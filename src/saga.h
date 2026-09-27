@@ -1532,6 +1532,26 @@ extern "C" {
     extern const f64 NuTimeBarScanlinesPerFrame;
     extern const u32 NuTimeBar_EngineColours[7];
     extern const u32 NuTimeBar_DefaultColours[16];
+    extern const f64 NuTimeBarQuarter;
+    extern const f32 NuTimeBarQFontSize;
+    extern const f32 NuTimeBarQFontScale;
+    extern const f64 NuTimeBarTop;
+    extern const f64 NuTimeBarColumnStep;
+    extern const f64 NuTimeBarSlotWidth;
+    extern const f64 NuTimeBarHorizontalTop;
+    extern const char NuTimeBarValueFormat[3];
+    extern const f32 NuTimeBarFontScale;
+    extern const f64 NuTimeBarVerticalScale;
+    extern const f64 NuTimeBarNegativeSlotWidth;
+    extern const f64 NuTimeBarRight;
+    extern const f64 NuTimeBarNameMargin;
+    extern const f32 NuTimeBarHalfFontScale;
+    extern const f64 NuTimeBarLinesPerSecond;
+    extern i32 NuTimeBarPeakResetInterval;
+    extern i32 NuTimeBarRenderPeakReset;
+    extern i32 NuTimeBarHorizontalPeakReset;
+    extern i32 PS2_VREZ_W;
+    extern i32 PS2_VREZ_H;
     extern i64 NuTime_TickBase;
     void __cdecl NuTimeGetTicksPS(u32 *low, u32 *high);
     void __cdecl NuTimeGet(NuTime *time);
@@ -1648,7 +1668,8 @@ extern "C" {
     void __cdecl RndrStateCopyGlobalState(NUGLOBALRNDRSTATE_PC *state);
     void __cdecl RndrStateResetGlobalState(NUGLOBALRNDRSTATE_PC *state);
     void __cdecl RndrStateResetSharedGlobalState(void);
-    void __cdecl RndrStateSetConstAlphaTint(i32 alpha_enabled, i32 tint_enabled, f32 alpha, const NUVEC *tint, NUMTL *material);
+    void __cdecl RndrStateSetConstAlphaTint(i32 alpha_enabled, i32 tint_enabled, f32 alpha, const NUVEC *tint,
+                                            NUMTL *material);
     void __cdecl RndrStateSetReflection(i32 reflection);
     i32 __cdecl NuRndrSetAmbientLightPS(const NUVEC *colour);
     void __cdecl NuPrim2DAddXYZ(f32 x, f32 y, f32 z);
@@ -1978,6 +1999,9 @@ extern "C" {
     NUFILE __cdecl NuDatFileOpen(NUDATHDR *header, char *filepath, i32 mode);
     i32 __cdecl NuDatFileRead(NUFILE file, void *buffer, i32 size);
     i32 __cdecl NuDatFileLoadBuffer(NUDATHDR *header, char *filepath, void *buffer, i32 capacity);
+    NUFILE __cdecl NuMemFileOpen(void *buffer, i32 buffer_size, i32 mode);
+    void *__cdecl NuMemFileAddr(NUFILE file);
+    i32 __cdecl NuMemFileWrite(NUFILE file, const void *data, i32 size);
     i32 __cdecl NuMemFileRead(NUFILE file, void *buffer, i32 size);
     i64 __cdecl NuMemFileSeek(NUFILE file, i64 offset, i32 origin);
     void __cdecl NuMemFileClose(NUFILE file);
@@ -2147,6 +2171,8 @@ extern "C" {
     f32 __cdecl GameAnimSet_GetAnimPos(GAMEANIMOBJ *object);
     void __cdecl GameAnimSet_SetAnimPos(GAMEANIMOBJ *object, f32 position);
     f32 __cdecl GameAnimSet_GetCompletionRatio(GAMEANIMSET *set);
+    void *__cdecl GizmoFindByName(void *gizmo_sys, i32 type_id, char *name);
+    extern void *gizmotypes;
     extern AREA_DATA_PC *ADataList;
     extern i32 AREACOUNT;
     extern EPISODEDATA_PC *EDataList;
@@ -2279,6 +2305,11 @@ extern "C" {
     void __cdecl IntroText_SetTextID(i32 id);
     void __cdecl Text_InitDefaultStrings(void);
     void __cdecl Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32 count);
+    void __cdecl Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end);
+    extern const char TextLoadPermTextDirectory[12];
+    extern const char TextLoadPermAPIExtension[9];
+    extern const char TextLoadPermTRCPath[19];
+    extern i16 tALONGTIMEAGO;
     extern const char TextPlatformXbox[5];
     extern const char TextPlatformPC[3];
     extern const char TextPlatformPSP[4];

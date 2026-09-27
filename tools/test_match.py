@@ -316,6 +316,7 @@ function report(code = 442, mapped = 1496) {
   return {format_version: 2, target_sha256: 'c'.repeat(64), progress: {
     text_bytes: 3471246, mapped_code_bytes: code, matched_code_bytes: code,
     matching_percent: 100 * code / 3471246, mapped_functions: 13, matched_functions: 13,
+    fuzzy_coverage_percent: 100 * code * 0.625 / 3471246,
     objdiff_fuzzy_percent: 60 + (code - 442) / 10, objdiff_total_code: 1000 + code - 442,
     image_bytes: 40067072, mapped_bytes: mapped, mapping_percent: 100 * mapped / 40067072}};
 }
@@ -354,10 +355,11 @@ async function exercise(options = {}) {
   assert.equal(first.writes[0].kind, 'create'); assert(first.body.startsWith(marker));
   assert(first.body.includes('| Exact code bytes | 442 | 467 | +25 |'));
   assert(first.body.includes('| Objdiff fuzzy match | 60.000000% | 62.500000% | +2.500000 pp |'));
+  assert(first.body.includes('| Fuzzy code coverage | '));
   assert(first.body.includes('| Compared code bytes | 1,000 | 1,025 | +25 |'));
   assert(first.body.includes('| Known mapped bytes | 1,496 | 1,596 | +100 |'));
   assert(first.body.includes('CI has no retail executable and does not verify these matches.'));
-  assert(first.body.includes('Objdiff fuzzy match describes similarity among compared functions.'));
+  assert(first.body.includes('Fuzzy code coverage weights objdiff scores'));
   assert.equal(first.reads[1].owner, 'fork'); assert.equal(first.reads[1].ref, headSHA);
   const oldBot = {id: 9, user: {login: 'github-actions[bot]'}, body: marker + '\nold'};
   const updated = await exercise({comments: [oldBot]});

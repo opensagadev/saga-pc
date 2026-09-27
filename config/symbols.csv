@@ -85,6 +85,7 @@ address   , symbol                                                , size  , ctyp
 0x004cf2d0, _Text_SetLanguage_Game                                , 228   , void __cdecl (i32)
 0x004cf3c0, _Text_InitDefaultStrings                              , 177   , void __cdecl (void)
 0x004cf480, _Text_DecodeButtons                                   , 41    , "void __cdecl (char *, char *)"
+0x004cf4c0, _Text_LoadStrings                                     , 397   , "void __cdecl (VARIPTR *, VARIPTR *)"
 0x004d44a0, _TrafficAnimSys_Configure                             , 650   , "void __cdecl (WORLDINFO *, char *)"
 0x004eed92, _SendMessageA@16                                      , 6     , "LRESULT __stdcall (HWND, UINT, WPARAM, LPARAM)"
 0x004eef40, _NuAlloc                                              , 471   , "void *__cdecl (i32, const char *, i32)"
@@ -1268,7 +1269,9 @@ address   , symbol                                                , size  , ctyp
 0x00751768, _nu_fsign_minus_one                                   , 4     , const f32
 0x00751788, __real@3fb99999a0000000                                , 8     , const f64
 0x00751798, _NuTimeBarQFontSize                                   , 4     , const f32
+0x00751798, __real@41800000                                       , 4     , const f32
 0x007517b0, _NuTimeBarQFontScale                                  , 4     , const f32
+0x007517b0, __real@3d800000                                       , 4     , const f32
 0x007517b4, __real@40800000                                       , 4     , const f32
 0x007517b8, _NuPrimTwo                                            , 4     , const f32
 0x007517c0, _NuTimeBarTop                                         , 8     , const f64
@@ -1593,7 +1596,12 @@ address   , symbol                                                , size  , ctyp
 0x007640d8, __real@461c4000                                       , 4     , const f32
 0x00764258, _KeyStructSizes                                       , 16    , const u8[16]
 0x00764538, _NuPrimPS2YScale                                      , 4     , const f32
+0x00764538, __real@bc124925                                       , 4     , const f32
 0x0076453c, _NuPrimPS2XScale                                      , 4     , const f32
+0x0076453c, __real@3b4ccccd                                       , 4     , const f32
+0x00764540, __real@42e00000                                       , 4     , const f32
+0x00764544, __real@c2e00000                                       , 4     , const f32
+0x00764548, __real@43a00000                                       , 4     , const f32
 0x007646a4, _NuCameraAllocSource                                  , 54    , const char[54]
 0x00765024, _NuTimeBarSource                                      , 51    , const char[51]
 0x00765058, _NuTimeBarScanlineMicroseconds                        , 8     , const f64

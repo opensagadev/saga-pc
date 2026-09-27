@@ -238,7 +238,7 @@ void __cdecl Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32
 void __cdecl Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
     char language[32];
     char path[256];
-    u8 *string_buffer = buffer->u8_ptr;
+    u8 *string_buffer = (u8 *)buffer->void_ptr;
 
     (void)buffer_end;
 

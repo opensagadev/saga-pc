@@ -438,7 +438,7 @@ void __cdecl NuPrim2DBegin(u32 primitive_type, u32 vertex_format, NUMTL *materia
     render_state.counter_0020++;
     render_state.state_00f8 = 0;
     render_state.state_00f4 = 0;
-    render_state.state_00fc = 0;
+    render_state.const_alpha_material = NULL;
     render_state.konst_packet_cache = NULL;
     DisplayListUpdateRenderState(list, &render_state);
 

@@ -947,6 +947,18 @@ extern "C" {
 #pragma const_seg(".rdata$NuTimeBarHalfFontScale")
     extern const f32 NuTimeBarHalfFontScale = 0.42500001192092896f;
 #pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarLinesPerSecond")
+    extern const f64 NuTimeBarLinesPerSecond = 15734.0;
+#pragma const_seg()
+#pragma data_seg(".data$NuTimeBarPeakResetInterval")
+    extern i32 NuTimeBarPeakResetInterval = 30;
+#pragma data_seg()
+#pragma data_seg(".data$NuTimeBarRenderPeakReset")
+    extern i32 NuTimeBarRenderPeakReset = 1;
+#pragma data_seg()
+#pragma data_seg(".data$NuTimeBarHorizontalPeakReset")
+    extern i32 NuTimeBarHorizontalPeakReset = 1;
+#pragma data_seg()
 #pragma bss_seg(".bss$NuTimeBar_EngineEnabled")
     i32 NuTimeBar_EngineEnabled;
 #pragma bss_seg()

@@ -14,38 +14,38 @@ i32 __cdecl NuQFntSetCoordinateSystem(i32 mode) {
     i32 previous = nuqfnt_cs_mode;
     nuqfnt_cs_mode = mode;
     switch (mode) {
-    case 2:
-        qfnt_rezscale_w = 1.0f;
-        qfnt_rezscale_h = 0.5f;
-        qfnt_offscale_x = 1.0f;
-        qfnt_offscale_y = 1.0f;
-        qfnt_len_scale = 1.0f;
-        qfnt_height_scale = 1.0f;
-        break;
-    case 3:
-        qfnt_rezscale_w = 320.0f;
-        qfnt_rezscale_h = -112.0f;
-        qfnt_offscale_x = 320.0f;
-        qfnt_offscale_y = 112.0f;
-        qfnt_len_scale = 0.003125f;
-        qfnt_height_scale = -0.008928572f;
-        break;
-    case 4:
-        qfnt_rezscale_w = 1.0f;
-        qfnt_rezscale_h = 1.0f;
-        qfnt_offscale_x = 0.0f;
-        qfnt_offscale_y = 0.0f;
-        qfnt_len_scale = 1.0f;
-        qfnt_height_scale = -1.0f;
-        break;
-    default:
-        qfnt_rezscale_w = 0.0625f;
-        qfnt_rezscale_h = 0.0625f;
-        qfnt_offscale_x = 0.0f;
-        qfnt_offscale_y = 0.0f;
-        qfnt_len_scale = 16.0f;
-        qfnt_height_scale = 16.0f;
-        break;
+        case 2:
+            qfnt_rezscale_w = 1.0f;
+            qfnt_rezscale_h = 0.5f;
+            qfnt_offscale_x = 1.0f;
+            qfnt_offscale_y = 1.0f;
+            qfnt_len_scale = 1.0f;
+            qfnt_height_scale = 1.0f;
+            break;
+        case 3:
+            qfnt_rezscale_w = 320.0f;
+            qfnt_rezscale_h = -112.0f;
+            qfnt_offscale_x = 320.0f;
+            qfnt_offscale_y = 112.0f;
+            qfnt_len_scale = 0.003125f;
+            qfnt_height_scale = -0.008928572f;
+            break;
+        case 4:
+            qfnt_rezscale_w = 1.0f;
+            qfnt_rezscale_h = 1.0f;
+            qfnt_offscale_x = 0.0f;
+            qfnt_offscale_y = 0.0f;
+            qfnt_len_scale = 1.0f;
+            qfnt_height_scale = -1.0f;
+            break;
+        default:
+            qfnt_rezscale_w = 0.0625f;
+            qfnt_rezscale_h = 0.0625f;
+            qfnt_offscale_x = 0.0f;
+            qfnt_offscale_y = 0.0f;
+            qfnt_len_scale = 16.0f;
+            qfnt_height_scale = 16.0f;
+            break;
     }
     return previous;
 }

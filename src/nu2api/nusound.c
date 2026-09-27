@@ -114,7 +114,7 @@ void __cdecl SetSfxBit_OffEx(i32 sfx_id) {
     if (index > 0x63f) {
         return;
     }
-    SfxBits[index >> 4] &= (u16)~(1u << (index & 0xf));
+    SfxBits[index >> 4] &= (u16) ~(1u << (index & 0xf));
 }
 
 i32 __cdecl SfxBitEx(i32 sfx_id) {

@@ -41,23 +41,22 @@ typedef struct area_gizmosys_prefix_pc_s {
 } AREA_GIZMOSYS_PREFIX_PC;
 STATIC_ASSERT(offsetof(AREA_GIZMOSYS_PREFIX_PC, sets) == 0x00);
 
-extern AREA_GIZMOTYPES_PC *gizmotypes;
-
 void *__cdecl GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
+    AREA_GIZMOTYPES_PC *types = (AREA_GIZMOTYPES_PC *)gizmotypes;
     AREA_GIZMOSET_PC *sets;
 
-    if (gizmotypes == NULL || name == NULL || gizmo_sys == NULL) {
+    if (types == NULL || name == NULL || gizmo_sys == NULL) {
         return NULL;
     }
 
     sets = ((AREA_GIZMOSYS_PREFIX_PC *)gizmo_sys)->sets;
-    if (type_id >= 0 && type_id <= gizmotypes->count) {
+    if (type_id >= 0 && type_id <= types->count) {
         AREA_GIZMOTYPE_PC *type;
         AREA_GIZMOSET_PC *set;
         AREA_GIZMO_PC *gizmo;
         i32 index;
 
-        type = &gizmotypes->types[type_id];
+        type = &types->types[type_id];
         set = &sets[type_id];
         if (type->get_gizmo_name == NULL) {
             return NULL;
@@ -76,9 +75,9 @@ void *__cdecl GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
         AREA_GIZMOSET_PC *set;
         i32 type_index;
 
-        type = gizmotypes->types;
+        type = types->types;
         set = sets;
-        for (type_index = 0; type_index < gizmotypes->count; ++type_index, ++type, ++set) {
+        for (type_index = 0; type_index < types->count; ++type_index, ++type, ++set) {
             AREA_GIZMO_PC *gizmo;
             i32 gizmo_index;
 
