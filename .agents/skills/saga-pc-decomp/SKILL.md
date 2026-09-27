@@ -8,6 +8,29 @@ description: Work on saga-pc's matching decompilation of the GOG PC executable, 
 Read [CONTRIBUTING.md](../../../CONTRIBUTING.md) for setup, commands, compiler
 constraints and required validation. Use [config/symbols.md](../../../config/symbols.md)
 for mapping rules and identification evidence. Run commands from the repository root.
+For NuMain and its dependencies, also read the [investigation queue](../../../config/numain.md)
+and [data inventory](../../../config/data.md). Keep current targets and remaining gaps
+in those documents; use the current source and `matching.json` for progress, rather
+than treating an older handoff's counts or commit ID as current state.
+
+## Agent coordination and continuation
+
+- Use at most **two subagents per task**, reuse them, and allow no nested delegation
+  unless the user requests a different arrangement. The main agent must also analyze and
+  implement a concrete part of the reconstruction. Keep delegated work on the
+  user-selected model; for a GPT-6 Sol workflow, use Sol for subagents too.
+- Give each subagent a bounded function/dependency or data task, exclusive file
+  ownership, and an explicit instruction to read this skill. Require PC identity,
+  type/ABI and complete-extent evidence, proposed map/header changes, and actual
+  compilation/comparison results. An unverified candidate remains a candidate.
+- The main agent integrates `src/saga.h`, `src/externals.h`, `config/symbols.csv`,
+  `matching.json` and README badges. Assign `src/data.cpp` to one writer at a time.
+  Subagents hand off findings and owned source edits; the main agent runs aggregate
+  checks and handles commits/pushes within the user's existing authorization.
+- Inspect the working tree and reuse installed tools, existing maps, and relevant
+  research under ignored `build/analysis/`. Check that scratch results concern the
+  configured original before relying on them. Avoid repeating setup, broad binary
+  scans or completed investigations without a concrete reason.
 
 ## Architecture
 
@@ -64,10 +87,19 @@ and original PC bytes. Record evidence and uncertainty in `config/symbols.md`, p
 attribution, and do not modify the separate Android repository as part of PC work.
 
 Keep the CSV sorted by original address. Add a mapping for every compiled function
-and data definition, including private globals, literals and vtables. The matcher
-finds objects by their current source files and exact linker names. Multiple copies
+and data definition, including private globals, literals, vtables and tentative C
+common allocations. The matcher finds objects by their current source files and
+exact linker names. Multiple copies
 must all match. Names mapped to different VAs cannot resolve a reference unambiguously;
 use distinct reconstruction names for unrelated file-local entities.
+
+Keep speculative identities and reachable-body counts in the research notes until
+PC identity, ABI and full boundaries are reviewed. Implement the real dependencies
+before extending an executable path; do not invent placeholder callees to satisfy
+the linker. Preserve a source-only executable that links, and describe partial
+entry-point reconstruction explicitly. Shared data/constants belong in
+`src/data.cpp` with PC initializer and extent evidence; retain existing private
+owners and C++ linkage where required.
 
 ## Required verification
 
@@ -87,6 +119,10 @@ locally with the supported retail executable**. Inspect affected differences wit
 `make -j"$(nproc)" diff FUNC=Name` (C shorthand, exact linker name or VA). Refresh
 `matching.json` and README badges before claiming matches. If retail is unavailable,
 report matching as unverified; do not invent or refresh comparison results.
+Compare against the previous verified report and investigate any lost exact matches.
+At a checkpoint, report newly verified functions/data, remaining differences and
+one concrete next target. When pushing is authorized, verify the resulting CI run
+and state its outcome; do not describe local success as a passing CI run.
 
 ## Meaning of results
 
@@ -108,7 +144,9 @@ or bindings simply to improve a metric.
 CI installs pinned tools and runs the original-free checks. `make lint` checks
 formatting and static analysis; `make check-core` runs the remaining checks.
 CI uses LLVM 18; local Clang 18+ is supported with `CLANG_FORMAT`/`CLANG_TIDY`
-overrides. Clang analyzes Windows x86 using a generated case-insensitive VFS
+overrides. Use LLVM 18 when reproducing CI; formatting can differ across major
+versions, so a newer local pass alone does not establish CI compatibility.
+Clang analyzes Windows x86 using a generated case-insensitive VFS
 overlay over verified Microsoft headers; never substitute host or Wine headers.
 The real compiler and matching flags remain MSVC 2005. PR comments update one
 bot comment from committed report snapshots; those reported numbers do not prove
