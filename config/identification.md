@@ -176,12 +176,23 @@ PC extents after relocation. They add verified dependencies without completing
 
 | PC VA | Function | Bytes | Evidence |
 | --- | --- | ---: | --- |
+| `0x0055c5e0` | `ClearPause` | 13 | Both C++ game-state writes clear the four-byte `Paused` and `NetPaused` globals; PC and Android behavior agree. |
 | `0x005c9130` | `NuPause` | 11 | Pause/resume callers pass 1/0; Android stores the integer as `f32` in `nu2api_paused` (`nucore_plain.cpp`). |
 | `0x005c9ff0` | `NuRegisterEndFrameCallBackFn` | 10 | Android stores a `void (*)(void)` callback; PC frame-end consumers invoke the stored pointer. |
+| `0x005d9030` | `NuPortalInit` | 34 | Android initializes the portal stack buffer and boundaries; PC computes the same aligned base and `0x3000` end. |
+| `0x005f9530` | `NuWaterReset` | 21 | NuFrameBegin call order identifies the routine; PC writes its two four-byte water-state globals. |
+| `0x006d58a0` | `NuMouseRead` | 1 | Android body is empty; PC extent is a single `ret`, called in the frame-begin sequence. |
+| `0x005e8430` | `NuOcclusionManagerBeginFrame` | 59 | Android calls `g_OcclusionManager.BeginFrame()`; PC swaps the two set pointers, clears the set fields, and resets both manager counters. |
+| `0x0064ae40` | `NuPartEnableRayCasts` | 10 | Android setter stores its `enabled` argument; PC stores the same argument to the ray-cast flag. |
 | `0x004f4fc0`–`0x004f5120` | Video accessors and setters, rolling-rate reset | 1–68 | `nuvideo.c`; six mapped functions at `0x004f4fc0`, `0x004f4fd0`, `0x004f4fe0`, `0x004f5100`, `0x004f5110`, and `0x004f5120` match exactly. |
-| `0x00697a30`–`0x00698a00` | Sound reverb, rumble, loop and hold-time helpers | 1–22 | `nusound.c`; all five mapped functions match exactly. |
-| `0x005d9030` | `NuPortalInit` | 34 | Initializes PC portal stack boundaries from the mapped `fstack` range. |
-| `0x0055f430`–`0x0055f500` | WorldInfo initialization, accessors and `WorldInfo_OtherLevel` | 6–36 | `world.c`; all four mapped functions match against PC world records and fields. |
+| `0x00697a30`–`0x00698a00` | Sound reverb, rumble, loop and hold-time helpers | 1–22 | `nusound.c`; all six mapped functions match exactly. |
+| `0x0055f430`–`0x0055f560` | WorldInfo initialization, accessors, other-level and room visibility | 6–103 | `world.c`; all five mapped functions match against PC world records and typed fields. |
+
+`NuFrameBegin` at `0x004f3e20` has a 32-byte VC8 scratch candidate that matches
+the complete PC extent after explicit bindings. It is not in tracked source because
+the PC `NuKeyboardRead` callee at `0x006d9340` still depends on an unreconstructed
+helper and state. The occlusion frame routine is tracked independently; its named
+manager and set fields are asserted in `saga.h`.
 
 The PC stores `nu2api_paused` as a four-byte float, and the frame-end code
 indirectly calls the four-byte callback pointer. Android's declarations confirm

@@ -20,10 +20,12 @@ address   , symbol                                                , size , ctype
 0x0054fa60, ?qrand@@YAHXZ                                         , 25   , i32 __cdecl (void)
 0x0054fa80, ?getqseed@@YAHXZ                                      , 6    , i32 __cdecl (void)
 0x0054fa90, ?ResetSeeds@@YAXXZ                                    , 61   , void __cdecl (void)
+0x0055c5e0, ?ClearPause@@YAXXZ                                     , 13   , "void __cdecl (void)"
 0x0055f430, _WorldInfo_InitOnce                                   , 21   , void __cdecl (void)
 0x0055f450, _WorldInfo_CurrentlyActive                            , 6    , WORLDINFO *__cdecl (void)
 0x0055f460, _WorldInfo_CurrentlyLoading                           , 6    , WORLDINFO *__cdecl (void)
 0x0055f500, _WorldInfo_OtherLevel                                 , 36   , i32 __cdecl (WORLDINFO *)
+0x0055f560, _WorldInfo_UpdateRoomVisibility                       , 103  , "void __cdecl (WORLDINFO *, i32)"
 0x005b9d70, _NuRandSeed                                           , 10   , void __cdecl (u32)
 0x005b9d80, _NuRandGetSeed                                        , 6    , u32 __cdecl (void)
 0x005b9d90, _NuRandFloatSeeded                                    , 52   , f32 __cdecl (u32 *)
@@ -44,10 +46,12 @@ address   , symbol                                                , size , ctype
 0x005d9030, _NuPortalInit                                         , 34   , void __cdecl (void)
 0x005dabd0, _NuHGobjReversibleCharacters                          , 16   , i32 __cdecl (i32)
 0x005dabe0, _NuHGobjForceShadowsOnCharacters                      , 16   , i32 __cdecl (i32)
+0x005e8430, _NuOcclusionManagerBeginFrame                          , 59   , "void __cdecl (void)"
 0x005f9530, _NuWaterReset                                         , 21   , void __cdecl (void)
 0x0061e6b0, _NuKeyToAscii                                        , 50   , "i32 __cdecl (u32, i32)"
 0x0064a450, _NuPartSetSeed                                        , 10   , void __cdecl (i32)
 0x0064a460, _NuPartGetSeed                                        , 6    , u32 __cdecl (void)
+0x0064ae40, _NuPartEnableRayCasts                                  , 10   , "void __cdecl (i32)"
 0x006579f0, _DebrisSetTimeIncrement                               , 11   , void __cdecl (f32)
 0x00659230, _DebrisSetSeed                                        , 10   , void __cdecl (i32)
 0x00659240, _DebrisGetSeed                                        , 6    , u32 __cdecl (void)
@@ -462,6 +466,8 @@ address   , symbol                                                , size , ctype
 0x0075133c, __imp__CoCreateInstance@20                            , 4    , "HRESULT (__stdcall *)(REFCLSID, IUnknown *, DWORD, REFIID, void **)"
 0x00751340, __imp__CoUninitialize@0                               , 4    , void (__stdcall *)(void)
 0x00751344, __imp__CoSetProxyBlanket@32                           , 4    , "HRESULT (__stdcall *)(IUnknown *, DWORD, DWORD, OLECHAR *, DWORD, DWORD, RPC_AUTH_IDENTITY_HANDLE, DWORD)"
+0x007514d0, _InitOnceWindowTitle                                  , 36   , const char[36]
+0x00751528, _InitOnceHalf                                         , 4    , const f32
 0x00751698, __real@3ff0000000000000                               , 8    , f64
 0x00755180, _NuSound3LoopHoldTimeMultiplier                       , 8    , const f64
 0x00764000, __real@3e00000000000000                               , 8    , f64
@@ -502,6 +508,7 @@ address   , symbol                                                , size , ctype
 0x008066c8, _ang                                                  , 1026 , u16[513]
 0x00806c00, _cubeEdgeIndices                                      , 96   , i32[12][2]
 0x00806c60, _cubeEdgeTopologies                                   , 96   , i32[12][2]
+0x0080bbe0, _g_OcclusionManager                                    , 368  , OCCLUSIONMANAGER
 0x0080be74, ??_R0?AVNuPostFilterGen@@@8                           , 30   ,
 0x0080be94, ??_R0?AVNuPostFilter@@@8                              , 27   ,
 0x0080bec4, ??_R0?AVNuMotionFilterGen@@@8                         , 32   ,
@@ -664,6 +671,7 @@ address   , symbol                                                , size , ctype
 0x0093b2c8, _SuperStory                                           , 4    , i32
 0x0093b344, _Arcade                                               , 4    , i32
 0x0093b348, _Paused                                               , 4    , i32
+0x0093b34c, ?NetPaused@@3HA                                       , 4    , i32
 0x0093b358, _GAMEDEMO                                             , 4    , i32
 0x0093d838, _PLAYERCOUNT                                          , 4    , i32
 0x0093d83c, _UsePlayerList                                        , 4    , i32
@@ -694,6 +702,7 @@ address   , symbol                                                , size , ctype
 0x0097398c, _NuTimeBar_Initialised                                , 4    , i32
 0x02854bf8, _nu_water_reset_state                                 , 4    , i32
 0x02854c00, _nu_water_reset_status                                , 4    , i32
+0x02920aac, _part_raycasts_enabled                                , 4    , i32
 0x0296206c, _DebrisCutSceneMode                                   , 4    , i32
 0x0297397c, _NuSound3Reverb                                       , 1    , u8
 0x02975a94, _win_message                                          , 28   , MSG

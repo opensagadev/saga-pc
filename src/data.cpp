@@ -22,7 +22,9 @@ i32 party_cant_be_under_cover;
 i32 ResetOldFStop;
 i32 new_level_from_menu;
 i32 reset_restart;
+#pragma bss_seg(".bss$NoMoreLoads")
 i32 no_more_loads;
+#pragma bss_seg()
 i32 BonusWinner = -1;
 i32 BonusCoinTotal;
 i32 NewMode;
@@ -42,6 +44,9 @@ i32 peak_poly_count;
 i32 poly_count;
 i32 CUTSTOPGAME;
 i32 Paused;
+#pragma bss_seg(".bss$NetPaused")
+i32 NetPaused;
+#pragma bss_seg()
 i32 FinishLoop_On = 1;
 i32 LevelChange;
 i32 LevelChangesInArea;
@@ -53,6 +58,12 @@ i32 Door_UseCutCam;
 i32 SUPERBUFFERSIZE = 0x09600000;
 VARIPTR original_permbuffer_base;
 extern "C" {
+#pragma const_seg(".rdata$InitOnceWindowTitle")
+    extern const char InitOnceWindowTitle[36] = "LEGO\xae Star Wars\x99: The Complete Saga";
+#pragma const_seg()
+#pragma const_seg(".rdata$InitOnceHalf")
+    extern const f32 InitOnceHalf = 0.5f;
+#pragma const_seg()
     void *Game_NuPad_Store[2];
     void **Game_NuPad;
     void *NuTimeBar_SetList[16];
@@ -84,6 +95,8 @@ extern "C" {
     VARIPTR fstack_top;
     VARIPTR fstack_limit;
     i32 DebrisCutSceneMode;
+    i32 part_raycasts_enabled;
+    OCCLUSIONMANAGER g_OcclusionManager = {0, 1, {0}, {{0}}, 0, 0, 0.3f, -1.0f, 0, 0, {0}};
 }
 void *pNuCam;
 i32 app_tbgameset;
@@ -109,7 +122,9 @@ VARIPTR permbuffer_base;
 VARIPTR permbuffer_ptr;
 VARIPTR permbuffer_end;
 VARIPTR characterbuffer_base;
+#pragma bss_seg(".bss$CharacterBufferPtr")
 VARIPTR characterbuffer_ptr;
+#pragma bss_seg()
 VARIPTR characterbuffer_end;
 VARIPTR superbuffer_base;
 VARIPTR superbuffer_ptr;
@@ -120,7 +135,9 @@ WORLDINFO WorldInfo[2] = {0};
 WORLDINFO *WORLD = &WorldInfo[0];
 WORLDINFO *LWORLD = &WorldInfo[0];
 
+#pragma data_seg(".data$WaitingForCharacter")
 i32 waiting_for_character = -1;
+#pragma data_seg()
 
 // CRC-16/IBM lookup values stored as 32-bit words.
 u32 crctab[256] = {

@@ -1,12 +1,11 @@
 # PC data inventory
 
-`src/data.cpp` now defines **110 independently mapped objects, 57,627 mapped
-bytes**. The current local `matching.json` verifies 108 exact objects (57,619
-bytes), including full COFF extents, BSS initializers, and the two relocations
-in `WORLD` and `LWORLD`. `waiting_for_character` at `0x007f23a4` and
-`no_more_loads` at `0x0093d874` remain different: MSVC emits eight-byte COFF
-extents for their four-byte PC objects, so the matcher refuses a partial
-comparison.
+`src/data.cpp` now defines **115 independently mapped objects, 58,043 mapped
+bytes**. The current local `matching.json` verifies all 115 full COFF extents,
+initializers, and the two relocations in `WORLD` and `LWORLD`. Isolated VC8
+sections keep `waiting_for_character`, `no_more_loads`, and
+`characterbuffer_ptr` at their actual four-byte extents instead of absorbing
+alignment padding from the next declaration.
 The accepted entries are in [symbols.csv](symbols.csv), and normal local matching
 checks their emitted bytes. The detailed scratch comparison and candidate scans
 are under ignored `build/analysis/data/`. This includes previously mapped symbols
@@ -74,6 +73,13 @@ the four-byte `loaded` field at `+0x110`, and returns the `level_idx` field at
 `+0x11c` or -1. Only recovered PC fields belong in the shared type; initializer
 equality does not establish unknown members.
 
+PC `WorldInfo_UpdateRoomVisibility` at `0x0055f560` also establishes
+`current_gscn` at `+0x13c`, a visibility flag at `+0x2990`, a 256-byte room
+visibility array at `+0x2991`, and its pointer at `+0x2a94`. Scene room count
+and room pointer are at `+0x74` and `+0x78`; room records advance by `0x18`
+bytes and expose a visibility-flags byte at `+0x10`. These named offsets are
+asserted in `saga.h`. The function's C reconstruction is still being compared.
+
 The permanent/character/super-buffer pointers and sizes are the 13 four-byte
 objects used by the verified StartPerm/EndPerm reconstruction. Their initial
 values are zero except `CHARACTERBUFFERSIZE = 0x02800000` (PC 40 MiB). The
@@ -88,12 +94,16 @@ them.
 
 | PC VA | Object | Extent and PC evidence |
 | --- | --- | --- |
-| `0x0297dbe0` | `nuapi` | 0x90-byte zero-initialized aggregate. PC `0x004f3db9` clears all 0x90 bytes; access widths establish i32 fields at `+4` language, `+8` video mode, `+0xc` swap mode, `+0x10` aspect, `+0x1c` PAL, `+0x7c` reversible characters, `+0x84` forced shadows, and f32 brightness at `+0x8c`. The PC swap-mode offset differs from Android. |
+| `0x0297dbe0` | `nuapi` | 0x90-byte zero-initialized aggregate. PC `0x004f3db9` clears all 0x90 bytes; access widths establish i32 fields at `+4` language, `+8` video mode, `+0xc` swap mode, `+0x10` aspect, `+0x1c` PAL, `+0x24` frame-begin count, `+0x7c` reversible characters, `+0x84` forced shadows, and f32 brightness at `+0x8c`. The PC swap-mode offset differs from Android. |
+| `0x007514d0`, `0x00751528` | `InitOnceWindowTitle`, `InitOnceHalf` | Complete 36-byte title string including its PC single-byte trademark codes, and four-byte f32 `0.5f`; both are read by PC InitOnce. |
+| `0x0080bbe0` | `g_OcclusionManager` | Full 0x170-byte initialized manager ending before distinct data at `0x0080bd50`. `initialized` starts zero, `enabled` starts one, and f32 fields at `+0x158`/`+0x15c` start `0.3f`/`-1.0f`. PC BeginFrame accesses the two set pointers at `+0x150`/`+0x154` and clears counters at `+0x160`/`+0x164`. |
 | `0x007ef01c`, `0x00924890`, `0x009253cc`, `0x00926bd0` | `SUPERBUFFERSIZE`, `original_permbuffer_base`, `Game_NuPad`, `Game_NuPad_Store` | PC allocation size is `0x09600000`; InitOnce copies the returned pointer and passes both pad slots at `0x00926bd0` and `+4` into hardware setup. The pointer globals and two-slot array start zero. |
 | `0x0092500c`, `0x00925010`, `0x00925014`, `0x00925040`, `0x00925184` | Four `app_tb*set` IDs and `pNuCam` | InitOnce stores four returned i32 set IDs and a camera pointer in separate four-byte globals; all start zero. |
 | `0x00963fb0`, `0x009663a8`, `0x0096d9e0`, `0x0096e598` | `fstack`, `fstack_limit`, `fstack_top`, `fstackmem` | Three four-byte cursor pointers and a 0x3000-byte zero-filled portal stack. PC `NuPortalInit` at `0x005d9030` sets its start, aligned top, and limit. |
 | `0x009716c0`, `0x0097398c`, `0x00920a00` | `NuTimeBar_SetList`, `NuTimeBar_Initialised`, `NuTime_TickBase` | 16 zero pointers (64 bytes), a zero i32, and a zero i64. PC time-bar initialization clears exactly 0x40 bytes at `0x009716c0`; slot code indexes four-byte entries. |
 | `0x009738a4`, `0x0097388c` | End-frame callback pointer, `nu2api_paused` | Four-byte zero pointer assigned at `0x005c9ff0`; four-byte zero f32 set by `NuPause` at `0x005c9130`. The pause value remains owned by its function unit. |
+| `0x0093b34c` | `NetPaused` | Zero-initialized four-byte i32 written with `Paused` by the exact PC `ClearPause` routine at `0x0055c5e0`. |
+| `0x02920aac` | `part_raycasts_enabled` | Zero-initialized four-byte i32 gating the PC parts raycast path; Android initializes its counterpart to one, so its default was not copied. |
 | `0x0297397c`, `0x00755180`, `0x00810dc8` | `NuSound3Reverb`, `NuSound3LoopHoldTimeMultiplier`, `NuSound3LoopHoldTime` | One-byte zero reverb flag, eight-byte f64 value `1000.0`, and four-byte i32 value `133`; the PC sound setters read or write these exact widths. |
 | `0x008108e4`, `0x0296206c` | `debris_time_increment`, `DebrisCutSceneMode` | Four-byte f32 `1/60` step and zero i32 mode, written by the verified PC debris setters. |
 | `0x02854bf8`, `0x02854c00` | `nu_water_reset_state`, `nu_water_reset_status` | Separate zero-initialized four-byte integers written as 1 and 0 by `NuWaterReset` at `0x005f9530`. |

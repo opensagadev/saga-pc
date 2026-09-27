@@ -20,6 +20,12 @@ additional exact leaf matches documented in [identification.md](identification.m
 do not complete `NuMain` or close the `InitOnce` gap. Keep missing references fatal
 when linking.
 
+The frame chain has tracked implementations for its portal, water-reset, mouse and
+occlusion callees. `NuKeyboardRead` at `0x006d9340` still has unresolved PC
+dependencies, so `NuFrameBegin` remains out of tracked source. An ignored VC8
+probe matches its complete 32-byte body after explicit bindings; this scratch
+comparison is not a tracked match.
+
 ## Direct-call candidates
 
 Ghidra body counts below describe reachable instructions and may omit internal

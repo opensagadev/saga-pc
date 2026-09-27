@@ -62,6 +62,22 @@ STATIC_ASSERT(sizeof(VARIPTR) == 4);
 
 #define NU_PORTAL_STACK_SIZE 0x3000
 
+typedef struct NUGSCNROOM_s {
+    u8 unknown_0000[0x10];
+    u8 visibility_flags;
+    u8 unknown_0011[7];
+} NUGSCNROOM;
+STATIC_ASSERT(sizeof(NUGSCNROOM) == 0x18);
+STATIC_ASSERT(offsetof(NUGSCNROOM, visibility_flags) == 0x10);
+
+typedef struct NUGSCN_s {
+    u8 unknown_0000[0x74];
+    i32 num_rooms;
+    NUGSCNROOM *rooms;
+} NUGSCN;
+STATIC_ASSERT(offsetof(NUGSCN, num_rooms) == 0x74);
+STATIC_ASSERT(offsetof(NUGSCN, rooms) == 0x78);
+
 // Only fields with confirmed PC offsets are exposed.
 typedef struct WORLDINFO_s {
     u32 unknown_0000[0x40];
@@ -72,7 +88,14 @@ typedef struct WORLDINFO_s {
     i32 loaded;
     u32 unknown_0114[2];
     i32 level_idx;
-    u32 unknown_0120[0x1423];
+    u32 unknown_0120[7];
+    NUGSCN *current_gscn;
+    u32 unknown_0140[0xa14];
+    u8 room_visibility_flag;
+    u8 rooms_visible[0x100];
+    u8 unknown_2a91[3];
+    u8 *rooms_visible_ptr;
+    u32 unknown_2a98[0x9c5];
 } WORLDINFO;
 STATIC_ASSERT(sizeof(WORLDINFO) == 0x51ac);
 STATIC_ASSERT(offsetof(WORLDINFO, buffer_start) == 0x100);
@@ -80,6 +103,10 @@ STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
 STATIC_ASSERT(offsetof(WORLDINFO, buffer_end) == 0x108);
 STATIC_ASSERT(offsetof(WORLDINFO, loaded) == 0x110);
 STATIC_ASSERT(offsetof(WORLDINFO, level_idx) == 0x11c);
+STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
+STATIC_ASSERT(offsetof(WORLDINFO, room_visibility_flag) == 0x2990);
+STATIC_ASSERT(offsetof(WORLDINFO, rooms_visible) == 0x2991);
+STATIC_ASSERT(offsetof(WORLDINFO, rooms_visible_ptr) == 0x2a94);
 
 typedef struct NUKEYCHAR_s {
     u32 key;
@@ -97,6 +124,35 @@ typedef struct NuTime_s {
 } NuTime;
 STATIC_ASSERT(sizeof(NuTime) == 8);
 
+typedef struct OCCLUDERSET_s {
+    u8 unknown_0000[0xc];
+    u32 count;
+    u8 queries_prepared;
+    u8 unknown_0011[0x8f];
+} OCCLUDERSET;
+STATIC_ASSERT(sizeof(OCCLUDERSET) == 0xa0);
+STATIC_ASSERT(offsetof(OCCLUDERSET, count) == 0xc);
+STATIC_ASSERT(offsetof(OCCLUDERSET, queries_prepared) == 0x10);
+
+typedef struct OCCLUSIONMANAGER_s {
+    u8 initialized;
+    u8 enabled;
+    u8 unknown_0002[0xe];
+    OCCLUDERSET sets[2];
+    OCCLUDERSET *building_set;
+    OCCLUDERSET *current_set;
+    f32 unknown_0158;
+    f32 unknown_015c;
+    u32 unknown_0160;
+    u32 unknown_0164;
+    u8 unknown_0168[8];
+} OCCLUSIONMANAGER;
+STATIC_ASSERT(sizeof(OCCLUSIONMANAGER) == 0x170);
+STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, building_set) == 0x150);
+STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, current_set) == 0x154);
+STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, unknown_0160) == 0x160);
+STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, unknown_0164) == 0x164);
+
 typedef struct nuapi_s {
     u8 unknown_0000[4];
     i32 language;
@@ -105,7 +161,9 @@ typedef struct nuapi_s {
     i32 video_aspect;
     u8 unknown_0014[8];
     i32 video_is_pal;
-    u8 unknown_0020[0x5c];
+    u8 unknown_0020[4];
+    i32 frame_begin_count;
+    u8 unknown_0028[0x54];
     i32 reversible_characters;
     u8 unknown_0080[4];
     i32 force_shadows_on_characters;
@@ -118,6 +176,7 @@ STATIC_ASSERT(offsetof(NUAPI, video_mode) == 8);
 STATIC_ASSERT(offsetof(NUAPI, video_swap_mode) == 0xc);
 STATIC_ASSERT(offsetof(NUAPI, video_aspect) == 0x10);
 STATIC_ASSERT(offsetof(NUAPI, video_is_pal) == 0x1c);
+STATIC_ASSERT(offsetof(NUAPI, frame_begin_count) == 0x24);
 STATIC_ASSERT(offsetof(NUAPI, reversible_characters) == 0x7c);
 STATIC_ASSERT(offsetof(NUAPI, force_shadows_on_characters) == 0x84);
 STATIC_ASSERT(offsetof(NUAPI, video_brightness) == 0x8c);
@@ -134,6 +193,9 @@ extern "C" {
     extern char **argv;
     extern NUDATHDR *curr_dat;
     extern NUAPI nuapi;
+    extern OCCLUSIONMANAGER g_OcclusionManager;
+    void __cdecl NuOcclusionManagerBeginFrame(void);
+    void __cdecl NuFrameBegin(void);
     extern void *Game_NuPad_Store[2];
     extern void **Game_NuPad;
     extern void *NuTimeBar_SetList[16];
@@ -253,6 +315,7 @@ extern "C" {
     WORLDINFO *__cdecl WorldInfo_CurrentlyActive(void);
     WORLDINFO *__cdecl WorldInfo_CurrentlyLoading(void);
     i32 __cdecl WorldInfo_OtherLevel(WORLDINFO *world);
+    void __cdecl WorldInfo_UpdateRoomVisibility(WORLDINFO *world, i32 param);
     void __cdecl edGraEnableTerrainSwap(void);
     void __cdecl edGraDisableTerrainSwap(void);
     void __cdecl edGraInitTerrainSwapProtection(void);
@@ -272,6 +335,8 @@ extern "C" {
 
     extern u32 NuWindQS;
     extern u32 partseed;
+    extern i32 part_raycasts_enabled;
+    void __cdecl NuPartEnableRayCasts(i32 enabled);
     extern u32 debrisseed;
     extern f32 debris_time_increment;
     extern i32 DebrisCutSceneMode;
@@ -295,6 +360,8 @@ extern i32 qseed;
 i32 __cdecl qrand(void);
 i32 __cdecl getqseed(void);
 extern i32 GAMERAND;
+extern i32 NetPaused;
+void __cdecl ClearPause(void);
 void __cdecl ResetSeeds(void);
 extern i32 SUPERBUFFERSIZE;
 extern VARIPTR original_permbuffer_base;
