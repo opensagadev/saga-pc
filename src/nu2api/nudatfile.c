@@ -1,5 +1,7 @@
 #include "saga.h"
 
+#include <string.h>
+
 extern i32 file_criticalsection;
 extern PC_NUDATFILEINFO *unpack_file_info;
 extern NUDATOPENFILEINFO *unpack_file_odi;
@@ -112,4 +114,97 @@ NUFILE __cdecl NuDatFileOpen(NUDATHDR *header, char *filepath, i32 mode) {
         decode_buffer_left = 0;
     }
     return info_index + 0x800;
+}
+
+i32 __cdecl NuDatFileRead(NUFILE file, void *destination, i32 size) {
+    PC_NUDATFILEINFO *info = &pc_dat_file_infos[file - 0x800];
+    NUDATOPENFILEINFO *open_file = &info->header->open_files[info->open_file_index];
+    i64 remaining;
+    i32 to_read;
+    i32 bytes_read;
+
+    if (info->compression_mode == 2) {
+        STUBBED_NAMED("NuDatFileRead: PC compressed block decoding");
+        return -1;
+    }
+
+    if (info->position != open_file->position) {
+        NuFileSeek(open_file->dat_file, info->position, 0);
+        open_file->position = info->position;
+    }
+
+    remaining = info->file_length + info->start - info->position;
+    if (remaining < 0) {
+        remaining = 0;
+    }
+    to_read = size;
+    if ((i64)to_read >= remaining) {
+        to_read = (i32)remaining;
+    }
+    if (to_read != 0) {
+        bytes_read = NuFileRead(open_file->dat_file, destination, to_read);
+        if (bytes_read >= 0) {
+            info->position += bytes_read;
+            open_file->position = info->position;
+        }
+        return bytes_read;
+    }
+    return 0;
+}
+
+i32 __cdecl NuMemFileRead(NUFILE file, void *destination, i32 size) {
+    PC_NUMEMFILE *memory;
+    i32 available;
+
+    if (file >= 0x800) {
+        return NuDatFileRead(file, destination, size);
+    }
+
+    memory = &pc_memfiles[file - 0x400];
+    available = (i32)(memory->end - memory->position) + 1;
+    if (size > available) {
+        size = available;
+    }
+    if (size != 0) {
+        memcpy(destination, memory->position, size);
+        memory->position += size;
+    }
+    return size;
+}
+
+i64 __cdecl NuMemFileSeek(NUFILE file, i64 offset, i32 origin) {
+    PC_NUMEMFILE *memory;
+
+    if (file >= 0x800) {
+        return NuDatFileSeek(file, offset, origin);
+    }
+
+    memory = &pc_memfiles[file - 0x400];
+    switch (origin) {
+        case 1:
+            memory->position += (i32)offset;
+            break;
+        case 2:
+            memory->position = memory->end - (i32)offset;
+            break;
+        default:
+            memory->position = memory->buffer + (i32)offset;
+            break;
+    }
+    return memory->position - memory->buffer;
+}
+
+void __cdecl NuMemFileClose(NUFILE file) {
+    if (file >= 0x800) {
+        PC_NUDATFILEINFO *info = &pc_dat_file_infos[file - 0x800];
+
+        if (info->open_file_index >= 0) {
+            info->header->open_files[info->open_file_index].info_idx = -1;
+        } else {
+            NuFileError();
+        }
+        info->is_used = 0;
+    } else {
+        pc_memfiles[file - 0x400].used = 0;
+    }
 }

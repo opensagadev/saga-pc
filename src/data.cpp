@@ -1,6 +1,9 @@
 #include "saga.h"
 
 struct SoundQueue;
+#pragma bss_seg(".bss$music_man")
+NuMusic music_man;
+#pragma bss_seg()
 #pragma bss_seg(".bss$the_music_player")
 NuMusic *the_music_player;
 #pragma bss_seg()
@@ -103,6 +106,24 @@ extern "C" {
     VUFNT *QFont2DButtons;
     VUFNT *system_qfont;
     NUTEXDIM_PC **NuTextureDimensions;
+    i32 NuPrimVertexCount;
+    i32 *NuPrimVertexCountPointer;
+    VARIPTR *NuPrimStreamBufferPointer;
+    i32 NuPrimCurrentPrimitiveType;
+    i32 NuPrimCSPos;
+    f32 NuPrimXBias;
+    f32 NuPrimYBias;
+    f32 NuPrimXScale = 1.0f;
+    f32 NuPrimYScale = 1.0f;
+#pragma const_seg(".rdata$NuPrimPS2XScale")
+    extern const f32 NuPrimPS2XScale = 0.003125f;
+#pragma const_seg(".rdata$NuPrimPS2YScale")
+    extern const f32 NuPrimPS2YScale = -1.0f / 112.0f;
+#pragma const_seg(".rdata$NuPrimTwo")
+    extern const f32 NuPrimTwo = 2.0f;
+#pragma const_seg(".rdata$NuPrimMinusTwo")
+    extern const f32 NuPrimMinusTwo = -2.0f;
+#pragma const_seg()
     NUFPAR_PC NuFParRecords[4];
     char NuFParBuffers[4][0x1000];
     NUFPAR_PC *NuFParRecordBase;
@@ -128,6 +149,15 @@ extern "C" {
     f32 qfnt_rezscale_w = 1.0f;
     f32 qfnt_rezscale_h = 1.0f;
     extern const f32 nu_fsign_minus_one = -1.0f;
+#pragma const_seg(".rdata$PCKeyboard2Name_candidate")
+    extern const char PCKeyboard2Name_candidate[10] = "Keyboard2";
+#pragma const_seg(".rdata$PCKeyboardMouse2Name_candidate")
+    extern const char PCKeyboardMouse2Name_candidate[16] = "KeyboardMouse2";
+#pragma const_seg(".rdata$PCKeyboard1Name_candidate")
+    extern const char PCKeyboard1Name_candidate[10] = "Keyboard1";
+#pragma const_seg(".rdata$PCKeyboardMouse1Name_candidate")
+    extern const char PCKeyboardMouse1Name_candidate[15] = "KeyboardMouse1";
+#pragma const_seg()
 #pragma const_seg(".rdata$NuQFntHalfScale")
     extern const f64 NuQFntHalfScale = 0.5;
 #pragma const_seg()
@@ -620,7 +650,9 @@ extern "C" {
     i32 DebrisGlassInitialized = 0;
     void *DebrisGlassCopyMaterial = NULL;
     f32 DebrisGlassU1 = 0.0f;
-    f32 DebrisGlassV1 = 0.0f;
+#pragma bss_seg(".bss$DebrisGlassV1")
+    f32 DebrisGlassV1;
+#pragma bss_seg()
 #pragma bss_seg(".bss$DebrisGlassTextureWidth")
     i32 DebrisGlassTextureWidth;
 #pragma bss_seg()

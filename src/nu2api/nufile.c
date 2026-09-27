@@ -19,7 +19,7 @@ void __cdecl PCByteCopy_candidate(void *destination, const void *source, u32 cou
     }
 }
 
-u32 __fastcall PCFilePakChecksum_candidate(const u8 *data, i32 count) {
+u32 __fastcall PCFilePakChecksum_candidate(i32 count, const u8 *data) {
     u32 sum = 0x12345678;
 
     while (count != 0) {
@@ -28,6 +28,34 @@ u32 __fastcall PCFilePakChecksum_candidate(const u8 *data, i32 count) {
     }
 
     return sum;
+}
+
+f32 __cdecl NuFileReadFloat(NUFILE file) {
+    f32 value;
+
+    NuFileRead(file, &value, sizeof(value));
+    return value;
+}
+
+i32 __cdecl NuFileReadInt(NUFILE file) {
+    i32 value;
+
+    NuFileRead(file, &value, sizeof(value));
+    return value;
+}
+
+i8 __cdecl NuFileReadChar(NUFILE file) {
+    i8 value = 0;
+
+    NuFileRead(file, &value, sizeof(value));
+    return value;
+}
+
+u16 __cdecl NuFileReadWChar(NUFILE file) {
+    u16 value = 0;
+
+    NuFileRead(file, &value, sizeof(value));
+    return value;
 }
 
 NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_out, i16 mode) {

@@ -310,3 +310,14 @@ two eight-byte `NuTime` fields at offsets `0x2c` and `0x34`, with layout asserts
 in `saga.h`. `ShowingError` at `0x0091ef3c` and `bHaveErr` at `0x00921248` are
 separate zero-initialized four-byte globals: the latter is read by `NuHasError`
 and cleared by `NuClearError`.
+
+The current primitive state map includes PC `f32` scale/bias constants and
+four-byte stream cursor/count owners. Retail initializers establish the exact
+`NuPrimPS2XScale`, `NuPrimPS2YScale`, `NuPrimTwo`, and `NuPrimMinusTwo` values;
+the corresponding definitions match. The coordinate-system stack at
+`0x02981c70` has a reviewed base address but no defensible complete capacity,
+so its CSV size and data definition remain absent. The four keyboard profile
+names used by the PC command initializer are mapped as exact read-only strings.
+The `NuMusic` album and track strides are PC-confirmed as 0x24 and 0x3c, but
+the complete `music_man` allocation extent remains unknown. Its CSV row gives
+an address without claiming data-byte coverage.

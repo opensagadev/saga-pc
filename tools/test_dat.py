@@ -1,4 +1,4 @@
-"""Run the actual source DAT parser and host I/O on arbitrary original-free fixtures."""
+"""Run source DAT parsing and uncompressed member I/O on original-free fixtures."""
 import os
 from pathlib import Path
 import shutil
@@ -76,7 +76,8 @@ class DatParserTests(unittest.TestCase):
             malformed = write_fixtures(directory)
             objects = []
             sources = [ROOT / f"src/nu2api/{name}.c" for name in
-                       ("nufile", "nufile_host", "nufile_device", "nupsfile", "nustring")]
+                       ("nufile", "nufile_host", "nufile_device", "nupsfile", "nustring",
+                        "nudatfile", "nudatlookup", "nufile_position", "nufile_mc", "nuthread")]
             sources.append(ROOT / "tools/test_dat_fixture.c")
             for source in sources:
                 output = directory / (source.stem + ".obj")
@@ -96,6 +97,7 @@ class DatParserTests(unittest.TestCase):
             expected.append("PASS TINY.DAT buffered=0 size_out=0")
             expected += [f"PASS rejected {name} buffered={buffered}"
                          for buffered in (0, 1) for name in malformed]
+            expected.append("PASS memory-file read seek close")
             expected.append("PASS synthetic version -3 DAT parser smoke")
             self.assertEqual(output.splitlines(), expected)
 

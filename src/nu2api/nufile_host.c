@@ -2,6 +2,29 @@
 
 #include <string.h>
 
+__declspec(noinline) i32 __cdecl NuMcOpen(i32 port, i32 slot, char *filepath, i32 mode, i32 async) {
+    (void)port;
+    (void)slot;
+    (void)filepath;
+    (void)mode;
+    (void)async;
+    return 0;
+}
+
+__declspec(noinline) i32 __cdecl NuMcRead(i32 file, void *destination, i32 size, i32 async) {
+    (void)file;
+    (void)destination;
+    (void)size;
+    (void)async;
+    return 0;
+}
+
+__declspec(noinline) i32 __cdecl NuMcClose(i32 file, i32 async) {
+    (void)file;
+    (void)async;
+    return 0;
+}
+
 void __cdecl NuFileError(void) {
 }
 
@@ -12,6 +35,10 @@ i32 __cdecl NuFileStatus(NUFILE file) {
     (void)file;
     /* The PC dispatch guards make its archive-status traversal unreachable. */
     return 0;
+}
+
+i32 __cdecl NuFileExists(char *filepath) {
+    return NuFileExistQuiet(filepath);
 }
 
 static void AquireFileBuffer(FILEINFO *info) {
@@ -50,16 +77,20 @@ NUFILE __cdecl NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i3
     device = NuFileGetDeviceFromPath(filepath);
     if (device == NULL) {
         if (header != NULL && mode != 1 && mode != 2) {
-            STUBBED_NAMED("NuFileOpenDF: try NuDatFileOpen before the host path");
+            NUFILE file = NuDatFileOpen(header, (char *)filepath, mode);
+            if (file > 0)
+                return file;
         }
         device = default_device;
     }
 
-    device->format_name_fn(device, path, filepath, sizeof(path));
+    device->format_name_fn(device, path, (char *)filepath, sizeof(path));
     if (device->id == 2)
         NuStrCat(path, nufile_disc_suffix);
     if (device->id == 1) {
-        STUBBED_NAMED("NuFileOpenDF: NuMcOpen using the formatted port and slot");
+        i32 file = NuMcOpen(path[2] - '0', path[3] - '0', path + device->name_len, mode, 0);
+        if (file >= 0)
+            return file + 0x1000;
         return 0;
     }
 
@@ -110,12 +141,10 @@ i64 __cdecl NuFileSeek(NUFILE file, i64 offset, i32 origin) {
     FILEINFO *info;
 
     if (file >= 0x1000) {
-        STUBBED_NAMED("NuFileSeek: NuMcSeek");
-        return -1;
+        return NuMcSeek(file - 0x1000, (i32)offset, origin, 0);
     }
     if (file >= 0x400) {
-        STUBBED_NAMED("NuFileSeek: memory-file and archive-member seek");
-        return -1;
+        return NuMemFileSeek(file, offset, origin);
     }
 
     file--;
@@ -144,12 +173,10 @@ i32 __cdecl NuFileRead(NUFILE file, void *destination, i32 size) {
     char *output;
 
     if (file >= 0x1000) {
-        STUBBED_NAMED("NuFileRead: NuMcRead");
-        return -1;
+        return NuMcRead(file - 0x1000, destination, size, 0);
     }
     if (file >= 0x400) {
-        STUBBED_NAMED("NuFileRead: memory-file and archive-member read");
-        return -1;
+        return NuMemFileRead(file, destination, size);
     }
 
     file--;
@@ -195,11 +222,11 @@ void __cdecl NuFileClose(NUFILE file) {
     FILEINFO *info;
 
     if (file >= 0x1000) {
-        STUBBED_NAMED("NuFileClose: NuMcClose");
+        NuMcClose(file - 0x1000, 0);
         return;
     }
     if (file >= 0x400) {
-        STUBBED_NAMED("NuFileClose: memory-file and archive-member close");
+        NuMemFileClose(file);
         return;
     }
 

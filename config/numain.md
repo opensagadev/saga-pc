@@ -24,7 +24,10 @@ so the source-compatible C wrapper is structural rather than byte-matching.
 `GAME.DAT`, through the exact archive-registration helper. The surrounding
 hardware dispatcher and the `LoadPermData` parser path remain incomplete.
 `NuMain` opens the six episode archives, then stops before indexing level/area
-tables. Its startup includes a temporary guard before `NuFrameBegin`
+tables. DAT member dispatch now opens, reads, seeks and closes stored archive
+members through PC-style handles. The four-record `NuFParOpen` allocator and BOM
+setup are implemented; `NuFParCreate`, line parsing and the level/area record
+loaders are the remaining table-load closure. Its startup includes a temporary guard before `NuFrameBegin`
 because the PC keyboard input owner is not yet initialized by our partial
 `InitOnce`. Its later restart and frame-loop phases contain explicit
 `STUBBED_NAMED` markers, so this is a runnable scaffold, not a complete or
@@ -63,7 +66,7 @@ per archive against independent Win32 reads. Compressed members have not been
 decompressed or validated. The parser is structural and nonmatching. It adds
 short-read, bounds and null-arena rejection absent from retail so the incomplete
 source entry fails safely. Source startup still exits before indexing absent
-level and area tables. The `GAME.DAT`/NuFPar loader closure and remaining frame loop are the next
+level and area tables. The `GAME.DAT`/NuFPar parser closure and remaining frame loop are the next
 dependency work, not a completed 4,332-byte `NuMain` match.
 
 ## Direct-call candidates

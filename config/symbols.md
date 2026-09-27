@@ -109,6 +109,71 @@ extents against the local retail executable. Synthetic original objects are loca
 comparison artifacts, not recovered original object files. Objdiff's similarity
 scores are separate from strict byte equality.
 
+## Current structural mapping pass
+
+The direct-call inventory in [`numain.md`](numain.md) supplies call sites inside
+the complete PC `NuMain` body. The accepted unimplemented entries in
+`symbols.csv` have separately reviewed final instructions and full contiguous
+extents; the Ghidra body counts in that queue alone are not used as sizes.
+Caller pushes and return-value use establish their callable types. In particular,
+`Game_Exit` at `0x0055c6d0` returns an integer that NuMain tests, while
+`WorldInfo_StreamLevel` receives a `BGPROCINFO *`. Their linker names are
+reconstruction names, since the retail executable is stripped. These rows add
+inventory coverage but no matched code bytes until compiled definitions exist.
+
+The parser family at `0x004f1240`, `0x004fa300`, and `0x004fc2d0`–`0x004fc900`
+is identified by shared access to four 0x584-byte parser records, their 0x1000-byte
+read buffers, the UTF flags at offsets `0x578`/`0x579`, and PC call edges from
+the level and area loaders. The create, destroy, and narrow line-reader source is
+present but still structurally different from retail; its wide path and table
+record layouts remain to be recovered.
+The level and area loaders at `0x005788f0` and `0x00572b00` have complete PC
+extents and their 0x130/0x9c record strides, respectively.
+
+The newly accepted four-byte startup/frame globals include independent level
+pointers (`LastLData`, `NewLData`, `HUB_LDATA`, `STATUS_LDATA`,
+`CREDITS_LDATA`), timers (`MainRenderTime`, `MainRenderTargetTime`,
+`WaitingForLevelTime`, `WaitingForCharacterTime`, `MAXFRAMETIME`), and scalar
+flags/counters. Their addresses and access widths come from PC references in
+NuMain and its direct callees; Android names and types only corroborate the
+identity. Fields inside `GAMESAVE`, `FadeSys`, and `StatusPacket` remain aggregate
+members rather than stand-alone symbols.
+
+The primitive call chain is now inventoried from the PC `NuPrim2DBegin` and
+`NuPrim3DBegin` callers through the display-list material linker, render-state
+updater, item linker, and geometry-transform builder. PC argument pushes,
+material/state references, and corresponding Android call order support these
+identities; their full instruction extents are in the CSV. The primitive end
+functions match exactly, while begin functions and the display-list closure are
+unimplemented. The packed-colour helper at `0x005c1f70` and the second matrix
+transpose form at `0x005f7610` retain provisional identities because the PC
+uses private register ABIs there.
+
+The expanded DAT/file inventory follows PC handle ranges: native files below
+`0x400`, memory files from `0x400`, and archive members from `0x800`. The accepted
+`NuMemFileOpen`/read/write/seek/close, `NuDatFileClose`/open-size/load-buffer,
+`NuFileLoadBuffer`/VP, parser-position, and file-pak rows were checked against
+complete retail bodies and their call graph. The PC-specific extension table has
+64 records of 16 bytes; its initialization takes a selector argument, unlike the
+Android no-argument helper. The `LZ2K` decoder and `RNC` packed-file paths are
+mapped but remain unimplemented. `read_buffer` and `decode_buffer` have reviewed
+addresses but blank extents until their capacities are established from PC uses.
+
+The NuMusic family map now includes album/track lookups, class selection,
+pause/resume, the large `Process` mixer, and both `PlayTrack` overloads. VC8
+scratch declarations establish the decorated names; retail fields and call edges
+establish the PC identities and full extents. Most remain unimplemented, so the
+map does not imply an operating mixer. `music_man` retains an unknown full data
+extent despite PC-confirmed field offsets through `+0x1e0`.
+
+The world/level family inventory adds 79 reviewed PC entries across
+`WorldInfo_Load`, `WorldInfo_Init`/`Reset`/`Dump`, progress helpers, 13 named
+configuration parsers, cutscene callbacks, and editor page teardown. Each entry
+has a complete PC instruction extent, including internal alignment where present;
+the calling convention and record type are corroborated by PC callers and state
+accesses. These are structural addresses and signatures for future source work,
+not a claim that the level loaders or frame loop are playable.
+
 ## External symbols
 
 The original PE import directory supplies 197 four-byte IAT slots: 191 imports by

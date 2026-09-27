@@ -715,10 +715,17 @@ typedef struct gameanimsys_s GAMEANIMSYS;
 
 /* This is a verified field view, not a declaration of full retail owner extent. */
 typedef struct nuinstanim_time_view_s {
-    u8 unknown_00[0x4c];
+    u8 unknown_00[0x40];
+    f32 tfactor;
+    u8 unknown_44[8];
     f32 ltime;
+    u32 flags;
+    f32 fparam1;
 } NUINSTANIM_TIME_VIEW;
+STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, tfactor) == 0x40);
 STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, ltime) == 0x4c);
+STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, flags) == 0x50);
+STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, fparam1) == 0x54);
 
 struct gameanimobj_s {
     GAMEANIMOBJ *next;
@@ -927,8 +934,13 @@ extern "C" {
     i32 __cdecl NuDatFileFindHash(NUDATHDR *header, char *name);
     i32 __cdecl NuDatFileFindTree(NUDATHDR *header, char *name);
     i32 __cdecl NuFileExistQuiet(char *filepath);
+    i32 __cdecl NuFileExists(char *filepath);
+    f32 __cdecl NuFileReadFloat(NUFILE file);
+    i32 __cdecl NuFileReadInt(NUFILE file);
+    i8 __cdecl NuFileReadChar(NUFILE file);
+    u16 __cdecl NuFileReadWChar(NUFILE file);
     void __cdecl PCByteCopy_candidate(void *destination, const void *source, u32 count);
-    u32 __fastcall PCFilePakChecksum_candidate(const u8 *data, i32 count);
+    u32 __fastcall PCFilePakChecksum_candidate(i32 count, const u8 *data);
     extern DAT_HANDLES_PC NuDatHandles;
     extern const char EpisodeIDat[14];
     extern const char EpisodeIIDat[15];
@@ -1011,10 +1023,33 @@ extern "C" {
     void __cdecl NuQFntSetColourRS(void *stream, VUFNT *font, u32 colour);
     extern const f64 NuQFntHalfScale;
     extern NUTEXDIM_PC **NuTextureDimensions;
+    extern i32 NuPrimVertexCount;
+    extern i32 *NuPrimVertexCountPointer;
+    extern VARIPTR *NuPrimStreamBufferPointer;
+    extern i32 NuPrimCurrentPrimitiveType;
+    extern i32 NuPrimCSPos;
+    extern f32 NuPrimXScale;
+    extern f32 NuPrimYScale;
+    extern f32 NuPrimXBias;
+    extern f32 NuPrimYBias;
+    extern const f32 NuPrimPS2XScale;
+    extern const f32 NuPrimPS2YScale;
+    extern const f32 NuPrimTwo;
+    extern const f32 NuPrimMinusTwo;
+    void __cdecl NuPrimSetCoordinateSystem(i32 scale_mode);
+    void __cdecl NuPrim2DEnd(void);
+    void __cdecl NuPrim3DEnd(void);
+    void __cdecl NuPrim2DAddXYZ(f32 x, f32 y, f32 z);
     extern NUFPAR_PC NuFParRecords[4];
     extern char NuFParBuffers[4][0x1000];
     extern NUFPAR_PC *NuFParRecordBase;
     extern char *NuFParBufferBase;
+    NUFPAR_PC *__cdecl NuFParOpen(NUFILE file_handle);
+    NUFPAR_PC *__cdecl NuFParCreate(char *file_name);
+    NUFPAR_PC *__cdecl NuFParCreateGivenFH(char *file_name, NUFILE file_handle);
+    void __cdecl NuFParDestroy(NUFPAR_PC *parser);
+    i32 __cdecl NuFParGetLine(NUFPAR_PC *parser);
+    void __cdecl NuFreeFPar(NUFPAR_PC *parser);
     u16 __cdecl UnicodeToIndexFast(VUCHARIDX *map, i32 count, u16 unicode);
     u16 __cdecl NuQFntEncodeUnicodeChar(VUFNT *font, u16 character);
     void __cdecl NuQFntEncodeUnicodeString(VUFNT *font, u16 *text);
@@ -1148,6 +1183,10 @@ extern "C" {
     i32 __cdecl NuDatFileGetFreeInfo(void);
     i32 __cdecl NuDatFileGetFreeHandleIX(NUDATHDR *header, i32 info_index);
     NUFILE __cdecl NuDatFileOpen(NUDATHDR *header, char *filepath, i32 mode);
+    i32 __cdecl NuDatFileRead(NUFILE file, void *buffer, i32 size);
+    i32 __cdecl NuMemFileRead(NUFILE file, void *buffer, i32 size);
+    i64 __cdecl NuMemFileSeek(NUFILE file, i64 offset, i32 origin);
+    void __cdecl NuMemFileClose(NUFILE file);
     extern i32 file_criticalsection;
     extern PC_NUDATFILEINFO *unpack_file_info;
     extern NUDATOPENFILEINFO *unpack_file_odi;
@@ -1190,6 +1229,9 @@ extern "C" {
     i64 __cdecl NuFileOpenSize(NUFILE file);
     i64 __cdecl NuDatFileSeek(NUFILE file, i64 offset, i32 origin);
     i32 __cdecl NuMcFileOpenSize(NUFILE file);
+    i32 __cdecl NuMcOpen(i32 port, i32 slot, char *filepath, i32 mode, i32 async);
+    i32 __cdecl NuMcRead(i32 file, void *destination, i32 size, i32 async);
+    i32 __cdecl NuMcClose(i32 file, i32 async);
     i32 __cdecl NuMcSeek(i32 file, i32 offset, i32 origin, i32 async);
     i32 __cdecl NuFileRead(NUFILE file, void *buffer, i32 size);
     i32 __cdecl NuFileStatus(NUFILE file);
@@ -1280,6 +1322,25 @@ extern "C" {
     void __cdecl GameAnimSet_EvaluateState(GAMEANIMSET *set);
     void __cdecl GameAnimSet_RemoveFromSystemList(GAMEANIMSET *set);
     void __cdecl GameAnimSys_ReStoreProgress(GAMEANIMSYS *system, i32 index);
+    GAMEANIMOBJPOOL *__cdecl GameAnimSet_CreateObjectPool(VARIPTR *buf, VARIPTR *end, i32 object_data_size,
+                                                          i32 capacity);
+    void __cdecl GameAnimSet_RemoveObject(GAMEANIMSET *set, GAMEANIMOBJ *object);
+    void __cdecl GameAnimSet_RemoveAllObjects(GAMEANIMSET *set);
+    void __cdecl GameAnimSet_SetTFactor(GAMEANIMSET *set, f32 factor);
+    void __cdecl GameAnimSet_ScaleFParam1(GAMEANIMSET *set, f32 scale);
+    i32 __cdecl GameAnimSet_IsAnimationReset(GAMEANIMSET *set);
+    i32 __cdecl GameAnimSet_Reset(GAMEANIMSET *set);
+    i32 __cdecl GameAnimSet_Play(GAMEANIMSET *set, f32 speed, i32 evaluate_state);
+    i32 __cdecl GameAnimSet_Stop(GAMEANIMSET *set);
+    i32 __cdecl GameAnimSet_SetRepeating(GAMEANIMSET *set, i32 repeating);
+    i32 __cdecl GameAnimSet_JumpToEnd(GAMEANIMSET *set);
+    i32 __cdecl GameAnimSet_JumpToStart(GAMEANIMSET *set);
+    void __cdecl GameAnimSet_JumpToAnimPos(GAMEANIMSET *set, f32 position);
+    i32 __cdecl GameAnimSet_Playing(GAMEANIMSET *set);
+    f32 __cdecl GameAnimSet_GetCurrentFrame(GAMEANIMSET *set);
+    f32 __cdecl GameAnimSet_GetAnimPos(GAMEANIMOBJ *object);
+    void __cdecl GameAnimSet_SetAnimPos(GAMEANIMOBJ *object, f32 position);
+    f32 __cdecl GameAnimSet_GetCompletionRatio(GAMEANIMSET *set);
     extern AREA_DATA_PC *ADataList;
     extern AREA_DATA_PC *LastAData;
     extern AREA_DATA_PC *HUB_ADATA;
@@ -1660,7 +1721,18 @@ extern i32 app_tbdrawset;
 struct nusound_filename_info_s;
 class NuMusic {
   public:
-    u8 unknown_0000[0x19c];
+    class Track;
+    struct Album {
+        char *name;
+        Track *tracks_source;
+        i32 tracks_count;
+        Track *tracks[6];
+        Track *GetTrack(u32 class_mask);
+    };
+    Album *albums;
+    i32 album_count;
+    u8 unknown_0008[0x190];
+    f32 master_volume;
     f32 fader_current;
     f32 fader_target;
     f32 fader_rate;
@@ -1673,9 +1745,18 @@ class NuMusic {
     i32 file_count;
 
     void SetFader(f32 target, f32 fade_seconds);
+    void SetMasterVolume(f32 volume);
+    i32 GetAlbumHandle(const char *name);
+    static i32 ClassToIX(u32 class_mask);
     void SetClassVolume(u32 class_mask, f32 volume);
     void GetSoundFiles(nusound_filename_info_s **files, i32 *count);
 };
+STATIC_ASSERT(sizeof(NuMusic::Album) == 0x24);
+STATIC_ASSERT(offsetof(NuMusic::Album, name) == 0);
+STATIC_ASSERT(offsetof(NuMusic::Album, tracks) == 0x0c);
+STATIC_ASSERT(offsetof(NuMusic, albums) == 0);
+STATIC_ASSERT(offsetof(NuMusic, album_count) == 4);
+STATIC_ASSERT(offsetof(NuMusic, master_volume) == 0x198);
 STATIC_ASSERT(offsetof(NuMusic, fader_current) == 0x19c);
 STATIC_ASSERT(offsetof(NuMusic, fader_target) == 0x1a0);
 STATIC_ASSERT(offsetof(NuMusic, fader_rate) == 0x1a4);

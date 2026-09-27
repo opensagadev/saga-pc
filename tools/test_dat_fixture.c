@@ -25,6 +25,18 @@ i32 numdevices;
 i32 DontDoFileUpperCaseHack;
 NUDATHDR *curr_dat;
 i32 datsys_offset;
+PC_NUDATFILEINFO pc_dat_file_infos[20];
+PC_NUMEMFILE pc_memfiles[20];
+i32 file_criticalsection;
+PC_NUDATFILEINFO *unpack_file_info;
+NUDATOPENFILEINFO *unpack_file_odi;
+i64 unpack_file_pos;
+i32 decode_buffer_left;
+i32 PCThreadCriticalSectionCount_candidate;
+CRITICAL_SECTION PCThreadCriticalSections_candidate[13];
+i32 PCFrameCriticalSectionIndex_candidate;
+
+extern i32 __cdecl PCThreadCriticalSectionCreate_candidate(void);
 
 #define REQUIRE(condition)                                                                                             \
     do {                                                                                                               \
@@ -33,6 +45,50 @@ i32 datsys_offset;
             return 1;                                                                                                  \
         }                                                                                                              \
     } while (0)
+
+static int exercise_members(NUDATHDR *header, i32 base_offset) {
+    NUFILE first, second, members[8];
+    char payload[16];
+    i32 i;
+
+    first = NuFileOpenDF("D\\B.BIN", 0, header, 0);
+    REQUIRE(first == 0x800);
+    REQUIRE(NuFileOpenSize(first) == 4 && NuFilePos(first) == 0);
+    REQUIRE(NuFileRead(first, payload, 2) == 2 && memcmp(payload, "wx", 2) == 0);
+    REQUIRE(NuFilePos(first) == 2);
+    REQUIRE(NuFileSeek(first, 1, 1) == base_offset + 515);
+    REQUIRE(NuFileRead(first, payload, sizeof(payload)) == 1 && payload[0] == 'z');
+    REQUIRE(NuFileRead(first, payload, 1) == 0 && NuFilePos(first) == 4);
+    REQUIRE(NuFileSeek(first, 2, 2) == base_offset + 514);
+    REQUIRE(NuFileRead(first, payload, 4) == 2 && memcmp(payload, "yz", 2) == 0);
+    REQUIRE(NuFileSeek(first, 0, 0) == base_offset + 512);
+    REQUIRE(NuFileRead(first, payload, 4) == 4 && memcmp(payload, "wxyz", 4) == 0);
+
+    second = NuFileOpenDF("D\\A.BIN", 0, header, 0);
+    REQUIRE(second == 0x801 && header->open_files[1].dat_file == 2);
+    REQUIRE(NuFileRead(second, payload, 4) == 4 && memcmp(payload, "ABCD", 4) == 0);
+    REQUIRE(NuFileSeek(second, 0, 0) == base_offset + 256);
+    pc_dat_file_infos[1].compression_mode = 2;
+    REQUIRE(NuFileRead(second, payload, 1) == -1 && NuFilePos(second) == 0);
+    pc_dat_file_infos[1].compression_mode = 0;
+    NuFileClose(first);
+    NuFileClose(second);
+    REQUIRE(header->open_files[0].info_idx == -1 && header->open_files[1].info_idx == -1);
+    REQUIRE(pc_dat_file_infos[0].is_used == 0 && pc_dat_file_infos[1].is_used == 0);
+    REQUIRE(pc_file_handles[0] != INVALID_HANDLE_VALUE && pc_file_handles[1] != INVALID_HANDLE_VALUE);
+
+    for (i = 0; i < 8; ++i) {
+        members[i] = NuDatFileOpen(header, "D\\B.BIN", 0);
+        REQUIRE(members[i] == 0x800 + i && header->open_files[i].info_idx == i);
+    }
+    REQUIRE(NuDatFileOpen(header, "D\\B.BIN", 0) == 0);
+    REQUIRE(pc_dat_file_infos[8].is_used == 0);
+    for (i = 0; i < 8; ++i) {
+        NuFileClose(members[i]);
+        REQUIRE(header->open_files[i].info_idx == -1 && pc_dat_file_infos[i].is_used == 0);
+    }
+    return 0;
+}
 
 static int exercise(const char *path, i32 base_offset, i32 buffered, int want_size) {
     __declspec(align(16)) unsigned char guarded[1024];
@@ -94,7 +150,11 @@ static int exercise(const char *path, i32 base_offset, i32 buffered, int want_si
         REQUIRE(NuFileRead(file, payload, 4) == 4);
         REQUIRE(memcmp(payload, expected_payloads[i], 4) == 0);
     }
-    NuFileClose(file);
+    REQUIRE(exercise_members(header, base_offset) == 0);
+    for (i = 0; i < 8; ++i) {
+        if (header->open_files[i].dat_file != 0)
+            NuFileClose(header->open_files[i].dat_file);
+    }
     REQUIRE(pc_file_handles[0] == INVALID_HANDLE_VALUE);
     REQUIRE(file_info[0].buf == NULL);
     curr_dat = NULL;
@@ -139,6 +199,27 @@ static int reject_metadata(const char *path, i32 metadata_size, int before_alloc
     return 0;
 }
 
+static int exercise_memory_file(void) {
+    u8 input[4] = {'a', 'b', 'c', 'd'};
+    char output[8];
+
+    pc_memfiles[0].buffer = input;
+    pc_memfiles[0].end = input + 3;
+    pc_memfiles[0].position = input;
+    pc_memfiles[0].used = 1;
+    REQUIRE(NuFileRead(0x400, output, 8) == 4 && memcmp(output, "abcd", 4) == 0);
+    REQUIRE(NuFileRead(0x400, output, 1) == 0);
+    REQUIRE(NuFileSeek(0x400, 1, 0) == 1);
+    REQUIRE(NuFileRead(0x400, output, 1) == 1 && output[0] == 'b');
+    REQUIRE(NuFileSeek(0x400, 1, 1) == 3);
+    REQUIRE(NuFileSeek(0x400, 1, 2) == 2);
+    REQUIRE(NuFileRead(0x400, output, 2) == 2 && memcmp(output, "cd", 2) == 0);
+    NuFileClose(0x400);
+    REQUIRE(pc_memfiles[0].used == 0);
+    puts("PASS memory-file read seek close");
+    return 0;
+}
+
 int main(int argc, char **argv) {
     static const char *paths[] = {"TINY.DAT", "NEGPOS.DAT", "OFFSET.DAT", "LONG_NAMED_FIXTURE.DAT"};
     unsigned char untouched[512];
@@ -151,6 +232,8 @@ int main(int argc, char **argv) {
     host_device.dir_separator = '\\';
     host_device.format_name_fn = DEV_FormatName;
     host_device.interrogate_fn = DEVHOST_Interrogate;
+    file_criticalsection = PCThreadCriticalSectionCreate_candidate();
+    REQUIRE(file_criticalsection == 1);
     for (buffered = 0; buffered < 2; ++buffered) {
         for (i = 0; i < 4; ++i)
             REQUIRE(exercise(paths[i], i == 2 ? 64 : 0, buffered, 1) == 0);
@@ -178,6 +261,8 @@ int main(int argc, char **argv) {
     REQUIRE(nufile_buffering_enabled == 1);
     for (i = 0; i < 32; ++i)
         REQUIRE(pc_file_handles[i] == INVALID_HANDLE_VALUE);
+    REQUIRE(exercise_memory_file() == 0);
+    DeleteCriticalSection(&PCThreadCriticalSections_candidate[file_criticalsection]);
     puts("PASS synthetic version -3 DAT parser smoke");
     return 0;
 }

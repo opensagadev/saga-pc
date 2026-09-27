@@ -1,6 +1,126 @@
 #include "saga.h"
 
+#include <string.h>
+
 extern i32 old_line_pos;
+
+static NUFPAR_PC *NuAllocFPar(void) {
+    i32 index;
+
+    if (NuFParRecordBase == NULL) {
+        NuFParRecordBase = NuFParRecords;
+        memset(NuFParRecordBase, 0, sizeof(NuFParRecords));
+        NuFParBufferBase = &NuFParBuffers[0][0];
+    }
+
+    for (index = 0; index < 4; index++) {
+        NUFPAR_PC *parser = &NuFParRecordBase[index];
+
+        if (parser->file_buffer == NULL) {
+            memset(parser, 0, sizeof(*parser));
+            parser->file_buffer = NuFParBufferBase + index * 0x1000;
+            memset(parser->file_buffer, 0, 0x1000);
+            return parser;
+        }
+    }
+
+    return NULL;
+}
+
+void __cdecl NuFreeFPar(NUFPAR_PC *parser) {
+    parser->file_buffer = NULL;
+}
+
+NUFPAR_PC *__cdecl NuFParOpen(NUFILE file_handle) {
+    NUFPAR_PC *parser = NuAllocFPar();
+    u16 first_word = 0;
+    u8 next_byte;
+
+    if (parser == NULL) {
+        return NULL;
+    }
+
+    parser->file_handle = file_handle;
+    parser->buffer_end = -1;
+    parser->line_number = -1;
+    parser->command_position = -1;
+    parser->separator_list = NULL;
+    parser->separator_tokens = NULL;
+    parser->line_buffer_ptr = parser->line_buffer;
+    parser->word_buffer_ptr = parser->word_buffer;
+    parser->line_buffer_size = 0x200;
+    parser->word_buffer_size = 0x200;
+
+    (void)NuFileRead(file_handle, &first_word, sizeof(first_word));
+    parser->is_utf16 = 0;
+    parser->is_utf8 = 0;
+
+    if (first_word == 0xfffe) {
+        parser->is_utf16 = 2;
+    } else if (first_word == 0xfeff) {
+        parser->is_utf16 = 1;
+    } else if (first_word == 0xbbef || first_word == 0xefbb) {
+        next_byte = 0;
+        (void)NuFileRead(file_handle, &next_byte, sizeof(next_byte));
+        if (next_byte == 0xbf) {
+            parser->is_utf8 = first_word == 0xbbef ? 1 : 2;
+        }
+    }
+
+    if (parser->is_utf16 == 0 && parser->is_utf8 == 0) {
+        (void)NuFileSeek(file_handle, 0, 0);
+    }
+
+    parser->file_size = (i32)NuFileOpenSize(file_handle);
+    return parser;
+}
+
+NUFPAR_PC *__cdecl NuFParCreateGivenFH(char *file_name, NUFILE file_handle) {
+    NUFPAR_PC *parser;
+
+    if (file_handle == 0) {
+        return NULL;
+    }
+
+    parser = NuFParOpen(file_handle);
+    if (parser == NULL) {
+        NuFileClose(file_handle);
+        return NULL;
+    }
+
+    NuStrCpy(parser->file_name, file_name);
+    return parser;
+}
+
+NUFPAR_PC *__cdecl NuFParCreate(char *file_name) {
+    NUFILE file_handle;
+    NUFPAR_PC *parser;
+
+    if (!NuFileExists(file_name)) {
+        return NULL;
+    }
+
+    file_handle = NuFileOpenDF(file_name, 0, curr_dat, 0);
+    if (file_handle == 0) {
+        return NULL;
+    }
+
+    parser = NuFParOpen(file_handle);
+    if (parser == NULL) {
+        NuFileClose(file_handle);
+        return NULL;
+    }
+
+    NuStrCpy(parser->file_name, file_name);
+    return parser;
+}
+
+void __cdecl NuFParDestroy(NUFPAR_PC *parser) {
+    NUFILE file_handle = parser->file_handle;
+
+    NuFreeFPar(parser);
+    NuFileClose(file_handle);
+}
 
 char __cdecl NuGetChar(NUFPAR_PC *parser) {
     i32 offset = parser->buffer_end < 0 ? 0 : parser->buffer_end;
@@ -182,6 +302,97 @@ i32 __cdecl NuFParGetLineW(NUFPAR_PC *parser) {
             case '\t':
             case ' ':
                 line[length & ((parser->word_buffer_size >> 1) - 1)] = character;
+                length++;
+                break;
+        }
+    }
+}
+
+i32 __cdecl NuFParGetLine(NUFPAR_PC *parser) {
+    char character;
+    i32 length = 0;
+    char *line = parser->line_buffer_ptr;
+    i32 is_done = 0;
+    i32 in_quoted_text = 0;
+
+    if (parser->is_utf16 != 0) {
+        return NuFParGetLineW(parser);
+    }
+
+    parser->line_position = 0;
+    parser->line_number++;
+
+    for (;;) {
+        character = NuGetChar(parser);
+        switch (character) {
+            case '\r':
+                (void)NuGetChar(parser);
+                /* fall through */
+            case '\n':
+                if (length == 0 || !is_done) {
+                    parser->line_number++;
+                    is_done = 0;
+                    break;
+                }
+                /* fall through */
+            case '\0':
+                line[length] = '\0';
+                return length;
+            case '"':
+                in_quoted_text = 1 - in_quoted_text;
+                is_done = 1;
+                line[length & (parser->line_buffer_size - 1)] = character;
+                length++;
+                break;
+            case ';':
+                if (!in_quoted_text) {
+                    if (length == 0 || !is_done) {
+                        i32 at_end_of_line = 0;
+
+                        do {
+                            character = NuGetChar(parser);
+                            switch (character) {
+                                case '\r':
+                                    (void)NuGetChar(parser);
+                                    /* fall through */
+                                case '\n':
+                                case '\0':
+                                    at_end_of_line = 1;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        } while (!at_end_of_line);
+
+                        length = 0;
+                        parser->line_position = 0;
+                        parser->line_number++;
+                        is_done = 0;
+                    } else {
+                        for (;;) {
+                            character = NuGetChar(parser);
+                            switch (character) {
+                                case '\r':
+                                    (void)NuGetChar(parser);
+                                    /* fall through */
+                                case '\n':
+                                case '\0':
+                                    line[length] = '\0';
+                                    return length;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                    break;
+                }
+                /* fall through */
+            default:
+                is_done = 1;
+                /* fall through */
+            case '\t':
+            case ' ':
+                line[length & (parser->line_buffer_size - 1)] = character;
                 length++;
                 break;
         }

@@ -62,6 +62,26 @@ typedef struct NuKeyboardInitLayout_PC {
     u8 *keyboard_state;
 } NuKeyboardInitLayout_PC;
 
+typedef struct NuKeyboardProfile_PC {
+    u8 unknown_00_to_0b[0x0c];
+    i32 device_mode_a;
+    NuKeyboardDevice_PC *device;
+    i32 device_mode_b;
+    u8 unknown_18_to_23[0x0c];
+    u16 default_key;
+    u8 unknown_26_to_35[0x10];
+    u8 active_36;
+    u8 unknown_37_to_38[2];
+    u8 active_39;
+    char name[0x40];
+    u8 unknown_7a_to_17b[0x17c - 0x7a];
+} NuKeyboardProfile_PC;
+
+typedef struct NuKeyboardProfileLayout_PC {
+    u8 unknown_0000_to_5cff[0x5d00];
+    NuKeyboardProfile_PC profiles[4];
+} NuKeyboardProfileLayout_PC;
+
 STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, keyboard_polled) == 0x4e10);
 STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_6345_to_6352) == 0x6345);
 STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_6354) == 0x6354);
@@ -75,6 +95,72 @@ STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_67e4) == 0x67e4);
 STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, key_records) == 0x67f0);
 STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, keyboard_state) == 0x68b0);
 STATIC_ASSERT(sizeof(NuKeyboardInitLayout_PC) == 0x68b4);
+STATIC_ASSERT(sizeof(NuKeyboardProfile_PC) == 0x17c);
+STATIC_ASSERT(offsetof(NuKeyboardProfile_PC, device_mode_a) == 0x0c);
+STATIC_ASSERT(offsetof(NuKeyboardProfile_PC, device) == 0x10);
+STATIC_ASSERT(offsetof(NuKeyboardProfile_PC, device_mode_b) == 0x14);
+STATIC_ASSERT(offsetof(NuKeyboardProfile_PC, default_key) == 0x24);
+STATIC_ASSERT(offsetof(NuKeyboardProfile_PC, active_36) == 0x36);
+STATIC_ASSERT(offsetof(NuKeyboardProfile_PC, active_39) == 0x39);
+STATIC_ASSERT(offsetof(NuKeyboardProfile_PC, name) == 0x3a);
+STATIC_ASSERT(offsetof(NuKeyboardProfileLayout_PC, profiles) == 0x5d00);
+
+extern const char PCKeyboardMouse1Name_candidate[15];
+extern const char PCKeyboardMouse2Name_candidate[16];
+extern const char PCKeyboard2Name_candidate[10];
+extern const char PCKeyboard1Name_candidate[10];
+
+void __fastcall NuKeyboardInitializeCommandProfiles_candidate(NuKeyboardState_PC *state) {
+    NuKeyboardProfileLayout_PC *layout = (NuKeyboardProfileLayout_PC *)state;
+    NuKeyboardProfile_PC *profile;
+
+    profile = &layout->profiles[0];
+    profile->device_mode_a = 1;
+    profile->device_mode_b = 1;
+    profile->active_36 = 1;
+    profile->active_39 = 1;
+    profile->default_key = 0xffff;
+    NuStrCpy(profile->name, PCKeyboardMouse1Name_candidate);
+    /* PC searches this profile's configured input and may install its key. */
+    STUBBED_NAMED(0x006d43e0);
+    STUBBED_NAMED(0x006d43e0);
+    STUBBED_NAMED(0x006d45f0);
+
+    profile = &layout->profiles[1];
+    profile->device_mode_a = 3;
+    profile->device = nu_keyboard_owner.device;
+    profile->device_mode_b = 3;
+    profile->active_36 = 1;
+    profile->active_39 = 1;
+    profile->default_key = 0xffff;
+    NuStrCpy(profile->name, PCKeyboardMouse2Name_candidate);
+    STUBBED_NAMED(0x006d43e0);
+    STUBBED_NAMED(0x006d43e0);
+    STUBBED_NAMED(0x006d45f0);
+
+    profile = &layout->profiles[2];
+    profile->device_mode_a = 2;
+    profile->device_mode_b = 2;
+    profile->active_36 = 1;
+    profile->active_39 = 1;
+    profile->default_key = 0xffff;
+    NuStrCpy(profile->name, PCKeyboard2Name_candidate);
+    STUBBED_NAMED(0x006d43e0);
+    STUBBED_NAMED(0x006d43e0);
+    STUBBED_NAMED(0x006d45f0);
+
+    profile = &layout->profiles[3];
+    profile->device_mode_a = 4;
+    profile->device = nu_keyboard_owner.device;
+    profile->device_mode_b = 4;
+    profile->active_36 = 1;
+    profile->active_39 = 1;
+    profile->default_key = 0xffff;
+    NuStrCpy(profile->name, PCKeyboard1Name_candidate);
+    STUBBED_NAMED(0x006d43e0);
+    STUBBED_NAMED(0x006d43e0);
+    STUBBED_NAMED(0x006d45f0);
+}
 
 void __fastcall NuKeyboardInitializeDefaultRecords_candidate(NuKeyboardState_PC *state);
 
@@ -149,7 +235,7 @@ NuKeyboardState_PC *__fastcall NuKeyboardStateInitialize_candidate(NuKeyboardSta
      * Those entries are already zero from the range clear above. */
     NuKeyboardInitializeDefaultRecords_candidate(state);
     STUBBED_NAMED(0x029755c4); /* Optional PC input-state callback */
-    STUBBED_NAMED(0x006d9bd0); /* PC keyboard command initialization */
+    NuKeyboardInitializeCommandProfiles_candidate(state);
 
     language = NuLanguageGet();
     if (language < 0 || language > 0x12) {

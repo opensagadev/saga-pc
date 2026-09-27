@@ -16,6 +16,31 @@ void NuMusic::SetFader(f32 target, f32 fade_seconds) {
     fader_rate = 0.0f;
 }
 
+void NuMusic::SetMasterVolume(f32 volume) {
+    if (this == NULL || the_music_player == NULL) {
+        return;
+    }
+
+    if (volume > 1.0f) {
+        volume = 1.0f;
+    } else if (volume < 0.0f) {
+        volume = 0.0f;
+    }
+
+    master_volume = volume;
+}
+
+i32 NuMusic::GetAlbumHandle(const char *name) {
+    if (this != NULL && the_music_player != NULL) {
+        for (i32 i = 0; i < album_count; i++) {
+            if (NuStrICmp(albums[i].name, name) == 0) {
+                return i + 0x12345678;
+            }
+        }
+    }
+    return 0;
+}
+
 void NuMusic::SetClassVolume(u32 class_mask, f32 volume) {
     if (this == NULL || the_music_player == NULL) {
         return;
@@ -69,4 +94,21 @@ extern "C" f32 numusicGetDuckVolume(void) {
         volume = 1.0f;
     }
     return volume;
+}
+
+i32 NuMusic::ClassToIX(u32 class_mask) {
+    for (i32 index = 0; index < 6; index++) {
+        if (class_mask == (1u << index)) {
+            return index;
+        }
+    }
+    return -1;
+}
+
+NuMusic::Track *NuMusic::Album::GetTrack(u32 class_mask) {
+    i32 index = NuMusic::ClassToIX(class_mask);
+    if (index == -1) {
+        return NULL;
+    }
+    return tracks[index];
 }
