@@ -183,10 +183,8 @@ def check_format():
     print(f"Formatting checked for {len(files)} source/header files.")
 
 
-def check_tidy():
-    tool = clang_tool("clang-tidy")
-    if not (ROOT / ".clang-tidy").is_file():
-        raise ValueError("Missing .clang-tidy policy")
+def analysis_configuration():
+    """Verify the original SDK and prepare the common Windows analysis flags."""
     compiler = ROOT / "build/tools/msvc8"
     pin = load_json(ROOT / "config/toolchain.json")
     changed = changed_trees(compiler, pin["trees"])
@@ -209,16 +207,70 @@ def check_tidy():
     # volatile LONG*. Rename only the analysis declarations, retaining SDK types.
     flags += ["-D_interlockedbittestandset=saga_clang_interlockedbittestandset",
               "-D_interlockedbittestandreset=saga_clang_interlockedbittestandreset"]
+    return include_dirs, overlay, flags
+
+
+def analysis_language(source):
+    return ["-x", "c", "-std=c89"] if source.endswith(".c") else [
+        "-x", "c++", "-std=c++98", "-fdelayed-template-parsing"]
+
+
+def prepare_editor():
+    """Generate editor inputs without changing the pinned compiler/header trees."""
+    include_dirs, _, flags = analysis_configuration()
+    destination = ROOT / "build/editor"
+    mirror = destination / "include"
+    if mirror.is_symlink():
+        mirror.unlink()
+    elif mirror.exists():
+        shutil.rmtree(mirror)
+    include_pattern = re.compile(r'^\s*#\s*include\s*[<"]([^">]+)[">]', re.MULTILINE)
+    requested = set()
+    headers = [path for directory in include_dirs for path in directory.rglob("*") if path.is_file()]
+    for path in [*headers, *(ROOT / name for name in source_files(headers=True))]:
+        requested.update(name.replace("\\", "/") for name in
+                         include_pattern.findall(path.read_text(encoding="latin-1")))
+    for directory, name in zip(include_dirs, ("crt", "sdk")):
+        files = {path.relative_to(directory).as_posix(): path
+                 for path in directory.rglob("*") if path.is_file()}
+        folded = {relative.casefold(): path for relative, path in files.items()}
+        if len(folded) != len(files):
+            raise ValueError(f"Case-colliding SDK headers in {directory}")
+        aliases = dict(files)
+        aliases.update(folded)
+        for spelling in requested:
+            if spelling.casefold() in folded:
+                aliases[spelling] = folded[spelling.casefold()]
+        for spelling, original in sorted(aliases.items()):
+            alias = mirror / name / spelling
+            alias.parent.mkdir(parents=True, exist_ok=True)
+            alias.symlink_to(os.path.relpath(original, alias.parent))
+    # Both editor extensions use the physical aliases: IntelliSense does not
+    # support Clang's VFS, and clang-tidy needs --vfsoverlay as a tool argument,
+    # which the standalone extension cannot obtain from a compilation database.
+    replacements = {str(directory): str(mirror / name)
+                    for directory, name in zip(include_dirs, ("crt", "sdk"))}
+    flags = [replacements.get(flag, flag) for flag in flags]
+    commands = [{"directory": str(ROOT), "file": str(ROOT / source), "arguments": [
+        "clang", *flags, *analysis_language(source),
+        "-c", str(ROOT / source)]} for source in source_files(headers=True)]
+    (destination / "compile_commands.json").write_text(json.dumps(commands, indent=2) + "\n")
+    print(f"Prepared editor header aliases and {len(commands)} analysis commands in build/editor/.")
+
+
+def check_tidy():
+    tool = clang_tool("clang-tidy")
+    if not (ROOT / ".clang-tidy").is_file():
+        raise ValueError("Missing .clang-tidy policy")
+    _, overlay, flags = analysis_configuration()
     env = dict(os.environ)
     for name in ("CPATH", "C_INCLUDE_PATH", "CPLUS_INCLUDE_PATH", "OBJC_INCLUDE_PATH",
                  "INCLUDE", "CL", "_CL_"):
         env.pop(name, None)
     files, failures = source_files(), []
     for source in files:
-        language = ["-x", "c++", "-std=c++98", "-fdelayed-template-parsing"] if source.endswith(".cpp") else [
-            "-x", "c", "-std=c89"]
         result = subprocess.run([tool, "--quiet", "--config-file=" + str(ROOT / ".clang-tidy"),
-                                 "--vfsoverlay=" + str(overlay), source, "--", *flags, *language],
+                                 "--vfsoverlay=" + str(overlay), source, "--", *flags, *analysis_language(source)],
                                 cwd=ROOT, env=env, timeout=120)
         if result.returncode:
             failures.append(source)
@@ -234,12 +286,16 @@ def main():
     mode.add_argument("--objects", action="store_true", help="Check compiled symbols and relocations against the map")
     mode.add_argument("--format", action="store_true", help="Check C/C++ source and header formatting")
     mode.add_argument("--tidy", action="store_true", help="Analyze C/C++ using the original Windows x86 SDK")
+    mode.add_argument("--editor", action="store_true", help="Prepare VS Code headers and clang-tidy compilation database")
     args = parser.parse_args()
     if args.format:
         check_format()
         return
     if args.tidy:
         check_tidy()
+        return
+    if args.editor:
+        prepare_editor()
         return
     config = project()
     if args.inspect:

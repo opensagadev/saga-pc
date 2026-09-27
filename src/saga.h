@@ -14,6 +14,7 @@
 #include <shlobj.h>
 #include <objbase.h>
 #include <oleauto.h>
+
 #include "externals.h"
 
 // NOLINTBEGIN(google-runtime-int): These aliases must spell their compiler-provided base types.
@@ -52,6 +53,7 @@ typedef struct nunrand_s {
 STATIC_ASSERT(sizeof(NURAND) == 4);
 
 typedef struct nudathdr_s NUDATHDR;
+typedef struct vufnt_s VUFNT;
 
 typedef union variptr_u {
     void *void_ptr;
@@ -142,6 +144,13 @@ STATIC_ASSERT(sizeof(NUMTX) == 0x40);
 STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
 
+typedef struct nucamera_s {
+    NUMTX mtx;
+    u8 unknown_40[0x38];
+} NUCAMERA;
+STATIC_ASSERT(sizeof(NUCAMERA) == 0x78);
+STATIC_ASSERT(offsetof(NUCAMERA, mtx) == 0);
+
 typedef struct nuspecial_handle_s {
     void *scene;
     NUMTX *special;
@@ -180,6 +189,17 @@ typedef struct NuTime_s {
     u32 high;
 } NuTime;
 STATIC_ASSERT(sizeof(NuTime) == 8);
+
+typedef struct TIMER_s {
+    f32 time_elapsed;
+    f32 last_time_elapsed;
+    f32 time_elapsed_mod_seconds;
+    i32 update_count;
+} TIMER;
+STATIC_ASSERT(sizeof(TIMER) == 0x10);
+STATIC_ASSERT(offsetof(TIMER, last_time_elapsed) == 4);
+STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);
+STATIC_ASSERT(offsetof(TIMER, update_count) == 0xc);
 
 typedef struct OCCLUDERSET_s {
     u8 unknown_0000[0xc];
@@ -278,6 +298,9 @@ extern "C" {
     void __cdecl NuVideoSetMode(i32 mode);
     i32 __cdecl NuVideoGetAspect(void);
     i32 __cdecl NuVideoGetSwapMode(void);
+    i32 __cdecl NuVideoSetSwapMode(i32 mode);
+    void __cdecl NuVideoSetSwapModePS(i32 mode);
+    extern f32 NuVideoFrameRate;
     void __cdecl NuVideoRollingFrameRateReset(void);
     void __cdecl NuVideoSetBrightnessPS(void);
     void __cdecl NuVideoSetBrightness(f32 brightness);
@@ -302,8 +325,15 @@ extern "C" {
     extern AREA_DATA_PC *ADataList;
     extern MAINFRAMECOUNTERS MainFrameCounters;
     extern i32 do_multiframe_update;
+    extern f32 FRAMETIME;
+    extern void *debris_cutoff_camera_vec;
+    extern i32 debris_render_group;
+    void __cdecl DebrisRegisterCutoffCameraVec(void *position);
+    void __cdecl DebrisSetRenderGroup(i32 group);
     void __cdecl ResetFrameCounters(void);
     void __cdecl UpdateFrameCounters(void);
+    void __cdecl ResetTimer(TIMER *timer, f32 reset_time);
+    void __cdecl UpdateTimer(TIMER *timer);
     void __cdecl WorldInfo_ReArrangeBuffers(i32 area1, i32 area2);
     extern f32 PanelProjectionX;
     extern f32 PanelProjectionY;
@@ -312,6 +342,7 @@ extern "C" {
     extern f32 PANEL3DMULX;
     extern f32 PANEL3DMULY;
     void __cdecl InitPanel(i32 mode);
+    void __cdecl RotateGameMatrix(NUMTX *matrix, i32 order, u16 x, u16 y, u16 z);
     extern LANGUAGEDATA Game_LanguageList[7];
     extern LANGUAGEDATA Text_LanguageList_Default[7];
     extern LANGUAGEDATA *Text_LanguageList;
@@ -358,7 +389,33 @@ extern "C" {
     i32 __cdecl Text_StripComments(char *text, char *dest, i32 separators);
     void __cdecl IntroText_SetTextID(i32 id);
     void __cdecl Text_InitDefaultStrings(void);
+    extern void (*buttonmapfn)(char *, char *);
+    extern i32 smarttext_fwn;
+    extern VUFNT *SmartTextFont;
+    extern VUFNT *QFont2D;
+    extern VUFNT *QFont3DZ;
+    extern f32 QFONTSCALEX;
+    extern f32 STCOORDSCALE;
+    extern const char Text_WibbleCodeword[7];
+    extern const char Text_CrossCodeword[6];
+    void __cdecl Text_DecodeButtons(char *source, char *destination);
+    void __cdecl TextRegisterButtonMapFn(void (*fn)(char *, char *));
+    void __cdecl SmartTextSetFWNMode(i32 mode);
+    void __cdecl SmartTextSetFont(VUFNT *font);
+    void __cdecl SetGameFont(VUFNT *font);
+    void __cdecl Set3DGameFont(VUFNT *font);
+    void __cdecl SmartTextSetWidescreen(f32 font_scale_x, f32 coordinate_scale);
+    void __cdecl SmartTextGetWidescreen(f32 *font_scale_x, f32 *coordinate_scale);
     i32 __cdecl NuStrLen(const char *text);
+    i32 __cdecl NuStrICmp(const char *a, const char *b);
+    i32 __cdecl NuStrNICmp(const char *a, const char *b, i32 n);
+    void __cdecl NuStrUpr(char *dst, const char *src);
+    void __cdecl NuStrLwr(char *dst, const char *src);
+    i32 __cdecl NuHexStringToI(char *string);
+    u8 *__cdecl NuUnicodeCharFromUTF8(u16 *out, u8 *text);
+    u8 *__cdecl NuUTF8CharFromUnicode(u8 *out, u16 codepoint);
+    i32 __cdecl ishexnum(char value);
+    i32 __cdecl hexcodetoint(char value);
     void __cdecl NuStrCat(char *str, const char *ext);
     i32 __cdecl NuStrNCat(char *str, const char *ext, i32 n);
     i32 __cdecl NuStrCpy(char *dst, const char *src);
@@ -368,11 +425,61 @@ extern "C" {
     i32 __cdecl NuStrLenU(u8 *str);
     i32 __cdecl NuStrCmp(const char *a, const char *b);
     i32 __cdecl NuStrNCmp(const char *a, const char *b, i32 n);
+    f32 __cdecl NuFmod(f32 a, f32 b);
     void __cdecl NuMtxSetTranslation(NUMTX *matrix, NUVEC *translation);
     void __cdecl NuMtxSetScale(NUMTX *matrix, NUVEC *scale);
+    void __cdecl NuMtxTranslate(NUMTX *matrix, NUVEC *translation);
+    void __cdecl NuMtxTranslateNeg(NUMTX *matrix, NUVEC *translation);
+    void __cdecl NuMtxPreTranslate(NUMTX *matrix, NUVEC *translation);
+    void __cdecl NuMtxScale(NUMTX *matrix, NUVEC *scale);
+    void __cdecl NuMtxScaleU(NUMTX *matrix, f32 scale);
+    void __cdecl NuMtxPreScaleU(NUMTX *matrix, f32 scale);
+    void __cdecl NuMtxPreScale(NUMTX *matrix, NUVEC *scale);
+    void __cdecl NuMtxPreScaleX(NUMTX *matrix, f32 scale_x);
+    void __cdecl NuMtxGetXAxis(NUMTX *matrix, NUVEC *axis);
+    void __cdecl NuMtxGetYAxis(NUMTX *matrix, NUVEC *axis);
+    void __cdecl NuMtxGetZAxis(NUMTX *matrix, NUVEC *axis);
+    void __cdecl NuMtxGetTranslation(NUMTX *matrix, NUVEC *translation);
+    void __cdecl NuVecAdd(NUVEC *dst, NUVEC *a, NUVEC *b);
+    void __cdecl NuVecSub(NUVEC *dst, NUVEC *a, NUVEC *b);
+    void __cdecl NuVecScale(NUVEC *dst, NUVEC *src, f32 scale);
+    void __cdecl NuVecAddScale(NUVEC *dst, NUVEC *a, NUVEC *b, f32 scale);
+    f32 __cdecl NuVecDot(NUVEC *a, NUVEC *b);
+    void __cdecl NuVecNeg(NUVEC *dst, NUVEC *src);
+    void __cdecl NuVecCross(NUVEC *dst, NUVEC *a, NUVEC *b);
+    void __cdecl NuVecMax(NUVEC *dst, NUVEC *a, NUVEC *b);
+    void __cdecl NuVecMin(NUVEC *dst, NUVEC *a, NUVEC *b);
+    f32 __cdecl NuVecMagSqr(NUVEC *vec);
+    void __cdecl NuVecLerp(NUVEC *dst, NUVEC *a, NUVEC *b, f32 t);
+    void __cdecl NuVecMtxRotate(NUVEC *dst, NUVEC *src, NUMTX *matrix);
+    void __cdecl NuVecMtxTransform(NUVEC *dst, NUVEC *src, NUMTX *matrix);
+    void __cdecl NuVecInvMtxRotate(NUVEC *dst, NUVEC *src, NUMTX *matrix);
+    void __cdecl NuVecInvMtxTransform(NUVEC *dst, NUVEC *src, NUMTX *matrix);
     NUMTX *__cdecl NuSpecialGetMtx(NUSPECIALHANDLE *special);
     void __cdecl NuSpecialSetMtx(NUSPECIALHANDLE *special, const NUMTX *matrix);
     i32 __cdecl NuSpecialExistsFn(NUSPECIALHANDLE *special);
+    i32 __cdecl NuSpecialTestAnim(NUSPECIALHANDLE *special);
+    NUVEC *__cdecl NuSpecialGetPos(NUSPECIALHANDLE *special);
+    NUVEC *__cdecl NuSpecialGetDrawPos(NUSPECIALHANDLE *special);
+    char *__cdecl NuSpecialGetName(NUSPECIALHANDLE *special);
+    NUMTX *__cdecl NuSpecialGetDrawMtx(NUSPECIALHANDLE *special);
+    NUMTX *__cdecl NuSpecialGetInstanceMtx(NUSPECIALHANDLE *special);
+    void *__cdecl NuSpecialGetInstAnim(NUSPECIALHANDLE *special);
+    void __cdecl NuSpecialSetCollision(NUSPECIALHANDLE *special, i32 enabled);
+    i32 __cdecl NuSpecialGetCollision(NUSPECIALHANDLE *special);
+    void __cdecl NuSpecialSetNoVisiTest(NUSPECIALHANDLE *special, i32 enabled);
+    i32 __cdecl NuSpecialGetNoVisiTestFn(NUSPECIALHANDLE *special);
+    extern f32 nuspecial_const_alpha;
+    extern NUVEC nuspecial_const_tint;
+    extern i32 nuspecial_const_alpha_enabled;
+    extern i32 nuspecial_const_tint_enabled;
+    extern i32 nuspecial_draw_state;
+    void __cdecl NuSpecialConstAlpha(i32 enabled, f32 alpha);
+    void __cdecl NuSpecialConstTint(i32 enabled, const NUVEC *tint);
+    void __cdecl NuSpecialGetNext(NUSPECIALHANDLE *special);
+    i32 __cdecl NuSpecialGetNumSpecials(NUGSCN *scene);
+    i32 __cdecl NuSpecialGetOnScreenFn(NUSPECIALHANDLE *special);
+    i32 __cdecl NuSpecialGetVisibilityFn(NUSPECIALHANDLE *special);
     extern i32 nu_water_reset_state;
     extern i32 nu_water_reset_status;
     void __cdecl NuWaterReset(void);
@@ -390,6 +497,42 @@ extern "C" {
     extern WORLDINFO *WORLD;
     extern WORLDINFO *LWORLD;
     extern u16 ang[513];
+    extern f32 NuTrigTable[32768];
+    void __cdecl NuTrigInit(void);
+    void __cdecl NuMtxRotateX(NUMTX *matrix, NUANG angle);
+    void __cdecl NuMtxRotateY(NUMTX *matrix, NUANG angle);
+    void __cdecl NuMtxRotateZ(NUMTX *matrix, NUANG angle);
+    void __cdecl NuMtxTransposeR(NUMTX *out, NUMTX *source);
+    void __cdecl NuMtxTranspose(NUMTX *out, NUMTX *source);
+    extern NUCAMERA global_camera;
+    extern NUVEC cam_axes;
+    void __cdecl NuCameraGet(NUCAMERA *camera);
+    NUMTX *__cdecl NuCameraGetMtx(void);
+    void __cdecl NuCameraSetAxes(NUVEC *axes);
+    void __cdecl NuCameraGetAxes(NUVEC *axes);
+    NUCAMERA *__cdecl NuCameraGetCam(void);
+    NUMTX *__cdecl NuCameraGetViewMtx(void);
+    NUMTX *__cdecl NuCameraGetProjectionMtx(void);
+    NUMTX *__cdecl NuCameraGetClippingMtx(void);
+    NUMTX *__cdecl NuCameraGetScalingMtx(void);
+    NUMTX *__cdecl NuCameraGetVPCSMtx(void);
+    NUMTX *__cdecl NuCameraGetVPCMtx(void);
+    NUMTX *__cdecl NuCameraGetVPMtx(void);
+    NUMTX *__cdecl NuCameraGetPCMtx(void);
+    void __cdecl NuCameraGetClipMtx(NUMTX *viewport, NUMTX *scissor);
+    NUMTX *__cdecl NuCameraGetClipPlanes(void);
+    void __cdecl NuMtxCalcCheapFaceOn(NUMTX *matrix, NUVEC *position);
+    void __cdecl NuMtxCalcDebrisFaceOn(NUMTX *matrix);
+    extern NUMTX vmtx;
+    extern NUMTX pmtx;
+    extern NUMTX cmtx;
+    extern NUMTX smtx;
+    extern NUMTX vpmtx;
+    extern NUMTX vpc_sci_mtx;
+    extern NUMTX vpc_vport_mtx;
+    extern NUMTX pc_vport_mtx;
+    extern NUMTX vpsmtx;
+    extern NUMTX clip_planes;
     extern u32 crctab[256];
     extern const u8 KeyStructSizes[16];
     extern u16 bad_equiv[8][2];

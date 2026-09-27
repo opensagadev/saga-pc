@@ -8,3 +8,7 @@ void __cdecl NuCommandLine(i32 *__restrict count, char ***__restrict arguments) 
 
 void NuVideoSetBrightnessPS(void) {
 }
+
+void NuVideoSetSwapModePS(i32 mode) {
+    (void)mode;
+}

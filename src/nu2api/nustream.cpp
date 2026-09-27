@@ -29,9 +29,11 @@ struct SoundQueue {
     i32 applied_volume;
     u8 unknown_0018[0x3c];
     SoundQueueVolumeSink *volume_sink;
-    u8 unknown_0058[8];
+    u32 unknown_0058;
+    LPTIMECALLBACK timer_callback;
     HANDLE event;
-    u8 unknown_0064[0xc];
+    UINT timer_id;
+    u8 unknown_0068[8];
     CRITICAL_SECTION lock;
     u8 unknown_0088[0x18];
     CRITICAL_SECTION volume_lock;
@@ -49,13 +51,17 @@ struct SoundQueue {
     __declspec(noinline) i32 HasCommand(i32 command);
     __declspec(noinline) i32 IsStreamIdle();
     __declspec(noinline) i32 GetStatus();
+    void StartTimer();
+    void StopTimer();
 };
 STATIC_ASSERT(offsetof(SoundQueue, stream_state) == 0x08);
 STATIC_ASSERT(offsetof(SoundQueue, stream_flags) == 0x0c);
 STATIC_ASSERT(offsetof(SoundQueue, requested_volume) == 0x10);
 STATIC_ASSERT(offsetof(SoundQueue, applied_volume) == 0x14);
 STATIC_ASSERT(offsetof(SoundQueue, volume_sink) == 0x54);
+STATIC_ASSERT(offsetof(SoundQueue, timer_callback) == 0x5c);
 STATIC_ASSERT(offsetof(SoundQueue, event) == 0x60);
+STATIC_ASSERT(offsetof(SoundQueue, timer_id) == 0x64);
 STATIC_ASSERT(offsetof(SoundQueue, lock) == 0x70);
 STATIC_ASSERT(offsetof(SoundQueue, volume_lock) == 0xa0);
 STATIC_ASSERT(offsetof(SoundQueue, command) == 0xb8);
@@ -168,6 +174,20 @@ i32 SoundQueue::GetStatus() {
         return 1;
     }
     return IsStreamIdle() != 0 ? 0 : 2;
+}
+
+void SoundQueue::StartTimer() {
+    if (timer_id != 0) {
+        timeKillEvent(timer_id);
+    }
+    timer_id = timeSetEvent(500, 100, timer_callback, 0, 0x21);
+}
+
+void SoundQueue::StopTimer() {
+    if (timer_id != 0) {
+        timeKillEvent(timer_id);
+    }
+    timer_id = 0;
 }
 
 extern "C" void __cdecl NuSound3StopStereoStream(i32 index) {

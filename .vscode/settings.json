@@ -1,0 +1,36 @@
+{
+    "C_Cpp.default.compilerPath": "",
+    "C_Cpp.default.intelliSenseMode": "windows-msvc-x86",
+    "C_Cpp.default.cStandard": "c89",
+    "C_Cpp.default.cppStandard": "c++03",
+    "C_Cpp.default.defines": [
+        "_MSC_VER=1400",
+        "_MT"
+    ],
+    "C_Cpp.default.browse.path": [
+        "${workspaceFolder}/src"
+    ],
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/src",
+        "${workspaceFolder}/build/editor/include/crt",
+        "${workspaceFolder}/build/editor/include/sdk"
+    ],
+    "C_Cpp.default.systemIncludePath": [
+        "${workspaceFolder}/build/editor/include/crt",
+        "${workspaceFolder}/build/editor/include/sdk"
+    ],
+    "clang-tidy.buildPath": "build/editor",
+    "C_Cpp.files.exclude": {
+        "**/build/tools/wine": true,
+        "**/build/tools/wine/**": true
+    },
+    "files.exclude": {
+        "**/build/tools/wine": true
+    },
+    "files.watcherExclude": {
+        "**/build/tools/wine/**": true
+    },
+    "search.exclude": {
+        "**/build/tools/wine/**": true
+    }
+}

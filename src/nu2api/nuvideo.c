@@ -29,6 +29,37 @@ i32 NuVideoGetSwapMode(void) {
     return nuapi.video_swap_mode;
 }
 
+i32 NuVideoSetSwapMode(i32 mode) {
+    i32 previous_mode = nuapi.video_swap_mode;
+
+    nuapi.video_swap_mode = mode;
+    switch (mode) {
+        case 1:
+        case 2:
+        case 5:
+            if (nuapi.video_is_pal != 0) {
+                NuVideoFrameRate = 50.0f;
+            } else {
+                NuVideoFrameRate = 60.0f;
+            }
+            break;
+        case 3:
+        case 4:
+        case 6:
+            if (nuapi.video_is_pal != 0) {
+                NuVideoFrameRate = 25.0f;
+            } else {
+                NuVideoFrameRate = 30.0f;
+            }
+            break;
+        default:
+            break;
+    }
+
+    NuVideoSetSwapModePS(mode);
+    return previous_mode;
+}
+
 void NuVideoRollingFrameRateReset(void) {
 }
 

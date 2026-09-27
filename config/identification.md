@@ -385,3 +385,36 @@ For example, `Fade`'s table leads to a candidate `Init` at `0x005b1250` (a
 and `GetFadeType` at `0x00564370` (three bytes returning zero). Their behavior
 agrees with Android's class. These are useful next candidates, but exact method
 linker names and prototypes still need a PC declaration probe before CSV entry.
+
+## Portable subsystem reconstruction
+
+The PC matrix and vector families now have typed `NUMTX`/`NUVEC` operations.
+`NuTrigInit` at `0x005bdd50` fills 32,768 floats in `NuTrigTable` at
+`0x029899c0`; the three rotation bodies index that table with the PC angle mask.
+`RotateGameMatrix` at `0x00550330` calls those real rotations in four PC-confirmed
+orders. Its complete 348-byte extent includes the compiler's local switch table;
+mapping only the reachable instructions would falsely report a match. The RDPI
+hex classifiers at `0x004f52a0` and `0x004f5310` likewise own local tables, so
+their mapped extents are 99 and 107 bytes. They are structurally ported but still
+byte-different.
+
+The camera getter family uses one 120-byte `global_camera` object at `0x00973708`,
+with its matrix at offset zero. Ten separate 64-byte matrix globals at
+`0x0080b708`–`0x0080b9c7` have independently checked identity initializers.
+The PC `NuMtxCalcCheapFaceOn` and `NuMtxCalcDebrisFaceOn` use the real view matrix
+through `NuCameraGetViewMtx`; neither requires an Android platform path. PC
+`NuVideoSetSwapMode` at `0x004f5050` uses the original PAL/NTSC frame-rate groups
+and calls the one-byte platform hook at `0x004feb70`.
+
+MSVC emits some 0.0f and 1.0f COMDAT constants that a local function does not
+relocate because it uses `fldz`/`fld1`. The symbol map binds these by compiler
+linker name to the independently referenced canonical PC constants at
+`0x00751658` and `0x00751524`; the bytes and four-byte extents were verified in
+the retail image. No address was assigned merely from an orphan object's position.
+
+`WorldInfo_LoadObjectAnimFile` at `0x0055f5d0` is a strong PC/Android control-flow
+identity, but remains a candidate: its PC `NuFileExists` path depends on the
+unmapped virtual-file system, and `edanimLoadPage` is a 1,482-byte editor loader
+without a portable Android implementation. The sound sample-table initializer at
+`0x00697a50` likewise uses 0x1c-byte PC records and a substantial PC loader and
+thread closure; Android's 0x20-byte record and setup code cannot be copied.

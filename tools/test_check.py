@@ -331,6 +331,7 @@ class ClangChecksTests(unittest.TestCase):
         (self.root / "src").mkdir()
         for name in ("a.c", "b.cpp", "saga.h", "notes.txt"):
             (self.root / "src" / name).write_text("// fixture\n")
+        (self.root / "src/a.c").write_text('#include <windows.h>\n')
         (self.root / ".clang-format").write_text("BasedOnStyle: LLVM\n")
         (self.root / ".clang-tidy").write_text("Checks: readability-identifier-naming\n")
         (self.root / "config").mkdir()
@@ -340,8 +341,60 @@ class ClangChecksTests(unittest.TestCase):
             directory = compiler / tree
             directory.mkdir(parents=True)
             (directory / name).write_text("// original SDK fixture\n")
+            if tree == "PlatformSDK/Include":
+                (directory / name).write_text('#include <BASETSD.H>\n')
+                (directory / "BaseTsd.h").write_text("// original nested SDK fixture\n")
             trees[tree] = tree_digest(directory)
         (self.root / "config/toolchain.json").write_text(json.dumps({"trees": trees}))
+
+    def test_prepare_editor_builds_case_aliases_and_windows_compile_database(self):
+        compiler = self.root / "build/tools/msvc8"
+        original_trees = {
+            "include": tree_digest(compiler / "include"),
+            "PlatformSDK/Include": tree_digest(compiler / "PlatformSDK/Include"),
+        }
+
+        check_module.prepare_editor()
+        check_module.prepare_editor()
+
+        mirror = self.root / "build/editor/include"
+        for alias, original in (
+                (mirror / "sdk/windows.h", compiler / "PlatformSDK/Include/Windows.h"),
+                (mirror / "sdk/BASETSD.H", compiler / "PlatformSDK/Include/BaseTsd.h")):
+            self.assertTrue(alias.is_symlink())
+            self.assertEqual(alias.resolve(), original.resolve())
+        self.assertEqual(original_trees["include"], tree_digest(compiler / "include"))
+        self.assertEqual(original_trees["PlatformSDK/Include"],
+                         tree_digest(compiler / "PlatformSDK/Include"))
+
+        commands = json.loads((self.root / "build/editor/compile_commands.json").read_text())
+        self.assertEqual([Path(item["file"]).name for item in commands],
+                         ["a.c", "b.cpp", "saga.h"])
+        for entry in commands:
+            command = entry["arguments"]
+            self.assertIn("--target=i686-pc-windows-msvc", command)
+            self.assertIn("-fms-compatibility-version=14.00", command)
+            self.assertIn("-nostdinc", command)
+            self.assertIn("-D_MT", command)
+            self.assertNotIn("-ivfsoverlay", command)
+            include_args = [command[index + 1] for index, arg in enumerate(command[:-1])
+                            if arg == "-isystem"]
+            self.assertEqual(include_args, [str(mirror / "crt"), str(mirror / "sdk")])
+            self.assertNotIn(str(compiler / "include"), include_args)
+            self.assertIn("-c", command)
+            source = Path(entry["file"]).name
+            if source == "a.c":
+                self.assertEqual(command[command.index("-x") + 1], "c")
+                self.assertIn("-std=c89", command)
+            else:
+                self.assertEqual(command[command.index("-x") + 1], "c++")
+                self.assertIn("-std=c++98", command)
+
+    def test_prepare_editor_rejects_modified_sdk(self):
+        header = self.root / "build/tools/msvc8/PlatformSDK/Include/Windows.h"
+        header.write_text("modified\n")
+        with self.assertRaisesRegex(ValueError, "changed compiler headers/libraries"):
+            check_module.prepare_editor()
 
     def test_tool_override_requires_supported_major_version(self):
         with patch.dict(os.environ, {"CLANG_TIDY": "/chosen/clang-tidy"}), \
@@ -385,7 +438,7 @@ class ClangChecksTests(unittest.TestCase):
             self.assertFalse(any(flag.startswith(("--checks=", "--warnings-as-errors=")) for flag in command))
         overlay = json.loads((self.root / "build/lint/headers.json").read_text())
         self.assertFalse(overlay["case-sensitive"])
-        self.assertEqual(len(overlay["roots"]), 2)
+        self.assertEqual(len(overlay["roots"]), 3)
         for entry in overlay["roots"]:
             self.assertEqual(entry["name"], entry["external-contents"])
             self.assertTrue(Path(entry["name"]).is_relative_to(self.root / "build/tools/msvc8"))

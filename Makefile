@@ -8,16 +8,18 @@ EXE := build/LEGOStarWarsSaga.exe
 CPPFLAGS := /Isrc /Ibuild/tools/msvc8/include /Ibuild/tools/msvc8/PlatformSDK/Include
 CXXFLAGS := /nologo /c /O2 /Gy /GS- /MT
 LDFLAGS := /nologo /machine:x86 /subsystem:windows /incremental:no /manifest:no /opt:noref /opt:noicf
-LDLIBS := user32.lib
+LDLIBS := user32.lib winmm.lib
 
 .DEFAULT_GOAL := build
 .DELETE_ON_ERROR:
-.PHONY: all build objects link setup check check-core lint check-objects test match diff inspect clean
+.PHONY: all build objects link run setup editor check check-core lint check-objects test match diff inspect clean
 
 all: build
 build: link
 objects: $(OBJECTS)
 link: $(EXE)
+run: $(EXE)
+	cd res && WINEPREFIX="$(CURDIR)/build/tools/wine" WINEDEBUG=-all WINEDLLOVERRIDES="winemenubuilder.exe=d" wine ../$(EXE)
 
 # Directory dependencies also relink when a source is removed from the input list.
 $(EXE): $(OBJECTS) $(SOURCE_DIRS) config/toolchain.json Makefile tools/cc.py tools/lib.py
@@ -37,6 +39,10 @@ build/tools/wine/.ready:
 
 setup:
 	$(PYTHON) tools/setup.py
+	$(PYTHON) tools/check.py --editor
+
+editor:
+	$(PYTHON) tools/check.py --editor
 
 check: lint check-core
 

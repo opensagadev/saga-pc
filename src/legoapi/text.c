@@ -151,3 +151,45 @@ void Text_InitDefaultStrings(void) {
     TTab[tSPANISH] = apitxt_SPANISH;
     TTab[tDANISH] = apitxt_DANISH;
 }
+
+void Text_DecodeButtons(char *source, char *destination) {
+    if (NuStrICmp(source, Text_WibbleCodeword) == 0) {
+        NuStrCpy(destination, Text_CrossCodeword);
+    }
+}
+
+void TextRegisterButtonMapFn(void (*fn)(char *, char *)) {
+    if (fn != NULL) {
+        buttonmapfn = fn;
+    }
+}
+
+void SmartTextSetFWNMode(i32 mode) {
+    smarttext_fwn = mode;
+}
+
+void SmartTextSetFont(VUFNT *font) {
+    SmartTextFont = font;
+}
+
+void SetGameFont(VUFNT *font) {
+    QFont2D = font;
+}
+
+void Set3DGameFont(VUFNT *font) {
+    QFont3DZ = font;
+}
+
+void SmartTextSetWidescreen(f32 font_scale_x, f32 coordinate_scale) {
+    QFONTSCALEX = font_scale_x;
+    STCOORDSCALE = coordinate_scale;
+}
+
+void SmartTextGetWidescreen(f32 *font_scale_x, f32 *coordinate_scale) {
+    if (font_scale_x != NULL) {
+        *font_scale_x = QFONTSCALEX;
+    }
+    if (coordinate_scale != NULL) {
+        *coordinate_scale = STCOORDSCALE;
+    }
+}

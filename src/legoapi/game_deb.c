@@ -1,5 +1,8 @@
 #include "saga.h"
 
+extern void *debris_cutoff_camera_vec;
+extern i32 debris_render_group;
+
 void DebrisSetSeed(i32 seed) {
     debrisseed = (u32)seed;
 }
@@ -14,4 +17,12 @@ void DebrisSetTimeIncrement(f32 increment) {
 
 void DebrisSetCutSceneMode(i32 enabled) {
     DebrisCutSceneMode = enabled;
+}
+
+void DebrisRegisterCutoffCameraVec(void *position) {
+    debris_cutoff_camera_vec = position;
+}
+
+void DebrisSetRenderGroup(i32 group) {
+    debris_render_group = group;
 }

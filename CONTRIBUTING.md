@@ -139,6 +139,17 @@ The SDK's required `_WIN32_WINNT` macro spelling and fundamental integer alias
 definitions have narrowly scoped lint suppressions; other source policy remains
 enforced. Clang is a source-analysis tool here, not the matching compiler.
 
+For VS Code, `make setup` also prepares the editor inputs; run `make editor`
+again after adding sources or changing SDK includes. This generates
+`build/editor/compile_commands.json` for the clang-tidy extension with the same
+Windows x86 target and language flags as `make lint`. Headers have
+explicit C++ analysis entries so opening `saga.h` directly also works.
+Both editor extensions use generated header symlinks in
+`build/editor/include/` with the filename spellings used by the source and SDK.
+This handles includes such as `windows.h` versus `Windows.h` on Linux without
+changing the checksum-pinned SDK. The committed workspace settings keep indexing
+inside the source/header paths and exclude Wine's links to the host filesystem.
+
 The compiler integration tests exercise C/C++ headers, SDK declarations and a
 source-only EXE link and execution under Wine, including unresolved-reference
 failure. These checks require the pinned tools; CI always installs them.

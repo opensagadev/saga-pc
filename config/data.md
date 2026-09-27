@@ -233,3 +233,20 @@ in `unreviewed-references.json`. Those target counts are analysis candidates,
 not a count of symbols: references can point into records, strings, arrays,
 vtable metadata or buffers. Recovering the remaining extents requires further
 PC-specific review, especially the roughly 35 MiB of zero-filled storage.
+
+## Typed subsystem state added after the initial inventory
+
+| PC VA | Object | Extent and load-time value |
+| --- | --- | --- |
+| `0x00925038` | `FRAMETIME` | Four-byte zero-filled `f32`; NuMain sets it during startup. |
+| `0x029899c0` | `NuTrigTable` | 131,072 zero-filled bytes, 32,768 `f32` entries filled by `NuTrigInit`. |
+| `0x00973708` | `global_camera` | One zero-filled 120-byte camera, matrix at offset zero. |
+| `0x0080b6fc` | `cam_axes` | Three `f32` values, each 1.0. |
+| `0x0080b708`–`0x0080b9c7` | Ten camera matrices | Ten distinct 64-byte identity `NUMTX` objects; individual addresses are in `symbols.csv`. |
+| `0x00806b9c`, `0x00806cc0` | Special alpha and tint | `f32` 1.0 and three-float `{1, 1, 1}` tint. |
+| `0x008015b4`, `0x008015f0` | Font coordinate scales | Both `f32` 1.0; the PC widescreen setter writes only these two. |
+| `0x0297dc00` | `NuVideoFrameRate` | Zero-filled `f32`, selected by PC swap mode. |
+
+The zero/one compiler COMDATs at `0x00751658`/`0x00751524` are mapped from
+independent original references and exact bits. The local compiler can emit them
+without a relocation when it uses x87 `fldz`/`fld1`.

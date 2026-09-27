@@ -80,6 +80,36 @@ extern "C" {
 
     // PC debris timing uses a single-precision 1/60-second step.
     f32 debris_time_increment = 1.0f / 60.0f;
+    void *debris_cutoff_camera_vec;
+    i32 debris_render_group;
+    f32 FRAMETIME;
+    f32 QFONTSCALEX = 1.0f;
+    f32 STCOORDSCALE = 1.0f;
+    VUFNT *QFont2D;
+    VUFNT *QFont3DZ;
+    VUFNT *SmartTextFont;
+    f32 nuspecial_const_alpha = 1.0f;
+    NUVEC nuspecial_const_tint = {1.0f, 1.0f, 1.0f};
+    NUVEC cam_axes = {1.0f, 1.0f, 1.0f};
+    NUCAMERA global_camera;
+#define IDENTITY_NUMTX {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f}
+    NUMTX vmtx = IDENTITY_NUMTX;
+    NUMTX pmtx = IDENTITY_NUMTX;
+    NUMTX cmtx = IDENTITY_NUMTX;
+    NUMTX smtx = IDENTITY_NUMTX;
+    NUMTX vpmtx = IDENTITY_NUMTX;
+    NUMTX vpc_sci_mtx = IDENTITY_NUMTX;
+    NUMTX vpc_vport_mtx = IDENTITY_NUMTX;
+    NUMTX pc_vport_mtx = IDENTITY_NUMTX;
+    NUMTX vpsmtx = IDENTITY_NUMTX;
+    NUMTX clip_planes = IDENTITY_NUMTX;
+#undef IDENTITY_NUMTX
+    i32 nuspecial_const_alpha_enabled;
+    i32 nuspecial_const_tint_enabled;
+    i32 nuspecial_draw_state;
+#pragma bss_seg(".bss$NuTrigTable")
+    f32 NuTrigTable[32768];
+#pragma bss_seg()
 
 // PC NuSound3 state and loop-hold conversion constants.
 #pragma bss_seg(".bss$NuSound3Reverb")
@@ -121,6 +151,14 @@ extern "C" {
 #pragma const_seg(".rdata$Text_UnknownText")
     extern const char Text_UnknownText[2] = "?";
 #pragma const_seg()
+#pragma const_seg(".rdata$Text_WibbleCodeword")
+    extern const char Text_WibbleCodeword[7] = "wibble";
+#pragma const_seg()
+#pragma const_seg(".rdata$Text_CrossCodeword")
+    extern const char Text_CrossCodeword[6] = "cross";
+#pragma const_seg()
+    void (*buttonmapfn)(char *, char *);
+    i32 smarttext_fwn;
 #pragma const_seg(".rdata$Text_PathEnglishText")
     extern const char Text_PathEnglishText[8] = "english";
 #pragma const_seg()
@@ -235,6 +273,7 @@ extern "C" {
     VARIPTR fstack_limit;
     i32 DebrisCutSceneMode;
     i32 part_raycasts_enabled;
+    f32 NuVideoFrameRate;
     OCCLUSIONMANAGER g_OcclusionManager = {0, 1, {0}, {{0}}, 0, 0, 0.3f, -1.0f, 0, 0, {0}};
 }
 void *pNuCam;
