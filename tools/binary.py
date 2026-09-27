@@ -1,0 +1,437 @@
+"""PE32/i386 COFF inspection, exact matching and objdiff comparison objects.
+
+Functions and data retain their complete compiler-produced extents. One shared
+relocation path applies known addresses; no retail bytes are copied into rebuilt
+code and no operands are masked. Comparison objects preserve preferred VAs.
+Objdiff's instruction score is advisory; only complete byte equality is exact.
+"""
+
+import datetime
+import hashlib
+import struct
+import uuid
+from pathlib import Path
+
+
+class BinaryError(ValueError):
+    pass
+
+
+def _slice(data, offset, size):
+    if offset < 0 or size < 0 or offset + size > len(data):
+        raise BinaryError(f"File range out of bounds: {offset:#x}+{size:#x}")
+    return data[offset:offset + size]
+
+
+def _unpack(fmt, data, offset):
+    return struct.unpack(fmt, _slice(data, offset, struct.calcsize(fmt)))
+
+
+def _text(data):
+    return data.split(b"\0", 1)[0].decode("utf-8", errors="replace")
+
+
+def _number(value):
+    if isinstance(value, bool):
+        raise BinaryError("A boolean is not an address")
+    return int(value, 0) if isinstance(value, str) else int(value)
+
+
+def _address(value):
+    value = _number(value)
+    if not 0 <= value <= 0xffffffff:
+        raise BinaryError("Address is outside the 32-bit range")
+    return value
+
+
+def _extent(va, size):
+    va, size = _address(va), _number(size)
+    if size <= 0 or va + size > 0x100000000:
+        raise BinaryError("Symbol extent is outside the 32-bit address space")
+    return va, size
+
+
+def _sections(data, offset, count, name_reader, coff=False):
+    result = []
+    for index in range(count):
+        raw = _slice(data, offset + index * 40, 40)
+        vs, va, size, ptr, rel, lines, nr, nl, flags = struct.unpack("<IIIIIIHHI", raw[8:])
+        # COFF BSS records its in-memory size without storing those bytes.
+        # A large zero-initialized array can exceed the entire object file.
+        if not (coff and ptr == 0 and flags & 0x80):
+            _slice(data, ptr, size)
+        result.append({"index": index + 1, "name": name_reader(raw[:8]),
+                       "virtual_size": vs, "virtual_address": va,
+                       "raw_size": size, "raw_offset": ptr,
+                       "relocation_offset": rel, "relocation_count": nr,
+                       "characteristics": flags})
+    return result
+
+
+class PE:
+    """A PE32 image. Addresses accepted by read_va are preferred image VAs."""
+
+    def __init__(self, path):
+        self.path = Path(path)
+        self.data = self.path.read_bytes()
+        if _slice(self.data, 0, 2) != b"MZ":
+            raise BinaryError("Not an MZ executable")
+        self.pe_offset = _unpack("<I", self.data, 0x3c)[0]
+        if _slice(self.data, self.pe_offset, 4) != b"PE\0\0":
+            raise BinaryError("Missing PE signature")
+        machine, nsections, timestamp, _, _, optional_size, flags = _unpack(
+            "<HHIIIHH", self.data, self.pe_offset + 4)
+        if machine != 0x14c:
+            raise BinaryError(f"Expected i386 PE, found machine {machine:#x}")
+        self.machine = machine
+        self.timestamp = timestamp
+        opt = self.pe_offset + 24
+        self.optional = _slice(self.data, opt, optional_size)
+        if optional_size < 96 or _unpack("<H", self.optional, 0)[0] != 0x10b:
+            raise BinaryError("Expected PE32 optional header")
+        self.linker_version = list(_unpack("<BB", self.optional, 2))
+        self.image_base = _unpack("<I", self.optional, 28)[0]
+        self.entry_point = self.image_base + _unpack("<I", self.optional, 16)[0]
+        self.image_size = _unpack("<I", self.optional, 56)[0]
+        self.size_of_headers = _unpack("<I", self.optional, 60)[0]
+        self.sections = _sections(self.data, opt + optional_size, nsections, _text)
+        ndirs = _unpack("<I", self.optional, 92)[0]
+        if ndirs > (optional_size - 96) // 8:
+            raise BinaryError("Data directories exceed optional header")
+        self.directories = [_unpack("<II", self.optional, 96 + i * 8)
+                            for i in range(ndirs)]
+
+    def va_to_offset(self, va, size=1):
+        rva = va - self.image_base
+        if rva >= 0 and rva + size <= self.size_of_headers:
+            _slice(self.data, rva, size)
+            return rva
+        for sec in self.sections:
+            delta = rva - sec["virtual_address"]
+            if delta >= 0 and delta + size <= sec["raw_size"]:
+                offset = sec["raw_offset"] + delta
+                _slice(self.data, offset, size)
+                return offset
+        raise BinaryError(f"VA range {va:#x}+{size:#x} has no contiguous file bytes")
+
+    def read_va(self, va, size):
+        return _slice(self.data, self.va_to_offset(va, size), size)
+
+    def read_data(self, va, size):
+        """Read one mapped section, zero-filling only its unbacked virtual tail."""
+        va, size = _extent(va, size)
+        matches = []
+        for section in self.sections:
+            offset = va - self.image_base - section["virtual_address"]
+            extent = max(section["virtual_size"], section["raw_size"])
+            if offset >= 0 and offset + size <= extent:
+                matches.append((section, offset))
+        if len(matches) != 1:
+            raise BinaryError("Data extent must belong to exactly one PE section")
+        section, offset = matches[0]
+        raw_size = section["raw_size"]
+        if not section["raw_offset"]:
+            if raw_size and not section["characteristics"] & 0x80:
+                raise BinaryError("Initialized PE data has no file offset")
+            return bytes(size)
+        backed = max(0, min(size, raw_size - offset))
+        data = _slice(self.data, section["raw_offset"] + offset, backed) if backed else b""
+        return data + bytes(size - backed)
+
+    def _rich(self):
+        end = self.data.rfind(b"Rich", 0x40, self.pe_offset)
+        if end < 0 or end + 8 > self.pe_offset:
+            return None
+        key = _unpack("<I", self.data, end + 4)[0]
+        start = end - 4
+        while start >= 0x40:
+            if _unpack("<I", self.data, start)[0] ^ key == 0x536e6144:
+                break
+            start -= 4
+        if start < 0x40 or (end - start - 16) % 8:
+            raise BinaryError("Malformed Rich header")
+        if any(_unpack("<I", self.data, start + i)[0] ^ key for i in (4, 8, 12)):
+            raise BinaryError("Malformed Rich header padding")
+        entries = []
+        for offset in range(start + 16, end, 8):
+            encoded_id, encoded_count = _unpack("<II", self.data, offset)
+            compid = encoded_id ^ key
+            entries.append({"product_id": compid >> 16, "build": compid & 0xffff,
+                            "count": encoded_count ^ key})
+        return {"offset": start, "xor_key": f"0x{key:08x}", "entries": entries}
+
+    def _pdb(self):
+        result = []
+        if len(self.directories) <= 6:
+            return result
+        rva, size = self.directories[6]
+        if not rva or not size:
+            return result
+        if size % 28:
+            raise BinaryError("Debug directory size is not a multiple of 28")
+        entries = self.read_va(self.image_base + rva, size)
+        for offset in range(0, size, 28):
+            _, _, _, _, kind, nbytes, _, ptr = _unpack("<IIHHIIII", entries, offset)
+            if kind != 2:
+                continue
+            cv = _slice(self.data, ptr, nbytes)
+            if cv[:4] == b"RSDS" and len(cv) >= 24:
+                result.append({"format": "RSDS", "guid": str(uuid.UUID(bytes_le=cv[4:20])),
+                               "age": _unpack("<I", cv, 20)[0], "path": _text(cv[24:])})
+            elif cv[:4] == b"NB10" and len(cv) >= 16:
+                result.append({"format": "NB10", "timestamp": _unpack("<I", cv, 8)[0],
+                               "age": _unpack("<I", cv, 12)[0], "path": _text(cv[16:])})
+        return result
+
+    def inspect(self):
+        return {"path": str(self.path.resolve()), "file_size": len(self.data),
+                "sha256": hashlib.sha256(self.data).hexdigest(), "machine": "i386",
+                "format": "PE32", "image_base": f"0x{self.image_base:08x}",
+                "image_size": f"0x{self.image_size:08x}",
+                "entry_point": f"0x{self.entry_point:08x}",
+                "linker_version": ".".join(map(str, self.linker_version)),
+                "timestamp": self.timestamp,
+                "timestamp_utc": datetime.datetime.fromtimestamp(
+                    self.timestamp, datetime.timezone.utc).isoformat(),
+                "rich": self._rich(), "pdb": self._pdb(), "sections": self.sections}
+
+
+class COFF:
+    """Ordinary i386 COFF only; bigobj, archives and LTCG objects are rejected."""
+
+    def __init__(self, path):
+        self.path = Path(path)
+        self.data = self.path.read_bytes()
+        machine, count, _, symptr, nsyms, optsize, _ = _unpack("<HHIIIHH", self.data, 0)
+        if machine != 0x14c or optsize:
+            raise BinaryError("Expected ordinary i386 COFF object (no LTCG/bigobj)")
+        if not symptr or not nsyms:
+            raise BinaryError("COFF object has no symbol table")
+        stroff = symptr + nsyms * 18
+        strlen = _unpack("<I", self.data, stroff)[0]
+        if strlen < 4:
+            raise BinaryError("Invalid COFF string table size")
+        strings = _slice(self.data, stroff, strlen)
+
+        def string_at(offset):
+            if offset < 4 or offset >= len(strings):
+                raise BinaryError("COFF string offset outside table")
+            if b"\0" not in strings[offset:]:
+                raise BinaryError("Unterminated COFF symbol name")
+            return _text(strings[offset:])
+
+        def section_name(raw):
+            name = _text(raw)
+            return string_at(int(name[1:])) if name.startswith("/") else name
+
+        self.sections = _sections(self.data, 20, count, section_name, coff=True)
+        self.symbols = []
+        self.symbol_by_index = {}
+        index = 0
+        while index < nsyms:
+            raw = _slice(self.data, symptr + index * 18, 18)
+            name = string_at(_unpack("<I", raw, 4)[0]) if raw[:4] == b"\0" * 4 else _text(raw[:8])
+            value, section, typ, storage, naux = _unpack("<IhHBB", raw, 8)
+            if index + naux >= nsyms:
+                raise BinaryError("COFF auxiliary symbols exceed symbol table")
+            aux = [_slice(self.data, symptr + (index + i + 1) * 18, 18) for i in range(naux)]
+            symbol = {"index": index, "name": name, "value": value,
+                      "section": section, "type": typ, "storage_class": storage,
+                      "aux": aux}
+            self.symbols.append(symbol)
+            self.symbol_by_index[index] = symbol
+            index += 1 + naux
+
+    def defined_symbols(self):
+        """Return named code/data definitions, excluding COFF/debug metadata."""
+        result = []
+        for symbol in self.symbols:
+            if (not symbol["name"] or symbol["section"] <= 0
+                    or symbol["storage_class"] not in (2, 3)):
+                continue
+            if symbol["section"] > len(self.sections):
+                raise BinaryError("Definition section is out of bounds")
+            section = self.sections[symbol["section"] - 1]
+            if (symbol["storage_class"] == 3 and symbol["aux"]
+                    and symbol["name"] == section["name"]):
+                continue
+            flags = section["characteristics"]
+            if (not flags & 0xe0 or flags & 0xa00
+                    or section["name"].startswith(".debug")):
+                continue
+            if not 0 <= symbol["value"] < section["raw_size"]:
+                raise BinaryError(f"Definition offset is outside its COFF section: {symbol['name']!r}")
+            result.append(symbol)
+        return result
+
+    def _definition(self, name):
+        matches = [s for s in self.defined_symbols() if s["name"] == name]
+        if len(matches) != 1:
+            raise BinaryError(f"Expected one defined symbol {name!r}, found {len(matches)}")
+        symbol = matches[0]
+        return symbol, self.sections[symbol["section"] - 1]
+
+    def _relocations(self, section, start, size, kind):
+        if section["characteristics"] & 0x01000000:
+            raise BinaryError("Extended COFF relocation counts are unsupported")
+        result = []
+        end = start + size
+        for index in range(section["relocation_count"]):
+            offset, target, typ = _unpack(
+                "<IIH", self.data, section["relocation_offset"] + 10 * index)
+            # ABSOLUTE is padding, with no field or referenced symbol to validate.
+            if typ == 0:
+                continue
+            if typ not in (6, 20):
+                raise BinaryError(f"Unsupported relocation type {typ:#x}; no masking")
+            if offset >= end or offset + 4 <= start:
+                continue
+            if offset < start or offset + 4 > end:
+                raise BinaryError(f"Relocation crosses {kind} boundary")
+            if target not in self.symbol_by_index:
+                raise BinaryError("Relocation references a missing/auxiliary COFF symbol")
+            result.append({"offset": offset - start, "type": typ,
+                           "symbol": self.symbol_by_index[target]["name"],
+                           "symbol_index": target})
+        return result
+
+    def _region(self, symbol, section, start, size, data, kind, size_source):
+        return {"bytes": bytes(data), "size": size, "size_source": size_source,
+                "offset": start, "section": section, "symbol": symbol,
+                "relocations": self._relocations(section, start, size, kind)}
+
+    def extract_function(self, name):
+        symbol, section = self._definition(name)
+        if not section["characteristics"] & 0x20 or not symbol["type"] & 0x20:
+            raise BinaryError(f"Symbol {name!r} is not a COFF function in a code section")
+        start = symbol["value"]
+        size = _unpack("<I", symbol["aux"][0], 4)[0] if symbol["aux"] else 0
+        if size:
+            size_source = "function auxiliary TotalSize"
+        else:
+            functions = {s["value"] for s in self.defined_symbols()
+                         if s["section"] == symbol["section"] and s["type"] & 0x20}
+            if functions != {start}:
+                raise BinaryError("Shared code section without function TotalSize; rebuild with /Gy")
+            size = section["raw_size"] - start
+            size_source = "sole function through section end (includes any section-end padding)"
+        if size <= 0 or start + size > section["raw_size"]:
+            raise BinaryError("Invalid function extent in COFF section")
+        if not section["raw_offset"]:
+            raise BinaryError("COFF code section has no file bytes")
+        data = _slice(self.data, section["raw_offset"] + start, size)
+        return self._region(symbol, section, start, size, data, "function", size_source)
+
+    def extract_data(self, name):
+        """Extract a full initializer through the next data symbol or section end."""
+        symbol, section = self._definition(name)
+        flags = section["characteristics"]
+        if flags & 0x20 or not flags & 0xc0 or symbol["type"] & 0x20:
+            raise BinaryError(f"Symbol {name!r} is not a named COFF data object")
+        if flags & 0xc0 == 0xc0:
+            raise BinaryError("Mixed initialized/uninitialized COFF data is unsupported")
+        start = symbol["value"]
+        offsets = [s["value"] for s in self.defined_symbols()
+                   if s["section"] == symbol["section"] and not s["type"] & 0x20]
+        end = min([offset for offset in offsets if offset > start] + [section["raw_size"]])
+        size = end - start
+        if size <= 0:
+            raise BinaryError("Invalid data extent in COFF section")
+        if flags & 0x80:
+            if section["raw_offset"]:
+                raise BinaryError("Uninitialized COFF data unexpectedly has file bytes")
+            data = bytes(size)
+        else:
+            if not section["raw_offset"]:
+                raise BinaryError("Initialized COFF data has no file offset")
+            data = _slice(self.data, section["raw_offset"] + start, size)
+        return self._region(symbol, section, start, size, data, "data symbol",
+                            "next data symbol or section end (includes padding)")
+
+
+def _relocate(obj, region, va, bindings):
+    """Apply i386 DIR32/REL32 fields once to a complete extracted region."""
+    va, _ = _extent(va, region["size"])
+    bindings = {} if bindings is None else bindings
+    if not isinstance(bindings, dict):
+        raise BinaryError("Bindings must map exact COFF symbols to addresses")
+    bindings = {name: _address(address) for name, address in bindings.items()}
+    data = bytearray(region["bytes"])
+    applied, touched = [], set()
+    for relocation in region["relocations"]:
+        offset, typ, name = relocation["offset"], relocation["type"], relocation["symbol"]
+        field = set(range(offset, offset + 4))
+        if field & touched:
+            raise BinaryError("Overlapping relocations are unsupported")
+        touched.update(field)
+        ref = obj.symbol_by_index[relocation["symbol_index"]]
+        if name in bindings:
+            address, source = bindings[name], "explicit binding"
+        elif ref["section"] == region["symbol"]["section"]:
+            address = _address(va + ref["value"] - region["offset"])
+            source = "derived same-section symbol"
+        elif ref["section"] == -1:
+            address, source = _address(ref["value"]), "COFF absolute symbol"
+        else:
+            raise BinaryError(f"Missing binding for relocation symbol {name!r}")
+        addend = struct.unpack_from("<I", data, offset)[0]
+        value = address + addend - (va + offset + 4 if typ == 20 else 0)
+        struct.pack_into("<I", data, offset, value & 0xffffffff)
+        applied.append({"offset": offset, "type": "DIR32" if typ == 6 else "REL32",
+                        "symbol": name, "symbol_va": f"0x{address:08x}",
+                        "resolution": source, "addend": f"0x{addend:08x}",
+                        "written_value": f"0x{value & 0xffffffff:08x}"})
+    return bytes(data), applied
+
+
+def relocate_function(obj, symbol, va, bindings=None):
+    """Return complete function bytes and applied relocations at its PC VA."""
+    obj = obj if isinstance(obj, COFF) else COFF(obj)
+    return _relocate(obj, obj.extract_function(symbol), va, bindings)
+
+
+def relocate_data(obj, symbol, va, bindings=None):
+    """Return complete initializer bytes and applied relocations at its PC VA."""
+    obj = obj if isinstance(obj, COFF) else COFF(obj)
+    return _relocate(obj, obj.extract_data(symbol), va, bindings)
+
+
+def compare_data(pe, obj, symbol, va, size, bindings=None):
+    """Compare a relocated initializer to retail; return hashes, never its bytes."""
+    pe = pe if isinstance(pe, PE) else PE(pe)
+    va, size = _extent(va, size)
+    data, _ = relocate_data(obj, symbol, va, bindings)
+    target = pe.read_data(va, size)
+    result = {"exact_match": data == target, "target_size": size, "base_size": len(data),
+              "target_sha256": hashlib.sha256(target).hexdigest(),
+              "base_sha256": hashlib.sha256(data).hexdigest()}
+    if len(data) != size:
+        result["reason"] = "Data extents differ; refusing partial/truncated comparison"
+    return result
+
+
+def write_function(path, symbol, va, code):
+    """Write an exactly sized, addressed COFF view for objdiff, not a linker."""
+    if not isinstance(code, (bytes, bytearray)) or not code:
+        raise BinaryError("Function bytes must be nonempty bytes")
+    va, size = _extent(va, len(code))
+    if not isinstance(symbol, str) or not symbol or "\0" in symbol:
+        raise BinaryError("Function symbol must be a nonempty name without NUL")
+    name = symbol.encode("utf-8")
+    strings = b""
+    if len(name) > 8:
+        name_field = struct.pack("<II", 0, 4)
+        strings = name + b"\0"
+    else:
+        name_field = name.ljust(8, b"\0")
+    raw_offset = 20 + 40
+    header = struct.pack("<HHIIIHH", 0x14c, 1, 0, raw_offset + size, 2, 0, 0)
+    section = struct.pack("<8sIIIIIIHHI", b".text", size, va, size,
+                          raw_offset, 0, 0, 0, 0, 0x60000020)
+    function = name_field + struct.pack("<IhHBB", 0, 1, 0x20, 2, 1)
+    auxiliary = struct.pack("<IIIIH", 0, size, 0, 0, 0)
+    result = (header + section + code + function + auxiliary
+              + struct.pack("<I", 4 + len(strings)) + strings)
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(result)

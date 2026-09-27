@@ -1,0 +1,11 @@
+{
+  "target": {
+    "exe": "res/LEGOStarWarsSaga.exe",
+    "sha256": "239f6c09b73e5764ced7469f158b621ff34c9984b5b0a850fe77248add259113",
+    "image_base": "0x00400000",
+    "text_va": "0x00401000",
+    "text_size": "0x0034f78e",
+    "image_size": "0x02636000"
+  },
+  "symbols": "config/symbols.csv"
+}

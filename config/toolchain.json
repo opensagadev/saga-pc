@@ -1,0 +1,15 @@
+{
+    "name": "Microsoft Visual C++ 2005 RTM x86",
+    "version": "14.00.50727.42",
+    "url": "https://github.com/widberg/msvc8.0/archive/d6c4aa208c8345c78a9f68ba6ef911ee94c6a6e1.zip",
+    "archive_sha256": "51c33ecf8a340f39b97ee722e35634a064fc72ca7c246d7d5b307e80e1981def",
+    "prefix": "msvc8.0-d6c4aa208c8345c78a9f68ba6ef911ee94c6a6e1/bin/",
+    "files": {
+        "cl.exe": "3cbf4306526c06a07d09fd4785ac290c7ac7b52355944e7b377e08f5d8e7ece7",
+        "c1.dll": "be84b91b22bf67435525904e63db3c33afa6ea64dae9200e73db23439804254a",
+        "c1xx.dll": "e4890058a1f928538b27246af1f5c6f95551fc0ad380639b1bf1d6b143b80d09",
+        "c2.dll": "ebca6ef587d6e028b50cc79fe71dd6155230ecb51014295399e8f00e8865ff86",
+        "mspdb80.dll": "8db1e85503bff64aa0197c06933aa41eaa2f6dee2e223b6160d3eb463ec0f6dd",
+        "1033/clui.dll": "bb1ddaa62048ddbef54a25d43695124c87ce559cf52cff0ffed17bf77741bec8"
+    }
+}

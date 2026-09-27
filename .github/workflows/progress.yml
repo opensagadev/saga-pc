@@ -1,0 +1,159 @@
+name: Reported matching progress
+
+# The write token only reads JSON through GitHub's API. Never check out or run PR code here.
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, edited, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: matching-progress-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  report:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Compare committed reports and update the PR comment
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          retries: 3
+          script: |
+            const marker = "<!-- saga-pc-matching-progress -->";
+            const {owner, repo} = context.repo;
+            const issue_number = context.issue.number;
+            const pullArgs = {owner, repo, pull_number: issue_number};
+            const {data: pr} = await github.rest.pulls.get(pullArgs);
+            const fields = ["text_bytes", "mapped_code_bytes", "matched_code_bytes",
+                            "mapped_functions", "matched_functions"];
+            const integer = (value) => Number.isSafeInteger(value) && value >= 0;
+            const percentage = (value, bytes, total) =>
+              Number.isFinite(value) && value >= 0 && value <= 100 &&
+              Math.abs(value - 100 * bytes / total) <= 0.000001;
+
+            function validate(report) {
+              const p = report?.progress;
+              if (report?.format_version !== 2 ||
+                  typeof report.target_sha256 !== "string" ||
+                  !/^[0-9a-f]{64}$/i.test(report.target_sha256) ||
+                  !p || !fields.every((field) => integer(p[field])) ||
+                  p.text_bytes <= 0 || p.text_bytes > 0x100000000 ||
+                  p.matched_code_bytes > p.mapped_code_bytes || p.mapped_code_bytes > p.text_bytes ||
+                  p.matched_functions > p.mapped_functions ||
+                  !percentage(p.matching_percent, p.matched_code_bytes, p.text_bytes)) {
+                throw new Error("Invalid matching summary");
+              }
+              let mapping = null;
+              if (["image_bytes", "mapped_bytes", "mapping_percent"].some((field) => field in p)) {
+                if (!integer(p.image_bytes) || p.image_bytes <= 0 || p.image_bytes > 0x100000000 ||
+                    !integer(p.mapped_bytes) || p.mapped_bytes > p.image_bytes ||
+                    !percentage(p.mapping_percent, p.mapped_bytes, p.image_bytes)) {
+                  throw new Error("Invalid mapping summary");
+                }
+                mapping = {image_bytes: p.image_bytes, mapped_bytes: p.mapped_bytes,
+                           mapping_percent: p.mapping_percent};
+              }
+              // Only validated hashes and numeric fields can reach Markdown.
+              return {target: report.target_sha256.toLowerCase(),
+                      ...Object.fromEntries(fields.map((field) => [field, p[field]])),
+                      matching_percent: p.matching_percent, mapping};
+            }
+
+            async function readReport(repository, ref) {
+              if (!repository || !/^[0-9a-f]{40}$/i.test(ref)) {
+                return {reason: "repository or revision unavailable"};
+              }
+              const location = {owner: repository.owner.login, repo: repository.name};
+              let file;
+              try {
+                ({data: file} = await github.rest.repos.getContent({
+                  ...location, path: "matching.json", ref,
+                }));
+                if (file.type !== "file" || !integer(file.size) || file.size > 16 * 1024 * 1024) {
+                  return {reason: "matching.json is not a supported report file (maximum 16 MiB)"};
+                }
+                // The contents endpoint omits inline content for files larger than 1 MiB.
+                if (file.encoding === "none") {
+                  ({data: file} = await github.rest.git.getBlob({...location, file_sha: file.sha}));
+                }
+              } catch (error) {
+                if ([403, 404, 422].includes(error.status)) {
+                  return {reason: "matching.json unavailable at this revision"};
+                }
+                throw error;
+              }
+              try {
+                if (file.encoding !== "base64" || typeof file.content !== "string") {
+                  throw new Error("Unsupported content encoding");
+                }
+                return {value: validate(JSON.parse(Buffer.from(file.content, "base64").toString("utf8")))};
+              } catch {
+                return {reason: "matching.json has invalid JSON or unsupported/inconsistent summary fields"};
+              }
+            }
+
+            const [base, head] = await Promise.all([
+              readReport(pr.base.repo, pr.base.sha), readReport(pr.head.repo, pr.head.sha),
+            ]);
+            const a = base.value;
+            const b = head.value;
+            const comparable = a && b && a.target === b.target && a.text_bytes === b.text_bytes &&
+              (!a.mapping || !b.mapping || a.mapping.image_bytes === b.mapping.image_bytes);
+            const number = (value, percent = false) => value == null ? "Unavailable" :
+              percent ? `${value.toFixed(6)}%` : value.toLocaleString("en-US");
+            const revision = (sha) => /^[0-9a-f]{40}$/i.test(sha) ? sha.slice(0, 7) : "unavailable";
+            const lines = [marker, "## Reported matching progress", "",
+              "Committed local results from `matching.json`. CI has no retail executable and does not verify these matches.", "",
+              `| Metric | Base (${revision(pr.base.sha)}) | PR (${revision(pr.head.sha)}) | Change |`,
+              "| --- | ---: | ---: | ---: |"];
+            function metric(label, oldValue, newValue, percent = false) {
+              let change = "—";
+              if (comparable && oldValue != null && newValue != null) {
+                const difference = newValue - oldValue;
+                change = `${difference > 0 ? "+" : ""}${percent ? difference.toFixed(6) : difference.toLocaleString("en-US")}${percent ? " pp" : ""}`;
+              }
+              lines.push(`| ${label} | ${number(oldValue, percent)} | ${number(newValue, percent)} | ${change} |`);
+            }
+            metric("Exact code matching", a?.matching_percent, b?.matching_percent, true);
+            metric("Known-size mapping", a?.mapping?.mapping_percent, b?.mapping?.mapping_percent, true);
+            metric("Exact code bytes", a?.matched_code_bytes, b?.matched_code_bytes);
+            metric("Known mapped bytes", a?.mapping?.mapped_bytes, b?.mapping?.mapped_bytes);
+            metric("Mapped code bytes", a?.mapped_code_bytes, b?.mapped_code_bytes);
+            metric("Exact functions", a?.matched_functions, b?.matched_functions);
+            metric("Mapped functions", a?.mapped_functions, b?.mapped_functions);
+            metric("Original .text bytes", a?.text_bytes, b?.text_bytes);
+            metric("Original image bytes", a?.mapping?.image_bytes, b?.mapping?.image_bytes);
+            lines.push("");
+            if (!a) lines.push(`Base report: ${base.reason}. No baseline delta is available.`);
+            if (!b) lines.push(`PR report: ${head.reason}. Run local matching and commit the report.`);
+            if (a && b && !comparable) {
+              lines.push("Reports are not comparable: the target executable or coverage denominator changed. Deltas are omitted.");
+            }
+            if ((a && !a.mapping) || (b && !b.mapping)) {
+              lines.push("An older report has no mapping summary; those values and deltas are unavailable.");
+            }
+            lines.push("", 'Refresh the report with `make -j"$(nproc)" match` using your local retail executable after relevant source or map changes.');
+            const body = lines.join("\n");
+            await core.summary.addRaw(body).write();
+
+            // Avoid an older run replacing a report for a newer PR revision.
+            const {data: latest} = await github.rest.pulls.get(pullArgs);
+            if (latest.head.sha !== pr.head.sha || latest.base.sha !== pr.base.sha || latest.state !== "open") {
+              core.info("PR changed while preparing the report; skipping stale comment.");
+              return;
+            }
+            const comments = await github.paginate(github.rest.issues.listComments,
+              {owner, repo, issue_number, per_page: 100});
+            const previous = comments.find((comment) =>
+              comment.user?.login === "github-actions[bot]" && comment.body?.startsWith(marker));
+            if (previous) {
+              if (previous.body !== body) {
+                await github.rest.issues.updateComment({owner, repo, comment_id: previous.id, body});
+              }
+            } else {
+              await github.rest.issues.createComment({owner, repo, issue_number, body});
+            }

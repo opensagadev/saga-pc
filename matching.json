@@ -1,0 +1,476 @@
+{
+  "format_version": 2,
+  "target_sha256": "239f6c09b73e5764ced7469f158b621ff34c9984b5b0a850fe77248add259113",
+  "compiler": "14.00.50727.42",
+  "objdiff_version": "3.8.1",
+  "inputs": {
+    "Makefile": "492ccb2729190d0916fe5d414c2e2c18f64622a13d4ca3310a2d7663907a6cbf",
+    "src/saga.h": "af02389c9eacf71f5b925caa1503da11303283b45e8884feb35b42d87326bf5e",
+    "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
+    "config/symbols.csv": "142676f9434f220e600f631680e370ce16b61649036b1007a250c1573e537fbe",
+    "config/symbols.md": "0b574044edd87e934a0c0da4be0c5d6fa5ec6ee26df54d335deca49aa3b35bbc",
+    "config/toolchain.json": "c4d0281ae4406524ae67c0f1779ad93ff75d1dccb1a59f7853a326b60ca14972",
+    "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
+    "tools/binary.py": "49bd4c255f7462a113c0576e6faf1560950a88dd57880e475c04573aa6b242f3",
+    "tools/cc.py": "538d133c99b355c3fb1ca0c2e5e67aa017423b8e6620eee6b379e7ad193cb275",
+    "tools/check.py": "17a3f3ead5e064c85c9595bf83f2173ce3fc39ead8d1967e91a15988ba81164c",
+    "tools/lib.py": "fc8069872f5fb5d34e457eaa7b397758faa7324dc45acddddfa6ec7704ed2335",
+    "tools/match.py": "a8b401bec5a29540f1242e3f475e6d96ebf9c68f8094809750f86b3abb906a42",
+    "tools/setup.py": "dec9aeec066e044ce6159ddc3637f499f9a0e3c6c57c14ffb9bc20c0d9f19905",
+    "tools/test_binary.py": "0fdfb593d144b6650b96355984a668051d163c4543af217e154c9c81b643b8db",
+    "tools/test_check.py": "46b153251fae60c3dd6e96b12eea52f5c7e4cd82a7a0dd3701ce8149669c1fd6",
+    "tools/test_lib.py": "c9c1aa1ff7e2cdef0b5a2f37cabd68960757849e45f45be3354b29ed53e4e46e",
+    "tools/test_match.py": "4a38c5ce1d1985ed27663de926cd358367a4bec95bc02fce542dbc918f1cfaa0",
+    "tools/test_setup.py": "d325a19d7a53389f2c40b5ed8f31b56fc17384e43208357efdc0763692e19a0a",
+    "src/nurand.cpp": "579272756be25183449ceb52407eba2bfaff5d120eef5ef27bacbd4ab9a008b2",
+    "src/qrand.cpp": "661f57d94774798eee86363a8f3c6aff3f743cfaea17d223b78e1bb6392ae4e6",
+    "src/nuang.c": "380eedf4c194e3af5feed9ca200d6257f21c9fcbf96f98381d239a1c1cdf8a77"
+  },
+  "objects": {
+    "build/obj/nuang.obj": "2f44d8194531951e9524f1a1c3a0c4d39b4bda20d5cc19c3d789d4b01eaa6300",
+    "build/obj/nurand.obj": "9d7c516a537c699885e61ce910d669866bf0e34c7b107dbe92b793e01482eb42",
+    "build/obj/qrand.obj": "ae5faa9338d5d68f515ef0a1e3aa540b854f610b460c85cfb829aa3df034f4a6"
+  },
+  "functions": [
+    {
+      "name": "?qrand@@YAHXZ",
+      "symbol": "?qrand@@YAHXZ",
+      "address": "0x0054fa60",
+      "units": [
+        "src/qrand.cpp"
+      ],
+      "target_size": 25,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/qrand.cpp",
+          "base_size": 25,
+          "exact_match": true,
+          "target_sha256": "9a225fbc60740f1d4d51c423aa265efc1b3295441af2f6f1c76f03b119c28cb2",
+          "base_sha256": "9a225fbc60740f1d4d51c423aa265efc1b3295441af2f6f1c76f03b119c28cb2",
+          "relocation_count": 2,
+          "comparison_unit": "0054fa60-5e2e9745a3e1",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRandSeed",
+      "symbol": "_NuRandSeed",
+      "address": "0x005b9d70",
+      "units": [
+        "src/nurand.cpp"
+      ],
+      "target_size": 10,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nurand.cpp",
+          "base_size": 10,
+          "exact_match": true,
+          "target_sha256": "ce0364047067755301a7e0b9b7fbe917e9313bc4fbc1391120138a1db8f654f9",
+          "base_sha256": "ce0364047067755301a7e0b9b7fbe917e9313bc4fbc1391120138a1db8f654f9",
+          "relocation_count": 1,
+          "comparison_unit": "005b9d70-f03451e650e5",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRandGetSeed",
+      "symbol": "_NuRandGetSeed",
+      "address": "0x005b9d80",
+      "units": [
+        "src/nurand.cpp"
+      ],
+      "target_size": 6,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nurand.cpp",
+          "base_size": 6,
+          "exact_match": true,
+          "target_sha256": "e55dc25b7198a310555e9a01209c3eff9a83f0d607a5b262c7ae30e3f7efa398",
+          "base_sha256": "e55dc25b7198a310555e9a01209c3eff9a83f0d607a5b262c7ae30e3f7efa398",
+          "relocation_count": 1,
+          "comparison_unit": "005b9d80-e3b583dabe37",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRandFloatSeeded",
+      "symbol": "_NuRandFloatSeeded",
+      "address": "0x005b9d90",
+      "units": [
+        "src/nurand.cpp"
+      ],
+      "target_size": 52,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nurand.cpp",
+          "base_size": 52,
+          "exact_match": true,
+          "target_sha256": "dde8de180a66d6d983c9f0b60cf60f1d16e94892e0590f41c78e6829703962e5",
+          "base_sha256": "dde8de180a66d6d983c9f0b60cf60f1d16e94892e0590f41c78e6829703962e5",
+          "relocation_count": 1,
+          "comparison_unit": "005b9d90-c7b98c0b1827",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRandFloat",
+      "symbol": "_NuRandFloat",
+      "address": "0x005b9dd0",
+      "units": [
+        "src/nurand.cpp"
+      ],
+      "target_size": 52,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nurand.cpp",
+          "base_size": 52,
+          "exact_match": true,
+          "target_sha256": "9eb22ffb217cff19ff2d0fa5ba9ce5116ce62cdf714fc724f609a56a30e5ab52",
+          "base_sha256": "9eb22ffb217cff19ff2d0fa5ba9ce5116ce62cdf714fc724f609a56a30e5ab52",
+          "relocation_count": 3,
+          "comparison_unit": "005b9dd0-a2a844024278",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRandIntSeeded",
+      "symbol": "_NuRandIntSeeded",
+      "address": "0x005b9e10",
+      "units": [
+        "src/nurand.cpp"
+      ],
+      "target_size": 20,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nurand.cpp",
+          "base_size": 20,
+          "exact_match": true,
+          "target_sha256": "40c74a22cf8acc63f01464b72198e0fda88aedb95cdccd932ef17c3dbe3e476e",
+          "base_sha256": "40c74a22cf8acc63f01464b72198e0fda88aedb95cdccd932ef17c3dbe3e476e",
+          "relocation_count": 0,
+          "comparison_unit": "005b9e10-d9ac589e56ff",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRandInt",
+      "symbol": "_NuRandInt",
+      "address": "0x005b9e30",
+      "units": [
+        "src/nurand.cpp"
+      ],
+      "target_size": 22,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nurand.cpp",
+          "base_size": 22,
+          "exact_match": true,
+          "target_sha256": "aecba62753a429ae5b3447d2d0c66cc0d013f85b4e343000d761fe15fef4faf7",
+          "base_sha256": "aecba62753a429ae5b3447d2d0c66cc0d013f85b4e343000d761fe15fef4faf7",
+          "relocation_count": 2,
+          "comparison_unit": "005b9e30-1d1a6107064c",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRandSetSeed",
+      "symbol": "_NuRandSetSeed",
+      "address": "0x005b9e70",
+      "units": [
+        "src/nurand.cpp"
+      ],
+      "target_size": 27,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nurand.cpp",
+          "base_size": 27,
+          "exact_match": true,
+          "target_sha256": "4d93caf54d98577c7d19e0788f1e8b5bce23e11dce4ea5333b10344d84fda9f5",
+          "base_sha256": "4d93caf54d98577c7d19e0788f1e8b5bce23e11dce4ea5333b10344d84fda9f5",
+          "relocation_count": 1,
+          "comparison_unit": "005b9e70-2313fe85f29b",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRand",
+      "symbol": "_NuRand",
+      "address": "0x005b9e90",
+      "units": [
+        "src/nurand.cpp"
+      ],
+      "target_size": 90,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nurand.cpp",
+          "base_size": 90,
+          "exact_match": true,
+          "target_sha256": "9127240753341288063c8cd1f09d233011efc9f8e4740697ca187d9916c24b46",
+          "base_sha256": "9127240753341288063c8cd1f09d233011efc9f8e4740697ca187d9916c24b46",
+          "relocation_count": 1,
+          "comparison_unit": "005b9e90-d8b3d547e6ee",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuFloatRand",
+      "symbol": "_NuFloatRand",
+      "address": "0x005b9ef0",
+      "units": [
+        "src/nurand.cpp"
+      ],
+      "target_size": 37,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nurand.cpp",
+          "base_size": 37,
+          "exact_match": true,
+          "target_sha256": "9a8e43b147468c546839a9ff88a0e2abf7064bfda89a2ebafb6ae7be702cf40f",
+          "base_sha256": "9a8e43b147468c546839a9ff88a0e2abf7064bfda89a2ebafb6ae7be702cf40f",
+          "relocation_count": 2,
+          "comparison_unit": "005b9ef0-7a15825088e2",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuAngAdd",
+      "symbol": "_NuAngAdd",
+      "address": "0x005be590",
+      "units": [
+        "src/nuang.c"
+      ],
+      "target_size": 28,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nuang.c",
+          "base_size": 28,
+          "exact_match": true,
+          "target_sha256": "fef9106cb0b497de437d388a373086d1a94334cdadf88e32df5f29f9ec357e09",
+          "base_sha256": "fef9106cb0b497de437d388a373086d1a94334cdadf88e32df5f29f9ec357e09",
+          "relocation_count": 0,
+          "comparison_unit": "005be590-9990b1609064",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuAngSub",
+      "symbol": "_NuAngSub",
+      "address": "0x005be5b0",
+      "units": [
+        "src/nuang.c"
+      ],
+      "target_size": 26,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nuang.c",
+          "base_size": 26,
+          "exact_match": true,
+          "target_sha256": "29d21fecdc403ae4dcb0f42ed834657419d2a4c0b0262206321dfc60b850fae5",
+          "base_sha256": "29d21fecdc403ae4dcb0f42ed834657419d2a4c0b0262206321dfc60b850fae5",
+          "relocation_count": 0,
+          "comparison_unit": "005be5b0-6fb54e81d4de",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuAng2AltSol",
+      "symbol": "_NuAng2AltSol",
+      "address": "0x005be600",
+      "units": [
+        "src/nuang.c"
+      ],
+      "target_size": 47,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nuang.c",
+          "base_size": 47,
+          "exact_match": true,
+          "target_sha256": "4739db103b73565e755b55ce7bec1adb5904ed4e0665fadbb4f5718930a06873",
+          "base_sha256": "4739db103b73565e755b55ce7bec1adb5904ed4e0665fadbb4f5718930a06873",
+          "relocation_count": 0,
+          "comparison_unit": "005be600-d7bf2fdaba5c",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    }
+  ],
+  "data": [
+    {
+      "name": "__real@3ff0000000000000",
+      "symbol": "__real@3ff0000000000000",
+      "address": "0x00751698",
+      "units": [
+        "src/nurand.cpp"
+      ],
+      "target_size": 8,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nurand.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712",
+          "base_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "__real@3e00000000000000",
+      "symbol": "__real@3e00000000000000",
+      "address": "0x00764000",
+      "units": [
+        "src/nurand.cpp"
+      ],
+      "target_size": 8,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nurand.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "aeebc4b5e0c40cd355fef6a7b42d8e9ea4f0d3195f60c5d384df43cb755b1d57",
+          "base_sha256": "aeebc4b5e0c40cd355fef6a7b42d8e9ea4f0d3195f60c5d384df43cb755b1d57"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "?qseed@@3HA",
+      "symbol": "?qseed@@3HA",
+      "address": "0x0080253c",
+      "units": [
+        "src/qrand.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/qrand.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "71626704b817e11f6bf2b8b06e3cadff7f41a6b6eb741b4d84f1fff4ebc120c6",
+          "base_sha256": "71626704b817e11f6bf2b8b06e3cadff7f41a6b6eb741b4d84f1fff4ebc120c6"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "global_rand",
+      "symbol": "_global_rand",
+      "address": "0x008066c0",
+      "units": [
+        "src/nurand.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nurand.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450",
+          "base_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "ang",
+      "symbol": "_ang",
+      "address": "0x008066c8",
+      "units": [],
+      "target_size": 1026,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "fseed",
+      "symbol": "_fseed",
+      "address": "0x0095e5f4",
+      "units": [
+        "src/nurand.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nurand.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    }
+  ],
+  "progress": {
+    "text_bytes": 3471246,
+    "mapped_code_bytes": 442,
+    "matched_code_bytes": 442,
+    "matching_percent": 0.012733179959011836,
+    "mapped_functions": 13,
+    "matched_functions": 13,
+    "image_bytes": 40067072,
+    "mapped_bytes": 1496,
+    "mapping_percent": 0.003733739265998773
+  }
+}

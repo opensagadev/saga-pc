@@ -1,0 +1,17 @@
+build/
+res/*
+!res/.gitignore
+!res/README.md
+__pycache__/
+*.pyc
+*.obj
+*.o
+*.exe
+*.dll
+*.pdb
+*.lib
+*.zip
+*.7z
+*.tar.gz
+*.tar.xz
+.DS_Store

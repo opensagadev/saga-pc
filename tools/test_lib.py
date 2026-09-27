@@ -1,0 +1,229 @@
+"""Protect compact symbol maps, conservative lookup, and coverage accounting."""
+
+import csv
+import hashlib
+from pathlib import Path
+import struct
+import tempfile
+from types import SimpleNamespace
+import unittest
+from unittest.mock import patch
+
+from tools import lib
+from tools.lib import bindings_for, covered_bytes, definitions_for, load_symbols
+from test_binary import coff_bytes, pe_bytes
+
+
+FIELDS = ("address", "symbol", "size", "ctype")
+
+
+def entry(address="0x00401000", symbol="_function", size="16", ctype=""):
+    return dict(address=address, symbol=symbol, size=size, ctype=ctype)
+
+
+def coff(*symbols):
+    return SimpleNamespace(defined_symbols=lambda: [
+        {"name": name, "section": section} for name, section in symbols if section > 0])
+
+
+class SymbolMapTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.path = Path(temporary.name) / "symbols.csv"
+
+    def write(self, rows):
+        with self.path.open("w", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=FIELDS)
+            writer.writeheader()
+            writer.writerows(rows)
+
+    def test_aligned_csv_preserves_mangling_and_quoted_signature_commas(self):
+        self.path.write_text(
+            "# Original map\n\n  // Unknowns may remain in the inventory\n"
+            "address       , symbol                , size , ctype\n"
+            '  401000      , ?function@@YAHHH@Z    , 10   , "i32 __cdecl (i32, i32)"\n')
+        self.assertEqual(load_symbols(self.path), [
+            {"address": 0x401000, "symbol": "?function@@YAHHH@Z", "size": 10,
+             "ctype": "i32 __cdecl (i32, i32)"}])
+
+    def test_unknown_size_and_type_allow_placeholder_before_implementation(self):
+        self.write([entry(symbol="sub_00401000", size="")])
+        actual = load_symbols(self.path)[0]
+        self.assertIsNone(actual["size"])
+        self.assertEqual(actual["symbol"], "sub_00401000")
+        self.assertEqual(actual["ctype"], "")
+
+    def test_decimal_and_hexadecimal_sizes_and_final_address_are_accepted(self):
+        for address, size, expected_address, expected_size in (
+                ("401000", "10", 0x401000, 10),
+                ("0x00401000", "0x10", 0x401000, 16),
+                ("FFFFFFFF", "1", 0xffffffff, 1)):
+            with self.subTest(address=address, size=size):
+                self.write([entry(address=address, size=size)])
+                row = load_symbols(self.path)[0]
+                self.assertEqual((row["address"], row["size"]),
+                                 (expected_address, expected_size))
+
+    def test_aliases_and_overlapping_extents_are_allowed(self):
+        self.write([
+            entry(size="32"),
+            entry(symbol="_alias", size="32"),
+            entry(address="0x00401008", symbol="_interior", size="8"),
+        ])
+        records = load_symbols(self.path)
+        self.assertEqual(len(records), 3)
+        self.assertEqual(covered_bytes((r["address"], r["size"]) for r in records), 32)
+
+    def test_repeated_names_at_different_addresses_remain_in_inventory(self):
+        self.write([entry(), entry(address="0x00402000")])
+        records = load_symbols(self.path)
+        self.assertEqual(len(records), 2)
+        self.assertEqual(bindings_for(records), {})
+
+    def test_duplicate_identity_rejected_even_when_size_or_type_disagree(self):
+        for second in (entry(), entry(size="32"), entry(size=""), entry(ctype="i32")):
+            with self.subTest(second=second):
+                self.write([entry(), second])
+                with self.assertRaisesRegex(ValueError, "duplicate symbol entry"):
+                    load_symbols(self.path)
+
+    def test_unsorted_addresses_are_rejected(self):
+        self.write([entry(address="0x00402000"), entry(address="0x00401000")])
+        with self.assertRaisesRegex(ValueError, "sorted by original address"):
+            load_symbols(self.path)
+
+    def test_invalid_extents_cannot_enter_the_map(self):
+        for address, size in (("0", "1"), ("-1", "1"), ("100000000", "1"),
+                              ("401000", "0"), ("401000", "-1"),
+                              ("ffffffff", "2"), ("not-an-address", "1"),
+                              ("401000", "unknown")):
+            with self.subTest(address=address, size=size):
+                self.write([entry(address=address, size=size)])
+                with self.assertRaisesRegex(ValueError, "invalid"):
+                    load_symbols(self.path)
+
+    def test_linker_name_is_required_after_trimming(self):
+        for symbol in ("", "   "):
+            with self.subTest(symbol=symbol):
+                self.write([entry(symbol=symbol)])
+                with self.assertRaisesRegex(ValueError, "linker name is required"):
+                    load_symbols(self.path)
+
+    def test_only_four_compact_columns_are_accepted(self):
+        headers = [tuple(field for field in FIELDS if field != missing) for missing in FIELDS]
+        headers += [FIELDS + (obsolete,) for obsolete in ("name", "type", "unit", "notes")]
+        headers += [("symbol", "address", "size", "ctype"), FIELDS + ("size",)]
+        for fields in headers:
+            with self.subTest(fields=fields):
+                self.path.write_text(",".join(fields) + "\n")
+                with self.assertRaisesRegex(ValueError, "required columns"):
+                    load_symbols(self.path)
+
+    def test_malformed_rows_and_empty_inventory_are_rejected(self):
+        for tail, message in (("", "empty symbol map"),
+                              ("401000,_data\n", "incorrect column count"),
+                              ("401000,_data,4,i32,extra\n", "incorrect column count"),
+                              ("401000,_f,4,i32 (i32, i32)\n", "incorrect column count")):
+            with self.subTest(tail=tail):
+                self.path.write_text(",".join(FIELDS) + "\n" + tail)
+                with self.assertRaisesRegex(ValueError, message):
+                    load_symbols(self.path)
+
+
+class SymbolLookupTests(unittest.TestCase):
+    def test_conflicting_original_addresses_stay_unresolved(self):
+        records = [
+            {"symbol": "_state", "address": 0x801000},
+            {"symbol": "_state", "address": 0x802000},
+            {"symbol": "_external", "address": 0x803000},
+        ]
+        self.assertEqual(bindings_for(records), {"_external": 0x803000})
+
+    def test_duplicate_references_to_one_address_are_not_ambiguous(self):
+        records = [
+            {"symbol": "_shared", "address": 0x801000},
+            {"symbol": "_shared", "address": 0x801000},
+            {"symbol": "_alias", "address": 0x801000},
+        ]
+        self.assertEqual(bindings_for(records), {"_shared": 0x801000, "_alias": 0x801000})
+        self.assertEqual(bindings_for([]), {})
+
+    def test_definitions_found_across_objects_without_choosing_one(self):
+        first, second = coff(("_state", 1)), coff(("_state", 2))
+        objects = {"src/b.cpp": second, "src/a.cpp": first}
+        self.assertEqual(definitions_for(objects, "_state"),
+                         [("src/a.cpp", first), ("src/b.cpp", second)])
+
+    def test_lookup_requires_exact_names_and_defined_sections(self):
+        obj = coff(("_state", 0), ("_state", -1), ("_state", 1),
+                   ("?state@@3HA", 2), ("_other", 0))
+        objects = {"src/a.cpp": obj, "src/undefined.cpp": coff(("_state", 0))}
+        self.assertEqual(definitions_for(objects, "_state"), [("src/a.cpp", obj)])
+        self.assertEqual(definitions_for(objects, "?state@@3HA"), [("src/a.cpp", obj)])
+        self.assertEqual(definitions_for(objects, "state"), [])
+        self.assertEqual(definitions_for(objects, "_other"), [])
+        self.assertEqual(definitions_for({}, "_state"), [])
+
+    def test_duplicate_definitions_in_one_object_are_an_error(self):
+        for sections in ((1, 1), (1, 2)):
+            with self.subTest(sections=sections):
+                obj = coff(*(("_state", section) for section in sections))
+                with self.assertRaisesRegex(ValueError, "Ambiguous linker name"):
+                    definitions_for({"src/a.cpp": obj}, "_state")
+
+    def test_coverage_counts_union_not_sum_or_span(self):
+        # Aliases, nesting, partial overlap, adjacency, and a separate range.
+        ranges = [(200, 5), (115, 15), (100, 20), (104, 4), (130, 10), (100, 20)]
+        self.assertEqual(covered_bytes(ranges), 45)
+        self.assertEqual(covered_bytes([]), 0)
+
+
+class ProjectInputTests(unittest.TestCase):
+    def test_mapping_covers_code_and_data_without_requiring_implementations(self):
+        target = {"image_base": "0x400000", "image_size": "0x10000",
+                  "text_va": "0x401000", "text_size": "0x1000"}
+        rows = [{"symbol": "_code", "address": 0x401000, "size": 16},
+                {"symbol": "_alias", "address": 0x401008, "size": 16},
+                {"symbol": "_unimplemented_data", "address": 0x403000, "size": 8},
+                {"symbol": "_unknown", "address": 0x404000, "size": None}]
+        coverage = lib.mapping_progress(rows, target)
+        self.assertEqual(coverage["mapped_bytes"], 32)
+        self.assertEqual(coverage["image_bytes"], 65536)
+        self.assertEqual(coverage["mapping_percent"], 100 * 32 / 65536)
+        self.assertEqual(lib.mapping_progress([], target)["mapping_percent"], 0)
+        with self.assertRaisesRegex(ValueError, "outside the original image"):
+            lib.mapping_progress([dict(rows[0], address=0x500000)], target)
+
+    def test_retail_hash_and_pinned_image_boundaries_are_verified(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(lib, "ROOT", Path(temp)):
+            data = bytearray(pe_bytes(b"\x31\xc0\xc3"))
+            struct.pack_into("<I", data, 0x98 + 56, 0x2000)
+            path = Path(temp) / "retail.exe"
+            path.write_bytes(data)
+            target = {"exe": "retail.exe", "sha256": hashlib.sha256(data).hexdigest(),
+                      "image_base": "0x400000", "image_size": "0x2000",
+                      "text_va": "0x401000", "text_size": "3"}
+            self.assertEqual(lib.retail(target).read_va(0x401000, 3), b"\x31\xc0\xc3")
+            for field, value in (("sha256", "0" * 64), ("image_size", "0x3000"),
+                                 ("image_base", "0x500000"), ("text_size", "4")):
+                with self.subTest(field=field), self.assertRaises(ValueError):
+                    lib.retail(dict(target, **{field: value}))
+
+    def test_current_sources_require_objects_and_stale_objects_are_ignored(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(lib, "ROOT", Path(temp)):
+            root = Path(temp)
+            (root / "src").mkdir()
+            (root / "src/current.cpp").write_text("// synthetic fixture\n")
+            obj = root / "build/obj/current.obj"
+            obj.parent.mkdir(parents=True)
+            obj.write_bytes(coff_bytes(b"\xc3"))
+            (obj.parent / "stale.obj").write_bytes(b"not even a valid object")
+            self.assertEqual(set(lib.compiled_objects()), {"src/current.cpp"})
+            obj.unlink()
+            with self.assertRaisesRegex(ValueError, "Missing build/obj/current.obj"):
+                lib.compiled_objects()
+
+
+if __name__ == "__main__":
+    unittest.main()

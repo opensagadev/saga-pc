@@ -1,0 +1,4 @@
+# Only instructions and this ignore file belong in Git.
+*
+!.gitignore
+!README.md

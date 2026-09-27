@@ -1,0 +1,41 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    name: MSVC 2005 x86
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - name: Install build dependencies
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ca-certificates make wine wine64 wine32:i386
+      - name: Cache pinned compiler and objdiff
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: |
+            build/tools/msvc8
+            build/tools/bin
+          key: matching-tools-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('config/toolchain.json', 'config/tools.json') }}
+      - name: Download or verify pinned tools
+        run: python3 tools/setup.py
+      - name: Check project and tooling
+        run: make check
+      - name: Compile and check symbol coverage
+        run: make -j"$(nproc)" check-objects
+      # Matching runs locally against the user's copy of the original executable.
