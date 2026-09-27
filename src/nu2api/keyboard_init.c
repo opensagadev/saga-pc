@@ -57,7 +57,8 @@ typedef struct NuKeyboardInitLayout_PC {
     u8 unknown_67e1;
     u8 unknown_67e2_to_67e3[2];
     i32 unknown_67e4;
-    u8 unknown_67e8_to_67ef[8];
+    i32 unknown_67e8;
+    i32 unknown_67ec;
     NuKeyboardInitKeyRecord_PC key_records[32];
     u8 *keyboard_state;
 } NuKeyboardInitLayout_PC;
@@ -92,6 +93,8 @@ STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_6604) == 0x6604);
 STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_660c_triplets) == 0x660c);
 STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_671a) == 0x671a);
 STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_67e4) == 0x67e4);
+STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_67e8) == 0x67e8);
+STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_67ec) == 0x67ec);
 STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, key_records) == 0x67f0);
 STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, keyboard_state) == 0x68b0);
 STATIC_ASSERT(sizeof(NuKeyboardInitLayout_PC) == 0x68b4);
@@ -175,6 +178,30 @@ void __fastcall NuKeyboardResetInputRecords_candidate(NuKeyboardState_PC *state)
         layout->key_records[i].unknown_04 = 0;
     }
     layout->unknown_67e4 = 0;
+}
+
+void __fastcall NuKeyboardSetStateValue6354_candidate(NuKeyboardState_PC *state, i32 unused_edx, i32 value) {
+    NuKeyboardInitLayout_PC *layout = (NuKeyboardInitLayout_PC *)state;
+
+    layout->unknown_6354 = value;
+}
+
+i32 __fastcall NuKeyboardGetInputRecordCount_candidate(NuKeyboardState_PC *state, i32 unused_edx) {
+    NuKeyboardInitLayout_PC *layout = (NuKeyboardInitLayout_PC *)state;
+
+    return layout->unknown_67e4;
+}
+
+i32 __fastcall NuKeyboardGetStateValue67e8_candidate(NuKeyboardState_PC *state, i32 unused_edx) {
+    NuKeyboardInitLayout_PC *layout = (NuKeyboardInitLayout_PC *)state;
+
+    return layout->unknown_67e8;
+}
+
+i32 __fastcall NuKeyboardGetStateValue67ec_candidate(NuKeyboardState_PC *state, i32 unused_edx) {
+    NuKeyboardInitLayout_PC *layout = (NuKeyboardInitLayout_PC *)state;
+
+    return layout->unknown_67ec;
 }
 
 extern const f32 PCKeyboardDefaultValue_candidate;

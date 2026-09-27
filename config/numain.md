@@ -26,8 +26,9 @@ hardware dispatcher and the `LoadPermData` parser path remain incomplete.
 `NuMain` opens the six episode archives, then stops before indexing level/area
 tables. DAT member dispatch now opens, reads, seeks and closes stored archive
 members through PC-style handles. The four-record `NuFParOpen` allocator and BOM
-setup are implemented; `NuFParCreate`, line parsing and the level/area record
-loaders are the remaining table-load closure. Its startup includes a temporary guard before `NuFrameBegin`
+setup, `NuFParCreate`, parser position save/restore, and the PC
+`Levels_ConfigureList` record parser are implemented structurally. The area
+record loader and remaining level/config callback closure are still open. Its startup includes a temporary guard before `NuFrameBegin`
 because the PC keyboard input owner is not yet initialized by our partial
 `InitOnce`. Its later restart and frame-loop phases contain explicit
 `STUBBED_NAMED` markers, so this is a runnable scaffold, not a complete or
@@ -38,10 +39,13 @@ PC sites. Both functions match their complete original extents. The PC hub
 model-list routine, AI message pool, font state leaves, file-position
 dispatch, DAT-member open helpers, animation progress family and music methods are
 also reconstructed, though some adjacent
-functions remain structural. `Levels_ConfigureList` and `Areas_ConfigureList`
-are explicit NULL-return scaffolds: their NuFPar open path and record fields
-must be recovered before the level/area guard can be removed. The source EXE
+functions remain structural. `Levels_ConfigureList` parses PC level records
+with typed fields and verified defaults, but is not a full-byte match;
+`Areas_ConfigureList` remains an explicit NULL-return scaffold. The source EXE
 does not pretend to load tables it has not built.
+The PC before/after level keyword dispatch tables and 47 callbacks are mapped;
+implementing those callbacks and the area parser is the next coherent path
+toward lifting the level/area guard.
 
 The frame chain now includes `NuFrameBegin`, its portal, water-reset, mouse and
 occlusion callees, and a structural `NuFrameEnd` implementation with explicit

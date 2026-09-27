@@ -152,6 +152,59 @@ i32 __cdecl NuDatFileRead(NUFILE file, void *destination, i32 size) {
     return 0;
 }
 
+i32 __cdecl NuDatFileLoadBuffer(NUDATHDR *header, char *filepath, void *destination, i32 capacity) {
+    NUFILE file;
+    PC_NUDATFILEINFO *info;
+    i32 size;
+
+    nufile_lasterror = 0;
+    file = NuDatFileOpen(header, filepath, 0);
+    if (file == 0) {
+        return 0;
+    }
+
+    if (header->mode == 3) {
+        while (NuFileStatus(file) != 0) {
+        }
+    }
+
+    info = &pc_dat_file_infos[file - 0x800];
+    if (info->compression_mode != 0) {
+        size = info->decompressed_length;
+    } else {
+        size = info->file_length;
+    }
+
+    if (size <= capacity && size != 0) {
+        if (info->compression_mode == 2) {
+            STUBBED_NAMED("NuDatFileLoadBuffer: PC compressed block decoding");
+            /* Stop the retail retry loop until the decoder is reconstructed. */
+            nufile_lasterror = -1;
+            NuFileClose(file);
+            return 0;
+        }
+
+        while (NuDatFileRead(file, destination, size) < 0) {
+            do {
+                NuFileRetry();
+            } while (NuDatFileSeek(file, 0, 0) < 0);
+        }
+
+        if (header->mode == 3) {
+            while (NuFileStatus(file) != 0) {
+            }
+        }
+        NuFileClose(file);
+        return size;
+    }
+
+    if (size != 0) {
+        nufile_lasterror = -1;
+    }
+    NuFileClose(file);
+    return 0;
+}
+
 i32 __cdecl NuMemFileRead(NUFILE file, void *destination, i32 size) {
     PC_NUMEMFILE *memory;
     i32 available;

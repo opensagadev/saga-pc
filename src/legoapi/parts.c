@@ -28,8 +28,8 @@ void Parts_Stop(WORLDINFO *world) {
     }
 }
 
-void NuPartEnableRayCasts(i32 enabled) {
-    part_raycasts_enabled = enabled;
+void SetPartRTLSet(RTLSET_PC *rtl_set) {
+    PartRTL = rtl_set;
 }
 
 void NuPartSetSeed(i32 seed) {

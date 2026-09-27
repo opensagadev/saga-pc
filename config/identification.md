@@ -183,7 +183,7 @@ PC extents after relocation. They add verified dependencies without completing
 | `0x005f9530` | `NuWaterReset` | 21 | NuFrameBegin call order identifies the routine; PC writes its two four-byte water-state globals. |
 | `0x006d58a0` | `NuMouseRead` | 1 | Android body is empty; PC extent is a single `ret`, called in the frame-begin sequence. |
 | `0x005e8430` | `NuOcclusionManagerBeginFrame` | 59 | Android calls `g_OcclusionManager.BeginFrame()`; PC swaps the two set pointers, clears the set fields, and resets both manager counters. |
-| `0x0064ae40` | `NuPartEnableRayCasts` | 10 | Android setter stores its `enabled` argument; PC stores the same argument to the ray-cast flag. |
+| `0x0064ae40` | `SetPartRTLSet` | 10 | NuMain's world setup passes `world+0x2ab4`; PC stores that pointer at `0x02920aac`, later read by the parts lighting-template allocator. Android `SetPartRTLSet`/`PartRTL` corroborate the use. The old ray-cast identity was wrong despite an exact ten-byte match. |
 | `0x004f4fc0`–`0x004f5120` | Video accessors and setters, rolling-rate reset | 1–68 | `nuvideo.c`; six mapped functions at `0x004f4fc0`, `0x004f4fd0`, `0x004f4fe0`, `0x004f5100`, `0x004f5110`, and `0x004f5120` match exactly. |
 | `0x00697a30`–`0x00698a00` | Sound reverb, rumble, loop and hold-time helpers | 1–22 | `nusound.c`; all six mapped functions match exactly. |
 | `0x0055f430`–`0x0055f560` | WorldInfo initialization, accessors, other-level and room visibility | 6–103 | `world.c`; all five mapped functions match against PC world records and typed fields. |
@@ -418,3 +418,15 @@ unmapped virtual-file system, and `edanimLoadPage` is a 1,482-byte editor loader
 without a portable Android implementation. The sound sample-table initializer at
 `0x00697a50` likewise uses 0x1c-byte PC records and a substantial PC loader and
 thread closure; Android's 0x20-byte record and setup code cannot be copied.
+
+The `UpdateFrame` prelude at `0x00491d50` has six directly called PC routines
+whose call order and argument forms agree with the Android frame path. PC body
+inspection supports `PortalDoors_Update` (229 bytes),
+`GameAISysStartFrame` (467), `Shadow_SetMode` (60),
+`GizmoPickups_SetOnOff` (686), and `DoInput` (786). The ten-byte setter at
+`0x005f9e90` is only a provisional `NuRndrShadowOnOff` identity: the PC stores
+one argument to renderer state, whereas Android's implementation is empty.
+These mappings establish locations and complete extents, not matches or reusable
+Android layouts. The PC frame packet is 16 bytes (`f32` time, pause state,
+pointer to two pad pointers, flags) and is dispatched through the thing
+manager's virtual slot `+0x20`; no static target is assigned to that call.

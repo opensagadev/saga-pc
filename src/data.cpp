@@ -204,6 +204,15 @@ extern "C" {
     FILEBUFF file_buff[4];
     i32 nufile_buffering_enabled;
     i32 datsys_offset;
+#pragma bss_seg(".bss$nufile_lasterror")
+    i32 nufile_lasterror;
+#pragma bss_seg()
+#pragma bss_seg(".bss$nufile_try_packed")
+    i32 nufile_try_packed;
+#pragma bss_seg()
+#pragma bss_seg(".bss$fpk_err")
+    i32 fpk_err;
+#pragma bss_seg()
     i32 file_time_count;
     NUFILE_DEVICE devices[16];
     i32 numdevices;
@@ -365,6 +374,24 @@ extern "C" {
     i16 PlayerList[8];
     APICHARACTERMODELLIST Hub_ModelList[6];
     LEVELDATA_PC *LDataList;
+    i32 MAXLDATA = 0x64;
+    LEVELDATA_PC *NEWGAME_LDATA;
+    LEVELDATA_PC *LOADGAME_LDATA;
+    LEVELDATA_PC *LastLData;
+    LEVELDATA_PC *NewLData;
+    LEVELDATA_PC *HUB_LDATA;
+    LEVELDATA_PC *STATUS_LDATA;
+    LEVELDATA_PC *CREDITS_LDATA;
+    f32 MainRenderTime;
+    f32 MainRenderTargetTime;
+    f32 WaitingForLevelTime;
+    f32 WaitingForCharacterTime;
+    f32 MAXFRAMETIME;
+    i32 save_paused;
+    i32 netclient;
+    i32 NOSOUND;
+    volatile i32 nuvideo_global_vbcnt;
+    i32 nurndr_tritot_this_frame;
     i32 openlevels;
     u8 snakebodies[0x440];
 #pragma data_seg(".data$gizaimessage_prefix")
@@ -524,7 +551,78 @@ extern "C" {
     VARIPTR fstack_top;
     VARIPTR fstack_limit;
     i32 DebrisCutSceneMode;
-    i32 part_raycasts_enabled;
+    RTLSET_PC *PartRTL;
+#pragma bss_seg(".bss$edbits_base_scene")
+    NUGSCN *edbits_base_scene;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edbits_base_terrain")
+    void *edbits_base_terrain;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuSound3Initialized")
+    i32 NuSound3Initialized;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuPrimNeedsOverbrightening")
+    u8 NuPrimNeedsOverbrightening;
+#pragma bss_seg()
+    TERRAIN_SURFACE_PC TerSurface[32] = {
+        {1.0f, 0, 0xffff},     {1.0f, 65, 0xffff},   {1.0f, 2, 0xffff},      {1.0f, 8, 0xffff},   {1.0f, 65536, 0xffff},
+        {1.0f, 66560, 0xffff}, {1.0f, 0, 0xffff},    {1.0f, 2048, 0xffff},   {1.0f, 0, 0xffff},   {1.0f, 8192, 0xffff},
+        {1.0f, 10, 0xffff},    {1.0f, 67, 0xffff},   {1.0f, 16, 0xffff},     {1.0f, 16, 0xffff},  {1.0f, 8192, 0xffff},
+        {1.0f, 8192, 0xffff},  {0.1f, 1088, 0xffff}, {0.2f, 131074, 0xffff}, {1.0f, 81, 0xffff},  {1.0f, 512, 0xffff},
+        {1.0f, 8192, 0xffff},  {1.0f, 514, 0xffff},  {1.0f, 64, 0xffff},     {1.0f, 192, 0xffff}, {1.0f, 8192, 0xffff},
+        {1.0f, 4160, 0xffff},  {1.0f, 0, 0xffff},    {1.0f, 5184, 0xffff},   {1.0f, 256, 0xffff}, {1.0f, 320, 0xffff},
+        {1.0f, 64, 0xffff},    {1.0f, 64, 0xffff},
+    };
+#pragma const_seg(".rdata$LevelConfigKeywordFile")
+    extern const char LevelConfigKeywordFile[5] = "file";
+#pragma const_seg(".rdata$LevelConfigKeywordDir")
+    extern const char LevelConfigKeywordDir[4] = "dir";
+#pragma const_seg(".rdata$LevelConfigKeywordStart")
+    extern const char LevelConfigKeywordStart[12] = "level_start";
+#pragma const_seg(".rdata$LevelConfigKeywordEnd")
+    extern const char LevelConfigKeywordEnd[10] = "level_end";
+#pragma const_seg(".rdata$LevelConfigKeywordTest")
+    extern const char LevelConfigKeywordTest[11] = "test_level";
+#pragma const_seg(".rdata$LevelConfigKeywordIntro")
+    extern const char LevelConfigKeywordIntro[12] = "intro_level";
+#pragma const_seg(".rdata$LevelConfigKeywordMidtro")
+    extern const char LevelConfigKeywordMidtro[13] = "midtro_level";
+#pragma const_seg(".rdata$LevelConfigKeywordCutscene")
+    extern const char LevelConfigKeywordCutscene[15] = "cutscene_level";
+#pragma const_seg(".rdata$LevelConfigKeywordOutro")
+    extern const char LevelConfigKeywordOutro[12] = "outro_level";
+#pragma const_seg(".rdata$LevelConfigKeywordStatus")
+    extern const char LevelConfigKeywordStatus[13] = "status_level";
+#pragma const_seg(".rdata$LevelConfigKeywordNewGame")
+    extern const char LevelConfigKeywordNewGame[14] = "newgame_level";
+#pragma const_seg(".rdata$LevelConfigKeywordLoadGame")
+    extern const char LevelConfigKeywordLoadGame[15] = "loadgame_level";
+#pragma const_seg()
+    extern const f32 LevelConfigFarDistance = 2000000.0f;
+#pragma bss_seg(".bss$SfxBits")
+    u16 SfxBits[100];
+#pragma bss_seg()
+#pragma bss_seg(".bss$GlobalSfxBits")
+    u16 GlobalSfxBits[100];
+#pragma bss_seg()
+#pragma bss_seg(".bss$edanim_page_on")
+    i32 edanim_page_on[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$edanim_page_used")
+    i32 edanim_page_used[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$edanim_page_scene")
+    NUGSCN *edanim_page_scene[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$edanim_next_param")
+    i32 edanim_next_param;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edanim_params_used")
+    i32 edanim_params_used;
+#pragma bss_seg()
+#pragma bss_seg(".bss$AnimParams")
+    EDANIM_PARAM_PC AnimParams[64];
+#pragma bss_seg()
     f32 NuVideoFrameRate;
     OCCLUSIONMANAGER g_OcclusionManager = {0, 1, {0}, {{0}}, 0, 0, 0.3f, -1.0f, 0, 0, {0}};
 
@@ -588,6 +686,23 @@ extern "C" {
 #pragma const_seg()
     f32 dme_sy = 1.0f;
     f32 MASTERVOLUME = 1.0f;
+#pragma data_seg(".data$AUDIOFADELEVEL")
+    f32 AUDIOFADELEVEL = 1.0f;
+#pragma data_seg()
+    NUMTX numtx_identity = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+                            0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+#pragma bss_seg(".bss$numtl_defaultmtl2d")
+    NUMTL *numtl_defaultmtl2d;
+#pragma bss_seg()
+#pragma bss_seg(".bss$numtl_defaultmtl3d")
+    NUMTL *numtl_defaultmtl3d;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuDisplayListStreamCursor")
+    VARIPTR *NuDisplayListStreamCursor;
+#pragma bss_seg()
+#pragma bss_seg(".bss$render_state")
+    NUGLOBALRNDRSTATE_PC render_state;
+#pragma bss_seg()
     f32 default_targetmomf = 4.0f;
     f32 default_ownermomf = 5.0f;
     f32 default_max_cable_length = 15.0f;
@@ -649,7 +764,9 @@ extern "C" {
 
     i32 DebrisGlassInitialized = 0;
     void *DebrisGlassCopyMaterial = NULL;
-    f32 DebrisGlassU1 = 0.0f;
+#pragma bss_seg(".bss$DebrisGlassU1")
+    f32 DebrisGlassU1;
+#pragma bss_seg()
 #pragma bss_seg(".bss$DebrisGlassV1")
     f32 DebrisGlassV1;
 #pragma bss_seg()
@@ -680,7 +797,9 @@ NUDATHDR *curr_dat;
 MSG win_message;
 
 i32 permbuffer_size;
+#pragma data_seg(".data$CHARACTERBUFFERSIZE")
 i32 CHARACTERBUFFERSIZE = 0x02800000;
+#pragma data_seg()
 i32 EDITBUFFERENDSIZE;
 VARIPTR permbuffer_base;
 VARIPTR permbuffer_ptr;

@@ -1,5 +1,7 @@
 #include "saga.h"
 
+extern "C" f32 AUDIOFADELEVEL;
+
 f32 GameGetMusicVolume(OPTIONSSAVE *options) {
     f32 volume = (f32)options->music_volume / 10.0;
     return (f32)(volume * ((f64)options->master_volume / 10.0));
@@ -30,6 +32,14 @@ void legoSetMusicVolume(f32 volume) {
 
 void legoSetCutVolume(f32 volume) {
     music_man.SetClassVolume(0x10, volume);
+}
+
+void SetAudioFadeLevel(f32 level) {
+    AUDIOFADELEVEL = level;
+}
+
+f32 GetAudioFadeLevel(void) {
+    return AUDIOFADELEVEL;
 }
 
 void SfxCheckMusicOnOff(OPTIONSSAVE *options) {

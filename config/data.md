@@ -119,7 +119,7 @@ them.
 | `0x009716c0`, `0x0097398c`, `0x00920a00` | `NuTimeBar_SetList`, `NuTimeBar_Initialised`, `NuTime_TickBase` | 16 zero pointers (64 bytes), a zero i32, and a zero i64. PC time-bar initialization clears exactly 0x40 bytes at `0x009716c0`; slot code indexes four-byte entries. |
 | `0x009738a4`, `0x0097388c` | End-frame callback pointer, `nu2api_paused` | Four-byte zero pointer assigned at `0x005c9ff0`; four-byte zero f32 set by `NuPause` at `0x005c9130`. The pause value remains owned by its function unit. |
 | `0x0093b34c` | `NetPaused` | Zero-initialized four-byte i32 written with `Paused` by the exact PC `ClearPause` routine at `0x0055c5e0`. |
-| `0x02920aac` | `part_raycasts_enabled` | Zero-initialized four-byte i32 gating the PC parts raycast path; Android initializes its counterpart to one, so its default was not copied. |
+| `0x02920aac` | `PartRTL` | Zero-initialized `RTLSET_PC *`. `SetPartRTLSet` receives `world->rtl_set` at PC offset `0x2ab4`; the later parts renderer tests this pointer before allocating a lighting template. |
 | `0x0297397c`, `0x00755180`, `0x00810dc8` | `NuSound3Reverb`, `NuScale1000`, `NuSound3LoopHoldTime` | One-byte zero reverb flag, shared eight-byte f64 value `1000.0`, and four-byte i32 value `133`; PC sound and time conversion routines reuse the same constant. |
 | `0x02962bd0`, `0x00810dbc`, `0x02972c20` | `NuSound3VolumeTable`, `NuSound3VolumeOffset`, `NuSound3StereoStreams` | PC stream-volume wrapper indexes a 16,384-float zero-initialized table filled at runtime, adds the initialized `-300` offset, then calls a queue method through one of two zero-initialized queue pointers. |
 | `0x007fc274`, `0x007fc278`, `0x007fc3c4`, `0x007fc3c8` | Panel projection and wide-mode sizes | Four PC f32 initializers, `1222.0`, `1145.0`, `740.0`, and `387.5`, feed `InitPanel`; the two computed multipliers begin zero. |
@@ -321,3 +321,18 @@ names used by the PC command initializer are mapped as exact read-only strings.
 The `NuMusic` album and track strides are PC-confirmed as 0x24 and 0x3c, but
 the complete `music_man` allocation extent remains unknown. Its CSV row gives
 an address without claiming data-byte coverage.
+
+The PC terrain table at `0x008034c8` has 32 twelve-byte records. Its complete
+384-byte initializer independently agrees with the Android table; the PC code
+confirms the movement scale, flags and final word offsets. The 64 animation
+parameter records at `0x0292fe38` have a PC stride of `0x2d4`, with the page
+byte at `+0x2d0`. Related zero-filled page arrays, the two 100-entry sound-bit
+arrays, and their extents now have separate map and source definitions. The
+level-config keyword strings at `0x00761ca4`–`0x00762281` and the
+2,000,000.0f sentinel at `0x00751d84` were read directly from the retail image;
+they are defined separately so the loader can bind their original references.
+The PC before-load and after-load generic keyword tables at `0x00803bb8`
+and `0x00803be0` span 40 and 424 bytes (five and 53 eight-byte entries).
+Their pointer entries anchor 47 separately mapped callbacks, with full
+function extents and PC field writes verified; the table initializers are not
+yet reconstructed as source data.

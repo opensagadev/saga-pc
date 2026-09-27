@@ -30,6 +30,122 @@ u32 __fastcall PCFilePakChecksum_candidate(i32 count, const u8 *data) {
     return sum;
 }
 
+static PC_FILEPAKITEM *GetPakItems(PC_FILEPAKHDR_V0 *header) {
+    switch (header->type) {
+        case 0x12345678:
+            return (PC_FILEPAKITEM *)(header + 1);
+        case 0x1234567a:
+            return (PC_FILEPAKITEM *)((PC_FILEPAKHDR *)header + 1);
+        default:
+            return (PC_FILEPAKITEM *)((PC_FILEPAKHDR_V1 *)header + 1);
+    }
+}
+
+i32 __cdecl NuFilePakGetLastError(void) {
+    return fpk_err;
+}
+
+u32 __cdecl NuFilePakGetSize(void *pak) {
+    PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)pak;
+
+    fpk_err = 0;
+    return header->file_size;
+}
+
+i32 __cdecl NuFilePakGetItem(void *pak, char *name) {
+    PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)pak;
+    PC_FILEPAKITEM *items;
+    u32 index;
+
+    fpk_err = 0;
+    items = GetPakItems(header);
+    for (index = 0; index < header->item_count; ++index) {
+        if (NuStrICmp((char *)header + items[index].name_offset, name) == 0) {
+            if ((items[index].flags & 2) != 0) {
+                return 0;
+            }
+            return index + 1;
+        }
+    }
+    return 0;
+}
+
+i32 __cdecl NuFilePakGetItemInfo(void *pak, i32 handle, void **address, i32 *size) {
+    PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)pak;
+    PC_FILEPAKITEM *item;
+
+    fpk_err = 0;
+    --handle;
+    if (handle >= 0 && (u32)handle < header->item_count) {
+        item = GetPakItems(header) + handle;
+        if ((item->flags & 2) == 0) {
+            if (address != NULL) {
+                *address = (char *)header + item->data_offset;
+            }
+            if (size != NULL) {
+                *size = item->size;
+            }
+            return 1;
+        }
+    }
+    return 0;
+}
+
+i32 __cdecl NuFilePakSetItemRequired(void *pak, i32 handle, i32 required) {
+    PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)pak;
+    PC_FILEPAKITEM *item;
+
+    fpk_err = 0;
+    --handle;
+    if (handle < 0 || (u32)handle >= header->item_count) {
+        return 0;
+    }
+    item = GetPakItems(header) + handle;
+    if ((item->flags & 2) == 0) {
+        item->flags = (item->flags & ~1u) | (required & 1);
+    }
+    return 1;
+}
+
+void __cdecl NuFilePakRelocate(void *pak, void *destination) {
+    PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)pak;
+
+    fpk_err = 0;
+    PCByteCopy_candidate(destination, header, header->file_size);
+}
+
+i32 __cdecl NuFilePakCondense(void *pak) {
+    PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)pak;
+    PC_FILEPAKITEM *items;
+    i32 removed_size = 0;
+    u32 index;
+
+    fpk_err = 0;
+    items = GetPakItems(header);
+    for (index = 0; index < header->item_count; ++index) {
+        PC_FILEPAKITEM *item = &items[index];
+
+        if ((item->flags & 2) != 0) {
+            continue;
+        }
+        if ((item->flags & 1) != 0) {
+            if (removed_size != 0 && item->alignment != 0) {
+                removed_size &= ~(item->alignment - 1);
+            }
+            if (removed_size != 0) {
+                PCByteCopy_candidate((char *)header + item->data_offset - removed_size,
+                                     (char *)header + item->data_offset, item->size);
+                item->data_offset -= removed_size;
+            }
+        } else {
+            item->flags |= 2;
+            removed_size = (removed_size + item->size + item->alignment - 1) & ~(item->alignment - 1);
+        }
+    }
+    header->file_size -= removed_size;
+    return removed_size;
+}
+
 f32 __cdecl NuFileReadFloat(NUFILE file) {
     f32 value;
 
@@ -56,6 +172,58 @@ u16 __cdecl NuFileReadWChar(NUFILE file) {
 
     NuFileRead(file, &value, sizeof(value));
     return value;
+}
+
+i32 __cdecl NuFileLoadBuffer(char *filepath, void *destination, i32 capacity) {
+    NUFILE file;
+    i32 loaded = 0;
+
+    nufile_lasterror = 0;
+    if (curr_dat != NULL) {
+        loaded = NuDatFileLoadBuffer(curr_dat, filepath, destination, capacity);
+        if (nufile_lasterror == -1) {
+            return 0;
+        }
+    }
+
+    if (loaded == 0) {
+        if (NuFileExists(filepath)) {
+            file = NuFileOpenDF(filepath, 0, curr_dat, 0);
+            if (file != 0) {
+                if (nufile_try_packed != 0) {
+                    STUBBED_NAMED("NuFileLoadBuffer: PC NuPPLoadBuffer packed-file path");
+                    nufile_lasterror = -1;
+                    loaded = 0;
+                } else {
+                    loaded = (i32)NuFileOpenSize(file);
+                    if (loaded <= capacity && loaded != 0) {
+                        while (NuFileRead(file, destination, loaded) < 0) {
+                            NuFileRetry();
+                            while (NuFileSeek(file, 0, 0) < 0) {
+                                NuFileRetry();
+                            }
+                        }
+                    } else {
+                        nufile_lasterror = -1;
+                        loaded = 0;
+                    }
+                }
+                NuFileClose(file);
+            } else {
+                nufile_lasterror = -3;
+            }
+        } else {
+            nufile_lasterror = -2;
+        }
+    }
+    return loaded;
+}
+
+i32 __cdecl NuFileLoadBufferVP(char *filepath, VARIPTR *buffer, VARIPTR *buffer_end) {
+    i32 loaded = NuFileLoadBuffer(filepath, buffer->void_ptr, buffer_end->addr - buffer->addr);
+
+    buffer->addr += loaded;
+    return loaded;
 }
 
 NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_out, i16 mode) {

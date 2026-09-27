@@ -245,14 +245,45 @@ typedef struct numtlattrib_s {
     u32 unknown_19_31 : 13;
 } NUMTLATTRIB;
 STATIC_ASSERT(sizeof(NUMTLATTRIB) == 4);
+typedef struct nudisplaylist_pc_s NUDISPLAYLIST_PC;
 typedef struct numtl_s {
-    u8 unknown_0000[0x40];
+    u8 unknown_0000[0x3c];
+    NUDISPLAYLIST_PC *display_list;
     NUMTLATTRIB attribs;
     u8 unknown_0044[0x30];
     i16 texture_id;
 } NUMTL;
+STATIC_ASSERT(offsetof(NUMTL, display_list) == 0x3c);
 STATIC_ASSERT(offsetof(NUMTL, attribs) == 0x40);
 STATIC_ASSERT(offsetof(NUMTL, texture_id) == 0x74);
+
+typedef struct nudisplayscene_pc_s {
+    u8 unknown_0000[0x58];
+    u8 *material_used_front;
+    u8 *material_used_back;
+    u8 unknown_0060[0x14];
+    u16 flags;
+} NUDISPLAYSCENE_PC;
+STATIC_ASSERT(offsetof(NUDISPLAYSCENE_PC, material_used_front) == 0x58);
+STATIC_ASSERT(offsetof(NUDISPLAYSCENE_PC, material_used_back) == 0x5c);
+STATIC_ASSERT(offsetof(NUDISPLAYSCENE_PC, flags) == 0x74);
+
+struct nudisplaylist_pc_s {
+    NUDISPLAYSCENE_PC *scene;
+    i32 material_id;
+    void *render_state;
+    u8 unknown_000c[8];
+    void *material_last;
+    void *dynamic_geometry;
+    u8 unknown_001c[8];
+    void *items;
+};
+STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, scene) == 0x00);
+STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, material_id) == 0x04);
+STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, render_state) == 0x08);
+STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, material_last) == 0x14);
+STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, dynamic_geometry) == 0x18);
+STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, items) == 0x24);
 
 typedef struct nutexdim_pc_s {
     i32 width;
@@ -329,6 +360,47 @@ STATIC_ASSERT(sizeof(VARIPTR) == 4);
 
 typedef i32 NUFILE;
 
+typedef struct pc_filepakhdr_v0_s {
+    u32 type;
+    u32 item_count;
+    u32 file_size;
+} PC_FILEPAKHDR_V0;
+typedef struct pc_filepakhdr_v1_s {
+    u32 type;
+    u32 item_count;
+    u32 file_size;
+    u32 checksum;
+    u32 flags;
+} PC_FILEPAKHDR_V1;
+typedef struct pc_filepakhdr_s {
+    u32 type;
+    u32 item_count;
+    u32 file_size;
+    u32 checksum;
+    u32 flags;
+    u32 decrypted_checksum;
+} PC_FILEPAKHDR;
+typedef struct pc_filepakitem_s {
+    i32 name_offset;
+    i32 data_offset;
+    i32 size;
+    i32 alignment;
+    u32 flags;
+    u32 pre_move_callback_va;
+    u32 post_move_callback_va;
+} PC_FILEPAKITEM;
+STATIC_ASSERT(sizeof(PC_FILEPAKHDR_V0) == 12);
+STATIC_ASSERT(sizeof(PC_FILEPAKHDR_V1) == 20);
+STATIC_ASSERT(sizeof(PC_FILEPAKHDR) == 24);
+STATIC_ASSERT(sizeof(PC_FILEPAKITEM) == 28);
+STATIC_ASSERT(offsetof(PC_FILEPAKITEM, name_offset) == 0);
+STATIC_ASSERT(offsetof(PC_FILEPAKITEM, data_offset) == 4);
+STATIC_ASSERT(offsetof(PC_FILEPAKITEM, size) == 8);
+STATIC_ASSERT(offsetof(PC_FILEPAKITEM, alignment) == 12);
+STATIC_ASSERT(offsetof(PC_FILEPAKITEM, flags) == 16);
+STATIC_ASSERT(offsetof(PC_FILEPAKITEM, pre_move_callback_va) == 20);
+STATIC_ASSERT(offsetof(PC_FILEPAKITEM, post_move_callback_va) == 24);
+
 typedef struct nufpar_pc_s {
     char *file_buffer;
     NUFILE file_handle;
@@ -371,6 +443,20 @@ STATIC_ASSERT(offsetof(NUFPAR_PC, is_utf8) == 0x579);
 STATIC_ASSERT(offsetof(NUFPAR_PC, separator_list) == 0x57c);
 STATIC_ASSERT(offsetof(NUFPAR_PC, separator_tokens) == 0x580);
 STATIC_ASSERT(sizeof(NUFPAR_PC) == 0x584);
+
+typedef struct nufparpos_pc_s {
+    i32 line_number;
+    i32 line_position;
+    i32 character_position;
+    i32 buffer_start;
+    i32 buffer_end;
+} NUFPARPOS_PC;
+STATIC_ASSERT(sizeof(NUFPARPOS_PC) == 0x14);
+STATIC_ASSERT(offsetof(NUFPARPOS_PC, line_number) == 0x00);
+STATIC_ASSERT(offsetof(NUFPARPOS_PC, line_position) == 0x04);
+STATIC_ASSERT(offsetof(NUFPARPOS_PC, character_position) == 0x08);
+STATIC_ASSERT(offsetof(NUFPARPOS_PC, buffer_start) == 0x0c);
+STATIC_ASSERT(offsetof(NUFPARPOS_PC, buffer_end) == 0x10);
 
 typedef struct nuwind_s {
     u8 unknown_0000[0x28];
@@ -583,6 +669,39 @@ STATIC_ASSERT(offsetof(NUGSCN, num_rooms) == 0x74);
 STATIC_ASSERT(offsetof(NUGSCN, rooms) == 0x78);
 STATIC_ASSERT(offsetof(NUGSCN, display_list) == 0x110);
 
+typedef struct terrain_surface_pc_s {
+    f32 movement_scale;
+    u32 flags;
+    u32 field_08;
+} TERRAIN_SURFACE_PC;
+STATIC_ASSERT(sizeof(TERRAIN_SURFACE_PC) == 0x0c);
+STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, flags) == 4);
+STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, field_08) == 8);
+
+typedef struct edanim_param_pc_s {
+    i32 instance_id;
+    u8 unknown_004[0x2cc];
+    i8 page;
+    u8 unknown_2d1[3];
+} EDANIM_PARAM_PC;
+STATIC_ASSERT(sizeof(EDANIM_PARAM_PC) == 0x2d4);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, page) == 0x2d0);
+
+typedef struct levelspline_pc_s {
+    NUGSCN **scene;
+    const char *name;
+    u16 min_points;
+    u16 max_points;
+    i16 level;
+    i16 area;
+} LEVELSPLINE_PC;
+STATIC_ASSERT(sizeof(LEVELSPLINE_PC) == 0x10);
+STATIC_ASSERT(offsetof(LEVELSPLINE_PC, name) == 4);
+STATIC_ASSERT(offsetof(LEVELSPLINE_PC, min_points) == 8);
+STATIC_ASSERT(offsetof(LEVELSPLINE_PC, area) == 0xe);
+
+typedef struct rtlset_pc_s RTLSET_PC;
+
 // Only fields with confirmed PC offsets are exposed.
 typedef struct WORLDINFO_s {
     u32 unknown_0000[0x40];
@@ -598,14 +717,18 @@ typedef struct WORLDINFO_s {
     struct area_data_pc_s *area;
     u32 unknown_0130[3];
     NUGSCN *current_gscn;
-    u32 unknown_0140[0xa14];
+    u32 unknown_0140[0xa07];
+    void *terrain;
+    u32 unknown_2960[0x0c];
     u8 room_visibility_flag;
     u8 rooms_visible[0x100];
     u8 unknown_2a91[3];
     u8 *rooms_visible_ptr;
     u32 unknown_2a98;
     i32 page_part;
-    u32 unknown_2aa0[0x9c3];
+    u32 unknown_2aa0[5];
+    RTLSET_PC *rtl_set;
+    u32 unknown_2ab8[0x9bd];
 } WORLDINFO;
 STATIC_ASSERT(sizeof(WORLDINFO) == 0x51ac);
 STATIC_ASSERT(offsetof(WORLDINFO, buffer_start) == 0x100);
@@ -616,10 +739,12 @@ STATIC_ASSERT(offsetof(WORLDINFO, level_idx) == 0x11c);
 STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
 STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
+STATIC_ASSERT(offsetof(WORLDINFO, terrain) == 0x295c);
 STATIC_ASSERT(offsetof(WORLDINFO, room_visibility_flag) == 0x2990);
 STATIC_ASSERT(offsetof(WORLDINFO, rooms_visible) == 0x2991);
 STATIC_ASSERT(offsetof(WORLDINFO, rooms_visible_ptr) == 0x2a94);
 STATIC_ASSERT(offsetof(WORLDINFO, page_part) == 0x2a9c);
+STATIC_ASSERT(offsetof(WORLDINFO, rtl_set) == 0x2ab4);
 
 typedef struct area_data_pc_s {
     u8 unknown_0000[0x7a];
@@ -638,13 +763,60 @@ typedef struct apicharactermodellist_s {
 STATIC_ASSERT(sizeof(APICHARACTERMODELLIST) == 4);
 STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, count) == 2);
 
+typedef struct level_display_pc_s {
+    f32 value_00;
+    f32 value_04;
+    i16 value_08;
+    u8 colors[6];
+} LEVEL_DISPLAY_PC;
+STATIC_ASSERT(sizeof(LEVEL_DISPLAY_PC) == 0x10);
+STATIC_ASSERT(offsetof(LEVEL_DISPLAY_PC, colors) == 0x0a);
+
 typedef struct level_data_pc_s {
-    u8 unknown_0000[0xa3];
+    char dir[0x40];
+    char name[0x20];
+    i16 unknown_0060;
+    i16 index;
+    u32 flags;
+    void *callbacks[7];
+    LEVEL_DISPLAY_PC display;
+    i16 music_index;
+    i16 unknown_0096;
+    i16 max_ter_platforms;
+    i16 max_ter_groups;
+    i16 unknown_009c;
+    i16 unknown_009e;
+    u8 mode;
+    u8 alpha;
+    u8 unknown_00a2;
     i8 area_index;
-    u8 unknown_00a4[0x8c];
+    f32 camera_distance;
+    f32 hover_distance;
+    u8 unknown_00ac[8];
+    f32 unknown_00b4[4];
+    u8 unknown_00c4[4];
+    i8 area_level_index;
+    u8 unknown_00c9[7];
+    f32 conveyor_speed;
+    f32 conveyor_width;
+    u8 unknown_00d8[0x40];
+    i32 music_tracks[6];
 } LEVELDATA_PC;
 STATIC_ASSERT(sizeof(LEVELDATA_PC) == 0x130);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, dir) == 0x00);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, name) == 0x40);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, index) == 0x62);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, callbacks) == 0x68);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, display) == 0x84);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, music_index) == 0x94);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, max_ter_platforms) == 0x98);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, mode) == 0xa0);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, camera_distance) == 0xa4);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, area_level_index) == 0xc8);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, conveyor_speed) == 0xd0);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);
 
 typedef struct dat_handles_pc_s {
     NUDATHDR *previous;
@@ -678,6 +850,27 @@ typedef struct numtx_s {
 STATIC_ASSERT(sizeof(NUMTX) == 0x40);
 STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
+
+typedef struct nuglobalrndrstate_pc_s {
+    u8 unknown_0000[0x1e];
+    u16 counter_001e;
+    u32 counter_0020;
+    u8 unknown_0024[0xd0];
+    i32 state_00f4;
+    i32 state_00f8;
+    i32 state_00fc;
+    u8 unknown_0100[0x80];
+    i32 state_0180;
+    u8 unknown_0184[0x14];
+    i32 viewport_width;
+    u8 unknown_019c[8];
+} NUGLOBALRNDRSTATE_PC;
+STATIC_ASSERT(sizeof(NUGLOBALRNDRSTATE_PC) == 0x1a4);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, counter_001e) == 0x1e);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, counter_0020) == 0x20);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, state_00f4) == 0xf4);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, state_0180) == 0x180);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, viewport_width) == 0x198);
 
 typedef struct nuqfnt_render_data_pc_s {
     u32 colour;
@@ -1039,6 +1232,8 @@ extern "C" {
     void __cdecl NuPrimSetCoordinateSystem(i32 scale_mode);
     void __cdecl NuPrim2DEnd(void);
     void __cdecl NuPrim3DEnd(void);
+    void __cdecl NuPrim2DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material);
+    void __cdecl NuPrim3DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material, NUMTX *matrix);
     void __cdecl NuPrim2DAddXYZ(f32 x, f32 y, f32 z);
     extern NUFPAR_PC NuFParRecords[4];
     extern char NuFParBuffers[4][0x1000];
@@ -1049,6 +1244,10 @@ extern "C" {
     NUFPAR_PC *__cdecl NuFParCreateGivenFH(char *file_name, NUFILE file_handle);
     void __cdecl NuFParDestroy(NUFPAR_PC *parser);
     i32 __cdecl NuFParGetLine(NUFPAR_PC *parser);
+    void __cdecl NuFParGetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position);
+    void __cdecl NuFParSetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position);
+    void __cdecl NuFParSuspend(NUFPAR_PC *parser);
+    void __cdecl NuFParResume(NUFPAR_PC *parser);
     void __cdecl NuFreeFPar(NUFPAR_PC *parser);
     u16 __cdecl UnicodeToIndexFast(VUCHARIDX *map, i32 count, u16 unicode);
     u16 __cdecl NuQFntEncodeUnicodeChar(VUFNT *font, u16 character);
@@ -1127,6 +1326,7 @@ extern "C" {
     f32 __cdecl GameSetSoundVolume(OPTIONSSAVE *options);
     void __cdecl SfxCheckMusicOnOff(OPTIONSSAVE *options);
     extern f32 MASTERVOLUME;
+    extern f32 AUDIOFADELEVEL;
     void __cdecl SetSoundVolume(f32 volume);
     f32 __cdecl GetSoundVolume(void);
     void __cdecl MenuEnterTitles(MENU *menu);
@@ -1184,6 +1384,7 @@ extern "C" {
     i32 __cdecl NuDatFileGetFreeHandleIX(NUDATHDR *header, i32 info_index);
     NUFILE __cdecl NuDatFileOpen(NUDATHDR *header, char *filepath, i32 mode);
     i32 __cdecl NuDatFileRead(NUFILE file, void *buffer, i32 size);
+    i32 __cdecl NuDatFileLoadBuffer(NUDATHDR *header, char *filepath, void *buffer, i32 capacity);
     i32 __cdecl NuMemFileRead(NUFILE file, void *buffer, i32 size);
     i64 __cdecl NuMemFileSeek(NUFILE file, i64 offset, i32 origin);
     void __cdecl NuMemFileClose(NUFILE file);
@@ -1205,6 +1406,9 @@ extern "C" {
     extern i32 old_line_pos;
     extern i32 nufile_buffering_enabled;
     extern i32 datsys_offset;
+    extern i32 nufile_lasterror;
+    extern i32 nufile_try_packed;
+    extern i32 fpk_err;
     extern i32 file_time_count;
     extern const char nufile_disc_suffix[3];
     extern NUFILE_DEVICE devices[16];
@@ -1234,6 +1438,15 @@ extern "C" {
     i32 __cdecl NuMcClose(i32 file, i32 async);
     i32 __cdecl NuMcSeek(i32 file, i32 offset, i32 origin, i32 async);
     i32 __cdecl NuFileRead(NUFILE file, void *buffer, i32 size);
+    i32 __cdecl NuFileLoadBuffer(char *filepath, void *buffer, i32 capacity);
+    i32 __cdecl NuFileLoadBufferVP(char *filepath, VARIPTR *current, VARIPTR *end);
+    i32 __cdecl NuFilePakGetLastError(void);
+    u32 __cdecl NuFilePakGetSize(void *pak);
+    i32 __cdecl NuFilePakGetItem(void *pak, char *name);
+    i32 __cdecl NuFilePakGetItemInfo(void *pak, i32 index, void **data, i32 *size);
+    i32 __cdecl NuFilePakSetItemRequired(void *pak, i32 index, i32 required);
+    void __cdecl NuFilePakRelocate(void *pak, void *destination);
+    i32 __cdecl NuFilePakCondense(void *pak);
     i32 __cdecl NuFileStatus(NUFILE file);
     void __cdecl NuFileError(void);
     void __cdecl NuFileRetry(void);
@@ -1345,6 +1558,24 @@ extern "C" {
     extern AREA_DATA_PC *LastAData;
     extern AREA_DATA_PC *HUB_ADATA;
     extern LEVELDATA_PC *LDataList;
+    extern i32 MAXLDATA;
+    extern LEVELDATA_PC *NEWGAME_LDATA;
+    extern LEVELDATA_PC *LOADGAME_LDATA;
+    extern LEVELDATA_PC *LastLData;
+    extern LEVELDATA_PC *NewLData;
+    extern LEVELDATA_PC *HUB_LDATA;
+    extern LEVELDATA_PC *STATUS_LDATA;
+    extern LEVELDATA_PC *CREDITS_LDATA;
+    extern f32 MainRenderTime;
+    extern f32 MainRenderTargetTime;
+    extern f32 WaitingForLevelTime;
+    extern f32 WaitingForCharacterTime;
+    extern f32 MAXFRAMETIME;
+    extern i32 save_paused;
+    extern i32 netclient;
+    extern i32 NOSOUND;
+    extern volatile i32 nuvideo_global_vbcnt;
+    extern i32 nurndr_tritot_this_frame;
     extern i32 openlevels;
     extern i32 PlayerID[2];
     extern i16 PlayerList[8];
@@ -1684,8 +1915,43 @@ extern "C" {
     extern const f64 nu_wind_scaled_time_multiplier;
     void __cdecl NuWindAnimate(NUWIND *wind, f32 frame_time);
     extern u32 partseed;
-    extern i32 part_raycasts_enabled;
-    void __cdecl NuPartEnableRayCasts(i32 enabled);
+    extern RTLSET_PC *PartRTL;
+    void __cdecl SetPartRTLSet(RTLSET_PC *rtl_set);
+    extern NUGSCN *edbits_base_scene;
+    extern void *edbits_base_terrain;
+    extern i32 NuSound3Initialized;
+    extern TERRAIN_SURFACE_PC TerSurface[32];
+    extern EDANIM_PARAM_PC AnimParams[64];
+    extern u16 SfxBits[100];
+    extern u16 GlobalSfxBits[100];
+    extern i32 edanim_page_on[8];
+    extern i32 edanim_page_used[8];
+    extern NUGSCN *edanim_page_scene[8];
+    extern i32 edanim_next_param;
+    extern i32 edanim_params_used;
+    extern const char LevelConfigKeywordFile[5];
+    extern const char LevelConfigKeywordDir[4];
+    extern const char LevelConfigKeywordStart[12];
+    extern const char LevelConfigKeywordEnd[10];
+    extern const char LevelConfigKeywordTest[11];
+    extern const char LevelConfigKeywordIntro[12];
+    extern const char LevelConfigKeywordMidtro[13];
+    extern const char LevelConfigKeywordCutscene[15];
+    extern const char LevelConfigKeywordOutro[12];
+    extern const char LevelConfigKeywordStatus[13];
+    extern const char LevelConfigKeywordNewGame[14];
+    extern const char LevelConfigKeywordLoadGame[15];
+    extern const f32 LevelConfigFarDistance;
+    extern NUMTL *numtl_defaultmtl2d;
+    extern NUMTL *numtl_defaultmtl3d;
+    extern VARIPTR *NuDisplayListStreamCursor;
+    extern NUGLOBALRNDRSTATE_PC render_state;
+    extern u8 NuPrimNeedsOverbrightening;
+    extern NUMTX numtx_identity;
+    void __cdecl edbitsRegisterBaseScene(NUGSCN *scene);
+    void __cdecl edanimRegisterBaseScene(NUGSCN *scene);
+    void __cdecl edbitsRegisterBaseTerrain(void *terrain);
+    void __cdecl WorldInfo_Register(WORLDINFO *world);
     extern u32 debrisseed;
     extern f32 debris_time_increment;
     extern i32 DebrisCutSceneMode;
@@ -1721,17 +1987,52 @@ extern i32 app_tbdrawset;
 struct nusound_filename_info_s;
 class NuMusic {
   public:
-    class Track;
+    class Track {
+      public:
+        u8 unknown_0000[8];
+        char *ident;
+        i32 file_indexes[2];
+        u32 clazz;
+        f32 *entry_times;
+        i32 entry_count;
+        i32 entry_index;
+        f32 start_offset;
+        f32 pitch;
+        f32 duck_volume;
+        f32 duck_fade;
+        f32 attenuation;
+        u32 flags;
+    };
+    class Voice {
+      public:
+        i32 stream_index;
+        Track *tracks[2];
+        i32 track_sub[2];
+        i32 track_index;
+        i32 status;
+        f32 gain;
+        f32 volume;
+        f32 last_volume;
+        f32 fade_rate;
+        f32 play_time;
+        u8 flags;
+        u8 unknown_0031[3];
+    };
     struct Album {
         char *name;
         Track *tracks_source;
         i32 tracks_count;
         Track *tracks[6];
         Track *GetTrack(u32 class_mask);
+        i32 GetTracks(u32 class_mask, Track **out_tracks);
+        void Initialise(void);
     };
     Album *albums;
     i32 album_count;
-    u8 unknown_0008[0x190];
+    Track *extra_tracks;
+    i32 extra_track_count;
+    u8 unknown_0010[0x120];
+    Voice voices[2];
     f32 master_volume;
     f32 fader_current;
     f32 fader_target;
@@ -1740,7 +2041,10 @@ class NuMusic {
     f32 duck_current;
     u8 unknown_01b0[4];
     f32 class_volumes[6];
-    u8 unknown_01cc[0x10];
+    u8 unknown_01cc[4];
+    i32 track_index;
+    u8 unknown_01d4[4];
+    Album *album;
     nusound_filename_info_s *fileinfo;
     i32 file_count;
 
@@ -1750,22 +2054,60 @@ class NuMusic {
     static i32 ClassToIX(u32 class_mask);
     void SetClassVolume(u32 class_mask, f32 volume);
     void GetSoundFiles(nusound_filename_info_s **files, i32 *count);
+    i32 PauseTrack(u32 class_mask);
+    i32 ResumeTrack(u32 class_mask);
+    bool SelectTrackByHandle(u32 class_mask, i32 handle);
+    i32 GetTrackHandle(u32 class_mask, const char *name);
+    i32 GetStatus(u32 class_mask, i32 *per_class_status);
+    bool SelectTrack(u32 class_mask, const char *name);
+    Voice *FindVoiceByTrack(Track *track);
+    Voice *FindVoiceByClass(u32 class_mask);
+    Voice *FindVoiceByClassAndStatus(u32 class_mask, u32 status);
+    Voice *FindIdleVoice(void);
+    i32 StopAll(i32 mode);
+    i32 PlayTrack(u32 class_mask);
+    i32 PlayTrack(u32 class_mask, u32 unused);
+    void Process(f32 delta);
 };
+STATIC_ASSERT(sizeof(NuMusic::Track) == 0x3c);
+STATIC_ASSERT(offsetof(NuMusic::Track, ident) == 0x08);
+STATIC_ASSERT(offsetof(NuMusic::Track, file_indexes) == 0x0c);
+STATIC_ASSERT(offsetof(NuMusic::Track, clazz) == 0x14);
+STATIC_ASSERT(offsetof(NuMusic::Track, start_offset) == 0x24);
+STATIC_ASSERT(offsetof(NuMusic::Track, entry_times) == 0x18);
+STATIC_ASSERT(offsetof(NuMusic::Track, entry_count) == 0x1c);
+STATIC_ASSERT(offsetof(NuMusic::Track, entry_index) == 0x20);
+STATIC_ASSERT(offsetof(NuMusic::Track, flags) == 0x38);
+STATIC_ASSERT(sizeof(NuMusic::Voice) == 0x34);
+STATIC_ASSERT(offsetof(NuMusic::Voice, tracks) == 0x04);
+STATIC_ASSERT(offsetof(NuMusic::Voice, track_index) == 0x14);
+STATIC_ASSERT(offsetof(NuMusic::Voice, status) == 0x18);
+STATIC_ASSERT(offsetof(NuMusic::Voice, track_sub) == 0x0c);
+STATIC_ASSERT(offsetof(NuMusic::Voice, gain) == 0x1c);
+STATIC_ASSERT(offsetof(NuMusic::Voice, play_time) == 0x2c);
+STATIC_ASSERT(offsetof(NuMusic::Voice, flags) == 0x30);
 STATIC_ASSERT(sizeof(NuMusic::Album) == 0x24);
 STATIC_ASSERT(offsetof(NuMusic::Album, name) == 0);
 STATIC_ASSERT(offsetof(NuMusic::Album, tracks) == 0x0c);
 STATIC_ASSERT(offsetof(NuMusic, albums) == 0);
 STATIC_ASSERT(offsetof(NuMusic, album_count) == 4);
+STATIC_ASSERT(offsetof(NuMusic, extra_tracks) == 0x08);
+STATIC_ASSERT(offsetof(NuMusic, extra_track_count) == 0x0c);
+STATIC_ASSERT(offsetof(NuMusic, voices) == 0x130);
 STATIC_ASSERT(offsetof(NuMusic, master_volume) == 0x198);
 STATIC_ASSERT(offsetof(NuMusic, fader_current) == 0x19c);
 STATIC_ASSERT(offsetof(NuMusic, fader_target) == 0x1a0);
 STATIC_ASSERT(offsetof(NuMusic, fader_rate) == 0x1a4);
 STATIC_ASSERT(offsetof(NuMusic, duck_current) == 0x1ac);
 STATIC_ASSERT(offsetof(NuMusic, class_volumes) == 0x1b4);
+STATIC_ASSERT(offsetof(NuMusic, track_index) == 0x1d0);
+STATIC_ASSERT(offsetof(NuMusic, album) == 0x1d8);
 STATIC_ASSERT(offsetof(NuMusic, fileinfo) == 0x1dc);
 STATIC_ASSERT(offsetof(NuMusic, file_count) == 0x1e0);
 extern NuMusic music_man;
 extern NuMusic *the_music_player;
+void SetAudioFadeLevel(f32 level);
+f32 GetAudioFadeLevel(void);
 #endif
 
 #endif

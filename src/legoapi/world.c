@@ -13,6 +13,24 @@ WORLDINFO *WorldInfo_CurrentlyLoading(void) {
     return LWORLD;
 }
 
+void __cdecl edbitsRegisterBaseScene(NUGSCN *scene) {
+    edbits_base_scene = scene;
+}
+
+void __cdecl edanimRegisterBaseScene(NUGSCN *scene) {
+    (void)scene;
+}
+
+void __cdecl edbitsRegisterBaseTerrain(void *terrain) {
+    edbits_base_terrain = terrain;
+}
+
+void __cdecl WorldInfo_Register(WORLDINFO *world) {
+    edbitsRegisterBaseScene(world->current_gscn);
+    edanimRegisterBaseScene(world->current_gscn);
+    edbitsRegisterBaseTerrain(world->terrain);
+}
+
 i32 __cdecl WorldInfo_OtherLevel(WORLDINFO *world) {
     WORLDINFO *other = &WorldInfo[0];
     if (world == &WorldInfo[0]) {

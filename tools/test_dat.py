@@ -21,6 +21,20 @@ VALID_CASES = (
 
 
 def write_fixtures(directory):
+    (directory / "HOST.BIN").write_bytes(b"host\0io!")
+    (directory / "EMPTY.BIN").write_bytes(b"")
+    for version, header_size in enumerate((12, 20, 24)):
+        pak = bytearray(256)
+        struct.pack_into("<III", pak, 0, 0x12345678 + version, 3, len(pak))
+        items = ((128, 192, 5, 4, 0x80, 0, 0),
+                 (136, 208, 16, (8, 16, 0)[version], 0x101, 0, 0),
+                 (160, 240, 6, 2, 0x83, 0, 0))
+        for index, item in enumerate(items):
+            struct.pack_into("<7I", pak, header_size + index * 28, *item)
+        for offset, data in ((128, b"DROP\0"), (136, b"keep.bin\0"), (160, b"OLD.BIN\0"),
+                             (192, b"trash"), (208, b"keep-payload-123"), (240, b"unused")):
+            pak[offset:offset + len(data)] = data
+        (directory / f"PAK{version}.BIN").write_bytes(pak)
     # Sorted keys/file records intentionally disagree with the discarded tree order.
     metadata = struct.pack("<ii", -3, 2)
     metadata += struct.pack("<iiii", 2, 4, 4, 0) + struct.pack("<iiii", 1, 4, 4, 0)
@@ -98,6 +112,7 @@ class DatParserTests(unittest.TestCase):
             expected += [f"PASS rejected {name} buffered={buffered}"
                          for buffered in (0, 1) for name in malformed]
             expected.append("PASS memory-file read seek close")
+            expected += [f"PASS file-pak version={version}" for version in range(3)]
             expected.append("PASS synthetic version -3 DAT parser smoke")
             self.assertEqual(output.splitlines(), expected)
 

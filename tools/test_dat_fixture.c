@@ -32,6 +32,9 @@ PC_NUDATFILEINFO *unpack_file_info;
 NUDATOPENFILEINFO *unpack_file_odi;
 i64 unpack_file_pos;
 i32 decode_buffer_left;
+i32 nufile_lasterror;
+i32 nufile_try_packed;
+i32 fpk_err;
 i32 PCThreadCriticalSectionCount_candidate;
 CRITICAL_SECTION PCThreadCriticalSections_candidate[13];
 i32 PCFrameCriticalSectionIndex_candidate;
@@ -87,6 +90,71 @@ static int exercise_members(NUDATHDR *header, i32 base_offset) {
         NuFileClose(members[i]);
         REQUIRE(header->open_files[i].info_idx == -1 && pc_dat_file_infos[i].is_used == 0);
     }
+    return 0;
+}
+
+static int exercise_loaders(NUDATHDR *header) {
+    static const char host_payload[8] = {'h', 'o', 's', 't', 0, 'i', 'o', '!'};
+    NUDATHDR *previous = curr_dat;
+    char output[16];
+    VARIPTR buffer, end;
+    i32 index;
+
+    memset(output, 0xa5, sizeof(output));
+    nufile_lasterror = 777;
+    REQUIRE(NuDatFileLoadBuffer(header, "D\\A.BIN", output, sizeof(output)) == 4);
+    REQUIRE(nufile_lasterror == 0 && memcmp(output, "ABCD", 4) == 0);
+    REQUIRE((u8)output[4] == 0xa5);
+    REQUIRE(NuDatFileLoadBuffer(header, "D\\A.BIN", output, 3) == 0);
+    REQUIRE(nufile_lasterror == -1);
+    REQUIRE(NuDatFileLoadBuffer(header, "ABSENT.BIN", output, sizeof(output)) == 0);
+    REQUIRE(nufile_lasterror == 0);
+
+    curr_dat = header;
+    header->mode = 3;
+    REQUIRE(NuFileLoadBuffer("D\\B.BIN", output, sizeof(output)) == 4);
+    REQUIRE(nufile_lasterror == 0 && memcmp(output, "wxyz", 4) == 0);
+    header->mode = 0;
+    buffer.char_ptr = output;
+    end.char_ptr = output + sizeof(output);
+    REQUIRE(NuFileLoadBufferVP("D\\A.BIN", &buffer, &end) == 4);
+    REQUIRE(buffer.char_ptr == output + 4 && memcmp(output, "ABCD", 4) == 0);
+    REQUIRE(NuFileLoadBufferVP("D\\B.BIN", &buffer, &end) == 4);
+    REQUIRE(buffer.char_ptr == output + 8 && memcmp(output, "ABCDwxyz", 8) == 0);
+    end.char_ptr = buffer.char_ptr + 3;
+    REQUIRE(NuFileLoadBufferVP("D\\B.BIN", &buffer, &end) == 0);
+    REQUIRE(buffer.char_ptr == output + 8 && nufile_lasterror == -1);
+
+    /* Unsupported PC decoding must fail without entering a retry loop. */
+    header->file_info[0].compression_mode = 2;
+    REQUIRE(NuFileLoadBuffer("D\\B.BIN", output, sizeof(output)) == 0);
+    REQUIRE(nufile_lasterror == -1);
+    header->file_info[0].compression_mode = 3;
+    REQUIRE(NuFileLoadBuffer("D\\B.BIN", output, sizeof(output)) == 4);
+    REQUIRE(nufile_lasterror == 0 && memcmp(output, "wxyz", 4) == 0);
+    header->file_info[0].compression_mode = 0;
+
+    REQUIRE(NuFileLoadBuffer("HOST.BIN", output, sizeof(output)) == sizeof(host_payload));
+    REQUIRE(nufile_lasterror == 0 && memcmp(output, host_payload, sizeof(host_payload)) == 0);
+    REQUIRE(NuFileLoadBuffer("HOST.BIN", output, sizeof(host_payload) - 1) == 0);
+    REQUIRE(nufile_lasterror == -1);
+    REQUIRE(NuFileLoadBuffer("EMPTY.BIN", output, sizeof(output)) == 0);
+    REQUIRE(nufile_lasterror == -1);
+    REQUIRE(NuFileLoadBuffer("ABSENT.BIN", output, sizeof(output)) == 0);
+    REQUIRE(nufile_lasterror == -2);
+    nufile_try_packed = 1;
+    REQUIRE(NuFileLoadBuffer("HOST.BIN", output, sizeof(output)) == 0);
+    REQUIRE(nufile_lasterror == -1);
+    nufile_try_packed = 0;
+    curr_dat = NULL;
+    REQUIRE(NuFileLoadBuffer("HOST.BIN", output, sizeof(output)) == sizeof(host_payload));
+    REQUIRE(nufile_lasterror == 0 && memcmp(output, host_payload, sizeof(host_payload)) == 0);
+    curr_dat = previous;
+
+    for (index = 0; index < 20; ++index)
+        REQUIRE(pc_dat_file_infos[index].is_used == 0);
+    for (index = 0; index < 8; ++index)
+        REQUIRE(header->open_files[index].info_idx == -1);
     return 0;
 }
 
@@ -151,6 +219,7 @@ static int exercise(const char *path, i32 base_offset, i32 buffered, int want_si
         REQUIRE(memcmp(payload, expected_payloads[i], 4) == 0);
     }
     REQUIRE(exercise_members(header, base_offset) == 0);
+    REQUIRE(exercise_loaders(header) == 0);
     for (i = 0; i < 8; ++i) {
         if (header->open_files[i].dat_file != 0)
             NuFileClose(header->open_files[i].dat_file);
@@ -220,6 +289,82 @@ static int exercise_memory_file(void) {
     return 0;
 }
 
+static int exercise_file_pak(i32 version) {
+    union {
+        u32 alignment;
+        u8 bytes[512];
+    } storage;
+    u8 original[256];
+    char *paths[3] = {"PAK0.BIN", "PAK1.BIN", "PAK2.BIN"};
+    PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)storage.bytes;
+    PC_FILEPAKITEM *items;
+    void *address;
+    i32 size, reclaimed;
+
+    REQUIRE(NuFileLoadBuffer(paths[version], storage.bytes, sizeof(storage.bytes)) == sizeof(original));
+    memcpy(original, storage.bytes, sizeof(original));
+    REQUIRE(header->type == 0x12345678u + version && header->item_count == 3);
+    switch (version) {
+        case 0:
+            items = (PC_FILEPAKITEM *)(header + 1);
+            break;
+        case 1:
+            items = (PC_FILEPAKITEM *)((PC_FILEPAKHDR_V1 *)header + 1);
+            break;
+        default:
+            items = (PC_FILEPAKITEM *)((PC_FILEPAKHDR *)header + 1);
+            break;
+    }
+    fpk_err = 5;
+    REQUIRE(NuFilePakGetLastError() == 5 && fpk_err == 5);
+    REQUIRE(NuFilePakGetSize(header) == sizeof(original) && NuFilePakGetLastError() == 0);
+    REQUIRE(NuFilePakGetItem(header, "drop") == 1);
+    REQUIRE(NuFilePakGetItem(header, "KEEP.BIN") == 2);
+    REQUIRE(NuFilePakGetItem(header, "old.bin") == 0);
+    REQUIRE(NuFilePakGetItem(header, "ABSENT") == 0 && fpk_err == 0);
+    address = storage.bytes;
+    size = -777;
+    REQUIRE(NuFilePakGetItemInfo(header, 0, &address, &size) == 0);
+    REQUIRE(NuFilePakGetItemInfo(header, -1, &address, &size) == 0);
+    REQUIRE(NuFilePakGetItemInfo(header, 4, &address, &size) == 0);
+    REQUIRE(NuFilePakGetItemInfo(header, 3, &address, &size) == 0);
+    REQUIRE(address == storage.bytes && size == -777);
+    REQUIRE(NuFilePakGetItemInfo(header, 2, NULL, NULL) == 1);
+    REQUIRE(NuFilePakGetItemInfo(header, 2, &address, &size) == 1);
+    REQUIRE(address == storage.bytes + 208 && size == 16);
+    REQUIRE(memcmp(address, "keep-payload-123", size) == 0);
+    REQUIRE(NuFilePakSetItemRequired(header, 0, 1) == 0);
+    REQUIRE(NuFilePakSetItemRequired(header, 4, 1) == 0);
+    REQUIRE(NuFilePakSetItemRequired(header, 3, 0) == 1 && items[2].flags == 0x83);
+    REQUIRE(NuFilePakSetItemRequired(header, 1, 3) == 1 && items[0].flags == 0x81);
+    REQUIRE(NuFilePakSetItemRequired(header, 1, 2) == 1 && items[0].flags == 0x80);
+    if (version == 1) {
+        header->type = 0xdeadbeef;
+        REQUIRE(NuFilePakGetItem(header, "KEEP.BIN") == 2);
+        header->type = 0x12345679;
+    }
+
+    NuFilePakRelocate(storage.bytes, storage.bytes + 4);
+    REQUIRE(memcmp(storage.bytes + 4, original, sizeof(original)) == 0);
+    REQUIRE(NuFilePakGetItem(storage.bytes + 4, "KEEP.BIN") == 2);
+    NuFilePakRelocate(storage.bytes + 4, storage.bytes);
+    REQUIRE(memcmp(storage.bytes, original, sizeof(original)) == 0);
+    reclaimed = version == 1 ? 0 : 8;
+    REQUIRE(NuFilePakCondense(header) == reclaimed);
+    REQUIRE(NuFilePakGetSize(header) == sizeof(original) - reclaimed);
+    REQUIRE(items[0].flags == 0x82 && items[1].flags == 0x101 && items[2].flags == 0x83);
+    REQUIRE(items[1].data_offset == 208 - reclaimed);
+    REQUIRE(NuFilePakGetItem(header, "drop") == 0);
+    REQUIRE(NuFilePakGetItemInfo(header, 2, &address, &size) == 1 && size == 16);
+    REQUIRE(memcmp(address, "keep-payload-123", size) == 0);
+    REQUIRE(NuFilePakCondense(header) == 0);
+    REQUIRE(NuFilePakGetSize(header) == sizeof(original) - reclaimed);
+    header->item_count = 0;
+    REQUIRE(NuFilePakGetItem(header, "keep.bin") == 0 && NuFilePakCondense(header) == 0);
+    printf("PASS file-pak version=%d\n", version);
+    return 0;
+}
+
 int main(int argc, char **argv) {
     static const char *paths[] = {"TINY.DAT", "NEGPOS.DAT", "OFFSET.DAT", "LONG_NAMED_FIXTURE.DAT"};
     unsigned char untouched[512];
@@ -262,6 +407,8 @@ int main(int argc, char **argv) {
     for (i = 0; i < 32; ++i)
         REQUIRE(pc_file_handles[i] == INVALID_HANDLE_VALUE);
     REQUIRE(exercise_memory_file() == 0);
+    for (i = 0; i < 3; ++i)
+        REQUIRE(exercise_file_pak(i) == 0);
     DeleteCriticalSection(&PCThreadCriticalSections_candidate[file_criticalsection]);
     puts("PASS synthetic version -3 DAT parser smoke");
     return 0;

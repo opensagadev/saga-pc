@@ -4,6 +4,23 @@
 
 extern i32 old_line_pos;
 
+void __cdecl NuFParGetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position) {
+    position->line_number = parser->line_number;
+    position->line_position = parser->line_position;
+    position->character_position = parser->character_position;
+    position->buffer_start = parser->buffer_start;
+    position->buffer_end = parser->buffer_end;
+}
+
+void __cdecl NuFParSetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position) {
+    parser->character_position = position->character_position;
+    parser->line_position = position->line_position;
+
+    if (parser->character_position < parser->buffer_start || parser->character_position > parser->buffer_end) {
+        parser->buffer_end = parser->character_position - 1;
+    }
+}
+
 static NUFPAR_PC *NuAllocFPar(void) {
     i32 index;
 
@@ -113,6 +130,42 @@ NUFPAR_PC *__cdecl NuFParCreate(char *file_name) {
 
     NuStrCpy(parser->file_name, file_name);
     return parser;
+}
+
+void __cdecl NuFParSuspend(NUFPAR_PC *parser) {
+    NUFILE file_handle = parser->file_handle;
+
+    if (file_handle >= 0x400 && file_handle < 0x800) {
+        return;
+    }
+
+    if (parser->file_name[0] == '\0' || file_handle == 0) {
+        NuFileError();
+    }
+
+    NuFileClose(file_handle);
+    parser->file_handle = 0;
+}
+
+void __cdecl NuFParResume(NUFPAR_PC *parser) {
+    NUFILE file_handle;
+
+    if (parser->file_handle >= 0x400 && parser->file_handle < 0x800) {
+        return;
+    }
+
+    if (parser->file_name[0] == '\0') {
+        NuFileError();
+    }
+
+    file_handle = NuFileOpenDF(parser->file_name, 0, curr_dat, 0);
+    parser->file_handle = file_handle;
+    if (file_handle == 0) {
+        NuFileError();
+    }
+
+    (void)NuFileSeek(file_handle, parser->character_position, 0);
+    parser->buffer_end = parser->character_position - 1;
 }
 
 void __cdecl NuFParDestroy(NUFPAR_PC *parser) {
@@ -461,18 +514,172 @@ i32 __cdecl NuFParGetWord(NUFPAR_PC *parser) {
     return length;
 }
 
+typedef void(__cdecl *LEVELSETDEFAULTS_PC)(LEVELDATA_PC *level);
+
 LEVELDATA_PC *__cdecl Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
                                            i32 *count_out, void *set_defaults_fn) {
-    (void)path;
-    (void)buffer;
-    (void)buffer_end;
-    (void)max_count;
-    (void)count_out;
-    (void)set_defaults_fn;
+    NUFPAR_PC *parser;
+    LEVELDATA_PC *level_data;
+    LEVELDATA_PC *current_level;
+    i32 in_level_config = 0;
+    i32 level_count = 0;
+    u32 aligned_address;
 
-    /* PC parsing depends on NuFPar and the still-unrecovered LEVELDATA_PC fields. */
-    STUBBED_NAMED("Levels_ConfigureList: NuFPar parser and full PC level record mapping");
-    return NULL;
+    parser = NuFParCreate(path);
+    MAXLDATA = max_count;
+    aligned_address = (buffer->addr + 3) & ~3u;
+    buffer->addr = aligned_address;
+    level_data = (LEVELDATA_PC *)buffer->void_ptr;
+    current_level = level_data;
+
+    while (NuFParGetLine(parser) != 0) {
+        char *word;
+
+        NuFParGetWord(parser);
+        word = parser->word_buffer_ptr;
+        if (word[0] == '\0') {
+            continue;
+        }
+
+        if (in_level_config) {
+            if (NuStrICmp(word, LevelConfigKeywordEnd) == 0) {
+                in_level_config = 0;
+                if (current_level->dir[0] == '\0' || current_level->name[0] == '\0' ||
+                    (current_level->flags & 0x200) != 0) {
+                    continue;
+                }
+
+                if ((current_level->flags & 0x10000) != 0) {
+                    NEWGAME_LDATA = current_level;
+                }
+                if ((current_level->flags & 0x20000) != 0) {
+                    LOADGAME_LDATA = current_level;
+                }
+
+                level_count++;
+                current_level++;
+                continue;
+            }
+
+            if (NuStrICmp(word, LevelConfigKeywordDir) == 0) {
+                if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < 0x40) {
+                    NuStrCpy(current_level->dir, parser->word_buffer_ptr);
+                }
+            } else if (NuStrICmp(word, LevelConfigKeywordFile) == 0) {
+                if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < 0x20) {
+                    NuStrCpy(current_level->name, parser->word_buffer_ptr);
+                }
+            }
+
+            if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordTest) == 0) {
+                current_level->flags |= 0x200;
+            } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordIntro) == 0) {
+                current_level->flags |= 0x20;
+            } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordMidtro) == 0 ||
+                       NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordCutscene) == 0) {
+                current_level->flags |= 0x40;
+            } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordOutro) == 0) {
+                current_level->flags |= 0x80;
+            } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordStatus) == 0) {
+                current_level->flags &= ~0x2u;
+                current_level->flags &= ~0x8u;
+                current_level->flags |= 0x400;
+            } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordNewGame) == 0) {
+                if (NEWGAME_LDATA == NULL) {
+                    current_level->flags |= 0x10000;
+                }
+            } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordLoadGame) == 0) {
+                if (LOADGAME_LDATA == NULL) {
+                    current_level->flags |= 0x20000;
+                }
+            }
+            continue;
+        }
+
+        if (NuStrICmp(word, LevelConfigKeywordStart) == 0 && level_count < MAXLDATA) {
+            i32 music_index;
+
+            current_level->dir[0] = '\0';
+            current_level->name[0] = '\0';
+            current_level->unknown_0060 = -1;
+            current_level->index = (i16)level_count;
+            current_level->flags = 0xe;
+            current_level->callbacks[0] = NULL;
+            current_level->callbacks[1] = NULL;
+            current_level->callbacks[2] = NULL;
+            current_level->callbacks[3] = NULL;
+            current_level->callbacks[4] = NULL;
+            current_level->callbacks[5] = NULL;
+            current_level->callbacks[6] = NULL;
+
+            current_level->display.value_00 = PCKeyboardDefaultValue_candidate;
+            current_level->display.value_04 = 0.15f;
+            current_level->display.value_08 = 20000;
+            current_level->display.colors[0] = 0;
+            current_level->display.colors[1] = 0;
+            current_level->display.colors[2] = 0;
+            current_level->display.colors[3] = 0;
+            current_level->display.colors[4] = 0;
+            current_level->display.colors[5] = 0;
+
+            current_level->music_index = -1;
+            current_level->unknown_0096 = -1;
+            current_level->max_ter_platforms = 0x80;
+            current_level->max_ter_groups = 0x100;
+            current_level->unknown_009c = -1;
+            current_level->unknown_009e = -1;
+            current_level->mode = 3;
+            current_level->alpha = 0x7f;
+            current_level->unknown_00a2 = 0xff;
+            current_level->area_index = -1;
+            current_level->camera_distance = 0.0f;
+            current_level->hover_distance = 0.0f;
+
+            current_level->unknown_00ac[0] = 0x50;
+            current_level->unknown_00ac[1] = 0x50;
+            current_level->unknown_00ac[2] = 0x50;
+            current_level->unknown_00ac[3] = 0x32;
+            current_level->unknown_00ac[4] = 0;
+            current_level->unknown_00ac[5] = 0;
+            current_level->unknown_00ac[6] = 0;
+            current_level->unknown_00ac[7] = 0;
+
+            current_level->unknown_00b4[0] = 0.5f;
+            current_level->unknown_00b4[1] = 0.5f;
+            current_level->unknown_00b4[2] = 0.5f;
+            current_level->unknown_00b4[3] = LevelConfigFarDistance;
+            current_level->area_level_index = -1;
+            current_level->unknown_00c9[0] = 5;
+            current_level->unknown_00c9[1] = 10;
+            current_level->unknown_00c9[2] = 5;
+            current_level->unknown_00c9[3] = 5;
+            current_level->unknown_00c9[4] = 10;
+            current_level->unknown_00c9[5] = 5;
+            current_level->unknown_00c9[6] = 5;
+            current_level->conveyor_speed = LevelConfigFarDistance;
+            current_level->conveyor_width = LevelConfigFarDistance;
+
+            for (music_index = 0; music_index < 6; music_index++) {
+                current_level->music_tracks[music_index] = -1;
+            }
+
+            in_level_config = 1;
+            if (set_defaults_fn != NULL) {
+                ((LEVELSETDEFAULTS_PC)set_defaults_fn)(current_level);
+            }
+        }
+    }
+
+    NuFParDestroy(parser);
+    if (level_count == 0) {
+        return NULL;
+    }
+
+    buffer_end->void_ptr = current_level;
+    if (count_out != NULL) {
+        *count_out = level_count;
+    }
+    return level_data;
 }
 
 AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
