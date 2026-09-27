@@ -1,5 +1,10 @@
 #include "saga.h"
 
+struct SoundQueue;
+#pragma bss_seg(".bss$NuSound3StereoStreams")
+SoundQueue *NuSound3StereoStreams[2];
+#pragma bss_seg()
+
 // Startup and main-loop state; defaults follow the PC executable.
 i32 ChallengeMode;
 i32 GAMEDEMO;
@@ -50,6 +55,10 @@ i32 NetPaused;
 i32 FinishLoop_On = 1;
 i32 LevelChange;
 i32 LevelChangesInArea;
+i32 do_multiframe_update;
+#pragma bss_seg(".bss$MainFrameCounters")
+MAINFRAMECOUNTERS MainFrameCounters;
+#pragma bss_seg()
 i32 Arcade;
 i32 hub_from_arcade = -1;
 i32 UsePlayerList;
@@ -76,8 +85,123 @@ extern "C" {
 #pragma bss_seg(".bss$NuSound3Reverb")
     u8 NuSound3Reverb;
 #pragma bss_seg()
-    extern const f64 NuSound3LoopHoldTimeMultiplier = 1000.0;
+    extern const f64 NuScale1000 = 1000.0;
     i32 NuSound3LoopHoldTime = 133;
+    i32 NuSound3VolumeOffset = -300;
+#pragma bss_seg(".bss$NuSound3VolumeTable")
+    f32 NuSound3VolumeTable[0x4000];
+#pragma bss_seg()
+#pragma bss_seg(".bss$ADataList")
+    AREA_DATA_PC *ADataList;
+#pragma bss_seg()
+    f32 PanelProjectionX = 1222.0f;
+    f32 PanelProjectionY = 1145.0f;
+    f32 PanelWideWidth = 740.0f;
+    f32 PanelWideHeight = 387.5f;
+#pragma bss_seg(".bss$Panel3DMulX")
+    f32 PANEL3DMULX;
+#pragma bss_seg()
+#pragma bss_seg(".bss$Panel3DMulY")
+    f32 PANEL3DMULY;
+#pragma bss_seg()
+    LANGUAGEDATA Game_LanguageList[7] = {{1, 0}, {2, 0}, {4, 0}, {5, 0}, {3, 0}, {8, 0}, {-1, 0}};
+    LANGUAGEDATA Text_LanguageList_Default[7] = {{1, 0}, {2, 0}, {4, 0}, {5, 0}, {3, 0}, {8, 0}, {-1, 0}};
+    LANGUAGEDATA *Text_LanguageList = Text_LanguageList_Default;
+    i32 LANGUAGECOUNT = 6;
+    i32 Text_Language = 1;
+    i32 INTROTEXT_ID = -1;
+    void *Text_AppFont;
+    char **TTab_Original;
+    char **TTab;
+    i32 Text_MaxStrings_Overall;
+    u32 *Text_StringBits;
+#pragma const_seg(".rdata$Text_ErrorText")
+    extern const char Text_ErrorText[7] = "Err...";
+#pragma const_seg()
+#pragma const_seg(".rdata$Text_UnknownText")
+    extern const char Text_UnknownText[2] = "?";
+#pragma const_seg()
+#pragma const_seg(".rdata$Text_PathEnglishText")
+    extern const char Text_PathEnglishText[8] = "english";
+#pragma const_seg()
+#pragma const_seg(".rdata$Text_PathFrenchText")
+    extern const char Text_PathFrenchText[7] = "french";
+#pragma const_seg()
+#pragma const_seg(".rdata$Text_PathGermanText")
+    extern const char Text_PathGermanText[7] = "german";
+#pragma const_seg()
+#pragma const_seg(".rdata$Text_PathItalianText")
+    extern const char Text_PathItalianText[8] = "italian";
+#pragma const_seg()
+#pragma const_seg(".rdata$Text_PathSpanishText")
+    extern const char Text_PathSpanishText[8] = "spanish";
+#pragma const_seg()
+#pragma const_seg(".rdata$Text_PathDanishText")
+    extern const char Text_PathDanishText[7] = "danish";
+#pragma const_seg()
+#pragma const_seg(".rdata$Text_PathJapaneseText")
+    extern const char Text_PathJapaneseText[9] = "japanese";
+#pragma const_seg()
+#pragma const_seg(".rdata$Text_EnglishName")
+    extern const char Text_EnglishName[8] = "English";
+#pragma const_seg()
+#pragma const_seg(".rdata$Text_FrenchName")
+    extern const char Text_FrenchName[10] = "Fran\xc3\xa7"
+                                            "ais";
+#pragma const_seg()
+#pragma const_seg(".rdata$Text_GermanName")
+    extern const char Text_GermanName[8] = "Deutsch";
+#pragma const_seg()
+#pragma const_seg(".rdata$Text_ItalianName")
+    extern const char Text_ItalianName[9] = "Italiano";
+#pragma const_seg()
+#pragma const_seg(".rdata$Text_SpanishName")
+    extern const char Text_SpanishName[9] = "Espa\xc3\xb1"
+                                            "ol";
+#pragma const_seg()
+#pragma const_seg(".rdata$Text_DanishName")
+    extern const char Text_DanishName[6] = "Dansk";
+#pragma const_seg()
+    char *Text_ErrorString = const_cast<char *>(Text_ErrorText);
+    char *txt_NULL = const_cast<char *>(Text_UnknownText);
+    char *txt_UNKNOWN = const_cast<char *>(Text_UnknownText);
+    char *Text_PathEnglish = const_cast<char *>(Text_PathEnglishText);
+    char *Text_PathFrench = const_cast<char *>(Text_PathFrenchText);
+    char *Text_PathGerman = const_cast<char *>(Text_PathGermanText);
+    char *Text_PathItalian = const_cast<char *>(Text_PathItalianText);
+    char *Text_PathSpanish = const_cast<char *>(Text_PathSpanishText);
+    char *Text_PathDanish = const_cast<char *>(Text_PathDanishText);
+    char *Text_PathJapanese = const_cast<char *>(Text_PathJapaneseText);
+    char *apitxt_ENGLISH = const_cast<char *>(Text_EnglishName);
+    char *apitxt_FRENCH = const_cast<char *>(Text_FrenchName);
+    char *apitxt_GERMAN = const_cast<char *>(Text_GermanName);
+    char *apitxt_ITALIAN = const_cast<char *>(Text_ItalianName);
+    char *apitxt_SPANISH = const_cast<char *>(Text_SpanishName);
+    char *apitxt_DANISH = const_cast<char *>(Text_DanishName);
+#pragma bss_seg(".bss$tNULL")
+    i16 tNULL;
+#pragma bss_seg()
+#pragma bss_seg(".bss$tUNKNOWN")
+    i16 tUNKNOWN;
+#pragma bss_seg()
+#pragma bss_seg(".bss$tENGLISH")
+    i16 tENGLISH;
+#pragma bss_seg()
+#pragma bss_seg(".bss$tFRENCH")
+    i16 tFRENCH;
+#pragma bss_seg()
+#pragma bss_seg(".bss$tGERMAN")
+    i16 tGERMAN;
+#pragma bss_seg()
+#pragma bss_seg(".bss$tITALIAN")
+    i16 tITALIAN;
+#pragma bss_seg()
+#pragma bss_seg(".bss$tSPANISH")
+    i16 tSPANISH;
+#pragma bss_seg()
+#pragma bss_seg(".bss$tDANISH")
+    i16 tDANISH;
+#pragma bss_seg()
 
 // NuWaterReset writes these standalone four-byte PC globals.
 #pragma bss_seg(".bss$NuWaterResetState")
@@ -89,6 +213,21 @@ extern "C" {
 #pragma bss_seg(".bss$NuTimeTickBase")
     i64 NuTime_TickBase;
 #pragma bss_seg()
+#pragma bss_seg(".bss$NuTimePerformanceFrequency")
+    i64 NuTime_PerformanceFrequency;
+#pragma bss_seg()
+#pragma const_seg(".rdata$NuTimeLowScale")
+    extern const f64 NuTime_LowScale = 4294967295.0;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeMicroScale")
+    extern const f64 NuTime_MicroScale = 1000000.0;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeScanlineScale")
+    extern const f64 NuTime_ScanlineScale = 272.0;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeRefreshRate")
+    extern const f64 NuTime_RefreshRate = 60.0;
+#pragma const_seg()
     void (*nuapi_endframe_callbackfn)(void);
     u8 fstackmem[NU_PORTAL_STACK_SIZE];
     VARIPTR fstack;
@@ -133,7 +272,9 @@ VARIPTR editbuffer_end;
 
 WORLDINFO WorldInfo[2] = {0};
 WORLDINFO *WORLD = &WorldInfo[0];
+#pragma data_seg(".data$LWorld")
 WORLDINFO *LWORLD = &WorldInfo[0];
+#pragma data_seg()
 
 #pragma data_seg(".data$WaitingForCharacter")
 i32 waiting_for_character = -1;

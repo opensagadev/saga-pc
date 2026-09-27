@@ -1,5 +1,60 @@
 #include "saga.h"
 
+void __cdecl NuTimeSub(NuTime *time, NuTime *a, NuTime *b) {
+    if (a->low >= b->low) {
+        time->low = a->low - b->low;
+        time->high = a->high - b->high;
+    } else {
+        time->low = a->low - b->low;
+        time->high = a->high - 1 - b->high;
+    }
+}
+
+void __cdecl NuTimeGetTicksPerSecondPS(u32 *low, u32 *high) {
+    *low = (u32)NuTime_PerformanceFrequency;
+    *high = (u32)(NuTime_PerformanceFrequency >> 32);
+}
+
+f32 __cdecl NuTimeSeconds(NuTime *time) {
+    u32 low;
+    u32 high;
+    f64 ticks;
+    f64 ticks_per_second;
+
+    NuTimeGetTicksPerSecondPS(&low, &high);
+    ticks = time->low + time->high * NuTime_LowScale;
+    ticks_per_second = low + high * NuTime_LowScale;
+    return (f32)(ticks / ticks_per_second);
+}
+
+f32 __cdecl NuTimeMilliSeconds(NuTime *time) {
+    u32 low;
+    u32 high;
+    f64 ticks;
+    f64 ticks_per_second;
+
+    NuTimeGetTicksPerSecondPS(&low, &high);
+    ticks = time->low + time->high * NuTime_LowScale;
+    ticks_per_second = low + high * NuTime_LowScale;
+    return (f32)(ticks / ticks_per_second * NuScale1000);
+}
+
+f32 __cdecl NuTimeMicroSeconds(NuTime *time) {
+    u32 low;
+    u32 high;
+    f64 ticks;
+    f64 ticks_per_second;
+
+    NuTimeGetTicksPerSecondPS(&low, &high);
+    ticks = time->low + time->high * NuTime_LowScale;
+    ticks_per_second = low + high * NuTime_LowScale;
+    return (f32)(ticks / ticks_per_second * NuTime_MicroScale);
+}
+
+f32 __cdecl NuTimeScanlines(NuTime *time) {
+    return (f32)(NuTimeSeconds(time) * NuTime_ScanlineScale * NuTime_RefreshRate);
+}
+
 typedef struct TimeBarSet {
     i32 uses_buffer;
     i32 slot_count;

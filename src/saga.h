@@ -108,6 +108,63 @@ STATIC_ASSERT(offsetof(WORLDINFO, room_visibility_flag) == 0x2990);
 STATIC_ASSERT(offsetof(WORLDINFO, rooms_visible) == 0x2991);
 STATIC_ASSERT(offsetof(WORLDINFO, rooms_visible_ptr) == 0x2a94);
 
+typedef struct area_data_pc_s {
+    u8 unknown_0000[0x7a];
+    u8 flags;
+    u8 unknown_007b[0x21];
+} AREA_DATA_PC;
+STATIC_ASSERT(sizeof(AREA_DATA_PC) == 0x9c);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
+
+typedef struct main_frame_counters_s {
+    u8 warmup_frame;
+    u8 every_frame;
+    u8 alternate_frame;
+    u8 third_frame;
+    u8 fourth_frame;
+} MAINFRAMECOUNTERS;
+STATIC_ASSERT(sizeof(MAINFRAMECOUNTERS) == 5);
+
+typedef struct nuvec_s {
+    f32 x;
+    f32 y;
+    f32 z;
+} NUVEC;
+STATIC_ASSERT(sizeof(NUVEC) == 0xc);
+
+typedef struct numtx_s {
+    f32 m00, m01, m02, m03;
+    f32 m10, m11, m12, m13;
+    f32 m20, m21, m22, m23;
+    f32 m30, m31, m32, m33;
+} NUMTX;
+STATIC_ASSERT(sizeof(NUMTX) == 0x40);
+STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
+STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
+
+typedef struct nuspecial_handle_s {
+    void *scene;
+    NUMTX *special;
+    NUMTX *display_special;
+} NUSPECIALHANDLE;
+STATIC_ASSERT(sizeof(NUSPECIALHANDLE) == 0xc);
+STATIC_ASSERT(offsetof(NUSPECIALHANDLE, special) == 4);
+STATIC_ASSERT(offsetof(NUSPECIALHANDLE, display_special) == 8);
+
+typedef struct language_data_s {
+    i32 language;
+    i32 unknown_04;
+} LANGUAGEDATA;
+STATIC_ASSERT(sizeof(LANGUAGEDATA) == 8);
+
+typedef struct text_entry_s {
+    i16 *text_id;
+    i16 value;
+    i16 pad;
+} TEXTENTRY;
+STATIC_ASSERT(sizeof(TEXTENTRY) == 8);
+STATIC_ASSERT(offsetof(TEXTENTRY, value) == 4);
+
 typedef struct NUKEYCHAR_s {
     u32 key;
     u8 normal;
@@ -203,6 +260,18 @@ extern "C" {
     extern i64 NuTime_TickBase;
     void __cdecl NuTimeGetTicksPS(u32 *low, u32 *high);
     void __cdecl NuTimeGet(NuTime *time);
+    void __cdecl NuTimeSub(NuTime *time, NuTime *a, NuTime *b);
+    void __cdecl NuTimeGetTicksPerSecondPS(u32 *low, u32 *high);
+    f32 __cdecl NuTimeSeconds(NuTime *time);
+    f32 __cdecl NuTimeMilliSeconds(NuTime *time);
+    f32 __cdecl NuTimeMicroSeconds(NuTime *time);
+    f32 __cdecl NuTimeScanlines(NuTime *time);
+    extern i64 NuTime_PerformanceFrequency;
+    extern const f64 NuTime_LowScale;
+    extern const f64 NuScale1000;
+    extern const f64 NuTime_MicroScale;
+    extern const f64 NuTime_ScanlineScale;
+    extern const f64 NuTime_RefreshRate;
     void __cdecl NuTimeBarSlotReset(i32 set, i32 slot);
     void __cdecl _NuTimeBarSlotBegin(i32 set, i32 slot, const char *name);
     i32 __cdecl NuVideoGetMode(void);
@@ -217,13 +286,93 @@ extern "C" {
     i32 __cdecl NuHGobjReversibleCharacters(i32 enabled);
     i32 __cdecl NuHGobjForceShadowsOnCharacters(i32 enabled);
     extern u8 NuSound3Reverb;
-    extern const f64 NuSound3LoopHoldTimeMultiplier;
     extern i32 NuSound3LoopHoldTime;
     i32 __cdecl NuSound3SetReverb(i32 enable);
     void __cdecl NuSound3SetLoopHoldTime(f32 time);
     void __cdecl NuSound3FlushLoops(void);
     void __cdecl NuSound3StopRumble(void);
     void __cdecl NuSound3SetRumblePads(void *pad0, void *pad1);
+    void __cdecl NuSound3StopStereoStream(i32 index);
+    void __cdecl NuSound3PauseStereoStream(i32 index);
+    void __cdecl NuSound3ResumeStereoStream(i32 index);
+    i32 __cdecl NuSound3SetStreamVolume(i32 index, i32 volume);
+    i32 __cdecl NuSound3GetStereoStreamStatus(i32 index);
+    extern f32 NuSound3VolumeTable[0x4000];
+    extern i32 NuSound3VolumeOffset;
+    extern AREA_DATA_PC *ADataList;
+    extern MAINFRAMECOUNTERS MainFrameCounters;
+    extern i32 do_multiframe_update;
+    void __cdecl ResetFrameCounters(void);
+    void __cdecl UpdateFrameCounters(void);
+    void __cdecl WorldInfo_ReArrangeBuffers(i32 area1, i32 area2);
+    extern f32 PanelProjectionX;
+    extern f32 PanelProjectionY;
+    extern f32 PanelWideWidth;
+    extern f32 PanelWideHeight;
+    extern f32 PANEL3DMULX;
+    extern f32 PANEL3DMULY;
+    void __cdecl InitPanel(i32 mode);
+    extern LANGUAGEDATA Game_LanguageList[7];
+    extern LANGUAGEDATA Text_LanguageList_Default[7];
+    extern LANGUAGEDATA *Text_LanguageList;
+    extern i32 LANGUAGECOUNT;
+    extern i32 Text_Language;
+    extern void *Text_AppFont;
+    extern char **TTab_Original;
+    extern char **TTab;
+    extern i32 Text_MaxStrings_Overall;
+    extern u32 *Text_StringBits;
+    extern char *Text_ErrorString;
+    extern char *Text_PathEnglish;
+    extern char *Text_PathFrench;
+    extern char *Text_PathGerman;
+    extern char *Text_PathItalian;
+    extern char *Text_PathSpanish;
+    extern char *Text_PathDanish;
+    extern char *Text_PathJapanese;
+    extern i32 INTROTEXT_ID;
+    extern char *txt_NULL;
+    extern char *txt_UNKNOWN;
+    extern char *apitxt_ENGLISH;
+    extern char *apitxt_FRENCH;
+    extern char *apitxt_GERMAN;
+    extern char *apitxt_ITALIAN;
+    extern char *apitxt_SPANISH;
+    extern char *apitxt_DANISH;
+    extern i16 tNULL;
+    extern i16 tUNKNOWN;
+    extern i16 tENGLISH;
+    extern i16 tFRENCH;
+    extern i16 tGERMAN;
+    extern i16 tITALIAN;
+    extern i16 tSPANISH;
+    extern i16 tDANISH;
+    void __cdecl Text_InitLanguageList(LANGUAGEDATA *language_list);
+    char *__cdecl Text_GetLanguagePath(i32 language);
+    void *__cdecl Text_IsFontLoaded(void);
+    void __cdecl Text_InitStringTable(i32 count, VARIPTR *buf, VARIPTR *buf_end);
+    i32 __cdecl Text_GetMaxOverallStrings(void);
+    void __cdecl Text_InitTable(TEXTENTRY *entry, i32 first, i32 last);
+    void __cdecl Text_InsertCommasIntoNumber(char *number, char *text, i32 length);
+    void __cdecl Text_MakeScore(u32 score, char *text);
+    i32 __cdecl Text_StripComments(char *text, char *dest, i32 separators);
+    void __cdecl IntroText_SetTextID(i32 id);
+    void __cdecl Text_InitDefaultStrings(void);
+    i32 __cdecl NuStrLen(const char *text);
+    void __cdecl NuStrCat(char *str, const char *ext);
+    i32 __cdecl NuStrNCat(char *str, const char *ext, i32 n);
+    i32 __cdecl NuStrCpy(char *dst, const char *src);
+    i32 __cdecl NuStrNCpy(char *dst, const char *src, i32 n);
+    char *__cdecl NuStrChr(char *src, char c);
+    char *__cdecl NuStrRChr(char *src, char c);
+    i32 __cdecl NuStrLenU(u8 *str);
+    i32 __cdecl NuStrCmp(const char *a, const char *b);
+    i32 __cdecl NuStrNCmp(const char *a, const char *b, i32 n);
+    void __cdecl NuMtxSetTranslation(NUMTX *matrix, NUVEC *translation);
+    void __cdecl NuMtxSetScale(NUMTX *matrix, NUVEC *scale);
+    NUMTX *__cdecl NuSpecialGetMtx(NUSPECIALHANDLE *special);
+    void __cdecl NuSpecialSetMtx(NUSPECIALHANDLE *special, const NUMTX *matrix);
+    i32 __cdecl NuSpecialExistsFn(NUSPECIALHANDLE *special);
     extern i32 nu_water_reset_state;
     extern i32 nu_water_reset_status;
     void __cdecl NuWaterReset(void);

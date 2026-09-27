@@ -75,6 +75,14 @@ than treating an older handoff's counts or commit ID as current state.
 
 ## Mapping and source work
 
+Prioritize broad PC program structure and coherent portable function families
+before instruction-level byte tuning. Use the Android decomp as a source candidate,
+then check each function against PC control flow, constants, data layout and
+dependencies. Port real PC behavior even when the first build is not exact;
+record the mismatch and move on to the next connected function. The final metric
+is exact PC code coverage, but isolated tiny matches must not displace work on
+major families. Never infer a PC percentage directly from Android's percentage.
+
 `config/symbols.csv` is independent of source annotations. It has exactly four
 comma-aligned columns: `address`, `symbol`, `size`, `ctype`. Addresses are preferred
 image VAs, not RVAs or file offsets. The symbol is our exact reconstructed linker

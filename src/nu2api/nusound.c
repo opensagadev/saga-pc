@@ -20,7 +20,7 @@ i32 __cdecl NuSound3SetReverb(i32 enable) {
 }
 
 void NuSound3SetLoopHoldTime(f32 time) {
-    NuSound3LoopHoldTime = (i32)(time * NuSound3LoopHoldTimeMultiplier);
+    NuSound3LoopHoldTime = (i32)(time * NuScale1000);
 }
 
 void __cdecl NuSound3FlushLoops(void) {

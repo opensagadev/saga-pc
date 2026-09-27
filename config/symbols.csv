@@ -1,9 +1,26 @@
 address   , symbol                                                , size , ctype
 0x00492b40, _NuMain                                               , 4332 , "i32 __cdecl (i32, char **)"
+0x004badd0, _InitPanel                                            , 106  , void __cdecl (i32)
+0x004cf3c0, _Text_InitDefaultStrings                              , 177  , void __cdecl (void)
 0x004eed92, _SendMessageA@16                                      , 6    , "LRESULT __stdcall (HWND, UINT, WPARAM, LPARAM)"
 0x004f0d40, _NuDatSet                                             , 16   , NUDATHDR *__cdecl (NUDATHDR *)
 0x004f0d50, _NuDatGet                                             , 6    , NUDATHDR *__cdecl (void)
+0x004f1e80, _NuStrCat                                             , 51   , "void __cdecl (char *, const char *)"
+0x004f1ec0, _NuStrNCat                                            , 73   , "i32 __cdecl (char *, const char *, i32)"
+0x004f1f10, _NuStrCpy                                             , 42   , "i32 __cdecl (char *, const char *)"
+0x004f1f40, _NuStrNCpy                                            , 75   , "i32 __cdecl (char *, const char *, i32)"
+0x004f1f90, _NuStrChr                                             , 33   , "char *__cdecl (char *, char)"
+0x004f1fc0, _NuStrRChr                                            , 46   , "char *__cdecl (char *, char)"
+0x004f1ff0, _NuStrLen                                             , 28   , "char *__cdecl (char *, char)"
+0x004f2010, _NuStrLenU                                            , 57   , "char *__cdecl (char *, char)"
+0x004f20f0, _NuStrCmp                                             , 60   , "i32 __cdecl (const char *, const char *)"
+0x004f2130, _NuStrNCmp                                            , 103  , "i32 __cdecl (const char *, const char *, i32)"
 0x004f3bd0, _NuTimeGet                                            , 18   , void __cdecl (NuTime *)
+0x004f3bf0, _NuTimeSub                                            , 58   , "void __cdecl (NuTime *, NuTime *, NuTime *)"
+0x004f3c30, _NuTimeSeconds                                        , 102  , f32 __cdecl (NuTime *)
+0x004f3ca0, _NuTimeMicroSeconds                                   , 108  , f32 __cdecl (NuTime *)
+0x004f3d10, _NuTimeMilliSeconds                                   , 108  , f32 __cdecl (NuTime *)
+0x004f3d80, _NuTimeScanlines                                      , 35   , f32 __cdecl (NuTime *)
 0x004f4060, _NuCommandLine                                        , 24   , "void __cdecl (i32 *, char ***)"
 0x004f4fc0, _NuVideoGetMode                                       , 6    , i32 __cdecl (void)
 0x004f4fd0, _NuVideoGetAspect                                     , 6    , i32 __cdecl (void)
@@ -15,8 +32,21 @@ address   , symbol                                                , size , ctype
 0x004f5270, _NuLanguageSet                                        , 10   , void __cdecl (i32)
 0x004feb80, _NuVideoSetBrightnessPS                               , 1    , void __cdecl (void)
 0x004ffb20, _NuTimeGetTicksPS                                     , 111  , "void __cdecl (u32 *, u32 *)"
+0x004ffb90, _NuTimeGetTicksPerSecondPS                            , 29   , "void __cdecl (u32 *, u32 *)"
 0x005476e0, _StartPerm                                            , 23   , void __cdecl (void)
 0x00547700, _EndPerm                                              , 124  , void __cdecl (void)
+0x00549430, _ResetFrameCounters                                   , 30   , void __cdecl (void)
+0x00549450, _UpdateFrameCounters                                  , 119  , void __cdecl (void)
+0x0054b540, _Text_InitLanguageList                                , 49   , void __cdecl (LANGUAGEDATA *)
+0x0054b5a0, _Text_GetLanguagePath                                 , 96   , char *__cdecl (i32)
+0x0054b640, _Text_IsFontLoaded                                    , 6    , void *__cdecl (void)
+0x0054b650, _Text_InitStringTable                                 , 111  , "void __cdecl (i32, VARIPTR *, VARIPTR *)"
+0x0054b6c0, _Text_GetMaxOverallStrings                            , 6    , i32 __cdecl (void)
+0x0054b9d0, _Text_InitTable                                       , 173  , "void __cdecl (TEXTENTRY *, i32, i32)"
+0x0054ba80, _Text_InsertCommasIntoNumber                          , 165  , "void __cdecl (char *, char *, i32)"
+0x0054bb30, _Text_MakeScore                                       , 132  , "void __cdecl (u32, char *)"
+0x0054be70, _Text_StripComments                                   , 141  , "i32 __cdecl (char *, char *, i32)"
+0x0054bf00, _IntroText_SetTextID                                  , 26   , void __cdecl (i32)
 0x0054fa60, ?qrand@@YAHXZ                                         , 25   , i32 __cdecl (void)
 0x0054fa80, ?getqseed@@YAHXZ                                      , 6    , i32 __cdecl (void)
 0x0054fa90, ?ResetSeeds@@YAXXZ                                    , 61   , void __cdecl (void)
@@ -24,8 +54,11 @@ address   , symbol                                                , size , ctype
 0x0055f430, _WorldInfo_InitOnce                                   , 21   , void __cdecl (void)
 0x0055f450, _WorldInfo_CurrentlyActive                            , 6    , WORLDINFO *__cdecl (void)
 0x0055f460, _WorldInfo_CurrentlyLoading                           , 6    , WORLDINFO *__cdecl (void)
+0x0055f470, _WorldInfo_ReArrangeBuffers                           , 132  , "void __cdecl (i32, i32)"
 0x0055f500, _WorldInfo_OtherLevel                                 , 36   , i32 __cdecl (WORLDINFO *)
 0x0055f560, _WorldInfo_UpdateRoomVisibility                       , 103  , "void __cdecl (WORLDINFO *, i32)"
+0x005b4500, _NuMtxSetTranslation                                  , 68   , "void __cdecl (NUMTX *, NUVEC *)"
+0x005b45a0, _NuMtxSetScale                                        , 68   , "void __cdecl (NUMTX *, NUVEC *)"
 0x005b9d70, _NuRandSeed                                           , 10   , void __cdecl (u32)
 0x005b9d80, _NuRandGetSeed                                        , 6    , u32 __cdecl (void)
 0x005b9d90, _NuRandFloatSeeded                                    , 52   , f32 __cdecl (u32 *)
@@ -41,6 +74,9 @@ address   , symbol                                                , size , ctype
 0x005be600, _NuAng2AltSol                                         , 47   , "void __cdecl (NUANG *, NUANG *, NUANG *, NUANG, NUANG, NUANG)"
 0x005c9130, _NuPause                                              , 11   , void __cdecl (i32)
 0x005c9ff0, _NuRegisterEndFrameCallBackFn                         , 10   , void __cdecl (void (*)(void))
+0x005cfa20, _NuSpecialGetMtx                                      , 15   , NUMTX *__cdecl (NUSPECIALHANDLE *)
+0x005cfa30, _NuSpecialSetMtx                                      , 30   , "void __cdecl (NUSPECIALHANDLE *, const NUMTX *)"
+0x005cfac0, _NuSpecialExistsFn                                    , 29   , i32 __cdecl (NUSPECIALHANDLE *)
 0x005d8370, _NuTimeBarSlotReset                                   , 131  , "void __cdecl (i32, i32)"
 0x005d8400, __NuTimeBarSlotBegin                                  , 54   , "void __cdecl (i32, i32, const char *)"
 0x005d9030, _NuPortalInit                                         , 34   , void __cdecl (void)
@@ -60,11 +96,24 @@ address   , symbol                                                , size , ctype
 0x0065f4e0, _edGraDisableTerrainSwap                              , 1    , void __cdecl (void)
 0x0065f4f0, _edGraInitTerrainSwapProtection                       , 1    , void __cdecl (void)
 0x00697a30, _NuSound3SetReverb                                    , 22   , i32 __cdecl (i32)
+0x00698400, _NuSound3StopStereoStream                             , 25   , void __cdecl (i32)
+0x00698420, _NuSound3PauseStereoStream                            , 25   , void __cdecl (i32)
+0x00698440, _NuSound3ResumeStereoStream                           , 25   , void __cdecl (i32)
+0x00698460, _NuSound3SetStreamVolume                              , 72   , "i32 __cdecl (i32, i32)"
+0x006984c0, _NuSound3GetStereoStreamStatus                        , 25   , "i32 __cdecl (i32, i32)"
 0x006987a0, _NuSound3FlushLoops                                   , 1    , void __cdecl (void)
 0x00698900, _NuSound3AddRumble                                    , 1    , "void __cdecl (void *, f32, i32, i32, f32)"
 0x00698910, _NuSound3StopRumble                                   , 1    , void __cdecl (void)
 0x00698930, _NuSound3SetRumblePads                                , 1    , "void __cdecl (void *, void *)"
 0x00698a00, _NuSound3SetLoopHoldTime                              , 21   , void __cdecl (f32)
+0x00699180, ?SendCommand@SoundQueue@@QAEHHH@Z                     , 117  , "i32 __thiscall (SoundQueue *, i32, i32)"
+0x00699260, ?HasCommand@SoundQueue@@QAEHH@Z                       , 85   , "i32 __thiscall (SoundQueue *, i32)"
+0x006996b0, ?Stop@SoundQueue@@QAEHXZ                              , 22   , i32 __thiscall (SoundQueue *)
+0x006996d0, ?Resume@SoundQueue@@QAEHXZ                            , 22   , i32 __thiscall (SoundQueue *)
+0x006996f0, ?Pause@SoundQueue@@QAEHXZ                             , 22   , i32 __thiscall (SoundQueue *)
+0x00699710, ?SetVolume@SoundQueue@@QAEHH@Z                        , 82   , "i32 __thiscall (SoundQueue *, i32)"
+0x00699770, ?IsStreamIdle@SoundQueue@@QAEHXZ                      , 37   , "i32 __thiscall (SoundQueue *, i32)"
+0x006997a0, ?GetStatus@SoundQueue@@QAEHXZ                         , 77   , "i32 __thiscall (SoundQueue *, i32)"
 0x006d58a0, _NuMouseRead                                          , 1    , void __cdecl (void)
 0x006dd390, _NuWindowsProcessMessages                             , 97   , i32 __cdecl (void)
 0x006de0e0, _WinMain@16                                           , 200  , "int __stdcall (HINSTANCE, HINSTANCE, LPSTR, int)"
@@ -469,7 +518,31 @@ address   , symbol                                                , size , ctype
 0x007514d0, _InitOnceWindowTitle                                  , 36   , const char[36]
 0x00751528, _InitOnceHalf                                         , 4    , const f32
 0x00751698, __real@3ff0000000000000                               , 8    , f64
-0x00755180, _NuSound3LoopHoldTimeMultiplier                       , 8    , const f64
+0x00755180, _NuScale1000                                           , 8    , const f64
+0x00755ba8, _Text_UnknownText                                     , 2    , const char[2]
+0x00758fc0, _NuTime_RefreshRate                                   , 8    , const f64
+0x0075c060, __real@406c000000000000                               , 8    , const f64
+0x0075c068, __real@4084000000000000                               , 8    , const f64
+0x0075c070, __real@43e00000                                       , 4    , const f32
+0x0075c074, __real@44200000                                       , 4    , const f32
+0x0075e9e0, __real@41f0000000000000                              , 8    , const f64
+0x0075e9e8, _NuTime_LowScale                                      , 8    , const f64
+0x0075e9f0, _NuTime_MicroScale                                    , 8    , const f64
+0x0075e9f8, _NuTime_ScanlineScale                                 , 8    , const f64
+0x0075f2d4, _Text_DanishName                                      , 6    , const char[6]
+0x0075f2dc, _Text_SpanishName                                     , 9    , const char[9]
+0x0075f2e8, _Text_ItalianName                                     , 9    , const char[9]
+0x0075f2f4, _Text_GermanName                                      , 8    , const char[8]
+0x0075f2fc, _Text_FrenchName                                      , 10   , const char[10]
+0x0075f308, _Text_EnglishName                                     , 8    , const char[8]
+0x0076161c, _Text_PathJapaneseText                                , 9    , const char[9]
+0x00761628, _Text_PathDanishText                                  , 7    , const char[7]
+0x00761630, _Text_PathSpanishText                                 , 8    , const char[8]
+0x00761638, _Text_PathItalianText                                 , 8    , const char[8]
+0x00761640, _Text_PathGermanText                                  , 7    , const char[7]
+0x00761648, _Text_PathFrenchText                                  , 7    , const char[7]
+0x00761650, _Text_PathEnglishText                                 , 8    , const char[8]
+0x00761658, _Text_ErrorText                                       , 7    , const char[7]
 0x00764000, __real@3e00000000000000                               , 8    , f64
 0x00764258, _KeyStructSizes                                       , 16   , const u8[16]
 0x007ef01c, ?SUPERBUFFERSIZE@@3HA                                 , 4    , i32
@@ -477,9 +550,35 @@ address   , symbol                                                , size , ctype
 0x007f23a4, _waiting_for_character                                , 4    , i32
 0x007f3b14, _BonusWinner                                          , 4    , i32
 0x007fac20, _PlayTrailer                                          , 4    , i32
+0x007fc274, _PanelProjectionX                                     , 4    , f32
+0x007fc278, _PanelProjectionY                                     , 4    , f32
+0x007fc3c4, _PanelWideWidth                                       , 4    , f32
+0x007fc3c8, _PanelWideHeight                                      , 4    , f32
+0x007ff950, _Game_LanguageList                                    , 56   , LANGUAGEDATA[7]
 0x0080048c, _bad_equiv                                            , 32   , u16[8][2]
+0x008009b0, _apitxt_ENGLISH                                       , 4    , char *
+0x008009b4, _apitxt_FRENCH                                        , 4    , char *
+0x008009b8, _apitxt_GERMAN                                        , 4    , char *
+0x008009bc, _apitxt_ITALIAN                                       , 4    , char *
+0x008009c0, _apitxt_SPANISH                                       , 4    , char *
+0x008009c4, _apitxt_DANISH                                        , 4    , char *
 0x00801dd0, ??_R0?AVNetListenerInterface@@@8                      , 35   ,
 0x00801df4, ??_R0?AVAINet@@@8                                     , 20   ,
+0x00802334, _Text_ErrorString                                     , 4    , char *
+0x00802338, _txt_NULL                                             , 4    , char *
+0x0080233c, _txt_UNKNOWN                                          , 4    , char *
+0x00802340, _Text_PathEnglish                                     , 4    , char *
+0x00802344, _Text_PathFrench                                      , 4    , char *
+0x00802348, _Text_PathGerman                                      , 4    , char *
+0x0080234c, _Text_PathItalian                                     , 4    , char *
+0x00802350, _Text_PathSpanish                                     , 4    , char *
+0x00802354, _Text_PathDanish                                      , 4    , char *
+0x00802358, _Text_PathJapanese                                    , 4    , char *
+0x0080235c, _Text_Language                                        , 4    , i32
+0x00802360, _Text_LanguageList                                    , 4    , LANGUAGEDATA *
+0x00802364, _LANGUAGECOUNT                                        , 4    , i32
+0x00802368, _INTROTEXT_ID                                         , 4    , i32
+0x00802400, _Text_LanguageList_Default                            , 56   , LANGUAGEDATA[7]
 0x00802538, ?GAMERAND@@3HA                                        , 4    , i32
 0x0080253c, ?qseed@@3HA                                           , 4    , i32
 0x00802c54, _WORLD                                                , 4    , WORLDINFO *
@@ -564,6 +663,7 @@ address   , symbol                                                , size , ctype
 0x008108e4, _debris_time_increment                                , 4    , f32
 0x00810900, _debrisseed                                           , 4    , u32
 0x00810b38, _SkinFlipTab                                          , 32   , i32[8]
+0x00810dbc, _NuSound3VolumeOffset                                 , 4    , "i32 __thiscall (SoundQueue *, i32)"
 0x00810dc8, _NuSound3LoopHoldTime                                 , 4    , i32
 0x00810ee0, ??_R0?AVWavReader@@@8                                 , 24   ,
 0x00811000, ??_R0?AVOggReader@@@8                                 , 24   ,
@@ -641,10 +741,21 @@ address   , symbol                                                , size , ctype
 0x0087b544, _frameout                                             , 4    , i32
 0x0087b55c, _HubMainRenderTimeHack                                , 4    , i32
 0x0087b73c, _new_level_from_menu                                  , 4    , i32
+0x0087b958, _PANEL3DMULX                                          , 4    , f32
+0x0087b9b8, _PANEL3DMULY                                          , 4    , f32
+0x008806bc, _tNULL                                                , 2    , i16
+0x008806c0, _tUNKNOWN                                             , 2    , i16
+0x008806c4, _tENGLISH                                             , 2    , i16
+0x008806c8, _tFRENCH                                              , 2    , i16
+0x008806cc, _tGERMAN                                              , 2    , i16
+0x008806d0, _tITALIAN                                             , 2    , i16
+0x008806d4, _tSPANISH                                             , 2    , i16
+0x008806d8, _tDANISH                                              , 2    , i16
 0x0088a56c, _dagobah_training                                     , 4    , i32
 0x0091eea8, _curr_dat                                             , 4    , NUDATHDR *
 0x0091ef34, _argc                                                 , 4    , i32
 0x0091ef38, _argv                                                 , 4    , char **
+0x0091efa0, _NuTime_PerformanceFrequency                          , 8    , i64
 0x00920a00, _NuTime_TickBase                                      , 8    , i64
 0x0092488c, _permbuffer_size                                      , 4    , i32
 0x00924890, ?original_permbuffer_base@@3Tvariptr_u@@A             , 4    , VARIPTR
@@ -663,9 +774,16 @@ address   , symbol                                                , size , ctype
 0x00925010, ?app_tbaiset@@3HA                                     , 4    , i32
 0x00925014, ?app_tbdrawset@@3HA                                   , 4    , i32
 0x00925040, ?app_tbgameset@@3HA                                   , 4    , i32
+0x00925058, _MainFrameCounters                                    , 5    , MAINFRAMECOUNTERS
+0x009250e8, _do_multiframe_update                                 , 4    , i32
 0x00925184, ?pNuCam@@3PAXA                                        , 4    , void *
 0x009253cc, _Game_NuPad                                           , 4    , void **
 0x00926bd0, _Game_NuPad_Store                                     , 8    , void *[2]
+0x00926c38, _Text_AppFont                                         , 4    , void *
+0x00926c3c, _TTab_Original                                        , 4    , char **
+0x00926c40, _TTab                                                 , 4    , char **
+0x00926c58, _Text_MaxStrings_Overall                              , 4    , i32
+0x00926c5c, _Text_StringBits                                      , 4    , u32 *
 0x0093b2bc, _NextArea_FreePlay                                    , 4    , i32
 0x0093b2c4, _FreePlay                                             , 4    , i32
 0x0093b2c8, _SuperStory                                           , 4    , i32
@@ -684,6 +802,7 @@ address   , symbol                                                , size , ctype
 0x00950764, _screendump                                           , 4    , i32
 0x00950768, _pause_rndr_on                                        , 4    , i32
 0x0095123c, _last_area                                            , 4    , i32
+0x00951374, _ADataList                                            , 4    , AREA_DATA_PC *
 0x00951388, _reset_area                                           , 4    , i32
 0x009513a8, _gone_through_door_to_new_level                       , 4    , i32
 0x00951440, _Door_UseCutCam                                       , 4    , i32
@@ -704,6 +823,8 @@ address   , symbol                                                , size , ctype
 0x02854c00, _nu_water_reset_status                                , 4    , i32
 0x02920aac, _part_raycasts_enabled                                , 4    , i32
 0x0296206c, _DebrisCutSceneMode                                   , 4    , i32
+0x02962bd0, _NuSound3VolumeTable                                  , 65536, "i32 __thiscall (SoundQueue *, i32)"
+0x02972c20, ?NuSound3StereoStreams@@3PAPAUSoundQueue@@A           , 8    , SoundQueue *[2]
 0x0297397c, _NuSound3Reverb                                       , 1    , u8
 0x02975a94, _win_message                                          , 28   , MSG
 0x0297dbe0, _nuapi                                                , 144  , NUAPI

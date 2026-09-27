@@ -48,3 +48,38 @@ void __cdecl WorldInfo_UpdateRoomVisibility(WORLDINFO *world, i32 param) {
         }
     }
 }
+
+void __cdecl WorldInfo_ReArrangeBuffers(i32 area1, i32 area2) {
+    VARIPTR *buffer_end = &WorldInfo[1].buffer_end;
+    AREA_DATA_PC *areas;
+    u8 single_buffer = 8;
+    u32 end;
+    u32 old_buffer_end;
+
+    if (area1 != -1) {
+        areas = ADataList;
+        if (area1 != area2 && (areas[area1].flags & single_buffer) != 0) {
+            LWORLD = &WorldInfo[0];
+            WORLD = &WorldInfo[0];
+            end = WorldInfo[0].buffer_end.addr;
+            old_buffer_end = buffer_end->addr;
+            if (end >= old_buffer_end) {
+                return;
+            }
+            buffer_end->addr = end;
+            WorldInfo[0].buffer_end.addr = old_buffer_end - EDITBUFFERENDSIZE;
+            return;
+        } else if ((areas[area1].flags & single_buffer) != 0) {
+            return;
+        }
+    }
+
+    end = WorldInfo[0].buffer_end.addr;
+    old_buffer_end = buffer_end->addr;
+    if (end <= old_buffer_end) {
+        return;
+    }
+    end += EDITBUFFERENDSIZE;
+    buffer_end->addr = end;
+    WorldInfo[0].buffer_end.addr = old_buffer_end;
+}

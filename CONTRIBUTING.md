@@ -73,6 +73,16 @@ are ignored; see [res/README.md](res/README.md).
 
 ## Development and validation
 
+Prioritize the overall PC program structure before tuning individual instruction
+sequences. Map connected function families and data layouts, then port portable
+Android logic only where the PC call graph, constants, and behavior support it.
+Complete real dependencies so the source executable continues to link. A
+ported function may remain byte-different while its PC-specific control flow or
+types are being recovered; record that honestly in the matching report. Once a
+family is structurally present, use complete byte comparisons to refine it.
+The exact Windows code percentage is the progress metric; Android's matching
+percentage does not transfer directly across compilers and platform backends.
+
 Identify the original function or global, record its boundary and references in
 [config/symbols.csv](config/symbols.csv), then implement it under `src/` and add
 shared declarations to [src/saga.h](src/saga.h). Keep shared game types, calling

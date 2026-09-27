@@ -1,11 +1,10 @@
 # PC data inventory
 
-`src/data.cpp` now defines **115 independently mapped objects, 58,043 mapped
-bytes**. The current local `matching.json` verifies all 115 full COFF extents,
-initializers, and the two relocations in `WORLD` and `LWORLD`. Isolated VC8
-sections keep `waiting_for_character`, `no_more_loads`, and
-`characterbuffer_ptr` at their actual four-byte extents instead of absorbing
-alignment padding from the next declaration.
+`src/data.cpp` now defines **193 independently mapped objects**. The current
+local `matching.json` verifies all 193 full COFF extents and initializers,
+including relocated pointers and the 65,536-byte runtime-filled sound-volume
+table's zero initial state. Isolated VC8 sections keep small scalar and string
+definitions at their actual extents instead of absorbing alignment padding.
 The accepted entries are in [symbols.csv](symbols.csv), and normal local matching
 checks their emitted bytes. The detailed scratch comparison and candidate scans
 are under ignored `build/analysis/data/`. This includes previously mapped symbols
@@ -78,7 +77,8 @@ PC `WorldInfo_UpdateRoomVisibility` at `0x0055f560` also establishes
 visibility array at `+0x2991`, and its pointer at `+0x2a94`. Scene room count
 and room pointer are at `+0x74` and `+0x78`; room records advance by `0x18`
 bytes and expose a visibility-flags byte at `+0x10`. These named offsets are
-asserted in `saga.h`. The function's C reconstruction is still being compared.
+asserted in `saga.h`. The function's C reconstruction matches the complete PC
+extent.
 
 The permanent/character/super-buffer pointers and sizes are the 13 four-byte
 objects used by the verified StartPerm/EndPerm reconstruction. Their initial
@@ -104,13 +104,24 @@ them.
 | `0x009738a4`, `0x0097388c` | End-frame callback pointer, `nu2api_paused` | Four-byte zero pointer assigned at `0x005c9ff0`; four-byte zero f32 set by `NuPause` at `0x005c9130`. The pause value remains owned by its function unit. |
 | `0x0093b34c` | `NetPaused` | Zero-initialized four-byte i32 written with `Paused` by the exact PC `ClearPause` routine at `0x0055c5e0`. |
 | `0x02920aac` | `part_raycasts_enabled` | Zero-initialized four-byte i32 gating the PC parts raycast path; Android initializes its counterpart to one, so its default was not copied. |
-| `0x0297397c`, `0x00755180`, `0x00810dc8` | `NuSound3Reverb`, `NuSound3LoopHoldTimeMultiplier`, `NuSound3LoopHoldTime` | One-byte zero reverb flag, eight-byte f64 value `1000.0`, and four-byte i32 value `133`; the PC sound setters read or write these exact widths. |
+| `0x0297397c`, `0x00755180`, `0x00810dc8` | `NuSound3Reverb`, `NuScale1000`, `NuSound3LoopHoldTime` | One-byte zero reverb flag, shared eight-byte f64 value `1000.0`, and four-byte i32 value `133`; PC sound and time conversion routines reuse the same constant. |
+| `0x02962bd0`, `0x00810dbc`, `0x02972c20` | `NuSound3VolumeTable`, `NuSound3VolumeOffset`, `NuSound3StereoStreams` | PC stream-volume wrapper indexes a 16,384-float zero-initialized table filled at runtime, adds the initialized `-300` offset, then calls a queue method through one of two zero-initialized queue pointers. |
+| `0x007fc274`, `0x007fc278`, `0x007fc3c4`, `0x007fc3c8` | Panel projection and wide-mode sizes | Four PC f32 initializers, `1222.0`, `1145.0`, `740.0`, and `387.5`, feed `InitPanel`; the two computed multipliers begin zero. |
+| `0x00925058`, `0x009250e8`, `0x0091efa0` | `MainFrameCounters`, `do_multiframe_update`, `NuTime_PerformanceFrequency` | The PC frame scheduler writes five consecutive counter bytes and reads a zero i32 update flag. Time conversion reads a zero-initialized eight-byte cached frequency set by a later platform timer initializer. |
 | `0x008108e4`, `0x0296206c` | `debris_time_increment`, `DebrisCutSceneMode` | Four-byte f32 `1/60` step and zero i32 mode, written by the verified PC debris setters. |
 | `0x02854bf8`, `0x02854c00` | `nu_water_reset_state`, `nu_water_reset_status` | Separate zero-initialized four-byte integers written as 1 and 0 by `NuWaterReset` at `0x005f9530`. |
 
 `NuTimeGetTicksPS` at `0x004ffb20` and `NuTimeBarSlotReset` at `0x005d8370`
 are still code work in progress. Their exact data initializers do not establish
 matching function bodies.
+
+The PC text subsystem has two seven-record language tables, each ending with
+`{-1, 0}`; Android's current default table lacks that final record. Its path and
+display-name strings, initialized pointer globals, string-table state, and
+eight two-byte default text IDs are mapped separately. Their complete original
+extents and initializers match. The PC language-path switch selects Japanese for
+0, French for 2, Spanish for 3, German for 4, Italian for 5, Danish for 8,
+and English otherwise; this ordering is not inferred from Android's enum.
 
 ## NuMain scalar state
 

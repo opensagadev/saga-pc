@@ -188,11 +188,39 @@ PC extents after relocation. They add verified dependencies without completing
 | `0x00697a30`–`0x00698a00` | Sound reverb, rumble, loop and hold-time helpers | 1–22 | `nusound.c`; all six mapped functions match exactly. |
 | `0x0055f430`–`0x0055f560` | WorldInfo initialization, accessors, other-level and room visibility | 6–103 | `world.c`; all five mapped functions match against PC world records and typed fields. |
 
+The next structural tranche ports connected PC-confirmed families rather than
+optimizing isolated instruction sequences. All ten `NuStr*` primitives in
+`nustring.c` match their full original extents, and six of the eleven text
+functions in `text.c` match. The other five text functions are present with real
+logic and recorded as byte-different; PC language selection, seven-record
+tables and string-table bounds override Android assumptions. `nutimebar.c`
+adds subtraction, frequency lookup and four time conversions; PC
+`0x004f3ca0` is microseconds and `0x004f3d10` is milliseconds, as their
+original `1,000,000.0` and `1,000.0` multipliers show. The source-only EXE
+also includes typed panel setup, frame-counter scheduling, world-buffer
+rearrangement and sound-stream queue/status/volume handling. Their exactness
+is reported by `matching.json`, not presumed from Android source similarity.
+
+Two matrix setters at `0x005b4500` and `0x005b45a0` have full 68-byte VC8
+scratch matches, but their C object also emits unreferenced 0.0f and 1.0f
+literal definitions with no defensible original address binding. The candidate
+stays in ignored `build/analysis/numtx_port.c` until that inventory question
+is resolved. No retail address was invented to inflate data or code coverage.
+
 `NuFrameBegin` at `0x004f3e20` has a 32-byte VC8 scratch candidate that matches
 the complete PC extent after explicit bindings. It is not in tracked source because
 the PC `NuKeyboardRead` callee at `0x006d9340` still depends on an unreconstructed
 helper and state. The occlusion frame routine is tracked independently; its named
 manager and set fields are asserted in `saga.h`.
+
+The typed PC DirectInput input prototype is staged in ignored
+`build/analysis/nuinput_port.cpp`, not the source build: the static owner at
+`0x029765a0` has verified fields through `+0x38`, establishing only a minimum
+`0x3c` extent. Its setup at `0x006dacb0`, field setter at `0x006d5950`,
+message handler at `0x006de1c0`, and shutdown call at `0x006dfdf0` do not reveal
+the complete object boundary or a `sizeof`/clear extent. Do not map the owner
+size until that boundary is recovered. The poller at `0x006d5990` and entry at
+`0x006d9340` remain unverified source candidates.
 
 The PC stores `nu2api_paused` as a four-byte float, and the frame-end code
 indirectly calls the four-byte callback pointer. Android's declarations confirm
