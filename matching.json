@@ -5,7 +5,7 @@
   "objdiff_version": "3.8.1",
   "inputs": {
     "Makefile": "0f1a890960209413faaf6f5bb4874188d098ea29a5aadf7c4e0c2a544bf12e98",
-    "src/externals.h": "d269bde3b919100c655ea317c3b40bbf6db500d5d0a2b6d300d57d24aec8da8b",
+    "src/externals.h": "c8a17bc0953ff0cb0904d09b67e30fd99fd8d63d2cc4c1782d969850a26b0e86",
     "src/saga.h": "cbd1f6e7acba23c08bc3bb67c63af195efc4118ea359d7d379f689a9cf025eef",
     "config/data.md": "11699ba013449b2a62e163f565a72072e20e878cdc92a029fdd74e70ba3671c9",
     "config/identification.md": "e2d5ff91fea706f42e7202427a6276d7986bae90d618105757473387492e7d29",
@@ -44,22 +44,22 @@
     "src/nurand.c": "b769593953bbb31329a5b540aa6872de745e21b5784b639ee533d9aa56777236"
   },
   "objects": {
-    "build/obj/batman.obj": "104018c775e6e3b647334af51a37e29c67250e48f70827df0356f4296bcb7e36",
-    "build/obj/data.obj": "c545289426d871205bc02799be68fdd0261befa33e75273d8f637b1d30ab18c3",
-    "build/obj/externals.obj": "bb4dc8a2fd6ecbd2d611942e102ccc28ef85172f6755f72c6dae1f11203284b7",
-    "build/obj/gameapi/edgra.obj": "41eb5c8127286db8d099e436597c36f740f4256ec2766a99ec85e6089708cea4",
-    "build/obj/gamelib/nuwind.obj": "3899075d9f37714227f7d89fdee63fa8ac2141883c440fda19161b93e08087bd",
-    "build/obj/legoapi/game_deb.obj": "2fc1050a5026d20abd33d8f4d93ff1190b8efd4ea30d13a49b311d3140477883",
-    "build/obj/legoapi/parts.obj": "91c6595d10ca914c7eb53d9a2baeba532c57aefa7d5e77d7e71e69ed00d63d8f",
-    "build/obj/legoapi/utilities.obj": "8f4e1a14e51a356ad9f72c930a70360776a82e9b5746f4a5210210262b4eefd6",
-    "build/obj/legoapi/world.obj": "994051cbeed664eaa1abe920d537bd16fc9eb2ac5dba1a75b9e433a93b56aed9",
-    "build/obj/legogame/startup.obj": "45e8a8dd5d44145d0a7061ef542aa33a9e1f916542722d4c41989b95e0cd2084",
-    "build/obj/nu2api/nuapi.obj": "37dff8af1432a94fd6bd5e0582f0d9c61c59c77c5354c02b2e1ee5f52fa8d904",
-    "build/obj/nu2api/nufile.obj": "ebeca83d4e6786fb5df11f54c80b7df2228fc9f33f5374ae03a84cb401449247",
-    "build/obj/nu2api/nuwin.obj": "409bd9fed75a09ce0b5cb1769220aa36f232f5bfd88252a601fa2148015747db",
-    "build/obj/nuang.obj": "4f8b3ad384db2ba623c53ed345782a9ae37bc566df48df4ae50570914fd8fbb8",
-    "build/obj/nurand.obj": "fc9449bbc752e99f5e314a090c3a2f1342624f62b58e65f703c3f0485502fc21",
-    "build/obj/qrand.obj": "301c5e5f2c45795bfdd35e3fbf8d3c5b4d5703a8defb7c2e3e294b0985d6401f"
+    "build/obj/batman.obj": "2bd1492529f871d4dc4a213108fdb7837329982982a7ca2d4522c44dea1cfe20",
+    "build/obj/data.obj": "d82f8f6c9af28df82528ae415ee518898ca1ac597bb58aa7d9153beeca36dfba",
+    "build/obj/externals.obj": "341a66be418f90f074e8b210feaa217a06487bd471a7264f0b0d0b2c5fbdcf35",
+    "build/obj/gameapi/edgra.obj": "abbb83b58be35a3cca9d963aef118cb5cbe2ca3c6a47b48ae47a484e0bef324b",
+    "build/obj/gamelib/nuwind.obj": "6d24913fb817225f589fba4018cc30d3d91b3ee381b9c34a6534edf8e0ff0107",
+    "build/obj/legoapi/game_deb.obj": "9366064efc9858f06957ea266fa14ae175892b08861a9ce0ba4b00676f263e4e",
+    "build/obj/legoapi/parts.obj": "680d8df849eeb7b59e6a1c7c9d178a638436edfdd3e1b1ee42ebfc9f3870a9a8",
+    "build/obj/legoapi/utilities.obj": "75473cee653fa78f2a882c48f293e859dfcc87258c78edb35c6a762758f56c6f",
+    "build/obj/legoapi/world.obj": "99f1ae62624d920a9f9cb02acfa2290d2e2fc24276ec1d2a1821579eefd85f62",
+    "build/obj/legogame/startup.obj": "d82c38bfcfa38d09b901237401ee860854259596d07ca4981e3f359d16c75fbb",
+    "build/obj/nu2api/nuapi.obj": "5454652238c8b0462f35d30c64c3340fde1a8ae72a74fdb2a233ad010ccd50eb",
+    "build/obj/nu2api/nufile.obj": "bed2760025bc4903b3c69c523689aa43fe229f3c79c5e651ed5fbf667e36a6a0",
+    "build/obj/nu2api/nuwin.obj": "694032e980965c344d6167a1befca8bbeb8bf7d98653263d3b2f81c35d8b2df6",
+    "build/obj/nuang.obj": "4af51629b6fe66b0c7ac9f77d83c8b34cf64300cb352230481c1744057658fbe",
+    "build/obj/nurand.obj": "de5f476a79e6479874049f0c12302c943bb64e812d58935e09fa8637166cf6a2",
+    "build/obj/qrand.obj": "d686d6b92cc974263d2e74c96a797c3c18bd03cbd4aa33bc1b2b92da2b2079ed"
   },
   "functions": [
     {
