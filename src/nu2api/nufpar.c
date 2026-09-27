@@ -718,3 +718,128 @@ i32 __cdecl NuFParInterpretWord(NUFPAR_PC *parser) {
     }
     return 0;
 }
+
+void __cdecl NuFParUnGetWord(NUFPAR_PC *parser) {
+    parser->line_position = old_line_pos;
+}
+
+void __cdecl NuFParGetOptionalFloat(NUFPAR_PC *parser, f32 *value) {
+    char buffer[64];
+
+    NuFParGetWord(parser);
+    if (parser->is_utf16 != 0) {
+        NuUnicodeToAscii(buffer, (u16 *)parser->word_buffer_ptr);
+    } else {
+        NuStrCpy(buffer, parser->word_buffer_ptr);
+    }
+
+    if (value != NULL && buffer[0] != '\0') {
+        *value = NuAToF(buffer);
+        if (*value == 0.0f) {
+            NuFParUnGetWord(parser);
+        }
+    }
+}
+
+void __cdecl NuFParGetOptionalInt(NUFPAR_PC *parser, i32 *value) {
+    char buffer[64];
+
+    NuFParGetWord(parser);
+    if (parser->is_utf16 != 0) {
+        NuUnicodeToAscii(buffer, (u16 *)parser->word_buffer_ptr);
+    } else {
+        NuStrCpy(buffer, parser->word_buffer_ptr);
+    }
+
+    if (value != NULL && buffer[0] != '\0') {
+        *value = NuAToI(buffer);
+        if (*value == 0) {
+            NuFParUnGetWord(parser);
+        }
+    }
+}
+
+i32 __cdecl NuFParPushCom(NUFPAR_PC *parser, NUFPCOMJMP *commands) {
+    if (parser->command_position >= 7) {
+        return -1;
+    }
+
+    parser->command_position++;
+    parser->command_stack[parser->command_position] = commands;
+    parser->command_stack2[parser->command_position] = NULL;
+    return parser->command_position;
+}
+
+i32 __cdecl NuFParPushComCTX(NUFPAR_PC *parser, NUFPCOMJMPCTX *commands) {
+    if (parser->command_position >= 7) {
+        return -1;
+    }
+
+    parser->command_position++;
+    parser->command_stack_ctx[parser->command_position] = commands;
+    parser->command_stack2_ctx[parser->command_position] = NULL;
+    return parser->command_position;
+}
+
+i32 __cdecl NuFParPushComCTX2(NUFPAR_PC *parser, NUFPCOMJMPCTX *commands, NUFPCOMJMPCTX *commands2) {
+    if (parser->command_position >= 7) {
+        return -1;
+    }
+
+    parser->command_position++;
+    parser->command_stack_ctx[parser->command_position] = commands;
+    parser->command_stack2_ctx[parser->command_position] = commands2;
+    return parser->command_position;
+}
+
+void __cdecl NuFParPopCom(NUFPAR_PC *parser) {
+    if (parser->command_position > -1) {
+        parser->command_position--;
+    }
+}
+
+NUFPCOMFN __cdecl NuFParSetInterpreterErrorHandler(NUFPCOMFN handler) {
+    NUFPCOMFN previous = fnInterpreterError;
+
+    fnInterpreterError = handler;
+    return previous;
+}
+
+i32 __cdecl NuFParInterpretWordCTX(NUFPAR_PC *parser, void *context) {
+    char buffer[64];
+    i32 index;
+    NUFPCOMJMPCTX *commands;
+
+    if (parser->is_utf16 != 0) {
+        NuUnicodeToAscii(buffer, (u16 *)parser->word_buffer_ptr);
+    } else {
+        NuStrCpy(buffer, parser->word_buffer_ptr);
+    }
+    if (buffer[0] == '\0' || buffer[0] == ';') {
+        return 0;
+    }
+
+    if (parser->command_position > -1) {
+        commands = parser->command_stack_ctx[parser->command_position];
+        for (index = 0; commands[index].keyword != NULL; index++) {
+            if (NuStrICmp(commands[index].keyword, buffer) == 0) {
+                commands[index].callback(parser, context);
+                return 1;
+            }
+        }
+        commands = parser->command_stack2_ctx[parser->command_position];
+        if (commands != NULL) {
+            for (index = 0; commands[index].keyword != NULL; index++) {
+                if (NuStrICmp(commands[index].keyword, buffer) == 0) {
+                    commands[index].callback(parser, context);
+                    return 1;
+                }
+            }
+        }
+    }
+
+    if (fnInterpreterError != NULL) {
+        fnInterpreterError(parser);
+    }
+    return 0;
+}

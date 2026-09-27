@@ -2,6 +2,7 @@
 """Compare the symbol inventory to retail, using exact bytes and objdiff-cli."""
 import argparse
 import json
+import math
 import re
 import subprocess
 import sys
@@ -51,17 +52,49 @@ def progress(functions, target):
             "matched_functions": sum(r["exact_match"] for r in functions)}
 
 
+def objdiff_percent(measures):
+    # Protobuf JSON omits scalar fields at their default value, including 0%.
+    value = measures.get("fuzzy_match_percent", 0.0)
+    if (type(value) not in (int, float) or not 0 <= value <= 100
+            or not math.isfinite(value)):
+        raise ValueError("objdiff fuzzy_match_percent must be a finite percentage")
+    return float(value)
+
+
+def objdiff_progress(report, functions):
+    # Native objdiff weights every comparison object by its original code size.
+    # Copies and aliases are repeated here; exact coverage uses the union above.
+    compared = sum(row["target_size"] * len(row["objects"])
+                   for row in functions if row["objects"])
+    if report is None and compared == 0:
+        return {"objdiff_fuzzy_percent": 0.0, "objdiff_total_code": 0}
+    measures = report.get("measures") if isinstance(report, dict) else None
+    if not isinstance(measures, dict):
+        raise ValueError("objdiff report must contain measures")
+    total = measures.get("total_code", 0)
+    # Protobuf uint64 values are serialized as decimal strings by the pinned CLI.
+    if isinstance(total, str) and re.fullmatch(r"0|[1-9][0-9]*", total):
+        total = int(total)
+    if type(total) is not int or total < 0:
+        raise ValueError("objdiff total_code must be a nonnegative integer")
+    if total != compared:
+        raise ValueError(f"objdiff total_code {total} differs from compared original extents {compared}")
+    return {"objdiff_fuzzy_percent": objdiff_percent(measures), "objdiff_total_code": total}
+
+
 def update_badge(stats):
     path = ROOT / "README.md"
     content = path.read_text()
-    for metric, label in (("matching", "match%20progress"), ("mapping", "mapping")):
-        value = stats[f"{metric}_percent"]
+    for metric, label, field, alt in (
+            ("matching", "objdiff%20fuzzy", "objdiff_fuzzy_percent", "objdiff fuzzy"),
+            ("mapping", "mapping", "mapping_percent", "mapping")):
+        value = stats[field]
         color = "red" if value < 25 else "yellow" if value < 75 else "green"
         # Start the Markdown row with an image, then keep both closing markers
         # and the mapping marker inline so HTML blocks do not split the badges.
         newline = "\n" if metric == "matching" else ""
         badge = (f"<!-- {metric}-badge -->{newline}"
-                 f"![{metric}](https://img.shields.io/badge/{label}-{value:.3f}%25-{color})"
+                 f"![{alt}](https://img.shields.io/badge/{label}-{value:.3f}%25-{color})"
                  f"<!-- /{metric}-badge -->")
         content, count = re.subn(f"<!-- {metric}-badge -->.*?<!-- /{metric}-badge -->",
                                 lambda _: badge, content, flags=re.S)
@@ -173,11 +206,12 @@ def main():
         row["status"] = "exact" if row["exact_match"] else "different"
     (OUT / "objdiff.json").write_text(json.dumps({"build_target": False, "build_base": False,
                                                  "units": units}, indent=2) + "\n")
+    report = None
     if units:
         report_path = OUT / "report.json"
         run([cli, "report", "generate", "-p", OUT, "-o", report_path])
         report = json.loads(report_path.read_text())
-        percentages = {(u["name"], f["name"]): f.get("fuzzy_match_percent")
+        percentages = {(u["name"], f["name"]): objdiff_percent(f)
                        for u in report["units"] for f in u.get("functions", [])}
         for row in functions:
             for result in row["objects"]:
@@ -185,7 +219,7 @@ def main():
                 if key not in percentages:
                     raise ValueError(f"objdiff omitted function {row['symbol']}")
                 result["objdiff_percent"] = percentages[key]
-            scores = [r["objdiff_percent"] for r in row["objects"] if r["objdiff_percent"] is not None]
+            scores = [r["objdiff_percent"] for r in row["objects"]]
             if scores:
                 row["objdiff_percent"] = min(scores)
     for row in functions + data:
@@ -211,13 +245,16 @@ def main():
               "inlined": inlined}
     if not args.function:
         result["progress"] = progress(functions, target)
+        result["progress"].update(objdiff_progress(report, functions))
         result["progress"].update(mapping_progress(records, target))
     (OUT / "summary.json").write_text(json.dumps(result, indent=2) + "\n")
     if args.update:
         update_badge(result["progress"])
         (ROOT / "matching.json").write_text(json.dumps(result, indent=2) + "\n")
         stats = result["progress"]
-        print(f"Matching code: {stats['matched_code_bytes']}/{stats['text_bytes']} bytes "
+        print(f"Objdiff fuzzy: {stats['objdiff_fuzzy_percent']:.3f}% across "
+              f"{stats['objdiff_total_code']} compared original code bytes")
+        print(f"Exact code: {stats['matched_code_bytes']}/{stats['text_bytes']} bytes "
               f"({stats['matching_percent']:.3f}% of original .text)")
         print(f"Mapped image: {stats['mapped_bytes']}/{stats['image_bytes']} bytes "
               f"({stats['mapping_percent']:.3f}% of original virtual image)")

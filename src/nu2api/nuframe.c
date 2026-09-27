@@ -14,32 +14,37 @@ void __cdecl NuFrameBegin(void) {
 f32 __cdecl NuFrameEnd(void) {
     NuTime now;
     NuTime elapsed;
-    union {
-        f32 value;
-        u32 bits;
-    } forced_frame_time;
     i32 had_error = NuHasError();
-    STUBBED_NAMED("NuFrameEnd: PC max-FPS gate, Sleep waits, and message-pump loop");
-    STUBBED_NAMED("NuFrameEnd: PC material and texture animation updates");
+    STUBBED_NAMED(0x008004e8); /* PC frame pacing gate and target interval. */
+    STUBBED_NAMED(0x007510ac); /* PC Sleep calls inside the frame wait loop. */
+    STUBBED_NAMED(0x006dd390); /* PC Windows message-pump loop. */
+    STUBBED_NAMED(0x00601330); /* PC frame-time update helper; identity unconfirmed. */
+    STUBBED_NAMED(0x005d34a0); /* PC frame-time update helper; identity unconfirmed. */
     NuWindAnimate(nuapi.wind, nuapi.frame_time);
-    STUBBED_NAMED("NuFrameEnd: PC occlusion and pad-record updates");
-    STUBBED_NAMED("NuFrameEnd: PC time-bar and pad rendering setup");
+    STUBBED_NAMED(0x005c6100); /* One-byte PC leaf; identity unresolved. */
+    STUBBED_NAMED(0x005de1a0); /* PC update helper with unresolved owner. */
+    STUBBED_NAMED(0x00698fa0); /* PC helper on two interface objects; identity unresolved. */
+    STUBBED_NAMED(0x006d3420); /* One-byte PC helper; identity unresolved. */
 
-    NuTimeGet(&nuapi.time);
-    STUBBED_NAMED("NuFrameEnd: PC NuRndrSwapScreen(-1); no callback call is visible in this body");
-    STUBBED_NAMED("NuFrameEnd: PC post-render pad update and critical-section handling");
+    NuTimeGetTicksPS(&nuapi.time.low, &nuapi.time.high);
+    STUBBED_NAMED(0x004f4c80); /* PC helper immediately before the render boundary. */
+    STUBBED_NAMED(0x005f3d60); /* One-argument PC render boundary candidate, mode -1. */
+    STUBBED_NAMED(0x005de1b0); /* PC post-render update helper. */
+    STUBBED_NAMED(0x006df310); /* PC frame critical-section leave. */
 
-    NuTimeGet(&now);
-    NuTimeSub(&elapsed, &now, &nuapi.time);
+    NuTimeGetTicksPS(&now.low, &now.high);
+    elapsed.low = now.low - nuapi.time.low;
+    elapsed.high = now.high - nuapi.time.high - (now.low < nuapi.time.low);
     nuapi.frame_time = NuTimeSeconds(&elapsed);
 
-    STUBBED_NAMED("NuFrameEnd: PC frame-time accumulator at 0x029803e0 and FPS counter loop");
-    STUBBED_NAMED("NuFrameEnd: PC FPS pacing Sleep loop and time-finalization helper");
-    NuTimeGet(&nuapi.time);
-    NuTimeGet(&nuapi.time2);
+    STUBBED_NAMED(0x029803e0); /* PC accumulated frame time. */
+    STUBBED_NAMED(0x006df270); /* PC FPS counter reads. */
+    STUBBED_NAMED(0x004ff0c0); /* PC timing finalizer. */
+    STUBBED_NAMED(0x004fb130); /* PC frame-time finalizer. */
+    NuTimeGetTicksPS(&nuapi.time.low, &nuapi.time.high);
+    NuTimeGetTicksPS(&nuapi.time2.low, &nuapi.time2.high);
 
-    forced_frame_time.value = nuapi.forced_frame_time;
-    if ((forced_frame_time.bits & 0x7fffffffu) != 0) {
+    if (nuapi.forced_frame_time != 0.0f) {
         nuapi.frame_time = nuapi.forced_frame_time;
     }
 

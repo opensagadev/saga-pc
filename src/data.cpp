@@ -331,9 +331,13 @@ extern "C" {
     NUVEC nuspecial_const_tint = {1.0f, 1.0f, 1.0f};
     NUVEC cam_axes = {1.0f, 1.0f, 1.0f};
     NUCAMERA global_camera;
+#pragma bss_seg(".bss$pNuCam")
+    NUCAMERA *pNuCam;
+#pragma bss_seg()
     // clang-format off: LLVM 18 and newer format initializer macros differently.
 #define IDENTITY_NUMTX {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f}
     // clang-format on
+    NUMTX NuMtxSetIdentityTemplate = IDENTITY_NUMTX;
     NUMTX vmtx = IDENTITY_NUMTX;
     NUMTX pmtx = IDENTITY_NUMTX;
     NUMTX cmtx = IDENTITY_NUMTX;
@@ -345,9 +349,15 @@ extern "C" {
     NUMTX vpsmtx = IDENTITY_NUMTX;
     NUMTX clip_planes = IDENTITY_NUMTX;
 #undef IDENTITY_NUMTX
+#pragma bss_seg(".bss$nuspecial_const_alpha_enabled")
     i32 nuspecial_const_alpha_enabled;
+#pragma bss_seg()
+#pragma bss_seg(".bss$nuspecial_const_tint_enabled")
     i32 nuspecial_const_tint_enabled;
+#pragma bss_seg()
+#pragma bss_seg(".bss$nuspecial_draw_state")
     i32 nuspecial_draw_state;
+#pragma bss_seg()
 #pragma bss_seg(".bss$NuTrigTable")
     f32 NuTrigTable[32768];
 #pragma bss_seg()
@@ -596,11 +606,20 @@ extern "C" {
 #pragma bss_seg(".bss$SfxCRCTable")
     u32 *SfxCRCTable;
 #pragma bss_seg()
+#pragma bss_seg(".bss$AmbientPairTab")
+    i16 *AmbientPairTab;
+#pragma bss_seg()
 #pragma bss_seg(".bss$NuPrimNeedsOverbrightening")
     u8 NuPrimNeedsOverbrightening;
 #pragma bss_seg()
 #pragma bss_seg(".bss$levelconfig_ldata")
     LEVELDATA_PC *levelconfig_ldata;
+#pragma bss_seg()
+#pragma bss_seg(".bss$Level_ConfigBeforeLoad_GameKeywords")
+    NUFPCOMJMP *Level_ConfigBeforeLoad_GameKeywords;
+#pragma bss_seg()
+#pragma bss_seg(".bss$Level_ConfigAfterLoad_GameKeywords")
+    NUFPCOMJMP *Level_ConfigAfterLoad_GameKeywords;
 #pragma bss_seg()
 #pragma bss_seg(".bss$fnInterpreterError")
     void(__cdecl *fnInterpreterError)(NUFPAR_PC *parser);
@@ -624,6 +643,14 @@ extern "C" {
     extern const char LevelConfigKeywordEnd[10] = "level_end";
 #pragma const_seg(".rdata$LevelBeforeLoadName")
     extern const char LevelBeforeLoadName[16] = "levelbeforeload";
+#pragma const_seg(".rdata$NuCameraAllocSource")
+    extern const char NuCameraAllocSource[54] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nucamera_gen.c";
+#pragma const_seg(".rdata$LoadPermEpisodesPath")
+    extern const char LoadPermEpisodesPath[20] = "levels\\episodes.txt";
+#pragma const_seg(".rdata$LoadPermAreasPath")
+    extern const char LoadPermAreasPath[17] = "levels\\areas.txt";
+#pragma const_seg(".rdata$LoadPermLevelsPath")
+    extern const char LoadPermLevelsPath[18] = "levels\\levels.txt";
 #pragma const_seg(".rdata$LevelAfterLoadName")
     extern const char LevelAfterLoadName[15] = "levelafterload";
 #pragma const_seg(".rdata$LevelConfigKeywordTest")
@@ -761,6 +788,55 @@ extern "C" {
 #pragma const_seg(".rdata$LevelConfigOn")
     extern const char LevelConfigOn[3] = "on";
 #pragma const_seg()
+#pragma data_seg(".data$LevelConfigKeywords_BeforeLoad")
+    NUFPCOMJMP LevelConfigKeywords_BeforeLoad[45] = {
+        {const_cast<char *>(LevelConfigGameKeyword_max_tightropes), LC_BL_max_tightropes},
+        {const_cast<char *>(LevelConfigGameKeyword_max_signals), LC_BL_max_signals},
+        {const_cast<char *>(LevelConfigGameKeyword_max_levers), LC_BL_max_levers},
+        {const_cast<char *>(LevelConfigGameKeyword_max_technos), LC_BL_max_technos},
+        {const_cast<char *>(LevelConfigGameKeyword_max_zipups), LC_BL_max_zipups},
+        {const_cast<char *>(LevelConfigGameKeyword_max_grapples), LC_BL_max_grapples},
+        {const_cast<char *>(LevelConfigGameKeyword_max_obstacles), LC_BL_max_obstacles},
+        {const_cast<char *>(LevelConfigGameKeyword_max_obstacle_objects), LC_BL_max_obstacle_objects},
+        {const_cast<char *>(LevelConfigGameKeyword_max_turrets), LC_BL_max_turrets},
+        {const_cast<char *>(LevelConfigGameKeyword_max_buildits), LC_BL_max_buildits},
+        {const_cast<char *>(LevelConfigGameKeyword_max_buildit_objects), LC_BL_max_buildit_objects},
+        {const_cast<char *>(LevelConfigGameKeyword_max_spinneranim_objs), LC_BL_max_spinneranim_objs},
+        {const_cast<char *>(LevelConfigGameKeyword_max_shards), LC_BL_max_shards},
+        {const_cast<char *>(LevelConfigGameKeyword_max_spinners), LC_BL_max_spinners},
+        {const_cast<char *>(LevelConfigGameKeyword_max_minicuts), LC_BL_max_minicuts},
+        {const_cast<char *>(LevelConfigGameKeyword_max_minicut_stages), LC_BL_max_minicutParts},
+        {const_cast<char *>(LevelConfigGameKeyword_maxgizmoblowuptypes), LC_BL_max_gizmoblowuptypes},
+        {const_cast<char *>(LevelConfigGameKeyword_maxgizmoblowups), LC_BL_max_gizmoblowups},
+        {const_cast<char *>(LevelConfigGameKeyword_max_climb_objects), LC_BL_max_climb_objects},
+        {const_cast<char *>(LevelConfigGameKeyword_max_attractos), LC_BL_max_attractos},
+        {const_cast<char *>(LevelConfigGameKeyword_max_timers), LC_BL_max_timers},
+        {const_cast<char *>(LevelConfigGameKeyword_max_guidelines), LC_BL_max_guidelines},
+        {const_cast<char *>(LevelConfigGameKeyword_max_ledges), LC_BL_max_ledges},
+        {const_cast<char *>(LevelConfigGameKeyword_max_securitydoors), LC_BL_max_securitydoors},
+        {const_cast<char *>(LevelConfigGameKeyword_max_tubes), LC_BL_max_tubes},
+        {const_cast<char *>(LevelConfigGameKeyword_max_pickups), LC_BL_max_pickups},
+        {const_cast<char *>(LevelConfigGameKeyword_max_gameantinodes), LC_BL_max_gameantinodes},
+        {const_cast<char *>(LevelConfigGameKeyword_max_gizpanels), LC_BL_max_gizpanels},
+        {const_cast<char *>(LevelConfigGameKeyword_max_force), LC_BL_max_force},
+        {const_cast<char *>(LevelConfigGameKeyword_max_force_objects), LC_BL_max_force_objects},
+        {const_cast<char *>(LevelConfigGameKeyword_max_pushblocks), LC_BL_max_pushblocks},
+        {const_cast<char *>(LevelConfigGameKeyword_max_pushblock_endpos), LC_BL_max_pushblock_endpos},
+        {const_cast<char *>(LevelConfigGameKeyword_max_gizspecials), LC_BL_max_gizspecials},
+        {const_cast<char *>(LevelConfigGameKeyword_max_hatmachines), LC_BL_max_hatmachines},
+        {const_cast<char *>(LevelConfigGameKeyword_max_doors), LC_BL_max_doors},
+        {const_cast<char *>(LevelConfigGameKeyword_max_teleports), LC_BL_max_teleports},
+        {const_cast<char *>(LevelConfigGameKeyword_max_gizrandoms), LC_BL_max_gizrandoms},
+        {const_cast<char *>(LevelConfigGameKeyword_max_torpmachines), LC_BL_max_torpmachines},
+        {const_cast<char *>(LevelConfigGameKeyword_max_bridges), LC_BL_max_bridges},
+        {const_cast<char *>(LevelConfigGameKeyword_max_plugs), LC_BL_max_plugs},
+        {const_cast<char *>(LevelConfigGameKeyword_max_bombgen_objects), LC_BL_max_bombgen_objects},
+        {const_cast<char *>(LevelConfigGameKeyword_max_bombgens), LC_BL_max_bombgens},
+        {const_cast<char *>(LevelConfigGameKeyword_windspeed), LC_BL_wind_speed},
+        {const_cast<char *>(LevelConfigGameKeyword_windsize), LC_BL_wind_size},
+        {NULL, NULL},
+    };
+#pragma data_seg()
 #pragma data_seg(".data$LevelConfig_BeforeLoad_GenericKeywords")
     NUFPCOMJMP LevelConfig_BeforeLoad_GenericKeywords[5] = {
         {const_cast<char *>(LevelConfigGenericKeyword_mipmapmode), LC_BL_mipmapmode},
@@ -829,6 +905,98 @@ extern "C" {
     };
 #pragma data_seg()
 
+#pragma const_seg(".rdata$LevelConfigGameKeyword_windsize")
+    extern const char LevelConfigGameKeyword_windsize[9] = "windsize";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_windspeed")
+    extern const char LevelConfigGameKeyword_windspeed[10] = "windspeed";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_bombgens")
+    extern const char LevelConfigGameKeyword_max_bombgens[13] = "max_bombgens";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_bombgen_objects")
+    extern const char LevelConfigGameKeyword_max_bombgen_objects[20] = "max_bombgen_objects";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_plugs")
+    extern const char LevelConfigGameKeyword_max_plugs[10] = "max_plugs";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_bridges")
+    extern const char LevelConfigGameKeyword_max_bridges[12] = "max_bridges";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_torpmachines")
+    extern const char LevelConfigGameKeyword_max_torpmachines[17] = "max_torpmachines";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_gizrandoms")
+    extern const char LevelConfigGameKeyword_max_gizrandoms[15] = "max_gizrandoms";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_teleports")
+    extern const char LevelConfigGameKeyword_max_teleports[14] = "max_teleports";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_doors")
+    extern const char LevelConfigGameKeyword_max_doors[10] = "max_doors";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_hatmachines")
+    extern const char LevelConfigGameKeyword_max_hatmachines[16] = "max_hatmachines";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_gizspecials")
+    extern const char LevelConfigGameKeyword_max_gizspecials[16] = "max_gizspecials";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_pushblock_endpos")
+    extern const char LevelConfigGameKeyword_max_pushblock_endpos[21] = "max_pushblock_endpos";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_pushblocks")
+    extern const char LevelConfigGameKeyword_max_pushblocks[15] = "max_pushblocks";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_force_objects")
+    extern const char LevelConfigGameKeyword_max_force_objects[18] = "max_force_objects";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_force")
+    extern const char LevelConfigGameKeyword_max_force[10] = "max_force";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_gizpanels")
+    extern const char LevelConfigGameKeyword_max_gizpanels[14] = "max_gizpanels";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_gameantinodes")
+    extern const char LevelConfigGameKeyword_max_gameantinodes[18] = "max_gameantinodes";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_pickups")
+    extern const char LevelConfigGameKeyword_max_pickups[12] = "max_pickups";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_tubes")
+    extern const char LevelConfigGameKeyword_max_tubes[10] = "max_tubes";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_securitydoors")
+    extern const char LevelConfigGameKeyword_max_securitydoors[18] = "max_securitydoors";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_ledges")
+    extern const char LevelConfigGameKeyword_max_ledges[11] = "max_ledges";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_guidelines")
+    extern const char LevelConfigGameKeyword_max_guidelines[15] = "max_guidelines";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_timers")
+    extern const char LevelConfigGameKeyword_max_timers[11] = "max_timers";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_attractos")
+    extern const char LevelConfigGameKeyword_max_attractos[14] = "max_attractos";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_climb_objects")
+    extern const char LevelConfigGameKeyword_max_climb_objects[18] = "max_climb_objects";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_maxgizmoblowups")
+    extern const char LevelConfigGameKeyword_maxgizmoblowups[16] = "maxgizmoblowups";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_maxgizmoblowuptypes")
+    extern const char LevelConfigGameKeyword_maxgizmoblowuptypes[20] = "maxgizmoblowuptypes";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_minicut_stages")
+    extern const char LevelConfigGameKeyword_max_minicut_stages[19] = "max_minicut_stages";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_minicuts")
+    extern const char LevelConfigGameKeyword_max_minicuts[13] = "max_minicuts";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_spinners")
+    extern const char LevelConfigGameKeyword_max_spinners[13] = "max_spinners";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_shards")
+    extern const char LevelConfigGameKeyword_max_shards[11] = "max_shards";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_spinneranim_objs")
+    extern const char LevelConfigGameKeyword_max_spinneranim_objs[21] = "max_spinneranim_objs";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_buildit_objects")
+    extern const char LevelConfigGameKeyword_max_buildit_objects[20] = "max_buildit_objects";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_buildits")
+    extern const char LevelConfigGameKeyword_max_buildits[13] = "max_buildits";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_turrets")
+    extern const char LevelConfigGameKeyword_max_turrets[12] = "max_turrets";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_obstacle_objects")
+    extern const char LevelConfigGameKeyword_max_obstacle_objects[21] = "max_obstacle_objects";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_obstacles")
+    extern const char LevelConfigGameKeyword_max_obstacles[14] = "max_obstacles";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_grapples")
+    extern const char LevelConfigGameKeyword_max_grapples[13] = "max_grapples";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_zipups")
+    extern const char LevelConfigGameKeyword_max_zipups[11] = "max_zipups";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_technos")
+    extern const char LevelConfigGameKeyword_max_technos[12] = "max_technos";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_levers")
+    extern const char LevelConfigGameKeyword_max_levers[11] = "max_levers";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_signals")
+    extern const char LevelConfigGameKeyword_max_signals[12] = "max_signals";
+#pragma const_seg(".rdata$LevelConfigGameKeyword_max_tightropes")
+    extern const char LevelConfigGameKeyword_max_tightropes[15] = "max_tightropes";
+#pragma const_seg(".rdata$AreaResidentsDirectory")
+    extern const char AreaResidentsDirectory[8] = "levels\\";
+#pragma const_seg(".rdata$AreaResidentsExtension")
+    extern const char AreaResidentsExtension[5] = ".txt";
 #pragma const_seg(".rdata$AreaConfigKeyword_character")
     extern const char AreaConfigKeyword_character[10] = "character";
 #pragma const_seg(".rdata$AreaConfigKeyword_area_start")
@@ -1051,8 +1219,12 @@ extern "C" {
         {22, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0},
     };
 
-    i32 DebrisGlassInitialized = 0;
-    void *DebrisGlassCopyMaterial = NULL;
+#pragma bss_seg(".bss$DebrisGlassInitialized")
+    i32 DebrisGlassInitialized;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DebrisGlassCopyMaterial")
+    void *DebrisGlassCopyMaterial;
+#pragma bss_seg()
 #pragma bss_seg(".bss$DebrisGlassU1")
     f32 DebrisGlassU1;
 #pragma bss_seg()
@@ -1068,7 +1240,6 @@ extern "C" {
 
     extern const f32 DebrisGlassMaterialOpacity = 0.999f;
 }
-void *pNuCam;
 i32 app_tbgameset;
 i32 app_tbplayerset;
 i32 app_tbaiset;

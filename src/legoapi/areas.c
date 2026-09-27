@@ -75,6 +75,80 @@ AREA_DATA_PC *__cdecl Area_FindByName(char *name, i32 *index_out) {
     return NULL;
 }
 
+void __cdecl Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
+    AREA_DATA_PC *area;
+    i32 area_index;
+
+    (void)buffer_end;
+    if (ADataList == NULL) {
+        return;
+    }
+
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    area = ADataList;
+    for (area_index = 0; area_index < AREACOUNT; ++area_index, ++area) {
+        NUFPAR_PC *parser;
+        char path[0x100];
+        i32 resident_count;
+
+        area->hub_player_ids = NULL;
+        if ((area->flags & 0x0002) != 0) {
+            continue;
+        }
+
+        NuStrCpy(path, AreaResidentsDirectory);
+        NuStrCat(path, area->dir);
+        NuStrCat(path, "\\");
+        NuStrCat(path, area->file);
+        NuStrCat(path, AreaResidentsExtension);
+        parser = NuFParCreate(path);
+        if (parser == NULL) {
+            continue;
+        }
+
+        resident_count = 0;
+        while (NuFParGetLine(parser) != 0) {
+            i32 character_id;
+
+            if (NuFParGetWord(parser) == 0 || NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_character) != 0) {
+                continue;
+            }
+            if (NuFParGetWord(parser) == 0) {
+                continue;
+            }
+            character_id = CharIDFromName(parser->word_buffer_ptr);
+            if (character_id == -1 || NuFParGetWord(parser) == 0 ||
+                NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_resident) != 0) {
+                continue;
+            }
+
+            if (area->hub_player_ids == NULL) {
+                area->hub_player_ids = (i16 *)buffer->void_ptr;
+            }
+            area->hub_player_ids[resident_count] = (i16)character_id;
+            ++resident_count;
+        }
+        NuFParDestroy(parser);
+
+        if (resident_count != 0) {
+            area->hub_player_ids[resident_count] = -1;
+            buffer->void_ptr = &area->hub_player_ids[resident_count + 1];
+        }
+    }
+    buffer->addr = (buffer->addr + 3) & ~3u;
+}
+
+void __cdecl Areas_FixUp(AREAFIXUP_PC *fixup) {
+    if (fixup != NULL) {
+        while (fixup->name != NULL) {
+            if (fixup->area != NULL) {
+                *fixup->area = Area_FindByName(fixup->name, NULL);
+            }
+            ++fixup;
+        }
+    }
+}
+
 LEVELDATA_PC *__cdecl Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out) {
     i32 index;
 
@@ -94,6 +168,22 @@ LEVELDATA_PC *__cdecl Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out) {
         }
     }
     return NULL;
+}
+
+void __cdecl SuperCounters_Reset(i32 area_index) {
+    if (area_index != -1) {
+        AREA_DATA_PC *area;
+        AREA_SUPERCOUNTER_PC *super_counters;
+        i32 index;
+
+        area = &ADataList[area_index];
+        super_counters = area->super_counters;
+        if (super_counters != NULL && area->super_counter_count != 0) {
+            for (index = 0; index < area->super_counter_count; ++index) {
+                super_counters[index].collected_count = 0;
+            }
+        }
+    }
 }
 
 void __cdecl Cheat_SetArea(i32 cheat, i32 area_index) {

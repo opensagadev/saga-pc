@@ -2,6 +2,97 @@
 
 typedef void(__cdecl *LEVELSETDEFAULTS_PC)(LEVELDATA_PC *level);
 
+#define LEVEL_BYTE_CALLBACK(name, field)                                                                               \
+    void __cdecl name(NUFPAR_PC *parser) {                                                                             \
+        levelconfig_ldata->field = (u8)NuFParGetInt(parser);                                                           \
+    }
+
+#define LEVEL_WORD_CALLBACK(name, field)                                                                               \
+    void __cdecl name(NUFPAR_PC *parser) {                                                                             \
+        levelconfig_ldata->field = (i16)NuFParGetInt(parser);                                                          \
+    }
+
+LEVEL_BYTE_CALLBACK(LC_BL_max_tightropes, max_tightropes)
+LEVEL_BYTE_CALLBACK(LC_BL_max_signals, max_signals)
+LEVEL_BYTE_CALLBACK(LC_BL_max_levers, max_levers)
+LEVEL_BYTE_CALLBACK(LC_BL_max_technos, max_technos)
+LEVEL_BYTE_CALLBACK(LC_BL_max_zipups, max_zipups)
+LEVEL_BYTE_CALLBACK(LC_BL_max_grapples, max_grapples)
+LEVEL_BYTE_CALLBACK(LC_BL_max_obstacles, max_obstacles)
+LEVEL_WORD_CALLBACK(LC_BL_max_obstacle_objects, max_obstacle_objects)
+LEVEL_BYTE_CALLBACK(LC_BL_max_turrets, max_turrets)
+LEVEL_BYTE_CALLBACK(LC_BL_max_buildits, max_buildits)
+LEVEL_WORD_CALLBACK(LC_BL_max_buildit_objects, max_buildit_objects)
+LEVEL_BYTE_CALLBACK(LC_BL_max_spinneranim_objs, max_spinneranim_objs)
+LEVEL_BYTE_CALLBACK(LC_BL_max_shards, max_shards)
+LEVEL_BYTE_CALLBACK(LC_BL_max_minicuts, max_minicuts)
+LEVEL_BYTE_CALLBACK(LC_BL_max_minicutParts, max_minicut_stages)
+LEVEL_BYTE_CALLBACK(LC_BL_max_climb_objects, max_climb_objects)
+LEVEL_BYTE_CALLBACK(LC_BL_max_attractos, max_attractos)
+LEVEL_BYTE_CALLBACK(LC_BL_max_timers, max_timers)
+LEVEL_BYTE_CALLBACK(LC_BL_max_guidelines, max_guidelines)
+LEVEL_BYTE_CALLBACK(LC_BL_max_ledges, max_ledges)
+LEVEL_BYTE_CALLBACK(LC_BL_max_securitydoors, max_securitydoors)
+LEVEL_BYTE_CALLBACK(LC_BL_max_tubes, max_tubes)
+LEVEL_WORD_CALLBACK(LC_BL_max_pickups, max_pickups)
+LEVEL_WORD_CALLBACK(LC_BL_max_gameantinodes, max_gameantinodes)
+LEVEL_BYTE_CALLBACK(LC_BL_max_gizpanels, max_gizpanels)
+LEVEL_BYTE_CALLBACK(LC_BL_max_force, max_force)
+LEVEL_WORD_CALLBACK(LC_BL_max_force_objects, max_force_objects)
+LEVEL_BYTE_CALLBACK(LC_BL_max_gizspecials, max_gizspecials)
+LEVEL_BYTE_CALLBACK(LC_BL_max_hatmachines, max_hatmachines)
+LEVEL_BYTE_CALLBACK(LC_BL_max_doors, max_doors)
+LEVEL_BYTE_CALLBACK(LC_BL_max_teleports, max_teleports)
+LEVEL_BYTE_CALLBACK(LC_BL_max_gizrandoms, max_gizrandoms)
+LEVEL_BYTE_CALLBACK(LC_BL_max_torpmachines, max_torpmachines)
+LEVEL_BYTE_CALLBACK(LC_BL_max_bridges, max_bridges)
+LEVEL_BYTE_CALLBACK(LC_BL_max_plugs, max_plugs)
+LEVEL_WORD_CALLBACK(LC_BL_max_bombgen_objects, max_bombgen_objects)
+LEVEL_BYTE_CALLBACK(LC_BL_max_bombgens, max_bombgens)
+
+void __cdecl LC_BL_max_spinners(NUFPAR_PC *parser) {
+    levelconfig_ldata->max_spinners = (u8)NuFParGetInt(parser);
+    if (levelconfig_ldata->max_spinners > 8) {
+        levelconfig_ldata->max_spinners = 8;
+    }
+}
+
+void __cdecl LC_BL_max_gizmoblowuptypes(NUFPAR_PC *parser) {
+    levelconfig_ldata->max_gizmoblowuptypes = (i16)NuFParGetInt(parser);
+    if ((u16)levelconfig_ldata->max_gizmoblowuptypes > 0xff) {
+        levelconfig_ldata->max_gizmoblowuptypes = 0xff;
+    }
+}
+
+void __cdecl LC_BL_max_gizmoblowups(NUFPAR_PC *parser) {
+    levelconfig_ldata->max_gizmoblowups = (i16)NuFParGetInt(parser);
+    if ((u16)levelconfig_ldata->max_gizmoblowups > 0x200) {
+        levelconfig_ldata->max_gizmoblowups = 0x200;
+    }
+}
+
+void __cdecl LC_BL_max_pushblocks(NUFPAR_PC *parser) {
+    levelconfig_ldata->max_pushblocks = (u8)NuFParGetInt(parser);
+    if (levelconfig_ldata->max_pushblocks > 0x10) {
+        levelconfig_ldata->max_pushblocks = 0x10;
+    }
+}
+
+void __cdecl LC_BL_max_pushblock_endpos(NUFPAR_PC *parser) {
+    levelconfig_ldata->max_pushblock_endpos = (u8)NuFParGetInt(parser);
+    if (levelconfig_ldata->max_pushblock_endpos > 0x40) {
+        levelconfig_ldata->max_pushblock_endpos = 0x40;
+    }
+}
+
+void __cdecl LC_BL_wind_speed(NUFPAR_PC *parser) {
+    levelconfig_ldata->wind_speed = NuFParGetFloat(parser);
+}
+
+void __cdecl LC_BL_wind_size(NUFPAR_PC *parser) {
+    levelconfig_ldata->wind_size = NuFParGetFloat(parser);
+}
+
 void __cdecl LC_BL_mipmapmode(NUFPAR_PC *parser) {
     levelconfig_ldata->mipmap_mode = (u8)NuFParGetInt(parser);
 }
@@ -328,6 +419,11 @@ void __cdecl LevelConfig_AfterLoad(LEVELDATA_PC *level, char *buffer, NUFPCOMJMP
         level->blob_shadow_fade_near = level->blob_shadow_fade_far;
     }
     level->flags |= 1;
+}
+
+void __cdecl Level_RegisterGameConfigKeywords(NUFPCOMJMP *before_load, NUFPCOMJMP *after_load) {
+    Level_ConfigBeforeLoad_GameKeywords = before_load;
+    Level_ConfigAfterLoad_GameKeywords = after_load;
 }
 
 LEVELDATA_PC *__cdecl Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,

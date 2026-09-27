@@ -36,6 +36,33 @@ i32 __cdecl GetSfxId(char *name) {
     return -1;
 }
 
+i32 __cdecl AmbientFromQuiet(i32 quiet_index) {
+    i32 pair_index;
+
+    if (quiet_index == -1) {
+        return -1;
+    }
+
+    for (pair_index = 0; AmbientPairTab[pair_index * 2] != -1; pair_index++) {
+        if (AmbientPairTab[pair_index * 2] == quiet_index) {
+            return AmbientPairTab[pair_index * 2 + 1];
+        }
+    }
+    return -1;
+}
+
+void __cdecl SfxBitsStore(void *sound_table) {
+    PCByteCopy_candidate(SfxBits, sound_table, 0xc8);
+}
+
+void __cdecl SfxBitsRestore(void *sound_table) {
+    PCByteCopy_candidate(sound_table, SfxBits, 0xc8);
+}
+
+void __cdecl ResetSounds(void) {
+    PCByteCopy_candidate(GlobalSfxBits, SfxBits, 0xc8);
+}
+
 i16 __cdecl GetMusicIndex(char *name, struct nusound_filename_info_s *table, i32 fallback) {
     (void)name;
     (void)table;

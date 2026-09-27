@@ -1,5 +1,9 @@
 #include "saga.h"
 
+void __cdecl NuMtxSetIdentity(NUMTX *matrix) {
+    *matrix = NuMtxSetIdentityTemplate;
+}
+
 STATIC_ASSERT(offsetof(NUVEC, x) == 0x00);
 STATIC_ASSERT(offsetof(NUVEC, y) == 0x04);
 STATIC_ASSERT(offsetof(NUVEC, z) == 0x08);

@@ -22,9 +22,9 @@ void __cdecl InitOnce(i32 argc, char **argv) {
     STUBBED_NAMED(0x006dbb30); /* hardware/setup varargs dispatcher */
     StartupOpenDats(StartupDatNames, 7, &permbuffer_base);
 
-    /* The camera and time-bar helpers depend on the unresolved PC allocator. */
+    /* Camera creation uses the PC's 0x78-byte record and pinned allocator. */
     STUBBED_NAMED(0x005ede60);
-    STUBBED_NAMED(0x005d5330); /* camera creation */
+    pNuCam = NuCameraCreate();
     InitPanel((i32)Game.options_save.widescreen);
     STUBBED_NAMED(0x005d8270); /* first time-bar set */
     STUBBED_NAMED(0x005d8270); /* second time-bar set */

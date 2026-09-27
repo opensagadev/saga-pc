@@ -243,12 +243,18 @@ external branch destinations in these comparison objects. Inspect `exact_match`
 rather than treating an objdiff percentage as proof. Mapped data definitions,
 including compiler literals and zero-initialized state, are compared too.
 
-The badge counts the union of exactly matched function bytes divided by the
-full original `.text` virtual size (**3,471,246 bytes**). It includes unmapped
-code in the denominator, counts aliases once, and excludes data. Imported slots
-and jump thunks are inventoried separately and are never credited as reconstructed
-matches. The original `.text` denominator remains unchanged. The separate
-**mapping** badge counts the union of all known
+The first badge shows objdiff's native fuzzy similarity across the functions we
+have compiled and compared. Objdiff weights its function scores by original code
+size; `objdiff_total_code` in `matching.json` gives that denominator. This score
+measures the quality of the current candidates, not the portion of the whole
+game reconstructed. An omitted zero score in objdiff's JSON counts as zero.
+
+The separate `matching_percent` in `matching.json` counts the union of exactly
+matched function bytes divided by the full original `.text` virtual size
+(**3,471,246 bytes**). It includes unmapped code in the denominator, counts
+aliases once, and excludes data. Imported slots and jump thunks are inventoried
+separately and are never credited as reconstructed matches. The original `.text`
+denominator remains unchanged. The **mapping** badge counts the union of all known
 symbol extents, including data and symbols without implementations, against the
 full `SizeOfImage` VA range (**40,067,072 bytes**). Unknown sizes contribute no
 bytes and overlaps count once. This can be computed without the retail file;

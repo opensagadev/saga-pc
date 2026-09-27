@@ -23,6 +23,10 @@ so the source-compatible C wrapper is structural rather than byte-matching.
 `InitOnce` now opens the PC's seven startup DAT names, beginning with
 `GAME.DAT`, through the exact archive-registration helper. The surrounding
 hardware dispatcher and the `LoadPermData` parser path remain incomplete.
+`LoadPermData` now calls the PC `Level_SetDefaults` initializer and starts the
+episode, area and level text parsers using the retail path strings. Episode
+fixups and subsequent allocation dependencies still need reconstruction.
+The PC default wind speed is 3.0f; the Android value is different.
 `NuMain` opens the six episode archives, then stops before indexing level/area
 tables. DAT member dispatch now opens, reads, seeks and closes stored archive
 members through PC-style handles. The four-record `NuFParOpen` allocator and BOM
@@ -30,7 +34,11 @@ setup, `NuFParCreate`, parser position save/restore, and the PC
 `Levels_ConfigureList` record parser are implemented structurally. The PC
 `Areas_ConfigureList` parser now has typed area and cheat records, including its
 level, character, and cheat lookup dependencies. Both generic level keyword
-tables and their parser wrappers match, along with 52 of the 54 callbacks.
+tables and their parser wrappers match, along with 52 of the 54 generic callbacks.
+All 44 game-specific before-load callbacks now have mapped PC extents and
+source definitions; their 45-record dispatch table and keyword strings have
+exact initializers. These callbacks match, but their containing parser and
+full `LoadPermData` path remain incomplete.
 The two music callbacks and both full record loaders remain structural, so
 level/area loading is not yet ready to run through `NuMain`. Its startup
 includes a temporary guard before `NuFrameBegin`

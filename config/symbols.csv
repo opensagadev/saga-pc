@@ -17,7 +17,52 @@ address   , symbol                                                , size  , ctyp
 0x0048afe0, _LoadAreaData                                          , 1095  , void __cdecl (BGPROCINFO *)
 0x0048c270, _StoreSceneProgress                                   , 372   , "void __cdecl (NUGSCN *, SCENEPROGRESS *, i32)"
 0x0048c630, _CalculateWorldSize                                   , 470   , void __cdecl (WORLDINFO *)
+0x0048c810, _LC_BL_max_tightropes                                 , 26    , void __cdecl (NUFPAR_PC *)
+0x0048c830, _LC_BL_max_signals                                    , 26    , void __cdecl (NUFPAR_PC *)
+0x0048c850, _LC_BL_max_levers                                     , 26    , void __cdecl (NUFPAR_PC *)
+0x0048c870, _LC_BL_max_technos                                    , 26    , void __cdecl (NUFPAR_PC *)
+0x0048c890, _LC_BL_max_zipups                                     , 26    , void __cdecl (NUFPAR_PC *)
+0x0048c8b0, _LC_BL_max_grapples                                   , 26    , void __cdecl (NUFPAR_PC *)
+0x0048c8d0, _LC_BL_max_obstacles                                  , 26    , void __cdecl (NUFPAR_PC *)
+0x0048c8f0, _LC_BL_max_obstacle_objects                           , 27    , void __cdecl (NUFPAR_PC *)
+0x0048c910, _LC_BL_max_turrets                                    , 26    , void __cdecl (NUFPAR_PC *)
+0x0048c930, _LC_BL_max_buildits                                   , 26    , void __cdecl (NUFPAR_PC *)
+0x0048c950, _LC_BL_max_buildit_objects                            , 27    , void __cdecl (NUFPAR_PC *)
+0x0048c970, _LC_BL_max_spinneranim_objs                           , 26    , void __cdecl (NUFPAR_PC *)
+0x0048c990, _LC_BL_max_climb_objects                              , 26    , void __cdecl (NUFPAR_PC *)
+0x0048c9b0, _LC_BL_max_shards                                     , 26    , void __cdecl (NUFPAR_PC *)
+0x0048c9d0, _LC_BL_max_spinners                                   , 47    , void __cdecl (NUFPAR_PC *)
+0x0048ca00, _LC_BL_max_minicuts                                   , 26    , void __cdecl (NUFPAR_PC *)
+0x0048ca20, _LC_BL_max_minicutParts                               , 26    , void __cdecl (NUFPAR_PC *)
+0x0048ca40, _LC_BL_max_gizmoblowuptypes                           , 53    , void __cdecl (NUFPAR_PC *)
+0x0048ca80, _LC_BL_max_gizmoblowups                               , 53    , void __cdecl (NUFPAR_PC *)
+0x0048cac0, _LC_BL_max_pushblocks                                 , 47    , void __cdecl (NUFPAR_PC *)
+0x0048caf0, _LC_BL_max_pushblock_endpos                           , 47    , void __cdecl (NUFPAR_PC *)
+0x0048cb20, _LC_BL_max_attractos                                  , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cb40, _LC_BL_max_timers                                     , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cb60, _LC_BL_max_guidelines                                 , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cb80, _LC_BL_max_ledges                                     , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cba0, _LC_BL_max_securitydoors                              , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cbc0, _LC_BL_max_tubes                                      , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cbe0, _LC_BL_max_pickups                                    , 27    , void __cdecl (NUFPAR_PC *)
+0x0048cc00, _LC_BL_max_gameantinodes                              , 27    , void __cdecl (NUFPAR_PC *)
+0x0048cc20, _LC_BL_max_gizpanels                                  , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cc40, _LC_BL_max_hatmachines                                , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cc60, _LC_BL_max_force                                      , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cc80, _LC_BL_max_force_objects                              , 27    , void __cdecl (NUFPAR_PC *)
+0x0048cca0, _LC_BL_max_bombgen_objects                            , 27    , void __cdecl (NUFPAR_PC *)
+0x0048ccc0, _LC_BL_max_bombgens                                   , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cce0, _LC_BL_max_gizspecials                                , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cd00, _LC_BL_max_doors                                      , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cd20, _LC_BL_max_teleports                                  , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cd40, _LC_BL_max_gizrandoms                                 , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cd60, _LC_BL_max_torpmachines                               , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cd80, _LC_BL_max_bridges                                    , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cda0, _LC_BL_max_plugs                                      , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cdc0, _LC_BL_wind_speed                                     , 26    , void __cdecl (NUFPAR_PC *)
+0x0048cde0, _LC_BL_wind_size                                      , 26    , void __cdecl (NUFPAR_PC *)
 0x0048ce00, _WorldInfo_Load                                       , 2222  , void __cdecl (WORLDINFO *)
+0x0048f520, _Level_SetDefaults                                    , 329   , void __cdecl (LEVELDATA_PC *)
 0x0048f6c0, _Game_WorldInfo_InitMenu                              , 48    , "void __cdecl (WORLDINFO *, i32 *, i32 *)"
 0x0048f6f0, _Game_WorldInfo_InitLast                              , 72    , void __cdecl (WORLDINFO *)
 0x0048f740, _ClearAreaProgress                                    , 252   , "void __cdecl (i32, i32)"
@@ -33,6 +78,7 @@ address   , symbol                                                , size  , ctyp
 0x00495740, _MenuEnterTitles                                      , 34    , void __cdecl (MENU *)
 0x004badd0, _InitPanel                                            , 106   , void __cdecl (i32)
 0x004c00c0, _Shadow_SetMode                                        , 60    , void __cdecl (void)
+0x004c9fb0, _LoadPermData                                         , 1532  , void __cdecl (void *)
 0x004ca5b0, _LoadPerm                                             , 2004  , void __cdecl (void)
 0x004ce020, _Teleports_Configure                                  , 503   , "void __cdecl (WORLDINFO *, char *)"
 0x004cf2d0, _Text_SetLanguage_Game                                , 228   , void __cdecl (i32)
@@ -76,8 +122,12 @@ address   , symbol                                                , size  , ctyp
 0x004f1040, _NuFParUnGetWord                                      , 17    , void __cdecl (NUFPAR_PC *)
 0x004f1060, _NuFParGetPos                                         , 53    , "void __cdecl (NUFPAR_PC *, NUFPARPOS_PC *)"
 0x004f10a0, _NuFParSetPos                                         , 54    , "void __cdecl (NUFPAR_PC *, NUFPARPOS_PC *)"
+0x004f10e0, _NuFParPushCom                                        , 63    , "i32 __cdecl (NUFPAR_PC *, NUFPCOMJMP *)"
+0x004f1120, _NuFParPushComCTX                                     , 63    , "i32 __cdecl (NUFPAR_PC *, NUFPCOMJMPCTX *)"
 0x004f1160, _NuFParPushCom2                                        , 63    , "i32 __cdecl (NUFPAR_PC *, NUFPCOMJMP *, NUFPCOMJMP *)"
+0x004f11a0, _NuFParPushComCTX2                                    , 63    , "i32 __cdecl (NUFPAR_PC *, NUFPCOMJMPCTX *, NUFPCOMJMPCTX *)"
 0x004f11e0, _NuFParPopCom                                         , 24    , void __cdecl (NUFPAR_PC *)
+0x004f1200, _NuFParSetInterpreterErrorHandler                     , 16    , NUFPCOMFN __cdecl (NUFPCOMFN)
 0x004f1240, _NuAllocFPar                                          , 134   , NUFPAR_PC *__cdecl (void)
 0x004f12e0, _NuFreeFPar                                           , 11    , void __cdecl (NUFPAR_PC *)
 0x004f1310, _NuLinkedListAppend                                   , 40    , "void __cdecl (NULISTHDR *, NULISTLNK *)"
@@ -144,6 +194,8 @@ address   , symbol                                                , size  , ctyp
 0x004f7df0, _NuFParGetWordW                                       , 434   , i32 __cdecl (NUFPAR_PC *)
 0x004f7fb0, _NuFParGetWord                                        , 335   , i32 __cdecl (NUFPAR_PC *)
 0x004f8100, _NuFParGetFloat                                        , 149   , f32 __cdecl (NUFPAR_PC *)
+0x004f81a0, _NuFParGetOptionalFloat                               , 185   , "void __cdecl (NUFPAR_PC *, f32 *)"
+0x004f8260, _NuFParGetOptionalInt                                 , 170   , "void __cdecl (NUFPAR_PC *, i32 *)"
 0x004f8a70, _NuStrIStr                                            , 120   , "char *__cdecl (char *, char *)"
 0x004f8b10, _NuStrICmp                                            , 100   , "i32 __cdecl (const char *, const char *)"
 0x004f8b80, _NuStrNICmp                                           , 150   , "i32 __cdecl (const char *, const char *, i32)"
@@ -159,6 +211,7 @@ address   , symbol                                                , size  , ctyp
 0x004f9de0, _NuFilePakGetItem                                     , 134   , "i32 __cdecl (void *, char *)"
 0x004f9e70, _NuFParGetInt                                          , 226   , i32 __cdecl (NUFPAR_PC *)
 0x004fa020, _NuFParInterpretWord                                   , 347   , i32 __cdecl (NUFPAR_PC *)
+0x004fa180, _NuFParInterpretWordCTX                               , 318   , "i32 __cdecl (NUFPAR_PC *, void *)"
 0x004fa2c0, _NuFParSuspend                                        , 55    , void __cdecl (NUFPAR_PC *)
 0x004fa300, _NuFParDestroy                                        , 22    , void __cdecl (NUFPAR_PC *)
 0x004fa3f0, _NuFileOpenDF                                         , 507   , "NUFILE __cdecl (const char *, i32, NUDATHDR *, i32)"
@@ -464,6 +517,7 @@ address   , symbol                                                , size  , ctyp
 0x005b3aa0, _NuVecMin                                             , 91    , "void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x005b3b00, _NuVecMagSqr                                          , 37    , f32 __cdecl (NUVEC *)
 0x005b3d80, _NuVecLerp                                            , 61    , "void __cdecl (NUVEC *, NUVEC *, NUVEC *, f32)"
+0x005b44e0, _NuMtxSetIdentity                                     , 21    , void __cdecl (NUMTX *)
 0x005b4500, _NuMtxSetTranslation                                  , 68    , "void __cdecl (NUMTX *, NUVEC *)"
 0x005b45a0, _NuMtxSetScale                                        , 68    , "void __cdecl (NUMTX *, NUVEC *)"
 0x005b4900, _NuMtxTranslate                                       , 35    , "void __cdecl (NUMTX *, NUVEC *)"
@@ -541,6 +595,7 @@ address   , symbol                                                , size  , ctyp
 0x005d0f60, _NuQFntSetScaleRS                                     , 56    , "void __cdecl (void *, VUFNT *, f32, f32)"
 0x005d0fa0, _NuQFntSetColourRS                                    , 14    , "void __cdecl (void *, VUFNT *, u32)"
 0x005d10e0, _NuQFntMoveRS                                         , 94    , "void __cdecl (void *, VUFNT *, f32, f32, f32)"
+0x005d5330, _NuCameraCreate                                       , 99    , NUCAMERA * __cdecl (void)
 0x005d60c0, _NuCameraGet                                          , 21    , void __cdecl (NUCAMERA *)
 0x005d6120, _NuCameraSetAxes                                      , 30    , void __cdecl (NUVEC *)
 0x005d6140, _NuCameraGetAxes                                      , 31    , void __cdecl (NUVEC *)
@@ -573,13 +628,16 @@ address   , symbol                                                , size  , ctyp
 0x005f35e0, _NuQFntPrintEx                                        , 320   , "void __cdecl (VUFNT *, i32, i32, i32, const char *, ...)"
 0x005f9530, _NuWaterReset                                         , 21    , void __cdecl (void)
 0x005f9e90, _NuRndrShadowOnOff_candidate                           , 10    , void __cdecl (i32)
+0x005fcef0, _DisplayListBuildKonstPacket                          , 60    , void * __cdecl (NUGLOBALRNDRSTATE_PC *)
+0x005fcf30, _DisplayListBuildReflectionPacket                     , 39    , void * __cdecl (NUGLOBALRNDRSTATE_PC *)
+0x005fcf60, _DisplayListBuildFogPacket                            , 106   , void * __cdecl (NUGLOBALRNDRSTATE_PC *)
 0x006009a0, _NuPrim2DEnd                                          , 24    , void __cdecl (void)
 0x006009c0, _NuPrim3DEnd                                          , 24    , void __cdecl (void)
 0x006009e0, _NuPrim2DAddXYZ                                       , 302   , "void __cdecl (f32, f32, f32)"
 0x00600b20, _NuPrimSetCoordinateSystem                            , 132   , void __cdecl (i32)
 0x006034b0, _NuDisplayListLinkItem                                , 117   , "void __cdecl (NUDISPLAYLIST *, u8, void *)"
 0x00603580, _DisplayListCreateGeomTransformPS                     , 142   , "void *__cdecl (VARIPTR *, NUMTX *, NUMTL *, void *, void *)"
-0x00607590, _DisplayListUpdateRenderState                         , 649   , "void __cdecl (NUDISPLAYLIST *, NUGLOBALRNDRSTATE *)"
+0x00607590, _DisplayListUpdateRenderState                         , 649   , "void __cdecl (NUDISPLAYLIST_PC *, NUGLOBALRNDRSTATE_PC *)"
 0x00607d70, _NuPrim2DBegin                                        , 331   , "void __cdecl (u32, u32, NUMTL *)"
 0x00607ec0, _NuPrim3DBegin                                        , 319   , "void __cdecl (u32, u32, NUMTL *, NUMTX *)"
 0x0061e6b0, _NuKeyToAscii                                         , 50    , "i32 __cdecl (u32, i32)"
@@ -1134,13 +1192,15 @@ address   , symbol                                                , size  , ctyp
 0x00751698, __real@3ff0000000000000                               , 8     , f64
 0x007516b8, _nu_wind_scaled_time_multiplier                       , 8     , const f64
 0x007516d8, _NuQFntHalfScale                                      , 8     , const f64
+0x00751708, __real@40400000                                       , 4     , const f32
 0x0075170c, __real@41200000                                       , 4     , const f32
 0x00751730, _Text_TimeS                                           , 3     , const char[3]
-0x00751768, _nu_fsign_minus_one                                   , 4     , const f32
 0x00751768, __real@bf800000                                        , 4     , const f32
+0x00751768, _nu_fsign_minus_one                                   , 4     , const f32
 0x00751788, __real@3fb99999a0000000                                , 8     , const f64
 0x007517b4, __real@40800000                                       , 4     , const f32
 0x007517b8, _NuPrimTwo                                            , 4     , const f32
+0x007518e4, __real@3f400000                                       , 4     , const f32
 0x00751948, __real@41f00000                                       , 4     , const f32
 0x0075194c, __real@42700000                                       , 4     , const f32
 0x007519f0, __real@4059000000000000                               , 8     , const f64
@@ -1165,8 +1225,54 @@ address   , symbol                                                , size  , ctyp
 0x00758fc0, _NuTime_RefreshRate                                   , 8     , const f64
 0x00758fc0, __real@404e000000000000                               , 8     , const f64
 0x00759700, _Menu_ColonSeparator                                  , 3     , const char[3]
+0x00759ca0, _LevelConfigGameKeyword_windsize                      , 9     , const char[9]
+0x00759cac, _LevelConfigGameKeyword_windspeed                     , 10    , const char[10]
+0x00759cb8, _LevelConfigGameKeyword_max_bombgens                  , 13    , const char[13]
+0x00759cc8, _LevelConfigGameKeyword_max_bombgen_objects           , 20    , const char[20]
+0x00759cdc, _LevelConfigGameKeyword_max_plugs                     , 10    , const char[10]
+0x00759ce8, _LevelConfigGameKeyword_max_bridges                   , 12    , const char[12]
+0x00759cf4, _LevelConfigGameKeyword_max_torpmachines              , 17    , const char[17]
+0x00759d08, _LevelConfigGameKeyword_max_gizrandoms                , 15    , const char[15]
+0x00759d18, _LevelConfigGameKeyword_max_teleports                 , 14    , const char[14]
+0x00759d28, _LevelConfigGameKeyword_max_doors                     , 10    , const char[10]
+0x00759d34, _LevelConfigGameKeyword_max_hatmachines               , 16    , const char[16]
+0x00759d44, _LevelConfigGameKeyword_max_gizspecials               , 16    , const char[16]
+0x00759d54, _LevelConfigGameKeyword_max_pushblock_endpos          , 21    , const char[21]
+0x00759d6c, _LevelConfigGameKeyword_max_pushblocks                , 15    , const char[15]
+0x00759d7c, _LevelConfigGameKeyword_max_force_objects             , 18    , const char[18]
+0x00759d90, _LevelConfigGameKeyword_max_force                     , 10    , const char[10]
+0x00759d9c, _LevelConfigGameKeyword_max_gizpanels                 , 14    , const char[14]
+0x00759dac, _LevelConfigGameKeyword_max_gameantinodes             , 18    , const char[18]
+0x00759dc0, _LevelConfigGameKeyword_max_pickups                   , 12    , const char[12]
+0x00759dcc, _LevelConfigGameKeyword_max_tubes                     , 10    , const char[10]
+0x00759dd8, _LevelConfigGameKeyword_max_securitydoors             , 18    , const char[18]
+0x00759dec, _LevelConfigGameKeyword_max_ledges                    , 11    , const char[11]
+0x00759df8, _LevelConfigGameKeyword_max_guidelines                , 15    , const char[15]
+0x00759e08, _LevelConfigGameKeyword_max_timers                    , 11    , const char[11]
+0x00759e14, _LevelConfigGameKeyword_max_attractos                 , 14    , const char[14]
+0x00759e24, _LevelConfigGameKeyword_max_climb_objects             , 18    , const char[18]
+0x00759e38, _LevelConfigGameKeyword_maxgizmoblowups               , 16    , const char[16]
+0x00759e48, _LevelConfigGameKeyword_maxgizmoblowuptypes           , 20    , const char[20]
+0x00759e5c, _LevelConfigGameKeyword_max_minicut_stages            , 19    , const char[19]
+0x00759e70, _LevelConfigGameKeyword_max_minicuts                  , 13    , const char[13]
+0x00759e80, _LevelConfigGameKeyword_max_spinners                  , 13    , const char[13]
+0x00759e90, _LevelConfigGameKeyword_max_shards                    , 11    , const char[11]
+0x00759e9c, _LevelConfigGameKeyword_max_spinneranim_objs          , 21    , const char[21]
+0x00759eb4, _LevelConfigGameKeyword_max_buildit_objects           , 20    , const char[20]
+0x00759ec8, _LevelConfigGameKeyword_max_buildits                  , 13    , const char[13]
+0x00759ed8, _LevelConfigGameKeyword_max_turrets                   , 12    , const char[12]
+0x00759ee4, _LevelConfigGameKeyword_max_obstacle_objects          , 21    , const char[21]
+0x00759efc, _LevelConfigGameKeyword_max_obstacles                 , 14    , const char[14]
+0x00759f0c, _LevelConfigGameKeyword_max_grapples                  , 13    , const char[13]
+0x00759f1c, _LevelConfigGameKeyword_max_zipups                    , 11    , const char[11]
+0x00759f28, _LevelConfigGameKeyword_max_technos                   , 12    , const char[12]
+0x00759f34, _LevelConfigGameKeyword_max_levers                    , 11    , const char[11]
+0x00759f40, _LevelConfigGameKeyword_max_signals                   , 12    , const char[12]
+0x00759f4c, _LevelConfigGameKeyword_max_tightropes                , 15    , const char[15]
 0x0075a0dc, _DebrisGlassMaterialOpacity                           , 4     , const f32
 0x0075a204, ??_C@_01KICIPPFI@?2?$AA@                              , 2     , const char[2]
+0x0075a208, _AreaResidentsDirectory                               , 8     , const char[8]
+0x0075ac2c, __real@44000000                                       , 4     , const f32
 0x0075ad8c, _EpisodeVIDat                                         , 15    , const char[15]
 0x0075ad9c, _EpisodeVDat                                          , 14    , const char[14]
 0x0075adac, _EpisodeIVDat                                         , 15    , const char[15]
@@ -1180,6 +1286,9 @@ address   , symbol                                                , size  , ctyp
 0x0075c070, __real@43e00000                                       , 4     , const f32
 0x0075c074, __real@44200000                                       , 4     , const f32
 0x0075ce98, __real@3e333333                                       , 4     , const f32
+0x0075d0c0, _LoadPermEpisodesPath                                 , 20    , const char[20]
+0x0075d0d4, _LoadPermAreasPath                                    , 17    , const char[17]
+0x0075d0e8, _LoadPermLevelsPath                                   , 18    , const char[18]
 0x0075d344, __real@3f4a3d71                                       , 4     , const f32
 0x0075d348, __real@3fe66666                                       , 4     , const f32
 0x0075d34c, __real@3f428f5c                                       , 4     , const f32
@@ -1192,6 +1301,7 @@ address   , symbol                                                , size  , ctyp
 0x0075d368, __real@3e051eb8                                       , 4     , const f32
 0x0075d36c, _Text_CrossCodeword                                   , 6     , const char[6]
 0x0075d374, _Text_WibbleCodeword                                  , 7     , const char[7]
+0x0075d39c, _AreaResidentsExtension                               , 5     , const char[5]
 0x0075d418, _nu_wind_phase_scale                                  , 8     , const f64
 0x0075e9e0, __real@41f0000000000000                               , 8     , const f64
 0x0075e9e8, _NuTime_LowScale                                      , 8     , const f64
@@ -1325,9 +1435,11 @@ address   , symbol                                                , size  , ctyp
 0x00763970, ??_C@_0M@PEBGKJHN@Snake_bit_1?$AA@                    , 12    , const char[12]
 0x00764000, __real@3e00000000000000                               , 8     , f64
 0x00764090, __real@3f2921fb60000000                               , 8     , const f64
+0x007640d8, __real@461c4000                                       , 4     , const f32
 0x00764258, _KeyStructSizes                                       , 16    , const u8[16]
 0x00764538, _NuPrimPS2YScale                                      , 4     , const f32
 0x0076453c, _NuPrimPS2XScale                                      , 4     , const f32
+0x007646a4, _NuCameraAllocSource                                  , 54    , const char[54]
 0x0076eef0, __real@40cfff8000000000                               , 8     , const f64
 0x007759a8, _PCKeyboard2Name_candidate                            , 10    , const char[10]
 0x007759b4, _PCKeyboardMouse2Name_candidate                       , 16    , const char[16]
@@ -1347,6 +1459,7 @@ address   , symbol                                                , size  , ctyp
 0x007f23a4, _waiting_for_character                                , 4     , i32
 0x007f39e4, _StartupGameFlag1                                     , 4     , i32
 0x007f3b14, _BonusWinner                                          , 4     , i32
+0x007fa608, _LevelConfigKeywords_BeforeLoad                       , 360   , NUFPCOMJMP[45]
 0x007fac04, _BGLOAD                                               , 4     , i32
 0x007fac20, _PlayTrailer                                          , 4     , i32
 0x007faccc, _opts_sfx_wait                                        , 4     , f32
@@ -1441,6 +1554,7 @@ address   , symbol                                                , size  , ctyp
 0x00806370, ??_R0?AVThingManager@@@8                              , 27    ,
 0x0080638c, ??_R0?AVGameThingManager@@@8                          , 31    ,
 0x008065bc, _NuWindQS                                             , 4     , u32
+0x00806680, _NuMtxSetIdentityTemplate                             , 64    , NUMTX
 0x008066c0, _global_rand                                          , 4     , NURAND
 0x008066c8, _ang                                                  , 1026  , u16[513]
 0x00806b9c, _nuspecial_const_alpha                                , 4     , f32
@@ -1751,7 +1865,7 @@ address   , symbol                                                , size  , ctyp
 0x009250bc, _LevelTimer                                           , 16    , TIMER
 0x009250d0, _PAL                                                  , 4     , i32
 0x009250e8, _do_multiframe_update                                 , 4     , i32
-0x00925184, ?pNuCam@@3PAXA                                        , 4     , void *
+0x00925184, _pNuCam                                               , 4     , NUCAMERA *
 0x009253c4, _disable_narrow_socks                                 , 4     , i32
 0x009253cc, _Game_NuPad                                           , 4     , void **
 0x009253d0, _GamePadStorage                                       , 6144  , GAMEPAD_INIT_RECORD[64]

@@ -150,6 +150,14 @@ and state its outcome; do not describe local success as a passing CI run.
 
 ## Meaning of results
 
+The README's first badge is objdiff's original-size-weighted fuzzy similarity
+among compiled, compared functions, with `objdiff_total_code` as its denominator.
+It measures candidate quality within the current comparison set, not whole-game
+progress. `matching.json` retains `matching_percent`: the union of exact function
+bytes divided by the entire retail `.text` extent. Report both when discussing
+matching progress, especially when the compared set changes. The mapping badge
+covers known symbol extents across the original virtual image, not byte matches.
+
 Retail PE functions are extracted into local COFF comparison views for objdiff.
 Candidate bytes come independently from compiled functions with real DIR32/REL32
 relocations applied through the map. Extents stay complete; no masking, truncation

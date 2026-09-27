@@ -1,4 +1,4 @@
-"""Progress must reflect exact original code coverage, never objdiff similarity."""
+"""Keep native objdiff similarity separate from exact original code coverage."""
 from pathlib import Path
 from contextlib import ExitStack, redirect_stdout
 import io
@@ -56,24 +56,87 @@ class ProgressTests(unittest.TestCase):
             mapping_marker = "<!-- mapping-badge -->old<!-- /mapping-badge -->"
             build_badge = "[![build](https://example.com/build.svg)](https://example.com/build)"
             path.write_text("before\n" + marker + " " + mapping_marker + " " + build_badge + "\nafter\n")
-            match.update_badge({"matching_percent": 0.012733, "mapping_percent": 0.003734})
+            stats = {"objdiff_fuzzy_percent": 59.39252, "matching_percent": 0.012733,
+                     "mapping_percent": 0.003734}
+            match.update_badge(stats)
             updated = path.read_text()
             self.assertTrue(updated.startswith("before\n"))
             self.assertTrue(updated.endswith("\nafter\n"))
-            self.assertIn("0.013%25-red", updated)
+            self.assertIn("objdiff%20fuzzy-59.393%25-yellow", updated)
+            self.assertNotIn("0.013%25", updated)
             self.assertIn("mapping-0.004%25-red", updated)
             badge_lines = [line for line in updated.splitlines() if "![" in line]
             self.assertEqual(len(badge_lines), 1)
-            self.assertTrue(badge_lines[0].startswith("![matching]"))
+            self.assertTrue(badge_lines[0].startswith("![objdiff fuzzy]"))
             self.assertIn("![mapping]", badge_lines[0])
             self.assertTrue(badge_lines[0].endswith(build_badge))
-            match.update_badge({"matching_percent": 0.012733, "mapping_percent": 0.003734})
+            match.update_badge(stats)
             self.assertEqual(path.read_text(), updated)
             for content in ("missing", marker + marker):
                 path.write_text(content)
                 with self.assertRaisesRegex(ValueError, "one matching-badge"):
-                    match.update_badge({"matching_percent": 0, "mapping_percent": 0})
+                    match.update_badge(stats)
                 self.assertEqual(path.read_text(), content)
+
+    def test_fuzzy_badge_color_thresholds(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(match, "ROOT", Path(temp)):
+            path = Path(temp) / "README.md"
+            path.write_text("<!-- matching-badge -->old<!-- /matching-badge --> "
+                            "<!-- mapping-badge -->old<!-- /mapping-badge -->\n")
+            for value, color in ((0, "red"), (24.999, "red"), (25, "yellow"),
+                                 (74.999, "yellow"), (75, "green"), (100, "green")):
+                with self.subTest(value=value):
+                    match.update_badge({"objdiff_fuzzy_percent": value, "mapping_percent": 0})
+                    self.assertIn(f"objdiff%20fuzzy-{value:.3f}%25-{color}", path.read_text())
+
+
+class ObjdiffProgressTests(unittest.TestCase):
+    def functions(self, copies=1):
+        return [{"target_size": 16, "objects": [{} for _ in range(copies)]},
+                {"target_size": 1000, "objects": []},
+                {"target_size": None, "objects": []}]
+
+    def test_native_metric_is_preserved_with_its_compared_code_denominator(self):
+        for total in (16, "16"):
+            with self.subTest(total=total):
+                report = {"measures": {"fuzzy_match_percent": 64.125, "total_code": total}}
+                self.assertEqual(match.objdiff_progress(report, self.functions()),
+                                 {"objdiff_fuzzy_percent": 64.125, "objdiff_total_code": 16})
+
+    def test_each_comparison_copy_counts_toward_native_denominator(self):
+        report = {"measures": {"fuzzy_match_percent": 75.0, "total_code": "32"}}
+        self.assertEqual(match.objdiff_progress(report, self.functions(copies=2))["objdiff_total_code"], 32)
+        with self.assertRaisesRegex(ValueError, "differs from compared original extents 16"):
+            match.objdiff_progress(report, self.functions())
+
+    def test_omitted_proto_scalar_means_zero_for_aggregate_and_function(self):
+        self.assertEqual(match.objdiff_percent({"name": "_different"}), 0.0)
+        report = {"measures": {"total_code": "16"}}
+        self.assertEqual(match.objdiff_progress(report, self.functions())["objdiff_fuzzy_percent"], 0.0)
+
+    def test_no_comparison_objects_has_zero_fuzzy_progress(self):
+        expected = {"objdiff_fuzzy_percent": 0.0, "objdiff_total_code": 0}
+        self.assertEqual(match.objdiff_progress(None, self.functions(copies=0)), expected)
+        self.assertEqual(match.objdiff_progress({"measures": {}}, []), expected)
+
+    def test_missing_or_invalid_measures_are_rejected_when_comparisons_exist(self):
+        for report in (None, {}, [], {"measures": None}, {"measures": []}, {"measures": 1}):
+            with self.subTest(report=report), self.assertRaisesRegex(ValueError, "contain measures"):
+                match.objdiff_progress(report, self.functions())
+
+    def test_invalid_native_percentages_are_rejected(self):
+        for value in (None, True, "75", -1, 101, 10 ** 1000, float("nan"), float("inf")):
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "finite percentage"):
+                match.objdiff_progress({"measures": {"total_code": "16", "fuzzy_match_percent": value}},
+                                       self.functions())
+
+    def test_invalid_or_inconsistent_native_totals_are_rejected(self):
+        for total in (None, True, -1, 16.0, "", "-16", "0x10", "16.0", [], " 16"):
+            with self.subTest(total=total), self.assertRaisesRegex(ValueError, "nonnegative integer"):
+                match.objdiff_progress({"measures": {"total_code": total}}, self.functions())
+        for measures in ({}, {"total_code": "15"}, {"total_code": "17"}):
+            with self.subTest(measures=measures), self.assertRaisesRegex(ValueError, "compared original extents"):
+                match.objdiff_progress({"measures": measures}, self.functions())
 
 
 class ObjdiffIntegrationTests(unittest.TestCase):
@@ -112,6 +175,7 @@ class ObjdiffIntegrationTests(unittest.TestCase):
             "same": original,
             "wrong_call": b"\xe8" + struct.pack("<i", 0x403000 - address - 5) + b"\xc3",
             "wrong_size": original + b"\x90",
+            "zero": b"\xcc" * len(original),
         }
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -128,12 +192,20 @@ class ObjdiffIntegrationTests(unittest.TestCase):
                                     capture_output=True, text=True, timeout=30)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             report = json.loads((root / "report.json").read_text())
-        scores = {unit["name"]: unit["functions"][0]["fuzzy_match_percent"]
+        scores = {unit["name"]: match.objdiff_percent(unit["functions"][0])
                   for unit in report["units"]}
         self.assertEqual(set(scores), set(candidates))
         self.assertEqual(scores["same"], 100.0)
+        zero = next(unit for unit in report["units"] if unit["name"] == "zero")
+        self.assertNotIn("fuzzy_match_percent", zero["functions"][0])
+        self.assertEqual(scores["zero"], 0.0)
+        # Every target object contributes, including repeated original addresses.
+        native = match.objdiff_progress(report, [{"target_size": len(original),
+                                                 "objects": [{} for _ in candidates]}])
+        self.assertEqual(native["objdiff_total_code"], len(original) * len(candidates))
+        self.assertEqual(native["objdiff_fuzzy_percent"], report["measures"]["fuzzy_match_percent"])
         # A 100% advisory score must never grant either negative a byte match.
-        for name in ("wrong_call", "wrong_size"):
+        for name in ("wrong_call", "wrong_size", "zero"):
             row = ProgressTests().row(size=len(original), exact=candidates[name] == original)
             row["objdiff_percent"] = scores[name]
             self.assertEqual(match.progress([row], ProgressTests.target)["matched_code_bytes"], 0)
@@ -226,6 +298,7 @@ function report(code = 442, mapped = 1496) {
   return {format_version: 2, target_sha256: 'c'.repeat(64), progress: {
     text_bytes: 3471246, mapped_code_bytes: code, matched_code_bytes: code,
     matching_percent: 100 * code / 3471246, mapped_functions: 13, matched_functions: 13,
+    objdiff_fuzzy_percent: 60 + (code - 442) / 10, objdiff_total_code: 1000 + code - 442,
     image_bytes: 40067072, mapped_bytes: mapped, mapping_percent: 100 * mapped / 40067072}};
 }
 async function exercise(options = {}) {
@@ -262,8 +335,11 @@ async function exercise(options = {}) {
   const first = await exercise();
   assert.equal(first.writes[0].kind, 'create'); assert(first.body.startsWith(marker));
   assert(first.body.includes('| Exact code bytes | 442 | 467 | +25 |'));
+  assert(first.body.includes('| Objdiff fuzzy match | 60.000000% | 62.500000% | +2.500000 pp |'));
+  assert(first.body.includes('| Compared code bytes | 1,000 | 1,025 | +25 |'));
   assert(first.body.includes('| Known mapped bytes | 1,496 | 1,596 | +100 |'));
   assert(first.body.includes('CI has no retail executable and does not verify these matches.'));
+  assert(first.body.includes('Objdiff fuzzy match describes similarity among compared functions.'));
   assert.equal(first.reads[1].owner, 'fork'); assert.equal(first.reads[1].ref, headSHA);
   const oldBot = {id: 9, user: {login: 'github-actions[bot]'}, body: marker + '\nold'};
   const updated = await exercise({comments: [oldBot]});
@@ -295,9 +371,27 @@ async function exercise(options = {}) {
   const old = await exercise({base: older});
   assert(old.body.includes('| Known mapped bytes | Unavailable | 1,596 | — |'));
   assert(old.body.includes('| Exact code bytes | 442 | 467 | +25 |'));
+  const noFuzzy = report();
+  for (const field of ['objdiff_fuzzy_percent', 'objdiff_total_code']) delete noFuzzy.progress[field];
+  const legacy = await exercise({base: noFuzzy});
+  assert(legacy.body.includes('| Objdiff fuzzy match | Unavailable | 62.500000% | — |'));
+  assert(legacy.body.includes('| Compared code bytes | Unavailable | 1,025 | — |'));
+  assert(legacy.body.includes('| Exact code bytes | 442 | 467 | +25 |'));
+  assert(legacy.body.includes('An older report has no objdiff fuzzy summary'));
+  const zeroFuzzy = report();
+  zeroFuzzy.progress.objdiff_fuzzy_percent = 0;
+  zeroFuzzy.progress.objdiff_total_code = 0;
+  assert((await exercise({head: zeroFuzzy})).body.includes('| Compared code bytes | 1,000 | 0 | -1,000 |'));
+  for (const field of ['objdiff_fuzzy_percent', 'objdiff_total_code']) {
+    const partial = report(); delete partial.progress[field];
+    assert((await exercise({head: partial})).body.includes('PR report: matching.json has invalid'));
+  }
   for (const [field, value] of [['matched_code_bytes', -1], ['mapped_functions', true],
       ['matched_functions', Number.MAX_SAFE_INTEGER + 1], ['matching_percent', 90],
-      ['mapping_percent', 90], ['image_bytes', 0]]) {
+      ['mapping_percent', 90], ['image_bytes', 0], ['objdiff_fuzzy_percent', true],
+      ['objdiff_fuzzy_percent', '90'], ['objdiff_fuzzy_percent', -1], ['objdiff_fuzzy_percent', 101],
+      ['objdiff_fuzzy_percent', NaN], ['objdiff_total_code', -1], ['objdiff_total_code', true],
+      ['objdiff_total_code', 1.5], ['objdiff_total_code', Number.MAX_SAFE_INTEGER + 1]]) {
     const r = report(); r.progress[field] = value;
     assert((await exercise({head: r})).body.includes('PR report: matching.json has invalid'), field);
   }

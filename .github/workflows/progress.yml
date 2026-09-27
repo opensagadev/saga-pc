@@ -57,10 +57,20 @@ jobs:
                 mapping = {image_bytes: p.image_bytes, mapped_bytes: p.mapped_bytes,
                            mapping_percent: p.mapping_percent};
               }
+              let objdiff = null;
+              if (["objdiff_fuzzy_percent", "objdiff_total_code"].some((field) => field in p)) {
+                if (!integer(p.objdiff_total_code) ||
+                    !Number.isFinite(p.objdiff_fuzzy_percent) ||
+                    p.objdiff_fuzzy_percent < 0 || p.objdiff_fuzzy_percent > 100) {
+                  throw new Error("Invalid objdiff fuzzy summary");
+                }
+                objdiff = {fuzzy_percent: p.objdiff_fuzzy_percent,
+                           total_code: p.objdiff_total_code};
+              }
               // Only validated hashes and numeric fields can reach Markdown.
               return {target: report.target_sha256.toLowerCase(),
                       ...Object.fromEntries(fields.map((field) => [field, p[field]])),
-                      matching_percent: p.matching_percent, mapping};
+                      matching_percent: p.matching_percent, mapping, objdiff};
             }
 
             async function readReport(repository, ref) {
@@ -118,7 +128,9 @@ jobs:
               }
               lines.push(`| ${label} | ${number(oldValue, percent)} | ${number(newValue, percent)} | ${change} |`);
             }
+            metric("Objdiff fuzzy match", a?.objdiff?.fuzzy_percent, b?.objdiff?.fuzzy_percent, true);
             metric("Exact code matching", a?.matching_percent, b?.matching_percent, true);
+            metric("Compared code bytes", a?.objdiff?.total_code, b?.objdiff?.total_code);
             metric("Known-size mapping", a?.mapping?.mapping_percent, b?.mapping?.mapping_percent, true);
             metric("Exact code bytes", a?.matched_code_bytes, b?.matched_code_bytes);
             metric("Known mapped bytes", a?.mapping?.mapped_bytes, b?.mapping?.mapped_bytes);
@@ -136,6 +148,10 @@ jobs:
             if ((a && !a.mapping) || (b && !b.mapping)) {
               lines.push("An older report has no mapping summary; those values and deltas are unavailable.");
             }
+            if ((a && !a.objdiff) || (b && !b.objdiff)) {
+              lines.push("An older report has no objdiff fuzzy summary; those values and deltas are unavailable.");
+            }
+            lines.push("Objdiff fuzzy match describes similarity among compared functions. Exact code matching uses the complete original `.text` section.");
             lines.push("", 'Refresh the report with `make -j"$(nproc)" match` using your local retail executable after relevant source or map changes.');
             const body = lines.join("\n");
             await core.summary.addRaw(body).write();

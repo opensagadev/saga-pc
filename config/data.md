@@ -337,6 +337,10 @@ Both source initializers match every byte and all 112 pointer relocations.
 Their entries anchor 54 PC callbacks. The 47 previously implemented callbacks
 and five additional scalar/ambient callbacks match complete code extents;
 the two music callbacks are still structural.
+The game-specific before-load table at `0x007fa608` has 45 eight-byte records,
+including its sentinel. Its 44 keyword strings, 44 callbacks and all table
+relocations are now mapped and exact. The retail startup paths for episodes,
+areas and levels are defined from their original NUL-terminated bytes.
 All 56 generic level keyword strings and 29 area/remaining-level keyword
 strings are separately defined and their complete NUL-terminated initializers
 match the PC image. The PC area record is `0x9c` bytes with a 16-bit flags field
