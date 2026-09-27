@@ -341,6 +341,12 @@ The game-specific before-load table at `0x007fa608` has 45 eight-byte records,
 including its sentinel. Its 44 keyword strings, 44 callbacks and all table
 relocations are now mapped and exact. The retail startup paths for episodes,
 areas and levels are defined from their original NUL-terminated bytes.
+The PC area fixup selector uses three separate tables: 65, 2 and 5 entries,
+including null sentinels. Their pointer initializers and destination globals
+are mapped from retail; unlike Android, the PC branches among the LSW,
+lost-temple and Gotham tables. Time-bar source and colour constants are defined
+from retail initializers. Individual area-name strings still require review of
+their compiler-owned alignment bytes before claiming exact matches.
 All 56 generic level keyword strings and 29 area/remaining-level keyword
 strings are separately defined and their complete NUL-terminated initializers
 match the PC image. The PC area record is `0x9c` bytes with a 16-bit flags field

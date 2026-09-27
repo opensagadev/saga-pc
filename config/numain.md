@@ -24,8 +24,11 @@ so the source-compatible C wrapper is structural rather than byte-matching.
 `GAME.DAT`, through the exact archive-registration helper. The surrounding
 hardware dispatcher and the `LoadPermData` parser path remain incomplete.
 `LoadPermData` now calls the PC `Level_SetDefaults` initializer and starts the
-episode, area and level text parsers using the retail path strings. Episode
-fixups and subsequent allocation dependencies still need reconstruction.
+episode, area and level text parsers using the retail path strings. The
+PC-specific `FixUpAreas` selector now matches exactly using three verified
+tables; `Episodes_ConfigureList` has a typed 0x1c-byte record parser. The early
+permanent-resource setup, `FixUpLevels`, and later allocation dependencies still
+need reconstruction.
 The PC default wind speed is 3.0f; the Android value is different.
 `NuMain` opens the six episode archives, then stops before indexing level/area
 tables. DAT member dispatch now opens, reads, seeks and closes stored archive
@@ -56,9 +59,8 @@ functions remain structural. `Levels_ConfigureList` parses PC level records
 with typed fields and verified defaults, but is not a full-byte match.
 `Areas_ConfigureList` now parses PC area records and is also nonmatching. The
 source EXE does not load these tables through startup before the remaining
-parser and allocation paths are verified. The next coherent target is the PC
-game-specific level/area keyword dispatch closure and the guarded startup
-handoff to the populated tables.
+parser and allocation paths are verified. The next coherent target is the early
+PC permanent-resource setup and the guarded startup handoff to populated tables.
 
 The frame chain now includes `NuFrameBegin`, its portal, water-reset, mouse and
 occlusion callees, and a structural `NuFrameEnd` implementation with explicit
@@ -67,10 +69,11 @@ still has unresolved PC input-state dependencies. The 987-byte PC `NuFrameEnd`
 starts with the six-byte `NuHasError` getter at `0x004feb50` and calls the
 11-byte `NuClearError` setter at `0x004feb60`; both touch the four-byte state
 at `0x00921248`. The PC error-dialog branch uses `ShowingError` at
-`0x0091ef3c`. The renderer call at `0x005f3d60` receives one integer argument
-and is a strong `NuRndrSwapScreen(i32)` candidate, but its 2,130-byte PC body
-contains substantial render-list work and is not reconstructed by Android's
-smaller presentation code.
+`0x0091ef3c`. The call at `0x005f3d60` receives a time-bar set index; its
+2,130-byte PC body is `NuTimeBarSetRender(i32)`, including GPU timing and
+rectangle rendering. The former `NuRndrSwapScreen` attribution was incorrect.
+Time-bar slot/control helpers now have separate PC mappings and source bodies;
+the render functions remain unimplemented.
 
 `NuDatOpenEx` now reads PC archive metadata through the native Win32 and
 host-file layers into InitOnce's permanent arena. It retains the PC's eight

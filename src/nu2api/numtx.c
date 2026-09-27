@@ -36,12 +36,83 @@ void __cdecl NuMtxSetTranslation(NUMTX *m, NUVEC *t) {
     m->m00 = m->m11 = m->m22 = m->m33 = 1.0f;
 }
 
+void __cdecl NuMtxSetTranslationNeg(NUMTX *m, NUVEC *t) {
+    m->m30 = -t->x;
+    m->m31 = -t->y;
+    m->m32 = -t->z;
+    m->m01 = m->m02 = m->m03 = m->m10 = m->m12 = m->m13 = m->m20 = m->m21 = m->m23 = 0.0f;
+    m->m00 = m->m11 = m->m22 = m->m33 = 1.0f;
+}
+
 void __cdecl NuMtxSetScale(NUMTX *m, NUVEC *s) {
     m->m00 = s->x;
     m->m11 = s->y;
     m->m22 = s->z;
     m->m01 = m->m02 = m->m03 = m->m10 = m->m12 = m->m13 = m->m20 = m->m21 = m->m23 = m->m30 = m->m31 = m->m32 = 0.0f;
     m->m33 = 1.0f;
+}
+
+void __cdecl NuMtxSetRotationX(NUMTX *m, NUANG angle) {
+    m->m11 = m->m22 = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    m->m12 = NuTrigTable[(angle >> 1) & 0x7fff];
+    m->m21 = -m->m12;
+    m->m00 = 1.0f;
+    m->m01 = m->m02 = m->m03 = m->m23 = m->m10 = m->m20 = m->m13 = m->m30 = m->m31 = m->m32 = 0.0f;
+    m->m33 = 1.0f;
+}
+
+void __cdecl NuMtxSetRotationY(NUMTX *m, NUANG angle) {
+    m->m00 = m->m22 = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    m->m20 = NuTrigTable[(angle >> 1) & 0x7fff];
+    m->m02 = -m->m20;
+    m->m11 = 1.0f;
+    m->m01 = m->m10 = m->m03 = m->m23 = m->m12 = m->m21 = m->m13 = m->m30 = m->m31 = m->m32 = 0.0f;
+    m->m33 = 1.0f;
+}
+
+void __cdecl NuMtxSetRotationZ(NUMTX *m, NUANG angle) {
+    m->m00 = m->m11 = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    m->m01 = NuTrigTable[(angle >> 1) & 0x7fff];
+    m->m10 = -m->m01;
+    m->m22 = 1.0f;
+    m->m02 = m->m12 = m->m03 = m->m23 = m->m20 = m->m21 = m->m13 = m->m30 = m->m31 = m->m32 = 0.0f;
+    m->m33 = 1.0f;
+}
+
+void __cdecl NuMtxSetRotationAxis(NUMTX *m, NUANG angle, NUVEC *axis) {
+    NUANG half_angle = angle >> 1;
+    f32 sine = NuTrigTable[(half_angle >> 1) & 0x7fff];
+    f32 cosine = NuTrigTable[((half_angle + 0x4000) >> 1) & 0x7fff];
+    f32 a = axis->x * sine;
+    f32 two_a = a + a;
+    f32 b = axis->y * sine;
+    f32 two_b = b + b;
+    f32 c = axis->z * sine;
+    f32 two_c = c + c;
+    f32 two_sa = cosine * two_a;
+    f32 two_aa = a * two_a;
+    f32 two_sb = cosine * two_b;
+    f32 two_ab = a * two_b;
+    f32 two_bb = b * two_b;
+    f32 two_sc = cosine * two_c;
+    f32 two_ac = a * two_c;
+    f32 two_bc = b * two_c;
+    f32 two_cc = c * two_c;
+
+    m->m00 = 1.0f - (two_bb + two_cc);
+    m->m11 = 1.0f - (two_aa + two_cc);
+    m->m22 = 1.0f - (two_aa + two_bb);
+    m->m33 = 1.0f;
+    m->m01 = two_ab + two_sc;
+    m->m02 = two_ac - two_sb;
+    m->m03 = 0.0f;
+    m->m10 = two_ab - two_sc;
+    m->m12 = two_bc + two_sa;
+    m->m13 = 0.0f;
+    m->m20 = two_ac + two_sb;
+    m->m21 = two_bc - two_sa;
+    m->m23 = 0.0f;
+    m->m30 = m->m31 = m->m32 = 0.0f;
 }
 
 void __cdecl NuMtxTranslate(NUMTX *m, NUVEC *t) {
@@ -246,4 +317,55 @@ void __cdecl NuMtxTranspose(NUMTX *m, NUMTX *source) {
     m->m11 = source->m11;
     m->m22 = source->m22;
     m->m33 = source->m33;
+}
+
+void __cdecl NuMtxInv(NUMTX *m, NUMTX *source) {
+    f32 tx = -source->m30;
+    f32 ty = -source->m31;
+    f32 tz = -source->m32;
+    f32 t;
+
+    t = source->m01;
+    m->m01 = source->m10;
+    m->m10 = t;
+    t = source->m02;
+    m->m02 = source->m20;
+    m->m20 = t;
+    t = source->m12;
+    m->m12 = source->m21;
+    m->m21 = t;
+    m->m00 = source->m00;
+    m->m11 = source->m11;
+    m->m22 = source->m22;
+    m->m30 = m->m00 * tx + m->m10 * ty + m->m20 * tz;
+    m->m31 = m->m01 * tx + m->m11 * ty + m->m21 * tz;
+    m->m32 = m->m02 * tx + m->m12 * ty + m->m22 * tz;
+    m->m23 = 0.0f;
+    m->m13 = m->m23;
+    m->m03 = m->m13;
+    m->m33 = 1.0f;
+}
+
+void __cdecl NuMtxInvR(NUMTX *m, NUMTX *source) {
+    f32 t;
+
+    t = source->m01;
+    m->m01 = source->m10;
+    m->m10 = t;
+    t = source->m02;
+    m->m02 = source->m20;
+    m->m20 = t;
+    t = source->m12;
+    m->m12 = source->m21;
+    m->m21 = t;
+    m->m00 = source->m00;
+    m->m11 = source->m11;
+    m->m22 = source->m22;
+    m->m23 = 0.0f;
+    m->m13 = m->m23;
+    m->m03 = m->m13;
+    m->m32 = 0.0f;
+    m->m31 = m->m32;
+    m->m30 = m->m31;
+    m->m33 = 1.0f;
 }

@@ -5,19 +5,19 @@ NUCAMERA *__cdecl NuCameraCreate(void) {
 
     NuMtxSetIdentity(&camera->mtx);
     camera->fov = 0.75f;
-    camera->aspect = 1.0f;
     camera->near_clip = 0.15f;
+    camera->portal_nearclip = 0.0f;
     camera->far_clip = 10000.0f;
-    camera->unknown_50 = 1.0f;
-    camera->unknown_54 = 1.0f;
+    camera->aspect = 1.0f;
     camera->unknown_58 = 1.0f;
     camera->unknown_5c = 1.0f;
-    camera->unknown_60 = 1.0f;
-    camera->unknown_64 = 1.0f;
-    camera->portal_nearclip = 0.0f;
-    camera->scale.x = 1.0f;
     camera->scale.y = 1.0f;
+    camera->scale.x = 1.0f;
     camera->scale.z = 1.0f;
+    camera->unknown_50 = 1.0f;
+    camera->unknown_54 = 1.0f;
+    camera->unknown_64 = 1.0f;
+    camera->unknown_60 = 1.0f;
     return camera;
 }
 

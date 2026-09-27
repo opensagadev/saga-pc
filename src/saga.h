@@ -470,6 +470,7 @@ typedef struct nufpcomjmpctx_s {
 STATIC_ASSERT(sizeof(NUFPCOMJMPCTX) == 8);
 STATIC_ASSERT(offsetof(NUFPCOMJMPCTX, callback) == 4);
 typedef void(__cdecl *NUFPCOMFN)(NUFPAR_PC *parser);
+typedef i32(__cdecl *NURDPGETVARFN)(char *name, f32 *value, i32 *found);
 
 typedef struct nufparpos_pc_s {
     i32 line_number;
@@ -807,6 +808,20 @@ STATIC_ASSERT(offsetof(AREA_DATA_PC, challenge_trial_time) == 0x84);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, text_id) == 0x94);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, hub_player_ids) == 0x98);
 
+typedef struct episode_data_pc_s {
+    i16 name_id;
+    i16 text_id;
+    i16 area_ids[10];
+    u8 area_count;
+    u8 regular_areas;
+    u8 index;
+    u8 unknown_001b;
+} EPISODEDATA_PC;
+STATIC_ASSERT(sizeof(EPISODEDATA_PC) == 0x1c);
+STATIC_ASSERT(offsetof(EPISODEDATA_PC, area_ids) == 0x04);
+STATIC_ASSERT(offsetof(EPISODEDATA_PC, area_count) == 0x18);
+STATIC_ASSERT(offsetof(EPISODEDATA_PC, index) == 0x1a);
+
 typedef struct area_fixup_pc_entry_s {
     char *name;
     AREA_DATA_PC **area;
@@ -814,13 +829,35 @@ typedef struct area_fixup_pc_entry_s {
 STATIC_ASSERT(sizeof(AREAFIXUP_PC) == 8);
 STATIC_ASSERT(offsetof(AREAFIXUP_PC, area) == 4);
 
+typedef struct area_supercounter_pickup_pc_s {
+    void *gizmo;
+    void *position_gizmo;
+    void *position_special[3];
+    char name[8];
+    char position_name[16];
+    i16 level_index;
+    u8 use_special;
+    u8 unknown_002f;
+} AREA_SUPERCOUNTER_PICKUP_PC;
+STATIC_ASSERT(sizeof(AREA_SUPERCOUNTER_PICKUP_PC) == 0x30);
+STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, name) == 0x14);
+STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, position_name) == 0x1c);
+STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, level_index) == 0x2c);
+STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, use_special) == 0x2e);
+
 struct area_supercounter_pc_s {
-    u8 unknown_0000_to_01e1[0x1e2];
+    AREA_SUPERCOUNTER_PICKUP_PC pickups[10];
+    u16 pickup_count;
     u16 collected_count;
-    u8 unknown_01e4_to_01e7[4];
+    u8 red;
+    u8 green;
+    u8 blue;
+    u8 processed_flags;
 };
 STATIC_ASSERT(sizeof(AREA_SUPERCOUNTER_PC) == 0x1e8);
+STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, pickup_count) == 0x1e0);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, collected_count) == 0x1e2);
+STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, processed_flags) == 0x1e7);
 
 typedef struct characterdata_pc_s {
     u8 unknown_0000[0x0c];
@@ -855,6 +892,13 @@ typedef struct sfx_record_pc_s {
 } SFX_RECORD_PC;
 STATIC_ASSERT(sizeof(SFX_RECORD_PC) == 0x40);
 STATIC_ASSERT(offsetof(SFX_RECORD_PC, next) == 0x10);
+
+typedef struct sfx_file_info_pc_s {
+    const char *filename;
+    u32 unknown_04[6];
+} SFX_FILE_INFO_PC;
+STATIC_ASSERT(sizeof(SFX_FILE_INFO_PC) == 0x1c);
+STATIC_ASSERT(offsetof(SFX_FILE_INFO_PC, filename) == 0);
 
 typedef struct apicharactermodellist_s {
     i16 model_id;
@@ -1076,14 +1120,45 @@ STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
 
 typedef struct nuglobalrndrstate_pc_s {
-    u8 unknown_0000[0x1e];
+    u8 unknown_0000[8];
+    i32 state_0008;
+    u8 unknown_000c[8];
+    i32 state_0014;
+    u8 unknown_0018[6];
     u16 counter_001e;
     u32 counter_0020;
-    u8 unknown_0024[0xd0];
+    u16 lights_id;
+    u16 unknown_0026[3];
+    u16 camera_id;
+    u16 fog_id;
+    u16 vertex_groups_id;
+    u16 reflection_id;
+    void *light_packet_cache;
+    NUVEC ambient_intensity;
+    NUVEC light_direction[3];
+    NUVEC light_intensity[3];
+    u8 unknown_008c[4];
+    NUMTX specular_mtx;
+    NUVEC specular_colour;
+    u8 unknown_00dc[0x18];
     i32 state_00f4;
     f32 state_00f8;
     i32 state_00fc;
-    u8 unknown_0100[0x80];
+    i32 state_0100;
+    u8 unknown_0104[0x0c];
+    void *camera_packet_cache;
+    NUMTX camera_matrix;
+    f32 projection_0154;
+    f32 projection_0158;
+    f32 projection_015c;
+    f32 projection_0160;
+    f32 projection_0164;
+    void *fog_packet_cache;
+    u32 fog_state_word;
+    f32 fog_value_0170;
+    f32 fog_value_0174;
+    void *fog_pointer_0178;
+    f32 fog_value_017c;
     void *konst_packet_cache;
     f32 viewport_x;
     f32 viewport_y;
@@ -1094,10 +1169,34 @@ typedef struct nuglobalrndrstate_pc_s {
     u8 unknown_019c[8];
 } NUGLOBALRNDRSTATE_PC;
 STATIC_ASSERT(sizeof(NUGLOBALRNDRSTATE_PC) == 0x1a4);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, state_0008) == 0x08);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, state_0014) == 0x14);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, counter_001e) == 0x1e);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, counter_0020) == 0x20);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, lights_id) == 0x24);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, camera_id) == 0x2c);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_id) == 0x2e);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, vertex_groups_id) == 0x30);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, reflection_id) == 0x32);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, light_packet_cache) == 0x34);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, ambient_intensity) == 0x38);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, light_direction) == 0x44);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, light_intensity) == 0x68);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, specular_mtx) == 0x90);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, specular_colour) == 0xd0);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, state_00f4) == 0xf4);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, state_00f8) == 0xf8);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, state_0100) == 0x100);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, camera_packet_cache) == 0x110);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, camera_matrix) == 0x114);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, projection_0154) == 0x154);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, projection_0164) == 0x164);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_packet_cache) == 0x168);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_state_word) == 0x16c);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_value_0170) == 0x170);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_value_0174) == 0x174);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_pointer_0178) == 0x178);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_value_017c) == 0x17c);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, konst_packet_cache) == 0x180);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, viewport_x) == 0x184);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, viewport_y) == 0x188);
@@ -1105,6 +1204,17 @@ STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, viewport_width) == 0x18c);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, viewport_height) == 0x190);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, reflection_state) == 0x194);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, reflection_packet_cache) == 0x198);
+
+typedef struct nuprim_vertex_group_source_pc_s {
+    u8 count;
+    u8 unknown_01;
+    u8 flags;
+    u8 unknown_03;
+    i8 *values;
+} NUPRIM_VERTEX_GROUP_SOURCE_PC;
+STATIC_ASSERT(sizeof(NUPRIM_VERTEX_GROUP_SOURCE_PC) == 8);
+STATIC_ASSERT(offsetof(NUPRIM_VERTEX_GROUP_SOURCE_PC, flags) == 2);
+STATIC_ASSERT(offsetof(NUPRIM_VERTEX_GROUP_SOURCE_PC, values) == 4);
 
 typedef struct nuqfnt_render_data_pc_s {
     u32 colour;
@@ -1411,6 +1521,14 @@ extern "C" {
     extern void **Game_NuPad;
     extern void *NuTimeBar_SetList[16];
     extern i32 NuTimeBar_Initialised;
+    extern i32 NuTimeBar_PeakReset;
+    extern i32 NuTimeBar_EngineEnabled;
+    extern i32 NuTimeBar_GpuFrameOutEnabled;
+    extern const char NuTimeBarSource[51];
+    extern const f64 NuTimeBarScanlineMicroseconds;
+    extern const f64 NuTimeBarScanlinesPerFrame;
+    extern const u32 NuTimeBar_EngineColours[7];
+    extern const u32 NuTimeBar_DefaultColours[16];
     extern i64 NuTime_TickBase;
     void __cdecl NuTimeGetTicksPS(u32 *low, u32 *high);
     void __cdecl NuTimeGet(NuTime *time);
@@ -1428,6 +1546,21 @@ extern "C" {
     extern const f64 NuTime_RefreshRate;
     void __cdecl NuTimeBarSlotReset(i32 set, i32 slot);
     void __cdecl _NuTimeBarSlotBegin(i32 set, i32 slot, const char *name);
+    i32 __cdecl NuTimeBarCreateSetEx(VARIPTR *buffer, VARIPTR end, i32 *colours);
+    i32 __cdecl NuTimeBarCreateSetEx2(VARIPTR *buffer, VARIPTR end, i32 colour);
+    i32 __cdecl NuTimeBarCreateSet(i32 *colours);
+    void __cdecl NuTimeBarDestroySet(i32 set);
+    u32 __cdecl _NuTimeBarSlotEnd(i32 set, i32 slot);
+    void __cdecl NuTimeBarSlotSet(i32 set, i32 slot, i32 value);
+    void __cdecl NuTimeBarSlotSetName(i32 set, i32 slot, const char *name);
+    void __cdecl NuTimeBarSlotSetEx(i32 set, i32 slot, i32 value, const char *name);
+    i32 __cdecl NuTimeBarSlotLastValueMicroseconds(i32 set, i32 slot);
+    i32 __cdecl NuTimeBarSlotLastValue(i32 set, i32 slot);
+    void __cdecl NuTimeBarResetPeaks(void);
+    void __cdecl NuTimeBarEnable(i32 enabled);
+    void __cdecl NuTimeBarIndicateGpuFrameOut(i32 enabled);
+    void __cdecl NuTimeBarInitEx(VARIPTR *buffer, VARIPTR end);
+    void __cdecl NuTimeBarInit(void);
     i32 __cdecl NuVideoGetMode(void);
     void __cdecl NuVideoSetMode(i32 mode);
     void __cdecl NuVideoSetResolution(i32 width, i32 height);
@@ -1497,10 +1630,15 @@ extern "C" {
     void __cdecl NuPrim3DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material, NUMTX *matrix);
     void __cdecl NuDisplayListLinkItem(NUDISPLAYLIST_PC *list, u8 type, void *target);
     void __cdecl NuDisplayListLinkMtl(NUDISPLAYLIST_PC *list, NUMTL *material);
+    void *__cdecl DisplayListBuildLightPacket(NUGLOBALRNDRSTATE_PC *state);
     void *__cdecl DisplayListBuildKonstPacket(NUGLOBALRNDRSTATE_PC *state);
     void *__cdecl DisplayListBuildReflectionPacket(NUGLOBALRNDRSTATE_PC *state);
     void *__cdecl DisplayListBuildFogPacket(NUGLOBALRNDRSTATE_PC *state);
+    void *__cdecl DisplayListBuildVertexGroupPacket(void);
     void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE_PC *state);
+    void __cdecl RndrStateCopyGlobalState(NUGLOBALRNDRSTATE_PC *state);
+    void __cdecl RndrStateResetGlobalState(NUGLOBALRNDRSTATE_PC *state);
+    void __cdecl RndrStateResetSharedGlobalState(void);
     void __cdecl NuPrim2DAddXYZ(f32 x, f32 y, f32 z);
     extern NUFPAR_PC NuFParRecords[4];
     extern char NuFParBuffers[4][0x1000];
@@ -1516,6 +1654,11 @@ extern "C" {
     void __cdecl NuFParUnGetWord(NUFPAR_PC *parser);
     i32 __cdecl NuFParGetInt(NUFPAR_PC *parser);
     f32 __cdecl NuFParGetFloat(NUFPAR_PC *parser);
+    f32 __cdecl NuFParGetFloatRDP(NUFPAR_PC *parser);
+    f32 __cdecl NuRDPFVar(char *input, NURDPGETVARFN get_variable);
+    i32 __cdecl NuRDPIVar(char *input, NURDPGETVARFN get_variable);
+    i32 __cdecl NuRDPI(char *input);
+    i32 __cdecl NuFParGetIntRDP(NUFPAR_PC *parser);
     void __cdecl NuFParGetOptionalFloat(NUFPAR_PC *parser, f32 *value);
     void __cdecl NuFParGetOptionalInt(NUFPAR_PC *parser, i32 *value);
     f32 __cdecl NuAToF(char *text);
@@ -1991,6 +2134,8 @@ extern "C" {
     f32 __cdecl GameAnimSet_GetCompletionRatio(GAMEANIMSET *set);
     extern AREA_DATA_PC *ADataList;
     extern i32 AREACOUNT;
+    extern EPISODEDATA_PC *EDataList;
+    extern i32 EPISODECOUNT;
     extern i32 LEVELCOUNT;
     extern CHARACTERDATA_PC *CDataList;
     extern i32 CHARCOUNT;
@@ -1999,9 +2144,18 @@ extern "C" {
     void __cdecl Cheats_Init(CHEAT_PC *cheats);
     AREA_DATA_PC *__cdecl Area_FindByName(char *name, i32 *index_out);
     LEVELDATA_PC *__cdecl Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out);
+    LEVELDATA_PC *__cdecl Area_FindNextPlayLevel(i32 level_index);
     void __cdecl Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end);
     void __cdecl Areas_FixUp(AREAFIXUP_PC *fixup);
+    void __cdecl FixUpAreas(void);
+    extern AREAFIXUP_PC AreaFixUpLSW[65];
+    extern AREAFIXUP_PC AreaFixUpLostTemple[2];
+    extern AREAFIXUP_PC AreaFixUpGotham[5];
+    extern AREA_DATA_PC *LOSTTEMPLE_ADATA;
     void __cdecl SuperCounters_Reset(i32 area_index);
+    AREA_SUPERCOUNTER_PC *__cdecl SuperCounter_FindFromNameAndLevel(char *name, WORLDINFO *world,
+                                                                    AREA_SUPERCOUNTER_PICKUP_PC **pickup_out);
+    void __cdecl SuperCounters_ResetProcessed(WORLDINFO *world);
     extern u16 AREA_DEFAULTBONUSTIMETRIALTIME;
     extern u16 AREA_DEFAULTCHALLENGETIME;
     LEVELDATA_PC *__cdecl Level_FindByName(char *name, i32 *index);
@@ -2109,6 +2263,15 @@ extern "C" {
     i32 __cdecl Text_StripComments(char *text, char *dest, i32 separators);
     void __cdecl IntroText_SetTextID(i32 id);
     void __cdecl Text_InitDefaultStrings(void);
+    void __cdecl Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32 count);
+    extern const char TextPlatformXbox[5];
+    extern const char TextPlatformPC[3];
+    extern const char TextPlatformPSP[4];
+    extern const char TextPlatformPS3[4];
+    extern const char TextPlatformPS2[4];
+    extern const char TextPlatformGameCube[3];
+    extern const char TextPlatform360[4];
+    extern const char TextPlatformWii[4];
     extern void (*buttonmapfn)(char *, char *);
     extern i32 smarttext_fwn;
     extern VUFNT *SmartTextFont;
@@ -2165,7 +2328,14 @@ extern "C" {
     i32 __cdecl NuStrNCmp(const char *a, const char *b, i32 n);
     f32 __cdecl NuFmod(f32 a, f32 b);
     void __cdecl NuMtxSetTranslation(NUMTX *matrix, NUVEC *translation);
+    void __cdecl NuMtxSetTranslationNeg(NUMTX *matrix, NUVEC *translation);
     void __cdecl NuMtxSetScale(NUMTX *matrix, NUVEC *scale);
+    void __cdecl NuMtxSetRotationX(NUMTX *matrix, NUANG angle);
+    void __cdecl NuMtxSetRotationY(NUMTX *matrix, NUANG angle);
+    void __cdecl NuMtxSetRotationZ(NUMTX *matrix, NUANG angle);
+    void __cdecl NuMtxSetRotationAxis(NUMTX *matrix, NUANG angle, NUVEC *axis);
+    void __cdecl NuMtxInv(NUMTX *output, NUMTX *input);
+    void __cdecl NuMtxInvR(NUMTX *output, NUMTX *input);
     void __cdecl NuMtxTranslate(NUMTX *matrix, NUVEC *translation);
     void __cdecl NuMtxTranslateNeg(NUMTX *matrix, NUVEC *translation);
     void __cdecl NuMtxPreTranslate(NUMTX *matrix, NUVEC *translation);
@@ -2346,9 +2516,14 @@ extern "C" {
     void __cdecl EndPerm(void);
     void __cdecl LoadPermData(void *process);
     void __cdecl Level_SetDefaults(LEVELDATA_PC *level);
+    EPISODEDATA_PC *__cdecl Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
+                                                   i32 *count_out);
     extern const char LoadPermLevelsPath[18];
     extern const char LoadPermAreasPath[17];
     extern const char LoadPermEpisodesPath[20];
+    extern const char EpisodeConfigKeyword_area[5];
+    extern const char EpisodeConfigKeyword_episode_start[14];
+    extern const char EpisodeConfigKeyword_episode_end[12];
     void __cdecl WorldInfo_InitOnce(void);
     WORLDINFO *__cdecl WorldInfo_CurrentlyActive(void);
     WORLDINFO *__cdecl WorldInfo_CurrentlyLoading(void);
@@ -2500,6 +2675,13 @@ extern "C" {
     extern i16 *SfxHashHeads;
     extern SFX_RECORD_PC *SfxInfo;
     extern u32 *SfxCRCTable;
+    extern i32 SfxCRCTableInitialized;
+    void __cdecl SfxBuildCRCTable(VARIPTR *buffer_cursor);
+    u32 __cdecl SfxNameHashN(const char *name, u32 limit);
+    extern SFX_FILE_INFO_PC *SfxFileTable;
+    extern i32 SfxFileCount;
+    void __cdecl SfxSetFileTable(SFX_FILE_INFO_PC *records);
+    extern NUPRIM_VERTEX_GROUP_SOURCE_PC *NuPrimVertexGroupSource;
     extern i16 *AmbientPairTab;
     extern NUMTL *numtl_defaultmtl2d;
     extern NUMTL *numtl_defaultmtl3d;

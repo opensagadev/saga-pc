@@ -381,6 +381,12 @@ extern "C" {
 #pragma bss_seg(".bss$AREACOUNT")
     i32 AREACOUNT;
 #pragma bss_seg()
+#pragma bss_seg(".bss$EDataList")
+    EPISODEDATA_PC *EDataList;
+#pragma bss_seg()
+#pragma bss_seg(".bss$EPISODECOUNT")
+    i32 EPISODECOUNT;
+#pragma bss_seg()
 #pragma bss_seg(".bss$LEVELCOUNT")
     i32 LEVELCOUNT;
 #pragma bss_seg()
@@ -403,6 +409,536 @@ extern "C" {
 #pragma data_seg()
     AREA_DATA_PC *LastAData;
     AREA_DATA_PC *HUB_ADATA;
+
+#pragma const_seg(".rdata$AreaFixUpName_Jedi")
+    extern char AreaFixUpName_Jedi[5] = "Jedi";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Gungan")
+    extern char AreaFixUpName_Gungan[7] = "Gungan";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Senate")
+    extern char AreaFixUpName_Senate[7] = "senate";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Losttemple")
+    extern char AreaFixUpName_Losttemple[11] = "losttemple";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Emperorfight")
+    extern char AreaFixUpName_Emperorfight[13] = "emperorfight";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Moseisley")
+    extern char AreaFixUpName_Moseisley[10] = "moseisley";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Tatooine")
+    extern char AreaFixUpName_Tatooine[9] = "tatooine";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Gunship")
+    extern char AreaFixUpName_Gunship[8] = "gunship";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Pursuit")
+    extern char AreaFixUpName_Pursuit[8] = "pursuit";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Podsprint")
+    extern char AreaFixUpName_Podsprint[10] = "podsprint";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Negotiations")
+    extern char AreaFixUpName_Negotiations[13] = "negotiations";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Fairground")
+    extern char AreaFixUpName_Fairground[11] = "Fairground";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Rooftops")
+    extern char AreaFixUpName_Rooftops[9] = "Rooftops";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Gothamstreets")
+    extern char AreaFixUpName_Gothamstreets[14] = "GothamStreets";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Batcave")
+    extern char AreaFixUpName_Batcave[8] = "batcave";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Jimtest")
+    extern char AreaFixUpName_Jimtest[8] = "JimTest";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_NbKashyyyk")
+    extern char AreaFixUpName_NbKashyyyk[12] = "nb_kashyyyk";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_NbKamino")
+    extern char AreaFixUpName_NbKamino[10] = "nb_kamino";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_NbDagobah")
+    extern char AreaFixUpName_NbDagobah[11] = "nb_dagobah";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Hoth")
+    extern char AreaFixUpName_Hoth[5] = "hoth";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Utapau")
+    extern char AreaFixUpName_Utapau[7] = "utapau";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_LostTemple")
+    extern char AreaFixUpName_LostTemple[11] = "LostTemple";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Bonus")
+    extern char AreaFixUpName_Bonus[6] = "Bonus";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Bonus2")
+    extern char AreaFixUpName_Bonus2[7] = "Bonus2";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Anewhope")
+    extern char AreaFixUpName_Anewhope[9] = "ANewHope";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_BonusGunship")
+    extern char AreaFixUpName_BonusGunship[14] = "Bonus_Gunship";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Anakinsflight")
+    extern char AreaFixUpName_Anakinsflight[14] = "AnakinsFlight";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Podrace")
+    extern char AreaFixUpName_Podrace[8] = "PodRace";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_E6characterbonus")
+    extern char AreaFixUpName_E6characterbonus[17] = "E6CharacterBonus";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_E5characterbonus")
+    extern char AreaFixUpName_E5characterbonus[17] = "E5CharacterBonus";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_E4characterbonus")
+    extern char AreaFixUpName_E4characterbonus[17] = "E4CharacterBonus";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_E3characterbonus")
+    extern char AreaFixUpName_E3characterbonus[17] = "E3CharacterBonus";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_E2characterbonus")
+    extern char AreaFixUpName_E2characterbonus[17] = "E2CharacterBonus";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_E1characterbonus")
+    extern char AreaFixUpName_E1characterbonus[17] = "E1CharacterBonus";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Deathstar2battle")
+    extern char AreaFixUpName_Deathstar2battle[17] = "DeathStar2Battle";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Endorbattle")
+    extern char AreaFixUpName_Endorbattle[12] = "EndorBattle";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Speederchase")
+    extern char AreaFixUpName_Speederchase[13] = "SpeederChase";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Sarlaccpit")
+    extern char AreaFixUpName_Sarlaccpit[11] = "SarlaccPit";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Jabbaspalace")
+    extern char AreaFixUpName_Jabbaspalace[13] = "JabbasPalace";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Cloudcityescape")
+    extern char AreaFixUpName_Cloudcityescape[16] = "CloudCityEscape";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Cloudcitytrap")
+    extern char AreaFixUpName_Cloudcitytrap[14] = "CloudCityTrap";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Dagobah")
+    extern char AreaFixUpName_Dagobah[8] = "Dagobah";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Asteroidchase")
+    extern char AreaFixUpName_Asteroidchase[14] = "AsteroidChase";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Hothescape")
+    extern char AreaFixUpName_Hothescape[11] = "HothEscape";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Hothbattle")
+    extern char AreaFixUpName_Hothbattle[11] = "HothBattle";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Deathstarbattle")
+    extern char AreaFixUpName_Deathstarbattle[16] = "DeathStarBattle";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Deathstarescape")
+    extern char AreaFixUpName_Deathstarescape[16] = "DeathStarEscape";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Deathstarrescue")
+    extern char AreaFixUpName_Deathstarrescue[16] = "DeathStarRescue";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Blockaderunner")
+    extern char AreaFixUpName_Blockaderunner[15] = "BlockadeRunner";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Vader")
+    extern char AreaFixUpName_Vader[6] = "Vader";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Temple")
+    extern char AreaFixUpName_Temple[7] = "Temple";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Kashyyyk")
+    extern char AreaFixUpName_Kashyyyk[9] = "Kashyyyk";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Grievous")
+    extern char AreaFixUpName_Grievous[9] = "Grievous";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Cruiser")
+    extern char AreaFixUpName_Cruiser[8] = "Cruiser";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Dogfight")
+    extern char AreaFixUpName_Dogfight[9] = "Dogfight";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Dooku")
+    extern char AreaFixUpName_Dooku[6] = "Dooku";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Factory")
+    extern char AreaFixUpName_Factory[8] = "Factory";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Kamino")
+    extern char AreaFixUpName_Kamino[7] = "Kamino";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Maul")
+    extern char AreaFixUpName_Maul[5] = "Maul";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Retakepalace")
+    extern char AreaFixUpName_Retakepalace[13] = "RetakePalace";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Palacerescue")
+    extern char AreaFixUpName_Palacerescue[13] = "PalaceRescue";
+#pragma const_seg()
+#pragma const_seg(".rdata$AreaFixUpName_Map")
+    extern char AreaFixUpName_Map[4] = "map";
+#pragma const_seg()
+
+#pragma bss_seg(".bss$GOTHAMSTREETS_ADATA")
+    AREA_DATA_PC *GOTHAMSTREETS_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ROOFTOPS_ADATA")
+    AREA_DATA_PC *ROOFTOPS_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$FAIRGROUND_ADATA")
+    AREA_DATA_PC *FAIRGROUND_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NEGOTIATIONS_ADATA")
+    AREA_DATA_PC *NEGOTIATIONS_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GUNGAN_ADATA")
+    AREA_DATA_PC *GUNGAN_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$RESCUE_ADATA")
+    AREA_DATA_PC *RESCUE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PODSPRINT_ADATA")
+    AREA_DATA_PC *PODSPRINT_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$RETAKE_ADATA")
+    AREA_DATA_PC *RETAKE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$MAUL_ADATA")
+    AREA_DATA_PC *MAUL_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BOUNTYHUNTERPURSUIT_ADATA")
+    AREA_DATA_PC *BOUNTYHUNTERPURSUIT_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$KAMINO_ADATA")
+    AREA_DATA_PC *KAMINO_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$FACTORY_ADATA")
+    AREA_DATA_PC *FACTORY_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$JEDI_ADATA")
+    AREA_DATA_PC *JEDI_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DOOKU_ADATA")
+    AREA_DATA_PC *DOOKU_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DOGFIGHT_ADATA")
+    AREA_DATA_PC *DOGFIGHT_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BATTLEOVERCORUSCANT_ADATA")
+    AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CRUISER_ADATA")
+    AREA_DATA_PC *CRUISER_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GRIEVOUS_ADATA")
+    AREA_DATA_PC *GRIEVOUS_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$KASHYYYK_ADATA")
+    AREA_DATA_PC *KASHYYYK_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TEMPLE_ADATA")
+    AREA_DATA_PC *TEMPLE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VADER_ADATA")
+    AREA_DATA_PC *VADER_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BLOCKADERUNNER_ADATA")
+    AREA_DATA_PC *BLOCKADERUNNER_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TATOOINE_ADATA")
+    AREA_DATA_PC *TATOOINE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$MOSEISLEY_ADATA")
+    AREA_DATA_PC *MOSEISLEY_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DEATHSTARRESCUE_ADATA")
+    AREA_DATA_PC *DEATHSTARRESCUE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DEATHSTARESCAPE_ADATA")
+    AREA_DATA_PC *DEATHSTARESCAPE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DEATHSTARBATTLE_ADATA")
+    AREA_DATA_PC *DEATHSTARBATTLE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$HOTHBATTLE_ADATA")
+    AREA_DATA_PC *HOTHBATTLE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$HOTHESCAPE_ADATA")
+    AREA_DATA_PC *HOTHESCAPE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ASTEROIDCHASE_ADATA")
+    AREA_DATA_PC *ASTEROIDCHASE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DAGOBAH_ADATA")
+    AREA_DATA_PC *DAGOBAH_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CLOUDCITYTRAP_ADATA")
+    AREA_DATA_PC *CLOUDCITYTRAP_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CLOUDCITYESCAPE_ADATA")
+    AREA_DATA_PC *CLOUDCITYESCAPE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$JABBASPALACE_ADATA")
+    AREA_DATA_PC *JABBASPALACE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SARLACCPIT_ADATA")
+    AREA_DATA_PC *SARLACCPIT_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SPEEDERCHASE_ADATA")
+    AREA_DATA_PC *SPEEDERCHASE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ENDORBATTLE_ADATA")
+    AREA_DATA_PC *ENDORBATTLE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DEATHSTARBATTLE2_ADATA")
+    AREA_DATA_PC *DEATHSTARBATTLE2_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$EMPERORFIGHT_ADATA")
+    AREA_DATA_PC *EMPERORFIGHT_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$E1CHARACTER_ADATA")
+    AREA_DATA_PC *E1CHARACTER_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$E2CHARACTER_ADATA")
+    AREA_DATA_PC *E2CHARACTER_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$E3CHARACTER_ADATA")
+    AREA_DATA_PC *E3CHARACTER_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$E4CHARACTER_ADATA")
+    AREA_DATA_PC *E4CHARACTER_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$E5CHARACTER_ADATA")
+    AREA_DATA_PC *E5CHARACTER_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$E6CHARACTER_ADATA")
+    AREA_DATA_PC *E6CHARACTER_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$E1VEHICLE_ADATA")
+    AREA_DATA_PC *E1VEHICLE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$E2VEHICLE_ADATA")
+    AREA_DATA_PC *E2VEHICLE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$E3VEHICLE_ADATA")
+    AREA_DATA_PC *E3VEHICLE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$E4VEHICLE_ADATA")
+    AREA_DATA_PC *E4VEHICLE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$E5VEHICLE_ADATA")
+    AREA_DATA_PC *E5VEHICLE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$E6VEHICLE_ADATA")
+    AREA_DATA_PC *E6VEHICLE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PODRACE_ADATA")
+    AREA_DATA_PC *PODRACE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ANAKINSFLIGHT_ADATA")
+    AREA_DATA_PC *ANAKINSFLIGHT_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BONUS_GUNSHIP_ADATA")
+    AREA_DATA_PC *BONUS_GUNSHIP_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ANEWHOPE_ADATA")
+    AREA_DATA_PC *ANEWHOPE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$LEGOCITY_ADATA")
+    AREA_DATA_PC *LEGOCITY_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NEWTOWN_ADATA")
+    AREA_DATA_PC *NEWTOWN_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$LOSTTEMPLE_ADATA")
+    AREA_DATA_PC *LOSTTEMPLE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SENATE_ADATA")
+    AREA_DATA_PC *SENATE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$UTAPAU_ADATA")
+    AREA_DATA_PC *UTAPAU_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$HOTH_ADATA")
+    AREA_DATA_PC *HOTH_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BONUSDAGOBAH_ADATA")
+    AREA_DATA_PC *BONUSDAGOBAH_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BONUSKAMINO_ADATA")
+    AREA_DATA_PC *BONUSKAMINO_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BONUSKASHYYYK_ADATA")
+    AREA_DATA_PC *BONUSKASHYYYK_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$JIMTEST_ADATA")
+    AREA_DATA_PC *JIMTEST_ADATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$SfxFileTable")
+    SFX_FILE_INFO_PC *SfxFileTable;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SfxFileCount")
+    i32 SfxFileCount;
+#pragma bss_seg()
+
+#pragma const_seg(".rdata$AreaFixUpLSW")
+    AREAFIXUP_PC AreaFixUpLSW[65] = {
+        {AreaFixUpName_Map, &HUB_ADATA},
+        {AreaFixUpName_Negotiations, &NEGOTIATIONS_ADATA},
+        {AreaFixUpName_Gungan, &GUNGAN_ADATA},
+        {AreaFixUpName_Palacerescue, &RESCUE_ADATA},
+        {AreaFixUpName_Podsprint, &PODSPRINT_ADATA},
+        {AreaFixUpName_Retakepalace, &RETAKE_ADATA},
+        {AreaFixUpName_Maul, &MAUL_ADATA},
+        {AreaFixUpName_Pursuit, &BOUNTYHUNTERPURSUIT_ADATA},
+        {AreaFixUpName_Kamino, &KAMINO_ADATA},
+        {AreaFixUpName_Factory, &FACTORY_ADATA},
+        {AreaFixUpName_Jedi, &JEDI_ADATA},
+        {AreaFixUpName_Gunship, &GUNSHIP_ADATA},
+        {AreaFixUpName_Dooku, &DOOKU_ADATA},
+        {AreaFixUpName_Dogfight, &DOGFIGHT_ADATA},
+        {AreaFixUpName_Dogfight, &BATTLEOVERCORUSCANT_ADATA},
+        {AreaFixUpName_Cruiser, &CRUISER_ADATA},
+        {AreaFixUpName_Grievous, &GRIEVOUS_ADATA},
+        {AreaFixUpName_Kashyyyk, &KASHYYYK_ADATA},
+        {AreaFixUpName_Temple, &TEMPLE_ADATA},
+        {AreaFixUpName_Vader, &VADER_ADATA},
+        {AreaFixUpName_Blockaderunner, &BLOCKADERUNNER_ADATA},
+        {AreaFixUpName_Tatooine, &TATOOINE_ADATA},
+        {AreaFixUpName_Moseisley, &MOSEISLEY_ADATA},
+        {AreaFixUpName_Deathstarrescue, &DEATHSTARRESCUE_ADATA},
+        {AreaFixUpName_Deathstarescape, &DEATHSTARESCAPE_ADATA},
+        {AreaFixUpName_Deathstarbattle, &DEATHSTARBATTLE_ADATA},
+        {AreaFixUpName_Hothbattle, &HOTHBATTLE_ADATA},
+        {AreaFixUpName_Hothescape, &HOTHESCAPE_ADATA},
+        {AreaFixUpName_Asteroidchase, &ASTEROIDCHASE_ADATA},
+        {AreaFixUpName_Dagobah, &DAGOBAH_ADATA},
+        {AreaFixUpName_Cloudcitytrap, &CLOUDCITYTRAP_ADATA},
+        {AreaFixUpName_Cloudcityescape, &CLOUDCITYESCAPE_ADATA},
+        {AreaFixUpName_Jabbaspalace, &JABBASPALACE_ADATA},
+        {AreaFixUpName_Sarlaccpit, &SARLACCPIT_ADATA},
+        {AreaFixUpName_Speederchase, &SPEEDERCHASE_ADATA},
+        {AreaFixUpName_Endorbattle, &ENDORBATTLE_ADATA},
+        {AreaFixUpName_Deathstar2battle, &DEATHSTARBATTLE2_ADATA},
+        {AreaFixUpName_Emperorfight, &EMPERORFIGHT_ADATA},
+        {AreaFixUpName_E1characterbonus, &E1CHARACTER_ADATA},
+        {AreaFixUpName_E2characterbonus, &E2CHARACTER_ADATA},
+        {AreaFixUpName_E3characterbonus, &E3CHARACTER_ADATA},
+        {AreaFixUpName_E4characterbonus, &E4CHARACTER_ADATA},
+        {AreaFixUpName_E5characterbonus, &E5CHARACTER_ADATA},
+        {AreaFixUpName_E6characterbonus, &E6CHARACTER_ADATA},
+        {AreaFixUpName_E1characterbonus, &E1VEHICLE_ADATA},
+        {AreaFixUpName_E2characterbonus, &E2VEHICLE_ADATA},
+        {AreaFixUpName_E3characterbonus, &E3VEHICLE_ADATA},
+        {AreaFixUpName_E4characterbonus, &E4VEHICLE_ADATA},
+        {AreaFixUpName_E5characterbonus, &E5VEHICLE_ADATA},
+        {AreaFixUpName_E6characterbonus, &E6VEHICLE_ADATA},
+        {AreaFixUpName_Podrace, &PODRACE_ADATA},
+        {AreaFixUpName_Anakinsflight, &ANAKINSFLIGHT_ADATA},
+        {AreaFixUpName_BonusGunship, &BONUS_GUNSHIP_ADATA},
+        {AreaFixUpName_Anewhope, &ANEWHOPE_ADATA},
+        {AreaFixUpName_Bonus2, &LEGOCITY_ADATA},
+        {AreaFixUpName_Bonus, &NEWTOWN_ADATA},
+        {AreaFixUpName_LostTemple, &LOSTTEMPLE_ADATA},
+        {AreaFixUpName_Senate, &SENATE_ADATA},
+        {AreaFixUpName_Utapau, &UTAPAU_ADATA},
+        {AreaFixUpName_Hoth, &HOTH_ADATA},
+        {AreaFixUpName_NbDagobah, &BONUSDAGOBAH_ADATA},
+        {AreaFixUpName_NbKamino, &BONUSKAMINO_ADATA},
+        {AreaFixUpName_NbKashyyyk, &BONUSKASHYYYK_ADATA},
+        {AreaFixUpName_Jimtest, &JIMTEST_ADATA},
+        {NULL, NULL},
+    };
+#pragma const_seg()
+
+#pragma const_seg(".rdata$AreaFixUpLostTemple")
+    AREAFIXUP_PC AreaFixUpLostTemple[2] = {
+        {AreaFixUpName_Losttemple, &LOSTTEMPLE_ADATA},
+        {NULL, NULL},
+    };
+#pragma const_seg()
+
+#pragma const_seg(".rdata$AreaFixUpGotham")
+    AREAFIXUP_PC AreaFixUpGotham[5] = {
+        {AreaFixUpName_Batcave, &HUB_ADATA},
+        {AreaFixUpName_Gothamstreets, &GOTHAMSTREETS_ADATA},
+        {AreaFixUpName_Rooftops, &ROOFTOPS_ADATA},
+        {AreaFixUpName_Fairground, &FAIRGROUND_ADATA},
+        {NULL, NULL},
+    };
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarSource")
+    extern const char NuTimeBarSource[51] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarScanlineMicroseconds")
+    extern const f64 NuTimeBarScanlineMicroseconds = 63.556;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarScanlinesPerFrame")
+    extern const f64 NuTimeBarScanlinesPerFrame = 262.5;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarEngineColours")
+    extern const u32 NuTimeBar_EngineColours[7] = {0x7f00007f, 0x7f007f00, 0x7f007f50, 0x7f507f50,
+                                                   0x7f000050, 0x7f40407f, 0x7f7f0000};
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarDefaultColours")
+    extern const u32 NuTimeBar_DefaultColours[16] = {
+        0x00000040, 0x22222240, 0x00004440, 0x00008840, 0x44000040, 0x88000040, 0x44004440, 0x88008840,
+        0x00440040, 0x00880040, 0x00444440, 0x00888840, 0x44440040, 0x88880040, 0x44444440, 0x88888840,
+    };
+#pragma const_seg()
+#pragma bss_seg(".bss$NuTimeBar_EngineEnabled")
+    i32 NuTimeBar_EngineEnabled;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuTimeBar_GpuFrameOutEnabled")
+    i32 NuTimeBar_GpuFrameOutEnabled;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuTimeBar_PeakReset")
+    i32 NuTimeBar_PeakReset;
+#pragma bss_seg()
+#pragma const_seg(".rdata$TextPlatformXbox")
+    extern const char TextPlatformXbox[5] = "xbox";
+#pragma const_seg()
+#pragma const_seg(".rdata$TextPlatformPC")
+    extern const char TextPlatformPC[3] = "pc";
+#pragma const_seg()
+#pragma const_seg(".rdata$TextPlatformPSP")
+    extern const char TextPlatformPSP[4] = "psp";
+#pragma const_seg()
+#pragma const_seg(".rdata$TextPlatformPS3")
+    extern const char TextPlatformPS3[4] = "ps3";
+#pragma const_seg()
+#pragma const_seg(".rdata$TextPlatformPS2")
+    extern const char TextPlatformPS2[4] = "ps2";
+#pragma const_seg()
+#pragma const_seg(".rdata$TextPlatformGameCube")
+    extern const char TextPlatformGameCube[3] = "gc";
+#pragma const_seg()
+#pragma const_seg(".rdata$TextPlatform360")
+    extern const char TextPlatform360[4] = "360";
+#pragma const_seg()
+#pragma const_seg(".rdata$TextPlatformWii")
+    extern const char TextPlatformWii[4] = "wii";
+#pragma const_seg()
+
     i32 PlayerID[2] = {-1, -1};
     i16 PlayerList[8];
     APICHARACTERMODELLIST Hub_ModelList[6];
@@ -606,6 +1142,12 @@ extern "C" {
 #pragma bss_seg(".bss$SfxCRCTable")
     u32 *SfxCRCTable;
 #pragma bss_seg()
+#pragma bss_seg(".bss$SfxCRCTableInitialized")
+    i32 SfxCRCTableInitialized;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuPrimVertexGroupSource")
+    NUPRIM_VERTEX_GROUP_SOURCE_PC *NuPrimVertexGroupSource;
+#pragma bss_seg()
 #pragma bss_seg(".bss$AmbientPairTab")
     i16 *AmbientPairTab;
 #pragma bss_seg()
@@ -651,6 +1193,12 @@ extern "C" {
     extern const char LoadPermAreasPath[17] = "levels\\areas.txt";
 #pragma const_seg(".rdata$LoadPermLevelsPath")
     extern const char LoadPermLevelsPath[18] = "levels\\levels.txt";
+#pragma const_seg(".rdata$EpisodeConfigKeyword_area")
+    extern const char EpisodeConfigKeyword_area[5] = "area";
+#pragma const_seg(".rdata$EpisodeConfigKeyword_episode_start")
+    extern const char EpisodeConfigKeyword_episode_start[14] = "episode_start";
+#pragma const_seg(".rdata$EpisodeConfigKeyword_episode_end")
+    extern const char EpisodeConfigKeyword_episode_end[12] = "episode_end";
 #pragma const_seg(".rdata$LevelAfterLoadName")
     extern const char LevelAfterLoadName[15] = "levelafterload";
 #pragma const_seg(".rdata$LevelConfigKeywordTest")

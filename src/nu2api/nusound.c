@@ -1,10 +1,73 @@
 #include "saga.h"
 
+void __cdecl SfxSetFileTable(SFX_FILE_INFO_PC *records) {
+    i32 index = 0;
+
+    SfxFileTable = records;
+    SfxFileCount = 0;
+    if (records == NULL) {
+        return;
+    }
+
+    while (records[index].filename != NULL) {
+        NuStrLen(records[index].filename);
+        index++;
+        SfxFileCount++;
+    }
+}
+
+void __cdecl SfxBuildCRCTable(VARIPTR *buffer_cursor) {
+    u32 *table;
+    i32 index;
+
+    if (SfxCRCTableInitialized != 0) {
+        return;
+    }
+
+    buffer_cursor->addr = (buffer_cursor->addr + 3) & ~3u;
+    table = (u32 *)buffer_cursor->void_ptr;
+    SfxCRCTable = table;
+    buffer_cursor->addr += 0x400;
+
+    for (index = 0; index < 256; index++) {
+        u32 value = (u32)index << 24;
+        i32 bit;
+
+        for (bit = 0; bit < 8; bit++) {
+            if ((value & 0x80000000) != 0) {
+                value = (value << 1) ^ 0x04c11db7;
+            } else {
+                value <<= 1;
+            }
+        }
+        table[index] = value;
+    }
+    SfxCRCTableInitialized = 1;
+}
+
 u32 __cdecl SfxNameHash(const char *name) {
     u32 hash = 0;
     i32 index = 0;
 
     while (name[index] != '\0') {
+        u8 character = (u8)name[index];
+        i32 table_index;
+
+        if (character >= 'a' && character <= 'z') {
+            character = (u8)(character - ('a' - 'A'));
+        }
+        table_index = (i8)character ^ (i32)(hash >> 24);
+        hash = (hash << 8) ^ SfxCRCTable[table_index];
+        index++;
+    }
+    return hash;
+}
+
+u32 __cdecl SfxNameHashN(const char *name, u32 max_length) {
+    u32 hash = 0;
+    u32 index = 0;
+
+    while (name[index] != '\0' && index < max_length) {
         u8 character = (u8)name[index];
         i32 table_index;
 

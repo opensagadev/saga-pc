@@ -97,6 +97,18 @@ class ObjectChecksTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "'\\$LN8': missing data mapping"):
             self.check({"src/video.c": with_label(1)}, [row("_f", size=1)])
 
+    def test_reused_compiler_jump_label_inside_mapped_code(self):
+        raw = coff_bytes(b"\x90\xc3", total_size=2)
+        count = struct.unpack_from("<I", raw, 12)[0]
+        insert_at = struct.unpack_from("<I", raw, 8)[0] + count * 18
+        labels = b"".join(struct.pack("<8sIhHBB", b"$LN8", value, 1, 0, 3, 0)
+                          for value in (0, 1))
+        raw[insert_at:insert_at] = labels
+        struct.pack_into("<I", raw, 12, count + 2)
+        obj = self.obj(raw, "reused_jump_label")
+        result = self.check({"src/parser.c": obj}, [row("_f", size=2)])
+        self.assertEqual((result["functions"], result["data"]), (1, 0))
+
     def test_unreferenced_common_definition_requires_mapping(self):
         objects = {"src/common.c": self.obj(object_common(), "common")}
         with self.assertRaisesRegex(ValueError, "src/common.c: '_data': missing data mapping"):

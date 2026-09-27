@@ -54,6 +54,19 @@ void __cdecl Level_SetDefaults(LEVELDATA_PC *level) {
     level->wind_size = 512.0f;
 }
 
+void __cdecl FixUpAreas(void) {
+    if (StartupGameFlag1 != 0) {
+        Areas_FixUp(AreaFixUpLSW);
+        if (LOSTTEMPLE_ADATA != NULL) {
+            LOSTTEMPLE_ADATA->flags |= 0x2000;
+        }
+    } else if (StartupGameFlag0 != 0) {
+        Areas_FixUp(AreaFixUpLostTemple);
+    } else {
+        Areas_FixUp(AreaFixUpGotham);
+    }
+}
+
 void __cdecl LoadPermData(void *process) {
     (void)process;
 
@@ -67,7 +80,118 @@ void __cdecl LoadPermData(void *process) {
     STUBBED_NAMED("LoadPermData: FixUpLevels");
 
     ADataList = Areas_ConfigureList((char *)LoadPermAreasPath, &permbuffer_ptr, &permbuffer_end, 0x48, &AREACOUNT);
-    STUBBED_NAMED("LoadPermData: FixUpAreas and Episodes_ConfigureList");
+    FixUpAreas();
+
+    EDataList =
+        Episodes_ConfigureList((char *)LoadPermEpisodesPath, &permbuffer_ptr, &permbuffer_end, 6, &EPISODECOUNT);
+}
+
+EPISODEDATA_PC *__cdecl Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
+                                               i32 *count_out) {
+    NUFPAR_PC *parser = NuFParCreate(path);
+    EPISODEDATA_PC *episode_base;
+    EPISODEDATA_PC *episode;
+    i32 episode_count = 0;
+    i32 in_episode = 0;
+
+    if (parser == NULL) {
+        if (count_out != NULL) {
+            *count_out = 0;
+        }
+        return NULL;
+    }
+
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    episode_base = (EPISODEDATA_PC *)buffer->void_ptr;
+    episode = episode_base;
+
+    while (NuFParGetLine(parser) != 0) {
+        char *word;
+
+        NuFParGetWord(parser);
+        word = parser->word_buffer_ptr;
+        if (word[0] == '\0') {
+            continue;
+        }
+
+        if (!in_episode) {
+            if (episode_count < max_count && NuStrICmp(word, EpisodeConfigKeyword_episode_start) == 0) {
+                episode->name_id = -1;
+                episode->text_id = -1;
+                episode->area_count = 0;
+                episode->index = (u8)episode_count;
+                in_episode = 1;
+            }
+            continue;
+        }
+
+        if (NuStrICmp(word, EpisodeConfigKeyword_episode_end) == 0) {
+            in_episode = 0;
+            if (episode->area_count != 0) {
+                episode_count++;
+                episode++;
+            }
+            continue;
+        }
+
+        if (NuStrICmp(word, EpisodeConfigKeyword_area) == 0) {
+            if (episode->area_count <= 9 && NuFParGetWord(parser) != 0) {
+                AREA_DATA_PC *area;
+                i32 area_index;
+                i32 prior_episode_index;
+                i32 area_slot;
+                i32 found = 0;
+
+                area = Area_FindByName(parser->word_buffer_ptr, &area_index);
+                if (area_index != -1) {
+                    for (area_slot = 0; area_slot < episode->area_count; area_slot++) {
+                        if (episode->area_ids[area_slot] == area_index) {
+                            found = 1;
+                            break;
+                        }
+                    }
+
+                    for (prior_episode_index = 0; found == 0 && prior_episode_index < episode_count;
+                         prior_episode_index++) {
+                        EPISODEDATA_PC *prior_episode = &episode_base[prior_episode_index];
+                        for (area_slot = 0; area_slot < prior_episode->area_count; area_slot++) {
+                            if (prior_episode->area_ids[area_slot] == area_index) {
+                                found = 1;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (found == 0) {
+                        i32 area_count = episode->area_count;
+                        episode->area_ids[area_count] = (i16)area_index;
+                        episode->area_count = (u8)(area_count + 1);
+                        if ((area->flags & 6) == 0) {
+                            episode->regular_areas++;
+                        }
+                    }
+                }
+            }
+            continue;
+        }
+
+        if (NuStrICmp(word, AreaConfigKeyword_name_id) == 0) {
+            episode->name_id = (i16)NuFParGetInt(parser);
+        } else if (NuStrICmp(word, AreaConfigKeyword_text_id) == 0) {
+            episode->text_id = (i16)NuFParGetInt(parser);
+        }
+    }
+
+    NuFParDestroy(parser);
+    if (episode_count == 0) {
+        return NULL;
+    }
+
+    buffer_end->void_ptr = episode;
+    if (count_out != NULL) {
+        *count_out = episode_count;
+    }
+    return episode_base;
 }
 
 void __cdecl StartPerm(void) {

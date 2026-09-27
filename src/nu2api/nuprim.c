@@ -1,5 +1,7 @@
 #include "saga.h"
 
+#include <string.h>
+
 extern i32 NuPrimCSPos;
 extern i32 NuPrimVertexCount;
 extern i32 *NuPrimVertexCountPointer;
@@ -81,26 +83,69 @@ STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, fog_id) == 0x2e);
 STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, vertex_groups_id) == 0x30);
 STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, reflection_id) == 0x32);
 
-typedef struct nuprim_render_state_fog_cache_pc_s {
-    NUPRIM_RENDER_STATE_IDS_PC ids;
-    u8 unknown_0034[0x134];
-    void *fog_packet_cache;
-} NUPRIM_RENDER_STATE_FOG_CACHE_PC;
-STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_FOG_CACHE_PC, fog_packet_cache) == 0x168);
+typedef struct nuprim_vec4_pc_s {
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 w;
+} NUPRIM_VEC4_PC;
+STATIC_ASSERT(sizeof(NUPRIM_VEC4_PC) == 0x10);
 
-typedef struct nuprim_fog_packet_source_pc_s {
-    u8 unknown_0000[0x16c];
-    u32 state_word_016c;
-    f32 value_0170;
-    f32 value_0174;
-    void *pointer_0178;
-    f32 value_017c;
-} NUPRIM_FOG_PACKET_SOURCE_PC;
-STATIC_ASSERT(offsetof(NUPRIM_FOG_PACKET_SOURCE_PC, state_word_016c) == 0x16c);
-STATIC_ASSERT(offsetof(NUPRIM_FOG_PACKET_SOURCE_PC, value_0170) == 0x170);
-STATIC_ASSERT(offsetof(NUPRIM_FOG_PACKET_SOURCE_PC, value_0174) == 0x174);
-STATIC_ASSERT(offsetof(NUPRIM_FOG_PACKET_SOURCE_PC, pointer_0178) == 0x178);
-STATIC_ASSERT(offsetof(NUPRIM_FOG_PACKET_SOURCE_PC, value_017c) == 0x17c);
+typedef struct nuprim_light_packet_pc_s {
+    NUPRIM_VEC4_PC ambient_intensity;
+    NUPRIM_VEC4_PC light_intensity[3];
+    NUPRIM_VEC4_PC light_direction[3];
+    NUMTX specular_mtx;
+    NUVEC specular_colour;
+} NUPRIM_LIGHT_PACKET_PC;
+STATIC_ASSERT(sizeof(NUPRIM_LIGHT_PACKET_PC) == 0xbc);
+STATIC_ASSERT(offsetof(NUPRIM_LIGHT_PACKET_PC, light_intensity) == 0x10);
+STATIC_ASSERT(offsetof(NUPRIM_LIGHT_PACKET_PC, light_direction) == 0x40);
+STATIC_ASSERT(offsetof(NUPRIM_LIGHT_PACKET_PC, specular_mtx) == 0x70);
+STATIC_ASSERT(offsetof(NUPRIM_LIGHT_PACKET_PC, specular_colour) == 0xb0);
+
+void __cdecl RndrStateCopyGlobalState(NUGLOBALRNDRSTATE_PC *state) {
+    memcpy(state, &render_state, sizeof(*state));
+    state->fog_packet_cache = NULL;
+    state->camera_packet_cache = NULL;
+    state->light_packet_cache = NULL;
+    state->konst_packet_cache = NULL;
+}
+
+void __cdecl RndrStateResetGlobalState(NUGLOBALRNDRSTATE_PC *state) {
+    state->state_00f4 = 0;
+    state->state_0100 = 0;
+    state->fog_packet_cache = NULL;
+    state->light_packet_cache = NULL;
+    state->camera_packet_cache = NULL;
+    state->konst_packet_cache = NULL;
+    state->reflection_packet_cache = NULL;
+
+    render_state.state_0008 = 0;
+    render_state.state_0014 = -1;
+    render_state.counter_0020 = -1;
+    render_state.lights_id = (u16)-1;
+    render_state.camera_id = (u16)-1;
+    render_state.fog_id = (u16)-1;
+    render_state.counter_001e = (u16)-1;
+}
+
+void __cdecl RndrStateResetSharedGlobalState(void) {
+    render_state.state_00f4 = 0;
+    render_state.state_0100 = 0;
+    render_state.fog_packet_cache = NULL;
+    render_state.light_packet_cache = NULL;
+    render_state.camera_packet_cache = NULL;
+    render_state.konst_packet_cache = NULL;
+    render_state.reflection_packet_cache = NULL;
+    render_state.state_0008 = 0;
+    render_state.state_0014 = -1;
+    render_state.counter_0020 = -1;
+    render_state.lights_id = (u16)-1;
+    render_state.camera_id = (u16)-1;
+    render_state.fog_id = (u16)-1;
+    render_state.counter_001e = (u16)-1;
+}
 
 void *__cdecl DisplayListBuildKonstPacket(NUGLOBALRNDRSTATE_PC *state) {
     f32 *packet;
@@ -122,23 +167,76 @@ void *__cdecl DisplayListBuildReflectionPacket(NUGLOBALRNDRSTATE_PC *state) {
     return packet;
 }
 
+void *__cdecl DisplayListBuildLightPacket(NUGLOBALRNDRSTATE_PC *state) {
+    NUPRIM_LIGHT_PACKET_PC *packet;
+    i32 i;
+
+    NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
+    packet = (NUPRIM_LIGHT_PACKET_PC *)NuDisplayListStreamCursor->void_ptr;
+    NuDisplayListStreamCursor->addr += sizeof(*packet);
+
+    packet->ambient_intensity.x = state->ambient_intensity.x;
+    packet->ambient_intensity.y = state->ambient_intensity.y;
+    packet->ambient_intensity.z = state->ambient_intensity.z;
+    packet->ambient_intensity.w = 1.0f;
+    for (i = 0; i < 3; ++i) {
+        packet->light_intensity[i].x = state->light_intensity[i].x;
+        packet->light_intensity[i].y = state->light_intensity[i].y;
+        packet->light_intensity[i].z = state->light_intensity[i].z;
+        packet->light_intensity[i].w = 1.0f;
+        packet->light_direction[i].x = state->light_direction[i].x;
+        packet->light_direction[i].y = state->light_direction[i].y;
+        packet->light_direction[i].z = state->light_direction[i].z;
+        packet->light_direction[i].w = 1.0f;
+    }
+    packet->specular_mtx = state->specular_mtx;
+    packet->specular_colour = state->specular_colour;
+    return packet;
+}
+
+void *__cdecl DisplayListBuildVertexGroupPacket(void) {
+    NUPRIM_VERTEX_GROUP_SOURCE_PC *source = NuPrimVertexGroupSource;
+    VARIPTR *cursor = NuDisplayListStreamCursor;
+    void *packet;
+    f32 *output;
+    i32 i;
+    u32 count;
+
+    if (source == NULL) {
+        return NULL;
+    }
+
+    cursor->addr = (cursor->addr + 0xf) & ~0xfU;
+    packet = cursor->void_ptr;
+    count = source->count;
+    *(u32 *)cursor->void_ptr = count;
+    cursor->addr += sizeof(u32);
+    *(u32 *)cursor->void_ptr = source->flags;
+    cursor->addr += sizeof(u32);
+    output = (f32 *)cursor->void_ptr;
+    cursor->addr += ((count + 3) / 4) * 0x10;
+    for (i = 0; i < (i32)count; ++i) {
+        output[i] = (f32)source->values[i];
+    }
+    return packet;
+}
+
 void *__cdecl DisplayListBuildFogPacket(NUGLOBALRNDRSTATE_PC *state) {
-    NUPRIM_FOG_PACKET_SOURCE_PC *source = (NUPRIM_FOG_PACKET_SOURCE_PC *)state;
     u32 *packet;
     u32 *packet_start;
 
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
     packet = (u32 *)NuDisplayListStreamCursor->void_ptr;
     packet_start = packet;
-    *packet++ = source->state_word_016c;
+    *packet++ = state->fog_state_word;
     NuDisplayListStreamCursor->addr += sizeof(u32);
-    if (source->state_word_016c != 0) {
-        *packet++ = (u32)source->pointer_0178;
-        *(f32 *)packet = source->value_0170;
+    if (state->fog_state_word != 0) {
+        *packet++ = (u32)state->fog_pointer_0178;
+        *(f32 *)packet = state->fog_value_0170;
         ++packet;
-        *(f32 *)packet = source->value_0174;
+        *(f32 *)packet = state->fog_value_0174;
         ++packet;
-        *(f32 *)packet = source->value_017c;
+        *(f32 *)packet = state->fog_value_017c;
         ++packet;
         NuDisplayListStreamCursor->addr += 4 * sizeof(u32);
     }
@@ -147,8 +245,6 @@ void *__cdecl DisplayListBuildFogPacket(NUGLOBALRNDRSTATE_PC *state) {
 
 void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE_PC *global) {
     NUPRIM_RENDER_STATE_IDS_PC *state;
-    NUPRIM_RENDER_STATE_IDS_PC *global_ids;
-    NUPRIM_RENDER_STATE_FOG_CACHE_PC *global_fog_cache;
     void *packet;
 
     if (global == NULL) {
@@ -156,58 +252,64 @@ void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRST
     }
 
     state = (NUPRIM_RENDER_STATE_IDS_PC *)list->render_state;
-    global_ids = (NUPRIM_RENDER_STATE_IDS_PC *)global;
-    global_fog_cache = (NUPRIM_RENDER_STATE_FOG_CACHE_PC *)global;
-    if (state->global_id == global_ids->global_id) {
+    if (state->global_id == global->counter_0020) {
         return;
     }
 
-    if (state->lights_id != global_ids->lights_id) {
-        STUBBED_NAMED(0x005fcdf0); /* Build and link the PC light-state packet. */
-        state->lights_id = global_ids->lights_id;
+    if (state->lights_id != global->lights_id) {
+        packet = global->light_packet_cache;
+        if (packet == NULL) {
+            packet = DisplayListBuildLightPacket(global);
+            global->light_packet_cache = packet;
+        }
+        NuDisplayListLinkItem(list, 0x94, packet);
+        state->lights_id = global->lights_id;
     }
 
-    if (state->camera_id != global_ids->camera_id) {
+    if (state->camera_id != global->camera_id) {
         STUBBED_NAMED(0x0060760b); /* Build and link the inline PC camera packet. */
-        state->camera_id = global_ids->camera_id;
+        state->camera_id = global->camera_id;
     }
 
-    if (state->fog_id != global_ids->fog_id) {
-        packet = global_fog_cache->fog_packet_cache;
+    if (state->fog_id != global->fog_id) {
+        packet = global->fog_packet_cache;
         if (packet == NULL) {
             packet = DisplayListBuildFogPacket(global);
-            global_fog_cache->fog_packet_cache = packet;
+            global->fog_packet_cache = packet;
         }
         NuDisplayListLinkItem(list, 0xa6, packet);
-        state->fog_id = global_ids->fog_id;
+        state->fog_id = global->fog_id;
     }
 
-    if (state->konst_id != global_ids->konst_id) {
+    if (state->konst_id != global->counter_001e) {
         packet = global->konst_packet_cache;
         if (packet == NULL) {
             packet = DisplayListBuildKonstPacket(global);
             global->konst_packet_cache = packet;
         }
         NuDisplayListLinkItem(list, 0xa5, packet);
-        state->konst_id = global_ids->konst_id;
+        state->konst_id = global->counter_001e;
     }
 
-    if (state->vertex_groups_id != global_ids->vertex_groups_id) {
-        STUBBED_NAMED(0x005fcfd0); /* Build and conditionally link vertex groups. */
-        state->vertex_groups_id = global_ids->vertex_groups_id;
+    if (state->vertex_groups_id != global->vertex_groups_id) {
+        packet = DisplayListBuildVertexGroupPacket();
+        if (packet != NULL) {
+            NuDisplayListLinkItem(list, 0xa9, packet);
+        }
+        state->vertex_groups_id = global->vertex_groups_id;
     }
 
-    if (state->reflection_id != global_ids->reflection_id) {
+    if (state->reflection_id != global->reflection_id) {
         packet = global->reflection_packet_cache;
         if (packet == NULL) {
             packet = DisplayListBuildReflectionPacket(global);
             global->reflection_packet_cache = packet;
         }
         NuDisplayListLinkItem(list, 0xab, packet);
-        state->reflection_id = global_ids->reflection_id;
+        state->reflection_id = global->reflection_id;
     }
 
-    state->global_id = global_ids->global_id;
+    state->global_id = global->counter_0020;
 }
 
 void __cdecl NuDisplayListLinkMtl(NUDISPLAYLIST_PC *list, NUMTL *material) {

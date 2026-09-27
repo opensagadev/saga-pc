@@ -843,3 +843,656 @@ i32 __cdecl NuFParInterpretWordCTX(NUFPAR_PC *parser, void *context) {
     }
     return 0;
 }
+
+typedef struct nurdpfcontext_pc_s {
+    i32 token;
+    f32 value;
+    char *input;
+    i32 position;
+    i32(__cdecl *get_variable)(char *, f32 *, i32 *);
+} NURDPFCTX_PC;
+
+STATIC_ASSERT(sizeof(NURDPFCTX_PC) == 20);
+STATIC_ASSERT(offsetof(NURDPFCTX_PC, token) == 0);
+STATIC_ASSERT(offsetof(NURDPFCTX_PC, value) == 4);
+STATIC_ASSERT(offsetof(NURDPFCTX_PC, input) == 8);
+STATIC_ASSERT(offsetof(NURDPFCTX_PC, position) == 12);
+STATIC_ASSERT(offsetof(NURDPFCTX_PC, get_variable) == 16);
+
+enum {
+    RDPF_ADD,
+    RDPF_SUBTRACT,
+    RDPF_MULTIPLY,
+    RDPF_DIVIDE,
+    RDPF_LEFT_PAREN,
+    RDPF_RIGHT_PAREN,
+    RDPF_END,
+    RDPF_NUMBER,
+    RDPF_VARIABLE
+};
+
+static void NuRDPFGetToken(NURDPFCTX_PC *context) {
+    char variable[256];
+    i32 length;
+    f32 multiplier;
+
+    for (;;) {
+        if (context->input[context->position] == '\0') {
+            context->token = RDPF_END;
+            return;
+        }
+        if (context->input[context->position] != ' ' && context->input[context->position] != '\t') {
+            break;
+        }
+        /* The PC increments the whitespace byte, not the input position. */
+        context->input[context->position]++;
+    }
+
+    switch (context->input[context->position]) {
+        case ';':
+            context->token = RDPF_END;
+            return;
+        case '+':
+            context->token = RDPF_ADD;
+            context->position++;
+            return;
+        case '-':
+            context->token = RDPF_SUBTRACT;
+            context->position++;
+            return;
+        case '*':
+            context->token = RDPF_MULTIPLY;
+            context->position++;
+            return;
+        case '/':
+            context->token = RDPF_DIVIDE;
+            context->position++;
+            return;
+        case '(':
+            context->token = RDPF_LEFT_PAREN;
+            context->position++;
+            return;
+        case ')':
+            context->token = RDPF_RIGHT_PAREN;
+            context->position++;
+            return;
+        case '.':
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            context->token = RDPF_NUMBER;
+            context->value = 0.0f;
+            multiplier = 0.0f;
+            while ((context->input[context->position] >= '0' && context->input[context->position] <= '9') ||
+                   context->input[context->position] == '.') {
+                if (context->input[context->position] == '.') {
+                    if (multiplier != 0.0f) {
+                        NuFileError();
+                    }
+                    multiplier = 0.1f;
+                } else if (multiplier != 0.0f) {
+                    context->value += (context->input[context->position] - '0') * multiplier;
+                    multiplier /= 10.0;
+                } else {
+                    context->value *= 10.0;
+                    context->value += context->input[context->position] - '0';
+                }
+                context->position++;
+            }
+            return;
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'G':
+        case 'H':
+        case 'I':
+        case 'J':
+        case 'K':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'O':
+        case 'P':
+        case 'Q':
+        case 'R':
+        case 'S':
+        case 'T':
+        case 'U':
+        case 'V':
+        case 'W':
+        case 'X':
+        case 'Y':
+        case 'Z':
+        case '_':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':
+        case 'g':
+        case 'h':
+        case 'i':
+        case 'j':
+        case 'k':
+        case 'l':
+        case 'm':
+        case 'n':
+        case 'o':
+        case 'p':
+        case 'q':
+        case 'r':
+        case 's':
+        case 't':
+        case 'u':
+        case 'v':
+        case 'w':
+        case 'x':
+        case 'y':
+        case 'z':
+            length = 0;
+            while (NuIsAlNum(context->input[context->position])) {
+                variable[length++] = context->input[context->position++];
+            }
+            variable[length] = '\0';
+            if (context->get_variable == NULL) {
+                NuFileError();
+            }
+            context->value = 0.0f;
+            context->token = RDPF_NUMBER;
+            context->get_variable(variable, &context->value, NULL);
+            return;
+        default:
+            return;
+    }
+}
+
+static f32 NuRDPFExpression(NURDPFCTX_PC *context);
+
+static f32 NuRDPFPrimary(NURDPFCTX_PC *context) {
+    f32 value;
+
+    switch (context->token) {
+        case RDPF_VARIABLE:
+            NuFileError();
+            /* fall through */
+        case RDPF_NUMBER:
+            NuRDPFGetToken(context);
+            return context->value;
+        case RDPF_SUBTRACT:
+            NuRDPFGetToken(context);
+            return -NuRDPFPrimary(context);
+        case RDPF_LEFT_PAREN:
+            NuRDPFGetToken(context);
+            value = NuRDPFExpression(context);
+            if (context->token != RDPF_RIGHT_PAREN) {
+                NuFileError();
+            }
+            NuRDPFGetToken(context);
+            return value;
+        case RDPF_END:
+            return 1.0f;
+        default:
+            NuFileError();
+            return 0.0f;
+    }
+}
+
+static f32 NuRDPFTerm(NURDPFCTX_PC *context) {
+    f32 value = NuRDPFPrimary(context);
+
+    for (;;) {
+        switch (context->token) {
+            case RDPF_MULTIPLY:
+                NuRDPFGetToken(context);
+                value *= NuRDPFPrimary(context);
+                break;
+            case RDPF_DIVIDE:
+                NuRDPFGetToken(context);
+                value /= NuRDPFPrimary(context);
+                break;
+            default:
+                return value;
+        }
+    }
+}
+
+static f32 NuRDPFExpression(NURDPFCTX_PC *context) {
+    f32 value = NuRDPFTerm(context);
+
+    for (;;) {
+        switch (context->token) {
+            case RDPF_ADD:
+                NuRDPFGetToken(context);
+                value += NuRDPFTerm(context);
+                break;
+            case RDPF_SUBTRACT:
+                NuRDPFGetToken(context);
+                value -= NuRDPFTerm(context);
+                break;
+            default:
+                return value;
+        }
+    }
+}
+
+f32 __cdecl NuRDPFVar(char *input, i32(__cdecl *get_variable)(char *, f32 *, i32 *)) {
+    NURDPFCTX_PC context;
+
+    context.input = input;
+    context.position = 0;
+    context.get_variable = get_variable;
+    NuRDPFGetToken(&context);
+    return NuRDPFExpression(&context);
+}
+
+f32 __cdecl NuFParGetFloatRDP(NUFPAR_PC *parser) {
+    char buffer[64];
+
+    NuFParGetWord(parser);
+    if (parser->is_utf16 != 0) {
+        NuUnicodeToAscii(buffer, (u16 *)parser->word_buffer_ptr);
+    } else {
+        NuStrCpy(buffer, parser->word_buffer_ptr);
+    }
+    return buffer[0] != '\0' ? NuRDPFVar(buffer, NULL) : 0.0f;
+}
+
+typedef struct nurdpicontext_pc_s {
+    i32 token;
+    i32 value;
+    char *input;
+    i32 position;
+    NURDPGETVARFN get_variable;
+} NURDPICTX_PC;
+
+STATIC_ASSERT(sizeof(NURDPICTX_PC) == 20);
+STATIC_ASSERT(offsetof(NURDPICTX_PC, token) == 0);
+STATIC_ASSERT(offsetof(NURDPICTX_PC, value) == 4);
+STATIC_ASSERT(offsetof(NURDPICTX_PC, input) == 8);
+STATIC_ASSERT(offsetof(NURDPICTX_PC, position) == 12);
+STATIC_ASSERT(offsetof(NURDPICTX_PC, get_variable) == 16);
+
+enum {
+    RDPI_ADD,
+    RDPI_SUBTRACT,
+    RDPI_MULTIPLY,
+    RDPI_DIVIDE,
+    RDPI_MODULO,
+    RDPI_LEFT_PAREN,
+    RDPI_RIGHT_PAREN,
+    RDPI_END,
+    RDPI_NUMBER,
+    RDPI_OR,
+    RDPI_AND,
+    RDPI_NOT,
+    RDPI_XOR,
+    RDPI_LOGICAL_OR,
+    RDPI_LOGICAL_AND,
+    RDPI_LOGICAL_NOT,
+    RDPI_EQUAL,
+    RDPI_NOT_EQUAL,
+    RDPI_LESS,
+    RDPI_GREATER,
+    RDPI_LESS_EQUAL,
+    RDPI_GREATER_EQUAL
+};
+
+static void NuRDPIGetToken(NURDPICTX_PC *context) {
+    char variable[256];
+    i32 length;
+
+    for (;;) {
+        if (context->input[context->position] == '\0') {
+            context->token = RDPI_END;
+            return;
+        }
+        if (context->input[context->position] != ' ' && context->input[context->position] != '\t') {
+            break;
+        }
+        /* The PC increments the whitespace byte, not the input position. */
+        context->input[context->position]++;
+    }
+
+    switch (context->input[context->position]) {
+        case ';':
+            context->token = RDPI_END;
+            return;
+        case '+':
+            context->token = RDPI_ADD;
+            context->position++;
+            return;
+        case '-':
+            context->token = RDPI_SUBTRACT;
+            context->position++;
+            return;
+        case '*':
+            context->token = RDPI_MULTIPLY;
+            context->position++;
+            return;
+        case '/':
+            context->token = RDPI_DIVIDE;
+            context->position++;
+            return;
+        case '%':
+            context->token = RDPI_MODULO;
+            context->position++;
+            return;
+        case '(':
+            context->token = RDPI_LEFT_PAREN;
+            context->position++;
+            return;
+        case ')':
+            context->token = RDPI_RIGHT_PAREN;
+            context->position++;
+            return;
+        case '|':
+            context->token = RDPI_OR;
+            context->position++;
+            if (context->input[context->position] == '|') {
+                context->token = RDPI_LOGICAL_OR;
+                context->position++;
+            }
+            return;
+        case '&':
+            context->token = RDPI_AND;
+            context->position++;
+            if (context->input[context->position] == '&') {
+                context->token = RDPI_LOGICAL_AND;
+                context->position++;
+            }
+            return;
+        case '=':
+            context->token = RDPI_EQUAL;
+            context->position++;
+            if (context->input[context->position] == '=') {
+                context->position++;
+            }
+            return;
+        case '>':
+            context->token = RDPI_GREATER;
+            context->position++;
+            if (context->input[context->position] == '=') {
+                context->position++;
+                context->token = RDPI_GREATER_EQUAL;
+            }
+            return;
+        case '<':
+            context->token = RDPI_LESS;
+            context->position++;
+            if (context->input[context->position] == '=') {
+                context->position++;
+                context->token = RDPI_LESS_EQUAL;
+            }
+            return;
+        case '^':
+            context->token = RDPI_XOR;
+            context->position++;
+            return;
+        case '!':
+            context->token = RDPI_LOGICAL_NOT;
+            context->position++;
+            if (context->input[context->position] == '=') {
+                context->token = RDPI_NOT_EQUAL;
+                context->position++;
+            }
+            return;
+        case '~':
+            context->token = RDPI_NOT;
+            context->position++;
+            return;
+        case '$':
+            context->position++;
+            context->token = RDPI_NUMBER;
+            context->value = 0;
+            while (ishexnum(context->input[context->position])) {
+                context->value <<= 4;
+                context->value += hexcodetoint(context->input[context->position]);
+                context->position++;
+            }
+            return;
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            context->token = RDPI_NUMBER;
+            context->value = 0;
+            while ((u8)(context->input[context->position] - '0') <= 9) {
+                context->value *= 10;
+                context->value += context->input[context->position] - '0';
+                context->position++;
+            }
+            return;
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'G':
+        case 'H':
+        case 'I':
+        case 'J':
+        case 'K':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'O':
+        case 'P':
+        case 'Q':
+        case 'R':
+        case 'S':
+        case 'T':
+        case 'U':
+        case 'V':
+        case 'W':
+        case 'X':
+        case 'Y':
+        case 'Z':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':
+        case 'g':
+        case 'h':
+        case 'i':
+        case 'j':
+        case 'k':
+        case 'l':
+        case 'm':
+        case 'n':
+        case 'o':
+        case 'p':
+        case 'q':
+        case 'r':
+        case 's':
+        case 't':
+        case 'u':
+        case 'v':
+        case 'w':
+        case 'x':
+        case 'y':
+        case 'z':
+            length = 0;
+            while (NuIsAlNum(context->input[context->position])) {
+                variable[length++] = context->input[context->position++];
+            }
+            variable[length] = '\0';
+            if (context->get_variable == NULL) {
+                NuFileError();
+            }
+            context->value = 0;
+            context->token = RDPI_NUMBER;
+            context->get_variable(variable, NULL, &context->value);
+            return;
+        default:
+            return;
+    }
+}
+
+static i32 NuRDPIExpression(NURDPICTX_PC *context);
+
+static i32 NuRDPIPrimary(NURDPICTX_PC *context) {
+    i32 value;
+
+    switch (context->token) {
+        case RDPI_NUMBER:
+            NuRDPIGetToken(context);
+            return context->value;
+        case RDPI_SUBTRACT:
+            NuRDPIGetToken(context);
+            return -NuRDPIPrimary(context);
+        case RDPI_NOT:
+            NuRDPIGetToken(context);
+            return ~NuRDPIPrimary(context);
+        case RDPI_LOGICAL_NOT:
+            NuRDPIGetToken(context);
+            return !NuRDPIPrimary(context);
+        case RDPI_LEFT_PAREN:
+            NuRDPIGetToken(context);
+            value = NuRDPIExpression(context);
+            if (context->token != RDPI_RIGHT_PAREN) {
+                NuFileError();
+            }
+            NuRDPIGetToken(context);
+            return value;
+        case RDPI_END:
+            return 1;
+        default:
+            NuFileError();
+            return 0;
+    }
+}
+
+static i32 NuRDPITerm(NURDPICTX_PC *context) {
+    i32 value = NuRDPIPrimary(context);
+
+    for (;;) {
+        switch (context->token) {
+            case RDPI_MULTIPLY:
+                NuRDPIGetToken(context);
+                value *= NuRDPIPrimary(context);
+                break;
+            case RDPI_DIVIDE:
+                NuRDPIGetToken(context);
+                value /= NuRDPIPrimary(context);
+                break;
+            case RDPI_MODULO:
+                NuRDPIGetToken(context);
+                value %= NuRDPIPrimary(context);
+                break;
+            case RDPI_EQUAL:
+                NuRDPIGetToken(context);
+                value = value == NuRDPIPrimary(context);
+                break;
+            case RDPI_NOT_EQUAL:
+                NuRDPIGetToken(context);
+                value = value != NuRDPIPrimary(context);
+                break;
+            case RDPI_LESS:
+                NuRDPIGetToken(context);
+                value = value < NuRDPIPrimary(context);
+                break;
+            case RDPI_GREATER:
+                NuRDPIGetToken(context);
+                value = value > NuRDPIPrimary(context);
+                break;
+            case RDPI_LESS_EQUAL:
+                NuRDPIGetToken(context);
+                value = value <= NuRDPIPrimary(context);
+                break;
+            case RDPI_GREATER_EQUAL:
+                NuRDPIGetToken(context);
+                value = value >= NuRDPIPrimary(context);
+                break;
+            default:
+                return value;
+        }
+    }
+}
+
+static i32 NuRDPIExpression(NURDPICTX_PC *context) {
+    i32 right;
+    i32 value = NuRDPITerm(context);
+
+    for (;;) {
+        switch (context->token) {
+            case RDPI_ADD:
+                NuRDPIGetToken(context);
+                value += NuRDPITerm(context);
+                break;
+            case RDPI_SUBTRACT:
+                NuRDPIGetToken(context);
+                value -= NuRDPITerm(context);
+                break;
+            case RDPI_AND:
+                NuRDPIGetToken(context);
+                value &= NuRDPITerm(context);
+                break;
+            case RDPI_OR:
+                NuRDPIGetToken(context);
+                value |= NuRDPITerm(context);
+                break;
+            case RDPI_XOR:
+                NuRDPIGetToken(context);
+                value ^= NuRDPITerm(context);
+                break;
+            case RDPI_LOGICAL_AND:
+                NuRDPIGetToken(context);
+                right = NuRDPITerm(context);
+                value = value != 0 && right != 0;
+                break;
+            case RDPI_LOGICAL_OR:
+                NuRDPIGetToken(context);
+                right = NuRDPITerm(context);
+                value = value != 0 || right != 0;
+                break;
+            default:
+                return value;
+        }
+    }
+}
+
+i32 __cdecl NuRDPIVar(char *input, NURDPGETVARFN get_variable) {
+    NURDPICTX_PC context;
+
+    context.input = input;
+    context.position = 0;
+    context.get_variable = get_variable;
+    NuRDPIGetToken(&context);
+    return NuRDPIExpression(&context);
+}
+
+i32 __cdecl NuRDPI(char *input) {
+    return NuRDPIVar(input, NULL);
+}
+
+i32 __cdecl NuFParGetIntRDP(NUFPAR_PC *parser) {
+    char buffer[64];
+
+    NuFParGetWord(parser);
+    if (parser->is_utf16 != 0) {
+        NuUnicodeToAscii(buffer, (u16 *)parser->word_buffer_ptr);
+    } else {
+        NuStrCpy(buffer, parser->word_buffer_ptr);
+    }
+    return buffer[0] != '\0' ? NuRDPI(buffer) : 0;
+}

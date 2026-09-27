@@ -1,6 +1,8 @@
 #include "saga.h"
 
 extern void __cdecl NuKeyboardRead(void);
+extern void __cdecl PCFrameCriticalSectionEnter_candidate(void);
+extern void __cdecl PCFrameCriticalSectionLeave_candidate(void);
 
 void __cdecl NuFrameBegin(void) {
     ++nuapi.frame_begin_count;
@@ -23,6 +25,7 @@ f32 __cdecl NuFrameEnd(void) {
     NuWindAnimate(nuapi.wind, nuapi.frame_time);
     STUBBED_NAMED(0x005c6100); /* One-byte PC leaf; identity unresolved. */
     STUBBED_NAMED(0x005de1a0); /* PC update helper with unresolved owner. */
+    PCFrameCriticalSectionEnter_candidate();
     STUBBED_NAMED(0x00698fa0); /* PC helper on two interface objects; identity unresolved. */
     STUBBED_NAMED(0x006d3420); /* One-byte PC helper; identity unresolved. */
 
@@ -30,7 +33,7 @@ f32 __cdecl NuFrameEnd(void) {
     STUBBED_NAMED(0x004f4c80); /* PC helper immediately before the render boundary. */
     STUBBED_NAMED(0x005f3d60); /* One-argument PC render boundary candidate, mode -1. */
     STUBBED_NAMED(0x005de1b0); /* PC post-render update helper. */
-    STUBBED_NAMED(0x006df310); /* PC frame critical-section leave. */
+    PCFrameCriticalSectionLeave_candidate();
 
     NuTimeGetTicksPS(&now.low, &now.high);
     elapsed.low = now.low - nuapi.time.low;

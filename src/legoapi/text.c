@@ -4,6 +4,17 @@
 
 #include <string.h>
 
+extern i32 __cdecl NuFParGetLineW(NUFPAR_PC *parser);
+extern i32 __cdecl NuFParGetWordW(NUFPAR_PC *parser);
+extern const char TextPlatformXbox[5];
+extern const char TextPlatformPC[3];
+extern const char TextPlatformPSP[4];
+extern const char TextPlatformPS3[4];
+extern const char TextPlatformPS2[4];
+extern const char TextPlatformGameCube[3];
+extern const char TextPlatform360[4];
+extern const char TextPlatformWii[4];
+
 void Text_InitLanguageList(LANGUAGEDATA *language_list) {
     if (language_list != NULL) {
         Text_LanguageList = language_list;
@@ -152,6 +163,72 @@ void Text_InitDefaultStrings(void) {
     TTab[tITALIAN] = apitxt_ITALIAN;
     TTab[tSPANISH] = apitxt_SPANISH;
     TTab[tDANISH] = apitxt_DANISH;
+}
+
+void __cdecl Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32 count) {
+    NUFPAR_PC *parser = NuFParCreate(path);
+    u8 *out = *buffer;
+
+    if (parser != NULL) {
+        if (parser->is_utf16 != 0) {
+            while (NuFParGetLineW(parser) != 0) {
+                i32 index = NuFParGetInt(parser);
+                if (index > 0 && index < count && NuFParGetWordW(parser) > 0) {
+                    u16 *word = (u16 *)parser->word_buffer_ptr;
+                    table[index] = (char *)out;
+                    while (*word != 0) {
+                        out = NuUTF8CharFromUnicode(out, *word++);
+                    }
+                    *out++ = '\0';
+                }
+            }
+        } else {
+            while (NuFParGetLine(parser) != 0) {
+                i32 index = NuFParGetInt(parser);
+                char *word;
+                i32 length;
+                i32 i;
+
+                if (index <= 0 || index >= count || NuFParGetWord(parser) <= 0) {
+                    continue;
+                }
+
+                word = parser->word_buffer_ptr;
+                if (parser->is_utf8 != 0) {
+                    if (NuStrICmp(word, TextPlatform360) == 0 || NuStrICmp(word, TextPlatformGameCube) == 0 ||
+                        NuStrICmp(word, TextPlatformPS2) == 0 || NuStrICmp(word, TextPlatformPS3) == 0 ||
+                        NuStrICmp(word, TextPlatformPSP) == 0 || NuStrICmp(word, TextPlatformWii) == 0 ||
+                        NuStrICmp(word, TextPlatformXbox) == 0) {
+                        continue;
+                    }
+                    if (NuStrICmp(word, TextPlatformPC) == 0) {
+                        NuFParGetWord(parser);
+                    }
+                    word = parser->word_buffer_ptr;
+                    length = NuStrLen(word);
+                    table[index] = (char *)out;
+                    NuStrCpy((char *)out, word);
+                    out += length + 1;
+                } else {
+                    length = NuStrLen(word);
+                    table[index] = (char *)out;
+                    for (i = 0; i < length; ++i) {
+                        u8 character = (u8)word[i];
+                        if (character < 0x80) {
+                            *out++ = character;
+                        } else {
+                            out = NuUTF8CharFromUnicode(out, character);
+                        }
+                    }
+                    *out++ = '\0';
+                }
+            }
+        }
+
+        NuFParDestroy(parser);
+    }
+
+    *buffer = out;
 }
 
 void Text_DecodeButtons(char *source, char *destination) {

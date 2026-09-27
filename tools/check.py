@@ -70,6 +70,13 @@ def check_objects(objects, records, target):
         for name, symbols in sorted(definitions.items()):
             context = f"{unit}: {name!r}"
             if len(symbols) != 1:
+                # MSVC reuses $LN jump-table labels across separate functions.
+                # They are local implementation details only when every copy
+                # falls inside a mapped function's complete compiled extent.
+                if (re.fullmatch(r"\$LN\d+", name) and
+                        all(compiler_label_inside_mapped_function(obj, symbol, definitions, rows_by_name)
+                            for symbol in symbols)):
+                    continue
                 errors.append(f"{context}: ambiguous COFF name ({len(symbols)} definitions); "
                               "give distinct objects distinct reconstruction names")
                 continue

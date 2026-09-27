@@ -170,6 +170,40 @@ LEVELDATA_PC *__cdecl Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out) {
     return NULL;
 }
 
+LEVELDATA_PC *__cdecl Area_FindNextPlayLevel(i32 level_index) {
+    LEVELDATA_PC *level;
+    LEVELDATA_PC *result;
+    i32 area_index;
+    i32 area_level_index;
+
+    level = &LDataList[level_index];
+    area_index = level->area_index;
+    area_level_index = level->area_level_index;
+    result = level;
+    if (area_index != -1) {
+        AREA_DATA_PC *area;
+
+        area = &ADataList[area_index];
+        if (area_level_index < area->level_count - 1) {
+            result = &LDataList[area->levels[area_level_index]];
+            if ((result->flags & 0xe0) != 0) {
+                i32 index;
+
+                for (index = area_level_index; index != area->level_count - 2; ++index) {
+                    LEVELDATA_PC *candidate;
+
+                    candidate = &LDataList[area->levels[index + 1]];
+                    if ((candidate->flags & 0xe0) == 0) {
+                        return candidate;
+                    }
+                }
+                return level;
+            }
+        }
+    }
+    return result;
+}
+
 void __cdecl SuperCounters_Reset(i32 area_index) {
     if (area_index != -1) {
         AREA_DATA_PC *area;
@@ -182,6 +216,48 @@ void __cdecl SuperCounters_Reset(i32 area_index) {
             for (index = 0; index < area->super_counter_count; ++index) {
                 super_counters[index].collected_count = 0;
             }
+        }
+    }
+}
+
+AREA_SUPERCOUNTER_PC *__cdecl SuperCounter_FindFromNameAndLevel(char *name, WORLDINFO *world,
+                                                                AREA_SUPERCOUNTER_PICKUP_PC **pickup_out) {
+    AREA_SUPERCOUNTER_PC *counter;
+    i32 counter_index;
+
+    if (world->area != NULL && world->area->super_counters != NULL) {
+        counter = world->area->super_counters;
+        for (counter_index = 0; counter_index < world->area->super_counter_count; ++counter_index, ++counter) {
+            i32 pickup_index;
+
+            for (pickup_index = 0; pickup_index < counter->pickup_count; ++pickup_index) {
+                AREA_SUPERCOUNTER_PICKUP_PC *pickup;
+
+                pickup = &counter->pickups[pickup_index];
+                if (pickup->level_index == world->level_idx && NuStrICmp(pickup->name, name) == 0) {
+                    if (pickup_out != NULL) {
+                        *pickup_out = pickup;
+                    }
+                    return counter;
+                }
+            }
+        }
+    }
+
+    if (pickup_out != NULL) {
+        *pickup_out = NULL;
+    }
+    return NULL;
+}
+
+void __cdecl SuperCounters_ResetProcessed(WORLDINFO *world) {
+    AREA_SUPERCOUNTER_PC *super_counters;
+    i32 index;
+
+    if (world->area != NULL && world->area->super_counters != NULL && world->area->super_counter_count != 0) {
+        super_counters = world->area->super_counters;
+        for (index = 0; index < world->area->super_counter_count; ++index) {
+            super_counters[index].processed_flags &= (u8)~2;
         }
     }
 }
