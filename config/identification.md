@@ -129,8 +129,9 @@ The map uses reconstruction names `_NuMain` and `_WinMain@16`, with explicit C
 linkage and the observed calling conventions. These are names emitted by our
 declarations, not spellings recovered from the stripped original. The current
 source entry path implements the first two PC calls, `NuCommandLine` and
-`WorldInfo_InitOnce`, then returns. `InitOnce` and the rest of the game loop
-remain unfinished; the complete `NuMain` and `WinMain` extents do not match.
+`WorldInfo_InitOnce`, then returns. The additional exact leaf matches below do not
+complete that path: `InitOnce` and the rest of the game loop remain unfinished, and
+the complete `NuMain` and `WinMain` extents do not match.
 
 The [data inventory](data.md) records reconstructed constants, shared state,
 type/extent evidence and the remaining data coverage.
@@ -166,6 +167,26 @@ must be taken from the PC instructions, never resolved by copying Android types.
 | `0x0065f4e0` | `edGraDisableTerrainSwap` | 1 | Same source; paired calls around `NuFrameEnd` establish identity. |
 | `0x0065f4f0` | `edGraInitTerrainSwapProtection` | 1 | Same source; PC call immediately follows `MenuReset`. |
 | `0x006dd390` | `NuWindowsProcessMessages` | 97 | Descriptive reconstruction name; SDK `PeekMessageA`, `TranslateMessage`, `DispatchMessageA`. |
+
+## Additional exact leaf matches
+
+The following functions were compiled with VC8 and compared over their complete
+PC extents after relocation. They add verified dependencies without completing
+`NuMain` or identifying `InitOnce`.
+
+| PC VA | Function | Bytes | Evidence |
+| --- | --- | ---: | --- |
+| `0x005c9130` | `NuPause` | 11 | Pause/resume callers pass 1/0; Android stores the integer as `f32` in `nu2api_paused` (`nucore_plain.cpp`). |
+| `0x005c9ff0` | `NuRegisterEndFrameCallBackFn` | 10 | Android stores a `void (*)(void)` callback; PC frame-end consumers invoke the stored pointer. |
+| `0x004f4fc0`–`0x004f5120` | Video accessors and setters, rolling-rate reset | 1–68 | `nuvideo.c`; six mapped functions at `0x004f4fc0`, `0x004f4fd0`, `0x004f4fe0`, `0x004f5100`, `0x004f5110`, and `0x004f5120` match exactly. |
+| `0x00697a30`–`0x00698a00` | Sound reverb, rumble, loop and hold-time helpers | 1–22 | `nusound.c`; all five mapped functions match exactly. |
+| `0x005d9030` | `NuPortalInit` | 34 | Initializes PC portal stack boundaries from the mapped `fstack` range. |
+| `0x0055f430`–`0x0055f500` | WorldInfo initialization, accessors and `WorldInfo_OtherLevel` | 6–36 | `world.c`; all four mapped functions match against PC world records and fields. |
+
+The PC stores `nu2api_paused` as a four-byte float, and the frame-end code
+indirectly calls the four-byte callback pointer. Android's declarations confirm
+the corresponding types; these mappings use standalone data addresses, with no
+aggregate-offset casts.
 
 WorldInfo occupies two records starting at `0x0093d878` and `0x00942a24`.
 Their stride is `0x51ac`, four bytes less than Android's record. The shared

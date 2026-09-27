@@ -60,18 +60,26 @@ typedef union variptr_u {
 } VARIPTR;
 STATIC_ASSERT(sizeof(VARIPTR) == 4);
 
+#define NU_PORTAL_STACK_SIZE 0x3000
+
 // Only fields with confirmed PC offsets are exposed.
 typedef struct WORLDINFO_s {
     u32 unknown_0000[0x40];
     void *buffer_start;
     VARIPTR giz_buffer;
     VARIPTR buffer_end;
-    u32 unknown_010c[0x1428];
+    u32 unknown_010c;
+    i32 loaded;
+    u32 unknown_0114[2];
+    i32 level_idx;
+    u32 unknown_0120[0x1423];
 } WORLDINFO;
 STATIC_ASSERT(sizeof(WORLDINFO) == 0x51ac);
 STATIC_ASSERT(offsetof(WORLDINFO, buffer_start) == 0x100);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
 STATIC_ASSERT(offsetof(WORLDINFO, buffer_end) == 0x108);
+STATIC_ASSERT(offsetof(WORLDINFO, loaded) == 0x110);
+STATIC_ASSERT(offsetof(WORLDINFO, level_idx) == 0x11c);
 
 typedef struct NUKEYCHAR_s {
     u32 key;
@@ -83,9 +91,41 @@ STATIC_ASSERT(sizeof(NUKEYCHAR) == 8);
 STATIC_ASSERT(offsetof(NUKEYCHAR, normal) == 4);
 STATIC_ASSERT(offsetof(NUKEYCHAR, shifted) == 5);
 
+typedef struct NuTime_s {
+    u32 low;
+    u32 high;
+} NuTime;
+STATIC_ASSERT(sizeof(NuTime) == 8);
+
+typedef struct nuapi_s {
+    u8 unknown_0000[4];
+    i32 language;
+    i32 video_mode;
+    i32 video_swap_mode;
+    i32 video_aspect;
+    u8 unknown_0014[8];
+    i32 video_is_pal;
+    u8 unknown_0020[0x5c];
+    i32 reversible_characters;
+    u8 unknown_0080[4];
+    i32 force_shadows_on_characters;
+    u8 unknown_0088[4];
+    f32 video_brightness;
+} NUAPI;
+STATIC_ASSERT(sizeof(NUAPI) == 0x90);
+STATIC_ASSERT(offsetof(NUAPI, language) == 4);
+STATIC_ASSERT(offsetof(NUAPI, video_mode) == 8);
+STATIC_ASSERT(offsetof(NUAPI, video_swap_mode) == 0xc);
+STATIC_ASSERT(offsetof(NUAPI, video_aspect) == 0x10);
+STATIC_ASSERT(offsetof(NUAPI, video_is_pal) == 0x1c);
+STATIC_ASSERT(offsetof(NUAPI, reversible_characters) == 0x7c);
+STATIC_ASSERT(offsetof(NUAPI, force_shadows_on_characters) == 0x84);
+STATIC_ASSERT(offsetof(NUAPI, video_brightness) == 0x8c);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
     int __cdecl NuMain(int argc, char **argv);
     void __cdecl NuCommandLine(i32 *__restrict argc, char ***__restrict argv);
     NUDATHDR *__cdecl NuDatSet(NUDATHDR *header);
@@ -93,6 +133,48 @@ extern "C" {
     extern i32 argc;
     extern char **argv;
     extern NUDATHDR *curr_dat;
+    extern NUAPI nuapi;
+    extern void *Game_NuPad_Store[2];
+    extern void **Game_NuPad;
+    extern void *NuTimeBar_SetList[16];
+    extern i32 NuTimeBar_Initialised;
+    extern i64 NuTime_TickBase;
+    void __cdecl NuTimeGetTicksPS(u32 *low, u32 *high);
+    void __cdecl NuTimeGet(NuTime *time);
+    void __cdecl NuTimeBarSlotReset(i32 set, i32 slot);
+    void __cdecl _NuTimeBarSlotBegin(i32 set, i32 slot, const char *name);
+    i32 __cdecl NuVideoGetMode(void);
+    void __cdecl NuVideoSetMode(i32 mode);
+    i32 __cdecl NuVideoGetAspect(void);
+    i32 __cdecl NuVideoGetSwapMode(void);
+    void __cdecl NuVideoRollingFrameRateReset(void);
+    void __cdecl NuVideoSetBrightnessPS(void);
+    void __cdecl NuVideoSetBrightness(f32 brightness);
+    i32 __cdecl NuLanguageGet(void);
+    void __cdecl NuLanguageSet(i32 language);
+    i32 __cdecl NuHGobjReversibleCharacters(i32 enabled);
+    i32 __cdecl NuHGobjForceShadowsOnCharacters(i32 enabled);
+    extern u8 NuSound3Reverb;
+    extern const f64 NuSound3LoopHoldTimeMultiplier;
+    extern i32 NuSound3LoopHoldTime;
+    i32 __cdecl NuSound3SetReverb(i32 enable);
+    void __cdecl NuSound3SetLoopHoldTime(f32 time);
+    void __cdecl NuSound3FlushLoops(void);
+    void __cdecl NuSound3StopRumble(void);
+    void __cdecl NuSound3SetRumblePads(void *pad0, void *pad1);
+    extern i32 nu_water_reset_state;
+    extern i32 nu_water_reset_status;
+    void __cdecl NuWaterReset(void);
+    extern u8 fstackmem[NU_PORTAL_STACK_SIZE];
+    extern VARIPTR fstack;
+    extern VARIPTR fstack_top;
+    extern VARIPTR fstack_limit;
+    void __cdecl NuPortalInit(void);
+    extern void (*nuapi_endframe_callbackfn)(void);
+    void __cdecl NuRegisterEndFrameCallBackFn(void (*callback)(void));
+    void __cdecl NuMouseRead(void);
+    void __cdecl NuPause(i32 paused);
+    i32 __cdecl NuKeyToAscii(u32 key, i32 shifted);
     extern WORLDINFO WorldInfo[2];
     extern WORLDINFO *WORLD;
     extern WORLDINFO *LWORLD;
@@ -170,6 +252,7 @@ extern "C" {
     void __cdecl WorldInfo_InitOnce(void);
     WORLDINFO *__cdecl WorldInfo_CurrentlyActive(void);
     WORLDINFO *__cdecl WorldInfo_CurrentlyLoading(void);
+    i32 __cdecl WorldInfo_OtherLevel(WORLDINFO *world);
     void __cdecl edGraEnableTerrainSwap(void);
     void __cdecl edGraDisableTerrainSwap(void);
     void __cdecl edGraInitTerrainSwapProtection(void);
@@ -190,15 +273,20 @@ extern "C" {
     extern u32 NuWindQS;
     extern u32 partseed;
     extern u32 debrisseed;
+    extern f32 debris_time_increment;
+    extern i32 DebrisCutSceneMode;
+    void __cdecl DebrisSetCutSceneMode(i32 enabled);
     u32 __cdecl NuWindRand(void);
     void __cdecl NuPartSetSeed(i32 seed);
     u32 __cdecl NuPartGetSeed(void);
     void __cdecl DebrisSetSeed(i32 seed);
     u32 __cdecl DebrisGetSeed(void);
+    void __cdecl DebrisSetTimeIncrement(f32 increment);
 
     NUANG __cdecl NuAngAdd(NUANG a, NUANG b);
     NUANG __cdecl NuAngSub(NUANG a, NUANG b);
     void __cdecl NuAng2AltSol(NUANG *out_x, NUANG *out_y, NUANG *out_z, NUANG x, NUANG y, NUANG z);
+
 #ifdef __cplusplus
 }
 
@@ -208,6 +296,13 @@ i32 __cdecl qrand(void);
 i32 __cdecl getqseed(void);
 extern i32 GAMERAND;
 void __cdecl ResetSeeds(void);
+extern i32 SUPERBUFFERSIZE;
+extern VARIPTR original_permbuffer_base;
+extern void *pNuCam;
+extern i32 app_tbgameset;
+extern i32 app_tbplayerset;
+extern i32 app_tbaiset;
+extern i32 app_tbdrawset;
 #endif
 
 #endif

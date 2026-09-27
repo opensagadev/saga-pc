@@ -15,14 +15,20 @@ than treating an older handoff's counts or commit ID as current state.
 
 ## Agent coordination and continuation
 
-- Use at most **two subagents per task**, reuse them, and allow no nested delegation
-  unless the user requests a different arrangement. The main agent must also analyze and
-  implement a concrete part of the reconstruction. Keep delegated work on the
-  user-selected model; for a GPT-6 Sol workflow, use Sol for subagents too.
+- Use Luna subagents in parallel for bounded research and implementation when
+  useful; keep the main agent responsible for code integration and final PC
+  verification. Reuse agents, avoid nested delegation, and have the main agent
+  analyze and implement concrete reconstruction work too. Use Sol for tasks
+  that require deeper reasoning when it materially helps.
 - Give each subagent a bounded function/dependency or data task, exclusive file
   ownership, and an explicit instruction to read this skill. Require PC identity,
   type/ABI and complete-extent evidence, proposed map/header changes, and actual
   compilation/comparison results. An unverified candidate remains a candidate.
+- Assign ownership by subsystem and consolidate related C routines into one
+  translation unit, such as `nuframe.c`, `nusound.c`, or `nuvideo.c`. Keep a
+  separate unit only when the original codegen needs a real cross-unit call or
+  the routine belongs to a different subsystem. Recompile and compare after
+  consolidation because MSVC may change code generation.
 - The main agent integrates `src/saga.h`, `src/externals.h`, `config/symbols.csv`,
   `matching.json` and README badges. Assign `src/data.cpp` to one writer at a time.
   Subagents hand off findings and owned source edits; the main agent runs aggregate
@@ -57,6 +63,10 @@ than treating an older handoff's counts or commit ID as current state.
   may use subsystem directories, but keep both headers directly in `src/`.
   Avoid repetitive file-header comments; keep source attribution in the docs.
   Preserve C++ linkage where the map uses it.
+- Access aggregate members through named typed fields and assert their PC
+  offsets with `STATIC_ASSERT`. Never cast an aggregate to bytes and access a
+  numeric offset to bypass layout verification. Keep genuine C/C++ as the
+  implementation; assembly copied or transcribed from retail is not a match.
 - Use VC8's native C++98/03-era dialect with MS extensions. It has no `/std` switch;
   do not infer full C++03 conformance from the era or impose an artificial strict
   C++98 mode. Follow constructs accepted by the pinned compiler and check output.

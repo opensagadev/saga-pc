@@ -88,6 +88,11 @@ and identification evidence in the documentation instead of repeated file-header
 comments. Record identification evidence and uncertainty
 in [config/symbols.md](config/symbols.md).
 
+Keep related C routines in one subsystem translation unit, such as `nuframe.c`,
+`nusound.c`, or `nuvideo.c`. Use named aggregate fields with asserted PC offsets;
+do not access members through byte-offset casts. Recompile and compare complete
+functions after moving code between units, since MSVC may inline or fold calls.
+
 See [the identification guide](config/identification.md) for recovering PC
 function boundaries, matching Android call/data relationships, and defining
 typed data. It includes a worked seed-initialization example and explains

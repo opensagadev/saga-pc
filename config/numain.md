@@ -1,10 +1,11 @@
 # NuMain investigation queue
 
 The original PC `NuMain` is at `0x00492b40`, with a complete 4,332-byte extent.
-[Identification notes](identification.md) explain its entry chain and the first
-implemented dependencies. The following names are **research candidates**, not
-additional accepted mappings or matches. Promote an entry into `symbols.csv`
-only after reviewing the callee, its complete boundary and the type/ABI.
+[Identification notes](identification.md) explain its entry chain and implemented
+dependencies. Treat each row as a queue item: `symbols.csv` holds accepted
+identities, while local exact comparisons are recorded separately. Unresolved
+names remain candidates until the callee, complete boundary and type/ABI are
+reviewed.
 
 Android `src/batman.cpp` and the named original Android ELF supplied correlations;
 the PC call order, instructions and data references determine whether they apply.
@@ -14,9 +15,10 @@ helper receives its world pointer in ESI, so its inferred decompiler signature
 cannot be used as a public interface without further work.
 
 The next unresolved startup dependency is `InitOnce` at `0x004011e0`. The current
-source entry deliberately returns after the two implemented startup calls.
-Port the real dependencies before extending that execution path; keep missing
-references fatal when linking.
+source entry still returns after its first two implemented startup calls. The
+additional exact leaf matches documented in [identification.md](identification.md)
+do not complete `NuMain` or close the `InitOnce` gap. Keep missing references fatal
+when linking.
 
 ## Direct-call candidates
 
@@ -114,7 +116,7 @@ The first call site and multiplicity are from the complete PC NuMain extent.
 | `0x005b11b0` | `FadeSystem::SetStage` | `0x00493271` | 1 | 44 | 1 |
 | `0x005b1220` | `FadeSystem::SetFade` | `0x00493266` | 1 | 47 | 1 |
 | `0x005b2510` | `Movie_Play` | `0x00492ce5` | 2 | 384 | 1 |
-| `0x005c9130` | `UNKNOWN` | `0x00493236` | 2 | 11 | 1 |
+| `0x005c9130` | `NuPause` | `0x00493236` | 2 | 11 | 1 |
 | `0x005d8370` | `NuTimeBarSlotReset` | `0x004933f3` | 1 | 131 | 1 |
 | `0x005d8400` | `_NuTimeBarSlotBegin` | `0x00493400` | 1 | 54 | 1 |
 | `0x005dabd0` | `NuHGobjReversibleCharacters` | `0x00492c2d` | 1 | 16 | 1 |

@@ -1,0 +1,46 @@
+#include "saga.h"
+
+i32 NuVideoGetMode(void) {
+    return nuapi.video_mode;
+}
+
+void NuVideoSetMode(i32 mode) {
+    nuapi.video_mode = mode;
+    switch (mode) {
+        case 3:
+        case 4:
+            nuapi.video_is_pal = 1;
+            break;
+        case 2:
+        case 5:
+        case 6:
+            nuapi.video_is_pal = 0;
+            break;
+        default:
+            break;
+    }
+}
+
+i32 NuVideoGetAspect(void) {
+    return nuapi.video_aspect;
+}
+
+i32 NuVideoGetSwapMode(void) {
+    return nuapi.video_swap_mode;
+}
+
+void NuVideoRollingFrameRateReset(void) {
+}
+
+void NuVideoSetBrightness(f32 brightness) {
+    nuapi.video_brightness = brightness;
+    NuVideoSetBrightnessPS();
+}
+
+i32 NuLanguageGet(void) {
+    return nuapi.language;
+}
+
+void NuLanguageSet(i32 language) {
+    nuapi.language = language;
+}

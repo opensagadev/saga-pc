@@ -83,6 +83,20 @@ class ObjectChecksTests(unittest.TestCase):
         result = self.check({"src/data.cpp": obj}, [row("_data", DATA, 4)])
         self.assertEqual(result["data"], 1)
 
+    def test_compiler_jump_table_label_inside_function_needs_no_data_mapping(self):
+        def with_label(size):
+            raw = coff_bytes(b"\x90\xc3", total_size=size)
+            count = struct.unpack_from("<I", raw, 12)[0]
+            insert_at = struct.unpack_from("<I", raw, 8)[0] + count * 18
+            raw[insert_at:insert_at] = struct.pack("<8sIhHBB", b"$LN8", 1, 1, 0, 3, 0)
+            struct.pack_into("<I", raw, 12, count + 1)
+            return self.obj(raw, f"jump_table_{size}")
+
+        result = self.check({"src/video.c": with_label(2)}, [row("_f", size=2)])
+        self.assertEqual((result["functions"], result["data"]), (1, 0))
+        with self.assertRaisesRegex(ValueError, "'\\$LN8': missing data mapping"):
+            self.check({"src/video.c": with_label(1)}, [row("_f", size=1)])
+
     def test_unreferenced_common_definition_requires_known_mapping(self):
         objects = {"src/common.c": self.obj(object_common(), "common")}
         with self.assertRaisesRegex(ValueError, "src/common.c: '_data': missing data mapping"):

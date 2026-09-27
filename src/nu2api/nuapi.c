@@ -5,3 +5,6 @@ void __cdecl NuCommandLine(i32 *__restrict count, char ***__restrict arguments) 
     argc = *count;
     argv = *arguments;
 }
+
+void NuVideoSetBrightnessPS(void) {
+}

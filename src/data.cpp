@@ -50,6 +50,48 @@ i32 hub_from_arcade = -1;
 i32 UsePlayerList;
 i32 Door_UseCutCam;
 
+i32 SUPERBUFFERSIZE = 0x09600000;
+VARIPTR original_permbuffer_base;
+extern "C" {
+    void *Game_NuPad_Store[2];
+    void **Game_NuPad;
+    void *NuTimeBar_SetList[16];
+    i32 NuTimeBar_Initialised;
+
+    // PC debris timing uses a single-precision 1/60-second step.
+    f32 debris_time_increment = 1.0f / 60.0f;
+
+// PC NuSound3 state and loop-hold conversion constants.
+#pragma bss_seg(".bss$NuSound3Reverb")
+    u8 NuSound3Reverb;
+#pragma bss_seg()
+    extern const f64 NuSound3LoopHoldTimeMultiplier = 1000.0;
+    i32 NuSound3LoopHoldTime = 133;
+
+// NuWaterReset writes these standalone four-byte PC globals.
+#pragma bss_seg(".bss$NuWaterResetState")
+    i32 nu_water_reset_state;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuWaterResetStatus")
+    i32 nu_water_reset_status;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuTimeTickBase")
+    i64 NuTime_TickBase;
+#pragma bss_seg()
+    void (*nuapi_endframe_callbackfn)(void);
+    u8 fstackmem[NU_PORTAL_STACK_SIZE];
+    VARIPTR fstack;
+    VARIPTR fstack_top;
+    VARIPTR fstack_limit;
+    i32 DebrisCutSceneMode;
+}
+void *pNuCam;
+i32 app_tbgameset;
+i32 app_tbplayerset;
+i32 app_tbaiset;
+i32 app_tbdrawset;
+NUAPI nuapi;
+
 i32 GAMERAND = 0x1f3ad27f;
 u32 NuWindQS = 0x1365;
 u32 partseed = 0x5c0999;

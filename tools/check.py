@@ -17,6 +17,27 @@ else:
     from lib import ROOT, bindings_for, changed_trees, compiled_objects, load_json, load_symbols, map_errors, mapping_progress, number, project, retail
 
 
+def compiler_label_inside_mapped_function(obj, symbol, definitions, rows_by_name):
+    """A compiler jump-table label within a mapped function is not standalone data."""
+    if (symbol["storage_class"] != 3 or not re.fullmatch(r"\$LN\d+", symbol["name"])
+            or symbol["section"] <= 0):
+        return False
+    section = obj.sections[symbol["section"] - 1]
+    if not section["characteristics"] & 0x20:
+        return False
+    for candidate in definitions.values():
+        if len(candidate) != 1:
+            continue
+        function = candidate[0]
+        if (function["section"] != symbol["section"] or not function["type"] & 0x20
+                or function["name"] not in rows_by_name):
+            continue
+        extent = obj.extract_function(function["name"])
+        if extent["offset"] <= symbol["value"] < extent["offset"] + extent["size"]:
+            return True
+    return False
+
+
 def check_objects(objects, records, target):
     """Require every compiled function/data definition to have one usable map row.
 
@@ -53,6 +74,8 @@ def check_objects(objects, records, target):
                               "give distinct objects distinct reconstruction names")
                 continue
             symbol = symbols[0]
+            if compiler_label_inside_mapped_function(obj, symbol, definitions, rows_by_name):
+                continue
             kind = "function" if symbol["type"] & 0x20 else "data"
             if name.startswith(("__imp_", "_saga_import_")):
                 errors.append(f"{context}: imported address slots must remain external declarations")
