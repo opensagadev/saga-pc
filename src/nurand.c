@@ -1,8 +1,5 @@
-// See LICENSE (GNU GPL version 3).
-// Adapted from opensagadev/saga: src/nu2api/numath/nurand.cpp.
 #include "saga.h"
 
-extern "C" {
 u32 fseed;
 static NURAND global_rand = {1};
 
@@ -75,5 +72,4 @@ u32 NuRandGetSeed(void) {
 
 f32 NuFloatRand(NURAND *rand) {
     return NuRand(rand) / 2.1474836e+09f;
-}
 }

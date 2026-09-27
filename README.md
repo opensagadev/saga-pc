@@ -1,7 +1,7 @@
 # saga-pc
 
 <!-- matching-badge -->
-![matching](https://img.shields.io/badge/match%20progress-0.013%25-red)<!-- /matching-badge --> <!-- mapping-badge -->![mapping](https://img.shields.io/badge/mapping-0.032%25-red)<!-- /mapping-badge --> [![build](https://img.shields.io/github/actions/workflow/status/opensagadev/saga-pc/build.yml?branch=main&label=build)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
+![matching](https://img.shields.io/badge/match%20progress-0.026%25-red)<!-- /matching-badge --> <!-- mapping-badge -->![mapping](https://img.shields.io/badge/mapping-0.140%25-red)<!-- /mapping-badge --> [![build](https://img.shields.io/github/actions/workflow/status/opensagadev/saga-pc/build.yml?branch=main&label=build)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 **saga-pc** is a matching decompilation of the GOG PC release of
 *LEGO Star Wars: The Complete Saga*.

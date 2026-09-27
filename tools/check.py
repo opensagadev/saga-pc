@@ -2,16 +2,19 @@
 """Check project inputs and compiled symbol coverage without the retail EXE."""
 import argparse
 import json
+import os
 from pathlib import Path
+import re
+import shutil
 import subprocess
 import sys
 
 if __package__:
     from .binary import relocate_data, relocate_function
-    from .lib import ROOT, bindings_for, compiled_objects, load_symbols, map_errors, mapping_progress, number, project, retail
+    from .lib import ROOT, bindings_for, changed_trees, compiled_objects, load_json, load_symbols, map_errors, mapping_progress, number, project, retail
 else:
     from binary import relocate_data, relocate_function
-    from lib import ROOT, bindings_for, compiled_objects, load_symbols, map_errors, mapping_progress, number, project, retail
+    from lib import ROOT, bindings_for, changed_trees, compiled_objects, load_json, load_symbols, map_errors, mapping_progress, number, project, retail
 
 
 def check_objects(objects, records, target):
@@ -128,12 +131,93 @@ def check_headers():
         raise ValueError("Project headers must be src/saga.h and optional src/externals.h")
 
 
+def clang_tool(name):
+    variable = name.upper().replace("-", "_")
+    candidates = [os.environ[variable]] if variable in os.environ else [name + "-18", name]
+    tool = next((path for candidate in candidates if (path := shutil.which(candidate))), None)
+    if tool is None:
+        raise ValueError(f"{name} 18 or newer is required; install {name}-18 or set {variable}")
+    version = subprocess.check_output([tool, "--version"], text=True, timeout=30)
+    match = re.search(r"(?:clang-format|LLVM) version (\d+)\.", version)
+    if not match or int(match[1]) < 18:
+        raise ValueError(f"{name} 18 or newer is required; {tool} reports {version.strip()!r}")
+    return tool
+
+
+def source_files(headers=False):
+    suffixes = {".c", ".cpp", ".h"} if headers else {".c", ".cpp"}
+    return sorted(path.relative_to(ROOT).as_posix() for path in (ROOT / "src").rglob("*")
+                  if path.is_file() and path.suffix in suffixes)
+
+
+def check_format():
+    tool = clang_tool("clang-format")
+    if not (ROOT / ".clang-format").is_file():
+        raise ValueError("Missing .clang-format policy")
+    files = source_files(headers=True)
+    subprocess.run([tool, "--style=file", "--fallback-style=none", "--dry-run", "--Werror", *files],
+                   cwd=ROOT, check=True, timeout=120)
+    print(f"Formatting checked for {len(files)} source/header files.")
+
+
+def check_tidy():
+    tool = clang_tool("clang-tidy")
+    if not (ROOT / ".clang-tidy").is_file():
+        raise ValueError("Missing .clang-tidy policy")
+    compiler = ROOT / "build/tools/msvc8"
+    pin = load_json(ROOT / "config/toolchain.json")
+    changed = changed_trees(compiler, pin["trees"])
+    if changed:
+        raise ValueError(f"Missing or changed compiler headers/libraries: {', '.join(changed)}; run make setup")
+    include_dirs = [compiler / "include", compiler / "PlatformSDK/Include"]
+    # Windows SDK includes assume case-insensitive filenames. Point Clang's VFS
+    # at the verified originals without changing their contents or the host SDK.
+    overlay = ROOT / "build/lint/headers.json"
+    overlay.parent.mkdir(parents=True, exist_ok=True)
+    overlay.write_text(json.dumps({"version": 0, "case-sensitive": False, "roots": [
+        {"type": "file", "name": str(path), "external-contents": str(path)}
+        for directory in include_dirs for path in sorted(directory.rglob("*")) if path.is_file()
+    ]}) + "\n")
+    flags = ["--target=i686-pc-windows-msvc", "-fms-extensions", "-fms-compatibility",
+             "-fms-compatibility-version=14.00", "-nostdinc", "-D_MT", "-Isrc"]
+    for directory in include_dirs:
+        flags.extend(["-isystem", str(directory)])
+    # VC8's SDK declares these using LONG*, while Clang's modern intrinsic uses
+    # volatile LONG*. Rename only the analysis declarations, retaining SDK types.
+    flags += ["-D_interlockedbittestandset=saga_clang_interlockedbittestandset",
+              "-D_interlockedbittestandreset=saga_clang_interlockedbittestandreset"]
+    env = dict(os.environ)
+    for name in ("CPATH", "C_INCLUDE_PATH", "CPLUS_INCLUDE_PATH", "OBJC_INCLUDE_PATH",
+                 "INCLUDE", "CL", "_CL_"):
+        env.pop(name, None)
+    files, failures = source_files(), []
+    for source in files:
+        language = ["-x", "c++", "-std=c++98", "-fdelayed-template-parsing"] if source.endswith(".cpp") else [
+            "-x", "c", "-std=c89"]
+        result = subprocess.run([tool, "--quiet", "--config-file=" + str(ROOT / ".clang-tidy"),
+                                 "--vfsoverlay=" + str(overlay), source, "--", *flags, *language],
+                                cwd=ROOT, env=env, timeout=120)
+        if result.returncode:
+            failures.append(source)
+    if failures:
+        raise ValueError("clang-tidy failed for: " + ", ".join(failures))
+    print(f"Clang-tidy checked {len(files)} units with the Windows x86 SDK and project policy.")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--inspect", action="store_true", help="Inspect the optional local retail executable")
     mode.add_argument("--objects", action="store_true", help="Check compiled symbols and relocations against the map")
+    mode.add_argument("--format", action="store_true", help="Check C/C++ source and header formatting")
+    mode.add_argument("--tidy", action="store_true", help="Analyze C/C++ using the original Windows x86 SDK")
     args = parser.parse_args()
+    if args.format:
+        check_format()
+        return
+    if args.tidy:
+        check_tidy()
+        return
     config = project()
     if args.inspect:
         pe = retail(config["target"])

@@ -355,6 +355,15 @@ def object_data(data=b"", bss_size=None, next_symbol=None, relocations=(), code=
     return result
 
 
+def object_common(size=4, name="_data", typ=0):
+    """A common allocation and an ordinary declaration, without data sections."""
+    result = bytearray(struct.pack("<HHIIIHH", 0x14c, 0, 0, 20, 2, 0, 0))
+    result += struct.pack("<8sIhHBB", name.encode(), size, 0, typ, 2, 0)
+    result += struct.pack("<8sIhHBB", b"_ref", 0, 0, 0, 2, 0)
+    result += struct.pack("<I", 4)
+    return result
+
+
 class DataMatchTests(unittest.TestCase):
     def setUp(self):
         temporary = tempfile.TemporaryDirectory()
@@ -388,6 +397,34 @@ class DataMatchTests(unittest.TestCase):
         self.prepare(b"", virtual_size=size, bss_size=size)
         self.assertLess(self.obj.stat().st_size, size)
         self.assertTrue(self.compare(size)["exact_match"])
+
+    def test_common_allocation_matches_zero_initializer_with_its_complete_size(self):
+        self.exe.write_bytes(image(b"", virtual_size=8))
+        self.obj.write_bytes(object_common(4))
+        region = COFF(self.obj).extract_data("_data")
+        self.assertEqual((region["bytes"], region["size"], region["offset"]), (bytes(4), 4, 0))
+        self.assertEqual(region["size_source"], "COFF common Value")
+        self.assertIsNone(region["section"])
+        self.assertEqual(region["relocations"], [])
+        self.assertTrue(self.compare(4)["exact_match"])
+        for size in (3, 8):
+            with self.subTest(size=size):
+                self.assertFalse(self.compare(size)["exact_match"])
+        self.exe.write_bytes(image(b"\x01\0\0\0"))
+        self.assertFalse(self.compare(4)["exact_match"])
+        with self.assertRaisesRegex(BinaryError, "not a COFF function"):
+            COFF(self.obj).extract_function("_data")
+
+    def test_reference_to_common_uses_address_binding_not_allocation_size(self):
+        raw = object_data(bytes(4), relocations=[(0, 3, 6)])
+        symptr = struct.unpack_from("<I", raw, 8)[0]
+        struct.pack_into("<I", raw, symptr + 3 * 18 + 8, 16)  # _ref is now common.
+        self.obj.write_bytes(raw)
+        self.exe.write_bytes(image(struct.pack("<I", VA + 0x20)))
+        self.assertTrue(self.compare(4, {"_ref": VA + 0x20})["exact_match"])
+        self.assertFalse(self.compare(4, {"_ref": VA + 0x24})["exact_match"])
+        with self.assertRaisesRegex(BinaryError, "Missing binding"):
+            self.compare(4)
 
     def test_pe_partly_backed_data_zero_fills_tail(self):
         self.prepare(b"\x01\0", b"\x01\0\0\0", virtual_size=4)
@@ -504,13 +541,20 @@ class DefinitionTests(unittest.TestCase):
         struct.pack_into("<I", raw, 20 + 36, 0x40000840)  # LNK_REMOVE with data flags
         self.assertEqual(self.definitions(raw), [])
 
-    def test_undefined_common_and_absolute_symbols_are_excluded(self):
-        for section in (0, -1):
-            with self.subTest(section=section):
-                raw = object_data(bytes(4))
-                symptr = struct.unpack_from("<I", raw, 8)[0]
-                struct.pack_into("<Ih", raw, symptr + 2 * 18 + 8, 4, section)
+    def test_external_common_is_a_definition_but_ordinary_undefined_is_not(self):
+        self.assertEqual([s["name"] for s in self.definitions(object_common())], ["_data"])
+        self.assertEqual(self.definitions(object_common(0)), [])
+
+    def test_section_zero_nonexternal_and_absolute_symbols_are_excluded(self):
+        for section, storage in ((0, 3), (-1, 2), (-1, 3)):
+            with self.subTest(section=section, storage=storage):
+                raw = object_common()
+                struct.pack_into("<hHB", raw, 20 + 12, section, 0, storage)
                 self.assertEqual(self.definitions(raw), [])
+
+    def test_common_function_type_is_malformed(self):
+        with self.assertRaisesRegex(BinaryError, "common symbol cannot be a function"):
+            self.definitions(object_common(4, typ=0x20))
 
     def test_invalid_definition_section_and_offset_are_rejected(self):
         for value, section, message in ((0, 2, "section is out of bounds"),

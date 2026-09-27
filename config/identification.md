@@ -128,8 +128,66 @@ unreachable. The comparison extent includes internal padding and excludes the
 The map uses reconstruction names `_NuMain` and `_WinMain@16`, with explicit C
 linkage and the observed calling conventions. These are names emitted by our
 declarations, not spellings recovered from the stripped original. The current
-source stubs establish an executable entry path; their short bodies intentionally
-do not match these original extents or implement the game's startup behavior.
+source entry path implements the first two PC calls, `NuCommandLine` and
+`WorldInfo_InitOnce`, then returns. `InitOnce` and the rest of the game loop
+remain unfinished; the complete `NuMain` and `WinMain` extents do not match.
+
+The [data inventory](data.md) records reconstructed constants, shared state,
+type/extent evidence and the remaining data coverage.
+
+## Initial NuMain dependency reconstruction
+
+The PC body contains 147 direct call sites to 115 unique targets; Android has
+334 call sites to 251 targets. Its update block is a separate PC helper at
+`0x00491d50`; rendering is another at `0x004927f0` and receives the world pointer
+in ESI through a compiler-private calling convention. Do not treat the decompiler's
+`void(void)` rendering prototype as an externally callable ABI. These helpers
+still need reconstruction. The [NuMain investigation queue](numain.md) records the call/global candidates
+separately from accepted mappings until identities and extents are reviewed.
+
+PC startup opens six episode DAT archives after menu initialization. It also
+pumps Windows messages and handles `WM_QUIT`. Android analytics, mobile sound
+callbacks, extra-data loading, MechSystems initialization and five-frame time
+smoothing are absent. PC menu count is `0x17`; PC level records have stride
+`0x130` and an area-index byte at `+0xa3`, differing from Android. Such differences
+must be taken from the PC instructions, never resolved by copying Android types.
+
+| PC VA | Function | Bytes | Source reference or PC evidence |
+| --- | --- | ---: | --- |
+| `0x004f4060` | `NuCommandLine` | 24 | PC stores its two command-line cursors; Android's provider is empty. |
+| `0x004f0d40` | `NuDatSet` | 16 | `nu2api/nufile/nufile.cpp`; returns the previous archive selection. |
+| `0x004f0d50` | `NuDatGet` | 6 | Same source; NuMain saves/restores selection around episode loads. |
+| `0x005476e0` | `StartPerm` | 23 | `legogame/startup.cpp`; initializes permanent buffer cursors. |
+| `0x00547700` | `EndPerm` | 124 | Same source; reviewed PC offsets and integer alignment arithmetic. |
+| `0x0055f430` | `WorldInfo_InitOnce` | 21 | `legoapi/world/world.cpp`; clears exactly `0xa358` bytes. |
+| `0x0055f450` | `WorldInfo_CurrentlyActive` | 6 | Same source; reads WORLD. |
+| `0x0055f460` | `WorldInfo_CurrentlyLoading` | 6 | Same source; reads LWORLD. |
+| `0x0065f4d0` | `edGraEnableTerrainSwap` | 1 | `gameapi/edtools/edtoolsall_plain.cpp`; verified retail `ret`. |
+| `0x0065f4e0` | `edGraDisableTerrainSwap` | 1 | Same source; paired calls around `NuFrameEnd` establish identity. |
+| `0x0065f4f0` | `edGraInitTerrainSwapProtection` | 1 | Same source; PC call immediately follows `MenuReset`. |
+| `0x006dd390` | `NuWindowsProcessMessages` | 97 | Descriptive reconstruction name; SDK `PeekMessageA`, `TranslateMessage`, `DispatchMessageA`. |
+
+WorldInfo occupies two records starting at `0x0093d878` and `0x00942a24`.
+Their stride is `0x51ac`, four bytes less than Android's record. The shared
+header exposes only the verified buffer fields at `+0x100`, `+0x104`, `+0x108`;
+other fields remain opaque. `EndPerm` writes both records' buffer boundaries,
+independently confirming the stride. WORLD and LWORLD both initially point to
+the first record. The Windows message structure at `0x02975a94` is a 28-byte MSG.
+Its pump translates and dispatches before testing `WM_QUIT`, following the retail
+instruction order.
+
+The command-line inputs do not alias the private cursors in the original:
+NuMain passes addresses of its stack parameters. Centralizing those cursors
+in `data.cpp` removes the compiler's private-storage knowledge. VC8's
+`__restrict` input qualifiers express that existing no-alias contract and retain
+the PC load/store order with the C frontend. No runtime pointers target retail
+addresses; the map is used only for comparison relocations.
+
+C routines now use `.c` units. Existing C random routines remain exact after the
+frontend conversion. `qrand` and `ResetSeeds` keep their previously mapped C++
+names. Source provenance belongs here and in the existing seed evidence below,
+rather than repetitive source-file headers. Check `matching.json` for current
+byte results; an accepted identity in this table alone is not a matching claim.
 
 ## Worked example: seed initialization
 

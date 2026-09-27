@@ -1,14 +1,19 @@
 """Offline object checks cover private data, literals and relocation mappings."""
 from pathlib import Path
+from contextlib import ExitStack, redirect_stdout
+import io
+import json
+import os
 import struct
 import tempfile
 import unittest
 from unittest.mock import patch
 
-from tools import check as check_module
-from tools.binary import COFF
+from tools import check as check_module, match as match_module
+from tools.binary import COFF, PE
 from tools.check import check_objects, map_errors
-from tools.test_binary import coff_bytes, object_data
+from tools.lib import tree_digest
+from tools.test_binary import coff_bytes, image, object_common, object_data
 
 
 TEXT = 0x401000
@@ -77,6 +82,45 @@ class ObjectChecksTests(unittest.TestCase):
         obj = self.obj(object_data(bytes(4)))  # .data section + auxiliary and undefined _ref
         result = self.check({"src/data.cpp": obj}, [row("_data", DATA, 4)])
         self.assertEqual(result["data"], 1)
+
+    def test_unreferenced_common_definition_requires_known_mapping(self):
+        objects = {"src/common.c": self.obj(object_common(), "common")}
+        with self.assertRaisesRegex(ValueError, "src/common.c: '_data': missing data mapping"):
+            self.check(objects, [])
+        with self.assertRaisesRegex(ValueError, "compiled definition has unknown original size"):
+            self.check(objects, [row("_data", DATA, None)])
+        result = self.check(objects, [row("_data", DATA, 4)])
+        self.assertEqual((result["functions"], result["data"]), (0, 1))
+        # Value zero is a declaration, even when no map row exists.
+        declaration = self.obj(object_common(0), "declaration")
+        self.assertEqual(self.check({"src/declaration.c": declaration}, [])["data"], 0)
+
+    def test_common_copies_and_regular_definition_all_count_and_keep_their_sizes(self):
+        common = self.obj(object_common(), "common")
+        regular = self.obj(object_data(bytes(8)), "regular")
+        objects = {"src/a.c": common, "src/b.c": common, "src/c.cpp": regular}
+        result = self.check(objects, [row("_data", DATA, 4)])
+        self.assertEqual(result["data"], 3)
+        self.assertEqual(result["size_differences"], [
+            {"unit": "src/c.cpp", "symbol": "_data", "original": 4, "rebuilt": 8}])
+        raw = object_data(bytes(4))
+        symptr = struct.unpack_from("<I", raw, 8)[0]
+        struct.pack_into("<I", raw, symptr + 3 * 18 + 8, 4)
+        ambiguous = self.obj(rename(raw, "_ref", "_data"), "ambiguous")
+        with self.assertRaisesRegex(ValueError, "ambiguous COFF name.*2 definitions"):
+            self.check({"src/ambiguous.c": ambiguous}, [row("_data", DATA, 4)])
+
+    def test_reference_to_common_requires_its_own_mapping(self):
+        raw = object_data(bytes(4), relocations=[(0, 3, 6)])
+        symptr = struct.unpack_from("<I", raw, 8)[0]
+        struct.pack_into("<I", raw, symptr + 3 * 18 + 8, 16)
+        objects = {"src/ref.c": self.obj(raw)}
+        with self.assertRaises(ValueError) as error:
+            self.check(objects, [row("_data", DATA, 4)])
+        self.assertIn("missing relocation mapping for '_ref'", str(error.exception))
+        self.assertIn("'_ref': missing data mapping", str(error.exception))
+        result = self.check(objects, [row("_data", DATA, 4), row("_ref", DATA + 4, 16)])
+        self.assertEqual(result["data"], 2)
 
     def test_unimplemented_inventory_with_unknown_size_is_allowed(self):
         obj = self.obj(coff_bytes(b"\xc3"))
@@ -166,7 +210,8 @@ class ObjectChecksTests(unittest.TestCase):
 
     def test_external_declaration_unit_must_not_define_code_or_data(self):
         for raw, record in ((coff_bytes(b"\xc3"), row("_f")),
-                            (object_data(bytes(4)), row("_data", DATA, 4))):
+                            (object_data(bytes(4)), row("_data", DATA, 4)),
+                            (object_common(), row("_data", DATA, 4))):
             with self.subTest(symbol=record["symbol"]), self.assertRaisesRegex(ValueError, "declarations only"):
                 self.check({"src/externals.c": self.obj(raw)}, [record])
 
@@ -184,6 +229,66 @@ class ObjectChecksTests(unittest.TestCase):
         self.assertFalse(map_errors([row("_data", DATA, 16)], TARGET))
 
 
+class CommonMatchTests(unittest.TestCase):
+    """Exercise the full report path so common data cannot disappear or become code."""
+
+    def run_match(self, candidates, address=TEXT, size=4):
+        with tempfile.TemporaryDirectory() as temp, ExitStack() as stack:
+            root = Path(temp)
+            (root / "config").mkdir()
+            (root / "Makefile").write_text("# fixture\n")
+            (root / "config/toolchain.json").write_text('{"version": "fixture"}')
+            original = root / "original.exe"
+            original.write_bytes(image(bytes(16)))
+            objects = {}
+            for index, raw in enumerate(candidates):
+                path = root / f"{index}.obj"
+                path.write_bytes(raw)
+                objects[f"src/{index}.c"] = COFF(path)
+            target = dict(TARGET, sha256="a" * 64)
+            for name, value in (("ROOT", root), ("OUT", root / "build/objdiff")):
+                stack.enter_context(patch.object(match_module, name, value))
+            for name, value in (("project", {"target": target}),
+                                ("load_symbols", [row("_data", address, size)]),
+                                ("retail", PE(original)),
+                                ("objdiff", ("unused", {"version": "fixture"})),
+                                ("compiled_objects", objects)):
+                stack.enter_context(patch.object(match_module, name, return_value=value))
+            stack.enter_context(patch.object(match_module, "object_path",
+                                             side_effect=lambda unit: root / (Path(unit).stem + ".obj")))
+            objdiff_run = stack.enter_context(patch.object(match_module, "run"))
+            stack.enter_context(patch("sys.argv", ["match.py", "--require-match"]))
+            stack.enter_context(redirect_stdout(io.StringIO()))
+            status = match_module.main()
+            report = json.loads((root / "build/objdiff/summary.json").read_text())
+            objdiff_run.assert_not_called()
+            return status, report
+
+    def test_common_inside_text_is_data_and_all_copies_must_match(self):
+        # The original address is in the configured code range on purpose:
+        # actual common-data metadata must override the inventory fallback.
+        status, report = self.run_match([object_common(), object_common(), object_data(bytes(4))])
+        self.assertEqual(status, 0)
+        self.assertEqual(report["functions"], [])
+        self.assertEqual(report["progress"]["matched_code_bytes"], 0)
+        result = report["data"][0]
+        self.assertEqual(result["status"], "exact")
+        self.assertEqual(len(result["objects"]), 3)
+        self.assertTrue(all(item["exact_match"] for item in result["objects"]))
+        for other in (object_common(8), object_data(b"\x01\0\0\0")):
+            with self.subTest(other=other):
+                status, report = self.run_match([object_common(), other])
+                self.assertEqual(status, 1)
+                self.assertFalse(report["data"][0]["exact_match"])
+                self.assertEqual(report["data"][0]["status"], "different")
+
+    def test_ordinary_undefined_symbol_remains_unimplemented(self):
+        status, report = self.run_match([object_common(0)], address=DATA)
+        self.assertEqual(status, 0)
+        self.assertEqual(report["data"][0]["status"], "not implemented")
+        self.assertEqual(report["data"][0]["objects"], [])
+
+
 class HeaderLayoutTests(unittest.TestCase):
     def test_only_common_and_external_headers_are_allowed(self):
         with tempfile.TemporaryDirectory() as temp, patch.object(check_module, "ROOT", Path(temp)):
@@ -199,6 +304,93 @@ class HeaderLayoutTests(unittest.TestCase):
             (src / "extra/other.h").write_text("// forbidden\n")
             with self.assertRaisesRegex(ValueError, "optional src/externals.h"):
                 check_module.check_headers()
+
+
+class ClangChecksTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        root_patch = patch.object(check_module, "ROOT", self.root)
+        root_patch.start()
+        self.addCleanup(root_patch.stop)
+        (self.root / "src").mkdir()
+        for name in ("a.c", "b.cpp", "saga.h", "notes.txt"):
+            (self.root / "src" / name).write_text("// fixture\n")
+        (self.root / ".clang-format").write_text("BasedOnStyle: LLVM\n")
+        (self.root / ".clang-tidy").write_text("Checks: readability-identifier-naming\n")
+        (self.root / "config").mkdir()
+        compiler = self.root / "build/tools/msvc8"
+        trees = {}
+        for tree, name in (("include", "stddef.h"), ("PlatformSDK/Include", "Windows.h")):
+            directory = compiler / tree
+            directory.mkdir(parents=True)
+            (directory / name).write_text("// original SDK fixture\n")
+            trees[tree] = tree_digest(directory)
+        (self.root / "config/toolchain.json").write_text(json.dumps({"trees": trees}))
+
+    def test_tool_override_requires_supported_major_version(self):
+        with patch.dict(os.environ, {"CLANG_TIDY": "/chosen/clang-tidy"}), \
+                patch.object(check_module.shutil, "which", return_value="/chosen/clang-tidy") as which, \
+                patch.object(check_module.subprocess, "check_output", return_value="LLVM version 22.1.8\n"):
+            self.assertEqual(check_module.clang_tool("clang-tidy"), "/chosen/clang-tidy")
+            which.assert_called_once_with("/chosen/clang-tidy")
+        with patch.object(check_module.shutil, "which", return_value="/old/clang-format"), \
+                patch.object(check_module.subprocess, "check_output", return_value="clang-format version 17.0.6"):
+            with self.assertRaisesRegex(ValueError, "18 or newer"):
+                check_module.clang_tool("clang-format")
+
+    def test_format_checks_sources_and_headers_without_modifying_them(self):
+        with patch.object(check_module, "clang_tool", return_value="clang-format-18"), \
+                patch.object(check_module.subprocess, "run") as run:
+            check_module.check_format()
+        command = run.call_args.args[0]
+        self.assertIn("--dry-run", command)
+        self.assertIn("--Werror", command)
+        self.assertEqual(command[-3:], ["src/a.c", "src/b.cpp", "src/saga.h"])
+        self.assertNotIn("-i", command)
+
+    def test_tidy_uses_original_case_insensitive_sdk_and_windows_language_modes(self):
+        with patch.object(check_module, "clang_tool", return_value="clang-tidy-18"), \
+                patch.object(check_module.subprocess, "run") as run, \
+                patch.dict(os.environ, {"CPATH": "/untrusted/include", "CPLUS_INCLUDE_PATH": "/host/c++"}):
+            run.return_value.returncode = 0
+            check_module.check_tidy()
+        self.assertEqual(run.call_count, 2)
+        for call, standard in zip(run.call_args_list, ("-std=c89", "-std=c++98")):
+            command = call.args[0]
+            self.assertIn("--target=i686-pc-windows-msvc", command)
+            self.assertIn("-fms-compatibility-version=14.00", command)
+            self.assertIn("-nostdinc", command)
+            self.assertIn("-D_MT", command)
+            self.assertIn(standard, command)
+            self.assertIn("--config-file=" + str(self.root / ".clang-tidy"), command)
+            self.assertIn("--vfsoverlay=" + str(self.root / "build/lint/headers.json"), command)
+            self.assertNotIn("CPATH", call.kwargs["env"])
+            self.assertNotIn("CPLUS_INCLUDE_PATH", call.kwargs["env"])
+            self.assertFalse(any(flag.startswith(("--checks=", "--warnings-as-errors=")) for flag in command))
+        overlay = json.loads((self.root / "build/lint/headers.json").read_text())
+        self.assertFalse(overlay["case-sensitive"])
+        self.assertEqual(len(overlay["roots"]), 2)
+        for entry in overlay["roots"]:
+            self.assertEqual(entry["name"], entry["external-contents"])
+            self.assertTrue(Path(entry["name"]).is_relative_to(self.root / "build/tools/msvc8"))
+
+    def test_tidy_rejects_modified_sdk_before_analysis(self):
+        (self.root / "build/tools/msvc8/PlatformSDK/Include/Windows.h").write_text("modified")
+        with patch.object(check_module, "clang_tool", return_value="clang-tidy-18"), \
+                patch.object(check_module.subprocess, "run") as run:
+            with self.assertRaisesRegex(ValueError, "changed compiler headers/libraries"):
+                check_module.check_tidy()
+        run.assert_not_called()
+
+    def test_tidy_failure_propagates_after_checking_all_units(self):
+        with patch.object(check_module, "clang_tool", return_value="clang-tidy-18"), \
+                patch.object(check_module.subprocess, "run") as run:
+            run.return_value.returncode = 1
+            with self.assertRaisesRegex(ValueError, "clang-tidy failed for: src/a.c, src/b.cpp"):
+                check_module.check_tidy()
+        self.assertEqual(run.call_count, 2)
 
 
 if __name__ == "__main__":

@@ -4,38 +4,62 @@
   "compiler": "14.00.50727.42",
   "objdiff_version": "3.8.1",
   "inputs": {
-    "Makefile": "8c3044210fe360b4ad5bbd20639d2e9f04c91ca795260b30a4099bb88229b5ef",
-    "src/externals.h": "986e260e839e1c84a7483de486465a78365031b9d0dc2c5cb0f0ef88ef2e1bd1",
-    "src/saga.h": "0c0bd3f995a956e731c59c6bcc94c65cd9ebf0fd193853e69c350c82575c81df",
-    "config/identification.md": "e81acade95f3d0b20c4ec39921f00b458ed8aca01dcaa44e4dbf60685cc754a0",
+    "Makefile": "0f1a890960209413faaf6f5bb4874188d098ea29a5aadf7c4e0c2a544bf12e98",
+    "src/externals.h": "d269bde3b919100c655ea317c3b40bbf6db500d5d0a2b6d300d57d24aec8da8b",
+    "src/saga.h": "cbd1f6e7acba23c08bc3bb67c63af195efc4118ea359d7d379f689a9cf025eef",
+    "config/data.md": "11699ba013449b2a62e163f565a72072e20e878cdc92a029fdd74e70ba3671c9",
+    "config/identification.md": "e2d5ff91fea706f42e7202427a6276d7986bae90d618105757473387492e7d29",
+    "config/numain.md": "c459fb9a1ea5a7852faae352322af3bd0089dfe3c2d73b0fad170c1d8abc8f4c",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
-    "config/symbols.csv": "8a85b8c5a8162129e3c0b70fac58e91a7aec5adffaf9b7061af432460a609c30",
+    "config/symbols.csv": "b5d0549ac30beab169955ec977f7ac0cc5fc25b8d58cd4cf04d9e4e3c7a61c95",
     "config/symbols.md": "ee47390feef4bb7fe129799368ec4294eb8181ba7e7ed92188c2699f546bbcd9",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
-    "tools/binary.py": "debc3e1226eea724ab4f7e1e6e70a98dfa2d64eedb4b15e593a8edcdd187a32c",
+    "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
     "tools/cc.py": "d6255ab1dce2b88823ca2dadd017bcab35ed8e50cb643f51ce190722a47d8423",
-    "tools/check.py": "5f7cb07f3b969b2f169dce67d6d19ca55a909e053b12e6c74cbe50ba61797161",
+    "tools/check.py": "fb2dc123f1c2cd5f398659ed9aebcefd7277e8d0c4002a751f88b31441c81a4f",
     "tools/lib.py": "8c94ae7a83dc5e94838ca429f569eb93f897168a654a4cff325ed3f36bbe24a3",
-    "tools/match.py": "21e3d2c26e4f5ca251ae973f4e4366fdcee7d10b000e6a2793e739da31d639f4",
+    "tools/match.py": "69e21baae7f13756e7b3e00fc65ccab2e0a2eb41878a7661023e2fd206619801",
     "tools/setup.py": "a7a9bd71e63f0039de5211e3e9976d87d57e357be9f7a62a68cfb33758b4e56c",
-    "tools/test_binary.py": "2cf1b81b1a4ed1ca8f61f0e9f08a60e03efb7a1ccd8e92b148155ed5af85cbc5",
-    "tools/test_check.py": "2ac80e1d67d1e50f263fffbbef24a8512348e120397441b02e7af2fabf23b887",
+    "tools/test_binary.py": "b9347b6599deed3c1f270ace1f7c5ac07bcebd2656ec373d77e45be7fa38432f",
+    "tools/test_check.py": "b1e270590925584a0f841e4a4f7ca40ac99cad3e802253437050b32d34d2e5b4",
     "tools/test_lib.py": "54561f44ee40367574c6f1824c77198ee3a93a455ba88e2ae4c83545b79a7e78",
     "tools/test_match.py": "27f92c2f5d185aca7d48e477f5627d05f651acad2b50e46c08569eca3de56ad2",
     "tools/test_setup.py": "e35061d99a30a27ce7a1fb60fdb49f9a08ac89665fecaed72222b4074a87bc8f",
-    "src/batman.cpp": "f28264a610a6636dc9c38f64b74ffd8843b7274c3ab3a90a57f32ef0bb46f6d6",
-    "src/nurand.cpp": "579272756be25183449ceb52407eba2bfaff5d120eef5ef27bacbd4ab9a008b2",
-    "src/qrand.cpp": "661f57d94774798eee86363a8f3c6aff3f743cfaea17d223b78e1bb6392ae4e6",
-    "src/externals.c": "916dd78c1821ec46a86787fbe9e9af67d287a8c958fd01755916650250843310",
-    "src/nuang.c": "380eedf4c194e3af5feed9ca200d6257f21c9fcbf96f98381d239a1c1cdf8a77"
+    "src/data.cpp": "5f4271e7fc4e5356d4fa6606db57b5c6d8b1220a291859d81113be62182838f0",
+    "src/legoapi/utilities.cpp": "4aaec27329de76409ff3b425fb71771f685bba3aeb92b6af71a1e6b823c1fe00",
+    "src/qrand.cpp": "57d416da020f1c701eb6cea362fcc833e7fefdda8e14347648d2bf4108018086",
+    "src/batman.c": "7cb118c77a04422f892e36915350ac07f85c53a19621a8234db94c4b93b802a1",
+    "src/externals.c": "f37ddb908b2fd9d5d41921a20103721555a28d521fbe7bcfdfd6b01d9d120ed5",
+    "src/gameapi/edgra.c": "f6e24776f20d78e21008574f9d6d4090fb1dc92b49ec1317d426f0b4f6c6eb04",
+    "src/gamelib/nuwind.c": "990cfa535179845a3de8c67af158da0bf7a10f4c6d93e661ad4953da4404f9d9",
+    "src/legoapi/game_deb.c": "0a855dfbd3da095118e2acb462b518bf236ad7ad15cc3e1b6aae614b44c7d5dc",
+    "src/legoapi/parts.c": "a009515fcf30bd0cc6530b6c80dfe068c0a95740917342f74aea44bb9e9ba036",
+    "src/legoapi/world.c": "8fc801c0cc010275795654dcb8110dee59e128ebe806ffb525d22503cc8764f8",
+    "src/legogame/startup.c": "2dd407130aaed8986667d9b2753f70f64290d027c4ecf4078b5a3e87263119dc",
+    "src/nu2api/nuapi.c": "e6c252884de69431af3e12c1ea435548e0bb003ce454349b866bbfd2e1cb342e",
+    "src/nu2api/nufile.c": "fd544d5039bbfb40f51c3821d6bac17b662f47906a563ed9a345cd2500e926e9",
+    "src/nu2api/nuwin.c": "99a1aba0aa4cc3404e98abbac6922ddcf23df9ffd2b620cfe33655378092dcc3",
+    "src/nuang.c": "4d28f575f195307ea8137bf317963a776130c8e8c211f5da2c658758dbf407ca",
+    "src/nurand.c": "b769593953bbb31329a5b540aa6872de745e21b5784b639ee533d9aa56777236"
   },
   "objects": {
-    "build/obj/batman.obj": "19b9ce1c0b163141841e0b56d9a0bb6b1006146a6586dd829f2ef54bdf581960",
-    "build/obj/externals.obj": "e7b24cdf4fdc0b39ceb29e2304f0af1483dc385d9b48cb6dcf0204deb34bed08",
-    "build/obj/nuang.obj": "13d43ff5159827fd61258ce49ed5eea50644ac1a8581418fc4098ddd3d5272a7",
-    "build/obj/nurand.obj": "cc0f5f61cdaa38c61bca294c30768b1c7bca95938a7806d40baa1e143972c2c5",
-    "build/obj/qrand.obj": "e32dfda82277e1fa16d3b6d23130b0de6cfc31fef09cd0b6f1d6df6d55a82bd7"
+    "build/obj/batman.obj": "104018c775e6e3b647334af51a37e29c67250e48f70827df0356f4296bcb7e36",
+    "build/obj/data.obj": "c545289426d871205bc02799be68fdd0261befa33e75273d8f637b1d30ab18c3",
+    "build/obj/externals.obj": "bb4dc8a2fd6ecbd2d611942e102ccc28ef85172f6755f72c6dae1f11203284b7",
+    "build/obj/gameapi/edgra.obj": "41eb5c8127286db8d099e436597c36f740f4256ec2766a99ec85e6089708cea4",
+    "build/obj/gamelib/nuwind.obj": "3899075d9f37714227f7d89fdee63fa8ac2141883c440fda19161b93e08087bd",
+    "build/obj/legoapi/game_deb.obj": "2fc1050a5026d20abd33d8f4d93ff1190b8efd4ea30d13a49b311d3140477883",
+    "build/obj/legoapi/parts.obj": "91c6595d10ca914c7eb53d9a2baeba532c57aefa7d5e77d7e71e69ed00d63d8f",
+    "build/obj/legoapi/utilities.obj": "8f4e1a14e51a356ad9f72c930a70360776a82e9b5746f4a5210210262b4eefd6",
+    "build/obj/legoapi/world.obj": "994051cbeed664eaa1abe920d537bd16fc9eb2ac5dba1a75b9e433a93b56aed9",
+    "build/obj/legogame/startup.obj": "45e8a8dd5d44145d0a7061ef542aa33a9e1f916542722d4c41989b95e0cd2084",
+    "build/obj/nu2api/nuapi.obj": "37dff8af1432a94fd6bd5e0582f0d9c61c59c77c5354c02b2e1ee5f52fa8d904",
+    "build/obj/nu2api/nufile.obj": "ebeca83d4e6786fb5df11f54c80b7df2228fc9f33f5374ae03a84cb401449247",
+    "build/obj/nu2api/nuwin.obj": "409bd9fed75a09ce0b5cb1769220aa36f232f5bfd88252a601fa2148015747db",
+    "build/obj/nuang.obj": "4f8b3ad384db2ba623c53ed345782a9ae37bc566df48df4ae50570914fd8fbb8",
+    "build/obj/nurand.obj": "fc9449bbc752e99f5e314a090c3a2f1342624f62b58e65f703c3f0485502fc21",
+    "build/obj/qrand.obj": "301c5e5f2c45795bfdd35e3fbf8d3c5b4d5703a8defb7c2e3e294b0985d6401f"
   },
   "functions": [
     {
@@ -43,24 +67,144 @@
       "symbol": "_NuMain",
       "address": "0x00492b40",
       "units": [
-        "src/batman.cpp"
+        "src/batman.c"
       ],
       "target_size": 4332,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/batman.cpp",
-          "base_size": 3,
+          "unit": "src/batman.c",
+          "base_size": 26,
           "exact_match": false,
           "target_sha256": "b21a1c5cc4d55da5db8c00161fc107d1695175b7fc48c3e62805ddf7ae85cda2",
-          "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
-          "relocation_count": 0,
-          "comparison_unit": "00492b40-dd208425f9ad",
-          "objdiff_percent": 0.17163505
+          "base_sha256": "8a8052913705560b79a08b3413ce1df0de074f552ca39d0c1853b0c2e287644a",
+          "relocation_count": 2,
+          "comparison_unit": "00492b40-e9ee26946a9c",
+          "objdiff_percent": 0.8102981
         }
       ],
       "status": "different",
-      "objdiff_percent": 0.17163505
+      "objdiff_percent": 0.8102981
+    },
+    {
+      "name": "NuDatSet",
+      "symbol": "_NuDatSet",
+      "address": "0x004f0d40",
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "target_size": 16,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nufile.c",
+          "base_size": 16,
+          "exact_match": true,
+          "target_sha256": "af342a2ce10f005a50b49486919360daba9110c31039a344f25ae1a26b2aace7",
+          "base_sha256": "af342a2ce10f005a50b49486919360daba9110c31039a344f25ae1a26b2aace7",
+          "relocation_count": 2,
+          "comparison_unit": "004f0d40-10e246971412",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuDatGet",
+      "symbol": "_NuDatGet",
+      "address": "0x004f0d50",
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "target_size": 6,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nufile.c",
+          "base_size": 6,
+          "exact_match": true,
+          "target_sha256": "ca72ada648fd3e5b9eedfead836b9a0791f6ea201d90d1ce8fba53a498e351cc",
+          "base_sha256": "ca72ada648fd3e5b9eedfead836b9a0791f6ea201d90d1ce8fba53a498e351cc",
+          "relocation_count": 1,
+          "comparison_unit": "004f0d50-aff630e9f8d6",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuCommandLine",
+      "symbol": "_NuCommandLine",
+      "address": "0x004f4060",
+      "units": [
+        "src/nu2api/nuapi.c"
+      ],
+      "target_size": 24,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nuapi.c",
+          "base_size": 24,
+          "exact_match": true,
+          "target_sha256": "dcca45c966dfa6aee1f2a4849ec536afc64edae043b73030a5a8ad17480a1476",
+          "base_sha256": "dcca45c966dfa6aee1f2a4849ec536afc64edae043b73030a5a8ad17480a1476",
+          "relocation_count": 2,
+          "comparison_unit": "004f4060-516f63abf9dd",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "StartPerm",
+      "symbol": "_StartPerm",
+      "address": "0x005476e0",
+      "units": [
+        "src/legogame/startup.c"
+      ],
+      "target_size": 23,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legogame/startup.c",
+          "base_size": 23,
+          "exact_match": true,
+          "target_sha256": "a10a395b9bed9b645fb8b6654f1415950c8acd4ee31110982f1676b5e1a5b3aa",
+          "base_sha256": "a10a395b9bed9b645fb8b6654f1415950c8acd4ee31110982f1676b5e1a5b3aa",
+          "relocation_count": 4,
+          "comparison_unit": "005476e0-b87f03f7fa46",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "EndPerm",
+      "symbol": "_EndPerm",
+      "address": "0x00547700",
+      "units": [
+        "src/legogame/startup.c"
+      ],
+      "target_size": 124,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legogame/startup.c",
+          "base_size": 124,
+          "exact_match": true,
+          "target_sha256": "11870a082db87001e40d4ddeb50d7a7f11b3f4ac6a4eb573bc93cac2878ccd9c",
+          "base_sha256": "11870a082db87001e40d4ddeb50d7a7f11b3f4ac6a4eb573bc93cac2878ccd9c",
+          "relocation_count": 19,
+          "comparison_unit": "00547700-3b13f8b33012",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?qrand@@YAHXZ",
@@ -90,40 +234,140 @@
       "name": "?getqseed@@YAHXZ",
       "symbol": "?getqseed@@YAHXZ",
       "address": "0x0054fa80",
-      "units": [],
+      "units": [
+        "src/qrand.cpp"
+      ],
       "target_size": 6,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/qrand.cpp",
+          "base_size": 6,
+          "exact_match": true,
+          "target_sha256": "65b2113bfb56022f30ce5602733dce1cf392df5fce18848c0712c86399e80c29",
+          "base_sha256": "65b2113bfb56022f30ce5602733dce1cf392df5fce18848c0712c86399e80c29",
+          "relocation_count": 1,
+          "comparison_unit": "0054fa80-d9f0b953e2b4",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?ResetSeeds@@YAXXZ",
       "symbol": "?ResetSeeds@@YAXXZ",
       "address": "0x0054fa90",
-      "units": [],
+      "units": [
+        "src/legoapi/utilities.cpp"
+      ],
       "target_size": 61,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/utilities.cpp",
+          "base_size": 61,
+          "exact_match": true,
+          "target_sha256": "6b092758f24d90a42a708de2d4630715684d68ae426906695dbb241e0681b259",
+          "base_sha256": "6b092758f24d90a42a708de2d4630715684d68ae426906695dbb241e0681b259",
+          "relocation_count": 7,
+          "comparison_unit": "0054fa90-ed7c602d704a",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "WorldInfo_InitOnce",
+      "symbol": "_WorldInfo_InitOnce",
+      "address": "0x0055f430",
+      "units": [
+        "src/legoapi/world.c"
+      ],
+      "target_size": 21,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/world.c",
+          "base_size": 21,
+          "exact_match": true,
+          "target_sha256": "9ba63f253367cf5d7902d085e7638238c3fa8acfd0eba77e1069c042ff188dbe",
+          "base_sha256": "9ba63f253367cf5d7902d085e7638238c3fa8acfd0eba77e1069c042ff188dbe",
+          "relocation_count": 2,
+          "comparison_unit": "0055f430-b356a37b7f84",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "WorldInfo_CurrentlyActive",
+      "symbol": "_WorldInfo_CurrentlyActive",
+      "address": "0x0055f450",
+      "units": [
+        "src/legoapi/world.c"
+      ],
+      "target_size": 6,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/world.c",
+          "base_size": 6,
+          "exact_match": true,
+          "target_sha256": "5559e0927370642fdba36d1f2e06c9ca462bc4c4df1a09f0c1a9db2ebfe45ba8",
+          "base_sha256": "5559e0927370642fdba36d1f2e06c9ca462bc4c4df1a09f0c1a9db2ebfe45ba8",
+          "relocation_count": 1,
+          "comparison_unit": "0055f450-a735af1a9d0c",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "WorldInfo_CurrentlyLoading",
+      "symbol": "_WorldInfo_CurrentlyLoading",
+      "address": "0x0055f460",
+      "units": [
+        "src/legoapi/world.c"
+      ],
+      "target_size": 6,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/world.c",
+          "base_size": 6,
+          "exact_match": true,
+          "target_sha256": "c9d34bcd925b8f51efd49e6d0adf8551a04875b1292e3e36fc2a32d645dab443",
+          "base_sha256": "c9d34bcd925b8f51efd49e6d0adf8551a04875b1292e3e36fc2a32d645dab443",
+          "relocation_count": 1,
+          "comparison_unit": "0055f460-c31ef73b3fb2",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuRandSeed",
       "symbol": "_NuRandSeed",
       "address": "0x005b9d70",
       "units": [
-        "src/nurand.cpp"
+        "src/nurand.c"
       ],
       "target_size": 10,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nurand.cpp",
+          "unit": "src/nurand.c",
           "base_size": 10,
           "exact_match": true,
           "target_sha256": "ce0364047067755301a7e0b9b7fbe917e9313bc4fbc1391120138a1db8f654f9",
           "base_sha256": "ce0364047067755301a7e0b9b7fbe917e9313bc4fbc1391120138a1db8f654f9",
           "relocation_count": 1,
-          "comparison_unit": "005b9d70-f03451e650e5",
+          "comparison_unit": "005b9d70-df01278df694",
           "objdiff_percent": 100.0
         }
       ],
@@ -135,19 +379,19 @@
       "symbol": "_NuRandGetSeed",
       "address": "0x005b9d80",
       "units": [
-        "src/nurand.cpp"
+        "src/nurand.c"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nurand.cpp",
+          "unit": "src/nurand.c",
           "base_size": 6,
           "exact_match": true,
           "target_sha256": "e55dc25b7198a310555e9a01209c3eff9a83f0d607a5b262c7ae30e3f7efa398",
           "base_sha256": "e55dc25b7198a310555e9a01209c3eff9a83f0d607a5b262c7ae30e3f7efa398",
           "relocation_count": 1,
-          "comparison_unit": "005b9d80-e3b583dabe37",
+          "comparison_unit": "005b9d80-d2ef07900ce1",
           "objdiff_percent": 100.0
         }
       ],
@@ -159,19 +403,19 @@
       "symbol": "_NuRandFloatSeeded",
       "address": "0x005b9d90",
       "units": [
-        "src/nurand.cpp"
+        "src/nurand.c"
       ],
       "target_size": 52,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nurand.cpp",
+          "unit": "src/nurand.c",
           "base_size": 52,
           "exact_match": true,
           "target_sha256": "dde8de180a66d6d983c9f0b60cf60f1d16e94892e0590f41c78e6829703962e5",
           "base_sha256": "dde8de180a66d6d983c9f0b60cf60f1d16e94892e0590f41c78e6829703962e5",
           "relocation_count": 1,
-          "comparison_unit": "005b9d90-c7b98c0b1827",
+          "comparison_unit": "005b9d90-66383d1b7d0c",
           "objdiff_percent": 100.0
         }
       ],
@@ -183,19 +427,19 @@
       "symbol": "_NuRandFloat",
       "address": "0x005b9dd0",
       "units": [
-        "src/nurand.cpp"
+        "src/nurand.c"
       ],
       "target_size": 52,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nurand.cpp",
+          "unit": "src/nurand.c",
           "base_size": 52,
           "exact_match": true,
           "target_sha256": "9eb22ffb217cff19ff2d0fa5ba9ce5116ce62cdf714fc724f609a56a30e5ab52",
           "base_sha256": "9eb22ffb217cff19ff2d0fa5ba9ce5116ce62cdf714fc724f609a56a30e5ab52",
           "relocation_count": 3,
-          "comparison_unit": "005b9dd0-a2a844024278",
+          "comparison_unit": "005b9dd0-3ac97bffb488",
           "objdiff_percent": 100.0
         }
       ],
@@ -207,19 +451,19 @@
       "symbol": "_NuRandIntSeeded",
       "address": "0x005b9e10",
       "units": [
-        "src/nurand.cpp"
+        "src/nurand.c"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nurand.cpp",
+          "unit": "src/nurand.c",
           "base_size": 20,
           "exact_match": true,
           "target_sha256": "40c74a22cf8acc63f01464b72198e0fda88aedb95cdccd932ef17c3dbe3e476e",
           "base_sha256": "40c74a22cf8acc63f01464b72198e0fda88aedb95cdccd932ef17c3dbe3e476e",
           "relocation_count": 0,
-          "comparison_unit": "005b9e10-d9ac589e56ff",
+          "comparison_unit": "005b9e10-e690f9dc660a",
           "objdiff_percent": 100.0
         }
       ],
@@ -231,19 +475,19 @@
       "symbol": "_NuRandInt",
       "address": "0x005b9e30",
       "units": [
-        "src/nurand.cpp"
+        "src/nurand.c"
       ],
       "target_size": 22,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nurand.cpp",
+          "unit": "src/nurand.c",
           "base_size": 22,
           "exact_match": true,
           "target_sha256": "aecba62753a429ae5b3447d2d0c66cc0d013f85b4e343000d761fe15fef4faf7",
           "base_sha256": "aecba62753a429ae5b3447d2d0c66cc0d013f85b4e343000d761fe15fef4faf7",
           "relocation_count": 2,
-          "comparison_unit": "005b9e30-1d1a6107064c",
+          "comparison_unit": "005b9e30-f9436fc8a379",
           "objdiff_percent": 100.0
         }
       ],
@@ -254,30 +498,44 @@
       "name": "NuWindRand",
       "symbol": "_NuWindRand",
       "address": "0x005b9e50",
-      "units": [],
+      "units": [
+        "src/gamelib/nuwind.c"
+      ],
       "target_size": 25,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/gamelib/nuwind.c",
+          "base_size": 25,
+          "exact_match": true,
+          "target_sha256": "e68dc05d5fac9ab3b8475e546add108c7bb72876e7827295233823eae049a276",
+          "base_sha256": "e68dc05d5fac9ab3b8475e546add108c7bb72876e7827295233823eae049a276",
+          "relocation_count": 2,
+          "comparison_unit": "005b9e50-a282139b45ab",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuRandSetSeed",
       "symbol": "_NuRandSetSeed",
       "address": "0x005b9e70",
       "units": [
-        "src/nurand.cpp"
+        "src/nurand.c"
       ],
       "target_size": 27,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nurand.cpp",
+          "unit": "src/nurand.c",
           "base_size": 27,
           "exact_match": true,
           "target_sha256": "4d93caf54d98577c7d19e0788f1e8b5bce23e11dce4ea5333b10344d84fda9f5",
           "base_sha256": "4d93caf54d98577c7d19e0788f1e8b5bce23e11dce4ea5333b10344d84fda9f5",
           "relocation_count": 1,
-          "comparison_unit": "005b9e70-2313fe85f29b",
+          "comparison_unit": "005b9e70-e6fb9cbd7b16",
           "objdiff_percent": 100.0
         }
       ],
@@ -289,19 +547,19 @@
       "symbol": "_NuRand",
       "address": "0x005b9e90",
       "units": [
-        "src/nurand.cpp"
+        "src/nurand.c"
       ],
       "target_size": 90,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nurand.cpp",
+          "unit": "src/nurand.c",
           "base_size": 90,
           "exact_match": true,
           "target_sha256": "9127240753341288063c8cd1f09d233011efc9f8e4740697ca187d9916c24b46",
           "base_sha256": "9127240753341288063c8cd1f09d233011efc9f8e4740697ca187d9916c24b46",
           "relocation_count": 1,
-          "comparison_unit": "005b9e90-d8b3d547e6ee",
+          "comparison_unit": "005b9e90-d8fc1aa4ecb4",
           "objdiff_percent": 100.0
         }
       ],
@@ -313,19 +571,19 @@
       "symbol": "_NuFloatRand",
       "address": "0x005b9ef0",
       "units": [
-        "src/nurand.cpp"
+        "src/nurand.c"
       ],
       "target_size": 37,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nurand.cpp",
+          "unit": "src/nurand.c",
           "base_size": 37,
           "exact_match": true,
           "target_sha256": "9a8e43b147468c546839a9ff88a0e2abf7064bfda89a2ebafb6ae7be702cf40f",
           "base_sha256": "9a8e43b147468c546839a9ff88a0e2abf7064bfda89a2ebafb6ae7be702cf40f",
           "relocation_count": 2,
-          "comparison_unit": "005b9ef0-7a15825088e2",
+          "comparison_unit": "005b9ef0-e8b4b0edb2f3",
           "objdiff_percent": 100.0
         }
       ],
@@ -408,65 +666,237 @@
       "name": "NuPartSetSeed",
       "symbol": "_NuPartSetSeed",
       "address": "0x0064a450",
-      "units": [],
+      "units": [
+        "src/legoapi/parts.c"
+      ],
       "target_size": 10,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/parts.c",
+          "base_size": 10,
+          "exact_match": true,
+          "target_sha256": "9c7784d5025b4f168cc4f7ce3b25b27ff95fb2185c712a027c2eded85c537992",
+          "base_sha256": "9c7784d5025b4f168cc4f7ce3b25b27ff95fb2185c712a027c2eded85c537992",
+          "relocation_count": 1,
+          "comparison_unit": "0064a450-f93acd940999",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuPartGetSeed",
       "symbol": "_NuPartGetSeed",
       "address": "0x0064a460",
-      "units": [],
+      "units": [
+        "src/legoapi/parts.c"
+      ],
       "target_size": 6,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/parts.c",
+          "base_size": 6,
+          "exact_match": true,
+          "target_sha256": "8480eaacfeac7bf71d636a47820559b6ae2699297e7c30d63b988929c9b069d0",
+          "base_sha256": "8480eaacfeac7bf71d636a47820559b6ae2699297e7c30d63b988929c9b069d0",
+          "relocation_count": 1,
+          "comparison_unit": "0064a460-0b1544cc4f70",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "DebrisSetSeed",
       "symbol": "_DebrisSetSeed",
       "address": "0x00659230",
-      "units": [],
+      "units": [
+        "src/legoapi/game_deb.c"
+      ],
       "target_size": 10,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/game_deb.c",
+          "base_size": 10,
+          "exact_match": true,
+          "target_sha256": "e65d927e9fbd0958736f4eb72e4acff2e5e652c3e4369beaf4cf770d4525b563",
+          "base_sha256": "e65d927e9fbd0958736f4eb72e4acff2e5e652c3e4369beaf4cf770d4525b563",
+          "relocation_count": 1,
+          "comparison_unit": "00659230-f87dd53f4d38",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "DebrisGetSeed",
       "symbol": "_DebrisGetSeed",
       "address": "0x00659240",
-      "units": [],
+      "units": [
+        "src/legoapi/game_deb.c"
+      ],
       "target_size": 6,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/game_deb.c",
+          "base_size": 6,
+          "exact_match": true,
+          "target_sha256": "43a77149c31721a6ab9c06da2a67b21093fbc1b1449852daf24daefbcdd2c091",
+          "base_sha256": "43a77149c31721a6ab9c06da2a67b21093fbc1b1449852daf24daefbcdd2c091",
+          "relocation_count": 1,
+          "comparison_unit": "00659240-b697a8396146",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "edGraEnableTerrainSwap",
+      "symbol": "_edGraEnableTerrainSwap",
+      "address": "0x0065f4d0",
+      "units": [
+        "src/gameapi/edgra.c"
+      ],
+      "target_size": 1,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/gameapi/edgra.c",
+          "base_size": 1,
+          "exact_match": true,
+          "target_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
+          "base_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
+          "relocation_count": 0,
+          "comparison_unit": "0065f4d0-46dd864b5422",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "edGraDisableTerrainSwap",
+      "symbol": "_edGraDisableTerrainSwap",
+      "address": "0x0065f4e0",
+      "units": [
+        "src/gameapi/edgra.c"
+      ],
+      "target_size": 1,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/gameapi/edgra.c",
+          "base_size": 1,
+          "exact_match": true,
+          "target_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
+          "base_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
+          "relocation_count": 0,
+          "comparison_unit": "0065f4e0-e1f054f72728",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "edGraInitTerrainSwapProtection",
+      "symbol": "_edGraInitTerrainSwapProtection",
+      "address": "0x0065f4f0",
+      "units": [
+        "src/gameapi/edgra.c"
+      ],
+      "target_size": 1,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/gameapi/edgra.c",
+          "base_size": 1,
+          "exact_match": true,
+          "target_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
+          "base_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
+          "relocation_count": 0,
+          "comparison_unit": "0065f4f0-0396beb1f884",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuWindowsProcessMessages",
+      "symbol": "_NuWindowsProcessMessages",
+      "address": "0x006dd390",
+      "units": [
+        "src/nu2api/nuwin.c"
+      ],
+      "target_size": 97,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nuwin.c",
+          "base_size": 97,
+          "exact_match": true,
+          "target_sha256": "373c2ddc5dafc2ea4e213756b6b06f095ce1e035029dfdda33eae41e106ec5d2",
+          "base_sha256": "373c2ddc5dafc2ea4e213756b6b06f095ce1e035029dfdda33eae41e106ec5d2",
+          "relocation_count": 8,
+          "comparison_unit": "006dd390-ca14b195b4af",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "WinMain@16",
       "symbol": "_WinMain@16",
       "address": "0x006de0e0",
       "units": [
-        "src/batman.cpp"
+        "src/batman.c"
       ],
       "target_size": 200,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/batman.cpp",
-          "base_size": 5,
+          "unit": "src/batman.c",
+          "base_size": 39,
           "exact_match": false,
           "target_sha256": "894e3934e0161d2f6aec9a7ad4cb9c9658cf51720f1edb5e88109029276c168d",
-          "base_sha256": "743e1bd88d09aaee11fa6bad94803b7e31241e4196b32ff1abc9aba5bdd924c5",
-          "relocation_count": 0,
-          "comparison_unit": "006de0e0-cea3b1aa60e9",
-          "objdiff_percent": 3.1746032
+          "base_sha256": "95aea075102b79b3d74703d4e6381fd1701ba5dc2c0042a58dc3bd2c4e5a1911",
+          "relocation_count": 2,
+          "comparison_unit": "006de0e0-31ee1b4b585f",
+          "objdiff_percent": 7.730159
         }
       ],
       "status": "different",
-      "objdiff_percent": 3.1746032
+      "objdiff_percent": 7.730159
+    },
+    {
+      "name": "memset",
+      "symbol": "_memset",
+      "address": "0x006e6950",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "srand",
+      "symbol": "_srand",
+      "address": "0x006e8e11",
+      "units": [],
+      "target_size": 13,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     }
   ],
   "data": [
@@ -475,13 +905,13 @@
       "symbol": "__real@3ff0000000000000",
       "address": "0x00751698",
       "units": [
-        "src/nurand.cpp"
+        "src/nurand.c"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nurand.cpp",
+          "unit": "src/nurand.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -496,18 +926,144 @@
       "symbol": "__real@3e00000000000000",
       "address": "0x00764000",
       "units": [
-        "src/nurand.cpp"
+        "src/nurand.c"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nurand.cpp",
+          "unit": "src/nurand.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
           "target_sha256": "aeebc4b5e0c40cd355fef6a7b42d8e9ea4f0d3195f60c5d384df43cb755b1d57",
           "base_sha256": "aeebc4b5e0c40cd355fef6a7b42d8e9ea4f0d3195f60c5d384df43cb755b1d57"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "KeyStructSizes",
+      "symbol": "_KeyStructSizes",
+      "address": "0x00764258",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 16,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 16,
+          "base_size": 16,
+          "target_sha256": "edc9568a0c0dc7091d6f85c40452e64dc1f586f599a235409c2e4ffed8132c43",
+          "base_sha256": "edc9568a0c0dc7091d6f85c40452e64dc1f586f599a235409c2e4ffed8132c43"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "CHARACTERBUFFERSIZE",
+      "symbol": "_CHARACTERBUFFERSIZE",
+      "address": "0x007ef020",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "6527919125dd56629d7a4d77771ad05eb5a14f2178337925cc70d554e52fe448",
+          "base_sha256": "6527919125dd56629d7a4d77771ad05eb5a14f2178337925cc70d554e52fe448"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "waiting_for_character",
+      "symbol": "_waiting_for_character",
+      "address": "0x007f23a4",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e",
+          "base_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "BonusWinner",
+      "symbol": "_BonusWinner",
+      "address": "0x007f3b14",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e",
+          "base_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "PlayTrailer",
+      "symbol": "_PlayTrailer",
+      "address": "0x007fac20",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e",
+          "base_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "bad_equiv",
+      "symbol": "_bad_equiv",
+      "address": "0x0080048c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 32,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 32,
+          "base_size": 32,
+          "target_sha256": "b6949fae5c0f1a4874c3472951a87e1c748c0eec2cf0ea7e6170b50271a445ad",
+          "base_sha256": "b6949fae5c0f1a4874c3472951a87e1c748c0eec2cf0ea7e6170b50271a445ad"
         }
       ],
       "status": "exact"
@@ -536,11 +1092,22 @@
       "name": "?GAMERAND@@3HA",
       "symbol": "?GAMERAND@@3HA",
       "address": "0x00802538",
-      "units": [],
+      "units": [
+        "src/data.cpp"
+      ],
       "target_size": 4,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "630b2d6208c99ea3db5d8e31c6e00db1e81850342ad4b95009993b2b6bbf8efe",
+          "base_sha256": "630b2d6208c99ea3db5d8e31c6e00db1e81850342ad4b95009993b2b6bbf8efe"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "?qseed@@3HA",
@@ -559,6 +1126,153 @@
           "base_size": 4,
           "target_sha256": "71626704b817e11f6bf2b8b06e3cadff7f41a6b6eb741b4d84f1fff4ebc120c6",
           "base_sha256": "71626704b817e11f6bf2b8b06e3cadff7f41a6b6eb741b4d84f1fff4ebc120c6"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "WORLD",
+      "symbol": "_WORLD",
+      "address": "0x00802c54",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "6290435e15017a0471a742167b11a1932a345ae80deaefbfddb97576214bb1f1",
+          "base_sha256": "6290435e15017a0471a742167b11a1932a345ae80deaefbfddb97576214bb1f1"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "LWORLD",
+      "symbol": "_LWORLD",
+      "address": "0x00802c58",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "6290435e15017a0471a742167b11a1932a345ae80deaefbfddb97576214bb1f1",
+          "base_sha256": "6290435e15017a0471a742167b11a1932a345ae80deaefbfddb97576214bb1f1"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "other_level",
+      "symbol": "_other_level",
+      "address": "0x00802c5c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e",
+          "base_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "level_already_loaded",
+      "symbol": "_level_already_loaded",
+      "address": "0x00802c68",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e",
+          "base_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "reset_load",
+      "symbol": "_reset_load",
+      "address": "0x00802c6c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450",
+          "base_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "FinishLoop_On",
+      "symbol": "_FinishLoop_On",
+      "address": "0x00802e14",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450",
+          "base_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "clear_screen_onstill",
+      "symbol": "_clear_screen_onstill",
+      "address": "0x00802e30",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450",
+          "base_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450"
         }
       ],
       "status": "exact"
@@ -614,6 +1328,153 @@
       "status": "not implemented"
     },
     {
+      "name": "Area",
+      "symbol": "_Area",
+      "address": "0x00803784",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e",
+          "base_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "newlevel_resumecutaudio",
+      "symbol": "_newlevel_resumecutaudio",
+      "address": "0x00803df4",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450",
+          "base_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "vehicle_timebase_dist",
+      "symbol": "_vehicle_timebase_dist",
+      "address": "0x00804224",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 16,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 16,
+          "base_size": 16,
+          "target_sha256": "8df1b685294b5e739942cbadfdd5b149ec48a7e3ac0f8a932f43377cf1152628",
+          "base_sha256": "8df1b685294b5e739942cbadfdd5b149ec48a7e3ac0f8a932f43377cf1152628"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "vehicle_timebase_nframes",
+      "symbol": "_vehicle_timebase_nframes",
+      "address": "0x00804234",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 16,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 16,
+          "base_size": 16,
+          "target_sha256": "f06ca82a61c3c7ddff70f451abd52e641de19b00d6c92c18dedeac5d968088a4",
+          "base_sha256": "f06ca82a61c3c7ddff70f451abd52e641de19b00d6c92c18dedeac5d968088a4"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "hub_from_arcade",
+      "symbol": "_hub_from_arcade",
+      "address": "0x00805a00",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e",
+          "base_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "TrooperStepFrames",
+      "symbol": "_TrooperStepFrames",
+      "address": "0x00805c94",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 16,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 16,
+          "base_size": 16,
+          "target_sha256": "b89dae8b6df43660a6aa2a608f697a589d8dc74b18e2360a82e11f1b10fae37b",
+          "base_sha256": "b89dae8b6df43660a6aa2a608f697a589d8dc74b18e2360a82e11f1b10fae37b"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "trooperspeedtab",
+      "symbol": "_trooperspeedtab",
+      "address": "0x00805ca4",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 16,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 16,
+          "base_size": 16,
+          "target_sha256": "51118f11887b30590c53ac29b37cfdb45067b59eb77a11e16bfd223abe3663ee",
+          "base_sha256": "51118f11887b30590c53ac29b37cfdb45067b59eb77a11e16bfd223abe3663ee"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "??_R0?AVThingManager@@@8",
       "symbol": "??_R0?AVThingManager@@@8",
       "address": "0x00806370",
@@ -637,24 +1498,35 @@
       "name": "NuWindQS",
       "symbol": "_NuWindQS",
       "address": "0x008065bc",
-      "units": [],
+      "units": [
+        "src/data.cpp"
+      ],
       "target_size": 4,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "2b0590796a9e6827c9483a48f51165b77b4b43ae3f6c48e47ac34f82e1602a6d",
+          "base_sha256": "2b0590796a9e6827c9483a48f51165b77b4b43ae3f6c48e47ac34f82e1602a6d"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "global_rand",
       "symbol": "_global_rand",
       "address": "0x008066c0",
       "units": [
-        "src/nurand.cpp"
+        "src/nurand.c"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nurand.cpp",
+          "unit": "src/nurand.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -668,11 +1540,64 @@
       "name": "ang",
       "symbol": "_ang",
       "address": "0x008066c8",
-      "units": [],
+      "units": [
+        "src/data.cpp"
+      ],
       "target_size": 1026,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 1026,
+          "base_size": 1026,
+          "target_sha256": "35e5094c1387d087543073af7c92e184affc1f354be19a64f04788956d371d60",
+          "base_sha256": "35e5094c1387d087543073af7c92e184affc1f354be19a64f04788956d371d60"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "cubeEdgeIndices",
+      "symbol": "_cubeEdgeIndices",
+      "address": "0x00806c00",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 96,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 96,
+          "base_size": 96,
+          "target_sha256": "427e410830ab552240cb8070d5f8d2e7d7e22630ced90af98bcce3e3e09b5595",
+          "base_sha256": "427e410830ab552240cb8070d5f8d2e7d7e22630ced90af98bcce3e3e09b5595"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "cubeEdgeTopologies",
+      "symbol": "_cubeEdgeTopologies",
+      "address": "0x00806c60",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 96,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 96,
+          "base_size": 96,
+          "target_sha256": "02f23f7bec55a0d316524ca1af54049074516a2e37d687501d0afb6f08282e45",
+          "base_sha256": "02f23f7bec55a0d316524ca1af54049074516a2e37d687501d0afb6f08282e45"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "??_R0?AVNuPostFilterGen@@@8",
@@ -918,11 +1843,22 @@
       "name": "crctab",
       "symbol": "_crctab",
       "address": "0x0080ed78",
-      "units": [],
+      "units": [
+        "src/data.cpp"
+      ],
       "target_size": 1024,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 1024,
+          "base_size": 1024,
+          "target_sha256": "0d31d328e929d3e6fc3aa8ec1d0352e14fcabfbf9cd5d4a651b5ec9eceeb8c7d",
+          "base_sha256": "0d31d328e929d3e6fc3aa8ec1d0352e14fcabfbf9cd5d4a651b5ec9eceeb8c7d"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "??_R0?AVPackStats@NuNetEmu@@@8",
@@ -1033,6 +1969,27 @@
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
+    },
+    {
+      "name": "NuKeyChar",
+      "symbol": "_NuKeyChar",
+      "address": "0x0080f5a0",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 520,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 520,
+          "base_size": 520,
+          "target_sha256": "5ef7875da0571e7cb6a64fa10cb0d1662f77751d83d5946a6a3dbeb7040b1baa",
+          "base_sha256": "5ef7875da0571e7cb6a64fa10cb0d1662f77751d83d5946a6a3dbeb7040b1baa"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "??_R0?AVEdClassInterface@@@8",
@@ -1178,21 +2135,64 @@
       "name": "partseed",
       "symbol": "_partseed",
       "address": "0x008102e8",
-      "units": [],
+      "units": [
+        "src/data.cpp"
+      ],
       "target_size": 4,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "8357f82fa23b46b77a2cc95b9c6807b30b7172701fb4d6c19774947c7cd989db",
+          "base_sha256": "8357f82fa23b46b77a2cc95b9c6807b30b7172701fb4d6c19774947c7cd989db"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "debrisseed",
       "symbol": "_debrisseed",
       "address": "0x00810900",
-      "units": [],
+      "units": [
+        "src/data.cpp"
+      ],
       "target_size": 4,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "8357f82fa23b46b77a2cc95b9c6807b30b7172701fb4d6c19774947c7cd989db",
+          "base_sha256": "8357f82fa23b46b77a2cc95b9c6807b30b7172701fb4d6c19774947c7cd989db"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "SkinFlipTab",
+      "symbol": "_SkinFlipTab",
+      "address": "0x00810b38",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 32,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 32,
+          "base_size": 32,
+          "target_sha256": "1ceca131529700bed78a25d78cb9035515928460abb98c06c24f5a1dd99eec9f",
+          "base_sha256": "1ceca131529700bed78a25d78cb9035515928460abb98c06c24f5a1dd99eec9f"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "??_R0?AVWavReader@@@8",
@@ -1815,22 +2815,1177 @@
       "status": "not implemented"
     },
     {
-      "name": "fseed",
-      "symbol": "_fseed",
-      "address": "0x0095e5f4",
+      "name": "MiniCutCam",
+      "symbol": "_MiniCutCam",
+      "address": "0x00855e00",
       "units": [
-        "src/nurand.cpp"
+        "src/data.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nurand.cpp",
+          "unit": "src/data.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
           "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
           "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "ChallengeMode",
+      "symbol": "_ChallengeMode",
+      "address": "0x00856c28",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "BonusCoinTotal",
+      "symbol": "_BonusCoinTotal",
+      "address": "0x0085ea94",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "NewMode",
+      "symbol": "_NewMode",
+      "address": "0x008765ac",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "reset_restart",
+      "symbol": "_reset_restart",
+      "address": "0x008765e4",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "party_cant_be_under_cover",
+      "symbol": "_party_cant_be_under_cover",
+      "address": "0x00876cec",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "makefreeplaymodellist",
+      "symbol": "_makefreeplaymodellist",
+      "address": "0x0087a9e8",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "LevelChangesInArea",
+      "symbol": "_LevelChangesInArea",
+      "address": "0x0087b2f4",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "loadareacharacters_loadedlevel",
+      "symbol": "_loadareacharacters_loadedlevel",
+      "address": "0x0087b2fc",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "peak_poly_count",
+      "symbol": "_peak_poly_count",
+      "address": "0x0087b4fc",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "poly_count",
+      "symbol": "_poly_count",
+      "address": "0x0087b500",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "frameout",
+      "symbol": "_frameout",
+      "address": "0x0087b544",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "HubMainRenderTimeHack",
+      "symbol": "_HubMainRenderTimeHack",
+      "address": "0x0087b55c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "new_level_from_menu",
+      "symbol": "_new_level_from_menu",
+      "address": "0x0087b73c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "dagobah_training",
+      "symbol": "_dagobah_training",
+      "address": "0x0088a56c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "curr_dat",
+      "symbol": "_curr_dat",
+      "address": "0x0091eea8",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "argc",
+      "symbol": "_argc",
+      "address": "0x0091ef34",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "argv",
+      "symbol": "_argv",
+      "address": "0x0091ef38",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "permbuffer_size",
+      "symbol": "_permbuffer_size",
+      "address": "0x0092488c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "permbuffer_base",
+      "symbol": "_permbuffer_base",
+      "address": "0x00924894",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "permbuffer_ptr",
+      "symbol": "_permbuffer_ptr",
+      "address": "0x00924898",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "permbuffer_end",
+      "symbol": "_permbuffer_end",
+      "address": "0x0092489c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "characterbuffer_base",
+      "symbol": "_characterbuffer_base",
+      "address": "0x009248ac",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "characterbuffer_ptr",
+      "symbol": "_characterbuffer_ptr",
+      "address": "0x009248b0",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "characterbuffer_end",
+      "symbol": "_characterbuffer_end",
+      "address": "0x009248b4",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "superbuffer_base",
+      "symbol": "_superbuffer_base",
+      "address": "0x009248c4",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "superbuffer_ptr",
+      "symbol": "_superbuffer_ptr",
+      "address": "0x009248c8",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "superbuffer_end",
+      "symbol": "_superbuffer_end",
+      "address": "0x009248cc",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "editbuffer_end",
+      "symbol": "_editbuffer_end",
+      "address": "0x009248d0",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "EDITBUFFERENDSIZE",
+      "symbol": "_EDITBUFFERENDSIZE",
+      "address": "0x009248d4",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "NextArea_FreePlay",
+      "symbol": "_NextArea_FreePlay",
+      "address": "0x0093b2bc",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "FreePlay",
+      "symbol": "_FreePlay",
+      "address": "0x0093b2c4",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "SuperStory",
+      "symbol": "_SuperStory",
+      "address": "0x0093b2c8",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "Arcade",
+      "symbol": "_Arcade",
+      "address": "0x0093b344",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "Paused",
+      "symbol": "_Paused",
+      "address": "0x0093b348",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "GAMEDEMO",
+      "symbol": "_GAMEDEMO",
+      "address": "0x0093b358",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "PLAYERCOUNT",
+      "symbol": "_PLAYERCOUNT",
+      "address": "0x0093d838",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "UsePlayerList",
+      "symbol": "_UsePlayerList",
+      "address": "0x0093d83c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "abort_load",
+      "symbol": "_abort_load",
+      "address": "0x0093d860",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "next_level",
+      "symbol": "_next_level",
+      "address": "0x0093d868",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "waiting_for_level",
+      "symbol": "_waiting_for_level",
+      "address": "0x0093d86c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "waiting_for_new_level",
+      "symbol": "_waiting_for_new_level",
+      "address": "0x0093d870",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "no_more_loads",
+      "symbol": "_no_more_loads",
+      "address": "0x0093d874",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "WorldInfo",
+      "symbol": "_WorldInfo",
+      "address": "0x0093d878",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 41816,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 41816,
+          "base_size": 41816,
+          "target_sha256": "4cad1af519f85a1a6bce45d43485ed715ea23c14e309b9ffc24b57901259bfe7",
+          "base_sha256": "4cad1af519f85a1a6bce45d43485ed715ea23c14e309b9ffc24b57901259bfe7"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "screendump",
+      "symbol": "_screendump",
+      "address": "0x00950764",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "pause_rndr_on",
+      "symbol": "_pause_rndr_on",
+      "address": "0x00950768",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "last_area",
+      "symbol": "_last_area",
+      "address": "0x0095123c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "reset_area",
+      "symbol": "_reset_area",
+      "address": "0x00951388",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "gone_through_door_to_new_level",
+      "symbol": "_gone_through_door_to_new_level",
+      "address": "0x009513a8",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "Door_UseCutCam",
+      "symbol": "_Door_UseCutCam",
+      "address": "0x00951440",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "Level",
+      "symbol": "_Level",
+      "address": "0x00951bc0",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "LevelChange",
+      "symbol": "_LevelChange",
+      "address": "0x00951bc4",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "CUTSTOPGAME",
+      "symbol": "_CUTSTOPGAME",
+      "address": "0x00951c00",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "ResetOldFStop",
+      "symbol": "_ResetOldFStop",
+      "address": "0x00955b54",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "fseed",
+      "symbol": "_fseed",
+      "address": "0x0095e5f4",
+      "units": [
+        "src/nurand.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nurand.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "win_message",
+      "symbol": "_win_message",
+      "address": "0x02975a94",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 28,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 28,
+          "base_size": 28,
+          "target_sha256": "3addfb141cd7c9c4c6543a82191a3707ac29c7a041217782e61d4d91c691aee8",
+          "base_sha256": "3addfb141cd7c9c4c6543a82191a3707ac29c7a041217782e61d4d91c691aee8"
         }
       ],
       "status": "exact"
@@ -5809,13 +7964,13 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 5098,
-    "matched_code_bytes": 442,
-    "matching_percent": 0.012733179959011836,
-    "mapped_functions": 22,
-    "matched_functions": 13,
+    "mapped_code_bytes": 5437,
+    "matched_code_bytes": 892,
+    "matching_percent": 0.025696824713661897,
+    "mapped_functions": 36,
+    "matched_functions": 32,
     "image_bytes": 40067072,
-    "mapped_bytes": 12722,
-    "mapping_percent": 0.031751758651093843
+    "mapped_bytes": 56029,
+    "mapping_percent": 0.1398380196087201
   }
 }

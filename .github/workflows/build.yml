@@ -24,7 +24,7 @@ jobs:
         run: |
           sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ca-certificates make wine wine64 wine32:i386
+          sudo apt-get install -y --no-install-recommends ca-certificates make wine wine64 wine32:i386 clang-format-18 clang-tidy-18
       - name: Cache pinned compiler, linker, SDK and objdiff
         uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
@@ -34,8 +34,13 @@ jobs:
           key: matching-tools-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('config/toolchain.json', 'config/tools.json') }}
       - name: Download or verify pinned tools
         run: python3 tools/setup.py
+      - name: Check C and C++ formatting and lint
+        run: make lint
+        env:
+          CLANG_FORMAT: clang-format-18
+          CLANG_TIDY: clang-tidy-18
       - name: Check project and tooling
-        run: make check
+        run: make check-core
       - name: Build executable and check symbol coverage
         run: make -j"$(nproc)" build check-objects
       # Matching runs locally against the user's copy of the original executable.

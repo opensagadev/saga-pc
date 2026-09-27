@@ -12,8 +12,8 @@ for mapping rules and identification evidence. Run commands from the repository 
 ## Architecture
 
 - The default build links our PC x86 sources into `build/LEGOStarWarsSaga.exe`
-  using the original MSVC linker and static CRT. Its WinMain/NuMain are currently
-  stubs; a successful link does not mean the game is reconstructed. No retail
+  using the original MSVC linker and static CRT. Its entry path is still
+  incomplete; a successful link does not mean the game is reconstructed. No retail
   bytes are used to produce this EXE. Matching uses the individual COFF objects.
   There are no host game or WASM targets.
 - GNU Make owns dependencies. Use `make -j"$(nproc)"` for bounded parallel builds.
@@ -28,9 +28,12 @@ for mapping rules and identification evidence. Run commands from the repository 
   headers for APIs they provide. Do not use Wine headers or duplicate SDK types.
   Wine runs the compiler/linker. Setup installs the original CRT/STL and Platform
   SDK headers/libraries and checksums their complete trees.
-  Guard C linkage
-  with `__cplusplus` and hide C++-only declarations from C. `.c` and `.cpp` units
-  exercise both compiler front ends. Preserve C++ linkage where the map uses it.
+  Use `.c` for C routines and `.cpp` when C++ linkage or features are needed.
+  Guard shared C declarations with `__cplusplus` and hide C++-only declarations
+  from C. Use `STATIC_ASSERT(...)` for verified sizes and offsets. Source units
+  may use subsystem directories, but keep both headers directly in `src/`.
+  Avoid repetitive file-header comments; keep source attribution in the docs.
+  Preserve C++ linkage where the map uses it.
 - Use VC8's native C++98/03-era dialect with MS extensions. It has no `/std` switch;
   do not infer full C++03 conformance from the era or impose an artificial strict
   C++98 mode. Follow constructs accepted by the pinned compiler and check output.
@@ -54,8 +57,10 @@ coverage or standalone matching result. Record callsite evidence in Markdown.
 Do not copy Android sizes, C++ layouts or vtable slot numbers onto the PC.
 
 Use constants, calls, strings, neighbors, shared state and vtables to identify
-anchors. Android source is a reference; its layout, ABI and names do not prove PC
-identity. Record evidence and uncertainty in `config/symbols.md`, preserve Android
+anchors. The PC retail executable is authoritative. Never port Android-specific code,
+constants or layouts. Android source is a reference; its layout, ABI and names
+do not prove PC identity. Verify every port with the pinned Windows compiler
+and original PC bytes. Record evidence and uncertainty in `config/symbols.md`, preserve Android
 attribution, and do not modify the separate Android repository as part of PC work.
 
 Keep the CSV sorted by original address. Add a mapping for every compiled function
@@ -67,7 +72,8 @@ use distinct reconstruction names for unrelated file-local entities.
 ## Required verification
 
 Run `make check` and `make -j"$(nproc)" build check-objects`. These require no original:
-static map/layout/input checks, synthetic tests, objdiff fixture integration after
+clang-format/clang-tidy policies, static map/layout/input checks, synthetic tests,
+objdiff fixture integration after
 setup, compilation/linking, complete symbol coverage and resolvable supported relocations.
 Unknown inventory entries are allowed; compiled definitions need known original
 sizes. Different rebuilt sizes are allowed for work in progress, not proof of matching.
@@ -99,7 +105,12 @@ nothing; overlapping aliases count once. Mapping includes image gaps/headers/pad
 in its denominator and is not a count of identified functions. Never alter bounds
 or bindings simply to improve a metric.
 
-CI installs pinned tools and runs the original-free checks. PR comments update one
+CI installs pinned tools and runs the original-free checks. `make lint` checks
+formatting and static analysis; `make check-core` runs the remaining checks.
+CI uses LLVM 18; local Clang 18+ is supported with `CLANG_FORMAT`/`CLANG_TIDY`
+overrides. Clang analyzes Windows x86 using a generated case-insensitive VFS
+overlay over verified Microsoft headers; never substitute host or Wine headers.
+The real compiler and matching flags remain MSVC 2005. PR comments update one
 bot comment from committed report snapshots; those reported numbers do not prove
 retail matching. The comment workflow reads PR data without checking out or running
 PR code with its write token.

@@ -327,8 +327,16 @@ class COFF:
         """Return named code/data definitions, excluding COFF/debug metadata."""
         result = []
         for symbol in self.symbols:
-            if (not symbol["name"] or symbol["section"] <= 0
-                    or symbol["storage_class"] not in (2, 3)):
+            if not symbol["name"] or symbol["storage_class"] not in (2, 3):
+                continue
+            # External section-zero symbols with nonzero Value are common
+            # allocations. Value is their size, not an offset or an address.
+            if symbol["section"] == 0 and symbol["storage_class"] == 2 and symbol["value"]:
+                if symbol["type"] & 0x20:
+                    raise BinaryError(f"COFF common symbol cannot be a function: {symbol['name']!r}")
+                result.append(symbol)
+                continue
+            if symbol["section"] <= 0:
                 continue
             if symbol["section"] > len(self.sections):
                 raise BinaryError("Definition section is out of bounds")
@@ -350,7 +358,8 @@ class COFF:
         if len(matches) != 1:
             raise BinaryError(f"Expected one defined symbol {name!r}, found {len(matches)}")
         symbol = matches[0]
-        return symbol, self.sections[symbol["section"] - 1]
+        section = self.sections[symbol["section"] - 1] if symbol["section"] else None
+        return symbol, section
 
     def _relocations(self, section, start, size, kind):
         if section["characteristics"] & 0x01000000:
@@ -383,7 +392,7 @@ class COFF:
 
     def extract_function(self, name):
         symbol, section = self._definition(name)
-        if not section["characteristics"] & 0x20 or not symbol["type"] & 0x20:
+        if section is None or not section["characteristics"] & 0x20 or not symbol["type"] & 0x20:
             raise BinaryError(f"Symbol {name!r} is not a COFF function in a code section")
         start = symbol["value"]
         size = _unpack("<I", symbol["aux"][0], 4)[0] if symbol["aux"] else 0
@@ -406,6 +415,10 @@ class COFF:
     def extract_data(self, name):
         """Extract a full initializer through the next data symbol or section end."""
         symbol, section = self._definition(name)
+        if section is None:
+            size = symbol["value"]
+            return {"bytes": bytes(size), "size": size, "size_source": "COFF common Value",
+                    "offset": 0, "section": None, "symbol": symbol, "relocations": []}
         flags = section["characteristics"]
         if flags & 0x20 or not flags & 0xc0 or symbol["type"] & 0x20:
             raise BinaryError(f"Symbol {name!r} is not a named COFF data object")

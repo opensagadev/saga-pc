@@ -1,7 +1,3 @@
-// See LICENSE (GNU GPL version 3).
-// Imports missing from the bundled Visual C++ 2005 CRT and Platform SDK.
-// Public DirectX APIs use their documented x86 ABI. Pointer-only types remain
-// incomplete until reconstructed source needs their layouts or interface methods.
 #ifndef SAGA_EXTERNALS_H
 #define SAGA_EXTERNALS_H
 
@@ -37,10 +33,7 @@ typedef struct _XINPUT_VIBRATION XINPUT_VIBRATION;
 typedef struct _XINPUT_CAPABILITIES XINPUT_CAPABILITIES;
 
 // The enum tags and widths are fixed; add named values as source needs them.
-typedef enum _D3DFORMAT {
-    D3DFMT_UNKNOWN = 0,
-    D3DFMT_FORCE_DWORD = 0x7fffffff
-} D3DFORMAT;
+typedef enum _D3DFORMAT { D3DFMT_UNKNOWN = 0, D3DFMT_FORCE_DWORD = 0x7fffffff } D3DFORMAT;
 typedef enum _D3DPOOL {
     D3DPOOL_DEFAULT = 0,
     D3DPOOL_MANAGED = 1,
@@ -48,10 +41,7 @@ typedef enum _D3DPOOL {
     D3DPOOL_SCRATCH = 3,
     D3DPOOL_FORCE_DWORD = 0x7fffffff
 } D3DPOOL;
-typedef enum _D3DXIMAGE_FILEFORMAT {
-    D3DXIFF_BMP = 0,
-    D3DXIFF_FORCE_DWORD = 0x7fffffff
-} D3DXIMAGE_FILEFORMAT;
+typedef enum _D3DXIMAGE_FILEFORMAT { D3DXIFF_BMP = 0, D3DXIFF_FORCE_DWORD = 0x7fffffff } D3DXIMAGE_FILEFORMAT;
 
 #ifdef __cplusplus
 extern "C" {
@@ -59,21 +49,42 @@ extern "C" {
 
     __declspec(dllimport) int __stdcall D3DPERF_BeginEvent(D3DCOLOR, const WCHAR *);
     __declspec(dllimport) int __stdcall D3DPERF_EndEvent(void);
-    __declspec(dllimport) HRESULT __stdcall D3DXCompileShader(const char *, UINT, const D3DXMACRO *, ID3DXInclude *, const char *, const char *, DWORD, ID3DXBuffer **, ID3DXBuffer **, ID3DXConstantTable **);
+    __declspec(dllimport) HRESULT __stdcall D3DXCompileShader(const char *, UINT, const D3DXMACRO *, ID3DXInclude *,
+                                                              const char *, const char *, DWORD, ID3DXBuffer **,
+                                                              ID3DXBuffer **, ID3DXConstantTable **);
     __declspec(dllimport) HRESULT __stdcall D3DXCreateBuffer(DWORD, ID3DXBuffer **);
-    __declspec(dllimport) HRESULT __stdcall D3DXCreateCubeTextureFromFileInMemory(IDirect3DDevice9 *, const void *, UINT, IDirect3DCubeTexture9 **);
-    __declspec(dllimport) HRESULT __stdcall D3DXCreateEffect(IDirect3DDevice9 *, const void *, UINT, const D3DXMACRO *, ID3DXInclude *, DWORD, ID3DXEffectPool *, ID3DXEffect **, ID3DXBuffer **);
-    __declspec(dllimport) HRESULT __stdcall D3DXCreateEffectCompiler(const char *, UINT, const D3DXMACRO *, ID3DXInclude *, DWORD, ID3DXEffectCompiler **, ID3DXBuffer **);
-    __declspec(dllimport) HRESULT __stdcall D3DXCreateEffectFromFileA(IDirect3DDevice9 *, const char *, const D3DXMACRO *, ID3DXInclude *, DWORD, ID3DXEffectPool *, ID3DXEffect **, ID3DXBuffer **);
-    __declspec(dllimport) HRESULT __stdcall D3DXCreateFontA(IDirect3DDevice9 *, INT, UINT, UINT, UINT, BOOL, DWORD, DWORD, DWORD, DWORD, const char *, ID3DXFont **);
-    __declspec(dllimport) HRESULT __stdcall D3DXCreateRenderToSurface(IDirect3DDevice9 *, UINT, UINT, D3DFORMAT, BOOL, D3DFORMAT, ID3DXRenderToSurface **);
-    __declspec(dllimport) HRESULT __stdcall D3DXCreateTextureFromFileInMemory(IDirect3DDevice9 *, const void *, UINT, IDirect3DTexture9 **);
-    __declspec(dllimport) HRESULT __stdcall D3DXCreateTextureFromFileInMemoryEx(IDirect3DDevice9 *, const void *, UINT, UINT, UINT, UINT, DWORD, D3DFORMAT, D3DPOOL, DWORD, DWORD, D3DCOLOR, D3DXIMAGE_INFO *, PALETTEENTRY *, IDirect3DTexture9 **);
-    __declspec(dllimport) D3DXMATRIX * __stdcall D3DXMatrixLookAtLH(D3DXMATRIX *, const D3DXVECTOR3 *, const D3DXVECTOR3 *, const D3DXVECTOR3 *);
-    __declspec(dllimport) D3DXMATRIX * __stdcall D3DXMatrixMultiply(D3DXMATRIX *, const D3DXMATRIX *, const D3DXMATRIX *);
-    __declspec(dllimport) D3DXMATRIX * __stdcall D3DXMatrixOrthoLH(D3DXMATRIX *, FLOAT, FLOAT, FLOAT, FLOAT);
-    __declspec(dllimport) HRESULT __stdcall D3DXSaveSurfaceToFileInMemory(ID3DXBuffer **, D3DXIMAGE_FILEFORMAT, IDirect3DSurface9 *, const PALETTEENTRY *, const RECT *);
-    __declspec(dllimport) IDirect3D9 * __stdcall Direct3DCreate9(UINT);
+    __declspec(dllimport) HRESULT __stdcall D3DXCreateCubeTextureFromFileInMemory(IDirect3DDevice9 *, const void *,
+                                                                                  UINT, IDirect3DCubeTexture9 **);
+    __declspec(dllimport) HRESULT __stdcall D3DXCreateEffect(IDirect3DDevice9 *, const void *, UINT, const D3DXMACRO *,
+                                                             ID3DXInclude *, DWORD, ID3DXEffectPool *, ID3DXEffect **,
+                                                             ID3DXBuffer **);
+    __declspec(dllimport) HRESULT __stdcall D3DXCreateEffectCompiler(const char *, UINT, const D3DXMACRO *,
+                                                                     ID3DXInclude *, DWORD, ID3DXEffectCompiler **,
+                                                                     ID3DXBuffer **);
+    __declspec(dllimport) HRESULT __stdcall D3DXCreateEffectFromFileA(IDirect3DDevice9 *, const char *,
+                                                                      const D3DXMACRO *, ID3DXInclude *, DWORD,
+                                                                      ID3DXEffectPool *, ID3DXEffect **,
+                                                                      ID3DXBuffer **);
+    __declspec(dllimport) HRESULT __stdcall D3DXCreateFontA(IDirect3DDevice9 *, INT, UINT, UINT, UINT, BOOL, DWORD,
+                                                            DWORD, DWORD, DWORD, const char *, ID3DXFont **);
+    __declspec(dllimport) HRESULT __stdcall D3DXCreateRenderToSurface(IDirect3DDevice9 *, UINT, UINT, D3DFORMAT, BOOL,
+                                                                      D3DFORMAT, ID3DXRenderToSurface **);
+    __declspec(dllimport) HRESULT __stdcall D3DXCreateTextureFromFileInMemory(IDirect3DDevice9 *, const void *, UINT,
+                                                                              IDirect3DTexture9 **);
+    __declspec(dllimport) HRESULT __stdcall D3DXCreateTextureFromFileInMemoryEx(IDirect3DDevice9 *, const void *, UINT,
+                                                                                UINT, UINT, UINT, DWORD, D3DFORMAT,
+                                                                                D3DPOOL, DWORD, DWORD, D3DCOLOR,
+                                                                                D3DXIMAGE_INFO *, PALETTEENTRY *,
+                                                                                IDirect3DTexture9 **);
+    __declspec(dllimport) D3DXMATRIX *__stdcall D3DXMatrixLookAtLH(D3DXMATRIX *, const D3DXVECTOR3 *,
+                                                                   const D3DXVECTOR3 *, const D3DXVECTOR3 *);
+    __declspec(dllimport) D3DXMATRIX *__stdcall D3DXMatrixMultiply(D3DXMATRIX *, const D3DXMATRIX *,
+                                                                   const D3DXMATRIX *);
+    __declspec(dllimport) D3DXMATRIX *__stdcall D3DXMatrixOrthoLH(D3DXMATRIX *, FLOAT, FLOAT, FLOAT, FLOAT);
+    __declspec(dllimport) HRESULT __stdcall D3DXSaveSurfaceToFileInMemory(ID3DXBuffer **, D3DXIMAGE_FILEFORMAT,
+                                                                          IDirect3DSurface9 *, const PALETTEENTRY *,
+                                                                          const RECT *);
+    __declspec(dllimport) IDirect3D9 *__stdcall Direct3DCreate9(UINT);
     __declspec(dllimport) HRESULT __stdcall DirectInput8Create(HINSTANCE, DWORD, REFIID, void **, IUnknown *);
     __declspec(dllimport) HRESULT __stdcall DirectSoundCreate8(LPCGUID, LPDIRECTSOUND8 *, LPUNKNOWN);
     __declspec(dllimport) DWORD __stdcall XInputGetCapabilities(DWORD, DWORD, XINPUT_CAPABILITIES *);
@@ -86,18 +97,18 @@ extern "C" {
 
     // binkw32.dll export suffixes establish stack sizes, not parameter types.
     // These symbols name opaque IAT slots; their function signatures are unknown.
-    extern void *saga_import_binkw32_dll__BinkSetSoundTrack_8; // _BinkSetSoundTrack@8
-    extern void *saga_import_binkw32_dll__BinkOpen_8; // _BinkOpen@8
-    extern void *saga_import_binkw32_dll__BinkNextFrame_4; // _BinkNextFrame@4
-    extern void *saga_import_binkw32_dll__BinkSetVolume_12; // _BinkSetVolume@12
-    extern void *saga_import_binkw32_dll__BinkOpenDirectSound_4; // _BinkOpenDirectSound@4
-    extern void *saga_import_binkw32_dll__BinkSetSoundSystem_8; // _BinkSetSoundSystem@8
-    extern void *saga_import_binkw32_dll__BinkDoFrame_4; // _BinkDoFrame@4
+    extern void *saga_import_binkw32_dll__BinkSetSoundTrack_8;     // _BinkSetSoundTrack@8
+    extern void *saga_import_binkw32_dll__BinkOpen_8;              // _BinkOpen@8
+    extern void *saga_import_binkw32_dll__BinkNextFrame_4;         // _BinkNextFrame@4
+    extern void *saga_import_binkw32_dll__BinkSetVolume_12;        // _BinkSetVolume@12
+    extern void *saga_import_binkw32_dll__BinkOpenDirectSound_4;   // _BinkOpenDirectSound@4
+    extern void *saga_import_binkw32_dll__BinkSetSoundSystem_8;    // _BinkSetSoundSystem@8
+    extern void *saga_import_binkw32_dll__BinkDoFrame_4;           // _BinkDoFrame@4
     extern void *saga_import_binkw32_dll__BinkCopyToBufferRect_44; // _BinkCopyToBufferRect@44
-    extern void *saga_import_binkw32_dll__BinkGetRealtime_12; // _BinkGetRealtime@12
-    extern void *saga_import_binkw32_dll__BinkWait_4; // _BinkWait@4
-    extern void *saga_import_binkw32_dll__BinkGoto_12; // _BinkGoto@12
-    extern void *saga_import_binkw32_dll__BinkClose_4; // _BinkClose@4
+    extern void *saga_import_binkw32_dll__BinkGetRealtime_12;      // _BinkGetRealtime@12
+    extern void *saga_import_binkw32_dll__BinkWait_4;              // _BinkWait@4
+    extern void *saga_import_binkw32_dll__BinkGoto_12;             // _BinkGoto@12
+    extern void *saga_import_binkw32_dll__BinkClose_4;             // _BinkClose@4
 
 #ifdef __cplusplus
 }

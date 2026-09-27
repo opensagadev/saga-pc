@@ -1,5 +1,3 @@
-// See LICENSE (GNU GPL version 3).
-// Adapted from opensagadev/saga: src/nu2api/numath/nutrig.c.
 #include "saga.h"
 
 NUANG NuAngAdd(NUANG a, NUANG b) {

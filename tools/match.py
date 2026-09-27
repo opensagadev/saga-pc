@@ -120,8 +120,8 @@ def main():
                                  "external declarations are excluded from reconstruction matching")
             continue
         definitions = definitions_for(objects, symbol)
-        kinds = {bool(s["type"] & 0x20) for _, obj in definitions for s in obj.symbols
-                 if s["name"] == symbol and s["section"] > 0}
+        kinds = {bool(s["type"] & 0x20) for _, obj in definitions for s in obj.defined_symbols()
+                 if s["name"] == symbol}
         if len(kinds) > 1:
             raise ValueError(f"Linker name {symbol!r} identifies both code and data")
         # For unknown symbols, the original code range identifies inventory

@@ -17,4 +17,4 @@ CheckOptions:
   - key: google-runtime-int.TypeSuffix
     value: ""
 
-HeaderFilterRegex: "^src/"
+HeaderFilterRegex: "(^|/)src/"

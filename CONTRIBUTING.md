@@ -3,20 +3,21 @@
 This project reconstructs the GOG PC executable with MSVC 2005 and compares the
 resulting x86 COFF objects against the original. The default build also links
 our current sources into a Windows executable using the original MSVC linker
-and libraries. The entry stub currently exits; the game remains incomplete.
+and libraries. The entry path currently initializes command-line/world state and
+exits; the game remains incomplete.
 There are no host or WebAssembly game targets.
 
 ## Requirements and setup
 
 The environment supports **Linux x86-64** and requires Python 3.11+, GNU Make,
-Git, CA certificates, and Wine with 32-bit Windows support. On Debian 12 /
-Ubuntu 24.04 or newer:
+Git, CA certificates, Wine with 32-bit Windows support, and clang-format /
+clang-tidy 18 or newer. CI uses LLVM 18. On Ubuntu 24.04:
 
 ```sh
 sudo dpkg --add-architecture i386
 sudo apt-get update
 sudo apt-get install --no-install-recommends \
-    ca-certificates git make python3 wine wine64 wine32:i386
+    ca-certificates git make python3 wine wine64 wine32:i386 clang-format-18 clang-tidy-18
 ```
 
 On another Linux distribution, install the same prerequisites with its package
@@ -30,8 +31,8 @@ make check
 make -j"$(nproc)" build check-objects
 ```
 
-`make setup` downloads checksum-pinned MSVC 2005, its linker, and objdiff-cli into ignored
-`build/tools/`. The compiler installation includes its original CRT/STL headers
+`make setup` downloads checksum-pinned MSVC 2005, its linker, and objdiff-cli
+into ignored `build/tools/`. The compiler installation includes its original CRT/STL headers
 and libraries and the bundled Windows Platform SDK. Their complete extracted
 trees are verified as well as the compiler/linker executables. Wine runs the tools;
 the build does not use Wine headers. For compiler-only work, use
@@ -75,16 +76,24 @@ are ignored; see [res/README.md](res/README.md).
 Identify the original function or global, record its boundary and references in
 [config/symbols.csv](config/symbols.csv), then implement it under `src/` and add
 shared declarations to [src/saga.h](src/saga.h). Keep shared game types, calling
-conventions, and layout assertions there. APIs absent from the bundled Microsoft
+conventions, and `STATIC_ASSERT(...)` layout checks there. Source units may be
+grouped into subsystem directories; keep `saga.h` and `externals.h` directly in
+`src/`. Use `.c` for C routines and `.cpp` where C++ linkage or features are
+needed. APIs absent from the bundled Microsoft
 headers have declarations in `src/externals.h`, included by `saga.h`; do not copy
-SDK declarations into it. Preserve Android source
-attribution when transferring code. Record identification evidence and uncertainty
+SDK declarations into it. The PC retail executable is authoritative: never
+transfer Android-specific behavior, constants or layouts. Check every transferred
+routine against the Windows build and original PC bytes. Keep source attribution
+and identification evidence in the documentation instead of repeated file-header
+comments. Record identification evidence and uncertainty
 in [config/symbols.md](config/symbols.md).
 
 See [the identification guide](config/identification.md) for recovering PC
 function boundaries, matching Android call/data relationships, and defining
 typed data. It includes a worked seed-initialization example and explains
-which analysis results still need review before entering the symbol map.
+which analysis results still need review before entering the symbol map. The
+[data inventory](config/data.md) documents shared definitions and remaining gaps;
+[the NuMain queue](config/numain.md) keeps unconfirmed call/data candidates separate.
 
 Run the checks while iterating:
 
@@ -96,9 +105,25 @@ make -j"$(nproc)" diff 'FUNC=?qrand@@YAHXZ'
 make -j"$(nproc)" match
 ```
 
-`make check` runs static project checks and synthetic regression tests, including
+`make check` runs formatting, static analysis, project checks and synthetic
+regression tests, including
 an objdiff-cli roundtrip using generated fixture objects. That integration test
 is skipped locally only when objdiff has not been installed; CI installs it.
+`make lint` runs both clang-format and clang-tidy with the committed configurations.
+Named LLVM 18 executables are preferred; set `CLANG_FORMAT` / `CLANG_TIDY` to
+select installed binaries. Missing tools and reported violations fail the check.
+Use LLVM 18 for the same formatting version as CI. `make check-core` runs the
+remaining project/tests portion after lint has already passed.
+
+Clang analyzes the Windows x86 target with MSVC compatibility and the verified
+original CRT/SDK headers. A generated case-insensitive VFS overlay in `build/lint/`
+handles Windows header spelling on Linux. It uses no host or Wine headers and
+has no effect on MSVC compilation or matching. Two obsolete SDK intrinsic names
+are aliased only during analysis to avoid conflicts with modern Clang builtins.
+The SDK's required `_WIN32_WINNT` macro spelling and fundamental integer alias
+definitions have narrowly scoped lint suppressions; other source policy remains
+enforced. Clang is a source-analysis tool here, not the matching compiler.
+
 The compiler integration tests exercise C/C++ headers, SDK declarations and a
 source-only EXE link and execution under Wine, including unresolved-reference
 failure. These checks require the pinned tools; CI always installs them.
@@ -121,9 +146,10 @@ report compilation and check results explicitly as **matching unverified**;
 do not fabricate or refresh a matching report without the original.
 
 [GitHub Actions](.github/workflows/build.yml) runs all validation that requires
-no original game files: `make check` followed by
+no original game files: a separate `make lint` step, `make check-core`, then
 `make -j"$(nproc)" build check-objects`, including executable linking. It installs
-and caches the compiler, linker, SDK and objdiff, verifying their hashes on every run. CI has no
+and caches the compiler, linker, SDK and objdiff, verifying their hashes on
+every run. CI has no
 retail executable, so passing CI does not establish matching or refresh reports.
 
 The [progress workflow](.github/workflows/progress.yml) updates one bot comment
@@ -220,8 +246,8 @@ resulting code.
 
 `.c` files use VC8's legacy C front end; `.cpp` files use C++. `src/saga.h` guards
 its shared `extern "C"` block with `__cplusplus`, and hides C++-linkage declarations
-from C. The angle unit is compiled as C, while the random units compile as C++,
-so every build exercises the shared header in both languages.
+from C. The angle and C random-number units compile as C; `qrand` and `ResetSeeds` retain
+C++ linkage. Every build exercises the shared header in both languages.
 
 The initial random-number and angle code comes from the Android project. Most
 bodies transfer unchanged; `NuAngAdd` and `NuAngSub` use the equivalent
@@ -233,10 +259,16 @@ config/            Target/tool pins, symbol inventory and identification notes
 src/saga.h         All shared declarations and layout checks
 src/externals.h    Declarations for APIs absent from the bundled SDK
 src/externals.c    Declaration-only external dependency unit
-src/batman.cpp     Windows entry point and application entry stub
-src/nurand.cpp     Random-number routines
+src/batman.c       Windows entry point and partial application initialization
+src/data.cpp       Verified shared PC data and constants
+src/nurand.c       Random-number routines
 src/nuang.c        Angle routines
-src/qrand.cpp       C++ random-number routine and state
+src/qrand.cpp      C++ random-number routine and state
+src/nu2api/        Command-line, archive and Windows platform routines
+src/legoapi/       Game helpers and world initialization
+src/legogame/      Startup buffer setup
+src/gameapi/       Terrain editor hooks
+src/gamelib/       Wind random-number routine
 res/               Your original executable (ignored)
 tools/             Helpers, shared libraries, and test_*.py checks
 build/obj/         Compiled MSVC objects (ignored)
