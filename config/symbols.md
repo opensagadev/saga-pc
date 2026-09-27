@@ -224,3 +224,15 @@ wrapper is intentionally nonmatching. Its three-byte zero-return callee at
 `this+0x19c/0x1a0/0x1a4` and matches with its real C++ linkage. These are
 reconstruction linker names for a stripped executable, not recovered retail
 symbol spellings.
+
+The `InitOnce` dispatcher passes token `0x18`, the seven-pointer table at
+`0x007ef090`, and count seven. Its PC branch calls `StartupOpenDats` at
+`0x006d3440`; the C reconstruction matches all 116 bytes and ten resolved
+relocations. That helper installs `GAME.DAT` through `NuDatSet` and the
+10-byte `NuSound3SetDat` setter. It does not perform archive-member reads.
+`NuDatFileSeek`, `NuDatCalcPos`, and the archive-slot allocators have separate
+PC call and boundary evidence; `NuDatFileOpen` is structurally reconstructed
+but remains byte-different and is not yet called by the source file-open
+dispatcher. The new `GameAnimSys` records use PC strides `0x28`, `0x14`,
+`0x1c`, and `0x10` for object, pool, set, and system respectively; its
+progress state at `0x00956634` is a 12-byte zero initializer.

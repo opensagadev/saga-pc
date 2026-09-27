@@ -1,7 +1,6 @@
 #include "saga.h"
 
 struct SoundQueue;
-class NuMusic;
 #pragma bss_seg(".bss$the_music_player")
 NuMusic *the_music_player;
 #pragma bss_seg()
@@ -73,6 +72,10 @@ extern "C" {
     i32 SUPERBUFFERSIZE = 0x09600000;
     i32 StartupGameFlag0;
     i32 StartupGameFlag1 = 1;
+    NUDATHDR *StartupDatList[7];
+    i32 StartupDatCount;
+    NUDATHDR *NuSoundDat;
+    GAMEANIMPROGRESS gameanimsysprogress;
     VARIPTR original_permbuffer_base;
     char InitOnceCurrentDirectory[1];
 #pragma const_seg(".rdata$InitOnceAllocSource")
@@ -99,6 +102,16 @@ extern "C" {
     VUFNT *QFont2D;
     VUFNT *QFont2DButtons;
     VUFNT *system_qfont;
+    NUTEXDIM_PC **NuTextureDimensions;
+    NUFPAR_PC NuFParRecords[4];
+    char NuFParBuffers[4][0x1000];
+    NUFPAR_PC *NuFParRecordBase;
+    char *NuFParBufferBase;
+    i32 file_criticalsection;
+    PC_NUDATFILEINFO *unpack_file_info;
+    NUDATOPENFILEINFO *unpack_file_odi;
+    i64 unpack_file_pos;
+    i32 decode_buffer_left;
     f32 nuqfnt_space_width;
     f32 qfnt_len_scale = 1.0f;
     f32 qfnt_height_scale = 1.0f;
@@ -115,6 +128,9 @@ extern "C" {
     f32 qfnt_rezscale_w = 1.0f;
     f32 qfnt_rezscale_h = 1.0f;
     extern const f32 nu_fsign_minus_one = -1.0f;
+#pragma const_seg(".rdata$NuQFntHalfScale")
+    extern const f64 NuQFntHalfScale = 0.5;
+#pragma const_seg()
     GAMESAVE Game;
     OPTIONSSAVE TempOptions;
     PLAYERPROGRESS PlayerProgress[8];
@@ -215,6 +231,27 @@ extern "C" {
 #pragma const_seg()
     DAT_HANDLES_PC NuDatHandles;
     i32 finishloop_backdroponly;
+#pragma const_seg(".rdata$StartupGameDat")
+    extern const char StartupGameDat[9] = "GAME.DAT";
+#pragma const_seg(".rdata$StartupEpisodeIDat")
+    extern const char StartupEpisodeIDat[14] = "Episode_I.DAT";
+#pragma const_seg(".rdata$StartupEpisodeIIDat")
+    extern const char StartupEpisodeIIDat[15] = "Episode_II.DAT";
+#pragma const_seg(".rdata$StartupEpisodeIIIDat")
+    extern const char StartupEpisodeIIIDat[16] = "Episode_III.DAT";
+#pragma const_seg(".rdata$StartupEpisodeIVDat")
+    extern const char StartupEpisodeIVDat[15] = "Episode_IV.DAT";
+#pragma const_seg(".rdata$StartupEpisodeVDat")
+    extern const char StartupEpisodeVDat[14] = "Episode_V.DAT";
+#pragma const_seg(".rdata$StartupEpisodeVIDat")
+    extern const char StartupEpisodeVIDat[15] = "Episode_VI.DAT";
+#pragma const_seg()
+#pragma data_seg(".data$StartupDatNames")
+    const char *StartupDatNames[7] = {
+        StartupGameDat,      StartupEpisodeIDat, StartupEpisodeIIDat, StartupEpisodeIIIDat,
+        StartupEpisodeIVDat, StartupEpisodeVDat, StartupEpisodeVIDat,
+    };
+#pragma data_seg()
 #pragma const_seg(".rdata$EpisodeIDat")
     extern const char EpisodeIDat[14] = "Episode_I.dat";
 #pragma const_seg(".rdata$EpisodeIIDat")
@@ -584,7 +621,9 @@ extern "C" {
     void *DebrisGlassCopyMaterial = NULL;
     f32 DebrisGlassU1 = 0.0f;
     f32 DebrisGlassV1 = 0.0f;
-    i32 DebrisGlassTextureWidth = 0;
+#pragma bss_seg(".bss$DebrisGlassTextureWidth")
+    i32 DebrisGlassTextureWidth;
+#pragma bss_seg()
 #pragma bss_seg(".bss$DebrisGlassTextureHeight")
     i32 DebrisGlassTextureHeight;
 #pragma bss_seg()

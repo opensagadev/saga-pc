@@ -1,48 +1,5 @@
 #include "saga.h"
 
-typedef struct nufpar_pc_s {
-    char *file_buffer;
-    NUFILE file_handle;
-    char file_name[0x100];
-    char line_buffer[0x202];
-    char word_buffer[0x202];
-    char *line_buffer_ptr;
-    char *word_buffer_ptr;
-    i32 line_buffer_size;
-    i32 word_buffer_size;
-    i32 line_number;
-    i32 line_position;
-    i32 character_position;
-    i32 buffer_start;
-    i32 buffer_end;
-    u8 unknown_0530[0x40];
-    i32 command_position;
-    i32 file_size;
-    u8 is_utf16;
-    u8 is_utf8;
-    u8 unknown_057a[2];
-    char *separator_list;
-    char *separator_tokens;
-} NUFPAR_PC;
-
-STATIC_ASSERT(offsetof(NUFPAR_PC, file_handle) == 0x4);
-STATIC_ASSERT(offsetof(NUFPAR_PC, line_buffer) == 0x108);
-STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer) == 0x30a);
-STATIC_ASSERT(offsetof(NUFPAR_PC, line_buffer_ptr) == 0x50c);
-STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer_ptr) == 0x510);
-STATIC_ASSERT(offsetof(NUFPAR_PC, line_buffer_size) == 0x514);
-STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer_size) == 0x518);
-STATIC_ASSERT(offsetof(NUFPAR_PC, line_number) == 0x51c);
-STATIC_ASSERT(offsetof(NUFPAR_PC, line_position) == 0x520);
-STATIC_ASSERT(offsetof(NUFPAR_PC, character_position) == 0x524);
-STATIC_ASSERT(offsetof(NUFPAR_PC, buffer_start) == 0x528);
-STATIC_ASSERT(offsetof(NUFPAR_PC, buffer_end) == 0x52c);
-STATIC_ASSERT(offsetof(NUFPAR_PC, is_utf16) == 0x578);
-STATIC_ASSERT(offsetof(NUFPAR_PC, is_utf8) == 0x579);
-STATIC_ASSERT(offsetof(NUFPAR_PC, separator_list) == 0x57c);
-STATIC_ASSERT(offsetof(NUFPAR_PC, separator_tokens) == 0x580);
-STATIC_ASSERT(sizeof(NUFPAR_PC) == 0x584);
-
 extern i32 old_line_pos;
 
 char __cdecl NuGetChar(NUFPAR_PC *parser) {
@@ -82,14 +39,162 @@ u16 __cdecl NuGetWChar(NUFPAR_PC *parser) {
     return (u16)(low_byte | (u16)(high_byte << 8));
 }
 
+i32 __cdecl NuFParGetWordW(NUFPAR_PC *parser) {
+    i32 length = 0;
+    i32 in_quoted_text = 0;
+    u16 *line = (u16 *)parser->line_buffer_ptr;
+    u16 *word = (u16 *)parser->word_buffer_ptr;
+
+    old_line_pos = parser->line_position;
+
+    while (line[parser->line_position & ((parser->line_buffer_size >> 1) - 1)] != 0) {
+        u16 character = line[parser->line_position];
+
+        if (parser->separator_tokens != NULL && !in_quoted_text &&
+            NuStrChr(parser->separator_tokens, (char)character) != NULL) {
+            if (length == 0) {
+                word[0] = character;
+                length++;
+                parser->line_position++;
+            }
+            word[length & ((parser->word_buffer_size >> 1) - 1)] = 0;
+            return length;
+        }
+
+        if (parser->separator_list != NULL && !in_quoted_text &&
+            NuStrChr(parser->separator_list, (char)character) != NULL) {
+            character = ' ';
+        }
+
+        switch (character & 0xff) {
+            case ' ':
+            case ',':
+            case '\t':
+                if (!in_quoted_text) {
+                    if (length != 0) {
+                        word[length & ((parser->word_buffer_size >> 1) - 1)] = 0;
+                        return length;
+                    }
+                    break;
+                }
+                /* fall through */
+            default:
+                if (character == '"') {
+                    if (in_quoted_text && line[parser->line_position + 1] == '"') {
+                        word[length & ((parser->word_buffer_size >> 1) - 1)] = character;
+                        length++;
+                        parser->line_position++;
+                    } else {
+                        in_quoted_text = 1 - in_quoted_text;
+                    }
+                } else {
+                    word[length & ((parser->word_buffer_size >> 1) - 1)] = character;
+                    length++;
+                }
+                break;
+        }
+
+        parser->line_position++;
+    }
+
+    word[length & ((parser->word_buffer_size >> 1) - 1)] = 0;
+    return length;
+}
+
+i32 __cdecl NuFParGetLineW(NUFPAR_PC *parser) {
+    u16 character;
+    i32 length = 0;
+    u16 *line = (u16 *)parser->line_buffer_ptr;
+    i32 at_end_of_line;
+    i32 is_done = 0;
+    i32 in_quoted_text = 0;
+
+    parser->line_position = 0;
+    parser->line_number++;
+
+    for (;;) {
+        character = NuGetWChar(parser);
+        switch (character) {
+            case '\r':
+                (void)NuGetWChar(parser);
+                /* fall through */
+            case '\n':
+                if (length == 0 || !is_done) {
+                    parser->line_number++;
+                    is_done = 0;
+                    break;
+                }
+                /* fall through */
+            case '\0':
+                line[length] = 0;
+                return length;
+            case '"':
+                in_quoted_text = 1 - in_quoted_text;
+                is_done = 1;
+                line[length & ((parser->word_buffer_size >> 1) - 1)] = character;
+                length++;
+                break;
+            case ';':
+                if (!in_quoted_text) {
+                    if (length == 0 || !is_done) {
+                        at_end_of_line = 0;
+                        do {
+                            character = NuGetWChar(parser);
+                            switch (character) {
+                                case '\r':
+                                    (void)NuGetWChar(parser);
+                                    /* fall through */
+                                case '\n':
+                                case '\0':
+                                    at_end_of_line = 1;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        } while (!at_end_of_line);
+
+                        length = 0;
+                        parser->line_position = 0;
+                        parser->line_number++;
+                        is_done = 0;
+                    } else {
+                        for (;;) {
+                            character = NuGetWChar(parser);
+                            switch (character) {
+                                case '\r':
+                                    (void)NuGetWChar(parser);
+                                    /* fall through */
+                                case '\n':
+                                case '\0':
+                                    line[length] = 0;
+                                    return length;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                    break;
+                }
+                /* fall through */
+            default:
+                is_done = 1;
+                /* fall through */
+            case '\t':
+            case ' ':
+                line[length & ((parser->word_buffer_size >> 1) - 1)] = character;
+                length++;
+                break;
+        }
+    }
+}
+
 i32 __cdecl NuFParGetWord(NUFPAR_PC *parser) {
     i32 length = 0;
     i32 in_quoted_text = 0;
     i32 found_quotes = 0;
 
     if (parser->is_utf16 != 0) {
-        STUBBED_NAMED("NuFParGetWord: UTF-16 word parser at PC 0x004f7df0");
-        return 0;
+        return NuFParGetWordW(parser);
     }
 
     old_line_pos = parser->line_position;

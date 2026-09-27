@@ -1,29 +1,5 @@
 #include "saga.h"
 
-struct nusound_filename_info_s;
-
-class NuMusic {
-  public:
-    u8 unknown_0000[0x19c];
-    f32 fader_current;
-    f32 fader_target;
-    f32 fader_rate;
-    u8 unknown_01a8[0x34];
-    nusound_filename_info_s *fileinfo;
-    i32 file_count;
-
-    void SetFader(f32 target, f32 fade_seconds);
-    void GetSoundFiles(nusound_filename_info_s **files, i32 *count);
-};
-
-STATIC_ASSERT(offsetof(NuMusic, fader_current) == 0x19c);
-STATIC_ASSERT(offsetof(NuMusic, fader_target) == 0x1a0);
-STATIC_ASSERT(offsetof(NuMusic, fader_rate) == 0x1a4);
-STATIC_ASSERT(offsetof(NuMusic, fileinfo) == 0x1dc);
-STATIC_ASSERT(offsetof(NuMusic, file_count) == 0x1e0);
-
-extern NuMusic *the_music_player;
-
 void NuMusic::SetFader(f32 target, f32 fade_seconds) {
     if (this == NULL || the_music_player == NULL) {
         return;
@@ -38,6 +14,32 @@ void NuMusic::SetFader(f32 target, f32 fade_seconds) {
     fader_target = target;
     fader_current = target;
     fader_rate = 0.0f;
+}
+
+void NuMusic::SetClassVolume(u32 class_mask, f32 volume) {
+    if (this == NULL || the_music_player == NULL) {
+        return;
+    }
+
+    if (volume > 1.0f)
+        volume = 1.0f;
+    if (volume < 0.0)
+        volume = 0.0f;
+    if (volume > 1.0f)
+        volume = 1.0f;
+
+    if ((class_mask & 0x01) != 0)
+        class_volumes[0] = volume;
+    if ((class_mask & 0x02) != 0)
+        class_volumes[1] = volume;
+    if ((class_mask & 0x04) != 0)
+        class_volumes[2] = volume;
+    if ((class_mask & 0x08) != 0)
+        class_volumes[3] = volume;
+    if ((class_mask & 0x10) != 0)
+        class_volumes[4] = volume;
+    if ((class_mask & 0x20) != 0)
+        class_volumes[5] = volume;
 }
 
 void NuMusic::GetSoundFiles(nusound_filename_info_s **files, i32 *count) {
@@ -56,4 +58,15 @@ void NuMusic::GetSoundFiles(nusound_filename_info_s **files, i32 *count) {
             *count = 0;
         }
     }
+}
+
+extern "C" f32 numusicGetDuckVolume(void) {
+    f32 volume;
+
+    if (the_music_player != NULL) {
+        volume = the_music_player->duck_current;
+    } else {
+        volume = 1.0f;
+    }
+    return volume;
 }

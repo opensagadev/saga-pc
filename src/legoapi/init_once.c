@@ -20,6 +20,7 @@ void __cdecl InitOnce(i32 argc, char **argv) {
     Game_NuPad = &Game_NuPad_Store[0];
     STUBBED_NAMED(0x006d62a0); /* pad/setup descriptor preparation */
     STUBBED_NAMED(0x006dbb30); /* hardware/setup varargs dispatcher */
+    StartupOpenDats(StartupDatNames, 7, &permbuffer_base);
 
     /* The camera and time-bar helpers depend on the unresolved PC allocator. */
     STUBBED_NAMED(0x005ede60);

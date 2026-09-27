@@ -21,6 +21,10 @@ void __cdecl NuSound3SetRumblePads(void *pad0, void *pad1) {
     (void)pad1;
 }
 
+void __cdecl NuSound3SetDat(NUDATHDR *header) {
+    NuSoundDat = header;
+}
+
 i32 __cdecl NuSound3SetReverb(i32 enable) {
     i32 previous = NuSound3Reverb;
     NuSound3Reverb = enable != 0;

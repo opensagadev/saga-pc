@@ -20,9 +20,11 @@ comparison extent. Its PC-sized permanent allocation, argument iteration and
 current-directory setup are present; input, camera and time-bar dependencies
 remain open. The retail argument helper uses a private ECX/EAX calling convention,
 so the source-compatible C wrapper is structural rather than byte-matching.
+`InitOnce` now opens the PC's seven startup DAT names, beginning with
+`GAME.DAT`, through the exact archive-registration helper. The surrounding
+hardware dispatcher and the `LoadPermData` parser path remain incomplete.
 `NuMain` opens the six episode archives, then stops before indexing level/area
-tables. Their source files reside in `GAME.DAT`, whose setup dispatcher and
-`LoadPermData` parser path are incomplete. Its startup includes a temporary guard before `NuFrameBegin`
+tables. Its startup includes a temporary guard before `NuFrameBegin`
 because the PC keyboard input owner is not yet initialized by our partial
 `InitOnce`. Its later restart and frame-loop phases contain explicit
 `STUBBED_NAMED` markers, so this is a runnable scaffold, not a complete or
@@ -30,10 +32,11 @@ matching 4,332-byte reconstruction. Keep unresolved references fatal when linkin
 
 The restart scaffold now calls `InitCables` and `InitSnakes` at their verified
 PC sites. Both functions match their complete original extents. The PC hub
-model-list routine, AI message pool, font move/matrix leaves, file-position
-dispatch and music-fader method are also reconstructed, though some adjacent
+model-list routine, AI message pool, font state leaves, file-position
+dispatch, DAT-member open helpers, animation progress family and music methods are
+also reconstructed, though some adjacent
 functions remain structural. `Levels_ConfigureList` and `Areas_ConfigureList`
-are explicit NULL-return scaffolds: their NuFPar dependencies and record fields
+are explicit NULL-return scaffolds: their NuFPar open path and record fields
 must be recovered before the level/area guard can be removed. The source EXE
 does not pretend to load tables it has not built.
 

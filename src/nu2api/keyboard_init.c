@@ -76,6 +76,8 @@ STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, key_records) == 0x67f0);
 STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, keyboard_state) == 0x68b0);
 STATIC_ASSERT(sizeof(NuKeyboardInitLayout_PC) == 0x68b4);
 
+void __fastcall NuKeyboardInitializeDefaultRecords_candidate(NuKeyboardState_PC *state);
+
 void __fastcall NuKeyboardResetInputRecords_candidate(NuKeyboardState_PC *state) {
     NuKeyboardInitLayout_PC *layout = (NuKeyboardInitLayout_PC *)state;
     i32 i;
@@ -145,7 +147,7 @@ NuKeyboardState_PC *__fastcall NuKeyboardStateInitialize_candidate(NuKeyboardSta
 
     /* PC also redundantly clears 32 16-bit entries in each of 14 tables.
      * Those entries are already zero from the range clear above. */
-    STUBBED_NAMED(0x006d96b0); /* PC input binding initialization */
+    NuKeyboardInitializeDefaultRecords_candidate(state);
     STUBBED_NAMED(0x029755c4); /* Optional PC input-state callback */
     STUBBED_NAMED(0x006d9bd0); /* PC keyboard command initialization */
 
@@ -227,4 +229,44 @@ void __fastcall NuKeyboardInsertInputRecord_candidate(NuKeyboardState_PC *state,
     record->unknown_01 = (u8)field_01;
     record->unknown_02 = (u8)field_02;
     record->unknown_04 = field_04;
+}
+
+void __fastcall NuKeyboardInitializeDefaultRecords_candidate(NuKeyboardState_PC *state) {
+    NuKeyboardInitLayout_PC *layout;
+
+    layout = (NuKeyboardInitLayout_PC *)state;
+    NuKeyboardResetInputRecords_candidate(state);
+
+#define ADD_DEFAULT_RECORD(field_00, field_01, field_02)                                                               \
+    if (layout->unknown_67e4 < 0x20) {                                                                                 \
+        NuKeyboardInsertInputRecord_candidate(state, 0, layout->unknown_67e4, field_00, field_01, field_02, 0);        \
+        ++layout->unknown_67e4;                                                                                        \
+    }
+
+    ADD_DEFAULT_RECORD(1, 0, -1);
+    ADD_DEFAULT_RECORD(2, 0, -1);
+    ADD_DEFAULT_RECORD(1, 1, -1);
+    ADD_DEFAULT_RECORD(2, 1, -1);
+    ADD_DEFAULT_RECORD(1, 2, -1);
+    ADD_DEFAULT_RECORD(2, 2, -1);
+    ADD_DEFAULT_RECORD(1, 3, -1);
+    ADD_DEFAULT_RECORD(2, 3, -1);
+    ADD_DEFAULT_RECORD(3, -1, 12);
+    ADD_DEFAULT_RECORD(3, -1, 13);
+    ADD_DEFAULT_RECORD(3, -1, 14);
+    ADD_DEFAULT_RECORD(3, -1, 15);
+    ADD_DEFAULT_RECORD(3, -1, 4);
+    ADD_DEFAULT_RECORD(3, -1, 5);
+    ADD_DEFAULT_RECORD(3, -1, 6);
+    ADD_DEFAULT_RECORD(3, -1, 7);
+    ADD_DEFAULT_RECORD(2, 4, 2);
+    ADD_DEFAULT_RECORD(2, 5, 0);
+    ADD_DEFAULT_RECORD(2, 6, 3);
+    ADD_DEFAULT_RECORD(2, 7, 1);
+    ADD_DEFAULT_RECORD(3, -1, 9);
+    ADD_DEFAULT_RECORD(3, -1, 10);
+    ADD_DEFAULT_RECORD(3, -1, 8);
+    ADD_DEFAULT_RECORD(3, -1, 11);
+
+#undef ADD_DEFAULT_RECORD
 }

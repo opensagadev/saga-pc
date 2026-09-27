@@ -86,6 +86,21 @@ objects used by the verified StartPerm/EndPerm reconstruction. Their initial
 values are zero except `CHARACTERBUFFERSIZE = 0x02800000` (PC 40 MiB). The
 Android source's different buffer size was not copied.
 
+The PC startup dispatcher passes a seven-pointer table at `0x007ef090` to
+`StartupOpenDats`. Its first string is uppercase `GAME.DAT`, followed by six
+`Episode_*.DAT` names, distinct from NuMain's lowercase-suffix strings.
+The table and all seven strings match their complete initialized extents.
+`StartupDatList` at `0x02974d14` has at least seven pointer slots; its full
+original capacity is not yet established, so its CSV size remains blank.
+`StartupDatCount` and `NuSoundDat` are separate zero-initialized scalars.
+
+The PC parser allocates at most four `NUFPAR_PC` records of stride `0x584`
+at `0x00917870` and four `0x1000`-byte read buffers at `0x008cab70`.
+Their root pointers at `0x0091eedc` and `0x0091eee0` start null. Those
+types and extents follow the PC allocator's loop and indexed accesses; the
+level and area table loaders still return null until their record parsing is
+reconstructed.
+
 ## Startup and subsystem state
 
 The new definitions below have exact full-extent initializer comparisons in

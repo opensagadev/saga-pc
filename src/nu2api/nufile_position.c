@@ -2,6 +2,11 @@
 
 extern i32 __cdecl NuMcSeek(i32 file, i32 offset, i32 origin, i32 async);
 
+__declspec(noinline) i32 __cdecl NuMcFileOpenSize(NUFILE file) {
+    (void)file;
+    return 0;
+}
+
 i64 __cdecl NuMemFilePos(NUFILE file) {
     if (file >= 0x800) {
         PC_NUDATFILEINFO *info = &pc_dat_file_infos[file - 0x800];
@@ -33,6 +38,48 @@ i64 __cdecl NuFilePos(NUFILE file) {
     } while (position < 0);
 
     return position;
+}
+
+i64 __cdecl NuFileOpenSize(NUFILE file) {
+    if (file >= 0x1000) {
+        return NuMcFileOpenSize(file - 0x1000);
+    }
+
+    if (file >= 0x800) {
+        PC_NUDATFILEINFO *info = &pc_dat_file_infos[file - 0x800];
+        if (info->compression_mode != 0) {
+            return info->decompressed_length;
+        }
+        return info->file_length;
+    }
+
+    if (file >= 0x400) {
+        return pc_memfiles[file - 0x400].end - pc_memfiles[file - 0x400].buffer;
+    }
+
+    return file_info[file - 1].file_len;
+}
+
+i64 __cdecl NuDatFileSeek(NUFILE file, i64 offset, i32 whence) {
+    PC_NUDATFILEINFO *info = &pc_dat_file_infos[file - 0x800];
+    NUDATOPENFILEINFO *open_file = &info->header->open_files[info->open_file_index];
+    i64 target_position;
+
+    switch (whence) {
+        case 1:
+            target_position = info->position + offset;
+            break;
+        case 2:
+            target_position = info->start + info->file_length - offset;
+            break;
+        default:
+            target_position = info->start + offset;
+            break;
+    }
+
+    info->position = NuFileSeek(open_file->dat_file, target_position, 0);
+    open_file->position = info->position;
+    return info->position;
 }
 
 i64 __cdecl NuFileSize(char *filepath) {

@@ -107,10 +107,13 @@ STATIC_ASSERT(sizeof(VUCHARIDX) == 4);
 STATIC_ASSERT(offsetof(VUCHARIDX, index) == 2);
 
 typedef struct vufntchar_s {
-    u8 unknown_0000[8];
+    f32 x;
+    f32 y;
     f32 width;
 } VUFNTCHAR;
 STATIC_ASSERT(sizeof(VUFNTCHAR) == 12);
+STATIC_ASSERT(offsetof(VUFNTCHAR, x) == 0);
+STATIC_ASSERT(offsetof(VUFNTCHAR, y) == 4);
 STATIC_ASSERT(offsetof(VUFNTCHAR, width) == 8);
 
 struct vufnt_s {
@@ -127,7 +130,9 @@ struct vufnt_s {
     f32 *y_scale;
     VUFNTCHAR *glyphs;
     VUCHARIDX *unicode_map;
-    u8 unknown_003c[0xc];
+    u8 unknown_003c[4];
+    struct numtl_s *material;
+    u8 unknown_0044[4];
     struct nuqfnt_render_data_pc_s *platform_data;
 };
 STATIC_ASSERT(offsetof(VUFNT, glyph_count) == 0x0c);
@@ -140,6 +145,7 @@ STATIC_ASSERT(offsetof(VUFNT, ic_gap) == 0x24);
 STATIC_ASSERT(offsetof(VUFNT, x_scale) == 0x2c);
 STATIC_ASSERT(offsetof(VUFNT, glyphs) == 0x34);
 STATIC_ASSERT(offsetof(VUFNT, unicode_map) == 0x38);
+STATIC_ASSERT(offsetof(VUFNT, material) == 0x40);
 STATIC_ASSERT(offsetof(VUFNT, platform_data) == 0x48);
 
 typedef struct menu_s {
@@ -242,8 +248,17 @@ STATIC_ASSERT(sizeof(NUMTLATTRIB) == 4);
 typedef struct numtl_s {
     u8 unknown_0000[0x40];
     NUMTLATTRIB attribs;
+    u8 unknown_0044[0x30];
+    i16 texture_id;
 } NUMTL;
 STATIC_ASSERT(offsetof(NUMTL, attribs) == 0x40);
+STATIC_ASSERT(offsetof(NUMTL, texture_id) == 0x74);
+
+typedef struct nutexdim_pc_s {
+    i32 width;
+    i32 height;
+} NUTEXDIM_PC;
+STATIC_ASSERT(sizeof(NUTEXDIM_PC) == 8);
 
 typedef struct part_emit_pc_s {
     i32 effect_id;
@@ -314,6 +329,49 @@ STATIC_ASSERT(sizeof(VARIPTR) == 4);
 
 typedef i32 NUFILE;
 
+typedef struct nufpar_pc_s {
+    char *file_buffer;
+    NUFILE file_handle;
+    char file_name[0x100];
+    char line_buffer[0x202];
+    char word_buffer[0x202];
+    char *line_buffer_ptr;
+    char *word_buffer_ptr;
+    i32 line_buffer_size;
+    i32 word_buffer_size;
+    i32 line_number;
+    i32 line_position;
+    i32 character_position;
+    i32 buffer_start;
+    i32 buffer_end;
+    u8 unknown_0530[0x40];
+    i32 command_position;
+    i32 file_size;
+    u8 is_utf16;
+    u8 is_utf8;
+    u8 unknown_057a[2];
+    char *separator_list;
+    char *separator_tokens;
+} NUFPAR_PC;
+
+STATIC_ASSERT(offsetof(NUFPAR_PC, file_handle) == 0x4);
+STATIC_ASSERT(offsetof(NUFPAR_PC, line_buffer) == 0x108);
+STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer) == 0x30a);
+STATIC_ASSERT(offsetof(NUFPAR_PC, line_buffer_ptr) == 0x50c);
+STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer_ptr) == 0x510);
+STATIC_ASSERT(offsetof(NUFPAR_PC, line_buffer_size) == 0x514);
+STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer_size) == 0x518);
+STATIC_ASSERT(offsetof(NUFPAR_PC, line_number) == 0x51c);
+STATIC_ASSERT(offsetof(NUFPAR_PC, line_position) == 0x520);
+STATIC_ASSERT(offsetof(NUFPAR_PC, character_position) == 0x524);
+STATIC_ASSERT(offsetof(NUFPAR_PC, buffer_start) == 0x528);
+STATIC_ASSERT(offsetof(NUFPAR_PC, buffer_end) == 0x52c);
+STATIC_ASSERT(offsetof(NUFPAR_PC, is_utf16) == 0x578);
+STATIC_ASSERT(offsetof(NUFPAR_PC, is_utf8) == 0x579);
+STATIC_ASSERT(offsetof(NUFPAR_PC, separator_list) == 0x57c);
+STATIC_ASSERT(offsetof(NUFPAR_PC, separator_tokens) == 0x580);
+STATIC_ASSERT(sizeof(NUFPAR_PC) == 0x584);
+
 typedef struct nuwind_s {
     u8 unknown_0000[0x28];
     f32 phase_speed_scale;
@@ -349,6 +407,8 @@ typedef struct nudatopenfileinfo_s {
 } NUDATOPENFILEINFO;
 STATIC_ASSERT(sizeof(NUDATOPENFILEINFO) == 0x10);
 STATIC_ASSERT(offsetof(NUDATOPENFILEINFO, position) == 8);
+STATIC_ASSERT(offsetof(NUDATOPENFILEINFO, dat_file) == 0);
+STATIC_ASSERT(offsetof(NUDATOPENFILEINFO, info_idx) == 4);
 
 struct nudathdr_s {
     i32 version;
@@ -420,7 +480,9 @@ STATIC_ASSERT(sizeof(PC_NUDATFILEINFO) == 0x30);
 STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, start) == 8);
 STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, position) == 0x10);
 STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, file_length) == 0x18);
+STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, decompressed_length) == 0x1c);
 STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, open_file_index) == 0x20);
+STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, is_used) == 0x24);
 STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, compression_mode) == 0x28);
 
 typedef struct pc_numemfile_s {
@@ -618,12 +680,13 @@ STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
 
 typedef struct nuqfnt_render_data_pc_s {
-    u32 unknown_0000;
+    u32 colour;
     f32 x;
     f32 y;
     f32 z;
     NUMTX matrix;
 } NUQFNT_RENDER_DATA_PC;
+STATIC_ASSERT(offsetof(NUQFNT_RENDER_DATA_PC, colour) == 0);
 STATIC_ASSERT(offsetof(NUQFNT_RENDER_DATA_PC, x) == 4);
 STATIC_ASSERT(offsetof(NUQFNT_RENDER_DATA_PC, y) == 8);
 STATIC_ASSERT(offsetof(NUQFNT_RENDER_DATA_PC, z) == 0xc);
@@ -644,6 +707,95 @@ typedef struct nuspecial_handle_s {
 STATIC_ASSERT(sizeof(NUSPECIALHANDLE) == 0xc);
 STATIC_ASSERT(offsetof(NUSPECIALHANDLE, special) == 4);
 STATIC_ASSERT(offsetof(NUSPECIALHANDLE, display_special) == 8);
+
+typedef struct gameanimobj_s GAMEANIMOBJ;
+typedef struct gameanimobjpool_s GAMEANIMOBJPOOL;
+typedef struct gameanimset_s GAMEANIMSET;
+typedef struct gameanimsys_s GAMEANIMSYS;
+
+/* This is a verified field view, not a declaration of full retail owner extent. */
+typedef struct nuinstanim_time_view_s {
+    u8 unknown_00[0x4c];
+    f32 ltime;
+} NUINSTANIM_TIME_VIEW;
+STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, ltime) == 0x4c);
+
+struct gameanimobj_s {
+    GAMEANIMOBJ *next;
+    NUSPECIALHANDLE special;
+    NUINSTANIM_TIME_VIEW *instance_animation;
+    void *animation;
+    f32 start_frame;
+    f32 end_frame;
+    u8 unknown_flags_20[4];
+    void *object_data;
+};
+STATIC_ASSERT(sizeof(GAMEANIMOBJ) == 0x28);
+STATIC_ASSERT(offsetof(GAMEANIMOBJ, next) == 0);
+STATIC_ASSERT(offsetof(GAMEANIMOBJ, special) == 4);
+STATIC_ASSERT(offsetof(GAMEANIMOBJ, instance_animation) == 0x10);
+STATIC_ASSERT(offsetof(GAMEANIMOBJ, animation) == 0x14);
+STATIC_ASSERT(offsetof(GAMEANIMOBJ, start_frame) == 0x18);
+STATIC_ASSERT(offsetof(GAMEANIMOBJ, end_frame) == 0x1c);
+STATIC_ASSERT(offsetof(GAMEANIMOBJ, unknown_flags_20) == 0x20);
+STATIC_ASSERT(offsetof(GAMEANIMOBJ, object_data) == 0x24);
+
+struct gameanimobjpool_s {
+    u16 object_data_size;
+    u16 active_count;
+    u16 capacity;
+    u16 unknown_06;
+    GAMEANIMOBJ *objects;
+    GAMEANIMOBJ *free_objects;
+    void *object_data;
+};
+STATIC_ASSERT(sizeof(GAMEANIMOBJPOOL) == 0x14);
+STATIC_ASSERT(offsetof(GAMEANIMOBJPOOL, object_data_size) == 0);
+STATIC_ASSERT(offsetof(GAMEANIMOBJPOOL, active_count) == 2);
+STATIC_ASSERT(offsetof(GAMEANIMOBJPOOL, capacity) == 4);
+STATIC_ASSERT(offsetof(GAMEANIMOBJPOOL, objects) == 8);
+STATIC_ASSERT(offsetof(GAMEANIMOBJPOOL, free_objects) == 0xc);
+STATIC_ASSERT(offsetof(GAMEANIMOBJPOOL, object_data) == 0x10);
+
+struct gameanimset_s {
+    NULISTLNK links;
+    u8 object_count;
+    u8 animated_object_count;
+    u16 flags;
+    i32 state;
+    GAMEANIMOBJPOOL *object_pool;
+    GAMEANIMSYS *system;
+    GAMEANIMOBJ *objects;
+};
+STATIC_ASSERT(sizeof(GAMEANIMSET) == 0x1c);
+STATIC_ASSERT(offsetof(GAMEANIMSET, links) == 0);
+STATIC_ASSERT(offsetof(GAMEANIMSET, object_count) == 8);
+STATIC_ASSERT(offsetof(GAMEANIMSET, animated_object_count) == 9);
+STATIC_ASSERT(offsetof(GAMEANIMSET, flags) == 0xa);
+STATIC_ASSERT(offsetof(GAMEANIMSET, state) == 0xc);
+STATIC_ASSERT(offsetof(GAMEANIMSET, object_pool) == 0x10);
+STATIC_ASSERT(offsetof(GAMEANIMSET, system) == 0x14);
+STATIC_ASSERT(offsetof(GAMEANIMSET, objects) == 0x18);
+
+struct gameanimsys_s {
+    NULISTHDR active_sets;
+    i32 set_count;
+    GAMEANIMSET **sets;
+};
+STATIC_ASSERT(sizeof(GAMEANIMSYS) == 0x10);
+STATIC_ASSERT(offsetof(GAMEANIMSYS, active_sets) == 0);
+STATIC_ASSERT(offsetof(GAMEANIMSYS, set_count) == 8);
+STATIC_ASSERT(offsetof(GAMEANIMSYS, sets) == 0xc);
+
+typedef struct gameanimprogress_s {
+    i32 count;
+    i32 entry_size;
+    u8 **entries;
+} GAMEANIMPROGRESS;
+STATIC_ASSERT(sizeof(GAMEANIMPROGRESS) == 0xc);
+STATIC_ASSERT(offsetof(GAMEANIMPROGRESS, count) == 0);
+STATIC_ASSERT(offsetof(GAMEANIMPROGRESS, entry_size) == 4);
+STATIC_ASSERT(offsetof(GAMEANIMPROGRESS, entries) == 8);
 
 typedef struct language_data_s {
     i32 language;
@@ -851,8 +1003,18 @@ extern "C" {
     extern f32 qfnt_rezscale_h;
     void __cdecl NuQFntMoveRS(void *stream, VUFNT *font, f32 x, f32 y, f32 z);
     void __cdecl NuQFntPrintU(VUFNT *font, char *text);
+    void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags);
     void __cdecl NuQFntPrintEx(VUFNT *font, i32 x, i32 y, i32 alignment, const char *format, ...);
     void __cdecl NuQFntSetMtxRS(void *stream, VUFNT *font, NUMTX *matrix);
+    void __cdecl NuQFntSetRS(void *stream, VUFNT *font);
+    void __cdecl NuQFntSetScaleRS(void *stream, VUFNT *font, f32 x_scale, f32 y_scale);
+    void __cdecl NuQFntSetColourRS(void *stream, VUFNT *font, u32 colour);
+    extern const f64 NuQFntHalfScale;
+    extern NUTEXDIM_PC **NuTextureDimensions;
+    extern NUFPAR_PC NuFParRecords[4];
+    extern char NuFParBuffers[4][0x1000];
+    extern NUFPAR_PC *NuFParRecordBase;
+    extern char *NuFParBufferBase;
     u16 __cdecl UnicodeToIndexFast(VUCHARIDX *map, i32 count, u16 unicode);
     u16 __cdecl NuQFntEncodeUnicodeChar(VUFNT *font, u16 character);
     void __cdecl NuQFntEncodeUnicodeString(VUFNT *font, u16 *text);
@@ -868,6 +1030,10 @@ extern "C" {
     void __cdecl InitOnce(i32 argc, char **argv);
     void __cdecl StartupParseArguments(i32 count, char **arguments);
     i32 __cdecl StartupParseArgument(i32 count, char **arguments);
+    void __cdecl StartupOpenDats(const char **names, i32 count, VARIPTR *arena);
+    extern NUDATHDR *StartupDatList[7];
+    extern i32 StartupDatCount;
+    extern const char *StartupDatNames[7];
     extern i32 StartupGameFlag0;
     extern i32 StartupGameFlag1;
     extern i32 SUPERBUFFERSIZE;
@@ -978,6 +1144,15 @@ extern "C" {
     extern i32 finishloop_backdroponly;
     NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *buf, i32 *size_out, i16 mode);
     NUDATHDR *__cdecl NuDatOpen(const char *filepath, VARIPTR *buf, i32 *size_out);
+    i64 __cdecl NuDatCalcPos(NUDATHDR *header, i32 offset);
+    i32 __cdecl NuDatFileGetFreeInfo(void);
+    i32 __cdecl NuDatFileGetFreeHandleIX(NUDATHDR *header, i32 info_index);
+    NUFILE __cdecl NuDatFileOpen(NUDATHDR *header, char *filepath, i32 mode);
+    extern i32 file_criticalsection;
+    extern PC_NUDATFILEINFO *unpack_file_info;
+    extern NUDATOPENFILEINFO *unpack_file_odi;
+    extern i64 unpack_file_pos;
+    extern i32 decode_buffer_left;
     extern HANDLE pc_file_handles[32];
     i32 __cdecl NuPSFileOpen(const char *filepath, i32 mode);
     i32 __cdecl NuPSFileClose(i32 handle);
@@ -1012,6 +1187,9 @@ extern "C" {
     i64 __cdecl NuMemFilePos(NUFILE file);
     i64 __cdecl NuFilePos(NUFILE file);
     i64 __cdecl NuFileSize(char *filepath);
+    i64 __cdecl NuFileOpenSize(NUFILE file);
+    i64 __cdecl NuDatFileSeek(NUFILE file, i64 offset, i32 origin);
+    i32 __cdecl NuMcFileOpenSize(NUFILE file);
     i32 __cdecl NuMcSeek(i32 file, i32 offset, i32 origin, i32 async);
     i32 __cdecl NuFileRead(NUFILE file, void *buffer, i32 size);
     i32 __cdecl NuFileStatus(NUFILE file);
@@ -1075,6 +1253,8 @@ extern "C" {
     i32 __cdecl NuHGobjForceShadowsOnCharacters(i32 enabled);
     extern u8 NuSound3Reverb;
     extern i32 NuSound3LoopHoldTime;
+    extern NUDATHDR *NuSoundDat;
+    void __cdecl NuSound3SetDat(NUDATHDR *header);
     i32 __cdecl NuSound3SetReverb(i32 enable);
     void __cdecl NuSound3SetLoopHoldTime(f32 time);
     void __cdecl NuSound3FlushLoops(void);
@@ -1085,8 +1265,21 @@ extern "C" {
     void __cdecl NuSound3ResumeStereoStream(i32 index);
     i32 __cdecl NuSound3SetStreamVolume(i32 index, i32 volume);
     i32 __cdecl NuSound3GetStereoStreamStatus(i32 index);
+    f32 __cdecl numusicGetDuckVolume(void);
     extern f32 NuSound3VolumeTable[0x4000];
     extern i32 NuSound3VolumeOffset;
+    extern GAMEANIMPROGRESS gameanimsysprogress;
+    void *__cdecl GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i32 size);
+    void __cdecl GameAnimSys_AllocateLevelProgressData(VARIPTR *buf, VARIPTR *end, i32 capacity, i32 level_count);
+    void __cdecl GameAnimSys_StoreProgress(GAMEANIMSYS *system, i32 index);
+    u8 *__cdecl GameAnimSys_GetProgressData(i32 index);
+    void __cdecl GameAnimSys_ClearProgress(i32 index);
+    GAMEANIMSYS *__cdecl GameAnimSys_Create(VARIPTR *buf, VARIPTR *end);
+    GAMEANIMSET *__cdecl GameAnimSet_Create(VARIPTR *buf, VARIPTR *end, GAMEANIMOBJPOOL *pool, GAMEANIMSYS *system);
+    void __cdecl GameAnimSet_AddToSystemList(GAMEANIMSET *set);
+    void __cdecl GameAnimSet_EvaluateState(GAMEANIMSET *set);
+    void __cdecl GameAnimSet_RemoveFromSystemList(GAMEANIMSET *set);
+    void __cdecl GameAnimSys_ReStoreProgress(GAMEANIMSYS *system, i32 index);
     extern AREA_DATA_PC *ADataList;
     extern AREA_DATA_PC *LastAData;
     extern AREA_DATA_PC *HUB_ADATA;
@@ -1463,6 +1656,35 @@ extern i32 app_tbgameset;
 extern i32 app_tbplayerset;
 extern i32 app_tbaiset;
 extern i32 app_tbdrawset;
+
+struct nusound_filename_info_s;
+class NuMusic {
+  public:
+    u8 unknown_0000[0x19c];
+    f32 fader_current;
+    f32 fader_target;
+    f32 fader_rate;
+    u8 unknown_01a8[4];
+    f32 duck_current;
+    u8 unknown_01b0[4];
+    f32 class_volumes[6];
+    u8 unknown_01cc[0x10];
+    nusound_filename_info_s *fileinfo;
+    i32 file_count;
+
+    void SetFader(f32 target, f32 fade_seconds);
+    void SetClassVolume(u32 class_mask, f32 volume);
+    void GetSoundFiles(nusound_filename_info_s **files, i32 *count);
+};
+STATIC_ASSERT(offsetof(NuMusic, fader_current) == 0x19c);
+STATIC_ASSERT(offsetof(NuMusic, fader_target) == 0x1a0);
+STATIC_ASSERT(offsetof(NuMusic, fader_rate) == 0x1a4);
+STATIC_ASSERT(offsetof(NuMusic, duck_current) == 0x1ac);
+STATIC_ASSERT(offsetof(NuMusic, class_volumes) == 0x1b4);
+STATIC_ASSERT(offsetof(NuMusic, fileinfo) == 0x1dc);
+STATIC_ASSERT(offsetof(NuMusic, file_count) == 0x1e0);
+extern NuMusic music_man;
+extern NuMusic *the_music_player;
 #endif
 
 #endif

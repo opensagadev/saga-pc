@@ -6,6 +6,26 @@ extern f32 qfnt_rezscale_h;
 extern f32 qfnt_offscale_x;
 extern f32 qfnt_offscale_y;
 
+void __cdecl NuQFntSetRS(void *stream, VUFNT *font) {
+    (void)stream;
+    font->mode = 1;
+}
+
+void __cdecl NuQFntSetScaleRS(void *stream, VUFNT *font, f32 x_scale, f32 y_scale) {
+    (void)stream;
+    *font->x_scale = x_scale;
+    if ((NuQFntMode & 4) != 0) {
+        *font->y_scale = y_scale;
+        return;
+    }
+    *font->y_scale = (f32)(y_scale * NuQFntHalfScale);
+}
+
+void __cdecl NuQFntSetColourRS(void *stream, VUFNT *font, u32 colour) {
+    (void)stream;
+    font->platform_data->colour = colour;
+}
+
 u16 UnicodeToIndexFast(VUCHARIDX *map, i32 count, u16 unicode) {
     i32 middle = count / 2;
     i32 low = 0;
@@ -98,6 +118,101 @@ void __cdecl NuQFntSetMtxRS(void *stream, VUFNT *font, NUMTX *matrix) {
     font->platform_data->matrix = *matrix;
 }
 
+void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags) {
+    NUQFNT_RENDER_DATA_PC *render_data = font->platform_data;
+    f32 x = render_data->x;
+    f32 y = render_data->y;
+    f32 z = render_data->z;
+    f32 inverse_texture_width = 1.0f;
+    f32 inverse_texture_height = 1.0f;
+    f32 height;
+    f32 space_width;
+    u32 colour;
+    i32 is_3d;
+
+    if (text == NULL) {
+        return;
+    }
+    if (font->material->texture_id > 0) {
+        NUTEXDIM_PC *texture_dimensions = NuTextureDimensions[font->material->texture_id - 1];
+        inverse_texture_width = 1.0f / (f32)texture_dimensions->width;
+        inverse_texture_height = 1.0f / (f32)texture_dimensions->height;
+    }
+
+    height = font->height * *font->y_scale;
+    if (nuqfnt_space_width == 0.0f) {
+        space_width = font->space_width * *font->x_scale;
+    } else {
+        space_width = nuqfnt_space_width * *font->x_scale;
+    }
+    is_3d = (flags & 4) != 0;
+
+    /* PC coordinate-stack increment and coordinate-system selection. */
+    STUBBED_NAMED(0x02854d3c);
+    STUBBED_NAMED(0x00600b20);
+    if (is_3d) {
+        STUBBED_NAMED(0x00607ec0);
+    } else {
+        STUBBED_NAMED(0x00607d70);
+    }
+
+    colour = render_data->colour;
+    while (*text != 0) {
+        u16 character = *text++;
+        VUFNTCHAR *glyph = &font->glyphs[character];
+        f32 advance;
+        f32 left = x;
+
+        if (character == 0x20) {
+            advance = space_width;
+        } else {
+            advance = glyph->width * *font->x_scale;
+        }
+
+        if ((flags & 1) != 0 && character >= 0x30 && character < 0x3a) {
+            u16 zero_index = NuQFntEncodeUnicodeChar(font, 0x30);
+            VUFNTCHAR *zero = &font->glyphs[zero_index];
+            f32 digit_width = zero->width * *font->x_scale;
+            left += digit_width - advance;
+            advance = digit_width;
+        }
+
+        if (character != 0x20) {
+            f32 right = left + glyph->width * *font->x_scale;
+            f32 u0 = glyph->x * inverse_texture_width;
+            f32 v0 = glyph->y * inverse_texture_height;
+            f32 u1 = (glyph->x + glyph->width) * inverse_texture_width;
+            f32 v1 = (glyph->y + font->height) * inverse_texture_height;
+
+            if (is_3d) {
+                f32 top = y - height;
+                /* Each marker is one PC NuPrim vertex submission (0x005c1f70). */
+                STUBBED_NAMED(0x005c1f70);
+                STUBBED_NAMED(0x005c1f70);
+                STUBBED_NAMED(0x005c1f70);
+                STUBBED_NAMED(0x005c1f70);
+                STUBBED_NAMED(0x005c1f70);
+                STUBBED_NAMED(0x005c1f70);
+            } else {
+                /* PC 2D path submits two corner vertices through 0x006009e0. */
+                STUBBED_NAMED(0x006009e0);
+                STUBBED_NAMED(0x006009e0);
+            }
+        }
+        x += advance + font->ic_gap * *font->x_scale;
+    }
+
+    if (is_3d) {
+        STUBBED_NAMED(0x006009c0);
+    } else {
+        STUBBED_NAMED(0x006009a0);
+    }
+    /* PC decrements the coordinate stack and restores the saved mode here. */
+    STUBBED_NAMED(0x02854d3c);
+    STUBBED_NAMED(0x00981c6c);
+    STUBBED_NAMED(0x00600b20);
+}
+
 void __cdecl NuQFntPrintU(VUFNT *font, char *text) {
     u16 encoded[1024];
     if (font == NULL) {
@@ -105,7 +220,6 @@ void __cdecl NuQFntPrintU(VUFNT *font, char *text) {
     }
     if (font != NULL && text != NULL) {
         NuQFntUTF8toQCode(font, text, encoded);
-        /* The PC renderer's 1210-byte glyph submission routine is still open. */
-        STUBBED_NAMED(0x005eb250);
+        NuQFntPrintCharW(font, encoded, NuQFntMode);
     }
 }
