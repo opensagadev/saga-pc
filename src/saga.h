@@ -54,6 +54,48 @@ typedef struct nunrand_s {
 
 STATIC_ASSERT(sizeof(NURAND) == 4);
 
+typedef struct nulistlnk_s {
+    struct nulistlnk_s *next;
+    struct nulistlnk_s *prev;
+} NULISTLNK;
+typedef struct nulisthdr_s {
+    NULISTLNK *head;
+    NULISTLNK *tail;
+} NULISTHDR;
+STATIC_ASSERT(sizeof(NULISTLNK) == 8);
+STATIC_ASSERT(offsetof(NULISTLNK, next) == 0);
+STATIC_ASSERT(offsetof(NULISTLNK, prev) == 4);
+STATIC_ASSERT(sizeof(NULISTHDR) == 8);
+STATIC_ASSERT(offsetof(NULISTHDR, head) == 0);
+STATIC_ASSERT(offsetof(NULISTHDR, tail) == 4);
+
+typedef struct gizaimessage_s {
+    NULISTLNK links;
+    char name[32];
+    f32 value;
+    i8 output_values[8];
+    i8 output_count;
+    u8 unknown_35;
+    u16 flags;
+} GIZAIMESSAGE;
+STATIC_ASSERT(sizeof(GIZAIMESSAGE) == 0x38);
+STATIC_ASSERT(offsetof(GIZAIMESSAGE, name) == 8);
+STATIC_ASSERT(offsetof(GIZAIMESSAGE, value) == 0x28);
+STATIC_ASSERT(offsetof(GIZAIMESSAGE, output_values) == 0x2c);
+STATIC_ASSERT(offsetof(GIZAIMESSAGE, output_count) == 0x34);
+STATIC_ASSERT(offsetof(GIZAIMESSAGE, flags) == 0x36);
+
+typedef struct gizaimessagesys_s {
+    i32 count;
+    GIZAIMESSAGE *messages;
+    NULISTHDR free_list;
+    NULISTHDR active_list;
+} GIZAIMESSAGESYS;
+STATIC_ASSERT(sizeof(GIZAIMESSAGESYS) == 0x18);
+STATIC_ASSERT(offsetof(GIZAIMESSAGESYS, messages) == 4);
+STATIC_ASSERT(offsetof(GIZAIMESSAGESYS, free_list) == 8);
+STATIC_ASSERT(offsetof(GIZAIMESSAGESYS, active_list) == 0x10);
+
 typedef struct nudathdr_s NUDATHDR;
 typedef struct vufnt_s VUFNT;
 
@@ -85,6 +127,8 @@ struct vufnt_s {
     f32 *y_scale;
     VUFNTCHAR *glyphs;
     VUCHARIDX *unicode_map;
+    u8 unknown_003c[0xc];
+    struct nuqfnt_render_data_pc_s *platform_data;
 };
 STATIC_ASSERT(offsetof(VUFNT, glyph_count) == 0x0c);
 STATIC_ASSERT(offsetof(VUFNT, unicode_count) == 0x10);
@@ -96,6 +140,7 @@ STATIC_ASSERT(offsetof(VUFNT, ic_gap) == 0x24);
 STATIC_ASSERT(offsetof(VUFNT, x_scale) == 0x2c);
 STATIC_ASSERT(offsetof(VUFNT, glyphs) == 0x34);
 STATIC_ASSERT(offsetof(VUFNT, unicode_map) == 0x38);
+STATIC_ASSERT(offsetof(VUFNT, platform_data) == 0x48);
 
 typedef struct menu_s {
     u8 unknown_0000[8];
@@ -359,6 +404,37 @@ STATIC_ASSERT(offsetof(FILEINFO, use_buf) == 0x2c);
 STATIC_ASSERT(offsetof(FILEINFO, mode) == 0x34);
 STATIC_ASSERT(offsetof(FILEINFO, buf) == 0x38);
 
+typedef struct pc_nudatfileinfo_s {
+    NUDATHDR *header;
+    u32 unknown_0004;
+    i64 start;
+    i64 position;
+    i32 file_length;
+    i32 decompressed_length;
+    i32 open_file_index;
+    i32 is_used;
+    i32 compression_mode;
+    u32 unknown_002c;
+} PC_NUDATFILEINFO;
+STATIC_ASSERT(sizeof(PC_NUDATFILEINFO) == 0x30);
+STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, start) == 8);
+STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, position) == 0x10);
+STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, file_length) == 0x18);
+STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, open_file_index) == 0x20);
+STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, compression_mode) == 0x28);
+
+typedef struct pc_numemfile_s {
+    u8 *buffer;
+    u8 *end;
+    u8 *position;
+    i32 mode;
+    i32 used;
+} PC_NUMEMFILE;
+STATIC_ASSERT(sizeof(PC_NUMEMFILE) == 0x14);
+STATIC_ASSERT(offsetof(PC_NUMEMFILE, position) == 8);
+STATIC_ASSERT(offsetof(PC_NUMEMFILE, mode) == 0xc);
+STATIC_ASSERT(offsetof(PC_NUMEMFILE, used) == 0x10);
+
 typedef struct nufile_device_s NUFILE_DEVICE;
 struct nufile_device_s {
     i32 id;
@@ -405,13 +481,45 @@ typedef struct NUGSCNROOM_s {
 STATIC_ASSERT(sizeof(NUGSCNROOM) == 0x18);
 STATIC_ASSERT(offsetof(NUGSCNROOM, visibility_flags) == 0x10);
 
+typedef struct nuspecial_legacy_pc_s {
+    u8 unknown_0000[0x44];
+    char *name;
+    u8 unknown_0048[4];
+} NUSPECIAL_LEGACY_PC;
+STATIC_ASSERT(sizeof(NUSPECIAL_LEGACY_PC) == 0x4c);
+STATIC_ASSERT(offsetof(NUSPECIAL_LEGACY_PC, name) == 0x44);
+
+typedef struct nudisplay_special_pc_s {
+    u8 unknown_0000[0xb4];
+    char *name;
+    u8 unknown_00b8[0x18];
+} NUDISPLAY_SPECIAL_PC;
+STATIC_ASSERT(sizeof(NUDISPLAY_SPECIAL_PC) == 0xd0);
+STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, name) == 0xb4);
+
+typedef struct nudisplay_list_pc_s {
+    u8 unknown_0000[0x6c];
+    i32 special_count;
+    NUDISPLAY_SPECIAL_PC *specials;
+} NUDISPLAY_LIST_PC;
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, special_count) == 0x6c);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, specials) == 0x70);
+
 typedef struct NUGSCN_s {
-    u8 unknown_0000[0x74];
+    u8 unknown_0000[0x24];
+    i32 special_count;
+    NUSPECIAL_LEGACY_PC *specials;
+    u8 unknown_002c[0x48];
     i32 num_rooms;
     NUGSCNROOM *rooms;
+    u8 unknown_007c[0x94];
+    NUDISPLAY_LIST_PC *display_list;
 } NUGSCN;
+STATIC_ASSERT(offsetof(NUGSCN, special_count) == 0x24);
+STATIC_ASSERT(offsetof(NUGSCN, specials) == 0x28);
 STATIC_ASSERT(offsetof(NUGSCN, num_rooms) == 0x74);
 STATIC_ASSERT(offsetof(NUGSCN, rooms) == 0x78);
+STATIC_ASSERT(offsetof(NUGSCN, display_list) == 0x110);
 
 // Only fields with confirmed PC offsets are exposed.
 typedef struct WORLDINFO_s {
@@ -454,10 +562,19 @@ STATIC_ASSERT(offsetof(WORLDINFO, page_part) == 0x2a9c);
 typedef struct area_data_pc_s {
     u8 unknown_0000[0x7a];
     u8 flags;
-    u8 unknown_007b[0x21];
+    u8 unknown_007b[0x1d];
+    i16 *hub_player_ids;
 } AREA_DATA_PC;
 STATIC_ASSERT(sizeof(AREA_DATA_PC) == 0x9c);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, hub_player_ids) == 0x98);
+
+typedef struct apicharactermodellist_s {
+    i16 model_id;
+    i16 count;
+} APICHARACTERMODELLIST;
+STATIC_ASSERT(sizeof(APICHARACTERMODELLIST) == 4);
+STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, count) == 2);
 
 typedef struct level_data_pc_s {
     u8 unknown_0000[0xa3];
@@ -499,6 +616,18 @@ typedef struct numtx_s {
 STATIC_ASSERT(sizeof(NUMTX) == 0x40);
 STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
+
+typedef struct nuqfnt_render_data_pc_s {
+    u32 unknown_0000;
+    f32 x;
+    f32 y;
+    f32 z;
+    NUMTX matrix;
+} NUQFNT_RENDER_DATA_PC;
+STATIC_ASSERT(offsetof(NUQFNT_RENDER_DATA_PC, x) == 4);
+STATIC_ASSERT(offsetof(NUQFNT_RENDER_DATA_PC, y) == 8);
+STATIC_ASSERT(offsetof(NUQFNT_RENDER_DATA_PC, z) == 0xc);
+STATIC_ASSERT(offsetof(NUQFNT_RENDER_DATA_PC, matrix) == 0x10);
 
 typedef struct nucamera_s {
     NUMTX mtx;
@@ -713,6 +842,17 @@ extern "C" {
     extern f32 qfnt_justify_squash;
     extern f32 qfnt_justify_stretch;
     extern u32 NuQFntMode;
+    extern i32 NuQFntModeStackIndex;
+    extern u32 NuQFntModeStack[16];
+    extern i32 nuqfnt_cs_mode;
+    extern f32 qfnt_offscale_x;
+    extern f32 qfnt_offscale_y;
+    extern f32 qfnt_rezscale_w;
+    extern f32 qfnt_rezscale_h;
+    void __cdecl NuQFntMoveRS(void *stream, VUFNT *font, f32 x, f32 y, f32 z);
+    void __cdecl NuQFntPrintU(VUFNT *font, char *text);
+    void __cdecl NuQFntPrintEx(VUFNT *font, i32 x, i32 y, i32 alignment, const char *format, ...);
+    void __cdecl NuQFntSetMtxRS(void *stream, VUFNT *font, NUMTX *matrix);
     u16 __cdecl UnicodeToIndexFast(VUCHARIDX *map, i32 count, u16 unicode);
     u16 __cdecl NuQFntEncodeUnicodeChar(VUFNT *font, u16 character);
     void __cdecl NuQFntEncodeUnicodeString(VUFNT *font, u16 *text);
@@ -726,6 +866,10 @@ extern "C" {
     f32 __cdecl NuFsign(f32 value);
     extern const f32 nu_fsign_minus_one;
     void __cdecl InitOnce(i32 argc, char **argv);
+    void __cdecl StartupParseArguments(i32 count, char **arguments);
+    i32 __cdecl StartupParseArgument(i32 count, char **arguments);
+    extern i32 StartupGameFlag0;
+    extern i32 StartupGameFlag1;
     extern i32 SUPERBUFFERSIZE;
     extern VARIPTR original_permbuffer_base;
     extern const char InitOnceAllocSource[15];
@@ -842,6 +986,9 @@ extern "C" {
     i64 __cdecl NuPSFileLSeek(i32 handle, i64 position, i32 origin);
     extern FILEINFO file_info[33];
     extern FILEBUFF file_buff[4];
+    extern PC_NUDATFILEINFO pc_dat_file_infos[20];
+    extern PC_NUMEMFILE pc_memfiles[20];
+    extern i32 old_line_pos;
     extern i32 nufile_buffering_enabled;
     extern i32 datsys_offset;
     extern i32 file_time_count;
@@ -862,6 +1009,10 @@ extern "C" {
     NUFILE __cdecl NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i32 flags);
     void __cdecl NuFileClose(NUFILE file);
     i64 __cdecl NuFileSeek(NUFILE file, i64 offset, i32 origin);
+    i64 __cdecl NuMemFilePos(NUFILE file);
+    i64 __cdecl NuFilePos(NUFILE file);
+    i64 __cdecl NuFileSize(char *filepath);
+    i32 __cdecl NuMcSeek(i32 file, i32 offset, i32 origin, i32 async);
     i32 __cdecl NuFileRead(NUFILE file, void *buffer, i32 size);
     i32 __cdecl NuFileStatus(NUFILE file);
     void __cdecl NuFileError(void);
@@ -883,6 +1034,9 @@ extern "C" {
     u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner);
     extern const f32 PCKeyboardDefaultValue_candidate;
     NuKeyboardState_PC *__fastcall NuKeyboardStateInitialize_candidate(NuKeyboardState_PC *state);
+    void __fastcall NuKeyboardResetInputRecords_candidate(NuKeyboardState_PC *state);
+    void __fastcall NuKeyboardInsertInputRecord_candidate(NuKeyboardState_PC *state, i32 unused_edx, i32 index,
+                                                          i32 field_00, i32 field_01, i32 field_02, u16 field_04);
     void __cdecl NuKeyboardApplyActionKeys_candidate(const i16 *keys, i32 count);
     extern i32 PCThreadCriticalSectionCount_candidate;
     extern CRITICAL_SECTION PCThreadCriticalSections_candidate[13];
@@ -938,6 +1092,10 @@ extern "C" {
     extern AREA_DATA_PC *HUB_ADATA;
     extern LEVELDATA_PC *LDataList;
     extern i32 openlevels;
+    extern i32 PlayerID[2];
+    extern i16 PlayerList[8];
+    extern APICHARACTERMODELLIST Hub_ModelList[6];
+    void __cdecl Hub_MakeModelList(void);
     extern MAINFRAMECOUNTERS MainFrameCounters;
     extern i32 do_multiframe_update;
     extern f32 FRAMETIME;
@@ -947,6 +1105,8 @@ extern "C" {
     void __cdecl DebrisSetRenderGroup(i32 group);
     void __cdecl ResetFrameCounters(void);
     void __cdecl InitCables(WORLDINFO *world);
+    void __cdecl InitSnakes(WORLDINFO *world);
+    i32 __cdecl NuSpecialFind(NUGSCN *scene, NUSPECIALHANDLE *handle, char *name, i32 flags);
     extern u8 cables[0xf60];
     extern f32 default_targetmomf, targetmomf;
     extern f32 default_ownermomf, ownermomf;
@@ -1030,6 +1190,24 @@ extern "C" {
     void __cdecl SmartTextGetWidescreen(f32 *font_scale_x, f32 *coordinate_scale);
     i32 __cdecl NuStrLen(const char *text);
     i32 __cdecl NuStrICmp(const char *a, const char *b);
+    char *__cdecl NuStrIStr(char *text, char *substring);
+    void __cdecl NuLinkedListAppend(NULISTHDR *list, NULISTLNK *node);
+    void __cdecl NuLinkedListRemove(NULISTHDR *list, NULISTLNK *node);
+    NULISTLNK *__cdecl NuLinkedListGetHead(NULISTHDR *list);
+    NULISTLNK *__cdecl NuLinkedListGetNext(NULISTHDR *list, NULISTLNK *node);
+    void __cdecl ResetGizAIMessageSys(GIZAIMESSAGESYS *sys);
+    void __cdecl ClearGizAIMessageSys(GIZAIMESSAGESYS *sys);
+    GIZAIMESSAGE *__cdecl CheckGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMESSAGE *message);
+    GIZAIMESSAGE *__cdecl SetGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, f32 value, GIZAIMESSAGE *message);
+    f32 __cdecl GetGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMESSAGE *message);
+    GIZAIMESSAGE *__cdecl QueryGizAIMessage(GIZAIMESSAGESYS *sys, GIZAIMESSAGE *message);
+    char *__cdecl GizAIMessage_GetName(GIZAIMESSAGE *message);
+    extern char gizaimessage_prefix[5];
+    extern const char GizAIMessage_NameFormat[3];
+    extern const char GizAIMessage_PrefixedNameFormat[5];
+    extern GIZAIMESSAGESYS *gizaimessagesys;
+    void *__cdecl AISysBufferAlloc(VARIPTR *cursor, VARIPTR *end, u32 size);
+    GIZAIMESSAGESYS *__cdecl CreateGizAIMessageSys(VARIPTR *cursor, VARIPTR *end, i32 count);
     i32 __cdecl NuStrNICmp(const char *a, const char *b, i32 n);
     void __cdecl NuStrUpr(char *dst, const char *src);
     void __cdecl NuStrLwr(char *dst, const char *src);

@@ -183,3 +183,44 @@ bindings and count toward mapped image coverage; they do not count as reconstruc
 functions or matched code/data. A compiled definition of an external slot or thunk
 is an error, and `src/externals.c` must emit no definitions. Original-free CI checks
 the latter rule; classification against actual import bytes happens locally.
+
+## PC startup and connected gameplay mappings
+
+The current startup map binds `InitSnakes` at `0x00597250` from NuMain's direct
+call at `0x00493111`. Its three `NuSpecialFind` calls use the PC scene pointer
+at `WORLDINFO+0x13c`, three 12-byte handles, and the distinct `Snake_bit_1/2/3`
+strings. `InitCables` is the adjacent direct call at `0x00493105`; its defaults
+and `WORLDINFO+0x12c` area comparison establish the typed cable state. Both
+entry functions match their full PC extents after relocation.
+
+The AI message system's PC constructor allocates a `0x18`-byte header and
+`count * 0x38`-byte records, then resets its two eight-byte linked lists. PC
+calls to `NuLinkedListAppend/Remove/GetHead/GetNext` use their confirmed
+`0x004f13xx` entries. The message flags are 16-bit at `+0x36`, rather than the
+Android declaration's byte. The real list helpers and four AI-message routines
+match completely; the other source routines remain marked different in
+`matching.json`.
+
+For file-position dispatch, PC file initialization clears 20 `0x30`-byte DAT
+records at `0x0297dc80` and 20 `0x14`-byte memory-file records at
+`0x02983760`. `NuMemFilePos` at `0x004f6c20` and the distinct three-byte
+`NuMcSeek` at `0x006dee90` are exact. `NuFilePos` and `NuFileSize` preserve the
+PC handle branches and archive-hit buffering behavior, but are not yet byte
+matches. The level/area loader entry names follow `LoadPermData` calls to
+`0x005788f0` and `0x00572b00`, with PC record strides `0x130` and `0x9c`;
+their current NULL-return sources are scaffolds, not loaded tables.
+
+PC font instructions establish `VUFNT+0x48` as platform data and a matrix at
+that data's `+0x10`. `NuQFntMoveRS` (`0x005d10e0`) and `NuQFntSetMtxRS`
+(`0x005d0f40`) match complete PC extents. The mode-save array starts at
+`0x0096d890`: the preceding word at `0x0096d88c` is separate, as shown by the
+push and restore displacements in `NuQFntPrintEx`. Its deeper glyph renderer
+and the wide/narrow NuFPar parser remain open dependencies.
+
+`InitOnce` calls the argument iterator at `0x00401100` using ECX/EAX as a
+private ABI, which ordinary VC8 C does not reproduce; our callable source
+wrapper is intentionally nonmatching. Its three-byte zero-return callee at
+`0x006d3430` is exact. The PC `NuMusic::SetFader` member at `0x00694d50` uses
+`this+0x19c/0x1a0/0x1a4` and matches with its real C++ linkage. These are
+reconstruction linker names for a stripped executable, not recovered retail
+symbol spellings.

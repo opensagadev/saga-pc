@@ -1,8 +1,10 @@
 address   , symbol                                                , size  , ctype
+0x00401100, _StartupParseArguments                                , 59    , "void __cdecl (i32, char **)"
 0x004011e0, _InitOnce                                             , 1019  , "void __cdecl (i32, char **)"
 0x00408800, _InitCables                                           , 127   , void __cdecl (WORLDINFO *)
 0x0043c800, _GameAISysSetGame                                     , 43    , void __cdecl (void)
 0x0043c830, _GameAISysInit                                        , 353   , void __cdecl (void)
+0x0047aa30, _Hub_MakeModelList                                    , 151   , void __cdecl (void)
 0x00492b40, _NuMain                                               , 4332  , "i32 __cdecl (i32, char **)"
 0x004942c0, _MenuEnterOptions                                     , 60    , void __cdecl (MENU *)
 0x00494300, _MenuUpdateOptions                                    , 690   , void __cdecl (MENU *)
@@ -28,6 +30,10 @@ address   , symbol                                                , size  , ctyp
 0x004f0d40, _NuDatSet                                             , 16    , NUDATHDR *__cdecl (NUDATHDR *)
 0x004f0d50, _NuDatGet                                             , 6     , NUDATHDR *__cdecl (void)
 0x004f0de0, @PCFilePakChecksum_candidate@8                        , 33    , "u32 __fastcall (const u8 *, i32)"
+0x004f1310, _NuLinkedListAppend                                   , 40    , "void __cdecl (NULISTHDR *, NULISTLNK *)"
+0x004f1410, _NuLinkedListRemove                                   , 47    , "void __cdecl (NULISTHDR *, NULISTLNK *)"
+0x004f1440, _NuLinkedListGetHead                                  , 7     , NULISTLNK *__cdecl (NULISTHDR *)
+0x004f1460, _NuLinkedListGetNext                                  , 15    , "NULISTLNK *__cdecl (NULISTHDR *, NULISTLNK *)"
 0x004f1e80, _NuStrCat                                             , 51    , "void __cdecl (char *, const char *)"
 0x004f1ec0, _NuStrNCat                                            , 73    , "i32 __cdecl (char *, const char *, i32)"
 0x004f1f10, _NuStrCpy                                             , 42    , "i32 __cdecl (char *, const char *)"
@@ -71,8 +77,12 @@ address   , symbol                                                , size  , ctyp
 0x004f6930, _NuFileSetCurrentDirectory                            , 111   , void __cdecl (const char *)
 0x004f6a60, _NuFileGetCurrentDllPath                              , 136   , void __cdecl (char *)
 0x004f6af0, _NuFileSetCurrentDllDirectory                         , 71    , void __cdecl (const char *)
+0x004f6c20, _NuMemFilePos                                         , 68    , i64 __cdecl (NUFILE)
+0x004f6d10, _NuFilePos                                            , 139   , i64 __cdecl (NUFILE)
 0x004f6de0, _NuFileSeek                                           , 190   , "i64 __cdecl (NUFILE, i64, i32)"
 0x004f76f0, _NuDatFileFindHash                                    , 214   , "i32 __cdecl (NUDATHDR *, char *)"
+0x004f7fb0, _NuFParGetWord                                        , 335   , i32 __cdecl (NUFPAR_PC *)
+0x004f8a70, _NuStrIStr                                            , 120   , "char *__cdecl (char *, char *)"
 0x004f8b10, _NuStrICmp                                            , 100   , "i32 __cdecl (const char *, const char *)"
 0x004f8b80, _NuStrNICmp                                           , 150   , "i32 __cdecl (const char *, const char *, i32)"
 0x004f8c20, _NuStrUpr                                             , 59    , "void __cdecl (char *, const char *)"
@@ -83,9 +93,12 @@ address   , symbol                                                , size  , ctyp
 0x004f9aa0, _NuDatFileFindTree                                    , 300   , "i32 __cdecl (NUDATHDR *, char *)"
 0x004fa3f0, _NuFileOpenDF                                         , 507   , "NUFILE __cdecl (const char *, i32, NUDATHDR *, i32)"
 0x004fa610, _NuFileExistQuiet                                     , 126   , i32 __cdecl (char *)
+0x004fa690, _NuFileSize                                           , 165   , i64 __cdecl (char *)
 0x004fb550, _NuFileRead                                           , 380   , "i32 __cdecl (NUFILE, void *, i32)"
 0x004fbb40, _NuDatOpenEx                                          , 1898  , "NUDATHDR *__cdecl (const char *, VARIPTR *, i32 *, i16)"
 0x004fc2b0, _NuDatOpen                                            , 26    , "NUDATHDR *__cdecl (const char *, VARIPTR *, i32 *)"
+0x004fc2d0, _NuGetChar                                            , 137   , char __cdecl (NUFPAR_PC *)
+0x004fc360, _NuGetWChar                                           , 41    , u16 __cdecl (NUFPAR_PC *)
 0x004fd050, _NuFrameEnd                                           , 987   , f32 __cdecl (void)
 0x004feb50, _NuHasError                                           , 6     , i32 __cdecl (void)
 0x004feb60, _NuClearError                                         , 11    , void __cdecl (void)
@@ -121,6 +134,7 @@ address   , symbol                                                , size  , ctyp
 0x0050e6f0, _SmartTextGetWidescreen                               , 33    , "void __cdecl (f32 *, f32 *)"
 0x0050e730, _SplitTextFindNextWS                                  , 99    , "i32 __cdecl (u8 *, i32)"
 0x0050ec40, _FixUpButtonsInFont                                   , 200   , "void __cdecl (VUFNT *, VUFNT *)"
+0x00517160, _AISysBufferAlloc                                     , 74    , "void *__cdecl (VARIPTR *, VARIPTR *, u32)"
 0x005476e0, _StartPerm                                            , 23    , void __cdecl (void)
 0x00547700, _EndPerm                                              , 124   , void __cdecl (void)
 0x00547a70, _GameGetMusicVolume                                   , 59    , f32 __cdecl (OPTIONSSAVE *)
@@ -160,8 +174,19 @@ address   , symbol                                                , size  , ctyp
 0x00566290, _FinishLoop                                           , 271   , void __cdecl (i32)
 0x00571b20, _Parts_Start                                          , 30    , void __cdecl (WORLDINFO *)
 0x00571b40, _Parts_Stop                                           , 30    , void __cdecl (WORLDINFO *)
+0x00572b00, _Areas_ConfigureList                                  , 1853  , "AREA_DATA_PC *__cdecl (char *, VARIPTR *, VARIPTR *, i32, i32 *)"
 0x00574e50, _GetParentMenuID                                      , 56    , i32 __cdecl (void)
+0x005788f0, _Levels_ConfigureList                                 , 1196  , "LEVELDATA_PC *__cdecl (char *, VARIPTR *, VARIPTR *, i32, i32 *, void *)"
 0x00596530, _InitShadowLights                                     , 632   , void __cdecl (void)
+0x00597250, _InitSnakes                                           , 99    , void __cdecl (WORLDINFO *)
+0x005aab50, _ResetGizAIMessageSys                                 , 99    , void __cdecl (GIZAIMESSAGESYS *)
+0x005aabc0, _ClearGizAIMessageSys                                 , 53    , void __cdecl (GIZAIMESSAGESYS *)
+0x005aac00, _CheckGizAIMessage                                    , 324   , "GIZAIMESSAGE *__cdecl (GIZAIMESSAGESYS *, const char *, GIZAIMESSAGE *)"
+0x005aad50, _QueryGizAIMessage                                    , 45    , "GIZAIMESSAGE *__cdecl (GIZAIMESSAGESYS *, GIZAIMESSAGE *)"
+0x005aadf0, _GizAIMessage_GetName                                 , 15    , char *__cdecl (GIZAIMESSAGE *)
+0x005aafb0, _CreateGizAIMessageSys                                , 104   , "GIZAIMESSAGESYS *__cdecl (VARIPTR *, VARIPTR *, i32)"
+0x005ab020, _GetGizAIMessage                                      , 34    , "f32 __cdecl (GIZAIMESSAGESYS *, const char *, GIZAIMESSAGE *)"
+0x005ab050, _SetGizAIMessage                                      , 35    , "GIZAIMESSAGE *__cdecl (GIZAIMESSAGESYS *, const char *, f32, GIZAIMESSAGE *)"
 0x005b1080, ?Init@FadeSystem@@QAEXXZ                              , 29    , void __thiscall (FadeSystem *)
 0x005b10a0, ?Update@FadeSystem@@QAEXXZ                            , 211   , void __thiscall (FadeSystem *)
 0x005b1180, ?Draw@FadeSystem@@QAEXXZ                              , 36    , void __thiscall (FadeSystem *)
@@ -221,6 +246,8 @@ address   , symbol                                                , size  , ctyp
 0x005c0500, _NuMtxMulVU0                                          , 21    , "void __cdecl (NUMTX *, NUMTX *, NUMTX *)"
 0x005c9130, _NuPause                                              , 11    , void __cdecl (i32)
 0x005c9ff0, _NuRegisterEndFrameCallBackFn                         , 10    , void __cdecl (void (*)(void))
+0x005cf510, _NuSpecialFindDisplay                                 , 149   , "i32 __cdecl (NUGSCN *, NUSPECIALHANDLE *, char *, i32)"
+0x005cf5b0, _NuSpecialFind                                        , 157   , "i32 __cdecl (NUGSCN *, NUSPECIALHANDLE *, char *, i32)"
 0x005cf980, _NuSpecialTestAnim                                    , 57    , i32 __cdecl (NUSPECIALHANDLE *)
 0x005cf9c0, _NuSpecialGetPos                                      , 23    , NUVEC *__cdecl (NUSPECIALHANDLE *)
 0x005cf9e0, _NuSpecialGetDrawPos                                  , 58    , NUVEC *__cdecl (NUSPECIALHANDLE *)
@@ -252,6 +279,8 @@ address   , symbol                                                , size  , ctyp
 0x005d0e80, _NuQFntHeight                                         , 43    , f32 __cdecl (VUFNT *)
 0x005d0eb0, _NuQFntBaseline                                       , 43    , f32 __cdecl (VUFNT *)
 0x005d0ee0, _NuQFntSetJustifiedTolerances                         , 72    , "void __cdecl (f32, f32)"
+0x005d0f40, _NuQFntSetMtxRS                                       , 26    , "void __cdecl (void *, VUFNT *, NUMTX *)"
+0x005d10e0, _NuQFntMoveRS                                         , 94    , "void __cdecl (void *, VUFNT *, f32, f32, f32)"
 0x005d60c0, _NuCameraGet                                          , 21    , void __cdecl (NUCAMERA *)
 0x005d6120, _NuCameraSetAxes                                      , 30    , void __cdecl (NUVEC *)
 0x005d6140, _NuCameraGetAxes                                      , 31    , void __cdecl (NUVEC *)
@@ -276,6 +305,8 @@ address   , symbol                                                , size  , ctyp
 0x005e8430, _NuOcclusionManagerBeginFrame                         , 59    , void __cdecl (void)
 0x005edbb0, _NuMtxCalcCheapFaceOn                                 , 134   , "void __cdecl (NUMTX *, NUVEC *)"
 0x005edd70, _NuMtxCalcDebrisFaceOn                                , 113   , void __cdecl (NUMTX *)
+0x005f3510, _NuQFntPrintU                                         , 108   , "void __cdecl (VUFNT *, char *)"
+0x005f35e0, _NuQFntPrintEx                                        , 320   , "void __cdecl (VUFNT *, i32, i32, i32, const char *, ...)"
 0x005f9530, _NuWaterReset                                         , 21    , void __cdecl (void)
 0x0061e6b0, _NuKeyToAscii                                         , 50    , "i32 __cdecl (u32, i32)"
 0x0062f970, _APITransparentInit                                   , 325   , void __cdecl (void)
@@ -295,6 +326,8 @@ address   , symbol                                                , size  , ctyp
 0x0065f4d0, _edGraEnableTerrainSwap                               , 1     , void __cdecl (void)
 0x0065f4e0, _edGraDisableTerrainSwap                              , 1     , void __cdecl (void)
 0x0065f4f0, _edGraInitTerrainSwapProtection                       , 1     , void __cdecl (void)
+0x00694d50, ?SetFader@NuMusic@@QAEXMM@Z                           , 84    , "void __thiscall (NuMusic *, f32, f32)"
+0x00695170, ?GetSoundFiles@NuMusic@@QAEXPAPAUnusound_filename_info_s@@PAH@Z, 66    , "void __thiscall (NuMusic *, nusound_filename_info_s **, i32 *)"
 0x00697a30, _NuSound3SetReverb                                    , 22    , i32 __cdecl (i32)
 0x00698400, _NuSound3StopStereoStream                             , 25    , void __cdecl (i32)
 0x00698420, _NuSound3PauseStereoStream                            , 25    , void __cdecl (i32)
@@ -319,6 +352,9 @@ address   , symbol                                                , size  , ctyp
 0x006998a0, ?StartTimer@SoundQueue@@QAEXXZ                        , 43    , void __thiscall (SoundQueue *)
 0x006998d0, ?StopTimer@SoundQueue@@QAEXXZ                         , 26    , void __thiscall (SoundQueue *)
 0x006d33d0, _NuKeyboardPlatformStartup_candidate                  , 59    , i32 __cdecl (void)
+0x006d3430, _StartupParseArgument                                 , 3     , "i32 __cdecl (i32, char **)"
+0x006d4d90, @NuKeyboardResetInputRecords_candidate@4              , 49    , void __fastcall (NuKeyboardState_PC *)
+0x006d4e60, @NuKeyboardInsertInputRecord_candidate@28             , 135   , "void __fastcall (NuKeyboardState_PC *, i32, i32, i32, i32, i32, u16)"
 0x006d58a0, _NuMouseRead                                          , 1     , void __cdecl (void)
 0x006d5990, @NuKeyboardPoll@4                                     , 368   , u8 *__fastcall (NuKeyboardOwner_PC *)
 0x006d6b30, _MenuSetPlatformState                                 , 1     , void __cdecl (i32)
@@ -327,6 +363,7 @@ address   , symbol                                                , size  , ctyp
 0x006da560, @NuKeyboardStateInitialize_candidate@4                , 949   , NuKeyboardState_PC *__fastcall (NuKeyboardState_PC *)
 0x006dd390, _NuWindowsProcessMessages                             , 97    , i32 __cdecl (void)
 0x006de0e0, _WinMain@16                                           , 200   , "int __stdcall (HINSTANCE, HINSTANCE, LPSTR, int)"
+0x006dee90, _NuMcSeek                                             , 3     , "i32 __cdecl (i32, i32, i32, i32)"
 0x006df080, _NuKeyboardCreateWindowState_candidate                , 55    , "void __cdecl (HWND, HINSTANCE)"
 0x006df300, _PCFrameCriticalSectionEnter_candidate                , 13    , void __cdecl (void)
 0x006df310, _PCFrameCriticalSectionLeave_candidate                , 13    , void __cdecl (void)
@@ -336,6 +373,7 @@ address   , symbol                                                , size  , ctyp
 0x006e6d90, _memcpy                                               ,       , "void *__cdecl (void *, const void *, size_t)"
 0x006e7570, _malloc                                               ,       , void *__cdecl (size_t)
 0x006e7633, _free                                                 , 133   , void __cdecl (void *)
+0x006e7b25, _vsprintf                                             , 23    , "i32 __cdecl (char *, const char *, va_list)"
 0x006e8430, __allmul                                              , 52    , "i64 __cdecl (i64, i64)"
 0x006e8e11, _srand                                                , 13    , void __cdecl (unsigned int)
 0x006e8e80, __CIsin                                               , 79    , f64 (x87 ST0 -> ST0)
@@ -752,12 +790,14 @@ address   , symbol                                                , size  , ctyp
 0x00751a40, _PCKeyboardDefaultValue_candidate                     , 4     , const f32
 0x00751a90, __real@3ff8000000000000                               , 8     , const f64
 0x00751bf8, __real@4024000000000000                               , 8     , const f64
+0x00751c00, _GizAIMessage_PrefixedNameFormat                      , 5     , const char[5]
 0x00751d90, __real@42480000                                       , 4     , const f32
 0x007531b8, __real@3e19999a                                       , 4     , const f32
 0x0075501c, __real@41c80000                                       , 4     , const f32
 0x00755180, _NuScale1000                                          , 8     , const f64
 0x00755ba8, _Text_UnknownText                                     , 2     , const char[2]
 0x007579a0, __real@461c3f9a                                       , 4     , const f32
+0x00758828, _GizAIMessage_NameFormat                              , 3     , const char[3]
 0x00758fc0, _NuTime_RefreshRate                                   , 8     , const f64
 0x00758fc0, __real@404e000000000000                               , 8     , const f64
 0x00759700, _Menu_ColonSeparator                                  , 3     , const char[3]
@@ -816,6 +856,9 @@ address   , symbol                                                , size  , ctyp
 0x007616b4, _Text_TimeHMS                                         , 13    , const char[13]
 0x007616c4, _Text_TimeHMSC                                        , 18    , const char[18]
 0x007616d8, __real@40ac200000000000                               , 8     , const f64
+0x00763958, ??_C@_0M@MGCAMLPP@Snake_bit_3?$AA@                    , 12    , const char[12]
+0x00763964, ??_C@_0M@NPDLPKLO@Snake_bit_2?$AA@                    , 12    , const char[12]
+0x00763970, ??_C@_0M@PEBGKJHN@Snake_bit_1?$AA@                    , 12    , const char[12]
 0x00764000, __real@3e00000000000000                               , 8     , f64
 0x00764090, __real@3f2921fb60000000                               , 8     , const f64
 0x00764258, _KeyStructSizes                                       , 16    , const u8[16]
@@ -830,6 +873,7 @@ address   , symbol                                                , size  , ctyp
 0x007f1050, _max_cable_length                                     , 4     , f32
 0x007f1054, _tow_length                                           , 4     , f32
 0x007f23a4, _waiting_for_character                                , 4     , i32
+0x007f39e4, _StartupGameFlag1                                     , 4     , i32
 0x007f3b14, _BonusWinner                                          , 4     , i32
 0x007fac04, _BGLOAD                                               , 4     , i32
 0x007fac20, _PlayTrailer                                          , 4     , i32
@@ -887,6 +931,7 @@ address   , symbol                                                , size  , ctyp
 0x00802400, _Text_LanguageList_Default                            , 56    , LANGUAGEDATA[7]
 0x00802538, ?GAMERAND@@3HA                                        , 4     , i32
 0x0080253c, ?qseed@@3HA                                           , 4     , i32
+0x00802bd8, _PlayerID                                             , 8     , i32[2]
 0x00802c54, _WORLD                                                , 4     , WORLDINFO *
 0x00802c58, _LWORLD                                               , 4     , WORLDINFO *
 0x00802c5c, _other_level                                          , 4     , i32
@@ -906,6 +951,7 @@ address   , symbol                                                , size  , ctyp
 0x00805a00, _hub_from_arcade                                      , 4     , i32
 0x00805c94, _TrooperStepFrames                                    , 16    , i32[4]
 0x00805ca4, _trooperspeedtab                                      , 16    , f32[4]
+0x00805d48, _gizaimessage_prefix                                  , 5     , char[5]
 0x00806370, ??_R0?AVThingManager@@@8                              , 27    ,
 0x0080638c, ??_R0?AVGameThingManager@@@8                          , 31    ,
 0x008065bc, _NuWindQS                                             , 4     , u32
@@ -915,6 +961,8 @@ address   , symbol                                                , size  , ctyp
 0x00806c00, _cubeEdgeIndices                                      , 96    , i32[12][2]
 0x00806c60, _cubeEdgeTopologies                                   , 96    , i32[12][2]
 0x00806cc0, _nuspecial_const_tint                                 , 12    , NUVEC
+0x0080b600, _qfnt_rezscale_w                                      , 4     , f32
+0x0080b604, _qfnt_rezscale_h                                      , 4     , f32
 0x0080b608, _qfnt_len_scale                                       , 4     , f32
 0x0080b60c, _qfnt_height_scale                                    , 4     , f32
 0x0080b610, _qfnt_justify_squash                                  , 4     , f32
@@ -1061,9 +1109,11 @@ address   , symbol                                                , size  , ctyp
 0x0085ea94, _BonusCoinTotal                                       , 4     , i32
 0x008668e8, _Game                                                 , 32332 , GAMESAVE
 0x0087658c, _TempOptions                                          , 13    , OPTIONSSAVE
+0x008765a0, _StartupGameFlag0                                     , 4     , i32
 0x008765ac, _NewMode                                              , 4     , i32
 0x008765e4, _reset_restart                                        , 4     , i32
 0x00876cec, _party_cant_be_under_cover                            , 4     , i32
+0x00879540, _Hub_ModelList                                        , 24    , APICHARACTERMODELLIST[6]
 0x0087a9e8, _makefreeplaymodellist                                , 4     , i32
 0x0087af98, _GUNSHIP_ADATA                                        , 4     , AREA_DATA_PC *
 0x0087b2f4, _LevelChangesInArea                                   , 4     , i32
@@ -1106,6 +1156,7 @@ address   , symbol                                                , size  , ctyp
 0x0088ab4c, _NuAllocManager                                       , 4     , void *
 0x0088ab50, _NuAllocPeakEnd0                                      , 4     , void *
 0x0088ab54, _NuAllocPeakEnd1                                      , 4     , void *
+0x0088ab6c, _old_line_pos                                         , 4     , i32
 0x008ceb70, _file_info                                            , 2112  , FILEINFO[33]
 0x00915fd0, _file_buff                                            , 4128  , FILEBUFF[4]
 0x0091eea4, _DontDoFileUpperCaseHack                              , 4     , i32
@@ -1189,6 +1240,7 @@ address   , symbol                                                , size  , ctyp
 0x0093b34c, ?NetPaused@@3HA                                       , 4     , i32
 0x0093b358, _GAMEDEMO                                             , 4     , i32
 0x0093d530, _PlayerProgress                                       , 128   , PLAYERPROGRESS[8]
+0x0093d5b0, _PlayerList                                           , 16    , i16[8]
 0x0093d838, _PLAYERCOUNT                                          , 4     , i32
 0x0093d83c, _UsePlayerList                                        , 4     , i32
 0x0093d860, _abort_load                                           , 4     , volatile i32
@@ -1213,10 +1265,14 @@ address   , symbol                                                , size  , ctyp
 0x00951bc4, _LevelChange                                          , 4     , i32
 0x00951c00, _CUTSTOPGAME                                          , 4     , i32
 0x00955b54, _ResetOldFStop                                        , 4     , i32
+0x00955b68, _snake_hspecials                                      , 36    , NUSPECIALHANDLE[3]
+0x00955b90, _snakebodies                                          , 1088  , u8[1088]
+0x0095df6c, _gizaimessagesys                                      , 4     , GIZAIMESSAGESYS *
 0x0095e434, ?fade_draw_suppressed@@3HA                            , 4     , i32
 0x0095e5f4, _fseed                                                , 4     , u32
 0x00963fb0, _fstack                                               , 4     , VARIPTR
 0x009663a8, _fstack_limit                                         , 4     , VARIPTR
+0x0096d890, _NuQFntModeStack                                      , 64    , u32[16]
 0x0096d9e0, _fstack_top                                           , 4     , VARIPTR
 0x0096e598, _fstackmem                                            , 12288 , u8[0x3000]
 0x009716c0, _NuTimeBar_SetList                                    , 64    , void *[16]
@@ -1226,9 +1282,13 @@ address   , symbol                                                , size  , ctyp
 0x009738b0, _nuspecial_const_alpha_enabled                        , 4     , i32
 0x009738b4, _nuspecial_const_tint_enabled                         , 4     , i32
 0x009738b8, _nuspecial_draw_state                                 , 4     , i32
+0x009738cc, _qfnt_offscale_x                                      , 4     , f32
+0x009738d0, _qfnt_offscale_y                                      , 4     , f32
 0x009738d4, _nuqfnt_space_width                                   , 4     , f32
 0x009738d8, _system_qfont                                         , 4     , VUFNT *
+0x009738e0, _nuqfnt_cs_mode                                       , 4     , i32
 0x009738e4, _NuQFntMode                                           , 4     , u32
+0x009738ec, _NuQFntModeStackIndex                                 , 4     , i32
 0x00973920, _DebrisGlassTextureWidth                              , 4     , i32
 0x00973924, _DebrisGlassTextureHeight                             , 4     , i32
 0x0097398c, _NuTimeBar_Initialised                                , 4     , i32
@@ -1244,6 +1304,7 @@ address   , symbol                                                , size  , ctyp
 0x029620d4, _debris_render_group                                  , 4     , i32
 0x029620e8, _DebrisGlassCopyMaterial                              , 4     , void *
 0x029620ec, _DebrisGlassInitialized                               , 4     , i32
+0x02962bac, ?the_music_player@@3PAVNuMusic@@A                     , 4     , NuMusic *
 0x02962bd0, _NuSound3VolumeTable                                  , 65536 , f32[0x4000]
 0x02972c20, ?NuSound3StereoStreams@@3PAPAUSoundQueue@@A           , 8     , SoundQueue *[2]
 0x0297397c, _NuSound3Reverb                                       , 1     , u8
@@ -1261,7 +1322,9 @@ address   , symbol                                                , size  , ctyp
 0x0297ae40, _PCFrameCriticalSectionIndex_candidate                , 4     , i32
 0x0297dbe0, _nuapi                                                , 144   , NUAPI
 0x0297dc00, _NuVideoFrameRate                                     , 4     , f32
+0x0297dc80, _pc_dat_file_infos                                    , 960   , PC_NUDATFILEINFO[20]
 0x0297e084, _numdevices                                           , 4     , i32
 0x02980400, _devices                                              , 9024  , NUFILE_DEVICE[16]
+0x02983760, _pc_memfiles                                          , 400   , PC_NUMEMFILE[20]
 0x029899c0, _NuTrigTable                                          , 131072, f32[32768]
 inlined   , ?HashString@@YAIPAE@Z                                 ,       , u32 __cdecl (u8 *)

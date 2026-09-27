@@ -76,6 +76,19 @@ STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, key_records) == 0x67f0);
 STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, keyboard_state) == 0x68b0);
 STATIC_ASSERT(sizeof(NuKeyboardInitLayout_PC) == 0x68b4);
 
+void __fastcall NuKeyboardResetInputRecords_candidate(NuKeyboardState_PC *state) {
+    NuKeyboardInitLayout_PC *layout = (NuKeyboardInitLayout_PC *)state;
+    i32 i;
+
+    for (i = 0; i < 32; ++i) {
+        layout->key_records[i].unknown_00 = 0;
+        layout->key_records[i].unknown_01 = 0xff;
+        layout->key_records[i].unknown_02 = 0xff;
+        layout->key_records[i].unknown_04 = 0;
+    }
+    layout->unknown_67e4 = 0;
+}
+
 extern const f32 PCKeyboardDefaultValue_candidate;
 
 NuKeyboardState_PC *__fastcall NuKeyboardStateInitialize_candidate(NuKeyboardState_PC *state) {
@@ -184,4 +197,34 @@ void __cdecl NuKeyboardApplyActionKeys_candidate(const i16 *keys, i32 count) {
         fallback_action = state->fallback_action == 0 ? 0 : 1;
         state->records[10 + fallback_action].active = 1;
     }
+}
+
+void __fastcall NuKeyboardInsertInputRecord_candidate(NuKeyboardState_PC *state, i32 unused_edx, i32 index,
+                                                      i32 field_00, i32 field_01, i32 field_02, u16 field_04) {
+    NuKeyboardInitLayout_PC *layout;
+    NuKeyboardInitKeyRecord_PC *record;
+    i32 i;
+
+    if ((u32)index > 31) {
+        return;
+    }
+
+    layout = (NuKeyboardInitLayout_PC *)state;
+    for (i = 0; i < 32; ++i) {
+        record = &layout->key_records[i];
+        if ((i32)(i8)record->unknown_00 == field_00) {
+            if (field_01 >= 0 && (i32)(i8)record->unknown_01 == field_01) {
+                return;
+            }
+            if (field_02 >= 0 && (i32)(i8)record->unknown_02 == field_02) {
+                return;
+            }
+        }
+    }
+
+    record = &layout->key_records[index];
+    record->unknown_00 = (u8)field_00;
+    record->unknown_01 = (u8)field_01;
+    record->unknown_02 = (u8)field_02;
+    record->unknown_04 = field_04;
 }

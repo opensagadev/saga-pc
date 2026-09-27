@@ -53,10 +53,10 @@ int __cdecl NuMain(int argc, char **argv) {
         Level = 0;
     }
 
-    // The PC has valid archive-backed tables here. The present asset loader is
-    // still stubbed, so stop before indexing its missing level and area data.
+    // GAME.DAT contains the level and area lists, but their PC parser path is
+    // still stubbed, so stop before indexing absent table data.
     if (LDataList == NULL || ADataList == NULL) {
-        STUBBED_NAMED("NuMain: level and area tables from the six PC DATs");
+        STUBBED_NAMED("NuMain: GAME.DAT level and area tables");
         return 0;
     }
 
@@ -79,6 +79,9 @@ int __cdecl NuMain(int argc, char **argv) {
         GameAISysSetGame();
         STUBBED_NAMED("NuMain: level stream, area initialization and music");
         InitCables(WORLD);
+        InitSnakes(WORLD);
+        STUBBED_NAMED("NuMain: NuMusic::SetFader(1, 0) at 0x0049312c");
+        NuSound3SetReverb(0);
         STUBBED_NAMED("NuMain: PC post-cable world and music setup");
 
         if (WORLD == NULL || WORLD->loaded == 0) {

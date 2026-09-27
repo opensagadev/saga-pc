@@ -230,6 +230,47 @@ i32 __cdecl NuStrICmp(const char *a, const char *b) {
     return 0;
 }
 
+char *__cdecl NuStrIStr(char *text, char *substring) {
+    char *start;
+    char *candidate;
+    char *pattern;
+    u8 text_upper;
+    u8 pattern_upper;
+
+    while (*text != '\0') {
+        start = text;
+        candidate = text;
+        pattern = substring;
+        while (*pattern != '\0') {
+            if (*candidate == '\0') {
+                break;
+            }
+            text_upper = (u8)*candidate;
+            if (text_upper >= 'a' && text_upper <= 'z') {
+                text_upper -= 0x20;
+            } else if (text_upper >= 0xe0) {
+                text_upper -= 0x20;
+            }
+            pattern_upper = (u8)*pattern;
+            if (pattern_upper >= 'a' && pattern_upper <= 'z') {
+                pattern_upper -= 0x20;
+            } else if (pattern_upper >= 0xe0) {
+                pattern_upper -= 0x20;
+            }
+            if (text_upper != pattern_upper) {
+                break;
+            }
+            candidate++;
+            pattern++;
+        }
+        if (*pattern == '\0') {
+            return start;
+        }
+        text++;
+    }
+    return NULL;
+}
+
 void __cdecl NuStrUpr(char *dst, const char *src) {
     u8 value;
 

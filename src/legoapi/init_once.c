@@ -1,8 +1,6 @@
 #include "saga.h"
 
 void __cdecl InitOnce(i32 argc, char **argv) {
-    (void)argc;
-    (void)argv;
 
     /* PC performs early configuration and permanent-buffer allocation first. */
     STUBBED_NAMED(0x006dc890);
@@ -14,7 +12,7 @@ void __cdecl InitOnce(i32 argc, char **argv) {
         return;
     }
     STUBBED_NAMED(0x00428b90);
-    STUBBED_NAMED(0x00401100);
+    StartupParseArguments(argc - 1, argv != NULL ? argv + 1 : NULL);
     NuFileSetCurrentDirectory(InitOnceCurrentDirectory);
     STUBBED_NAMED(0x00602930);
 
@@ -37,7 +35,7 @@ void __cdecl InitOnce(i32 argc, char **argv) {
     Game.options_save.music_volume = (u8)InitOnceOptionInput1;
     Game.options_save.master_volume = (u8)InitOnceOptionInput2;
 
-    STUBBED_NAMED(0x00547b20);
-    STUBBED_NAMED(0x00547ab0);
+    GameSetSoundVolume(&Game.options_save);
+    GameSetMusicVolume(&Game.options_save);
     STUBBED_NAMED(0x00543e80);
 }

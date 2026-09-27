@@ -1,5 +1,13 @@
 #include "saga.h"
 
+#include <stdarg.h>
+#include <stdio.h>
+
+extern u32 NuQFntModeStack[16];
+extern i32 NuQFntModeStackIndex;
+extern void __cdecl NuQFntMoveRS(void *stream, VUFNT *font, f32 x, f32 y, f32 z);
+extern void __cdecl NuQFntPrintU(VUFNT *font, char *text);
+
 f32 __cdecl NuQFntPrintLenW(VUFNT *font, u16 *text) {
     f32 x_scale;
     f32 length = 0.0f;
@@ -85,4 +93,29 @@ f32 __cdecl NuQFntBaseline(VUFNT *font) {
 void __cdecl NuQFntSetJustifiedTolerances(f32 squash, f32 stretch) {
     qfnt_justify_squash = squash < 1.0f ? 1.0f : squash;
     qfnt_justify_stretch = stretch < 1.0f ? 1.0f : stretch;
+}
+
+void __cdecl NuQFntPrintEx(VUFNT *font, i32 x, i32 y, i32 alignment, const char *format, ...) {
+    char text[1024];
+    va_list arguments;
+    i32 width;
+
+    if (NuQFntModeStackIndex < 16) {
+        NuQFntModeStack[NuQFntModeStackIndex++] = NuQFntMode;
+    }
+    NuQFntMode = 2;
+    va_start(arguments, format);
+    vsprintf(text, format, arguments);
+    va_end(arguments);
+    width = (i32)NuQFntPrintLenU(font, text);
+    if (alignment == 0x20) {
+        x -= width;
+    } else if (alignment == 0x40) {
+        x -= width / 2;
+    }
+    NuQFntMoveRS(NULL, font, (f32)x, (f32)y, 0.0f);
+    NuQFntPrintU(font, text);
+    if (NuQFntModeStackIndex > 0) {
+        NuQFntMode = NuQFntModeStack[--NuQFntModeStackIndex];
+    }
 }

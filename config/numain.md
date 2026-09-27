@@ -16,14 +16,26 @@ cannot be used as a public interface without further work.
 
 The source entry now follows the verified PC startup order through permanent-data
 loading. `InitOnce` at `0x004011e0` has a structural stub with its full 1,019-byte
-comparison extent. Its PC-sized permanent allocation and current-directory setup
-are present; input, camera and time-bar dependencies remain open.
-`NuMain` stops before indexing level/area tables when the six DAT archives have
-not been loaded. Its startup includes a temporary guard before `NuFrameBegin`
+comparison extent. Its PC-sized permanent allocation, argument iteration and
+current-directory setup are present; input, camera and time-bar dependencies
+remain open. The retail argument helper uses a private ECX/EAX calling convention,
+so the source-compatible C wrapper is structural rather than byte-matching.
+`NuMain` opens the six episode archives, then stops before indexing level/area
+tables. Their source files reside in `GAME.DAT`, whose setup dispatcher and
+`LoadPermData` parser path are incomplete. Its startup includes a temporary guard before `NuFrameBegin`
 because the PC keyboard input owner is not yet initialized by our partial
 `InitOnce`. Its later restart and frame-loop phases contain explicit
 `STUBBED_NAMED` markers, so this is a runnable scaffold, not a complete or
 matching 4,332-byte reconstruction. Keep unresolved references fatal when linking.
+
+The restart scaffold now calls `InitCables` and `InitSnakes` at their verified
+PC sites. Both functions match their complete original extents. The PC hub
+model-list routine, AI message pool, font move/matrix leaves, file-position
+dispatch and music-fader method are also reconstructed, though some adjacent
+functions remain structural. `Levels_ConfigureList` and `Areas_ConfigureList`
+are explicit NULL-return scaffolds: their NuFPar dependencies and record fields
+must be recovered before the level/area guard can be removed. The source EXE
+does not pretend to load tables it has not built.
 
 The frame chain now includes `NuFrameBegin`, its portal, water-reset, mouse and
 occlusion callees, and a structural `NuFrameEnd` implementation with explicit
@@ -48,7 +60,7 @@ per archive against independent Win32 reads. Compressed members have not been
 decompressed or validated. The parser is structural and nonmatching. It adds
 short-read, bounds and null-arena rejection absent from retail so the incomplete
 source entry fails safely. Source startup still exits before indexing absent
-level and area tables. Asset loading and the remaining frame loop are the next
+level and area tables. The `GAME.DAT`/NuFPar loader closure and remaining frame loop are the next
 dependency work, not a completed 4,332-byte `NuMain` match.
 
 ## Direct-call candidates

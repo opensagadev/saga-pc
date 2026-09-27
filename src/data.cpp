@@ -1,6 +1,10 @@
 #include "saga.h"
 
 struct SoundQueue;
+class NuMusic;
+#pragma bss_seg(".bss$the_music_player")
+NuMusic *the_music_player;
+#pragma bss_seg()
 #pragma bss_seg(".bss$NuSound3StereoStreams")
 SoundQueue *NuSound3StereoStreams[2];
 #pragma bss_seg()
@@ -67,6 +71,8 @@ i32 Door_UseCutCam;
 
 extern "C" {
     i32 SUPERBUFFERSIZE = 0x09600000;
+    i32 StartupGameFlag0;
+    i32 StartupGameFlag1 = 1;
     VARIPTR original_permbuffer_base;
     char InitOnceCurrentDirectory[1];
 #pragma const_seg(".rdata$InitOnceAllocSource")
@@ -99,6 +105,15 @@ extern "C" {
     f32 qfnt_justify_squash = 1.0f;
     f32 qfnt_justify_stretch = 1.0f;
     u32 NuQFntMode;
+    i32 NuQFntModeStackIndex;
+#pragma bss_seg(".bss$NuQFntModeStack")
+    u32 NuQFntModeStack[16];
+#pragma bss_seg()
+    i32 nuqfnt_cs_mode;
+    f32 qfnt_offscale_x;
+    f32 qfnt_offscale_y;
+    f32 qfnt_rezscale_w = 1.0f;
+    f32 qfnt_rezscale_h = 1.0f;
     extern const f32 nu_fsign_minus_one = -1.0f;
     GAMESAVE Game;
     OPTIONSSAVE TempOptions;
@@ -271,13 +286,29 @@ extern "C" {
 #pragma bss_seg(".bss$NuSound3VolumeTable")
     f32 NuSound3VolumeTable[0x4000];
 #pragma bss_seg()
+    PC_NUDATFILEINFO pc_dat_file_infos[20];
+    PC_NUMEMFILE pc_memfiles[20];
+    i32 old_line_pos;
 #pragma bss_seg(".bss$ADataList")
     AREA_DATA_PC *ADataList;
 #pragma bss_seg()
     AREA_DATA_PC *LastAData;
     AREA_DATA_PC *HUB_ADATA;
+    i32 PlayerID[2] = {-1, -1};
+    i16 PlayerList[8];
+    APICHARACTERMODELLIST Hub_ModelList[6];
     LEVELDATA_PC *LDataList;
     i32 openlevels;
+    u8 snakebodies[0x440];
+#pragma data_seg(".data$gizaimessage_prefix")
+    char gizaimessage_prefix[5] = "msg_";
+#pragma data_seg()
+#pragma const_seg(".rdata$GizAIMessage_NameFormat")
+    extern const char GizAIMessage_NameFormat[3] = "%s";
+#pragma const_seg(".rdata$GizAIMessage_PrefixedNameFormat")
+    extern const char GizAIMessage_PrefixedNameFormat[5] = "%s%s";
+#pragma const_seg()
+    GIZAIMESSAGESYS *gizaimessagesys;
     f32 PanelProjectionX = 1222.0f;
     f32 PanelProjectionY = 1145.0f;
     f32 PanelWideWidth = 740.0f;
@@ -554,7 +585,9 @@ extern "C" {
     f32 DebrisGlassU1 = 0.0f;
     f32 DebrisGlassV1 = 0.0f;
     i32 DebrisGlassTextureWidth = 0;
-    i32 DebrisGlassTextureHeight = 0;
+#pragma bss_seg(".bss$DebrisGlassTextureHeight")
+    i32 DebrisGlassTextureHeight;
+#pragma bss_seg()
 
     extern const f32 DebrisGlassMaterialOpacity = 0.999f;
 }
@@ -592,7 +625,9 @@ VARIPTR superbuffer_end;
 VARIPTR editbuffer_end;
 
 WORLDINFO WorldInfo[2] = {0};
+#pragma data_seg(".data$WORLD")
 WORLDINFO *WORLD = &WorldInfo[0];
+#pragma data_seg()
 #pragma data_seg(".data$LWorld")
 WORLDINFO *LWORLD = &WorldInfo[0];
 #pragma data_seg()

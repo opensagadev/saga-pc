@@ -1,9 +1,9 @@
 # PC data inventory
 
-`src/data.cpp` now defines **370 independently mapped objects**. The current
-local `matching.json` verifies 362 full COFF extents and initializers; the
-remaining eight are different or lack an established original extent. Exact
-initializers include relocated pointers and the 65,536-byte runtime-filled
+`src/data.cpp` defines independently mapped shared objects. The current
+[`matching.json`](../matching.json) records which complete COFF extents and
+initializers match and which still differ or lack an established original
+extent. Exact initializers include relocated pointers and the 65,536-byte runtime-filled
 sound-volume table's zero initial state. Isolated VC8 sections keep small scalar and string
 definitions at their actual extents instead of absorbing alignment padding.
 The accepted entries are in [symbols.csv](symbols.csv), and normal local matching
@@ -123,6 +123,26 @@ eight two-byte default text IDs are mapped separately. Their complete original
 extents and initializers match. The PC language-path switch selects Japanese for
 0, French for 2, Spanish for 3, German for 4, Italian for 5, Danish for 8,
 and English otherwise; this ordering is not inferred from Android's enum.
+
+## Additional file, font, and gameplay state
+
+The next PC startup batch adds zero-initialized DAT and memory-file position
+records: 20 records of `0x30` bytes at `0x0297dc80`, and 20 of `0x14` bytes at
+`0x02983760`. File initialization clears precisely those extents; position and
+seek instructions establish the typed offsets in `saga.h`. The source retains
+PC `GAME.DAT` level/area table loading as an open parser dependency.
+
+Font mode saves use 16 four-byte entries starting at `0x0096d890`, with a
+separate stack index at `0x009738ec`. PC push and restore displacements establish
+that array base; the preceding word at `0x0096d88c` is not absorbed into it.
+The typed font platform-data pointer at `VUFNT+0x48` leads to x/y/z at
+`+4/+8/+0xc` and a 64-byte matrix at `+0x10`; their users now have layout
+assertions instead of numeric byte access.
+
+The AI message pool uses eight-byte list links and `0x38`-byte message records,
+including a 16-bit flags field at `+0x36`. The hub model list has six four-byte
+records, and the snake bodies occupy four `0x110`-byte slots. Their initializers
+and individual source definitions are compared independently with the PC image.
 
 ## NuMain scalar state
 

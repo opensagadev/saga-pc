@@ -127,11 +127,11 @@ unreachable. The comparison extent includes internal padding and excludes the
 
 The map uses reconstruction names `_NuMain` and `_WinMain@16`, with explicit C
 linkage and the observed calling conventions. These are names emitted by our
-declarations, not spellings recovered from the stripped original. The current
-source entry path implements the first two PC calls, `NuCommandLine` and
-`WorldInfo_InitOnce`, then returns. The additional exact leaf matches below do not
-complete that path: `InitOnce` and the rest of the game loop remain unfinished, and
-the complete `NuMain` and `WinMain` extents do not match.
+declarations, not spellings recovered from the stripped original. The source
+entry now calls its reconstructed startup, opens the six episode DAT archives,
+then exits before dereferencing the missing level and area tables. `GAME.DAT`
+contains those lists; its registration and parser chain are unfinished. The
+complete `NuMain` and `WinMain` extents do not match.
 
 The [data inventory](data.md) records reconstructed constants, shared state,
 type/extent evidence and the remaining data coverage.

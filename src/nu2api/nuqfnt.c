@@ -1,5 +1,11 @@
 #include "saga.h"
 
+extern i32 nuqfnt_cs_mode;
+extern f32 qfnt_rezscale_w;
+extern f32 qfnt_rezscale_h;
+extern f32 qfnt_offscale_x;
+extern f32 qfnt_offscale_y;
+
 u16 UnicodeToIndexFast(VUCHARIDX *map, i32 count, u16 unicode) {
     i32 middle = count / 2;
     i32 low = 0;
@@ -74,4 +80,32 @@ void NuQFntUTF8toQCode(VUFNT *font, char *text, u16 *encoded) {
         ++encoded;
     }
     *encoded = 0;
+}
+
+void __cdecl NuQFntMoveRS(void *stream, VUFNT *font, f32 x, f32 y, f32 z) {
+    (void)stream;
+    if (nuqfnt_cs_mode != 4) {
+        x = x * qfnt_rezscale_w + qfnt_offscale_x;
+        y = y * qfnt_rezscale_h + qfnt_offscale_y - font->baseline * *font->y_scale;
+    }
+    font->platform_data->x = x;
+    font->platform_data->y = y;
+    font->platform_data->z = z;
+}
+
+void __cdecl NuQFntSetMtxRS(void *stream, VUFNT *font, NUMTX *matrix) {
+    (void)stream;
+    font->platform_data->matrix = *matrix;
+}
+
+void __cdecl NuQFntPrintU(VUFNT *font, char *text) {
+    u16 encoded[1024];
+    if (font == NULL) {
+        font = system_qfont;
+    }
+    if (font != NULL && text != NULL) {
+        NuQFntUTF8toQCode(font, text, encoded);
+        /* The PC renderer's 1210-byte glyph submission routine is still open. */
+        STUBBED_NAMED(0x005eb250);
+    }
 }
