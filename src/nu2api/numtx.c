@@ -115,6 +115,14 @@ void __cdecl NuMtxSetRotationAxis(NUMTX *m, NUANG angle, NUVEC *axis) {
     m->m30 = m->m31 = m->m32 = 0.0f;
 }
 
+void __cdecl NuMtxRotateAng(NUANG angle, f32 x, f32 z, f32 *rx, f32 *rz) {
+    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+
+    *rx = x * cosine - z * sine;
+    *rz = x * sine + z * cosine;
+}
+
 void __cdecl NuMtxTranslate(NUMTX *m, NUVEC *t) {
     m->m30 += t->x;
     m->m31 += t->y;

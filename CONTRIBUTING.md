@@ -243,11 +243,16 @@ external branch destinations in these comparison objects. Inspect `exact_match`
 rather than treating an objdiff percentage as proof. Mapped data definitions,
 including compiler literals and zero-initialized state, are compared too.
 
-The first badge shows objdiff's native fuzzy similarity across the functions we
-have compiled and compared. Objdiff weights its function scores by original code
-size; `objdiff_total_code` in `matching.json` gives that denominator. This score
-measures the quality of the current candidates, not the portion of the whole
-game reconstructed. An omitted zero score in objdiff's JSON counts as zero.
+The first badge shows **fuzzy code coverage**: each compiled function contributes
+its objdiff similarity weighted by its original PC extent, divided by the full
+original `.text` virtual size (**3,471,246 bytes**). Unmapped and unimplemented
+code contributes zero. Overlapping aliases contribute only once, at their least
+similar score. This measures fuzzy progress against the whole game, but it is an
+estimate rather than a count of equal bytes: objdiff can score a wrong branch
+destination as similar. `fuzzy_coverage_percent` records the same figure in
+`matching.json`. The report also retains objdiff's native
+`objdiff_fuzzy_percent` among compared functions, with `objdiff_total_code` as
+its narrower denominator. An omitted zero score in objdiff's JSON counts as zero.
 
 The separate `matching_percent` in `matching.json` counts the union of exactly
 matched function bytes divided by the full original `.text` virtual size

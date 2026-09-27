@@ -34,6 +34,24 @@ class ProgressTests(unittest.TestCase):
         self.assertEqual(stats["matching_percent"], 0)
         self.assertEqual(stats["mapped_code_bytes"], 16)
 
+    def test_fuzzy_coverage_uses_original_text_denominator(self):
+        row = self.row(exact=False)
+        row["objects"] = [{"objdiff_percent": 50.0}]
+        stats = match.progress([row], self.target)
+        self.assertEqual(stats["fuzzy_coverage_percent"], 100 * 8 / 4096)
+        self.assertEqual(stats["matching_percent"], 0)
+
+    def test_fuzzy_aliases_count_once_at_least_similar_score(self):
+        first = self.row(exact=False)
+        first["objects"] = [{"objdiff_percent": 80.0}]
+        alias = self.row(exact=False)
+        alias["objects"] = [{"objdiff_percent": 60.0}]
+        overlap = self.row(address=0x401008, exact=False)
+        overlap["objects"] = [{"objdiff_percent": 40.0}]
+        stats = match.progress([first, alias, overlap], self.target)
+        self.assertAlmostEqual(stats["fuzzy_coverage_percent"],
+                               100 * (8 * .6 + 8 * .4 + 8 * .4) / 4096)
+
     def test_aliases_and_overlaps_are_counted_once(self):
         stats = match.progress([self.row(), self.row(), self.row(0x401008)], self.target)
         self.assertEqual(stats["mapped_code_bytes"], 24)
@@ -56,18 +74,18 @@ class ProgressTests(unittest.TestCase):
             mapping_marker = "<!-- mapping-badge -->old<!-- /mapping-badge -->"
             build_badge = "[![build](https://example.com/build.svg)](https://example.com/build)"
             path.write_text("before\n" + marker + " " + mapping_marker + " " + build_badge + "\nafter\n")
-            stats = {"objdiff_fuzzy_percent": 59.39252, "matching_percent": 0.012733,
+            stats = {"fuzzy_coverage_percent": 1.29352, "matching_percent": 0.012733,
                      "mapping_percent": 0.003734}
             match.update_badge(stats)
             updated = path.read_text()
             self.assertTrue(updated.startswith("before\n"))
             self.assertTrue(updated.endswith("\nafter\n"))
-            self.assertIn("objdiff%20fuzzy-59.393%25-yellow", updated)
+            self.assertIn("fuzzy%20code-1.294%25-red", updated)
             self.assertNotIn("0.013%25", updated)
             self.assertIn("mapping-0.004%25-red", updated)
             badge_lines = [line for line in updated.splitlines() if "![" in line]
             self.assertEqual(len(badge_lines), 1)
-            self.assertTrue(badge_lines[0].startswith("![objdiff fuzzy]"))
+            self.assertTrue(badge_lines[0].startswith("![fuzzy code]"))
             self.assertIn("![mapping]", badge_lines[0])
             self.assertTrue(badge_lines[0].endswith(build_badge))
             match.update_badge(stats)
@@ -86,8 +104,8 @@ class ProgressTests(unittest.TestCase):
             for value, color in ((0, "red"), (24.999, "red"), (25, "yellow"),
                                  (74.999, "yellow"), (75, "green"), (100, "green")):
                 with self.subTest(value=value):
-                    match.update_badge({"objdiff_fuzzy_percent": value, "mapping_percent": 0})
-                    self.assertIn(f"objdiff%20fuzzy-{value:.3f}%25-{color}", path.read_text())
+                    match.update_badge({"fuzzy_coverage_percent": value, "mapping_percent": 0})
+                    self.assertIn(f"fuzzy%20code-{value:.3f}%25-{color}", path.read_text())
 
 
 class ObjdiffProgressTests(unittest.TestCase):

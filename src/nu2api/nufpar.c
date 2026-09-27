@@ -1496,3 +1496,94 @@ i32 __cdecl NuFParGetIntRDP(NUFPAR_PC *parser) {
     }
     return buffer[0] != '\0' ? NuRDPI(buffer) : 0;
 }
+
+void __cdecl NuFParInit(i32 max_count, i32 buffer_size) {
+    NuFParRecordBase = NuFParRecords;
+    memset(NuFParRecordBase, 0, sizeof(NuFParRecords));
+    NuFParBufferBase = &NuFParBuffers[0][0];
+}
+
+f32 __cdecl NuRDPF(char *input) {
+    return NuRDPFVar(input, NULL);
+}
+
+i32 __cdecl GetLineW(u16 *line, NUFILE file) {
+    i32 length = 0;
+    i32 end_of_line;
+    i32 has_text = 0;
+    i32 quoted = 0;
+    u16 character;
+
+    for (;;) {
+        character = NuFileReadWChar(file);
+        switch (character) {
+            case '\r':
+                (void)NuFileReadWChar(file);
+                /* fall through */
+            case '\n':
+                if (length == 0 || has_text == 0) {
+                    has_text = 0;
+                    break;
+                }
+                /* fall through */
+            case '\0':
+            line_complete:
+                line[length] = 0;
+                return length;
+            case '"':
+                quoted = 1 - quoted;
+                has_text = 1;
+                line[length++] = character;
+                break;
+            case ';':
+                if (quoted != 0) {
+                    goto append_character;
+                }
+                if (length == 0 || has_text == 0) {
+                    end_of_line = 0;
+                    do {
+                        character = NuFileReadWChar(file);
+                        switch (character) {
+                            case '\n':
+                            case '\0':
+                                end_of_line = 1;
+                                break;
+                            case '\r':
+                                (void)NuFileReadWChar(file);
+                                end_of_line = 1;
+                                break;
+                            default:
+                                break;
+                        }
+                    } while (end_of_line == 0);
+                    length = 0;
+                    has_text = 0;
+                    break;
+                }
+                for (;;) {
+                    character = NuFileReadWChar(file);
+                    switch (character) {
+                        case '\n':
+                        case '\0':
+                            goto line_complete;
+                        case '\r':
+                            (void)NuFileReadWChar(file);
+                            goto line_complete;
+                        default:
+                            break;
+                    }
+                }
+            case ' ':
+            case '\t':
+                if (has_text != 0) {
+                    line[length++] = character;
+                }
+                break;
+            default:
+            append_character:
+                has_text = 1;
+                line[length++] = character;
+                break;
+        }
+    }
+}

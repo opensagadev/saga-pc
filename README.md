@@ -11,10 +11,11 @@ the original game, building on the [Android decompilation](https://github.com/op
 
 This project is at an early stage. Our sources build a Windows executable and
 reconstructed functions are compared with the original; the game is still incomplete.
-The first badge tracks objdiff's fuzzy similarity among functions we have
-compiled and compared. It is not whole-game coverage. The second tracks mapped
-symbol extents across the original virtual image; exact byte coverage of the
-original code is recorded separately in [matching.json](matching.json).
+The first badge tracks objdiff-weighted coverage of the original code: compared
+functions contribute their fuzzy similarity, and unimplemented code contributes
+zero. It is an estimate, not an exact byte match. The second tracks mapped symbol
+extents across the original virtual image. Native objdiff similarity among compared
+functions and exact code coverage are recorded in [matching.json](matching.json).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the symbol map, and the build
 and matching workflow.

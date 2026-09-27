@@ -72,6 +72,8 @@ STATIC_ASSERT(sizeof(TimeBarSet) == 0x2c);
 STATIC_ASSERT(offsetof(TimeBarSet, slot_count) == 4);
 STATIC_ASSERT(offsetof(TimeBarSet, accumulators) == 8);
 STATIC_ASSERT(offsetof(TimeBarSet, start_times) == 0x10);
+STATIC_ASSERT(offsetof(TimeBarSet, field_14) == 0x14);
+STATIC_ASSERT(offsetof(TimeBarSet, field_18) == 0x18);
 STATIC_ASSERT(offsetof(TimeBarSet, colours) == 0x1c);
 STATIC_ASSERT(offsetof(TimeBarSet, toggle_flags) == 0x20);
 STATIC_ASSERT(offsetof(TimeBarSet, slot_names) == 0x24);
@@ -337,4 +339,296 @@ void __cdecl NuTimeBarInit(void) {
     VARIPTR unused_buffer;
     unused_buffer.addr = 0;
     NuTimeBarInitEx(NULL, unused_buffer);
+}
+
+void __cdecl NuTimeBarSetRenderHorizontal(i32 set) {
+    TimeBarSet *timebar;
+    f32 name_width = 0.0f;
+    f32 vertical_scale;
+    i32 slot;
+
+    if (set == -1 && NuTimeBar_EngineEnabled == 0) {
+        return;
+    }
+
+    {
+        if (NuQFntModeStackIndex < 16) {
+            NuQFntModeStack[NuQFntModeStackIndex++] = NuQFntMode;
+        }
+        NuQFntMode = 2;
+        if (NuQFntCSModeStackIndex < 16) {
+            NuQFntCSModeStack[NuQFntCSModeStackIndex++] = nuqfnt_cs_mode;
+        }
+        nuqfnt_cs_mode = 1;
+        qfnt_rezscale_w = NuTimeBarQFontScale;
+        qfnt_rezscale_h = NuTimeBarQFontScale;
+        qfnt_offscale_x = 0.0f;
+        qfnt_offscale_y = 0.0f;
+        qfnt_len_scale = NuTimeBarQFontSize;
+        qfnt_height_scale = NuTimeBarQFontSize;
+        if (system_qfont != NULL) {
+            system_qfont->mode = 1;
+            nuqfnt_space_width = system_qfont->space_width;
+        }
+    }
+    if (system_qfont != NULL) {
+        system_qfont->platform_data->colour = 0xe0e0e0e0;
+        *system_qfont->x_scale = NuTimeBarFontScale;
+        *system_qfont->y_scale = (NuQFntMode & 4) != 0 ? NuTimeBarFontScale : NuTimeBarHalfFontScale;
+    }
+    vertical_scale = (f32)(NuTimeBarVerticalScale / PS2_VREZ_H);
+    timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
+    for (slot = 0; slot < timebar->slot_count; ++slot) {
+        if (timebar->slot_names[slot] != NULL) {
+            f32 width = NuQFntPrintLenU(system_qfont, (char *)timebar->slot_names[slot]);
+            if (width > name_width) {
+                name_width = width;
+            }
+        }
+    }
+    {
+        if (NuQFntModeStackIndex > 0) {
+            NuQFntMode = NuQFntModeStack[--NuQFntModeStackIndex];
+        }
+        if (NuQFntCSModeStackIndex > 0) {
+            NuQFntSetCoordinateSystem(NuQFntCSModeStack[--NuQFntCSModeStackIndex]);
+        }
+    }
+    name_width /= (f32)(PS2_VREZ_W << 4);
+
+    for (slot = 0; slot < timebar->slot_count; ++slot) {
+        u32 value = (u32)timebar->accumulators[timebar->toggle_flags[slot]][slot];
+        if (value > (u32)timebar->field_14[slot]) {
+            timebar->field_14[slot] = (i32)value;
+        }
+        if (NuTimeBarHorizontalPeakReset == 0) {
+            timebar->field_18[slot] = 0;
+        }
+        value = (u32)timebar->accumulators[timebar->toggle_flags[slot]][slot];
+        if (value > (u32)timebar->field_18[slot]) {
+            timebar->field_18[slot] = (i32)value;
+        }
+
+        if (timebar->field_18[slot] != 0) {
+            f32 left = (f32)(name_width + NuTimeBarNameMargin);
+            f32 top = (f32)((slot + 1) * NuTimeBarSlotWidth * 2.0 + NuTimeBarHorizontalTop);
+            f32 elapsed_frames = (f32)((f64)(u32)timebar->field_18[slot] * NuTime_RefreshRate / NuTime_MicroScale);
+            f32 right = left + elapsed_frames * vertical_scale;
+            f32 bottom = (f32)(top + NuTimeBarSlotWidth);
+            f32 screen_width = (f32)(PS2_VREZ_W << 4);
+            f32 screen_height = (f32)(PS2_VREZ_H << 4);
+            i32 x = (i32)(left * screen_width);
+            i32 y = (i32)(top * screen_height);
+            i32 width = (i32)((right - left) * screen_width);
+            i32 height = (i32)((bottom - top) * screen_height);
+            i32 text_y;
+
+            (void)width;
+            STUBBED_NAMED(0x005db880); /* NuRndrRect2di(x,y,width,height,colours[slot],NULL). */
+            {
+                if (NuQFntModeStackIndex < 16) {
+                    NuQFntModeStack[NuQFntModeStackIndex++] = NuQFntMode;
+                }
+                NuQFntMode = 2;
+                if (NuQFntCSModeStackIndex < 16) {
+                    NuQFntCSModeStack[NuQFntCSModeStackIndex++] = nuqfnt_cs_mode;
+                }
+                nuqfnt_cs_mode = 1;
+                qfnt_rezscale_w = NuTimeBarQFontScale;
+                qfnt_rezscale_h = NuTimeBarQFontScale;
+                qfnt_offscale_x = 0.0f;
+                qfnt_offscale_y = 0.0f;
+                qfnt_len_scale = NuTimeBarQFontSize;
+                qfnt_height_scale = NuTimeBarQFontSize;
+                if (system_qfont != NULL) {
+                    system_qfont->mode = 1;
+                    nuqfnt_space_width = system_qfont->space_width;
+                }
+            }
+            if (system_qfont != NULL) {
+                system_qfont->platform_data->colour = 0xe0e0e0e0;
+                *system_qfont->x_scale = NuTimeBarFontScale;
+                *system_qfont->y_scale = (NuQFntMode & 4) != 0 ? NuTimeBarFontScale : NuTimeBarHalfFontScale;
+            }
+            text_y = y + height - (i32)(NuQFntHeight(system_qfont) * NuTimeBarQuarter);
+            if (timebar->slot_names[slot] != NULL) {
+                NuQFntPrintEx(system_qfont, (i32)(NuTimeBarSlotWidth * (PS2_VREZ_W << 4)), text_y, 0x10,
+                              timebar->slot_names[slot]);
+            }
+            if (timebar->field_18[slot] != 0) {
+                f32 lines = (f32)((f64)(u32)timebar->field_18[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
+                NuQFntPrintEx(system_qfont, x, text_y, 0x10, Text_TimeS, (i32)lines);
+            }
+            if (timebar->field_14[slot] != 0) {
+                f32 lines = (f32)((f64)(u32)timebar->field_14[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
+                NuQFntPrintEx(system_qfont, (i32)(NuTimeBarRight * (PS2_VREZ_W << 4)), text_y, 0x20, Text_TimeS,
+                              (i32)lines);
+            }
+            {
+                if (NuQFntModeStackIndex > 0) {
+                    NuQFntMode = NuQFntModeStack[--NuQFntModeStackIndex];
+                }
+                if (NuQFntCSModeStackIndex > 0) {
+                    NuQFntSetCoordinateSystem(NuQFntCSModeStack[--NuQFntCSModeStackIndex]);
+                }
+            }
+        }
+        if (timebar->field_28 != 0) {
+            NuTimeBarSlotReset(set, slot);
+        }
+        if (NuTimeBar_PeakReset != 0) {
+            timebar->field_14[slot] = 0;
+        }
+    }
+    NuTimeBar_PeakReset = 0;
+    --NuTimeBarHorizontalPeakReset;
+    if (NuTimeBarHorizontalPeakReset < 0) {
+        NuTimeBarHorizontalPeakReset = NuTimeBarPeakResetInterval;
+    }
+}
+
+void __cdecl NuTimeBarSetRender(i32 set) {
+    TimeBarSet *timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
+    f32 gpu_frames = 0.0f;
+    i32 engine_enabled = NuTimeBar_EngineEnabled;
+    i32 slot;
+
+    if (set == -1) {
+        if (NuTimeBar_GpuFrameOutEnabled != 0) {
+            u32 gpu_time = (u32)timebar->accumulators[timebar->toggle_flags[1]][1];
+            gpu_frames = (f32)((f64)gpu_time * nuapi.fps / NuTime_MicroScale);
+        }
+        if (engine_enabled == 0 && gpu_frames <= 1.0f) {
+            return;
+        }
+    }
+
+    STUBBED_NAMED(0x005d4290); /* NuRndrBeginScene(1), not Android's current -1. */
+    if (set >= 0 || (set == -1 && engine_enabled != 0)) {
+        f32 vertical_scale = (f32)(NuTimeBarVerticalScale / PS2_VREZ_H);
+        for (slot = 0; slot < timebar->slot_count; ++slot) {
+            u32 value = (u32)timebar->accumulators[timebar->toggle_flags[slot]][slot];
+            if (value > (u32)timebar->field_14[slot]) {
+                timebar->field_14[slot] = (i32)value;
+            }
+            if (NuTimeBarRenderPeakReset == 0) {
+                timebar->field_18[slot] = 0;
+            }
+            value = (u32)timebar->accumulators[timebar->toggle_flags[slot]][slot];
+            if (value > (u32)timebar->field_18[slot]) {
+                timebar->field_18[slot] = (i32)value;
+            }
+
+            if (timebar->field_18[slot] != 0) {
+                f32 left = (f32)((slot + 1) * NuTimeBarSlotWidth * NuTimeBarColumnStep);
+                f32 elapsed_frames = (f32)((f64)(u32)timebar->field_18[slot] * NuTime_RefreshRate / NuTime_MicroScale);
+                f32 bottom = (f32)(NuTimeBarTop + elapsed_frames * vertical_scale);
+                f32 right = (f32)(left + NuTimeBarSlotWidth);
+                f32 screen_width = (f32)(PS2_VREZ_W << 4);
+                f32 screen_height = (f32)(PS2_VREZ_H << 4);
+                i32 x = (i32)(left * screen_width);
+                i32 y = (i32)(NuTimeBarTop * screen_height);
+                i32 width = (i32)((right - left) * screen_width);
+                i32 height = (i32)((bottom - NuTimeBarTop) * screen_height);
+                i32 text_x;
+                i32 text_y;
+
+                (void)x;
+                (void)y;
+                (void)width;
+                (void)height;
+                STUBBED_NAMED(0x005db880); /* NuRndrRect2di(x,y,width,height,colours[slot],NULL). */
+                {
+                    if (NuQFntModeStackIndex < 16) {
+                        NuQFntModeStack[NuQFntModeStackIndex++] = NuQFntMode;
+                    }
+                    NuQFntMode = 2;
+                    if (NuQFntCSModeStackIndex < 16) {
+                        NuQFntCSModeStack[NuQFntCSModeStackIndex++] = nuqfnt_cs_mode;
+                    }
+                    nuqfnt_cs_mode = 1;
+                    qfnt_rezscale_w = NuTimeBarQFontScale;
+                    qfnt_rezscale_h = NuTimeBarQFontScale;
+                    qfnt_offscale_x = 0.0f;
+                    qfnt_offscale_y = 0.0f;
+                    qfnt_len_scale = NuTimeBarQFontSize;
+                    qfnt_height_scale = NuTimeBarQFontSize;
+                    if (system_qfont != NULL) {
+                        system_qfont->mode = 1;
+                        nuqfnt_space_width = system_qfont->space_width;
+                    }
+                }
+                if (system_qfont != NULL) {
+                    *system_qfont->x_scale = 1.0f;
+                    *system_qfont->y_scale = (NuQFntMode & 4) != 0 ? 1.0f : 0.5f;
+                    system_qfont->platform_data->colour = 0xe0e0e0e0;
+                }
+                text_x = (i32)(PS2_VREZ_W * NuTimeBarSlotWidth * NuQFntHalfScale) -
+                         (i32)(PS2_VREZ_W * NuTimeBarNegativeSlotWidth) * (slot + 1) * 3;
+                if (timebar->field_18[slot] != 0) {
+                    f32 lines = (f32)((f64)(u32)timebar->field_18[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
+                    i32 digits = (i32)lines;
+                    i32 digit;
+                    if (digits > 9999) {
+                        digits = 9999;
+                    }
+                    text_y = (i32)(PS2_VREZ_H * NuTimeBarTop) * 16;
+                    text_y += (i32)NuQFntHeight(system_qfont) * (digits > 999 ? 5 : 4);
+                    for (digit = 0; digit < 3; ++digit) {
+                        text_y -= (i32)NuQFntHeight(system_qfont);
+                        NuQFntPrintEx(system_qfont, text_x * 16, text_y, 0x40, NuTimeBarValueFormat, digits % 10);
+                        digits /= 10;
+                    }
+                    if (digits != 0) {
+                        text_y -= (i32)NuQFntHeight(system_qfont);
+                        NuQFntPrintEx(system_qfont, text_x * 16, text_y, 0x40, NuTimeBarValueFormat, digits % 10);
+                    }
+                }
+                if (timebar->field_14[slot] != 0) {
+                    f32 lines;
+                    text_x = (i32)(PS2_VREZ_W * NuTimeBarSlotWidth * NuQFntHalfScale) -
+                             (i32)(PS2_VREZ_W * NuTimeBarNegativeSlotWidth) * (slot + 1) * 3;
+                    text_y = (PS2_VREZ_H << 4) - (i32)NuQFntHeight(system_qfont) * 2;
+                    text_y += (i32)NuQFntBaseline(system_qfont);
+                    if ((slot & 1) != 0) {
+                        text_y -= 320;
+                    }
+                    lines = (f32)((f64)(u32)timebar->field_14[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
+                    NuQFntPrintEx(system_qfont, text_x * 16, text_y, 0x40, NuTimeBarValueFormat, (i32)lines);
+                }
+                if (timebar->slot_names[slot] != NULL) {
+                    text_x = (i32)(PS2_VREZ_W * NuTimeBarSlotWidth * NuQFntHalfScale) -
+                             (i32)(PS2_VREZ_W * NuTimeBarNegativeSlotWidth) * (slot + 1) * 3;
+                    text_y = (PS2_VREZ_H << 4) - (i32)NuQFntHeight(system_qfont);
+                    text_y += (i32)NuQFntBaseline(system_qfont);
+                    text_y -= (slot & 1) != 0 ? 640 : 320;
+                    NuQFntPrintEx(system_qfont, text_x * 16, text_y, 0x40, timebar->slot_names[slot]);
+                }
+                {
+                    if (NuQFntModeStackIndex > 0) {
+                        NuQFntMode = NuQFntModeStack[--NuQFntModeStackIndex];
+                    }
+                    if (NuQFntCSModeStackIndex > 0) {
+                        NuQFntSetCoordinateSystem(NuQFntCSModeStack[--NuQFntCSModeStackIndex]);
+                    }
+                }
+            }
+            if (timebar->field_28 != 0) {
+                NuTimeBarSlotReset(set, slot);
+            }
+            if (NuTimeBar_PeakReset != 0) {
+                timebar->field_14[slot] = 0;
+            }
+        }
+        NuTimeBar_PeakReset = 0;
+        --NuTimeBarRenderPeakReset;
+        if (NuTimeBarRenderPeakReset < 0) {
+            NuTimeBarRenderPeakReset = NuTimeBarPeakResetInterval;
+        }
+    }
+    if (gpu_frames > 1.0f) {
+        STUBBED_NAMED(0x005db880); /* (0,0,0x3c0,0xe00,0x80000064,NuTimeBar_FrameOutMtl). */
+        STUBBED_NAMED(0x005db880); /* (0x2440,0,0x3c0,0xe00,0x80000064,NuTimeBar_FrameOutMtl). */
+    }
+    STUBBED_NAMED(0x005f3950); /* NuRndrEndScene. */
 }

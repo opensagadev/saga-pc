@@ -46,8 +46,34 @@ def progress(functions, target):
                            for r in functions if r["target_size"])
     matched = covered_bytes((number(r["address"]), r["target_size"])
                             for r in functions if r["exact_match"])
+    # Credit each original byte at most once. With overlapping aliases, use the
+    # least similar comparison; an extra definition cannot inflate coverage.
+    endpoints = []
+    for index, row in enumerate(functions):
+        if not row.get("objects") or not row["target_size"]:
+            continue
+        scores = [obj["objdiff_percent"] for obj in row["objects"]]
+        if any(type(score) not in (int, float) or not math.isfinite(score)
+               or not 0 <= score <= 100 for score in scores):
+            raise ValueError(f"Invalid objdiff score for {row['name']}")
+        address = number(row["address"])
+        score = min(scores)
+        endpoints.extend(((address, 1, index, score),
+                          (address + row["target_size"], -1, index, score)))
+    active = {}
+    fuzzy_bytes = 0.0
+    previous = None
+    for address, action, index, score in sorted(endpoints):
+        if previous is not None and active:
+            fuzzy_bytes += (address - previous) * min(active.values()) / 100
+        if action < 0:
+            del active[index]
+        else:
+            active[index] = score
+        previous = address
     return {"text_bytes": total, "mapped_code_bytes": mapped,
             "matched_code_bytes": matched, "matching_percent": 100 * matched / total,
+            "fuzzy_coverage_percent": 100 * fuzzy_bytes / total,
             "mapped_functions": len(functions),
             "matched_functions": sum(r["exact_match"] for r in functions)}
 
@@ -86,7 +112,7 @@ def update_badge(stats):
     path = ROOT / "README.md"
     content = path.read_text()
     for metric, label, field, alt in (
-            ("matching", "objdiff%20fuzzy", "objdiff_fuzzy_percent", "objdiff fuzzy"),
+            ("matching", "fuzzy%20code", "fuzzy_coverage_percent", "fuzzy code"),
             ("mapping", "mapping", "mapping_percent", "mapping")):
         value = stats[field]
         color = "red" if value < 25 else "yellow" if value < 75 else "green"
@@ -254,6 +280,7 @@ def main():
         stats = result["progress"]
         print(f"Objdiff fuzzy: {stats['objdiff_fuzzy_percent']:.3f}% across "
               f"{stats['objdiff_total_code']} compared original code bytes")
+        print(f"Fuzzy code coverage: {stats['fuzzy_coverage_percent']:.3f}% of original .text")
         print(f"Exact code: {stats['matched_code_bytes']}/{stats['text_bytes']} bytes "
               f"({stats['matching_percent']:.3f}% of original .text)")
         print(f"Mapped image: {stats['mapped_bytes']}/{stats['image_bytes']} bytes "

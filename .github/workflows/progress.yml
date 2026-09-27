@@ -67,10 +67,19 @@ jobs:
                 objdiff = {fuzzy_percent: p.objdiff_fuzzy_percent,
                            total_code: p.objdiff_total_code};
               }
+              let fuzzyCoverage = null;
+              if ("fuzzy_coverage_percent" in p) {
+                if (!Number.isFinite(p.fuzzy_coverage_percent) ||
+                    p.fuzzy_coverage_percent < 0 ||
+                    p.fuzzy_coverage_percent > 100 * p.mapped_code_bytes / p.text_bytes + 0.000001) {
+                  throw new Error("Invalid whole-code fuzzy coverage");
+                }
+                fuzzyCoverage = p.fuzzy_coverage_percent;
+              }
               // Only validated hashes and numeric fields can reach Markdown.
               return {target: report.target_sha256.toLowerCase(),
                       ...Object.fromEntries(fields.map((field) => [field, p[field]])),
-                      matching_percent: p.matching_percent, mapping, objdiff};
+                      matching_percent: p.matching_percent, fuzzyCoverage, mapping, objdiff};
             }
 
             async function readReport(repository, ref) {
@@ -129,6 +138,7 @@ jobs:
               lines.push(`| ${label} | ${number(oldValue, percent)} | ${number(newValue, percent)} | ${change} |`);
             }
             metric("Objdiff fuzzy match", a?.objdiff?.fuzzy_percent, b?.objdiff?.fuzzy_percent, true);
+            metric("Fuzzy code coverage", a?.fuzzyCoverage, b?.fuzzyCoverage, true);
             metric("Exact code matching", a?.matching_percent, b?.matching_percent, true);
             metric("Compared code bytes", a?.objdiff?.total_code, b?.objdiff?.total_code);
             metric("Known-size mapping", a?.mapping?.mapping_percent, b?.mapping?.mapping_percent, true);
@@ -151,7 +161,7 @@ jobs:
             if ((a && !a.objdiff) || (b && !b.objdiff)) {
               lines.push("An older report has no objdiff fuzzy summary; those values and deltas are unavailable.");
             }
-            lines.push("Objdiff fuzzy match describes similarity among compared functions. Exact code matching uses the complete original `.text` section.");
+            lines.push("Fuzzy code coverage weights objdiff scores by original function size against the complete `.text`; unmapped code is zero. Native objdiff fuzzy match describes only compared functions. Exact code matching credits byte-identical functions only.");
             lines.push("", 'Refresh the report with `make -j"$(nproc)" match` using your local retail executable after relevant source or map changes.');
             const body = lines.join("\n");
             await core.summary.addRaw(body).write();

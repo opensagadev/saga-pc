@@ -1,5 +1,101 @@
 #include "saga.h"
 
+typedef struct area_gizmotype_pc_s {
+    u8 unknown_0000[0x44];
+    char *(__cdecl *get_gizmo_name)(void *gizmo);
+    u8 unknown_0048[0x54];
+} AREA_GIZMOTYPE_PC;
+STATIC_ASSERT(sizeof(AREA_GIZMOTYPE_PC) == 0x9c);
+STATIC_ASSERT(offsetof(AREA_GIZMOTYPE_PC, get_gizmo_name) == 0x44);
+
+typedef struct area_gizmotypes_pc_s {
+    i32 count;
+    i32 unknown_0004;
+    AREA_GIZMOTYPE_PC *types;
+} AREA_GIZMOTYPES_PC;
+STATIC_ASSERT(sizeof(AREA_GIZMOTYPES_PC) == 0x0c);
+STATIC_ASSERT(offsetof(AREA_GIZMOTYPES_PC, types) == 0x08);
+
+typedef struct area_gizmoset_pc_s {
+    void *type;
+    i32 count;
+    i32 max_count;
+    void *gizmos;
+    void *unknown_0010;
+} AREA_GIZMOSET_PC;
+STATIC_ASSERT(sizeof(AREA_GIZMOSET_PC) == 0x14);
+STATIC_ASSERT(offsetof(AREA_GIZMOSET_PC, count) == 0x04);
+STATIC_ASSERT(offsetof(AREA_GIZMOSET_PC, gizmos) == 0x0c);
+
+typedef struct area_gizmo_pc_s {
+    void *object;
+    i16 unknown_0004;
+    u8 type_id;
+    u8 unknown_0007;
+} AREA_GIZMO_PC;
+STATIC_ASSERT(sizeof(AREA_GIZMO_PC) == 8);
+STATIC_ASSERT(offsetof(AREA_GIZMO_PC, type_id) == 0x06);
+
+typedef struct area_gizmosys_prefix_pc_s {
+    AREA_GIZMOSET_PC *sets;
+} AREA_GIZMOSYS_PREFIX_PC;
+STATIC_ASSERT(offsetof(AREA_GIZMOSYS_PREFIX_PC, sets) == 0x00);
+
+extern AREA_GIZMOTYPES_PC *gizmotypes;
+
+void *__cdecl GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
+    AREA_GIZMOSET_PC *sets;
+
+    if (gizmotypes == NULL || name == NULL || gizmo_sys == NULL) {
+        return NULL;
+    }
+
+    sets = ((AREA_GIZMOSYS_PREFIX_PC *)gizmo_sys)->sets;
+    if (type_id >= 0 && type_id <= gizmotypes->count) {
+        AREA_GIZMOTYPE_PC *type;
+        AREA_GIZMOSET_PC *set;
+        AREA_GIZMO_PC *gizmo;
+        i32 index;
+
+        type = &gizmotypes->types[type_id];
+        set = &sets[type_id];
+        if (type->get_gizmo_name == NULL) {
+            return NULL;
+        }
+        gizmo = (AREA_GIZMO_PC *)set->gizmos;
+        for (index = 0; index < set->count; ++index, ++gizmo) {
+            if (NuStrICmp(type->get_gizmo_name(gizmo), name) == 0) {
+                return gizmo;
+            }
+        }
+        return NULL;
+    }
+
+    {
+        AREA_GIZMOTYPE_PC *type;
+        AREA_GIZMOSET_PC *set;
+        i32 type_index;
+
+        type = gizmotypes->types;
+        set = sets;
+        for (type_index = 0; type_index < gizmotypes->count; ++type_index, ++type, ++set) {
+            AREA_GIZMO_PC *gizmo;
+            i32 gizmo_index;
+
+            if (type->get_gizmo_name == NULL) {
+                continue;
+            }
+            gizmo = (AREA_GIZMO_PC *)set->gizmos;
+            for (gizmo_index = 0; gizmo_index < set->count; ++gizmo_index, ++gizmo) {
+                if (NuStrICmp(type->get_gizmo_name(gizmo), name) == 0) {
+                    return gizmo;
+                }
+            }
+        }
+    }
+    return NULL;
+}
+
 void __cdecl Cheats_Init(CHEAT_PC *cheats) {
     CHEATSYSTEM_PC *system;
 

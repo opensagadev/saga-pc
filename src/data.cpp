@@ -411,25 +411,25 @@ extern "C" {
     AREA_DATA_PC *HUB_ADATA;
 
 #pragma const_seg(".rdata$AreaFixUpName_Jedi")
-    extern char AreaFixUpName_Jedi[5] = "Jedi";
+    extern char AreaFixUpName_Jedi[8] = "Jedi";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Gungan")
-    extern char AreaFixUpName_Gungan[7] = "Gungan";
+    extern char AreaFixUpName_Gungan[8] = "Gungan";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Senate")
-    extern char AreaFixUpName_Senate[7] = "senate";
+    extern char AreaFixUpName_Senate[8] = "senate";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Losttemple")
-    extern char AreaFixUpName_Losttemple[11] = "losttemple";
+    extern char AreaFixUpName_Losttemple[12] = "losttemple";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Emperorfight")
-    extern char AreaFixUpName_Emperorfight[13] = "emperorfight";
+    extern char AreaFixUpName_Emperorfight[16] = "emperorfight";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Moseisley")
-    extern char AreaFixUpName_Moseisley[10] = "moseisley";
+    extern char AreaFixUpName_Moseisley[12] = "moseisley";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Tatooine")
-    extern char AreaFixUpName_Tatooine[9] = "tatooine";
+    extern char AreaFixUpName_Tatooine[12] = "tatooine";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Gunship")
     extern char AreaFixUpName_Gunship[8] = "gunship";
@@ -438,19 +438,19 @@ extern "C" {
     extern char AreaFixUpName_Pursuit[8] = "pursuit";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Podsprint")
-    extern char AreaFixUpName_Podsprint[10] = "podsprint";
+    extern char AreaFixUpName_Podsprint[12] = "podsprint";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Negotiations")
-    extern char AreaFixUpName_Negotiations[13] = "negotiations";
+    extern char AreaFixUpName_Negotiations[16] = "negotiations";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Fairground")
-    extern char AreaFixUpName_Fairground[11] = "Fairground";
+    extern char AreaFixUpName_Fairground[12] = "Fairground";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Rooftops")
-    extern char AreaFixUpName_Rooftops[9] = "Rooftops";
+    extern char AreaFixUpName_Rooftops[12] = "Rooftops";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Gothamstreets")
-    extern char AreaFixUpName_Gothamstreets[14] = "GothamStreets";
+    extern char AreaFixUpName_Gothamstreets[16] = "GothamStreets";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Batcave")
     extern char AreaFixUpName_Batcave[8] = "batcave";
@@ -462,88 +462,88 @@ extern "C" {
     extern char AreaFixUpName_NbKashyyyk[12] = "nb_kashyyyk";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_NbKamino")
-    extern char AreaFixUpName_NbKamino[10] = "nb_kamino";
+    extern char AreaFixUpName_NbKamino[12] = "nb_kamino";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_NbDagobah")
-    extern char AreaFixUpName_NbDagobah[11] = "nb_dagobah";
+    extern char AreaFixUpName_NbDagobah[12] = "nb_dagobah";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Hoth")
-    extern char AreaFixUpName_Hoth[5] = "hoth";
+    extern char AreaFixUpName_Hoth[8] = "hoth";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Utapau")
-    extern char AreaFixUpName_Utapau[7] = "utapau";
+    extern char AreaFixUpName_Utapau[8] = "utapau";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_LostTemple")
-    extern char AreaFixUpName_LostTemple[11] = "LostTemple";
+    extern char AreaFixUpName_LostTemple[12] = "LostTemple";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Bonus")
-    extern char AreaFixUpName_Bonus[6] = "Bonus";
+    extern char AreaFixUpName_Bonus[8] = "Bonus";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Bonus2")
-    extern char AreaFixUpName_Bonus2[7] = "Bonus2";
+    extern char AreaFixUpName_Bonus2[8] = "Bonus2";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Anewhope")
-    extern char AreaFixUpName_Anewhope[9] = "ANewHope";
+    extern char AreaFixUpName_Anewhope[12] = "ANewHope";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_BonusGunship")
-    extern char AreaFixUpName_BonusGunship[14] = "Bonus_Gunship";
+    extern char AreaFixUpName_BonusGunship[16] = "Bonus_Gunship";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Anakinsflight")
-    extern char AreaFixUpName_Anakinsflight[14] = "AnakinsFlight";
+    extern char AreaFixUpName_Anakinsflight[16] = "AnakinsFlight";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Podrace")
     extern char AreaFixUpName_Podrace[8] = "PodRace";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_E6characterbonus")
-    extern char AreaFixUpName_E6characterbonus[17] = "E6CharacterBonus";
+    extern char AreaFixUpName_E6characterbonus[20] = "E6CharacterBonus";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_E5characterbonus")
-    extern char AreaFixUpName_E5characterbonus[17] = "E5CharacterBonus";
+    extern char AreaFixUpName_E5characterbonus[20] = "E5CharacterBonus";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_E4characterbonus")
-    extern char AreaFixUpName_E4characterbonus[17] = "E4CharacterBonus";
+    extern char AreaFixUpName_E4characterbonus[20] = "E4CharacterBonus";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_E3characterbonus")
-    extern char AreaFixUpName_E3characterbonus[17] = "E3CharacterBonus";
+    extern char AreaFixUpName_E3characterbonus[20] = "E3CharacterBonus";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_E2characterbonus")
-    extern char AreaFixUpName_E2characterbonus[17] = "E2CharacterBonus";
+    extern char AreaFixUpName_E2characterbonus[20] = "E2CharacterBonus";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_E1characterbonus")
-    extern char AreaFixUpName_E1characterbonus[17] = "E1CharacterBonus";
+    extern char AreaFixUpName_E1characterbonus[20] = "E1CharacterBonus";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Deathstar2battle")
-    extern char AreaFixUpName_Deathstar2battle[17] = "DeathStar2Battle";
+    extern char AreaFixUpName_Deathstar2battle[20] = "DeathStar2Battle";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Endorbattle")
     extern char AreaFixUpName_Endorbattle[12] = "EndorBattle";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Speederchase")
-    extern char AreaFixUpName_Speederchase[13] = "SpeederChase";
+    extern char AreaFixUpName_Speederchase[16] = "SpeederChase";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Sarlaccpit")
-    extern char AreaFixUpName_Sarlaccpit[11] = "SarlaccPit";
+    extern char AreaFixUpName_Sarlaccpit[12] = "SarlaccPit";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Jabbaspalace")
-    extern char AreaFixUpName_Jabbaspalace[13] = "JabbasPalace";
+    extern char AreaFixUpName_Jabbaspalace[16] = "JabbasPalace";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Cloudcityescape")
     extern char AreaFixUpName_Cloudcityescape[16] = "CloudCityEscape";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Cloudcitytrap")
-    extern char AreaFixUpName_Cloudcitytrap[14] = "CloudCityTrap";
+    extern char AreaFixUpName_Cloudcitytrap[16] = "CloudCityTrap";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Dagobah")
     extern char AreaFixUpName_Dagobah[8] = "Dagobah";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Asteroidchase")
-    extern char AreaFixUpName_Asteroidchase[14] = "AsteroidChase";
+    extern char AreaFixUpName_Asteroidchase[16] = "AsteroidChase";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Hothescape")
-    extern char AreaFixUpName_Hothescape[11] = "HothEscape";
+    extern char AreaFixUpName_Hothescape[12] = "HothEscape";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Hothbattle")
-    extern char AreaFixUpName_Hothbattle[11] = "HothBattle";
+    extern char AreaFixUpName_Hothbattle[12] = "HothBattle";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Deathstarbattle")
     extern char AreaFixUpName_Deathstarbattle[16] = "DeathStarBattle";
@@ -555,43 +555,43 @@ extern "C" {
     extern char AreaFixUpName_Deathstarrescue[16] = "DeathStarRescue";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Blockaderunner")
-    extern char AreaFixUpName_Blockaderunner[15] = "BlockadeRunner";
+    extern char AreaFixUpName_Blockaderunner[16] = "BlockadeRunner";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Vader")
-    extern char AreaFixUpName_Vader[6] = "Vader";
+    extern char AreaFixUpName_Vader[8] = "Vader";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Temple")
-    extern char AreaFixUpName_Temple[7] = "Temple";
+    extern char AreaFixUpName_Temple[8] = "Temple";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Kashyyyk")
-    extern char AreaFixUpName_Kashyyyk[9] = "Kashyyyk";
+    extern char AreaFixUpName_Kashyyyk[12] = "Kashyyyk";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Grievous")
-    extern char AreaFixUpName_Grievous[9] = "Grievous";
+    extern char AreaFixUpName_Grievous[12] = "Grievous";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Cruiser")
     extern char AreaFixUpName_Cruiser[8] = "Cruiser";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Dogfight")
-    extern char AreaFixUpName_Dogfight[9] = "Dogfight";
+    extern char AreaFixUpName_Dogfight[12] = "Dogfight";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Dooku")
-    extern char AreaFixUpName_Dooku[6] = "Dooku";
+    extern char AreaFixUpName_Dooku[8] = "Dooku";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Factory")
     extern char AreaFixUpName_Factory[8] = "Factory";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Kamino")
-    extern char AreaFixUpName_Kamino[7] = "Kamino";
+    extern char AreaFixUpName_Kamino[8] = "Kamino";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Maul")
-    extern char AreaFixUpName_Maul[5] = "Maul";
+    extern char AreaFixUpName_Maul[8] = "Maul";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Retakepalace")
-    extern char AreaFixUpName_Retakepalace[13] = "RetakePalace";
+    extern char AreaFixUpName_Retakepalace[16] = "RetakePalace";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Palacerescue")
-    extern char AreaFixUpName_Palacerescue[13] = "PalaceRescue";
+    extern char AreaFixUpName_Palacerescue[16] = "PalaceRescue";
 #pragma const_seg()
 #pragma const_seg(".rdata$AreaFixUpName_Map")
     extern char AreaFixUpName_Map[4] = "map";
@@ -905,6 +905,48 @@ extern "C" {
         0x00440040, 0x00880040, 0x00444440, 0x00888840, 0x44440040, 0x88880040, 0x44444440, 0x88888840,
     };
 #pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarQuarter")
+    extern const f64 NuTimeBarQuarter = 0.25;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarQFontSize")
+    extern const f32 NuTimeBarQFontSize = 16.0f;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarQFontScale")
+    extern const f32 NuTimeBarQFontScale = 0.0625f;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarTop")
+    extern const f64 NuTimeBarTop = 0.05000000074505806;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarColumnStep")
+    extern const f64 NuTimeBarColumnStep = 3.0;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarSlotWidth")
+    extern const f64 NuTimeBarSlotWidth = 0.02500000037252903;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarHorizontalTop")
+    extern const f64 NuTimeBarHorizontalTop = 0.15000000596046448;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarValueFormat")
+    extern const char NuTimeBarValueFormat[3] = "%d";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarFontScale")
+    extern const f32 NuTimeBarFontScale = 0.8500000238418579f;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarVerticalScale")
+    extern const f64 NuTimeBarVerticalScale = 120.0;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarNegativeSlotWidth")
+    extern const f64 NuTimeBarNegativeSlotWidth = -0.02500000037252903;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarRight")
+    extern const f64 NuTimeBarRight = 0.974999999627471;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarNameMargin")
+    extern const f64 NuTimeBarNameMargin = 0.044999999925494194;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTimeBarHalfFontScale")
+    extern const f32 NuTimeBarHalfFontScale = 0.42500001192092896f;
+#pragma const_seg()
 #pragma bss_seg(".bss$NuTimeBar_EngineEnabled")
     i32 NuTimeBar_EngineEnabled;
 #pragma bss_seg()
@@ -914,6 +956,15 @@ extern "C" {
 #pragma bss_seg(".bss$NuTimeBar_PeakReset")
     i32 NuTimeBar_PeakReset;
 #pragma bss_seg()
+#pragma const_seg(".rdata$TextLoadPermTRCPath")
+    extern const char TextLoadPermTRCPath[19] = "stuff\\text\\trc.csv";
+#pragma const_seg()
+#pragma const_seg(".rdata$TextLoadPermAPIExtension")
+    extern const char TextLoadPermAPIExtension[9] = "_api.txt";
+#pragma const_seg()
+#pragma const_seg(".rdata$TextLoadPermTextDirectory")
+    extern const char TextLoadPermTextDirectory[12] = "stuff\\text\\";
+#pragma const_seg()
 #pragma const_seg(".rdata$TextPlatformXbox")
     extern const char TextPlatformXbox[5] = "xbox";
 #pragma const_seg()
@@ -938,6 +989,25 @@ extern "C" {
 #pragma const_seg(".rdata$TextPlatformWii")
     extern const char TextPlatformWii[4] = "wii";
 #pragma const_seg()
+
+#pragma bss_seg(".bss$tALONGTIMEAGO")
+    i16 tALONGTIMEAGO;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuQFntCSModeStack")
+    i32 NuQFntCSModeStack[16];
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuQFntCSModeStackIndex")
+    i32 NuQFntCSModeStackIndex;
+
+#pragma bss_seg(".bss$gizmotypes")
+    void *gizmotypes;
+#pragma bss_seg()
+#pragma data_seg(".data$PS2_VREZ_W")
+    i32 PS2_VREZ_W = 640;
+#pragma data_seg()
+#pragma data_seg(".data$PS2_VREZ_H")
+    i32 PS2_VREZ_H = 224;
+#pragma data_seg()
 
     i32 PlayerID[2] = {-1, -1};
     i16 PlayerList[8];

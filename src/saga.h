@@ -886,11 +886,13 @@ STATIC_ASSERT(offsetof(CHEATSYSTEM_PC, flags) == 8);
 
 typedef struct sfx_record_pc_s {
     char *name;
-    u8 unknown_0004[0x0c];
+    u32 sample_id_flags;
+    u8 unknown_0008[8];
     i16 next;
     u8 unknown_0012[0x2e];
 } SFX_RECORD_PC;
 STATIC_ASSERT(sizeof(SFX_RECORD_PC) == 0x40);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, sample_id_flags) == 0x04);
 STATIC_ASSERT(offsetof(SFX_RECORD_PC, next) == 0x10);
 
 typedef struct sfx_file_info_pc_s {
@@ -1143,7 +1145,7 @@ typedef struct nuglobalrndrstate_pc_s {
     u8 unknown_00dc[0x18];
     i32 state_00f4;
     f32 state_00f8;
-    i32 state_00fc;
+    NUMTL *const_alpha_material;
     i32 state_0100;
     u8 unknown_0104[0x0c];
     void *camera_packet_cache;
@@ -1186,6 +1188,7 @@ STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, specular_mtx) == 0x90);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, specular_colour) == 0xd0);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, state_00f4) == 0xf4);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, state_00f8) == 0xf8);
+STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, const_alpha_material) == 0xfc);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, state_0100) == 0x100);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, camera_packet_cache) == 0x110);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, camera_matrix) == 0x114);
@@ -1596,6 +1599,8 @@ extern "C" {
     extern i32 NuQFntModeStackIndex;
     extern u32 NuQFntModeStack[16];
     extern i32 nuqfnt_cs_mode;
+    extern i32 NuQFntCSModeStack[16];
+    extern i32 NuQFntCSModeStackIndex;
     extern f32 qfnt_offscale_x;
     extern f32 qfnt_offscale_y;
     extern f32 qfnt_rezscale_w;
@@ -1604,6 +1609,10 @@ extern "C" {
     void __cdecl NuQFntPrintU(VUFNT *font, char *text);
     void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags);
     void __cdecl NuQFntPrintEx(VUFNT *font, i32 x, i32 y, i32 alignment, const char *format, ...);
+    i32 __cdecl NuQFntSetCoordinateSystem(i32 mode);
+    void __cdecl NuQFntPushCoordinateSystem(i32 mode);
+    void __cdecl NuQFntPopCoordinateSystem(void);
+    i32 __cdecl NuQFntGetCoordinateSystem(void);
     void __cdecl NuQFntSetMtxRS(void *stream, VUFNT *font, NUMTX *matrix);
     void __cdecl NuQFntSetRS(void *stream, VUFNT *font);
     void __cdecl NuQFntSetScaleRS(void *stream, VUFNT *font, f32 x_scale, f32 y_scale);
@@ -1639,11 +1648,15 @@ extern "C" {
     void __cdecl RndrStateCopyGlobalState(NUGLOBALRNDRSTATE_PC *state);
     void __cdecl RndrStateResetGlobalState(NUGLOBALRNDRSTATE_PC *state);
     void __cdecl RndrStateResetSharedGlobalState(void);
+    void __cdecl RndrStateSetConstAlphaTint(i32 alpha_enabled, i32 tint_enabled, f32 alpha, const NUVEC *tint, NUMTL *material);
+    void __cdecl RndrStateSetReflection(i32 reflection);
+    i32 __cdecl NuRndrSetAmbientLightPS(const NUVEC *colour);
     void __cdecl NuPrim2DAddXYZ(f32 x, f32 y, f32 z);
     extern NUFPAR_PC NuFParRecords[4];
     extern char NuFParBuffers[4][0x1000];
     extern NUFPAR_PC *NuFParRecordBase;
     extern char *NuFParBufferBase;
+    void __cdecl NuFParInit(i32 max_count, i32 buffer_size);
     NUFPAR_PC *__cdecl NuFParOpen(NUFILE file_handle);
     NUFPAR_PC *__cdecl NuFParCreate(char *file_name);
     NUFPAR_PC *__cdecl NuFParCreateMem(char *file_name, char *buffer, i32 size);
@@ -1656,6 +1669,8 @@ extern "C" {
     f32 __cdecl NuFParGetFloat(NUFPAR_PC *parser);
     f32 __cdecl NuFParGetFloatRDP(NUFPAR_PC *parser);
     f32 __cdecl NuRDPFVar(char *input, NURDPGETVARFN get_variable);
+    f32 __cdecl NuRDPF(char *input);
+    i32 __cdecl GetLineW(u16 *buffer, NUFILE file);
     i32 __cdecl NuRDPIVar(char *input, NURDPGETVARFN get_variable);
     i32 __cdecl NuRDPI(char *input);
     i32 __cdecl NuFParGetIntRDP(NUFPAR_PC *parser);
@@ -2336,6 +2351,7 @@ extern "C" {
     void __cdecl NuMtxSetRotationAxis(NUMTX *matrix, NUANG angle, NUVEC *axis);
     void __cdecl NuMtxInv(NUMTX *output, NUMTX *input);
     void __cdecl NuMtxInvR(NUMTX *output, NUMTX *input);
+    void __cdecl NuMtxRotateAng(NUANG angle, f32 x, f32 z, f32 *rx, f32 *rz);
     void __cdecl NuMtxTranslate(NUMTX *matrix, NUVEC *translation);
     void __cdecl NuMtxTranslateNeg(NUMTX *matrix, NUVEC *translation);
     void __cdecl NuMtxPreTranslate(NUMTX *matrix, NUVEC *translation);
@@ -2681,6 +2697,10 @@ extern "C" {
     extern SFX_FILE_INFO_PC *SfxFileTable;
     extern i32 SfxFileCount;
     void __cdecl SfxSetFileTable(SFX_FILE_INFO_PC *records);
+    void __cdecl SetSfxBit_OnEx(i32 id);
+    void __cdecl SetSfxBit_On(i32 id);
+    void __cdecl SetSfxBit_OffEx(i32 id);
+    i32 __cdecl SfxBitEx(i32 id);
     extern NUPRIM_VERTEX_GROUP_SOURCE_PC *NuPrimVertexGroupSource;
     extern i16 *AmbientPairTab;
     extern NUMTL *numtl_defaultmtl2d;

@@ -99,6 +99,45 @@ i32 __cdecl GetSfxId(char *name) {
     return -1;
 }
 
+void __cdecl SetSfxBit_OnEx(i32 sfx_id) {
+    u32 index = (u32)sfx_id;
+
+    if (index > 0x63f) {
+        return;
+    }
+    SfxBits[index >> 4] |= (u16)(1u << (index & 0xf));
+}
+
+void __cdecl SetSfxBit_OffEx(i32 sfx_id) {
+    u32 index = (u32)sfx_id;
+
+    if (index > 0x63f) {
+        return;
+    }
+    SfxBits[index >> 4] &= (u16)~(1u << (index & 0xf));
+}
+
+i32 __cdecl SfxBitEx(i32 sfx_id) {
+    u32 index = (u32)sfx_id;
+
+    if (index > 0x63f) {
+        return -1;
+    }
+    return (SfxBits[index >> 4] & (u16)(1u << (index & 0xf))) != 0;
+}
+
+void __cdecl SetSfxBit_On(i32 sound_id) {
+    i32 sample_id;
+
+    if (sound_id < 0) {
+        return;
+    }
+    sample_id = (i32)(SfxInfo[sound_id].sample_id_flags << 17) >> 17;
+    if ((u32)sample_id <= 0x63f) {
+        SetSfxBit_OnEx(sample_id);
+    }
+}
+
 i32 __cdecl AmbientFromQuiet(i32 quiet_index) {
     i32 pair_index;
 

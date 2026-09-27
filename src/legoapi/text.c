@@ -14,6 +14,10 @@ extern const char TextPlatformPS2[4];
 extern const char TextPlatformGameCube[3];
 extern const char TextPlatform360[4];
 extern const char TextPlatformWii[4];
+extern const char TextLoadPermTextDirectory[12];
+extern const char TextLoadPermAPIExtension[9];
+extern const char TextLoadPermTRCPath[19];
+extern i16 tALONGTIMEAGO;
 
 void Text_InitLanguageList(LANGUAGEDATA *language_list) {
     if (language_list != NULL) {
@@ -229,6 +233,35 @@ void __cdecl Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32
     }
 
     *buffer = out;
+}
+
+void __cdecl Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
+    char language[32];
+    char path[256];
+    u8 *string_buffer = buffer->u8_ptr;
+
+    (void)buffer_end;
+
+    TextRegisterButtonMapFn(Text_DecodeButtons);
+    NuStrCpy(language, Text_GetLanguagePath(Text_Language));
+
+    NuStrCpy(path, TextLoadPermTextDirectory);
+    NuStrCat(path, language);
+    NuStrCat(path, AreaResidentsExtension);
+    Text_LoadAndFixUpStrings(path, &string_buffer, TTab, 0x70d);
+
+    if (StartupGameFlag1 != 0) {
+        IntroText_SetTextID(tALONGTIMEAGO);
+    } else {
+        NuStrCpy(path, TextLoadPermTextDirectory);
+        NuStrCat(path, language);
+        NuStrCat(path, TextLoadPermAPIExtension);
+        Text_LoadAndFixUpStrings(path, &string_buffer, TTab, 0x70d);
+    }
+
+    buffer->addr = ((u32)string_buffer + 3U) & ~3U;
+
+    STUBBED_NAMED("Text_LoadStrings: intro-label fixups and trc.csv lookup setup");
 }
 
 void Text_DecodeButtons(char *source, char *destination) {

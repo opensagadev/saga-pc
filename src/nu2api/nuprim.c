@@ -147,6 +147,33 @@ void __cdecl RndrStateResetSharedGlobalState(void) {
     render_state.counter_001e = (u16)-1;
 }
 
+void __cdecl RndrStateSetReflection(i32 reflection) {
+    render_state.reflection_state = (u32)reflection;
+    ++render_state.counter_0020;
+    ++render_state.reflection_id;
+    render_state.reflection_packet_cache = NULL;
+}
+
+void __cdecl RndrStateSetConstAlphaTint(i32 alpha_enabled, i32 tint_enabled, f32 alpha, const NUVEC *tint,
+                                        NUMTL *material) {
+    (void)tint_enabled;
+    (void)tint;
+    render_state.state_00f8 = alpha;
+    render_state.const_alpha_material = material;
+    ++render_state.counter_0020;
+    ++render_state.counter_001e;
+    render_state.state_00f4 = alpha_enabled;
+    render_state.konst_packet_cache = NULL;
+}
+
+i32 __cdecl NuRndrSetAmbientLightPS(const NUVEC *colour) {
+    render_state.ambient_intensity = *colour;
+    ++render_state.counter_0020;
+    ++render_state.lights_id;
+    render_state.light_packet_cache = NULL;
+    return 1;
+}
+
 void *__cdecl DisplayListBuildKonstPacket(NUGLOBALRNDRSTATE_PC *state) {
     f32 *packet;
 
