@@ -18,7 +18,9 @@ The source entry now follows the verified PC startup order through permanent-dat
 loading. `InitOnce` at `0x004011e0` has a structural stub with its full 1,019-byte
 comparison extent; its allocator, camera and time-bar dependencies remain open.
 `NuMain` stops before indexing level/area tables when the six DAT archives have
-not been loaded. Its later restart and frame-loop phases contain explicit
+not been loaded. Its startup includes a temporary guard before `NuFrameBegin`
+because the PC keyboard input owner is not yet initialized by our partial
+`InitOnce`. Its later restart and frame-loop phases contain explicit
 `STUBBED_NAMED` markers, so this is a runnable scaffold, not a complete or
 matching 4,332-byte reconstruction. Keep unresolved references fatal when linking.
 
@@ -37,9 +39,11 @@ smaller presentation code.
 The current `NuDatOpenEx` is an explicit parser stub, so `NuMain` exits safely
 when archive-backed level and area tables are absent. PC archive inspection
 confirms eight open-file slots and eight-byte tree nodes, unlike Android's
-layout. Implementing this parser and the native Win32 file layer is the next
-path toward meaningful startup execution; the rest of the frame loop remains
-structural work rather than a byte match.
+layout. The native Win32 and host-file layers now implement real open/read/seek/
+close behavior; a local temporary-file smoke check exercised normal and cached
+reads, seeks and cleanup. The DAT parser and permanent arena remain the next
+dependencies before meaningful startup execution; the rest of the frame loop
+remains structural work rather than a byte match.
 
 ## Direct-call candidates
 

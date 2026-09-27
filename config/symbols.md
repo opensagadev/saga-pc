@@ -31,6 +31,10 @@ means the entry is unimplemented. Multiple definitions of one mapped symbol are
 compared independently, and all must match for that entry to count. A linker name
 mapped to multiple original addresses produces an ambiguous relocation binding;
 comparison rejects a reference that needs it instead of choosing an address.
+Compiled data may retain a blank original size while its complete PC extent is
+being recovered. The object check still requires its address binding and checks
+all relocations, but matching gives it no byte coverage or exact-match credit.
+Compiled functions require complete PC extents.
 
 Compiled COFF symbol and section metadata distinguish functions from data. For
 inventory reporting, an entry without a compiled definition inside the original

@@ -1,5 +1,35 @@
 #include "saga.h"
 
+void __cdecl PCByteCopy_candidate(void *destination, const void *source, u32 count) {
+    u8 *dst = (u8 *)destination;
+    const u8 *src = (const u8 *)source;
+
+    if (dst < src) {
+        while (count != 0) {
+            *dst++ = *src++;
+            --count;
+        }
+    } else {
+        dst += count;
+        src += count;
+        while (count != 0) {
+            *--dst = *--src;
+            --count;
+        }
+    }
+}
+
+u32 __fastcall PCFilePakChecksum_candidate(const u8 *data, i32 count) {
+    u32 sum = 0x12345678;
+
+    while (count != 0) {
+        --count;
+        sum += *data++;
+    }
+
+    return sum;
+}
+
 NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *buf, i32 *unused, i16 mode) {
     (void)filepath;
     (void)buf;

@@ -98,12 +98,36 @@ STATIC_ASSERT(offsetof(VUFNT, glyphs) == 0x34);
 STATIC_ASSERT(offsetof(VUFNT, unicode_map) == 0x38);
 
 typedef struct menu_s {
-    u8 unknown_0000[0x14];
+    u8 unknown_0000[8];
+    i16 selected_column;
+    i16 selected_row;
+    u8 unknown_000c[8];
     i16 menu;
-    u8 unknown_0016[0xca];
+    u8 unknown_0016[0x1e];
+    i32 selected_item;
+    i32 selected_item_column;
+    u8 unknown_003c[0x20];
+    i32 left_pressed;
+    i32 right_pressed;
+    i32 confirm_pressed;
+    i32 cancel_pressed;
+    u8 unknown_006c[0x20];
+    i32 draw_item;
+    f32 item_scale;
+    u8 unknown_0094[0x4c];
 } MENU;
 STATIC_ASSERT(sizeof(MENU) == 0xe0);
+STATIC_ASSERT(offsetof(MENU, selected_column) == 0x08);
+STATIC_ASSERT(offsetof(MENU, selected_row) == 0x0a);
 STATIC_ASSERT(offsetof(MENU, menu) == 0x14);
+STATIC_ASSERT(offsetof(MENU, selected_item) == 0x34);
+STATIC_ASSERT(offsetof(MENU, selected_item_column) == 0x38);
+STATIC_ASSERT(offsetof(MENU, left_pressed) == 0x5c);
+STATIC_ASSERT(offsetof(MENU, right_pressed) == 0x60);
+STATIC_ASSERT(offsetof(MENU, confirm_pressed) == 0x64);
+STATIC_ASSERT(offsetof(MENU, cancel_pressed) == 0x68);
+STATIC_ASSERT(offsetof(MENU, draw_item) == 0x8c);
+STATIC_ASSERT(offsetof(MENU, item_scale) == 0x90);
 
 typedef struct menufninfo_s {
     i32 id;
@@ -123,6 +147,39 @@ STATIC_ASSERT(offsetof(MENUFNINFO, enter_fn) == 4);
 STATIC_ASSERT(offsetof(MENUFNINFO, exit_fn) == 0x10);
 STATIC_ASSERT(offsetof(MENUFNINFO, memory_x) == 0x14);
 STATIC_ASSERT(offsetof(MENUFNINFO, wrap) == 0x18);
+
+typedef struct optionssave_s {
+    u8 unknown_0000[3];
+    u8 sound_volume;
+    u8 music_volume;
+    u8 master_volume;
+    u8 music_enabled;
+    u8 unknown_0007[4];
+    u8 widescreen;
+    u8 brightness;
+} OPTIONSSAVE;
+STATIC_ASSERT(sizeof(OPTIONSSAVE) == 0x0d);
+STATIC_ASSERT(offsetof(OPTIONSSAVE, sound_volume) == 3);
+STATIC_ASSERT(offsetof(OPTIONSSAVE, music_volume) == 4);
+STATIC_ASSERT(offsetof(OPTIONSSAVE, master_volume) == 5);
+STATIC_ASSERT(offsetof(OPTIONSSAVE, widescreen) == 0x0b);
+
+typedef struct gamesave_s {
+    u32 unknown_0000;
+    OPTIONSSAVE options_save;
+    u8 unknown_0011[0x7e3b];
+} GAMESAVE;
+STATIC_ASSERT(sizeof(GAMESAVE) == 0x7e4c);
+STATIC_ASSERT(offsetof(GAMESAVE, options_save) == 4);
+
+typedef struct playerprogress_s {
+    u32 coins;
+    u16 unknown_0004;
+    u8 active;
+    u8 unknown_0007[9];
+} PLAYERPROGRESS;
+STATIC_ASSERT(sizeof(PLAYERPROGRESS) == 0x10);
+STATIC_ASSERT(offsetof(PLAYERPROGRESS, active) == 6);
 
 typedef struct numtlattrib_s {
     u32 alpha_mode : 4;
@@ -175,6 +232,32 @@ STATIC_ASSERT(sizeof(GAMEPAD_INIT_RECORD) == 0x60);
 STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, pad) == 0);
 STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, allocated) == 0x5a);
 
+typedef struct NuKeyboardState_PC {
+    u8 unknown_0000_to_4e10[0x4e10];
+    u8 keyboard_polled;
+    u8 unknown_4e11_to_68b0[0x68b0 - 0x4e11];
+    u8 *keyboard_state;
+} NuKeyboardState_PC;
+STATIC_ASSERT(sizeof(NuKeyboardState_PC) == 0x68b4);
+STATIC_ASSERT(offsetof(NuKeyboardState_PC, keyboard_polled) == 0x4e10);
+STATIC_ASSERT(offsetof(NuKeyboardState_PC, keyboard_state) == 0x68b0);
+
+typedef struct NuKeyboardDevice_PC NuKeyboardDevice_PC;
+typedef struct NuKeyboardOwner_PC {
+    f32 unknown_0000;
+    i32 unknown_0004;
+    f32 unknown_0008;
+    u8 unknown_000c_to_0024[0x18];
+    NuKeyboardDevice_PC *device;
+    i32 poll_status;
+} NuKeyboardOwner_PC;
+STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, device) == 0x24);
+STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, poll_status) == 0x28);
+
+typedef struct nualloc_record_s NUALLOC_RECORD;
+typedef struct nualloc_pool_s NUALLOC_POOL;
+typedef struct nualloc_arena_s NUALLOC_ARENA;
+
 typedef struct bgprocinfo_s BGPROCINFO;
 
 typedef union variptr_u {
@@ -183,6 +266,134 @@ typedef union variptr_u {
     u32 addr;
 } VARIPTR;
 STATIC_ASSERT(sizeof(VARIPTR) == 4);
+
+typedef i32 NUFILE;
+
+typedef struct nuwind_s {
+    u8 unknown_0000[0x28];
+    f32 phase_speed_scale;
+    f32 phase;
+    f32 accumulated_time;
+    f32 scaled_accumulated_time;
+} NUWIND;
+STATIC_ASSERT(sizeof(NUWIND) == 0x38);
+STATIC_ASSERT(offsetof(NUWIND, phase_speed_scale) == 0x28);
+STATIC_ASSERT(offsetof(NUWIND, phase) == 0x2c);
+STATIC_ASSERT(offsetof(NUWIND, accumulated_time) == 0x30);
+STATIC_ASSERT(offsetof(NUWIND, scaled_accumulated_time) == 0x34);
+
+typedef struct nudatfinfo_s {
+    i32 file_offset;
+    i32 file_len;
+    i32 decompressed_len;
+    i32 compression_mode;
+} NUDATFINFO;
+STATIC_ASSERT(sizeof(NUDATFINFO) == 0x10);
+
+typedef struct nudfnode_s {
+    i16 child_idx;
+    i16 sibling_idx;
+    char *name;
+} NUDFNODE;
+STATIC_ASSERT(sizeof(NUDFNODE) == 8);
+
+typedef struct nudatopenfileinfo_s {
+    NUFILE dat_file;
+    i32 info_idx;
+    i64 position;
+} NUDATOPENFILEINFO;
+STATIC_ASSERT(sizeof(NUDATOPENFILEINFO) == 0x10);
+STATIC_ASSERT(offsetof(NUDATOPENFILEINFO, position) == 8);
+
+struct nudathdr_s {
+    i32 version;
+    i32 file_count;
+    NUDATFINFO *file_info;
+    i32 tree_node_count;
+    NUDFNODE *file_tree;
+    i32 leaf_names_len;
+    char *leaf_names;
+    u32 *hash_idxs;
+    i32 hash_count;
+    i32 hashes_len;
+    char *hashes;
+    NUDATOPENFILEINFO open_files[8];
+    i16 unknown_b0;
+    i16 mode;
+    i32 unknown_b4;
+    char *name;
+};
+STATIC_ASSERT(sizeof(NUDATHDR) == 0xc0);
+STATIC_ASSERT(offsetof(NUDATHDR, open_files) == 0x30);
+STATIC_ASSERT(offsetof(NUDATHDR, unknown_b0) == 0xb0);
+STATIC_ASSERT(offsetof(NUDATHDR, mode) == 0xb2);
+STATIC_ASSERT(offsetof(NUDATHDR, name) == 0xb8);
+
+typedef struct fileinfo_s FILEINFO;
+typedef struct filebuff_s {
+    FILEINFO *file_info;
+    i32 time;
+    char data[1024];
+} FILEBUFF;
+STATIC_ASSERT(sizeof(FILEBUFF) == 0x408);
+
+struct fileinfo_s {
+    i32 handle;
+    i64 read_pos;
+    i64 file_pos;
+    i64 file_len;
+    i64 buf_start;
+    i32 buf_len;
+    i32 use_buf;
+    i32 unused;
+    i32 mode;
+    FILEBUFF *buf;
+};
+STATIC_ASSERT(sizeof(FILEINFO) == 0x40);
+STATIC_ASSERT(offsetof(FILEINFO, read_pos) == 8);
+STATIC_ASSERT(offsetof(FILEINFO, file_pos) == 0x10);
+STATIC_ASSERT(offsetof(FILEINFO, file_len) == 0x18);
+STATIC_ASSERT(offsetof(FILEINFO, buf_start) == 0x20);
+STATIC_ASSERT(offsetof(FILEINFO, buf_len) == 0x28);
+STATIC_ASSERT(offsetof(FILEINFO, use_buf) == 0x2c);
+STATIC_ASSERT(offsetof(FILEINFO, mode) == 0x34);
+STATIC_ASSERT(offsetof(FILEINFO, buf) == 0x38);
+
+typedef struct nufile_device_s NUFILE_DEVICE;
+struct nufile_device_s {
+    i32 id;
+    i32 unit;
+    i32 attr;
+    i32 status;
+    i32 dir_separator;
+    i32 max_name_size;
+    i32 max_extension_size;
+    i32 max_directory_size;
+    i32 free_space;
+    u8 unknown_0024[0x10];
+    char name[0x10];
+    i32 match_len;
+    i32 name_len;
+    char root[0x20];
+    char description[0x40];
+    char cur_dir[0x80];
+    char sys_dir[0x80];
+    char dll_dir[0x80];
+    i32 (*format_name_fn)(NUFILE_DEVICE *, char *, char *, i32);
+    i32 (*interrogate_fn)(NUFILE_DEVICE *);
+};
+STATIC_ASSERT(sizeof(NUFILE_DEVICE) == 0x234);
+STATIC_ASSERT(offsetof(NUFILE_DEVICE, dir_separator) == 0x10);
+STATIC_ASSERT(offsetof(NUFILE_DEVICE, name) == 0x34);
+STATIC_ASSERT(offsetof(NUFILE_DEVICE, match_len) == 0x44);
+STATIC_ASSERT(offsetof(NUFILE_DEVICE, name_len) == 0x48);
+STATIC_ASSERT(offsetof(NUFILE_DEVICE, root) == 0x4c);
+STATIC_ASSERT(offsetof(NUFILE_DEVICE, description) == 0x6c);
+STATIC_ASSERT(offsetof(NUFILE_DEVICE, cur_dir) == 0xac);
+STATIC_ASSERT(offsetof(NUFILE_DEVICE, sys_dir) == 0x12c);
+STATIC_ASSERT(offsetof(NUFILE_DEVICE, dll_dir) == 0x1ac);
+STATIC_ASSERT(offsetof(NUFILE_DEVICE, format_name_fn) == 0x22c);
+STATIC_ASSERT(offsetof(NUFILE_DEVICE, interrogate_fn) == 0x230);
 
 #define NU_PORTAL_STACK_SIZE 0x3000
 
@@ -379,15 +590,17 @@ typedef struct nuapi_s {
     i32 screen_width;
     i32 screen_height;
     i32 video_is_pal;
-    u8 unknown_0020[4];
+    f32 fps;
     i32 frame_begin_count;
     u8 unknown_0028[4];
     NuTime time;
     NuTime time2;
     f32 frame_time;
     i32 frame_count;
-    f32 frame_time_limit;
-    u8 unknown_0048[0x34];
+    f32 forced_frame_time;
+    i32 max_fps;
+    u8 unknown_004c[0x2c];
+    void *wind;
     i32 reversible_characters;
     u8 unknown_0080[4];
     i32 force_shadows_on_characters;
@@ -403,12 +616,15 @@ STATIC_ASSERT(offsetof(NUAPI, screen_height) == 0x18);
 STATIC_ASSERT(offsetof(NUAPI, video_swap_mode) == 0xc);
 STATIC_ASSERT(offsetof(NUAPI, video_aspect) == 0x10);
 STATIC_ASSERT(offsetof(NUAPI, video_is_pal) == 0x1c);
+STATIC_ASSERT(offsetof(NUAPI, fps) == 0x20);
 STATIC_ASSERT(offsetof(NUAPI, frame_begin_count) == 0x24);
 STATIC_ASSERT(offsetof(NUAPI, time) == 0x2c);
 STATIC_ASSERT(offsetof(NUAPI, time2) == 0x34);
 STATIC_ASSERT(offsetof(NUAPI, frame_time) == 0x3c);
 STATIC_ASSERT(offsetof(NUAPI, frame_count) == 0x40);
-STATIC_ASSERT(offsetof(NUAPI, frame_time_limit) == 0x44);
+STATIC_ASSERT(offsetof(NUAPI, forced_frame_time) == 0x44);
+STATIC_ASSERT(offsetof(NUAPI, max_fps) == 0x48);
+STATIC_ASSERT(offsetof(NUAPI, wind) == 0x78);
 STATIC_ASSERT(offsetof(NUAPI, frame_end_state) == 0x88);
 STATIC_ASSERT(offsetof(NUAPI, reversible_characters) == 0x7c);
 STATIC_ASSERT(offsetof(NUAPI, force_shadows_on_characters) == 0x84);
@@ -422,6 +638,8 @@ extern "C" {
     void __cdecl NuCommandLine(i32 *__restrict argc, char ***__restrict argv);
     NUDATHDR *__cdecl NuDatSet(NUDATHDR *header);
     NUDATHDR *__cdecl NuDatGet(void);
+    void __cdecl PCByteCopy_candidate(void *destination, const void *source, u32 count);
+    u32 __fastcall PCFilePakChecksum_candidate(const u8 *data, i32 count);
     extern DAT_HANDLES_PC NuDatHandles;
     extern const char EpisodeIDat[14];
     extern const char EpisodeIIDat[15];
@@ -500,7 +718,13 @@ extern "C" {
     f32 __cdecl NuFsign(f32 value);
     extern const f32 nu_fsign_minus_one;
     void __cdecl InitOnce(i32 argc, char **argv);
-    extern u8 InitOncePanelOption;
+    extern u32 InitOnceOptionInput0;
+    extern u32 InitOnceOptionInput1;
+    extern u32 InitOnceOptionInput2;
+    extern GAMESAVE Game;
+    extern OPTIONSSAVE TempOptions;
+    extern OPTIONSSAVE *Game_OptionsSave;
+    extern PLAYERPROGRESS PlayerProgress[8];
     extern MENUFNINFO MenuInfo[100];
     extern MENUFNINFO GameMenuInfo[23];
     extern MENU GameMenu[10];
@@ -521,12 +745,28 @@ extern "C" {
     extern i32 MenuDrawDropShadows;
     extern NUMTL *MenuFadeMtl;
     extern const char Menu_UsedFormat[15];
+    extern const char Menu_OptionsVolumeFormat[10];
+    extern const char Menu_ColonSeparator[3];
+    extern f32 dme_sy;
+    extern i32 menu_flash;
+    extern i16 tAUDIOVOLUME, tMUSIC, tON, tOFF, tACCEPT, tBACK;
     void __cdecl MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count,
                                   void (*draw_save_slots_info_fn)(f32, f32, i32, i32), i32 is_fade_enabled,
                                   i32 is_shadow_enabled);
     void __cdecl MenuInitialise(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count,
                                 void (*draw_save_slots_fn)(MENU *, f32), i32 is_fade_enabled, i32 is_shadow_enabled);
     void __cdecl MenuReset(void);
+    void __cdecl MenuEnterNewGame(MENU *menu);
+    void __cdecl MenuEnterOptions(MENU *menu);
+    void __cdecl MenuDrawOptions(MENU *menu);
+    void __cdecl MenuExitOptions(MENU *menu);
+    void __cdecl RestoreOptions(void);
+    void __cdecl MenuEnterTitles(MENU *menu);
+    i32 __cdecl GetParentMenuID(void);
+    extern i32 MenuLoadOccurred;
+    extern i32 startnewgame_initiated;
+    extern i32 startnewgame;
+    extern i32 saveload_autosave;
     void __cdecl MenuSetPlatformState(i32 state);
     extern i32 BGLOAD;
     extern i32 PermDataLoaded;
@@ -569,8 +809,64 @@ extern "C" {
     extern i32 bHaveErr;
     void __cdecl FinishLoop(i32 frames);
     extern i32 finishloop_backdroponly;
-    NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *buf, i32 *unused, i16 mode);
-    NUDATHDR *__cdecl NuDatOpen(const char *filepath, VARIPTR *buf, i32 *unused);
+    NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *buf, i32 *size_out, i16 mode);
+    NUDATHDR *__cdecl NuDatOpen(const char *filepath, VARIPTR *buf, i32 *size_out);
+    extern HANDLE pc_file_handles[32];
+    i32 __cdecl NuPSFileOpen(const char *filepath, i32 mode);
+    i32 __cdecl NuPSFileClose(i32 handle);
+    i32 __cdecl NuPSFileRead(i32 handle, void *buffer, i32 size);
+    i32 __cdecl NuPSFileWrite(i32 handle, const void *buffer, i32 size);
+    i64 __cdecl NuPSFileLSeek(i32 handle, i64 position, i32 origin);
+    extern FILEINFO file_info[33];
+    extern FILEBUFF file_buff[4];
+    extern i32 nufile_buffering_enabled;
+    extern i32 file_time_count;
+    extern const char nufile_disc_suffix[3];
+    extern NUFILE_DEVICE devices[16];
+    extern i32 numdevices;
+    extern NUFILE_DEVICE host_device;
+    extern NUFILE_DEVICE *default_device;
+    extern i32 DontDoFileUpperCaseHack;
+    NUFILE_DEVICE *__cdecl NuFileGetDeviceFromPath(const char *path);
+    NUFILE_DEVICE *__cdecl NuFileAddDevice(NUFILE_DEVICE *device);
+    i32 __cdecl DEV_FormatName(NUFILE_DEVICE *device, char *destination, char *source, i32 capacity);
+    i32 __cdecl DEVHOST_Interrogate(NUFILE_DEVICE *device);
+    NUFILE __cdecl NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i32 flags);
+    void __cdecl NuFileClose(NUFILE file);
+    i64 __cdecl NuFileSeek(NUFILE file, i64 offset, i32 origin);
+    i32 __cdecl NuFileRead(NUFILE file, void *buffer, i32 size);
+    i32 __cdecl NuFileStatus(NUFILE file);
+    void __cdecl NuFileError(void);
+    void __cdecl NuFileRetry(void);
+    extern NuKeyboardState_PC *nu_input_state;
+    extern NuKeyboardOwner_PC nu_keyboard_owner;
+    extern u8 nu_keyboard_pages[0x200];
+    extern u8 nu_keyboard_page_index;
+    extern i32 nu_keyboard_device_flags;
+    extern i32 nu_keyboard_key_index;
+    extern i32 nu_keyboard_key_count;
+    extern i32 nu_keyboard_repeat_countdown;
+    extern i32 nu_keyboard_previous_key_index;
+    extern i32 nu_keyboard_no_key_state;
+    extern HWND PCInputWindow_candidate;
+    extern HINSTANCE PCInputInstance_candidate;
+    i32 __cdecl NuKeyboardPlatformStartup_candidate(void);
+    void __cdecl NuKeyboardCreateWindowState_candidate(HWND window, HINSTANCE instance);
+    u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner);
+    extern i32 PCThreadCriticalSectionCount_candidate;
+    extern CRITICAL_SECTION PCThreadCriticalSections_candidate[13];
+    extern i32 PCFrameCriticalSectionIndex_candidate;
+    extern NUALLOC_RECORD *NuAllocRecordHead;
+    extern u32 NuAllocTrackedBytes;
+    extern NUALLOC_POOL *NuAllocPool;
+    extern u32 NuAllocRecordSerial;
+    extern NUALLOC_ARENA *NuAllocArena;
+    extern void *NuAllocManager;
+    extern void *NuAllocPeakEnd0;
+    extern void *NuAllocPeakEnd1;
+    extern u32 NuAllocHeaderMetadata[3];
+    extern u32 NuAllocTailMetadata[3];
+    void *__cdecl NuAlloc(i32 size, const char *file, i32 line);
     void __cdecl edpartStartPage(u8 page);
     void __cdecl edpartStopPage(u8 page);
     void __cdecl Parts_Start(WORLDINFO *world);
@@ -913,6 +1209,9 @@ extern "C" {
     f32 __cdecl NuFloatRand(NURAND *rand);
 
     extern u32 NuWindQS;
+    extern const f64 nu_wind_phase_scale;
+    extern const f64 nu_wind_scaled_time_multiplier;
+    void __cdecl NuWindAnimate(NUWIND *wind, f32 frame_time);
     extern u32 partseed;
     extern i32 part_raycasts_enabled;
     void __cdecl NuPartEnableRayCasts(i32 enabled);

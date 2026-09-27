@@ -129,8 +129,10 @@ Run `make check` and `make -j"$(nproc)" build check-objects`. These require no o
 clang-format/clang-tidy policies, static map/layout/input checks, synthetic tests,
 objdiff fixture integration after
 setup, compilation/linking, complete symbol coverage and resolvable supported relocations.
-Unknown inventory entries are allowed; compiled definitions need known original
-sizes. Different rebuilt sizes are allowed for work in progress, not proof of matching.
+Unknown inventory entries are allowed. Compiled functions need known original
+sizes; compiled data with an unknown original extent may be mapped without a size,
+but receives no coverage or exact-match credit until that extent is established.
+Different rebuilt sizes are allowed for work in progress, not proof of matching.
 `make objects` and `make check-objects` work independently of the EXE link. Keep
 unresolved references fatal when linking. The source EXE has its own layout;
 never use its addresses as original mappings. `/OPT:NOREF /OPT:NOICF` retain

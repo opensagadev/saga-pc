@@ -74,6 +74,18 @@ def display_name(symbol):
     return symbol[1:] if symbol.startswith("_") and not symbol.startswith("__") else symbol
 
 
+def print_diff(diff, symbol_name):
+    for side, label in (("left", "RETAIL"), ("right", "REBUILT")):
+        print(label)
+        for symbol in diff[side]["symbols"]:
+            if symbol["name"] == symbol_name:
+                for line in symbol.get("instructions", []):
+                    # Insertions/deletions leave an alignment gap on the other side.
+                    ins = line.get("instruction")
+                    if ins is not None:
+                        print(f"  {int(ins['address']):08x}  {ins.get('formatted', '')}")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--update", action="store_true", help="Update matching.json and the README badge")
@@ -215,13 +227,7 @@ def main():
             run([cli, "diff", "-1", OUT / unit["target_path"],
                  "-2", OUT / unit["base_path"], functions[0]["symbol"], "-o", diff_path])
             diff = json.loads(diff_path.read_text())
-            for side, label in (("left", "RETAIL"), ("right", "REBUILT")):
-                print(label)
-                for symbol in diff[side]["symbols"]:
-                    if symbol["name"] == functions[0]["symbol"]:
-                        for line in symbol.get("instructions", []):
-                            ins = line["instruction"]
-                            print(f"  {int(ins['address']):08x}  {ins.get('formatted', '')}")
+            print_diff(diff, functions[0]["symbol"])
     print("Local comparison objects and reports: build/objdiff/")
     return int(args.require_match and any(r["units"] and not r["exact_match"] for r in functions + data))
 

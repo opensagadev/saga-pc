@@ -84,7 +84,7 @@ void __cdecl NuTimeGetTicksPS(u32 *low, u32 *high) {
     if (counter.QuadPart > NuTime_TickBase) {
         elapsed = counter.QuadPart - NuTime_TickBase;
     } else {
-        elapsed = counter.QuadPart + (0x7fffffffffffffffLL - NuTime_TickBase);
+        elapsed = (counter.QuadPart - NuTime_TickBase) + 0x7fffffffffffffffLL;
     }
     *low = (u32)elapsed;
     *high = (u32)(elapsed >> 32);

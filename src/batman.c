@@ -28,7 +28,11 @@ int __cdecl NuMain(int argc, char **argv) {
     InitShadowLights();
     GamePads_Init();
     bgProcInit();
-    FinishLoop(2);
+    if (nu_input_state != NULL) {
+        FinishLoop(2);
+    } else {
+        STUBBED_NAMED("NuMain: FinishLoop waits for PC input-state setup in InitOnce");
+    }
     Text_InitLanguageList(Game_LanguageList);
     Text_SetLanguage(-1);
     StartPerm();

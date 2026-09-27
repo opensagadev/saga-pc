@@ -1,5 +1,11 @@
 #include "saga.h"
 
+STATIC_ASSERT(offsetof(MAINFRAMECOUNTERS, warmup_frame) == 0);
+STATIC_ASSERT(offsetof(MAINFRAMECOUNTERS, every_frame) == 1);
+STATIC_ASSERT(offsetof(MAINFRAMECOUNTERS, alternate_frame) == 2);
+STATIC_ASSERT(offsetof(MAINFRAMECOUNTERS, third_frame) == 3);
+STATIC_ASSERT(offsetof(MAINFRAMECOUNTERS, fourth_frame) == 4);
+
 extern f32 FRAMETIME;
 extern f32 __cdecl NuFmod(f32 value, f32 divisor);
 
@@ -12,22 +18,22 @@ void ResetFrameCounters(void) {
 }
 
 void UpdateFrameCounters(void) {
-    if (do_multiframe_update == 0) {
-        ResetFrameCounters();
+    if (do_multiframe_update != 0) {
+        if ((i8)MainFrameCounters.warmup_frame <= 0) {
+            ++MainFrameCounters.warmup_frame;
+            return;
+        }
+
+        MainFrameCounters.every_frame = 1;
+        MainFrameCounters.alternate_frame = (MainFrameCounters.alternate_frame + 1) & 1;
+        if (++MainFrameCounters.third_frame == 3) {
+            MainFrameCounters.third_frame = 0;
+        }
+        MainFrameCounters.fourth_frame = (MainFrameCounters.fourth_frame + 1) & 3;
         return;
     }
 
-    if ((i8)MainFrameCounters.warmup_frame <= 0) {
-        ++MainFrameCounters.warmup_frame;
-        return;
-    }
-
-    MainFrameCounters.every_frame = 1;
-    MainFrameCounters.alternate_frame = (MainFrameCounters.alternate_frame + 1) & 1;
-    if (++MainFrameCounters.third_frame == 3) {
-        MainFrameCounters.third_frame = 0;
-    }
-    MainFrameCounters.fourth_frame = (MainFrameCounters.fourth_frame + 1) & 3;
+    ResetFrameCounters();
 }
 
 void ResetTimer(TIMER *timer, f32 reset_time) {

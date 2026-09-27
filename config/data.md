@@ -256,6 +256,13 @@ without a relocation when it uses x87 `fldz`/`fld1`.
 The current `src/data.cpp` also defines the PC startup menu, episode archive
 names, font constants, gamepad records, background-worker state, and debris
 constants. Their individual addresses, extents and types are in `symbols.csv`.
+The 0x7e4c-byte PC `GAMESAVE` aggregate now owns `options_save` and player
+progress in one typed definition. The six options fields copied during
+`InitOnce` use layout-checked members of that aggregate. The host-file data
+includes 32 native handles, 33 `FILEINFO` records, four 0x408-byte file buffers,
+and the 0x234-byte PC device template; `NuFileDevice` has three separately
+asserted directory fields. The keyboard owner extent is still unknown and has
+no data-match credit; its typed partial layout must not imply a complete size.
 `NUAPI` remains one 144-byte object at `0x0297dbe0`; PC references establish
 two eight-byte `NuTime` fields at offsets `0x2c` and `0x34`, with layout asserts
 in `saga.h`. `ShowingError` at `0x0091ef3c` and `bHaveErr` at `0x00921248` are

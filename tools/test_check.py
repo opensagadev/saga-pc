@@ -97,12 +97,13 @@ class ObjectChecksTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "'\\$LN8': missing data mapping"):
             self.check({"src/video.c": with_label(1)}, [row("_f", size=1)])
 
-    def test_unreferenced_common_definition_requires_known_mapping(self):
+    def test_unreferenced_common_definition_requires_mapping(self):
         objects = {"src/common.c": self.obj(object_common(), "common")}
         with self.assertRaisesRegex(ValueError, "src/common.c: '_data': missing data mapping"):
             self.check(objects, [])
-        with self.assertRaisesRegex(ValueError, "compiled definition has unknown original size"):
-            self.check(objects, [row("_data", DATA, None)])
+        unknown = self.check(objects, [row("_data", DATA, None)])
+        self.assertEqual((unknown["functions"], unknown["data"]), (0, 1))
+        self.assertEqual(unknown["size_differences"], [])
         result = self.check(objects, [row("_data", DATA, 4)])
         self.assertEqual((result["functions"], result["data"]), (0, 1))
         # Value zero is a declaration, even when no map row exists.

@@ -96,7 +96,7 @@ def check_objects(objects, records, target):
                               "use distinct reconstruction names")
                 continue
             row = rows[0]
-            if row["size"] is None:
+            if row["size"] is None and kind == "function":
                 errors.append(f"{context}: compiled definition has unknown original size; "
                               "recover its complete extent in config/symbols.csv")
                 continue
@@ -136,7 +136,7 @@ def check_objects(objects, records, target):
                 errors.append(f"{context}: {error}")
                 continue
             result["functions" if kind == "function" else "data"] += 1
-            if len(rebuilt) != row["size"]:
+            if row["size"] is not None and len(rebuilt) != row["size"]:
                 result["size_differences"].append({"unit": unit, "symbol": name,
                                                   "original": row["size"], "rebuilt": len(rebuilt)})
     for name, definitions in sorted(kinds.items()):

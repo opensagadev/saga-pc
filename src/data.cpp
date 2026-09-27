@@ -7,6 +7,7 @@ SoundQueue *NuSound3StereoStreams[2];
 
 // Startup and main-loop state; defaults follow the PC executable.
 i32 ChallengeMode;
+i32 fade_draw_suppressed;
 i32 GAMEDEMO;
 i32 PLAYERCOUNT;
 i32 Level;
@@ -95,7 +96,16 @@ extern "C" {
     f32 qfnt_justify_stretch = 1.0f;
     u32 NuQFntMode;
     extern const f32 nu_fsign_minus_one = -1.0f;
-    u8 InitOncePanelOption;
+    GAMESAVE Game;
+    OPTIONSSAVE TempOptions;
+    PLAYERPROGRESS PlayerProgress[8];
+    u32 InitOnceOptionInput0;
+    u32 InitOnceOptionInput1;
+    u32 InitOnceOptionInput2;
+    i32 MenuLoadOccurred;
+    i32 startnewgame_initiated;
+    i32 startnewgame;
+    i32 saveload_autosave = -1;
     i32 BGLOAD = 1;
     i32 PermDataLoaded = 1;
     i32 LOADEROFF;
@@ -116,6 +126,73 @@ extern "C" {
     i32 bgproc_freeze;
     i32 ShowingError;
     i32 bHaveErr;
+    HANDLE pc_file_handles[32] = {
+        INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
+        INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
+        INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
+        INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
+        INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
+        INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
+        INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
+    };
+    FILEINFO file_info[33];
+    FILEBUFF file_buff[4];
+    i32 nufile_buffering_enabled;
+    i32 file_time_count;
+    NUFILE_DEVICE devices[16];
+    i32 numdevices;
+    NUFILE_DEVICE host_device = {
+        0,
+        0,
+        0x0e,
+        0,
+        '\\',
+        0x400,
+        -1,
+        -1,
+        -1,
+        {0},
+        {0},
+        4,
+        6,
+        {0},
+        "Host pc filesystem",
+        {0},
+        {0},
+        {0},
+        DEV_FormatName,
+        DEVHOST_Interrogate,
+    };
+    NUFILE_DEVICE *default_device = &host_device;
+    i32 DontDoFileUpperCaseHack;
+    NuKeyboardState_PC *nu_input_state;
+    HWND PCInputWindow_candidate;
+    HINSTANCE PCInputInstance_candidate;
+    NuKeyboardOwner_PC nu_keyboard_owner;
+    u8 nu_keyboard_pages[0x200];
+    u8 nu_keyboard_page_index;
+    i32 nu_keyboard_device_flags;
+    i32 nu_keyboard_key_index;
+    i32 nu_keyboard_key_count;
+    i32 nu_keyboard_repeat_countdown;
+    i32 nu_keyboard_previous_key_index;
+    i32 nu_keyboard_no_key_state;
+    i32 PCThreadCriticalSectionCount_candidate;
+    CRITICAL_SECTION PCThreadCriticalSections_candidate[13];
+    i32 PCFrameCriticalSectionIndex_candidate;
+    NUALLOC_RECORD *NuAllocRecordHead;
+    u32 NuAllocTrackedBytes;
+    NUALLOC_POOL *NuAllocPool;
+    u32 NuAllocRecordSerial;
+    NUALLOC_ARENA *NuAllocArena;
+    void *NuAllocManager;
+    void *NuAllocPeakEnd0;
+    void *NuAllocPeakEnd1;
+    u32 NuAllocHeaderMetadata[3] = {0x424d454d, 0x45484b4c, 0x52454441};
+    u32 NuAllocTailMetadata[3] = {0x424d454d, 0x41544b4c, 0x31304c49};
+#pragma const_seg(".rdata$NuFileDiscSuffix")
+    extern const char nufile_disc_suffix[3] = ";1";
+#pragma const_seg()
     DAT_HANDLES_PC NuDatHandles;
     i32 finishloop_backdroponly;
 #pragma const_seg(".rdata$EpisodeIDat")
@@ -393,21 +470,58 @@ extern "C" {
 #pragma const_seg(".rdata$Menu_UsedFormat")
     extern const char Menu_UsedFormat[15] = "Menus used: %d";
 #pragma const_seg()
+#pragma const_seg(".rdata$Menu_OptionsVolumeFormat")
+    extern const char Menu_OptionsVolumeFormat[10] = "%s: %i/%i";
+#pragma const_seg(".rdata$Menu_ColonSeparator")
+    extern const char Menu_ColonSeparator[3] = ": ";
+#pragma const_seg()
+#pragma const_seg(".rdata$nu_wind_phase_scale")
+    extern const f64 nu_wind_phase_scale = 1.0 / 256.0;
+#pragma const_seg(".rdata$nu_wind_scaled_time_multiplier")
+    extern const f64 nu_wind_scaled_time_multiplier = 5.0;
+#pragma const_seg()
+    f32 dme_sy = 1.0f;
+    i32 menu_flash;
+#pragma bss_seg(".bss$tAUDIOVOLUME")
+    i16 tAUDIOVOLUME;
+#pragma bss_seg(".bss$tMUSIC")
+    i16 tMUSIC;
+#pragma bss_seg(".bss$tON")
+    i16 tON;
+#pragma bss_seg(".bss$tOFF")
+    i16 tOFF;
+#pragma bss_seg(".bss$tACCEPT")
+    i16 tACCEPT;
+#pragma bss_seg(".bss$tBACK")
+    i16 tBACK;
+#pragma bss_seg()
+    OPTIONSSAVE *Game_OptionsSave;
 
     // STUBBED: PC callback bodies are not reconstructed; NULL slots keep them inactive.
     // IDs, remembered cursors, and prompt flags use the 23-record PC table.
     MENUFNINFO GameMenuInfo[23] = {
-        {0, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},  {1, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 0, 0},
-        {2, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},  {3, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {4, NULL, NULL, NULL, NULL, 0, 0, 0, 1, 1, 0},    {5, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0},
-        {6, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},  {7, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0},
-        {8, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},  {9, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {10, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {11, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {12, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {13, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {14, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {15, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {16, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {17, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {18, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {19, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {20, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {21, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {0, MenuEnterTitles, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {1, MenuEnterNewGame, NULL, NULL, NULL, -1, -1, 0, 1, 0, 0},
+        {2, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {3, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {4, MenuEnterOptions, MenuDrawOptions, NULL, MenuExitOptions, 0, 0, 0, 1, 1, 0},
+        {5, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0},
+        {6, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {7, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0},
+        {8, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {9, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {10, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {11, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {12, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {13, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {14, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {15, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {16, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {17, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {18, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {19, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {20, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {21, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {22, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0},
     };
 

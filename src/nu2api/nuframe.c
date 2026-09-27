@@ -12,21 +12,41 @@ void __cdecl NuFrameBegin(void) {
 }
 
 f32 __cdecl NuFrameEnd(void) {
+    NuTime now;
+    NuTime elapsed;
+    union {
+        f32 value;
+        u32 bits;
+    } forced_frame_time;
     i32 had_error = NuHasError();
-    STUBBED_NAMED("NuFrameEnd PC timing calls 0x004ffb20 and 0x004f3c30; NUAPI timestamp fields remain unresolved");
-    STUBBED_NAMED("NuFrameEnd PC direct calls 0x005d4290, 0x006de050, 0x004f3f50, 0x005f3950, 0x00601330");
-    STUBBED_NAMED("NuFrameEnd PC direct calls 0x005d34a0, 0x005ddc80, 0x005c6100, 0x005de1a0, 0x006df300");
-    STUBBED_NAMED("NuFrameEnd PC direct calls 0x006dd390, 0x00698fa0, 0x006d3420, 0x004ef790, 0x004f4c80");
-    STUBBED_NAMED("NuFrameEnd PC direct calls 0x005f3d60, 0x0060b5b0, 0x006df310, 0x006df270, 0x004ff0c0");
-    STUBBED_NAMED("NuFrameEnd PC direct calls 0x004fb130, 0x004f91f0, 0x004feb60; renderer, callbacks, pad and worker "
-                  "closure unresolved");
+    STUBBED_NAMED("NuFrameEnd: PC max-FPS gate, Sleep waits, and message-pump loop");
+    STUBBED_NAMED("NuFrameEnd: PC material/texture animation, wind, occlusion, and pad-record updates");
+    STUBBED_NAMED("NuFrameEnd: PC time-bar and pad rendering setup");
+
+    NuTimeGet(&nuapi.time);
+    STUBBED_NAMED("NuFrameEnd: PC NuRndrSwapScreen(-1); no callback call is visible in this body");
+    STUBBED_NAMED("NuFrameEnd: PC post-render pad update and critical-section handling");
+
+    NuTimeGet(&now);
+    NuTimeSub(&elapsed, &now, &nuapi.time);
+    nuapi.frame_time = NuTimeSeconds(&elapsed);
+
+    STUBBED_NAMED("NuFrameEnd: PC frame-time accumulator at 0x029803e0 and FPS counter loop");
+    STUBBED_NAMED("NuFrameEnd: PC FPS pacing Sleep loop and time-finalization helper");
+    NuTimeGet(&nuapi.time);
+    NuTimeGet(&nuapi.time2);
+
+    forced_frame_time.value = nuapi.forced_frame_time;
+    if ((forced_frame_time.bits & 0x7fffffffu) != 0) {
+        nuapi.frame_time = nuapi.forced_frame_time;
+    }
 
     ++nuapi.frame_count;
     --nuapi.frame_begin_count;
 
     if (ShowingError == 0 && had_error != 0) {
         ShowingError = 1;
-        STUBBED_NAMED("NuFrameEnd PC error dialog 0x004f91f0");
+        STUBBED_NAMED("NuFrameEnd: PC error-dialog functions at 0x004f91f0 and 0x004feb60");
         NuClearError();
         ShowingError = 0;
     }
@@ -35,11 +55,11 @@ f32 __cdecl NuFrameEnd(void) {
     return nuapi.frame_time;
 }
 
-i32 __cdecl NuHasError(void) {
+__declspec(noinline) i32 __cdecl NuHasError(void) {
     return bHaveErr;
 }
 
-void __cdecl NuClearError(void) {
+__declspec(noinline) void __cdecl NuClearError(void) {
     bHaveErr = 0;
 }
 

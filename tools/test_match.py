@@ -77,6 +77,31 @@ class ProgressTests(unittest.TestCase):
 
 
 class ObjdiffIntegrationTests(unittest.TestCase):
+    def test_instruction_gaps_render_on_either_side_without_game_files(self):
+        if not (match.ROOT / "build/tools/bin/objdiff-cli").is_file():
+            self.skipTest("Run make setup to include the objdiff integration check (required in CI)")
+        cli, _ = match.objdiff()
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            short, longer = root / "short.obj", root / "longer.obj"
+            write_function(short, "_synthetic", 0x401000, b"\xc3")
+            write_function(longer, "_synthetic", 0x401000, b"\x90\xc3")
+            for left, right, gap_side in ((short, longer, "left"), (longer, short, "right")):
+                with self.subTest(gap_side=gap_side):
+                    diff_path = root / "diff.json"
+                    match.run([cli, "diff", "-1", left, "-2", right,
+                               "_synthetic", "-o", diff_path])
+                    diff = json.loads(diff_path.read_text())
+                    lines = diff[gap_side]["symbols"][0]["instructions"]
+                    self.assertTrue(any(line.get("instruction") is None for line in lines))
+                    with redirect_stdout(io.StringIO()) as output:
+                        match.print_diff(diff, "_synthetic")
+                    rendered = output.getvalue()
+                    self.assertIn("RETAIL\n", rendered)
+                    self.assertIn("REBUILT\n", rendered)
+                    self.assertEqual(rendered.count("ret"), 2)
+                    self.assertEqual(rendered.count("nop"), 1)
+
     def test_pinned_cli_reads_named_objects_without_game_files(self):
         if not (match.ROOT / "build/tools/bin/objdiff-cli").is_file():
             self.skipTest("Run make setup to include the objdiff integration check (required in CI)")
