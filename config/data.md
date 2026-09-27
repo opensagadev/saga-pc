@@ -333,6 +333,15 @@ level-config keyword strings at `0x00761ca4`–`0x00762281` and the
 they are defined separately so the loader can bind their original references.
 The PC before-load and after-load generic keyword tables at `0x00803bb8`
 and `0x00803be0` span 40 and 424 bytes (five and 53 eight-byte entries).
-Their pointer entries anchor 47 separately mapped callbacks, with full
-function extents and PC field writes verified; the table initializers are not
-yet reconstructed as source data.
+Both source initializers match every byte and all 112 pointer relocations.
+Their entries anchor 54 PC callbacks. The 47 previously implemented callbacks
+and five additional scalar/ambient callbacks match complete code extents;
+the two music callbacks are still structural.
+All 56 generic level keyword strings and 29 area/remaining-level keyword
+strings are separately defined and their complete NUL-terminated initializers
+match the PC image. The PC area record is `0x9c` bytes with a 16-bit flags field
+at `+0x7a`; the cheat system uses an initialized pointer at `0x008032c4`
+to zero-filled state at `0x00950da4`. Only the first 12 bytes of that state
+have a reviewed layout, so its map extent remains blank. The two trial-time
+defaults expose 16-bit values 300 and 600; their full owner extents are also
+left blank.

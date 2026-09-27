@@ -1,520 +1,334 @@
 #include "saga.h"
 
-#include <string.h>
-
-extern i32 old_line_pos;
-
-void __cdecl NuFParGetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position) {
-    position->line_number = parser->line_number;
-    position->line_position = parser->line_position;
-    position->character_position = parser->character_position;
-    position->buffer_start = parser->buffer_start;
-    position->buffer_end = parser->buffer_end;
-}
-
-void __cdecl NuFParSetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position) {
-    parser->character_position = position->character_position;
-    parser->line_position = position->line_position;
-
-    if (parser->character_position < parser->buffer_start || parser->character_position > parser->buffer_end) {
-        parser->buffer_end = parser->character_position - 1;
-    }
-}
-
-static NUFPAR_PC *NuAllocFPar(void) {
-    i32 index;
-
-    if (NuFParRecordBase == NULL) {
-        NuFParRecordBase = NuFParRecords;
-        memset(NuFParRecordBase, 0, sizeof(NuFParRecords));
-        NuFParBufferBase = &NuFParBuffers[0][0];
-    }
-
-    for (index = 0; index < 4; index++) {
-        NUFPAR_PC *parser = &NuFParRecordBase[index];
-
-        if (parser->file_buffer == NULL) {
-            memset(parser, 0, sizeof(*parser));
-            parser->file_buffer = NuFParBufferBase + index * 0x1000;
-            memset(parser->file_buffer, 0, 0x1000);
-            return parser;
-        }
-    }
-
-    return NULL;
-}
-
-void __cdecl NuFreeFPar(NUFPAR_PC *parser) {
-    parser->file_buffer = NULL;
-}
-
-NUFPAR_PC *__cdecl NuFParOpen(NUFILE file_handle) {
-    NUFPAR_PC *parser = NuAllocFPar();
-    u16 first_word = 0;
-    u8 next_byte;
-
-    if (parser == NULL) {
-        return NULL;
-    }
-
-    parser->file_handle = file_handle;
-    parser->buffer_end = -1;
-    parser->line_number = -1;
-    parser->command_position = -1;
-    parser->separator_list = NULL;
-    parser->separator_tokens = NULL;
-    parser->line_buffer_ptr = parser->line_buffer;
-    parser->word_buffer_ptr = parser->word_buffer;
-    parser->line_buffer_size = 0x200;
-    parser->word_buffer_size = 0x200;
-
-    (void)NuFileRead(file_handle, &first_word, sizeof(first_word));
-    parser->is_utf16 = 0;
-    parser->is_utf8 = 0;
-
-    if (first_word == 0xfffe) {
-        parser->is_utf16 = 2;
-    } else if (first_word == 0xfeff) {
-        parser->is_utf16 = 1;
-    } else if (first_word == 0xbbef || first_word == 0xefbb) {
-        next_byte = 0;
-        (void)NuFileRead(file_handle, &next_byte, sizeof(next_byte));
-        if (next_byte == 0xbf) {
-            parser->is_utf8 = first_word == 0xbbef ? 1 : 2;
-        }
-    }
-
-    if (parser->is_utf16 == 0 && parser->is_utf8 == 0) {
-        (void)NuFileSeek(file_handle, 0, 0);
-    }
-
-    parser->file_size = (i32)NuFileOpenSize(file_handle);
-    return parser;
-}
-
-NUFPAR_PC *__cdecl NuFParCreateGivenFH(char *file_name, NUFILE file_handle) {
-    NUFPAR_PC *parser;
-
-    if (file_handle == 0) {
-        return NULL;
-    }
-
-    parser = NuFParOpen(file_handle);
-    if (parser == NULL) {
-        NuFileClose(file_handle);
-        return NULL;
-    }
-
-    NuStrCpy(parser->file_name, file_name);
-    return parser;
-}
-
-NUFPAR_PC *__cdecl NuFParCreate(char *file_name) {
-    NUFILE file_handle;
-    NUFPAR_PC *parser;
-
-    if (!NuFileExists(file_name)) {
-        return NULL;
-    }
-
-    file_handle = NuFileOpenDF(file_name, 0, curr_dat, 0);
-    if (file_handle == 0) {
-        return NULL;
-    }
-
-    parser = NuFParOpen(file_handle);
-    if (parser == NULL) {
-        NuFileClose(file_handle);
-        return NULL;
-    }
-
-    NuStrCpy(parser->file_name, file_name);
-    return parser;
-}
-
-void __cdecl NuFParSuspend(NUFPAR_PC *parser) {
-    NUFILE file_handle = parser->file_handle;
-
-    if (file_handle >= 0x400 && file_handle < 0x800) {
-        return;
-    }
-
-    if (parser->file_name[0] == '\0' || file_handle == 0) {
-        NuFileError();
-    }
-
-    NuFileClose(file_handle);
-    parser->file_handle = 0;
-}
-
-void __cdecl NuFParResume(NUFPAR_PC *parser) {
-    NUFILE file_handle;
-
-    if (parser->file_handle >= 0x400 && parser->file_handle < 0x800) {
-        return;
-    }
-
-    if (parser->file_name[0] == '\0') {
-        NuFileError();
-    }
-
-    file_handle = NuFileOpenDF(parser->file_name, 0, curr_dat, 0);
-    parser->file_handle = file_handle;
-    if (file_handle == 0) {
-        NuFileError();
-    }
-
-    (void)NuFileSeek(file_handle, parser->character_position, 0);
-    parser->buffer_end = parser->character_position - 1;
-}
-
-void __cdecl NuFParDestroy(NUFPAR_PC *parser) {
-    NUFILE file_handle = parser->file_handle;
-
-    NuFreeFPar(parser);
-    NuFileClose(file_handle);
-}
-
-char __cdecl NuGetChar(NUFPAR_PC *parser) {
-    i32 offset = parser->buffer_end < 0 ? 0 : parser->buffer_end;
-
-    if (parser->character_position > parser->buffer_end) {
-        i32 bytes_to_read;
-        i32 bytes_read;
-
-        if (parser->buffer_end + 1 > parser->file_size) {
-            return '\0';
-        }
-
-        bytes_to_read = parser->file_size - offset;
-        if (bytes_to_read > 0x1000) {
-            bytes_to_read = 0x1000;
-        }
-        bytes_read = NuFileRead(parser->file_handle, parser->file_buffer, bytes_to_read);
-        parser->buffer_start = parser->buffer_end + 1;
-        parser->buffer_end += bytes_read;
-        if (bytes_read == 0) {
-            return '\0';
-        }
-    }
-
-    {
-        char value = parser->file_buffer[parser->character_position - parser->buffer_start];
-        parser->character_position++;
-        return value;
-    }
-}
-
-u16 __cdecl NuGetWChar(NUFPAR_PC *parser) {
-    u16 low_byte = (u8)NuGetChar(parser);
-    u16 high_byte = (u8)NuGetChar(parser);
-
-    return (u16)(low_byte | (u16)(high_byte << 8));
-}
-
-i32 __cdecl NuFParGetWordW(NUFPAR_PC *parser) {
-    i32 length = 0;
-    i32 in_quoted_text = 0;
-    u16 *line = (u16 *)parser->line_buffer_ptr;
-    u16 *word = (u16 *)parser->word_buffer_ptr;
-
-    old_line_pos = parser->line_position;
-
-    while (line[parser->line_position & ((parser->line_buffer_size >> 1) - 1)] != 0) {
-        u16 character = line[parser->line_position];
-
-        if (parser->separator_tokens != NULL && !in_quoted_text &&
-            NuStrChr(parser->separator_tokens, (char)character) != NULL) {
-            if (length == 0) {
-                word[0] = character;
-                length++;
-                parser->line_position++;
-            }
-            word[length & ((parser->word_buffer_size >> 1) - 1)] = 0;
-            return length;
-        }
-
-        if (parser->separator_list != NULL && !in_quoted_text &&
-            NuStrChr(parser->separator_list, (char)character) != NULL) {
-            character = ' ';
-        }
-
-        switch (character & 0xff) {
-            case ' ':
-            case ',':
-            case '\t':
-                if (!in_quoted_text) {
-                    if (length != 0) {
-                        word[length & ((parser->word_buffer_size >> 1) - 1)] = 0;
-                        return length;
-                    }
-                    break;
-                }
-                /* fall through */
-            default:
-                if (character == '"') {
-                    if (in_quoted_text && line[parser->line_position + 1] == '"') {
-                        word[length & ((parser->word_buffer_size >> 1) - 1)] = character;
-                        length++;
-                        parser->line_position++;
-                    } else {
-                        in_quoted_text = 1 - in_quoted_text;
-                    }
-                } else {
-                    word[length & ((parser->word_buffer_size >> 1) - 1)] = character;
-                    length++;
-                }
-                break;
-        }
-
-        parser->line_position++;
-    }
-
-    word[length & ((parser->word_buffer_size >> 1) - 1)] = 0;
-    return length;
-}
-
-i32 __cdecl NuFParGetLineW(NUFPAR_PC *parser) {
-    u16 character;
-    i32 length = 0;
-    u16 *line = (u16 *)parser->line_buffer_ptr;
-    i32 at_end_of_line;
-    i32 is_done = 0;
-    i32 in_quoted_text = 0;
-
-    parser->line_position = 0;
-    parser->line_number++;
-
-    for (;;) {
-        character = NuGetWChar(parser);
-        switch (character) {
-            case '\r':
-                (void)NuGetWChar(parser);
-                /* fall through */
-            case '\n':
-                if (length == 0 || !is_done) {
-                    parser->line_number++;
-                    is_done = 0;
-                    break;
-                }
-                /* fall through */
-            case '\0':
-                line[length] = 0;
-                return length;
-            case '"':
-                in_quoted_text = 1 - in_quoted_text;
-                is_done = 1;
-                line[length & ((parser->word_buffer_size >> 1) - 1)] = character;
-                length++;
-                break;
-            case ';':
-                if (!in_quoted_text) {
-                    if (length == 0 || !is_done) {
-                        at_end_of_line = 0;
-                        do {
-                            character = NuGetWChar(parser);
-                            switch (character) {
-                                case '\r':
-                                    (void)NuGetWChar(parser);
-                                    /* fall through */
-                                case '\n':
-                                case '\0':
-                                    at_end_of_line = 1;
-                                    break;
-                                default:
-                                    break;
-                            }
-                        } while (!at_end_of_line);
-
-                        length = 0;
-                        parser->line_position = 0;
-                        parser->line_number++;
-                        is_done = 0;
-                    } else {
-                        for (;;) {
-                            character = NuGetWChar(parser);
-                            switch (character) {
-                                case '\r':
-                                    (void)NuGetWChar(parser);
-                                    /* fall through */
-                                case '\n':
-                                case '\0':
-                                    line[length] = 0;
-                                    return length;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                    break;
-                }
-                /* fall through */
-            default:
-                is_done = 1;
-                /* fall through */
-            case '\t':
-            case ' ':
-                line[length & ((parser->word_buffer_size >> 1) - 1)] = character;
-                length++;
-                break;
-        }
-    }
-}
-
-i32 __cdecl NuFParGetLine(NUFPAR_PC *parser) {
-    char character;
-    i32 length = 0;
-    char *line = parser->line_buffer_ptr;
-    i32 is_done = 0;
-    i32 in_quoted_text = 0;
-
-    if (parser->is_utf16 != 0) {
-        return NuFParGetLineW(parser);
-    }
-
-    parser->line_position = 0;
-    parser->line_number++;
-
-    for (;;) {
-        character = NuGetChar(parser);
-        switch (character) {
-            case '\r':
-                (void)NuGetChar(parser);
-                /* fall through */
-            case '\n':
-                if (length == 0 || !is_done) {
-                    parser->line_number++;
-                    is_done = 0;
-                    break;
-                }
-                /* fall through */
-            case '\0':
-                line[length] = '\0';
-                return length;
-            case '"':
-                in_quoted_text = 1 - in_quoted_text;
-                is_done = 1;
-                line[length & (parser->line_buffer_size - 1)] = character;
-                length++;
-                break;
-            case ';':
-                if (!in_quoted_text) {
-                    if (length == 0 || !is_done) {
-                        i32 at_end_of_line = 0;
-
-                        do {
-                            character = NuGetChar(parser);
-                            switch (character) {
-                                case '\r':
-                                    (void)NuGetChar(parser);
-                                    /* fall through */
-                                case '\n':
-                                case '\0':
-                                    at_end_of_line = 1;
-                                    break;
-                                default:
-                                    break;
-                            }
-                        } while (!at_end_of_line);
-
-                        length = 0;
-                        parser->line_position = 0;
-                        parser->line_number++;
-                        is_done = 0;
-                    } else {
-                        for (;;) {
-                            character = NuGetChar(parser);
-                            switch (character) {
-                                case '\r':
-                                    (void)NuGetChar(parser);
-                                    /* fall through */
-                                case '\n':
-                                case '\0':
-                                    line[length] = '\0';
-                                    return length;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                    break;
-                }
-                /* fall through */
-            default:
-                is_done = 1;
-                /* fall through */
-            case '\t':
-            case ' ':
-                line[length & (parser->line_buffer_size - 1)] = character;
-                length++;
-                break;
-        }
-    }
-}
-
-i32 __cdecl NuFParGetWord(NUFPAR_PC *parser) {
-    i32 length = 0;
-    i32 in_quoted_text = 0;
-    i32 found_quotes = 0;
-
-    if (parser->is_utf16 != 0) {
-        return NuFParGetWordW(parser);
-    }
-
-    old_line_pos = parser->line_position;
-
-    while (parser->line_buffer_ptr[parser->line_position] != '\0') {
-        char character = parser->line_buffer_ptr[parser->line_position];
-
-        if (parser->separator_tokens != NULL && !in_quoted_text &&
-            NuStrChr(parser->separator_tokens, character) != NULL) {
-            if (length == 0) {
-                parser->word_buffer_ptr[0] = character;
-                length++;
-                parser->line_position++;
-            }
-            parser->word_buffer_ptr[length & (parser->word_buffer_size - 1)] = '\0';
-            return length;
-        }
-
-        if (parser->separator_list != NULL && !in_quoted_text && NuStrChr(parser->separator_list, character) != NULL) {
-            character = ' ';
-        }
-
-        switch (character) {
-            case ' ':
-            case ',':
-            case '\t':
-                if (!in_quoted_text) {
-                    if (length != 0) {
-                        parser->word_buffer_ptr[length & (parser->word_buffer_size - 1)] = '\0';
-                        return length;
-                    }
-                    break;
-                }
-                /* fall through */
-            default:
-                if (character == '"') {
-                    in_quoted_text = 1 - in_quoted_text;
-                    found_quotes = 1;
-                } else {
-                    parser->word_buffer_ptr[length & (parser->word_buffer_size - 1)] = character;
-                    length++;
-                }
-                break;
-        }
-
-        parser->line_position++;
-        if (found_quotes && in_quoted_text == 0 && length == 0) {
-            break;
-        }
-    }
-
-    parser->word_buffer_ptr[length & (parser->word_buffer_size - 1)] = '\0';
-    return length;
-}
-
 typedef void(__cdecl *LEVELSETDEFAULTS_PC)(LEVELDATA_PC *level);
+
+void __cdecl LC_BL_mipmapmode(NUFPAR_PC *parser) {
+    levelconfig_ldata->mipmap_mode = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_BL_fix_strobing_anims(NUFPAR_PC *parser) {
+    (void)parser;
+    levelconfig_ldata->flags |= 0x100;
+}
+
+void __cdecl LC_BL_max_ter_groups(NUFPAR_PC *parser) {
+    levelconfig_ldata->max_ter_groups = (i16)NuFParGetInt(parser);
+}
+
+void __cdecl LC_BL_max_ter_platforms(NUFPAR_PC *parser) {
+    levelconfig_ldata->max_ter_platforms = (i16)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_backr(NUFPAR_PC *parser) {
+    levelconfig_ldata->display.bg_red_bottom = (u8)NuFParGetInt(parser);
+    levelconfig_ldata->display.bg_red_top = levelconfig_ldata->display.bg_red_bottom;
+}
+
+void __cdecl LC_AL_backg(NUFPAR_PC *parser) {
+    levelconfig_ldata->display.bg_green_bottom = (u8)NuFParGetInt(parser);
+    levelconfig_ldata->display.bg_green_top = levelconfig_ldata->display.bg_green_bottom;
+}
+
+void __cdecl LC_AL_backb(NUFPAR_PC *parser) {
+    levelconfig_ldata->display.bg_blue_bottom = (u8)NuFParGetInt(parser);
+    levelconfig_ldata->display.bg_blue_top = levelconfig_ldata->display.bg_blue_bottom;
+}
+
+void __cdecl LC_AL_backr_top(NUFPAR_PC *parser) {
+    levelconfig_ldata->display.bg_red_top = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_backg_top(NUFPAR_PC *parser) {
+    levelconfig_ldata->display.bg_green_top = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_backb_top(NUFPAR_PC *parser) {
+    levelconfig_ldata->display.bg_blue_top = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_backr_bottom(NUFPAR_PC *parser) {
+    levelconfig_ldata->display.bg_red_bottom = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_backg_bottom(NUFPAR_PC *parser) {
+    levelconfig_ldata->display.bg_green_bottom = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_backb_bottom(NUFPAR_PC *parser) {
+    levelconfig_ldata->display.bg_blue_bottom = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_farclip_hack(NUFPAR_PC *parser) {
+    f32 value = NuFParGetFloat(parser);
+
+    if (value < 0.1f) {
+        value = 0.1f;
+    } else if (value > 50.0) {
+        value = 50.0;
+    }
+    levelconfig_ldata->display.farclip_hack = value;
+}
+
+void __cdecl LC_AL_farclip(NUFPAR_PC *parser) {
+    i32 value = NuFParGetInt(parser);
+
+    if (value < 10) {
+        value = 10;
+    } else if (value > 20000) {
+        value = 20000;
+    }
+    levelconfig_ldata->display.far_clip = (i16)value;
+}
+
+void __cdecl LC_AL_nearclip(NUFPAR_PC *parser) {
+    f32 value = NuFParGetFloat(parser);
+
+    if (value < 0.001f) {
+        value = 0.001f;
+    } else if (value > 1.0f) {
+        value = 1.0f;
+    }
+    levelconfig_ldata->display.near_clip = value;
+}
+
+void __cdecl LC_AL_hover_height(NUFPAR_PC *parser) {
+    levelconfig_ldata->hover_height = NuFParGetFloat(parser);
+}
+
+void __cdecl LC_AL_blobshadow_alpha(NUFPAR_PC *parser) {
+    levelconfig_ldata->blob_shadow_alpha = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_blobshadow_fadenear(NUFPAR_PC *parser) {
+    levelconfig_ldata->blob_shadow_fade_near = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_blobshadow_fadefar(NUFPAR_PC *parser) {
+    levelconfig_ldata->blob_shadow_fade_far = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_reflect_range(NUFPAR_PC *parser) {
+    levelconfig_ldata->reflection_range = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_reflect_y(NUFPAR_PC *parser) {
+    levelconfig_ldata->reflection_y = NuFParGetFloat(parser);
+}
+
+void __cdecl LC_AL_metal(NUFPAR_PC *parser) {
+    levelconfig_ldata->flags |= 0x1000;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
+        levelconfig_ldata->flags &= ~0x1000u;
+    }
+}
+
+void __cdecl LC_AL_in_space(NUFPAR_PC *parser) {
+    levelconfig_ldata->flags |= 0x40000;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
+        levelconfig_ldata->flags &= ~0x40000u;
+    }
+}
+
+void __cdecl LC_AL_override_nopickupgravity(NUFPAR_PC *parser) {
+    levelconfig_ldata->flags |= 0x400000;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
+        levelconfig_ldata->flags &= ~0x400000u;
+    }
+}
+
+void __cdecl LC_AL_hidden_icons(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        if (NuStrICmp(parser->word_buffer_ptr, LevelConfigOn) == 0) {
+            levelconfig_ldata->flags &= ~0x800000u;
+            return;
+        }
+        if (NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
+            levelconfig_ldata->flags |= 0x800000;
+        }
+    }
+}
+
+void __cdecl LC_AL_pickups_to_panel(NUFPAR_PC *parser) {
+    levelconfig_ldata->flags |= 0x80000;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
+        levelconfig_ldata->flags &= ~0x80000u;
+    }
+}
+
+void __cdecl LC_AL_forget_takeovers(NUFPAR_PC *parser) {
+    levelconfig_ldata->flags |= 0x100000;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
+        levelconfig_ldata->flags &= ~0x100000u;
+    }
+}
+
+void __cdecl LC_AL_narrow_socks(NUFPAR_PC *parser) {
+    levelconfig_ldata->flags |= 0x200000;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
+        levelconfig_ldata->flags &= ~0x200000u;
+    }
+}
+
+void __cdecl LC_AL_camera_rain(NUFPAR_PC *parser) {
+    levelconfig_ldata->flags |= 0x4000;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
+        levelconfig_ldata->flags &= ~0x4000u;
+    }
+}
+
+void __cdecl LC_AL_terrain_rain(NUFPAR_PC *parser) {
+    levelconfig_ldata->flags |= 0x8000;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
+        levelconfig_ldata->flags &= ~0x8000u;
+    }
+}
+
+void __cdecl LC_AL_double_score(NUFPAR_PC *parser) {
+    levelconfig_ldata->flags |= 0x800;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
+        levelconfig_ldata->flags &= ~0x800u;
+    }
+}
+
+void __cdecl LC_AL_flat_terrain(NUFPAR_PC *parser) {
+    levelconfig_ldata->flags |= 0x10;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
+        levelconfig_ldata->flags &= ~0x10u;
+    }
+}
+
+void __cdecl LC_AL_cam_tilt(NUFPAR_PC *parser) {
+    levelconfig_ldata->cam_tilt = NuFParGetFloat(parser);
+}
+
+void __cdecl LC_AL_raycaststep(NUFPAR_PC *parser) {
+    levelconfig_ldata->raycast_step = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_plat_scan_dist(NUFPAR_PC *parser) {
+    levelconfig_ldata->platform_scan_distance = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_waterripple_startcol_r(NUFPAR_PC *parser) {
+    levelconfig_ldata->water_ripple_start_rgba[0] = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_waterripple_startcol_g(NUFPAR_PC *parser) {
+    levelconfig_ldata->water_ripple_start_rgba[1] = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_waterripple_startcol_b(NUFPAR_PC *parser) {
+    levelconfig_ldata->water_ripple_start_rgba[2] = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_waterripple_startcol_a(NUFPAR_PC *parser) {
+    levelconfig_ldata->water_ripple_start_rgba[3] = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_waterripple_endcol_r(NUFPAR_PC *parser) {
+    levelconfig_ldata->water_ripple_end_rgba[0] = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_waterripple_endcol_g(NUFPAR_PC *parser) {
+    levelconfig_ldata->water_ripple_end_rgba[1] = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_waterripple_endcol_b(NUFPAR_PC *parser) {
+    levelconfig_ldata->water_ripple_end_rgba[2] = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_waterripple_endcol_a(NUFPAR_PC *parser) {
+    levelconfig_ldata->water_ripple_end_rgba[3] = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_waterripple_life(NUFPAR_PC *parser) {
+    levelconfig_ldata->water_ripple_life = NuFParGetFloat(parser);
+}
+
+void __cdecl LC_AL_cam_pullback_dist(NUFPAR_PC *parser) {
+    f32 value = NuFParGetFloat(parser);
+
+    if (value < 0.0f) {
+        value = 0.0f;
+    }
+    levelconfig_ldata->cam_pullback_dist = value;
+}
+
+void __cdecl LC_AL_cam_lateral_dist(NUFPAR_PC *parser) {
+    f32 value = NuFParGetFloat(parser);
+
+    if (value < 0.0f) {
+        value = 0.0f;
+    }
+    levelconfig_ldata->cam_lateral_dist = value;
+}
+
+void __cdecl LC_AL_campos_seek(NUFPAR_PC *parser) {
+    levelconfig_ldata->cam_pos_seek = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_camang_seek(NUFPAR_PC *parser) {
+    levelconfig_ldata->cam_angle_seek = (u8)NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_shadowtype(NUFPAR_PC *parser) {
+    levelconfig_ldata->shadow_type = NuFParGetInt(parser);
+}
+
+void __cdecl LC_AL_sfx_ambient(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        levelconfig_ldata->sfx_ambient = (i16)GetSfxId(parser->word_buffer_ptr);
+    }
+}
+
+void __cdecl LC_AL_conveyor(NUFPAR_PC *parser) {
+    while (NuFParGetWord(parser) != 0) {
+        if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeyword_xspeed) == 0) {
+            levelconfig_ldata->conveyor_x_speed = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeyword_zspeed) == 0) {
+            levelconfig_ldata->conveyor_z_speed = NuFParGetFloat(parser);
+        }
+    }
+}
+
+void __cdecl LevelConfig_BeforeLoad(LEVELDATA_PC *level, char *buffer, NUFPCOMJMP *keywords) {
+    NUFPAR_PC *parser = NuFParCreateMem((char *)LevelBeforeLoadName, buffer, 0xffff);
+
+    if (parser == NULL) {
+        return;
+    }
+
+    levelconfig_ldata = level;
+    NuFParPushCom2(parser, LevelConfig_BeforeLoad_GenericKeywords, keywords);
+    while (NuFParGetLine(parser) != 0) {
+        if (NuFParGetWord(parser) != 0) {
+            NuFParInterpretWord(parser);
+        }
+    }
+    NuFParDestroy(parser);
+}
+
+void __cdecl LevelConfig_AfterLoad(LEVELDATA_PC *level, char *buffer, NUFPCOMJMP *keywords) {
+    NUFPAR_PC *parser = NuFParCreateMem((char *)LevelAfterLoadName, buffer, 0xffff);
+
+    if (parser == NULL) {
+        return;
+    }
+
+    levelconfig_ldata = level;
+    NuFParPushCom2(parser, LevelConfig_AfterLoad_GenericKeywords, keywords);
+    while (NuFParGetLine(parser) != 0) {
+        if (NuFParGetWord(parser) != 0) {
+            NuFParInterpretWord(parser);
+        }
+    }
+    NuFParDestroy(parser);
+
+    if (level->blob_shadow_fade_near > level->blob_shadow_fade_far) {
+        level->blob_shadow_fade_near = level->blob_shadow_fade_far;
+    }
+    level->flags |= 1;
+}
 
 LEVELDATA_PC *__cdecl Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
                                            i32 *count_out, void *set_defaults_fn) {
@@ -612,52 +426,52 @@ LEVELDATA_PC *__cdecl Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR 
             current_level->callbacks[5] = NULL;
             current_level->callbacks[6] = NULL;
 
-            current_level->display.value_00 = PCKeyboardDefaultValue_candidate;
-            current_level->display.value_04 = 0.15f;
-            current_level->display.value_08 = 20000;
-            current_level->display.colors[0] = 0;
-            current_level->display.colors[1] = 0;
-            current_level->display.colors[2] = 0;
-            current_level->display.colors[3] = 0;
-            current_level->display.colors[4] = 0;
-            current_level->display.colors[5] = 0;
+            current_level->display.farclip_hack = PCKeyboardDefaultValue_candidate;
+            current_level->display.near_clip = 0.15f;
+            current_level->display.far_clip = 20000;
+            current_level->display.bg_red_top = 0;
+            current_level->display.bg_red_bottom = 0;
+            current_level->display.bg_green_top = 0;
+            current_level->display.bg_green_bottom = 0;
+            current_level->display.bg_blue_top = 0;
+            current_level->display.bg_blue_bottom = 0;
 
             current_level->music_index = -1;
-            current_level->unknown_0096 = -1;
+            current_level->sfx_ambient = -1;
             current_level->max_ter_platforms = 0x80;
             current_level->max_ter_groups = 0x100;
-            current_level->unknown_009c = -1;
+            current_level->music_other_index = -1;
             current_level->unknown_009e = -1;
-            current_level->mode = 3;
-            current_level->alpha = 0x7f;
+            current_level->mipmap_mode = 3;
+            current_level->blob_shadow_alpha = 0x7f;
             current_level->unknown_00a2 = 0xff;
             current_level->area_index = -1;
-            current_level->camera_distance = 0.0f;
-            current_level->hover_distance = 0.0f;
+            current_level->cam_tilt = 0.0f;
+            current_level->hover_height = 0.0f;
 
-            current_level->unknown_00ac[0] = 0x50;
-            current_level->unknown_00ac[1] = 0x50;
-            current_level->unknown_00ac[2] = 0x50;
-            current_level->unknown_00ac[3] = 0x32;
-            current_level->unknown_00ac[4] = 0;
-            current_level->unknown_00ac[5] = 0;
-            current_level->unknown_00ac[6] = 0;
-            current_level->unknown_00ac[7] = 0;
+            current_level->water_ripple_start_rgba[0] = 0x50;
+            current_level->water_ripple_start_rgba[1] = 0x50;
+            current_level->water_ripple_start_rgba[2] = 0x50;
+            current_level->water_ripple_start_rgba[3] = 0x32;
+            current_level->water_ripple_end_rgba[0] = 0;
+            current_level->water_ripple_end_rgba[1] = 0;
+            current_level->water_ripple_end_rgba[2] = 0;
+            current_level->water_ripple_end_rgba[3] = 0;
 
-            current_level->unknown_00b4[0] = 0.5f;
-            current_level->unknown_00b4[1] = 0.5f;
-            current_level->unknown_00b4[2] = 0.5f;
-            current_level->unknown_00b4[3] = LevelConfigFarDistance;
+            current_level->water_ripple_life = 0.5f;
+            current_level->cam_pullback_dist = 0.5f;
+            current_level->cam_lateral_dist = 0.5f;
+            current_level->reflection_y = LevelConfigFarDistance;
             current_level->area_level_index = -1;
-            current_level->unknown_00c9[0] = 5;
-            current_level->unknown_00c9[1] = 10;
-            current_level->unknown_00c9[2] = 5;
-            current_level->unknown_00c9[3] = 5;
-            current_level->unknown_00c9[4] = 10;
-            current_level->unknown_00c9[5] = 5;
-            current_level->unknown_00c9[6] = 5;
-            current_level->conveyor_speed = LevelConfigFarDistance;
-            current_level->conveyor_width = LevelConfigFarDistance;
+            current_level->blob_shadow_fade_near = 5;
+            current_level->blob_shadow_fade_far = 10;
+            current_level->cam_pos_seek = 5;
+            current_level->cam_angle_seek = 5;
+            current_level->reflection_range = 10;
+            current_level->raycast_step = 5;
+            current_level->platform_scan_distance = 5;
+            current_level->conveyor_x_speed = LevelConfigFarDistance;
+            current_level->conveyor_z_speed = LevelConfigFarDistance;
 
             for (music_index = 0; music_index < 6; music_index++) {
                 current_level->music_tracks[music_index] = -1;
@@ -680,19 +494,4 @@ LEVELDATA_PC *__cdecl Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR 
         *count_out = level_count;
     }
     return level_data;
-}
-
-AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
-                                          i32 *count_out) {
-    (void)path;
-    (void)buffer;
-    (void)buffer_end;
-    (void)max_count;
-
-    /* PC parsing also needs NuFPar plus name resolution and the full area record mapping. */
-    STUBBED_NAMED("Areas_ConfigureList: NuFPar parser, level lookup and full PC area record mapping");
-    if (count_out != NULL) {
-        *count_out = 0;
-    }
-    return NULL;
 }

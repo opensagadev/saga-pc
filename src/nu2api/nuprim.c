@@ -47,10 +47,87 @@ typedef struct nuprim_command_pc_s {
 STATIC_ASSERT(sizeof(NUPRIM_COMMAND_PC) == 0x10);
 STATIC_ASSERT(offsetof(NUPRIM_COMMAND_PC, target) == 4);
 
+typedef struct nuprim_material_state_pc_s {
+    u32 unknown_0000[2];
+    NUMTL *material;
+    u32 unknown_000c;
+    u32 unknown_0010;
+    i32 texture_id;
+} NUPRIM_MATERIAL_STATE_PC;
+STATIC_ASSERT(offsetof(NUPRIM_MATERIAL_STATE_PC, material) == 0x08);
+STATIC_ASSERT(offsetof(NUPRIM_MATERIAL_STATE_PC, texture_id) == 0x14);
+
 typedef struct nuprim_transform_packet_pc_s {
     u8 unknown_0000[0x40];
 } NUPRIM_TRANSFORM_PACKET_PC;
 STATIC_ASSERT(sizeof(NUPRIM_TRANSFORM_PACKET_PC) == 0x40);
+
+void __cdecl NuDisplayListLinkMtl(NUDISPLAYLIST_PC *list, NUMTL *material) {
+    NUPRIM_MATERIAL_STATE_PC *state = (NUPRIM_MATERIAL_STATE_PC *)list->render_state;
+    NUPRIM_COMMAND_PC *commands;
+    i32 texture_id = material->texture_id;
+
+    if (state->material == material) {
+        return;
+    }
+
+    NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
+    ((NUPRIM_COMMAND_PC *)list->material_last)->target = NuDisplayListStreamCursor->void_ptr;
+
+    if (texture_id > 0 && state->texture_id != texture_id) {
+        commands = (NUPRIM_COMMAND_PC *)NuDisplayListStreamCursor->void_ptr;
+        NuDisplayListStreamCursor->addr += 0x60;
+
+        commands[0].type = 0x87;
+        commands[0].id = 0;
+        commands[0].target = NULL;
+        commands[1].type = 0x87;
+        commands[1].id = 0;
+        commands[1].target = NULL;
+
+        state->texture_id = texture_id;
+        commands += 2;
+    } else {
+        NuDisplayListStreamCursor->addr += 0x40;
+        commands = (NUPRIM_COMMAND_PC *)NuDisplayListStreamCursor->void_ptr;
+    }
+
+    commands[0].type = 0x80;
+    commands[0].id = 3;
+    commands[0].target = material;
+    commands[1].type = 0x87;
+    commands[1].id = 0;
+    commands[1].target = NULL;
+    commands[2].type = 0x87;
+    commands[2].id = 0;
+    commands[2].target = NULL;
+    commands[3].type = 0x8d;
+    commands[3].id = 1;
+    commands[3].target = NULL;
+
+    list->material_last = &commands[3];
+    state->material = material;
+}
+
+void __cdecl NuDisplayListLinkItem(NUDISPLAYLIST_PC *list, u8 type, void *target) {
+    NUPRIM_COMMAND_PC *item;
+    NUPRIM_COMMAND_PC *geometry_command;
+
+    NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
+    item = (NUPRIM_COMMAND_PC *)NuDisplayListStreamCursor->void_ptr;
+    ((NUPRIM_COMMAND_PC *)list->material_last)->target = item;
+
+    item->type = type;
+    item->id = 3;
+    item->target = target != NULL ? target : item + 2;
+
+    geometry_command = item + 1;
+    geometry_command->type = 0x8d;
+    geometry_command->id = 1;
+    geometry_command->target = (NUPRIM_COMMAND_PC *)list->dynamic_geometry + 1;
+    list->material_last = geometry_command;
+    NuDisplayListStreamCursor->addr += 2 * sizeof(NUPRIM_COMMAND_PC);
+}
 
 void __cdecl NuPrim2DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material) {
     NUDISPLAYLIST_PC *list;
@@ -70,8 +147,7 @@ void __cdecl NuPrim2DBegin(u32 primitive_type, u32 vertex_format, NUMTL *materia
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
     list = material->display_list;
     if (list == NULL) {
-        STUBBED_NAMED(0x005fc8c0); /* The fallback list object has no established extent. */
-        STUBBED_NAMED(0x005de2d0); /* NuDisplayListLinkMtl(list, material). */
+        STUBBED_NAMED(0x00973e90); /* Need the fallback list object before linking its material. */
         return;
     }
 
@@ -97,7 +173,7 @@ void __cdecl NuPrim2DBegin(u32 primitive_type, u32 vertex_format, NUMTL *materia
     geometry_command = (NUPRIM_COMMAND_PC *)NuDisplayListStreamCursor->void_ptr;
     geometry_command->type = 0x8d;
     geometry_command->id = 1;
-    geometry_command->target = (u8 *)list->dynamic_geometry + sizeof(NUPRIM_COMMAND_PC);
+    geometry_command->target = (NUPRIM_COMMAND_PC *)list->dynamic_geometry + 1;
     list->material_last = geometry_command;
 
     NuDisplayListStreamCursor->addr += sizeof(NUPRIM_COMMAND_PC);
@@ -160,12 +236,12 @@ void __cdecl NuPrim3DBegin(u32 primitive_type, u32 vertex_format, NUMTL *materia
     command->type = 0x8c;
     command->id = 3;
     command->target = transform;
-    list->items = (NUPRIM_COMMAND_PC *)((u8 *)command + sizeof(NUPRIM_COMMAND_PC));
+    list->items = command + 1;
     command = (NUPRIM_COMMAND_PC *)list->items;
     command->type = 0x82;
     command->id = 3;
     command->target = geometry;
-    list->items = (NUPRIM_COMMAND_PC *)((u8 *)command + sizeof(NUPRIM_COMMAND_PC));
+    list->items = command + 1;
 }
 
 void __cdecl NuPrimSetCoordinateSystem(i32 scale_mode) {

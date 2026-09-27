@@ -45,3 +45,31 @@ f32 GetAudioFadeLevel(void) {
 void SfxCheckMusicOnOff(OPTIONSSAVE *options) {
     (void)options;
 }
+
+extern "C" void __cdecl LC_AL_music(NUFPAR_PC *parser) {
+    char *name;
+
+    if (NuFParGetWord(parser) == 0) {
+        return;
+    }
+
+    name = parser->word_buffer_ptr;
+    levelconfig_ldata->music_index = GetMusicIndex(name, MusicInfo, -1);
+    levelconfig_ldata->music_tracks[0] = music_man.GetTrackHandle(1, name);
+    levelconfig_ldata->music_tracks[2] = music_man.GetTrackHandle(2, name);
+    levelconfig_ldata->music_tracks[4] = music_man.GetTrackHandle(0x20, name);
+}
+
+extern "C" void __cdecl LC_AL_music_other(NUFPAR_PC *parser) {
+    char *name;
+
+    if (NuFParGetWord(parser) == 0) {
+        return;
+    }
+
+    name = parser->word_buffer_ptr;
+    levelconfig_ldata->music_other_index = GetMusicIndex(name, MusicInfo, -1);
+    levelconfig_ldata->music_tracks[1] = music_man.GetTrackHandle(1, name);
+    levelconfig_ldata->music_tracks[3] = music_man.GetTrackHandle(2, name);
+    levelconfig_ldata->music_tracks[5] = music_man.GetTrackHandle(0x20, name);
+}

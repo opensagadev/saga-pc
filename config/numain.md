@@ -27,8 +27,13 @@ hardware dispatcher and the `LoadPermData` parser path remain incomplete.
 tables. DAT member dispatch now opens, reads, seeks and closes stored archive
 members through PC-style handles. The four-record `NuFParOpen` allocator and BOM
 setup, `NuFParCreate`, parser position save/restore, and the PC
-`Levels_ConfigureList` record parser are implemented structurally. The area
-record loader and remaining level/config callback closure are still open. Its startup includes a temporary guard before `NuFrameBegin`
+`Levels_ConfigureList` record parser are implemented structurally. The PC
+`Areas_ConfigureList` parser now has typed area and cheat records, including its
+level, character, and cheat lookup dependencies. Both generic level keyword
+tables and their parser wrappers match, along with 52 of the 54 callbacks.
+The two music callbacks and both full record loaders remain structural, so
+level/area loading is not yet ready to run through `NuMain`. Its startup
+includes a temporary guard before `NuFrameBegin`
 because the PC keyboard input owner is not yet initialized by our partial
 `InitOnce`. Its later restart and frame-loop phases contain explicit
 `STUBBED_NAMED` markers, so this is a runnable scaffold, not a complete or
@@ -40,12 +45,12 @@ model-list routine, AI message pool, font state leaves, file-position
 dispatch, DAT-member open helpers, animation progress family and music methods are
 also reconstructed, though some adjacent
 functions remain structural. `Levels_ConfigureList` parses PC level records
-with typed fields and verified defaults, but is not a full-byte match;
-`Areas_ConfigureList` remains an explicit NULL-return scaffold. The source EXE
-does not pretend to load tables it has not built.
-The PC before/after level keyword dispatch tables and 47 callbacks are mapped;
-implementing those callbacks and the area parser is the next coherent path
-toward lifting the level/area guard.
+with typed fields and verified defaults, but is not a full-byte match.
+`Areas_ConfigureList` now parses PC area records and is also nonmatching. The
+source EXE does not load these tables through startup before the remaining
+parser and allocation paths are verified. The next coherent target is the PC
+game-specific level/area keyword dispatch closure and the guarded startup
+handoff to the populated tables.
 
 The frame chain now includes `NuFrameBegin`, its portal, water-reset, mouse and
 occlusion callees, and a structural `NuFrameEnd` implementation with explicit

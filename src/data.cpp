@@ -368,6 +368,29 @@ extern "C" {
 #pragma bss_seg(".bss$ADataList")
     AREA_DATA_PC *ADataList;
 #pragma bss_seg()
+#pragma bss_seg(".bss$AREACOUNT")
+    i32 AREACOUNT;
+#pragma bss_seg()
+#pragma bss_seg(".bss$LEVELCOUNT")
+    i32 LEVELCOUNT;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CDataList")
+    CHARACTERDATA_PC *CDataList;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CHARCOUNT")
+    i32 CHARCOUNT;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CheatSystem")
+    CHEATSYSTEM_PC CheatSystem;
+#pragma bss_seg()
+#pragma data_seg(".data$CheatSystemPtr")
+    CHEATSYSTEM_PC *CheatSystemPtr = &CheatSystem;
+#pragma data_seg()
+#pragma data_seg(".data$AREA_DEFAULTBONUSTIMETRIALTIME")
+    u16 AREA_DEFAULTBONUSTIMETRIALTIME = 300;
+#pragma data_seg(".data$AREA_DEFAULTCHALLENGETIME")
+    u16 AREA_DEFAULTCHALLENGETIME = 600;
+#pragma data_seg()
     AREA_DATA_PC *LastAData;
     AREA_DATA_PC *HUB_ADATA;
     i32 PlayerID[2] = {-1, -1};
@@ -561,8 +584,26 @@ extern "C" {
 #pragma bss_seg(".bss$NuSound3Initialized")
     i32 NuSound3Initialized;
 #pragma bss_seg()
+#pragma bss_seg(".bss$MusicInfo")
+    struct nusound_filename_info_s *MusicInfo;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SfxHashHeads")
+    i16 *SfxHashHeads;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SfxInfo")
+    SFX_RECORD_PC *SfxInfo;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SfxCRCTable")
+    u32 *SfxCRCTable;
+#pragma bss_seg()
 #pragma bss_seg(".bss$NuPrimNeedsOverbrightening")
     u8 NuPrimNeedsOverbrightening;
+#pragma bss_seg()
+#pragma bss_seg(".bss$levelconfig_ldata")
+    LEVELDATA_PC *levelconfig_ldata;
+#pragma bss_seg()
+#pragma bss_seg(".bss$fnInterpreterError")
+    void(__cdecl *fnInterpreterError)(NUFPAR_PC *parser);
 #pragma bss_seg()
     TERRAIN_SURFACE_PC TerSurface[32] = {
         {1.0f, 0, 0xffff},     {1.0f, 65, 0xffff},   {1.0f, 2, 0xffff},      {1.0f, 8, 0xffff},   {1.0f, 65536, 0xffff},
@@ -581,6 +622,10 @@ extern "C" {
     extern const char LevelConfigKeywordStart[12] = "level_start";
 #pragma const_seg(".rdata$LevelConfigKeywordEnd")
     extern const char LevelConfigKeywordEnd[10] = "level_end";
+#pragma const_seg(".rdata$LevelBeforeLoadName")
+    extern const char LevelBeforeLoadName[16] = "levelbeforeload";
+#pragma const_seg(".rdata$LevelAfterLoadName")
+    extern const char LevelAfterLoadName[15] = "levelafterload";
 #pragma const_seg(".rdata$LevelConfigKeywordTest")
     extern const char LevelConfigKeywordTest[11] = "test_level";
 #pragma const_seg(".rdata$LevelConfigKeywordIntro")
@@ -597,8 +642,252 @@ extern "C" {
     extern const char LevelConfigKeywordNewGame[14] = "newgame_level";
 #pragma const_seg(".rdata$LevelConfigKeywordLoadGame")
     extern const char LevelConfigKeywordLoadGame[15] = "loadgame_level";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_mipmapmode")
+    extern const char LevelConfigGenericKeyword_mipmapmode[11] = "mipmapmode";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_fix_strobing_anims")
+    extern const char LevelConfigGenericKeyword_fix_strobing_anims[19] = "fix_strobing_anims";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_max_ter_groups")
+    extern const char LevelConfigGenericKeyword_max_ter_groups[15] = "max_ter_groups";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_max_ter_platforms")
+    extern const char LevelConfigGenericKeyword_max_ter_platforms[18] = "max_ter_platforms";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_backr")
+    extern const char LevelConfigGenericKeyword_backr[6] = "backr";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_backg")
+    extern const char LevelConfigGenericKeyword_backg[6] = "backg";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_backb")
+    extern const char LevelConfigGenericKeyword_backb[6] = "backb";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_backr_top")
+    extern const char LevelConfigGenericKeyword_backr_top[10] = "backr_top";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_backg_top")
+    extern const char LevelConfigGenericKeyword_backg_top[10] = "backg_top";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_backb_top")
+    extern const char LevelConfigGenericKeyword_backb_top[10] = "backb_top";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_backr_bottom")
+    extern const char LevelConfigGenericKeyword_backr_bottom[13] = "backr_bottom";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_backg_bottom")
+    extern const char LevelConfigGenericKeyword_backg_bottom[13] = "backg_bottom";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_backb_bottom")
+    extern const char LevelConfigGenericKeyword_backb_bottom[13] = "backb_bottom";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_farclip_hack")
+    extern const char LevelConfigGenericKeyword_farclip_hack[13] = "farclip_hack";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_farclip")
+    extern const char LevelConfigGenericKeyword_farclip[8] = "farclip";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_nearclip")
+    extern const char LevelConfigGenericKeyword_nearclip[9] = "nearclip";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_farclip_pc")
+    extern const char LevelConfigGenericKeyword_farclip_pc[11] = "farclip_pc";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_nearclip_pc")
+    extern const char LevelConfigGenericKeyword_nearclip_pc[12] = "nearclip_pc";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_hover_height")
+    extern const char LevelConfigGenericKeyword_hover_height[13] = "hover_height";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_blobshadow_alpha")
+    extern const char LevelConfigGenericKeyword_blobshadow_alpha[17] = "blobshadow_alpha";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_blobshadow_fadenear")
+    extern const char LevelConfigGenericKeyword_blobshadow_fadenear[20] = "blobshadow_fadenear";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_blobshadow_fadefar")
+    extern const char LevelConfigGenericKeyword_blobshadow_fadefar[19] = "blobshadow_fadefar";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_reflect_range")
+    extern const char LevelConfigGenericKeyword_reflect_range[14] = "reflect_range";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_reflect_y")
+    extern const char LevelConfigGenericKeyword_reflect_y[10] = "reflect_y";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_metal")
+    extern const char LevelConfigGenericKeyword_metal[6] = "metal";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_in_space")
+    extern const char LevelConfigGenericKeyword_in_space[9] = "in_space";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_override_nopickupgravity")
+    extern const char LevelConfigGenericKeyword_override_nopickupgravity[25] = "override_nopickupgravity";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_hidden_icons")
+    extern const char LevelConfigGenericKeyword_hidden_icons[13] = "hidden_icons";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_pickups_to_panel")
+    extern const char LevelConfigGenericKeyword_pickups_to_panel[17] = "pickups_to_panel";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_forget_takeovers")
+    extern const char LevelConfigGenericKeyword_forget_takeovers[17] = "forget_takeovers";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_narrow_socks")
+    extern const char LevelConfigGenericKeyword_narrow_socks[13] = "narrow_socks";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_camera_rain")
+    extern const char LevelConfigGenericKeyword_camera_rain[12] = "camera_rain";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_terrain_rain")
+    extern const char LevelConfigGenericKeyword_terrain_rain[13] = "terrain_rain";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_double_score")
+    extern const char LevelConfigGenericKeyword_double_score[13] = "double_score";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_flat_terrain")
+    extern const char LevelConfigGenericKeyword_flat_terrain[13] = "flat_terrain";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_cam_tilt")
+    extern const char LevelConfigGenericKeyword_cam_tilt[9] = "cam_tilt";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_raycaststep")
+    extern const char LevelConfigGenericKeyword_raycaststep[12] = "raycaststep";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_plat_scan_dist")
+    extern const char LevelConfigGenericKeyword_plat_scan_dist[15] = "plat_scan_dist";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_startcol_r")
+    extern const char LevelConfigGenericKeyword_waterripple_startcol_r[23] = "waterripple_startcol_r";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_startcol_g")
+    extern const char LevelConfigGenericKeyword_waterripple_startcol_g[23] = "waterripple_startcol_g";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_startcol_b")
+    extern const char LevelConfigGenericKeyword_waterripple_startcol_b[23] = "waterripple_startcol_b";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_startcol_a")
+    extern const char LevelConfigGenericKeyword_waterripple_startcol_a[23] = "waterripple_startcol_a";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_endcol_r")
+    extern const char LevelConfigGenericKeyword_waterripple_endcol_r[21] = "waterripple_endcol_r";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_endcol_g")
+    extern const char LevelConfigGenericKeyword_waterripple_endcol_g[21] = "waterripple_endcol_g";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_endcol_b")
+    extern const char LevelConfigGenericKeyword_waterripple_endcol_b[21] = "waterripple_endcol_b";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_endcol_a")
+    extern const char LevelConfigGenericKeyword_waterripple_endcol_a[21] = "waterripple_endcol_a";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_life")
+    extern const char LevelConfigGenericKeyword_waterripple_life[17] = "waterripple_life";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_cam_pullback_dist")
+    extern const char LevelConfigGenericKeyword_cam_pullback_dist[18] = "cam_pullback_dist";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_cam_lateral_dist")
+    extern const char LevelConfigGenericKeyword_cam_lateral_dist[17] = "cam_lateral_dist";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_campos_seek")
+    extern const char LevelConfigGenericKeyword_campos_seek[12] = "campos_seek";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_camang_seek")
+    extern const char LevelConfigGenericKeyword_camang_seek[12] = "camang_seek";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_shadowtype")
+    extern const char LevelConfigGenericKeyword_shadowtype[11] = "shadowtype";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_music")
+    extern const char LevelConfigGenericKeyword_music[6] = "music";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_music_other")
+    extern const char LevelConfigGenericKeyword_music_other[12] = "music_other";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_sfx_ambient")
+    extern const char LevelConfigGenericKeyword_sfx_ambient[12] = "sfx_ambient";
+#pragma const_seg(".rdata$LevelConfigGenericKeyword_conveyor")
+    extern const char LevelConfigGenericKeyword_conveyor[9] = "conveyor";
 #pragma const_seg()
     extern const f32 LevelConfigFarDistance = 2000000.0f;
+#pragma const_seg(".rdata$LevelConfigOff")
+    extern const char LevelConfigOff[4] = "off";
+#pragma const_seg(".rdata$LevelConfigOn")
+    extern const char LevelConfigOn[3] = "on";
+#pragma const_seg()
+#pragma data_seg(".data$LevelConfig_BeforeLoad_GenericKeywords")
+    NUFPCOMJMP LevelConfig_BeforeLoad_GenericKeywords[5] = {
+        {const_cast<char *>(LevelConfigGenericKeyword_mipmapmode), LC_BL_mipmapmode},
+        {const_cast<char *>(LevelConfigGenericKeyword_fix_strobing_anims), LC_BL_fix_strobing_anims},
+        {const_cast<char *>(LevelConfigGenericKeyword_max_ter_groups), LC_BL_max_ter_groups},
+        {const_cast<char *>(LevelConfigGenericKeyword_max_ter_platforms), LC_BL_max_ter_platforms},
+        {NULL, NULL},
+    };
+#pragma data_seg()
+
+#pragma data_seg(".data$LevelConfig_AfterLoad_GenericKeywords")
+    NUFPCOMJMP LevelConfig_AfterLoad_GenericKeywords[53] = {
+        {const_cast<char *>(LevelConfigGenericKeyword_backr), LC_AL_backr},
+        {const_cast<char *>(LevelConfigGenericKeyword_backg), LC_AL_backg},
+        {const_cast<char *>(LevelConfigGenericKeyword_backb), LC_AL_backb},
+        {const_cast<char *>(LevelConfigGenericKeyword_backr_top), LC_AL_backr_top},
+        {const_cast<char *>(LevelConfigGenericKeyword_backg_top), LC_AL_backg_top},
+        {const_cast<char *>(LevelConfigGenericKeyword_backb_top), LC_AL_backb_top},
+        {const_cast<char *>(LevelConfigGenericKeyword_backr_bottom), LC_AL_backr_bottom},
+        {const_cast<char *>(LevelConfigGenericKeyword_backg_bottom), LC_AL_backg_bottom},
+        {const_cast<char *>(LevelConfigGenericKeyword_backb_bottom), LC_AL_backb_bottom},
+        {const_cast<char *>(LevelConfigGenericKeyword_farclip_hack), LC_AL_farclip_hack},
+        {const_cast<char *>(LevelConfigGenericKeyword_farclip), LC_AL_farclip},
+        {const_cast<char *>(LevelConfigGenericKeyword_nearclip), LC_AL_nearclip},
+        {const_cast<char *>(LevelConfigGenericKeyword_farclip_pc), LC_AL_farclip},
+        {const_cast<char *>(LevelConfigGenericKeyword_nearclip_pc), LC_AL_nearclip},
+        {const_cast<char *>(LevelConfigGenericKeyword_hover_height), LC_AL_hover_height},
+        {const_cast<char *>(LevelConfigGenericKeyword_blobshadow_alpha), LC_AL_blobshadow_alpha},
+        {const_cast<char *>(LevelConfigGenericKeyword_blobshadow_fadenear), LC_AL_blobshadow_fadenear},
+        {const_cast<char *>(LevelConfigGenericKeyword_blobshadow_fadefar), LC_AL_blobshadow_fadefar},
+        {const_cast<char *>(LevelConfigGenericKeyword_reflect_range), LC_AL_reflect_range},
+        {const_cast<char *>(LevelConfigGenericKeyword_reflect_y), LC_AL_reflect_y},
+        {const_cast<char *>(LevelConfigGenericKeyword_metal), LC_AL_metal},
+        {const_cast<char *>(LevelConfigGenericKeyword_in_space), LC_AL_in_space},
+        {const_cast<char *>(LevelConfigGenericKeyword_override_nopickupgravity), LC_AL_override_nopickupgravity},
+        {const_cast<char *>(LevelConfigGenericKeyword_hidden_icons), LC_AL_hidden_icons},
+        {const_cast<char *>(LevelConfigGenericKeyword_pickups_to_panel), LC_AL_pickups_to_panel},
+        {const_cast<char *>(LevelConfigGenericKeyword_forget_takeovers), LC_AL_forget_takeovers},
+        {const_cast<char *>(LevelConfigGenericKeyword_narrow_socks), LC_AL_narrow_socks},
+        {const_cast<char *>(LevelConfigGenericKeyword_camera_rain), LC_AL_camera_rain},
+        {const_cast<char *>(LevelConfigGenericKeyword_terrain_rain), LC_AL_terrain_rain},
+        {const_cast<char *>(LevelConfigGenericKeyword_double_score), LC_AL_double_score},
+        {const_cast<char *>(LevelConfigGenericKeyword_flat_terrain), LC_AL_flat_terrain},
+        {const_cast<char *>(LevelConfigGenericKeyword_cam_tilt), LC_AL_cam_tilt},
+        {const_cast<char *>(LevelConfigGenericKeyword_raycaststep), LC_AL_raycaststep},
+        {const_cast<char *>(LevelConfigGenericKeyword_plat_scan_dist), LC_AL_plat_scan_dist},
+        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_startcol_r), LC_AL_waterripple_startcol_r},
+        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_startcol_g), LC_AL_waterripple_startcol_g},
+        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_startcol_b), LC_AL_waterripple_startcol_b},
+        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_startcol_a), LC_AL_waterripple_startcol_a},
+        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_endcol_r), LC_AL_waterripple_endcol_r},
+        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_endcol_g), LC_AL_waterripple_endcol_g},
+        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_endcol_b), LC_AL_waterripple_endcol_b},
+        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_endcol_a), LC_AL_waterripple_endcol_a},
+        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_life), LC_AL_waterripple_life},
+        {const_cast<char *>(LevelConfigGenericKeyword_cam_pullback_dist), LC_AL_cam_pullback_dist},
+        {const_cast<char *>(LevelConfigGenericKeyword_cam_lateral_dist), LC_AL_cam_lateral_dist},
+        {const_cast<char *>(LevelConfigGenericKeyword_campos_seek), LC_AL_campos_seek},
+        {const_cast<char *>(LevelConfigGenericKeyword_camang_seek), LC_AL_camang_seek},
+        {const_cast<char *>(LevelConfigGenericKeyword_shadowtype), LC_AL_shadowtype},
+        {const_cast<char *>(LevelConfigGenericKeyword_music), LC_AL_music},
+        {const_cast<char *>(LevelConfigGenericKeyword_music_other), LC_AL_music_other},
+        {const_cast<char *>(LevelConfigGenericKeyword_sfx_ambient), LC_AL_sfx_ambient},
+        {const_cast<char *>(LevelConfigGenericKeyword_conveyor), LC_AL_conveyor},
+        {NULL, NULL},
+    };
+#pragma data_seg()
+
+#pragma const_seg(".rdata$AreaConfigKeyword_character")
+    extern const char AreaConfigKeyword_character[10] = "character";
+#pragma const_seg(".rdata$AreaConfigKeyword_area_start")
+    extern const char AreaConfigKeyword_area_start[11] = "area_start";
+#pragma const_seg(".rdata$AreaConfigKeyword_redbrick_extra")
+    extern const char AreaConfigKeyword_redbrick_extra[15] = "redbrick_extra";
+#pragma const_seg(".rdata$AreaConfigKeyword_redbrick_cheat")
+    extern const char AreaConfigKeyword_redbrick_cheat[15] = "redbrick_cheat";
+#pragma const_seg(".rdata$AreaConfigKeyword_timetrial_time")
+    extern const char AreaConfigKeyword_timetrial_time[15] = "timetrial_time";
+#pragma const_seg(".rdata$AreaConfigKeyword_text_id")
+    extern const char AreaConfigKeyword_text_id[8] = "text_id";
+#pragma const_seg(".rdata$AreaConfigKeyword_name_id")
+    extern const char AreaConfigKeyword_name_id[8] = "name_id";
+#pragma const_seg(".rdata$AreaConfigKeyword_no_freeplay")
+    extern const char AreaConfigKeyword_no_freeplay[12] = "no_freeplay";
+#pragma const_seg(".rdata$AreaConfigKeyword_no_completion_points")
+    extern const char AreaConfigKeyword_no_completion_points[21] = "no_completion_points";
+#pragma const_seg(".rdata$AreaConfigKeyword_no_gold_brick")
+    extern const char AreaConfigKeyword_no_gold_brick[14] = "no_gold_brick";
+#pragma const_seg(".rdata$AreaConfigKeyword_nopickupgravity")
+    extern const char AreaConfigKeyword_nopickupgravity[16] = "nopickupgravity";
+#pragma const_seg(".rdata$AreaConfigKeyword_no_character_collisions")
+    extern const char AreaConfigKeyword_no_character_collisions[24] = "no_character_collisions";
+#pragma const_seg(".rdata$AreaConfigKeyword_no_character_collision")
+    extern const char AreaConfigKeyword_no_character_collision[23] = "no_character_collision";
+#pragma const_seg(".rdata$AreaConfigKeyword_nocharactercollisions")
+    extern const char AreaConfigKeyword_nocharactercollisions[22] = "nocharactercollisions";
+#pragma const_seg(".rdata$AreaConfigKeyword_nocharactercollision")
+    extern const char AreaConfigKeyword_nocharactercollision[21] = "nocharactercollision";
+#pragma const_seg(".rdata$AreaConfigKeyword_super_bonus_area")
+    extern const char AreaConfigKeyword_super_bonus_area[17] = "super_bonus_area";
+#pragma const_seg(".rdata$AreaConfigKeyword_bonus_area")
+    extern const char AreaConfigKeyword_bonus_area[11] = "bonus_area";
+#pragma const_seg(".rdata$AreaConfigKeyword_ending_area")
+    extern const char AreaConfigKeyword_ending_area[12] = "ending_area";
+#pragma const_seg(".rdata$AreaConfigKeyword_vehicle_area")
+    extern const char AreaConfigKeyword_vehicle_area[13] = "vehicle_area";
+#pragma const_seg(".rdata$AreaConfigKeyword_override_things_scene")
+    extern const char AreaConfigKeyword_override_things_scene[22] = "override_things_scene";
+#pragma const_seg(".rdata$AreaConfigKeyword_hub_area")
+    extern const char AreaConfigKeyword_hub_area[9] = "hub_area";
+#pragma const_seg(".rdata$AreaConfigKeyword_test_area")
+    extern const char AreaConfigKeyword_test_area[10] = "test_area";
+#pragma const_seg(".rdata$AreaConfigKeyword_minikit")
+    extern const char AreaConfigKeyword_minikit[8] = "minikit";
+#pragma const_seg(".rdata$AreaConfigKeyword_single_buffer")
+    extern const char AreaConfigKeyword_single_buffer[14] = "single_buffer";
+#pragma const_seg(".rdata$AreaConfigKeyword_level")
+    extern const char AreaConfigKeyword_level[6] = "level";
+#pragma const_seg(".rdata$AreaConfigKeyword_area_end")
+    extern const char AreaConfigKeyword_area_end[9] = "area_end";
+#pragma const_seg(".rdata$AreaConfigKeyword_resident")
+    extern const char AreaConfigKeyword_resident[9] = "resident";
+#pragma const_seg(".rdata$LevelConfigKeyword_zspeed")
+    extern const char LevelConfigKeyword_zspeed[7] = "zspeed";
+#pragma const_seg(".rdata$LevelConfigKeyword_xspeed")
+    extern const char LevelConfigKeyword_xspeed[7] = "xspeed";
+#pragma const_seg()
 #pragma bss_seg(".bss$SfxBits")
     u16 SfxBits[100];
 #pragma bss_seg()

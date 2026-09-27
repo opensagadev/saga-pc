@@ -106,11 +106,22 @@ i32 NuMusic::ClassToIX(u32 class_mask) {
 }
 
 NuMusic::Track *NuMusic::Album::GetTrack(u32 class_mask) {
-    i32 index = NuMusic::ClassToIX(class_mask);
-    if (index == -1) {
-        return NULL;
+    i32 index;
+    for (index = 0; index < 6; index++) {
+        if (class_mask == (1u << index)) {
+            return tracks[index];
+        }
     }
-    return tracks[index];
+    return NULL;
+}
+
+void NuMusic::Track::ManageEntryTime(void) {
+    if (entry_count != 0) {
+        entry_index = (entry_index + 1) % entry_count;
+        start_offset = entry_times[entry_index];
+    } else {
+        start_offset = 0.0f;
+    }
 }
 
 NuMusic::Voice *NuMusic::FindVoiceByTrack(Track *track) {
