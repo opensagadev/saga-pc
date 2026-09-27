@@ -10,6 +10,14 @@
         "c1xx.dll": "e4890058a1f928538b27246af1f5c6f95551fc0ad380639b1bf1d6b143b80d09",
         "c2.dll": "ebca6ef587d6e028b50cc79fe71dd6155230ecb51014295399e8f00e8865ff86",
         "mspdb80.dll": "8db1e85503bff64aa0197c06933aa41eaa2f6dee2e223b6160d3eb463ec0f6dd",
-        "1033/clui.dll": "bb1ddaa62048ddbef54a25d43695124c87ce559cf52cff0ffed17bf77741bec8"
+        "1033/clui.dll": "bb1ddaa62048ddbef54a25d43695124c87ce559cf52cff0ffed17bf77741bec8",
+        "link.exe": "3f14f86bf8e079f5c4af4ff54ffc682140eebad1ca2b911ac7f7726540d7bab4",
+        "1033/linkui.dll": "25dfa3c14b624cf372b042b3db3d51d9d7350851a9674e58d80e472bd1d6a65b"
+    },
+    "trees": {
+        "include": "3fd4ab20f344ff3738fd92163c4c5d21812be516f8afe338ac87829d3d2b9740",
+        "lib": "d0c247600d9576218a40bd1bc369a2086a41509cf2a99d5adad6b44f89f0eb82",
+        "PlatformSDK/Include": "80f53e7c9351babb4fa6243dae172e78f23ba8138f794088710b1d5aa25c51a7",
+        "PlatformSDK/Lib": "6a096e262282ec22926358fbdc90aecdd89d289ffbccda0ddee933315d6d4e1d"
     }
 }

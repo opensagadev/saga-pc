@@ -79,12 +79,14 @@ class PE:
         self.pe_offset = _unpack("<I", self.data, 0x3c)[0]
         if _slice(self.data, self.pe_offset, 4) != b"PE\0\0":
             raise BinaryError("Missing PE signature")
-        machine, nsections, timestamp, _, _, optional_size, flags = _unpack(
+        machine, nsections, timestamp, symptr, nsyms, optional_size, flags = _unpack(
             "<HHIIIHH", self.data, self.pe_offset + 4)
         if machine != 0x14c:
             raise BinaryError(f"Expected i386 PE, found machine {machine:#x}")
         self.machine = machine
         self.timestamp = timestamp
+        self.coff_symbol_offset = symptr
+        self.coff_symbol_count = nsyms
         opt = self.pe_offset + 24
         self.optional = _slice(self.data, opt, optional_size)
         if optional_size < 96 or _unpack("<H", self.optional, 0)[0] != 0x10b:
@@ -116,6 +118,80 @@ class PE:
 
     def read_va(self, va, size):
         return _slice(self.data, self.va_to_offset(va, size), size)
+
+    def _ascii_string(self, va):
+        value = bytearray()
+        for offset in range(4096):
+            byte = self.read_va(va + offset, 1)[0]
+            if not byte:
+                if not value:
+                    raise BinaryError("Empty PE import name")
+                try:
+                    return value.decode("ascii")
+                except UnicodeDecodeError as error:
+                    raise BinaryError("Non-ASCII PE import name") from error
+            value.append(byte)
+        raise BinaryError("Unterminated or oversized PE import name")
+
+    def imports(self):
+        """Read PE32 import identities and four-byte IAT slot VAs, never DLL code VAs.
+
+        Ordinal imports remain ordinals: a library/tool's ordinal-name guesses
+        are not names present in this executable. Delay imports are unsupported.
+        """
+        if len(self.directories) > 13 and any(self.directories[13]):
+            raise BinaryError("Delay imports are not supported by the external inventory")
+        rva, size = self.directories[1] if len(self.directories) > 1 else (0, 0)
+        if not rva and not size:
+            return []
+        if not rva or size < 20:
+            raise BinaryError("Invalid PE import directory")
+        imports, slots = [], set()
+        for offset in range(0, size - 19, 20):
+            lookup, timestamp, forwarder, name_rva, iat = _unpack(
+                "<5I", self.read_va(self.image_base + rva + offset, 20), 0)
+            if not any((lookup, timestamp, forwarder, name_rva, iat)):
+                return imports
+            if not name_rva or not iat or (not lookup and timestamp):
+                raise BinaryError("Import descriptor lacks recoverable lookup/IAT information")
+            dll = self._ascii_string(self.image_base + name_rva)
+            # A missing lookup table may use an unbound IAT as its lookup table.
+            table = lookup or iat
+            for index in range(len(self.data) // 4):
+                value = _unpack("<I", self.read_va(self.image_base + table + index * 4, 4), 0)[0]
+                address = self.image_base + iat + index * 4
+                self.read_va(address, 4)
+                if not value:
+                    break
+                if address in slots:
+                    raise BinaryError("Overlapping PE import address slots")
+                slots.add(address)
+                item = {"dll": dll, "address": address, "size": 4, "name": None, "ordinal": None}
+                if value & 0x80000000:
+                    if value & 0x7fff0000:
+                        raise BinaryError("Reserved bits set in ordinal import")
+                    item["ordinal"] = value & 0xffff
+                else:
+                    self.read_va(self.image_base + value, 2)  # IMAGE_IMPORT_BY_NAME hint
+                    item["name"] = self._ascii_string(self.image_base + value + 2)
+                imports.append(item)
+            else:
+                raise BinaryError("Unterminated PE import lookup table")
+        raise BinaryError("PE import directory has no terminating descriptor")
+
+    def import_thunk(self, va):
+        """Return the operand of a complete x86 JMP [absolute IAT] at a mapped VA.
+
+        This validates an independently identified entry, not a byte-scan function
+        finder: a tail jump within a longer function is not a separate symbol.
+        The caller must establish that the operand names an actual import slot.
+        """
+        code = [s for s in self.sections if s["characteristics"] & 0x20 and
+                0 <= va - self.image_base - s["virtual_address"] <= s["raw_size"] - 6]
+        if len(code) != 1:
+            return None
+        raw = self.read_va(va, 6)
+        return _unpack("<I", raw, 2)[0] if raw[:2] == b"\xff\x25" else None
 
     def read_data(self, va, size):
         """Read one mapped section, zero-filling only its unbacked virtual tail."""
@@ -193,7 +269,12 @@ class PE:
                 "timestamp": self.timestamp,
                 "timestamp_utc": datetime.datetime.fromtimestamp(
                     self.timestamp, datetime.timezone.utc).isoformat(),
-                "rich": self._rich(), "pdb": self._pdb(), "sections": self.sections}
+                "rich": self._rich(), "pdb": self._pdb(),
+                "coff_symbol_offset": self.coff_symbol_offset,
+                "coff_symbol_count": self.coff_symbol_count,
+                "export_directory": self.directories[0] if self.directories else (0, 0),
+                "delay_import_directory": self.directories[13] if len(self.directories) > 13 else (0, 0),
+                "imports": self.imports(), "sections": self.sections}
 
 
 class COFF:

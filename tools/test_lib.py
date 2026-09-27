@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 from tools import lib
 from tools.lib import bindings_for, covered_bytes, definitions_for, load_symbols
-from test_binary import coff_bytes, pe_bytes
+from test_binary import BASE, coff_bytes, pe_bytes, pe_import_bytes
 
 
 FIELDS = ("address", "symbol", "size", "ctype")
@@ -53,6 +53,29 @@ class SymbolMapTests(unittest.TestCase):
         self.assertIsNone(actual["size"])
         self.assertEqual(actual["symbol"], "sub_00401000")
         self.assertEqual(actual["ctype"], "")
+
+    def test_inlined_inventory_preserves_type_without_inventing_an_extent(self):
+        self.write([entry(), entry(address="inlined", symbol="?HashString@@YAIPAE@Z", size="",
+                                   ctype="u32 __cdecl (u8 *)")])
+        row = load_symbols(self.path)[1]
+        self.assertIsNone(row["address"])
+        self.assertIsNone(row["size"])
+        self.assertEqual(row["ctype"], "u32 __cdecl (u8 *)")
+
+    def test_inlined_entries_need_blank_sizes_unique_names_and_final_sorted_position(self):
+        inline = entry(address="inlined", symbol="_a", size="")
+        for rows, message in (
+                ([dict(inline, size="0")], "blank size"),
+                ([dict(inline, size="16")], "blank size"),
+                ([inline, inline], "duplicate symbol entry"),
+                ([inline, entry()], "followed by inlined"),
+                ([dict(inline, symbol="_z"), inline], "sorted by linker name")):
+            with self.subTest(rows=rows):
+                self.write(rows)
+                with self.assertRaisesRegex(ValueError, message):
+                    load_symbols(self.path)
+        self.write([inline, dict(inline, symbol="_z")])
+        self.assertEqual(len(load_symbols(self.path)), 2)
 
     def test_decimal_and_hexadecimal_sizes_and_final_address_are_accepted(self):
         for address, size, expected_address, expected_size in (
@@ -132,6 +155,12 @@ class SymbolMapTests(unittest.TestCase):
 
 
 class SymbolLookupTests(unittest.TestCase):
+    def test_inlined_symbols_do_not_bind_or_conflict_with_recovered_standalone_addresses(self):
+        records = [{"symbol": "_inline", "address": None},
+                   {"symbol": "_both", "address": None},
+                   {"symbol": "_both", "address": 0x401000}]
+        self.assertEqual(bindings_for(records), {"_both": 0x401000})
+
     def test_conflicting_original_addresses_stay_unresolved(self):
         records = [
             {"symbol": "_state", "address": 0x801000},
@@ -186,7 +215,8 @@ class ProjectInputTests(unittest.TestCase):
         rows = [{"symbol": "_code", "address": 0x401000, "size": 16},
                 {"symbol": "_alias", "address": 0x401008, "size": 16},
                 {"symbol": "_unimplemented_data", "address": 0x403000, "size": 8},
-                {"symbol": "_unknown", "address": 0x404000, "size": None}]
+                {"symbol": "_unknown", "address": 0x404000, "size": None},
+                {"symbol": "_inline", "address": None, "size": None}]
         coverage = lib.mapping_progress(rows, target)
         self.assertEqual(coverage["mapped_bytes"], 32)
         self.assertEqual(coverage["image_bytes"], 65536)
@@ -194,6 +224,8 @@ class ProjectInputTests(unittest.TestCase):
         self.assertEqual(lib.mapping_progress([], target)["mapping_percent"], 0)
         with self.assertRaisesRegex(ValueError, "outside the original image"):
             lib.mapping_progress([dict(rows[0], address=0x500000)], target)
+        with self.assertRaisesRegex(ValueError, "blank size"):
+            lib.mapping_progress([dict(rows[-1], size=16)], target)
 
     def test_retail_hash_and_pinned_image_boundaries_are_verified(self):
         with tempfile.TemporaryDirectory() as temp, patch.object(lib, "ROOT", Path(temp)):
@@ -223,6 +255,49 @@ class ProjectInputTests(unittest.TestCase):
             obj.unlink()
             with self.assertRaisesRegex(ValueError, "Missing build/obj/current.obj"):
                 lib.compiled_objects()
+
+
+class ExternalInventoryTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.path = Path(temporary.name) / "imports.exe"
+        self.path.write_bytes(pe_import_bytes())
+        self.pe = lib.PE(self.path)
+
+    def row(self, address, size, symbol="_external"):
+        return {"address": address, "size": size, "symbol": symbol, "ctype": ""}
+
+    def test_import_slots_and_complete_thunks_are_external_but_internal_code_is_not(self):
+        rows = [self.row(BASE, 6, "_ApiName@0"), self.row(BASE + 6, 6, "_ordinal_thunk"),
+                self.row(BASE + 0x140, 4, "__imp__ApiName@0"),
+                self.row(BASE + 0x144, 4, "_saga_import_SYSTEM_ordinal_11"),
+                self.row(BASE + 12, 7, "_internal_tail_jump"),
+                self.row(None, None, "_inline")]
+        external = lib.external_symbols(self.pe, rows, {})
+        self.assertEqual(len(external), 4)
+        self.assertNotIn((BASE + 12, "_internal_tail_jump"), external)
+        self.assertEqual(external[(BASE, "_ApiName@0")]["import_name"], "ApiName")
+        ordinal = external[(BASE + 6, "_ordinal_thunk")]
+        self.assertIsNone(ordinal["import_name"])
+        self.assertEqual(ordinal["ordinal"], 11)
+
+    def test_import_code_is_not_invented_from_unrelated_jumps(self):
+        raw = pe_import_bytes()
+        struct.pack_into("<I", raw, 0x200 + 2, BASE + 0x148)  # Null terminator is not a slot.
+        self.path.write_bytes(raw)
+        self.assertFalse(lib.external_symbols(lib.PE(self.path), [self.row(BASE, 6)], {}))
+
+    def test_external_extents_must_be_exactly_slot_or_thunk_size(self):
+        for address, size in ((BASE, 5), (BASE, 8), (BASE + 0x140, 8), (BASE + 0x140, None)):
+            with self.subTest(address=address, size=size), self.assertRaisesRegex(ValueError, "must have size"):
+                lib.external_symbols(self.pe, [self.row(address, size)], {})
+
+    def test_source_definitions_cannot_be_credited_as_external_matches(self):
+        for address, size in ((BASE, 6), (BASE + 0x140, 4)):
+            with self.subTest(address=address), self.assertRaisesRegex(ValueError, "declaration-only"):
+                lib.external_symbols(self.pe, [self.row(address, size)],
+                                     {"src/accidental.c": coff(("_external", 1))})
 
 
 if __name__ == "__main__":

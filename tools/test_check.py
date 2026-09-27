@@ -3,7 +3,9 @@ from pathlib import Path
 import struct
 import tempfile
 import unittest
+from unittest.mock import patch
 
+from tools import check as check_module
 from tools.binary import COFF
 from tools.check import check_objects, map_errors
 from tools.test_binary import coff_bytes, object_data
@@ -86,6 +88,23 @@ class ObjectChecksTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "'_f': compiled definition has unknown original size"):
             self.check({"src/code.cpp": obj}, [row("_f", size=None)])
 
+    def test_inlined_inventory_is_allowed_but_not_a_standalone_definition_mapping(self):
+        obj = self.obj(coff_bytes(b"\xc3"))
+        inline = row("_f", None, None)
+        self.assertEqual(self.check({}, [inline])["functions"], 0)
+        with self.assertRaisesRegex(ValueError, "standalone definition has only an inlined mapping"):
+            self.check({"src/code.cpp": obj}, [inline])
+        # Observing an inline occurrence does not rule out a separately recovered copy.
+        self.assertEqual(self.check({"src/code.cpp": obj}, [row("_f"), inline])["functions"], 1)
+
+    def test_inlined_reference_requires_a_real_standalone_address(self):
+        obj = self.obj(coff_bytes(b"\xe8\0\0\0\0\xc3", relocations=[(1, "_g", 20)]))
+        records = [row("_f", size=6), row("_g", None, None)]
+        with self.assertRaisesRegex(ValueError, "relocation to inlined-only symbol '_g'"):
+            self.check({"src/caller.cpp": obj}, records)
+        records.insert(1, row("_g", TEXT + 16, None))
+        self.assertEqual(self.check({"src/caller.cpp": obj}, records)["functions"], 1)
+
     def test_different_rebuilt_sizes_are_allowed_for_work_in_progress(self):
         objects = {"src/code.cpp": self.obj(coff_bytes(b"\x31\xc0\xc3"), "code"),
                    "src/data.cpp": self.obj(object_data(bytes(4)), "data")}
@@ -145,12 +164,41 @@ class ObjectChecksTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "function address.*outside original .text"):
             self.check({"src/code.cpp": obj}, [row("_f", DATA)])
 
+    def test_external_declaration_unit_must_not_define_code_or_data(self):
+        for raw, record in ((coff_bytes(b"\xc3"), row("_f")),
+                            (object_data(bytes(4)), row("_data", DATA, 4))):
+            with self.subTest(symbol=record["symbol"]), self.assertRaisesRegex(ValueError, "declarations only"):
+                self.check({"src/externals.c": self.obj(raw)}, [record])
+
+    def test_import_address_names_must_not_be_defined_in_other_units(self):
+        for name in ("__imp__ApiName@0", "_saga_import_SYSTEM_ordinal_11"):
+            obj = self.obj(rename(object_data(bytes(4)), "_data", name))
+            with self.subTest(name=name), self.assertRaisesRegex(ValueError, "external declarations"):
+                self.check({"src/other.c": obj}, [row(name, DATA, 4)])
+
     def test_mapped_extents_fit_image_and_do_not_cross_text_boundaries(self):
         for address, size in ((0x3fffff, 1), (0x410000, None), (0x40ffff, 2),
                               (TEXT - 1, 2), (TEXT + 0xfff, 2)):
             with self.subTest(address=address, size=size):
                 self.assertTrue(map_errors([row("_f", address, size)], TARGET))
         self.assertFalse(map_errors([row("_data", DATA, 16)], TARGET))
+
+
+class HeaderLayoutTests(unittest.TestCase):
+    def test_only_common_and_external_headers_are_allowed(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(check_module, "ROOT", Path(temp)):
+            src = Path(temp) / "src"
+            src.mkdir()
+            with self.assertRaisesRegex(ValueError, "src/saga.h"):
+                check_module.check_headers()
+            (src / "saga.h").write_text("// fixture\n")
+            check_module.check_headers()
+            (src / "externals.h").write_text("// API declarations\n")
+            check_module.check_headers()
+            (src / "extra").mkdir()
+            (src / "extra/other.h").write_text("// forbidden\n")
+            with self.assertRaisesRegex(ValueError, "optional src/externals.h"):
+                check_module.check_headers()
 
 
 if __name__ == "__main__":

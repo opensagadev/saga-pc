@@ -11,16 +11,24 @@ for mapping rules and identification evidence. Run commands from the repository 
 
 ## Architecture
 
-- This project builds PC x86 MSVC objects for matching. Full executable relinking,
-  host game builds and WASM game builds are outside the current implementation.
+- The default build links our PC x86 sources into `build/LEGOStarWarsSaga.exe`
+  using the original MSVC linker and static CRT. Its WinMain/NuMain are currently
+  stubs; a successful link does not mean the game is reconstructed. No retail
+  bytes are used to produce this EXE. Matching uses the individual COFF objects.
+  There are no host game or WASM targets.
 - GNU Make owns dependencies. Use `make -j"$(nproc)"` for bounded parallel builds.
   The order-only Wine `.ready` target initializes its prefix before compiler jobs.
-- Four commands live in `tools/`: setup downloads pinned tools, cc invokes MSVC,
+- Four commands live in `tools/`: setup downloads pinned tools, cc invokes MSVC compiler/linker,
   check validates the project/objects, and match compares retail and updates reports.
   Reuse `tools/lib.py` for configuration, symbol maps, hashes and coverage, and
   `tools/binary.py` for PE/COFF extraction, relocation and comparison objects.
   Do not introduce another relocation implementation or build orchestrator.
-- `src/saga.h` contains all shared declarations and layout checks. Guard C linkage
+- `src/saga.h` contains shared game declarations and layout checks. It includes
+  `src/externals.h` for APIs missing from the bundled Microsoft SDK; use the SDK
+  headers for APIs they provide. Do not use Wine headers or duplicate SDK types.
+  Wine runs the compiler/linker. Setup installs the original CRT/STL and Platform
+  SDK headers/libraries and checksums their complete trees.
+  Guard C linkage
   with `__cplusplus` and hide C++-only declarations from C. `.c` and `.cpp` units
   exercise both compiler front ends. Preserve C++ linkage where the map uses it.
 - Use VC8's native C++98/03-era dialect with MS extensions. It has no `/std` switch;
@@ -37,6 +45,14 @@ image VAs, not RVAs or file offsets. The symbol is our exact reconstructed linke
 name. Ctype records the recovered C/C++ signature or data type; actual COFF metadata
 supplies code/data classification. Leave unknown sizes blank until established.
 
+Read [config/identification.md](../../../config/identification.md) for recovering
+PC boundaries and propagating Android call/data/RTTI anchors. `/O2` performs
+substantial inlining: an absent call is not proof of a different identity. Use
+`inlined` instead of an address, with a blank size, for an observed inline helper
+without an established standalone PC entry. Such rows supply no address binding,
+coverage or standalone matching result. Record callsite evidence in Markdown.
+Do not copy Android sizes, C++ layouts or vtable slot numbers onto the PC.
+
 Use constants, calls, strings, neighbors, shared state and vtables to identify
 anchors. Android source is a reference; its layout, ABI and names do not prove PC
 identity. Record evidence and uncertainty in `config/symbols.md`, preserve Android
@@ -50,11 +66,15 @@ use distinct reconstruction names for unrelated file-local entities.
 
 ## Required verification
 
-Run `make check` and `make -j"$(nproc)" check-objects`. These require no original:
+Run `make check` and `make -j"$(nproc)" build check-objects`. These require no original:
 static map/layout/input checks, synthetic tests, objdiff fixture integration after
-setup, compilation, complete symbol coverage and resolvable supported relocations.
+setup, compilation/linking, complete symbol coverage and resolvable supported relocations.
 Unknown inventory entries are allowed; compiled definitions need known original
 sizes. Different rebuilt sizes are allowed for work in progress, not proof of matching.
+`make objects` and `make check-objects` work independently of the EXE link. Keep
+unresolved references fatal when linking. The source EXE has its own layout;
+never use its addresses as original mappings. `/OPT:NOREF /OPT:NOICF` retain
+unused routines and distinct identical functions in this early build.
 
 After source, map, compiler or tooling changes, **run `make -j"$(nproc)" match`
 locally with the supported retail executable**. Inspect affected differences with
@@ -84,9 +104,16 @@ bot comment from committed report snapshots; those reported numbers do not prove
 retail matching. The comment workflow reads PR data without checking out or running
 PR code with its write token.
 
+`src/externals.c` must remain declaration-only. Import slots and verified import
+thunks belong in the inventory but are excluded from reconstruction matching;
+do not implement replacement DLL routines. Their original PE import identities
+remain separate from reconstruction linker aliases. RTTI records are internal
+data and are not excluded as imports.
+
 Original input belongs at ignored `res/LEGOStarWarsSaga.exe` (symlinks work).
 All generated state is under ignored `build/`: tools and Wine in `build/tools/`,
-compiled objects in `build/obj/`, comparisons in `build/objdiff/`. `make clean` keeps
+compiled objects in `build/obj/`, the EXE in `build/`, comparisons in
+`build/objdiff/`. `make clean` keeps
 downloaded tools. Never commit originals, game assets, tool binaries or extracted
 retail bytes. The tracked report contains hashes and metrics only.
 

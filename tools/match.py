@@ -9,11 +9,11 @@ import sys
 if __package__:
     from .binary import compare_data, relocate_function, write_function
     from .lib import (ROOT, bindings_for, compiled_objects, covered_bytes, definitions_for,
-                      digest, load_json, load_symbols, mapping_progress, number, object_path, project, retail, sha256)
+                      digest, external_symbols, load_json, load_symbols, mapping_progress, number, object_path, project, retail, sha256)
 else:
     from binary import compare_data, relocate_function, write_function
     from lib import (ROOT, bindings_for, compiled_objects, covered_bytes, definitions_for,
-                     digest, load_json, load_symbols, mapping_progress, number, object_path, project, retail, sha256)
+                     digest, external_symbols, load_json, load_symbols, mapping_progress, number, object_path, project, retail, sha256)
 
 OUT = ROOT / "build/objdiff"
 
@@ -84,21 +84,41 @@ def main():
         parser.error("A filtered comparison cannot update overall progress")
     config = project()
     target = config["target"]
-    pe = retail(target)
-    cli, cli_pin = objdiff()
     records = load_symbols()
     selected = records
     if args.function:
         selected = [r for r in records if args.function in
-                    (display_name(r["symbol"]), r["symbol"], f"0x{r['address']:08x}")]
+                    (display_name(r["symbol"]), r["symbol"],
+                     f"0x{r['address']:08x}" if r["address"] is not None else None)]
+        addressed = [r for r in selected if r["address"] is not None]
+        selected = addressed or selected
         if len(selected) != 1:
             raise ValueError(f"Expected one function for {args.function!r}; found {len(selected)}")
+        if selected[0]["address"] is None:
+            raise ValueError(f"{selected[0]['symbol']!r} is recorded as inlined, part of its caller; "
+                             "no standalone original address is established. Compare the caller instead")
+    pe = retail(target)
+    cli, cli_pin = objdiff()
     OUT.mkdir(parents=True, exist_ok=True)
     objects = compiled_objects()
+    externals = external_symbols(pe, records, objects)
     bindings = bindings_for(records)
-    units, functions, data = [], [], []
+    units, functions, data, inlined = [], [], [], []
     for record in selected:
         symbol, va = record["symbol"], record["address"]
+        if va is None:
+            if symbol not in bindings and definitions_for(objects, symbol):
+                raise ValueError(f"{symbol!r}: compiled standalone definition has only an inlined mapping; "
+                                 "no standalone original address is established. Keep the code in its "
+                                 "caller, or recover a standalone address and size in config/symbols.csv")
+            inlined.append({"name": display_name(symbol), "symbol": symbol, "address": None,
+                            "ctype": record["ctype"], "status": "inlined"})
+            continue
+        if (va, symbol) in externals:
+            if args.function:
+                raise ValueError(f"{symbol!r} is an external {externals[(va, symbol)]['kind']}; "
+                                 "external declarations are excluded from reconstruction matching")
+            continue
         definitions = definitions_for(objects, symbol)
         kinds = {bool(s["type"] & 0x20) for _, obj in definitions for s in obj.symbols
                  if s["name"] == symbol and s["section"] > 0}
@@ -160,7 +180,13 @@ def main():
         similarity = row.get("objdiff_percent")
         score = f"; objdiff {similarity:.2f}%" if similarity is not None else ""
         print(f"{row['status']:16} {row['name']:32} {row['target_size']} bytes{score}")
-    inputs = [ROOT / "Makefile", ROOT / "src/saga.h", *sorted((ROOT / "config").glob("*")),
+    if externals:
+        print(f"Excluded {len(externals)} imported address slots/thunks from reconstruction matching.")
+    if inlined:
+        print(f"Recorded {len(inlined)} inlined symbols as part of their callers; "
+              "no standalone address or byte coverage is assigned.")
+    inputs = [ROOT / "Makefile", *sorted((ROOT / "src").rglob("*.h")),
+              *sorted((ROOT / "config").glob("*")),
               *sorted((ROOT / "tools").glob("*.py")), *sorted((ROOT / "src").rglob("*.cpp")),
               *sorted((ROOT / "src").rglob("*.c"))]
     result = {"format_version": 2, "target_sha256": target["sha256"],
@@ -169,7 +195,8 @@ def main():
               "inputs": {p.relative_to(ROOT).as_posix(): sha256(p) for p in inputs},
               "objects": {object_path(unit).relative_to(ROOT).as_posix(): digest(obj.data)
                           for unit, obj in sorted(objects.items())},
-              "functions": functions, "data": data}
+              "functions": functions, "data": data, "externals": list(externals.values()),
+              "inlined": inlined}
     if not args.function:
         result["progress"] = progress(functions, target)
         result["progress"].update(mapping_progress(records, target))

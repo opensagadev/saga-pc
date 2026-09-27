@@ -1,22 +1,31 @@
 PYTHON ?= python3
 
 SOURCES := $(shell find src -type f \( -name '*.cpp' -o -name '*.c' \) | LC_ALL=C sort)
+SOURCE_DIRS := $(shell find src -type d)
 OBJECTS := $(patsubst src/%,build/obj/%,$(SOURCES:.cpp=.obj))
 OBJECTS := $(OBJECTS:.c=.obj)
-CPPFLAGS := /Isrc
-CXXFLAGS := /nologo /c /O2 /Gy /GS-
+EXE := build/LEGOStarWarsSaga.exe
+CPPFLAGS := /Isrc /Ibuild/tools/msvc8/include /Ibuild/tools/msvc8/PlatformSDK/Include
+CXXFLAGS := /nologo /c /O2 /Gy /GS- /MT
+LDFLAGS := /nologo /machine:x86 /subsystem:windows /incremental:no /manifest:no /opt:noref /opt:noicf
 
 .DEFAULT_GOAL := build
 .DELETE_ON_ERROR:
-.PHONY: all build setup check check-objects test match diff inspect clean
+.PHONY: all build objects link setup check check-objects test match diff inspect clean
 
 all: build
-build: $(OBJECTS)
+build: link
+objects: $(OBJECTS)
+link: $(EXE)
 
-build/obj/%.obj: src/%.cpp src/saga.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+# Directory dependencies also relink when a source is removed from the input list.
+$(EXE): $(OBJECTS) $(SOURCE_DIRS) config/toolchain.json Makefile tools/cc.py tools/lib.py
+	$(PYTHON) tools/cc.py --link $@ $(OBJECTS) -- $(LDFLAGS)
+
+build/obj/%.obj: src/%.cpp src/saga.h src/externals.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
-build/obj/%.obj: src/%.c src/saga.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+build/obj/%.obj: src/%.c src/saga.h src/externals.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
 # Serialize first-time Wine setup, then compile distinct objects concurrently.
@@ -32,7 +41,7 @@ check:
 	$(PYTHON) tools/check.py
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
 
-check-objects: build
+check-objects: objects
 	$(PYTHON) tools/check.py --objects
 
 test:
@@ -50,3 +59,4 @@ inspect:
 
 clean:
 	rm -rf build/obj build/objdiff
+	rm -f $(EXE)

@@ -22,7 +22,11 @@ def check_objects(objects, records, target):
     """
     errors = map_errors(records, target)
     rows_by_name = {}
+    inlined_names = set()
     for row in records:
+        if row["address"] is None:
+            inlined_names.add(row["symbol"])
+            continue
         rows_by_name.setdefault(row["symbol"], []).append(row)
     bindings = bindings_for(records)
     text_start = number(target["text_va"])
@@ -37,6 +41,8 @@ def check_objects(objects, records, target):
         except ValueError as error:
             errors.append(f"{unit}: {error}")
             continue
+        if unit == "src/externals.c" and definitions:
+            errors.append("src/externals.c must contain declarations only; no function or data definitions")
         for name, symbols in sorted(definitions.items()):
             context = f"{unit}: {name!r}"
             if len(symbols) != 1:
@@ -45,11 +51,18 @@ def check_objects(objects, records, target):
                 continue
             symbol = symbols[0]
             kind = "function" if symbol["type"] & 0x20 else "data"
+            if name.startswith(("__imp_", "_saga_import_")):
+                errors.append(f"{context}: imported address slots must remain external declarations")
             kinds.setdefault(name, []).append((unit, kind))
             rows = rows_by_name.get(name, [])
             if not rows:
-                errors.append(f"{context}: missing {kind} mapping; add its original address, "
-                              "size and type to config/symbols.csv")
+                if name in inlined_names:
+                    errors.append(f"{context}: compiled standalone definition has only an inlined mapping; "
+                                  "no standalone original address is established. Keep the code in its "
+                                  "caller, or recover a standalone address and size in config/symbols.csv")
+                else:
+                    errors.append(f"{context}: missing {kind} mapping; add its original address, "
+                                  "size and type to config/symbols.csv")
                 continue
             if len(rows) != 1:
                 addresses = ", ".join(f"{r['address']:#010x}" for r in rows)
@@ -80,6 +93,10 @@ def check_objects(objects, records, target):
                         addresses = ", ".join(f"{r['address']:#010x}" for r in choices)
                         missing.append(f"{where}: ambiguous relocation mapping for "
                                        f"{ref_name!r} ({addresses})")
+                    elif ref_name in inlined_names and not choices and ref["section"] == 0:
+                        missing.append(f"{where}: relocation to inlined-only symbol {ref_name!r}; "
+                                       "no standalone original address is established. Compare it as "
+                                       "part of its caller, or recover a standalone mapping")
                     elif (ref_name not in bindings and
                           ref["section"] not in (symbol["section"], -1)):
                         missing.append(f"{where}: missing relocation mapping for {ref_name!r}; "
@@ -105,6 +122,12 @@ def check_objects(objects, records, target):
     return result
 
 
+def check_headers():
+    headers = {p.relative_to(ROOT).as_posix() for p in (ROOT / "src").rglob("*.h")}
+    if "src/saga.h" not in headers or headers - {"src/saga.h", "src/externals.h"}:
+        raise ValueError("Project headers must be src/saga.h and optional src/externals.h")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group()
@@ -120,9 +143,7 @@ def main():
     errors = map_errors(records, config["target"])
     if errors:
         raise ValueError("Symbol/map checks failed:\n  - " + "\n  - ".join(errors))
-    headers = sorted(p.relative_to(ROOT).as_posix() for p in (ROOT / "src").rglob("*.h"))
-    if headers != ["src/saga.h"]:
-        raise ValueError("Project currently uses one common header: src/saga.h")
+    check_headers()
     files = subprocess.check_output(
         ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=ROOT).decode().split("\0")
     forbidden = {".exe", ".dll", ".obj", ".o", ".pdb", ".lib", ".zip", ".7z", ".dat", ".obb", ".apk"}
@@ -139,7 +160,9 @@ def main():
             with full.open("rb") as stream:
                 if stream.read(2) == b"MZ":
                     raise ValueError(f"Windows executable in source files: {name}")
-    print(f"Checked {len(records)} symbol entries, single-header layout and Git input boundaries.")
+    inlined = sum(row["address"] is None for row in records)
+    print(f"Checked {len(records) - inlined} address mappings and {inlined} inlined symbols, "
+          "source-header layout and Git input boundaries.")
     mapping = mapping_progress(records, config["target"])
     print(f"Mapped {mapping['mapped_bytes']}/{mapping['image_bytes']} virtual image bytes "
           f"({mapping['mapping_percent']:.3f}%).")

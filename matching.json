@@ -4,34 +4,64 @@
   "compiler": "14.00.50727.42",
   "objdiff_version": "3.8.1",
   "inputs": {
-    "Makefile": "492ccb2729190d0916fe5d414c2e2c18f64622a13d4ca3310a2d7663907a6cbf",
-    "src/saga.h": "af02389c9eacf71f5b925caa1503da11303283b45e8884feb35b42d87326bf5e",
+    "Makefile": "8c3044210fe360b4ad5bbd20639d2e9f04c91ca795260b30a4099bb88229b5ef",
+    "src/externals.h": "986e260e839e1c84a7483de486465a78365031b9d0dc2c5cb0f0ef88ef2e1bd1",
+    "src/saga.h": "0c0bd3f995a956e731c59c6bcc94c65cd9ebf0fd193853e69c350c82575c81df",
+    "config/identification.md": "e81acade95f3d0b20c4ec39921f00b458ed8aca01dcaa44e4dbf60685cc754a0",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
-    "config/symbols.csv": "142676f9434f220e600f631680e370ce16b61649036b1007a250c1573e537fbe",
-    "config/symbols.md": "0b574044edd87e934a0c0da4be0c5d6fa5ec6ee26df54d335deca49aa3b35bbc",
-    "config/toolchain.json": "c4d0281ae4406524ae67c0f1779ad93ff75d1dccb1a59f7853a326b60ca14972",
+    "config/symbols.csv": "8a85b8c5a8162129e3c0b70fac58e91a7aec5adffaf9b7061af432460a609c30",
+    "config/symbols.md": "ee47390feef4bb7fe129799368ec4294eb8181ba7e7ed92188c2699f546bbcd9",
+    "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
-    "tools/binary.py": "49bd4c255f7462a113c0576e6faf1560950a88dd57880e475c04573aa6b242f3",
-    "tools/cc.py": "538d133c99b355c3fb1ca0c2e5e67aa017423b8e6620eee6b379e7ad193cb275",
-    "tools/check.py": "17a3f3ead5e064c85c9595bf83f2173ce3fc39ead8d1967e91a15988ba81164c",
-    "tools/lib.py": "fc8069872f5fb5d34e457eaa7b397758faa7324dc45acddddfa6ec7704ed2335",
-    "tools/match.py": "a8b401bec5a29540f1242e3f475e6d96ebf9c68f8094809750f86b3abb906a42",
-    "tools/setup.py": "dec9aeec066e044ce6159ddc3637f499f9a0e3c6c57c14ffb9bc20c0d9f19905",
-    "tools/test_binary.py": "0fdfb593d144b6650b96355984a668051d163c4543af217e154c9c81b643b8db",
-    "tools/test_check.py": "46b153251fae60c3dd6e96b12eea52f5c7e4cd82a7a0dd3701ce8149669c1fd6",
-    "tools/test_lib.py": "c9c1aa1ff7e2cdef0b5a2f37cabd68960757849e45f45be3354b29ed53e4e46e",
-    "tools/test_match.py": "4a38c5ce1d1985ed27663de926cd358367a4bec95bc02fce542dbc918f1cfaa0",
-    "tools/test_setup.py": "d325a19d7a53389f2c40b5ed8f31b56fc17384e43208357efdc0763692e19a0a",
+    "tools/binary.py": "debc3e1226eea724ab4f7e1e6e70a98dfa2d64eedb4b15e593a8edcdd187a32c",
+    "tools/cc.py": "d6255ab1dce2b88823ca2dadd017bcab35ed8e50cb643f51ce190722a47d8423",
+    "tools/check.py": "5f7cb07f3b969b2f169dce67d6d19ca55a909e053b12e6c74cbe50ba61797161",
+    "tools/lib.py": "8c94ae7a83dc5e94838ca429f569eb93f897168a654a4cff325ed3f36bbe24a3",
+    "tools/match.py": "21e3d2c26e4f5ca251ae973f4e4366fdcee7d10b000e6a2793e739da31d639f4",
+    "tools/setup.py": "a7a9bd71e63f0039de5211e3e9976d87d57e357be9f7a62a68cfb33758b4e56c",
+    "tools/test_binary.py": "2cf1b81b1a4ed1ca8f61f0e9f08a60e03efb7a1ccd8e92b148155ed5af85cbc5",
+    "tools/test_check.py": "2ac80e1d67d1e50f263fffbbef24a8512348e120397441b02e7af2fabf23b887",
+    "tools/test_lib.py": "54561f44ee40367574c6f1824c77198ee3a93a455ba88e2ae4c83545b79a7e78",
+    "tools/test_match.py": "27f92c2f5d185aca7d48e477f5627d05f651acad2b50e46c08569eca3de56ad2",
+    "tools/test_setup.py": "e35061d99a30a27ce7a1fb60fdb49f9a08ac89665fecaed72222b4074a87bc8f",
+    "src/batman.cpp": "f28264a610a6636dc9c38f64b74ffd8843b7274c3ab3a90a57f32ef0bb46f6d6",
     "src/nurand.cpp": "579272756be25183449ceb52407eba2bfaff5d120eef5ef27bacbd4ab9a008b2",
     "src/qrand.cpp": "661f57d94774798eee86363a8f3c6aff3f743cfaea17d223b78e1bb6392ae4e6",
+    "src/externals.c": "916dd78c1821ec46a86787fbe9e9af67d287a8c958fd01755916650250843310",
     "src/nuang.c": "380eedf4c194e3af5feed9ca200d6257f21c9fcbf96f98381d239a1c1cdf8a77"
   },
   "objects": {
-    "build/obj/nuang.obj": "2f44d8194531951e9524f1a1c3a0c4d39b4bda20d5cc19c3d789d4b01eaa6300",
-    "build/obj/nurand.obj": "9d7c516a537c699885e61ce910d669866bf0e34c7b107dbe92b793e01482eb42",
-    "build/obj/qrand.obj": "ae5faa9338d5d68f515ef0a1e3aa540b854f610b460c85cfb829aa3df034f4a6"
+    "build/obj/batman.obj": "19b9ce1c0b163141841e0b56d9a0bb6b1006146a6586dd829f2ef54bdf581960",
+    "build/obj/externals.obj": "e7b24cdf4fdc0b39ceb29e2304f0af1483dc385d9b48cb6dcf0204deb34bed08",
+    "build/obj/nuang.obj": "13d43ff5159827fd61258ce49ed5eea50644ac1a8581418fc4098ddd3d5272a7",
+    "build/obj/nurand.obj": "cc0f5f61cdaa38c61bca294c30768b1c7bca95938a7806d40baa1e143972c2c5",
+    "build/obj/qrand.obj": "e32dfda82277e1fa16d3b6d23130b0de6cfc31fef09cd0b6f1d6df6d55a82bd7"
   },
   "functions": [
+    {
+      "name": "NuMain",
+      "symbol": "_NuMain",
+      "address": "0x00492b40",
+      "units": [
+        "src/batman.cpp"
+      ],
+      "target_size": 4332,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/batman.cpp",
+          "base_size": 3,
+          "exact_match": false,
+          "target_sha256": "b21a1c5cc4d55da5db8c00161fc107d1695175b7fc48c3e62805ddf7ae85cda2",
+          "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
+          "relocation_count": 0,
+          "comparison_unit": "00492b40-dd208425f9ad",
+          "objdiff_percent": 0.17163505
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 0.17163505
+    },
     {
       "name": "?qrand@@YAHXZ",
       "symbol": "?qrand@@YAHXZ",
@@ -55,6 +85,26 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "?getqseed@@YAHXZ",
+      "symbol": "?getqseed@@YAHXZ",
+      "address": "0x0054fa80",
+      "units": [],
+      "target_size": 6,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "?ResetSeeds@@YAXXZ",
+      "symbol": "?ResetSeeds@@YAXXZ",
+      "address": "0x0054fa90",
+      "units": [],
+      "target_size": 61,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "NuRandSeed",
@@ -201,6 +251,16 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "NuWindRand",
+      "symbol": "_NuWindRand",
+      "address": "0x005b9e50",
+      "units": [],
+      "target_size": 25,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "NuRandSetSeed",
       "symbol": "_NuRandSetSeed",
       "address": "0x005b9e70",
@@ -343,6 +403,70 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuPartSetSeed",
+      "symbol": "_NuPartSetSeed",
+      "address": "0x0064a450",
+      "units": [],
+      "target_size": 10,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "NuPartGetSeed",
+      "symbol": "_NuPartGetSeed",
+      "address": "0x0064a460",
+      "units": [],
+      "target_size": 6,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "DebrisSetSeed",
+      "symbol": "_DebrisSetSeed",
+      "address": "0x00659230",
+      "units": [],
+      "target_size": 10,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "DebrisGetSeed",
+      "symbol": "_DebrisGetSeed",
+      "address": "0x00659240",
+      "units": [],
+      "target_size": 6,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "WinMain@16",
+      "symbol": "_WinMain@16",
+      "address": "0x006de0e0",
+      "units": [
+        "src/batman.cpp"
+      ],
+      "target_size": 200,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/batman.cpp",
+          "base_size": 5,
+          "exact_match": false,
+          "target_sha256": "894e3934e0161d2f6aec9a7ad4cb9c9658cf51720f1edb5e88109029276c168d",
+          "base_sha256": "743e1bd88d09aaee11fa6bad94803b7e31241e4196b32ff1abc9aba5bdd924c5",
+          "relocation_count": 0,
+          "comparison_unit": "006de0e0-cea3b1aa60e9",
+          "objdiff_percent": 3.1746032
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 3.1746032
     }
   ],
   "data": [
@@ -389,6 +513,36 @@
       "status": "exact"
     },
     {
+      "name": "??_R0?AVNetListenerInterface@@@8",
+      "symbol": "??_R0?AVNetListenerInterface@@@8",
+      "address": "0x00801dd0",
+      "units": [],
+      "target_size": 35,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVAINet@@@8",
+      "symbol": "??_R0?AVAINet@@@8",
+      "address": "0x00801df4",
+      "units": [],
+      "target_size": 20,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "?GAMERAND@@3HA",
+      "symbol": "?GAMERAND@@3HA",
+      "address": "0x00802538",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "?qseed@@3HA",
       "symbol": "?qseed@@3HA",
       "address": "0x0080253c",
@@ -408,6 +562,86 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "??_R0?AVFadeBase@@@8",
+      "symbol": "??_R0?AVFadeBase@@@8",
+      "address": "0x00802ec0",
+      "units": [],
+      "target_size": 23,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVFade@@@8",
+      "symbol": "??_R0?AVFade@@@8",
+      "address": "0x00802ed8",
+      "units": [],
+      "target_size": 19,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVFadeWipe@@@8",
+      "symbol": "??_R0?AVFadeWipe@@@8",
+      "address": "0x00802eec",
+      "units": [],
+      "target_size": 23,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVFadeStillWipe@@@8",
+      "symbol": "??_R0?AVFadeStillWipe@@@8",
+      "address": "0x00802f04",
+      "units": [],
+      "target_size": 28,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVFadeStill@@@8",
+      "symbol": "??_R0?AVFadeStill@@@8",
+      "address": "0x00802f20",
+      "units": [],
+      "target_size": 24,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVThingManager@@@8",
+      "symbol": "??_R0?AVThingManager@@@8",
+      "address": "0x00806370",
+      "units": [],
+      "target_size": 27,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVGameThingManager@@@8",
+      "symbol": "??_R0?AVGameThingManager@@@8",
+      "address": "0x0080638c",
+      "units": [],
+      "target_size": 31,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "NuWindQS",
+      "symbol": "_NuWindQS",
+      "address": "0x008065bc",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "global_rand",
@@ -441,6 +675,1146 @@
       "status": "not implemented"
     },
     {
+      "name": "??_R0?AVNuPostFilterGen@@@8",
+      "symbol": "??_R0?AVNuPostFilterGen@@@8",
+      "address": "0x0080be74",
+      "units": [],
+      "target_size": 30,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNuPostFilter@@@8",
+      "symbol": "??_R0?AVNuPostFilter@@@8",
+      "address": "0x0080be94",
+      "units": [],
+      "target_size": 27,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNuMotionFilterGen@@@8",
+      "symbol": "??_R0?AVNuMotionFilterGen@@@8",
+      "address": "0x0080bec4",
+      "units": [],
+      "target_size": 32,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNuMotionFilter@@@8",
+      "symbol": "??_R0?AVNuMotionFilter@@@8",
+      "address": "0x0080bee4",
+      "units": [],
+      "target_size": 29,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNuCopyFilter@@@8",
+      "symbol": "??_R0?AVNuCopyFilter@@@8",
+      "address": "0x0080bf04",
+      "units": [],
+      "target_size": 27,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNuMotionAccumFilterGen@@@8",
+      "symbol": "??_R0?AVNuMotionAccumFilterGen@@@8",
+      "address": "0x0080bf30",
+      "units": [],
+      "target_size": 37,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNuSpeedBlurFilterGen@@@8",
+      "symbol": "??_R0?AVNuSpeedBlurFilterGen@@@8",
+      "address": "0x0080bf58",
+      "units": [],
+      "target_size": 35,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNuDeferredFilterGen@@@8",
+      "symbol": "??_R0?AVNuDeferredFilterGen@@@8",
+      "address": "0x0080bf80",
+      "units": [],
+      "target_size": 34,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNuMainFilterGen@@@8",
+      "symbol": "??_R0?AVNuMainFilterGen@@@8",
+      "address": "0x0080c054",
+      "units": [],
+      "target_size": 30,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNuMotionAccumFilter@@@8",
+      "symbol": "??_R0?AVNuMotionAccumFilter@@@8",
+      "address": "0x0080c07c",
+      "units": [],
+      "target_size": 34,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNuSpeedBlurFilter@@@8",
+      "symbol": "??_R0?AVNuSpeedBlurFilter@@@8",
+      "address": "0x0080c0a0",
+      "units": [],
+      "target_size": 32,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNuDeferredFilter@@@8",
+      "symbol": "??_R0?AVNuDeferredFilter@@@8",
+      "address": "0x0080c0c0",
+      "units": [],
+      "target_size": 31,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVbad_alloc@std@@@8",
+      "symbol": "??_R0?AVbad_alloc@std@@@8",
+      "address": "0x0080e984",
+      "units": [],
+      "target_size": 28,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVexception@std@@@8",
+      "symbol": "??_R0?AVexception@std@@@8",
+      "address": "0x0080e9a0",
+      "units": [],
+      "target_size": 28,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNuMainFilter@@@8",
+      "symbol": "??_R0?AVNuMainFilter@@@8",
+      "address": "0x0080ea04",
+      "units": [],
+      "target_size": 27,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVlogic_error@std@@@8",
+      "symbol": "??_R0?AVlogic_error@std@@@8",
+      "address": "0x0080ea20",
+      "units": [],
+      "target_size": 30,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVlength_error@std@@@8",
+      "symbol": "??_R0?AVlength_error@std@@@8",
+      "address": "0x0080ea40",
+      "units": [],
+      "target_size": 31,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNetSmallStats@@@8",
+      "symbol": "??_R0?AVNetSmallStats@@@8",
+      "address": "0x0080ead0",
+      "units": [],
+      "target_size": 28,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNetStats@@@8",
+      "symbol": "??_R0?AVNetStats@@@8",
+      "address": "0x0080eaec",
+      "units": [],
+      "target_size": 23,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNetTransporterInterface@@@8",
+      "symbol": "??_R0?AVNetTransporterInterface@@@8",
+      "address": "0x0080eb80",
+      "units": [],
+      "target_size": 38,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNetTransporter@@@8",
+      "symbol": "??_R0?AVNetTransporter@@@8",
+      "address": "0x0080eba8",
+      "units": [],
+      "target_size": 29,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVTTNetwork@@@8",
+      "symbol": "??_R0?AVTTNetwork@@@8",
+      "address": "0x0080ebc8",
+      "units": [],
+      "target_size": 24,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVBaseThing@@@8",
+      "symbol": "??_R0?AVBaseThing@@@8",
+      "address": "0x0080ebe0",
+      "units": [],
+      "target_size": 24,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVV2SessionManager@@@8",
+      "symbol": "??_R0?AVV2SessionManager@@@8",
+      "address": "0x0080ed50",
+      "units": [],
+      "target_size": 31,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "crctab",
+      "symbol": "_crctab",
+      "address": "0x0080ed78",
+      "units": [],
+      "target_size": 1024,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVPackStats@NuNetEmu@@@8",
+      "symbol": "??_R0?AVPackStats@NuNetEmu@@@8",
+      "address": "0x0080f250",
+      "units": [],
+      "target_size": 33,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdStream@@@8",
+      "symbol": "??_R0?AVEdStream@@@8",
+      "address": "0x0080f2f0",
+      "units": [],
+      "target_size": 23,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdInputStream@@@8",
+      "symbol": "??_R0?AVEdInputStream@@@8",
+      "address": "0x0080f308",
+      "units": [],
+      "target_size": 28,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdOutputStream@@@8",
+      "symbol": "??_R0?AVEdOutputStream@@@8",
+      "address": "0x0080f324",
+      "units": [],
+      "target_size": 29,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNetInputStream@@@8",
+      "symbol": "??_R0?AVNetInputStream@@@8",
+      "address": "0x0080f344",
+      "units": [],
+      "target_size": 29,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNetOutputStream@@@8",
+      "symbol": "??_R0?AVNetOutputStream@@@8",
+      "address": "0x0080f364",
+      "units": [],
+      "target_size": 30,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdObjectNotifier@@@8",
+      "symbol": "??_R0?AVEdObjectNotifier@@@8",
+      "address": "0x0080f384",
+      "units": [],
+      "target_size": 31,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNetworkObjectManager@@@8",
+      "symbol": "??_R0?AVNetworkObjectManager@@@8",
+      "address": "0x0080f3a4",
+      "units": [],
+      "target_size": 35,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNetReplicator@@@8",
+      "symbol": "??_R0?AVNetReplicator@@@8",
+      "address": "0x0080f3c8",
+      "units": [],
+      "target_size": 28,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AV?$CSListLink@VNetReplicator@@@@@8",
+      "symbol": "??_R0?AV?$CSListLink@VNetReplicator@@@@@8",
+      "address": "0x0080f3e4",
+      "units": [],
+      "target_size": 44,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVNetFtpManager@@@8",
+      "symbol": "??_R0?AVNetFtpManager@@@8",
+      "address": "0x0080f480",
+      "units": [],
+      "target_size": 28,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdClassInterface@@@8",
+      "symbol": "??_R0?AVEdClassInterface@@@8",
+      "address": "0x0080fff4",
+      "units": [],
+      "target_size": 31,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdControl@@@8",
+      "symbol": "??_R0?AVEdControl@@@8",
+      "address": "0x00810014",
+      "units": [],
+      "target_size": 24,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdEnumControl@@@8",
+      "symbol": "??_R0?AVEdEnumControl@@@8",
+      "address": "0x0081002c",
+      "units": [],
+      "target_size": 28,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdBitControl@@@8",
+      "symbol": "??_R0?AVEdBitControl@@@8",
+      "address": "0x00810048",
+      "units": [],
+      "target_size": 27,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVRTLHelper@@@8",
+      "symbol": "??_R0?AVRTLHelper@@@8",
+      "address": "0x00810064",
+      "units": [],
+      "target_size": 24,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVFogHelper@@@8",
+      "symbol": "??_R0?AVFogHelper@@@8",
+      "address": "0x0081007c",
+      "units": [],
+      "target_size": 24,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdRefRTL@@@8",
+      "symbol": "??_R0?AVEdRefRTL@@@8",
+      "address": "0x00810094",
+      "units": [],
+      "target_size": 23,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdRef@@@8",
+      "symbol": "??_R0?AVEdRef@@@8",
+      "address": "0x008100ac",
+      "units": [],
+      "target_size": 20,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AV?$CSListLink@VEdRef@@@@@8",
+      "symbol": "??_R0?AV?$CSListLink@VEdRef@@@@@8",
+      "address": "0x008100c0",
+      "units": [],
+      "target_size": 36,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdRefFog@@@8",
+      "symbol": "??_R0?AVEdRefFog@@@8",
+      "address": "0x008100e4",
+      "units": [],
+      "target_size": 23,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AV?$EdValueControl@H@@@8",
+      "symbol": "??_R0?AV?$EdValueControl@H@@@8",
+      "address": "0x00810100",
+      "units": [],
+      "target_size": 33,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AV?$EdValueControl@M@@@8",
+      "symbol": "??_R0?AV?$EdValueControl@M@@@8",
+      "address": "0x00810124",
+      "units": [],
+      "target_size": 33,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdIntControl@@@8",
+      "symbol": "??_R0?AVEdIntControl@@@8",
+      "address": "0x00810148",
+      "units": [],
+      "target_size": 27,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdFloatControl@@@8",
+      "symbol": "??_R0?AVEdFloatControl@@@8",
+      "address": "0x00810164",
+      "units": [],
+      "target_size": 29,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "partseed",
+      "symbol": "_partseed",
+      "address": "0x008102e8",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "debrisseed",
+      "symbol": "_debrisseed",
+      "address": "0x00810900",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVWavReader@@@8",
+      "symbol": "??_R0?AVWavReader@@@8",
+      "address": "0x00810ee0",
+      "units": [],
+      "target_size": 24,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVOggReader@@@8",
+      "symbol": "??_R0?AVOggReader@@@8",
+      "address": "0x00811000",
+      "units": [],
+      "target_size": 24,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdTool@@@8",
+      "symbol": "??_R0?AVEdTool@@@8",
+      "address": "0x0081fe6c",
+      "units": [],
+      "target_size": 21,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AV?$CSListLink@VEdTool@@@@@8",
+      "symbol": "??_R0?AV?$CSListLink@VEdTool@@@@@8",
+      "address": "0x0081fe84",
+      "units": [],
+      "target_size": 37,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVBaseEditor@@@8",
+      "symbol": "??_R0?AVBaseEditor@@@8",
+      "address": "0x0081feac",
+      "units": [],
+      "target_size": 25,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AV?$CSListLink@VBaseEditor@@@@@8",
+      "symbol": "??_R0?AV?$CSListLink@VBaseEditor@@@@@8",
+      "address": "0x0081fec8",
+      "units": [],
+      "target_size": 41,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEditorSettings@@@8",
+      "symbol": "??_R0?AVEditorSettings@@@8",
+      "address": "0x0081fef4",
+      "units": [],
+      "target_size": 29,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVPlaceableInterface@@@8",
+      "symbol": "??_R0?AVPlaceableInterface@@@8",
+      "address": "0x0081ff14",
+      "units": [],
+      "target_size": 33,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVKnotHelper@@@8",
+      "symbol": "??_R0?AVKnotHelper@@@8",
+      "address": "0x0081ff38",
+      "units": [],
+      "target_size": 25,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdSubSystem@@@8",
+      "symbol": "??_R0?AVEdSubSystem@@@8",
+      "address": "0x0081ff54",
+      "units": [],
+      "target_size": 26,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AUMemBufferAllocator@@@8",
+      "symbol": "??_R0?AUMemBufferAllocator@@@8",
+      "address": "0x0081ff70",
+      "units": [],
+      "target_size": 33,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AV?$CSListLink@VEdSubSystem@@@@@8",
+      "symbol": "??_R0?AV?$CSListLink@VEdSubSystem@@@@@8",
+      "address": "0x0081ff94",
+      "units": [],
+      "target_size": 42,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdVectorControl@@@8",
+      "symbol": "??_R0?AVEdVectorControl@@@8",
+      "address": "0x0081ffc0",
+      "units": [],
+      "target_size": 30,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdMatrixControl@@@8",
+      "symbol": "??_R0?AVEdMatrixControl@@@8",
+      "address": "0x0081ffe0",
+      "units": [],
+      "target_size": 30,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdStringControl@@@8",
+      "symbol": "??_R0?AVEdStringControl@@@8",
+      "address": "0x00820000",
+      "units": [],
+      "target_size": 30,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdColourControl@@@8",
+      "symbol": "??_R0?AVEdColourControl@@@8",
+      "address": "0x00820020",
+      "units": [],
+      "target_size": 30,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdSfxNameControl@@@8",
+      "symbol": "??_R0?AVEdSfxNameControl@@@8",
+      "address": "0x00820040",
+      "units": [],
+      "target_size": 31,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdManipulator@@@8",
+      "symbol": "??_R0?AVEdManipulator@@@8",
+      "address": "0x00820060",
+      "units": [],
+      "target_size": 28,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdManMove@@@8",
+      "symbol": "??_R0?AVEdManMove@@@8",
+      "address": "0x0082007c",
+      "units": [],
+      "target_size": 24,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdManRotate@@@8",
+      "symbol": "??_R0?AVEdManRotate@@@8",
+      "address": "0x00820094",
+      "units": [],
+      "target_size": 26,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdManScale@@@8",
+      "symbol": "??_R0?AVEdManScale@@@8",
+      "address": "0x008200b0",
+      "units": [],
+      "target_size": 25,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVPlaceableNameControl@@@8",
+      "symbol": "??_R0?AVPlaceableNameControl@@@8",
+      "address": "0x008200cc",
+      "units": [],
+      "target_size": 35,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdSpecialObjectControl@@@8",
+      "symbol": "??_R0?AVEdSpecialObjectControl@@@8",
+      "address": "0x008200f0",
+      "units": [],
+      "target_size": 37,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVSplinePointBlock@@@8",
+      "symbol": "??_R0?AVSplinePointBlock@@@8",
+      "address": "0x0082011c",
+      "units": [],
+      "target_size": 31,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AV?$CSListLink@VSplinePointBlock@@@@@8",
+      "symbol": "??_R0?AV?$CSListLink@VSplinePointBlock@@@@@8",
+      "address": "0x0082013c",
+      "units": [],
+      "target_size": 47,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdFileInputStream@@@8",
+      "symbol": "??_R0?AVEdFileInputStream@@@8",
+      "address": "0x0082016c",
+      "units": [],
+      "target_size": 32,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdFileOutputStream@@@8",
+      "symbol": "??_R0?AVEdFileOutputStream@@@8",
+      "address": "0x0082018c",
+      "units": [],
+      "target_size": 33,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVCursorTool@@@8",
+      "symbol": "??_R0?AVCursorTool@@@8",
+      "address": "0x008201b0",
+      "units": [],
+      "target_size": 25,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVPlaceable@@@8",
+      "symbol": "??_R0?AVPlaceable@@@8",
+      "address": "0x008201cc",
+      "units": [],
+      "target_size": 24,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVSplineObject@@@8",
+      "symbol": "??_R0?AVSplineObject@@@8",
+      "address": "0x008201e4",
+      "units": [],
+      "target_size": 27,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AV?$CSListLink@VSplineObject@@@@@8",
+      "symbol": "??_R0?AV?$CSListLink@VSplineObject@@@@@8",
+      "address": "0x00820200",
+      "units": [],
+      "target_size": 43,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdClassObjectNameControl@@@8",
+      "symbol": "??_R0?AVEdClassObjectNameControl@@@8",
+      "address": "0x0082022c",
+      "units": [],
+      "target_size": 39,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVSpecialObject@@@8",
+      "symbol": "??_R0?AVSpecialObject@@@8",
+      "address": "0x0082025c",
+      "units": [],
+      "target_size": 28,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdRefSpecialObject@@@8",
+      "symbol": "??_R0?AVEdRefSpecialObject@@@8",
+      "address": "0x00820278",
+      "units": [],
+      "target_size": 33,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVSceneObject@@@8",
+      "symbol": "??_R0?AVSceneObject@@@8",
+      "address": "0x0082029c",
+      "units": [],
+      "target_size": 26,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVSceneInstance@@@8",
+      "symbol": "??_R0?AVSceneInstance@@@8",
+      "address": "0x008202b8",
+      "units": [],
+      "target_size": 28,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AV?$CSListLink@VSceneInstance@@@@@8",
+      "symbol": "??_R0?AV?$CSListLink@VSceneInstance@@@@@8",
+      "address": "0x008202d4",
+      "units": [],
+      "target_size": 44,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdRefPlaceable@@@8",
+      "symbol": "??_R0?AVEdRefPlaceable@@@8",
+      "address": "0x00820300",
+      "units": [],
+      "target_size": 29,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdRefSpline@@@8",
+      "symbol": "??_R0?AVEdRefSpline@@@8",
+      "address": "0x00820320",
+      "units": [],
+      "target_size": 26,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVEdRefKnot@@@8",
+      "symbol": "??_R0?AVEdRefKnot@@@8",
+      "address": "0x0082033c",
+      "units": [],
+      "target_size": 24,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVSplineHelper@@@8",
+      "symbol": "??_R0?AVSplineHelper@@@8",
+      "address": "0x00820354",
+      "units": [],
+      "target_size": 27,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVSceneObjectHelper@@@8",
+      "symbol": "??_R0?AVSceneObjectHelper@@@8",
+      "address": "0x00820370",
+      "units": [],
+      "target_size": 32,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVClassEditor@@@8",
+      "symbol": "??_R0?AVClassEditor@@@8",
+      "address": "0x00820390",
+      "units": [],
+      "target_size": 26,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVLevelEditor@@@8",
+      "symbol": "??_R0?AVLevelEditor@@@8",
+      "address": "0x008203bc",
+      "units": [],
+      "target_size": 26,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVPropertyTool@@@8",
+      "symbol": "??_R0?AVPropertyTool@@@8",
+      "address": "0x008203dc",
+      "units": [],
+      "target_size": 27,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVSplineTool@@@8",
+      "symbol": "??_R0?AVSplineTool@@@8",
+      "address": "0x008203f8",
+      "units": [],
+      "target_size": 25,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVinvalid_argument@std@@@8",
+      "symbol": "??_R0?AVinvalid_argument@std@@@8",
+      "address": "0x00829524",
+      "units": [],
+      "target_size": 35,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVout_of_range@std@@@8",
+      "symbol": "??_R0?AVout_of_range@std@@@8",
+      "address": "0x00829548",
+      "units": [],
+      "target_size": 31,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVtype_info@@@8",
+      "symbol": "??_R0?AVtype_info@@@8",
+      "address": "0x00829814",
+      "units": [],
+      "target_size": 24,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVbad_cast@std@@@8",
+      "symbol": "??_R0?AVbad_cast@std@@@8",
+      "address": "0x0082987c",
+      "units": [],
+      "target_size": 27,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVbad_typeid@std@@@8",
+      "symbol": "??_R0?AVbad_typeid@std@@@8",
+      "address": "0x00829898",
+      "units": [],
+      "target_size": 29,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AV__non_rtti_object@std@@@8",
+      "symbol": "??_R0?AV__non_rtti_object@std@@@8",
+      "address": "0x008298b8",
+      "units": [],
+      "target_size": 36,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVbad_exception@std@@@8",
+      "symbol": "??_R0?AVbad_exception@std@@@8",
+      "address": "0x00829f24",
+      "units": [],
+      "target_size": 32,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVDNameNode@@@8",
+      "symbol": "??_R0?AVDNameNode@@@8",
+      "address": "0x0082a754",
+      "units": [],
+      "target_size": 24,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVcharNode@@@8",
+      "symbol": "??_R0?AVcharNode@@@8",
+      "address": "0x0082a76c",
+      "units": [],
+      "target_size": 23,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVpDNameNode@@@8",
+      "symbol": "??_R0?AVpDNameNode@@@8",
+      "address": "0x0082a784",
+      "units": [],
+      "target_size": 25,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVDNameStatusNode@@@8",
+      "symbol": "??_R0?AVDNameStatusNode@@@8",
+      "address": "0x0082a7a0",
+      "units": [],
+      "target_size": 30,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVpcharNode@@@8",
+      "symbol": "??_R0?AVpcharNode@@@8",
+      "address": "0x0082a7c0",
+      "units": [],
+      "target_size": 24,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVShaderBuilderGen@@@8",
+      "symbol": "??_R0?AVShaderBuilderGen@@@8",
+      "address": "0x008542e0",
+      "units": [],
+      "target_size": 31,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVHLSLShaderBuilder@@@8",
+      "symbol": "??_R0?AVHLSLShaderBuilder@@@8",
+      "address": "0x00854300",
+      "units": [],
+      "target_size": 32,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AV?$ShaderManagerTemplate@VNuShaderObject@@@@@8",
+      "symbol": "??_R0?AV?$ShaderManagerTemplate@VNuShaderObject@@@@@8",
+      "address": "0x00854320",
+      "units": [],
+      "target_size": 56,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "??_R0?AVShaderManagerHLSL@@@8",
+      "symbol": "??_R0?AVShaderManagerHLSL@@@8",
+      "address": "0x00854358",
+      "units": [],
+      "target_size": 32,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "fseed",
       "symbol": "_fseed",
       "address": "0x0095e5f4",
@@ -462,15 +1836,3986 @@
       "status": "exact"
     }
   ],
+  "externals": [
+    {
+      "symbol": "_SendMessageA@16",
+      "address": "0x004eed92",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "SendMessageA",
+      "ordinal": null,
+      "iat_address": "0x0075128c"
+    },
+    {
+      "symbol": "_saga_thunk_KERNEL32_dll_GetCurrentThreadId_006f05ae@0",
+      "address": "0x006f05ae",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetCurrentThreadId",
+      "ordinal": null,
+      "iat_address": "0x007510d8"
+    },
+    {
+      "symbol": "_saga_thunk_KERNEL32_dll_GetCurrentThread_006f05b4@0",
+      "address": "0x006f05b4",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetCurrentThread",
+      "ordinal": null,
+      "iat_address": "0x00751170"
+    },
+    {
+      "symbol": "_D3DXMatrixMultiply@12",
+      "address": "0x007157c8",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXMatrixMultiply",
+      "ordinal": null,
+      "iat_address": "0x00751324"
+    },
+    {
+      "symbol": "_D3DXMatrixLookAtLH@16",
+      "address": "0x007157ce",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXMatrixLookAtLH",
+      "ordinal": null,
+      "iat_address": "0x00751328"
+    },
+    {
+      "symbol": "_D3DXMatrixOrthoLH@20",
+      "address": "0x007157d4",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXMatrixOrthoLH",
+      "ordinal": null,
+      "iat_address": "0x0075132c"
+    },
+    {
+      "symbol": "_D3DXSaveSurfaceToFileInMemory@20",
+      "address": "0x007157da",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXSaveSurfaceToFileInMemory",
+      "ordinal": null,
+      "iat_address": "0x00751314"
+    },
+    {
+      "symbol": "_D3DXCreateTextureFromFileInMemory@16",
+      "address": "0x007157e0",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateTextureFromFileInMemory",
+      "ordinal": null,
+      "iat_address": "0x00751310"
+    },
+    {
+      "symbol": "_D3DXCreateRenderToSurface@28",
+      "address": "0x007157e6",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateRenderToSurface",
+      "ordinal": null,
+      "iat_address": "0x0075130c"
+    },
+    {
+      "symbol": "_D3DXCreateFontA@48",
+      "address": "0x007157ec",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateFontA",
+      "ordinal": null,
+      "iat_address": "0x00751308"
+    },
+    {
+      "symbol": "_D3DXCreateEffectFromFileA@32",
+      "address": "0x007157f2",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateEffectFromFileA",
+      "ordinal": null,
+      "iat_address": "0x00751304"
+    },
+    {
+      "symbol": "_D3DXCreateTextureFromFileInMemoryEx@60",
+      "address": "0x007157f8",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateTextureFromFileInMemoryEx",
+      "ordinal": null,
+      "iat_address": "0x00751300"
+    },
+    {
+      "symbol": "_D3DXCreateCubeTextureFromFileInMemory@16",
+      "address": "0x007157fe",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateCubeTextureFromFileInMemory",
+      "ordinal": null,
+      "iat_address": "0x007512fc"
+    },
+    {
+      "symbol": "_D3DXCreateEffect@36",
+      "address": "0x00715804",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateEffect",
+      "ordinal": null,
+      "iat_address": "0x007512f8"
+    },
+    {
+      "symbol": "_D3DPERF_BeginEvent@8",
+      "address": "0x0071580a",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3d9.dll",
+      "import_name": "D3DPERF_BeginEvent",
+      "ordinal": null,
+      "iat_address": "0x007512f0"
+    },
+    {
+      "symbol": "_D3DPERF_EndEvent@0",
+      "address": "0x00715810",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3d9.dll",
+      "import_name": "D3DPERF_EndEvent",
+      "ordinal": null,
+      "iat_address": "0x007512ec"
+    },
+    {
+      "symbol": "_Direct3DCreate9@4",
+      "address": "0x00715816",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3d9.dll",
+      "import_name": "Direct3DCreate9",
+      "ordinal": null,
+      "iat_address": "0x007512e8"
+    },
+    {
+      "symbol": "_timeGetTime@0",
+      "address": "0x0073efb4",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "WINMM.dll",
+      "import_name": "timeGetTime",
+      "ordinal": null,
+      "iat_address": "0x0075129c"
+    },
+    {
+      "symbol": "_timeSetEvent@20",
+      "address": "0x0073efba",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "WINMM.dll",
+      "import_name": "timeSetEvent",
+      "ordinal": null,
+      "iat_address": "0x00751298"
+    },
+    {
+      "symbol": "_timeKillEvent@4",
+      "address": "0x0073efc0",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "WINMM.dll",
+      "import_name": "timeKillEvent",
+      "ordinal": null,
+      "iat_address": "0x00751294"
+    },
+    {
+      "symbol": "_DirectSoundCreate8@12",
+      "address": "0x0073efc6",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "DSOUND.dll",
+      "import_name": null,
+      "ordinal": 11,
+      "iat_address": "0x00751018"
+    },
+    {
+      "symbol": "_DirectInput8Create@20",
+      "address": "0x00740ac0",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "DINPUT8.dll",
+      "import_name": "DirectInput8Create",
+      "ordinal": null,
+      "iat_address": "0x00751010"
+    },
+    {
+      "symbol": "_BinkGetRealtime@12",
+      "address": "0x00740ac6",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkGetRealtime@12",
+      "ordinal": null,
+      "iat_address": "0x007512d4"
+    },
+    {
+      "symbol": "_BinkCopyToBufferRect@44",
+      "address": "0x00740acc",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkCopyToBufferRect@44",
+      "ordinal": null,
+      "iat_address": "0x007512d0"
+    },
+    {
+      "symbol": "_BinkDoFrame@4",
+      "address": "0x00740ad2",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkDoFrame@4",
+      "ordinal": null,
+      "iat_address": "0x007512cc"
+    },
+    {
+      "symbol": "_BinkSetSoundSystem@8",
+      "address": "0x00740ad8",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkSetSoundSystem@8",
+      "ordinal": null,
+      "iat_address": "0x007512c8"
+    },
+    {
+      "symbol": "_BinkOpenDirectSound@4",
+      "address": "0x00740ade",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkOpenDirectSound@4",
+      "ordinal": null,
+      "iat_address": "0x007512c4"
+    },
+    {
+      "symbol": "_BinkSetVolume@12",
+      "address": "0x00740ae4",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkSetVolume@12",
+      "ordinal": null,
+      "iat_address": "0x007512c0"
+    },
+    {
+      "symbol": "_BinkClose@4",
+      "address": "0x00740aea",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkClose@4",
+      "ordinal": null,
+      "iat_address": "0x007512e0"
+    },
+    {
+      "symbol": "_BinkOpen@8",
+      "address": "0x00740af0",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkOpen@8",
+      "ordinal": null,
+      "iat_address": "0x007512b8"
+    },
+    {
+      "symbol": "_BinkSetSoundTrack@8",
+      "address": "0x00740af6",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkSetSoundTrack@8",
+      "ordinal": null,
+      "iat_address": "0x007512b4"
+    },
+    {
+      "symbol": "_BinkNextFrame@4",
+      "address": "0x00740afc",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkNextFrame@4",
+      "ordinal": null,
+      "iat_address": "0x007512bc"
+    },
+    {
+      "symbol": "_BinkWait@4",
+      "address": "0x00740b02",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkWait@4",
+      "ordinal": null,
+      "iat_address": "0x007512d8"
+    },
+    {
+      "symbol": "_BinkGoto@12",
+      "address": "0x00740b08",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkGoto@12",
+      "ordinal": null,
+      "iat_address": "0x007512dc"
+    },
+    {
+      "symbol": "_XInputGetCapabilities@12",
+      "address": "0x00740b0e",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "XINPUT1_3.dll",
+      "import_name": null,
+      "ordinal": 4,
+      "iat_address": "0x007512a4"
+    },
+    {
+      "symbol": "_XInputGetState@8",
+      "address": "0x00740b14",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "XINPUT1_3.dll",
+      "import_name": null,
+      "ordinal": 2,
+      "iat_address": "0x007512a8"
+    },
+    {
+      "symbol": "_XInputSetState@8",
+      "address": "0x00740b1a",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "XINPUT1_3.dll",
+      "import_name": null,
+      "ordinal": 3,
+      "iat_address": "0x007512ac"
+    },
+    {
+      "symbol": "_Sleep@4",
+      "address": "0x00740b20",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "Sleep",
+      "ordinal": null,
+      "iat_address": "0x007510ac"
+    },
+    {
+      "symbol": "_SetEvent@4",
+      "address": "0x00740b26",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetEvent",
+      "ordinal": null,
+      "iat_address": "0x007510b0"
+    },
+    {
+      "symbol": "_LeaveCriticalSection@4",
+      "address": "0x00740b2c",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "LeaveCriticalSection",
+      "ordinal": null,
+      "iat_address": "0x007510b4"
+    },
+    {
+      "symbol": "_EnterCriticalSection@4",
+      "address": "0x00740b32",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "EnterCriticalSection",
+      "ordinal": null,
+      "iat_address": "0x007510b8"
+    },
+    {
+      "symbol": "_WaitForSingleObject@8",
+      "address": "0x00740b38",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "WaitForSingleObject",
+      "ordinal": null,
+      "iat_address": "0x007510bc"
+    },
+    {
+      "symbol": "_ResumeThread@4",
+      "address": "0x00740b3e",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "ResumeThread",
+      "ordinal": null,
+      "iat_address": "0x007510c0"
+    },
+    {
+      "symbol": "_SetThreadPriority@8",
+      "address": "0x00740b44",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetThreadPriority",
+      "ordinal": null,
+      "iat_address": "0x007510c4"
+    },
+    {
+      "symbol": "_CreateThread@24",
+      "address": "0x00740b4a",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "CreateThread",
+      "ordinal": null,
+      "iat_address": "0x007510c8"
+    },
+    {
+      "symbol": "_CreateEventA@16",
+      "address": "0x00740b50",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "CreateEventA",
+      "ordinal": null,
+      "iat_address": "0x007510cc"
+    },
+    {
+      "symbol": "_InitializeCriticalSection@4",
+      "address": "0x00740b56",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "InitializeCriticalSection",
+      "ordinal": null,
+      "iat_address": "0x007510d0"
+    },
+    {
+      "symbol": "_ResetEvent@4",
+      "address": "0x00740b5c",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "ResetEvent",
+      "ordinal": null,
+      "iat_address": "0x007510d4"
+    },
+    {
+      "symbol": "_GetCurrentThreadId@0",
+      "address": "0x00740b62",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetCurrentThreadId",
+      "ordinal": null,
+      "iat_address": "0x007510d8"
+    },
+    {
+      "symbol": "_CreateFileA@28",
+      "address": "0x00740b68",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "CreateFileA",
+      "ordinal": null,
+      "iat_address": "0x007510dc"
+    },
+    {
+      "symbol": "_CloseHandle@4",
+      "address": "0x00740b6e",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "CloseHandle",
+      "ordinal": null,
+      "iat_address": "0x007510e0"
+    },
+    {
+      "symbol": "_ReadFile@20",
+      "address": "0x00740b74",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "ReadFile",
+      "ordinal": null,
+      "iat_address": "0x007510e4"
+    },
+    {
+      "symbol": "_WriteFile@20",
+      "address": "0x00740b7a",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "WriteFile",
+      "ordinal": null,
+      "iat_address": "0x007510e8"
+    },
+    {
+      "symbol": "_SetFilePointerEx@20",
+      "address": "0x00740b80",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetFilePointerEx",
+      "ordinal": null,
+      "iat_address": "0x007510ec"
+    },
+    {
+      "symbol": "_MoveFileA@8",
+      "address": "0x00740b86",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "MoveFileA",
+      "ordinal": null,
+      "iat_address": "0x007510f0"
+    },
+    {
+      "symbol": "_DeleteFileA@4",
+      "address": "0x00740b8c",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "DeleteFileA",
+      "ordinal": null,
+      "iat_address": "0x007510f4"
+    },
+    {
+      "symbol": "_FindFirstFileA@8",
+      "address": "0x00740b92",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "FindFirstFileA",
+      "ordinal": null,
+      "iat_address": "0x007510f8"
+    },
+    {
+      "symbol": "_FindClose@4",
+      "address": "0x00740b98",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "FindClose",
+      "ordinal": null,
+      "iat_address": "0x007510fc"
+    },
+    {
+      "symbol": "_FindNextFileA@8",
+      "address": "0x00740b9e",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "FindNextFileA",
+      "ordinal": null,
+      "iat_address": "0x00751100"
+    },
+    {
+      "symbol": "_FileTimeToSystemTime@8",
+      "address": "0x00740ba4",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "FileTimeToSystemTime",
+      "ordinal": null,
+      "iat_address": "0x00751104"
+    },
+    {
+      "symbol": "_CreateDirectoryA@8",
+      "address": "0x00740baa",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "CreateDirectoryA",
+      "ordinal": null,
+      "iat_address": "0x00751108"
+    },
+    {
+      "symbol": "_GetFileAttributesExA@12",
+      "address": "0x00740bb0",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetFileAttributesExA",
+      "ordinal": null,
+      "iat_address": "0x0075110c"
+    },
+    {
+      "symbol": "_QueryPerformanceCounter@4",
+      "address": "0x00740bb6",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "QueryPerformanceCounter",
+      "ordinal": null,
+      "iat_address": "0x00751110"
+    },
+    {
+      "symbol": "_QueryPerformanceFrequency@4",
+      "address": "0x00740bbc",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "QueryPerformanceFrequency",
+      "ordinal": null,
+      "iat_address": "0x00751114"
+    },
+    {
+      "symbol": "_SetProcessAffinityMask@8",
+      "address": "0x00740bc2",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetProcessAffinityMask",
+      "ordinal": null,
+      "iat_address": "0x00751118"
+    },
+    {
+      "symbol": "_GetProcessAffinityMask@12",
+      "address": "0x00740bc8",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetProcessAffinityMask",
+      "ordinal": null,
+      "iat_address": "0x0075111c"
+    },
+    {
+      "symbol": "_GetCurrentProcess@0",
+      "address": "0x00740bce",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetCurrentProcess",
+      "ordinal": null,
+      "iat_address": "0x00751120"
+    },
+    {
+      "symbol": "_MultiByteToWideChar@24",
+      "address": "0x00740bd4",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "MultiByteToWideChar",
+      "ordinal": null,
+      "iat_address": "0x00751124"
+    },
+    {
+      "symbol": "_GetTimeFormatA@24",
+      "address": "0x00740bda",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetTimeFormatA",
+      "ordinal": null,
+      "iat_address": "0x00751128"
+    },
+    {
+      "symbol": "_GetDateFormatA@24",
+      "address": "0x00740be0",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetDateFormatA",
+      "ordinal": null,
+      "iat_address": "0x0075112c"
+    },
+    {
+      "symbol": "_GetTickCount@0",
+      "address": "0x00740be6",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetTickCount",
+      "ordinal": null,
+      "iat_address": "0x00751130"
+    },
+    {
+      "symbol": "_DebugBreak@0",
+      "address": "0x00740bec",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "DebugBreak",
+      "ordinal": null,
+      "iat_address": "0x00751134"
+    },
+    {
+      "symbol": "_GetLogicalDriveStringsA@8",
+      "address": "0x00740bf2",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetLogicalDriveStringsA",
+      "ordinal": null,
+      "iat_address": "0x00751138"
+    },
+    {
+      "symbol": "_DeleteCriticalSection@4",
+      "address": "0x00740bf8",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "DeleteCriticalSection",
+      "ordinal": null,
+      "iat_address": "0x0075113c"
+    },
+    {
+      "symbol": "_WaitForMultipleObjects@16",
+      "address": "0x00740bfe",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "WaitForMultipleObjects",
+      "ordinal": null,
+      "iat_address": "0x00751140"
+    },
+    {
+      "symbol": "_GetFileSize@8",
+      "address": "0x00740c04",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetFileSize",
+      "ordinal": null,
+      "iat_address": "0x00751144"
+    },
+    {
+      "symbol": "_GetUserGeoID@4",
+      "address": "0x00740c0a",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetUserGeoID",
+      "ordinal": null,
+      "iat_address": "0x00751148"
+    },
+    {
+      "symbol": "_GetUserDefaultLangID@0",
+      "address": "0x00740c10",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetUserDefaultLangID",
+      "ordinal": null,
+      "iat_address": "0x0075114c"
+    },
+    {
+      "symbol": "_GetModuleFileNameA@12",
+      "address": "0x00740c16",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetModuleFileNameA",
+      "ordinal": null,
+      "iat_address": "0x00751150"
+    },
+    {
+      "symbol": "_GetModuleHandleA@4",
+      "address": "0x00740c1c",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetModuleHandleA",
+      "ordinal": null,
+      "iat_address": "0x00751154"
+    },
+    {
+      "symbol": "_VerifyVersionInfoA@16",
+      "address": "0x00740c22",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "VerifyVersionInfoA",
+      "ordinal": null,
+      "iat_address": "0x00751158"
+    },
+    {
+      "symbol": "_VerSetConditionMask@16",
+      "address": "0x00740c28",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "VerSetConditionMask",
+      "ordinal": null,
+      "iat_address": "0x0075115c"
+    },
+    {
+      "symbol": "_GetFileAttributesA@4",
+      "address": "0x00740c2e",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetFileAttributesA",
+      "ordinal": null,
+      "iat_address": "0x00751160"
+    },
+    {
+      "symbol": "_ExpandEnvironmentStringsA@12",
+      "address": "0x00740c34",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "ExpandEnvironmentStringsA",
+      "ordinal": null,
+      "iat_address": "0x00751164"
+    },
+    {
+      "symbol": "_SetThreadExecutionState@4",
+      "address": "0x00740c3a",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetThreadExecutionState",
+      "ordinal": null,
+      "iat_address": "0x00751168"
+    },
+    {
+      "symbol": "_SetThreadAffinityMask@8",
+      "address": "0x00740c40",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetThreadAffinityMask",
+      "ordinal": null,
+      "iat_address": "0x0075116c"
+    },
+    {
+      "symbol": "_GetCurrentThread@0",
+      "address": "0x00740c46",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetCurrentThread",
+      "ordinal": null,
+      "iat_address": "0x00751170"
+    },
+    {
+      "symbol": "_OutputDebugStringA@4",
+      "address": "0x00740c4c",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "OutputDebugStringA",
+      "ordinal": null,
+      "iat_address": "0x00751174"
+    },
+    {
+      "symbol": "_GetCommandLineA@0",
+      "address": "0x00740c52",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetCommandLineA",
+      "ordinal": null,
+      "iat_address": "0x00751178"
+    },
+    {
+      "symbol": "_HeapFree@12",
+      "address": "0x00740c58",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "HeapFree",
+      "ordinal": null,
+      "iat_address": "0x0075117c"
+    },
+    {
+      "symbol": "_GetVersionExA@4",
+      "address": "0x00740c5e",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetVersionExA",
+      "ordinal": null,
+      "iat_address": "0x00751180"
+    },
+    {
+      "symbol": "_HeapAlloc@12",
+      "address": "0x00740c64",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "HeapAlloc",
+      "ordinal": null,
+      "iat_address": "0x00751184"
+    },
+    {
+      "symbol": "_GetProcessHeap@0",
+      "address": "0x00740c6a",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetProcessHeap",
+      "ordinal": null,
+      "iat_address": "0x00751188"
+    },
+    {
+      "symbol": "_GetStartupInfoA@4",
+      "address": "0x00740c70",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetStartupInfoA",
+      "ordinal": null,
+      "iat_address": "0x0075118c"
+    },
+    {
+      "symbol": "_GetLastError@0",
+      "address": "0x00740c76",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetLastError",
+      "ordinal": null,
+      "iat_address": "0x00751190"
+    },
+    {
+      "symbol": "_HeapReAlloc@16",
+      "address": "0x00740c7c",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "HeapReAlloc",
+      "ordinal": null,
+      "iat_address": "0x00751194"
+    },
+    {
+      "symbol": "_TerminateProcess@8",
+      "address": "0x00740c82",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "TerminateProcess",
+      "ordinal": null,
+      "iat_address": "0x00751198"
+    },
+    {
+      "symbol": "_UnhandledExceptionFilter@4",
+      "address": "0x00740c88",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "UnhandledExceptionFilter",
+      "ordinal": null,
+      "iat_address": "0x0075119c"
+    },
+    {
+      "symbol": "_SetUnhandledExceptionFilter@4",
+      "address": "0x00740c8e",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetUnhandledExceptionFilter",
+      "ordinal": null,
+      "iat_address": "0x007511a0"
+    },
+    {
+      "symbol": "_IsDebuggerPresent@0",
+      "address": "0x00740c94",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "IsDebuggerPresent",
+      "ordinal": null,
+      "iat_address": "0x00751064"
+    },
+    {
+      "symbol": "_RaiseException@16",
+      "address": "0x00740c9a",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "RaiseException",
+      "ordinal": null,
+      "iat_address": "0x007511a8"
+    },
+    {
+      "symbol": "_RtlUnwind@16",
+      "address": "0x00740ca0",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "RtlUnwind",
+      "ordinal": null,
+      "iat_address": "0x007511ac"
+    },
+    {
+      "symbol": "_GetProcAddress@8",
+      "address": "0x00740ca6",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetProcAddress",
+      "ordinal": null,
+      "iat_address": "0x007511b0"
+    },
+    {
+      "symbol": "_ExitProcess@4",
+      "address": "0x00740cac",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "ExitProcess",
+      "ordinal": null,
+      "iat_address": "0x007511b4"
+    },
+    {
+      "symbol": "_SetConsoleCtrlHandler@8",
+      "address": "0x00740cb2",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetConsoleCtrlHandler",
+      "ordinal": null,
+      "iat_address": "0x007511b8"
+    },
+    {
+      "symbol": "_TlsGetValue@4",
+      "address": "0x00740cb8",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "TlsGetValue",
+      "ordinal": null,
+      "iat_address": "0x007511bc"
+    },
+    {
+      "symbol": "_TlsAlloc@0",
+      "address": "0x00740cbe",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "TlsAlloc",
+      "ordinal": null,
+      "iat_address": "0x007511c0"
+    },
+    {
+      "symbol": "_TlsSetValue@8",
+      "address": "0x00740cc4",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "TlsSetValue",
+      "ordinal": null,
+      "iat_address": "0x007511c4"
+    },
+    {
+      "symbol": "_TlsFree@4",
+      "address": "0x00740cca",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "TlsFree",
+      "ordinal": null,
+      "iat_address": "0x007511c8"
+    },
+    {
+      "symbol": "_InterlockedIncrement@4",
+      "address": "0x00740cd0",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "InterlockedIncrement",
+      "ordinal": null,
+      "iat_address": "0x007511cc"
+    },
+    {
+      "symbol": "_SetLastError@4",
+      "address": "0x00740cd6",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetLastError",
+      "ordinal": null,
+      "iat_address": "0x007511d0"
+    },
+    {
+      "symbol": "_InterlockedDecrement@4",
+      "address": "0x00740cdc",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "InterlockedDecrement",
+      "ordinal": null,
+      "iat_address": "0x007511d4"
+    },
+    {
+      "symbol": "_HeapSize@12",
+      "address": "0x00740ce2",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "HeapSize",
+      "ordinal": null,
+      "iat_address": "0x007511d8"
+    },
+    {
+      "symbol": "_GetStdHandle@4",
+      "address": "0x00740ce8",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetStdHandle",
+      "ordinal": null,
+      "iat_address": "0x007511dc"
+    },
+    {
+      "symbol": "_FreeEnvironmentStringsA@4",
+      "address": "0x00740cee",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "FreeEnvironmentStringsA",
+      "ordinal": null,
+      "iat_address": "0x007511e0"
+    },
+    {
+      "symbol": "_GetEnvironmentStrings@0",
+      "address": "0x00740cf4",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetEnvironmentStrings",
+      "ordinal": null,
+      "iat_address": "0x007511e4"
+    },
+    {
+      "symbol": "_FreeEnvironmentStringsW@4",
+      "address": "0x00740cfa",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "FreeEnvironmentStringsW",
+      "ordinal": null,
+      "iat_address": "0x007511e8"
+    },
+    {
+      "symbol": "_WideCharToMultiByte@32",
+      "address": "0x00740d00",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "WideCharToMultiByte",
+      "ordinal": null,
+      "iat_address": "0x007511ec"
+    },
+    {
+      "symbol": "_GetEnvironmentStringsW@0",
+      "address": "0x00740d06",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetEnvironmentStringsW",
+      "ordinal": null,
+      "iat_address": "0x007511f0"
+    },
+    {
+      "symbol": "_SetHandleCount@4",
+      "address": "0x00740d0c",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetHandleCount",
+      "ordinal": null,
+      "iat_address": "0x007511f4"
+    },
+    {
+      "symbol": "_GetFileType@4",
+      "address": "0x00740d12",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetFileType",
+      "ordinal": null,
+      "iat_address": "0x007511f8"
+    },
+    {
+      "symbol": "_HeapDestroy@4",
+      "address": "0x00740d18",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "HeapDestroy",
+      "ordinal": null,
+      "iat_address": "0x007511fc"
+    },
+    {
+      "symbol": "_HeapCreate@12",
+      "address": "0x00740d1e",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "HeapCreate",
+      "ordinal": null,
+      "iat_address": "0x00751200"
+    },
+    {
+      "symbol": "_VirtualFree@12",
+      "address": "0x00740d24",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "VirtualFree",
+      "ordinal": null,
+      "iat_address": "0x00751204"
+    },
+    {
+      "symbol": "_GetCurrentProcessId@0",
+      "address": "0x00740d2a",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetCurrentProcessId",
+      "ordinal": null,
+      "iat_address": "0x00751208"
+    },
+    {
+      "symbol": "_GetSystemTimeAsFileTime@4",
+      "address": "0x00740d30",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetSystemTimeAsFileTime",
+      "ordinal": null,
+      "iat_address": "0x007511a4"
+    },
+    {
+      "symbol": "_FatalAppExitA@8",
+      "address": "0x00740d36",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "FatalAppExitA",
+      "ordinal": null,
+      "iat_address": "0x007510a8"
+    },
+    {
+      "symbol": "_VirtualAlloc@16",
+      "address": "0x00740d3c",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "VirtualAlloc",
+      "ordinal": null,
+      "iat_address": "0x007510a4"
+    },
+    {
+      "symbol": "_SetFilePointer@16",
+      "address": "0x00740d42",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetFilePointer",
+      "ordinal": null,
+      "iat_address": "0x007510a0"
+    },
+    {
+      "symbol": "_GetConsoleCP@0",
+      "address": "0x00740d48",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetConsoleCP",
+      "ordinal": null,
+      "iat_address": "0x0075109c"
+    },
+    {
+      "symbol": "_GetConsoleMode@8",
+      "address": "0x00740d4e",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetConsoleMode",
+      "ordinal": null,
+      "iat_address": "0x00751098"
+    },
+    {
+      "symbol": "_FlushFileBuffers@4",
+      "address": "0x00740d54",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "FlushFileBuffers",
+      "ordinal": null,
+      "iat_address": "0x00751094"
+    },
+    {
+      "symbol": "_GetCPInfo@8",
+      "address": "0x00740d5a",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetCPInfo",
+      "ordinal": null,
+      "iat_address": "0x00751090"
+    },
+    {
+      "symbol": "_GetACP@0",
+      "address": "0x00740d60",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetACP",
+      "ordinal": null,
+      "iat_address": "0x0075108c"
+    },
+    {
+      "symbol": "_GetOEMCP@0",
+      "address": "0x00740d66",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetOEMCP",
+      "ordinal": null,
+      "iat_address": "0x00751088"
+    },
+    {
+      "symbol": "_IsValidCodePage@4",
+      "address": "0x00740d6c",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "IsValidCodePage",
+      "ordinal": null,
+      "iat_address": "0x00751084"
+    },
+    {
+      "symbol": "_LCMapStringA@24",
+      "address": "0x00740d72",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "LCMapStringA",
+      "ordinal": null,
+      "iat_address": "0x00751080"
+    },
+    {
+      "symbol": "_LCMapStringW@24",
+      "address": "0x00740d78",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "LCMapStringW",
+      "ordinal": null,
+      "iat_address": "0x0075107c"
+    },
+    {
+      "symbol": "_SetStdHandle@8",
+      "address": "0x00740d7e",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetStdHandle",
+      "ordinal": null,
+      "iat_address": "0x00751078"
+    },
+    {
+      "symbol": "_FreeLibrary@4",
+      "address": "0x00740d84",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "FreeLibrary",
+      "ordinal": null,
+      "iat_address": "0x00751074"
+    },
+    {
+      "symbol": "_InterlockedExchange@8",
+      "address": "0x00740d8a",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "InterlockedExchange",
+      "ordinal": null,
+      "iat_address": "0x00751070"
+    },
+    {
+      "symbol": "_LoadLibraryA@4",
+      "address": "0x00740d90",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "LoadLibraryA",
+      "ordinal": null,
+      "iat_address": "0x0075106c"
+    },
+    {
+      "symbol": "_GetLocaleInfoA@16",
+      "address": "0x00740d96",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetLocaleInfoA",
+      "ordinal": null,
+      "iat_address": "0x00751068"
+    },
+    {
+      "symbol": "_GetLocaleInfoW@16",
+      "address": "0x00740d9c",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetLocaleInfoW",
+      "ordinal": null,
+      "iat_address": "0x00751054"
+    },
+    {
+      "symbol": "_WriteConsoleA@20",
+      "address": "0x00740da2",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "WriteConsoleA",
+      "ordinal": null,
+      "iat_address": "0x00751050"
+    },
+    {
+      "symbol": "_GetConsoleOutputCP@0",
+      "address": "0x00740da8",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetConsoleOutputCP",
+      "ordinal": null,
+      "iat_address": "0x0075104c"
+    },
+    {
+      "symbol": "_WriteConsoleW@20",
+      "address": "0x00740dae",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "WriteConsoleW",
+      "ordinal": null,
+      "iat_address": "0x00751048"
+    },
+    {
+      "symbol": "_GetStringTypeA@20",
+      "address": "0x00740db4",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetStringTypeA",
+      "ordinal": null,
+      "iat_address": "0x00751044"
+    },
+    {
+      "symbol": "_GetStringTypeW@16",
+      "address": "0x00740dba",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetStringTypeW",
+      "ordinal": null,
+      "iat_address": "0x00751040"
+    },
+    {
+      "symbol": "_GetUserDefaultLCID@0",
+      "address": "0x00740dc0",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetUserDefaultLCID",
+      "ordinal": null,
+      "iat_address": "0x0075103c"
+    },
+    {
+      "symbol": "_EnumSystemLocalesA@8",
+      "address": "0x00740dc6",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "EnumSystemLocalesA",
+      "ordinal": null,
+      "iat_address": "0x00751028"
+    },
+    {
+      "symbol": "_IsValidLocale@8",
+      "address": "0x00740dcc",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "IsValidLocale",
+      "ordinal": null,
+      "iat_address": "0x0075102c"
+    },
+    {
+      "symbol": "_SetEndOfFile@4",
+      "address": "0x00740dd2",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetEndOfFile",
+      "ordinal": null,
+      "iat_address": "0x00751030"
+    },
+    {
+      "symbol": "_GetTimeZoneInformation@4",
+      "address": "0x00740dd8",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetTimeZoneInformation",
+      "ordinal": null,
+      "iat_address": "0x00751034"
+    },
+    {
+      "symbol": "_CompareStringA@24",
+      "address": "0x00740dde",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "CompareStringA",
+      "ordinal": null,
+      "iat_address": "0x00751038"
+    },
+    {
+      "symbol": "_CompareStringW@24",
+      "address": "0x00740de4",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "CompareStringW",
+      "ordinal": null,
+      "iat_address": "0x00751058"
+    },
+    {
+      "symbol": "_SetEnvironmentVariableA@8",
+      "address": "0x00740dea",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetEnvironmentVariableA",
+      "ordinal": null,
+      "iat_address": "0x0075105c"
+    },
+    {
+      "symbol": "_OutputDebugStringW@4",
+      "address": "0x00740df0",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "KERNEL32.dll",
+      "import_name": "OutputDebugStringW",
+      "ordinal": null,
+      "iat_address": "0x00751060"
+    },
+    {
+      "symbol": "_SetCursor@4",
+      "address": "0x00740df6",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "SetCursor",
+      "ordinal": null,
+      "iat_address": "0x00751284"
+    },
+    {
+      "symbol": "_MapVirtualKeyExA@12",
+      "address": "0x00740dfc",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "MapVirtualKeyExA",
+      "ordinal": null,
+      "iat_address": "0x00751280"
+    },
+    {
+      "symbol": "_LoadKeyboardLayoutA@8",
+      "address": "0x00740e02",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "LoadKeyboardLayoutA",
+      "ordinal": null,
+      "iat_address": "0x00751278"
+    },
+    {
+      "symbol": "_SystemParametersInfoA@16",
+      "address": "0x00740e08",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "SystemParametersInfoA",
+      "ordinal": null,
+      "iat_address": "0x0075127c"
+    },
+    {
+      "symbol": "_MessageBoxA@16",
+      "address": "0x00740e0e",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "MessageBoxA",
+      "ordinal": null,
+      "iat_address": "0x00751274"
+    },
+    {
+      "symbol": "_UpdateWindow@4",
+      "address": "0x00740e14",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "UpdateWindow",
+      "ordinal": null,
+      "iat_address": "0x00751270"
+    },
+    {
+      "symbol": "_ShowWindow@8",
+      "address": "0x00740e1a",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "ShowWindow",
+      "ordinal": null,
+      "iat_address": "0x0075124c"
+    },
+    {
+      "symbol": "_GetSystemMetrics@4",
+      "address": "0x00740e20",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "GetSystemMetrics",
+      "ordinal": null,
+      "iat_address": "0x0075122c"
+    },
+    {
+      "symbol": "_DispatchMessageA@4",
+      "address": "0x00740e26",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "DispatchMessageA",
+      "ordinal": null,
+      "iat_address": "0x00751230"
+    },
+    {
+      "symbol": "_TranslateMessage@4",
+      "address": "0x00740e2c",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "TranslateMessage",
+      "ordinal": null,
+      "iat_address": "0x00751234"
+    },
+    {
+      "symbol": "_PeekMessageA@20",
+      "address": "0x00740e32",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "PeekMessageA",
+      "ordinal": null,
+      "iat_address": "0x00751238"
+    },
+    {
+      "symbol": "_SetCursorPos@8",
+      "address": "0x00740e38",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "SetCursorPos",
+      "ordinal": null,
+      "iat_address": "0x0075123c"
+    },
+    {
+      "symbol": "_DestroyWindow@4",
+      "address": "0x00740e3e",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "DestroyWindow",
+      "ordinal": null,
+      "iat_address": "0x00751240"
+    },
+    {
+      "symbol": "_DefWindowProcA@16",
+      "address": "0x00740e44",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "DefWindowProcA",
+      "ordinal": null,
+      "iat_address": "0x00751244"
+    },
+    {
+      "symbol": "_PostQuitMessage@4",
+      "address": "0x00740e4a",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "PostQuitMessage",
+      "ordinal": null,
+      "iat_address": "0x00751248"
+    },
+    {
+      "symbol": "_AdjustWindowRect@12",
+      "address": "0x00740e50",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "AdjustWindowRect",
+      "ordinal": null,
+      "iat_address": "0x00751288"
+    },
+    {
+      "symbol": "_GetWindowLongA@8",
+      "address": "0x00740e56",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "GetWindowLongA",
+      "ordinal": null,
+      "iat_address": "0x00751250"
+    },
+    {
+      "symbol": "_CreateWindowExA@48",
+      "address": "0x00740e5c",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "CreateWindowExA",
+      "ordinal": null,
+      "iat_address": "0x00751254"
+    },
+    {
+      "symbol": "_RegisterClassExA@4",
+      "address": "0x00740e62",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "RegisterClassExA",
+      "ordinal": null,
+      "iat_address": "0x00751258"
+    },
+    {
+      "symbol": "_LoadCursorA@8",
+      "address": "0x00740e68",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "LoadCursorA",
+      "ordinal": null,
+      "iat_address": "0x0075125c"
+    },
+    {
+      "symbol": "_LoadIconA@8",
+      "address": "0x00740e6e",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "LoadIconA",
+      "ordinal": null,
+      "iat_address": "0x00751260"
+    },
+    {
+      "symbol": "_MoveWindow@24",
+      "address": "0x00740e74",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "MoveWindow",
+      "ordinal": null,
+      "iat_address": "0x00751264"
+    },
+    {
+      "symbol": "_MessageBoxW@16",
+      "address": "0x00740e7a",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "MessageBoxW",
+      "ordinal": null,
+      "iat_address": "0x00751268"
+    },
+    {
+      "symbol": "_GetForegroundWindow@0",
+      "address": "0x00740e80",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "USER32.dll",
+      "import_name": "GetForegroundWindow",
+      "ordinal": null,
+      "iat_address": "0x0075126c"
+    },
+    {
+      "symbol": "_DeleteObject@4",
+      "address": "0x00740e86",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "GDI32.dll",
+      "import_name": "DeleteObject",
+      "ordinal": null,
+      "iat_address": "0x00751020"
+    },
+    {
+      "symbol": "_RegCloseKey@4",
+      "address": "0x00740e8c",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "ADVAPI32.dll",
+      "import_name": "RegCloseKey",
+      "ordinal": null,
+      "iat_address": "0x00751000"
+    },
+    {
+      "symbol": "_RegQueryValueExA@24",
+      "address": "0x00740e92",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "ADVAPI32.dll",
+      "import_name": "RegQueryValueExA",
+      "ordinal": null,
+      "iat_address": "0x00751008"
+    },
+    {
+      "symbol": "_RegOpenKeyExA@20",
+      "address": "0x00740e98",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "ADVAPI32.dll",
+      "import_name": "RegOpenKeyExA",
+      "ordinal": null,
+      "iat_address": "0x00751004"
+    },
+    {
+      "symbol": "_ShellExecuteA@24",
+      "address": "0x00740e9e",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "SHELL32.dll",
+      "import_name": "ShellExecuteA",
+      "ordinal": null,
+      "iat_address": "0x00751220"
+    },
+    {
+      "symbol": "_SHGetFolderPathA@20",
+      "address": "0x00740ea4",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "SHELL32.dll",
+      "import_name": "SHGetFolderPathA",
+      "ordinal": null,
+      "iat_address": "0x0075121c"
+    },
+    {
+      "symbol": "_SHCreateDirectoryExA@12",
+      "address": "0x00740eaa",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "SHELL32.dll",
+      "import_name": "SHCreateDirectoryExA",
+      "ordinal": null,
+      "iat_address": "0x00751224"
+    },
+    {
+      "symbol": "_CoUninitialize@0",
+      "address": "0x00740eb0",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "ole32.dll",
+      "import_name": "CoUninitialize",
+      "ordinal": null,
+      "iat_address": "0x00751340"
+    },
+    {
+      "symbol": "_CoSetProxyBlanket@32",
+      "address": "0x00740eb6",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "ole32.dll",
+      "import_name": "CoSetProxyBlanket",
+      "ordinal": null,
+      "iat_address": "0x00751344"
+    },
+    {
+      "symbol": "_CoCreateInstance@20",
+      "address": "0x00740ebc",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "ole32.dll",
+      "import_name": "CoCreateInstance",
+      "ordinal": null,
+      "iat_address": "0x0075133c"
+    },
+    {
+      "symbol": "_CoInitialize@4",
+      "address": "0x00740ec2",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "ole32.dll",
+      "import_name": "CoInitialize",
+      "ordinal": null,
+      "iat_address": "0x00751338"
+    },
+    {
+      "symbol": "_CoInitializeEx@8",
+      "address": "0x00740ec8",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "ole32.dll",
+      "import_name": "CoInitializeEx",
+      "ordinal": null,
+      "iat_address": "0x00751334"
+    },
+    {
+      "symbol": "_SysFreeString@4",
+      "address": "0x00740ece",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "OLEAUT32.dll",
+      "import_name": null,
+      "ordinal": 6,
+      "iat_address": "0x00751214"
+    },
+    {
+      "symbol": "_SysAllocString@4",
+      "address": "0x00740ed4",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "OLEAUT32.dll",
+      "import_name": null,
+      "ordinal": 2,
+      "iat_address": "0x00751210"
+    },
+    {
+      "symbol": "_D3DXCompileShader@40",
+      "address": "0x0074fbdc",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCompileShader",
+      "ordinal": null,
+      "iat_address": "0x00751320"
+    },
+    {
+      "symbol": "_D3DXCreateEffectCompiler@28",
+      "address": "0x0074fbe2",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateEffectCompiler",
+      "ordinal": null,
+      "iat_address": "0x00751318"
+    },
+    {
+      "symbol": "_D3DXCreateBuffer@8",
+      "address": "0x0074fbe8",
+      "size": 6,
+      "kind": "import thunk",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateBuffer",
+      "ordinal": null,
+      "iat_address": "0x0075131c"
+    },
+    {
+      "symbol": "__imp__RegCloseKey@4",
+      "address": "0x00751000",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "ADVAPI32.dll",
+      "import_name": "RegCloseKey",
+      "ordinal": null,
+      "iat_address": "0x00751000"
+    },
+    {
+      "symbol": "__imp__RegOpenKeyExA@20",
+      "address": "0x00751004",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "ADVAPI32.dll",
+      "import_name": "RegOpenKeyExA",
+      "ordinal": null,
+      "iat_address": "0x00751004"
+    },
+    {
+      "symbol": "__imp__RegQueryValueExA@24",
+      "address": "0x00751008",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "ADVAPI32.dll",
+      "import_name": "RegQueryValueExA",
+      "ordinal": null,
+      "iat_address": "0x00751008"
+    },
+    {
+      "symbol": "__imp__DirectInput8Create@20",
+      "address": "0x00751010",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "DINPUT8.dll",
+      "import_name": "DirectInput8Create",
+      "ordinal": null,
+      "iat_address": "0x00751010"
+    },
+    {
+      "symbol": "__imp__DirectSoundCreate8@12",
+      "address": "0x00751018",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "DSOUND.dll",
+      "import_name": null,
+      "ordinal": 11,
+      "iat_address": "0x00751018"
+    },
+    {
+      "symbol": "__imp__DeleteObject@4",
+      "address": "0x00751020",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "GDI32.dll",
+      "import_name": "DeleteObject",
+      "ordinal": null,
+      "iat_address": "0x00751020"
+    },
+    {
+      "symbol": "__imp__EnumSystemLocalesA@8",
+      "address": "0x00751028",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "EnumSystemLocalesA",
+      "ordinal": null,
+      "iat_address": "0x00751028"
+    },
+    {
+      "symbol": "__imp__IsValidLocale@8",
+      "address": "0x0075102c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "IsValidLocale",
+      "ordinal": null,
+      "iat_address": "0x0075102c"
+    },
+    {
+      "symbol": "__imp__SetEndOfFile@4",
+      "address": "0x00751030",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetEndOfFile",
+      "ordinal": null,
+      "iat_address": "0x00751030"
+    },
+    {
+      "symbol": "__imp__GetTimeZoneInformation@4",
+      "address": "0x00751034",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetTimeZoneInformation",
+      "ordinal": null,
+      "iat_address": "0x00751034"
+    },
+    {
+      "symbol": "__imp__CompareStringA@24",
+      "address": "0x00751038",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "CompareStringA",
+      "ordinal": null,
+      "iat_address": "0x00751038"
+    },
+    {
+      "symbol": "__imp__GetUserDefaultLCID@0",
+      "address": "0x0075103c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetUserDefaultLCID",
+      "ordinal": null,
+      "iat_address": "0x0075103c"
+    },
+    {
+      "symbol": "__imp__GetStringTypeW@16",
+      "address": "0x00751040",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetStringTypeW",
+      "ordinal": null,
+      "iat_address": "0x00751040"
+    },
+    {
+      "symbol": "__imp__GetStringTypeA@20",
+      "address": "0x00751044",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetStringTypeA",
+      "ordinal": null,
+      "iat_address": "0x00751044"
+    },
+    {
+      "symbol": "__imp__WriteConsoleW@20",
+      "address": "0x00751048",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "WriteConsoleW",
+      "ordinal": null,
+      "iat_address": "0x00751048"
+    },
+    {
+      "symbol": "__imp__GetConsoleOutputCP@0",
+      "address": "0x0075104c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetConsoleOutputCP",
+      "ordinal": null,
+      "iat_address": "0x0075104c"
+    },
+    {
+      "symbol": "__imp__WriteConsoleA@20",
+      "address": "0x00751050",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "WriteConsoleA",
+      "ordinal": null,
+      "iat_address": "0x00751050"
+    },
+    {
+      "symbol": "__imp__GetLocaleInfoW@16",
+      "address": "0x00751054",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetLocaleInfoW",
+      "ordinal": null,
+      "iat_address": "0x00751054"
+    },
+    {
+      "symbol": "__imp__CompareStringW@24",
+      "address": "0x00751058",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "CompareStringW",
+      "ordinal": null,
+      "iat_address": "0x00751058"
+    },
+    {
+      "symbol": "__imp__SetEnvironmentVariableA@8",
+      "address": "0x0075105c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetEnvironmentVariableA",
+      "ordinal": null,
+      "iat_address": "0x0075105c"
+    },
+    {
+      "symbol": "__imp__OutputDebugStringW@4",
+      "address": "0x00751060",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "OutputDebugStringW",
+      "ordinal": null,
+      "iat_address": "0x00751060"
+    },
+    {
+      "symbol": "__imp__IsDebuggerPresent@0",
+      "address": "0x00751064",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "IsDebuggerPresent",
+      "ordinal": null,
+      "iat_address": "0x00751064"
+    },
+    {
+      "symbol": "__imp__GetLocaleInfoA@16",
+      "address": "0x00751068",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetLocaleInfoA",
+      "ordinal": null,
+      "iat_address": "0x00751068"
+    },
+    {
+      "symbol": "__imp__LoadLibraryA@4",
+      "address": "0x0075106c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "LoadLibraryA",
+      "ordinal": null,
+      "iat_address": "0x0075106c"
+    },
+    {
+      "symbol": "__imp__InterlockedExchange@8",
+      "address": "0x00751070",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "InterlockedExchange",
+      "ordinal": null,
+      "iat_address": "0x00751070"
+    },
+    {
+      "symbol": "__imp__FreeLibrary@4",
+      "address": "0x00751074",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "FreeLibrary",
+      "ordinal": null,
+      "iat_address": "0x00751074"
+    },
+    {
+      "symbol": "__imp__SetStdHandle@8",
+      "address": "0x00751078",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetStdHandle",
+      "ordinal": null,
+      "iat_address": "0x00751078"
+    },
+    {
+      "symbol": "__imp__LCMapStringW@24",
+      "address": "0x0075107c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "LCMapStringW",
+      "ordinal": null,
+      "iat_address": "0x0075107c"
+    },
+    {
+      "symbol": "__imp__LCMapStringA@24",
+      "address": "0x00751080",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "LCMapStringA",
+      "ordinal": null,
+      "iat_address": "0x00751080"
+    },
+    {
+      "symbol": "__imp__IsValidCodePage@4",
+      "address": "0x00751084",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "IsValidCodePage",
+      "ordinal": null,
+      "iat_address": "0x00751084"
+    },
+    {
+      "symbol": "__imp__GetOEMCP@0",
+      "address": "0x00751088",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetOEMCP",
+      "ordinal": null,
+      "iat_address": "0x00751088"
+    },
+    {
+      "symbol": "__imp__GetACP@0",
+      "address": "0x0075108c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetACP",
+      "ordinal": null,
+      "iat_address": "0x0075108c"
+    },
+    {
+      "symbol": "__imp__GetCPInfo@8",
+      "address": "0x00751090",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetCPInfo",
+      "ordinal": null,
+      "iat_address": "0x00751090"
+    },
+    {
+      "symbol": "__imp__FlushFileBuffers@4",
+      "address": "0x00751094",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "FlushFileBuffers",
+      "ordinal": null,
+      "iat_address": "0x00751094"
+    },
+    {
+      "symbol": "__imp__GetConsoleMode@8",
+      "address": "0x00751098",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetConsoleMode",
+      "ordinal": null,
+      "iat_address": "0x00751098"
+    },
+    {
+      "symbol": "__imp__GetConsoleCP@0",
+      "address": "0x0075109c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetConsoleCP",
+      "ordinal": null,
+      "iat_address": "0x0075109c"
+    },
+    {
+      "symbol": "__imp__SetFilePointer@16",
+      "address": "0x007510a0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetFilePointer",
+      "ordinal": null,
+      "iat_address": "0x007510a0"
+    },
+    {
+      "symbol": "__imp__VirtualAlloc@16",
+      "address": "0x007510a4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "VirtualAlloc",
+      "ordinal": null,
+      "iat_address": "0x007510a4"
+    },
+    {
+      "symbol": "__imp__FatalAppExitA@8",
+      "address": "0x007510a8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "FatalAppExitA",
+      "ordinal": null,
+      "iat_address": "0x007510a8"
+    },
+    {
+      "symbol": "__imp__Sleep@4",
+      "address": "0x007510ac",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "Sleep",
+      "ordinal": null,
+      "iat_address": "0x007510ac"
+    },
+    {
+      "symbol": "__imp__SetEvent@4",
+      "address": "0x007510b0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetEvent",
+      "ordinal": null,
+      "iat_address": "0x007510b0"
+    },
+    {
+      "symbol": "__imp__LeaveCriticalSection@4",
+      "address": "0x007510b4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "LeaveCriticalSection",
+      "ordinal": null,
+      "iat_address": "0x007510b4"
+    },
+    {
+      "symbol": "__imp__EnterCriticalSection@4",
+      "address": "0x007510b8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "EnterCriticalSection",
+      "ordinal": null,
+      "iat_address": "0x007510b8"
+    },
+    {
+      "symbol": "__imp__WaitForSingleObject@8",
+      "address": "0x007510bc",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "WaitForSingleObject",
+      "ordinal": null,
+      "iat_address": "0x007510bc"
+    },
+    {
+      "symbol": "__imp__ResumeThread@4",
+      "address": "0x007510c0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "ResumeThread",
+      "ordinal": null,
+      "iat_address": "0x007510c0"
+    },
+    {
+      "symbol": "__imp__SetThreadPriority@8",
+      "address": "0x007510c4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetThreadPriority",
+      "ordinal": null,
+      "iat_address": "0x007510c4"
+    },
+    {
+      "symbol": "__imp__CreateThread@24",
+      "address": "0x007510c8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "CreateThread",
+      "ordinal": null,
+      "iat_address": "0x007510c8"
+    },
+    {
+      "symbol": "__imp__CreateEventA@16",
+      "address": "0x007510cc",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "CreateEventA",
+      "ordinal": null,
+      "iat_address": "0x007510cc"
+    },
+    {
+      "symbol": "__imp__InitializeCriticalSection@4",
+      "address": "0x007510d0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "InitializeCriticalSection",
+      "ordinal": null,
+      "iat_address": "0x007510d0"
+    },
+    {
+      "symbol": "__imp__ResetEvent@4",
+      "address": "0x007510d4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "ResetEvent",
+      "ordinal": null,
+      "iat_address": "0x007510d4"
+    },
+    {
+      "symbol": "__imp__GetCurrentThreadId@0",
+      "address": "0x007510d8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetCurrentThreadId",
+      "ordinal": null,
+      "iat_address": "0x007510d8"
+    },
+    {
+      "symbol": "__imp__CreateFileA@28",
+      "address": "0x007510dc",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "CreateFileA",
+      "ordinal": null,
+      "iat_address": "0x007510dc"
+    },
+    {
+      "symbol": "__imp__CloseHandle@4",
+      "address": "0x007510e0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "CloseHandle",
+      "ordinal": null,
+      "iat_address": "0x007510e0"
+    },
+    {
+      "symbol": "__imp__ReadFile@20",
+      "address": "0x007510e4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "ReadFile",
+      "ordinal": null,
+      "iat_address": "0x007510e4"
+    },
+    {
+      "symbol": "__imp__WriteFile@20",
+      "address": "0x007510e8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "WriteFile",
+      "ordinal": null,
+      "iat_address": "0x007510e8"
+    },
+    {
+      "symbol": "__imp__SetFilePointerEx@20",
+      "address": "0x007510ec",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetFilePointerEx",
+      "ordinal": null,
+      "iat_address": "0x007510ec"
+    },
+    {
+      "symbol": "__imp__MoveFileA@8",
+      "address": "0x007510f0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "MoveFileA",
+      "ordinal": null,
+      "iat_address": "0x007510f0"
+    },
+    {
+      "symbol": "__imp__DeleteFileA@4",
+      "address": "0x007510f4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "DeleteFileA",
+      "ordinal": null,
+      "iat_address": "0x007510f4"
+    },
+    {
+      "symbol": "__imp__FindFirstFileA@8",
+      "address": "0x007510f8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "FindFirstFileA",
+      "ordinal": null,
+      "iat_address": "0x007510f8"
+    },
+    {
+      "symbol": "__imp__FindClose@4",
+      "address": "0x007510fc",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "FindClose",
+      "ordinal": null,
+      "iat_address": "0x007510fc"
+    },
+    {
+      "symbol": "__imp__FindNextFileA@8",
+      "address": "0x00751100",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "FindNextFileA",
+      "ordinal": null,
+      "iat_address": "0x00751100"
+    },
+    {
+      "symbol": "__imp__FileTimeToSystemTime@8",
+      "address": "0x00751104",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "FileTimeToSystemTime",
+      "ordinal": null,
+      "iat_address": "0x00751104"
+    },
+    {
+      "symbol": "__imp__CreateDirectoryA@8",
+      "address": "0x00751108",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "CreateDirectoryA",
+      "ordinal": null,
+      "iat_address": "0x00751108"
+    },
+    {
+      "symbol": "__imp__GetFileAttributesExA@12",
+      "address": "0x0075110c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetFileAttributesExA",
+      "ordinal": null,
+      "iat_address": "0x0075110c"
+    },
+    {
+      "symbol": "__imp__QueryPerformanceCounter@4",
+      "address": "0x00751110",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "QueryPerformanceCounter",
+      "ordinal": null,
+      "iat_address": "0x00751110"
+    },
+    {
+      "symbol": "__imp__QueryPerformanceFrequency@4",
+      "address": "0x00751114",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "QueryPerformanceFrequency",
+      "ordinal": null,
+      "iat_address": "0x00751114"
+    },
+    {
+      "symbol": "__imp__SetProcessAffinityMask@8",
+      "address": "0x00751118",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetProcessAffinityMask",
+      "ordinal": null,
+      "iat_address": "0x00751118"
+    },
+    {
+      "symbol": "__imp__GetProcessAffinityMask@12",
+      "address": "0x0075111c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetProcessAffinityMask",
+      "ordinal": null,
+      "iat_address": "0x0075111c"
+    },
+    {
+      "symbol": "__imp__GetCurrentProcess@0",
+      "address": "0x00751120",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetCurrentProcess",
+      "ordinal": null,
+      "iat_address": "0x00751120"
+    },
+    {
+      "symbol": "__imp__MultiByteToWideChar@24",
+      "address": "0x00751124",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "MultiByteToWideChar",
+      "ordinal": null,
+      "iat_address": "0x00751124"
+    },
+    {
+      "symbol": "__imp__GetTimeFormatA@24",
+      "address": "0x00751128",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetTimeFormatA",
+      "ordinal": null,
+      "iat_address": "0x00751128"
+    },
+    {
+      "symbol": "__imp__GetDateFormatA@24",
+      "address": "0x0075112c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetDateFormatA",
+      "ordinal": null,
+      "iat_address": "0x0075112c"
+    },
+    {
+      "symbol": "__imp__GetTickCount@0",
+      "address": "0x00751130",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetTickCount",
+      "ordinal": null,
+      "iat_address": "0x00751130"
+    },
+    {
+      "symbol": "__imp__DebugBreak@0",
+      "address": "0x00751134",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "DebugBreak",
+      "ordinal": null,
+      "iat_address": "0x00751134"
+    },
+    {
+      "symbol": "__imp__GetLogicalDriveStringsA@8",
+      "address": "0x00751138",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetLogicalDriveStringsA",
+      "ordinal": null,
+      "iat_address": "0x00751138"
+    },
+    {
+      "symbol": "__imp__DeleteCriticalSection@4",
+      "address": "0x0075113c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "DeleteCriticalSection",
+      "ordinal": null,
+      "iat_address": "0x0075113c"
+    },
+    {
+      "symbol": "__imp__WaitForMultipleObjects@16",
+      "address": "0x00751140",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "WaitForMultipleObjects",
+      "ordinal": null,
+      "iat_address": "0x00751140"
+    },
+    {
+      "symbol": "__imp__GetFileSize@8",
+      "address": "0x00751144",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetFileSize",
+      "ordinal": null,
+      "iat_address": "0x00751144"
+    },
+    {
+      "symbol": "__imp__GetUserGeoID@4",
+      "address": "0x00751148",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetUserGeoID",
+      "ordinal": null,
+      "iat_address": "0x00751148"
+    },
+    {
+      "symbol": "__imp__GetUserDefaultLangID@0",
+      "address": "0x0075114c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetUserDefaultLangID",
+      "ordinal": null,
+      "iat_address": "0x0075114c"
+    },
+    {
+      "symbol": "__imp__GetModuleFileNameA@12",
+      "address": "0x00751150",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetModuleFileNameA",
+      "ordinal": null,
+      "iat_address": "0x00751150"
+    },
+    {
+      "symbol": "__imp__GetModuleHandleA@4",
+      "address": "0x00751154",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetModuleHandleA",
+      "ordinal": null,
+      "iat_address": "0x00751154"
+    },
+    {
+      "symbol": "__imp__VerifyVersionInfoA@16",
+      "address": "0x00751158",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "VerifyVersionInfoA",
+      "ordinal": null,
+      "iat_address": "0x00751158"
+    },
+    {
+      "symbol": "__imp__VerSetConditionMask@16",
+      "address": "0x0075115c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "VerSetConditionMask",
+      "ordinal": null,
+      "iat_address": "0x0075115c"
+    },
+    {
+      "symbol": "__imp__GetFileAttributesA@4",
+      "address": "0x00751160",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetFileAttributesA",
+      "ordinal": null,
+      "iat_address": "0x00751160"
+    },
+    {
+      "symbol": "__imp__ExpandEnvironmentStringsA@12",
+      "address": "0x00751164",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "ExpandEnvironmentStringsA",
+      "ordinal": null,
+      "iat_address": "0x00751164"
+    },
+    {
+      "symbol": "__imp__SetThreadExecutionState@4",
+      "address": "0x00751168",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetThreadExecutionState",
+      "ordinal": null,
+      "iat_address": "0x00751168"
+    },
+    {
+      "symbol": "__imp__SetThreadAffinityMask@8",
+      "address": "0x0075116c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetThreadAffinityMask",
+      "ordinal": null,
+      "iat_address": "0x0075116c"
+    },
+    {
+      "symbol": "__imp__GetCurrentThread@0",
+      "address": "0x00751170",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetCurrentThread",
+      "ordinal": null,
+      "iat_address": "0x00751170"
+    },
+    {
+      "symbol": "__imp__OutputDebugStringA@4",
+      "address": "0x00751174",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "OutputDebugStringA",
+      "ordinal": null,
+      "iat_address": "0x00751174"
+    },
+    {
+      "symbol": "__imp__GetCommandLineA@0",
+      "address": "0x00751178",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetCommandLineA",
+      "ordinal": null,
+      "iat_address": "0x00751178"
+    },
+    {
+      "symbol": "__imp__HeapFree@12",
+      "address": "0x0075117c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "HeapFree",
+      "ordinal": null,
+      "iat_address": "0x0075117c"
+    },
+    {
+      "symbol": "__imp__GetVersionExA@4",
+      "address": "0x00751180",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetVersionExA",
+      "ordinal": null,
+      "iat_address": "0x00751180"
+    },
+    {
+      "symbol": "__imp__HeapAlloc@12",
+      "address": "0x00751184",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "HeapAlloc",
+      "ordinal": null,
+      "iat_address": "0x00751184"
+    },
+    {
+      "symbol": "__imp__GetProcessHeap@0",
+      "address": "0x00751188",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetProcessHeap",
+      "ordinal": null,
+      "iat_address": "0x00751188"
+    },
+    {
+      "symbol": "__imp__GetStartupInfoA@4",
+      "address": "0x0075118c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetStartupInfoA",
+      "ordinal": null,
+      "iat_address": "0x0075118c"
+    },
+    {
+      "symbol": "__imp__GetLastError@0",
+      "address": "0x00751190",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetLastError",
+      "ordinal": null,
+      "iat_address": "0x00751190"
+    },
+    {
+      "symbol": "__imp__HeapReAlloc@16",
+      "address": "0x00751194",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "HeapReAlloc",
+      "ordinal": null,
+      "iat_address": "0x00751194"
+    },
+    {
+      "symbol": "__imp__TerminateProcess@8",
+      "address": "0x00751198",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "TerminateProcess",
+      "ordinal": null,
+      "iat_address": "0x00751198"
+    },
+    {
+      "symbol": "__imp__UnhandledExceptionFilter@4",
+      "address": "0x0075119c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "UnhandledExceptionFilter",
+      "ordinal": null,
+      "iat_address": "0x0075119c"
+    },
+    {
+      "symbol": "__imp__SetUnhandledExceptionFilter@4",
+      "address": "0x007511a0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetUnhandledExceptionFilter",
+      "ordinal": null,
+      "iat_address": "0x007511a0"
+    },
+    {
+      "symbol": "__imp__GetSystemTimeAsFileTime@4",
+      "address": "0x007511a4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetSystemTimeAsFileTime",
+      "ordinal": null,
+      "iat_address": "0x007511a4"
+    },
+    {
+      "symbol": "__imp__RaiseException@16",
+      "address": "0x007511a8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "RaiseException",
+      "ordinal": null,
+      "iat_address": "0x007511a8"
+    },
+    {
+      "symbol": "__imp__RtlUnwind@16",
+      "address": "0x007511ac",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "RtlUnwind",
+      "ordinal": null,
+      "iat_address": "0x007511ac"
+    },
+    {
+      "symbol": "__imp__GetProcAddress@8",
+      "address": "0x007511b0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetProcAddress",
+      "ordinal": null,
+      "iat_address": "0x007511b0"
+    },
+    {
+      "symbol": "__imp__ExitProcess@4",
+      "address": "0x007511b4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "ExitProcess",
+      "ordinal": null,
+      "iat_address": "0x007511b4"
+    },
+    {
+      "symbol": "__imp__SetConsoleCtrlHandler@8",
+      "address": "0x007511b8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetConsoleCtrlHandler",
+      "ordinal": null,
+      "iat_address": "0x007511b8"
+    },
+    {
+      "symbol": "__imp__TlsGetValue@4",
+      "address": "0x007511bc",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "TlsGetValue",
+      "ordinal": null,
+      "iat_address": "0x007511bc"
+    },
+    {
+      "symbol": "__imp__TlsAlloc@0",
+      "address": "0x007511c0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "TlsAlloc",
+      "ordinal": null,
+      "iat_address": "0x007511c0"
+    },
+    {
+      "symbol": "__imp__TlsSetValue@8",
+      "address": "0x007511c4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "TlsSetValue",
+      "ordinal": null,
+      "iat_address": "0x007511c4"
+    },
+    {
+      "symbol": "__imp__TlsFree@4",
+      "address": "0x007511c8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "TlsFree",
+      "ordinal": null,
+      "iat_address": "0x007511c8"
+    },
+    {
+      "symbol": "__imp__InterlockedIncrement@4",
+      "address": "0x007511cc",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "InterlockedIncrement",
+      "ordinal": null,
+      "iat_address": "0x007511cc"
+    },
+    {
+      "symbol": "__imp__SetLastError@4",
+      "address": "0x007511d0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetLastError",
+      "ordinal": null,
+      "iat_address": "0x007511d0"
+    },
+    {
+      "symbol": "__imp__InterlockedDecrement@4",
+      "address": "0x007511d4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "InterlockedDecrement",
+      "ordinal": null,
+      "iat_address": "0x007511d4"
+    },
+    {
+      "symbol": "__imp__HeapSize@12",
+      "address": "0x007511d8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "HeapSize",
+      "ordinal": null,
+      "iat_address": "0x007511d8"
+    },
+    {
+      "symbol": "__imp__GetStdHandle@4",
+      "address": "0x007511dc",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetStdHandle",
+      "ordinal": null,
+      "iat_address": "0x007511dc"
+    },
+    {
+      "symbol": "__imp__FreeEnvironmentStringsA@4",
+      "address": "0x007511e0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "FreeEnvironmentStringsA",
+      "ordinal": null,
+      "iat_address": "0x007511e0"
+    },
+    {
+      "symbol": "__imp__GetEnvironmentStrings@0",
+      "address": "0x007511e4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetEnvironmentStrings",
+      "ordinal": null,
+      "iat_address": "0x007511e4"
+    },
+    {
+      "symbol": "__imp__FreeEnvironmentStringsW@4",
+      "address": "0x007511e8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "FreeEnvironmentStringsW",
+      "ordinal": null,
+      "iat_address": "0x007511e8"
+    },
+    {
+      "symbol": "__imp__WideCharToMultiByte@32",
+      "address": "0x007511ec",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "WideCharToMultiByte",
+      "ordinal": null,
+      "iat_address": "0x007511ec"
+    },
+    {
+      "symbol": "__imp__GetEnvironmentStringsW@0",
+      "address": "0x007511f0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetEnvironmentStringsW",
+      "ordinal": null,
+      "iat_address": "0x007511f0"
+    },
+    {
+      "symbol": "__imp__SetHandleCount@4",
+      "address": "0x007511f4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "SetHandleCount",
+      "ordinal": null,
+      "iat_address": "0x007511f4"
+    },
+    {
+      "symbol": "__imp__GetFileType@4",
+      "address": "0x007511f8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetFileType",
+      "ordinal": null,
+      "iat_address": "0x007511f8"
+    },
+    {
+      "symbol": "__imp__HeapDestroy@4",
+      "address": "0x007511fc",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "HeapDestroy",
+      "ordinal": null,
+      "iat_address": "0x007511fc"
+    },
+    {
+      "symbol": "__imp__HeapCreate@12",
+      "address": "0x00751200",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "HeapCreate",
+      "ordinal": null,
+      "iat_address": "0x00751200"
+    },
+    {
+      "symbol": "__imp__VirtualFree@12",
+      "address": "0x00751204",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "VirtualFree",
+      "ordinal": null,
+      "iat_address": "0x00751204"
+    },
+    {
+      "symbol": "__imp__GetCurrentProcessId@0",
+      "address": "0x00751208",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "KERNEL32.dll",
+      "import_name": "GetCurrentProcessId",
+      "ordinal": null,
+      "iat_address": "0x00751208"
+    },
+    {
+      "symbol": "__imp__SysAllocString@4",
+      "address": "0x00751210",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "OLEAUT32.dll",
+      "import_name": null,
+      "ordinal": 2,
+      "iat_address": "0x00751210"
+    },
+    {
+      "symbol": "__imp__SysFreeString@4",
+      "address": "0x00751214",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "OLEAUT32.dll",
+      "import_name": null,
+      "ordinal": 6,
+      "iat_address": "0x00751214"
+    },
+    {
+      "symbol": "__imp__SHGetFolderPathA@20",
+      "address": "0x0075121c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "SHELL32.dll",
+      "import_name": "SHGetFolderPathA",
+      "ordinal": null,
+      "iat_address": "0x0075121c"
+    },
+    {
+      "symbol": "__imp__ShellExecuteA@24",
+      "address": "0x00751220",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "SHELL32.dll",
+      "import_name": "ShellExecuteA",
+      "ordinal": null,
+      "iat_address": "0x00751220"
+    },
+    {
+      "symbol": "__imp__SHCreateDirectoryExA@12",
+      "address": "0x00751224",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "SHELL32.dll",
+      "import_name": "SHCreateDirectoryExA",
+      "ordinal": null,
+      "iat_address": "0x00751224"
+    },
+    {
+      "symbol": "__imp__GetSystemMetrics@4",
+      "address": "0x0075122c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "GetSystemMetrics",
+      "ordinal": null,
+      "iat_address": "0x0075122c"
+    },
+    {
+      "symbol": "__imp__DispatchMessageA@4",
+      "address": "0x00751230",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "DispatchMessageA",
+      "ordinal": null,
+      "iat_address": "0x00751230"
+    },
+    {
+      "symbol": "__imp__TranslateMessage@4",
+      "address": "0x00751234",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "TranslateMessage",
+      "ordinal": null,
+      "iat_address": "0x00751234"
+    },
+    {
+      "symbol": "__imp__PeekMessageA@20",
+      "address": "0x00751238",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "PeekMessageA",
+      "ordinal": null,
+      "iat_address": "0x00751238"
+    },
+    {
+      "symbol": "__imp__SetCursorPos@8",
+      "address": "0x0075123c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "SetCursorPos",
+      "ordinal": null,
+      "iat_address": "0x0075123c"
+    },
+    {
+      "symbol": "__imp__DestroyWindow@4",
+      "address": "0x00751240",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "DestroyWindow",
+      "ordinal": null,
+      "iat_address": "0x00751240"
+    },
+    {
+      "symbol": "__imp__DefWindowProcA@16",
+      "address": "0x00751244",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "DefWindowProcA",
+      "ordinal": null,
+      "iat_address": "0x00751244"
+    },
+    {
+      "symbol": "__imp__PostQuitMessage@4",
+      "address": "0x00751248",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "PostQuitMessage",
+      "ordinal": null,
+      "iat_address": "0x00751248"
+    },
+    {
+      "symbol": "__imp__ShowWindow@8",
+      "address": "0x0075124c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "ShowWindow",
+      "ordinal": null,
+      "iat_address": "0x0075124c"
+    },
+    {
+      "symbol": "__imp__GetWindowLongA@8",
+      "address": "0x00751250",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "GetWindowLongA",
+      "ordinal": null,
+      "iat_address": "0x00751250"
+    },
+    {
+      "symbol": "__imp__CreateWindowExA@48",
+      "address": "0x00751254",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "CreateWindowExA",
+      "ordinal": null,
+      "iat_address": "0x00751254"
+    },
+    {
+      "symbol": "__imp__RegisterClassExA@4",
+      "address": "0x00751258",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "RegisterClassExA",
+      "ordinal": null,
+      "iat_address": "0x00751258"
+    },
+    {
+      "symbol": "__imp__LoadCursorA@8",
+      "address": "0x0075125c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "LoadCursorA",
+      "ordinal": null,
+      "iat_address": "0x0075125c"
+    },
+    {
+      "symbol": "__imp__LoadIconA@8",
+      "address": "0x00751260",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "LoadIconA",
+      "ordinal": null,
+      "iat_address": "0x00751260"
+    },
+    {
+      "symbol": "__imp__MoveWindow@24",
+      "address": "0x00751264",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "MoveWindow",
+      "ordinal": null,
+      "iat_address": "0x00751264"
+    },
+    {
+      "symbol": "__imp__MessageBoxW@16",
+      "address": "0x00751268",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "MessageBoxW",
+      "ordinal": null,
+      "iat_address": "0x00751268"
+    },
+    {
+      "symbol": "__imp__GetForegroundWindow@0",
+      "address": "0x0075126c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "GetForegroundWindow",
+      "ordinal": null,
+      "iat_address": "0x0075126c"
+    },
+    {
+      "symbol": "__imp__UpdateWindow@4",
+      "address": "0x00751270",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "UpdateWindow",
+      "ordinal": null,
+      "iat_address": "0x00751270"
+    },
+    {
+      "symbol": "__imp__MessageBoxA@16",
+      "address": "0x00751274",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "MessageBoxA",
+      "ordinal": null,
+      "iat_address": "0x00751274"
+    },
+    {
+      "symbol": "__imp__LoadKeyboardLayoutA@8",
+      "address": "0x00751278",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "LoadKeyboardLayoutA",
+      "ordinal": null,
+      "iat_address": "0x00751278"
+    },
+    {
+      "symbol": "__imp__SystemParametersInfoA@16",
+      "address": "0x0075127c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "SystemParametersInfoA",
+      "ordinal": null,
+      "iat_address": "0x0075127c"
+    },
+    {
+      "symbol": "__imp__MapVirtualKeyExA@12",
+      "address": "0x00751280",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "MapVirtualKeyExA",
+      "ordinal": null,
+      "iat_address": "0x00751280"
+    },
+    {
+      "symbol": "__imp__SetCursor@4",
+      "address": "0x00751284",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "SetCursor",
+      "ordinal": null,
+      "iat_address": "0x00751284"
+    },
+    {
+      "symbol": "__imp__AdjustWindowRect@12",
+      "address": "0x00751288",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "AdjustWindowRect",
+      "ordinal": null,
+      "iat_address": "0x00751288"
+    },
+    {
+      "symbol": "__imp__SendMessageA@16",
+      "address": "0x0075128c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "USER32.dll",
+      "import_name": "SendMessageA",
+      "ordinal": null,
+      "iat_address": "0x0075128c"
+    },
+    {
+      "symbol": "__imp__timeKillEvent@4",
+      "address": "0x00751294",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "WINMM.dll",
+      "import_name": "timeKillEvent",
+      "ordinal": null,
+      "iat_address": "0x00751294"
+    },
+    {
+      "symbol": "__imp__timeSetEvent@20",
+      "address": "0x00751298",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "WINMM.dll",
+      "import_name": "timeSetEvent",
+      "ordinal": null,
+      "iat_address": "0x00751298"
+    },
+    {
+      "symbol": "__imp__timeGetTime@0",
+      "address": "0x0075129c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "WINMM.dll",
+      "import_name": "timeGetTime",
+      "ordinal": null,
+      "iat_address": "0x0075129c"
+    },
+    {
+      "symbol": "__imp__XInputGetCapabilities@12",
+      "address": "0x007512a4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "XINPUT1_3.dll",
+      "import_name": null,
+      "ordinal": 4,
+      "iat_address": "0x007512a4"
+    },
+    {
+      "symbol": "__imp__XInputGetState@8",
+      "address": "0x007512a8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "XINPUT1_3.dll",
+      "import_name": null,
+      "ordinal": 2,
+      "iat_address": "0x007512a8"
+    },
+    {
+      "symbol": "__imp__XInputSetState@8",
+      "address": "0x007512ac",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "XINPUT1_3.dll",
+      "import_name": null,
+      "ordinal": 3,
+      "iat_address": "0x007512ac"
+    },
+    {
+      "symbol": "_saga_import_binkw32_dll__BinkSetSoundTrack_8",
+      "address": "0x007512b4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkSetSoundTrack@8",
+      "ordinal": null,
+      "iat_address": "0x007512b4"
+    },
+    {
+      "symbol": "_saga_import_binkw32_dll__BinkOpen_8",
+      "address": "0x007512b8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkOpen@8",
+      "ordinal": null,
+      "iat_address": "0x007512b8"
+    },
+    {
+      "symbol": "_saga_import_binkw32_dll__BinkNextFrame_4",
+      "address": "0x007512bc",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkNextFrame@4",
+      "ordinal": null,
+      "iat_address": "0x007512bc"
+    },
+    {
+      "symbol": "_saga_import_binkw32_dll__BinkSetVolume_12",
+      "address": "0x007512c0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkSetVolume@12",
+      "ordinal": null,
+      "iat_address": "0x007512c0"
+    },
+    {
+      "symbol": "_saga_import_binkw32_dll__BinkOpenDirectSound_4",
+      "address": "0x007512c4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkOpenDirectSound@4",
+      "ordinal": null,
+      "iat_address": "0x007512c4"
+    },
+    {
+      "symbol": "_saga_import_binkw32_dll__BinkSetSoundSystem_8",
+      "address": "0x007512c8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkSetSoundSystem@8",
+      "ordinal": null,
+      "iat_address": "0x007512c8"
+    },
+    {
+      "symbol": "_saga_import_binkw32_dll__BinkDoFrame_4",
+      "address": "0x007512cc",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkDoFrame@4",
+      "ordinal": null,
+      "iat_address": "0x007512cc"
+    },
+    {
+      "symbol": "_saga_import_binkw32_dll__BinkCopyToBufferRect_44",
+      "address": "0x007512d0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkCopyToBufferRect@44",
+      "ordinal": null,
+      "iat_address": "0x007512d0"
+    },
+    {
+      "symbol": "_saga_import_binkw32_dll__BinkGetRealtime_12",
+      "address": "0x007512d4",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkGetRealtime@12",
+      "ordinal": null,
+      "iat_address": "0x007512d4"
+    },
+    {
+      "symbol": "_saga_import_binkw32_dll__BinkWait_4",
+      "address": "0x007512d8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkWait@4",
+      "ordinal": null,
+      "iat_address": "0x007512d8"
+    },
+    {
+      "symbol": "_saga_import_binkw32_dll__BinkGoto_12",
+      "address": "0x007512dc",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkGoto@12",
+      "ordinal": null,
+      "iat_address": "0x007512dc"
+    },
+    {
+      "symbol": "_saga_import_binkw32_dll__BinkClose_4",
+      "address": "0x007512e0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "binkw32.dll",
+      "import_name": "_BinkClose@4",
+      "ordinal": null,
+      "iat_address": "0x007512e0"
+    },
+    {
+      "symbol": "__imp__Direct3DCreate9@4",
+      "address": "0x007512e8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3d9.dll",
+      "import_name": "Direct3DCreate9",
+      "ordinal": null,
+      "iat_address": "0x007512e8"
+    },
+    {
+      "symbol": "__imp__D3DPERF_EndEvent@0",
+      "address": "0x007512ec",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3d9.dll",
+      "import_name": "D3DPERF_EndEvent",
+      "ordinal": null,
+      "iat_address": "0x007512ec"
+    },
+    {
+      "symbol": "__imp__D3DPERF_BeginEvent@8",
+      "address": "0x007512f0",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3d9.dll",
+      "import_name": "D3DPERF_BeginEvent",
+      "ordinal": null,
+      "iat_address": "0x007512f0"
+    },
+    {
+      "symbol": "__imp__D3DXCreateEffect@36",
+      "address": "0x007512f8",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateEffect",
+      "ordinal": null,
+      "iat_address": "0x007512f8"
+    },
+    {
+      "symbol": "__imp__D3DXCreateCubeTextureFromFileInMemory@16",
+      "address": "0x007512fc",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateCubeTextureFromFileInMemory",
+      "ordinal": null,
+      "iat_address": "0x007512fc"
+    },
+    {
+      "symbol": "__imp__D3DXCreateTextureFromFileInMemoryEx@60",
+      "address": "0x00751300",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateTextureFromFileInMemoryEx",
+      "ordinal": null,
+      "iat_address": "0x00751300"
+    },
+    {
+      "symbol": "__imp__D3DXCreateEffectFromFileA@32",
+      "address": "0x00751304",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateEffectFromFileA",
+      "ordinal": null,
+      "iat_address": "0x00751304"
+    },
+    {
+      "symbol": "__imp__D3DXCreateFontA@48",
+      "address": "0x00751308",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateFontA",
+      "ordinal": null,
+      "iat_address": "0x00751308"
+    },
+    {
+      "symbol": "__imp__D3DXCreateRenderToSurface@28",
+      "address": "0x0075130c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateRenderToSurface",
+      "ordinal": null,
+      "iat_address": "0x0075130c"
+    },
+    {
+      "symbol": "__imp__D3DXCreateTextureFromFileInMemory@16",
+      "address": "0x00751310",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateTextureFromFileInMemory",
+      "ordinal": null,
+      "iat_address": "0x00751310"
+    },
+    {
+      "symbol": "__imp__D3DXSaveSurfaceToFileInMemory@20",
+      "address": "0x00751314",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXSaveSurfaceToFileInMemory",
+      "ordinal": null,
+      "iat_address": "0x00751314"
+    },
+    {
+      "symbol": "__imp__D3DXCreateEffectCompiler@28",
+      "address": "0x00751318",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateEffectCompiler",
+      "ordinal": null,
+      "iat_address": "0x00751318"
+    },
+    {
+      "symbol": "__imp__D3DXCreateBuffer@8",
+      "address": "0x0075131c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCreateBuffer",
+      "ordinal": null,
+      "iat_address": "0x0075131c"
+    },
+    {
+      "symbol": "__imp__D3DXCompileShader@40",
+      "address": "0x00751320",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXCompileShader",
+      "ordinal": null,
+      "iat_address": "0x00751320"
+    },
+    {
+      "symbol": "__imp__D3DXMatrixMultiply@12",
+      "address": "0x00751324",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXMatrixMultiply",
+      "ordinal": null,
+      "iat_address": "0x00751324"
+    },
+    {
+      "symbol": "__imp__D3DXMatrixLookAtLH@16",
+      "address": "0x00751328",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXMatrixLookAtLH",
+      "ordinal": null,
+      "iat_address": "0x00751328"
+    },
+    {
+      "symbol": "__imp__D3DXMatrixOrthoLH@20",
+      "address": "0x0075132c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "d3dx9_35.dll",
+      "import_name": "D3DXMatrixOrthoLH",
+      "ordinal": null,
+      "iat_address": "0x0075132c"
+    },
+    {
+      "symbol": "__imp__CoInitializeEx@8",
+      "address": "0x00751334",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "ole32.dll",
+      "import_name": "CoInitializeEx",
+      "ordinal": null,
+      "iat_address": "0x00751334"
+    },
+    {
+      "symbol": "__imp__CoInitialize@4",
+      "address": "0x00751338",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "ole32.dll",
+      "import_name": "CoInitialize",
+      "ordinal": null,
+      "iat_address": "0x00751338"
+    },
+    {
+      "symbol": "__imp__CoCreateInstance@20",
+      "address": "0x0075133c",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "ole32.dll",
+      "import_name": "CoCreateInstance",
+      "ordinal": null,
+      "iat_address": "0x0075133c"
+    },
+    {
+      "symbol": "__imp__CoUninitialize@0",
+      "address": "0x00751340",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "ole32.dll",
+      "import_name": "CoUninitialize",
+      "ordinal": null,
+      "iat_address": "0x00751340"
+    },
+    {
+      "symbol": "__imp__CoSetProxyBlanket@32",
+      "address": "0x00751344",
+      "size": 4,
+      "kind": "import slot",
+      "dll": "ole32.dll",
+      "import_name": "CoSetProxyBlanket",
+      "ordinal": null,
+      "iat_address": "0x00751344"
+    }
+  ],
+  "inlined": [
+    {
+      "name": "?HashString@@YAIPAE@Z",
+      "symbol": "?HashString@@YAIPAE@Z",
+      "address": null,
+      "ctype": "u32 __cdecl (u8 *)",
+      "status": "inlined"
+    }
+  ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 442,
+    "mapped_code_bytes": 5098,
     "matched_code_bytes": 442,
     "matching_percent": 0.012733179959011836,
-    "mapped_functions": 13,
+    "mapped_functions": 22,
     "matched_functions": 13,
     "image_bytes": 40067072,
-    "mapped_bytes": 1496,
-    "mapping_percent": 0.003733739265998773
+    "mapped_bytes": 12722,
+    "mapping_percent": 0.031751758651093843
   }
 }

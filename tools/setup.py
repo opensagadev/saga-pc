@@ -3,7 +3,7 @@
 import argparse
 import platform
 import shutil
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import sys
 import tempfile
 import urllib.error
@@ -11,9 +11,9 @@ import urllib.request
 import zipfile
 
 if __package__:
-    from .lib import ROOT, changed_files, digest, load_json, sha256
+    from .lib import ROOT, changed_files, changed_trees, digest, load_json, sha256
 else:
-    from lib import ROOT, changed_files, digest, load_json, sha256
+    from lib import ROOT, changed_files, changed_trees, digest, load_json, sha256
 
 
 def download(url, destination):
@@ -26,8 +26,8 @@ def download(url, destination):
 
 def install_compiler(archive):
     pin = load_json(ROOT / "config/toolchain.json")
-    dest = ROOT / "build/tools/msvc8/bin"
-    if not changed_files(dest, pin["files"]):
+    dest = ROOT / "build/tools/msvc8"
+    if not changed_files(dest / "bin", pin["files"]) and not changed_trees(dest, pin["trees"]):
         print(f'{pin["name"]} {pin["version"]}: verified, already installed')
         return
     with tempfile.TemporaryDirectory(prefix="saga-pc-compiler-") as temp:
@@ -36,17 +36,45 @@ def install_compiler(archive):
             download(pin["url"], archive)
         if sha256(archive) != pin["archive_sha256"]:
             raise ValueError("Compiler archive SHA-256 mismatch; refusing extraction")
+        staged = Path(temp) / "compiler"
         with zipfile.ZipFile(archive) as package:
-            # Extract only these six files, never archive-supplied paths.
+            # Executables remain allowlisted; retain the matching CRT/STL and SDK trees.
             files = {name: package.read(pin["prefix"] + name)
                      for name in pin["files"]}
+            package_root = pin["prefix"].removesuffix("bin/")
+            seen = set()
+            for member in package.infolist():
+                if member.is_dir() or not member.filename.startswith(package_root):
+                    continue
+                relative = member.filename[len(package_root):]
+                if not any(relative.startswith(tree + "/") for tree in pin["trees"]):
+                    continue
+                parts = PurePosixPath(relative).parts
+                if (PurePosixPath(relative).is_absolute() or ".." in parts
+                        or "\\" in relative or ":" in relative or relative in seen
+                        or (member.external_attr >> 16) & 0o170000 == 0o120000):
+                    raise ValueError(f"Unsafe compiler archive member: {relative}")
+                seen.add(relative)
+                path = staged / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(package.read(member))
         for name, data in files.items():
             if digest(data) != pin["files"][name]:
                 raise ValueError(f"Compiler file SHA-256 mismatch: {name}")
+        changed = changed_trees(staged, pin["trees"])
+        if changed:
+            raise ValueError(f"Compiler tree SHA-256 mismatch: {', '.join(changed)}")
         for name, data in files.items():
-            path = dest / name
+            path = staged / "bin" / name
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(data)
+        # Replace this tool's whole directory so stale cache paths cannot redirect writes.
+        if dest.is_symlink():
+            dest.unlink()
+        elif dest.exists():
+            shutil.rmtree(dest)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(staged, dest)
     print(f'Installed {pin["name"]} {pin["version"]} in {dest}')
 
 

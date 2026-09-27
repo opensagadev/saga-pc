@@ -1,11 +1,14 @@
 """Progress must reflect exact original code coverage, never objdiff similarity."""
 from pathlib import Path
+from contextlib import ExitStack, redirect_stdout
+import io
 import json
 import os
 import shutil
 import struct
 import subprocess
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -109,6 +112,73 @@ class ObjdiffIntegrationTests(unittest.TestCase):
             row = ProgressTests().row(size=len(original), exact=candidates[name] == original)
             row["objdiff_percent"] = scores[name]
             self.assertEqual(match.progress([row], ProgressTests.target)["matched_code_bytes"], 0)
+
+
+class InlinedInventoryTests(unittest.TestCase):
+    inline = {"symbol": "?HashString@@YAIPAE@Z", "address": None, "size": None,
+              "ctype": "u32 __cdecl (u8 *)"}
+    target = {"image_base": "0x400000", "image_size": "0x10000", "sha256": "a" * 64,
+              "text_va": "0x401000", "text_size": "0x1000"}
+
+    def run_match(self, records, args=(), objects=None):
+        with tempfile.TemporaryDirectory() as temp, ExitStack() as stack:
+            root = Path(temp)
+            (root / "config").mkdir()
+            (root / "src").mkdir()
+            (root / "src/saga.h").write_text("// fixture\n")
+            (root / "src/externals.h").write_text("// API declarations\n")
+            (root / "Makefile").write_text("# fixture\n")
+            (root / "config/toolchain.json").write_text('{"version": "fixture"}')
+            pe = SimpleNamespace(imports=lambda: [], import_thunk=lambda _: None)
+            for name, value in (("ROOT", root), ("OUT", root / "build/objdiff")):
+                stack.enter_context(patch.object(match, name, value))
+            for name, value in (("project", {"target": self.target}), ("load_symbols", records),
+                                ("retail", pe), ("objdiff", ("unused", {"version": "fixture"})),
+                                ("compiled_objects", objects or {})):
+                stack.enter_context(patch.object(match, name, return_value=value))
+            stack.enter_context(patch("sys.argv", ["match.py", *args]))
+            output = stack.enter_context(redirect_stdout(io.StringIO()))
+            self.assertEqual(match.main(), 0)
+            report = json.loads((root / "build/objdiff/summary.json").read_text())
+            return report, output.getvalue()
+
+    def test_inlined_symbols_report_separately_without_increasing_coverage_or_function_counts(self):
+        records = [{"symbol": "_code", "address": 0x401000, "size": 16, "ctype": ""},
+                   {"symbol": "_data", "address": 0x403000, "size": 4, "ctype": "u32"}]
+        baseline, _ = self.run_match(records)
+        result, output = self.run_match([*records, self.inline])
+        self.assertEqual(result["functions"], baseline["functions"])
+        self.assertEqual(result["data"], baseline["data"])
+        self.assertEqual(result["progress"], baseline["progress"])
+        self.assertEqual(result["externals"], [])
+        self.assertEqual(result["inputs"]["src/externals.h"], match.digest(b"// API declarations\n"))
+        self.assertEqual(result["inlined"], [{"name": self.inline["symbol"],
+                          "symbol": self.inline["symbol"], "address": None,
+                          "ctype": self.inline["ctype"], "status": "inlined"}])
+        self.assertIn("part of their callers", output)
+
+    def test_inlined_function_selection_explains_caller_without_requiring_retail_or_tools(self):
+        with patch.object(match, "project", return_value={"target": self.target}), \
+                patch.object(match, "load_symbols", return_value=[self.inline]), \
+                patch.object(match, "retail") as retail, patch.object(match, "objdiff") as objdiff, \
+                patch("sys.argv", ["match.py", "--function", self.inline["symbol"]]):
+            with self.assertRaisesRegex(ValueError, "part of its caller.*no standalone original address"):
+                match.main()
+            retail.assert_not_called()
+            objdiff.assert_not_called()
+
+    def test_match_cannot_treat_an_inlined_only_definition_as_addressable(self):
+        obj = SimpleNamespace(defined_symbols=lambda: [{"name": self.inline["symbol"]}])
+        with self.assertRaisesRegex(ValueError, "standalone definition has only an inlined mapping"):
+            self.run_match([self.inline], objects={"src/accidental.cpp": obj})
+
+    def test_recovered_standalone_copy_remains_selectable_by_name_or_address(self):
+        standalone = dict(self.inline, address=0x401000, size=16)
+        for selector in (self.inline["symbol"], "0x00401000"):
+            with self.subTest(selector=selector):
+                report, _ = self.run_match([standalone, self.inline], ["--function", selector])
+                self.assertEqual(len(report["functions"]), 1)
+                self.assertEqual(report["inlined"], [])
 
 
 class ProgressWorkflowTests(unittest.TestCase):

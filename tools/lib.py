@@ -35,6 +35,26 @@ def changed_files(directory, checksums):
             if not (directory / name).is_file() or sha256(directory / name) != expected]
 
 
+def tree_digest(directory):
+    """Hash every regular file's relative path and contents, including unexpected files."""
+    directory = Path(directory)
+    if not directory.is_dir() or directory.is_symlink():
+        return None
+    result = hashlib.sha256()
+    for path in sorted(directory.rglob("*")):
+        if path.is_symlink():
+            return None
+        if path.is_file():
+            result.update(path.relative_to(directory).as_posix().encode() + b"\0"
+                          + sha256(path).encode() + b"\n")
+    return result.hexdigest()
+
+
+def changed_trees(directory, checksums):
+    return [name for name, expected in checksums.items()
+            if tree_digest(directory / name) != expected]
+
+
 def project():
     return load_json(ROOT / "config/project.json")
 
@@ -86,14 +106,16 @@ def load_symbols(path=None):
             if None in row or any(v is None for v in row.values()):
                 raise ValueError(f"{path}:{line}: incorrect column count")
             row = {k: v.strip() for k, v in row.items()}
+            if row["address"] == "inlined" and row["size"]:
+                raise ValueError(f"{path}:{line}: inlined symbols must have a blank size")
             try:
-                address = int(row["address"], 16)
+                address = None if row["address"] == "inlined" else int(row["address"], 16)
                 size = (int(row["size"], 16 if row["size"].lower().startswith("0x") else 10)
                         if row["size"] else None)
             except ValueError as error:
                 raise ValueError(f"{path}:{line}: invalid address or size") from error
-            if not 0 < address <= 0xffffffff or (size is not None and
-                    (size <= 0 or address + size > 0x100000000)):
+            if address is not None and (not 0 < address <= 0xffffffff or (size is not None and
+                    (size <= 0 or address + size > 0x100000000))):
                 raise ValueError(f"{path}:{line}: invalid 32-bit extent")
             if not row["symbol"]:
                 raise ValueError(f"{path}:{line}: a linker name is required")
@@ -104,8 +126,10 @@ def load_symbols(path=None):
             records.append(dict(row, address=address, size=size))
     if not records:
         raise ValueError(f"{path}: empty symbol map")
-    if records != sorted(records, key=lambda r: r["address"]):
-        raise ValueError(f"{path}: keep symbols sorted by original address")
+    if records != sorted(records, key=lambda r: (r["address"] is None, r["address"] or 0,
+                                                r["symbol"] if r["address"] is None else "")):
+        raise ValueError(f"{path}: keep symbols sorted by original address, "
+                         "followed by inlined symbols sorted by linker name")
     return records
 
 
@@ -113,6 +137,8 @@ def bindings_for(records):
     """Leave names with multiple original addresses unresolved; never guess."""
     choices = {}
     for record in records:
+        if record["address"] is None:
+            continue
         choices.setdefault(record["symbol"], set()).add(record["address"])
     return {symbol: next(iter(addresses)) for symbol, addresses in choices.items()
             if len(addresses) == 1}
@@ -128,6 +154,37 @@ def definitions_for(objects, symbol):
         if definitions:
             found.append((unit, obj))
     return found
+
+
+def external_symbols(pe, records, objects):
+    """Identify mapped IAT slots/import thunks from retail metadata, excluding code reconstruction.
+
+    The CSV names remain reconstruction aliases; PE import identities are retained
+    separately. External declarations may produce references, never definitions.
+    """
+    imports = {item["address"]: item for item in pe.imports()}
+    result = {}
+    for record in records:
+        va, name = record["address"], record["symbol"]
+        if va is None:
+            continue
+        slot = va if va in imports else pe.import_thunk(va)
+        if slot not in imports:
+            continue
+        kind, size = ("import slot", 4) if va in imports else ("import thunk", 6)
+        if record["size"] != size:
+            raise ValueError(f"External {kind} {name!r} at {va:#x} must have size {size}")
+        definitions = definitions_for(objects, name)
+        if definitions:
+            units = ", ".join(unit for unit, _ in definitions)
+            raise ValueError(f"External {kind} {name!r} has a compiled definition in {units}; "
+                             "keep external symbols declaration-only")
+        imported = imports[slot]
+        result[(va, name)] = {"symbol": name, "address": f"0x{va:08x}", "size": size,
+                              "kind": kind, "dll": imported["dll"],
+                              "import_name": imported["name"], "ordinal": imported["ordinal"],
+                              "iat_address": f"0x{slot:08x}"}
+    return result
 
 
 def covered_bytes(ranges):
@@ -152,6 +209,10 @@ def map_errors(records, target):
     errors = []
     for row in records:
         address, size = row["address"], row["size"]
+        if address is None:
+            if size is not None:
+                errors.append(f"{row['symbol']!r}: inlined symbols must have a blank size")
+            continue
         end = address + (size or 1)
         context = f"{row['symbol']!r} at {address:#010x}"
         if not image_start <= address < end <= image_end:
@@ -168,5 +229,6 @@ def mapping_progress(records, target):
     if errors:
         raise ValueError("Invalid mapping coverage: " + "; ".join(errors))
     total = number(target["image_size"])
-    mapped = covered_bytes((row["address"], row["size"]) for row in records if row["size"])
+    mapped = covered_bytes((row["address"], row["size"]) for row in records
+                           if row["address"] is not None and row["size"])
     return {"image_bytes": total, "mapped_bytes": mapped, "mapping_percent": 100 * mapped / total}

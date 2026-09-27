@@ -1,9 +1,10 @@
 # Contributing
 
 This project reconstructs the GOG PC executable with MSVC 2005 and compares the
-resulting x86 COFF objects against the original. It currently builds individual
-compilation units; a full executable relink is future work. There are no host
-or WebAssembly game targets.
+resulting x86 COFF objects against the original. The default build also links
+our current sources into a Windows executable using the original MSVC linker
+and libraries. The entry stub currently exits; the game remains incomplete.
+There are no host or WebAssembly game targets.
 
 ## Requirements and setup
 
@@ -26,19 +27,32 @@ git clone git@github.com:opensagadev/saga-pc.git
 cd saga-pc
 make setup
 make check
-make -j"$(nproc)" check-objects
+make -j"$(nproc)" build check-objects
 ```
 
-`make setup` downloads checksum-pinned MSVC 2005 and objdiff-cli into ignored
-`build/tools/`. For compiler-only work, use
+`make setup` downloads checksum-pinned MSVC 2005, its linker, and objdiff-cli into ignored
+`build/tools/`. The compiler installation includes its original CRT/STL headers
+and libraries and the bundled Windows Platform SDK. Their complete extracted
+trees are verified as well as the compiler/linker executables. Wine runs the tools;
+the build does not use Wine headers. For compiler-only work, use
 `python3 tools/setup.py --compiler-only`; an existing pinned compiler archive
 can be supplied with `--archive /path/to/archive.zip`.
 
-[Makefile](Makefile) owns source discovery and compilation dependencies.
-`make -j"$(nproc)"` builds all sources, capped at the CPU count; `make -j2` uses
-a smaller limit. Wine initializes its isolated prefix at `build/tools/wine/`
-once before compilation jobs run in parallel. The first build can take longer.
-Compilation and tooling checks need no original game files.
+[Makefile](Makefile) owns source discovery, compilation and linking dependencies.
+`make -j"$(nproc)"` builds `build/LEGOStarWarsSaga.exe`, capped at the CPU count;
+`make -j2` uses a smaller limit. `make -j"$(nproc)" objects` compiles only the
+individual objects, and `make -j"$(nproc)" link` explicitly builds the executable.
+Wine initializes its isolated prefix at `build/tools/wine/` once before compiler
+jobs run in parallel. The first build can take longer.
+
+Linking uses our objects, the static Microsoft CRT (`/MT`), and bundled SDK import
+libraries. It needs no original EXE or game DLLs. The Windows subsystem uses the
+CRT's normal `WinMain` startup; unresolved references fail the link. `/OPT:NOREF`
+and `/OPT:NOICF` keep compiled routines even when the stub does not call them, and
+avoid folding distinct identical routines. The linked image has its own layout;
+matching still compares individual objects at the original mapped addresses.
+As source begins calling additional APIs, supply their import libraries at link
+time and their DLLs at runtime. Declarations alone introduce no DLL dependency.
 
 ## Original executable
 
@@ -60,16 +74,23 @@ are ignored; see [res/README.md](res/README.md).
 
 Identify the original function or global, record its boundary and references in
 [config/symbols.csv](config/symbols.csv), then implement it under `src/` and add
-shared declarations to [src/saga.h](src/saga.h). Keep all shared types, calling
-conventions, and layout assertions in that single header. Preserve Android source
+shared declarations to [src/saga.h](src/saga.h). Keep shared game types, calling
+conventions, and layout assertions there. APIs absent from the bundled Microsoft
+headers have declarations in `src/externals.h`, included by `saga.h`; do not copy
+SDK declarations into it. Preserve Android source
 attribution when transferring code. Record identification evidence and uncertainty
 in [config/symbols.md](config/symbols.md).
+
+See [the identification guide](config/identification.md) for recovering PC
+function boundaries, matching Android call/data relationships, and defining
+typed data. It includes a worked seed-initialization example and explains
+which analysis results still need review before entering the symbol map.
 
 Run the checks while iterating:
 
 ```sh
 make check
-make -j"$(nproc)" check-objects
+make -j"$(nproc)" build check-objects
 make -j"$(nproc)" diff FUNC=NuRand
 make -j"$(nproc)" diff 'FUNC=?qrand@@YAHXZ'
 make -j"$(nproc)" match
@@ -78,6 +99,9 @@ make -j"$(nproc)" match
 `make check` runs static project checks and synthetic regression tests, including
 an objdiff-cli roundtrip using generated fixture objects. That integration test
 is skipped locally only when objdiff has not been installed; CI installs it.
+The compiler integration tests exercise C/C++ headers, SDK declarations and a
+source-only EXE link and execution under Wine, including unresolved-reference
+failure. These checks require the pinned tools; CI always installs them.
 The PR-comment workflow is exercised against a mocked GitHub API using Node.js;
 install Node.js to run that check locally. It is required and available in CI.
 `check-objects` first builds all current sources, then validates their COFF
@@ -98,8 +122,8 @@ do not fabricate or refresh a matching report without the original.
 
 [GitHub Actions](.github/workflows/build.yml) runs all validation that requires
 no original game files: `make check` followed by
-`make -j"$(nproc)" check-objects`, including compilation. It installs and caches
-both the compiler and objdiff, verifying their hashes on every run. CI has no
+`make -j"$(nproc)" build check-objects`, including executable linking. It installs
+and caches the compiler, linker, SDK and objdiff, verifying their hashes on every run. CI has no
 retail executable, so passing CI does not establish matching or refresh reports.
 
 The [progress workflow](.github/workflows/progress.yml) updates one bot comment
@@ -126,6 +150,13 @@ objects define the same mapped symbol, every definition must match. COFF symbol
 and section metadata distinguish functions from data. A linker name mapped to
 different original addresses is ambiguous and cannot resolve a relocation.
 
+The PC `/O2` build performs substantial inlining. When a helper is identified
+inside a caller but has no established standalone PC entry, use `inlined` in the
+CSV address column and leave its size blank. Keep its name and type for reference;
+it contributes no address binding, mapping bytes or standalone matching result.
+Do not give the helper the address of an instruction inside its caller. Record
+the callsite evidence in [the identification guide](config/identification.md).
+
 `FUNC` accepts an exact symbol, a simple undecorated C name such as `NuRand`, or
 an original hexadecimal address. For C++, use the decorated symbol or address:
 
@@ -151,19 +182,21 @@ including compiler literals and zero-initialized state, are compared too.
 
 The badge counts the union of exactly matched function bytes divided by the
 full original `.text` virtual size (**3,471,246 bytes**). It includes unmapped
-code in the denominator, counts aliases once, and excludes data. The initial
-inventory contains 13 implemented functions and six data/literal entries; it is
-far from complete. The separate **mapping** badge counts the union of all known
+code in the denominator, counts aliases once, and excludes data. Imported slots
+and jump thunks are inventoried separately and are never credited as reconstructed
+matches. The original `.text` denominator remains unchanged. The separate
+**mapping** badge counts the union of all known
 symbol extents, including data and symbols without implementations, against the
 full `SizeOfImage` VA range (**40,067,072 bytes**). Unknown sizes contribute no
 bytes and overlaps count once. This can be computed without the retail file;
 `make check` prints current coverage. The full image is the 100% reference and
 includes headers, section gaps, alignment and padding, so mapping is raw address
-coverage rather than a claim that every function is identified. At present,
-1,496 bytes are mapped (**0.004%**).
+coverage rather than a claim that every function is identified. See the README
+badges and `matching.json` for the current totals. Entries marked `inlined` have
+no independent extent and add no bytes to either metric.
 
 [matching.json](matching.json) records local results and input hashes, with no
-original bytes. `make clean` removes generated object and
+original bytes. `make clean` removes the generated executable, object and
 comparison files while preserving `build/tools/`.
 
 ## Compiler and project layout
@@ -171,7 +204,7 @@ comparison files while preserving `build/tools/`.
 The PE linker version (8.0) and Rich-header compiler build (50727) identify the
 Visual C++ 2005 family. The pinned x86 compiler is **14.00.50727.42 (RTM)**;
 metadata alone does not distinguish all VC8 service-pack variants. It reproduces
-the initial functions with `/O2 /Gy /GS-` and the x86 default calling convention
+the initial functions with `/O2 /Gy /GS- /MT` and the x86 default calling convention
 and floating-point settings. Other code may require additional evidence and
 per-file settings as reconstruction grows.
 
@@ -198,18 +231,22 @@ C or C++ linkage as appropriate, including mangled `qrand`.
 ```text
 config/            Target/tool pins, symbol inventory and identification notes
 src/saga.h         All shared declarations and layout checks
+src/externals.h    Declarations for APIs absent from the bundled SDK
+src/externals.c    Declaration-only external dependency unit
+src/batman.cpp     Windows entry point and application entry stub
 src/nurand.cpp     Random-number routines
 src/nuang.c        Angle routines
 src/qrand.cpp       C++ random-number routine and state
 res/               Your original executable (ignored)
 tools/             Helpers, shared libraries, and test_*.py checks
 build/obj/         Compiled MSVC objects (ignored)
+build/LEGOStarWarsSaga.exe  Executable linked from our sources (ignored)
 build/objdiff/      Local comparison objects and reports (ignored)
 build/tools/       Downloaded msvc8/, objdiff in bin/, Wine in wine/ (ignored)
 ```
 
 The four command-line helpers are `tools/setup.py` for tool downloads,
-`tools/cc.py` for invoking MSVC through Wine, `tools/check.py` for project and
+`tools/cc.py` for invoking the MSVC compiler/linker through Wine, `tools/check.py` for project and
 object checks, and `tools/match.py` for retail comparison and progress. Their
 shared libraries are `tools/binary.py` for PE/COFF parsing, relocations,
 comparison objects, and data comparison; and `tools/lib.py` for configuration,

@@ -54,6 +54,79 @@ def coff_bytes(code, relocations=(), total_size=0, extra_function=False):
     return result
 
 
+def pe_import_bytes():
+    """Synthetic named + ordinal imports and their six-byte x86 jump thunks."""
+    raw = bytearray(0x500)
+    raw[:6] = b"\xff\x25" + struct.pack("<I", BASE + 0x140)
+    raw[6:12] = b"\xff\x25" + struct.pack("<I", BASE + 0x144)
+    raw[12:19] = b"\x90\xff\x25" + struct.pack("<I", BASE + 0x140)  # Tail jump inside a function
+    struct.pack_into("<III", raw, 0x100, 0x1340, 0x8000000b, 0)
+    struct.pack_into("<III", raw, 0x140, 0x1340, 0x8000000b, 0)
+    struct.pack_into("<5I", raw, 0x200, 0x1100, 0, 0, 0x1300, 0x1140)
+    raw[0x300:0x30b] = b"SYSTEM.dll\0"
+    raw[0x340:0x34a] = b"\0\0ApiName\0"
+    result = pe_bytes(raw)
+    struct.pack_into("<II", result, 0x98 + 96 + 8, 0x1200, 40)
+    struct.pack_into("<I", result, 0x98 + 56, 0x2000)
+    return result
+
+
+class PEImportsTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.path = Path(temporary.name) / "imports.exe"
+
+    def image(self, data=None):
+        self.path.write_bytes(pe_import_bytes() if data is None else data)
+        return PE(self.path)
+
+    def test_named_and_ordinal_import_slots_keep_actual_identities(self):
+        imports = self.image().imports()
+        self.assertEqual(imports, [
+            {"dll": "SYSTEM.dll", "address": BASE + 0x140, "size": 4, "name": "ApiName", "ordinal": None},
+            {"dll": "SYSTEM.dll", "address": BASE + 0x144, "size": 4, "name": None, "ordinal": 11}])
+
+    def test_unbound_iat_is_lookup_fallback(self):
+        raw = pe_import_bytes()
+        struct.pack_into("<I", raw, 0x200 + 0x200, 0)
+        self.assertEqual(self.image(raw).imports()[0]["name"], "ApiName")
+        struct.pack_into("<I", raw, 0x200 + 0x204, 1)
+        with self.assertRaisesRegex(BinaryError, "recoverable"):
+            self.image(raw).imports()
+
+    def test_missing_descriptor_terminator_is_rejected(self):
+        raw = pe_import_bytes()
+        struct.pack_into("<I", raw, 0x98 + 96 + 12, 20)
+        with self.assertRaisesRegex(BinaryError, "terminating descriptor"):
+            self.image(raw).imports()
+
+    def test_invalid_lookup_pointer_and_ordinal_reserved_bits_fail(self):
+        for value in (0x500000, 0x8001000b):
+            with self.subTest(value=value):
+                raw = pe_import_bytes()
+                struct.pack_into("<I", raw, 0x200 + 0x100, value)
+                with self.assertRaises(BinaryError):
+                    self.image(raw).imports()
+
+    def test_delay_imports_fail_explicitly_instead_of_being_silently_omitted(self):
+        raw = pe_import_bytes()
+        struct.pack_into("<II", raw, 0x98 + 96 + 13 * 8, 0x1400, 32)
+        with self.assertRaisesRegex(BinaryError, "Delay imports"):
+            self.image(raw).imports()
+
+    def test_thunk_recognition_checks_entry_not_arbitrary_tail_jump(self):
+        pe = self.image()
+        self.assertEqual(pe.import_thunk(BASE), BASE + 0x140)
+        self.assertEqual(pe.import_thunk(BASE + 6), BASE + 0x144)
+        self.assertIsNone(pe.import_thunk(BASE + 12))
+        self.assertIsNone(pe.import_thunk(BASE + 0x4ff))
+        self.assertIsNone(pe.import_thunk(0))
+
+    def test_no_import_directory_is_empty_inventory(self):
+        self.assertEqual(self.image(pe_bytes(b"\xc3")).imports(), [])
+
+
 class BinaryTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()

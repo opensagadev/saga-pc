@@ -1,7 +1,20 @@
-// See LICENSE (GNU GPL version 3).
-// Shared PC declarations, adapted from opensagadev/saga's reconstructed headers.
 #ifndef SAGA_H
 #define SAGA_H
+
+#include <stddef.h>
+
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x0501 // Expose the Windows XP APIs used by the retail imports.
+#endif
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <windows.h>
+#include <mmsystem.h>
+#include <shellapi.h>
+#include <shlobj.h>
+#include <objbase.h>
+#include <oleauto.h>
+#include "externals.h"
 
 typedef signed char i8;
 typedef unsigned char u8;
@@ -13,10 +26,6 @@ typedef signed __int64 i64;
 typedef unsigned __int64 u64;
 typedef float f32;
 typedef double f64;
-
-#ifndef NULL
-#define NULL 0
-#endif
 
 // VC8-compatible C/C++ checks for the retail x86 data model.
 typedef char saga_i8_size[(sizeof(i8) == 1) ? 1 : -1];
@@ -38,6 +47,9 @@ typedef char saga_nurand_size[(sizeof(NURAND) == 4) ? 1 : -1];
 #ifdef __cplusplus
 extern "C" {
 #endif
+    int __cdecl NuMain(int argc, char **argv);
+    int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, int show);
+
     extern u32 fseed;
 
     i32 __cdecl NuRand(NURAND *rand);
