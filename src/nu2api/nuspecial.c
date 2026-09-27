@@ -347,3 +347,19 @@ i32 __cdecl NuSpecialGetVisibilityFn(NUSPECIALHANDLE *special) {
     display = (NuSpecialDisplayView *)special->display_special;
     return display != NULL ? (display->flags >> 1) & 1 : 0;
 }
+
+i32 __cdecl NuSpecialCompare(NUSPECIALHANDLE *first, NUSPECIALHANDLE *second) {
+    if (first->special != NULL && first->special == second->special) {
+        return 1;
+    }
+    if (first->display_special != NULL && first->display_special == second->display_special) {
+        return 1;
+    }
+    return 0;
+}
+
+void __cdecl NuSpecialClear(NUSPECIALHANDLE *special) {
+    special->scene = NULL;
+    special->special = NULL;
+    special->display_special = NULL;
+}

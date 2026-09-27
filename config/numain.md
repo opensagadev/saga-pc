@@ -14,17 +14,32 @@ and render helpers, six episode DAT loads and a Windows message pump. The render
 helper receives its world pointer in ESI, so its inferred decompiler signature
 cannot be used as a public interface without further work.
 
-The next unresolved startup dependency is `InitOnce` at `0x004011e0`. The current
-source entry still returns after its first two implemented startup calls. The
-additional exact leaf matches documented in [identification.md](identification.md)
-do not complete `NuMain` or close the `InitOnce` gap. Keep missing references fatal
-when linking.
+The source entry now follows the verified PC startup order through permanent-data
+loading. `InitOnce` at `0x004011e0` has a structural stub with its full 1,019-byte
+comparison extent; its allocator, camera and time-bar dependencies remain open.
+`NuMain` stops before indexing level/area tables when the six DAT archives have
+not been loaded. Its later restart and frame-loop phases contain explicit
+`STUBBED_NAMED` markers, so this is a runnable scaffold, not a complete or
+matching 4,332-byte reconstruction. Keep unresolved references fatal when linking.
 
-The frame chain has tracked implementations for its portal, water-reset, mouse and
-occlusion callees. `NuKeyboardRead` at `0x006d9340` still has unresolved PC
-dependencies, so `NuFrameBegin` remains out of tracked source. An ignored VC8
-probe matches its complete 32-byte body after explicit bindings; this scratch
-comparison is not a tracked match.
+The frame chain now includes `NuFrameBegin`, its portal, water-reset, mouse and
+occlusion callees, and a structural `NuFrameEnd` implementation with explicit
+markers for renderer and timing dependencies. `NuKeyboardRead` at `0x006d9340`
+still has unresolved PC input-state dependencies. The 987-byte PC `NuFrameEnd`
+starts with the six-byte `NuHasError` getter at `0x004feb50` and calls the
+11-byte `NuClearError` setter at `0x004feb60`; both touch the four-byte state
+at `0x00921248`. The PC error-dialog branch uses `ShowingError` at
+`0x0091ef3c`. The renderer call at `0x005f3d60` receives one integer argument
+and is a strong `NuRndrSwapScreen(i32)` candidate, but its 2,130-byte PC body
+contains substantial render-list work and is not reconstructed by Android's
+smaller presentation code.
+
+The current `NuDatOpenEx` is an explicit parser stub, so `NuMain` exits safely
+when archive-backed level and area tables are absent. PC archive inspection
+confirms eight open-file slots and eight-byte tree nodes, unlike Android's
+layout. Implementing this parser and the native Win32 file layer is the next
+path toward meaningful startup execution; the rest of the frame loop remains
+structural work rather than a byte match.
 
 ## Direct-call candidates
 

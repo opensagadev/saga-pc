@@ -239,7 +239,9 @@ class CompilerHeadersTests(unittest.TestCase):
                                        ("/O2", "/Gy", "/GS-", "/WX"))
                     undefined = {s["name"] for s in obj.symbols
                                  if s["section"] == 0 and s["storage_class"] == 2}
-                    self.assertEqual(undefined, {r["symbol"] for r in imports})
+                    expected = {"_D3DXMatrixMultiply@12" if r["symbol"] == "__imp__D3DXMatrixMultiply@12"
+                                else r["symbol"] for r in imports}
+                    self.assertEqual(undefined, expected)
 
     def link(self, output, objects, flags=(), env=None):
         return subprocess.run([

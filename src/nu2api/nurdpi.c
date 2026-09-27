@@ -1,5 +1,10 @@
 #include "saga.h"
 
+i32 NuIsAlNum(char value) {
+    return ((value >= 'A' && value <= 'Z') || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') ||
+            value == '_');
+}
+
 i32 ishexnum(char value) {
     switch (value) {
         case '0':

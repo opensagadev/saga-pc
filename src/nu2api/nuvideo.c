@@ -25,6 +25,11 @@ i32 NuVideoGetAspect(void) {
     return nuapi.video_aspect;
 }
 
+void NuVideoSetResolution(i32 width, i32 height) {
+    nuapi.screen_width = width;
+    nuapi.screen_height = height;
+}
+
 i32 NuVideoGetSwapMode(void) {
     return nuapi.video_swap_mode;
 }
@@ -74,4 +79,12 @@ i32 NuLanguageGet(void) {
 
 void NuLanguageSet(i32 language) {
     nuapi.language = language;
+}
+
+i32 NuRegionGet(void) {
+    return nuapi.region;
+}
+
+void NuRegionSet(i32 region) {
+    nuapi.region = region;
 }

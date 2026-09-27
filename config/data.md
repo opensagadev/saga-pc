@@ -250,3 +250,14 @@ PC-specific review, especially the roughly 35 MiB of zero-filled storage.
 The zero/one compiler COMDATs at `0x00751658`/`0x00751524` are mapped from
 independent original references and exact bits. The local compiler can emit them
 without a relocation when it uses x87 `fldz`/`fld1`.
+
+## Startup and frame state
+
+The current `src/data.cpp` also defines the PC startup menu, episode archive
+names, font constants, gamepad records, background-worker state, and debris
+constants. Their individual addresses, extents and types are in `symbols.csv`.
+`NUAPI` remains one 144-byte object at `0x0297dbe0`; PC references establish
+two eight-byte `NuTime` fields at offsets `0x2c` and `0x34`, with layout asserts
+in `saga.h`. `ShowingError` at `0x0091ef3c` and `bHaveErr` at `0x00921248` are
+separate zero-initialized four-byte globals: the latter is read by `NuHasError`
+and cleared by `NuClearError`.

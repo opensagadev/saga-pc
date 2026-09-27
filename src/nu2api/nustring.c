@@ -368,3 +368,78 @@ u8 *__cdecl NuUTF8CharFromUnicode(u8 *dst, u16 character) {
     }
     return dst;
 }
+
+void __cdecl NuUnicodeToUTF8(u8 *dst, u16 *src) {
+    if (src == NULL) {
+        return;
+    }
+    if (dst == NULL) {
+        return;
+    }
+
+    *dst = '\0';
+    for (; *src != 0; src++) {
+        if (*src < 0x80) {
+            *dst++ = (u8)*src;
+        } else if (*src < 0x800) {
+            *dst++ = (u8)((*src >> 6 & 0x1f) | 0xc0);
+            *dst++ = (u8)((*src & 0x3f) | 0x80);
+        } else {
+            *dst++ = (u8)((*src >> 12 & 0x1f) | 0xe0);
+            *dst++ = (u8)((*src >> 6 & 0x3f) | 0x80);
+            *dst++ = (u8)((*src & 0x3f) | 0x80);
+        }
+    }
+    *dst = '\0';
+}
+
+void __cdecl NuUTF8ToUnicode(u16 *dst, u8 *src) {
+    if (src == NULL) {
+        return;
+    }
+    if (dst == NULL) {
+        return;
+    }
+
+    *dst = 0;
+    while (*src != 0) {
+        if (*src < 0x80) {
+            *dst = *src;
+            src++;
+        } else if (*src < 0xe0) {
+            *dst = (*src & 0x1f) << 6;
+            src++;
+            *dst |= *src & 0x3f;
+            src++;
+        } else if (*src < 0xf0) {
+            *dst = (*src & 0x0f) << 12;
+            src++;
+            *dst |= (*src & 0x3f) << 6;
+            src++;
+            *dst |= *src & 0x3f;
+            src++;
+        } else {
+            *dst = '?';
+            src++;
+        }
+        dst++;
+    }
+    *dst = 0;
+}
+
+void __cdecl NuAsciiToUnicode(u16 *dst, char *src) {
+    i32 pos = 0;
+
+    *dst = 0;
+    if (src == NULL) {
+        return;
+    }
+    if (dst == NULL) {
+        return;
+    }
+
+    for (; src[pos] != '\0'; pos++) {
+        dst[pos] = (u8)src[pos];
+    }
+    dst[pos] = '\0';
+}

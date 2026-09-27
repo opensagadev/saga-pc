@@ -33,6 +33,8 @@ typedef double f64;
 #define SAGA_JOIN_IMPL(a, b) a##b
 #define SAGA_JOIN(a, b) SAGA_JOIN_IMPL(a, b)
 #define STATIC_ASSERT(expression) typedef char SAGA_JOIN(saga_static_assert_, __LINE__)[(expression) ? 1 : -1]
+#define STUBBED() ((void)0)
+#define STUBBED_NAMED(name) ((void)0)
 
 // VC8-compatible C/C++ checks for the retail x86 data model.
 STATIC_ASSERT(sizeof(i8) == 1);
@@ -54,6 +56,126 @@ STATIC_ASSERT(sizeof(NURAND) == 4);
 
 typedef struct nudathdr_s NUDATHDR;
 typedef struct vufnt_s VUFNT;
+
+typedef struct vucharidx_s {
+    u16 unicode;
+    u16 index;
+} VUCHARIDX;
+STATIC_ASSERT(sizeof(VUCHARIDX) == 4);
+STATIC_ASSERT(offsetof(VUCHARIDX, index) == 2);
+
+typedef struct vufntchar_s {
+    u8 unknown_0000[8];
+    f32 width;
+} VUFNTCHAR;
+STATIC_ASSERT(sizeof(VUFNTCHAR) == 12);
+STATIC_ASSERT(offsetof(VUFNTCHAR, width) == 8);
+
+struct vufnt_s {
+    u8 unknown_0000[0x0c];
+    i32 glyph_count;
+    i32 unicode_count;
+    f32 height;
+    f32 baseline;
+    f32 space_width;
+    i32 mode;
+    f32 ic_gap;
+    void *legacy_font;
+    f32 *x_scale;
+    f32 *y_scale;
+    VUFNTCHAR *glyphs;
+    VUCHARIDX *unicode_map;
+};
+STATIC_ASSERT(offsetof(VUFNT, glyph_count) == 0x0c);
+STATIC_ASSERT(offsetof(VUFNT, unicode_count) == 0x10);
+STATIC_ASSERT(offsetof(VUFNT, height) == 0x14);
+STATIC_ASSERT(offsetof(VUFNT, baseline) == 0x18);
+STATIC_ASSERT(offsetof(VUFNT, space_width) == 0x1c);
+STATIC_ASSERT(offsetof(VUFNT, mode) == 0x20);
+STATIC_ASSERT(offsetof(VUFNT, ic_gap) == 0x24);
+STATIC_ASSERT(offsetof(VUFNT, x_scale) == 0x2c);
+STATIC_ASSERT(offsetof(VUFNT, glyphs) == 0x34);
+STATIC_ASSERT(offsetof(VUFNT, unicode_map) == 0x38);
+
+typedef struct menu_s {
+    u8 unknown_0000[0x14];
+    i16 menu;
+    u8 unknown_0016[0xca];
+} MENU;
+STATIC_ASSERT(sizeof(MENU) == 0xe0);
+STATIC_ASSERT(offsetof(MENU, menu) == 0x14);
+
+typedef struct menufninfo_s {
+    i32 id;
+    void (*enter_fn)(MENU *);
+    void (*draw_fn)(MENU *);
+    void (*update_fn)(MENU *);
+    void (*exit_fn)(MENU *);
+    i16 memory_x;
+    i16 memory_y;
+    i8 wrap;
+    i8 confirm_prompt;
+    i8 cancel_prompt;
+    u8 unknown_001b;
+} MENUFNINFO;
+STATIC_ASSERT(sizeof(MENUFNINFO) == 0x1c);
+STATIC_ASSERT(offsetof(MENUFNINFO, enter_fn) == 4);
+STATIC_ASSERT(offsetof(MENUFNINFO, exit_fn) == 0x10);
+STATIC_ASSERT(offsetof(MENUFNINFO, memory_x) == 0x14);
+STATIC_ASSERT(offsetof(MENUFNINFO, wrap) == 0x18);
+
+typedef struct numtlattrib_s {
+    u32 alpha_mode : 4;
+    u32 filter_mode : 2;
+    u32 unknown_0_64_128 : 2;
+    u32 unknown_1_1_2 : 2;
+    u32 unknown_1_4_8 : 2;
+    u32 cull_mode : 2;
+    u32 z_mode : 2;
+    u32 unknown_2_1_2 : 2;
+    u32 unknown_2_4 : 1;
+    u32 unknown_19_31 : 13;
+} NUMTLATTRIB;
+STATIC_ASSERT(sizeof(NUMTLATTRIB) == 4);
+typedef struct numtl_s {
+    u8 unknown_0000[0x40];
+    NUMTLATTRIB attribs;
+} NUMTL;
+STATIC_ASSERT(offsetof(NUMTL, attribs) == 0x40);
+
+typedef struct part_emit_pc_s {
+    i32 effect_id;
+    u8 unknown_0004[0x22];
+    i8 page;
+    u8 unknown_0027[0x0d];
+    f32 camera_distance;
+    u8 unknown_0038[0x34];
+} PART_EMIT_PC;
+STATIC_ASSERT(sizeof(PART_EMIT_PC) == 0x6c);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, page) == 0x26);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, camera_distance) == 0x34);
+
+typedef struct nupad_init_state_s {
+    u8 unknown_00[0x88];
+    u8 init_type;
+    u8 init_flags;
+    u8 init_port;
+} NUPAD_INIT_STATE;
+STATIC_ASSERT(offsetof(NUPAD_INIT_STATE, init_type) == 0x88);
+STATIC_ASSERT(offsetof(NUPAD_INIT_STATE, init_flags) == 0x89);
+STATIC_ASSERT(offsetof(NUPAD_INIT_STATE, init_port) == 0x8a);
+
+typedef struct gamepad_init_record_s {
+    NUPAD_INIT_STATE *pad;
+    u8 unknown_04[0x56];
+    u16 allocated;
+    u8 unknown_5c[4];
+} GAMEPAD_INIT_RECORD;
+STATIC_ASSERT(sizeof(GAMEPAD_INIT_RECORD) == 0x60);
+STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, pad) == 0);
+STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, allocated) == 0x5a);
+
+typedef struct bgprocinfo_s BGPROCINFO;
 
 typedef union variptr_u {
     void *void_ptr;
@@ -97,7 +219,9 @@ typedef struct WORLDINFO_s {
     u8 rooms_visible[0x100];
     u8 unknown_2a91[3];
     u8 *rooms_visible_ptr;
-    u32 unknown_2a98[0x9c5];
+    u32 unknown_2a98;
+    i32 page_part;
+    u32 unknown_2aa0[0x9c3];
 } WORLDINFO;
 STATIC_ASSERT(sizeof(WORLDINFO) == 0x51ac);
 STATIC_ASSERT(offsetof(WORLDINFO, buffer_start) == 0x100);
@@ -109,6 +233,7 @@ STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
 STATIC_ASSERT(offsetof(WORLDINFO, room_visibility_flag) == 0x2990);
 STATIC_ASSERT(offsetof(WORLDINFO, rooms_visible) == 0x2991);
 STATIC_ASSERT(offsetof(WORLDINFO, rooms_visible_ptr) == 0x2a94);
+STATIC_ASSERT(offsetof(WORLDINFO, page_part) == 0x2a9c);
 
 typedef struct area_data_pc_s {
     u8 unknown_0000[0x7a];
@@ -117,6 +242,21 @@ typedef struct area_data_pc_s {
 } AREA_DATA_PC;
 STATIC_ASSERT(sizeof(AREA_DATA_PC) == 0x9c);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
+
+typedef struct level_data_pc_s {
+    u8 unknown_0000[0xa3];
+    i8 area_index;
+    u8 unknown_00a4[0x8c];
+} LEVELDATA_PC;
+STATIC_ASSERT(sizeof(LEVELDATA_PC) == 0x130);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
+
+typedef struct dat_handles_pc_s {
+    NUDATHDR *previous;
+    NUDATHDR *episode[6];
+} DAT_HANDLES_PC;
+STATIC_ASSERT(sizeof(DAT_HANDLES_PC) == 0x1c);
+STATIC_ASSERT(offsetof(DAT_HANDLES_PC, episode) == 4);
 
 typedef struct main_frame_counters_s {
     u8 warmup_frame;
@@ -231,29 +371,45 @@ STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, unknown_0160) == 0x160);
 STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, unknown_0164) == 0x164);
 
 typedef struct nuapi_s {
-    u8 unknown_0000[4];
     i32 language;
+    i32 region;
     i32 video_mode;
     i32 video_swap_mode;
     i32 video_aspect;
-    u8 unknown_0014[8];
+    i32 screen_width;
+    i32 screen_height;
     i32 video_is_pal;
     u8 unknown_0020[4];
     i32 frame_begin_count;
-    u8 unknown_0028[0x54];
+    u8 unknown_0028[4];
+    NuTime time;
+    NuTime time2;
+    f32 frame_time;
+    i32 frame_count;
+    f32 frame_time_limit;
+    u8 unknown_0048[0x34];
     i32 reversible_characters;
     u8 unknown_0080[4];
     i32 force_shadows_on_characters;
-    u8 unknown_0088[4];
+    i32 frame_end_state;
     f32 video_brightness;
 } NUAPI;
 STATIC_ASSERT(sizeof(NUAPI) == 0x90);
-STATIC_ASSERT(offsetof(NUAPI, language) == 4);
+STATIC_ASSERT(offsetof(NUAPI, language) == 0);
+STATIC_ASSERT(offsetof(NUAPI, region) == 4);
 STATIC_ASSERT(offsetof(NUAPI, video_mode) == 8);
+STATIC_ASSERT(offsetof(NUAPI, screen_width) == 0x14);
+STATIC_ASSERT(offsetof(NUAPI, screen_height) == 0x18);
 STATIC_ASSERT(offsetof(NUAPI, video_swap_mode) == 0xc);
 STATIC_ASSERT(offsetof(NUAPI, video_aspect) == 0x10);
 STATIC_ASSERT(offsetof(NUAPI, video_is_pal) == 0x1c);
 STATIC_ASSERT(offsetof(NUAPI, frame_begin_count) == 0x24);
+STATIC_ASSERT(offsetof(NUAPI, time) == 0x2c);
+STATIC_ASSERT(offsetof(NUAPI, time2) == 0x34);
+STATIC_ASSERT(offsetof(NUAPI, frame_time) == 0x3c);
+STATIC_ASSERT(offsetof(NUAPI, frame_count) == 0x40);
+STATIC_ASSERT(offsetof(NUAPI, frame_time_limit) == 0x44);
+STATIC_ASSERT(offsetof(NUAPI, frame_end_state) == 0x88);
 STATIC_ASSERT(offsetof(NUAPI, reversible_characters) == 0x7c);
 STATIC_ASSERT(offsetof(NUAPI, force_shadows_on_characters) == 0x84);
 STATIC_ASSERT(offsetof(NUAPI, video_brightness) == 0x8c);
@@ -266,6 +422,13 @@ extern "C" {
     void __cdecl NuCommandLine(i32 *__restrict argc, char ***__restrict argv);
     NUDATHDR *__cdecl NuDatSet(NUDATHDR *header);
     NUDATHDR *__cdecl NuDatGet(void);
+    extern DAT_HANDLES_PC NuDatHandles;
+    extern const char EpisodeIDat[14];
+    extern const char EpisodeIIDat[15];
+    extern const char EpisodeIIIDat[16];
+    extern const char EpisodeIVDat[15];
+    extern const char EpisodeVDat[14];
+    extern const char EpisodeVIDat[15];
     extern i32 argc;
     extern char **argv;
     extern NUDATHDR *curr_dat;
@@ -296,6 +459,7 @@ extern "C" {
     void __cdecl _NuTimeBarSlotBegin(i32 set, i32 slot, const char *name);
     i32 __cdecl NuVideoGetMode(void);
     void __cdecl NuVideoSetMode(i32 mode);
+    void __cdecl NuVideoSetResolution(i32 width, i32 height);
     i32 __cdecl NuVideoGetAspect(void);
     i32 __cdecl NuVideoGetSwapMode(void);
     i32 __cdecl NuVideoSetSwapMode(i32 mode);
@@ -306,6 +470,125 @@ extern "C" {
     void __cdecl NuVideoSetBrightness(f32 brightness);
     i32 __cdecl NuLanguageGet(void);
     void __cdecl NuLanguageSet(i32 language);
+    i32 __cdecl NuRegionGet(void);
+    void __cdecl NuRegionSet(i32 region);
+    void __cdecl NuMtxMulVU0(NUMTX *result, NUMTX *left, NUMTX *right);
+    void __cdecl NuUnicodeToUTF8(u8 *output, u16 *input);
+    void __cdecl NuUTF8ToUnicode(u16 *output, u8 *input);
+    void __cdecl NuAsciiToUnicode(u16 *output, char *input);
+    i32 __cdecl NuIsAlNum(char character);
+    i32 __cdecl NuSpecialCompare(NUSPECIALHANDLE *left, NUSPECIALHANDLE *right);
+    void __cdecl NuSpecialClear(NUSPECIALHANDLE *special);
+    extern VUFNT *QFont2DButtons;
+    extern VUFNT *system_qfont;
+    extern f32 nuqfnt_space_width;
+    extern f32 qfnt_len_scale;
+    extern f32 qfnt_height_scale;
+    extern f32 qfnt_justify_squash;
+    extern f32 qfnt_justify_stretch;
+    extern u32 NuQFntMode;
+    u16 __cdecl UnicodeToIndexFast(VUCHARIDX *map, i32 count, u16 unicode);
+    u16 __cdecl NuQFntEncodeUnicodeChar(VUFNT *font, u16 character);
+    void __cdecl NuQFntEncodeUnicodeString(VUFNT *font, u16 *text);
+    void __cdecl NuQFntUTF8toQCode(VUFNT *font, char *text, u16 *encoded);
+    f32 __cdecl NuQFntPrintLenW(VUFNT *font, u16 *text);
+    f32 __cdecl NuQFntPrintLenU(VUFNT *font, char *text);
+    f32 __cdecl NuQFntHeight(VUFNT *font);
+    f32 __cdecl NuQFntBaseline(VUFNT *font);
+    void __cdecl NuQFntSetJustifiedTolerances(f32 squash, f32 stretch);
+    f32 __cdecl NuFloor(f32 value);
+    f32 __cdecl NuFsign(f32 value);
+    extern const f32 nu_fsign_minus_one;
+    void __cdecl InitOnce(i32 argc, char **argv);
+    extern u8 InitOncePanelOption;
+    extern MENUFNINFO MenuInfo[100];
+    extern MENUFNINFO GameMenuInfo[23];
+    extern MENU GameMenu[10];
+    extern i32 MenuSFX;
+    extern i32 GameMenuLevel;
+    extern i32 MenuLanguages;
+    extern i32 MenusUsed;
+    extern void (*drawslotinfofn)(f32, f32, i32, i32);
+    extern void (*drawslotsfn)(MENU *, f32);
+    extern char MenuHeader[64];
+    extern u8 MENUHEADERR;
+    extern u8 MENUHEADERG;
+    extern u8 MENUHEADERB;
+    extern i32 header_r;
+    extern i32 header_g;
+    extern i32 header_b;
+    extern i32 MenuFadeEnabled;
+    extern i32 MenuDrawDropShadows;
+    extern NUMTL *MenuFadeMtl;
+    extern const char Menu_UsedFormat[15];
+    void __cdecl MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count,
+                                  void (*draw_save_slots_info_fn)(f32, f32, i32, i32), i32 is_fade_enabled,
+                                  i32 is_shadow_enabled);
+    void __cdecl MenuInitialise(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count,
+                                void (*draw_save_slots_fn)(MENU *, f32), i32 is_fade_enabled, i32 is_shadow_enabled);
+    void __cdecl MenuReset(void);
+    void __cdecl MenuSetPlatformState(i32 state);
+    extern i32 BGLOAD;
+    extern i32 PermDataLoaded;
+    extern i32 LOADEROFF;
+    extern volatile i32 LoadPerm_LanguageSelect;
+    extern NUMTL *legal_mtl;
+    extern f32 DEFAULTFRAMETIME;
+    extern i32 PAL;
+    void __cdecl SetBackgroundMusic(i32 track);
+    void __cdecl LoadPerm(void);
+    void __cdecl GameAISysSetGame(void);
+    void __cdecl GameAISysInit(void);
+    extern PART_EMIT_PC part_emits[40];
+    extern i32 part_page_on[8];
+    extern GAMEPAD_INIT_RECORD GamePadStorage[64];
+    void __cdecl GamePads_Init(void);
+    extern i32 bgproc_initialized;
+    extern CRITICAL_SECTION bgproc_critical_section;
+    extern HANDLE bgproc_work_event;
+    extern HANDLE bgproc_resume_event;
+    extern BGPROCINFO *bgproc_active;
+    extern DWORD bgproc_thread_id;
+    extern i32 bgproc_frozen;
+    extern i32 bgproc_freeze;
+    extern const char bgproc_resume_event_name[9];
+    extern const char bgproc_work_event_name[11];
+    void __cdecl bgProcInit(void);
+    void __cdecl bgprocFreeze(void);
+    void __cdecl bgprocUnFreeze(void);
+    i32 __cdecl bgprocIsFrozen(void);
+    i32 __cdecl bgprocIsFreezing(void);
+    i32 __cdecl bgProcIsBgThread(void);
+    void __cdecl APITransparentInit(void);
+    void __cdecl InitShadowLights(void);
+    void __cdecl NuKeyboardRead(void);
+    f32 __cdecl NuFrameEnd(void);
+    i32 __cdecl NuHasError(void);
+    void __cdecl NuClearError(void);
+    extern i32 ShowingError;
+    extern i32 bHaveErr;
+    void __cdecl FinishLoop(i32 frames);
+    extern i32 finishloop_backdroponly;
+    NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *buf, i32 *unused, i16 mode);
+    NUDATHDR *__cdecl NuDatOpen(const char *filepath, VARIPTR *buf, i32 *unused);
+    void __cdecl edpartStartPage(u8 page);
+    void __cdecl edpartStopPage(u8 page);
+    void __cdecl Parts_Start(WORLDINFO *world);
+    void __cdecl Parts_Stop(WORLDINFO *world);
+    extern f32 INTROTEXT_Y;
+    extern f32 INTROTEXT_SCALE;
+    extern void (*Text_GameSetLanguageFn)(i32);
+    extern const char Text_TimeHMSC[18];
+    extern const char Text_TimeHMS[13];
+    extern const char Text_TimeMSC[13];
+    extern const char Text_TimeMS[8];
+    extern const char Text_TimeSC[8];
+    extern const char Text_TimeS[3];
+    void __cdecl Text_SetLanguage(i32 language);
+    void __cdecl Text_SetLanguage_Game(i32 language);
+    void __cdecl Text_MakeTime(f32 time, i32 show_hours, i32 show_minutes, i32 show_centiseconds, char *text);
+    i32 __cdecl SplitTextFindNextWS(u8 *text, i32 position);
+    void __cdecl FixUpButtonsInFont(VUFNT *game_font, VUFNT *button_font);
     i32 __cdecl NuHGobjReversibleCharacters(i32 enabled);
     i32 __cdecl NuHGobjForceShadowsOnCharacters(i32 enabled);
     extern u8 NuSound3Reverb;
@@ -323,6 +606,10 @@ extern "C" {
     extern f32 NuSound3VolumeTable[0x4000];
     extern i32 NuSound3VolumeOffset;
     extern AREA_DATA_PC *ADataList;
+    extern AREA_DATA_PC *LastAData;
+    extern AREA_DATA_PC *HUB_ADATA;
+    extern LEVELDATA_PC *LDataList;
+    extern i32 openlevels;
     extern MAINFRAMECOUNTERS MainFrameCounters;
     extern i32 do_multiframe_update;
     extern f32 FRAMETIME;

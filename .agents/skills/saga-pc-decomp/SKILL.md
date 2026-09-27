@@ -112,10 +112,14 @@ must all match. Names mapped to different VAs cannot resolve a reference unambig
 use distinct reconstruction names for unrelated file-local entities.
 
 Keep speculative identities and reachable-body counts in the research notes until
-PC identity, ABI and full boundaries are reviewed. Implement the real dependencies
-before extending an executable path; do not invent placeholder callees to satisfy
-the linker. Preserve a source-only executable that links, and describe partial
-entry-point reconstruction explicitly. Shared data/constants belong in
+PC identity, ABI and full boundaries are reviewed. For the entry-path scaffolding,
+mark unreconstructed PC actions with `STUBBED()` or `STUBBED_NAMED(...)` at their
+actual call sites. These macros deliberately emit no code in matching builds;
+they make the source-only dependency gaps visible without adding unmapppable
+logging data or fake linker definitions. Keep such functions nonmatching and
+document the skipped behavior. Replace markers with verified real dependencies
+down the call tree. Preserve a source-only executable that links, and describe
+partial entry-point reconstruction explicitly. Shared data/constants belong in
 `src/data.cpp` with PC initializer and extent evidence; retain existing private
 owners and C++ linkage where required.
 

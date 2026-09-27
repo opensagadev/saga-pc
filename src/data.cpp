@@ -86,13 +86,81 @@ extern "C" {
     f32 QFONTSCALEX = 1.0f;
     f32 STCOORDSCALE = 1.0f;
     VUFNT *QFont2D;
+    VUFNT *QFont2DButtons;
+    VUFNT *system_qfont;
+    f32 nuqfnt_space_width;
+    f32 qfnt_len_scale = 1.0f;
+    f32 qfnt_height_scale = 1.0f;
+    f32 qfnt_justify_squash = 1.0f;
+    f32 qfnt_justify_stretch = 1.0f;
+    u32 NuQFntMode;
+    extern const f32 nu_fsign_minus_one = -1.0f;
+    u8 InitOncePanelOption;
+    i32 BGLOAD = 1;
+    i32 PermDataLoaded = 1;
+    i32 LOADEROFF;
+    volatile i32 LoadPerm_LanguageSelect;
+    NUMTL *legal_mtl;
+    f32 DEFAULTFRAMETIME;
+    i32 PAL;
+    PART_EMIT_PC part_emits[40];
+    i32 part_page_on[8];
+    GAMEPAD_INIT_RECORD GamePadStorage[64];
+    i32 bgproc_initialized;
+    CRITICAL_SECTION bgproc_critical_section;
+    HANDLE bgproc_work_event;
+    HANDLE bgproc_resume_event;
+    BGPROCINFO *bgproc_active;
+    DWORD bgproc_thread_id;
+    i32 bgproc_frozen;
+    i32 bgproc_freeze;
+    i32 ShowingError;
+    i32 bHaveErr;
+    DAT_HANDLES_PC NuDatHandles;
+    i32 finishloop_backdroponly;
+#pragma const_seg(".rdata$EpisodeIDat")
+    extern const char EpisodeIDat[14] = "Episode_I.dat";
+#pragma const_seg(".rdata$EpisodeIIDat")
+    extern const char EpisodeIIDat[15] = "Episode_II.dat";
+#pragma const_seg(".rdata$EpisodeIIIDat")
+    extern const char EpisodeIIIDat[16] = "Episode_III.dat";
+#pragma const_seg(".rdata$EpisodeIVDat")
+    extern const char EpisodeIVDat[15] = "Episode_IV.dat";
+#pragma const_seg(".rdata$EpisodeVDat")
+    extern const char EpisodeVDat[14] = "Episode_V.dat";
+#pragma const_seg(".rdata$EpisodeVIDat")
+    extern const char EpisodeVIDat[15] = "Episode_VI.dat";
+#pragma const_seg()
+#pragma const_seg(".rdata$bgproc_resume_event_name")
+    extern const char bgproc_resume_event_name[9] = "BGFreeze";
+#pragma const_seg(".rdata$bgproc_work_event_name")
+    extern const char bgproc_work_event_name[11] = "BGWorkToDo";
+#pragma const_seg()
     VUFNT *QFont3DZ;
     VUFNT *SmartTextFont;
+    f32 INTROTEXT_Y = 0.175f;
+    f32 INTROTEXT_SCALE = 0.79f;
+    void (*Text_GameSetLanguageFn)(i32);
+#pragma const_seg(".rdata$Text_TimeHMSC")
+    extern const char Text_TimeHMSC[18] = "%i:%.2i:%.2i.%.2i";
+#pragma const_seg(".rdata$Text_TimeHMS")
+    extern const char Text_TimeHMS[13] = "%i:%.2i:%.2i";
+#pragma const_seg(".rdata$Text_TimeMSC")
+    extern const char Text_TimeMSC[13] = "%i:%.2i.%.2i";
+#pragma const_seg(".rdata$Text_TimeMS")
+    extern const char Text_TimeMS[8] = "%i:%.2i";
+#pragma const_seg(".rdata$Text_TimeSC")
+    extern const char Text_TimeSC[8] = "%i.%.2i";
+#pragma const_seg(".rdata$Text_TimeS")
+    extern const char Text_TimeS[3] = "%i";
+#pragma const_seg()
     f32 nuspecial_const_alpha = 1.0f;
     NUVEC nuspecial_const_tint = {1.0f, 1.0f, 1.0f};
     NUVEC cam_axes = {1.0f, 1.0f, 1.0f};
     NUCAMERA global_camera;
+    // clang-format off: LLVM 18 and newer format initializer macros differently.
 #define IDENTITY_NUMTX {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f}
+    // clang-format on
     NUMTX vmtx = IDENTITY_NUMTX;
     NUMTX pmtx = IDENTITY_NUMTX;
     NUMTX cmtx = IDENTITY_NUMTX;
@@ -124,6 +192,10 @@ extern "C" {
 #pragma bss_seg(".bss$ADataList")
     AREA_DATA_PC *ADataList;
 #pragma bss_seg()
+    AREA_DATA_PC *LastAData;
+    AREA_DATA_PC *HUB_ADATA;
+    LEVELDATA_PC *LDataList;
+    i32 openlevels;
     f32 PanelProjectionX = 1222.0f;
     f32 PanelProjectionY = 1145.0f;
     f32 PanelWideWidth = 740.0f;
@@ -275,6 +347,78 @@ extern "C" {
     i32 part_raycasts_enabled;
     f32 NuVideoFrameRate;
     OCCLUSIONMANAGER g_OcclusionManager = {0, 1, {0}, {{0}}, 0, 0, 0.3f, -1.0f, 0, 0, {0}};
+
+    // STUBBED: reserved PC menu callbacks remain unavailable.
+    MENUFNINFO MenuInfo[100] = {
+        {1000, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0}, {1001, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {1002, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0}, {1004, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
+        {1003, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0}, {1005, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
+        {1006, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0}, {1007, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {1008, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0}, {1009, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {1010, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 0, 0}, {1011, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
+        {1012, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0}, {1013, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
+        {1014, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {1015, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {1016, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0}, {1017, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
+        {1018, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0}, {1019, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 0, 0},
+        {1020, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0}, {1021, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {1022, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {1023, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
+        {1024, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {1025, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {1026, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {1027, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {1028, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {1029, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {1030, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+    };
+    MENU GameMenu[10];
+    i32 MenuSFX = -1;
+    i32 GameMenuLevel = -1;
+    i32 MenuLanguages = 1;
+    i32 MenusUsed = 31;
+    // STUBBED: PC defaults are draw callbacks at 0x5100f0 and 0x5103e0.
+    void (*drawslotinfofn)(f32, f32, i32, i32);
+    void (*drawslotsfn)(MENU *, f32);
+    char MenuHeader[64];
+    i32 header_r;
+    i32 header_g;
+    i32 header_b;
+    i32 MenuFadeEnabled;
+    i32 MenuDrawDropShadows;
+    NUMTL *MenuFadeMtl;
+#pragma bss_seg(".bss$MENUHEADERR")
+    u8 MENUHEADERR;
+#pragma bss_seg()
+#pragma data_seg(".data$MENUHEADERG")
+    u8 MENUHEADERG = 0x7f;
+#pragma data_seg(".data$MENUHEADERB")
+    u8 MENUHEADERB = 0xff;
+#pragma data_seg()
+#pragma const_seg(".rdata$Menu_UsedFormat")
+    extern const char Menu_UsedFormat[15] = "Menus used: %d";
+#pragma const_seg()
+
+    // STUBBED: PC callback bodies are not reconstructed; NULL slots keep them inactive.
+    // IDs, remembered cursors, and prompt flags use the 23-record PC table.
+    MENUFNINFO GameMenuInfo[23] = {
+        {0, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},  {1, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 0, 0},
+        {2, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},  {3, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {4, NULL, NULL, NULL, NULL, 0, 0, 0, 1, 1, 0},    {5, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0},
+        {6, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},  {7, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0},
+        {8, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},  {9, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {10, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {11, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {12, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {13, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {14, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {15, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {16, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {17, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {18, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {19, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {20, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0}, {21, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {22, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0},
+    };
+
+    i32 DebrisGlassInitialized = 0;
+    void *DebrisGlassCopyMaterial = NULL;
+    f32 DebrisGlassU1 = 0.0f;
+    f32 DebrisGlassV1 = 0.0f;
+    i32 DebrisGlassTextureWidth = 0;
+    i32 DebrisGlassTextureHeight = 0;
+
+    extern const f32 DebrisGlassMaterialOpacity = 0.999f;
 }
 void *pNuCam;
 i32 app_tbgameset;

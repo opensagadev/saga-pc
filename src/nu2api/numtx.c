@@ -20,6 +20,10 @@ STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
 STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
 
+void __cdecl NuMtxMulVU0(NUMTX *result, NUMTX *left, NUMTX *right) {
+    D3DXMatrixMultiply((D3DXMATRIX *)result, (D3DXMATRIX *)left, (D3DXMATRIX *)right);
+}
+
 void __cdecl NuMtxSetTranslation(NUMTX *m, NUVEC *t) {
     m->m30 = t->x;
     m->m31 = t->y;

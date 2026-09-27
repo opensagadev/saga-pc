@@ -10,14 +10,14 @@ There are no host or WebAssembly game targets.
 ## Requirements and setup
 
 The environment supports **Linux x86-64** and requires Python 3.11+, GNU Make,
-Git, CA certificates, Wine with 32-bit Windows support, and clang-format /
-clang-tidy 18 or newer. CI uses LLVM 18. On Ubuntu 24.04:
+Git, CA certificates, Wine with 32-bit Windows support, LLVM's `llvm-dlltool`,
+and clang-format / clang-tidy 18 or newer. CI uses LLVM 18. On Ubuntu 24.04:
 
 ```sh
 sudo dpkg --add-architecture i386
 sudo apt-get update
 sudo apt-get install --no-install-recommends \
-    ca-certificates git make python3 wine wine64 wine32:i386 clang-format-18 clang-tidy-18
+    ca-certificates git make python3 wine wine64 wine32:i386 clang-format-18 clang-tidy-18 llvm-18
 ```
 
 On another Linux distribution, install the same prerequisites with its package
@@ -50,7 +50,9 @@ Linking uses our objects, the static Microsoft CRT (`/MT`), and bundled SDK impo
 libraries. It needs no original EXE or game DLLs. The Windows subsystem uses the
 CRT's normal `WinMain` startup; unresolved references fail the link. `/OPT:NOREF`
 and `/OPT:NOICF` keep compiled routines even when the stub does not call them, and
-avoid folding distinct identical routines. The linked image has its own layout;
+avoid folding distinct identical routines. `llvm-dlltool` makes an import library
+for `D3DXMatrixMultiply` from its export declaration; no DLL contents are bundled.
+The linked image has its own layout;
 matching still compares individual objects at the original mapped addresses.
 As source begins calling additional APIs, supply their import libraries at link
 time and their DLLs at runtime. Declarations alone introduce no DLL dependency.
@@ -82,6 +84,13 @@ types are being recovered; record that honestly in the matching report. Once a
 family is structurally present, use complete byte comparisons to refine it.
 The exact Windows code percentage is the progress metric; Android's matching
 percentage does not transfer directly across compilers and platform backends.
+
+Startup code may use `STUBBED()` or `STUBBED_NAMED(...)` to mark a verified PC
+call or state transition whose dependency is still missing. These markers emit
+no code in matching builds and do not imply a byte match. Keep the original call
+order, document the skipped work, and replace markers down the dependency tree.
+The source-only executable currently exits before using level/area tables until
+the PC DAT loader can populate them.
 
 Identify the original function or global, record its boundary and references in
 [config/symbols.csv](config/symbols.csv), then implement it under `src/` and add

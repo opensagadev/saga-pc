@@ -42,6 +42,12 @@ struct SoundQueue {
     i32 count;
     i32 read_index;
     i32 write_index;
+    u8 unknown_01c4[0x1c];
+    char stream_path[0x104];
+    u8 unknown_02e4[0x108];
+    f32 start_offset;
+    u32 unknown_03f0;
+    i32 unknown_03f4;
 
     i32 SendCommand(i32 command, i32 argument);
     __declspec(noinline) i32 Stop();
@@ -53,6 +59,8 @@ struct SoundQueue {
     __declspec(noinline) i32 GetStatus();
     void StartTimer();
     void StopTimer();
+    __declspec(noinline) i32 SetStreamFile(const char *path, f32 offset);
+    __declspec(noinline) i32 SetStreamFlags(i32 flags);
 };
 STATIC_ASSERT(offsetof(SoundQueue, stream_state) == 0x08);
 STATIC_ASSERT(offsetof(SoundQueue, stream_flags) == 0x0c);
@@ -68,6 +76,9 @@ STATIC_ASSERT(offsetof(SoundQueue, command) == 0xb8);
 STATIC_ASSERT(offsetof(SoundQueue, argument) == 0x138);
 STATIC_ASSERT(offsetof(SoundQueue, count) == 0x1b8);
 STATIC_ASSERT(offsetof(SoundQueue, write_index) == 0x1c0);
+STATIC_ASSERT(offsetof(SoundQueue, stream_path) == 0x1e0);
+STATIC_ASSERT(offsetof(SoundQueue, start_offset) == 0x3ec);
+STATIC_ASSERT(offsetof(SoundQueue, unknown_03f4) == 0x3f4);
 
 extern SoundQueue *NuSound3StereoStreams[2];
 extern "C" f32 NuSound3VolumeTable[0x4000];
@@ -188,6 +199,22 @@ void SoundQueue::StopTimer() {
         timeKillEvent(timer_id);
     }
     timer_id = 0;
+}
+
+i32 SoundQueue::SetStreamFile(const char *path, f32 offset) {
+    if (this == NULL || active == 0) {
+        return 0;
+    }
+    NuStrNCpy(stream_path, path, sizeof(stream_path));
+    start_offset = offset;
+    return SendCommand(1, 0);
+}
+
+i32 SoundQueue::SetStreamFlags(i32 flags) {
+    if (this == NULL || active == 0) {
+        return 0;
+    }
+    return SendCommand(2, flags);
 }
 
 extern "C" void __cdecl NuSound3StopStereoStream(i32 index) {

@@ -1,5 +1,7 @@
 #include "saga.h"
 
+#include <stdio.h>
+
 #include <string.h>
 
 void Text_InitLanguageList(LANGUAGEDATA *language_list) {
@@ -191,5 +193,137 @@ void SmartTextGetWidescreen(f32 *font_scale_x, f32 *coordinate_scale) {
     }
     if (coordinate_scale != NULL) {
         *coordinate_scale = STCOORDSCALE;
+    }
+}
+
+void Text_SetLanguage_Game(i32 language) {
+    switch (language) {
+        case 4:
+            INTROTEXT_Y = 0.13f;
+            INTROTEXT_SCALE = 0.575f;
+            break;
+        case 2:
+            INTROTEXT_Y = 0.115f;
+            INTROTEXT_SCALE = 0.5f;
+            break;
+        case 3:
+            INTROTEXT_Y = 0.14f;
+            INTROTEXT_SCALE = 0.61f;
+            break;
+        case 8:
+            INTROTEXT_Y = 0.15f;
+            INTROTEXT_SCALE = 0.67f;
+            break;
+        case 5:
+            INTROTEXT_Y = 0.17f;
+            INTROTEXT_SCALE = 0.76f;
+            break;
+        case 0:
+            INTROTEXT_Y = 0.0f;
+            INTROTEXT_SCALE = 1.8f;
+            break;
+        default:
+            INTROTEXT_Y = 0.175f;
+            INTROTEXT_SCALE = 0.79f;
+            break;
+    }
+}
+
+i32 SplitTextFindNextWS(u8 *text, i32 position) {
+    u8 character = text[position];
+check_character:
+    if (character == ' ') {
+        const u8 next = text[position + 1];
+        if (next == '!' || next == '?' || next == ';' || next == ':') {
+            goto next_character;
+        }
+        return position;
+    }
+    if (character == '\0') {
+        return position;
+    }
+    if (character == '\\' && text[position + 1] == 'n') {
+        return position;
+    }
+next_character:
+    do {
+        ++position;
+        character = text[position];
+    } while (character >= 0x80 && character <= 0xbf);
+    goto check_character;
+}
+
+void FixUpButtonsInFont(VUFNT *game_font, VUFNT *button_font) {
+    if (game_font == NULL) {
+        game_font = QFont2D;
+    }
+    if (button_font == NULL) {
+        button_font = QFont2DButtons;
+    }
+    if (game_font != NULL && button_font != NULL) {
+        f32 scale = game_font->height / button_font->height;
+        i32 i;
+        for (i = 0; i < button_font->glyph_count; ++i) {
+            i32 j;
+            for (j = 0; j < game_font->glyph_count; ++j) {
+                if (button_font->unicode_map[i].unicode == game_font->unicode_map[j].unicode) {
+                    if (button_font->unicode_map[i].unicode >= 0x531 && button_font->unicode_map[i].unicode <= 0x53f) {
+                        game_font->glyphs[game_font->unicode_map[j].index].width =
+                            button_font->glyphs[button_font->unicode_map[i].index].width * scale;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void Text_MakeTime(f32 time, i32 show_hours, i32 show_minutes, i32 show_centiseconds, char *text) {
+    i32 hours = 0;
+    i32 minutes;
+    i32 seconds;
+    i32 centiseconds;
+    if (time < 0.0f) {
+        time = 0.0f;
+    }
+    if (show_hours != 0) {
+        hours = (i32)(time / 3600.0);
+        minutes = (i32)NuFmod((f32)(time / 60.0), 60.0f);
+    } else {
+        minutes = (i32)(time / 60.0);
+    }
+    if (show_hours != 0 || show_minutes != 0) {
+        seconds = (i32)NuFmod(time, 60.0f);
+    } else {
+        seconds = (i32)time;
+    }
+    centiseconds = (i32)(NuFmod(time, 1.0f) * 100.0);
+    if (text == NULL) {
+        return;
+    }
+    if (show_hours != 0) {
+        if (show_centiseconds != 0) {
+            sprintf(text, Text_TimeHMSC, hours, minutes, seconds, centiseconds);
+        } else {
+            sprintf(text, Text_TimeHMS, hours, minutes, seconds);
+        }
+    } else if (show_minutes != 0) {
+        if (show_centiseconds != 0) {
+            sprintf(text, Text_TimeMSC, minutes, seconds, centiseconds);
+        } else {
+            sprintf(text, Text_TimeMS, minutes, seconds);
+        }
+    } else if (show_centiseconds != 0) {
+        sprintf(text, Text_TimeSC, seconds, centiseconds);
+    } else {
+        sprintf(text, Text_TimeS, seconds);
+    }
+}
+
+void Text_SetLanguage(i32 language) {
+    (void)language;
+    Text_Language = NuLanguageGet();
+    if (Text_GameSetLanguageFn != NULL) {
+        Text_GameSetLanguageFn(Text_Language);
     }
 }

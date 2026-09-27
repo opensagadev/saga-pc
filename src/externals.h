@@ -78,7 +78,7 @@ extern "C" {
                                                                                 IDirect3DTexture9 **);
     __declspec(dllimport) D3DXMATRIX *__stdcall D3DXMatrixLookAtLH(D3DXMATRIX *, const D3DXVECTOR3 *,
                                                                    const D3DXVECTOR3 *, const D3DXVECTOR3 *);
-    DECLSPEC_IMPORT D3DXMATRIX *__stdcall D3DXMatrixMultiply(D3DXMATRIX *, const D3DXMATRIX *, const D3DXMATRIX *);
+    D3DXMATRIX *__stdcall D3DXMatrixMultiply(D3DXMATRIX *, const D3DXMATRIX *, const D3DXMATRIX *);
     __declspec(dllimport) D3DXMATRIX *__stdcall D3DXMatrixOrthoLH(D3DXMATRIX *, FLOAT, FLOAT, FLOAT, FLOAT);
     __declspec(dllimport) HRESULT __stdcall D3DXSaveSurfaceToFileInMemory(ID3DXBuffer **, D3DXIMAGE_FILEFORMAT,
                                                                           IDirect3DSurface9 *, const PALETTEENTRY *,

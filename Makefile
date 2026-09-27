@@ -5,10 +5,11 @@ SOURCE_DIRS := $(shell find src -type d)
 OBJECTS := $(patsubst src/%,build/obj/%,$(SOURCES:.cpp=.obj))
 OBJECTS := $(OBJECTS:.c=.obj)
 EXE := build/LEGOStarWarsSaga.exe
+D3DX_LIB := build/d3dx9_35.lib
 CPPFLAGS := /Isrc /Ibuild/tools/msvc8/include /Ibuild/tools/msvc8/PlatformSDK/Include
 CXXFLAGS := /nologo /c /O2 /Gy /GS- /MT
 LDFLAGS := /nologo /machine:x86 /subsystem:windows /incremental:no /manifest:no /opt:noref /opt:noicf
-LDLIBS := user32.lib winmm.lib
+LDLIBS := user32.lib winmm.lib $(abspath $(D3DX_LIB))
 
 .DEFAULT_GOAL := build
 .DELETE_ON_ERROR:
@@ -22,8 +23,11 @@ run: $(EXE)
 	cd res && WINEPREFIX="$(CURDIR)/build/tools/wine" WINEDEBUG=-all WINEDLLOVERRIDES="winemenubuilder.exe=d" wine ../$(EXE)
 
 # Directory dependencies also relink when a source is removed from the input list.
-$(EXE): $(OBJECTS) $(SOURCE_DIRS) config/toolchain.json Makefile tools/cc.py tools/lib.py
+$(EXE): $(OBJECTS) $(D3DX_LIB) $(SOURCE_DIRS) config/toolchain.json Makefile tools/cc.py tools/lib.py
 	$(PYTHON) tools/cc.py --link $@ $(OBJECTS) -- $(LDFLAGS) $(LDLIBS)
+
+$(D3DX_LIB): tools/d3dx9_35.def tools/cc.py Makefile
+	$(PYTHON) tools/cc.py --implib $@ $<
 
 build/obj/%.obj: src/%.cpp src/saga.h src/externals.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)

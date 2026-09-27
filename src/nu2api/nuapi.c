@@ -12,3 +12,7 @@ void NuVideoSetBrightnessPS(void) {
 void NuVideoSetSwapModePS(i32 mode) {
     (void)mode;
 }
+
+void MenuSetPlatformState(i32 state) {
+    (void)state;
+}

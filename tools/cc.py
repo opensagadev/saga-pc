@@ -96,6 +96,8 @@ def main():
                     raise ValueError(f"Link input must be a compiled .obj file: {path}")
             if any(flag.upper().startswith(("/FORCE", "-FORCE")) for flag in flags):
                 raise ValueError("Forced linking is unsupported; resolve all symbols normally")
+            flags = [windows(Path(flag)) if flag.lower().endswith(".lib") and Path(flag).is_file()
+                     else flag for flag in flags]
             command = [wine, str(compiler / "link.exe"), *flags,
                        "/LIBPATH:" + windows(compiler.parent / "lib"),
                        "/LIBPATH:" + windows(compiler.parent / "PlatformSDK/Lib"),
