@@ -78,6 +78,8 @@ int __cdecl NuMain(int argc, char **argv) {
         STUBBED_NAMED("NuMain: restart-level episode and gizmo state");
         GameAISysSetGame();
         STUBBED_NAMED("NuMain: level stream, area initialization and music");
+        InitCables(WORLD);
+        STUBBED_NAMED("NuMain: PC post-cable world and music setup");
 
         if (WORLD == NULL || WORLD->loaded == 0) {
             STUBBED_NAMED("NuMain: waiting for the PC world stream");

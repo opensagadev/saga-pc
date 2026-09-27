@@ -1,9 +1,11 @@
 address   , symbol                                                , size  , ctype
 0x004011e0, _InitOnce                                             , 1019  , "void __cdecl (i32, char **)"
+0x00408800, _InitCables                                           , 127   , void __cdecl (WORLDINFO *)
 0x0043c800, _GameAISysSetGame                                     , 43    , void __cdecl (void)
 0x0043c830, _GameAISysInit                                        , 353   , void __cdecl (void)
 0x00492b40, _NuMain                                               , 4332  , "i32 __cdecl (i32, char **)"
 0x004942c0, _MenuEnterOptions                                     , 60    , void __cdecl (MENU *)
+0x00494300, _MenuUpdateOptions                                    , 690   , void __cdecl (MENU *)
 0x004945c0, _MenuDrawOptions                                      , 510   , void __cdecl (MENU *)
 0x004947c0, _MenuExitOptions                                      , 5     , void __cdecl (MENU *)
 0x00494df0, _MenuEnterNewGame                                     , 38    , void __cdecl (MENU *)
@@ -15,6 +17,7 @@ address   , symbol                                                , size  , ctyp
 0x004cf480, _Text_DecodeButtons                                   , 41    , "void __cdecl (char *, char *)"
 0x004eed92, _SendMessageA@16                                      , 6     , "LRESULT __stdcall (HWND, UINT, WPARAM, LPARAM)"
 0x004eef40, _NuAlloc                                              , 471   , "void *__cdecl (i32, const char *, i32)"
+0x004ef280, _NuFree                                               , 442   , "void __cdecl (void *, const char *, i32)"
 0x004ef660, _PCByteCopy_candidate                                 , 84    , "void __cdecl (void *, const void *, u32)"
 0x004ef790, _NuFileError                                          , 1     , void __cdecl (void)
 0x004ef7b0, _NuFileRetry                                          , 1     , void __cdecl (void)
@@ -64,7 +67,12 @@ address   , symbol                                                , size  , ctyp
 0x004f52a0, _ishexnum                                             , 99    , i32 __cdecl (char)
 0x004f5310, _hexcodetoint                                         , 107   , i32 __cdecl (char)
 0x004f6820, _NuFileAddDevice                                      , 216   , NUFILE_DEVICE *__cdecl (NUFILE_DEVICE *)
+0x004f6900, _NuFileGetCurrentDirectory                            , 42    , i32 __cdecl (char *)
+0x004f6930, _NuFileSetCurrentDirectory                            , 111   , void __cdecl (const char *)
+0x004f6a60, _NuFileGetCurrentDllPath                              , 136   , void __cdecl (char *)
+0x004f6af0, _NuFileSetCurrentDllDirectory                         , 71    , void __cdecl (const char *)
 0x004f6de0, _NuFileSeek                                           , 190   , "i64 __cdecl (NUFILE, i64, i32)"
+0x004f76f0, _NuDatFileFindHash                                    , 214   , "i32 __cdecl (NUDATHDR *, char *)"
 0x004f8b10, _NuStrICmp                                            , 100   , "i32 __cdecl (const char *, const char *)"
 0x004f8b80, _NuStrNICmp                                           , 150   , "i32 __cdecl (const char *, const char *, i32)"
 0x004f8c20, _NuStrUpr                                             , 59    , "void __cdecl (char *, const char *)"
@@ -72,7 +80,9 @@ address   , symbol                                                , size  , ctyp
 0x004f8cb0, _NuHexStringToI                                       , 81    , i32 __cdecl (char *)
 0x004f98c0, _NuFileGetDeviceFromPath                              , 113   , NUFILE_DEVICE *__cdecl (const char *)
 0x004f99e0, _NuFileClose                                          , 122   , void __cdecl (NUFILE)
+0x004f9aa0, _NuDatFileFindTree                                    , 300   , "i32 __cdecl (NUDATHDR *, char *)"
 0x004fa3f0, _NuFileOpenDF                                         , 507   , "NUFILE __cdecl (const char *, i32, NUDATHDR *, i32)"
+0x004fa610, _NuFileExistQuiet                                     , 126   , i32 __cdecl (char *)
 0x004fb550, _NuFileRead                                           , 380   , "i32 __cdecl (NUFILE, void *, i32)"
 0x004fbb40, _NuDatOpenEx                                          , 1898  , "NUDATHDR *__cdecl (const char *, VARIPTR *, i32 *, i16)"
 0x004fc2b0, _NuDatOpen                                            , 26    , "NUDATHDR *__cdecl (const char *, VARIPTR *, i32 *)"
@@ -113,6 +123,10 @@ address   , symbol                                                , size  , ctyp
 0x0050ec40, _FixUpButtonsInFont                                   , 200   , "void __cdecl (VUFNT *, VUFNT *)"
 0x005476e0, _StartPerm                                            , 23    , void __cdecl (void)
 0x00547700, _EndPerm                                              , 124   , void __cdecl (void)
+0x00547a70, _GameGetMusicVolume                                   , 59    , f32 __cdecl (OPTIONSSAVE *)
+0x00547ab0, _GameSetMusicVolume                                   , 110   , f32 __cdecl (OPTIONSSAVE *)
+0x00547b20, _GameSetSoundVolume                                   , 123   , f32 __cdecl (OPTIONSSAVE *)
+0x00548ef0, _SfxCheckMusicOnOff                                   , 1     , void __cdecl (OPTIONSSAVE *)
 0x00548f10, _SetBackgroundMusic                                   , 1     , void __cdecl (i32)
 0x00548fb0, _ResetTimer                                           , 46    , "void __cdecl (TIMER *, f32)"
 0x00548fe0, _UpdateTimer                                          , 97    , void __cdecl (TIMER *)
@@ -270,6 +284,8 @@ address   , symbol                                                , size  , ctyp
 0x0064a450, _NuPartSetSeed                                        , 10    , void __cdecl (i32)
 0x0064a460, _NuPartGetSeed                                        , 6     , u32 __cdecl (void)
 0x0064ae40, _NuPartEnableRayCasts                                 , 10    , void __cdecl (i32)
+0x00650eb0, _SetSoundVolume                                       , 11    , void __cdecl (f32)
+0x00650ec0, _GetSoundVolume                                       , 7     , f32 __cdecl (void)
 0x00656e40, _DebrisSetRenderGroup                                 , 10    , void __cdecl (i32)
 0x006579f0, _DebrisSetTimeIncrement                               , 11    , void __cdecl (f32)
 0x00658590, _DebrisRegisterCutoffCameraVec                        , 10    , void __cdecl (void *)
@@ -307,6 +323,8 @@ address   , symbol                                                , size  , ctyp
 0x006d5990, @NuKeyboardPoll@4                                     , 368   , u8 *__fastcall (NuKeyboardOwner_PC *)
 0x006d6b30, _MenuSetPlatformState                                 , 1     , void __cdecl (i32)
 0x006d9340, _NuKeyboardRead                                       , 42    , void __cdecl (void)
+0x006d9540, _NuKeyboardApplyActionKeys_candidate                  , 112   , "void __cdecl (const i16 *, i32)"
+0x006da560, @NuKeyboardStateInitialize_candidate@4                , 949   , NuKeyboardState_PC *__fastcall (NuKeyboardState_PC *)
 0x006dd390, _NuWindowsProcessMessages                             , 97    , i32 __cdecl (void)
 0x006de0e0, _WinMain@16                                           , 200   , "int __stdcall (HINSTANCE, HINSTANCE, LPSTR, int)"
 0x006df080, _NuKeyboardCreateWindowState_candidate                , 55    , "void __cdecl (HWND, HINSTANCE)"
@@ -317,6 +335,8 @@ address   , symbol                                                , size  , ctyp
 0x006e6b90, __ftol2_sse                                           , 28    ,
 0x006e6d90, _memcpy                                               ,       , "void *__cdecl (void *, const void *, size_t)"
 0x006e7570, _malloc                                               ,       , void *__cdecl (size_t)
+0x006e7633, _free                                                 , 133   , void __cdecl (void *)
+0x006e8430, __allmul                                              , 52    , "i64 __cdecl (i64, i64)"
 0x006e8e11, _srand                                                , 13    , void __cdecl (unsigned int)
 0x006e8e80, __CIsin                                               , 79    , f64 (x87 ST0 -> ST0)
 0x006f05ae, _saga_thunk_KERNEL32_dll_GetCurrentThreadId_006f05ae@0, 6     , DWORD __stdcall (void)
@@ -714,6 +734,7 @@ address   , symbol                                                , size  , ctyp
 0x0075133c, __imp__CoCreateInstance@20                            , 4     , "HRESULT (__stdcall *)(REFCLSID, IUnknown *, DWORD, REFIID, void **)"
 0x00751340, __imp__CoUninitialize@0                               , 4     , void (__stdcall *)(void)
 0x00751344, __imp__CoSetProxyBlanket@32                           , 4     , "HRESULT (__stdcall *)(IUnknown *, DWORD, DWORD, OLECHAR *, DWORD, DWORD, RPC_AUTH_IDENTITY_HANDLE, DWORD)"
+0x007514c0, _InitOnceAllocSource                                  , 15    , const char[15]
 0x007514d0, _InitOnceWindowTitle                                  , 36    , const char[36]
 0x00751524, __real@3f800000                                       , 4     , const f32
 0x00751528, _InitOnceHalf                                         , 4     , const f32
@@ -721,11 +742,15 @@ address   , symbol                                                , size  , ctyp
 0x00751658, __real@00000000                                       , 4     , const f32
 0x00751698, __real@3ff0000000000000                               , 8     , f64
 0x007516b8, _nu_wind_scaled_time_multiplier                       , 8     , const f64
+0x0075170c, __real@41200000                                       , 4     , const f32
 0x00751730, _Text_TimeS                                           , 3     , const char[3]
 0x00751768, _nu_fsign_minus_one                                   , 4     , const f32
+0x007517b4, __real@40800000                                       , 4     , const f32
 0x00751948, __real@41f00000                                       , 4     , const f32
 0x0075194c, __real@42700000                                       , 4     , const f32
 0x007519f0, __real@4059000000000000                               , 8     , const f64
+0x00751a40, _PCKeyboardDefaultValue_candidate                     , 4     , const f32
+0x00751a90, __real@3ff8000000000000                               , 8     , const f64
 0x00751bf8, __real@4024000000000000                               , 8     , const f64
 0x00751d90, __real@42480000                                       , 4     , const f32
 0x007531b8, __real@3e19999a                                       , 4     , const f32
@@ -737,6 +762,7 @@ address   , symbol                                                , size  , ctyp
 0x00758fc0, __real@404e000000000000                               , 8     , const f64
 0x00759700, _Menu_ColonSeparator                                  , 3     , const char[3]
 0x0075a0dc, _DebrisGlassMaterialOpacity                           , 4     , const f32
+0x0075a204, ??_C@_01KICIPPFI@?2?$AA@                              , 2     , const char[2]
 0x0075ad8c, _EpisodeVIDat                                         , 15    , const char[15]
 0x0075ad9c, _EpisodeVDat                                          , 14    , const char[14]
 0x0075adac, _EpisodeIVDat                                         , 15    , const char[15]
@@ -793,12 +819,21 @@ address   , symbol                                                , size  , ctyp
 0x00764000, __real@3e00000000000000                               , 8     , f64
 0x00764090, __real@3f2921fb60000000                               , 8     , const f64
 0x00764258, _KeyStructSizes                                       , 16    , const u8[16]
-0x007ef01c, ?SUPERBUFFERSIZE@@3HA                                 , 4     , i32
+0x007ef01c, _SUPERBUFFERSIZE                                 , 4     , i32
 0x007ef020, _CHARACTERBUFFERSIZE                                  , 4     , i32
+0x007f1038, _default_targetmomf                                   , 4     , f32
+0x007f103c, _default_ownermomf                                    , 4     , f32
+0x007f1040, _default_max_cable_length                             , 4     , f32
+0x007f1044, _default_tow_length                                   , 4     , f32
+0x007f1048, _targetmomf                                           , 4     , f32
+0x007f104c, _ownermomf                                            , 4     , f32
+0x007f1050, _max_cable_length                                     , 4     , f32
+0x007f1054, _tow_length                                           , 4     , f32
 0x007f23a4, _waiting_for_character                                , 4     , i32
 0x007f3b14, _BonusWinner                                          , 4     , i32
 0x007fac04, _BGLOAD                                               , 4     , i32
 0x007fac20, _PlayTrailer                                          , 4     , i32
+0x007faccc, _opts_sfx_wait                                        , 4     , f32
 0x007facf0, _GameMenuInfo                                         , 644   , MENUFNINFO[23]
 0x007fc274, _PanelProjectionX                                     , 4     , f32
 0x007fc278, _PanelProjectionY                                     , 4     , f32
@@ -948,6 +983,7 @@ address   , symbol                                                , size  , ctyp
 0x00810148, ??_R0?AVEdIntControl@@@8                              , 27    ,
 0x00810164, ??_R0?AVEdFloatControl@@@8                            , 29    ,
 0x008102e8, _partseed                                             , 4     , u32
+0x00810468, _MASTERVOLUME                                         , 4     , f32
 0x008108e4, _debris_time_increment                                , 4     , f32
 0x00810900, _debrisseed                                           , 4     , u32
 0x00810b38, _SkinFlipTab                                          , 32    , i32[8]
@@ -1018,6 +1054,8 @@ address   , symbol                                                , size  , ctyp
 0x00854300, ??_R0?AVHLSLShaderBuilder@@@8                         , 32    ,
 0x00854320, ??_R0?AV?$ShaderManagerTemplate@VNuShaderObject@@@@@8 , 56    ,
 0x00854358, ??_R0?AVShaderManagerHLSL@@@8                         , 32    ,
+0x00854728, _InitOnceCurrentDirectory                             ,       , char[]
+0x00854e58, _cables                                               , 3936  , u8[0xf60]
 0x00855e00, _MiniCutCam                                           , 4     , i32
 0x00856c28, _ChallengeMode                                        , 4     , i32
 0x0085ea94, _BonusCoinTotal                                       , 4     , i32
@@ -1027,6 +1065,7 @@ address   , symbol                                                , size  , ctyp
 0x008765e4, _reset_restart                                        , 4     , i32
 0x00876cec, _party_cant_be_under_cover                            , 4     , i32
 0x0087a9e8, _makefreeplaymodellist                                , 4     , i32
+0x0087af98, _GUNSHIP_ADATA                                        , 4     , AREA_DATA_PC *
 0x0087b2f4, _LevelChangesInArea                                   , 4     , i32
 0x0087b2fc, _loadareacharacters_loadedlevel                       , 4     , i32
 0x0087b4fc, _peak_poly_count                                      , 4     , i32
@@ -1037,6 +1076,7 @@ address   , symbol                                                , size  , ctyp
 0x0087b55c, _HubMainRenderTimeHack                                , 4     , i32
 0x0087b560, _NuDatHandles                                         , 28    , DAT_HANDLES_PC
 0x0087b73c, _new_level_from_menu                                  , 4     , i32
+0x0087b750, _opts_sfx_i                                           , 4     , i32
 0x0087b760, _startnewgame_initiated                               , 4     , i32
 0x0087b764, _startnewgame                                         , 4     , i32
 0x0087b958, _PANEL3DMULX                                          , 4     , f32
@@ -1072,6 +1112,7 @@ address   , symbol                                                , size  , ctyp
 0x0091eea8, _curr_dat                                             , 4     , NUDATHDR *
 0x0091eeac, _file_time_count                                      , 4     , i32
 0x0091eeb0, _nufile_buffering_enabled                             , 4     , i32
+0x0091eebc, _datsys_offset                                        , 4     , i32
 0x0091ef34, _argc                                                 , 4     , i32
 0x0091ef38, _argv                                                 , 4     , char **
 0x0091ef3c, _ShowingError                                         , 4     , i32
@@ -1108,7 +1149,7 @@ address   , symbol                                                , size  , ctyp
 0x00924880, _PCInputWindow_candidate                              , 4     , HWND
 0x00924884, _PCInputInstance_candidate                            , 4     , HINSTANCE
 0x0092488c, _permbuffer_size                                      , 4     , i32
-0x00924890, ?original_permbuffer_base@@3Tvariptr_u@@A             , 4     , VARIPTR
+0x00924890, _original_permbuffer_base             , 4     , VARIPTR
 0x00924894, _permbuffer_base                                      , 4     , VARIPTR
 0x00924898, _permbuffer_ptr                                       , 4     , VARIPTR
 0x0092489c, _permbuffer_end                                       , 4     , VARIPTR
@@ -1167,6 +1208,7 @@ address   , symbol                                                , size  , ctyp
 0x009513a8, _gone_through_door_to_new_level                       , 4     , i32
 0x00951440, _Door_UseCutCam                                       , 4     , i32
 0x00951b98, _LDataList                                            , 4     , LEVELDATA_PC *
+0x00951ba8, _TITLES_LDATA                                         , 4     , LEVELDATA_PC *
 0x00951bc0, _Level                                                , 4     , i32
 0x00951bc4, _LevelChange                                          , 4     , i32
 0x00951c00, _CUTSTOPGAME                                          , 4     , i32

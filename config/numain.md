@@ -16,7 +16,8 @@ cannot be used as a public interface without further work.
 
 The source entry now follows the verified PC startup order through permanent-data
 loading. `InitOnce` at `0x004011e0` has a structural stub with its full 1,019-byte
-comparison extent; its allocator, camera and time-bar dependencies remain open.
+comparison extent. Its PC-sized permanent allocation and current-directory setup
+are present; input, camera and time-bar dependencies remain open.
 `NuMain` stops before indexing level/area tables when the six DAT archives have
 not been loaded. Its startup includes a temporary guard before `NuFrameBegin`
 because the PC keyboard input owner is not yet initialized by our partial
@@ -36,14 +37,19 @@ and is a strong `NuRndrSwapScreen(i32)` candidate, but its 2,130-byte PC body
 contains substantial render-list work and is not reconstructed by Android's
 smaller presentation code.
 
-The current `NuDatOpenEx` is an explicit parser stub, so `NuMain` exits safely
-when archive-backed level and area tables are absent. PC archive inspection
-confirms eight open-file slots and eight-byte tree nodes, unlike Android's
-layout. The native Win32 and host-file layers now implement real open/read/seek/
-close behavior; a local temporary-file smoke check exercised normal and cached
-reads, seeks and cleanup. The DAT parser and permanent arena remain the next
-dependencies before meaningful startup execution; the rest of the frame loop
-remains structural work rather than a byte match.
+`NuDatOpenEx` now reads PC archive metadata through the native Win32 and
+host-file layers into InitOnce's permanent arena. It retains the PC's eight
+open-file slots, eight-byte tree nodes, and version -3 hash-index compaction;
+the hash-string self-copy is preserved. Synthetic Windows archive checks cover
+buffered and unbuffered reads, encoded metadata offsets, size reporting, lookup
+ordering, and cleanup. A separate local read-only smoke parsed all seven installed
+GOG DAT archives in both buffering modes and compared one complete stored payload
+per archive against independent Win32 reads. Compressed members have not been
+decompressed or validated. The parser is structural and nonmatching. It adds
+short-read, bounds and null-arena rejection absent from retail so the incomplete
+source entry fails safely. Source startup still exits before indexing absent
+level and area tables. Asset loading and the remaining frame loop are the next
+dependency work, not a completed 4,332-byte `NuMain` match.
 
 ## Direct-call candidates
 

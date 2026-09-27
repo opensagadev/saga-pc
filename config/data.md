@@ -1,9 +1,10 @@
 # PC data inventory
 
-`src/data.cpp` now defines **193 independently mapped objects**. The current
-local `matching.json` verifies all 193 full COFF extents and initializers,
-including relocated pointers and the 65,536-byte runtime-filled sound-volume
-table's zero initial state. Isolated VC8 sections keep small scalar and string
+`src/data.cpp` now defines **370 independently mapped objects**. The current
+local `matching.json` verifies 362 full COFF extents and initializers; the
+remaining eight are different or lack an established original extent. Exact
+initializers include relocated pointers and the 65,536-byte runtime-filled
+sound-volume table's zero initial state. Isolated VC8 sections keep small scalar and string
 definitions at their actual extents instead of absorbing alignment padding.
 The accepted entries are in [symbols.csv](symbols.csv), and normal local matching
 checks their emitted bytes. The detailed scratch comparison and candidate scans
@@ -263,6 +264,12 @@ includes 32 native handles, 33 `FILEINFO` records, four 0x408-byte file buffers,
 and the 0x234-byte PC device template; `NuFileDevice` has three separately
 asserted directory fields. The keyboard owner extent is still unknown and has
 no data-match credit; its typed partial layout must not imply a complete size.
+The DAT parser reads the signed four-byte `datsys_offset` at `0x0091eebc` and
+uses the permanent arena pointer. `SUPERBUFFERSIZE` and
+`original_permbuffer_base` have C linker names in this reconstruction so the C
+`InitOnce` unit can use typed declarations; their preferred-image addresses,
+four-byte extents and values remain mapped. The retail image is stripped, so
+these CSV names are reconstruction choices rather than original source names.
 `NUAPI` remains one 144-byte object at `0x0297dbe0`; PC references establish
 two eight-byte `NuTime` fields at offsets `0x2c` and `0x34`, with layout asserts
 in `saga.h`. `ShowingError` at `0x0091ef3c` and `bHaveErr` at `0x00921248` are

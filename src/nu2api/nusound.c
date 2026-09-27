@@ -1,5 +1,13 @@
 #include "saga.h"
 
+void SetSoundVolume(f32 volume) {
+    MASTERVOLUME = volume;
+}
+
+f32 GetSoundVolume(void) {
+    return MASTERVOLUME;
+}
+
 void __cdecl NuSound3AddRumble(void *pad, f32 strength, i32 duration, i32 priority, f32 buzz) {
     (void)pad;
     (void)strength;

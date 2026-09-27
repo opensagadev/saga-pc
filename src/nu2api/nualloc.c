@@ -146,3 +146,52 @@ void *__cdecl NuAlloc(i32 size, const char *file, i32 line) {
 
     return user_data;
 }
+
+void __cdecl NuFree(void *user_data, const char *file, i32 line) {
+    NUALLOC_RECORD *record;
+    NUALLOC_TAIL *tail;
+
+    if (NuAllocArena != NULL) {
+        STUBBED_NAMED(0x004ef280); /* PC reports frees while the arena is active. */
+        return;
+    }
+
+    if (user_data == NULL) {
+        STUBBED_NAMED(0x004eedc0); /* PC diagnostic hook is an empty RET. */
+        return;
+    }
+
+    record = (NUALLOC_RECORD *)((char *)user_data - sizeof(*record));
+    tail = (NUALLOC_TAIL *)((char *)user_data + record->requested_size);
+    if (memcmp(tail, NuAllocTailMetadata, sizeof(*tail)) != 0) {
+        STUBBED_NAMED(0x004eedc0); /* Corrupt tail diagnostic hook. */
+    }
+    if (memcmp(record->header_metadata, NuAllocHeaderMetadata, sizeof(record->header_metadata)) != 0) {
+        STUBBED_NAMED(0x004eedc0); /* Corrupt header diagnostic hook. */
+    }
+
+    if (record->next != NULL) {
+        record->next->previous = record->previous;
+    } else if (record->previous == NULL) {
+        STUBBED_NAMED(0x004eedc0); /* PC empty-list diagnostic hook. */
+    }
+
+    if (record->previous != NULL) {
+        record->previous->next = record->next;
+    } else {
+        NuAllocRecordHead = record->next;
+    }
+
+    NuAllocTrackedBytes -= record->requested_size;
+    record->next = NULL;
+    record->previous = NULL;
+
+    if (NuAllocManager != NULL) {
+        STUBBED_NAMED(0x004efb00); /* Manager release/coalescing closure unresolved. */
+        return;
+    }
+
+    free(record);
+    (void)file;
+    (void)line;
+}

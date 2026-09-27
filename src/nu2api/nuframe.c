@@ -20,7 +20,9 @@ f32 __cdecl NuFrameEnd(void) {
     } forced_frame_time;
     i32 had_error = NuHasError();
     STUBBED_NAMED("NuFrameEnd: PC max-FPS gate, Sleep waits, and message-pump loop");
-    STUBBED_NAMED("NuFrameEnd: PC material/texture animation, wind, occlusion, and pad-record updates");
+    STUBBED_NAMED("NuFrameEnd: PC material and texture animation updates");
+    NuWindAnimate(nuapi.wind, nuapi.frame_time);
+    STUBBED_NAMED("NuFrameEnd: PC occlusion and pad-record updates");
     STUBBED_NAMED("NuFrameEnd: PC time-bar and pad rendering setup");
 
     NuTimeGet(&nuapi.time);

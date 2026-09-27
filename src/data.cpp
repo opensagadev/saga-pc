@@ -65,9 +65,13 @@ i32 hub_from_arcade = -1;
 i32 UsePlayerList;
 i32 Door_UseCutCam;
 
-i32 SUPERBUFFERSIZE = 0x09600000;
-VARIPTR original_permbuffer_base;
 extern "C" {
+    i32 SUPERBUFFERSIZE = 0x09600000;
+    VARIPTR original_permbuffer_base;
+    char InitOnceCurrentDirectory[1];
+#pragma const_seg(".rdata$InitOnceAllocSource")
+    extern const char InitOnceAllocSource[15] = ".\\pcbatman.cpp";
+#pragma const_seg()
 #pragma const_seg(".rdata$InitOnceWindowTitle")
     extern const char InitOnceWindowTitle[36] = "LEGO\xae Star Wars\x99: The Complete Saga";
 #pragma const_seg()
@@ -138,6 +142,7 @@ extern "C" {
     FILEINFO file_info[33];
     FILEBUFF file_buff[4];
     i32 nufile_buffering_enabled;
+    i32 datsys_offset;
     i32 file_time_count;
     NUFILE_DEVICE devices[16];
     i32 numdevices;
@@ -480,7 +485,23 @@ extern "C" {
 #pragma const_seg(".rdata$nu_wind_scaled_time_multiplier")
     extern const f64 nu_wind_scaled_time_multiplier = 5.0;
 #pragma const_seg()
+#pragma const_seg(".rdata$PCKeyboardDefaultValue_candidate")
+    extern const f32 PCKeyboardDefaultValue_candidate = 0.1f;
+#pragma const_seg()
     f32 dme_sy = 1.0f;
+    f32 MASTERVOLUME = 1.0f;
+    f32 default_targetmomf = 4.0f;
+    f32 default_ownermomf = 5.0f;
+    f32 default_max_cable_length = 15.0f;
+    f32 default_tow_length = 6.0f;
+    f32 targetmomf = 4.0f;
+    f32 ownermomf = 5.0f;
+    f32 max_cable_length = 15.0f;
+    f32 tow_length = 6.0f;
+    AREA_DATA_PC *GUNSHIP_ADATA;
+#pragma bss_seg(".bss$cables")
+    u8 cables[0xf60];
+#pragma bss_seg()
     i32 menu_flash;
 #pragma bss_seg(".bss$tAUDIOVOLUME")
     i16 tAUDIOVOLUME;
@@ -496,6 +517,9 @@ extern "C" {
     i16 tBACK;
 #pragma bss_seg()
     OPTIONSSAVE *Game_OptionsSave;
+    f32 opts_sfx_wait = 1.5f;
+    i32 opts_sfx_i;
+    LEVELDATA_PC *TITLES_LDATA;
 
     // STUBBED: PC callback bodies are not reconstructed; NULL slots keep them inactive.
     // IDs, remembered cursors, and prompt flags use the 23-record PC table.
@@ -504,7 +528,7 @@ extern "C" {
         {1, MenuEnterNewGame, NULL, NULL, NULL, -1, -1, 0, 1, 0, 0},
         {2, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {3, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {4, MenuEnterOptions, MenuDrawOptions, NULL, MenuExitOptions, 0, 0, 0, 1, 1, 0},
+        {4, MenuEnterOptions, MenuDrawOptions, MenuUpdateOptions, MenuExitOptions, 0, 0, 0, 1, 1, 0},
         {5, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0},
         {6, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {7, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0},

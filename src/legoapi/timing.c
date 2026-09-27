@@ -5,6 +5,11 @@ STATIC_ASSERT(offsetof(MAINFRAMECOUNTERS, every_frame) == 1);
 STATIC_ASSERT(offsetof(MAINFRAMECOUNTERS, alternate_frame) == 2);
 STATIC_ASSERT(offsetof(MAINFRAMECOUNTERS, third_frame) == 3);
 STATIC_ASSERT(offsetof(MAINFRAMECOUNTERS, fourth_frame) == 4);
+STATIC_ASSERT(sizeof(TIMER) == 0x10);
+STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
+STATIC_ASSERT(offsetof(TIMER, last_time_elapsed) == 4);
+STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);
+STATIC_ASSERT(offsetof(TIMER, update_count) == 0xc);
 
 extern f32 FRAMETIME;
 extern f32 __cdecl NuFmod(f32 value, f32 divisor);

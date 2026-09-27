@@ -3,8 +3,8 @@
 This project reconstructs the GOG PC executable with MSVC 2005 and compares the
 resulting x86 COFF objects against the original. The default build also links
 our current sources into a Windows executable using the original MSVC linker
-and libraries. The entry path currently initializes command-line/world state and
-exits; the game remains incomplete.
+and libraries. The entry path opens the PC episode archives, then exits safely
+before the still-missing level and area tables are used; the game remains incomplete.
 There are no host or WebAssembly game targets.
 
 ## Requirements and setup
@@ -90,7 +90,9 @@ call or state transition whose dependency is still missing. These markers emit
 no code in matching builds and do not imply a byte match. Keep the original call
 order, document the skipped work, and replace markers down the dependency tree.
 The source-only executable currently exits before using level/area tables until
-the PC DAT loader can populate them.
+the PC asset-loading dependencies populate them. Its DAT metadata parser is
+structural and has additional short-read and null-arena guards; those are
+source-runtime safeguards, not retail byte matches.
 
 Identify the original function or global, record its boundary and references in
 [config/symbols.csv](config/symbols.csv), then implement it under `src/` and add

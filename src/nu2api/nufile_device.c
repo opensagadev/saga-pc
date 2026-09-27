@@ -175,3 +175,59 @@ NUFILE_DEVICE *__cdecl NuFileAddDevice(NUFILE_DEVICE *device) {
     numdevices = device_index + 1;
     return registered_device;
 }
+
+i32 __cdecl NuFileGetCurrentDirectory(char *destination) {
+    const char *source;
+
+    source = default_device->cur_dir;
+    if (source != NULL) {
+        while (*source != '\0') {
+            *destination++ = *source++;
+        }
+    }
+    *destination = '\0';
+    return 0;
+}
+
+void __cdecl NuFileSetCurrentDirectory(const char *path) {
+    char separator[2] = {'\\', '\0'};
+    char *destination;
+    char *destination_start;
+    const char *source;
+
+    destination_start = default_device->cur_dir;
+    if (*path == '\0') {
+        *destination_start = '\0';
+        return;
+    }
+
+    destination = destination_start;
+    source = path;
+    do {
+        *destination++ = *source;
+    } while (*source++ != '\0');
+
+    if (destination[-2] != '\\' && destination[-2] != '/') {
+        separator[0] = (char)default_device->dir_separator;
+        separator[1] = '\0';
+        NuStrCat(default_device->cur_dir, separator);
+    }
+}
+
+void __cdecl NuFileGetCurrentDllPath(char *destination) {
+    i32 root_length;
+
+    NuStrCpy(destination, default_device->root);
+    NuStrCat(destination, default_device->dll_dir);
+    root_length = NuStrLen(default_device->root);
+    NuFileCorrectSlashes(default_device, destination + root_length);
+}
+
+void __cdecl NuFileSetCurrentDllDirectory(const char *path) {
+    if (*path != '\0') {
+        NuStrCpy(default_device->dll_dir, path);
+        NuStrCat(default_device->dll_dir, "\\");
+    } else {
+        default_device->dll_dir[0] = '\0';
+    }
+}
