@@ -337,6 +337,7 @@ address   , symbol                                                , size  , ctyp
 0x0050ec40, _FixUpButtonsInFont                                   , 200   , "void __cdecl (VUFNT *, VUFNT *)"
 0x0050fed0, _DrawMenu                                          , 543   , void (i32)
 0x00517160, _AISysBufferAlloc                                     , 74    , "void *__cdecl (VARIPTR *, VARIPTR *, u32)"
+0x00547060, _NuLstCreate                                      , 136   , "NULSTHDR *__cdecl (i32, i32)"
 0x00547240, _NuLstAllocTail                                    , 117   , "NULNKHDR *__cdecl (NULSTHDR *)"
 0x005476e0, _StartPerm                                            , 23    , void __cdecl (void)
 0x00547700, _EndPerm                                              , 124   , void __cdecl (void)
@@ -1534,6 +1535,7 @@ address   , symbol                                                , size  , ctyp
 0x0075f77c, _TextPlatformWii                                      , 4     , const char[4]
 0x0076138c, _LevelConfigGenericKeyword_camang_seek                 , 12    , const char[12]
 0x00761398, _LevelConfigGenericKeyword_campos_seek                 , 12    , const char[12]
+0x007615b0, _NuLstCreateTag                                   , 52    , const char[52]
 0x0076161c, _Text_PathJapaneseText                                , 9     , const char[9]
 0x00761628, _Text_PathDanishText                                  , 7     , const char[7]
 0x00761630, _Text_PathSpanishText                                 , 8     , const char[8]

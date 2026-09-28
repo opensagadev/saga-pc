@@ -2427,6 +2427,8 @@ extern "C" {
     extern void(__cdecl *NuThreadEnableThreadSwap)(void);
     NULNKHDR *__cdecl NuLstAllocTail(NULSTHDR *list);
     void __cdecl bgProcDataOversize(i32 size);
+    NULSTHDR *__cdecl NuLstCreate(i32 element_count, i32 element_size);
+    extern const char NuLstCreateTag[52];
     BGPROCINFO *__cdecl bgPostRequest(bgprocdofn *do_fn, bgprocdofn *ack_fn, void *data, i32 data_size);
     extern const char GetSfxSwPPadName[7];
     extern LEVELDATA_PC *DOGFIGHTA_LDATA;

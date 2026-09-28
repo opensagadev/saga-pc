@@ -1505,6 +1505,9 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$LevelSplinesStartCamName")
     extern const char LevelSplinesStartCamName[10] = "start_cam";
+
+#pragma const_seg(".rdata$NuLstCreateTag")
+    extern const char NuLstCreateTag[52] = "d:\\projects\\game_saga\\nu2api.saga\\gamelib\\listman.c";
 #pragma const_seg()
 #pragma const_seg(".rdata$LevelConfigFarDistance")
     extern const f32 LevelConfigFarDistance = 2000000.0f;

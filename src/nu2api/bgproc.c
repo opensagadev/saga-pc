@@ -34,7 +34,7 @@ BGPROCINFO *__cdecl bgPostRequest(bgprocdofn *do_fn, bgprocdofn *ack_fn, void *d
 void __cdecl bgProcInit(void) {
     if (bgproc_initialized == 0) {
         bgproc_initialized = 1;
-        STUBBED_NAMED("bgProcInit: NuLstCreate(16, sizeof(BGPROCINFO))");
+        bgproc_procinfo_pool = NuLstCreate(0x10, sizeof(BGPROCINFO));
         InitializeCriticalSection(&bgproc_critical_section);
         bgproc_work_event = CreateEventA(NULL, FALSE, FALSE, bgproc_work_event_name);
         bgproc_resume_event = CreateEventA(NULL, TRUE, TRUE, bgproc_resume_event_name);
