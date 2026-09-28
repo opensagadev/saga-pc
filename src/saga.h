@@ -1397,6 +1397,23 @@ typedef struct NuTime_s {
 } NuTime;
 STATIC_ASSERT(sizeof(NuTime) == 8);
 
+typedef struct memorymanager_s {
+    u32 buffer_start;
+    u32 buffer_end;
+    u32 *start_anchor;
+    u32 *end_anchor;
+    u32 unknown_10;
+    u32 unknown_14;
+    u32 size;
+    u8 free_lists[0x22c];
+} MEMORYMANAGER;
+STATIC_ASSERT(sizeof(MEMORYMANAGER) == 0x248);
+STATIC_ASSERT(offsetof(MEMORYMANAGER, buffer_end) == 0x4);
+STATIC_ASSERT(offsetof(MEMORYMANAGER, start_anchor) == 0x8);
+STATIC_ASSERT(offsetof(MEMORYMANAGER, end_anchor) == 0xc);
+STATIC_ASSERT(offsetof(MEMORYMANAGER, size) == 0x18);
+STATIC_ASSERT(offsetof(MEMORYMANAGER, free_lists) == 0x1c);
+
 typedef struct TIMER_s {
     f32 time_elapsed;
     f32 last_time_elapsed;
@@ -1964,6 +1981,15 @@ extern "C" {
     extern NUGSCN *save_icon_scene;
     extern i32 display_aspect_mode;
     extern f32 NuVideoDisplayAspect;
+    extern void *OldLevelHackData;
+    extern void *LevelHackData;
+    extern i32 LevelHackDataSize;
+    extern i16 id_DEFAULTCHARACTER[2];
+    extern i16 ID_DEFAULTCHARACTER_A;
+    extern i16 ID_DEFAULTCHARACTER_B;
+    extern i16 ID_DEFAULTCHARACTER_LSW_A;
+    extern i16 ID_DEFAULTCHARACTER_LSW_B;
+    extern MEMORYMANAGER theMemoryManager;
     extern f32 DEFAULTFRAMETIME;
     extern i32 PAL;
     void __cdecl SetBackgroundMusic(i32 track);

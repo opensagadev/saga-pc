@@ -185,6 +185,15 @@ extern "C" {
     NUGSCN *save_icon_scene;
     i32 display_aspect_mode;
     f32 NuVideoDisplayAspect;
+    void *OldLevelHackData;
+    void *LevelHackData;
+    i32 LevelHackDataSize;
+    i16 id_DEFAULTCHARACTER[2] = {-1, -1};
+    i16 ID_DEFAULTCHARACTER_A = -1;
+    i16 ID_DEFAULTCHARACTER_B = -1;
+    i16 ID_DEFAULTCHARACTER_LSW_A = -1;
+    i16 ID_DEFAULTCHARACTER_LSW_B = -1;
+    MEMORYMANAGER theMemoryManager;
     f32 DEFAULTFRAMETIME;
     i32 PAL;
     PART_EMIT_PC part_emits[40];

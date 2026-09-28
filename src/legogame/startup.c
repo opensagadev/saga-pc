@@ -258,22 +258,143 @@ void __cdecl FixUpAreas(void) {
 }
 
 void __cdecl LoadPermData(void *process) {
-    (void)process;
+    i16 default_id_a;
+    i16 default_id_b;
+    u32 aligned;
 
-    // The PC worker first initializes shared permanent resources and waits for
-    // language selection before reaching the table loaders. Those setup stages
-    // still have unresolved dependencies in this source reconstruction.
-    STUBBED_NAMED("LoadPermData: font, language/string, audio, and permanent resource setup");
+    STUBBED_NAMED("LoadPermData: LoadPermLoadFonts");
+    while (LoadPerm_LanguageSelect != 3) {
+    }
+
+    Text_InitStringTable(0x70d, &permbuffer_ptr, &permbuffer_end);
+
+    if (StartupGameFlag1 == 0 && StartupGameFlag0 == 0) {
+        STUBBED_NAMED("LoadPermData: Text_InitTable(Text_TableMenu, 0, 0x31f)");
+        STUBBED_NAMED("LoadPermData: Text_InitTable(Text_TableGame, 0x320, 0x70c)");
+    } else {
+        STUBBED_NAMED("LoadPermData: Text_InitTable(Text_TableMain, 0, 0x70c)");
+    }
+
+    Text_LoadStrings(&permbuffer_ptr, &permbuffer_end);
+    Text_InitDefaultStrings();
+    LoadPerm_StringsLoaded = 1;
+
+    if (process != NULL) {
+        STUBBED_NAMED("LoadPermData: LoadPermLoadLegalTexture");
+    }
+
+    STUBBED_NAMED("LoadPermData: string filter load (badwords.txt at 0x4fe390)");
+    STUBBED_NAMED("LoadPermData: ConfigureMusic(audio\\music.txt) into MusicInfo + SfxSetFileTable");
+    STUBBED_NAMED("LoadPermData: sound configuration from Audio\\Audio.cfg (0x6521b0)");
+    STUBBED_NAMED("LoadPermData: still-render initialization (0x565820)");
+
+    OldLevelHackData = GameBufferAlloc(&permbuffer_ptr, &permbuffer_end, 0x80);
+    LevelHackData = GameBufferAlloc(&permbuffer_ptr, &permbuffer_end, 0x80);
+    LevelHackDataSize = 0;
+
+    STUBBED_NAMED("LoadPermData: LevelProgress_ReserveBufferSpace(&permbuffer_ptr, &permbuffer_end)");
+    STUBBED_NAMED("LoadPermData: pFadeInfo = &FadeSys; FadeSystem::Init; AddFade x4 (0x802ea0/a8/b0/b8)");
+    STUBBED_NAMED("LoadPermData: LevelObjects_InitForGame(0x7f44f8, &ptr, &end, 0x2ee, 0x1f40)");
+    STUBBED_NAMED("LoadPermData: LevelSplines_InitForGame(0x7f4358)");
+    STUBBED_NAMED("LoadPermData: LoadPermLoadSaveIconScene");
+
+    aligned = (permbuffer_ptr.addr + 0xfU) & ~0xfU;
+    permbuffer_ptr.addr = aligned + 0x200;
+    theMemoryManager.buffer_start = aligned;
+    theMemoryManager.buffer_end = aligned + 0x200;
+    theMemoryManager.start_anchor = &theMemoryManager.buffer_start;
+    theMemoryManager.end_anchor = &theMemoryManager.buffer_end;
+    theMemoryManager.unknown_10 = 0;
+    theMemoryManager.unknown_14 = 0;
+    theMemoryManager.size = 0x200;
+    memset(theMemoryManager.free_lists, 0, sizeof(theMemoryManager.free_lists));
+
+    STUBBED_NAMED("LoadPermData: CreateThingManager");
+
+    if (StartupGameFlag0 != 0) {
+        STUBBED_NAMED("LoadPermData: startup registration variant (0x46a150)");
+    } else if (StartupGameFlag1 != 0) {
+        STUBBED_NAMED("LoadPermData: startup registration variant (0x46a340)");
+        GameAnimSys_AllocateLevelProgressData(&permbuffer_ptr, &permbuffer_end, 0x280, 0xc);
+        STUBBED_NAMED("LoadPermData: registration pair (0x4642e0, 0x458440)");
+        STUBBED_NAMED("LoadPermData: LSW gameplay hook wiring"
+                      " (CutScene_StartFn=0x42d740, CutScene_PreUpdateFn=0x42d8e0,"
+                      " CutScene_PostUpdateFn=0x42da00, CutScene_StoppedFn=0x42da10,"
+                      " CutScene_ReplaceCharacterModelFn=0x42daa0, InitBolt_AddMomentumType=0x42dca0,"
+                      " Bolt_HitPlatFn=0x42dd50, Bolt_HitCustomFn=0x42dd80,"
+                      " GameBlowUpBlownUpFn=0x42dda0, GizObstacle_SetDefaultSFXFn=0x42df30)");
+    } else {
+        STUBBED_NAMED("LoadPermData: startup registration variant (0x46a230)");
+    }
+
+    if (!(StartupGameFlag0 == 0 && StartupGameFlag1 != 0)) {
+        GameAnimSys_AllocateLevelProgressData(&permbuffer_ptr, &permbuffer_end, 0x280, 0xc);
+        STUBBED_NAMED("LoadPermData: registration pair (0x45e2e0, 0x457f60)");
+    }
+
+    STUBBED_NAMED("LoadPermData: Movies_ConfigureList(movies\\movies.txt)");
+    STUBBED_NAMED("LoadPermData: NuRegisterEndFrameCallBackFn(0x5ca000)");
+    STUBBED_NAMED("LoadPermData: ConfigureCharacterList(chars\\chars.txt) into CDataList/CHARCOUNT/GCDataList");
+    STUBBED_NAMED("LoadPermData: CharScenes_Init");
+    STUBBED_NAMED("LoadPermData: IconScenes_Init(stuff\\icons\\)");
+    STUBBED_NAMED("LoadPermData: FixUpCharacters(0x7f1b50)");
+    STUBBED_NAMED("LoadPermData: MiniKits_Init");
+
+    if (StartupGameFlag1 != 0) {
+        default_id_a = ID_DEFAULTCHARACTER_LSW_A;
+        default_id_b = ID_DEFAULTCHARACTER_LSW_B;
+    } else {
+        default_id_a = ID_DEFAULTCHARACTER_A;
+        default_id_b = ID_DEFAULTCHARACTER_B;
+    }
+    id_DEFAULTCHARACTER[0] = default_id_a;
+    id_DEFAULTCHARACTER[1] = default_id_b;
+
+    STUBBED_NAMED("LoadPermData: CharCategories_Init(0x7f25f0 / 0x7f25a8)");
+    STUBBED_NAMED("LoadPermData: Cheats_Init(0x7f3d98)");
+    PlayerID[0] = id_DEFAULTCHARACTER[0];
+    PlayerID[1] = id_DEFAULTCHARACTER[1];
+    STUBBED_NAMED("LoadPermData: CharVariants_Init(0x7f3a80, 0x17)");
 
     LDataList = Levels_ConfigureList((char *)LoadPermLevelsPath, &permbuffer_ptr, &permbuffer_end, 0x16d, &LEVELCOUNT,
                                      Level_SetDefaults);
-    STUBBED_NAMED("LoadPermData: FixUpLevels");
+    STUBBED_NAMED("LoadPermData: FixUpLevels(0x7fa790)");
 
     ADataList = Areas_ConfigureList((char *)LoadPermAreasPath, &permbuffer_ptr, &permbuffer_end, 0x48, &AREACOUNT);
     FixUpAreas();
 
     EDataList =
         Episodes_ConfigureList((char *)LoadPermEpisodesPath, &permbuffer_ptr, &permbuffer_end, 6, &EPISODECOUNT);
+
+    STUBBED_NAMED("LoadPermData: NewGame");
+    STUBBED_NAMED("LoadPermData: InitGameAfterConfig");
+
+    if (StartupGameFlag1 == 0) {
+        STUBBED_NAMED("LoadPermData: cutscene list load (cut\\cutscenes.txt at 0x57a870)");
+    }
+
+    STUBBED_NAMED("LoadPermData: APICharacterSysInit(&ptr, end, CHARCOUNT, 0x30, 0xe9, 0x400, CDataList, 0x595e00)");
+    STUBBED_NAMED("LoadPermData: SetActionInfo(0x7fbec8, 0x7fbed0)");
+    STUBBED_NAMED("LoadPermData: CreateGizAIMessageSys(&ptr, &end, 0x40) into gizaimessagesys");
+
+    permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xfU) & ~0xfU;
+
+    if (StartupGameFlag1 != 0) {
+        STUBBED_NAMED("LoadPermData: BackDrop_Init(stuff\\starfield.gsc)");
+    }
+
+    STUBBED_NAMED("LoadPermData: LoadPerm1");
+    STUBBED_NAMED("LoadPermData: LoadPerm2");
+    STUBBED_NAMED("LoadPermData: GameThingManager::AddOnceOnlyThings(0x95e438)");
+    STUBBED_NAMED("LoadPermData: RegisterHelpers");
+
+    STUBBED_NAMED("LoadPermData: loading-screen registration (0x421320 struct with font,"
+                  " LoadPermProgressDraw, 0x401140)");
+    STUBBED_NAMED("LoadPermData: procedural animation fn registration (0x6d4dd0(0x50c140))");
+    STUBBED_NAMED("LoadPermData: callback registration (0x6d6d90(0x4011b0))");
+
+    permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xfU) & ~0xfU;
+    PermDataLoaded = 1;
 }
 
 EPISODEDATA_PC *__cdecl Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
