@@ -1558,6 +1558,64 @@ STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_178) == 0x178);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_188) == 0x188);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_214) == 0x214);
 
+struct bgprocinfo_s;
+typedef void(__cdecl *bgprocdofn)(struct bgprocinfo_s *);
+
+typedef struct bgvar_s {
+    i32 type;
+    union {
+        i32 i32_value;
+        u32 u32_value;
+        f32 float_value;
+        void *pointer_value;
+        char *string_value;
+    } value;
+} BGVAR;
+STATIC_ASSERT(sizeof(BGVAR) == 0x8);
+
+struct bgprocinfo_s {
+    bgprocdofn *do_fn;
+    bgprocdofn *ack_fn;
+    i32 work_started : 1;
+    i32 unknown_flag_2 : 1;
+    i32 padding;
+    u8 data[0x100];
+    BGVAR *vars;
+    i32 var_count;
+};
+STATIC_ASSERT(sizeof(BGPROCINFO) == 0x118);
+STATIC_ASSERT(offsetof(BGPROCINFO, data) == 0x10);
+STATIC_ASSERT(offsetof(BGPROCINFO, vars) == 0x110);
+STATIC_ASSERT(offsetof(BGPROCINFO, var_count) == 0x114);
+
+typedef struct nulsthdr_s NULSTHDR;
+
+typedef struct nulnkhdr_s {
+    struct nulsthdr_s *owner;
+    struct nulnkhdr_s *next;
+    struct nulnkhdr_s *prev;
+    u16 id;
+    u16 is_used : 1;
+} NULNKHDR;
+STATIC_ASSERT(sizeof(NULNKHDR) == 0x10);
+
+struct nulsthdr_s {
+    NULNKHDR *free;
+    NULNKHDR *free_tail;
+    NULNKHDR *head;
+    NULNKHDR *tail;
+    u16 element_count;
+    u16 element_size;
+    u16 element_size_total;
+    u16 used_count;
+    u32 safe_thread;
+    u16 padding[2];
+};
+STATIC_ASSERT(sizeof(NULSTHDR) == 0x20);
+STATIC_ASSERT(offsetof(NULSTHDR, tail) == 0xc);
+STATIC_ASSERT(offsetof(NULSTHDR, used_count) == 0x16);
+STATIC_ASSERT(offsetof(NULSTHDR, safe_thread) == 0x18);
+
 typedef struct gizobstacle_s {
     u8 opaque_00_44[0x44];
     f32 trigger_radius;
@@ -2178,6 +2236,13 @@ extern "C" {
     extern void(__cdecl *GameBlowUpBlownUpFn)(void *blowup);
     extern void(__cdecl *GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
     extern LEVELDATA_PC *KAMINOE_LDATA;
+    extern NULSTHDR *bgproc_procinfo_pool;
+    extern volatile u32 nu_current_thread_id;
+    extern void(__cdecl *NuThreadDisableThreadSwap)(void);
+    extern void(__cdecl *NuThreadEnableThreadSwap)(void);
+    NULNKHDR *__cdecl NuLstAllocTail(NULSTHDR *list);
+    void __cdecl bgProcDataOversize(i32 size);
+    BGPROCINFO *__cdecl bgPostRequest(bgprocdofn *do_fn, bgprocdofn *ack_fn, void *data, i32 data_size);
     extern const char GetSfxSwPPadName[7];
     extern LEVELDATA_PC *DOGFIGHTA_LDATA;
     extern void *OldLevelHackData;

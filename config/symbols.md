@@ -346,6 +346,27 @@ condition must live in the marker text until the callee exists.
 written by `Level_FindByName("Kamino_E"/"dogfight_a")` in the
 level-handler registration cluster around `0x0048e3xx`-`0x0048e7xx`.
 
+The background-post path is reconstructed. `NuLstAllocTail`
+(`0x00547240`, 117 bytes) pops the free list, links the node at the tail
+(`NULNKHDR` 0x10 bytes, `NULSTHDR` 0x20 bytes per the Android `nulst`
+layout), sets `is_used` and bumps `used_count`, and gates both
+`NuThreadDisableThreadSwap`/`NuThreadEnableThreadSwap` calls
+(`0x00800820`/`0x00800824`, indirect pointers) behind the
+`safe_thread != nu_current_thread_id` test against the volatile current
+thread id at `0x00297ad74`. `bgPostRequest` (`0x004fecf0`, 151 bytes)
+posts the 0x118-byte `BGPROCINFO` work item through the
+`bgproc_procinfo_pool` list (`0x0091f1d4`, the pointer created by
+`NuLstCreate(0x10, 0x118)` inside `bgProcInit`), under
+`bgproc_critical_section`, copying up to the caller's data size into
+`+0x10` with the one-byte `bgProcDataOversize` hook (`0x004fe640`)
+notified when the size exceeds `0x100`, then signals
+`bgproc_work_event`. The retail keeps the post's `data_size` in `eax`
+across the hook call, which requires same-unit visibility of the empty
+hook body; our hook lives in `nuvideo.c`, so the reload registers differ
+(78% similarity, identical semantics). `bgProcDataOversize` itself is a
+one-byte `ret` and is exact. `LoadPerm` now posts `LoadPermData` with a
+real `bgPostRequest` call.
+
 ## External symbols
 
 The original PE import directory supplies 197 four-byte IAT slots: 191 imports by

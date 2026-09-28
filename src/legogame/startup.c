@@ -117,7 +117,7 @@ void __cdecl LoadPerm(void) {
     ready_timer = 0.0f;
     intro_timer = 0.0f;
     menu_alpha = 0.0f;
-    STUBBED_NAMED("LoadPerm: bgPostRequest(LoadPermData, NULL, NULL, 0)");
+    bgPostRequest((bgprocdofn *)LoadPermData, NULL, NULL, 0);
 
     while (PermDataLoaded == 0 || tail_timer > 0.0f) {
         NuFrameBegin();

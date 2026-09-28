@@ -88,3 +88,6 @@ i32 NuRegionGet(void) {
 void NuRegionSet(i32 region) {
     nuapi.region = region;
 }
+
+void __cdecl bgProcDataOversize(i32 size) {
+}

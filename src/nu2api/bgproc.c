@@ -1,5 +1,36 @@
 #include "saga.h"
 
+NULSTHDR *bgproc_procinfo_pool;
+volatile u32 nu_current_thread_id;
+void(__cdecl *NuThreadDisableThreadSwap)(void);
+void(__cdecl *NuThreadEnableThreadSwap)(void);
+
+BGPROCINFO *__cdecl bgPostRequest(bgprocdofn *do_fn, bgprocdofn *ack_fn, void *data, i32 data_size) {
+    BGPROCINFO *info;
+
+    EnterCriticalSection(&bgproc_critical_section);
+    info = (BGPROCINFO *)NuLstAllocTail(bgproc_procinfo_pool);
+    if (info != NULL) {
+        info->do_fn = do_fn;
+        info->ack_fn = ack_fn;
+        info->work_started = 0;
+        info->unknown_flag_2 = 0;
+        info->vars = NULL;
+        info->var_count = 0;
+        if (data != NULL && data_size != 0) {
+            if (data_size > 0x100) {
+                bgProcDataOversize(0x100);
+            }
+            memcpy(info->data, data, data_size);
+        }
+    }
+    LeaveCriticalSection(&bgproc_critical_section);
+    if (info != NULL) {
+        SetEvent(bgproc_work_event);
+    }
+    return info;
+}
+
 void __cdecl bgProcInit(void) {
     if (bgproc_initialized == 0) {
         bgproc_initialized = 1;

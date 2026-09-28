@@ -290,6 +290,7 @@ address   , symbol                                                , size  , ctyp
 0x004fd850, _NuFileCopy                                           , 75    , "i32 __cdecl (char *, char *)"
 0x004fd8a0, _NuFilePakLoadKey                                     , 332   , "void *__cdecl (char *, VARIPTR *, VARIPTR, i32, const u8 *, u32)"
 0x004fd9f0, _NuFilePakLoad                                        , 33    , "void *__cdecl (char *, VARIPTR *, VARIPTR, i32)"
+0x004fe640, _bgProcDataOversize                                , 1     , "void __cdecl (i32)"
 0x004feb50, _NuHasError                                           , 6     , i32 __cdecl (void)
 0x004feb60, _NuClearError                                         , 11    , void __cdecl (void)
 0x004feb70, _NuVideoSetSwapModePS                                 , 1     , void __cdecl (i32)
@@ -333,6 +334,7 @@ address   , symbol                                                , size  , ctyp
 0x0050ec40, _FixUpButtonsInFont                                   , 200   , "void __cdecl (VUFNT *, VUFNT *)"
 0x0050fed0, _DrawMenu                                          , 543   , void (i32)
 0x00517160, _AISysBufferAlloc                                     , 74    , "void *__cdecl (VARIPTR *, VARIPTR *, u32)"
+0x00547240, _NuLstAllocTail                                    , 117   , "NULNKHDR *__cdecl (NULSTHDR *)"
 0x005476e0, _StartPerm                                            , 23    , void __cdecl (void)
 0x00547700, _EndPerm                                              , 124   , void __cdecl (void)
 0x00547a30, ?legoSetMusicVolume@@YAXM@Z                           , 21    , void __cdecl (f32)
@@ -1706,6 +1708,8 @@ address   , symbol                                                , size  , ctyp
 0x00800544, _gExplodeInitialised                                  , 4     , i32
 0x00800550, _host_device                                          , 564   , NUFILE_DEVICE
 0x008007a0, _pc_file_handles                                      , 128   , HANDLE[32]
+0x00800820, _NuThreadDisableThreadSwap                        , 4     , "void (__cdecl *)(void)"
+0x00800824, _NuThreadEnableThreadSwap                         , 4     , "void (__cdecl *)(void)"
 0x00800940, _MenuSFX                                              , 4     , i32
 0x00800944, _GameMenuLevel                                        , 4     , i32
 0x00800948, _MenuLanguages                                        , 4     , i32
@@ -2109,6 +2113,7 @@ address   , symbol                                                , size  , ctyp
 0x0091efa0, _NuTime_PerformanceFrequency                          , 8     , i64
 0x0091f1c8, _bgproc_work_event                                    , 4     , HANDLE
 0x0091f1cc, _bgproc_resume_event                                  , 4     , HANDLE
+0x0091f1d4, _bgproc_procinfo_pool                              , 4     , NULSTHDR *
 0x00920a00, _NuTime_TickBase                                      , 8     , i64
 0x00921208, _bgproc_critical_section                              , 24    , CRITICAL_SECTION
 0x00921248, _bHaveErr                                             , 4     , i32
@@ -2382,6 +2387,7 @@ address   , symbol                                                , size  , ctyp
 0x029765a0, _nu_keyboard_owner                                    ,       , NuKeyboardOwner_PC partial
 0x029765cc, _nu_keyboard_key_count                                , 4     , i32
 0x002976c18, _NuVideoDisplayAspect                             , 4     , f32
+0x00297ad74, _nu_current_thread_id                           , 4     , volatile u32
 0x0297ad94, _nuvideo_global_vbcnt                                 , 4     , volatile i32
 0x0297ae40, _PCFrameCriticalSectionIndex_candidate                , 4     , i32
 0x0297dbe0, _nuapi                                                , 144   , NUAPI
