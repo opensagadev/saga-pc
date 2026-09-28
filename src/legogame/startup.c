@@ -72,6 +72,178 @@ f32 __cdecl LoadPermFadeAlpha(f32 t, f32 duration) {
     return 0.0f;
 }
 
+void __cdecl LoadPerm(void) {
+    WORLDINFO *saved_world;
+    f32 language_timer;
+    f32 legal_timer;
+    f32 ready_timer;
+    f32 intro_timer;
+    f32 tail_timer;
+    f32 menu_alpha;
+    f32 legal_alpha;
+    f32 intro_alpha;
+    f32 aspect;
+    f32 half;
+    f32 frame_time;
+
+    SetBackgroundMusic(1);
+    saved_world = WORLD;
+    PermDataLoaded = 0;
+    WORLD = NULL;
+
+    if (BGLOAD == 0 || LOADEROFF != 0) {
+        LoadPerm_LanguageSelect = 3;
+        LoadPermData(NULL);
+        if (legal_mtl != NULL) {
+            STUBBED_NAMED("LoadPerm: NuMtlDestroy(legal_mtl)");
+            legal_mtl = NULL;
+        }
+        WORLD = saved_world;
+        return;
+    }
+
+    FRAMETIME = DEFAULTFRAMETIME;
+    pNuCam->mtx = NuMtxSetIdentityTemplate;
+    STUBBED_NAMED("LoadPerm: NuCameraSet(pNuCam)");
+    InitPanel(Game.options_save.widescreen);
+    STUBBED_NAMED("LoadPerm: NuQFntSetCoordinateSystem(3)");
+    STUBBED_NAMED("LoadPerm: NuMtxSetScale(&scale, &scale_vec) with scale +0x2c = 1.0f");
+    if (PAL == 0) {
+        LoadPerm_LanguageSelect = 3;
+    }
+    language_timer = 3.3f;
+    tail_timer = 0.2f;
+    legal_timer = 0.0f;
+    ready_timer = 0.0f;
+    intro_timer = 0.0f;
+    menu_alpha = 0.0f;
+    STUBBED_NAMED("LoadPerm: bgPostRequest(LoadPermData, NULL, NULL, 0)");
+
+    while (PermDataLoaded == 0 || tail_timer > 0.0f) {
+        NuFrameBegin();
+        STUBBED_NAMED("LoadPerm: NuCameraSet(&global_camera)");
+        readpads_always = 1;
+        STUBBED_NAMED("LoadPerm: ReadPads()");
+        STUBBED_NAMED("LoadPerm: UpdateGameMenu(GamePad, 0)");
+        UpdateTimer(&GlobalTimer);
+        menu_flash = NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.2f) < 0.1f;
+
+        if (menu_alpha > 0.5f) {
+            if (language_timer < 3.3f) {
+                if (LoadPerm_LanguageSelect == 0) {
+                    STUBBED_NAMED("LoadPerm: NewMenu(7, 0, -1)");
+                    STUBBED_NAMED("LoadPerm: fade member at 0x009507a0 = -1.0f");
+                    LoadPerm_LanguageSelect = 1;
+                }
+                if (LoadPerm_LanguageSelect == 1 && GameMenuLevel == 0) {
+                    LoadPerm_LanguageSelect = 2;
+                }
+                if (LoadPerm_LanguageSelect == 2) {
+                    menu_alpha += FRAMETIME;
+                    if (menu_alpha > 0.5f) {
+                        LoadPerm_LanguageSelect = 3;
+                    }
+                }
+            }
+        }
+
+        if (ready_timer < 1.0f && language_timer >= 3.3f && LoadPerm_LanguageSelect == 3 &&
+            LoadPerm_StringsLoaded != 0 && saveload_status == 1 && GameMenuLevel == 0) {
+            ready_timer += FRAMETIME;
+            if (ready_timer > 1.0f) {
+                ready_timer = 1.0f;
+            }
+        }
+
+        if (legal_timer < 5.8f && language_timer >= 3.3f && LoadPerm_LanguageSelect == 3 && ready_timer >= 1.0f &&
+            loadlegal_done != 0) {
+            if (legal_timer == 0.0f && legal_mtl == NULL) {
+                if (legal_tid == 0) {
+                    legal_timer = 5.8f;
+                } else {
+                    STUBBED_NAMED("LoadPerm: LoadPermCreateLegalMtl(legal_tid) into legal_mtl");
+                }
+            } else {
+                legal_timer += FRAMETIME;
+                if (legal_timer > 5.8f) {
+                    legal_timer = 5.8f;
+                }
+            }
+        }
+
+        if (intro_timer < 3.8f && language_timer >= 3.3f && LoadPerm_LanguageSelect == 3 && ready_timer >= 1.0f &&
+            legal_timer >= 5.8f && Text_IsFontLoaded() != 0 && LoadPerm_StringsLoaded != 0) {
+            if (StartupGameFlag1 == 0 || INTROTEXT_ID != -1) {
+                intro_timer += FRAMETIME;
+                if (intro_timer > 3.8f) {
+                    intro_timer = 3.8f;
+                }
+            }
+        }
+
+        if (PermDataLoaded != 0 && LoadPerm_LanguageSelect == 3 && language_timer >= 3.3f && ready_timer >= 1.0f &&
+            legal_timer >= 5.8f && intro_timer >= 3.8f) {
+            tail_timer -= FRAMETIME;
+            if (tail_timer < 0.0f) {
+                tail_timer = 0.0f;
+            }
+        }
+
+        STUBBED_NAMED("LoadPerm: NuRndrBeginScene(1)");
+        STUBBED_NAMED("LoadPerm: NuRndrGradClear(0xf00, 0x80000000, 0x80000000, 1.0f)");
+
+        if (tail_timer == 0.2f) {
+            menu_alpha = LoadPermFadeAlpha(language_timer, 2.5f);
+            STUBBED_NAMED("LoadPerm: NuSpecialDrawAtAlpha(&special, &scale, menu_alpha)");
+            STUBBED_NAMED("LoadPerm: DrawMenu(0)");
+
+            legal_alpha = LoadPermFadeAlpha(legal_timer, 5.0f);
+            if (legal_alpha > 0.0f) {
+                switch (display_aspect_mode) {
+                    case 0:
+                        aspect = 1.7777778f;
+                        break;
+                    case 1:
+                        aspect = 1.6f;
+                        break;
+                    case 2:
+                        aspect = NuVideoDisplayAspect;
+                        break;
+                    default:
+                        aspect = 1.3333334f;
+                        break;
+                }
+                half = (1.0f - 1.3333334f / aspect) * 0.5f;
+                STUBBED_NAMED("LoadPerm: NuRndrClear(0xb00, 0, 1.0f) with legal 2D quad"
+                              " (NuPrimCSPos push 2, NuPrim2DBegin(0x10, 7, legal_mtl),"
+                              " colour (legal_alpha * 255.0f) << 24 | 0x808080,"
+                              " NuPrim2DSetColor, vertices half/1-half, NuPrim2DEnd,"
+                              " coordinate-system pop)");
+            }
+
+            intro_alpha = LoadPermFadeAlpha(intro_timer, 3.0f);
+            if (intro_alpha > 0.0f && StartupGameFlag1 != 0) {
+                STUBBED_NAMED("LoadPerm: IntroText_Draw(intro_alpha)");
+            }
+        }
+
+        STUBBED_NAMED("LoadPerm: NuRndrEndScene()");
+        edGraEnableTerrainSwap();
+        frame_time = NuFrameEnd();
+        FRAMETIME = frame_time;
+        edGraDisableTerrainSwap();
+        if (FRAMETIME > MAXFRAMETIME && CUTSTOPGAME == 0) {
+            FRAMETIME = MAXFRAMETIME;
+        }
+    }
+
+    if (legal_mtl != NULL) {
+        STUBBED_NAMED("LoadPerm: NuMtlDestroy(legal_mtl)");
+        legal_mtl = NULL;
+    }
+    WORLD = saved_world;
+}
+
 void __cdecl FixUpAreas(void) {
     if (StartupGameFlag1 != 0) {
         Areas_FixUp(AreaFixUpLSW);

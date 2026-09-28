@@ -76,6 +76,7 @@ address   , symbol                                                , size  , ctyp
 0x004945c0, _MenuDrawOptions                                      , 510   , void __cdecl (MENU *)
 0x004947c0, _MenuExitOptions                                      , 5     , void __cdecl (MENU *)
 0x00494df0, _MenuEnterNewGame                                     , 38    , void __cdecl (MENU *)
+0x00495310, _UpdateGameMenu                                    , 1070  , "void (void *, i32)"
 0x00495740, _MenuEnterTitles                                      , 34    , void __cdecl (MENU *)
 0x004badd0, _InitPanel                                            , 106   , void __cdecl (i32)
 0x004c00c0, _Shadow_SetMode                                        , 60    , void __cdecl (void)
@@ -1284,6 +1285,7 @@ address   , symbol                                                , size  , ctyp
 0x00751698, __real@3ff0000000000000                               , 8     , f64
 0x007516b8, _nu_wind_scaled_time_multiplier                       , 8     , const f64
 0x007516d8, _NuQFntHalfScale                                      , 8     , const f64
+0x007516e4, __real@3e4ccccd                                       , 4     , const f32
 0x007516e8, _NuTimeBarQuarter                                     , 8     , const f64
 0x00751708, __real@40400000                                       , 4     , const f32
 0x0075170c, __real@41200000                                       , 4     , const f32
@@ -1321,6 +1323,7 @@ address   , symbol                                                , size  , ctyp
 0x00753288, _NuTimeBarUnsignedBias                                , 4     , const f32
 0x00753428, __real@3feb333340000000                               , 8     , const f64
 0x0075501c, __real@41c80000                                       , 4     , const f32
+0x00755044, __real@40733333                                     , 4     , const f32
 0x00755180, _NuScale1000                                          , 8     , const f64
 0x00755ba8, _Text_UnknownText                                     , 2     , const char[2]
 0x007577b0, _AreaConfigKeyword_character                           , 10    , const char[10]
@@ -1457,6 +1460,8 @@ address   , symbol                                                , size  , ctyp
 0x0075d0c0, _LoadPermEpisodesPath                                 , 20    , const char[20]
 0x0075d0d4, _LoadPermAreasPath                                    , 17    , const char[17]
 0x0075d0e8, _LoadPermLevelsPath                                   , 18    , const char[18]
+0x0075d170, __real@400e666660000000                             , 8     , const f64
+0x0075d178, __real@40b9999a                                     , 4     , const f32
 0x0075d344, __real@3f4a3d71                                       , 4     , const f32
 0x0075d348, __real@3fe66666                                       , 4     , const f32
 0x0075d34c, __real@3f428f5c                                       , 4     , const f32
@@ -1896,6 +1901,7 @@ address   , symbol                                                , size  , ctyp
 0x008203bc, ??_R0?AVLevelEditor@@@8                               , 26    ,
 0x008203dc, ??_R0?AVPropertyTool@@@8                              , 27    ,
 0x008203f8, ??_R0?AVSplineTool@@@8                                , 25    ,
+0x00826494, _display_aspect_mode                               , 4     , i32
 0x00826498, _InitOnceOptionInput0                                 , 4     , u32
 0x0082649c, _InitOnceOptionInput1                                 , 4     , u32
 0x008264a0, _InitOnceOptionInput2                                 , 4     , u32
@@ -2012,7 +2018,10 @@ address   , symbol                                                , size  , ctyp
 0x0087b958, _PANEL3DMULX                                          , 4     , f32
 0x0087b9b8, _PANEL3DMULY                                          , 4     , f32
 0x0088058c, _legal_mtl                                            , 4     , NUMTL *
+0x00880590, _legal_tid                                         , 4     , i32
+0x00880594, _loadlegal_done                                    , 4     , i32
 0x00880598, _LoadPerm_LanguageSelect                              , 4     , volatile i32
+0x0088059c, _LoadPerm_StringsLoaded                            , 4     , i32
 0x008806bc, _tNULL                                                , 2     , i16
 0x008806c0, _tUNKNOWN                                             , 2     , i16
 0x008806c4, _tENGLISH                                             , 2     , i16
@@ -2099,6 +2108,7 @@ address   , symbol                                                , size  , ctyp
 0x00921ec4, _QFont2DButtons                                       , 4     , VUFNT *
 0x00921ee4, _buttonmapfn                                          , 4     , "void (*)(char *, char *)"
 0x00921ee8, _smarttext_fwn                                        , 4     , i32
+0x00924820, _saveload_status                                   , 4     , i32
 0x00924880, _PCInputWindow_candidate                              , 4     , HWND
 0x00924884, _PCInputInstance_candidate                            , 4     , HINSTANCE
 0x0092488c, _permbuffer_size                                      , 4     , i32
@@ -2107,6 +2117,7 @@ address   , symbol                                                , size  , ctyp
 0x00924898, _permbuffer_ptr                                       , 4     , VARIPTR
 0x0092489c, _permbuffer_end                                       , 4     , VARIPTR
 0x009248a0, _things_scene                                         , 4     , NUGSCN *
+0x009248a8, _save_icon_scene                                   , 4     , NUGSCN *
 0x009248ac, _characterbuffer_base                                 , 4     , VARIPTR
 0x009248b0, _characterbuffer_ptr                                  , 4     , VARIPTR
 0x009248b4, _characterbuffer_end                                  , 4     , VARIPTR
@@ -2132,6 +2143,7 @@ address   , symbol                                                , size  , ctyp
 0x00925038, _FRAMETIME                                            , 4     , f32
 0x0092503c, _DEFAULTFRAMETIME                                     , 4     , f32
 0x00925040, ?app_tbgameset@@3HA                                   , 4     , i32
+0x00925048, _GlobalTimer                                       , 16    , TIMER
 0x00925058, _MainFrameCounters                                    , 5     , MAINFRAMECOUNTERS
 0x00925074, _MAXFRAMETIME                                         , 4     , f32
 0x009250bc, _LevelTimer                                           , 16    , TIMER
@@ -2142,6 +2154,7 @@ address   , symbol                                                , size  , ctyp
 0x009253cc, _Game_NuPad                                           , 4     , void **
 0x009253d0, _GamePadStorage                                       , 6144  , GAMEPAD_INIT_RECORD[64]
 0x00926bd0, _Game_NuPad_Store                                     , 8     , void *[2]
+0x00926bf0, _readpads_always                                   , 4     , i32
 0x00926c38, _Text_AppFont                                         , 4     , void *
 0x00926c3c, _TTab_Original                                        , 4     , char **
 0x00926c40, _TTab                                                 , 4     , char **
@@ -2316,6 +2329,7 @@ address   , symbol                                                , size  , ctyp
 0x02975a94, _win_message                                          , 28    , MSG
 0x029765a0, _nu_keyboard_owner                                    ,       , NuKeyboardOwner_PC partial
 0x029765cc, _nu_keyboard_key_count                                , 4     , i32
+0x002976c18, _NuVideoDisplayAspect                             , 4     , f32
 0x0297ad94, _nuvideo_global_vbcnt                                 , 4     , volatile i32
 0x0297ae40, _PCFrameCriticalSectionIndex_candidate                , 4     , i32
 0x0297dbe0, _nuapi                                                , 144   , NUAPI

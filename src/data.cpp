@@ -176,6 +176,15 @@ extern "C" {
     i32 LOADEROFF;
     volatile i32 LoadPerm_LanguageSelect;
     NUMTL *legal_mtl;
+    i32 legal_tid;
+    i32 loadlegal_done;
+    i32 LoadPerm_StringsLoaded;
+    i32 readpads_always;
+    TIMER GlobalTimer;
+    i32 saveload_status;
+    NUGSCN *save_icon_scene;
+    i32 display_aspect_mode;
+    f32 NuVideoDisplayAspect;
     f32 DEFAULTFRAMETIME;
     i32 PAL;
     PART_EMIT_PC part_emits[40];

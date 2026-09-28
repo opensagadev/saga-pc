@@ -1955,6 +1955,15 @@ extern "C" {
     extern i32 LOADEROFF;
     extern volatile i32 LoadPerm_LanguageSelect;
     extern NUMTL *legal_mtl;
+    extern i32 legal_tid;
+    extern i32 loadlegal_done;
+    extern i32 LoadPerm_StringsLoaded;
+    extern i32 readpads_always;
+    extern TIMER GlobalTimer;
+    extern i32 saveload_status;
+    extern NUGSCN *save_icon_scene;
+    extern i32 display_aspect_mode;
+    extern f32 NuVideoDisplayAspect;
     extern f32 DEFAULTFRAMETIME;
     extern i32 PAL;
     void __cdecl SetBackgroundMusic(i32 track);
