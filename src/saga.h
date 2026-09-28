@@ -1154,6 +1154,26 @@ typedef struct cutinfo_s {
     u8 opaque_08[0x4];
 } CUTINFO;
 
+typedef struct apicharacterdata_s {
+    u8 opaque_00_0c[0xc];
+    char *name;
+    u8 opaque_10_4c[0x3c];
+} APICHARACTERDATA;
+STATIC_ASSERT(sizeof(APICHARACTERDATA) == 0x4c);
+STATIC_ASSERT(offsetof(APICHARACTERDATA, name) == 0xc);
+
+typedef struct apicharsys_s {
+    u8 opaque_00_20[0x20];
+    APICHARACTERDATA *char_data;
+    u8 opaque_24_1c[0x1c];
+} APICHARSYS;
+
+typedef struct cutscenecharacter_s {
+    u8 opaque_00_40[0x40];
+    char *name;
+    u8 opaque_44[0x4];
+} CUTSCENECHARACTER;
+
 typedef struct gameobject_s {
     u8 opaque_00_1fc[0x1fc];
     u8 flags_1fc;
@@ -2308,7 +2328,7 @@ extern "C" {
     void __cdecl CutScene_PreUpdateFn_LSW(CUTINFO *cut);
     void __cdecl CutScene_PostUpdateFn_LSW(void);
     void __cdecl CutScene_StoppedFn_LSW(CUTINFO *cut);
-    i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(void *cut, void *character);
+    i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER *character);
     i32 __cdecl InitBolt_AddMomentumType_LSW(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum);
     i32 __cdecl Bolt_HitPlatFn_LSW(void *bolt);
     i32 __cdecl Bolt_HitCustomFn_LSW(void *bolt, void *points);
@@ -2318,13 +2338,15 @@ extern "C" {
     extern void(__cdecl *CutScene_PreUpdateFn)(CUTINFO *cut);
     extern void(__cdecl *CutScene_PostUpdateFn)(void);
     extern void(__cdecl *CutScene_StoppedFn)(CUTINFO *cut);
-    extern i32(__cdecl *CutScene_ReplaceCharacterModelFn)(void *cut, void *character);
+    extern i32(__cdecl *CutScene_ReplaceCharacterModelFn)(CUTINFO *cut, CUTSCENECHARACTER *character);
     extern i32(__cdecl *InitBolt_AddMomentumType)(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum);
     extern i32(__cdecl *Bolt_HitPlatFn)(void *bolt);
     extern i32(__cdecl *Bolt_HitCustomFn)(void *bolt, void *points);
     extern void(__cdecl *GameBlowUpBlownUpFn)(void *blowup);
     extern void(__cdecl *GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
     extern AREA_DATA_PC *PODRACE_ADATA;
+    extern AREA_DATA_PC *GUNSHIP_ADATA;
+    extern AREA_DATA_PC *DOGFIGHT_ADATA;
     extern AREA_DATA_PC *BONUS_GUNSHIP_ADATA;
     extern LEVELDATA_PC *KAMINOE_LDATA;
     extern NUSPECIALHANDLE LevHSpecial_50;
@@ -2344,6 +2366,23 @@ extern "C" {
     extern LEVELDATA_PC *SPEEDERCHASEA_LDATA;
     extern LEVELDATA_PC *DEATHSTARBATTLED_LDATA;
     extern i16 id_SPEEDERBIKE;
+    extern i16 id_ANAKINSPOD;
+    extern i16 id_ANAKINSPODGREEN;
+    extern i16 id_ANAKINSNEWPOD;
+    extern i16 id_ANAKINSNEWPODGREEN;
+    extern i16 id_REPUBLICGUNSHIP_GREEN;
+    extern i16 id_NEW_REPUBLIC_GUNSHIP;
+    extern i16 id_NEW_REPUBLIC_GUNSHIP_GREEN;
+    extern i16 id_JEDISTARFIGHTERYELLOWEP3;
+    extern GAMEOBJECT *player;
+    extern GAMEOBJECT *CutDeadVehiclePlayer;
+    extern APICHARSYS *apicharsys;
+    extern void *game_cutscenes_podrace_sebulba;
+    extern void *game_cutscenes_podsprint_out_of_time;
+    extern void *game_cutscenes_podsprint_sebulba;
+    extern void *game_cutscenes_dogfight_die;
+    extern LEVELDATA_PC *PODSPRINTA_LDATA;
+    i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER *character);
     extern LEVELDATA_PC *PODRACEB_LDATA;
     extern LEVELDATA_PC *BONUS_GUNSHIPA_LDATA;
     extern u16 podrace_die_angle_a;

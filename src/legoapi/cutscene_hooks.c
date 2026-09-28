@@ -66,9 +66,97 @@ void __cdecl CutScene_StoppedFn_LSW(CUTINFO *cut) {
     }
 }
 
-i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(void *cut, void *character) {
-    STUBBED_NAMED("CutScene_ReplaceCharacterModelFn_LSW: podrace/podsprint/gunship"
-                  " green-vehicle character replacement by id");
+i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER *character) {
+    i16 id;
+    GAMEOBJECT *vehicle;
+
+    if (cut == NULL || character == NULL) {
+        return -1;
+    }
+    if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA) {
+        if (cut != game_cutscenes_podrace_pod_explode && cut != game_cutscenes_podrace_out_of_time &&
+            cut != game_cutscenes_podrace_sebulba) {
+            return -1;
+        }
+        id = id_ANAKINSPOD;
+        if (id == -1) {
+            return -1;
+        }
+        if (NuStrICmp(character->name, apicharsys->char_data[id].name) == 0) {
+            return -1;
+        }
+        vehicle = CutDeadVehiclePlayer;
+        if (vehicle == NULL) {
+            vehicle = player;
+            if (vehicle == NULL) {
+                return -1;
+            }
+        }
+        if (vehicle->id == id_ANAKINSPODGREEN) {
+            return id_ANAKINSPODGREEN;
+        }
+        return -1;
+    }
+    if (WORLD->current_level == PODSPRINTA_LDATA) {
+        if (cut != game_cutscenes_podsprint_out_of_time && cut != game_cutscenes_podsprint_sebulba) {
+            return -1;
+        }
+        id = id_ANAKINSNEWPOD;
+        if (id == -1) {
+            return -1;
+        }
+        if (NuStrICmp(character->name, apicharsys->char_data[id].name) == 0) {
+            return -1;
+        }
+        vehicle = CutDeadVehiclePlayer;
+        if (vehicle != NULL) {
+            if (vehicle->id == id_ANAKINSNEWPODGREEN) {
+                return id_ANAKINSNEWPODGREEN;
+            }
+            return id_ANAKINSNEWPOD;
+        }
+        if (player->id == id_ANAKINSNEWPODGREEN) {
+            return id_ANAKINSNEWPODGREEN;
+        }
+        return id_ANAKINSNEWPOD;
+    }
+    if (BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA) {
+        if (cut != game_cutscenes_bonus_gunship_cavalry_explode) {
+            return -1;
+        }
+        vehicle = CutDeadVehiclePlayer;
+        if (vehicle == NULL) {
+            return -1;
+        }
+        id = id_REPUBLICGUNSHIP_GREEN;
+        if (vehicle->id == id) {
+            return id;
+        }
+        return -1;
+    }
+    if (GUNSHIP_ADATA != NULL && WORLD->area == GUNSHIP_ADATA) {
+        if (cut != game_cutscenes_bonus_gunship_cavalry_explode) {
+            return -1;
+        }
+        vehicle = CutDeadVehiclePlayer;
+        if (vehicle != NULL && vehicle->id == id_NEW_REPUBLIC_GUNSHIP_GREEN) {
+            return id_NEW_REPUBLIC_GUNSHIP_GREEN;
+        }
+        return id_NEW_REPUBLIC_GUNSHIP;
+    }
+    if (DOGFIGHT_ADATA != NULL && WORLD->area == DOGFIGHT_ADATA) {
+        if (cut != game_cutscenes_dogfight_die) {
+            return -1;
+        }
+        vehicle = CutDeadVehiclePlayer;
+        if (vehicle == NULL) {
+            return -1;
+        }
+        id = id_JEDISTARFIGHTERYELLOWEP3;
+        if (vehicle->id == id) {
+            return id;
+        }
+    }
     return -1;
 }
 
