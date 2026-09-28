@@ -1154,12 +1154,6 @@ typedef struct cutinfo_s {
     u8 opaque_08[0x4];
 } CUTINFO;
 
-typedef struct instnugcutscene_s {
-    u8 opaque_00_90[0x90];
-    f32 current_frame;
-    u8 opaque_94[0x4];
-} INSTNUGCUTSCENE;
-
 typedef struct gameobject_s {
     u8 opaque_00_1fc[0x1fc];
     u8 flags_1fc;
@@ -1189,6 +1183,16 @@ typedef struct numtx_s {
     f32 m20, m21, m22, m23;
     f32 m30, m31, m32, m33;
 } NUMTX;
+
+typedef struct instnugcutscene_s {
+    u8 opaque_00_18[0x18];
+    NUMTX matrix;
+    u8 opaque_58_88[0x70];
+    u32 flags_88;
+    u8 opaque_8c_90[0x4];
+    f32 current_frame;
+    u8 opaque_94[0x4];
+} INSTNUGCUTSCENE;
 STATIC_ASSERT(sizeof(NUMTX) == 0x40);
 STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
@@ -2307,10 +2311,27 @@ extern "C" {
     extern i32(__cdecl *Bolt_HitCustomFn)(void *bolt, void *points);
     extern void(__cdecl *GameBlowUpBlownUpFn)(void *blowup);
     extern void(__cdecl *GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
+    extern AREA_DATA_PC *PODRACE_ADATA;
+    extern AREA_DATA_PC *BONUS_GUNSHIP_ADATA;
     extern LEVELDATA_PC *KAMINOE_LDATA;
     extern NUSPECIALHANDLE LevHSpecial_50;
     extern NUSPECIALHANDLE LevHSpecial_51;
     extern void *game_cutscenes_cutscene;
+    extern void *game_cutscenes_podrace_pod_explode;
+    extern void *game_cutscenes_podrace_out_of_time;
+    extern void *game_cutscenes_bonus_gunship_cavalry_explode;
+    extern NUVEC PodRaceADiePos;
+    extern NUVEC PodRaceBDiePos;
+    extern NUVEC PodRaceCDiePos;
+    extern NUVEC GunshipADiePos;
+    extern NUVEC GunshipBDiePos;
+    extern LEVELDATA_PC *PODRACEA_LDATA;
+    extern LEVELDATA_PC *PODRACEB_LDATA;
+    extern LEVELDATA_PC *BONUS_GUNSHIPA_LDATA;
+    extern u16 podrace_die_angle_a;
+    extern u16 podrace_die_angle_b;
+    extern u16 podrace_die_angle_c;
+    void __cdecl instNuGCutSceneSetMtx(INSTNUGCUTSCENE *inst, NUMTX *mtx);
     extern NUSPECIALHANDLE LevHSpecial_50;
     extern NUSPECIALHANDLE LevHSpecial_51;
     extern NULSTHDR *bgproc_procinfo_pool;

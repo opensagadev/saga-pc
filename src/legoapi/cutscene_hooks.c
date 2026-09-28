@@ -1,11 +1,43 @@
 #include "saga.h"
 
 i32 __cdecl CutScene_StartFn_LSW(CUTINFO *cut) {
-    STUBBED_NAMED("CutScene_StartFn_LSW: podrace/bonus-gunship death matrix setup"
-                  " (DiePos statics 0x7f5d08/0x7f5d14/0x7f5d24/0x7f5d34/0x7f5d40,"
-                  " angle words 0x876618/0x87661c/0x876620 and the 90-degree consts,"
-                  " NuMtxSetRotationY + NuMtxTranslate + instNuGCutSceneSetMtx)");
-    return 0;
+    NUMTX matrix;
+    NUVEC *position;
+    u16 degrees;
+
+    if (PODRACE_ADATA != NULL && PODRACE_ADATA == WORLD->area) {
+        if (cut != game_cutscenes_podrace_pod_explode && cut != game_cutscenes_podrace_out_of_time) {
+            return 0;
+        }
+        if (WORLD->current_level == PODRACEA_LDATA) {
+            position = &PodRaceADiePos;
+            degrees = podrace_die_angle_a;
+        } else if (WORLD->current_level == PODRACEB_LDATA) {
+            position = &PodRaceBDiePos;
+            degrees = 90;
+        } else {
+            position = &PodRaceCDiePos;
+            degrees = 90;
+        }
+    } else if (BONUS_GUNSHIP_ADATA != NULL && BONUS_GUNSHIP_ADATA == WORLD->area) {
+        if (cut != game_cutscenes_bonus_gunship_cavalry_explode) {
+            return 0;
+        }
+        if (WORLD->current_level == BONUS_GUNSHIPA_LDATA) {
+            position = &GunshipADiePos;
+            degrees = podrace_die_angle_b;
+        } else {
+            position = &GunshipBDiePos;
+            degrees = podrace_die_angle_c;
+        }
+    } else {
+        return 0;
+    }
+
+    NuMtxSetRotationY(&matrix, (NUANG)((u32)degrees << 16 / 360));
+    NuMtxTranslate(&matrix, position);
+    instNuGCutSceneSetMtx((INSTNUGCUTSCENE *)cut->instance, &matrix);
+    return 1;
 }
 
 void __cdecl CutScene_PreUpdateFn_LSW(CUTINFO *cut) {
@@ -67,4 +99,10 @@ void __cdecl GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle)
     if (obstacle->mode == 2 && obstacle->trigger_radius < 0.25f) {
         obstacle->start_sfx_id = (i16)GetSfxId(GetSfxSwPPadName);
     }
+}
+
+void __cdecl instNuGCutSceneSetMtx(INSTNUGCUTSCENE *inst, NUMTX *mtx) {
+    inst->flags_88 |= 0x80;
+    inst->matrix = *mtx;
+    NuGCutSceneUpdateMtx(&inst->matrix);
 }
