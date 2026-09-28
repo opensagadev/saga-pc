@@ -2357,6 +2357,16 @@ extern "C" {
     extern AREA_DATA_PC *GUNSHIP_ADATA;
     extern AREA_DATA_PC *DOGFIGHT_ADATA;
     extern AREA_DATA_PC *BONUS_GUNSHIP_ADATA;
+    extern i32 levspl_i_start;
+    extern i32 levspl_i_startcam;
+    extern LEVELSPLINE_PC *LevSplList;
+    extern i32 LEVELSPLINECOUNT;
+    extern const char LevelSplinesStartName[6];
+    extern const char LevelSplinesStartCamName[10];
+    extern void *LevelProgressData;
+    extern LEVELSPLINE_PC *LevelSplinesTable;
+    void __cdecl LevelProgress_ReserveBufferSpace(VARIPTR *buffer, VARIPTR buffer_end);
+    void __cdecl LevelSplines_InitForGame(LEVELSPLINE_PC *table);
     extern LEVELDATA_PC *KAMINOE_LDATA;
     extern NUSPECIALHANDLE LevHSpecial_50;
     extern NUSPECIALHANDLE LevHSpecial_51;

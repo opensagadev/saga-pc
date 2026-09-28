@@ -196,6 +196,12 @@ extern "C" {
     i32(__cdecl *Bolt_HitCustomFn)(void *bolt, void *points);
     void(__cdecl *GameBlowUpBlownUpFn)(void *blowup);
     void(__cdecl *GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
+    void *LevelProgressData;
+    LEVELSPLINE_PC *LevSplList;
+    LEVELSPLINE_PC *LevelSplinesTable;
+    i32 LEVELSPLINECOUNT;
+    i32 levspl_i_start = -1;
+    i32 levspl_i_startcam = -1;
     LEVELDATA_PC *KAMINOE_LDATA;
     LEVELDATA_PC *DOGFIGHTA_LDATA;
     NUSPECIALHANDLE LevHSpecial_50;
@@ -1493,7 +1499,14 @@ extern "C" {
     extern const char LevelConfigGenericKeyword_sfx_ambient[12] = "sfx_ambient";
 #pragma const_seg(".rdata$LevelConfigGenericKeyword_conveyor")
     extern const char LevelConfigGenericKeyword_conveyor[9] = "conveyor";
+
+#pragma const_seg(".rdata$LevelSplinesStartName")
+    extern const char LevelSplinesStartName[6] = "start";
 #pragma const_seg()
+#pragma const_seg(".rdata$LevelSplinesStartCamName")
+    extern const char LevelSplinesStartCamName[10] = "start_cam";
+#pragma const_seg()
+#pragma const_seg(".rdata$LevelConfigFarDistance")
     extern const f32 LevelConfigFarDistance = 2000000.0f;
 #pragma const_seg(".rdata$LevelConfigOff")
     extern const char LevelConfigOff[4] = "off";

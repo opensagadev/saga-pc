@@ -294,10 +294,10 @@ void __cdecl LoadPermData(void *process) {
     LevelHackData = GameBufferAlloc(&permbuffer_ptr, &permbuffer_end, 0x80);
     LevelHackDataSize = 0;
 
-    STUBBED_NAMED("LoadPermData: LevelProgress_ReserveBufferSpace(&permbuffer_ptr, &permbuffer_end)");
+    LevelProgress_ReserveBufferSpace(&permbuffer_ptr, permbuffer_end);
     STUBBED_NAMED("LoadPermData: pFadeInfo = &FadeSys; FadeSystem::Init; AddFade x4 (0x802ea0/a8/b0/b8)");
     STUBBED_NAMED("LoadPermData: LevelObjects_InitForGame(0x7f44f8, &ptr, &end, 0x2ee, 0x1f40)");
-    STUBBED_NAMED("LoadPermData: LevelSplines_InitForGame(0x7f4358)");
+    LevelSplines_InitForGame(LevelSplinesTable);
     STUBBED_NAMED("LoadPermData: LoadPermLoadSaveIconScene");
 
     aligned = (permbuffer_ptr.addr + 0xfU) & ~0xfU;

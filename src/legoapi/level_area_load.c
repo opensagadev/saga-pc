@@ -591,3 +591,28 @@ LEVELDATA_PC *__cdecl Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR 
     }
     return level_data;
 }
+
+void __cdecl LevelProgress_ReserveBufferSpace(VARIPTR *buffer, VARIPTR buffer_end) {
+    buffer->addr = (buffer->addr + 0xfU) & ~0xfU;
+    LevelProgressData = buffer->void_ptr;
+    buffer->addr += 0x229e0;
+}
+
+void __cdecl LevelSplines_InitForGame(LEVELSPLINE_PC *table) {
+    LEVELSPLINE_PC *record;
+
+    LevSplList = table;
+    LEVELSPLINECOUNT = 0;
+    if (table == NULL || table[0].name == NULL) {
+        return;
+    }
+    for (record = &table[0]; record->name != NULL; record++) {
+        if (levspl_i_start == -1 && NuStrICmp(record->name, LevelSplinesStartName) == 0) {
+            levspl_i_start = LEVELSPLINECOUNT;
+        }
+        if (levspl_i_startcam == -1 && NuStrICmp(record->name, LevelSplinesStartCamName) == 0) {
+            levspl_i_startcam = LEVELSPLINECOUNT;
+        }
+        LEVELSPLINECOUNT++;
+    }
+}
