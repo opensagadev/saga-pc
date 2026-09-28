@@ -6,15 +6,19 @@ void __cdecl PCByteCopy_candidate(void *destination, const void *source, u32 cou
 
     if (dst < src) {
         while (count != 0) {
-            *dst++ = *src++;
-            --count;
+            count--;
+            *dst = *src;
+            dst = dst + 1;
+            src = src + 1;
         }
     } else {
         dst += count;
         src += count;
         while (count != 0) {
-            *--dst = *--src;
-            --count;
+            count--;
+            dst--;
+            src--;
+            *dst = *src;
         }
     }
 }
@@ -47,9 +51,10 @@ i32 __cdecl NuFilePakGetLastError(void) {
 
 u32 __cdecl NuFilePakGetSize(void *pak) {
     PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)pak;
+    u32 size = header->file_size;
 
     fpk_err = 0;
-    return header->file_size;
+    return size;
 }
 
 i32 __cdecl NuFilePakGetItem(void *pak, char *name) {
@@ -109,19 +114,21 @@ i32 __cdecl NuFilePakSetItemRequired(void *pak, i32 handle, i32 required) {
 
 void __cdecl NuFilePakRelocate(void *pak, void *destination) {
     PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)pak;
+    u32 size = header->file_size;
 
     fpk_err = 0;
-    PCByteCopy_candidate(destination, header, header->file_size);
+    PCByteCopy_candidate(destination, header, size);
 }
 
 i32 __cdecl NuFilePakCondense(void *pak) {
     PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)pak;
     PC_FILEPAKITEM *items;
-    i32 removed_size = 0;
+    i32 removed_size;
     u32 index;
 
     fpk_err = 0;
     items = GetPakItems(header);
+    removed_size = 0;
     for (index = 0; index < header->item_count; ++index) {
         PC_FILEPAKITEM *item = &items[index];
 

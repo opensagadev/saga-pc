@@ -1,5 +1,8 @@
 PYTHON ?= python3
 
+# Parallelize object compilation by default; explicit -j still overrides.
+MAKEFLAGS += -j$(shell nproc)
+
 SOURCES := $(shell find src -type f \( -name '*.cpp' -o -name '*.c' \) | LC_ALL=C sort)
 SOURCE_DIRS := $(shell find src -type d)
 OBJECTS := $(patsubst src/%,build/obj/%,$(SOURCES:.cpp=.obj))

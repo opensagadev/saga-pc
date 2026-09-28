@@ -174,6 +174,26 @@ the calling convention and record type are corroborated by PC callers and state
 accesses. These are structural addresses and signatures for future source work,
 not a claim that the level loaders or frame loop are playable.
 
+The file-pak byte-copy family is verified against retail call sites:
+`PCByteCopy_candidate` (`0x004ef660`, 84 bytes) copies forward when
+`dst < src` and backward otherwise, with the forward loop spelling
+`count--; *d = *s; d++; s++;` and the backward loop splitting `count--; d--; s--; *d = *s;`
+(that exact spelling reproduces the retail 84 bytes). Retail call sites fix the
+argument orders: `SfxBitsStore` copies from `SfxBits` (`0x002921780`) into the
+argument table, `SfxBitsRestore` copies back, and `ResetSounds` copies
+`GlobalSfxBits` (`0x002947cc8`) into `SfxBits`, all 0xc8 bytes.
+`NuFilePakGetSize` and `NuFilePakRelocate` load their header fields into
+registers before the `fpk_err = 0` store; Relocate pushes count, pak,
+destination and the byte-copy ABI is `(destination, pak, size)`.
+`NuFilePakGetItemInfo` and `NuFilePakSetItemRequired` match exactly.
+`NuFilePakCondense` and `NuFilePakGetItem` are structurally identical to retail
+(same magic switch, item stride `0x1c`, flag masks) and differ only in
+instruction scheduling; assigning `removed_size = 0` after the inlined
+`GetPakItems` switch improves the Condense similarity. `PCByteCopy_candidate`
+keeps its tentative name: no retail symbol spelling exists in the stripped
+image, and the identical-copy identity is not yet pinned to a specific Android
+routine.
+
 ## External symbols
 
 The original PE import directory supplies 197 four-byte IAT slots: 191 imports by
