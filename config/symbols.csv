@@ -4,6 +4,16 @@ address   , symbol                                                , size  , ctyp
 0x00403cb0, _NuFdiv                                               , 54    , "f32 __cdecl (f32, f32)"
 0x00408800, _InitCables                                           , 127   , void __cdecl (WORLDINFO *)
 0x0042d180, _Areas_OpenAll                                        , 148   , void __cdecl (i32)
+0x0042d740, _CutScene_StartFn_LSW                              , 412   , "i32 __cdecl (CUTINFO *)"
+0x0042d8e0, _CutScene_PreUpdateFn_LSW                          , 285   , "void __cdecl (CUTINFO *)"
+0x0042da00, _CutScene_PostUpdateFn_LSW                         , 1     , void __cdecl (void)
+0x0042da10, _CutScene_StoppedFn_LSW                           , 138   , "void __cdecl (CUTINFO *)"
+0x0042daa0, _CutScene_ReplaceCharacterModelFn_LSW              , 507   , "i32 __cdecl (CUTINFO *, NUGCUTCHAR *)"
+0x0042dca0, _InitBolt_AddMomentumType_LSW                      , 174   , "i32 __cdecl (BOLT *, void *, NUVEC *)"
+0x0042dd50, _Bolt_HitPlatFn_LSW                               , 35    , "i32 __cdecl (BOLT *)"
+0x0042dd80, _Bolt_HitCustomFn_LSW                              , 27    , "i32 __cdecl (BOLT *, NUVEC *)"
+0x0042dda0, _GameBlowUpBlownUpFn_LSW                           , 398   , "void __cdecl (GIZMOBLOWUP *)"
+0x0042df30, _GizObstacle_SetDefaultSFXFn_LSW                   , 52    , "void __cdecl (void *, GIZOBSTACLE *)"
 0x0043b940, _GameAISysStartFrame                                   , 467   , void __cdecl (AISYS *)
 0x0043c800, _GameAISysSetGame                                     , 43    , void __cdecl (void)
 0x0043c830, _GameAISysInit                                        , 353   , void __cdecl (void)
@@ -1294,6 +1304,7 @@ address   , symbol                                                , size  , ctyp
 0x007516e8, _NuTimeBarQuarter                                     , 8     , const f64
 0x00751708, __real@40400000                                       , 4     , const f32
 0x0075170c, __real@41200000                                       , 4     , const f32
+0x00751718, __real@3e800000                                       , 4     , const f32
 0x00751728, __real@3e99999a                                     , 4     , const f32
 0x00751730, _Text_TimeS                                           , 3     , const char[3]
 0x00751768, __real@bf800000                                        , 4     , const f32
@@ -1331,6 +1342,7 @@ address   , symbol                                                , size  , ctyp
 0x0075501c, __real@41c80000                                       , 4     , const f32
 0x00755044, __real@40733333                                     , 4     , const f32
 0x00755180, _NuScale1000                                          , 8     , const f64
+0x007552e0, _GetSfxSwPPadName                                  , 7     , const char[7]
 0x00755ba8, _Text_UnknownText                                     , 2     , const char[2]
 0x007577b0, _AreaConfigKeyword_character                           , 10    , const char[10]
 0x007579a0, __real@461c3f9a                                       , 4     , const f32
@@ -2014,6 +2026,8 @@ address   , symbol                                                , size  , ctyp
 0x0087b060, _BONUSKAMINO_ADATA                                    , 4     , AREA_DATA_PC *
 0x0087b064, _BONUSKASHYYYK_ADATA                                  , 4     , AREA_DATA_PC *
 0x0087b068, _JIMTEST_ADATA                                        , 4     , AREA_DATA_PC *
+0x0087b118, _DOGFIGHTA_LDATA                                  , 4     , LEVELDATA_PC *
+0x0087b134, _KAMINOE_LDATA                                    , 4     , LEVELDATA_PC *
 0x0087b2ec, _LevelProgressData                                    , 4     , LEVEL_PROGRESS *
 0x0087b2f4, _LevelChangesInArea                                   , 4     , i32
 0x0087b2fc, _loadareacharacters_loadedlevel                       , 4     , i32
@@ -2176,6 +2190,7 @@ address   , symbol                                                , size  , ctyp
 0x00926c60, _Text_GameSetLanguageFn                               , 4     , void (*)(i32)
 0x0092b0e8, _ConfigBuffer                                         ,       , char[]
 0x0093b0f8, _Game_OptionsSave                                     , 4     , OPTIONSSAVE *
+0x0093b208, _GizObstacle_SetDefaultSFXFn                        , 4     , "void (__cdecl *)(void *, GIZOBSTACLE *)"
 0x0093b288, _gizmotypes                                           , 4     , void *
 0x0093b294, _CDataList                                             , 4     , CHARACTERDATA_PC *
 0x0093b298, _CHARCOUNT                                            , 4     , i32
@@ -2208,6 +2223,7 @@ address   , symbol                                                , size  , ctyp
 0x00950764, _screendump                                           , 4     , i32
 0x00950768, _pause_rndr_on                                        , 4     , i32
 0x00950770, _finishloop_backdroponly                              , 4     , i32
+0x00950bd8, _GameBlowUpBlownUpFn                               , 4     , "void (__cdecl *)(void *)"
 0x00950da4, _CheatSystem                                           ,       , CHEATSYSTEM_PC [12-byte reviewed prefix; full extent unknown]
 0x00951024, _SURFACEBITS_DUST                                     , 2     , u16
 0x00951028, _SURFACEBITS_NODUST                                   , 2     , u16
@@ -2242,6 +2258,14 @@ address   , symbol                                                , size  , ctyp
 0x00951bd4, _LEVELSPLINECOUNT                                     , 4     , i32
 0x00951bf8, _newlevelfrommenu_newmenuy                            , 4     , i32
 0x00951c00, _CUTSTOPGAME                                          , 4     , i32
+0x00951cac, _CutScene_StartFn                                 , 4     , "i32 (__cdecl *)(void *)"
+0x00951cb0, _CutScene_PreUpdateFn                              , 4     , "void (__cdecl *)(void *)"
+0x00951cb4, _CutScene_PostUpdateFn                             , 4     , "void (__cdecl *)(void)"
+0x00951cb8, _CutScene_StoppedFn                                , 4     , "void (__cdecl *)(void *)"
+0x00951cbc, _CutScene_ReplaceCharacterModelFn                   , 4     , "i32 (__cdecl *)(void *, void *)"
+0x00951ce4, _Bolt_HitPlatFn                                    , 4     , "i32 (__cdecl *)(void *)"
+0x00951cec, _Bolt_HitCustomFn                                  , 4     , "i32 (__cdecl *)(void *, void *)"
+0x00954410, _InitBolt_AddMomentumType                          , 4     , "i32 (__cdecl *)(void *, void *, void *)"
 0x00955b54, _ResetOldFStop                                        , 4     , i32
 0x00955b68, _snake_hspecials                                      , 36    , NUSPECIALHANDLE[3]
 0x00955b90, _snakebodies                                          , 1088  , u8[1088]

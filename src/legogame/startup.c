@@ -319,12 +319,16 @@ void __cdecl LoadPermData(void *process) {
         STUBBED_NAMED("LoadPermData: startup registration variant (0x46a340)");
         GameAnimSys_AllocateLevelProgressData(&permbuffer_ptr, &permbuffer_end, 0x280, 0xc);
         STUBBED_NAMED("LoadPermData: registration pair (0x4642e0, 0x458440)");
-        STUBBED_NAMED("LoadPermData: LSW gameplay hook wiring"
-                      " (CutScene_StartFn=0x42d740, CutScene_PreUpdateFn=0x42d8e0,"
-                      " CutScene_PostUpdateFn=0x42da00, CutScene_StoppedFn=0x42da10,"
-                      " CutScene_ReplaceCharacterModelFn=0x42daa0, InitBolt_AddMomentumType=0x42dca0,"
-                      " Bolt_HitPlatFn=0x42dd50, Bolt_HitCustomFn=0x42dd80,"
-                      " GameBlowUpBlownUpFn=0x42dda0, GizObstacle_SetDefaultSFXFn=0x42df30)");
+        CutScene_StartFn = CutScene_StartFn_LSW;
+        CutScene_PreUpdateFn = CutScene_PreUpdateFn_LSW;
+        CutScene_PostUpdateFn = CutScene_PostUpdateFn_LSW;
+        CutScene_StoppedFn = CutScene_StoppedFn_LSW;
+        CutScene_ReplaceCharacterModelFn = CutScene_ReplaceCharacterModelFn_LSW;
+        InitBolt_AddMomentumType = InitBolt_AddMomentumType_LSW;
+        Bolt_HitPlatFn = Bolt_HitPlatFn_LSW;
+        Bolt_HitCustomFn = Bolt_HitCustomFn_LSW;
+        GameBlowUpBlownUpFn = GameBlowUpBlownUpFn_LSW;
+        GizObstacle_SetDefaultSFXFn = GizObstacle_SetDefaultSFXFn_LSW;
     } else {
         STUBBED_NAMED("LoadPermData: startup registration variant (0x46a230)");
     }

@@ -1558,6 +1558,19 @@ STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_178) == 0x178);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_188) == 0x188);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_214) == 0x214);
 
+typedef struct gizobstacle_s {
+    u8 opaque_00_44[0x44];
+    f32 trigger_radius;
+    u8 opaque_48_8c[0x44];
+    i16 start_sfx_id;
+    u8 opaque_8e_91[0x3];
+    u8 mode;
+    u8 opaque_92_94[0x3];
+} GIZOBSTACLE;
+STATIC_ASSERT(offsetof(GIZOBSTACLE, trigger_radius) == 0x44);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, start_sfx_id) == 0x8c);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, mode) == 0x91);
+
 typedef struct memorymanager_s {
     u32 buffer_start;
     u32 buffer_end;
@@ -2144,6 +2157,29 @@ extern "C" {
     extern NUGSCN *save_icon_scene;
     extern i32 display_aspect_mode;
     extern f32 NuVideoDisplayAspect;
+    i32 __cdecl CutScene_StartFn_LSW(void *cut);
+    void __cdecl CutScene_PreUpdateFn_LSW(void *cut);
+    void __cdecl CutScene_PostUpdateFn_LSW(void);
+    void __cdecl CutScene_StoppedFn_LSW(void *cut);
+    i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(void *cut, void *character);
+    i32 __cdecl InitBolt_AddMomentumType_LSW(void *bolt, void *object, void *momentum);
+    i32 __cdecl Bolt_HitPlatFn_LSW(void *bolt);
+    i32 __cdecl Bolt_HitCustomFn_LSW(void *bolt, void *points);
+    void __cdecl GameBlowUpBlownUpFn_LSW(void *blowup);
+    void __cdecl GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle);
+    extern i32(__cdecl *CutScene_StartFn)(void *cut);
+    extern void(__cdecl *CutScene_PreUpdateFn)(void *cut);
+    extern void(__cdecl *CutScene_PostUpdateFn)(void);
+    extern void(__cdecl *CutScene_StoppedFn)(void *cut);
+    extern i32(__cdecl *CutScene_ReplaceCharacterModelFn)(void *cut, void *character);
+    extern i32(__cdecl *InitBolt_AddMomentumType)(void *bolt, void *object, void *momentum);
+    extern i32(__cdecl *Bolt_HitPlatFn)(void *bolt);
+    extern i32(__cdecl *Bolt_HitCustomFn)(void *bolt, void *points);
+    extern void(__cdecl *GameBlowUpBlownUpFn)(void *blowup);
+    extern void(__cdecl *GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
+    extern LEVELDATA_PC *KAMINOE_LDATA;
+    extern const char GetSfxSwPPadName[7];
+    extern LEVELDATA_PC *DOGFIGHTA_LDATA;
     extern void *OldLevelHackData;
     extern void *LevelHackData;
     extern i32 LevelHackDataSize;

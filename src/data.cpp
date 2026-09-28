@@ -186,6 +186,18 @@ extern "C" {
     i32 display_aspect_mode;
     f32 NuVideoDisplayAspect;
     void *OldLevelHackData;
+    i32(__cdecl *CutScene_StartFn)(void *cut);
+    void(__cdecl *CutScene_PreUpdateFn)(void *cut);
+    void(__cdecl *CutScene_PostUpdateFn)(void);
+    void(__cdecl *CutScene_StoppedFn)(void *cut);
+    i32(__cdecl *CutScene_ReplaceCharacterModelFn)(void *cut, void *character);
+    i32(__cdecl *InitBolt_AddMomentumType)(void *bolt, void *object, void *momentum);
+    i32(__cdecl *Bolt_HitPlatFn)(void *bolt);
+    i32(__cdecl *Bolt_HitCustomFn)(void *bolt, void *points);
+    void(__cdecl *GameBlowUpBlownUpFn)(void *blowup);
+    void(__cdecl *GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
+    LEVELDATA_PC *KAMINOE_LDATA;
+    LEVELDATA_PC *DOGFIGHTA_LDATA;
     void *LevelHackData;
     i32 LevelHackDataSize;
     i16 id_DEFAULTCHARACTER[2] = {-1, -1};
@@ -1275,6 +1287,8 @@ extern "C" {
         {1.0f, 4160, 0xffff},  {1.0f, 0, 0xffff},    {1.0f, 5184, 0xffff},   {1.0f, 256, 0xffff}, {1.0f, 320, 0xffff},
         {1.0f, 64, 0xffff},    {1.0f, 64, 0xffff},
     };
+#pragma const_seg(".rdata$GetSfxSwPPadName")
+    extern const char GetSfxSwPPadName[7] = "SwPPad";
 #pragma const_seg(".rdata$LevelConfigKeywordFile")
     extern const char LevelConfigKeywordFile[5] = "file";
 #pragma const_seg(".rdata$LevelConfigKeywordDir")

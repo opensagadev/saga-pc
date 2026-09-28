@@ -312,6 +312,40 @@ constant fold), which our spelling does not yet reproduce.
 the `0x218`-byte record to the `0x00964110` array at `0x0095fbd8` and routes
 the scene id into the dynamic-light pending ring at light+`0x354`/`0x374`.
 
+## LSW gameplay hook family
+
+`LoadPermData`'s `Flag1` branch wires ten hook pointers
+(`0x00951cac`-`0x00951cbc`, `0x00954410`, `0x00951ce4`, `0x00951cec`,
+`0x00950bd8`, `0x0093b208`) to the LSW hook targets in
+`src/legoapi/cutscene_hooks.c`, reconstructed from the Android
+`*_LSW` functions. `CutScene_PostUpdateFn_LSW` (`0x0042da00`, a single
+`ret`) and `GizObstacle_SetDefaultSFXFn_LSW` (`0x0042df30`: mode `2` and
+trigger radius `< 0.25f` set the `SwPPad` sfx id through `GetSfxId`) are
+exact. The other eight have their full extents mapped with PC-verified
+prototypes from their indirect call sites: `CutScene_StartFn_LSW`
+(`0x0042d740`, 412 bytes — podrace/bonus-gunship death matrices through
+`NuMtxSetRotationY`/`NuMtxTranslate`/`instNuGCutSceneSetMtx`),
+`CutScene_PreUpdateFn_LSW` (`0x0042d8e0`, 285 — avalanche rumble/shake),
+`CutScene_StoppedFn_LSW` (`0x0042da10`, 138 — `LevHSpecial[50]`/`[51]`
+hiding with `AddPartDebris`/`NuSpecialSetVisibility`),
+`CutScene_ReplaceCharacterModelFn_LSW` (`0x0042daa0`, 507 — green-vehicle
+id replacement; the PC checks `CutDeadVehiclePlayer` where Android checks
+`player`), `InitBolt_AddMomentumType_LSW` (`0x0042dca0`, 174 — LSW1
+momentum scaling plus the speederbike/deathstar return-one gates),
+`Bolt_HitPlatFn_LSW` (`0x0042dd50`, 35 — `KaminoE_CheckPlatHit` behind the
+`current_level == KAMINOE_LDATA` gate), `Bolt_HitCustomFn_LSW`
+(`0x0042dd80`, 27 — tail call to `ChrisExtraBoltCollision` behind the
+`DOGFIGHTA_LDATA` gate) and `GameBlowUpBlownUpFn_LSW` (`0x0042dda0`, 398 —
+womprat/spider `AddDynamicCreature` spawns keyed on the blowup special
+name; the LostTemple spider branch is PC-only, absent from Android).
+The bolt hooks currently compile as marker-text bodies because
+`0x004e1460` and `0x00412aa0` are unreconstructed; note that an empty
+`if (...) { STUBBED_NAMED(...); }` body is eliminated by VC8, so the gate
+condition must live in the marker text until the callee exists.
+`KAMINOE_LDATA` (`0x0087b134`) and `DOGFIGHTA_LDATA` (`0x0087b118`) are
+written by `Level_FindByName("Kamino_E"/"dogfight_a")` in the
+level-handler registration cluster around `0x0048e3xx`-`0x0048e7xx`.
+
 ## External symbols
 
 The original PE import directory supplies 197 four-byte IAT slots: 191 imports by
