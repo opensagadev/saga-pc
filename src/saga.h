@@ -2453,9 +2453,7 @@ extern "C" {
     void __cdecl NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count, i32 arg4, VARIPTR *arg5);
     void __cdecl NuDisplayListInit(VARIPTR *cursor, i32 arg2);
     void __cdecl NuDisplayListBeginFrame(void);
-    void __cdecl NuDisplayListResetStateCache0(void *cursor);
     void __cdecl NuDisplayListRender2D(i32 arg);
-    void __cdecl NuDisplayListBeginFrameTail(void);
     extern u32 nuprim_field_ba8;
     extern i32 nudlist_alloc_count;
     extern u32 nudlist_alloc_base;
@@ -2466,7 +2464,7 @@ extern "C" {
     extern u32 nudlist_field_e58;
     extern u32 nudlist_field_e80;
     extern u32 nudlist_field_fc8;
-    extern u32 *nudlist_field_fc4;
+    extern i32 nudlist_field_fc4;
     extern u32 nudlist_field_9d0;
     extern u32 nudlist_field_9d8;
     extern u32 nudlist_field_fe4;

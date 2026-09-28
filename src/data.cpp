@@ -208,7 +208,7 @@ extern "C" {
     u32 nudlist_field_e58;
     u32 nudlist_field_e80;
     u32 nudlist_field_fc8;
-    u32 *nudlist_field_fc4;
+    i32 nudlist_field_fc4;
     u32 nudlist_field_9d0;
     u32 nudlist_field_9d8;
     u32 nudlist_field_fe4;

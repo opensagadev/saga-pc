@@ -20,7 +20,7 @@ u32 nudlist_flags;
 u32 nudlist_field_e58;
 u32 nudlist_field_e80;
 u32 nudlist_field_fc8;
-u32 *nudlist_field_fc4;
+i32 nudlist_field_fc4;
 u32 nudlist_field_9d0;
 u32 nudlist_field_9d8;
 u32 nudlist_field_fe4;
@@ -216,7 +216,7 @@ void __cdecl NuDisplayListBeginFrame(void) {
     NUSORTPRI *node;
     i32 index;
 
-    NuDisplayListResetStateCache0(*nudlist_field_fc4);
+    PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
     flags = nudlist_flags;
     flags ^= (~flags & 0x8000);
     nudlist_flags = flags;
@@ -238,7 +238,8 @@ void __cdecl NuDisplayListBeginFrame(void) {
         node->flags &= ~0x2;
     }
     render_scene_index = 0;
-    NuDisplayListBeginFrameTail();
+    RndrStateResetSharedGlobalState();
+    PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
 }
 
 void __cdecl NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count, i32 arg4, VARIPTR *arg5) {
