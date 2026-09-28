@@ -249,6 +249,40 @@ The `0.3f`-promoted double at `0x007531c0` (`__real@3fd3333340000000`), the
 `0.2f`-promoted double at `0x00751680`, and the `0.3f` at `0x00751728` are
 referenced directly by the retail fade helper.
 
+`LoadPerm` (`0x004ca5b0`) and `LoadPermData` (`0x004c9fb0`) are now
+structurally reconstructed with their real PC stage sequence. PC-specific
+behavior verified against the retail bytes: `LoadPerm` initializes its
+language-stage timer to the saturated `3.3f` (the language menu runs before
+`LoadPerm` on PC, through `MenuInitialise`), so the in-loop menu state machine
+and the special-scene timer block are gated off; the ready, legal and intro
+stages run under the `>= 3.3f` language gate. `menu_flash` is
+`NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.2f) < 0.1f`, the legal timer
+runs 0 to 5.8f with the legal material created once when `legal_tid != 0` and
+`loadlegal_done != 0`, the intro timer runs to 3.8f, and the tail countdown
+requires `PermDataLoaded`, `LoadPerm_LanguageSelect == 3`, ready `> 1.0f`,
+legal `>= 5.8f` and intro `>= 3.8f`. The loop additionally exits when
+`FRAMETIME > MAXFRAMETIME` and `CUTSTOPGAME == 0`; otherwise `FRAMETIME` is
+clamped to `MAXFRAMETIME`. The legal quad half-size is
+`(1 - 4/3 / aspect) * 0.5` with vertices at that value and its complement,
+where the aspect comes from the `0x00826494` selector (`0` = 16:9, `1` = 1.6,
+`2` = the runtime `0x02976c18` value, otherwise 4:3). `InitPanel` receives
+`Game.options_save.widescreen` (`Game` + 0xf). `LoadPermData` splits the text
+tables at ids `0x31f`/`0x320` only when both startup flags are clear, runs the
+shared registration tail when `!(Flag0 == 0 && Flag1 != 0)`, wires the ten LSW
+gameplay hook pointers only in the `Flag1 != 0` branch, initializes the
+`0x248`-byte memory manager at `0x02913270` (arena `0x200` bytes carved from
+the aligned permbuffer, self-anchored start/end pointers, `0x22c` free-list
+bytes), copies the default-character ids from the Flag1 pair
+(`0x007f185c`/`0x007f1860`) or the base pair (`0x007f17b8`/`0x007f180c`) into
+`id_DEFAULTCHARACTER`, and finishes with two 16-byte alignments around
+`PermDataLoaded = 1`. The default-character source id names are hypotheses
+from the Android `id_QUIGONJINN`/`id_OBIWANKENOBI` defaults; the PC stores are
+verified. Every callee without a compiled reconstruction remains a
+`STUBBED_NAMED` marker at its real call position; the loading-screen
+registration struct at `0x00421320`, the two tail function-pointer
+registrations, and the ten hook targets (`0x0042d740` through `0x0042df30`)
+are the next mapping candidates in this family.
+
 ## External symbols
 
 The original PE import directory supplies 197 four-byte IAT slots: 191 imports by
