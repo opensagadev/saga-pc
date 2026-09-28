@@ -1157,10 +1157,23 @@ typedef struct cutinfo_s {
 typedef struct gameobject_s {
     u8 opaque_00_1fc[0x1fc];
     u8 flags_1fc;
-    u8 opaque_1fd_ca4[0xca7];
+    u8 opaque_1fd_ca4[0xaa7];
     void *pad;
-    u8 opaque_ca8[0x4];
+    u8 opaque_ca8_f18[0x270];
+    NUVEC target_velocity;
+    u8 opaque_f24_1064[0x140];
+    u16 id;
+    u8 opaque_1066[0x2];
 } GAMEOBJECT;
+STATIC_ASSERT(offsetof(GAMEOBJECT, target_velocity) == 0xf18);
+STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
+
+typedef struct bolt_s {
+    u8 opaque_00_cc[0xcc];
+    f32 speed;
+    u8 opaque_d0[0x4];
+} BOLT;
+STATIC_ASSERT(offsetof(BOLT, speed) == 0xcc);
 
 typedef struct gamecamera_s {
     u8 opaque_00_11c[0x11c];
@@ -2296,7 +2309,7 @@ extern "C" {
     void __cdecl CutScene_PostUpdateFn_LSW(void);
     void __cdecl CutScene_StoppedFn_LSW(CUTINFO *cut);
     i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(void *cut, void *character);
-    i32 __cdecl InitBolt_AddMomentumType_LSW(void *bolt, void *object, void *momentum);
+    i32 __cdecl InitBolt_AddMomentumType_LSW(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum);
     i32 __cdecl Bolt_HitPlatFn_LSW(void *bolt);
     i32 __cdecl Bolt_HitCustomFn_LSW(void *bolt, void *points);
     void __cdecl GameBlowUpBlownUpFn_LSW(void *blowup);
@@ -2306,7 +2319,7 @@ extern "C" {
     extern void(__cdecl *CutScene_PostUpdateFn)(void);
     extern void(__cdecl *CutScene_StoppedFn)(CUTINFO *cut);
     extern i32(__cdecl *CutScene_ReplaceCharacterModelFn)(void *cut, void *character);
-    extern i32(__cdecl *InitBolt_AddMomentumType)(void *bolt, void *object, void *momentum);
+    extern i32(__cdecl *InitBolt_AddMomentumType)(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum);
     extern i32(__cdecl *Bolt_HitPlatFn)(void *bolt);
     extern i32(__cdecl *Bolt_HitCustomFn)(void *bolt, void *points);
     extern void(__cdecl *GameBlowUpBlownUpFn)(void *blowup);
@@ -2326,6 +2339,11 @@ extern "C" {
     extern NUVEC GunshipADiePos;
     extern NUVEC GunshipBDiePos;
     extern LEVELDATA_PC *PODRACEA_LDATA;
+    extern i32 LSW1;
+    extern LEVELDATA_PC *BONUS_GUNSHIPB_LDATA;
+    extern LEVELDATA_PC *SPEEDERCHASEA_LDATA;
+    extern LEVELDATA_PC *DEATHSTARBATTLED_LDATA;
+    extern i16 id_SPEEDERBIKE;
     extern LEVELDATA_PC *PODRACEB_LDATA;
     extern LEVELDATA_PC *BONUS_GUNSHIPA_LDATA;
     extern u16 podrace_die_angle_a;

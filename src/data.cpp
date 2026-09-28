@@ -191,7 +191,7 @@ extern "C" {
     void(__cdecl *CutScene_PostUpdateFn)(void);
     void(__cdecl *CutScene_StoppedFn)(CUTINFO *cut);
     i32(__cdecl *CutScene_ReplaceCharacterModelFn)(void *cut, void *character);
-    i32(__cdecl *InitBolt_AddMomentumType)(void *bolt, void *object, void *momentum);
+    i32(__cdecl *InitBolt_AddMomentumType)(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum);
     i32(__cdecl *Bolt_HitPlatFn)(void *bolt);
     i32(__cdecl *Bolt_HitCustomFn)(void *bolt, void *points);
     void(__cdecl *GameBlowUpBlownUpFn)(void *blowup);
@@ -210,6 +210,11 @@ extern "C" {
     NUVEC GunshipADiePos = {10.0f, -1.0f, -20.0f};
     NUVEC GunshipBDiePos = {0.0f, -1.0f, -150.0f};
     LEVELDATA_PC *PODRACEA_LDATA;
+    i32 LSW1;
+    LEVELDATA_PC *BONUS_GUNSHIPB_LDATA;
+    LEVELDATA_PC *SPEEDERCHASEA_LDATA;
+    LEVELDATA_PC *DEATHSTARBATTLED_LDATA;
+    i16 id_SPEEDERBIKE = -1;
     LEVELDATA_PC *PODRACEB_LDATA;
     LEVELDATA_PC *BONUS_GUNSHIPA_LDATA;
     u16 podrace_die_angle_a;

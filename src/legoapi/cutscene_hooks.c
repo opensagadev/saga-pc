@@ -72,9 +72,28 @@ i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(void *cut, void *character) {
     return -1;
 }
 
-i32 __cdecl InitBolt_AddMomentumType_LSW(void *bolt, void *object, void *momentum) {
-    STUBBED_NAMED("InitBolt_AddMomentumType_LSW: LSW1 momentum scaling and"
-                  " speederbike/deathstar return gates");
+i32 __cdecl InitBolt_AddMomentumType_LSW(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum) {
+    f32 scale;
+
+    if (object == NULL) {
+        return 0;
+    }
+    if (LSW1 != 0 && momentum != NULL) {
+        if (WORLD->current_level == BONUS_GUNSHIPB_LDATA) {
+            scale = 0.25f;
+        } else {
+            scale = 0.5f;
+        }
+        NuVecScale(momentum, &object->target_velocity, scale);
+        bolt->speed += NuVecMag(momentum);
+        return 0;
+    }
+    if (WORLD->current_level == SPEEDERCHASEA_LDATA && object->id == id_SPEEDERBIKE) {
+        return 1;
+    }
+    if (WORLD->current_level == DEATHSTARBATTLED_LDATA) {
+        return 1;
+    }
     return 0;
 }
 
