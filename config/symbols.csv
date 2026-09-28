@@ -79,6 +79,16 @@ address   , symbol                                                , size  , ctyp
 0x00495740, _MenuEnterTitles                                      , 34    , void __cdecl (MENU *)
 0x004badd0, _InitPanel                                            , 106   , void __cdecl (i32)
 0x004c00c0, _Shadow_SetMode                                        , 60    , void __cdecl (void)
+0x004c9a40, _NuPrim2DSetColor                                   , 108   , void (u32)
+0x004c9b20, _LoadPermBuildLegalTextureName                     , 169   , void (char *)
+0x004c9bd0, _LoadPermLoadLegalTexture                          , 309   , void (void)
+0x004c9d10, _LoadPermCreateLegalMtl                            , 97    , "i32 (i32)"
+0x004c9d80, _LoadPermDestroyLegalMtl                           , 29    , void (void)
+0x004c9db0, _LoadPermLoadFonts                                 , 93    , void (void)
+0x004c9e10, _LoadPermLoadSaveIconScene                         , 81    , void (void)
+0x004c9e70, _LoadPermProgressDraw                              , 53    , "void (i32, f32)"
+0x004c9eb0, _LoadPermFadeAlpha                                     , 163   , "f32 __cdecl (f32, f32)"
+0x004c9f60, _MemoryManagerInit                                 , 71    , void (void *)
 0x004c9fb0, _LoadPermData                                         , 1532  , void __cdecl (void *)
 0x004ca5b0, _LoadPerm                                             , 2004  , void __cdecl (void)
 0x004ce020, _Teleports_Configure                                  , 503   , "void __cdecl (WORLDINFO *, char *)"
@@ -299,6 +309,7 @@ address   , symbol                                                , size  , ctyp
 0x005094b0, _MenuInitialiseEx                                     , 360   , "void __cdecl (MENUFNINFO *, i32, i32, void (*)(f32, f32, i32, i32), i32, i32)"
 0x00509620, _MenuInitialise                                       , 49    , "void __cdecl (MENUFNINFO *, i32, i32, void (*)(MENU *, f32), i32, i32)"
 0x00509760, _MenuReset                                            , 51    , void __cdecl (void)
+0x00509830, _NewMenu                                           , 629   , "MENUSCREEN *(i32, i32, i32)"
 0x0050c130, _TextRegisterButtonMapFn                              , 14    , "void __cdecl (void (*)(char *, char *))"
 0x0050c770, _SmartTextSetFWNMode                                  , 10    , void __cdecl (i32)
 0x0050e520, _SmartTextSetFont                                     , 10    , void __cdecl (VUFNT *)
@@ -308,6 +319,7 @@ address   , symbol                                                , size  , ctyp
 0x0050e6f0, _SmartTextGetWidescreen                               , 33    , "void __cdecl (f32 *, f32 *)"
 0x0050e730, _SplitTextFindNextWS                                  , 99    , "i32 __cdecl (u8 *, i32)"
 0x0050ec40, _FixUpButtonsInFont                                   , 200   , "void __cdecl (VUFNT *, VUFNT *)"
+0x0050fed0, _DrawMenu                                          , 543   , void (i32)
 0x00517160, _AISysBufferAlloc                                     , 74    , "void *__cdecl (VARIPTR *, VARIPTR *, u32)"
 0x005476e0, _StartPerm                                            , 23    , void __cdecl (void)
 0x00547700, _EndPerm                                              , 124   , void __cdecl (void)
@@ -329,6 +341,7 @@ address   , symbol                                                , size  , ctyp
 0x00549430, _ResetFrameCounters                                   , 30    , void __cdecl (void)
 0x00549450, _UpdateFrameCounters                                  , 119   , void __cdecl (void)
 0x0054a5e0, _GamePads_Init                                        , 117   , void __cdecl (void)
+0x0054b090, _ReadPads                                          , 32    , void (void)
 0x0054b0b0, _DoInput                                               , 786   , void __cdecl (WORLD *)
 0x0054b540, _Text_InitLanguageList                                , 49    , void __cdecl (LANGUAGEDATA *)
 0x0054b580, _Text_SetLanguage                                     , 27    , void __cdecl (i32)
@@ -343,6 +356,7 @@ address   , symbol                                                , size  , ctyp
 0x0054bbc0, _Text_MakeTime                                        , 392   , "void __cdecl (f32, i32, i32, i32, char *)"
 0x0054be70, _Text_StripComments                                   , 141   , "i32 __cdecl (char *, char *, i32)"
 0x0054bf00, _IntroText_SetTextID                                  , 26    , void __cdecl (i32)
+0x0054bf20, _IntroText_Draw                                    , 262   , void (f32)
 0x0054fa60, ?qrand@@YAHXZ                                         , 25    , i32 __cdecl (void)
 0x0054fa80, ?getqseed@@YAHXZ                                      , 6     , i32 __cdecl (void)
 0x0054fa90, ?ResetSeeds@@YAXXZ                                    , 61    , void __cdecl (void)
@@ -631,6 +645,7 @@ address   , symbol                                                , size  , ctyp
 0x005d0f60, _NuQFntSetScaleRS                                     , 56    , "void __cdecl (void *, VUFNT *, f32, f32)"
 0x005d0fa0, _NuQFntSetColourRS                                    , 14    , "void __cdecl (void *, VUFNT *, u32)"
 0x005d10e0, _NuQFntMoveRS                                         , 94    , "void __cdecl (void *, VUFNT *, f32, f32, f32)"
+0x005d4290, _NuRndrBeginScene                                  , 109   , i32 (i32)
 0x005d5330, _NuCameraCreate                                       , 99    , NUCAMERA * __cdecl (void)
 0x005d60c0, _NuCameraGet                                          , 21    , void __cdecl (NUCAMERA *)
 0x005d6120, _NuCameraSetAxes                                      , 30    , void __cdecl (NUVEC *)
@@ -668,8 +683,10 @@ address   , symbol                                                , size  , ctyp
 0x005dabe0, _NuHGobjForceShadowsOnCharacters                      , 16    , i32 __cdecl (i32)
 0x005ddc80, _NuWindAnimate                                        , 112   , "void __cdecl (NUWIND *, f32)"
 0x005de2d0, _NuDisplayListLinkMtl                                 , 186   , "void __cdecl (NUDISPLAYLIST *, NUMTL *)"
+0x005e50e0, _NuMtlDestroy                                      , 95    , void (NUMTL *)
 0x005e8430, _NuOcclusionManagerBeginFrame                         , 59    , void __cdecl (void)
 0x005eb250, _NuQFntPrintCharW                                     , 1210  , "void __cdecl (VUFNT *, u16 *, u32)"
+0x005ebd80, _NuRndrClear                                       , 111   , "void (i32, i32, f32)"
 0x005edbb0, _NuMtxCalcCheapFaceOn                                 , 134   , "void __cdecl (NUMTX *, NUVEC *)"
 0x005edd70, _NuMtxCalcDebrisFaceOn                                , 113   , void __cdecl (NUMTX *)
 0x005eddf0, _NuTimeBarInitEx                                      , 111   , "void __cdecl (VARIPTR *, VARIPTR)"
@@ -678,6 +695,7 @@ address   , symbol                                                , size  , ctyp
 0x005ef880, _NuGScnRemove                                         , 200   , void __cdecl (NUGSCN *)
 0x005f3510, _NuQFntPrintU                                         , 108   , "void __cdecl (VUFNT *, char *)"
 0x005f35e0, _NuQFntPrintEx                                        , 320   , "void __cdecl (VUFNT *, i32, i32, i32, const char *, ...)"
+0x005f3950, _NuRndrEndScene                                    , 139   , void (void)
 0x005f3d60, _NuTimeBarSetRender                                   , 2130  , void __cdecl (i32)
 0x005f45c0, _NuTimeBarSetRenderHorizontal                         , 1475  , void __cdecl (i32)
 0x005f9530, _NuWaterReset                                         , 21    , void __cdecl (void)
@@ -693,12 +711,15 @@ address   , symbol                                                , size  , ctyp
 0x005fd160, _RndrStateResetSharedGlobalState                      , 80    , void __cdecl (void)
 0x005fd220, _RndrStateSetConstAlphaTint                           , 58    , "void __cdecl (i32, i32, f32, const NUVEC *, NUMTL *)"
 0x005fd3c0, _RndrStateSetReflection                               , 38    , void __cdecl (i32)
+0x005feab0, _NuRndrGradClear                                   , 27    , "void (i32, i32, i32, f32)"
+0x005ff7a0, _NuSpecialDrawAtAlpha                              , 122   , "i32 (void *, NUMTX *, f32)"
 0x006009a0, _NuPrim2DEnd                                          , 24    , void __cdecl (void)
 0x006009c0, _NuPrim3DEnd                                          , 24    , void __cdecl (void)
 0x006009e0, _NuPrim2DAddXYZ                                       , 302   , "void __cdecl (f32, f32, f32)"
 0x00600b20, _NuPrimSetCoordinateSystem                            , 132   , void __cdecl (i32)
 0x006034b0, _NuDisplayListLinkItem                                , 117   , "void __cdecl (NUDISPLAYLIST *, u8, void *)"
 0x00603580, _DisplayListCreateGeomTransformPS                     , 142   , "void *__cdecl (VARIPTR *, NUMTX *, NUMTL *, void *, void *)"
+0x00603cc0, _NuCameraSet                                       , 91    , void (NUCAMERA *)
 0x00607590, _DisplayListUpdateRenderState                         , 649   , "void __cdecl (NUDISPLAYLIST_PC *, NUGLOBALRNDRSTATE_PC *)"
 0x00607d70, _NuPrim2DBegin                                        , 331   , "void __cdecl (u32, u32, NUMTL *)"
 0x00607ec0, _NuPrim3DBegin                                        , 319   , "void __cdecl (u32, u32, NUMTL *, NUMTX *)"
@@ -800,6 +821,7 @@ address   , symbol                                                , size  , ctyp
 0x00698910, _NuSound3StopRumble                                   , 1     , void __cdecl (void)
 0x00698930, _NuSound3SetRumblePads                                , 1     , "void __cdecl (void *, void *)"
 0x00698a00, _NuSound3SetLoopHoldTime                              , 21    , void __cdecl (f32)
+0x00698e70, _NuSound3Update                                    , 86    , void (void)
 0x00698ed0, _NuSound3KillAllAudio                                 , 32    , void __cdecl (void)
 0x00699180, ?SendCommand@SoundQueue@@QAEHHH@Z                     , 117   , "i32 __thiscall (SoundQueue *, i32, i32)"
 0x00699260, ?HasCommand@SoundQueue@@QAEHH@Z                       , 85    , "i32 __thiscall (SoundQueue *, i32)"
@@ -1258,12 +1280,14 @@ address   , symbol                                                , size  , ctyp
 0x00751594, _StartupEpisodeVDat                                   , 14    , const char[14]
 0x007515a4, _StartupEpisodeVIDat                                  , 15    , const char[15]
 0x00751658, __real@00000000                                       , 4     , const f32
+0x00751680, __real@3fc99999a0000000                             , 8     , const f64
 0x00751698, __real@3ff0000000000000                               , 8     , f64
 0x007516b8, _nu_wind_scaled_time_multiplier                       , 8     , const f64
 0x007516d8, _NuQFntHalfScale                                      , 8     , const f64
 0x007516e8, _NuTimeBarQuarter                                     , 8     , const f64
 0x00751708, __real@40400000                                       , 4     , const f32
 0x0075170c, __real@41200000                                       , 4     , const f32
+0x00751728, __real@3e99999a                                     , 4     , const f32
 0x00751730, _Text_TimeS                                           , 3     , const char[3]
 0x00751768, __real@bf800000                                        , 4     , const f32
 0x00751768, _nu_fsign_minus_one                                   , 4     , const f32
@@ -1293,6 +1317,7 @@ address   , symbol                                                , size  , ctyp
 0x00751ee8, _AreaFixUpName_Jedi                                   , 8     , char[8]
 0x00752c30, _AreaFixUpName_Gungan                                 , 8     , char[8]
 0x007531b8, __real@3e19999a                                       , 4     , const f32
+0x007531c0, __real@3fd3333340000000                             , 8     , const f64
 0x00753288, _NuTimeBarUnsignedBias                                , 4     , const f32
 0x00753428, __real@3feb333340000000                               , 8     , const f64
 0x0075501c, __real@41c80000                                       , 4     , const f32

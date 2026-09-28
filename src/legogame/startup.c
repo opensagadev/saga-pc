@@ -54,6 +54,24 @@ void __cdecl Level_SetDefaults(LEVELDATA_PC *level) {
     level->wind_size = 512.0f;
 }
 
+f32 __cdecl LoadPermFadeAlpha(f32 t, f32 duration) {
+    f32 end;
+
+    if (t > 0.0f && t < duration + 0.3f + 0.3f + 0.2f) {
+        if (t < 0.3f) {
+            return t / 0.3f;
+        }
+        end = duration + 0.3f;
+        if (t < end) {
+            return 1.0f;
+        }
+        if (t < end + 0.3f) {
+            return 1.0f - end / (end + 0.3f - (t - end));
+        }
+    }
+    return 0.0f;
+}
+
 void __cdecl FixUpAreas(void) {
     if (StartupGameFlag1 != 0) {
         Areas_FixUp(AreaFixUpLSW);

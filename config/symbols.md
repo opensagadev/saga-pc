@@ -194,6 +194,61 @@ keeps its tentative name: no retail symbol spelling exists in the stripped
 image, and the identical-copy identity is not yet pinned to a specific Android
 routine.
 
+## LoadPerm / LoadPermData callee identification
+
+The PC `LoadPerm` (`0x004ca5b0`, 2,004 bytes) and `LoadPermData`
+(`0x004c9fb0`, 1,532 bytes) call a set of now-mapped helpers. Android
+correlations come from `legogame/startup.cpp`; PC call sites, constants and
+data references confirm each identity. All extents below end at a `ret`
+followed by `int3` (or directly by the next function where no padding exists).
+
+Accepted identities (Android body/callsite parity, verified PC extents):
+
+| PC VA | Function | Bytes | Evidence |
+| --- | --- | ---: | --- |
+| `0x0054b090` | `ReadPads` | 32 | Loop calls `ReadPad(0)`/`ReadPad(1)` then clears `0x00926bf0`; Android `gamepads.cpp` `ReadPads`. |
+| `0x00603cc0` | `NuCameraSet` | 91 | `LoadPerm` copies the identity matrix to `0x00925184` then calls it with that pointer, and calls it with `global_camera` per frame; Android `NuCameraSet(pNuCam)`/`NuCameraSet(&global_camera)`. Forwards to `0x005ed540` and the `0x0080b788` viewport block. |
+| `0x00509830` | `NewMenu` | 629 | `LoadPerm` calls `NewMenu(7, 0, -1)` where Android does the same; stride-`0x1c` menu table at `0x00800aa8`, `GameMenuLevel` at `0x00800944`, screen stride `0xe0` from `0x00921460`. |
+| `0x0050fed0` | `DrawMenu` | 543 | Called inside the `0.2f` tail-timer guard like Android `DrawMenu(0)`; `[screen+0x14] == 0xffff` early-out and per-menu callbacks match. |
+| `0x005d4290` | `NuRndrBeginScene` | 109 | Resets the `0x218`-byte scene record at `0x009718c0` (scene id `-1`, colours, counters) exactly as Android `nurndr_plain.cpp`; argument unused on both platforms. |
+| `0x005feab0` | `NuRndrGradClear` | 27 | Forwards `(flags, colour, alpha)` to `0x005ebd80`, dropping the third colour like Android's stub; `LoadPerm` calls `(0xf00, 0x80000000, 0x80000000, 1.0f)`. |
+| `0x005ebd80` | `NuRndrClear` | 111 | ORs flags into `0x009718c8`, stores colour/alpha at `+0xc/+0x10`, reads the viewport pair, then PC-specific aspect math through `0x00963e38/0x00963e3c` and `0.0625`. `LoadPerm` calls `(0xb00, 0, 1.0f)`. |
+| `0x005f3950` | `NuRndrEndScene` | 139 | Appends the `0x218`-byte scene to `0x00964110` at `0x0095fbd8`, calls `0x005efff0` for the scene id, and handles the dynamic-light pointer at `+0x38/+0x3c` exactly as Android. Called before `edGraEnableTerrainSwap`/`NuFrameEnd`. |
+| `0x005e50e0` | `NuMtlDestroy` | 95 | Clears the used bit (`and word, 0xfffe`), destroys via `0x005de220`, walks the override list testing `[esi+4] == mtl`; both `LoadPerm` tails call it on `legal_mtl` and null it. |
+| `0x005ff7a0` | `NuSpecialDrawAtAlpha` | 122 | Null-scene/alpha<=0 rejection, `0x005cfb50` constant-alpha pair around `0x005f0f00` (`NuDisplayListRndrSpecial`, five args); `LoadPerm` draws the `pc_bits.gsc` scene with the `NuMtxSetScale` matrix. |
+| `0x0054bf20` | `IntroText_Draw` | 262 | Early-out on `IntroText_TextID` (`0x00802368`) == -1; `(alpha*128.0)<<24 | 0x7f5f00` colour, `SetQFont2D` callee at `0x0050e6a0`, `NuQFntPrintJustifiedW` at `0x005f69c0`; matches Android `text.cpp` `IntroText_Draw`. |
+
+Candidate identities (role confirmed, name/identity not fully pinned):
+
+| PC VA | Candidate | Bytes | Note |
+| --- | --- | ---: | --- |
+| `0x00698e70` | `NuSound3Update` | 86 | Mix-buffer copy, `SetEvent` on `0x02972c44`, stream kick, tail-jump to the voice sweep at `0x00698cc0`; guarded by the `0x002962054` sound flag everywhere. No byte-provable Android counterpart (different audio backend). |
+| `0x004c9a40` | `NuPrim2DSetColor` | 108 | Packs ARGB for the 8888 or 565-format immediate-2D vertex colour into `[stream]+0xc`; the argument arrives in EAX (private register ABI, like the `InitOnce` argument helper) from both `LoadPerm` call sites. |
+| `0x004c9d10` | `LoadPermCreateLegalMtl` | 97 | Creates the legal-screen material (`attrib |= 0xe022`, diffuse/opacity 1.0f, `+0xb4 = 0x1000`, texture id at `+0x74`); the out-pointer arrives in EDI preloaded with `&legal_mtl` (private ABI). |
+| `0x004c9f60` | `MemoryManagerInit` | 71 | 16-aligns the buffer cursors and clears the `0x22c`-byte free lists; kept COMDAT copy of the code inlined into `LoadPermData` at `0x004ca183`. |
+
+LoadPermData-family helpers (all in the startup translation unit,
+`0x004c9b20`-`0x004c9fa6`): `LoadPermBuildLegalTextureName` (`0x004c9b20`)
+builds `"legal" + region suffix + language path`; `LoadPermLoadLegalTexture`
+(`0x004c9bd0`, stack-cookie function) loads `"stuff\legal\<name>.dds"` into
+`legal_tid` (`0x00880590`) once per run; `LoadPermDestroyLegalMtl`
+(`0x004c9d80`) destroys `legal_mtl`; `LoadPermLoadFonts` (`0x004c9db0`) picks
+the PC font path by startup flags (`pc_font`, `starwars_font_j`,
+`starwars_font`, `batman_font`); `LoadPermLoadSaveIconScene`
+(`0x004c9e10`) loads `stuff\save_icon.gsc` or `stuff\pc_bits.gsc` into
+`0x009248a8`; `LoadPermProgressDraw` (`0x004c9e70`) draws the loading
+percentage (times 100.0 from `0x007519f0`) as the alpha byte of a filled
+rectangle. `LoadPermFadeAlpha` (`0x004c9eb0`) is implemented in source: its
+piecewise window (`t/0.3f` rise, hold to `duration + 0.3f`, reciprocal fade-out
+`1 - end/(end + 0.3f - (t - end))`, zero outside `[0, end + 0.3f + 0.2f)`)
+matches the first 109 retail bytes exactly; the remaining tail differs only in
+branch layout and exit-block merging (retail shares the two return-zero exits
+and spills `end + 0.3f` across the branch), with identical semantics.
+
+The `0.3f`-promoted double at `0x007531c0` (`__real@3fd3333340000000`), the
+`0.2f`-promoted double at `0x00751680`, and the `0.3f` at `0x00751728` are
+referenced directly by the retail fade helper.
+
 ## External symbols
 
 The original PE import directory supplies 197 four-byte IAT slots: 191 imports by

@@ -2189,6 +2189,7 @@ extern "C" {
     void __cdecl Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end);
     void __cdecl Areas_FixUp(AREAFIXUP_PC *fixup);
     void __cdecl FixUpAreas(void);
+    f32 __cdecl LoadPermFadeAlpha(f32 t, f32 duration);
     extern AREAFIXUP_PC AreaFixUpLSW[65];
     extern AREAFIXUP_PC AreaFixUpLostTemple[2];
     extern AREAFIXUP_PC AreaFixUpGotham[5];
