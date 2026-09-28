@@ -1405,6 +1405,102 @@ typedef struct nuvpcurrent_s {
 } NUVPCURRENT;
 STATIC_ASSERT(sizeof(NUVPCURRENT) == 0x10);
 
+typedef struct nudisplaylistitem_s {
+    u8 type;
+    u8 id;
+    u8 unknown_02[2];
+    void *next;
+    u32 data[2];
+} NUDISPLAYLISTITEM;
+STATIC_ASSERT(sizeof(NUDISPLAYLISTITEM) == 0x10);
+STATIC_ASSERT(offsetof(NUDISPLAYLISTITEM, next) == 0x4);
+
+typedef struct nurndrlibstate_s {
+    u8 opaque_00_08[0x8];
+    void *mtl;
+    u8 opaque_0c_14[0x8];
+    i32 tex_id;
+    u8 opaque_18_1e[0x6];
+    i16 konst_id;
+    i32 global_id;
+    i16 lights_id;
+    u8 opaque_26_2c[0x6];
+    i16 camera_id;
+    i16 fog_id;
+    u8 opaque_30_34[0x4];
+} NURNDRLIBSTATE;
+STATIC_ASSERT(sizeof(NURNDRLIBSTATE) == 0x34);
+STATIC_ASSERT(offsetof(NURNDRLIBSTATE, mtl) == 0x08);
+STATIC_ASSERT(offsetof(NURNDRLIBSTATE, tex_id) == 0x14);
+STATIC_ASSERT(offsetof(NURNDRLIBSTATE, konst_id) == 0x1e);
+STATIC_ASSERT(offsetof(NURNDRLIBSTATE, global_id) == 0x20);
+STATIC_ASSERT(offsetof(NURNDRLIBSTATE, lights_id) == 0x24);
+STATIC_ASSERT(offsetof(NURNDRLIBSTATE, camera_id) == 0x2c);
+STATIC_ASSERT(offsetof(NURNDRLIBSTATE, fog_id) == 0x2e);
+
+typedef struct nudisplaylist_s {
+    u8 opaque_00_08[0x8];
+    NURNDRLIBSTATE *state;
+    NUDISPLAYLISTITEM *mtl_item;
+    NUDISPLAYLISTITEM *first;
+    NUDISPLAYLISTITEM *mtl_last;
+    u8 opaque_18_20[0x8];
+} NUDISPLAYLIST;
+STATIC_ASSERT(offsetof(NUDISPLAYLIST, state) == 0x08);
+STATIC_ASSERT(offsetof(NUDISPLAYLIST, mtl_item) == 0x0c);
+STATIC_ASSERT(offsetof(NUDISPLAYLIST, first) == 0x10);
+STATIC_ASSERT(offsetof(NUDISPLAYLIST, mtl_last) == 0x14);
+
+typedef struct nudisplayscene_s {
+    u8 opaque_00_54[0x54];
+    NUDISPLAYLIST **dlist_mtls;
+    u8 opaque_58_74[0x1c];
+    u8 flags;
+    u8 opaque_75_78[0x3];
+} NUDISPLAYSCENE;
+STATIC_ASSERT(offsetof(NUDISPLAYSCENE, dlist_mtls) == 0x54);
+STATIC_ASSERT(offsetof(NUDISPLAYSCENE, flags) == 0x74);
+
+typedef struct nusortpri_s {
+    i32 sort_pri;
+    NUDISPLAYLISTITEM *items;
+    struct nusortpri_s *sys_next;
+    u8 opaque_0c_14[0x8];
+    u32 flags;
+    u8 opaque_18_1c[0x4];
+    struct nudisplayscene_s *display_scene;
+    u16 nmtls;
+    u16 mtl_first;
+} NUSORTPRI;
+STATIC_ASSERT(sizeof(NUSORTPRI) == 0x24);
+STATIC_ASSERT(offsetof(NUSORTPRI, items) == 0x04);
+STATIC_ASSERT(offsetof(NUSORTPRI, sys_next) == 0x08);
+STATIC_ASSERT(offsetof(NUSORTPRI, flags) == 0x14);
+STATIC_ASSERT(offsetof(NUSORTPRI, display_scene) == 0x1c);
+STATIC_ASSERT(offsetof(NUSORTPRI, nmtls) == 0x20);
+STATIC_ASSERT(offsetof(NUSORTPRI, mtl_first) == 0x22);
+
+typedef struct nudisplaylistrenderscene_s {
+    i32 nsort_pris;
+    NUSORTPRI **sort_pris;
+    NUDISPLAYLISTITEM render_2d_first;
+} NUDISPLAYLISTRENDERSCENE;
+STATIC_ASSERT(sizeof(NUDISPLAYLISTRENDERSCENE) == 0x18);
+STATIC_ASSERT(offsetof(NUDISPLAYLISTRENDERSCENE, render_2d_first) == 0x08);
+
+typedef struct nurndrlightrecord_s {
+    u8 opaque_00_108[0x108];
+    i32 enabled;
+    u8 opaque_10c_354[0x248];
+    i32 pending[8];
+    i32 count;
+    u8 opaque_378_380[0x8];
+} NURNDRLIGHTRECORD;
+STATIC_ASSERT(sizeof(NURNDRLIGHTRECORD) == 0x380);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, enabled) == 0x108);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, pending) == 0x354);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, count) == 0x374);
+
 typedef struct nurndrlibscene_s {
     i32 scene_id;
     u32 clear_flags;
@@ -2059,6 +2155,15 @@ extern "C" {
     extern MEMORYMANAGER theMemoryManager;
     extern NURNDRLIBSCENE currentScene;
     extern NUVPCURRENT vpCurrent;
+    extern NURNDRLIBSTATE *displaylist_2d_state;
+    extern NUDISPLAYLISTITEM *displaylist_2d_first;
+    extern NUDISPLAYLISTITEM *displaylist_2d_mtl_last;
+    extern i32 nused_sort_pris;
+    extern NUSORTPRI *sort_list;
+    extern i32 render_scene_index;
+    void __cdecl NuDisplayListResetStateCache(NURNDRLIBSTATE *state);
+    void __cdecl NuRndrEndScene(void);
+    i32 __cdecl NuDisplayListAddRenderScene(void);
     void __cdecl NuVpGetPosition2(f32 *x, f32 *y);
     extern i32 sceneParametersCount;
     extern i32 DebrisGlassTextureWidth;

@@ -35,12 +35,12 @@ jobs:
       - name: Download or verify pinned tools
         run: python3 tools/setup.py
       - name: Check C and C++ formatting and lint
-        run: make lint
+        run: make -j"$(nproc)" lint
         env:
           CLANG_FORMAT: clang-format-18
           CLANG_TIDY: clang-tidy-18
       - name: Check project and tooling
-        run: make check-core
+        run: make -j"$(nproc)" check-core
       - name: Build executable and check symbol coverage
         run: make -j"$(nproc)" build check-objects
       # Matching runs locally against the user's copy of the original executable.

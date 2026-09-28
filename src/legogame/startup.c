@@ -229,7 +229,7 @@ void __cdecl LoadPerm(void) {
             }
         }
 
-        STUBBED_NAMED("LoadPerm: NuRndrEndScene()");
+        NuRndrEndScene();
         edGraEnableTerrainSwap();
         frame_time = NuFrameEnd();
         FRAMETIME = frame_time;
