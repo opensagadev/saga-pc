@@ -676,17 +676,6 @@ typedef struct partdebrissys_s {
     PARTDEBRISENTRY *entries;
 } PARTDEBRISSYS;
 
-typedef struct gamecamera_s {
-    u8 opaque_00_1d4[0x1d4];
-    f32 shake_intensity;
-    f32 shake_decay;
-    f32 shake_freq;
-    u8 opaque_1e0[0x4];
-} GAMECAMERA;
-STATIC_ASSERT(offsetof(GAMECAMERA, shake_intensity) == 0x1d4);
-STATIC_ASSERT(offsetof(GAMECAMERA, shake_decay) == 0x1d8);
-STATIC_ASSERT(offsetof(GAMECAMERA, shake_freq) == 0x1dc);
-
 typedef struct nudisplay_special_pc_s {
     u8 unknown_0000[0xb4];
     char *name;
@@ -1158,6 +1147,40 @@ typedef struct nuvec_s {
     f32 y;
     f32 z;
 } NUVEC;
+
+typedef struct cutinfo_s {
+    u8 opaque_00_04[0x4];
+    void *instance;
+    u8 opaque_08[0x4];
+} CUTINFO;
+
+typedef struct instnugcutscene_s {
+    u8 opaque_00_90[0x90];
+    f32 current_frame;
+    u8 opaque_94[0x4];
+} INSTNUGCUTSCENE;
+
+typedef struct gameobject_s {
+    u8 opaque_00_1fc[0x1fc];
+    u8 flags_1fc;
+    u8 opaque_1fd_ca4[0xca7];
+    void *pad;
+    u8 opaque_ca8[0x4];
+} GAMEOBJECT;
+
+typedef struct gamecamera_s {
+    u8 opaque_00_11c[0x11c];
+    NUVEC position;
+    u8 opaque_128_1d4[0xac];
+    f32 shake_intensity;
+    f32 shake_decay;
+    f32 shake_freq;
+    u8 opaque_1e0[0x4];
+} GAMECAMERA;
+STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
+STATIC_ASSERT(offsetof(GAMECAMERA, shake_intensity) == 0x1d4);
+STATIC_ASSERT(offsetof(GAMECAMERA, shake_decay) == 0x1d8);
+STATIC_ASSERT(offsetof(GAMECAMERA, shake_freq) == 0x1dc);
 STATIC_ASSERT(sizeof(NUVEC) == 0xc);
 
 typedef struct numtx_s {
@@ -2264,20 +2287,20 @@ extern "C" {
     extern NUGSCN *save_icon_scene;
     extern i32 display_aspect_mode;
     extern f32 NuVideoDisplayAspect;
-    i32 __cdecl CutScene_StartFn_LSW(void *cut);
-    void __cdecl CutScene_PreUpdateFn_LSW(void *cut);
+    i32 __cdecl CutScene_StartFn_LSW(CUTINFO *cut);
+    void __cdecl CutScene_PreUpdateFn_LSW(CUTINFO *cut);
     void __cdecl CutScene_PostUpdateFn_LSW(void);
-    void __cdecl CutScene_StoppedFn_LSW(void *cut);
+    void __cdecl CutScene_StoppedFn_LSW(CUTINFO *cut);
     i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(void *cut, void *character);
     i32 __cdecl InitBolt_AddMomentumType_LSW(void *bolt, void *object, void *momentum);
     i32 __cdecl Bolt_HitPlatFn_LSW(void *bolt);
     i32 __cdecl Bolt_HitCustomFn_LSW(void *bolt, void *points);
     void __cdecl GameBlowUpBlownUpFn_LSW(void *blowup);
     void __cdecl GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle);
-    extern i32(__cdecl *CutScene_StartFn)(void *cut);
-    extern void(__cdecl *CutScene_PreUpdateFn)(void *cut);
+    extern i32(__cdecl *CutScene_StartFn)(CUTINFO *cut);
+    extern void(__cdecl *CutScene_PreUpdateFn)(CUTINFO *cut);
     extern void(__cdecl *CutScene_PostUpdateFn)(void);
-    extern void(__cdecl *CutScene_StoppedFn)(void *cut);
+    extern void(__cdecl *CutScene_StoppedFn)(CUTINFO *cut);
     extern i32(__cdecl *CutScene_ReplaceCharacterModelFn)(void *cut, void *character);
     extern i32(__cdecl *InitBolt_AddMomentumType)(void *bolt, void *object, void *momentum);
     extern i32(__cdecl *Bolt_HitPlatFn)(void *bolt);
@@ -2826,6 +2849,9 @@ extern "C" {
     extern WORLDINFO WorldInfo[2];
     extern WORLDINFO *WORLD;
     extern GAMECAMERA *GameCam;
+    extern void *Player[8];
+    extern f32 DEFAULTFPS;
+    extern void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, f32 priority);
     extern i32 part_debris_count;
     extern WORLDINFO *LWORLD;
     extern u16 ang[513];

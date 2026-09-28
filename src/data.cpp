@@ -186,10 +186,10 @@ extern "C" {
     i32 display_aspect_mode;
     f32 NuVideoDisplayAspect;
     void *OldLevelHackData;
-    i32(__cdecl *CutScene_StartFn)(void *cut);
-    void(__cdecl *CutScene_PreUpdateFn)(void *cut);
+    i32(__cdecl *CutScene_StartFn)(CUTINFO *cut);
+    void(__cdecl *CutScene_PreUpdateFn)(CUTINFO *cut);
     void(__cdecl *CutScene_PostUpdateFn)(void);
-    void(__cdecl *CutScene_StoppedFn)(void *cut);
+    void(__cdecl *CutScene_StoppedFn)(CUTINFO *cut);
     i32(__cdecl *CutScene_ReplaceCharacterModelFn)(void *cut, void *character);
     i32(__cdecl *InitBolt_AddMomentumType)(void *bolt, void *object, void *momentum);
     i32(__cdecl *Bolt_HitPlatFn)(void *bolt);
@@ -201,6 +201,8 @@ extern "C" {
     NUSPECIALHANDLE LevHSpecial_50;
     NUSPECIALHANDLE LevHSpecial_51;
     void *game_cutscenes_cutscene;
+    void *Player[8];
+    f32 DEFAULTFPS;
     void *LevelHackData;
     i32 LevelHackDataSize;
     i16 id_DEFAULTCHARACTER[2] = {-1, -1};

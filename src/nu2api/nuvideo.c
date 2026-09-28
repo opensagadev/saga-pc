@@ -95,6 +95,23 @@ void __cdecl bgProcDataOversize(i32 size) {
 GAMECAMERA *GameCam;
 i32 part_debris_count;
 
+void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, f32 priority) {
+    i32 index;
+    GAMEOBJECT *object;
+
+    if (frames > 0) {
+        if ((f32)frames / DEFAULTFPS > duration) {
+            duration = (f32)frames / DEFAULTFPS;
+        }
+    }
+    for (index = 0; index < 8; index++) {
+        object = (GAMEOBJECT *)Player[index];
+        if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->pad != NULL) {
+            NuSound3AddRumble(object->pad, duration, (i32)(strength * 255.0f), 0, strength);
+        }
+    }
+}
+
 void __cdecl GameCam_NewShake(GAMECAMERA *camera, f32 intensity, f32 decay, f32 freq) {
     if (camera == NULL) {
         camera = GameCam;

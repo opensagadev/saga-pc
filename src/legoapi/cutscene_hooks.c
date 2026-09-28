@@ -1,6 +1,6 @@
 #include "saga.h"
 
-i32 __cdecl CutScene_StartFn_LSW(void *cut) {
+i32 __cdecl CutScene_StartFn_LSW(CUTINFO *cut) {
     STUBBED_NAMED("CutScene_StartFn_LSW: podrace/bonus-gunship death matrix setup"
                   " (DiePos statics 0x7f5d08/0x7f5d14/0x7f5d24/0x7f5d34/0x7f5d40,"
                   " angle words 0x876618/0x87661c/0x876620 and the 90-degree consts,"
@@ -8,18 +8,20 @@ i32 __cdecl CutScene_StartFn_LSW(void *cut) {
     return 0;
 }
 
-void __cdecl CutScene_PreUpdateFn_LSW(void *cut) {
+void __cdecl CutScene_PreUpdateFn_LSW(CUTINFO *cut) {
     STUBBED_NAMED("CutScene_PreUpdateFn_LSW: avalanche rumble/shake"
-                  " (podrace_avalanche and podsprint_avalanche cutscenes only,"
-                  " intensity from instance frame vs 111.0f, NuVecDist to"
-                  " PodAvalanchePeakPos scaled at 750.0f, NewRumbleAllPlayers +"
-                  " GameCam_NewShake)");
+                  " (podrace_avalanche and podsprint_avalanche cutscenes only:"
+                  " intensity = 111.0f - instance frame clamped via the -110 test,"
+                  " 1 - |intensity| / 110, NuVecDist(&GameCam->position,"
+                  " &PodAvalanchePeakPos, NULL) scaled at 750.0f,"
+                  " NewRumbleAllPlayers(qrand() / 65536 * intensity, 0, 0, 0),"
+                  " GameCam_NewShake(GameCam, intensity + intensity, 0.1f, 1.25f))");
 }
 
 void __cdecl CutScene_PostUpdateFn_LSW(void) {
 }
 
-void __cdecl CutScene_StoppedFn_LSW(void *cut) {
+void __cdecl CutScene_StoppedFn_LSW(CUTINFO *cut) {
     if (cut == game_cutscenes_cutscene) {
         if (NuSpecialExistsFn(&LevHSpecial_50)) {
             AddPartDebris(WORLD->part_debris_sys, 0x10, NuSpecialGetDrawPos(&LevHSpecial_50));
