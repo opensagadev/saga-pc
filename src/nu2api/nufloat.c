@@ -1,5 +1,5 @@
 #include "saga.h"
-#include <math.h>
+double sqrt(double);
 
 extern const f32 nu_fsign_minus_one;
 
