@@ -1280,6 +1280,7 @@ address   , symbol                                                , size  , ctyp
 0x00751584, _StartupEpisodeIVDat                                  , 15    , const char[15]
 0x00751594, _StartupEpisodeVDat                                   , 14    , const char[14]
 0x007515a4, _StartupEpisodeVIDat                                  , 15    , const char[15]
+0x00751640, __real@40a00000                                       , 4     , const f32
 0x00751658, __real@00000000                                       , 4     , const f32
 0x00751680, __real@3fc99999a0000000                             , 8     , const f64
 0x00751698, __real@3ff0000000000000                               , 8     , f64
@@ -1309,6 +1310,7 @@ address   , symbol                                                , size  , ctyp
 0x00751a10, _NuTimeBarSlotWidth                                   , 8     , const f64
 0x00751a40, _PCKeyboardDefaultValue_candidate                     , 4     , const f32
 0x00751a40, __real@3dcccccd                                       , 4     , const f32
+0x00751a68, __real@3fb0000000000000                             , 8     , const f64
 0x00751a90, __real@3ff8000000000000                               , 8     , const f64
 0x00751bf8, __real@4024000000000000                               , 8     , const f64
 0x00751c00, _GizAIMessage_PrefixedNameFormat                      , 5     , const char[5]
@@ -2244,8 +2246,12 @@ address   , symbol                                                , size  , ctyp
 0x0095e434, ?fade_draw_suppressed@@3HA                            , 4     , i32
 0x0095e5f4, _fseed                                                , 4     , u32
 0x0095e690, _numtl_defaultmtl3d                                   , 4     , NUMTL *
+0x0095fbd8, _sceneParametersCount                              , 4     , i32
 0x00963de0, _NuQFntCSModeStack                                    , 64    , i32[16]
+0x00963e38, _nurndr_back_w                                     , 4     , i32
+0x00963e3c, _nurndr_back_h                                     , 4     , i32
 0x00963fb0, _fstack                                               , 4     , VARIPTR
+0x00964110, _sceneParameters                                   ,       , NURNDRLIBSCENE[]
 0x009663a8, _fstack_limit                                         , 4     , VARIPTR
 0x0096d890, _NuQFntModeStack                                      , 64    , u32[16]
 0x0096d910, _numtl_defaultmtl2d                                   , 4     , NUMTL *
@@ -2253,6 +2259,7 @@ address   , symbol                                                , size  , ctyp
 0x0096e598, _fstackmem                                            , 12288 , u8[0x3000]
 0x0097159c, _NuTextureDimensions                                  , 4     , NUTEXDIM_PC **
 0x009716c0, _NuTimeBar_SetList                                    , 64    , void *[16]
+0x009718c0, _currentScene                                      , 536   , NURNDRLIBSCENE
 0x00973700, _NuDisplayListStreamCursor                            , 4     , VARIPTR *
 0x00973708, _global_camera                                        , 120   , NUCAMERA
 0x0097388c, _nu2api_paused                                        , 4     , f32

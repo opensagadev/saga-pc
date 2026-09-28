@@ -189,8 +189,8 @@ void __cdecl LoadPerm(void) {
             }
         }
 
-        STUBBED_NAMED("LoadPerm: NuRndrBeginScene(1)");
-        STUBBED_NAMED("LoadPerm: NuRndrGradClear(0xf00, 0x80000000, 0x80000000, 1.0f)");
+        NuRndrBeginScene(1);
+        NuRndrGradClear(0xf00, (i32)0x80000000, (i32)0x80000000, 1.0f);
 
         if (tail_timer == 0.2f) {
             menu_alpha = LoadPermFadeAlpha(language_timer, 2.5f);
@@ -214,11 +214,13 @@ void __cdecl LoadPerm(void) {
                         break;
                 }
                 half = (1.0f - 1.3333334f / aspect) * 0.5f;
-                STUBBED_NAMED("LoadPerm: NuRndrClear(0xb00, 0, 1.0f) with legal 2D quad"
-                              " (NuPrimCSPos push 2, NuPrim2DBegin(0x10, 7, legal_mtl),"
+                NuRndrClear(0xb00, 0, 1.0f);
+                STUBBED_NAMED("LoadPerm: legal 2D quad"
+                              " (NuPrimCSPos push 2, NuPrimSetCoordinateSystem(2),"
+                              " NuPrim2DBegin(0x10, 7, legal_mtl),"
                               " colour (legal_alpha * 255.0f) << 24 | 0x808080,"
                               " NuPrim2DSetColor, vertices half/1-half, NuPrim2DEnd,"
-                              " coordinate-system pop)");
+                              " NuPrimCoordSystemStack pop)");
             }
 
             intro_alpha = LoadPermFadeAlpha(intro_timer, 3.0f);
