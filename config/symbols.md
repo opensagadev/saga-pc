@@ -283,6 +283,24 @@ registration struct at `0x00421320`, the two tail function-pointer
 registrations, and the ten hook targets (`0x0042d740` through `0x0042df30`)
 are the next mapping candidates in this family.
 
+The render-scene family lives in `src/nu2api/nurndr.c`. `NuRndrGradClear`
+(`0x005feab0`) is exact: it forwards `(flags, bottom_colour, alpha)` to
+`NuRndrClear` and drops the third colour like the Android stub.
+`NuRndrBeginScene` (`0x005d4290`, 109 bytes) resets the named fields of the
+`0x218`-byte scene record at `0x009718c0` and always returns 1; the retail
+epilogue computes the return as `lea eax,[ecx+2]` from the register-held -1
+(the compiler-level `or ecx,-1` encoding of the constant prevents the
+constant fold), which our spelling does not yet reproduce. `NuRndrClear`
+(`0x005ebd80`) stores the alpha/colour/flags, reads the viewport pair through
+the still-unmapped `0x005dad10`, and computes the two overscan factors with
+`fidiv` against the mapped `PS2_VREZ_W`/`PS2_VREZ_H` integer globals;
+`0x00963e38`/`0x00963e3c` are named `nurndr_back_w`/`nurndr_back_h` as
+reconstruction names pending their writers' identification.
+`NuRndrEndScene` (`0x005f3950`) remains unimplemented pending the
+`NuDisplayListAddRenderScene` callee at `0x005efff0`; its retail body appends
+the `0x218`-byte record to the `0x00964110` array at `0x0095fbd8` and routes
+the scene id into the dynamic-light pending ring at light+`0x354`/`0x374`.
+
 ## External symbols
 
 The original PE import directory supplies 197 four-byte IAT slots: 191 imports by
