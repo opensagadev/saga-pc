@@ -11,6 +11,21 @@ NUSORTPRI *sort_list;
 i32 render_scene_index;
 NURNDRLIBSCENE sceneParameters[32];
 NUDISPLAYLISTRENDERSCENE *render_scene_ptrs[16];
+i32 nudlist_alloc_count;
+u32 nudlist_alloc_base;
+u32 nudlist_alloc_end;
+u32 nudlist_item_base;
+i32 nudlist_frame_active;
+u32 nudlist_flags;
+u32 nudlist_field_e58;
+u32 nudlist_field_e80;
+u32 nudlist_field_fc8;
+u32 *nudlist_field_fc4;
+u32 nudlist_field_9d0;
+u32 nudlist_field_9d8;
+u32 nudlist_field_fe4;
+NUDISPLAYLISTITEM nudlist_2d_static;
+VARIPTR nudlist_stream_cursor;
 
 i32 __cdecl NuRndrBeginScene(i32 begin_flags) {
     currentScene.clear_alpha_4c = 0.0f;
@@ -192,4 +207,45 @@ void __cdecl NuRndrEndScene(void) {
     }
     sceneParameters[sceneParametersCount] = currentScene;
     sceneParametersCount += 1;
+}
+
+void __cdecl NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count, i32 arg4, VARIPTR *arg5) {
+    u32 aligned;
+    i32 index;
+    u32 offset;
+
+    nudlist_alloc_count = count;
+    nudlist_alloc_base = cursor->addr;
+    cursor->addr += count;
+    aligned = (cursor->addr + 3U) & ~3U;
+    nudlist_alloc_end = aligned;
+    cursor->addr = aligned + count * 36;
+    nudlist_item_base = (cursor->addr + 0xfU) & ~0xfU;
+    cursor->addr = nudlist_item_base;
+    cursor->addr += count * 32;
+    for (index = 0; index < count; index++) {
+        *(u8 *)(nudlist_alloc_base + index) = 0;
+        offset = index * 0x20;
+        *(u8 *)(nudlist_item_base + offset + 0x10) = 0x84;
+        *(u32 *)(nudlist_item_base + offset + 0x14) = 0;
+        *((u8 *)nudlist_item_base + offset + 0x11) = 4;
+    }
+}
+
+void __cdecl NuDisplayListInit(VARIPTR *cursor, i32 arg2) {
+    STUBBED_NAMED("NuDisplayListInit: 0x5fd1c0 setup");
+    nudlist_field_9d8 = 0;
+    nudlist_field_e80 = 0;
+    sort_list = NULL;
+    nudlist_field_fc8 = 0;
+    displaylist_2d_first = &nudlist_2d_static;
+    STUBBED_NAMED("NuDisplayListInit: NuDisplayListCreateDynMtlList (0x5efbf0)");
+    nudlist_flags |= 0x10;
+    nudlist_field_e58 = 0;
+    NuDisplayListStreamAlloc(cursor, arg2, 0x40, arg2, cursor);
+    NuDisplayListStreamCursor = &nudlist_stream_cursor;
+    nudlist_field_1598 = nuprim_field_ba8;
+    STUBBED_NAMED("NuDisplayListInit: 0x4ffa60 setup");
+    STUBBED_NAMED("NuDisplayListInit: 0x5f0d70 first-frame draw");
+    STUBBED_NAMED("NuDisplayListInit: NuDisplayListBeginFrame (0x5dfab0)");
 }

@@ -402,6 +402,22 @@ private register ABI), the frame draw (`0x005f0d70`), the init at
 cursor pointing at `0x0097c1cc`) are already mapped from the
 `NuDisplayListAddRenderScene` work.
 
+Two of them are now reconstructed. `NuDisplayListStreamAlloc`
+(`0x005deb20`, 139 bytes, 51.8%) reserves four regions of the stream
+cursor for `count` items: the cursor bytes, a 4-aligned block, the
+count-times-36 sort-pri scratch, and the 16-aligned item base
+(`nudlist_item_base`, `0x00973fc0`) followed by count-times-32 item
+slots, then clears `count` bytes at the allocation base and writes the
+0x84/id-4 terminator into each slot's +0x10 item. `NuDisplayListInit`
+(`0x00603350`, 147 bytes, 34.7%) zeroes the manager state, sets
+`displaylist_2d_first` to the static item at `0x00973ed4`, requests the
+dynamic material list (`0x005efbf0`, still a marker), sets the
+needs-build flag bit 0x10 at `0x00973e50`, allocates the 0x40-slot
+stream regions, points `NuDisplayListStreamCursor` at `0x0097c1cc`, and
+stores the `0x002854ba8` value into `0x00971598` — the remaining
+call-site markers (`0x5fd1c0`, `0x4ffa60`, `0x5f0d70`,
+`NuDisplayListBeginFrame`) are the mapped-unimplemented callees.
+
 The special-visibility path is reconstructed: `NuSpecialSetVisibility`
 (`0x005cfc00`, 184 bytes, 74.7%) handles the legacy and display-special
 layouts of the handle (`NULEGACYSPECIAL` instance/flags at +0x40/+0x44/+0x48,
