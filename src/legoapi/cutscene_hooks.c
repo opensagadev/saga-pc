@@ -185,9 +185,10 @@ i32 __cdecl InitBolt_AddMomentumType_LSW(BOLT *bolt, GAMEOBJECT *object, NUVEC *
     return 0;
 }
 
-i32 __cdecl Bolt_HitPlatFn_LSW(void *bolt) {
-    STUBBED_NAMED("Bolt_HitPlatFn_LSW: if WORLD->current_level == KAMINOE_LDATA then"
-                  " KaminoE_CheckPlatHit(bolt)");
+i32 __cdecl Bolt_HitPlatFn_LSW(BOLT *bolt) {
+    if (WORLD->current_level == KAMINOE_LDATA) {
+        KaminoE_CheckPlatHit(bolt);
+    }
     return 0;
 }
 
@@ -212,4 +213,45 @@ void __cdecl instNuGCutSceneSetMtx(INSTNUGCUTSCENE *inst, NUMTX *mtx) {
     inst->flags_88 |= 0x80;
     inst->matrix = *mtx;
     NuGCutSceneUpdateMtx(&inst->matrix);
+}
+
+i32 __cdecl KaminoE_CheckPlatHit(BOLT *bolt) {
+    KAMINOEPLATE *hit;
+
+    if (bolt->unknown_fa == kamino_plate_id) {
+        hit = kamino_plate_hit;
+        if (kamino_plate_1 != NULL && kamino_plate_1_active != 0) {
+            if ((kamino_plate_1->flags_13a & 0x30) == 0 && (kamino_plate_1->flags_13a & 0x2) != 0) {
+                if (hit == NULL) {
+                    hit = kamino_plate_1;
+                    kamino_plate_hit = hit;
+                }
+            }
+        }
+        if (kamino_plate_2 != NULL && kamino_plate_2_active != 0) {
+            if ((kamino_plate_2->flags_13a & 0x30) == 0 && (kamino_plate_2->flags_13a & 0x2) != 0) {
+                if (hit == NULL) {
+                    hit = kamino_plate_2;
+                    kamino_plate_hit = hit;
+                }
+            }
+        }
+        if (kamino_plate_3 != NULL && kamino_plate_3_active != 0) {
+            if ((kamino_plate_3->flags_13a & 0x30) == 0 && (kamino_plate_3->flags_13a & 0x2) != 0) {
+                if (hit == NULL) {
+                    hit = kamino_plate_3;
+                    kamino_plate_hit = hit;
+                }
+            }
+        }
+        if (kamino_plate_4 != NULL && kamino_plate_4_active != 0) {
+            if ((kamino_plate_4->flags_13a & 0x30) == 0 && (kamino_plate_4->flags_13a & 0x2) != 0) {
+                if (hit == NULL) {
+                    kamino_plate_hit = kamino_plate_4;
+                }
+            }
+        }
+        return 1;
+    }
+    return 0;
 }

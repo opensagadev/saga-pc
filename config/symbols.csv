@@ -109,6 +109,7 @@ address   , symbol                                                , size  , ctyp
 0x004cf480, _Text_DecodeButtons                                   , 41    , "void __cdecl (char *, char *)"
 0x004cf4c0, _Text_LoadStrings                                     , 397   , "void __cdecl (VARIPTR *, VARIPTR *)"
 0x004d44a0, _TrafficAnimSys_Configure                             , 650   , "void __cdecl (WORLDINFO *, char *)"
+0x004e1460, _KaminoE_CheckPlatHit                             , 228   , "i32 __cdecl (BOLT *)"
 0x004eed92, _SendMessageA@16                                      , 6     , "LRESULT __stdcall (HWND, UINT, WPARAM, LPARAM)"
 0x004eef40, _NuAlloc                                              , 471   , "void *__cdecl (i32, const char *, i32)"
 0x004ef280, _NuFree                                               , 442   , "void __cdecl (void *, const char *, i32)"
@@ -2125,6 +2126,16 @@ address   , symbol                                                , size  , ctyp
 0x00880918, _tAUDIOVOLUME                                         , 2     , i16
 0x0088093c, _tMUSIC                                               , 2     , i16
 0x00880f90, _tALONGTIMEAGO                                        , 2     , i16
+0x00889058, _kamino_plate_1                                  , 4     , KAMINOEPLATE *
+0x0088905c, _kamino_plate_2                                  , 4     , KAMINOEPLATE *
+0x00889060, _kamino_plate_3                                  , 4     , KAMINOEPLATE *
+0x00889064, _kamino_plate_4                                  , 4     , KAMINOEPLATE *
+0x00889068, _kamino_plate_hit                                , 4     , KAMINOEPLATE *
+0x0088906c, _kamino_plate_1_active                           , 4     , i32
+0x00889070, _kamino_plate_2_active                           , 4     , i32
+0x00889074, _kamino_plate_3_active                           , 4     , i32
+0x00889078, _kamino_plate_4_active                           , 4     , i32
+0x008890a6, _kamino_plate_id                                  , 2     , u16
 0x0088a56c, _dagobah_training                                     , 4     , i32
 0x0088ab38, _NuAllocRecordHead                                    , 4     , NUALLOC_RECORD *
 0x0088ab3c, _NuAllocTrackedBytes                                  , 4     , u32

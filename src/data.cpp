@@ -192,7 +192,7 @@ extern "C" {
     void(__cdecl *CutScene_StoppedFn)(CUTINFO *cut);
     i32(__cdecl *CutScene_ReplaceCharacterModelFn)(CUTINFO *cut, CUTSCENECHARACTER *character);
     i32(__cdecl *InitBolt_AddMomentumType)(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum);
-    i32(__cdecl *Bolt_HitPlatFn)(void *bolt);
+    i32(__cdecl *Bolt_HitPlatFn)(BOLT *bolt);
     i32(__cdecl *Bolt_HitCustomFn)(void *bolt, void *points);
     void(__cdecl *GameBlowUpBlownUpFn)(void *blowup);
     void(__cdecl *GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
@@ -215,6 +215,16 @@ extern "C" {
     LEVELDATA_PC *SPEEDERCHASEA_LDATA;
     LEVELDATA_PC *DEATHSTARBATTLED_LDATA;
     i16 id_SPEEDERBIKE = -1;
+    KAMINOEPLATE *kamino_plate_1;
+    KAMINOEPLATE *kamino_plate_2;
+    KAMINOEPLATE *kamino_plate_3;
+    KAMINOEPLATE *kamino_plate_4;
+    i32 kamino_plate_1_active;
+    i32 kamino_plate_2_active;
+    i32 kamino_plate_3_active;
+    i32 kamino_plate_4_active;
+    KAMINOEPLATE *kamino_plate_hit;
+    u16 kamino_plate_id;
     i16 id_ANAKINSPOD = -1;
     i16 id_ANAKINSPODGREEN = -1;
     i16 id_ANAKINSNEWPOD = -1;

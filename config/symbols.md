@@ -333,6 +333,27 @@ conversion written as `(u32)degrees << 16 / 360` (the retail's
 `NuGCutSceneUpdateMtx` (`0x00500b90`, 86 bytes), whose retail body reads
 its operand from EDI (the private register ABI); the reconstruction
 declares it `__cdecl`, so the call shape differs.
+
+`CutScene_ReplaceCharacterModelFn_LSW` (`0x0042daa0`, 507 bytes, 71.6%)
+and `InitBolt_AddMomentumType_LSW` (`0x0042dca0`, 174 bytes, 84.2%) are
+reconstructed with their full branch logic. The replacement hook walks
+the podrace/podsprint/bonus-gunship/gunship/dogfight selections with the
+`APICHARACTERDATA` (0x4c stride, name at +0xc) name match through
+`apicharsys` (`0x02913104`) and the vehicle chain
+(`CutDeadVehiclePlayer` at `0x00951bfc` falling back to `player` at
+`0x0093d830`), replacing the ten character id words (all initialized
+-1). The bolt hook scales `GAMEOBJECT.target_velocity` (+0xf18) into
+the momentum vector with `bolt->speed` (+0xcc) accumulation behind the
+`LSW1` gate, and returns 1 for the speederbike/death-star level gates.
+`Bolt_HitPlatFn_LSW` (`0x0042dd50`, 35 bytes, 87.9%) now calls the
+reconstructed `KaminoE_CheckPlatHit` (`0x004e1460`, 228 bytes, 88.5%):
+the bolt's +0xfa word must match the plate id (`0x008890a6`), then the
+first of the four Kamino plates (`0x00889058`-`0x00889064`, each gated
+by its active flag and the +0x13a flag bits 0x30/0x2) becomes the plate
+hit (`0x00889068`); the tail differs by four bytes of scheduling.
+`Bolt_HitCustomFn_LSW` still carries its marker text pending
+`ChrisExtraBoltCollision` (`0x00412aa0`), and `GameBlowUpBlownUpFn_LSW`
+pending the eleven-argument `AddDynamicCreature` (`0x0043d890`).
 `KAMINOE_LDATA` (`0x0087b134`) and `DOGFIGHTA_LDATA` (`0x0087b118`) are
 written by `Level_FindByName("Kamino_E"/"dogfight_a")` in the
 level-handler registration cluster around `0x0048e3xx`-`0x0048e7xx`.
