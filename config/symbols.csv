@@ -708,6 +708,7 @@ address   , symbol                                                , size  , ctyp
 0x005dabe0, _NuHGobjForceShadowsOnCharacters                      , 16    , i32 __cdecl (i32)
 0x005dad10, _NuVpGetPosition2                                 , 360   , "void (f32 *, f32 *)"
 0x005ddc80, _NuWindAnimate                                        , 112   , "void __cdecl (NUWIND *, f32)"
+0x005ddd10, _NuDisplayListRender2D                             , 60    , "void __cdecl (i32)"
 0x005de2d0, _NuDisplayListLinkMtl                                 , 186   , "void __cdecl (NUDISPLAYLIST *, NUMTL *)"
 0x005deb20, _NuDisplayListStreamAlloc                           , 139   , "void __cdecl (VARIPTR *, i32, i32, i32, VARIPTR *)"
 0x005dece0, _NuDisplayListPurge_candidate                     , 92    , void __cdecl (void)
@@ -2412,6 +2413,7 @@ address   , symbol                                                , size  , ctyp
 0x0097399c, _NuTimeBar_FrameOutMtl                                , 4     , NUMTL *
 0x009739d0, _nudlist_field_9d0                                , 4     , i32
 0x009739d8, _nudlist_field_9d8                                , 4     , u32
+0x009739dc, _nudlist_sortpri_array                             , 4     , NUSORTPRI **
 0x00973e50, _nudlist_flags                                    , 4     , u32
 0x00973e58, _nudlist_field_e58                                , 4     , u32
 0x00973e80, _nudlist_field_e80                                , 4     , u32
