@@ -367,6 +367,25 @@ hook body; our hook lives in `nuvideo.c`, so the reload registers differ
 one-byte `ret` and is exact. `LoadPerm` now posts `LoadPermData` with a
 real `bgPostRequest` call.
 
+The special-visibility path is reconstructed: `NuSpecialSetVisibility`
+(`0x005cfc00`, 184 bytes, 74.7%) handles the legacy and display-special
+layouts of the handle (`NULEGACYSPECIAL` instance/flags at +0x40/+0x44/+0x48,
+`NUDISPLAY_SPECIAL_PC` flags at +0xb8 and `instance_ix` at +0xc0, and the
+scene display-list's visibility-flag byte gate at +0x76), and
+`GameCam_NewShake` (`0x00549bb0`, 43 bytes, 90%) stores the three shake
+parameters into the camera at +0x1d4/+0x1d8/+0x1dc with the null-camera
+`GameCam` (`0x008021b4`) fallback. `AddPartDebris` (`0x00571b60`, 54 bytes,
+85.5%) validates the index against `part_debris_count` (`0x00951018`), reads
+the 0x14-stride id table at `part_debris_sys`+8, and calls the still-stubbed
+part spawner at `0x0064b370` (candidate name
+`PartDebrisCreatePart_candidate`, kept in `game_deb.c` so the cross-unit
+call survives constant folding). With these in place
+`CutScene_StoppedFn_LSW` is exact: it hides the two special handles
+`LevHSpecial_50`/`LevHSpecial_51` (`0x0087ad50`/`0x0087ad5c`, standalone
+12-byte handles rather than Android's array indexing) and spawns part
+debris when the stopped cutscene is `game_cutscenes_cutscene`
+(`0x0087660c`).
+
 The math helpers behind the hook family are exact: `NuFsqrt`
 (`0x005c0240`, `if (f < 0) return 0; return sqrt(f);` with the CRT
 `__CIsqrt` intrinsic bound at `0x006e9530`), `NuVecMag`

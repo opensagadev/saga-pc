@@ -91,3 +91,15 @@ void NuRegionSet(i32 region) {
 
 void __cdecl bgProcDataOversize(i32 size) {
 }
+
+GAMECAMERA *GameCam;
+i32 part_debris_count;
+
+void __cdecl GameCam_NewShake(GAMECAMERA *camera, f32 intensity, f32 decay, f32 freq) {
+    if (camera == NULL) {
+        camera = GameCam;
+    }
+    camera->shake_intensity = intensity;
+    camera->shake_decay = decay;
+    camera->shake_freq = freq;
+}

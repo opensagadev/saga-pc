@@ -26,3 +26,8 @@ void DebrisRegisterCutoffCameraVec(void *position) {
 void DebrisSetRenderGroup(i32 group) {
     debris_render_group = group;
 }
+
+i32 __cdecl PartDebrisCreatePart_candidate(i32 id, NUVEC *position, i32 flag) {
+    STUBBED_NAMED("PartDebrisCreatePart_candidate: part template lookup and spawn");
+    return -1;
+}

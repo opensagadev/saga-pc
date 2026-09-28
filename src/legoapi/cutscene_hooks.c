@@ -20,8 +20,16 @@ void __cdecl CutScene_PostUpdateFn_LSW(void) {
 }
 
 void __cdecl CutScene_StoppedFn_LSW(void *cut) {
-    STUBBED_NAMED("CutScene_StoppedFn_LSW: hide LevHSpecial[50]/[51] and add part"
-                  " debris when cut == game_cutscenes.cutscene");
+    if (cut == game_cutscenes_cutscene) {
+        if (NuSpecialExistsFn(&LevHSpecial_50)) {
+            AddPartDebris(WORLD->part_debris_sys, 0x10, NuSpecialGetDrawPos(&LevHSpecial_50));
+            NuSpecialSetVisibility(&LevHSpecial_50, 0);
+        }
+        if (NuSpecialExistsFn(&LevHSpecial_51)) {
+            AddPartDebris(WORLD->part_debris_sys, 0x10, NuSpecialGetDrawPos(&LevHSpecial_51));
+            NuSpecialSetVisibility(&LevHSpecial_51, 0);
+        }
+    }
 }
 
 i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(void *cut, void *character) {

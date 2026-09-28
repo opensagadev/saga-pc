@@ -665,21 +665,69 @@ typedef struct nuspecial_legacy_pc_s {
 STATIC_ASSERT(sizeof(NUSPECIAL_LEGACY_PC) == 0x4c);
 STATIC_ASSERT(offsetof(NUSPECIAL_LEGACY_PC, name) == 0x44);
 
+typedef struct partdebrisentry_s {
+    i32 id;
+    u8 opaque_04_14[0x10];
+} PARTDEBRISENTRY;
+STATIC_ASSERT(sizeof(PARTDEBRISENTRY) == 0x14);
+
+typedef struct partdebrissys_s {
+    u8 opaque_00_08[0x8];
+    PARTDEBRISENTRY *entries;
+} PARTDEBRISSYS;
+
+typedef struct gamecamera_s {
+    u8 opaque_00_1d4[0x1d4];
+    f32 shake_intensity;
+    f32 shake_decay;
+    f32 shake_freq;
+    u8 opaque_1e0[0x4];
+} GAMECAMERA;
+STATIC_ASSERT(offsetof(GAMECAMERA, shake_intensity) == 0x1d4);
+STATIC_ASSERT(offsetof(GAMECAMERA, shake_decay) == 0x1d8);
+STATIC_ASSERT(offsetof(GAMECAMERA, shake_freq) == 0x1dc);
+
 typedef struct nudisplay_special_pc_s {
     u8 unknown_0000[0xb4];
     char *name;
-    u8 unknown_00b8[0x18];
+    u32 flags;
+    u8 unknown_00bc[0x4];
+    u32 instance_ix;
+    u8 unknown_00c4[0xc];
 } NUDISPLAY_SPECIAL_PC;
 STATIC_ASSERT(sizeof(NUDISPLAY_SPECIAL_PC) == 0xd0);
 STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, name) == 0xb4);
+STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, flags) == 0xb8);
+STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, instance_ix) == 0xc0);
 
 typedef struct nudisplay_list_pc_s {
-    u8 unknown_0000[0x6c];
+    u8 unknown_0000[0x48];
+    u8 *visibility_flags;
+    u8 unknown_004c_6c[0x20];
     i32 special_count;
     NUDISPLAY_SPECIAL_PC *specials;
+    u8 unknown_0074_76[0x2];
+    u8 instance_visibility_enabled;
+    u8 unknown_0077[0x1];
 } NUDISPLAY_LIST_PC;
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, visibility_flags) == 0x48);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, instance_visibility_enabled) == 0x76);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, special_count) == 0x6c);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, specials) == 0x70);
+
+typedef struct nulegacyinstance_s {
+    u8 opaque_00_44[0x44];
+    u32 visible;
+    u8 opaque_48[0x4];
+} NULEGACYINSTANCE;
+
+typedef struct nulegacyspecial_s {
+    u8 opaque_00_40[0x40];
+    NULEGACYINSTANCE *instance;
+    u32 visible_flags;
+    u32 flags_48;
+    u8 opaque_50[0x8];
+} NULEGACYSPECIAL;
 
 typedef struct NUGSCN_s {
     u8 unknown_0000[0x24];
@@ -743,7 +791,8 @@ typedef struct WORLDINFO_s {
     u32 unknown_0120[2];
     struct level_data_pc_s *current_level;
     struct area_data_pc_s *area;
-    u32 unknown_0130[3];
+    u32 unknown_0130[2];
+    PARTDEBRISSYS *part_debris_sys;
     NUGSCN *current_gscn;
     u32 unknown_0140[0xa07];
     void *terrain;
@@ -2236,6 +2285,11 @@ extern "C" {
     extern void(__cdecl *GameBlowUpBlownUpFn)(void *blowup);
     extern void(__cdecl *GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
     extern LEVELDATA_PC *KAMINOE_LDATA;
+    extern NUSPECIALHANDLE LevHSpecial_50;
+    extern NUSPECIALHANDLE LevHSpecial_51;
+    extern void *game_cutscenes_cutscene;
+    extern NUSPECIALHANDLE LevHSpecial_50;
+    extern NUSPECIALHANDLE LevHSpecial_51;
     extern NULSTHDR *bgproc_procinfo_pool;
     extern volatile u32 nu_current_thread_id;
     extern void(__cdecl *NuThreadDisableThreadSwap)(void);
@@ -2771,6 +2825,8 @@ extern "C" {
     i32 __cdecl NuKeyToAscii(u32 key, i32 shifted);
     extern WORLDINFO WorldInfo[2];
     extern WORLDINFO *WORLD;
+    extern GAMECAMERA *GameCam;
+    extern i32 part_debris_count;
     extern WORLDINFO *LWORLD;
     extern u16 ang[513];
     extern f32 NuTrigTable[32768];

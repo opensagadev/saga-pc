@@ -363,3 +363,43 @@ void __cdecl NuSpecialClear(NUSPECIALHANDLE *special) {
     special->special = NULL;
     special->display_special = NULL;
 }
+
+void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *handle, i32 visible) {
+    NULEGACYSPECIAL *legacy;
+    NUDISPLAY_SPECIAL_PC *display;
+    NUDISPLAY_LIST_PC *display_list;
+
+    if (handle == NULL || handle->scene == NULL) {
+        return;
+    }
+    legacy = (NULEGACYSPECIAL *)handle->special;
+    if (legacy != NULL) {
+        if (legacy->instance != NULL) {
+            legacy->instance->visible ^= (legacy->instance->visible ^ visible) & 1;
+        }
+        if (visible != 0) {
+            legacy->flags_48 |= 0x200;
+        } else {
+            legacy->flags_48 &= ~0x200;
+        }
+        return;
+    }
+    display = (NUDISPLAY_SPECIAL_PC *)handle->display_special;
+    if (display == NULL) {
+        return;
+    }
+    if (visible != 0) {
+        display->flags |= 0x202;
+        display_list = ((NUGSCN *)handle->scene)->display_list;
+        if ((display_list->instance_visibility_enabled & 1) != 0) {
+            display_list->visibility_flags[display->instance_ix] |= 1;
+        }
+    } else {
+        display->flags &= ~0x2;
+        display->flags &= ~0x200;
+        display_list = ((NUGSCN *)handle->scene)->display_list;
+        if ((display_list->instance_visibility_enabled & 1) != 0) {
+            display_list->visibility_flags[display->instance_ix] &= ~1;
+        }
+    }
+}

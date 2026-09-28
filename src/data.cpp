@@ -198,6 +198,9 @@ extern "C" {
     void(__cdecl *GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
     LEVELDATA_PC *KAMINOE_LDATA;
     LEVELDATA_PC *DOGFIGHTA_LDATA;
+    NUSPECIALHANDLE LevHSpecial_50;
+    NUSPECIALHANDLE LevHSpecial_51;
+    void *game_cutscenes_cutscene;
     void *LevelHackData;
     i32 LevelHackDataSize;
     i16 id_DEFAULTCHARACTER[2] = {-1, -1};

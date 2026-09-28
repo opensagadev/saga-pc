@@ -39,3 +39,16 @@ void NuPartSetSeed(i32 seed) {
 u32 NuPartGetSeed(void) {
     return partseed;
 }
+
+void __cdecl AddPartDebris(PARTDEBRISSYS *sys, i32 index, NUVEC *position) {
+    PARTDEBRISENTRY *entry;
+
+    if (sys == NULL || index < 0 || index >= part_debris_count) {
+        return;
+    }
+    entry = &sys->entries[index];
+    if (entry->id == -1) {
+        return;
+    }
+    PartDebrisCreatePart_candidate(entry->id, position, 1);
+}

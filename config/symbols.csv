@@ -354,6 +354,7 @@ address   , symbol                                                , size  , ctyp
 0x00548fe0, _UpdateTimer                                          , 97    , void __cdecl (TIMER *)
 0x00549430, _ResetFrameCounters                                   , 30    , void __cdecl (void)
 0x00549450, _UpdateFrameCounters                                  , 119   , void __cdecl (void)
+0x00549bb0, _GameCam_NewShake                                , 43    , "void __cdecl (GAMECAMERA *, f32, f32, f32)"
 0x0054a5e0, _GamePads_Init                                        , 117   , void __cdecl (void)
 0x0054b090, _ReadPads                                          , 32    , void (void)
 0x0054b0b0, _DoInput                                               , 786   , void __cdecl (WORLD *)
@@ -417,6 +418,7 @@ address   , symbol                                                , size  , ctyp
 0x00571a50, _LoadPartFile                                         , 204   , void __cdecl (WORLDINFO *)
 0x00571b20, _Parts_Start                                          , 30    , void __cdecl (WORLDINFO *)
 0x00571b40, _Parts_Stop                                           , 30    , void __cdecl (WORLDINFO *)
+0x00571b60, _AddPartDebris                                       , 54    , "void __cdecl (PARTDEBRISSYS *, i32, NUVEC *)"
 0x00572380, _Surfaces_Reset                                       , 182   , void __cdecl (void)
 0x00572b00, _Areas_ConfigureList                                  , 1853  , "AREA_DATA_PC *__cdecl (char *, VARIPTR *, VARIPTR *, i32, i32 *)"
 0x00573240, _Areas_ConfigureResidents                              , 481   , "void __cdecl (VARIPTR *, VARIPTR *)"
@@ -631,6 +633,7 @@ address   , symbol                                                , size  , ctyp
 0x005cfac0, _NuSpecialExistsFn                                    , 29    , i32 __cdecl (NUSPECIALHANDLE *)
 0x005cfb50, _NuSpecialConstAlpha                                  , 49    , "void __cdecl (i32, f32)"
 0x005cfb90, _NuSpecialConstTint                                   , 68    , "void __cdecl (i32, const NUVEC *)"
+0x005cfc00, _NuSpecialSetVisibility                              , 184   , "void __cdecl (NUSPECIALHANDLE *, i32)"
 0x005cfcc0, _NuSpecialSetCollision                                , 83    , "void __cdecl (NUSPECIALHANDLE *, i32)"
 0x005cfd20, _NuSpecialGetCollision                                , 51    , i32 __cdecl (NUSPECIALHANDLE *)
 0x005cfd60, _NuSpecialGetVisibilityFn                             , 48    , i32 __cdecl (NUSPECIALHANDLE *)
@@ -750,6 +753,7 @@ address   , symbol                                                , size  , ctyp
 0x0064a450, _NuPartSetSeed                                        , 10    , void __cdecl (i32)
 0x0064a460, _NuPartGetSeed                                        , 6     , u32 __cdecl (void)
 0x0064ae40, _SetPartRTLSet                                        , 10    , void __cdecl (RTLSET_PC *)
+0x0064b370, _PartDebrisCreatePart_candidate                       , 154   , "i32 __cdecl (i32, NUVEC *, i32)"
 0x0064c6e0, _edpartClearPage                                      , 198   , void __cdecl (i8)
 0x00650280, _SfxBuildCRCTable                                     , 217   , void __cdecl (VARIPTR *)
 0x00650430, _SfxNameHash                                           , 64    , u32 __cdecl (const char *)
@@ -1737,6 +1741,7 @@ address   , symbol                                                , size  , ctyp
 0x00802014, _saveload_autosave                                    , 4     , i32
 0x0080202c, _PS2_VCNTR_X                                       , 4     , i32
 0x00802030, _PS2_VCNTR_Y                                       , 4     , i32
+0x008021b4, _GameCam                                             , 4     , GAMECAMERA *
 0x00802334, _Text_ErrorString                                     , 4     , char *
 0x00802338, _txt_NULL                                             , 4     , char *
 0x0080233c, _txt_UNKNOWN                                          , 4     , char *
@@ -1965,9 +1970,12 @@ address   , symbol                                                , size  , ctyp
 0x008765a0, _StartupGameFlag0                                     , 4     , i32
 0x008765ac, _NewMode                                              , 4     , i32
 0x008765e4, _reset_restart                                        , 4     , i32
+0x0087660c, _game_cutscenes_cutscene                           , 4     , void *
 0x00876cec, _party_cant_be_under_cover                            , 4     , i32
 0x00879540, _Hub_ModelList                                        , 24    , APICHARACTERMODELLIST[6]
 0x0087a9e8, _makefreeplaymodellist                                , 4     , i32
+0x0087ad50, _LevHSpecial_50                                      , 12    , NUSPECIALHANDLE
+0x0087ad5c, _LevHSpecial_51                                      , 12    , NUSPECIALHANDLE
 0x0087af64, _GOTHAMSTREETS_ADATA                                  , 4     , AREA_DATA_PC *
 0x0087af68, _ROOFTOPS_ADATA                                       , 4     , AREA_DATA_PC *
 0x0087af6c, _FAIRGROUND_ADATA                                     , 4     , AREA_DATA_PC *
@@ -2234,6 +2242,7 @@ address   , symbol                                                , size  , ctyp
 0x00950770, _finishloop_backdroponly                              , 4     , i32
 0x00950bd8, _GameBlowUpBlownUpFn                               , 4     , "void (__cdecl *)(void *)"
 0x00950da4, _CheatSystem                                           ,       , CHEATSYSTEM_PC [12-byte reviewed prefix; full extent unknown]
+0x00951018, _part_debris_count                                   , 4     , i32
 0x00951024, _SURFACEBITS_DUST                                     , 2     , u16
 0x00951028, _SURFACEBITS_NODUST                                   , 2     , u16
 0x0095123c, _last_area                                            , 4     , i32
