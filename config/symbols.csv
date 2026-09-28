@@ -614,6 +614,9 @@ address   , symbol                                                , size  , ctyp
 0x005be590, _NuAngAdd                                             , 28    , "NUANG __cdecl (NUANG, NUANG)"
 0x005be5b0, _NuAngSub                                             , 26    , "NUANG __cdecl (NUANG, NUANG)"
 0x005be600, _NuAng2AltSol                                         , 47    , "void __cdecl (NUANG *, NUANG *, NUANG *, NUANG, NUANG, NUANG)"
+0x005bec80, _NuVecMag                                          , 49    , "f32 __cdecl (NUVEC *)"
+0x005becc0, _NuVecDist                                         , 182   , "f32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
+0x005c0240, _NuFsqrt                                           , 34    , "f32 __cdecl (f32)"
 0x005c0500, _NuMtxMulVU0                                          , 21    , "void __cdecl (NUMTX *, NUMTX *, NUMTX *)"
 0x005c9130, _NuPause                                              , 11    , void __cdecl (i32)
 0x005c9ff0, _NuRegisterEndFrameCallBackFn                         , 10    , void __cdecl (void (*)(void))
@@ -889,6 +892,7 @@ address   , symbol                                                , size  , ctyp
 0x006e8430, __allmul                                              , 52    , "i64 __cdecl (i64, i64)"
 0x006e8e11, _srand                                                , 13    , void __cdecl (unsigned int)
 0x006e8e80, __CIsin                                               , 79    , f64 (x87 ST0 -> ST0)
+0x006e9530, __CIsqrt                                           , 20    , "f32 __cdecl (f64)"
 0x006f05ae, _saga_thunk_KERNEL32_dll_GetCurrentThreadId_006f05ae@0, 6     , DWORD __stdcall (void)
 0x006f05b4, _saga_thunk_KERNEL32_dll_GetCurrentThread_006f05b4@0  , 6     , HANDLE __stdcall (void)
 0x007157c8, _D3DXMatrixMultiply@12                                , 6     , "D3DXMATRIX * __stdcall (D3DXMATRIX *, const D3DXMATRIX *, const D3DXMATRIX *)"

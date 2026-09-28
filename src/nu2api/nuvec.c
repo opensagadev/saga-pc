@@ -146,3 +146,22 @@ void __cdecl NuVecInvMtxTransform(NUVEC *out, NUVEC *v, NUMTX *m) {
     out->y = x * m->m10 + y * m->m11 + z * m->m12;
     out->z = x * m->m20 + y * m->m21 + z * m->m22;
 }
+
+f32 NuVecMag(NUVEC *vec) {
+    return NuFsqrt(vec->x * vec->x + vec->y * vec->y + vec->z * vec->z);
+}
+
+f32 NuVecDist(NUVEC *v0, NUVEC *v1, NUVEC *dist) {
+    NUVEC delta;
+
+    if (dist != NULL) {
+        dist->x = v0->x - v1->x;
+        dist->y = v0->y - v1->y;
+        dist->z = v0->z - v1->z;
+        return NuFsqrt(dist->x * dist->x + dist->y * dist->y + dist->z * dist->z);
+    }
+    delta.x = v0->x - v1->x;
+    delta.y = v0->y - v1->y;
+    delta.z = v0->z - v1->z;
+    return NuFsqrt(delta.y * delta.y + delta.x * delta.x + delta.z * delta.z);
+}

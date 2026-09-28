@@ -2691,6 +2691,7 @@ extern "C" {
     i32 __cdecl NuStrCmp(const char *a, const char *b);
     i32 __cdecl NuStrNCmp(const char *a, const char *b, i32 n);
     f32 __cdecl NuFmod(f32 a, f32 b);
+    f32 __cdecl NuFsqrt(f32 f);
     void __cdecl NuMtxSetTranslation(NUMTX *matrix, NUVEC *translation);
     void __cdecl NuMtxSetTranslationNeg(NUMTX *matrix, NUVEC *translation);
     void __cdecl NuMtxSetScale(NUMTX *matrix, NUVEC *scale);
@@ -2723,6 +2724,8 @@ extern "C" {
     void __cdecl NuVecMax(NUVEC *dst, NUVEC *a, NUVEC *b);
     void __cdecl NuVecMin(NUVEC *dst, NUVEC *a, NUVEC *b);
     f32 __cdecl NuVecMagSqr(NUVEC *vec);
+    f32 __cdecl NuVecMag(NUVEC *vec);
+    f32 __cdecl NuVecDist(NUVEC *v0, NUVEC *v1, NUVEC *dist);
     void __cdecl NuVecLerp(NUVEC *dst, NUVEC *a, NUVEC *b, f32 t);
     void __cdecl NuVecMtxRotate(NUVEC *dst, NUVEC *src, NUMTX *matrix);
     void __cdecl NuVecMtxTransform(NUVEC *dst, NUVEC *src, NUMTX *matrix);

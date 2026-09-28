@@ -367,6 +367,16 @@ hook body; our hook lives in `nuvideo.c`, so the reload registers differ
 one-byte `ret` and is exact. `LoadPerm` now posts `LoadPermData` with a
 real `bgPostRequest` call.
 
+The math helpers behind the hook family are exact: `NuFsqrt`
+(`0x005c0240`, `if (f < 0) return 0; return sqrt(f);` with the CRT
+`__CIsqrt` intrinsic bound at `0x006e9530`), `NuVecMag`
+(`0x005bec80`, 49 bytes) and `NuVecDist` (`0x005becc0`, 182 bytes; the
+two-path form with the delta written to the third argument when
+non-NULL). The `NuVecDist` else-path differs from retail only in one
+FPU load scheduling choice (x versus y first from the stack delta,
+99.97%). The CRT `__CIsqrt` member at `0x006e9530` is inventoried like
+`__ftol2_sse` before it.
+
 ## External symbols
 
 The original PE import directory supplies 197 four-byte IAT slots: 191 imports by

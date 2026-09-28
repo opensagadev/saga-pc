@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <math.h>
 
 extern const f32 nu_fsign_minus_one;
 
@@ -15,4 +16,11 @@ f32 NuFsign(f32 value) {
         return nu_fsign_minus_one;
     }
     return 1.0f;
+}
+
+f32 NuFsqrt(f32 f) {
+    if (f < 0.0f) {
+        return 0.0f;
+    }
+    return (f32)sqrt(f);
 }
