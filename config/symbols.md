@@ -379,6 +379,29 @@ hook body; our hook lives in `nuvideo.c`, so the reload registers differ
 one-byte `ret` and is exact. `LoadPerm` now posts `LoadPermData` with a
 real `bgPostRequest` call.
 
+`NuLstCreate` (`0x00547060`, 136 bytes, 62%) is reconstructed: it
+allocates `count * (element_size + 0x10) + 0x20` through `NuAlloc`
+(`0x004eef40`, mapped) with the retail's embedded
+`d:\projects\game_saga\nu2api.saga\gamelib\listman.c` call-site tag
+(`0x007615b0`, 52 bytes) and category 0x67, then chains the free list
+with owner/next/id fields and stores `nu_current_thread_id` as the
+header's `safe_thread`. `bgProcInit` now creates the 0x10-slot
+`BGPROCINFO` pool for real.
+
+The display-list manager family is mapped with verified extents as
+candidates pending their reconstruction: the frame begin
+(`0x005dfab0`), the stream allocator (`0x005deb20`), the dynamic
+material-list creator (`0x005efbf0`, 1,011 bytes), the per-scene draw
+(`0x005f02e0`), the draw driver looping `render_scene_index`
+(`0x005f03c0`), the sort-priority processor (`0x005f0470`, 1,611
+bytes), the ESI-argument sort-pri draw (`0x005f0ac0`, 1,079 bytes —
+private register ABI), the frame draw (`0x005f0d70`), the init at
+`0x00603350` and the purge (`0x005dece0`). Their state globals
+(`0x00973e50`/`0x00973ea0`/`0x00973ea4`/`0x00973e98`/`0x00973ee8`/
+`0x00973eec`/`0x00973ef0`/`0x00973ef4` and the `0x00973700` stream
+cursor pointing at `0x0097c1cc`) are already mapped from the
+`NuDisplayListAddRenderScene` work.
+
 The special-visibility path is reconstructed: `NuSpecialSetVisibility`
 (`0x005cfc00`, 184 bytes, 74.7%) handles the legacy and display-special
 layouts of the handle (`NULEGACYSPECIAL` instance/flags at +0x40/+0x44/+0x48,

@@ -709,6 +709,9 @@ address   , symbol                                                , size  , ctyp
 0x005dad10, _NuVpGetPosition2                                 , 360   , "void (f32 *, f32 *)"
 0x005ddc80, _NuWindAnimate                                        , 112   , "void __cdecl (NUWIND *, f32)"
 0x005de2d0, _NuDisplayListLinkMtl                                 , 186   , "void __cdecl (NUDISPLAYLIST *, NUMTL *)"
+0x005deb20, _NuDisplayListStreamAlloc_candidate                , 139   , "void *__cdecl (VARIPTR *, i32)"
+0x005dece0, _NuDisplayListPurge_candidate                     , 92    , void __cdecl (void)
+0x005dfab0, _NuDisplayListBeginFrame_candidate                 , 187   , void __cdecl (void)
 0x005e50e0, _NuMtlDestroy                                      , 95    , void (NUMTL *)
 0x005e8430, _NuOcclusionManagerBeginFrame                         , 59    , void __cdecl (void)
 0x005eb250, _NuQFntPrintCharW                                     , 1210  , "void __cdecl (VUFNT *, u16 *, u32)"
@@ -719,7 +722,13 @@ address   , symbol                                                , size  , ctyp
 0x005ede60, _NuTimeBarInit                                        , 13    , void __cdecl (void)
 0x005ef7f0, _NuGScnRead                                           , 26    , "NUGSCN * __cdecl (VARIPTR *, VARIPTR, char *)"
 0x005ef880, _NuGScnRemove                                         , 200   , void __cdecl (NUGSCN *)
+0x005efbf0, _NuDisplayListCreateDynMtlList_candidate           , 1011  , void __cdecl (void)
 0x005efff0, _NuDisplayListAddRenderScene                        , 746   , i32 (void)
+0x005f02e0, _NuDisplayListDrawRenderScene_candidate            , 209   , void __cdecl (i32)
+0x005f03c0, _NuDisplayListDrawRenderScenes_candidate           , 171   , void __cdecl (void)
+0x005f0470, _NuDisplayListProcessSortPris_candidate           , 1611  , void __cdecl (void)
+0x005f0ac0, _NuDisplayListDrawSortPri_candidate                , 1079  , void (void)
+0x005f0d70, _NuDisplayListDrawFrame_candidate                 , 391   , void __cdecl (void)
 0x005f3510, _NuQFntPrintU                                         , 108   , "void __cdecl (VUFNT *, char *)"
 0x005f35e0, _NuQFntPrintEx                                        , 320   , "void __cdecl (VUFNT *, i32, i32, i32, const char *, ...)"
 0x005f3950, _NuRndrEndScene                                    , 139   , void (void)
@@ -745,6 +754,7 @@ address   , symbol                                                , size  , ctyp
 0x006009c0, _NuPrim3DEnd                                          , 24    , void __cdecl (void)
 0x006009e0, _NuPrim2DAddXYZ                                       , 302   , "void __cdecl (f32, f32, f32)"
 0x00600b20, _NuPrimSetCoordinateSystem                            , 132   , void __cdecl (i32)
+0x00603350, _NuDisplayListInit_candidate                       , 147   , "void __cdecl (VARIPTR *, VARIPTR)"
 0x006034b0, _NuDisplayListLinkItem                                , 117   , "void __cdecl (NUDISPLAYLIST *, u8, void *)"
 0x00603580, _DisplayListCreateGeomTransformPS                     , 142   , "void *__cdecl (VARIPTR *, NUMTX *, NUMTL *, void *, void *)"
 0x00603cc0, _NuCameraSet                                       , 91    , void (NUCAMERA *)

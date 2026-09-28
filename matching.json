@@ -11,7 +11,7 @@
     "config/identification.md": "b9eea045e7943ce389d5ee6b3ae6fc9c027e8462a396247ca203559390f3db79",
     "config/numain.md": "4b56e5360cffca2837606cbbf220cb0a5d6adafd7ff3d71042cc37922dabab63",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
-    "config/symbols.csv": "98fd6faddd73ee121547a2fddc95d90538befae796ac3acf1d4ae16cb36f3e54",
+    "config/symbols.csv": "807cd8fef03680a18456687e671230c6d9501360e39b8cdd3f4aa1b239a11d20",
     "config/symbols.md": "fe6682529a32f1520616cc50730e52e9c04749617db32dcbee3b969dfb45c809",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -15606,6 +15606,36 @@
       "objdiff_percent": 52.092308
     },
     {
+      "name": "NuDisplayListStreamAlloc_candidate",
+      "symbol": "_NuDisplayListStreamAlloc_candidate",
+      "address": "0x005deb20",
+      "units": [],
+      "target_size": 139,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "NuDisplayListPurge_candidate",
+      "symbol": "_NuDisplayListPurge_candidate",
+      "address": "0x005dece0",
+      "units": [],
+      "target_size": 92,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "NuDisplayListBeginFrame_candidate",
+      "symbol": "_NuDisplayListBeginFrame_candidate",
+      "address": "0x005dfab0",
+      "units": [],
+      "target_size": 187,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "NuMtlDestroy",
       "symbol": "_NuMtlDestroy",
       "address": "0x005e50e0",
@@ -15804,6 +15834,16 @@
       "status": "not implemented"
     },
     {
+      "name": "NuDisplayListCreateDynMtlList_candidate",
+      "symbol": "_NuDisplayListCreateDynMtlList_candidate",
+      "address": "0x005efbf0",
+      "units": [],
+      "target_size": 1011,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "NuDisplayListAddRenderScene",
       "symbol": "_NuDisplayListAddRenderScene",
       "address": "0x005efff0",
@@ -15826,6 +15866,56 @@
       ],
       "status": "different",
       "objdiff_percent": 54.766815
+    },
+    {
+      "name": "NuDisplayListDrawRenderScene_candidate",
+      "symbol": "_NuDisplayListDrawRenderScene_candidate",
+      "address": "0x005f02e0",
+      "units": [],
+      "target_size": 209,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "NuDisplayListDrawRenderScenes_candidate",
+      "symbol": "_NuDisplayListDrawRenderScenes_candidate",
+      "address": "0x005f03c0",
+      "units": [],
+      "target_size": 171,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "NuDisplayListProcessSortPris_candidate",
+      "symbol": "_NuDisplayListProcessSortPris_candidate",
+      "address": "0x005f0470",
+      "units": [],
+      "target_size": 1611,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "NuDisplayListDrawSortPri_candidate",
+      "symbol": "_NuDisplayListDrawSortPri_candidate",
+      "address": "0x005f0ac0",
+      "units": [],
+      "target_size": 1079,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "NuDisplayListDrawFrame_candidate",
+      "symbol": "_NuDisplayListDrawFrame_candidate",
+      "address": "0x005f0d70",
+      "units": [],
+      "target_size": 391,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "NuQFntPrintU",
@@ -16398,6 +16488,16 @@
       ],
       "status": "different",
       "objdiff_percent": 93.333336
+    },
+    {
+      "name": "NuDisplayListInit_candidate",
+      "symbol": "_NuDisplayListInit_candidate",
+      "address": "0x00603350",
+      "units": [],
+      "target_size": 147,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "NuDisplayListLinkItem",
@@ -46801,16 +46901,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 125696,
+    "mapped_code_bytes": 130342,
     "matched_code_bytes": 22341,
     "matching_percent": 0.6436017499191933,
     "fuzzy_coverage_percent": 1.5847718232934513,
-    "mapped_functions": 902,
+    "mapped_functions": 912,
     "matched_functions": 471,
     "objdiff_fuzzy_percent": 62.182198,
     "objdiff_total_code": 88468,
     "image_bytes": 40067072,
-    "mapped_bytes": 538523,
-    "mapping_percent": 1.3440537906039154
+    "mapped_bytes": 543169,
+    "mapping_percent": 1.3556493471746576
   }
 }
