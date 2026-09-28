@@ -1,6 +1,7 @@
 address   , symbol                                                , size  , ctype
 0x00401100, _StartupParseArguments                                , 59    , "void __cdecl (i32, char **)"
 0x004011e0, _InitOnce                                             , 1019  , "void __cdecl (i32, char **)"
+0x00403cb0, _NuFdiv                                               , 54    , "f32 __cdecl (f32, f32)"
 0x00408800, _InitCables                                           , 127   , void __cdecl (WORLDINFO *)
 0x0042d180, _Areas_OpenAll                                        , 148   , void __cdecl (i32)
 0x0043b940, _GameAISysStartFrame                                   , 467   , void __cdecl (AISYS *)
@@ -682,6 +683,7 @@ address   , symbol                                                , size  , ctyp
 0x005d9030, _NuPortalInit                                         , 34    , void __cdecl (void)
 0x005dabd0, _NuHGobjReversibleCharacters                          , 16    , i32 __cdecl (i32)
 0x005dabe0, _NuHGobjForceShadowsOnCharacters                      , 16    , i32 __cdecl (i32)
+0x005dad10, _NuVpGetPosition2                                 , 360   , "void (f32 *, f32 *)"
 0x005ddc80, _NuWindAnimate                                        , 112   , "void __cdecl (NUWIND *, f32)"
 0x005de2d0, _NuDisplayListLinkMtl                                 , 186   , "void __cdecl (NUDISPLAYLIST *, NUMTL *)"
 0x005e50e0, _NuMtlDestroy                                      , 95    , void (NUMTL *)
@@ -1711,6 +1713,8 @@ address   , symbol                                                , size  , ctyp
 0x00801dd0, ??_R0?AVNetListenerInterface@@@8                      , 35    ,
 0x00801df4, ??_R0?AVAINet@@@8                                     , 20    ,
 0x00802014, _saveload_autosave                                    , 4     , i32
+0x0080202c, _PS2_VCNTR_X                                       , 4     , i32
+0x00802030, _PS2_VCNTR_Y                                       , 4     , i32
 0x00802334, _Text_ErrorString                                     , 4     , char *
 0x00802338, _txt_NULL                                             , 4     , char *
 0x0080233c, _txt_UNKNOWN                                          , 4     , char *
@@ -2248,8 +2252,7 @@ address   , symbol                                                , size  , ctyp
 0x0095e690, _numtl_defaultmtl3d                                   , 4     , NUMTL *
 0x0095fbd8, _sceneParametersCount                              , 4     , i32
 0x00963de0, _NuQFntCSModeStack                                    , 64    , i32[16]
-0x00963e38, _nurndr_back_w                                     , 4     , i32
-0x00963e3c, _nurndr_back_h                                     , 4     , i32
+0x00963e30, _vpCurrent                                         , 16    , NUVPCURRENT
 0x00963fb0, _fstack                                               , 4     , VARIPTR
 0x00964110, _sceneParameters                                   ,       , NURNDRLIBSCENE[]
 0x009663a8, _fstack_limit                                         , 4     , VARIPTR

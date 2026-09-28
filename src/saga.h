@@ -1397,6 +1397,14 @@ typedef struct NuTime_s {
 } NuTime;
 STATIC_ASSERT(sizeof(NuTime) == 8);
 
+typedef struct nuvpcurrent_s {
+    i32 x;
+    i32 y;
+    i32 width;
+    i32 height;
+} NUVPCURRENT;
+STATIC_ASSERT(sizeof(NUVPCURRENT) == 0x10);
+
 typedef struct nurndrlibscene_s {
     i32 scene_id;
     u32 clear_flags;
@@ -1625,6 +1633,8 @@ extern "C" {
     extern i32 NuTimeBarRenderPeakReset;
     extern i32 NuTimeBarHorizontalPeakReset;
     extern i32 PS2_VREZ_W;
+    extern i32 PS2_VCNTR_X;
+    extern i32 PS2_VCNTR_Y;
     extern i32 PS2_VREZ_H;
     extern i64 NuTime_TickBase;
     void __cdecl NuTimeGetTicksPS(u32 *low, u32 *high);
@@ -2048,9 +2058,9 @@ extern "C" {
     extern i16 ID_DEFAULTCHARACTER_LSW_B;
     extern MEMORYMANAGER theMemoryManager;
     extern NURNDRLIBSCENE currentScene;
+    extern NUVPCURRENT vpCurrent;
+    void __cdecl NuVpGetPosition2(f32 *x, f32 *y);
     extern i32 sceneParametersCount;
-    extern i32 nurndr_back_w;
-    extern i32 nurndr_back_h;
     extern i32 DebrisGlassTextureWidth;
     extern i32 DebrisGlassTextureHeight;
     i32 __cdecl NuRndrBeginScene(i32 begin_flags);

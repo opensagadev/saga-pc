@@ -284,18 +284,29 @@ registrations, and the ten hook targets (`0x0042d740` through `0x0042df30`)
 are the next mapping candidates in this family.
 
 The render-scene family lives in `src/nu2api/nurndr.c`. `NuRndrGradClear`
-(`0x005feab0`) is exact: it forwards `(flags, bottom_colour, alpha)` to
-`NuRndrClear` and drops the third colour like the Android stub.
-`NuRndrBeginScene` (`0x005d4290`, 109 bytes) resets the named fields of the
-`0x218`-byte scene record at `0x009718c0` and always returns 1; the retail
+(`0x005feab0`), `NuRndrClear` (`0x005ebd80`), `NuFdiv` (`0x00403cb0`) and
+`NuVpGetPosition2` (`0x005dad10`) are exact. `NuRndrClear` stores the
+alpha/colour/flags, reads the viewport position through `NuVpGetPosition2`
+into scene +`0x14`/`+0x18`, and computes the two overscan factors as
+`0.0625 * vpCurrent.width / (pixel_width / PS2_VREZ_W)` and the height
+equivalent, with the CSE'd `0.0625` constant staying on the FPU stack across
+both factors. `NuVpGetPosition2` is Android's `NuVpGetPosition2` verbatim:
+`NuFdiv((f32)vpCurrent.x * 0.0625f - ((f32)PS2_VCNTR_X - (f32)(pixel_width >> 1)),
+NuFdiv((f32)pixel_width, (f32)PS2_VREZ_W))` and the height equivalent, with
+`NuFdiv` inlined four times (its guarded `a == 0 || b == 0` divide). The
+retail image carries roughly thirty identical standalone 54-byte `NuFdiv`
+copies (per-unit out-of-line emissions); the reconstruction binds one of them
+at `0x00403cb0` and inlines the rest in its callers, as the retail does.
+`vpCurrent` (`0x00963e30`) holds `i32 x, y, width, height` (Android's
+`NUVIEWPORT` head); its first four bytes are the position and
+`width`/`height` feed `NuRndrClear`'s overscan factors. The render-target
+globals `0x00973920`/`0x00973924` keep their accepted `DebrisGlassTexture`
+names and also serve as the viewport pixel dimensions in the `NuFdiv`
+divisors. `NuRndrBeginScene` (`0x005d4290`, 109 bytes) resets the named
+fields of the `0x218`-byte scene record and always returns 1; the retail
 epilogue computes the return as `lea eax,[ecx+2]` from the register-held -1
 (the compiler-level `or ecx,-1` encoding of the constant prevents the
-constant fold), which our spelling does not yet reproduce. `NuRndrClear`
-(`0x005ebd80`) stores the alpha/colour/flags, reads the viewport pair through
-the still-unmapped `0x005dad10`, and computes the two overscan factors with
-`fidiv` against the mapped `PS2_VREZ_W`/`PS2_VREZ_H` integer globals;
-`0x00963e38`/`0x00963e3c` are named `nurndr_back_w`/`nurndr_back_h` as
-reconstruction names pending their writers' identification.
+constant fold), which our spelling does not yet reproduce.
 `NuRndrEndScene` (`0x005f3950`) remains unimplemented pending the
 `NuDisplayListAddRenderScene` callee at `0x005efff0`; its retail body appends
 the `0x218`-byte record to the `0x00964110` array at `0x0095fbd8` and routes

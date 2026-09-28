@@ -1885,6 +1885,11 @@ extern "C" {
 #pragma bss_seg(".bss$DebrisGlassTextureHeight")
     i32 DebrisGlassTextureHeight;
 #pragma bss_seg()
+#pragma bss_seg(".bss$PS2_VCNTR_X")
+    i32 PS2_VCNTR_X;
+#pragma bss_seg(".bss$PS2_VCNTR_Y")
+    i32 PS2_VCNTR_Y;
+#pragma bss_seg()
 
     extern const f32 DebrisGlassMaterialOpacity = 0.999f;
 }
