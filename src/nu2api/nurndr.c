@@ -30,10 +30,8 @@ void __cdecl NuRndrClear(i32 clear_flags, i32 bg_colour, f32 alpha) {
     currentScene.clear_flags_08 |= clear_flags;
     currentScene.bg_colour = bg_colour;
     NuVpGetPosition2(&currentScene.unknown_14, &currentScene.unknown_18);
-    currentScene.calc_1c =
-        (f32)(0.0625 * vpCurrent.width / ((f64)DebrisGlassTextureWidth / PS2_VREZ_W));
-    currentScene.calc_20 =
-        (f32)(0.0625 * vpCurrent.height / ((f64)DebrisGlassTextureHeight / PS2_VREZ_H));
+    currentScene.calc_1c = (f32)(0.0625 * vpCurrent.width / ((f64)DebrisGlassTextureWidth / PS2_VREZ_W));
+    currentScene.calc_20 = (f32)(0.0625 * vpCurrent.height / ((f64)DebrisGlassTextureHeight / PS2_VREZ_H));
 }
 
 void __cdecl NuRndrGradClear(i32 clear_flags, i32 top_colour, i32 bottom_colour, f32 alpha) {
