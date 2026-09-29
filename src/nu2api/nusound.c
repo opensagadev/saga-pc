@@ -161,6 +161,41 @@ void __cdecl SfxBitsRestore(void *sound_table) {
     PCByteCopy_candidate(SfxBits, sound_table, 0xc8);
 }
 
+void __cdecl SoundStopMusic(void) {
+    if (NOSOUND == 0 && NOMUSIC == 0) {
+        NuSound3StopStereoStream(0);
+        NuSound3StopStereoStream(1);
+
+        Music.transition = 0.0f;
+        Music.state = 0;
+        Music.requested_track = -1;
+        Music.current_track = -1;
+        Music.queued_track = -1;
+        Music.primary_stream = 0;
+        Music.transition_frames = 0;
+        Music.pause_requested = 0;
+        Music.field_0012 = 0;
+        Music.field_0013 = 0;
+        Music.update_delay = 0;
+        Music.restore_requested = 0;
+        Music.resume_track = -1;
+    }
+}
+
+void __cdecl ResetLevSfx(WORLDINFO *world) {
+    i32 index;
+    for (index = 0; index < 64; ++index) {
+        world->level_sfx[index].id = -1;
+    }
+    world->level_sfx_count = 0;
+}
+
+void __cdecl ClearLinkedCutSceneMusic(void *context) {
+    if (context == NULL || Music.track_data == context) {
+        Music.track_data = NULL;
+    }
+}
+
 void __cdecl ResetSounds(void) {
     PCByteCopy_candidate(SfxBits, GlobalSfxBits, 0xc8);
 }
@@ -170,6 +205,9 @@ i16 __cdecl GetMusicIndex(char *name, struct nusound_filename_info_s *table, i32
     (void)table;
     (void)fallback;
     return -1;
+}
+
+void __cdecl UpdateBackgroundMusic(void) {
 }
 
 void SetSoundVolume(f32 volume) {

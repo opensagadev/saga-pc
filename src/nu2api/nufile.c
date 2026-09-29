@@ -1,5 +1,75 @@
 #include "saga.h"
 
+i32 __cdecl NuMcWrite(i32 file, const void *data, i32 size, i32 flags) {
+    (void)file;
+    (void)data;
+    (void)size;
+    (void)flags;
+    return 0;
+}
+
+i32 __cdecl NuFileWrite(NUFILE file, const void *data, i32 size) {
+    if (file >= 0x1000) {
+        return NuMcWrite(file - 0x1000, data, size, 0);
+    }
+
+    if (file >= 0x400) {
+        return NuMemFileWrite(file, data, size);
+    }
+
+    file -= 1;
+    return NuPSFileWrite(file, data, size);
+}
+
+void __cdecl NuFileWriteString(NUFILE file, const char *text) {
+    const char *end = text;
+    i32 size;
+
+    while (*end != '\0') {
+        ++end;
+    }
+    size = (i32)(end - text);
+
+    if (file >= 0x1000) {
+        NuMcWrite(file - 0x1000, text, size, 0);
+    } else if (file >= 0x400) {
+        NuMemFileWrite(file, text, size);
+    } else {
+        NuPSFileWrite(file - 1, text, size);
+    }
+}
+
+i32 __cdecl NuFileCopyEx(char *destination, char *source, void *buffer, i32 capacity) {
+    i32 remaining;
+    i32 copied = 0;
+    NUFILE input = NuFileOpenDF(source, 0, curr_dat, 0);
+    NUFILE output = NuFileOpenDF(destination, 1, curr_dat, 0);
+
+    if (input != 0 && output != 0) {
+        remaining = (i32)NuFileOpenSize(input);
+        while (remaining != 0) {
+            i32 count = NuFileRead(input, buffer, remaining < capacity ? remaining : capacity);
+            NuFileWrite(output, buffer, count);
+            copied += count;
+            remaining -= count;
+        }
+    }
+
+    if (input != 0) {
+        NuFileClose(input);
+    }
+    if (output != 0) {
+        NuFileClose(output);
+    }
+    return copied;
+}
+
+i32 __cdecl NuFileCopy(char *destination, char *source) {
+    char buffer[1024];
+
+    return NuFileCopyEx(destination, source, buffer, sizeof(buffer));
+}
+
 void __cdecl PCByteCopy_candidate(void *destination, const void *source, u32 count) {
     u8 *dst = (u8 *)destination;
     const u8 *src = (const u8 *)source;

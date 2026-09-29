@@ -18,6 +18,33 @@ inventories stay under ignored `build/analysis/data/`.
 
 ## Primitive tables
 
+The progress/music batch establishes these additional PC layouts and globals:
+
+- `LEVEL_PROGRESS` rows have stride `0x2e28`, a `0x2800` scene-progress prefix,
+  minimum time factor at `+0x2814`, state at `+0x2820`, and twelve 16-byte disabled
+  effect names at `+0x2d68`. Retail clearing and effect-name loops establish
+  these extents; unknown fields remain opaque. `WORLDINFO.scene_progress` is at
+  `+0x15c`, `secondary_gscn` at `+0x140`, and the debris page index at `+0x2a98`.
+- The 64 level-SFX records begin at `WORLDINFO+0x4710`, stride `0x10`, with a
+  signed ID at `+0x0c`; the count is at `+0x4b10`. Resetting IDs does not establish
+  the other record fields.
+- `Music` at `0x00810490` occupies `0x24` bytes, including its context pointer at
+  `+0x20`. PC reset stores, independent references to the following initialized
+  word at `0x008104b4`, and the next known object corroborate its boundary. Its
+  typed initializer matches. `NOMUSIC`, the debris count/table pointers and the
+  eight-entry page-use table also match their zero initial states.
+- Block readers index 16-byte records at `0x0090ffc8`: tag, signed size and
+  64-bit file position. The counter at `0x00800464` starts at one. The source
+  reserves 1,024 records from the Android capacity hypothesis, but the complete
+  PC allocation extent is **unverified**: its CSV size stays blank and contributes
+  no mapping/exact coverage. Do not derive its size from the next zero address.
+- Legal-texture suffix strings are independently bound at `0x007547a4`,
+  `0x0075cff4`, `0x0075cff8`, `0x0075d004` and `0x0075d010`. The PC language-zero
+  branch stores `2.2f` from `0x0075504c` into two mutable scales initialized to
+  `1.0f` at `0x008015ac`/`0x008015b0`. Their `TextScale*_candidate` names describe
+  observed use; historical names remain uncertain. All complete initializers
+  compare independently against retail.
+
 | PC VA | Reconstruction symbol | Bytes | PC boundary/type evidence |
 | --- | --- | ---: | --- |
 | `0x00764258` | `_KeyStructSizes` | 16 | Byte lookups at `0x005cac1b`, `0x005cac34`, and `0x005cac4d`; each type is checked against 16. |

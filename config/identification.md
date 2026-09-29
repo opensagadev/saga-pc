@@ -9,6 +9,26 @@ them. Identification and exact reconstruction matching are separate results.
 
 ## What is available
 
+The structural progress batch follows the Android world, animation, file and
+sound source families while retaining PC layouts and branch behavior. Reviewed
+NuMain direct-call inventory additions cover area cleanup/loading, challenge and
+player transitions, music and still-screen rendering; their complete single
+intervals were decoded through their final instructions before mapping.
+Inventory entries alone do not count as reconstructed code.
+
+`LoadPermBuildLegalTextureName` at `0x004c9b20` receives its destination in EDI,
+not a normal stack argument. Its C interface is a structural wrapper: the PC
+region selects US suffixes, while the generic fallback always uses
+`Text_Language`. The 169-byte helper does **not** append `.dds`. Its language-zero
+branch changes the two text scales to `2.2f`. The wrapper remains nonmatching;
+do not relabel the original private ABI as cdecl evidence.
+
+`NuSpecialGetFirst` at `0x005cfef0` has a complete 96-byte extent and returns an
+integer success flag. Its no-specials path optionally calls the one-byte return
+at `0x005c1300`. `PCSpecialEmptyHandler_candidate` records that verified no-op
+behavior without claiming a historical identity. Legacy and display-list
+specials retain distinct PC record strides.
+
 Both originals are little-endian x86 binaries with 32-bit pointers. The Android
 `res/libTTapp.so` examined here has SHA-256
 `30d3fe55503416139a1d0f9b25fc73924aab4b12dd731aafc08b4a1c9bd950d5`.

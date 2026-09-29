@@ -91,6 +91,25 @@ dependency work, not a completed 4,332-byte `NuMain` match.
 
 ## Direct-call candidates
 
+The connected progress closure now includes `ClearLevelProgress`,
+`StoreSceneProgress`, effect-off tracking, gizmo progress callbacks, and debris
+lookup/status dispatch. These use asserted PC fields, including the embedded
+`WORLDINFO` scene-progress record and the animation index. The animation-page
+reset/start/stop/clear family, music reset and level-SFX reset are also implemented.
+These are structural ports with fresh retail comparisons; they do not complete
+world streaming or make the guarded NuMain frame loop playable.
+
+The file layer now supports native/memory writes, copy operations, and nested
+block reads. `NuFileEndBlkRead`, `NuFileGetBlkSize` and `NuFileAlignRead` match;
+the parent block-reader comparison remains nonexact. `NuCameraSet` only implements
+its identity/reset/multiply substeps and marks the missing PC camera builder and
+Direct3D submissions. `NuCameraSetEx` has a reviewed 1,105-byte extent at
+`0x005ed540`, but its PC backend dependencies remain open.
+
+The next structural target is `StoreLevelProgressFn` and its area-progress
+callers, followed by the permanent scene/material loaders. Preserve the startup
+table guard until their real dependency closure is ready.
+
 Ghidra body counts below describe reachable instructions and may omit internal
 padding or shared/disjoint ranges. They are **not** authoritative CSV sizes.
 The first call site and multiplicity are from the complete PC NuMain extent.

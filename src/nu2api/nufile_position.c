@@ -110,3 +110,49 @@ i64 __cdecl NuFileSize(char *filepath) {
     nufile_buffering_enabled = saved_buffering;
     return position;
 }
+
+i32 __cdecl NuFileBeginBlkRead(NUFILE file, i32 expected_tag) {
+    i32 index = nufile_blkcnt++;
+    i64 position = NuFilePos(file);
+    PC_NUFILE_READBLOCK *block;
+
+    if (index > 1 && nufile_blkinfo[index - 1].position + nufile_blkinfo[index - 1].size <= position) {
+        --nufile_blkcnt;
+        return 0;
+    }
+    block = &nufile_blkinfo[index];
+    block->position = NuFilePos(file);
+    NuFileRead(file, block, 8);
+    if (block->size < 0) {
+        block->size = -block->size;
+    }
+    if (expected_tag != 0 && expected_tag != block->tag) {
+        NuFileError();
+    }
+    return block->tag;
+}
+
+i32 __cdecl NuFileAlignRead(NUFILE file, i32 mask) {
+    i32 count = 0;
+    i64 position = NuFilePos(file);
+    while ((position & (i64)mask) != 0) {
+        i8 byte = 0;
+        ++position;
+        ++count;
+        NuFileRead(file, &byte, 1);
+    }
+    return count;
+}
+
+void __cdecl NuFileEndBlkRead(NUFILE file) {
+    i32 index = --nufile_blkcnt;
+    i64 position = NuFilePos(file);
+    i64 end = nufile_blkinfo[index].position + nufile_blkinfo[index].size;
+    if (position != end) {
+        NuFileSeek(file, end, 0);
+    }
+}
+
+i32 __cdecl NuFileGetBlkSize(void) {
+    return nufile_blkinfo[nufile_blkcnt - 1].size;
+}

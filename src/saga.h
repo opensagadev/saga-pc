@@ -611,6 +611,15 @@ STATIC_ASSERT(offsetof(PC_NUMEMFILE, position) == 8);
 STATIC_ASSERT(offsetof(PC_NUMEMFILE, mode) == 0xc);
 STATIC_ASSERT(offsetof(PC_NUMEMFILE, used) == 0x10);
 
+typedef struct pc_nufile_readblock_s {
+    i32 tag;
+    i32 size;
+    i64 position;
+} PC_NUFILE_READBLOCK;
+STATIC_ASSERT(sizeof(PC_NUFILE_READBLOCK) == 0x10);
+STATIC_ASSERT(offsetof(PC_NUFILE_READBLOCK, size) == 4);
+STATIC_ASSERT(offsetof(PC_NUFILE_READBLOCK, position) == 8);
+
 typedef struct nufile_device_s NUFILE_DEVICE;
 struct nufile_device_s {
     i32 id;
@@ -722,7 +731,9 @@ typedef struct NUGSCN_s {
     u8 unknown_0000[0x24];
     i32 special_count;
     NUSPECIAL_LEGACY_PC *specials;
-    u8 unknown_002c[0x48];
+    u8 unknown_002c[0x28];
+    void **instance_animation_data;
+    u8 unknown_0058[0x1c];
     i32 num_rooms;
     NUGSCNROOM *rooms;
     u8 unknown_007c[0x94];
@@ -730,6 +741,7 @@ typedef struct NUGSCN_s {
 } NUGSCN;
 STATIC_ASSERT(offsetof(NUGSCN, special_count) == 0x24);
 STATIC_ASSERT(offsetof(NUGSCN, specials) == 0x28);
+STATIC_ASSERT(offsetof(NUGSCN, instance_animation_data) == 0x54);
 STATIC_ASSERT(offsetof(NUGSCN, num_rooms) == 0x74);
 STATIC_ASSERT(offsetof(NUGSCN, rooms) == 0x78);
 STATIC_ASSERT(offsetof(NUGSCN, display_list) == 0x110);
@@ -767,6 +779,72 @@ STATIC_ASSERT(offsetof(LEVELSPLINE_PC, area) == 0xe);
 
 typedef struct rtlset_pc_s RTLSET_PC;
 
+typedef struct scene_special_progress_pc_s {
+    u32 flags;
+    f32 tfactor;
+} SCENESPECIALPROGRESS_PC;
+STATIC_ASSERT(sizeof(SCENESPECIALPROGRESS_PC) == 8);
+STATIC_ASSERT(offsetof(SCENESPECIALPROGRESS_PC, tfactor) == 4);
+
+typedef struct scene_progress_pc_s {
+    SCENESPECIALPROGRESS_PC specials[1280];
+} SCENEPROGRESS;
+STATIC_ASSERT(sizeof(SCENEPROGRESS) == 0x2800);
+
+typedef struct level_progress_pc_s {
+    SCENEPROGRESS scene_progress;
+    u8 unknown_2800[0x14];
+    f32 minimum_tfactor;
+    u8 unknown_2818[8];
+    u32 progress_state;
+    u8 unknown_2824[0x544];
+    char disabled_effect_names[12][16];
+} LEVEL_PROGRESS;
+STATIC_ASSERT(sizeof(LEVEL_PROGRESS) == 0x2e28);
+STATIC_ASSERT(offsetof(LEVEL_PROGRESS, minimum_tfactor) == 0x2814);
+STATIC_ASSERT(offsetof(LEVEL_PROGRESS, progress_state) == 0x2820);
+STATIC_ASSERT(offsetof(LEVEL_PROGRESS, disabled_effect_names) == 0x2d68);
+
+typedef struct level_sfx_entry_pc_s {
+    u8 unknown_0000[0x0c];
+    i16 id;
+    u8 unknown_000e[2];
+} LEVELSFXENTRY_PC;
+STATIC_ASSERT(sizeof(LEVELSFXENTRY_PC) == 0x10);
+STATIC_ASSERT(offsetof(LEVELSFXENTRY_PC, id) == 0x0c);
+
+typedef struct music_playback_pc_s {
+    i16 state;
+    i16 requested_track;
+    i16 primary_stream;
+    i16 current_track;
+    i16 transition_frames;
+    i16 queued_track;
+    i16 secondary_stream;
+    i16 resume_frames;
+    u8 pause_requested;
+    u8 restore_requested;
+    u8 field_0012;
+    u8 field_0013;
+    f32 seek_offset;
+    f32 transition;
+    u16 update_delay;
+    i16 resume_track;
+    void *track_data;
+} MUSICPLAYBACK_PC;
+STATIC_ASSERT(sizeof(MUSICPLAYBACK_PC) == 0x24);
+STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, requested_track) == 2);
+STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, current_track) == 6);
+STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, queued_track) == 0x0a);
+STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, pause_requested) == 0x10);
+STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, restore_requested) == 0x11);
+STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, field_0012) == 0x12);
+STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, field_0013) == 0x13);
+STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, transition) == 0x18);
+STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, update_delay) == 0x1c);
+STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, resume_track) == 0x1e);
+STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, track_data) == 0x20);
+
 // Only fields with confirmed PC offsets are exposed.
 typedef struct WORLDINFO_s {
     u32 unknown_0000[0x40];
@@ -783,18 +861,23 @@ typedef struct WORLDINFO_s {
     u32 unknown_0130[2];
     PARTDEBRISSYS *part_debris_sys;
     NUGSCN *current_gscn;
-    u32 unknown_0140[0xa07];
+    NUGSCN *secondary_gscn;
+    u8 unknown_0144[0x18];
+    SCENEPROGRESS scene_progress;
     void *terrain;
     u32 unknown_2960[0x0c];
     u8 room_visibility_flag;
     u8 rooms_visible[0x100];
     u8 unknown_2a91[3];
     u8 *rooms_visible_ptr;
-    u32 unknown_2a98;
+    i32 page_pp;
     i32 page_part;
     u32 unknown_2aa0[5];
     RTLSET_PC *rtl_set;
-    u32 unknown_2ab8[0x9bd];
+    u8 unknown_2ab8[0x1c58];
+    LEVELSFXENTRY_PC level_sfx[64];
+    i32 level_sfx_count;
+    u8 unknown_4b14[0x698];
 } WORLDINFO;
 STATIC_ASSERT(sizeof(WORLDINFO) == 0x51ac);
 STATIC_ASSERT(offsetof(WORLDINFO, buffer_start) == 0x100);
@@ -805,14 +888,29 @@ STATIC_ASSERT(offsetof(WORLDINFO, level_idx) == 0x11c);
 STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
 STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
+STATIC_ASSERT(offsetof(WORLDINFO, secondary_gscn) == 0x140);
+STATIC_ASSERT(offsetof(WORLDINFO, scene_progress) == 0x15c);
 STATIC_ASSERT(offsetof(WORLDINFO, terrain) == 0x295c);
 STATIC_ASSERT(offsetof(WORLDINFO, room_visibility_flag) == 0x2990);
 STATIC_ASSERT(offsetof(WORLDINFO, rooms_visible) == 0x2991);
 STATIC_ASSERT(offsetof(WORLDINFO, rooms_visible_ptr) == 0x2a94);
+STATIC_ASSERT(offsetof(WORLDINFO, page_pp) == 0x2a98);
 STATIC_ASSERT(offsetof(WORLDINFO, page_part) == 0x2a9c);
 STATIC_ASSERT(offsetof(WORLDINFO, rtl_set) == 0x2ab4);
+STATIC_ASSERT(offsetof(WORLDINFO, level_sfx) == 0x4710);
+STATIC_ASSERT(offsetof(WORLDINFO, level_sfx_count) == 0x4b10);
 
 typedef struct area_supercounter_pc_s AREA_SUPERCOUNTER_PC;
+
+typedef struct debris_info_pc_s {
+    char name[16];
+    u8 unknown_10;
+    i8 page;
+    u8 unknown_12[0x1d];
+    u8 status;
+} DEBRIS_INFO_PC;
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, page) == 0x11);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, status) == 0x2f);
 
 typedef struct area_data_pc_s {
     char dir[0x40];
@@ -1402,11 +1500,14 @@ typedef struct nuinstanim_time_view_s {
     f32 ltime;
     u32 flags;
     f32 fparam1;
+    u8 unknown_58[4];
+    u16 animation_index;
 } NUINSTANIM_TIME_VIEW;
 STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, tfactor) == 0x40);
 STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, ltime) == 0x4c);
 STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, flags) == 0x50);
 STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, fparam1) == 0x54);
+STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, animation_index) == 0x5c);
 
 struct gameanimobj_s {
     GAMEANIMOBJ *next;
@@ -2363,7 +2464,9 @@ extern "C" {
     extern i32 LEVELSPLINECOUNT;
     extern const char LevelSplinesStartName[6];
     extern const char LevelSplinesStartCamName[10];
-    extern void *LevelProgressData;
+    extern LEVEL_PROGRESS *LevelProgressData;
+    i32 __cdecl EffectOffProgress_Update(LEVEL_PROGRESS *progress, char *name, i32 enabled);
+    void __cdecl EffectOffProgress_Reset(LEVEL_PROGRESS *progress);
     extern LEVELSPLINE_PC *LevelSplinesTable;
     void __cdecl LevelProgress_ReserveBufferSpace(VARIPTR *buffer, VARIPTR buffer_end);
     void __cdecl LevelSplines_InitForGame(LEVELSPLINE_PC *table);
@@ -2573,6 +2676,12 @@ extern "C" {
     i64 __cdecl NuFilePos(NUFILE file);
     i64 __cdecl NuFileSize(char *filepath);
     i64 __cdecl NuFileOpenSize(NUFILE file);
+    extern i32 nufile_blkcnt;
+    extern PC_NUFILE_READBLOCK nufile_blkinfo[1024];
+    i32 __cdecl NuFileBeginBlkRead(NUFILE file, i32 expected_tag);
+    i32 __cdecl NuFileAlignRead(NUFILE file, i32 mask);
+    void __cdecl NuFileEndBlkRead(NUFILE file);
+    i32 __cdecl NuFileGetBlkSize(void);
     i64 __cdecl NuDatFileSeek(NUFILE file, i64 offset, i32 origin);
     i32 __cdecl NuMcFileOpenSize(NUFILE file);
     i32 __cdecl NuMcOpen(i32 port, i32 slot, char *filepath, i32 mode, i32 async);
@@ -2748,6 +2857,36 @@ extern "C" {
     extern i32 save_paused;
     extern i32 netclient;
     extern i32 NOSOUND;
+    extern i32 NOMUSIC;
+    extern MUSICPLAYBACK_PC Music;
+    extern f32 TextScaleX_candidate;
+    extern f32 TextScaleY_candidate;
+    extern const f32 PermLegalScale;
+    extern const char PermLegalBase[6];
+    extern const char PermLegalSeparator[2];
+    extern const char PermLegalSpanish[11];
+    extern const char PermLegalFrench[10];
+    extern const char PermLegalUS[4];
+    extern i32 debinf_count;
+    extern DEBRIS_INFO_PC **debtab;
+    extern i32 edpp_page_used[8];
+    i32 __cdecl LookupDebrisEffectPageOnly(char *name, i8 page);
+    void __cdecl DebrisTypeStatusAlwaysOff(i32 type);
+    void __cdecl DebrisTypeStatusAlwaysOn(i32 type);
+    void __cdecl SetEffectVisibility(char *name, i32 visible);
+    void __cdecl StoreSceneProgress(NUGSCN *scene, SCENEPROGRESS *progress, i32 reset_factor);
+    void __cdecl ClearLevelProgress(i32 index, WORLDINFO *world);
+    void __cdecl GizmoSysClearLevelProgress(void *owner, i32 index);
+    void __cdecl edanimParamReset(void);
+    void __cdecl edanimStartPage(i32 page);
+    void __cdecl edanimStopPage(i32 page);
+    void __cdecl edanimClearPage(i32 page);
+    void __cdecl edanimStartAllPages(void);
+    void __cdecl SoundStopMusic(void);
+    void __cdecl UpdateBackgroundMusic(void);
+    void __cdecl ClearLinkedCutSceneMusic(void *context);
+    void __cdecl ResetLevSfx(WORLDINFO *world);
+    i32 __cdecl NuMcWrite(i32 file, const void *buffer, i32 size, i32 async);
     extern volatile i32 nuvideo_global_vbcnt;
     extern i32 nurndr_tritot_this_frame;
     extern i32 openlevels;
@@ -2961,6 +3100,7 @@ extern "C" {
     void __cdecl NuSpecialConstAlpha(i32 enabled, f32 alpha);
     void __cdecl NuSpecialConstTint(i32 enabled, const NUVEC *tint);
     void __cdecl NuSpecialGetNext(NUSPECIALHANDLE *special);
+    i32 __cdecl NuSpecialGetFirst(NUGSCN *scene, NUSPECIALHANDLE *special, i32 flags);
     i32 __cdecl NuSpecialGetNumSpecials(NUGSCN *scene);
     i32 __cdecl NuSpecialGetOnScreenFn(NUSPECIALHANDLE *special);
     i32 __cdecl NuSpecialGetVisibilityFn(NUSPECIALHANDLE *special);

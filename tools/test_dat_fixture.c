@@ -17,6 +17,8 @@ FILEINFO file_info[33];
 FILEBUFF file_buff[4];
 i32 file_time_count;
 i32 nufile_buffering_enabled;
+i32 nufile_blkcnt = 1;
+PC_NUFILE_READBLOCK nufile_blkinfo[1024];
 const char nufile_disc_suffix[3] = ";1";
 NUFILE_DEVICE host_device;
 NUFILE_DEVICE *default_device = &host_device;

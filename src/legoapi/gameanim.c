@@ -519,3 +519,53 @@ f32 __cdecl GameAnimSet_GetCompletionRatio(GAMEANIMSET *set) {
     }
     return 0.0f;
 }
+
+void __cdecl edanimParamReset(void) {
+    i32 i;
+
+    for (i = 0; i < 64; ++i) {
+        AnimParams[i].instance_id = -1;
+    }
+    edanim_next_param = 0;
+    edanim_params_used = 0;
+    for (i = 0; i < 8; ++i) {
+        edanim_page_used[i] = 0;
+        edanim_page_on[i] = 0;
+    }
+}
+
+void __cdecl edanimStartPage(i32 page) {
+    if (edanim_page_used[page] != 0 && edanim_page_scene[page] != NULL && edanim_page_on[page] == 0) {
+        edanim_page_on[page] = 1;
+    }
+}
+
+void __cdecl edanimStopPage(i32 page) {
+    edanim_page_on[page] = 0;
+}
+
+void __cdecl edanimClearPage(i32 page) {
+    i32 index;
+
+    if (edanim_page_on[page] != 0) {
+        edanimStopPage(page);
+    }
+    for (index = 0; index < 64; ++index) {
+        if (AnimParams[index].page == page) {
+            AnimParams[index].instance_id = -1;
+            --edanim_params_used;
+        }
+    }
+    edanim_page_used[page] = 0;
+    edanim_page_scene[page] = NULL;
+}
+
+void __cdecl edanimStartAllPages(void) {
+    i32 page;
+
+    for (page = 0; page < 8; ++page) {
+        if (edanim_page_used[page] != 0 && edanim_page_scene[page] != NULL && edanim_page_on[page] == 0) {
+            edanim_page_on[page] = page * 4 + 1;
+        }
+    }
+}

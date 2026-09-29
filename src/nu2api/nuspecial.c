@@ -312,6 +312,31 @@ void __cdecl NuSpecialGetNext(NUSPECIALHANDLE *special) {
     }
 }
 
+void __cdecl PCSpecialEmptyHandler_candidate(void) {
+}
+
+i32 __cdecl NuSpecialGetFirst(NUGSCN *scene, NUSPECIALHANDLE *special, i32 flags) {
+    if (scene->specials != NULL) {
+        special->scene = scene;
+        special->special = (NUMTX *)scene->specials;
+        special->display_special = NULL;
+        return 1;
+    }
+    if (scene->display_list->special_count != 0) {
+        special->scene = scene;
+        special->special = NULL;
+        special->display_special = (NUMTX *)scene->display_list->specials;
+        return 1;
+    }
+    special->scene = NULL;
+    special->special = NULL;
+    special->display_special = NULL;
+    if (flags != 0) {
+        PCSpecialEmptyHandler_candidate();
+    }
+    return 0;
+}
+
 i32 __cdecl NuSpecialGetNumSpecials(NUGSCN *scene) {
     NuSpecialSceneView *view = (NuSpecialSceneView *)scene;
     i32 count = view->special_count;

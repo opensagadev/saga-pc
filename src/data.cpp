@@ -75,6 +75,8 @@ extern "C" {
     i32 SUPERBUFFERSIZE = 0x09600000;
     i32 StartupGameFlag0;
     i32 StartupGameFlag1 = 1;
+    i32 nufile_blkcnt = 1;
+    PC_NUFILE_READBLOCK nufile_blkinfo[1024];
     NUDATHDR *StartupDatList[7];
     i32 StartupDatCount;
     NUDATHDR *NuSoundDat;
@@ -179,11 +181,36 @@ extern "C" {
     i32 legal_tid;
     i32 loadlegal_done;
     i32 LoadPerm_StringsLoaded;
+#pragma const_seg(".rdata$PermLegalScale")
+    extern const f32 PermLegalScale = 2.2f;
+#pragma const_seg()
+#pragma const_seg(".rdata$PermLegalBase")
+    extern const char PermLegalBase[6] = "legal";
+#pragma const_seg()
+#pragma const_seg(".rdata$PermLegalSeparator")
+    extern const char PermLegalSeparator[2] = "_";
+#pragma const_seg()
+#pragma const_seg(".rdata$PermLegalSpanish")
+    extern const char PermLegalSpanish[11] = "_usspanish";
+#pragma const_seg()
+#pragma const_seg(".rdata$PermLegalFrench")
+    extern const char PermLegalFrench[10] = "_usfrench";
+#pragma const_seg()
+#pragma const_seg(".rdata$PermLegalUS")
+    extern const char PermLegalUS[4] = "_us";
+#pragma const_seg()
     i32 readpads_always;
     TIMER GlobalTimer;
     i32 saveload_status;
+    i32 NOMUSIC;
+    MUSICPLAYBACK_PC Music = {0, -1, 0, -1, 0, -1, 0, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0, -1, NULL};
+    i32 edpp_page_used[8];
+    i32 debinf_count;
+    DEBRIS_INFO_PC **debtab;
     NUGSCN *save_icon_scene;
     i32 display_aspect_mode;
+    f32 TextScaleX_candidate = 1.0f;
+    f32 TextScaleY_candidate = 1.0f;
     f32 NuVideoDisplayAspect;
     void *OldLevelHackData;
     i32(__cdecl *CutScene_StartFn)(CUTINFO *cut);
@@ -196,7 +223,8 @@ extern "C" {
     i32(__cdecl *Bolt_HitCustomFn)(void *bolt, void *points);
     void(__cdecl *GameBlowUpBlownUpFn)(void *blowup);
     void(__cdecl *GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
-    void *LevelProgressData;
+    NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
+    LEVEL_PROGRESS *LevelProgressData;
     LEVELSPLINE_PC *LevSplList;
     LEVELSPLINE_PC *LevelSplinesTable;
     i32 nudlist_alloc_count;

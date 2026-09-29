@@ -33,6 +33,19 @@ void __cdecl NuCameraSetAxes(NUVEC *axes) {
     cam_axes = *axes;
 }
 
+void __cdecl NuCameraSet(NUCAMERA *camera) {
+    /* The PC camera-state builder at 0x005ed540 is still a dependency. */
+    STUBBED_NAMED(0x005ed540);
+
+    NuMtxSetIdentity(&cmtx);
+    NuMtxMulVU0(&vpc_vport_mtx, &vpmtx, &cmtx);
+    vpc_sci_mtx = vpc_vport_mtx;
+
+    /* The final two calls submit the viewport and projection matrices to D3D. */
+    STUBBED_NAMED(0x006e56a0);
+    STUBBED_NAMED(0x006e56a0);
+}
+
 void __cdecl NuCameraGetAxes(NUVEC *axes) {
     *axes = cam_axes;
 }
