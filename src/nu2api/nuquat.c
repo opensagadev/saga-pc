@@ -1,5 +1,7 @@
 #include "saga.h"
 
+#include <xmmintrin.h>
+
 #define QUAT_SIN(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
 #define QUAT_COS(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
 
@@ -246,5 +248,63 @@ void NuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
         out->y = from->y * from_factor + target->y * to_factor;
         out->z = from->z * from_factor + target->z * to_factor;
         out->w = from->w * from_factor + target->w * to_factor;
+    }
+}
+
+void __cdecl VuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
+    __m128 source = _mm_loadu_ps(&from->x);
+    __m128 target = _mm_loadu_ps(&to->x);
+    __m128 products = _mm_mul_ps(source, target);
+    __m128 dot_vector = _mm_add_ps(_mm_shuffle_ps(products, products, 0x4e), products);
+    f32 dot;
+    _mm_store_ss(&dot, _mm_add_ss(_mm_shuffle_ps(dot_vector, dot_vector, 0xb1), dot_vector));
+
+    if (dot < 0.0f) {
+        dot = -dot;
+        target = _mm_sub_ps(_mm_setzero_ps(), target);
+    }
+
+    if (dot > 0.85f) {
+        __m128 result = _mm_add_ps(_mm_mul_ps(_mm_sub_ps(target, source), _mm_set1_ps(t)), source);
+        __m128 squared = _mm_mul_ps(result, result);
+        __m128 sum = _mm_add_ps(_mm_shuffle_ps(squared, squared, 0x4e), squared);
+        sum = _mm_add_ps(_mm_shuffle_ps(sum, sum, 0xb1), sum);
+        result = _mm_mul_ps(_mm_rsqrt_ps(sum), result);
+        _mm_storeu_ps(&out->x, result);
+    } else {
+        f32 a;
+        f32 b;
+        f32 angle;
+        f32 inverse_sine;
+        f32 u;
+        f32 v;
+        f32 sin_u;
+        f32 sin_v;
+        f32 from_factor;
+        f32 to_factor;
+
+        dot = dot < 0.995f ? dot : 0.995f;
+        a = 2.2184808254241943 + (dot * 0.223403662443161) * dot;
+        b = dot * 2.4418842792510986;
+        angle = 1.5707963705062866 + (NuFsqrt(a - b) - NuFsqrt(a + b)) + dot * 0.6391287446022034;
+        inverse_sine = 1.0f / NuFsqrt(1.0f - dot * dot);
+
+        u = (1.0f - t) * angle - 1.5707963705062866;
+        u = u * u;
+        v = t * angle - 1.5707963705062866;
+        v = v * v;
+        sin_u =
+            0.9999999403953552 +
+            (((u * 2.3154014343163e-05 - 0.0013853708514943719) * u + 0.04166358336806297) * u - 0.4999990463256836) *
+                u;
+        sin_v =
+            0.9999999403953552 +
+            (((v * 2.3154014343163e-05 - 0.0013853708514943719) * v + 0.04166358336806297) * v - 0.4999990463256836) *
+                v;
+        from_factor = sin_u * inverse_sine;
+        to_factor = sin_v * inverse_sine;
+        target = _mm_mul_ps(target, _mm_set1_ps(to_factor));
+        source = _mm_mul_ps(source, _mm_set1_ps(from_factor));
+        _mm_storeu_ps(&out->x, _mm_add_ps(source, target));
     }
 }

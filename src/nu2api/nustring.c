@@ -1,5 +1,52 @@
 #include "saga.h"
 
+#include <string.h>
+
+extern char *NuBlankString;
+
+#define NU_WIDE_LENGTH(text, length)                                                                                   \
+    do {                                                                                                               \
+        const u16 *nu_cursor = (const u16 *)(text);                                                                    \
+        (length) = 0;                                                                                                  \
+        while (*nu_cursor++ != 0) {                                                                                    \
+            ++(length);                                                                                                \
+        }                                                                                                              \
+    } while (0)
+
+#define NU_CHAR_EQUIV(a, b, result)                                                                                    \
+    do {                                                                                                               \
+        i32 nu_equiv_i;                                                                                                \
+        (result) = 0;                                                                                                  \
+        if ((a) == (b)) {                                                                                              \
+            (result) = 1;                                                                                              \
+        } else {                                                                                                       \
+            for (nu_equiv_i = 0; bad_equiv[nu_equiv_i][0] != 0; ++nu_equiv_i) {                                        \
+                if ((bad_equiv[nu_equiv_i][1] == (a) && bad_equiv[nu_equiv_i][0] == (b)) ||                            \
+                    (bad_equiv[nu_equiv_i][1] == (b) && bad_equiv[nu_equiv_i][0] == (a))) {                            \
+                    (result) = 1;                                                                                      \
+                    break;                                                                                             \
+                }                                                                                                      \
+            }                                                                                                          \
+        }                                                                                                              \
+    } while (0)
+
+#define NU_IS_FLUFF(character, result)                                                                                 \
+    do {                                                                                                               \
+        i32 nu_fluff_i;                                                                                                \
+        (result) = 0;                                                                                                  \
+        for (nu_fluff_i = 0; bad_fluff[nu_fluff_i] != 0; ++nu_fluff_i) {                                               \
+            if (bad_fluff[nu_fluff_i] == (character)) {                                                                \
+                (result) = 1;                                                                                          \
+                break;                                                                                                 \
+            }                                                                                                          \
+        }                                                                                                              \
+    } while (0)
+
+#define NU_UTF16_UPPER(character)                                                                                      \
+    (((character) >= 0x0061 && (character) <= 0x007a) || ((character) >= 0x00e0 && (character) <= 0x00ff)              \
+         ? (u16)((character) - 0x20)                                                                                   \
+         : (u16)(character))
+
 void __cdecl NuStrCat(char *str, const char *ext) {
     while (*str != '\0') {
         str++;
@@ -98,6 +145,58 @@ char *__cdecl NuStrRChr(char *src, char c) {
         ptr--;
     }
     return NULL;
+}
+
+void __cdecl NuStrFixExtPlatform(char *dst, char *src, char *ext, i32 dst_size, char *platform_string) {
+    char *period;
+    char *separator;
+    char *windows_separator;
+    char suffix[48];
+    i32 suffix_length;
+    i32 source_length;
+
+    if (src == NULL || ext == NULL || dst == NULL) {
+        return;
+    }
+
+    NuStrCpy(suffix, "PC");
+    NuStrCat(suffix, ext);
+    suffix_length = NuStrLen(suffix);
+    source_length = NuStrLen(src);
+    if (source_length >= suffix_length && NuStrNICmp(src + source_length - suffix_length, suffix, suffix_length) == 0) {
+        NuStrCpy(dst, src);
+        return;
+    }
+
+    NuStrCpy(dst, src);
+    period = NuStrRChr(dst, '.');
+    separator = NuStrRChr(dst, '/');
+    windows_separator = NuStrRChr(dst, '\\');
+    if (windows_separator > separator) {
+        separator = windows_separator;
+    }
+
+    if (separator >= period) {
+        NuStrCat(dst, "_");
+        NuStrCat(dst, platform_string != NULL ? platform_string : "PC");
+        NuStrCat(dst, ext);
+    } else {
+        *period = '\0';
+        NuStrCat(period, "_");
+        NuStrCat(period, platform_string != NULL ? platform_string : "PC");
+        NuStrCat(period, ext);
+    }
+
+    if (NuStrLen(dst) > dst_size - 1) {
+        STUBBED_NAMED("NuStrFixExtPlatform: retail buffer-size assertion at 0x4ef790");
+    }
+}
+
+void __cdecl NuStrFixExt(char *dst, char *src, char *ext, i32 dst_size) {
+    if (src == NULL || ext == NULL || dst == NULL) {
+        return;
+    }
+    NuStrFixExtPlatform(dst, src, ext, dst_size, NULL);
 }
 
 i32 __cdecl NuStrLen(const char *str) {
@@ -304,6 +403,18 @@ void __cdecl NuStrLwr(char *dst, const char *src) {
     *dst = *src;
 }
 
+void __cdecl NuStrLwrW(u16 *dst, const u16 *src) {
+    while (*src != 0) {
+        u16 value = *src;
+        if ((value >= 'A' && value <= 'Z') || (value >= 0xc0 && value <= 0xdf)) {
+            value += 0x20;
+        }
+        *dst++ = value;
+        ++src;
+    }
+    *dst = *src;
+}
+
 i32 __cdecl NuStrNICmp(const char *a, const char *b, i32 n) {
     char a_cursor;
     char b_cursor;
@@ -484,3 +595,487 @@ void __cdecl NuAsciiToUnicode(u16 *dst, char *src) {
     }
     dst[pos] = '\0';
 }
+
+i32 __cdecl NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, char *label, char *language) {
+    i32 parse_buf_size = 0x8000;
+    NUSTRINGBANK *bank = &StringBank[CurrentStringBank];
+    u16 label_utf16[0x40];
+    u16 lang_utf16[0x40];
+    void *mem_buf = (void *)(buf_end.addr - 0x100000);
+    i32 bytes_read;
+    char *word_buf;
+    char *line_buf;
+    char *tmp_buf;
+    NUFILE mem_file;
+    NUFPAR_PC *parser;
+    NUSTRING *strings;
+    i32 column;
+    i32 label_column = -1;
+    i32 lang_column = -1;
+    i32 len;
+    i32 i = 0;
+    i32 max_strings = 0;
+
+    NuAsciiToUnicode(label_utf16, label);
+    NuAsciiToUnicode(lang_utf16, language);
+    bank->strings = NULL;
+    bank->max_strings = 0;
+    bank->string_count = 0;
+
+    if (buf_end.addr - buf->addr < 0x14b000) {
+        NuFileError();
+    }
+
+    bytes_read = NuFileLoadBuffer(filepath, mem_buf, 0x100000);
+    if ((i32)(0x100000 - bytes_read) < 0x18000) {
+        NuFileError();
+    }
+    word_buf = (char *)((u32)mem_buf + bytes_read);
+    line_buf = word_buf + parse_buf_size;
+    tmp_buf = line_buf + parse_buf_size;
+
+    mem_file = NuMemFileOpen(mem_buf, bytes_read, 1);
+    if (mem_file != 0) {
+        parser = NuFParOpen(mem_file);
+        if (parser != NULL) {
+            parser->word_buffer_ptr = word_buf;
+            parser->line_buffer_ptr = line_buf;
+            parser->line_buffer_size = parse_buf_size;
+            parser->word_buffer_size = parse_buf_size;
+            while (NuFParGetLine(parser) != 0) {
+                ++max_strings;
+            }
+        }
+        NuFileClose(mem_file);
+    }
+
+    strings = (NUSTRING *)((buf->addr + 3) & ~3U);
+    buf->addr = (buf->addr + 3) & ~3U;
+    buf->addr += max_strings * sizeof(NUSTRING);
+    mem_file = NuMemFileOpen(mem_buf, bytes_read, 1);
+    if (mem_file != 0) {
+        parser = NuFParOpen(mem_file);
+        if (parser != NULL) {
+            parser->word_buffer_ptr = word_buf;
+            parser->line_buffer_ptr = line_buf;
+            parser->line_buffer_size = parse_buf_size;
+            parser->word_buffer_size = parse_buf_size;
+            while (NuFParGetLine(parser) != 0) {
+                column = 0;
+                while (NuFParGetWord(parser) != 0) {
+                    const u16 *a;
+                    const u16 *b;
+                    i32 equal;
+                    a = (const u16 *)parser->word_buffer_ptr;
+                    b = label_utf16;
+                    equal = 1;
+                    while (*a != 0 && *b != 0) {
+                        u16 ac = NU_UTF16_UPPER(*a);
+                        u16 bc = NU_UTF16_UPPER(*b);
+                        if (ac != bc) {
+                            equal = 0;
+                            break;
+                        }
+                        ++a;
+                        ++b;
+                    }
+                    if (equal && *a == *b) {
+                        label_column = column;
+                    }
+
+                    a = (const u16 *)parser->word_buffer_ptr;
+                    b = lang_utf16;
+                    equal = 1;
+                    while (*a != 0 && *b != 0) {
+                        u16 ac = NU_UTF16_UPPER(*a);
+                        u16 bc = NU_UTF16_UPPER(*b);
+                        if (ac != bc) {
+                            equal = 0;
+                            break;
+                        }
+                        ++a;
+                        ++b;
+                    }
+                    if (equal && *a == *b) {
+                        lang_column = column;
+                    }
+                    ++column;
+                }
+                if (label_column >= 0 && lang_column >= 0) {
+                    break;
+                }
+            }
+
+            if (label_column >= 0 && lang_column >= 0) {
+                while (NuFParGetLine(parser) != 0) {
+                    column = 0;
+                    while (NuFParGetWord(parser) != 0) {
+                        if (column == label_column) {
+                            NU_WIDE_LENGTH(parser->word_buffer_ptr, len);
+                            ++len;
+                            strings[i].id = buf->char_ptr;
+                            buf->addr += (u32)len;
+                            NuUnicodeToAscii(strings[i].id, (u16 *)parser->word_buffer_ptr);
+                        }
+                        if (column == lang_column) {
+                            if (nustring_format == 1) {
+                                NU_WIDE_LENGTH(parser->word_buffer_ptr, len);
+                                ++len;
+                                strings[i].str_utf16 = (u16 *)((buf->addr + 1) & ~1U);
+                                buf->addr = (buf->addr + 1) & ~1U;
+                                buf->addr += (u32)len * 2;
+                                {
+                                    const u16 *src = (const u16 *)parser->word_buffer_ptr;
+                                    u16 *dst = strings[i].str_utf16;
+                                    do {
+                                        *dst++ = *src;
+                                    } while (*src++ != 0);
+                                }
+                            } else {
+                                NuUnicodeToUTF8((u8 *)tmp_buf, (u16 *)parser->word_buffer_ptr);
+                                len = NuStrLen(tmp_buf) + 1;
+                                strings[i].str_utf8 = (u8 *)((buf->addr + 1) & ~1U);
+                                buf->addr = (buf->addr + 1) & ~1U;
+                                buf->addr += (u32)len;
+                                NuStrCpy(strings[i].str_utf8, tmp_buf);
+                            }
+                        }
+                        ++column;
+                        if (column > label_column && column > lang_column) {
+                            if (strings[i].id != NULL && strings[i].str_utf16 != NULL) {
+                                ++i;
+                            } else {
+                                strings[i].id = NULL;
+                                strings[i].str_utf16 = NULL;
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            bank->strings = strings;
+            bank->string_count = i;
+            bank->max_strings = max_strings;
+        }
+        NuFileClose(mem_file);
+    }
+    return bank->string_count;
+}
+
+i32 __cdecl NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) {
+    i32 i = 0;
+    i32 max_strings = 0;
+    NUSTRING *strings = NULL;
+    NUSTRINGBANK *bank = &StringBank[CurrentStringBank];
+    void *mem_buf = (void *)(buf_end.addr - 0x100000);
+    i32 bytes_read;
+    NUFILE mem_file;
+    NUFPAR_PC *parser;
+    i32 len;
+    char *tmp_buf;
+
+    bank->strings = NULL;
+    bank->max_strings = 0;
+    bank->string_count = 0;
+    bytes_read = NuFileLoadBuffer(filepath, mem_buf, 0x100000);
+    if ((i32)(0x100000 - bytes_read) < 0x8000) {
+        NuFileError();
+    }
+    tmp_buf = (char *)((u32)mem_buf + bytes_read);
+    mem_file = NuMemFileOpen(mem_buf, bytes_read, 1);
+    if (mem_file != 0) {
+        parser = NuFParOpen(mem_file);
+        if (parser != NULL) {
+            while (NuFParGetLine(parser) != 0) {
+                ++max_strings;
+            }
+        }
+        NuFileClose(mem_file);
+    }
+
+    strings = (NUSTRING *)((buf->addr + 3) & ~3U);
+    buf->addr = (buf->addr + 3) & ~3U;
+    buf->addr += max_strings * sizeof(NUSTRING);
+    mem_file = NuMemFileOpen(mem_buf, bytes_read, 1);
+    if (mem_file != 0) {
+        parser = NuFParOpen(mem_file);
+        if (parser != NULL) {
+            while (NuFParGetLine(parser) != 0) {
+                NuFParGetWord(parser);
+                NuFParGetWord(parser);
+                NU_WIDE_LENGTH(parser->word_buffer_ptr, len);
+                ++len;
+                strings[i].id = buf->char_ptr;
+                buf->addr += (u32)len;
+                NuUnicodeToAscii(strings[i].id, (u16 *)parser->word_buffer_ptr);
+                NuFParGetWord(parser);
+                NU_WIDE_LENGTH(parser->word_buffer_ptr, len);
+                ++len;
+                strings[i].str_utf16 = (u16 *)((buf->addr + 1) & ~1U);
+                buf->addr = (buf->addr + 1) & ~1U;
+                buf->addr += (u32)len * 2;
+                {
+                    const u16 *src = (const u16 *)parser->word_buffer_ptr;
+                    u16 *dst = strings[i].str_utf16;
+                    do {
+                        *dst++ = *src;
+                    } while (*src++ != 0);
+                }
+
+                if (nustring_format == 1) {
+                    NU_WIDE_LENGTH(parser->word_buffer_ptr, len);
+                    ++len;
+                    strings[i].str_utf16 = (u16 *)((buf->addr + 1) & ~1U);
+                    buf->addr = (buf->addr + 1) & ~1U;
+                    buf->addr += (u32)len * 2;
+                    {
+                        const u16 *src = (const u16 *)parser->word_buffer_ptr;
+                        u16 *dst = strings[i].str_utf16;
+                        do {
+                            *dst++ = *src;
+                        } while (*src++ != 0);
+                    }
+                } else {
+                    NuUnicodeToUTF8((u8 *)tmp_buf, (u16 *)parser->word_buffer_ptr);
+                    len = NuStrLen(tmp_buf) + 1;
+                    strings[i].str_utf8 = (u8 *)((buf->addr + 1) & ~1U);
+                    buf->addr = (buf->addr + 1) & ~1U;
+                    buf->addr += (u32)len;
+                    NuStrCpy(strings[i].str_utf8, tmp_buf);
+                }
+                ++i;
+            }
+            bank->strings = strings;
+            bank->string_count = i;
+            bank->max_strings = max_strings;
+        }
+        NuFileClose(mem_file);
+    }
+    return bank->string_count;
+}
+
+u16 *__cdecl NuStringTableGetByName(char *name) {
+    i32 i;
+    i32 j;
+
+    for (i = 0; i < 3; ++i) {
+        for (j = 0; j < StringBank[i].string_count; ++j) {
+            NUSTRING *string = &StringBank[i].strings[j];
+            if (string->id != NULL && string->str_utf16 != NULL && NuStrICmp(string->id, name) == 0) {
+                return string->str_utf16;
+            }
+        }
+    }
+    return (u16 *)NuBlankString;
+}
+
+void __cdecl NuStringTableSetBank(i32 bank) {
+    if ((u32)bank <= 2) {
+        CurrentStringBank = (i16)bank;
+    }
+}
+
+void __cdecl NuStringTableSetFormat(i32 format) {
+    nustring_format = (u32)format;
+}
+
+i32 __cdecl NuStringTableGetFormat(void) {
+    return (i32)nustring_format;
+}
+
+void __cdecl NuStringTableUnload(void) {
+    NUSTRINGBANK *bank = &StringBank[CurrentStringBank];
+    bank->strings = NULL;
+    bank->max_strings = 0;
+    bank->string_count = 0;
+}
+
+i32 __cdecl NuStringTableGetIdByName(char *name) {
+    i32 i;
+    i32 j;
+
+    for (i = 0; i < 3; ++i) {
+        for (j = 0; j < StringBank[i].string_count; ++j) {
+            NUSTRING *string = &StringBank[i].strings[j];
+            if (string->id != NULL && string->str_utf16 != NULL && NuStrICmp(string->id, name) == 0) {
+                return j + (i << 24);
+            }
+        }
+    }
+    return -1;
+}
+
+u16 *__cdecl NuStringTableGetById(i32 id) {
+    u32 bank = 0;
+
+    if ((u32)id > 0xffffff && id != -1) {
+        bank = (u32)id >> 24;
+        id &= 0xffffff;
+    }
+    if (bank > 2) {
+        return NULL;
+    }
+    if (id < 0 || id >= StringBank[bank].string_count) {
+        return NULL;
+    }
+    return StringBank[bank].strings[id].str_utf16;
+}
+
+void __cdecl NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
+    i32 count = 0;
+    i32 i = 0;
+    i32 length;
+    i32 j;
+    void *mem_buf = (void *)(buf_end.addr - 0x100000);
+    i32 bytes_read = NuFileLoadBuffer(path, mem_buf, 0x100000);
+    NUFILE file;
+    NUFPAR_PC *parser;
+    u16 word[128];
+
+    file = NuMemFileOpen(mem_buf, bytes_read, 1);
+    if (file != 0) {
+        parser = NuFParOpen(file);
+        if (parser != NULL) {
+            do {
+                if (NuFParGetWord(parser) > 0) {
+                    ++count;
+                }
+            } while (NuFParGetLine(parser) != 0);
+        }
+        NuFileClose(file);
+    }
+
+    BadWords = (u16 **)((buf->addr + 3) & ~3U);
+    buf->addr = (buf->addr + 3) & ~3U;
+    buf->addr += (count + 1) * sizeof(u16 *);
+    memset(BadWords, 0, (count + 1) * sizeof(u16 *));
+
+    file = NuMemFileOpen(mem_buf, bytes_read, 1);
+    if (file != 0) {
+        parser = NuFParOpen(file);
+        if (parser != NULL) {
+            do {
+                if (NuFParGetWord(parser) > 0) {
+                    NuUTF8ToUnicode(word, (u8 *)parser->word_buffer_ptr);
+                    length = 0;
+                    while (word[length] != 0) {
+                        ++length;
+                    }
+                    if (length <= 3) {
+                        for (j = length; j >= 0; --j) {
+                            word[j + 1] = word[j];
+                        }
+                        word[0] = '!';
+                        ++length;
+                    }
+                    ++length;
+                    BadWords[i] = (u16 *)((buf->addr + 1) & ~1U);
+                    buf->addr = (buf->addr + 1) & ~1U;
+                    buf->addr += (u32)length * 2;
+                    NuStrLwrW(BadWords[i], word);
+                    ++i;
+                }
+            } while (NuFParGetLine(parser) != 0 && i < count);
+        }
+        NuFileClose(file);
+    }
+    NumBadWords = i;
+}
+
+u16 *__cdecl NuStringBadSubString(const u16 *text, const u16 *word, i32 *length, i32 whole_word) {
+    const u16 *cursor;
+    const u16 *match;
+    i32 boundary = 1;
+    i32 equivalent;
+    i32 is_fluff;
+
+    while (*text != 0) {
+        cursor = text;
+        match = word;
+        if (boundary || !whole_word) {
+            while (*match != 0) {
+                if (*cursor == 0) {
+                    break;
+                }
+                NU_CHAR_EQUIV(*cursor, *match, equivalent);
+                if (!equivalent) {
+                    break;
+                }
+                ++cursor;
+                while (*cursor != 0) {
+                    NU_IS_FLUFF(*cursor, is_fluff);
+                    if (!is_fluff && *cursor != *match) {
+                        break;
+                    }
+                    ++cursor;
+                }
+                ++match;
+            }
+            if (*match == 0) {
+                NU_IS_FLUFF(cursor[1], is_fluff);
+                if (!whole_word || cursor[1] == 0 || is_fluff) {
+                    *length = (i32)(cursor - text);
+                    return (u16 *)text;
+                }
+            }
+        }
+        NU_IS_FLUFF(*text, boundary);
+        ++text;
+    }
+    return NULL;
+}
+
+i32 __cdecl NuStringFilterBadWordsW(u16 *dest, u16 *source, u16 *replacement) {
+    i32 i = 0;
+    i32 changed = 0;
+    i32 whole_word;
+    u16 *word;
+    u16 *match;
+    i32 length;
+    u16 lower[256];
+
+    if (source != dest) {
+        const u16 *src = source;
+        u16 *dst = dest;
+        do {
+            *dst++ = *src;
+        } while (*src++ != 0);
+    }
+    NuStrLwrW(lower, dest);
+    while (BadWords[i] != NULL) {
+        if (BadWords[i][0] == '!') {
+            word = BadWords[i] + 1;
+            whole_word = 1;
+        } else {
+            word = BadWords[i];
+            whole_word = 0;
+        }
+        match = NuStringBadSubString(lower, word, &length, whole_word);
+        if (match != NULL) {
+            const u16 *src = replacement;
+            u16 *dst = dest;
+            do {
+                *dst++ = *src;
+            } while (*src++ != 0);
+            changed = 1;
+        }
+        ++i;
+    }
+    return changed;
+}
+
+i32 __cdecl NuStringFilterBadWords(u8 *dest, u8 *source, u8 *replacement) {
+    i32 changed;
+    u16 text[128];
+    u16 substitute[128];
+
+    NuUTF8ToUnicode(text, source);
+    NuUTF8ToUnicode(substitute, replacement);
+    changed = NuStringFilterBadWordsW(text, text, substitute);
+    NuUnicodeToUTF8(dest, text);
+    return changed;
+}
+
+#undef NU_WIDE_LENGTH
+#undef NU_CHAR_EQUIV
+#undef NU_IS_FLUFF

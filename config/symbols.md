@@ -574,3 +574,20 @@ but remains byte-different and is not yet called by the source file-open
 dispatcher. The new `GameAnimSys` records use PC strides `0x28`, `0x14`,
 `0x1c`, and `0x10` for object, pool, set, and system respectively; its
 progress state at `0x00956634` is a 12-byte zero initializer.
+
+The structural movement/animation/string/script batch uses direct PC caller,
+field, string and boundary evidence. In particular, `Bolt_Reflect` is
+`0x0057fc30` (79 bytes); `0x0057fb30` is a private direction/matrix helper.
+`0x00580c00` is the default debris callback, not `Bolt_End`; its full span is
+149 bytes through `ret` at `0x00580c94`, retaining nine internal alignment bytes.
+The inline bolt-type name is passed as the record base to `NuStrICmp` while
+records step by 0xa4. The world-local table begins at `WORLDINFO+0x4b14`.
+The owner liveness gate reads the DWORD at `GAMEOBJECT+0x1fc`, sharing a verified
+byte view; it does not read `+0x1f8`.
+
+Parser records and string banks use PC strides, and compiled helper bindings
+include the actual `PCByteCopy_candidate` dependency for overlap-safe copying.
+`AIScriptLoadPakFile` and its context driver use private register arguments;
+source markers remain until their callsite integration is reconstructed. Retained
+analysis proposals are advisory and have not been promoted solely from graph
+scores. Full comparison extents remain in the CSV even for partial routines.

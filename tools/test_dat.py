@@ -91,7 +91,7 @@ class DatParserTests(unittest.TestCase):
             objects = []
             sources = [ROOT / f"src/nu2api/{name}.c" for name in
                        ("nufile", "nufile_host", "nufile_device", "nupsfile", "nustring",
-                        "nudatfile", "nudatlookup", "nufile_position", "nufile_mc", "nuthread", "numemfile")]
+                        "nudatfile", "nudatlookup", "nufile_position", "nufile_mc", "nuthread", "numemfile", "nufpar", "nurdpi")]
             sources.append(ROOT / "tools/test_dat_fixture.c")
             for source in sources:
                 output = directory / (source.stem + ".obj")

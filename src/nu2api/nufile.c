@@ -486,3 +486,7 @@ NUDATHDR *__cdecl NuDatSet(NUDATHDR *header) {
 NUDATHDR *__cdecl NuDatGet(void) {
     return curr_dat;
 }
+
+NUFILE __cdecl NuFileOpen(const char *filepath, i32 mode) {
+    return NuFileOpenDF(filepath, mode, curr_dat, 0);
+}

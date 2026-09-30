@@ -116,6 +116,71 @@ void __cdecl GameAudio_PlaySfx(i32 sfx, NUVEC *position, i32 flags, i32 volume) 
     }
 }
 
+i32 __cdecl GroupBuffer_MakeGroup(i32 sample_id) {
+    i32 group_id = NuSound3GroupCount;
+    i32 sample_index;
+
+    if (group_id == 0x80 || NuSound3GroupSampleCount == 0x200) {
+        return -1;
+    }
+
+    sample_index = NuSound3GroupSampleCount;
+    NuSound3Groups[group_id].first_sample = (i16)sample_index;
+    NuSound3Groups[group_id].sample_count = 1;
+    NuSound3Groups[group_id].cursor = 0;
+    SfxInfo[sample_id].group = (i16)group_id;
+    NuSound3GroupSampleIds[sample_index] = (i16)sample_id;
+    NuSound3GroupSampleCount = sample_index + 1;
+    NuSound3GroupCount = group_id + 1;
+    return group_id;
+}
+
+i32 __cdecl GroupBuffer_GetSample(i32 group_id, i32 sequential) {
+    SFX_GROUP_PC *group = &NuSound3Groups[group_id];
+    i32 first_sample = group->first_sample;
+    i32 sample_count = group->sample_count;
+
+    if (sequential != 0) {
+        i32 cursor = (i16)group->cursor;
+        i32 next_cursor = (u16)group->cursor + 1;
+        group->cursor = (i16)next_cursor;
+        if ((i16)group->cursor >= sample_count) {
+            group->cursor = 0;
+        }
+        return NuSound3GroupSampleIds[first_sample + cursor];
+    }
+
+    if (sample_count == 0) {
+        sample_count = 1;
+    }
+    return NuSound3GroupSampleIds[first_sample + ((NuRandIntSeeded(&nusound_seed) >> 16) % sample_count)];
+}
+
+void __cdecl AudioGroup_Parse(NUFPAR_PC *parser) {
+    i32 group_id = -1;
+    i32 first = 1;
+
+    while (NuFParGetWord(parser) != 0) {
+        i32 sample_id = GetSfxId(parser->word_buffer_ptr);
+
+        if (first != 0) {
+            if (sample_id == -1) {
+                return;
+            }
+            group_id = GroupBuffer_MakeGroup(sample_id);
+            first = 0;
+        } else {
+            sample_id = GetSfxId(parser->word_buffer_ptr);
+            if (sample_id != -1 && NuSound3GroupSampleCount != 0x200) {
+                NuSound3GroupSampleIds[NuSound3GroupSampleCount] = (i16)sample_id;
+                NuSound3GroupSampleCount++;
+                NuSound3Groups[group_id].sample_count++;
+                NuSound3Groups[group_id].cursor = 0;
+            }
+        }
+    }
+}
+
 void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
     SFX_RECORD_PC *record;
     const NUMTX *listener;
@@ -144,8 +209,8 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
 
     priority = record->priority;
     if (record->group != -1) {
-        STUBBED_NAMED("resolve grouped SFX sample and group voice limit");
-        return;
+        sample_id = GroupBuffer_GetSample(record->group, (record->sample_id_flags >> 16) & 1);
+        record = &SfxInfo[sample_id];
     }
 
     sample_id = (i32)(record->sample_id_flags & 0x7fffu);

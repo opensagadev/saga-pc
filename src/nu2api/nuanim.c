@@ -21,6 +21,57 @@ STATIC_ASSERT(offsetof(NuAnimDataPrefixView, frame_count) == 0xe);
 STATIC_ASSERT(offsetof(NuAnimDataPrefixView, declared_end_frame) == 0x16);
 STATIC_ASSERT(sizeof(NuAnimDataPrefixView) == 0x18);
 
+typedef struct NuAnimReadSharedCurve {
+    u32 unknown_00;
+    void *key_data;
+    i32 key_count;
+    u32 unknown_0c;
+} NuAnimReadSharedCurve;
+
+typedef struct NuAnimReadCurveSet {
+    i32 constant_count;
+    f32 *constants;
+    void **curves;
+    i8 curve_count;
+    u8 unknown_0d[3];
+} NuAnimReadCurveSet;
+
+typedef struct NuAnimReadChunk {
+    i32 curve_set_count;
+    i32 shared_curve_count;
+    NuAnimReadCurveSet **curve_sets;
+    void *curve_data;
+    NuAnimReadSharedCurve *shared_curves;
+} NuAnimReadChunk;
+
+typedef struct NuAnimReadData {
+    f32 duration;
+    char *name;
+    i32 chunk_count;
+    NuAnimReadChunk **chunks;
+    NuAnimReadChunk *chunk_storage[1];
+} NuAnimReadData;
+
+STATIC_ASSERT(sizeof(NuAnimReadSharedCurve) == 0x10);
+STATIC_ASSERT(offsetof(NuAnimReadSharedCurve, key_data) == 0x4);
+STATIC_ASSERT(offsetof(NuAnimReadSharedCurve, key_count) == 0x8);
+STATIC_ASSERT(sizeof(NuAnimReadCurveSet) == 0x10);
+STATIC_ASSERT(offsetof(NuAnimReadCurveSet, constants) == 0x4);
+STATIC_ASSERT(offsetof(NuAnimReadCurveSet, curves) == 0x8);
+STATIC_ASSERT(offsetof(NuAnimReadCurveSet, curve_count) == 0xc);
+STATIC_ASSERT(sizeof(NuAnimReadChunk) == 0x14);
+STATIC_ASSERT(offsetof(NuAnimReadChunk, curve_sets) == 0x8);
+STATIC_ASSERT(offsetof(NuAnimReadChunk, curve_data) == 0xc);
+STATIC_ASSERT(offsetof(NuAnimReadChunk, shared_curves) == 0x10);
+STATIC_ASSERT(sizeof(NuAnimReadData) == 0x14);
+STATIC_ASSERT(offsetof(NuAnimReadData, chunks) == 0xc);
+STATIC_ASSERT(offsetof(NuAnimReadData, chunk_storage) == 0x10);
+
+extern u8 NuAnimDataBitCount[256];
+extern i32 NuAnimDataBitCountInitialized;
+extern const f64 NuAnimDataFloatMax;
+extern const char NuAnimSourceFileName[];
+
 f32 __cdecl NuAnimEndFrameOld(void *animation_data) {
     NuAnimDataPrefixView *animation = (NuAnimDataPrefixView *)animation_data;
 
@@ -285,6 +336,139 @@ void __cdecl NuAnimCurve2SetApplyToMatrix_3(ANI3_HEADER_PC *animation, i32 node,
 
 void __cdecl NuAnimData2CalcMatrix(ANI3_HEADER_PC *animation, i32 node, f32 frame, NUMTX *matrix) {
     NuAnimCurve2SetApplyToMatrix_3(animation, node, frame, matrix);
+}
+
+void __cdecl buildBitCountTable(void) {
+    u32 value;
+    for (value = 0; value < 256; ++value) {
+        u32 bit;
+        NuAnimDataBitCount[value] = 0;
+        for (bit = 0; bit < 8; ++bit) {
+            if ((value >> bit) & 1) {
+                ++NuAnimDataBitCount[value];
+            }
+        }
+    }
+    NuAnimDataBitCountInitialized = 1;
+}
+
+void *__cdecl NuAnimCurveSetCreate(i32 curve_count) {
+    NuAnimReadCurveSet *curve_set;
+    u32 array_size;
+
+    if (curve_count == 0) {
+        return NULL;
+    }
+
+    curve_set = (NuAnimReadCurveSet *)NuAlloc(0x10, NuAnimSourceFileName, 0x4ec);
+    memset(curve_set, 0, 0x10);
+    curve_set->curve_count = (i8)curve_count;
+
+    array_size = (u32)curve_count * sizeof(void *);
+    curve_set->curves = (void **)NuAlloc((i32)array_size, NuAnimSourceFileName, 0x4f3);
+    memset(curve_set->curves, 0, array_size);
+
+    curve_set->constants = (f32 *)NuAlloc((i32)array_size, NuAnimSourceFileName, 0x4f8);
+    memset(curve_set->constants, 0, array_size);
+    return curve_set;
+}
+
+void *__cdecl NuAnimDataRead(NUFILE file) {
+    char *name = NULL;
+    i32 name_size;
+    f32 duration;
+    i32 chunk_count;
+    u32 allocation_size;
+    NuAnimReadData *animation;
+    i32 chunk_index;
+
+    if (NuAnimDataBitCountInitialized == 0) {
+        buildBitCountTable();
+    }
+
+    name_size = NuFileReadInt(file);
+    if (name_size != 0) {
+        name = (char *)NuAlloc(name_size, NuAnimSourceFileName, 0x43f);
+        NuFileRead(file, name, name_size);
+    }
+
+    duration = NuFileReadFloat(file);
+    chunk_count = NuFileReadInt(file);
+    allocation_size = (u32)chunk_count * sizeof(void *) + offsetof(NuAnimReadData, chunk_storage);
+    animation = (NuAnimReadData *)NuAlloc((i32)allocation_size, NuAnimSourceFileName, 0x4bb);
+    memset(animation, 0, allocation_size);
+    animation->duration = duration;
+    animation->name = name;
+    animation->chunk_count = chunk_count;
+    animation->chunks = animation->chunk_storage;
+
+    for (chunk_index = 0; chunk_index < animation->chunk_count; ++chunk_index) {
+        i32 curve_set_count = NuFileReadInt(file);
+        NuAnimReadChunk *chunk = (NuAnimReadChunk *)NuAlloc(0x14, NuAnimSourceFileName, 0x4a8);
+        i32 curve_data_count;
+        i32 shared_curve_count;
+        i32 set_index;
+        u8 *shared_cursor;
+        u8 *curve_data_cursor;
+
+        chunk->curve_set_count = curve_set_count;
+        chunk->shared_curve_count = 0;
+        chunk->curve_data = NULL;
+        chunk->shared_curves = NULL;
+        chunk->curve_sets =
+            (NuAnimReadCurveSet **)NuAlloc(curve_set_count * (i32)sizeof(void *), NuAnimSourceFileName, 0x4ac);
+        memset(chunk->curve_sets, 0, curve_set_count * sizeof(void *));
+        animation->chunks[chunk_index] = chunk;
+
+        curve_data_count = NuFileReadInt(file);
+        if (curve_data_count != 0) {
+            const u32 curve_data_size = (u32)curve_data_count * 0x10;
+            chunk->curve_data = NuAlloc((i32)curve_data_size, NuAnimSourceFileName, 0x459);
+            NuFileRead(file, chunk->curve_data, (i32)curve_data_size);
+        }
+
+        shared_curve_count = NuFileReadInt(file);
+        if (shared_curve_count != 0) {
+            const u32 shared_curve_size = (u32)shared_curve_count * 0x10;
+            chunk->shared_curves =
+                (NuAnimReadSharedCurve *)NuAlloc((i32)shared_curve_size, NuAnimSourceFileName, 0x466);
+            NuFileRead(file, chunk->shared_curves, (i32)shared_curve_size);
+        }
+
+        for (set_index = 0; set_index < curve_set_count; ++set_index) {
+            const i32 curve_count = NuFileReadChar(file);
+            if (curve_count != 0) {
+                i32 curve_index;
+                NuAnimReadCurveSet *curve_set = (NuAnimReadCurveSet *)NuAnimCurveSetCreate(curve_count);
+                chunk->curve_sets[set_index] = curve_set;
+                curve_set->constant_count = NuFileReadInt(file);
+                for (curve_index = 0; curve_index < curve_set->curve_count; ++curve_index) {
+                    curve_set->constants[curve_index] = NuFileReadFloat(file);
+                }
+            }
+        }
+
+        shared_cursor = (u8 *)chunk->shared_curves;
+        curve_data_cursor = (u8 *)chunk->curve_data;
+        for (set_index = 0; set_index < chunk->curve_set_count; ++set_index) {
+            NuAnimReadCurveSet *curve_set = chunk->curve_sets[set_index];
+            i32 curve_index;
+            if (curve_set == NULL) {
+                continue;
+            }
+            for (curve_index = 0; curve_index < curve_set->curve_count; ++curve_index) {
+                if (curve_set->constants[curve_index] == NuAnimDataFloatMax) {
+                    NuAnimReadSharedCurve *shared_curve = (NuAnimReadSharedCurve *)shared_cursor;
+                    curve_set->curves[curve_index] = shared_curve;
+                    ++chunk->shared_curve_count;
+                    shared_curve->key_data = curve_data_cursor;
+                    curve_data_cursor += (u32)shared_curve->key_count << 4;
+                    shared_cursor += 0x10;
+                }
+            }
+        }
+    }
+    return animation;
 }
 
 #define ANI3_CURVE_GROUP_MASK(group) ((group) == 0 ? 2 : ((group) == 1 ? 1 : 8))
@@ -852,4 +1036,407 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint(ANI3_HEADER_PC *anim, f32 frame, ANI3_BU
         }
     }
     return 0;
+}
+
+/* Blend players are separate retail entries because their quaternion format
+ * and output-buffer state have distinct update semantics. */
+i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Blend_Quat3(ANI3_HEADER_PC *anim, f32 frame, ANI3_BUFFER_PC *buffer, f32 blend,
+                                                    i32 joint_count, i32 first_joint, NUVEC *root_translation) {
+    u32 quarter;
+    f32 fraction;
+    i32 key_offset;
+    u8 *keys;
+    ANI3_SCALEMIN_PC *scale_min = anim->scale_min;
+    const u16 *curve_types = anim->curve_types;
+    const u16 *constants = (const u16 *)anim->constants - 16;
+    i32 count = joint_count < anim->node_count ? joint_count : anim->node_count;
+    i32 joint;
+    const f32 inverse_blend = 1.0f - blend;
+    NUVEC *root = first_joint == 0 ? root_translation : 0;
+
+    ANI3_GET_SAMPLE_POSITION(anim, frame, &quarter, &fraction, &key_offset);
+    keys = anim->keys + key_offset;
+    for (joint = 0; joint < first_joint; ++joint) {
+        u8 flags = anim->node_flags[joint];
+        if ((flags & 2) != 0) {
+            ANI3_SKIP_V4_CURVE(curve_types[0], &keys, &scale_min);
+            ANI3_SKIP_V4_CURVE(curve_types[1], &keys, &scale_min);
+            ANI3_SKIP_V4_CURVE(curve_types[2], &keys, &scale_min);
+        }
+        if ((flags & 1) != 0) {
+            ANI3_SKIP_V4_CURVE(curve_types[3], &keys, &scale_min);
+            ANI3_SKIP_V4_CURVE(curve_types[4], &keys, &scale_min);
+            ANI3_SKIP_V4_CURVE(curve_types[5], &keys, &scale_min);
+        }
+        if ((flags & 8) != 0) {
+            ANI3_SKIP_V4_CURVE(curve_types[6], &keys, &scale_min);
+            ANI3_SKIP_V4_CURVE(curve_types[7], &keys, &scale_min);
+            ANI3_SKIP_V4_CURVE(curve_types[8], &keys, &scale_min);
+        }
+        curve_types += 9;
+    }
+    for (joint = first_joint; joint < first_joint + count; ++joint) {
+        u8 flags = anim->node_flags[joint];
+        ANI3_JOINT_PC *out = &buffer->joints[joint];
+        buffer->joint_flags[joint] |= flags;
+
+        if ((flags & 2) != 0) {
+            f32 sample;
+            ANI3_DECODE_V4_CURVE(sample, anim, curve_types[0], quarter, fraction, &keys, &scale_min);
+            if (root != 0)
+                root->x = sample;
+            out->translation.x += (sample - out->translation.x) * blend;
+            ANI3_DECODE_V4_CURVE(sample, anim, curve_types[1], quarter, fraction, &keys, &scale_min);
+            if (root != 0)
+                root->y = sample;
+            out->translation.y += (sample - out->translation.y) * blend;
+            ANI3_DECODE_V4_CURVE(sample, anim, curve_types[2], quarter, fraction, &keys, &scale_min);
+            if (root != 0)
+                root->z = -sample;
+            out->translation.z += (sample - out->translation.z) * blend;
+            root = 0;
+        } else {
+            out->translation.x *= inverse_blend;
+            out->translation.y *= inverse_blend;
+            out->translation.z *= inverse_blend;
+            if (root != 0) {
+                root->x = root->y = root->z = 0.0f;
+                root = 0;
+            }
+        }
+        curve_types += 3;
+
+        if ((flags & 1) != 0) {
+            NUQUAT first;
+            NUQUAT second;
+            NUQUAT sampled;
+            ANI3_DECODE_QUAT3_PAIR(anim, anim->key_stride, constants, curve_types[0], quarter, &keys, &scale_min,
+                                   &first.x, &second.x);
+            ANI3_DECODE_QUAT3_PAIR(anim, anim->key_stride, constants, curve_types[1], quarter, &keys, &scale_min,
+                                   &first.y, &second.y);
+            ANI3_DECODE_QUAT3_PAIR(anim, anim->key_stride, constants, curve_types[2], quarter, &keys, &scale_min,
+                                   &first.z, &second.z);
+            first.w = NuFsqrt(1.0f - (first.x * first.x + first.y * first.y + first.z * first.z));
+            second.w = NuFsqrt(1.0f - (second.x * second.x + second.y * second.y + second.z * second.z));
+            ANI3_QUAT_LERP(&sampled, first, second, fraction, 1);
+            VuQuatSlerpFast((NUQUAT *)&out->rotation, (NUQUAT *)&out->rotation, &sampled, blend);
+        } else {
+            __m128 rotation = _mm_loadu_ps(&out->rotation.x);
+            __m128 scale = _mm_set1_ps(inverse_blend);
+            rotation = _mm_mul_ps(rotation, scale);
+            rotation = _mm_add_ps(rotation, _mm_setr_ps(0.0f, 0.0f, 0.0f, blend));
+            ANI3_NORMALIZE_VECTOR(&out->rotation, rotation);
+        }
+        curve_types += 3;
+
+        if ((flags & 8) != 0) {
+            f32 sample;
+            ANI3_DECODE_V4_CURVE(sample, anim, curve_types[0], quarter, fraction, &keys, &scale_min);
+            out->scale.x += (sample - out->scale.x) * blend;
+            ANI3_DECODE_V4_CURVE(sample, anim, curve_types[1], quarter, fraction, &keys, &scale_min);
+            out->scale.y += (sample - out->scale.y) * blend;
+            ANI3_DECODE_V4_CURVE(sample, anim, curve_types[2], quarter, fraction, &keys, &scale_min);
+            out->scale.z += (sample - out->scale.z) * blend;
+        } else {
+            out->scale.x = out->scale.x * inverse_blend + blend;
+            out->scale.y = out->scale.y * inverse_blend + blend;
+            out->scale.z = out->scale.z * inverse_blend + blend;
+        }
+        curve_types += 3;
+    }
+    return 0;
+}
+
+i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Blend_Quat3W(ANI3_HEADER_PC *anim, f32 frame, ANI3_BUFFER_PC *buffer, f32 blend,
+                                                     i32 joint_count, i32 first_joint, NUVEC *root_translation) {
+    u32 quarter;
+    f32 fraction;
+    i32 key_offset;
+    u8 *keys;
+    ANI3_SCALEMIN_PC *scale_min = anim->scale_min;
+    const u16 *curve_types = anim->curve_types;
+    const u16 *constants = (const u16 *)anim->constants - 16;
+    i32 count = joint_count < anim->node_count ? joint_count : anim->node_count;
+    i32 joint;
+    const f32 inverse_blend = 1.0f - blend;
+    NUVEC *root = first_joint == 0 ? root_translation : 0;
+
+    ANI3_GET_SAMPLE_POSITION(anim, frame, &quarter, &fraction, &key_offset);
+    keys = anim->keys + key_offset;
+    for (joint = 0; joint < first_joint; ++joint) {
+        u8 flags = anim->node_flags[joint];
+        i32 group;
+        for (group = 0; group < 3; ++group) {
+            i32 components = group == 1 ? 4 : 3;
+            i32 component;
+            if ((flags & ANI3_CURVE_GROUP_MASK(group)) != 0) {
+                for (component = 0; component < components; ++component)
+                    ANI3_SKIP_V4_CURVE(*curve_types++, &keys, &scale_min);
+            } else {
+                curve_types += components;
+            }
+        }
+    }
+    for (joint = first_joint; joint < first_joint + count; ++joint) {
+        u8 flags = anim->node_flags[joint];
+        ANI3_JOINT_PC *out = &buffer->joints[joint];
+        buffer->joint_flags[joint] |= flags;
+        if ((flags & 2) != 0) {
+            f32 sample;
+            ANI3_DECODE_V4_CURVE(sample, anim, *curve_types++, quarter, fraction, &keys, &scale_min);
+            if (root != 0)
+                root->x = sample;
+            out->translation.x += (sample - out->translation.x) * blend;
+            ANI3_DECODE_V4_CURVE(sample, anim, *curve_types++, quarter, fraction, &keys, &scale_min);
+            if (root != 0)
+                root->y = sample;
+            out->translation.y += (sample - out->translation.y) * blend;
+            ANI3_DECODE_V4_CURVE(sample, anim, *curve_types++, quarter, fraction, &keys, &scale_min);
+            if (root != 0)
+                root->z = -sample;
+            out->translation.z += (sample - out->translation.z) * blend;
+            root = 0;
+        } else {
+            out->translation.x *= inverse_blend;
+            out->translation.y *= inverse_blend;
+            out->translation.z *= inverse_blend;
+            if (root != 0) {
+                root->x = root->y = root->z = 0.0f;
+                root = 0;
+            }
+            curve_types += 3;
+        }
+        if ((flags & 1) != 0) {
+            NUQUAT first;
+            NUQUAT second;
+            NUQUAT sampled;
+            ANI3_DECODE_QUAT3_PAIR(anim, anim->key_stride, constants, *curve_types++, quarter, &keys, &scale_min,
+                                   &first.x, &second.x);
+            ANI3_DECODE_QUAT3_PAIR(anim, anim->key_stride, constants, *curve_types++, quarter, &keys, &scale_min,
+                                   &first.y, &second.y);
+            ANI3_DECODE_QUAT3_PAIR(anim, anim->key_stride, constants, *curve_types++, quarter, &keys, &scale_min,
+                                   &first.z, &second.z);
+            ANI3_DECODE_QUAT3_PAIR(anim, anim->key_stride, constants, *curve_types++, quarter, &keys, &scale_min,
+                                   &first.w, &second.w);
+            ANI3_QUAT_LERP(&sampled, first, second, fraction, 0);
+            /* Retail computes into its stack quaternion and discards that result. */
+            VuQuatSlerpFast(&sampled, (NUQUAT *)&out->rotation, &sampled, blend);
+        } else {
+            __m128 rotation = _mm_loadu_ps(&out->rotation.x);
+            rotation = _mm_mul_ps(rotation, _mm_set1_ps(inverse_blend));
+            rotation = _mm_add_ps(rotation, _mm_setr_ps(0.0f, 0.0f, 0.0f, blend));
+            ANI3_NORMALIZE_VECTOR(&out->rotation, rotation);
+            curve_types += 4;
+        }
+        if ((flags & 8) != 0) {
+            f32 sample;
+            ANI3_DECODE_V4_CURVE(sample, anim, *curve_types++, quarter, fraction, &keys, &scale_min);
+            out->scale.x += (sample - out->scale.x) * blend;
+            ANI3_DECODE_V4_CURVE(sample, anim, *curve_types++, quarter, fraction, &keys, &scale_min);
+            out->scale.y += (sample - out->scale.y) * blend;
+            ANI3_DECODE_V4_CURVE(sample, anim, *curve_types++, quarter, fraction, &keys, &scale_min);
+            out->scale.z += (sample - out->scale.z) * blend;
+        } else {
+            out->scale.x = out->scale.x * inverse_blend + blend;
+            out->scale.y = out->scale.y * inverse_blend + blend;
+            out->scale.z = out->scale.z * inverse_blend + blend;
+            curve_types += 3;
+        }
+    }
+    return 0;
+}
+
+i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Blend_EulerQuat(ANI3_HEADER_PC *anim, f32 frame, ANI3_BUFFER_PC *buffer,
+                                                        f32 blend, i32 joint_count, i32 first_joint,
+                                                        NUVEC *root_translation) {
+    u32 quarter;
+    f32 fraction;
+    i32 key_offset;
+    u8 *keys;
+    ANI3_SCALEMIN_PC *scale_min = anim->scale_min;
+    const u16 *curve_types = anim->curve_types;
+    i32 joint;
+    i32 decode_count;
+    i32 end_joint;
+    const f32 inverse_blend = 1.0f - blend;
+    NUVEC *root = first_joint == 0 ? root_translation : 0;
+    NUQUAT sampled;
+
+    ANI3_GET_SAMPLE_POSITION(anim, frame, &quarter, &fraction, &key_offset);
+    keys = anim->keys + key_offset;
+    for (joint = 0; joint < first_joint; ++joint) {
+        u8 flags = anim->node_flags[joint];
+        i32 group;
+        for (group = 0; group < 3; ++group) {
+            if ((flags & ANI3_CURVE_GROUP_MASK(group)) != 0) {
+                i32 component;
+                for (component = 0; component < 3; ++component)
+                    ANI3_SKIP_V4_CURVE(curve_types[group * 3 + component], &keys, &scale_min);
+            }
+        }
+        curve_types += 9;
+    }
+    decode_count = joint_count < anim->node_count ? joint_count : anim->node_count;
+    end_joint = first_joint + decode_count;
+    for (joint = first_joint; joint < end_joint; ++joint) {
+        u8 flags = anim->node_flags[joint];
+        ANI3_JOINT_PC *out = &buffer->joints[joint];
+        buffer->joint_flags[joint] |= flags;
+        if ((flags & 2) != 0) {
+            f32 sample;
+            ANI3_DECODE_V4_CURVE(sample, anim, curve_types[0], quarter, fraction, &keys, &scale_min);
+            out->translation.x += (sample - out->translation.x) * blend;
+            if (root != 0)
+                root->x = sample;
+            ANI3_DECODE_V4_CURVE(sample, anim, curve_types[1], quarter, fraction, &keys, &scale_min);
+            out->translation.y += (sample - out->translation.y) * blend;
+            if (root != 0)
+                root->y = sample;
+            ANI3_DECODE_V4_CURVE(sample, anim, curve_types[2], quarter, fraction, &keys, &scale_min);
+            out->translation.z += (sample - out->translation.z) * blend;
+            if (root != 0)
+                root->z = -sample;
+        } else {
+            out->translation.x *= inverse_blend;
+            out->translation.y *= inverse_blend;
+            out->translation.z *= inverse_blend;
+            if (root != 0)
+                root->x = root->y = root->z = 0.0f;
+        }
+        if ((flags & 1) != 0) {
+            f32 first_euler[3];
+            f32 second_euler[3];
+            NUQUAT first;
+            NUQUAT second;
+            ANI3_DECODE_V4_PAIR(anim, curve_types[3], quarter, &keys, &scale_min, &first_euler[0], &second_euler[0]);
+            ANI3_DECODE_V4_PAIR(anim, curve_types[4], quarter, &keys, &scale_min, &first_euler[1], &second_euler[1]);
+            ANI3_DECODE_V4_PAIR(anim, curve_types[5], quarter, &keys, &scale_min, &first_euler[2], &second_euler[2]);
+            NuQuatFromEulerXYZ(&first, (NUANG)(first_euler[0] * 10430.378f), (NUANG)(first_euler[1] * 10430.378f),
+                               (NUANG)(first_euler[2] * 10430.378f));
+            NuQuatFromEulerXYZ(&second, (NUANG)(second_euler[0] * 10430.378f), (NUANG)(second_euler[1] * 10430.378f),
+                               (NUANG)(second_euler[2] * 10430.378f));
+            ANI3_QUAT_LERP(&sampled, first, second, fraction, 1);
+        } else {
+            sampled.x = 0.0f;
+            sampled.y = 0.0f;
+            sampled.z = 0.0f;
+            sampled.w = 1.0f;
+        }
+        VuQuatSlerpFast((NUQUAT *)&out->rotation, (NUQUAT *)&out->rotation, &sampled, blend);
+        if ((flags & 8) != 0) {
+            f32 sample;
+            ANI3_DECODE_V4_CURVE(sample, anim, curve_types[6], quarter, fraction, &keys, &scale_min);
+            out->scale.x += (sample - out->scale.x) * blend;
+            ANI3_DECODE_V4_CURVE(sample, anim, curve_types[7], quarter, fraction, &keys, &scale_min);
+            out->scale.y += (sample - out->scale.y) * blend;
+            ANI3_DECODE_V4_CURVE(sample, anim, curve_types[8], quarter, fraction, &keys, &scale_min);
+            out->scale.z += (sample - out->scale.z) * blend;
+        } else {
+            out->scale.x = out->scale.x * inverse_blend + blend;
+            out->scale.y = out->scale.y * inverse_blend + blend;
+            out->scale.z = out->scale.z * inverse_blend + blend;
+        }
+        root = 0;
+        curve_types += 9;
+    }
+    return 0;
+}
+
+void __cdecl ANI_SimpleAni3PlayerV4Joint_Blend(ANI3_HEADER_PC *anim, f32 frame, ANI3_BUFFER_PC *buffer, f32 blend,
+                                               i32 joint_count, i32 first_joint, NUVEC *root_translation) {
+    if ((anim->format_flags & 1) != 0) {
+        if ((anim->format_flags & 2) != 0) {
+            ANI_SimpleAni3PlayerV4Joint_Blend_Quat3W(anim, frame, buffer, blend, joint_count, first_joint,
+                                                     root_translation);
+        } else {
+            ANI_SimpleAni3PlayerV4Joint_Blend_Quat3(anim, frame, buffer, blend, joint_count, first_joint,
+                                                    root_translation);
+        }
+    } else if (buffer->use_quaternions != 0) {
+        ANI_SimpleAni3PlayerV4Joint_Blend_EulerQuat(anim, frame, buffer, blend, joint_count, first_joint,
+                                                    root_translation);
+    } else {
+        /* Scalar V4 curves blend directly into the existing buffer fields. */
+        u32 quarter;
+        f32 fraction;
+        i32 key_offset;
+        u8 *keys;
+        ANI3_SCALEMIN_PC *scale_min = anim->scale_min;
+        const u16 *curve_types = anim->curve_types;
+        i32 joint;
+        const f32 inverse_blend = 1.0f - blend;
+        NUVEC *root = first_joint == 0 ? root_translation : 0;
+        i32 decode_count;
+        i32 end_joint;
+        ANI3_GET_SAMPLE_POSITION(anim, frame, &quarter, &fraction, &key_offset);
+        keys = anim->keys + key_offset;
+        for (joint = 0; joint < first_joint; ++joint) {
+            u8 flags = anim->node_flags[joint];
+            i32 group;
+            for (group = 0; group < 3; ++group) {
+                if ((flags & ANI3_CURVE_GROUP_MASK(group)) != 0) {
+                    i32 component;
+                    for (component = 0; component < 3; ++component)
+                        ANI3_SKIP_V4_CURVE(curve_types[group * 3 + component], &keys, &scale_min);
+                }
+            }
+            curve_types += 9;
+        }
+        decode_count = joint_count < anim->node_count ? joint_count : anim->node_count;
+        end_joint = first_joint + decode_count;
+        for (joint = first_joint; joint < end_joint; ++joint) {
+            u8 flags = anim->node_flags[joint];
+            ANI3_JOINT_PC *out = &buffer->joints[joint];
+            buffer->joint_flags[joint] |= flags;
+            if ((flags & 2) != 0) {
+                f32 sample;
+                ANI3_DECODE_V4_CURVE(sample, anim, curve_types[0], quarter, fraction, &keys, &scale_min);
+                out->translation.x += (sample - out->translation.x) * blend;
+                if (root != 0)
+                    root->x = sample;
+                ANI3_DECODE_V4_CURVE(sample, anim, curve_types[1], quarter, fraction, &keys, &scale_min);
+                out->translation.y += (sample - out->translation.y) * blend;
+                if (root != 0)
+                    root->y = sample;
+                ANI3_DECODE_V4_CURVE(sample, anim, curve_types[2], quarter, fraction, &keys, &scale_min);
+                out->translation.z += (sample - out->translation.z) * blend;
+                if (root != 0)
+                    root->z = -sample;
+            } else {
+                out->translation.x *= inverse_blend;
+                out->translation.y *= inverse_blend;
+                out->translation.z *= inverse_blend;
+                if (root != 0)
+                    root->x = root->y = root->z = 0.0f;
+            }
+            if ((flags & 1) != 0) {
+                f32 sample;
+                ANI3_DECODE_V4_CURVE(sample, anim, curve_types[3], quarter, fraction, &keys, &scale_min);
+                out->rotation.x += (sample - out->rotation.x) * blend;
+                ANI3_DECODE_V4_CURVE(sample, anim, curve_types[4], quarter, fraction, &keys, &scale_min);
+                out->rotation.y += (sample - out->rotation.y) * blend;
+                ANI3_DECODE_V4_CURVE(sample, anim, curve_types[5], quarter, fraction, &keys, &scale_min);
+                out->rotation.z += (sample - out->rotation.z) * blend;
+            } else {
+                out->rotation.x *= inverse_blend;
+                out->rotation.y *= inverse_blend;
+                out->rotation.z *= inverse_blend;
+            }
+            if ((flags & 8) != 0) {
+                f32 sample;
+                ANI3_DECODE_V4_CURVE(sample, anim, curve_types[6], quarter, fraction, &keys, &scale_min);
+                out->scale.x += (sample - out->scale.x) * blend;
+                ANI3_DECODE_V4_CURVE(sample, anim, curve_types[7], quarter, fraction, &keys, &scale_min);
+                out->scale.y += (sample - out->scale.y) * blend;
+                ANI3_DECODE_V4_CURVE(sample, anim, curve_types[8], quarter, fraction, &keys, &scale_min);
+                out->scale.z += (sample - out->scale.z) * blend;
+            } else {
+                out->scale.x = out->scale.x * inverse_blend + blend;
+                out->scale.y = out->scale.y * inverse_blend + blend;
+                out->scale.z = out->scale.z * inverse_blend + blend;
+            }
+            root = 0;
+            curve_types += 9;
+        }
+    }
 }

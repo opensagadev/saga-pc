@@ -45,6 +45,22 @@ i32 PCThreadCriticalSectionCount_candidate;
 CRITICAL_SECTION PCThreadCriticalSections_candidate[13];
 i32 PCFrameCriticalSectionIndex_candidate;
 
+/* Independent zeroed parser/string state for this synthetic file-I/O executable. */
+NUSTRINGBANK StringBank[3];
+i16 CurrentStringBank;
+u32 nustring_format = 1;
+char *NuBlankString = " ";
+u16 **BadWords;
+i32 NumBadWords;
+const u16 bad_fluff[26] = {0};
+u16 bad_equiv[8][2];
+NUFPAR_PC NuFParRecords[4];
+char NuFParBuffers[4][0x1000];
+NUFPAR_PC *NuFParRecordBase;
+char *NuFParBufferBase;
+i32 old_line_pos;
+void(__cdecl *fnInterpreterError)(NUFPAR_PC *);
+
 extern i32 __cdecl PCThreadCriticalSectionCreate_candidate(void);
 
 #define REQUIRE(condition)                                                                                             \

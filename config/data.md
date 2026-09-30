@@ -411,3 +411,22 @@ extent and no matching/coverage credit; spacing to another owner alone does not
 establish its capacity. New buffer-size globals and PCImplodeWordMask have
 reviewed scalar extents. Explicit bss sections keep small verified data owners
 separate from compiler alignment gaps in the COFF comparison.
+
+The movement/string/script batch adds three 12-byte string banks, 8-byte string
+entries, a relocated blank-string pointer, UTF-16 filter punctuation, script
+keywords, spline tuning values, and the 256-byte legacy animation popcount table.
+`bad_fluff` owns 26 words (52 bytes), ending at its first zero; the following
+alignment word is excluded. Its PC second character is `$`, unlike Android.
+
+PC sound groups have 128 records of eight bytes and 512 sample-ID words. Bolt
+storage has 32 records of 0x138 bytes. The initialized BoltSys pointer references
+a real 0x20-byte descriptor and its 0xa4-byte default type, retaining function
+relocations. Default callback bodies and missing actions are visible in source;
+initializer pointers must never be replaced with null merely to make linking pass.
+
+Five vehicle corner tables each contain four NUVECs (48 bytes). Vehicle IDs and
+temporary rotation angles are two-byte owners despite four-byte spacing.
+Movement literals retain their exact retail precision: the projectile predictor
+qword at `0x00762718` is `0.04000000283122063`, not mathematical 0.04.
+PC aggregate views remain partial unless complete owner extents are established;
+named fields and offset assertions do not by themselves establish full capacity.

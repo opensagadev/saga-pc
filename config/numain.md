@@ -373,3 +373,47 @@ selection and wrappers are present, but grouped samples and physical backend
 playback remain explicit missing actions. NuMain and game startup remain partial.
 See identification.md for the next broader string-table and shared object-layout
 batches; do not return to register/instruction tuning ahead of those transfers.
+
+## Movement, object, animation and script expansion
+
+The next structural batch follows connected portable families beyond NuMain.
+`MovePlayerSpline` (`0x00415c60`, 1322 bytes),
+`VehicleTurnOrLoopOffset` (`0x00498320`, 342), and
+`APIObjectVelocities` (`0x0062b040`, 169) now use asserted PC object/pad fields.
+Spline positioning retains its existing owner in `edsplines.c`; seek helpers and
+player movement belong in `move.c`. Terrain following and the context-0x3a area
+check remain explicit missing actions.
+
+`GameObjectRotation` uses the complete 2650-byte span at `0x00431740`, including
+its internal alignment gaps. Its rotation, reflection and suspension state uses
+PC offsets, shared four-corner tables, and the reconstructed `FindAnglesZX`.
+Terrain sampling and vehicle-hover queries remain missing actions.
+`GameObjectOrigin` (`0x0055d2b0`, 993) reconstructs the ordinary predicted origin
+and bounds. Its model-joint selection and context-dependent terrain adjustment
+remain incomplete: neither an Android joint-array capacity nor a context-table
+extent is sufficient PC evidence. Portal lookup uses `collision_position` at
+`GAMEOBJECT+0x80`, rather than Android's position at `+0x5c`.
+
+`Bolts_Update` (`0x00583030`, 2738) reconstructs the 32-record update outline,
+owner flags, timing, acceleration, integration, bounds and callback dispatch.
+Raycasts, collision responses and bolt termination still contain markers. Its
+default debris callback is partial; missing game-debris actions remain explicit.
+Shoot/Add and the networking abstraction are subsequent dependencies.
+
+ANI3 blended players, fast quaternion interpolation, and the legacy animation
+reader/curve-set allocator are reconstructed against PC control flow. The legacy
+bit-count builder is `0x005c9140`; it is not an animation-data allocator.
+String-table CSV/TXT loading, lookups, filtering and PC extension handling are
+reconstructed. The extension helper preserves the retail `PC` suffix check;
+the invalid-size assertion action remains missing.
+
+AI script finders, deep list copying, inherited-state construction, and the outer
+script-list loader have source implementations. State/parameter/derive/include
+callbacks are expanded. Per-file parsing and recursive include parsing retain
+markers: their PC driver uses private register arguments, so no invented cdecl
+callee is supplied. The indexed constant records have an unresolved allocation
+extent; `xConst` is deliberately not implemented with Android's guessed capacity.
+
+Next broad closures: the PC DirectSound voice manager and playback leaves;
+projectile Shoot/Add with verified networking and target fields; the per-file
+AI parser and its register-ABI integration. Keep instruction tuning secondary.

@@ -74,6 +74,172 @@ i32 Door_UseCutCam;
 extern "C" {
     i32 SUPERBUFFERSIZE = 0x09600000;
     u32 PCImplodeWordMask = 0xffffffff;
+    NULISTHDR global_aiscripts;
+    u16 **BadWords;
+    i32 NumBadWords;
+    BOLTTYPE_PC GlobalBoltType_Default = {
+        "null", 4.0f, 2.0f, 0.0f, 0.125f, 1.0f, 0.1f, -1,   -1,   -1,   0, -1, 0,  1,
+        0xff,   0,    0,    NULL, NULL,   NULL, NULL, NULL, NULL, NULL, 0, -1, -1, {0},
+    };
+    BOLTSYS_PC GlobalBoltSystem_Default = {
+        &GlobalBoltType_Default,        1,    NULL, Bolt_Debris_Default, Bolt_GetShootOrigin_Default,
+        Bolt_GetShootDirection_Default, NULL, NULL,
+    };
+    BOLTSYS_PC *BoltSys = &GlobalBoltSystem_Default;
+    NUSTRINGBANK StringBank[3];
+#pragma bss_seg(".bss$CurrentStringBank")
+    i16 CurrentStringBank;
+#pragma bss_seg()
+    u32 nustring_format = 1;
+    SFX_GROUP_PC NuSound3Groups[128];
+    i16 NuSound3GroupSampleIds[512];
+    i32 NuSound3GroupSampleCount;
+    i32 NuSound3GroupCount;
+    BOLT Bolt[32];
+    i32 i_bolt;
+    f32 spline_seek_pos = 10.0f;
+    f32 spline_seek_ang = 10.0f;
+    f32 spline_xoffset_speed_seek = 4.0f;
+    f32 spline_xoffset_speed_roll = 16384.0f;
+    extern const u16 bad_fluff[26] = {
+        '!', '$', '%', '^', '&', '*', '(', ')', '_', '+', '-', '=', '{',
+        '}', '[', ']', '@', '~', '#', '?', '<', '>', ',', '.', ' ', 0,
+    };
+    u8 NuAnimDataBitCount[256];
+    i32 NuAnimDataBitCountInitialized;
+    extern const f64 VehicleTurnPhaseScale = 65536.0;
+    extern const f64 VehicleTurnPhaseOffset = 16384.0;
+    extern const f64 MoveSplineRunSpeedSentinel = 1000000000.0;
+    extern const f32 MoveSplineTurnRate = 8.0f;
+    extern const f64 BoltRayAccelerationTimeSquared = 0.04000000283122063;
+    extern const f64 NuAnimDataFloatMax = 3.4028234663852886e+38;
+#pragma data_seg(".data$GameObjectRotationBuggyId")
+    u16 GameObjectRotationBuggyId = 0xffff;
+#pragma data_seg()
+#pragma data_seg(".data$GameObjectRotationRadioCarId")
+    u16 GameObjectRotationRadioCarId = 0xffff;
+#pragma data_seg()
+#pragma data_seg(".data$GameObjectRotationPoliceCarId")
+    u16 GameObjectRotationPoliceCarId = 0xffff;
+#pragma data_seg()
+#pragma data_seg(".data$GameObjectRotationMowerId")
+    u16 GameObjectRotationMowerId = 0xffff;
+#pragma data_seg()
+#pragma data_seg(".data$GameObjectRotationAtstId")
+    u16 GameObjectRotationAtstId = 0xffff;
+#pragma data_seg()
+#pragma bss_seg(".bss$temp_xrot")
+    u16 temp_xrot;
+#pragma bss_seg()
+#pragma bss_seg(".bss$temp_zrot")
+    u16 temp_zrot;
+#pragma bss_seg()
+    i32 VehicleArea;
+    extern const char NuAnimSourceFileName[48] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c";
+#pragma const_seg(".rdata$AIScriptKeywordInclude")
+    extern const char AIScriptKeywordInclude[8] = "INCLUDE";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptKeywordDeriveFromScript")
+    extern const char AIScriptKeywordDeriveFromScript[17] = "DERIVEFROMSCRIPT";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptKeywordActionMacro")
+    extern const char AIScriptKeywordActionMacro[12] = "ACTIONMACRO";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptKeywordConditionMacro")
+    extern const char AIScriptKeywordConditionMacro[15] = "CONDITIONMACRO";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptKeywordConst")
+    extern const char AIScriptKeywordConst[6] = "CONST";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptKeywordParam")
+    extern const char AIScriptKeywordParam[6] = "PARAM";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptKeywordState")
+    extern const char AIScriptKeywordState[6] = "STATE";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptKeywordEnd")
+    extern const char AIScriptKeywordEnd[2] = "}";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptKeywordReferenceScript")
+    extern const char AIScriptKeywordReferenceScript[16] = "REFERENCESCRIPT";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptKeywordActions")
+    extern const char AIScriptKeywordActions[8] = "ACTIONS";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptKeywordConditions")
+    extern const char AIScriptKeywordConditions[11] = "CONDITIONS";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptKeywordBase")
+    extern const char AIScriptKeywordBase[5] = "Base";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptKeywordGlobal")
+    extern const char AIScriptKeywordGlobal[7] = "Global";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptKeywordSource")
+    extern const char AIScriptKeywordSource[7] = "Source";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptKeywordScript")
+    extern const char AIScriptKeywordScript[7] = "Script";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptKeywordLevel")
+    extern const char AIScriptKeywordLevel[6] = "Level";
+#pragma const_seg()
+    extern const char NuBlankStringValue[2];
+    char *NuBlankString = (char *)NuBlankStringValue;
+    extern const f64 GameObjectNearFloorNoFloorHeight = 2000000.0;
+    extern const f64 GameObjectNearFloorRadiusDivisor = 0.22499999403953552;
+#pragma const_seg(".rdata$AIScriptListFilename")
+    extern const char AIScriptListFilename[11] = "script.txt";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptListPathFormat")
+    extern const char AIScriptListPathFormat[14] = "%s\\script.txt";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptFileExtension")
+    extern const char AIScriptFileExtension[5] = ".scp";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuBlankStringValue")
+    extern const char NuBlankStringValue[2] = " ";
+#pragma const_seg()
+#pragma const_seg(".rdata$GameObjectRotationBuggyOffsets")
+    extern const NUVEC GAMEOBJECT_ROTATION_BUGGY_OFFSETS[4] = {
+        {-0.1175f, 0.0f, 0.1575f},
+        {0.1175f, 0.0f, 0.1575f},
+        {0.1175f, 0.0f, -0.1575f},
+        {-0.1175f, 0.0f, -0.1575f},
+    };
+#pragma const_seg()
+#pragma const_seg(".rdata$GameObjectRotationRadioCarOffsets")
+    extern const NUVEC GAMEOBJECT_ROTATION_RADIOCAR_OFFSETS[4] = {
+        {-0.12f, 0.0f, 0.08f},
+        {0.12f, 0.0f, 0.08f},
+        {0.12f, 0.0f, -0.08f},
+        {-0.12f, 0.0f, -0.08f},
+    };
+#pragma const_seg()
+#pragma const_seg(".rdata$GameObjectRotationPoliceCarOffsets")
+    extern const NUVEC GAMEOBJECT_ROTATION_POLICECAR_OFFSETS[4] = {
+        {-0.19f, 0.0f, 0.31f},
+        {0.19f, 0.0f, 0.31f},
+        {0.19f, 0.0f, -0.31f},
+        {-0.19f, 0.0f, -0.31f},
+    };
+#pragma const_seg()
+#pragma const_seg(".rdata$GameObjectRotationMowerOffsets")
+    extern const NUVEC GAMEOBJECT_ROTATION_MOWER_OFFSETS[4] = {
+        {-0.1175f, 0.0f, 0.155f},
+        {0.1175f, 0.0f, 0.155f},
+        {0.1175f, 0.0f, -0.155f},
+        {-0.1175f, 0.0f, -0.155f},
+    };
+#pragma const_seg()
+#pragma const_seg(".rdata$GameObjectRotationDefaultOffsets")
+    extern const NUVEC GAMEOBJECT_ROTATION_DEFAULT_OFFSETS[4] = {
+        {-0.2f, 0.0f, 0.2f},
+        {0.2f, 0.0f, 0.2f},
+        {0.2f, 0.0f, -0.2f},
+        {-0.2f, 0.0f, -0.2f},
+    };
+#pragma const_seg()
     i32 StartupGameFlag0;
     i32 StartupGameFlag1 = 1;
     u8 ForcePlayEndFrame;
@@ -108,7 +274,9 @@ extern "C" {
     PC_NUFILE_READBLOCK nufile_blkinfo[1024];
     NUDATHDR *StartupDatList[7];
     i32 StartupDatCount;
+#pragma bss_seg(".bss$NuSoundDat")
     NUDATHDR *NuSoundDat;
+#pragma bss_seg()
     GAMEANIMPROGRESS gameanimsysprogress;
     VARIPTR original_permbuffer_base;
     char InitOnceCurrentDirectory[1];
