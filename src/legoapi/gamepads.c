@@ -29,3 +29,35 @@ u16 __cdecl GamePad_InputAngle(GAMEOBJECT *object, GAMEPAD_PC *pad) {
     }
     return (u16)(pad->input_angle + GameCam->input_yaw);
 }
+
+f32 __cdecl GamePad_Rotate(GAMEOBJECT *object) {
+    GAMEPAD_PC *pad;
+    i32 index, current_delta, previous_delta;
+    if (object == Player[0])
+        index = 0;
+    else if (object == Player[1])
+        index = 1;
+    else
+        return 0.0f;
+    pad = object->pad;
+    if (pad->input_magnitude == 0.0f || PlayerPadCurrentSpeed[index] == 0.0f || PlayerPadPreviousSpeed[index] == 0.0f)
+        return 0.0f;
+    current_delta = RotDiff(PlayerPadCurrentAngle[index], pad->input_angle);
+    previous_delta = RotDiff(PlayerPadPreviousAngle[index], PlayerPadCurrentAngle[index]);
+    if (!((current_delta < 0 && previous_delta < 0 && current_delta > -0x2000 && previous_delta > -0x2000) ||
+          (current_delta > 0 && previous_delta > 0 && current_delta < 0x2000 && previous_delta < 0x2000)))
+        return 0.0f;
+    return (f32)(((f64)current_delta * (1.0 / 65536.0)) / FRAMETIME);
+}
+
+i32 __cdecl GamePad_Waggle(GAMEPAD_PC *pad) {
+    i32 delta;
+    if (pad->input_magnitude != 0.0f) {
+        delta = RotDiff(pad->previous_input_angle, pad->input_angle);
+        if (delta < 0)
+            delta = -delta;
+        if (delta > 0x2000)
+            return 1;
+    }
+    return (pad->input_magnitude != 0.0f) != (pad->previous_input_magnitude != 0.0f);
+}

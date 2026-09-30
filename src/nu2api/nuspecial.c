@@ -672,3 +672,51 @@ i32 __cdecl NuSpecialGetInstanceix(NUSPECIALHANDLE *handle) {
         return ((NuSpecialInstanceDisplayPC *)handle->display_special)->instance_index;
     return -1;
 }
+
+i32 special_debug;
+
+i32 __cdecl NuSpecialFindDisplay(NUGSCN *scene, NUSPECIALHANDLE *handle, char *name, i32 flags) {
+    NUDISPLAY_SPECIAL_PC *special;
+    i32 index;
+    if (scene == NULL)
+        return 0;
+    special = scene->display_list->specials;
+    for (index = 0; index < scene->display_list->special_count; ++index, ++special) {
+        if (NuStrICmp(name, special->name) == 0) {
+            handle->scene = scene;
+            handle->display_special = (NUMTX *)special;
+            handle->special = NULL;
+            return 1;
+        }
+    }
+    if (flags != 0 && special_debug != 0) {
+        STUBBED_NAMED("NuSpecialFindDisplay: unresolved missing special diagnostic at 0x005c1300");
+    }
+    handle->scene = NULL;
+    handle->special = NULL;
+    handle->display_special = NULL;
+    return 0;
+}
+
+i32 __cdecl NuSpecialFind(NUGSCN *scene, NUSPECIALHANDLE *handle, char *name, i32 flags) {
+    NUSPECIAL_LEGACY_PC *special;
+    i32 index;
+    (void)flags;
+    if (scene != NULL && name != NULL) {
+        if (scene->display_list != NULL)
+            return NuSpecialFindDisplay(scene, handle, name, 1);
+        special = scene->specials;
+        for (index = 0; index < scene->special_count; ++index, ++special) {
+            if (NuStrICmp(name, special->name) == 0) {
+                handle->scene = scene;
+                handle->special = (NUMTX *)special;
+                handle->display_special = NULL;
+                return 1;
+            }
+        }
+    }
+    handle->scene = NULL;
+    handle->special = NULL;
+    handle->display_special = NULL;
+    return 0;
+}

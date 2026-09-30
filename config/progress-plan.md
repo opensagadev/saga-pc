@@ -188,3 +188,35 @@ Reviewers verify identities and full extents while source owners prepare scratch
 C; the root integrates field cohorts before production release. Continue the
 active structural objective and regular verified commits rather than stopping at
 this milestone or tuning the already-compared functions.
+
+## Fourth verified structural checkpoint
+
+The next coherent source batch adds 48,885 unique compared original bytes,
+bringing comparison coverage to 325,804 bytes. Whole-PC fuzzy coverage rises
+from 4.718974% to 5.705892%, a net gain of 34,258.36 similarity-weighted bytes.
+The native objdiff average is 60.79941% over 325,859 bytes, including an unchanged
+55-byte overlap; this average is not the whole-game percentage. Exact coverage
+is 45,048 bytes (1.297747%), with 795 exact functions, 74 newly exact functions,
+and no lost existing exact functions or data. Image mapping is 887,823 of
+40,067,072 bytes (2.215842%). The retail bounds remain unchanged.
+
+This batch transfers ordinary AI actions, locator/follow/path/interrupt logic,
+takeover/tag/rider processing, object management/removal, socket parsing and
+geometry, and last-safe/jump/Buck dependencies. Real animation, collection,
+explosion, matrix/quaternion and input queries close dependencies. The animation
+loop now builds basketball and rocket descriptors with recovered callbacks and
+real AddPart calls. Existing special lookups move into their original nuspecial
+owner; the migrated bytes are not counted as new coverage.
+
+Large partial functions remain honest: ManageGameObjects scores about 10.54%,
+AfterAnimation about 23.82%, and nested gizmo destruction about 28.77%. Missing
+cleanup, rendering, debris, collision and context actions are still marked at
+their real call sites. These low scores remain in the whole-code computation.
+No returned query is replaced with invented success. NuMain and gameplay remain
+partial despite the source-only EXE linking successfully.
+
+Next contract-ready source work is the connected movement dispatcher and GameAI
+combat/follow actions. The socket camera family requires genuine terrain
+scan/cast results before release; its research remains separate from transferred
+code. Continue the active goal with all eight Sol agents, prioritizing new
+verified PC spans rather than small instruction-order refinements.

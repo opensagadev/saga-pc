@@ -585,3 +585,30 @@ at 0x0093b0e8 only bounds contiguous original storage above; it does not prove
 ConfigBuffer's exact extent. Pack-loaded text has no established 64 KiB bound,
 and this working backing does not establish arbitrary inputs safe. No invented
 original size or guard is used to improve coverage or fabricate a loader result.
+
+## Fourth structural data release
+
+The fourth checkpoint adds 236 newly exact initializer rows without losing an
+existing exact data definition. Shared AI strings/state, takeover state,
+contexts and movement tuning use reviewed PC initializers. Producer bounds prove
+three further complete arrays: 16 one-byte creature-set counters at 0x00876868,
+eight LevGameObject pointers at 0x0087a810, and four LevFlag integers at
+0x0087aa40. LevGameObject is distinct from Player. GameObjectState_InActive at
+0x00753164 is the nine-byte ASCII string including its terminator, not a record
+array. The initialized BigJump callback belongs to jumping.c.
+
+The original socket TU owns its 56-entry callback table plus sentinel (456
+bytes), parser/runtime state, names and literals. Its 111 compiled data rows
+cover 1,849 exact bytes. Original private owners remain local; shared data lives
+in data.cpp. Animation-duration state and the collection list/count likewise
+remain in their verified original source units.
+
+LevSafePlatID at 0x00803bb0 is a two-entry working access view initialized to -1.
+Its complete original capacity remains unproved, so the CSV size is blank and
+it receives no extent or exact credit. Four pad-history owners similarly expose
+only the two zero-initialized entries proven by PC player-index consumers:
+current/previous speed at 0x00926be4/0x00926bd8 and current/previous angle at
+0x009253c8/0x00926be0. Their original sizes stay blank; the source access views
+do not claim complete array extents. The upcoming one-at-once attacker table has
+an independently proved eight-row bound; preserve the PC index-eight bug rather
+than enlarging its storage to conceal an out-of-bounds access.

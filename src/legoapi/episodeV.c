@@ -5,6 +5,21 @@ void __cdecl BobaRocket_Deflect(PART_PC *part) {
     NewPartRotation(part);
 }
 
+void __cdecl BobaRocket_Kill(PART_PC *part, i32 reason) {
+    EXPLOSION_PC *explosion = Detonate(&part->position, 0);
+    GAMEOBJECT *owner;
+    (void)reason;
+    if (explosion == NULL || Arcade == 0) {
+        return;
+    }
+    owner = part->owner;
+    if (owner != NULL && (owner == Player[0] || owner == Player[1]) && (owner->flags_1fc_word & 0x1001) == 0x1001 &&
+        owner->field_280 <= 1) {
+        explosion->flags |= 0x10000;
+        explosion->owner = owner;
+    }
+}
+
 u16 __cdecl SeekRot(u16 current, u16 target, f32 rate);
 f32 __cdecl SeekValF(f32 current, f32 target, f32 rate);
 

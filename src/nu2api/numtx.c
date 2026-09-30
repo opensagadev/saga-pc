@@ -788,3 +788,29 @@ NUVEC *__cdecl NuMtxGetScale(NUVEC *out, NUMTX *matrix) {
     out->z = NuFsqrt(matrix->m20 * matrix->m20 + matrix->m21 * matrix->m21 + matrix->m22 * matrix->m22);
     return out;
 }
+
+void __cdecl NuMtxVecToEulerXYZ(NUVEC *x_vector, NUVEC *z_vector, NUANG *x, NUANG *y, NUANG *z) {
+    NUVEC local_x;
+    NUVEC local_z;
+    NUANG negative_z;
+    *z = NuAtan2D(x_vector->y, x_vector->x);
+    negative_z = -*z;
+    NuMtxRotateAng(negative_z, x_vector->x, x_vector->y, &local_x.x, &local_x.y);
+    local_x.z = x_vector->z;
+    NuMtxRotateAng(negative_z, z_vector->x, z_vector->y, &local_z.x, &local_z.y);
+    local_z.z = z_vector->z;
+    *y = -NuAtan2D(local_x.z, local_x.x);
+    NuMtxRotateAng(*y, local_z.x, local_z.z, &local_z.x, &local_z.z);
+    *x = -NuAtan2D(local_z.y, local_z.z);
+}
+void __cdecl NuMtxGetEulerXYZ(NUMTX *matrix, NUANG *x, NUANG *y, NUANG *z) {
+    NUVEC x_vector;
+    NUVEC z_vector;
+    x_vector.x = matrix->m00;
+    x_vector.y = matrix->m01;
+    x_vector.z = matrix->m02;
+    z_vector.x = matrix->m20;
+    z_vector.y = matrix->m21;
+    z_vector.z = matrix->m22;
+    NuMtxVecToEulerXYZ(&x_vector, &z_vector, x, y, z);
+}

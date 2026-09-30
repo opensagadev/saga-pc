@@ -1409,3 +1409,101 @@ vehicle_collision:
         !(WORLD->area != NULL && (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA)))
         VehicleCollisionCode(object);
 }
+
+void __cdecl UpdateLastSafePosition(GAMEOBJECT *object) {
+    GAMEOBJECT *terrain_object;
+    i32 surface, unsafe;
+    i8 layer, context;
+    i16 platform, shadow_platform;
+    u32 model_flags;
+
+    object->flags_ef4 &= ~0x400000;
+    if (!object->dead && (LEGOCONTEXT_DOOMED == -1 || object->character_context != LEGOCONTEXT_DOOMED) &&
+        (object->flags_1fc & 4) == 0) {
+        object->previous_position = object->position;
+        terrain_object = object;
+        if (object->takeover_source != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 &&
+            object->character_context == LEGOCONTEXT_BEENTAKENOVER)
+            terrain_object = object->takeover_source;
+        surface = (i8)terrain_object->jump_animation_state;
+        if (surface != -1 && (TerSurface[surface].flags & 0xc041) != 0)
+            unsafe = 1;
+        else {
+            layer = terrain_object->field_283;
+            unsafe = layer != -1 && ((TerLayer[layer].flags & 1) != 0 || layer == 9);
+        }
+        if (unsafe && VehicleArea && BonusArea)
+            unsafe = !(terrain_object->character_data->game_character->field_028 > 0.0f);
+        do {
+            if ((object->flags_ef4 & 4) != 0)
+                break;
+            context = object->character_context;
+            if ((CInfo[context].parameter & 8) != 0)
+                break;
+            if (object->field_281 == 0 &&
+                (context == -1 || (context != LEGOCONTEXT_BEENTAKENOVER && context != LEGOCONTEXT_EATEN &&
+                                   context != LEGOCONTEXT_GETIN)) &&
+                !VehicleArea) {
+                model_flags = object->character_data->model_flags;
+                if (((model_flags & 0x2000) == 0 || !(object->character_data->game_character->field_028 > 0.0f)) &&
+                    ((model_flags & 0x8000) == 0 || object->jump_variant_state != 1))
+                    break;
+            }
+            if (object->floor_height == 2000000.0f)
+                break;
+            platform = object->terrain_platform_id;
+            shadow_platform = object->supporting_platform_id;
+            if (!((platform == -1 || platform == LevSafePlatID[0] || platform == LevSafePlatID[1]) &&
+                  (shadow_platform == -1 || shadow_platform == LevSafePlatID[0] ||
+                   shadow_platform == LevSafePlatID[1])) &&
+                (LastSafePosExtraFn == NULL || !LastSafePosExtraFn(object)))
+                break;
+            if (!(object->lower_position.y > object->floor_height - (f64)0.1f) || unsafe)
+                break;
+            object->flags_ef4 |= 0x400000;
+            object->last_safe_position = object->position;
+            object->fall_recovery_timer = 0.0f;
+            if ((object->ai_packet.path_info.flags & 1) != 0 &&
+                (object->ai_packet.path_info.connection->traversal_flags[1] |
+                 object->ai_packet.path_info.connection->traversal_flags[0]) == 0) {
+                if (object->takeover_owner != NULL &&
+                    (LEGOCONTEXT_GETIN == -1 || object->character_context != LEGOCONTEXT_GETIN) &&
+                    (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER))
+                    object->takeover_owner = NULL;
+                object->respawn_position = object->last_safe_position;
+                object->flags_1fc_word |= 0x2000;
+            }
+            if (object->field_280 < 2 && object->field_da8 <= 0.0f && GameCam->blend_time >= GameCam->blend_duration &&
+                object->sock_index != 0xff) {
+                if (object->takeover_owner != NULL &&
+                    (LEGOCONTEXT_GETIN == -1 || object->character_context != LEGOCONTEXT_GETIN) &&
+                    (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER))
+                    object->takeover_owner = NULL;
+                object->camera_saved_position = object->last_safe_position;
+            }
+            goto safe_position_done;
+        } while (0);
+        if ((object->flags_1fc & 0x80) != 0 && (layer = object->field_283) != -1 && (TerLayer[layer].flags & 1) != 0 &&
+            !NoLayerKill(object)) {
+            if (object->fall_recovery_timer <= 0.0f)
+                object->fall_hover_height = object->position.y;
+            object->fall_recovery_timer += FRAMETIME;
+        } else
+            object->fall_recovery_timer = 0.0f;
+        if ((WORLD->current_level->flags & 0x40000) != 0)
+            object->last_safe_position = object->position;
+    }
+safe_position_done:
+    if ((object->flags_ef4 & 0x1000000) == 0 && (object->flags_1fc & 0x80) == 0 &&
+        (LEGOCONTEXT_EATEN == -1 || object->character_context != LEGOCONTEXT_EATEN) &&
+        (object->flags_1fc_word & 0x2000) != 0) {
+        if ((object->ai_packet.path_info.flags & 1) != 0) {
+            if (object->takeover_owner != NULL &&
+                (LEGOCONTEXT_GETIN == -1 || object->character_context != LEGOCONTEXT_GETIN) &&
+                (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER))
+                object->takeover_owner = NULL;
+        }
+        object->last_safe_position = object->respawn_position;
+    }
+    object->flags_ef4 &= ~4;
+}

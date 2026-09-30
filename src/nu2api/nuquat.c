@@ -308,3 +308,35 @@ void __cdecl VuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
         _mm_storeu_ps(&out->x, _mm_add_ps(source, target));
     }
 }
+
+void __cdecl NuQuatSlerp(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
+    NUQUAT target;
+    f32 dot, omega, sine, source_weight, target_weight;
+    i16 angle;
+    dot = from->x * to->x + from->y * to->y + from->z * to->z + from->w * to->w;
+    if (dot < 0.0f) {
+        dot = -dot;
+        target.x = -to->x;
+        target.y = -to->y;
+        target.z = -to->z;
+        target.w = -to->w;
+    } else {
+        target = *to;
+    }
+    if (1.0f - dot > 1e-05f) {
+        angle = (i16)(0x4000 - NuASin(dot));
+        omega = (f32)angle;
+        sine = QUAT_SIN((i32)omega);
+        source_weight = QUAT_SIN((i32)((1.0f - t) * omega));
+        source_weight = source_weight == 0.0f || sine == 0.0f ? 0.0f : source_weight / sine;
+        target_weight = QUAT_SIN((i32)(t * omega));
+        target_weight = target_weight == 0.0f || sine == 0.0f ? 0.0f : target_weight / sine;
+    } else {
+        source_weight = 1.0f - t;
+        target_weight = t;
+    }
+    out->x = from->x * source_weight + target.x * target_weight;
+    out->y = from->y * source_weight + target.y * target_weight;
+    out->z = from->z * source_weight + target.z * target_weight;
+    out->w = from->w * source_weight + target.w * target_weight;
+}

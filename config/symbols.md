@@ -696,3 +696,20 @@ Cheats_CheckFlags occupies 13 bytes through its RET, not 14. SnapCreaturePos now
 uses AISysGetCharacterPathPos with the typed World AI owner and retains two
 surface-action markers. Loader diagnostics that are genuine retail RET callees
 are recorded separately from missing resource behavior.
+
+The fourth structural release maps complete PC spans for ordinary AI actions,
+takeover and lifecycle processing, socket parsing/geometry, and jump/last-safe
+closures. Existing nuspecial lookup definitions migrate to their original TU;
+comparison follows the same original addresses. Two-byte contexts and counters
+retain their actual PC widths. Full comparisons and existing exact matches are
+preserved; large partial bodies contribute their measured low scores.
+
+NuMtxVecToEulerXYZ (0x005bf4f0, 233 bytes) has five ordinary pointer arguments and
+three genuine angle/rotation operations. NuMtxGetEulerXYZ (0x005bf5e0, 81 bytes)
+copies the first and third matrix basis rows and is exact. ForceTowardsMid
+(0x00498d40, 1,057 bytes) belongs to the pushing subsystem, uses unsigned candidate
+count and named socket/matrix fields, and currently scores 68.62%. NuQuatSlerp
+ends at the RET at 0x005b8987: its 488-byte extent does not include the adjacent
+weighted-quaternion routine. The retained graph's EnforceSockYLimits candidate
+at 0x005405f0 was rejected: the actual routine is a four-vector perspective
+interpolation provider and has not been implemented or mapped under that name.

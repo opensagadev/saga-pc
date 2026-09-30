@@ -594,3 +594,26 @@ Next concrete closures are takeover/tag/rider processing, socket configuration
 and geometry, ordinary AI actions, and last-safe/Buck logic. NuMain and a playable
 game remain partial; current percentages come from matching.json, not these
 historical function lists.
+
+## Fourth structural dependency release
+
+Takeover/tag/rider calls now use recovered animation-duration, jump and Buck
+providers. Last-safe position tracking, platform tests and player restoration
+use the PC fields and genuine callback state. StartBigJump has the PC six-argument
+interface; context-reset actions remain marked. ManageGameObjects, removal and
+deactivation reconstruct their PC state transitions, with missing network,
+creature-reset, group and torpedo actions explicitly retained as gaps.
+
+AfterAnimation now constructs the basketball and rocket ADDPART descriptors,
+including real callbacks, targeting and allocation results. Detonate returns
+the real eight-record explosion pool allocation; debris and judder omissions
+remain visible. The nested blowup provider replaces the existing caller's missing
+whole action, while five unreconstructed effect/action kinds remain marked in
+its new body. None of these closures establishes completed startup or gameplay.
+
+Socket parsing, configuration, generation, position queries and rotation now
+use genuine matrix/quaternion/trigonometric dependencies. PC behavior differs
+from Android in the rail cursor return, allocation-exhaustion path, projection
+calculation and several wrappers. The next movement dispatcher and combat action
+cohorts are prepared separately; camera terrain queries still require their real
+scan/cast providers before implementation can be released.

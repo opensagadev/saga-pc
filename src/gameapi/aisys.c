@@ -100,7 +100,8 @@ __declspec(noinline) AIPATHNODE_PC *__cdecl AIPathFindNode(AISYS_PC *system, AIP
     return NULL;
 }
 
-void *__cdecl AIPAthFindPathCnx(AISYS_PC *system, AIPATH_PC *path, char *from_name, char *to_name, i32 *direction) {
+__declspec(noinline) void *__cdecl AIPAthFindPathCnx(AISYS_PC *system, AIPATH_PC *path, char *from_name, char *to_name,
+                                                     i32 *direction) {
     AIPATHNODE_PC *from;
     AIPATHNODE_PC *to;
     i32 to_index;
@@ -3438,4 +3439,1754 @@ void __cdecl AISysProcessCharacter(AISYS_PC *system, APIOBJECT_PC *object, AIPAC
             NuVecSub(&packet->movement_position, &packet->movement_destination, &delta);
         }
     }
+}
+
+i32 __cdecl Action_SetState(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                            i32 count, i32 first_time, f32 elapsed) {
+    i32 i;
+    if (first_time == 0 || count == 0)
+        return 0;
+    processor->next_state = AIStateFind(params[0], processor->script);
+    processor->flags &= ~4u;
+    for (i = 1; i < count; i++) {
+        if (NuStrICmp(params[i], "KeepBlockedMessages") == 0)
+            processor->flags |= 4;
+    }
+    if (processor->next_state == NULL) {
+        if (AIActionDiagnosticMode == 1)
+            AIScriptMissingStateDiagnosticAlternate(params[0], processor->script->name, processor->state->name);
+        else
+            AIScriptMissingStateDiagnostic(params[0], processor->script->name, processor->state->name);
+    }
+    return 0;
+}
+
+i32 __cdecl Action_ResetTimer(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                              i32 count, i32 first_time, f32 elapsed) {
+    f32 minimum;
+    f32 maximum;
+    f32 exact;
+    f64 first_term;
+    f32 random;
+    char *value;
+    i32 i;
+    if (first_time == 0)
+        return 1;
+    minimum = maximum = exact = 0.0f;
+    for (i = 0; i < count; i++) {
+        value = NuStrIStr(params[i], (char *)AIActionMinTimeName);
+        if (value != NULL)
+            minimum = AIParamToFloatEx(packet, processor, value + 8);
+        else if ((value = NuStrIStr(params[i], (char *)AIActionMaxTimeName)) != NULL)
+            maximum = AIParamToFloatEx(packet, processor, value + 8);
+        else if ((value = NuStrIStr(params[i], (char *)AIActionTimeName)) != NULL)
+            exact = AIParamToFloatEx(packet, processor, value + 5);
+    }
+    if (minimum != 0.0f || maximum != 0.0f) {
+        first_term = (1.0 - NuRandFloat()) * minimum;
+        random = NuRandFloat();
+        processor->script_timer = (f32)(random * maximum + first_term);
+    } else
+        processor->script_timer = exact;
+    return 1;
+}
+
+i32 __cdecl Action_Idle(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count,
+                        i32 first_time, f32 elapsed) {
+    f32 minimum;
+    f32 maximum;
+    i32 frames;
+    i32 i;
+    char *value;
+    minimum = maximum = 0.0f;
+    frames = 0;
+    if (first_time != 0) {
+        for (i = 0; i < count; i++) {
+            value = NuStrIStr(params[i], (char *)AIActionMinTimeName);
+            if (value != NULL)
+                minimum = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMinTimeName) + 1);
+            else if ((value = NuStrIStr(params[i], (char *)AIActionMaxTimeName)) != NULL)
+                maximum = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMaxTimeName) + 1);
+            else if ((value = NuStrIStr(params[i], (char *)AIActionFramesName)) != NULL)
+                frames = (i32)AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionFramesName) + 1);
+            else
+                processor->action_timer = AIParamToFloatEx(packet, processor, params[i]);
+        }
+        if (frames != 0) {
+            processor->action_data_1 = (u8)(frames < 0 ? 0 : (frames > 255 ? 255 : frames));
+        } else if (processor->action_timer == 0.0f && maximum > minimum) {
+            processor->action_timer = NuRandFloat() * (maximum - minimum) + minimum;
+        }
+        return 0;
+    }
+    if (processor->action_data_1 != 0) {
+        processor->action_data_1--;
+        return processor->action_data_1 == 0;
+    }
+    if (processor->action_timer > 0.0f) {
+        processor->action_timer -= elapsed;
+        if (processor->action_timer <= 0.0f) {
+            processor->action_timer = 0.0f;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+i32 __cdecl Action_SetParam(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                            i32 count, i32 first_time, f32 elapsed) {
+    AICREATURE_PC *creature;
+    i32 i;
+    i32 index;
+    u64 flag;
+    char *value;
+    f32 result;
+    f64 previous;
+    if (packet != NULL && processor != NULL && processor->script != NULL) {
+        creature = packet->creature_index == 0xff ? NULL : &system->creatures[packet->creature_index];
+        for (i = 0; i < count - 1; i++) {
+            for (index = 0; index < 4; index++) {
+                if (NuStrICmp(params[i], processor->script->params[index].name) == 0)
+                    break;
+            }
+            if (index < 4) {
+                flag = (u64)2 << index;
+                i++;
+                if (NuStrICmp(params[i], GizmoDefaultOutputName) == 0) {
+                    if (creature != NULL && ((u64)(i64)creature->flags & flag) != 0)
+                        processor->params[index] = creature->script_params[index];
+                    else
+                        processor->params[index] = processor->script->params[index].default_value;
+                } else if ((value = NuStrIStr(params[i], (char *)AIActionIncrementName)) != NULL) {
+                    result =
+                        AIParamToFloatEx(packet, &packet->script_processor, value + NuStrLen(AIActionIncrementName));
+                    processor->params[index] += result;
+                } else if ((value = NuStrIStr(params[i], (char *)AIActionDecrementName)) != NULL) {
+                    previous = processor->params[index];
+                    result =
+                        AIParamToFloatEx(packet, &packet->script_processor, value + NuStrLen(AIActionDecrementName));
+                    processor->params[index] = (f32)(previous - result);
+                } else
+                    processor->params[index] = AIParamToFloatEx(packet, &packet->script_processor, params[i]);
+            }
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_SetReturnToState(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                    i32 count, i32 first_time, f32 elapsed) {
+    AISTATE_PC *state;
+    i32 i;
+    char *value;
+    if (first_time != 0 && processor != NULL) {
+        state = processor->state;
+        for (i = 0; i < count; i++) {
+            value = NuStrIStr(params[i], (char *)AIActionStateName);
+            if (value != NULL) {
+                state = AIStateFind(value + 6, processor->script);
+                if (state == NULL) {
+                    if (AIActionDiagnosticMode == 0)
+                        AIScriptMissingStateDiagnostic(params[0], processor->script->name, processor->state->name);
+                    else
+                        AIScriptMissingStateDiagnosticAlternate(params[0], processor->script->name,
+                                                                processor->state->name);
+                }
+            }
+        }
+        processor->return_to_state = state;
+    }
+    return 1;
+}
+
+i32 __cdecl Action_ReturnToState(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                 i32 count, i32 first_time, f32 elapsed) {
+    if (processor != NULL && processor->return_to_state != NULL) {
+        processor->next_state = processor->return_to_state;
+        processor->return_to_state = NULL;
+    }
+    return 1;
+}
+
+void __cdecl InitFn_GameParamToFloat(AI_GAME_PARAM_TO_FLOAT_PC callback) {
+    GameParamToFloatFn = callback;
+}
+
+i32 __cdecl Action_SetCircleDirection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                      char **params, i32 param_count, i32 first_time, f32 elapsed) {
+    i32 i;
+
+    if (packet != NULL && packet->owner != NULL && first_time != 0 && param_count != 0) {
+        for (i = 0; i < param_count; i++) {
+            if (NuStrICmp(params[i], AIActionClockwiseName) == 0) {
+                packet->flags |= 0x200u;
+            } else if (NuStrICmp(params[i], AIActionAnticlockwiseName) == 0) {
+                packet->flags &= ~0x200u;
+            } else if (NuStrICmp(params[i], AIActionReverseName) == 0) {
+                packet->flags ^= 0x200u;
+            } else if (NuStrICmp(params[i], AIActionRandomName) == 0) {
+                if (NuRandFloat() > 0.5f) {
+                    packet->flags |= 0x200u;
+                } else {
+                    packet->flags &= ~0x200u;
+                }
+            }
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_FacePlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                              i32 param_count, i32 first_time, f32 elapsed) {
+    f32 min_time;
+    f32 max_time;
+    i32 index;
+    char *value;
+    f32 remaining_time;
+
+    if (packet == NULL) {
+        return 1;
+    }
+    if (first_time != 0) {
+        min_time = 0.0f;
+        max_time = 0.0f;
+        for (index = 0; index < param_count; ++index) {
+            value = NuStrIStr(params[index], (char *)AIActionMinTimeName);
+            if (value != NULL) {
+                min_time = AIParamToFloatEx(packet, processor, value + 8);
+            } else if ((value = NuStrIStr(params[index], (char *)AIActionMaxTimeName)) != NULL) {
+                max_time = AIParamToFloatEx(packet, processor, value + 8);
+            } else {
+                processor->action_timer = AIParamToFloatEx(packet, processor, params[index]);
+            }
+        }
+        if (processor->action_timer == 0.0f && min_time < max_time) {
+            processor->action_timer = NuRandFloat() * (max_time - min_time) + min_time;
+        }
+    }
+    remaining_time = processor->action_timer;
+    if (sys->player_1 != NULL) {
+        packet->movement_look_target = &sys->player_1->position;
+    }
+    if (remaining_time > 0.0f) {
+        remaining_time -= elapsed;
+        processor->action_timer = remaining_time;
+        if (remaining_time <= 0.0f) {
+            processor->action_timer = 0.0f;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+i32 __cdecl Action_FaceOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                i32 param_count, i32 first_time, f32 elapsed) {
+    f32 min_time;
+    f32 max_time;
+    i32 index;
+    char *value;
+    APIOBJECT_PC *opponent;
+    NUVEC direction;
+
+    (void)sys;
+    if (packet == NULL) {
+        return 1;
+    }
+    if (first_time != 0) {
+        min_time = 0.0f;
+        max_time = 0.0f;
+        for (index = 0; index < param_count; ++index) {
+            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)AIActionMinTimeName);
+            if (value != NULL) {
+                min_time = AIParamToFloatEx(packet, processor, value + 8);
+            } else if ((value = NuStrIStr(params[index], (char *)AIActionMaxTimeName)) != NULL) {
+                max_time = AIParamToFloatEx(packet, processor, value + 8);
+            } else if ((value = NuStrIStr(params[index], (char *)AIActionFaceOffsetName)) != NULL) {
+                processor->action_data_4 = AIParamToFloatEx(packet, processor, value + 11);
+            } else if (NuStrICmp(params[index], AIActionNearestOpponentName) == 0) {
+                processor->action_data_1 = 1;
+            } else {
+                processor->action_timer = AIParamToFloatEx(packet, processor, params[index]);
+            }
+        }
+        if (processor->action_timer == 0.0f && min_time < max_time) {
+            processor->action_timer = NuRandFloat() * (max_time - min_time) + min_time;
+        }
+    }
+
+    opponent =
+        processor->action_data_1 != 0 ? ((APIOBJECT_PC *)packet->nearest_opponent) : ((APIOBJECT_PC *)packet->opponent);
+    if (opponent != NULL && opponent->ai != NULL) {
+        if (processor->action_data_4 == 0.0f) {
+            packet->movement_look_target = &opponent->position;
+        } else {
+            direction.x = opponent->position.z - packet->owner->position.z;
+            direction.y = 0.0f;
+            direction.z = packet->owner->position.x - opponent->position.x;
+            NuVecNorm(&direction, &direction);
+            processor->action_pos.x = opponent->position.x + direction.x * processor->action_data_4;
+            processor->action_pos.y = opponent->position.y;
+            processor->action_pos.z = opponent->position.z + direction.z * processor->action_data_4;
+            packet->movement_look_target = &processor->action_pos;
+        }
+    }
+    if (processor->action_timer > 0.0f) {
+        processor->action_timer -= elapsed;
+        if (processor->action_timer <= 0.0f) {
+            processor->action_timer = 0.0f;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+i32 __cdecl Action_ShadowTerrain(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                 i32 param_count, i32 first_time, f32 elapsed) {
+    i32 i;
+
+    if (packet != NULL && packet->owner != NULL && first_time != 0) {
+        packet->owner->flags_1fc |= 8;
+        for (i = 0; i < param_count; i++) {
+            if (NuStrICmp(params[i], AIScriptFalse) == 0) {
+                packet->owner->flags_1fc &= ~8;
+            }
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_SetMoveRadius(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                 i32 param_4, i32 param_5, f32 param_6) {
+
+    (void)sys;
+    (void)processor;
+    (void)packet;
+    (void)params;
+    (void)param_4;
+    (void)param_5;
+    (void)param_6;
+    if (packet != NULL && packet->owner != NULL && param_5 != 0) {
+        packet->mover_height =
+            ((APIOBJECT_PC *)packet->owner)->collision_radius + ((APIOBJECT_PC *)packet->owner)->collision_radius;
+        if (param_4 != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0) {
+            packet->mover_height = AIParamToFloatEx(packet, processor, params[0]);
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_ResetToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                 i32 param_4, i32 param_5, f32 param_6) {
+    NUVEC *origin;
+
+    (void)processor;
+    (void)params;
+    (void)param_4;
+    (void)param_5;
+    (void)param_6;
+    if (packet == NULL || packet->owner == NULL) {
+        return 1;
+    }
+    origin = GetOriginPositionFn != NULL ? GetOriginPositionFn(sys, packet) : NULL;
+    if (origin != NULL) {
+        packet->owner->position = *origin;
+    } else if (packet->owner != NULL && (packet->owner->flags_1f8 & 0x400) != 0 && packet->creature_index != 0xff) {
+        packet->owner->position = sys->creatures[packet->creature_index].position;
+    }
+    return 1;
+}
+
+i32 __cdecl Action_SetIgnoreAntinodes(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                      i32 param_count, i32 first_time, f32 elapsed) {
+    APIOBJECT_PC *object;
+    i32 ignore;
+    i32 i;
+    char *value;
+
+    if (first_time != 0) {
+        object = packet != NULL ? (APIOBJECT_PC *)(packet->owner) : NULL;
+        ignore = 1;
+        for (i = 0; i < param_count; i++) {
+            value = NuStrIStr(params[i], (char *)AreaConfigKeyword_character);
+            if (value != NULL) {
+                if (GetNamedGameObjectCallback != NULL) {
+                    object = GetNamedGameObjectCallback(sys, value + 10);
+                }
+            } else if (NuStrICmp(AIActionFalseName, params[0]) == 0) {
+                // The original tests the first parameter, even on later iterations.
+                ignore = 0;
+            }
+        }
+        if (object != NULL) {
+            object->flags_low = (object->flags_low & ~0x20000u) | (ignore != 0 ? 0x20000u : 0);
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_SetViewDistance(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                   i32 count, i32 first_time, f32 elapsed) {
+    APIOBJECT_PC *object;
+
+    if (packet != NULL && packet->owner != NULL && first_time != 0) {
+        object = (APIOBJECT_PC *)packet->owner;
+        if (packet->creature_index != 0xff)
+            object->view_distance = system->creatures[packet->creature_index].view_distance;
+        else if (GetViewRangeFn != NULL)
+            object->view_distance = GetViewRangeFn(object->character_model->model_id);
+        else
+            object->view_distance = 1.0f;
+        if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
+            object->view_distance = AIParamToFloatEx(packet, processor, params[0]);
+    }
+    return 1;
+}
+
+i32 __cdecl Action_SetHearDistance(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                   i32 count, i32 first_time, f32 elapsed) {
+    APIOBJECT_PC *object;
+
+    if (packet != NULL && packet->owner != NULL && first_time != 0) {
+        object = (APIOBJECT_PC *)packet->owner;
+        if (packet->creature_index != 0xff)
+            object->hear_distance = system->creatures[packet->creature_index].hear_distance;
+        else if (GetHearDistanceFn != NULL)
+            object->hear_distance = GetHearDistanceFn(object->character_model->model_id);
+        else
+            object->hear_distance = 1.0f;
+        if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
+            object->hear_distance = AIParamToFloatEx(packet, processor, params[0]);
+    }
+    return 1;
+}
+
+i32 __cdecl Action_SetMaxViewHeight(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                    i32 count, i32 first_time, f32 elapsed) {
+    APIOBJECT_PC *object;
+
+    if (packet != NULL && packet->owner != NULL && first_time != 0) {
+        object = (APIOBJECT_PC *)packet->owner;
+        if (packet->creature_index != 0xff)
+            object->max_view_height = system->creatures[packet->creature_index].max_view_height;
+        else if (GetMaxViewHeightFn != NULL)
+            object->max_view_height = GetMaxViewHeightFn(object->character_model->model_id);
+        else
+            object->max_view_height = 1.0f;
+        if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
+            object->max_view_height = AIParamToFloatEx(packet, processor, params[0]);
+    }
+    return 1;
+}
+
+i32 __cdecl Action_SetMinViewHeight(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                    i32 count, i32 first_time, f32 elapsed) {
+    APIOBJECT_PC *object;
+
+    if (packet != NULL && packet->owner != NULL && first_time != 0) {
+        object = (APIOBJECT_PC *)packet->owner;
+        if (packet->creature_index != 0xff)
+            object->min_view_height = system->creatures[packet->creature_index].min_view_height;
+        else if (GetMinViewHeightFn != NULL)
+            object->min_view_height = GetMinViewHeightFn(object->character_model->model_id);
+        else
+            object->min_view_height = 1.0f;
+        if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
+            object->min_view_height = AIParamToFloatEx(packet, processor, params[0]);
+    }
+    return 1;
+}
+
+i32 __cdecl Action_IgnoreWallSplines(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                     char **params, i32 count, i32 first_time, f32 elapsed) {
+    i32 i;
+
+    if (packet != NULL && first_time != 0) {
+        packet->flags |= 0x80u;
+        for (i = 0; i < count; i++) {
+            if (NuStrICmp(params[i], AIScriptFalse) == 0)
+                packet->flags &= ~0x80u;
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_CheckWallSplines(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                    i32 count, i32 first_time, f32 elapsed) {
+    i32 i;
+
+    if (packet != NULL && first_time != 0) {
+        packet->flags |= 0x100u;
+        for (i = 0; i < count; i++) {
+            if (NuStrICmp(params[i], AIScriptFalse) == 0)
+                packet->flags &= ~0x100u;
+        }
+        if ((packet->flags & 0x100u) != 0)
+            packet->flags |= 0x80u;
+    }
+    return 1;
+}
+
+i32 __cdecl Action_Circle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                          i32 param_count, i32 first_time, f32 elapsed) {
+    NUVEC difference;
+    i32 i;
+    char *value;
+    NUVEC *position;
+    AIPATHINFO_PC *path;
+    AILOCATOR_PC *locator;
+    AICREATURE_PC *creature;
+
+    if (packet == NULL || sys == NULL || sys->player_1 == NULL) {
+        return 1;
+    }
+    if (first_time != 0) {
+        for (i = 0; i < param_count; i++) {
+            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) != 0) {
+                continue;
+            }
+
+            if (NuStrICmp(params[i], AIPathAnticlockwiseName) == 0) {
+                packet->flags &= ~0x200u;
+            } else if (NuStrICmp(params[i], AIPathClockwiseName) == 0) {
+                packet->flags |= 0x200u;
+            } else if (NuStrICmp(params[i], AIPathReverseName) == 0) {
+                packet->flags ^= 0x200u;
+            } else if (NuStrICmp(params[i], AIPathFacingName) == 0) {
+                processor->action_data_1 |= 1;
+            } else if (NuStrICmp(params[i], AIPathCurrentDistanceName) == 0) {
+                processor->action_data_1 |= 4;
+            } else if ((value = NuStrIStr(params[i], (char *)AIPathLocatorName)) != NULL) {
+                processor->action_data_3 = AIPathFindLocator(sys, value + 8);
+                if (processor->action_data_3 != NULL) {
+                    processor->action_data_1 |= 0x10;
+                }
+            } else if (NuStrIStr(params[i], (char *)AIPathCurrentPositionName) != NULL) {
+                processor->action_data_1 |= 8;
+                processor->action_pos = packet->terrain_origin;
+            } else if (NuStrICmp(params[i], AIPathOriginName) == 0) {
+                if (packet->creature_index != 0xff) {
+                    processor->action_data_1 |= 0x20;
+                }
+            } else {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
+            }
+        }
+        if ((processor->action_data_1 & 0x38) == 0) {
+            processor->action_data_1 |= 8;
+            processor->action_pos = packet->terrain_origin;
+        }
+    }
+    position = NULL;
+    path = NULL;
+    if ((processor->action_data_1 & 8) != 0) {
+        position = &processor->action_pos;
+        path = &packet->path_info;
+    } else if ((processor->action_data_1 & 0x10) != 0) {
+        locator = (AILOCATOR_PC *)(processor->action_data_3);
+        position = &locator->position;
+        path = &locator->path_info;
+    } else if ((processor->action_data_1 & 0x20) != 0) {
+        creature = &sys->creatures[packet->creature_index];
+        path = &creature->path_info;
+        position = GetOriginPositionFn != NULL ? GetOriginPositionFn(sys, packet) : NULL;
+        if (position == NULL) {
+            position = &creature->position;
+        }
+    }
+    if (position != NULL && path != NULL) {
+        if ((processor->action_data_1 & 4) != 0) {
+            packet->movement_instruction_parameter = NuVecXZDist(&packet->terrain_origin, position, &difference);
+        }
+        AIMoveInstruction(packet, position, 0.0f, path, 3, packet->movement_instruction_parameter);
+        if ((processor->action_data_1 & 1) != 0) {
+            packet->movement_look_target = position;
+        }
+    }
+    return 0;
+}
+
+i32 __cdecl Action_CirclePlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                i32 param_count, i32 first_time, f32 elapsed) {
+    NUVEC difference;
+    i32 i;
+    AIPACKET_PC *target;
+    NUVEC *position;
+
+    if (packet == NULL || sys == NULL || sys->player_1 == NULL) {
+        return 1;
+    }
+    if (first_time != 0) {
+        for (i = 0; i < param_count; i++) {
+            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) != 0) {
+                continue;
+            }
+            if (NuStrICmp(params[i], AIPathAnticlockwiseName) == 0) {
+                packet->flags &= ~0x200u;
+            } else if (NuStrICmp(params[i], AIPathClockwiseName) == 0) {
+                packet->flags |= 0x200u;
+            } else if (NuStrICmp(params[i], AIPathReverseName) == 0) {
+                packet->flags ^= 0x200u;
+            } else if (NuStrICmp(params[i], AIPathFacingName) == 0) {
+                processor->action_data_1 |= 1;
+            } else if (NuStrICmp(params[i], AIPathCanGoOffPathName) == 0) {
+                processor->action_data_1 |= 2;
+            } else if (NuStrICmp(params[i], AIPathCurrentDistanceName) == 0) {
+                processor->action_data_1 |= 4;
+            } else {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
+            }
+        }
+    }
+    if (sys->player_1 != NULL) {
+        if ((processor->action_data_1 & 4) != 0) {
+            packet->movement_instruction_parameter =
+                NuVecXZDist(&packet->terrain_origin, &sys->player_1->ai->last_path_position, &difference);
+        }
+        target = sys->player_1->ai;
+        position = (processor->action_data_1 & 2) != 0 ? &target->terrain_origin : &target->last_path_position;
+        AIMoveInstruction(packet, position, target->mover_height, &target->path_info, 3,
+                          packet->movement_instruction_parameter);
+        if ((processor->action_data_1 & 1) != 0) {
+            packet->movement_look_target = position;
+        }
+    }
+    return 0;
+}
+
+i32 __cdecl Action_CircleOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                  i32 param_count, i32 first_time, f32 elapsed) {
+    NUVEC difference;
+    i32 i;
+    AIPACKET_PC *target;
+    NUVEC *position;
+
+    if (packet == NULL) {
+        return 1;
+    }
+    if (first_time != 0) {
+        for (i = 0; i < param_count; i++) {
+            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) != 0) {
+                continue;
+            }
+            if (NuStrICmp(params[i], AIPathAnticlockwiseName) == 0) {
+                packet->flags &= ~0x200u;
+            } else if (NuStrICmp(params[i], AIPathClockwiseName) == 0) {
+                packet->flags |= 0x200u;
+            } else if (NuStrICmp(params[i], AIPathReverseName) == 0) {
+                packet->flags ^= 0x200u;
+            } else if (NuStrICmp(params[i], AIPathRandomName) == 0) {
+                if (NuRandFloat() < 0.5f) {
+                    packet->flags &= ~0x200u;
+                } else {
+                    packet->flags |= 0x200u;
+                }
+            } else if (NuStrICmp(params[i], AIPathFacingName) == 0) {
+                processor->action_data_1 |= 1;
+            } else if (NuStrICmp(params[i], AIPathCanGoOffPathName) == 0) {
+                processor->action_data_1 |= 2;
+            } else if (NuStrICmp(params[i], AIPathCurrentDistanceName) == 0) {
+                processor->action_data_1 |= 4;
+            } else {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
+            }
+        }
+    }
+    if (((APIOBJECT_PC *)packet->opponent) != NULL && ((APIOBJECT_PC *)packet->opponent)->ai != NULL) {
+        if ((processor->action_data_1 & 4) != 0) {
+            packet->movement_instruction_parameter = NuVecXZDist(
+                &packet->terrain_origin, &((APIOBJECT_PC *)packet->opponent)->ai->last_path_position, &difference);
+        }
+        target = ((APIOBJECT_PC *)packet->opponent)->ai;
+        position = (processor->action_data_1 & 2) != 0 ? &target->terrain_origin : &target->last_path_position;
+        AIMoveInstruction(packet, position, target->mover_height, &target->path_info, 3,
+                          packet->movement_instruction_parameter);
+        if ((processor->action_data_1 & 1) != 0) {
+            packet->movement_look_target = position;
+        }
+    }
+    return 0;
+}
+
+i32 __cdecl Action_GoToNode(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                            i32 param_count, i32 first_time, f32 elapsed) {
+    NUVEC difference;
+    i32 index;
+    AIPATHNODE_PC *node;
+    i32 node_index;
+    AIPATHNODE_PC *node_2;
+    f32 distance_squared;
+
+    (void)elapsed;
+
+    if (packet == NULL || packet->owner == NULL || packet->path_info.path == NULL ||
+        packet->path_info.connection == NULL) {
+        return 1;
+    }
+
+    if (first_time != 0) {
+        if (param_count == 0) {
+            return 0;
+        }
+        for (index = 1; index < param_count; ++index) {
+            if (AIActionParseSpeedFn == NULL || AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) == 0) {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
+            }
+        }
+        processor->action_data_3 = AIPathFindNode(sys, packet->path_info.path, params[0]);
+        node = (AIPATHNODE_PC *)(processor->action_data_3);
+        if (node != NULL && node->connection_count != 0) {
+            node_index = node - packet->path_info.path->nodes;
+            processor->path_info.path = packet->path_info.path;
+            processor->path_info.connection = node->connections[0];
+            processor->path_info.distance =
+                node_index == processor->path_info.connection->node_indices[0] ? 0.0f : 1.0f;
+            processor->path_info.direction = 0;
+            processor->path_info.flags_word |= 1;
+            processor->path_info.width = 0.0f;
+            AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 1,
+                              packet->movement_instruction_parameter);
+        } else {
+            return 1;
+        }
+        return 0;
+    }
+
+    node_2 = (AIPATHNODE_PC *)(processor->action_data_3);
+    if (node_2 == NULL) {
+        return 1;
+    }
+    distance_squared = NuVecXZDistSqr(&packet->terrain_origin, &node_2->position, &difference);
+    AIMoveInstruction(packet, &node_2->position, 0.0f, &processor->path_info, 1,
+                      packet->movement_instruction_parameter);
+    return distance_squared < node_2->radius_squared;
+}
+
+i32 __cdecl Action_FollowPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                              i32 param_count, i32 is_first_time, f32 elapsed) {
+    f32 completion_time;
+    f32 minimum_time;
+    f32 maximum_time;
+    i32 index;
+    char *value;
+    f64 first_term;
+    f32 random;
+
+    (void)sys;
+
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL) {
+        return 1;
+    }
+    if (packet->path_info.path == NULL || packet->path_info.connection == NULL) {
+        return 0;
+    }
+
+    completion_time = 0.0f;
+    if (is_first_time != 0) {
+        packet->movement_target = NULL;
+
+        minimum_time = 0.0f;
+        maximum_time = 0.0f;
+        for (index = 0; index < param_count; ++index) {
+            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
+                continue;
+            }
+
+            value = NuStrIStr(params[index], (char *)AIActionMinTimeName);
+            if (value != NULL) {
+                minimum_time = AIParamToFloatEx(packet, processor, value + 8);
+                continue;
+            }
+
+            value = NuStrIStr(params[index], (char *)AIActionMaxTimeName);
+            if (value != NULL) {
+                maximum_time = AIParamToFloatEx(packet, processor, value + 8);
+                continue;
+            }
+
+            processor->action_timer = AIParamToFloatEx(packet, processor, params[index]);
+        }
+
+        if (maximum_time > minimum_time) {
+            first_term = (1.0 - NuRandFloat()) * minimum_time;
+            random = NuRandFloat();
+            processor->action_timer = (f32)(random * maximum_time + first_term);
+        }
+    }
+
+    AIMoveInstruction(packet, NULL, 0.0f, NULL, 4, packet->movement_instruction_parameter);
+
+    if (!(processor->action_timer > completion_time)) {
+        return 0;
+    }
+
+    processor->action_timer -= elapsed;
+    return completion_time >= processor->action_timer;
+}
+
+i32 __cdecl Action_MoveAwayFromNode(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                    i32 param_count, i32 first_time, f32 elapsed) {
+    NUVEC difference;
+    i32 i;
+    AIPATHNODE_PC *node;
+    i32 index;
+    AIPATHNODE_PC *node_2;
+    f32 distance;
+
+    if (packet == NULL || packet->owner == NULL || packet->path_info.path == NULL ||
+        packet->path_info.connection == NULL) {
+        return 1;
+    }
+    if (first_time != 0) {
+        if (param_count == 0) {
+            return 0;
+        }
+        for (i = 1; i < param_count; i++) {
+            if (AIActionParseSpeedFn == NULL || AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) == 0) {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
+            }
+        }
+        node = AIPathFindNode(sys, packet->path_info.path, params[0]);
+        processor->action_data_3 = node;
+        if (node == NULL || node->connection_count == 0) {
+            return 1;
+        }
+        index = node - packet->path_info.path->nodes;
+        AISysCharacterSetPath(packet, packet->path_info.path);
+        processor->path_info.connection = node->connections[0];
+        processor->path_info.distance = index == processor->path_info.connection->node_indices[0] ? 0.0f : 1.0f;
+        processor->path_info.width = 0.0f;
+        processor->path_info.direction = 0;
+        processor->path_info.flags_word |= 1;
+        AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 2,
+                          packet->movement_instruction_parameter);
+        return 0;
+    }
+    node_2 = (AIPATHNODE_PC *)(processor->action_data_3);
+    if (node_2 != NULL) {
+        distance = NuVecXZDistSqr(&packet->terrain_origin, &node_2->position, &difference);
+        if (!(node_2->radius_squared > distance)) {
+            AIMoveInstruction(packet, &node_2->position, 0.0f, &processor->path_info, 2,
+                              packet->movement_instruction_parameter);
+            return 0;
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_GoToNodeRandom(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                  i32 param_count, i32 first_time, f32 elapsed) {
+    NUVEC difference;
+    i32 selected;
+    AIPATHNODE_PC *node;
+    i32 node_index;
+    AIPATHNODE_PC *node_2;
+    f32 distance_squared;
+
+    (void)elapsed;
+
+    if (packet == NULL || packet->owner == NULL || packet->path_info.path == NULL ||
+        packet->path_info.connection == NULL) {
+        return 1;
+    }
+    if (first_time != 0) {
+        if (param_count == 0) {
+            return 0;
+        }
+        selected = (i32)(NuRandFloat() * param_count);
+        if (selected >= param_count) {
+            selected = param_count - 1;
+        }
+        processor->action_data_3 = AIPathFindNode(sys, packet->path_info.path, params[selected]);
+        node = (AIPATHNODE_PC *)(processor->action_data_3);
+        if (node != NULL && node->connection_count != 0) {
+            node_index = node - packet->path_info.path->nodes;
+            processor->path_info.path = packet->path_info.path;
+            processor->path_info.connection = node->connections[0];
+            processor->path_info.distance =
+                node_index == processor->path_info.connection->node_indices[0] ? 0.0f : 1.0f;
+            processor->path_info.direction = 0;
+            processor->path_info.flags_word |= 1;
+            processor->path_info.width = 0.0f;
+            AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 1,
+                              packet->movement_instruction_parameter);
+        } else {
+            return 1;
+        }
+        return 0;
+    }
+    node_2 = (AIPATHNODE_PC *)(processor->action_data_3);
+    if (node_2 == NULL) {
+        return 1;
+    }
+    distance_squared = NuVecXZDistSqr(&packet->terrain_origin, &node_2->position, &difference);
+    AIMoveInstruction(packet, &node_2->position, 0.0f, &processor->path_info, 1,
+                      packet->movement_instruction_parameter);
+    return distance_squared < node_2->radius_squared;
+}
+
+i32 __cdecl Action_MoveAwayFromOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                        char **params, i32 param_count, i32 first_time, f32 elapsed) {
+    i32 i;
+    AIPACKET_PC *target;
+
+    if (packet == NULL) {
+        return 1;
+    }
+    if (first_time != 0) {
+        for (i = 0; i < param_count; i++) {
+            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) != 0) {
+                continue;
+            }
+            if (NuStrICmp(params[i], AIPathFaceName) == 0) {
+                processor->action_data_1 = 1;
+            } else {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
+            }
+        }
+    }
+    if (((APIOBJECT_PC *)packet->opponent) != NULL && ((APIOBJECT_PC *)packet->opponent)->ai != NULL) {
+        target = ((APIOBJECT_PC *)packet->opponent)->ai;
+        AIMoveInstruction(packet, &target->last_path_position, target->mover_height, &target->path_info, 2,
+                          packet->movement_instruction_parameter);
+        if (processor->action_data_1 != 0) {
+            packet->movement_look_target = &((APIOBJECT_PC *)packet->opponent)->position;
+        }
+    }
+    return 0;
+}
+
+i32 __cdecl Action_MoveAwayFromPlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                      i32 param_count, i32 first_time, f32 elapsed) {
+    i32 i;
+    AIPACKET_PC *target;
+
+    if (packet == NULL) {
+        return 1;
+    }
+    if (first_time != 0) {
+        for (i = 0; i < param_count; i++) {
+            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) != 0) {
+                continue;
+            }
+            if (NuStrICmp(params[i], AIPathFaceName) == 0) {
+                processor->action_data_1 = 1;
+            } else {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
+            }
+        }
+    }
+    if (sys->player_1 != NULL) {
+        target = sys->player_1->ai;
+        AIMoveInstruction(packet, &target->last_path_position, target->mover_height, &target->path_info, 2,
+                          packet->movement_instruction_parameter);
+        if (processor->action_data_1 != 0) {
+            packet->movement_look_target = &sys->player_1->position;
+        }
+    }
+    return 0;
+}
+
+i32 __cdecl Action_MoveAwayFromPlayer2(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                       i32 param_count, i32 first_time, f32 elapsed) {
+    i32 i;
+    AIPACKET_PC *target;
+
+    if (packet == NULL) {
+        return 1;
+    }
+    if (first_time != 0) {
+        for (i = 0; i < param_count; i++) {
+            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) != 0) {
+                continue;
+            }
+            if (NuStrICmp(params[i], AIPathFaceName) == 0) {
+                processor->action_data_1 = 1;
+            } else {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
+            }
+        }
+    }
+    if (sys->player_2 != NULL) {
+        target = sys->player_2->ai;
+        AIMoveInstruction(packet, &target->last_path_position, target->mover_height, &target->path_info, 2,
+                          packet->movement_instruction_parameter);
+        if (processor->action_data_1 != 0) {
+            packet->movement_look_target = &sys->player_2->position;
+        }
+    }
+    return 0;
+}
+
+i32 __cdecl Action_GoToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                              i32 param_count, i32 first_time, f32 elapsed) {
+    NUVEC difference;
+    AICREATURE_PC *creature;
+    NUVEC *origin;
+    f32 min_time;
+    f32 max_time;
+    i32 index;
+    char *value;
+    f32 distance_squared;
+    f32 range;
+    f32 remaining_time;
+
+    if (packet == NULL || packet->owner == NULL || packet->path_info.path == NULL ||
+        packet->path_info.connection == NULL || (packet->owner->flags_1f8 & 0x400) == 0 ||
+        packet->creature_index == 0xff) {
+        return 1;
+    }
+    creature = &sys->creatures[packet->creature_index];
+    origin = GetOriginPositionFn != NULL ? GetOriginPositionFn(sys, packet) : NULL;
+    if (origin == NULL) {
+        origin = &creature->position;
+    }
+
+    if (first_time != 0) {
+        packet->movement_instruction_parameter = 0.2f;
+        min_time = 0.0f;
+        max_time = 0.0f;
+        for (index = 0; index < param_count; ++index) {
+            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)AIPathWaitTimeName);
+            if (value != NULL) {
+                processor->action_timer = AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathWaitTimeName) + 1);
+            } else if ((value = NuStrIStr(params[index], (char *)AIActionMinTimeName)) != NULL) {
+                min_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMinTimeName) + 1);
+            } else if ((value = NuStrIStr(params[index], (char *)AIActionMaxTimeName)) != NULL) {
+                max_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMaxTimeName) + 1);
+            } else if (NuStrICmp(params[index], AIPathXZRangeCheckName) == 0) {
+                processor->action_data_2 = 1;
+            } else if ((value = NuStrIStr(params[index], (char *)AIPathGoalRangeName)) != NULL) {
+                packet->movement_instruction_parameter =
+                    AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathGoalRangeName) + 1);
+            } else {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
+            }
+        }
+        if (processor->action_timer == 0.0f) {
+            if (min_time < max_time) {
+                processor->action_timer = NuRandFloat() * (max_time - min_time) + min_time;
+            } else {
+                processor->action_timer = 0.01f;
+            }
+        }
+        AIMoveInstruction(packet, origin, 0.0f, &creature->path_info, 1, packet->movement_instruction_parameter);
+        processor->action_pos.x = 0.0f;
+        processor->action_pos.y = 0.0f;
+        processor->action_pos.z = 1.0f;
+        NuVecRotateY(&processor->action_pos, &processor->action_pos, creature->y_rotation);
+        NuVecAdd(&processor->action_pos, &processor->action_pos, origin);
+        return 0;
+    }
+
+    AIMoveInstruction(packet, origin, 0.0f, &creature->path_info, 1, packet->movement_instruction_parameter);
+    distance_squared = processor->action_data_2 != 0 ? NuVecXZDistSqr(&packet->terrain_origin, origin, &difference)
+                                                     : NuVecDistSqr(&packet->terrain_origin, origin, &difference);
+    range = packet->movement_instruction_parameter + ai_moveradius;
+    range = elapsed * packet->owner->horizontal_velocity_magnitude + range;
+    if (distance_squared < range * range) {
+        remaining_time = processor->action_timer;
+        packet->movement_look_target = &processor->action_pos;
+        if (!(remaining_time > 0.0f)) {
+            return 1;
+        }
+        remaining_time -= elapsed;
+        processor->action_timer = remaining_time;
+        if (remaining_time < 0.0f) {
+            processor->action_timer = 0.0f;
+        }
+    }
+    return 0;
+}
+
+__declspec(noinline) void __cdecl FollowAPIObject(APIOBJECT_PC *object, APIOBJECT_PC *target, i32 flags,
+                                                  f32 movement_parameter) {
+    AIPACKET_PC *packet;
+    AIPACKET_PC *target_packet;
+    AIPATH_PC *path;
+    NUVEC *destination;
+    i32 movement_mode;
+    i32 use_path;
+    u8 object_node;
+    u8 target_node;
+    f32 stopping_distance;
+    packet = object->ai;
+    target_packet = target->ai;
+    if ((flags & 1) != 0) {
+        use_path = 0;
+        path = packet->path_info.path;
+        if (path != NULL && path == target_packet->path_info.path) {
+            if (((target_packet->path_info.flags & 1) != 0 ||
+                 packet->path_info.connection != target_packet->path_info.connection) &&
+                packet->path_info.connection != NULL && target_packet->path_info.connection != NULL &&
+                (packet->flags & 0x100000u) == 0) {
+                object_node = packet->path_info.connection->node_indices[0];
+                target_node = target_packet->path_info.connection->node_indices[0];
+                if (path->route_matrix[object_node][target_node] != 0xff || object_node == target_node)
+                    use_path = 1;
+            }
+        }
+        if (use_path != 0) {
+            destination = &target_packet->last_path_position;
+            movement_mode = 1;
+        } else {
+            destination = &target_packet->terrain_origin;
+            movement_mode = 7;
+        }
+    } else {
+        destination = &target_packet->last_path_position;
+        movement_mode = 1;
+    }
+    stopping_distance = (flags & 2) != 0 ? 0.0f : target_packet->mover_height;
+    AIMoveInstruction(packet, destination, stopping_distance, &target_packet->path_info, movement_mode,
+                      movement_parameter);
+}
+
+__declspec(noinline) void __cdecl AIPathCnxSetTemporaryBlock(AIPATH_PC *path, char *from_name, char *to_name,
+                                                             i32 blocked) {
+    AIPATHNODE_PC *from;
+    AIPATHNODE_PC *to;
+    AIPATHCNX_PC *connection;
+    i32 to_index;
+    i32 index;
+    i32 direction;
+    if (from_name == NULL || path == NULL || to_name == NULL)
+        return;
+    from = AIPathFindNode(NULL, path, from_name);
+    to = AIPathFindNode(NULL, path, to_name);
+    if (to == NULL || from == NULL)
+        return;
+    to_index = to - path->nodes;
+    for (index = 0; index < from->connection_count; index++) {
+        connection = from->connections[index];
+        if (connection->node_indices[0] == to_index)
+            direction = 1;
+        else if (connection->node_indices[1] == to_index)
+            direction = 0;
+        else
+            continue;
+        if (blocked != 0)
+            connection->traversal_flags[direction] |= 0x80000000u;
+        else
+            connection->traversal_flags[direction] &= 0x7fffffffu;
+        return;
+    }
+}
+
+void __cdecl InitFn_AIBigJumpToDestination(AI_BIG_JUMP_TO_DESTINATION_PC callback) {
+    AIBigJumpToDestinationFn = callback;
+}
+
+i32 __cdecl Action_FaceLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                               i32 param_count, i32 first_time, f32 elapsed) {
+    i32 index;
+    char *value;
+    AILOCATOR_PC *locator;
+
+    (void)elapsed;
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL ||
+        packet->path_info.path == NULL || packet->path_info.connection == NULL) {
+        return 1;
+    }
+    if (first_time != 0) {
+        processor->action_data_3 = processor->locator;
+        for (index = 0; index < param_count; ++index) {
+            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
+                continue;
+            }
+            value = NuStrIStr(params[index], "name");
+            if (value != NULL) {
+                processor->action_data_3 = AIPathFindLocator(sys, value + NuStrLen("name") + 1);
+                ++index;
+            }
+        }
+    }
+    locator = (AILOCATOR_PC *)(processor->action_data_3);
+    if (locator != NULL) {
+        packet->movement_look_target = &locator->position;
+        return 1;
+    }
+    return 0;
+}
+
+i32 __cdecl Action_SetRespawnLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                     i32 param_count, i32 first_time, f32 elapsed) {
+    AILOCATOR_PC *locators[32];
+    i32 count;
+    i32 i;
+    char *value;
+
+    if (packet != NULL && packet->owner != NULL && ((APIOBJECT_PC *)packet->owner)->owner != NULL && first_time != 0) {
+        packet->respawn_locator = processor->locator;
+        count = 0;
+        for (i = 0; i < param_count; i++) {
+            value = NuStrIStr(params[i], "locator");
+            if (value != NULL) {
+                if (count < 32) {
+                    locators[count] = AIPathFindLocator(sys, value + 8);
+                    if (locators[count] != NULL) {
+                        count++;
+                    }
+                }
+            }
+        }
+        if (count != 0) {
+            packet->respawn_locator = locators[NuRand(NULL) % count];
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_BlockPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                             i32 param_4, i32 param_5, f32 param_6) {
+    char *from;
+    char *to;
+    i32 both_ways;
+    i32 blocked;
+    i32 index;
+    char *value;
+
+    (void)processor;
+    (void)packet;
+    (void)param_6;
+    if (sys != NULL && sys->path_sys != NULL && sys->path_sys->path_count != 0 && param_5 != 0 && param_4 > 0) {
+        from = NULL;
+        to = NULL;
+        both_ways = 0;
+        blocked = 1;
+        for (index = 0; index < param_4; ++index) {
+            value = NuStrIStr(params[index], (char *)AIActionFromName);
+            if (value != NULL) {
+                from = value + 5;
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)AIActionToName);
+            if (value != NULL) {
+                to = value + 3;
+            } else if (NuStrICmp(params[index], AIActionBothWaysName) == 0) {
+                both_ways = 1;
+            } else if (NuStrICmp(params[index], AIActionFalseName) == 0) {
+                blocked = 0;
+            }
+        }
+        if (to != NULL && from != NULL) {
+            AIPathCnxSetTemporaryBlock(sys->path_sys->active_path, from, to, blocked);
+            if (both_ways) {
+                AIPathCnxSetTemporaryBlock(sys->path_sys->active_path, to, from, blocked);
+            }
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_PathConnectionMaxLength(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                           char **params, i32 param_count, i32 first_time, f32 elapsed) {
+    i32 direction;
+    char *from;
+    char *to;
+    f32 length;
+    i32 i;
+    char *value;
+    AIPATHCNX_PC *connection;
+
+    direction = 0;
+    if (sys != NULL && first_time != 0) {
+        from = NULL;
+        to = NULL;
+        length = 0.0f;
+        for (i = 0; i < param_count; i++) {
+            value = NuStrIStr(params[i], (char *)AIActionFromName);
+            if (value != NULL) {
+                from = value + 5;
+            } else if ((value = NuStrIStr(params[i], (char *)AIActionToName)) != NULL) {
+                to = value + 3;
+            } else if ((value = NuStrIStr(params[i], (char *)AIActionLengthName)) != NULL) {
+                length = AIParamToFloatEx(packet, processor, value + 7);
+            }
+        }
+        if (to != NULL && from != NULL) {
+            connection = (AIPATHCNX_PC *)(AIPAthFindPathCnx(sys, sys->path_sys->active_path, from, to, &direction));
+            if (connection != NULL) {
+                connection->max_horizontal_distance = length;
+                if (length != 0.0f &&
+                    connection->horizontal_distance > length + sys->path_sys->active_path->nodes[0].radius +
+                                                          sys->path_sys->active_path->nodes[0].radius) {
+                    connection->traversal_flags[0] |= 0x08000000;
+                    connection->traversal_flags[1] |= 0x08000000;
+                } else {
+                    connection->traversal_flags[0] &= ~0x08000000;
+                    connection->traversal_flags[1] &= ~0x08000000;
+                }
+            }
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_PathConnectionObstacle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                          char **params, i32 param_count, i32 first_time, f32 elapsed) {
+    i32 direction;
+    char *from;
+    char *to;
+    i32 open;
+    i32 i;
+    char *value;
+    AIPATHCNX_PC *connection;
+
+    direction = 0;
+    if (sys != NULL && first_time != 0) {
+        from = NULL;
+        to = NULL;
+        open = 0;
+        for (i = 0; i < param_count; i++) {
+            value = NuStrIStr(params[i], (char *)AIActionFromName);
+            if (value != NULL) {
+                from = value + 5;
+            } else if ((value = NuStrIStr(params[i], (char *)AIActionToName)) != NULL) {
+                to = value + 3;
+            } else if (NuStrICmp(params[i], AIActionOpenName) == 0) {
+                open = 1;
+            }
+        }
+        if (to != NULL && from != NULL) {
+            connection = (AIPATHCNX_PC *)(AIPAthFindPathCnx(sys, NULL, from, to, &direction));
+            if (connection != NULL && (connection->traversal_flags[0] & 0x20000000) != 0) {
+                connection->open = open;
+            }
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_SetInterrupt(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                i32 param_count, i32 is_first_time, f32 elapsed) {
+    u8 priority;
+    u8 id;
+    char *state_name;
+    f32 time;
+    char *value;
+    i32 i;
+
+    if (is_first_time && processor != NULL && param_count > 0) {
+        priority = 0;
+        id = 0;
+        state_name = NULL;
+        time = 0.0f;
+
+        for (i = 0; i < param_count; i++) {
+            if ((value = NuStrIStr(params[i], "priority")) != NULL) {
+                priority = (i32)(AIParamToFloatEx(packet, processor, value + 9));
+            } else if ((value = NuStrIStr(params[i], (char *)AIActionIDName)) != NULL) {
+                id = (i32)(AIParamToFloatEx(packet, processor, value + 3));
+            } else if ((value = NuStrIStr(params[i], (char *)AIActionStateName)) != NULL) {
+                state_name = value + 6;
+            } else if ((value = NuStrIStr(params[i], (char *)AIActionTimeName)) != NULL) {
+                time = AIParamToFloatEx(packet, processor, value + 5);
+            }
+        }
+        if (state_name != NULL) {
+            AIScriptSetInterrupt(processor, priority, id, state_name, time);
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_ClearInterrupt(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                  i32 param_count, i32 is_first_time, f32 elapsed) {
+    char *state_name;
+    i32 i;
+    char *value;
+
+    if (is_first_time && processor != NULL && param_count > 0) {
+        state_name = NULL;
+        for (i = 0; i < param_count; i++) {
+            value = NuStrIStr(params[i], (char *)AIActionStateName);
+            if (value != NULL) {
+                state_name = value + 6;
+            }
+        }
+        if (state_name != NULL) {
+            if (processor->interrupt_state != NULL && NuStrCmp(state_name, processor->interrupt_state->name) == 0) {
+                processor->interrupt_priority = 0;
+                processor->interrupt_id = 0;
+                processor->interrupt_timer = 0.0f;
+                processor->interrupt_state = NULL;
+            }
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_NotifyStateChange(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                     char **params, i32 param_count, i32 first_time, f32 elapsed) {
+    i32 enabled;
+    i32 i;
+
+    enabled = 1;
+    for (i = 0; i < param_count; i++) {
+        if (NuStrICmp(params[i], AIScriptFalse) == 0) {
+            enabled = 0;
+        }
+    }
+    if (enabled) {
+        AiSysStateDebugee = processor;
+    } else {
+        AiSysStateDebugee = NULL;
+    }
+    return 1;
+}
+
+i32 __cdecl Action_FollowOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                  i32 param_count, i32 first_time, f32 elapsed) {
+    i32 index;
+    APIOBJECT_PC *target;
+
+    if (packet == NULL) {
+        return 1;
+    }
+
+    if (first_time != 0) {
+        for (index = 0; index < param_count; ++index) {
+            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
+                continue;
+            }
+            if (NuStrICmp(params[index], AIActionIgnoreRadiusName) == 0) {
+                processor->action_data_1 |= 2;
+            } else if (NuStrICmp(params[index], AIPathCanGoOffPathName) == 0) {
+                processor->action_data_1 |= 1;
+            } else {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
+            }
+        }
+    }
+
+    target = (APIOBJECT_PC *)(packet->opponent);
+    if (target != NULL && target->ai != NULL) {
+        FollowAPIObject(((APIOBJECT_PC *)packet->owner), target, processor->action_data_1,
+                        packet->movement_instruction_parameter);
+    }
+    return 0;
+}
+
+i32 __cdecl Action_RetreatFromOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                       char **params, i32 param_count, i32 first_time, f32 elapsed) {
+    i32 i;
+    AIPACKET_PC *target;
+
+    if (packet == NULL) {
+        return 1;
+    }
+    if (first_time != 0) {
+        packet->movement_instruction_parameter = 1.0f;
+        for (i = 0; i < param_count; i++) {
+            if (AIActionParseSpeedFn == NULL || AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) == 0) {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
+            }
+        }
+    }
+    if (packet->opponent != NULL && ((APIOBJECT_PC *)packet->opponent)->ai != NULL) {
+        target = ((APIOBJECT_PC *)packet->opponent)->ai;
+        AIMoveInstruction(packet, &target->last_path_position, target->mover_height, &target->path_info, 2,
+                          packet->movement_instruction_parameter);
+    }
+    return 0;
+}
+
+i32 __cdecl Action_RetreatFromNearestOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                              char **params, i32 param_count, i32 first_time, f32 elapsed) {
+    i32 i;
+    AIPACKET_PC *target;
+
+    if (packet == NULL) {
+        return 1;
+    }
+    if (first_time != 0) {
+        packet->movement_instruction_parameter = 1.0f;
+        for (i = 0; i < param_count; i++) {
+            if (AIActionParseSpeedFn == NULL || AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) == 0) {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
+            }
+        }
+    }
+    if (packet->nearest_opponent != NULL) {
+        target = ((APIOBJECT_PC *)packet->nearest_opponent)->ai;
+        AIMoveInstruction(packet, &target->last_path_position, target->mover_height, &target->path_info, 2,
+                          packet->movement_instruction_parameter);
+    }
+    return 0;
+}
+
+i32 __cdecl Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                               i32 param_count, i32 is_first_time, f32 elapsed) {
+    AILOCATOR_PC *locator;
+    NUVEC distance_vector;
+    f32 distance_squared;
+    f32 reach_distance;
+    i32 random_locator_count;
+    i32 use_personal_name;
+    i32 use_indexed_name;
+    f32 minimum_time;
+    f32 maximum_time;
+    char locator_name[64];
+    i32 index;
+    AILOCATOR_PC *locator_2;
+    char *value;
+    AILOCATOR_PC *locator_3;
+
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL ||
+        packet->path_info.path == NULL || packet->path_info.connection == NULL) {
+        return 1;
+    }
+
+    if (is_first_time == 0) {
+        locator = (AILOCATOR_PC *)(processor->action_data_3);
+        if (locator == NULL) {
+            return 1;
+        }
+
+        if ((processor->action_data_1 & 8u) == 0) {
+            AIMoveInstruction(packet, &locator->position, 0.0f, &locator->path_info, 1,
+                              packet->movement_instruction_parameter);
+        } else {
+            AIMoveInstruction(packet, &locator->position, 0.0f, &locator->path_info, 7,
+                              packet->movement_instruction_parameter);
+        }
+
+        if ((processor->action_data_1 & 4u) != 0 && packet->opponent != NULL) {
+            packet->movement_look_target = &packet->opponent->position;
+        }
+        if ((processor->action_data_1 & 1u) != 0 && ((APIOBJECT_PC *)packet->owner)->grounded == 0) {
+            return 0;
+        }
+
+        distance_squared = (processor->action_data_1 & 2u) != 0
+                               ? NuVecXZDistSqr(&packet->terrain_origin, &locator->position, &distance_vector)
+                               : NuVecDistSqr(&packet->terrain_origin, &locator->position, &distance_vector);
+        reach_distance = packet->movement_instruction_parameter + ai_moveradius;
+        reach_distance = elapsed * packet->owner->horizontal_velocity_magnitude + reach_distance;
+        if (reach_distance * reach_distance > distance_squared) {
+            if ((processor->action_data_1 & 4u) == 0 || packet->opponent == NULL) {
+                packet->movement_look_target = &processor->action_pos;
+            }
+            if (!(processor->action_timer > 0.0f)) {
+                return 1;
+            }
+            processor->action_timer -= elapsed;
+            if (processor->action_timer < 0.0f) {
+                processor->action_timer = 0.0f;
+            }
+            return 0;
+        } else {
+            if ((packet->flags & 0x400000u) != 0 && (processor->action_data_1 & 16u) != 0 &&
+                AIBigJumpToDestinationFn != NULL) {
+                return AIBigJumpToDestinationFn(((APIOBJECT_PC *)packet->owner), &locator->position) != 0;
+            }
+            return 0;
+        }
+    }
+
+    processor->action_data_1 = 0;
+    processor->action_data_3 = processor->locator;
+
+    random_locator_count = 0;
+    use_personal_name = 0;
+    use_indexed_name = 0;
+    minimum_time = 0.0f;
+    maximum_time = 0.0f;
+
+    if (param_count != 0) {
+        for (index = 0; index < param_count; ++index) {
+            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
+                continue;
+            }
+
+            if (NuStrIStr(params[index], "name") != NULL || NuStrIStr(params[index], "teleport") != NULL) {
+                ++index;
+                if (index < param_count) {
+                    if (use_indexed_name != 0 && ((APIOBJECT_PC *)packet->owner)->locator_name_index != -1) {
+                        sprintf(locator_name, AILocatorIndexedFormat, params[index],
+                                ((APIOBJECT_PC *)packet->owner)->locator_name_index);
+                    } else if (use_personal_name != 0 && ((APIOBJECT_PC *)packet->owner)->character_data != NULL) {
+                        sprintf(locator_name, AILocatorPersonalFormat, params[index],
+                                ((APIOBJECT_PC *)packet->owner)->character_data->name);
+                    } else if (random_locator_count != 0) {
+                        sprintf(locator_name, AILocatorIndexedFormat, params[index],
+                                NuRand(NULL) % random_locator_count);
+                    } else {
+                        sprintf(locator_name, params[index]);
+                    }
+
+                    processor->action_data_3 = AIPathFindLocator(sys, locator_name);
+                }
+                if (NuStrIStr(params[index - 1], "teleport") != NULL) {
+                    locator_2 = (AILOCATOR_PC *)(processor->action_data_3);
+                    if (locator_2 == NULL) {
+                        return 1;
+                    }
+                    packet->owner->position = locator_2->position;
+                    return 1;
+                }
+                continue;
+            }
+
+            if (NuStrIStr(params[index], (char *)AIActionPersonalName) != NULL) {
+                use_personal_name = 1;
+                continue;
+            }
+            if (NuStrIStr(params[index], (char *)AIActionIndexedName) != NULL) {
+                use_indexed_name = 1;
+                continue;
+            }
+
+            value = NuStrIStr(params[index], "random");
+            if (value != NULL) {
+                random_locator_count = AIParamToFloatEx(packet, processor, value + NuStrLen("random") + 1);
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)AIPathWaitTimeName);
+            if (value != NULL) {
+                processor->action_timer = AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathWaitTimeName) + 1);
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)AIActionMinTimeName);
+            if (value != NULL) {
+                minimum_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMinTimeName) + 1);
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)AIActionMaxTimeName);
+            if (value != NULL) {
+                maximum_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMaxTimeName) + 1);
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)AIPathGoalRangeName);
+            if (value != NULL) {
+                packet->movement_instruction_parameter =
+                    AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathGoalRangeName) + 1);
+                continue;
+            }
+
+            if (NuStrICmp(params[index], "on_ground") == 0) {
+                processor->action_data_1 |= 1u;
+            } else if (NuStrICmp(params[index], AIPathXZRangeCheckName) == 0) {
+                processor->action_data_1 |= 2u;
+            } else if (NuStrICmp(params[index], AIPathFaceOpponentName) == 0) {
+                processor->action_data_1 |= 4u;
+            } else if (NuStrICmp(params[index], AIPathIgnorePathName) == 0) {
+                processor->action_data_1 |= 8u;
+            } else if (NuStrICmp(params[index], AIPathMustReachDestinationName) == 0) {
+                processor->action_data_1 |= 16u;
+            } else {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
+            }
+        }
+    }
+
+    if (processor->action_timer == 0.0f) {
+        if (maximum_time > minimum_time) {
+            processor->action_timer = NuRandFloat() * (maximum_time - minimum_time) + minimum_time;
+        } else {
+            processor->action_timer = 0.01f;
+        }
+    }
+
+    locator_3 = (AILOCATOR_PC *)(processor->action_data_3);
+    if (locator_3 == NULL) {
+        return 1;
+    }
+
+    if ((processor->action_data_1 & 8u) != 0) {
+        AIMoveInstruction(packet, &locator_3->position, 0.0f, &locator_3->path_info, 7,
+                          packet->movement_instruction_parameter);
+    } else {
+        AIMoveInstruction(packet, &locator_3->position, 0.0f, &locator_3->path_info, 1,
+                          packet->movement_instruction_parameter);
+    }
+
+    processor->action_pos.x = 0.0f;
+    processor->action_pos.y = 0.0f;
+    processor->action_pos.z = 1.0f;
+    NuVecRotateY(&processor->action_pos, &processor->action_pos, locator_3->rotation);
+    NuVecAdd(&processor->action_pos, &processor->action_pos, &locator_3->position);
+    return 0;
+}
+
+i32 __cdecl Action_SetLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                              i32 count, i32 first_time, f32 elapsed) {
+    char *name;
+    char *value;
+    char buffer[64];
+    i32 personal;
+    i32 indexed;
+    i32 random_count;
+    i32 index;
+    APIOBJECT_PC *object;
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL ||
+        packet->path_info.path == NULL || packet->path_info.connection == NULL || first_time == 0)
+        return 1;
+    processor->locator = NULL;
+    name = NULL;
+    personal = 0;
+    indexed = 0;
+    random_count = 0;
+    for (index = 0; index < count; index++) {
+        value = NuStrIStr(params[index], "name");
+        if (value != NULL)
+            name = value + 5;
+        else if (NuStrIStr(params[index], (char *)AIActionPersonalName) != NULL)
+            personal = 1;
+        else if (NuStrIStr(params[index], (char *)AIActionIndexedName) != NULL)
+            indexed = 1;
+        else {
+            value = NuStrIStr(params[index], "random");
+            if (value != NULL)
+                random_count = (i32)AIParamToFloatEx(packet, &packet->script_processor, value + 7);
+        }
+    }
+    if (name != NULL) {
+        object = (APIOBJECT_PC *)packet->owner;
+        if (indexed != 0 && object->locator_name_index != -1)
+            sprintf(buffer, AILocatorIndexedFormat, name, object->locator_name_index);
+        else if (personal != 0 && object->character_data != NULL)
+            sprintf(buffer, AILocatorPersonalFormat, name, object->character_data->name);
+        else if (random_count != 0)
+            sprintf(buffer, AILocatorIndexedFormat, name, NuRand(NULL) % random_count);
+        else
+            sprintf(buffer, name);
+        processor->locator = AIPathFindLocator(system, buffer);
+    }
+    return 1;
+}
+
+i32 __cdecl Action_FollowPlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                i32 param_count, i32 first_time, f32 elapsed) {
+    if (packet == NULL) {
+        return 1;
+    }
+
+    if (first_time != 0) {
+        i32 index;
+        for (index = 0; index < param_count; ++index) {
+            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
+                continue;
+            }
+            if (NuStrICmp(params[index], AIActionIgnoreRadiusName) == 0) {
+                processor->action_data_1 |= 2;
+            } else if (NuStrICmp(params[index], AIPathCanGoOffPathName) == 0) {
+                processor->action_data_1 |= 1;
+            } else {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
+            }
+        }
+    }
+
+    if (sys->player_1 != NULL && sys->player_1->ai != NULL) {
+        FollowAPIObject(((APIOBJECT_PC *)packet->owner), sys->player_1, processor->action_data_1,
+                        packet->movement_instruction_parameter);
+    }
+    return 0;
 }

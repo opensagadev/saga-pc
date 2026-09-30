@@ -38,3 +38,11 @@ TUBE_PC *__cdecl Tube_InAnyCylinder(WORLDINFO *world, GAMEOBJECT *object, i32 ig
     }
     return NULL;
 }
+
+i32 __cdecl ObjInTube(GAMEOBJECT *object) {
+    if (LEGOCONTEXT_TUBE != -1 && object->character_context == LEGOCONTEXT_TUBE)
+        return 1;
+    if (LEGOCONTEXT_GLIDE != -1 && object->character_context == LEGOCONTEXT_GLIDE && object->techno != NULL)
+        return 1;
+    return 0;
+}

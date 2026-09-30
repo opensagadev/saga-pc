@@ -1206,3 +1206,39 @@ void __cdecl AIScriptProcess(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC
         }
     }
 }
+
+i32 __cdecl AIScriptSetBaseScriptStateByName(AISCRIPTPROCESS_PC *processor, char *name) {
+    AISTATE_PC *state;
+    if (name == NULL || processor == NULL || processor->script == NULL)
+        return 0;
+    state = AIStateFind(name, processor->base_script);
+    if (state == NULL)
+        return 0;
+    if (processor->script == processor->base_script) {
+        AIScriptSetState(processor, state);
+        return 1;
+    }
+    AIScriptProcessorInit(NULL, NULL, processor, NULL, NULL, NULL, 0, processor->base_script, state);
+    processor->active_ref_count = 0;
+    return 1;
+}
+
+void __cdecl AIScriptMissingStateDiagnostic(char *name, char *script_name, char *state_name) {
+}
+
+void __cdecl AIScriptMissingStateDiagnosticAlternate(char *name, char *script_name, char *state_name) {
+}
+
+i32 __cdecl AIScriptSetInterrupt(AISCRIPTPROCESS_PC *processor, u8 priority, u8 id, char *state_name, f32 time) {
+    AISTATE_PC *state;
+    if (processor->interrupt_priority > priority)
+        return 0;
+    state = AIStateFind(state_name, processor->script);
+    if (state == NULL)
+        return 0;
+    processor->interrupt_priority = priority;
+    processor->interrupt_id = id;
+    processor->interrupt_state = state;
+    processor->interrupt_timer = time;
+    return 1;
+}

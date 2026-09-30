@@ -1559,3 +1559,10 @@ void *__cdecl NuAnimData2Fixup(i32 file_size, void **data) {
 }
 
 #undef NUANIM_REBASE_POINTER
+
+f32 __cdecl NuAnimEndFrame(void *animation_data) {
+    NuAnimDataPrefixView *animation = (NuAnimDataPrefixView *)animation_data;
+    if (animation->first_word.magic < 0x414e4934 || animation->first_word.magic > 0x414e4935)
+        return animation->first_word.legacy_end_frame;
+    return (f32)((i32)animation->frame_count + (i32)animation->first_frame);
+}

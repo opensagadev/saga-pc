@@ -3561,3 +3561,401 @@ extern "C" {
     u16 SURFACEBITS_DUST;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma const_seg(".rdata$AIActionRandomName")
+    const char AIActionRandomName[7] = "Random";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionMinTimeName")
+    const char AIActionMinTimeName[8] = "mintime";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionMaxTimeName")
+    const char AIActionMaxTimeName[8] = "maxtime";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionTimeName")
+    const char AIActionTimeName[5] = "time";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionFramesName")
+    const char AIActionFramesName[7] = "frames";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionIncrementName")
+    const char AIActionIncrementName[5] = "inc=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionDecrementName")
+    const char AIActionDecrementName[5] = "dec=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionStateName")
+    const char AIActionStateName[6] = "state";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathAnticlockwiseName")
+    const char AIPathAnticlockwiseName[14] = "ANTICLOCKWISE";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathClockwiseName")
+    const char AIPathClockwiseName[10] = "CLOCKWISE";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathReverseName")
+    const char AIPathReverseName[8] = "REVERSE";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathRandomName")
+    const char AIPathRandomName[7] = "RANDOM";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathFacingName")
+    const char AIPathFacingName[7] = "facing";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathCurrentDistanceName")
+    const char AIPathCurrentDistanceName[12] = "currentdist";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathCurrentPositionName")
+    const char AIPathCurrentPositionName[17] = "current_position";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathLocatorName")
+    const char AIPathLocatorName[9] = "locator=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathOriginName")
+    const char AIPathOriginName[7] = "origin";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathCanGoOffPathName")
+    const char AIPathCanGoOffPathName[16] = "can_go_off_path";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathFaceName")
+    const char AIPathFaceName[5] = "face";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathWaitTimeName")
+    const char AIPathWaitTimeName[9] = "waittime";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathXZRangeCheckName")
+    const char AIPathXZRangeCheckName[14] = "xz_rangecheck";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathGoalRangeName")
+    const char AIPathGoalRangeName[10] = "goalrange";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionFaceOffsetName")
+    const char AIActionFaceOffsetName[11] = "faceoffset";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionNearestOpponentName")
+    const char AIActionNearestOpponentName[17] = "nearest_opponent";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionClockwiseName")
+    const char AIActionClockwiseName[10] = "Clockwise";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionAnticlockwiseName")
+    const char AIActionAnticlockwiseName[14] = "AntiClockwise";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionReverseName")
+    const char AIActionReverseName[8] = "Reverse";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionFalseName")
+    const char AIActionFalseName[6] = "FALSE";
+#pragma const_seg()
+#pragma bss_seg(".bss$AIActionDiagnosticMode")
+    i32 AIActionDiagnosticMode;
+#pragma bss_seg()
+
+#pragma data_seg(".data$Tag_Mode")
+    i32 Tag_Mode = 2;
+#pragma data_seg()
+#pragma bss_seg(".bss$player_tag_to")
+    GAMEOBJECT *player_tag_to;
+#pragma bss_seg()
+#pragma bss_seg(".bss$player_tag_from")
+    GAMEOBJECT *player_tag_from;
+#pragma bss_seg()
+#pragma bss_seg(".bss$player_tag_timer")
+    f32 player_tag_timer;
+#pragma bss_seg()
+#pragma bss_seg(".bss$do_player_tag")
+    i32 do_player_tag;
+#pragma bss_seg()
+#pragma bss_seg(".bss$Tag_DrawIconFn")
+    TAG_DRAW_ICON_PC Tag_DrawIconFn;
+#pragma bss_seg()
+#pragma data_seg(".data$TakeOverATATJumpScale")
+    f32 TakeOverATATJumpScale = 0.75f;
+#pragma data_seg()
+#pragma data_seg(".data$SpeederChaseATATExitSpeed")
+    f32 SpeederChaseATATExitSpeed = 4.0f;
+#pragma data_seg()
+#pragma data_seg(".data$SpeederChaseATATExitHeight")
+    f32 SpeederChaseATATExitHeight = 2.5f;
+#pragma data_seg()
+#pragma data_seg(".data$SpeederChaseATATExitLandPos")
+    NUVEC SpeederChaseATATExitLandPos = {-159.0f, 6.869999885559082f, -17.600000381469727f};
+#pragma data_seg()
+#pragma bss_seg(".bss$LastSafePosExtraFn")
+    LAST_SAFE_POS_EXTRA_PC LastSafePosExtraFn;
+#pragma bss_seg()
+#pragma data_seg(".data$LEGOCONTEXT_DOOMED")
+    i32 LEGOCONTEXT_DOOMED = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOCONTEXT_BEENTAKENOVER")
+    i32 LEGOCONTEXT_BEENTAKENOVER = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOCONTEXT_GETIN")
+    i32 LEGOCONTEXT_GETIN = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOCONTEXT_EATEN")
+    i32 LEGOCONTEXT_EATEN = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOCONTEXT_BUCK")
+    i32 LEGOCONTEXT_BUCK = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOCONTEXT_JUMP")
+    i32 LEGOCONTEXT_JUMP = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOACT_BUCK")
+    i16 LEGOACT_BUCK = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOACT_JUMP")
+    i16 LEGOACT_JUMP = -1;
+#pragma data_seg()
+#pragma data_seg(".data$BUCK_RIDERJUMPCLEARANCE")
+    f32 BUCK_RIDERJUMPCLEARANCE = 1.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$BuckStartExtraFn")
+    TAG_DRAW_ICON_PC BuckStartExtraFn;
+#pragma bss_seg()
+}
+
+extern "C" {
+// Two-entry reconstruction access view; the original full array extent is unknown.
+// PC readers and reset producers access these two i32 entries; no original sizeof credit.
+#pragma data_seg(".data$LevSafePlatID")
+    i32 LevSafePlatID[2] = {-1, -1};
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$id_CLONEWALKER")
+    i16 id_CLONEWALKER = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_TROOPERCANNON")
+    i16 id_TROOPERCANNON = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_BIGGUN")
+    i16 id_BIGGUN = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_HEAVYREPEATINGCANNON")
+    i16 id_HEAVYREPEATINGCANNON = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_TAUNTAUN")
+    i16 id_TAUNTAUN = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_FLASHSPEEDER")
+    i16 id_FLASHSPEEDER = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_DEWBACK")
+    i16 id_DEWBACK = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_BOMARRMONK")
+    i16 id_BOMARRMONK = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_BANTHA")
+    i16 id_BANTHA = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_GYROCOPTER")
+    i16 id_GYROCOPTER = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_LUKESKYWALKERDAGOBAH")
+    i16 id_LUKESKYWALKERDAGOBAH = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_ATAT")
+    i16 id_ATAT = -1;
+#pragma data_seg()
+#pragma data_seg(".data$DEFAULT_PLAYERHITPOINTS")
+    i32 DEFAULT_PLAYERHITPOINTS = 8;
+#pragma data_seg()
+#pragma bss_seg(".bss$VADERC_LDATA")
+    LEVELDATA_PC *VADERC_LDATA;
+#pragma bss_seg()
+#pragma data_seg(".data$TOGGLEHOLDTIME")
+    f32 TOGGLEHOLDTIME = 1.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$CUTSKIPLOCK")
+    i32 CUTSKIPLOCK;
+#pragma bss_seg()
+#pragma bss_seg(".bss$players_cannot_exit_speeder")
+    i32 players_cannot_exit_speeder;
+#pragma bss_seg()
+#pragma const_seg(".rdata$TakeOverState_JustBeenTakenOver")
+    const char TakeOverState_JustBeenTakenOver[18] = "JustBeenTakenOver";
+#pragma const_seg()
+#pragma const_seg(".rdata$TakeOverState_MapRunAway")
+    const char TakeOverState_MapRunAway[11] = "MapRunAway";
+#pragma const_seg()
+#pragma const_seg(".rdata$TakeOverState_ReleasedTakeOver")
+    const char TakeOverState_ReleasedTakeOver[17] = "ReleasedTakeOver";
+#pragma const_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$AILocatorPersonalFormat")
+    const char AILocatorPersonalFormat[6] = "%s_%s";
+#pragma const_seg()
+#pragma const_seg(".rdata$AILocatorIndexedFormat")
+    const char AILocatorIndexedFormat[6] = "%s_%d";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionIndexedName")
+    const char AIActionIndexedName[8] = "indexed";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionPersonalName")
+    const char AIActionPersonalName[9] = "personal";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionIDName")
+    const char AIActionIDName[3] = "id";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionToName")
+    const char AIActionToName[3] = "to";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionBothWaysName")
+    const char AIActionBothWaysName[9] = "bothways";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionFromName")
+    const char AIActionFromName[5] = "from";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionIgnoreRadiusName")
+    const char AIActionIgnoreRadiusName[14] = "ignore_radius";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionOpenName")
+    const char AIActionOpenName[5] = "open";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionLengthName")
+    const char AIActionLengthName[7] = "length";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathMustReachDestinationName")
+    const char AIPathMustReachDestinationName[23] = "must_reach_destination";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathIgnorePathName")
+    const char AIPathIgnorePathName[12] = "ignore_path";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIPathFaceOpponentName")
+    const char AIPathFaceOpponentName[14] = "face_opponent";
+#pragma const_seg()
+#pragma bss_seg(".bss$AIBigJumpToDestinationFn")
+    AI_BIG_JUMP_TO_DESTINATION_PC AIBigJumpToDestinationFn;
+#pragma bss_seg()
+#pragma bss_seg(".bss$AiSysStateDebugee")
+    AISCRIPTPROCESS_PC *AiSysStateDebugee;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$BonusArea")
+    i32 BonusArea;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$LEGOCONTEXT_BIGJUMP")
+    i32 LEGOCONTEXT_BIGJUMP = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOACT_FALL")
+    i16 LEGOACT_FALL = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOACT_COMBOJUMP")
+    i16 LEGOACT_COMBOJUMP = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOACT_JUMP2")
+    i16 LEGOACT_JUMP2 = -1;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$aicreature_sets_alive")
+    u8 aicreature_sets_alive[16];
+#pragma bss_seg()
+#pragma bss_seg(".bss$LevGameObject")
+    GAMEOBJECT *LevGameObject[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$LevFlag")
+    i32 LevFlag[4];
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$LEGOCONTEXT_TUBE")
+    i32 LEGOCONTEXT_TUBE = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOCONTEXT_GLIDE")
+    i32 LEGOCONTEXT_GLIDE = -1;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$party_follow_offsets")
+    f32 party_follow_offsets[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$ai_fighting")
+    i32 ai_fighting;
+#pragma bss_seg()
+#pragma bss_seg(".bss$drop_back_in_timer")
+    f32 drop_back_in_timer;
+#pragma bss_seg()
+#pragma data_seg(".data$aitol")
+    f32 aitol = 0.5f;
+#pragma data_seg()
+#pragma data_seg(".data$direction_scale")
+    f32 direction_scale = 100.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$player2")
+    GAMEOBJECT *player2;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$nethost")
+    i32 nethost;
+#pragma bss_seg()
+#pragma data_seg(".data$id_PKDROID")
+    i16 id_PKDROID = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$NEGOTIATIONSC_LDATA")
+    LEVELDATA_PC *NEGOTIATIONSC_LDATA;
+#pragma bss_seg()
+#pragma const_seg(".rdata$GameObjectState_InActive")
+    const char GameObjectState_InActive[9] = "InActive";
+#pragma const_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$CurrentSpeed")
+    f32 CurrentSpeed = 10.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$avg_currentspeed_mul")
+    f32 avg_currentspeed_mul;
+#pragma bss_seg()
+#pragma data_seg(".data$TwistSockRotationModeA")
+    i32 TwistSockRotationModeA = 3;
+#pragma data_seg()
+#pragma data_seg(".data$TwistSockRotationModeB")
+    i32 TwistSockRotationModeB = 5;
+#pragma data_seg()
+#pragma data_seg(".data$TwistYawLeanDegrees")
+    i32 TwistYawLeanDegrees = 15;
+#pragma data_seg()
+#pragma data_seg(".data$TwistPitchLeanDegrees")
+    i32 TwistPitchLeanDegrees = 15;
+#pragma data_seg()
+#pragma data_seg(".data$TwistLateralSpeed")
+    f32 TwistLateralSpeed = 8.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$TwistScaleLean")
+    i32 TwistScaleLean;
+#pragma bss_seg()
+}
+
+extern "C" {
+// Two-entry reconstruction access views; all observed PC readers/producers select 0 or 1.
+// Original complete array capacities remain unknown; CSV sizes intentionally stay blank.
+#pragma bss_seg(".bss$PlayerPadCurrentSpeed")
+    f32 PlayerPadCurrentSpeed[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$PlayerPadPreviousSpeed")
+    f32 PlayerPadPreviousSpeed[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$PlayerPadCurrentAngle")
+    u16 PlayerPadCurrentAngle[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$PlayerPadPreviousAngle")
+    u16 PlayerPadPreviousAngle[2];
+#pragma bss_seg()
+}

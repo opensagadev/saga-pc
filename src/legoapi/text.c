@@ -437,3 +437,8 @@ void Text_SetLanguage(i32 language) {
         Text_GameSetLanguageFn(Text_Language);
     }
 }
+
+i32 __cdecl GetMenuID(void) {
+    i16 menu = GameMenu[GameMenuLevel].menu;
+    return menu == -1 ? -1 : MenuInfo[menu].id;
+}

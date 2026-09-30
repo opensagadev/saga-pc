@@ -1171,8 +1171,23 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                     velocity.y = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0);
                     velocity.z = (f32)(-((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0 + 3.0));
                     NuVecMtxRotate(&velocity, &velocity, &matrix);
-                    STUBBED_NAMED(
-                        "AfterAnimation: basketball descriptor/AddPart requiring genuine callbacks PC4b1c58..4b1d0c");
+                    {
+                        ADDPART_PC part = Default_ADDPART;
+                        part.matrix = &matrix;
+                        part.velocity = &velocity;
+                        part.part_id = 90;
+                        part.gravity = -10.0f;
+                        part.flags = 0x10;
+                        part.field_14 = 0.05f;
+                        part.field_18 = 0.05f;
+                        part.special = &WORLD->level_objects[90].special;
+                        part.update_fn = PartUpdate_Basketball;
+                        part.impact_fn = PartImpact_Basketball;
+                        part.stop_fn = PartStop_Flickerer;
+                        part.draw_fn = PartDraw_Flickerer;
+                        part.time_step = FRAMETIME;
+                        AddPart(&part);
+                    }
                 } else {
                     STUBBED_NAMED("AfterAnimation: Bolt_Shoot PC583af0");
                     if (object->quick_shoot_bolt_id == 29)
@@ -1227,8 +1242,36 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
             velocity.y = 0.0f;
             velocity.z = -1.0f;
             NuVecMtxRotate(&velocity, &velocity, &matrix);
-            STUBBED_NAMED("AfterAnimation: rocket descriptor/BoltSys direction/TargetGameObject/AddPart requiring "
-                          "genuine callbacks PC4b1f97..4b2126");
+            {
+                ADDPART_PC part = Default_ADDPART;
+                i32 player = (object->flags_1fc_word & 0x80) != 0;
+                NUVEC direction;
+                f32 range;
+                PART_PC *created;
+                part.matrix = &matrix;
+                part.velocity = &velocity;
+                part.field_14 = 0.1f;
+                part.field_18 = 0.1f;
+                part.special = &WORLD->level_objects[232].special;
+                part.part_id = 232;
+                part.flags = player ? 0xc11b : 0xc31b;
+                part.owner = object;
+                part.hostility_group = object->hostility_group;
+                part.kill_fn = BobaRocket_Kill;
+                part.move_fn = BobaRocket_Move;
+                part.deflect_fn = BobaRocket_Deflect;
+                part.collision_fn = PartCollide_3D;
+                part.time_step = FRAMETIME;
+                part.gravity = 0.0f;
+                part.field_a4 = player ? (f32)(4.0 + 2.0 * ((f64)qrand() * (f64)(1.0f / 65535.0f))) : 10.0f;
+                BoltSys->shoot_direction(object, &direction);
+                range = part.field_a4 * rocket_speed;
+                part.recipient = TargetGameObject(object, &object->collision_position, &direction, range, range * range,
+                                                  0, 1, 0, -1);
+                created = AddPart(&part);
+                if (created != NULL)
+                    created->force_flags = (u16)ObjHitObj_Flags(object);
+            }
         }
         if ((object->flags_e24 & 0x4000) != 0)
             STUBBED_NAMED("AfterAnimation: ThermalDetonator_Throw PC4cfbb0");
@@ -1489,4 +1532,1113 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     if (VehicleArea != 0 && object->field_280 < 2)
         STUBBED_NAMED("KillGameObject: DebFreeInstantly Falcon key PC684400");
     return 1;
+}
+
+i32 __cdecl NoLayerKill(GAMEOBJECT *object) {
+    return (object->character_data->game_character->flags_094 & 0x800000) != 0 && object->field_283 == 6;
+}
+
+void __cdecl GetTakeOverPos(GAMEOBJECT *object, NUVEC *position) {
+    i32 locator = object->character_data->game_character->ride_locator;
+    CHARACTER_MODEL_LAYERS_PC *model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
+    if (locator != -1 && model->points_of_interest[locator] != NULL) {
+        NUMTX *matrix = &object->locator_matrices[locator];
+        *position = matrix->translation;
+    } else {
+        position->x = object->position.x;
+        position->y = object->upper_position.y;
+        position->z = object->position.z;
+    }
+}
+
+/* A copy of the actual 33-DWORD script cohort, without extending the packet. */
+typedef struct TAGSCRIPTSTATE_PC {
+    AISCRIPTPROCESS_PC processor;
+    void *script_link;
+} TAGSCRIPTSTATE_PC;
+STATIC_ASSERT(sizeof(AISCRIPTPROCESS_PC) == 0xc8);
+STATIC_ASSERT(offsetof(TAGSCRIPTSTATE_PC, script_link) == 0xc8);
+STATIC_ASSERT(sizeof(TAGSCRIPTSTATE_PC) == 0xcc);
+
+static void TakeOver_SetAction(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
+    i32 action;
+    CHARACTER_MODEL_LAYERS_PC *model = (CHARACTER_MODEL_LAYERS_PC *)rider->character_model;
+    if (vehicle->id == GameObjectRotationBuggyId) {
+        action = 0x70;
+    } else if (vehicle->id == id_GYROCOPTER) {
+        action = 0x83;
+    } else if (StartupGameFlag1 == 0) {
+        rider->field_7aa = 0x6c;
+        return;
+    } else if (vehicle->character_data->game_character->weapon_action == 12) {
+        action = CurrentAnim(&vehicle->anim_packet) == 3 || CurrentAnim(&vehicle->anim_packet) == 0x17 ? 0xc4 : 0xc3;
+    } else if (vehicle->id == id_BANTHA || vehicle->id == id_BOMARRMONK) {
+        action = 0x70;
+    } else if (vehicle->id == id_DEWBACK) {
+        action = 0x83;
+    } else if (vehicle->id == id_LANDSPEEDER || vehicle->id == id_FLASHSPEEDER) {
+        action = 0x84;
+    } else if (vehicle->id == id_TAUNTAUN) {
+        action = 0x86;
+    } else if (vehicle->id == id_SPEEDERBIKE) {
+        action = 0xc0;
+    } else if (vehicle->id == id_HEAVYREPEATINGCANNON || vehicle->id == id_BIGGUN) {
+        action = 0xc1;
+    } else if (vehicle->id == id_TROOPERCANNON) {
+        action = model->action_animations[0xc2] != NULL ? 0xc2 : 0xc1;
+    } else if (vehicle->id == id_STAP2) {
+        action = 0xc1;
+    } else if (vehicle->id == id_CLONEWALKER) {
+        action = 0xc0;
+    } else {
+        rider->field_7aa = 0x6c;
+        return;
+    }
+    rider->field_7aa = model->action_animations[action] != NULL ? (i16)action : 0x6c;
+}
+
+/* Original-TU private globals are handed off to the single data owner. */
+
+static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
+    f32 nearest_distance = object->character_context == 0x17 ? 1.44f : 0.48999998f;
+    i32 count = Tag_Mode == 3 ? HIGHGAMEOBJECT : 8;
+    GAMEOBJECT *nearest = NULL;
+    i32 index;
+    for (index = 0; index < count; ++index) {
+        GAMEOBJECT *candidate = Tag_Mode == 3 ? &Obj[index] : Player[index];
+        NUVEC direction;
+        f32 distance;
+        if (candidate == NULL || (candidate->flags_1fc_word & 0x1001) != 0x1001 || candidate == object ||
+            candidate->dead != 0 || (candidate->tag_flags & 2) != 0) {
+            continue;
+        }
+        if (candidate->character_context == 0x17 || candidate->character_context == 0x3d ||
+            (CInfo[candidate->character_context].flags & 0x8000) != 0 ||
+            ((candidate->flags_ef4 & 2) != 0 && object->id != id_LUKESKYWALKERDAGOBAH)) {
+            continue;
+        }
+        distance = NuVecDistSqr(&object->position, &candidate->position, &direction);
+        if (distance < nearest_distance) {
+            NuVecRotateY(&direction, &direction, -(i32)object->field_0x276);
+            if (direction.z < 0.0f) {
+                nearest_distance = distance;
+                nearest = candidate;
+            }
+        }
+    }
+    return nearest;
+}
+
+static i32 Tag_FindGameObject_CYCLICAL(GAMEOBJECT *object) {
+    i32 remaining = HIGHGAMEOBJECT - 1;
+    i32 index = object->hostility_group;
+    while (remaining > 0) {
+        GAMEOBJECT *candidate;
+        if (++index == HIGHGAMEOBJECT) {
+            index = 0;
+        }
+        --remaining;
+        if (remaining == 0) {
+            break;
+        }
+        candidate = &Obj[index];
+        if (candidate != object && (candidate->flags_1fc_word & 0x1001) == 0x1001 && candidate->dead == 0 &&
+            candidate->field_280 != 0xff && (candidate->tag_flags & 2) == 0 && (candidate->flags_ef4 & 2) == 0 &&
+            (CInfo[candidate->character_context].flags & 0x800) == 0) {
+            return (i8)candidate->field_280;
+        }
+    }
+    return -1;
+}
+
+i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend_camera, i32 unused) {
+    GAMEPAD_PC *source_pad;
+    GAMEPAD_PC *destination_pad;
+    f32 source_da8;
+    i8 source_hp, destination_hp;
+    u32 source_player, destination_player;
+    TAGSCRIPTSTATE_PC source_script, destination_script;
+    u8 source_set = 0, destination_set = 0;
+    u32 source_ai = 0, destination_ai = 0;
+    void *pointer;
+    u8 player_index;
+    f32 timer;
+    u32 source_flags, mask;
+    void(__cdecl * callback)(GAMEOBJECT *);
+    (void)unused;
+    if (CUTSKIPLOCK != 0) {
+        return 0;
+    }
+    source_pad = source->pad;
+    destination_pad = destination->pad;
+    source_da8 = source->field_da8;
+    source_hp = source->current_hp;
+    destination_hp = destination->current_hp;
+    source_player = source->flags_1fc_word & 0x80;
+    destination_player = destination->flags_1fc_word & 0x80;
+    if (takeover != 0) {
+        source_script.processor = source->ai_packet.script_processor;
+        source_script.script_link = source->ai_packet.takeover_script_link;
+        destination_script.processor = destination->ai_packet.script_processor;
+        destination_script.script_link = destination->ai_packet.takeover_script_link;
+        source_set = source->ai_packet.creature_set;
+        destination_set = destination->ai_packet.creature_set;
+        source_ai = source->flags_1fc_word & 0x100;
+        destination_ai = destination->flags_1fc_word & 0x100;
+    }
+    STUBBED_NAMED("TagCode: ResetForceGlow source player packet PC4a4ca0");
+    STUBBED_NAMED("TagCode: ResetForceGlow destination player packet PC4a4ca0");
+    destination->pad = source_pad;
+    source->pad = destination_pad;
+    source->flags_1fc_word = (source->flags_1fc_word & ~0x80u) | destination_player;
+    destination->flags_1fc_word = (destination->flags_1fc_word & ~0x80u) | source_player;
+    source->field_da8 = destination->field_da8;
+    destination->field_da8 = source_da8;
+    pointer = source->coin_packet;
+    source->coin_packet = destination->coin_packet;
+    destination->coin_packet = pointer;
+    player_index = source->field_280;
+    source->field_280 = destination->field_280;
+    destination->field_280 = player_index;
+    timer = source->powerup_time;
+    source->powerup_time = destination->powerup_time;
+    destination->powerup_time = timer;
+    pointer = source->gizforce_los_info;
+    source->gizforce_los_info = destination->gizforce_los_info;
+    destination->gizforce_los_info = pointer;
+    STUBBED_NAMED("TagCode: real two GizForce_ResetLOS calls PC466820, no Android task operations");
+    mask = takeover != 0 ? 0x146fd : 0x46f8;
+    source_flags = source->flags_1f8;
+    source->flags_1f8 = (source_flags & ~mask) | (destination->flags_1f8 & mask);
+    destination->flags_1f8 = (destination->flags_1f8 & ~mask) | (source_flags & mask);
+    callback = source->tag_object_callback;
+    source->tag_object_callback = destination->tag_object_callback;
+    destination->tag_object_callback = callback;
+    timer = source->spawn_protection_timer;
+    source->spawn_protection_timer = destination->spawn_protection_timer;
+    destination->spawn_protection_timer = timer;
+    STUBBED_NAMED("TagCode: AICreatureResumeScript source PC415000");
+    if (takeover != 0) {
+        if (source->field_280 != 0xff) {
+            Player[(i8)source->field_280] = source;
+        }
+        if (destination->field_280 != 0xff) {
+            Player[(i8)destination->field_280] = destination;
+        }
+    } else {
+        source->hud_icon_timer = 0.0f;
+        source->input_toggle_hold_time = TOGGLEHOLDTIME;
+        source->flags_ef0 = (source->flags_ef0 & ~0x180000u) | 0x80;
+        source->tag_reset_timer = 0.0f;
+        source->pause_context_state = 0.0f;
+        destination->hud_icon_timer = 2.0f;
+        destination->input_toggle_hold_time = TOGGLEHOLDTIME;
+        destination->flags_ef0 |= 0x80;
+        STUBBED_NAMED("TagCode: NewBuzzFrames destination pad 2,0 PC54a8d0");
+        if (source->field_280 != 0xff) {
+            Player[(i8)source->field_280] = source;
+            if (source->rider != NULL) {
+                source->field_107e = source->character_data->game_character->hitpoints;
+            } else if (WORLD->current_level != VADERC_LDATA) {
+                source->field_107e = DEFAULT_PLAYERHITPOINTS;
+            }
+        } else {
+            source->field_107e = source->character_data->game_character->hitpoints;
+        }
+        if (destination->field_280 != 0xff) {
+            Player[(i8)destination->field_280] = destination;
+            if (destination->rider != NULL) {
+                destination->field_107e = destination->character_data->game_character->hitpoints;
+            } else if (WORLD->current_level != VADERC_LDATA) {
+                destination->field_107e = DEFAULT_PLAYERHITPOINTS;
+            }
+            STUBBED_NAMED("TagCode: GameCam_Blend GameCam,0.5f,0,1 PC54a3e0");
+        } else {
+            destination->field_107e = destination->character_data->game_character->hitpoints;
+        }
+        destination->current_hp = source_hp;
+        if ((i32)source_hp > (i32)destination->field_107e) {
+            destination->current_hp = (i8)destination->field_107e;
+        }
+        if (destination->current_hp == 0 && destination->field_107e != 0) {
+            destination->current_hp = 1;
+        }
+        if (WORLD->current_level == VADERC_LDATA || (source->flags_1fc_word & 0x80) != 0) {
+            source->current_hp = destination_hp;
+        } else if ((source->character_data->model_flags & 0x20) != 0) {
+            source->current_hp = (i8)source->saved_hitpoints;
+        } else {
+            source->current_hp = (i8)source->field_107e;
+        }
+    }
+    destination->flags_ef0 &= ~0x180000u;
+    destination->tag_reset_timer = 0.0f;
+    destination->pause_context_state = 0.0f;
+    destination->tag_cooldown = 1.0f;
+    if (source == player_tag_to && destination != player_tag_from) {
+        player_tag_to = NULL;
+        player_tag_timer = 0.0f;
+        player_tag_from = NULL;
+        do_player_tag = 0;
+    }
+    if (takeover != 0) {
+        if (AIScriptSetBaseScriptStateByName(&destination->ai_packet.script_processor,
+                                             (char *)TakeOverState_JustBeenTakenOver) != 0) {
+            AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)destination, &destination->ai_packet,
+                            &destination->ai_packet.script_processor, FRAMETIME);
+        }
+        source->ai_packet.script_processor = destination_script.processor;
+        source->ai_packet.takeover_script_link = destination_script.script_link;
+        destination->ai_packet.script_processor = source_script.processor;
+        destination->ai_packet.takeover_script_link = source_script.script_link;
+        source->ai_packet.creature_set = source_set;
+        destination->ai_packet.creature_set = destination_set;
+        STUBBED_NAMED("TagCode: AICreatureResumeScript source PC415000");
+        source->flags_1fc_word = (source->flags_1fc_word & ~0x100u) | destination_ai;
+        destination->flags_1fc_word = (destination->flags_1fc_word & ~0x100u) | source_ai;
+        STUBBED_NAMED("TagCode: ReleaseForce source,0 PC4a25b0");
+        STUBBED_NAMED("TagCode: ReleaseBuildIt source,0 PC58ff10");
+        STUBBED_NAMED("TagCode: ReleasePush source PC59cb00");
+        STUBBED_NAMED("TagCode: Player_ResetContexts source player packet PC55e4e0");
+        if ((source->portal_flags & 0x10) == 0) {
+            STUBBED_NAMED("TagCode: SetWeaponIn source PC58d8e0");
+        }
+        source->rider = destination;
+        destination->rider = source;
+        source->takeover_target = NULL;
+        destination->takeover_target = NULL;
+        source->takeover_owner = destination;
+        source->character_context = 0x3b;
+        TakeOver_SetAction(source, source->rider);
+        source->takeover_timer = 1.0f;
+        source->external_force = source->position;
+        if (blend_camera != 0) {
+            STUBBED_NAMED("TagCode: GameCam_Blend GameCam,0.5f,0,1 PC54a3e0");
+        }
+        if (destination->character_data->game_character->field_028 > 0.0f) {
+            destination->velocity.y -= (f64)source->character_data->game_character->jump_speed * 0.5;
+        }
+    }
+    return 1;
+}
+
+/* Appended after tag-draft.c and get-pos.c in the original-TU scratch group. */
+static void SetRiderPos(GAMEOBJECT *object, NUVEC *position) {
+    if (object->rider != NULL) {
+        if (position != NULL) {
+            object->position = *position;
+        } else {
+            GetTakeOverPos(object->rider, &object->position);
+        }
+        object->pitch_angle = 0;
+        object->roll_angle = 0;
+        object->field_0x276 = object->rider->facing_angle;
+        object->facing_angle = object->rider->facing_angle;
+        object->movement_facing_angle = object->rider->facing_angle;
+    }
+    GameObjectOrigin(object);
+}
+
+i32 __cdecl TakeOverYoda(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 unused) {
+    (void)unused;
+    STUBBED_NAMED("TakeOverYoda: ReleaseForce PC4a25b0");
+    STUBBED_NAMED("TakeOverYoda: ReleaseBuildIt PC58ff10");
+    STUBBED_NAMED("TakeOverYoda: ReleasePush PC59cb00");
+    STUBBED_NAMED("TakeOverYoda: Player_ResetContexts PC55e4e0");
+    if ((rider->portal_flags & 0x10) == 0) {
+        STUBBED_NAMED("TakeOverYoda: SetWeaponIn PC58d8e0");
+    }
+    rider->rider = vehicle;
+    vehicle->rider = rider;
+    rider->takeover_target = NULL;
+    vehicle->takeover_target = NULL;
+    rider->takeover_owner = vehicle;
+    rider->character_context = 0x3b;
+    TakeOver_SetAction(rider, rider->rider);
+    rider->takeover_timer = 1.0f;
+    rider->external_force = rider->position;
+    if (blend_camera != 0) {
+        STUBBED_NAMED("TakeOverYoda: GameCam_Blend GameCam,0.5f,0,1 PC54a3e0");
+    }
+    STUBBED_NAMED("TakeOverYoda: NewBuzz vehicle pad,0.1f,0 PC54a8a0");
+    STUBBED_NAMED("TakeOverYoda: GameCam_Judder GameCam,0.1f,0,NULL PC549de0");
+    STUBBED_NAMED("TakeOverYoda: Hint_SetComplete 0x28c PC576960");
+    return 1;
+}
+
+void __cdecl TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
+    i32 i;
+    CHARACTER_MODEL_LAYERS_PC *model;
+    for (i = 0; i < HIGHGAMEOBJECT; ++i) {
+        GAMEOBJECT *object = &Obj[i];
+        if ((object->flags_1fc_word & 0x1001) == 0x1001 && object->character_context == 0x3c &&
+            object->force_target == vehicle) {
+            return;
+        }
+    }
+    if (rider == NULL || (rider->flags_1fc_word & 1) == 0 || vehicle == NULL || (vehicle->flags_1fc_word & 1) == 0 ||
+        rider->rider != NULL || vehicle->rider != NULL) {
+        return;
+    }
+    rider->character_context = 0x3c;
+    model = (CHARACTER_MODEL_LAYERS_PC *)rider->character_model;
+    if (model->action_animations[6] != NULL) {
+        ResetAnimPacket(&rider->anim_packet, -1);
+        rider->field_7aa = 6;
+        rider->context_duration = AnimDuration((i16)rider->id, 6, 0.0f, 0.0f, 1);
+    } else {
+        rider->field_7aa = 5;
+        rider->context_duration = 0.5f;
+    }
+    if (vehicle->id == id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
+        NUVEC position;
+        GetTakeOverPos(vehicle, &position);
+        rider->context_duration *= 2.0f * SpeederChaseATATInOutMul(&rider->position, &position);
+    }
+    rider->context_timer = 0.0f;
+    rider->external_force = rider->position;
+    rider->takeover_start_angle = rider->field_0x276;
+    rider->force_target = vehicle;
+    rider->takeover_target = NULL;
+    vehicle->takeover_target = NULL;
+    STUBBED_NAMED("TakeOver2GetIn: PlayJumpSfx rider,0 PC547f30");
+}
+
+void __cdecl TakeOverGameObject2(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera) {
+    i32 result;
+    if (rider == NULL || (rider->flags_1fc_word & 1) == 0 || vehicle == NULL || (vehicle->flags_1fc_word & 1) == 0 ||
+        rider->rider != NULL || vehicle->rider != NULL) {
+        return;
+    }
+    if ((rider->flags_ef4 & 2) != 0) {
+        result = TakeOverYoda(rider, vehicle, blend_camera, 1);
+    } else {
+        if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 &&
+            (rider->flags_1fc_word & 0x80) != 0) {
+            blend_camera = 1;
+        }
+        STUBBED_NAMED("TakeOverGameObject2: RegisterTakeOverObject vehicle PC59f990");
+        result = TagCode(rider, vehicle, 1, blend_camera, 1);
+    }
+    if (result == 2) {
+        rider->tag_flags |= 0xc;
+        rider->tag_cooldown = 1.0f;
+        rider->pending_tag_target = vehicle;
+    }
+}
+
+void __cdecl TakeOverGameObject(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 immediate) {
+    if (immediate != 0) {
+        TakeOverGameObject2(rider, vehicle, blend_camera);
+    } else {
+        TakeOver2GetIn(rider, vehicle);
+    }
+}
+
+void __cdecl ReleaseTakeOver(GAMEOBJECT *object, i32 unused) {
+    GAMEOBJECT *rider = object->rider;
+    TAGSCRIPTSTATE_PC rider_script, object_script;
+    u8 rider_set, object_set;
+    u32 rider_flag, object_flag;
+    PLAYERCHARACTERCONFIG_PC *character;
+    (void)unused;
+    if (rider == NULL) {
+        return;
+    }
+    if (object->character_context == 0x3b) {
+        GAMEOBJECT *vehicle = rider;
+        rider = object;
+        object = vehicle;
+    }
+    rider_script.processor = rider->ai_packet.script_processor;
+    rider_script.script_link = rider->ai_packet.takeover_script_link;
+    object_script.processor = object->ai_packet.script_processor;
+    object_script.script_link = object->ai_packet.takeover_script_link;
+    rider_set = rider->ai_packet.creature_set;
+    object_set = object->ai_packet.creature_set;
+    rider_flag = rider->flags_1fc_word & 0x100;
+    object_flag = object->flags_1fc_word & 0x100;
+    if ((rider->flags_ef4 & 2) == 0 && TagCode(rider, object, 1, 0, 0) == 0) {
+        return;
+    }
+    STUBBED_NAMED("ReleaseTakeOver: reviewed 1-byte empty cross-character callback PC486f20, names rider/object "
+                  "character_data->name");
+    rider->ai_packet.script_processor = object_script.processor;
+    rider->ai_packet.takeover_script_link = object_script.script_link;
+    object->ai_packet.script_processor = rider_script.processor;
+    object->ai_packet.takeover_script_link = rider_script.script_link;
+    rider->ai_packet.creature_set = rider_set;
+    object->ai_packet.creature_set = object_set;
+    STUBBED_NAMED("ReleaseTakeOver: AICreatureResumeScript object PC415000");
+    rider->flags_1fc_word = (rider->flags_1fc_word & ~0x100u) | object_flag;
+    object->flags_1fc_word = (object->flags_1fc_word & ~0x100u) | rider_flag;
+    if (rider->rider != NULL) {
+        GetTakeOverPos(rider->rider, &rider->position);
+        rider->pitch_angle = 0;
+        rider->roll_angle = 0;
+        rider->field_0x276 = rider->rider->facing_angle;
+        rider->facing_angle = rider->rider->facing_angle;
+        rider->movement_facing_angle = rider->rider->facing_angle;
+    }
+    GameObjectOrigin(rider);
+    rider->rider = NULL;
+    rider->character_context = -1;
+    if (object->id == id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
+        f32 multiplier = SpeederChaseATATInOutMul(&rider->position, &SpeederChaseATATExitLandPos);
+        f32 duration = SpeederChaseATATExitHeight * multiplier;
+        f32 speed = SpeederChaseATATExitSpeed * multiplier;
+        StartBigJump(rider, &SpeederChaseATATExitLandPos, 0, speed, duration, 0);
+        STUBBED_NAMED("ReleaseTakeOver: GameCam_Blend GameCam,2.0f,0,1 PC54a3e0");
+    } else {
+        Buck_StartRiderJump(rider, object);
+    }
+    character = object->character_data->game_character;
+    if (character->field_028 > 0.0f) {
+        object->velocity.y -= (f64)rider->velocity.y * 0.5;
+    } else if ((character->flags_094 & 0x20000) != 0) {
+        Buck_Start(object, rider);
+    }
+    object->rider = NULL;
+    rider->flags_e20 &= 0x7fffffff;
+    object->flags_e20 &= 0x7fffffff;
+    rider->ai_packet.path_info.flags_word &= ~1u;
+    object->ai_update_position = object->position;
+    if (rider->field_280 != 0xff || object->field_280 != 0xff) {
+        STUBBED_NAMED("ReleaseTakeOver: GameCam_Blend GameCam,0.3f,0,1 PC54a3e0");
+    }
+    if (AIScriptSetBaseScriptStateByName(&rider->ai_packet.script_processor, (char *)TakeOverState_ReleasedTakeOver) !=
+        0) {
+        AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)rider, &rider->ai_packet, &rider->ai_packet.script_processor,
+                        FRAMETIME);
+    }
+    if (AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, (char *)TakeOverState_ReleasedTakeOver) !=
+        0) {
+        AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, &object->ai_packet.script_processor,
+                        FRAMETIME);
+    }
+}
+
+void __cdecl ReleaseAllTakeOvers(void) {
+    i32 index;
+    for (index = 0; index < 8; ++index) {
+        if (Player[index] != NULL) {
+            ReleaseTakeOver(Player[index], 0);
+        }
+    }
+}
+
+void __cdecl Tag_Check(GAMEOBJECT *object) {
+    GAMEOBJECT *target = NULL;
+    i32 result;
+    if (Arcade != 0 || (object->tag_flags & 1) != 0 || object->character_context == 0x51) {
+        if ((object->tag_flags & 1) != 0 || object->character_context == 0x51) {
+            object->hud_icon_timer = 0.0f;
+        }
+        object->flags_ef0 &= ~0x180000u;
+        object->tag_reset_timer = 0.0f;
+        object->pause_context_state = 0.0f;
+        if (Arcade == 0) {
+            return;
+        }
+    }
+    if (object->field_280 == 0xff) {
+        return;
+    }
+    if ((object->tag_flags & 4) != 0) {
+        object->tag_cooldown -= FRAMETIME;
+        if (object->tag_cooldown > 0.0f && object->pending_tag_target != NULL) {
+            target = object->pending_tag_target;
+            if ((target->flags_1fc_word & 0x1001) != 0x1001) {
+                object->tag_flags &= ~4u;
+                object->pending_tag_target = NULL;
+                goto draw_icon;
+            }
+            result = (object->flags_ef4 & 2) != 0 ? TakeOverYoda(object, target, 0, 1)
+                                                  : TagCode(object, target, (object->tag_flags >> 3) & 1, 0, 1);
+            if (result != 0) {
+                goto tagged_result;
+            }
+        }
+        object->tag_flags &= ~4u;
+        goto draw_icon;
+    }
+    object->tag_player_index = -1;
+    if ((object->flags_1fc_word & 0x80) == 0 || object->dead != 0 ||
+        (CInfo[object->character_context].flags & 0x800) != 0 || (object->flags_1fc_word & 0x100) != 0 ||
+        !(object->tag_cooldown <= 0.0f)) {
+        goto draw_icon;
+    }
+    if (VehicleArea != 0) {
+        if ((object->pad->buttons_pressed & GAMEPAD_TAG) != 0) {
+            object->hud_icon_timer = 2.0f;
+        }
+        goto draw_icon;
+    }
+    if ((object->pad->buttons_pressed & GAMEPAD_TAG) == 0) {
+        goto draw_icon;
+    }
+    if (CUTSKIPLOCK != 0) {
+        object->hud_icon_timer = 2.0f;
+        object->input_toggle_hold_time = TOGGLEHOLDTIME;
+        goto no_target;
+    }
+    if (Arcade != 0) {
+        goto no_target;
+    }
+    if (Tag_Mode == 1 || Tag_Mode == 3) {
+        if (object->character_context == -1 || object->character_context == 0x17 ||
+            (CInfo[object->character_context].flags & 4) != 0 ||
+            (CInfo[object->character_context].parameter & 0x10) != 0) {
+            target = Tag_FindGameObject_TRANSFER(object);
+        }
+        if (Tag_Mode == 1) {
+            if (target != NULL && target->field_280 != 0xff) {
+                object->tag_player_index = (i8)target->field_280;
+            }
+            goto select_player;
+        }
+        if (target == NULL) {
+            goto no_target;
+        }
+        if (InCollectList_Index((i16)target->id, NULL, 0) == -1) {
+            STUBBED_NAMED("Tag_Check: GameAudio_PlaySfx 0x32,&collision_position,0,0 PC547930");
+            STUBBED_NAMED("Tag_Check: NewRumble object pad,0.5f,0 PC54a850");
+            if (AIScriptSetBaseScriptStateByName(&target->ai_packet.script_processor,
+                                                 (char *)TakeOverState_MapRunAway) != 0) {
+                AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)target, &target->ai_packet,
+                                &target->ai_packet.script_processor, FRAMETIME);
+            }
+            goto no_target;
+        }
+        goto attempt_tag;
+    }
+    object->tag_player_index = (i8)Tag_FindGameObject_CYCLICAL(object);
+select_player:
+    if (object->tag_player_index < 0) {
+        goto no_target;
+    }
+    target = Player[object->tag_player_index];
+    if (target == NULL) {
+        goto no_target;
+    }
+attempt_tag:
+    if ((target->flags_ef4 & 2) != 0) {
+        TakeOver2GetIn(target, object);
+        goto draw_icon;
+    }
+    if ((object->flags_1fc_word & 0x80) != 0 && (target->flags_1fc_word & 0x80) != 0) {
+        if (player_tag_timer > 0.0f && object == player_tag_to && target == player_tag_from) {
+            do_player_tag = 1;
+        } else {
+            player_tag_to = target;
+            player_tag_from = object;
+            player_tag_timer = 0.5f;
+        }
+        goto draw_icon;
+    }
+    result = TagCode(object, target, 0, 0, 1);
+    if (result == 2) {
+        object->tag_flags = (object->tag_flags | 4) & ~8u;
+        object->tag_cooldown = 1.0f;
+        object->pending_tag_target = target;
+        goto draw_icon;
+    }
+tagged_result:
+    if (result != 1) {
+        goto draw_icon;
+    }
+    object->tag_flags &= ~4u;
+    STUBBED_NAMED("Tag_Check: GameAudio_PlaySfx 0x21,&collision_position,0,0 PC547930");
+    if (target->model_draw_result != 0) {
+        STUBBED_NAMED("Tag_Check: GameCam_Blend GameCam,0.5f,0,1 PC54a3e0");
+    } else {
+        STUBBED_NAMED("Tag_Check: GameCam_Reset GameCam PC54a2f0");
+    }
+    STUBBED_NAMED("Tag_Check: RememberPlayerIDs 0,Player0id-or-minus1,Player1id-or-minus1 PC55e1b0");
+    if (Tag_Mode == 1 || Tag_Mode == 3) {
+        STUBBED_NAMED("Tag_Check: Tag_NewTransfer object,target PC59fe30");
+    }
+    if (object->field_280 < 2 && target->field_280 < 2) {
+        STUBBED_NAMED("Tag_Check: ResetTimer &JoinInTimer,0 PC548fb0");
+    }
+    goto draw_icon;
+no_target:
+    if (object->rider == NULL) {
+        object->hud_icon_timer = 2.0f;
+    }
+draw_icon:
+    if (Tag_DrawIconFn != NULL) {
+        Tag_DrawIconFn(object);
+    }
+}
+
+void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
+    GAMEOBJECT *target;
+    if (object->character_context == 0x3c) {
+        f32 fraction;
+        NUVEC destination;
+        f32 height;
+        f64 phase;
+        i32 difference;
+        u16 angle;
+        target = object->force_target;
+        if (target == NULL) {
+            object->character_context = -1;
+            return;
+        }
+        object->context_timer += FRAMETIME;
+        if (object->context_timer >= object->context_duration) {
+            object->character_context = -1;
+            if ((object->flags_1fc_word & 0x80) != 0) {
+                STUBBED_NAMED("TakeOverCode: Hint_SetComplete selected target ID/movement callback and "
+                              "StartupGameFlag1 branch PC576960");
+            }
+            STUBBED_NAMED("TakeOverCode: WORLDgrabber+46ec and grab-control IDs select PlaySfx env_crane_in PC681f40 "
+                          "or PlayLandSfx object,0,0 PC548020");
+            STUBBED_NAMED("TakeOverCode: NewBuzz object pad,0.1f,0 PC54a8a0");
+            TakeOverGameObject2(object, object->force_target, 1);
+            return;
+        }
+        fraction = object->context_timer / object->context_duration;
+        GetTakeOverPos(target, &destination);
+        object->position.x = (destination.x - object->external_force.x) * fraction + object->external_force.x;
+        object->position.y = (destination.y - object->external_force.y) * fraction + object->external_force.y;
+        object->position.z = (destination.z - object->external_force.z) * fraction + object->external_force.z;
+        target = object->force_target;
+        height = target->bounds_half_height;
+        if (object->field_7aa == 6 || object->field_7aa == 0xc9) {
+            f32 jump_height = object->character_data->game_character->jump_height;
+            if (jump_height > height) {
+                height = jump_height;
+            }
+        }
+        if (target->id == id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
+            height *= TakeOverATATJumpScale * SpeederChaseATATInOutMul(&destination, &object->external_force);
+        }
+        phase = (f64)fraction * 32768.0;
+        object->position.y += height * NuTrigTable[((i32)phase >> 1) & 0x7fff];
+        target = object->force_target;
+        difference = RotDiff(object->takeover_start_angle, target->field_0x276);
+        angle = (u16)(i32)((f64)object->takeover_start_angle +
+                           (f64)difference *
+                               (1.0 - ((f64)NuTrigTable[((i32)(phase + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5));
+        object->field_0x276 = angle;
+        object->movement_facing_angle = angle;
+        object->facing_angle = angle;
+        return;
+    }
+    object->tag_flags &= ~1u;
+    target = object->rider;
+    if (target != NULL) {
+        if (object->character_context == 0x3b) {
+            if (!(players_cannot_exit_speeder != 0 && target->id == id_SPEEDERBIKE)) {
+                u32 buttons = target->pad->buttons_pressed;
+                if ((object->flags_ef4 & 2) != 0) {
+                    buttons &= ~GAMEPAD_JUMP;
+                }
+                if (target->character_context != 0x2a && (buttons & (GAMEPAD_JUMP | GAMEPAD_TAG)) != 0) {
+                    ReleaseTakeOver(object, 1);
+                    if ((object->flags_1fc_word & 0x80) != 0) {
+                        STUBBED_NAMED("TakeOverCode: Hint_SetComplete StartupGameFlag1?0x25e:5 PC576960");
+                    }
+                    return;
+                }
+            }
+            SetRiderPos(object, NULL);
+            object->takeover_timer = 1.0f;
+        } else if (object->character_data->game_character->weapon_action == 12) {
+            i32 animation =
+                CurrentAnim(&object->anim_packet) == 3 || CurrentAnim(&object->anim_packet) == 0x17 ? 0xc4 : 0xc3;
+            CHARACTER_MODEL_LAYERS_PC *model;
+            target = object->rider;
+            model = (CHARACTER_MODEL_LAYERS_PC *)target->character_model;
+            if (model->action_animations[animation] != NULL) {
+                target->field_7aa = (i16)animation;
+            }
+        }
+        return;
+    }
+    if (object->takeover_timer >= 0.0f) {
+        object->takeover_timer -= FRAMETIME;
+        return;
+    }
+    if (MiniCutCam != 0 || (object->flags_1fc_word & 0x80) == 0 || object->dead != 0 ||
+        !(object->takeover_timer <= 0.0f) || object->character_context == 0x2b ||
+        (object->character_context != -1 && (object->character_context != 0 || object->action_movement_state == 3 ||
+                                             object->action_movement_state == 4)) ||
+        object->field_281 == 0) {
+        return;
+    }
+    {
+        f32 nearest_distance = 9.0f;
+        GAMEOBJECT *nearest = NULL;
+        i32 index;
+        for (index = 0; index < HIGHGAMEOBJECT; ++index) {
+            GAMEOBJECT *candidate = &Obj[index];
+            f32 dx, dz, range, range_squared, distance;
+            if ((candidate->flags_1fc_word & 0x1001) != 0x1001 || candidate->dead != 0 ||
+                candidate->field_280 != 0xff || (CInfo[candidate->character_context].flags & 0x8000) != 0 ||
+                candidate->rider != NULL || (candidate->character_data->game_character->flags_090 & 0x40) == 0 ||
+                ((candidate->character_data->model_flags & 0x40000000) != 0 &&
+                 (candidate->character_context == 0x17 || candidate->character_context == 0x3e)) ||
+                (candidate->tag_flags & 2) != 0) {
+                continue;
+            }
+            if (candidate->id == id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
+                if (object->jump_animation_state == 0x13) {
+                    nearest = candidate;
+                }
+                continue;
+            }
+            if (object->collision_min.y > candidate->collision_max.y ||
+                candidate->collision_min.y > object->collision_max.y) {
+                continue;
+            }
+            range = (f64)candidate->bounds_radius * 2.0 + object->bounds_radius;
+            dx = candidate->collision_position.x - object->collision_position.x;
+            dz = candidate->collision_position.z - object->collision_position.z;
+            if (!(object->facing_direction.x * dx + object->facing_direction.z * dz > 0.0f)) {
+                continue;
+            }
+            distance = dx * dx + dz * dz;
+            range_squared = range * range;
+            if (range_squared > distance && nearest_distance > distance) {
+                nearest_distance = distance;
+                nearest = candidate;
+            }
+        }
+        if (nearest != NULL) {
+            if (tag_pressed != 0 || (nearest->id == id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA)) {
+                TakeOver2GetIn(object, nearest);
+            } else {
+                object->tag_flags |= 1;
+                nearest->flags_e20 |= 0x80000000;
+            }
+        }
+    }
+}
+
+static void RecomputeHighGameObject(void) {
+    i32 index;
+    HIGHGAMEOBJECT = 0;
+    for (index = 0; index < 64; ++index) {
+        if ((Obj[index].flags_1fc_word & 1) != 0) {
+            HIGHGAMEOBJECT = index + 1;
+        }
+    }
+}
+
+void __cdecl RemoveGameObject(GAMEOBJECT *object, i32 unused) {
+    i32 i;
+    (void)unused;
+    if (object == NULL)
+        return;
+    for (i = 0; i < HIGHGAMEOBJECT; ++i) {
+        u64 bit = object->hostility_group < 64 ? ((u64)1 << object->hostility_group) : 0;
+        u32 low = ~(u32)bit, high = ~(u32)(bit >> 32);
+        Obj[i].collision_contact_mask[0] &= ~object->collision_identity_mask[0];
+        Obj[i].collision_contact_mask[1] &= ~object->collision_identity_mask[1];
+        Obj[i].hostility_mask[0] &= low;
+        Obj[i].hostility_mask[1] &= high;
+        Obj[i].field_eb0 &= low;
+        Obj[i].field_eb4 &= high;
+        Obj[i].ai_opponent_exclusion_mask[0] &= low;
+        Obj[i].ai_opponent_exclusion_mask[1] &= high;
+    }
+    if (object->pad != NULL)
+        object->pad->runtime_flags &= ~1u;
+    STUBBED_NAMED("RemoveGameObject: DestroySnakeBody PC597350");
+    STUBBED_NAMED("RemoveGameObject: APIObjectDestroy WORLD->object_sys,object PC62a910");
+    RecomputeHighGameObject();
+    for (i = 0; i < 8; ++i) {
+        if (LevGameObject[i] == object)
+            LevGameObject[i] = NULL;
+    }
+}
+
+void __cdecl DeactivateGameObject(GAMEOBJECT *object) {
+    if (object == NULL)
+        return;
+    if (object->rider != NULL) {
+        if ((object->flags_1f8 & 0x4000) != 0)
+            ReleaseTakeOver(object, 1);
+        else
+            KillGameObject(object->rider, 4, 0);
+    }
+    object->flags_1fc_word &= ~0x1000u;
+    if (object->ai_packet.creature_index != 0xff &&
+        AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, (char *)GameObjectState_InActive) != 0) {
+        object->ai_packet.reset_mode = 0;
+        WORLD->ai_sys->creatures[object->ai_packet.creature_index].activation_type = 2;
+    } else {
+        object->ai_packet.reset_mode = 4;
+    }
+}
+
+void __cdecl ManageGameObjects(void) {
+    i32 i, j, area;
+    GAMEOBJECT *candidate, *other, *vehicle, *target;
+    AICREATURE_PC *creature;
+    AISYS_PC *system;
+    AIGROUP_PC *group;
+    AILOCATOR_PC *locator, *respawn_locator;
+    APIOBJECT_PC *member;
+    u16 saved_flags;
+    u32 contact_low, contact_high, low, high, limit;
+    u64 bit;
+    i64 mask;
+    f32 blend;
+    GAMEOBJECT *object = Obj;
+    memset(aicreature_sets_alive, 0, sizeof(aicreature_sets_alive));
+    for (i = 0; i < HIGHGAMEOBJECT; ++i) {
+        candidate = &object[i];
+        if ((candidate->flags_1fc_word & 0x1000) != 0 && candidate->dead == 0 && candidate->ai_packet.creature_set != 0)
+            ++aicreature_sets_alive[candidate->ai_packet.creature_set - 1];
+    }
+    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
+        if ((object->flags_1fc_word & 1) == 0)
+            continue;
+        if ((object->flags_1f8 & 0x40000) != 0) {
+            if (nethost != 0 && (object->flags_1fc_word & 0x1000) == 0 && object->ai_packet.creature_index == 0xff &&
+                (object->ai_packet.reset_mode & ~2) != 1 && (object->flags_1f8 & 0x4000) != 0)
+                AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet,
+                                &object->ai_packet.script_processor, FRAMETIME);
+            continue;
+        }
+        if ((object->flags_1fc_word & 0x1000) != 0) {
+            if (object->dead == 0)
+                continue;
+            if (object->tag_object_callback != NULL) {
+                object->tag_object_callback(object);
+                object->tag_object_callback = NULL;
+            }
+            if (object->field_1010 > 0.0f) {
+                object->field_1010 -= FRAMETIME;
+                if (object->field_1010 <= 0.0f) {
+                    object->field_1010 = 0.0f;
+                    other = NULL;
+                    if (WORLD->current_level == PODSPRINTA_LDATA)
+                        other = GetOtherActivePlayer(object);
+                    if (other != NULL) {
+                        object->start_position = other->position;
+                        object->position = other->position;
+                        object->ai_update_position = other->position;
+                        GameObjectOrigin(object);
+                        object->velocity = other->velocity;
+                        object->movement_facing_angle = other->field_0x276;
+                        object->facing_angle = other->field_0x276;
+                        object->field_0x276 = other->field_0x276;
+                    } else {
+                        SetToLastSafePos(object);
+                        GameObjectOrigin(object);
+                        object->velocity.x = object->velocity.z = 0.0f;
+                        object->velocity.y = -0.1f;
+                        object->facing_angle = object->movement_facing_angle;
+                        object->field_0x276 = object->movement_facing_angle;
+                    }
+                    saved_flags = object->flags_1fc_word & 0x2000;
+                    STUBBED_NAMED("ManageGameObjects: ResetPlayerMoves PC41af70");
+                    object->dead = 0;
+                    object->flags_1fc_word = (object->flags_1fc_word & ~0x2000) | saved_flags;
+                    object->current_hp = object->field_107e;
+                    object->shield_hitpoints = object->character_data->game_character->shield_hitpoints;
+                    object->saved_hitpoints = 4;
+                    object->flags_ef0 |= 0x80;
+                    object->character_context = 0xff;
+                    if (object->field_280 != 0xff)
+                        object->spawn_protection_timer = 2.5f;
+                    AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
+                    vehicle = object->takeover_owner;
+                    if (vehicle != NULL && (vehicle->rider == NULL || vehicle->rider == object) &&
+                        (vehicle->flags_1fc_word & 0x1000) != 0 && vehicle->character_context != 0x2b &&
+                        vehicle->dead == 0) {
+                        GetTakeOverPos(vehicle, &object->position);
+                        TakeOverGameObject(object, object->takeover_owner, 0, 1);
+                    }
+                    if ((object->flags_1fc_word & 0x80) && WORLD->current_level == SPEEDERCHASEA_LDATA &&
+                        disable_narrow_socks == 0)
+                        STUBBED_NAMED("ManageGameObjects: GameCam_Blend GameCam,0.5f,0.0f,0 PC54a3e0");
+                } else if (WORLD->current_level == PODSPRINTA_LDATA) {
+                    other = GetOtherActivePlayer(object);
+                    if (other != NULL)
+                        object->position = other->position;
+                }
+                continue;
+            }
+            object->death_timer += FRAMETIME;
+            if (!(object->death_timer >= object->death_delay))
+                continue;
+            object->death_timer = object->death_delay;
+            contact_low = ~object->collision_identity_mask[0];
+            contact_high = ~object->collision_identity_mask[1];
+            bit = object->hostility_group < 64 ? ((u64)1 << object->hostility_group) : 0;
+            low = ~(u32)bit, high = ~(u32)(bit >> 32);
+            for (j = 0; j < HIGHGAMEOBJECT; ++j) {
+                Obj[j].collision_contact_mask[0] &= contact_low;
+                Obj[j].collision_contact_mask[1] &= contact_high;
+                Obj[j].hostility_mask[0] &= low;
+                Obj[j].hostility_mask[1] &= high;
+                Obj[j].field_eb0 &= low;
+                Obj[j].field_eb4 &= high;
+                Obj[j].ai_opponent_exclusion_mask[0] &= low;
+                Obj[j].ai_opponent_exclusion_mask[1] &= high;
+            }
+            if ((object->flags_1f8 & 0x4000) != 0) {
+                if ((object->flags_1f8 & 0x400) != 0) {
+                    creature = &WORLD->ai_sys->creatures[object->ai_packet.creature_index];
+                    if ((object->portal_flags & 0x100000) != 0) {
+                        if ((object->portal_flags & 0x200000) == 0) {
+                            object->field_1010 =
+                                object->id == id_STAP2 && WORLD->current_level == NEGOTIATIONSC_LDATA ? 5.0f : 1.0f;
+                            continue;
+                        }
+                    } else {
+                        limit = object->ai_packet.respawn_count + 1;
+                        if (creature->max_respawn_count != -1 && object->ai_packet.respawn_locator == NULL)
+                            limit = creature->min_respawn_count +
+                                    (Game.difficulty - 1) *
+                                        (creature->max_respawn_count - creature->min_respawn_count) / 9 +
+                                    1;
+                        if (limit <= object->ai_packet.respawn_count) {
+                            object->flags_1fc_word &= ~0x1000;
+                            object->ai_packet.reset_mode = 4;
+                            continue;
+                        }
+                    }
+                    object->flags_1fc_word &= ~0x1000;
+                    object->ai_packet.reset_mode = 1;
+                    blend = 1.0 - ((f64)(u32)Game.difficulty - 1.0) / 9.0;
+                    object->ai_packet.spawn_delay =
+                        creature->max_respawn_time * blend + creature->min_respawn_time * (1.0f - blend);
+                } else {
+                    object->field_1010 = 2.0f;
+                }
+                continue;
+            }
+            if ((object->portal_flags & 0x100000) != 0) {
+                object->field_1010 = 1.0f;
+                continue;
+            }
+            goto remove_object;
+        }
+        if (object->ai_packet.creature_index != 0xff) {
+            system = WORLD->ai_sys;
+            creature = &system->creatures[object->ai_packet.creature_index];
+            if (object->ai_packet.reset_mode == 0) {
+                switch (creature->activation_type) {
+                    case 0:
+                        if (Game.difficulty >= creature->activation_difficulty)
+                            STUBBED_NAMED("ManageGameObjects: ResetAICreature object/system PC41c120");
+                        else
+                            object->ai_packet.reset_mode = 4;
+                        break;
+                    case 1:
+                        if (creature->activate_area == NULL) {
+                            creature->activation_type = 0;
+                        } else {
+                            area = creature->activate_area - system->areas;
+                            mask = (i32)(1u << (area & 31));
+                            if (player != NULL &&
+                                (((u64)player->ai_area_mask[0] | ((u64)player->ai_area_mask[1] << 32)) & mask) != 0) {
+                                if (Game.difficulty < creature->activation_difficulty) {
+                                    object->ai_packet.reset_mode = 4;
+                                } else if (creature->count > 1 && creature->start_stagger > 0.0f &&
+                                           object->ai_packet.group_member_index != 0) {
+                                    object->ai_packet.reset_mode = 1;
+                                    object->ai_packet.spawn_delay =
+                                        (f32)(u32)object->ai_packet.group_member_index * creature->start_stagger;
+                                } else {
+                                    STUBBED_NAMED("ManageGameObjects: ResetAICreature object/system PC41c120");
+                                }
+                            }
+                        }
+                        break;
+                    case 2:
+                        if (Game.difficulty >= creature->activation_difficulty)
+                            AIScriptProcess(system, (APIOBJECT_PC *)object, &object->ai_packet,
+                                            &object->ai_packet.script_processor, FRAMETIME);
+                        break;
+                }
+            } else if (object->ai_packet.reset_mode == 1) {
+                group = object->ai_packet.group;
+                if (group != NULL && !(group->flags & 2))
+                    continue;
+                if (creature->activation_type == 1) {
+                    area = creature->activate_area - system->areas;
+                    mask = (i32)(1u << (area & 31));
+                    if (player == NULL ||
+                        (((u64)player->ai_area_mask[0] | ((u64)player->ai_area_mask[1] << 32)) & mask) == 0 ||
+                        Game.difficulty < creature->activation_difficulty) {
+                        if (creature->count > 1 && creature->start_stagger > 0.0f)
+                            object->ai_packet.spawn_delay =
+                                (f32)(u32)object->ai_packet.group_member_index * creature->start_stagger;
+                        continue;
+                    }
+                }
+                object->ai_packet.spawn_delay -= FRAMETIME;
+                if (!(object->ai_packet.spawn_delay <= 0.0f))
+                    continue;
+                if (group != NULL) {
+                    locator = object->ai_packet.script_processor.locator;
+                    respawn_locator = object->ai_packet.respawn_locator;
+                    for (j = 0; j < group->member_count; ++j) {
+                        member = group->members[j];
+                        if (member != NULL) {
+                            target = member->owner;
+                            target->ai_packet.spawn_delay = 0.0f;
+                            target->ai_packet.script_processor.locator = locator;
+                            target->ai_packet.respawn_locator = respawn_locator;
+                            STUBBED_NAMED("ManageGameObjects: ResetAICreature group member PC41c120");
+                            group = object->ai_packet.group;
+                            if (group->leader == NULL)
+                                group->leader = group->members[j];
+                        }
+                        group = object->ai_packet.group;
+                    }
+                    group->flags &= ~8u;
+                    object->ai_packet.group->flags &= ~4u;
+                } else {
+                    object->ai_packet.spawn_delay = 0.0f;
+                    if (object->id == id_PKDROID) {
+                        STUBBED_NAMED("ManageGameObjects: ResetAICreature object/system PC41c120");
+                        STUBBED_NAMED("ManageGameObjects: SpawnCreatureFromCrate object,3.0f,0.0f PC4302e0");
+                    } else {
+                        STUBBED_NAMED("ManageGameObjects: ResetAICreature object/WORLD->ai_sys PC41c120");
+                    }
+                }
+            }
+            continue;
+        }
+        if (object->ai_packet.reset_mode == 1) {
+            object->ai_packet.spawn_delay -= FRAMETIME;
+            if (object->ai_packet.spawn_delay <= 0.0f) {
+                object->ai_packet.reset_mode = 2;
+                object->ai_packet.spawn_delay = 0.0f;
+                object->flags_1fc_word |= 0x1000;
+            }
+            continue;
+        }
+        if (object->ai_packet.reset_mode == 3)
+            continue;
+        if ((object->flags_1f8 & 0x4000) != 0) {
+            AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet,
+                            &object->ai_packet.script_processor, FRAMETIME);
+            continue;
+        }
+    remove_object:;
+        group = object->ai_packet.group;
+        if (group != NULL) {
+            if (group->rows[0].is_alive == 0 && group->rows[1].is_alive == 0 && group->rows[2].is_alive == 0 &&
+                group->rows[3].is_alive == 0) {
+                STUBBED_NAMED("ManageGameObjects: DestroyAIGroup PC5181e0");
+            } else {
+                for (j = 0; j < group->member_count; ++j) {
+                    if (group->members[j] == (APIOBJECT_PC *)object)
+                        group->members[j] = NULL;
+                }
+            }
+        }
+        STUBBED_NAMED("ManageGameObjects: FreeTorpedoPacket PC4d22f0");
+        RemoveGameObject(object, 1);
+    }
 }

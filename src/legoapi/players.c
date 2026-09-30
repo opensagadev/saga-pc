@@ -432,3 +432,9 @@ i32 __cdecl UnderPlayerControl(GAMEOBJECT *object) {
         return 1;
     return 0;
 }
+
+void __cdecl SetToLastSafePos(GAMEOBJECT *object) {
+    object->start_position = object->last_safe_position;
+    object->position = object->last_safe_position;
+    object->ai_update_position = object->last_safe_position;
+}

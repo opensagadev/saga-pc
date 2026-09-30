@@ -301,3 +301,20 @@ void __cdecl PartImpact_Basketball(PART_PC *part) {
     if (volume > 0.0f)
         PlaySfxAndSetVolume("BBounce", &part->position, volume);
 }
+
+void __cdecl PartUpdate_Basketball(PART_PC *part) {
+    GIZMOBLOWUP_PC *blowup;
+    if (LevGizmo[0] == NULL)
+        return;
+    blowup = (GIZMOBLOWUP_PC *)LevGizmo[0]->object;
+    if ((blowup->status_flags & 0x800001) == 0 &&
+        NuVecDistSqr(&blowup->position, &part->position, NULL) < 0.1f * 0.1f) {
+        GizmoSetVisibility(WORLD->gizmo_sys, LevGizmo[0], 1, 0);
+        STUBBED_NAMED("PartUpdate_Basketball: GizmoBlowupBlowup PC567800(blowup,1,-1,-1,NULL,1)");
+    }
+}
+void __cdecl PartCollide_3D(PART_PC *part) {
+    (void)part;
+    STUBBED_NAMED(
+        "PartCollide_3D: entire private PartCollide PC42c740 collision action, PART in EDI and mode1 on stack");
+}
