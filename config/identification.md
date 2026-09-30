@@ -493,3 +493,56 @@ vector normalization/rotations, axis triangle tests and the legacy animation end
 frame. Quaternion multiply remains 99.60% advisory similarity with different
 bytes; plane intersection and the larger parser/animation/flow routines remain
 structural. The current `matching.json` is authoritative for later changes.
+
+## Repeatable graph identification
+
+`python3 tools/check.py --identify --holdout` ranks whole-program candidates from
+the retained Android ELF graph and PC call/reference exports. Add `--source-graph
+build/analysis/source-graph/android-source-graph.json` for source signatures,
+clean direct calls, named global references and literal values. Extraction and
+feature-refresh commands are described in [CONTRIBUTING.md](../CONTRIBUTING.md).
+All generated graphs, candidate ledgers and original-derived evidence remain
+under ignored `build/analysis/`; the accepted four-column CSV remains separate.
+
+The current source-tree extraction covers 490 translation units using the actual
+Android GNU C11/C++11 syntax modes: 447 have no diagnostics, while 43 remain
+degraded. Clean evidence contains 11,267 definitions, 44,980 calls, 44,010 global
+references and 5,983 literals. Virtual references and unresolved calls are not
+promoted to direct edges. Adjacent string literals retain their complete value.
+Source identities join ELF nodes only through unique, compatible linker names;
+inline-only or otherwise unjoined definitions receive no invented addresses.
+
+The reviewed map supplies 732 unique PC/Android name seeds. Four propagation
+rounds produced 1,485 additional candidate pairs, with alternatives and individual
+call/data/string supports in the ledger. In the deterministic holdout, 183 known
+pairs were removed; 101 were proposed and all 101 agreed with those existing
+labels. This is encouraging retrieval evidence on a biased known-function sample,
+not a probability calibration or proof of unknown mappings. Generic parser/draw
+calls, compiler helpers, inlining and source/platform differences still create
+false positives. Do not infer PC code progress from these pair counts.
+
+The ledger distinguishes entry/min/max/body/range information. Split bodies or
+ranges below the entry leave the candidate extent blank; 202 inferred pairs need
+that boundary review. Even a single Ghidra range remains an analysis hypothesis.
+Input hashes and 36,155 corroborated retail direct-call operands prevent quietly
+using unrelated exports. Reference caches reject stale PC map inputs; refresh
+explicitly after extending the map. Android ELF GOT features currently resolve
+R_386_RELATIVE slots and direct PIC addresses, not every relocation kind; the
+source-reference channel supplies complementary evidence.
+
+A family review accepted 71 additional function identities and three data entries:
+17 gizmo/flow entries, 14 ANI3 entries, six rendering/file/particle identities,
+11 sound wrappers/loaders, 12 table-anchored AI callbacks, and 11 resource/parser
+entries. Complete code spans were checked against PC terminal instructions and
+conditional branches; internal flow/loader padding remains included. The three
+data entries are the 36-byte flow callback table at `0x00805514`, its eight-byte
+`default` output name at `0x00757734`, and the zero byte checksum at `0x00956454`.
+These are inventory additions, not implementations. Private flow helpers retain
+blank ctypes where EDI/ESI conventions are not ordinary public C calls. ANI3
+private helpers also retain blank ctypes pending their source organization.
+
+Unresolved CharConfig fastcall decoration, network renderer member names and the
+adjacent ANI3 shared-gap function remain research. The next connected source
+batch is the six-function ANI3 matrix/extraction path, followed by the complete
+flow callback closure and ordinary AI callbacks. Keep full byte comparison as
+verification after each broad portable implementation batch.

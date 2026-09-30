@@ -355,3 +355,12 @@ queue also retains the candidates still needing type or ownership review.
 | `0x0091ef38` | `NuCommandLine_argv` | pointer |
 | `0x0091eea8` | `curr_dat` | pointer |
 | `0x0093d878` | `world_array` | aggregate_anchor_stride0x51ac_count2 |
+
+The source/binary graph queue now has broad reviewed ANI3, flow, resource and AI
+callback inventory anchors. Implement the six-function ANI3 matrix path next
+(`NuAnimData2CalcMatrix` at `0x005f3390` through `0x005ce350` and interpolation
+helpers), then its caller `EvalAnim2` and special/display-list update closure.
+Their named PC layout proposals and portable drafts are under ignored
+`build/analysis/bulk-anim-matrix/` and `bulk-gameanim/`; recheck them against the
+retail instructions when integrating. This target expands animation behavior
+without displacing the broader structural identification queue.

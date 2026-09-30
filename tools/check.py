@@ -294,7 +294,37 @@ def main():
     mode.add_argument("--format", action="store_true", help="Check C/C++ source and header formatting")
     mode.add_argument("--tidy", action="store_true", help="Analyze C/C++ using the original Windows x86 SDK")
     mode.add_argument("--editor", action="store_true", help="Prepare VS Code headers and clang-tidy compilation database")
+    mode.add_argument("--identify", action="store_true", help="Rank Android-to-PC call/reference graph hypotheses from local analysis exports")
+    mode.add_argument("--extract-source-graph", action="store_true", help="Extract a cached Android source AST graph for identification")
+    parser.add_argument("--holdout", action="store_true", help="With --identify, test recovery of hidden existing mappings")
+    parser.add_argument("--source-graph", type=Path, help="With --identify, add a diagnostics-clean Android AST graph")
+    parser.add_argument("--refresh-features", action="store_true", help="With --identify, regenerate ELF/PE data references before scoring")
+    parser.add_argument("--android-root", type=Path, default=ROOT.parent / "saga", help="Read-only Android reference for --refresh-features")
+    parser.add_argument("--ndk-root", type=Path, help="Existing Android NDK r8e extraction for --extract-source-graph")
+    parser.add_argument("--jobs", type=int, default=8, help="Bounded AST extraction workers (default: 8)")
+    parser.add_argument("--input", type=Path, action="append", help="Limit AST extraction to these translation units")
     args = parser.parse_args()
+    if args.extract_source_graph:
+        if not args.ndk_root:
+            parser.error("--extract-source-graph requires --ndk-root")
+        if __package__:
+            from .source_graph import extract
+        else:
+            from source_graph import extract
+        extract(args.android_root, args.ndk_root,
+                args.source_graph or ROOT / "build/analysis/source-graph/android-source-graph.json",
+                inputs=args.input or (), all_source=args.input is None, jobs=args.jobs)
+        return
+    if (args.holdout or args.source_graph or args.refresh_features) and not args.identify:
+        parser.error("--holdout, --source-graph and --refresh-features require --identify")
+    if args.identify:
+        if __package__:
+            from .identification import generate
+        else:
+            from identification import generate
+        generate(holdout=args.holdout, source_graph=args.source_graph,
+                 refresh=args.refresh_features, android_root=args.android_root)
+        return
     if args.format:
         check_format()
         return

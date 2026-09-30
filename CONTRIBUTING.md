@@ -343,3 +343,59 @@ All three JSON configurations are consumed by the helpers:
 
 The repository [Codex skill](.agents/skills/saga-pc-decomp/SKILL.md) describes this
 workflow for coding agents.
+
+## Fast structural identification
+
+The optional analysis commands use the same `tools/check.py` entry point and
+ignored `build/analysis/` workspace. They do not change the Makefile build or
+accept symbol bindings. The call/reference scorer reuses these retained inputs:
+
+- `android-callgraph.json`: original Android ELF nodes with integer `address`,
+  `size`, linker `name`, and `calls` containing `site`/`target`/`name`.
+- `pc/functions.tsv`: `entry`, `min`, `max`, `body_bytes`, `ranges`, `name`.
+- `pc/references.tsv`: `function`, `instruction`, `target`, `type`.
+- Optional `bulk-identify/{android,pc}-data-features.json`: named data and literal
+  reference features. `--refresh-features` regenerates these from the originals,
+  retained `data/accepted-symbols.json`, and the current symbol map. This needs
+  Python Capstone and the Android repository's retained ELF/PIC readers.
+
+The PC TSVs are Ghidra analysis exports, not authoritative boundaries. Scoring
+checks the retail hash and corroborates exported direct-call operands against
+its actual instructions. Output hashes identify every supplied graph/map input.
+Re-export after changing the analyzed binary or its function definitions.
+
+```sh
+python3 tools/check.py --identify --holdout
+python3 tools/check.py --identify --refresh-features --android-root ../saga --holdout
+```
+
+For source-level types, inline definitions, calls and references, optionally
+extract the Android AST using Python `clang.cindex`/libclang, a local `clang`
+executable, and an existing NDK r8e extraction. These are analysis dependencies;
+they are not compiler or CI requirements. Set the actual NDK extraction path:
+
+```sh
+python3 tools/check.py --extract-source-graph --android-root ../saga \
+    --ndk-root /path/to/existing/android-ndk-r8e --jobs 8
+python3 tools/check.py --identify --holdout \
+    --source-graph build/analysis/source-graph/android-source-graph.json
+```
+
+The extractor scans C/C++ source-tree translation units using the Android
+GNU C11/C++11 syntax modes, not the host/WASM build. Limit scope with repeated
+`--input /path/to/file.cpp`; `--source-graph` selects the output path. Cached TU
+results fingerprint source and SDK headers, extractor code, compiler arguments,
+and Clang/libclang versions. Clean AST records
+are separated from degraded parses, and indirect/unresolved calls stay explicit.
+A unique compatible linker name joins clean source records to existing ELF nodes; unmatched inline
+source definitions retain their source identities without invented addresses.
+
+Review `bulk-identify/hypotheses.csv`, `anchor-crosswalk.csv`, `summary.json`,
+and optional `holdout.json`. The ledger records original candidate spans,
+source signatures/paths, ranked alternatives, graph/reference supports, margins
+and propagation rounds. Scores are comparative heuristics, not calibrated
+probabilities. The deterministic holdout hides every fourth unique accepted pair
+before scoring; its recovery test is useful but biased toward already identified
+functions. It cannot certify unknown identities, PC layouts or function extents.
+Accept coherent groups only after the PC review in [identification.md](config/identification.md),
+then port their portable behavior and run the required build/matching checks.

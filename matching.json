@@ -7,23 +7,27 @@
     "Makefile": "3701f963e43852880974b950195a9e100a988f39b769b2d78b51873193e47e3e",
     "src/externals.h": "6e21a33e084cafaa08da9f0acb850c3b544726f282be867f96d441df2fbcdf39",
     "src/saga.h": "b1af61217bf7c3aa55e4692eaa42f9c5979f30675b953eb83a4055d71a7bb38c",
-    "config/data.md": "9f8cff31d8009ad6467e48ba68f6f35a65a193bcb4d91fd3e7c19815a63eced2",
-    "config/identification.md": "d08eacd068758700aa5936faf69f0c828af5618fb637baf3a2d37dccd40eeb09",
-    "config/numain.md": "6cd3b1c149b0a0261213187fd915828c7cd67f93804cea511c0fff1ea52fb9a6",
+    "config/data.md": "95c100244874fc00c3c90adb2571c969c51eedf40c4311540092d19931ce63aa",
+    "config/identification.md": "42e1a72e01b5999903f6a65d2581c590eb7b9b03099224633de6f5070096d394",
+    "config/numain.md": "a187242ddbc27b8fc9c32e0901ac3d3dc50e570bff5ec7a61ec61ba8dffd93d2",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
-    "config/symbols.csv": "3de9572107ece646a4931113e0062745ffefc3187b4889cbb89d6f426d58145f",
+    "config/symbols.csv": "3f629e08994578619a15c4d7a45e2a2a13dff6274a7205076b5143a631992135",
     "config/symbols.md": "c76abb9e261e24c8a6e2132e08eb04f6614c5e2d02fb670a58b767af679ab8f2",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
     "tools/cc.py": "428b7ac5f1b7808cf780d0b26a03b49600e43810ec1c1f128630766d090a820f",
-    "tools/check.py": "3f9a7a8d4f2b05b98fa0e55fcaf1dd12bad51a7decf90b524700c5fbe15b02be",
+    "tools/check.py": "e0a1838e14ece8e14679b7f0cf2a1d1c4c277d60de45fbd75a36cf4cbb9f8d00",
+    "tools/identification.py": "f200bbd4b26603a69540d39b8ee8c7f892908d50a819b890b408e25d2a5675b9",
     "tools/lib.py": "8c94ae7a83dc5e94838ca429f569eb93f897168a654a4cff325ed3f36bbe24a3",
     "tools/match.py": "c0abc16e173230f630d5aac633b0e0f9348a9b47b0245ef925ed936606e829f9",
+    "tools/reference_features.py": "b12a8f3f9c5d1a60286e7d562c9e21eee49fa069a6cc365450866ff97216713a",
     "tools/setup.py": "a7a9bd71e63f0039de5211e3e9976d87d57e357be9f7a62a68cfb33758b4e56c",
+    "tools/source_graph.py": "d4039a51c35367778c8ce4cc91a1e265bfd941393f62f65fa67d2dcaa2becbda",
     "tools/test_binary.py": "b9347b6599deed3c1f270ace1f7c5ac07bcebd2656ec373d77e45be7fa38432f",
     "tools/test_check.py": "9175ce38e888f0562018b56e893558547f7cdba34620a5ce7a26b8e9bfdbf9f3",
     "tools/test_dat.py": "fc3e86891b356f7a401a6133ca1e4c1b539038ef62e1ce5513e034bd19029977",
+    "tools/test_identification.py": "92a90880fb47c2b7a8e2e0608487bf435db936e49909b161ac13f3f516171ab6",
     "tools/test_lib.py": "54561f44ee40367574c6f1824c77198ee3a93a455ba88e2ae4c83545b79a7e78",
     "tools/test_match.py": "794c052372646961512004b82d37c0b2656438a321a2280ed6420d87766f16dd",
     "tools/test_setup.py": "7ceb42e28b5c13e56f794c9cef0b24cabebac3ac454b446473b857714a6c1a67",
@@ -699,6 +703,16 @@
       "objdiff_percent": 98.125
     },
     {
+      "name": "DrawStatusText",
+      "symbol": "_DrawStatusText",
+      "address": "0x00482f40",
+      "units": [],
+      "target_size": 583,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "EffectOffProgress_Update",
       "symbol": "_EffectOffProgress_Update",
       "address": "0x0048a060",
@@ -800,6 +814,26 @@
       "address": "0x0048a4b0",
       "units": [],
       "target_size": 482,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "LoadPerm1",
+      "symbol": "_LoadPerm1",
+      "address": "0x0048a6a0",
+      "units": [],
+      "target_size": 1351,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "LoadPerm2",
+      "symbol": "_LoadPerm2",
+      "address": "0x0048abf0",
+      "units": [],
+      "target_size": 835,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -2219,6 +2253,16 @@
       ],
       "status": "different",
       "objdiff_percent": 54.0
+    },
+    {
+      "name": "BobaRocket_Move",
+      "symbol": "_BobaRocket_Move",
+      "address": "0x004a56a0",
+      "units": [],
+      "target_size": 1001,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "InitPanel",
@@ -6701,6 +6745,36 @@
       "status": "not implemented"
     },
     {
+      "name": "NuStringTableLoadCSV",
+      "symbol": "_NuStringTableLoadCSV",
+      "address": "0x004fda90",
+      "units": [],
+      "target_size": 1260,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "NuStringTableLoadTXT",
+      "symbol": "_NuStringTableLoadTXT",
+      "address": "0x004fdf80",
+      "units": [],
+      "target_size": 899,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "NuStringFilterLoad",
+      "symbol": "_NuStringFilterLoad",
+      "address": "0x004fe390",
+      "units": [],
+      "target_size": 659,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "bgProcDataOversize",
       "symbol": "_bgProcDataOversize",
       "address": "0x004fe640",
@@ -7697,6 +7771,126 @@
       "status": "not implemented"
     },
     {
+      "name": "Condition_Timer",
+      "symbol": "_Condition_Timer",
+      "address": "0x00514990",
+      "units": [],
+      "target_size": 8,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Condition_Random",
+      "symbol": "_Condition_Random",
+      "address": "0x005149a0",
+      "units": [],
+      "target_size": 5,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Condition_AlwaysTrue",
+      "symbol": "_Condition_AlwaysTrue",
+      "address": "0x005149f0",
+      "units": [],
+      "target_size": 13,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_NoTerrain",
+      "symbol": "_Action_NoTerrain",
+      "address": "0x005161a0",
+      "units": [],
+      "target_size": 116,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_NoLosCheck",
+      "symbol": "_Action_NoLosCheck",
+      "address": "0x00516220",
+      "units": [],
+      "target_size": 119,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_FlatTerrain",
+      "symbol": "_Action_FlatTerrain",
+      "address": "0x005162a0",
+      "units": [],
+      "target_size": 116,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_DontUseShadowTerrain",
+      "symbol": "_Action_DontUseShadowTerrain",
+      "address": "0x005163a0",
+      "units": [],
+      "target_size": 116,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_DontPush",
+      "symbol": "_Action_DontPush",
+      "address": "0x00516420",
+      "units": [],
+      "target_size": 116,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CanSeeBehind",
+      "symbol": "_Action_CanSeeBehind",
+      "address": "0x005164a0",
+      "units": [],
+      "target_size": 119,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_RequiresLOS",
+      "symbol": "_Action_RequiresLOS",
+      "address": "0x00516520",
+      "units": [],
+      "target_size": 97,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetFullPathSearch",
+      "symbol": "_Action_SetFullPathSearch",
+      "address": "0x00516590",
+      "units": [],
+      "target_size": 119,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_NoShadows",
+      "symbol": "_Action_NoShadows",
+      "address": "0x00516bf0",
+      "units": [],
+      "target_size": 119,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "AISysBufferAlloc",
       "symbol": "_AISysBufferAlloc",
       "address": "0x00517160",
@@ -7841,6 +8035,16 @@
       "objdiff_percent": 49.331966
     },
     {
+      "name": "AIScriptLoadAllPakFile",
+      "symbol": "_AIScriptLoadAllPakFile",
+      "address": "0x0052c470",
+      "units": [],
+      "target_size": 607,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "NuLstCreate",
       "symbol": "_NuLstCreate",
       "address": "0x00547060",
@@ -7942,6 +8146,36 @@
       "address": "0x00547780",
       "units": [],
       "target_size": 87,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "GameAudio_GetPlrSfxBits",
+      "symbol": "_GameAudio_GetPlrSfxBits",
+      "address": "0x00547820",
+      "units": [],
+      "target_size": 34,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "GameAudio_PlaySfxById",
+      "symbol": "_GameAudio_PlaySfxById",
+      "address": "0x005478a0",
+      "units": [],
+      "target_size": 141,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "GameAudio_PlaySfx",
+      "symbol": "_GameAudio_PlaySfx",
+      "address": "0x00547930",
+      "units": [],
+      "target_size": 33,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -8089,6 +8323,26 @@
       ],
       "status": "different",
       "objdiff_percent": 94.0
+    },
+    {
+      "name": "AddLevSfx",
+      "symbol": "_AddLevSfx",
+      "address": "0x00547bd0",
+      "units": [],
+      "target_size": 223,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "UpdateLevelSfx",
+      "symbol": "_UpdateLevelSfx",
+      "address": "0x00548690",
+      "units": [],
+      "target_size": 121,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "NewAreaMusicChanges",
@@ -9079,6 +9333,26 @@
       "objdiff_percent": 57.574074
     },
     {
+      "name": "GizmoGetOutput",
+      "symbol": "_GizmoGetOutput",
+      "address": "0x0055a1b0",
+      "units": [],
+      "target_size": 70,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "GizmoGetOutputName",
+      "symbol": "_GizmoGetOutputName",
+      "address": "0x0055a200",
+      "units": [],
+      "target_size": 71,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "GizmoSetVisibility",
       "symbol": "_GizmoSetVisibility",
       "address": "0x0055a250",
@@ -9132,6 +9406,16 @@
       "address": "0x0055ad70",
       "units": [],
       "target_size": 421,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "GizmoActivateReverse",
+      "symbol": "_GizmoActivateReverse",
+      "address": "0x0055b0e0",
+      "units": [],
+      "target_size": 146,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -11545,6 +11829,16 @@
       "status": "not implemented"
     },
     {
+      "name": "CutScenes_Load",
+      "symbol": "_CutScenes_Load",
+      "address": "0x0057c3e0",
+      "units": [],
+      "target_size": 1333,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "CutScene_PlayingOrRequested",
       "symbol": "_CutScene_PlayingOrRequested",
       "address": "0x0057cd80",
@@ -11625,6 +11919,16 @@
       "status": "not implemented"
     },
     {
+      "name": "CharConfig_ConfigureAll",
+      "symbol": "_CharConfig_ConfigureAll",
+      "address": "0x00589ac0",
+      "units": [],
+      "target_size": 1139,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Mission_Clear",
       "symbol": "_Mission_Clear",
       "address": "0x0058a8d0",
@@ -11640,6 +11944,26 @@
       "address": "0x0058b8d0",
       "units": [],
       "target_size": 358,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Customiser_LoadAccessories",
+      "symbol": "_Customiser_LoadAccessories",
+      "address": "0x00592a70",
+      "units": [],
+      "target_size": 648,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Customiser_LoadAll",
+      "symbol": "_Customiser_LoadAll",
+      "address": "0x005931a0",
+      "units": [],
+      "target_size": 811,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -11751,6 +12075,96 @@
       "objdiff_percent": 85.10345
     },
     {
+      "name": "CheckOutputGizmoFlowBox",
+      "symbol": "_CheckOutputGizmoFlowBox",
+      "address": "0x0059d930",
+      "units": [],
+      "target_size": 141,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "LoopCountLoopingInputsEx",
+      "symbol": "_LoopCountLoopingInputsEx",
+      "address": "0x0059d9d0",
+      "units": [],
+      "target_size": 96,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "LoopCountLoopingInputs",
+      "symbol": "_LoopCountLoopingInputs",
+      "address": "0x0059da30",
+      "units": [],
+      "target_size": 48,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "ResetForLoopEx",
+      "symbol": "_ResetForLoopEx",
+      "address": "0x0059da60",
+      "units": [],
+      "target_size": 153,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "ProcessConditionFlowBox",
+      "symbol": "_ProcessConditionFlowBox",
+      "address": "0x0059db00",
+      "units": [],
+      "target_size": 692,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "CheckOutputConditionFlowBox",
+      "symbol": "_CheckOutputConditionFlowBox",
+      "address": "0x0059ddd0",
+      "units": [],
+      "target_size": 104,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "CheckIfParentsFinished",
+      "symbol": "_CheckIfParentsFinished",
+      "address": "0x0059de40",
+      "units": [],
+      "target_size": 291,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "FlowBoxActivationFeedback",
+      "symbol": "_FlowBoxActivationFeedback",
+      "address": "0x0059df70",
+      "units": [],
+      "target_size": 191,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "PerformActionFlowBox",
+      "symbol": "_PerformActionFlowBox",
+      "address": "0x0059e030",
+      "units": [],
+      "target_size": 71,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "CheckOutputActionFlowBox",
       "symbol": "_CheckOutputActionFlowBox",
       "address": "0x0059e080",
@@ -11773,6 +12187,16 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "ProcessFlowBox",
+      "symbol": "_ProcessFlowBox",
+      "address": "0x0059e090",
+      "units": [],
+      "target_size": 453,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "ResetGizFlowPointers",
@@ -11823,6 +12247,16 @@
       "objdiff_percent": 85.23637
     },
     {
+      "name": "ResetGizFlow",
+      "symbol": "_ResetGizFlow",
+      "address": "0x0059f4e0",
+      "units": [],
+      "target_size": 596,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "ProcessGizFlow",
       "symbol": "_ProcessGizFlow",
       "address": "0x0059f740",
@@ -11845,6 +12279,36 @@
       ],
       "status": "different",
       "objdiff_percent": 44.685715
+    },
+    {
+      "name": "FlowBoxFindByName",
+      "symbol": "_FlowBoxFindByName",
+      "address": "0x0059f7a0",
+      "units": [],
+      "target_size": 89,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "ProcessGizmoFlowBox",
+      "symbol": "_ProcessGizmoFlowBox",
+      "address": "0x0059f800",
+      "units": [],
+      "target_size": 193,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "ProcessActionFlowBox",
+      "symbol": "_ProcessActionFlowBox",
+      "address": "0x0059f8d0",
+      "units": [],
+      "target_size": 114,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "ClearTakeOverObjectSys",
@@ -15931,6 +16395,126 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "CalcValue1648Get2Values",
+      "symbol": "_CalcValue1648Get2Values",
+      "address": "0x005ca5a0",
+      "units": [],
+      "target_size": 629,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "CalcValue1648",
+      "symbol": "_CalcValue1648",
+      "address": "0x005ca830",
+      "units": [],
+      "target_size": 544,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "ANI_SimpleAni3PlayerV4Joint_Quat3",
+      "symbol": "_ANI_SimpleAni3PlayerV4Joint_Quat3",
+      "address": "0x005caaa0",
+      "units": [],
+      "target_size": 1990,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "ANI_SimpleAni3PlayerV4Joint_Quat3W",
+      "symbol": "_ANI_SimpleAni3PlayerV4Joint_Quat3W",
+      "address": "0x005cb270",
+      "units": [],
+      "target_size": 1807,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "ANI_SimpleAni3PlayerV4Joint_EulerQuat",
+      "symbol": "_ANI_SimpleAni3PlayerV4Joint_EulerQuat",
+      "address": "0x005cb980",
+      "units": [],
+      "target_size": 1865,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "ANI_SimpleAni3PlayerV4Joint",
+      "symbol": "_ANI_SimpleAni3PlayerV4Joint",
+      "address": "0x005cc0d0",
+      "units": [],
+      "target_size": 1138,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "ANI_SimpleAni3PlayerV4Joint_Blend_Quat3",
+      "symbol": "_ANI_SimpleAni3PlayerV4Joint_Blend_Quat3",
+      "address": "0x005cc550",
+      "units": [],
+      "target_size": 2057,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "ANI_SimpleAni3PlayerV4Joint_Blend_Quat3W",
+      "symbol": "_ANI_SimpleAni3PlayerV4Joint_Blend_Quat3W",
+      "address": "0x005ccd60",
+      "units": [],
+      "target_size": 1952,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "ANI_SimpleAni3PlayerV4Joint_Blend_EulerQuat",
+      "symbol": "_ANI_SimpleAni3PlayerV4Joint_Blend_EulerQuat",
+      "address": "0x005cd500",
+      "units": [],
+      "target_size": 2125,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "ANI_SimpleAni3PlayerV4Joint_Blend",
+      "symbol": "_ANI_SimpleAni3PlayerV4Joint_Blend",
+      "address": "0x005cdd50",
+      "units": [],
+      "target_size": 1521,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "ANI_Ani3ExtractAllNodeCurves",
+      "symbol": "_ANI_Ani3ExtractAllNodeCurves",
+      "address": "0x005ce350",
+      "units": [],
+      "target_size": 1122,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "NuAnimCurveExtractAllNodeCurves_3",
+      "symbol": "_NuAnimCurveExtractAllNodeCurves_3",
+      "address": "0x005ce7e0",
+      "units": [],
+      "target_size": 59,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "NuSpecialFindDisplay",
       "symbol": "_NuSpecialFindDisplay",
       "address": "0x005cf510",
@@ -18063,6 +18647,16 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "NuAnimDataRead",
+      "symbol": "_NuAnimDataRead",
+      "address": "0x005e9300",
+      "units": [],
+      "target_size": 688,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "NuSpecialGetAnimEndFrame",
       "symbol": "_NuSpecialGetAnimEndFrame",
       "address": "0x005e9650",
@@ -18085,6 +18679,16 @@
       ],
       "status": "different",
       "objdiff_percent": 0.0
+    },
+    {
+      "name": "NuAnimCurve2SetApplyToMatrix_3",
+      "symbol": "_NuAnimCurve2SetApplyToMatrix_3",
+      "address": "0x005ea390",
+      "units": [],
+      "target_size": 234,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "NuQFntPrintCharW",
@@ -18340,6 +18944,16 @@
       "address": "0x005f0d70",
       "units": [],
       "target_size": 391,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "NuAnimData2CalcMatrix",
+      "symbol": "_NuAnimData2CalcMatrix",
+      "address": "0x005f3390",
+      "units": [],
+      "target_size": 32,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -19095,6 +19709,36 @@
       "objdiff_percent": 93.1579
     },
     {
+      "name": "EdFileOpen",
+      "symbol": "_EdFileOpen",
+      "address": "0x00621270",
+      "units": [],
+      "target_size": 293,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "EdFileReadInt",
+      "symbol": "_EdFileReadInt",
+      "address": "0x006217e0",
+      "units": [],
+      "target_size": 59,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "APILoadCharacterModels",
+      "symbol": "_APILoadCharacterModels",
+      "address": "0x0062d540",
+      "units": [],
+      "target_size": 2619,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "APITransparentInit",
       "symbol": "_APITransparentInit",
       "address": "0x0062f970",
@@ -19268,6 +19912,16 @@
       "address": "0x0064c6e0",
       "units": [],
       "target_size": 198,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "AddVariableShotPARTEffect",
+      "symbol": "_AddVariableShotPARTEffect",
+      "address": "0x0064e550",
+      "units": [],
+      "target_size": 1441,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -19631,6 +20285,36 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "PlaySfxByIdEx",
+      "symbol": "_PlaySfxByIdEx",
+      "address": "0x00650f20",
+      "units": [],
+      "target_size": 1353,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "PlaySfxAndSetVolume",
+      "symbol": "_PlaySfxAndSetVolume",
+      "address": "0x00651470",
+      "units": [],
+      "target_size": 49,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "PlaySfxAndSetPitch",
+      "symbol": "_PlaySfxAndSetPitch",
+      "address": "0x006514b0",
+      "units": [],
+      "target_size": 49,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "SfxSetFileTable",
@@ -20250,6 +20934,36 @@
       "address": "0x0066cc50",
       "units": [],
       "target_size": 11,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "PlaySfxById",
+      "symbol": "_PlaySfxById",
+      "address": "0x00681e90",
+      "units": [],
+      "target_size": 31,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "PlaySfxByIdAndSetVolume",
+      "symbol": "_PlaySfxByIdAndSetVolume",
+      "address": "0x00681eb0",
+      "units": [],
+      "target_size": 35,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "PlaySfx",
+      "symbol": "_PlaySfx",
+      "address": "0x00681f40",
+      "units": [],
+      "target_size": 45,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -24634,6 +25348,16 @@
       "address": "0x00755d8c",
       "units": [],
       "target_size": 6,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "GizmoDefaultOutputName",
+      "symbol": "_GizmoDefaultOutputName",
+      "address": "0x00757734",
+      "units": [],
+      "target_size": 8,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -34882,6 +35606,16 @@
       "status": "exact"
     },
     {
+      "name": "flowbox_callbacks",
+      "symbol": "_flowbox_callbacks",
+      "address": "0x00805514",
+      "units": [],
+      "target_size": 36,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "hub_from_arcade",
       "symbol": "_hub_from_arcade",
       "address": "0x00805a00",
@@ -44699,6 +45433,16 @@
       "status": "exact"
     },
     {
+      "name": "gizflow_loop_checksum",
+      "symbol": "_gizflow_loop_checksum",
+      "address": "0x00956454",
+      "units": [],
+      "target_size": 1,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "gameanimsysprogress",
       "symbol": "_gameanimsysprogress",
       "address": "0x00956634",
@@ -51731,16 +52475,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 162041,
+    "mapped_code_bytes": 202038,
     "matched_code_bytes": 28624,
     "matching_percent": 0.8246030387935629,
     "fuzzy_coverage_percent": 2.03728139373444,
-    "mapped_functions": 1020,
+    "mapped_functions": 1091,
     "matched_functions": 515,
     "objdiff_fuzzy_percent": 63.433773,
     "objdiff_total_code": 111570,
     "image_bytes": 40067072,
-    "mapped_bytes": 575433,
-    "mapping_percent": 1.436174322895369
+    "mapped_bytes": 615475,
+    "mapping_percent": 1.5361117478212534
   }
 }

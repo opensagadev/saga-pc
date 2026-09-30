@@ -97,6 +97,18 @@ without an established standalone PC entry. Such rows supply no address binding,
 coverage or standalone matching result. Record callsite evidence in Markdown.
 Do not copy Android sizes, C++ layouts or vtable slot numbers onto the PC.
 
+For broad identification, use `python3 tools/check.py --identify --holdout`
+against retained analysis exports, optionally adding `--source-graph` with the
+clean Android AST graph. See the reproducible workflow and input schemas in
+[identification.md](../../../config/identification.md). Prefer bounded family
+reviews of high-ranked pairs over starting isolated searches from scratch.
+Tentative pairs may propagate inside the research graph but never automatically
+enter `symbols.csv`. Scores and held-out recovery are advisory; verify PC
+identity, caller ABI and complete extent before accepting a row. Keep degraded
+AST evidence and source-only inline definitions separate; never invent original
+addresses or claim reconstruction coverage from inferred pair counts. Source
+signatures describe Android candidates until checked against PC callers.
+
 Use constants, calls, strings, neighbors, shared state and vtables to identify
 anchors. The PC retail executable is authoritative. Never port Android-specific code,
 constants or layouts. Android source is a reference; its layout, ABI and names
