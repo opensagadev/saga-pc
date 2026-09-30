@@ -30,7 +30,9 @@ i32 level_already_loaded = -1;
 i32 next_level;
 volatile i32 abort_load;
 i32 dagobah_training;
+#pragma bss_seg(".bss$party_cant_be_under_cover")
 i32 party_cant_be_under_cover;
+#pragma bss_seg()
 i32 ResetOldFStop;
 i32 new_level_from_menu;
 i32 reset_restart;
@@ -2606,3 +2608,543 @@ NULISTHDR *aiscript_load_conditions;
 NULISTHDR *aiscript_load_actions;
 
 i32 condition_has_no_goto;
+
+// Movement, object and AI state recovered from the PC image.
+extern "C" {
+#pragma bss_seg(".bss$HIGHGAMEOBJECT")
+    i32 HIGHGAMEOBJECT;
+#pragma bss_seg()
+#pragma bss_seg(".bss$Obj")
+    GAMEOBJECT *Obj;
+#pragma bss_seg()
+#pragma bss_seg(".bss$plr_lastpos")
+    NUVEC plr_lastpos;
+#pragma bss_seg()
+#pragma bss_seg(".bss$v000")
+    NUVEC v000;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GameTimer")
+    TIMER GameTimer;
+#pragma bss_seg()
+#pragma bss_seg(".bss$party_under_cover")
+    i32 party_under_cover;
+#pragma bss_seg()
+#pragma bss_seg(".bss$alert_obj")
+    GAMEOBJECT *alert_obj;
+#pragma bss_seg()
+#pragma bss_seg(".bss$alert_timer")
+    f32 alert_timer;
+#pragma bss_seg()
+#pragma data_seg(".data$ForcePush_Speed")
+    f32 ForcePush_Speed = 2.5f;
+#pragma data_seg()
+#pragma bss_seg(".bss$ForcePush_SuperPush")
+    i32 ForcePush_SuperPush;
+#pragma bss_seg()
+#pragma const_seg(".rdata$PCContextName_NoContext")
+    extern const char PCContextName_NoContext[10] = "NoContext";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Jump")
+    extern const char PCContextName_Jump[5] = "Jump";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_LandJump")
+    extern const char PCContextName_LandJump[9] = "LandJump";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_LandJump2")
+    extern const char PCContextName_LandJump2[10] = "LandJump2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_LandFlip")
+    extern const char PCContextName_LandFlip[9] = "LandFlip";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_LandComboJump")
+    extern const char PCContextName_LandComboJump[14] = "LandComboJump";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Combo")
+    extern const char PCContextName_Combo[6] = "Combo";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_WeaponIn")
+    extern const char PCContextName_WeaponIn[9] = "WeaponIn";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_WeaponOut")
+    extern const char PCContextName_WeaponOut[10] = "WeaponOut";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Force")
+    extern const char PCContextName_Force[6] = "Force";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_ComboRotate")
+    extern const char PCContextName_ComboRotate[12] = "ComboRotate";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Shoot")
+    extern const char PCContextName_Shoot[6] = "Shoot";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Interface")
+    extern const char PCContextName_Interface[10] = "Interface";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Block")
+    extern const char PCContextName_Block[6] = "Block";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_LandLunge")
+    extern const char PCContextName_LandLunge[10] = "LandLunge";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_LandSlam")
+    extern const char PCContextName_LandSlam[9] = "LandSlam";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Teleport")
+    extern const char PCContextName_Teleport[9] = "Teleport";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Swipe")
+    extern const char PCContextName_Swipe[6] = "Swipe";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Tube")
+    extern const char PCContextName_Tube[5] = "Tube";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_ForceThrow")
+    extern const char PCContextName_ForceThrow[11] = "ForceThrow";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_HoverUp")
+    extern const char PCContextName_HoverUp[8] = "HoverUp";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Rocket")
+    extern const char PCContextName_Rocket[7] = "Rocket";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_TakeHit")
+    extern const char PCContextName_TakeHit[8] = "TakeHit";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Zap")
+    extern const char PCContextName_Zap[4] = "Zap";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Deactivated")
+    extern const char PCContextName_Deactivated[12] = "Deactivated";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Hold")
+    extern const char PCContextName_Hold[5] = "Hold";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_LandSpecial")
+    extern const char PCContextName_LandSpecial[12] = "LandSpecial";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Communicate")
+    extern const char PCContextName_Communicate[12] = "Communicate";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_ForcePush")
+    extern const char PCContextName_ForcePush[10] = "ForcePush";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_ForcePushed")
+    extern const char PCContextName_ForcePushed[12] = "ForcePushed";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_ForceDeflect")
+    extern const char PCContextName_ForceDeflect[13] = "ForceDeflect";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_ForceFrozen")
+    extern const char PCContextName_ForceFrozen[12] = "ForceFrozen";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_BigJump")
+    extern const char PCContextName_BigJump[8] = "BigJump";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_BackFlip")
+    extern const char PCContextName_BackFlip[9] = "BackFlip";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Recoil")
+    extern const char PCContextName_Recoil[7] = "Recoil";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_ForcedBack")
+    extern const char PCContextName_ForcedBack[11] = "ForcedBack";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_DropIn")
+    extern const char PCContextName_DropIn[7] = "DropIn";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_DropOut")
+    extern const char PCContextName_DropOut[8] = "DropOut";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Dodge")
+    extern const char PCContextName_Dodge[6] = "Dodge";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Punch")
+    extern const char PCContextName_Punch[6] = "Punch";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Push")
+    extern const char PCContextName_Push[5] = "Push";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_PushSpinner")
+    extern const char PCContextName_PushSpinner[12] = "PushSpinner";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_LandCombatRoll")
+    extern const char PCContextName_LandCombatRoll[15] = "LandCombatRoll";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Turn")
+    extern const char PCContextName_Turn[5] = "Turn";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Doomed")
+    extern const char PCContextName_Doomed[7] = "Doomed";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Launch")
+    extern const char PCContextName_Launch[7] = "Launch";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_BuildIt")
+    extern const char PCContextName_BuildIt[8] = "BuildIt";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_ThrowDetonator")
+    extern const char PCContextName_ThrowDetonator[15] = "ThrowDetonator";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Grabbed")
+    extern const char PCContextName_Grabbed[8] = "Grabbed";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_SpecialMoveVictim")
+    extern const char PCContextName_SpecialMoveVictim[18] = "SpecialMoveVictim";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Roll")
+    extern const char PCContextName_Roll[5] = "Roll";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_UnRoll")
+    extern const char PCContextName_UnRoll[7] = "UnRoll";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Slide")
+    extern const char PCContextName_Slide[6] = "Slide";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_BeenDragged")
+    extern const char PCContextName_BeenDragged[12] = "BeenDragged";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_ZipDown")
+    extern const char PCContextName_ZipDown[8] = "ZipDown";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Loop")
+    extern const char PCContextName_Loop[5] = "Loop";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Poo")
+    extern const char PCContextName_Poo[4] = "Poo";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Grab")
+    extern const char PCContextName_Grab[5] = "Grab";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Eaten")
+    extern const char PCContextName_Eaten[6] = "Eaten";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_BarrelRoll")
+    extern const char PCContextName_BarrelRoll[11] = "BarrelRoll";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_BeenTakenOver")
+    extern const char PCContextName_BeenTakenOver[14] = "BeenTakenOver";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_GetIn")
+    extern const char PCContextName_GetIn[6] = "GetIn";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Flatten")
+    extern const char PCContextName_Flatten[8] = "Flatten";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Buck")
+    extern const char PCContextName_Buck[5] = "Buck";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Eat")
+    extern const char PCContextName_Eat[4] = "Eat";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Disorientate")
+    extern const char PCContextName_Disorientate[13] = "Disorientate";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Activate")
+    extern const char PCContextName_Activate[9] = "Activate";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_ZappedByFloor")
+    extern const char PCContextName_ZappedByFloor[14] = "ZappedByFloor";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Climb")
+    extern const char PCContextName_Climb[6] = "Climb";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Tightrope")
+    extern const char PCContextName_Tightrope[10] = "Tightrope";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_WallShuffle")
+    extern const char PCContextName_WallShuffle[12] = "WallShuffle";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Grapple")
+    extern const char PCContextName_Grapple[8] = "Grapple";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_ZipUp")
+    extern const char PCContextName_ZipUp[6] = "ZipUp";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_PlaceDetonator")
+    extern const char PCContextName_PlaceDetonator[15] = "PlaceDetonator";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_PickUpDetonator")
+    extern const char PCContextName_PickUpDetonator[16] = "PickUpDetonator";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_PullLever")
+    extern const char PCContextName_PullLever[10] = "PullLever";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Float")
+    extern const char PCContextName_Float[6] = "Float";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Signal")
+    extern const char PCContextName_Signal[7] = "Signal";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Batarang")
+    extern const char PCContextName_Batarang[9] = "Batarang";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Hang")
+    extern const char PCContextName_Hang[5] = "Hang";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Glide")
+    extern const char PCContextName_Glide[6] = "Glide";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Catch")
+    extern const char PCContextName_Catch[6] = "Catch";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Techno")
+    extern const char PCContextName_Techno[7] = "Techno";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_AttractoTarget")
+    extern const char PCContextName_AttractoTarget[15] = "AttractoTarget";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_AttractoDeposit")
+    extern const char PCContextName_AttractoDeposit[16] = "AttractoDeposit";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Sonar")
+    extern const char PCContextName_Sonar[6] = "Sonar";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_LedgeTerrain")
+    extern const char PCContextName_LedgeTerrain[13] = "LedgeTerrain";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Transform")
+    extern const char PCContextName_Transform[10] = "Transform";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_WallJumpWait")
+    extern const char PCContextName_WallJumpWait[13] = "WallJumpWait";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_SuperCarry")
+    extern const char PCContextName_SuperCarry[11] = "SuperCarry";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_PushObstacle")
+    extern const char PCContextName_PushObstacle[13] = "PushObstacle";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Stunned")
+    extern const char PCContextName_Stunned[8] = "Stunned";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Ledge")
+    extern const char PCContextName_Ledge[6] = "Ledge";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Security")
+    extern const char PCContextName_Security[9] = "Security";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Ballooning")
+    extern const char PCContextName_Ballooning[11] = "Ballooning";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_ThrowQuick")
+    extern const char PCContextName_ThrowQuick[11] = "ThrowQuick";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_DieAir")
+    extern const char PCContextName_DieAir[7] = "DieAir";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_DieGround")
+    extern const char PCContextName_DieGround[10] = "DieGround";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_HatMachine")
+    extern const char PCContextName_HatMachine[11] = "HatMachine";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_Whip")
+    extern const char PCContextName_Whip[5] = "Whip";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCContextName_NetWait")
+    extern const char PCContextName_NetWait[8] = "NetWait";
+#pragma const_seg()
+#pragma data_seg(".data$PCContextInfoTable")
+    CHARACTER_CONTEXT_INFO_PC PCContextInfoTable[101] = {
+        {PCContextName_NoContext, -1, 0x1000, 0},
+        {PCContextName_Jump, -1, 0x1000000, 0},
+        {PCContextName_LandJump, -1, 0x15, 0},
+        {PCContextName_LandJump2, -1, 0x15, 0},
+        {PCContextName_LandFlip, -1, 0x15, 0},
+        {PCContextName_LandComboJump, -1, 0x15, 0},
+        {PCContextName_Combo, -1, 0x800010, 1},
+        {PCContextName_WeaponIn, -1, 0x1013, 0},
+        {PCContextName_WeaponOut, -1, 0x1013, 0},
+        {PCContextName_Force, -1, 0x222, 0},
+        {PCContextName_ComboRotate, -1, 0x11, 0},
+        {PCContextName_Shoot, -1, 0x11, 0},
+        {PCContextName_Interface, -1, 0x33, 0},
+        {PCContextName_Block, -1, 0x4000010, 0},
+        {PCContextName_LandLunge, -1, 0x800011, 0},
+        {PCContextName_LandSlam, -1, 0x800011, 0},
+        {PCContextName_Teleport, -1, 0x1b3, 12},
+        {PCContextName_Swipe, -1, 0x800010, 0},
+        {PCContextName_Tube, -1, 0x408, 0},
+        {PCContextName_ForceThrow, -1, 0x12, 0},
+        {PCContextName_HoverUp, -1, 0x30, 0},
+        {PCContextName_Rocket, -1, 0x11, 0},
+        {PCContextName_TakeHit, -1, 0x10000031, 0},
+        {PCContextName_Zap, -1, 0x10, 0},
+        {PCContextName_Deactivated, -1, 0x10200031, 0},
+        {PCContextName_Hold, -1, 0x4000010, 0},
+        {PCContextName_LandSpecial, -1, 0x15, 0},
+        {PCContextName_Communicate, -1, 0x33, 0},
+        {PCContextName_ForcePush, -1, 0x2, 0},
+        {PCContextName_ForcePushed, -1, 0x231, 0},
+        {PCContextName_ForceDeflect, -1, 0x2, 0},
+        {PCContextName_ForceFrozen, -1, 0xb, 0},
+        {PCContextName_BigJump, -1, 0x2400111, 0},
+        {PCContextName_BackFlip, -1, 0x91, 0},
+        {PCContextName_Recoil, -1, 0x9, 0},
+        {PCContextName_ForcedBack, -1, 0x8, 0},
+        {PCContextName_DropIn, -1, 0x40113, 0},
+        {PCContextName_DropOut, -1, 0x40113, 0},
+        {PCContextName_Dodge, -1, 0x92, 1},
+        {PCContextName_Punch, -1, 0x10032, 1},
+        {PCContextName_Push, -1, 0x2030, 0},
+        {PCContextName_PushSpinner, -1, 0x3010, 0},
+        {PCContextName_LandCombatRoll, -1, 0xb4, 0},
+        {PCContextName_Turn, -1, 0x190, 0},
+        {PCContextName_Doomed, -1, 0x400110, 0},
+        {PCContextName_Launch, -1, 0x0, 0},
+        {PCContextName_BuildIt, -1, 0x10, 0},
+        {PCContextName_ThrowDetonator, -1, 0x33, 0},
+        {PCContextName_Grabbed, -1, 0x13, 0},
+        {PCContextName_SpecialMoveVictim, -1, 0x33, 0},
+        {PCContextName_Roll, -1, 0x10, 16},
+        {PCContextName_UnRoll, -1, 0x13, 16},
+        {PCContextName_Slide, -1, 0x40000030, 0},
+        {PCContextName_BeenDragged, -1, 0x0, 0},
+        {PCContextName_ZipDown, -1, 0x30, 0},
+        {PCContextName_Loop, -1, 0x190, 0},
+        {PCContextName_Poo, -1, 0x33, 0},
+        {PCContextName_Grab, -1, 0x33, 0},
+        {PCContextName_Eaten, -1, 0x60020933, 0},
+        {PCContextName_BarrelRoll, -1, 0x190, 0},
+        {PCContextName_BeenTakenOver, -1, 0x600209b0, 0},
+        {PCContextName_GetIn, -1, 0x60400130, 0},
+        {PCContextName_Flatten, -1, 0x33, 0},
+        {PCContextName_Buck, -1, 0x33, 0},
+        {PCContextName_Eat, -1, 0x33, 0},
+        {PCContextName_Disorientate, -1, 0x100, 0},
+        {PCContextName_Activate, -1, 0x200033, 0},
+        {PCContextName_ZappedByFloor, -1, 0x31, 0},
+        {PCContextName_Climb, -1, 0x431, 0},
+        {PCContextName_Tightrope, -1, 0x80431, 0},
+        {PCContextName_WallShuffle, -1, 0x3031, 0},
+        {PCContextName_Grapple, -1, 0x40000430, 0},
+        {PCContextName_ZipUp, -1, 0x40000430, 0},
+        {PCContextName_PlaceDetonator, -1, 0x33, 0},
+        {PCContextName_PickUpDetonator, -1, 0x31, 0},
+        {PCContextName_PullLever, -1, 0x31, 0},
+        {PCContextName_Float, -1, 0x30, 2},
+        {PCContextName_Signal, -1, 0x4000433, 0},
+        {PCContextName_Batarang, -1, 0x8000033, 0},
+        {PCContextName_Hang, -1, 0x430, 0},
+        {PCContextName_Glide, -1, 0x430, 0},
+        {PCContextName_Catch, -1, 0x13, 0},
+        {PCContextName_Techno, -1, 0x84000031, 0},
+        {PCContextName_AttractoTarget, -1, 0x4000033, 0},
+        {PCContextName_AttractoDeposit, -1, 0x33, 0},
+        {PCContextName_Sonar, -1, 0x33, 0},
+        {PCContextName_LedgeTerrain, -1, 0x431, 0},
+        {PCContextName_Transform, -1, 0x33, 0},
+        {PCContextName_WallJumpWait, -1, 0x2431, 0},
+        {PCContextName_SuperCarry, -1, 0x33, 0},
+        {PCContextName_PushObstacle, -1, 0x3010, 0},
+        {PCContextName_Stunned, -1, 0x10000031, 0},
+        {PCContextName_Ledge, -1, 0x431, 0},
+        {PCContextName_Security, -1, 0x33, 0},
+        {PCContextName_Ballooning, -1, 0x100010, 0},
+        {PCContextName_ThrowQuick, -1, 0x33, 0},
+        {PCContextName_DieAir, -1, 0x80b1, 0},
+        {PCContextName_DieGround, -1, 0x80b1, 0},
+        {PCContextName_HatMachine, -1, 0x33, 0},
+        {PCContextName_Whip, -1, 0x33, 1},
+        {PCContextName_NetWait, -1, 0x23, 0},
+    };
+#pragma data_seg()
+#pragma data_seg(".data$CInfo")
+    CHARACTER_CONTEXT_INFO_PC *CInfo = &PCContextInfoTable[1];
+#pragma data_seg()
+#pragma bss_seg(".bss$dynamic_antinodes")
+    AIANTINODE_PC dynamic_antinodes[64];
+#pragma bss_seg()
+#pragma data_seg(".data$default_path_heighttol")
+    f32 default_path_heighttol = 0.2f;
+#pragma data_seg()
+}
+
+// Additional PC movement, targeting, arcade and callback state.
+extern "C" {
+#pragma bss_seg(".bss$TargetDist_Near2")
+    f32 TargetDist_Near2;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TargetDist_Mid2")
+    f32 TargetDist_Mid2;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TargetDeg_Near")
+    u16 TargetDeg_Near;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TargetDeg_Mid")
+    u16 TargetDeg_Mid;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TargetDeg_Far")
+    u16 TargetDeg_Far;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DEATHSTAR2BATTLEA_LDATA")
+    LEVELDATA_PC *DEATHSTAR2BATTLEA_LDATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ASTEROIDCHASED_LDATA")
+    LEVELDATA_PC *ASTEROIDCHASED_LDATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DEATHSTARRESCUEA_LDATA")
+    LEVELDATA_PC *DEATHSTARRESCUEA_LDATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$applygravity_extrahoveroffset")
+    f32 applygravity_extrahoveroffset;
+#pragma bss_seg()
+#pragma data_seg(".data$ApplyGravityContextHoverHeight")
+    f32 ApplyGravityContextHoverHeight = 0.20000000298023224f;
+#pragma data_seg()
+#pragma const_seg(".rdata$ForcePushSeekRate")
+    extern const f32 ForcePushSeekRate = 20.0f;
+#pragma const_seg()
+#pragma const_seg(".rdata$ForcePushApproachInnerSquare")
+    extern const f32 ForcePushApproachInnerSquare = 0.010000000707805157f;
+#pragma const_seg()
+#pragma const_seg(".rdata$ForcePushApproachOuterSquare")
+    extern const f32 ForcePushApproachOuterSquare = 0.04000000283122063f;
+#pragma const_seg()
+#pragma data_seg(".data$id_GONKDROID")
+    u16 id_GONKDROID = 0xffff;
+#pragma data_seg()
+#pragma data_seg(".data$ONEPLAYERPOWERUPS")
+    i32 ONEPLAYERPOWERUPS = 1;
+#pragma data_seg()
+#pragma bss_seg(".bss$APIOBJECTFromObjIDFn")
+    APIOBJECT_FROM_ID_PC APIOBJECTFromObjIDFn;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCArcadeModeText0")
+    i16 PCArcadeModeText0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCArcadeModeText1")
+    i16 PCArcadeModeText1;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCArcadeModeText2")
+    i16 PCArcadeModeText2;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCArcadeLevelText")
+    i16 PCArcadeLevelText;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCArcadeModeText")
+    i16 PCArcadeModeText;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCArcadePlayText")
+    i16 PCArcadePlayText;
+#pragma bss_seg()
+#pragma data_seg(".data$Arcade_Mode")
+    ARCADE_MODE_PC Arcade_Mode[7] = {
+        {&PCArcadeModeText0, 0, 0x19},   {&PCArcadeModeText1, 10, 0x12}, {&PCArcadeModeText1, 25, 0x12},
+        {&PCArcadeModeText1, 50, 0x12},  {&PCArcadeModeText2, 50000, 4}, {&PCArcadeModeText2, 100000, 4},
+        {&PCArcadeModeText2, 250000, 4},
+    };
+#pragma data_seg()
+#pragma data_seg(".data$ArcadeItem")
+    ARCADE_ITEM_PC ArcadeItem = {&PCArcadeLevelText, 0, 12, 0, &PCArcadeModeText, 0, 7, 0, &PCArcadePlayText, 0, 5, 0};
+#pragma data_seg()
+#pragma data_seg(".data$gizmoerrorlogsize")
+    i32 gizmoerrorlogsize = 2048;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$v001")
+    NUVEC v001 = {0.0f, 0.0f, 1.0f};
+#pragma data_seg()
+}

@@ -267,3 +267,28 @@ void __cdecl NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera
     }
     NuMtxMulVU0(out, view, &NuCameraScissorProjectionScratch);
 }
+
+i32 __cdecl NuCameraClipTestSphere(NUVEC *point, f32 radius, NUMTX *world) {
+    NUVEC transformed;
+    NUVEC4 plane_distances;
+    if (world != NULL) {
+        NuVecMtxTransform(&transformed, point, world);
+        NuVecMtxTransform(&transformed, &transformed, &vmtx);
+    } else {
+        NuVecMtxTransform(&transformed, point, &vmtx);
+    }
+    if (0.0f > (transformed.z - global_camera.near_clip) + radius)
+        return 1;
+    if (0.0f > (global_camera.far_clip - transformed.z) + radius)
+        return 1;
+    NuVec4MtxTransform(&plane_distances, &transformed, &clip_planes);
+    if (-radius > plane_distances.x)
+        return 1;
+    if (-radius > plane_distances.y)
+        return 1;
+    if (-radius > plane_distances.z)
+        return 1;
+    if (-radius > plane_distances.w)
+        return 1;
+    return 0;
+}

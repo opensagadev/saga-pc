@@ -19,7 +19,7 @@ loading. `InitOnce` at `0x004011e0` has a structural stub with its full 1,019-by
 comparison extent. Its PC-sized permanent allocation, argument iteration and
 current-directory setup are present; input, camera and time-bar dependencies
 remain open. The retail argument helper uses a private ECX/EAX calling convention,
-so the source-compatible C wrapper is structural rather than byte-matching.
+reproduced by the same-TU static C helper; InitOnce itself remains partial.
 `InitOnce` now opens the PC's seven startup DAT names, beginning with
 `GAME.DAT`, through the exact archive-registration helper. The surrounding
 hardware dispatcher and the `LoadPermData` parser path remain incomplete.

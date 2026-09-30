@@ -555,8 +555,9 @@ push and restore displacements in `NuQFntPrintEx`. Its deeper glyph renderer
 and the wide/narrow NuFPar parser remain open dependencies.
 
 `InitOnce` calls the argument iterator at `0x00401100` using ECX/EAX as a
-private ABI, which ordinary VC8 C does not reproduce; our callable source
-wrapper is intentionally nonmatching. Its three-byte zero-return callee at
+private ABI. An ordinary VC8 `/O2` same-TU static helper reproduces its full
+59-byte body with three real relocations when the final stores follow PC order.
+The helper now belongs to the InitOnce unit rather than a public stack-ABI wrapper. Its three-byte zero-return callee at
 `0x006d3430` is exact. The PC `NuMusic::SetFader` member at `0x00694d50` uses
 `this+0x19c/0x1a0/0x1a4` and matches with its real C++ linkage. These are
 reconstruction linker names for a stripped executable, not recovered retail
@@ -621,3 +622,43 @@ interior LEA omitted by an earlier noncontiguous research body count. Jitter at
 0x005809a0/54 reads the asserted GAMEOBJECT float at +0xb0 and calls C qrand.
 The qrand/getqseed/qseed linker names changed to C without changing original
 addresses or extents; compare prior exact results by those addresses.
+
+## First plan-execution wave (September 2026)
+
+The accepted movement, GameObject and AI families reuse the frozen clean Android
+source graph and ranked hypotheses, then require independent retail entry/ABI,
+complete-boundary, field and dependency review. Research packets remain under
+`build/analysis/wave1/`; the checked-in C bodies, assertions and CSV are the
+reviewable results. Candidate-only large bodies receive no implementation credit.
+
+The PC allocator establishes 64 GameObjects with stride `0x10d8`:
+`WorldInfo_Load` pushes that stride at `0x0048d514` into `APIObjectSysInit`, whose
+allocation uses 64 slots. The object-system record is `0x218`, with two-word
+hostility masks. The embedded packet begins at object `+0x2c8`, while locator
+callbacks also access a distinct AI pointer at object `+4`; the partial
+`APIOBJECT_PC` view keeps those interfaces explicit. The callback accepts a byte
+ID; a dead object's `+0x1010` value must be positive, including rejection of NaN.
+
+AI locator records have stride `0x3c`, locator sets `0x1c`, and PC areas `0x40`
+(Android areas are `0x3c`). Path-position source preserves complete connection
+searches, route checks and original return paths. The same-TU static reset helper
+at `0x0051a760` naturally emits the verified private EAX input and exactly matches
+86 bytes. Verified real calls to selected large sibling functions are preserved
+with `noinline`; this is distinct from forcing public calling conventions on
+private helpers. The sole new AI omission is the route-map diagnostic at
+`0x00512860`, marked at the actual action.
+
+The static ForcePush eligibility helper at `0x004a3b60` also naturally uses EAX
+for the first object and two stack pointers. Its complete 123-byte retail extent
+is mapped without a public prototype. The full ForcePush target selector has no
+omitted selection loop, but its first structural build scores zero; a bounded
+branch-order/TU audit is required before copying more siblings. Its size remains
+1,014 bytes regardless of score. Source shape, rather than byte tweaks, is the
+next investigation. `SnapCreaturePos` explicitly leaves surface initialization,
+surface placement and character-path query actions unresolved. Source linking
+and high similarity do not establish runnable startup or complete game behavior.
+
+The root reconstructed camera sphere clipping, homogeneous vector transformation
+and nearest-segment squared distance in the existing engine units. The transform
+matches its full 143-byte PC extent; clipping and segment distance remain
+structural. All comparisons keep complete extents and actual relocations.

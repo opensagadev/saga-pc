@@ -402,3 +402,13 @@ void __cdecl NuVec4MtxTransformVU0(NUVEC4 *out, NUVEC4 *v, NUMTX *m) {
     out->z = z;
     out->w = w;
 }
+
+void __cdecl NuVec4MtxTransform(NUVEC4 *out, NUVEC *v, NUMTX *m) {
+    f32 y = v->x * m->m01 + v->y * m->m11 + v->z * m->m21 + m->m31;
+    f32 z = v->x * m->m02 + v->y * m->m12 + v->z * m->m22 + m->m32;
+    f32 w = v->x * m->m03 + v->y * m->m13 + v->z * m->m23 + m->m33;
+    out->x = v->x * m->m00 + v->y * m->m10 + v->z * m->m20 + m->m30;
+    out->y = y;
+    out->z = z;
+    out->w = w;
+}

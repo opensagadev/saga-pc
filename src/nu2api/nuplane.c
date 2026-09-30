@@ -212,3 +212,39 @@ i32 NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *dire
     }
     return 0;
 }
+
+f32 __cdecl NuLineToPointDistSqrEx(NUVEC *start, NUVEC *end, NUVEC *point, NUVEC *out) {
+    NUVEC direction;
+    NUVEC offset;
+    NUVEC nearest;
+    NUVEC difference;
+    f32 length;
+    f32 inverse_length;
+    f32 along;
+    f32 distance;
+    direction.x = end->x - start->x;
+    direction.y = end->y - start->y;
+    direction.z = end->z - start->z;
+    length = NuFsqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
+    inverse_length = 1.0f / length;
+    direction.x *= inverse_length;
+    direction.y *= inverse_length;
+    direction.z *= inverse_length;
+    offset.x = point->x - start->x;
+    offset.y = point->y - start->y;
+    offset.z = point->z - start->z;
+    along = direction.x * offset.x + direction.y * offset.y + direction.z * offset.z;
+    if (along <= 0.0f) {
+        nearest = *start;
+    } else if (along >= length) {
+        nearest = *end;
+    } else {
+        nearest.x = direction.x * along + start->x;
+        nearest.y = direction.y * along + start->y;
+        nearest.z = direction.z * along + start->z;
+    }
+    distance = NuVecDistSqr(&nearest, point, &difference);
+    if (out != NULL)
+        *out = nearest;
+    return distance;
+}

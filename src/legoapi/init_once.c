@@ -1,5 +1,15 @@
 #include "saga.h"
 
+static void StartupParseArguments(i32 count, char **arguments) {
+    while (count > 0) {
+        StartupParseArgument(count, arguments);
+        count--;
+        arguments++;
+    }
+    StartupGameFlag1 = 1;
+    StartupGameFlag0 = 0;
+}
+
 void __cdecl InitOnce(i32 argc, char **argv) {
 
     /* PC performs early configuration and permanent-buffer allocation first. */
@@ -12,7 +22,7 @@ void __cdecl InitOnce(i32 argc, char **argv) {
         return;
     }
     STUBBED_NAMED(0x00428b90);
-    StartupParseArguments(argc - 1, argv != NULL ? argv + 1 : NULL);
+    StartupParseArguments(argc - 1, argv + 1);
     NuFileSetCurrentDirectory(InitOnceCurrentDirectory);
     STUBBED_NAMED(0x00602930);
 

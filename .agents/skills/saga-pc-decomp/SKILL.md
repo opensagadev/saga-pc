@@ -15,17 +15,21 @@ than treating an older handoff's counts or commit ID as current state.
 
 ## Agent coordination and continuation
 
-- Use Luna subagents in parallel for bounded research and implementation when
-  useful; keep the main agent responsible for code integration and final PC
-  verification. Reuse agents, avoid nested delegation, and have the main agent
-  analyze and implement concrete reconstruction work too. Use Sol for tasks
-  that require deeper reasoning when it materially helps.
+- Use GPT-6.1 Sol subagents for parallel bounded research and implementation;
+  the user currently excludes Luna. Keep the main agent responsible for
+  concrete source reconstruction, shared integration and final PC verification.
+  Reuse agents and avoid nested delegation. Read the current
+  [execution plan](../../../config/progress-plan.md) and
+  [strategy review](../../../config/strategy.md) when choosing broad work waves.
 - Give each subagent a bounded function/dependency or data task, exclusive file
   ownership, and an explicit instruction to read this skill. Require PC identity,
   type/ABI and complete-extent evidence, proposed map/header changes, and actual
   compilation/comparison results. An unverified candidate remains a candidate.
 - Assign ownership by subsystem and consolidate related C routines into one
-  translation unit, such as `nuframe.c`, `nusound.c`, or `nuvideo.c`. Keep a
+  translation unit, such as `nuframe.c`, `nusound.c`, or `nuvideo.c`. Preserve
+  verified original-TU static helper/caller groups: ordinary VC8 `/O2` can
+  generate private register ABIs without `/GL`. Keep truly local declarations
+  local rather than forcing public stack-ABI wrappers. Keep a
   separate unit only when the original codegen needs a real cross-unit call or
   the routine belongs to a different subsystem. Recompile and compare after
   consolidation because MSVC may change code generation.
@@ -82,6 +86,12 @@ dependencies. Port real PC behavior even when the first build is not exact;
 record the mismatch and move on to the next connected function. Track transfer
 progress with whole-code PC fuzzy coverage and report exact coverage separately; isolated tiny matches must not displace major families.
 Never infer a PC percentage directly from Android's percentage.
+
+Prepare broad candidate waves, initially about 50–100 KB of hypothesized PC
+spans across several coherent units, and release confirmed subsets continuously.
+Candidate bytes never establish progress or authorize CSV insertion. Measure
+accepted/contract-ready/newly-compared bytes and net whole-PC fuzzy gain. Do not
+wait for full type/backend reconstruction when a field cohort suffices.
 
 Choose connected batches by original PC bytes unlocked per shared layout and
 dependency, not by function count. Review entries, ABI, accessed fields, data

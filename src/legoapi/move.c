@@ -182,3 +182,167 @@ void __cdecl MovePlayerSpline(GAMEOBJECT *object) {
     APIObjectVelocities(object);
     GameObjectOrigin(object);
 }
+
+void __cdecl MoveInactiveVehicle(GAMEOBJECT *object, i32 mode, GAMEOBJECT **followed_object) {
+    GAMEOBJECT *other;
+    NUVEC position;
+    f32 count;
+
+    (void)mode;
+    object->target_velocity.x = object->target_velocity.y = object->target_velocity.z = 0.0f;
+    if (object == (GAMEOBJECT *)Player[0]) {
+        other = (GAMEOBJECT *)Player[1];
+        position = other->position;
+    } else if (object == (GAMEOBJECT *)Player[1]) {
+        other = (GAMEOBJECT *)Player[0];
+        position = other->position;
+    } else {
+        position = v000;
+        count = 0.0f;
+        if (Player[0] != NULL) {
+            NuVecAdd(&position, &position, &((GAMEOBJECT *)Player[0])->position);
+            count += 1.0f;
+        }
+        if (Player[1] != NULL) {
+            NuVecAdd(&position, &position, &((GAMEOBJECT *)Player[1])->position);
+            count += 1.0f;
+        }
+        if (count > 0.0f)
+            NuVecScale(&position, &position, 1.0f / count);
+        other = NULL;
+    }
+    SeekVec(&object->position, &object->position, &position, 10.0f);
+    object->velocity = object->target_velocity;
+    if (other != NULL)
+        object->facing_angle = object->movement_facing_angle = object->field_0x276 = other->field_0x276;
+    if (followed_object != NULL)
+        *followed_object = other;
+    object->delayed_turn_timer = 0.0f;
+    object->field_ddc = 0.0f;
+}
+
+static i32 ForcePushEligible(GAMEOBJECT *candidate, GAMEOBJECT *object, GAMEOBJECT *source) {
+    PLAYERCHARACTERCONFIG_PC *character;
+    if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 || candidate->dead != 0 ||
+        candidate == object || candidate == source || candidate->field_280 != 0xff ||
+        (candidate->portal_flags & 0x08000000) != 0 || CannotKill(candidate) != 0 ||
+        (candidate->character_data->model_flags & 0x4002010) != 0x10)
+        return 0;
+    character = candidate->character_data->game_character;
+    return (character->flags_090 & 0x40) == 0 && (character->flags_094 & 0x200) == 0;
+}
+
+i32 __cdecl FaceOpponent(GAMEOBJECT *object, NUVEC *position) {
+    GAMEOBJECT *target;
+    if (position == NULL) {
+        target = object->force_target;
+        if (target != NULL) {
+            if ((target->flags_1fc_word & 1) == 0 || (target->flags_1fc_word & 0x1000) == 0 || target->dead != 0)
+                return 0;
+            position = &target->position;
+        } else {
+            if (object->blowup_target == NULL)
+                return 0;
+            position = &object->blowup_target->mid_position;
+        }
+        if (position == NULL)
+            return 0;
+    }
+    object->movement_facing_angle = NuAtan2D(position->x - object->position.x, position->z - object->position.z);
+    return 1;
+}
+
+i32 __cdecl ForcePushed_SetTargetMom(GAMEOBJECT *object, f32 *seek_rate) {
+    GAMEOBJECT *source = object->force_target;
+    GAMEOBJECT *candidate;
+    GAMEOBJECT *nearest;
+    NUVEC target;
+    NUVEC direction;
+    f32 distance_squared;
+    f32 approach_weight;
+    f32 push_x;
+    f32 push_z;
+    f32 dx;
+    f32 dz;
+    f32 nearest_distance_squared;
+    i32 index;
+    u16 angle;
+    if (source == NULL) {
+        object->target_velocity.x = object->target_velocity.z = 0.0f;
+        return 0;
+    }
+    if ((source->flags_e20 & 0x180) != 0) {
+        object->target_velocity.x = object->target_velocity.z = 0.0f;
+        if (source->character_context == 0x1b && source->field_7b3 == 1) {
+            target.x = source->external_force.x;
+            target.y = source->external_force.y - object->character_bottom * object->origin_scale;
+            target.z = source->external_force.z;
+            distance_squared = NuVecDistSqr(&target, &object->position, &direction);
+            if (!(ForcePushApproachInnerSquare > distance_squared)) {
+                approach_weight = 1.0f;
+                if (ForcePushApproachOuterSquare > distance_squared)
+                    approach_weight = (f32)(((f64)NuFsqrt(distance_squared) - (f64)0.1f) / (f64)0.1f);
+                if (approach_weight > 0.0f) {
+                    NuVecNorm(&direction, &direction);
+                    NuVecScale(&object->target_velocity, &direction, 1.0f);
+                }
+            }
+            *seek_rate = ForcePushSeekRate;
+            return 1;
+        }
+        return 0;
+    }
+    if (object->action_movement_state == 4 && Cheat_IsOn(0x13) != 0) {
+        angle = NuAtan2D(object->collision_position.x - source->collision_position.x,
+                         object->collision_position.z - source->collision_position.z);
+        object->target_velocity.x = -NuTrigTable[angle >> 1] * ForcePush_Speed;
+        object->target_velocity.z = -NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * ForcePush_Speed;
+        return 0;
+    }
+    nearest = NULL;
+    if (ForcePush_SuperPush != 0 && (object->flags_1fc & 0x80) == 0 && (source->flags_e20 & 0x380) == 0) {
+        push_x = object->position.x - source->position.x;
+        push_z = object->position.z - source->position.z;
+        nearest_distance_squared = 2.25f;
+        candidate = Obj;
+        for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
+            if (!ForcePushEligible(candidate, object, source) || candidate->id == id_GONKDROID ||
+                candidate->collision_min.y > object->collision_max.y ||
+                object->collision_min.y > candidate->collision_max.y)
+                continue;
+            dx = candidate->position.x - object->position.x;
+            dz = candidate->position.z - object->position.z;
+            if (!(0.0 > push_x * dx + push_z * dz)) {
+                distance_squared = dx * dx + dz * dz;
+                if (distance_squared < nearest_distance_squared) {
+                    nearest_distance_squared = distance_squared;
+                    nearest = candidate;
+                }
+            }
+        }
+    }
+    if (nearest != NULL) {
+        dx = nearest->collision_position.x - object->collision_position.x;
+        dz = nearest->collision_position.z - object->collision_position.z;
+    } else {
+        dx = object->collision_position.x - source->collision_position.x;
+        dz = object->collision_position.z - source->collision_position.z;
+    }
+    angle = NuAtan2D(dx, dz);
+    object->target_velocity.x = NuTrigTable[angle >> 1] * ForcePush_Speed;
+    object->target_velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * ForcePush_Speed;
+    return 0;
+}
+
+i32 __cdecl ForcePushed_YRotation(GAMEOBJECT *object) {
+    GAMEOBJECT *source = object->force_target;
+    if (source != NULL && source->character_context == 0x1b && (source->flags_e20 & 0x380) == 0 &&
+        (object->velocity.x != 0.0f || object->velocity.z != 0.0f)) {
+        object->movement_facing_angle = (u16)(NuAtan2D(object->velocity.x, object->velocity.z) + 0x8000);
+        if (object->action_movement_state == 4 && Cheat_IsOn(0x13) != 0)
+            object->movement_facing_angle += 0x8000;
+    } else {
+        FaceOpponent(object, NULL);
+    }
+    return 0;
+}

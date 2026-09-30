@@ -488,3 +488,33 @@ far bias starts at the PC float 0.1. The sound multiplier starts at 0x4000, and
 the `.ogg` pointer is initialized through a real relocation to its five-byte
 named string. Path margin is the PC float 0.05; bolt jitter divides by the
 verified double 65535.0.
+
+## Movement/object/AI dependency wave
+
+The first execution wave adds typed context records and the source dependencies
+for movement, object targeting, AI locator/path processing and gizmo lifecycle.
+The isolated released shared-data packets verify 142 definitions over 8,423
+bytes and 112 real relocations; the aggregate report additionally checks emitted
+compiler constants and the cheats-TU private timer. See the current report for
+exact counts rather than adding isolated and aggregate counts together.
+
+`PCContextInfoTable` has 101 contiguous 16-byte PC records; `CInfo` points at
+record one so the `-1` context selects the first row. Flags are one 32-bit word,
+not Android's wider interpretation. The final NetWait record ends at
+`0x007fb778`, where a distinct action-info table begins. Actual names, actions,
+flags and parameters are initialized individually, with named string owners
+and real relocations. No capacity was inferred merely from Android declarations.
+
+The dynamic antinode pool contains 64 records of stride `0x58` at `0x00922288`;
+PC producer loops establish the capacity. The locator callback is a zero-initialized
+typed function pointer. The arcade provider has seven 12-byte modes, confirmed
+by initializer boundaries and the PC mode-limit store. `ArcadeItem` is a complete
+24-byte record, including signed mode at `+0xc`. Text pointers target independently
+verified 16-bit text-ID objects. Android's smaller mode counts are not applicable.
+
+Other recovered dependencies include the 16-byte game timer, object-pool globals,
+ForcePush thresholds, target distances and angles, vector initializers, and
+mutable cheat/gizmo state. `Cheat_PowerUpTime` remains static in `cheats.c`, its
+verified original translation unit; shared data ownership does not move genuine
+private state into `data.cpp`. All have PC extent and initializer evidence and
+are checked by the normal matcher, with no data copied as an opaque retail blob.

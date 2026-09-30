@@ -10,7 +10,7 @@ OBJECTS := $(OBJECTS:.c=.obj)
 EXE := build/LEGOStarWarsSaga.exe
 D3DX_LIB := build/d3dx9_35.lib
 CPPFLAGS := /Isrc /Ibuild/tools/msvc8/include /Ibuild/tools/msvc8/PlatformSDK/Include
-CXXFLAGS := /nologo /c /O2 /Gy /GS- /MT
+CXXFLAGS := /nologo /c /O2 /Gy /GS /MT
 LDFLAGS := /nologo /machine:x86 /subsystem:windows /incremental:no /manifest:no /opt:noref /opt:noicf
 LDLIBS := user32.lib winmm.lib $(abspath $(D3DX_LIB))
 

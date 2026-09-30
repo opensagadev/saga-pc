@@ -299,9 +299,13 @@ comparison files while preserving `build/tools/`.
 The PE linker version (8.0) and Rich-header compiler build (50727) identify the
 Visual C++ 2005 family. The pinned x86 compiler is **14.00.50727.42 (RTM)**;
 metadata alone does not distinguish all VC8 service-pack variants. It reproduces
-the initial functions with `/O2 /Gy /GS- /MT` and the x86 default calling convention
-and floating-point settings. Other code may require additional evidence and
-per-file settings as reconstruction grows.
+the initial functions with `/O2 /Gy /MT` and the x86 default floating-point
+settings. The build enables `/GS`: retail stack-cookie references and an isolated
+93-unit probe support it, with two additional exact candidates and no lost exact
+matches. Preserve same-TU static helpers where PC callers use private register
+arguments; ordinary VC8 can generate these without `/GL`. Other code may require
+additional evidence and per-file settings. See [the strategy review](config/strategy.md)
+and [execution plan](config/progress-plan.md) for broad source transfer.
 
 Use **VC8's native C++98/03-era dialect with Microsoft extensions**, rather than
 forcing a separate C++98 mode. This compiler has no `/std:c++03` switch; the
