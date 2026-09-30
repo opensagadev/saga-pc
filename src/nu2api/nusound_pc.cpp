@@ -8,6 +8,54 @@ extern "C" void __cdecl PCSoundAlreadyPlayingHook(void) {
 extern "C" void __cdecl PCSoundFailure(...) {
 }
 
+extern "C" void __cdecl PCSoundPlayUnpositioned(i32 sample_id, i32 volume_index, i32 arg3, i32 arg4, f32 arg5, i32 arg6,
+                                                f32 arg7, f32 arg8, i32 arg9) {
+    SoundSamplePC *sample;
+    i32 scaled_volume;
+    i32 voice_id;
+    i32 table_index;
+
+    if (SoundVoiceManager.samples == NULL) {
+        return;
+    }
+
+    sample = &SoundVoiceManager.samples[sample_id];
+    if (sample->valid_byte == 0) {
+        return;
+    }
+
+    if (PCSoundVolumeMultiplier == 0x4000) {
+        scaled_volume = volume_index;
+    } else {
+        scaled_volume = (PCSoundVolumeMultiplier * volume_index) >> 15;
+    }
+
+    voice_id = SoundVoiceManager.AllocateVoice(sample_id, 0);
+    if (voice_id <= -1) {
+        return;
+    }
+
+    table_index = scaled_volume;
+    if (table_index > 0x3fff) {
+        table_index = 0;
+    }
+
+    SoundVoiceManager.SetVoice(voice_id, 0, NuSound3VolumeTable[table_index], 0);
+
+    (void)arg3;
+    (void)arg4;
+    (void)arg5;
+    (void)arg6;
+    (void)arg7;
+    (void)arg8;
+    (void)arg9;
+}
+
+extern "C" void __cdecl PCSoundPlayUnpositionedWrapper(i32 arg1, i32 arg2, i32 arg3, i32 arg4, f32 arg5, i32 arg6,
+                                                       f32 arg7, f32 arg8) {
+    PCSoundPlayUnpositioned(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, 0);
+}
+
 i32 __thiscall SoundVoiceManagerPC::AllocateVoice(i32 sample_id, i32 bank) {
     i32 first_voice;
     i32 last_voice;
@@ -202,4 +250,18 @@ void __thiscall SoundVoiceManagerPC::Setup3DVoice(i32 voice_id, const NUVEC *pos
     }
 
     slot->aux->vtable->set_position(slot->aux, position->x, position->y, position->z, update_flag);
+}
+
+void __thiscall SoundVoiceManagerPC::SetSampleName(const char *name, i32 sample_index) {
+    i32 name_length;
+
+    this->samples[sample_index].valid_byte = 1;
+    NuStrCpy(this->samples[sample_index].file_name, name);
+    NuStrLwr(this->samples[sample_index].file_name, this->samples[sample_index].file_name);
+    name_length = NuStrLen(name);
+    if (name_length > 2 && this->samples[sample_index].file_name[name_length - 1] == 'l' &&
+        this->samples[sample_index].file_name[name_length - 2] == '_') {
+        this->samples[sample_index].file_name[name_length - 2] = '\0';
+    }
+    NuStrCat(this->samples[sample_index].file_name, PCSoundOggExtension);
 }

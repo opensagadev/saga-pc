@@ -14,6 +14,29 @@ BOLTTYPE_PC *__cdecl BoltType_FindByID(i32 id, WORLDINFO *world) {
     return NULL;
 }
 
+BOLT_PC *__cdecl Bolt_Alloc(void) {
+    i32 index = i_bolt;
+    i32 attempts = 0;
+
+    while (Bolt[index].active != 0 && (Bolt[index].flags & 8) != 0 && attempts < 32) {
+        ++index;
+        if (index == 32)
+            index = 0;
+        ++attempts;
+    }
+
+    i_bolt = (index + 1) % 32;
+    return &Bolt[index];
+}
+
+f32 __cdecl Bolt_ObjTargetPosYAdjust(GAMEOBJECT *object) {
+    f32 height = object->field_b0;
+    i32 random = qrand();
+    f64 height_range = ((f64)height + height) / BoltTargetRandomDenominator;
+
+    return (f32)((f64)random * height_range - height);
+}
+
 void __cdecl Bolt_GetShootOrigin_Default(GAMEOBJECT *object, NUVEC *position) {
     *position = object->collision_position;
 }
@@ -87,7 +110,7 @@ void __cdecl Bolt_Shoot(GAMEOBJECT *object, i32 type_id, i32 fire_flags) {
         intercept_position = target_position;
         if ((object->character_data->model_flags & 0x2000) == 0 && (object->flags_1f8 & 1) != 0) {
             adjusted_position = target->collision_position;
-            STUBBED_NAMED("Bolt_Shoot: add Bolt_ObjTargetPosYAdjust to target collision position");
+            adjusted_position.y += Bolt_ObjTargetPosYAdjust(target);
             target_position = &adjusted_position;
         }
     } else {

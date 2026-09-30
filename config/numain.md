@@ -453,9 +453,9 @@ is unresolved. Observed 0x948 and nested 0xd0 requests establish only a minimum
 this allocator over a one-byte anchor or infer its capacity from adjacent owners.
 `NuMtxGetScale` is independently implemented with the PC output-pointer ABI.
 
-The next connected targets are the DirectSound voice manager/playback methods,
-`AIPathNodeUpdatePos` (683-byte complete extent) and `WithinConnection` (1532
-bytes; still depends on the numeric helper at 0x00512900), and the bridge family.
+The DirectSound voice methods, AIPathNodeUpdatePos (683 bytes), WithinConnection
+(1532 bytes) and bridge lifecycle now have source implementations. Positional
+playback, renderer actions and projectile networking remain connected targets.
 Retained bridge research verifies Init/Remove/Create/Update/Draw spans and eight
 0xb0c-byte records; Create's 16 stack slots still need parameter-order review.
 Reuse these bundles before assigning implementation. Keep instruction tuning
@@ -490,8 +490,10 @@ the playback backend remain separate dependencies; this is not working audio.
 ANI3 and legacy animation pointer fixups, including the separate pointer-block
 relocator, are implemented. The evaluators still await a proven scratch capacity.
 `AIPathNodeUpdatePos` uses the PC special callback, endpoint-oriented displacement,
-radius traversal checks and animation activity test. `WithinConnection` remains
-unimplemented while its eleven stack slots are reviewed. The numeric helper at
+radius traversal checks and animation activity test. `WithinConnection` is
+implemented with its eleven PC stack slots: previous
+connection is argument six, route is argument seven, and arguments five/eight
+are unused. Its complete extent is 1532 bytes. The numeric helper at
 0x00512900 is arcsine-like, not acos; its neutral reconstruction name is
 `PCPathArcSine`, with the full signed EAX result kept until callers narrow it.
 
@@ -501,14 +503,38 @@ lookup, aim helpers, `Bolt_Add`/network dispatch, selected sound and lifetime up
 remain explicit actions to reconstruct. The source does not fabricate a bolt ID.
 NuMain and the runnable game remain partial.
 
-Next connected targets: finish the eleven-argument WithinConnection review and
-implement it; close the 919-byte physical sound playback backend; follow Bolt_Add
-and its networking/locator closure. Renderer 0x005f0f00 is a separate larger
-backend/layout batch. Reuse ignored research under build/analysis/.
+The PC unpositioned playback function and its wrapper are now implemented
+(118/62 bytes). They preserve the sample validity gate, signed volume scaling,
+voice allocation, table indexing and zero pitch parameter. The 141-byte sample
+name method lowercases the PC path, removes a final `_l`, and appends `.ogg`.
+Positional playback still requires the private-register listener/distance helper;
+loading and DirectSound manager initialization remain incomplete.
 
-A subsequent camera/culling bundle is promising: reviewed complete intervals at
-0x00603f10 (497), 0x00604110 (456) and 0x006042e0 (1608) total 2561 original
-bytes and use existing vector/matrix/camera types. The SSE/outcode helper's
-historical identity is tentative, and clip-state globals still need mapped types,
-extents and initializers. Review these together before source transfer; do not
-copy the Android backend or accept a helper name solely from graph ranking.
+`Bolt_Alloc` scans the PC 32-slot pool and retains its original behavior when no
+free slot is found. `Bolt_ObjTargetPosYAdjust` uses the verified object field at
++0xb0, C `qrand` and the PC double denominator 65535. The random family is now
+compiled as C; its mapped addresses and extents are unchanged.
+
+Next connected target: Bolt_Add, its NetMessage constructor/writers and the
+2551-byte Bolt_Init. Independent retail owner-index division at 0x00582ef6 and
+an object-array walk at 0x0059fc9e establish the 0x10d8 object stride. The current
+GAMEOBJECT definition still represents its shorter observed prefix; recover the
+remaining fields/tail before introducing array indexing. Renderer 0x005f0f00 is a
+separate larger backend/layout batch. Reuse ignored research under build/analysis/.
+
+The camera/culling bundle at 0x00603f10 (497), 0x00604110 (456) and
+0x006042e0 (1608) is implemented. PC scalar and SSE branches retain their
+separate comparison behavior, including unordered SSE comparisons. SSE input
+uses two 48-byte blocks containing four X, four Y and four Z values; it is not
+an array of four-component vectors. Screen clipping follows the retail RET hook
+and infinite loop. Complete comparison extents retain the original stack-cookie
+instructions even though current project flags disable compiler cookies.
+
+Viewport/scissor projection helpers at 0x005ed300/0x005ed420 (282/274 bytes)
+rebuild their scratch matrices when the mode argument is zero and otherwise
+reuse cached state. Optional near/far values select the ordinary camera fields
+only when zero; unordered/nonzero values select the optional fields. The original
+reuses its mode argument slot to hold the rounded cotangent. Projection m32 is
+(-2 * far * near) / (far - near), verified through the x87 stack operations.
+NuCameraSetEx and its renderer/frustum/backend closure remain unreconstructed;
+these helpers do not complete camera setup or NuMain.

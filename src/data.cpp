@@ -124,6 +124,7 @@ extern "C" {
     extern const f64 MoveSplineRunSpeedSentinel = 1000000000.0;
     extern const f32 MoveSplineTurnRate = 8.0f;
     extern const f64 BoltRayAccelerationTimeSquared = 0.04000000283122063;
+    extern const f64 BoltTargetRandomDenominator = 65535.0;
     extern const f64 NuAnimDataFloatMax = 3.4028234663852886e+38;
 #pragma data_seg(".data$GameObjectRotationBuggyId")
     u16 GameObjectRotationBuggyId = 0xffff;
@@ -779,6 +780,74 @@ extern "C" {
     NUVEC nuspecial_const_tint = {1.0f, 1.0f, 1.0f};
     NUVEC cam_axes = {1.0f, 1.0f, 1.0f};
     NUCAMERA global_camera;
+#pragma data_seg(".data$NuCameraProjectionFarClipBias")
+    f32 NuCameraProjectionFarClipBias = 0.1f;
+#pragma data_seg()
+#pragma bss_seg(".bss$NuCameraVPortProjectionScaleX")
+    f32 NuCameraVPortProjectionScaleX;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuCameraVPortProjectionScaleY")
+    f32 NuCameraVPortProjectionScaleY;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuCameraScissorProjectionScaleX")
+    f32 NuCameraScissorProjectionScaleX;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuCameraScissorProjectionScaleY")
+    f32 NuCameraScissorProjectionScaleY;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuCameraScissorProjectionScratch")
+    NUMTX NuCameraScissorProjectionScratch;
+#pragma bss_seg()
+#pragma bss_seg(".bss$clip_test_mtx")
+    NUMTX clip_test_mtx;
+#pragma bss_seg()
+#pragma bss_seg(".bss$zx")
+    f32 zx;
+#pragma bss_seg()
+#pragma bss_seg(".bss$zy")
+    f32 zy;
+#pragma const_seg(".rdata$ClipOutcodeMask32")
+    __declspec(align(16)) extern const u32 ClipOutcodeMask32[4] = {32, 32, 32, 32};
+#pragma const_seg()
+#pragma const_seg(".rdata$ClipOutcodeMask16")
+    __declspec(align(16)) extern const u32 ClipOutcodeMask16[4] = {16, 16, 16, 16};
+#pragma const_seg()
+#pragma const_seg(".rdata$ClipOutcodeMask1")
+    __declspec(align(16)) extern const u32 ClipOutcodeMask1[4] = {1, 1, 1, 1};
+#pragma const_seg()
+#pragma const_seg(".rdata$ClipOutcodeMask2")
+    __declspec(align(16)) extern const u32 ClipOutcodeMask2[4] = {2, 2, 2, 2};
+#pragma const_seg()
+#pragma const_seg(".rdata$ClipOutcodeMask8")
+    __declspec(align(16)) extern const u32 ClipOutcodeMask8[4] = {8, 8, 8, 8};
+#pragma const_seg()
+#pragma const_seg(".rdata$ClipOutcodeMask4")
+    __declspec(align(16)) extern const u32 ClipOutcodeMask4[4] = {4, 4, 4, 4};
+#pragma const_seg()
+#pragma const_seg(".rdata$ClipOutcodeMinusOne")
+    __declspec(align(16)) extern const f32 ClipOutcodeMinusOne[4] = {-1.0f, -1.0f, -1.0f, -1.0f};
+#pragma const_seg()
+#pragma data_seg(".data$ClipFarLimits")
+    __declspec(align(16)) f32 ClipFarLimits[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+#pragma data_seg()
+#pragma data_seg(".data$PCClipExtentsEnabled")
+    i32 PCClipExtentsEnabled = 1;
+#pragma data_seg()
+#pragma bss_seg(".bss$PCClipUseSSE")
+    i32 PCClipUseSSE;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ClipCornerBlocks")
+    __declspec(align(16)) NUVEC4BLOCK_PC ClipCornerBlocks[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$ClipTransformedBlocks")
+    __declspec(align(16)) NUVEC4BLOCK_PC ClipTransformedBlocks[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$clip_outcode_workspace_prefix")
+    u32 clip_outcode_workspace_prefix[8];
+#pragma bss_seg()
+#pragma data_seg(".data$AIPathConnectionMargin")
+    f32 AIPathConnectionMargin = 0.05f;
+#pragma data_seg()
 #pragma bss_seg(".bss$pNuCam")
     NUCAMERA *pNuCam;
 #pragma bss_seg()
@@ -817,6 +886,15 @@ extern "C" {
     extern const f64 NuScale1000 = 1000.0;
     i32 NuSound3LoopHoldTime = 133;
     i32 NuSound3VolumeOffset = -300;
+#pragma data_seg(".data$PCSoundVolumeMultiplier")
+    i32 PCSoundVolumeMultiplier = 0x4000;
+#pragma data_seg()
+#pragma const_seg(".rdata$PCSoundOggExtensionText")
+    extern const char PCSoundOggExtensionText[5] = ".ogg";
+#pragma const_seg()
+#pragma data_seg(".data$PCSoundOggExtension")
+    const char *PCSoundOggExtension = PCSoundOggExtensionText;
+#pragma data_seg()
 #pragma data_seg(".data$SoundVoiceVolumeOffset")
     i32 SoundVoiceVolumeOffset = -300;
 #pragma data_seg()

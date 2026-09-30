@@ -476,3 +476,15 @@ records, 0x6c platform records and 64 track slots of 0x18 bytes. Capacities rema
 runtime fields. The platform cell at +0x1b98 is a separate typed member, not an
 out-of-bounds access past the 256 ordinary cells. Platform flags are a dword at
 +0x4c as the PC load/store instructions establish.
+
+The camera clip state includes a zero matrix scratch, zero X/Y scale scalars,
+six aligned four-lane outcode masks, four minus-one lanes, mutable far limits
+initialized to one, an enabled gate initialized to one and a zero SSE gate.
+The two SoA corner/result buffers and eight outcode words represent only observed
+source prefixes; their map sizes remain blank and supply no coverage credit.
+Projection reuses the existing identity `pc_vport_mtx`; scissor scratch is a
+separate zero 64-byte matrix. Its four scale scalars start at zero and the writable
+far bias starts at the PC float 0.1. The sound multiplier starts at 0x4000, and
+the `.ogg` pointer is initialized through a real relocation to its five-byte
+named string. Path margin is the PC float 0.05; bolt jitter divides by the
+verified double 65535.0.

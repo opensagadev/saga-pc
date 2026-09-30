@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <xmmintrin.h>
 
 STATIC_ASSERT(offsetof(NUVEC, x) == 0x00);
 STATIC_ASSERT(offsetof(NUVEC, y) == 0x04);
@@ -259,6 +260,89 @@ void __cdecl NuVecMtxTransform(NUVEC *out, NUVEC *v, NUMTX *m) {
     out->x = v->x * m->m00 + v->y * m->m10 + v->z * m->m20 + m->m30;
     out->y = y;
     out->z = z;
+}
+
+void __cdecl NuVecMtxTransformBlock(NUVEC *out, NUVEC *vectors, NUMTX *matrix, i32 count) {
+    i32 index;
+
+    for (index = 0; index < count; ++index) {
+        NUVEC *vector = &vectors[index];
+        NUVEC *transformed = &out[index];
+
+        transformed->x = vector->x * matrix->m00 + vector->y * matrix->m10 + vector->z * matrix->m20 + matrix->m30;
+        transformed->y = vector->x * matrix->m01 + vector->y * matrix->m11 + vector->z * matrix->m21 + matrix->m31;
+        transformed->z = vector->x * matrix->m02 + vector->y * matrix->m12 + vector->z * matrix->m22 + matrix->m32;
+    }
+}
+
+void __cdecl PCVecMtxTransformClipBlocks(NUVEC4BLOCK_PC *out, NUVEC4BLOCK_PC *in, NUMTX *matrix, i32 count,
+                                         u32 *outcodes) {
+    i32 block_count = (count + 3) >> 2;
+    i32 block;
+    __m128 m00, m01, m02;
+    __m128 m10, m11, m12;
+    __m128 m20, m21, m22;
+    __m128 m30, m31, m32;
+    __m128 near_clip, far_clip, minus_one;
+    __m128 zx_scale, zy_scale;
+    __m128 mask32, mask16, mask1, mask2, mask8, mask4;
+
+    if (block_count <= 0) {
+        return;
+    }
+
+    m00 = _mm_set1_ps(matrix->m00);
+    m01 = _mm_set1_ps(matrix->m01);
+    m02 = _mm_set1_ps(matrix->m02);
+    m10 = _mm_set1_ps(matrix->m10);
+    m11 = _mm_set1_ps(matrix->m11);
+    m12 = _mm_set1_ps(matrix->m12);
+    m20 = _mm_set1_ps(matrix->m20);
+    m21 = _mm_set1_ps(matrix->m21);
+    m22 = _mm_set1_ps(matrix->m22);
+    m30 = _mm_set1_ps(matrix->m30);
+    m31 = _mm_set1_ps(matrix->m31);
+    m32 = _mm_set1_ps(matrix->m32);
+    near_clip = _mm_set1_ps(global_camera.near_clip);
+    far_clip = _mm_load_ps(ClipFarLimits);
+    minus_one = _mm_load_ps(ClipOutcodeMinusOne);
+    zx_scale = _mm_set1_ps(zx);
+    zy_scale = _mm_set1_ps(zy);
+    mask32 = _mm_load_ps((const f32 *)ClipOutcodeMask32);
+    mask16 = _mm_load_ps((const f32 *)ClipOutcodeMask16);
+    mask1 = _mm_load_ps((const f32 *)ClipOutcodeMask1);
+    mask2 = _mm_load_ps((const f32 *)ClipOutcodeMask2);
+    mask8 = _mm_load_ps((const f32 *)ClipOutcodeMask8);
+    mask4 = _mm_load_ps((const f32 *)ClipOutcodeMask4);
+
+    for (block = 0; block < block_count; ++block) {
+        NUVEC4BLOCK_PC *source = &in[block];
+        NUVEC4BLOCK_PC *destination = &out[block];
+        __m128 x = _mm_load_ps(source->x);
+        __m128 y = _mm_load_ps(source->y);
+        __m128 z = _mm_load_ps(source->z);
+        __m128 transformed_x =
+            _mm_add_ps(_mm_add_ps(_mm_add_ps(m30, _mm_mul_ps(x, m00)), _mm_mul_ps(y, m10)), _mm_mul_ps(z, m20));
+        __m128 transformed_y =
+            _mm_add_ps(_mm_add_ps(_mm_add_ps(m31, _mm_mul_ps(x, m01)), _mm_mul_ps(y, m11)), _mm_mul_ps(z, m21));
+        __m128 transformed_z =
+            _mm_add_ps(_mm_add_ps(_mm_add_ps(m32, _mm_mul_ps(x, m02)), _mm_mul_ps(y, m12)), _mm_mul_ps(z, m22));
+        __m128 z_times_zx = _mm_mul_ps(transformed_z, zx_scale);
+        __m128 z_times_zy = _mm_mul_ps(transformed_z, zy_scale);
+        __m128 code;
+
+        _mm_store_ps(destination->x, transformed_x);
+        _mm_store_ps(destination->y, transformed_y);
+        _mm_store_ps(destination->z, transformed_z);
+
+        code = _mm_and_ps(_mm_cmplt_ps(transformed_z, near_clip), mask32);
+        code = _mm_or_ps(code, _mm_and_ps(_mm_cmpnle_ps(transformed_z, far_clip), mask16));
+        code = _mm_or_ps(code, _mm_and_ps(_mm_cmplt_ps(transformed_x, _mm_mul_ps(z_times_zx, minus_one)), mask1));
+        code = _mm_or_ps(code, _mm_and_ps(_mm_cmpnle_ps(transformed_x, z_times_zx), mask2));
+        code = _mm_or_ps(code, _mm_and_ps(_mm_cmplt_ps(transformed_y, _mm_mul_ps(z_times_zy, minus_one)), mask8));
+        code = _mm_or_ps(code, _mm_and_ps(_mm_cmpnle_ps(transformed_y, z_times_zy), mask4));
+        _mm_store_ps((f32 *)&outcodes[block * 4], code);
+    }
 }
 
 void __cdecl NuVecInvMtxRotate(NUVEC *out, NUVEC *v, NUMTX *m) {

@@ -398,6 +398,7 @@ address    , symbol                                                         , si
 0x00517160 , _AISysBufferAlloc                                              , 74    , "void *__cdecl (VARIPTR *, VARIPTR *, u32)"
 0x0051a7c0 , _AISysCharacterSetPath                                         , 198   , "void __cdecl (AIPACKET_PC *, AIPATH_PC *)"
 0x0051af40 , _AIPathNodeUpdatePos                                           , 683   , "void __cdecl (void *, AIPATH_PC *, AIPATHNODE_PC *)"
+0x0051b1f0 , _WithinConnection                                              , 1532  , "i32 __cdecl (void *, NUVEC *, AIPATH_PC *, AIPATHCNX_PC *, i32, AIPATHCNX_PC *, i32, i32, AIPATHINFO_PC *, f32, i32)"
 0x0051b7f0 , _AISysFindRoute                                                , 151   , void __cdecl (AIPACKET_PC *)
 0x0051b890 , _AISysCharacterSetPathCnx                                      , 381   , "void __cdecl (AIPACKET_PC *, NUVEC *, AIPATHCNX_PC *, i32)"
 0x0052b3f0 , _xConditions                                                   , 1476  , void __cdecl (NUFPAR_PC *)
@@ -464,8 +465,8 @@ address    , symbol                                                         , si
 0x0054be70 , _Text_StripComments                                            , 141   , "i32 __cdecl (char *, char *, i32)"
 0x0054bf00 , _IntroText_SetTextID                                           , 26    , void __cdecl (i32)
 0x0054bf20 , _IntroText_Draw                                                , 262   , void (f32)
-0x0054fa60 , ?qrand@@YAHXZ                                                  , 25    , i32 __cdecl (void)
-0x0054fa80 , ?getqseed@@YAHXZ                                               , 6     , i32 __cdecl (void)
+0x0054fa60 , _qrand                                                         , 25    , i32 __cdecl (void)
+0x0054fa80 , _getqseed                                                      , 6     , i32 __cdecl (void)
 0x0054fa90 , ?ResetSeeds@@YAXXZ                                             , 61    , void __cdecl (void)
 0x0054fb40 , _SeekValF                                                      , 64    , "f32 __cdecl (f32, f32, f32)"
 0x0054fb80 , _SeekVec                                                       , 94    , "void __cdecl (NUVEC *, NUVEC *, NUVEC *, f32)"
@@ -620,10 +621,12 @@ address    , symbol                                                         , si
 0x0057d210 , _bgLoadStreamCutScene                                          , 29    , void __cdecl (BGPROCINFO *)
 0x0057d230 , _CutScenes_BGLoadManager                                       , 53    , void __cdecl (void)
 0x0057eec0 , _CutScenes_End                                                 , 135   , void __cdecl (void)
+0x0057fba0 , _Bolt_Alloc                                                    , 123   , BOLT_PC *__cdecl (void)
 0x0057fc30 , _Bolt_Reflect                                                  , 79    , "void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x005806a0 , _BoltType_FindByID                                             , 71    , "BOLTTYPE_PC *__cdecl (i32, WORLDINFO *)"
 0x00580920 , _Bolt_GetShootOrigin_Default                                   , 35    , "void __cdecl (GAMEOBJECT *, NUVEC *)"
 0x00580950 , _Bolt_GetShootDirection_Default                                , 74    , "u16 __cdecl (GAMEOBJECT *, NUVEC *)"
+0x005809a0 , _Bolt_ObjTargetPosYAdjust                                      , 54    , f32 __cdecl (GAMEOBJECT *)
 0x00580c00 , _Bolt_Debris_Default                                           , 149   , "void __cdecl (BOLT *, NUVEC *, i32, NUVEC *, i32)"
 0x00581e40 , _BoltTypes_Configure                                           , 362   , "void __cdecl (WORLDINFO *, char *)"
 0x00583030 , _Bolts_Update                                                  , 2738  , void __cdecl (WORLDINFO *)
@@ -962,6 +965,8 @@ address    , symbol                                                         , si
 0x005ea660 , _NuSpecialUpdate                                               , 59    , void __cdecl (NUSPECIALHANDLE *)
 0x005eb250 , _NuQFntPrintCharW                                              , 1210  , "void __cdecl (VUFNT *, u16 *, u32)"
 0x005ebd80 , _NuRndrClear                                                   , 111   , "void (i32, i32, f32)"
+0x005ed300 , _NuCameraSetVPortClipMtx                                       , 282   , "void __cdecl (NUMTX *, NUMTX *, NUCAMERA *, i32)"
+0x005ed420 , _NuCameraSetScissorClipMtx                                     , 274   , "void __cdecl (NUMTX *, NUMTX *, NUCAMERA *, i32)"
 0x005ed540 , _NuCameraSetEx                                                 , 1105  , "void __cdecl (NUCAMERA *, i32)"
 0x005edbb0 , _NuMtxCalcCheapFaceOn                                          , 134   , "void __cdecl (NUMTX *, NUVEC *)"
 0x005edd70 , _NuMtxCalcDebrisFaceOn                                         , 113   , void __cdecl (NUMTX *)
@@ -985,6 +990,7 @@ address    , symbol                                                         , si
 0x005f3d60 , _NuTimeBarSetRender                                            , 2130  , void __cdecl (i32)
 0x005f45c0 , _NuTimeBarSetRenderHorizontal                                  , 1475  , void __cdecl (i32)
 0x005f7490 , _DisplayListUpdateSpecialTransformPS                           , 1     , "void __cdecl (NUSPECIALHANDLE *, NUMTX *)"
+0x005f7490 , _PCClipScreenUnsupported                                       , 1     , void __cdecl (void)
 0x005f9530 , _NuWaterReset                                                  , 21    , void __cdecl (void)
 0x005f9e90 , _NuRndrShadowOnOff_candidate                                   , 10    , void __cdecl (i32)
 0x005fca40 , _NuDisplayListResetStateCache                                  , 37    , void (NURNDRLIBSTATE *)
@@ -1009,6 +1015,9 @@ address    , symbol                                                         , si
 0x006034b0 , _NuDisplayListLinkItem                                         , 117   , "void __cdecl (NUDISPLAYLIST *, u8, void *)"
 0x00603580 , _DisplayListCreateGeomTransformPS                              , 142   , "void *__cdecl (VARIPTR *, NUMTX *, NUMTL *, void *, void *)"
 0x00603cc0 , _NuCameraSet                                                   , 91    , void (NUCAMERA *)
+0x00603f10 , _NuVecMtxTransformBlock                                        , 497   , "void __cdecl (NUVEC *, NUVEC *, NUMTX *, i32)"
+0x00604110 , _PCVecMtxTransformClipBlocks                                   , 456   , "void __cdecl (NUVEC4BLOCK_PC *, NUVEC4BLOCK_PC *, NUMTX *, i32, u32 *)"
+0x006042e0 , _NuCameraClipTestExtents                                       , 1608  , "i32 __cdecl (NUVEC *, NUVEC *, NUMTX *, f32, i32)"
 0x00607590 , _DisplayListUpdateRenderState                                  , 649   , "void __cdecl (NUDISPLAYLIST_PC *, NUGLOBALRNDRSTATE_PC *)"
 0x00607d70 , _NuPrim2DBegin                                                 , 331   , "void __cdecl (u32, u32, NUMTL *)"
 0x00607ec0 , _NuPrim3DBegin                                                 , 319   , "void __cdecl (u32, u32, NUMTL *, NUMTX *)"
@@ -1128,6 +1137,7 @@ address    , symbol                                                         , si
 0x00696b40 , _PCSoundSetRawVolume                                           , 48    , "HRESULT __cdecl (IDirectSoundBuffer *, i32)"
 0x00696b70 , _PCSoundSetLinearVolume                                        , 53    , "HRESULT __cdecl (IDirectSoundBuffer *, f32)"
 0x00696be0 , _NuSound3GetListener                                           , 15    , NUMTX *__cdecl (void)
+0x00696f10 , ?SetSampleName@SoundVoiceManagerPC@@QAEXPBDH@Z                 , 141   , "void __thiscall (SoundVoiceManagerPC *, const char *, i32)"
 0x00697470 , ?AllocateVoice@SoundVoiceManagerPC@@QAEHHH@Z                   , 264   , "i32 __thiscall (SoundVoiceManagerPC *, i32, i32)"
 0x00697580 , ?SetVoice@SoundVoiceManagerPC@@QAEXHHMH@Z                      , 267   , "void __thiscall (SoundVoiceManagerPC *, i32, i32, f32, i32)"
 0x00697690 , ?StopVoice@SoundVoiceManagerPC@@QAEXH@Z                        , 98    , "void __thiscall (SoundVoiceManagerPC *, i32)"
@@ -1135,6 +1145,8 @@ address    , symbol                                                         , si
 0x00697920 , ?SetVolumeTableIndex@SoundVoiceManagerPC@@QAEXHH@Z             , 104   , "void __thiscall (SoundVoiceManagerPC *, i32, i32)"
 0x00697990 , ?SetFrequencyParameter@SoundVoiceManagerPC@@QAEXHH@Z           , 135   , "void __thiscall (SoundVoiceManagerPC *, i32, i32)"
 0x00697a30 , _NuSound3SetReverb                                             , 22    , i32 __cdecl (i32)
+0x00698040 , _PCSoundPlayUnpositioned                                       , 118   , "void __cdecl (i32, i32, i32, i32, f32, i32, f32, f32, i32)"
+0x006980c0 , _PCSoundPlayUnpositionedWrapper                                , 62    , "void __cdecl (i32, i32, i32, i32, f32, i32, f32, f32)"
 0x00698400 , _NuSound3StopStereoStream                                      , 25    , void __cdecl (i32)
 0x00698420 , _NuSound3PauseStereoStream                                     , 25    , void __cdecl (i32)
 0x00698440 , _NuSound3ResumeStereoStream                                    , 25    , void __cdecl (i32)
@@ -1674,6 +1686,7 @@ address    , symbol                                                         , si
 0x00751c00 , _GizAIMessage_PrefixedNameFormat                               , 5     , const char[5]
 0x00751c30 , __real@4049000000000000                                        , 8     , const f64
 0x00751ca4 , _NuPrimMinusTwo                                                , 4     , const f32
+0x00751cc8 , _BoltTargetRandomDenominator                                   , 8     , const f64
 0x00751d84 , _LevelConfigFarDistance                                        , 4     , const f32
 0x00751d84 , __real@49f42400                                                , 4     , const f32
 0x00751d90 , __real@42480000                                                , 4     , const f32
@@ -2095,6 +2108,7 @@ address    , symbol                                                         , si
 0x00765680 , _NuTimeBarNameMargin                                           , 8     , const f64
 0x00765688 , _NuTimeBarHalfFontScale                                        , 4     , const f32
 0x0076eef0 , __real@40cfff8000000000                                        , 8     , const f64
+0x0076ef00 , _PCSoundOggExtensionText                                       , 5     , const char[5]
 0x007759a8 , _PCKeyboard2Name_candidate                                     , 10    , const char[10]
 0x007759b4 , _PCKeyboardMouse2Name_candidate                                , 16    , const char[16]
 0x007759c4 , _PCKeyboard1Name_candidate                                     , 10    , const char[10]
@@ -2202,6 +2216,7 @@ address    , symbol                                                         , si
 0x008015b0 , _TextScaleY_candidate                                          , 4     , f32
 0x008015b4 , _QFONTSCALEX                                                   , 4     , f32
 0x008015f0 , _STCOORDSCALE                                                  , 4     , f32
+0x00801c88 , _AIPathConnectionMargin                                        , 4     , f32
 0x00801dd0 , ??_R0?AVNetListenerInterface@@@8                               , 35    ,
 0x00801df4 , ??_R0?AVAINet@@@8                                              , 20    ,
 0x00802014 , _saveload_autosave                                             , 4     , i32
@@ -2228,7 +2243,7 @@ address    , symbol                                                         , si
 0x00802400 , _Text_LanguageList_Default                                     , 56    , LANGUAGEDATA[7]
 0x00802524 , _LAYER_HOVERIGNORE                                             , 4     , u32
 0x00802538 , ?GAMERAND@@3HA                                                 , 4     , i32
-0x0080253c , ?qseed@@3HA                                                    , 4     , i32
+0x0080253c , _qseed                                                         , 4     , i32
 0x00802bd8 , _PlayerID                                                      , 8     , i32[2]
 0x00802c54 , _WORLD                                                         , 4     , WORLDINFO *
 0x00802c58 , _LWORLD                                                        , 4     , WORLDINFO *
@@ -2297,6 +2312,7 @@ address    , symbol                                                         , si
 0x0080b8c8 , _pc_vport_mtx                                                  , 64    , NUMTX
 0x0080b908 , _vpsmtx                                                        , 64    , NUMTX
 0x0080b988 , _clip_planes                                                   , 64    , NUMTX
+0x0080b9c8 , _NuCameraProjectionFarClipBias                                 , 4     , f32
 0x0080b9f4 , _NuTimeBarPeakResetInterval                                    , 4     , i32
 0x0080b9f8 , _NuTimeBar_EngineColours                                       , 28    , const u32[7]
 0x0080ba18 , _NuTimeBar_DefaultColours                                      , 64    , const u32[16]
@@ -2322,6 +2338,15 @@ address    , symbol                                                         , si
 0x0080e2b4 , _NuPrimYScale                                                  , 4     , f32
 0x0080e694 , _PS2_VREZ_W                                                    , 4     , i32
 0x0080e698 , _PS2_VREZ_H                                                    , 4     , i32
+0x0080e85c , _PCClipExtentsEnabled                                          , 4     , i32
+0x0080e870 , _ClipOutcodeMask32                                             , 16    , const u32[4]
+0x0080e880 , _ClipOutcodeMask16                                             , 16    , const u32[4]
+0x0080e890 , _ClipOutcodeMask1                                              , 16    , const u32[4]
+0x0080e8a0 , _ClipOutcodeMask2                                              , 16    , const u32[4]
+0x0080e8b0 , _ClipOutcodeMask8                                              , 16    , const u32[4]
+0x0080e8c0 , _ClipOutcodeMask4                                              , 16    , const u32[4]
+0x0080e8d0 , _ClipOutcodeMinusOne                                           , 16    , const f32[4]
+0x0080e8f0 , _ClipFarLimits                                                 , 16    , f32[4]
 0x0080e984 , ??_R0?AVbad_alloc@std@@@8                                      , 28    ,
 0x0080e9a0 , ??_R0?AVexception@std@@@8                                      , 28    ,
 0x0080ea04 , ??_R0?AVNuMainFilter@@@8                                       , 27    ,
@@ -2371,11 +2396,13 @@ address    , symbol                                                         , si
 0x00810b34 , _TerrPlatScanDist                                              , 4     , f32
 0x00810b38 , _SkinFlipTab                                                   , 32    , i32[8]
 0x00810bf0 , _PCMusicProcessOne_candidate                                   , 4     , const f32
+0x00810d90 , _PCSoundOggExtension                                           , 4     , const char *
 0x00810d98 , _nusound_fade_end                                              , 4     , f32
 0x00810d9c , _nusound_fade_start                                            , 4     , f32
 0x00810dbc , _NuSound3VolumeOffset                                          , 4     , i32
 0x00810dc0 , _SoundVoiceVolumeOffset                                        , 4     , i32
 0x00810dc8 , _NuSound3LoopHoldTime                                          , 4     , i32
+0x00810dd4 , _PCSoundVolumeMultiplier                                       , 4     , i32
 0x00810ee0 , ??_R0?AVWavReader@@@8                                          , 24    ,
 0x00811000 , ??_R0?AVOggReader@@@8                                          , 24    ,
 0x0081fe6c , ??_R0?AVEdTool@@@8                                             , 21    ,
@@ -2844,8 +2871,13 @@ address    , symbol                                                         , si
 0x0095fbd8 , _sceneParametersCount                                          , 4     , i32
 0x00963de0 , _NuQFntCSModeStack                                             , 64    , i32[16]
 0x00963e30 , _vpCurrent                                                     , 16    , NUVPCURRENT
+0x00963e60 , _NuCameraVPortProjectionScaleX                                 , 4     , f32
+0x00963e64 , _NuCameraVPortProjectionScaleY                                 , 4     , f32
+0x00963e68 , _NuCameraScissorProjectionScaleX                               , 4     , f32
+0x00963e6c , _NuCameraScissorProjectionScaleY                               , 4     , f32
 0x00963fb0 , _fstack                                                        , 4     , VARIPTR
 0x00964110 , _sceneParameters                                               ,       , NURNDRLIBSCENE[32]
+0x00966398 , _zx                                                            , 4     , f32
 0x009663a8 , _fstack_limit                                                  , 4     , VARIPTR
 0x0096d890 , _NuQFntModeStack                                               , 64    , u32[16]
 0x0096d910 , _numtl_defaultmtl2d                                            , 4     , NUMTL *
@@ -2858,6 +2890,7 @@ address    , symbol                                                         , si
 0x00971780 , _NuAnimDataBitCount                                            , 256   , u8[256]
 0x009718b0 , _nudlist_field_18b0                                            , 4     , void *
 0x009718c0 , _currentScene                                                  , 536   , NURNDRLIBSCENE
+0x0097315c , _zy                                                            , 4     , f32
 0x00973700 , _NuDisplayListStreamCursor                                     , 4     , VARIPTR *
 0x00973708 , _global_camera                                                 , 120   , NUCAMERA
 0x009737fd , _ForcePlayEndFrame                                             , 1     , u8
@@ -2911,10 +2944,13 @@ address    , symbol                                                         , si
 0x00973fc8 , _nudlist_field_fc8                                             , 4     , u32
 0x00973fe4 , _nudlist_field_fe4                                             , 4     , u32
 0x0097ae08 , _ANI3_EVAL_SCALE_ARRAY                                         ,       , NUVEC[]
+0x0097bab0 , _NuCameraScissorProjectionScratch                              , 64    , NUMTX
 0x0097bb54 , _nurndr_tritot_this_frame                                      , 4     , i32
 0x0097c1cc , _nudlist_stream_cursor                                         , 8     , VARIPTR
+0x0097c1d0 , _clip_outcode_workspace_prefix                                 ,       , u32[8] (minimum source prefix; full extent unknown)
 0x00981c70 , _NuPrimCoordSystemStack                                        ,       , i32[]
 0x009868c0 , _render_state                                                  , 420   , NUGLOBALRNDRSTATE_PC
+0x0280c4a0 , _clip_test_mtx                                                 , 64    , NUMTX
 0x02854ba8 , _nuprim_field_ba8                                              , 4     , u32
 0x02854bf8 , _nu_water_reset_state                                          , 4     , i32
 0x02854c00 , _nu_water_reset_status                                         , 4     , i32
@@ -2926,6 +2962,8 @@ address    , symbol                                                         , si
 0x02854d40 , _NuPrimXBias                                                   , 4     , f32
 0x02854d44 , _NuPrimYBias                                                   , 4     , f32
 0x02854d6c , _numtl_force_mipmode                                           , 4     , i32
+0x02854f70 , _ClipCornerBlocks                                              ,       , NUVEC4BLOCK_PC[2] (minimum source prefix; full extent unknown)
+0x02854ff0 , _ClipTransformedBlocks                                         ,       , NUVEC4BLOCK_PC[2] (minimum source prefix; full extent unknown)
 0x02913104 , _apicharsys                                                    , 4     , APICHARSYS *
 0x002913270, _theMemoryManager                                              , 584   , MEMORYMANAGER
 0x02913a4c , _part_page_on                                                  , 32    , i32[8]
@@ -2993,6 +3031,7 @@ address    , symbol                                                         , si
 0x00297ad74, _nu_current_thread_id                                          , 4     , volatile u32
 0x0297ad94 , _nuvideo_global_vbcnt                                          , 4     , volatile i32
 0x0297ae40 , _PCFrameCriticalSectionIndex_candidate                         , 4     , i32
+0x0297c0f0 , _PCClipUseSSE                                                  , 4     , i32
 0x0297dbe0 , _nuapi                                                         , 144   , NUAPI
 0x0297dc00 , _NuVideoFrameRate                                              , 4     , f32
 0x0297dc80 , _pc_dat_file_infos                                             , 960   , PC_NUDATFILEINFO[20]

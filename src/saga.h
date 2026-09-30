@@ -84,15 +84,26 @@ typedef struct numtx_s {
     f32 m30, m31, m32, m33;
 } NUMTX;
 
+typedef struct __declspec(align(16)) NUVEC4BLOCK_PC {
+    f32 x[4];
+    f32 y[4];
+    f32 z[4];
+} NUVEC4BLOCK_PC;
+STATIC_ASSERT(sizeof(NUVEC4BLOCK_PC) == 0x30);
+STATIC_ASSERT(offsetof(NUVEC4BLOCK_PC, x) == 0);
+STATIC_ASSERT(offsetof(NUVEC4BLOCK_PC, y) == 0x10);
+STATIC_ASSERT(offsetof(NUVEC4BLOCK_PC, z) == 0x20);
+
 typedef struct SoundSamplePC {
     IDirectSoundBuffer *buffer;
-    u8 unknown_004[0x400];
+    char file_name[0x400];
     u8 valid_byte;
     u8 unknown_405[3];
     u32 frequency;
 } SoundSamplePC;
 STATIC_ASSERT(sizeof(SoundSamplePC) == 0x40c);
 STATIC_ASSERT(offsetof(SoundSamplePC, buffer) == 0);
+STATIC_ASSERT(offsetof(SoundSamplePC, file_name) == 4);
 STATIC_ASSERT(offsetof(SoundSamplePC, valid_byte) == 0x404);
 STATIC_ASSERT(offsetof(SoundSamplePC, frequency) == 0x408);
 
@@ -102,9 +113,15 @@ typedef struct SoundVoiceSlotPC {
     SoundSamplePC *sample;
     u32 is_spatial;
     i32 sample_id;
-    u8 unknown_14[0x10];
+    i32 sound_key;
+    u8 field_18;
+    u8 field_19;
+    u8 unknown_1a[2];
+    f32 field_1c;
+    f32 field_20;
     i32 volume_index;
-    u8 unknown_28[8];
+    i32 field_28;
+    i32 field_2c;
     i32 parameter;
 } SoundVoiceSlotPC;
 STATIC_ASSERT(sizeof(SoundVoiceSlotPC) == 0x34);
@@ -113,6 +130,13 @@ STATIC_ASSERT(offsetof(SoundVoiceSlotPC, aux) == 4);
 STATIC_ASSERT(offsetof(SoundVoiceSlotPC, sample) == 8);
 STATIC_ASSERT(offsetof(SoundVoiceSlotPC, is_spatial) == 0xc);
 STATIC_ASSERT(offsetof(SoundVoiceSlotPC, sample_id) == 0x10);
+STATIC_ASSERT(offsetof(SoundVoiceSlotPC, sound_key) == 0x14);
+STATIC_ASSERT(offsetof(SoundVoiceSlotPC, field_18) == 0x18);
+STATIC_ASSERT(offsetof(SoundVoiceSlotPC, field_19) == 0x19);
+STATIC_ASSERT(offsetof(SoundVoiceSlotPC, field_1c) == 0x1c);
+STATIC_ASSERT(offsetof(SoundVoiceSlotPC, field_20) == 0x20);
+STATIC_ASSERT(offsetof(SoundVoiceSlotPC, field_28) == 0x28);
+STATIC_ASSERT(offsetof(SoundVoiceSlotPC, field_2c) == 0x2c);
 STATIC_ASSERT(offsetof(SoundVoiceSlotPC, volume_index) == 0x24);
 STATIC_ASSERT(offsetof(SoundVoiceSlotPC, parameter) == 0x30);
 
@@ -125,6 +149,7 @@ typedef struct SoundVoiceManagerPC {
     IDirectSound8 *factory;
     u8 unknown_d1c[0x7c];
 #ifdef __cplusplus
+    void __thiscall SetSampleName(const char *name, i32 sample_index);
     i32 __thiscall AllocateVoice(i32, i32);
     void __thiscall SetVoice(i32, i32, f32, i32);
     void __thiscall SetVolumeTableIndex(i32, i32);
@@ -499,7 +524,9 @@ typedef struct AIPATH_PC {
     u8 index;
     u8 unknown_16[2];
     u8 updated_node_bits[0x20];
-    u8 unknown_38[0x44];
+    u8 unknown_38[0x40];
+    u8 search_checksum;
+    u8 unknown_79[3];
     AIPATHNODE_PC *nodes;
     AIPATHCNX_PC *connections;
     u8 **route_matrix;
@@ -507,6 +534,7 @@ typedef struct AIPATH_PC {
 } AIPATH_PC;
 STATIC_ASSERT(offsetof(AIPATH_PC, updated_node_bits) == 0x18);
 STATIC_ASSERT(offsetof(AIPATH_PC, route_count) == 0x14);
+STATIC_ASSERT(offsetof(AIPATH_PC, search_checksum) == 0x78);
 STATIC_ASSERT(offsetof(AIPATH_PC, nodes) == 0x7c);
 STATIC_ASSERT(offsetof(AIPATH_PC, routes) == 0x88);
 
@@ -2216,7 +2244,7 @@ typedef struct gameobject_s {
     u8 unknown_00a4[0x4];
     f32 origin_scale;
     f32 collision_radius;
-    u8 unknown_00b0[0x4];
+    f32 field_b0;
     f32 scaled_height;
     NUMTX transform;
     u8 unknown_00f8[0x80];
@@ -2378,6 +2406,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, movement_lean_angle) == 0xe18);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_e58) == 0xe58);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_ea0_target) == 0xea0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_b0) == 0xb0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_ea0) == 0xea0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, surface_normal) == 0xf24);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1052) == 0x1052);
@@ -4677,6 +4706,34 @@ extern "C" {
     void __cdecl NuMtxTransposeR(NUMTX *out, NUMTX *source);
     void __cdecl NuMtxTranspose(NUMTX *out, NUMTX *source);
     extern NUCAMERA global_camera;
+    extern NUMTX clip_test_mtx;
+    extern f32 zx;
+    extern f32 zy;
+    extern i32 PCClipExtentsEnabled;
+    extern i32 PCClipUseSSE;
+    extern const u32 ClipOutcodeMask32[4];
+    extern const u32 ClipOutcodeMask16[4];
+    extern const u32 ClipOutcodeMask1[4];
+    extern const u32 ClipOutcodeMask2[4];
+    extern const u32 ClipOutcodeMask8[4];
+    extern const u32 ClipOutcodeMask4[4];
+    extern const f32 ClipOutcodeMinusOne[4];
+    extern f32 ClipFarLimits[4];
+    extern u32 clip_outcode_workspace_prefix[8];
+    extern NUVEC4BLOCK_PC ClipCornerBlocks[2];
+    extern NUVEC4BLOCK_PC ClipTransformedBlocks[2];
+    void __cdecl NuVecMtxTransformBlock(NUVEC *, NUVEC *, NUMTX *, i32);
+    void __cdecl PCVecMtxTransformClipBlocks(NUVEC4BLOCK_PC *, NUVEC4BLOCK_PC *, NUMTX *, i32, u32 *);
+    i32 __cdecl NuCameraClipTestExtents(NUVEC *, NUVEC *, NUMTX *, f32, i32);
+    void __cdecl NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast);
+    void __cdecl NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast);
+    extern f32 NuCameraProjectionFarClipBias;
+    extern f32 NuCameraVPortProjectionScaleX;
+    extern f32 NuCameraVPortProjectionScaleY;
+    extern f32 NuCameraScissorProjectionScaleX;
+    extern f32 NuCameraScissorProjectionScaleY;
+    extern NUMTX NuCameraScissorProjectionScratch;
+    void __cdecl PCClipScreenUnsupported(void);
     extern NUVEC cam_axes;
     void __cdecl NuCameraGet(NUCAMERA *camera);
     NUCAMERA *__cdecl NuCameraCreate(void);
@@ -4959,6 +5016,7 @@ extern "C" {
     typedef i32(__cdecl *AISYS_SPECIAL_NODE_CALLBACK_PC)(void *, NUSPECIALHANDLE *);
     extern AISYS_SPECIAL_NODE_CALLBACK_PC AISysSpecialNodeCallback;
     extern const f64 AIPathAngularScale;
+    extern f32 AIPathConnectionMargin;
     extern const f64 PCPathArcSineCoefficient3;
     extern const f64 PCPathArcSineCoefficient5;
     extern const f64 PCPathArcSineCoefficient7;
@@ -4967,6 +5025,8 @@ extern "C" {
     f32 __cdecl NuVecXZDist(NUVEC *, NUVEC *, NUVEC *);
     extern const f64 PCAtan2RadianScale;
     f32 __cdecl NuAtan2(f32, f32);
+    i32 __cdecl WithinConnection(void *, NUVEC *, AIPATH_PC *, AIPATHCNX_PC *, i32, AIPATHCNX_PC *, i32, i32,
+                                 AIPATHINFO_PC *, f32, i32);
     void __cdecl AIPathNodeUpdatePos(void *, AIPATH_PC *, AIPATHNODE_PC *);
     extern f32 BoltShootParameter;
     extern u16 BoltShootClassId0;
@@ -4974,6 +5034,9 @@ extern "C" {
     extern u16 BoltShootClassId2;
     extern i32 BoltShootIdScratch;
     extern NUVEC BoltShootPositionScratch;
+    BOLT_PC *__cdecl Bolt_Alloc(void);
+    extern const f64 BoltTargetRandomDenominator;
+    f32 __cdecl Bolt_ObjTargetPosYAdjust(GAMEOBJECT *);
     void __cdecl Bolt_Shoot(GAMEOBJECT *, i32, i32);
     extern void *CurrentTerrain;
     void *__cdecl TerrainGetCur(void);
@@ -4992,6 +5055,11 @@ extern "C" {
     extern CRITICAL_SECTION SoundVoiceCriticalSection;
     extern i32 SoundVoiceEnabledGate;
     extern i32 SoundVoiceVolumeOffset;
+    extern const char PCSoundOggExtensionText[5];
+    extern const char *PCSoundOggExtension;
+    extern i32 PCSoundVolumeMultiplier;
+    void __cdecl PCSoundPlayUnpositioned(i32, i32, i32, i32, f32, i32, f32, f32, i32);
+    void __cdecl PCSoundPlayUnpositionedWrapper(i32, i32, i32, i32, f32, i32, f32, f32);
     extern const GUID SoundVoice3DBufferIID;
     void __cdecl PCSoundAlreadyPlayingHook(void);
 #ifdef __cplusplus
@@ -5105,13 +5173,13 @@ extern "C" {
     NUANG __cdecl NuAngSub(NUANG a, NUANG b);
     void __cdecl NuAng2AltSol(NUANG *out_x, NUANG *out_y, NUANG *out_z, NUANG x, NUANG y, NUANG z);
 
+    extern i32 qseed;
+    i32 __cdecl qrand(void);
+    i32 __cdecl getqseed(void);
 #ifdef __cplusplus
 }
 
 // These retain C++ linkage and are not exposed as C declarations.
-extern i32 qseed;
-i32 __cdecl qrand(void);
-i32 __cdecl getqseed(void);
 extern i32 GAMERAND;
 extern i32 NetPaused;
 void __cdecl ClearPause(void);

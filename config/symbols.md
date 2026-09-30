@@ -41,10 +41,9 @@ inventory reporting, an entry without a compiled definition inside the original
 `.text` section is unimplemented code; it never counts as a match. The `ctype`
 column documents the recovered C/C++ type and does not replace the COFF metadata.
 
-C and C++ linkage are supported: `_NuRand` and `?qrand@@YAHXZ` are different
+C and C++ linkage are supported: `_NuRand` and `?SetSampleName@SoundVoiceManagerPC@@QAEXPBDH@Z` are different
 MSVC decoration styles. `make -j"$(nproc)" diff FUNC=NuRand` accepts a simple undecorated C
-name. For C++, use the exact symbol (`make -j"$(nproc)" diff 'FUNC=?qrand@@YAHXZ'`) or its
-original address (`make -j"$(nproc)" diff FUNC=0x0054fa60`).
+name. For C++, use the exact mapped linker symbol or its original address.
 
 [`src/saga.h`](../src/saga.h) owns compilable type definitions, calling conventions,
 and layout checks. The map's `ctype` is useful during inspection, including before
@@ -83,10 +82,10 @@ The initial mappings have the following evidence:
   `NuFloatRand` at `0x005b9ef0` calls `NuRand` and scales the result by `2^-31`.
 - **`qrand`, `0x0054fa60`:** the Android source is
   `src/legoapi/core/input/qrand.cpp`, with Android symbol `_Z5qrandv`. The PC
-  reconstruction emits `?qrand@@YAHXZ`. Its multiplier `0x24cd` alone is ambiguous;
+  reconstruction now emits `_qrand` from a C translation unit. Its multiplier `0x24cd` alone is ambiguous;
   `qseed` at `0x0080253c` starts at 12345, and the neighboring seed getter and reset
   routines corroborate the identity. The Android variable is named `qseed`; MSVC
-  emits `?qseed@@3HA`. The similar routine at `0x005b9e50` instead starts with
+  emits `_qseed` with C linkage. The similar routine at `0x005b9e50` instead starts with
   `0x1365` and corresponds to `NuWindRand`; it is not mapped as `qrand`.
 - **Angle helpers, `0x005be590`, `0x005be5b0`, `0x005be600`:** Android's
   `src/nu2api/numath/nutrig.c` has the same argument order and operations for
@@ -591,3 +590,34 @@ include the actual `PCByteCopy_candidate` dependency for overlap-safe copying.
 source markers remain until their callsite integration is reconstructed. Retained
 analysis proposals are advisory and have not been promoted solely from graph
 scores. Full comparison extents remain in the CSV even for partial routines.
+
+## Camera, path geometry, sample names and bolt pool follow-up
+
+Camera extents and block transforms are bound through their direct PC calls and
+complete return boundaries (0x00603f10/497, 0x00604110/456, 0x006042e0/1608).
+The historical SSE helper identity remains neutral; its implemented ABI uses
+48-byte SoA blocks and full packed outcode words. The one-byte hook at 0x005f7490
+is a genuine retail RET, reached by the screen-clipping trap. It aliases the
+already-mapped special-transform no-op at the same original address, so it
+adds no distinct code coverage. No generated inline
+helper is given a fictitious original binding.
+
+Projection helpers at 0x005ed300/282 and 0x005ed420/274 use four cdecl arguments,
+64-byte matrix owners and the shared trig table. Full x87 stack tracing resolves
+the argument-slot reuse and division direction; neither an invented mode-bit
+float reinterpretation nor inverted m32 formula is retained.
+
+WithinConnection at 0x0051b1f0/1532 takes eleven cdecl slots. The verified route
+is argument seven and previous connection is argument six. Its cache accesses
+AIPATH+0x78, while the connection extent, nodes, widths and height ranges use
+existing asserted PC fields. Node updates are real dependencies.
+
+Unpositioned playback entries at 0x00698040/118 and 0x006980c0/62 preserve all
+nine/eight caller slots; unused slots are not erased from the signature. The
+sample-name method at 0x00696f10/141 is thiscall `(const char *, i32)` with RET 8.
+It establishes the 0x400-byte path at sample+4 before the valid byte at +0x404.
+Bolt_Alloc at 0x0057fba0 uses its entire 123-byte span, including the three-byte
+interior LEA omitted by an earlier noncontiguous research body count. Jitter at
+0x005809a0/54 reads the asserted GAMEOBJECT float at +0xb0 and calls C qrand.
+The qrand/getqseed/qseed linker names changed to C without changing original
+addresses or extents; compare prior exact results by those addresses.
