@@ -47,12 +47,16 @@ def validate_completed_run(path):
 
 
 class IdentificationRun:
-    """Capture annotations once; raw input changes invalidate publication."""
+    """Capture annotations once; raw input changes invalidate publication.
+
+    Joint runs disable legacy inputs and register their verified pair originals
+    and exports separately. The default retains historical baseline inputs.
+    """
 
     def __init__(self, output_dir, symbols_path=None, *, pc_functions=None,
                  pc_references=None, android_graph=None, pc_features=None,
                  android_features=None, accepted_symbols=None, target=None,
-                 source_graph=None, reviewed_pairs=None):
+                 source_graph=None, reviewed_pairs=None, legacy_inputs=True):
         self.output_dir = Path(output_dir).resolve()
         self.output_dir.parent.mkdir(parents=True, exist_ok=True)
         self.lock = (self.output_dir.parent / ("." + self.output_dir.name + ".identify.lock")).open("a+")
@@ -85,12 +89,18 @@ class IdentificationRun:
             if self.accepted_symbols is None:
                 self.accepted_symbols = self.work_dir / "accepted-symbols.snapshot.json"
                 self.accepted_symbols.write_text("[]\n")
-            self.pc_functions = self._raw("pc_functions", pc_functions or lib.ROOT / "build/analysis/pc/functions.tsv")
-            self.pc_references = self._raw("pc_references", pc_references or lib.ROOT / "build/analysis/pc/references.tsv")
-            self.android_graph = self._raw("android_graph", android_graph or lib.ROOT / "build/analysis/android-callgraph.json")
-            self.pc_features = self._cache(pc_features, "pc-data-features.json")
-            self.android_features = self._cache(android_features, "android-data-features.json")
-            self._raw("retail", lib.ROOT / self.target["exe"])
+            self.pc_functions = self.pc_references = self.android_graph = None
+            self.pc_features = self.android_features = None
+            if legacy_inputs:
+                self.pc_functions = self._raw("pc_functions", pc_functions or lib.ROOT / "build/analysis/pc/functions.tsv")
+                self.pc_references = self._raw("pc_references", pc_references or lib.ROOT / "build/analysis/pc/references.tsv")
+                self.android_graph = self._raw("android_graph", android_graph or lib.ROOT / "build/analysis/android-callgraph.json")
+                self.pc_features = self._cache(pc_features, "pc-data-features.json")
+                self.android_features = self._cache(android_features, "android-data-features.json")
+                self._raw("retail", lib.ROOT / self.target["exe"])
+            else:
+                for name in ("pc-data-features.json", "android-data-features.json"):
+                    (self.work_dir / name).unlink(missing_ok=True)
             self._previous_state = None
             self._previous_state_path = None
             state = self.output_dir / "state.json"

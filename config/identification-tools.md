@@ -116,6 +116,26 @@ five-callback replay, data rows gained 72, changed 214 and removed 18; function
 evidence rows gained 114, changed 835 and removed 167. These are research deltas,
 not acceptance or accuracy metrics. Peak Python RSS was 695 MiB.
 
+Joint mode now needs only its pinned graph pair, originals, symbol map and
+optional reviewed journal. It does not capture legacy function/reference TSVs,
+the old Android call graph, accepted-symbol cache or feature caches. Explicit
+pair paths can relocate the original; the supported PC hash and image/code
+bounds remain mandatory, and inventory reads that same verified original.
+Legacy mode keeps its existing input defaults.
+
+Without the optional Android source-tree ELF reader, a valid ELF32 i386 original
+still permits call/data matching. Android literal observations are then disabled
+with an explicit reason in `literal_features`; missing reader code is never
+replaced with guessed labels. Malformed ELF headers/table bounds still fail.
+Fresh-repository tests exercise this path with a genuine minimal ELF, absent
+legacy files/default original, and invalid stale caches.
+
+Five further reviewed level-pointer cells add 20 mapped bytes, bringing accepted
+image coverage to 933,846 bytes (2.331%). The portable full replay used 12 reviewed
+data correspondences, retained every data candidate, and changed three function
+evidence rows without new tentative pairs. Its peak RSS was 697 MiB under the
+1 GiB guard. No unused legacy input roles occur in its completed manifest.
+
 `tools/repair_graph.py` makes the independent copy, pins the reviewed packet and
 executed script, checks a fresh repair report, and verifies the saved function
 extents in the new export before publishing a graph pair. Use a fresh output
@@ -515,7 +535,7 @@ tooling/map changes. Keep generated graphs, original bytes, H2 databases and
 downloaded binaries ignored. Only tooling, synthetic tests, reviewed proposals
 and documentation belong in tracked changes.
 
-The latest checkpoint `make -j2 check` passed 297 tests (three optional Ghidra fixture skips), source
+The latest checkpoint `make -j2 check` passed 304 tests (three optional Ghidra fixture skips), source
 formatting and Clang-tidy. The object check passed 1,638 function and 2,604 data
 definitions across 123 objects. Final compilation/matching checks use two Make
 workers to keep resource use bounded.

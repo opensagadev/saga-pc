@@ -7,8 +7,10 @@ from unittest.mock import patch
 
 from tools import identification as score
 from tools import identification_graph as graph
+from tools import identification_literals as literals
 import test_identification_run as run_tests
 from test_binary import BASE
+from test_identification_literals import elf_bytes
 
 
 class JointIntegrationTests(unittest.TestCase):
@@ -70,6 +72,61 @@ class JointIntegrationTests(unittest.TestCase):
         self.assertTrue((output / "evidence.jsonl").is_file())
         self.assertTrue((output / "inventory.json").is_file())
         self.assertEqual(score.validate_completed_run(output)["status"], "complete")
+
+    def test_owned_joint_run_needs_only_pair_annotations_and_originals(self):
+        self.elf.write_bytes(elf_bytes(b"portable fixture\0"))
+        pair = self.export_pair()
+        for path in (self.functions, self.references, self.android, self.accepted):
+            path.unlink()
+        target = {**self.target, "exe": "res/absent-default.exe"}
+        output = self.root / "portable-output"
+        output.mkdir()
+        # Retained baseline caches must neither influence joint scoring nor
+        # survive as apparently current joint products.
+        for name in ("pc-data-features.json", "android-data-features.json"):
+            (output / name).write_text("invalid unrelated baseline cache")
+        with patch.object(score, "ROOT", self.root), \
+                patch.object(literals, "ELF_READER", self.root / "absent-reader.py"), \
+                patch.object(score.lib, "project", return_value={"target": target}):
+            summary = score.generate(analysis_dir=output, symbols=self.symbols,
+                                     reviewed_pairs=self.decisions, joint_graph=pair)
+        self.assertEqual(summary["mode"], "joint-graph")
+        android_literals = summary["literal_features"]["sides"]["android"]
+        self.assertEqual(android_literals["status"], "unavailable")
+        self.assertEqual(android_literals["reason_code"], "missing-optional-elf-reader")
+        self.assertEqual(android_literals["original_sha256"], score.lib.sha256(self.elf))
+        manifest = score.validate_completed_run(output)
+        self.assertNotIn("android_literal_reader", manifest["inputs"])
+        self.assertEqual(manifest["inputs"]["joint_pc_binary"]["path"], str(self.pc))
+        self.assertEqual(manifest["inputs"]["joint_pc_binary"]["sha256"], target["sha256"])
+        for role in ("pc_functions", "pc_references", "android_graph", "accepted_symbols",
+                     "pc_features", "android_features", "retail"):
+            self.assertNotIn(role, manifest["inputs"])
+        self.assertEqual(json.loads((output / "accepted-symbols.snapshot.json").read_text()), [])
+        for name in ("pc-data-features.json", "android-data-features.json"):
+            self.assertFalse((output / name).exists())
+        self.assertTrue((output / "inventory.json").is_file())
+        self.assertTrue((output / "hypotheses.csv").is_file())
+
+    def test_pair_cannot_replace_the_configured_supported_original(self):
+        pair = self.export_pair()
+        target = {**self.target, "sha256": "0" * 64}
+        output = self.root / "unsupported-output"
+        with score.IdentificationRun(output, self.symbols, target=target,
+                                     legacy_inputs=False) as run:
+            with self.assertRaisesRegex(ValueError, "configured target"):
+                score.generate(run=run, joint_graph=pair)
+        self.assertFalse(output.exists())
+
+    def test_pair_cannot_change_configured_image_boundaries(self):
+        pair = self.export_pair()
+        target = {**self.target, "text_size": self.target["text_size"] + 1}
+        output = self.root / "invalid-boundaries"
+        with score.IdentificationRun(output, self.symbols, target=target,
+                                     legacy_inputs=False) as run:
+            with self.assertRaisesRegex(ValueError, "configured boundaries"):
+                score.generate(run=run, joint_graph=pair)
+        self.assertFalse(output.exists())
 
     def test_changed_graph_export_never_publishes_joint_results(self):
         pair = self.export_pair()

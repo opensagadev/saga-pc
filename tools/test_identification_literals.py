@@ -119,6 +119,63 @@ class LiteralFeaturesTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "valid"):
             literals.literal_features(self.pair, self.originals)
 
+    def test_valid_elf_missing_optional_reader_disables_only_android_literals(self):
+        missing = self.root / "absent-reference-checkout/elf32.py"
+        before = {side: (lib.sha256(self.originals[side]),
+                         list(value.edges), dict(value.nodes))
+                  for side, value in self.pair.items()}
+        with patch.object(literals, "ELF_READER", missing), \
+                patch.object(literals.importlib.util, "spec_from_file_location") as load:
+            result = literals.literal_features(self.pair, self.originals)
+            load.assert_not_called()
+        self.assertEqual(result["pc"], {BASE: {"s:distinctive text"}})
+        self.assertEqual(result["android"], {})
+        metadata = result["metadata"]["sides"]["android"]
+        self.assertEqual(metadata["status"], "unavailable")
+        self.assertEqual(metadata["features"], "disabled")
+        self.assertEqual(metadata["reason_code"], "missing-optional-elf-reader")
+        self.assertEqual(metadata["functions_with_literals"], 0)
+        self.assertEqual(metadata["original_sha256"], before["android"][0])
+        self.assertNotIn("reader_sha256", metadata)
+        for side, value in self.pair.items():
+            self.assertEqual(before[side], (lib.sha256(self.originals[side]),
+                                           list(value.edges), dict(value.nodes)))
+
+    def test_minimal_valid_elf_header_missing_reader_is_explicitly_unavailable(self):
+        blob = bytearray(52)
+        blob[:16] = b"\x7fELF\x01\x01\x01" + b"\0" * 9
+        struct.pack_into("<HHIIIIIHHHHHH", blob, 16, 3, 3, 1, 0, 0, 0, 0,
+                         52, 0, 0, 0, 0, 0)
+        self.originals["android"].write_bytes(blob)
+        self.refresh_hash("android")
+        with patch.object(literals, "ELF_READER", self.root / "missing.py"):
+            result = literals.literal_features(self.pair, self.originals)
+        self.assertEqual(result["metadata"]["sides"]["android"]["reason_code"],
+                         "missing-optional-elf-reader")
+
+    def test_malformed_elf_cannot_be_downgraded_by_missing_reader(self):
+        valid = bytes(elf_bytes(self.data))
+        variants = [b"\x7fELF\x01\x01"]
+        for offset, fmt, value in ((4, "B", 2), (5, "B", 2), (6, "B", 0),
+                                   (16, "H", 0), (18, "H", 40), (20, "I", 0),
+                                   (40, "H", 51), (28, "I", 0x10000),
+                                   (42, "H", 31), (44, "H", 1),
+                                   (32, "I", 0x10000), (46, "H", 39),
+                                   (50, "H", 4)):
+            blob = bytearray(valid)
+            struct.pack_into("<" + fmt, blob, offset, value)
+            # A program table size/offset is relevant only with a table count.
+            if offset in (28, 42):
+                struct.pack_into("<H", blob, 44, 1)
+            variants.append(blob)
+        with patch.object(literals, "ELF_READER", self.root / "missing.py"):
+            for blob in variants:
+                with self.subTest(header=bytes(blob[:52])):
+                    self.originals["android"].write_bytes(blob)
+                    self.refresh_hash("android")
+                    with self.assertRaisesRegex(ValueError, "valid"):
+                        literals.literal_features(self.pair, self.originals)
+
     def test_nobits_zero_filled_section_never_supplies_literal(self):
         blob = bytearray(self.originals["android"].read_bytes())
         struct.pack_into("<I", blob, 0x550 + 4, 8)

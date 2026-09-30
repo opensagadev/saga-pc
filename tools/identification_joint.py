@@ -53,12 +53,16 @@ def _register_pair(run, path):
         if supplied:
             original = path.parent / supplied
         elif side == "pc":
-            original = run.raw_inputs["retail"]
+            original = run.raw_inputs.get("retail", lib.ROOT / run.target["exe"])
         else:
             original = lib.ROOT.parent / "saga/res/libTTapp.so"
         run.add_raw_input("joint_" + side + "_binary", original)
         if lib.sha256(original) != manifest["binary_sha256"]:
             raise ValueError(f"{side} graph does not describe the supplied original")
+        if side == "pc":
+            # Pair paths may relocate the supported original, not change its
+            # identity or configured image boundaries.
+            lib.retail({**run.target, "exe": str(original.resolve())})
     for filename in ("identification_graph.py", "identification_joint.py", "identification.py", "identification_review.py", "identification_state.py"):
         run.add_raw_input("tool_" + filename, Path(__file__).with_name(filename))
     pair = graph.load_graph_pair(path)
@@ -544,7 +548,7 @@ def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdou
         _json(run.work_dir / "tables.json", tables.table_candidates(pair, seeds, limit=100))
         _json(run.work_dir / "metadata.json", tables.metadata_candidates(pair, limit=100))
         _json(run.work_dir / "gaps.json", {side: tables.gap_inventory(pair[side], limit=200) for side in ("pc", "android")})
-    pe = PE(run.raw_inputs["retail"])
+    pe = PE(run.raw_inputs["joint_pc_binary"])
     # A map's known size establishes an accepted inventory extent. Raw Ghidra
     # lengths and tentative candidates deliberately supply no reviewed coverage.
     entities = []

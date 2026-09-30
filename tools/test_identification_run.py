@@ -287,10 +287,17 @@ class IdentificationRunTests(unittest.TestCase):
                                      android_graph=self.android, target=self.target) as run:
             self.assertEqual(json.loads(run.accepted_symbols.read_text()), [])
             self.assertNotIn("accepted_symbols", run.inputs)
+
             summary = score.generate(run=run)
         self.assertEqual(summary["unique_name_seeds"], 2)
         self.assertEqual(summary["inferred_pairs"], 1)
         self.assertEqual(json.loads((self.root / "output/accepted-symbols.snapshot.json").read_text()), [])
+
+    def test_baseline_context_still_requires_legacy_exports(self):
+        self.functions.unlink()
+        with self.assertRaises(FileNotFoundError):
+            self.run_context()
+        self.assertFalse((self.root / "output").exists())
 
     def test_live_map_edit_during_scoring_does_not_enter_holdout(self):
         original = score.score_round

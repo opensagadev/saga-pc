@@ -810,3 +810,17 @@ no pointee layout. Android counterparts at `0x006a1460`, `0x006a145c`, and
 `0x006a13f4` remain in their original order. The ignored
 `continuation/set-level-sfx-review` packet preserves the writer, reader and
 boundary evidence. These rows add mapping coverage, with no matching credit.
+
+Five further four-byte level-pointer cells were independently reviewed in the
+same writer family: `CLOUDCITYESCAPEA_LDATA` at `0x0087b238`,
+`JABBASPALACEA_LDATA` at `0x0087b2a0`, `JABBASPALACED_LDATA` at `0x0087b2a8`,
+`JABBASPALACEE_LDATA` at `0x0087b2ac`, and `ENDORBATTLEA_LDATA` at `0x0087b2b4`.
+Exact named `Level_FindByName` calls store their returned pointers, and separate
+`SetLevelSfxBits` branches compare those cells while selecting the expected
+steam/control-desk, disco, minecart or lantern sounds. Parent reinspection
+confirmed each original literal, absolute return store, comparison and zero
+initializer. Android counterparts are `0x006a1468`, `0x006a13f8`, `0x006a13f0`,
+`0x006a13ec` and `0x006a13e4`. The ignored `continuation/level-pointer-frontier`
+packet records these contracts. `CLOUDCITYTRAPB_LDATA` at `0x0087b248` remains a
+candidate because its separate particle-reader identity needs review. No
+pointed-to aggregate layout or additional Android sound branch is transferred.

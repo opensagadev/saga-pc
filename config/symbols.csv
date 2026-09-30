@@ -4102,6 +4102,7 @@ address    , symbol                                                         , si
 0x0087b1f4 , _DEATHSTARBATTLED_LDATA                                        , 4     , LEVELDATA_PC *
 0x0087b1fc , _HOTHBATTLEA_LDATA                                             , 4     , LEVELDATA_PC *
 0x87b230   , _ASTEROIDCHASED_LDATA                                          , 4     , LEVELDATA_PC *
+0x0087b238 , _CLOUDCITYESCAPEA_LDATA                                        , 4     , LEVELDATA_PC *
 0x0087b240 , _CLOUDCITYESCAPEC_LDATA                                        , 4     , LEVELDATA_PC *
 0x0087b244 , _CLOUDCITYTRAPA_LDATA                                          , 4     , LEVELDATA_PC *
 0x0087b254 , _SPEEDERCHASEA_LDATA                                           , 4     , LEVELDATA_PC *
@@ -4109,7 +4110,11 @@ address    , symbol                                                         , si
 0x0087b278 , _DEATHSTAR2BATTLEE_LDATA                                       , 4     , LEVELDATA_PC *
 0x0087b27c , _DEATHSTAR2BATTLEF_LDATA                                       , 4     , LEVELDATA_PC *
 0x0087b280 , _DEATHSTAR2BATTLEG_LDATA                                       , 4     , LEVELDATA_PC *
+0x0087b2a0 , _JABBASPALACEA_LDATA                                           , 4     , LEVELDATA_PC *
 0x0087b2a4 , _JABBASPALACEB_LDATA                                           , 4     , LEVELDATA_PC *
+0x0087b2a8 , _JABBASPALACED_LDATA                                           , 4     , LEVELDATA_PC *
+0x0087b2ac , _JABBASPALACEE_LDATA                                           , 4     , LEVELDATA_PC *
+0x0087b2b4 , _ENDORBATTLEA_LDATA                                            , 4     , LEVELDATA_PC *
 0x0087b2c8 , _UpdateSockets_LDATA                                           , 4     , LEVELDATA_PC *
 0x0087b2ec , _LevelProgressData                                             , 4     , LEVEL_PROGRESS *
 0x0087b2f4 , _LevelChangesInArea                                            , 4     , i32

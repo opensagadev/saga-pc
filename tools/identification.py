@@ -707,9 +707,10 @@ def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.
         output = Path(analysis_dir or OUT)
         run = IdentificationRun(output, symbols, source_graph=source_graph,
                                 reviewed_pairs=reviewed_pairs,
-                                accepted_symbols=ROOT / "build/analysis/data/accepted-symbols.json",
-                                pc_features=output / "pc-data-features.json" if (output / "pc-data-features.json").exists() else PC_FEATURES,
-                                android_features=output / "android-data-features.json" if (output / "android-data-features.json").exists() else ANDROID_FEATURES)
+                                legacy_inputs=not bool(joint_graph),
+                                accepted_symbols=None if joint_graph else ROOT / "build/analysis/data/accepted-symbols.json",
+                                pc_features=None if joint_graph else (output / "pc-data-features.json" if (output / "pc-data-features.json").exists() else PC_FEATURES),
+                                android_features=None if joint_graph else (output / "android-data-features.json" if (output / "android-data-features.json").exists() else ANDROID_FEATURES))
     try:
         for tool_name in ("identification_limits.py", "identification_state.py"):
             run.add_raw_input("tool_" + tool_name, Path(__file__).with_name(tool_name))

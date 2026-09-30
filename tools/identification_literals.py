@@ -41,10 +41,27 @@ def _reader(side, path):
         return read, {"status": "available", "reader": "tools.binary.PE"}
     if not blob.startswith(b"\x7fELF"):
         return None, {"status": "unavailable", "reason": "original is not an ELF; no verified data mapping"}
-    if len(blob) < 52 or blob[4:6] != b"\x01\x01" or struct.unpack_from("<H", blob, 18)[0] != 3:
+    if len(blob) < 52 or blob[4:7] != b"\x01\x01\x01":
         raise ValueError("Literal extraction requires a valid little-endian i386 ELF32")
+    (kind, machine, version, _, program_offset, section_offset, _, header_size,
+     program_size, program_count, section_size, section_count,
+     string_index) = struct.unpack_from("<HHIIIIIHHHHHH", blob, 16)
+    # Header checks establish the optional-reader fallback's platform identity,
+    # not a section mapping. Do not decode literals without the external reader.
+    if (kind not in (2, 3) or machine != 3 or version != 1 or header_size != 52 or
+            (program_count and (program_size != 32 or program_offset < 52 or
+                               program_offset + program_count * program_size > len(blob))) or
+            (section_count and (section_size != 40 or section_offset < 52 or
+                               section_offset + section_count * section_size > len(blob))) or
+            (not section_count and (section_offset or string_index)) or
+            (section_count and string_index >= section_count)):
+        raise ValueError("Literal extraction requires a valid little-endian i386 ELF32 header and table bounds")
     if not ELF_READER.is_file():
-        raise ValueError(f"Existing Android ELF reader is unavailable: {ELF_READER}")
+        return None, {"status": "unavailable", "features": "disabled",
+                      "reason_code": "missing-optional-elf-reader",
+                      "reason": f"Optional Android ELF reader is unavailable: {ELF_READER}; Android literals disabled",
+                      "header_verified": "ELF32 little-endian i386; header and table bounds only",
+                      "functions_with_literals": 0}
     spec = importlib.util.spec_from_file_location("saga_identification_elf32", ELF_READER)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
