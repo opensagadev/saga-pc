@@ -621,3 +621,118 @@ void __cdecl NuMtxToQuat(NUMTX *m, NUQUAT *out) {
         out->w = q[3];
     }
 }
+
+#define NU_SIN_PC(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
+#define NU_COS_PC(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
+
+void __cdecl NuMtxSetRotateXYZ(NUMTX *m, NUANGVEC *a) {
+    f32 cosx = NU_COS_PC(a->x);
+    f32 sinx = NU_SIN_PC(a->x);
+    f32 cosy = NU_COS_PC(a->y);
+    f32 siny = NU_SIN_PC(a->y);
+    f32 cosz = NU_COS_PC(a->z);
+    f32 sinz = NU_SIN_PC(a->z);
+
+    m->m00 = cosy * cosz;
+    m->m01 = cosy * sinz;
+    m->m02 = -siny;
+    m->m03 = 0.0f;
+    m->m10 = sinx * siny * cosz - cosx * sinz;
+    m->m11 = sinx * siny * sinz + cosx * cosz;
+    m->m12 = sinx * cosy;
+    m->m13 = 0.0f;
+    m->m20 = cosx * siny * cosz + sinx * sinz;
+    m->m21 = cosx * siny * sinz - sinx * cosz;
+    m->m22 = cosx * cosy;
+    m->m23 = 0.0f;
+    m->m30 = 0.0f;
+    m->m31 = 0.0f;
+    m->m32 = 0.0f;
+    m->m33 = 1.0f;
+}
+
+void __cdecl NuMtxSetRotateXYZVU0(NUMTX *matrix, NUANGVEC *angles) {
+    NuMtxSetRotateXYZ(matrix, angles);
+}
+
+void __cdecl NuMtxPreScaleVU0(NUMTX *matrix, NUVEC *scale) {
+    NuMtxPreScale(matrix, scale);
+}
+
+void __cdecl NuMtxMul(NUMTX *m, NUMTX *m0, NUMTX *m1) {
+    NUMTX gm;
+
+    if ((m == m0) || (m == m1)) {
+        gm.m00 = m0->m00 * m1->m00 + m0->m01 * m1->m10 + m0->m02 * m1->m20;
+        gm.m01 = m0->m00 * m1->m01 + m0->m01 * m1->m11 + m0->m02 * m1->m21;
+        gm.m02 = m0->m00 * m1->m02 + m0->m01 * m1->m12 + m0->m02 * m1->m22;
+        gm.m03 = 0.0f;
+        gm.m10 = m0->m10 * m1->m00 + m0->m11 * m1->m10 + m0->m12 * m1->m20;
+        gm.m11 = m0->m10 * m1->m01 + m0->m11 * m1->m11 + m0->m12 * m1->m21;
+        gm.m12 = m0->m10 * m1->m02 + m0->m11 * m1->m12 + m0->m12 * m1->m22;
+        gm.m13 = 0.0f;
+        gm.m20 = m0->m20 * m1->m00 + m0->m21 * m1->m10 + m0->m22 * m1->m20;
+        gm.m21 = m0->m20 * m1->m01 + m0->m21 * m1->m11 + m0->m22 * m1->m21;
+        gm.m22 = m0->m20 * m1->m02 + m0->m21 * m1->m12 + m0->m22 * m1->m22;
+        gm.m23 = 0.0f;
+        gm.m30 = m0->m30 * m1->m00 + m0->m31 * m1->m10 + m0->m32 * m1->m20 + m1->m30;
+        gm.m31 = m0->m30 * m1->m01 + m0->m31 * m1->m11 + m0->m32 * m1->m21 + m1->m31;
+        gm.m32 = m0->m30 * m1->m02 + m0->m31 * m1->m12 + m0->m32 * m1->m22 + m1->m32;
+        gm.m33 = 1.0f;
+        *m = gm;
+    } else {
+        m->m00 = m0->m00 * m1->m00 + m0->m01 * m1->m10 + m0->m02 * m1->m20;
+        m->m01 = m0->m00 * m1->m01 + m0->m01 * m1->m11 + m0->m02 * m1->m21;
+        m->m02 = m0->m00 * m1->m02 + m0->m01 * m1->m12 + m0->m02 * m1->m22;
+        m->m03 = 0.0f;
+        m->m10 = m0->m10 * m1->m00 + m0->m11 * m1->m10 + m0->m12 * m1->m20;
+        m->m11 = m0->m10 * m1->m01 + m0->m11 * m1->m11 + m0->m12 * m1->m21;
+        m->m12 = m0->m10 * m1->m02 + m0->m11 * m1->m12 + m0->m12 * m1->m22;
+        m->m13 = 0.0f;
+        m->m20 = m0->m20 * m1->m00 + m0->m21 * m1->m10 + m0->m22 * m1->m20;
+        m->m21 = m0->m20 * m1->m01 + m0->m21 * m1->m11 + m0->m22 * m1->m21;
+        m->m22 = m0->m20 * m1->m02 + m0->m21 * m1->m12 + m0->m22 * m1->m22;
+        m->m23 = 0.0f;
+        m->m30 = m0->m30 * m1->m00 + m0->m31 * m1->m10 + m0->m32 * m1->m20 + m1->m30;
+        m->m31 = m0->m30 * m1->m01 + m0->m31 * m1->m11 + m0->m32 * m1->m21 + m1->m31;
+        m->m32 = m0->m30 * m1->m02 + m0->m31 * m1->m12 + m0->m32 * m1->m22 + m1->m32;
+        m->m33 = 1.0f;
+    }
+}
+
+void __cdecl NuMtxMulR(NUMTX *m, NUMTX *m0, NUMTX *m1) {
+    NUMTX gm;
+
+    if ((m == m0) || (m == m1)) {
+        gm.m00 = m0->m00 * m1->m00 + m0->m01 * m1->m10 + m0->m02 * m1->m20;
+        gm.m01 = m0->m00 * m1->m01 + m0->m01 * m1->m11 + m0->m02 * m1->m21;
+        gm.m02 = m0->m00 * m1->m02 + m0->m01 * m1->m12 + m0->m02 * m1->m22;
+        gm.m03 = 0.0;
+        gm.m10 = m0->m10 * m1->m00 + m0->m11 * m1->m10 + m0->m12 * m1->m20;
+        gm.m11 = m0->m10 * m1->m01 + m0->m11 * m1->m11 + m0->m12 * m1->m21;
+        gm.m12 = m0->m10 * m1->m02 + m0->m11 * m1->m12 + m0->m12 * m1->m22;
+        gm.m13 = 0.0;
+        gm.m20 = m0->m20 * m1->m00 + m0->m21 * m1->m10 + m0->m22 * m1->m20;
+        gm.m21 = m0->m20 * m1->m01 + m0->m21 * m1->m11 + m0->m22 * m1->m21;
+        gm.m22 = m0->m20 * m1->m02 + m0->m21 * m1->m12 + m0->m22 * m1->m22;
+        gm.m23 = 0.0;
+        gm.m30 = gm.m31 = gm.m32 = 0.0f;
+        gm.m33 = 1.0;
+        *m = gm;
+    } else {
+        m->m00 = m0->m00 * m1->m00 + m0->m01 * m1->m10 + m0->m02 * m1->m20;
+        m->m01 = m0->m00 * m1->m01 + m0->m01 * m1->m11 + m0->m02 * m1->m21;
+        m->m02 = m0->m00 * m1->m02 + m0->m01 * m1->m12 + m0->m02 * m1->m22;
+        m->m03 = 0.0;
+        m->m10 = m0->m10 * m1->m00 + m0->m11 * m1->m10 + m0->m12 * m1->m20;
+        m->m11 = m0->m10 * m1->m01 + m0->m11 * m1->m11 + m0->m12 * m1->m21;
+        m->m12 = m0->m10 * m1->m02 + m0->m11 * m1->m12 + m0->m12 * m1->m22;
+        m->m13 = 0.0;
+        m->m20 = m0->m20 * m1->m00 + m0->m21 * m1->m10 + m0->m22 * m1->m20;
+        m->m21 = m0->m20 * m1->m01 + m0->m21 * m1->m11 + m0->m22 * m1->m21;
+        m->m22 = m0->m20 * m1->m02 + m0->m21 * m1->m12 + m0->m22 * m1->m22;
+        m->m23 = 0.0;
+        m->m30 = m->m31 = m->m32 = 0.0f;
+        m->m33 = 1.0;
+    }
+}

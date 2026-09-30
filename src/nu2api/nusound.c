@@ -1,5 +1,244 @@
 #include "saga.h"
 
+extern NUVEC nusound_special_positions[5];
+extern f32 nusound_fade_start;
+extern f32 nusound_fade_end;
+extern u32 nusound_seed;
+extern NUMTX *NuSound3Listener;
+
+NUMTX *__cdecl NuSound3GetListener(void) {
+    return NuSound3Listener != NULL ? NuSound3Listener : &global_camera.mtx;
+}
+
+void __cdecl PlaySfx(char *name, NUVEC *position) {
+    i32 sfx_id = GetSfxId(name);
+    if (sfx_id != -1) {
+        PlaySfxByIdEx(sfx_id, position, 1.0f, 1.0f);
+    }
+}
+
+void __cdecl PlaySfxAndSetPitch(char *name, NUVEC *position, f32 pitch) {
+    i32 sfx_id = GetSfxId(name);
+    if (sfx_id != -1) {
+        PlaySfxByIdEx(sfx_id, position, 1.0f, pitch);
+    }
+}
+
+void __cdecl PlaySfxAndSetVolume(char *name, NUVEC *position, f32 volume) {
+    i32 sfx_id = GetSfxId(name);
+    if (sfx_id != -1) {
+        PlaySfxByIdEx(sfx_id, position, volume, 1.0f);
+    }
+}
+
+void __cdecl PlaySfxById(i32 sfx_id, NUVEC *position) {
+    PlaySfxByIdEx(sfx_id, position, 1.0f, 1.0f);
+}
+
+void __cdecl PlaySfxByIdAndSetVolume(i32 sfx_id, NUVEC *position, f32 volume) {
+    PlaySfxByIdEx(sfx_id, position, volume, 1.0f);
+}
+
+void __cdecl AddLevSfx(WORLDINFO *world, NUVEC *position, char *name, i32 sfx_id) {
+    i32 index;
+
+    if (sfx_id == -1 && name != NULL) {
+        sfx_id = GetSfxId(name);
+    }
+    if (sfx_id == -1) {
+        return;
+    }
+
+    index = 0;
+    while (index < world->level_sfx_count && world->level_sfx[index].id != sfx_id) {
+        index++;
+    }
+    if (index < world->level_sfx_count) {
+        if (world->level_sfx[index].references != 0xff) {
+            world->level_sfx[index].references++;
+        }
+        return;
+    }
+    if (index >= 64) {
+        return;
+    }
+
+    if (position != NULL) {
+        world->level_sfx[index].position = *position;
+    } else {
+        world->level_sfx[index].position.x = 0.0f;
+        world->level_sfx[index].position.y = 0.0f;
+        world->level_sfx[index].position.z = 0.0f;
+    }
+    world->level_sfx[index].id = (i16)sfx_id;
+    world->level_sfx[index].references = 1;
+    world->level_sfx_count = index + 1;
+}
+
+void __cdecl UpdateLevelSfx(WORLDINFO *world, i32 paused) {
+    SfxBitsRestore(&CurrentSFXTAB);
+
+    if (paused != 0) {
+        NuSound3SetReverb(0);
+        return;
+    }
+    if (GameAudio->check_reverb_fn != NULL && GameAudio->check_reverb_fn() != 0) {
+        NuSound3SetReverb(1);
+    } else {
+        NuSound3SetReverb(0);
+    }
+
+    if (CUTSTOPGAME == 0 && world->current_level->sfx_ambient != -1) {
+        GameAudio_PlaySfxById(world->current_level->sfx_ambient, NULL, 0, 0);
+    }
+}
+
+void __cdecl GameAudio_PlaySfxById(i32 sfx_id, NUVEC *position, i32 flags, i32 volume) {
+    (void)volume;
+    if (flags == 0) {
+        PlaySfxById(sfx_id, position);
+        return;
+    }
+    if ((flags & ~2) == 1) {
+        nusound_special_positions[1] = *position;
+        PlaySfxById(sfx_id, &nusound_special_positions[1]);
+    }
+    flags -= 2;
+    if ((u32)flags <= 1) {
+        nusound_special_positions[2] = *position;
+        PlaySfxById(sfx_id, &nusound_special_positions[2]);
+    }
+}
+
+void __cdecl GameAudio_PlaySfx(i32 sfx, NUVEC *position, i32 flags, i32 volume) {
+    if ((u32)sfx < 0x54) {
+        GameAudio_PlaySfxById(GameAudio->sfx_ids[sfx], position, flags, volume);
+    }
+}
+
+void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
+    SFX_RECORD_PC *record;
+    const NUMTX *listener;
+    i8 priority;
+    i32 sample_id;
+    i32 voice_volume;
+    i32 volume_left;
+    i32 volume_right;
+    i32 loop;
+    f32 pan;
+    f32 falloff_near;
+    f32 falloff_far;
+    f32 saved_fade_start;
+    f32 saved_fade_end;
+    f32 volume_scale;
+    i32 changed_fade;
+
+    if (sfx_id == -1) {
+        return;
+    }
+
+    record = &SfxInfo[sfx_id];
+    if ((record->sample_id_flags & 0x000c0000u) != 0) {
+        return;
+    }
+
+    priority = record->priority;
+    if (record->group != -1) {
+        STUBBED_NAMED("resolve grouped SFX sample and group voice limit");
+        return;
+    }
+
+    sample_id = (i32)(record->sample_id_flags & 0x7fffu);
+    loop = (record->sample_id_flags & 0x8000u) != 0;
+    pan = record->pan;
+    falloff_near = record->falloff_near;
+    falloff_far = record->falloff_far;
+    saved_fade_start = 0.0f;
+    saved_fade_end = 0.0f;
+    changed_fade = 0;
+
+    if (record->falloff_near != 0.0f || record->falloff_far != 0.0f) {
+        saved_fade_start = nusound_fade_start;
+        saved_fade_end = nusound_fade_end;
+        nusound_fade_start = falloff_near * saved_fade_start * 0.5f;
+        nusound_fade_end = falloff_far * saved_fade_end / 15.0f;
+        changed_fade = 1;
+    } else {
+        falloff_near = 2.0f;
+        falloff_far = 15.0f;
+    }
+
+    listener = NuSound3GetListener();
+    if (listener == NULL) {
+        goto restore_fade;
+    }
+    if (position != NULL) {
+        f32 dx = position->x - listener->m30;
+        f32 dy = position->y - listener->m31;
+        f32 dz = position->z - listener->m32;
+        f32 max_distance = nusound_fade_end;
+        if (dx * dx + dy * dy + dz * dz > max_distance * max_distance) {
+            goto restore_fade;
+        }
+    }
+
+    if (volume != 1.0f) {
+        if (volume > 1.0f) {
+            volume = 1.0f;
+        }
+        volume_scale = (f32)record->volume * volume;
+    } else {
+        volume_scale = (f32)record->volume;
+    }
+    if ((record->sample_id_flags & 0x00400000u) == 0) {
+        volume_scale *= AUDIOFADELEVEL;
+        volume_scale *= numusicGetDuckVolume();
+    }
+    voice_volume = (i32)(volume_scale * MASTERVOLUME);
+
+    if (record->pitch_rnd != 0.0f) {
+        f32 pitch_variation = NuRandFloatSeeded(&nusound_seed) * record->pitch_rnd;
+        if ((NuRandIntSeeded(&nusound_seed) & 1u) == 0) {
+            pitch_variation *= 0.5f;
+            pitch *= 1.0f - pitch_variation;
+        } else {
+            pitch *= 1.0f + pitch_variation;
+        }
+    }
+    if (record->volume_rnd != 0.0f) {
+        voice_volume = (i32)((f32)voice_volume * (1.0f + NuRandFloatSeeded(&nusound_seed) * record->volume_rnd));
+    }
+
+    if ((u32)sample_id <= 1599u) {
+        if (position != NULL) {
+            STUBBED_NAMED("dispatch positioned SFX to loop, standard, or priority backend");
+        } else {
+            volume_left = pan < 0.0f ? voice_volume : (i32)((1.0f - pan) * voice_volume);
+            volume_right = pan > 0.0f ? voice_volume : (i32)((1.0f + pan) * voice_volume);
+            if (loop != 0) {
+                NUVEC listener_position;
+                NUVEC forward;
+                listener_position.x = listener->m30;
+                listener_position.y = listener->m31;
+                listener_position.z = listener->m32;
+                forward.x = listener->m20;
+                forward.y = listener->m21;
+                forward.z = listener->m22;
+                NuVecAdd(&listener_position, &listener_position, &forward);
+                STUBBED_NAMED("dispatch listener-relative looped SFX to 3D backend");
+            } else {
+                STUBBED_NAMED("dispatch unpositioned SFX to standard or priority backend");
+            }
+        }
+    }
+
+restore_fade:
+    if (changed_fade != 0) {
+        nusound_fade_start = saved_fade_start;
+        nusound_fade_end = saved_fade_end;
+    }
+}
+
 void __cdecl SfxSetFileTable(SFX_FILE_INFO_PC *records) {
     i32 index = 0;
 
@@ -153,11 +392,11 @@ i32 __cdecl AmbientFromQuiet(i32 quiet_index) {
     return -1;
 }
 
-void __cdecl SfxBitsStore(void *sound_table) {
+void __cdecl SfxBitsStore(SoundTable *sound_table) {
     PCByteCopy_candidate(sound_table, SfxBits, 0xc8);
 }
 
-void __cdecl SfxBitsRestore(void *sound_table) {
+void __cdecl SfxBitsRestore(SoundTable *sound_table) {
     PCByteCopy_candidate(SfxBits, sound_table, 0xc8);
 }
 
@@ -180,6 +419,13 @@ void __cdecl SoundStopMusic(void) {
         Music.restore_requested = 0;
         Music.resume_track = -1;
     }
+}
+
+void __cdecl SoundKillAll(void) {
+    SoundStopMusic();
+    NuSound3FlushLoops();
+    STUBBED_NAMED("stop all active sound voices through the NuSound queue manager");
+    STUBBED_NAMED("run the NuSound update after killing all audio");
 }
 
 void __cdecl ResetLevSfx(WORLDINFO *world) {

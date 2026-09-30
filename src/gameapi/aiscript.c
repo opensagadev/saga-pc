@@ -2,6 +2,8 @@
 
 #include <string.h>
 
+extern const char AIScriptFalse[6];
+
 extern VARIPTR *aiscript_load_buffer;
 extern VARIPTR *aiscript_load_end_buffer;
 extern AISCRIPT_PC *aiscript_load_script;
@@ -227,4 +229,157 @@ void __cdecl xRefScript(NUFPAR_PC *parser) {
     } else {
         *aiscript_load_buffer = saved_buffer;
     }
+}
+
+#define AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, mask, initially_set, set_on_false)                  \
+    do {                                                                                                               \
+        u32 *flags;                                                                                                    \
+        i32 i;                                                                                                         \
+        if ((packet) != NULL && (packet)->owner != NULL && (first_time) != 0) {                                        \
+            flags = ((mask) == 0x2000u) ? &(packet)->owner->flags_1f8 : &(packet)->owner->flags_1fc;                   \
+            if (initially_set) {                                                                                       \
+                *flags |= (mask);                                                                                      \
+            } else {                                                                                                   \
+                *flags &= ~(mask);                                                                                     \
+            }                                                                                                          \
+            for (i = 0; i < (count); i++) {                                                                            \
+                if (NuStrICmp((params)[i], AIScriptFalse) == 0) {                                                      \
+                    if (set_on_false) {                                                                                \
+                        *flags |= (mask);                                                                              \
+                    } else {                                                                                           \
+                        *flags &= ~(mask);                                                                             \
+                    }                                                                                                  \
+                }                                                                                                      \
+            }                                                                                                          \
+        }                                                                                                              \
+    } while (0)
+
+#define AISCRIPT_SET_PACKET_FLAG(packet, params, count, first_time, mask)                                              \
+    do {                                                                                                               \
+        i32 i;                                                                                                         \
+        if ((packet) != NULL && (first_time) != 0) {                                                                   \
+            (packet)->flags |= (mask);                                                                                 \
+            for (i = 0; i < (count); i++) {                                                                            \
+                if (NuStrICmp((params)[i], AIScriptFalse) == 0) {                                                      \
+                    (packet)->flags &= ~(mask);                                                                        \
+                }                                                                                                      \
+            }                                                                                                          \
+        }                                                                                                              \
+    } while (0)
+
+i32 __cdecl Action_NoTerrain(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+                             f32 delta_time) {
+    (void)sys;
+    (void)processor;
+    (void)delta_time;
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x20u, 1, 0);
+    return 1;
+}
+
+i32 __cdecl Action_NoLosCheck(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+                              f32 delta_time) {
+    (void)sys;
+    (void)processor;
+    (void)delta_time;
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x400u, 1, 0);
+    return 1;
+}
+
+i32 __cdecl Action_FlatTerrain(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count,
+                               i32 first_time, f32 delta_time) {
+    (void)sys;
+    (void)processor;
+    (void)delta_time;
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x10u, 1, 0);
+    return 1;
+}
+
+i32 __cdecl Action_DontUseShadowTerrain(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count,
+                                        i32 first_time, f32 delta_time) {
+    (void)sys;
+    (void)processor;
+    (void)delta_time;
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x40u, 1, 0);
+    return 1;
+}
+
+i32 __cdecl Action_DontPush(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+                            f32 delta_time) {
+    (void)sys;
+    (void)processor;
+    (void)delta_time;
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x2u, 1, 0);
+    return 1;
+}
+
+i32 __cdecl Action_CanSeeBehind(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count,
+                                i32 first_time, f32 delta_time) {
+    (void)sys;
+    (void)processor;
+    (void)delta_time;
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x800u, 1, 0);
+    return 1;
+}
+
+i32 __cdecl Action_RequiresLOS(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count,
+                               i32 first_time, f32 delta_time) {
+    (void)sys;
+    (void)processor;
+    (void)delta_time;
+    AISCRIPT_SET_PACKET_FLAG(packet, params, count, first_time, 0x20000u);
+    return 1;
+}
+
+i32 __cdecl Action_SetFullPathSearch(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count,
+                                     i32 first_time, f32 delta_time) {
+    (void)sys;
+    (void)processor;
+    (void)delta_time;
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x8u, 0, 1);
+    return 1;
+}
+
+i32 __cdecl Action_NoShadows(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+                             f32 delta_time) {
+    (void)sys;
+    (void)processor;
+    (void)delta_time;
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x2000u, 1, 0);
+    return 1;
+}
+
+f32 __cdecl Condition_Timer(void *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *argument,
+                            void *initialized_argument) {
+    (void)sys;
+    (void)packet;
+    (void)argument;
+    (void)initialized_argument;
+    return processor->script_timer;
+}
+
+f32 __cdecl Condition_Random(void *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *argument,
+                             void *initialized_argument) {
+    (void)sys;
+    (void)processor;
+    (void)packet;
+    (void)argument;
+    (void)initialized_argument;
+    return NuRandFloat();
+}
+
+#undef AISCRIPT_SET_OWNER_FLAG
+#undef AISCRIPT_SET_PACKET_FLAG
+
+f32 __cdecl Condition_AlwaysTrue(void *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *argument,
+                                 void *initialized_argument) {
+    union {
+        void *pointer;
+        f32 value;
+    } result;
+    (void)sys;
+    (void)processor;
+    (void)packet;
+    (void)argument;
+    result.pointer = initialized_argument;
+    return result.value;
 }

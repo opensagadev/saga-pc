@@ -82,8 +82,29 @@ Complete real dependencies so the source executable continues to link. A
 ported function may remain byte-different while its PC-specific control flow or
 types are being recovered; record that honestly in the matching report. Once a
 family is structurally present, use complete byte comparisons to refine it.
-The exact Windows code percentage is the progress metric; Android's matching
-percentage does not transfer directly across compilers and platform backends.
+Whole-code Windows fuzzy coverage is the main transfer-progress metric; exact
+code coverage separately records complete byte equality. Android's percentage
+does not transfer directly across compilers and platform backends.
+
+Select transfer batches by **original PC code bytes unlocked per shared layout
+and dependency**, rather than function count or ease of exact matching. Start
+with complete portable families that use established types, then recover one
+shared object layout to enable several larger callers. Review a family's PC
+entries, calling conventions, accessed fields, literals and call closure together
+before splitting source ownership among agents. Send one combined header/map/data
+proposal early, and integrate it once. Use the retained graph ledger to select
+that batch; avoid rebuilding analysis exports without changed inputs.
+
+Bring real control flow and dependency behavior into the Windows build first.
+Stop instruction tuning once comparison confirms the intended PC structure and
+identifies remaining differences; only fix those immediately when they reveal
+a wrong ABI, layout, constant or behavior. Batch compiler literals and private
+helper decisions with the implementation: VC8 may emit even `__forceinline` C
+helpers as separate functions, so source abstractions must not introduce
+fictitious standalone original mappings. Expand verified inline operations in
+place when necessary. Measure each checkpoint by newly compared original code
+bytes and whole-code fuzzy/exact deltas; inventory-only rows and stub markers
+are not transferred implementations.
 
 Startup code may use `STUBBED()` or `STUBBED_NAMED(...)` to mark a verified PC
 call or state transition whose dependency is still missing. These markers emit

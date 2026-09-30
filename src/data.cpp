@@ -73,8 +73,37 @@ i32 Door_UseCutCam;
 
 extern "C" {
     i32 SUPERBUFFERSIZE = 0x09600000;
+    u32 PCImplodeWordMask = 0xffffffff;
     i32 StartupGameFlag0;
     i32 StartupGameFlag1 = 1;
+    u8 ForcePlayEndFrame;
+#pragma bss_seg(".bss$ForceEulerToQuat")
+    u8 ForceEulerToQuat;
+#pragma bss_seg()
+    ANI3_GLOBALBUFFER_PC *globalbuffer;
+    const FLOWBOX_CALLBACKS_PC flowbox_callbacks[3] = {
+        {ResetGizmoFlowBox, ProcessGizmoFlowBox, CheckOutputGizmoFlowBox},
+        {NULL, ProcessConditionFlowBox, CheckOutputConditionFlowBox},
+        {NULL, ProcessActionFlowBox, CheckOutputActionFlowBox},
+    };
+    u8 gizflow_loop_checksum;
+    u8 read_buffer[0x40000];
+    i32 read_buffer_size;
+    i32 read_buffer_decoded_size;
+    GAMEAUDIO_PC GameAudioStorage;
+    GAMEAUDIO_PC *GameAudio = &GameAudioStorage;
+    SoundTable CurrentSFXTAB;
+    NUVEC nusound_special_positions[5];
+    NUMTX *NuSound3Listener;
+    f32 nusound_fade_start = 2.0f;
+    f32 nusound_fade_end = 15.0f;
+    u32 nusound_seed = 0x20558057;
+#pragma const_seg(".rdata$GizmoDefaultOutputName")
+    extern const char GizmoDefaultOutputName[8] = "default";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptFalse")
+    extern const char AIScriptFalse[6] = "false";
+#pragma const_seg()
     i32 nufile_blkcnt = 1;
     PC_NUFILE_READBLOCK nufile_blkinfo[1024];
     NUDATHDR *StartupDatList[7];
@@ -391,7 +420,9 @@ extern "C" {
     NUALLOC_POOL *NuAllocPool;
     u32 NuAllocRecordSerial;
     NUALLOC_ARENA *NuAllocArena;
+#pragma bss_seg(".bss$NuAllocManager")
     void *NuAllocManager;
+#pragma bss_seg()
     void *NuAllocPeakEnd0;
     void *NuAllocPeakEnd1;
     u32 NuAllocHeaderMetadata[3] = {0x424d454d, 0x45484b4c, 0x52454441};

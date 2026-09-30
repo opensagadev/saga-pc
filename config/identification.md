@@ -546,3 +546,54 @@ adjacent ANI3 shared-gap function remain research. The next connected source
 batch is the six-function ANI3 matrix/extraction path, followed by the complete
 flow callback closure and ordinary AI callbacks. Keep full byte comparison as
 verification after each broad portable implementation batch.
+
+## Transfer throughput and next families
+
+The Android snapshot examined on 2026-09-30 reports 65.112% objdiff fuzzy
+similarity, 11.013% exact code bytes and 46.430% exact functions. These are
+different measures, and none predicts PC matching. Before the connected
+transfer batch, the PC had 111,570 original bytes under comparison (3.214%
+of its 3,471,246-byte text), averaging 63.434% objdiff similarity and supplying
+2.037% whole-code fuzzy coverage. Expanding compared code is the principal
+throughput target. The 202,038 mapped code bytes include inventory-only entries;
+they are not all compiled implementations.
+
+The graph's next large source families are movement (`move.cpp`, 20 candidates,
+37,443 hypothesized bytes), game objects (`gameobjects.cpp`, 12/20,706), bolts
+(8/14,845), and the AI system (`aisys.cpp`, 16/13,219). Those sums filter inferred
+pairs for at least three seed supports and a single analysis range; they remain
+research estimates, potentially overlapping or misidentified. Movement/object
+work first needs a shared PC object-layout batch. Rendering candidates require
+separate backend review and are not automatic portable transfers.
+
+For the next lower-dependency source batch, review `NuStringTableLoadCSV`
+(`0x004fda90`, current map extent 1,260) and TXT (`0x004fdf80`, 899) together
+with their string-bank allocation/lookup closure in Android `nustring_c.cpp`.
+Their file/parser APIs are already present. `NuStringFilterLoad` at `0x004fe390`
+has a multi-range boundary and must be reviewed separately. The remaining ANI3
+blend players are another connected batch with established types. A full LZ2K
+decoder needs its bit/Huffman state and private ABI closure; the retained
+`implode.cpp` reference supplies portable logic, but a header-size helper is
+not evidence that decoding itself is reconstructed.
+
+The first shared object-layout investigation narrows that larger batch to the
+PC coordinate/angle region at +0x58..+0xa0, rather than the whole Android
+GAMEOBJECT. Candidate MovePlayerSpline (0x00415c60) reads the +0x5c vector,
+snapshots it at +0x8c and calls candidate GameObjectOrigin (0x0055d2b0),
+which writes the vector at +0x80. Candidate UpdateGameObjects (0x00434a20)
+calls both. These entries are still research: review identities, full extents,
+calling conventions and the origin branch before naming fields or adding CSV
+bindings. The +0x80 vector's precise role is unresolved. Current GAMEOBJECT
+already establishes flags_1fc, target_velocity (+0xf18) and id (+0x1064);
+replace only independently verified portions of its padding.
+
+The connected transfer adds 62 compiled function identities and 19,088 original
+code bytes to comparison. All previously exact functions and data are retained.
+The ANI3 player bodies have weak instruction correspondence and are not exact;
+large source/retail size differences still need compiler-structure review. The
+PC uses SSE quaternion endpoint interpolation and unconditional rsqrtps
+normalization. EulerQuat converts two Euler endpoints before quaternion
+interpolation for quarters 0..2, but converts one interpolated Euler sample
+for quarter 3, which bypasses normalization (0x005cbdac jumps past the SSE
+store to 0x005cbe86). The interpolation arms retain those PC SDK intrinsics;
+the Android scalar normalization/interpolation path is not interchangeable.

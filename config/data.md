@@ -393,3 +393,21 @@ The noninterpolating table index uses a signed 16-bit temporary, sufficient for
 its positive-quadrant 0..512 range; this remains a code-generation difference.
 The zero-double binding at `0x00751790` is supported by original qword arithmetic
 references, even when a rebuilt routine uses `fldz` and leaves its COMDAT unused.
+
+The animation/flow/sound transfer batch adds independently reviewed ANI3 control
+bytes and scratch-pointer globals, the three-row flow callback table with real
+function relocations, and PC compiler qwords (4095.0, packed-key scale, angle
+scale and 15.0). The GameAudio singleton occupies 0x200 bytes at 0x009248f8: its
+name array and ID array have 84 entries, not the initially proposed 85; the
+initialized pointer at 0x008020bc refers to this source object. CurrentSFXTAB
+at 0x00924d18 covers the 100 u16 words used by PC restoration, without copying
+Android's trailing name-pointer member. Five NUVEC sound positions at
+0x02962b70 span 0x3c independently confirmed by fifteen initializer writes. The
+listener fallback refers to the existing global_camera.mtx, not a duplicate
+matrix owner. Fade start/end load as 2.0f/15.0f and random seed as 0x20558057.
+
+The DAT read buffer is defined for source linking but retains an unknown CSV
+extent and no matching/coverage credit; spacing to another owner alone does not
+establish its capacity. New buffer-size globals and PCImplodeWordMask have
+reviewed scalar extents. Explicit bss sections keep small verified data owners
+separate from compiler alignment gaps in the COFF comparison.

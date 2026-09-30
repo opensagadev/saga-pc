@@ -79,9 +79,22 @@ Prioritize broad PC program structure and coherent portable function families
 before instruction-level byte tuning. Use the Android decomp as a source candidate,
 then check each function against PC control flow, constants, data layout and
 dependencies. Port real PC behavior even when the first build is not exact;
-record the mismatch and move on to the next connected function. The final metric
-is exact PC code coverage, but isolated tiny matches must not displace work on
-major families. Never infer a PC percentage directly from Android's percentage.
+record the mismatch and move on to the next connected function. Track transfer
+progress with whole-code PC fuzzy coverage and report exact coverage separately; isolated tiny matches must not displace major families.
+Never infer a PC percentage directly from Android's percentage.
+
+Choose connected batches by original PC bytes unlocked per shared layout and
+dependency, not by function count. Review entries, ABI, accessed fields, data
+references and dependency closure as one family before assigning implementation.
+Request combined header/map/data proposals early, integrate once, and reuse the
+retained graph and existing research. Prefer expanding compared original bytes
+over tuning already-compared routines. Fix comparison differences immediately
+when they reveal incorrect behavior, type, layout or constant; defer instruction
+ordering/register refinements. Keep explicit missing actions honest. VC8 C may
+emit standalone COMDATs even for `__forceinline` helpers: never invent original
+bindings for reconstruction-only abstractions; expand verified inline operations
+in place when needed. Report compared original bytes and fuzzy/exact deltas at
+checkpoints, distinguishing real transfer from inventory additions.
 
 `config/symbols.csv` is independent of source annotations. It has exactly four
 comma-aligned columns: `address`, `symbol`, `size`, `ctype`. Addresses are preferred

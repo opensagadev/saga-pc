@@ -364,3 +364,12 @@ Their named PC layout proposals and portable drafts are under ignored
 `build/analysis/bulk-anim-matrix/` and `bulk-gameanim/`; recheck them against the
 retail instructions when integrating. This target expands animation behavior
 without displacing the broader structural identification queue.
+
+The connected transfer checkpoint now supplies the ANI3 matrix/extraction chain
+and all unblended players, typed EvalAnim/EvalAnim2 callers, special/display-list
+updates, and the flow callback/process/reset closure. The four ANI3 blend
+players/dispatcher remain the immediate connected animation target. Sound
+selection and wrappers are present, but grouped samples and physical backend
+playback remain explicit missing actions. NuMain and game startup remain partial.
+See identification.md for the next broader string-table and shared object-layout
+batches; do not return to register/instruction tuning ahead of those transfers.

@@ -605,10 +605,26 @@ i32 __cdecl GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 fra
             continue;
         }
         if (object->instance_animation != NULL) {
-            if (include_animated != 0) {
-                /* Matrix evaluation requires the unreconstructed NuAnimData2 matrix evaluator. */
-                STUBBED_NAMED("GameAnimSet_GetAveragePos: EvalAnim at 0x005526c0");
+            f32 frame;
+            NUMTX matrix;
+            NUVEC translation;
+
+            if (include_animated == 0) {
+                continue;
             }
+            if (frame_selection == 0) {
+                frame = object->start_frame;
+            } else if (frame_selection == 1) {
+                frame = object->end_frame;
+            } else {
+                frame = object->instance_animation->ltime;
+            }
+            EvalAnim(&object->special, frame, &matrix, 1);
+            translation.x = matrix.m30;
+            translation.y = matrix.m31;
+            translation.z = matrix.m32;
+            NuVecAdd(&sum, &sum, &translation);
+            ++count;
         } else if (include_static != 0) {
             NuVecAdd(&sum, &sum, NuSpecialGetDrawPos(&object->special));
             ++count;
@@ -650,6 +666,69 @@ void __cdecl GameAnimSet_SetVisibility(GAMEANIMSET *set, i32 visibility) {
     }
 }
 
+void __cdecl EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 update) {
+    NUINSTANIM_TIME_VIEW *instance_animation;
+    ANI3_HEADER_PC *animation;
+    NUGSCN *scene;
+    NUMTX *instance_matrix;
+
+    if (special == NULL || matrix == NULL) {
+        return;
+    }
+    instance_animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(special);
+    if (instance_animation == NULL) {
+        if (update != 0) {
+            instance_matrix = NuSpecialGetInstanceMtx(special);
+            if (instance_matrix != NULL) {
+                *matrix = *instance_matrix;
+            }
+        }
+        return;
+    }
+
+    scene = (NUGSCN *)special->scene;
+    animation = (ANI3_HEADER_PC *)scene->instance_animation_data[instance_animation->animation_index];
+    if (animation == NULL) {
+        return;
+    }
+    NuAnimData2CalcMatrix(animation, 0, frame, matrix);
+    if (update != 0) {
+        instance_matrix = NuSpecialGetInstanceMtx(special);
+        if (instance_matrix != NULL) {
+            matrix->m30 += instance_matrix->m30;
+            matrix->m31 += instance_matrix->m31;
+            matrix->m32 += instance_matrix->m32;
+        }
+    }
+}
+
+void __cdecl EvalAnim2(NUSPECIALHANDLE *special, f32 frame) {
+    NUINSTANIM_TIME_VIEW *instance_animation;
+    ANI3_HEADER_PC *animation;
+    NUGSCN *scene;
+    NUMTX *instance_matrix;
+    i32 animation_index;
+
+    instance_animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(special);
+    if (instance_animation == NULL) {
+        return;
+    }
+    scene = (NUGSCN *)special->scene;
+    animation = (ANI3_HEADER_PC *)scene->instance_animation_data[instance_animation->animation_index];
+    if (animation == NULL || frame == instance_animation->prev_eval_time) {
+        return;
+    }
+    instance_matrix = NuSpecialGetInstanceMtx(special);
+    NuAnimData2CalcMatrix(animation, 0, frame, &instance_animation->matrix);
+    instance_animation->prev_eval_time = frame;
+    animation_index = (i32)(instance_animation - scene->instance_animations);
+    scene->instance_animation_matrices[animation_index] = instance_animation->matrix;
+    instance_animation->matrix.m30 += instance_matrix->m30;
+    instance_animation->matrix.m31 += instance_matrix->m31;
+    instance_animation->matrix.m32 += instance_matrix->m32;
+    NuSpecialUpdate(special);
+}
+
 void __cdecl GameAnimSet_EvalAnim(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
 
@@ -657,8 +736,9 @@ void __cdecl GameAnimSet_EvalAnim(GAMEANIMSET *set) {
         return;
     }
     for (object = set->objects; object != NULL; object = object->next) {
-        /* EvalAnim2's matrix-data evaluator closure is not reconstructed yet. */
-        STUBBED_NAMED("GameAnimSet_EvalAnim: EvalAnim2 at 0x00552760");
+        if (object->instance_animation != NULL) {
+            EvalAnim2(&object->special, object->instance_animation->ltime);
+        }
     }
 }
 
@@ -669,7 +749,6 @@ i32 __cdecl GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 
     NUVEC maximum = {-1.0e9f, -1.0e9f, -1.0e9f};
     i32 found_object = 0;
 
-    (void)frame_selection;
     if (centre == NULL || set == NULL || set->object_count == 0 || set->objects == NULL) {
         return 0;
     }
@@ -677,23 +756,33 @@ i32 __cdecl GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 
         NUVEC object_centre;
         f32 object_radius;
         NUMTX *draw_matrix;
+        NUMTX evaluated_matrix;
+        f32 frame;
 
         if ((object->flags & 1) != 0) {
             continue;
         }
         if (object->instance_animation != NULL) {
-            if (include_animated != 0) {
-                /* Matrix evaluation requires the unreconstructed NuAnimData2 matrix evaluator. */
-                STUBBED_NAMED("GameAnimSet_GetCentreAndRadius: EvalAnim at 0x005526c0");
+            if (include_animated == 0) {
+                continue;
             }
-            continue;
-        }
-        if (include_static == 0) {
-            continue;
-        }
-        draw_matrix = NuSpecialGetDrawMtx(&object->special);
-        if (draw_matrix == NULL) {
-            continue;
+            if (frame_selection == 0) {
+                frame = object->start_frame;
+            } else if (frame_selection == 1) {
+                frame = object->end_frame;
+            } else {
+                frame = object->instance_animation->ltime;
+            }
+            EvalAnim(&object->special, frame, &evaluated_matrix, 1);
+            draw_matrix = &evaluated_matrix;
+        } else {
+            if (include_static == 0) {
+                continue;
+            }
+            draw_matrix = NuSpecialGetDrawMtx(&object->special);
+            if (draw_matrix == NULL) {
+                continue;
+            }
         }
         NuSpecialGetRadius(&object->special, &object_centre, &object_radius);
         object_radius *= 0.75f;
@@ -792,7 +881,7 @@ void __cdecl GameAnimSys_Update(GAMEANIMSYS *system) {
                     }
                 }
                 if (previous_frame != object->instance_animation->ltime) {
-                    STUBBED_NAMED("GameAnimSys_Update: EvalAnim2 at 0x00552760");
+                    EvalAnim2(&object->special, object->instance_animation->ltime);
                 }
                 if ((object->instance_animation->flags & 1) != 0) {
                     set->flags |= 1;

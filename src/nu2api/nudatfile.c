@@ -10,6 +10,23 @@ extern i32 decode_buffer_left;
 extern void __cdecl PCThreadCriticalSectionEnter_candidate(i32 section_index);
 extern void __cdecl PCThreadCriticalSectionLeave_candidate(i32 section_index);
 
+void __cdecl NuDatFileDecodeNext(void) {
+    char block_header[12];
+    i32 file;
+    i64 position;
+
+    file = unpack_file_odi->dat_file;
+    NuFileRead(file, block_header, 12);
+
+    read_buffer_decoded_size = ExplodeBufferSize(block_header);
+    read_buffer_size = ExplodeCompressedSize(block_header) - 12;
+    NuFileRead(file, read_buffer, read_buffer_size);
+
+    position = unpack_file_info->position + read_buffer_size + 12;
+    unpack_file_info->position = position;
+    unpack_file_odi->position = position;
+}
+
 i64 __cdecl NuDatCalcPos(NUDATHDR *header, i32 offset) {
     i64 position = offset;
 

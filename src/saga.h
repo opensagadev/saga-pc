@@ -46,7 +46,25 @@ STATIC_ASSERT(sizeof(f64) == 8);
 STATIC_ASSERT(sizeof(void *) == 4);
 STATIC_ASSERT(sizeof(MSG) == 28);
 
+typedef struct nuvec_s {
+    f32 x;
+    f32 y;
+    f32 z;
+} NUVEC;
+
 typedef i32 NUANG;
+typedef struct NUANGVEC {
+    NUANG x, y, z;
+} NUANGVEC;
+STATIC_ASSERT(sizeof(NUANGVEC) == 12);
+STATIC_ASSERT(offsetof(NUANGVEC, x) == 0);
+STATIC_ASSERT(offsetof(NUANGVEC, y) == 4);
+STATIC_ASSERT(offsetof(NUANGVEC, z) == 8);
+typedef struct NUVEC4 {
+    f32 x, y, z, w;
+} NUVEC4;
+STATIC_ASSERT(sizeof(NUVEC4) == 16);
+STATIC_ASSERT(offsetof(NUVEC4, w) == 12);
 
 typedef struct nunrand_s {
     i32 value;
@@ -81,15 +99,20 @@ STATIC_ASSERT(offsetof(GIZMO_PC, type_id) == 6);
 typedef struct gizmotype_pc_s {
     u8 unknown_00[0x44];
     char *(__cdecl *get_gizmo_name)(void *gizmo);
-    u8 unknown_48[0xc];
+    i32(__cdecl *get_output)(void *gizmo, i32 output, i32 mode);
+    char *(__cdecl *get_output_name)(void *gizmo, i32 output);
+    u8 unknown_50[4];
     void(__cdecl *set_visibility)(void *gizmo, i32 mode);
-    u8 unknown_58[4];
+    i32(__cdecl *activate_reverse)(void *gizmo, i32 reverse, i32 visibility);
     void(__cdecl *activate)(void *gizmo, i32 mode);
     u8 unknown_60[0x3c];
 } GIZMOTYPE_PC;
 STATIC_ASSERT(sizeof(GIZMOTYPE_PC) == 0x9c);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, get_gizmo_name) == 0x44);
+STATIC_ASSERT(offsetof(GIZMOTYPE_PC, get_output) == 0x48);
+STATIC_ASSERT(offsetof(GIZMOTYPE_PC, get_output_name) == 0x4c);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, set_visibility) == 0x54);
+STATIC_ASSERT(offsetof(GIZMOTYPE_PC, activate_reverse) == 0x58);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, activate) == 0x5c);
 
 typedef struct gizmotypes_pc_s {
@@ -125,6 +148,13 @@ typedef struct GIZFLOWPROGRESS_PC {
     u32 latched[16];
     u32 output_state[16];
 } GIZFLOWPROGRESS_PC;
+
+typedef struct FLOWBOXCONDITION_PC {
+    u8 operation;
+    u8 threshold;
+} FLOWBOXCONDITION_PC;
+STATIC_ASSERT(offsetof(FLOWBOXCONDITION_PC, operation) == 0);
+STATIC_ASSERT(offsetof(FLOWBOXCONDITION_PC, threshold) == 1);
 
 typedef struct FLOWBOX_PC FLOWBOX_PC;
 typedef struct FLOWBOXGIZMOREF_PC FLOWBOXGIZMOREF_PC;
@@ -201,6 +231,55 @@ STATIC_ASSERT(offsetof(GIZFLOW_PC, flowbox_count) == 0x4);
 STATIC_ASSERT(offsetof(GIZFLOW_PC, flowboxes) == 0x8);
 STATIC_ASSERT(offsetof(GIZFLOW_PC, frame) == 0xc);
 STATIC_ASSERT(offsetof(GIZFLOW_PC, pointers_need_reset) == 0xd);
+
+typedef void(__cdecl *GIZACTIONFN_PC)(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+typedef struct GIZACTIONDEF_PC {
+    const char *name;
+    GIZACTIONFN_PC action_fn;
+} GIZACTIONDEF_PC;
+typedef struct FLOWBOXACTION_PC {
+    struct FLOWBOXACTION_PC *next;
+    char **parameters;
+    i32 parameter_count;
+    GIZACTIONDEF_PC *definition;
+} FLOWBOXACTION_PC;
+typedef struct FLOWBOX_CALLBACKS_PC {
+    void(__cdecl *reset)(GIZFLOW_PC *, FLOWBOX_PC *);
+    i32(__cdecl *process)(GIZFLOW_PC *, FLOWBOX_PC *, u8);
+    i32(__cdecl *check_output)(GIZFLOW_PC *, FLOWBOX_PC *, u8);
+} FLOWBOX_CALLBACKS_PC;
+STATIC_ASSERT(sizeof(GIZACTIONDEF_PC) == 8);
+STATIC_ASSERT(offsetof(GIZACTIONDEF_PC, action_fn) == 4);
+STATIC_ASSERT(sizeof(FLOWBOXACTION_PC) == 0x10);
+STATIC_ASSERT(offsetof(FLOWBOXACTION_PC, next) == 0);
+STATIC_ASSERT(offsetof(FLOWBOXACTION_PC, parameters) == 4);
+STATIC_ASSERT(offsetof(FLOWBOXACTION_PC, parameter_count) == 8);
+STATIC_ASSERT(offsetof(FLOWBOXACTION_PC, definition) == 0xc);
+STATIC_ASSERT(sizeof(FLOWBOX_CALLBACKS_PC) == 0xc);
+STATIC_ASSERT(offsetof(FLOWBOX_CALLBACKS_PC, reset) == 0);
+STATIC_ASSERT(offsetof(FLOWBOX_CALLBACKS_PC, process) == 4);
+STATIC_ASSERT(offsetof(FLOWBOX_CALLBACKS_PC, check_output) == 8);
+
+typedef struct AIOWNER_PC {
+    u8 unknown_000[0x1f8];
+    u32 flags_1f8;
+    u32 flags_1fc;
+} AIOWNER_PC;
+STATIC_ASSERT(offsetof(AIOWNER_PC, flags_1f8) == 0x1f8);
+STATIC_ASSERT(offsetof(AIOWNER_PC, flags_1fc) == 0x1fc);
+typedef struct AIPACKET_PC {
+    u8 unknown_000[0xd0];
+    AIOWNER_PC *owner;
+    u8 unknown_0d4[0x114];
+    u32 flags;
+} AIPACKET_PC;
+STATIC_ASSERT(offsetof(AIPACKET_PC, owner) == 0xd0);
+STATIC_ASSERT(offsetof(AIPACKET_PC, flags) == 0x1e8);
+typedef struct AISCRIPTPROCESS_PC {
+    u8 unknown_00[0x24];
+    f32 script_timer;
+} AISCRIPTPROCESS_PC;
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, script_timer) == 0x24);
 
 typedef struct AISCRIPT_PC AISCRIPT_PC;
 typedef struct AISTATE_PC AISTATE_PC;
@@ -921,7 +1000,10 @@ typedef struct partdebrissys_s {
 } PARTDEBRISSYS;
 
 typedef struct nudisplay_special_pc_s {
-    u8 unknown_0000[0xb4];
+    u8 unknown_0000[0x80];
+    NUVEC4 bounds_min;
+    NUVEC4 bounds_max;
+    u8 unknown_00a0[0x14];
     char *name;
     u32 flags;
     u8 unknown_00bc[0x4];
@@ -929,20 +1011,30 @@ typedef struct nudisplay_special_pc_s {
     u8 unknown_00c4[0xc];
 } NUDISPLAY_SPECIAL_PC;
 STATIC_ASSERT(sizeof(NUDISPLAY_SPECIAL_PC) == 0xd0);
+STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, bounds_min) == 0x80);
+STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, bounds_max) == 0x90);
 STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, name) == 0xb4);
 STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, flags) == 0xb8);
 STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, instance_ix) == 0xc0);
 
 typedef struct nudisplay_list_pc_s {
-    u8 unknown_0000[0x48];
+    u8 unknown_0000[0x44];
+    NUVEC4 *clip_bounds;
     u8 *visibility_flags;
     u8 unknown_004c_6c[0x20];
     i32 special_count;
     NUDISPLAY_SPECIAL_PC *specials;
-    u8 unknown_0074_76[0x2];
-    u8 instance_visibility_enabled;
-    u8 unknown_0077[0x1];
+    union {
+        u32 render_flags;
+        struct {
+            u8 unknown_0074_76[0x2];
+            u8 instance_visibility_enabled;
+            u8 unknown_0077[0x1];
+        };
+    };
 } NUDISPLAY_LIST_PC;
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, clip_bounds) == 0x44);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, render_flags) == 0x74);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, visibility_flags) == 0x48);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, instance_visibility_enabled) == 0x76);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, special_count) == 0x6c);
@@ -966,7 +1058,9 @@ typedef struct NUGSCN_s {
     u8 unknown_0000[0x24];
     i32 special_count;
     NUSPECIAL_LEGACY_PC *specials;
-    u8 unknown_002c[0x28];
+    u8 unknown_002c[0x20];
+    struct nuinstanim_time_view_s *instance_animations;
+    struct numtx_s *instance_animation_matrices;
     void **instance_animation_data;
     u8 unknown_0058[0x1c];
     i32 num_rooms;
@@ -976,6 +1070,8 @@ typedef struct NUGSCN_s {
 } NUGSCN;
 STATIC_ASSERT(offsetof(NUGSCN, special_count) == 0x24);
 STATIC_ASSERT(offsetof(NUGSCN, specials) == 0x28);
+STATIC_ASSERT(offsetof(NUGSCN, instance_animations) == 0x4c);
+STATIC_ASSERT(offsetof(NUGSCN, instance_animation_matrices) == 0x50);
 STATIC_ASSERT(offsetof(NUGSCN, instance_animation_data) == 0x54);
 STATIC_ASSERT(offsetof(NUGSCN, num_rooms) == 0x74);
 STATIC_ASSERT(offsetof(NUGSCN, rooms) == 0x78);
@@ -1041,12 +1137,15 @@ STATIC_ASSERT(offsetof(LEVEL_PROGRESS, progress_state) == 0x2820);
 STATIC_ASSERT(offsetof(LEVEL_PROGRESS, disabled_effect_names) == 0x2d68);
 
 typedef struct level_sfx_entry_pc_s {
-    u8 unknown_0000[0x0c];
+    NUVEC position;
     i16 id;
-    u8 unknown_000e[2];
+    u8 references;
+    u8 unknown_000f;
 } LEVELSFXENTRY_PC;
 STATIC_ASSERT(sizeof(LEVELSFXENTRY_PC) == 0x10);
 STATIC_ASSERT(offsetof(LEVELSFXENTRY_PC, id) == 0x0c);
+STATIC_ASSERT(offsetof(LEVELSFXENTRY_PC, position) == 0);
+STATIC_ASSERT(offsetof(LEVELSFXENTRY_PC, references) == 0xe);
 
 typedef struct music_playback_pc_s {
     i16 state;
@@ -1255,16 +1354,60 @@ typedef struct cheatsystem_pc_s {
 STATIC_ASSERT(sizeof(CHEATSYSTEM_PC) == 12);
 STATIC_ASSERT(offsetof(CHEATSYSTEM_PC, flags) == 8);
 
+typedef struct SoundTable {
+    u16 bits[100];
+} SoundTable;
+STATIC_ASSERT(sizeof(SoundTable) == 0xc8);
+
+typedef struct GAMEAUDIO_PC {
+    u8 unknown_0000[4];
+    i32(__cdecl *check_reverb_fn)(void);
+    char *sfx_names[84];
+    i16 sfx_ids[84];
+} GAMEAUDIO_PC;
+STATIC_ASSERT(sizeof(GAMEAUDIO_PC) == 0x200);
+STATIC_ASSERT(offsetof(GAMEAUDIO_PC, sfx_names) == 8);
+STATIC_ASSERT(offsetof(GAMEAUDIO_PC, check_reverb_fn) == 4);
+STATIC_ASSERT(offsetof(GAMEAUDIO_PC, sfx_ids) == 0x158);
+
 typedef struct sfx_record_pc_s {
     char *name;
     u32 sample_id_flags;
-    u8 unknown_0008[8];
+    i32 pitch;
+    i8 priority;
+    u8 unknown_000d[3];
     i16 next;
-    u8 unknown_0012[0x2e];
+    i16 volume;
+    i16 group;
+    u16 category;
+    f32 pan;
+    f32 pitch_rnd;
+    f32 volume_rnd;
+    f32 falloff_near;
+    f32 falloff_far;
+    f32 buzz_timer;
+    i32 rumble_strength;
+    f32 rumble_sustain;
+    f32 rumble_release;
+    u8 unknown_003c[4];
 } SFX_RECORD_PC;
 STATIC_ASSERT(sizeof(SFX_RECORD_PC) == 0x40);
 STATIC_ASSERT(offsetof(SFX_RECORD_PC, sample_id_flags) == 0x04);
 STATIC_ASSERT(offsetof(SFX_RECORD_PC, next) == 0x10);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, pitch) == 0x8);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, priority) == 0xc);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, volume) == 0x12);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, group) == 0x14);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, category) == 0x16);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, pan) == 0x18);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, pitch_rnd) == 0x1c);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, volume_rnd) == 0x20);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, falloff_near) == 0x24);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, falloff_far) == 0x28);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, buzz_timer) == 0x2c);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, rumble_strength) == 0x30);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, rumble_sustain) == 0x34);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, rumble_release) == 0x38);
 
 typedef struct sfx_file_info_pc_s {
     const char *filename;
@@ -1475,12 +1618,6 @@ typedef struct main_frame_counters_s {
 } MAINFRAMECOUNTERS;
 STATIC_ASSERT(sizeof(MAINFRAMECOUNTERS) == 5);
 
-typedef struct nuvec_s {
-    f32 x;
-    f32 y;
-    f32 z;
-} NUVEC;
-
 typedef struct cutinfo_s {
     u8 opaque_00_04[0x4];
     void *instance;
@@ -1637,6 +1774,82 @@ typedef struct instnugcutscene_s {
 STATIC_ASSERT(sizeof(NUMTX) == 0x40);
 STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
+
+typedef struct ANI3_SCALEMIN_PC {
+    f32 scale;
+    f32 minimum;
+} ANI3_SCALEMIN_PC;
+STATIC_ASSERT(sizeof(ANI3_SCALEMIN_PC) == 0x8);
+
+typedef struct ANI3_HEADER_PC {
+    u32 magic;
+    u16 node_count;
+    u16 key_count;
+    u16 key_stride;
+    u16 frame_count;
+    u16 curve_count;
+    u16 first_frame;
+    u8 end_frame;
+    u8 constant_index;
+    u8 field_12_low;
+    u8 format_flags;
+    u16 next_block;
+    u16 declared_end_frame;
+    u8 pad_18[4];
+    f32 minimum;
+    f32 scale;
+    ANI3_SCALEMIN_PC *scale_min;
+    i16 *constants;
+    u16 *curve_types;
+    u8 *keys;
+    u8 *node_flags;
+    void *field_38;
+} ANI3_HEADER_PC;
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, node_count) == 0x04);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, key_count) == 0x06);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, key_stride) == 0x08);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, frame_count) == 0x0a);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, curve_count) == 0x0c);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, first_frame) == 0x0e);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, end_frame) == 0x10);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, format_flags) == 0x13);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, declared_end_frame) == 0x16);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, minimum) == 0x1c);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, scale) == 0x20);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, scale_min) == 0x24);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, constants) == 0x28);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, curve_types) == 0x2c);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, keys) == 0x30);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, node_flags) == 0x34);
+STATIC_ASSERT(sizeof(ANI3_HEADER_PC) == 0x3c);
+
+typedef struct ANI3_JOINT_PC {
+    NUVEC4 translation;
+    NUVEC4 rotation;
+    NUVEC4 scale;
+} ANI3_JOINT_PC;
+STATIC_ASSERT(offsetof(ANI3_JOINT_PC, rotation) == 0x10);
+STATIC_ASSERT(offsetof(ANI3_JOINT_PC, scale) == 0x20);
+STATIC_ASSERT(sizeof(ANI3_JOINT_PC) == 0x30);
+
+typedef struct ANI3_BUFFER_PC {
+    i32 joint_count;
+    i16 max_joints;
+    u8 use_quaternions;
+    u8 pad_07;
+    ANI3_JOINT_PC *joints;
+    u8 *joint_flags;
+} ANI3_BUFFER_PC;
+STATIC_ASSERT(offsetof(ANI3_BUFFER_PC, use_quaternions) == 0x06);
+STATIC_ASSERT(offsetof(ANI3_BUFFER_PC, joints) == 0x08);
+STATIC_ASSERT(offsetof(ANI3_BUFFER_PC, joint_flags) == 0x0c);
+STATIC_ASSERT(sizeof(ANI3_BUFFER_PC) == 0x10);
+
+typedef struct ANI3_GLOBALBUFFER_PC {
+    u8 unknown_00[8];
+    f32 *animation_values;
+} ANI3_GLOBALBUFFER_PC;
+STATIC_ASSERT(offsetof(ANI3_GLOBALBUFFER_PC, animation_values) == 8);
 
 typedef struct nuglobalrndrstate_pc_s {
     u8 unknown_0000[8];
@@ -1795,19 +2008,22 @@ typedef struct gameanimsys_s GAMEANIMSYS;
 
 /* This is a verified field view, not a declaration of full retail owner extent. */
 typedef struct nuinstanim_time_view_s {
-    u8 unknown_00[0x40];
+    NUMTX matrix;
     f32 tfactor;
     u8 unknown_44[8];
     f32 ltime;
     u32 flags;
     f32 fparam1;
-    u8 unknown_58[4];
+    f32 prev_eval_time;
     u16 animation_index;
 } NUINSTANIM_TIME_VIEW;
+STATIC_ASSERT(sizeof(NUINSTANIM_TIME_VIEW) == 0x60);
+STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, matrix) == 0);
 STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, tfactor) == 0x40);
 STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, ltime) == 0x4c);
 STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, flags) == 0x50);
 STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, fparam1) == 0x54);
+STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, prev_eval_time) == 0x58);
 STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, animation_index) == 0x5c);
 
 struct gameanimobj_s {
@@ -3355,6 +3571,16 @@ extern "C" {
     void __cdecl NuMtxSetTranslation(NUMTX *matrix, NUVEC *translation);
     void __cdecl NuMtxSetTranslationNeg(NUMTX *matrix, NUVEC *translation);
     void __cdecl NuMtxSetScale(NUMTX *matrix, NUVEC *scale);
+    void __cdecl NuMtxMul(NUMTX *matrix, NUMTX *left, NUMTX *right);
+    void __cdecl NuMtxMulR(NUMTX *matrix, NUMTX *left, NUMTX *right);
+    void __cdecl NuMtxSetRotateXYZ(NUMTX *matrix, NUANGVEC *angles);
+    void __cdecl NuMtxSetRotateXYZVU0(NUMTX *matrix, NUANGVEC *angles);
+    void __cdecl NuMtxPreScaleVU0(NUMTX *matrix, NUVEC *scale);
+    void __cdecl EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 update);
+    void __cdecl EvalAnim2(NUSPECIALHANDLE *special, f32 frame);
+    void __cdecl NuSpecialUpdate(NUSPECIALHANDLE *special);
+    void __cdecl NuDisplayListUpdateSpecial(NUSPECIALHANDLE *special);
+    void __cdecl DisplayListUpdateSpecialTransformPS(NUSPECIALHANDLE *special, NUMTX *matrix);
     void __cdecl NuMtxSetRotationX(NUMTX *matrix, NUANG angle);
     void __cdecl NuMtxSetRotationY(NUMTX *matrix, NUANG angle);
     void __cdecl NuMtxSetRotationZ(NUMTX *matrix, NUANG angle);
@@ -3426,6 +3652,30 @@ extern "C" {
     f32 __cdecl NuSpecialGetAnimEndFrame(NUSPECIALHANDLE *special);
     void __cdecl NuSpecialGetRadius(NUSPECIALHANDLE *special, NUVEC *centre, f32 *radius);
     void __cdecl GizFlowStoreProgress(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress);
+    extern const FLOWBOX_CALLBACKS_PC flowbox_callbacks[3];
+    extern u8 gizflow_loop_checksum;
+    extern const char GizmoDefaultOutputName[8];
+    i32 __cdecl GizmoGetOutput(void *system, void *gizmo, i32 output, i32 mode);
+    char *__cdecl GizmoGetOutputName(void *system, void *gizmo, i32 output);
+    void __cdecl GizmoActivateReverse(void *system, void *gizmo, i32 reverse, i32 visibility, i32 mode);
+    i32 __cdecl CheckOutputGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    i32 __cdecl ProcessConditionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    i32 __cdecl CheckOutputConditionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    i32 __cdecl ProcessActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    void __cdecl PerformActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box);
+    void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress);
+    FLOWBOX_PC *__cdecl FlowBoxFindByName(GIZFLOW_PC *system, char *name);
+    extern u8 ForcePlayEndFrame;
+    extern u8 ForceEulerToQuat;
+    extern ANI3_GLOBALBUFFER_PC *globalbuffer;
+    f32 __cdecl CalcValue1648(char *, i32, i32, f32, ANI3_SCALEMIN_PC *);
+    void __cdecl CalcValue1648Get2Values(char *, i32, i32, ANI3_SCALEMIN_PC *, f32 *, f32 *);
+    void __cdecl ANI_Ani3ExtractAllNodeCurves(ANI3_HEADER_PC *, f32, f32 *, i32, char *);
+    f32 *__cdecl NuAnimCurveExtractAllNodeCurves_3(ANI3_HEADER_PC *, i32, f32, char *);
+    void __cdecl NuAnimCurve2SetApplyToMatrix_3(ANI3_HEADER_PC *, i32, f32, NUMTX *);
+    void __cdecl NuAnimData2CalcMatrix(ANI3_HEADER_PC *, i32, f32, NUMTX *);
+    i32 __cdecl ANI_SimpleAni3PlayerV4Joint(ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, i32, i32);
+    void __cdecl ANI_SimpleAni3PlayerV4Joint_Blend(ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, f32, i32, i32, NUVEC *);
     void __cdecl ResetGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box);
     i32 __cdecl CheckOutputActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
     void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
@@ -3672,6 +3922,8 @@ extern "C" {
     extern i32 NuSound3Initialized;
     extern TERRAIN_SURFACE_PC TerSurface[32];
     extern EDANIM_PARAM_PC AnimParams[64];
+    void __cdecl SfxBitsRestore(SoundTable *table);
+    extern SoundTable CurrentSFXTAB;
     extern u16 SfxBits[100];
     extern u16 GlobalSfxBits[100];
     extern i32 edanim_page_on[8];
@@ -3787,6 +4039,44 @@ extern "C" {
     i32 __cdecl GetSfxId(char *name);
     u32 __cdecl SfxNameHash(const char *name);
     extern i16 *SfxHashHeads;
+    void __cdecl GameAudio_PlaySfxById(i32, NUVEC *, i32, i32);
+    void __cdecl GameAudio_PlaySfx(i32, NUVEC *, i32, i32);
+    void __cdecl AddLevSfx(WORLDINFO *, NUVEC *, char *, i32);
+    void __cdecl UpdateLevelSfx(WORLDINFO *, i32);
+    void __cdecl PlaySfxByIdEx(i32, NUVEC *, f32, f32);
+    void __cdecl PlaySfxAndSetVolume(char *, NUVEC *, f32);
+    void __cdecl PlaySfxAndSetPitch(char *, NUVEC *, f32);
+    void __cdecl PlaySfxById(i32, NUVEC *);
+    void __cdecl PlaySfxByIdAndSetVolume(i32, NUVEC *, f32);
+    void __cdecl PlaySfx(char *, NUVEC *);
+    extern u8 read_buffer[0x40000];
+    extern i32 read_buffer_size;
+    extern i32 read_buffer_decoded_size;
+    extern u32 PCImplodeWordMask;
+    i32 __cdecl ExplodeBufferSize(char *);
+    i32 __cdecl ExplodeCompressedSize(char *);
+    void __cdecl NuDatFileDecodeNext(void);
+    i32 __cdecl Action_NoTerrain(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_NoLosCheck(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_FlatTerrain(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_DontUseShadowTerrain(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_DontPush(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_CanSeeBehind(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_RequiresLOS(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_SetFullPathSearch(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_NoShadows(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
+    f32 __cdecl Condition_Timer(void *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+    f32 __cdecl Condition_Random(void *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+    f32 __cdecl Condition_AlwaysTrue(void *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+    NUMTX *__cdecl NuSound3GetListener(void);
+    extern NUMTX *NuSound3Listener;
+    extern f32 nusound_fade_start;
+    extern f32 nusound_fade_end;
+    extern u32 nusound_seed;
+    extern const char AIScriptFalse[6];
+    extern GAMEAUDIO_PC GameAudioStorage;
+    extern NUVEC nusound_special_positions[5];
+    extern GAMEAUDIO_PC *GameAudio;
     extern SFX_RECORD_PC *SfxInfo;
     extern u32 *SfxCRCTable;
     extern i32 SfxCRCTableInitialized;
