@@ -5,6 +5,24 @@ Prepared 2026-09-30. This implements the discovery work in
 The authoritative accepted map remains [symbols.csv](symbols.csv); the existing
 [identification guide](identification.md) defines PC identity, ABI and extent rules.
 
+The implementation and checked local commands are documented in
+[identification-tools.md](identification-tools.md). The maintained pipeline uses
+`identification_run.py` for frozen inputs, `identification_graph.py` for typed raw
+graphs, and `identification_joint.py` for orchestration around the existing function
+scorer. `identification_review.py` and `identification_tables.py` retain independent
+review statuses and bounded pointer/RTTI evidence. The small
+[review journal](identification-decisions.jsonl) includes the verified Customiser
+chain and a rejected random-state identity; it does not change the accepted CSV.
+Actual experiment results and remaining limitations are recorded in the runbook.
+
+Memory correction from the first full pilot: raw JSONL exports remain authoritative,
+but their query indices use local SQLite through Python's standard library. Full
+Python graph copies and duplicated candidate reference lists caused unacceptable
+memory pressure. Identification now runs one job at a time under a default 1 GiB
+address-space limit; incomplete or failed runs are never published. This local
+disk index replaces the original all-in-memory indexing choice without adding a
+service or external dependency.
+
 ## Outcome and tool choices
 
 Build a repeatable, inspectable mapping pipeline for the original PC executable
@@ -26,11 +44,11 @@ build. Do not replace Ghidra, patch a dependency stack or build the full BinDiff
 engine just for this experiment. Other analysis stacks require a demonstrated
 gap in this pipeline before being considered.
 
-Local inspection found no BinDiff executable or BinExport extension. The
-published BinExport package inspected targets Ghidra 11.0.3; compatibility with
-this 12.1.2_DEV installation is unverified. Treat a prebuilt install as a test,
-not an assumed working dependency. If attempted, keep the executable and extension
-in project-local tool/config directories and pin the downloaded artifact hash.
+Initial inspection found no BinDiff executable or BinExport extension. During
+implementation the packaged BinDiff 8 executable installed locally, and official
+BinExport sources built unmodified against this Ghidra installation. The pilot
+added no top-five retrieval gain over graph plus BSim; it remains optional.
+Pinned hashes and checked commands are recorded in the operator runbook.
 See the [official BinExport releases](https://github.com/google/binexport/releases)
 and [BinDiff releases](https://github.com/google/bindiff/releases).
 
@@ -280,11 +298,11 @@ interactive graph viewer is outside the first implementation milestone.
 
 ## Evaluation, tests and integration
 
-The intended public interface stays under `tools/check.py --identify`. Add
+The implemented public interface stays under `tools/check.py --identify`, with
 `--analysis-dir`, `--symbols`, `--joint-graph`, `--reviewed-pairs` and
 `--holdout-mode {pair,family,data}`. Keep expensive extraction as an explicit
-operation. The following is a **proposed interface after implementation**, not a
-command available today:
+operation. For a family holdout, supply an explicit selection whose family labels
+match the chosen held families:
 
 ```sh
 python3 tools/check.py --identify \
@@ -292,6 +310,7 @@ python3 tools/check.py --identify \
   --symbols config/symbols.csv \
   --joint-graph build/analysis/identification/graph-pair.json \
   --reviewed-pairs build/analysis/identification/reviewed-pairs.jsonl \
+  --holdout-selection build/analysis/identification/family-selection.json \
   --holdout --holdout-mode family
 ```
 
@@ -299,18 +318,14 @@ python3 tools/check.py --identify \
 the supplied symbols and decisions before reading features. Existing invocations
 without these options retain their current behavior.
 
-After adding the exporter in package 2, a PC export will use this command shape
-from the repository root; create the output/config/cache directories first:
+The maintained exporter launcher isolates its Java script and exports both
+originals sequentially. Use the pinned configuration described in the runbook
+and a fresh output directory:
 
 ```sh
-XDG_CONFIG_HOME="$PWD/build/analysis/identification/ghidra-user/config" \
-XDG_CACHE_HOME="$PWD/build/analysis/identification/ghidra-user/cache" \
-/opt/ghidra/support/analyzeHeadless \
-  "$PWD/build/analysis/ghidra" saga-pc \
-  -process LEGOStarWarsSaga.exe -readOnly -noanalysis \
-  -scriptPath "$PWD/tools/ghidra" \
-  -postScript ExportReferenceGraph.java \
-    "$PWD/build/analysis/identification/pc-graph"
+python3 tools/reference_graph.py \
+  --config build/analysis/identification/current-graphs/export-config.json \
+  --output build/analysis/identification/graphs-next
 ```
 
 The isolated XDG directories avoid writes to the user's normal Ghidra settings.

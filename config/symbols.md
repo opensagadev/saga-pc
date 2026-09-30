@@ -713,3 +713,57 @@ ends at the RET at 0x005b8987: its 488-byte extent does not include the adjacent
 weighted-quaternion routine. The retained graph's EnforceSockYLimits candidate
 at 0x005405f0 was rejected: the actual routine is a four-vector perspective
 interpolation provider and has not been implemented or mapped under that name.
+
+## Reviewed graph and BSim mapping release (October 2026)
+
+Five functions entered the accepted inventory after original PC identity, caller
+ABI and complete-boundary review. This adds 1,064 known function bytes without
+adding compiled definitions or claiming reconstruction progress.
+
+| PC entry | Identity | PC bytes | Named Android entry |
+| --- | --- | ---: | --- |
+| `0x0055b6c0` | `IconScene_FindById` | 29 | `0x004604c0` |
+| `0x0055b830` | `DrawCharIcon` | 641 | `0x004606a0` |
+| `0x005930c0` | `Customiser_DumpAccessories` | 211 | `0x004a0760` |
+| `0x005f3270` | `NuAnimData2LoadBuffEx` | 154 | `0x002bc3d0` |
+| `0x005f3310` | `NuAnimData2LoadBuff` | 29 | `0x002bc490` |
+
+The character-icon family uses a ten-slot cdecl draw contract, separate frame and
+character alpha, a special-handle override, and the bounded character scene-table
+lookup. The PC draw body omits Android's extra spin, scale and depth globals.
+The animation loader aligns its destination to sixteen bytes, distinguishes the
+ANI5 format through the signed header comparison, and follows the independently
+mapped file-loading, pointer-fixing and animation-fixing calls. Its three-slot
+wrapper forwards a local output pointer as the Ex loader's fourth argument. The
+PC empty-file path also calls a one-byte diagnostic return absent on Android.
+
+The Customiser routine uses the reviewed accessories-state guard, two sides and
+nine categories, and restores textures or removes scenes. Its opaque pointer
+contract is established; complete Customiser layout remains unresolved.
+`Customiser_AccessoriesLoaded` at `0x00955894` now has an identity-only inventory
+row. Its size and type stay blank: observed DWORD reads/writes do not prove the
+complete object's extent. The unimplemented `_Name` bindings are reconstruction
+linker names, consistent with existing C bindings; the stripped PE does not prove
+historical source linkage.
+
+The [review journal](identification-decisions.jsonl) retains these decisions and
+the following data corrections. Android `numtx_identity` at `0x00625570` serves
+two distinct PC allocations: the set-identity template at `0x00806680` and the
+default primitive matrix at `0x0080e270`. They are semantic correspondences with
+separate storage, and their original PC names and extents remain separate.
+Android `render_state` at `0x0119b900` corresponds to PC base `0x009868c0`;
+`0x009868e0` is its field at offset `0x20`, so pairing that field with the whole
+Android aggregate is rejected. The original copy operations use 420 PC bytes
+and 432 Android bytes, confirming why their layouts cannot be transferred.
+
+Five already-mapped callbacks were also confirmed as genuine missing function
+nodes in the retained PC graph: `Condition_Timer`, `Condition_Random`,
+`Condition_AlwaysTrue`, `CheckOutputConditionFlowBox`, and `ProcessActionFlowBox`.
+Their complete 244 bytes add no map coverage. The Random tail transfer and the
+action callback's direct call are verified; table-mediated dispatch remains
+conditional. Their next step is a bounded repair in a disposable Ghidra project.
+
+Detailed operands, callers and terminal instructions remain under ignored
+`build/analysis/identification/continuation/`, in `bsim-review`, `adjacent-review`,
+`data-review` and `callback-review` JSON/Markdown packets. Python review processes
+used 256 MiB limits; full scoring uses the serialized 1 GiB guard.

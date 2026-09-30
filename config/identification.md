@@ -7,6 +7,16 @@ and is unnecessary for this work. The four-column [symbol map](symbols.csv)
 contains accepted identities; record uncertain alternatives here before adding
 them. Identification and exact reconstruction matching are separate results.
 
+The maintained code/data graph pipeline and its checked commands are described in
+[identification-tools.md](identification-tools.md). Use it for frozen experiments,
+reviewed data anchors, pointer/RTTI evidence, independent BSim/BinDiff retrieval
+and deterministic decision replay. The
+[identification plan](identification-plan.md) explains the evaluation policy;
+[identification-decisions.jsonl](identification-decisions.jsonl) retains reviewed
+Customiser, icon and animation families, semantic data aliases and negative
+identity controls. See [the reviewed mapping release](symbols.md#reviewed-graph-and-bsim-mapping-release-october-2026)
+for accepted rows and remaining callback graph gaps.
+
 ## What is available
 
 The structural progress batch follows the Android world, animation, file and

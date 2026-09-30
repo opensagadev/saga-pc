@@ -15,8 +15,10 @@ from pathlib import Path
 
 if __package__:
     from . import lib
+    from .identification_run import IdentificationRun, validate_completed_run
 else:
     import lib
+    from identification_run import IdentificationRun, validate_completed_run
 
 ROOT = lib.ROOT
 OUT = ROOT / "build/analysis/bulk-identify"
@@ -32,11 +34,12 @@ MIN_SUPPORTS_TO_PROPAGATE = 2
 MIN_RAW_MARGIN = 0.08
 
 
-def input_provenance():
+def input_provenance(run=None):
     """Fingerprint the actual inputs and corroborate exported direct PC calls."""
-    pe = lib.retail(lib.project()["target"])
+    pe = lib.retail(run.target if run else lib.project()["target"])
     checked = 0
-    with PC_REFS.open(newline="") as stream:
+    references = run.pc_references if run else PC_REFS
+    with references.open(newline="") as stream:
         for row in csv.DictReader(stream, delimiter="\t"):
             if row["type"] != "UNCONDITIONAL_CALL":
                 continue
@@ -50,33 +53,53 @@ def input_provenance():
             checked += 1
     if not checked:
         raise ValueError("PC reference export has no corroborated direct calls")
-    paths = [PC_FUNCS, PC_REFS, ANDROID, ROOT / "config/symbols.csv"]
+    paths = ([run.pc_functions, run.pc_references, run.android_graph, run.symbols_path]
+             if run else [PC_FUNCS, PC_REFS, ANDROID, ROOT / "config/symbols.csv"])
     paths.extend(ROOT / "tools" / name for name in (
         "identification.py", "reference_features.py", "source_graph.py"))
-    paths.extend(path for path in (PC_FEATURES, ANDROID_FEATURES) if path.exists())
+    paths.extend(path for path in ((run.pc_features, run.android_features) if run else
+                                    (PC_FEATURES, ANDROID_FEATURES)) if path.exists())
+    hashes = {(str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else str(path)): lib.sha256(path)
+              for path in paths}
+    if run:
+        hashes = {role: record["sha256"] for role, record in run.inputs.items()}
+        hashes.update({"tools/" + name: lib.sha256(ROOT / "tools" / name) for name in (
+            "identification.py", "identification_run.py", "reference_features.py", "source_graph.py")})
+        hashes.update({path.name: lib.sha256(path) for path in (run.pc_features, run.android_features)
+                       if path.exists()})
     return {"retail_sha256": lib.sha256(pe.path),
             "checked_pc_direct_calls": checked,
-            "sha256": {str(path.relative_to(ROOT)): lib.sha256(path) for path in paths},
+            "sha256": hashes,
             "limitations": "Hashes identify supplied analysis exports; they do not certify their completeness."}
 
 
-def refresh_features(android_root):
+def refresh_features(android_root, run=None):
     """Regenerate reference exports explicitly; scoring reuses them by default."""
     if __package__:
         from .reference_features import generate
     else:
         from reference_features import generate
-    config = lib.project()
+    target = run.target if run else lib.project()["target"]
     payload = generate(Path(android_root), Path(android_root) / "res/libTTapp.so",
-                       ROOT / config["target"]["exe"], PC_REFS, PC_FUNCS,
-                       ROOT / "build/analysis/data/accepted-symbols.json",
-                       ROOT / "config/symbols.csv", OUT / "data-features.json")
-    for key, path in (("android", ANDROID_FEATURES), ("pc", PC_FEATURES)):
+                       ROOT / target["exe"], run.pc_references if run else PC_REFS,
+                       run.pc_functions if run else PC_FUNCS,
+                       run.accepted_symbols if run else ROOT / "build/analysis/data/accepted-symbols.json",
+                       run.symbols_path if run else ROOT / "config/symbols.csv",
+                       (run.work_dir if run else OUT) / "data-features.json")
+    if run:
+        payload["inputs"] = {("snapshot:" + Path(path).relative_to(run.work_dir).as_posix()
+                              if Path(path).is_relative_to(run.work_dir) else path): digest
+                             for path, digest in payload["inputs"].items()}
+        (run.work_dir / "data-features.json").write_text(json.dumps(payload, indent=2) + "\n")
+    for key, path in (("android", run.android_features if run else ANDROID_FEATURES),
+                      ("pc", run.pc_features if run else PC_FEATURES)):
         path.write_text(json.dumps({**payload[key], "inputs": payload["inputs"]}, indent=2) + "\n")
+        if run:
+            run.record_cache(key + "_features", path)
 
 
 def benchmark(android, pc, seeds, mapped, a_out, a_in, p_out, p_in,
-              a_features=None, p_features=None):
+              a_features=None, p_features=None, output_dir=None):
     """Hide every fourth known pair before scoring; no names of held pairs seed calls."""
     held = {va: aa for index, (va, aa) in enumerate(sorted(seeds.items())) if index % 4 == 0}
     training = {va: aa for va, aa in seeds.items() if va not in held}
@@ -111,7 +134,7 @@ def benchmark(android, pc, seeds, mapped, a_out, a_in, p_out, p_in,
               "round1_top5_correct": top5, "held_out_proposed": len(predictions),
               "held_out_correct": sum(row["correct"] for row in predictions),
               "warning": "Existing mappings are labels; this biased sample does not calibrate probabilities for unknown functions."}
-    (OUT / "holdout.json").write_text(json.dumps({**result, "predictions": predictions}, indent=2) + "\n")
+    ((Path(output_dir) if output_dir else OUT) / "holdout.json").write_text(json.dumps({**result, "predictions": predictions}, indent=2) + "\n")
     return result
 
 
@@ -134,9 +157,9 @@ def base_name(name):
     return name
 
 
-def read_pc_functions():
+def read_pc_functions(path=None):
     result = {}
-    with PC_FUNCS.open() as stream:
+    with Path(path or PC_FUNCS).open() as stream:
         next(stream)
         for line in stream:
             entry, min_va, max_va, body, ranges, name = line.rstrip("\n").split("\t", 5)
@@ -157,21 +180,21 @@ def boundary_fields(row):
             "pc_byte_coverage_candidate": row["size"] if single else ""}
 
 
-def read_pc_edges():
+def read_pc_edges(path=None):
     calls_out, calls_in, reads = defaultdict(set), defaultdict(set), defaultdict(set)
-    with PC_REFS.open(newline="") as stream:
+    with Path(path or PC_REFS).open(newline="") as stream:
         for row in csv.DictReader(stream, delimiter="\t"):
             src, dst, typ = int(row["function"], 16), int(row["target"], 16), row["type"]
             if typ.endswith("CALL"):
                 calls_out[src].add(dst)
                 calls_in[dst].add(src)
-            elif typ in {"READ", "WRITE", "DATA", "POINTER"}:
+            elif typ in {"READ", "WRITE", "READ_WRITE", "DATA", "POINTER"}:
                 reads[src].add(dst)
     return calls_out, calls_in, reads
 
 
-def read_android():
-    graph = json.loads(ANDROID.read_text())
+def read_android(path=None):
+    graph = json.loads(Path(path or ANDROID).read_text())
     pretty = demangle([row["name"] for row in graph])
     result = {}
     for row, name in zip(graph, pretty):
@@ -294,20 +317,37 @@ def adjacency_for_pc(pc, calls_out, calls_in):
             {dst: sources & pc.keys() for dst, sources in calls_in.items()})
 
 
-def read_features(android, pc):
+def read_features(android, pc, run=None):
     """Load comparable strings and named data anchors when both exports exist."""
-    if not PC_FEATURES.exists() or not ANDROID_FEATURES.exists():
+    pc_path = run.pc_features if run else PC_FEATURES
+    android_path = run.android_features if run else ANDROID_FEATURES
+    if not pc_path.exists() or not android_path.exists():
         return {}, {}, {}
-    p_doc, a_doc = json.loads(PC_FEATURES.read_text()), json.loads(ANDROID_FEATURES.read_text())
+    p_doc, a_doc = json.loads(pc_path.read_text()), json.loads(android_path.read_text())
     if p_doc.get("schema") != "pc-function-data-features-v1" or a_doc.get("schema") != "android-function-data-features-v1":
         raise ValueError("Unsupported reference-feature schema; use --refresh-features")
-    validate_feature_inputs(p_doc, [PC_FUNCS, PC_REFS, ROOT / "config/symbols.csv",
-                                   ROOT / "build/analysis/data/accepted-symbols.json",
-                                   ROOT / lib.project()["target"]["exe"]])
+    if run:
+        validate_feature_inputs(p_doc, [run.pc_functions, run.pc_references,
+                                       ROOT / run.target["exe"]])
+        for role in ("symbols", "accepted_symbols"):
+            record = run.inputs.get(role)
+            if record:
+                permitted = {record["path"], "snapshot:" + record["snapshot"]}
+                matches = [digest for name, digest in p_doc.get("inputs", {}).items()
+                           if name in permitted]
+                if matches != [record["sha256"]]:
+                    raise ValueError(f"Stale or unverified feature input: {role}; use --refresh-features")
+    else:
+        validate_feature_inputs(p_doc, [PC_FUNCS, PC_REFS, ROOT / "config/symbols.csv",
+                                       ROOT / "build/analysis/data/accepted-symbols.json",
+                                       ROOT / lib.project()["target"]["exe"]])
     android_inputs = [Path(path) for path in a_doc.get("inputs", {}) if Path(path).name == "libTTapp.so"]
     if not android_inputs:
         raise ValueError("Android feature export has no original ELF fingerprint; use --refresh-features")
     validate_feature_inputs(a_doc, android_inputs)
+    if run:
+        for index, path in enumerate(android_inputs):
+            run.add_raw_input("android_original" if index == 0 else f"android_original_{index}", path)
     android_rows = {int(row["address"], 16): row for row in a_doc.get("functions", [])}
     pc_rows = {int(row["address"], 16): row for row in p_doc.get("functions", [])}
     pc_raw_names = [name for row in pc_rows.values() for name in row.get("anchors", [])]
@@ -455,18 +495,20 @@ def support_names(evidence, android):
     return ";".join(sorted(set(labels)))
 
 
-def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.parent / "saga"):
+def _generate(run, holdout=False, source_graph=None, refresh=False, android_root=ROOT.parent / "saga"):
     """Write research hypotheses only; never change the accepted symbol map."""
-    OUT.mkdir(parents=True, exist_ok=True)
+    out = run.work_dir
+    run.validate_inputs()
     if refresh:
-        refresh_features(android_root)
-    provenance = input_provenance()
-    symbol_rows = lib.load_symbols()
+        refresh_features(android_root, run)
+    symbol_rows = run.symbol_rows
     mapped = {r["address"]: r for r in symbol_rows if r["address"] is not None}
-    pc = read_pc_functions()
-    calls_out, calls_in, reads = read_pc_edges()
-    a_out_graph = read_android()
-    source_features, source_meta = source_overlay(a_out_graph, source_graph)
+    pc = read_pc_functions(run.pc_functions)
+    calls_out, calls_in, reads = read_pc_edges(run.pc_references)
+    a_out_graph = read_android(run.android_graph)
+    source_features, source_meta = source_overlay(a_out_graph, run.source_graph)
+    if source_meta.get("enabled"):
+        source_meta["path"] = run.inputs["source_overlay"]["path"]
     a_out, a_in = adjacency_for_android(a_out_graph)
     p_out, p_in = adjacency_for_pc(pc, calls_out, calls_in)
     symbols_at_address = defaultdict(set)
@@ -475,7 +517,8 @@ def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.
             symbols_at_address[row["address"]].add(base_name(row["symbol"]))
     ambiguous_pc_addresses = {va for va, names in symbols_at_address.items() if len(names) > 1}
     seed_map = unique_name_seeds(a_out_graph, pc, mapped, ambiguous_pc_addresses)
-    a_features, p_features, feature_meta = read_features(a_out_graph, pc)
+    a_features, p_features, feature_meta = read_features(a_out_graph, pc, run)
+    provenance = input_provenance(run)
     for va, tokens in source_features.items():
         a_features.setdefault(va, set()).update(tokens)
     # Mapping collisions are excluded from graph seeds; existing maps can have
@@ -586,12 +629,12 @@ def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.
                          "pc_data_refs": len(reads[va])})
     rows.sort(key=lambda r: (r["status"] not in {"seed-name-anchor", "inferred-mutual-top"},
                              r["source_name"], int(r["rank"] or 0), r["pc_address"]))
-    with (OUT / "hypotheses.csv").open("w", newline="") as stream:
+    with (out / "hypotheses.csv").open("w", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=fields)
         writer.writeheader()
         writer.writerows(rows)
 
-    with (OUT / "anchor-crosswalk.csv").open("w", newline="") as stream:
+    with (out / "anchor-crosswalk.csv").open("w", newline="") as stream:
         writer = csv.writer(stream)
         writer.writerow(["PC_VA", "PC_symbol", "Android_VA", "Android_name", "anchor_rule"])
         for va, aa in sorted(seed_map.items()):
@@ -611,7 +654,7 @@ def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.
                "android_functions_with_features": len(a_features), "pc_functions_with_features": len(p_features),
                "feature_export_schemas": feature_meta,
                "warning": "No candidate is an accepted PC identity; scores are not probabilities."}
-    with (OUT / "method.md").open("w") as stream:
+    with (out / "method.md").open("w") as stream:
         stream.write("# Broad iterative Android-to-PC candidate ledger\n\n")
         stream.write("Research hypotheses only. This output does not accept symbol rows or infer verified ABIs. "
                      "Scores are raw comparative heuristic values, not calibrated probabilities.\n\n")
@@ -638,7 +681,57 @@ def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.
     summary["source_overlay"] = source_meta
     if holdout:
         summary["holdout"] = benchmark(a_out_graph, pc, seed_map, mapped,
-                                       a_out, a_in, p_out, p_in, a_features, p_features)
-    (OUT / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
-    print(json.dumps(summary, indent=2))
+                                       a_out, a_in, p_out, p_in, a_features, p_features, output_dir=out)
+    (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     return summary
+
+
+if __package__:
+    from .identification_limits import bounded_identification
+else:
+    from identification_limits import bounded_identification
+
+
+@bounded_identification
+def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.parent / "saga",
+             analysis_dir=None, symbols=None, reviewed_pairs=None, run=None,
+             joint_graph=None, holdout_mode="pair", holdout_selection=None,
+             similarity_candidates=None):
+    """Snapshot inputs and atomically publish a completed research run."""
+    if holdout_mode != "pair" and not holdout:
+        raise ValueError("A family or data holdout requires --holdout")
+    if holdout_selection and not (holdout or similarity_candidates):
+        raise ValueError("An explicit selection requires --holdout or similarity comparison")
+    owned = run is None
+    if owned:
+        output = Path(analysis_dir or OUT)
+        run = IdentificationRun(output, symbols, source_graph=source_graph,
+                                reviewed_pairs=reviewed_pairs,
+                                accepted_symbols=ROOT / "build/analysis/data/accepted-symbols.json",
+                                pc_features=output / "pc-data-features.json" if (output / "pc-data-features.json").exists() else PC_FEATURES,
+                                android_features=output / "android-data-features.json" if (output / "android-data-features.json").exists() else ANDROID_FEATURES)
+    try:
+        for tool_name in ("identification_limits.py", "identification_state.py"):
+            run.add_raw_input("tool_" + tool_name, Path(__file__).with_name(tool_name))
+        if joint_graph:
+            if refresh or source_graph or run.source_graph:
+                raise ValueError("Joint mode uses raw graph exports; source overlays and legacy feature refresh require baseline mode")
+            if __package__:
+                from .identification_joint import generate_joint
+            else:
+                from identification_joint import generate_joint
+            summary = generate_joint(run, joint_graph, holdout=holdout,
+                                     holdout_mode=holdout_mode, holdout_selection=holdout_selection,
+                                     similarity_candidates=similarity_candidates)
+        else:
+            if holdout_mode != "pair" or holdout_selection or similarity_candidates or reviewed_pairs:
+                raise ValueError("Review journals, similarity and explicit/family/data holdouts require --joint-graph")
+            summary = _generate(run, holdout, source_graph, refresh, android_root)
+            if "android_original" not in run.inputs:
+                summary["android_original_identity"] = "unavailable: legacy call graph has no verified original ELF fingerprint"
+        run.publish(summary)
+        print(json.dumps(summary, indent=2))
+        return summary
+    except BaseException:
+        run.abort()
+        raise

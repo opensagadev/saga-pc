@@ -299,6 +299,15 @@ def main():
     mode.add_argument("--editor", action="store_true", help="Prepare VS Code headers and clang-tidy compilation database")
     mode.add_argument("--identify", action="store_true", help="Rank Android-to-PC call/reference graph hypotheses from local analysis exports")
     mode.add_argument("--extract-source-graph", action="store_true", help="Extract a cached Android source AST graph for identification")
+    parser.add_argument("--analysis-dir", type=Path, help="With --identify, atomically publish research outputs here")
+    parser.add_argument("--memory-limit-mb", type=int, default=1024,
+                        help="With --identify, bound process address space in MiB (default: 1024)")
+    parser.add_argument("--symbols", type=Path, help="With --identify, freeze this reviewed symbol map")
+    parser.add_argument("--joint-graph", type=Path, help="With --identify, use a hash-verified original code/data graph pair")
+    parser.add_argument("--reviewed-pairs", type=Path, help="With --identify, freeze a reviewed decision journal")
+    parser.add_argument("--similarity-candidates", type=Path, action="append", help="With --identify, add advisory BSim/BinDiff candidates")
+    parser.add_argument("--holdout-mode", choices=("pair", "family", "data"), default="pair", help="With --identify --holdout, choose a label split")
+    parser.add_argument("--holdout-selection", type=Path, help="With --identify --holdout, freeze an explicit evaluation selection")
     parser.add_argument("--holdout", action="store_true", help="With --identify, test recovery of hidden existing mappings")
     parser.add_argument("--source-graph", type=Path, help="With --identify, add a diagnostics-clean Android AST graph")
     parser.add_argument("--refresh-features", action="store_true", help="With --identify, regenerate ELF/PE data references before scoring")
@@ -318,15 +327,23 @@ def main():
                 args.source_graph or ROOT / "build/analysis/source-graph/android-source-graph.json",
                 inputs=args.input or (), all_source=args.input is None, jobs=args.jobs)
         return
-    if (args.holdout or args.source_graph or args.refresh_features) and not args.identify:
+    if (args.holdout or args.source_graph or args.refresh_features or args.analysis_dir or args.symbols
+            or args.joint_graph or args.reviewed_pairs or args.similarity_candidates or args.holdout_selection
+            or args.holdout_mode != "pair" or args.memory_limit_mb != 1024) and not args.identify:
         parser.error("--holdout, --source-graph and --refresh-features require --identify")
     if args.identify:
+        if args.memory_limit_mb < 128:
+            parser.error("--memory-limit-mb must be at least 128")
         if __package__:
             from .identification import generate
         else:
             from identification import generate
         generate(holdout=args.holdout, source_graph=args.source_graph,
-                 refresh=args.refresh_features, android_root=args.android_root)
+                 refresh=args.refresh_features, android_root=args.android_root,
+                 analysis_dir=args.analysis_dir, symbols=args.symbols, joint_graph=args.joint_graph,
+                 reviewed_pairs=args.reviewed_pairs, holdout_mode=args.holdout_mode,
+                 holdout_selection=args.holdout_selection, similarity_candidates=args.similarity_candidates,
+                 memory_limit_mb=args.memory_limit_mb)
         return
     if args.format:
         check_format()
