@@ -69,6 +69,241 @@ STATIC_ASSERT(sizeof(NULISTHDR) == 8);
 STATIC_ASSERT(offsetof(NULISTHDR, head) == 0);
 STATIC_ASSERT(offsetof(NULISTHDR, tail) == 4);
 
+typedef struct gizmo_pc_s {
+    void *object;
+    i16 field_04;
+    u8 type_id;
+    u8 field_07;
+} GIZMO_PC;
+STATIC_ASSERT(sizeof(GIZMO_PC) == 8);
+STATIC_ASSERT(offsetof(GIZMO_PC, type_id) == 6);
+
+typedef struct gizmotype_pc_s {
+    u8 unknown_00[0x44];
+    char *(__cdecl *get_gizmo_name)(void *gizmo);
+    u8 unknown_48[0xc];
+    void(__cdecl *set_visibility)(void *gizmo, i32 mode);
+    u8 unknown_58[4];
+    void(__cdecl *activate)(void *gizmo, i32 mode);
+    u8 unknown_60[0x3c];
+} GIZMOTYPE_PC;
+STATIC_ASSERT(sizeof(GIZMOTYPE_PC) == 0x9c);
+STATIC_ASSERT(offsetof(GIZMOTYPE_PC, get_gizmo_name) == 0x44);
+STATIC_ASSERT(offsetof(GIZMOTYPE_PC, set_visibility) == 0x54);
+STATIC_ASSERT(offsetof(GIZMOTYPE_PC, activate) == 0x5c);
+
+typedef struct gizmotypes_pc_s {
+    i32 count;
+    i32 max_levels;
+    GIZMOTYPE_PC *types;
+} GIZMOTYPES_PC;
+STATIC_ASSERT(sizeof(GIZMOTYPES_PC) == 0xc);
+STATIC_ASSERT(offsetof(GIZMOTYPES_PC, types) == 8);
+
+typedef struct gizmoset_pc_s {
+    GIZMOTYPE_PC *type;
+    i32 count;
+    i32 capacity;
+    GIZMO_PC *gizmos;
+    void *data;
+} GIZMOSET_PC;
+STATIC_ASSERT(sizeof(GIZMOSET_PC) == 0x14);
+STATIC_ASSERT(offsetof(GIZMOSET_PC, count) == 4);
+STATIC_ASSERT(offsetof(GIZMOSET_PC, gizmos) == 0xc);
+STATIC_ASSERT(offsetof(GIZMOSET_PC, data) == 0x10);
+
+typedef struct gizmosys_prefix_pc_s {
+    GIZMOSET_PC *sets;
+} GIZMOSYS_PREFIX_PC;
+STATIC_ASSERT(offsetof(GIZMOSYS_PREFIX_PC, sets) == 0);
+
+typedef struct GIZFLOWPROGRESS_PC {
+    i32 valid;
+    u32 active[16];
+    u32 triggered[16];
+    u32 completed[16];
+    u32 latched[16];
+    u32 output_state[16];
+} GIZFLOWPROGRESS_PC;
+
+typedef struct FLOWBOX_PC FLOWBOX_PC;
+typedef struct FLOWBOXGIZMOREF_PC FLOWBOXGIZMOREF_PC;
+typedef struct FLOWBOXGIZMODATA_PC FLOWBOXGIZMODATA_PC;
+struct FLOWBOX_PC {
+    u8 parent_count;
+    u8 loop_parent_count;
+    u8 child_count;
+    u8 type;
+    i32 runtime_id;
+    u8 last_process_frame;
+    u8 loop_checksum;
+    u8 state_flags_low;
+    u8 state_flags_high;
+    void *data;
+    FLOWBOX_PC **parents;
+    FLOWBOX_PC **children;
+    u8 *output_indices;
+    char *name;
+};
+struct FLOWBOXGIZMOREF_PC {
+    void *gizmo;
+    char *name;
+};
+struct FLOWBOXGIZMODATA_PC {
+    i32 gizmo_count;
+    i32 capacity;
+    FLOWBOXGIZMOREF_PC **gizmos;
+};
+typedef struct GIZFLOW_PC {
+    void *gizmo_sys;
+    i32 flowbox_count;
+    FLOWBOX_PC *flowboxes;
+    u8 frame;
+    u8 pointers_need_reset;
+} GIZFLOW_PC;
+
+STATIC_ASSERT(sizeof(GIZFLOWPROGRESS_PC) == 0x144);
+STATIC_ASSERT(offsetof(GIZFLOWPROGRESS_PC, valid) == 0x0);
+STATIC_ASSERT(offsetof(GIZFLOWPROGRESS_PC, active) == 0x4);
+STATIC_ASSERT(offsetof(GIZFLOWPROGRESS_PC, triggered) == 0x44);
+STATIC_ASSERT(offsetof(GIZFLOWPROGRESS_PC, completed) == 0x84);
+STATIC_ASSERT(offsetof(GIZFLOWPROGRESS_PC, latched) == 0xc4);
+STATIC_ASSERT(offsetof(GIZFLOWPROGRESS_PC, output_state) == 0x104);
+
+STATIC_ASSERT(sizeof(FLOWBOX_PC) == 0x20);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, parent_count) == 0x0);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, loop_parent_count) == 0x1);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, child_count) == 0x2);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, type) == 0x3);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, runtime_id) == 0x4);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, last_process_frame) == 0x8);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, loop_checksum) == 0x9);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, state_flags_low) == 0xa);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, state_flags_high) == 0xb);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, data) == 0xc);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, parents) == 0x10);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, children) == 0x14);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, output_indices) == 0x18);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, name) == 0x1c);
+
+STATIC_ASSERT(sizeof(FLOWBOXGIZMOREF_PC) == 0x8);
+STATIC_ASSERT(offsetof(FLOWBOXGIZMOREF_PC, gizmo) == 0x0);
+STATIC_ASSERT(offsetof(FLOWBOXGIZMOREF_PC, name) == 0x4);
+
+STATIC_ASSERT(sizeof(FLOWBOXGIZMODATA_PC) == 0xc);
+STATIC_ASSERT(offsetof(FLOWBOXGIZMODATA_PC, gizmo_count) == 0x0);
+STATIC_ASSERT(offsetof(FLOWBOXGIZMODATA_PC, capacity) == 0x4);
+STATIC_ASSERT(offsetof(FLOWBOXGIZMODATA_PC, gizmos) == 0x8);
+
+STATIC_ASSERT(sizeof(GIZFLOW_PC) == 0x10);
+STATIC_ASSERT(offsetof(GIZFLOW_PC, gizmo_sys) == 0x0);
+STATIC_ASSERT(offsetof(GIZFLOW_PC, flowbox_count) == 0x4);
+STATIC_ASSERT(offsetof(GIZFLOW_PC, flowboxes) == 0x8);
+STATIC_ASSERT(offsetof(GIZFLOW_PC, frame) == 0xc);
+STATIC_ASSERT(offsetof(GIZFLOW_PC, pointers_need_reset) == 0xd);
+
+typedef struct AISCRIPT_PC AISCRIPT_PC;
+typedef struct AISTATE_PC AISTATE_PC;
+typedef struct AIACTION_PC AIACTION_PC;
+typedef struct AICONDITION_PC AICONDITION_PC;
+typedef struct AIREFSCRIPT_PC AIREFSCRIPT_PC;
+typedef struct AIACTIONMACRO_PC AIACTIONMACRO_PC;
+typedef struct AICONDITIONMACRO_PC AICONDITIONMACRO_PC;
+
+struct AIACTION_PC {
+    NULISTLNK link;
+    char **params;
+    i32 param_count;
+    void *definition;
+};
+STATIC_ASSERT(sizeof(AIACTION_PC) == 0x14);
+STATIC_ASSERT(offsetof(AIACTION_PC, params) == 0x08);
+STATIC_ASSERT(offsetof(AIACTION_PC, definition) == 0x10);
+
+struct AICONDITION_PC {
+    NULISTLNK link;
+    f32 param_value;
+    u8 comparison;
+    i8 param_index;
+    u16 flags;
+    char *complex_expression;
+    char *argument;
+    void *initialized_argument;
+    void *definition;
+    char *next_state_name;
+    AISTATE_PC *next_state;
+    AICONDITION_PC *parameter_condition;
+};
+STATIC_ASSERT(sizeof(AICONDITION_PC) == 0x2c);
+STATIC_ASSERT(offsetof(AICONDITION_PC, param_value) == 0x08);
+STATIC_ASSERT(offsetof(AICONDITION_PC, comparison) == 0x0c);
+STATIC_ASSERT(offsetof(AICONDITION_PC, flags) == 0x0e);
+STATIC_ASSERT(offsetof(AICONDITION_PC, complex_expression) == 0x10);
+STATIC_ASSERT(offsetof(AICONDITION_PC, argument) == 0x14);
+STATIC_ASSERT(offsetof(AICONDITION_PC, definition) == 0x1c);
+STATIC_ASSERT(offsetof(AICONDITION_PC, next_state) == 0x24);
+STATIC_ASSERT(offsetof(AICONDITION_PC, parameter_condition) == 0x28);
+
+struct AIREFSCRIPT_PC {
+    NULISTLNK link;
+    char *name;
+    AISCRIPT_PC *script;
+    char *return_state_name;
+    AISTATE_PC *return_state;
+    u32 check_global_scripts : 1;
+    u32 check_level_scripts : 1;
+    NULISTHDR conditions;
+};
+STATIC_ASSERT(sizeof(AIREFSCRIPT_PC) == 0x24);
+STATIC_ASSERT(offsetof(AIREFSCRIPT_PC, script) == 0x0c);
+STATIC_ASSERT(offsetof(AIREFSCRIPT_PC, return_state_name) == 0x10);
+STATIC_ASSERT(offsetof(AIREFSCRIPT_PC, return_state) == 0x14);
+STATIC_ASSERT(offsetof(AIREFSCRIPT_PC, conditions) == 0x1c);
+
+struct AISTATE_PC {
+    NULISTLNK link;
+    NULISTHDR conditions;
+    NULISTHDR actions;
+    char *name;
+    NULISTHDR reference_scripts;
+};
+STATIC_ASSERT(sizeof(AISTATE_PC) == 0x24);
+STATIC_ASSERT(offsetof(AISTATE_PC, conditions) == 0x08);
+STATIC_ASSERT(offsetof(AISTATE_PC, actions) == 0x10);
+STATIC_ASSERT(offsetof(AISTATE_PC, name) == 0x18);
+STATIC_ASSERT(offsetof(AISTATE_PC, reference_scripts) == 0x1c);
+
+struct AIACTIONMACRO_PC {
+    NULISTLNK link;
+    char *name;
+    NULISTHDR actions;
+};
+STATIC_ASSERT(sizeof(AIACTIONMACRO_PC) == 0x14);
+STATIC_ASSERT(offsetof(AIACTIONMACRO_PC, actions) == 0x0c);
+
+struct AICONDITIONMACRO_PC {
+    NULISTLNK link;
+    char *name;
+    NULISTHDR conditions;
+};
+STATIC_ASSERT(sizeof(AICONDITIONMACRO_PC) == 0x14);
+STATIC_ASSERT(offsetof(AICONDITIONMACRO_PC, conditions) == 0x0c);
+
+typedef struct AISCRIPTPARAM_PC {
+    char *name;
+    f32 default_value;
+} AISCRIPTPARAM_PC;
+STATIC_ASSERT(sizeof(AISCRIPTPARAM_PC) == 0x08);
+
+struct AISCRIPT_PC {
+    u8 unknown_00[0x48];
+    NULISTHDR condition_macros;
+    NULISTHDR action_macros;
+};
+STATIC_ASSERT(sizeof(AISCRIPT_PC) == 0x58);
+STATIC_ASSERT(offsetof(AISCRIPT_PC, condition_macros) == 0x48);
+STATIC_ASSERT(offsetof(AISCRIPT_PC, action_macros) == 0x50);
+
 typedef struct gizaimessage_s {
     NULISTLNK links;
     char name[32];
@@ -1317,6 +1552,72 @@ STATIC_ASSERT(offsetof(GAMECAMERA, shake_decay) == 0x1d8);
 STATIC_ASSERT(offsetof(GAMECAMERA, shake_freq) == 0x1dc);
 STATIC_ASSERT(sizeof(NUVEC) == 0xc);
 
+typedef struct nugspline_s {
+    i16 length;
+    u16 pt_size;
+    char *name;
+    NUVEC *pts;
+} NUGSPLINE;
+STATIC_ASSERT(sizeof(NUGSPLINE) == 0xc);
+STATIC_ASSERT(offsetof(NUGSPLINE, length) == 0);
+STATIC_ASSERT(offsetof(NUGSPLINE, pt_size) == 2);
+STATIC_ASSERT(offsetof(NUGSPLINE, name) == 4);
+STATIC_ASSERT(offsetof(NUGSPLINE, pts) == 8);
+
+typedef struct SPLINEPOS_s {
+    NUGSPLINE *spline;
+    i16 segment;
+    i8 looping;
+    union {
+        u8 reached_end;
+        u8 finished;
+    };
+    union {
+        f32 segment_distance;
+        f32 distance;
+    };
+    f32 segment_length;
+    NUVEC position;
+    union {
+        f32 along;
+        f32 normalized_position;
+    };
+} SPLINEPOS;
+STATIC_ASSERT(sizeof(SPLINEPOS) == 0x20);
+STATIC_ASSERT(offsetof(SPLINEPOS, spline) == 0);
+STATIC_ASSERT(offsetof(SPLINEPOS, segment) == 4);
+STATIC_ASSERT(offsetof(SPLINEPOS, looping) == 6);
+STATIC_ASSERT(offsetof(SPLINEPOS, finished) == 7);
+STATIC_ASSERT(offsetof(SPLINEPOS, segment_distance) == 8);
+STATIC_ASSERT(offsetof(SPLINEPOS, segment_length) == 0xc);
+STATIC_ASSERT(offsetof(SPLINEPOS, position) == 0x10);
+STATIC_ASSERT(offsetof(SPLINEPOS, along) == 0x1c);
+
+typedef struct nuquat_s {
+    f32 x, y, z, w;
+} NUQUAT;
+STATIC_ASSERT(sizeof(NUQUAT) == 0x10);
+STATIC_ASSERT(offsetof(NUQUAT, x) == 0);
+STATIC_ASSERT(offsetof(NUQUAT, y) == 4);
+STATIC_ASSERT(offsetof(NUQUAT, z) == 8);
+STATIC_ASSERT(offsetof(NUQUAT, w) == 0xc);
+
+typedef union nuplane_s {
+    struct {
+        f32 a, b, c, d;
+    };
+    struct {
+        NUVEC normal;
+        f32 distance;
+    };
+} NUPLANE;
+STATIC_ASSERT(sizeof(NUPLANE) == 0x10);
+STATIC_ASSERT(offsetof(NUPLANE, a) == 0);
+STATIC_ASSERT(offsetof(NUPLANE, b) == 4);
+STATIC_ASSERT(offsetof(NUPLANE, c) == 8);
+STATIC_ASSERT(offsetof(NUPLANE, d) == 0xc);
+STATIC_ASSERT(offsetof(NUPLANE, normal) == 0);
+
 typedef struct numtx_s {
     f32 m00, m01, m02, m03;
     f32 m10, m11, m12, m13;
@@ -1516,7 +1817,8 @@ struct gameanimobj_s {
     void *animation;
     f32 start_frame;
     f32 end_frame;
-    u8 unknown_flags_20[4];
+    u8 flags;
+    u8 reserved_21[3];
     void *object_data;
 };
 STATIC_ASSERT(sizeof(GAMEANIMOBJ) == 0x28);
@@ -1526,7 +1828,7 @@ STATIC_ASSERT(offsetof(GAMEANIMOBJ, instance_animation) == 0x10);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, animation) == 0x14);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, start_frame) == 0x18);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, end_frame) == 0x1c);
-STATIC_ASSERT(offsetof(GAMEANIMOBJ, unknown_flags_20) == 0x20);
+STATIC_ASSERT(offsetof(GAMEANIMOBJ, flags) == 0x20);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, object_data) == 0x24);
 
 struct gameanimobjpool_s {
@@ -2776,6 +3078,17 @@ extern "C" {
     extern i32 NuSound3VolumeOffset;
     extern GAMEANIMPROGRESS gameanimsysprogress;
     void *__cdecl GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i32 size);
+    GAMEANIMOBJ *__cdecl GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f32 start_frame,
+                                               f32 end_frame, i32 append);
+    i32 __cdecl GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 frame_selection, i32 include_animated,
+                                          i32 include_static);
+    i32 __cdecl GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 *radius, i32 frame_selection,
+                                               i32 include_animated, i32 include_static);
+    i32 __cdecl GameAnimSet_GetVisibility(GAMEANIMSET *set);
+    void __cdecl GameAnimSet_SetVisibility(GAMEANIMSET *set, i32 visibility);
+    void __cdecl GameAnimSet_EvalAnim(GAMEANIMSET *set);
+    void __cdecl GameAnimSys_Update(GAMEANIMSYS *system);
+
     void __cdecl GameAnimSys_AllocateLevelProgressData(VARIPTR *buf, VARIPTR *end, i32 capacity, i32 level_count);
     void __cdecl GameAnimSys_StoreProgress(GAMEANIMSYS *system, i32 index);
     u8 *__cdecl GameAnimSys_GetProgressData(i32 index);
@@ -3061,6 +3374,86 @@ extern "C" {
     void __cdecl NuMtxGetYAxis(NUMTX *matrix, NUVEC *axis);
     void __cdecl NuMtxGetZAxis(NUMTX *matrix, NUVEC *axis);
     void __cdecl NuMtxGetTranslation(NUMTX *matrix, NUVEC *translation);
+    void __cdecl NuQuatFromEulerXYZ(NUQUAT *out, NUANG psi, NUANG theta, NUANG phi);
+    void __cdecl NuMtxToQuat(NUMTX *matrix, NUQUAT *out);
+    void __cdecl NuQuatToMtx(NUQUAT *quat, NUMTX *out);
+    void __cdecl NuQuatMul(NUQUAT *out, NUQUAT *q0, NUQUAT *q1);
+    void __cdecl NuQuatNormalise(NUQUAT *out, NUQUAT *q);
+    void __cdecl NuQuatHarmonize(NUQUAT *a, NUQUAT *b);
+    void __cdecl NuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t);
+    void __cdecl NuQuatLerp(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t);
+    f32 __cdecl NuCubicInterpolation(f32 m, f32 y0, f32 y1, f32 y2, f32 t);
+    void __cdecl NuQuatCubicInt(NUQUAT *out, NUQUAT *m, NUQUAT *a, NUQUAT *b, NUQUAT *c, f32 t);
+    f32 __cdecl NuHermiteInterpolation(f32 m, f32 y0, f32 y1, f32 y2, f32 t);
+    void __cdecl NuQuatHermiteInt(NUQUAT *out, NUQUAT *m, NUQUAT *q0, NUQUAT *q1, NUQUAT *q2, f32 t);
+    void __cdecl NuPlnEqn(NUPLANE *out, NUVEC *pnt0, NUVEC *pnt1, NUVEC *pnt2);
+    i32 __cdecl NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *direction);
+    i32 __cdecl NuPlnLine(NUPLANE *plane, NUVEC *s, NUVEC *e, NUVEC *out);
+    f32 __cdecl NuPlnLine3(NUPLANE *plane, NUVEC *pnt, NUVEC *v, NUVEC *out);
+    i32 __cdecl NuPtInPolyXY(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
+    i32 __cdecl NuPtInPolyYX(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
+    i32 __cdecl NuPtInPolyXZ(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
+    i32 __cdecl NuPtInPolyZX(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
+    i32 __cdecl NuPtInPolyYZ(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
+    i32 __cdecl NuPtInPolyZY(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
+    f32 __cdecl NuPlnDist2(NUPLANE *plane, NUVEC *a, NUVEC *b);
+    f32 __cdecl NuVecNorm(NUVEC *out, NUVEC *input);
+    void __cdecl NuVecSurfaceNormal(NUVEC *out, NUVEC *p0, NUVEC *p1, NUVEC *p2);
+    f32 __cdecl NuVecDistSqr(NUVEC *v0, NUVEC *v1, NUVEC *delta);
+    f32 __cdecl NuVecXZDistSqr(NUVEC *v0, NUVEC *v1, NUVEC *delta);
+    void __cdecl PointAlongSpline(NUGSPLINE *spline, f32 along, NUVEC *result, u16 *yaw, u16 *pitch, i32 looping);
+    void __cdecl MoveSplinePosition(SPLINEPOS *position, f32 distance);
+    void __cdecl GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *spline, i32 looping, i16 first_point,
+                                     i16 last_point);
+    void __cdecl InitSplinePosition(SPLINEPOS *position, NUGSPLINE *spline, f32 distance, i32 looping);
+    void __cdecl NuVecScaleAccum(NUVEC *out, NUVEC *input, f32 scale);
+    void __cdecl NuVecInvScale(NUVEC *out, NUVEC *input, f32 scale);
+    void __cdecl NuVecCrossRel(NUVEC *out, NUVEC *base, NUVEC *p0, NUVEC *p1);
+    f32 __cdecl NuVecMagXZ(NUVEC *input);
+    void __cdecl NuVecRotateX(NUVEC *out, NUVEC *input, NUANG angle);
+    void __cdecl NuVecRotateY(NUVEC *out, NUVEC *input, NUANG angle);
+    void __cdecl NuVecRotateZ(NUVEC *out, NUVEC *input, NUANG angle);
+    void __cdecl NuVecRotateYValZ(NUVEC *out, f32 magnitude, NUANG angle);
+    void __cdecl NuMtxLookAtD3D(NUMTX *matrix, NUVEC *eye, NUVEC *target, NUVEC *up);
+    void __cdecl NuMtxSetPerspectiveD3D(NUMTX *matrix, f32 fov, f32 aspect, f32 near_plane, f32 far_plane);
+    void __cdecl NuMtxSetFrustumD3D(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane,
+                                    f32 far_plane);
+    void __cdecl NuMtxSetFrustumBlend(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane,
+                                      f32 far_plane);
+    void __cdecl NuMtxGetFrustumD3D(NUMTX *matrix, f32 *left, f32 *right, f32 *bottom, f32 *top, f32 *near_plane,
+                                    f32 *far_plane);
+    f32 __cdecl NuAnimEndFrameOld(void *animation_data);
+    f32 __cdecl NuSpecialGetAnimEndFrame(NUSPECIALHANDLE *special);
+    void __cdecl NuSpecialGetRadius(NUSPECIALHANDLE *special, NUVEC *centre, f32 *radius);
+    void __cdecl GizFlowStoreProgress(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress);
+    void __cdecl ResetGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box);
+    i32 __cdecl CheckOutputActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    void __cdecl ResetGizFlowPointers(GIZFLOW_PC *system);
+    void __cdecl ProcessGizFlow(GIZFLOW_PC *system, f32 delta_time);
+    i32 __cdecl ProcessGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    void __cdecl GizmoSetVisibility(void *system, void *gizmo, i32 visible, i32 mode);
+    void __cdecl GizmoActivate(void *system, void *gizmo, i32 active, i32 mode);
+    void __cdecl NuMtxInvRSS(NUMTX *inverse, NUMTX *matrix);
+    f32 __cdecl NuMtxSSE(NUMTX *a, NUMTX *b);
+    void __cdecl NuMtxOrth(NUMTX *matrix);
+    i32 __cdecl RotDiff(u16 current, u16 target);
+    NUANG __cdecl NuAtan2D(f32 dx, f32 dy);
+    NUANG __cdecl NuAtan2DA(f32 dx, f32 dy);
+    f32 __cdecl NuAtan2DAF(f32 dx, f32 dy);
+    void __cdecl xConditions(NUFPAR_PC *parser);
+    void __cdecl xActions(NUFPAR_PC *parser);
+    void __cdecl xConditionMacro(NUFPAR_PC *parser);
+    void __cdecl xActionMacro(NUFPAR_PC *parser);
+    void __cdecl xRefScript(NUFPAR_PC *parser);
+    extern VARIPTR *aiscript_load_buffer;
+    extern VARIPTR *aiscript_load_end_buffer;
+    extern AISCRIPT_PC *aiscript_load_script;
+    extern AISTATE_PC *aiscript_load_state;
+    extern NULISTHDR *aiscript_load_refs;
+    extern NULISTHDR *aiscript_load_conditions;
+    extern NULISTHDR *aiscript_load_actions;
+    extern i32 condition_has_no_goto;
     void __cdecl NuVecAdd(NUVEC *dst, NUVEC *a, NUVEC *b);
     void __cdecl NuVecSub(NUVEC *dst, NUVEC *a, NUVEC *b);
     void __cdecl NuVecScale(NUVEC *dst, NUVEC *src, f32 scale);

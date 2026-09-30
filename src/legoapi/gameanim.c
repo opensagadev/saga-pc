@@ -1,5 +1,7 @@
 #include "saga.h"
 
+extern void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *special, i32 visible);
+
 /* PC animation constructors call the shared game allocator out of line. */
 __declspec(noinline) void *__cdecl GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i32 size) {
     void *ptr = NULL;
@@ -518,6 +520,317 @@ f32 __cdecl GameAnimSet_GetCompletionRatio(GAMEANIMSET *set) {
         return ratio;
     }
     return 0.0f;
+}
+
+GAMEANIMOBJ *__cdecl GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f32 start_frame, f32 end_frame,
+                                           i32 append) {
+    GAMEANIMOBJPOOL *pool;
+    GAMEANIMOBJ *object;
+    GAMEANIMOBJ *tail;
+    i32 object_index;
+    f32 last_frame;
+
+    if (set == NULL || set->object_pool == NULL || set->object_pool->free_objects == NULL || special == NULL ||
+        NuSpecialExistsFn(special) == 0) {
+        return NULL;
+    }
+
+    pool = set->object_pool;
+    ++set->object_count;
+    object = pool->free_objects;
+    ++pool->active_count;
+    pool->free_objects = object->next;
+    if (append != 0) {
+        object->next = NULL;
+        if (set->objects == NULL) {
+            set->objects = object;
+        } else {
+            tail = set->objects;
+            while (tail->next != NULL) {
+                tail = tail->next;
+            }
+            tail->next = object;
+        }
+    } else {
+        object->next = set->objects;
+        set->objects = object;
+    }
+
+    object_index = (i32)(object - pool->objects);
+    object->object_data = (u8 *)pool->object_data + pool->object_data_size * object_index;
+    object->special = *special;
+    object->instance_animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&object->special);
+    if (object->instance_animation == NULL) {
+        return object;
+    }
+
+    object->animation =
+        ((NUGSCN *)object->special.scene)->instance_animation_data[object->instance_animation->animation_index];
+    last_frame = NuSpecialGetAnimEndFrame(&object->special);
+    if (last_frame > 0.0f) {
+        if (last_frame < end_frame) {
+            object->end_frame = last_frame;
+        } else {
+            object->end_frame = end_frame;
+            if (object->end_frame < 1.0f) {
+                object->end_frame = 1.0f;
+            }
+        }
+        if (start_frame > last_frame) {
+            object->start_frame = last_frame;
+        } else {
+            object->start_frame = start_frame;
+            if (object->start_frame < 1.0f) {
+                object->start_frame = 1.0f;
+            }
+        }
+        ++set->animated_object_count;
+    } else {
+        (void)NuSpecialGetName(&object->special);
+    }
+    return object;
+}
+
+i32 __cdecl GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 frame_selection, i32 include_animated,
+                                      i32 include_static) {
+    GAMEANIMOBJ *object;
+    NUVEC sum = {0.0f, 0.0f, 0.0f};
+    i32 count = 0;
+
+    if (position == NULL || set == NULL || set->object_count == 0 || set->objects == NULL) {
+        return 0;
+    }
+    for (object = set->objects; object != NULL; object = object->next) {
+        if ((object->flags & 1) != 0) {
+            continue;
+        }
+        if (object->instance_animation != NULL) {
+            if (include_animated != 0) {
+                /* Matrix evaluation requires the unreconstructed NuAnimData2 matrix evaluator. */
+                STUBBED_NAMED("GameAnimSet_GetAveragePos: EvalAnim at 0x005526c0");
+            }
+        } else if (include_static != 0) {
+            NuVecAdd(&sum, &sum, NuSpecialGetDrawPos(&object->special));
+            ++count;
+        }
+    }
+    if (count == 0) {
+        return 0;
+    }
+    NuVecScale(position, &sum, 1.0f / (f32)count);
+    return 1;
+}
+
+i32 __cdecl GameAnimSet_GetVisibility(GAMEANIMSET *set) {
+    GAMEANIMOBJ *object;
+    i32 visible_count = 0;
+
+    if (set == NULL) {
+        return 0;
+    }
+    for (object = set->objects; object != NULL; object = object->next) {
+        if (NuSpecialGetVisibilityFn(&object->special) != 0) {
+            ++visible_count;
+        }
+    }
+    if (visible_count == set->object_count) {
+        return 2;
+    }
+    return visible_count > 0 ? 1 : 0;
+}
+
+void __cdecl GameAnimSet_SetVisibility(GAMEANIMSET *set, i32 visibility) {
+    GAMEANIMOBJ *object;
+
+    if (set == NULL) {
+        return;
+    }
+    for (object = set->objects; object != NULL; object = object->next) {
+        NuSpecialSetVisibility(&object->special, visibility);
+    }
+}
+
+void __cdecl GameAnimSet_EvalAnim(GAMEANIMSET *set) {
+    GAMEANIMOBJ *object;
+
+    if (set == NULL) {
+        return;
+    }
+    for (object = set->objects; object != NULL; object = object->next) {
+        /* EvalAnim2's matrix-data evaluator closure is not reconstructed yet. */
+        STUBBED_NAMED("GameAnimSet_EvalAnim: EvalAnim2 at 0x00552760");
+    }
+}
+
+i32 __cdecl GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 *radius, i32 frame_selection,
+                                           i32 include_animated, i32 include_static) {
+    GAMEANIMOBJ *object;
+    NUVEC minimum = {1.0e9f, 1.0e9f, 1.0e9f};
+    NUVEC maximum = {-1.0e9f, -1.0e9f, -1.0e9f};
+    i32 found_object = 0;
+
+    (void)frame_selection;
+    if (centre == NULL || set == NULL || set->object_count == 0 || set->objects == NULL) {
+        return 0;
+    }
+    for (object = set->objects; object != NULL; object = object->next) {
+        NUVEC object_centre;
+        f32 object_radius;
+        NUMTX *draw_matrix;
+
+        if ((object->flags & 1) != 0) {
+            continue;
+        }
+        if (object->instance_animation != NULL) {
+            if (include_animated != 0) {
+                /* Matrix evaluation requires the unreconstructed NuAnimData2 matrix evaluator. */
+                STUBBED_NAMED("GameAnimSet_GetCentreAndRadius: EvalAnim at 0x005526c0");
+            }
+            continue;
+        }
+        if (include_static == 0) {
+            continue;
+        }
+        draw_matrix = NuSpecialGetDrawMtx(&object->special);
+        if (draw_matrix == NULL) {
+            continue;
+        }
+        NuSpecialGetRadius(&object->special, &object_centre, &object_radius);
+        object_radius *= 0.75f;
+        NuVecMtxTransform(&object_centre, &object_centre, draw_matrix);
+        if (object_centre.x - object_radius < minimum.x) {
+            minimum.x = object_centre.x - object_radius;
+        }
+        if (object_centre.y - object_radius < minimum.y) {
+            minimum.y = object_centre.y - object_radius;
+        }
+        if (object_centre.z - object_radius < minimum.z) {
+            minimum.z = object_centre.z - object_radius;
+        }
+        if (object_centre.x + object_radius > maximum.x) {
+            maximum.x = object_centre.x + object_radius;
+        }
+        if (object_centre.y + object_radius > maximum.y) {
+            maximum.y = object_centre.y + object_radius;
+        }
+        if (object_centre.z + object_radius > maximum.z) {
+            maximum.z = object_centre.z + object_radius;
+        }
+        found_object = 1;
+    }
+    if (found_object == 0) {
+        return 0;
+    }
+    centre->x = (minimum.x + maximum.x) * 0.5f;
+    centre->y = (minimum.y + maximum.y) * 0.5f;
+    centre->z = (minimum.z + maximum.z) * 0.5f;
+    if (radius != NULL) {
+        f32 half_x = (maximum.x - minimum.x) * 0.5f;
+        f32 half_y = (maximum.y - minimum.y) * 0.5f;
+        f32 half_z = (maximum.z - minimum.z) * 0.5f;
+        *radius = NuFsqrt(half_x * half_x + half_y * half_y + half_z * half_z);
+    }
+    return 1;
+}
+
+void __cdecl GameAnimSys_Update(GAMEANIMSYS *system) {
+    GAMEANIMSET *set;
+    GAMEANIMSET *next_set;
+    GAMEANIMOBJ *object;
+    u8 was_no_visibility_test;
+    i32 all_playing_forward;
+    i32 all_at_start;
+    i32 all_at_end;
+    i32 any_special_no_visibility_test;
+    f32 direction;
+    f32 previous_frame;
+    f32 directed_frame;
+
+    if (system == NULL) {
+        return;
+    }
+    set = (GAMEANIMSET *)NuLinkedListGetHead(&system->active_sets);
+    while (set != NULL) {
+        next_set = (GAMEANIMSET *)NuLinkedListGetNext(&system->active_sets, &set->links);
+        was_no_visibility_test = (u8)(set->flags & 1);
+        set->flags &= (u16)~1;
+        if ((set->flags & 2) != 0) {
+            set->flags &= (u16) ~(1 | 2);
+            GameAnimSet_RemoveFromSystemList(set);
+            set = next_set;
+            continue;
+        }
+        set->state = 0;
+        all_playing_forward = 1;
+        all_at_start = 1;
+        all_at_end = 1;
+        any_special_no_visibility_test = 0;
+        for (object = set->objects; object != NULL; object = object->next) {
+            if (NuSpecialGetNoVisiTestFn(&object->special) != 0) {
+                any_special_no_visibility_test = 1;
+            }
+            if (object->instance_animation != NULL) {
+                direction = object->start_frame > object->end_frame ? -1.0f : 1.0f;
+                previous_frame = object->instance_animation->ltime;
+                if (previous_frame * direction >= object->end_frame * direction) {
+                    if (object->instance_animation->tfactor * direction < 0.0f) {
+                        object->instance_animation->ltime = object->end_frame;
+                    } else if ((object->instance_animation->flags & 8) != 0) {
+                        object->instance_animation->ltime = previous_frame - object->end_frame + object->start_frame;
+                    } else {
+                        object->instance_animation->ltime = object->end_frame;
+                        object->instance_animation->flags &= ~1u;
+                    }
+                } else if (previous_frame * direction <= object->start_frame * direction) {
+                    if (object->instance_animation->tfactor * direction > 0.0f) {
+                        object->instance_animation->ltime = object->start_frame;
+                    } else if ((object->instance_animation->flags & 8) != 0) {
+                        object->instance_animation->ltime = object->end_frame - (object->start_frame - previous_frame);
+                    } else {
+                        object->instance_animation->ltime = object->start_frame;
+                        object->instance_animation->flags &= ~1u;
+                    }
+                }
+                if (previous_frame != object->instance_animation->ltime) {
+                    STUBBED_NAMED("GameAnimSys_Update: EvalAnim2 at 0x00552760");
+                }
+                if ((object->instance_animation->flags & 1) != 0) {
+                    set->flags |= 1;
+                    if (object->instance_animation->tfactor * direction < 0.0f) {
+                        all_playing_forward = 0;
+                    }
+                }
+                directed_frame = object->instance_animation->ltime * direction;
+                if (directed_frame > object->start_frame * direction) {
+                    all_at_start = 0;
+                }
+                if (directed_frame < object->end_frame * direction) {
+                    all_at_end = 0;
+                }
+            }
+        }
+        if ((set->flags & 1) != any_special_no_visibility_test) {
+            for (object = set->objects; object != NULL; object = object->next) {
+                NuSpecialSetNoVisiTest(&object->special, set->flags & 1);
+            }
+        }
+        if ((set->flags & 1) != 0) {
+            set->state = all_playing_forward != 0 ? 1 : 3;
+        } else {
+            if (all_at_end != 0) {
+                set->state = 2;
+            } else if (all_at_start == 0) {
+                set->state = 4;
+            }
+            if (was_no_visibility_test != 0) {
+                set->flags |= 2;
+            }
+        }
+        if ((set->flags & (1 | 2)) == 0) {
+            GameAnimSet_RemoveFromSystemList(set);
+        }
+        set = next_set;
+    }
 }
 
 void __cdecl edanimParamReset(void) {

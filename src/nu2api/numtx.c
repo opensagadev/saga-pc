@@ -24,8 +24,196 @@ STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
 STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
 
+f32 __cdecl NuMtxSSE(NUMTX *a, NUMTX *b) {
+    f32 sse;
+
+    sse = (a->m00 - b->m00) * (a->m00 - b->m00);
+    sse += (a->m01 - b->m01) * (a->m01 - b->m01);
+    sse += (a->m02 - b->m02) * (a->m02 - b->m02);
+    sse += (a->m03 - b->m03) * (a->m03 - b->m03);
+    sse += (a->m10 - b->m10) * (a->m10 - b->m10);
+    sse += (a->m11 - b->m11) * (a->m11 - b->m11);
+    sse += (a->m12 - b->m12) * (a->m12 - b->m12);
+    sse += (a->m13 - b->m13) * (a->m13 - b->m13);
+    sse += (a->m20 - b->m20) * (a->m20 - b->m20);
+    sse += (a->m21 - b->m21) * (a->m21 - b->m21);
+    sse += (a->m22 - b->m22) * (a->m22 - b->m22);
+    sse += (a->m23 - b->m23) * (a->m23 - b->m23);
+    sse += (a->m30 - b->m30) * (a->m30 - b->m30);
+    sse += (a->m31 - b->m31) * (a->m31 - b->m31);
+    sse += (a->m32 - b->m32) * (a->m32 - b->m32);
+    sse += (a->m33 - b->m33) * (a->m33 - b->m33);
+
+    return sse;
+}
+
+void __cdecl NuMtxOrth(NUMTX *m) {
+    f32 magnitude;
+
+    magnitude = 1.0f / NuFsqrt(m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02);
+    m->m00 = m->m00 * magnitude;
+    m->m01 = m->m01 * magnitude;
+    m->m02 = m->m02 * magnitude;
+
+    magnitude = 1.0f / NuFsqrt(m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12);
+    m->m10 = m->m10 * magnitude;
+    m->m11 = m->m11 * magnitude;
+    m->m12 = m->m12 * magnitude;
+
+    m->m20 = m->m01 * m->m12 - m->m02 * m->m11;
+    m->m21 = m->m02 * m->m10 - m->m00 * m->m12;
+    m->m22 = m->m00 * m->m11 - m->m01 * m->m10;
+    m->m10 = m->m21 * m->m02 - m->m22 * m->m01;
+    m->m11 = m->m22 * m->m00 - m->m20 * m->m02;
+    m->m12 = m->m20 * m->m01 - m->m21 * m->m00;
+}
+
+void __cdecl NuMtxInvRSS(NUMTX *inverse, NUMTX *matrix) {
+    NUMTX result;
+    f32 determinant;
+    f32 inverse_determinant;
+
+    determinant = matrix->m00 * (matrix->m11 * matrix->m22 - matrix->m12 * matrix->m21) -
+                  matrix->m01 * (matrix->m10 * matrix->m22 - matrix->m12 * matrix->m20) +
+                  matrix->m02 * (matrix->m10 * matrix->m21 - matrix->m11 * matrix->m20);
+    inverse_determinant = determinant == 0.0f ? 0.0f : 1.0f / determinant;
+
+    result.m00 = (matrix->m11 * matrix->m22 - matrix->m12 * matrix->m21) * inverse_determinant;
+    result.m10 = (matrix->m10 * matrix->m22 - matrix->m12 * matrix->m20) * -inverse_determinant;
+    result.m20 = (matrix->m10 * matrix->m21 - matrix->m11 * matrix->m20) * inverse_determinant;
+    result.m01 = (matrix->m01 * matrix->m22 - matrix->m02 * matrix->m21) * -inverse_determinant;
+    result.m11 = (matrix->m00 * matrix->m22 - matrix->m02 * matrix->m20) * inverse_determinant;
+    result.m21 = (matrix->m00 * matrix->m21 - matrix->m01 * matrix->m20) * -inverse_determinant;
+    result.m02 = (matrix->m01 * matrix->m12 - matrix->m02 * matrix->m11) * inverse_determinant;
+    result.m12 = (matrix->m00 * matrix->m12 - matrix->m02 * matrix->m10) * -inverse_determinant;
+    result.m22 = (matrix->m00 * matrix->m11 - matrix->m01 * matrix->m10) * inverse_determinant;
+    result.m03 = 0.0f;
+    result.m13 = 0.0f;
+    result.m23 = 0.0f;
+    result.m33 = 1.0f;
+    result.m30 = 0.0f;
+    result.m31 = 0.0f;
+    result.m32 = 0.0f;
+    *inverse = result;
+}
+
 void __cdecl NuMtxMulVU0(NUMTX *result, NUMTX *left, NUMTX *right) {
     D3DXMatrixMultiply((D3DXMATRIX *)result, (D3DXMATRIX *)left, (D3DXMATRIX *)right);
+}
+
+void __cdecl NuMtxLookAtD3D(NUMTX *matrix, NUVEC *eye, NUVEC *center, NUVEC *up) {
+    NUVEC x_axis;
+    NUVEC y_axis;
+    NUVEC z_axis;
+
+    NuVecSub(&z_axis, center, eye);
+    NuVecNorm(&z_axis, &z_axis);
+    NuVecCross(&x_axis, up, &z_axis);
+    NuVecNorm(&x_axis, &x_axis);
+    NuVecCross(&y_axis, &z_axis, &x_axis);
+    NuVecNorm(&y_axis, &y_axis);
+
+    matrix->m00 = x_axis.x;
+    matrix->m01 = y_axis.x;
+    matrix->m02 = z_axis.x;
+    matrix->m03 = 0.0f;
+    matrix->m10 = x_axis.y;
+    matrix->m11 = y_axis.y;
+    matrix->m12 = z_axis.y;
+    matrix->m13 = 0.0f;
+    matrix->m20 = x_axis.z;
+    matrix->m21 = y_axis.z;
+    matrix->m22 = z_axis.z;
+    matrix->m23 = 0.0f;
+    matrix->m30 = (-eye->x * x_axis.x - eye->y * x_axis.y) - eye->z * x_axis.z;
+    matrix->m31 = (-eye->x * y_axis.x - eye->y * y_axis.y) - eye->z * y_axis.z;
+    matrix->m32 = (-eye->x * z_axis.x - eye->y * z_axis.y) - eye->z * z_axis.z;
+    matrix->m33 = 1.0f;
+}
+
+void __cdecl NuMtxSetPerspectiveD3D(NUMTX *matrix, f32 fovy, f32 aspect, f32 z_near, f32 z_far) {
+    i32 half_angle = (i32)((fovy / 2.0f) * (65536.0f / 360.0f));
+    f32 tangent = NuTrigTable[(half_angle >> 1) & 0x7fff] / NuTrigTable[((half_angle + 0x4000) >> 1) & 0x7fff];
+
+    matrix->m00 = 1.0f / (aspect * tangent);
+    matrix->m01 = 0.0f;
+    matrix->m02 = 0.0f;
+    matrix->m03 = 0.0f;
+    matrix->m10 = 0.0f;
+    matrix->m11 = 1.0f / tangent;
+    matrix->m12 = 0.0f;
+    matrix->m13 = 0.0f;
+    matrix->m20 = 0.0f;
+    matrix->m21 = 0.0f;
+    matrix->m22 = z_far / (z_far - z_near);
+    matrix->m23 = 1.0f;
+    matrix->m30 = 0.0f;
+    matrix->m31 = 0.0f;
+    matrix->m32 = (-z_far * z_near) / (z_far - z_near);
+    matrix->m33 = 0.0f;
+}
+
+void __cdecl NuMtxSetFrustumD3D(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 z_near, f32 z_far) {
+    matrix->m00 = (z_near + z_near) / (right - left);
+    matrix->m01 = 0.0f;
+    matrix->m02 = 0.0f;
+    matrix->m03 = 0.0f;
+    matrix->m10 = 0.0f;
+    matrix->m11 = (z_near + z_near) / (top - bottom);
+    matrix->m12 = 0.0f;
+    matrix->m13 = 0.0f;
+    matrix->m20 = (right + left) / (left - right);
+    matrix->m21 = (top + bottom) / (bottom - top);
+    matrix->m22 = z_far / (z_far - z_near);
+    matrix->m23 = 1.0f;
+    matrix->m30 = 0.0f;
+    matrix->m31 = 0.0f;
+    matrix->m32 = (-z_far * z_near) / (z_far - z_near);
+    matrix->m33 = 0.0f;
+}
+
+void __cdecl NuMtxSetFrustumBlend(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 z_near, f32 z_far) {
+    matrix->m00 = (z_near + z_near) / (right - left);
+    matrix->m01 = 0.0f;
+    matrix->m02 = 0.0f;
+    matrix->m03 = 0.0f;
+    matrix->m10 = 0.0f;
+    matrix->m11 = (z_near + z_near) / (top - bottom);
+    matrix->m12 = 0.0f;
+    matrix->m13 = 0.0f;
+    matrix->m20 = (right + left) / (left - right);
+    matrix->m21 = (top + bottom) / (bottom - top);
+    matrix->m22 = (z_far + z_near) / (z_far - z_near);
+    matrix->m23 = 1.0f;
+    matrix->m30 = 0.0f;
+    matrix->m31 = 0.0f;
+    matrix->m32 = (z_far * -2.0f * z_near) / (z_far - z_near);
+    matrix->m33 = 0.0f;
+}
+
+void __cdecl NuMtxGetFrustumD3D(NUMTX *matrix, f32 *left, f32 *right, f32 *bottom, f32 *top, f32 *z_near_out,
+                                f32 *z_far_out) {
+    f32 q = matrix->m22;
+    f32 z_near = -matrix->m32 / q;
+
+    if (z_far_out != NULL) {
+        *z_far_out = (q * z_near) / (q - 1.0f);
+    }
+    if (left != NULL) {
+        *left = ((-1.0f - matrix->m20) * z_near) / matrix->m00;
+    }
+    if (right != NULL) {
+        *right = ((1.0f - matrix->m20) * z_near) / matrix->m00;
+    }
+    if (bottom != NULL) {
+        *bottom = ((-1.0f - matrix->m21) * z_near) / matrix->m11;
+    }
+    if (top != NULL) {
+        *top = ((1.0f - matrix->m21) * z_near) / matrix->m11;
+    }
+    if (z_near_out != NULL) {
+        *z_near_out = z_near;
+    }
 }
 
 void __cdecl NuMtxSetTranslation(NUMTX *m, NUVEC *t) {
@@ -376,4 +564,60 @@ void __cdecl NuMtxInvR(NUMTX *m, NUMTX *source) {
     m->m31 = m->m32;
     m->m30 = m->m31;
     m->m33 = 1.0f;
+}
+
+void __cdecl NuMtxToQuat(NUMTX *m, NUQUAT *out) {
+    f32 elements[3][3];
+    i32 next[3];
+    f32 q[4];
+    f32 s;
+    f32 trace;
+    i32 i;
+    i32 j;
+    i32 k;
+
+    elements[0][0] = m->m00;
+    elements[0][1] = m->m01;
+    elements[0][2] = m->m02;
+    elements[1][0] = m->m10;
+    elements[1][1] = m->m11;
+    elements[1][2] = m->m12;
+    elements[2][0] = m->m20;
+    elements[2][1] = m->m21;
+    elements[2][2] = m->m22;
+    next[0] = 1;
+    next[1] = 2;
+    next[2] = 0;
+    trace = elements[0][0] + elements[1][1] + elements[2][2];
+
+    if (trace > 0.0f) {
+        s = NuFsqrt(trace + 1.0f);
+        out->w = s * 0.5f;
+        s = 0.5f / s;
+        out->x = (elements[1][2] - elements[2][1]) * s;
+        out->y = (elements[2][0] - elements[0][2]) * s;
+        out->z = (elements[0][1] - elements[1][0]) * s;
+    } else {
+        i = 0;
+        if (elements[1][1] > elements[0][0]) {
+            i = 1;
+        }
+        if (elements[2][2] > elements[i][i]) {
+            i = 2;
+        }
+        j = next[i];
+        k = next[j];
+        s = NuFsqrt((elements[i][i] - (elements[j][j] + elements[k][k])) + 1.0f);
+        q[i] = s * 0.5f;
+        if (s != 0.0f) {
+            s = 0.5f / s;
+        }
+        q[3] = (elements[j][k] - elements[k][j]) * s;
+        q[j] = (elements[i][j] + elements[j][i]) * s;
+        q[k] = (elements[i][k] + elements[k][i]) * s;
+        out->x = q[0];
+        out->y = q[1];
+        out->z = q[2];
+        out->w = q[3];
+    }
 }

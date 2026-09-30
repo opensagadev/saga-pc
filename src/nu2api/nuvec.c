@@ -40,6 +40,65 @@ void __cdecl NuVecAddScale(NUVEC *out, NUVEC *left, NUVEC *right, f32 scale) {
     out->z = left->z + right->z * scale;
 }
 
+void __cdecl NuVecScaleAccum(NUVEC *out, NUVEC *vector, f32 scale) {
+    out->x += vector->x * scale;
+    out->y += vector->y * scale;
+    out->z += vector->z * scale;
+}
+
+void __cdecl NuVecInvScale(NUVEC *out, NUVEC *vector, f32 scale) {
+    f32 inverse_scale;
+
+    if (scale == 0.0f) {
+        inverse_scale = 0.0f;
+    } else {
+        inverse_scale = 1.0f / scale;
+    }
+
+    out->x = vector->x * inverse_scale;
+    out->y = vector->y * inverse_scale;
+    out->z = vector->z * inverse_scale;
+}
+
+void __cdecl NuVecRotateX(NUVEC *out, NUVEC *vector, NUANG angle) {
+    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    f32 y = vector->y;
+
+    out->x = vector->x;
+    out->y = y * cosine - vector->z * sine;
+    out->z = y * sine + vector->z * cosine;
+}
+
+void __cdecl NuVecRotateY(NUVEC *out, NUVEC *vector, NUANG angle) {
+    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    f32 x = vector->x;
+
+    out->x = x * cosine + vector->z * sine;
+    out->y = vector->y;
+    out->z = vector->z * cosine - x * sine;
+}
+
+void __cdecl NuVecRotateZ(NUVEC *out, NUVEC *vector, NUANG angle) {
+    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    f32 x = vector->x;
+
+    out->x = x * cosine - vector->y * sine;
+    out->y = x * sine + vector->y * cosine;
+    out->z = vector->z;
+}
+
+void __cdecl NuVecRotateYValZ(NUVEC *out, f32 magnitude, NUANG angle) {
+    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+
+    out->x = magnitude * sine;
+    out->y = 0.0f;
+    out->z = magnitude * cosine;
+}
+
 f32 __cdecl NuVecDot(NUVEC *left, NUVEC *right) {
     return left->x * right->x + left->y * right->y + left->z * right->z;
 }
@@ -58,6 +117,19 @@ void __cdecl NuVecCross(NUVEC *out, NUVEC *left, NUVEC *right) {
     out->x = left->y * right->z - left->z * right->y;
     out->y = y;
     out->z = z;
+}
+
+void __cdecl NuVecCrossRel(NUVEC *out, NUVEC *base, NUVEC *p0, NUVEC *p1) {
+    NUVEC edge0;
+    NUVEC edge1;
+
+    edge0.x = p0->x - base->x;
+    edge0.y = p0->y - base->y;
+    edge0.z = p0->z - base->z;
+    edge1.x = p1->x - base->x;
+    edge1.y = p1->y - base->y;
+    edge1.z = p1->z - base->z;
+    NuVecCross(out, &edge0, &edge1);
 }
 
 void __cdecl NuVecMax(NUVEC *out, NUVEC *left, NUVEC *right) {
@@ -102,6 +174,67 @@ void __cdecl NuVecMin(NUVEC *out, NUVEC *left, NUVEC *right) {
 
 f32 __cdecl NuVecMagSqr(NUVEC *vector) {
     return vector->x * vector->x + vector->y * vector->y + vector->z * vector->z;
+}
+
+f32 __cdecl NuVecMagXZ(NUVEC *vector) {
+    return NuFsqrt(vector->x * vector->x + vector->z * vector->z);
+}
+
+f32 __cdecl NuVecNorm(NUVEC *out, NUVEC *vector) {
+    f32 length = NuFsqrt(vector->x * vector->x + vector->y * vector->y + vector->z * vector->z);
+    f32 inverse_length;
+
+    if (length > 0.0f) {
+        inverse_length = 1.0f / length;
+    } else {
+        inverse_length = 0.0f;
+    }
+
+    out->x = vector->x * inverse_length;
+    out->y = vector->y * inverse_length;
+    out->z = vector->z * inverse_length;
+    return length;
+}
+
+void __cdecl NuVecSurfaceNormal(NUVEC *out, NUVEC *p0, NUVEC *p1, NUVEC *p2) {
+    NUVEC edge0;
+    NUVEC edge1;
+
+    edge0.x = p0->x - p1->x;
+    edge0.y = p0->y - p1->y;
+    edge0.z = p0->z - p1->z;
+    edge1.x = p0->x - p2->x;
+    edge1.y = p0->y - p2->y;
+    edge1.z = p0->z - p2->z;
+
+    NuVecCross(out, &edge1, &edge0);
+    NuVecNorm(out, out);
+}
+
+f32 __cdecl NuVecDistSqr(NUVEC *v0, NUVEC *v1, NUVEC *delta) {
+    NUVEC local_delta;
+
+    if (delta == NULL) {
+        delta = &local_delta;
+    }
+
+    delta->x = v0->x - v1->x;
+    delta->y = v0->y - v1->y;
+    delta->z = v0->z - v1->z;
+    return delta->x * delta->x + delta->y * delta->y + delta->z * delta->z;
+}
+
+f32 __cdecl NuVecXZDistSqr(NUVEC *v0, NUVEC *v1, NUVEC *delta) {
+    NUVEC local_delta;
+
+    if (delta == NULL) {
+        delta = &local_delta;
+    }
+
+    delta->x = v0->x - v1->x;
+    delta->y = 0.0f;
+    delta->z = v0->z - v1->z;
+    return delta->x * delta->x + delta->z * delta->z;
 }
 
 void __cdecl NuVecLerp(NUVEC *out, NUVEC *left, NUVEC *right, f32 t) {

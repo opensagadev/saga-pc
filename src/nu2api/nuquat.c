@@ -1,0 +1,250 @@
+#include "saga.h"
+
+#define QUAT_SIN(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
+#define QUAT_COS(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
+
+static __forceinline f32 NuFdiv(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
+
+void NuQuatFromEulerXYZ(NUQUAT *out, NUANG psi, NUANG theta, NUANG phi) {
+    f32 sin_psi_over_2;
+    f32 cos_psi_over_2;
+    f32 sin_theta_over_2;
+    f32 cos_theta_over_2;
+    f32 sin_phi_over_2;
+    f32 cos_phi_over_2;
+    f32 sin_phi_times_sin_theta;
+    f32 cos_phi_times_cos_theta;
+    f32 sin_phi_times_cos_theta;
+    f32 cos_phi_times_sin_theta;
+
+    psi /= 2;
+    theta /= 2;
+    phi /= 2;
+
+    cos_psi_over_2 = QUAT_COS(psi);
+    sin_psi_over_2 = QUAT_SIN(psi);
+
+    sin_theta_over_2 = QUAT_SIN(theta);
+    cos_theta_over_2 = QUAT_COS(theta);
+
+    cos_phi_over_2 = QUAT_COS(phi);
+    sin_phi_over_2 = QUAT_SIN(phi);
+
+    cos_phi_times_cos_theta = cos_phi_over_2 * cos_theta_over_2;
+    sin_phi_times_sin_theta = sin_phi_over_2 * sin_theta_over_2;
+
+    out->w = cos_phi_times_cos_theta * cos_psi_over_2 + sin_phi_times_sin_theta * sin_psi_over_2;
+    out->x = cos_phi_times_cos_theta * sin_psi_over_2 - sin_phi_times_sin_theta * cos_psi_over_2;
+
+    cos_phi_times_sin_theta = cos_phi_over_2 * sin_theta_over_2;
+    sin_phi_times_cos_theta = sin_phi_over_2 * cos_theta_over_2;
+
+    out->y = cos_phi_times_sin_theta * cos_psi_over_2 + sin_phi_times_cos_theta * sin_psi_over_2;
+    out->z = sin_phi_times_cos_theta * cos_psi_over_2 - cos_phi_times_sin_theta * sin_psi_over_2;
+}
+
+void NuQuatToMtx(NUQUAT *quat, NUMTX *out) {
+    f32 w_sq;
+    f32 x_sq;
+    f32 y_sq;
+    f32 z_sq;
+    f32 xy_times_2;
+    f32 xz_times_2;
+    f32 xw_times_2;
+    f32 yz_times_2;
+    f32 yw_times_2;
+    f32 zw_times_2;
+
+    w_sq = quat->w * quat->w;
+    x_sq = quat->x * quat->x;
+    y_sq = quat->y * quat->y;
+    z_sq = quat->z * quat->z;
+
+    xy_times_2 = (quat->x * quat->y) * 2.0;
+    xz_times_2 = (quat->x * quat->z) * 2.0;
+    xw_times_2 = (quat->x * quat->w) * 2.0;
+    yz_times_2 = (quat->y * quat->z) * 2.0;
+    yw_times_2 = (quat->y * quat->w) * 2.0;
+    zw_times_2 = (quat->z * quat->w) * 2.0;
+
+    out->m00 = w_sq + x_sq - y_sq - z_sq;
+    out->m10 = xy_times_2 - zw_times_2;
+    out->m20 = xz_times_2 + yw_times_2;
+    out->m30 = 0.0f;
+
+    out->m01 = xy_times_2 + zw_times_2;
+    out->m11 = w_sq - x_sq + y_sq - z_sq;
+    out->m21 = yz_times_2 - xw_times_2;
+    out->m31 = 0.0f;
+
+    out->m02 = xz_times_2 - yw_times_2;
+    out->m12 = yz_times_2 + xw_times_2;
+    out->m22 = w_sq - x_sq - y_sq + z_sq;
+    out->m32 = 0.0f;
+
+    out->m03 = 0.0f;
+    out->m13 = 0.0f;
+    out->m23 = 0.0f;
+    out->m33 = 1.0;
+}
+
+void NuQuatMul(NUQUAT *out, NUQUAT *q0, NUQUAT *q1) {
+    NUQUAT result;
+    result.w = q1->w * q0->w - q1->x * q0->x - q1->y * q0->y - q1->z * q0->z;
+    result.x = q1->w * q0->x + q1->x * q0->w + q1->y * q0->z - q1->z * q0->y;
+    result.y = q1->w * q0->y + q1->y * q0->w + q1->z * q0->x - q1->x * q0->z;
+    out->z = q1->w * q0->z + q1->z * q0->w + q1->x * q0->y - q1->y * q0->x;
+    out->x = result.x;
+    out->y = result.y;
+    out->w = result.w;
+}
+
+void NuQuatNormalise(NUQUAT *out, NUQUAT *q) {
+    f32 magnitude_squared = q->w * q->w + q->x * q->x + q->y * q->y + q->z * q->z;
+    if (magnitude_squared > 0.0f) {
+        f32 inverse_magnitude = NuFdiv(1.0, NuFsqrt(magnitude_squared));
+        out->w = q->w * inverse_magnitude;
+        out->x = q->x * inverse_magnitude;
+        out->y = q->y * inverse_magnitude;
+        out->z = q->z * inverse_magnitude;
+    } else {
+        *out = *q;
+    }
+}
+
+void NuQuatHarmonize(NUQUAT *a, NUQUAT *b) {
+    f32 dot = a->x * b->x + a->y * b->y + a->z * b->z + a->w * b->w;
+
+    if (dot < 0.0f) {
+        b->x = -b->x;
+        b->y = -b->y;
+        b->z = -b->z;
+        b->w = -b->w;
+    }
+}
+
+void NuQuatLerp(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
+    out->x = (to->x - from->x) * t + from->x;
+    out->y = (to->y - from->y) * t + from->y;
+    out->z = (to->z - from->z) * t + from->z;
+    out->w = (to->w - from->w) * t + from->w;
+}
+
+f32 NuCubicInterpolation(f32 m, f32 y0, f32 y1, f32 y2, f32 t) {
+    f32 a;
+    f32 b;
+    f32 c;
+    f32 d;
+    f32 t_cb;
+    f32 t_sq;
+
+    a = -m / 6.0 + y0 / 2.0 + -y1 / 2.0 + y2 / 6.0;
+    b = m / 2.0 - y0 + y1 / 2.0;
+    c = -m / 3.0 + -y0 / 2.0 + y1 + -y2 / 6.0;
+    d = y0;
+
+    t_sq = t * t;
+    t_cb = t * t_sq;
+
+    return a * t_cb + b * t_sq + c * t + d;
+}
+
+void NuQuatCubicInt(NUQUAT *out, NUQUAT *m, NUQUAT *a, NUQUAT *b, NUQUAT *c, f32 t) {
+    NuQuatHarmonize(m, a);
+    NuQuatHarmonize(a, b);
+    NuQuatHarmonize(b, c);
+
+    out->x = NuCubicInterpolation(m->x, a->x, b->x, c->x, t);
+    out->y = NuCubicInterpolation(m->y, a->y, b->y, c->y, t);
+    out->z = NuCubicInterpolation(m->z, a->z, b->z, c->z, t);
+    out->w = NuCubicInterpolation(m->w, a->w, b->w, c->w, t);
+}
+
+f32 NuHermiteInterpolation(f32 m, f32 y0, f32 y1, f32 y2, f32 t) {
+    f32 m0;
+    f32 m1;
+    f32 t_sq;
+    f32 t_cb;
+    f32 h0;
+    f32 h1;
+    f32 h2;
+    f32 h3;
+
+    m0 = (y1 - m) / 2.0;
+    m1 = (y2 - y0) / 2.0;
+
+    t_sq = t * t;
+    t_cb = t * t_sq;
+
+    h0 = (t_cb + t_cb - t_sq * 3.0) + 1.0;
+    h1 = t_cb - (t_sq + t_sq) + t;
+    h2 = t_cb * -2.0 + t_sq * 3.0;
+    h3 = t_cb - t_sq;
+
+    return h0 * y0 + h1 * m0 + h2 * y1 + h3 * m1;
+}
+
+void NuQuatHermiteInt(NUQUAT *out, NUQUAT *m, NUQUAT *q0, NUQUAT *q1, NUQUAT *q2, f32 t) {
+    NuQuatHarmonize(m, q0);
+    NuQuatHarmonize(q0, q1);
+    NuQuatHarmonize(q1, q2);
+
+    out->x = NuHermiteInterpolation(m->x, q0->x, q1->x, q2->x, t);
+    out->y = NuHermiteInterpolation(m->y, q0->y, q1->y, q2->y, t);
+    out->z = NuHermiteInterpolation(m->z, q0->z, q1->z, q2->z, t);
+    out->w = NuHermiteInterpolation(m->w, q0->w, q1->w, q2->w, t);
+}
+
+void NuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
+    f32 dot = from->x * to->x + from->y * to->y + from->z * to->z + from->w * to->w;
+    NUQUAT negative;
+    NUQUAT *target;
+    if (dot < 0.0f) {
+        dot = -dot;
+        target = &negative;
+        target->x = -to->x;
+        target->y = -to->y;
+        target->z = -to->z;
+        target->w = -to->w;
+    } else {
+        target = to;
+    }
+    if (dot > 0.8500000238418579) {
+        f32 inverse_t = 1.0f - t;
+        out->x = from->x * inverse_t + target->x * t;
+        out->y = from->y * inverse_t + target->y * t;
+        out->z = from->z * inverse_t + target->z * t;
+        out->w = from->w * inverse_t + target->w * t;
+        NuQuatNormalise(out, out);
+    } else {
+        f32 a, b, angle, inverse_sine, u, v, sin_u, sin_v, from_factor, to_factor;
+        dot = dot < 0.9950000047683716 ? dot : 0.995f;
+        a = 2.2184808254241943 + (dot * 0.223403662443161) * dot;
+        b = dot * 2.4418842792510986;
+        angle = 1.5707963705062866 + (NuFsqrt(a - b) - NuFsqrt(a + b)) + dot * 0.6391287446022034;
+        inverse_sine = 1.0f / NuFsqrt(1.0f - dot * dot);
+        u = (1.0f - t) * angle - 1.5707963705062866;
+        u = u * u;
+        v = t * angle - 1.5707963705062866;
+        v = v * v;
+        sin_u =
+            0.9999999403953552 +
+            (((u * 2.3154014343163e-05 - 0.0013853708514943719) * u + 0.04166358336806297) * u - 0.4999990463256836) *
+                u;
+        sin_v =
+            0.9999999403953552 +
+            (((v * 2.3154014343163e-05 - 0.0013853708514943719) * v + 0.04166358336806297) * v - 0.4999990463256836) *
+                v;
+        from_factor = sin_u * inverse_sine;
+        to_factor = sin_v * inverse_sine;
+        out->x = from->x * from_factor + target->x * to_factor;
+        out->y = from->y * from_factor + target->y * to_factor;
+        out->z = from->z * from_factor + target->z * to_factor;
+        out->w = from->w * from_factor + target->w * to_factor;
+    }
+}

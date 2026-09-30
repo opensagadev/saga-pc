@@ -1,5 +1,7 @@
 #include "saga.h"
 
+extern f32 __cdecl NuAnimEndFrameOld(void *animation_data);
+
 extern i32 nuspecial_draw_state;
 extern i32 nuspecial_const_alpha_enabled;
 extern i32 nuspecial_const_tint_enabled;
@@ -48,6 +50,46 @@ typedef struct NuSpecialSceneView {
     NuSpecialDisplayListView *display_list;
 } NuSpecialSceneView;
 
+typedef struct NuSpecialLegacyObjectView {
+    u8 unknown_00[0x34];
+    NUVEC center;
+    f32 radius;
+} NuSpecialLegacyObjectView;
+
+typedef struct NuSpecialLegacyInstanceIndexView {
+    u8 unknown_00[0x40];
+    i16 object_index;
+} NuSpecialLegacyInstanceIndexView;
+
+typedef struct NuSpecialAnimationInstanceView {
+    u8 unknown_00[0x50];
+    u32 flags;
+    u8 unknown_54[8];
+    u16 animation_index;
+} NuSpecialAnimationInstanceView;
+
+typedef struct NuSpecialAnimFallbackRecord {
+    u16 unknown_00;
+    u16 end_frame;
+    u8 unknown_04[8];
+} NuSpecialAnimFallbackRecord;
+
+typedef struct NuSpecialAnimFallbackTableView {
+    u8 unknown_0000[0x1e0];
+    NuSpecialAnimFallbackRecord *records;
+} NuSpecialAnimFallbackTableView;
+
+typedef struct NuSpecialBoundsDisplayView {
+    u8 unknown_00[0xa0];
+    NUVEC center;
+    f32 radius;
+} NuSpecialBoundsDisplayView;
+
+typedef struct NuSpecialLegacySceneObjectsView {
+    u8 unknown_00[0x18];
+    NuSpecialLegacyObjectView **objects;
+} NuSpecialLegacySceneObjectsView;
+
 enum {
     NUSPECIAL_COLLISION_FLAG = 1 << 9,
     NUSPECIAL_NO_VISIBILITY_TEST_FLAG = 1 << 7,
@@ -68,6 +110,87 @@ STATIC_ASSERT(sizeof(NuSpecialDisplayView) == 0xd0);
 STATIC_ASSERT(offsetof(NuSpecialDisplayListView, special_count) == 0x6c);
 STATIC_ASSERT(offsetof(NuSpecialSceneView, special_count) == 0x24);
 STATIC_ASSERT(offsetof(NuSpecialSceneView, display_list) == 0x110);
+STATIC_ASSERT(offsetof(NuSpecialLegacyObjectView, center) == 0x34);
+STATIC_ASSERT(offsetof(NuSpecialLegacyObjectView, radius) == 0x40);
+STATIC_ASSERT(offsetof(NuSpecialLegacyInstanceIndexView, object_index) == 0x40);
+STATIC_ASSERT(offsetof(NuSpecialAnimationInstanceView, flags) == 0x50);
+STATIC_ASSERT(offsetof(NuSpecialAnimationInstanceView, animation_index) == 0x5c);
+STATIC_ASSERT(offsetof(NuSpecialAnimFallbackTableView, records) == 0x1e0);
+STATIC_ASSERT(offsetof(NuSpecialAnimFallbackRecord, end_frame) == 2);
+STATIC_ASSERT(sizeof(NuSpecialAnimFallbackRecord) == 0xc);
+STATIC_ASSERT(offsetof(NuSpecialBoundsDisplayView, center) == 0xa0);
+STATIC_ASSERT(offsetof(NuSpecialBoundsDisplayView, radius) == 0xac);
+STATIC_ASSERT(offsetof(NuSpecialLegacySceneObjectsView, objects) == 0x18);
+
+f32 __cdecl NuSpecialGetAnimEndFrame(NUSPECIALHANDLE *special) {
+    NuSpecialLegacyView *legacy;
+    NuSpecialLegacyInstanceView *legacy_instance;
+    NuSpecialDisplayView *display;
+    NuSpecialAnimationInstanceView *animation_instance;
+    NuSpecialAnimFallbackTableView *fallback_table;
+    void *animation;
+    void **animation_data;
+    u32 animation_index;
+
+    if (special == NULL || special->scene == NULL) {
+        return 0.0f;
+    }
+    legacy = (NuSpecialLegacyView *)special->special;
+    if (legacy != NULL) {
+        legacy_instance = (NuSpecialLegacyInstanceView *)legacy->instance;
+        animation = legacy_instance->field_48.animation;
+    } else {
+        display = (NuSpecialDisplayView *)special->display_special;
+        if (display == NULL) {
+            return 0.0f;
+        }
+        animation = display->instance_animation;
+        if (animation == (void *)-1) {
+            return 0.0f;
+        }
+    }
+    if (animation == NULL) {
+        return 0.0f;
+    }
+
+    animation_instance = (NuSpecialAnimationInstanceView *)animation;
+    animation_index = animation_instance->animation_index;
+    animation_data = ((NUGSCN *)special->scene)->instance_animation_data;
+    if (animation_data[animation_index] != NULL) {
+        return NuAnimEndFrameOld(animation_data[animation_index]);
+    }
+
+    animation_index = animation_instance->flags >> 22;
+    if (animation_index == 0) {
+        return 0.0f;
+    }
+    fallback_table = (NuSpecialAnimFallbackTableView *)special->scene;
+    if (fallback_table->records == NULL) {
+        return 0.0f;
+    }
+    return (f32)fallback_table->records[animation_index - 1].end_frame;
+}
+
+void __cdecl NuSpecialGetRadius(NUSPECIALHANDLE *special, NUVEC *position, f32 *radius) {
+    NuSpecialLegacyView *legacy;
+    NuSpecialLegacyInstanceIndexView *instance;
+    NuSpecialLegacySceneObjectsView *scene;
+    NuSpecialLegacyObjectView *object;
+    NuSpecialBoundsDisplayView *display;
+
+    legacy = (NuSpecialLegacyView *)special->special;
+    if (legacy != NULL) {
+        instance = (NuSpecialLegacyInstanceIndexView *)legacy->instance;
+        scene = (NuSpecialLegacySceneObjectsView *)special->scene;
+        object = scene->objects[instance->object_index];
+        *radius = object->radius;
+        *position = object->center;
+        return;
+    }
+    display = (NuSpecialBoundsDisplayView *)special->display_special;
+    *position = display->center;
+    *radius = display->radius;
+}
 
 NUMTX *__cdecl NuSpecialGetMtx(NUSPECIALHANDLE *special) {
     if (special->display_special != NULL) {

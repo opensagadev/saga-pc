@@ -450,3 +450,46 @@ These mappings establish locations and complete extents, not matches or reusable
 Android layouts. The PC frame packet is 16 bytes (`f32` time, pause state,
 pointer to two pad pointers, flags) and is dispatched through the thing
 manager's virtual slot `+0x20`; no static target is assigned to that call.
+
+## Portable math, animation and flow structure
+
+The current PC batch adds the quaternion interpolation/conversion family, plane
+and triangle tests, vector and matrix operations, the three atan entry points,
+spline positioning, special bounds/end-frame queries, animation-set operations,
+gizmo dispatch, and the AI script macro/reference parser. Android logic is used
+as a candidate; named PC layouts and complete retail extents determine the ports.
+These are structural implementations unless the current matching report establishes
+full equality. Moving a helper across a translation unit can change inlining.
+
+`GameAnimSys_Update` uses PC set bits 1 (visibility state), 2 (stop request)
+and 4 (active-list membership); instance-animation repeat remains bit 8. Its
+matrix evaluation is still marked at the actual missing call. Static object
+bounds are implemented, while animated bounds await the same evaluator closure.
+The spline runtime uses the PC record's signed point stride; `PointAlongSpline`
+uses the separately verified twelve-byte position array and its private angle
+helper's portable logic. Its unsigned fixed-point conversion references the
+retail 2^32 float at `0x00753288`.
+
+Gizmo callbacks take two arguments even though the public dispatchers accept four.
+Flow pointer reset still marks the missing reset-table dispatch; its three-row
+PC callback table is researched separately. The reset's guard is word mask
+0x1000, and the reset uses visibility rather than activation. AI macro/ref-script
+parsing is partial: ordinary action/condition-definition lookup is still marked,
+and macro allocation/copy uses the reconstructed allocator instead of the original
+private EDI/ESI helper closure. The original five parser comparison spans retain
+internal instruction alignment; reachable-byte counts are not substituted.
+
+The next broad groups are the ANI3 node/curve/matrix closure, the display-list
+special updater, the complete flow callback table, and AI definition tables.
+Their ignored drafts and proposal maps require shared layout and branch review
+before acceptance. NuMain remains the incomplete entry scaffold described above.
+
+The verified batch adds 76 function inventory entries and 77 compiled function
+definitions (including a second real `NuFdiv` copy). Thirty-two functions and
+50 data definitions newly match, with no lost exact results. Whole-original
+fuzzy coverage is 2.037%, exact code coverage 0.825%, and image mapping 1.436%.
+The math leaves include exact atan interpolation, quaternion slerp/conversions,
+vector normalization/rotations, axis triangle tests and the legacy animation end
+frame. Quaternion multiply remains 99.60% advisory similarity with different
+bytes; plane intersection and the larger parser/animation/flow routines remain
+structural. The current `matching.json` is authoritative for later changes.

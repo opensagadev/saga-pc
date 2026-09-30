@@ -382,3 +382,14 @@ to zero-filled state at `0x00950da4`. Only the first 12 bytes of that state
 have a reviewed layout, so its map extent remains blank. The two trial-time
 defaults expose 16-bit values 300 and 600; their full owner extents are also
 left blank.
+
+The AI parser now has eight separate four-byte zero-filled cursor/list/state
+owners at `0x00922234`–`0x00922258` (with gaps retained); these are named shared
+fields rather than offsets into an invented owner. Quaternion, matrix, atan and
+spline compiler literals have bindings based on their exact PC bit patterns and
+actual retail references. The positive 512.0 double is at `0x007640c8`; no negative
+512.0 constant exists in the image, so it must not be given an arbitrary binding.
+The noninterpolating table index uses a signed 16-bit temporary, sufficient for
+its positive-quadrant 0..512 range; this remains a code-generation difference.
+The zero-double binding at `0x00751790` is supported by original qword arithmetic
+references, even when a rebuilt routine uses `fldz` and leaves its COMDAT unused.

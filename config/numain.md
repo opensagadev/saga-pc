@@ -89,6 +89,11 @@ source entry fails safely. Source startup still exits before indexing absent
 level and area tables. The `GAME.DAT`/NuFPar parser closure and remaining frame loop are the next
 dependency work, not a completed 4,332-byte `NuMain` match.
 
+The structural math/spline and animation-set dependencies now have broader source
+coverage. Animated evaluation, display-special updates, full flow dispatch and
+regular AI definition lookup remain marked or unimplemented. The next coherent
+port batches follow those closures; NuMain's startup/loop status is unchanged.
+
 ## Direct-call candidates
 
 The connected progress closure now includes `ClearLevelProgress`,
