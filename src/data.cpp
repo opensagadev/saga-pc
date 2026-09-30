@@ -3959,3 +3959,363 @@ extern "C" {
     u16 PlayerPadPreviousAngle[2];
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma const_seg(".rdata$AIGamePunch2Name")
+    const char AIGamePunch2Name[8] = "PUNCH_2";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGamePunch1Name")
+    const char AIGamePunch1Name[8] = "PUNCH_1";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameSetName")
+    const char AIGameSetName[5] = "set=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameCharacterName")
+    const char AIGameCharacterName[11] = "character=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameStateName")
+    const char AIGameStateName[7] = "state=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameNearestName")
+    const char AIGameNearestName[8] = "nearest";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameShootName")
+    const char AIGameShootName[6] = "SHOOT";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameBlockName")
+    const char AIGameBlockName[6] = "BLOCK";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGamePunchSpecialName")
+    const char AIGamePunchSpecialName[14] = "PUNCH_SPECIAL";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGamePunchBehindName")
+    const char AIGamePunchBehindName[13] = "PUNCH_BEHIND";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGamePunch3Name")
+    const char AIGamePunch3Name[8] = "PUNCH_3";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameAttackOverrideName")
+    const char AIGameAttackOverrideName[16] = "attack_override";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameJediGoodieAttackName")
+    const char AIGameJediGoodieAttackName[18] = "jediGoodie_attack";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameRangeName")
+    const char AIGameRangeName[6] = "range";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameFireIntervalName")
+    const char AIGameFireIntervalName[13] = "fireinterval";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameFireRangeName")
+    const char AIGameFireRangeName[10] = "firerange";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameEndName")
+    const char AIGameEndName[5] = "end=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameStartName")
+    const char AIGameStartName[7] = "start=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameHoldSpecialButtonName")
+    const char AIGameHoldSpecialButtonName[20] = "hold_special_button";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameTurnName")
+    const char AIGameTurnName[5] = "turn";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameRandomTurnDirectionName")
+    const char AIGameRandomTurnDirectionName[14] = "rand_turn_dir";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameMaximumTurnName")
+    const char AIGameMaximumTurnName[9] = "max_turn";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameMinimumTurnName")
+    const char AIGameMinimumTurnName[9] = "min_turn";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameOpponentName")
+    const char AIGameOpponentName[9] = "Opponent";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIGameTakeOverTargetName")
+    const char AIGameTakeOverTargetName[15] = "TakeOverTarget";
+#pragma const_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$CircleLeanDegrees")
+    i32 CircleLeanDegrees = 30;
+#pragma data_seg()
+#pragma data_seg(".data$PodRollInputRate")
+    f32 PodRollInputRate = 6.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PodRollReleaseRate")
+    f32 PodRollReleaseRate = 3.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PodFacingSeekRate")
+    f32 PodFacingSeekRate = 2.0f;
+#pragma data_seg()
+#pragma data_seg(".data$GUNSHIPAHACK")
+    i32 GUNSHIPAHACK = 2;
+#pragma data_seg()
+#pragma bss_seg(".bss$podrace_section")
+    i32 podrace_section;
+#pragma bss_seg()
+#pragma bss_seg(".bss$newgamecam")
+    i32 newgamecam;
+#pragma bss_seg()
+#pragma data_seg(".data$GAMEPAD_DUP")
+    i32 GAMEPAD_DUP = 4096;
+#pragma data_seg()
+#pragma data_seg(".data$GAMEPAD_DDOWN")
+    i32 GAMEPAD_DDOWN = 16384;
+#pragma data_seg()
+#pragma data_seg(".data$GAMEPAD_DLEFT")
+    i32 GAMEPAD_DLEFT = 32768;
+#pragma data_seg()
+#pragma data_seg(".data$GAMEPAD_DRIGHT")
+    i32 GAMEPAD_DRIGHT = 8192;
+#pragma data_seg()
+#pragma data_seg(".data$GAMEPAD_LIFT")
+    i32 GAMEPAD_LIFT = 8;
+#pragma data_seg()
+#pragma data_seg(".data$OFFSCREEN_CATCHUP_TIME")
+    f32 OFFSCREEN_CATCHUP_TIME = 1.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$LIFTPLAYER")
+    i32 LIFTPLAYER;
+#pragma bss_seg()
+}
+
+extern "C" {
+// Hub arrays are two-entry source views; full original capacities remain unknown.
+#pragma bss_seg(".bss$pod_roll")
+    f32 pod_roll[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$pod_roll_target")
+    f32 pod_roll_target[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$Hub_PadSpeed")
+    f32 Hub_PadSpeed[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$Hub_PadAngle")
+    u16 Hub_PadAngle[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$MissionSys")
+    MISSIONSYS_PC *MissionSys;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GameObjectDimensionsExtraFn")
+    void(__cdecl *GameObjectDimensionsExtraFn)(GAMEOBJECT *);
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$idealgoalrange")
+    f32 idealgoalrange = 1.5f;
+#pragma data_seg()
+#pragma data_seg(".data$engagefiretime")
+    f32 engagefiretime = 1.5f;
+#pragma data_seg()
+#pragma bss_seg(".bss$DEFAULT_MOVE_RANGE")
+    f32 DEFAULT_MOVE_RANGE;
+#pragma bss_seg()
+#pragma bss_seg(".bss$LevelCharacterTypeIDFn")
+    AI_LEVEL_CHARACTER_TYPE_ID_PC LevelCharacterTypeIDFn;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SpecialRouteCharacterTypeIDFn")
+    AI_LEVEL_CHARACTER_TYPE_ID_PC SpecialRouteCharacterTypeIDFn;
+#pragma bss_seg()
+#pragma bss_seg(".bss$LevelCharacterGlobalIDFn")
+    AI_LEVEL_CHARACTER_GLOBAL_ID_PC LevelCharacterGlobalIDFn;
+#pragma bss_seg()
+#pragma const_seg(".rdata$AICombatMinimumRangeName")
+    const char AICombatMinimumRangeName[10] = "minrange=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICombatStaticName")
+    const char AICombatStaticName[7] = "static";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICombatOffscreenName")
+    const char AICombatOffscreenName[10] = "offscreen";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICombatNoFireInMiniCutName")
+    const char AICombatNoFireInMiniCutName[19] = "no_fire_in_minicut";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICombatCircleName")
+    const char AICombatCircleName[7] = "circle";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICombatOpponentName")
+    const char AICombatOpponentName[10] = "opponent=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICombatInstantName")
+    const char AICombatInstantName[8] = "instant";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICombatFrontArcOnlyName")
+    const char AICombatFrontArcOnlyName[13] = "frontArcOnly";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICombatDroidName")
+    const char AICombatDroidName[15] = "opponent=droid";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICombatNearestEnemyName")
+    const char AICombatNearestEnemyName[23] = "opponent=nearest_enemy";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICombatLastAttackerName")
+    const char AICombatLastAttackerName[14] = "last_attacker";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICombatOpponentTypeName")
+    const char AICombatOpponentTypeName[13] = "opponentType";
+#pragma const_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$LEGOCONTEXT_WHIP")
+    i32 LEGOCONTEXT_WHIP = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOCONTEXT_SUPERCARRY")
+    i32 LEGOCONTEXT_SUPERCARRY = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOCONTEXT_SPECIALMOVE_ATTACKER")
+    i32 LEGOCONTEXT_SPECIALMOVE_ATTACKER = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOCONTEXT_SPECIALMOVE_VICTIM")
+    i32 LEGOCONTEXT_SPECIALMOVE_VICTIM = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOCONTEXT_BUILDIT")
+    i32 LEGOCONTEXT_BUILDIT = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOCONTEXT_PUSHOBSTACLE")
+    i32 LEGOCONTEXT_PUSHOBSTACLE = -1;
+#pragma data_seg()
+#pragma data_seg(".data$SUPERCARRY_THROWSPEED_XZ")
+    f32 SUPERCARRY_THROWSPEED_XZ = 3.0f;
+#pragma data_seg()
+#pragma data_seg(".data$SUPERCARRY_THROWSPEED_Y")
+    f32 SUPERCARRY_THROWSPEED_Y = 3.0f;
+#pragma data_seg()
+#pragma data_seg(".data$SUPERCARRY_RELEASESPEED_XZ")
+    f32 SUPERCARRY_RELEASESPEED_XZ = 2.0f;
+#pragma data_seg()
+#pragma data_seg(".data$SUPERCARRY_DROPSPEED_XZ")
+    f32 SUPERCARRY_DROPSPEED_XZ = 0.2f;
+#pragma data_seg()
+#pragma data_seg(".data$SUPERCARRY_DROPSPEED_Y")
+    f32 SUPERCARRY_DROPSPEED_Y = 1.0f;
+#pragma data_seg()
+#pragma data_seg(".data$SUPERCARRY_OBJGRAVITY")
+    f32 SUPERCARRY_OBJGRAVITY = -6.0f;
+#pragma data_seg()
+#pragma data_seg(".data$SuperCarry_KeepObjectLevel")
+    i32 SuperCarry_KeepObjectLevel = 1;
+#pragma data_seg()
+#pragma data_seg(".data$SuperCarry_AlignObject")
+    i32 SuperCarry_AlignObject = 1;
+#pragma data_seg()
+#pragma bss_seg(".bss$Player_ClearContextFn")
+    PLAYER_CLEAR_CONTEXT_CALLBACK_PC Player_ClearContextFn;
+#pragma bss_seg()
+#pragma data_seg(".data$AIFireIntervalMul")
+    f32 AIFireIntervalMul = 1.0f;
+#pragma data_seg()
+#pragma data_seg(".data$GhostLightMul")
+    f32 GhostLightMul = 1.0f;
+#pragma data_seg()
+#pragma data_seg(".data$GhostLightTargetMul")
+    f32 GhostLightTargetMul = 1.0f;
+#pragma data_seg()
+#pragma data_seg(".data$timebase_updates")
+    i32 timebase_updates = 1;
+#pragma data_seg()
+#pragma bss_seg(".bss$tieonsfxwait")
+    f32 tieonsfxwait;
+#pragma bss_seg()
+#pragma bss_seg(".bss$tieoffsfxwait")
+    f32 tieoffsfxwait;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CurrentSpeedOverride")
+    f32 CurrentSpeedOverride;
+#pragma bss_seg()
+#pragma data_seg(".data$BaseCurrentSpeed")
+    f32 BaseCurrentSpeed = 10.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$DoubleScore")
+    i32 DoubleScore;
+#pragma bss_seg()
+#pragma data_seg(".data$id_SEBULBASPOD")
+    i16 id_SEBULBASPOD = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$UpdateSockets_LDATA")
+    LEVELDATA_PC *UpdateSockets_LDATA;
+#pragma bss_seg()
+// Mixed-field source access view; complete original adaptive state extent remains unknown.
+#pragma data_seg(".data$adtabentries")
+    i8 adtabentries[9][4] = {{-1, -1, -1, -1}, {-1, -1, -1, 0}, {-1, -1, 0, 0}, {-1, 0, 0, 0}, {0, 0, 0, 0},
+                             {1, 0, 0, 0},     {1, 1, 0, 0},    {1, 1, 1, 0},   {1, 1, 1, 1}};
+#pragma data_seg()
+#pragma data_seg(".data$adtab")
+    i8 (*adtab)[4] = &adtabentries[4];
+#pragma data_seg()
+#pragma bss_seg(".bss$adaptivedifficulty")
+    ADAPTIVEDIFFICULTY_PC adaptivedifficulty;
+#pragma bss_seg()
+#pragma const_seg(".rdata$AIControlPlayerRunSpeedName")
+    const char AIControlPlayerRunSpeedName[17] = "player_run_speed";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControlSeekName")
+    const char AIControlSeekName[6] = "seek=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControlMinimumName")
+    const char AIControlMinimumName[5] = "min=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControlMaximumName")
+    const char AIControlMaximumName[5] = "max=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControlClearName")
+    const char AIControlClearName[6] = "clear";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControlMaximumDefaultName")
+    const char AIControlMaximumDefaultName[12] = "max=default";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControlMultiplyName")
+    const char AIControlMultiplyName[10] = "multiply=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControlLocatorName")
+    const char AIControlLocatorName[8] = "Locator";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControlAllNonPartyName")
+    const char AIControlAllNonPartyName[14] = "All_Non_Party";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControlDefaultTitleName")
+    const char AIControlDefaultTitleName[8] = "Default";
+#pragma const_seg()
+#pragma const_seg(".rdata$GameAIPlayerName")
+    const char GameAIPlayerName[7] = "player";
+#pragma const_seg()
+#pragma const_seg(".rdata$GameAIPlayer2Name")
+    const char GameAIPlayer2Name[9] = "player_2";
+#pragma const_seg()
+#pragma const_seg(".rdata$GameAIPlayerFormat")
+    const char GameAIPlayerFormat[9] = "Player%d";
+#pragma const_seg()
+#pragma data_seg(".data$id_YWING")
+    i16 id_YWING = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_MINIYWING")
+    i16 id_MINIYWING = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_TIEBOMBER")
+    i16 id_TIEBOMBER = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_MINITIEBOMBER")
+    i16 id_MINITIEBOMBER = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_MINISTARDESTROYER")
+    i16 id_MINISTARDESTROYER = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$LEGO_AIPATHCNX_FORGOODIES")
+    u32 LEGO_AIPATHCNX_FORGOODIES;
+#pragma bss_seg()
+#pragma bss_seg(".bss$LEGO_AIPATHCNX_FORBADDIES")
+    u32 LEGO_AIPATHCNX_FORBADDIES;
+#pragma bss_seg()
+#pragma data_seg(".data$v100")
+    NUVEC v100 = {1.0f, 0.0f, 0.0f};
+#pragma data_seg()
+#pragma data_seg(".data$v010")
+    NUVEC v010 = {0.0f, 1.0f, 0.0f};
+#pragma data_seg()
+}

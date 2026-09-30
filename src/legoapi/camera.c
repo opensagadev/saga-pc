@@ -13,3 +13,12 @@ i32 __cdecl GoingForwardsAlongNarrowSock(GAMEOBJECT *object) {
         forwards = 1 - forwards;
     return forwards;
 }
+
+GAMEPAD_PC *__cdecl ViewCamGetGamePad(void) {
+    return ViewCam.gamepad;
+}
+
+#pragma data_seg(".data$ViewCam")
+VIEWCAM_PC ViewCam = {0,   {1000000000.0f, 0.0f, 0.0f}, -8192, -29500, 2.6600000858306885f, 0.0f, 120.0f, 0x43480000,
+                      NULL};
+#pragma data_seg()

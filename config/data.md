@@ -612,3 +612,18 @@ current/previous speed at 0x00926be4/0x00926bd8 and current/previous angle at
 do not claim complete array extents. The upcoming one-at-once attacker table has
 an independently proved eight-row bound; preserve the PC index-eight bug rather
 than enlarging its storage to conceal an out-of-bounds access.
+
+## Fifth release data contracts
+
+The movement and GameAI cohorts add PC constants, strings and control state.
+UpdateGameObjects uses independently recovered scalar globals, the signed
+9-by-4 adaptive table and its genuine middle-row pointer relocation. The
+adaptive state has named level, accumulator and elapsed-time fields; its full
+original extent remains unknown. Hub input arrays likewise remain partial
+access views. Initialized callback pointers retain their real null state.
+
+The sole data owner compared all 306 current wave definitions covering 3,860
+known bytes exactly, including real pointer relocations. Nine working views
+remain excluded from original-size credit. The consolidated report and
+unknown-view inventory are retained under ignored build/analysis/wave1/data/
+wave3/. These are initializer checks, not proof of runtime state.

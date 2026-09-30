@@ -8,7 +8,7 @@ f32 __cdecl ForceTowardsMid(GAMEOBJECT *object) {
         f32 value;
         u32 bits;
     } absolute;
-    if (system == NULL || object->sock_position.sock_index == -1 || (u8)(u8)object->sock_position.candidate_count > 1)
+    if (system == NULL || object->sock_position.sock_index == -1 || (u8)object->sock_position.candidate_count > 1)
         return 0.0f;
     sock = &system->socks[object->sock_position.sock_index];
     inner = sock->mid_force_inner_radius;

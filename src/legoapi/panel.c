@@ -63,3 +63,15 @@ void __cdecl RotateGameMatrix(NUMTX *matrix, i32 order, u16 x, u16 y, u16 z) {
             break;
     }
 }
+
+i32 __cdecl InDoubleScoreZone(GAMEOBJECT *object) {
+    i32 i;
+    if ((WORLD->current_level->flags & 0x800) != 0)
+        return 1;
+    for (i = 19; i <= 23; ++i) {
+        if (WORLD->camera_splines[i] != NULL &&
+            OutSideSplineArea(&object->collision_position, WORLD->camera_splines[i], NULL, NULL, 0) == 0)
+            return 1;
+    }
+    return 0;
+}

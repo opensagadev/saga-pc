@@ -1507,3 +1507,577 @@ safe_position_done:
     }
     object->flags_ef4 &= ~4;
 }
+
+static void MovementMtxRotateX(NUMTX *m, NUANG angle) {
+    f32 cos_x = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sin_x = NuTrigTable[(angle >> 1) & 0x7fff];
+    f32 m01 = m->m01;
+    f32 m11 = m->m11;
+    f32 m21 = m->m21;
+    f32 m31 = m->m31;
+
+    m->m01 = m01 * cos_x - m->m02 * sin_x;
+    m->m02 = m01 * sin_x + m->m02 * cos_x;
+    m->m11 = m11 * cos_x - m->m12 * sin_x;
+    m->m12 = m11 * sin_x + m->m12 * cos_x;
+    m->m21 = m21 * cos_x - m->m22 * sin_x;
+    m->m22 = m21 * sin_x + m->m22 * cos_x;
+    m->m31 = m31 * cos_x - m->m32 * sin_x;
+    m->m32 = m31 * sin_x + m->m32 * cos_x;
+}
+
+static void MovementMtxRotateY(NUMTX *m, NUANG angle) {
+    f32 cos_y = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sin_y = NuTrigTable[(angle >> 1) & 0x7fff];
+    f32 m00 = m->m00;
+    f32 m10 = m->m10;
+    f32 m20 = m->m20;
+    f32 m30 = m->m30;
+
+    m->m00 = m00 * cos_y + m->m02 * sin_y;
+    m->m02 = m->m02 * cos_y - m00 * sin_y;
+    m->m10 = m10 * cos_y + m->m12 * sin_y;
+    m->m12 = m->m12 * cos_y - m10 * sin_y;
+    m->m20 = m20 * cos_y + m->m22 * sin_y;
+    m->m22 = m->m22 * cos_y - m20 * sin_y;
+    m->m30 = m30 * cos_y + m->m32 * sin_y;
+    m->m32 = m->m32 * cos_y - m30 * sin_y;
+}
+
+void __cdecl MovePlayer_ROLLING(GAMEOBJECT *object) {
+    f32 seek_rate;
+    f32 displacement;
+    f32 rumble;
+    i32 effect, count, heading, pitch, yaw, roll;
+    NUVEC position, local_velocity;
+    NUMTX matrix;
+    object->flags_e20 &= ~0x10000000;
+    object->target_velocity.y = ObjInTube(object) ? 1.25f : 0.0f;
+    seek_rate = object->id == (u16)id_DRAGBOMB && (object->flags_ef4 & 0x200) != 0
+                    ? 1.0f
+                    : object->character_data->game_character->velocity_seek_rate;
+    object->target_velocity.x = object->target_velocity.z = 0.0f;
+    if (object->character_context == 0x2b) {
+        if (object->turn_braking < 1.0f) {
+            displacement = 1.0f - object->turn_braking;
+            displacement = (f32)(displacement * 0.0);
+            object->target_velocity.x = object->target_velocity.z = displacement;
+            if (object->wall_run_state == 2) {
+                displacement = (f32)(displacement * 0.5);
+                object->target_velocity.x = object->target_velocity.z = displacement;
+            }
+        }
+        if (object->wall_run_state == 2) {
+            rumble = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5);
+            STUBBED_NAMED("NewRumble(object->pad->bound_pad, rumble, 0)");
+            effect = WORLD->game_debris_sys->entries[58].effect;
+            if (effect != -1) {
+                count = ParticlesPerSecond(60.0f, FRAMETIME);
+                if (count > 0) {
+                    position.x = object->collision_position.x;
+                    position.y = object->water_height;
+                    position.z = object->collision_position.z;
+                    STUBBED_NAMED("AddVariableShotDebrisEffect(effect, &position, count, 0, 0)");
+                }
+            }
+        }
+    }
+    object->velocity.x = SeekValF(object->velocity.x, object->target_velocity.x, seek_rate);
+    object->velocity.z = SeekValF(object->velocity.z, object->target_velocity.z, seek_rate);
+    if (WORLD->area != NULL && WORLD->area == GUNSHIP_ADATA)
+        STUBBED_NAMED("GunShip_DragBombSeekBlowUp(object)");
+    matrix = object->transform;
+    matrix.m30 = matrix.m31 = matrix.m32 = 0.0f;
+    object->movement_mode = 0;
+    heading = NuAtan2D(object->velocity.x, object->velocity.z);
+    NuVecRotateY(&local_velocity, &object->velocity, -heading);
+    MovementMtxRotateY(&matrix, -heading);
+    displacement = (local_velocity.z * FRAMETIME) / object->collision_radius;
+    MovementMtxRotateX(&matrix, (i32)(displacement * (f64)10430.3779296875f));
+    MovementMtxRotateY(&matrix, heading);
+    NuMtxGetEulerXYZ(&matrix, &pitch, &yaw, &roll);
+    object->pitch_angle = pitch;
+    object->field_0x276 = yaw;
+    object->roll_angle = roll;
+    GizmoBlowupCheckProximity(WORLD, object);
+}
+
+f32 __cdecl ForceAlongSock(GAMEOBJECT *object) {
+    NUVEC force;
+    f32 speed;
+    if (object->sock_index == 0xff || CurrentSpeed == 0.0f)
+        return 0.0f;
+    speed = (f32)((1.0 + object->current_speed_bias) * (f32)(CurrentSpeed * avg_currentspeed_mul));
+    force.x = force.y = 0.0f;
+    force.z = speed;
+    NuVecRotateX(&force, &force, object->sock_position.midpoint_pitch);
+    NuVecRotateY(&force, &force, object->sock_heading);
+    NuVecAdd(&object->target_velocity, &object->target_velocity, &force);
+    return speed;
+}
+
+i32 __cdecl MovePlayer_TWIST(GAMEOBJECT *object) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    GAMEPAD_PC *pad = object->pad;
+    GAMEOBJECT *vehicle;
+    NUMTX orientation;
+    i32 yaw_lean, pitch_lean;
+    f32 speed, scale;
+    if (object->field_280 == 0xff || DOGFIGHTA_LDATA == NULL || world->current_level != DOGFIGHTA_LDATA ||
+        world->sock_sys == NULL)
+        return 0;
+    object->movement_mode = 4;
+    if (object->sock_position.sock_index == -1 ||
+        (world->sock_sys->socks[object->sock_position.sock_index].flags & 1) != 0)
+        return 0;
+    object->movement_mode = 4;
+    yaw_lean = (i32)((f64)((TwistYawLeanDegrees << 16) / 360) * pad->input_direction_z);
+    pitch_lean = (i32)((f64)((TwistPitchLeanDegrees << 16) / 360) * -pad->input_direction_x);
+    SockRotationMatrix(world->sock_sys, &object->sock_position, &orientation, TwistSockRotationModeA,
+                       TwistSockRotationModeB);
+    object->vehicle_orientation = orientation;
+    if ((object->flags_e20 & 0x20) != 0) {
+        MoveInactiveVehicle(object, 1, &vehicle);
+        if (vehicle != NULL) {
+            object->field_0x276 = vehicle->field_0x276;
+            object->movement_facing_angle = vehicle->field_0x276;
+            object->facing_angle = vehicle->field_0x276;
+            object->velocity = vehicle->velocity;
+            object->field_dc8 = vehicle->field_dc8;
+            object->movement_lean_angle = object->tertiary_lean_angle = object->secondary_lean_angle = 0;
+            object->roll_angle = object->pitch_angle = 0;
+            object->vehicle_orientation = vehicle->vehicle_orientation;
+            object->sock_position = vehicle->sock_position;
+        }
+    } else {
+        object->target_velocity = v000;
+        speed = (pad->input_magnitude / object->character_data->game_character->run_speed) * TwistLateralSpeed;
+        if (speed > 0.0f) {
+            object->target_velocity.x = pad->input_direction_z * speed;
+            object->target_velocity.y = -pad->input_direction_x * speed;
+        }
+        STUBBED_NAMED("KeepVehicleOnScreen(object, 1, 1, 1)");
+        object->target_velocity.z = 0.0f;
+        NuVecMtxRotate(&object->target_velocity, &object->target_velocity, &object->vehicle_orientation);
+        ForceAlongSock(object);
+        SeekVec(&object->velocity, &object->velocity, &object->target_velocity,
+                object->character_data->game_character->velocity_seek_rate);
+    }
+    scale = (f32)(1.0 - 0.0);
+    if (scale < 0.0f)
+        scale = 0.0f;
+    if (TwistScaleLean != 0) {
+        yaw_lean *= (i32)scale;
+        pitch_lean *= (i32)scale;
+    }
+    object->tertiary_lean_angle = SeekRot(object->tertiary_lean_angle, yaw_lean, 5.0f);
+    object->movement_lean_angle = SeekRot(object->movement_lean_angle, yaw_lean, 5.0f);
+    object->secondary_lean_angle = SeekRot(object->secondary_lean_angle, pitch_lean, 5.0f);
+    return 1;
+}
+
+i32 __cdecl MovePlayer_CIRCLE(GAMEOBJECT *object) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    GAMEPAD_PC *pad = object->pad;
+    PLAYERCHARACTERCONFIG_PC *data;
+    GAMEOBJECT *vehicle;
+    u16 heading;
+    f32 seek_rate, maximum, fraction, half_speed;
+    i32 flicker;
+    if (object->field_280 == 0xff || BONUS_GUNSHIPB_LDATA == NULL || world->current_level != BONUS_GUNSHIPB_LDATA ||
+        world->sock_sys == NULL || object->sock_position.sock_index == -1)
+        return 0;
+    object->movement_mode = 3;
+    heading = world->sock_sys->socks[object->sock_position.sock_index].input_yaw + object->sock_heading;
+    object->current_input_angle = heading + pad->input_angle;
+    object->flags_e20 |= 0x200000;
+    object->movement_facing_angle = heading;
+    object->facing_angle = SeekRot(object->facing_angle, heading, 8.0f);
+    object->field_0x276 = object->facing_angle;
+    object->movement_lean_angle = SeekRot(object->movement_lean_angle,
+                                          (i32)((f64)((CircleLeanDegrees << 16) / 360) * pad->input_direction_z), 8.0f);
+    data = object->character_data->game_character;
+    seek_rate = data->velocity_seek_rate;
+    if (object->character_context == 0x23 || object->character_context == 0x24)
+        object->target_velocity = v000;
+    else if ((object->flags_e20 & 0x20) != 0) {
+        MoveInactiveVehicle(object, 0, &vehicle);
+        if (vehicle != NULL) {
+            object->field_0x276 = vehicle->field_0x276;
+            object->movement_facing_angle = vehicle->field_0x276;
+            object->facing_angle = vehicle->field_0x276;
+            object->velocity = vehicle->velocity;
+            object->field_dc8 = vehicle->field_dc8;
+            object->movement_lean_angle = object->tertiary_lean_angle = object->secondary_lean_angle = 0;
+            object->roll_angle = object->pitch_angle = 0;
+        }
+        return 1;
+    } else {
+        object->target_velocity.y = 0.0f;
+        if (object->movement_direction_x != 0.0f || object->movement_direction_z != 0.0f) {
+            object->target_velocity.x = object->movement_direction_x;
+            object->target_velocity.z = object->movement_direction_z;
+            object->movement_direction_x = object->movement_direction_z;
+        } else {
+            object->target_velocity.x =
+                pad->input_magnitude > 0.0f ? pad->input_magnitude * pad->input_direction_z : 0.0f;
+            object->target_velocity.z = 0.0f;
+            flicker = (object->flags_e24 >> 16) & 7;
+            if (object->vehicle_hit_timer > 0.0f && flicker != 0) {
+                maximum = (f32)(1.5 * data->run_speed);
+                fraction = (f32)(object->vehicle_hit_timer / (f64)0.4f);
+                half_speed = (f32)(object->target_velocity.x * 0.5);
+                if (flicker == 3) {
+                    object->target_velocity.x = half_speed - fraction * maximum;
+                    if (-maximum > object->target_velocity.x)
+                        object->target_velocity.x = -maximum;
+                } else {
+                    object->target_velocity.x = half_speed + fraction * maximum;
+                    if (object->target_velocity.x > maximum)
+                        object->target_velocity.x = maximum;
+                }
+            }
+            STUBBED_NAMED("KeepVehicleOnScreen(object, 1, 0, 0)");
+            NuVecRotateY(&object->target_velocity, &object->target_velocity, heading);
+        }
+        ForceTowardsMid(object);
+    }
+    object->velocity.x = SeekValF(object->velocity.x, object->target_velocity.x, seek_rate);
+    object->velocity.z = SeekValF(object->velocity.z, object->target_velocity.z, seek_rate);
+    return 1;
+}
+
+i32 __cdecl MovePlayer_GUNSHIPIN(GAMEOBJECT *object) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    GAMEPAD_PC *pad = object->pad;
+    PLAYERCHARACTERCONFIG_PC *data;
+    GAMEOBJECT *vehicle;
+    f32 input_x = pad->input_direction_z, input_z = pad->input_direction_x, magnitude = pad->input_magnitude;
+    f32 seek_rate, maximum, fraction, half_speed;
+    u16 heading;
+    i32 flicker, lean;
+    if (object->field_280 == 0xff || BONUS_GUNSHIPA_LDATA == NULL || world->current_level != BONUS_GUNSHIPA_LDATA ||
+        world->sock_sys == NULL || object->sock_index == 0xff)
+        return 0;
+    object->movement_mode = 3;
+    heading = object->sock_body_heading;
+    if (object->character_context == 0x23 || object->character_context == 0x24) {
+        object->target_velocity = v000;
+        ForceAlongSock(object);
+        object->velocity.x = SeekValF(object->velocity.x, object->target_velocity.x, 0.0f);
+        object->velocity.z = SeekValF(object->velocity.z, object->target_velocity.z, 0.0f);
+    } else if ((object->flags_e20 & 0x20) != 0) {
+        MoveInactiveVehicle(object, 1, &vehicle);
+        if (vehicle != NULL) {
+            object->field_0x276 = vehicle->field_0x276;
+            object->movement_facing_angle = vehicle->field_0x276;
+            object->facing_angle = vehicle->field_0x276;
+            object->velocity = vehicle->velocity;
+            object->field_dc8 = vehicle->field_dc8;
+            object->movement_lean_angle = object->tertiary_lean_angle = object->secondary_lean_angle = 0;
+            object->roll_angle = object->pitch_angle = 0;
+        }
+    } else {
+        data = object->character_data->game_character;
+        seek_rate = data->velocity_seek_rate;
+        object->target_velocity.y = 0.0f;
+        if (object->movement_direction_x != 0.0f || object->movement_direction_z != 0.0f) {
+            object->target_velocity.x = object->movement_direction_x;
+            object->target_velocity.z = object->movement_direction_z;
+            object->movement_direction_x = object->movement_direction_z = 0.0f;
+        } else {
+            if ((LevFlag[0] & 0xff00) != 0) {
+                input_x = object->position.x < -1.0f ? 1.0f : object->position.x > 1.0f ? -1.0f : 0.0f;
+                input_z = 0.0f;
+                magnitude = data->run_speed;
+            }
+            object->target_velocity.z = 0.0f;
+            if (magnitude > 0.0f) {
+                object->target_velocity.x = input_x * magnitude;
+                if (GUNSHIPAHACK != 0)
+                    object->target_velocity.z = input_z * magnitude;
+            } else
+                object->target_velocity.x = 0.0f;
+            flicker = (object->flags_e24 >> 16) & 7;
+            if (object->vehicle_hit_timer > 0.0f && flicker != 0) {
+                maximum = (f32)(1.5 * data->run_speed);
+                fraction = (f32)(object->vehicle_hit_timer / (f64)0.4f);
+                half_speed = (f32)(object->target_velocity.z * 0.5);
+                if (flicker == 3) {
+                    object->target_velocity.z = half_speed + fraction * maximum;
+                    if (object->target_velocity.z > maximum)
+                        object->target_velocity.z = maximum;
+                } else {
+                    object->target_velocity.z = half_speed - fraction * maximum;
+                    if (-maximum > object->target_velocity.z)
+                        object->target_velocity.z = -maximum;
+                }
+            }
+            NuVecRotateY(&object->target_velocity, &object->target_velocity, heading);
+            ForceAlongSock(object);
+        }
+        object->velocity.x = SeekValF(object->velocity.x, object->target_velocity.x, seek_rate);
+        object->velocity.z = SeekValF(object->velocity.z, object->target_velocity.z, seek_rate);
+    }
+    object->movement_facing_angle = heading;
+    object->facing_angle = SeekRot(object->facing_angle, heading, 8.0f);
+    object->field_0x276 = object->facing_angle;
+    object->pitch_angle = SeekRot(object->pitch_angle, 0, 8.0f);
+    lean = object->character_context == 0x23 || object->character_context == 0x24
+               ? 0
+               : (i32)((f64)((CircleLeanDegrees << 16) / 360) * input_x);
+    object->movement_lean_angle = SeekRot(object->movement_lean_angle, lean, 8.0f);
+    return 1;
+}
+
+i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    GAMEPAD_PC *pad = object->pad;
+    f32 input = pad->input_direction_z;
+    f32 height, blend, speed, seek_rate;
+    u16 heading = 0, pitch = 0, roll = 0;
+    i32 index;
+    if (object->field_280 == 0xff || PODRACE_ADATA == NULL || world->area != PODRACE_ADATA)
+        return 0;
+    if (object->current_speed_mul == 0.0f)
+        return 1;
+    if (WORLD->current_level == PODRACEB_LDATA && podrace_section != 1 && (FadeSys.fade != 0.0f || MiniCutCam != 0) &&
+        object->sock_index != 0xff && object->sock_position.distance < 20.0f)
+        input = -0.625f;
+    index = (i8)object->field_280;
+    if (index < 2) {
+        pod_roll_target[index] =
+            SeekLinearF(pod_roll_target[index], input, (PodRollInputRate * FRAMETIME) * (f32)fabs((f64)input));
+        pod_roll_target[index] = SeekLinearF(pod_roll_target[index], 0.0f, PodRollReleaseRate * FRAMETIME);
+        pod_roll[index] = SeekValF(pod_roll[index], pod_roll_target[index], 8.0f);
+    }
+    object->movement_mode = 2;
+    if (object->sock_index != 0xff)
+        heading = object->sock_body_heading;
+    if (object->floor_height != 2000000.0f) {
+        height = object->collision_min.y - object->floor_height;
+        if (height < 0.5f)
+            blend = 1.0f;
+        else if (height < 1.5f)
+            blend = (f32)(1.0 - (height - 0.5));
+        else
+            blend = 0.0f;
+        FindAnglesZX(&object->surface_normal, NULL, NULL);
+        pitch = (u16)(i32)((f64)RotDiff(0, temp_xrot) * blend);
+        roll = (u16)(i32)((f64)RotDiff(0, temp_zrot) * blend);
+    }
+    object->pitch_angle = SeekRot(object->pitch_angle, pitch, 8.0f);
+    object->roll_angle = SeekRot(object->roll_angle, roll, 8.0f);
+    if ((object->flags_e20 & 0x20) != 0)
+        MoveInactiveVehicle(object, 1, NULL);
+    else {
+        object->target_velocity = v000;
+        if (object->sock_index != 0xff)
+            object->target_velocity.x = index < 2 ? pod_roll[index] * object->character_data->game_character->run_speed
+                                                  : input * pad->input_magnitude;
+        STUBBED_NAMED("KeepVehicleOnScreen(object, 1, 1, 1)");
+        if (object->target_velocity.x != 0.0f || object->target_velocity.y != 0.0f || object->target_velocity.z != 0.0f)
+            NuVecRotateY(&object->target_velocity, &object->target_velocity, heading);
+        if (object->sock_index != 0xff)
+            ForceAlongSock(object);
+        seek_rate = object->character_data->game_character->velocity_seek_rate;
+        object->velocity.x = SeekValF(object->velocity.x, object->target_velocity.x, seek_rate);
+        object->velocity.z = SeekValF(object->velocity.z, object->target_velocity.z, seek_rate);
+    }
+    object->movement_facing_angle = NuAtan2D(object->target_velocity.x, object->target_velocity.z);
+    object->facing_angle = SeekRot(object->facing_angle, object->movement_facing_angle, PodFacingSeekRate);
+    object->field_0x276 = object->facing_angle;
+    return 1;
+}
+
+void __cdecl MovePlayer(GAMEOBJECT *object) {
+    GAMEPAD_PC *pad = object->pad;
+    PLAYERCHARACTERCONFIG_PC *data;
+    GAMEOBJECT *lift;
+    i32 analog_x = pad->bound_pad != NULL ? pad->bound_pad->analog_left_x : 0;
+    i32 analog_y = pad->bound_pad != NULL ? pad->bound_pad->analog_left_y : 0;
+    i32 menu_id, index, waggle;
+    u32 buttons;
+    f32 x, z, magnitude, inverse, run_speed, walk_speed;
+    NUVEC input, axis;
+    u16 angle;
+
+    object->flags_e20 &= ~0x200000;
+    if (pad->input_magnitude != pad->previous_input_magnitude)
+        pad->runtime_flags |= 0x40;
+    object->previous_floor_height = object->floor_height;
+    object->start_position = object->position;
+    object->initial_position = object->collision_position;
+    object->field_282 = object->field_281;
+    pad->previous_input_angle = pad->input_angle;
+    pad->previous_input_magnitude = pad->input_magnitude;
+    object->flags_ef0 &= ~0x4000;
+    object->previous_movement_angle = object->field_0x276;
+    object->field_f10 = object->model_draw_result == 0 ? object->field_f10 + FRAMETIME : 0.0f;
+    if (object->character_context == 0x2b)
+        object->turn_braking += FRAMETIME;
+    if ((object->flags_ef4 & 0x4000000) != 0) {
+        APIObjectVelocities(object);
+        GameObjectOrigin(object);
+        return;
+    }
+    if (object->dead)
+        return;
+    pad->runtime_flags &= ~8;
+    pad->waggle_magnitude = 0.0f;
+    object->field_106e = -1;
+    object->flags_ef0 &= ~0x400;
+    menu_id = GetMenuID();
+    if ((object->flags_1fc_word & 0x180) == 0x80) {
+        if (FadeSys.fade > 0.0f || newgamecam != 0 || MiniCutCam == 2 || (menu_id != 0x0e && menu_id != -1)) {
+            pad->input_magnitude = 0.0f;
+            pad->input_direction_z = pad->input_direction_x = 0.0f;
+            pad->input_mode = 1;
+        } else if (object->pad == ViewCamGetGamePad())
+            pad->input_magnitude = 0.0f;
+        else {
+            buttons = pad->buttons_held;
+            if ((buttons & (GAMEPAD_DLEFT | GAMEPAD_DRIGHT | GAMEPAD_DUP | GAMEPAD_DDOWN)) != 0) {
+                x = (buttons & GAMEPAD_DLEFT) != 0 ? -127.5f : (buttons & GAMEPAD_DRIGHT) != 0 ? 127.5f : 0.0f;
+                z = (buttons & GAMEPAD_DDOWN) != 0 ? -127.5f : (buttons & GAMEPAD_DUP) != 0 ? 127.5f : 0.0f;
+                if (x != 0.0f || z != 0.0f)
+                    pad->input_mode = 1;
+            } else {
+                x = (f32)((f64)analog_x - 127.5);
+                z = (f32)(127.5 - (f64)analog_y);
+                if (x * x + z * z < 1806.25)
+                    x = z = 0.0f;
+                else if (x != 0.0f || z != 0.0f)
+                    pad->input_mode = 2;
+            }
+            x = (f32)(x * (f64)0.007843137718737125f);
+            z = (f32)(z * (f64)0.007843137718737125f);
+            angle = NuAtan2D(x, z);
+            axis.x = axis.y = 0.0f;
+            axis.z = fabs((f64)x) > fabs((f64)z) ? (f32)fabs((f64)x) : (f32)fabs((f64)z);
+            NuVecRotateY(&input, &axis, angle);
+            magnitude = NuFsqrt(input.x * input.x + input.z * input.z);
+            if (object == Player[0] || object == Player[1]) {
+                index = object == Player[0] ? 0 : 1;
+                PlayerPadPreviousSpeed[index] = PlayerPadCurrentSpeed[index];
+                PlayerPadPreviousAngle[index] = PlayerPadCurrentAngle[index];
+                PlayerPadCurrentSpeed[index] = pad->input_magnitude;
+                PlayerPadCurrentAngle[index] = pad->input_angle;
+            }
+            if ((f64)0.2f > magnitude)
+                pad->input_magnitude = 0.0f;
+            else {
+                data = object->character_data->game_character;
+                if ((object->character_data->model_flags & 0x20) != 0 &&
+                    (object->field_280 == 0xff ? object->current_hp < 3 : object->vehicle_secondary_hp < 3))
+                    pad->input_magnitude = data->walk_speed;
+                else if (magnitude < 0.5f && (data->flags_090 & 8) == 0)
+                    pad->input_magnitude = data->tiptoe_speed;
+                else if (magnitude < (f64)0.8f)
+                    pad->input_magnitude = data->walk_speed;
+                else
+                    pad->input_magnitude = data->run_speed;
+            }
+            pad->input_direction_z = input.x;
+            pad->input_direction_x = input.z;
+            if (pad->input_magnitude > 0.0f)
+                pad->input_angle = NuAtan2D(input.x, input.z);
+            waggle = GamePad_Waggle(object->pad);
+            pad->runtime_flags = (pad->runtime_flags & ~8) | ((waggle & 1) << 3);
+            pad->waggle_magnitude = object == Player[0] || object == Player[1] ? GamePad_Rotate(object) : 0.0f;
+        }
+    } else {
+        if ((object->flags_ef0 & 0x10) != 0) {
+            pad->input_magnitude = 0.0f;
+            object->pad->buttons_held = object->pad->buttons_pressed = 0;
+        } else if (object->ai_packet.movement_stopped == 1) {
+            pad->input_magnitude = 0.0f;
+            pad->input_mode = 1;
+            pad->input_direction_z = pad->input_direction_x = 0.0f;
+        } else if (object->character_context == 0x17 && (object->field_ef8 & 1) == 0)
+            pad->input_magnitude = 0.0f;
+        else {
+            x = object->ai_packet.movement_position.x - object->position.x;
+            z = object->ai_packet.movement_position.z - object->position.z;
+            if (x == 0.0f && z == 0.0f) {
+                pad->input_magnitude = 0.0f;
+                pad->input_angle = 0;
+                pad->input_direction_z = pad->input_direction_x = 0.0f;
+            } else {
+                magnitude = NuFsqrt(x * x + z * z);
+                pad->input_magnitude = magnitude / ai_moveradius;
+                if (pad->input_magnitude > 1.0f)
+                    pad->input_magnitude = 1.0f;
+                inverse = 1.0f / magnitude;
+                pad->input_direction_x = x * inverse;
+                pad->input_direction_z = z * inverse;
+                pad->input_angle = NuAtan2D(pad->input_direction_x, pad->input_direction_z);
+                pad->input_angle = NuAngSub(pad->input_angle, GameCam->input_yaw);
+            }
+            pad->input_mode = 1;
+        }
+        if (object->context_target_position != NULL)
+            pad->input_magnitude = 0.0f;
+        else {
+            data = object->character_data->game_character;
+            run_speed = object->run_speed_override == 1000000000.0 ? data->run_speed : object->run_speed_override;
+            walk_speed = object->walk_speed_override == 1000000000.0 ? data->walk_speed : object->walk_speed_override;
+            pad->input_magnitude = (object->ai_packet.flags & 0x40000) != 0 ? 0.0f : pad->input_magnitude * run_speed;
+            if ((object->ai_packet.flags & 0x80000) == 0 && pad->input_magnitude < data->tiptoe_speed * 0.5)
+                pad->input_magnitude = 0.0f;
+            if ((object->ai_packet.flags & 8) == 0) {
+                if (object->ai_packet.goal_speed_mode == 1 && pad->input_magnitude > walk_speed)
+                    pad->input_magnitude = walk_speed;
+                else if (object->ai_packet.goal_speed_mode == 2 && pad->input_magnitude > data->tiptoe_speed)
+                    pad->input_magnitude = data->tiptoe_speed;
+            }
+            if ((object->flags_1f8 & 0x400) == 0 && (object->portal_flags & 0x2000000) == 0 &&
+                (object->field_f10 >= OFFSCREEN_CATCHUP_TIME ||
+                 (object->model_draw_result == 0 && (object->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f)) &&
+                (pad->input_magnitude + (f64)0.001f >= walk_speed || object->id == (u16)id_SPEEDERBIKE))
+                object->flags_ef0 |= 0x400;
+        }
+        object->pad->operator_data = object->ai_packet.movement_look_target;
+    }
+    if ((object->flags_1fc & 0x80) != 0 && menu_id == 0x0e && (object == Player[0] || object == Player[1])) {
+        index = object == Player[0] ? 0 : 1;
+        Hub_PadSpeed[index] = pad->input_magnitude;
+        Hub_PadAngle[index] = pad->input_angle;
+        pad->input_mode = 1;
+        pad->input_magnitude = 0.0f;
+        pad->input_direction_z = pad->input_direction_x = 0.0f;
+    }
+    if (pad->input_magnitude > 0.0f)
+        pad->animation_input_magnitude = pad->input_magnitude;
+    if (object->character_context == 0x3b || object->character_context == 0x39)
+        return;
+    object->movement_mode = 2;
+    STUBBED_NAMED("ShoveSystemCheckGameObject(object)");
+    if (object->id == (u16)id_DRAGBOMB)
+        MovePlayer_ROLLING(object);
+    else if (!MovePlayer_TWIST(object) && !MovePlayer_CIRCLE(object) && !MovePlayer_GUNSHIPIN(object) &&
+             !MovePlayer_POD(object)) {
+        if ((object->character_data->model_flags & 0x2000) == 0)
+            STUBBED_NAMED("MovePlayer_DIRECTIONAL(object)");
+        else
+            MovePlayer_VEHICLEDIRECTIONAL(object);
+    }
+    if (LIFTPLAYER != 0 && menu_id == -1 && !object->dead && object->character_context != 0x2b &&
+        (object->character_data->game_character->flags_090 & 0x80) == 0 && (object->flags_1fc & 0x80) != 0 &&
+        (pad->buttons_held & GAMEPAD_LIFT) != 0 && pad != ViewCamGetGamePad()) {
+        lift = object;
+        if (object->character_context == 0x51 && object->techno != NULL && object->techno->target_mode == 1 &&
+            object->techno->controlled_player != NULL)
+            lift = object->techno->controlled_player;
+        lift->position.y = (f32)(lift->position.y + 1.5 * FRAMETIME);
+        lift->velocity.y = 0.0f;
+        lift->field_281 = 0;
+        lift->lift_clear_state = 0;
+        if (lift->character_context == 0x33)
+            lift->character_context = -1;
+    }
+    object->flags_1fc_word |= 0x10000;
+    object->previous_velocity = object->velocity;
+    APIObjectVelocities(object);
+    GameObjectOrigin(object);
+}

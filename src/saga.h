@@ -1053,7 +1053,8 @@ typedef struct AIGROUP_PC {
 } AIGROUP_PC;
 STATIC_ASSERT(sizeof(AIGROUP_PC) == 0x134);
 typedef struct AICREATURE_PC {
-    u8 unknown_00[0x20];
+    char name[1];
+    u8 unknown_01[0x1f];
     NUVEC position;
     i32 y_rotation;
     AIPATHINFO_PC path_info;
@@ -1078,6 +1079,7 @@ typedef struct AICREATURE_PC {
     f32 max_view_height;
     f32 min_view_height;
 } AICREATURE_PC;
+STATIC_ASSERT(offsetof(AICREATURE_PC, name) == 0);
 STATIC_ASSERT(offsetof(AICREATURE_PC, position) == 0x20);
 STATIC_ASSERT(offsetof(AICREATURE_PC, path_info) == 0x30);
 STATIC_ASSERT(offsetof(AICREATURE_PC, flags) == 0x48);
@@ -2546,6 +2548,19 @@ STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, activation_delay) == 0xb4);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, proximity_delay) == 0xb8);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, animation_time) == 0xbc);
 
+typedef struct techno_pc_s {
+    u8 unknown_00[0x37];
+    u8 target_mode;
+    u8 unknown_38[0x34];
+    union {
+        void *controlled_object;
+        struct gameobject_s *controlled_player;
+        NUSPECIALHANDLE *controlled_special;
+    };
+} TECHNO_PC;
+STATIC_ASSERT(offsetof(TECHNO_PC, target_mode) == 0x37);
+STATIC_ASSERT(offsetof(TECHNO_PC, controlled_object) == 0x6c);
+STATIC_ASSERT(sizeof(TECHNO_PC) == 0x70);
 typedef struct WORLDINFO_s {
     u32 unknown_0000[0x40];
     void *buffer_start;
@@ -2590,11 +2605,16 @@ typedef struct WORLDINFO_s {
     LEVELSFXENTRY_PC level_sfx[64];
     i32 level_sfx_count;
     BOLTTYPE_PC bolt_types[8];
-    u8 unknown_5034[0x8c];
+    u8 unknown_5034[0x44];
+    TECHNO_PC *technos;
+    i32 techno_count;
+    u8 unknown_5080[0x40];
     i32 gizmo_blowup_count;
     u8 unknown_50c4[4];
     GIZMOBLOWUP_PC *gizmo_blowups;
-    u8 unknown_50cc[0xe0];
+    u8 unknown_50cc[0x40];
+    void *game_antinode_sys;
+    u8 unknown_5110[0x9c];
 } WORLDINFO;
 STATIC_ASSERT(offsetof(WORLDINFO, sock_sys) == 0x2988);
 STATIC_ASSERT(offsetof(WORLDINFO, camera_splines) == 0x2ac4);
@@ -3545,8 +3565,6 @@ STATIC_ASSERT(offsetof(SPLINEPOS, segment_length) == 0xc);
 STATIC_ASSERT(offsetof(SPLINEPOS, position) == 0x10);
 STATIC_ASSERT(offsetof(SPLINEPOS, along) == 0x1c);
 
-typedef struct techno_pc_s TECHNO_PC;
-
 typedef struct blowup_target_pc_s {
     u8 unknown_00[0x4c];
     NUVEC mid_position;
@@ -3565,6 +3583,11 @@ STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, count) == 0);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, pickup_data) == 0x14);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, pickup_flags) == 0x28);
 
+typedef struct AITRIGGERSET_PARTIAL_PC {
+    u8 unknown_00[0x210];
+    u8 flags_low;
+} AITRIGGERSET_PARTIAL_PC;
+STATIC_ASSERT(offsetof(AITRIGGERSET_PARTIAL_PC, flags_low) == 0x210);
 typedef struct gameobject_s {
     union {
         struct {
@@ -3716,8 +3739,13 @@ typedef struct gameobject_s {
     u8 tag_flags;
     u8 unknown_07c6[2];
     struct gameobject_s *pending_tag_target;
-    u8 unknown_07cc[2];
-    u16 sock_body_heading;
+    union {
+        SOCKROT_PC sock_angles;
+        struct {
+            u16 sock_body_pitch;
+            u16 sock_body_heading;
+        };
+    };
     u8 unknown_07d0[0x2c];
     void *coin_packet;
     void *gizforce_los_info;
@@ -3735,7 +3763,8 @@ typedef struct gameobject_s {
     f32 field_c94;
     NUVEC suspension_normal;
     GAMEPAD_PC *pad;
-    u8 unknown_0ca8[0x14];
+    SOCKPOSITION_PC *previous_sock_position;
+    u8 unknown_0cac[0x10];
     SUIT_LAYERS_PC *suit;
     u8 unknown_0cc0[4];
     struct TORPEDOPACKET_PC *torpedo;
@@ -3752,7 +3781,8 @@ typedef struct gameobject_s {
     u8 unknown_0d20[0xc];
     f32 airborne_input_timer;
     f32 origin_scale_override;
-    u8 unknown_0d34[8];
+    f32 timer_d34;
+    u8 unknown_0d38[4];
     f32 weapon_scale;
     u8 unknown_0d40[4];
     f32 sabre_collision_radius;
@@ -3776,7 +3806,8 @@ typedef struct gameobject_s {
     f32 field_dc8;
     u8 unknown_0dcc[4];
     f32 takeover_timer;
-    u8 unknown_0dd4[8];
+    f32 arrow_blend;
+    u8 unknown_0dd8[4];
     f32 field_ddc;
     u8 unknown_0de0[0xc];
     f32 powerup_time;
@@ -3844,7 +3875,9 @@ typedef struct gameobject_s {
     u32 ai_opponent_exclusion_mask[2];
     u32 field_ec0;
     f32 field_ec4;
-    u8 unknown_0ec8[0xc];
+    u8 unknown_0ec8[4];
+    f32 timer_ecc;
+    u8 unknown_0ed0[4];
     f32 run_speed_override;
     f32 walk_speed_override;
     u8 unknown_0edc[8];
@@ -3881,7 +3914,8 @@ typedef struct gameobject_s {
     f32 shadow_opacity;
     u8 unknown_1024[4];
     f32 hover_height_override;
-    u8 unknown_102c[0x10];
+    f32 collision_scale_override;
+    u8 unknown_1030[0xc];
     f32 fall_acceleration_timer;
     u8 unknown_1040[8];
     u32 layer_mask;
@@ -3927,11 +3961,15 @@ typedef struct gameobject_s {
     u8 attack_override;
     u8 unknown_1086[0x1e];
     struct gameobject_s *opponent;
-    u8 unknown_10a8[8];
-    void *move_override;
-    u8 unknown_10b4[8];
+    struct gameobject_s *last_attacker;
+    u8 unknown_10ac[4];
+    void(__cdecl *move_override)(struct gameobject_s *);
+    u8 unknown_10b4[4];
+    f32 ai_elapsed_time;
     NUVEC ai_update_position;
-    u8 unknown_10c8[0x10];
+    f32 ai_vertical_velocity;
+    u8 unknown_10cc[8];
+    AITRIGGERSET_PARTIAL_PC *active_trigger_set;
 } GAMEOBJECT;
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_e33) == 0xe33);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_107e) == 0x107e);
@@ -6652,6 +6690,122 @@ extern "C" {
     extern f32 PlayerPadPreviousSpeed[2];
     extern u16 PlayerPadCurrentAngle[2];
     extern u16 PlayerPadPreviousAngle[2];
+    typedef struct VIEWCAM_PC {
+        i32 mode;
+        NUVEC target;
+        i16 pitch;
+        i16 yaw;
+        f32 distance;
+        f32 height;
+        f32 zoom_step;
+        u32 unknown_20;
+        GAMEPAD_PC *gamepad;
+    } VIEWCAM_PC;
+    STATIC_ASSERT(offsetof(VIEWCAM_PC, mode) == 0);
+    STATIC_ASSERT(offsetof(VIEWCAM_PC, target) == 4);
+    STATIC_ASSERT(offsetof(VIEWCAM_PC, pitch) == 0x10);
+    STATIC_ASSERT(offsetof(VIEWCAM_PC, yaw) == 0x12);
+    STATIC_ASSERT(offsetof(VIEWCAM_PC, distance) == 0x14);
+    STATIC_ASSERT(offsetof(VIEWCAM_PC, height) == 0x18);
+    STATIC_ASSERT(offsetof(VIEWCAM_PC, zoom_step) == 0x1c);
+    STATIC_ASSERT(offsetof(VIEWCAM_PC, gamepad) == 0x24);
+    STATIC_ASSERT(sizeof(VIEWCAM_PC) == 0x28);
+    extern VIEWCAM_PC ViewCam;
+    GAMEPAD_PC *__cdecl ViewCamGetGamePad(void);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, last_attacker) == 0x10a8);
+    i32 __cdecl LineIntersectSphere(NUVEC *, NUVEC *, NUVEC *, f32, f32 *);
+    i32 __cdecl InDoubleScoreZone(GAMEOBJECT *);
+    i32 __cdecl TakeOverYodaSeekDistanceHack(GAMEOBJECT *, GAMEOBJECT *, NUVEC *);
+    extern const char AIGamePunch2Name[8];
+    extern const char AIGamePunch1Name[8];
+    extern const char AIGameSetName[5];
+    extern const char AIGameCharacterName[11];
+    extern const char AIGameStateName[7];
+    extern const char AIGameNearestName[8];
+    extern const char AIGameShootName[6];
+    extern const char AIGameBlockName[6];
+    extern const char AIGamePunchSpecialName[14];
+    extern const char AIGamePunchBehindName[13];
+    extern const char AIGamePunch3Name[8];
+    extern const char AIGameAttackOverrideName[16];
+    extern const char AIGameJediGoodieAttackName[18];
+    extern const char AIGameRangeName[6];
+    extern const char AIGameFireIntervalName[13];
+    extern const char AIGameFireRangeName[10];
+    extern const char AIGameEndName[5];
+    extern const char AIGameStartName[7];
+    extern const char AIGameHoldSpecialButtonName[20];
+    extern const char AIGameTurnName[5];
+    extern const char AIGameRandomTurnDirectionName[14];
+    extern const char AIGameMaximumTurnName[9];
+    extern const char AIGameMinimumTurnName[9];
+    extern const char AIGameOpponentName[9];
+    extern const char AIGameTakeOverTargetName[15];
+    STATIC_ASSERT(offsetof(WORLDINFO, technos) == 0x5078);
+    STATIC_ASSERT(offsetof(WORLDINFO, techno_count) == 0x507c);
+    STATIC_ASSERT(offsetof(WORLDINFO, game_antinode_sys) == 0x510c);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, sock_angles) == 0x7cc);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, sock_body_pitch) == 0x7cc);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, previous_sock_position) == 0xca8);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, timer_d34) == 0xd34);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, arrow_blend) == 0xdd4);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, timer_ecc) == 0xecc);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, collision_scale_override) == 0x102c);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, ai_elapsed_time) == 0x10b8);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, ai_vertical_velocity) == 0x10c8);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, active_trigger_set) == 0x10d4);
+    TECHNO_PC *__cdecl Technos_FindControllingTechno(GAMEOBJECT *);
+    extern i32 CircleLeanDegrees;
+    extern f32 PodRollInputRate;
+    extern f32 PodRollReleaseRate;
+    extern f32 PodFacingSeekRate;
+    extern i32 GUNSHIPAHACK;
+    extern i32 podrace_section;
+    extern i32 newgamecam;
+    extern i32 GAMEPAD_DUP;
+    extern i32 GAMEPAD_DDOWN;
+    extern i32 GAMEPAD_DLEFT;
+    extern i32 GAMEPAD_DRIGHT;
+    extern i32 GAMEPAD_LIFT;
+    extern f32 OFFSCREEN_CATCHUP_TIME;
+    extern i32 LIFTPLAYER;
+    extern f32 pod_roll[2];
+    extern f32 pod_roll_target[2];
+    extern f32 Hub_PadSpeed[2];
+    extern u16 Hub_PadAngle[2];
+    typedef struct mission_data_pc_s MISSIONDATA_PC;
+    typedef struct mission_sys_pc_s {
+        u8 unknown_00[4];
+        MISSIONDATA_PC *active_mission;
+        u8 unknown_08[0x15];
+        u8 state;
+    } MISSIONSYS_PC;
+    STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
+    STATIC_ASSERT(offsetof(MISSIONSYS_PC, state) == 0x1d);
+    extern MISSIONSYS_PC *MissionSys;
+    extern void(__cdecl *GameObjectDimensionsExtraFn)(GAMEOBJECT *);
+    MISSIONDATA_PC *__cdecl Mission_Active(MISSIONSYS_PC *);
+    void __cdecl GameObjectDimensions(GAMEOBJECT *);
+    typedef i32(__cdecl *AI_LEVEL_CHARACTER_TYPE_ID_PC)(char *);
+    typedef i32(__cdecl *AI_LEVEL_CHARACTER_GLOBAL_ID_PC)(u8);
+    extern f32 idealgoalrange;
+    extern f32 engagefiretime;
+    extern f32 DEFAULT_MOVE_RANGE;
+    extern AI_LEVEL_CHARACTER_TYPE_ID_PC LevelCharacterTypeIDFn;
+    extern AI_LEVEL_CHARACTER_TYPE_ID_PC SpecialRouteCharacterTypeIDFn;
+    extern AI_LEVEL_CHARACTER_GLOBAL_ID_PC LevelCharacterGlobalIDFn;
+    extern const char AICombatMinimumRangeName[10];
+    extern const char AICombatStaticName[7];
+    extern const char AICombatOffscreenName[10];
+    extern const char AICombatNoFireInMiniCutName[19];
+    extern const char AICombatCircleName[7];
+    extern const char AICombatOpponentName[10];
+    extern const char AICombatInstantName[8];
+    extern const char AICombatFrontArcOnlyName[13];
+    extern const char AICombatDroidName[15];
+    extern const char AICombatNearestEnemyName[23];
+    extern const char AICombatLastAttackerName[14];
+    extern const char AICombatOpponentTypeName[13];
     extern GIZOBSTACLE *LevGizObst[8];
     extern AREA_DATA_PC *JEDI_ADATA;
     extern AREA_DATA_PC *DOOKU_ADATA;
@@ -7707,6 +7861,78 @@ extern "C" {
     void __cdecl NuBridgeUpdate(NUVEC *);
     void __cdecl NuBridgeDraw(NUMTL *);
     void __cdecl NuBrdigeDrawRope(NUMTL *, NUVEC *, NUVEC *, i32, i32 *, i32);
+    extern f32 AIFireIntervalMul;
+    extern f32 GhostLightMul;
+    extern f32 GhostLightTargetMul;
+    extern i32 timebase_updates;
+    extern f32 tieonsfxwait;
+    extern f32 tieoffsfxwait;
+    extern f32 CurrentSpeedOverride;
+    extern f32 BaseCurrentSpeed;
+    extern i32 DoubleScore;
+    extern i16 id_SEBULBASPOD;
+    extern LEVELDATA_PC *UpdateSockets_LDATA;
+
+    typedef struct ADAPTIVEDIFFICULTY_PC {
+        i32 level;
+        f32 accumulator;
+        f32 time_elapsed;
+    } ADAPTIVEDIFFICULTY_PC;
+    STATIC_ASSERT(offsetof(ADAPTIVEDIFFICULTY_PC, level) == 0);
+    STATIC_ASSERT(offsetof(ADAPTIVEDIFFICULTY_PC, accumulator) == 4);
+    STATIC_ASSERT(offsetof(ADAPTIVEDIFFICULTY_PC, time_elapsed) == 8);
+    /* Working source access view; complete original object extent unproved. */
+    extern ADAPTIVEDIFFICULTY_PC adaptivedifficulty;
+    extern i8 adtabentries[9][4];
+    extern i8 (*adtab)[4];
+
+    extern const char AIControlPlayerRunSpeedName[17];
+    extern const char AIControlSeekName[6];
+    extern const char AIControlMinimumName[5];
+    extern const char AIControlMaximumName[5];
+    extern const char AIControlClearName[6];
+    extern const char AIControlMaximumDefaultName[12];
+    extern const char AIControlMultiplyName[10];
+    extern const char AIControlLocatorName[8];
+    extern const char AIControlAllNonPartyName[14];
+    extern const char AIControlDefaultTitleName[8];
+
+    typedef void(__cdecl *PLAYER_CLEAR_CONTEXT_CALLBACK_PC)(GAMEOBJECT *);
+    extern i32 LEGOCONTEXT_WHIP;
+    extern i32 LEGOCONTEXT_SUPERCARRY;
+    extern i32 LEGOCONTEXT_SPECIALMOVE_ATTACKER;
+    extern i32 LEGOCONTEXT_SPECIALMOVE_VICTIM;
+    extern i32 LEGOCONTEXT_BUILDIT;
+    extern i32 LEGOCONTEXT_PUSHOBSTACLE;
+    extern f32 SUPERCARRY_THROWSPEED_XZ;
+    extern f32 SUPERCARRY_THROWSPEED_Y;
+    extern f32 SUPERCARRY_RELEASESPEED_XZ;
+    extern f32 SUPERCARRY_DROPSPEED_XZ;
+    extern f32 SUPERCARRY_DROPSPEED_Y;
+    extern f32 SUPERCARRY_OBJGRAVITY;
+    extern i32 SuperCarry_KeepObjectLevel;
+    extern i32 SuperCarry_AlignObject;
+    extern PLAYER_CLEAR_CONTEXT_CALLBACK_PC Player_ClearContextFn;
+
+    extern NUVEC v100;
+    extern NUVEC v010;
+
+    extern i16 id_YWING;
+    extern i16 id_MINIYWING;
+    extern i16 id_TIEBOMBER;
+    extern i16 id_MINITIEBOMBER;
+    extern i16 id_MINISTARDESTROYER;
+    extern u32 LEGO_AIPATHCNX_FORGOODIES;
+    extern u32 LEGO_AIPATHCNX_FORBADDIES;
+
+    extern const char GameAIPlayerName[7];
+    extern const char GameAIPlayer2Name[9];
+    extern const char GameAIPlayerFormat[9];
+
+    extern AREA_DATA_PC *PODSPRINT_ADATA;
+    void __cdecl MakeThrowVector(NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32, f32);
+    APIOBJECT_PC *__cdecl GetNamedAPIObject(void *, char *);
+    NUVEC *__cdecl GetAICreatureOrigin(AISYS_PC *, AIPACKET_PC *);
     typedef APIOBJECT_PC *(__cdecl *GAMEOBJECT_LOOKUP_CALLBACK_PC)(void *, char *);
     extern GAMEOBJECT_LOOKUP_CALLBACK_PC GetNamedGameObjectCallback;
     GAMEOBJECT *__cdecl GetNamedGameObject(void *, char *);

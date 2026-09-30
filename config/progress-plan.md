@@ -220,3 +220,34 @@ combat/follow actions. The socket camera family requires genuine terrain
 scan/cast results before release; its research remains separate from transferred
 code. Continue the active goal with all eight Sol agents, prioritizing new
 verified PC spans rather than small instruction-order refinements.
+
+## Fifth verified structural checkpoint and pause
+
+This batch adds 27,002 unique compared original bytes, bringing the total to
+352,806. Whole-PC fuzzy coverage rises from 5.705892% to 6.211619%, adding
+17,555.00 similarity-weighted bytes. Native objdiff averages 61.121914% over
+352,861 bytes, including the unchanged 55-byte overlap. Exact coverage is
+45,746 bytes (1.317855%): 801 exact functions, six newly exact functions and
+698 newly exact bytes. No previous exact function or data result is lost.
+Image mapping is 913,001 of 40,067,072 bytes (2.278682%).
+
+New compared families include the movement dispatcher and POD/rolling/gunship/
+circle/force-along modes; GameAI simpleton, combat and control actions; the
+complete UpdateGameObjects comparison span; and genuine supporting queries.
+GetAICreatureOrigin, ViewCamGetGamePad, oneAtOnce_CanAttack,
+Action_SetDefaultMovementRange, MovementMtxRotateY and InDoubleScoreZone
+match exactly. The batch also adds 131 exact data comparison rows.
+
+UpdateGameObjects remains partial at 36.11261% with 36 missing void actions.
+Its RememberPlayerIDs call is an explicit action gap until the real provider
+is reconstructed. The genuine name lookup remains nonexact at 53.810345%;
+MakeThrowVector scores 97.438095% without exact equality. Unknown data owner
+extents, including Hub input views and adaptive difficulty, remain uncredited.
+Source-only linking does not establish completed NuMain or playable gameplay.
+
+At the user's request, expansion stops after this verified commit and push.
+Retained next-wave contracts cover 8,385 bytes of enemy/control callbacks,
+player context/reset dependencies and PartCollide/Deflect/Torpedo queries.
+Terrain camera candidates remain withheld for state-producer and semantic
+verification. Resume with these retained packets instead of repeating setup
+or whole-binary identification.

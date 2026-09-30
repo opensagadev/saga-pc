@@ -617,3 +617,26 @@ from Android in the rail cursor return, allocation-exhaustion path, projection
 calculation and several wrappers. The next movement dispatcher and combat action
 cohorts are prepared separately; camera terrain queries still require their real
 scan/cast providers before implementation can be released.
+
+## Fifth structural release and stopping point
+
+MovePlayer, POD, rolling, gunship, circle, twist and force-along movement now
+use verified PC layouts and genuine socket/input providers. GameAI simpleton,
+combat and movement-control actions use PC constants and real queries.
+UpdateGameObjects reconstructs its complete comparison span with explicit
+missing action markers; remembering player IDs, resetting context, rendering,
+networking and other unreconstructed actions remain gaps. No successful
+placeholder return conceals a missing query.
+
+The GameAI name lookup, creature-origin cache, object dimensions, double-score
+zone, Yoda distance, techno controller and active-mission providers are real.
+The creature inline name has a minimal address view; its original writable
+capacity is still unknown. Adaptive difficulty uses typed mixed fields and
+the original signed nine-row table, with its pointer initialized to row four.
+Unknown owner extents receive no mapping or exact-size credit.
+
+Work is paused at the user's request after this verified commit. Next broad
+source target is the reviewed 8,385-byte enemy/control callback family, followed
+by player context/reset actions needed by UpdateGameObjects. Terrain camera
+work remains scratch-only pending semantic and state-producer verification.
+NuMain and gameplay remain incomplete.
