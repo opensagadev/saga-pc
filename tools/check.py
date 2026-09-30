@@ -212,7 +212,10 @@ def analysis_configuration():
         flags.extend(["-isystem", str(directory)])
     # VC8's SDK declares these using LONG*, while Clang's modern intrinsic uses
     # volatile LONG*. Rename only the analysis declarations, retaining SDK types.
-    flags += ["-D_interlockedbittestandset=saga_clang_interlockedbittestandset",
+    # VC8 math.h uses the newer Clang keyword _Complex as a parameter name.
+    # Rename that analysis-only identifier without editing the verified CRT.
+    flags += ["-D_Complex=saga_clang_complex_parameter",
+              "-D_interlockedbittestandset=saga_clang_interlockedbittestandset",
               "-D_interlockedbittestandreset=saga_clang_interlockedbittestandreset"]
     return include_dirs, overlay, flags
 

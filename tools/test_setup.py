@@ -201,10 +201,10 @@ class CompilerHeadersTests(unittest.TestCase):
 
     def test_original_c_runtime_and_cpp_standard_library_compile(self):
         sources = {
-            "c": "#include <stddef.h>\n#include <stdio.h>\n#include <stdlib.h>\n"
+            "c": "#include <stddef.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <math.h>\n"
                  "#include <windows.h>\n"
                  "size_t sdk_probe(FILE *file) { return sizeof(size_t) + ftell(file) + "
-                 "GetCurrentProcessId(); }\n",
+                 "GetCurrentProcessId() + (size_t)fabs(-1.0); }\n",
             "cpp": "#include <vector>\n#include <string>\n#include <algorithm>\n"
                    "int sdk_probe() { std::vector<int> values(3, 7); "
                    "std::sort(values.begin(), values.end()); "

@@ -3148,3 +3148,88 @@ extern "C" {
     NUVEC v001 = {0.0f, 0.0f, 1.0f};
 #pragma data_seg()
 }
+
+// PC movement tuning, timers, input masks and parser path.
+extern "C" {
+#pragma bss_seg(".bss$GamePlayTimer")
+    TIMER GamePlayTimer;
+#pragma bss_seg()
+#pragma data_seg(".data$GAMEPAD_JUMP")
+    u32 GAMEPAD_JUMP = 64;
+#pragma data_seg()
+#pragma data_seg(".data$GAMEPAD_ACTION")
+    u32 GAMEPAD_ACTION = 128;
+#pragma data_seg()
+#pragma data_seg(".data$GAMEPAD_SPECIAL")
+    u32 GAMEPAD_SPECIAL = 32;
+#pragma data_seg()
+#pragma data_seg(".data$GAMEPAD_TAG")
+    u32 GAMEPAD_TAG = 16;
+#pragma data_seg()
+#pragma data_seg(".data$ApplyGravityContext22HoverHeight")
+    f32 ApplyGravityContext22HoverHeight = 0.20000000298023224f;
+#pragma data_seg()
+#pragma data_seg(".data$ApplyGravityContext42HoverHeight")
+    f32 ApplyGravityContext42HoverHeight = 0.20000000298023224f;
+#pragma data_seg()
+#pragma data_seg(".data$ApplyGravityWallRunAcceleration")
+    f32 ApplyGravityWallRunAcceleration = -0.25f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_GRAVITY")
+    f32 PODSPRINT_GRAVITY = -35.0f;
+#pragma data_seg()
+#pragma data_seg(".data$SLAMGRAVITY")
+    f32 SLAMGRAVITY = -15.0f;
+#pragma data_seg()
+#pragma data_seg(".data$id_DRAGBOMB")
+    u16 id_DRAGBOMB = 0xffff;
+#pragma data_seg()
+#pragma data_seg(".data$AIPathDefaultChecks")
+    i32 AIPathDefaultChecks = 1;
+#pragma data_seg()
+#pragma const_seg(".rdata$ApplyGravityVelocityFactor")
+    extern const f64 ApplyGravityVelocityFactor = 0.3330000042915344;
+#pragma const_seg()
+#pragma const_seg(".rdata$ApplyGravityFrameScale")
+    extern const f64 ApplyGravityFrameScale = 180.0;
+#pragma const_seg()
+#pragma const_seg(".rdata$ApplyGravityMinimumFrameTime")
+    extern const f32 ApplyGravityMinimumFrameTime = 0.01666666753590107f;
+#pragma const_seg()
+#pragma const_seg(".rdata$GizmoConfigPathFormat")
+    extern const char GizmoConfigPathFormat[7] = "%s.giz";
+#pragma const_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$AIRespawnOnPathFn")
+    AI_RESPAWN_ON_PATH_PC AIRespawnOnPathFn;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GetCharacterGoalSpeedFn")
+    AI_CHARACTER_GOAL_SPEED_PC GetCharacterGoalSpeedFn;
+#pragma bss_seg()
+#pragma bss_seg(".bss$MidSpecialMoveFn")
+    AI_MID_SPECIAL_MOVE_PC MidSpecialMoveFn;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$GCDataList")
+    PLAYERCHARACTERCONFIG_PC *GCDataList;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CharacterCustomiser")
+    CUSTOMISER_LAYERS_PC *CharacterCustomiser;
+#pragma bss_seg()
+#pragma data_seg(".data$id_BODYGUARD")
+    i16 id_BODYGUARD = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_GEONOSIAN")
+    i16 id_GEONOSIAN = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_CHEWBACCA")
+    i16 id_CHEWBACCA = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$MAGNETOFFSET")
+    f32 MAGNETOFFSET;
+#pragma bss_seg()
+}

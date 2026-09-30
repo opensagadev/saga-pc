@@ -20,3 +20,7 @@ i32 __cdecl Cheat_IsOn(i32 cheat) {
     }
     return 0;
 }
+
+i32 __cdecl Cheats_CheckFlags(u32 flags) {
+    return (i32)(CheatSystemPtr->flags & flags);
+}

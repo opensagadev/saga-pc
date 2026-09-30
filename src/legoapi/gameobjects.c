@@ -538,7 +538,7 @@ void __cdecl SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIP
     if (path_info != NULL) {
         object->ai_packet.path_info = *path_info;
     } else {
-        STUBBED_NAMED("SnapCreaturePos: query character path position (PC 0x52f800)");
+        AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
     }
 }
 
@@ -662,4 +662,69 @@ GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC 
         }
     }
     return best != NULL ? best : previous;
+}
+
+void __cdecl GameObjectToCameraCode(GAMEOBJECT *object) {
+    f32 distance;
+    LEVELDATA_PC *level;
+    i32 far_distance;
+    u32 near_distance;
+    PLAYERCHARACTERCONFIG_PC *data;
+    u32 mask;
+
+    if (GameTimer.update_count == 0) {
+        object->shadow_opacity = 0.0f;
+        return;
+    }
+    distance = object->ai_update_distance;
+    level = WORLD->current_level;
+    far_distance = level->blob_shadow_fade_far;
+    if (distance < (f32)far_distance) {
+        near_distance = level->blob_shadow_fade_near;
+        if (distance > (f32)near_distance) {
+            object->shadow_opacity = 1.0f - (distance - (f32)near_distance) / (f32)(i32)(far_distance - near_distance);
+        } else {
+            object->shadow_opacity = 1.0f;
+        }
+    } else {
+        object->shadow_opacity = 0.0f;
+    }
+    data = object->character_data->game_character;
+    if ((data->flags_094 & 0x10) != 0) {
+        return;
+    }
+    if (object->dead != 0) {
+        i16 model_id = ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->model_id;
+        PLAYERCHARACTERCONFIG_PC *model_data = apicharsys->char_data[model_id].game_character;
+        mask = model_data->layer_mask_dead;
+        if (mask != 0) {
+            goto apply_layers;
+        }
+    }
+    if (distance > data->layer_distance_low) {
+        mask = data->layer_mask_low;
+    } else if (distance > data->layer_distance_medium) {
+        mask = data->layer_mask_medium;
+    } else {
+        mask = data->layer_mask;
+    }
+apply_layers:
+    object->layer_mask = mask | object->extra_layer_mask;
+    object->layer_mask = AdjustLayerBits(object->layer_mask, object);
+}
+
+f32 __cdecl GetCharacterGoalSpeed(APIOBJECT_PC *object) {
+    if (object == NULL || object->ai == NULL) {
+        return 0.0f;
+    }
+    switch (object->ai->goal_speed_mode) {
+        case 0:
+            return object->character_data->game_character->run_speed * FRAMETIME;
+        case 1:
+            return object->character_data->game_character->walk_speed * FRAMETIME;
+        case 2:
+            return object->character_data->game_character->tiptoe_speed * FRAMETIME;
+        default:
+            return 0.0f;
+    }
 }

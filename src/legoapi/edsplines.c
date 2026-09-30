@@ -291,3 +291,80 @@ void __cdecl GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *sp
 #undef SPLINE_ROTATION_DIFFERENCE
 #undef SPLINE_POINT_ANGLES
 #undef SPLINE_POINT
+
+i32 __cdecl OutSideSplineArea(NUVEC *position, NUGSPLINE *spline, NUVEC *edge_end, NUVEC *edge_start, i32 inside) {
+    NUVEC ray_start;
+    NUVEC ray_end;
+    NUVEC end;
+    NUVEC closest;
+    NUVEC before;
+    NUVEC after;
+    i32 intersections = 0;
+    i32 closest_index = 0;
+    i32 i;
+    i32 previous;
+    i32 next;
+    f32 best = 1000000000.0f;
+    f32 ax;
+    f32 az;
+    f32 bx;
+    f32 bz;
+
+    if (position == NULL || spline == NULL) {
+        return 0;
+    }
+    ray_start.x = position->x;
+    ray_start.y = -position->z;
+    ray_start.z = position->y;
+    ray_end.x = position->x;
+    ray_end.y = 100000.0f;
+    ray_end.z = position->y;
+    end.x = spline->pts[0].x;
+    end.y = -spline->pts[0].z;
+    end.z = spline->pts[0].y;
+    for (i = 1; i < spline->length; ++i) {
+        NUVEC start = end;
+        end.x = spline->pts[i].x;
+        end.y = -spline->pts[i].z;
+        end.z = spline->pts[i].y;
+        intersections += LineIntersectXY(&ray_start, &ray_end, &start, &end, NULL, NULL);
+    }
+    if ((intersections & 1) != 0 ? inside == 0 : inside != 0) {
+        return 0;
+    }
+    closest = spline->pts[0];
+    for (i = 0; i < spline->length - 1; ++i) {
+        f32 dx = spline->pts[i].x - position->x;
+        f32 dz = spline->pts[i].z - position->z;
+        f32 distance = dx * dx + dz * dz;
+        if (distance < best) {
+            closest_index = i;
+            closest = spline->pts[i];
+            best = distance;
+        }
+    }
+    previous = closest_index == 0 ? spline->length - 2 : closest_index - 1;
+    next = closest_index == spline->length - 2 ? 0 : closest_index + 1;
+    before = spline->pts[previous];
+    after = spline->pts[next];
+    ax = after.x - position->x;
+    az = after.z - position->z;
+    bx = before.x - position->x;
+    bz = before.z - position->z;
+    if (bx * bx + bz * bz > ax * ax + az * az) {
+        if (edge_end != NULL) {
+            *edge_end = after;
+        }
+        if (edge_start != NULL) {
+            *edge_start = closest;
+        }
+    } else {
+        if (edge_end != NULL) {
+            *edge_end = closest;
+        }
+        if (edge_start != NULL) {
+            *edge_start = before;
+        }
+    }
+    return 1;
+}

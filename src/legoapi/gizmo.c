@@ -460,3 +460,80 @@ void __cdecl GizmoSysReset(void *system_ptr, void *world, i32 progress_index) {
         }
     }
 }
+
+extern const char GizmoConfigPathFormat[7];
+extern void __cdecl EdFileSetMedia(i32 media);
+extern i32 __cdecl EdFileOpen(char *filepath, i32 mode);
+extern i32 __cdecl EdFileClose(void);
+extern void __cdecl EdFileRead(void *buffer, i32 length);
+extern i32 __cdecl EdFileReadInt(void);
+extern char __cdecl EdFileReadChar(void);
+
+static __declspec(noinline) void GizmoSysPostLoad(GIZMO_CONFIG_SYSTEM_PC *system, void *world) {
+    GIZMO_CONFIG_TYPE_PC *type;
+    GIZMO_CONFIG_SET_PC *set;
+    i32 index;
+    if (gizmotypes == NULL || system == NULL) {
+        return;
+    }
+    type = ((GIZMO_CONFIG_TYPES_PC *)gizmotypes)->types;
+    set = system->sets;
+    for (index = 0; index < ((GIZMO_CONFIG_TYPES_PC *)gizmotypes)->count; ++index, ++type, ++set) {
+        if (type->functions.post_load != NULL) {
+            type->functions.post_load(world, set->data);
+        }
+    }
+}
+
+void __cdecl LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
+    GIZMO_CONFIG_SYSTEM_PC *system = (GIZMO_CONFIG_SYSTEM_PC *)system_ptr;
+    char gizmo_name[32];
+    char path[256];
+    i32 name_length;
+    i32 data_length;
+    i32 type_id;
+
+    if (system == NULL) {
+        return;
+    }
+    system->flags |= 4;
+    if (system->error_log != NULL) {
+        memset(system->error_log, 0, gizmoerrorlogsize);
+    }
+    system->flags &= ~3;
+    if (gizmotypes != NULL) {
+        sprintf(path, GizmoConfigPathFormat, config_file);
+        EdFileSetMedia(1);
+        if (EdFileOpen(path, 0) != 0) {
+            EdFileReadInt();
+            name_length = EdFileReadInt();
+            while (name_length != 0) {
+                if (name_length > (i32)sizeof(gizmo_name)) {
+                    STUBBED_NAMED("Gizmo name too long diagnostic");
+                }
+                memset(gizmo_name, 0, sizeof(gizmo_name));
+                EdFileRead(gizmo_name, name_length);
+                STUBBED_NAMED("Gizmo load name diagnostic");
+                data_length = EdFileReadInt();
+                type_id = GizmoGetTypeIDByName(system, gizmo_name);
+                if (type_id >= 0 && data_length > 0 && type_id < ((GIZMO_CONFIG_TYPES_PC *)gizmotypes)->count &&
+                    ((GIZMO_CONFIG_TYPES_PC *)gizmotypes)->types[type_id].functions.load != NULL &&
+                    ((GIZMO_CONFIG_TYPES_PC *)gizmotypes)
+                            ->types[type_id]
+                            .functions.load(world, system->sets[type_id].data) != 0) {
+                    STUBBED_NAMED("Gizmo load success diagnostic");
+                } else {
+                    STUBBED_NAMED("Gizmo skipped load diagnostic");
+                    while (data_length != 0) {
+                        EdFileReadChar();
+                        --data_length;
+                    }
+                }
+                name_length = EdFileReadInt();
+            }
+            EdFileClose();
+        }
+    }
+    GizmoSysPostLoad(system, world);
+    system->flags &= ~4;
+}

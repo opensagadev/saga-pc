@@ -165,7 +165,8 @@ remaining project/tests portion after lint has already passed.
 Clang analyzes the Windows x86 target with MSVC compatibility and the verified
 original CRT/SDK headers. A generated case-insensitive VFS overlay in `build/lint/`
 handles Windows header spelling on Linux. It uses no host or Wine headers and
-has no effect on MSVC compilation or matching. Two obsolete SDK intrinsic names
+has no effect on MSVC compilation or matching. The legacy math header's `_Complex` parameter identifier is renamed only for
+Clang analysis because modern Clang treats it as a keyword. Two obsolete SDK intrinsic names
 are aliased only during analysis to avoid conflicts with modern Clang builtins.
 The SDK's required `_WIN32_WINNT` macro spelling and fundamental integer alias
 definitions have narrowly scoped lint suppressions; other source policy remains

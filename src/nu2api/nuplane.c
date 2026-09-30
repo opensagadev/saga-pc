@@ -248,3 +248,39 @@ f32 __cdecl NuLineToPointDistSqrEx(NUVEC *start, NUVEC *end, NUVEC *point, NUVEC
         *out = nearest;
     return distance;
 }
+
+__declspec(noinline) f32 __cdecl NuInfiniteLineToPointDistSqrEx(NUVEC *start, NUVEC *end, NUVEC *point,
+                                                                NUVEC *closest) {
+    NUVEC direction;
+    NUVEC relative;
+    NUVEC projected;
+    NUVEC delta;
+    f32 inverse_length;
+    f32 projection;
+    f32 distance;
+    direction.x = end->x - start->x;
+    direction.y = end->y - start->y;
+    direction.z = end->z - start->z;
+    inverse_length = 1.0f / NuFsqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
+    direction.x *= inverse_length;
+    direction.y *= inverse_length;
+    direction.z *= inverse_length;
+    relative.x = point->x - start->x;
+    relative.y = point->y - start->y;
+    relative.z = point->z - start->z;
+    projection = direction.x * relative.x + direction.y * relative.y + direction.z * relative.z;
+    projected.x = direction.x * projection;
+    projected.y = direction.y * projection;
+    projected.z = direction.z * projection;
+    projected.x += start->x;
+    projected.y += start->y;
+    projected.z += start->z;
+    distance = NuVecDistSqr(&projected, point, &delta);
+    if (closest != NULL)
+        *closest = projected;
+    return distance;
+}
+
+f32 __cdecl NuInfiniteLineToPointDistSqr(NUVEC *start, NUVEC *end, NUVEC *point) {
+    return NuInfiniteLineToPointDistSqrEx(start, end, point, NULL);
+}

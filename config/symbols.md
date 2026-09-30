@@ -662,3 +662,37 @@ The root reconstructed camera sphere clipping, homogeneous vector transformation
 and nearest-segment squared distance in the existing engine units. The transform
 matches its full 143-byte PC extent; clipping and segment distance remain
 structural. All comparisons keep complete extents and actual relocations.
+
+## Second structural execution release
+
+The next accepted closure covers complete character-path geometry, formation,
+gravity, player-layer selection, gizmo loading/edit-file parsing, layer-name
+lookups and spline-area intersections. PC field cohorts are asserted in saga.h;
+unknown regions remain opaque. AddToAIGroup's signed conversion and the
+character-goal-speed x87 evaluation order were corrected from actual retail
+instructions. The latter matches all 112 original bytes.
+
+CharacterTestPathCnx and FormationMove remain original-TU static helpers. Their
+current compiled private register allocation differs from the original while
+the caller/callee pairs remain coherent; no fake public ABI wrappers conceal
+that difference. RowMoveTowards currently supplies no usable objdiff similarity
+measurement and conservatively contributes zero. Full original spans remain
+unchanged. A bounded Force selector branch-layout correction raises its previous
+zero score without adding or omitting selection behavior.
+
+The plain C random utility unit preserves its original addresses and extents:
+ResetSeeds and GAMERAND now have C linker names in the CSV. Compare prior exact
+results by their original addresses when following this intentional linkage
+conversion; ResetSeeds remains exact. LineIntersectXY retains a genuine
+cross-TU call from OutSideSplineArea. Retail runtime probes establish that both
+segments include both endpoints: 15 endpoint cases and 16 polygon cases passed,
+including null/output handling. An initial endpoint interpretation was rejected
+before release. This runtime evidence complements complete byte comparisons;
+it does not establish exact instruction matching.
+
+Techno_FindOperator uses the proven eight-player context scan and typed fields.
+The engine infinite-line projection preserves the PC zero-length behavior.
+Cheats_CheckFlags occupies 13 bytes through its RET, not 14. SnapCreaturePos now
+uses AISysGetCharacterPathPos with the typed World AI owner and retains two
+surface-action markers. Loader diagnostics that are genuine retail RET callees
+are recorded separately from missing resource behavior.

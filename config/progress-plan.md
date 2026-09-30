@@ -126,3 +126,32 @@ expand character path/processing to remove Snap's genuine missing query; recover
 larger object helper closures; and load gizmos with the real edit-file subsystem.
 Keep the 250 KB unique-compared milestone and broad original-byte throughput as
 the scope targets. NuMain/startup remain partial.
+
+## Second verified execution checkpoint
+
+The second release adds **18,213 unique compared original code bytes**, reaching
+**210,393** (objdiff's 210,448 includes the unchanged 55-byte alias). Whole-PC
+fuzzy increases **3.121956% → 3.461923%**; native similarity is 57.129005%.
+Exact code increases by 548 bytes to **33,633**: twelve new exact functions and
+87 exact data report rows, with no lost exact results. Mapping reaches
+**742,934 / 40,067,072 bytes (1.854226%)**. Combined with the first checkpoint,
+source comparison expands by 32,195 unique PC bytes over the strategy baseline.
+These releases do not yet meet the 250 KB compared-code milestone.
+
+Complete structural bodies now include gravity and its private helper, formation
+and character-path geometry, player layers and camera/goal-speed selection,
+gizmo/edit-file loading, infinite-line geometry, and spline-area intersections.
+Snap calls the actual character-path query; its two surface actions remain
+explicit omissions. NuMain and a playable game remain incomplete. Large private
+formation bodies can score poorly despite coherent reconstruction; full extents
+and genuine relocations remain in comparison, including a zero-scored driver.
+
+The parallel queue now continues into the 17 KB directional/vehicle family,
+12 KB object lifecycle family, AI destination/action drivers, and a contrasting
+character-configuration parser wave. Reviewers prepare contracts and scratch
+sources during frozen aggregate checks; source owners resume after the commit.
+The main agent reconstructs the particle backend closure alongside them. This
+avoids making every agent wait for the aggregate validation lane. All agents use
+GPT-6.1 Sol without nested delegation. The continuous objective prioritizes new
+whole-PC compared bytes and fuzzy gain, with verified checkpoints roughly every
+30 minutes rather than a fixed number of tiny exact matches.

@@ -1,5 +1,19 @@
 #include "saga.h"
 
+typedef struct movement_suit_pc_s {
+    u8 unknown_00[0xc];
+    u8 store_flag;
+} MOVEMENT_SUIT_PC;
+STATIC_ASSERT(offsetof(MOVEMENT_SUIT_PC, store_flag) == 0xc);
+typedef struct movement_model_pc_s {
+    u8 unknown_00[0xc];
+    void **model_data_b;
+} MOVEMENT_MODEL_PC;
+STATIC_ASSERT(offsetof(MOVEMENT_MODEL_PC, model_data_b) == 0xc);
+
+TUBE_PC *__cdecl Tube_InAnyCylinder(WORLDINFO *, GAMEOBJECT *, i32);
+
+extern AREA_DATA_PC *PODSPRINT_ADATA;
 extern const f64 VehicleTurnPhaseScale;
 extern const f64 VehicleTurnPhaseOffset;
 extern const f64 MoveSplineRunSpeedSentinel;
@@ -56,8 +70,12 @@ f32 __cdecl VehicleTurnOrLoopOffset(GAMEOBJECT *object) {
             return (1.0f - sine) * NuQFntHalfScale * character->field_088 * NuQFntHalfScale;
         return (1.0f - sine) * NuQFntHalfScale * character->field_088;
     }
-    if (object->character_context == 0x3a && (object->flags_1fc & 0x80) != 0)
-        STUBBED_NAMED(PODSPRINT_ADATA_area_check_and_offset);
+    if (object->character_context == 0x3a && (object->flags_1fc & 0x80) != 0 && PODSPRINT_ADATA != NULL &&
+        PODSPRINT_ADATA == WORLD->area) {
+        phase = 1.0f - object->context_timer / object->context_duration;
+        sine = NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff];
+        return sine * object->character_data->game_character->field_088;
+    }
     return 0.0f;
 }
 
@@ -271,66 +289,66 @@ i32 __cdecl ForcePushed_SetTargetMom(GAMEOBJECT *object, f32 *seek_rate) {
         object->target_velocity.x = object->target_velocity.z = 0.0f;
         return 0;
     }
-    if ((source->flags_e20 & 0x180) != 0) {
-        object->target_velocity.x = object->target_velocity.z = 0.0f;
-        if (source->character_context == 0x1b && source->field_7b3 == 1) {
-            target.x = source->external_force.x;
-            target.y = source->external_force.y - object->character_bottom * object->origin_scale;
-            target.z = source->external_force.z;
-            distance_squared = NuVecDistSqr(&target, &object->position, &direction);
-            if (!(ForcePushApproachInnerSquare > distance_squared)) {
-                approach_weight = 1.0f;
-                if (ForcePushApproachOuterSquare > distance_squared)
-                    approach_weight = (f32)(((f64)NuFsqrt(distance_squared) - (f64)0.1f) / (f64)0.1f);
-                if (approach_weight > 0.0f) {
-                    NuVecNorm(&direction, &direction);
-                    NuVecScale(&object->target_velocity, &direction, 1.0f);
-                }
-            }
-            *seek_rate = ForcePushSeekRate;
-            return 1;
+    if ((source->flags_e20 & 0x180) == 0) {
+        if (object->action_movement_state == 4 && Cheat_IsOn(0x13) != 0) {
+            angle = NuAtan2D(object->collision_position.x - source->collision_position.x,
+                             object->collision_position.z - source->collision_position.z);
+            object->target_velocity.x = -NuTrigTable[angle >> 1] * ForcePush_Speed;
+            object->target_velocity.z = -NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * ForcePush_Speed;
+            return 0;
         }
-        return 0;
-    }
-    if (object->action_movement_state == 4 && Cheat_IsOn(0x13) != 0) {
-        angle = NuAtan2D(object->collision_position.x - source->collision_position.x,
-                         object->collision_position.z - source->collision_position.z);
-        object->target_velocity.x = -NuTrigTable[angle >> 1] * ForcePush_Speed;
-        object->target_velocity.z = -NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * ForcePush_Speed;
-        return 0;
-    }
-    nearest = NULL;
-    if (ForcePush_SuperPush != 0 && (object->flags_1fc & 0x80) == 0 && (source->flags_e20 & 0x380) == 0) {
-        push_x = object->position.x - source->position.x;
-        push_z = object->position.z - source->position.z;
-        nearest_distance_squared = 2.25f;
-        candidate = Obj;
-        for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
-            if (!ForcePushEligible(candidate, object, source) || candidate->id == id_GONKDROID ||
-                candidate->collision_min.y > object->collision_max.y ||
-                object->collision_min.y > candidate->collision_max.y)
-                continue;
-            dx = candidate->position.x - object->position.x;
-            dz = candidate->position.z - object->position.z;
-            if (!(0.0 > push_x * dx + push_z * dz)) {
-                distance_squared = dx * dx + dz * dz;
-                if (distance_squared < nearest_distance_squared) {
-                    nearest_distance_squared = distance_squared;
-                    nearest = candidate;
+        nearest = NULL;
+        if (ForcePush_SuperPush != 0 && (object->flags_1fc & 0x80) == 0 && (source->flags_e20 & 0x380) == 0) {
+            push_x = object->position.x - source->position.x;
+            push_z = object->position.z - source->position.z;
+            nearest_distance_squared = 2.25f;
+            candidate = Obj;
+            for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
+                if (!ForcePushEligible(candidate, object, source) || candidate->id == id_GONKDROID ||
+                    candidate->collision_min.y > object->collision_max.y ||
+                    object->collision_min.y > candidate->collision_max.y)
+                    continue;
+                dx = candidate->position.x - object->position.x;
+                dz = candidate->position.z - object->position.z;
+                if (!(0.0 > push_x * dx + push_z * dz)) {
+                    distance_squared = dx * dx + dz * dz;
+                    if (distance_squared < nearest_distance_squared) {
+                        nearest_distance_squared = distance_squared;
+                        nearest = candidate;
+                    }
                 }
             }
         }
+        if (nearest != NULL) {
+            dx = nearest->collision_position.x - object->collision_position.x;
+            dz = nearest->collision_position.z - object->collision_position.z;
+        } else {
+            dx = object->collision_position.x - source->collision_position.x;
+            dz = object->collision_position.z - source->collision_position.z;
+        }
+        angle = NuAtan2D(dx, dz);
+        object->target_velocity.x = NuTrigTable[angle >> 1] * ForcePush_Speed;
+        object->target_velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * ForcePush_Speed;
+        return 0;
     }
-    if (nearest != NULL) {
-        dx = nearest->collision_position.x - object->collision_position.x;
-        dz = nearest->collision_position.z - object->collision_position.z;
-    } else {
-        dx = object->collision_position.x - source->collision_position.x;
-        dz = object->collision_position.z - source->collision_position.z;
+    object->target_velocity.x = object->target_velocity.z = 0.0f;
+    if (source->character_context == 0x1b && source->field_7b3 == 1) {
+        target.x = source->external_force.x;
+        target.y = source->external_force.y - object->character_bottom * object->origin_scale;
+        target.z = source->external_force.z;
+        distance_squared = NuVecDistSqr(&target, &object->position, &direction);
+        if (!(ForcePushApproachInnerSquare > distance_squared)) {
+            approach_weight = 1.0f;
+            if (ForcePushApproachOuterSquare > distance_squared)
+                approach_weight = (f32)(((f64)NuFsqrt(distance_squared) - (f64)0.1f) / (f64)0.1f);
+            if (approach_weight > 0.0f) {
+                NuVecNorm(&direction, &direction);
+                NuVecScale(&object->target_velocity, &direction, 1.0f);
+            }
+        }
+        *seek_rate = ForcePushSeekRate;
+        return 1;
     }
-    angle = NuAtan2D(dx, dz);
-    object->target_velocity.x = NuTrigTable[angle >> 1] * ForcePush_Speed;
-    object->target_velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * ForcePush_Speed;
     return 0;
 }
 
@@ -345,4 +363,281 @@ i32 __cdecl ForcePushed_YRotation(GAMEOBJECT *object) {
         FaceOpponent(object, NULL);
     }
     return 0;
+}
+
+static i32 IsAFallAnim(i32 animation) {
+    return animation == 5 || animation == 0x28 || animation == 0x4b || animation == 0x4c || animation == 0x74;
+}
+
+void __cdecl ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f32 seek_rate, f32 *ground_height) {
+    f32 extra_hover_offset;
+    i32 flags;
+    i32 context;
+    f32 acceleration;
+    CHARACTERDATA_PC *character;
+    WORLDINFO *world;
+    f32 target_ground_height;
+    GAMEOBJECT *target;
+    f32 target_velocity;
+    f32 height;
+    i32 falling_hover;
+    i32 hold_jump;
+    f32 separation;
+    f32 offset;
+    TUBE_PC *tube;
+    f32 floor_height;
+    PLAYERCHARACTERCONFIG_PC *data;
+    f32 pull;
+    i32 default_gravity;
+    f32 middle;
+    f32 previous_velocity;
+    f32 duration;
+
+    extra_hover_offset = applygravity_extrahoveroffset;
+    applygravity_extrahoveroffset = 0.0f;
+    if (object->movement_spline_position.spline != NULL) {
+        return;
+    }
+    flags = object->flags_1fc_word;
+    if ((flags & 0x20) != 0 || object->move_override != NULL) {
+        return;
+    }
+    context = object->character_context;
+
+    if ((CInfo[context].flags & 0x400) != 0) {
+        if (context != 0x44 || (u16)(object->field_7aa - 5) > 1) {
+            return;
+        }
+    } else if (context == 0x5f) {
+        if ((object->context_variant_flags & 0x100) != 0) {
+            return;
+        }
+    } else if (context == 0x4b) {
+        if (object->suit == NULL || (((MOVEMENT_SUIT_PC *)object->suit)->store_flag & 0x10) == 0) {
+            return;
+        }
+        acceleration = -1.0f;
+        gravity = &acceleration;
+    }
+    if ((flags & 4) != 0 || (object->portal_flags & 0x80000000) != 0 || context == 0x2c) {
+        return;
+    }
+    if ((object->flags_e20 & 0x20) != 0) {
+        object->velocity.y = 0.0f;
+        return;
+    }
+    character = object->character_data;
+    if ((character->model_flags & 0x2000) == 0 && (u8)(context - 0x23) < 2) {
+        object->velocity.y = 0.0f;
+        return;
+    }
+    world = WORLD;
+    if ((WORLD->current_level->flags & 0x40000) != 0 && gravity == NULL && character->game_character->gravity == 0.0f) {
+        return;
+    }
+    if (object->flags_107a == 4) {
+        return;
+    }
+
+    if (context == 0x1e || context == 0x22 || context == 0x42) {
+        hover_height = context == 0x1e   ? ApplyGravityContextHoverHeight
+                       : context == 0x22 ? ApplyGravityContext22HoverHeight
+                                         : ApplyGravityContext42HoverHeight;
+        seek_rate = 8.0f;
+    } else if (context == 0x1c) {
+        target = object->force_target;
+        if (target != NULL && (target->flags_e20 & 0x180) != 0) {
+            if (target->field_7b3 == 1) {
+                return;
+            }
+            if ((target->flags_e20 & 0x400) == 0 &&
+                ((target->flags_e20 & 0x100) == 0 || (character->game_character->flags_090 & 0x4000) == 0)) {
+                target_ground_height = target->lower_position.y;
+                ground_height = &target_ground_height;
+                hover_height = (target->upper_position.y - target_ground_height) * 0.75f;
+                seek_rate = 8.0f;
+            }
+        }
+    } else if (context == 0x5d && object->context_hover_target_y != 1.0e9f) {
+        target_velocity = (object->position.y - object->context_hover_target_y) * character->game_character->gravity *
+                          ApplyGravityVelocityFactor;
+        object->velocity.y = SeekValF(object->velocity.y, target_velocity, 8.0f);
+        return;
+    }
+
+    height = object->hover_height_override == 1.0e9f ? hover_height : object->hover_height_override;
+    falling_hover = 0;
+    if (height != 0.0f && object->fall_recovery_timer > 0.0f) {
+        if ((GUNSHIP_ADATA != NULL && GUNSHIP_ADATA == WORLD->area) ||
+            (BONUS_GUNSHIP_ADATA != NULL && BONUS_GUNSHIP_ADATA == WORLD->area)) {
+            height = 0.0f;
+        } else if (character->game_character->hover_fall_mode == 2 && (i8)flags < 0) {
+            if (object->fall_hover_height != 2.0e6f) {
+                falling_hover = 1;
+                if (object->fall_recovery_timer >= 0.6f) {
+                    object->fall_hover_height -= FRAMETIME * 3.0f;
+                }
+            }
+        } else {
+            height -= object->fall_recovery_timer * 0.5f;
+        }
+    }
+    if (context != 0x33) {
+        if ((object->field_281 & 1) != 0 && object->contact_count == 0 && object->velocity.y == 0.0f &&
+            object->surface_normal.y > NuTrigTable[0x21c7]) {
+            object->field_281 &= ~1;
+        }
+        if (height == 0.0f && (object->field_281 & 1) != 0) {
+            object->velocity.y = 0.0f;
+            return;
+        }
+    }
+
+    hold_jump = 0;
+    if (gravity != NULL) {
+        acceleration = *gravity;
+    } else {
+        if (object->floor_height != 2.0e6f && height != 0.0f && context != 0x2b) {
+            if (falling_hover) {
+                object->terrain_origin_floor_offset = 0.0f;
+                target_velocity = (object->position.y - object->fall_hover_height) *
+                                  character->game_character->gravity * ApplyGravityVelocityFactor;
+                object->velocity.y = SeekValF(object->velocity.y, target_velocity, seek_rate);
+                return;
+            }
+            if ((object->field_283 == 0x10 || object->field_283 == 7) &&
+                (VehicleArea != 0 || (character->game_character->flags_090 & 0x40) == 0 ||
+                 object->takeover_source != NULL)) {
+
+                GetVehicleHoverHeight(object, &separation);
+                separation += object->water_height;
+                if (object->hover_height_override != 1.0e9f) {
+                    separation += object->hover_height_override;
+                }
+                offset = VehicleTurnOrLoopOffset(object);
+
+                if (object->model_draw_result != 0 || FRAMETIME < ApplyGravityMinimumFrameTime) {
+                    target_velocity = (object->collision_position.y - (offset + separation)) *
+                                      object->character_data->game_character->gravity * ApplyGravityVelocityFactor;
+                } else {
+                    target_velocity = ((object->collision_position.y - (offset + separation)) *
+                                       object->character_data->game_character->gravity) /
+                                      (FRAMETIME * ApplyGravityFrameScale);
+                }
+                object->velocity.y = SeekValF(object->velocity.y, target_velocity, seek_rate);
+                return;
+            }
+            if (PODSPRINT_ADATA != NULL && PODSPRINT_ADATA == world->area && (i8)flags < 0) {
+                tube = Tube_InAnyCylinder(world, object, 1);
+                if (tube != NULL) {
+                    ground_height = &tube->top;
+                }
+            }
+            floor_height = ground_height != NULL && *ground_height != 2.0e6f ? *ground_height : object->floor_height;
+            if (object->water_height != 2.0e6f && object->water_height > floor_height && object->field_283 != 5 &&
+                object->field_283 != 7 && object->field_283 != 0x10) {
+                floor_height = object->water_height;
+            }
+            floor_height += extra_hover_offset;
+            offset = VehicleTurnOrLoopOffset(object);
+            character = object->character_data;
+            floor_height += offset;
+            height += offset;
+            data = character->game_character;
+            if ((data->flags_094 & 0x20) != 0 || (PODSPRINT_ADATA != NULL && PODSPRINT_ADATA == WORLD->area) ||
+                !(GamePlayTimer.time_elapsed >= 1.0f) || !(object->collision_origin.y > height * 5.0f + floor_height)) {
+                object->terrain_origin_floor_offset = height;
+                pull = PODSPRINT_ADATA != NULL && PODSPRINT_ADATA == WORLD->area ? PODSPRINT_GRAVITY : data->gravity;
+
+                if (object->model_draw_result != 0 || FRAMETIME < ApplyGravityMinimumFrameTime) {
+                    target_velocity =
+                        (object->collision_origin.y - (floor_height + height)) * pull * ApplyGravityVelocityFactor;
+                } else {
+                    target_velocity = ((object->collision_origin.y - (floor_height + height)) * pull) /
+                                      (FRAMETIME * ApplyGravityFrameScale);
+                }
+                object->velocity.y = SeekValF(object->velocity.y, target_velocity, seek_rate);
+                return;
+            }
+        }
+
+        default_gravity = 1;
+        if ((object->floor_height == 2.0e6f || height == 0.0f) && context == 0) {
+            if (StartupGameFlag1 != 0 && object->action_movement_state == 3) {
+                acceleration = -10.0f;
+                default_gravity = 0;
+            } else if (object->action_movement_state == 4) {
+                acceleration = SLAMGRAVITY;
+                default_gravity = 0;
+            } else if (object->action_movement_state == 5) {
+                if (object->jump_animation_state == 0x1a) {
+                    object->jump_variant_state = 3;
+                    object->jump_variant_timer = 0.0f;
+                } else if ((object->pad->buttons_held & GAMEPAD_JUMP) == 0) {
+                    if (object->jump_variant_state == 2) {
+                        object->jump_variant_state = 3;
+                    }
+                    object->jump_variant_timer = 0.0f;
+                } else if (object->jump_variant_state == 3) {
+                    acceleration = -1.0f;
+                    default_gravity = 0;
+                } else if (object->jump_variant_state == 2) {
+                    object->velocity.y = 0.0f;
+                    return;
+                } else {
+                    hold_jump = 1;
+                }
+            }
+        }
+        if (default_gravity) {
+            acceleration = character->game_character->gravity;
+            if (object->character_context == 0x2b) {
+                if (object->wall_run_state == 3) {
+                    acceleration = -acceleration;
+                } else if (object->wall_run_state == 2) {
+                    acceleration = ApplyGravityWallRunAcceleration;
+                } else if (object->wall_run_state == 4) {
+                    acceleration = -2.0f;
+                }
+            }
+        }
+        middle = (object->position.y - object->character_bottom * object->origin_scale) +
+                 (object->character_top - object->character_bottom) * 0.5f * object->origin_scale;
+        if ((object->field_281 == 0 && object->contact_count != 0 && object->contact_position.y < middle &&
+             object->anim_blending == 0 &&
+             ((MOVEMENT_MODEL_PC *)object->character_model)->model_data_b[object->animation_index] != NULL &&
+             IsAFallAnim(object->animation_index) != 0) ||
+            object->fall_acceleration_timer > 0.0f) {
+            acceleration += acceleration;
+            if (acceleration > -5.0f) {
+                acceleration = -5.0f;
+            }
+        }
+    }
+    previous_velocity = object->velocity.y;
+    if ((object->field_281 & 0xfd) == 0 || object->id == id_DRAGBOMB) {
+        object->velocity.y = acceleration * FRAMETIME + previous_velocity;
+    }
+    if (object->character_context == 0x2b) {
+        if (object->wall_run_state == 3) {
+            if (object->velocity.y < 0.1f) {
+                object->velocity.y = 0.1f;
+            }
+        } else if (object->velocity.y > -0.1f) {
+            object->velocity.y = -0.1f;
+        }
+    }
+    if (hold_jump && previous_velocity > 0.0f && object->velocity.y <= 0.0f) {
+        duration = character->game_character->jump_hold_duration;
+        if (duration > 0.0f) {
+            object->velocity.y = 0.0f;
+            object->jump_variant_timer = duration;
+            if ((i8)object->flags_1fc >= 0) {
+                object->jump_variant_timer *= 1.5f;
+            }
+            object->jump_variant_state = 2;
+        } else {
+            object->jump_variant_state = 3;
+        }
+    }
 }

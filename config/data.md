@@ -518,3 +518,24 @@ mutable cheat/gizmo state. `Cheat_PowerUpTime` remains static in `cheats.c`, its
 verified original translation unit; shared data ownership does not move genuine
 private state into `data.cpp`. All have PC extent and initializer evidence and
 are checked by the normal matcher, with no data copied as an opaque retail blob.
+
+## Second structural release: typed owners and private tables
+
+The shared-data release adds **25 complete definitions / 115 bytes**: sixteen
+scalar owners (85 bytes), three typed null callback owners (12 bytes), five
+player globals (14 bytes), and the camera-offset scalar (4 bytes). Actual PC
+setter consumers establish each callback signature. All initializers match
+retail; null initial callbacks do not imply their eventual backend is complete.
+
+The edit-file subsystem preserves eight original-TU private state owners,
+including its 4096-byte read buffer, for 4,128 exact initializer bytes. The
+player subsystem preserves its 42-row, 12-byte SpecialLayer table and associated
+strings in the original TU: 43 definitions, 1,154 bytes and 84 real relocations.
+Names, offsets, sentinel/bounds and pointers are established from the retail
+producer/consumer, not from Android array capacities or neighboring zero data.
+
+The complete 200-byte ADDPART stack record has a retained typed field/initializer
+proposal for the next lifecycle release; it is not credited as a new shared-data
+definition here. Particle callback backends and dynamic-joint providers remain
+separate code dependencies. Animation scratch backing capacity also remains
+unproven: observed allocations do not establish a complete static owner extent.

@@ -538,3 +538,21 @@ reuses its mode argument slot to hold the rounded cotangent. Projection m32 is
 (-2 * far * near) / (far - near), verified through the x87 stack operations.
 NuCameraSetEx and its renderer/frustum/backend closure remain unreconstructed;
 these helpers do not complete camera setup or NuMain.
+
+
+## Current structural execution state
+
+The full GameObject stride is now asserted as 0x10d8 with verified named field
+cohorts and an opaque unknown tail; older prefix-only notes above describe prior
+checkpoints. Compiler cookies are now enabled using the real pinned CRT, and
+every existing exact result survives both structural releases. SnapCreaturePos
+calls the real character-path query through WORLD->ai_sys at +0x2ae8; its surface
+initialization and placement actions remain explicit omissions.
+
+Gravity, formation/path geometry, player layers, gizmo/edit-file loading and
+spline intersection closures add complete structural source families. NuMain,
+startup backends and gameplay remain partial. The current continuous work queue
+is vehicle/directional movement, AI destination/action drivers, object lifecycle
+and particle backends, plus character-configuration parsing. Use the execution
+plan and current report for metrics; historical body counts are not authoritative
+complete comparison extents.
