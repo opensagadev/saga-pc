@@ -1440,3 +1440,122 @@ void __cdecl ANI_SimpleAni3PlayerV4Joint_Blend(ANI3_HEADER_PC *anim, f32 frame, 
         }
     }
 }
+
+typedef struct NuAnimData2CurveDataPrefix_PC {
+    u32 *key_mask;
+    u16 *key_offsets;
+    void *key_data;
+} NuAnimData2CurveDataPrefix_PC;
+
+typedef struct NuAnimData2Curve_PC {
+    NuAnimData2CurveDataPrefix_PC *curve_data;
+} NuAnimData2Curve_PC;
+
+typedef struct NuAnimData2Prefix_PC {
+    union {
+        f32 duration;
+        u32 magic;
+    } first_word;
+    i16 node_count;
+    i16 curve_count;
+    i16 chunk_count;
+    u16 unknown_0a;
+    NuAnimData2Curve_PC *curves;
+    u8 *curve_types;
+    u8 *node_flags;
+} NuAnimData2Prefix_PC;
+
+STATIC_ASSERT(offsetof(NuAnimData2CurveDataPrefix_PC, key_mask) == 0);
+STATIC_ASSERT(offsetof(NuAnimData2CurveDataPrefix_PC, key_offsets) == 4);
+STATIC_ASSERT(offsetof(NuAnimData2CurveDataPrefix_PC, key_data) == 8);
+STATIC_ASSERT(sizeof(NuAnimData2CurveDataPrefix_PC) == 0xc);
+STATIC_ASSERT(offsetof(NuAnimData2Prefix_PC, node_count) == 4);
+STATIC_ASSERT(offsetof(NuAnimData2Prefix_PC, curve_count) == 6);
+STATIC_ASSERT(offsetof(NuAnimData2Prefix_PC, curves) == 0xc);
+STATIC_ASSERT(offsetof(NuAnimData2Prefix_PC, curve_types) == 0x10);
+STATIC_ASSERT(offsetof(NuAnimData2Prefix_PC, node_flags) == 0x14);
+STATIC_ASSERT(sizeof(NuAnimData2Prefix_PC) == 0x18);
+
+#define NUANIM_REBASE_POINTER(pointer, amount) ((pointer) == NULL ? NULL : (void *)((u32)(pointer) + (u32)(amount)))
+
+void __cdecl ANI_FixUpAddrs(ANI3_HEADER_PC *anim, i32 delta, i32 flags) {
+    (void)flags;
+    if (anim->magic != 0x414e4934)
+        return;
+    for (;;) {
+        if (anim->constants != NULL)
+            anim->constants = (i16 *)NUANIM_REBASE_POINTER(anim->constants, delta);
+        if (anim->scale_min != NULL)
+            anim->scale_min = (ANI3_SCALEMIN_PC *)NUANIM_REBASE_POINTER(anim->scale_min, delta);
+        if (anim->keys != NULL)
+            anim->keys = (u8 *)NUANIM_REBASE_POINTER(anim->keys, delta);
+        if (anim->curve_types != NULL)
+            anim->curve_types = (u16 *)NUANIM_REBASE_POINTER(anim->curve_types, delta);
+        if (anim->node_flags != NULL)
+            anim->node_flags = (u8 *)NUANIM_REBASE_POINTER(anim->node_flags, delta);
+        if (anim->field_38 != NULL)
+            anim->field_38 = (void *)NUANIM_REBASE_POINTER(anim->field_38, delta);
+        if (anim->next_block == 0)
+            break;
+        delta += anim->next_block;
+        anim = (ANI3_HEADER_PC *)((char *)anim + anim->next_block);
+    }
+}
+
+void *__cdecl NuAnimData2FixPtrs(void *data, i32 delta, i32 external_delta, i32 flags) {
+    NuAnimData2Prefix_PC *anim;
+    i32 curve_count;
+    i32 curve_index;
+
+    if (NuAnimDataBitCountInitialized == 0)
+        buildBitCountTable();
+    anim = (NuAnimData2Prefix_PC *)NUANIM_REBASE_POINTER(data, delta);
+    if (anim == NULL)
+        return NULL;
+
+    if (anim->first_word.magic == 0x414e4934 || anim->first_word.magic == 0x414e4935) {
+        if (external_delta != 0)
+            ANI_FixUpAddrs((ANI3_HEADER_PC *)anim, delta, flags);
+        else
+            ANI_FixUpAddrs((ANI3_HEADER_PC *)anim, (i32)anim, flags);
+    } else {
+        anim->curves = (NuAnimData2Curve_PC *)NUANIM_REBASE_POINTER(anim->curves, delta);
+        anim->curve_types = (u8 *)NUANIM_REBASE_POINTER(anim->curve_types, delta);
+        anim->node_flags = (u8 *)NUANIM_REBASE_POINTER(anim->node_flags, delta);
+        curve_count = (i32)anim->node_count * (i32)anim->curve_count;
+        for (curve_index = 0; curve_index < curve_count; ++curve_index) {
+            if (anim->curve_types[curve_index] != 0) {
+                NuAnimData2CurveDataPrefix_PC *curve = anim->curves[curve_index].curve_data;
+                curve = (NuAnimData2CurveDataPrefix_PC *)NUANIM_REBASE_POINTER(curve, delta);
+                anim->curves[curve_index].curve_data = curve;
+                curve->key_mask = (u32 *)NUANIM_REBASE_POINTER(curve->key_mask, delta);
+                curve->key_offsets = (u16 *)NUANIM_REBASE_POINTER(curve->key_offsets, delta);
+                curve->key_data = NUANIM_REBASE_POINTER(curve->key_data, delta);
+            }
+        }
+    }
+    return anim;
+}
+
+void *__cdecl NuAnimData2Fixup(i32 file_size, void **data) {
+    u32 *header = (u32 *)*data;
+    u32 magic = header[0];
+
+    if ((i32)header[1] >= (i32)0x414e4935)
+        return NuPtrBlockFix(header);
+    if (magic == 0x414e4933 || magic == 0x414e4934) {
+        ANI_FixUpAddrs((ANI3_HEADER_PC *)header, (i32)header, 0);
+        return header;
+    }
+
+    header[0] = (u32)file_size;
+    {
+        i32 relocation_delta = (i32)((u32)header - header[1]);
+        header[2] = (u32)NuAnimData2FixPtrs((void *)header[2], relocation_delta, 0, 0);
+    }
+    header = (u32 *)*data;
+    header[1] = (u32)header;
+    return (void *)header[2];
+}
+
+#undef NUANIM_REBASE_POINTER

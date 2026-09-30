@@ -87,6 +87,18 @@ extern "C" {
     };
     BOLTSYS_PC *BoltSys = &GlobalBoltSystem_Default;
     NUSTRINGBANK StringBank[3];
+#pragma data_seg(".data$BoltShootClassId0")
+    u16 BoltShootClassId0 = 0xffff;
+#pragma data_seg()
+#pragma data_seg(".data$BoltShootClassId1")
+    u16 BoltShootClassId1 = 0xffff;
+#pragma data_seg()
+#pragma data_seg(".data$BoltShootClassId2")
+    u16 BoltShootClassId2 = 0xffff;
+#pragma data_seg()
+#pragma data_seg(".data$BoltShootParameter")
+    f32 BoltShootParameter = 0.1f;
+#pragma data_seg()
 #pragma bss_seg(".bss$CurrentStringBank")
     i16 CurrentStringBank;
 #pragma bss_seg()
@@ -189,6 +201,24 @@ extern "C" {
     extern const f64 GameObjectNearFloorNoFloorHeight = 2000000.0;
     extern const f64 GameObjectNearFloorRadiusDivisor = 0.22499999403953552;
     extern const f64 VehicleHoverHeightSeparationScale = 0.6000000238418579;
+#pragma const_seg(".rdata$AIPathAngularScale")
+    extern const f64 AIPathAngularScale = 10430.3779296875;
+#pragma const_seg()
+#pragma const_seg(".rdata$PCAtan2RadianScale")
+    extern const f64 PCAtan2RadianScale = 9.58738019107841e-05;
+#pragma const_seg()
+#pragma const_seg(".rdata$PCPathArcSineCoefficient3")
+    extern const f64 PCPathArcSineCoefficient3 = (f64)(f32)-0.166667f;
+#pragma const_seg()
+#pragma const_seg(".rdata$PCPathArcSineCoefficient5")
+    extern const f64 PCPathArcSineCoefficient5 = (f64)(f32)-0.075f;
+#pragma const_seg()
+#pragma const_seg(".rdata$PCPathArcSineCoefficient7")
+    extern const f64 PCPathArcSineCoefficient7 = (f64)(f32)-0.0446429f;
+#pragma const_seg()
+#pragma const_seg(".rdata$PCPathArcSineCoefficient9")
+    extern const f64 PCPathArcSineCoefficient9 = (f64)(f32)-0.0303819f;
+#pragma const_seg()
 #pragma const_seg(".rdata$AIScriptListFilename")
     extern const char AIScriptListFilename[11] = "script.txt";
 #pragma const_seg()
@@ -275,6 +305,9 @@ extern "C" {
     u8 ForceEulerToQuat;
 #pragma bss_seg()
     ANI3_GLOBALBUFFER_PC *globalbuffer;
+#pragma bss_seg(".bss$AISysSpecialNodeCallback")
+    AISYS_SPECIAL_NODE_CALLBACK_PC AISysSpecialNodeCallback;
+#pragma bss_seg()
 #pragma bss_seg(".bss$AnimBuffEvalCB")
     ANI3_EVAL_CALLBACK_PC AnimBuffEvalCB;
 #pragma bss_seg()
@@ -291,6 +324,24 @@ extern "C" {
 #pragma const_seg()
 #pragma bss_seg(".bss$ANI3_EVAL_SCALE_ARRAY")
     NUVEC ANI3_EVAL_SCALE_ARRAY[256];
+#pragma bss_seg()
+#pragma bss_seg(".bss$SoundVoiceManager")
+    SoundVoiceManagerPC SoundVoiceManager;
+#pragma bss_seg()
+#pragma bss_seg(".bss$Bridges")
+    NUBRIDGE_PC Bridges[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuBridgeProc")
+    i32 NuBridgeProc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BoltShootIdScratch")
+    i32 BoltShootIdScratch;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BoltShootPositionScratch")
+    NUVEC BoltShootPositionScratch;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CurrentTerrain")
+    void *CurrentTerrain;
 #pragma bss_seg()
 #pragma bss_seg(".bss$GetNamedGameObjectCallback")
     GAMEOBJECT_LOOKUP_CALLBACK_PC GetNamedGameObjectCallback;
@@ -766,6 +817,23 @@ extern "C" {
     extern const f64 NuScale1000 = 1000.0;
     i32 NuSound3LoopHoldTime = 133;
     i32 NuSound3VolumeOffset = -300;
+#pragma data_seg(".data$SoundVoiceVolumeOffset")
+    i32 SoundVoiceVolumeOffset = -300;
+#pragma data_seg()
+#pragma data_seg(".data$SoundVoiceEnabledGate")
+    i32 SoundVoiceEnabledGate = 1;
+#pragma data_seg()
+#pragma bss_seg(".bss$SoundVoiceCriticalSection")
+    CRITICAL_SECTION SoundVoiceCriticalSection;
+#pragma bss_seg()
+#pragma const_seg(".rdata$SoundVoice3DBufferIID")
+    extern const GUID SoundVoice3DBufferIID = {
+        0x279afa86,
+        0x4981,
+        0x11ce,
+        {0xa5, 0x21, 0x00, 0x20, 0xaf, 0x0b, 0xe5, 0x60},
+    };
+#pragma const_seg()
 #pragma bss_seg(".bss$NuSound3VolumeTable")
     f32 NuSound3VolumeTable[0x4000];
 #pragma bss_seg()

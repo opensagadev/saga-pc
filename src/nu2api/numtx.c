@@ -467,6 +467,51 @@ void __cdecl NuMtxRotateZ(NUMTX *m, NUANG angle) {
     m->m31 = m30 * sin_z + m->m31 * cos_z;
 }
 
+void __cdecl NuMtxPreRotateX(NUMTX *m, NUANG angle) {
+    f32 cos_x = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sin_x = NuTrigTable[(angle >> 1) & 0x7fff];
+    f32 m10 = m->m10;
+    f32 m11 = m->m11;
+    f32 m12 = m->m12;
+
+    m->m10 = cos_x * m10 + m->m20 * sin_x;
+    m->m11 = cos_x * m11 + m->m21 * sin_x;
+    m->m12 = cos_x * m12 + m->m22 * sin_x;
+    m->m20 = m->m20 * cos_x - sin_x * m10;
+    m->m21 = m->m21 * cos_x - sin_x * m11;
+    m->m22 = m->m22 * cos_x - sin_x * m12;
+}
+
+void __cdecl NuMtxPreRotateY(NUMTX *m, NUANG angle) {
+    f32 cos_y = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sin_y = NuTrigTable[(angle >> 1) & 0x7fff];
+    f32 m00 = m->m00;
+    f32 m01 = m->m01;
+    f32 m02 = m->m02;
+
+    m->m00 = cos_y * m00 - m->m20 * sin_y;
+    m->m01 = cos_y * m01 - m->m21 * sin_y;
+    m->m02 = cos_y * m02 - m->m22 * sin_y;
+    m->m20 = sin_y * m00 + m->m20 * cos_y;
+    m->m21 = sin_y * m01 + m->m21 * cos_y;
+    m->m22 = sin_y * m02 + m->m22 * cos_y;
+}
+
+void __cdecl NuMtxPreRotateZ(NUMTX *m, NUANG angle) {
+    f32 cos_z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sin_z = NuTrigTable[(angle >> 1) & 0x7fff];
+    f32 m00 = m->m00;
+    f32 m01 = m->m01;
+    f32 m02 = m->m02;
+
+    m->m00 = cos_z * m00 + m->m10 * sin_z;
+    m->m01 = cos_z * m01 + m->m11 * sin_z;
+    m->m02 = cos_z * m02 + m->m12 * sin_z;
+    m->m10 = m->m10 * cos_z - sin_z * m00;
+    m->m11 = m->m11 * cos_z - sin_z * m01;
+    m->m12 = m->m12 * cos_z - sin_z * m02;
+}
+
 void __cdecl NuMtxTransposeR(NUMTX *m, NUMTX *source) {
     f32 t;
 

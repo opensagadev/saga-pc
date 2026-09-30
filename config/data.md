@@ -452,3 +452,27 @@ wrapping with `& 0x1f` and the consumer's stride confirm capacity and fields:
 i16 ID, u8 state, i8 repeat count, two float delays and a position pointer.
 The head at 0x00924afc and the queue start zero-filled in the PC image. The
 Speeder Chase flag at 0x009253c4 is another verified zero-initialized i32 owner.
+
+Bridge state is eight 0xb0c-byte records at 0x02983a80 (22624 bytes), plus the
+zero-initialized processing gate at 0x029892e0. The sound volume producer and
+consumer independently establish 0x4000 floats at 0x02962bd0; the existing
+NuSound3VolumeTable is reused. Sound sample/voice records use PC strides 0x40c
+and 0x34. The source SoundVoiceManager provides an observed 0xd98-byte prefix,
+not a proven complete owner; its CSV size remains blank and contributes no credit.
+Its critical section has the SDK's 24-byte layout, the enabled gate starts at 1,
+and the volume offset is signed integer -300. The 3D-buffer IID has the exact PC
+16-byte initializer.
+
+The AI special callback and current-terrain pointer are separate zero-initialized
+four-byte owners. Path angle/radian scales and the four negative polynomial
+coefficients retain the PC qword bits. Polynomial coefficients are widened from
+rounded floats, not mathematical double decimals. Bolt shot parameter, three
+16-bit class-ID defaults, ID scratch and NUVEC position scratch retain verified
+scalar extents; runtime initialization is distinct from the retail image's values.
+No scratch allocator capacity is inferred from the spacing of neighboring symbols.
+
+Terrain lifecycle views verify the 0xa490 accessed header prefix, 0x38 group
+records, 0x6c platform records and 64 track slots of 0x18 bytes. Capacities remain
+runtime fields. The platform cell at +0x1b98 is a separate typed member, not an
+out-of-bounds access past the 256 ordinary cells. Platform flags are a dword at
++0x4c as the PC load/store instructions establish.

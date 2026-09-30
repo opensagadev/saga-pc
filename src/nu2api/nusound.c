@@ -561,3 +561,37 @@ void __cdecl NuSound3FlushLoops(void) {
 
 void __cdecl NuSound3StopRumble(void) {
 }
+
+f32 __cdecl PCSoundVolumeLookup(i32 index) {
+    /* Retail checks only the upper bound; preserve its negative-index behavior. */
+    if (index > 0x3fff) {
+        index = 0;
+    }
+
+    return NuSound3VolumeTable[index];
+}
+
+HRESULT __cdecl PCSoundSetRawVolume(IDirectSoundBuffer *buffer, i32 volume) {
+    volume += SoundVoiceVolumeOffset;
+    if (volume > 0) {
+        volume = 0;
+    }
+    if (volume < -10000) {
+        volume = -10000;
+    }
+
+    return buffer->vtable->set_volume(buffer, volume);
+}
+
+HRESULT __cdecl PCSoundSetLinearVolume(IDirectSoundBuffer *buffer, f32 volume) {
+    i32 raw_volume = (i32)volume + SoundVoiceVolumeOffset;
+
+    if (raw_volume > 0) {
+        raw_volume = 0;
+    }
+    if (raw_volume < -10000) {
+        raw_volume = -10000;
+    }
+
+    return buffer->vtable->set_volume(buffer, raw_volume);
+}

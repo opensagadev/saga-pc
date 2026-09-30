@@ -144,3 +144,101 @@ void __cdecl AISysCharacterSetPathCnx(AIPACKET_PC *packet, NUVEC *position, AIPA
         path_packet->path_info.flags |= AIPATHINFO_FLAG_ROUTE_CHECKED_LOCAL;
     }
 }
+
+void __cdecl AIPathNodeUpdatePos(void *context, AIPATH_PC *path, AIPATHNODE_PC *node) {
+    i32 node_index;
+    u8 node_bit;
+    u8 *updated_byte;
+    u8 connection_index;
+
+    if (node->has_special == 0) {
+        return;
+    }
+
+    node_index = (i32)(node - path->nodes);
+    updated_byte = &path->updated_node_bits[node_index >> 3];
+    node_bit = (u8)(1u << (node_index & 7));
+    if ((*updated_byte & node_bit) != 0) {
+        return;
+    }
+    *updated_byte |= node_bit;
+
+    if ((node->runtime_flags & 0x04) != 0) {
+        if (NuSpecialGetVisibilityFn(&node->special_handle) == 0) {
+            return;
+        }
+
+        node->runtime_flags &= (u8)~0x04;
+        for (connection_index = 0; connection_index < node->connection_count; ++connection_index) {
+            AIPATHCNX_PC *connection = node->connections[connection_index];
+            u8 other_index = connection->node_indices[0];
+            AIPATHNODE_PC *other;
+
+            if (other_index == (u8)node_index) {
+                other_index = connection->node_indices[1];
+            }
+            other = &path->nodes[other_index];
+            if ((other->runtime_flags & 0x04) == 0) {
+                connection->traversal_flags[0] &= 0xefffffffu;
+                connection->traversal_flags[1] &= 0xefffffffu;
+            }
+        }
+    } else if (NuSpecialGetVisibilityFn(&node->special_handle) == 0 &&
+               (AISysSpecialNodeCallback == NULL || AISysSpecialNodeCallback(context, &node->special_handle) == 0)) {
+        node->runtime_flags |= 0x04;
+        for (connection_index = 0; connection_index < node->connection_count; ++connection_index) {
+            AIPATHCNX_PC *connection = node->connections[connection_index];
+            connection->traversal_flags[0] |= 0x10000000u;
+            connection->traversal_flags[1] |= 0x10000000u;
+        }
+        return;
+    }
+
+    {
+        NUVEC old_position = node->position;
+        NUMTX *draw_matrix = NuSpecialGetDrawMtx(&node->special_handle);
+        NuVecMtxTransform(&node->position, &node->special_position, draw_matrix);
+        node->min_height = node->position.y + node->min_height_offset;
+        node->max_height = node->position.y + node->max_height_offset;
+
+        for (connection_index = 0; connection_index < node->connection_count; ++connection_index) {
+            AIPATHCNX_PC *connection = node->connections[connection_index];
+            u8 other_index = connection->node_indices[0];
+            AIPATHNODE_PC *other;
+            NUVEC delta;
+            f32 radius_extent;
+
+            if (other_index == (u8)node_index) {
+                other_index = connection->node_indices[1];
+            }
+            other = &path->nodes[other_index];
+
+            if (connection->node_indices[0] == (u8)node_index)
+                connection->horizontal_distance = NuVecXZDist(&other->position, &node->position, &delta);
+            else
+                connection->horizontal_distance = NuVecXZDist(&node->position, &other->position, &delta);
+            connection->rotation = (i16)(NuAtan2(delta.x, delta.z) * AIPathAngularScale);
+
+            radius_extent = node->radius + connection->max_horizontal_distance + other->radius;
+            if (connection->max_horizontal_distance != 0.0f) {
+                if (radius_extent <= connection->horizontal_distance) {
+                    connection->traversal_flags[0] &= 0xf7ffffffu;
+                    connection->traversal_flags[1] &= 0xf7ffffffu;
+                } else {
+                    connection->traversal_flags[0] |= 0x08000000u;
+                    connection->traversal_flags[1] |= 0x08000000u;
+                }
+            }
+        }
+
+        if (old_position.x == node->position.x && old_position.y == node->position.y &&
+            old_position.z == node->position.z) {
+            NUINSTANIM_TIME_VIEW *animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&node->special_handle);
+            if (animation == NULL || (animation->flags & 1) == 0 || animation->tfactor == 0.0f) {
+                node->runtime_flags &= (u8)~0x02;
+                return;
+            }
+        }
+        node->runtime_flags |= 0x02;
+    }
+}

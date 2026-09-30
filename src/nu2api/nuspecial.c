@@ -636,3 +636,39 @@ void __cdecl NuSpecialUpdate(NUSPECIALHANDLE *special) {
     display->flags |= 0x400;
     NuDisplayListUpdateSpecial(special);
 }
+
+typedef struct NuSpecialInstanceRecordPC {
+    u8 unknown_00[0x50];
+} NuSpecialInstanceRecordPC;
+
+typedef struct NuSpecialInstanceScenePC {
+    u8 unknown_00[0x1c];
+    i32 instance_count;
+    NuSpecialInstanceRecordPC *instances;
+} NuSpecialInstanceScenePC;
+
+typedef struct NuSpecialInstanceDisplayPC {
+    u8 unknown_00[0xc0];
+    i32 instance_index;
+} NuSpecialInstanceDisplayPC;
+
+STATIC_ASSERT(sizeof(NuSpecialInstanceRecordPC) == 0x50);
+STATIC_ASSERT(offsetof(NuSpecialInstanceScenePC, instance_count) == 0x1c);
+STATIC_ASSERT(offsetof(NuSpecialInstanceScenePC, instances) == 0x20);
+STATIC_ASSERT(offsetof(NuSpecialInstanceDisplayPC, instance_index) == 0xc0);
+
+i32 __cdecl NuSpecialGetInstanceix(NUSPECIALHANDLE *handle) {
+    NuSpecialLegacyView *legacy = (NuSpecialLegacyView *)handle->special;
+    i32 i;
+    if (legacy != NULL) {
+        NuSpecialInstanceScenePC *scene = (NuSpecialInstanceScenePC *)handle->scene;
+        for (i = 0; i < scene->instance_count; ++i) {
+            if (&scene->instances[i] == legacy->instance)
+                return i;
+        }
+        return -1;
+    }
+    if (handle->display_special != NULL)
+        return ((NuSpecialInstanceDisplayPC *)handle->display_special)->instance_index;
+    return -1;
+}

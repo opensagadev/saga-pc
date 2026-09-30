@@ -469,3 +469,46 @@ or schedules the next interval. Android's additional GameAudio wrapper at this
 point is absent from the PC call and is not copied. Physical DirectSound playback
 still remains a separate incomplete dependency; queue reconstruction does not
 establish working sound or a playable game.
+
+The bridge, PC voice, animation-fixup and projectile batch expands complete
+comparison spans rather than tuning individual instruction sequences. Bridge
+Init/Remove/Create/Update/Draw use eight asserted 0xb0c-byte records. Their real
+terrain getter/setter, platform-hit, platform creation/deletion and track-cleanup
+dependencies are implemented, with real calls through the special-instance lookup. The physical
+platform arrays contain 24 entries; retail warns about larger creation counts but
+continues the loop, so no Android capacity or added guard is substituted.
+Bridge drawing still marks its missing renderer and rope-segment actions, including
+the unresolved draw-result branch; it never invents a successful draw.
+
+The six ordinary DirectSound voice methods use reviewed PC vtable slots, a
+64-slot manager prefix, 0x34-byte voice slots and 0x40c-byte sample records.
+Sample ID and voice-bank selection are distinct; frequency divides the sample
+rate by 1000. Two one-byte RET hooks are genuine PC routines. The standalone C
+volume leaves live in the existing sound unit. Sound loading/initialization and
+the playback backend remain separate dependencies; this is not working audio.
+
+ANI3 and legacy animation pointer fixups, including the separate pointer-block
+relocator, are implemented. The evaluators still await a proven scratch capacity.
+`AIPathNodeUpdatePos` uses the PC special callback, endpoint-oriented displacement,
+radius traversal checks and animation activity test. `WithinConnection` remains
+unimplemented while its eleven stack slots are reviewed. The numeric helper at
+0x00512900 is arcsine-like, not acos; its neutral reconstruction name is
+`PCPathArcSine`, with the full signed EAX result kept until callers narrow it.
+
+`Bolt_Shoot` now carries PC type/callback selection, five-slot firing gates,
+portal target views, fallback origin, flash state and the final shot flag. Locator
+lookup, aim helpers, `Bolt_Add`/network dispatch, selected sound and lifetime updates
+remain explicit actions to reconstruct. The source does not fabricate a bolt ID.
+NuMain and the runnable game remain partial.
+
+Next connected targets: finish the eleven-argument WithinConnection review and
+implement it; close the 919-byte physical sound playback backend; follow Bolt_Add
+and its networking/locator closure. Renderer 0x005f0f00 is a separate larger
+backend/layout batch. Reuse ignored research under build/analysis/.
+
+A subsequent camera/culling bundle is promising: reviewed complete intervals at
+0x00603f10 (497), 0x00604110 (456) and 0x006042e0 (1608) total 2561 original
+bytes and use existing vector/matrix/camera types. The SSE/outcode helper's
+historical identity is tentative, and clip-state globals still need mapped types,
+extents and initializers. Review these together before source transfer; do not
+copy the Android backend or accept a helper name solely from graph ranking.

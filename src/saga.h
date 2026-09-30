@@ -46,6 +46,17 @@ STATIC_ASSERT(sizeof(f64) == 8);
 STATIC_ASSERT(sizeof(void *) == 4);
 STATIC_ASSERT(sizeof(MSG) == 28);
 
+STATIC_ASSERT(offsetof(IDirectSound8Vtbl, duplicate_sound_buffer) == 0x14);
+STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, get_status) == 0x24);
+STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, play) == 0x30);
+STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, set_volume) == 0x3c);
+STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, set_frequency) == 0x44);
+STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, stop) == 0x48);
+STATIC_ASSERT(offsetof(IDirectSound3DBufferVtbl, set_max_distance) == 0x40);
+STATIC_ASSERT(offsetof(IDirectSound3DBufferVtbl, set_min_distance) == 0x44);
+STATIC_ASSERT(offsetof(IDirectSound3DBufferVtbl, set_mode) == 0x48);
+STATIC_ASSERT(offsetof(IDirectSound3DBufferVtbl, set_position) == 0x4c);
+
 typedef struct nuvec_s {
     f32 x;
     f32 y;
@@ -72,6 +83,61 @@ typedef struct numtx_s {
     f32 m20, m21, m22, m23;
     f32 m30, m31, m32, m33;
 } NUMTX;
+
+typedef struct SoundSamplePC {
+    IDirectSoundBuffer *buffer;
+    u8 unknown_004[0x400];
+    u8 valid_byte;
+    u8 unknown_405[3];
+    u32 frequency;
+} SoundSamplePC;
+STATIC_ASSERT(sizeof(SoundSamplePC) == 0x40c);
+STATIC_ASSERT(offsetof(SoundSamplePC, buffer) == 0);
+STATIC_ASSERT(offsetof(SoundSamplePC, valid_byte) == 0x404);
+STATIC_ASSERT(offsetof(SoundSamplePC, frequency) == 0x408);
+
+typedef struct SoundVoiceSlotPC {
+    IDirectSoundBuffer *voice;
+    IDirectSound3DBuffer *aux;
+    SoundSamplePC *sample;
+    u32 is_spatial;
+    i32 sample_id;
+    u8 unknown_14[0x10];
+    i32 volume_index;
+    u8 unknown_28[8];
+    i32 parameter;
+} SoundVoiceSlotPC;
+STATIC_ASSERT(sizeof(SoundVoiceSlotPC) == 0x34);
+STATIC_ASSERT(offsetof(SoundVoiceSlotPC, voice) == 0);
+STATIC_ASSERT(offsetof(SoundVoiceSlotPC, aux) == 4);
+STATIC_ASSERT(offsetof(SoundVoiceSlotPC, sample) == 8);
+STATIC_ASSERT(offsetof(SoundVoiceSlotPC, is_spatial) == 0xc);
+STATIC_ASSERT(offsetof(SoundVoiceSlotPC, sample_id) == 0x10);
+STATIC_ASSERT(offsetof(SoundVoiceSlotPC, volume_index) == 0x24);
+STATIC_ASSERT(offsetof(SoundVoiceSlotPC, parameter) == 0x30);
+
+typedef struct SoundVoiceManagerPC {
+    u8 unknown_000[0xc];
+    SoundVoiceSlotPC voices[64];
+    SoundSamplePC *samples;
+    i32 active_count;
+    u32 unknown_d14;
+    IDirectSound8 *factory;
+    u8 unknown_d1c[0x7c];
+#ifdef __cplusplus
+    i32 __thiscall AllocateVoice(i32, i32);
+    void __thiscall SetVoice(i32, i32, f32, i32);
+    void __thiscall SetVolumeTableIndex(i32, i32);
+    void __thiscall SetFrequencyParameter(i32, i32);
+    void __thiscall StopVoice(i32);
+    void __thiscall Setup3DVoice(i32, const NUVEC *, i32);
+#endif
+} SoundVoiceManagerPC;
+STATIC_ASSERT(offsetof(SoundVoiceManagerPC, voices) == 0xc);
+STATIC_ASSERT(offsetof(SoundVoiceManagerPC, samples) == 0xd0c);
+STATIC_ASSERT(offsetof(SoundVoiceManagerPC, active_count) == 0xd10);
+STATIC_ASSERT(offsetof(SoundVoiceManagerPC, factory) == 0xd18);
+STATIC_ASSERT(sizeof(SoundVoiceManagerPC) == 0xd98);
 
 typedef struct NUSTRING {
     char *id;
@@ -327,6 +393,15 @@ STATIC_ASSERT(offsetof(TERRAIN_LAYER_PC, flags) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_LAYER_PC, unknown_04) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_LAYER_PC, unknown_08) == 8);
 
+typedef struct nuspecial_handle_s {
+    void *scene;
+    NUMTX *special;
+    NUMTX *display_special;
+} NUSPECIALHANDLE;
+STATIC_ASSERT(sizeof(NUSPECIALHANDLE) == 0xc);
+STATIC_ASSERT(offsetof(NUSPECIALHANDLE, special) == 4);
+STATIC_ASSERT(offsetof(NUSPECIALHANDLE, display_special) == 8);
+
 typedef struct AIPATHINFO_PC {
     void *path;
     void *connection;
@@ -390,13 +465,14 @@ struct AIPATHNODE_PC {
     u8 padding_31[3];
     AIPATHCNX_PC **connections;
     f32 distance_cache[2];
-    u8 special_handle[0x0c];
+    NUSPECIALHANDLE special_handle;
     NUVEC special_position;
     u16 route_membership_mask;
     u16 route_boundary_mask;
 };
 STATIC_ASSERT(sizeof(AIPATHNODE_PC) == 0x5c);
 STATIC_ASSERT(offsetof(AIPATHNODE_PC, position) == 0x04);
+STATIC_ASSERT(offsetof(AIPATHNODE_PC, special_handle) == 0x40);
 STATIC_ASSERT(offsetof(AIPATHNODE_PC, connections) == 0x34);
 STATIC_ASSERT(offsetof(AIPATHNODE_PC, route_membership_mask) == 0x58);
 
@@ -421,12 +497,15 @@ typedef struct AIPATH_PC {
     u16 connection_count;
     u8 route_count;
     u8 index;
-    u8 unknown_16[0x66];
+    u8 unknown_16[2];
+    u8 updated_node_bits[0x20];
+    u8 unknown_38[0x44];
     AIPATHNODE_PC *nodes;
     AIPATHCNX_PC *connections;
     u8 **route_matrix;
     AIPATHROUTE_PC *routes;
 } AIPATH_PC;
+STATIC_ASSERT(offsetof(AIPATH_PC, updated_node_bits) == 0x18);
 STATIC_ASSERT(offsetof(AIPATH_PC, route_count) == 0x14);
 STATIC_ASSERT(offsetof(AIPATH_PC, nodes) == 0x7c);
 STATIC_ASSERT(offsetof(AIPATH_PC, routes) == 0x88);
@@ -2203,7 +2282,9 @@ typedef struct gameobject_s {
     void *field_c80;
     void *field_c84;
     void *field_c88;
-    u8 unknown_0c8c[0xc];
+    f32 field_c8c;
+    f32 field_c90;
+    f32 field_c94;
     NUVEC suspension_normal;
     GAMEPAD_PC *pad;
     u8 unknown_0ca8[0x28];
@@ -2223,20 +2304,27 @@ typedef struct gameobject_s {
     u8 unknown_0e1a[0x6];
     u32 flags_e20;
     u32 flags_e24;
-    u8 unknown_0e28[0x30];
+    u8 unknown_0e28[0x24];
+    NUVEC field_e4c;
     NUVEC field_e58;
     SPLINEPOS movement_spline_position;
     NUVEC movement_spline_offset;
     f32 movement_spline_lateral_speed;
     u8 unknown_0e94[0xc];
-    NUVEC field_ea0;
+    union {
+        NUVEC field_ea0;
+        struct gameobject_s *field_ea0_target;
+    };
     u8 unknown_0eac[0x28];
     f32 run_speed_override;
     u8 unknown_0ed8[0x14];
     u32 portal_flags;
     u32 flags_ef0;
     u32 flags_ef4;
-    u8 unknown_0ef8[0x18];
+    u8 field_ef8;
+    u8 unknown_0ef9[3];
+    u8 field_efc;
+    u8 unknown_0efd[0x13];
     f32 field_f10;
     u8 unknown_0f14[0x4];
     NUVEC target_velocity;
@@ -2289,6 +2377,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_d54) == 0xd54);
 STATIC_ASSERT(offsetof(GAMEOBJECT, movement_lean_angle) == 0xe18);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_e58) == 0xe58);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_ea0_target) == 0xea0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_ea0) == 0xea0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, surface_normal) == 0xf24);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1052) == 0x1052);
@@ -2300,6 +2389,12 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_105e) == 0x105e);
 STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
 STATIC_ASSERT(offsetof(GAMEOBJECT, roll_angle) == 0x27c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_283) == 0x283);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_c8c) == 0xc8c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_c90) == 0xc90);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_c94) == 0xc94);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_e4c) == 0xe4c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_ef8) == 0xef8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_efc) == 0xefc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, hover_height_override) == 0x1028);
 STATIC_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
@@ -2644,14 +2739,62 @@ STATIC_ASSERT(offsetof(NUCAMERA, unknown_64) == 0x64);
 STATIC_ASSERT(offsetof(NUCAMERA, portal_nearclip) == 0x68);
 STATIC_ASSERT(offsetof(NUCAMERA, scale) == 0x6c);
 
-typedef struct nuspecial_handle_s {
-    void *scene;
-    NUMTX *special;
-    NUMTX *display_special;
-} NUSPECIALHANDLE;
-STATIC_ASSERT(sizeof(NUSPECIALHANDLE) == 0xc);
-STATIC_ASSERT(offsetof(NUSPECIALHANDLE, special) == 4);
-STATIC_ASSERT(offsetof(NUSPECIALHANDLE, display_special) == 8);
+typedef struct nubridge_pc_s {
+    u8 active;
+    u8 unknown_01;
+    i16 idle_frames;
+    NUGSCN *scene;
+    void *terrain;
+    NUVEC edge_positions[24][2];
+    NUVEC edge_motion[24][2];
+    NUMTX platform_matrices[24];
+    NUSPECIALHANDLE special;
+    NUSPECIALHANDLE second_special;
+    NUVEC centre;
+    f32 cull_radius_squared;
+    i16 platforms[24];
+    u8 in_range;
+    u8 was_drawn;
+    i8 platform_count;
+    u8 field_ae7;
+    u32 colour;
+    u16 contact_frames;
+    i16 rotation_y;
+    f32 width;
+    f32 spring_strength;
+    f32 gravity;
+    f32 damping;
+    f32 load_multiplier;
+    f32 field_b04;
+    f32 field_b08;
+} NUBRIDGE_PC;
+STATIC_ASSERT(sizeof(NUBRIDGE_PC) == 0xb0c);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, active) == 0x0);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, idle_frames) == 0x2);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, scene) == 0x4);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, terrain) == 0x8);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, edge_positions) == 0xc);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, edge_motion) == 0x24c);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, platform_matrices) == 0x48c);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, special) == 0xa8c);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, second_special) == 0xa98);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, centre) == 0xaa4);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, cull_radius_squared) == 0xab0);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, platforms) == 0xab4);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, in_range) == 0xae4);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, was_drawn) == 0xae5);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, platform_count) == 0xae6);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, field_ae7) == 0xae7);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, colour) == 0xae8);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, contact_frames) == 0xaec);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, rotation_y) == 0xaee);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, width) == 0xaf0);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, spring_strength) == 0xaf4);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, gravity) == 0xaf8);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, damping) == 0xafc);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, load_multiplier) == 0xb00);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, field_b04) == 0xb04);
+STATIC_ASSERT(offsetof(NUBRIDGE_PC, field_b08) == 0xb08);
 
 typedef struct gameanimobj_s GAMEANIMOBJ;
 typedef struct gameanimobjpool_s GAMEANIMOBJPOOL;
@@ -4813,6 +4956,63 @@ extern "C" {
     i32 __cdecl ExplodeBufferSize(char *);
     i32 __cdecl ExplodeCompressedSize(char *);
     void __cdecl NuDatFileDecodeNext(void);
+    typedef i32(__cdecl *AISYS_SPECIAL_NODE_CALLBACK_PC)(void *, NUSPECIALHANDLE *);
+    extern AISYS_SPECIAL_NODE_CALLBACK_PC AISysSpecialNodeCallback;
+    extern const f64 AIPathAngularScale;
+    extern const f64 PCPathArcSineCoefficient3;
+    extern const f64 PCPathArcSineCoefficient5;
+    extern const f64 PCPathArcSineCoefficient7;
+    extern const f64 PCPathArcSineCoefficient9;
+    i32 __cdecl PCPathArcSine(f32);
+    f32 __cdecl NuVecXZDist(NUVEC *, NUVEC *, NUVEC *);
+    extern const f64 PCAtan2RadianScale;
+    f32 __cdecl NuAtan2(f32, f32);
+    void __cdecl AIPathNodeUpdatePos(void *, AIPATH_PC *, AIPATHNODE_PC *);
+    extern f32 BoltShootParameter;
+    extern u16 BoltShootClassId0;
+    extern u16 BoltShootClassId1;
+    extern u16 BoltShootClassId2;
+    extern i32 BoltShootIdScratch;
+    extern NUVEC BoltShootPositionScratch;
+    void __cdecl Bolt_Shoot(GAMEOBJECT *, i32, i32);
+    extern void *CurrentTerrain;
+    void *__cdecl TerrainGetCur(void);
+    void __cdecl TerrainSetCur(void *);
+    i32 __cdecl PlatInstGetHit(i32);
+    i32 __cdecl NewPlatInst(void *, i32);
+    i32 __cdecl DeletePlatinst(i32);
+    void __cdecl ScanTerrIDRemovePlat(i32);
+    i32 __cdecl NuSpecialGetInstanceix(NUSPECIALHANDLE *);
+    void __cdecl NuVec4MtxTransformVU0(NUVEC4 *, NUVEC4 *, NUMTX *);
+    i32 __cdecl NuSpecialDrawAt(NUSPECIALHANDLE *, NUMTX *);
+    f32 __cdecl PCSoundVolumeLookup(i32);
+    HRESULT __cdecl PCSoundSetRawVolume(IDirectSoundBuffer *, i32);
+    HRESULT __cdecl PCSoundSetLinearVolume(IDirectSoundBuffer *, f32);
+    extern SoundVoiceManagerPC SoundVoiceManager;
+    extern CRITICAL_SECTION SoundVoiceCriticalSection;
+    extern i32 SoundVoiceEnabledGate;
+    extern i32 SoundVoiceVolumeOffset;
+    extern const GUID SoundVoice3DBufferIID;
+    void __cdecl PCSoundAlreadyPlayingHook(void);
+#ifdef __cplusplus
+    void __cdecl PCSoundFailure(...);
+#endif
+    void __cdecl ANI_FixUpAddrs(ANI3_HEADER_PC *, i32, i32);
+    void *__cdecl NuAnimData2FixPtrs(void *, i32, i32, i32);
+    void *__cdecl NuAnimData2Fixup(i32, void **);
+    void *__cdecl NuPtrBlockFix(void *);
+    extern NUBRIDGE_PC Bridges[8];
+    extern i32 NuBridgeProc;
+    void __cdecl NuMtxPreRotateX(NUMTX *, NUANG);
+    void __cdecl NuMtxPreRotateY(NUMTX *, NUANG);
+    void __cdecl NuMtxPreRotateZ(NUMTX *, NUANG);
+    i32 __cdecl NuBridgeCreate(NUGSCN *, NUSPECIALHANDLE *, NUSPECIALHANDLE *, NUVEC *, NUVEC *, f32, i16, f32, f32,
+                               f32, f32, i32, f32, f32, i32, u32);
+    void __cdecl NuBridgeInit(void);
+    void __cdecl NuBridgeRemove(i32);
+    void __cdecl NuBridgeUpdate(NUVEC *);
+    void __cdecl NuBridgeDraw(NUMTL *);
+    void __cdecl NuBrdigeDrawRope(NUMTL *, NUVEC *, NUVEC *, i32, i32 *, i32);
     typedef GAMEOBJECT **(__cdecl *GAMEOBJECT_LOOKUP_CALLBACK_PC)(void *, char *);
     extern GAMEOBJECT_LOOKUP_CALLBACK_PC GetNamedGameObjectCallback;
     GAMEOBJECT *__cdecl GetNamedGameObject(void *, char *);

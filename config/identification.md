@@ -597,3 +597,21 @@ interpolation for quarters 0..2, but converts one interpolated Euler sample
 for quarter 3, which bypasses normalization (0x005cbdac jumps past the SSE
 store to 0x005cbe86). The interpolation arms retain those PC SDK intrinsics;
 the Android scalar normalization/interpolation path is not interchangeable.
+
+The bridge lifecycle/platform family and voice-manager leaves were reviewed as
+connected PC closures. Six voice methods are ordinary thiscall routines; the
+private-register helper at 0x006977b0 remains outside that source interface.
+The reconstruction class/method labels are neutral proposed names, not recovered
+retail symbols. Field labels follow actual PC accesses and asserted offsets.
+
+Bundled Microsoft SDK headers lack dsound.h. The standalone declarations in
+src/externals.h cover only the COM surfaces used here; called vtable slots were
+checked against PC displacements and the [Microsoft DirectSound header](https://github.com/microsoft/win32metadata/blob/main/generation/WinSDK/RecompiledIdlHeaders/um/dsound.h).
+Unused slots are noncallable placeholders. No Wine headers are used.
+
+The renderer at 0x005f0f00 (1491 bytes) is strongly identified as
+NuDisplayListRndrSpecial by the special-draw wrappers and skin-mode callers.
+Its display-special tail and material/render-state closure still need their own
+PC layout review. Do not supply a placeholder return value to the 43-byte wrapper.
+WithinConnection's direct callers clean 0x2c bytes (eleven stack arguments);
+earlier twelve-argument research was rejected before source integration.
