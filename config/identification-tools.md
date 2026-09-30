@@ -7,7 +7,9 @@ complete-extent rules in [identification.md](identification.md) still apply.
 
 Identification jobs run sequentially under a repository lock and a default
 **1 GiB address-space limit**. `--memory-limit-mb` changes the limit explicitly;
-keep the default for these originals. A memory-limit failure aborts publication.
+The current pipeline fits the default; an explicit budget up to about 4 GiB is
+available when a larger reviewed batch needs it. Measure peak RSS and keep heavy
+jobs serialized. A memory-limit failure aborts publication.
 Do not run raw graph loaders concurrently or bypass this guarded entry point for
 full originals. An earlier unbounded parallel pilot exhausted memory; its partial
 outputs are not valid results. Raw graph extraction and bounded synthetic tests
@@ -83,10 +85,51 @@ It excluded the sibling matrix alias and kept only the unrelated random-state
 rejection. This is a useful remaining ownership limitation, rather than a new
 identity claim. The check peaked at 642 MiB under the 1 GiB guard.
 
-Five already-mapped callback entries, totaling 244 bytes, were confirmed missing
-from the raw function graph. Their direct/tail edges and unresolved table
-dispatches are recorded for later repair in a disposable Ghidra project. Small
-reviews used 256 MiB caps. Raw originals and projects were unchanged.
+Five already-mapped callback entries, totaling 244 bytes, were repaired in an
+independent copy of the PC Ghidra project. Restricted disassembly and exact
+reviewed bodies restored `Condition_Timer`, `Condition_Random`,
+`Condition_AlwaysTrue`, `CheckOutputConditionFlowBox` and `ProcessActionFlowBox`.
+The saved copy was reopened read-only and exported; all existing function bodies
+were preserved. Original project file hashes and metadata were unchanged. The
+Android export was reused unchanged. This adds graph evidence, with no new map
+bytes or reconstruction credit. Java used a 512 MiB heap and peaked at 756 MiB
+RSS; small reviews used 256 MiB Python caps.
+The incremental replay gained five accepted function seeds (1,176 total),
+removed five obsolete alternatives for `Condition_Random`, and preserved every
+data candidate. It peaked at 697 MiB under the 1 GiB Python guard. The repaired
+PC graph has 7,844 functions; the Android graph remains at 13,242.
+
+A subsequent repair includes four more reviewed Flow callbacks, for nine entries
+and 537 already-mapped bytes total. It preserves every existing function body,
+restores the direct `ProcessActionFlowBox` → `PerformActionFlowBox` connection,
+and retains unresolved table dispatches. The PC graph now has 7,848 functions.
+This larger repair peaked at 737 MiB RSS with the same 512 MiB heap.
+
+Original review then accepted `MovePlayer_DIRECTIONAL` (10,904 bytes),
+`SetLevelSfxBits` (8,845 bytes), and three four-byte level-pointer cells. Their
+19,761 bytes raise mapped image coverage to 933,826 / 40,067,072 bytes (2.331%).
+The functions remain unimplemented and their complete aggregate layouts remain
+unreviewed. The new pointer-cell contracts do not establish pointee layouts.
+Replay uses 1,182 accepted function seeds and seven reviewed data correspondences,
+with 1,243 tentative function pairs and 1,731 data candidates. Relative to the
+five-callback replay, data rows gained 72, changed 214 and removed 18; function
+evidence rows gained 114, changed 835 and removed 167. These are research deltas,
+not acceptance or accuracy metrics. Peak Python RSS was 695 MiB.
+
+`tools/repair_graph.py` makes the independent copy, pins the reviewed packet and
+executed script, checks a fresh repair report, and verifies the saved function
+extents in the new export before publishing a graph pair. Use a fresh output
+under `build/analysis`; the packet schema and required range hashes are described
+in `tools/ghidra/RepairReviewedFunctions.java`. Neither script clears conflicting
+data or code, infers signatures, or analyzes the whole program.
+
+```sh
+python3 tools/repair_graph.py \
+  --config build/analysis/identification/current-graphs/export-config.json \
+  --packet build/analysis/identification/continuation/callback-repair-packet.json \
+  --reuse-pair build/analysis/identification/current-graphs/graph-pair.json \
+  --output build/analysis/identification/callback-repaired-graphs
+```
 
 ## Installed tools and input identity
 
@@ -112,6 +155,11 @@ Every headless command sets project-local `XDG_CONFIG_HOME` and
 normal Ghidra configuration. Use one operation per Ghidra project at a time.
 Never bypass a project lock. Export retained databases with `-readOnly
 -noanalysis`; analysis repair belongs in a separate working copy.
+The maintained exporters and repair launcher share the identification job lock.
+Set a job's `java_heap_mb` explicitly to change the 512 MiB default (128–4096 MiB).
+Java heap is not total RSS, so measure the process. Launch Java separately from
+Python jobs with finite address-space limits: JVM virtual reservations exceed
+its heap, and the launchers reject inherited limits rather than remove them.
 
 Ghidra can exit successfully despite script failure. Check the expected output,
 its manifest, and the script log. A pre-existing output is not proof that the
@@ -467,7 +515,12 @@ tooling/map changes. Keep generated graphs, original bytes, H2 databases and
 downloaded binaries ignored. Only tooling, synthetic tests, reviewed proposals
 and documentation belong in tracked changes.
 
-Final continuation `make -j2 check` passed 278 tests (three optional Ghidra fixture skips), source
+The latest checkpoint `make -j2 check` passed 297 tests (three optional Ghidra fixture skips), source
 formatting and Clang-tidy. The object check passed 1,638 function and 2,604 data
 definitions across 123 objects. Final compilation/matching checks use two Make
 workers to keep resource use bounded.
+Retail matching preserves all 801 exact functions and every pre-existing
+comparison row. Fuzzy code coverage stays at 6.212%; only mapping coverage rises.
+The first pushed tool snapshot exposed a test relying on a local ignored file;
+the fixture now isolates both repository roots and its job lock, so the required
+legacy-default inputs are entirely synthetic.

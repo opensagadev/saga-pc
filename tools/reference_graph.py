@@ -13,15 +13,20 @@ from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+import resource
+import re
 
 try:
     from .lib import sha256
+    from .identification_limits import identification_lock
 except ImportError:
     from lib import sha256
+    from identification_limits import identification_lock
 
 
 SCHEMA = "identification-reference-graph-v1"
 EXPORTER = Path(__file__).resolve().parent / "ghidra" / "ExportReferenceGraph.java"
+DEFAULT_JAVA_HEAP_MB = 512
 
 
 def validate_export(path, binary_sha256, delta, exporter_sha256):
@@ -47,7 +52,52 @@ def validate_export(path, binary_sha256, delta, exporter_sha256):
     return manifest
 
 
+def _validate_job(job, label):
+    if not isinstance(job, dict):
+        raise ValueError("Expected an export job object")
+    if not isinstance(label, str) or not re.fullmatch(r"[a-zA-Z0-9_-]+", label):
+        raise ValueError("Expected a simple export job label")
+    for key in ("original", "project", "program"):
+        if not isinstance(job.get(key), (str, Path)) or not str(job[key]).strip():
+            raise ValueError(f"{label}: expected a nonempty {key}")
+    if not isinstance(job["program"], str):
+        raise ValueError(f"{label}: expected a program name string")
+    expected = job.get("sha256")
+    if not isinstance(expected, str) or not re.fullmatch(r"[0-9a-f]{64}", expected):
+        raise ValueError(f"{label}: expected a pinned SHA-256")
+    heap = job.get("java_heap_mb", DEFAULT_JAVA_HEAP_MB)
+    if isinstance(heap, bool) or not isinstance(heap, int) or not 128 <= heap <= 4096:
+        raise ValueError(f"{label}: java_heap_mb must be an integer from 128 to 4096 MiB")
+    raw_delta = job.get("delta")
+    if isinstance(raw_delta, bool) or not isinstance(raw_delta, (int, str)):
+        raise ValueError(f"{label}: expected an integer address delta")
+    try:
+        delta = int(raw_delta, 0) if isinstance(raw_delta, str) else raw_delta
+    except ValueError as error:
+        raise ValueError(f"{label}: expected an integer address delta") from error
+    if not -0x100000000 <= delta <= 0xffffffff:
+        raise ValueError(f"{label}: address delta exceeds a 32-bit address transform")
+    if "reviewed_evidence" in job and (not isinstance(job["reviewed_evidence"], (str, Path))
+                                       or not str(job["reviewed_evidence"]).strip()):
+        raise ValueError(f"{label}: expected a reviewed evidence path")
+    return delta, heap
+
+
 def export_job(job, label, config_directory, output, ghidra_home):
+    """Run one serialized export; job.java_heap_mb defaults to 512 MiB.
+
+    Java reserves virtual space beyond its heap. Launch separately from Python
+    jobs capped with RLIMIT_AS; inherited soft and hard limits are preserved.
+    The heap limit does not bound total Java RSS or native allocations.
+    """
+    delta, heap = _validate_job(job, label)
+    if resource.getrlimit(resource.RLIMIT_AS) != (resource.RLIM_INFINITY, resource.RLIM_INFINITY):
+        raise ValueError("Ghidra cannot inherit a finite address-space limit; launch separately with unlimited RLIMIT_AS and bounded java_heap_mb")
+    with identification_lock():
+        return _export_job(job, label, Path(config_directory), Path(output), Path(ghidra_home), delta, heap)
+
+
+def _export_job(job, label, config_directory, output, ghidra_home, delta, heap):
     def resolve(value):
         path = Path(value)
         return path.resolve() if path.is_absolute() else (config_directory / path).resolve()
@@ -59,9 +109,12 @@ def export_job(job, label, config_directory, output, ghidra_home):
     project = resolve(job["project"])
     if project.suffix != ".gpr" or not project.is_file():
         raise ValueError(f"{label}: expected an existing Ghidra .gpr project")
-    delta = int(job["delta"], 0) if isinstance(job["delta"], str) else int(job["delta"])
+    if job.get("reviewed_evidence") and not resolve(job["reviewed_evidence"]).is_file():
+        raise ValueError(f"{label}: reviewed evidence file is missing")
+    output.mkdir(parents=True, exist_ok=True)
     runtime = output / "ghidra-runtime"
     environment = os.environ.copy()
+    environment["GHIDRA_HEADLESS_MAXMEM"] = f"{heap}M"
     for variable, directory in (("XDG_CONFIG_HOME", "config"), ("XDG_CACHE_HOME", "cache")):
         path = runtime / directory
         path.mkdir(parents=True, exist_ok=True)

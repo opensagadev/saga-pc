@@ -761,9 +761,52 @@ nodes in the retained PC graph: `Condition_Timer`, `Condition_Random`,
 `Condition_AlwaysTrue`, `CheckOutputConditionFlowBox`, and `ProcessActionFlowBox`.
 Their complete 244 bytes add no map coverage. The Random tail transfer and the
 action callback's direct call are verified; table-mediated dispatch remains
-conditional. Their next step is a bounded repair in a disposable Ghidra project.
+conditional. Their entries and four further Flow callbacks were repaired in an
+independent project copy with exact reviewed bodies. The re-export preserves all
+existing function bodies, and retained project content and metadata are unchanged.
+The nine callbacks total 537 already-mapped bytes; they add no coverage.
 
 Detailed operands, callers and terminal instructions remain under ignored
 `build/analysis/identification/continuation/`, in `bsim-review`, `adjacent-review`,
 `data-review` and `callback-review` JSON/Markdown packets. Python review processes
 used 256 MiB limits; full scoring uses the serialized 1 GiB guard.
+
+`MovePlayer_DIRECTIONAL` is now mapped at `0x004ac620`, with the complete
+10,904-byte extent ending at `0x004af0b8`. Its `CurrentAnim` and
+`Techno_FindOperator` entry, inactive-vehicle handling, `GrapWindLp` sound,
+input-angle processing, target-velocity seeking, lean limits and terminal
+`GizmoBlowupCheckProximity` call match the named Android routine at `0x001670d0`.
+The accepted `MovePlayer` caller at `0x00416ab3` passes one object pointer and
+cleans four bytes; both bare returns leave incidental ignored results, supporting
+the source's `void` contract. Every original instruction is reachable, local
+branches stay on instruction boundaries, and returns at `0x004ac71d` and
+`0x004af0b7` close all paths. Following alignment bytes are excluded. The C linker
+name is a reconstruction choice. Existing `GAMEOBJECT` field contracts support
+the pointer type; its entire layout remains incomplete. This is an unimplemented
+mapping, adding no fuzzy or exact-match credit. The ignored
+`continuation/movement-directional-review` packet preserves the original CFG and
+caller evidence.
+
+`SetLevelSfxBits` is mapped at `0x004bde10`, with 8,845 original bytes through
+the return at `0x004c009c`. `WorldInfo_Init` passes its world pointer at
+`0x00560209`. The ordered sound literals, level-dependent crane/hover/magnet
+choices, arcade/character conditions, terminated ID list and
+`SetSfxBit_On`/`SfxBitsStore` epilogue corroborate the named Android routine at
+`0x00145ad0`. Original branches remain inside the reviewed complete extent;
+alignment after its sole return is excluded. Its one-pointer `void __cdecl`
+signature is established, while several aggregate field cohorts still require
+review. For example, the first sound ID and count occur at PC world offsets
+`0x471c` and `0x4b10`, versus Android `0x4720` and `0x4b14`. The function remains
+unimplemented.
+
+The same review identifies three four-byte `LEVELDATA_PC *` slots:
+`CLOUDCITYESCAPEC_LDATA` at `0x0087b240`, `CLOUDCITYTRAPA_LDATA` at
+`0x0087b244`, and `JABBASPALACEB_LDATA` at `0x0087b2a4`. Original writers call
+accepted `Level_FindByName` with the exact corresponding names and store its
+pointer result at `0x0048f0cd`, `0x0048efc3`, and `0x0048f131`. Independent sound
+branches compare the world level against those same slots. The reviewed extent
+is each complete pointer cell, with original zero initialization; it establishes
+no pointee layout. Android counterparts at `0x006a1460`, `0x006a145c`, and
+`0x006a13f4` remain in their original order. The ignored
+`continuation/set-level-sfx-review` packet preserves the writer, reader and
+boundary evidence. These rows add mapping coverage, with no matching credit.

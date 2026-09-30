@@ -19,6 +19,11 @@ class IdentificationRunTests(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
+        # Synthetic experiments also own synthetic heavy-job locks. They must
+        # not consume local ignored inputs or contend with a real export job.
+        root_patch = patch.object(score.lib, "ROOT", self.root)
+        root_patch.start()
+        self.addCleanup(root_patch.stop)
         self.printed = io.StringIO()
         self.quiet = redirect_stdout(self.printed)
         self.quiet.__enter__()
@@ -254,10 +259,15 @@ class IdentificationRunTests(unittest.TestCase):
         for source, destination in paths.items():
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source, destination)
+        tools = self.root / "tools"
+        tools.mkdir()
+        for name in ("identification.py", "identification_run.py", "reference_features.py", "source_graph.py"):
+            shutil.copyfile(score.ROOT / "tools" / name, tools / name)
         (self.root / "config/project.json").write_text(json.dumps({"target": self.target}))
         output = self.root / "build/analysis/bulk-identify"
         from tools import identification_run
         with patch.object(score.lib, "ROOT", self.root), \
+                patch.object(score, "ROOT", self.root), \
                 patch.object(score, "OUT", output), \
                 patch.object(score, "PC_FEATURES", output / "pc-data-features.json"), \
                 patch.object(score, "ANDROID_FEATURES", output / "android-data-features.json"):
@@ -267,6 +277,20 @@ class IdentificationRunTests(unittest.TestCase):
         self.assertTrue((output / "hypotheses.csv").is_file())
         self.assertEqual(identification_run.validate_completed_run(output)["inputs"]["symbols"]["path"],
                          str(paths[self.symbols]))
+        self.assertEqual(identification_run.validate_completed_run(output)["inputs"]["accepted_symbols"]["path"],
+                         str(paths[self.accepted]))
+
+    def test_graph_only_context_without_optional_accepted_symbols(self):
+        self.accepted.unlink()
+        with score.IdentificationRun(self.root / "output", self.symbols,
+                                     pc_functions=self.functions, pc_references=self.references,
+                                     android_graph=self.android, target=self.target) as run:
+            self.assertEqual(json.loads(run.accepted_symbols.read_text()), [])
+            self.assertNotIn("accepted_symbols", run.inputs)
+            summary = score.generate(run=run)
+        self.assertEqual(summary["unique_name_seeds"], 2)
+        self.assertEqual(summary["inferred_pairs"], 1)
+        self.assertEqual(json.loads((self.root / "output/accepted-symbols.snapshot.json").read_text()), [])
 
     def test_live_map_edit_during_scoring_does_not_enter_holdout(self):
         original = score.score_round

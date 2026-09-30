@@ -97,6 +97,21 @@ else:
                             self.fail("invalid limit entered work")
         self.assertFalse((self.root / "build").exists())
 
+    def test_lock_only_leaves_address_space_caps_unchanged(self):
+        self.child("""
+previous = resource.getrlimit(resource.RLIMIT_AS)
+with limits.identification_lock():
+    assert resource.getrlimit(resource.RLIMIT_AS) == previous
+    try:
+        with limits.identification_budget(128):
+            raise AssertionError('budget entered a slot owned by the lock')
+    except ValueError as error:
+        assert 'Another identification job' in str(error)
+assert resource.getrlimit(resource.RLIMIT_AS) == previous
+with limits.identification_budget(128):
+    pass
+""")
+
 
 if __name__ == "__main__":
     unittest.main()

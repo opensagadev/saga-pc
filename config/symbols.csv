@@ -190,11 +190,13 @@ address    , symbol                                                         , si
 0x004a5b30 , _PartUpdate_Basketball                                         , 113   , void __cdecl (PART_PC *)
 0x004a5bb0 , _PartImpact_Basketball                                         , 128   , void __cdecl (PART_PC *)
 0x004abac0 , _ApplyGravity                                                  , 2543  , "void __cdecl (GAMEOBJECT *, f32 *, f32, f32, f32 *)"
+0x004ac620 , _MovePlayer_DIRECTIONAL                                        , 10904 , void __cdecl (GAMEOBJECT *)
 0x4af0c0   , _MovePlayer_VEHICLEDIRECTIONAL                                 , 6146  , void __cdecl (GAMEOBJECT *)
 0x4b08d0   , _MovePlayer_TWIST                                              , 827   , i32 __cdecl (GAMEOBJECT *)
 0x004b1ab0 , _GameObjectStuffAfterAnimation                                 , 3904  , void __cdecl (void)
 0x004b8fc0 , _InDoubleScoreZone                                             , 116   , i32 __cdecl (GAMEOBJECT *)
 0x004badd0 , _InitPanel                                                     , 106   , void __cdecl (i32)
+0x004bde10 , _SetLevelSfxBits                                               , 8845  , void __cdecl (WORLDINFO *)
 0x004c00c0 , _Shadow_SetMode                                                , 60    , void __cdecl (void)
 0x004c99b0 , _SpeederChaseATATInOutMul                                      , 85    , f32 __cdecl (GAMEOBJECT *)
 0x004c9a40 , _NuPrim2DSetColor                                              , 108   , void (u32)
@@ -4100,11 +4102,14 @@ address    , symbol                                                         , si
 0x0087b1f4 , _DEATHSTARBATTLED_LDATA                                        , 4     , LEVELDATA_PC *
 0x0087b1fc , _HOTHBATTLEA_LDATA                                             , 4     , LEVELDATA_PC *
 0x87b230   , _ASTEROIDCHASED_LDATA                                          , 4     , LEVELDATA_PC *
+0x0087b240 , _CLOUDCITYESCAPEC_LDATA                                        , 4     , LEVELDATA_PC *
+0x0087b244 , _CLOUDCITYTRAPA_LDATA                                          , 4     , LEVELDATA_PC *
 0x0087b254 , _SPEEDERCHASEA_LDATA                                           , 4     , LEVELDATA_PC *
 0x87b26c   , _DEATHSTAR2BATTLEA_LDATA                                       , 4     , LEVELDATA_PC *
 0x0087b278 , _DEATHSTAR2BATTLEE_LDATA                                       , 4     , LEVELDATA_PC *
 0x0087b27c , _DEATHSTAR2BATTLEF_LDATA                                       , 4     , LEVELDATA_PC *
 0x0087b280 , _DEATHSTAR2BATTLEG_LDATA                                       , 4     , LEVELDATA_PC *
+0x0087b2a4 , _JABBASPALACEB_LDATA                                           , 4     , LEVELDATA_PC *
 0x0087b2c8 , _UpdateSockets_LDATA                                           , 4     , LEVELDATA_PC *
 0x0087b2ec , _LevelProgressData                                             , 4     , LEVEL_PROGRESS *
 0x0087b2f4 , _LevelChangesInArea                                            , 4     , i32

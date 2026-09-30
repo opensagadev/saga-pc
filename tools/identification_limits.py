@@ -13,9 +13,8 @@ DEFAULT_MEMORY_MB = 1024
 
 
 @contextmanager
-def identification_budget(memory_mb=DEFAULT_MEMORY_MB):
-    if isinstance(memory_mb, bool) or not isinstance(memory_mb, int) or memory_mb < 128:
-        raise ValueError("Identification memory limit must be at least 128 MiB")
+def identification_lock():
+    """Reserve the shared heavy-job slot without limiting child address space."""
     directory = lib.ROOT / "build/analysis"
     directory.mkdir(parents=True, exist_ok=True)
     with (directory / ".identification-heavy.lock").open("a+") as lock:
@@ -23,6 +22,14 @@ def identification_budget(memory_mb=DEFAULT_MEMORY_MB):
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError as error:
             raise ValueError("Another identification job is running; full graph jobs must run sequentially") from error
+        yield
+
+
+@contextmanager
+def identification_budget(memory_mb=DEFAULT_MEMORY_MB):
+    if isinstance(memory_mb, bool) or not isinstance(memory_mb, int) or memory_mb < 128:
+        raise ValueError("Identification memory limit must be at least 128 MiB")
+    with identification_lock():
         previous = resource.getrlimit(resource.RLIMIT_AS)
         limit = memory_mb * 1024 * 1024
         if previous[0] != resource.RLIM_INFINITY:

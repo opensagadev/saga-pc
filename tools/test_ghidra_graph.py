@@ -9,6 +9,10 @@ import os
 from pathlib import Path
 import unittest
 import tempfile
+from unittest.mock import patch
+
+from tools import reference_graph as launcher
+from tools import identification_limits as limits
 
 try:
     from .reference_graph import validate_export
@@ -61,6 +65,109 @@ class ExportPublicationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.validate()
 
+
+class ExportLauncherTests(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        self.original = self.root / "original.exe"
+        self.original.write_bytes(b"synthetic original")
+        self.project = self.root / "fixture.gpr"
+        self.project.write_text("synthetic project")
+        self.output = self.root / "output"
+        self.job = {"original": self.original.name, "project": self.project.name,
+                    "program": "/original.exe", "sha256": launcher.sha256(self.original), "delta": 0}
+        self.environments = []
+        self.root_patch = patch.object(limits.lib, "ROOT", self.root)
+        self.root_patch.start()
+        self.addCleanup(self.root_patch.stop)
+
+    def fake_headless(self, command, *, env, check):
+        self.assertTrue(check)
+        self.assertIn("-readOnly", command)
+        self.assertIn("-noanalysis", command)
+        self.environments.append(env)
+        with self.assertRaisesRegex(ValueError, "Another identification job"):
+            with limits.identification_lock():
+                self.fail("launcher did not retain its shared lock")
+        folder = Path(command[command.index("-postScript") + 2])
+        for kind in ("nodes", "edges"):
+            (folder / (kind + ".jsonl")).write_text("{}\n")
+        manifest = {"schema": launcher.SCHEMA, "binary_sha256": self.job["sha256"],
+                    "exporter_sha256": launcher.sha256(Path(command[command.index("-scriptPath") + 1]) / launcher.EXPORTER.name),
+                    "language": "x86:LE:32:default",
+                    "address_transform": {"delta": 0, "original_header_verified": True},
+                    "verification": {"program_original_sha256_equal": True, "executable_block_byte_checks": 1},
+                    "nodes_file": "nodes.jsonl", "edges_file": "edges.jsonl",
+                    "sha256": {kind: launcher.sha256(folder / (kind + ".jsonl")) for kind in ("nodes", "edges")}}
+        (folder / "manifest.json").write_text(json.dumps(manifest))
+
+    def invoke(self):
+        return launcher.export_job(self.job, "pc", self.root, self.output, self.root / "ghidra")
+
+    def test_default_heap_and_shared_lock_with_sequential_exports(self):
+        with patch.object(launcher.resource, "getrlimit", return_value=(-1, -1)), \
+                patch.dict(os.environ, {"GHIDRA_HEADLESS_MAXMEM": "4G"}), \
+                patch.object(launcher.subprocess, "run", side_effect=self.fake_headless) as run:
+            self.invoke()
+            self.invoke()
+        self.assertEqual(run.call_count, 2)
+        self.assertEqual([env["GHIDRA_HEADLESS_MAXMEM"] for env in self.environments], ["512M", "512M"])
+        self.assertTrue((self.output / "pc/manifest.json").is_file())
+        with limits.identification_lock():
+            pass
+
+    def test_explicit_heap_supports_requested_four_gib_limit(self):
+        self.job["java_heap_mb"] = 4096
+        with patch.object(launcher.resource, "getrlimit", return_value=(-1, -1)), \
+                patch.object(launcher.subprocess, "run", side_effect=self.fake_headless):
+            self.invoke()
+        self.assertEqual(self.environments[0]["GHIDRA_HEADLESS_MAXMEM"], "4096M")
+
+    def test_bad_heap_types_or_limits_fail_without_launcher(self):
+        with patch.object(launcher.subprocess, "run") as run:
+            for value in (True, "512", 512.0, 127, 4097, None):
+                with self.subTest(value=value):
+                    self.job["java_heap_mb"] = value
+                    with self.assertRaisesRegex(ValueError, "java_heap_mb"):
+                        self.invoke()
+            run.assert_not_called()
+        self.assertFalse(self.output.exists())
+
+    def test_invalid_program_or_delta_is_rejected_before_launcher(self):
+        with patch.object(launcher.subprocess, "run") as run:
+            for key, value in (("program", True), ("delta", True), ("delta", 0.0), ("delta", "invalid")):
+                with self.subTest(key=key, value=value), patch.dict(self.job, {key: value}):
+                    with self.assertRaises(ValueError):
+                        self.invoke()
+            run.assert_not_called()
+
+    def test_finite_address_space_is_preserved_and_rejected(self):
+        with patch.object(launcher.subprocess, "run") as run, patch.object(launcher.resource, "setrlimit") as set_limit:
+            for caps in ((256 * 1024 * 1024, -1), (-1, 1024 * 1024 * 1024)):
+                with self.subTest(caps=caps), patch.object(launcher.resource, "getrlimit", return_value=caps):
+                    with self.assertRaisesRegex(ValueError, "launch separately"):
+                        self.invoke()
+            run.assert_not_called()
+            set_limit.assert_not_called()
+
+    def test_scorer_lock_blocks_export_before_work(self):
+        with limits.identification_lock(), \
+                patch.object(launcher.resource, "getrlimit", return_value=(-1, -1)), \
+                patch.object(launcher.subprocess, "run") as run:
+            with self.assertRaisesRegex(ValueError, "Another identification job"):
+                self.invoke()
+            run.assert_not_called()
+        self.assertFalse(self.output.exists())
+
+    def test_failed_launcher_releases_shared_lock(self):
+        with patch.object(launcher.resource, "getrlimit", return_value=(-1, -1)), \
+                patch.object(launcher.subprocess, "run", side_effect=RuntimeError("failed launch")):
+            with self.assertRaisesRegex(RuntimeError, "failed launch"):
+                self.invoke()
+        with limits.identification_lock():
+            pass
 
 @unittest.skipUnless(os.environ.get("SAGA_GHIDRA_FIXTURE_GRAPH"),
                      "optional Ghidra synthetic fixture export not supplied")
