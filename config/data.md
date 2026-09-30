@@ -430,3 +430,25 @@ Movement literals retain their exact retail precision: the projectile predictor
 qword at `0x00762718` is `0.04000000283122063`, not mathematical 0.04.
 PC aggregate views remain partial unless complete owner extents are established;
 named fields and offset assertions do not by themselves establish full capacity.
+
+The hover/script closure adds reviewed argument-key strings, Hoth level and
+hover-state globals, lookup and animation callback slots, the retail identity
+matrix and hover separation qword. The terrain table at 0x0080364c contains 17
+12-byte records (204 bytes), supported by PC index bounds, access stride and its
+initializer. Only the first u32 is named `flags`; the remaining words retain
+neutral labels. Source initialization preserves the exact word values rather
+than guessing Android meanings.
+
+The animation scale table at 0x0097ae08 is represented by a 256-NUVEC source
+prefix: the evaluator accesses through slot 255. This establishes minimum
+accessed storage, not a complete original owner extent. Its CSV size stays blank,
+so it receives no mapping coverage or exact-data credit. Evaluator drafts are
+not linked while their scratch backing capacity remains unresolved. Do not
+replace the unknown scratch owner with a one-byte array: returning that address
+for real writes would create invalid source-object accesses.
+
+The repeat-SFX queue has 32 records of 16 bytes at 0x00924b18. Producer head
+wrapping with `& 0x1f` and the consumer's stride confirm capacity and fields:
+i16 ID, u8 state, i8 repeat count, two float delays and a position pointer.
+The head at 0x00924afc and the queue start zero-filled in the PC image. The
+Speeder Chase flag at 0x009253c4 is another verified zero-initialized i32 owner.

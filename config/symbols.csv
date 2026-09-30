@@ -22,6 +22,9 @@ address    , symbol                                                         , si
 0x0043b940 , _GameAISysStartFrame                                           , 467   , void __cdecl (AISYS *)
 0x0043c800 , _GameAISysSetGame                                              , 43    , void __cdecl (void)
 0x0043c830 , _GameAISysInit                                                 , 353   , void __cdecl (void)
+0x00440120 , _GetNamedGameObject                                            , 34    , "GAMEOBJECT *__cdecl (void *, char *)"
+0x004507b0 , _Action_PlaySfx                                                , 539   , "i32 __cdecl (void *, void *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x004568b0 , _GameAIScriptAddLevelSfx                                       , 255   , "void __cdecl (WORLDINFO *, NULISTHDR *)"
 0x004669e0 , _GizForceSFX_Configure                                         , 258   , "void __cdecl (WORLDINFO *, char *)"
 0x0046c7d0 , _GizmoPickups_SetOnOff                                         , 686   , void __cdecl (void)
 0x00470370 , _Grabber_Configure                                             , 691   , "void __cdecl (WORLDINFO *, char *)"
@@ -101,6 +104,7 @@ address    , symbol                                                         , si
 0x00495310 , _UpdateGameMenu                                                , 1070  , "void (void *, i32)"
 0x00495740 , _MenuEnterTitles                                               , 34    , void __cdecl (MENU *)
 0x00498320 , _VehicleTurnOrLoopOffset                                       , 342   , f32 __cdecl (GAMEOBJECT *)
+0x00498590 , _GetVehicleHoverHeight                                         , 792   , "f32 __cdecl (GAMEOBJECT *, f32 *)"
 0x004a56a0 , _BobaRocket_Move                                               , 1001  , "void __cdecl (PART_s *, f32)"
 0x004badd0 , _InitPanel                                                     , 106   , void __cdecl (i32)
 0x004c00c0 , _Shadow_SetMode                                                , 60    , void __cdecl (void)
@@ -376,6 +380,7 @@ address    , symbol                                                         , si
 0x00513990 , _AIScriptCopyConditions                                        , 401   , "void __cdecl (NULISTHDR *, NULISTHDR *, VARIPTR *, VARIPTR *)"
 0x00513b30 , _AIScriptCopyActions                                           , 388   , "void __cdecl (NULISTHDR *, NULISTHDR *, VARIPTR *, VARIPTR *)"
 0x00513f20 , _AIScriptBuildDerivedScript                                    , 536   , "i32 __cdecl (AISCRIPT_PC *, VARIPTR *, VARIPTR *, AISYS_PC *)"
+0x005147c0 , _AIParamToFloat                                                , 142   , "f32 __cdecl (AISCRIPTPROCESS_PC *, char *)"
 0x00514990 , _Condition_Timer                                               , 8     , "f32 __cdecl (void *, void *, void *, char *, void *)"
 0x005149a0 , _Condition_Random                                              , 5     , "f32 __cdecl (void *, void *, void *, char *, void *)"
 0x005149f0 , _Condition_AlwaysTrue                                          , 13    , "f32 __cdecl (void *, void *, void *, char *, void *)"
@@ -389,6 +394,9 @@ address    , symbol                                                         , si
 0x00516590 , _Action_SetFullPathSearch                                      , 119   , "i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
 0x00516bf0 , _Action_NoShadows                                              , 119   , "i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
 0x00517160 , _AISysBufferAlloc                                              , 74    , "void *__cdecl (VARIPTR *, VARIPTR *, u32)"
+0x0051a7c0 , _AISysCharacterSetPath                                         , 198   , "void __cdecl (AIPACKET_PC *, AIPATH_PC *)"
+0x0051b7f0 , _AISysFindRoute                                                , 151   , void __cdecl (AIPACKET_PC *)
+0x0051b890 , _AISysCharacterSetPathCnx                                      , 381   , "void __cdecl (AIPACKET_PC *, NUVEC *, AIPATHCNX_PC *, i32)"
 0x0052b3f0 , _xConditions                                                   , 1476  , void __cdecl (NUFPAR_PC *)
 0x0052b9c0 , _xActions                                                      , 749   , void __cdecl (NUFPAR_PC *)
 0x0052bdf0 , _xConditionMacro                                               , 206   , void __cdecl (NUFPAR_PC *)
@@ -412,6 +420,8 @@ address    , symbol                                                         , si
 0x00547ba0 , _ResetLevSfx                                                   , 36    , void __cdecl (WORLDINFO *)
 0x00547bd0 , _AddLevSfx                                                     , 223   , "void __cdecl (WORLDINFO *, NUVEC *, char *, i32)"
 0x00548690 , _UpdateLevelSfx                                                , 121   , "void __cdecl (WORLDINFO *, i32)"
+0x005487c0 , _PlayRepeatSfx                                                 , 209   , "void __cdecl (char *, i32, f32, i32, f32, NUVEC *)"
+0x005488a0 , _UpdateRepeatSfx                                               , 135   , void __cdecl (void)
 0x005489a0 , _NewAreaMusicChanges                                           , 11    , void __cdecl (void)
 0x005489b0 , _ActionFromQuiet                                               , 82    , i32 __cdecl (i32)
 0x00548a10 , _AmbientFromQuiet                                              , 65    , i32 __cdecl (i32)
@@ -736,6 +746,7 @@ address    , symbol                                                         , si
 0x005b4a50 , _NuMtxScale                                                    , 111   , "void __cdecl (NUMTX *, NUVEC *)"
 0x005b4ac0 , _NuMtxScaleU                                                   , 105   , "void __cdecl (NUMTX *, f32)"
 0x005b4b30 , _NuMtxPreScaleU                                                , 81    , "void __cdecl (NUMTX *, f32)"
+0x005b4b90 , _NuMtxGetScale                                                 , 149   , "NUVEC *__cdecl (NUVEC *, NUMTX *)"
 0x005b4c30 , _NuMtxPreScale                                                 , 85    , "void __cdecl (NUMTX *, NUVEC *)"
 0x005b4c90 , _NuMtxPreScaleX                                                , 33    , "void __cdecl (NUMTX *, f32)"
 0x005b4cf0 , _NuMtxRotateX                                                  , 224   , "void __cdecl (NUMTX *, NUANG)"
@@ -926,6 +937,8 @@ address    , symbol                                                         , si
 0x005e8430 , _NuOcclusionManagerBeginFrame                                  , 59    , void __cdecl (void)
 0x005e9300 , _NuAnimDataRead                                                , 688   , void* __cdecl (NUFILE)
 0x005e9650 , _NuSpecialGetAnimEndFrame                                      , 118   , f32 __cdecl (NUSPECIALHANDLE *special)
+0x005e96d0 , _NuAnimBuffEvaluate_3_QuatB                                    , 1720  , "void __cdecl (NUMTX *, ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *, ANI3_ROOT_CALLBACK_PC, NUVEC *, void *)"
+0x005e9d90 , _NuAnimBuffEvaluate_3                                          , 1325  , "void __cdecl (ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *, ANI3_ROOT_CALLBACK_PC, NUVEC *, void *)"
 0x005ea390 , _NuAnimCurve2SetApplyToMatrix_3                                , 234   , "void __cdecl (ANI3_HEADER_PC *, i32, f32, NUMTX *)"
 0x005ea660 , _NuSpecialUpdate                                               , 59    , void __cdecl (NUSPECIALHANDLE *)
 0x005eb250 , _NuQFntPrintCharW                                              , 1210  , "void __cdecl (VUFNT *, u16 *, u32)"
@@ -1139,6 +1152,7 @@ address    , symbol                                                         , si
 0x006df300 , _PCFrameCriticalSectionEnter_candidate                         , 13    , void __cdecl (void)
 0x006df310 , _PCFrameCriticalSectionLeave_candidate                         , 13    , void __cdecl (void)
 0x006e6950 , _memset                                                        ,       , "void *__cdecl (void *, int, size_t)"
+0x006e69d0 , __allshl                                                       , 31    , MSVC x86 compiler u64 left-shift helper (EDX:EAX; CL)
 0x006e69ef , _sprintf                                                       , 123   , "i32 __cdecl (char *, const char *, ...)"
 0x006e6b90 , __ftol2_sse                                                    , 28    ,
 0x006e6d90 , _memcpy                                                        ,       , "void *__cdecl (void *, const void *, size_t)"
@@ -1561,6 +1575,7 @@ address    , symbol                                                         , si
 0x00751640 , __real@40a00000                                                , 4     , const f32
 0x00751644 , __real@4e6e6b28                                                , 4     , const f32
 0x00751658 , __real@00000000                                                , 4     , const f32
+0x00751678 , _VehicleHoverHeightSeparationScale                             , 8     , const f64
 0x00751680 , __real@3fc99999a0000000                                        , 8     , const f64
 0x00751690 , _VehicleTurnPhaseOffset                                        , 8     , const f64
 0x00751698 , __real@3ff0000000000000                                        , 8     , f64
@@ -1593,6 +1608,7 @@ address    , symbol                                                         , si
 0x007517c0 , _NuTimeBarTop                                                  , 8     , const f64
 0x007518e4 , __real@3f400000                                                , 4     , const f32
 0x00751928 , _MoveSplineRunSpeedSentinel                                    , 8     , const f64
+0x00751928 , __real@41cdcd6500000000                                        , 8     , const f64
 0x00751948 , __real@41f00000                                                , 4     , const f32
 0x0075194c , __real@42700000                                                , 4     , const f32
 0x00751958 , __real@40e0000000000000                                        , 8     , const f64
@@ -1642,8 +1658,17 @@ address    , symbol                                                         , si
 0x00757714 , _AIScriptFalse                                                 , 6     , const char[6]
 0x00757734 , _GizmoDefaultOutputName                                        , 8     , char[8]
 0x007577b0 , _AreaConfigKeyword_character                                   , 10    , const char[10]
+0x00757800 , _AIScriptActionNameArgPrefix                                   , 6     , const char[6]
+0x00757854 , _ZArgPrefix                                                    , 3     , const char[3]
+0x00757858 , _YArgPrefix                                                    , 3     , const char[3]
+0x0075785c , _XArgPrefix                                                    , 3     , const char[3]
 0x007578a0 , __real@4066c16c20000000                                        , 8     , const f64
 0x007579a0 , __real@461c3f9a                                                , 4     , const f32
+0x00757f48 , _CharacterPosArgPrefix                                         , 15    , const char[15]
+0x00757f58 , _StartDelayArgPrefix                                           , 12    , const char[12]
+0x00757f64 , _RepeatDelayArgPrefix                                          , 10    , const char[10]
+0x00757f70 , _PlayCountArgPrefix                                            , 11    , const char[11]
+0x00758464 , _AIScriptParamPrefix                                           , 6     , const char[6]
 0x007586e0 , _NuTimeBarHorizontalTop                                        , 8     , const f64
 0x00758808 , __real@3fefffffe0000000                                        , 8     , const f64
 0x00758828 , _GizAIMessage_NameFormat                                       , 3     , const char[3]
@@ -2169,6 +2194,7 @@ address    , symbol                                                         , si
 0x00802f20 , ??_R0?AVFadeStill@@@8                                          , 24    ,
 0x008032c4 , _CheatSystemPtr                                                , 4     , CHEATSYSTEM_PC *
 0x008034c8 , _TerSurface                                                    , 384   , TERRAIN_SURFACE_PC[32]
+0x0080364c , _TerLayer                                                      , 204   , TERRAIN_LAYER_PC[17]
 0x00803784 , _Area                                                          , 4     , i32
 0x00803788 , _AREA_DEFAULTBONUSTIMETRIALTIME                                ,       , u16 [observed low word; full owner unknown]
 0x0080378c , _AREA_DEFAULTCHALLENGETIME                                     ,       , u16 [observed low word; full owner unknown]
@@ -2192,6 +2218,7 @@ address    , symbol                                                         , si
 0x00806370 , ??_R0?AVThingManager@@@8                                       , 27    ,
 0x0080638c , ??_R0?AVGameThingManager@@@8                                   , 31    ,
 0x008065bc , _NuWindQS                                                      , 4     , u32
+0x008065c0 , _ANI3_EVAL_IDENTITY_MATRIX                                     , 64    , const NUMTX
 0x00806680 , _NuMtxSetIdentityTemplate                                      , 64    , NUMTX
 0x008066c0 , _global_rand                                                   , 4     , NURAND
 0x008066c8 , _ang                                                           , 1026  , u16[513]
@@ -2463,6 +2490,7 @@ address    , symbol                                                         , si
 0x0087b118 , _DOGFIGHTA_LDATA                                               , 4     , LEVELDATA_PC *
 0x0087b134 , _KAMINOE_LDATA                                                 , 4     , LEVELDATA_PC *
 0x0087b1f4 , _DEATHSTARBATTLED_LDATA                                        , 4     , LEVELDATA_PC *
+0x0087b1fc , _HOTHBATTLEA_LDATA                                             , 4     , LEVELDATA_PC *
 0x0087b254 , _SPEEDERCHASEA_LDATA                                           , 4     , LEVELDATA_PC *
 0x0087b2ec , _LevelProgressData                                             , 4     , LEVEL_PROGRESS *
 0x0087b2f4 , _LevelChangesInArea                                            , 4     , i32
@@ -2478,6 +2506,7 @@ address    , symbol                                                         , si
 0x0087b750 , _opts_sfx_i                                                    , 4     , i32
 0x0087b760 , _startnewgame_initiated                                        , 4     , i32
 0x0087b764 , _startnewgame                                                  , 4     , i32
+0x0087b900 , _getvehiclehoverheight_hothbattlehack                          , 4     , i32
 0x0087b958 , _PANEL3DMULX                                                   , 4     , f32
 0x0087b9b8 , _PANEL3DMULY                                                   , 4     , f32
 0x0088058c , _legal_mtl                                                     , 4     , NUMTL *
@@ -2596,6 +2625,7 @@ address    , symbol                                                         , si
 0x00922250 , _aiscript_load_conditions                                      , 4     , NULISTHDR *
 0x00922254 , _aiscript_load_actions                                         , 4     , NULISTHDR *
 0x00922258 , _condition_has_no_goto                                         , 4     , i32
+0x00923924 , _GetNamedGameObjectCallback                                    , 4     , GAMEOBJECT_LOOKUP_CALLBACK_PC
 0x00924820 , _saveload_status                                               , 4     , i32
 0x00924880 , _PCInputWindow_candidate                                       , 4     , HWND
 0x00924884 , _PCInputInstance_candidate                                     , 4     , HINSTANCE
@@ -2620,8 +2650,10 @@ address    , symbol                                                         , si
 0x009248ec , _MusicInfo                                                     , 4     , nusound_filename_info_s *
 0x009248f4 , _LevMusicOtherAmbient                                          , 4     , i32
 0x009248f8 , _GameAudioStorage                                              , 512   , GAMEAUDIO_PC
+0x00924afc , _RepeatSfxQueueHead                                            , 4     , i32
 0x00924b00 , _LevMusicAmbient                                               , 4     , i32
 0x00924b08 , _LevMusicOtherAction                                           , 4     , i32
+0x00924b18 , _RepeatSfxQueue                                                , 512   , REPEAT_SFX_ENTRY_PC[32]
 0x00924d18 , _CurrentSFXTAB                                                 , 200   , SoundTable
 0x00924de4 , _AmbientPairTab                                                , 4     , i16 *
 0x00924de8 , _LevMusicAction                                                , 4     , i32
@@ -2773,6 +2805,9 @@ address    , symbol                                                         , si
 0x009737fe , _ForceEulerToQuat                                              , 1     , u8
 0x00973888 , _NuAnimDataBitCountInitialized                                 , 4     , i32
 0x0097388c , _nu2api_paused                                                 , 4     , f32
+0x00973894 , _AnimBuffEvalCB                                                , 4     , ANI3_EVAL_CALLBACK_PC
+0x00973898 , _AnimBuffEvalData                                              , 4     , void **
+0x0097389c , _AnimBuffEvalJoint                                             , 4     , i32 *
 0x009738a0 , _globalbuffer                                                  , 4     , ANI3_GLOBALBUFFER_PC *
 0x009738a4 , _nuapi_endframe_callbackfn                                     , 4     , void (*)(void)
 0x009738b0 , _nuspecial_const_alpha_enabled                                 , 4     , i32
@@ -2816,6 +2851,7 @@ address    , symbol                                                         , si
 0x00973fc4 , _nudlist_field_fc4                                             , 4     , i32
 0x00973fc8 , _nudlist_field_fc8                                             , 4     , u32
 0x00973fe4 , _nudlist_field_fe4                                             , 4     , u32
+0x0097ae08 , _ANI3_EVAL_SCALE_ARRAY                                         ,       , NUVEC[]
 0x0097bb54 , _nurndr_tritot_this_frame                                      , 4     , i32
 0x0097c1cc , _nudlist_stream_cursor                                         , 8     , VARIPTR
 0x00981c70 , _NuPrimCoordSystemStack                                        ,       , i32[]

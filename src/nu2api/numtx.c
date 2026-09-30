@@ -736,3 +736,10 @@ void __cdecl NuMtxMulR(NUMTX *m, NUMTX *m0, NUMTX *m1) {
         m->m33 = 1.0;
     }
 }
+
+NUVEC *__cdecl NuMtxGetScale(NUVEC *out, NUMTX *matrix) {
+    out->x = NuFsqrt(matrix->m00 * matrix->m00 + matrix->m01 * matrix->m01 + matrix->m02 * matrix->m02);
+    out->y = NuFsqrt(matrix->m10 * matrix->m10 + matrix->m11 * matrix->m11 + matrix->m12 * matrix->m12);
+    out->z = NuFsqrt(matrix->m20 * matrix->m20 + matrix->m21 * matrix->m21 + matrix->m22 * matrix->m22);
+    return out;
+}

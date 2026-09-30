@@ -188,6 +188,7 @@ extern "C" {
     char *NuBlankString = (char *)NuBlankStringValue;
     extern const f64 GameObjectNearFloorNoFloorHeight = 2000000.0;
     extern const f64 GameObjectNearFloorRadiusDivisor = 0.22499999403953552;
+    extern const f64 VehicleHoverHeightSeparationScale = 0.6000000238418579;
 #pragma const_seg(".rdata$AIScriptListFilename")
     extern const char AIScriptListFilename[11] = "script.txt";
 #pragma const_seg()
@@ -196,6 +197,33 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$AIScriptFileExtension")
     extern const char AIScriptFileExtension[5] = ".scp";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptActionNameArgPrefix")
+    extern const char AIScriptActionNameArgPrefix[6] = "name=";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayCountArgPrefix")
+    extern const char PlayCountArgPrefix[11] = "playcount=";
+#pragma const_seg()
+#pragma const_seg(".rdata$RepeatDelayArgPrefix")
+    extern const char RepeatDelayArgPrefix[10] = "repdelay=";
+#pragma const_seg()
+#pragma const_seg(".rdata$StartDelayArgPrefix")
+    extern const char StartDelayArgPrefix[12] = "startdelay=";
+#pragma const_seg()
+#pragma const_seg(".rdata$XArgPrefix")
+    extern const char XArgPrefix[3] = "x=";
+#pragma const_seg()
+#pragma const_seg(".rdata$YArgPrefix")
+    extern const char YArgPrefix[3] = "y=";
+#pragma const_seg()
+#pragma const_seg(".rdata$ZArgPrefix")
+    extern const char ZArgPrefix[3] = "z=";
+#pragma const_seg()
+#pragma const_seg(".rdata$CharacterPosArgPrefix")
+    extern const char CharacterPosArgPrefix[15] = "character_pos=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIScriptParamPrefix")
+    extern const char AIScriptParamPrefix[6] = "param";
 #pragma const_seg()
 #pragma const_seg(".rdata$NuBlankStringValue")
     extern const char NuBlankStringValue[2] = " ";
@@ -247,6 +275,45 @@ extern "C" {
     u8 ForceEulerToQuat;
 #pragma bss_seg()
     ANI3_GLOBALBUFFER_PC *globalbuffer;
+#pragma bss_seg(".bss$AnimBuffEvalCB")
+    ANI3_EVAL_CALLBACK_PC AnimBuffEvalCB;
+#pragma bss_seg()
+#pragma bss_seg(".bss$AnimBuffEvalData")
+    void **AnimBuffEvalData;
+#pragma bss_seg()
+#pragma bss_seg(".bss$AnimBuffEvalJoint")
+    i32 *AnimBuffEvalJoint;
+#pragma bss_seg()
+#pragma const_seg(".rdata$ANI3_EVAL_IDENTITY_MATRIX")
+    extern const NUMTX ANI3_EVAL_IDENTITY_MATRIX = {
+        1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+    };
+#pragma const_seg()
+#pragma bss_seg(".bss$ANI3_EVAL_SCALE_ARRAY")
+    NUVEC ANI3_EVAL_SCALE_ARRAY[256];
+#pragma bss_seg()
+#pragma bss_seg(".bss$GetNamedGameObjectCallback")
+    GAMEOBJECT_LOOKUP_CALLBACK_PC GetNamedGameObjectCallback;
+#pragma bss_seg()
+#pragma bss_seg(".bss$RepeatSfxQueueHead")
+    i32 RepeatSfxQueueHead;
+#pragma bss_seg()
+#pragma bss_seg(".bss$RepeatSfxQueue")
+    REPEAT_SFX_ENTRY_PC RepeatSfxQueue[32];
+#pragma bss_seg()
+#pragma data_seg(".data$TerLayer")
+    TERRAIN_LAYER_PC TerLayer[17] = {
+        {0x00000000, 0x0000ffff, 0x40000000}, {0x00000000, 0x0000ffff, 0x40000000},
+        {0x00000000, 0x0000ffff, 0x3f800000}, {0x00000001, 0x0000ffff, 0x3f800000},
+        {0x00000000, 0x0000ffff, 0x3f800000}, {0x00000020, 0x0000ffff, 0x3f800000},
+        {0x00000001, 0x0000ffff, 0x3f800000}, {0x00000000, 0x0000ffff, 0x3f800000},
+        {0x00000000, 0x0000ffff, 0x3f800000}, {0x00000000, 0x0000ffff, 0x3f800000},
+        {0x00000000, 0x0000ffff, 0x3f800000}, {0x00000000, 0x0000ffff, 0x3f800000},
+        {0x00000000, 0x0000ffff, 0x3f800000}, {0x00000000, 0x0000ffff, 0x3f800000},
+        {0x00000000, 0x0000ffff, 0x3f800000}, {0x00000000, 0x0000ffff, 0x3f800000},
+        {0x00000000, 0x0000ffff, 0x00000000},
+    };
+#pragma data_seg()
     const FLOWBOX_CALLBACKS_PC flowbox_callbacks[3] = {
         {ResetGizmoFlowBox, ProcessGizmoFlowBox, CheckOutputGizmoFlowBox},
         {NULL, ProcessConditionFlowBox, CheckOutputConditionFlowBox},
@@ -1010,6 +1077,15 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$HOTHBATTLE_ADATA")
     AREA_DATA_PC *HOTHBATTLE_ADATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$HOTHBATTLEA_LDATA")
+    LEVELDATA_PC *HOTHBATTLEA_LDATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$getvehiclehoverheight_hothbattlehack")
+    i32 getvehiclehoverheight_hothbattlehack;
+#pragma bss_seg()
+#pragma bss_seg(".bss$disable_narrow_socks")
+    i32 disable_narrow_socks;
 #pragma bss_seg()
 #pragma bss_seg(".bss$HOTHESCAPE_ADATA")
     AREA_DATA_PC *HOTHESCAPE_ADATA;

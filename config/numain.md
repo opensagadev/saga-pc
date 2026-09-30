@@ -417,3 +417,55 @@ extent; `xConst` is deliberately not implemented with Android's guessed capacity
 Next broad closures: the PC DirectSound voice manager and playback leaves;
 projectile Shoot/Add with verified networking and target fields; the per-file
 AI parser and its register-ABI integration. Keep instruction tuning secondary.
+
+The next structural batch closes the script-to-sound parameter path and the
+vehicle hover calculation. `GameAIScriptAddLevelSfx` traverses the real script,
+state and action lists. `Action_PlaySfx` uses the PC parameter keys, the actual
+`AIParamToFloat` conversion and nullable callback-based `GetNamedGameObject`
+wrapper. The script processor stores four float parameters at +0x14; the timer
+remains at +0x24. The `param` substring conversion passes the match pointer to
+NuAToI, without skipping the prefix, as retail does. Do not silently repair this
+PC behavior using Android intent. Retail also forms the collision-position
+address after character lookup without a null guard; startup callback registration
+is still incomplete, so this is not evidence of a playable source build.
+
+The three ordinary-ABI path helpers at 0x0051a7c0, 0x0051b7f0 and 0x0051b890 now
+share the asserted packet layout. Existing packet flags remain at +0x1e8 while
+route masks, selection and path state occupy +0x130..+0x17f; capability flags
+are at +0x1f4. Keep the genuine compiler-generated 64-bit shift and its 31-byte
+`__allshl` binding rather than declaring that register-ABI helper as cdecl.
+
+`GetVehicleHoverHeight` includes both player-separation gates, level/character
+fallbacks, Speeder Chase and the Hoth terrain predicate. The terrain index is
+signed at object+0x283. Retail 0x0055ee8e..0x0055eeb2 checks it against 17 before
+accessing the same 12-byte table used by the hover function. This closes the
+terrain-table identity and removes the previous Hoth marker. The hover function
+itself retains retail's lack of a bounds guard in that branch.
+
+The two animation evaluators at 0x005e96d0 (1720 bytes) and 0x005e9d90 (1325
+bytes) remain inventory entries, with uncommitted implementation drafts under
+ignored build/analysis/. Direct PC loops establish joint stride 0x60, bind matrix
+at +0x00 and parent byte at +0x50. A guessed 0x50-byte record was corrected before
+landing evaluator code. Their scratch allocation dependency is not ready: the
+cursor at 0x00827730 initially points to 0x02976d00, but complete backing capacity
+is unresolved. Observed 0x948 and nested 0xd0 requests establish only a minimum
+0xa20 live prefix, not the maximum needed by dynamic callers. Do not implement
+this allocator over a one-byte anchor or infer its capacity from adjacent owners.
+`NuMtxGetScale` is independently implemented with the PC output-pointer ABI.
+
+The next connected targets are the DirectSound voice manager/playback methods,
+`AIPathNodeUpdatePos` (683-byte complete extent) and `WithinConnection` (1532
+bytes; still depends on the numeric helper at 0x00512900), and the bridge family.
+Retained bridge research verifies Init/Remove/Create/Update/Draw spans and eight
+0xb0c-byte records; Create's 16 stack slots still need parameter-order review.
+Reuse these bundles before assigning implementation. Keep instruction tuning
+secondary to transferring these complete dependency families.
+
+Repeat-SFX producer and consumer are reconstructed together: one-shot calls
+bypass the queue; delayed/repeated requests use the 32-entry ring. `UpdateRepeatSfx`
+at 0x005488a0 (135 bytes) advances states 1/3 using FRAMETIME, dispatches state 2
+through PC PlaySfxById, decrements the signed remaining count and either resets
+or schedules the next interval. Android's additional GameAudio wrapper at this
+point is absent from the PC call and is not copied. Physical DirectSound playback
+still remains a separate incomplete dependency; queue reconstruction does not
+establish working sound or a playable game.

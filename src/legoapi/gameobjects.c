@@ -64,6 +64,90 @@ extern u16 GameObjectRotationAtstId;
 extern i32 VehicleArea;
 extern u16 temp_xrot;
 extern u16 temp_zrot;
+extern i32 disable_narrow_socks;
+
+extern const f64 VehicleHoverHeightSeparationScale;
+extern i32 getvehiclehoverheight_hothbattlehack;
+
+f32 __cdecl GetVehicleHoverHeight(GAMEOBJECT *object, f32 *separation_offset) {
+    GAMEOBJECT *player0 = (GAMEOBJECT *)Player[0];
+    GAMEOBJECT *player1 = (GAMEOBJECT *)Player[1];
+    WORLDINFO *world = WORLD;
+    LEVELDATA_PC *level = world->current_level;
+    f32 height = object->hover_height_override;
+    i32 separate;
+
+    if ((f64)height == MoveSplineRunSpeedSentinel) {
+        height = level->hover_height;
+        if (height == 0.0f) {
+            height = object->character_data->game_character->field_028;
+            if (object->id == id_SPEEDERBIKE && level == SPEEDERCHASEA_LDATA && disable_narrow_socks != 0) {
+                height = (f32)((f64)height * NuQFntHalfScale);
+            }
+        }
+    }
+
+    if (level == SPEEDERCHASEA_LDATA) {
+        separate = disable_narrow_socks == 0 && object->field_280 != 0xff &&
+                   object->movement_spline_position.spline == NULL && player0 != NULL &&
+                   player0->takeover_source != NULL && player0->id == id_SPEEDERBIKE && player1 != NULL &&
+                   player1->takeover_source != NULL && player0->id == player1->id;
+    } else {
+        separate = (object->flags_1fc & 0x80) != 0 && player0 != NULL &&
+                   (player0->character_data->model_flags & 0x2000) != 0 &&
+                   (((player0->flags_1fc & 0x80) != 0) || player0->character_context == 0x24) && player1 != NULL &&
+                   (player1->character_data->model_flags & 0x2000) != 0 &&
+                   (((player1->flags_1fc & 0x80) != 0) || player1->character_context == 0x24);
+    }
+
+    if (separate) {
+        f32 combined_height =
+            (f32)((f64)(player0->bounds_half_height + player1->bounds_half_height) * VehicleHoverHeightSeparationScale);
+        f32 combined_radius = player0->bounds_radius + player1->bounds_radius;
+        f32 inner_distance = combined_radius * combined_radius;
+        f32 outer_radius = (f32)((f64)combined_radius * NuTimeBarColumnStep);
+        f32 outer_distance = outer_radius * outer_radius;
+        f32 distance = NuVecXZDistSqr(&player0->position, &player1->position, NULL);
+        f32 blend;
+        f32 offset;
+        f32 adjusted_height;
+        f32 correction = 0.0f;
+
+        if (distance < inner_distance) {
+            blend = 1.0f;
+        } else if (distance < outer_distance) {
+            blend = 1.0f - (distance - inner_distance) / (outer_distance - inner_distance);
+        } else {
+            blend = 0.0f;
+        }
+
+        offset = blend * combined_height;
+        adjusted_height = height - offset;
+        if (adjusted_height < offset) {
+            correction = offset - adjusted_height;
+        }
+        if (player0 == object) {
+            adjusted_height = height + offset;
+            if (separation_offset != NULL) {
+                *separation_offset = offset;
+            }
+        } else if (separation_offset != NULL) {
+            *separation_offset = -offset;
+        }
+        height = adjusted_height + correction;
+        level = world->current_level;
+    } else if (separation_offset != NULL) {
+        *separation_offset = 0.0f;
+    }
+
+    if (level == HOTHBATTLEA_LDATA && (TerLayer[object->field_283].flags & 1) != 0) {
+        height = 0.0f;
+        getvehiclehoverheight_hothbattlehack = 1;
+    } else {
+        getvehiclehoverheight_hothbattlehack = 0;
+    }
+    return height;
+}
 
 u16 __cdecl SeekRot(u16 current, u16 target, f32 speed);
 
@@ -271,4 +355,17 @@ void __cdecl GameObjectOrigin(GAMEOBJECT *object) {
     object->collision_origin.z = z;
     object->ai_terrain_origin = object->collision_origin;
     STUBBED_NAMED(GameObjectOrigin_ContextTerrainAdjustment);
+}
+
+GAMEOBJECT *__cdecl GetNamedGameObject(void *sys, char *name) {
+    GAMEOBJECT **result;
+
+    if (GetNamedGameObjectCallback == NULL) {
+        return NULL;
+    }
+    result = GetNamedGameObjectCallback(sys, name);
+    if (result == NULL) {
+        return NULL;
+    }
+    return *result;
 }

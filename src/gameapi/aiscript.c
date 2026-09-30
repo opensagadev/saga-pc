@@ -39,6 +39,34 @@ void __cdecl xConditionMacro(NUFPAR_PC *parser);
 void __cdecl xActionMacro(NUFPAR_PC *parser);
 void __cdecl xRefScript(NUFPAR_PC *parser);
 
+f32 __cdecl AIParamToFloat(AISCRIPTPROCESS_PC *processor, char *param) {
+    char *cursor;
+    u32 index;
+
+    if (param == NULL) {
+        return 0.0f;
+    }
+
+    if (processor != NULL) {
+        cursor = NuStrIStr(param, (char *)AIScriptParamPrefix);
+        if (cursor != NULL) {
+            index = (u32)NuAToI(cursor);
+            if (index <= 3) {
+                return processor->params[index];
+            }
+        } else if (processor->script != NULL) {
+            for (index = 0; index < 4; ++index) {
+                if (processor->script->params[index].name != NULL &&
+                    NuStrICmp(processor->script->params[index].name, param) == 0) {
+                    return processor->params[index];
+                }
+            }
+        }
+    }
+
+    return NuAToF(param);
+}
+
 AISCRIPT_PC *__cdecl AIScriptFind(AISYS_PC *sys, const char *name, i32 can_use_default, i32 check_level_scripts,
                                   i32 check_global_scripts) {
     AISCRIPT_PC *script;
