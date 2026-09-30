@@ -1,5 +1,17 @@
 #include "saga.h"
 
+i32 __cdecl LevelObject_FindIndexFromName(char *name) {
+    i32 i;
+    if (ObjTabList != NULL && LEVELOBJECTCOUNT > 0) {
+        for (i = 0; i < LEVELOBJECTCOUNT; ++i) {
+            if (NuStrICmp(ObjTabList[i].name, name) == 0) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
 typedef void(__cdecl *LEVELSETDEFAULTS_PC)(LEVELDATA_PC *level);
 
 #define LEVEL_BYTE_CALLBACK(name, field)                                                                               \

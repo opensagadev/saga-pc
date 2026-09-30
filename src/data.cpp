@@ -567,8 +567,6 @@ extern "C" {
     i32 levspl_i_startcam = -1;
     LEVELDATA_PC *KAMINOE_LDATA;
     LEVELDATA_PC *DOGFIGHTA_LDATA;
-    NUSPECIALHANDLE LevHSpecial_50;
-    NUSPECIALHANDLE LevHSpecial_51;
     void *game_cutscenes_cutscene;
     void *game_cutscenes_podrace_pod_explode;
     void *game_cutscenes_podrace_out_of_time;
@@ -3231,5 +3229,335 @@ extern "C" {
 #pragma data_seg()
 #pragma bss_seg(".bss$MAGNETOFFSET")
     f32 MAGNETOFFSET;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$Default_ADDPART")
+    ADDPART_PC Default_ADDPART = {
+        0,                                    // matrix
+        0,                                    // position
+        0,                                    // velocity
+        0,                                    // owner
+        0,                                    // recipient
+        0.10000000149011612f,                 // field_14
+        0.10000000149011612f,                 // field_18
+        -5.0f,                                // gravity
+        0.75f,                                // field_20
+        0,                                    // special
+        -1,                                   // part_id
+        0x00000000u,                          // flags
+        0,                                    // callback_30
+        0,                                    // callback_34
+        0,                                    // callback_38
+        0,                                    // callback_3c
+        0,                                    // callback_40
+        0,                                    // callback_44
+        0,                                    // callback_48
+        0,                                    // callback_4c
+        0,                                    // callback_50
+        0,                                    // callback_54
+        -1,                                   // effect_id_58
+        0,                                    // debris_handle
+        -1,                                   // effect_id_60
+        -1,                                   // effect_id_64
+        60.0f,                                // field_68
+        60.0f,                                // field_6c
+        -1,                                   // effect_id_70
+        -1,                                   // effect_id_74
+        -1,                                   // effect_id_78
+        1.0f,                                 // effect_scale
+        0,                                    // lighting_handle
+        -1,                                   // lighting_id
+        2000000.0f,                           // field_88
+        0.01666666753590107f,                 // time_step
+        0xffffffffu,                          // hostility_group
+        0,                                    // lighting_data
+        1.0f,                                 // lighting_scale_x
+        1.0f,                                 // lighting_scale_y
+        1.0f,                                 // lighting_scale_z
+        0.0f,                                 // field_a4
+        {0x0u, 0x0u, 0x0u, 0x0u, 0x0u, 0x0u}, // field_a8
+        1.0f,                                 // field_c0
+        0,                                    // field_c4
+        {0, 0, 0},                            // padding_c5
+    };
+#pragma data_seg()
+
+#pragma bss_seg(".bss$Part")
+    PART_PC *Part;
+#pragma bss_seg()
+#pragma data_seg(".data$MAXPARTS")
+    i32 MAXPARTS = 32;
+#pragma data_seg()
+#pragma data_seg(".data$part_slot_cursor")
+    i32 part_slot_cursor = -1;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$PreparingForSpecialMoveFn")
+    AI_PREPARING_SPECIAL_MOVE_PC PreparingForSpecialMoveFn;
+#pragma bss_seg()
+#pragma data_seg(".data$new_retreat")
+    i32 new_retreat = 1;
+#pragma data_seg()
+#pragma data_seg(".data$ai_moveradius")
+    f32 ai_moveradius = 0.10000000149011612f;
+#pragma data_seg()
+#pragma data_seg(".data$AIMovementInstructionPositiveThreshold")
+    f32 AIMovementInstructionPositiveThreshold = 0.5f;
+#pragma data_seg()
+#pragma data_seg(".data$AIMovementInstructionNegativeThreshold")
+    f32 AIMovementInstructionNegativeThreshold = -0.5f;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$LevHSpecial")
+    NUSPECIALHANDLE LevHSpecial[88];
+#pragma bss_seg()
+#pragma bss_seg(".bss$LevGizObst")
+    GIZOBSTACLE *LevGizObst[8];
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$CarWashHack")
+    GAMEOBJECT *CarWashHack;
+#pragma bss_seg()
+#pragma bss_seg(".bss$IDLESPEEDINNARROWSOCKSONLY")
+    i32 IDLESPEEDINNARROWSOCKSONLY;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VehicleAreaRememberSpeed")
+    f32 VehicleAreaRememberSpeed;
+#pragma bss_seg()
+#pragma data_seg(".data$VehicleCollisionDamageSpeedFraction")
+    f32 VehicleCollisionDamageSpeedFraction = 0.6000000238418579f;
+#pragma data_seg()
+#pragma data_seg(".data$VehicleCollisionFrontAngle")
+    i32 VehicleCollisionFrontAngle = 45;
+#pragma data_seg()
+#pragma data_seg(".data$VehicleCollisionRearAngle")
+    i32 VehicleCollisionRearAngle = 10;
+#pragma data_seg()
+#pragma data_seg(".data$VEHICLE_WATER_SPEED_MUL")
+    f32 VEHICLE_WATER_SPEED_MUL = 0.699999988079071f;
+#pragma data_seg()
+#pragma data_seg(".data$VEHICLE_SUBMARINE_DEPTH")
+    f32 VEHICLE_SUBMARINE_DEPTH = 0.20000000298023224f;
+#pragma data_seg()
+#pragma data_seg(".data$VEHICLE_TUBE_UPSPEED")
+    f32 VEHICLE_TUBE_UPSPEED = 5.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_SLOWSPEED")
+    f32 PODSPRINT_SLOWSPEED = 15.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_CRUISESPEED")
+    f32 PODSPRINT_CRUISESPEED = 25.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_RUNSPEED")
+    f32 PODSPRINT_RUNSPEED = 35.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_ACCELTIME")
+    f32 PODSPRINT_ACCELTIME = 0.5f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_DECELTIME")
+    f32 PODSPRINT_DECELTIME = 0.25f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_VELOCITYSEEK")
+    f32 PODSPRINT_VELOCITYSEEK = 8.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_TURNRATE")
+    f32 PODSPRINT_TURNRATE = 1.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_HIGH_TURNRATE")
+    f32 PODSPRINT_HIGH_TURNRATE = 1.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$MOSEISLEYB_LDATA")
+    LEVELDATA_PC *MOSEISLEYB_LDATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DEATHSTAR2BATTLEE_LDATA")
+    LEVELDATA_PC *DEATHSTAR2BATTLEE_LDATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DEATHSTAR2BATTLEF_LDATA")
+    LEVELDATA_PC *DEATHSTAR2BATTLEF_LDATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DEATHSTAR2BATTLEG_LDATA")
+    LEVELDATA_PC *DEATHSTAR2BATTLEG_LDATA;
+#pragma bss_seg()
+#pragma data_seg(".data$id_LANDSPEEDER")
+    i16 id_LANDSPEEDER = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_WOOKIEFLYER")
+    i16 id_WOOKIEFLYER = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_IMPERIALGUARD")
+    i16 id_IMPERIALGUARD = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_GRIEVOUS")
+    i16 id_GRIEVOUS = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_THEEMPEROR")
+    i16 id_THEEMPEROR = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_BOB")
+    i16 id_BOB = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_DOOKU")
+    i16 id_DOOKU = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_DARTHMAUL")
+    i16 id_DARTHMAUL = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_ANAKINPADAWAN")
+    i16 id_ANAKINPADAWAN = -1;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$TURNTIME")
+    f32 TURNTIME = 1.0f;
+#pragma data_seg()
+#pragma const_seg(".rdata$TurnLoopSfx")
+    extern const char TurnLoopSfx[17] = "XWing_LoopDeLoop";
+#pragma const_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$BladeTab")
+    BLADE_PC BladeTab[4] = {
+        {101, 223, 1, 59, 64, {255, 31, 0}, {0, 0, 0}},
+        {103, 221, 2, 60, 65, {30, 191, 15}, {0, 0, 0}},
+        {105, 225, 3, 61, 66, {0, 191, 255}, {0, 0, 0}},
+        {107, 227, 4, 62, 67, {200, 0, 255}, {0, 0, 0}},
+    };
+#pragma data_seg()
+#pragma data_seg(".data$GameDeflectPartGravity")
+    f32 GameDeflectPartGravity = -2.5f;
+#pragma data_seg()
+#pragma data_seg(".data$GameDeflectPartSpeed")
+    f32 GameDeflectPartSpeed = 5.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PARTSCALEUPTIME")
+    f32 PARTSCALEUPTIME = 0.5f;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$podsprint")
+    PODSPRINT_PC podsprint;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NarrowSockException")
+    NARROWSOCKEXCEPTION_PC *NarrowSockException;
+#pragma bss_seg()
+#pragma data_seg(".data$id_BASKETCANNON")
+    i16 id_BASKETCANNON = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$ScriptProcessFirstTimeActionFn")
+    AI_SCRIPT_FIRST_ACTION_PC ScriptProcessFirstTimeActionFn;
+#pragma bss_seg()
+#pragma bss_seg(".bss$current_packet")
+    AIPACKET_PC *current_packet;
+#pragma bss_seg()
+#pragma bss_seg(".bss$current_processor")
+    AISCRIPTPROCESS_PC *current_processor;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$SaberSparksTimer")
+    f32 SaberSparksTimer;
+#pragma bss_seg()
+#pragma const_seg(".rdata$SaberSparksName")
+    extern const char SaberSparksName[12] = "SaberSparks";
+#pragma const_seg()
+#pragma bss_seg(".bss$GameParamToFloatFn")
+    AI_GAME_PARAM_TO_FLOAT_PC GameParamToFloatFn;
+#pragma bss_seg()
+#pragma const_seg(".rdata$AIExpressionRandName")
+    extern const char AIExpressionRandName[5] = "Rand";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIExpressionTrueName")
+    extern const char AIExpressionTrueName[5] = "true";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIExpressionMaxName")
+    extern const char AIExpressionMaxName[4] = "max";
+#pragma const_seg()
+#pragma data_seg(".data$rocket_speed")
+    f32 rocket_speed = 1.2000000476837158f;
+#pragma data_seg()
+#pragma data_seg(".data$rocket_lock_distance")
+    f32 rocket_lock_distance = 1.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$GUNSHIPA_LDATA")
+    LEVELDATA_PC *GUNSHIPA_LDATA;
+#pragma bss_seg()
+#pragma const_seg(".rdata$AICharacterInitialiseName")
+    extern const char AICharacterInitialiseName[11] = "Initialise";
+#pragma const_seg()
+#pragma bss_seg(".bss$perm_debrissys")
+    APIDEBRISSYS_PC *perm_debrissys;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$id_TIEFIGHTER")
+    i16 id_TIEFIGHTER = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_XWING")
+    i16 id_XWING = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_STAP")
+    i16 id_STAP = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_STAP2")
+    i16 id_STAP2 = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$AIActionParseSpeedFn")
+    AI_PARSE_SPEED_PC AIActionParseSpeedFn;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GetViewRangeFn")
+    AI_CHARACTER_DISTANCE_PC GetViewRangeFn;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GetHearDistanceFn")
+    AI_CHARACTER_DISTANCE_PC GetHearDistanceFn;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GetMaxViewHeightFn")
+    AI_CHARACTER_DISTANCE_PC GetMaxViewHeightFn;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GetMinViewHeightFn")
+    AI_CHARACTER_DISTANCE_PC GetMinViewHeightFn;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GetOriginPositionFn")
+    AI_ORIGIN_POSITION_PC GetOriginPositionFn;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CHARPAK")
+    i32 CHARPAK;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$LevGizmo")
+    GIZMO_PC *LevGizmo[12];
+#pragma bss_seg()
+#pragma bss_seg(".bss$Explosions")
+    EXPLOSION_PC Explosions[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$i_explosion")
+    i32 i_explosion;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShadowMode")
+    i32 ShadowMode;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CheckLostDataFn")
+    CHECK_LOST_DATA_PC CheckLostDataFn;
+#pragma bss_seg()
+// Reconstruction backing: 64 KiB source bound plus two emitted terminators.
+// The original owner capacity remains unknown; the CSV extent intentionally stays blank.
+#pragma bss_seg(".bss$ConfigBuffer")
+    char ConfigBuffer[0x10002];
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$SURFACEBITS_DUST")
+    u16 SURFACEBITS_DUST;
 #pragma bss_seg()
 }

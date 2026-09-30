@@ -55,6 +55,12 @@ class FadeSystem : public FADEINFO_s {
 
 STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
 
+extern "C" {
+#pragma bss_seg(".bss$FadeSys")
+    FadeSystem FadeSys;
+#pragma bss_seg()
+}
+
 extern i32 fade_draw_suppressed;
 extern f32 FRAMETIME;
 

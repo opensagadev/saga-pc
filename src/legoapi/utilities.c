@@ -41,3 +41,16 @@ i32 __cdecl LineIntersectXY(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, NUVEC *first
     }
     return t >= 0.0f && t <= 1.0f && u >= 0.0f && u <= 1.0f;
 }
+
+i32 __cdecl SphereSphereOverlapScaleY(NUVEC *position_a, f32 radius_a, f32 y_radius_a, NUVEC *position_b, f32 radius_b,
+                                      f32 y_radius_b) {
+    f32 dx = position_b->x - position_a->x;
+    f32 dy = position_b->y - position_a->y;
+    f32 dz = position_b->z - position_a->z;
+    f32 radius;
+    if (radius_b != y_radius_b || radius_a != y_radius_a) {
+        dy *= (radius_b + radius_a) / (y_radius_b + y_radius_a);
+    }
+    radius = radius_b + radius_a;
+    return dx * dx + dy * dy + dz * dz <= radius * radius;
+}

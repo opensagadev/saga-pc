@@ -155,3 +155,36 @@ avoids making every agent wait for the aggregate validation lane. All agents use
 GPT-6.1 Sol without nested delegation. The continuous objective prioritizes new
 whole-PC compared bytes and fuzzy gain, with verified checkpoints roughly every
 30 minutes rather than a fixed number of tiny exact matches.
+
+## Third verified structural comparison
+
+The next frozen source wave adds **66,526 unique compared original code bytes**,
+reaching **276,919** and passing the 250 KB milestone. Native objdiff compares
+276,974 bytes including the unchanged 55-byte alias, with 59.16157% similarity.
+Whole-PC fuzzy coverage increases **3.461923% → 4.718974%** (+1.257051 percentage
+points, 43,635.32 additional similarity-weighted original bytes). Exact code
+increases 7,208 bytes to **40,841 / 3,471,246 (1.176552%)**: 132 new exact functions,
+721 total, with no previous exact function lost. Image mapping reaches
+**835,186 / 40,067,072 (2.084470%)**, an increase of 92,252 known original bytes.
+
+The character configuration closure contributes over 20 KB, with its real
+callback table, parser state and loader providers. Other broad releases include
+AI movement/retreat drivers, script runtime and character processing, vehicle
+movement, object lifecycle, and a typed particle constructor. The main agent
+implements the constructor/math/API/query and file-pack loading closures while
+integrating reviewed source, data, fields and maps from eight parallel Sol agents.
+
+Partial source remains visible: AI networking notification, selected lifecycle
+and particle effects, damage/debris actions, nested gizmo destruction and parser
+diagnostics have explicit call-site markers. Large partial lifecycle bodies score
+poorly; these full comparisons remain in the denominator. Successful source-only
+EXE linking does not establish playable gameplay or completed NuMain. Two former
+12-byte LevHSpecial aliases are now views into one exact 1,056-byte array; their
+old inventory rows remain, but there are no duplicated source owners.
+
+Next wave prepares takeover/tag/rider logic, ordinary AI actions and path/circle
+instructions, socket configuration/geometry and last-safe/Buck dependencies.
+Reviewers verify identities and full extents while source owners prepare scratch
+C; the root integrates field cohorts before production release. Continue the
+active structural objective and regular verified commits rather than stopping at
+this milestone or tuning the already-compared functions.

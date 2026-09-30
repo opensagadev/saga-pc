@@ -323,17 +323,50 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
 void __cdecl GameObjectOrigin(GAMEOBJECT *object) {
     f32 x;
     f32 z;
+    CHARACTER_MODEL_LAYERS_PC *model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
+    PLAYERCHARACTERCONFIG_PC *config;
+    i32 joint;
     object->flags_1f8 |= 0x100;
     if (object->use_model_origin != 0) {
-        STUBBED_NAMED(GameObjectOrigin_ModelJointSelection);
-    } else {
-        object->flags_1f8 ^= 0x100;
-        object->collision_position.x = object->position.x + object->previous_velocity.x * FRAMETIME;
-        object->collision_position.y = object->position.y + object->previous_velocity.y * FRAMETIME;
-        object->collision_position.z = object->position.z + object->previous_velocity.z * FRAMETIME;
-        object->collision_position.y +=
-            (object->character_bottom + object->character_top) * object->origin_scale * 0.5f;
+        config = object->character_data->game_character;
+        joint = config->model_origin_joint;
+        if (joint != -1 && model != NULL && model->points_of_interest[joint] != NULL) {
+            if ((object->flags_e24 & 8) != 0) {
+                object->collision_position.x =
+                    object->locator_matrices[joint].m30 + object->previous_velocity.x * FRAMETIME;
+                object->collision_position.y =
+                    (f32)((f64)(object->locator_matrices[joint].m31 + object->previous_velocity.y * FRAMETIME) +
+                          (f64)((object->character_bottom + object->character_top) * object->origin_scale) * 0.5);
+                object->collision_position.z =
+                    object->locator_matrices[joint].m32 + object->previous_velocity.z * FRAMETIME;
+            } else {
+                object->collision_position.x = 0.0f;
+                object->collision_position.y = -object->character_bottom;
+                object->collision_position.z = 0.0f;
+                NuVecMtxRotate(&object->collision_position, &object->collision_position, &object->transform);
+                NuVecAdd(&object->collision_position, &object->collision_position, &object->position);
+            }
+            object->collision_position.x += object->previous_velocity.x * FRAMETIME;
+            object->collision_position.y += object->previous_velocity.y * FRAMETIME;
+            object->collision_position.z += object->previous_velocity.z * FRAMETIME;
+            goto origin_ready;
+        }
+        joint = config->collision_origin_joint;
+        if (object->origin_scale_override == 1.0f && joint != -1 && model->points_of_interest[joint] != NULL &&
+            object->origin_joint_ready != 0) {
+            object->collision_position.x = object->locator_matrices[joint].m30;
+            object->collision_position.y = object->locator_matrices[joint].m31;
+            object->collision_position.z = object->locator_matrices[joint].m32;
+            goto origin_ready;
+        }
     }
+    object->flags_1f8 ^= 0x100;
+    object->collision_position.x = object->position.x + object->previous_velocity.x * FRAMETIME;
+    object->collision_position.y =
+        (f32)((f64)(object->position.y + object->previous_velocity.y * FRAMETIME) +
+              (f64)((object->character_bottom + object->character_top) * object->origin_scale) * 0.5);
+    object->collision_position.z = object->position.z + object->previous_velocity.z * FRAMETIME;
+origin_ready:
     x = object->position.x + object->previous_velocity.x * FRAMETIME;
     z = object->position.z + object->previous_velocity.z * FRAMETIME;
     object->collision_min.x = object->collision_position.x - object->bounds_radius;
@@ -397,7 +430,7 @@ GAMEOBJECT *__cdecl FindGameObject(i32 character_id, u32 required_flags, i32 ali
 }
 
 GAMEOBJECT *__cdecl GetNamedGameObject(void *sys, char *name) {
-    GAMEOBJECT **result;
+    APIOBJECT_PC *result;
 
     if (GetNamedGameObjectCallback == NULL) {
         return NULL;
@@ -406,7 +439,7 @@ GAMEOBJECT *__cdecl GetNamedGameObject(void *sys, char *name) {
     if (result == NULL) {
         return NULL;
     }
-    return *result;
+    return (GAMEOBJECT *)result->owner;
 }
 
 void __cdecl MakeBaddiesForgetAboutParty(i32 check_hostility) {
@@ -727,4 +760,733 @@ f32 __cdecl GetCharacterGoalSpeed(APIOBJECT_PC *object) {
         default:
             return 0.0f;
     }
+}
+
+static i32 GetBladeJoints(GAMEOBJECT *object, i32 blade, i32 joints[2], i32 *streak_blade) {
+    i32 local_blade;
+    PLAYERCHARACTERCONFIG_PC *data;
+    if (object->origin_joint_ready == 0 || (object->flags_e20 & 0x08000000) == 0) {
+        return 0;
+    }
+    if (streak_blade == NULL) {
+        streak_blade = &local_blade;
+    }
+    *streak_blade = blade;
+    data = object->character_data->game_character;
+    joints[0] = data->streak_joints[blade][0];
+    if (joints[0] == -1 ||
+        ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->points_of_interest[joints[0]] == NULL) {
+        return 0;
+    }
+    data = object->character_data->game_character;
+    joints[1] = data->streak_joints[*streak_blade][1];
+    if (joints[1] == -1 ||
+        ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->points_of_interest[joints[1]] == NULL) {
+        return 0;
+    }
+    return 1;
+}
+
+static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
+    i8 context;
+    i32 joints[2];
+    i32 streak_blade;
+    CHARACTER_MODEL_LAYERS_PC *model;
+    PLAYERCHARACTERCONFIG_PC *data;
+    i32 joint_a;
+    i32 joint_b;
+    NUVEC points[3];
+    NUVEC difference;
+    NUVEC minimum;
+    NUVEC maximum;
+    f32 length;
+    f32 extent;
+    GAMEOBJECT *nearest;
+    i32 nearest_point;
+    f32 nearest_distance;
+    i32 i;
+    if (object->weapon_scale < 1.0f)
+        return;
+    context = object->character_context;
+    if ((context == 0 && (object->action_movement_state == 4 || object->action_movement_state == 2)) || context == 4 ||
+        context == 16 || (context == 13 && object->id != id_THEEMPEROR) || context == 14 ||
+        (context == 31 && object->field_7b3 == 1) ||
+        ((object->flags_1fc_word & 0x80) != 0 && Cheat_PowerUpActive((i8)object->field_280))) {
+        object->sabre_flags |= 2;
+    }
+    if (object->id == id_IMPERIALGUARD)
+        object->sabre_flags &= ~3;
+    if (object->sabre_flags == 0)
+        return;
+    if (!GetBladeJoints(object, blade, joints, &streak_blade))
+        return;
+    model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
+    data = object->character_data->game_character;
+    joint_a = joints[0];
+    joint_b = joints[1];
+    object->blade_states[blade] = -1;
+    points[0].x = object->locator_matrices[joint_a].m30;
+    points[0].y = object->locator_matrices[joint_a].m31;
+    points[0].z = object->locator_matrices[joint_a].m32;
+    points[1].x = object->locator_matrices[joint_b].m30;
+    points[1].y = object->locator_matrices[joint_b].m31;
+    points[1].z = object->locator_matrices[joint_b].m32;
+    if ((object->sabre_flags & 2) != 0) {
+        i32 colour;
+        if (object->field_280 != 0xff && Cheat_IsOn(25))
+            colour = 0;
+        else if (object->field_280 != 0xff && Player_HasPurpleForce(object))
+            colour = 3;
+        else if (object->id == id_GRIEVOUS && (blade == 3 || blade == 0))
+            colour = 2;
+        else if (AnakinGreenSabre(object) || (object->id == id_BOB && (object->flags_ef0 & 0x200) != 0))
+            colour = 1;
+        else
+            colour = GCDataList[(i16)object->id].blade_colour;
+        object->blade_states[blade] = colour;
+        if (object->model_draw_result != 0) {
+            const u8 *rgb = BladeTab[colour].colour;
+            const u32 packed = 0xff000000u | rgb[0] | (rgb[1] << 8) | (rgb[2] << 16);
+            STUBBED_NAMED("LightSabre: emit direct streak PC5a3730");
+            if (object->reflection_enabled != 0 && object->reflection_height != 2000000.0f) {
+                f32 plane = object->reflection_height;
+                NUVEC reflected[2];
+                if (WORLD->current_level->reflection_y != 2000000.0f)
+                    plane = WORLD->current_level->reflection_y;
+                reflected[0] = points[0];
+                reflected[1] = points[1];
+                reflected[0].y = plane - (reflected[0].y - plane);
+                reflected[1].y = plane - (reflected[1].y - plane);
+                STUBBED_NAMED("LightSabre: emit reflected streak PC5a3730");
+            }
+        }
+    }
+    if ((object->sabre_flags & 7) == 0)
+        return;
+    if (object->field_280 != 0xff && Cheat_IsOn(25))
+        effect = 1;
+    else if (object->field_280 != 0xff && Player_HasPurpleForce(object))
+        effect = 4;
+    else if (object->id == id_GRIEVOUS)
+        effect = (blade == 3 || blade == 0) ? 3 : 2;
+    if (data->weapon_action == 12 && context == 5 && object->combo_stage == 2 && object->field_7aa == 52 &&
+        model->points_of_interest[4] != NULL) {
+        points[0].x = object->locator_matrices[4].m30;
+        points[0].y = object->locator_matrices[4].m31;
+        points[0].z = object->locator_matrices[4].m32;
+        NuVecAdd(&points[1], &points[0], &object->collision_position);
+        NuVecScale(&points[1], &points[1], 0.5f);
+    }
+    length = NuVecDist(&points[0], &points[1], &difference);
+    points[2].x = difference.x * 0.5f + points[1].x;
+    points[2].y = difference.y * 0.5f + points[1].y;
+    points[2].z = difference.z * 0.5f + points[1].z;
+    object->sabre_collision_radius = length * 0.25f;
+    extent = length * 1.5f;
+    minimum.x = points[2].x - extent;
+    minimum.y = points[2].y - extent;
+    minimum.z = points[2].z - extent;
+    maximum.x = points[2].x + extent;
+    maximum.y = points[2].y + extent;
+    maximum.z = points[2].z + extent;
+    if ((object->sabre_flags & 4) != 0) {
+        NUVEC direction;
+        NuVecRotateY(&direction, &v001, (u16)(object->field_0x276 + (context == 16 ? 0x8000 : 0)));
+        NuVecScale(&difference, &direction, 0.2f);
+        NuVecAdd(&points[0], &object->collision_position, &difference);
+        NuVecScale(&difference, &direction, 0.5f);
+        NuVecAdd(&points[1], &object->collision_position, &difference);
+        NuVecScale(&difference, &direction, 0.35f);
+        NuVecAdd(&points[2], &object->collision_position, &difference);
+        if (context == 13) {
+            points[0].y = (f32)((f64)object->lower_position.y +
+                                (f64)(object->upper_position.y - object->lower_position.y) * (f64)0.333f);
+            points[1].y = points[2].y = points[0].y;
+        }
+        length = NuVecDist(&points[0], &points[1], &difference);
+        points[2].x = difference.x * 0.5f + points[1].x;
+        points[2].y = difference.y * 0.5f + points[1].y;
+        points[2].z = difference.z * 0.5f + points[1].z;
+        object->sabre_collision_radius = length * 0.25f;
+        extent = length * 1.5f;
+        minimum.x = points[2].x - extent;
+        minimum.y = points[2].y - extent;
+        minimum.z = points[2].z - extent;
+        maximum.x = points[2].x + extent;
+        maximum.y = points[2].y + extent;
+        maximum.z = points[2].z + extent;
+    }
+    if ((object->sabre_flags & 5) == 0)
+        goto particle_contact;
+    nearest = NULL;
+    nearest_point = 0;
+    nearest_distance = 1000000.0f;
+    for (i = 0; i < HIGHGAMEOBJECT; ++i) {
+        GAMEOBJECT *target = &Obj[i];
+        PLAYERCHARACTERCONFIG_PC *target_data;
+        i32 point;
+        if (target == object || (target->flags_1fc_word & 0x1001) != 0x1001 || target->use_model_origin <= 1 ||
+            target->dead != 0 || (target->character_context & 0xfd) == 57 || target->character_context == 60 ||
+            (CInfo[target->character_context].flags & 0x8000) != 0)
+            continue;
+        target_data = target->character_data->game_character;
+        if ((target_data->flags_090 & 0x8000) != 0 || target->collision_min.x > maximum.x ||
+            target->collision_max.x < minimum.x || target->collision_min.z > maximum.z ||
+            target->collision_max.z < minimum.z || target->collision_min.y > maximum.y ||
+            target->collision_max.y < minimum.y)
+            continue;
+        for (point = 2; point >= 0; --point) {
+            f32 distance;
+            if (!SphereSphereOverlapScaleY(&target->collision_position, target->bounds_radius,
+                                           target->bounds_half_height, &points[point], object->sabre_collision_radius,
+                                           object->sabre_collision_radius))
+                continue;
+            if ((object->sabre_flags & 1) != 0) {
+                if ((target->flags_1fc_word & 2) == 0 && (target_data->flags_090 & 0x1040) == 0) {
+                    NUVEC reaction;
+                    f32 maximum_speed = target_data->run_speed;
+                    f32 magnitude_squared;
+                    NuVecSub(&reaction, &target->collision_position, &object->collision_position);
+                    if (reaction.x == 0.0f && reaction.z == 0.0f) {
+                        reaction.x = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) - 0.5);
+                        reaction.z = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) - 0.5);
+                    }
+                    NuVecNorm(&reaction, &reaction);
+                    target->movement_direction_x = target_data->walk_speed * reaction.x + target->velocity.x;
+                    target->movement_direction_z = target_data->walk_speed * reaction.z + target->velocity.z;
+                    magnitude_squared = target->movement_direction_x * target->movement_direction_x +
+                                        target->movement_direction_z * target->movement_direction_z;
+                    if (magnitude_squared > maximum_speed * maximum_speed) {
+                        f32 scale = maximum_speed / NuFsqrt(magnitude_squared);
+                        target->movement_direction_x *= scale;
+                        target->movement_direction_z *= scale;
+                    }
+                }
+                STUBBED_NAMED("LightSabre: AddGameDebrisRot PC62c680");
+                if (SaberSparksTimer <= 0.0f && object->anim_blending == 0 && object->character_context != 5 &&
+                    object->character_context != 16 && object->character_context != 13 &&
+                    object->character_context != 14 && (CInfo[object->character_context].flags & 0x04000000) == 0 &&
+                    ((CInfo[object->character_context].flags & 0x08000000) == 0 ||
+                     (object->context_variant_flags & 0x20000) == 0) &&
+                    target->character_context != 5 && target->character_context != 16 &&
+                    target->character_context != 13 && target->character_context != 14 &&
+                    (CInfo[target->character_context].flags & 0x04000000) == 0 &&
+                    ((CInfo[target->character_context].flags & 0x08000000) == 0 ||
+                     (target->context_variant_flags & 0x20000) == 0)) {
+                    PlaySfx((char *)SaberSparksName, &points[point]);
+                    SaberSparksTimer = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f)) * (f64)0.3f + (f64)0.3f);
+                    qrand();
+                    STUBBED_NAMED("LightSabre: source randomized rumble PC54a850");
+                    qrand();
+                    STUBBED_NAMED("LightSabre: target randomized rumble PC54a850");
+                }
+            }
+            distance = NuVecDistSqr(&object->collision_position, &target->collision_position, NULL);
+            if (distance < nearest_distance) {
+                nearest_distance = distance;
+                nearest_point = point;
+                nearest = target;
+            }
+        }
+    }
+    if (nearest != NULL && (object->sabre_flags & 4) != 0) {
+        STUBBED_NAMED("LightSabre: closest-target debris PC62c560");
+        if (!CannotKill(nearest)) {
+            i32 damage = object->sabre_damage;
+            if (damage != 0 && (nearest->flags_1fc_word & 0x80) != 0) {
+                damage = (object->flags_1fc_word & 0x80) != 0 && Player_HasDoubleWeaponDamage(object) ? 2 : 1;
+            }
+            STUBBED_NAMED("LightSabre: apply ObjHitObj damage PC438230");
+        } else {
+            STUBBED_NAMED("LightSabre: source rumble PC54a850");
+            STUBBED_NAMED("LightSabre: target rumble PC54a850");
+        }
+        return;
+    }
+    if ((object->sabre_flags & 4) != 0 &&
+        ((object->flags_1fc_word & 0x80) != 0 || (object->portal_flags & 0x40) != 0 || object->field_f00 == 5)) {
+        if ((object->flags_1fc_word & 0x80) == 0 && object->model_draw_result == 0) {
+            if (object->blowup_target != NULL) {
+                STUBBED_NAMED("LightSabre: GizmoBlowupBlowup PC567800");
+                STUBBED_NAMED("LightSabre: AlertSurroundingCreatures PC4399e0");
+            }
+            return;
+        }
+        STUBBED_NAMED("LightSabre: GizmoBlowUp_Hit pointer-dependent hit/debris/rumble branch PC569c70");
+    }
+particle_contact:
+    if ((object->sabre_flags & 6) != 0) {
+        PART_PC *part = HitParts(object, points, 3, object->sabre_collision_radius, &minimum, &maximum, 0x08000008);
+        if (part != NULL) {
+            if ((part->flags & 8) == 0) {
+                KillPart(part, 0);
+            } else {
+                STUBBED_NAMED("LightSabre: DeflectPart(part,object,5.0,-2.5,0,effect) PC42c500");
+            }
+            STUBBED_NAMED("LightSabre: AlertSurroundingCreatures PC4399e0");
+        }
+    }
+}
+
+static void AfterAnimationSabreCode(GAMEOBJECT *object, i32 effect) {
+    PLAYERCHARACTERCONFIG_PC *data = object->character_data->game_character;
+    i32 reset_streak = 0;
+    u8 streak;
+    u8 damage;
+    u8 blade_flags[2];
+    i32 blade;
+    if ((data->weapon_action == 3 || object->id == (u16)id_GRIEVOUS || object->id == (u16)id_DOOKU) &&
+        object->character_context == 0 && object->action_movement_state == 3) {
+        object->sabre_flags |= 2;
+    }
+    if (object->id == (u16)id_GRIEVOUS && (object->character_context == 12 || object->character_context == 24) &&
+        object->field_7aa == 26) {
+        reset_streak = 1;
+        object->sabre_flags |= 2;
+    } else if (object->id == (u16)id_BODYGUARD &&
+               (object->character_context == 12 || object->character_context == 24) &&
+               (object->field_7aa == 26 || object->field_7aa == 27)) {
+        object->sabre_flags |= 2;
+    }
+    streak = object->sabre_flags & 2;
+    damage = object->sabre_flags & 4;
+    blade_flags[0] = blade_flags[1] = object->sabre_flags;
+    if (object->id == (u16)id_GRIEVOUS) {
+        i32 first = -1;
+        i32 second = -1;
+        if (damage != 0) {
+            if (object->character_context == 13) {
+                first = 2;
+                second = 0;
+            } else if (object->character_context == 16) {
+                first = 3;
+                second = 2;
+            } else if (object->character_context == 5) {
+                switch (object->field_7aa) {
+                    case 46:
+                        second = 0;
+                        break;
+                    case 47:
+                    case 48:
+                        second = 3;
+                        break;
+                    case 49:
+                    case 50:
+                    case 51:
+                    case 52:
+                        first = 2;
+                        second = 0;
+                        break;
+                    case 53:
+                        first = 1;
+                        second = 0;
+                        break;
+                    case 54:
+                    case 55:
+                        first = 3;
+                        second = 2;
+                        break;
+                    case 56:
+                    case 57:
+                    case 58:
+                    case 59:
+                        second = 2;
+                        break;
+                }
+            }
+        }
+        for (blade = 0; blade < 4; ++blade) {
+            if (blade == 2 && reset_streak != 0) {
+                streak = 0;
+            }
+            object->sabre_flags = streak | 1;
+            if (damage != 0 && (blade == first || blade == second)) {
+                object->sabre_flags |= damage;
+            }
+            if (object->character_context == 16) {
+                if (blade < 2) {
+                    object->sabre_flags &= ~2;
+                } else {
+                    object->sabre_flags |= 2;
+                }
+            }
+            LightSabreStreakCode(object, blade, effect);
+        }
+    } else if (object->id == (u16)id_DARTHMAUL) {
+        LightSabreStreakCode(object, 0, effect);
+        object->sabre_flags = streak | 1;
+        LightSabreStreakCode(object, 1, effect);
+    } else if (object->id == (u16)id_BODYGUARD) {
+        if (object->character_context == 5 && damage != 0) {
+            if (object->combo_stage == 2) {
+                blade_flags[0] &= ~4;
+                blade_flags[1] |= 4;
+            } else {
+                blade_flags[0] |= 4;
+                blade_flags[1] &= ~4;
+            }
+        } else if (object->character_context == 0 && object->action_movement_state == 4) {
+            blade_flags[0] |= 2;
+            blade_flags[1] |= 2;
+        }
+        for (blade = 0; blade < 2; ++blade) {
+            object->sabre_flags = blade_flags[blade];
+            LightSabreStreakCode(object, blade, effect);
+        }
+    } else {
+        LightSabreStreakCode(object, 0, effect);
+    }
+}
+
+void __cdecl GameObjectStuffAfterAnimation(void) {
+    GAMEOBJECT *object = Obj;
+    i32 i;
+    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
+        i32 drawn;
+        CHARACTER_MODEL_LAYERS_PC *model;
+        PLAYERCHARACTERCONFIG_PC *data;
+        if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0 || object->origin_joint_ready == 0)
+            continue;
+        drawn = object->model_draw_result != 0;
+        model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
+        data = object->character_data->game_character;
+        if (drawn || (object->layer_mask & 4) != 0) {
+            if (object->script_fire_target != NULL && (object->script_fire_target->flags_1fc_word & 1) == 0)
+                object->script_fire_target = NULL;
+            if (object->quick_shoot_bolt_id != -1) {
+                if (object->id == (u16)id_BASKETCANNON) {
+                    NUMTX matrix;
+                    NUVEC velocity;
+                    i32 joint = drawn ? data->first_shoot_joint : -1;
+                    STUBBED_NAMED("AfterAnimation: GameAudio_PlaySfxById PC5478a0");
+                    if (joint != -1 && model->points_of_interest[joint] != NULL)
+                        matrix = object->locator_matrices[joint];
+                    else {
+                        matrix = object->transform;
+                        matrix.m30 = object->collision_position.x;
+                        matrix.m31 = object->collision_position.y;
+                        matrix.m32 = object->collision_position.z;
+                    }
+                    velocity.x = 0.0f;
+                    velocity.y = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0);
+                    velocity.z = (f32)(-((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0 + 3.0));
+                    NuVecMtxRotate(&velocity, &velocity, &matrix);
+                    STUBBED_NAMED(
+                        "AfterAnimation: basketball descriptor/AddPart requiring genuine callbacks PC4b1c58..4b1d0c");
+                } else {
+                    STUBBED_NAMED("AfterAnimation: Bolt_Shoot PC583af0");
+                    if (object->quick_shoot_bolt_id == 29)
+                        object->context_variant_flags |= 0x40;
+                }
+            }
+            if ((object->flags_e20 & 0x04000000) != 0)
+                STUBBED_NAMED("AfterAnimation: Torpedo_Shoot PC4d3690");
+        }
+        if (drawn && ((object->character_data->model_flags & 8) != 0 || object->id == (u16)id_BODYGUARD ||
+                      object->id == (u16)id_IMPERIALGUARD)) {
+            i32 effect = object->blade_index == -1 ? -1 : BladeTab[object->blade_index].hit_effect;
+            AfterAnimationSabreCode(object, effect);
+        }
+        if (object->debris_joint != -1)
+            STUBBED_NAMED("AfterAnimation: AddGameDebris effect138/139 at locator translation PC62c560");
+        if (object->character_context == 38) {
+            CHARACTER_ANIMATION_LOCATOR_PC *animation = model->animations[object->field_7aa];
+            if (animation != NULL && animation->locator != -1 &&
+                ((object->context_variant_flags & 0x40) == 0 || object->debris_joint != -1)) {
+                NUVEC points[2];
+                i32 joint = animation->locator;
+                points[0].x = object->locator_matrices[joint].m30;
+                points[0].y = object->locator_matrices[joint].m31;
+                points[0].z = object->locator_matrices[joint].m32;
+                points[1] = points[0];
+                points[0].y = (f32)((f64)points[0].y + (f64)0.075f);
+                points[1].y = (f32)((f64)points[1].y - (f64)0.075f);
+                STUBBED_NAMED("AfterAnimation: emit locator streak PC5a3730");
+            }
+        }
+        if (object->slam_effect != -1)
+            STUBBED_NAMED("AfterAnimation: AddSlamDebris PC42f9d0");
+        if (object->batarang_release != 0)
+            STUBBED_NAMED("AfterAnimation: Batarang_Release PC404620");
+        if ((object->flags_e20 & 0x00800000) != 0)
+            STUBBED_NAMED("AfterAnimation: SuperCarry_Throw PC5980c0");
+        if ((object->flags_e20 & 0x10) != 0) {
+            NUMTX matrix;
+            NUVEC velocity;
+            i32 joint = drawn ? data->rocket_joint : -1;
+            if (joint != -1 && model->points_of_interest[joint] != NULL)
+                matrix = object->locator_matrices[joint];
+            else {
+                NuMtxSetRotationX(&matrix, 0x1555);
+                NuMtxRotateY(&matrix, (u16)(object->field_0x276 + 0x8000));
+                matrix.m30 = object->collision_position.x;
+                matrix.m31 = object->collision_position.y;
+                matrix.m32 = object->collision_position.z;
+            }
+            velocity.x = 0.0f;
+            velocity.y = 0.0f;
+            velocity.z = -1.0f;
+            NuVecMtxRotate(&velocity, &velocity, &matrix);
+            STUBBED_NAMED("AfterAnimation: rocket descriptor/BoltSys direction/TargetGameObject/AddPart requiring "
+                          "genuine callbacks PC4b1f97..4b2126");
+        }
+        if ((object->flags_e24 & 0x4000) != 0)
+            STUBBED_NAMED("AfterAnimation: ThermalDetonator_Throw PC4cfbb0");
+        if ((object->flags_e20 & 0x02000000) != 0 && object->force_target != NULL)
+            STUBBED_NAMED("AfterAnimation: GetZapOrigin pointer-dependent NuLgtLaser PC4a6050/6018c0");
+        if (drawn && (object->character_data->model_flags & 8) != 0 && object->weapon_scale == 1.0f) {
+            i32 blade;
+            for (blade = 0; blade < 4; ++blade) {
+                i32 joints[2];
+                if (GetBladeJoints(object, blade, joints, NULL) != 0) {
+                    STUBBED_NAMED("AfterAnimation: continuous sabre particles and real raycast-dependent rub action "
+                                  "PC4b223b..4b261d");
+                }
+            }
+        }
+        if (drawn && object->id == (u16)id_LANDSPEEDER)
+            STUBBED_NAMED("AfterAnimation: Landspeeder three real debris effects PC4b2636..4b283a");
+        if (VehicleArea != 0 && object->field_280 <= 1)
+            STUBBED_NAMED("AfterAnimation: Falcon debris-handle create/orient/free PC4b283a..4b290d");
+        if (object->powerup_time > 0.0f && object->dead == 0) {
+            NUVEC position;
+            f32 radius = (f32)((f64)object->bounds_radius * (0.5 + (f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5));
+            u16 angle = (u16)qrand();
+            position.x = object->position.x + radius * NuTrigTable[angle >> 1];
+            position.y =
+                (f32)((f64)(object->position.y + object->character_bottom * object->origin_scale) + (f64)0.05f);
+            position.z = object->position.z + radius * NuTrigTable[((u16)(angle + 0x4000) >> 1) & 0x7fff];
+            STUBBED_NAMED("AfterAnimation: PowerUp_Particles PC46a8d0");
+        }
+    }
+}
+
+typedef struct kill_zipup_pc_s {
+    u8 unknown_00[0x68];
+    u16 runtime_flags;
+} KILL_ZIPUP_PC;
+STATIC_ASSERT(offsetof(KILL_ZIPUP_PC, runtime_flags) == 0x68);
+
+i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused) {
+    i32 reason = requested_reason == 5 ? 4 : requested_reason;
+    i32 terminal_kill = 0;
+    GAMEOBJECT *rider;
+    AIGROUP_PC *group;
+    GAMEOBJECT *candidate;
+    i32 i;
+    if ((object->flags_1fc_word & 0x80) != 0) {
+        STUBBED_NAMED("KillGameObject: increment AreaGlobals first value PC951244 and LevDeaths PC87b2f0");
+    }
+    STUBBED_NAMED("KillGameObject: NuSound3ClearLoopHold upper position PC698a20");
+    STUBBED_NAMED("KillGameObject: NuSound3ClearLoopHold collision position PC698a20");
+    STUBBED_NAMED("KillGameObject: NuSound3ClearLoopHold lower position PC698a20");
+    STUBBED_NAMED("KillGameObject: Grapple_RemoveDynamic PC54e7d0");
+    STUBBED_NAMED("KillGameObject: Shards_HandleLostObj PC4c0c80");
+    if (reason != 4) {
+        STUBBED_NAMED(
+            "KillGameObject: PC identity-selected death debris/explosion/audio/rumble/snake actions PC436582..436996");
+    } else {
+        STUBBED_NAMED("KillGameObject: snake body destroy action PC597350");
+    }
+    if (object->character_context == 43) {
+        object->character_context = -1;
+        if ((object->flags_1fc_word & 0x80) != 0 &&
+            (WORLD->current_level == HOTHBATTLEA_LDATA || WORLD->current_level == GUNSHIPA_LDATA))
+            STUBBED_NAMED("KillGameObject: half-second GameCam_Blend PC54a3e0");
+    }
+    if (reason == 4) {
+        terminal_kill = 1;
+        reason = 2;
+    } else if (WORLD->current_level == SPEEDERCHASEA_LDATA && object->ai_packet.creature_set == 2) {
+        STUBBED_NAMED("KillGameObject: SpeedersKilled message and lost hitpoint increment PC436a30..436a55");
+    }
+    if ((object->character_data->model_flags & 0x2000) != 0) {
+        object->velocity.x = (f32)((f64)object->velocity.x * 0.5);
+        object->velocity.y = (f32)((f64)object->velocity.y * 0.5);
+        object->velocity.z = (f32)((f64)object->velocity.z * 0.5);
+    } else {
+        object->velocity.x = 0.0f;
+        object->velocity.z = 0.0f;
+    }
+    object->current_hp = 0;
+    object->dead = (u8)(reason == 3 ? 2 : reason);
+    if (object->character_context == 7 || object->field_e33 == 1)
+        object->flags_e20 |= 0x10000;
+    else if (object->character_context == 6 || object->field_e33 == 2)
+        object->flags_e20 &= ~0x10000;
+    if (object->helmet != 0)
+        STUBBED_NAMED("KillGameObject: LoseHelmet PC433aa0");
+    rider = object->rider;
+    STUBBED_NAMED("KillGameObject: Player_ClearContext PC55e4a0");
+    if (terminal_kill != 0 && rider != NULL)
+        KillGameObject(rider, 4, 0);
+    STUBBED_NAMED("KillGameObject: ReleaseLever PC48ffc0");
+    STUBBED_NAMED("KillGameObject: Player_ResetContexts embedded packet6c4 PC55e4e0");
+    if ((object->flags_1fc_word & 0x80) != 0) {
+        if (object->torpedo != NULL) {
+            while (object->torpedo->count != 0) {
+                STUBBED_NAMED("KillGameObject: emit torpedo debris at actual position PC684c90");
+                --object->torpedo->count;
+            }
+        }
+        if (object->dead == 0 || (object->character_data->model_flags & 0x2000) == 0 ||
+            (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0))
+            STUBBED_NAMED("KillGameObject: one-second GameCam_Blend PC54a3e0");
+        if ((object->flags_1f8 & 0x40000) == 0) {
+            if (object->takeover_owner != NULL &&
+                (object->takeover_owner->rider == NULL || object->takeover_owner->rider == object)) {
+                STUBBED_NAMED(
+                    "KillGameObject: real GetTakeOverPos output-dependent position/start/AI position writes PC4871a0");
+            } else {
+                STUBBED_NAMED("KillGameObject: SetToLastSafePos PC55cd80");
+            }
+        }
+        GameObjectOrigin(object);
+        AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
+    }
+    object->death_timer = 0.0f;
+    if (object->dead != 2)
+        object->dead = 1;
+    if (object->dead == 1)
+        object->start_position = object->position;
+    object->death_delay = object->dead == 2 ? 0.0f : 0.5f;
+    if (object->death_delay <= 0.0f)
+        object->movement_lean_angle = 0;
+    if (terminal_kill == 0)
+        STUBBED_NAMED("KillGameObject: real BeenKilled script predicate/process using same packet2c8 PC52c790/52cc90");
+    group = object->ai_packet.group;
+    if (group != NULL) {
+        group->member_is_alive &= ~(u32)((u64)1 << object->ai_packet.group_member_index);
+        group->rows[object->ai_packet.group_row].is_alive &=
+            ~(u8)((u64)1 << (object->ai_packet.group_member_index - object->ai_packet.group_row * group->count_across));
+        group = object->ai_packet.group;
+        if (group->leader == (APIOBJECT_PC *)object) {
+            group->leader = NULL;
+            if ((group->flags & 4) != 0) {
+                for (i = group->member_count - 1; i >= 0; --i) {
+                    if (group->members[i] != NULL) {
+                        candidate = (GAMEOBJECT *)group->members[i]->owner;
+                        if (candidate != object && (candidate->flags_1fc_word & 0x1001) == 0x1001 &&
+                            candidate->dead == 0) {
+                            group->leader = (APIOBJECT_PC *)candidate;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                for (i = 0; i < object->ai_packet.group->member_count; ++i) {
+                    group = object->ai_packet.group;
+                    if (group->members[i] == NULL)
+                        continue;
+                    candidate = (GAMEOBJECT *)group->members[i]->owner;
+                    if (candidate == NULL) {
+                        group->members[i] = NULL;
+                    } else if (candidate != object && (candidate->flags_1fc_word & 0x1001) == 0x1001 &&
+                               candidate->dead == 0) {
+                        group->leader = (APIOBJECT_PC *)candidate;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    object->ai_packet.flags &= ~0x5000;
+    object->ai_packet.nearest_opponent = NULL;
+    object->ai_packet.target_dc = NULL;
+    object->ai_packet.target_ec = NULL;
+    object->ai_packet.target_metric_e0 = 1000000000.0f;
+    object->ai_packet.target_metric_f0 = 1000000000.0f;
+    object->ai_awareness_mask = 0;
+    object->ai_seen_mask = 0;
+    object->field_eb0 = object->field_eb4 = 0;
+    object->opponent = NULL;
+    object->ai_packet.opponent = NULL;
+    object->field_ec0 = 0;
+    object->field_ec4 = 0.0f;
+    if (object->reciprocal_target != NULL) {
+        object->reciprocal_target->reciprocal_target = NULL;
+        object->reciprocal_target = NULL;
+    }
+    if (object->character_context == 71 && object->grapple != NULL) {
+        ((KILL_ZIPUP_PC *)object->grapple)->runtime_flags &= ~0x100;
+        object->grapple = NULL;
+    }
+    STUBBED_NAMED("KillGameObject: Batarangs_CheckLostData PC404e30");
+    STUBBED_NAMED("KillGameObject: SpecialMove_ReleaseVictim PC58b0f0");
+    STUBBED_NAMED("KillGameObject: ReleaseEat PC49c4e0");
+    STUBBED_NAMED("KillGameObject: ReleaseBuildIt PC58ff10");
+    STUBBED_NAMED("KillGameObject: ReleasePush PC59cb00");
+    candidate = Obj;
+    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++candidate) {
+        if ((candidate->flags_1fc_word & 0x1001) != 0x1001 || candidate == object)
+            continue;
+        if (candidate->character_context == 27 && candidate->force_target == object)
+            STUBBED_NAMED("KillGameObject: ReleaseForce target PC4a25b0");
+        if (candidate->force_target == object)
+            candidate->force_target = NULL;
+        if (candidate->airborne_collision_target == object)
+            candidate->airborne_collision_target = NULL;
+    }
+    STUBBED_NAMED("KillGameObject: ReleaseForce source PC4a25b0");
+    if (object->field_280 == 0xff) {
+        for (i = 0; i < 32; ++i)
+            if (Bolt[i].active != 0 && Bolt[i].owner == object)
+                Bolt[i].owner = NULL;
+        for (i = 0; i < MAXPARTS; ++i)
+            if ((Part[i].active & 1) != 0 && Part[i].owner == object)
+                Part[i].owner = NULL;
+        STUBBED_NAMED("KillGameObject: explosion owner cleanup (eight records38) PC43700c..43711e");
+    }
+    if (DOGFIGHTA_LDATA != NULL && WorldInfo_CurrentlyActive()->current_level == DOGFIGHTA_LDATA && BonusWinner == -1 &&
+        (object->flags_1f8 & 0x40000) == 0)
+        STUBBED_NAMED("KillGameObject: ResetLevel EP3_DOGFIGHT_DIE PC57a620");
+    if (terminal_kill != 0 && object->field_280 == 0xff) {
+        i32 remove = requested_reason == 5;
+        AICREATURE_PC *creature = NULL;
+        i32 persistent = (object->portal_flags & 0x100000) != 0;
+        i32 respawn = 0;
+        if (!remove) {
+            u32 limit = object->portal_flags;
+            i32 respawn_flag = 0;
+            if ((object->flags_1f8 & 0x4400) == 0x4400) {
+                creature = &WORLD->ai_sys->creatures[object->ai_packet.creature_index];
+                respawn_flag = (object->portal_flags & 0x200000) != 0;
+                if (!persistent) {
+                    limit = object->ai_packet.respawn_count + 1;
+                    if (creature->max_respawn_count != -1 && object->ai_packet.respawn_locator == NULL)
+                        limit =
+                            creature->min_respawn_count +
+                            ((creature->max_respawn_count - creature->min_respawn_count) * ((i32)Game.difficulty - 1)) /
+                                9 +
+                            1;
+                }
+            }
+            if (!persistent && object->ai_packet.respawn_count >= limit)
+                remove = 1;
+            else
+                respawn = creature != NULL && (!persistent || respawn_flag);
+        }
+        if (remove) {
+            object->flags_1fc_word &= ~0x1000;
+            object->ai_packet.reset_mode = 4;
+        } else if (respawn && creature != NULL) {
+            object->flags_1fc_word &= ~0x1000;
+            object->ai_packet.reset_mode = 1;
+            object->ai_packet.spawn_delay = (f32)(1.0 - ((f64)Game.difficulty - 1.0) / 9.0);
+            if (creature->min_respawn_time > 0.0f && creature->max_respawn_time > 0.0f)
+                object->ai_packet.spawn_delay = creature->max_respawn_time * object->ai_packet.spawn_delay +
+                                                creature->min_respawn_time * (1.0f - object->ai_packet.spawn_delay);
+            else
+                object->ai_packet.spawn_delay =
+                    (f32)((f64)object->ai_packet.spawn_delay * ((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0));
+        } else
+            object->field_1010 = 1.0f;
+    }
+    if (object->torpedo != NULL && object->field_280 == 0xff) {
+        STUBBED_NAMED("KillGameObject: FreeTorpedoPacket PC4d22f0");
+        object->torpedo = NULL;
+    }
+    if (VehicleArea != 0 && object->field_280 < 2)
+        STUBBED_NAMED("KillGameObject: DebFreeInstantly Falcon key PC684400");
+    return 1;
 }

@@ -3,12 +3,15 @@ address    , symbol                                                         , si
 0x004011e0 , _InitOnce                                                      , 1019  , "void __cdecl (i32, char **)"
 0x00403cb0 , _NuFdiv                                                        , 54    , "f32 __cdecl (f32, f32)"
 0x00408800 , _InitCables                                                    , 127   , void __cdecl (WORLDINFO *)
+0x40e690   , _GoingForwardsAlongNarrowSock                                  , 106   , i32 __cdecl (GAMEOBJECT *)
 0x00415c60 , _MovePlayerSpline                                              , 1322  , void __cdecl (GAMEOBJECT *)
 0x00416190 , _MovePlayer                                                    , 2718  , void __cdecl (GAMEOBJECT *)
+0x004190e0 , _AnakinGreenSabre                                              , 70    , i32 __cdecl (GAMEOBJECT *)
 0x0041a360 , _AvailableToPlayer                                             , 365   , "i32 __cdecl (u32, i32, i32, i32)"
 0x0041a4d0 , _GetOtherActivePlayer                                          , 44    , GAMEOBJECT *__cdecl (GAMEOBJECT *)
 0x0041a5b0 , _AdjustLayerBits                                               , 1031  , "u32 __cdecl (u32, GAMEOBJECT *)"
 0x0041ade0 , _FixUpLayers                                                   , 218   , void __cdecl (void)
+0x0041af30 , _Player_HasPurpleForce                                         , 46    , i32 __cdecl (GAMEOBJECT *)
 0x0042b960 , _CheckResetBits                                                , 2966  , void __cdecl (void)
 0x0042d180 , _Areas_OpenAll                                                 , 148   , void __cdecl (i32)
 0x0042d5f0 , _FindGameCutScenes                                             , 335   , void __cdecl (void)
@@ -26,6 +29,7 @@ address    , symbol                                                         , si
 0x00431740 , _GameObjectRotation                                            , 2650  , "void __cdecl (GAMEOBJECT *, i32)"
 0x00432860 , _GameObjectToCameraCode                                        , 341   , void __cdecl (GAMEOBJECT *)
 0x00433df0 , _TargetGameObject                                              , 1167  , "GAMEOBJECT *__cdecl (GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, u32, i32, i32, i32)"
+0x004364e0 , _KillGameObject                                                , 3750  , "i32 __cdecl (GAMEOBJECT *, i32, i32)"
 0x0043a910 , _MakeBaddiesForgetAboutParty                                   , 1155  , void __cdecl (i32)
 0x0043b940 , _GameAISysStartFrame                                           , 467   , void __cdecl (AISYS *)
 0x0043c130 , _GetCharacterGoalSpeed                                         , 112   , f32 __cdecl (APIOBJECT_PC *)
@@ -114,17 +118,30 @@ address    , symbol                                                         , si
 0x00494df0 , _MenuEnterNewGame                                              , 38    , void __cdecl (MENU *)
 0x00495310 , _UpdateGameMenu                                                , 1070  , "void (void *, i32)"
 0x00495740 , _MenuEnterTitles                                               , 34    , void __cdecl (MENU *)
+0x497c40   , _MovementArcSine                                               , 320   , ""
 0x004982f0 , _IsAFallAnim                                                   , 37    , private EAX i32 animation -> i32 bool; same-TU static
 0x00498320 , _VehicleTurnOrLoopOffset                                       , 342   , f32 __cdecl (GAMEOBJECT *)
 0x00498590 , _GetVehicleHoverHeight                                         , 792   , "f32 __cdecl (GAMEOBJECT *, f32 *)"
 0x004988b0 , _DrawOffsetCode                                                , 393   , "void __cdecl (GAMEOBJECT *, i32)"
 0x00499170 , _MoveInactiveVehicle                                           , 395   , "void __cdecl (GAMEOBJECT *, i32, GAMEOBJECT **)"
 0x00499500 , _FaceOpponent                                                  , 133   , "i32 __cdecl (GAMEOBJECT *, NUVEC *)"
+0x499610   , _VehicleCollisionCode                                          , 770   , void __cdecl (GAMEOBJECT *)
+0x4999e0   , _GetVehicleSpeedMul                                            , 342   , "f32 __cdecl (GAMEOBJECT *,f32)"
+0x49ad40   , _StartTurn                                                     , 76    , void __cdecl (GAMEOBJECT *)
+0x0049b2b0 , _IsTurnRequested                                               , 123   , ""
+0x49b330   , _TurnCode                                                      , 1206  , "void __cdecl (GAMEOBJECT *,i32,GAMEPAD_PC *)"
+0x0049f780 , _GetBladeJoints                                                , 115   , "i32 (GAMEOBJECT *, i32, i32 *, i32 *) [private stack object; EAX blade; ESI joints; EDX optional output]"
+0x0049fa50 , _LightSabreStreakCode                                          , 3747  , "void (GAMEOBJECT *, i32, i32) [private EDI object; two stack arguments]"
+0x004a0900 , _AfterAnimationSabreCode                                       , 635   , "void (GAMEOBJECT *, i32) [private EAX object; one stack argument]"
 0x004a3b60 , _ForcePushEligible                                             , 123   , "i32 (GAMEOBJECT *, GAMEOBJECT *, GAMEOBJECT *) [private EAX first input; two stack pointers]"
 0x004a3eb0 , _ForcePushed_SetTargetMom                                      , 1014  , "i32 __cdecl (GAMEOBJECT *, f32 *)"
 0x004a42b0 , _ForcePushed_YRotation                                         , 146   , i32 __cdecl (GAMEOBJECT *)
-0x004a56a0 , _BobaRocket_Move                                               , 1001  , "void __cdecl (PART_s *, f32)"
+0x004a56a0 , _BobaRocket_Move                                               , 1001  , "void __cdecl (PART_PC *, f32)"
+0x004a5b00 , _BobaRocket_Deflect                                            , 37    , void __cdecl (PART_PC *)
+0x004a5bb0 , _PartImpact_Basketball                                         , 128   , void __cdecl (PART_PC *)
 0x004abac0 , _ApplyGravity                                                  , 2543  , "void __cdecl (GAMEOBJECT *, f32 *, f32, f32, f32 *)"
+0x4af0c0   , _MovePlayer_VEHICLEDIRECTIONAL                                 , 6146  , void __cdecl (GAMEOBJECT *)
+0x004b1ab0 , _GameObjectStuffAfterAnimation                                 , 3904  , void __cdecl (void)
 0x004badd0 , _InitPanel                                                     , 106   , void __cdecl (i32)
 0x004c00c0 , _Shadow_SetMode                                                , 60    , void __cdecl (void)
 0x004c9a40 , _NuPrim2DSetColor                                              , 108   , void (u32)
@@ -146,7 +163,9 @@ address    , symbol                                                         , si
 0x004cf480 , _Text_DecodeButtons                                            , 41    , "void __cdecl (char *, char *)"
 0x004cf4c0 , _Text_LoadStrings                                              , 397   , "void __cdecl (VARIPTR *, VARIPTR *)"
 0x004d44a0 , _TrafficAnimSys_Configure                                      , 650   , "void __cdecl (WORLDINFO *, char *)"
+0x004dbb60 , _PodSprint_InStartCountdown                                    , 28    , f32 __cdecl (WORLDINFO *)
 0x004e1460 , _KaminoE_CheckPlatHit                                          , 228   , i32 __cdecl (BOLT *)
+0x4ea8e0   , _DeathStar2BattleFire_GetSlowDownMul                           , 90    , f32 __cdecl (GAMEOBJECT *)
 0x004eed92 , _SendMessageA@16                                               , 6     , "LRESULT __stdcall (HWND, UINT, WPARAM, LPARAM)"
 0x004eef40 , _NuAlloc                                                       , 471   , "void *__cdecl (i32, const char *, i32)"
 0x004ef280 , _NuFree                                                        , 442   , "void __cdecl (void *, const char *, i32)"
@@ -176,6 +195,7 @@ address    , symbol                                                         , si
 0x004f0d50 , _NuDatGet                                                      , 6     , NUDATHDR *__cdecl (void)
 0x004f0dc0 , _GetPakItems                                                   , 26    , PC_FILEPAKITEM *(PC_FILEPAKHDR_V0 *) [private ECX ABI]
 0x004f0de0 , @PCFilePakChecksum_candidate@8                                 , 33    , "u32 __fastcall (i32, const u8 *)"
+0x004f0e10 , _DecryptPakData                                                , 54    , ""
 0x004f0e50 , _NuFilePakGetLastError                                         , 6     , i32 __cdecl (void)
 0x004f0e60 , _NuFilePakCondense                                             , 159   , i32 __cdecl (void *)
 0x004f0f00 , _NuFilePakRelocate                                             , 33    , "void __cdecl (void *, void *)"
@@ -403,7 +423,12 @@ address    , symbol                                                         , si
 0x00513990 , _AIScriptCopyConditions                                        , 401   , "void __cdecl (NULISTHDR *, NULISTHDR *, VARIPTR *, VARIPTR *)"
 0x00513b30 , _AIScriptCopyActions                                           , 388   , "void __cdecl (NULISTHDR *, NULISTHDR *, VARIPTR *, VARIPTR *)"
 0x00513f20 , _AIScriptBuildDerivedScript                                    , 536   , "i32 __cdecl (AISCRIPT_PC *, VARIPTR *, VARIPTR *, AISYS_PC *)"
+0x00514550 , _AIScriptNextAction                                            , 77    , ""
+0x005145a0 , _AIScriptSetState                                              , 59    , "void __cdecl (AISCRIPTPROCESS_PC *, AISTATE_PC *)"
+0x00514640 , _AIScriptProcessorInit                                         , 384   , "void __cdecl (AISYS_PC *, AIPACKET_PC *, AISCRIPTPROCESS_PC *, AICREATURE_PC *, char *, char *, i32, AISCRIPT_PC *, AISTATE_PC *)"
 0x005147c0 , _AIParamToFloat                                                , 142   , "f32 __cdecl (AISCRIPTPROCESS_PC *, char *)"
+0x00514850 , _AiEvalExpressionNameLoopup                                    , 206   , "i32 __cdecl (char *, f32 *, i32 *)"
+0x00514920 , _AIParamToFloatEx                                              , 100   , "f32 __cdecl (AIPACKET_PC *, AISCRIPTPROCESS_PC *, char *)"
 0x00514990 , _Condition_Timer                                               , 8     , "f32 __cdecl (void *, void *, void *, char *, void *)"
 0x005149a0 , _Condition_Random                                              , 5     , "f32 __cdecl (void *, void *, void *, char *, void *)"
 0x005149f0 , _Condition_AlwaysTrue                                          , 13    , "f32 __cdecl (void *, void *, void *, char *, void *)"
@@ -442,10 +467,22 @@ address    , symbol                                                         , si
 0x0051b7f0 , _AISysFindRoute                                                , 151   , void __cdecl (AIPACKET_PC *)
 0x0051b890 , _AISysCharacterSetPathCnx                                      , 381   , "void __cdecl (AIPACKET_PC *, NUVEC *, AIPATHCNX_PC *, i32)"
 0x0051ba10 , _AISysGetPathPosEx                                             , 1145  , "void __cdecl (AISYS_PC *, NUVEC *, AIPATHINFO_PC *, AIPATH_PC *, i32, i32, f32 *)"
+0x0051be90 , _GetNextConnection                                             , 703   , ""
+0x0051c150 , _CalculateRightIntersection                                    , 736   , ""
+0x0051c430 , _CalculateIntersection                                         , 618   , "u32 __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, AIPATHCNX_PC *, AIPATHCNX_PC *)"
 0x0051c6a0 , _RowMoveWander                                                 , 1309  , "i32 __cdecl (AIGROUP_PC *, AIROW_PC *, AIROW_PC *, APIOBJECT_PC *)"
 0x0051cbc0 , _RowMoveTowards                                                , 1388  , "i32 __cdecl (AIGROUP_PC *, AIROW_PC *, AIROW_PC *, APIOBJECT_PC *)"
 0x0051d130 , _FormationMove                                                 , 192   , ""
+0x0051d1f0 , _AIMoveFindNearestSpecialRouteNode                             , 148   , ""
+0x0051d310 , _AIMoveFindDivertNode                                          , 492   , ""
+0x0051d500 , _AIMoveApplyDivertNode                                         , 218   , ""
+0x0051d5e0 , _AIMoveChooseExitNodePath                                      , 367   , "i32 __cdecl (AISYS_PC *, AIPACKET_PC *)"
+0x0051d750 , _AIMoveAdjustDestinationPath                                   , 89    , ""
+0x0051d7b0 , _AIMoveToDestination                                           , 4355  , "void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x0051e8c0 , _AIMoveToDestinationAvoidingCamera                             , 73    , "void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x0051e910 , _AIRetreatFromDestinationPath                                  , 1925  , ""
 0x0051f0a0 , _AICircle                                                      , 263   , "void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x0051f1b0 , _AIWander                                                      , 1104  , "void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
 0x0051f600 , _AIMoveDirectlyToDestination                                   , 169   , "void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
 0x0051fe60 , _AILocatorSet_CheckLocatorsStillAssigned                       , 137   , "void __cdecl (AISYS_PC *, AILOCATORSET_PC *)"
 0x0051fef0 , _AILocatorSet_AssignNearestLocator                             , 400   , "void __cdecl (AISYS_PC *, AILOCATORSET_PC *, APIOBJECT_PC *, f32, NUVEC *, NUVEC *, f32, i32)"
@@ -458,12 +495,20 @@ address    , symbol                                                         , si
 0x0052bf80 , _xInclude                                                      , 114   , void __cdecl (NUFPAR_PC *)
 0x0052c000 , _xRefScript                                                    , 794   , void __cdecl (NUFPAR_PC *)
 0x0052c470 , _AIScriptLoadAllPakFile                                        , 607   , "void __cdecl (void *, char *, VARIPTR *, VARIPTR *, AISYS_PC *)"
+0x0052c800 , _AIScriptFillRemainingComplexOperands                          , 114   , ""
+0x0052c880 , _AIScriptProcessStateConditions                                , 587   , ""
+0x0052caf0 , _AIScriptProcessReferences                                     , 401   , ""
+0x0052cc90 , _AIScriptProcess                                               , 989   , "void __cdecl (AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, AISCRIPTPROCESS_PC *, f32)"
 0x0052e9c0 , _CharacterTestPathCnx                                          , 3645  , ""
 0x0052f800 , _AISysGetCharacterPathPos                                      , 1147  , "void __cdecl (AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, i32, i32)"
 0x0052fc80 , _AISysGetPathPos                                               , 38    , "void __cdecl (AISYS_PC *, NUVEC *, AIPATHINFO_PC *, AIPATH_PC *, i32)"
 0x0052fcb0 , _AIMoveInstruction                                             , 239   , "void __cdecl (AIPACKET_PC *, NUVEC *, f32, AIPATHINFO_PC *, i32, f32)"
 0x0052fda0 , _AIFormationFollow                                             , 401   , void __cdecl (AIPACKET_PC *)
+0x0052ff40 , _AIRetreatFromDestination2                                     , 517   , "void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x00530150 , _AIRetreatFromDestination                                      , 237   , "void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x00530240 , _AISysCharacterMovement                                        , 433   , "void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
 0x005371a0 , _AISysUpdateCharacterPathPos                                   , 458   , "void __cdecl (AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, i32, f32)"
+0x00537370 , _AISysProcessCharacter                                         , 1424  , "void __cdecl (AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, i32, f32, i32, i32)"
 0x00543f30 , _NuBridgeInit                                                  , 149   , void __cdecl (void)
 0x00543fd0 , _NuBridgeRemove                                                , 144   , void __cdecl (i32)
 0x00544070 , _NuBridgeCreate                                                , 939   , "i32 __cdecl (NUGSCN *, NUSPECIALHANDLE *, NUSPECIALHANDLE *, NUVEC *, NUVEC *, f32, i16, f32, f32, f32, f32, i32, f32, f32, i32, u32)"
@@ -503,10 +548,13 @@ address    , symbol                                                         , si
 0x00549430 , _ResetFrameCounters                                            , 30    , void __cdecl (void)
 0x00549450 , _UpdateFrameCounters                                           , 119   , void __cdecl (void)
 0x00549bb0 , _GameCam_NewShake                                              , 43    , "void __cdecl (GAMECAMERA *, f32, f32, f32)"
+0x0054a1c0 , _NarrowSockPositionAllowed                                     , 123   , ""
+0x54a240   , _ObjInNarrowSock                                               , 163   , "i32 __cdecl (GAMEOBJECT *,SOCKSYS_PC *,i32)"
 0x0054a5e0 , _GamePads_Init                                                 , 117   , void __cdecl (void)
 0x0054a910 , _NewRumbleAllPlayers                                           , 145   , "void __cdecl (f32, f32, i32, f32)"
 0x0054b090 , _ReadPads                                                      , 32    , void (void)
 0x0054b0b0 , _DoInput                                                       , 786   , void __cdecl (WORLD *)
+0x54b3d0   , _GamePad_InputAngle                                            , 99    , "u16 __cdecl (GAMEOBJECT *,GAMEPAD_PC *)"
 0x0054b540 , _Text_InitLanguageList                                         , 49    , void __cdecl (LANGUAGEDATA *)
 0x0054b580 , _Text_SetLanguage                                              , 27    , void __cdecl (i32)
 0x0054b5a0 , _Text_GetLanguagePath                                          , 96    , char *__cdecl (i32)
@@ -524,11 +572,14 @@ address    , symbol                                                         , si
 0x0054fa60 , _qrand                                                         , 25    , i32 __cdecl (void)
 0x0054fa80 , _getqseed                                                      , 6     , i32 __cdecl (void)
 0x0054fa90 , _ResetSeeds                                                    , 61    , void __cdecl (void)
+0x0054fad0 , _SeekLinearF                                                   , 104   , "f32 __cdecl (f32, f32, f32)"
 0x0054fb40 , _SeekValF                                                      , 64    , "f32 __cdecl (f32, f32, f32)"
 0x0054fb80 , _SeekVec                                                       , 94    , "void __cdecl (NUVEC *, NUVEC *, NUVEC *, f32)"
+0x0054fce0 , _SphereSphereOverlapScaleY                                     , 165   , "i32 __cdecl (NUVEC *, f32, f32, NUVEC *, f32, f32)"
 0x0054fec0 , _FindAnglesZX                                                  , 126   , "void __cdecl (NUVEC *, u16 *, u16 *)"
 0x00550040 , _RotDiff                                                       , 38    , "i32 __cdecl (u16, u16)"
 0x00550070 , _SeekRot                                                       , 133   , "u16 __cdecl (u16, u16, f32)"
+0x00550100 , _TurnRot                                                       , 114   , "u16 __cdecl (u16, u16, i32, i32 *)"
 0x00550330 , _RotateGameMatrix                                              , 348   , "void __cdecl (NUMTX *, i32, u16, u16, u16)"
 0x00550a20 , _PointAlongSpline                                              , 560   , "void __cdecl (NUGSPLINE *, f32, NUVEC *, u16 *, u16 *, i32)"
 0x00550ff0 , _LineIntersectXY                                               , 380   , "i32 __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
@@ -568,12 +619,14 @@ address    , symbol                                                         , si
 0x0055c6d0 , ?Game_Exit@@YAHH@Z                                             , 175   , i32 __cdecl (i32)
 0x0055ccd0 , _ScaleGameObject                                               , 79    , void __cdecl (GAMEOBJECT *)
 0x0055cd20 , _GetTopBot                                                     , 82    , void __cdecl (GAMEOBJECT *)
+0x55cdf0   , _UnderPlayerControl                                            , 41    , i32 __cdecl (GAMEOBJECT *)
 0x0055ce20 , _FindGameObject                                                , 179   , "GAMEOBJECT *__cdecl (i32, u32, i32, i32, i32)"
 0x0055d130 , _GameObjectNearFloor                                           , 173   , "i32 __cdecl (GAMEOBJECT *, f32, f32 *)"
 0x0055d2b0 , _GameObjectOrigin                                              , 993   , void __cdecl (GAMEOBJECT *)
 0x0055d6a0 , _PortalGameObject                                              , 121   , "void __cdecl (GAMEOBJECT *, i32, i32, i16, NUGSCN *)"
 0x0055d720 , _SnapCreaturePos                                               , 408   , "void __cdecl (GAMEOBJECT *, NUVEC *, i32, AIPATHINFO_PC *, i32)"
 0x0055e1b0 , _RememberPlayerIDs                                             , 249   , "void __cdecl (i32, i32, i32)"
+0x0055f320 , _Player_HasDoubleWeaponDamage                                  , 49    , i32 __cdecl (GAMEOBJECT *)
 0x0055f430 , _WorldInfo_InitOnce                                            , 21    , void __cdecl (void)
 0x0055f450 , _WorldInfo_CurrentlyActive                                     , 6     , WORLDINFO *__cdecl (void)
 0x0055f460 , _WorldInfo_CurrentlyLoading                                    , 6     , WORLDINFO *__cdecl (void)
@@ -602,6 +655,7 @@ address    , symbol                                                         , si
 0x005661f0 , _NoRender                                                      , 159   , void __cdecl (void)
 0x00566290 , _FinishLoop                                                    , 271   , void __cdecl (i32)
 0x00566630 , _SetLevelExBlowupFlags                                         , 10    , void __cdecl (u32)
+0x0056a5b0 , _GizmoBlowupCheckProximity                                     , 522   , "i32 __cdecl (WORLDINFO *, GAMEOBJECT *)"
 0x0056a9b0 , _GizmoBlowupResetNameTable                                     , 31    , void __cdecl (void)
 0x0056d760 , _Tube_InCylinder                                               , 152   , "i32 __cdecl (GAMEOBJECT *, TUBE_PC *, f32 *, i32)"
 0x0056d800 , _Tube_InAnyCylinder                                            , 96    , "TUBE_PC * __cdecl (WORLDINFO *, GAMEOBJECT *, i32)"
@@ -609,12 +663,15 @@ address    , symbol                                                         , si
 0x0056e030 , _Cheat_FindByName                                              , 69    , i32 __cdecl (char *)
 0x0056e0f0 , _Cheats_CheckFlags                                             , 13    , i32 __cdecl (u32)
 0x0056e160 , _Cheat_IsOn                                                    , 98    , i32 __cdecl (i32)
+0x0056e460 , _Cheat_PowerUpActive                                           , 110   , i32 __cdecl (i32)
 0x0056e580 , _Cheat_SetArea                                                 , 45    , "void __cdecl (i32, i32)"
 0x00570c90 , _SpecialMiniKits_Configure                                     , 786   , "void __cdecl (WORLDINFO *, char *)"
 0x00571a50 , _LoadPartFile                                                  , 204   , void __cdecl (WORLDINFO *)
 0x00571b20 , _Parts_Start                                                   , 30    , void __cdecl (WORLDINFO *)
 0x00571b40 , _Parts_Stop                                                    , 30    , void __cdecl (WORLDINFO *)
 0x00571b60 , _AddPartDebris                                                 , 54    , "void __cdecl (PARTDEBRISSYS *, i32, NUVEC *)"
+0x00571c50 , _PartStop_Flickerer                                            , 38    , void __cdecl (PART_PC *)
+0x00571c80 , _PartDraw_Flickerer                                            , 108   , i32 __cdecl (PART_PC *)
 0x00572380 , _Surfaces_Reset                                                , 182   , void __cdecl (void)
 0x00572b00 , _Areas_ConfigureList                                           , 1853  , "AREA_DATA_PC *__cdecl (char *, VARIPTR *, VARIPTR *, i32, i32 *)"
 0x00573240 , _Areas_ConfigureResidents                                      , 481   , "void __cdecl (VARIPTR *, VARIPTR *)"
@@ -689,6 +746,9 @@ address    , symbol                                                         , si
 0x00579b40 , _LevelConfig_AfterLoad                                         , 141   , "void __cdecl (LEVELDATA_PC *, char *, NUFPCOMJMP *)"
 0x00579bd0 , _LevelSplines_InitForGame                                      , 135   , void __cdecl (LEVELSPLINE_PC *)
 0x00579c60 , _LevelSplines_InitForLevel                                     , 519   , void __cdecl (WORLDINFO *)
+0x00579e70 , _LevelObjects_InitForGame                                      , 228   , "void __cdecl (LEVEL_OBJECT_CONFIG_PC *, VARIPTR *, VARIPTR *, i32, i32)"
+0x00579f60 , _LevelObject_AddExtra                                          , 156   , "i32 __cdecl (char *, i32)"
+0x0057a240 , _LevelObject_FindIndexFromName                                 , 77    , i32 __cdecl (char *)
 0x0057a420 , _Level_LoadConfigFile                                          , 164   , void __cdecl (WORLDINFO *)
 0x0057a6d0 , _NewLevelFromMenu                                              , 160   , "void __cdecl (LEVELDATA_PC *, i32, i32, i32)"
 0x0057c3e0 , _CutScenes_Load                                                , 1333  , "CUTSYS* __cdecl (char*, nugscn_s*, nugscn_s*, int, VARIPTR*, VARIPTR*, int, int, WORLDINFO*)"
@@ -709,8 +769,222 @@ address    , symbol                                                         , si
 0x00581e40 , _BoltTypes_Configure                                           , 362   , "void __cdecl (WORLDINFO *, char *)"
 0x00583030 , _Bolts_Update                                                  , 2738  , void __cdecl (WORLDINFO *)
 0x00583af0 , _Bolt_Shoot                                                    , 2722  , "void __cdecl (GAMEOBJECT *, i32, i32)"
-0x00589ac0 , _CharConfig_ConfigureAll                                       , 1139  , "void __cdecl (int, nufpcomjmp_s*)"
+0x5845c0   , _CharConfigAbsFloat                                            , 18    , f32 (f32 value)
+0x584640   , _RedirectTextFile                                              , 238   , "i32 (char *text, char *filename, i32 filename_capacity)"
+0x584740   , _CC_name_id                                                    , 22    , void (NUFPAR_PC *parser)
+0x584760   , _CC_mass                                                       , 23    , void (NUFPAR_PC *parser)
+0x584780   , _CC_radius                                                     , 23    , void (NUFPAR_PC *parser)
+0x5847a0   , _CC_miny                                                       , 23    , void (NUFPAR_PC *parser)
+0x5847c0   , _CC_maxy                                                       , 23    , void (NUFPAR_PC *parser)
+0x5847e0   , _CC_scale                                                      , 23    , void (NUFPAR_PC *parser)
+0x584800   , _CC_layer                                                      , 261   , void (NUFPAR_PC *parser)
+0x584940   , _CC_fixed_layers                                               , 73    , void (NUFPAR_PC *parser)
+0x584990   , _CC_hair_layer_index                                           , 47    , void (NUFPAR_PC *parser)
+0x5849c0   , _CC_cape_layer_index                                           , 47    , void (NUFPAR_PC *parser)
+0x5849f0   , _CC_hair_layer                                                 , 54    , void (NUFPAR_PC *parser)
+0x584a30   , _CC_cape_layer                                                 , 54    , void (NUFPAR_PC *parser)
+0x584a70   , _CC_ReadNumericLayerMask                                       , 84    , "i32 (NUFPAR_PC *parser, u32 *mask)"
+0x584ad0   , _CC_ReadNamedLayerMask                                         , 91    , "i32 (NUFPAR_PC *parser, u32 *mask)"
+0x584b30   , _CC_ReadLayerMask                                              , 33    , "i32 (NUFPAR_PC *parser, u32 *mask)"
+0x584b60   , _CC_layers_special                                             , 121   , void (NUFPAR_PC *parser)
+0x584be0   , _CC_layers_high                                                , 87    , void (NUFPAR_PC *parser)
+0x584c40   , _CC_layers_medium                                              , 70    , void (NUFPAR_PC *parser)
+0x584c90   , _CC_layers_low                                                 , 52    , void (NUFPAR_PC *parser)
+0x584cd0   , _CC_layers_dead                                                , 52    , void (NUFPAR_PC *parser)
+0x584d10   , _CC_ride_layersoff                                             , 52    , void (NUFPAR_PC *parser)
+0x584d50   , _CC_bsa_default                                                , 84    , void (NUFPAR_PC *parser)
+0x584db0   , _CC_SetAnimFlags                                               , 56    , "void (NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, u32 flags)"
+0x584df0   , _CC_SetAnimMiscFlags                                           , 58    , "void (NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, u16 flags)"
+0x584e30   , _CC_ReadAnimEffect                                             , 2343  , "void (NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, i16 character_id, CHARACTER_EFFECT_CONFIG_PC *effects, i32 *effect_count)"
+0x585760   , _CC_anim_start                                                 , 2881  , void (NUFPAR_PC *parser)
+0x5862e0   , _CC_collision_locator                                          , 59    , void (NUFPAR_PC *parser)
+0x586320   , _CC_weapon_locator_1                                           , 59    , void (NUFPAR_PC *parser)
+0x586360   , _CC_weapon_locator_2                                           , 59    , void (NUFPAR_PC *parser)
+0x5863a0   , _CC_weapon_locator_3                                           , 59    , void (NUFPAR_PC *parser)
+0x5863e0   , _CC_weapon_locator_4                                           , 59    , void (NUFPAR_PC *parser)
+0x586420   , _CC_weapon_shoot_locator_1                                     , 59    , void (NUFPAR_PC *parser)
+0x586460   , _CC_weapon_shoot_locator_2                                     , 59    , void (NUFPAR_PC *parser)
+0x5864a0   , _CC_weapon_shoot_locator_3                                     , 59    , void (NUFPAR_PC *parser)
+0x5864e0   , _CC_weapon_shoot_locator_4                                     , 59    , void (NUFPAR_PC *parser)
+0x586520   , _CC_shield_locator                                             , 59    , void (NUFPAR_PC *parser)
+0x586560   , _CC_throw_locator                                              , 59    , void (NUFPAR_PC *parser)
+0x5865a0   , _CC_place_locator                                              , 59    , void (NUFPAR_PC *parser)
+0x5865e0   , _CC_grapple_locator                                            , 109   , void (NUFPAR_PC *parser)
+0x586650   , _CC_extra_character_locator                                    , 59    , void (NUFPAR_PC *parser)
+0x586690   , _CC_ride_locator                                               , 59    , void (NUFPAR_PC *parser)
+0x5866d0   , _CC_poo_locator                                                , 59    , void (NUFPAR_PC *parser)
+0x586710   , _CC_head_locator                                               , 59    , void (NUFPAR_PC *parser)
+0x586750   , _CC_rocket_locator                                             , 59    , void (NUFPAR_PC *parser)
+0x586790   , _CC_thingy_locator                                             , 59    , void (NUFPAR_PC *parser)
+0x5867d0   , _CC_helmet_locator                                             , 59    , void (NUFPAR_PC *parser)
+0x586810   , _CC_shadow_locators                                            , 80    , void (NUFPAR_PC *parser)
+0x586860   , _CC_thrust_locators                                            , 80    , void (NUFPAR_PC *parser)
+0x5868b0   , _CC_hand_locators                                              , 86    , void (NUFPAR_PC *parser)
+0x586910   , _CC_ReadStreakLocators                                         , 67    , "void (NUFPAR_PC *parser, i8 *locators)"
+0x586960   , _CC_streak_1_locators                                          , 28    , void (NUFPAR_PC *parser)
+0x586980   , _CC_streak_2_locators                                          , 28    , void (NUFPAR_PC *parser)
+0x5869a0   , _CC_streak_3_locators                                          , 28    , void (NUFPAR_PC *parser)
+0x5869c0   , _CC_streak_4_locators                                          , 28    , void (NUFPAR_PC *parser)
+0x586a10   , _CC_head_joint                                                 , 55    , void (NUFPAR_PC *parser)
+0x586a50   , _CC_cloak_joint                                                , 55    , void (NUFPAR_PC *parser)
+0x586a90   , _CC_cloak_joint2                                               , 55    , void (NUFPAR_PC *parser)
+0x586b00   , _CC_sfx_die                                                    , 52    , void (NUFPAR_PC *parser)
+0x586b40   , _CC_sfx_hurt                                                   , 52    , void (NUFPAR_PC *parser)
+0x586b80   , _CC_sfx_grunt                                                  , 52    , void (NUFPAR_PC *parser)
+0x586bc0   , _CC_sfx_engine                                                 , 52    , void (NUFPAR_PC *parser)
+0x586c00   , _CC_sfx_shoot                                                  , 52    , void (NUFPAR_PC *parser)
+0x586c40   , _CC_sfx_footstep                                               , 52    , void (NUFPAR_PC *parser)
+0x586c80   , _CC_sfx_chatter                                                , 52    , void (NUFPAR_PC *parser)
+0x586cc0   , _CC_chatter_delay                                              , 26    , void (NUFPAR_PC *parser)
+0x586ce0   , _CC_sfx_sabre                                                  , 52    , void (NUFPAR_PC *parser)
+0x586d20   , _CC_sfx_misc                                                   , 114   , void (NUFPAR_PC *parser)
+0x586da0   , _CC_clear_sfx_misc                                             , 15    , void (NUFPAR_PC *parser)
+0x586db0   , _CC_cloak_up_angle                                             , 35    , void (NUFPAR_PC *parser)
+0x586de0   , _CC_cloak_down_angle                                           , 35    , void (NUFPAR_PC *parser)
+0x586e10   , _CC_viewrange                                                  , 23    , void (NUFPAR_PC *parser)
+0x586e30   , _CC_heardistance                                               , 23    , void (NUFPAR_PC *parser)
+0x586e50   , _CC_max_viewheight                                             , 23    , void (NUFPAR_PC *parser)
+0x586e70   , _CC_min_viewheight                                             , 23    , void (NUFPAR_PC *parser)
+0x586e90   , _CC_mediumres_swapdist                                         , 26    , void (NUFPAR_PC *parser)
+0x586eb0   , _CC_lowres_swapdist                                            , 26    , void (NUFPAR_PC *parser)
+0x586ed0   , _CC_turn_rate                                                  , 56    , void (NUFPAR_PC *parser)
+0x586f10   , _CC_turn_rate_2                                                , 56    , void (NUFPAR_PC *parser)
+0x586fa0   , _CC_banking                                                    , 68    , void (NUFPAR_PC *parser)
+0x586ff0   , _CC_choke                                                      , 68    , void (NUFPAR_PC *parser)
+0x587040   , _CC_lightning                                                  , 68    , void (NUFPAR_PC *parser)
+0x587090   , _CC_resist_zap                                                 , 74    , void (NUFPAR_PC *parser)
+0x5870e0   , _CC_has_no_turn                                                , 74    , void (NUFPAR_PC *parser)
+0x587130   , _CC_ghost                                                      , 74    , void (NUFPAR_PC *parser)
+0x587180   , _CC_speed_up_time                                              , 23    , void (NUFPAR_PC *parser)
+0x5871a0   , _CC_slow_down_time                                             , 26    , void (NUFPAR_PC *parser)
+0x5871c0   , _CC_jump_move_speed_scale                                      , 26    , void (NUFPAR_PC *parser)
+0x5871e0   , _CC_loop_height                                                , 26    , void (NUFPAR_PC *parser)
+0x587200   , _CC_no_tiptoe                                                  , 68    , void (NUFPAR_PC *parser)
+0x587250   , _CC_already_got_hat                                            , 68    , void (NUFPAR_PC *parser)
+0x5872a0   , _CC_not_got_hat                                                , 13    , void (NUFPAR_PC *parser)
+0x5872b0   , _CC_punch_weapon_out                                           , 68    , void (NUFPAR_PC *parser)
+0x587300   , _CC_can_take_over                                              , 68    , void (NUFPAR_PC *parser)
+0x587350   , _CC_turning_circle                                             , 74    , void (NUFPAR_PC *parser)
+0x5873a0   , _CC_slide_orientation                                          , 74    , void (NUFPAR_PC *parser)
+0x5873f0   , _CC_can_drag_bombs                                             , 74    , void (NUFPAR_PC *parser)
+0x587440   , _CC_extra_toggle                                               , 74    , void (NUFPAR_PC *parser)
+0x587490   , _CC_can_flatten                                                , 74    , void (NUFPAR_PC *parser)
+0x5874e0   , _CC_tightrope_walk                                             , 74    , void (NUFPAR_PC *parser)
+0x587530   , _CC_car_wheels                                                 , 74    , void (NUFPAR_PC *parser)
+0x587580   , _CC_is_a_girl                                                  , 16    , void (NUFPAR_PC *parser)
+0x587590   , _CC_is_a_boy                                                   , 16    , void (NUFPAR_PC *parser)
+0x5875a0   , _CC_icon                                                       , 144   , void (NUFPAR_PC *parser)
+0x587630   , _CC_weapon                                                     , 48    , void (NUFPAR_PC *parser)
+0x587660   , _CC_shield_hit_points                                          , 26    , void (NUFPAR_PC *parser)
+0x587680   , _CC_stop_speed                                                 , 23    , void (NUFPAR_PC *parser)
+0x5876a0   , _CC_idle_speed                                                 , 23    , void (NUFPAR_PC *parser)
+0x5876c0   , _CC_tiptoe_speed                                               , 23    , void (NUFPAR_PC *parser)
+0x5876e0   , _CC_walk_speed                                                 , 23    , void (NUFPAR_PC *parser)
+0x587700   , _CC_run_speed                                                  , 23    , void (NUFPAR_PC *parser)
+0x587720   , _CC_backwards_factor                                           , 23    , void (NUFPAR_PC *parser)
+0x587740   , _CC_air_gravity                                                , 23    , void (NUFPAR_PC *parser)
+0x587760   , _CC_jump_speed                                                 , 23    , void (NUFPAR_PC *parser)
+0x587780   , _CC_jump_2_speed                                               , 23    , void (NUFPAR_PC *parser)
+0x5877a0   , _CC_acceleration                                               , 23    , void (NUFPAR_PC *parser)
+0x5877c0   , _CC_streak                                                     , 176   , void (NUFPAR_PC *parser)
+0x587870   , _CC_hit_points                                                 , 26    , void (NUFPAR_PC *parser)
+0x5878d0   , _CC_baddie                                                     , 62    , void (NUFPAR_PC *parser)
+0x587910   , _CC_jedi                                                       , 62    , void (NUFPAR_PC *parser)
+0x587950   , _CC_droid                                                      , 62    , void (NUFPAR_PC *parser)
+0x587990   , _CC_protocol                                                   , 62    , void (NUFPAR_PC *parser)
+0x5879d0   , _CC_astromech                                                  , 62    , void (NUFPAR_PC *parser)
+0x587a10   , _CC_cannon                                                     , 74    , void (NUFPAR_PC *parser)
+0x587a60   , _CC_bounty_hunter                                              , 68    , void (NUFPAR_PC *parser)
+0x587ab0   , _CC_blaster                                                    , 68    , void (NUFPAR_PC *parser)
+0x587b00   , _CC_teleport                                                   , 68    , void (NUFPAR_PC *parser)
+0x587b50   , _CC_zipup                                                      , 68    , void (NUFPAR_PC *parser)
+0x587ba0   , _CC_untargetable                                               , 68    , void (NUFPAR_PC *parser)
+0x587bf0   , _CC_orientate                                                  , 68    , void (NUFPAR_PC *parser)
+0x587c40   , _CC_neutral                                                    , 68    , void (NUFPAR_PC *parser)
+0x587c90   , _CC_complex_shadow                                             , 68    , void (NUFPAR_PC *parser)
+0x587ce0   , _CC_shadow_orientation                                         , 74    , void (NUFPAR_PC *parser)
+0x587d30   , _CC_can_open_doors                                             , 68    , void (NUFPAR_PC *parser)
+0x587d80   , _CC_non_stick                                                  , 68    , void (NUFPAR_PC *parser)
+0x587dd0   , _CC_can_shoot_offscreen                                        , 68    , void (NUFPAR_PC *parser)
+0x587e20   , _CC_can_fire                                                   , 68    , void (NUFPAR_PC *parser)
+0x587e70   , _CC_minikit                                                    , 68    , void (NUFPAR_PC *parser)
+0x587ec0   , _CC_minikit_with_scene                                         , 100   , void (NUFPAR_PC *parser)
+0x587f30   , _CC_minikit_noscenewhenplayable                                , 75    , void (NUFPAR_PC *parser)
+0x587f80   , _CC_lift_hover                                                 , 73    , void (NUFPAR_PC *parser)
+0x587fd0   , _CC_can_poo                                                    , 78    , void (NUFPAR_PC *parser)
+0x588020   , _CC_can_zap                                                    , 75    , void (NUFPAR_PC *parser)
+0x588070   , _CC_put_weapon_away_on_shoot                                   , 75    , void (NUFPAR_PC *parser)
+0x5880c0   , _CC_always_stop_to_shoot                                       , 77    , void (NUFPAR_PC *parser)
+0x588110   , _CC_second_shot_only                                           , 79    , void (NUFPAR_PC *parser)
+0x588160   , _CC_no_start_punch_sfx                                         , 73    , void (NUFPAR_PC *parser)
+0x5881b0   , _CC_single_jump_slam                                           , 73    , void (NUFPAR_PC *parser)
+0x588200   , _CC_dont_draw_rider                                            , 73    , void (NUFPAR_PC *parser)
+0x588250   , _CC_glide_anytime                                              , 73    , void (NUFPAR_PC *parser)
+0x5882a0   , _CC_can_communicate                                            , 75    , void (NUFPAR_PC *parser)
+0x5882f0   , _CC_immune_to_magnets                                          , 75    , void (NUFPAR_PC *parser)
+0x588340   , _CC_immune_to_forcepush                                        , 75    , void (NUFPAR_PC *parser)
+0x588390   , _CC_cannot_kill                                                , 75    , void (NUFPAR_PC *parser)
+0x5883e0   , _CC_wait_for_weapon_in_out                                     , 75    , void (NUFPAR_PC *parser)
+0x588430   , _CC_double_jump_hover                                          , 75    , void (NUFPAR_PC *parser)
+0x588480   , _CC_no_category                                                , 75    , void (NUFPAR_PC *parser)
+0x5884d0   , _CC_no_force                                                   , 75    , void (NUFPAR_PC *parser)
+0x588520   , _CC_white_lightning                                            , 75    , void (NUFPAR_PC *parser)
+0x588570   , _CC_buck_rider                                                 , 75    , void (NUFPAR_PC *parser)
+0x5885c0   , _CC_die_usecurrentlayers                                       , 75    , void (NUFPAR_PC *parser)
+0x588610   , _CC_no_weapon_draw                                             , 75    , void (NUFPAR_PC *parser)
+0x588660   , _CC_no_jump_fire                                               , 75    , void (NUFPAR_PC *parser)
+0x5886b0   , _CC_hover_over_mud                                             , 75    , void (NUFPAR_PC *parser)
+0x588700   , _CC_toggle_if_not_in_collection                                , 75    , void (NUFPAR_PC *parser)
+0x588750   , _CC_toggle_if_in_minikit_bonus                                 , 75    , void (NUFPAR_PC *parser)
+0x5887a0   , _CC_deflect_bolts_in_minikit_bonus                             , 75    , void (NUFPAR_PC *parser)
+0x5887f0   , _CC_has_grapple                                                , 75    , void (NUFPAR_PC *parser)
+0x588840   , _CC_hover_wings                                                , 75    , void (NUFPAR_PC *parser)
+0x588890   , _CC_has_whip                                                   , 75    , void (NUFPAR_PC *parser)
+0x5888e0   , _CC_respawn                                                    , 68    , void (NUFPAR_PC *parser)
+0x588930   , _CC_vehicle                                                    , 68    , void (NUFPAR_PC *parser)
+0x588980   , _CC_only_active_when_taken_over                                , 68    , void (NUFPAR_PC *parser)
+0x5889d0   , _CC_beast                                                      , 68    , void (NUFPAR_PC *parser)
+0x588a20   , _CC_prefers_brawling                                           , 68    , void (NUFPAR_PC *parser)
+0x588a70   , _CC_dontpush                                                   , 68    , void (NUFPAR_PC *parser)
+0x588ac0   , _CC_dont_move_out_of_way                                       , 74    , void (NUFPAR_PC *parser)
+0x588b10   , _CC_dontmove                                                   , 74    , void (NUFPAR_PC *parser)
+0x588b60   , _CC_jetpack                                                    , 68    , void (NUFPAR_PC *parser)
+0x588bb0   , _CC_oldheadmovement                                            , 68    , void (NUFPAR_PC *parser)
+0x588c00   , _CC_atatheadmovement                                           , 16    , void (NUFPAR_PC *parser)
+0x588c10   , _CC_cannotbigjump                                              , 68    , void (NUFPAR_PC *parser)
+0x588c60   , _CC_no_offpath_teleport                                        , 68    , void (NUFPAR_PC *parser)
+0x588cb0   , _CC_no_kill_parts                                              , 68    , void (NUFPAR_PC *parser)
+0x588d00   , _CC_high_jump                                                  , 74    , void (NUFPAR_PC *parser)
+0x588d50   , _CC_super_strength                                             , 74    , void (NUFPAR_PC *parser)
+0x588da0   , _CC_transformatron                                             , 74    , void (NUFPAR_PC *parser)
+0x588df0   , _CC_bypass_security                                            , 74    , void (NUFPAR_PC *parser)
+0x588e40   , _CC_hazard_protection                                          , 74    , void (NUFPAR_PC *parser)
+0x588e90   , _CC_wall_jump                                                  , 74    , void (NUFPAR_PC *parser)
+0x588ee0   , _CC_got_batarang                                               , 74    , void (NUFPAR_PC *parser)
+0x588f30   , _CC_tightrope_tilt                                             , 74    , void (NUFPAR_PC *parser)
+0x588f80   , _CC_combat_roll                                                , 207   , void (NUFPAR_PC *parser)
+0x589050   , _CC_has_scene_element                                          , 10    , void (NUFPAR_PC *parser)
+0x589060   , _CC_dont_turn                                                  , 75    , void (NUFPAR_PC *parser)
+0x5890b0   , _CC_no_jump                                                    , 77    , void (NUFPAR_PC *parser)
+0x589100   , _CC_no_shoot                                                   , 79    , void (NUFPAR_PC *parser)
+0x589150   , _CC_blobshadow_size                                            , 49    , void (NUFPAR_PC *parser)
+0x589190   , _CC_blobshadow_alpha                                           , 26    , void (NUFPAR_PC *parser)
+0x5891b0   , _CC_hover_height                                               , 23    , void (NUFPAR_PC *parser)
+0x5891d0   , _CC_hover_time                                                 , 46    , void (NUFPAR_PC *parser)
+0x589200   , _CC_maxheadturn                                                , 35    , void (NUFPAR_PC *parser)
+0x589230   , _CC_maxheadtilt                                                , 35    , void (NUFPAR_PC *parser)
+0x589260   , _CC_headrotrate                                                , 35    , void (NUFPAR_PC *parser)
+0x589290   , _CC_coin_value                                                 , 72    , void (NUFPAR_PC *parser)
+0x5892e0   , _CC_SetTimebase                                                , 97    , "void (NUFPAR_PC *parser, i32 index)"
+0x589350   , _CC_set_timebaseupdate1                                        , 16    , void (NUFPAR_PC *parser)
+0x589360   , _CC_set_timebaseupdate2                                        , 16    , void (NUFPAR_PC *parser)
+0x589370   , _CC_set_timebaseupdate3                                        , 16    , void (NUFPAR_PC *parser)
+0x589380   , _CC_set_timebaseupdate4                                        , 16    , void (NUFPAR_PC *parser)
+0x589390   , _CharConfig_CalculateJumpStats                                 , 116   , "void (float jump_speed, float gravity, float *duration, float *height)"
+0x589410   , _CharConfig                                                    , 1704  , "i32 (i32 character_id, char *directory, char *filename, VARIPTR *arena, VARIPTR *arena_end, i32 permanent, char *text, i32 text_length, i32 redirect, NUFPCOMJMP *game_keywords)"
+0x589ac0   , _CharConfig_ConfigureAll                                       , 1139  , "void (i32 permanent, NUFPCOMJMP *game_keywords)"
 0x0058a8d0 , _Mission_Clear                                                 , 44    , void __cdecl (void *)
+0x0058b720 , _ObjHitObj_Flags                                               , 67    , i32 __cdecl (GAMEOBJECT *)
 0x0058b7f0 , _CannotKill                                                    , 71    , i32 __cdecl (GAMEOBJECT *)
 0x0058b8d0 , _CharPlatforms_Configure                                       , 358   , "void __cdecl (WORLDINFO *, char *)"
 0x00592a70 , _Customiser_LoadAccessories                                    , 648   , "void __cdecl (CUSTOMISER*, APICHARACTERMODELLIST_s*)"
@@ -783,6 +1057,8 @@ address    , symbol                                                         , si
 0x005a81b0 , _Particles_Start                                               , 80    , void __cdecl (WORLDINFO *)
 0x005a8200 , _Particles_Stop                                                , 113   , void __cdecl (WORLDINFO *)
 0x005a8280 , _SetEffectVisibility                                           , 55    , "void __cdecl (char *, i32)"
+0x005a8390 , _CharPivot_Init                                                , 45    , void __cdecl (struct CHARPIVOT_PC *)
+0x005a83c0 , _CharPivot_Check                                               , 419   , "void __cdecl (GAMEOBJECT *, NUVEC *)"
 0x005aab50 , _ResetGizAIMessageSys                                          , 99    , void __cdecl (GIZAIMESSAGESYS *)
 0x005aabc0 , _ClearGizAIMessageSys                                          , 53    , void __cdecl (GIZAIMESSAGESYS *)
 0x005aac00 , _CheckGizAIMessage                                             , 324   , "GIZAIMESSAGE *__cdecl (GIZAIMESSAGESYS *, const char *, GIZAIMESSAGE *)"
@@ -918,6 +1194,7 @@ address    , symbol                                                         , si
 0x005bec80 , _NuVecMag                                                      , 49    , f32 __cdecl (NUVEC *)
 0x005becc0 , _NuVecDist                                                     , 182   , "f32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x005bed80 , _NuVecXZDist                                                   , 159   , "f32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
+0x005bee20 , _NuLineLineIntersect                                           , 452   , "i32 __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32 *, f32 *)"
 0x005bf910 , _NuLineToPointDistSqrEx                                        , 431   , "f32 __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
 0x005bfae0 , _NuInfiniteLineToPointDistSqrEx                                , 330   , "f32 __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
 0x005bfc30 , _NuInfiniteLineToPointDistSqr                                  , 26    , "f32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
@@ -1118,15 +1395,26 @@ address    , symbol                                                         , si
 0x6217e0   , _EdFileReadInt                                                 , 59    , i32 __cdecl (void)
 0x6218c0   , _EdFileReadChar                                                , 21    , char __cdecl (void)
 0x0062b040 , _APIObjectVelocities                                           , 169   , void __cdecl (GAMEOBJECT *)
+0x0062c300 , _ParticlesPerFrame                                             , 76    , "i32 __cdecl (f32, f32)"
+0x0062c350 , _ParticlesPerSecond                                            , 90    , "i32 __cdecl (f32, f32)"
+0x0062c3b0 , _FindGameDebris                                                , 79    , "i32 __cdecl (APIDEBRISSYS_PC *, char *)"
 0x0062d540 , _APILoadCharacterModels                                        , 2619  , "void __cdecl (APICHARACTERMODELLIST_s*, i32, VARIPTR*, VARIPTR, i32)"
+0x62f150   , _AnimPlaying                                                   , 68    , "f32 *__cdecl (ANIMPACKET_PC *,i32,i32,i32)"
+0x0062f1a0 , _CurrentAnim                                                   , 20    , i32 __cdecl (ANIMPACKET_PC *)
 0x0062f970 , _APITransparentInit                                            , 325   , void __cdecl (void)
+0x00630740 , _ActionFromName                                                , 127   , i32 __cdecl (const char *)
 0x006489f0 , _edpartStartPage                                               , 57    , void __cdecl (u8)
 0x00648a30 , _edpartStopPage                                                , 17    , void __cdecl (u8)
 0x0064a450 , _NuPartSetSeed                                                 , 10    , void __cdecl (i32)
 0x0064a460 , _NuPartGetSeed                                                 , 6     , u32 __cdecl (void)
+0x0064a740 , _NewPartRotation                                               , 127   , void __cdecl (PART_PC *)
+0x0064a7c0 , _NewPartOrderedRotation                                        , 133   , void __cdecl (PART_PC *)
+0x0064ab10 , _HitParts                                                      , 371   , "PART_PC *__cdecl (GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, u32)"
+0x0064ac90 , _KillPart                                                      , 175   , "void __cdecl (PART_PC *, i32)"
 0x0064ae40 , _SetPartRTLSet                                                 , 10    , void __cdecl (RTLSET_PC *)
 0x0064b370 , _PartDebrisCreatePart_candidate                                , 154   , "i32 __cdecl (i32, NUVEC *, i32)"
 0x0064c6e0 , _edpartClearPage                                               , 198   , void __cdecl (i8)
+0x0064d270 , _AddPart                                                       , 1884  , PART_PC *__cdecl (ADDPART_PC *)
 0x0064e550 , _AddVariableShotPARTEffect                                     , 1441  , "void __cdecl (i32, NUVEC *, f32, f32, NUMTX *)"
 0x00650280 , _SfxBuildCRCTable                                              , 217   , void __cdecl (VARIPTR *)
 0x00650430 , _SfxNameHash                                                   , 64    , u32 __cdecl (const char *)
@@ -1719,12 +2007,17 @@ address    , symbol                                                         , si
 0x00751640 , __real@40a00000                                                , 4     , const f32
 0x00751644 , __real@4e6e6b28                                                , 4     , const f32
 0x00751658 , __real@00000000                                                , 4     , const f32
+0x751660   , __real@3fe6666660000000                                        , 8     , const f64
 0x00751678 , _VehicleHoverHeightSeparationScale                             , 8     , const f64
 0x00751680 , __real@3fc99999a0000000                                        , 8     , const f64
+0x00751688 , __real@40e8000000000000                                        , 8     , f64
 0x00751690 , _VehicleTurnPhaseOffset                                        , 8     , const f64
+0x00751690 , __real@40d0000000000000                                        , 8     , f64
 0x00751698 , __real@3ff0000000000000                                        , 8     , f64
 0x007516a0 , __real@4018000000000000                                        , 8     , const f64
+0x007516a8 , __real@3fe99999a0000000                                        , 8     , f64
 0x007516b0 , _VehicleTurnPhaseScale                                         , 8     , const f64
+0x007516b0 , __real@40f0000000000000                                        , 8     , f64
 0x007516b8 , _nu_wind_scaled_time_multiplier                                , 8     , const f64
 0x007516b8 , __real@4014000000000000                                        , 8     , const f64
 0x007516d8 , _NuQFntHalfScale                                               , 8     , const f64
@@ -1734,6 +2027,7 @@ address    , symbol                                                         , si
 0x007516e8 , __real@3fd0000000000000                                        , 8     , const f64
 0x007516f8 , __real@3fd99999a0000000                                        , 8     , const f64
 0x00751700 , __real@3ef0000000000000                                        , 8     , const f64
+0x00751700 , __real@3ef0001000000000                                        , 8     , const f64
 0x00751708 , __real@40400000                                                , 4     , const f32
 0x0075170c , __real@41200000                                                , 4     , const f32
 0x00751718 , __real@3e800000                                                , 4     , const f32
@@ -1760,6 +2054,7 @@ address    , symbol                                                         , si
 0x007517b0 , __real@3d800000                                                , 4     , const f32
 0x007517b4 , __real@40800000                                                , 4     , const f32
 0x007517b8 , _NuPrimTwo                                                     , 4     , const f32
+0x007517b8 , __real@40000000                                                , 4     , const f32
 0x007517c0 , _NuTimeBarTop                                                  , 8     , const f64
 0x007518e4 , __real@3f400000                                                , 4     , const f32
 0x00751928 , _MoveSplineRunSpeedSentinel                                    , 8     , const f64
@@ -1778,15 +2073,21 @@ address    , symbol                                                         , si
 0x00751a50 , __real@3f19999a                                                , 4     , const f32
 0x00751a68 , __real@3fb0000000000000                                        , 8     , const f64
 0x00751a78 , _ApplyGravityVelocityFactor                                    , 8     , const f64
+0x00751a78 , __real@3fd54fdf40000000                                        , 8     , const f64
+0x00751a88 , __real@3f10000000000000                                        , 8     , f64
 0x00751a90 , __real@3ff8000000000000                                        , 8     , const f64
+0x751a98   , __real@40c0000000000000                                        , 8     , const f64
 0x00751ac0 , __real@3fe8000000000000                                        , 8     , const f64
 0x00751bf8 , __real@4024000000000000                                        , 8     , const f64
 0x00751c00 , _GizAIMessage_PrefixedNameFormat                               , 5     , const char[5]
 0x00751c30 , __real@4049000000000000                                        , 8     , const f64
+0x00751c40 , __real@40200000                                                , 4     , const f32
 0x00751ca4 , _NuPrimMinusTwo                                                , 4     , const f32
 0x00751ca4 , __real@c0000000                                                , 4     , const f32
+0x00751ca8 , __real@49742400                                                , 4     , const f32
 0x00751cb8 , __real@c1200000                                                , 4     , const f32
 0x00751cc8 , _BoltTargetRandomDenominator                                   , 8     , const f64
+0x00751d0c , __real@3eb33333                                                , 4     , const f32
 0x00751d84 , _LevelConfigFarDistance                                        , 4     , const f32
 0x00751d84 , __real@49f42400                                                , 4     , const f32
 0x00751d90 , __real@42480000                                                , 4     , const f32
@@ -1840,17 +2141,24 @@ address    , symbol                                                         , si
 0x007531b4 , __real@3fa00000                                                , 4     , const f32
 0x007531b8 , __real@3e19999a                                                , 4     , const f32
 0x007531c0 , __real@3fd3333340000000                                        , 8     , const f64
+0x7531c8   , __real@403e000000000000                                        , 8     , const f64
+0x007531d8 , __real@4022000000000000                                        , 8     , const f64
 0x007531f8 , __real@406fe00000000000                                        , 8     , const f64
 0x00753220 , __real@bdcccccd                                                , 4     , const f32
 0x00753270 , _AIScriptKeywordBase                                           , 5     , const char[5]
 0x00753288 , _NuTimeBarUnsignedBias                                         , 4     , const f32
 0x00753288 , __real@4f800000                                                , 4     , f32
 0x007532a8 , __real@42c80000                                                , 4     , const f32
+0x7532b8   , __real@3ecccccd                                                , 4     , const f32
+0x75330c   , ??_C@_07IOJHMCFF@blaster?$AA@                                  , 8     , const char[8]
+0x75331c   , ??_C@_04BNEGNDCN@jedi?$AA@                                     , 5     , const char[5]
 0x007533d0 , _GameObjectNearFloorRadiusDivisor                              , 8     , const f64
 0x00753428 , __real@3feb333340000000                                        , 8     , const f64
+0x7546c8   , ??_C@_03NBAOADML@gun?$AA@                                      , 4     , const char[4]
 0x007547a4 , _PermLegalBase                                                 , 6     , const char[6]
 0x007548ec , _LevelSplinesStartCamName                                      , 10    , const char[10]
 0x007548f8 , _LevelSplinesStartName                                         , 6     , const char[6]
+0x754f70   , ??_C@_04OBGPFBCN@blue?$AA@                                     , 5     , const char[5]
 0x00754fa4 , _ApplyGravityMinimumFrameTime                                  , 4     , const f32
 0x75500c   , _ForcePushSeekRate                                             , 4     , const f32
 0x0075501c , __real@41c80000                                                , 4     , const f32
@@ -1858,6 +2166,7 @@ address    , symbol                                                         , si
 0x00755044 , __real@40733333                                                , 4     , const f32
 0x0075504c , _PermLegalScale                                                , 4     , const f32
 0x0075515c , __real@40c80000                                                , 4     , const f32
+0x755174   , __real@becccccd                                                , 4     , const f32
 0x00755180 , _NuScale1000                                                   , 8     , const f64
 0x007552e0 , _GetSfxSwPPadName                                              , 7     , const char[7]
 0x00755b18 , __real@4004000000000000                                        , 8     , const f64
@@ -1876,10 +2185,17 @@ address    , symbol                                                         , si
 0x756a38   , _PCContextName_BigJump                                         , 8     , const char [8]
 0x756ac8   , _PCContextName_Activate                                        , 9     , const char [9]
 0x756da4   , _PCContextName_BeenTakenOver                                   , 14    , const char [14]
+0x7576b8   , ??_C@_06DKGIHPCG@baddie?$AA@                                   , 7     , const char[7]
 0x00757714 , _AIScriptFalse                                                 , 6     , const char[6]
+0x75772c   , ??_C@_04GPMDFGEJ@type?$AA@                                     , 5     , const char[5]
 0x00757734 , _GizmoDefaultOutputName                                        , 8     , char[8]
+0x75773c   , ??_C@_07JAOEMGIL@neutral?$AA@                                  , 8     , const char[8]
+0x75779c   , ??_C@_07PABIOCAD@respawn?$AA@                                  , 8     , const char[8]
 0x007577b0 , _AreaConfigKeyword_character                                   , 10    , const char[10]
+0x7577b0   , ??_C@_09MNKJOHH@character?$AA@                                 , 10    , const char[10]
 0x00757800 , _AIScriptActionNameArgPrefix                                   , 6     , const char[6]
+0x757824   , ??_C@_06NLFCANPD@random?$AA@                                   , 7     , const char[7]
+0x75782c   , ??_C@_04MEMAJGDJ@name?$AA@                                     , 5     , const char[5]
 0x00757854 , _ZArgPrefix                                                    , 3     , const char[3]
 0x00757858 , _YArgPrefix                                                    , 3     , const char[3]
 0x0075785c , _XArgPrefix                                                    , 3     , const char[3]
@@ -1889,14 +2205,22 @@ address    , symbol                                                         , si
 0x00757f58 , _StartDelayArgPrefix                                           , 12    , const char[12]
 0x00757f64 , _RepeatDelayArgPrefix                                          , 10    , const char[10]
 0x00757f70 , _PlayCountArgPrefix                                            , 11    , const char[11]
+0x758280   , ??_C@_07PAIKCKMF@locator?$AA@                                  , 8     , const char[8]
 0x00758464 , _AIScriptParamPrefix                                           , 6     , const char[6]
+0x007584a8 , _AIExpressionMaxName                                           , 4     , const char [4]
 0x7584c4   , _PCContextName_Techno                                          , 7     , const char [7]
+0x75850c   , ??_C@_08LOCMGIHJ@teleport?$AA@                                 , 9     , const char[9]
+0x75866c   , ??_C@_05GGJMBGBG@zipup?$AA@                                    , 6     , const char[6]
 0x007586e0 , _NuTimeBarHorizontalTop                                        , 8     , const f64
 0x758774   , _PCContextName_Jump                                            , 5     , const char [5]
 0x00758808 , __real@3fefffffe0000000                                        , 8     , const f64
 0x00758828 , _GizAIMessage_NameFormat                                       , 3     , const char[3]
 0x00758b54 , __real@ce6e6b28                                                , 4     , const f32
+0x758dec   , ??_C@_05MHMEBBGO@scale?$AA@                                    , 6     , const char[6]
+0x758dfc   , ??_C@_05HJCMGBKF@speed?$AA@                                    , 6     , const char[6]
+0x758e04   , ??_C@_06KGHINEPG@radius?$AA@                                   , 7     , const char[7]
 0x00758e24 , _LevelConfigOff                                                , 4     , const char[4]
+0x758e24   , ??_C@_03MCADLMAF@off?$AA@                                      , 4     , const char[4]
 0x00758fc0 , _NuTime_RefreshRate                                            , 8     , const f64
 0x00758fc0 , __real@404e000000000000                                        , 8     , const f64
 0x758fd0   , _PCContextName_HatMachine                                      , 11    , const char [11]
@@ -2011,7 +2335,7 @@ address    , symbol                                                         , si
 0x00759f40 , _LevelConfigGameKeyword_max_signals                            , 12    , const char[12]
 0x00759f4c , _LevelConfigGameKeyword_max_tightropes                         , 15    , const char[15]
 0x0075a0dc , _DebrisGlassMaterialOpacity                                    , 4     , const f32
-0x0075a204 , ??_C@_01KICIPPFI@?2?$AA@                                       , 2     , const char[2]
+0x75a204   , ??_C@_01KICIPPFI@?2?$AA@                                       , 2     , const char[2]
 0x0075a208 , _AreaResidentsDirectory                                        , 8     , const char[8]
 0x0075a2b0 , __real@45000000                                                , 4     , const f32
 0x0075ac2c , __real@44000000                                                , 4     , const f32
@@ -2022,6 +2346,7 @@ address    , symbol                                                         , si
 0x0075adcc , _EpisodeIIDat                                                  , 15    , const char[15]
 0x0075addc , _EpisodeIDat                                                   , 14    , const char[14]
 0x0075adec , _Menu_OptionsVolumeFormat                                      , 10    , const char[10]
+0x75b9a8   , ??_C@_04EAPMNACM@idle?$AA@                                     , 5     , const char[5]
 0x75b9b8   , _PCContextName_NetWait                                         , 8     , const char [8]
 0x75b9c0   , _PCContextName_Whip                                            , 5     , const char [5]
 0x75b9c8   , _PCContextName_DieGround                                       , 10    , const char [10]
@@ -2111,10 +2436,20 @@ address    , symbol                                                         , si
 0x75bd38   , _PCContextName_LandJump                                        , 9     , const char [9]
 0x75bd44   , _PCContextName_NoContext                                       , 10    , const char [10]
 0x0075bd58 , __real@3bf9096c                                                , 4     , const f32
+0x75bd70   , __real@bf12f1aa                                                , 4     , const f32
+0x75bd74   , __real@3f12f1aa                                                , 4     , const f32
+0x0075bd7c , _TurnLoopSfx                                                   , 17    , const char [17]
+0x0075bd98 , __real@40d38e0000000000                                        , 8     , f64
+0x0075bdc0 , _SaberSparksName                                               , 12    , const char [12]
 0x0075bdec , __real@3a83126f                                                , 4     , const f32
 0x75be2c   , _ForcePushApproachOuterSquare                                  , 4     , const f32
 0x75be30   , _ForcePushApproachInnerSquare                                  , 4     , const f32
+0x0075be44 , ??_C@_07GDIDDJMN@BBounce?$AA@                                  , 8     , const char[8]
+0x0075be50 , __real@4003333340000000                                        , 8     , const f64
+0x75be58   , __real@3eb851ec                                                , 4     , const f32
 0x0075bf80 , _ApplyGravityFrameScale                                        , 8     , const f64
+0x75bf80   , __real@4066800000000000                                        , 8     , const f64
+0x75bfa0   , __real@c0a5540000000000                                        , 8     , const f64
 0x0075bfd0 , _PCAtan2RadianScale                                            , 8     , const f64
 0x0075c058 , _NuTimeBarValueFormat                                          , 3     , const char[3]
 0x0075c060 , __real@406c000000000000                                        , 8     , const f64
@@ -2148,8 +2483,10 @@ address    , symbol                                                         , si
 0x0075d37c , _TextLoadPermTRCPath                                           , 19    , const char[19]
 0x0075d390 , _TextLoadPermAPIExtension                                      , 9     , const char[9]
 0x0075d39c , _AreaResidentsExtension                                        , 5     , const char[5]
+0x75d39c   , ??_C@_04LCMACLFG@?4txt?$AA@                                    , 5     , const char[5]
 0x0075d3a4 , _TextLoadPermTextDirectory                                     , 12    , const char[12]
 0x0075d3d8 , __real@3f1a36e2e0000000                                        , 8     , const f64
+0x75d3e0   , ??_C@_07CJDNLGID@vehicle?$AA@                                  , 8     , const char[8]
 0x0075d418 , _nu_wind_phase_scale                                           , 8     , const f64
 0x0075d4f0 , __real@3fefd70a40000000                                        , 8     , const f64
 0x0075da40 , __real@c066c16c20000000                                        , 8     , const f64
@@ -2193,6 +2530,8 @@ address    , symbol                                                         , si
 0x0075ffd8 , _AIScriptKeywordSource                                         , 7     , const char[7]
 0x0075ffe0 , ??_C@_06CEFAHBNL@Script?$AA@                                   , 7     , const char[7]
 0x0075ffe0 , _AIScriptKeywordScript                                         , 7     , const char[7]
+0x0075ffe8 , _AIExpressionTrueName                                          , 5     , const char [5]
+0x0075fff0 , _AIExpressionRandName                                          , 5     , const char [5]
 0x0075fff8 , _NuAnimDataFloatMax                                            , 8     , const f64
 0x0075fff8 , __real@47efffffe0000000                                        , 8     , const f64
 0x007603f8 , ??_C@_07DKPOBDJL@OnMacro?$AA@                                  , 8     , const char[8]
@@ -2201,6 +2540,9 @@ address    , symbol                                                         , si
 0x0076041c , ??_C@_0M@ELCDDGAK@ReturnState?$AA@                             , 12    , const char[12]
 0x00760428 , _AIScriptListPathFormat                                        , 14    , const char[14]
 0x00760438 , _AIScriptListFilename                                          , 11    , const char[11]
+0x760458   , ??_C@_08IIJFADMF@priority?$AA@                                 , 9     , const char[9]
+0x760c14   , ??_C@_09CIJOFFDC@on_ground?$AA@                                , 10    , const char[10]
+0x00760c20 , _AICharacterInitialiseName                                     , 11    , const char [11]
 0x0076138c , _LevelConfigGenericKeyword_camang_seek                         , 12    , const char[12]
 0x00761398 , _LevelConfigGenericKeyword_campos_seek                         , 12    , const char[12]
 0x007615b0 , _NuLstCreateTag                                                , 52    , const char[52]
@@ -2226,12 +2568,14 @@ address    , symbol                                                         , si
 0x007616c4 , _Text_TimeHMSC                                                 , 18    , const char[18]
 0x007616d8 , __real@40ac200000000000                                        , 8     , const f64
 0x0076186c , _GizmoConfigPathFormat                                         , 7     , const char [7]
+0x761a90   , ??_C@_09CKCBMNI@orientate?$AA@                                 , 10    , const char[10]
 0x00761b28 , _AreaConfigKeyword_area_start                                  , 11    , const char[11]
 0x00761b34 , _AreaConfigKeyword_redbrick_extra                              , 15    , const char[15]
 0x00761b44 , _AreaConfigKeyword_redbrick_cheat                              , 15    , const char[15]
 0x00761b54 , _AreaConfigKeyword_timetrial_time                              , 15    , const char[15]
 0x00761b64 , _AreaConfigKeyword_text_id                                     , 8     , const char[8]
 0x00761b6c , _AreaConfigKeyword_name_id                                     , 8     , const char[8]
+0x761b6c   , ??_C@_07ECDMHAAP@name_id?$AA@                                  , 8     , const char[8]
 0x00761b74 , _AreaConfigKeyword_no_freeplay                                 , 12    , const char[12]
 0x00761b80 , _AreaConfigKeyword_no_completion_points                        , 21    , const char[21]
 0x00761b98 , _AreaConfigKeyword_no_gold_brick                               , 14    , const char[14]
@@ -2248,6 +2592,7 @@ address    , symbol                                                         , si
 0x00761c6c , _AreaConfigKeyword_hub_area                                    , 9     , const char[9]
 0x00761c78 , _AreaConfigKeyword_test_area                                   , 10    , const char[10]
 0x00761c84 , _AreaConfigKeyword_minikit                                     , 8     , const char[8]
+0x761c84   , ??_C@_07IJLDNLID@minikit?$AA@                                  , 8     , const char[8]
 0x00761c8c , _AreaConfigKeyword_single_buffer                               , 14    , const char[14]
 0x00761c9c , _AreaConfigKeyword_level                                       , 6     , const char[6]
 0x00761ca4 , _LevelConfigKeywordFile                                        , 5     , const char[5]
@@ -2289,7 +2634,9 @@ address    , symbol                                                         , si
 0x007620c0 , _LevelConfigGenericKeyword_blobshadow_fadefar                  , 19    , const char[19]
 0x007620d4 , _LevelConfigGenericKeyword_blobshadow_fadenear                 , 20    , const char[20]
 0x007620e8 , _LevelConfigGenericKeyword_blobshadow_alpha                    , 17    , const char[17]
+0x7620e8   , ??_C@_0BB@CKDMNEID@blobshadow_alpha?$AA@                       , 17    , const char[17]
 0x007620fc , _LevelConfigGenericKeyword_hover_height                        , 13    , const char[13]
+0x7620fc   , ??_C@_0N@FCJDHOAN@hover_height?$AA@                            , 13    , const char[13]
 0x0076210c , _LevelConfigGenericKeyword_nearclip_pc                         , 12    , const char[12]
 0x00762118 , _LevelConfigGenericKeyword_farclip_pc                          , 11    , const char[11]
 0x00762124 , _LevelConfigGenericKeyword_nearclip                            , 9     , const char[9]
@@ -2320,11 +2667,288 @@ address    , symbol                                                         , si
 0x00762278 , _LevelConfigKeywordEnd                                         , 10    , const char[10]
 0x00762284 , _LevelBeforeLoadName                                           , 16    , const char[16]
 0x00762294 , _LevelConfigOn                                                 , 3     , const char[3]
+0x762294   , ??_C@_02LIELOMNJ@on?$AA@                                       , 3     , const char[3]
 0x00762298 , _LevelConfigKeyword_zspeed                                     , 7     , const char[7]
 0x007622a0 , _LevelConfigKeyword_xspeed                                     , 7     , const char[7]
 0x007622a8 , _LevelAfterLoadName                                            , 15    , const char[15]
+0x7623d4   , ??_C@_03MINGLPN@sfx?$AA@                                       , 4     , const char[4]
+0x7624ac   , ??_C@_05BAAEGMAJ@fpsec?$AA@                                    , 6     , const char[6]
+0x7624e4   , ??_C@_05MIJNFGED@frame?$AA@                                    , 6     , const char[6]
+0x762590   , ??_C@_08MIKIMOCP@anim_end?$AA@                                 , 9     , const char[9]
+0x76266c   , ??_C@_09MLDDNGBO@sfx_shoot?$AA@                                , 10    , const char[10]
 0x007626d8 , _EpisodeConfigKeyword_area                                     , 5     , const char[5]
 0x00762718 , _BoltRayAccelerationTimeSquared                                , 8     , const f64
+0x762720   , ??_C@_0BA@HEJJFPAB@timebaseupdate4?$AA@                        , 16    , const char[16]
+0x762730   , ??_C@_0BA@DLNIMJMG@timebaseupdate3?$AA@                        , 16    , const char[16]
+0x762740   , ??_C@_0BA@CCMDPIIH@timebaseupdate2?$AA@                        , 16    , const char[16]
+0x762750   , ??_C@_0BA@JOOKLEE@timebaseupdate1?$AA@                         , 16    , const char[16]
+0x762760   , ??_C@_0L@NPPHDADM@coin_value?$AA@                              , 11    , const char[11]
+0x76276c   , ??_C@_09PDDLCHGE@coinvalue?$AA@                                , 10    , const char[10]
+0x762778   , ??_C@_0M@PMJPDPGL@headrotrate?$AA@                             , 12    , const char[12]
+0x762784   , ??_C@_0M@MHOFCPKM@maxheadtilt?$AA@                             , 12    , const char[12]
+0x762790   , ??_C@_0M@HLLPLDCK@maxheadturn?$AA@                             , 12    , const char[12]
+0x76279c   , ??_C@_0L@NBOHDACE@hover_time?$AA@                              , 11    , const char[11]
+0x7627a8   , ??_C@_0BA@PMINIJHO@blobshadow_size?$AA@                        , 16    , const char[16]
+0x7627b8   , ??_C@_08BOGIAOHH@no_shoot?$AA@                                 , 9     , const char[9]
+0x7627c4   , ??_C@_07DPMJAKPG@no_jump?$AA@                                  , 8     , const char[8]
+0x7627cc   , ??_C@_09JLIFGNND@dont_turn?$AA@                                , 10    , const char[10]
+0x7627d8   , ??_C@_0BC@FFKHNFOO@has_scene_element?$AA@                      , 18    , const char[18]
+0x7627ec   , ??_C@_0M@NPCKGPFO@combat_roll?$AA@                             , 12    , const char[12]
+0x7627f8   , ??_C@_0P@CMCAPHCP@tightrope_tilt?$AA@                          , 15    , const char[15]
+0x762808   , ??_C@_0N@CAPHDPF@got_batarang?$AA@                             , 13    , const char[13]
+0x762818   , ??_C@_09JFCBKLAP@wall_jump?$AA@                                , 10    , const char[10]
+0x762824   , ??_C@_0BC@MFLAKDIN@hazard_protection?$AA@                      , 18    , const char[18]
+0x762838   , ??_C@_0BA@EACHEJPA@bypass_security?$AA@                        , 16    , const char[16]
+0x762848   , ??_C@_0P@DHMFAFFJ@transformatron?$AA@                          , 15    , const char[15]
+0x762858   , ??_C@_0P@JEANIKK@super_strength?$AA@                           , 15    , const char[15]
+0x762868   , ??_C@_09FBHJOLDH@high_jump?$AA@                                , 10    , const char[10]
+0x762874   , ??_C@_0O@IBELCHMJ@no_kill_parts?$AA@                           , 14    , const char[14]
+0x762884   , ??_C@_0BE@CIHDGJMG@no_offpath_teleport?$AA@                    , 20    , const char[20]
+0x762898   , ??_C@_0O@DKLNGPMI@cannotbigjump?$AA@                           , 14    , const char[14]
+0x7628a8   , ??_C@_0BB@HLHDHBBE@atatheadmovement?$AA@                       , 17    , const char[17]
+0x7628bc   , ??_C@_0BA@IMCEAMPC@oldheadmovement?$AA@                        , 16    , const char[16]
+0x7628cc   , ??_C@_07CEBLAHMM@jetpack?$AA@                                  , 8     , const char[8]
+0x7628d4   , ??_C@_08BAJJCOCI@dontmove?$AA@                                 , 9     , const char[9]
+0x7628e0   , ??_C@_0BF@OOCCOHEM@dont_move_out_of_way?$AA@                   , 21    , const char[21]
+0x7628f8   , ??_C@_08ECIHGEG@dontpush?$AA@                                  , 9     , const char[9]
+0x762904   , ??_C@_0BB@COKJIKMF@prefers_brawling?$AA@                       , 17    , const char[17]
+0x762918   , ??_C@_05MEKNPCKN@beast?$AA@                                    , 6     , const char[6]
+0x762920   , ??_C@_0BM@HCAOBBCC@only_active_when_taken_over?$AA@            , 28    , const char[28]
+0x76293c   , ??_C@_08BPANHCDG@has_whip?$AA@                                 , 9     , const char[9]
+0x762948   , ??_C@_0M@KPGFCAPK@hover_wings?$AA@                             , 12    , const char[12]
+0x762954   , ??_C@_0M@CCGAIDAI@has_grapple?$AA@                             , 12    , const char[12]
+0x762960   , ??_C@_0BP@CMJIJMJL@deflect_bolts_in_minikit_bonus?$AA@         , 31    , const char[31]
+0x762980   , ??_C@_0BL@OOJAFJOC@toggle_if_in_minikit_bonus?$AA@             , 27    , const char[27]
+0x76299c   , ??_C@_0BM@DNIMKBHH@toggle_if_not_in_collection?$AA@            , 28    , const char[28]
+0x7629b8   , ??_C@_0P@GNEGKKCD@hover_over_mud?$AA@                          , 15    , const char[15]
+0x7629c8   , ??_C@_0N@IMBCGBPA@no_jump_fire?$AA@                            , 13    , const char[13]
+0x7629d8   , ??_C@_0P@GHHAEOLO@no_weapon_draw?$AA@                          , 15    , const char[15]
+0x7629e8   , ??_C@_0BF@KOAHHIFL@die_usecurrentlayers?$AA@                   , 21    , const char[21]
+0x762a00   , ??_C@_0L@IEMLHMPJ@buck_rider?$AA@                              , 11    , const char[11]
+0x762a0c   , ??_C@_0BA@HOBLHPDK@white_lightning?$AA@                        , 16    , const char[16]
+0x762a1c   , ??_C@_08HODBEHJ@no_force?$AA@                                  , 9     , const char[9]
+0x762a28   , ??_C@_0M@BGBEHMKB@no_category?$AA@                             , 12    , const char[12]
+0x762a34   , ??_C@_0BC@OBACANHP@double_jump_hover?$AA@                      , 18    , const char[18]
+0x762a48   , ??_C@_0BH@DGOBJPEF@wait_for_weapon_in_out?$AA@                 , 23    , const char[23]
+0x762a60   , ??_C@_0M@NNEOLEFC@cannot_kill?$AA@                             , 12    , const char[12]
+0x762a6c   , ??_C@_0BE@CAPGIGID@immune_to_forcepush?$AA@                    , 20    , const char[20]
+0x762a80   , ??_C@_0BC@DEOANACF@immune_to_magnets?$AA@                      , 18    , const char[18]
+0x762a94   , ??_C@_0BA@ICNJCKEH@can_communicate?$AA@                        , 16    , const char[16]
+0x762aa4   , ??_C@_0O@GFNCMAEH@glide_anytime?$AA@                           , 14    , const char[14]
+0x762ab4   , ??_C@_0L@NDDOBLBI@lift_hover?$AA@                              , 11    , const char[11]
+0x762ac0   , ??_C@_0BM@FBMGAICH@minikit_noscenewhenplayable?$AA@            , 28    , const char[28]
+0x762adc   , ??_C@_0BD@LOKIFELM@minikit_with_scene?$AA@                     , 19    , const char[19]
+0x762af0   , ??_C@_0BA@IEFOBFCA@dont_draw_rider?$AA@                        , 16    , const char[16]
+0x762b00   , ??_C@_0BB@BMMMJKNF@single_jump_slam?$AA@                       , 17    , const char[17]
+0x762b14   , ??_C@_0BD@IFEJOMED@no_start_punch_sfx?$AA@                     , 19    , const char[19]
+0x762b28   , ??_C@_0BB@JGHBAGGH@second_shot_only?$AA@                       , 17    , const char[17]
+0x762b3c   , ??_C@_0BF@JDCGPDBJ@always_stop_to_shoot?$AA@                   , 21    , const char[21]
+0x762b54   , ??_C@_0BJ@IBMONOEH@put_weapon_away_on_shoot?$AA@               , 25    , const char[25]
+0x762b70   , ??_C@_07DGNGOLG@can_zap?$AA@                                   , 8     , const char[8]
+0x762b78   , ??_C@_07KLBEKNEG@can_poo?$AA@                                  , 8     , const char[8]
+0x762b80   , ??_C@_08FJKLGCDH@can_fire?$AA@                                 , 9     , const char[9]
+0x762b8c   , ??_C@_0BE@IKDKLNMH@can_shoot_offscreen?$AA@                    , 20    , const char[20]
+0x762ba0   , ??_C@_09ELCPIABE@non_stick?$AA@                                , 10    , const char[10]
+0x762bac   , ??_C@_0P@FLAPHKJK@can_open_doors?$AA@                          , 15    , const char[15]
+0x762bbc   , ??_C@_0BD@ILMBAKEH@shadow_orientation?$AA@                     , 19    , const char[19]
+0x762bd0   , ??_C@_0P@GMAKICOB@complex_shadow?$AA@                          , 15    , const char[15]
+0x762be0   , ??_C@_0N@MHJBCFHE@untargetable?$AA@                            , 13    , const char[13]
+0x762bf0   , ??_C@_0O@IJGHEKKD@bounty_hunter?$AA@                           , 14    , const char[14]
+0x762c00   , ??_C@_06FOGLCJCO@cannon?$AA@                                   , 7     , const char[7]
+0x762c08   , ??_C@_09MLNOMECL@astromech?$AA@                                , 10    , const char[10]
+0x762c14   , ??_C@_08FCFPNNHF@protocol?$AA@                                 , 9     , const char[9]
+0x762c20   , ??_C@_05HLJIBJOG@droid?$AA@                                    , 6     , const char[6]
+0x762c28   , ??_C@_0L@HPCPHHHG@hit_points?$AA@                              , 11    , const char[11]
+0x762c34   , ??_C@_06GPFGACAF@streak?$AA@                                   , 7     , const char[7]
+0x762c3c   , ??_C@_0N@OKFAMOHD@acceleration?$AA@                            , 13    , const char[13]
+0x762c4c   , ??_C@_0N@JNEINBEG@jump_2_speed?$AA@                            , 13    , const char[13]
+0x762c5c   , ??_C@_0L@NFJDJPLH@jump_speed?$AA@                              , 11    , const char[11]
+0x762c68   , ??_C@_0M@LMNLHBMC@air_gravity?$AA@                             , 12    , const char[12]
+0x762c74   , ??_C@_0BB@JGNPENCF@backwards_factor?$AA@                       , 17    , const char[17]
+0x762c88   , ??_C@_09HDBAFAJI@run_speed?$AA@                                , 10    , const char[10]
+0x762c94   , ??_C@_0L@KIBOAONH@walk_speed?$AA@                              , 11    , const char[11]
+0x762ca0   , ??_C@_0N@MHOAMIOK@tiptoe_speed?$AA@                            , 13    , const char[13]
+0x762cb0   , ??_C@_0L@KHDNDIGM@idle_speed?$AA@                              , 11    , const char[11]
+0x762cbc   , ??_C@_0L@MBBMCGEB@stop_speed?$AA@                              , 11    , const char[11]
+0x762cc8   , ??_C@_0BC@HGKGELON@shield_hit_points?$AA@                      , 18    , const char[18]
+0x762cdc   , ??_C@_06GEPNGEJI@weapon?$AA@                                   , 7     , const char[7]
+0x762ce4   , ??_C@_04DMJJIPAH@icon?$AA@                                     , 5     , const char[5]
+0x762cec   , ??_C@_08ELMGCGEM@is_a_boy?$AA@                                 , 9     , const char[9]
+0x762cf8   , ??_C@_09FHLHNAHL@is_a_girl?$AA@                                , 10    , const char[10]
+0x762d04   , ??_C@_0L@OEKFFPLC@car_wheels?$AA@                              , 11    , const char[11]
+0x762d10   , ??_C@_0P@GDGOKLIO@tightrope_walk?$AA@                          , 15    , const char[15]
+0x762d20   , ??_C@_0M@OMCOBJIA@can_flatten?$AA@                             , 12    , const char[12]
+0x762d2c   , ??_C@_0N@IPGJKHJF@extra_toggle?$AA@                            , 13    , const char[13]
+0x762d3c   , ??_C@_0P@FOAOOPCC@can_drag_bombs?$AA@                          , 15    , const char[15]
+0x762d4c   , ??_C@_0BC@HMOCLLPI@slide_orientation?$AA@                      , 18    , const char[18]
+0x762d60   , ??_C@_0P@OHNLDHFB@turning_circle?$AA@                          , 15    , const char[15]
+0x762d70   , ??_C@_0O@DMPGGBAO@can_take_over?$AA@                           , 14    , const char[14]
+0x762d80   , ??_C@_0BB@DKIFOCAH@punch_weapon_out?$AA@                       , 17    , const char[17]
+0x762d94   , ??_C@_0M@KFNIAPFH@not_got_hat?$AA@                             , 12    , const char[12]
+0x762da0   , ??_C@_0BA@BOMCPPFM@already_got_hat?$AA@                        , 16    , const char[16]
+0x762db0   , ??_C@_09KNNFGCAE@no_tiptoe?$AA@                                , 10    , const char[10]
+0x762dbc   , ??_C@_0M@OJDDGHCC@loop_height?$AA@                             , 12    , const char[12]
+0x762dc8   , ??_C@_0BG@PEOLFDBH@jump_move_speed_scale?$AA@                  , 22    , const char[22]
+0x762de0   , ??_C@_0P@MCNJNKEA@slow_down_time?$AA@                          , 15    , const char[15]
+0x762df0   , ??_C@_0O@BNCKLAH@speed_up_time?$AA@                            , 14    , const char[14]
+0x762e00   , ??_C@_0M@DCEEACLD@has_no_turn?$AA@                             , 12    , const char[12]
+0x762e0c   , ??_C@_05IMCPNAJM@ghost?$AA@                                    , 6     , const char[6]
+0x762e14   , ??_C@_0L@JGKKGLPH@resist_zap?$AA@                              , 11    , const char[11]
+0x762e20   , ??_C@_09NNHDMKJA@lightning?$AA@                                , 10    , const char[10]
+0x762e2c   , ??_C@_05FGFCEDFC@choke?$AA@                                    , 6     , const char[6]
+0x762e34   , ??_C@_07NHBFELLE@banking?$AA@                                  , 8     , const char[8]
+0x762e3c   , ??_C@_0M@PEGNPCGM@turn_rate_2?$AA@                             , 12    , const char[12]
+0x762e48   , ??_C@_09NKDNFDCB@turn_rate?$AA@                                , 10    , const char[10]
+0x762e54   , ??_C@_0BA@CPJFGAAI@lowres_swapdist?$AA@                        , 16    , const char[16]
+0x762e64   , ??_C@_0BD@KLOMOIPP@mediumres_swapdist?$AA@                     , 19    , const char[19]
+0x762e78   , ??_C@_0P@FKENCDOC@min_viewheight?$AA@                          , 15    , const char[15]
+0x762e88   , ??_C@_0P@HNPGEEND@max_viewheight?$AA@                          , 15    , const char[15]
+0x762e98   , ??_C@_0N@NJMEGNAE@heardistance?$AA@                            , 13    , const char[13]
+0x762ea8   , ??_C@_09MKHFCFJD@viewrange?$AA@                                , 10    , const char[10]
+0x762eb4   , ??_C@_0BB@HGHOFMGF@cloak_down_angle?$AA@                       , 17    , const char[17]
+0x762ec8   , ??_C@_0P@KFDMNHKI@cloak_up_angle?$AA@                          , 15    , const char[15]
+0x762ed8   , ??_C@_0P@FBCDCFAB@clear_sfx_misc?$AA@                          , 15    , const char[15]
+0x762ee8   , ??_C@_08NLOIHMAL@sfx_misc?$AA@                                 , 9     , const char[9]
+0x762ef4   , ??_C@_09HDGOHPIB@sfx_sabre?$AA@                                , 10    , const char[10]
+0x762f00   , ??_C@_0O@KBBFFEDH@chatter_delay?$AA@                           , 14    , const char[14]
+0x762f10   , ??_C@_0M@LJGFGHHK@sfx_chatter?$AA@                             , 12    , const char[12]
+0x762f1c   , ??_C@_0N@MMNHOKKH@sfx_footstep?$AA@                            , 13    , const char[13]
+0x762f2c   , ??_C@_0L@DELDOJAF@sfx_engine?$AA@                              , 11    , const char[11]
+0x762f38   , ??_C@_09EHECMEHM@sfx_grunt?$AA@                                , 10    , const char[10]
+0x762f44   , ??_C@_08NIGPFPN@sfx_hurt?$AA@                                  , 9     , const char[9]
+0x762f50   , ??_C@_07OGJOBHJF@sfx_die?$AA@                                  , 8     , const char[8]
+0x762f58   , ??_C@_0N@OGOEHCBC@cloak_joint2?$AA@                            , 13    , const char[13]
+0x762f68   , ??_C@_0M@EPPJECMP@cloak_joint?$AA@                             , 12    , const char[12]
+0x762f74   , ??_C@_0L@HOLMHKFD@head_joint?$AA@                              , 11    , const char[11]
+0x762f80   , ??_C@_0BC@BFHIKLMD@streak_4_locators?$AA@                      , 18    , const char[18]
+0x762f94   , ??_C@_0BC@DMEDLOEA@streak_3_locators?$AA@                      , 18    , const char[18]
+0x762fa8   , ??_C@_0BC@PNMNGBIA@streak_2_locators?$AA@                      , 18    , const char[18]
+0x762fbc   , ??_C@_0BC@GECPAHIB@streak_1_locators?$AA@                      , 18    , const char[18]
+0x762fd0   , ??_C@_0BA@PBAIDIE@streak_locators?$AA@                         , 16    , const char[16]
+0x762fe0   , ??_C@_0O@NNMOOOOE@hand_locators?$AA@                           , 14    , const char[14]
+0x762ff0   , ??_C@_0BA@JKFEKIOO@thrust_locators?$AA@                        , 16    , const char[16]
+0x763000   , ??_C@_0BA@IEBPPAAP@shadow_locators?$AA@                        , 16    , const char[16]
+0x763010   , ??_C@_0P@JGMMABBH@helmet_locator?$AA@                          , 15    , const char[15]
+0x763020   , ??_C@_0P@OHICBEHF@thingy_locator?$AA@                          , 15    , const char[15]
+0x763030   , ??_C@_0P@KPNLEJAA@rocket_locator?$AA@                          , 15    , const char[15]
+0x763040   , ??_C@_0N@JKGAMCFA@head_locator?$AA@                            , 13    , const char[13]
+0x763050   , ??_C@_0M@IEBMABJD@poo_locator?$AA@                             , 12    , const char[12]
+0x76305c   , ??_C@_0N@IPKHIIFB@ride_locator?$AA@                            , 13    , const char[13]
+0x76306c   , ??_C@_0BI@HGKEHAAG@extra_character_locator?$AA@                , 24    , const char[24]
+0x763084   , ??_C@_0BB@CECBFJPA@grapple_locators?$AA@                       , 17    , const char[17]
+0x763098   , ??_C@_0BA@FMPGHGHF@grapple_locator?$AA@                        , 16    , const char[16]
+0x7630a8   , ??_C@_0O@NKNBMNEG@place_locator?$AA@                           , 14    , const char[14]
+0x7630b8   , ??_C@_0O@FBADNENF@throw_locator?$AA@                           , 14    , const char[14]
+0x7630c8   , ??_C@_0P@PMGADCHN@shield_locator?$AA@                          , 15    , const char[15]
+0x7630d8   , ??_C@_0BH@HEOCABDL@weapon_shoot_locator_4?$AA@                 , 23    , const char[23]
+0x7630f0   , ??_C@_0BH@DLKDJHPM@weapon_shoot_locator_3?$AA@                 , 23    , const char[23]
+0x763108   , ??_C@_0BH@CCLIKGLN@weapon_shoot_locator_2?$AA@                 , 23    , const char[23]
+0x763120   , ??_C@_0BH@JJFPFHO@weapon_shoot_locator_1?$AA@                  , 23    , const char[23]
+0x763138   , ??_C@_0BF@JLOGPPKD@weapon_shoot_locator?$AA@                   , 21    , const char[21]
+0x763150   , ??_C@_0BB@IOKLEPJO@weapon_locator_4?$AA@                       , 17    , const char[17]
+0x763164   , ??_C@_0BB@MBOKNJFJ@weapon_locator_3?$AA@                       , 17    , const char[17]
+0x763178   , ??_C@_0BB@NIPBOIBI@weapon_locator_2?$AA@                       , 17    , const char[17]
+0x76318c   , ??_C@_0BB@PDNMLLNL@weapon_locator_1?$AA@                       , 17    , const char[17]
+0x7631a0   , ??_C@_0P@IBJOJIAM@weapon_locator?$AA@                          , 15    , const char[15]
+0x7631b0   , ??_C@_0BC@OCJGBHGA@collision_locator?$AA@                      , 18    , const char[18]
+0x7631c4   , ??_C@_0L@LKOHIBCJ@anim_start?$AA@                              , 11    , const char[11]
+0x7631d0   , ??_C@_0M@BFOCLPLN@bsa_default?$AA@                             , 12    , const char[12]
+0x7631dc   , ??_C@_0P@DPPCFHKN@ride_layersoff?$AA@                          , 15    , const char[15]
+0x7631ec   , ??_C@_0M@MCGDAECJ@layers_dead?$AA@                             , 12    , const char[12]
+0x7631f8   , ??_C@_0L@CKJPDDBD@layers_low?$AA@                              , 11    , const char[11]
+0x763204   , ??_C@_0O@GOFADELO@layers_medium?$AA@                           , 14    , const char[14]
+0x763214   , ??_C@_0M@OFHNGFCO@layers_high?$AA@                             , 12    , const char[12]
+0x763220   , ??_C@_0P@CLBBKACD@layers_special?$AA@                          , 15    , const char[15]
+0x763230   , ??_C@_0L@EABIEJEF@cape_layer?$AA@                              , 11    , const char[11]
+0x76323c   , ??_C@_0L@BFCEACBJ@hair_layer?$AA@                              , 11    , const char[11]
+0x763248   , ??_C@_0BB@COJLMHNG@cape_layer_index?$AA@                       , 17    , const char[17]
+0x76325c   , ??_C@_0BB@KKHOMNEA@hair_layer_index?$AA@                       , 17    , const char[17]
+0x763270   , ??_C@_0N@DBCDEOMN@fixed_layers?$AA@                            , 13    , const char[13]
+0x763280   , ??_C@_05NAHLDCCJ@layer?$AA@                                    , 6     , const char[6]
+0x763288   , ??_C@_04HPPKNACP@maxy?$AA@                                     , 5     , const char[5]
+0x763290   , ??_C@_04KCOFCHAC@miny?$AA@                                     , 5     , const char[5]
+0x763298   , ??_C@_04IJEANHEE@mass?$AA@                                     , 5     , const char[5]
+0x7632a0   , ??_C@_08CHOICKHF@txt_file?$AA@                                 , 9     , const char[9]
+0x7632ac   , ??_C@_08IBICOFKM@redirect?$AA@                                 , 9     , const char[9]
+0x7632b8   , ??_C@_0L@BPOFIKC@effect_end?$AA@                               , 11    , const char[11]
+0x7632c4   , ??_C@_08JHKNLGEI@bits_off?$AA@                                 , 9     , const char[9]
+0x7632d0   , ??_C@_07BDGHIOGO@bits_on?$AA@                                  , 8     , const char[8]
+0x7632d8   , ??_C@_0BD@CEOAKOOD@use_locator_matrix?$AA@                     , 19    , const char[19]
+0x7632ec   , ??_C@_0BA@IHOPOPLN@right_footprint?$AA@                        , 16    , const char[16]
+0x7632fc   , ??_C@_0P@MMEOEHOD@left_footprint?$AA@                          , 15    , const char[15]
+0x76330c   , ??_C@_0N@BODKMFME@at_obj_speed?$AA@                            , 13    , const char[13]
+0x76331c   , ??_C@_07GPMJHPOH@max_val?$AA@                                  , 8     , const char[8]
+0x763324   , ??_C@_07IJKJNAAG@min_val?$AA@                                  , 8     , const char[8]
+0x76332c   , ??_C@_08NPHHKBFO@max_mode?$AA@                                 , 9     , const char[9]
+0x763338   , ??_C@_09HKPHAMJE@xyz_speed?$AA@                                , 10    , const char[10]
+0x763344   , ??_C@_08INJBKBGD@xz_speed?$AA@                                 , 9     , const char[9]
+0x763350   , ??_C@_08IJMBDBP@min_mode?$AA@                                  , 9     , const char[9]
+0x76335c   , ??_C@_0N@KDBMKLAA@at_ter_layer?$AA@                            , 13    , const char[13]
+0x76336c   , ??_C@_0BD@FJKNGINK@at_locator_average?$AA@                     , 19    , const char[19]
+0x763380   , ??_C@_0O@MGBNGPJL@at_obj_bottom?$AA@                           , 14    , const char[14]
+0x763390   , ??_C@_0P@EKNONKNP@at_ter_surface?$AA@                          , 15    , const char[15]
+0x7633a0   , ??_C@_09OBMOEPKM@non_solid?$AA@                                , 10    , const char[10]
+0x7633ac   , ??_C@_08FGPNIDBO@surfaces?$AA@                                 , 9     , const char[9]
+0x7633b8   , ??_C@_06EMCPHFGM@volume?$AA@                                   , 7     , const char[7]
+0x7633c0   , ??_C@_06BNAMCNNH@sfx_2d?$AA@                                   , 7     , const char[7]
+0x7633c8   , ??_C@_08OPOMJGCA@locators?$AA@                                 , 9     , const char[9]
+0x7633d4   , ??_C@_0BF@LGFIDMFB@particles_per_second?$AA@                   , 21    , const char[21]
+0x7633ec   , ??_C@_0BE@LPGMNEOK@particles_per_frame?$AA@                    , 20    , const char[20]
+0x763400   , ??_C@_07LDEGNPMJ@between?$AA@                                  , 8     , const char[8]
+0x763408   , ??_C@_08KFDOCAEB@constant?$AA@                                 , 9     , const char[9]
+0x763414   , ??_C@_06BKDGJKBE@timing?$AA@                                   , 7     , const char[7]
+0x76341c   , ??_C@_06JNFJAMDO@judder?$AA@                                   , 7     , const char[7]
+0x763424   , ??_C@_04KHIAAJL@buzz?$AA@                                      , 5     , const char[5]
+0x76342c   , ??_C@_06OLEBFMCD@rumble?$AA@                                   , 7     , const char[7]
+0x763434   , ??_C@_06CGNNJAN@frame2?$AA@                                    , 7     , const char[7]
+0x76343c   , ??_C@_06CJEAIKMO@frame1?$AA@                                   , 7     , const char[7]
+0x763444   , ??_C@_0O@BCPGJNOC@num_particles?$AA@                           , 14    , const char[14]
+0x763454   , ??_C@_0M@PJAEODPD@player_only?$AA@                             , 12    , const char[12]
+0x763460   , ??_C@_06GDPMEFML@not_in?$AA@                                   , 7     , const char[7]
+0x763468   , ??_C@_07MIDIGML@in_only?$AA@                                   , 8     , const char[8]
+0x763470   , ??_C@_0BA@LNAHCGHO@intersect_water?$AA@                        , 16    , const char[16]
+0x763480   , ??_C@_0M@NEJLKCNN@above_water?$AA@                             , 12    , const char[12]
+0x76348c   , ??_C@_0M@MKEMFLOI@under_water?$AA@                             , 12    , const char[12]
+0x763498   , ??_C@_09MCJFNGNA@condition?$AA@                                , 10    , const char[10]
+0x7634a4   , ??_C@_08JMJOOMBD@deb_name?$AA@                                 , 9     , const char[9]
+0x7634b0   , ??_C@_0N@CNKGJIAI@effect_start?$AA@                            , 13    , const char[13]
+0x7634c0   , ??_C@_0BE@EBAAPACF@extra_character_off?$AA@                    , 20    , const char[20]
+0x7634d4   , ??_C@_07KIHIIBPI@is_whip?$AA@                                  , 8     , const char[8]
+0x7634dc   , ??_C@_07BBHFNCFC@is_kick?$AA@                                  , 8     , const char[8]
+0x7634e4   , ??_C@_08BICIKFBL@is_punch?$AA@                                 , 9     , const char[9]
+0x7634f0   , ??_C@_06HKPENCHE@gun_on?$AA@                                   , 7     , const char[7]
+0x7634f8   , ??_C@_07GKKGNMGO@gun_off?$AA@                                  , 8     , const char[8]
+0x763500   , ??_C@_0L@MMJOOGBP@frame_stop?$AA@                              , 11    , const char[11]
+0x76350c   , ??_C@_06FEDHHOIL@frame4?$AA@                                   , 7     , const char[7]
+0x763514   , ??_C@_06BLHGOIEM@frame3?$AA@                                   , 7     , const char[7]
+0x76351c   , ??_C@_09EFKDAMKG@frame_end?$AA@                                , 10    , const char[10]
+0x763528   , ??_C@_09PIEENAKP@frame_hit?$AA@                                , 10    , const char[10]
+0x763534   , ??_C@_07MEIKKLPK@maxreps?$AA@                                  , 8     , const char[8]
+0x76353c   , ??_C@_07CCOKAEBL@minreps?$AA@                                  , 8     , const char[8]
+0x763544   , ??_C@_08CEFKIAJJ@headturn?$AA@                                 , 9     , const char[9]
+0x763550   , ??_C@_0N@PLNBCAFN@headturn_off?$AA@                            , 13    , const char[13]
+0x763560   , ??_C@_0M@PDNGFCHF@no_headturn?$AA@                             , 12    , const char[12]
+0x76356c   , ??_C@_05LFFLDGPK@shake?$AA@                                    , 6     , const char[6]
+0x763574   , ??_C@_07BCMGPKNJ@4frames?$AA@                                  , 8     , const char[8]
+0x76357c   , ??_C@_09IPEFJHNA@footsteps?$AA@                                , 10    , const char[10]
+0x763588   , ??_C@_0BD@MBCCLNDB@can_play_backwards?$AA@                     , 19    , const char[19]
+0x76359c   , ??_C@_09ODNGOEIO@translate?$AA@                                , 10    , const char[10]
+0x7635a8   , ??_C@_0BA@MAPEAAME@speedmul_maxfps?$AA@                        , 16    , const char[16]
+0x7635b8   , ??_C@_0P@GNKHHCGO@speedmul_speed?$AA@                          , 15    , const char[15]
+0x7635c8   , ??_C@_09GDLIEMFJ@blend_out?$AA@                                , 10    , const char[10]
+0x7635d4   , ??_C@_08EEPDICBA@blend_in?$AA@                                 , 9     , const char[9]
+0x7635e0   , ??_C@_05EEELFEFN@cycle?$AA@                                    , 6     , const char[6]
+0x7635e8   , ??_C@_03GFMFJDIE@bsa?$AA@                                      , 4     , const char[4]
+0x7635ec   , ??_C@_06DDLLCOJG@action?$AA@                                   , 7     , const char[7]
+0x7635f8   , __real@400921fb60000000                                        , 8     , const f64
+0x763600   , ??_C@_01HIHLOKLC@1?$AA@                                        , 2     , const char[2]
+0x763604   , ??_C@_06GEHONCEN@purple?$AA@                                   , 7     , const char[7]
+0x76360c   , ??_C@_05GBEEJKMC@green?$AA@                                    , 6     , const char[6]
+0x763614   , ??_C@_03FAAAOPJM@red?$AA@                                      , 4     , const char[4]
+0x763618   , ??_C@_0BA@FCCKOOFM@can_direct_land?$AA@                        , 16    , const char[16]
+0x763628   , ??_C@_0L@IPNNAMAM@can_get_up?$AA@                              , 11    , const char[11]
+0x763634   , ??_C@_06BJLHAJHF@chars?2?$AA@                                  , 7     , const char[7]
+0x76363c   , ??_C@_0BD@EJCIEOFH@chars?2charstxt?4fpk?$AA@                   , 19    , const char[19]
 0x00763958 , ??_C@_0M@MGCAMLPP@Snake_bit_3?$AA@                             , 12    , const char[12]
 0x00763964 , ??_C@_0M@NPDLPKLO@Snake_bit_2?$AA@                             , 12    , const char[12]
 0x00763970 , ??_C@_0M@PEBGKJHN@Snake_bit_1?$AA@                             , 12    , const char[12]
@@ -2394,17 +3018,31 @@ address    , symbol                                                         , si
 0x007f1848 , _GameObjectRotationMowerId                                     , 2     , u16
 0x007f185c , _ID_DEFAULTCHARACTER_LSW_A                                     , 2     , i16
 0x007f1860 , _ID_DEFAULTCHARACTER_LSW_B                                     , 2     , i16
+0x007f1878 , _id_IMPERIALGUARD                                              , 2     , i16
 0x007f187c , _id_BODYGUARD                                                  , 2     , i16
+0x007f1880 , _id_DARTHMAUL                                                  , 2     , i16
 0x007f18dc , _id_GEONOSIAN                                                  , 2     , i16
 0x007f18ec , _id_CHEWBACCA                                                  , 2     , i16
 0x007f18f4 , _GameObjectRotationAtstId                                      , 2     , u16
 0x7f191c   , _id_DRAGBOMB                                                   , 2     , u16
+0x007f1930 , _id_BASKETCANNON                                               , 2     , i16
+0x007f1940 , _id_LANDSPEEDER                                                , 2     , i16
 0x007f1948 , _id_SPEEDERBIKE                                                , 2     , i16
+0x007f1968 , _id_GRIEVOUS                                                   , 2     , i16
+0x007f1970 , _id_TIEFIGHTER                                                 , 2     , i16
+0x007f19a0 , _id_THEEMPEROR                                                 , 2     , i16
+0x007f19b8 , _id_STAP                                                       , 2     , i16
+0x007f19bc , _id_STAP2                                                      , 2     , i16
+0x007f19cc , _id_ANAKINPADAWAN                                              , 2     , i16
+0x007f19dc , _id_BOB                                                        , 2     , i16
 0x007f19e4 , _id_JEDISTARFIGHTERYELLOWEP3                                   , 2     , i16
 0x007f19fc , _id_REPUBLICGUNSHIP_GREEN                                      , 2     , i16
 0x007f1a00 , _id_NEW_REPUBLIC_GUNSHIP                                       , 2     , i16
 0x007f1a04 , _id_NEW_REPUBLIC_GUNSHIP_GREEN                                 , 2     , i16
+0x007f1a08 , _id_DOOKU                                                      , 2     , i16
+0x007f1a1c , _id_XWING                                                      , 2     , i16
 0x7f1a50   , _id_GONKDROID                                                  , 2     , u16
+0x007f1a64 , _id_WOOKIEFLYER                                                , 2     , i16
 0x007f1b14 , _id_ANAKINSPOD                                                 , 2     , i16
 0x007f1b18 , _id_ANAKINSPODGREEN                                            , 2     , i16
 0x007f1b2c , _id_ANAKINSNEWPOD                                              , 2     , i16
@@ -2443,14 +3081,34 @@ address    , symbol                                                         , si
 0x007fac20 , _PlayTrailer                                                   , 4     , i32
 0x007faccc , _opts_sfx_wait                                                 , 4     , f32
 0x007facf0 , _GameMenuInfo                                                  , 644   , MENUFNINFO[23]
+0x007fb07c , _VEHICLE_SUBMARINE_DEPTH                                       , 4     , f32
+0x007fb080 , _VEHICLE_WATER_SPEED_MUL                                       , 4     , f32
+0x007fb084 , _GameDeflectPartGravity                                        , 4     , f32
+0x007fb088 , _GameDeflectPartSpeed                                          , 4     , f32
 0x7fb09c   , _ForcePush_Speed                                               , 4     , f32
+0x007fb0bc , _VEHICLE_TUBE_UPSPEED                                          , 4     , f32
+0x007fb0c0 , _PODSPRINT_SLOWSPEED                                           , 4     , f32
+0x007fb0c4 , _PODSPRINT_CRUISESPEED                                         , 4     , f32
+0x007fb0c8 , _PODSPRINT_RUNSPEED                                            , 4     , f32
+0x007fb0cc , _PODSPRINT_ACCELTIME                                           , 4     , f32
+0x007fb0d0 , _PODSPRINT_DECELTIME                                           , 4     , f32
+0x007fb0d4 , _PODSPRINT_VELOCITYSEEK                                        , 4     , f32
+0x007fb0d8 , _PODSPRINT_TURNRATE                                            , 4     , f32
+0x007fb0dc , _PODSPRINT_HIGH_TURNRATE                                       , 4     , f32
 0x7fb0e0   , _PODSPRINT_GRAVITY                                             , 4     , f32
 0x007fb0e4 , _CInfo                                                         , 4     , CHARACTER_CONTEXT_INFO_PC *
+0x007fb0e8 , _BladeTab                                                      , 64    , BLADE_PC [4]
 0x007fb128 , _PCContextInfoTable                                            , 1616  , CHARACTER_CONTEXT_INFO_PC [101]
 0x7fbecc   , _ApplyGravityContextHoverHeight                                , 4     , f32
 0x7fc000   , _ApplyGravityContext22HoverHeight                              , 4     , f32
 0x7fc004   , _ApplyGravityWallRunAcceleration                               , 4     , f32
 0x7fc008   , _ApplyGravityContext42HoverHeight                              , 4     , f32
+0x007fc040 , _TURNTIME                                                      , 4     , f32
+0x007fc078 , _rocket_speed                                                  , 4     , f32
+0x007fc210 , _VehicleCollisionDamageSpeedFraction                           , 4     , f32
+0x007fc214 , _VehicleCollisionFrontAngle                                    , 4     , i32
+0x007fc218 , _VehicleCollisionRearAngle                                     , 4     , i32
+0x007fc224 , _rocket_lock_distance                                          , 4     , f32
 0x007fc274 , _PanelProjectionX                                              , 4     , f32
 0x007fc278 , _PanelProjectionY                                              , 4     , f32
 0x007fc3c4 , _PanelWideWidth                                                , 4     , f32
@@ -2493,7 +3151,11 @@ address    , symbol                                                         , si
 0x008015b4 , _QFONTSCALEX                                                   , 4     , f32
 0x008015f0 , _STCOORDSCALE                                                  , 4     , f32
 0x00801c58 , _default_path_heighttol                                        , 4     , f32
+0x00801c6c , _ai_moveradius                                                 , 4     , f32
 0x00801c88 , _AIPathConnectionMargin                                        , 4     , f32
+0x00801c8c , _AIMovementInstructionPositiveThreshold                        , 4     , f32
+0x00801c90 , _AIMovementInstructionNegativeThreshold                        , 4     , f32
+0x00801c94 , _new_retreat                                                   , 4     , i32
 0x801d54   , _AIPathDefaultChecks                                           , 4     , i32
 0x00801dd0 , ??_R0?AVNetListenerInterface@@@8                               , 35    ,
 0x00801df4 , ??_R0?AVAINet@@@8                                              , 20    ,
@@ -2552,6 +3214,10 @@ address    , symbol                                                         , si
 0x00803b64 , _MAXLDATA                                                      , 4     , i32
 0x00803b68 , _levspl_i_start                                                , 4     , i32
 0x00803b6c , _levspl_i_startcam                                             , 4     , i32
+0x803b78   , _LEVOBJREF_FIRSTOBJ                                            , 4     , i32
+0x803b7c   , _LEVOBJREF_LASTOBJ                                             , 4     , i32
+0x803b80   , _LEVOBJREF_FIRSTREFOBJ                                         , 4     , i32
+0x803b84   , _LEVOBJREF_LASTREFOBJ                                          , 4     , i32
 0x00803bb8 , _LevelConfig_BeforeLoad_GenericKeywords                        , 40    , NUFPCOMJMP[5]
 0x00803be0 , _LevelConfig_AfterLoad_GenericKeywords                         , 424   , NUFPCOMJMP[53]
 0x00803d8c , _newlevelfrommenu_newmenuid                                    , 4     , i32
@@ -2562,6 +3228,7 @@ address    , symbol                                                         , si
 0x00804198 , _GlobalBoltSystem_Default                                      , 32    , BOLTSYS_PC
 0x00804224 , _vehicle_timebase_dist                                         , 16    , f32[4]
 0x00804234 , _vehicle_timebase_nframes                                      , 16    , i32[4]
+0x804248   , _ConfigChar_Keywords                                           , 1664  , NUFPCOMJMP[208]
 0x00804c20 , _BoltShootClassId0                                             , 2     , u16
 0x00804c24 , _BoltShootClassId1                                             , 2     , u16
 0x00804c28 , _BoltShootClassId2                                             , 2     , u16
@@ -2673,6 +3340,10 @@ address    , symbol                                                         , si
 0x00810124 , ??_R0?AV?$EdValueControl@M@@@8                                 , 33    ,
 0x00810148 , ??_R0?AVEdIntControl@@@8                                       , 27    ,
 0x00810164 , ??_R0?AVEdFloatControl@@@8                                     , 29    ,
+0x0081020c , _MAXPARTS                                                      , 4     , i32
+0x00810210 , _Default_ADDPART                                               , 200   , ADDPART_PC
+0x008102d8 , _part_slot_cursor                                              , 4     , i32
+0x008102e4 , _PARTSCALEUPTIME                                               , 4     , f32
 0x008102e8 , _partseed                                                      , 4     , u32
 0x00810364 , _nusound_seed                                                  , 4     , u32
 0x00810468 , _MASTERVOLUME                                                  , 4     , f32
@@ -2790,10 +3461,13 @@ address    , symbol                                                         , si
 0x00879540 , _Hub_ModelList                                                 , 24    , APICHARACTERMODELLIST[6]
 0x87a854   , _TargetDeg_Mid                                                 , 2     , u16
 0x87a858   , _TargetDeg_Far                                                 , 2     , u16
+0x0087a928 , _LevGizObst                                                    , 32    , GIZOBSTACLE *[8]
 0x87a950   , _TargetDist_Near2                                              , 4     , f32
 0x87a978   , _TargetDeg_Near                                                , 2     , u16
+0x0087a98c , _LevGizmo                                                      , 48    , GIZMO_PC * [12]
 0x0087a9e8 , _makefreeplaymodellist                                         , 4     , i32
 0x87aa74   , _TargetDist_Mid2                                               , 4     , f32
+0x0087aaf8 , _LevHSpecial                                                   , 1056  , NUSPECIALHANDLE [88]
 0x0087ad50 , _LevHSpecial_50                                                , 12    , NUSPECIALHANDLE
 0x0087ad5c , _LevHSpecial_51                                                , 12    , NUSPECIALHANDLE
 0x0087af64 , _GOTHAMSTREETS_ADATA                                           , 4     , AREA_DATA_PC *
@@ -2865,16 +3539,21 @@ address    , symbol                                                         , si
 0x0087b0ac , _PODRACEA_LDATA                                                , 4     , LEVELDATA_PC *
 0x0087b0b0 , _PODRACEB_LDATA                                                , 4     , LEVELDATA_PC *
 0x0087b0c0 , _PODSPRINTA_LDATA                                              , 4     , LEVELDATA_PC *
+0x0087b0f4 , _GUNSHIPA_LDATA                                                , 4     , LEVELDATA_PC *
 0x0087b0fc , _BONUS_GUNSHIPA_LDATA                                          , 4     , LEVELDATA_PC *
 0x0087b100 , _BONUS_GUNSHIPB_LDATA                                          , 4     , LEVELDATA_PC *
 0x0087b118 , _DOGFIGHTA_LDATA                                               , 4     , LEVELDATA_PC *
 0x0087b134 , _KAMINOE_LDATA                                                 , 4     , LEVELDATA_PC *
+0x0087b1b4 , _MOSEISLEYB_LDATA                                              , 4     , LEVELDATA_PC *
 0x87b1c4   , _DEATHSTARRESCUEA_LDATA                                        , 4     , LEVELDATA_PC *
 0x0087b1f4 , _DEATHSTARBATTLED_LDATA                                        , 4     , LEVELDATA_PC *
 0x0087b1fc , _HOTHBATTLEA_LDATA                                             , 4     , LEVELDATA_PC *
 0x87b230   , _ASTEROIDCHASED_LDATA                                          , 4     , LEVELDATA_PC *
 0x0087b254 , _SPEEDERCHASEA_LDATA                                           , 4     , LEVELDATA_PC *
 0x87b26c   , _DEATHSTAR2BATTLEA_LDATA                                       , 4     , LEVELDATA_PC *
+0x0087b278 , _DEATHSTAR2BATTLEE_LDATA                                       , 4     , LEVELDATA_PC *
+0x0087b27c , _DEATHSTAR2BATTLEF_LDATA                                       , 4     , LEVELDATA_PC *
+0x0087b280 , _DEATHSTAR2BATTLEG_LDATA                                       , 4     , LEVELDATA_PC *
 0x0087b2ec , _LevelProgressData                                             , 4     , LEVEL_PROGRESS *
 0x0087b2f4 , _LevelChangesInArea                                            , 4     , i32
 0x0087b2fc , _loadareacharacters_loadedlevel                                , 4     , i32
@@ -2889,11 +3568,16 @@ address    , symbol                                                         , si
 0x0087b750 , _opts_sfx_i                                                    , 4     , i32
 0x0087b760 , _startnewgame_initiated                                        , 4     , i32
 0x0087b764 , _startnewgame                                                  , 4     , i32
+0x0087b8d8 , _VehicleAreaRememberSpeed                                      , 4     , f32
+0x0087b8dc , _IDLESPEEDINNARROWSOCKSONLY                                    , 4     , i32
+0x0087b8e0 , _SaberSparksTimer                                              , 4     , f32
 0x87b8fc   , _applygravity_extrahoveroffset                                 , 4     , f32
 0x0087b900 , _getvehiclehoverheight_hothbattlehack                          , 4     , i32
 0x87b928   , _ForcePush_SuperPush                                           , 4     , i32
+0x87b938   , _magdif                                                        , 4     , private f32
 0x0087b958 , _PANEL3DMULX                                                   , 4     , f32
 0x0087b9b8 , _PANEL3DMULY                                                   , 4     , f32
+0x0087bb10 , _ShadowMode                                                    , 4     , i32
 0x0088058c , _legal_mtl                                                     , 4     , NUMTL *
 0x00880590 , _legal_tid                                                     , 4     , i32
 0x00880594 , _loadlegal_done                                                , 4     , i32
@@ -2920,6 +3604,7 @@ address    , symbol                                                         , si
 0x00880918 , _tAUDIOVOLUME                                                  , 2     , i16
 0x0088093c , _tMUSIC                                                        , 2     , i16
 0x00880f90 , _tALONGTIMEAGO                                                 , 2     , i16
+0x00882438 , _podsprint                                                     , 148   , PODSPRINT_PC
 0x00889058 , _kamino_plate_1                                                , 4     , KAMINOEPLATE *
 0x0088905c , _kamino_plate_2                                                , 4     , KAMINOEPLATE *
 0x00889060 , _kamino_plate_3                                                , 4     , KAMINOEPLATE *
@@ -2930,7 +3615,9 @@ address    , symbol                                                         , si
 0x00889074 , _kamino_plate_3_active                                         , 4     , i32
 0x00889078 , _kamino_plate_4_active                                         , 4     , i32
 0x008890a6 , _kamino_plate_id                                               , 2     , u16
+0x00889634 , _CarWashHack                                                   , 4     , GAMEOBJECT *
 0x0088a56c , _dagobah_training                                              , 4     , i32
+0x0088a668 , _slowDownTimer                                                 , 8     , f32 [2]
 0x0088ab38 , _NuAllocRecordHead                                             , 4     , NUALLOC_RECORD *
 0x0088ab3c , _NuAllocTrackedBytes                                           , 4     , u32
 0x0088ab40 , _NuAllocPool                                                   , 4     , NUALLOC_POOL *
@@ -3016,13 +3703,24 @@ address    , symbol                                                         , si
 0x00922250 , _aiscript_load_conditions                                      , 4     , NULISTHDR *
 0x00922254 , _aiscript_load_actions                                         , 4     , NULISTHDR *
 0x00922258 , _condition_has_no_goto                                         , 4     , i32
+0x0092227c , _current_packet                                                , 4     , AIPACKET_PC *
+0x00922280 , _current_processor                                             , 4     , AISCRIPTPROCESS_PC *
 0x00922288 , _dynamic_antinodes                                             , 5632  , AIANTINODE_PC[64]
+0x009238cc , _ScriptProcessFirstTimeActionFn                                , 4     , AI_SCRIPT_FIRST_ACTION_PC
+0x009238d0 , _AIActionParseSpeedFn                                          , 4     , AI_PARSE_SPEED_PC
 0x009238d4 , _AIRespawnOnPathFn                                             , 4     , AI_RESPAWN_ON_PATH_PC
+0x009238e0 , _GameParamToFloatFn                                            , 4     , AI_GAME_PARAM_TO_FLOAT_PC
 0x009238e4 , _GetCharacterGoalSpeedFn                                       , 4     , AI_CHARACTER_GOAL_SPEED_PC
+0x009238e8 , _GetViewRangeFn                                                , 4     , AI_CHARACTER_DISTANCE_PC
+0x009238ec , _GetHearDistanceFn                                             , 4     , AI_CHARACTER_DISTANCE_PC
+0x009238f0 , _GetMaxViewHeightFn                                            , 4     , AI_CHARACTER_DISTANCE_PC
+0x009238f4 , _GetMinViewHeightFn                                            , 4     , AI_CHARACTER_DISTANCE_PC
 0x009238f8 , _AISysSpecialNodeCallback                                      , 4     , AISYS_SPECIAL_NODE_CALLBACK_PC
 0x009238fc , _APIOBJECTFromObjIDFn                                          , 4     , APIOBJECT_FROM_ID_PC
+0x0092391c , _PreparingForSpecialMoveFn                                     , 4     , AI_PREPARING_SPECIAL_MOVE_PC
 0x00923920 , _MidSpecialMoveFn                                              , 4     , AI_MID_SPECIAL_MOVE_PC
 0x00923924 , _GetNamedGameObjectCallback                                    , 4     , GAMEOBJECT_LOOKUP_CALLBACK_PC
+0x00923928 , _GetOriginPositionFn                                           , 4     , AI_ORIGIN_POSITION_PC
 0x00924820 , _saveload_status                                               , 4     , i32
 0x00924880 , _PCInputWindow_candidate                                       , 4     , HWND
 0x00924884 , _PCInputInstance_candidate                                     , 4     , HINSTANCE
@@ -3072,6 +3770,7 @@ address    , symbol                                                         , si
 0x009250d0 , _PAL                                                           , 4     , i32
 0x009250e8 , _do_multiframe_update                                          , 4     , i32
 0x00925184 , _pNuCam                                                        , 4     , NUCAMERA *
+0x009253c0 , _NarrowSockException                                           , 4     , NARROWSOCKEXCEPTION_PC *
 0x009253c4 , _disable_narrow_socks                                          , 4     , i32
 0x009253cc , _Game_NuPad                                                    , 4     , void **
 0x009253d0 , _GamePadStorage                                                , 6144  , GAMEPAD_INIT_RECORD[64]
@@ -3083,11 +3782,13 @@ address    , symbol                                                         , si
 0x00926c58 , _Text_MaxStrings_Overall                                       , 4     , i32
 0x00926c5c , _Text_StringBits                                               , 4     , u32 *
 0x00926c60 , _Text_GameSetLanguageFn                                        , 4     , void (*)(i32)
+0x9270d8   , _MiniBuffer                                                    , 16384 , char[16384]
 0x0092b0e0 , _temp_xrot                                                     , 2     , u16
 0x0092b0e4 , _temp_zrot                                                     , 2     , u16
 0x0092b0e8 , _ConfigBuffer                                                  ,       , char[]
 0x93b0ec   , _v000                                                          , 12    , NUVEC
 0x0093b0f8 , _Game_OptionsSave                                              , 4     , OPTIONSSAVE *
+0x0093b0fc , _perm_debrissys                                                , 4     , APIDEBRISSYS_PC *
 0x0093b208 , _GizObstacle_SetDefaultSFXFn                                   , 4     , "void (__cdecl *)(void *, GIZOBSTACLE *)"
 0x0093b288 , _gizmotypes                                                    , 4     , void *
 0x0093b294 , _CDataList                                                     , 4     , CHARACTERDATA_PC *
@@ -3098,6 +3799,7 @@ address    , symbol                                                         , si
 0x0093b2c4 , _FreePlay                                                      , 4     , i32
 0x0093b2c8 , _SuperStory                                                    , 4     , i32
 0x0093b2cc , _ResetBits                                                     , 4     , u32
+0x0093b2d0 , _CheckLostDataFn                                               , 4     , CHECK_LOST_DATA_PC
 0x0093b344 , _Arcade                                                        , 4     , i32
 0x0093b348 , _Paused                                                        , 4     , i32
 0x0093b34c , ?NetPaused@@3HA                                                , 4     , i32
@@ -3126,10 +3828,13 @@ address    , symbol                                                         , si
 0x00950764 , _screendump                                                    , 4     , i32
 0x00950768 , _pause_rndr_on                                                 , 4     , i32
 0x00950770 , _finishloop_backdroponly                                       , 4     , i32
+0x0095079c , _FadeSys                                                       ,       , FADEINFO_PC
 0x00950bd8 , _GameBlowUpBlownUpFn                                           , 4     , void (__cdecl *)(void *)
 0x00950c70 , _MAGNETOFFSET                                                  , 4     , f32
 0x00950da4 , _CheatSystem                                                   ,       , CHEATSYSTEM_PC [12-byte reviewed prefix; full extent unknown]
 0x00950db0 , _Cheat_PowerUpTime                                             , 4     , f32
+0x00950db8 , _Explosions                                                    , 448   , EXPLOSION_PC [8]
+0x00950f78 , _i_explosion                                                   , 4     , i32
 0x00951018 , _part_debris_count                                             , 4     , i32
 0x00951024 , _SURFACEBITS_DUST                                              , 2     , u16
 0x00951028 , _SURFACEBITS_NODUST                                            , 2     , u16
@@ -3163,6 +3868,13 @@ address    , symbol                                                         , si
 0x00951bcc , _Level_ConfigAfterLoad_GameKeywords                            , 4     , NUFPCOMJMP *
 0x00951bd0 , _LevSplList                                                    , 4     , LEVELSPLINE_PC *
 0x00951bd4 , _LEVELSPLINECOUNT                                              , 4     , i32
+0x951bd8   , _ObjTabList                                                    , 4     , LEVEL_OBJECT_CONFIG_PC *
+0x951bdc   , _LEVELOBJECTCOUNT                                              , 4     , i32
+0x951be0   , _LEVELOBJECTMAX                                                , 4     , i32
+0x951be4   , _EXTRALEVELOBJECTCOUNT                                         , 4     , i32
+0x951be8   , _ExtraLevelObject_NameTable                                    , 4     , char *
+0x951bec   , _ExtraLevelObject_NameTableSize                                , 4     , i32
+0x951bf0   , _ExtraLevelObject_NameTableIndex                               , 4     , i32
 0x00951bf8 , _newlevelfrommenu_newmenuy                                     , 4     , i32
 0x00951bfc , _CutDeadVehiclePlayer                                          , 4     , GAMEOBJECT *
 0x00951c00 , _CUTSTOPGAME                                                   , 4     , i32
@@ -3178,6 +3890,10 @@ address    , symbol                                                         , si
 0x00951cf8 , _BoltShootPositionScratch                                      , 12    , NUVEC
 0x00951d08 , _Bolt                                                          , 9984  , BOLT[32]
 0x00954410 , _InitBolt_AddMomentumType                                      , 4     , "i32 (__cdecl *)(void *, void *, void *)"
+0x954420   , _charconfig                                                    , 4040  , CHARCONFIG_PC
+0x9553e8   , _configureallcharacters_perm                                   , 4     , i32
+0x009553ec , _CHARPAK                                                       , 4     , i32
+0x9553f0   , _SecondCharConfigure                                           , 4     , i32
 0x00955b54 , _ResetOldFStop                                                 , 4     , i32
 0x00955b68 , _snake_hspecials                                               , 36    , NUSPECIALHANDLE[3]
 0x00955b90 , _snakebodies                                                   , 1088  , u8[1088]
@@ -3185,6 +3901,7 @@ address    , symbol                                                         , si
 0x009562b4 , _EPISODECOUNT                                                  , 4     , i32
 0x00956454 , _gizflow_loop_checksum                                         , 1     , u8
 0x00956634 , _gameanimsysprogress                                           , 12    , GAMEANIMPROGRESS
+0x0095df40 , _CharPivot                                                     , 4     , struct CHARPIVOT_PC *
 0x0095df6c , _gizaimessagesys                                               , 4     , GIZAIMESSAGESYS *
 0x0095e434 , ?fade_draw_suppressed@@3HA                                     , 4     , i32
 0x0095e5f4 , _fseed                                                         , 4     , u32
@@ -3293,8 +4010,11 @@ address    , symbol                                                         , si
 0x2912f64  , _edfile_write_flag                                             , 4     , i32
 0x2912f68  , _edfile_readwrongendianess                                     , 4     , i32
 0x02913104 , _apicharsys                                                    , 4     , APICHARSYS *
+0x0291313c , _APIActionInfo                                                 , 4     , API_ACTION_INFO_PC *
+0x02913140 , _APIExtraActionData                                            , 4     , API_EXTRA_ACTION_PC *
 0x002913270, _theMemoryManager                                              , 584   , MEMORYMANAGER
 0x02913a4c , _part_page_on                                                  , 32    , i32[8]
+0x0291f684 , _Part                                                          , 4     , PART_PC *
 0x0291f7d4 , _part_emits                                                    , 4320  , PART_EMIT_PC[40]
 0x02920aac , _PartRTL                                                       , 4     , RTLSET_PC *
 0x02920ae8 , _DebrisGlassV1                                                 , 4     , f32

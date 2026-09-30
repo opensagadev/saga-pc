@@ -556,3 +556,41 @@ is vehicle/directional movement, AI destination/action drivers, object lifecycle
 and particle backends, plus character-configuration parsing. Use the execution
 plan and current report for metrics; historical body counts are not authoritative
 complete comparison extents.
+
+
+## Third structural release and remaining actions
+
+The current sources add real AI movement dispatch, retreat/wander/intersection
+logic, script processing and character processing. AIScriptProcess still marks
+the PC-only network notification action; a registered respawn callback is a real
+call, but its eventual side-effect implementation remains separate work. Vehicle
+movement uses PC inputs, constants and typed fields, including the animation
+flags byte at +0xa and WORLD's external spline pointer. Missing rumble and
+collision effect/damage actions remain explicit.
+
+GameObjectOrigin now reconstructs the real model-joint branch. GetBlade,
+LightSabre, object animation dispatch, AfterAnimation and Kill preserve reviewed
+PC control and state; substantial rendering, damage, scripting and callback
+construction actions remain marked. Kill uses the actual portal-flag fallback
+in the common respawn-count comparison rather than Android's simplified removal
+rule. No null or successful placeholder return conceals a missing query.
+
+The particle constructor, KillPart and hit scan now use the full asserted PART
+and ADDPART records, real callbacks, pool selection, transforms and rotation
+initialization. Dynamic-light and debris backend actions remain incomplete.
+Flicker, basketball impact and Boba deflect callbacks are real; Boba movement
+retains the genuine frame particle-count RNG but marks its missing trail emission.
+Gizmo proximity preserves count/state and the PC persistent destroy flag while
+marking its nested blowup action.
+
+Character configuration now supplies the PC keyword callbacks, private state,
+parser and loader logic. RedirectTextFile's third argument is filename capacity,
+and zero stripped text still follows the PC parser path. Diagnostic omissions
+are explicit. NuFilePakLoadKey uses real alignment, file reading, checksum and
+key decoding providers, including the existing PC retry routine. Its dependency
+NuFileLoadBuffer retains the separately documented packed-file path gap.
+
+Next concrete closures are takeover/tag/rider processing, socket configuration
+and geometry, ordinary AI actions, and last-safe/Buck logic. NuMain and a playable
+game remain partial; current percentages come from matching.json, not these
+historical function lists.

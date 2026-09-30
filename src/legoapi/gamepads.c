@@ -20,3 +20,12 @@ void __cdecl GamePads_Init(void) {
         GamePadStorage[1].pad->init_port = 0x38;
     }
 }
+
+u16 __cdecl GamePad_InputAngle(GAMEOBJECT *object, GAMEPAD_PC *pad) {
+    if ((object->flags_1fc_word & 0x80) != 0 && object->sock_position.sock_index != -1) {
+        SOCK_PC *sock = &WORLD->sock_sys->socks[object->sock_position.sock_index];
+        if ((sock->flags & 0x40) != 0)
+            return (u16)(pad->input_angle + object->sock_heading + sock->input_yaw);
+    }
+    return (u16)(pad->input_angle + GameCam->input_yaw);
+}

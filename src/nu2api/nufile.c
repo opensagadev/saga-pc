@@ -490,3 +490,82 @@ NUDATHDR *__cdecl NuDatGet(void) {
 NUFILE __cdecl NuFileOpen(const char *filepath, i32 mode) {
     return NuFileOpenDF(filepath, mode, curr_dat, 0);
 }
+
+static __declspec(noinline) void DecryptPakData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 key_length) {
+    u8 *bytes = (u8 *)(header + 1);
+    i32 index = 0;
+    length -= sizeof(PC_FILEPAKHDR);
+    while (length != 0) {
+        --length;
+        *bytes -= key[index++];
+        if (index >= key_length)
+            index = 0;
+        ++bytes;
+    }
+    header->flags &= ~1u;
+}
+
+void *__cdecl NuFilePakLoadKey(char *filepath, VARIPTR *buffer, VARIPTR end, i32 alignment, const u8 *key,
+                               u32 key_length) {
+    PC_FILEPAKHDR *header;
+    i32 length;
+    u32 checksum;
+    fpk_err = 0;
+    if (alignment > 0x2000) {
+        NuFileRetry();
+        fpk_err = 5;
+        return NULL;
+    }
+    if (alignment <= 4)
+        alignment = 4;
+    buffer->addr = (buffer->addr + alignment - 1) & ~(alignment - 1);
+    header = (PC_FILEPAKHDR *)buffer->void_ptr;
+    length = NuFileLoadBufferVP(filepath, buffer, &end);
+    if (length == 0) {
+        fpk_err = 1;
+        return NULL;
+    }
+    if ((u32)length != header->file_size) {
+        NuFileRetry();
+        fpk_err = 5;
+        return NULL;
+    }
+    switch (header->type) {
+        case 0x12345678:
+            break;
+        case 0x12345679:
+        case 0x1234567a:
+            checksum = header->checksum;
+            header->checksum = 0;
+            if (PCFilePakChecksum_candidate(length, (const u8 *)header) != checksum) {
+                NuFileRetry();
+                fpk_err = 3;
+                return NULL;
+            }
+            if (header->type == 0x1234567a && (header->flags & 1) != 0) {
+                if (key == NULL) {
+                    NuFileRetry();
+                    fpk_err = 6;
+                    return NULL;
+                }
+                DecryptPakData(header, length, key, (i32)key_length);
+                checksum = header->decrypted_checksum;
+                header->decrypted_checksum = 0;
+                if (PCFilePakChecksum_candidate(length, (const u8 *)header) != checksum) {
+                    NuFileRetry();
+                    fpk_err = 6;
+                    return NULL;
+                }
+            }
+            break;
+        default:
+            NuFileRetry();
+            fpk_err = 4;
+            return NULL;
+    }
+    return header;
+}
+
+void *__cdecl NuFilePakLoad(char *filepath, VARIPTR *buffer, VARIPTR end, i32 alignment) {
+    return NuFilePakLoadKey(filepath, buffer, end, alignment, NULL, 0);
+}

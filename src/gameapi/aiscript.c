@@ -1,5 +1,6 @@
 #include "saga.h"
 
+#include <float.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -832,4 +833,376 @@ f32 __cdecl Condition_AlwaysTrue(void *sys, AISCRIPTPROCESS_PC *processor, AIPAC
     (void)argument;
     result.pointer = initialized_argument;
     return result.value;
+}
+
+static __declspec(noinline) i32 AIScriptNextAction(AISCRIPTPROCESS_PC *processor) {
+    AIACTION_PC *action;
+    if (processor == NULL)
+        return 0;
+    if (processor->action_node != NULL)
+        action = (AIACTION_PC *)NuLinkedListGetNext(&processor->state->actions, &processor->action_node->link);
+    else
+        action = (AIACTION_PC *)NuLinkedListGetHead(&processor->state->actions);
+    if (action != NULL)
+        processor->flags |= 1;
+    processor->action_node = action;
+    return 1;
+}
+
+void __cdecl AIScriptSetState(AISCRIPTPROCESS_PC *processor, AISTATE_PC *state) {
+    if (processor != NULL && state != NULL) {
+        if ((processor->flags & 4) == 0)
+            processor->unknown_b2 = 0;
+        processor->flags &= ~4u;
+        processor->state = state;
+        processor->action_node = NULL;
+        processor->next_state = NULL;
+        processor->param_stack[0].is_first_time_state = 1;
+        AIScriptNextAction(processor);
+    }
+}
+
+void __cdecl AIScriptProcessorInit(AISYS_PC *system, AIPACKET_PC *packet, AISCRIPTPROCESS_PC *processor,
+                                   AICREATURE_PC *creature, char *script_name, char *start_state_name,
+                                   i32 can_use_default, AISCRIPT_PC *script, AISTATE_PC *start_state) {
+    i32 i;
+    if (processor == NULL)
+        return;
+    processor->flags &= ~4u;
+    processor->unknown_b2 = 0;
+    if (script == NULL) {
+        script = AIScriptFind(system, script_name, can_use_default, 1, 1);
+        processor->local_messages = NULL;
+    }
+    if (script != NULL) {
+        processor->script = script;
+        processor->next_state = NULL;
+        if (processor->base_script == NULL)
+            processor->base_script = script;
+        if (creature != NULL) {
+            for (i = 0; i < 4; i++)
+                processor->params[i] = creature->script_params[i];
+            for (i = 0; i < 4; i++) {
+                if (((u64)(i64)creature->flags & ((u64)2 << i)) == 0)
+                    processor->params[i] = script->params[i].default_value;
+            }
+        } else {
+            for (i = 0; i < 4; i++)
+                processor->params[i] = script->params[i].default_value;
+        }
+        if (start_state != NULL ||
+            (start_state_name != NULL && (start_state = AIStateFind(start_state_name, script)) != NULL)) {
+            AIScriptSetState(processor, start_state);
+        } else if (processor->script != NULL) {
+            start_state = AIStateFind(AIScriptKeywordBase, processor->script);
+            if (start_state != NULL)
+                AIScriptSetState(processor, start_state);
+        }
+    }
+    processor->interrupt_timer = 0.0f;
+    processor->interrupt_priority = 0;
+    processor->interrupt_id = 0;
+    processor->interrupt_state = NULL;
+    processor->return_to_state = NULL;
+}
+
+static i32 __cdecl AiEvalExpressionNameLoopup(char *expression, f32 *float_out, i32 *int_out) {
+    f32 value;
+    i32 got_value;
+    got_value = 0;
+    value = 0.0f;
+    if (NuStrICmp(expression, AIExpressionRandName) == 0) {
+        got_value = 1;
+        value = NuRandFloat();
+    } else if (NuStrICmp(expression, AIScriptFalse) == 0) {
+        got_value = 1;
+        value = 0.0f;
+    } else if (NuStrICmp(expression, AIExpressionTrueName) == 0) {
+        got_value = 1;
+        value = 1.0f;
+    } else if (NuStrICmp(expression, AIExpressionMaxName) == 0) {
+        got_value = 1;
+        value = FLT_MAX;
+    }
+    if (got_value == 0) {
+        if (GameParamToFloatFn != NULL)
+            got_value = GameParamToFloatFn(current_packet, current_processor, expression, &value);
+        if (got_value == 0)
+            value = AIParamToFloat(current_processor, expression);
+    }
+    if (float_out != NULL)
+        *float_out = value;
+    if (int_out != NULL)
+        *int_out = (i32)value;
+    return 0;
+}
+
+f32 __cdecl AIParamToFloatEx(AIPACKET_PC *packet, AISCRIPTPROCESS_PC *processor, char *param) {
+    char *cursor;
+    f32 result;
+    i32 is_number;
+    is_number = 1;
+    cursor = param;
+    while (*cursor != '\0') {
+        if (*cursor < -45 || *cursor > '9' || *cursor == '/') {
+            is_number = 0;
+            break;
+        }
+        cursor++;
+    }
+    if (is_number != 0)
+        return NuAToF(param);
+    current_processor = processor;
+    current_packet = packet;
+    result = NuRDPFVar(param, AiEvalExpressionNameLoopup);
+    current_processor = NULL;
+    return result;
+}
+
+static __declspec(noinline) void AIScriptFillRemainingComplexOperands(NULISTHDR *conditions, AIPACKET_PC *packet,
+                                                                      AISCRIPTPROCESS_PC *processor,
+                                                                      AICONDITION_PC *condition, i32 stack_index) {
+    AICONDITION_PC *remaining;
+    if (processor->param_stack[stack_index].force_complex_eval != 0) {
+        if (processor->param_stack[stack_index].is_first_time_state != 0) {
+            remaining = (AICONDITION_PC *)NuLinkedListGetNext(conditions, (NULISTLNK *)condition);
+            while (remaining != NULL) {
+                if ((remaining->flags & 8) != 0)
+                    processor->param_stack[stack_index].complex_params[remaining->param_index] =
+                        AIParamToFloatEx(packet, processor, remaining->complex_expression);
+                remaining = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &remaining->link);
+            }
+        }
+        processor->param_stack[stack_index].force_complex_eval = 0;
+    }
+}
+
+static __declspec(noinline) AICONDITION_PC *AIScriptProcessStateConditions(AISYS_PC *system, NULISTHDR *conditions,
+                                                                           AIPACKET_PC *packet,
+                                                                           AISCRIPTPROCESS_PC *processor,
+                                                                           i32 stack_index) {
+    AICONDITION_PC *condition;
+    f32 condition_value;
+    f32 comparison_value;
+    AICONDITION_EVAL_PC comparison_fn;
+    i32 comparison_passed;
+    if (processor == NULL || conditions == NULL)
+        return NULL;
+    condition = (AICONDITION_PC *)NuLinkedListGetHead(conditions);
+    while (condition != NULL) {
+        condition_value = 0.0f;
+        comparison_passed = 0;
+        if (condition->definition != NULL) {
+            if (condition->definition->eval_fn != NULL)
+                condition_value = condition->definition->eval_fn(system, processor, packet, condition->argument,
+                                                                 condition->initialized_argument);
+            if (condition->parameter_condition != NULL && condition->parameter_condition->definition != NULL) {
+                comparison_fn = condition->parameter_condition->definition->eval_fn;
+                comparison_value = comparison_fn != NULL ? comparison_fn(system, processor, packet, condition->argument,
+                                                                         condition->initialized_argument)
+                                                         : condition_value;
+            } else if ((condition->flags & 8) != 0) {
+                if (processor->param_stack[stack_index].is_first_time_state != 0)
+                    processor->param_stack[stack_index].complex_params[condition->param_index] =
+                        AIParamToFloatEx(packet, processor, condition->complex_expression);
+                comparison_value = processor->param_stack[stack_index].complex_params[condition->param_index];
+            } else if ((condition->flags & 4) != 0)
+                comparison_value = processor->params[condition->param_index];
+            else
+                comparison_value = condition->param_value;
+            switch (condition->comparison) {
+                case 0:
+                    comparison_passed = condition_value == comparison_value;
+                    break;
+                case 1:
+                    comparison_passed = condition_value < comparison_value;
+                    break;
+                case 2:
+                    comparison_passed = condition_value > comparison_value;
+                    break;
+                case 3:
+                    comparison_passed = condition_value <= comparison_value;
+                    break;
+                case 4:
+                    comparison_passed = condition_value >= comparison_value;
+                    break;
+                case 5:
+                    comparison_passed = condition_value != comparison_value;
+                    break;
+            }
+        }
+        if (!comparison_passed) {
+            while ((condition->flags & 1) != 0) {
+                condition = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &condition->link);
+                if (condition == NULL)
+                    break;
+                if (processor->param_stack[stack_index].is_first_time_state != 0 && (condition->flags & 8) != 0) {
+                    processor->param_stack[stack_index].complex_params[condition->param_index] =
+                        AIParamToFloatEx(packet, processor, condition->complex_expression);
+                    condition->param_value = processor->param_stack[stack_index].complex_params[condition->param_index];
+                }
+            }
+        } else if ((condition->flags & 1) == 0) {
+            AIScriptFillRemainingComplexOperands(conditions, packet, processor, condition, stack_index);
+            processor->param_stack[stack_index].is_first_time_state = 0;
+            return condition;
+        }
+        if (condition != NULL)
+            condition = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &condition->link);
+    }
+    AIScriptFillRemainingComplexOperands(conditions, packet, processor, NULL, stack_index);
+    processor->param_stack[stack_index].is_first_time_state = 0;
+    return NULL;
+}
+
+static __declspec(noinline) i32 AIScriptProcessReferences(AISYS_PC *system, AIPACKET_PC *packet,
+                                                          AISCRIPTPROCESS_PC *processor) {
+    NULISTHDR *references;
+    AIREFSCRIPT_PC *reference;
+    AICONDITION_PC *entry_condition;
+    i32 index;
+    if (system == NULL || processor == NULL || processor->script == NULL || processor->active_ref_count >= 4)
+        return 0;
+    references = &processor->script->reference_scripts;
+    for (index = 0; index < 2; index++) {
+        reference = (AIREFSCRIPT_PC *)NuLinkedListGetHead(references);
+        while (reference != NULL) {
+            processor->param_stack[1].is_first_time_state = 1;
+            processor->param_stack[1].force_complex_eval = 1;
+            if (NuLinkedListGetHead(&reference->conditions) == NULL ||
+                AIScriptProcessStateConditions(system, &reference->conditions, packet, processor, 1) != NULL) {
+                if (reference->script != NULL) {
+                    processor->param_stack[0].is_first_time_state = 1;
+                    processor->param_stack[0].force_complex_eval = 1;
+                    entry_condition = AIScriptProcessStateConditions(system, &reference->script->base_state->conditions,
+                                                                     packet, processor, 0);
+                    if (entry_condition != NULL && entry_condition->next_state != reference->script->base_state) {
+                        processor->active_refs[processor->active_ref_count] = reference;
+                        processor->active_ref_count++;
+                        AIScriptProcessorInit(system, packet, processor, NULL, NULL, NULL, 0, reference->script,
+                                              entry_condition->next_state);
+                        return 1;
+                    }
+                }
+            }
+            reference = (AIREFSCRIPT_PC *)NuLinkedListGetNext(
+                index == 0 ? &processor->script->reference_scripts : references, &reference->link);
+        }
+        if (processor->state == NULL)
+            break;
+        references = &processor->state->reference_scripts;
+    }
+    return 0;
+}
+
+void __cdecl AIScriptProcess(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC *packet, AISCRIPTPROCESS_PC *processor,
+                             f32 elapsed) {
+    i32 index;
+    AIREFSCRIPT_PC *reference;
+    AICREATURE_PC *creature;
+    AIACTION_PC *action;
+    i32 first_time;
+    f32 old_interrupt_timer;
+    AICONDITION_PC *transition;
+    if (processor == NULL || processor->script == NULL)
+        return;
+    processor->script_timer += elapsed;
+    for (index = 0; index < processor->active_ref_count; index++) {
+        reference = processor->active_refs[index];
+        if (NuLinkedListGetHead(&reference->conditions) != NULL &&
+            AIScriptProcessStateConditions(system, &reference->conditions, packet, processor, 1) == NULL) {
+            processor->active_ref_count = index;
+            if (index == 0) {
+                creature = packet->creature_index != 0xff ? &system->creatures[packet->creature_index] : NULL;
+                AIScriptProcessorInit(system, packet, processor, creature, NULL, NULL, 0, processor->base_script,
+                                      reference->return_state);
+            } else
+                AIScriptProcessorInit(system, packet, processor, NULL, NULL, NULL, 0,
+                                      processor->active_refs[index - 1]->script, reference->return_state);
+            break;
+        }
+    }
+    if (processor->next_state == NULL && processor->active_ref_count != 0 &&
+        processor->state == processor->script->base_state) {
+        index = processor->active_ref_count - 1;
+        reference = processor->active_refs[index];
+        processor->active_ref_count = index;
+        if (index == 0) {
+            creature = packet->creature_index != 0xff ? &system->creatures[packet->creature_index] : NULL;
+            AIScriptProcessorInit(system, packet, processor, creature, NULL, NULL, 0, processor->base_script,
+                                  reference->return_state);
+        } else
+            AIScriptProcessorInit(system, packet, processor, NULL, NULL, NULL, 0,
+                                  processor->active_refs[index - 1]->script, reference->return_state);
+    }
+    if (processor->next_state != NULL) {
+        AIScriptSetState(processor, processor->next_state);
+        processor->next_state = NULL;
+    }
+    if (processor->state == NULL)
+        AIScriptSetState(processor, (AISTATE_PC *)NuLinkedListGetHead(&processor->script->states));
+    if (processor->state != NULL) {
+        while (processor->action_node != NULL) {
+            action = processor->action_node;
+            if (action->definition != NULL && action->definition->eval_fn != NULL) {
+                first_time = 0;
+                if ((processor->flags & 1) != 0) {
+                    processor->action_data_1 = 0;
+                    processor->action_data_2 = 0;
+                    processor->action_data_3 = NULL;
+                    processor->action_data_6 = 0;
+                    processor->action_data_4 = 0.0f;
+                    processor->action_data_5 = 0.0f;
+                    processor->action_data_7 = 0;
+                    processor->action_timer = 0.0f;
+                    processor->action_pos.x = processor->action_pos.y = processor->action_pos.z = 0.0f;
+                    memset(&processor->path_info, 0, sizeof(processor->path_info));
+                    if (packet != NULL) {
+                        packet->goal_path_node = NULL;
+                        packet->goal_speed_mode = 0;
+                        packet->movement_instruction_parameter = 0.0f;
+                        packet->movement_look_target = NULL;
+                        if (ScriptProcessFirstTimeActionFn != NULL)
+                            ScriptProcessFirstTimeActionFn(system, packet, processor);
+                    }
+                    processor->flags &= ~1u;
+                    first_time = 1;
+                    if (action->definition->replicate_on_first_action != 0) {
+                        STUBBED_NAMED("AIScriptProcess: PC network first-action notification 0x53db30");
+                    }
+                }
+                if (action->definition->eval_fn(system, processor, packet, action->params, action->param_count,
+                                                first_time, elapsed) == 0)
+                    break;
+            } else
+                processor->flags &= ~1u;
+            if ((processor->flags & 1) != 0)
+                continue;
+            if (processor->action_node != NULL)
+                processor->action_node =
+                    (AIACTION_PC *)NuLinkedListGetNext(&processor->state->actions, &processor->action_node->link);
+            else
+                processor->action_node = (AIACTION_PC *)NuLinkedListGetHead(&processor->state->actions);
+            if (processor->action_node != NULL)
+                processor->flags |= 1;
+        }
+    }
+    if (AIScriptProcessReferences(system, packet, processor) != 0)
+        return;
+    old_interrupt_timer = processor->interrupt_timer;
+    if (processor->interrupt_timer > 0.0f)
+        processor->interrupt_timer -= elapsed;
+    if (old_interrupt_timer > 0.0f && processor->interrupt_timer <= 0.0f && processor->interrupt_state != NULL) {
+        AIScriptSetState(processor, processor->interrupt_state);
+        processor->interrupt_priority = 0;
+        processor->interrupt_state = NULL;
+        return;
+    }
+    if (processor->state != NULL) {
+        transition = AIScriptProcessStateConditions(system, &processor->state->conditions, packet, processor, 0);
+        if (transition != NULL) {
+            processor->flags = (processor->flags & ~4u) | ((transition->flags & 2u) << 1);
+            AIScriptSetState(processor, transition->next_state);
+        }
+    }
 }

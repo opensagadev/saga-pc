@@ -539,3 +539,49 @@ proposal for the next lifecycle release; it is not credited as a new shared-data
 definition here. Particle callback backends and dynamic-joint providers remain
 separate code dependencies. Animation scratch backing capacity also remains
 unproven: observed allocations do not establish a complete static owner extent.
+
+
+## Third structural release: parser, effects and typed owners
+
+The shared data writer adds 81 complete original definitions, totaling 2,292
+bytes, all verified against retail initializers. These include actual movement
+and AI scalars, callback pointers, the 200-byte Default_ADDPART, four blade colour
+records, the 88-entry LevHSpecial array, eight LevGizObst pointers, and the
+148-byte podsprint record. Full producer bounds establish these array extents;
+Android declarations alone do not. The former LevHSpecial_50/51 source owners
+are removed: both now address the genuine exact aggregate's elements.
+
+The character configuration TU owns its genuine 208-row keyword table (207
+entries and a sentinel), private parser/state/backing records and generated
+literals. Five private initializers total 22,096 exact bytes; the real keyword
+table accounts for 1,664 of those bytes. Its 307 native literals total 3,759
+verified bytes. These remain original-TU owners, not opaque copied retail data.
+Level-object count/name pointers and four -1 reference scalars likewise remain
+in their proper source owner.
+
+WORLD has distinct typed debris systems: game_debris_sys is at +0x134 and the
+existing part_debris_sys is at +0x138. Their entries are separate semantic types;
+the game table's 20-byte row contains an effect id and inline 16-byte name. The
+16-byte runtime level-object row has a NUSPECIALHANDLE and active byte at +0xe.
+The object locator cohort contains 16 matrices, proved by PC loading/drawing
+producers; it is not a guessed array capacity.
+
+Explosions is the real eight-record pool at 0x00950db8, 0x38 bytes per record,
+448 bytes total; i_explosion at 0x00950f78 is a separate scalar. The owner pointer
+is at +8, position at +0xc, radius at +0x18, time at +0x1c, duration at +0x20 and
+flags at +0x24. The absolute owner-field address 0x00950dc0 is not the array base.
+The PC cursor wraps at eight, proving the full extent. LevGizmo is the real
+12-pointer array at 0x0087a98c, cleared by an explicit 48-byte producer. The
+remaining fields stay opaque until their semantics are established.
+
+Two working source owners deliberately receive **no original extent or exact
+credit**. FadeSys at 0x0095079c is the genuine nonvirtual FadeSystem C++ object;
+C consumers use the same named scalar layout. PC initialization establishes the
+accessed prefix through +0x28, but not an authoritative complete original owner
+size, so its CSV size remains blank. ConfigBuffer at 0x0092b0e8 also keeps a blank
+original size. Its reconstruction backing is 0x10002 bytes: the reviewed 64 KiB
+source limit plus two stripping terminators. The independent temporary rotation
+at 0x0093b0e8 only bounds contiguous original storage above; it does not prove
+ConfigBuffer's exact extent. Pack-loaded text has no established 64 KiB bound,
+and this working backing does not establish arbitrary inputs safe. No invented
+original size or guard is used to improve coverage or fabricate a loader result.

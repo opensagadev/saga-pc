@@ -24,3 +24,20 @@ i32 __cdecl Cheat_IsOn(i32 cheat) {
 i32 __cdecl Cheats_CheckFlags(u32 flags) {
     return (i32)(CheatSystemPtr->flags & flags);
 }
+
+i32 __cdecl Cheat_PowerUpActive(i32 index) {
+    i32 player;
+    if (ONEPLAYERPOWERUPS != 0) {
+        if (index != 0 && index != 1) {
+            return 0;
+        }
+        for (player = 0; player < 2; ++player) {
+            GAMEOBJECT *object = (GAMEOBJECT *)Player[player];
+            if (object != NULL && object->powerup_time > 0.0f && (i8)object->field_280 == index) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+    return Cheat_PowerUpTime > 0.0f;
+}

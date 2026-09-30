@@ -410,3 +410,25 @@ void __cdecl DrawOffsetCode(GAMEOBJECT *object, i32 reset) {
         object->render_offset = target;
     }
 }
+
+i32 __cdecl Player_HasPurpleForce(GAMEOBJECT *object) {
+    if (Cheat_IsOn(28) != 0) {
+        return 1;
+    }
+    return object != NULL && object->powerup_time > 0.0f;
+}
+
+i32 __cdecl Player_HasDoubleWeaponDamage(GAMEOBJECT *object) {
+    if (Cheats_CheckFlags(0x400) != 0) {
+        return 1;
+    }
+    return object != NULL && object->powerup_time > 0.0f;
+}
+
+i32 __cdecl UnderPlayerControl(GAMEOBJECT *object) {
+    if ((object->flags_1fc_word & 0x80) != 0)
+        return 1;
+    if (object->takeover_source != NULL && (object->takeover_source->flags_1fc_word & 0x80) != 0)
+        return 1;
+    return 0;
+}

@@ -1,6 +1,34 @@
 #include "saga.h"
 #include <xmmintrin.h>
 
+i32 __cdecl NuLineLineIntersect(NUVEC *origin_a, NUVEC *direction_a, NUVEC *origin_b, NUVEC *direction_b,
+                                f32 *parameter_a, f32 *parameter_b) {
+    NUVEC cross;
+    NUVEC difference;
+    f32 length;
+    f32 inverse;
+    f32 determinant;
+
+    cross.x = direction_a->y * direction_b->z - direction_a->z * direction_b->y;
+    cross.y = direction_a->z * direction_b->x - direction_a->x * direction_b->z;
+    cross.z = direction_a->x * direction_b->y - direction_a->y * direction_b->x;
+    length = NuFsqrt(cross.x * cross.x + cross.y * cross.y + cross.z * cross.z);
+    inverse = length == 0.0f ? 0.0f : 1.0f / length;
+    inverse *= inverse;
+    difference.x = origin_b->x - origin_a->x;
+    difference.y = origin_b->y - origin_a->y;
+    difference.z = origin_b->z - origin_a->z;
+    determinant = difference.x * (direction_b->y * cross.z - direction_b->z * cross.y) -
+                  difference.y * (direction_b->x * cross.z - direction_b->z * cross.x) +
+                  difference.z * (direction_b->x * cross.y - direction_b->y * cross.x);
+    *parameter_a = determinant * inverse;
+    determinant = difference.x * (direction_a->y * cross.z - direction_a->z * cross.y) -
+                  difference.y * (direction_a->x * cross.z - direction_a->z * cross.x) +
+                  difference.z * (direction_a->x * cross.y - direction_a->y * cross.x);
+    *parameter_b = determinant * inverse;
+    return inverse != 0.0f;
+}
+
 STATIC_ASSERT(offsetof(NUVEC, x) == 0x00);
 STATIC_ASSERT(offsetof(NUVEC, y) == 0x04);
 STATIC_ASSERT(offsetof(NUVEC, z) == 0x08);
