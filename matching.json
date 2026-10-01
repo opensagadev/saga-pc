@@ -8,16 +8,16 @@
     "src/externals.h": "3382382faeac231f3c7962ffb276f5c091463416d3cd41afd89c57fe6c4eef62",
     "src/saga.h": "bc18ee32ad09246d69582fd9c4bcfa4d4b1b68b690889e94fe80334ff46d6788",
     "config/data.md": "b46d28a41b8d3d2d61ee37a9eaee793a8857aed771d8c46412ec3df2a8c151a1",
-    "config/identification-decisions.jsonl": "8363cb381e099f16a11d7df4186696cd72023a1a135ee931956ed768fd3db5eb",
+    "config/identification-decisions.jsonl": "8b3b27281554772c469816f8401c4ab03f2eaf4ce166b9931be0fafe31abe11e",
     "config/identification-plan.md": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
-    "config/identification-tools.md": "65b3b79e4f4adcc9dabe5efd2ec2d5692341bf4c57224b139f7c15f7fb3d5ebc",
+    "config/identification-tools.md": "b0861ec839f2e52db64b21862342ea0d609383e1800d4335ee5b9baa460f7343",
     "config/identification.md": "ecfbf8977bb20b3c0b8fc8cf0c4a7cc7d7cd0f9915f3abe77145c532651e31e4",
     "config/numain.md": "b1bf36c6b55647064f79402997c5d956060e13cbf6d6648bcde831ea4e0c5e74",
     "config/progress-plan.md": "cf144b1f5e0b8d5d0a17e0f2a1d065ad64c13a95d1b491c88792e046bb65a3ff",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
     "config/strategy.md": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
-    "config/symbols.csv": "ed8950f9c1c9edf195cccd963c6c59035e51dc62530bdc21ed491567e6739b50",
-    "config/symbols.md": "20af11ef1606d5bd840a39615b681fb2d00ddfb729bc4524b814830117d7c932",
+    "config/symbols.csv": "2b8605bdc3693e6902d64fcc2fd3aa0dc28f552cfcc75f333571ed4494047d4e",
+    "config/symbols.md": "b4506bfedb383debad16cada69e7584832923aec19a8427dd7ab4f17a7d20ff4",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
@@ -26,7 +26,7 @@
     "tools/cc.py": "428b7ac5f1b7808cf780d0b26a03b49600e43810ec1c1f128630766d090a820f",
     "tools/check.py": "304e380caa8ba84da40f4b68421cb4b63c760271070aa1111d579648791ab6e8",
     "tools/identification.py": "eb8678dbbeea7e30684a191a3e6cd76690d223ee87f3e9f4b9fff14b31591f8f",
-    "tools/identification_graph.py": "adbc74b552eb7cbaaa4f62750d8e88cdf75f418ff96968ed61f2485dd9eac3f6",
+    "tools/identification_graph.py": "a127d545fb83ff22ab6cf09fe4a1da0b33b7975c8dc1ac953be46c00ba77ea66",
     "tools/identification_inspect.py": "1bdaa9f14aacdf9b5e3cae97ed04b34da59558dc20ee36417148b0b716fcdcc1",
     "tools/identification_joint.py": "55e72e3591803523aa7d501b6c0388ce92dc9c6d84ee7c07a1be78b88eab922c",
     "tools/identification_limits.py": "c44fb5fb1eacd2f20126515e28421863eb4c66d35250340ba1708e2c4f9440cb",
@@ -55,6 +55,7 @@
     "tools/test_identification_joint.py": "1b745485aca770596ba07aa3f25e6522891f1cc4b929458b150ed17407b2f61b",
     "tools/test_identification_limits.py": "de46aa361901c31ca434236504cf318f64a9dc5b1a52042e0957dd1b3d3e9bb6",
     "tools/test_identification_literals.py": "4464803d23947e66a0669c4d36fa1cd6da53cf7707936fab81221b687be1bd43",
+    "tools/test_identification_operand.py": "4234b5c6d51ff6cd701f1ed01da2e32b4471c692528887d7be5282d01b79002d",
     "tools/test_identification_registry.py": "c8f20bf61ec222ddf72b1ffff5b566383b4755d01a0edda89263e61aa36da43b",
     "tools/test_identification_registry_run.py": "40c0e144d80c186a4fd199bf3fdf7cc7889f4d9e8ec104c7a9097b0e781da5db",
     "tools/test_identification_review.py": "e554e56de00abf23de3bd58e4f64d9f7317e274398bb6b7e793ea31cbd9a1bf7",
@@ -6721,6 +6722,16 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "Action_CreatePod",
+      "symbol": "_Action_CreatePod",
+      "address": "0x004dd810",
+      "units": [],
+      "target_size": 1135,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "KaminoE_CheckPlatHit",
@@ -73862,6 +73873,26 @@
       "status": "exact"
     },
     {
+      "name": "force_gizmotype_id",
+      "symbol": "_force_gizmotype_id",
+      "address": "0x007f8cc4",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "GizForceSFX_ConfigKeywords",
+      "symbol": "_GizForceSFX_ConfigKeywords",
+      "address": "0x007f8ccc",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "Arcade_Mode",
       "symbol": "_Arcade_Mode",
       "address": "0x007fa130",
@@ -74091,6 +74122,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "lever_gizmotype_id",
+      "symbol": "_lever_gizmotype_id",
+      "address": "0x007faaa4",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "BGLOAD",
@@ -82319,6 +82360,16 @@
       "status": "exact"
     },
     {
+      "name": "script_spline_selected",
+      "symbol": "_script_spline_selected",
+      "address": "0x00876db4",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "prev_droid_ix",
       "symbol": "_prev_droid_ix",
       "address": "0x00876db8",
@@ -84316,6 +84367,16 @@
       "status": "exact"
     },
     {
+      "name": "CRUISERD_LDATA",
+      "symbol": "_CRUISERD_LDATA",
+      "address": "0x0087b16c",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "VADERC_LDATA",
       "symbol": "_VADERC_LDATA",
       "address": "0x0087b180",
@@ -84679,6 +84740,16 @@
       "status": "exact"
     },
     {
+      "name": "LevDeaths",
+      "symbol": "_LevDeaths",
+      "address": "0x0087b2f0",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "LevelChangesInArea",
       "symbol": "_LevelChangesInArea",
       "address": "0x0087b2f4",
@@ -84719,6 +84790,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "pFadeInfo",
+      "symbol": "_pFadeInfo",
+      "address": "0x0087b4f0",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "peak_poly_count",
@@ -90756,10 +90837,39 @@
       "units": [
         "src/legoapi/fade.cpp"
       ],
+      "target_size": 44,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/fade.cpp",
+          "exact_match": true,
+          "target_size": 44,
+          "base_size": 44,
+          "target_sha256": "85759b3811ff7dc47b03792ac85317be51431a3f9e01dcafce317ed736a391b0",
+          "base_sha256": "85759b3811ff7dc47b03792ac85317be51431a3f9e01dcafce317ed736a391b0"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "gizmoblowupnametable_numids",
+      "symbol": "_gizmoblowupnametable_numids",
+      "address": "0x009507c8",
+      "units": [],
       "target_size": null,
       "exact_match": false,
       "objects": [],
       "status": "unknown size"
+    },
+    {
+      "name": "gizmoblowupnametable",
+      "symbol": "_gizmoblowupnametable",
+      "address": "0x009507d0",
+      "units": [],
+      "target_size": 1024,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "GameBlowUpBlownUpFn",
@@ -95061,6 +95171,16 @@
       "status": "exact"
     },
     {
+      "name": "TerI",
+      "symbol": "_TerI",
+      "address": "0x0292188c",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "edpp_page_used",
       "symbol": "_edpp_page_used",
       "address": "0x02924b30",
@@ -95090,6 +95210,16 @@
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
+    },
+    {
+      "name": "ShadPoly",
+      "symbol": "_ShadPoly",
+      "address": "0x0292fc10",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "CurTerr",
@@ -100621,16 +100751,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 517466,
+    "mapped_code_bytes": 518601,
     "matched_code_bytes": 45746,
     "matching_percent": 1.3178553176582704,
     "fuzzy_coverage_percent": 6.211660510525754,
-    "mapped_functions": 2011,
+    "mapped_functions": 2012,
     "matched_functions": 801,
     "objdiff_fuzzy_percent": 61.122322,
     "objdiff_total_code": 352861,
     "image_bytes": 40067072,
-    "mapped_bytes": 1061773,
-    "mapping_percent": 2.6499889984474034
+    "mapped_bytes": 1063984,
+    "mapping_percent": 2.655507245450828
   }
 }

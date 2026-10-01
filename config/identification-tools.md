@@ -511,6 +511,7 @@ Registry diagnostics report 234 physical candidates, no ambiguous joins and
 27 unresolved names, including the Android-only callback. These counts establish
 neither retrieval-quality gains nor newly compared code.
 
+
 ```sh
 python3 tools/repair_graph.py \
   --config build/analysis/identification/current-graphs/export-config.json \
@@ -554,6 +555,79 @@ resolve the exact target site, with offset zero; indexed reconstruction now
 calculates the offset from target addresses rather than hardcoding that result.
 This introduces neither containing-owner fallback nor additional automatic data
 anchors.
+
+## Operand context and false address observations
+
+The exporter now adds `identification-reference-operand-v1` facts to access
+observations. These record the exact reference operand index, object form,
+raw scalar bits and bounded instruction P-code context. A scalar value never
+receives the address normalization delta. Operand-local P-code computes an
+operand; consuming operations come from whole-instruction P-code. Ghidra's
+ADDRESS flag alone is insufficient because attaching an analysis reference can
+set it on a scalar operand.
+
+`address_reference_policy()` excludes an exactly bound OR/AND/XOR/TEST scalar-bit
+operand from derived address incidence. Every raw edge, target, owner, site,
+role and width remains in the exported evidence. A memory operand at the same
+numeric address remains eligible. PUSH/MOV/LEA, direct memory and PIC/GOT address
+candidates retain their support. CMP, unknown, unbound, truncated and legacy
+observations remain explicitly weak candidates; these local facts cannot
+establish pointer identity, allocation extent or type.
+
+In-memory graphs, SQLite normalized incidence, literal inputs and data support
+use the same eligibility rule. Manifest schemas and operand indices are checked
+strictly; a declared schema with missing access facts fails validation. The
+derived index schema and scorer version change, while older raw exports remain
+readable with unclassified legacy support. Do not rebind old index markers to a
+new producer hash.
+
+A compiled Ghidra fixture checks 24 synthetic instructions and 20 data-reference
+observations: fourteen remain eligible and six scalar operands are excluded.
+Independent review verifies Java/Python parity, equal-valued memory and scalar
+operands, raw-bit normalization, comparison recall and malformed schema/index
+rejection. Twelve dedicated tests and 85 targeted graph/tool tests pass under an
+external 256 MiB process limit.
+
+Fresh original exports preserve byte-identical nodes, every raw edge after
+removing the added facts, all function ranges and the explicit mixed/table/data
+owners. They exclude 250 PC and 548 Android scalar-bit observations from derived
+support. Five exact original-cache controls independently confirm OR/TEST/AND
+exclusion and weak CMP retention. The serialized exports take 37.03 seconds and
+peak at 1,262 MiB RSS, using 512 MiB PC and 1 GiB Android Java heaps. Read-only
+Ghidra rotates byte-identical project index files and updates housekeeping
+metadata; all retained project file contents, sizes and modes remain unchanged.
+These checks establish classification and preservation, not a retrieval-quality
+or unknown-symbol precision gain.
+
+Two further missing creature entries have independently reviewed identities and
+complete extents and are repaired for graph analysis, preserving all 8,023 prior
+functions and explicit owners. Their ABI holds remain outside the accepted map.
+The graph now contains 8,025 PC and 13,242 Android functions. The next production
+replay takes 78.68 seconds and peaks at 761 MiB RSS under the unchanged 1 GiB cap.
+It records 1,416 accepted function seeds, 88 identity-reviewed data anchors,
+eleven exclusions, zero stale decisions, 1,490 tentative function pairs, 30,915
+full function candidates and 2,039 data candidates. The registry diagnostic has
+236 physical pairs; none is automatically accepted.
+
+An isolated control uses the same current producer, frozen accepted inputs and
+explicit 89-label quarantine for both arms. Its 193-function family partition,
+1,183 training function seeds, 784 training data labels, seventeen reviewed data
+anchors and five rejections are identical. Both arms exclude all 261 selected
+Android family endpoints from training and hold out all fixed seventy queries.
+The old arm uses the same raw observations without operand facts; the new arm
+adds only the facts and derived eligibility policy. Complete output manifests
+and 193 per-query rank records are retained locally.
+
+Both arms recover 74 of 193 functions with no incorrect proposals. Round one
+connects 176 queries, ranks 59 correct candidates first and 89 in the top five.
+The fixed seventy subset recovers 27, connects 67, ranks 26 first and 42 in the
+top five. Every recorded rank and proposal is identical between arms. This
+control establishes no retrieval gain or loss for this family and cannot measure
+unknown-symbol precision or exhaustive address recall. Earlier results from
+different repaired graphs are historical context, not this control's baseline.
+The serialized old/new runs take 91.45/66.32 seconds and peak at 1,010/1,046 MiB
+RSS under the same 1.5 GiB process cap; timings alone do not establish a general
+performance improvement.
 
 ## Installed tools and input identity
 
@@ -1010,13 +1084,15 @@ tooling/map changes. Keep generated graphs, original bytes, H2 databases and
 downloaded binaries ignored. Only tooling, synthetic tests, reviewed proposals
 and documentation belong in tracked changes.
 
-The latest checkpoint `make -j2 check` passed 391 tests (three optional Ghidra fixture skips), source
+The latest checkpoint `make -j2 check` passed 408 tests (three optional Ghidra fixture skips), source
 formatting and Clang-tidy. The object check passed 1,638 function and 2,604 data
 definitions across 123 objects. Final compilation/matching checks use two Make
 workers to keep resource use bounded.
 Retail matching preserves all 801 previous exact function rows. Pre-existing
-comparisons and all 123 object hashes are unchanged in this inventory release.
-Fuzzy code coverage rounds to 6.212%; mapping coverage reaches 2.587%.
+function comparisons and all 123 object hashes are unchanged. The newly verified
+44-byte `FadeSys` extent now gives its existing compiled BSS definition an exact
+data comparison; no code comparison or reconstruction coverage is added.
+Fuzzy code coverage rounds to 6.212%; mapping coverage reaches 2.656%.
 The first pushed tool snapshot exposed a test relying on a local ignored file;
 the fixture now isolates both repository roots and its job lock, so the required
 legacy-default inputs are entirely synthetic.

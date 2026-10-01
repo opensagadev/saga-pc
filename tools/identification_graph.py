@@ -25,9 +25,61 @@ GRAPH_SCHEMA = "identification-reference-graph-v1"
 PAIR_SCHEMA = "identification-graph-pair-v1"
 DECISION_SCHEMA = "identification-decision-v1"
 STATE_SCHEMA = "identification-state-v1"
-SCORER_VERSION = "confirmed-user-data-v1"
+SCORER_VERSION = "confirmed-user-data-v2-operand"
 STATUSES = {"candidate", "identity-reviewed", "rejected", "ambiguous", "inline-only", "alias"}
 DATA_KINDS = {"data-site", "data-object"}
+
+
+OPERAND_SCHEMA = "identification-reference-operand-v1"
+SCALAR_BIT_CONSUMERS = {"INT_AND", "INT_OR", "INT_XOR"}
+
+def _validate_operand_schema(manifest):
+    if "reference_operand_schema" in manifest and manifest["reference_operand_schema"] != OPERAND_SCHEMA:
+        raise ValueError("Unsupported manifest reference operand schema")
+
+def address_reference_policy(edge, manifest=None):
+    """Keep raw observations; quarantine only proved operand scalar-bit use.
+
+    Unknown and comparisons retain weak compatibility candidates. Instruction
+    context verification never establishes a target identity/type/allocation.
+    """
+    _validate_operand_schema(manifest or {})
+    evidence = edge.get("evidence")
+    operand = evidence.get("operand") if isinstance(evidence, dict) else None
+    declared = (manifest or {}).get("reference_operand_schema")
+    if operand is None:
+        if declared:
+            raise ValueError("Declared operand schema lacks access operand facts")
+        return {"eligible": True, "qualification": "legacy-unclassified", "context_verified": False, "address_target_verified": False}
+    if not isinstance(operand, dict) or operand.get("schema") != OPERAND_SCHEMA:
+        raise ValueError("Unknown access operand evidence schema")
+    operand_index = operand.get("operand_index")
+    edge_index = edge.get("operand_index")
+    if type(operand_index) is not int or type(edge_index) is not int or operand_index < -1 or operand_index != edge_index:
+        raise ValueError("Access operand index must be an exact integer matching its reference")
+    for key in ("operand_binding_exact", "memory_operand", "address_materialization", "scalar_operand", "truncated"):
+        if type(operand.get(key)) is not bool:
+            raise ValueError("Invalid access operand evidence flag")
+    if type(operand.get("address_arithmetic", False)) is not bool:
+        raise ValueError("Invalid address arithmetic evidence flag")
+    consumers = operand.get("scalar_consumers")
+    if not isinstance(consumers, list) or len(consumers) > 16 or not all(isinstance(x, str) for x in consumers):
+        raise ValueError("Invalid scalar consumer evidence")
+    result = {"eligible": True, "qualification": "ambiguous-legacy-candidate", "context_verified": False, "address_target_verified": False}
+    if operand["truncated"] or not operand["operand_binding_exact"]:
+        return result
+    use = operand.get("semantic_use", "unclassified")
+    if use == "scalar-operation-candidate" and operand["scalar_operand"] and not operand["memory_operand"] and not operand["address_materialization"] and not operand.get("address_arithmetic", False) and set(consumers) & SCALAR_BIT_CONSUMERS:
+        return {"eligible": False, "qualification": "operand-scalar-bit-use", "context_verified": True, "address_target_verified": False}
+    if use == "comparison-candidate":
+        result["qualification"] = "comparison-legacy-candidate"
+        return result
+    if operand["memory_operand"] or operand["address_materialization"] or operand.get("address_arithmetic", False):
+        result.update(qualification=use, context_verified=True)
+    return result
+
+def address_reference_eligible(edge, manifest=None):
+    return address_reference_policy(edge, manifest)["eligible"]
 
 
 def canonical_hash(value):
@@ -90,6 +142,7 @@ class Graph:
     function_data: dict = field(init=False)
 
     def __post_init__(self):
+        _validate_operand_schema(self.manifest)
         if self.manifest.get("schema") != GRAPH_SCHEMA:
             raise ValueError("Unsupported reference graph schema")
         _binary_hash(self.manifest.get("binary_sha256"))
@@ -162,11 +215,14 @@ class Graph:
                 continue
             if self.nodes[src]["kind"] != "function":
                 raise ValueError("Data access source must be a function")
+            eligible = address_reference_eligible(edge, self.manifest)
             target = owner or dst
             if target is None:
                 continue
             if self.nodes[target]["kind"] not in DATA_KINDS:
                 raise ValueError("Data access cannot target a function")
+            if not eligible:
+                continue
             indexed_edge = edge
             pointers = got_pointers.get(target, [])
             destinations = {item["target"] for item in pointers}
@@ -793,7 +849,7 @@ def scorer_inputs(pair):
                 dst_va = graph.nodes[target]["address"]
                 calls_out[src_va].add(dst_va)
                 calls_in[dst_va].add(src_va)
-            elif edge["kind"] == "access" and isinstance(edge.get("target_address"), int):
+            elif edge["kind"] == "access" and isinstance(edge.get("target_address"), int) and address_reference_eligible(edge, graph.manifest):
                 reads[src_va].add(edge["target_address"])
         if side == "android":
             for va, node in nodes.items():
@@ -805,7 +861,7 @@ def scorer_inputs(pair):
     return result
 
 
-INDEX_SCHEMA = "identification-sqlite-index-v1"
+INDEX_SCHEMA = "identification-sqlite-index-v2-operand"
 
 
 class _Nodes(Mapping):
@@ -1031,6 +1087,7 @@ def _checked_node(node, manifest):
 
 
 def _build_index(path, manifest, collections):
+    _validate_operand_schema(manifest)
     db = sqlite3.connect(path)
     try:
         db.execute("PRAGMA cache_size=-4096")
@@ -1082,7 +1139,7 @@ def _build_index(path, manifest, collections):
             if kind == "access":
                 if src[0] != "function" or dst is not None and dst[0] not in DATA_KINDS:
                     raise ValueError("Data access requires function source and data target")
-                normalized = owner or target
+                normalized = (owner or target) if address_reference_eligible(edge, manifest) else None
             db.execute("INSERT INTO edges VALUES(?,?,?,?,?,?,?,?)", (sequence, source, target, owner, kind, normalized, None, json.dumps(edge, sort_keys=True, separators=(",", ":"))))
             if sequence % 1000 == 0:
                 db.commit()
@@ -1116,6 +1173,7 @@ def _build_index(path, manifest, collections):
 
 def _load_indexed_graph(manifest_path, manifest, collections):
     """Publish reusable local indices only after validation, with sidecar SHA256."""
+    _validate_operand_schema(manifest)
     tool_hash = _file_hash(Path(__file__))
     identity = canonical_hash({"manifest": manifest, "producer_sha256": tool_hash, "schema": INDEX_SCHEMA})
     destination = manifest_path.parent / (".identification-index-" + identity[:24] + ".sqlite3")

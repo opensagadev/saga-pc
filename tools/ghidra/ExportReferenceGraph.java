@@ -8,6 +8,7 @@ import ghidra.program.model.listing.*;
 import ghidra.program.model.mem.*;
 import ghidra.program.model.pcode.*;
 import ghidra.program.model.symbol.*;
+import ghidra.program.model.scalar.Scalar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.*;
@@ -24,7 +25,7 @@ public class ExportReferenceGraph extends GhidraScript {
     private long delta;
     private final List<long[]> originalRanges = new ArrayList<>();
 
-    private Map<String, Object> record(Object... values) {
+    private static Map<String, Object> record(Object... values) {
         Map<String, Object> result = new LinkedHashMap<>();
         for (int i = 0; i < values.length; i += 2) result.put((String) values[i], values[i + 1]);
         return result;
@@ -180,6 +181,81 @@ public class ExportReferenceGraph extends GhidraScript {
         return widths.size() == 1 ? widths.iterator().next() : null;
     }
 
+    // Exact operand form/context, never proof of a referenced allocation.
+    // Operand-local Pcode is evaluation, not instruction consumption.
+    public static Map<String,Object> operandFacts(Instruction instruction, Reference reference) {
+        int index=reference.getOperandIndex();List<String> kinds=new ArrayList<>();
+        Map<String,Object> facts=record("schema","identification-reference-operand-v1","operand_index",index,
+            "operand_binding_exact",false,"memory_operand",false,"address_materialization",false,
+            "address_arithmetic",false,"scalar_operand",false,"scalar_consumers",new ArrayList<String>(),
+            "truncated",false,"operand_form","unclassified","semantic_use","unclassified",
+            "address_target_verified",false,"reference_program_target_hex",String.format("0x%x",reference.getToAddress().getOffset()),
+            "object_kinds",kinds);
+        if(index<0||index>=instruction.getNumOperands())return facts;
+        Object[] objects=instruction.getOpObjects(index);int type=instruction.getOperandType(index);
+        facts.put("operand_type_bits",type);
+        if(objects.length>16){facts.put("truncated",true);return facts;}
+        for(Object o:objects)kinds.add(o instanceof Scalar?"Scalar":o instanceof Address?"Address":o.getClass().getSimpleName());
+        PcodeOp[] whole=instruction.getPcode();
+        if(whole==null)return facts;
+        if(whole.length>64){facts.put("truncated",true);return facts;}
+        Scalar scalar=objects.length==1&&objects[0] instanceof Scalar?(Scalar)objects[0]:null;
+        Set<String> consumers=new TreeSet<>();
+        if(scalar!=null) {
+            facts.put("scalar_operand",true);facts.put("operand_form","immediate-scalar");
+            facts.put("scalar_value_hex",String.format("0x%x",scalar.getUnsignedValue()));facts.put("scalar_bit_width",scalar.bitLength());
+            if(scalar.bitLength()!=32)return facts; // First gate is the pinned i386 pair.
+            for(PcodeOp op:whole)for(Varnode input:op.getInputs())
+                if(input.isConstant()&&input.getSize()==4&&(input.getOffset()&0xffffffffL)==scalar.getUnsignedValue())consumers.add(op.getMnemonic());
+            if(consumers.size()>16){facts.put("truncated",true);return facts;}
+            facts.put("scalar_consumers",new ArrayList<>(consumers));
+        }
+        String mnemonic=instruction.getMnemonicString().toUpperCase(Locale.ROOT);
+        boolean dynamic=ghidra.program.model.lang.OperandType.isDynamic(type);
+        if(mnemonic.equals("LEA")&&index==1&&instruction.getNumOperands()==2&&(scalar!=null||dynamic)) {
+            facts.put("operand_binding_exact",true);facts.put("address_materialization",true);
+            facts.put("semantic_use","address-materialization-candidate");return facts;
+        }
+        if(objects.length==1&&objects[0] instanceof Address) {
+            Address target=reference.getToAddress();boolean matched=false;
+            for(PcodeOp op:whole) {
+                for(Varnode input:op.getInputs())if(input.isAddress()&&input.getAddress().equals(target))matched=true;
+                Varnode output=op.getOutput();if(output!=null&&output.isAddress()&&output.getAddress().equals(target))matched=true;
+            }
+            if(matched) {facts.put("operand_binding_exact",true);facts.put("memory_operand",true);
+                facts.put("operand_form","direct-memory");facts.put("semantic_use","memory-access-candidate");}
+            return facts;
+        }
+        boolean memoryFlow=false;for(PcodeOp op:whole)if(op.getOpcode()==PcodeOp.LOAD||op.getOpcode()==PcodeOp.STORE)memoryFlow=true;
+        RefType rt=reference.getReferenceType();
+        if(dynamic&&(rt.isRead()||rt.isWrite())&&memoryFlow) {
+            facts.put("operand_binding_exact",true);facts.put("memory_operand",true);
+            facts.put("operand_form","indirect-memory");facts.put("semantic_use","memory-access-candidate");return facts;
+        }
+        if(scalar==null)return facts;
+        if(index==1&&instruction.getNumOperands()==2) {
+            String operation=null;
+            if(mnemonic.equals("OR"))operation="INT_OR";else if(mnemonic.equals("AND")||mnemonic.equals("TEST"))operation="INT_AND";
+            else if(mnemonic.equals("XOR"))operation="INT_XOR";
+            if(operation!=null&&consumers.contains(operation)) {facts.put("operand_binding_exact",true);
+                facts.put("semantic_use","scalar-operation-candidate");return facts;}
+            if(mnemonic.equals("CMP")&&(consumers.contains("INT_LESS")||consumers.contains("INT_SBORROW")||consumers.contains("INT_SUB"))) {
+                facts.put("operand_binding_exact",true);facts.put("semantic_use","comparison-candidate");return facts;
+            }
+        }
+        if(((mnemonic.equals("PUSH")&&index==0&&instruction.getNumOperands()==1)||
+            (mnemonic.equals("MOV")&&index==1&&instruction.getNumOperands()==2))&&consumers.contains("COPY")) {
+            facts.put("operand_binding_exact",true);facts.put("address_materialization",true);
+            facts.put("semantic_use","address-materialization-candidate");return facts;
+        }
+        if(index==1&&instruction.getNumOperands()==2&&((mnemonic.equals("ADD")&&consumers.contains("INT_ADD"))||
+            (mnemonic.equals("SUB")&&consumers.contains("INT_SUB")))) {
+            facts.put("operand_binding_exact",true);facts.put("address_arithmetic",true);
+            facts.put("semantic_use","address-arithmetic-candidate");return facts;
+        }
+        return facts;
+    }
+
     private void addEdge(Function function, Instruction instruction, Reference reference) {
         Address target = reference.getToAddress();
         RefType type = reference.getReferenceType();
@@ -213,6 +289,7 @@ public class ExportReferenceGraph extends GhidraScript {
             "owner", data == null ? null : id(data.getAddress(), "data-object"),
             "offset", data == null ? null : target.subtract(data.getAddress()), "width", accessWidth,
             "evidence", record("origin", "ghidra-reference", "source_type", reference.getSource().toString(),
+                "operand", kind.equals("access") ? operandFacts(instruction, reference) : null,
                 "width_origin", accessWidth == null ? "unknown" : "constant-address-pcode",
                 "tail_certainty", tail ? "external-body-branch-candidate" : null)));
     }
@@ -349,6 +426,7 @@ public class ExportReferenceGraph extends GhidraScript {
         for (long[] range : originalRanges) loadRanges.add(record("start", String.format("0x%08x", range[0]),
             "end_exclusive", String.format("0x%08x", range[1])));
         Map<String, Object> manifest = record("schema", "identification-reference-graph-v1",
+            "reference_operand_schema", "identification-reference-operand-v1",
             "binary_sha256", binaryHash, "binary_md5", currentProgram.getExecutableMD5(),
             "address_space", "ram", "address_transform", record("delta", delta, "program_image_base", currentProgram.getImageBase().toString(),
                 "original_image_base", String.format("0x%08x", originalBase), "original_header_verified", true),

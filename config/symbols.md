@@ -1571,3 +1571,53 @@ Four Accessory interior-to-base pairings and the PC loop-terminal constant
 `nonregistry-data-frontier-next5` and its independent audit retain the allocation,
 neighbor and literal-operand proofs. These additions identify 12,002 code bytes
 and 608 data bytes; they add no compiled definitions or comparison credit.
+
+## Pod callback and further data identities
+
+`Action_CreatePod` at `0x4dd810` adds a complete 1,135-byte body. The original
+game-AI registry and Android named ELF function establish the paired identity.
+Independent review closes every original PC CFG path, enumerates the four
+entry-stack residues modulo sixteen, and checks stack restoration, saved
+registers, seven-slot dispatch and the qualified normal floating-state contract.
+Its aggregate types remain opaque. Frozen `ai-registry-new-callback-batch12`
+and its independent audit retain the original proofs. Other callbacks in that
+packet remain held on specific callee effects; this acceptance does not extend
+to them.
+
+Two data identities have complete four-byte PC allocations: `LevDeaths` at
+`0x87b2f0` and `CRUISERD_LDATA` at `0x87b16c`. Original reset/increment consumers
+and independently identified neighboring allocations bound the death counter.
+Original level lookup results, lifecycle field installation and world-level
+comparison establish the level pointer; distinct lookup stores on both sides
+bound its allocation. Only the static pointer cell receives extent credit;
+level allocation sizes and callback interfaces remain separate questions.
+
+Six further identities retain blank size and ctype: `force_gizmotype_id`
+(`0x7f8cc4`), `lever_gizmotype_id` (`0x7faaa4`), `pFadeInfo` (`0x87b4f0`),
+`script_spline_selected` (`0x876db4`), `TerI` (`0x292188c`) and `ShadPoly`
+(`0x292fc10`). The selected-spline value is a pointer from a selected pointer
+list, rather than its integer index. TerI's `0x948` allocator request concerns
+the runtime pointee, rather than the static pointer allocation. Original paired
+consumers establish these identities, but neither access widths nor Android
+sizes close their PC allocation boundaries. Frozen
+`nonregistry-data-frontier-next6` and its independent audit retain the original
+PIC/GOT, consumer and neighboring-allocation proofs. These additions identify
+1,135 code bytes and eight data bytes, with no new source or comparison credit.
+
+The next allocation review establishes `FadeSys`'s previously unknown extent
+as 44 bytes at `0x95079c`, retaining the existing `FADEINFO_PC` field cohort.
+Original initialization reaches the last field at `+0x28`; original methods
+and independently identified adjacent storage close the allocation boundaries.
+This enables comparison of an existing compiled data definition, rather than
+adding a source definition. Its pointee and virtual interfaces are separate
+contracts.
+
+The private `gizmoblowupnametable` at `0x9507d0` has a complete 1,024-byte
+`char[32][32]` allocation: original reset clears 1,024 bytes, lookup enforces
+capacity 32 with a 32-byte stride, and insertion copies at most 32 bytes into
+each slot. Independently initialized state at `0x950bd0` closes its exclusive
+end. The name counter at `0x9507c8` and `ForceSFX_ConfigKeywords` at `0x7f8ccc`
+receive identity-only mappings with blank extent and type; unresolved gaps and
+terminal-record boundaries receive no credit. Frozen
+`nonregistry-data-frontier-next7` and its independent audit retain original
+PC boundaries, Android named symbols, PIC/GOT references and initializers.
