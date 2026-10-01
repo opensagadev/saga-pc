@@ -739,6 +739,43 @@ changed-target and alias controls were unavailable in this pilot; synthetic
 adapter controls remain separately identified. Frozen
 `pc-crt-coff-pilot-next1` records the exact inputs, hashes and failures.
 
+### Directed views and identity anchors with ABI holds
+
+Graph inspection accepts `--direction out`, `in`, or `both`; the default remains
+`both`. Outgoing expansion follows source/owner references to targets and their
+normalized/GOT observations. Incoming expansion follows target/user references
+to sources and owners. Direction controls traversal expansion: raw owner-access
+observations remain retained, including peer-source observations that are not
+queued. Existing 32-node, 256-edge, per-relation fanout, output and deadline
+limits remain enforced. Raw and normalized targets retain distinct meanings.
+Six new synthetic cases independently verify direction, shared-callee clutter,
+cycles, limits, malformed options and default behavior; 31 inspector tests pass.
+
+The retained `raceopponent-outgoing-call-reference-tree` is an advisory depth-two
+view with explicit truncations and optional presentation-only CSV labels. It
+contains 31 PC nodes/34 edges and 32 Android nodes/78 edges, takes 0.93 seconds
+and peaks at 31 MiB. Presence, labels and graph extents do not establish identity
+or calling-interface acceptance. The CLI refuses implicit index preparation.
+
+The next four-callback graph repair preserves all 8,037 prior functions and the
+explicit mixed/data guards, bringing the PC graph to 8,041 functions. Its
+512 MiB Java heap peaks at 744 MiB in 20.51 seconds with zero tool swaps.
+Those four original identities and complete spans total 830 research bytes;
+the journal retains ABI/type flags false and the CSV gains no rows or bytes.
+An independent particle-count/normal disagreement adds one rejected data pair.
+
+The graph/exclusion replay takes 53.56 seconds at 742 MiB under the 1 GiB cap.
+A second replay isolates the four identity-anchor additions on identical graphs,
+using the complete first run as its previous baseline. It takes 42.44 seconds
+at 689 MiB, with 1,423 seeds, 91 data anchors, fifteen exclusions, zero stale
+decisions, 1,313 tentative pairs, 16,865 full function rows and 2,039 data rows.
+The inferred-pair decrease is not an accuracy claim. Independent audit verifies
+all 57 outputs across three complete runs, both state links, streamed ledger
+counts and final live input pins. An initial anchor append stopped before any
+mutation because its duplicate check did not handle legacy graph node IDs;
+the first replay remained valid for its graph/exclusion scope before the
+corrected append and isolated anchor replay.
+
 ## Installed tools and input identity
 
 The installed Ghidra is `/opt/ghidra`, version `12.1.2_DEV`, with Java
@@ -1194,16 +1231,16 @@ tooling/map changes. Keep generated graphs, original bytes, H2 databases and
 downloaded binaries ignored. Only tooling, synthetic tests, reviewed proposals
 and documentation belong in tracked changes.
 
-The latest checkpoint `make -j2 check` passed 425 tests (three optional Ghidra fixture skips), source
+The latest checkpoint `make -j2 check` passed 431 tests (three optional Ghidra fixture skips), source
 formatting and Clang-tidy. The object check passed 1,638 function and 2,604 data
 definitions across 123 objects. Final compilation/matching checks use two Make
 workers to keep resource use bounded.
 Retail matching preserves all 801 previous exact function rows. Pre-existing
 function comparisons, all previous data comparisons and all 123 object hashes
 are unchanged. The existing 44-byte `FadeSys` exact data comparison is preserved.
-The latest accepted callback adds 94 code bytes to the map, with no code
-comparison or reconstruction coverage added. Final project and
-object checks cover the complete accepted map after these additions.
+This checkpoint adds research identities and an exclusion, with no accepted map
+bytes, code comparison or reconstruction coverage added. Final project and
+object checks cover the complete accepted map.
 Fuzzy code coverage rounds to 6.212%; mapping coverage reaches 2.783%.
 The first pushed tool snapshot exposed a test relying on a local ignored file;
 the fixture now isolates both repository roots and its job lock, so the required

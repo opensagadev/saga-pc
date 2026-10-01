@@ -64,6 +64,93 @@ class InspectorTests(unittest.TestCase):
         self.assertEqual((edge['target'],edge['owner'],edge['normalized_target'],edge['via'],edge['width']),(slot,slot,obj,slot,4))
         self.assertIn(user,[n['id'] for n in result['nodes']])
 
+    def test_default_direction_preserves_both_traversal(self):
+        root, callee, caller = self.node(1), self.node(2), self.node(3)
+        self.edge(1, root, callee)
+        self.edge(2, caller, root)
+        self.assertEqual(inspector.traverse(self.db, self.manifest, 1, 2),
+                         inspector.traverse(self.db, self.manifest, 1, 2, direction='both'))
+        self.assertEqual([r['relation'] for r in inspector.traverse(self.db, self.manifest, 1)['relations']],
+                         ['outgoing', 'incoming', 'owned-access', 'normalized-data-users'])
+
+    def test_outgoing_avoids_shared_callee_incoming_clutter(self):
+        root, shared, other, wanted = [self.node(i) for i in range(1, 5)]
+        self.edge(1, root, shared)
+        self.edge(2, root, other)
+        self.edge(3, other, wanted)
+        for i in range(16):
+            self.edge(10 + i, shared, self.node(100 + i))
+            self.edge(40 + i, self.node(200 + i), shared)
+        both = inspector.traverse(self.db, self.manifest, 1, 2)
+        out = inspector.traverse(self.db, self.manifest, 1, 2, direction='out')
+        self.assertNotIn(wanted, [n['id'] for n in both['nodes']])
+        self.assertIn(wanted, [n['id'] for n in out['nodes']])
+        self.assertFalse(any(n['address'] >= 200 for n in out['nodes']))
+        self.assertTrue(all(r['relation'] in ('outgoing', 'owned-access') for r in out['relations']))
+        self.assertEqual(out['direction'], 'out')
+
+    def test_outgoing_got_retains_raw_slot_and_normalized_object_without_users(self):
+        root, user = self.node(1), self.node(4)
+        slot, obj = self.node(2, 'data-object'), self.node(3, 'data-object')
+        self.edge(1, root, slot, slot, obj, slot, 'access')
+        self.edge(2, user, slot, slot, obj, slot, 'access')
+        self.edge(3, slot, obj, kind='pointer')
+        view = inspector.traverse(self.db, self.manifest, 1, 2, direction='out')
+        self.assertEqual({n['id'] for n in view['nodes']}, {root, slot, obj})
+        edge = next(e for e in view['edges'] if e['cached_sequence'] == 1)
+        self.assertEqual((edge['target'], edge['owner'], edge['normalized_target'], edge['via']),
+                         (slot, slot, obj, slot))
+        self.assertIn(2, [e['cached_sequence'] for e in view['edges']])
+        self.assertNotIn(user, [n['id'] for n in view['nodes']])
+
+    def test_incoming_follows_callers_and_normalized_data_users(self):
+        root, user, outgoing = self.node(1), self.node(2), self.node(3)
+        slot, obj = self.node(4, 'data-object'), self.node(5, 'data-object')
+        self.edge(1, root, outgoing)
+        self.edge(2, obj, root, kind='pointer')
+        self.edge(3, user, slot, slot, obj, slot, 'access')
+        view = inspector.traverse(self.db, self.manifest, 1, 2, direction='in')
+        self.assertIn(user, [n['id'] for n in view['nodes']])
+        self.assertIn(slot, [n['id'] for n in view['nodes']])
+        self.assertNotIn(outgoing, [n['id'] for n in view['nodes']])
+        self.assertTrue(all(r['relation'] in ('incoming', 'normalized-data-users') for r in view['relations']))
+        edge = next(e for e in view['edges'] if e['cached_sequence'] == 3)
+        self.assertEqual((edge['target'], edge['normalized_target'], edge['via']), (slot, obj, slot))
+
+    def test_directed_cycles_fanout_and_invalid_direction_fail_early(self):
+        root, callee = self.node(1), self.node(2)
+        self.edge(1, root, callee)
+        self.edge(2, callee, root)
+        for direction in ('out', 'in'):
+            view = inspector.traverse(self.db, self.manifest, 1, 2, direction=direction)
+            self.assertEqual(len(view['nodes']), 2)
+            self.assertEqual(len(view['edges']), 2)
+        for invalid in (True, False, None, 1, [], 'OUT', ''):
+            with self.subTest(invalid=invalid):
+                with self.assertRaisesRegex(ValueError, 'Direction'):
+                    inspector.traverse(self.db, self.manifest, 1, direction=invalid)
+                with patch.object(inspector, 'verified_cache') as verify:
+                    with self.assertRaisesRegex(ValueError, 'Direction'):
+                        inspector.inspect_pair('absent', 1, 2, direction=invalid)
+                    verify.assert_not_called()
+        for i in range(20): self.edge(10 + i, root, self.node(100 + i))
+        view = inspector.traverse(self.db, self.manifest, 1, 2, direction='out')
+        self.assertTrue(any('relation-fanout' in t for t in view['truncations']))
+        self.assertLessEqual(len(view['nodes']), 32)
+
+    def test_direction_visible_in_mermaid_and_cli_choices(self):
+        self.node(1)
+        view = inspector.traverse(self.db, self.manifest, 1, direction='out')
+        packet = {'direction': 'out', 'limitations': [], 'sides': {'pc': view, 'android': view}}
+        self.assertIn('Requested reference direction: out; bounded neighborhood', inspector.mermaid(packet))
+        self.assertIn('PC out bounded', inspector.mermaid(packet))
+        self.assertIn('direction: out', inspector.markdown(packet))
+        with patch.object(inspector, 'inspect_pair') as inspect:
+            with self.assertRaises(SystemExit):
+                inspector.main(['--pair', 'absent', '--pc', '1', '--android', '2',
+                                '--direction', 'sideways', '--output', 'unused'])
+            inspect.assert_not_called()
+
     def test_missing_function_does_not_resolve_data_or_neighbor(self):
         self.node(1,'data-site');self.node(2)
         result=inspector.traverse(self.db,self.manifest,1)

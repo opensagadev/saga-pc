@@ -126,8 +126,15 @@ def _node(db, identifier, manifest):
     return result
 
 
-def traverse(db, manifest, va, depth=1, edge_budget=256, deadline=None):
+def _direction(value):
+    if type(value) is not str or value not in ('out', 'in', 'both'):
+        raise ValueError('Direction must be out, in or both')
+    return value
+
+
+def traverse(db, manifest, va, depth=1, edge_budget=256, deadline=None, direction='both'):
     """Strict exact function root; bounded BFS with shared/cyclic references."""
+    direction = _direction(direction)
     if isinstance(depth, bool) or depth not in (1, 2):
         raise ValueError('Depth must be 1 or 2')
     va = address(va)
@@ -136,7 +143,7 @@ def traverse(db, manifest, va, depth=1, edge_budget=256, deadline=None):
     db.execute('PRAGMA mmap_size=0')
     db.execute('PRAGMA temp_store=FILE')
     db.set_progress_handler(lambda: time.monotonic() >= deadline, 1000)
-    result = {'original_va': f'0x{va:08x}', 'status': 'missing-function', 'nodes': [], 'edges': [], 'truncations': [], 'relations': [], 'accepted_evidence': 'not loaded; graph presence is not identity approval'}
+    result = {'direction': direction, 'original_va': f'0x{va:08x}', 'status': 'missing-function', 'nodes': [], 'edges': [], 'truncations': [], 'relations': [], 'accepted_evidence': 'not loaded; graph presence is not identity approval'}
     try:
         roots = db.execute("SELECT id FROM nodes WHERE address=? AND kind='function' ORDER BY id LIMIT 2", (va,)).fetchall()
         if len(roots) > 1:
@@ -160,7 +167,12 @@ def traverse(db, manifest, va, depth=1, edge_budget=256, deadline=None):
             result['nodes'].append(node)
             if level >= depth:
                 continue
-            for relation, column in (('outgoing', 'source'), ('incoming', 'target'), ('owned-access', 'owner'), ('normalized-data-users', 'normalized_target')):
+            relations = (('outgoing', 'source'), ('incoming', 'target'), ('owned-access', 'owner'), ('normalized-data-users', 'normalized_target'))
+            if direction == 'out':
+                relations = (relations[0], relations[2])
+            elif direction == 'in':
+                relations = (relations[1], relations[3])
+            for relation, column in relations:
                 rows = db.execute('SELECT sequence,source,target,owner,normalized_target,via,CASE WHEN length(raw)<=65536 THEN raw ELSE NULL END,length(raw) FROM edges WHERE ' + column + '=? ORDER BY sequence LIMIT 17', (identifier,)).fetchall()
                 truncated = len(rows) > 16
                 result['relations'].append({'node': identifier, 'relation': relation, 'count_lower_bound': len(rows), 'count_exact': not truncated, 'truncated': truncated})
@@ -181,7 +193,14 @@ def traverse(db, manifest, va, depth=1, edge_budget=256, deadline=None):
                             raise ValueError('Cached edge columns disagree with raw record')
                         result['edges'].append(edge)
                         edges.add(seq)
-                    for neighbor in (source, target, owner, normalized, via):
+                    neighbors = (source, target, owner, normalized, via)
+                    if direction == 'out':
+                        neighbors = (target, normalized, via)
+                    elif direction == 'in':
+                        # Preserve the raw slot only when it belongs to this incidence.
+                        raw_via = via if via in (target, owner) else None
+                        neighbors = (source, owner, raw_via)
+                    for neighbor in neighbors:
                         if neighbor is None or neighbor in queued:
                             continue
                         if len(queued) >= 32:
@@ -248,7 +267,8 @@ def _safe_label(value):
     return ''.join(c if c.isascii() and (c.isalnum() or c in ' _.$:+-') else '?' for c in value[:96])
 
 
-def inspect_pair(pair_path, pc, android, depth=1, symbols=None):
+def inspect_pair(pair_path, pc, android, depth=1, symbols=None, direction='both'):
+    direction = _direction(direction)
     symbol_rows, symbol_provenance = _symbol_snapshot(symbols) if symbols is not None else (None, None)
     pair_path = Path(pair_path).resolve()
     pair_signatures = {str(pair_path): _signature(pair_path)}
@@ -264,7 +284,7 @@ def inspect_pair(pair_path, pc, android, depth=1, symbols=None):
         if not filename:
             raise ValueError('Pair requires both manifests')
         verified[side] = verified_cache(pair_path.parent / filename, expected)
-    result = {'schema': 'identification-pair-inspection-v1', 'pair_sha256': pair_hash,
+    result = {'schema': 'identification-pair-inspection-v1', 'direction': direction, 'pair_sha256': pair_hash,
               'limits': {'depth': depth, 'nodes_per_side': 32, 'total_edges': 256, 'fanout': 16, 'traversal_seconds': 5},
               'limitations': ['Supplied pair is advisory; no identity/ABI/type/full extent acceptance.', 'Original VAs are already normalized; no relocation is applied.', 'No candidate, journal, state or source labels loaded.'], 'sides': {}}
     if _signature(pair_path) != pair_signatures[str(pair_path)]:
@@ -282,7 +302,7 @@ def inspect_pair(pair_path, pc, android, depth=1, symbols=None):
                 if Path(str(index) + suffix).exists():
                     raise ValueError('Mutable SQLite sidecar appeared')
             db = stack.enter_context(closing(sqlite3.connect(index.as_uri() + '?mode=ro&immutable=1', uri=True)))
-            inspection = traverse(db, manifest, va, depth, remaining, deadline)
+            inspection = traverse(db, manifest, va, depth, remaining, deadline, direction=direction)
             inspection['provenance'] = provenance
             result['sides'][side] = inspection
             remaining -= len(inspection['edges'])
@@ -300,12 +320,14 @@ def inspect_pair(pair_path, pc, android, depth=1, symbols=None):
 
 
 def mermaid(packet):
-    lines = ['```mermaid', 'flowchart LR']
+    direction = _direction(packet.get('direction', 'both'))
+    lines = ['```mermaid', 'flowchart LR', f'  %% Requested reference direction: {direction}; bounded neighborhood']
     for side in ('pc', 'android'):
         view = packet['sides'][side]
         nodes = sorted(view['nodes'], key=lambda node: node['id'])
         ids = {node['id']: f'{side}_{index}' for index, node in enumerate(nodes)}
-        lines.append(f'  subgraph {side}["{side.upper()}"]')
+        caption = side.upper() if direction == 'both' else f'{side.upper()} {direction} bounded'
+        lines.append(f'  subgraph {side}["{caption}"]')
         for node in nodes:
             extra = packet.get('presentation_labels', {}).get('pc', {}).get(node['id']) if side == 'pc' else None
             label = (' map: ' + '; '.join(_safe_label(name) for name in extra['names'])) if extra else ''
@@ -324,7 +346,8 @@ def mermaid(packet):
 
 
 def markdown(packet):
-    lines = ['Explicit pair neighborhood (diagnostic only).', '', *packet['limitations'], '', mermaid(packet), '']
+    direction = _direction(packet.get('direction', 'both'))
+    lines = [f'Explicit bounded pair neighborhood (direction: {direction}; diagnostic only).', '', *packet['limitations'], '', mermaid(packet), '']
     for side, view in packet['sides'].items():
         lines += [f"{side.upper()} {view['original_va']}: {view['status']}; {len(view['nodes'])} nodes, {len(view['edges'])} edges.", '', '| Original VA | Kind | Depth | Analyzed bytes |', '|---|---|---|---|']
         for node in view['nodes']:
@@ -342,6 +365,7 @@ def main(argv=None):
     parser.add_argument('--pc', required=True)
     parser.add_argument('--android', required=True)
     parser.add_argument('--depth', type=int, choices=(1, 2), default=1)
+    parser.add_argument('--direction', choices=('out', 'in', 'both'), default='both', help='Reference traversal direction; both preserves the default neighborhood')
     parser.add_argument('--symbols', type=Path, help='Explicit PC CSV; presentation only')
     parser.add_argument('--output', type=Path, required=True, help='Fresh output stem under build/analysis')
     args = parser.parse_args(argv)
@@ -352,7 +376,7 @@ def main(argv=None):
     outputs = [Path(str(stem) + suffix) for suffix in ('.json', '.md')]
     if any(p.exists() for p in outputs):
         parser.error('Output must be fresh')
-    packet = inspect_pair(args.pair, args.pc, args.android, args.depth, symbols=args.symbols)
+    packet = inspect_pair(args.pair, args.pc, args.android, args.depth, symbols=args.symbols, direction=args.direction)
     payloads = [json.dumps(packet, sort_keys=True, separators=(',', ':')) + '\n', markdown(packet)]
     if sum(len(p.encode()) for p in payloads) > 4 * 1024 * 1024:
         raise ValueError('Output exceeds 4 MiB budget')

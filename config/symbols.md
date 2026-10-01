@@ -1721,3 +1721,27 @@ An index name alone does not establish original PC identity, ABI or extent.
 Assembly entries with missing function metadata or shared multi-entry ownership
 must remain held when the extractor cannot represent their complete bodies.
 Exact full relocated byte equality is required, including external destinations.
+
+## Terrain callback research anchors and particle-count exclusion
+
+Four original game callbacks have independently verified identities and complete
+PC extents: `AwkwardShapeOverride` at `0x454bb0` (222 bytes),
+`IgnoreLastSafePathPos` at `0x454ad0` (222), `IgnoreSlideTerrain` at `0x454c90`
+(193), and `SplineFollowTerrain` at `0x454d60` (193). Their original registry
+records, names and Android ELF/PIC records establish the correspondences.
+They enter the research journal as identity anchors with ABI and type flags
+false. Optional indirect lookup effects remain unreviewed; the first two also
+have an additional unresolved helper. They do not enter the accepted CSV and
+add no mapped or reconstructed bytes. Frozen `ai-registry-new-callback-batch15`
+and its independent audit retain the proofs and holds.
+
+The pairing of PC `0x291f68c` to Android `PartNorm` at `0x124f220` is rejected.
+The original PC DWORD is incremented by integer one while counting `0x270e`
+WORD IDs; the original named Android object supplies three floating normal
+components. The rejection does not depend on proving the value of ECX at the
+PC store across opaque calls. The correct PC count name, type and complete
+allocation remain unknown. The adjacent unnamed vector likewise retains its
+identity hold; the existing four-byte `Part` pointer has no new extent credit.
+Its dynamically carved buffer uses PC 544-byte records, independently of the
+Android runtime stride. Frozen `nonregistry-data-frontier-next10` and its
+independent audit preserve those distinctions.
