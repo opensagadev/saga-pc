@@ -8,16 +8,16 @@
     "src/externals.h": "3382382faeac231f3c7962ffb276f5c091463416d3cd41afd89c57fe6c4eef62",
     "src/saga.h": "5b5c54e8e43f9bdf33f5b8e3a70df64c05c1177588b5a24ed456c103994658d5",
     "config/data.md": "b46d28a41b8d3d2d61ee37a9eaee793a8857aed771d8c46412ec3df2a8c151a1",
-    "config/identification-decisions.jsonl": "dbd4ae032015162949e44e6bc45ed486e7118388706ceed7a92203e65881f540",
+    "config/identification-decisions.jsonl": "57d8d24d7932a6410ab2e6383cbb53e24f79776d6d7a370451410362697430bf",
     "config/identification-plan.md": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
-    "config/identification-tools.md": "63d2c391045a1f37a644ea5009627d66256f63ef4cbe2f866cd291b2ee8d7199",
+    "config/identification-tools.md": "26730fb725e21817a8beb87e2f8e47265130cdcb875124e19a0409ba50808c40",
     "config/identification.md": "ecfbf8977bb20b3c0b8fc8cf0c4a7cc7d7cd0f9915f3abe77145c532651e31e4",
     "config/numain.md": "b1bf36c6b55647064f79402997c5d956060e13cbf6d6648bcde831ea4e0c5e74",
     "config/progress-plan.md": "cf144b1f5e0b8d5d0a17e0f2a1d065ad64c13a95d1b491c88792e046bb65a3ff",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
     "config/strategy.md": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
-    "config/symbols.csv": "e62cc6515deb9e35f22d3b18066be2317f9bf9196732323f99bf4c06335b8dd9",
-    "config/symbols.md": "9aeb1baec5adadb287020c3923d08b3822d25359a83e1a6214f8b9ad9c5e8478",
+    "config/symbols.csv": "c1b197794f93eb1e7e0e3f92980721053062bbf3b524a5afb71d763e90d80331",
+    "config/symbols.md": "c928d069412c052965471207b37ccae97f2926b517643f58f6a684b3728f2fe2",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
@@ -26,7 +26,7 @@
     "tools/cc.py": "428b7ac5f1b7808cf780d0b26a03b49600e43810ec1c1f128630766d090a820f",
     "tools/check.py": "dc41eb223d4b941b03a3f27bc2b8c0a05e336a723e1d28ed1fd6be08049ac3cb",
     "tools/identification.py": "05c35e08fe9bf55a19656804f949c75053549a17feab0d84cf6ad47ceb64d3fb",
-    "tools/identification_graph.py": "98340c5dd385f2e08300fb575f17e209ba37ba123cf270829bbb51ec819bc5c9",
+    "tools/identification_graph.py": "e73e652683a1641ace0a5956e155c905af8cb87e45b5309e4eba0e929aa0e4ad",
     "tools/identification_joint.py": "30980fcaf58605d8eb4e97a03cf38af9020496f1b74b9585b63bc18cb8420192",
     "tools/identification_limits.py": "c44fb5fb1eacd2f20126515e28421863eb4c66d35250340ba1708e2c4f9440cb",
     "tools/identification_literals.py": "52b26a61109aed9711523d3d852d3222b7fbc0de786f013503f9246cf90e610c",
@@ -38,7 +38,7 @@
     "tools/match.py": "c0abc16e173230f630d5aac633b0e0f9348a9b47b0245ef925ed936606e829f9",
     "tools/reference_features.py": "daee9cafe9ca5ae5a4249adf4f877ca14f1b1eb356178b9f91e0ee2da4fe92c9",
     "tools/reference_graph.py": "c88427c6e6421f7e84902b3d0e3081e5f2ad7d3637e9463572d2d6f48e96a1ca",
-    "tools/repair_graph.py": "40029ec294a151d0b35fe2a6fcd22daad7abbcd07325a4db7649f39ed5418d2d",
+    "tools/repair_graph.py": "ec06a1baae2ab54bcbab70ad4a2c827fc531d4d86ec1dc314309f2d5cf5b0881",
     "tools/setup.py": "a7a9bd71e63f0039de5211e3e9976d87d57e357be9f7a62a68cfb33758b4e56c",
     "tools/source_graph.py": "6314a14d5522f8ff3a3b37dac3e4e0fde6de85125bcc23bc38c1a0e2daa77e44",
     "tools/test_binary.py": "b9347b6599deed3c1f270ace1f7c5ac07bcebd2656ec373d77e45be7fa38432f",
@@ -47,7 +47,7 @@
     "tools/test_dat.py": "e8d311ac6f55e67d102999c6d8ba3ba0932366979d6f22008ea883154f7e0b4f",
     "tools/test_ghidra_graph.py": "d5dd21767cef88b78204d9323adf7feaa62cceecba6ac7a71f326db3f53b99fa",
     "tools/test_identification.py": "0abb6f78c0a8a8897fd288a35598af638ad331869631e81f2ff57b7124124034",
-    "tools/test_identification_graph.py": "0dbd7f2693cfe0436b34ddcd8a47f43c1488a5aaa4e578b969eb08d1ed6d8469",
+    "tools/test_identification_graph.py": "2a1b03cb9284b2e121b7109a0cc3c1d03f47973906deda30df2a4bf259f40699",
     "tools/test_identification_joint.py": "add50bb38db9cdccb806097aa95fbfb5e33e9c268c24863868b27e0817140b91",
     "tools/test_identification_limits.py": "de46aa361901c31ca434236504cf318f64a9dc5b1a52042e0957dd1b3d3e9bb6",
     "tools/test_identification_literals.py": "4464803d23947e66a0669c4d36fa1cd6da53cf7707936fab81221b687be1bd43",
@@ -57,7 +57,7 @@
     "tools/test_identification_tables.py": "0428ce56acdcc268e5af8fd170b719b599fb0274357bcfa6e099f109b1c90392",
     "tools/test_lib.py": "54561f44ee40367574c6f1824c77198ee3a93a455ba88e2ae4c83545b79a7e78",
     "tools/test_match.py": "794c052372646961512004b82d37c0b2656438a321a2280ed6420d87766f16dd",
-    "tools/test_repair_graph.py": "47ac8b6da5ccfdc2547cf28996d355d8ef8bdfd0d667495281a80fc98dad3f77",
+    "tools/test_repair_graph.py": "ddd23cf3d90c8e64eceed8442657e4ae9d540a46906de30abce5555f0b0d1e16",
     "tools/test_setup.py": "d7a31492511f3d96c3f4c68d36c82ac5887931505e56ee8ebba9344b991c73ff",
     "src/data.cpp": "3fea1974778fbfc5ed99dc22884d3e045131b7e1b789b63f5d8ff6d55921ff38",
     "src/legoapi/fade.cpp": "73f1076d3ee6b210268db546579b25fb82f28a777ff3d3861db57db8aecd5407",
@@ -737,6 +737,16 @@
       ],
       "status": "different",
       "objdiff_percent": 14.285714
+    },
+    {
+      "name": "PartKill_ForceThrow",
+      "symbol": "_PartKill_ForceThrow",
+      "address": "0x0042d000",
+      "units": [],
+      "target_size": 371,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "Areas_OpenAll",
@@ -1593,6 +1603,16 @@
       ],
       "status": "different",
       "objdiff_percent": 76.29536
+    },
+    {
+      "name": "Action_RemoveThrownForceObjects",
+      "symbol": "_Action_RemoveThrownForceObjects",
+      "address": "0x00449e10",
+      "units": [],
+      "target_size": 75,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "Action_SetRunSpeed",
@@ -5078,6 +5098,16 @@
       "address": "0x004d44a0",
       "units": [],
       "target_size": 650,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "ZipUp_MoveCode",
+      "symbol": "_ZipUp_MoveCode",
+      "address": "0x004d6060",
+      "units": [],
+      "target_size": 3774,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -55698,6 +55728,16 @@
       "status": "exact"
     },
     {
+      "name": "GrapWindLp_text",
+      "symbol": "_GrapWindLp_text",
+      "address": "0x0075bf90",
+      "units": [],
+      "target_size": 11,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "__real@c0a5540000000000",
       "symbol": "__real@c0a5540000000000",
       "address": "0x0075bfa0",
@@ -82066,6 +82106,16 @@
       "status": "not implemented"
     },
     {
+      "name": "CLOUDCITYTRAPB_LDATA",
+      "symbol": "_CLOUDCITYTRAPB_LDATA",
+      "address": "0x0087b248",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "SPEEDERCHASEA_LDATA",
       "symbol": "_SPEEDERCHASEA_LDATA",
       "address": "0x0087b254",
@@ -98075,16 +98125,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 435662,
+    "mapped_code_bytes": 439882,
     "matched_code_bytes": 45746,
     "matching_percent": 1.3178553176582704,
     "fuzzy_coverage_percent": 6.21161866290101,
-    "mapped_functions": 1821,
+    "mapped_functions": 1824,
     "matched_functions": 801,
     "objdiff_fuzzy_percent": 61.121914,
     "objdiff_total_code": 352861,
     "image_bytes": 40067072,
-    "mapped_bytes": 933846,
-    "mapping_percent": 2.3307068707191783
+    "mapped_bytes": 938081,
+    "mapping_percent": 2.3412766473177777
   }
 }

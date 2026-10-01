@@ -1,5 +1,7 @@
 """Tiny fixtures for disposable-project and repair provenance safeguards."""
 import copy
+from contextlib import nullcontext, redirect_stdout
+import io
 import json
 import os
 import resource
@@ -142,6 +144,205 @@ class RepairGraphTests(unittest.TestCase):
                 repair.repair(config, self.packet_path, "missing-pair", output, "/fake")
             launch.assert_not_called()
         self.assertFalse(output.exists())
+
+
+class ReviewedDataRepairTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.packet_path = self.root / "data-packet.json"
+        self.project = self.root / "retained.gpr"
+        self.project.write_bytes(b"")
+        self.project.with_suffix(".rep").mkdir()
+        (self.project.with_suffix(".rep") / "db").write_bytes(b"retained program")
+        self.packet = {"schema": repair.DATA_SCHEMA, "binary_sha256": "a" * 64,
+                       "image_base": "0x400000",
+                       "bounds": [{"start": "0x00700000", "size": 20,
+                                   "range_sha256": "b" * 64}],
+                       "superseded": [{"start": "0x00700007", "size": 13,
+                                       "range_sha256": "c" * 64, "data_type_path": "/string"}],
+                       "definitions": [{"start": "0x00700000", "size": 8, "kind": "float64",
+                                        "range_sha256": "d" * 64},
+                                       {"start": "0x00700008", "size": 11, "kind": "char-array",
+                                        "range_sha256": "e" * 64}]}
+        self.packet_path.write_text(json.dumps(self.packet))
+        self.report = {"schema": "identification-reviewed-data-repair-v1",
+                       "binary_sha256": self.packet["binary_sha256"],
+                       "packet_sha256": repair.sha256(self.packet_path),
+                       "disposable_project_file": str(self.project),
+                       "bounds": copy.deepcopy(self.packet["bounds"]),
+                       "superseded": copy.deepcopy(self.packet["superseded"]),
+                       "definitions": [dict(row, status="created", data_type_path=repair._data_type(row))
+                                       for row in self.packet["definitions"]]}
+        self.function = {"kind": "function", "address": "0x00401000", "size": None,
+                         "body_bytes": 5,
+                         "ranges": [{"start": "0x00401000", "end_exclusive": "0x00401003"},
+                                    {"start": "0x00401010", "end_exclusive": "0x00401012"}]}
+        self.owners = [{"kind": "data-object", "address": row["start"],
+                        "size": row["size"], "data_type": repair._data_type(row)}
+                       for row in self.packet["definitions"]]
+
+    def nodes(self, name, rows):
+        path = self.root / name
+        path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        return path
+
+    def test_explicit_data_packet_and_report(self):
+        repair.validate_data_packet(self.packet)
+        repair.validate_repair(self.report, self.packet, self.packet_path, self.project)
+
+    def test_data_authorizations_reject_escapes_overlaps_and_unsupported_types(self):
+        mutations = [("definitions", 0, "start", "0x00700014"),
+                     ("superseded", 0, "size", 14),
+                     ("definitions", 1, "start", "0x00700007"),
+                     ("definitions", 0, "size", 7),
+                     ("definitions", 0, "kind", "inferred-pointer"),
+                     ("bounds", 0, "range_sha256", "unverified")]
+        for group, index, key, value in mutations:
+            with self.subTest(group=group, key=key):
+                packet = copy.deepcopy(self.packet)
+                packet[group][index][key] = value
+                with self.assertRaises(ValueError):
+                    repair.validate_data_packet(packet)
+        for group in ("bounds", "superseded", "definitions"):
+            packet = copy.deepcopy(self.packet)
+            packet[group] = []
+            with self.assertRaises(ValueError):
+                repair.validate_data_packet(packet)
+
+    def test_data_report_must_confirm_exact_old_and_new_owners(self):
+        mutations = [("definitions", 0, "size", 7),
+                     ("definitions", 0, "data_type_path", "/float"),
+                     ("definitions", 0, "range_sha256", "f" * 64),
+                     ("definitions", 0, "status", "already-exact"),
+                     ("superseded", 0, "data_type_path", "/undefined"),
+                     ("bounds", 0, "size", 21)]
+        for group, index, key, value in mutations:
+            with self.subTest(group=group, key=key):
+                report = copy.deepcopy(self.report)
+                report[group][index][key] = value
+                with self.assertRaises(ValueError):
+                    repair.validate_repair(report, self.packet, self.packet_path, self.project)
+        report = copy.deepcopy(self.report)
+        report["definitions"] *= 2
+        with self.assertRaises(ValueError):
+            repair.validate_repair(report, self.packet, self.packet_path, self.project)
+
+    def test_reopened_data_requires_typed_owner_not_raw_site(self):
+        path = self.nodes("current.jsonl", [self.function, *self.owners])
+        self.assertEqual(repair.validate_saved_nodes(self.packet, path), 2)
+        for key, value in (("data_type", "/string"), ("size", 12), ("kind", "data-site")):
+            owners = copy.deepcopy(self.owners)
+            owners[1][key] = value
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                repair.validate_saved_nodes(self.packet, self.nodes("wrong.jsonl", owners))
+
+    def test_superseded_owner_must_disappear_or_be_exactly_replaced(self):
+        stale = {"kind": "data-object", "address": self.packet["superseded"][0]["start"],
+                 "size": 13, "data_type": "/string"}
+        with self.assertRaisesRegex(ValueError, "Superseded"):
+            repair.validate_saved_nodes(self.packet, self.nodes("stale.jsonl", [*self.owners, stale]))
+        packet = copy.deepcopy(self.packet)
+        packet["superseded"][0]["start"] = packet["definitions"][1]["start"]
+        self.assertEqual(repair.validate_saved_nodes(packet, self.nodes("replaced.jsonl", self.owners)), 2)
+
+    def test_previous_function_ranges_survive_unsorted_exports(self):
+        second = dict(self.function, address="0x00402000")
+        previous = self.nodes("old.jsonl", [second, *self.owners, self.function])
+        current = self.nodes("new.jsonl", [self.function, second, *self.owners])
+        self.assertEqual(repair.validate_preserved_functions(previous, current), 2)
+        changed = copy.deepcopy(self.function)
+        changed["ranges"][1]["end_exclusive"] = "0x00401013"
+        changed["body_bytes"] = 6
+        for rows in ([second], [second, changed], [second, self.function, self.function]):
+            with self.subTest(rows=rows), self.assertRaises(ValueError):
+                repair.validate_preserved_functions(previous, self.nodes("wrong.jsonl", rows))
+
+    def test_function_repair_export_uses_complete_ranges_not_null_size(self):
+        packet = {"functions": [{"entry": "0x00401000", "size": 5}]}
+        contiguous = copy.deepcopy(self.function)
+        contiguous["ranges"] = [{"start": "0x00401000", "end_exclusive": "0x00401005"}]
+        self.assertEqual(repair.validate_saved_nodes(packet, self.nodes("single.jsonl", [contiguous])), 1)
+        with self.assertRaises(ValueError):
+            repair.validate_saved_nodes(packet, self.nodes("split.jsonl", [self.function]))
+
+    def test_node_record_budget_is_enforced(self):
+        path = self.root / "large.jsonl"
+        path.write_bytes(b" " * (4 * 1024 * 1024 + 1))
+        with self.assertRaisesRegex(ValueError, "bounded JSONL"):
+            repair.validate_saved_nodes(self.packet, path)
+
+    def test_data_wrapper_dispatch_and_publication_with_fake_jobs(self):
+        original, android = self.root / "pc.exe", self.root / "android.so"
+        original.write_bytes(b"synthetic pc")
+        android.write_bytes(b"synthetic android")
+        self.packet["binary_sha256"] = repair.sha256(original)
+        self.packet_path.write_text(json.dumps(self.packet))
+        previous_dir = self.root / "previous"
+        previous_dir.mkdir()
+        (previous_dir / "nodes.jsonl").write_text(json.dumps(self.function) + "\n")
+        previous_manifest = previous_dir / "manifest.json"
+        previous_manifest.write_text(json.dumps({"exporter_sha256": "f" * 64, "program": "pc.exe"}))
+        android_manifest = self.root / "android-manifest.json"
+        android_manifest.write_text(json.dumps({"exporter_sha256": "f" * 64}))
+        pair = self.root / "pair.json"
+        pair.write_text(json.dumps({"schema": "identification-graph-pair-v1",
+                                    "pc": str(previous_manifest), "android": str(android_manifest)}))
+        config = self.root / "config.json"
+        config.write_text(json.dumps({"schema": "export-reference-graph-config-v1", "jobs": {
+            "pc": {"project": str(self.project), "original": str(original), "program": "pc.exe",
+                   "sha256": repair.sha256(original), "delta": 0},
+            "android": {"original": str(android), "sha256": repair.sha256(android), "delta": -65536}}}))
+        script = self.root / "RepairReviewedData.java"
+        script.write_text("// synthetic script; never executed\n")
+        output = self.root / "build/analysis/data-repair"
+        baseline = repair.project_inventory(self.project)
+
+        def fake_java(command, env, check):
+            self.assertIn("-noanalysis", command)
+            self.assertNotIn("-readOnly", command)
+            self.assertEqual(env["GHIDRA_HEADLESS_MAXMEM"], "512M")
+            post = command.index("-postScript")
+            self.assertEqual(command[post + 1], script.name)
+            generated = Path(command[post + 2])
+            packet = json.loads(generated.read_text())
+            self.assertNotEqual(packet["disposable_project_file"], packet["source_project_file"])
+            report = copy.deepcopy(self.report)
+            report.update(binary_sha256=packet["binary_sha256"], packet_sha256=repair.sha256(generated),
+                          disposable_project_file=packet["disposable_project_file"])
+            Path(command[post + 4]).write_text(json.dumps(report))
+
+        def fake_export(job, label, config_directory, destination, ghidra_home):
+            evidence = [json.loads(line) for line in Path(job["reviewed_evidence"]).read_text().splitlines()]
+            self.assertEqual({row["address"] for row in evidence}, {row["start"] for row in self.packet["definitions"]})
+            pc = destination / "pc"
+            pc.mkdir()
+            (pc / "nodes.jsonl").write_text("".join(json.dumps(row) + "\n" for row in [*self.owners, self.function]))
+            return {"node_count": 3, "program": "pc.exe"}
+
+        with patch.object(repair, "ROOT", self.root), \
+                patch.object(repair, "DATA_SCRIPT", script), \
+                patch.object(repair.resource, "getrlimit", return_value=(-1, -1)), \
+                patch.object(repair, "identification_lock", return_value=nullcontext()), \
+                patch.object(repair, "validate_export"), \
+                patch.object(repair.subprocess, "run", side_effect=fake_java) as launch, \
+                patch.object(repair, "export_job", side_effect=fake_export), \
+                redirect_stdout(io.StringIO()):
+            published = repair.repair(config, self.packet_path, pair, output, "/fake-ghidra")
+            previous_manifest.write_text(json.dumps({"exporter_sha256": "f" * 64, "program": "wrong.exe"}))
+            with self.assertRaisesRegex(ValueError, "program differs"):
+                repair.repair(config, self.packet_path, pair, output.with_name("wrong-program"), "/fake-ghidra")
+            self.packet["binary_sha256"] = "0" * 64
+            self.packet_path.write_text(json.dumps(self.packet))
+            with self.assertRaisesRegex(ValueError, "differs from PC export configuration"):
+                repair.repair(config, self.packet_path, pair, output.with_name("wrong-hash"), "/fake-ghidra")
+        launch.assert_called_once()
+        result = json.loads(published.read_text())
+        self.assertEqual(result["repair_kind"], "reviewed-data")
+        self.assertEqual(result["preserved_function_count"], 1)
+        self.assertEqual(result["repair_script_sha256"], repair.sha256(script))
+        self.assertEqual(repair.project_inventory(self.project), baseline)
 
 
 if __name__ == "__main__":

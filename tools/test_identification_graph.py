@@ -311,6 +311,52 @@ class BoundedGraphTests(unittest.TestCase):
                 loaded["pc"].close()
                 loaded["android"].close()
 
+    def test_got_pointer_to_interior_site_keeps_exact_incidence_across_views(self):
+        manifest = {"schema": graph.GRAPH_SCHEMA, "binary_sha256": PC_HASH,
+                    "address_space": "ram", "address_transform": {"delta": 0}}
+        specs = [("function", 100, None, ".text"),
+                 ("data-object", 1000, 13, ".rodata"),
+                 ("data-site", 1001, None, ".rodata"),
+                 ("data-object", 2000, 4, ".got")]
+        nodes = {graph.node_id(PC_HASH, kind, va): {
+            "id": graph.node_id(PC_HASH, kind, va), "kind": kind,
+            "address": va, "size": size, "section": section, "aliases": []}
+            for kind, va, size, section in specs}
+        function, parent, interior, slot = list(nodes)
+        access = {"kind": "access", "source": function, "target": slot,
+                  "owner": slot, "target_address": 2000, "site": 101,
+                  "role": "read", "width": 4, "offset": 0}
+        pointer = {"kind": "pointer", "source": slot, "target": interior,
+                   "target_address": 1001, "site": 2000}
+        live = graph.Graph(copy.deepcopy(manifest), copy.deepcopy(nodes), [access, pointer])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name, records in (("nodes", live.nodes.values()), ("edges", live.edges)):
+                (root / (name + ".jsonl")).write_text(
+                    "".join(json.dumps(row) + "\n" for row in records))
+            manifest["sha256"] = {name: graph._file_hash(root / (name + ".jsonl"))
+                                  for name in ("nodes", "edges")}
+            (root / "manifest.json").write_text(json.dumps(manifest))
+            indexed = graph.load_graph(root / "manifest.json")
+            try:
+                expected = list(live.data_users[interior][function])
+                for candidate in (live, indexed, graph.GraphView(live, {}),
+                                  graph.GraphView(indexed, {})):
+                    self.assertEqual(candidate.resolve(1001, "data"), interior)
+                    self.assertEqual(list(candidate.data_users[interior][function]), expected)
+                    self.assertEqual(list(candidate.function_data[function][interior]), expected)
+                    self.assertFalse(candidate.data_users.get(parent))
+                    self.assertFalse(candidate.data_users.get(slot))
+                    edge = list(candidate.data_users[interior][function])[0]
+                    self.assertEqual(candidate.nodes[edge["normalized_owner"]]["address"]
+                                     + edge["normalized_offset"], 1001)
+                    self.assertEqual(edge["role"], "address")
+                    self.assertIsNone(edge["width"])
+                    self.assertEqual(edge["raw_width"], 4)
+                    self.assertEqual(edge["target_address"], 2000)
+            finally:
+                indexed.close()
+
 
 if __name__ == "__main__":
     unittest.main()

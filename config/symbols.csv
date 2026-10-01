@@ -17,6 +17,7 @@ address    , symbol                                                         , si
 0x00426de0 , _Detonate                                                      , 374   , "EXPLOSION_PC *__cdecl (NUVEC *, u16)"
 0x0042b960 , _CheckResetBits                                                , 2966  , void __cdecl (void)
 0x0042cf20 , _PartCollide_3D                                                , 17    , void __cdecl (PART_PC *)
+0x0042d000 , _PartKill_ForceThrow                                            , 371   , "void __cdecl (PART_PC *, i32)"
 0x0042d180 , _Areas_OpenAll                                                 , 148   , void __cdecl (i32)
 0x0042d5f0 , _FindGameCutScenes                                             , 335   , void __cdecl (void)
 0x0042d740 , _CutScene_StartFn_LSW                                          , 412   , i32 __cdecl (CUTINFO *)
@@ -55,6 +56,7 @@ address    , symbol                                                         , si
 0x447f00   , _Action_EngageOpponent                                         , 2337  , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x448830   , _Action_ShootAtOpponent                                        , 959   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x448fe0   , _Action_FollowDirection                                        , 756   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x00449e10 , _Action_RemoveThrownForceObjects                               , 75    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44ac40   , _Action_SetRunSpeed                                            , 1180  , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44c3f0   , _Action_SetMaxMovementRange                                    , 404   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44c590   , _Action_SetDefaultMovementRange                                , 82    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -219,6 +221,7 @@ address    , symbol                                                         , si
 0x004cf480 , _Text_DecodeButtons                                            , 41    , "void __cdecl (char *, char *)"
 0x004cf4c0 , _Text_LoadStrings                                              , 397   , "void __cdecl (VARIPTR *, VARIPTR *)"
 0x004d44a0 , _TrafficAnimSys_Configure                                      , 650   , "void __cdecl (WORLDINFO *, char *)"
+0x004d6060 , _ZipUp_MoveCode                                                , 3774  , "void __cdecl (GAMEOBJECT *, i32)"
 0x004dbb60 , _PodSprint_InStartCountdown                                    , 28    , f32 __cdecl (WORLDINFO *)
 0x004e1460 , _KaminoE_CheckPlatHit                                          , 228   , i32 __cdecl (BOLT *)
 0x004e8380 , _TakeOverYodaSeekDistanceHack                                  , 129   , "i32 __cdecl (GAMEOBJECT *, GAMEOBJECT *, NUVEC *)"
@@ -2776,6 +2779,7 @@ address    , symbol                                                         , si
 0x75be58   , __real@3eb851ec                                                , 4     , const f32
 0x0075bf80 , _ApplyGravityFrameScale                                        , 8     , const f64
 0x75bf80   , __real@4066800000000000                                        , 8     , const f64
+0x0075bf90 , _GrapWindLp_text                                               , 11    , char[11]
 0x75bfa0   , __real@c0a5540000000000                                        , 8     , const f64
 0x0075bfd0 , _PCAtan2RadianScale                                            , 8     , const f64
 0x0075c058 , _NuTimeBarValueFormat                                          , 3     , const char[3]
@@ -4105,6 +4109,7 @@ address    , symbol                                                         , si
 0x0087b238 , _CLOUDCITYESCAPEA_LDATA                                        , 4     , LEVELDATA_PC *
 0x0087b240 , _CLOUDCITYESCAPEC_LDATA                                        , 4     , LEVELDATA_PC *
 0x0087b244 , _CLOUDCITYTRAPA_LDATA                                          , 4     , LEVELDATA_PC *
+0x0087b248 , _CLOUDCITYTRAPB_LDATA                                          , 4     , LEVELDATA_PC *
 0x0087b254 , _SPEEDERCHASEA_LDATA                                           , 4     , LEVELDATA_PC *
 0x87b26c   , _DEATHSTAR2BATTLEA_LDATA                                       , 4     , LEVELDATA_PC *
 0x0087b278 , _DEATHSTAR2BATTLEE_LDATA                                       , 4     , LEVELDATA_PC *

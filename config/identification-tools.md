@@ -136,12 +136,31 @@ data correspondences, retained every data candidate, and changed three function
 evidence rows without new tentative pairs. Its peak RSS was 697 MiB under the
 1 GiB guard. No unused legacy input roles occur in its completed manifest.
 
+The next connected review accepted `PartKill_ForceThrow` (371 PC bytes),
+`ZipUp_MoveCode` (3,774), `Action_RemoveThrownForceObjects` (75), the four-byte
+CloudCityTrap_B pointer cell, and the eleven-byte GrapWindLp character array.
+These five rows add 4,235 mapped bytes, bringing image coverage to 938,081 bytes
+(2.341%). Their ABI/storage contracts follow original callers, callback dispatch
+and initializer rows; full aggregate layouts remain unresolved. They add no
+compiled definitions or reconstruction credit.
+
+The removal callback's original named table row supplied its missing entry seed.
+A subsequent disposable function repair recovered its 75-byte node while
+preserving all 7,848 prior function bodies and the two corrected data owners.
+The new graph has 7,849 PC functions. The combined replay used 1,185 accepted
+function seeds and fourteen reviewed data correspondences, with 1,243 tentative
+function pairs and 1,759 data candidates. It reports zero stale decisions.
+Compared with the portable replay, data rows gained 37, changed 185 and removed
+nine; function evidence rows gained eighteen, changed 400 and removed thirty.
+These remain hypothesis deltas. Peak Python RSS was 695 MiB under the serialized
+1 GiB guard; the callback Ghidra repair peaked at 748 MiB with a 512 MiB heap.
+
 `tools/repair_graph.py` makes the independent copy, pins the reviewed packet and
 executed script, checks a fresh repair report, and verifies the saved function
 extents in the new export before publishing a graph pair. Use a fresh output
 under `build/analysis`; the packet schema and required range hashes are described
-in `tools/ghidra/RepairReviewedFunctions.java`. Neither script clears conflicting
-data or code, infers signatures, or analyzes the whole program.
+in `tools/ghidra/RepairReviewedFunctions.java`. Function repair refuses conflicting
+data or code, does not infer signatures, and does not analyze the whole program.
 
 ```sh
 python3 tools/repair_graph.py \
@@ -150,6 +169,42 @@ python3 tools/repair_graph.py \
   --reuse-pair build/analysis/identification/current-graphs/graph-pair.json \
   --output build/analysis/identification/callback-repaired-graphs
 ```
+
+Typed-data repair uses the same wrapper with an
+`identification-reviewed-data-v1` packet, documented in
+`tools/ghidra/RepairReviewedData.java`. Authorizations include original-byte
+bounds and hashes, exact superseded data starts/sizes/type paths, and the new
+`float64` or NUL-terminated `char-array` definitions. It clears only the explicitly
+superseded definitions in a disposable project, rejects every other code/data
+conflict, and performs the entire replacement in one transaction. Original
+memory bytes remain unchanged. Reopening and exporting must recover the exact
+new owner sizes/types, remove superseded owners, and preserve every prior
+function's entry, ranges and byte count before the new graph pair is published.
+The function comparison streams raw nodes into a small disk-backed SQLite table;
+it does not load either graph into Python memory.
+
+This closes a real ownership error around `GrapWindLp`: the original string
+starts at `0x0075bf90`, while the prior Ghidra string at `0x0075bf8f` absorbs the
+preceding double's last byte. A correct reviewed interior site has no independent
+user incidence while access edges belong to that incorrect owner. Pairing the
+wrong parent would authorize a different storage extent. The repair instead
+creates the verified eight-byte double at `0x0075bf88` and eleven-byte character
+array at `0x0075bf90`; alignment remains outside both definitions.
+
+The first real typed-data repair saved and reopened both exact owners, removed
+the erroneous owner, and preserved all 7,848 prior function bodies. All three
+original access sites now resolve to their correct storage objects. Retained
+project content and captured metadata remain unchanged; Android's pinned graph
+was reused unchanged. With a 512 MiB Java heap, peak process RSS was 759 MiB.
+Original bytes in the explicitly reviewed twenty-byte window were verified
+before and after the transaction.
+
+A tiny unique-GOT-pointer fixture now verifies exact interior-site incidence
+across live, indexed and annotated graph views. Both existing representations
+resolve the exact target site, with offset zero; indexed reconstruction now
+calculates the offset from target addresses rather than hardcoding that result.
+This introduces neither containing-owner fallback nor additional automatic data
+anchors.
 
 ## Installed tools and input identity
 
@@ -535,7 +590,7 @@ tooling/map changes. Keep generated graphs, original bytes, H2 databases and
 downloaded binaries ignored. Only tooling, synthetic tests, reviewed proposals
 and documentation belong in tracked changes.
 
-The latest checkpoint `make -j2 check` passed 304 tests (three optional Ghidra fixture skips), source
+The latest checkpoint `make -j2 check` passed 314 tests (three optional Ghidra fixture skips), source
 formatting and Clang-tidy. The object check passed 1,638 function and 2,604 data
 definitions across 123 objects. Final compilation/matching checks use two Make
 workers to keep resource use bounded.

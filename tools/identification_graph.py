@@ -870,9 +870,12 @@ class _Edges(Sequence):
             edge = json.loads(raw)
             if via is not None and (self.function is not None or self.data is not None):
                 pointers = [json.loads(row[0]) for row in self.graph.db.execute("SELECT raw FROM edges WHERE source=? AND kind='pointer' ORDER BY sequence", (via,))]
+                pointed = self.graph.nodes[next(item["target"] for item in pointers
+                                                if item.get("target") is not None)]
+                normalized_offset = pointed["address"] - self.graph.nodes[target]["address"]
                 edge.update(raw_owner=edge.get("owner"), raw_role=edge.get("role"), raw_width=edge.get("width"),
                             role="address", width=None, normalized_owner=target,
-                            normalized_offset=0, normalization="unique-analysis-supported-got-pointer",
+                            normalized_offset=normalized_offset, normalization="unique-analysis-supported-got-pointer",
                             normalization_evidence=pointers)
             yield edge
 

@@ -1,16 +1,20 @@
-"""Repair reviewed PC functions in an independent Ghidra copy and export it.
+"""Repair reviewed PC functions or data in an independent Ghidra copy and export it.
 
 The export config and reviewed packet pin original identities. Reuse the
 unchanged Android manifest from --reuse-pair; never mutate retained projects.
 Java heap is bounded separately from Python virtual address space.
 """
 import argparse
+from contextlib import closing
 import json
 import os
 from pathlib import Path
 import resource
+import re
 import shutil
+import sqlite3
 import subprocess
+import tempfile
 
 try:
     from .identification_limits import identification_lock
@@ -23,6 +27,135 @@ except ImportError:
 
 
 SCRIPT = Path(__file__).resolve().parent / "ghidra/RepairReviewedFunctions.java"
+DATA_SCRIPT = SCRIPT.with_name("RepairReviewedData.java")
+DATA_SCHEMA = "identification-reviewed-data-v1"
+
+
+def _number(value):
+    return int(value, 0) if isinstance(value, str) else value
+
+
+def _data_type(row):
+    if row["kind"] == "char-array":
+        return f"/char[{row['size']}]"
+    if row["kind"] == "float64" and row["size"] == 8:
+        return "/double"
+    raise ValueError("Unsupported reviewed data kind or size")
+
+
+def validate_data_packet(packet):
+    """Authorize explicit byte bounds, replaced owners and typed definitions."""
+    groups = {}
+    for key in ("bounds", "superseded", "definitions"):
+        rows = packet.get(key)
+        if not isinstance(rows, list) or not 1 <= len(rows) <= 16:
+            raise ValueError("Expected bounded reviewed data packet rows")
+        ranges = []
+        for row in rows:
+            start, size = _number(row["start"]), row["size"]
+            if (isinstance(start, bool) or not isinstance(start, int) or start < 0x400000 or
+                    isinstance(size, bool) or not isinstance(size, int) or not 0 < size <= 65536 or
+                    start + size > 0x100000000 or
+                    not re.fullmatch(r"[0-9a-f]{64}", row.get("range_sha256", ""))):
+                raise ValueError("Invalid reviewed data range or digest")
+            if any(start < end and low < start + size for low, end in ranges):
+                raise ValueError("Reviewed data rows overlap")
+            ranges.append((start, start + size))
+            if key == "definitions":
+                _data_type(row)
+            elif key == "superseded" and (not isinstance(row.get("data_type_path"), str) or
+                                           not row["data_type_path"].startswith("/")):
+                raise ValueError("Superseded owner requires an exact type path")
+        groups[key] = ranges
+    if sum(end - start for start, end in groups["bounds"]) > 65536:
+        raise ValueError("Reviewed data bounds exceed 64 KiB")
+    for key in ("superseded", "definitions"):
+        if any(not any(low <= start and end <= high for low, high in groups["bounds"])
+               for start, end in groups[key]):
+            raise ValueError("Reviewed owner or definition escapes explicit byte bounds")
+
+
+def _nodes(path):
+    """Decode one bounded raw node at a time, without constructing a Graph."""
+    with Path(path).open() as stream:
+        while True:
+            line = stream.readline(4 * 1024 * 1024 + 1)
+            if not line:
+                break
+            if len(line) > 4 * 1024 * 1024:
+                raise ValueError("Exported node exceeds bounded JSONL record size")
+            yield json.loads(line)
+
+
+def _function_extent(row):
+    ranges = sorted((_number(value["start"]), _number(value["end_exclusive"]))
+                    for value in row.get("ranges", []))
+    if (not ranges or any(end <= start for start, end in ranges) or
+            any(ranges[index][0] < ranges[index - 1][1] for index in range(1, len(ranges))) or
+            sum(end - start for start, end in ranges) != row.get("body_bytes")):
+        raise ValueError("Invalid exported function ranges or body byte count")
+    return json.dumps(ranges, separators=(",", ":")), row["body_bytes"]
+
+
+def validate_preserved_functions(previous_nodes, current_nodes):
+    """Keep prior extents on disk; memory holds only one decoded node per stream."""
+    with tempfile.TemporaryDirectory(prefix="repair-functions-") as directory:
+        with closing(sqlite3.connect(str(Path(directory) / "extents.sqlite"))) as database, database:
+            database.execute("PRAGMA cache_size=-2048")
+            database.execute("PRAGMA mmap_size=0")
+            database.execute("CREATE TABLE functions(address INTEGER PRIMARY KEY, ranges TEXT, bytes INTEGER, seen INTEGER DEFAULT 0)")
+            count = 0
+            for row in _nodes(previous_nodes):
+                if row.get("kind") == "function":
+                    ranges, size = _function_extent(row)
+                    try:
+                        database.execute("INSERT INTO functions(address,ranges,bytes) VALUES (?,?,?)",
+                                         (_number(row["address"]), ranges, size))
+                    except sqlite3.IntegrityError as error:
+                        raise ValueError("Duplicate previous function entry") from error
+                    count += 1
+            for row in _nodes(current_nodes):
+                if row.get("kind") != "function":
+                    continue
+                address = _number(row["address"])
+                prior = database.execute("SELECT ranges,bytes,seen FROM functions WHERE address=?", (address,)).fetchone()
+                if prior is not None:
+                    if prior[2] or _function_extent(row) != prior[:2]:
+                        raise ValueError("Data repair changed or duplicated a previous function extent")
+                    database.execute("UPDATE functions SET seen=1 WHERE address=?", (address,))
+            if database.execute("SELECT COUNT(*) FROM functions WHERE seen=0").fetchone()[0]:
+                raise ValueError("Data repair lost previous function entries")
+            return count
+
+
+def validate_saved_nodes(packet, nodes_path):
+    """Verify reopened export owners/functions against the reviewed packet."""
+    data_mode = packet.get("schema") == DATA_SCHEMA
+    key = "definitions" if data_mode else "functions"
+    address_key = "start" if data_mode else "entry"
+    expected = {_number(row[address_key]): row for row in packet[key]}
+    superseded = {_number(row["start"]) for row in packet.get("superseded", [])} if data_mode else set()
+    found = set()
+    for row in _nodes(nodes_path):
+        address = _number(row["address"])
+        if data_mode and row["kind"] == "data-object" and address in superseded and address not in expected:
+            raise ValueError("Superseded data owner survived reopened export")
+        if address not in expected or row["kind"] != ("data-object" if data_mode else "function"):
+            continue
+        wanted = expected[address]
+        if address in found:
+            raise ValueError("Duplicate reopened reviewed owner or function")
+        if data_mode:
+            if row.get("size") != wanted["size"] or row.get("data_type") != _data_type(wanted):
+                raise ValueError("Saved data owner differs from reviewed size/type")
+        else:
+            ranges, size = _function_extent(row)
+            if ranges != json.dumps([[address, address + wanted["size"]]], separators=(",", ":")) or size != wanted["size"]:
+                raise ValueError("Saved function differs from reviewed complete extent")
+        found.add(address)
+    if found != expected.keys():
+        raise ValueError("Saved export is missing reviewed owners or functions")
+    return len(found)
 
 
 def resolve(directory, value):
@@ -72,11 +205,32 @@ def copy_project(project, destination):
 
 
 def validate_repair(report, packet, packet_path, project):
-    if (report.get("schema") != "identification-reviewed-function-repair-v1" or
+    data_mode = packet.get("schema") == DATA_SCHEMA
+    report_schema = "identification-reviewed-data-repair-v1" if data_mode else "identification-reviewed-function-repair-v1"
+    if (report.get("schema") != report_schema or
             report.get("binary_sha256") != packet["binary_sha256"] or
             report.get("packet_sha256") != sha256(packet_path) or
             report.get("disposable_project_file") != str(project.resolve())):
         raise ValueError("Fresh repair report differs from pinned inputs")
+    if data_mode:
+        validate_data_packet(packet)
+        expected = {(_number(row["start"]), row["size"], row["range_sha256"],
+                     row["kind"], _data_type(row)) for row in packet["definitions"]}
+        actual = {(int(row["start"], 16), row["size"], row["range_sha256"],
+                   row["kind"], row["data_type_path"]) for row in report["definitions"]}
+        if actual != expected or len(report["definitions"]) != len(packet["definitions"]):
+            raise ValueError("Repair report does not contain exactly the reviewed data definitions")
+        if any(row.get("status") != "created" for row in report["definitions"]):
+            raise ValueError("Data repair did not complete")
+        for key in ("bounds", "superseded"):
+            fields = ("start", "size", "range_sha256") + (("data_type_path",) if key == "superseded" else ())
+            expected_rows = {tuple(_number(row[field]) if field == "start" else row[field]
+                                   for field in fields) for row in packet[key]}
+            actual_rows = {tuple(int(row[field], 16) if field == "start" else row[field]
+                                 for field in fields) for row in report[key]}
+            if actual_rows != expected_rows or len(report[key]) != len(packet[key]):
+                raise ValueError("Data repair report differs from explicit bounds/superseded owners")
+        return
     expected = {(int(row["entry"], 0), row["size"], row["range_sha256"]) for row in packet["functions"]}
     actual = {(int(row["entry"], 16), row["size"], row["range_sha256"]) for row in report["functions"]}
     if actual != expected or len(report["functions"]) != len(packet["functions"]):
@@ -106,13 +260,28 @@ def repair(config_path, packet_path, reuse_pair_path, output, ghidra_home):
     if packet_path.stat().st_size > 65536:
         raise ValueError("Reviewed packet exceeds 64 KiB")
     packet = json.loads(packet_path.read_text())
-    if packet.get("schema") != "identification-reviewed-functions-v1" or packet.get("binary_sha256") != pc["sha256"]:
+    if packet.get("schema") not in {"identification-reviewed-functions-v1", DATA_SCHEMA} or packet.get("binary_sha256") != pc["sha256"]:
         raise ValueError("Reviewed packet differs from PC export configuration")
+    data_mode = packet["schema"] == DATA_SCHEMA
+    if data_mode:
+        validate_data_packet(packet)
+    script = DATA_SCRIPT if data_mode else SCRIPT
     if sha256(original) != pc["sha256"]:
         raise ValueError("PC original differs from pinned SHA-256")
     pair = json.loads(reuse_pair_path.read_text())
     if pair.get("schema") != "identification-graph-pair-v1":
         raise ValueError("Expected an existing graph pair")
+    previous_pc = None
+    if data_mode:
+        previous_pc = resolve(reuse_pair_path.parent, pair["pc"])
+        previous_pc_hash = sha256(previous_pc)
+        previous_pc_manifest = json.loads(previous_pc.read_text())
+        if previous_pc_manifest.get("program") != program:
+            raise ValueError("Prior PC graph program differs from source project program")
+        pc_delta = _number(pc["delta"])
+        if pc_delta != 0:
+            raise ValueError("Reviewed PC data repair requires original PC addresses")
+        validate_export(previous_pc, pc["sha256"], pc_delta, previous_pc_manifest["exporter_sha256"])
     android_manifest = resolve(reuse_pair_path.parent, pair["android"])
     android_manifest_hash = sha256(android_manifest)
     prior = json.loads(android_manifest.read_text())
@@ -130,12 +299,12 @@ def repair(config_path, packet_path, reuse_pair_path, output, ghidra_home):
         copied, before = copy_project(source, output / "project")
         packet.update(disposable_project=True, source_project_file=str(source),
                       disposable_project_file=str(copied))
-        generated_packet = output / "reviewed-functions.json"
+        generated_packet = output / ("reviewed-data.json" if data_mode else "reviewed-functions.json")
         generated_packet.write_text(json.dumps(packet, indent=2) + "\n")
         scripts = output / "repair-scripts"
         scripts.mkdir()
-        shutil.copyfile(SCRIPT, scripts / SCRIPT.name)
-        executed_script_hash = sha256(scripts / SCRIPT.name)
+        shutil.copyfile(script, scripts / script.name)
+        executed_script_hash = sha256(scripts / script.name)
         environment = os.environ.copy()
         environment["GHIDRA_HEADLESS_MAXMEM"] = f"{heap}M"
         for key, suffix in (("XDG_CONFIG_HOME", "config"), ("XDG_CACHE_HOME", "cache")):
@@ -145,13 +314,13 @@ def repair(config_path, packet_path, reuse_pair_path, output, ghidra_home):
         report_path = output / "repair-report.json"
         command = [str(Path(ghidra_home) / "support/analyzeHeadless"), str(copied.parent), copied.stem,
                    "-process", pc["program"], "-noanalysis", "-scriptPath", str(scripts),
-                   "-postScript", SCRIPT.name, str(generated_packet), str(original), str(report_path),
+                   "-postScript", script.name, str(generated_packet), str(original), str(report_path),
                    "-log", str(output / "repair.log")]
         try:
             subprocess.run(command, env=environment, check=True)
             report = json.loads(report_path.read_text())
             validate_repair(report, packet, generated_packet, copied)
-            if sha256(scripts / SCRIPT.name) != executed_script_hash:
+            if sha256(scripts / script.name) != executed_script_hash:
                 raise ValueError("Staged repair script changed during execution")
         finally:
             if project_inventory(source) != before:
@@ -159,23 +328,32 @@ def repair(config_path, packet_path, reuse_pair_path, output, ghidra_home):
     copied_job = dict(pc, project=str(copied), original=str(original))
     if pc.get("reviewed_evidence"):
         copied_job["reviewed_evidence"] = str(resolve(config_path.parent, pc["reviewed_evidence"]))
+    if data_mode:
+        # ExportReferenceGraph emits objects reached by references or explicit
+        # evidence addresses. Include every reviewed definition, even if unused.
+        evidence_path = output / "reviewed-data-evidence.jsonl"
+        with evidence_path.open("w") as destination:
+            if pc.get("reviewed_evidence"):
+                for annotation in _nodes(copied_job["reviewed_evidence"]):
+                    destination.write(json.dumps(annotation) + "\n")
+            for row in packet["definitions"]:
+                destination.write(json.dumps({"binary_sha256": packet["binary_sha256"],
+                                             "address": f"0x{_number(row['start']):08x}",
+                                             "origin": "explicit reviewed data repair packet",
+                                             "packet_sha256": sha256(generated_packet),
+                                             "range_sha256": row["range_sha256"],
+                                             "size": row["size"], "data_type_path": _data_type(row)}) + "\n")
+        copied_job["reviewed_evidence"] = str(evidence_path)
     manifest = export_job(copied_job, "pc", config_path.parent, output, Path(ghidra_home).resolve())
-    expected = {int(row["entry"], 0): row["size"] for row in packet["functions"]}
-    found = {}
-    with (output / "pc/nodes.jsonl").open() as stream:
-        for line in stream:
-            row = json.loads(line)
-            address = int(row["address"], 0)
-            if row["kind"] == "function" and address in expected:
-                ranges = row.get("ranges", [])
-                if len(ranges) != 1:
-                    raise ValueError("Repaired function has a noncontiguous exported body")
-                start, end = int(ranges[0]["start"], 0), int(ranges[0]["end_exclusive"], 0)
-                if start != address or end - start != row.get("body_bytes"):
-                    raise ValueError("Repaired function body range and byte count differ")
-                found[address] = row["body_bytes"]
-    if found != expected:
-        raise ValueError("Saved and re-exported function extents differ from reviewed repair")
+    if data_mode and manifest.get("program") != program:
+        raise ValueError("Reopened PC graph program differs from repaired program")
+    found = validate_saved_nodes(packet, output / "pc/nodes.jsonl")
+    preserved_functions = None
+    if data_mode:
+        if sha256(previous_pc) != previous_pc_hash:
+            raise ValueError("Prior PC manifest changed during data repair")
+        validate_export(previous_pc, pc["sha256"], pc_delta, previous_pc_manifest["exporter_sha256"])
+        preserved_functions = validate_preserved_functions(previous_pc.parent / "nodes.jsonl", output / "pc/nodes.jsonl")
     if project_inventory(source) != before:
         raise ValueError("Retained Ghidra project changed during export")
     if sha256(android_manifest) != android_manifest_hash:
@@ -188,12 +366,15 @@ def repair(config_path, packet_path, reuse_pair_path, output, ghidra_home):
               "repair_report_sha256": sha256(report_path), "retained_project_unchanged": True,
               "reused_android_manifest_sha256": android_manifest_hash,
               "java_heap_mb": heap}
+    if data_mode:
+        result.update(repair_kind="reviewed-data", previous_pc_manifest_sha256=previous_pc_hash,
+                      preserved_function_count=preserved_functions)
     (output / "original-project-inventory.json").write_text(json.dumps(before, indent=2) + "\n")
     pair_path = output / "graph-pair.json"
     temporary_pair = output / "graph-pair.json.tmp"
     temporary_pair.write_text(json.dumps(result, indent=2) + "\n")
     os.replace(temporary_pair, pair_path)
-    print(f"Verified {len(found)} repaired function extents; {manifest['node_count']} PC nodes. {pair_path}")
+    print(f"Verified {found} repaired {'data owners' if data_mode else 'function extents'}; {manifest['node_count']} PC nodes. {pair_path}")
     return pair_path
 
 

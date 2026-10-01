@@ -821,6 +821,92 @@ steam/control-desk, disco, minecart or lantern sounds. Parent reinspection
 confirmed each original literal, absolute return store, comparison and zero
 initializer. Android counterparts are `0x006a1468`, `0x006a13f8`, `0x006a13f0`,
 `0x006a13ec` and `0x006a13e4`. The ignored `continuation/level-pointer-frontier`
-packet records these contracts. `CLOUDCITYTRAPB_LDATA` at `0x0087b248` remains a
-candidate because its separate particle-reader identity needs review. No
+packet records these contracts. The separate particle-reader review below resolves
+`CLOUDCITYTRAPB_LDATA` at `0x0087b248`. No
 pointed-to aggregate layout or additional Android sound branch is transferred.
+
+
+`PartKill_ForceThrow` is mapped at `0x0042d000`, with 371 original bytes
+through the return at `0x0042d172`; the following thirteen INT3 bytes are excluded.
+The level-specific debris IDs, special-name selection, rumble, qrand threshold,
+camera shake and `Explode1` call establish identity independently of the previously
+held level-pointer name. All local branches land on decoded instructions within
+the complete body. The named Android function is at `0x00121600`, with a different
+630-byte extent that is not transferred to PC.
+
+Its two-argument `void __cdecl (PART_PC *, i32)` contract follows original
+runtime callback initialization and dispatch. The initializer at `0x00467a35`
+writes the callback into AddPart parameter offset `0x44`; accepted AddPart copies
+that field to PART offset `0x1c0` at `0x0064d790`. Accepted KillPart loads that
+callback at `0x0064acec`, pushes the reason and PART pointer, calls it at
+`0x0064acfd`, and cleans eight bytes. The callback does not use the reason;
+its bare return and ignored result support the void contract. Complete PART
+layout remains unresolved. The ignored `continuation/force-throw-review` and
+`force-throw-abi-closure` packets preserve original range hashes and instructions.
+Parent review independently verified the complete body and dispatch windows.
+
+This independently identified reader compares current_level against
+`CLOUDCITYTRAPB_LDATA` at `0x0042d012`. The original lookup writer pushes exact
+`CloudCityTrap_B` at `0x0048efed`, calls Level_FindByName, and stores returned EAX
+into `0x0087b248` at `0x0048effc`. Together these establish the complete four-byte,
+zero-initialized `LEVELDATA_PC *` cell, corresponding to Android `0x006a1458`.
+No pointee layout is inferred. Both new rows are inventory mappings without
+source definitions or reconstruction credit.
+
+
+The sound literal `GrapWindLp` at `0x0075bf90` is mapped as the complete
+`char[11]` array, through its first NUL at `0x0075bf9a`. Original PlaySfx argument
+sites at `0x004ac76e` and `0x004d6875` both pass that exact start. Its preceding
+qword at `0x0075bf88` is independently read by `0x004ae825`; the five following
+alignment bytes and next qword at `0x0075bfa0` are excluded. Ghidra's string
+starting at `0x0075bf8f` incorrectly absorbs the preceding double's last byte
+and is not the accepted storage boundary.
+
+The named Android directional function resolves the same literal at `0x00567b17`:
+its original thunk call returns `0x001670db`, adds `0x004af795` to establish EBX
+`0x00616870`, then its LEA at `0x0016792a` selects the literal before PlaySfx.
+Bounded whole-function register-flow review verifies that PIC base reaches the
+argument, subject to the standard SysV callee-preserved EBX convention. No ELF
+relocation overlaps those selected operands. Multiple zero-size LC aliases do
+not establish a unique source translation unit. `_GrapWindLp_text` is a
+prospective reconstruction name, without a compiled definition. The ignored
+`continuation/grap-wind-literal-review` and `grap-wind-pic-register-proof` packets
+preserve the byte contracts and PIC proof.
+
+
+`ZipUp_MoveCode` at `0x004d6060` is mapped with a complete 3,774-byte PC body,
+ending after the return at `0x004d6f1d`. All local jumps remain on decoded
+instruction boundaries; thirteen returns close the paths, and two following
+INT3 bytes are excluded. Context `0x47`, the three-stage animation route,
+hook timeout/detachment and hint `0x262`, the swing arc and sound threshold,
+and nearest-zipup/StartBigJump eligibility establish identity independently of
+the shared GrapWindLp literal. The named Android function at `0x001d2750`
+has a different 4,982-byte ELF extent.
+
+Four original callers pass the object pointer and special input. In particular,
+`0x004b3ca6` pushes the input, `0x004b3ca7` pushes the object, and the direct call
+at `0x004b3ca8` is followed by eight-byte cleanup. The callee reads both stack
+arguments and uses plain returns; callers ignore the result. This establishes
+`void __cdecl (GAMEOBJECT *, i32)` without asserting full GAMEOBJECT or ZIPUP
+layouts. Parent byte/branch/caller reinspection agrees with the ignored
+`continuation/zipup-review` packet. This remains an unimplemented inventory row.
+
+
+`Action_RemoveThrownForceObjects` is recovered at `0x00449e10` from the original
+named action-definition row at `0x007f76a8`: the twelve-byte row contains the
+`RemoveThrownForceObjects` string pointer, callback entry, and zero flags. That
+static initializer supplies a real disassembly seed despite the missing retained
+function node. The original body tests each active PART's kill callback against
+accepted PartKill_ForceThrow, calls KillPart(part, 0), advances by PC stride
+`0x220`, and returns one. Every instruction is reachable; the complete 75-byte
+body ends after the return at `0x00449e5a`, excluding subsequent INT3 padding.
+
+Accepted AIScriptProcess loads the action callback at definition offset four,
+pushes its seven established interface arguments, calls through EAX at
+`0x0052cf4f`, cleans 28 bytes, and tests the result. This establishes the existing
+seven-argument cdecl action contract without inferring ignored parameters solely
+from Android. Android's named function at `0x00188120` uses PART stride `0x224`,
+which is not transferred to PC. Parent reinspection verified the original table
+row, literal, body and dispatcher window. The ignored
+`continuation/force-remove-frontier` packet retains this proof. No whole action
+table, PART pool extent, aggregate layout or source definition is added.
