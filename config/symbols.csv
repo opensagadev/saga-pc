@@ -62,6 +62,7 @@ address    , symbol                                                         , si
 0x0043d530 , _oneAtOnce_SetDistPerRow                                       , 41    ,
 0x0043d560 , _oneAtOnce_SetInitDistPerRow                                   , 41    ,
 0x0043d890 , _AddDynamicCreature                                            , 1963  ,
+0x0043e040 , _AISysGetPathPos2                                              , 321    ,
 0x00440120 , _GetNamedGameObject                                            , 34    , "GAMEOBJECT *__cdecl (void *, char *)"
 0x440150   , _PartyMemberInWay                                              , 312   , "i32 __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
 0x443fc0   , _Action_SetTakeOverTarget                                       , 739   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -927,6 +928,7 @@ address    , symbol                                                         , si
 0x00549430 , _ResetFrameCounters                                            , 30    , void __cdecl (void)
 0x00549450 , _UpdateFrameCounters                                           , 119   , void __cdecl (void)
 0x00549bb0 , _GameCam_NewShake                                              , 43    , "void __cdecl (GAMECAMERA *, f32, f32, f32)"
+0x00549de0 , _GameCam_Judder                                                , 301    ,
 0x00549f10 , _GameCam_HitJudder                                             , 186    ,
 0x0054a1c0 , _NarrowSockPositionAllowed                                     , 123   , ""
 0x54a240   , _ObjInNarrowSock                                               , 163   , "i32 __cdecl (GAMEOBJECT *,SOCKSYS_PC *,i32)"
@@ -1044,6 +1046,7 @@ address    , symbol                                                         , si
 0x0055e1b0 , _RememberPlayerIDs                                             , 249   , "void __cdecl (i32, i32, i32)"
 0x0055e410 , _SetPlayer                                                     , 85    ,
 0x0055e4a0 , _Player_ClearContext                                           , 58    ,
+0x0055e4e0 , _Player_ResetContexts                                          , 280    ,
 0x0055f320 , _Player_HasDoubleWeaponDamage                                  , 49    , i32 __cdecl (GAMEOBJECT *)
 0x0055f430 , _WorldInfo_InitOnce                                            , 21    , void __cdecl (void)
 0x0055f450 , _WorldInfo_CurrentlyActive                                     , 6     , WORLDINFO *__cdecl (void)
@@ -1856,6 +1859,7 @@ address    , symbol                                                         , si
 0x0062c300 , _ParticlesPerFrame                                             , 76    , "i32 __cdecl (f32, f32)"
 0x0062c350 , _ParticlesPerSecond                                            , 90    , "i32 __cdecl (f32, f32)"
 0x0062c3b0 , _FindGameDebris                                                , 79    , "i32 __cdecl (APIDEBRISSYS_PC *, char *)"
+0x0062c400 , _InitGameDebris                                                , 339    ,
 0x0062d500 , _APIResetCharacterRemap                                        , 53    ,
 0x0062d540 , _APILoadCharacterModels                                        , 2619  , "void __cdecl (APICHARACTERMODELLIST_s*, i32, VARIPTR*, VARIPTR, i32)"
 0x0062e040 , _AnimDuration                                                  , 324   , "f32 __cdecl (i32, i32, f32, f32, i32)"

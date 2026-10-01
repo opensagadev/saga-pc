@@ -2466,3 +2466,40 @@ and reset instructions; the neighboring curSphereter alternative has only reset
 evidence and remains held. PC increment-by-one is not established. The CSV size
 and ctype stay blank, with ABI/type/extent flags false and no allocation or source
 credit. The Android four-byte symbol is not a recovered PC allocation size.
+
+## Shared-helper reviews and debris rival correction (2026-10-02)
+
+Four further identities have complete PC extents and qualified physical caller
+contracts. Their historical ctypes remain blank:
+
+| Function | PC entry | PC bytes | Native Android entry |
+| --- | --- | --- | --- |
+| AISysGetPathPos2 | 0x0043e040 | 321 | 0x00181410 |
+| GameCam_Judder | 0x00549de0 | 301 | 0x004d8370 |
+| Player_ResetContexts | 0x0055e4e0 | 280 | 0x0046b240 |
+| InitGameDebris | 0x0062c400 | 339 | 0x003ca2d0 |
+
+The 1,241 bytes add inventory coverage only. The first three helpers have three
+distinct accepted caller roots each. Original instructions and caller contracts,
+rather than equal empty data profiles, establish their identities. AISysGetPathPos2
+requires four pointer words; several callers supply two additional unused words.
+Its already mapped character-path provider retains an explicit normal engine
+qualification. Camera and context helpers preserve their lower floating-point
+stack values under their reviewed vector, random and square-root contracts.
+
+InitGameDebris builds an aligned arena with a twelve-byte header, twenty-byte
+entries, name copying and debris lookup. Its complete extent retains internal
+alignment and both returns. One observed caller supplies six words, another
+supplies an unused seventh. The structurally competing PC 0x0068df20 is instead
+a mode-dependent file/parser loader managing eight slots. Its proposed pair
+against Android 0x003ca2d0 is explicitly rejected in the append-only journal.
+The correct arena initializer was a rival with only one accepted parent root;
+multi-parent support alone did not settle this identity.
+
+ObjHitObj at 0x00438230 corresponds to native Android 0x0013a9e0. Original
+control flow, twenty-one accepted callee families and distinctive collision
+state/actions establish this journal-only identity. Its complete 5,764-byte PC
+extent retains internal alignment and four returns. Six physical caller words
+are observed, but complete child-call contract closure remains pending; ABI and
+type flags stay false. It adds no CSV binding, source definition or coverage.
+Frozen original and independent release packets remain under ignored analysis.

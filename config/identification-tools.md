@@ -1699,3 +1699,33 @@ or inferred pairs survive, and their union gains five pairs. Data candidates gai
 with no automatic identity, allocation or source credit. The run again reaches
 a fixed point in eight rounds, taking 48.46 seconds at 742,244 KiB maximum RSS
 with zero swaps and the same 1,024 MiB address-space cap.
+
+After reviewing the three shared-helper leads, correcting the debris initializer
+rival and adding the journal-only collision identity, five previous inferences
+become accepted anchors. The normal matcher now has 1,496 accepted anchors,
+1,324 inferred pairs and 2,380 data candidates. All 1,491 previous accepted
+anchors survive. Five other existing raw candidates become inferred, while
+183 unconverted old inferences lose that status: 180 remain raw candidates and
+three leave the candidate pool. The accepted/inferred union falls from 2,998 to
+2,820. This is an advisory-confidence regression, not a loss of verified maps.
+The explicitly rejected debris-parser pair was absent from both raw candidate
+pools and is not a direct member of those losses.
+
+This exposes a nonmonotonic mechanism in the propagation policy: an inferred
+pair carries inherited roots, while its promotion to an accepted seed gives it
+one fresh root. Descendants may then lose the multiple-root support required
+for inference. Specific causal paths still require an evidence audit; the
+membership counts alone do not attribute every loss to that mechanism. Data
+candidates gain 28 pairs and lose four, for a net increase of 24. The run settles
+in seven rounds, takes 45.85 seconds at 692,192 KiB maximum RSS with zero swaps,
+and retains the 1,024 MiB address-space cap. Original review, complete extents
+and qualified physical contracts remain separate from advisory propagation.
+
+The final multi-parent diagnostic retains no eligible leads: its three former
+leads are now mapped. It inspects 1,080 observed rivals in 1,198 comparisons,
+with 37 multi-parent compatible pairs. Ten held examples remain; one gains three
+PC rivals. This does not establish that the remaining ambiguities are exhausted.
+The diagnostic takes 1.47 seconds at 45,016 KiB RSS with zero swaps. An initial
+attempt supplied the JSON symbol inventory where the accepted-seed JSONL was
+required; the format guard rejected it before publication. The failed and
+successful runs together charge 2,991,059 metadata bytes, below eight MiB.
