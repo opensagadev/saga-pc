@@ -684,6 +684,61 @@ retain the semantic delta. An initial launch was refused by the shared lock
 while the baseline copy ran; the identical completed baseline was revalidated
 before the successful serial replay.
 
+The next fixed four-callback review repairs 680 original PC bytes in a fresh
+project copy, preserving all 8,033 prior function bodies and the explicit mixed
+table/data-owner guards. The graph now contains 8,037 PC functions. Java uses
+a 512 MiB heap, takes 21.15 seconds and peaks at 760 MiB with zero tool swaps.
+Only `PartyCanBeUnderCover` passes independent ABI review and adds 94 accepted
+code bytes; the other three complete graph spans remain held on callee effects.
+No aggregate declarations or compiled definitions are added.
+
+The corresponding replay takes 53.73 seconds and peaks at 742 MiB under the
+1 GiB cap. It has 1,419 seeds, 91 data anchors, fourteen exclusions, zero stale
+decisions, 1,503 tentative pairs, 16,661 full function rows and 2,039 data rows.
+Registry diagnostics resolve 248 physical pairs, leaving twelve missing PC
+endpoints and one Android-only name. Independent audit verifies all 38 outputs
+across the completed run and its complete previous baseline, live input pins
+and streamed ledger counts. Counts do not establish identification accuracy.
+
+### Bounded static-CRT archive adapter
+
+`tools/crt_archive.py` supplies exact member selection from the already installed
+MSVC `libcmt.lib`, complementing Android graph identities. It reads archive
+headers and linker/name metadata once, then reads only explicitly selected
+member payloads. Defaults cap cumulative metadata at 2 MiB and both per-member
+and cumulative payload at 16 KiB. Limits are checked before reads. Duplicate
+symbol alternatives remain ambiguous until an exact selector resolves them.
+
+Use `CRTArchive.find()` for exact alternatives, `select()` for one exact symbol,
+member name or header offset, and its `coff()` context for the existing
+`tools.binary.COFF` parser. The context stages a fixed safe temporary filename;
+existing extraction and relocation APIs retain all their failure gates. There
+is no new relocation implementation, inferred function extent or automatic map
+acceptance. Archive index names are hypotheses; complete original identity,
+ABI, ownership and full relocated byte equality require separate review.
+
+Independent review verifies the pinned library and exact calibration selectors
+without supplying object code. A synthetic alternate-file open exposed a
+provenance race before the payload pilot. The adapter now checks the opened
+descriptor's device, inode, size and timestamps before and after parsing or
+payload reads, alongside path checks. The regression rejects the alternate
+descriptor before charging or reading selected payload. Seventeen synthetic
+tests cover this case, exact selection, ambiguity, malformed indices, limits,
+delegation and changed relocation destinations.
+
+The fixed original pilot reads three selected members once (9,294 payload
+bytes), supplies 210 original PC code bytes and extracts 130 tool-code bytes
+including the failed relocation attempt. The complete 52-byte `__allmul`
+calibration is exactly equal at its original address. This is an existing
+identity calibration, not a new mapping or reconstructed source definition.
+The 13-byte `_srand` extraction succeeds, but relocation refuses the missing
+`__getptd` binding. Both FTOL entry extractions refuse native shared-section
+ownership without auxiliary function sizes; no flags or extents are invented.
+Actual unresolved-relocation and unequal-extent controls are recorded. Actual
+changed-target and alias controls were unavailable in this pilot; synthetic
+adapter controls remain separately identified. Frozen
+`pc-crt-coff-pilot-next1` records the exact inputs, hashes and failures.
+
 ## Installed tools and input identity
 
 The installed Ghidra is `/opt/ghidra`, version `12.1.2_DEV`, with Java
@@ -1139,15 +1194,15 @@ tooling/map changes. Keep generated graphs, original bytes, H2 databases and
 downloaded binaries ignored. Only tooling, synthetic tests, reviewed proposals
 and documentation belong in tracked changes.
 
-The latest checkpoint `make -j2 check` passed 408 tests (three optional Ghidra fixture skips), source
+The latest checkpoint `make -j2 check` passed 425 tests (three optional Ghidra fixture skips), source
 formatting and Clang-tidy. The object check passed 1,638 function and 2,604 data
 definitions across 123 objects. Final compilation/matching checks use two Make
 workers to keep resource use bounded.
 Retail matching preserves all 801 previous exact function rows. Pre-existing
 function comparisons, all previous data comparisons and all 123 object hashes
 are unchanged. The existing 44-byte `FadeSys` exact data comparison is preserved.
-The new accepted extents add 2,308 code bytes and 48,816 data bytes to the map,
-with no code comparison or reconstruction coverage added. Final project and
+The latest accepted callback adds 94 code bytes to the map, with no code
+comparison or reconstruction coverage added. Final project and
 object checks cover the complete accepted map after these additions.
 Fuzzy code coverage rounds to 6.212%; mapping coverage reaches 2.783%.
 The first pushed tool snapshot exposed a test relying on a local ignored file;

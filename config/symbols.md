@@ -1695,3 +1695,29 @@ unresolved. Its ctype stays blank. Frozen
 `terrain-scale-ymask-runtime-boundaries-next1` and its independent audit retain
 the final composition, actual interfaces and earlier proof hashes. This adds
 1,984 mapped code bytes with no source definition or comparison credit.
+
+## Undercover callback and bounded CRT member review
+
+`Action_PartyCanBeUnderCover` at `0x456850` has a complete 94-byte PC body.
+Original game registry records and the named Android ELF callback bind identity.
+Independent complete CFG, saved-register and stack checks close all three
+normal returns. The actual dispatcher supplies seven stack slots, removes
+28 bytes and tests EAX. The callback returns one; its original `NuStrICmp`
+dependency is a call-free integer leaf. An identity LEA used for alignment
+does not introduce a semantic incoming ECX requirement. Aggregate pointer
+types remain opaque, with type review false. Frozen
+`ai-registry-new-callback-batch14` and its independent audit retain the proof.
+
+The same fixed review establishes complete graph-analysis spans for `AddPart`
+at `0x44b740` (516 bytes), `DrawBossHitPoints` at `0x455e60` (35), and
+`LetGoOfBalloon` at `0x455e30` (35). Their outgoing callee effects remain held;
+the graph repairs do not authorize accepted map rows. Party alone adds 94
+mapped code bytes, with no compiled definition or reconstruction gain.
+
+The installed MSVC CRT archive supplies a complementary source of named
+member hypotheses. Its linker index selects bounded COFF members; the existing
+COFF parser and relocation code remain authoritative for candidate extraction.
+An index name alone does not establish original PC identity, ABI or extent.
+Assembly entries with missing function metadata or shared multi-entry ownership
+must remain held when the extractor cannot represent their complete bodies.
+Exact full relocated byte equality is required, including external destinations.
