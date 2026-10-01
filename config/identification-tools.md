@@ -224,6 +224,36 @@ not new verified symbols. Peak RSS is 630 MiB. Shared topology and the common
 records are the next retrieval channel; raw DWORD/byte masks and field offsets
 must not be equated across platforms.
 
+The original registry diagnostic now extracts 261 PC and 262 Android records
+from independently reviewed complete tables. Original initialization and dispatch
+code establishes separate game/API namespaces: PC has 207 game records versus
+Android's 208, and both have 54 API records. `DontPush`, `SetLocator` and
+`FollowPlayer` occur in both namespaces; a name alone cannot identify them.
+The Android pointer addends already contain original VAs. No second relocation
+or graph address adjustment is applied. The PC and Android table bounds, null
+terminators, names, callbacks and namespace proofs are independently checked.
+
+A following reviewed wave adds `GizObstacles_RegisterGizmo` and sixteen AI
+callbacks, totaling 2,995 complete PC bytes, plus an obstacle type-ID identity
+with unknown allocation extent and zero coverage credit. Full aggregate types
+remain unreviewed. Image mapping becomes 942,793 bytes (2.353%); source matching
+does not increase. The registration repair adds one missing graph entry, and
+the AI repair adds fifteen; the sixteenth callback already has a retained node.
+All 7,895 previous function bodies and corrected scalar/literal owners survive.
+The current PC graph has 7,911 functions. These Ghidra jobs peaked below 761 MiB
+with 512 MiB heaps.
+
+The current production replay uses 1,254 accepted function seeds and 24 reviewed
+data anchors, with 1,241 tentative function pairs, 1,775 data candidates and zero
+stale decisions. Its separate registry diagnostic yields 131 physical candidate
+pairs, no ambiguous joins and 130 unresolved names: 129 missing PC function nodes
+and one Android-only name, `CharClipToBlobShadows`. Alias records count once per
+physical callback pair. Peak Python RSS was 632 MiB under the 1 GiB limit.
+The diagnostic finds the counterparts of all seventy frozen AI labels using
+original registry names. This is lookup coverage, not a new holdout score: the
+graph correspondence result remains 25/70. Registry outputs neither seed nor
+change graph scoring, and no diagnostic candidate is automatically accepted.
+
 `tools/repair_graph.py` makes the independent copy, pins the reviewed packet and
 executed script, checks a fresh repair report, and verifies the saved function
 extents in the new export before publishing a graph pair. Use a fresh output
@@ -464,6 +494,28 @@ automatic identity approvals. Data candidates use distinct confirmed paired
 function users; repeated accesses in one function do not count as independent
 users. Tied co-used globals and competing owner interpretations require review.
 
+Add `--registry-descriptors FILE` to a joint run for a separate original-registry
+diagnostic. The file has schema `identification-registry-descriptors-v1`, `pc`
+and `android` descriptor arrays, and `review_proofs` entries containing `side`,
+`path` and `sha256`. Each descriptor pins the original binary SHA-256, namespace
+and explicit 12-byte layout (`stride: 12`, name/callback/flags offsets 0/4/8).
+Selected rows require individual start/size/hash proofs. Complete tables require
+the base, count excluding the terminator, a bound spanning `(count + 1) * 12`
+bytes with its SHA-256, and a twelve-zero-byte terminator. No expected names or
+address transforms are accepted. Names are read through their first original
+NUL, and callback endpoints must retain their exact original VA.
+
+Only `namespace_status: "reviewed-original"` enables joins, with at least one
+pinned review proof per reviewed side. Unknown namespaces fail closed. The run
+pins descriptor, proof, original and producer inputs; it reuses the literal
+readers and pins the optional Android reader when present. An unavailable
+Android reader produces an explicit degraded diagnostic retaining PC evidence;
+malformed originals still fail. Limits are 32 descriptors, 4,096 records,
+64 KiB per table and 2 MiB for the descriptor file. `registry-evidence.json`
+and `registry-comparison.json` preserve unresolved callbacks, conflicting names
+and alias groups. Their candidates are review inputs with unproved body/ABI
+extents; `summary.json` records `scoring_used: false` and promotion disabled.
+
 Each run freezes the symbol map, optional decisions and source overlay, and
 fingerprints raw inputs. It publishes a staged directory atomically only after
 validation. `run-manifest.json` has schema `identification-run-v1` and status
@@ -664,7 +716,7 @@ tooling/map changes. Keep generated graphs, original bytes, H2 databases and
 downloaded binaries ignored. Only tooling, synthetic tests, reviewed proposals
 and documentation belong in tracked changes.
 
-The latest checkpoint `make -j2 check` passed 323 tests (three optional Ghidra fixture skips), source
+The latest checkpoint `make -j2 check` passed 353 tests (three optional Ghidra fixture skips), source
 formatting and Clang-tidy. The object check passed 1,638 function and 2,604 data
 definitions across 123 objects. Final compilation/matching checks use two Make
 workers to keep resource use bounded.

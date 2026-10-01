@@ -997,3 +997,56 @@ use DWORD `+0x9c`, unlike Android's BYTE `+0xa0`. The obstacle type-ID reader at
 `0x00802644` is a pending data dependency; no allocation extent is inferred.
 The ignored `continuation/obstacle-dependency-next` retains the original registry,
 dispatcher, body hash and counterpart evidence. No implementation is claimed.
+
+The original registration initializer seeds `GizObstacles_RegisterGizmo` at
+`0x00559430`, with a complete 318-byte body and Android counterpart `0x004ad4c0`.
+The actual registration dispatcher passes one index, cleans four bytes and uses
+the returned configuration pointer. The PC callback copies 120 bytes, returns
+`0x0093b210`, installs the original `GizObstacle` name and callback fixups, and
+stores the index to `0x00802644`. Android copies 124 bytes; its record size is not
+transferred. All 44 PC instructions are reachable and the final return restores
+ESP. The existing private configuration contract supplies the opaque return
+type; dependent callback bodies and static allocations remain separate work.
+
+`obstacle_gizmotype_id` at `0x00802644` is an identity-only storage mapping to
+Android `0x006682e0`. Independent AI/flow DWORD readers, the registration writer,
+and the actual Android relative-GOT slot prove its role. Ghidra undefined4 and
+four-byte accesses do not establish the full PC allocation. CSV size and ctype
+remain blank; journal type/extent flags are false, without complete ranges or
+coverage credit. The ignored `continuation/obstacle-id-frontier` preserves this
+limitation and original provenance.
+
+The complete original AI registries independently seed sixteen more callback
+identities, adding 2,677 PC bytes. Namespace and name come from the original
+records and registration/dispatch code; neither existing CSV labels nor Android
+record ordinals supply identity. All original PC extents and seven-argument
+caller contracts receive independent CFG/stack review. Complete aggregate
+layouts remain unproved, so journal type flags remain false.
+
+| Callback | PC entry | Complete bytes | Named Android entry |
+| --- | --- | ---: | --- |
+| SetAnimation | `0x44e860` | 91 | `0x18b660` |
+| AnimTimeRandom | `0x44e8c0` | 47 | `0x18b610` |
+| CanOpenDoors | `0x44ede0` | 139 | `0x1853e0` |
+| CanShootOffScreen | `0x44ee70` | 139 | `0x185310` |
+| KeepWeaponOut | `0x44ef00` | 190 | `0x19da00` |
+| SnapWeaponOut | `0x44efc0` | 319 | `0x19d820` |
+| ResetContext | `0x44f100` | 161 | `0x19d750` |
+| PrefersPlayers | `0x44f1b0` | 113 | `0x185280` |
+| SetBoltsDontGetDeflectedBack | `0x44f230` | 100 | `0x1851f0` |
+| CanShootObstructions | `0x44f2a0` | 113 | `0x185160` |
+| UseBigJumpToJump | `0x44f320` | 113 | `0x1850d0` |
+| SetTaggable | `0x44f930` | 342 | `0x19d570` |
+| CatchUpForbidden | `0x44f860` | 193 | `0x19d450` |
+| CannotDropIn | `0x44fa90` | 249 | `0x19d300` |
+| CanAttack | `0x44fc50` | 184 | `0x19d1e0` |
+| NotWithParty | `0x44fb90` | 184 | `0x19d0c0` |
+
+`SetTaggable` has a complete 342-byte contiguous PC extent including three
+reviewed interior alignment bytes. Its retained analysis body has 339 bytes
+in two ranges; that sparse analysis does not shrink the reviewed original
+function. The other fifteen entries require disposable graph repair. This
+wave adds no implementations or reconstruction credit. Both frozen packets
+`continuation/ai-registry-new-callback-batch` and its independent audit retain
+original registry rows, hashes, behavior, platform flag-width differences and
+full boundary/ABI evidence.

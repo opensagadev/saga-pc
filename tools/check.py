@@ -305,6 +305,7 @@ def main():
     parser.add_argument("--symbols", type=Path, help="With --identify, freeze this reviewed symbol map")
     parser.add_argument("--joint-graph", type=Path, help="With --identify, use a hash-verified original code/data graph pair")
     parser.add_argument("--reviewed-pairs", type=Path, help="With --identify, freeze a reviewed decision journal")
+    parser.add_argument("--registry-descriptors", type=Path, help="With --identify --joint-graph, diagnose reviewed original registry records separately from scoring")
     parser.add_argument("--similarity-candidates", type=Path, action="append", help="With --identify, add advisory BSim/BinDiff candidates")
     parser.add_argument("--holdout-mode", choices=("pair", "family", "data"), default="pair", help="With --identify --holdout, choose a label split")
     parser.add_argument("--holdout-selection", type=Path, help="With --identify --holdout, freeze an explicit evaluation selection")
@@ -328,12 +329,14 @@ def main():
                 inputs=args.input or (), all_source=args.input is None, jobs=args.jobs)
         return
     if (args.holdout or args.source_graph or args.refresh_features or args.analysis_dir or args.symbols
-            or args.joint_graph or args.reviewed_pairs or args.similarity_candidates or args.holdout_selection
+            or args.joint_graph or args.reviewed_pairs or args.registry_descriptors or args.similarity_candidates or args.holdout_selection
             or args.holdout_mode != "pair" or args.memory_limit_mb != 1024) and not args.identify:
-        parser.error("--holdout, --source-graph and --refresh-features require --identify")
+        parser.error("Identification options require --identify")
     if args.identify:
         if args.memory_limit_mb < 128:
             parser.error("--memory-limit-mb must be at least 128")
+        if args.registry_descriptors and not args.joint_graph:
+            parser.error("--registry-descriptors requires --joint-graph")
         if __package__:
             from .identification import generate
         else:
@@ -343,6 +346,7 @@ def main():
                  analysis_dir=args.analysis_dir, symbols=args.symbols, joint_graph=args.joint_graph,
                  reviewed_pairs=args.reviewed_pairs, holdout_mode=args.holdout_mode,
                  holdout_selection=args.holdout_selection, similarity_candidates=args.similarity_candidates,
+                 registry_descriptors=args.registry_descriptors,
                  memory_limit_mb=args.memory_limit_mb)
         return
     if args.format:

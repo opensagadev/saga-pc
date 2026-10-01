@@ -375,7 +375,7 @@ def _similarity_evaluation(run, paths, selection, result, pair):
 
 
 def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdout_selection=None,
-                    similarity_candidates=None, pair=None):
+                    similarity_candidates=None, pair=None, registry_descriptors=None):
     """Generate ignored research outputs; caller publishes through IdentificationRun."""
     if __package__:
         from . import identification as scorer
@@ -385,6 +385,13 @@ def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdou
         from binary import PE
     if pair is None:
         pair = _register_pair(run, joint_graph)
+    registry_metadata = {"enabled": False, "reason": "no reviewed registry descriptors supplied"}
+    if registry_descriptors is not None:
+        if __package__:
+            from .identification_registry_run import diagnose_registry
+        else:
+            from identification_registry_run import diagnose_registry
+        registry_metadata = diagnose_registry(run, pair, registry_descriptors)
     inputs, source_meta = _function_inputs(pair, scorer, run.source_graph)
     literal_metadata = {"enabled": False}
     literal_module = Path(__file__).with_name("identification_literals.py")
@@ -579,6 +586,7 @@ def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdou
                "graph_fingerprints": {side: pair[side].fingerprint for side in ("pc", "android")},
                "holdout": held_metrics,
                "literal_features": literal_metadata,
+               "registry_diagnostics": registry_metadata,
                "features": "direct calls, explicit journal-reviewed data users and map-independent literals when available; name-only data joins are labels, not propagation anchors; constant/initializer scoring not enabled",
                "warning": "Hypotheses never establish PC identity, type/ABI, complete extent or reconstruction coverage."}
     _json(run.work_dir / "summary.json", summary)
@@ -587,13 +595,13 @@ def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdou
 
 
 def generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdout_selection=None,
-                   similarity_candidates=None):
+                   similarity_candidates=None, registry_descriptors=None):
     """Own/close lazy original graph indices while the run owns publication."""
     pair = _register_pair(run, joint_graph)
     try:
         return _generate_joint(run, joint_graph, holdout=holdout, holdout_mode=holdout_mode,
                                holdout_selection=holdout_selection, similarity_candidates=similarity_candidates,
-                               pair=pair)
+                               pair=pair, registry_descriptors=registry_descriptors)
     finally:
         for side in ("pc", "android"):
             if isinstance(pair[side], graph.IndexedGraph):

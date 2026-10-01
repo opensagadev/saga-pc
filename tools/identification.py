@@ -696,12 +696,14 @@ else:
 def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.parent / "saga",
              analysis_dir=None, symbols=None, reviewed_pairs=None, run=None,
              joint_graph=None, holdout_mode="pair", holdout_selection=None,
-             similarity_candidates=None):
+             similarity_candidates=None, registry_descriptors=None):
     """Snapshot inputs and atomically publish a completed research run."""
     if holdout_mode != "pair" and not holdout:
         raise ValueError("A family or data holdout requires --holdout")
     if holdout_selection and not (holdout or similarity_candidates):
         raise ValueError("An explicit selection requires --holdout or similarity comparison")
+    if registry_descriptors and not joint_graph:
+        raise ValueError("Registry diagnostics require --joint-graph")
     owned = run is None
     if owned:
         output = Path(analysis_dir or OUT)
@@ -723,7 +725,8 @@ def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.
                 from identification_joint import generate_joint
             summary = generate_joint(run, joint_graph, holdout=holdout,
                                      holdout_mode=holdout_mode, holdout_selection=holdout_selection,
-                                     similarity_candidates=similarity_candidates)
+                                     similarity_candidates=similarity_candidates,
+                                     registry_descriptors=registry_descriptors)
         else:
             if holdout_mode != "pair" or holdout_selection or similarity_candidates or reviewed_pairs:
                 raise ValueError("Review journals, similarity and explicit/family/data holdouts require --joint-graph")

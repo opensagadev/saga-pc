@@ -62,9 +62,25 @@ address    , symbol                                                         , si
 0x44c3f0   , _Action_SetMaxMovementRange                                    , 404   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44c590   , _Action_SetDefaultMovementRange                                , 82    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44e2f0   , _Action_GoToLevelPath                                          , 381   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44e860   , _Action_SetAnimation                                           , 91    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44e8c0   , _Action_AnimTimeRandom                                         , 47    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x0044e8f0 , _Action_AlwaysTriggerObstacle                                 , 186   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x0044e9b0 , _Action_CanTriggerObstacle                                    , 186   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x0044ea70 , _Action_PlayGizObstacle                                       , 362   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44ede0   , _Action_CanOpenDoors                                           , 139   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44ee70   , _Action_CanShootOffScreen                                      , 139   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44ef00   , _Action_KeepWeaponOut                                          , 190   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44efc0   , _Action_SnapWeaponOut                                          , 319   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44f100   , _Action_ResetContext                                           , 161   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44f1b0   , _Action_PrefersPlayers                                         , 113   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44f230   , _Action_SetBoltsDontGetDeflectedBack                           , 100   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44f2a0   , _Action_CanShootObstructions                                   , 113   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44f320   , _Action_UseBigJumpToJump                                       , 113   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44f860   , _Action_CatchUpForbidden                                       , 193   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44f930   , _Action_SetTaggable                                            , 342   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44fa90   , _Action_CannotDropIn                                           , 249   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44fb90   , _Action_NotWithParty                                           , 184   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44fc50   , _Action_CanAttack                                              , 184   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x004507b0 , _Action_PlaySfx                                                , 539   , "i32 __cdecl (void *, void *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x452400   , _Action_FollowCharacter                                        , 353   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x452570   , _Action_GameFollowPlayer                                       , 619   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -797,6 +813,7 @@ address    , symbol                                                         , si
 0x005579d0 , _GizObstacle_PlayBackwards                                     , 119   , void __cdecl (GIZOBSTACLE *)
 0x00558970 , _GizObstacle_JumpToStart                                       , 25    , void __cdecl (GIZOBSTACLE *)
 0x00558990 , _GizObstacle_JumpToEnd                                         , 25    , void __cdecl (GIZOBSTACLE *)
+0x00559430 , _GizObstacles_RegisterGizmo                                    , 318   , ADD_GIZMO_CONFIG_TYPE_PC * __cdecl (i32)
 0x559610   , _GizmoBufferAlloc                                              , 67    , "void * __cdecl (VARIPTR *, VARIPTR *, i32)"
 0x559660   , _RegisterGizmoTypes                                            , 638   , "void __cdecl (VARIPTR *, VARIPTR *, REGISTER_GIZMO_CONFIG_TYPE_FN *, i32)"
 0x005598e0 , _CreateGizmoSys                                                , 289   , "void *__cdecl (void *, VARIPTR *, VARIPTR *)"
@@ -3708,6 +3725,7 @@ address    , symbol                                                         , si
 0x00802524 , _LAYER_HOVERIGNORE                                             , 4     , u32
 0x00802538 , _GAMERAND                                                      , 4     , i32
 0x0080253c , _qseed                                                         , 4     , i32
+0x00802644 , _obstacle_gizmotype_id                                         ,       ,
 0x00802724 , _gizmoerrorlogsize                                             , 4     , i32
 0x00802814 , _LEGOCONTEXT_TUBE                                              , 4     , i32
 0x00802818 , _LEGOCONTEXT_GLIDE                                             , 4     , i32
