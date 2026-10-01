@@ -8,16 +8,16 @@
     "src/externals.h": "3382382faeac231f3c7962ffb276f5c091463416d3cd41afd89c57fe6c4eef62",
     "src/saga.h": "5b5c54e8e43f9bdf33f5b8e3a70df64c05c1177588b5a24ed456c103994658d5",
     "config/data.md": "b46d28a41b8d3d2d61ee37a9eaee793a8857aed771d8c46412ec3df2a8c151a1",
-    "config/identification-decisions.jsonl": "e6536f4147a8f1a6a0e1f11fbb4d3821082fde26cf652a1a427648f52b3d549e",
+    "config/identification-decisions.jsonl": "c33ad0c9c7ccc8e445167b32ad110013d2fe36afcb8920dc6f787fa1763779d1",
     "config/identification-plan.md": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
-    "config/identification-tools.md": "2dfdf45c72649cc67a19eb5ba4890cef92d7d6e4e479045fb1e6ffaa4b8a178b",
+    "config/identification-tools.md": "65085d2033af0f23d4d4e775001942d88a3502de8cd3dd581411e07f0ab902a3",
     "config/identification.md": "ecfbf8977bb20b3c0b8fc8cf0c4a7cc7d7cd0f9915f3abe77145c532651e31e4",
     "config/numain.md": "b1bf36c6b55647064f79402997c5d956060e13cbf6d6648bcde831ea4e0c5e74",
     "config/progress-plan.md": "cf144b1f5e0b8d5d0a17e0f2a1d065ad64c13a95d1b491c88792e046bb65a3ff",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
     "config/strategy.md": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
-    "config/symbols.csv": "5c668bdfd64a11b6ed56e2e77b2470834d6e60827877f867003d2e5526024e03",
-    "config/symbols.md": "1078937a5b91e9d574018de98aefe02b423e1f12721217c0474711abe081685d",
+    "config/symbols.csv": "921dd92bac892372ce118407b814a6474bf12479a74c63355c5fd5aef0ebf6cb",
+    "config/symbols.md": "41864bd314f1cebd47ac41d32bc3214832f99b7cc94dd7e0ea83a2e61c68cd75",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
@@ -27,6 +27,7 @@
     "tools/check.py": "304e380caa8ba84da40f4b68421cb4b63c760271070aa1111d579648791ab6e8",
     "tools/identification.py": "eb8678dbbeea7e30684a191a3e6cd76690d223ee87f3e9f4b9fff14b31591f8f",
     "tools/identification_graph.py": "e73e652683a1641ace0a5956e155c905af8cb87e45b5309e4eba0e929aa0e4ad",
+    "tools/identification_inspect.py": "1a3e4a3277a1e155885bd3f0eedeec5b4cc4d99cd4e07a04c9136ca1bf95da47",
     "tools/identification_joint.py": "511d0f76a00dd0b5bcd18d4d60d4f5ba09a183802c7c4eb32ae6e5d8e5e1f885",
     "tools/identification_limits.py": "c44fb5fb1eacd2f20126515e28421863eb4c66d35250340ba1708e2c4f9440cb",
     "tools/identification_literals.py": "52b26a61109aed9711523d3d852d3222b7fbc0de786f013503f9246cf90e610c",
@@ -40,7 +41,7 @@
     "tools/match.py": "c0abc16e173230f630d5aac633b0e0f9348a9b47b0245ef925ed936606e829f9",
     "tools/reference_features.py": "daee9cafe9ca5ae5a4249adf4f877ca14f1b1eb356178b9f91e0ee2da4fe92c9",
     "tools/reference_graph.py": "c88427c6e6421f7e84902b3d0e3081e5f2ad7d3637e9463572d2d6f48e96a1ca",
-    "tools/repair_graph.py": "8471ae5a294a217a4e70f97e53fe8b4a37a7bf6ea9c81ac3d2c3ab991f2f699b",
+    "tools/repair_graph.py": "b669e1a171c00b732cd75f04ee13102ce27c8dc9e130ab2e1eee759ab9f10c50",
     "tools/setup.py": "a7a9bd71e63f0039de5211e3e9976d87d57e357be9f7a62a68cfb33758b4e56c",
     "tools/source_graph.py": "6314a14d5522f8ff3a3b37dac3e4e0fde6de85125bcc23bc38c1a0e2daa77e44",
     "tools/test_binary.py": "b9347b6599deed3c1f270ace1f7c5ac07bcebd2656ec373d77e45be7fa38432f",
@@ -50,6 +51,7 @@
     "tools/test_ghidra_graph.py": "d5dd21767cef88b78204d9323adf7feaa62cceecba6ac7a71f326db3f53b99fa",
     "tools/test_identification.py": "0abb6f78c0a8a8897fd288a35598af638ad331869631e81f2ff57b7124124034",
     "tools/test_identification_graph.py": "2a1b03cb9284b2e121b7109a0cc3c1d03f47973906deda30df2a4bf259f40699",
+    "tools/test_identification_inspect.py": "aea76917abdd85495606cc1829af0a7bbe6a9fc4551f18066f99359e17d8d59d",
     "tools/test_identification_joint.py": "add50bb38db9cdccb806097aa95fbfb5e33e9c268c24863868b27e0817140b91",
     "tools/test_identification_limits.py": "de46aa361901c31ca434236504cf318f64a9dc5b1a52042e0957dd1b3d3e9bb6",
     "tools/test_identification_literals.py": "4464803d23947e66a0669c4d36fa1cd6da53cf7707936fab81221b687be1bd43",
@@ -61,7 +63,7 @@
     "tools/test_identification_tables.py": "0428ce56acdcc268e5af8fd170b719b599fb0274357bcfa6e099f109b1c90392",
     "tools/test_lib.py": "54561f44ee40367574c6f1824c77198ee3a93a455ba88e2ae4c83545b79a7e78",
     "tools/test_match.py": "794c052372646961512004b82d37c0b2656438a321a2280ed6420d87766f16dd",
-    "tools/test_repair_graph.py": "b11a38a83162548416525531a6d757a0d737b8bc91e83f6f17a19a8194c0de8a",
+    "tools/test_repair_graph.py": "68b1dd96f0c1a96019ceac09eb03e5611dcf94e85fdb84a0b1dca1ddffc82c14",
     "tools/test_setup.py": "d7a31492511f3d96c3f4c68d36c82ac5887931505e56ee8ebba9344b991c73ff",
     "src/data.cpp": "3fea1974778fbfc5ed99dc22884d3e045131b7e1b789b63f5d8ff6d55921ff38",
     "src/legoapi/fade.cpp": "73f1076d3ee6b210268db546579b25fb82f28a777ff3d3861db57db8aecd5407",
@@ -1465,6 +1467,86 @@
       "objdiff_percent": 87.24779
     },
     {
+      "name": "Action_CanDefend",
+      "symbol": "_Action_CanDefend",
+      "address": "0x004445c0",
+      "units": [],
+      "target_size": 110,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_DontAimAt",
+      "symbol": "_Action_DontAimAt",
+      "address": "0x00444630",
+      "units": [],
+      "target_size": 110,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_ImmuneToKillTerrain",
+      "symbol": "_Action_ImmuneToKillTerrain",
+      "address": "0x004446a0",
+      "units": [],
+      "target_size": 113,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_ImmuneToBolts",
+      "symbol": "_Action_ImmuneToBolts",
+      "address": "0x00444720",
+      "units": [],
+      "target_size": 113,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_Respawnable",
+      "symbol": "_Action_Respawnable",
+      "address": "0x004447a0",
+      "units": [],
+      "target_size": 165,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CanUseWeapon",
+      "symbol": "_Action_CanUseWeapon",
+      "address": "0x00444850",
+      "units": [],
+      "target_size": 110,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetBoss",
+      "symbol": "_Action_SetBoss",
+      "address": "0x004448c0",
+      "units": [],
+      "target_size": 113,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetSide",
+      "symbol": "_Action_SetSide",
+      "address": "0x00444940",
+      "units": [],
+      "target_size": 1496,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_SetScriptState",
       "symbol": "_Action_SetScriptState",
       "address": "0x00445740",
@@ -1487,6 +1569,26 @@
       ],
       "status": "different",
       "objdiff_percent": 63.580837
+    },
+    {
+      "name": "Action_SetDontMove",
+      "symbol": "_Action_SetDontMove",
+      "address": "0x00445b70",
+      "units": [],
+      "target_size": 180,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_DontSetStoppedFlag",
+      "symbol": "_Action_DontSetStoppedFlag",
+      "address": "0x00445c30",
+      "units": [],
+      "target_size": 180,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "Action_SetOpponent",
@@ -1609,6 +1711,56 @@
       "objdiff_percent": 76.29536
     },
     {
+      "name": "Action_SetInvulnerable",
+      "symbol": "_Action_SetInvulnerable",
+      "address": "0x00449440",
+      "units": [],
+      "target_size": 565,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_DontAvoidCharacter",
+      "symbol": "_Action_DontAvoidCharacter",
+      "address": "0x00449680",
+      "units": [],
+      "target_size": 291,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_GameDontPush",
+      "symbol": "_Action_GameDontPush",
+      "address": "0x004497b0",
+      "units": [],
+      "target_size": 435,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetZeroAcceleration",
+      "symbol": "_Action_SetZeroAcceleration",
+      "address": "0x00449bb0",
+      "units": [],
+      "target_size": 215,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_BreakFormation",
+      "symbol": "_Action_BreakFormation",
+      "address": "0x00449c90",
+      "units": [],
+      "target_size": 33,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_SetFormationCommander",
       "symbol": "_Action_SetFormationCommander",
       "address": "0x00449cf0",
@@ -1699,6 +1851,56 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "Action_IgnoreShoveSystem",
+      "symbol": "_Action_IgnoreShoveSystem",
+      "address": "0x0044ca80",
+      "units": [],
+      "target_size": 110,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CannotBeForcedBack",
+      "symbol": "_Action_CannotBeForcedBack",
+      "address": "0x0044caf0",
+      "units": [],
+      "target_size": 113,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CanTurn",
+      "symbol": "_Action_CanTurn",
+      "address": "0x0044cb70",
+      "units": [],
+      "target_size": 113,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_NoIdleSpeed",
+      "symbol": "_Action_NoIdleSpeed",
+      "address": "0x0044cbf0",
+      "units": [],
+      "target_size": 211,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CannotBeSeen",
+      "symbol": "_Action_CannotBeSeen",
+      "address": "0x0044ccd0",
+      "units": [],
+      "target_size": 110,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "Action_GoToLevelPath",
@@ -1865,6 +2067,86 @@
       "status": "not implemented"
     },
     {
+      "name": "Action_IgnoreTurnAroundSpline",
+      "symbol": "_Action_IgnoreTurnAroundSpline",
+      "address": "0x0044f3a0",
+      "units": [],
+      "target_size": 113,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CanMoveWhenDeactivated",
+      "symbol": "_Action_CanMoveWhenDeactivated",
+      "address": "0x0044f420",
+      "units": [],
+      "target_size": 100,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_DontAttack",
+      "symbol": "_Action_DontAttack",
+      "address": "0x0044f490",
+      "units": [],
+      "target_size": 100,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CanPullLevers",
+      "symbol": "_Action_CanPullLevers",
+      "address": "0x0044f500",
+      "units": [],
+      "target_size": 113,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CanHitForceObjects",
+      "symbol": "_Action_CanHitForceObjects",
+      "address": "0x0044f580",
+      "units": [],
+      "target_size": 100,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_AlwaysBackFlip",
+      "symbol": "_Action_AlwaysBackFlip",
+      "address": "0x0044f5f0",
+      "units": [],
+      "target_size": 113,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_PlayerSpeederHack",
+      "symbol": "_Action_PlayerSpeederHack",
+      "address": "0x0044f670",
+      "units": [],
+      "target_size": 100,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetAnimSpeedMul",
+      "symbol": "_Action_SetAnimSpeedMul",
+      "address": "0x0044f6e0",
+      "units": [],
+      "target_size": 370,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_CatchUpForbidden",
       "symbol": "_Action_CatchUpForbidden",
       "address": "0x0044f860",
@@ -1910,6 +2192,16 @@
       "address": "0x0044fc50",
       "units": [],
       "target_size": 184,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_TakeDamage",
+      "symbol": "_Action_TakeDamage",
+      "address": "0x0044fd10",
+      "units": [],
+      "target_size": 549,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -2009,6 +2301,46 @@
       ],
       "status": "different",
       "objdiff_percent": 91.94924
+    },
+    {
+      "name": "Action_UseTimeBasedUpdate",
+      "symbol": "_Action_UseTimeBasedUpdate",
+      "address": "0x00455290",
+      "units": [],
+      "target_size": 141,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_WalkBackwards",
+      "symbol": "_Action_WalkBackwards",
+      "address": "0x00455320",
+      "units": [],
+      "target_size": 201,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CanHelpWithTriggers",
+      "symbol": "_Action_CanHelpWithTriggers",
+      "address": "0x00456490",
+      "units": [],
+      "target_size": 113,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CanCollideWithObjects",
+      "symbol": "_Action_CanCollideWithObjects",
+      "address": "0x00456510",
+      "units": [],
+      "target_size": 113,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "GameAIScriptAddLevelSfx",
@@ -18510,6 +18842,36 @@
       "address": "0x005579d0",
       "units": [],
       "target_size": 119,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "GizmoObstacle_GetGizmoName",
+      "symbol": "_GizmoObstacle_GetGizmoName",
+      "address": "0x00558770",
+      "units": [],
+      "target_size": 14,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "GizmoObstacle_GetOutput",
+      "symbol": "_GizmoObstacle_GetOutput",
+      "address": "0x00558780",
+      "units": [],
+      "target_size": 168,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "GizmoObstacle_GetOutputName",
+      "symbol": "_GizmoObstacle_GetOutputName",
+      "address": "0x00558830",
+      "units": [],
+      "target_size": 72,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -60593,6 +60955,16 @@
       "status": "exact"
     },
     {
+      "name": "GizObstacleName_text",
+      "symbol": "_GizObstacleName_text",
+      "address": "0x00761810",
+      "units": [],
+      "target_size": 12,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "GizmoConfigPathFormat",
       "symbol": "_GizmoConfigPathFormat",
       "address": "0x0076186c",
@@ -98489,16 +98861,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 444562,
+    "mapped_code_bytes": 451928,
     "matched_code_bytes": 45746,
     "matching_percent": 1.3178553176582704,
     "fuzzy_coverage_percent": 6.21161866290101,
-    "mapped_functions": 1850,
+    "mapped_functions": 1886,
     "matched_functions": 801,
     "objdiff_fuzzy_percent": 61.121914,
     "objdiff_total_code": 352861,
     "image_bytes": 40067072,
-    "mapped_bytes": 942793,
-    "mapping_percent": 2.3530369276796668
+    "mapped_bytes": 950171,
+    "mapping_percent": 2.371451050877888
   }
 }

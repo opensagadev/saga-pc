@@ -38,6 +38,119 @@ class RepairGraphTests(unittest.TestCase):
                        "functions": [dict(row, entry=row["entry"][2:], status="created")
                                      for row in self.packet["functions"]]}
 
+    def mixed_fixture(self):
+        row = self.packet["functions"][0]
+        row["size"] = 36
+        row["excluded_ranges"] = [
+            {"start": "0x0040100f", "size": 1, "range_sha256": "d"*64, "kind": "padding"},
+            {"start": "0x00401010", "size": 20, "range_sha256": "e"*64, "kind": "switch-table32",
+             "targets": ["0x00401000"]*5, "guard_reviewed": True}]
+        row["replacement_body"] = {"body_bytes": 15, "ranges": [
+            {"start": "0x00401000", "end_exclusive": "0x0040100f", "range_sha256": "f"*64}]}
+        self.packet_path.write_text(json.dumps(self.packet))
+        self.report["packet_sha256"] = repair.sha256(self.packet_path)
+        self.report["functions"][0] = dict(copy.deepcopy(row), entry="00401000", status="extended-reviewed")
+        return row
+
+    def test_mixed_body_and_exact_extension_report(self):
+        row = self.mixed_fixture()
+        repair.validate_function_packet(self.packet)
+        repair.validate_repair(self.report,self.packet,self.packet_path,self.project)
+        row["excluded_ranges"][1]["existing_data"] = {"data_type_path": "/pointer"}
+        repair.validate_function_packet(self.packet)
+
+    def test_mixed_exclusions_fail_closed(self):
+        self.mixed_fixture()
+        for key,value in (("start","0x00401011"),("size",True),("range_sha256","bad"),
+                          ("guard_reviewed",False),("guard_reviewed",1),("targets",[]),
+                          ("targets",["0x00401010"]*5),("targets",["0x00402000"]*5),
+                          ("existing_data",{"data_type_path":"unproved"}), ("kind","data")):
+            packet=copy.deepcopy(self.packet);packet["functions"][0]["excluded_ranges"][1][key]=value
+            with self.subTest(key=key,value=value),self.assertRaises(ValueError):
+                repair.validate_function_packet(packet)
+        for specs in (self.packet["functions"][0]["excluded_ranges"]*2,None,[]):
+            packet=copy.deepcopy(self.packet);packet["functions"][0]["excluded_ranges"]=specs
+            with self.assertRaises(ValueError):repair.validate_function_packet(packet)
+
+    def test_padding_cannot_authorize_tables(self):
+        self.mixed_fixture()
+        for key,value in (("targets",[]),("guard_reviewed",True),("existing_data",{"data_type_path":"/pointer"})):
+            packet=copy.deepcopy(self.packet);packet["functions"][0]["excluded_ranges"][0][key]=value
+            with self.assertRaises(ValueError):repair.validate_function_packet(packet)
+
+    def test_exact_old_body_metadata_required(self):
+        self.mixed_fixture()
+        for key,value in (("body_bytes",True),("body_bytes",14),("ranges",[]),("ranges",[None])):
+            packet=copy.deepcopy(self.packet);packet["functions"][0]["replacement_body"][key]=value
+            with self.assertRaises(ValueError):repair.validate_function_packet(packet)
+        for key,value in (("range_sha256","bad"),("start","0x00401001"),
+                          ("end_exclusive","0x00401010"),("end_exclusive",True)):
+            packet=copy.deepcopy(self.packet);packet["functions"][0]["replacement_body"]["ranges"][0][key]=value
+            with self.assertRaises(ValueError):repair.validate_function_packet(packet)
+        packet=copy.deepcopy(self.packet);packet["functions"][0]["replacement_body"]["ranges"]*=2
+        with self.assertRaises(ValueError):repair.validate_function_packet(packet)
+
+    def test_mixed_report_must_echo_review_and_extension_status(self):
+        self.mixed_fixture()
+        for key,value in (("excluded_ranges",[]),("replacement_body",None),("status","already-exact")):
+            report=copy.deepcopy(self.report);report["functions"][0][key]=value
+            with self.assertRaises(ValueError):repair.validate_repair(report,self.packet,self.packet_path,self.project)
+        report=copy.deepcopy(self.report);report["functions"][1]["status"]="extended-reviewed"
+        with self.assertRaises(ValueError):repair.validate_repair(report,self.packet,self.packet_path,self.project)
+
+    def test_old_body_instructions_cannot_be_cleared(self):
+        self.mixed_fixture()
+        self.packet["functions"][0]["superseded_instructions"]=[
+            {"start":"0x00401001","size":2,"range_sha256":"a"*64}]
+        with self.assertRaisesRegex(ValueError,"old body"):repair.validate_function_packet(self.packet)
+
+    def test_only_approved_old_and_new_extents_may_change(self):
+        row=self.mixed_fixture()
+        original={"kind":"function","address":"0x00401000","body_bytes":15,
+                  "ranges":[{"start":"0x00401000","end_exclusive":"0x0040100f"}]}
+        other={"kind":"function","address":"0x00403000","body_bytes":3,
+               "ranges":[{"start":"0x00403000","end_exclusive":"0x00403003"}]}
+        extended=copy.deepcopy(original);extended["body_bytes"]=36;extended["ranges"][0]["end_exclusive"]="0x00401024"
+        def nodes(name,rows):
+            path=self.root/name;path.write_text("".join(json.dumps(r)+"\n" for r in rows));return path
+        prior=nodes("prior.jsonl",[other,original]);current=nodes("current.jsonl",[extended,other])
+        self.assertEqual(repair.validate_preserved_functions(prior,current,[row]),2)
+        with self.assertRaises(ValueError):repair.validate_preserved_functions(prior,current)
+        with self.assertRaises(ValueError):repair.validate_preserved_functions(prior,nodes("unchanged.jsonl",[original,other]),[row])
+        wrong=copy.deepcopy(original);wrong["body_bytes"]=14;wrong["ranges"][0]["end_exclusive"]="0x0040100e"
+        with self.assertRaises(ValueError):repair.validate_preserved_functions(nodes("wrongold.jsonl",[wrong,other]),current,[row])
+        changed=copy.deepcopy(other);changed["body_bytes"]=4;changed["ranges"][0]["end_exclusive"]="0x00403004"
+        with self.assertRaises(ValueError):repair.validate_preserved_functions(prior,nodes("otherchanged.jsonl",[extended,changed]),[row])
+        with self.assertRaises(ValueError):repair.validate_preserved_functions(nodes("missingold.jsonl",[other]),current,[row])
+
+    def retained_owner_fixture(self):
+        row = self.mixed_fixture()
+        row["excluded_ranges"][1]["existing_data"] = {"data_type_path": "/pointer"}
+        # Fixture owner covers the exact explicitly approved range, not an inferred array.
+        functions = [{"kind": "function", "address": r["entry"], "body_bytes": r["size"],
+                      "ranges": [{"start": r["entry"], "end_exclusive": hex(repair._number(r["entry"])+r["size"])}]}
+                     for r in self.packet["functions"]]
+        owner = {"kind": "data-object", "address": "0x00401010", "size": 20, "data_type": "/pointer"}
+        return functions, owner
+
+    def test_reopened_mixed_extent_retains_exact_table_owner(self):
+        functions, owner = self.retained_owner_fixture()
+        path=self.root/"owners.jsonl";path.write_text("".join(json.dumps(r)+"\n" for r in [owner,*functions]))
+        self.assertEqual(repair.validate_saved_nodes(self.packet,path),2)
+        self.packet["functions"][0]["excluded_ranges"][1].pop("existing_data")
+        path.write_text("".join(json.dumps(r)+"\n" for r in functions))
+        self.assertEqual(repair.validate_saved_nodes(self.packet,path),2)
+
+    def test_reopened_retained_table_owner_missing_changed_or_duplicate_rejected(self):
+        functions, owner = self.retained_owner_fixture()
+        variants = [functions,[*functions,owner,owner]]
+        for key,value in (("size",True),("size",19),("data_type","/byte[20]"),
+                          ("address","0x00401014"),("kind","data-site")):
+            changed=dict(owner);changed[key]=value;variants.append([*functions,changed])
+        for rows in variants:
+            path=self.root/"wrongowners.jsonl";path.write_text("".join(json.dumps(r)+"\n" for r in rows))
+            with self.assertRaises(ValueError):repair.validate_saved_nodes(self.packet,path)
+
     def test_copy_is_independent_and_preserves_original(self):
         before = repair.project_inventory(self.project)
         copied, captured = repair.copy_project(self.project, self.root / "copy")

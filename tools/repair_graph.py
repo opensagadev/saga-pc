@@ -49,6 +49,67 @@ def _reviewed_range(row, address_key, maximum_size):
     return start, start + size
 
 
+def _mixed_function(row):
+    """Authorize exact excluded bytes and an optional exact prior analyzed body."""
+    start, end = _reviewed_range(row, "entry", 65536)
+    excluded = row.get("excluded_ranges", [])
+    if not isinstance(excluded, list) or len(excluded) > 32:
+        raise ValueError("Expected bounded reviewed excluded ranges")
+    intervals = []
+    for spec in excluded:
+        low, high = _reviewed_range(spec, "start", 65536)
+        if not start < low < high <= end or any(low < b and a < high for a, b in intervals):
+            raise ValueError("Excluded ranges overlap or escape function")
+        kind = spec.get("kind")
+        if kind not in {"padding", "switch-table32"}:
+            raise ValueError("Unsupported excluded range kind")
+        if kind == "switch-table32":
+            targets = spec.get("targets")
+            if (low % 4 or spec["size"] % 4 or spec.get("guard_reviewed") is not True or
+                    not isinstance(targets, list) or len(targets) != spec["size"] // 4):
+                raise ValueError("Switch table requires aligned cells, targets and guard review")
+            for target in targets:
+                target = _number(target)
+                if type(target) is not int or not start <= target < end:
+                    raise ValueError("Switch table target outside reviewed function")
+        elif any(key in spec for key in ("targets", "guard_reviewed", "existing_data")):
+            raise ValueError("Padding cannot authorize table metadata/data owners")
+        if "existing_data" in spec:
+            data = spec["existing_data"]
+            if (not isinstance(data, dict) or set(data) != {"data_type_path"} or
+                    not isinstance(data["data_type_path"], str) or not data["data_type_path"].startswith("/")):
+                raise ValueError("Exact existing table data type required")
+        intervals.append((low, high))
+    for spec in excluded:
+        for value in spec.get("targets", []):
+            target = _number(value)
+            if any(low <= target < high for low, high in intervals):
+                raise ValueError("Switch target points into excluded bytes")
+    replacement = row.get("replacement_body")
+    if replacement is not None:
+        if not isinstance(replacement, dict) or not excluded:
+            raise ValueError("Old body replacement requires mixed extent review")
+        ranges = replacement.get("ranges")
+        if not isinstance(ranges, list) or not 1 <= len(ranges) <= 32:
+            raise ValueError("Expected bounded exact old body ranges")
+        prior, total = [], 0
+        for spec in ranges:
+            if not isinstance(spec, dict):
+                raise ValueError("Expected explicit exact old body range")
+            low = _number(spec.get("start")); high = _number(spec.get("end_exclusive"))
+            if type(low) is not int or type(high) is not int:
+                raise ValueError("Invalid exact old body range")
+            _reviewed_range({"start": low, "size": high-low, "range_sha256": spec.get("range_sha256")}, "start", 65536)
+            if (not start <= low < high <= end or any(low < b and a < high for a,b in prior) or
+                    any(low < b and a < high for a,b in intervals)):
+                raise ValueError("Old body overlaps exclusions or escapes replacement")
+            prior.append((low,high)); total += high-low
+        if (min(a for a,b in prior) != start or type(replacement.get("body_bytes")) is not int or
+                replacement["body_bytes"] != total or total >= end-start):
+            raise ValueError("Replacement must strictly extend exact old body")
+    return intervals
+
+
 def validate_function_packet(packet):
     """Only explicitly pinned whole bodies and optional old instructions may change."""
     functions = packet.get("functions")
@@ -63,6 +124,7 @@ def validate_function_packet(packet):
         if any(start < high and low < end for low, high in bodies):
             raise ValueError("Reviewed function ranges overlap")
         bodies.append((start, end))
+        _mixed_function(row)
         superseded = row.get("superseded_instructions", [])
         if not isinstance(superseded, list) or len(superseded) > 32:
             raise ValueError("Expected a bounded explicit superseded instruction list")
@@ -73,6 +135,10 @@ def validate_function_packet(packet):
                 raise ValueError("Superseded instruction escapes reviewed function body")
             if any(low < old_high and old_low < high for old_low, old_high in instructions):
                 raise ValueError("Superseded instructions overlap")
+            replacement = row.get("replacement_body")
+            if replacement is not None and any(low < _number(old["end_exclusive"]) and _number(old["start"]) < high
+                                               for old in replacement["ranges"]):
+                raise ValueError("Cannot supersede instructions inside approved old body")
             instructions.append((low, high))
 
 
@@ -142,8 +208,21 @@ def _function_extent(row):
     return json.dumps(ranges, separators=(",", ":")), row["body_bytes"]
 
 
-def validate_preserved_functions(previous_nodes, current_nodes):
+def validate_preserved_functions(previous_nodes, current_nodes, replacements=None):
     """Keep prior extents on disk; memory holds only one decoded node per stream."""
+    replacements = replacements or []
+    approved = {}
+    for row in replacements:
+        _mixed_function(row)
+        if row.get("replacement_body") is None:
+            continue
+        address = _number(row["entry"])
+        if address in approved:
+            raise ValueError("Duplicate authorized function replacement")
+        old = row["replacement_body"]
+        approved[address] = (_function_extent(old),
+                             (json.dumps([[address,address+row["size"]]], separators=(",", ":")), row["size"]))
+    seen_approved = set()
     with tempfile.TemporaryDirectory(prefix="repair-functions-") as directory:
         with closing(sqlite3.connect(str(Path(directory) / "extents.sqlite"))) as database, database:
             database.execute("PRAGMA cache_size=-2048")
@@ -153,6 +232,11 @@ def validate_preserved_functions(previous_nodes, current_nodes):
             for row in _nodes(previous_nodes):
                 if row.get("kind") == "function":
                     ranges, size = _function_extent(row)
+                    address = _number(row["address"])
+                    if address in approved:
+                        if (ranges,size) != approved[address][0]:
+                            raise ValueError("Previous function differs from approved old body")
+                        seen_approved.add(address)
                     try:
                         database.execute("INSERT INTO functions(address,ranges,bytes) VALUES (?,?,?)",
                                          (_number(row["address"]), ranges, size))
@@ -165,9 +249,12 @@ def validate_preserved_functions(previous_nodes, current_nodes):
                 address = _number(row["address"])
                 prior = database.execute("SELECT ranges,bytes,seen FROM functions WHERE address=?", (address,)).fetchone()
                 if prior is not None:
-                    if prior[2] or _function_extent(row) != prior[:2]:
+                    wanted = approved[address][1] if address in approved else prior[:2]
+                    if prior[2] or _function_extent(row) != wanted:
                         raise ValueError("Data repair changed or duplicated a previous function extent")
                     database.execute("UPDATE functions SET seen=1 WHERE address=?", (address,))
+            if seen_approved != approved.keys():
+                raise ValueError("Approved old function body absent from prior export")
             if database.execute("SELECT COUNT(*) FROM functions WHERE seen=0").fetchone()[0]:
                 raise ValueError("Data repair lost previous function entries")
             return count
@@ -180,9 +267,28 @@ def validate_saved_nodes(packet, nodes_path):
     address_key = "start" if data_mode else "entry"
     expected = {_number(row[address_key]): row for row in packet[key]}
     superseded = {_number(row["start"]) for row in packet.get("superseded", [])} if data_mode else set()
+    retained = {}
+    if not data_mode:
+        for function in packet["functions"]:
+            for spec in function.get("excluded_ranges", []):
+                if "existing_data" not in spec:
+                    continue
+                address = _number(spec["start"])
+                if address in retained:
+                    raise ValueError("Duplicate explicit retained table owner")
+                retained[address] = (spec["size"], spec["existing_data"]["data_type_path"])
+    retained_found = set()
     found = set()
     for row in _nodes(nodes_path):
         address = _number(row["address"])
+        if row["kind"] == "data-object" and address in retained:
+            if address in retained_found:
+                raise ValueError("Duplicate reopened retained table owner")
+            wanted_size, wanted_type = retained[address]
+            if (type(row.get("size")) is not int or row["size"] != wanted_size or
+                    row.get("data_type") != wanted_type):
+                raise ValueError("Reopened retained table owner differs from reviewed size/type")
+            retained_found.add(address)
         if data_mode and row["kind"] == "data-object" and address in superseded and address not in expected:
             raise ValueError("Superseded data owner survived reopened export")
         if address not in expected or row["kind"] != ("data-object" if data_mode else "function"):
@@ -199,6 +305,8 @@ def validate_saved_nodes(packet, nodes_path):
             if ranges != json.dumps([[address, address + wanted["size"]]], separators=(",", ":")) or size != wanted["size"]:
                 raise ValueError("Saved function differs from reviewed complete extent")
         found.add(address)
+    if retained_found != retained.keys():
+        raise ValueError("Saved export is missing explicit retained table owners")
     if found != expected.keys():
         raise ValueError("Saved export is missing reviewed owners or functions")
     return len(found)
@@ -286,10 +394,17 @@ def validate_repair(report, packet, packet_path, project):
     actual = {(int(row["entry"], 16), row["size"], row["range_sha256"]) for row in report["functions"]}
     if actual != expected or len(report["functions"]) != len(packet["functions"]):
         raise ValueError("Repair report does not contain exactly the reviewed ranges")
-    if any(row.get("status") not in {"created", "already-exact"} for row in report["functions"]):
+    if any(row.get("status") not in {"created", "already-exact", "extended-reviewed"} for row in report["functions"]):
         raise ValueError("Repair did not complete")
     by_entry = {_number(row["entry"]): row for row in packet["functions"]}
     for outcome in report["functions"]:
+        wanted = by_entry[int(outcome["entry"], 16)]
+        if (outcome.get("status") == "extended-reviewed") != (wanted.get("replacement_body") is not None):
+            raise ValueError("Function extension status differs from explicit replacement")
+        for key in ("excluded_ranges", "replacement_body"):
+            default = [] if key == "excluded_ranges" else None
+            if outcome.get(key, default) != wanted.get(key, default):
+                raise ValueError("Repair report differs from reviewed mixed body metadata")
         expected_rows = by_entry[int(outcome["entry"], 16)].get("superseded_instructions", [])
         cleared = outcome.get("superseded_instructions", [])
         if not isinstance(cleared, list) or len(cleared) != len(expected_rows):
@@ -341,7 +456,8 @@ def repair(config_path, packet_path, reuse_pair_path, output, ghidra_home):
     if pair.get("schema") != "identification-graph-pair-v1":
         raise ValueError("Expected an existing graph pair")
     previous_pc = None
-    if data_mode:
+    preservation_required = data_mode or any(row.get("replacement_body") is not None for row in packet.get("functions", []))
+    if preservation_required:
         previous_pc = resolve(reuse_pair_path.parent, pair["pc"])
         previous_pc_hash = sha256(previous_pc)
         previous_pc_manifest = json.loads(previous_pc.read_text())
@@ -420,11 +536,11 @@ def repair(config_path, packet_path, reuse_pair_path, output, ghidra_home):
         raise ValueError("Reopened PC graph program differs from repaired program")
     found = validate_saved_nodes(packet, output / "pc/nodes.jsonl")
     preserved_functions = None
-    if data_mode:
+    if preservation_required:
         if sha256(previous_pc) != previous_pc_hash:
             raise ValueError("Prior PC manifest changed during data repair")
         validate_export(previous_pc, pc["sha256"], pc_delta, previous_pc_manifest["exporter_sha256"])
-        preserved_functions = validate_preserved_functions(previous_pc.parent / "nodes.jsonl", output / "pc/nodes.jsonl")
+        preserved_functions = validate_preserved_functions(previous_pc.parent / "nodes.jsonl", output / "pc/nodes.jsonl", packet.get("functions", []))
     if project_inventory(source) != before:
         raise ValueError("Retained Ghidra project changed during export")
     if sha256(android_manifest) != android_manifest_hash:

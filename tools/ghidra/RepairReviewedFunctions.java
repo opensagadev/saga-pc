@@ -7,6 +7,11 @@
 //  disposable_project_file:"/absolute/copy.gpr",functions:[
 //  {entry:"0x514990",size:8,range_sha256:"...",complete_extent_reviewed:true,
 //   superseded_instructions:[{start:"0x...",size:2,range_sha256:"..."}]}]}
+// Optional excluded_ranges pin padding or switch-table32 original bytes;
+// tables pin guard_reviewed:true and every original target, and may pin an
+// exact retained existing_data:{data_type_path}. No data type is created.
+// Optional replacement_body pins exact old ranges+hashes/body_bytes before
+// extending that same existing entry to the whole reviewed mixed extent.
 // Optional superseded instructions require independently reviewed exact listing
 // bounds and original bytes. Other conflicts remain fatal; no analysis is run.
 import ghidra.app.script.GhidraScript;
@@ -27,11 +32,21 @@ public class RepairReviewedFunctions extends GhidraScript {
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static class Reviewed {
         Address entry, end;
-        AddressSet body;
+        AddressSet body, code, oldBody;
+        boolean extension;
+        JsonObject replacement;
+        List<Excluded> excluded = new ArrayList<>();
         int size;
         String digest;
         boolean existing;
         List<Superseded> superseded = new ArrayList<>();
+    }
+    private static class Excluded {
+        Address start, end;
+        int size;
+        String kind, digest, dataType;
+        JsonObject spec;
+        List<Address> targets = new ArrayList<>();
     }
     private static class Superseded {
         Address start, end;
@@ -120,19 +135,92 @@ public class RepairReviewedFunctions extends GhidraScript {
                 byte[] bytes = originalBytes(file, entry, r.size), programBytes = new byte[r.size];
                 require(currentProgram.getMemory().getBytes(r.entry, programBytes) == r.size && Arrays.equals(bytes, programBytes), "Program range differs from original bytes");
                 r.digest = digest(bytes); require(r.digest.equals(row.get("range_sha256").getAsString()), "Reviewed range SHA256 mismatch");
+                r.code = new AddressSet(r.body);
+                if (row.has("excluded_ranges")) {
+                    JsonArray exclusions = row.getAsJsonArray("excluded_ranges");
+                    require(exclusions.size() <= 32, "Too many excluded ranges");
+                    AddressSet used = new AddressSet();
+                    for (JsonElement item : exclusions) {
+                        JsonObject spec = item.getAsJsonObject(); Excluded x = new Excluded();
+                        long low = number(spec.get("start")), width = number(spec.get("size"));
+                        require(low > entry && width > 0 && width <= 65536 && low + width <= entry + size,
+                                "Excluded range escapes function");
+                        x.start = r.entry.getAddressSpace().getAddress(low); x.size = (int)width; x.end = x.start.add(width-1);
+                        require(!used.intersects(x.start,x.end), "Excluded ranges overlap"); used.add(x.start,x.end);
+                        x.kind = spec.get("kind").getAsString();
+                        require(x.kind.equals("padding") || x.kind.equals("switch-table32"), "Unknown exclusion kind");
+                        byte[] excludedBytes = originalBytes(file, low, x.size); x.digest = digest(excludedBytes);
+                        require(x.digest.equals(spec.get("range_sha256").getAsString()), "Excluded bytes hash mismatch");
+                        if (x.kind.equals("switch-table32")) {
+                            require(low % 4 == 0 && width % 4 == 0 && new JsonPrimitive(true).equals(spec.get("guard_reviewed")),
+                                    "Aligned table and explicit guard review required");
+                            JsonArray targets = spec.getAsJsonArray("targets");
+                            require(targets.size() == width/4, "One exact target per table cell required");
+                            for (int i=0; i<targets.size(); i++) {
+                                long target = number(targets.get(i));
+                                long actual = Integer.toUnsignedLong(java.nio.ByteBuffer.wrap(excludedBytes,i*4,4)
+                                        .order(java.nio.ByteOrder.LITTLE_ENDIAN).getInt());
+                                require(target == actual && target >= entry && target < entry + size,
+                                        "Table cell differs from explicit original target");
+                                x.targets.add(r.entry.getAddressSpace().getAddress(target));
+                            }
+                            if (spec.has("existing_data")) {
+                                JsonObject owner = spec.getAsJsonObject("existing_data");
+                                require(owner.size()==1 && owner.has("data_type_path"), "Exact existing data type required");
+                                x.dataType = owner.get("data_type_path").getAsString();
+                                Data defined = listing.getDefinedDataAt(x.start);
+                                require(defined != null && defined.getMaxAddress().equals(x.end) &&
+                                        defined.getDataType().getPathName().equals(x.dataType), "Existing table owner differs from review");
+                            }
+                        } else {
+                            require(!spec.has("targets") && !spec.has("guard_reviewed") && !spec.has("existing_data"),
+                                    "Padding cannot authorize table metadata");
+                        }
+                        x.spec = spec.deepCopy(); r.excluded.add(x); r.code.delete(x.start,x.end);
+                    }
+                    for (Excluded x : r.excluded) for (Address target : x.targets)
+                        require(r.code.contains(target), "Table target lies in excluded bytes");
+                }
+                if (row.has("replacement_body")) {
+                    require(!r.excluded.isEmpty(), "Body extension requires mixed review");
+                    r.replacement = row.getAsJsonObject("replacement_body").deepCopy();
+                    JsonArray oldRanges = r.replacement.getAsJsonArray("ranges");
+                    require(oldRanges.size()>0 && oldRanges.size()<=32, "Expected bounded old body ranges");
+                    r.oldBody = new AddressSet(); long oldSize=0;
+                    for (JsonElement oldRange : oldRanges) {
+                        JsonObject old = oldRange.getAsJsonObject();
+                        long low = number(old.get("start")), high = number(old.get("end_exclusive"));
+                        require(low>=entry && high>low && high<=entry+size, "Old range outside replacement");
+                        Address a = r.entry.getAddressSpace().getAddress(low), b = r.entry.getAddressSpace().getAddress(high-1);
+                        require(!r.oldBody.intersects(a,b) && r.code.contains(new AddressSet(a,b)), "Old body overlaps/excludes code");
+                        require(digest(originalBytes(file,low,(int)(high-low))).equals(old.get("range_sha256").getAsString()),
+                                "Old body original range hash mismatch");
+                        r.oldBody.add(a,b); oldSize += high-low;
+                    }
+                    require(r.oldBody.getMinAddress().equals(r.entry) && oldSize<size &&
+                            oldSize == number(r.replacement.get("body_bytes")), "Old body is not exact strict subset");
+                }
                 Iterator<Function> overlaps = manager.getFunctionsOverlapping(r.body);
                 while (overlaps.hasNext()) {
                     Function f = overlaps.next();
-                    require(f.getEntryPoint().equals(r.entry) && f.getBody().equals(r.body), "Existing function conflict"); r.existing = true;
+                    require(f.getEntryPoint().equals(r.entry) && f.getBody().equals(r.oldBody != null ? r.oldBody : r.body), "Existing function conflict");
+                    r.existing = true; r.extension = r.oldBody != null;
                 }
+                require(r.oldBody == null || r.extension, "Approved old body is missing");
                 CodeUnit first = listing.getCodeUnitContaining(r.entry), last = listing.getCodeUnitContaining(r.end);
                 require(first == null || first.getMinAddress().equals(r.entry), "Entry crosses existing code/data unit");
                 require(last == null || last.getMaxAddress().compareTo(r.end) <= 0, "End crosses existing code/data unit");
                 DataIterator data = listing.getDefinedData(r.body, true);
-                require(!data.hasNext(), "Defined data conflicts with reviewed code; explicit separate review required");
+                while (data.hasNext()) {
+                    Data defined = data.next(); boolean allowed = false;
+                    for (Excluded x : r.excluded) allowed |= x.dataType != null &&
+                        defined.getMinAddress().equals(x.start) && defined.getMaxAddress().equals(x.end) &&
+                        defined.getDataType().getPathName().equals(x.dataType);
+                    require(allowed, "Defined data conflicts outside explicitly reviewed exact table owners");
+                }
                 if (row.has("superseded_instructions")) {
                     JsonArray prior = row.getAsJsonArray("superseded_instructions");
-                    require(prior.size() <= 32 && (!r.existing || prior.size() == 0),
+                    require(prior.size() <= 32 && (!r.existing || r.extension || prior.size() == 0),
                             "Cannot supersede instructions in an existing function");
                     AddressSet cleared = new AddressSet();
                     for (JsonElement old : prior) {
@@ -151,8 +239,18 @@ public class RepairReviewedFunctions extends GhidraScript {
                         s.digest = digest(oldBytes);
                         require(s.digest.equals(spec.get("range_sha256").getAsString()),
                                 "Superseded instruction original SHA256 mismatch");
+                        require(r.oldBody == null || !r.oldBody.intersects(s.start,s.end),
+                                "Cannot clear instructions in approved old body");
                         r.superseded.add(s);
                     }
+                }
+                InstructionIterator instructions = listing.getInstructions(r.body,true);
+                while (instructions.hasNext()) {
+                    Instruction instruction = instructions.next();
+                    if (r.code.contains(new AddressSet(instruction.getMinAddress(),instruction.getMaxAddress()))) continue;
+                    boolean approved = false;
+                    for (Superseded old : r.superseded) approved |= old.start.equals(instruction.getMinAddress()) && old.end.equals(instruction.getMaxAddress());
+                    require(approved, "Existing instruction conflicts with reviewed excluded bytes");
                 }
                 work.add(r);
             }
@@ -169,32 +267,45 @@ public class RepairReviewedFunctions extends GhidraScript {
                     old.put("start", s.start.toString()); old.put("size", s.size);
                     old.put("range_sha256", s.digest); old.put("status", "cleared"); replaced.add(old);
                 }
-                DisassembleCommand command = new DisassembleCommand(r.entry, r.body, true);
+                DisassembleCommand command = new DisassembleCommand(r.entry, r.code, true);
                 command.enableCodeAnalysis(false);
                 require(command.applyTo(currentProgram, monitor), "Restricted disassembly failed: " + command.getStatusMsg());
-                require(r.body.contains(command.getDisassembledAddressSet()), "Disassembly escaped reviewed body");
-                Address cursor = r.entry;
-                while (cursor.compareTo(r.end) <= 0) {
-                    Instruction instruction = listing.getInstructionAt(cursor);
-                    if (instruction == null) {
-                        // Reviewed complete extents may contain unreachable but
-                        // explicitly decoded padding after an early return.
-                        DisassembleCommand gap = new DisassembleCommand(cursor, r.body, true);
-                        gap.enableCodeAnalysis(false);
-                        require(gap.applyTo(currentProgram, monitor) && r.body.contains(gap.getDisassembledAddressSet()),
-                                "Restricted gap disassembly failed");
-                        instruction = listing.getInstructionAt(cursor);
+                require(r.code.contains(command.getDisassembledAddressSet()), "Disassembly escaped reviewed body");
+                AddressRangeIterator codeRanges = r.code.getAddressRanges();
+                while (codeRanges.hasNext()) {
+                    AddressRange codeRange = codeRanges.next(); Address cursor = codeRange.getMinAddress();
+                    while (cursor.compareTo(codeRange.getMaxAddress()) <= 0) {
+                        Instruction instruction = listing.getInstructionAt(cursor);
+                        if (instruction == null) {
+                            DisassembleCommand gap = new DisassembleCommand(cursor,r.code,true);
+                            gap.enableCodeAnalysis(false);
+                            require(gap.applyTo(currentProgram,monitor) && r.code.contains(gap.getDisassembledAddressSet()),
+                                    "Restricted gap disassembly failed");
+                            instruction = listing.getInstructionAt(cursor);
+                        }
+                        require(instruction != null && r.code.contains(new AddressSet(cursor,instruction.getMaxAddress())),
+                                "Range has undecoded bytes or crossing instruction at " + cursor + " in " + r.entry);
+                        cursor = instruction.getMaxAddress().add(1);
                     }
-                    Instruction next = listing.getInstructionAfter(cursor);
-                    require(instruction != null && r.body.contains(instruction.getMaxAddress()),
-                            "Range has undecoded bytes or crossing instruction at " + cursor +
-                            " in reviewed function " + r.entry + ".." + r.end +
-                            "; containing unit=" + listing.getCodeUnitContaining(cursor) +
-                            "; next instruction=" + next + (next == null ? "" :
-                            " at " + next.getMinAddress() + ".." + next.getMaxAddress()));
-                    cursor = instruction.getMaxAddress().add(1);
+                }
+                for (Excluded x : r.excluded) {
+                    for (Address target : x.targets)
+                        require(listing.getInstructionAt(target) != null && r.code.contains(target),
+                                "Reviewed table target is not an exact decoded code boundary");
+                    require(!listing.getInstructions(new AddressSet(x.start,x.end),true).hasNext(),
+                            "Disassembly created instructions in reviewed excluded bytes");
+                    if (x.dataType != null) {
+                        Data owner = listing.getDefinedDataAt(x.start);
+                        require(owner != null && owner.getMaxAddress().equals(x.end) &&
+                                owner.getDataType().getPathName().equals(x.dataType),
+                                "Repair changed explicitly retained table owner");
+                    }
                 }
                 Function f = manager.getFunctionAt(r.entry);
+                if (r.extension) {
+                    require(f != null && f.getBody().equals(r.oldBody), "Old body changed after preflight");
+                    f.setBody(r.body);
+                }
                 if (f == null) f = manager.createFunction(null, r.entry, r.body, SourceType.ANALYSIS);
                 require(f != null && f.getBody().equals(r.body), "Created body differs from reviewed complete extent");
                 byte[] unchanged = new byte[r.size];
@@ -203,7 +314,13 @@ public class RepairReviewedFunctions extends GhidraScript {
                 Map<String,Object> outcome = new LinkedHashMap<>();
                 outcome.put("entry", r.entry.toString()); outcome.put("size", r.size); outcome.put("range_sha256", r.digest);
                 outcome.put("superseded_instructions", replaced);
-                outcome.put("status", r.existing ? "already-exact" : "created"); outcomes.add(outcome);
+                if (!r.excluded.isEmpty()) {
+                    List<JsonObject> exclusions = new ArrayList<>();
+                    for (Excluded x : r.excluded) exclusions.add(x.spec);
+                    outcome.put("excluded_ranges", exclusions);
+                }
+                if (r.replacement != null) outcome.put("replacement_body", r.replacement);
+                outcome.put("status", r.extension ? "extended-reviewed" : r.existing ? "already-exact" : "created"); outcomes.add(outcome);
             }
             success = true;
         } finally { currentProgram.endTransaction(transaction, success); }

@@ -15,7 +15,7 @@ dependency.
 | --- | --- |
 | `address` | Preferred-image virtual address, in hexadecimal. The image base is `0x00400000`; these are not file offsets or RVAs. |
 | `symbol` | Exact MSVC COFF linker name expected in our reconstruction. The stripped executable does not supply this name. Use a provisional name for an identified entity without source yet. |
-| `size` | Size in bytes, normally decimal (`0x` hexadecimal is also accepted). Leave blank when the extent is unknown. Functions end at their final instruction; following alignment padding is excluded. |
+| `size` | Size in bytes, normally decimal (`0x` hexadecimal is also accepted). Leave blank when the extent is unknown. Functions include owned compiler tables and internal alignment; alignment after the complete owner is excluded. |
 | `ctype` | Recovered C/C++ function signature or data type. Leave unknown types blank rather than guessing. |
 
 Keep rows sorted by address and quote signatures containing commas. Known sizes
@@ -1023,6 +1023,24 @@ record ordinals supply identity. All original PC extents and seven-argument
 caller contracts receive independent CFG/stack review. Complete aggregate
 layouts remain unproved, so journal type flags remain false.
 
+The later mixed-body review supersedes the instruction-only obstacle output
+extent proposals. Complete extents are 168 and 72 bytes, including their five-cell
+local switch tables and internal alignment. Original full-range hashes and all
+guarded case targets are independently checked. Journal replacement decisions
+explicitly supersede the earlier extent decisions; ABI identities are unchanged.
+
+`Action_SetSide` at `0x444940` maps to original Android `0x19c510`, with the
+existing seven-argument callback contract and false aggregate type-review flag.
+Its full 1,496-byte PC extent contains 1,463 instruction bytes, one NOP and two
+16-byte local switch tables. Both unsigned guards, all eight table targets,
+default paths and four balanced plain returns are independently resolved. The
+following eight INT3 bytes are excluded. Its existing analysis body omits the
+tables; an explicit old-body replacement pins that difference rather than
+truncating the map to the reachable code. The ignored `ai-set-side-boundary-review`,
+`obstacle-registration-local-table-extent-review` and independent mixed-extent
+audit retain original ownership and complete boundary evidence. No source
+implementation or reconstruction gain is claimed.
+
 | Callback | PC entry | Complete bytes | Named Android entry |
 | --- | --- | ---: | --- |
 | SetAnimation | `0x44e860` | 91 | `0x18b660` |
@@ -1050,3 +1068,97 @@ wave adds no implementations or reconstruction credit. Both frozen packets
 `continuation/ai-registry-new-callback-batch` and its independent audit retain
 original registry rows, hashes, behavior, platform flag-width differences and
 full boundary/ABI evidence.
+
+The next original-registry wave accepts sixteen additional callbacks (3,574 PC
+bytes) after independent identity, seven-argument caller ABI, CFG/stack and
+complete-boundary review. Full aggregate types remain unproved.
+
+| Callback | PC entry | Complete bytes | Named Android entry |
+| --- | --- | ---: | --- |
+| TakeDamage | `0x44fd10` | 549 | `0x19cdc0` |
+| CanHitForceObjects | `0x44f580` | 100 | `0x185040` |
+| AlwaysBackFlip | `0x44f5f0` | 113 | `0x184fb0` |
+| PlayerSpeederHack | `0x44f670` | 100 | `0x184f20` |
+| SetAnimSpeedMul | `0x44f6e0` | 370 | `0x185930` |
+| CanDefend | `0x4445c0` | 110 | `0x184e80` |
+| DontAimAt | `0x444630` | 110 | `0x184d40` |
+| CanUseWeapon | `0x444850` | 110 | `0x184ca0` |
+| SetBoss | `0x4448c0` | 113 | `0x184c00` |
+| SetDontMove | `0x445b70` | 180 | `0x199700` |
+| DontSetStoppedFlag | `0x445c30` | 180 | `0x1995e0` |
+| SetInvulnerable | `0x449440` | 565 | `0x1992b0` |
+| DontPush | `0x4497b0` | 435 | `0x199020` |
+| DontAvoidCharacter | `0x449680` | 291 | `0x198eb0` |
+| SetZeroAcceleration | `0x449bb0` | 215 | `0x18f720` |
+| BreakFormation | `0x449c90` | 33 | `0x183d20` |
+
+The game `DontPush` callback at `0x4497b0` uses reconstruction name
+`Action_GameDontPush`; the already accepted API `Action_DontPush` at `0x516420`
+remains a separate callback. Original registration and dispatch establish both
+namespaces. Mask widths, aggregate offsets and Android extents are independently
+reviewed rather than transferred. Five PC entries already have complete retained
+bodies; eleven missing entries receive disposable graph repair. The ignored
+`continuation/ai-registry-new-callback-batch2` and independent audit retain original
+records, hashes and complete ABI/extent evidence. No implementation or matching
+gain is claimed.
+
+Original obstacle registration fields and their runtime consumers independently
+identify `GizmoObstacle_GetGizmoName` (`0x558770`, 14 bytes),
+`GizmoObstacle_GetOutput` (`0x558780`, 168 bytes), and
+`GizmoObstacle_GetOutputName` (`0x558830`, 72 bytes). Actual consumers pass one,
+three and two stack arguments respectively, clean their calls and use the
+returned character pointer or integer. Both five-case indirect switches have
+guarded indices and independently resolved original targets. Their complete
+extents include local tables and internal alignment after terminal instructions;
+the following eight INT3 bytes are excluded. Partial aggregate layouts keep
+function type-review flags false.
+
+The name callback returns the obstacle record base as character storage; it
+does not load a pointer-valued name member. Output checks use PC DWORD progress
+flags at `+0x94` and proximity at `+0x98`; Android uses a byte at `+0x98` and a
+DWORD at `+0x9c`. These platform differences remain explicit. The six-byte
+output-count callback at `0x558880` remains held for missing original caller ABI
+evidence despite its strong configuration-field identity.
+
+`GizObstacleName_text` at `0x761810` has a separately reviewed complete
+`char[12]` literal contract, adding twelve mapped bytes. Original pointer cell
+`0x802710`, registration stores and the actual `NuStrCpy` source argument prove
+its use. The exact first-NUL span starts at its own owner, with a preceding NUL
+and a separately accessed following `MAXGIZ...` string. This proves the literal
+subobject, without assigning the enclosing string pool's allocation. The ignored
+`continuation/obstacle-registration-dependencies` and independent audit preserve
+both original binaries, initializer/consumer operands, switch targets and bounds.
+These three function identities and one literal add 266 mapped bytes, without
+implementations or reconstruction credit.
+
+Sixteen further original-registry callbacks covering 2,042 PC bytes pass the
+same independent identity, seven-slot caller ABI and complete-extent checks.
+
+| Callback | PC entry | Complete bytes | Named Android entry |
+| --- | --- | ---: | --- |
+| ImmuneToKillTerrain | `0x4446a0` | 113 | `0x184470` |
+| ImmuneToBolts | `0x444720` | 113 | `0x1843d0` |
+| Respawnable | `0x4447a0` | 165 | `0x1842f0` |
+| IgnoreShoveSystem | `0x44ca80` | 110 | `0x1846f0` |
+| CannotBeForcedBack | `0x44caf0` | 113 | `0x1845b0` |
+| CanTurn | `0x44cb70` | 113 | `0x184510` |
+| NoIdleSpeed | `0x44cbf0` | 211 | `0x1979b0` |
+| CannotBeSeen | `0x44ccd0` | 110 | `0x184650` |
+| IgnoreTurnAroundSpline | `0x44f3a0` | 113 | `0x183f30` |
+| CanMoveWhenDeactivated | `0x44f420` | 100 | `0x183ea0` |
+| DontAttack | `0x44f490` | 100 | `0x183e10` |
+| CanPullLevers | `0x44f500` | 113 | `0x183d80` |
+| UseTimeBasedUpdate | `0x455290` | 141 | `0x1841a0` |
+| WalkBackwards | `0x455320` | 201 | `0x1867b0` |
+| CanHelpWithTriggers | `0x456490` | 113 | `0x184100` |
+| CanCollideWithObjects | `0x456510` | 113 | `0x184060` |
+
+All sixteen entries were missing from the retained graph. Disposable repair
+checks the current listing for conflicts before creating their complete bodies.
+`Respawnable` retains asymmetric original flag semantics: PC sets `0x200000`
+and clears `0x100000`, while Android sets `0x20` and clears `0x10`. This is not
+a generic toggle of one bit. Other masks and offsets are reviewed separately
+for each binary. Full aggregate types remain unproved; type flags stay false.
+The ignored `continuation/ai-registry-new-callback-batch3` and independent audit
+preserve original hashes, registry records and full CFG/ABI evidence. No source
+implementation or reconstruction gain is claimed.

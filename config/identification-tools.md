@@ -254,6 +254,34 @@ original registry names. This is lookup coverage, not a new holdout score: the
 graph correspondence result remains 25/70. Registry outputs neither seed nor
 change graph scoring, and no diagnostic candidate is automatically accepted.
 
+The next reviewed wave adds 33 AI callbacks, three obstacle callbacks and one
+registration-name literal: 7,366 complete function bytes and twelve data bytes.
+Image mapping reaches 950,171 bytes (2.371%). Six AI bodies already existed;
+the remaining 27 AI entries and three obstacle entries are repaired in disposable
+projects. The PC graph has 7,941 functions. A retained one-byte `INC ESI` at `0x455345` split the
+original two-byte `JLE` at `0x455344`; the initial repair rolled back. Independent
+original CFG review and an exact listing/hash proof authorize replacing only
+that stale instruction. The successful repair rechecks the source listing and
+retained-project preservation, and peaks below 763 MiB with a 512 MiB heap.
+
+The preceding incremental replay freezes the previous completed state and reviewed
+map/journal. It uses 1,289 accepted function seeds and 25 reviewed data anchors,
+with 1,236 tentative function pairs, 1,795 data candidates and zero stale
+decisions. Data hypotheses add twenty, change thirteen and remove none; function
+evidence changes 200 and removes 130, with none added. The separate registry
+diagnostic now has 158 physical candidate pairs, no ambiguous joins and 103
+unresolved names: 102 missing PC entries and the same Android-only name. None
+of those diagnostic pairs alter scoring or acceptance. Peak Python RSS is
+678 MiB under the 1 GiB guard. Mapping increases; reconstruction does not.
+
+A separate bounded review identifies sixteen original AI registry name-storage
+pairs, but holds their full allocation sizes/types and journal integration:
+Android graph endpoints are absent. First-NUL content and rounded Ghidra string
+owners alone do not establish complete allocation extents. The obstacle
+output-count callback also remains held for missing original PC caller ABI
+proof. These concrete limitations remain in ignored review packets rather than
+becoming speculative coverage.
+
 `tools/repair_graph.py` makes the independent copy, pins the reviewed packet and
 executed script, checks a fresh repair report, and verifies the saved function
 extents in the new export before publishing a graph pair. Use a fresh output
@@ -265,6 +293,38 @@ reviewed body. Each optional row pins `start`, integer `size` (1--15 bytes) and
 existing function bodies are forbidden. A fresh report must identify precisely
 those cleared units. Missing reports fail even when headless exits successfully.
 Repair does not infer signatures or analyze the whole program.
+
+Complete function extents include compiler-owned local tables and internal
+alignment after terminal instructions. Optional `excluded_ranges` pin these
+bytes by start/size/hash and kind `padding` or `switch-table32`; they stay outside
+restricted disassembly. Tables additionally require aligned four-byte cells,
+explicit original targets and `guard_reviewed: true`. Every stored target must
+equal its reviewed value and resolve to a code instruction in the function.
+An existing defined table owner requires `existing_data: {data_type_path: ...}`
+with exact matching start, size and type. No new data definition is inferred.
+
+Optional `replacement_body` pins the exact old analyzed ranges, each original
+range hash and total `body_bytes`. It authorizes a strict extension to the full
+reviewed extent. The saved report must echo this metadata and mark the extension
+`extended-reviewed`; every other prior function remains identical. Reopened
+exports must retain the new full bodies and all explicitly pinned data owners.
+The obstacle output/name bodies require extensions from 147/49 to 168/72 bytes;
+`SetSide` extends from 1,463 instruction bytes to 1,496 bytes including one NOP
+and two guarded four-cell tables. Following INT3 alignment is excluded. Exact
+old body proofs and eighteen four-byte `/pointer` owners constrain these three
+extensions; no broader extent or owner replacement is permitted.
+
+The real mixed-body repair succeeds with a 512 MiB heap and 744 MiB peak RSS.
+The reopened graph retains all 7,941 prior functions, changing only those three
+explicit extents, all eighteen pointer owners and both corrected scalar/literal
+pairs. The corrected incremental replay uses 1,290 accepted function seeds and
+25 reviewed data anchors, with 1,235 tentative function pairs, 1,795 data
+candidates and zero stale decisions. Relative to the preceding replay, twelve
+data hypotheses and sixteen function evidence rows change, one tentative
+function disappears, and none are added. The registry diagnostic remains at
+158 physical candidates and 103 unresolved names. Peak Python RSS is 679 MiB
+under the 1 GiB limit. All original reconstruction comparison rows and 123
+object hashes remain unchanged; mapped bytes rise without source matching gain.
 
 ```sh
 python3 tools/repair_graph.py \
@@ -531,6 +591,30 @@ Joint research outputs include `hypotheses.csv` (functions),
 this run's actual counts. These are separate from
 `matching.json` and reconstruction coverage.
 
+For a small paired call/reference view, use the cache-only inspector after a
+guarded joint run has prepared and validated both graph indices:
+
+```sh
+python3 tools/identification_inspect.py \
+  --pair build/analysis/identification/registry-wave2-reviewed-conflict-repaired-graphs/graph-pair.json \
+  --pc 0x455320 --android 0x1867b0 --depth 2 \
+  --output build/analysis/identification/continuation/walk-backwards-inspection
+```
+
+It streams manifest/raw-export/index hashes, checks the exact cache identity and
+current producer, and queries SQLite directly without constructing a full graph
+or preparing a missing index. Outputs are a fresh JSON/Markdown pair under ignored
+`build/analysis`. Depth defaults to one and is capped at two, with 32 nodes per
+side, 256 total edges, sixteen edges per relation, a five-second traversal
+deadline, 2 MiB SQL caches and a 256 MiB CLI address-space limit. Verification
+time is separate from the traversal deadline. Missing function entries stay
+missing; cycles/shared nodes are references and all truncation is explicit.
+Raw targets, owners, roles and widths remain separate from advisory GOT-derived
+normalized targets. Analysis body ranges never establish reviewed extents.
+The first real `WalkBackwards` depth-two probe used 28 MiB RSS and 0.73 seconds,
+with explicit node/fanout truncation. This inspection has no scoring, acceptance,
+state, journal or source overlay effects.
+
 Persistent function state contains compact summaries and an exact digest of each
 full evidence row. Replay streams legacy state row by row, so an old 100 MiB
 state does not allocate another complete evidence tree. Data rows retain full
@@ -716,7 +800,7 @@ tooling/map changes. Keep generated graphs, original bytes, H2 databases and
 downloaded binaries ignored. Only tooling, synthetic tests, reviewed proposals
 and documentation belong in tracked changes.
 
-The latest checkpoint `make -j2 check` passed 353 tests (three optional Ghidra fixture skips), source
+The latest checkpoint `make -j2 check` passed 382 tests (three optional Ghidra fixture skips), source
 formatting and Clang-tidy. The object check passed 1,638 function and 2,604 data
 definitions across 123 objects. Final compilation/matching checks use two Make
 workers to keep resource use bounded.
