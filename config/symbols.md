@@ -1745,3 +1745,38 @@ identity hold; the existing four-byte `Part` pointer has no new extent credit.
 Its dynamically carved buffer uses PC 544-byte records, independently of the
 Android runtime stride. Frozen `nonregistry-data-frontier-next10` and its
 independent audit preserve those distinctions.
+
+
+## RaceOpponent and particle scene page IDs
+
+`Action_RaceOpponent` at `0x4569b0` has a complete 606-byte PC body.
+Original game registry records and Android ELF/PIC records independently bind
+its identity to the named Android callback at `0x185ea0`. Independent complete
+PC call enumeration, stack, saved-register, initialized-local and floating-state
+checks close its physical ABI for normal returns under the recorded valid
+runtime, memory and numeric-domain conditions. Its actual AIMove call supplies
+mode one. The goal-speed callback must remain the verified installed
+`0x43c130` target or a separately reviewed equivalent. Arbitrary callback
+replacement, other AIMove modes and exceptional CRT paths remain unreviewed.
+Formal return and aggregate types remain unknown, so ctype stays blank.
+
+Fresh complete RaceOpponent and AIMove call lists disprove the earlier stale
+`0x923924` lookup hold for this reachable mode-one closure. That lookup remains
+a real unresolved interface for the separately held terrain callbacks. Frozen
+`callback13-mid-distance-boundary-next1` and
+`callback13-race-final-independent-next1` retain the correction, complete
+606-byte body hash and prior independent proof pins. This function adds
+inventory coverage without a reconstructed definition or code comparison gain.
+
+`part_scene_pageid` at `0x291f6a8` is a 128-byte `i32[32]` allocation.
+Original PC InitParts initializes all 32 DWORDs; insertion, loading and clearing
+consumers independently establish its complete extent ending at `0x291f728`.
+Signed page comparisons and runtime `-1` tags distinguish it from the separate
+scene-pointer array. Original Android ELF/PIC/GOT records bind the named
+128-byte object at `0x1242040`; Android size is not PC extent authority.
+
+The original PE virtual storage is zero. The reconstructed data definition
+therefore uses a zero initializer; InitParts' runtime `-1` writes do not become
+a static initializer. Frozen `nonregistry-data-frontier-next11` and its
+independent audit retain identity, signed type, complete PC ownership and
+initializer evidence. This batch adds 734 mapped bytes: 606 code and 128 data.

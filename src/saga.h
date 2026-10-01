@@ -6855,6 +6855,7 @@ extern "C" {
     void __cdecl CharPivot_Check(GAMEOBJECT *, NUVEC *);
     extern ADDPART_PC Default_ADDPART;
     extern PART_PC *Part;
+    extern i32 part_scene_pageid[32];
     extern i32 MAXPARTS;
     extern i32 part_slot_cursor;
     i32 __cdecl NuLineLineIntersect(NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32 *, f32 *);

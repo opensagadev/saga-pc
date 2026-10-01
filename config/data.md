@@ -627,3 +627,18 @@ known bytes exactly, including real pointer relocations. Nine working views
 remain excluded from original-size credit. The consolidated report and
 unknown-view inventory are retained under ignored build/analysis/wave1/data/
 wave3/. These are initializer checks, not proof of runtime state.
+
+
+## Particle scene page IDs
+
+The complete `part_scene_pageid` owner at `0x0291f6a8` contains 32 signed
+32-bit page IDs (128 bytes). Original PC initialization and independently
+bounded insertion, loading and clearing consumers establish capacity and
+ownership through `0x0291f728`. Its signed comparisons and `-1` runtime tags
+distinguish it from the separately identified scene-pointer array.
+
+The original PE virtual storage is zero, so data.cpp defines the array with a
+zero initializer in its own BSS section. InitParts' later `-1` stores remain
+runtime behavior. The named Android ELF object and original PIC/GOT relocation
+support identity; PC consumers establish type and extent. Frozen
+`nonregistry-data-frontier-next11` and its independent audit retain the proof.

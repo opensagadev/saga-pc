@@ -1231,17 +1231,41 @@ tooling/map changes. Keep generated graphs, original bytes, H2 databases and
 downloaded binaries ignored. Only tooling, synthetic tests, reviewed proposals
 and documentation belong in tracked changes.
 
-The latest checkpoint `make -j2 check` passed 431 tests (three optional Ghidra fixture skips), source
-formatting and Clang-tidy. The object check passed 1,638 function and 2,604 data
-definitions across 123 objects. Final compilation/matching checks use two Make
-workers to keep resource use bounded.
-Retail matching preserves all 801 previous exact function rows. Pre-existing
-function comparisons, all previous data comparisons and all 123 object hashes
-are unchanged. The existing 44-byte `FadeSys` exact data comparison is preserved.
-This checkpoint adds research identities and an exclusion, with no accepted map
-bytes, code comparison or reconstruction coverage added. Final project and
-object checks cover the complete accepted map.
-Fuzzy code coverage rounds to 6.212%; mapping coverage reaches 2.783%.
+The latest checkpoint `make -j2 check` passed 431 tests (three optional Ghidra
+fixture skips), source formatting and Clang-tidy. The object check passed 1,638
+function and 2,605 data definitions across 123 objects. Final compilation and
+matching use two Make workers. All 2,015 previous function comparison rows and
+2,561 previous data rows are unchanged, preserving 801 exact function rows.
+The new 128-byte page-ID array compares exactly against original zero storage.
+The header change rebuilt the objects; their full file hashes changed and are
+not claimed preserved. Regional comparisons establish preservation.
+
+This checkpoint maps RaceOpponent's complete 606-byte body and the 128-byte
+page-ID array, adding 734 mapped bytes. RaceOpponent's reviewed normal-return
+physical ABI retains explicit runtime qualifications and unknown formal types;
+its ctype is blank and it has no compiled definition. This batch adds 128 exact
+data bytes and no compared or exact code bytes. Fuzzy code coverage remains
+6.212%; mapping coverage reaches 2.785%.
+
+The frozen `joint-registry-wave12-run` uses the unchanged 8,041-function PC and
+13,242-function Android graphs. It contains 1,424 function seeds, 92 reviewed
+data anchors, 15 exclusions and zero stale decisions. Its 1,312 inferred pairs,
+16,864 function candidate rows and 2,040 data candidate pairs remain advisory.
+The complete previous run was copied and hash-validated before replay. The
+1024 MiB address-space limit and shared heavy-job lock remained enforced;
+production took 42.78 seconds at 705,456 KiB peak RSS (about 689 MiB), with
+zero swaps reported by that job. Frozen
+`registry-wave12-matching-preservation` records every prior comparison row
+and verified current object hash.
+
+The first checks failed on sandbox-blocked Wine local sockets; the authorized
+rerun passed. A copied-output count guard expected 19 but found all 20 files;
+the corrected complete-copy hash check passed before production. An initial
+object guard counted 17 stale ignored object files and presumed raw-hash
+preservation. It refused; the corrected audit checks only the 123 report
+objects and preserves the actual regional comparisons. No failed guard
+establishes success or comparison credit.
+
 The first pushed tool snapshot exposed a test relying on a local ignored file;
 the fixture now isolates both repository roots and its job lock, so the required
 legacy-default inputs are entirely synthetic.

@@ -223,6 +223,7 @@ address    , symbol                                                         , si
 0x456510,_Action_CanCollideWithObjects,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x00456850 , _Action_PartyCanBeUnderCover                                    , 94    ," i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
 0x004568b0 , _GameAIScriptAddLevelSfx                                       , 255   , "void __cdecl (WORLDINFO *, NULISTHDR *)"
+0x004569b0 , _Action_RaceOpponent                                           , 606   ,
 0x00465590 , _GizActions_PlayObstacle                                       , 389   , "void __cdecl (GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x004669e0 , _GizForceSFX_Configure                                         , 258   , "void __cdecl (WORLDINFO *, char *)"
 0x0046c7d0 , _GizmoPickups_SetOnOff                                         , 686   , void __cdecl (void)
@@ -4882,6 +4883,7 @@ address    , symbol                                                         , si
 0x02913a4c , _part_page_on                                                  , 32    , i32[8]
 0x02913a78,_part_types,48128,
 0x0291f684 , _Part                                                          , 4     , PART_PC *
+0x0291f6a8 , _part_scene_pageid                                             , 128   , i32[32]
 0x0291f7d4 , _part_emits                                                    , 4320  , PART_EMIT_PC[40]
 0x029208f0,_part_scene,128,
 0x02920aac , _PartRTL                                                       , 4     , RTLSET_PC *
