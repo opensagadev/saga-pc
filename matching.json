@@ -8,16 +8,16 @@
     "src/externals.h": "3382382faeac231f3c7962ffb276f5c091463416d3cd41afd89c57fe6c4eef62",
     "src/saga.h": "5b5c54e8e43f9bdf33f5b8e3a70df64c05c1177588b5a24ed456c103994658d5",
     "config/data.md": "b46d28a41b8d3d2d61ee37a9eaee793a8857aed771d8c46412ec3df2a8c151a1",
-    "config/identification-decisions.jsonl": "c33ad0c9c7ccc8e445167b32ad110013d2fe36afcb8920dc6f787fa1763779d1",
+    "config/identification-decisions.jsonl": "266a903538247f382739e828c6e6200600db84a777a6193cc05673953e672ad8",
     "config/identification-plan.md": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
-    "config/identification-tools.md": "65085d2033af0f23d4d4e775001942d88a3502de8cd3dd581411e07f0ab902a3",
+    "config/identification-tools.md": "89f5bf6d39fed28ea0cbe48628665751419ebc4888e5f30c4be5790115473e3f",
     "config/identification.md": "ecfbf8977bb20b3c0b8fc8cf0c4a7cc7d7cd0f9915f3abe77145c532651e31e4",
     "config/numain.md": "b1bf36c6b55647064f79402997c5d956060e13cbf6d6648bcde831ea4e0c5e74",
     "config/progress-plan.md": "cf144b1f5e0b8d5d0a17e0f2a1d065ad64c13a95d1b491c88792e046bb65a3ff",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
     "config/strategy.md": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
-    "config/symbols.csv": "921dd92bac892372ce118407b814a6474bf12479a74c63355c5fd5aef0ebf6cb",
-    "config/symbols.md": "41864bd314f1cebd47ac41d32bc3214832f99b7cc94dd7e0ea83a2e61c68cd75",
+    "config/symbols.csv": "976194281b829dc3b7085012a8aa7fe7fb83d75c91bbf71561cddfc87569837f",
+    "config/symbols.md": "1f0467acf40fdf04d4122c2b56dc70815a56c014e9debc86c0d98e3d29623e6a",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
@@ -1467,6 +1467,26 @@
       "objdiff_percent": 87.24779
     },
     {
+      "name": "Action_Activate",
+      "symbol": "_Action_Activate",
+      "address": "0x004442f0",
+      "units": [],
+      "target_size": 412,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_DeActivate",
+      "symbol": "_Action_DeActivate",
+      "address": "0x00444490",
+      "units": [],
+      "target_size": 295,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_CanDefend",
       "symbol": "_Action_CanDefend",
       "address": "0x004445c0",
@@ -1547,6 +1567,26 @@
       "status": "not implemented"
     },
     {
+      "name": "Action_SetStateArea",
+      "symbol": "_Action_SetStateArea",
+      "address": "0x00444f20",
+      "units": [],
+      "target_size": 651,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_UpdateSockPos",
+      "symbol": "_Action_UpdateSockPos",
+      "address": "0x004451b0",
+      "units": [],
+      "target_size": 113,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_SetScriptState",
       "symbol": "_Action_SetScriptState",
       "address": "0x00445740",
@@ -1571,6 +1611,26 @@
       "objdiff_percent": 63.580837
     },
     {
+      "name": "Action_SetAIOverrideControl",
+      "symbol": "_Action_SetAIOverrideControl",
+      "address": "0x00445910",
+      "units": [],
+      "target_size": 403,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetLastSafePathPos",
+      "symbol": "_Action_SetLastSafePathPos",
+      "address": "0x00445ab0",
+      "units": [],
+      "target_size": 179,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_SetDontMove",
       "symbol": "_Action_SetDontMove",
       "address": "0x00445b70",
@@ -1586,6 +1646,36 @@
       "address": "0x00445c30",
       "units": [],
       "target_size": 180,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_GameSetLocator",
+      "symbol": "_Action_GameSetLocator",
+      "address": "0x00445cf0",
+      "units": [],
+      "target_size": 745,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetLocatorSet",
+      "symbol": "_Action_SetLocatorSet",
+      "address": "0x00445fe0",
+      "units": [],
+      "target_size": 115,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetDoomedEscapeLocator",
+      "symbol": "_Action_SetDoomedEscapeLocator",
+      "address": "0x00446b30",
+      "units": [],
+      "target_size": 608,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -1687,6 +1777,36 @@
       "objdiff_percent": 82.367645
     },
     {
+      "name": "Action_GrabVictim",
+      "symbol": "_Action_GrabVictim",
+      "address": "0x00448ed0",
+      "units": [],
+      "target_size": 168,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_EatVictim",
+      "symbol": "_Action_EatVictim",
+      "address": "0x00448f80",
+      "units": [],
+      "target_size": 40,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_ReleaseVictim",
+      "symbol": "_Action_ReleaseVictim",
+      "address": "0x00448fb0",
+      "units": [],
+      "target_size": 40,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_FollowDirection",
       "symbol": "_Action_FollowDirection",
       "address": "0x00448fe0",
@@ -1709,6 +1829,46 @@
       ],
       "status": "different",
       "objdiff_percent": 76.29536
+    },
+    {
+      "name": "Action_PressSpecialButton",
+      "symbol": "_Action_PressSpecialButton",
+      "address": "0x004492e0",
+      "units": [],
+      "target_size": 163,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_PressTagButton",
+      "symbol": "_Action_PressTagButton",
+      "address": "0x00449390",
+      "units": [],
+      "target_size": 50,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_PressActionButton",
+      "symbol": "_Action_PressActionButton",
+      "address": "0x004493d0",
+      "units": [],
+      "target_size": 60,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_UseWeapon",
+      "symbol": "_Action_UseWeapon",
+      "address": "0x00449410",
+      "units": [],
+      "target_size": 45,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "Action_SetInvulnerable",
@@ -1741,6 +1901,36 @@
       "status": "not implemented"
     },
     {
+      "name": "Action_PressJumpButton",
+      "symbol": "_Action_PressJumpButton",
+      "address": "0x00449970",
+      "units": [],
+      "target_size": 50,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_AddToSet",
+      "symbol": "_Action_AddToSet",
+      "address": "0x004499b0",
+      "units": [],
+      "target_size": 151,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetControlSystem",
+      "symbol": "_Action_SetControlSystem",
+      "address": "0x00449a50",
+      "units": [],
+      "target_size": 109,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_SetZeroAcceleration",
       "symbol": "_Action_SetZeroAcceleration",
       "address": "0x00449bb0",
@@ -1754,6 +1944,16 @@
       "name": "Action_BreakFormation",
       "symbol": "_Action_BreakFormation",
       "address": "0x00449c90",
+      "units": [],
+      "target_size": 33,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_FormationMove",
+      "symbol": "_Action_FormationMove",
+      "address": "0x00449cc0",
       "units": [],
       "target_size": 33,
       "exact_match": false,
@@ -1781,6 +1981,36 @@
       "status": "not implemented"
     },
     {
+      "name": "Action_Launch",
+      "symbol": "_Action_Launch",
+      "address": "0x00449f40",
+      "units": [],
+      "target_size": 47,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SelectRandomSpline",
+      "symbol": "_Action_SelectRandomSpline",
+      "address": "0x00449f70",
+      "units": [],
+      "target_size": 538,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetCurrentSpeed",
+      "symbol": "_Action_SetCurrentSpeed",
+      "address": "0x0044aac0",
+      "units": [],
+      "target_size": 382,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_SetRunSpeed",
       "symbol": "_Action_SetRunSpeed",
       "address": "0x0044ac40",
@@ -1803,6 +2033,56 @@
       ],
       "status": "different",
       "objdiff_percent": 76.87047
+    },
+    {
+      "name": "Action_SetWalkSpeed",
+      "symbol": "_Action_SetWalkSpeed",
+      "address": "0x0044b0e0",
+      "units": [],
+      "target_size": 107,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetHitPoints",
+      "symbol": "_Action_SetHitPoints",
+      "address": "0x0044b150",
+      "units": [],
+      "target_size": 316,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetShieldHitPoints",
+      "symbol": "_Action_SetShieldHitPoints",
+      "address": "0x0044b290",
+      "units": [],
+      "target_size": 201,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetHoverPhase",
+      "symbol": "_Action_SetHoverPhase",
+      "address": "0x0044c1d0",
+      "units": [],
+      "target_size": 201,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_UseCurrentSpeed",
+      "symbol": "_Action_UseCurrentSpeed",
+      "address": "0x0044c2a0",
+      "units": [],
+      "target_size": 336,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "Action_SetMaxMovementRange",
@@ -1851,6 +2131,16 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "Action_ApplyGravity",
+      "symbol": "_Action_ApplyGravity",
+      "address": "0x0044ca00",
+      "units": [],
+      "target_size": 113,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "Action_IgnoreShoveSystem",
@@ -1903,6 +2193,16 @@
       "status": "not implemented"
     },
     {
+      "name": "Action_SetPath",
+      "symbol": "_Action_SetPath",
+      "address": "0x0044e160",
+      "units": [],
+      "target_size": 388,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_GoToLevelPath",
       "symbol": "_Action_GoToLevelPath",
       "address": "0x0044e2f0",
@@ -1925,6 +2225,16 @@
       ],
       "status": "different",
       "objdiff_percent": 45.14516
+    },
+    {
+      "name": "Action_GoToOriginalPath",
+      "symbol": "_Action_GoToOriginalPath",
+      "address": "0x0044e580",
+      "units": [],
+      "target_size": 724,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "Action_SetAnimation",
@@ -49025,6 +49335,156 @@
       "status": "exact"
     },
     {
+      "name": "AIRegistryName_Game_CanAttack",
+      "symbol": "_AIRegistryName_Game_CanAttack",
+      "address": "0x007568f0",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AIRegistryName_Game_CannotDropIn",
+      "symbol": "_AIRegistryName_Game_CannotDropIn",
+      "address": "0x007568fc",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AIRegistryName_Game_CatchUpForbidden",
+      "symbol": "_AIRegistryName_Game_CatchUpForbidden",
+      "address": "0x0075690c",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AIRegistryName_Game_SetTaggable",
+      "symbol": "_AIRegistryName_Game_SetTaggable",
+      "address": "0x00756920",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AIRegistryName_Game_UseBigJumpToJump",
+      "symbol": "_AIRegistryName_Game_UseBigJumpToJump",
+      "address": "0x0075692c",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AIRegistryName_Game_CanShootObstructions",
+      "symbol": "_AIRegistryName_Game_CanShootObstructions",
+      "address": "0x00756940",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AIRegistryName_Game_SetBoltsDontGetDeflectedBack",
+      "symbol": "_AIRegistryName_Game_SetBoltsDontGetDeflectedBack",
+      "address": "0x00756958",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AIRegistryName_Game_PrefersPlayers",
+      "symbol": "_AIRegistryName_Game_PrefersPlayers",
+      "address": "0x00756978",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AIRegistryName_Game_ResetContext",
+      "symbol": "_AIRegistryName_Game_ResetContext",
+      "address": "0x00756988",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AIRegistryName_Game_SnapWeaponOut",
+      "symbol": "_AIRegistryName_Game_SnapWeaponOut",
+      "address": "0x00756998",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AIRegistryName_Game_KeepWeaponOut",
+      "symbol": "_AIRegistryName_Game_KeepWeaponOut",
+      "address": "0x007569a8",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AIRegistryName_Game_CanShootOffScreen",
+      "symbol": "_AIRegistryName_Game_CanShootOffScreen",
+      "address": "0x007569b8",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AIRegistryName_Game_CanOpenDoors",
+      "symbol": "_AIRegistryName_Game_CanOpenDoors",
+      "address": "0x007569cc",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AIRegistryName_Game_AnimTimeRandom",
+      "symbol": "_AIRegistryName_Game_AnimTimeRandom",
+      "address": "0x007569dc",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AIRegistryName_Game_SetAnimation",
+      "symbol": "_AIRegistryName_Game_SetAnimation",
+      "address": "0x007569ec",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "PCContextName_BigJump",
       "symbol": "_PCContextName_BigJump",
       "address": "0x00756a38",
@@ -49044,6 +49504,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "AIRegistryName_Game_GoToLevelPath",
+      "symbol": "_AIRegistryName_Game_GoToLevelPath",
+      "address": "0x00756aac",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "PCContextName_Activate",
@@ -98861,16 +99331,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 451928,
+    "mapped_code_bytes": 459711,
     "matched_code_bytes": 45746,
     "matching_percent": 1.3178553176582704,
     "fuzzy_coverage_percent": 6.21161866290101,
-    "mapped_functions": 1886,
+    "mapped_functions": 1917,
     "matched_functions": 801,
     "objdiff_fuzzy_percent": 61.121914,
     "objdiff_total_code": 352861,
     "image_bytes": 40067072,
-    "mapped_bytes": 950171,
-    "mapping_percent": 2.371451050877888
+    "mapped_bytes": 957954,
+    "mapping_percent": 2.3908759791581478
   }
 }

@@ -326,6 +326,35 @@ function disappears, and none are added. The registry diagnostic remains at
 under the 1 GiB limit. All original reconstruction comparison rows and 123
 object hashes remain unchanged; mapped bytes rise without source matching gain.
 
+The following wave adds 31 complete AI callback identities (7,783 PC bytes)
+and sixteen name-storage identities with unknown allocation extents/types.
+The storage rows have blank CSV size/ctype and false extent/type/ABI flags,
+without complete ranges or coverage credit. Mapping reaches 957,954 bytes
+(2.391%). Game `SetLocator` retains a distinct reconstruction name from its API
+namesake, and SetPath retains its complete 388-byte span despite a 382-byte sparse
+analysis body. Twenty-six missing callback entries are repaired in two bounded
+PC jobs, preserving all earlier function bodies, corrected data owners and the
+three explicit mixed extents. The PC graph now has 7,967 functions.
+
+Original name-lookup consumers and exact name-pointer records independently
+establish those sixteen storage identities. A copied Android project receives
+sixteen reviewed original-VA data-site annotations during read-only export;
+no definitions, users or edges are invented. The 512 MiB heap attempt stops
+without publication; an explicit 1 GiB heap retry succeeds at 1,266 MiB RSS.
+All 266,598 preceding Android node records and the exact 248,675-edge export
+are preserved, with only sixteen new sites. The original project is unchanged.
+Full allocation extents remain unproved; resolving graph endpoints does not
+resolve those allocation/type holds or establish ranking-quality improvement.
+
+The production replay uses 1,321 accepted function seeds and 41 reviewed data
+anchors, with 1,230 tentative function pairs, 1,824 data candidates and zero
+stale decisions. Data hypotheses add 29, change 32 and remove none; function
+evidence changes 45 and removes 95, with none added. The registry diagnostic
+has 184 physical candidates, no ambiguous joins and 77 unresolved names:
+76 missing PC callbacks plus `CharClipToBlobShadows` on Android only. Its outputs
+remain separate from scoring and acceptance. Peak Python RSS is 674 MiB under
+the 1 GiB limit. No source reconstruction gain is claimed.
+
 ```sh
 python3 tools/repair_graph.py \
   --config build/analysis/identification/current-graphs/export-config.json \

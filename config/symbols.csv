@@ -50,6 +50,8 @@ address    , symbol                                                         , si
 0x43d450   , _oneAtOnce_GetHoldRange                                        , 174   , f32 __cdecl (GAMEOBJECT *)
 0x00440120 , _GetNamedGameObject                                            , 34    , "GAMEOBJECT *__cdecl (void *, char *)"
 0x440150   , _PartyMemberInWay                                              , 312   , "i32 __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
+0x4442f0,_Action_Activate,412,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x444490,_Action_DeActivate,295,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4445c0,_Action_CanDefend,110,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x444630,_Action_DontAimAt,110,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4446a0,_Action_ImmuneToKillTerrain,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -58,30 +60,59 @@ address    , symbol                                                         , si
 0x444850,_Action_CanUseWeapon,110,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4448c0,_Action_SetBoss,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x444940,_Action_SetSide,1496,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x444f20,_Action_SetStateArea,651,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x4451b0,_Action_UpdateSockPos,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x445740   , _Action_SetScriptState                                         , 460   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x445910,_Action_SetAIOverrideControl,403,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x445ab0,_Action_SetLastSafePathPos,179,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x445b70,_Action_SetDontMove,180,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x445c30,_Action_DontSetStoppedFlag,180,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x445cf0,_Action_GameSetLocator,745,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x445fe0,_Action_SetLocatorSet,115,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x446b30,_Action_SetDoomedEscapeLocator,608,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4477c0   , _Action_SetOpponent                                            , 759   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x447ac0   , _Action_AttackOpponent                                         , 1077  , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x447f00   , _Action_EngageOpponent                                         , 2337  , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x448830   , _Action_ShootAtOpponent                                        , 959   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x448ed0,_Action_GrabVictim,168,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x448f80,_Action_EatVictim,40,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x448fb0,_Action_ReleaseVictim,40,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x448fe0   , _Action_FollowDirection                                        , 756   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x4492e0,_Action_PressSpecialButton,163,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x449390,_Action_PressTagButton,50,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x4493d0,_Action_PressActionButton,60,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x449410,_Action_UseWeapon,45,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x449440,_Action_SetInvulnerable,565,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x449680,_Action_DontAvoidCharacter,291,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4497b0,_Action_GameDontPush,435,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x449970,_Action_PressJumpButton,50,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x4499b0,_Action_AddToSet,151,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x449a50,_Action_SetControlSystem,109,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x449bb0,_Action_SetZeroAcceleration,215,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x449c90,_Action_BreakFormation,33,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x449cc0,_Action_FormationMove,33,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x00449cf0 , _Action_SetFormationCommander                                 , 282   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x00449e10 , _Action_RemoveThrownForceObjects                               , 75    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x449f40,_Action_Launch,47,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x449f70,_Action_SelectRandomSpline,538,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44aac0,_Action_SetCurrentSpeed,382,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44ac40   , _Action_SetRunSpeed                                            , 1180  , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44b0e0,_Action_SetWalkSpeed,107,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44b150,_Action_SetHitPoints,316,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44b290,_Action_SetShieldHitPoints,201,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44c1d0,_Action_SetHoverPhase,201,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44c2a0,_Action_UseCurrentSpeed,336,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44c3f0   , _Action_SetMaxMovementRange                                    , 404   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44c590   , _Action_SetDefaultMovementRange                                , 82    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44ca00,_Action_ApplyGravity,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44ca80,_Action_IgnoreShoveSystem,110,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44caf0,_Action_CannotBeForcedBack,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44cb70,_Action_CanTurn,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44cbf0,_Action_NoIdleSpeed,211,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44ccd0,_Action_CannotBeSeen,110,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44e160,_Action_SetPath,388,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44e2f0   , _Action_GoToLevelPath                                          , 381   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44e580,_Action_GoToOriginalPath,724,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44e860   , _Action_SetAnimation                                           , 91    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44e8c0   , _Action_AnimTimeRandom                                         , 47    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x0044e8f0 , _Action_AlwaysTriggerObstacle                                 , 186   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -2498,7 +2529,23 @@ address    , symbol                                                         , si
 0x7561fc   , _PCContextName_PullLever                                       , 10    , const char [10]
 0x7565d0   , _PCContextName_Launch                                          , 7     , const char [7]
 0x756788   , _PCContextName_ForcePush                                       , 10    , const char [10]
+0x7568f0,_AIRegistryName_Game_CanAttack,,
+0x7568fc,_AIRegistryName_Game_CannotDropIn,,
+0x75690c,_AIRegistryName_Game_CatchUpForbidden,,
+0x756920,_AIRegistryName_Game_SetTaggable,,
+0x75692c,_AIRegistryName_Game_UseBigJumpToJump,,
+0x756940,_AIRegistryName_Game_CanShootObstructions,,
+0x756958,_AIRegistryName_Game_SetBoltsDontGetDeflectedBack,,
+0x756978,_AIRegistryName_Game_PrefersPlayers,,
+0x756988,_AIRegistryName_Game_ResetContext,,
+0x756998,_AIRegistryName_Game_SnapWeaponOut,,
+0x7569a8,_AIRegistryName_Game_KeepWeaponOut,,
+0x7569b8,_AIRegistryName_Game_CanShootOffScreen,,
+0x7569cc,_AIRegistryName_Game_CanOpenDoors,,
+0x7569dc,_AIRegistryName_Game_AnimTimeRandom,,
+0x7569ec,_AIRegistryName_Game_SetAnimation,,
 0x756a38   , _PCContextName_BigJump                                         , 8     , const char [8]
+0x756aac,_AIRegistryName_Game_GoToLevelPath,,
 0x756ac8   , _PCContextName_Activate                                        , 9     , const char [9]
 0x756da4   , _PCContextName_BeenTakenOver                                   , 14    , const char [14]
 0x007575d8 , __real@3fc0000000000000                                        , 8     , const f64

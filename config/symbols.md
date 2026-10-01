@@ -1162,3 +1162,99 @@ for each binary. Full aggregate types remain unproved; type flags stay false.
 The ignored `continuation/ai-registry-new-callback-batch3` and independent audit
 preserve original hashes, registry records and full CFG/ABI evidence. No source
 implementation or reconstruction gain is claimed.
+
+The fourth new AI callback batch accepts fifteen complete original-registry
+identities covering 2,213 PC bytes, with independently reviewed seven-slot ABI
+and full extents. Aggregate type flags remain false.
+
+| Callback | PC entry | Complete bytes | Named Android entry |
+| --- | --- | ---: | --- |
+| PressSpecialButton | `0x4492e0` | 163 | `0x1849e0` |
+| PressTagButton | `0x449390` | 50 | `0x183c20` |
+| PressActionButton | `0x4493d0` | 60 | `0x183c60` |
+| UseWeapon | `0x449410` | 45 | `0x183cb0` |
+| PressJumpButton | `0x449970` | 50 | `0x183ce0` |
+| FormationMove | `0x449cc0` | 33 | `0x183d40` |
+| Launch | `0x449f40` | 47 | `0x1934d0` |
+| SetCurrentSpeed | `0x44aac0` | 382 | `0x1980b0` |
+| SetWalkSpeed | `0x44b0e0` | 107 | `0x185890` |
+| UseCurrentSpeed | `0x44c2a0` | 336 | `0x188cd0` |
+| SetHoverPhase | `0x44c1d0` | 201 | `0x184830` |
+| ApplyGravity | `0x44ca00` | 113 | `0x184790` |
+| SetControlSystem | `0x449a50` | 109 | `0x184940` |
+| SetHitPoints | `0x44b150` | 316 | `0x197ec0` |
+| SetShieldHitPoints | `0x44b290` | 201 | `0x197d90` |
+
+All fifteen accepted entries need disposable graph repair. Original runtime
+namespace, name pointers, callback pointers, hashes and both CFGs are retained in
+`continuation/ai-registry-new-callback-batch4` and its independent audit. Its
+original SetSide hold is resolved separately by the full mixed-table review;
+that frozen packet is preserved unchanged. No source implementation or matching
+gain is claimed.
+
+The fifth new AI callback batch accepts sixteen complete original-registry
+identities covering 5,570 PC bytes, with the same independently reviewed
+seven-slot ABI and conservative aggregate type flags.
+
+| Callback | PC entry | Complete bytes | Named Android entry |
+| --- | --- | ---: | --- |
+| Activate | `0x4442f0` | 412 | `0x19f340` |
+| DeActivate | `0x444490` | 295 | `0x19f180` |
+| SetPath | `0x44e160` | 388 | `0x19ef50` |
+| GoToOriginalPath | `0x44e580` | 724 | `0x18c100` |
+| SetLocator | `0x445cf0` | 745 | `0x194960` |
+| SetLocatorSet | `0x445fe0` | 115 | `0x190cf0` |
+| SetDoomedEscapeLocator | `0x446b30` | 608 | `0x19db20` |
+| SetStateArea | `0x444f20` | 651 | `0x193af0` |
+| GrabVictim | `0x448ed0` | 168 | `0x19ac40` |
+| EatVictim | `0x448f80` | 40 | `0x18ab70` |
+| ReleaseVictim | `0x448fb0` | 40 | `0x18ab30` |
+| UpdateSockPos | `0x4451b0` | 113 | `0x184b60` |
+| SetAIOverrideControl | `0x445910` | 403 | `0x1855e0` |
+| SetLastSafePathPos | `0x445ab0` | 179 | `0x18f870` |
+| AddToSet | `0x4499b0` | 151 | `0x18ff10` |
+| SelectRandomSpline | `0x449f70` | 538 | `0x193520` |
+
+`Action_GameSetLocator` at `0x445cf0` is the game namespace callback; it stays
+separate from the existing API `Action_SetLocator`. Original namespaces and
+callback records provide identity, rather than reconstruction names. SetPath
+has a full 388-byte extent including six interior LEA alignment bytes; its
+retained sparse analysis body has 382 bytes and does not shrink that map.
+Eleven entries require disposable graph repair; five already exist. The frozen
+`continuation/ai-registry-new-callback-batch5` and independent audit retain both
+original hashes, row/relocation proofs and full CFG/boundary evidence. No source
+implementation or reconstruction gain is claimed.
+
+Sixteen AI registry name-storage identities now have independently reviewed
+original record pointers, exact first-NUL content hashes, runtime name consumers
+and graph endpoints on both sides. Full allocation extents and storage types
+remain unproved: CSV sizes/types are blank, journal extent/type/ABI flags are
+false, and no complete ranges or byte credit are assigned.
+
+| Registry name | PC storage | Android storage |
+| --- | --- | --- |
+| GoToLevelPath | `0x756aac` | `0x569ed0` |
+| SetAnimation | `0x7569ec` | `0x569f75` |
+| AnimTimeRandom | `0x7569dc` | `0x569f82` |
+| CanOpenDoors | `0x7569cc` | `0x569f91` |
+| CanShootOffScreen | `0x7569b8` | `0x569f9e` |
+| KeepWeaponOut | `0x7569a8` | `0x569fb0` |
+| SnapWeaponOut | `0x756998` | `0x569fbe` |
+| ResetContext | `0x756988` | `0x569fcc` |
+| PrefersPlayers | `0x756978` | `0x569fd9` |
+| SetBoltsDontGetDeflectedBack | `0x756958` | `0x569fe8` |
+| CanShootObstructions | `0x756940` | `0x56a005` |
+| UseBigJumpToJump | `0x75692c` | `0x56a01a` |
+| SetTaggable | `0x756920` | `0x56a02b` |
+| CatchUpForbidden | `0x75690c` | `0x56a037` |
+| CannotDropIn | `0x7568fc` | `0x56a048` |
+| CanAttack | `0x7568f0` | `0x56a055` |
+
+The first Android export stopped at its 512 MiB heap limit without publishing.
+A serialized 1 GiB retry on an independent project copy added only sixteen exact
+original-VA data sites; all 266,598 previous node records and all 248,675 edges
+remain identical. No data definitions, enclosing allocations, users or pointer
+edges are invented. The original project is unchanged. These inventory names
+do not establish reconstruction gain or ranking-quality improvement. Ignored
+`ai-registry-name-data-frontier`, endpoint evidence, whole-graph preservation
+audit and independent identity review retain provenance and limitations.
