@@ -87,8 +87,8 @@ def _mixed_function(row):
                 raise ValueError("Switch target points into excluded bytes")
     replacement = row.get("replacement_body")
     if replacement is not None:
-        if not isinstance(replacement, dict) or not excluded:
-            raise ValueError("Old body replacement requires mixed extent review")
+        if not isinstance(replacement, dict):
+            raise ValueError("Old body replacement requires exact prior body review")
         ranges = replacement.get("ranges")
         if not isinstance(ranges, list) or not 1 <= len(ranges) <= 32:
             raise ValueError("Expected bounded exact old body ranges")

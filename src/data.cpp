@@ -3290,6 +3290,9 @@ extern "C" {
 #pragma bss_seg(".bss$part_scene_pageid")
     i32 part_scene_pageid[32] = {0};
 #pragma bss_seg()
+#pragma bss_seg(".bss$part_page_used")
+    i32 part_page_used[8] = {0};
+#pragma bss_seg()
 #pragma data_seg(".data$MAXPARTS")
     i32 MAXPARTS = 32;
 #pragma data_seg()

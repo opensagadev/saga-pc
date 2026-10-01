@@ -642,3 +642,12 @@ zero initializer in its own BSS section. InitParts' later `-1` stores remain
 runtime behavior. The named Android ELF object and original PIC/GOT relocation
 support identity; PC consumers establish type and extent. Frozen
 `nonregistry-data-frontier-next11` and its independent audit retain the proof.
+
+
+The separate `part_page_used` owner at `0x029208bc` contains eight zero-initialized
+32-bit page occupancy gates (32 bytes), ending at `0x029208dc`. Original
+initialization plus an independent eight-slot capacity scan and set/reset
+consumers prove that complete allocation. Its `i32[8]` declaration supplies
+integer gates without claiming signed arithmetic or unchecked caller safety.
+The following 20-byte gap remains unidentified. data.cpp retains the original
+zero initializer in a separate BSS section.

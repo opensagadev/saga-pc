@@ -218,6 +218,7 @@ address    , symbol                                                         , si
 0x455b60   , _Action_SetAO_AttackersPerRow                                   , 116   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x455be0   , _Action_SetAO_RowDist                                           , 109   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x455c50   , _Action_SetAO_InitRowDist                                       , 109   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x00455e90 , _Action_CompleteLevel                                          , 280   ,
 0x00456080 , _Action_CircleLocator                                          , 517   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x456490,_Action_CanHelpWithTriggers,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x456510,_Action_CanCollideWithObjects,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -4885,6 +4886,7 @@ address    , symbol                                                         , si
 0x0291f684 , _Part                                                          , 4     , PART_PC *
 0x0291f6a8 , _part_scene_pageid                                             , 128   , i32[32]
 0x0291f7d4 , _part_emits                                                    , 4320  , PART_EMIT_PC[40]
+0x029208bc , _part_page_used                                                , 32    , i32[8]
 0x029208f0,_part_scene,128,
 0x02920aac , _PartRTL                                                       , 4     , RTLSET_PC *
 0x02920ae8 , _DebrisGlassV1                                                 , 4     , f32

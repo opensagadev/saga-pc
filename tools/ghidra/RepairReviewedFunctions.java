@@ -182,7 +182,6 @@ public class RepairReviewedFunctions extends GhidraScript {
                         require(r.code.contains(target), "Table target lies in excluded bytes");
                 }
                 if (row.has("replacement_body")) {
-                    require(!r.excluded.isEmpty(), "Body extension requires mixed review");
                     r.replacement = row.getAsJsonObject("replacement_body").deepCopy();
                     JsonArray oldRanges = r.replacement.getAsJsonArray("ranges");
                     require(oldRanges.size()>0 && oldRanges.size()<=32, "Expected bounded old body ranges");

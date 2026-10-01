@@ -1218,6 +1218,40 @@ callers and complete-body review as authority. The ignored
 `continuation/reviewed-new-callback-bindiff-diagnostic` pins the originals and
 records every selected counterpart and normalization.
 
+## Extending a verified function across missing code
+
+A reviewed `replacement_body` may describe an exact strict subset of the complete
+new function range, including a missing code gap with no padding or table
+exclusions. Every old range retains its original-byte hash and exact byte count.
+The same entry, complete new extent, old-body equality, instruction boundaries,
+conflicting-owner checks and preservation audit remain mandatory. Existing
+mixed code/table exclusions retain their separate ownership rules.
+
+The original CRT candidate at `0x6f0395` supplies the real validation: its
+retained 116-byte split body omitted reachable POP ECX and XOR ESI,ESI bytes
+at `0x6f03fd..0x6f0400`. Its independently reviewed complete PC extent is
+119 bytes through `0x6f040c`. A disposable-project negative with an incorrect
+old-range hash was refused before publication. The correctly pinned positive
+restored those three bytes and preserved all 8,043 prior function entries,
+allowing only this exact declared extension, plus the four explicit owner
+guards and both previously repaired runtime helpers. The source project
+remained unchanged. The pinned native CRT member instead has a 131-byte body;
+identity, ABI and type remain held, with no accepted mapping credit.
+
+Before that extension, two already accepted functions were absent from the
+analysis graph: GetCharacterGoalSpeed at `0x43c130` (112 bytes) and
+GetNamedAPIObject at `0x43c220` (375). Their independently verified extents
+were added in a disposable project while preserving all prior 8,041 function
+entries and the four owner guards. These 487 bytes add no mapping credit.
+Lookup formatter and arbitrary callback-replacement effects remain unresolved.
+
+Both successful Ghidra jobs used a 512 MiB Java heap, unrestricted Java address
+space and the shared heavy-job lock. They ran sequentially at roughly 753 MiB
+and 760 MiB peak RSS, reporting zero swaps. Frozen
+`registry-wave13-helper-owner-preservation`,
+`registry-wave13-crt-gap-root-validation` and the independent tooling audit
+retain the actual proofs and bounds.
+
 ## Verification and boundaries
 
 Fixture exports and adapter tests verify serialization, normalization and
@@ -1231,40 +1265,35 @@ tooling/map changes. Keep generated graphs, original bytes, H2 databases and
 downloaded binaries ignored. Only tooling, synthetic tests, reviewed proposals
 and documentation belong in tracked changes.
 
-The latest checkpoint `make -j2 check` passed 431 tests (three optional Ghidra
+The latest checkpoint `make -j2 check` passed 434 tests (three optional Ghidra
 fixture skips), source formatting and Clang-tidy. The object check passed 1,638
-function and 2,605 data definitions across 123 objects. Final compilation and
-matching use two Make workers. All 2,015 previous function comparison rows and
-2,561 previous data rows are unchanged, preserving 801 exact function rows.
-The new 128-byte page-ID array compares exactly against original zero storage.
-The header change rebuilt the objects; their full file hashes changed and are
-not claimed preserved. Regional comparisons establish preservation.
+function and 2,606 data definitions across 123 objects. Compilation and matching
+use two Make workers. The preceding checkpoint preserved all prior comparison
+rows and added 128 exact page-ID data bytes; its pushed commit `4abd113` passed
+CI Build 36843877620.
 
-This checkpoint maps RaceOpponent's complete 606-byte body and the 128-byte
-page-ID array, adding 734 mapped bytes. RaceOpponent's reviewed normal-return
-physical ABI retains explicit runtime qualifications and unknown formal types;
-its ctype is blank and it has no compiled definition. This batch adds 128 exact
-data bytes and no compared or exact code bytes. Fuzzy code coverage remains
-6.212%; mapping coverage reaches 2.785%.
+This checkpoint maps CompleteLevel's complete 280-byte body and the 32-byte
+page occupancy gates, adding 312 mapped bytes. CompleteLevel's reviewed normal
+physical ABI retains explicit runtime, table and queue-count qualifications;
+formal types stay unknown and ctype is blank. No compiled callback definition
+or code comparison gain is claimed. The array retains its original zero
+initializer. Mapping coverage rounds to 2.786%; fuzzy code remains 6.212%.
 
-The frozen `joint-registry-wave12-run` uses the unchanged 8,041-function PC and
-13,242-function Android graphs. It contains 1,424 function seeds, 92 reviewed
-data anchors, 15 exclusions and zero stale decisions. Its 1,312 inferred pairs,
-16,864 function candidate rows and 2,040 data candidate pairs remain advisory.
-The complete previous run was copied and hash-validated before replay. The
-1024 MiB address-space limit and shared heavy-job lock remained enforced;
-production took 42.78 seconds at 705,456 KiB peak RSS (about 689 MiB), with
-zero swaps reported by that job. Frozen
-`registry-wave12-matching-preservation` records every prior comparison row
-and verified current object hash.
+The frozen `joint-registry-wave13-run` uses the repaired 8,043-function PC and
+unchanged 13,242-function Android graphs. It contains 1,427 function seeds,
+93 reviewed data anchors, 15 exclusions and zero stale decisions. CompleteLevel
+adds one identity; two already accepted identities become usable function seeds
+through the missing-helper graph repairs. The 1,311 inferred pairs, 16,858
+function candidate rows and 2,041 data candidate pairs remain advisory. These
+counts do not establish accuracy improvement. All 20 files from the complete
+previous run were copied and hash-validated before replay.
 
-The first checks failed on sandbox-blocked Wine local sockets; the authorized
-rerun passed. A copied-output count guard expected 19 but found all 20 files;
-the corrected complete-copy hash check passed before production. An initial
-object guard counted 17 stale ignored object files and presumed raw-hash
-preservation. It refused; the corrected audit checks only the 123 report
-objects and preserves the actual regional comparisons. No failed guard
-establishes success or comparison credit.
+The 1024 MiB address-space limit and shared heavy-job lock remained enforced;
+production took 52.29 seconds at 705,204 KiB peak RSS (about 689 MiB), with
+zero swaps reported by that job. Root integration preserves the corrected
+CompleteLevel record stride of `0x130` (304 bytes), explicit queue range 0..8
+and the occupancy gates' zero/one contract. Source implementations, broader
+CRT identities and arbitrary-input safety remain separate work.
 
 The first pushed tool snapshot exposed a test relying on a local ignored file;
 the fixture now isolates both repository roots and its job lock, so the required

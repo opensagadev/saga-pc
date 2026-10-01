@@ -68,7 +68,7 @@ class RepairGraphTests(unittest.TestCase):
             packet=copy.deepcopy(self.packet);packet["functions"][0]["excluded_ranges"][1][key]=value
             with self.subTest(key=key,value=value),self.assertRaises(ValueError):
                 repair.validate_function_packet(packet)
-        for specs in (self.packet["functions"][0]["excluded_ranges"]*2,None,[]):
+        for specs in (self.packet["functions"][0]["excluded_ranges"]*2,None):
             packet=copy.deepcopy(self.packet);packet["functions"][0]["excluded_ranges"]=specs
             with self.assertRaises(ValueError):repair.validate_function_packet(packet)
 
@@ -122,6 +122,69 @@ class RepairGraphTests(unittest.TestCase):
         changed=copy.deepcopy(other);changed["body_bytes"]=4;changed["ranges"][0]["end_exclusive"]="0x00403004"
         with self.assertRaises(ValueError):repair.validate_preserved_functions(prior,nodes("otherchanged.jsonl",[extended,changed]),[row])
         with self.assertRaises(ValueError):repair.validate_preserved_functions(nodes("missingold.jsonl",[other]),current,[row])
+
+    def pure_code_fixture(self):
+        row = self.packet["functions"][0]
+        row["size"] = 119
+        row["replacement_body"] = {"body_bytes": 116, "ranges": [
+            {"start": "0x00401000", "end_exclusive": "0x00401068", "range_sha256": "d"*64},
+            {"start": "0x0040106b", "end_exclusive": "0x00401077", "range_sha256": "e"*64}]}
+        self.packet_path.write_text(json.dumps(self.packet))
+        self.report["packet_sha256"] = repair.sha256(self.packet_path)
+        self.report["functions"][0] = dict(copy.deepcopy(row), entry="00401000", status="extended-reviewed")
+        return row
+
+    def test_pure_code_three_byte_gap_requires_no_exclusions(self):
+        row = self.pure_code_fixture()
+        repair.validate_function_packet(self.packet)
+        repair.validate_repair(self.report, self.packet, self.packet_path, self.project)
+        row["excluded_ranges"] = []
+        repair.validate_function_packet(self.packet)
+
+    def test_pure_code_old_body_pins_fail_closed(self):
+        self.pure_code_fixture()
+        for change in ("count", "overlap", "hash", "entry", "unchanged"):
+            packet = copy.deepcopy(self.packet)
+            old = packet["functions"][0]["replacement_body"]
+            if change == "count": old["body_bytes"] = 115
+            elif change == "overlap": old["ranges"][1]["start"] = "0x00401067"
+            elif change == "hash": old["ranges"][0]["range_sha256"] = "bad"
+            elif change == "entry": old["ranges"][0]["start"] = "0x00401001"
+            else:
+                old["body_bytes"] = 119
+                old["ranges"] = [{"start": "0x00401000", "end_exclusive": "0x00401077", "range_sha256": "d"*64}]
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                repair.validate_function_packet(packet)
+        report = copy.deepcopy(self.report)
+        report["functions"][0]["replacement_body"]["ranges"][0]["range_sha256"] = "f"*64
+        with self.assertRaises(ValueError):
+            repair.validate_repair(report, self.packet, self.packet_path, self.project)
+        self.packet["functions"][0]["superseded_instructions"] = [
+            {"start": "0x00401001", "size": 2, "range_sha256": "a"*64}]
+        with self.assertRaisesRegex(ValueError, "old body"):
+            repair.validate_function_packet(self.packet)
+
+    def test_pure_code_preservation_matches_exact_old_split_ranges(self):
+        row = self.pure_code_fixture()
+        old = dict(copy.deepcopy(row["replacement_body"]), kind="function", address=row["entry"])
+        new = {"kind": "function", "address": row["entry"], "body_bytes": 119,
+               "ranges": [{"start": row["entry"], "end_exclusive": "0x00401077"}]}
+        def nodes(name, value):
+            path = self.root / name
+            path.write_text(json.dumps(value)+"\n")
+            return path
+        prior, current = nodes("old.jsonl", old), nodes("new.jsonl", new)
+        self.assertEqual(repair.validate_preserved_functions(prior, current, [row]), 1)
+        with self.assertRaises(ValueError): repair.validate_preserved_functions(prior, current)
+        with self.assertRaises(ValueError): repair.validate_preserved_functions(prior, prior, [row])
+        changed = copy.deepcopy(old)
+        changed["ranges"][0]["end_exclusive"] = "0x00401067"
+        changed["ranges"][1]["start"] = "0x0040106a"
+        with self.assertRaises(ValueError):
+            repair.validate_preserved_functions(nodes("shifted.jsonl", changed), current, [row])
+        changed = copy.deepcopy(old); changed["body_bytes"] = 115
+        with self.assertRaises(ValueError):
+            repair.validate_preserved_functions(nodes("count.jsonl", changed), current, [row])
 
     def retained_owner_fixture(self):
         row = self.mixed_fixture()

@@ -1780,3 +1780,46 @@ therefore uses a zero initializer; InitParts' runtime `-1` writes do not become
 a static initializer. Frozen `nonregistry-data-frontier-next11` and its
 independent audit retain identity, signed type, complete PC ownership and
 initializer evidence. This batch adds 734 mapped bytes: 606 code and 128 data.
+
+
+## Particle page occupancy gates
+
+`part_page_used` at `0x29208bc` is an independently bounded 32-byte allocation
+of eight integer page occupancy gates. Original PC InitParts explicitly writes
+all eight DWORDs through `0x29208d8`. An independent free-slot scan tests cells
+1 through 7, stops at index eight and sets the selected gate to one; ClearPage
+resets the indexed gate to zero. Those consumers establish the complete extent
+ending at `0x29208dc`. The following 20-byte gap is not part of this owner.
+
+Original Android ELF and PIC/GOT relocation records bind the named
+`part_page_used` object at `0x1242160`. Android allocation size is not the PC
+extent authority. The PC declaration is `i32[8]` for zero/one integer gates;
+this does not establish signed arithmetic or arbitrary index safety. The named
+Android FileLoadEffects body has different bulk-reset behavior and remains
+unaccepted as a PC function correspondence.
+
+Original PE storage is zero and data.cpp uses that initializer. Frozen
+`nonregistry-data-frontier-next12` and its independent audit retain the original
+operands, capacity, allocation, relocation and initializer proofs.
+
+
+## CompleteLevel callback
+
+`Action_CompleteLevel` at `0x455e90` has a complete 280-byte PC body,
+independently bound to the named Android callback at `0x190930` by original
+game registry and ELF/PIC records. Fresh review of the complete callback and
+all nine direct calls closes ten original bodies, including their transitive
+leaf calls. Normal stack and saved-register preservation, consumed arguments,
+local initialization and private register/flag requirements pass. The integer
+closure contains no x87 instructions and both callback returns produce EAX one.
+
+The review assumes valid initialized tables, signed IDs, groups, strings and
+runtime objects. Record stride is exactly `0x130` (304 bytes). The queue count
+must be in 0..8: the original signed upper-bound test supplies no negative-count
+guard. These conditions do not establish arbitrary-input safety, exceptional
+behavior, concurrent mutation rules or formal aggregate/return types. Ctype
+stays blank, and no source definition or code comparison credit is supplied.
+Frozen `callback13-next-function-frontier-next1` and
+`callback13-completelevel-independent-next1` retain the complete proof and
+qualifications. Together with the page occupancy gates this batch adds
+312 mapped bytes: 280 code and 32 data.
