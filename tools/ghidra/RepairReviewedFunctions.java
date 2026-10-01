@@ -5,8 +5,10 @@
 // {binary_sha256,image_base:"0x400000",disposable_project:true,
 //  source_project_file:"/absolute/original.gpr",
 //  disposable_project_file:"/absolute/copy.gpr",functions:[
-//  {entry:"0x514990",size:8,range_sha256:"...",complete_extent_reviewed:true}]}
-// Does not repair ABI/type, follow external tails, clear conflicts or run analysis.
+//  {entry:"0x514990",size:8,range_sha256:"...",complete_extent_reviewed:true,
+//   superseded_instructions:[{start:"0x...",size:2,range_sha256:"..."}]}]}
+// Optional superseded instructions require independently reviewed exact listing
+// bounds and original bytes. Other conflicts remain fatal; no analysis is run.
 import ghidra.app.script.GhidraScript;
 import ghidra.app.cmd.disassemble.DisassembleCommand;
 import ghidra.program.model.address.*;
@@ -29,6 +31,12 @@ public class RepairReviewedFunctions extends GhidraScript {
         int size;
         String digest;
         boolean existing;
+        List<Superseded> superseded = new ArrayList<>();
+    }
+    private static class Superseded {
+        Address start, end;
+        int size;
+        String digest;
     }
     private void require(boolean value, String error) {
         if (!value) throw new IllegalArgumentException(error);
@@ -122,6 +130,30 @@ public class RepairReviewedFunctions extends GhidraScript {
                 require(last == null || last.getMaxAddress().compareTo(r.end) <= 0, "End crosses existing code/data unit");
                 DataIterator data = listing.getDefinedData(r.body, true);
                 require(!data.hasNext(), "Defined data conflicts with reviewed code; explicit separate review required");
+                if (row.has("superseded_instructions")) {
+                    JsonArray prior = row.getAsJsonArray("superseded_instructions");
+                    require(prior.size() <= 32 && (!r.existing || prior.size() == 0),
+                            "Cannot supersede instructions in an existing function");
+                    AddressSet cleared = new AddressSet();
+                    for (JsonElement old : prior) {
+                        JsonObject spec = old.getAsJsonObject(); Superseded s = new Superseded();
+                        long start = number(spec.get("start")), width = number(spec.get("size"));
+                        require(start > entry && width > 0 && width <= 15 && start + width <= entry + size,
+                                "Superseded instruction outside reviewed body");
+                        s.start = r.entry.getAddressSpace().getAddress(start);
+                        s.size = (int)width; s.end = s.start.add(width - 1);
+                        require(!cleared.intersects(s.start, s.end), "Superseded instructions overlap");
+                        cleared.add(s.start, s.end);
+                        Instruction instruction = listing.getInstructionAt(s.start);
+                        require(instruction != null && instruction.getMaxAddress().equals(s.end),
+                                "Superseded listing instruction differs from explicit bounds");
+                        byte[] oldBytes = originalBytes(file, start, s.size);
+                        s.digest = digest(oldBytes);
+                        require(s.digest.equals(spec.get("range_sha256").getAsString()),
+                                "Superseded instruction original SHA256 mismatch");
+                        r.superseded.add(s);
+                    }
+                }
                 work.add(r);
             }
         }
@@ -130,6 +162,13 @@ public class RepairReviewedFunctions extends GhidraScript {
         try {
             for (Reviewed r : work) {
                 monitor.checkCancelled();
+                List<Map<String,Object>> replaced = new ArrayList<>();
+                for (Superseded s : r.superseded) {
+                    listing.clearCodeUnits(s.start, s.end, false);
+                    Map<String,Object> old = new LinkedHashMap<>();
+                    old.put("start", s.start.toString()); old.put("size", s.size);
+                    old.put("range_sha256", s.digest); old.put("status", "cleared"); replaced.add(old);
+                }
                 DisassembleCommand command = new DisassembleCommand(r.entry, r.body, true);
                 command.enableCodeAnalysis(false);
                 require(command.applyTo(currentProgram, monitor), "Restricted disassembly failed: " + command.getStatusMsg());
@@ -146,14 +185,24 @@ public class RepairReviewedFunctions extends GhidraScript {
                                 "Restricted gap disassembly failed");
                         instruction = listing.getInstructionAt(cursor);
                     }
-                    require(instruction != null && r.body.contains(instruction.getMaxAddress()), "Range has undecoded bytes or crossing instruction");
+                    Instruction next = listing.getInstructionAfter(cursor);
+                    require(instruction != null && r.body.contains(instruction.getMaxAddress()),
+                            "Range has undecoded bytes or crossing instruction at " + cursor +
+                            " in reviewed function " + r.entry + ".." + r.end +
+                            "; containing unit=" + listing.getCodeUnitContaining(cursor) +
+                            "; next instruction=" + next + (next == null ? "" :
+                            " at " + next.getMinAddress() + ".." + next.getMaxAddress()));
                     cursor = instruction.getMaxAddress().add(1);
                 }
                 Function f = manager.getFunctionAt(r.entry);
                 if (f == null) f = manager.createFunction(null, r.entry, r.body, SourceType.ANALYSIS);
                 require(f != null && f.getBody().equals(r.body), "Created body differs from reviewed complete extent");
+                byte[] unchanged = new byte[r.size];
+                require(currentProgram.getMemory().getBytes(r.entry, unchanged) == r.size &&
+                        digest(unchanged).equals(r.digest), "Repair changed original program bytes");
                 Map<String,Object> outcome = new LinkedHashMap<>();
                 outcome.put("entry", r.entry.toString()); outcome.put("size", r.size); outcome.put("range_sha256", r.digest);
+                outcome.put("superseded_instructions", replaced);
                 outcome.put("status", r.existing ? "already-exact" : "created"); outcomes.add(outcome);
             }
             success = true;

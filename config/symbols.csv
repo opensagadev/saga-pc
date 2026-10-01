@@ -70,6 +70,7 @@ address    , symbol                                                         , si
 0x452570   , _Action_GameFollowPlayer                                       , 619   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4527e0   , _Action_MoveForward                                            , 634   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x004568b0 , _GameAIScriptAddLevelSfx                                       , 255   , "void __cdecl (WORLDINFO *, NULISTHDR *)"
+0x00465590 , _GizActions_PlayObstacle                                       , 389   , "void __cdecl (GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x004669e0 , _GizForceSFX_Configure                                         , 258   , "void __cdecl (WORLDINFO *, char *)"
 0x0046c7d0 , _GizmoPickups_SetOnOff                                         , 686   , void __cdecl (void)
 0x00470370 , _Grabber_Configure                                             , 691   , "void __cdecl (WORLDINFO *, char *)"
@@ -792,6 +793,10 @@ address    , symbol                                                         , si
 0x00552760 , _EvalAnim2                                                     , 181   , "void __cdecl (NUSPECIALHANDLE *, f32)"
 0x005528b0 , _SaveSceneObjectAnimTFactors                                   , 60    , void __cdecl (NUGSCN *)
 0x00553570 , _InitSplinePosition                                            , 156   , "void __cdecl (SPLINEPOS *position, NUGSPLINE *spline, f32 distance, i32 looping)"
+0x00557960 , _GizObstacle_PlayForwards                                      , 111   , void __cdecl (GIZOBSTACLE *)
+0x005579d0 , _GizObstacle_PlayBackwards                                     , 119   , void __cdecl (GIZOBSTACLE *)
+0x00558970 , _GizObstacle_JumpToStart                                       , 25    , void __cdecl (GIZOBSTACLE *)
+0x00558990 , _GizObstacle_JumpToEnd                                         , 25    , void __cdecl (GIZOBSTACLE *)
 0x559610   , _GizmoBufferAlloc                                              , 67    , "void * __cdecl (VARIPTR *, VARIPTR *, i32)"
 0x559660   , _RegisterGizmoTypes                                            , 638   , "void __cdecl (VARIPTR *, VARIPTR *, REGISTER_GIZMO_CONFIG_TYPE_FN *, i32)"
 0x005598e0 , _CreateGizmoSys                                                , 289   , "void *__cdecl (void *, VARIPTR *, VARIPTR *)"
@@ -3461,6 +3466,12 @@ address    , symbol                                                         , si
 0x007f1878 , _id_IMPERIALGUARD                                              , 2     , i16
 0x007f187c , _id_BODYGUARD                                                  , 2     , i16
 0x007f1880 , _id_DARTHMAUL                                                  , 2     , i16
+0x007f1888 , _id_BATTLEDROID                                                ,       ,
+0x007f188c , _id_BATTLEDROIDCOMMANDER                                       ,       ,
+0x007f1890 , _id_BATTLEDROIDGEONOSIAN                                       ,       ,
+0x007f1894 , _id_BATTLEDROIDSECURITY                                        ,       ,
+0x007f1898 , _id_CLONEEP3                                                   ,       ,
+0x007f189c , _id_CLONEEP3SAND                                               ,       ,
 0x007f18b8 , _id_PKDROID                                                    , 2     , i16
 0x007f18dc , _id_GEONOSIAN                                                  , 2     , i16
 0x007f18ec , _id_CHEWBACCA                                                  , 2     , i16

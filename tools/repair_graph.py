@@ -29,10 +29,51 @@ except ImportError:
 SCRIPT = Path(__file__).resolve().parent / "ghidra/RepairReviewedFunctions.java"
 DATA_SCRIPT = SCRIPT.with_name("RepairReviewedData.java")
 DATA_SCHEMA = "identification-reviewed-data-v1"
+FUNCTION_SCHEMA = "identification-reviewed-functions-v1"
 
 
 def _number(value):
     return int(value, 0) if isinstance(value, str) else value
+
+
+def _reviewed_range(row, address_key, maximum_size):
+    if not isinstance(row, dict):
+        raise ValueError("Expected an explicit reviewed range object")
+    start, size = _number(row.get(address_key)), row.get("size")
+    digest = row.get("range_sha256")
+    if (type(start) is not int or not 0x400000 <= start <= 0xffffffff or
+            type(size) is not int or not 0 < size <= maximum_size or
+            start + size > 0x100000000 or not isinstance(digest, str) or
+            not re.fullmatch(r"[0-9a-f]{64}", digest)):
+        raise ValueError("Invalid reviewed function/instruction range or hash")
+    return start, start + size
+
+
+def validate_function_packet(packet):
+    """Only explicitly pinned whole bodies and optional old instructions may change."""
+    functions = packet.get("functions")
+    if (packet.get("schema") != FUNCTION_SCHEMA or not isinstance(functions, list) or
+            not 1 <= len(functions) <= 32):
+        raise ValueError("Expected 1..32 reviewed function ranges")
+    bodies = []
+    for row in functions:
+        start, end = _reviewed_range(row, "entry", 65536)
+        if row.get("complete_extent_reviewed") is not True:
+            raise ValueError("Explicit complete function extent approval required")
+        if any(start < high and low < end for low, high in bodies):
+            raise ValueError("Reviewed function ranges overlap")
+        bodies.append((start, end))
+        superseded = row.get("superseded_instructions", [])
+        if not isinstance(superseded, list) or len(superseded) > 32:
+            raise ValueError("Expected a bounded explicit superseded instruction list")
+        instructions = []
+        for instruction in superseded:
+            low, high = _reviewed_range(instruction, "start", 15)
+            if not start < low < high <= end:
+                raise ValueError("Superseded instruction escapes reviewed function body")
+            if any(low < old_high and old_low < high for old_low, old_high in instructions):
+                raise ValueError("Superseded instructions overlap")
+            instructions.append((low, high))
 
 
 def _data_type(row):
@@ -238,12 +279,31 @@ def validate_repair(report, packet, packet_path, project):
             if actual_rows != expected_rows or len(report[key]) != len(packet[key]):
                 raise ValueError("Data repair report differs from explicit bounds/superseded owners")
         return
-    expected = {(int(row["entry"], 0), row["size"], row["range_sha256"]) for row in packet["functions"]}
+    validate_function_packet(packet)
+    if any(type(row.get("size")) is not int for row in report["functions"]):
+        raise ValueError("Function repair report requires integer sizes")
+    expected = {(_number(row["entry"]), row["size"], row["range_sha256"]) for row in packet["functions"]}
     actual = {(int(row["entry"], 16), row["size"], row["range_sha256"]) for row in report["functions"]}
     if actual != expected or len(report["functions"]) != len(packet["functions"]):
         raise ValueError("Repair report does not contain exactly the reviewed ranges")
     if any(row.get("status") not in {"created", "already-exact"} for row in report["functions"]):
         raise ValueError("Repair did not complete")
+    by_entry = {_number(row["entry"]): row for row in packet["functions"]}
+    for outcome in report["functions"]:
+        expected_rows = by_entry[int(outcome["entry"], 16)].get("superseded_instructions", [])
+        cleared = outcome.get("superseded_instructions", [])
+        if not isinstance(cleared, list) or len(cleared) != len(expected_rows):
+            raise ValueError("Repair report differs from explicit superseded instructions")
+        expected_clears = {(_number(row["start"]), row["size"], row["range_sha256"])
+                           for row in expected_rows}
+        actual_clears = set()
+        for row in cleared:
+            if (not isinstance(row, dict) or row.get("status") != "cleared" or
+                    type(row.get("size")) is not int):
+                raise ValueError("Superseded instruction report status or size differs")
+            actual_clears.add((int(row["start"], 16), row["size"], row["range_sha256"]))
+        if actual_clears != expected_clears or len(actual_clears) != len(cleared):
+            raise ValueError("Repair report differs from explicit superseded instructions")
 
 
 def repair(config_path, packet_path, reuse_pair_path, output, ghidra_home):
@@ -267,11 +327,13 @@ def repair(config_path, packet_path, reuse_pair_path, output, ghidra_home):
     if packet_path.stat().st_size > 65536:
         raise ValueError("Reviewed packet exceeds 64 KiB")
     packet = json.loads(packet_path.read_text())
-    if packet.get("schema") not in {"identification-reviewed-functions-v1", DATA_SCHEMA} or packet.get("binary_sha256") != pc["sha256"]:
+    if packet.get("schema") not in {FUNCTION_SCHEMA, DATA_SCHEMA} or packet.get("binary_sha256") != pc["sha256"]:
         raise ValueError("Reviewed packet differs from PC export configuration")
     data_mode = packet["schema"] == DATA_SCHEMA
     if data_mode:
         validate_data_packet(packet)
+    else:
+        validate_function_packet(packet)
     script = DATA_SCRIPT if data_mode else SCRIPT
     if sha256(original) != pc["sha256"]:
         raise ValueError("PC original differs from pinned SHA-256")
@@ -325,6 +387,8 @@ def repair(config_path, packet_path, reuse_pair_path, output, ghidra_home):
                    "-log", str(output / "repair.log")]
         try:
             subprocess.run(command, env=environment, check=True)
+            if not report_path.is_file():
+                raise ValueError(f"Ghidra produced no successful repair report; inspect {output / 'repair.log'}")
             report = json.loads(report_path.read_text())
             validate_repair(report, packet, generated_packet, copied)
             if sha256(scripts / script.name) != executed_script_hash:

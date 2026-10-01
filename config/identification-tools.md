@@ -180,12 +180,61 @@ new candidate data roots; this is expected. A bounded post-replay audit finds no
 duplicate site/owner observations and confirms accepted ZipUp is excluded from
 tentative endpoints.
 
+The next obstacle review accepts five complete function identities (669 PC
+bytes) and six character-ID storage identities with unknown allocation extents.
+The latter have blank CSV sizes and ctypes, false type/extent review flags and
+zero coverage credit. Accepted image coverage becomes 939,798 bytes (2.346%).
+These inventory additions have no compiled implementations or reconstruction
+gain; the original PC readers/writers and independent allocation limitations
+are recorded in [symbols.md](symbols.md).
+
+An AI-family preflight exposed 43 missing PC nodes among 70 confirmed map/ELF
+pairs. Independent original name/callback records and full CFG reviews recovered
+all 43 complete entries (11,448 original bytes) in three disposable repair batches,
+preserving every previous function extent and both corrected scalar/literal
+owner pairs. The final PC graph has 7,895 functions; Android remains at 13,242.
+One retained two-byte instruction at `0x00534f4e` incorrectly split the original
+four-byte `LEA ESP,[ESP]` at `0x00534f4c`. The first batch-three attempt rolled
+back and published no graph pair. Its explicitly reviewed replacement verifies
+the exact old instruction bounds/hash before clearing only that unit in the
+copy. All other code/data/function conflicts remain fatal. Successful Ghidra
+jobs peaked at 749--762 MiB with 512 MiB heaps.
+
+The family correspondence holdout freezes the original accepted map/journal,
+all 74 Android family variants and 70 unambiguous labels. Before repair, graph
+coverage was 27/70, final recovery 20/27 represented pairs or 20/70 overall, and
+round-one top-five retrieval 24/27. After repair, all 70 inputs are represented:
+final recovery is 25/70 (all 25 proposals correct on these labels), round-one
+top-one 27/70 and top-five 43/70. Every earlier final recovery survives. The five
+new registry callbacks recover only 1/5, counting the two Play aliases once.
+Data-name labels quarantined from training increase from 24 to 31, while the
+same seventeen independently checked reviewed anchors and 1,162 function seeds
+remain training. Original binary names/literals are allowed; this is not a
+registry-name-blind experiment or probability calibration. Independent audits
+verify both frozen input sets, partitions and denominators. Peak Python RSS is
+767 MiB before and 796 MiB after repair under the 1 GiB guard.
+
+The following production replay uses the current map/journal: 1,237 accepted
+function seeds, 23 reviewed data correspondences, 1,239 tentative function pairs,
+1,776 data candidates and zero stale decisions. Compared with the preceding
+registry replay, data rows add fifteen, change 79 and remove two; function
+evidence adds two, changes 176 and removes 207. Those are research changes,
+not new verified symbols. Peak RSS is 630 MiB. Shared topology and the common
+`false` literal leave many flag callbacks ambiguous. Reviewed original registry
+records are the next retrieval channel; raw DWORD/byte masks and field offsets
+must not be equated across platforms.
+
 `tools/repair_graph.py` makes the independent copy, pins the reviewed packet and
 executed script, checks a fresh repair report, and verifies the saved function
 extents in the new export before publishing a graph pair. Use a fresh output
 under `build/analysis`; the packet schema and required range hashes are described
 in `tools/ghidra/RepairReviewedFunctions.java`. Function repair refuses conflicting
-data or code, does not infer signatures, and does not analyze the whole program.
+data or code except exact, explicitly listed `superseded_instructions` inside a
+reviewed body. Each optional row pins `start`, integer `size` (1--15 bytes) and
+`range_sha256`; duplicate/overlapping rows, entry-instruction replacement and
+existing function bodies are forbidden. A fresh report must identify precisely
+those cleared units. Missing reports fail even when headless exits successfully.
+Repair does not infer signatures or analyze the whole program.
 
 ```sh
 python3 tools/repair_graph.py \
@@ -615,7 +664,7 @@ tooling/map changes. Keep generated graphs, original bytes, H2 databases and
 downloaded binaries ignored. Only tooling, synthetic tests, reviewed proposals
 and documentation belong in tracked changes.
 
-The latest checkpoint `make -j2 check` passed 317 tests (three optional Ghidra fixture skips), source
+The latest checkpoint `make -j2 check` passed 323 tests (three optional Ghidra fixture skips), source
 formatting and Clang-tidy. The object check passed 1,638 function and 2,604 data
 definitions across 123 objects. Final compilation/matching checks use two Make
 workers to keep resource use bounded.

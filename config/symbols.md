@@ -960,3 +960,40 @@ but the original ELF rows share the named Action_PlayGizObstacle function.
 Only one function row is accepted. The ignored `continuation/action-registry-frontier`
 packet records this source gap and the three missing PC graph entries. The four
 functions add 1,016 inventory bytes without implementations or match credit.
+
+The obstacle action's original directional/SNAP branches independently seed
+four animation wrappers: `GizObstacle_PlayForwards` at `0x00557960` (111 bytes),
+`PlayBackwards` at `0x005579d0` (119), `JumpToStart` at `0x00558970` (25), and
+`JumpToEnd` at `0x00558990` (25). Their named Android originals are respectively
+`0x004ab6c0`, `0x004abd80`, `0x004acc90`, and `0x004accc0`. Original callers pass
+one obstacle pointer; playback's incoming ECX push only reserves a float slot
+that is overwritten before use. Every local return restores ESP. The jump
+wrappers replace the stack argument with `anim_set` and terminate in explicit
+tails to the already mapped animation-set helpers; their extents exclude those
+helpers. All instructions are reachable and hashes cover each complete body.
+These four inventory rows add 280 bytes without compiled implementations.
+
+Six character-ID storage identities are accepted at `0x007f1888` through
+`0x007f189c`, with four-byte spacing: `id_BATTLEDROID`,
+`id_BATTLEDROIDCOMMANDER`, `id_BATTLEDROIDGEONOSIAN`,
+`id_BATTLEDROIDSECURITY`, `id_CLONEEP3`, and `id_CLONEEP3SAND`.
+Exact original name/fixup rows, the startup resolver's WORD store, and independent
+formation comparisons establish their semantic identities and signed 16-bit
+accessed values. They do not establish complete PC allocation extents or original
+declarations. Every CSV size and ctype stays blank; journal type/extent flags are
+false and there are no complete ranges, source definitions or coverage credit.
+Android's two-byte globals and Ghidra's analysis-only undefined2 owners do not
+prove PC object boundaries. The ignored `continuation/formation-id-independent-audit`
+records this limitation and exact-address owner checks.
+
+`GizActions_PlayObstacle` at `0x00465590` adds a complete 389-byte inventory
+body. The original eight-byte gizmo-action definition at `0x007f8b88` binds
+`PlayObstacle` to this entry; the Android original binds the same action to
+`0x001c37e0`. The actual flow dispatcher pushes flow, box, params and count
+and cleans sixteen bytes. All 124 PC instructions are reachable, every branch
+closes within `[0x465590,0x465715)`, and every return restores ESP. Direction,
+SNAP, stay-open/shut tokens select the four reviewed playback helpers; PC flags
+use DWORD `+0x9c`, unlike Android's BYTE `+0xa0`. The obstacle type-ID reader at
+`0x00802644` is a pending data dependency; no allocation extent is inferred.
+The ignored `continuation/obstacle-dependency-next` retains the original registry,
+dispatcher, body hash and counterpart evidence. No implementation is claimed.

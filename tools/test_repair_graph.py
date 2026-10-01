@@ -27,9 +27,9 @@ class RepairGraphTests(unittest.TestCase):
         self.packet = {"schema": "identification-reviewed-functions-v1",
                        "binary_sha256": "a" * 64,
                        "functions": [{"entry": "0x00401000", "size": 5,
-                                      "range_sha256": "b" * 64},
+                                      "range_sha256": "b" * 64, "complete_extent_reviewed": True},
                                      {"entry": "0x00402000", "size": 8,
-                                      "range_sha256": "c" * 64}]}
+                                      "range_sha256": "c" * 64, "complete_extent_reviewed": True}]}
         self.packet_path.write_text(json.dumps(self.packet))
         self.report = {"schema": "identification-reviewed-function-repair-v1",
                        "binary_sha256": self.packet["binary_sha256"],
@@ -107,6 +107,99 @@ class RepairGraphTests(unittest.TestCase):
         self.report["functions"][0]["status"] = "failed"
         with self.assertRaisesRegex(ValueError, "did not complete"):
             repair.validate_repair(self.report, self.packet, self.packet_path, self.project)
+
+    def superseded_fixture(self):
+        self.packet["functions"][0]["superseded_instructions"] = [
+            {"start": "0x00401002", "size": 2, "range_sha256": "d" * 64}]
+        self.packet_path.write_text(json.dumps(self.packet))
+        self.report["packet_sha256"] = repair.sha256(self.packet_path)
+        self.report["functions"][0]["superseded_instructions"] = [
+            {"start": "00401002", "size": 2, "range_sha256": "d" * 64, "status": "cleared"}]
+
+    def test_function_packet_legacy_and_explicit_instruction_clear(self):
+        repair.validate_function_packet(self.packet)
+        self.superseded_fixture()
+        repair.validate_function_packet(self.packet)
+        repair.validate_repair(self.report, self.packet, self.packet_path, self.project)
+
+    def test_function_packet_requires_exact_approved_integer_ranges(self):
+        for key, value in (("entry", True), ("entry", "0x3fffff"), ("size", True),
+                           ("size", 5.0), ("size", 0), ("size", 65537),
+                           ("range_sha256", "bad"), ("range_sha256", False),
+                           ("complete_extent_reviewed", 1), ("complete_extent_reviewed", False)):
+            packet = copy.deepcopy(self.packet)
+            packet["functions"][0][key] = value
+            with self.subTest(key=key, value=value), self.assertRaises(ValueError):
+                repair.validate_function_packet(packet)
+        for functions in ([], self.packet["functions"] * 17,
+                          [self.packet["functions"][0]] * 2):
+            packet = dict(self.packet, functions=functions)
+            with self.assertRaises(ValueError):
+                repair.validate_function_packet(packet)
+
+    def test_superseded_instruction_requires_exact_bounded_disjoint_ranges(self):
+        self.superseded_fixture()
+        for key, value in (("start", True), ("start", "0x00400fff"), ("start", "0x00401000"),
+                           ("start", "0x00401004"), ("size", True), ("size", 2.0),
+                           ("size", 0), ("size", 16), ("range_sha256", "bad")):
+            packet = copy.deepcopy(self.packet)
+            packet["functions"][0]["superseded_instructions"][0][key] = value
+            with self.subTest(key=key, value=value), self.assertRaises(ValueError):
+                repair.validate_function_packet(packet)
+        for value in (None, {}, [self.packet["functions"][0]["superseded_instructions"][0]] * 2,
+                      [self.packet["functions"][0]["superseded_instructions"][0]] * 33):
+            packet = copy.deepcopy(self.packet)
+            packet["functions"][0]["superseded_instructions"] = value
+            with self.assertRaises(ValueError):
+                repair.validate_function_packet(packet)
+
+    def test_report_clears_must_match_authorized_rows_exactly(self):
+        self.superseded_fixture()
+        for key, value in (("start", "00401003"), ("size", 1), ("size", 2.0),
+                           ("size", True), ("range_sha256", "e" * 64), ("status", "skipped")):
+            report = copy.deepcopy(self.report)
+            report["functions"][0]["superseded_instructions"][0][key] = value
+            with self.subTest(key=key, value=value), self.assertRaises(ValueError):
+                repair.validate_repair(report, self.packet, self.packet_path, self.project)
+        for value in (None, [], self.report["functions"][0]["superseded_instructions"] * 2):
+            report = copy.deepcopy(self.report)
+            report["functions"][0]["superseded_instructions"] = value
+            with self.assertRaises(ValueError):
+                repair.validate_repair(report, self.packet, self.packet_path, self.project)
+        # Equal row count cannot conceal clearing the same instruction twice.
+        self.packet["functions"][0]["superseded_instructions"].append(
+            {"start": "0x00401004", "size": 1, "range_sha256": "e" * 64})
+        self.packet_path.write_text(json.dumps(self.packet))
+        self.report["packet_sha256"] = repair.sha256(self.packet_path)
+        self.report["functions"][0]["superseded_instructions"] *= 2
+        with self.assertRaises(ValueError):
+            repair.validate_repair(self.report, self.packet, self.packet_path, self.project)
+
+    def test_legacy_report_cannot_claim_unrequested_clearing(self):
+        self.report["functions"][0]["superseded_instructions"] = [
+            {"start": "00401002", "size": 2, "range_sha256": "d" * 64, "status": "cleared"}]
+        with self.assertRaises(ValueError):
+            repair.validate_repair(self.report, self.packet, self.packet_path, self.project)
+
+    def test_invalid_function_clear_packet_rejected_before_original_read_or_job(self):
+        self.superseded_fixture()
+        self.packet["functions"][0]["superseded_instructions"][0]["size"] = 16
+        self.packet_path.write_text(json.dumps(self.packet))
+        config = self.root / "config.json"
+        config.write_text(json.dumps({"schema": "export-reference-graph-config-v1", "jobs": {
+            "pc": {"original": "missing-original", "project": str(self.project),
+                   "program": "synthetic.exe", "sha256": self.packet["binary_sha256"]},
+            "android": {}}}))
+        output = self.root / "build/analysis/repair"
+        with patch.object(repair, "ROOT", self.root), \
+                patch.object(repair.resource, "getrlimit", return_value=(-1, -1)), \
+                patch.object(repair, "sha256") as read_original, \
+                patch.object(repair.subprocess, "run") as launch:
+            with self.assertRaisesRegex(ValueError, "range or hash"):
+                repair.repair(config, self.packet_path, "missing-pair", output, "/fake")
+            read_original.assert_not_called()
+            launch.assert_not_called()
+        self.assertFalse(output.exists())
         self.packet_path.write_text("changed packet")
         with self.assertRaisesRegex(ValueError, "pinned inputs"):
             repair.validate_repair(self.report, self.packet, self.packet_path, self.project)

@@ -8,7 +8,7 @@
     "src/externals.h": "3382382faeac231f3c7962ffb276f5c091463416d3cd41afd89c57fe6c4eef62",
     "src/saga.h": "5b5c54e8e43f9bdf33f5b8e3a70df64c05c1177588b5a24ed456c103994658d5",
     "config/data.md": "b46d28a41b8d3d2d61ee37a9eaee793a8857aed771d8c46412ec3df2a8c151a1",
-    "config/identification-decisions.jsonl": "ff21a5bfc2b7106e0a42997062d227100f6fbf577f87dacffdd95b62b2d5e237",
+    "config/identification-decisions.jsonl": "bc84e06ee6b3383ea2b52e911aa10b4664ba0a3fc8a07c3cc32919d7b599b754",
     "config/identification-plan.md": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
     "config/identification-tools.md": "e8329a844935e5e96cedf77da23308599a4c1bb0c6cbff7e6cf2995eccb3a365",
     "config/identification.md": "ecfbf8977bb20b3c0b8fc8cf0c4a7cc7d7cd0f9915f3abe77145c532651e31e4",
@@ -16,8 +16,8 @@
     "config/progress-plan.md": "cf144b1f5e0b8d5d0a17e0f2a1d065ad64c13a95d1b491c88792e046bb65a3ff",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
     "config/strategy.md": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
-    "config/symbols.csv": "fe2c820e46fb781fed7ba69027ae3ed474762c41c4e4d4f394d9ed77818b9a37",
-    "config/symbols.md": "44690b9ec99693fe3480737161ebd8abf8e25d8cfb5b1093817342bb7d1c47dc",
+    "config/symbols.csv": "7fc8096eaefd8905ab7558f078bfd301bc22a298d605fafb813741632fd95d91",
+    "config/symbols.md": "4e7f4372c759cdecc9b6f40942e148118028ab52c67f2ea58817e6acdc7f7684",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
@@ -38,7 +38,7 @@
     "tools/match.py": "c0abc16e173230f630d5aac633b0e0f9348a9b47b0245ef925ed936606e829f9",
     "tools/reference_features.py": "daee9cafe9ca5ae5a4249adf4f877ca14f1b1eb356178b9f91e0ee2da4fe92c9",
     "tools/reference_graph.py": "c88427c6e6421f7e84902b3d0e3081e5f2ad7d3637e9463572d2d6f48e96a1ca",
-    "tools/repair_graph.py": "0abf8d38520b284836b73b56469a0e331f12c162540fa2036395ea02074c9d2f",
+    "tools/repair_graph.py": "8471ae5a294a217a4e70f97e53fe8b4a37a7bf6ea9c81ac3d2c3ab991f2f699b",
     "tools/setup.py": "a7a9bd71e63f0039de5211e3e9976d87d57e357be9f7a62a68cfb33758b4e56c",
     "tools/source_graph.py": "6314a14d5522f8ff3a3b37dac3e4e0fde6de85125bcc23bc38c1a0e2daa77e44",
     "tools/test_binary.py": "b9347b6599deed3c1f270ace1f7c5ac07bcebd2656ec373d77e45be7fa38432f",
@@ -57,7 +57,7 @@
     "tools/test_identification_tables.py": "0428ce56acdcc268e5af8fd170b719b599fb0274357bcfa6e099f109b1c90392",
     "tools/test_lib.py": "54561f44ee40367574c6f1824c77198ee3a93a455ba88e2ae4c83545b79a7e78",
     "tools/test_match.py": "794c052372646961512004b82d37c0b2656438a321a2280ed6420d87766f16dd",
-    "tools/test_repair_graph.py": "7d5d5c6771cf09c1f6a0e3b4f379fbdacb9a41ec2760dae61cb37115d3425d6c",
+    "tools/test_repair_graph.py": "b11a38a83162548416525531a6d757a0d737b8bc91e83f6f17a19a8194c0de8a",
     "tools/test_setup.py": "d7a31492511f3d96c3f4c68d36c82ac5887931505e56ee8ebba9344b991c73ff",
     "src/data.cpp": "3fea1974778fbfc5ed99dc22884d3e045131b7e1b789b63f5d8ff6d55921ff38",
     "src/legoapi/fade.cpp": "73f1076d3ee6b210268db546579b25fb82f28a777ff3d3861db57db8aecd5407",
@@ -1869,6 +1869,16 @@
       ],
       "status": "different",
       "objdiff_percent": 95.333336
+    },
+    {
+      "name": "GizActions_PlayObstacle",
+      "symbol": "_GizActions_PlayObstacle",
+      "address": "0x00465590",
+      "units": [],
+      "target_size": 389,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "GizForceSFX_Configure",
@@ -18319,6 +18329,46 @@
       ],
       "status": "different",
       "objdiff_percent": 99.0
+    },
+    {
+      "name": "GizObstacle_PlayForwards",
+      "symbol": "_GizObstacle_PlayForwards",
+      "address": "0x00557960",
+      "units": [],
+      "target_size": 111,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "GizObstacle_PlayBackwards",
+      "symbol": "_GizObstacle_PlayBackwards",
+      "address": "0x005579d0",
+      "units": [],
+      "target_size": 119,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "GizObstacle_JumpToStart",
+      "symbol": "_GizObstacle_JumpToStart",
+      "address": "0x00558970",
+      "units": [],
+      "target_size": 25,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "GizObstacle_JumpToEnd",
+      "symbol": "_GizObstacle_JumpToEnd",
+      "address": "0x00558990",
+      "units": [],
+      "target_size": 25,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "GizmoBufferAlloc",
@@ -69971,6 +70021,66 @@
       "status": "exact"
     },
     {
+      "name": "id_BATTLEDROID",
+      "symbol": "_id_BATTLEDROID",
+      "address": "0x007f1888",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "id_BATTLEDROIDCOMMANDER",
+      "symbol": "_id_BATTLEDROIDCOMMANDER",
+      "address": "0x007f188c",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "id_BATTLEDROIDGEONOSIAN",
+      "symbol": "_id_BATTLEDROIDGEONOSIAN",
+      "address": "0x007f1890",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "id_BATTLEDROIDSECURITY",
+      "symbol": "_id_BATTLEDROIDSECURITY",
+      "address": "0x007f1894",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "id_CLONEEP3",
+      "symbol": "_id_CLONEEP3",
+      "address": "0x007f1898",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "id_CLONEEP3SAND",
+      "symbol": "_id_CLONEEP3SAND",
+      "address": "0x007f189c",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "id_PKDROID",
       "symbol": "_id_PKDROID",
       "address": "0x007f18b8",
@@ -98195,16 +98305,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 440898,
+    "mapped_code_bytes": 441567,
     "matched_code_bytes": 45746,
     "matching_percent": 1.3178553176582704,
     "fuzzy_coverage_percent": 6.21161866290101,
-    "mapped_functions": 1828,
+    "mapped_functions": 1833,
     "matched_functions": 801,
     "objdiff_fuzzy_percent": 61.121914,
     "objdiff_total_code": 352861,
     "image_bytes": 40067072,
-    "mapped_bytes": 939129,
-    "mapping_percent": 2.3438922614559905
+    "mapped_bytes": 939798,
+    "mapping_percent": 2.345561961702617
   }
 }
