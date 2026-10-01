@@ -564,9 +564,9 @@ void __cdecl SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIP
     object->ai_update_position = object->position;
     object->reset_velocity = v000;
     object->velocity = object->reset_velocity;
-    STUBBED_NAMED("SnapCreaturePos: initialize surface information (PC 0x5728a0)");
+    InitSurfaceInfo(object);
     if (set_on_surface != 0) {
-        STUBBED_NAMED("SnapCreaturePos: set object on surface (PC 0x572660)");
+        SetObjOnSurface(object, 0);
     }
     if (path_info != NULL) {
         object->ai_packet.path_info = *path_info;
@@ -3242,6 +3242,129 @@ void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_hei
             object->roof_surface_id_pc = 0;
     } else
         object->roof_surface_id_pc = 0xff;
+
+    extra_reflect = SurfaceInfo_ExtraReflectFn;
+    if (extra_reflect != NULL)
+        extra_reflect(object);
+}
+
+/* Source-private in gameobjects.c. Forward pointer uses struct tag in saga.h.
+ * Tail[1] exposes actual counted traversal; it is NOT owner/allocation count.
+ */
+typedef struct shadow_platform_entry_pc_s {
+    GAMEOBJECT *object;
+    u8 unknown_04_14[0x10];
+} SHADOW_PLATFORM_ENTRY_PC;
+struct shadow_platform_list_pc_s {
+    u8 unknown_00_04[4];
+    i32 count;
+    u8 unknown_08_18[0x10];
+    SHADOW_PLATFORM_ENTRY_PC entries[1];
+};
+STATIC_ASSERT(sizeof(SHADOW_PLATFORM_ENTRY_PC) == 0x14);
+STATIC_ASSERT(offsetof(SHADOW_PLATFORM_ENTRY_PC, object) == 0);
+STATIC_ASSERT(offsetof(struct shadow_platform_list_pc_s, count) == 4);
+STATIC_ASSERT(offsetof(struct shadow_platform_list_pc_s, entries) == 0x18);
+/* Preserve existing GAMEOBJECT field declarations/assertions:
+ * level_object_index signedWORD1070, flags_1fc BYTE1fc,
+ * character_data pointer54 -> game_character pointer24 -> field_028 f32.
+ * No new aggregate/type claim in this private source access view.
+ */
+
+f32 __cdecl GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask) {
+    i32 handles[16];
+    i32 handle_count = 0;
+    i32 i;
+    volatile f32 height;
+
+    if (object != NULL) {
+        WORLDINFO *world = WorldInfo_CurrentlyActive();
+        if (object->level_object_index != -1)
+            handles[handle_count++] = object->level_object_index;
+        if (world != NULL && world->shadow_platform_list_pc != NULL && VehicleArea == 0 &&
+            (object->flags_1fc & 0x80u) == 0) {
+            struct shadow_platform_list_pc_s *list = world->shadow_platform_list_pc;
+            for (i = 0; i < list->count; ++i) {
+                if (list->entries[i].object != NULL)
+                    handles[handle_count++] = list->entries[i].object->level_object_index;
+            }
+        }
+        for (i = 0; i < handle_count; ++i)
+            PlatOnOff(handles[i], 0);
+        if (LAYER_HOVERIGNORE != 0xffffffffu && object->character_data->game_character->field_028 == 0.0f)
+            mask &= (i32)~LAYER_HOVERIGNORE;
+    }
+
+    height = NewShadowEx(position, 0.0f, probe, probe, mask);
+    if (object != NULL && object->level_object_index != -1)
+        PlatOnOff(object->level_object_index, 1);
+    for (i = 0; i < handle_count; ++i)
+        PlatOnOff(handles[i], 1);
+    return height;
+}
+
+f32 __cdecl FindReflectionNoPlatforms(NUVEC *position) {
+    volatile f32 height;
+    i32 material;
+    NewTerrPlatformsOff();
+    height = NewShadowEx(position, 0.0f, 5.0f, 5.0f, -1);
+    if (height != GameObjectNearFloorNoFloorHeight) {
+        material = ShadowInfo();
+        if ((u32)material <= 31u && (TerSurface[material].flags & 2u) != 0)
+            return height;
+    }
+    return LevelConfigFarDistance;
+}
+
+void __cdecl InitSurfaceInfo(GAMEOBJECT *object) {
+    volatile f32 rounded_height;
+    volatile f32 rounded_reflection;
+    f32 height;
+    f32 reflection;
+    u8 water_surface;
+    void(__cdecl * extra_reflect)(GAMEOBJECT *);
+
+    rounded_height = GameShadow(object, &object->position, 5.0f, -1);
+    height = rounded_height;
+    object->floor_height = height;
+    if ((f64)height != GameObjectNearFloorNoFloorHeight) {
+        GetSurfaceInfo(object, 1, height);
+        object->surface_flag8_scale_pc = (TerSurface[(i8)object->jump_animation_state].flags & 8) ? 1.0f : 0.0f;
+        FindAnglesZX(&object->surface_normal, NULL, NULL);
+        object->field_1056 = temp_zrot;
+        object->field_1052 = temp_zrot;
+        object->field_1058 = temp_xrot;
+        object->field_1054 = temp_xrot;
+    } else {
+        GetSurfaceInfo(object, 0, height);
+        object->surface_flag8_scale_pc = 0.0f;
+        object->jump_animation_state = 0;
+        object->raw_surface_id_pc = 0;
+        object->surface_normal.x = v010.x;
+        object->surface_normal.y = v010.y;
+        object->surface_normal.z = v010.z;
+    }
+
+    water_surface = object->field_283 == 1 || object->field_283 == 9;
+    object->unknown_0286 = water_surface && object->water_height >= object->collision_position.y;
+    object->water_intersects = water_surface && !(object->water_height > object->collision_max.y) &&
+                               !(object->water_height < object->collision_min.y);
+
+    object->water_height = LevelConfigFarDistance;
+    object->roof_height_pc = LevelConfigFarDistance;
+    object->field_283 = -1;
+    object->roof_surface_id_pc = 0xff;
+    GetSurfaceInfo(object, 1, object->floor_height);
+
+    if (!(object->character_data->game_character->flags_090 & 0x8000) &&
+        (f64)object->reflection_height == GameObjectNearFloorNoFloorHeight && object->terrain_platform_id != -1) {
+        rounded_reflection = FindReflectionNoPlatforms(&object->position);
+        reflection = rounded_reflection;
+        if ((f64)reflection != GameObjectNearFloorNoFloorHeight) {
+            object->reflection_height = reflection;
+            object->reflection_enabled = 2;
+        }
+    }
 
     extra_reflect = SurfaceInfo_ExtraReflectFn;
     if (extra_reflect != NULL)

@@ -837,3 +837,23 @@ The independently checked data packet is
 are 24 bytes, and its cumulative semantic metadata is 4,010,331 bytes under
 a 4 MiB cap. Earlier predicate failures and the CSV whitespace-only repair
 are recorded, rather than omitted from the bookkeeping.
+
+## Shadow wrapper access views (2026-10-01)
+
+The existing mutable `LAYER_HOVERIGNORE` row at `0x00802524` has known size
+four and type u32. Its source definition now preserves original writable
+initializer `0xffffffff`; reusing this row adds no new mapping extent.
+`TerrainShadowStatusPc` at `0x0292fde8` and `TerrainScaleWorkBasePc` at
+`0x02962b50` are separate four-byte loader-zero access cells, respectively
+i32 and polygon pointer. Their complete original owner sizes/types remain
+blank, with zero allocation or exact-data credit. The DWORD status is distinct
+from the existing WORD surface-class cell at `0x02947db0`.
+
+WORLDINFO exposes the accessed platform-list pointer at `0x2adc`; its AI
+pointer remains `0x2ae8` and size `0x51ac`. The private list uses signed count
+at +4 and inline entries at +0x18, stride0x14, with a GAMEOBJECT pointer at
+entry+0. Only that counted access view is known; the tail declaration supplies
+no owner count or universal capacity. GAMEOBJECT exposes the float at +0xd6c
+without changing size0x10d8. Existing floor, roof, surface IDs, normals and
+character links are reused. Compiler layout assertions and independently
+reviewed original/COFF selected cells preserve these distinctions.

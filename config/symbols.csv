@@ -1071,6 +1071,7 @@ address    , symbol                                                         , si
 0x00572380 , _Surfaces_Reset                                                , 182   , void __cdecl (void)
 0x00572440 , _GetSurfaceInfo                                                , 536   ,
 0x00572660 , _SetObjOnSurface                                               , 233   ,
+0x005728a0 , _InitSurfaceInfo                                                , 538   ,
 0x00572b00 , _Areas_ConfigureList                                           , 1853  , "AREA_DATA_PC *__cdecl (char *, VARIPTR *, VARIPTR *, i32, i32 *)"
 0x00573240 , _Areas_ConfigureResidents                                      , 481   , "void __cdecl (VARIPTR *, VARIPTR *)"
 0x00573430 , _Area_FindByName                                               , 107   , "AREA_DATA_PC * __cdecl (char *, i32 *)"
@@ -1900,9 +1901,11 @@ address    , symbol                                                         , si
 0x0067a600 , _ShadowInfo                                                    , 18    ,
 0x0067a670 , _EShadowInfo                                                   , 18    ,
 0x0067a690 , _ShadowRoofInfo                                                , 18    ,
+0x0067a6d0 , _NewTerrPlatformsOff                                            , 10    ,
 0x0067a6e0 , _NewShadowOnPlatform                                           , 55    ,
 0x0067bf50 , _NewPlatInst                                                   , 528   , "i32 __cdecl (void *, i32)"
 0x0067c860 , _PlatInstGetHit                                                , 45    , i32 __cdecl (i32)
+0x0067c8e0 , _PlatOnOff                                                      , 73    ,
 0x0067c930 , _DeletePlatinst                                                , 335   , i32 __cdecl (i32)
 0x0067fb50 , _TerrainPlatGetMtx                                             , 49    ,
 0x00681e90 , _PlaySfxById                                                   , 31    , "void __cdecl (i32, NUVEC *)"
@@ -4959,6 +4962,7 @@ address    , symbol                                                         , si
 0x0292fda0 , _edanim_page_on                                                , 32    , i32[8]
 0x0292fdc0 , _SfxHashHeads                                                  , 4     , i16 *
 0x0292fdd8 , _GetSurfaceInfoSurfaceNormalPc                                 ,       ,
+0x0292fde8 , _TerrainShadowStatusPc                                          ,       ,
 0x0292fdec , _TerrainWaterCastIndexPc                                       ,       ,
 0x0292fe38 , _AnimParams                                                    , 46336 , EDANIM_PARAM_PC[64]
 0x02947b94 , _SfxInfo                                                       , 4     , SFX_RECORD_PC *
@@ -4996,6 +5000,7 @@ address    , symbol                                                         , si
 0x02962128 , _edanim_params_used                                            , 4     , i32
 0x02962134 , _edbits_base_scene                                             , 4     , NUGSCN *
 0x0296293c , _edbits_base_terrain                                           , 4     , void *
+0x02962b50 , _TerrainScaleWorkBasePc                                         ,       ,
 0x02962b70 , _nusound_special_positions                                     , 60    , NUVEC[5]
 0x02962bac , ?the_music_player@@3PAVNuMusic@@A                              , 4     , NuMusic *
 0x02962bcc , _NuSound3Initialized                                           , 4     , i32

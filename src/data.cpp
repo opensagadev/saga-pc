@@ -4485,3 +4485,15 @@ extern "C" {
     extern const f32 TerrainCastLowerSentinel = -2000000.0f;
 #pragma const_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$TerrainShadowStatusPc")
+    i32 TerrainShadowStatusPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainScaleWorkBasePc")
+    TERRAIN_POLYGON_INFO_PC *TerrainScaleWorkBasePc;
+#pragma bss_seg()
+#pragma data_seg(".data$LAYER_HOVERIGNORE")
+    u32 LAYER_HOVERIGNORE = 0xffffffffu;
+#pragma data_seg()
+}

@@ -2602,7 +2602,9 @@ typedef struct WORLDINFO_s {
     LEVEL_OBJECT_RUNTIME_PC *level_objects;
     struct nugspline_s **camera_splines;
     void *gizmo_sys;
-    u8 unknown_2acc[0x1c];
+    u8 unknown_2acc[0x10];
+    struct shadow_platform_list_pc_s *shadow_platform_list_pc;
+    u8 unknown_2ae0[8];
     AISYS_PC *ai_sys;
     u8 unknown_2aec[0x1ba4];
     TUBE_PC *tubes;
@@ -3817,7 +3819,9 @@ typedef struct gameobject_s {
     u8 unknown_0d58[8];
     f32 hud_icon_timer;
     f32 jump_variant_timer;
-    u8 unknown_0d68[0x14];
+    u8 unknown_0d68[4];
+    f32 surface_flag8_scale_pc;
+    u8 unknown_0d70[0xc];
     f32 terrain_origin_floor_offset;
     u8 unknown_0d80[0x18];
     f32 turn_braking;
@@ -6194,6 +6198,13 @@ extern "C" {
                                     i32 count, i32 first_time, f32 elapsed);
     i32 __cdecl Action_SetAnimSpeedMul(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                        char **params, i32 num_params, i32 first_time, f32 elapsed);
+    void __cdecl InitSurfaceInfo(GAMEOBJECT *object);
+    f32 __cdecl GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask);
+    f32 __cdecl FindReflectionNoPlatforms(NUVEC *position);
+    f32 __cdecl NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_range, i32 mask);
+    void __cdecl PlatOnOff(i32 platform_index, i32 enabled);
+    void __cdecl NewTerrPlatformsOff(void);
+    extern u32 LAYER_HOVERIGNORE;
     i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode);
     void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height);
     i32 __cdecl ShadowInfo(void);
@@ -8241,5 +8252,11 @@ extern NuMusic *the_music_player;
 void SetAudioFadeLevel(f32 level);
 f32 GetAudioFadeLevel(void);
 #endif
+
+STATIC_ASSERT(offsetof(WORLDINFO, shadow_platform_list_pc) == 0x2adc);
+STATIC_ASSERT(offsetof(WORLDINFO, ai_sys) == 0x2ae8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, surface_flag8_scale_pc) == 0xd6c);
+STATIC_ASSERT(sizeof(WORLDINFO) == 0x51ac);
+STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 
 #endif

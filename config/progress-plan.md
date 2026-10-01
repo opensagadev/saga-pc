@@ -371,3 +371,22 @@ Physical effects are reviewed separately from unresolved source fields and
 initialization/bounds. Then close shadow/reflection and release InitSurfaceInfo
 and the accepted snap callbacks. SetCurrentSpeed's unrelated indirect lookup
 remains held.
+
+## Shadow and surface initialization release
+
+Six connected implementations add 1,260 compared original bytes, reaching
+369,300 total and 369,245 unique after the unchanged 55-byte alias overlap.
+Whole-PC fuzzy coverage increases from 6.3935661% to 6.4234240%, gaining
+0.02985795 percentage points. Four new exact functions add 649 bytes; all
+806 earlier exact functions remain, yielding 810 functions and 46,519 exact
+bytes out of 3,471,246 text bytes. Three new independently reviewed identities
+add 621 mapped bytes, reaching 1,118,618 / 40,067,072 virtual image bytes.
+Two neutral data access views earn zero extent credit.
+
+SnapCreaturePos's existing implementation now calls both real surface
+providers. InitSurfaceInfo and PlatOnOff remain nonexact; retain their complete
+comparisons and normal-engine qualifications while expanding source closure.
+Next review the accepted 2,076-byte SnapToPosition/SnapToSockPosition action
+family, including parser rounding, socket providers, actor writes and the
+separate eight-slot party pointer view. The unrelated current-speed indirect
+lookup and the playable entry path remain incomplete.

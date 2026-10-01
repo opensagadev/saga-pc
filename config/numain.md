@@ -750,3 +750,12 @@ CI for the preceding `d4e209f1` checkpoint timed out twice during Wine package
 downloads, before lint/tests/build ran. Those cancelled runs are not passes.
 The build job limit is increased from 20 to 60 minutes for the next push;
 its exact commit must still receive terminal CI verification.
+
+Shadow wrappers, platform toggles and InitSurfaceInfo now have genuine source,
+with 1,260 newly compared original bytes and four exact wrapper/switch bodies.
+SnapCreaturePos's two actual provider calls are restored without claiming
+new credit for its already-compared 408-byte body. New Init and switch
+identities are separately reviewed; original types and full data-owner extents
+remain held. The next connected source batch is the 2,076-byte snap action
+family. Its socket/parser/actor/party-array evidence must close before release;
+no marker or inventory-only mapping counts as implementation progress.

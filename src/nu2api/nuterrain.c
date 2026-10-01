@@ -1344,3 +1344,52 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
 #undef TERRAIN_FINISH_GROUP
 #undef TERRAIN_CROSS
 #undef SHADOW_BOUNDS_OVERLAP
+
+extern i32 TerrainShadowStatusPc;
+extern TERRAIN_POLYGON_INFO_PC *TerrainScaleWorkBasePc;
+
+f32 __cdecl NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_range, i32 mask) {
+    NUVEC local_position;
+    (void)unused;
+    TerrainShadowHeightPc = LevelConfigFarDistance;
+    GetSurfaceInfoWaterHeightPc = LevelConfigFarDistance;
+    GetSurfaceInfoWaterNormalPc.y = 1.0f;
+    TerrainShadowStatusPc = -1;
+    GetSurfaceInfoRoofHeightPc = LevelConfigFarDistance;
+    TerrainShadowGroupIndexPc = -1;
+    TerrainShadowFloorIndexPc = -1;
+    GetSurfaceInfoSurfaceNormalPc.y = 1.0f;
+    TerrainCastAuxPolygonPc = NULL;
+    TerrainWaterCastIndexPc = 0;
+    EShadowPolygonPc = NULL;
+    ShadowRoofPolygonPc = NULL;
+    TerrainSurfaceClassPc = 0;
+    ShadPoly = NULL;
+
+    if (CurrentTerrain == NULL)
+        return LevelConfigFarDistance;
+
+    TerI = (TERRAIN_SHADOW_QUERY_VIEW_PC *)NuScratchAlloc32(0x948);
+    TerrainScaledShapeCursorPc = TerrainScaleWorkBasePc;
+    local_position = *position;
+    NewScanRot(&local_position, mask);
+    (void)NewCast(&local_position, height_above, roof_range);
+    NuScratchRelease();
+    TerrainPlatformsOffPc = 0;
+    return local_position.y;
+}
+
+/* Local existing nuterrain.c access views; no new storage definition. */
+void PlatOnOff(i32 platform_index, i32 enabled) {
+    TERRAIN_SET_PC *terrain;
+    i32 group_index;
+    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    if (terrain == NULL || platform_index < 0 || platform_index >= terrain->max_platforms)
+        return;
+    group_index = terrain->platforms[platform_index].terrain_group_index;
+    terrain->groups[group_index].chunk_type = enabled != 0 ? 1 : -1;
+}
+
+void NewTerrPlatformsOff(void) {
+    TerrainPlatformsOffPc = 1;
+}

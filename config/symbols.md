@@ -2202,3 +2202,46 @@ Frozen local evidence: `terrain-scan-source-independent-next2.json`,
 `registry-wave21-macro-rename-compiled-supplement.json`, under ignored
 `build/analysis/identification/continuation/`. The next shadow wrappers still
 need separate provider/caller closure; their inventory names are not source.
+
+## Shadow wrappers and surface initialization (2026-10-01)
+
+Genuine C now closes NewShadowEx234, GameShadow305,
+FindReflectionNoPlatforms100, PlatOnOff73, NewTerrPlatformsOff10 and
+InitSurfaceInfo538: 1,260 newly compared original PC bytes. The first three
+already had accepted inventory rows. The last three add independently reviewed
+identities and 621 known mapped bytes; their historical ctypes remain blank.
+InitSurfaceInfo's native Android symbol is `_Z15InitSurfaceInfoP12GameObject_s`
+at `0x004e2680` / 553 bytes; its PC body at `0x005728a0` is independently
+complete at 538 bytes. The switch pairs are PC `0x0067c8e0` / 73 to native
+Android `0x00389800`, and PC `0x0067a6d0` / 10 to native `0x00384ba0`.
+The canonical graph IDs use those native addresses without a guessed bias.
+
+The corrected identity supplement `init-surface-paired-identity-next1.json`
+verifies the original ELF symbol, full body, child bindings and matching control
+sequence. The earlier six-helper paired audit does not contain InitSurfaceInfo
+and supplies no authority for that identity. Original PC size and physical ABI
+remain separate from Android's symbol extent and historical formal types.
+
+NewShadowEx, GameShadow, reflection and the all-platform-off switch are exact:
+649 original bytes across four functions. PlatOnOff rebuilds to 68 bytes and
+scores 53%; InitSurfaceInfo rebuilds to 634 and scores 48.68276%. They remain
+nonexact. SnapCreaturePos's existing 408-byte implementation now makes its
+actual InitSurfaceInfo call followed by optional SetObjOnSurface(object, 0).
+It scores 74.88421%; restoring these calls adds no new compared-byte credit.
+SetObjOnSurface233 and GetSurfaceInfo536 already had genuine implementations.
+
+The source retains duplicate platform handles, the qualified sixteen-handle
+stack domain, signed handles and original nullable world/list guards. Float
+results are stored to f32 at the original observable boundaries. Reflection
+rejects ordered equality with the double sentinel; unordered values remain
+admitted. Init preserves the water predicates, two-query order, accessed D6C
+float and once-loaded final callback. These remain qualified valid-engine,
+normal-provider contracts; unknown full backing capacities and historical
+aggregate types are not promoted. The terrain wrapper calls enter with empty
+owned x87 stacks; its result is the local Y after discarding NewCast's return.
+All fifteen previous terrain bodies and semantic relocations remain unchanged.
+
+Ignored continuation evidence includes the corrected paired identity,
+`registry-wave22-map-independent-next1.json`, the shadow source and actual
+compiled gates, and the Init source/compiled gates. No extracted retail bytes
+or original inputs are committed.
