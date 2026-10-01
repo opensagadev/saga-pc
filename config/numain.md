@@ -660,3 +660,15 @@ Their partial typed field cohorts preserve the object layout; full owner types
 and literal allocations remain held. This extends the reviewed AI source path
 without closing NuMain's unrelated gameplay/loading/rendering gaps. The next
 connected dependency review is UseCurrentSpeed and its CurrentStart provider.
+
+
+The current-speed closure is now genuine PC source: CurrentStart499ca0/288
+and accepted UseCurrentSpeed44c2a0/336 add 624 compared original bytes. Fresh
+identity, field, source and actual compiled-contract reviews preserve the
+zero-only speed gate, direct PC dogfight-level fallback, C44/EC8 selection,
+signed socket arguments and all stack/x87 return states. Neither routine is
+exact; literal complete extents remain held. Next prepare the accepted
+687-byte SetScaleOverride callback using existing parser/random providers
+and collision-scale/process fields. Its x87 NaN predicates, timed rounding
+and interpolation require their own source and compiled review. The separate
+SetCurrentSpeed indirect lookup at slot923924 remains unresolved.

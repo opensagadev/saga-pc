@@ -2466,6 +2466,7 @@ STATIC_ASSERT(offsetof(SOCKPOSITION_PC, midpoint) == 0x8);
 STATIC_ASSERT(offsetof(SOCKPOSITION_PC, camera_position) == 0x14);
 STATIC_ASSERT(offsetof(SOCKPOSITION_PC, camera_rotation) == 0x20);
 STATIC_ASSERT(offsetof(SOCKPOSITION_PC, midpoint_rotation) == 0x24);
+STATIC_ASSERT(offsetof(SOCKPOSITION_PC, midpoint_pitch) == 0x24);
 STATIC_ASSERT(offsetof(SOCKPOSITION_PC, heading) == 0x26);
 STATIC_ASSERT(offsetof(SOCKPOSITION_PC, next_segment) == 0x28);
 STATIC_ASSERT(offsetof(SOCKPOSITION_PC, candidate_count) == 0x2a);
@@ -3768,7 +3769,8 @@ typedef struct gameobject_s {
     NUMTX vehicle_orientation;
     f32 current_speed_mul;
     f32 current_speed_bias;
-    u8 unknown_0c4c[0x28];
+    f32 socket_current_speed_pc;
+    u8 unknown_0c50[0x24];
     NUVEC camera_saved_position;
     void *field_c80;
     void *field_c84;
@@ -4060,6 +4062,8 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, wall_run_state) == 0xe37);
 STATIC_ASSERT(offsetof(GAMEOBJECT, fall_acceleration_timer) == 0x103c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, animation_speed_multiplier) == 0x1034);
 STATIC_ASSERT(offsetof(GAMEOBJECT, movement_speed_scale_pc) == 0xec8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, socket_current_speed_pc) == 0xc4c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, flags) == 0x4b0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, contact_count) == 0x1078);
 STATIC_ASSERT(offsetof(GAMEOBJECT, move_override) == 0x10b0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, contact_position) == 0x6a8);
@@ -6181,6 +6185,11 @@ extern "C" {
                                     i32 count, i32 first_time, f32 elapsed);
     i32 __cdecl Action_SetAnimSpeedMul(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                        char **params, i32 num_params, i32 first_time, f32 elapsed);
+    void __cdecl CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socket_rotation);
+    i32 __cdecl Action_UseCurrentSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                       char **params, i32 num_params, i32 first_time, f32 elapsed);
+    extern const char AIUseCurrentSpeedMultiplierName[11];
+    extern const char AIUseCurrentSpeedSnapName[12];
     extern const char AIAnimSpeedValueName[7];
     extern const char AIAnimSpeedMultiplyByName[13];
     i32 __cdecl CharIDFromName(char *name);

@@ -294,3 +294,22 @@ UseCurrentSpeed as a connected 624-byte source closure. CurrentStart's 288-byte
 PC identity/ABI proposal requires independent approval; its PC dogfight-level
 check differs from Android TwistLevel. The separate SetCurrentSpeed indirect
 lookup remains a concrete unresolved provider boundary.
+
+
+## Current-speed source release
+
+CurrentStart and UseCurrentSpeed add 624 compared original code bytes,
+reaching 354,972 unique bytes (355,027 including the unchanged 55-byte
+overlap). Whole-PC fuzzy coverage increases from 6.249405% to 6.265642%,
+a gain of 0.016237 percentage points. All 801 exact functions and 45,746
+exact code bytes remain unchanged. CurrentStart's independently verified
+complete 288-byte identity adds that extent to the map: 1,116,826 of
+40,067,072 virtual bytes, or 2.787391%. Two source literal access views
+have unknown complete allocations and receive no extent or exact credit.
+
+Both actual compiled contracts pass independent review. The original PC
+zero-only/NaN-admitting comparison and dogfight-level fallback are retained;
+no historical aggregate signature or complete data owner is inferred. The
+next connected source target is SetScaleOverride's accepted 687-byte body
+with existing fields and parser/random providers. SetCurrentSpeed's distinct
+indirect lookup remains held. NuMain and playable gameplay remain incomplete.

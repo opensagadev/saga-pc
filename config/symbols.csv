@@ -116,7 +116,7 @@ address    , symbol                                                         , si
 0x0044b950 , _Action_AddPartDebris                                          , 495   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x0044bed0 , _Action_LaunchGuidedMissile                                    , 759   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44c1d0,_Action_SetHoverPhase,201,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
-0x44c2a0,_Action_UseCurrentSpeed,336,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x0044c2a0 , _Action_UseCurrentSpeed                                        , 336   ,
 0x44c3f0   , _Action_SetMaxMovementRange                                    , 404   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44c590   , _Action_SetDefaultMovementRange                                , 82    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44c5f0   , _Action_SetGravityHeight                                        , 342   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -332,6 +332,7 @@ address    , symbol                                                         , si
 0x499610   , _VehicleCollisionCode                                          , 770   , void __cdecl (GAMEOBJECT *)
 0x4999e0   , _GetVehicleSpeedMul                                            , 342   , "f32 __cdecl (GAMEOBJECT *,f32)"
 0x499be0   , _ForceAlongSock                                                , 178   , f32 __cdecl (GAMEOBJECT *)
+0x00499ca0 , _CurrentStart                                                  , 288   ,
 0x499e20   , _MovePlayer_GUNSHIPIN                                          , 1076  , i32 __cdecl (GAMEOBJECT *)
 0x49a260   , _MovePlayer_CIRCLE                                             , 904   , i32 __cdecl (GAMEOBJECT *)
 0x0049a5f0 , _MovePlayer_ROLLING                                            , 766   , void __cdecl (GAMEOBJECT *)
@@ -2732,6 +2733,8 @@ address    , symbol                                                         , si
 0x00757bf8 , _AIControlMaximumDefaultName                                   , 12    , const char[12]
 0x00757c04 , _AIControlMultiplyName                                         , 10    , const char[10]
 0x00757c44 , _AIAnimSpeedValueName                                          ,       ,
+0x00757c68 , _AIUseCurrentSpeedSnapName                                     ,       ,
+0x00757c74 , _AIUseCurrentSpeedMultiplierName                               ,       ,
 0x00757c80 , _AIControlLocatorName                                          , 8     , const char[8]
 0x00757c88 , _AIControlAllNonPartyName                                      , 14    , const char[14]
 0x00757c98 , _AIControlDefaultTitleName                                     , 8     , const char[8]

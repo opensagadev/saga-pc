@@ -3087,3 +3087,35 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         STUBBED_NAMED("UpdateGameObjects: CheckMissionEnd PC4977f0");
     }
 }
+
+void __cdecl CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socket_rotation) {
+    WORLDINFO *world;
+    SOCK_PC *sock;
+    NUVEC current;
+    i32 index;
+
+    world = WorldInfo_CurrentlyActive();
+    object->socket_current_speed_pc = 0.0f;
+    index = object->sock_position.sock_index;
+    if (index == -1 || world->sock_sys == NULL)
+        return;
+    sock = &world->sock_sys->socks[index];
+    if (sock->current_speed == 0.0f)
+        return;
+    if (!allow_any_level && (DOGFIGHTA_LDATA == NULL || world->current_level != DOGFIGHTA_LDATA))
+        return;
+    object->socket_current_speed_pc = sock->current_speed;
+    current.x = 0.0f;
+    current.y = 0.0f;
+    if ((object->flags_ef4 & 0x200000u) != 0)
+        current.z = object->movement_speed_scale_pc * object->socket_current_speed_pc;
+    else
+        current.z = object->current_speed_mul * object->socket_current_speed_pc;
+    if (use_socket_rotation) {
+        NuVecRotateX(&object->velocity, &current, (NUANG)object->sock_position.midpoint_pitch);
+        NuVecRotateY(&object->velocity, &object->velocity, (NUANG)object->sock_position.heading);
+    } else
+        NuVecRotateY(&object->velocity, &object->velocity, (NUANG)(u16)object->field_0x276);
+    object->ai_packet.flags &= ~0x40000u;
+    object->target_velocity = object->velocity;
+}

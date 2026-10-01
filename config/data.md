@@ -696,3 +696,23 @@ five literals remain unknown. Every new CSV row keeps size and ctype blank;
 37 emitted source data bytes earn zero original extent or exact-match credit.
 No first-NUL span, four-byte scalar access or Android allocation size is treated
 as complete PC ownership proof.
+
+
+### Current-speed field and literal access views
+
+Fresh PC CurrentStart/UseCurrentSpeed review verifies `GAMEOBJECT` C4C as a
+float storing raw socket current speed. Only the first four bytes of the old
+C4C opaque span become `socket_current_speed_pc`; the remaining C50..C6F
+bytes stay opaque. C44 and EC8 are alternative scale factors, not a product.
+The existing velocity, target velocity, packet flags, world/socket prefixes
+and signed socket index/segment fields are reused with asserted offsets.
+These bodies do not access SOCKSYS count, so this cohort grants no new count
+or index-bounds claim.
+
+`AIUseCurrentSpeedSnapName` at `0x757c68` initializes the 12-byte source view
+`snaptospeed\0`; `AIUseCurrentSpeedMultiplierName` at `0x757c74` initializes
+the 11-byte source view `multiplier\0`. The substring parser advances 11.
+A retained graph owner labels the latter as 12 bytes although the first NUL
+occurs within 11; the extra zero does not establish the complete allocation.
+Both CSV sizes and ctypes remain blank, and both receive zero original extent
+or exact-data credit despite their 23 emitted reconstruction bytes.

@@ -1900,3 +1900,55 @@ Neither is exact. Frozen source, field, physical-closure and compiled-contract
 reviews remain under `raceopponent-source-*`, `raceopponent-compiled-contract-*`
 and `animspeedmul-source-*` / `animspeedmul-compiled-contract-*`. No original
 bytes are copied into the rebuilt functions or masked out of comparison.
+
+
+### CurrentStart and UseCurrentSpeed source closure
+
+`CurrentStart` is independently identified at PC `0x499ca0`, complete size 288,
+against the original named Android `0x153840`/412-byte body. Fresh PC decoding
+covers all 78 reachable instructions and both terminal returns through
+`0x499dc0`; the 288-byte SHA256 is
+`6d695075da492177589087b626461186b5daa4db3840c00ac7434c68b3e9d7f9`.
+The accepted `Action_UseCurrentSpeed` (`0x44c2a0`/336, Android `0x188cd0`)
+actually passes object/1/1 and cleans 12 bytes. Independent original provider
+closures cover `WorldInfo_CurrentlyActive` and both call-free vector rotations.
+Normal stack, nonvolatile-register and owned x87 states close without private
+incoming register/flag dependencies. The earlier procedural budget-held
+CurrentStart review remains held; the fresh next2 audit supplies approval.
+
+The helper always obtains the active world and clears the object's C4C float
+before its guards. Its speed comparison rejects ordered zero only: negative
+and NaN values continue. Second argument zero requires the actual PC
+`DOGFIGHTA_LDATA` pointer and current-level equality; Android's TwistLevel test
+is not transferred. The stored raw socket speed is multiplied by EC8 when
+EF4 bit 0x200000 is set, otherwise C44. Third argument nonzero rotates the
+local current vector X then Y; zero rotates the existing velocity around Y.
+The C4C field split and socket pitch assertion describe accessed PC prefixes,
+not a recovered complete historical aggregate. The legacy field named
+`field_0x276` is physically at 0x27a and remains explicitly zero-extended.
+
+The callback retains its first-time guard, signed parameter count, FALSE
+priority, substring `multiplier` with advancement 11, optional `snaptospeed`,
+portal flag and signed socket arguments. Independent source replay and actual
+MSVC COFF reviews verify both routines' qualified normal contracts. Existing
+canonical parser/socket interfaces remain explicit boundaries; this does not
+prove all malformed inputs or floating exceptions. Historical formal types
+remain held: the helper's observed ignored EAX supports a reconstructed void
+view, while the callback's old source-convention CSV ctype is cleared through
+an explicit append-only journal supersession.
+
+Genuine C resides in the existing gameobjects and gameaiactions units. The
+helper compiles to 279 bytes and scores 83.92308%; the callback compiles to 344
+bytes and scores 95.80808%. Neither is exact. This adds 624 compared original
+bytes, preserves all 801 exact functions and 45,746 exact bytes, and reaches
+355,027 compared bytes including the unchanged 55-byte alias overlap
+(354,972 unique). Whole-PC fuzzy coverage is 6.265641761481748%. The new
+helper adds 288 known mapped bytes, reaching 1,116,826 / 40,067,072.
+
+Frozen evidence under `build/analysis/identification/continuation/`:
+`usecurrentspeed-callee-independent-next2.json`,
+`usecurrentspeed-source-cohort-next1-handoff.json`,
+`usecurrentspeed-source-fields-independent-next1.json`,
+`usecurrentspeed-source-draft-independent-next1.json`,
+`currentstart-compiled-contract-independent-next1.json` and
+`usecurrentspeed-compiled-contract-independent-next1.json`.

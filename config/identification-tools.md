@@ -1392,3 +1392,39 @@ Matching and compilation use two workers. Complete owner/type and broader
 runtime safety claims remain held. Next investigate the original CurrentStart
 provider blocking UseCurrentSpeed; PC dogfight-level and zero-speed behavior
 must replace Android-specific assumptions.
+
+
+### Current-speed checkpoint replay
+
+The next accepted seed is CurrentStart499ca0/288, independently reviewed
+against original Android153840/412. Both this helper and the existing
+UseCurrentSpeed44c2a0/336 now have genuine C, independently checked source
+contracts and actual MSVC COFF contracts. Two new literal access views retain
+blank original sizes/types; the callback signature is explicitly superseded
+to a blank historical type. No Android aggregate or allocation size transfers.
+
+Before any changes, all 20 completed wave15 run files, the committed matching
+report and the 124 report-listed object hashes were frozen for wave16. All
+20 baseline files were then copied and hash-verified before scoring. The
+scorer uses its internal shared heavy-job lock and a 1,024 MiB address-space
+limit. A redundant outer lock caused an immediate guard rejection; the error
+and timing logs were preserved, all 20 outputs were verified unchanged before
+retry, and a pre-retry root verification record was saved. Removing the
+redundant outer lock retains the scorer's normal internal serialization.
+
+The successful replay took 42.43 seconds, peaked at 704,556 KiB RSS (about
+688 MiB), and reported zero swaps. Graph counts remain 8,043 PC and 13,242
+Android functions with unchanged graph fingerprints. The new reviewed seed
+replaces one inferred hypothesis: 1,432 name seeds, 1,308 inferred pairs and
+16,851 function candidate rows. Data candidate rows remain 2,042, reviewed
+data anchors 95, rejections 15 and stale decisions zero. Those counts describe
+research, not accuracy or source coverage.
+
+Required local checks pass: 434 tests (three skipped), formatting for 126
+files, static analysis for 124 units, source-only link and complete object
+checks. There are 1,647 compiled functions and 2,618 data definitions across
+124 reported objects. Matching adds 624 original code bytes, reaches
+6.265641761481748% whole-PC fuzzy coverage and preserves all 801 exact
+functions/45,746 exact code bytes. Source-only linking still does not
+establish reconstructed gameplay. The separate SetCurrentSpeed indirect
+lookup remains held; the next source packet is SetScaleOverride687.

@@ -4340,4 +4340,10 @@ extern "C" {
 #pragma const_seg(".rdata$AIAnimSpeedMultiplyByName")
     const char AIAnimSpeedMultiplyByName[13] = "multiply_by=";
 #pragma const_seg()
+#pragma const_seg(".rdata$AIUseCurrentSpeedMultiplierName")
+    const char AIUseCurrentSpeedMultiplierName[11] = "multiplier";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIUseCurrentSpeedSnapName")
+    const char AIUseCurrentSpeedSnapName[12] = "snaptospeed";
+#pragma const_seg()
 }

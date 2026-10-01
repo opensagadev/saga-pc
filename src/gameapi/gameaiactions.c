@@ -1145,3 +1145,39 @@ i32 __cdecl Action_SetAnimSpeedMul(AISYS_PC *system, AISCRIPTPROCESS_PC *process
     }
     return 1;
 }
+
+i32 __cdecl Action_UseCurrentSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                   i32 num_params, i32 first_time, f32 elapsed) {
+    GAMEOBJECT *object;
+    char *value;
+    i32 snap;
+    i32 index;
+
+    snap = 0;
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL)
+        return 1;
+    object = ((APIOBJECT_PC *)packet->owner)->owner;
+    if (!first_time)
+        return 1;
+    object->flags_ef4 |= 0x200000u;
+    object->movement_speed_scale_pc = 1.0f;
+    for (index = 0; index < num_params; index++) {
+        if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0)
+            object->flags_ef4 &= ~0x200000u;
+        else if ((value = NuStrIStr(params[index], (char *)AIUseCurrentSpeedMultiplierName)) != NULL)
+            object->movement_speed_scale_pc = AIParamToFloat(processor, value + 11);
+        else if (NuStrICmp(params[index], (char *)AIUseCurrentSpeedSnapName) == 0)
+            snap = 1;
+    }
+    if ((object->flags_ef4 & 0x200000u) != 0 && (object->portal_flags & 0x4000u) == 0) {
+        object->portal_flags |= 0x4000u;
+        if (!snap)
+            return 1;
+        ComplexSockPosition(WORLD->sock_sys, &object->position, object->sock_position.sock_index,
+                            object->sock_position.segment, &object->sock_position);
+        ComplexSockAngles(&object->sock_angles);
+    }
+    if (snap)
+        CurrentStart(object, 1, 1);
+    return 1;
+}
