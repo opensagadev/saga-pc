@@ -340,6 +340,7 @@ address    , symbol                                                         , si
 0x49ad40   , _StartTurn                                                     , 76    , void __cdecl (GAMEOBJECT *)
 0x0049b2b0 , _IsTurnRequested                                               , 123   , ""
 0x49b330   , _TurnCode                                                      , 1206  , "void __cdecl (GAMEOBJECT *,i32,GAMEPAD_PC *)"
+0x0049ca10 , _EatVictim                                                     , 108   ,
 0x0049ea70 , _PunchCode                                                     , 3000  ,
 0x0049f630 , _MakeThrowVector                                               , 329   , "void __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32, f32)"
 0x0049f780 , _GetBladeJoints                                                , 115   , "i32 (GAMEOBJECT *, i32, i32 *, i32 *) [private stack object; EAX blade; ESI joints; EDX optional output]"
@@ -909,6 +910,7 @@ address    , symbol                                                         , si
 0x00549bb0 , _GameCam_NewShake                                              , 43    , "void __cdecl (GAMECAMERA *, f32, f32, f32)"
 0x0054a1c0 , _NarrowSockPositionAllowed                                     , 123   , ""
 0x54a240   , _ObjInNarrowSock                                               , 163   , "i32 __cdecl (GAMEOBJECT *,SOCKSYS_PC *,i32)"
+0x0054a2f0 , _GameCam_Reset                                                 , 232   ,
 0x0054a5e0 , _GamePads_Init                                                 , 117   , void __cdecl (void)
 0x0054a690 , _GamePad_Rotate                                                , 224   , f32 __cdecl (GAMEOBJECT *)
 0x0054a770 , _GamePad_Waggle                                                , 113   , i32 __cdecl (GAMEPAD_PC *)
@@ -1393,6 +1395,7 @@ address    , symbol                                                         , si
 0x0058b7f0 , _CannotKill                                                    , 71    , i32 __cdecl (GAMEOBJECT *)
 0x0058b840 , _NoLayerKill                                                   , 40    , i32 __cdecl (GAMEOBJECT *)
 0x0058b8d0 , _CharPlatforms_Configure                                       , 358   , "void __cdecl (WORLDINFO *, char *)"
+0x0058d8e0 , _SetWeaponIn                                                   , 66    ,
 0x00592a70 , _Customiser_LoadAccessories                                    , 648   , "void __cdecl (CUSTOMISER*, APICHARACTERMODELLIST_s*)"
 0x005930c0 , _Customiser_DumpAccessories                                    , 211   , void __cdecl (CUSTOMISER*)
 0x005931a0 , _Customiser_LoadAll                                            , 811   , "void __cdecl (CUSTOMISER*, WORLDINFO*)"
@@ -1818,6 +1821,7 @@ address    , symbol                                                         , si
 0x0062c300 , _ParticlesPerFrame                                             , 76    , "i32 __cdecl (f32, f32)"
 0x0062c350 , _ParticlesPerSecond                                            , 90    , "i32 __cdecl (f32, f32)"
 0x0062c3b0 , _FindGameDebris                                                , 79    , "i32 __cdecl (APIDEBRISSYS_PC *, char *)"
+0x0062d500 , _APIResetCharacterRemap                                        , 53    ,
 0x0062d540 , _APILoadCharacterModels                                        , 2619  , "void __cdecl (APICHARACTERMODELLIST_s*, i32, VARIPTR*, VARIPTR, i32)"
 0x0062e040 , _AnimDuration                                                  , 324   , "f32 __cdecl (i32, i32, f32, f32, i32)"
 0x0062e650 , _ResetAnimPacket                                               , 59    , "void __cdecl (ANIMPACKET_PC *, i16)"
@@ -1912,6 +1916,7 @@ address    , symbol                                                         , si
 0x00681eb0 , _PlaySfxByIdAndSetVolume                                       , 35    , "void __cdecl (i32, NUVEC *, f32)"
 0x00681f40 , _PlaySfx                                                       , 45    , "void __cdecl (char *, NUVEC *)"
 0x00684580 , _DebFreeAllCreatedEffects                                      , 84    , void __cdecl (void)
+0x00684c90 , _AddVariableShotDebrisEffect                                   , 71    ,
 0x00687850 , _edanimLoadPage                                                , 1489  , "i32 __cdecl (char *, NUGSCN *)"
 0x00689e70 , _edgraStopPage                                                 , 84    , void __cdecl (i8)
 0x00689ed0 , _edgraClearPage                                                , 158   , void __cdecl (i8)

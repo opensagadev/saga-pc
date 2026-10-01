@@ -304,6 +304,8 @@ def main():
                         help="With --identify, bound process address space in MiB (default: 1024)")
     parser.add_argument("--max-rounds", type=int, default=4,
                         help="With --identify, propagate up to this many rounds, stopping when no pairs are added (1–64; default: 4)")
+    parser.add_argument("--tentative-data-feedback", action="store_true",
+                        help="With --identify --joint-graph, publish separate data hypotheses from inferred function ancestry")
     parser.add_argument("--symbols", type=Path, help="With --identify, freeze this reviewed symbol map")
     parser.add_argument("--joint-graph", type=Path, help="With --identify, use a hash-verified original code/data graph pair")
     parser.add_argument("--reviewed-pairs", type=Path, help="With --identify, freeze a reviewed decision journal")
@@ -332,7 +334,8 @@ def main():
         return
     if (args.holdout or args.source_graph or args.refresh_features or args.analysis_dir or args.symbols
             or args.joint_graph or args.reviewed_pairs or args.registry_descriptors or args.similarity_candidates or args.holdout_selection
-            or args.holdout_mode != "pair" or args.memory_limit_mb != 1024 or args.max_rounds != 4) and not args.identify:
+            or args.holdout_mode != "pair" or args.memory_limit_mb != 1024 or args.max_rounds != 4
+            or args.tentative_data_feedback) and not args.identify:
         parser.error("Identification options require --identify")
     if args.identify:
         if args.memory_limit_mb < 128:
@@ -341,6 +344,8 @@ def main():
             parser.error("--max-rounds must be between 1 and 64")
         if args.registry_descriptors and not args.joint_graph:
             parser.error("--registry-descriptors requires --joint-graph")
+        if args.tentative_data_feedback and not args.joint_graph:
+            parser.error("--tentative-data-feedback requires --joint-graph")
         if __package__:
             from .identification import generate
         else:
@@ -352,6 +357,7 @@ def main():
                  holdout_selection=args.holdout_selection, similarity_candidates=args.similarity_candidates,
                  registry_descriptors=args.registry_descriptors,
                  max_rounds=args.max_rounds,
+                 tentative_data_feedback=args.tentative_data_feedback,
                  memory_limit_mb=args.memory_limit_mb)
         return
     if args.format:

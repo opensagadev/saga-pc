@@ -408,3 +408,27 @@ longer propagation experiment reaches a fixed point after seven rounds, adding
 against assuming exponential growth from more rounds alone. Preserve original
 identity/ABI/extent review and distinguish tentative propagation from accepted
 mapping and source comparison progress.
+
+## Structural identity and candidate-data channel
+
+Five independent structural identity reviews add 530 mapped code bytes, reaching
+1,119,148 / 40,067,072 virtual image bytes. They add no source definitions,
+compared original bytes or fuzzy/exact credit. StartLaunch remains an ABI hold,
+despite its verified graph boundary. The longer run plus missing-node repairs
+has 1,328 tentative function pairs; inferred counts remain research inventory.
+
+The new opt-in data channel carries tentative function ancestry into a separate
+candidate ledger. It counts deduplicated accepted roots and does not change the
+confirmed-user data scorer or feed its output back into function/state/table
+scoring. Next compare disabled and enabled runs with identical inputs, compare
+four versus sixteen rounds, and review newly exposed data roles/owners against
+the originals. Holdout support remains explicitly unavailable for this channel;
+no accuracy or calibrated confidence claim follows from candidate yield.
+
+The controlled candidate-data experiment completed under a hard 1 GiB process
+limit: four rounds produce 9,892 tentative data rows; the seven-round fixed
+point produces 9,949, a net +57. These are uncertain hypotheses, potentially
+including existing candidates, and have no mapping/extent/source credit.
+Normal function/data/state outputs agree between disabled/enabled runs at the
+same round limit. The final experimental run peaks at 1,006,836 KiB RSS with
+zero swaps; the first 10,000-row guard failure is retained explicitly.

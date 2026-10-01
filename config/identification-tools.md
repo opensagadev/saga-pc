@@ -970,8 +970,38 @@ A disposable Ghidra repair adds the independently reviewed code entries
 previous PC function extents and reusing the Android export. Their former
 nonfunction call targets could not participate in function propagation. Boundary
 repair alone does not approve a historical name, type or source implementation.
-Inferred function pairs currently do not feed the confirmed-user data scorer;
-adding a separate candidate channel with explicit lineage is the next experiment.
+The confirmed-user data scorer still uses accepted function pairs only. Add
+`--tentative-data-feedback` to an ordinary joint run to publish the separate
+`tentative-function-data-candidates.jsonl` experiment. This channel combines
+current inferred-mutual-top function observations with accepted seeds, intersects
+ancestry with accepted function roots and reviewed data components, and counts
+at least two distinct users and two distinct ancestry roots. Repeated descendants
+cannot manufacture independent roots; their per-root contributions use maxima.
+Its scores are research rankings, not comparable with the normal data ranking.
+
+These rows never enter normal data outputs, state, function retrieval, table
+scoring or the accepted map. They retain function observation status, round,
+score and ancestry. Rejected/reserved pairs and work/provenance limits apply;
+owner, offset, type and allocation ambiguities still need original review.
+Holdout and similarity-evaluation modes reject this option until a separate
+training-only evaluation is available. The option defaults off, and reruns clear
+any stale tentative ledger before publication.
+
+The production experiment retains the normal scorer's 10,000-row limit and
+uses a separate 50,000-row limit for the ancestry experiment, with the same
+500,000-work limit and a hard 1 GiB process limit. The first experimental run
+hit the smaller retained-row guard and published no partial rankings; the
+explicit larger experimental budget completed with zero swaps. These limits
+are work controls, not score or identity approvals.
+
+With the five newly reviewed identities, 1,449 accepted seeds yield 1,307
+tentative function pairs in four rounds and 1,329 at the seven-round fixed point.
+The separate ancestry channel reports 9,892 and 9,949 data-candidate rows,
+respectively: a net increase of 57 rows, not 57 verified or necessarily new
+unique identities. The normal data scorer retains 2,072 candidate pairs in both
+runs. Disabled/enabled sixteen-round runs preserve the normal function, data
+and state outputs; delta bookkeeping differs when only the control starts from
+a prior state. These experiments do not measure unknown-data accuracy.
 
 Optional joint inputs are `--reviewed-pairs JOURNAL.jsonl`, repeated
 `--similarity-candidates CANDIDATES.json`, and `--holdout` with

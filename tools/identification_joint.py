@@ -379,7 +379,7 @@ def _similarity_evaluation(run, paths, selection, result, pair):
 
 
 def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdout_selection=None,
-                    similarity_candidates=None, pair=None, registry_descriptors=None, max_rounds=None):
+                    similarity_candidates=None, pair=None, registry_descriptors=None, max_rounds=None, tentative_data_feedback=False):
     """Generate ignored research outputs; caller publishes through IdentificationRun."""
     if __package__:
         from . import identification as scorer
@@ -461,6 +461,19 @@ def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdou
     result = _function_retrieval(pair, inputs, seeds, mapped, data_pairs, rejected, scorer,
                                  capture_round1=False, max_rounds=max_rounds)
     data_rows = data_state["data_candidates"]
+    tentative_data_rows = []
+    if tentative_data_feedback:
+        if __package__:
+            from . import identification_tentative_data as tentative
+        else:
+            import identification_tentative_data as tentative
+        run.add_raw_input("tool_identification_tentative_data.py", Path(tentative.__file__))
+        tentative_data_rows = tentative.tentative_data_candidates(
+            graph, pair, seeds, result["proposals"], data_pairs, rejected,
+            reserved_data_pairs=data_labels)
+        with (run.work_dir / "tentative-function-data-candidates.jsonl").open("w") as stream:
+            for row in tentative_data_rows:
+                stream.write(json.dumps(row, sort_keys=True) + "\n")
     held_metrics = None
     evaluated_result = result
     if holdout or similarity_candidates is not None:
@@ -609,22 +622,32 @@ def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdou
                "registry_diagnostics": registry_metadata,
                "features": "direct calls, explicit journal-reviewed data users and map-independent literals when available; name-only data joins are labels, not propagation anchors; constant/initializer scoring not enabled",
                "warning": "Hypotheses never establish PC identity, type/ABI, complete extent or reconstruction coverage."}
+    if tentative_data_feedback:
+        summary["tentative_function_data_channel"] = {
+            "enabled": True, "candidate_rows": len(tentative_data_rows),
+            "score_version": "tentative-function-data-lineage-v1",
+            "feeds_function_retrieval": False, "feeds_state": False}
     _json(run.work_dir / "summary.json", summary)
     run.validate_inputs()
     return summary
 
 
 def generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdout_selection=None,
-                   similarity_candidates=None, registry_descriptors=None, max_rounds=None):
+                   similarity_candidates=None, registry_descriptors=None, max_rounds=None, tentative_data_feedback=False):
     """Own/close lazy original graph indices while the run owns publication."""
     if max_rounds is not None and (isinstance(max_rounds, bool) or not isinstance(max_rounds, int)
                                    or not 1 <= max_rounds <= 64):
         raise ValueError("max_rounds must be an integer between 1 and 64")
+    if not isinstance(tentative_data_feedback, bool):
+        raise ValueError("tentative_data_feedback must be boolean")
+    if tentative_data_feedback and (holdout or similarity_candidates is not None):
+        raise ValueError("Tentative data experiment requires a separate fixed training-only holdout design")
     pair = _register_pair(run, joint_graph)
     try:
         return _generate_joint(run, joint_graph, holdout=holdout, holdout_mode=holdout_mode,
                                holdout_selection=holdout_selection, similarity_candidates=similarity_candidates,
-                               pair=pair, registry_descriptors=registry_descriptors, max_rounds=max_rounds)
+                               pair=pair, registry_descriptors=registry_descriptors, max_rounds=max_rounds,
+                               tentative_data_feedback=tentative_data_feedback)
     finally:
         for side in ("pc", "android"):
             if isinstance(pair[side], graph.IndexedGraph):

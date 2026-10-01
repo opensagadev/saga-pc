@@ -711,10 +711,15 @@ else:
 def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.parent / "saga",
              analysis_dir=None, symbols=None, reviewed_pairs=None, run=None,
              joint_graph=None, holdout_mode="pair", holdout_selection=None,
-             similarity_candidates=None, registry_descriptors=None, max_rounds=MAX_ROUNDS):
+             similarity_candidates=None, registry_descriptors=None, max_rounds=MAX_ROUNDS,
+             tentative_data_feedback=False):
     """Snapshot inputs and atomically publish a completed research run."""
     if isinstance(max_rounds, bool) or not isinstance(max_rounds, int) or not 1 <= max_rounds <= 64:
         raise ValueError("max_rounds must be an integer between 1 and 64")
+    if not isinstance(tentative_data_feedback, bool):
+        raise ValueError("tentative_data_feedback must be boolean")
+    if tentative_data_feedback and (not joint_graph or holdout or similarity_candidates is not None):
+        raise ValueError("Tentative data feedback requires a joint run without holdout or similarity evaluation")
     if holdout_mode != "pair" and not holdout:
         raise ValueError("A family or data holdout requires --holdout")
     if holdout_selection and not (holdout or similarity_candidates):
@@ -743,7 +748,8 @@ def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.
             summary = generate_joint(run, joint_graph, holdout=holdout,
                                      holdout_mode=holdout_mode, holdout_selection=holdout_selection,
                                      similarity_candidates=similarity_candidates,
-                                     registry_descriptors=registry_descriptors, max_rounds=max_rounds)
+                                     registry_descriptors=registry_descriptors, max_rounds=max_rounds,
+                                     tentative_data_feedback=tentative_data_feedback)
         else:
             if holdout_mode != "pair" or holdout_selection or similarity_candidates or reviewed_pairs:
                 raise ValueError("Review journals, similarity and explicit/family/data holdouts require --joint-graph")

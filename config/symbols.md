@@ -2273,3 +2273,29 @@ bounded independent caller-signature retrieval. The four-to-seven-round experime
 adds 22 tentative pairs; a separate pilot supplies 13 unmapped review leads.
 Neither publishes names automatically. Missing function nodes and candidate data
 feedback are being reviewed separately so uncertain edges retain their lineage.
+
+## Structural caller-signature mapping release (2026-10-01)
+
+Five original identities add 530 known code bytes without source reconstruction:
+GameCam_Reset at 0x0054a2f0 / 232, SetWeaponIn at 0x0058d8e0 / 66,
+APIResetCharacterRemap at 0x0062d500 / 53, AddVariableShotDebrisEffect at
+0x00684c90 / 71 and EatVictim at 0x0049ca10 / 108. All ctypes remain blank.
+Shared accepted caller signatures selected the candidates; independent original
+PC bodies, native Android records, callers and complete boundaries established
+the released identities. Android APIResetCharacterRemap is exactly 0x003cc1dc;
+an earlier prose typo 0x003cc7dc was rejected, not normalized into a match.
+
+SetWeaponIn and the remap reset are callfree. GameCam_Reset retains an explicit
+normal canonical-memset child qualification; the debris wrapper retains a normal
+callee-effects qualification with deeper shot-emitter semantics unreviewed.
+EatVictim's animation-duration provider physical effects are reviewed. None of
+these qualified caller boundaries establishes a full historical formal type,
+all-input source implementation or exception guarantee. StartLaunch's identity
+and 98-byte boundary support graph repair, while its callee ABI remains held;
+no StartLaunch CSV or accepted journal row is added.
+
+The two repaired graph nodes expose the original calls from 0x00449f61 and
+0x00448f9a. A longer repaired-graph run reaches 1,328 tentative pairs, two more
+than the same longer run before repair. Original inputs, prior extents and retained
+projects remain pinned. Ignored evidence comprises the two structural callee
+reviews, missing-callee review, repair audit and structural-wave24-root-release.

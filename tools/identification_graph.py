@@ -469,7 +469,7 @@ def _rank(rows, max_alternatives=5):
 
 def score_data_candidates(pair, confirmed_function_pairs, reviewed_data_pairs=(), rejected=(),
                           min_users=2, max_alternatives=5, max_work=500000,
-                          max_retained=10000, evidence_users=8, evidence_edges=4, reserved_data_pairs=()):
+                          max_retained=10000, evidence_users=8, evidence_edges=4, reserved_data_pairs=(), function_root_lineage=None):
     """Exact cohort-local data ranking with explicit bounded work and evidence.
 
     All competitors enter both margins before five alternatives are retained.
@@ -489,6 +489,15 @@ def score_data_candidates(pair, confirmed_function_pairs, reviewed_data_pairs=()
         frequency = len(android.function_data.get(afn, {}))
         user_info[afn] = (pfn, 1.0 / math.log2(2 + frequency), pdata)
         root_labels[afn] = f"function:{pfn}:{afn}"
+    # Optional candidate-only lineage: callers validate roots against accepted
+    # anchors. No inferred function identity creates a new independent root.
+    lineages = {afn: (root_labels[afn],) for _, afn in roots}
+    if function_root_lineage is not None:
+        for pfn, afn in roots:
+            values = function_root_lineage.get((pfn, afn), ())
+            if not values or any(not isinstance(value, str) or not value for value in values):
+                raise ValueError("Missing or invalid function root lineage")
+            lineages[afn] = tuple(sorted(set(values)))
     pc_user_count = Counter(pdata for _, _, pdata_ids in user_info.values() for pdata in pdata_ids)
     eligible_pc = {pdata for pdata, count in pc_user_count.items() if count >= min_users}
     retained, reverse, work = [], {}, 0
@@ -521,8 +530,27 @@ def score_data_candidates(pair, confirmed_function_pairs, reviewed_data_pairs=()
                 aoffsets = {edge["offset"] for edge in aedges if edge.get("offset") is not None}
                 poffsets = {edge["offset"] for edge in pedges if edge.get("offset") is not None}
                 score += 0.04 * bool((aroles & proles) - {"unknown", None}) + 0.02 * bool(aoffsets & poffsets)
+            inherited_roots = sorted({root for afn, _, _ in support for root in lineages[afn]})
+            if function_root_lineage is not None:
+                if len(inherited_roots) < min_users:
+                    continue
+                # One contribution per accepted root. Split multi-root user
+                # evidence; duplicate descendants cannot manufacture supports.
+                root_weights = {}
+                for afn, pfn, weight in support:
+                    aedges, pedges = users[afn], pc.function_data[pfn][pdata]
+                    aroles = {edge.get("role", "unknown") for edge in aedges}
+                    proles = {edge.get("role", "unknown") for edge in pedges}
+                    aoffsets = {edge["offset"] for edge in aedges if edge.get("offset") is not None}
+                    poffsets = {edge["offset"] for edge in pedges if edge.get("offset") is not None}
+                    contribution = (weight + 0.04 * bool((aroles & proles) - {"unknown", None})
+                                    + 0.02 * bool(aoffsets & poffsets)) / len(lineages[afn])
+                    for root in lineages[afn]:
+                        root_weights[root] = max(root_weights.get(root, 0.0), contribution)
+                score = sum(root_weights.values())
             score = round(score, 12)
-            compact = {"pc": pdata, "android": aa, "score": score, "supports": len(support), "users": support}
+            compact = {"pc": pdata, "android": aa, "score": score,
+                       "supports": len(inherited_roots), "users": support}
             cohort.append(compact)
             competitors = reverse.setdefault(pdata, [])
             competitors.append((aa, score))
@@ -544,7 +572,8 @@ def score_data_candidates(pair, confirmed_function_pairs, reviewed_data_pairs=()
         row.update(**_pair_fields(pair, pdata, aa), kind="data", status="candidate",
                    mutual_top=row["rank"] == 1 and competing[0][0] == aa,
                    pc_margin=competing[0][1] - competing[1][1] if len(competing) > 1 else competing[0][1],
-                   support_roots=[root_labels[afn] for afn, _, _ in support],
+                   support_roots=([root_labels[afn] for afn, _, _ in support] if function_root_lineage is None
+                                  else sorted({root for afn, _, _ in support for root in lineages[afn]})),
                    pc_extent=pc.nodes[pdata].get("size") if pc.nodes[pdata].get("extent_certainty") == "verified" else None,
                    pc_analysis_extent=pc.nodes[pdata].get("size"), android_extent=android.nodes[aa].get("size"),
                    boundary_status=pc.nodes[pdata].get("boundary_status", "unknown"),
@@ -556,6 +585,10 @@ def score_data_candidates(pair, confirmed_function_pairs, reviewed_data_pairs=()
                              "pc_edge_count": len(pedges), "android_edge_count": len(aedges),
                              "pc_edges": list(itertools.islice(iter(pedges), evidence_edges)),
                              "android_edges": list(itertools.islice(iter(aedges), evidence_edges))})
+        if function_root_lineage is not None:
+            for item in evidence:
+                item["function_pair"] = item.pop("root")
+                item["support_roots"] = list(lineages[item["android_function"]])
         row.update(evidence=evidence, evidence_users_total=len(support), evidence_truncated=len(support) > evidence_users,
                    evidence_edges_limit=evidence_edges)
         rows.append(row)
