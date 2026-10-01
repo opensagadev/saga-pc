@@ -1452,3 +1452,70 @@ by the independent original-byte audit. Thirteen missing entries require repair;
 CameraShake, SetVisibility and SetGravityHeight already exist. Aggregate types
 remain unreviewed. Frozen `ai-registry-new-callback-batch9` and its independent
 audit preserve the original proof, full ranges and separate decode ledgers.
+
+## Callback, terrain helper and state-slot continuation
+
+The next reviewed release adds sixteen registry callbacks covering 3,815 PC
+bytes and six terrain/shadow helper identities covering 8,829 PC bytes. Every
+function has independent original identity, physical ABI and complete-range
+reviews. Aggregate/formal types remain unproved, so the terrain helper CSV
+ctypes stay blank. Fourteen missing callback entries are repaired in a copied
+Ghidra project; all 8,005 prior function extents and the previously reviewed
+mixed-body, literal and scalar owners survive. The resulting PC graph has
+8,019 functions. Android originals and its retained export remain unchanged.
+
+The helper identities are GameShadow (`0x5506f0`, 305 bytes),
+FindReflectionNoPlatforms (`0x553500`, 100), AnimSpeed (`0x62f1c0`, 35),
+NewShadowEx (`0x673730`, 234), NewScanRot (`0x671750`, 4,748), and
+NewCast (`0x6729e0`, 3,407). Paired original behavior independently corroborates
+platform disable/restore, reflection filtering, animation scaling, and the
+shadow scan/cast chain. NewShadowEx has five physical stack slots; the four-slot
+Android NewShadow wrapper is a different function. Its unused second slot and
+NewScanRot's formal return remain unknown. Normal floating returns reuse the
+pinned helper-return and NuFsqrt contracts; full private CRT exceptional behavior
+is not established. The frozen `terrain-helper-paired-identity-frontier` and
+independent audit preserve both proofs and separate bounded decode ledgers.
+
+Ten standalone data cells have proved four-byte PC extents, totaling 40 bytes:
+
+| Identity | PC | Original Android | Reviewed cell representation |
+| --- | --- | --- | --- |
+| num_takeoverobjects | `0x956628` | `0x12a5d30` | signed count |
+| maxdebkeys | `0x29620b4` | `0x1203f00` | signed capacity |
+| debkeydata | `0x29620c4` | `0x1203ec0` | opaque arena pointer |
+| apiloadcharactermodels_nopakfile | `0x291310c` | `0x123f920` | 32-bit gate |
+| CutStopInfo | `0x951c08` | `0x1290a20` | opaque nullable pointer |
+| DEBPAGE_AREA | `0x805b3c` | `0x6681a0` | page handle with -1 sentinel |
+| GAMEPAD_TOGGLERIGHT | `0x80228c` | `0x667c24` | unsigned mask |
+| grapple_gizmotype_id | `0x802460` | `0x6686f0` | signed id with -1 sentinel |
+| vehicle_scene | `0x9248b8` | `0x126c3cc` | NUGSCN pointer slot |
+| Door_Last | `0x9513d0` | `0x1279e10` | opaque nullable pointer |
+
+Actual PC producers and consumers identify each independent slot; separately
+used neighboring storage closes its allocation boundary. DWORD touches or
+Android symbol widths alone never supply extent proof. Pointer-cell types do
+not establish their pointee layouts or allocations. Existing NuGScnRead and
+NuGScnRemove contracts support only the vehicle-scene pointer representation.
+
+Four further identities retain blank size/type and receive no extent credit:
+active_cutscene_instances (`0x92135c`), debris_name (`0x7f5dd0`),
+MiniKitCollection (`0x855f44`) and CutBorderScale (`0x950780`). The supposed
+cutscene neighbor `0x921360` is a misleading analyzed view: the original adds
+`0x921460` to a scaled index, then addresses an instance field. For debris_name,
+147 active names and a separate runtime capacity of 400 do not prove a 400-cell
+static array; the capacity sizes a different allocated record arena. The
+collection's twenty touched bytes leave its terminal allocation unproved.
+Float semantics do not close CutBorderScale's upper boundary or exclude a
+surrounding owner. Original paired identity evidence remains useful despite
+these allocation holds. Frozen `nonregistry-data-frontier-next3`, `next4` and
+their independent audits retain the original operand and boundary proofs.
+
+The proposed PC `0x800000` / Android weights `0x788b20` binding is explicitly
+rejected. Original OR and TEST operands use `0x800000` as a flag constant;
+Android OR/AND/CMP operands corroborate that role. Folding these speculative
+analysis references into a huge data owner does not identify a PC allocation.
+This rejects the cross-binary pairing without denying unrelated storage at the
+same numeric PC address. The append-only journal retains this negative evidence.
+
+These additions identify 12,644 PC code bytes and 40 data bytes. They add no
+compiled definitions, newly compared bytes or reconstruction matching credit.

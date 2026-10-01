@@ -75,7 +75,7 @@ class IdentificationRun:
             (self.work_dir / "run-manifest.json").unlink(missing_ok=True)
             for name in ("summary.json", "holdout.json", "hypotheses.csv", "method.md",
                          "anchor-crosswalk.csv", "data-candidates.csv", "function-candidates.csv",
-                         "function-candidates.jsonl", "evidence.jsonl", "inventory.json", "state.json", "delta.json", "review.md"):
+                         "function-candidates.jsonl", "data-candidates.jsonl", "evidence.jsonl", "inventory.json", "state.json", "delta.json", "review.md"):
                 (self.work_dir / name).unlink(missing_ok=True)
             self.target = dict(target or lib.project()["target"])
             self.source_symbols_path = Path(symbols_path or lib.ROOT / "config/symbols.csv").resolve()

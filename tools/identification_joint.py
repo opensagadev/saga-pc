@@ -518,8 +518,13 @@ def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdou
     function_delta = persistent_state.candidate_delta(previous_functions, result["rows"])
     data_state["candidate_storage"] = persistent_state.CANDIDATE_STORAGE
     data_state["function_candidates"] = [persistent_state.compact_candidate(row) for row in result["rows"]]
+    data_state["data_candidates"] = [persistent_state.compact_candidate(row) for row in data_rows]
     with (run.work_dir / "function-candidates.jsonl").open("w") as stream:
         for row in result["rows"]:
+            json.dump(row, stream, sort_keys=True)
+            stream.write("\n")
+    with (run.work_dir / "data-candidates.jsonl").open("w") as stream:
+        for row in data_rows:
             json.dump(row, stream, sort_keys=True)
             stream.write("\n")
     data_state["fingerprint"] = graph.canonical_hash({key: value for key, value in data_state.items() if key != "fingerprint"})

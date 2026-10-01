@@ -630,12 +630,11 @@ def replay_state(pair, confirmed_function_pairs, reviewed_data_pairs=(), rejecte
              "data_label_pairs": normalize_pairs(pair, reserved_data_pairs, "data"),
              "rejected": sorted(rejected), "data_candidates": rows}
     state["fingerprint"] = canonical_hash(state)
-    before = {(row["pc"], row["android"]): row for row in (previous or {}).get("data_candidates", [])}
-    after = {(row["pc"], row["android"]): row for row in rows}
-    delta = {"added": [after[key] for key in sorted(after.keys() - before.keys())],
-             "removed": [before[key] for key in sorted(before.keys() - after.keys())],
-             "changed": [{"before": before[key], "after": after[key]} for key in sorted(before.keys() & after.keys())
-                         if canonical_hash(before[key]) != canonical_hash(after[key])]}
+    if __package__:
+        from .identification_state import candidate_delta
+    else:
+        from identification_state import candidate_delta
+    delta = candidate_delta((previous or {}).get("data_candidates", []), rows)
     return state, delta
 
 

@@ -7,8 +7,10 @@ complete-extent rules in [identification.md](identification.md) still apply.
 
 Identification jobs run sequentially under a repository lock and a default
 **1 GiB address-space limit**. `--memory-limit-mb` changes the limit explicitly;
-The current pipeline fits the default; an explicit budget up to about 4 GiB is
-available when a larger reviewed batch needs it. Measure peak RSS and keep heavy
+Production scoring fits the default. The broader registry-family holdout needs
+an explicit 1.5 GiB cap and peaks at about 999 MiB RSS; its 1 GiB attempt aborts
+without publishing a completed run. A budget up to about 4 GiB is available when
+a larger reviewed batch needs it. Measure peak RSS and keep heavy
 jobs serialized. A memory-limit failure aborts publication.
 Do not run raw graph loaders concurrently or bypass this guarded entry point for
 full originals. An earlier unbounded parallel pilot exhausted memory; its partial
@@ -431,6 +433,63 @@ remains 6.211660511%. No additional original code bytes are compiled or compared
 Optional reviewed PC labels in the bounded inspector are presentation only;
 the AddGizmos depth-two view uses 31 MiB RSS and preserves raw graph evidence.
 
+A subsequent original review adds 22 complete function identities (12,644 PC
+bytes), ten complete four-byte data cells and four data identities with unknown
+extents. Mapping reaches 1,049,163 / 40,067,072 bytes (2.619%). Six terrain/shadow
+helpers retain unknown formal types despite reviewed physical contracts; the
+sixteen registry callbacks retain independently proved namespace identities.
+Fourteen missing callback entries are repaired in a copied project, preserving
+all 8,005 prior functions and reviewed data/table owners. The resulting graph
+contains 8,019 PC functions. The job uses a 512 MiB Java heap and peaks at about
+759 MiB RSS. A weights pairing based on immediate flag constants becomes an
+explicit exclusion. See the [mapping notes](symbols.md#callback-terrain-helper-and-state-slot-continuation)
+for the accepted storage and unresolved allocations.
+
+The broader family evaluation freezes the preceding production run's map and
+journal snapshots before later additions. Its predeclared family contains all
+261 physical Android registry callbacks, including the 70 original gold labels.
+It hides 193 known function pairs and retains 1,183 training seeds. Propagation
+proposes 72 held pairs; all agree with their existing labels. First-round
+retrieval connects 176 queries, with 60 expected top-one and 91 expected top-five
+pairs. Within the original fixed 70-label subset, 26 are recovered correctly;
+per-query ranks for that subset are not published. The historical 25/70 result
+used different graphs and training anchors, so the difference does not isolate
+an improvement from graph repairs. Existing-label retrieval does not establish
+precision on previously unknown symbols or calibrated probabilities.
+
+The successful family run uses a 1.5 GiB address-space cap, taking 59.53 seconds
+and peaking at 999 MiB RSS. A subsequent partition-only reproduction uses the
+same pinned inputs and original seed/split machinery, stopping before scoring.
+It confirms that all 261 family endpoints stay out of training and that every
+fixed-70 gold pair is held. Explicit family data, incident data and alias closure
+quarantine 89 of 873 data labels, leaving 784 labels and 17 reviewed anchors.
+Five unrelated exclusions remain; blocked owners/interiors, endpoint decisions
+and held PC names are filtered. This later reproduction is separate from the
+earlier run's runtime capture. Frozen `registry-wave5-family-holdout-result-audit`
+and `registry-wave5-family-partition-audit` artifacts retain the counts,
+endpoints, hash pins and limitations. The partition probe peaks at 205 MiB RSS
+and performs no scoring or original-code decoding.
+
+The next production replay has 1,398 accepted function seeds, 74 reviewed data
+anchors, six exclusions and zero stale decisions. It records 1,464 tentative
+function pairs, 31,047 full function candidate rows and 1,972 data candidates.
+Function evidence adds 835 rows, changes 15,476 and removes 4,072; data evidence
+adds 97, changes 203 and removes 48. Registry diagnostics independently report
+230 physical pairs and 31 unresolved names: 30 missing PC callback entries and
+the Android-only callback. These remain diagnostics and hypotheses, with no
+retrieval-quality or reconstruction gain inferred from their counts.
+
+An initial incremental attempt fails safely because the preceding run's full
+data cohort exceeds the 16 MiB retained-state bound, at only 221 MiB RSS. Both
+candidate cohorts now stream into bounded digest summaries; separately hashed
+JSONL ledgers retain every full row. Real legacy-state migration succeeds under
+256 MiB, and independent synthetic review passes 86 targeted tests. Evidence-only
+changes, legacy formats, corruption, cohort/row limits and unpropagated
+`round=null` candidates are covered. The final production job takes 70.24 seconds,
+peaks at 718 MiB RSS under the unchanged 1 GiB cap and publishes a verified
+completed run. Its state shrinks from 41,182,703 to 15,741,922 bytes despite added
+anchors, with 18,330,080 bytes of full data evidence retained separately.
+
 ```sh
 python3 tools/repair_graph.py \
   --config build/analysis/identification/current-graphs/export-config.json \
@@ -690,7 +749,8 @@ same output directory are rejected. Prefer named run directories to preserve
 comparisons.
 
 Joint research outputs include `hypotheses.csv` (functions),
-`function-candidates.jsonl` (full function evidence), `data-candidates.csv`,
+`function-candidates.jsonl` and `data-candidates.jsonl` (full evidence),
+`data-candidates.csv` (selected review fields),
 `evidence.jsonl`, `review.md`, `inventory.json`,
 `state.json`, and `delta.json`; `summary.json` and any `holdout.json` report
 this run's actual counts. These are separate from
@@ -730,11 +790,15 @@ no Android name or cross-binary identity is inferred. Mermaid labels use a fixed
 safe character alphabet. The real PunchCode probe used 28 MiB RSS; the inspector
 suite has 25 synthetic tests, including changed-input and hostile-label cases.
 
-Persistent function state contains compact summaries and an exact digest of each
-full evidence row. Replay streams legacy state row by row, so an old 100 MiB
-state does not allocate another complete evidence tree. Data rows retain full
-evidence with a 16 MiB aggregate canonical payload limit; individual rows are
-limited to 1 MiB. Oversized inputs fail explicitly. Tentative state is used only
+Persistent function and data state contains compact summaries and an exact
+digest of each full evidence row, using `candidate-digest-v2` storage. Full
+evidence remains in separate JSONL files fingerprinted by the completed-run
+manifest. Replay streams legacy state row by row, including earlier
+`function-digest-v1` state with full data rows. An old large state never allocates
+another complete evidence tree. Individual decoded rows are limited to 1 MiB;
+each retained compact cohort and other member is limited to 16 MiB. Oversized or
+malformed inputs fail explicitly. Evidence-only changes remain visible through
+their canonical digests. Tentative state is used only
 to report changes, never as confirmation anchors. The current implementation
 recomputes candidates from confirmed roots rather than updating only neighbors.
 

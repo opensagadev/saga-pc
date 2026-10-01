@@ -8,6 +8,9 @@ from unittest.mock import patch
 from tools import identification as score
 from tools import identification_graph as graph
 from tools import identification_literals as literals
+from tools import identification_state as state
+from tools import identification_joint as joint
+from tools.identification_run import validate_completed_run
 import test_identification_run as run_tests
 from test_binary import BASE
 from test_identification_literals import elf_bytes
@@ -152,9 +155,88 @@ class JointIntegrationTests(unittest.TestCase):
         for name in ("first", "second"):
             with self.run_context(name) as run:
                 score.generate(run=run, joint_graph=pair)
-        for filename in ("hypotheses.csv", "data-candidates.csv", "evidence.jsonl", "inventory.json"):
+        for filename in ("hypotheses.csv", "data-candidates.csv", "data-candidates.jsonl", "function-candidates.jsonl", "evidence.jsonl", "inventory.json"):
             self.assertEqual((self.root / "first" / filename).read_bytes(),
                              (self.root / "second" / filename).read_bytes())
+
+    def test_full_data_ledger_is_hashed_and_compact_state_migrates_legacy_exactly(self):
+        pair = self.export_pair()
+        with self.run_context() as run:
+            score.generate(run=run, joint_graph=pair)
+        output = self.root / "output"
+        manifest = validate_completed_run(output)
+        ledger = output / "data-candidates.jsonl"
+        self.assertIn(ledger.name, manifest["outputs"])
+        full = [json.loads(line) for line in ledger.read_text().splitlines()]
+        saved = json.loads((output / "state.json").read_text())
+        self.assertTrue(full)
+        self.assertEqual(saved["candidate_storage"], state.CANDIDATE_STORAGE)
+        self.assertEqual(saved["data_candidates"], [state.compact_candidate(row) for row in full])
+        self.assertTrue(any(set(row) - set(saved["data_candidates"][0]) for row in full))
+        # Recreate the former completed function-digest/full-data representation.
+        saved["candidate_storage"] = state.LEGACY_CANDIDATE_STORAGE
+        saved["data_candidates"] = full
+        saved["fingerprint"] = graph.canonical_hash({k: v for k, v in saved.items() if k != "fingerprint"})
+        (output / "state.json").write_text(json.dumps(saved))
+        manifest["outputs"]["state.json"] = score.lib.sha256(output / "state.json")
+        (output / "run-manifest.json").write_text(json.dumps(manifest))
+        validate_completed_run(output)
+        with self.run_context() as run:
+            score.generate(run=run, joint_graph=pair)
+        delta = json.loads((output / "delta.json").read_text())
+        self.assertEqual(delta, {"data": {"added": [], "removed": [], "changed": []},
+                                 "functions": {"added": [], "removed": [], "changed": []}})
+        self.assertEqual(json.loads((output / "state.json").read_text())["candidate_storage"], state.CANDIDATE_STORAGE)
+        with ledger.open("a") as stream:
+            stream.write("{}\n")
+        with self.assertRaisesRegex(ValueError, "Modified run output.*data-candidates.jsonl"):
+            validate_completed_run(output)
+
+    def test_compact_data_replay_detects_evidence_only_changes(self):
+        pair = self.export_pair()
+        with self.run_context() as run:
+            score.generate(run=run, joint_graph=pair)
+        original = graph.score_data_candidates
+
+        def change_evidence(*args, **kwargs):
+            rows = original(*args, **kwargs)
+            for row in rows:
+                row["additional_evidence"] = "same score, different complete row"
+            return rows
+
+        with self.run_context() as run, patch.object(graph, "score_data_candidates", side_effect=change_evidence):
+            score.generate(run=run, joint_graph=pair)
+        output = self.root / "output"
+        delta = json.loads((output / "delta.json").read_text())["data"]
+        self.assertEqual(len(delta["changed"]), 1)
+        self.assertEqual(delta["changed"][0]["before"]["score"], delta["changed"][0]["after"]["score"])
+        self.assertNotEqual(delta["changed"][0]["before"]["row_digest"], delta["changed"][0]["after"]["row_digest"])
+        row = json.loads((output / "data-candidates.jsonl").read_text().splitlines()[0])
+        self.assertEqual(row["additional_evidence"], "same score, different complete row")
+
+    def test_unpropagated_function_round_none_survives_compact_publication(self):
+        pair = self.export_pair()
+        original = joint._function_retrieval
+
+        def unpropagated(*args, **kwargs):
+            result = original(*args, **kwargs)
+            if not result["rows"]:
+                paired = args[0]
+                result["rows"].append({"pc": paired["pc"].resolve(BASE, "function"),
+                                       "android": paired["android"].resolve(1, "function"),
+                                       "pc_address": BASE, "android_address": 1,
+                                       "score": 0, "supports": 0, "rank": 1})
+            for row in result["rows"]:
+                row["round"] = None
+                row["status"] = "candidate"
+            return result
+
+        with self.run_context() as run, patch.object(joint, "_function_retrieval", side_effect=unpropagated):
+            score.generate(run=run, joint_graph=pair)
+        path = self.root / "output" / "state.json"
+        loaded = state.load_previous_state(path)
+        self.assertTrue(loaded["function_candidates"])
+        self.assertTrue(all(row["round"] is None for row in loaded["function_candidates"]))
 
     def decision(self, status):
         return {"schema": graph.DECISION_SCHEMA, "id": "data-review", "kind": "data",

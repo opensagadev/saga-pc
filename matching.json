@@ -8,16 +8,16 @@
     "src/externals.h": "3382382faeac231f3c7962ffb276f5c091463416d3cd41afd89c57fe6c4eef62",
     "src/saga.h": "bc18ee32ad09246d69582fd9c4bcfa4d4b1b68b690889e94fe80334ff46d6788",
     "config/data.md": "b46d28a41b8d3d2d61ee37a9eaee793a8857aed771d8c46412ec3df2a8c151a1",
-    "config/identification-decisions.jsonl": "af102e9d16720a15f28e5aac6846a7f485cb6f2e49c081f86f64d372a431a572",
+    "config/identification-decisions.jsonl": "1cc2b009320e6bfc3aac8b7ca03879d836551c33560718321f17a9c9fa85c960",
     "config/identification-plan.md": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
-    "config/identification-tools.md": "b6da319a1c45dbce288dc7cb846d4c6b53a2e556dc6c17fa18c90b92ae6d857c",
+    "config/identification-tools.md": "45865e7fe7e216affdd65adaf8434a88f2d06df6248b7bfe42628be08b1ef617",
     "config/identification.md": "ecfbf8977bb20b3c0b8fc8cf0c4a7cc7d7cd0f9915f3abe77145c532651e31e4",
     "config/numain.md": "b1bf36c6b55647064f79402997c5d956060e13cbf6d6648bcde831ea4e0c5e74",
     "config/progress-plan.md": "cf144b1f5e0b8d5d0a17e0f2a1d065ad64c13a95d1b491c88792e046bb65a3ff",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
     "config/strategy.md": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
-    "config/symbols.csv": "3a728d6ee6bf7004ec0a6cf827821252d6cfdf55ac236579d13a36c4466afecb",
-    "config/symbols.md": "ffd70509267c1f517627392726b46505db493ae16077ce0855856630ea863ea0",
+    "config/symbols.csv": "3e2d4f2d0695ebda898fb61b5453252abef437b5a7a7f798f8e76db4c98b1613",
+    "config/symbols.md": "fa829cb6b6fe57141589ed2188374ad74fa33f1f7cc75d0ddf5294c3e23befb3",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
@@ -26,16 +26,16 @@
     "tools/cc.py": "428b7ac5f1b7808cf780d0b26a03b49600e43810ec1c1f128630766d090a820f",
     "tools/check.py": "304e380caa8ba84da40f4b68421cb4b63c760271070aa1111d579648791ab6e8",
     "tools/identification.py": "eb8678dbbeea7e30684a191a3e6cd76690d223ee87f3e9f4b9fff14b31591f8f",
-    "tools/identification_graph.py": "e73e652683a1641ace0a5956e155c905af8cb87e45b5309e4eba0e929aa0e4ad",
+    "tools/identification_graph.py": "adbc74b552eb7cbaaa4f62750d8e88cdf75f418ff96968ed61f2485dd9eac3f6",
     "tools/identification_inspect.py": "1bdaa9f14aacdf9b5e3cae97ed04b34da59558dc20ee36417148b0b716fcdcc1",
-    "tools/identification_joint.py": "511d0f76a00dd0b5bcd18d4d60d4f5ba09a183802c7c4eb32ae6e5d8e5e1f885",
+    "tools/identification_joint.py": "55e72e3591803523aa7d501b6c0388ce92dc9c6d84ee7c07a1be78b88eab922c",
     "tools/identification_limits.py": "c44fb5fb1eacd2f20126515e28421863eb4c66d35250340ba1708e2c4f9440cb",
     "tools/identification_literals.py": "52b26a61109aed9711523d3d852d3222b7fbc0de786f013503f9246cf90e610c",
     "tools/identification_registry.py": "066ed2cc43b2aaed4755a076850de8792c69333a2c67dafe859998c39f3229e5",
     "tools/identification_registry_run.py": "c42b429298988bf05a45d8e48ca2a1d7e439fb574a0a9e93057e3ae95493200d",
     "tools/identification_review.py": "e92eacc56382d50d952457caf410d34d64be450565d86f7b449b80f22d47137f",
-    "tools/identification_run.py": "4b74dae5461f136dadcd03bb31eeaf7df38096ed67522664f737fb0d68f6370b",
-    "tools/identification_state.py": "001d87aa07d0694a07db33f48b60418130f902631a0a0570b66ef0b28061949f",
+    "tools/identification_run.py": "29831c492dbe131e292e5979d2421937e55dd730abfa4756ee635e0777ce8667",
+    "tools/identification_state.py": "bd74afbaea3e4a071cb103663de6b21684da75710fc8dfd927cd46a0b84c2a50",
     "tools/identification_tables.py": "02af9327955f2a5fb6594e739461d280a17c28ec96b6a07ee86500bd9a4a8b76",
     "tools/lib.py": "8c94ae7a83dc5e94838ca429f569eb93f897168a654a4cff325ed3f36bbe24a3",
     "tools/match.py": "c0abc16e173230f630d5aac633b0e0f9348a9b47b0245ef925ed936606e829f9",
@@ -52,14 +52,14 @@
     "tools/test_identification.py": "0abb6f78c0a8a8897fd288a35598af638ad331869631e81f2ff57b7124124034",
     "tools/test_identification_graph.py": "2a1b03cb9284b2e121b7109a0cc3c1d03f47973906deda30df2a4bf259f40699",
     "tools/test_identification_inspect.py": "26a4a51eeb54303684e0ae7f8a5069ef8adddc64a0cf51f431305bb51afeef8c",
-    "tools/test_identification_joint.py": "add50bb38db9cdccb806097aa95fbfb5e33e9c268c24863868b27e0817140b91",
+    "tools/test_identification_joint.py": "1b745485aca770596ba07aa3f25e6522891f1cc4b929458b150ed17407b2f61b",
     "tools/test_identification_limits.py": "de46aa361901c31ca434236504cf318f64a9dc5b1a52042e0957dd1b3d3e9bb6",
     "tools/test_identification_literals.py": "4464803d23947e66a0669c4d36fa1cd6da53cf7707936fab81221b687be1bd43",
     "tools/test_identification_registry.py": "c8f20bf61ec222ddf72b1ffff5b566383b4755d01a0edda89263e61aa36da43b",
     "tools/test_identification_registry_run.py": "40c0e144d80c186a4fd199bf3fdf7cc7889f4d9e8ec104c7a9097b0e781da5db",
     "tools/test_identification_review.py": "e554e56de00abf23de3bd58e4f64d9f7317e274398bb6b7e793ea31cbd9a1bf7",
     "tools/test_identification_run.py": "d67f590ebaff4dc935172360ff6c1635c882270ad8ef6ac325dcbcd715839e40",
-    "tools/test_identification_state.py": "a91929c4bffa8a8b105030bf18baa64c7bbbc6a67fbc6bf6fd7691199c40d540",
+    "tools/test_identification_state.py": "7042cc53952e76f785a37794c9cca48fe6102874609bfe601088155cae267cf4",
     "tools/test_identification_tables.py": "0428ce56acdcc268e5af8fd170b719b599fb0274357bcfa6e099f109b1c90392",
     "tools/test_lib.py": "54561f44ee40367574c6f1824c77198ee3a93a455ba88e2ae4c83545b79a7e78",
     "tools/test_match.py": "794c052372646961512004b82d37c0b2656438a321a2280ed6420d87766f16dd",
@@ -1475,6 +1475,26 @@
       ],
       "status": "different",
       "objdiff_percent": 87.24779
+    },
+    {
+      "name": "Action_SetTakeOverTarget",
+      "symbol": "_Action_SetTakeOverTarget",
+      "address": "0x00443fc0",
+      "units": [],
+      "target_size": 739,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_ClearTakeOverTarget",
+      "symbol": "_Action_ClearTakeOverTarget",
+      "address": "0x004442b0",
+      "units": [],
+      "target_size": 52,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "Action_Activate",
@@ -3043,6 +3063,96 @@
       "status": "not implemented"
     },
     {
+      "name": "Action_ProbeDroid",
+      "symbol": "_Action_ProbeDroid",
+      "address": "0x00453f30",
+      "units": [],
+      "target_size": 538,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_AlertCreatures",
+      "symbol": "_Action_AlertCreatures",
+      "address": "0x00454150",
+      "units": [],
+      "target_size": 142,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetLastAttacker",
+      "symbol": "_Action_SetLastAttacker",
+      "address": "0x004541e0",
+      "units": [],
+      "target_size": 296,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_LinkTurretToController",
+      "symbol": "_Action_LinkTurretToController",
+      "address": "0x00454310",
+      "units": [],
+      "target_size": 206,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_TakeOver",
+      "symbol": "_Action_TakeOver",
+      "address": "0x004543e0",
+      "units": [],
+      "target_size": 493,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_ReleaseTakeOver",
+      "symbol": "_Action_ReleaseTakeOver",
+      "address": "0x004545d0",
+      "units": [],
+      "target_size": 158,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_RegisterTakeOverObject",
+      "symbol": "_Action_RegisterTakeOverObject",
+      "address": "0x00454670",
+      "units": [],
+      "target_size": 135,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetCanTakeOver",
+      "symbol": "_Action_SetCanTakeOver",
+      "address": "0x00454960",
+      "units": [],
+      "target_size": 135,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CanBeCarried",
+      "symbol": "_Action_CanBeCarried",
+      "address": "0x004549f0",
+      "units": [],
+      "target_size": 221,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_UseTimeBasedUpdate",
       "symbol": "_Action_UseTimeBasedUpdate",
       "address": "0x00455290",
@@ -3058,6 +3168,56 @@
       "address": "0x00455320",
       "units": [],
       "target_size": 201,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetUseOneAtOnce",
+      "symbol": "_Action_SetUseOneAtOnce",
+      "address": "0x004559e0",
+      "units": [],
+      "target_size": 250,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetAO_MaxAttackers",
+      "symbol": "_Action_SetAO_MaxAttackers",
+      "address": "0x00455ae0",
+      "units": [],
+      "target_size": 116,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetAO_AttackersPerRow",
+      "symbol": "_Action_SetAO_AttackersPerRow",
+      "address": "0x00455b60",
+      "units": [],
+      "target_size": 116,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetAO_RowDist",
+      "symbol": "_Action_SetAO_RowDist",
+      "address": "0x00455be0",
+      "units": [],
+      "target_size": 109,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetAO_InitRowDist",
+      "symbol": "_Action_SetAO_InitRowDist",
+      "address": "0x00455c50",
+      "units": [],
+      "target_size": 109,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -19337,6 +19497,16 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "GameShadow",
+      "symbol": "_GameShadow",
+      "address": "0x005506f0",
+      "units": [],
+      "target_size": 305,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "PointAlongSpline",
       "symbol": "_PointAlongSpline",
       "address": "0x00550a20",
@@ -19558,6 +19728,16 @@
       "address": "0x005528b0",
       "units": [],
       "target_size": 60,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "FindReflectionNoPlatforms",
+      "symbol": "_FindReflectionNoPlatforms",
+      "address": "0x00553500",
+      "units": [],
+      "target_size": 100,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -38841,6 +39021,16 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "AnimSpeed",
+      "symbol": "_AnimSpeed",
+      "address": "0x0062f1c0",
+      "units": [],
+      "target_size": 35,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "APITransparentInit",
       "symbol": "_APITransparentInit",
       "address": "0x0062f970",
@@ -40373,6 +40563,36 @@
       ],
       "status": "different",
       "objdiff_percent": 51.0
+    },
+    {
+      "name": "NewScanRot",
+      "symbol": "_NewScanRot",
+      "address": "0x00671750",
+      "units": [],
+      "target_size": 4748,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "NewCast",
+      "symbol": "_NewCast",
+      "address": "0x006729e0",
+      "units": [],
+      "target_size": 3407,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "NewShadowEx",
+      "symbol": "_NewShadowEx",
+      "address": "0x00673730",
+      "units": [],
+      "target_size": 234,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "NewPlatInst",
@@ -73147,6 +73367,16 @@
       "status": "not implemented"
     },
     {
+      "name": "debris_name",
+      "symbol": "_debris_name",
+      "address": "0x007f5dd0",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "timebase_updates",
       "symbol": "_timebase_updates",
       "address": "0x007f6588",
@@ -76106,6 +76336,16 @@
       "status": "exact"
     },
     {
+      "name": "GAMEPAD_TOGGLERIGHT",
+      "symbol": "_GAMEPAD_TOGGLERIGHT",
+      "address": "0x0080228c",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "GAMEPAD_DUP",
       "symbol": "_GAMEPAD_DUP",
       "address": "0x00802290",
@@ -76566,6 +76806,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "grapple_gizmotype_id",
+      "symbol": "_grapple_gizmotype_id",
+      "address": "0x00802460",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "v100",
@@ -78278,6 +78528,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "DEBPAGE_AREA",
+      "symbol": "_DEBPAGE_AREA",
+      "address": "0x00805b3c",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "TrooperStepFrames",
@@ -81181,6 +81441,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "MiniKitCollection",
+      "symbol": "_MiniKitCollection",
+      "address": "0x00855f44",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "DEFAULT_MOVE_RANGE",
@@ -86918,6 +87188,16 @@
       "status": "exact"
     },
     {
+      "name": "active_cutscene_instances",
+      "symbol": "_active_cutscene_instances",
+      "address": "0x0092135c",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "menu_flash",
       "symbol": "_menu_flash",
       "address": "0x00921404",
@@ -88312,6 +88592,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "vehicle_scene",
+      "symbol": "_vehicle_scene",
+      "address": "0x009248b8",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "area_scene",
@@ -90280,6 +90570,16 @@
       "status": "exact"
     },
     {
+      "name": "CutBorderScale",
+      "symbol": "_CutBorderScale",
+      "address": "0x00950780",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "FadeSys",
       "symbol": "_FadeSys",
       "address": "0x0095079c",
@@ -90690,6 +90990,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "Door_Last",
+      "symbol": "_Door_Last",
+      "address": "0x009513d0",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "Door_UseCutCam",
@@ -91374,6 +91684,16 @@
       "status": "exact"
     },
     {
+      "name": "CutStopInfo",
+      "symbol": "_CutStopInfo",
+      "address": "0x00951c08",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "CUTSKIPLOCK",
       "symbol": "_CUTSKIPLOCK",
       "address": "0x00951c7c",
@@ -91956,6 +92276,16 @@
       "address": "0x00956458",
       "units": [],
       "target_size": 352,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "num_takeoverobjects",
+      "symbol": "_num_takeoverobjects",
+      "address": "0x00956628",
+      "units": [],
+      "target_size": 4,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -94310,6 +94640,16 @@
       "status": "exact"
     },
     {
+      "name": "apiloadcharactermodels_nopakfile",
+      "symbol": "_apiloadcharactermodels_nopakfile",
+      "address": "0x0291310c",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "APIActionInfo",
       "symbol": "_APIActionInfo",
       "address": "0x0291313c",
@@ -95012,6 +95352,16 @@
       "status": "exact"
     },
     {
+      "name": "maxdebkeys",
+      "symbol": "_maxdebkeys",
+      "address": "0x029620b4",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "debinf_count",
       "symbol": "_debinf_count",
       "address": "0x029620b8",
@@ -95052,6 +95402,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "debkeydata",
+      "symbol": "_debkeydata",
+      "address": "0x029620c4",
+      "units": [],
+      "target_size": 4,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "debris_render_group",
@@ -100071,16 +100431,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 492820,
+    "mapped_code_bytes": 505464,
     "matched_code_bytes": 45746,
     "matching_percent": 1.3178553176582704,
     "fuzzy_coverage_percent": 6.211660510525754,
-    "mapped_functions": 1972,
+    "mapped_functions": 1994,
     "matched_functions": 801,
     "objdiff_fuzzy_percent": 61.122322,
     "objdiff_total_code": 352861,
     "image_bytes": 40067072,
-    "mapped_bytes": 1036479,
-    "mapping_percent": 2.5868598533978227
+    "mapped_bytes": 1049163,
+    "mapping_percent": 2.618516771078256
   }
 }
