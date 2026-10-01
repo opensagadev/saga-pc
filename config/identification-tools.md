@@ -355,6 +355,51 @@ has 184 physical candidates, no ambiguous joins and 77 unresolved names:
 remain separate from scoring and acceptance. Peak Python RSS is 674 MiB under
 the 1 GiB limit. No source reconstruction gain is claimed.
 
+The next wave adds 24 complete function identities (14,057 PC bytes) and sixteen
+more unknown-extent name-storage identities, bringing mapping to 972,011 bytes
+(2.426%). Sixteen AI callbacks and seven original GizObstacle callbacks have
+independent pointer/namespace, PC consumer ABI and complete-extent reviews.
+PunchCode adds a full 3,000-byte extent including its seven-cell switch table;
+its ctype remains blank. Its exact old 2,972-byte body and seven typed pointer
+owners authorize the mixed extension. Other broad movement identities and
+private ABIs remain explicit holds. The PC graph now has 7,983 functions.
+
+This review also corrects previously swapped GizmoActivate/GizmoSetVisibility
+bindings, their runtime slots and the activation condition. Twelve source calls
+are independently checked against fourteen original E8 sites: ten names change
+and two retain their identity. All 801 previous exact function rows remain
+identical. Other old comparison rows remain identical except the two corrected
+wrapper bindings and ProcessGizmoFlowBox's corrected call target. Header changes
+recompile all 123 objects, whose full COFF hashes change. Comparison hashes and
+extents, rather than raw object equality, verify preservation here. Whole-code
+fuzzy coverage changes from 6.211618663% to 6.211660511%; no newly compared
+original code bytes are added.
+
+Every repair now pins the prior PC manifest and streams all existing function
+extents into a bounded disk SQLite comparison before publication, including
+ordinary missing-entry packs. Changed, dropped or duplicate old bodies fail;
+only exact independently reviewed mixed extensions are allowed. Reopened program,
+original transform and graph hashes are checked in every mode. Four synthetic
+ordinary-repair regressions raise the wrapper suite to 41 tests.
+
+The second Android export carries all 32 reviewed name annotations. All 266,614
+preceding nodes and all 248,675 edges remain identical; only sixteen unknown-size
+sites are added. No allocation, type, definition, user or edge is inferred. Its
+1 GiB heap export peaks at 1,272 MiB RSS; the original project is unchanged.
+PC jobs peak below 760 MiB RSS with 512 MiB heaps. The successful replay peaks
+at 675 MiB RSS under the 1 GiB Python address-space limit. Replay validation
+rejects incomplete baseline publications and noncanonical binary hash roles
+before scoring; the final run uses a complete verified baseline and canonical
+original-hash-bound journal.
+
+The production replay has 1,345 accepted function seeds, 57 reviewed data
+anchors, 1,224 tentative function pairs, 1,887 data candidates and zero stale
+decisions. Data hypotheses add 74, change 193 and remove 11; function hypotheses
+add 13, change 486 and remove 80. Registry diagnostics report 194 physical
+candidates, no ambiguous joins and 67 unresolved names: 66 missing PC callbacks
+plus the Android-only CharClipToBlobShadows. These diagnostics remain separate
+from scoring and acceptance. No identification-quality gain is established.
+
 ```sh
 python3 tools/repair_graph.py \
   --config build/analysis/identification/current-graphs/export-config.json \
@@ -829,12 +874,14 @@ tooling/map changes. Keep generated graphs, original bytes, H2 databases and
 downloaded binaries ignored. Only tooling, synthetic tests, reviewed proposals
 and documentation belong in tracked changes.
 
-The latest checkpoint `make -j2 check` passed 382 tests (three optional Ghidra fixture skips), source
+The latest checkpoint `make -j2 check` passed 386 tests (three optional Ghidra fixture skips), source
 formatting and Clang-tidy. The object check passed 1,638 function and 2,604 data
 definitions across 123 objects. Final compilation/matching checks use two Make
 workers to keep resource use bounded.
-Retail matching preserves all 801 exact functions and every pre-existing
-comparison row. Fuzzy code coverage stays at 6.212%; only mapping coverage rises.
+Retail matching preserves all 801 previous exact function rows. Pre-existing
+comparisons are unchanged except the independently corrected Gizmo wrappers
+and ProcessGizmoFlowBox call target. Fuzzy code coverage rounds to 6.212%;
+mapping coverage reaches 2.426%.
 The first pushed tool snapshot exposed a test relying on a local ignored file;
 the fixture now isolates both repository roots and its job lock, so the required
 legacy-default inputs are entirely synthetic.

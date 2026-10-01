@@ -1,28 +1,5 @@
 #include "saga.h"
 
-void __cdecl GizmoSetVisibility(void *system, void *gizmo_ptr, i32 visible, i32 mode) {
-    GIZMOTYPES_PC *registry;
-    GIZMOTYPE_PC *type;
-    GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_ptr;
-
-    if (gizmotypes == NULL || system == NULL || gizmo == NULL)
-        return;
-
-    registry = (GIZMOTYPES_PC *)gizmotypes;
-    if (gizmo->type_id >= registry->count)
-        return;
-
-    type = &registry->types[gizmo->type_id];
-    if (type->set_visibility == NULL)
-        return;
-
-    if (visible == 0 && type->activate != NULL)
-        type->activate(gizmo, 1);
-
-    type->set_visibility(gizmo, visible);
-    (void)mode;
-}
-
 void __cdecl GizmoActivate(void *system, void *gizmo_ptr, i32 active, i32 mode) {
     GIZMOTYPES_PC *registry;
     GIZMOTYPE_PC *type;
@@ -39,13 +16,36 @@ void __cdecl GizmoActivate(void *system, void *gizmo_ptr, i32 active, i32 mode) 
     if (type->activate == NULL)
         return;
 
-    if (active == 0 && type->set_visibility != NULL) {
-        type->set_visibility(gizmo, 0);
+    if (active != 0 && type->set_visibility != NULL)
+        type->set_visibility(gizmo, 1);
+
+    type->activate(gizmo, active);
+    (void)mode;
+}
+
+void __cdecl GizmoSetVisibility(void *system, void *gizmo_ptr, i32 visible, i32 mode) {
+    GIZMOTYPES_PC *registry;
+    GIZMOTYPE_PC *type;
+    GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_ptr;
+
+    if (gizmotypes == NULL || system == NULL || gizmo == NULL)
+        return;
+
+    registry = (GIZMOTYPES_PC *)gizmotypes;
+    if (gizmo->type_id >= registry->count)
+        return;
+
+    type = &registry->types[gizmo->type_id];
+    if (type->set_visibility == NULL)
+        return;
+
+    if (visible == 0 && type->activate != NULL) {
+        type->activate(gizmo, 0);
         registry = (GIZMOTYPES_PC *)gizmotypes;
         type = &registry->types[gizmo->type_id];
     }
 
-    type->activate(gizmo, active);
+    type->set_visibility(gizmo, visible);
     (void)mode;
 }
 
@@ -96,7 +96,7 @@ void __cdecl GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i3
     type = &registry->types[gizmo->type_id];
     type->activate_reverse(gizmo, reverse, command);
     if (visibility != 0)
-        GizmoActivate(system, gizmo, reverse == 0, 1);
+        GizmoSetVisibility(system, gizmo, reverse == 0, 1);
     (void)mode;
 }
 
@@ -113,9 +113,9 @@ typedef struct gizmo_config_functions_pc_s {
     void *get_output;
     void *get_output_name;
     void *get_num_outputs;
-    void *set_visibility;
-    void *activate_reverse;
     void *activate;
+    void *activate_reverse;
+    void *set_visibility;
     void *get_visibility;
     void *get_pos;
     void *using_special;
@@ -137,6 +137,9 @@ STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
 STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
 STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
 STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
 STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
 STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
 STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
@@ -264,9 +267,9 @@ void __cdecl RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CO
         type->functions.get_output = definition->functions.get_output;
         type->functions.get_output_name = definition->functions.get_output_name;
         type->functions.get_num_outputs = definition->functions.get_num_outputs;
-        type->functions.set_visibility = definition->functions.set_visibility;
-        type->functions.activate_reverse = definition->functions.activate_reverse;
         type->functions.activate = definition->functions.activate;
+        type->functions.activate_reverse = definition->functions.activate_reverse;
+        type->functions.set_visibility = definition->functions.set_visibility;
         type->functions.get_visibility = definition->functions.get_visibility;
         type->functions.get_pos = definition->functions.get_pos;
         type->functions.using_special = definition->functions.using_special;

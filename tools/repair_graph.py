@@ -227,6 +227,7 @@ def validate_preserved_functions(previous_nodes, current_nodes, replacements=Non
         with closing(sqlite3.connect(str(Path(directory) / "extents.sqlite"))) as database, database:
             database.execute("PRAGMA cache_size=-2048")
             database.execute("PRAGMA mmap_size=0")
+            database.execute("PRAGMA temp_store=FILE")
             database.execute("CREATE TABLE functions(address INTEGER PRIMARY KEY, ranges TEXT, bytes INTEGER, seen INTEGER DEFAULT 0)")
             count = 0
             for row in _nodes(previous_nodes):
@@ -251,12 +252,12 @@ def validate_preserved_functions(previous_nodes, current_nodes, replacements=Non
                 if prior is not None:
                     wanted = approved[address][1] if address in approved else prior[:2]
                     if prior[2] or _function_extent(row) != wanted:
-                        raise ValueError("Data repair changed or duplicated a previous function extent")
+                        raise ValueError("Repair changed or duplicated a previous function extent")
                     database.execute("UPDATE functions SET seen=1 WHERE address=?", (address,))
             if seen_approved != approved.keys():
                 raise ValueError("Approved old function body absent from prior export")
             if database.execute("SELECT COUNT(*) FROM functions WHERE seen=0").fetchone()[0]:
-                raise ValueError("Data repair lost previous function entries")
+                raise ValueError("Repair lost previous function entries")
             return count
 
 
@@ -455,18 +456,21 @@ def repair(config_path, packet_path, reuse_pair_path, output, ghidra_home):
     pair = json.loads(reuse_pair_path.read_text())
     if pair.get("schema") != "identification-graph-pair-v1":
         raise ValueError("Expected an existing graph pair")
-    previous_pc = None
-    preservation_required = data_mode or any(row.get("replacement_body") is not None for row in packet.get("functions", []))
-    if preservation_required:
-        previous_pc = resolve(reuse_pair_path.parent, pair["pc"])
-        previous_pc_hash = sha256(previous_pc)
-        previous_pc_manifest = json.loads(previous_pc.read_text())
-        if previous_pc_manifest.get("program") != program:
-            raise ValueError("Prior PC graph program differs from source project program")
-        pc_delta = _number(pc["delta"])
-        if pc_delta != 0:
-            raise ValueError("Reviewed PC data repair requires original PC addresses")
-        validate_export(previous_pc, pc["sha256"], pc_delta, previous_pc_manifest["exporter_sha256"])
+    # Every repair must preserve the prior graph, including missing-entry packs.
+    if not isinstance(pair.get("pc"), str) or not pair["pc"].strip():
+        raise ValueError("Repair requires a pinned prior PC manifest")
+    previous_pc = resolve(reuse_pair_path.parent, pair["pc"])
+    previous_pc_hash = sha256(previous_pc)
+    previous_pc_manifest = json.loads(previous_pc.read_text())
+    if previous_pc_manifest.get("program") != program:
+        raise ValueError("Prior PC graph program differs from source project program")
+    raw_pc_delta = pc["delta"]
+    if isinstance(raw_pc_delta, bool) or not isinstance(raw_pc_delta, (int, str)):
+        raise ValueError("Reviewed PC repair requires an integer address delta")
+    pc_delta = _number(raw_pc_delta)
+    if pc_delta != 0:
+        raise ValueError("Reviewed PC repair requires original PC addresses")
+    validate_export(previous_pc, pc["sha256"], pc_delta, previous_pc_manifest["exporter_sha256"])
     android_manifest = resolve(reuse_pair_path.parent, pair["android"])
     android_manifest_hash = sha256(android_manifest)
     prior = json.loads(android_manifest.read_text())
@@ -532,15 +536,13 @@ def repair(config_path, packet_path, reuse_pair_path, output, ghidra_home):
                                              "size": row["size"], "data_type_path": _data_type(row)}) + "\n")
         copied_job["reviewed_evidence"] = str(evidence_path)
     manifest = export_job(copied_job, "pc", config_path.parent, output, Path(ghidra_home).resolve())
-    if data_mode and manifest.get("program") != program:
+    if manifest.get("program") != program:
         raise ValueError("Reopened PC graph program differs from repaired program")
     found = validate_saved_nodes(packet, output / "pc/nodes.jsonl")
-    preserved_functions = None
-    if preservation_required:
-        if sha256(previous_pc) != previous_pc_hash:
-            raise ValueError("Prior PC manifest changed during data repair")
-        validate_export(previous_pc, pc["sha256"], pc_delta, previous_pc_manifest["exporter_sha256"])
-        preserved_functions = validate_preserved_functions(previous_pc.parent / "nodes.jsonl", output / "pc/nodes.jsonl", packet.get("functions", []))
+    if sha256(previous_pc) != previous_pc_hash:
+        raise ValueError("Prior PC manifest changed during repair")
+    validate_export(previous_pc, pc["sha256"], pc_delta, previous_pc_manifest["exporter_sha256"])
+    preserved_functions = validate_preserved_functions(previous_pc.parent / "nodes.jsonl", output / "pc/nodes.jsonl", packet.get("functions", []))
     if project_inventory(source) != before:
         raise ValueError("Retained Ghidra project changed during export")
     if sha256(android_manifest) != android_manifest_hash:
@@ -552,10 +554,10 @@ def repair(config_path, packet_path, reuse_pair_path, output, ghidra_home):
               "repair_packet_sha256": sha256(generated_packet), "repair_script_sha256": executed_script_hash,
               "repair_report_sha256": sha256(report_path), "retained_project_unchanged": True,
               "reused_android_manifest_sha256": android_manifest_hash,
-              "java_heap_mb": heap}
+              "java_heap_mb": heap, "previous_pc_manifest_sha256": previous_pc_hash,
+              "preserved_function_count": preserved_functions}
     if data_mode:
-        result.update(repair_kind="reviewed-data", previous_pc_manifest_sha256=previous_pc_hash,
-                      preserved_function_count=preserved_functions)
+        result.update(repair_kind="reviewed-data")
     (output / "original-project-inventory.json").write_text(json.dumps(before, indent=2) + "\n")
     pair_path = output / "graph-pair.json"
     temporary_pair = output / "graph-pair.json.tmp"

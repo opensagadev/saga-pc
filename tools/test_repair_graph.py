@@ -317,6 +317,98 @@ class RepairGraphTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "pinned inputs"):
             repair.validate_repair(self.report, self.packet, self.packet_path, self.project)
 
+    def ordinary_wrapper_fixture(self, prior_program="pc.exe", prior_delta=0, job_delta=0):
+        original, android = self.root / "pc.exe", self.root / "android.so"
+        original.write_bytes(b"synthetic pc")
+        android.write_bytes(b"synthetic android")
+        self.packet["binary_sha256"] = repair.sha256(original)
+        self.packet_path.write_text(json.dumps(self.packet))
+        old = {"kind": "function", "address": "0x00403000", "body_bytes": 3,
+               "ranges": [{"start": "0x00403000", "end_exclusive": "0x00403003"}]}
+        added = [{"kind": "function", "address": row["entry"], "body_bytes": row["size"],
+                  "ranges": [{"start": row["entry"], "end_exclusive": hex(repair._number(row["entry"])+row["size"])}]}
+                 for row in self.packet["functions"]]
+        def export(directory, rows, binary, program, delta):
+            directory.mkdir(parents=True)
+            (directory / "nodes.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            (directory / "edges.jsonl").write_text("")
+            manifest = {"schema": "identification-reference-graph-v1", "program": program,
+                        "binary_sha256": repair.sha256(binary), "exporter_sha256": "f"*64,
+                        "language": "x86:LE:32:default", "node_count": len(rows),
+                        "nodes_file": "nodes.jsonl", "edges_file": "edges.jsonl",
+                        "address_transform": {"delta": delta, "original_header_verified": True},
+                        "verification": {"program_original_sha256_equal": True, "executable_block_byte_checks": 1},
+                        "sha256": {kind: repair.sha256(directory/(kind+".jsonl")) for kind in ("nodes", "edges")}}
+            path = directory / "manifest.json";path.write_text(json.dumps(manifest))
+            return path, manifest
+        previous, _ = export(self.root/"previous", [old], original, prior_program, prior_delta)
+        aa, _ = export(self.root/"android", [], android, "android.so", -65536)
+        pair = self.root/"pair.json";pair.write_text(json.dumps({"schema": "identification-graph-pair-v1", "pc": str(previous), "android": str(aa)}))
+        config = self.root/"config.json";config.write_text(json.dumps({"schema": "export-reference-graph-config-v1", "jobs": {
+            "pc": {"project": str(self.project), "original": str(original), "program": "pc.exe", "sha256": repair.sha256(original), "delta": job_delta},
+            "android": {"original": str(android), "sha256": repair.sha256(android), "delta": -65536}}}))
+        script = self.root/"Repair.java";script.write_text("// synthetic, never executed")
+        def java(command, **kwargs):
+            post = command.index("-postScript")
+            generated = Path(command[post+2]);packet = json.loads(generated.read_text())
+            report = {"schema": "identification-reviewed-function-repair-v1", "binary_sha256": packet["binary_sha256"],
+                      "packet_sha256": repair.sha256(generated), "disposable_project_file": packet["disposable_project_file"],
+                      "functions": [dict(row, status="created") for row in packet["functions"]]}
+            Path(command[post+4]).write_text(json.dumps(report))
+        return config, pair, previous, old, added, export, original, script, java
+
+    def run_ordinary_wrapper(self, fixture, rows, output):
+        config, pair, previous, old, added, export, original, script, java = fixture
+        def fake_export(job, label, config_directory, destination, ghidra_home):
+            return export(destination/"pc", rows, original, "pc.exe", 0)[1]
+        with patch.object(repair, "ROOT", self.root), patch.object(repair, "SCRIPT", script), \
+                patch.object(repair.resource, "getrlimit", return_value=(-1,-1)), \
+                patch.object(repair, "identification_lock", return_value=nullcontext()), \
+                patch.object(repair.subprocess, "run", side_effect=java), \
+                patch.object(repair, "export_job", side_effect=fake_export), redirect_stdout(io.StringIO()):
+            return repair.repair(config, self.packet_path, pair, output, "/fake")
+
+    def test_ordinary_function_pack_preserves_and_pins_old_extents(self):
+        fixture = self.ordinary_wrapper_fixture()
+        published = self.run_ordinary_wrapper(fixture, [*fixture[4], fixture[3]], self.root/"build/analysis/good")
+        result = json.loads(published.read_text())
+        self.assertEqual(result["preserved_function_count"], 1)
+        self.assertEqual(result["previous_pc_manifest_sha256"], repair.sha256(fixture[2]))
+
+    def test_ordinary_function_pack_cannot_publish_dropped_changed_or_duplicate_old_body(self):
+        fixture = self.ordinary_wrapper_fixture()
+        old = fixture[3];changed = copy.deepcopy(old)
+        changed["body_bytes"] = 4;changed["ranges"][0]["end_exclusive"] = "0x00403004"
+        for index, prior_rows in enumerate(([], [changed], [old, old])):
+            output = self.root/f"build/analysis/bad-{index}"
+            with self.subTest(prior_rows=prior_rows), self.assertRaisesRegex(ValueError, "previous function"):
+                self.run_ordinary_wrapper(fixture, [*fixture[4], *prior_rows], output)
+            self.assertFalse((output/"graph-pair.json").exists())
+
+    def test_ordinary_function_pack_requires_prior_pc_manifest(self):
+        fixture = self.ordinary_wrapper_fixture()
+        fixture[1].write_text(json.dumps({"schema": "identification-graph-pair-v1", "android": "unused"}))
+        fixture = (*fixture[:-1], lambda *args, **kw: self.fail("Missing prior graph reached Java launcher"))
+        output = self.root/"build/analysis/no-prior"
+        with self.assertRaisesRegex(ValueError, "pinned prior PC manifest"):
+            self.run_ordinary_wrapper(fixture, [fixture[3], *fixture[4]], output)
+        self.assertFalse(output.exists())
+
+    def test_ordinary_function_pack_rejects_wrong_prior_program_or_delta_before_launch(self):
+        for index, kwargs in enumerate(({"prior_program": "wrong.exe"}, {"prior_delta": 65536}, {"job_delta": 65536}, {"job_delta": False})):
+            # Each fixture receives independent files and a fresh output.
+            with tempfile.TemporaryDirectory() as directory:
+                original_root = self.root;self.root = Path(directory)
+                try:
+                    fixture = self.ordinary_wrapper_fixture(**kwargs)
+                    output = self.root/"build/analysis/rejected"
+                    fixture = (*fixture[:-1], lambda *args, **kw: self.fail("Invalid prior graph reached Java launcher"))
+                    with self.assertRaises(ValueError):
+                        self.run_ordinary_wrapper(fixture, [fixture[3], *fixture[4]], output)
+                    self.assertFalse(output.exists())
+                finally:
+                    self.root = original_root
+
     def test_finite_address_space_rejected_before_any_input_or_launch(self):
         for limits in ((256 * 1024 * 1024, resource.RLIM_INFINITY),
                        (resource.RLIM_INFINITY, 256 * 1024 * 1024)):

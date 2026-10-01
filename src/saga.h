@@ -233,18 +233,18 @@ typedef struct gizmotype_pc_s {
     i32(__cdecl *get_output)(void *gizmo, i32 output, i32 mode);
     char *(__cdecl *get_output_name)(void *gizmo, i32 output);
     u8 unknown_50[4];
-    void(__cdecl *set_visibility)(void *gizmo, i32 mode);
+    void(__cdecl *activate)(void *gizmo, i32 active);
     i32(__cdecl *activate_reverse)(void *gizmo, i32 reverse, i32 visibility);
-    void(__cdecl *activate)(void *gizmo, i32 mode);
+    void(__cdecl *set_visibility)(void *gizmo, i32 visible);
     u8 unknown_60[0x3c];
 } GIZMOTYPE_PC;
 STATIC_ASSERT(sizeof(GIZMOTYPE_PC) == 0x9c);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, get_gizmo_name) == 0x44);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, get_output) == 0x48);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, get_output_name) == 0x4c);
-STATIC_ASSERT(offsetof(GIZMOTYPE_PC, set_visibility) == 0x54);
+STATIC_ASSERT(offsetof(GIZMOTYPE_PC, activate) == 0x54);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, activate_reverse) == 0x58);
-STATIC_ASSERT(offsetof(GIZMOTYPE_PC, activate) == 0x5c);
+STATIC_ASSERT(offsetof(GIZMOTYPE_PC, set_visibility) == 0x5c);
 
 typedef struct gizmotypes_pc_s {
     i32 count;

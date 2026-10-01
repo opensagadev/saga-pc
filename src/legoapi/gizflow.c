@@ -43,7 +43,7 @@ void __cdecl ResetGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box) {
         return;
     data = (FLOWBOXGIZMODATA_PC *)box->data;
     for (i = 0; i < data->gizmo_count; ++i)
-        GizmoSetVisibility(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
+        GizmoActivate(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
 }
 
 i32 __cdecl CheckOutputGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output) {
@@ -97,7 +97,7 @@ static void ResetForLoopEx(GIZFLOW_PC *flow, FLOWBOX_PC *root, FLOWBOX_PC *box, 
     if (box->type == 0 && (FLOWBOX_FLAGS(box) & 0x1000) == 0 && box->data != NULL) {
         data = (FLOWBOXGIZMODATA_PC *)box->data;
         for (i = 0; i < data->gizmo_count; ++i)
-            GizmoSetVisibility(flow->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
+            GizmoActivate(flow->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
     }
     for (i = 0; i < box->child_count; ++i)
         ResetForLoopEx(flow, root, box->children[i], checksum);
@@ -213,12 +213,12 @@ void __cdecl CheckIfParentsFinished(GIZFLOW_PC *system, FLOWBOX_PC *box) {
             FLOWBOXGIZMODATA_PC *data = (FLOWBOXGIZMODATA_PC *)parent->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j)
-                GizmoActivate(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
+                GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
         } else if ((parent->state_flags_low & 0x10) != 0) {
             FLOWBOXGIZMODATA_PC *data = (FLOWBOXGIZMODATA_PC *)parent->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j)
-                GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
+                GizmoActivate(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
         }
         if ((parent->state_flags_low & 0x40) != 0) {
             parent->state_flags_high &= (u8)~1;
@@ -313,10 +313,10 @@ void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
                 data = (FLOWBOXGIZMODATA_PC *)box->data;
                 if ((box->state_flags_low & 8) != 0) {
                     for (i = 0; i < data->gizmo_count; ++i)
-                        GizmoActivate(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
+                        GizmoSetVisibility(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
                 } else if ((box->state_flags_low & 0x10) != 0) {
                     for (i = 0; i < data->gizmo_count; ++i)
-                        GizmoSetVisibility(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
+                        GizmoActivate(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
                 }
                 box->state_flags_low &= (u8)~0x20;
             }
@@ -397,7 +397,7 @@ void __cdecl ResetGizFlowPointers(GIZFLOW_PC *system) {
                     if (flowbox_callbacks[box->type].reset != NULL)
                         flowbox_callbacks[box->type].reset(system, box);
                     if ((box->state_flags_low & 5) == 4)
-                        GizmoActivate(system->gizmo_sys, ref->gizmo, 0, 1);
+                        GizmoSetVisibility(system->gizmo_sys, ref->gizmo, 0, 1);
                 }
             }
         }
@@ -465,7 +465,7 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
             FLOWBOXGIZMODATA_PC *data = (FLOWBOXGIZMODATA_PC *)box->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j)
-                GizmoActivate(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
+                GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
         }
     }
 }

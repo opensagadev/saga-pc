@@ -1258,3 +1258,114 @@ edges are invented. The original project is unchanged. These inventory names
 do not establish reconstruction gain or ranking-quality improvement. Ignored
 `ai-registry-name-data-frontier`, endpoint evidence, whole-graph preservation
 audit and independent identity review retain provenance and limitations.
+
+The sixth and seventh new original AI registry batches accept sixteen callbacks
+covering 10,325 PC bytes. Independently reviewed runtime namespaces, named record
+pointers and Android relocations supply identity; actual PC dispatcher calls prove
+the seven stack slots and return use. Full original PC CFGs and range hashes
+establish extents. Complete aggregate types remain unproved.
+
+| Callback | PC entry | Complete bytes | Named Android entry |
+| --- | --- | ---: | --- |
+| SnapToLocator | `0x446060` | 1001 | `0x19eaa0` |
+| SnapToOrigin | `0x447030` | 504 | `0x19e880` |
+| BigJumpToLocator | `0x446450` | 698 | `0x19e380` |
+| BigJump | `0x446710` | 1047 | `0x19de40` |
+| SnapToPosition | `0x446d90` | 663 | `0x1945f0` |
+| SnapToSockPosition | `0x447230` | 1413 | `0x18ba40` |
+| EngageObject | `0x448bf0` | 735 | `0x18abb0` |
+| TagCharacter | `0x44ff40` | 239 | `0x19cca0` |
+| UseForce | `0x450030` | 627 | `0x18a750` |
+| ForcePush | `0x450340` | 521 | `0x19a970` |
+| DeflectPlayersPart | `0x450550` | 113 | `0x184ab0` |
+| Kill | `0x445230` | 1236 | `0x199820` |
+| Explode | `0x445710` | 38 | `0x18a710` |
+| SetSpline | `0x449ac0` | 236 | `0x18a510` |
+| LaunchGuidedMissile | `0x44bed0` | 759 | `0x188eb0` |
+| AddPartDebris | `0x44b950` | 495 | `0x197ad0` |
+
+Ten missing entries are repaired on independent project copies, preserving every
+prior function extent. Kill retains its complete 1,236-byte mapped span although
+its analyzed body excludes three interior LEA padding bytes; SetSpline includes
+its corresponding three-byte alignment. Neither distinction licenses truncation.
+Frozen `continuation/ai-registry-new-callback-batch6` and `batch7`, with their
+independent audits, retain original provenance. These remain inventory entries.
+
+Seven further GizObstacle callbacks cover 732 complete PC bytes. Actual original
+initializer writes, config-to-runtime slot copies, named Android callback symbols
+and both bodies establish identity. Original PC consumers independently prove
+one-, two- or three-slot callback contracts, including unused incoming arguments.
+The PC configuration name begins with NUL; no literal PC type-name claim is made.
+
+| Callback | PC entry | Complete bytes | Named Android entry |
+| --- | --- | ---: | --- |
+| GizObstacles_GetMaxGizmos | `0x5586f0` | 25 | `0x4a9e00` |
+| GizmoObstacle_Activate | `0x557580` | 119 | `0x4aaf10` |
+| GizmoObstacle_ActivateRev | `0x559300` | 229 | `0x4ac5c0` |
+| GizmoObstacle_SetVisibility | `0x557630` | 60 | `0x4aaea0` |
+| GizObstacles_AllocateProgressData | `0x558890` | 21 | `0x4aa7d0` |
+| GizObstacles_ClearProgress | `0x5588b0` | 99 | `0x4aa5a0` |
+| GizObstacles_StoreProgress | `0x5589b0` | 179 | `0x4ab1c0` |
+
+Full obstacle layouts remain unproved. AddGizmos and GetNumOutputs remain held
+for actual PC dispatcher contracts. Six missing callback entries are repaired
+without altering prior bodies. The ignored `gizmo-registration-next-wave` and
+independent audit retain pointer, body, consumer and complete-extent evidence.
+
+The existing Gizmo wrapper identities were reversed. Original callback registration
+and consumers establish activation at runtime `+0x54` and visibility at `+0x5c`:
+`GizmoActivate` is PC `0x55a250` / Android `0x4b08f0` (92 PC bytes), while
+`GizmoSetVisibility` is PC `0x55a2b0` / Android `0x4b0980` (107 PC bytes).
+Activation makes the gizmo visible when `active != 0`; the earlier reconstructed
+zero test was incorrect. Header fields, private config fields, copy order, source
+condition and the two address bindings are corrected together. All twelve rebuilt
+source calls are checked against fourteen original E8 sites. Ten call names change;
+ProcessGizmoFlowBox retains activation, and its reverse call retains its identity.
+This supersedes earlier conclusions based on the swapped wrapper labels; frozen
+research is kept unchanged. `gizmo-wrapper-identity-correction`, its independent
+audit and applied-diff review preserve the original proof and caller exceptions.
+
+PunchCode is independently identified at PC `0x49ea70` / Android `0x157490`.
+Original paired Swipe/WhipSwish sound consumers, named ELF symbol and shared
+animation/math/sound calls establish identity. The PC caller supplies six words,
+including a separately prepared float zero, and cleans 24 bytes. Full argument
+types and signedness remain unproved, so its CSV ctype is blank. The complete
+3,000-byte extent includes its seven-cell compiler switch table at `0x49f60c`;
+the analyzed 2,972-byte body alone is incomplete. Exact guarded targets, prior
+AddressSet, original hashes and all seven four-byte pointer owners authorize
+extension through `0x49f628`, excluding following INT3 alignment. The independent
+`punch-code-independent-audit` and broader `nonregistry-function-frontier-next`
+retain evidence. ForcePushCode/ZapCode private ABIs and five larger tentative
+movement identities remain explicit holds.
+
+A second sixteen-name storage cohort brings reviewed AI registry names to 32.
+Original pointer records, content hashes and actual lookup consumers establish
+identity only. All sizes/types remain blank and extent/type/ABI flags false;
+these rows add no byte coverage.
+
+| Registry name | PC storage | Android storage |
+| --- | --- | --- |
+| DeActivate | `0x756abc` | `0x569ec5` |
+| SetPath | `0x756aa4` | `0x569ede` |
+| GoToOriginalPath | `0x756a90` | `0x569ee6` |
+| SetLocator | `0x756a74` | `0x569f05` |
+| SetLocatorSet | `0x756a64` | `0x569f10` |
+| SetDoomedEscapeLocator | `0x756a20` | `0x569f3c` |
+| NotWithParty | `0x7568e0` | `0x56a05f` |
+| TakeDamage | `0x7568d4` | `0x56a06c` |
+| CanHitForceObjects | `0x7568b0` | `0x56a084` |
+| AlwaysBackFlip | `0x7568a0` | `0x56a097` |
+| PlayerSpeederHack | `0x75688c` | `0x56a0a6` |
+| SetAnimSpeedMul | `0x75687c` | `0x56a0b8` |
+| SetSide | `0x756874` | `0x56a0c8` |
+| SetStateArea | `0x756864` | `0x56a0d0` |
+| SetOpponent | `0x756858` | `0x56a0dd` |
+| AttackOpponent | `0x756848` | `0x56a0e9` |
+
+The second read-only Android export carries the merged 32 annotations, preserving
+all 266,614 preceding nodes and all 248,675 edges exactly and adding only sixteen
+unknown-extent sites. It neither defines arrays nor invents users or edges.
+The independent identity/endpoint audit and root streaming preservation audit
+retain separate attribution. Non-registry data review also holds six existing
+owner interiors, the unknown FadeSys allocation and the camera extent; pointee
+or indexed-field references do not prove an independent whole-object allocation.
