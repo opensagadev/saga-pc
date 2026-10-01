@@ -488,3 +488,27 @@ reviewed data anchors, with no stale decisions. Eight rounds reach a fixed point
 This run takes 47.36 seconds at 746,344 KiB RSS under the 1 GiB address-space
 limit, with zero swaps. Equal inferred totals do not establish equal pair sets
 or scoring accuracy; preserve the exact frozen outputs for comparison.
+
+## Larger structural mapping and call-order tool
+
+Seven more reviewed identities add 6,773 known PC code bytes, including
+TerrainInitEx, NuDisplayListRndrSpecial, AddDebrisEffect and KeepVehicleOnScreen.
+Source comparison, exact matches and fuzzy coverage receive no inventory credit.
+The new bounded call-order tool uses accepted caller/callee anchors and reviewed
+data-role evidence, retains competitors and publishes candidate-only results.
+Its full-input run takes about 1.3 seconds at 44 MiB RSS under a 256 MiB cap.
+
+The normal joint rescore has 1,476 accepted seeds, 1,515 inferred pairs and 2,087
+normal data candidates, with 109 reviewed data anchors and no stale decisions.
+Eight rounds reach a fixed point in 48.19 seconds at 739,168 KiB RSS under the
+1 GiB address-space cap, with zero swaps. Six prior hypotheses became seeds;
+Batarangs_Reset is a newly accepted pair. The advisory pair 0x005d6860 /
+0x002d5670 no longer propagates but remains a rank-one raw candidate. No new
+inferred pairs appear. Counts alone do not establish identity or accuracy.
+
+Continue original review of the new InitPartDebris/InitParts call-context leads.
+GizmoBlowUp_Hit's shared explosion-flag ancestry supplies a distinctive identity
+and complete PC boundary; actual installed callback tables and four helper
+interfaces need qualified physical closure before map release. ReadPad's callback
+and PanelRender's child/virtual interfaces remain separate holds. Keep heavy
+jobs serialized and frozen counterfactual outputs intact.

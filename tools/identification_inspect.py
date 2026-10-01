@@ -26,10 +26,27 @@ MAX_RECORD = 65536
 
 
 def _json(path):
+    """Bound the descriptor capture before parsing even if the path changes/grows."""
+    import os
+    import stat
     path = Path(path)
-    if path.stat().st_size > MAX_RECORD:
-        raise ValueError('Metadata exceeds bounded record size')
-    value = json.loads(path.read_text())
+    initial = _signature(path)
+    with path.open('rb', buffering=0) as stream:
+        opened = os.fstat(stream.fileno())
+        signature = (opened.st_dev, opened.st_ino, opened.st_size,
+                     opened.st_mtime_ns, opened.st_ctime_ns)
+        if not stat.S_ISREG(opened.st_mode) or signature != initial:
+            raise ValueError('Metadata input replaced or not a regular file')
+        size = opened.st_size
+        if size > MAX_RECORD:
+            raise ValueError('Metadata exceeds bounded record size')
+        payload = stream.read(size + 1)
+        after = os.fstat(stream.fileno())
+        after_signature = (after.st_dev, after.st_ino, after.st_size,
+                           after.st_mtime_ns, after.st_ctime_ns)
+        if len(payload) != size or after_signature != signature or _signature(path) != signature:
+            raise ValueError('Metadata changed during bounded descriptor capture')
+    value = json.loads(payload.decode())
     if not isinstance(value, dict):
         raise ValueError('Expected metadata object')
     return value

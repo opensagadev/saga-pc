@@ -2367,3 +2367,37 @@ identities have blank extents/types and add zero image coverage. This release
 adds no source comparison bytes. TerrainInitEx's separately reviewed 3,491-byte
 identity and physical-contract supplement await the next mapping release;
 PanelRender's physical child/virtual-call contracts remain held.
+
+## Larger structural caller families (2026-10-01)
+
+Seven further original identities have complete PC extents and qualified
+physical caller contracts; their ctypes remain blank:
+
+| Function | PC entry | PC bytes | Native Android entry |
+| --- | --- | --- | --- |
+| Batarangs_Reset | 0x00404990 | 184 | 0x001d7a20 |
+| AddCreature | 0x0041f8f0 | 67 | 0x000fdf50 |
+| KeepVehicleOnScreen | 0x00499300 | 509 | 0x00150000 |
+| GetLevelExBlowupFlags | 0x00569c60 | 6 | 0x004bd870 |
+| NuDisplayListRndrSpecial | 0x005f0f00 | 1491 | 0x002f3340 |
+| TerrainInitEx | 0x0066b8c0 | 3491 | 0x0036e580 |
+| AddDebrisEffect | 0x00684ee0 | 1025 | 0x00352ee0 |
+
+The 6,773 bytes add inventory coverage only. Original caller cleanup, private
+register inputs, nonvolatile preservation and local x87 effects are reviewed;
+normal engine/provider calls retain explicit qualifications. TerrainInitEx
+consumes ten caller-writable words and requires the reviewed filename length
+at most 95 for its child buffer. Its combined reviewed x87 peak is seven.
+KeepVehicleOnScreen's clamp mutates its outgoing argument storage; its vector
+helpers close at a combined peak of three. Display and debris private renderer
+and matrix interfaces are inspected rather than assumed to use stack arguments.
+AddCreature's integer shift preserves its allocator's live floating value;
+its EAX-object and ESI-object child interfaces are also inspected.
+
+The call-free batarang reset has 32 distinctive ordered stores. The flag getter
+reads the already identified flag owner, whose allocation size/type remain
+unknown. Neither adds a data definition. ReadPad, PanelRender and GizmoBlowUp_Hit
+remain research identities with explicit installed-callback or child-contract
+holds. Native sizes, argument layouts and runtime callback effects are not
+transferred to PC source. Frozen original and independent release packets remain
+under ignored continuation.

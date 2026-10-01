@@ -1584,3 +1584,36 @@ leads require original identity, physical ABI and complete PC boundary review.
 Candidate-only diagnostic publication must remain separate from accepted
 scoring and state. Bounded cache pinning and atomic publication are required
 before the prototype becomes an operator tool.
+
+## Bounded ordered-call context diagnostic
+
+`tools/identification_context.py` turns the single-parent prototype into a
+candidate-only operator tool. It compares the ordered intervals between accepted
+callee anchors inside paired accepted callers, retaining same-context competitors
+before filtering mapped entries. Canonical reviewed data access roles provide
+additional evidence; unresolved references and missing roles remain explicit
+debts. Native names are attached after selection. Inferred pairs cannot supply
+anchors, and the result never enters scorer state or the symbol map.
+
+The CLI requires `--graph-pair`, `--accepted-seeds`, `--journal`, `--symbols`,
+`--input-pins` and a new `--output` filename. The pin file is a JSON object with
+exact SHA-256 values keyed `graph_pair`, `accepted_seeds`, `journal`, `symbols`.
+Use the accepted `function-seeds.snapshot.jsonl` from the matching frozen run;
+never substitute hypotheses. Graph exports and existing immutable SQLite caches
+are stream-verified; missing caches require separate guarded preparation.
+
+The diagnostic takes the internal heavy-job lock and caps address space at
+256 MiB before imports. It bounds SQL work, projections, metadata, fanout and
+publication, with atomic exclusive output creation. Descriptor captures reject
+replacement/growth before parsing; the shared inspection metadata reader uses
+the same bounded approach. Sixteen synthetic tests cover competition, withheld
+anchors, missing access roles, stale inputs, growth races, no partial publication
+and absence of aggregate-test memory-limit side effects.
+
+The frozen preaccept run retains twenty review candidates from 179 compatible
+pairs in 1.31 seconds at 44,224 KiB RSS, with zero swaps. After the seven new
+function mappings, the diagnostic retains twenty from 180 compatible pairs in
+1.29 seconds at 44,116 KiB RSS, also with zero swaps. It charges 2,725,025 metadata
+bytes, with no original code/data reads. These are candidate yields, not measured
+precision. Missing-role handling is stricter than the old prototype; the old
+holdout result and lead count do not establish this tool's accuracy.

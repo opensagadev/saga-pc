@@ -2,6 +2,7 @@ address    , symbol                                                         , si
 0x00401100 , _StartupParseArguments                                         , 59    , "void __cdecl (i32, char **)"
 0x004011e0 , _InitOnce                                                      , 1019  , "void __cdecl (i32, char **)"
 0x00403cb0 , _NuFdiv                                                        , 54    , "f32 __cdecl (f32, f32)"
+0x00404990 , _Batarangs_Reset                                               , 184    ,
 0x00408800 , _InitCables                                                    , 127   , void __cdecl (WORLDINFO *)
 0x0040aa60 , _ViewCamGetGamePad                                             , 6     , GAMEPAD_PC *__cdecl (void)
 0x40e690   , _GoingForwardsAlongNarrowSock                                  , 106   , i32 __cdecl (GAMEOBJECT *)
@@ -17,6 +18,7 @@ address    , symbol                                                         , si
 0x0041ade0 , _FixUpLayers                                                   , 218   , void __cdecl (void)
 0x0041af30 , _Player_HasPurpleForce                                         , 46    , i32 __cdecl (GAMEOBJECT *)
 0x0041c120 , _ResetAICreature                                               , 1276  ,
+0x0041f8f0 , _AddCreature                                                   , 67     ,
 0x00426de0 , _Detonate                                                      , 374   , "EXPLOSION_PC *__cdecl (NUVEC *, u16)"
 0x0042b960 , _CheckResetBits                                                , 2966  , void __cdecl (void)
 0x0042cf20 , _PartCollide_3D                                                , 17    , void __cdecl (PART_PC *)
@@ -336,6 +338,7 @@ address    , symbol                                                         , si
 0x004988b0 , _DrawOffsetCode                                                , 393   , "void __cdecl (GAMEOBJECT *, i32)"
 0x00498d40 , _ForceTowardsMid                                               , 1057  , f32 __cdecl (GAMEOBJECT *)
 0x00499170 , _MoveInactiveVehicle                                           , 395   , "void __cdecl (GAMEOBJECT *, i32, GAMEOBJECT **)"
+0x00499300 , _KeepVehicleOnScreen                                           , 509    ,
 0x00499500 , _FaceOpponent                                                  , 133   , "i32 __cdecl (GAMEOBJECT *, NUVEC *)"
 0x499610   , _VehicleCollisionCode                                          , 770   , void __cdecl (GAMEOBJECT *)
 0x4999e0   , _GetVehicleSpeedMul                                            , 342   , "f32 __cdecl (GAMEOBJECT *,f32)"
@@ -1066,6 +1069,7 @@ address    , symbol                                                         , si
 0x00566290 , _FinishLoop                                                    , 271   , void __cdecl (i32)
 0x00566630 , _SetLevelExBlowupFlags                                         , 10    , void __cdecl (u32)
 0x00567800 , _GizmoBlowupBlowup                                             , 1385  , "i32 __cdecl (GIZMOBLOWUP_PC *, i32, i32, i32, GAMEOBJECT *, i32)"
+0x00569c60 , _GetLevelExBlowupFlags                                         , 6      ,
 0x0056a5b0 , _GizmoBlowupCheckProximity                                     , 522   , "i32 __cdecl (WORLDINFO *, GAMEOBJECT *)"
 0x0056a9b0 , _GizmoBlowupResetNameTable                                     , 31    , void __cdecl (void)
 0x0056d760 , _Tube_InCylinder                                               , 152   , "i32 __cdecl (GAMEOBJECT *, TUBE_PC *, f32 *, i32)"
@@ -1783,6 +1787,7 @@ address    , symbol                                                         , si
 0x005f0470 , _NuDisplayListProcessSortPris_candidate                        , 1611  , void __cdecl (void)
 0x005f0ac0 , _NuDisplayListDrawSortPri_candidate                            , 1079  , void (void)
 0x005f0d70 , _NuDisplayListDrawFrame_candidate                              , 391   , void __cdecl (void)
+0x005f0f00 , _NuDisplayListRndrSpecial                                      , 1491   ,
 0x005f3140 , _NuAnimData2Fixup                                              , 120   , "void *__cdecl (i32, void **)"
 0x005f3270 , _NuAnimData2LoadBuffEx                                         , 154   , "void *__cdecl (char *, VARIPTR *, VARIPTR *, void **)"
 0x005f3310 , _NuAnimData2LoadBuff                                           , 29    , "void *__cdecl (char *, VARIPTR *, VARIPTR *)"
@@ -1910,6 +1915,7 @@ address    , symbol                                                         , si
 0x0065f4e0 , _edGraDisableTerrainSwap                                       , 1     , void __cdecl (void)
 0x0065f4f0 , _edGraInitTerrainSwapProtection                                , 1     , void __cdecl (void)
 0x0066b320 , _TerrainSetWallDeflectYScale                                   , 11    , void __cdecl (f32)
+0x0066b8c0 , _TerrainInitEx                                                 , 3491   ,
 0x0066cb70 , _noterraininit                                                 , 64    , void __cdecl (void)
 0x0066cbb0 , _TerrainSetCur                                                 , 10    , void __cdecl (void *)
 0x0066cbc0 , _TerrainGetCur                                                 , 6     , void *__cdecl (void)
@@ -1936,6 +1942,7 @@ address    , symbol                                                         , si
 0x00681f40 , _PlaySfx                                                       , 45    , "void __cdecl (char *, NUVEC *)"
 0x00684580 , _DebFreeAllCreatedEffects                                      , 84    , void __cdecl (void)
 0x00684c90 , _AddVariableShotDebrisEffect                                   , 71    ,
+0x00684ee0 , _AddDebrisEffect                                               , 1025   ,
 0x00687850 , _edanimLoadPage                                                , 1489  , "i32 __cdecl (char *, NUGSCN *)"
 0x00689e70 , _edgraStopPage                                                 , 84    , void __cdecl (i8)
 0x00689ed0 , _edgraClearPage                                                , 158   , void __cdecl (i8)

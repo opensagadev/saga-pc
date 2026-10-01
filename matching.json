@@ -8,16 +8,16 @@
     "src/externals.h": "3382382faeac231f3c7962ffb276f5c091463416d3cd41afd89c57fe6c4eef62",
     "src/saga.h": "2e2cfb2393674eb86067c16512dbb7c31f7e9294a650b4705752df17ab1e88f4",
     "config/data.md": "148fd2b094bbf1330d84ac4dfa8cf6b0384511be674edd0563ea259a99ed43f8",
-    "config/identification-decisions.jsonl": "af610bc34a4d9513acc2d0b9ac5521ad22e803db8b28a4e1e2f1ae01846c0028",
+    "config/identification-decisions.jsonl": "5cc45b78037d72ba3d3bd5a37b3f4058675e41ca637ce808a7d8c73e4330b573",
     "config/identification-plan.md": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
-    "config/identification-tools.md": "9afb309ef41f06eb9f53ccf8ff5f8a7e1d523f3b02f4d7229f34a8d44f75c1f5",
+    "config/identification-tools.md": "c354076475237696cadbd24a35594e2d1c5ab017bd432ae18d4734775b549441",
     "config/identification.md": "ecfbf8977bb20b3c0b8fc8cf0c4a7cc7d7cd0f9915f3abe77145c532651e31e4",
     "config/numain.md": "3f25abbf6d2df3515fa97714b637d71ad5d5aa1dd2bca0a6162a76bfa01e8ca6",
-    "config/progress-plan.md": "bd6f3f1c32d6958a4a6d9c03a19dae2f64f5df52d39576efad0937e641ae38c0",
+    "config/progress-plan.md": "3b9ac0100b31fc3de9ee7c0a73d4b312ad476ac6def9b3c23b740254424ad789",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
     "config/strategy.md": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
-    "config/symbols.csv": "bc2a79e6837abcd11d128def955a73d0453bb385a96836bfc64ea21a5e40a7ea",
-    "config/symbols.md": "202a542510542ddf6785a6c3678885c6f51f39e678dc699dd06cfad92b0e2afe",
+    "config/symbols.csv": "20d2e56c2a1ffe008f755505c2fe7b5c3317d8acacf7d70cf5088d9469fb029b",
+    "config/symbols.md": "d15d76d69b29851185294750bc26fe76d6ccc04ad6936849730c7d21f32d0de9",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
@@ -27,8 +27,9 @@
     "tools/check.py": "c8546d7e6ab3c89f7ea96bc2b549ff631700c293ecc0b1ef012c2e040007fbdc",
     "tools/crt_archive.py": "63955f21a150f37cca3e35b9a4190b145e268764690f01d75b98f4f001f60edd",
     "tools/identification.py": "4eb468f8dd11754cebae7bb6a9c73fca3f7a507fe347069c1d1175a65a82760f",
+    "tools/identification_context.py": "5f5fc784cfa5e10b1d000f7afb1affcf2db9034ebaa4eb52091c6c6e16771831",
     "tools/identification_graph.py": "c8b9ba1a838165e7c03fb9fd0c6a60eb464dd91a67dc9f2cdecfac4ed99afa9c",
-    "tools/identification_inspect.py": "b0e41c7f14a5fb497864a5ea059cb9a71a029fac627ebec92dc7fc907934a9ef",
+    "tools/identification_inspect.py": "84826efbbfadc24eab86b408e83ad30534bf4fe7df038a6bf318769975a9b34d",
     "tools/identification_joint.py": "49d479f5611e4ce2c8925e20197f09ff5e1923618951242617c152b49290edc5",
     "tools/identification_limits.py": "c44fb5fb1eacd2f20126515e28421863eb4c66d35250340ba1708e2c4f9440cb",
     "tools/identification_literals.py": "52b26a61109aed9711523d3d852d3222b7fbc0de786f013503f9246cf90e610c",
@@ -53,6 +54,7 @@
     "tools/test_dat.py": "e8d311ac6f55e67d102999c6d8ba3ba0932366979d6f22008ea883154f7e0b4f",
     "tools/test_ghidra_graph.py": "d5dd21767cef88b78204d9323adf7feaa62cceecba6ac7a71f326db3f53b99fa",
     "tools/test_identification.py": "0abb6f78c0a8a8897fd288a35598af638ad331869631e81f2ff57b7124124034",
+    "tools/test_identification_context.py": "4dd1819cf4e98ddbef683aa8e7acdbf2681ad92805a9b90bea87897c1859156a",
     "tools/test_identification_graph.py": "2a1b03cb9284b2e121b7109a0cc3c1d03f47973906deda30df2a4bf259f40699",
     "tools/test_identification_inspect.py": "9b394f9ceefe001d09760df3d095a7d7d9a7dc977479418a83d0bb142ebd92d8",
     "tools/test_identification_joint.py": "d0d3e5ffa9d0cf70efa56181364f7176f92d08f0657cf19527fcaf7fa1f00e49",
@@ -408,6 +410,16 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "Batarangs_Reset",
+      "symbol": "_Batarangs_Reset",
+      "address": "0x00404990",
+      "units": [],
+      "target_size": 184,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "InitCables",
       "symbol": "_InitCables",
       "address": "0x00408800",
@@ -721,6 +733,16 @@
       "address": "0x0041c120",
       "units": [],
       "target_size": 1276,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "AddCreature",
+      "symbol": "_AddCreature",
+      "address": "0x0041f8f0",
+      "units": [],
+      "target_size": 67,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -5804,6 +5826,16 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "KeepVehicleOnScreen",
+      "symbol": "_KeepVehicleOnScreen",
+      "address": "0x00499300",
+      "units": [],
+      "target_size": 509,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "FaceOpponent",
@@ -21928,6 +21960,16 @@
       ],
       "status": "different",
       "objdiff_percent": 28.772251
+    },
+    {
+      "name": "GetLevelExBlowupFlags",
+      "symbol": "_GetLevelExBlowupFlags",
+      "address": "0x00569c60",
+      "units": [],
+      "target_size": 6,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "GizmoBlowupCheckProximity",
@@ -38396,6 +38438,16 @@
       "status": "not implemented"
     },
     {
+      "name": "NuDisplayListRndrSpecial",
+      "symbol": "_NuDisplayListRndrSpecial",
+      "address": "0x005f0f00",
+      "units": [],
+      "target_size": 1491,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "NuAnimData2Fixup",
       "symbol": "_NuAnimData2Fixup",
       "address": "0x005f3140",
@@ -41248,6 +41300,16 @@
       "status": "not implemented"
     },
     {
+      "name": "TerrainInitEx",
+      "symbol": "_TerrainInitEx",
+      "address": "0x0066b8c0",
+      "units": [],
+      "target_size": 3491,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "noterraininit",
       "symbol": "_noterraininit",
       "address": "0x0066cb70",
@@ -41797,6 +41859,16 @@
       "address": "0x00684c90",
       "units": [],
       "target_size": 71,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "AddDebrisEffect",
+      "symbol": "_AddDebrisEffect",
+      "address": "0x00684ee0",
+      "units": [],
+      "target_size": 1025,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -102885,16 +102957,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 529094,
+    "mapped_code_bytes": 535867,
     "matched_code_bytes": 46519,
     "matching_percent": 1.3401239785368135,
     "fuzzy_coverage_percent": 6.4712667300063105,
-    "mapped_functions": 2058,
+    "mapped_functions": 2065,
     "matched_functions": 810,
     "objdiff_fuzzy_percent": 60.501606,
     "objdiff_total_code": 371376,
     "image_bytes": 40067072,
-    "mapped_bytes": 1123457,
-    "mapping_percent": 2.803940851979401
+    "mapped_bytes": 1130230,
+    "mapping_percent": 2.820845007092108
   }
 }
