@@ -1818,8 +1818,43 @@ runtime objects. Record stride is exactly `0x130` (304 bytes). The queue count
 must be in 0..8: the original signed upper-bound test supplies no negative-count
 guard. These conditions do not establish arbitrary-input safety, exceptional
 behavior, concurrent mutation rules or formal aggregate/return types. Ctype
-stays blank, and no source definition or code comparison credit is supplied.
+stays blank. The following source release supplies a genuine implementation
+without claiming recovery of its historical formal types.
 Frozen `callback13-next-function-frontier-next1` and
 `callback13-completelevel-independent-next1` retain the complete proof and
 qualifications. Together with the page occupancy gates this batch adds
 312 mapped bytes: 280 code and 32 data.
+
+
+## CompleteLevel source closure
+
+The callback now has genuine C together with NewCutScene (`0x57cd30`, 69 bytes),
+CutScene_Find (`0x57c970`, 77), GoToNewLevel (`0x57a580`, 43) and CompleteLevel
+(`0x57a5b0`, 97). Independent original paired bodies establish each helper's
+identity, complete PC extent and qualified normal physical ABI. All four retain
+blank ctypes. NewCutScene receives four stack words, reads three and returns the
+queued pointer or NULL; the callback consumes that result. The callback ignores
+the two level helpers' EAX results, which does not establish historical return
+types for other callers.
+
+Named access fields establish WORLDINFO.cutscene_sys at `0x2ab0`, the CUTSYS_PC
+list/count prefix at offsets zero/four and CUTINFO's inline name at eight.
+CUTINFO.instance at four retains its separate existing proof. These are access
+prefixes; neither full cutscene allocation sizes nor name capacity are known.
+WORLDINFO's verified size and existing offsets remain unchanged. PC level
+records use the verified 304-byte stride, never Android's 324-byte layout.
+
+The five routines add 566 original bytes to comparison. The callback scores
+98.175255%; GoToNewLevel 96.666664%, CutScene_Find 82.30556% and NewCutScene
+80.208336%. CompleteLevel scores 0.125% with a 162-byte rebuilt body: VC8
+faithfully inlines Area_FindStatusLevel in the shared areas unit, whereas the
+97-byte retail body calls it. Full extents remain in the comparison; no code
+is masked or truncated. No new function is exact. Every previous exact function
+and data comparison remains unchanged.
+
+Frozen `completelevel-source-draft-next1-handoff`,
+`completelevel-source-draft-independent-next1` and
+`completelevel-compiled-contract-independent-next1` retain C, branch, argument,
+result, volatile-access and initializer evidence. Normal queue range 0..8 and
+valid initialized runtime/table/string conditions remain explicit; source
+interfaces do not prove unrestricted safety or historical aggregate types.

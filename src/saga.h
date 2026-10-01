@@ -2561,6 +2561,7 @@ typedef struct techno_pc_s {
 STATIC_ASSERT(offsetof(TECHNO_PC, target_mode) == 0x37);
 STATIC_ASSERT(offsetof(TECHNO_PC, controlled_object) == 0x6c);
 STATIC_ASSERT(sizeof(TECHNO_PC) == 0x70);
+typedef struct cutsys_pc_s CUTSYS_PC;
 typedef struct WORLDINFO_s {
     u32 unknown_0000[0x40];
     void *buffer_start;
@@ -2590,7 +2591,8 @@ typedef struct WORLDINFO_s {
     u8 *rooms_visible_ptr;
     i32 page_pp;
     i32 page_part;
-    u32 unknown_2aa0[5];
+    u32 unknown_2aa0[4];
+    CUTSYS_PC *cutscene_sys;
     RTLSET_PC *rtl_set;
     u8 unknown_2ab8[8];
     LEVEL_OBJECT_RUNTIME_PC *level_objects;
@@ -2640,6 +2642,7 @@ STATIC_ASSERT(offsetof(WORLDINFO, rooms_visible) == 0x2991);
 STATIC_ASSERT(offsetof(WORLDINFO, rooms_visible_ptr) == 0x2a94);
 STATIC_ASSERT(offsetof(WORLDINFO, page_pp) == 0x2a98);
 STATIC_ASSERT(offsetof(WORLDINFO, page_part) == 0x2a9c);
+STATIC_ASSERT(offsetof(WORLDINFO, cutscene_sys) == 0x2ab0);
 STATIC_ASSERT(offsetof(WORLDINFO, rtl_set) == 0x2ab4);
 STATIC_ASSERT(offsetof(WORLDINFO, level_sfx) == 0x4710);
 STATIC_ASSERT(offsetof(WORLDINFO, level_sfx_count) == 0x4b10);
@@ -3491,8 +3494,19 @@ STATIC_ASSERT(sizeof(MAINFRAMECOUNTERS) == 5);
 typedef struct cutinfo_s {
     u8 opaque_00_04[0x4];
     void *instance;
-    u8 opaque_08[0x4];
+    char name[1];
+    u8 unknown_09[3];
 } CUTINFO;
+STATIC_ASSERT(offsetof(CUTINFO, instance) == 4);
+STATIC_ASSERT(offsetof(CUTINFO, name) == 8);
+
+// Access prefixes only: the trailing name and complete original sizes are unknown.
+struct cutsys_pc_s {
+    CUTINFO **records;
+    i32 count;
+};
+STATIC_ASSERT(offsetof(CUTSYS_PC, records) == 0);
+STATIC_ASSERT(offsetof(CUTSYS_PC, count) == 4);
 
 typedef struct apicharacterdata_s {
     u8 opaque_00_0c[0xc];
@@ -5741,6 +5755,10 @@ extern "C" {
     extern i32 display_aspect_mode;
     extern f32 NuVideoDisplayAspect;
     i32 __cdecl CutScene_StartFn_LSW(CUTINFO *cut);
+    CUTINFO *__cdecl CutScene_Find(CUTSYS_PC *system, char *name);
+    CUTINFO *__cdecl NewCutScene(CUTINFO *cutscene, CUTSYS_PC *system, char *name, i32 unused_4);
+    extern CUTINFO *NewCutInfo[8];
+    extern i32 NewCutInfoCount;
     void __cdecl CutScene_PreUpdateFn_LSW(CUTINFO *cut);
     void __cdecl CutScene_PostUpdateFn_LSW(void);
     void __cdecl CutScene_StoppedFn_LSW(CUTINFO *cut);
@@ -6149,6 +6167,11 @@ extern "C" {
     extern u16 AREA_DEFAULTBONUSTIMETRIALTIME;
     extern u16 AREA_DEFAULTCHALLENGETIME;
     LEVELDATA_PC *__cdecl Level_FindByName(char *name, i32 *index);
+    void __cdecl GoToNewLevel(i32 level_index);
+    void __cdecl CompleteLevel(WORLDINFO *world);
+    extern u32 LevelCompletionFallbackFlagPC;
+    i32 __cdecl Action_CompleteLevel(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                     char **params, i32 count, i32 first_time, f32 elapsed);
     i32 __cdecl CharIDFromName(char *name);
     i32 __cdecl Cheat_FindByName(char *name);
     void __cdecl Cheat_SetArea(i32 cheat, i32 area_index);

@@ -994,3 +994,48 @@ i32 __cdecl Action_SetDefaultMovementRange(AISYS_PC *system, AISCRIPTPROCESS_PC 
     }
     return 1;
 }
+
+static const char CompleteLevelCutscenePrefix[10] = "cutscene=";
+static const char NewLevelPrefix[10] = "newlevel=";
+
+i32 __cdecl Action_CompleteLevel(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                 i32 count, i32 first_time, f32 elapsed) {
+    LEVELDATA_PC *level;
+    char *cutscene_name;
+    char *value;
+    i32 index;
+
+    level = NULL;
+    cutscene_name = NULL;
+    if (first_time == 0)
+        return 1;
+
+    for (index = 0; index < count; ++index) {
+        value = NuStrIStr(params[index], (char *)CompleteLevelCutscenePrefix);
+        if (value != NULL)
+            cutscene_name = value + NuStrLen(CompleteLevelCutscenePrefix);
+
+        value = NuStrIStr(params[index], (char *)NewLevelPrefix);
+        if (value != NULL)
+            level = Level_FindByName(value + NuStrLen(NewLevelPrefix), NULL);
+    }
+
+    if (FreePlay == 0) {
+        if (cutscene_name == NULL)
+            goto choose_level;
+        if (NewCutScene(NULL, WORLD->cutscene_sys, cutscene_name, 0) != NULL)
+            return 1;
+        if (FreePlay == 0)
+            goto choose_level;
+    }
+
+    if (level != NULL && (level->flags & 0xe0u) != 0)
+        level = Area_FindStatusLevel(WORLD->area, NULL);
+
+choose_level:
+    if (level != NULL)
+        GoToNewLevel(level->index);
+    else
+        CompleteLevel(WORLD);
+    return 1;
+}

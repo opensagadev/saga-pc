@@ -4324,4 +4324,14 @@ extern "C" {
 #pragma data_seg(".data$v010")
     NUVEC v010 = {0.0f, 1.0f, 0.0f};
 #pragma data_seg()
+// Eight queue slots are a source access view; the complete original extent is unknown.
+#pragma bss_seg(".bss$NewCutInfo")
+    CUTINFO *NewCutInfo[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$NewCutInfoCount")
+    i32 NewCutInfoCount;
+#pragma bss_seg()
+#pragma bss_seg(".bss$LevelCompletionFallbackFlagPC")
+    u32 LevelCompletionFallbackFlagPC;
+#pragma bss_seg()
 }

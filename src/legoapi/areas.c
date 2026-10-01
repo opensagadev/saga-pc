@@ -558,3 +558,27 @@ AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *
     }
     return area_base;
 }
+
+void __cdecl GoToNewLevel(i32 level_index) {
+    i32 waiting;
+
+    waiting = waiting_for_level;
+    NewLData = &LDataList[level_index];
+    if (waiting != -1)
+        waiting_for_new_level = 1;
+}
+
+void __cdecl CompleteLevel(WORLDINFO *world) {
+    LEVELDATA_PC *level;
+
+    level = NewLData;
+    LevelCompletionFallbackFlagPC = 1u;
+    if (level == NULL || ((level->flags & 0xe0u) != 0 && FreePlay != 0)) {
+        level = Area_FindStatusLevel(world->area, NULL);
+        NewLData = level;
+    }
+    if (level == NULL)
+        NewLData = HUB_LDATA;
+    if (waiting_for_level != -1)
+        waiting_for_new_level = 1;
+}

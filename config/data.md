@@ -651,3 +651,29 @@ consumers prove that complete allocation. Its `i32[8]` declaration supplies
 integer gates without claiming signed arithmetic or unchecked caller safety.
 The following 20-byte gap remains unidentified. data.cpp retains the original
 zero initializer in a separate BSS section.
+
+
+## CompleteLevel queue and source access views
+
+NewCutInfoCount at `0x00951c9c` is a complete four-byte signed integer owner.
+Independent PC counter consumers and distinct neighboring DWORD owners bound
+it through `0x00951ca0`; original Android ELF/PIC/GOT records bind the named
+object at `0x01290980`. Original PE virtual storage is zero. The reconstructed
+zero initializer compares exactly and earns four mapped and exact data bytes.
+
+NewCutInfo at `0x00951c2c` is independently identified with the original named
+Android local queue at `0x01290a80`. Its `CUTINFO *[8]` source declaration is an
+access view for initialized count 0..8. Complete PC allocation and historical
+array type remain unknown: CSV size/ctype stay blank and there is no extent or
+exact-match credit. The original signed upper-bound test does not reject
+negative counts; the C implementation adds no such guard.
+
+The four-byte LevelCompletionFallbackFlagPC view at `0x00950790` follows the
+original zero-filled PE storage and unconditional DWORD-one store. The name is
+descriptive reconstruction terminology; historical identity, signedness and
+complete ownership remain unknown. Private ten-byte NUL-backed `cutscene=` and
+`newlevel=` initializers at `0x00757df0` and `0x007584d4` belong to the reconstructed
+callback unit. Their original pool/allocation boundaries remain unknown. These
+three views also have blank CSV sizes/ctypes and receive no extent/exact credit.
+All four unknown views resolve compiled references without treating source
+emission sizes or Android allocations as PC ownership proof.

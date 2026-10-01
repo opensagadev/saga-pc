@@ -1145,8 +1145,12 @@ address    , symbol                                                         , si
 0x00579f60 , _LevelObject_AddExtra                                          , 156   , "i32 __cdecl (char *, i32)"
 0x0057a240 , _LevelObject_FindIndexFromName                                 , 77    , i32 __cdecl (char *)
 0x0057a420 , _Level_LoadConfigFile                                          , 164   , void __cdecl (WORLDINFO *)
+0x0057a580  , _GoToNewLevel                                                  , 43    ,
+0x0057a5b0  , _CompleteLevel                                                 , 97    ,
 0x0057a6d0 , _NewLevelFromMenu                                              , 160   , "void __cdecl (LEVELDATA_PC *, i32, i32, i32)"
 0x0057c3e0 , _CutScenes_Load                                                , 1333  , "CUTSYS* __cdecl (char*, nugscn_s*, nugscn_s*, int, VARIPTR*, VARIPTR*, int, int, WORLDINFO*)"
+0x0057c970  , _CutScene_Find                                                 , 77    ,
+0x0057cd30  , _NewCutScene                                                   , 69    ,
 0x0057cd80 , _CutScene_PlayingOrRequested                                   , 78    , i32 __cdecl (CUTINFO *)
 0x0057cec0 , _CutScenes_Stop                                                , 49    , void __cdecl (CUTSYS *)
 0x0057cf00 , _CutScenes_Destroy                                             , 108   , void __cdecl (CUTSYS *)
@@ -2731,6 +2735,7 @@ address    , symbol                                                         , si
 0x00757ca8 , _AIActionTimeName                                              , 5     , const char[5]
 0x00757cf4 , _AIActionIDName                                                , 3     , const char[3]
 0x00757d6c , _AIActionToName                                                , 3     , const char[3]
+0x00757df0  , _CompleteLevelCutscenePrefix                                   ,       ,
 0x00757e18 , _AIActionBothWaysName                                          , 9     , const char[9]
 0x00757e80 , _AIPathFaceName                                                , 5     , const char[5]
 0x00757f40 , _AIActionFromName                                              , 5     , const char[5]
@@ -2753,6 +2758,7 @@ address    , symbol                                                         , si
 0x00758464 , _AIScriptParamPrefix                                           , 6     , const char[6]
 0x007584a8 , _AIExpressionMaxName                                           , 4     , const char [4]
 0x7584c4   , _PCContextName_Techno                                          , 7     , const char [7]
+0x007584d4  , _NewLevelPrefix                                                ,       ,
 0x75850c   , ??_C@_08LOCMGIHJ@teleport?$AA@                                 , 9     , const char[9]
 0x75866c   , ??_C@_05GGJMBGBG@zipup?$AA@                                    , 6     , const char[6]
 0x007586e0 , _NuTimeBarHorizontalTop                                        , 8     , const f64
@@ -4676,6 +4682,7 @@ address    , symbol                                                         , si
 0x00950768 , _pause_rndr_on                                                 , 4     , i32
 0x00950770 , _finishloop_backdroponly                                       , 4     , i32
 0x00950780 , _CutBorderScale                                                ,       ,
+0x00950790  , _LevelCompletionFallbackFlagPC                                 ,       ,
 0x0095079c , _FadeSys                                                        , 44     , FADEINFO_PC
 0x009507c8 , _gizmoblowupnametable_numids                                    ,        ,
 0x009507d0 , _gizmoblowupnametable                                           , 1024   , char[32][32]
@@ -4734,7 +4741,9 @@ address    , symbol                                                         , si
 0x00951bfc , _CutDeadVehiclePlayer                                          , 4     , GAMEOBJECT *
 0x00951c00 , _CUTSTOPGAME                                                   , 4     , i32
 0x951c08   , _CutStopInfo                                                    , 4     , void *
+0x00951c2c  , _NewCutInfo                                                    ,       ,
 0x00951c7c , _CUTSKIPLOCK                                                   , 4     , i32
+0x00951c9c  , _NewCutInfoCount                                               , 4     , i32
 0x00951cac , _CutScene_StartFn                                              , 4     , i32 (__cdecl *)(void *)
 0x00951cb0 , _CutScene_PreUpdateFn                                          , 4     , void (__cdecl *)(void *)
 0x00951cb4 , _CutScene_PostUpdateFn                                         , 4     , void (__cdecl *)(void)

@@ -1265,14 +1265,14 @@ tooling/map changes. Keep generated graphs, original bytes, H2 databases and
 downloaded binaries ignored. Only tooling, synthetic tests, reviewed proposals
 and documentation belong in tracked changes.
 
-The latest checkpoint `make -j2 check` passed 434 tests (three optional Ghidra
+The preceding checkpoint `make -j2 check` passed 434 tests (three optional Ghidra
 fixture skips), source formatting and Clang-tidy. The object check passed 1,638
 function and 2,606 data definitions across 123 objects. Compilation and matching
 use two Make workers. The preceding checkpoint preserved all prior comparison
 rows and added 128 exact page-ID data bytes; its pushed commit `4abd113` passed
 CI Build 36843877620.
 
-This checkpoint maps CompleteLevel's complete 280-byte body and the 32-byte
+That checkpoint maps CompleteLevel's complete 280-byte body and the 32-byte
 page occupancy gates, adding 312 mapped bytes. CompleteLevel's reviewed normal
 physical ABI retains explicit runtime, table and queue-count qualifications;
 formal types stay unknown and ctype is blank. No compiled callback definition
@@ -1298,3 +1298,56 @@ CRT identities and arbitrary-input safety remain separate work.
 The first pushed tool snapshot exposed a test relying on a local ignored file;
 the fixture now isolates both repository roots and its job lock, so the required
 legacy-default inputs are entirely synthetic.
+
+
+## CompleteLevel source release and incremental replay
+
+Four independently reviewed helper identities supply 286 additional mapped code
+bytes, and the complete NewCutInfoCount supplies four mapped data bytes. The
+nine new CSV rows include four unknown queue/flag/string access views; their
+blank size/type cells earn no extent or exact credit. Source implementations
+of these four helpers and the previously mapped callback cover 566 newly
+compared original code bytes. All source definitions and relocations resolve:
+1,643 functions and 2,611 data definitions across 124 objects.
+
+The callback scores 98.175255%; whole-PC fuzzy coverage increases to
+6.224200609% from 6.211660511%. Native objdiff averages 61.1476% across 353,427
+original code bytes, including the existing 55-byte overlap. All previous 801
+exact functions and 45,746 exact code bytes remain unchanged. None of the five
+new routines is exact. CompleteLevel's genuine status lookup is inlined in
+its 162-byte rebuilt body and scores 0.125% against the complete 97-byte retail
+body; this remains visible in the denominator. The counter adds four exact
+initializer bytes. Mapping reaches 1,116,538 / 40,067,072 (2.786672308%).
+
+The frozen `joint-registry-wave14-run` reuses the same 8,043 PC and 13,242 Android
+function graphs. It contains 1,431 function seeds, 95 independently reviewed data
+anchors, 15 exclusions and zero stale decisions. Its 1,309 inferred function
+pairs, 16,852 candidate rows and 2,042 data candidates remain advisory. New
+anchor counts do not prove scoring accuracy or allocation recovery.
+
+All 20 prior completed-run files were copied and hash-validated in the frozen
+`registry-wave14-baseline` and new run directory before scoring. The baseline
+and `registry-wave14-run-copy` records describe this pre-score copy; they are
+not hashes of subsequently changed completed-run outputs. The new run's
+previous-state snapshot matches the frozen baseline state. Manifest output and
+input hashes independently establish current completed-run integrity.
+
+Production ran for 43.12 seconds at 706,068 KiB peak RSS (about 690 MiB) with the
+1024 MiB address-space cap and shared heavy-job lock enforced. That job reported
+zero swaps. Compilation and retail comparison used two Make workers. The initial
+sandboxed full-check attempt's seven compiler fixture failures all reported
+Wine socket-bind permission errors; the log remains preserved separately from
+the required run with local Wine socket access. No PC boundary, formal type or
+complete allocation is inferred from a successful source build.
+
+
+The required run with local Wine socket access passed all 434 tests in
+154.550 seconds (three optional Ghidra fixture skips), formatting for 126
+source/header files and Clang-tidy for 124 units. The source EXE links and the
+object check resolves every compiled mapping/relocation. The frozen
+`registry-wave14-run-independent-audit` independently checks manifest outputs,
+input hashes, unchanged graphs, the prior-state snapshot and exactly six
+journal additions. Separate source/compiled-contract audits preserve formal
+type, allocation and runtime-domain limitations. The next source cohort is
+RaceOpponent's existing movement closure; speed-control dependencies retain
+specific field and callee holds.

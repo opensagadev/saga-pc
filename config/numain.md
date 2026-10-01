@@ -640,3 +640,15 @@ source target is the reviewed 8,385-byte enemy/control callback family, followed
 by player context/reset actions needed by UpdateGameObjects. Terrain camera
 work remains scratch-only pending semantic and state-producer verification.
 NuMain and gameplay remain incomplete.
+
+
+## Resumed queue and level-transition source
+
+Continuous work has resumed. Action_CompleteLevel now uses genuine cutscene
+queue/lookup and level transition/fallback providers, adding 566 original code
+bytes to comparison. The typed field cohort preserves WORLDINFO's layout;
+queue and cutscene declarations remain access prefixes with explicit normal
+runtime conditions. No unknown allocation receives extent or exact credit.
+This closes that AI callback's reviewed source dependencies, not the larger
+NuMain loading, rendering and gameplay gaps. RaceOpponent's reviewed movement
+closure is the next source preparation target.

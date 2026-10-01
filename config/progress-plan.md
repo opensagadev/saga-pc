@@ -251,3 +251,26 @@ player context/reset dependencies and PartCollide/Deflect/Torpedo queries.
 Terrain camera candidates remain withheld for state-producer and semantic
 verification. Resume with these retained packets instead of repeating setup
 or whole-binary identification.
+
+
+## Resumed CompleteLevel source release
+
+The user resumed continuous work after the earlier stopping point. The active
+objective continues bounded identification and genuine source transfer, with
+serialized heavy jobs, verified commits and no fixed stopping milestone.
+
+The CompleteLevel closure adds 566 newly compared original code bytes, reaching
+353,372 unique bytes (353,427 including the unchanged 55-byte overlap). Whole-PC
+fuzzy coverage rises from 6.211661% to 6.224201%, a gain of 0.012540 percentage
+points. All 801 exact functions and 45,746 exact code bytes remain unchanged.
+The four helper identities and queue counter add 290 mapped bytes, reaching
+1,116,538 of 40,067,072 (2.786672%). Only the counter adds four exact data bytes;
+unknown queue/flag/string access views earn no extent credit.
+
+The source callback is close at 98.175255%, but none of the five new routines is
+exact. The level fallback's genuine area lookup is inlined by VC8 and scores
+poorly; retain its complete comparison and prioritize the next source closure
+before instruction ordering refinements. Next prepare the accepted 606-byte
+RaceOpponent callback using the existing movement providers. Speed-control
+callbacks require separate field and dependency review; indirect lookup and
+unmapped providers remain concrete holds. NuMain and gameplay remain partial.
