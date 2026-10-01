@@ -8,6 +8,7 @@ address    , symbol                                                         , si
 0x40e690   , _GoingForwardsAlongNarrowSock                                  , 106   , i32 __cdecl (GAMEOBJECT *)
 0x00414ab0 , _SetFlicker                                                    , 25    ,
 0x00414bb0 , _DeactivateGameObject                                          , 158   , void __cdecl (GAMEOBJECT *)
+0x00414f80 , _StoreProgressAICharacter                                      , 119    ,
 0x00415c60 , _MovePlayerSpline                                              , 1322  , void __cdecl (GAMEOBJECT *)
 0x416190   , _MovePlayer                                                    , 2718  , void __cdecl (GAMEOBJECT *)
 0x00416d60 , _TerrainPlayer                                                  , 7994  ,
@@ -19,7 +20,9 @@ address    , symbol                                                         , si
 0x0041af30 , _Player_HasPurpleForce                                         , 46    , i32 __cdecl (GAMEOBJECT *)
 0x0041c120 , _ResetAICreature                                               , 1276  ,
 0x0041f8f0 , _AddCreature                                                   , 67     ,
+0x00423bc0 , _Customiser_InitNames                                          , 99     ,
 0x00426de0 , _Detonate                                                      , 374   , "EXPLOSION_PC *__cdecl (NUVEC *, u16)"
+0x0042aa00 , _LSW_SetIndy                                                   , 489    ,
 0x0042b960 , _CheckResetBits                                                , 2966  , void __cdecl (void)
 0x0042cf20 , _PartCollide_3D                                                , 17    , void __cdecl (PART_PC *)
 0x0042d000 , _PartKill_ForceThrow                                            , 371   , "void __cdecl (PART_PC *, i32)"
@@ -313,6 +316,7 @@ address    , symbol                                                         , si
 0x0048cdc0 , _LC_BL_wind_speed                                              , 26    , void __cdecl (NUFPAR_PC *)
 0x0048cde0 , _LC_BL_wind_size                                               , 26    , void __cdecl (NUFPAR_PC *)
 0x0048ce00 , _WorldInfo_Load                                                , 2222  , void __cdecl (WORLDINFO *)
+0x0048da50 , _FixUpLevels                                                   , 6860   ,
 0x0048f520 , _Level_SetDefaults                                             , 329   , void __cdecl (LEVELDATA_PC *)
 0x0048f670 , _FixUpAreas                                                    , 73    , void __cdecl (void)
 0x0048f6c0 , _Game_WorldInfo_InitMenu                                       , 48    , "void __cdecl (WORLDINFO *, i32 *, i32 *)"
@@ -640,6 +644,7 @@ address    , symbol                                                         , si
 0x00509620 , _MenuInitialise                                                , 49    , "void __cdecl (MENUFNINFO *, i32, i32, void (*)(MENU *, f32), i32, i32)"
 0x00509760 , _MenuReset                                                     , 51    , void __cdecl (void)
 0x00509830 , _NewMenu                                                       , 629   , "MENUSCREEN *(i32, i32, i32)"
+0x0050b4e0 , _MenuLoadTechnicalStrings                                      , 867    ,
 0x0050c130 , _TextRegisterButtonMapFn                                       , 14    , "void __cdecl (void (*)(char *, char *))"
 0x0050c770 , _SmartTextSetFWNMode                                           , 10    , void __cdecl (i32)
 0x0050e520 , _SmartTextSetFont                                              , 10    , void __cdecl (VUFNT *)
@@ -931,6 +936,7 @@ address    , symbol                                                         , si
 0x0054a770 , _GamePad_Waggle                                                , 113   , i32 __cdecl (GAMEPAD_PC *)
 0x0054a850 , _NewRumble                                                     , 66     ,
 0x0054a910 , _NewRumbleAllPlayers                                           , 145   , "void __cdecl (f32, f32, i32, f32)"
+0x0054a9b0 , _DieRumble                                                     , 90     ,
 0x0054b090 , _ReadPads                                                      , 32    , void (void)
 0x0054b0b0 , _DoInput                                                       , 786   , void __cdecl (WORLD *)
 0x54b3d0   , _GamePad_InputAngle                                            , 99    , "u16 __cdecl (GAMEOBJECT *,GAMEPAD_PC *)"
@@ -1424,6 +1430,7 @@ address    , symbol                                                         , si
 0x005930c0 , _Customiser_DumpAccessories                                    , 211   , void __cdecl (CUSTOMISER*)
 0x005931a0 , _Customiser_LoadAll                                            , 811   , "void __cdecl (CUSTOMISER*, WORLDINFO*)"
 0x00594250 , _InCollectList_Index                                           , 82    , "i32 __cdecl (i32, COLLECTID_PC *, i32)"
+0x00594640 , _Collection_CreateCustom                                       , 464    ,
 0x00596530 , _InitShadowLights                                              , 632   , void __cdecl (void)
 0x00597250 , _InitSnakes                                                    , 99    , void __cdecl (WORLDINFO *)
 0x00597350 , _DestroySnakeBody                                              , 47    ,
@@ -5041,6 +5048,7 @@ address    , symbol                                                         , si
 0x02961fa0 , _edanim_page_used                                              , 32    , i32[8]
 0x02961fd4 , _DebrisGlassU1                                                 , 4     , f32
 0x02961ffc , _TerrainShadowGroupIndexPc                                     ,       ,
+0x02962000 , _TerrainCountPc                                                ,        ,
 0x02962020 , _GetSurfaceInfoWaterNormalPc                                   ,       ,
 0x0296202c , _TerrainSkinUseRecordsPc                                       ,       ,
 0x02962040 , _NuSound3GroupSampleCount                                      , 4     , i32

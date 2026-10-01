@@ -389,6 +389,190 @@ def diagnose(caches, seeds, data_pairs, map_ranges, rejected, held, ledger):
             'thresholds': vars(caps), 'original_code_bytes': 0, 'inferred_inputs': False}
 
 
+MULTI_SCHEMA = 'multi-parent-positive-interval-candidates-v1'
+
+
+def positive_interval_groups(calls, seed_pairs, caps, ledger):
+    """Nearest positive anchors; occurrence rank/gap and absent edges are not gates.
+
+    Parent keys are canonical accepted PC entries on both sides, so repeated call
+    occurrences cannot manufacture independent accepted roots. Missing targets stay
+    in the interval as debt rather than being erased from the observed sequence.
+    """
+    inverse = {a: p for p, a in seed_pairs.items()}
+    contexts, hubs = {}, {}
+    for side in ('pc', 'android'):
+        accepted = seed_pairs if side == 'pc' else inverse
+        users = collections.defaultdict(set)
+        for parent, seq in calls[side].items():
+            for site, target in seq:
+                ledger.step()
+                if target is not None:
+                    users[target].add(parent)
+        hubs[side] = {t for t, owners in users.items()
+                      if t not in accepted and len(owners) > caps.hub_parents}
+        table = collections.defaultdict(lambda: collections.defaultdict(list))
+        for parent, seq in calls[side].items():
+            previous, start = 'START', 0
+            while start < len(seq):
+                ledger.step()
+                target = seq[start][1]
+                if target in accepted:
+                    previous = target if side == 'pc' else inverse[target]
+                    start += 1
+                    continue
+                end = start
+                while end < len(seq) and seq[end][1] not in accepted:
+                    ledger.step()
+                    end += 1
+                following = seq[end][1] if end < len(seq) else 'END'
+                if side == 'android' and following != 'END':
+                    following = inverse[following]
+                if previous != 'START' or following != 'END':
+                    key = (parent, previous, following)
+                    debt = sum(t is None or t in hubs[side] for _, t in seq[start:end])
+                    for ordinal, (site, target) in enumerate(seq[start:end]):
+                        ledger.step()
+                        if target is not None:
+                            table[target][key].append({'site': site, 'ordinal': ordinal,
+                                                      'gap_calls': end-start,
+                                                      'missing_or_hub_calls': debt})
+                start = end
+        contexts[side] = table
+    return contexts, hubs
+
+
+def multi_parent_interval_candidates(contexts, caps, ledger):
+    """Observe every bounded rival before retention, including one-root rivals."""
+    inverted = {}
+    for side, table in contexts.items():
+        index = collections.defaultdict(set)
+        for target, intervals in table.items():
+            for key in intervals:
+                ledger.step()
+                index[key].add(target)
+                if len(index[key]) > caps.hub_parents:
+                    raise Guard('Positive interval fanout cap exceeded; no partial competition')
+        inverted[side] = index
+    witnesses = collections.defaultdict(set)
+    comparisons = 0
+    for key in sorted(set(inverted['pc']) & set(inverted['android']), key=str):
+        pcs, aas = inverted['pc'][key], inverted['android'][key]
+        comparisons += len(pcs)*len(aas)
+        if comparisons > caps.comparisons:
+            raise Guard('Candidate comparison cap exceeded')
+        for pc in sorted(pcs):
+            for aa in sorted(aas):
+                ledger.step()
+                witnesses[pc, aa].add(key)
+    rivals_pc, rivals_aa = collections.defaultdict(set), collections.defaultdict(set)
+    for pc, aa in witnesses:
+        ledger.step()
+        rivals_pc[pc].add(aa)
+        rivals_aa[aa].add(pc)
+    pairs = []
+    for (pc, aa), keys in sorted(witnesses.items()):
+        roots = sorted({key[0] for key in keys})
+        # One-parent rivals are kept in the competition universe, not output as
+        # independently supported two-parent candidate hypotheses.
+        if len(roots) < 2:
+            continue
+        items = []
+        for key in sorted(keys, key=str):
+            ledger.step()
+            items.append({'parent_pc': key[0], 'left_anchor_pc': key[1],
+                          'right_anchor_pc': key[2],
+                          'pc_occurrences': contexts['pc'][pc][key],
+                          'android_occurrences': contexts['android'][aa][key]})
+        pairs.append({'pc_address': pc, 'android_address': aa,
+                      'support_parent_roots': roots, 'positive_interval_roots': len(roots),
+                      'positive_interval_witnesses': items,
+                      'context': [[list(key), min(len(contexts['pc'][pc][key]),
+                                                  len(contexts['android'][aa][key]))]
+                                  for key in sorted(keys, key=str)],
+                      'anchored_occurrences': sum(min(len(contexts['pc'][pc][k]),
+                                                      len(contexts['android'][aa][k])) for k in keys),
+                      'competitors': {'pc': sorted(rivals_aa[aa]),
+                                      'android': sorted(rivals_pc[pc])}})
+    return pairs, comparisons, len(witnesses)
+
+
+def diagnose_multi_positive(caches, seeds, data_pairs, map_ranges, rejected, held, ledger):
+    caps = ledger.caps
+    calls, missing, parent_missing = {'pc': {}, 'android': {}}, collections.Counter(), collections.Counter()
+    for side in calls:
+        for pc, aa in sorted(seeds.items()):
+            sequence = []
+            for va, kind, site in caches[side].calls(pc if side == 'pc' else aa):
+                if type(site) is not int:
+                    raise ValueError('Call edge lacks ordered original site')
+                if kind != 'function':
+                    missing[side] += 1
+                    parent_missing[side, pc] += 1
+                    va = None
+                sequence.append((site, va))
+            calls[side][pc] = sequence
+    contexts, hubs = positive_interval_groups(calls, seeds, caps, ledger)
+    pairs, comparisons, observed = multi_parent_interval_candidates(contexts, caps, ledger)
+    roots = {'pc': {p: p for p, a in data_pairs}, 'android': {a: p for p, a in data_pairs}}
+    profiles, debts = {}, {}
+    for side in caches:
+        for target in sorted({r[side+'_address'] for r in pairs}):
+            profiles[side, target], debts[side, target] = caches[side].profile(target, roots[side])
+    eligible, holds = [], []
+    for row in pairs:
+        pc, aa = row['pc_address'], row['android_address']
+        left, right = profiles['pc', pc], profiles['android', aa]
+        debt = sorted(set(debts['pc', pc]+debts['android', aa]))
+        common = set(left) & set(right)
+        overlap = [record for start, length, record in map_ranges if start <= pc < start+length]
+        reasons = []
+        if pc in hubs['pc'] or aa in hubs['android']:
+            reasons.append('candidate-target-over-parent-hub-threshold')
+        if any(len(v) != 1 for v in row['competitors'].values()):
+            reasons.append('globally-competing-positive-interval')
+        if overlap:
+            reasons.append('current-CSV-entry-or-extent-overlap')
+        if (pc, aa) in rejected:
+            reasons.append('reviewed-journal-rejected-pair')
+        row.update(shared_data_roots=sorted({v[0] for v in common}),
+                   shared_data_roles=[list(v) for v in sorted(common, key=str)],
+                   nonempty_data_profile_exact=bool(left) and left == right and not debt,
+                   data_profile_exact=left == right, data_role_holds=debt,
+                   CSV_overlap=overlap, journal_holds=held.get(pc, []), eligibility_holds=reasons,
+                   context_scope_holds=[{'side': side, 'parent_pc': parent,
+                                         'missing_function_call_targets': parent_missing[side, parent]}
+                                        for side in caches for parent in row['support_parent_roots']
+                                        if parent_missing[side, parent]],
+                   data_profiles={side: [[list(k), n] for k, n in sorted(profile.items(), key=str)]
+                                  for side, profile in [('pc', left), ('android', right)]})
+        (holds if reasons else eligible).append(row)
+    eligible.sort(key=lambda v: (-v['positive_interval_roots'], -len(v['shared_data_roots']),
+                                v['pc_address'], v['android_address']))
+    retained = eligible[:caps.retained]
+    for row in retained:
+        row['physical_function_callers'] = {side: caches[side].callers(row[side+'_address']) for side in caches}
+        row['posthoc_annotations'] = {side: caches[side].annotation(row[side+'_address']) for side in caches}
+        row['identity_reviewed'] = row['abi_reviewed'] = row['extent_reviewed'] = row['type_reviewed'] = False
+    holds.sort(key=lambda v: (v['pc_address'], v['android_address']))
+    return {'schema': MULTI_SCHEMA, 'status': 'candidate-only; no promotion',
+            'candidates': retained, 'held_examples': holds[:caps.retained],
+            'counts': {'accepted_parent_pairs': len(seeds), 'compatible_pairs': len(pairs),
+                       'comparisons': comparisons, 'observed_rival_pairs': observed,
+                       'unique_anchored_unmapped_pairs': len(eligible), 'retained': len(retained),
+                       'reviewed_bijective_data_roots': len(data_pairs),
+                       'hubs_omitted': {s: 0 for s in hubs},
+                       'hub_targets_held': {s: len(hubs[s]) for s in hubs},
+                       'missing_function_call_targets': dict(missing)},
+            'scope_holds': ['Candidate-only positive interval evidence; no identity/ABI/type/extent approval.',
+                            'Linear callsite order is adjacency evidence, not dynamic execution order.',
+                            'Competition includes all observed interval rivals, even one-root and mapped rivals, before top-N.',
+                            'Two distinct canonical accepted parent entries required; repeated occurrences never add roots.',
+                            'Observed accepted-parent universe only; hub targets stay in rival competition and cannot become retained leads; missing calls and data-role debt stay explicit.',
+                            'Absent intervals are never negative evidence; no inferred inputs or scorer/state feedback.'],
+            'thresholds': vars(caps), 'original_code_bytes': 0, 'inferred_inputs': False}
+
+
 def accepted_pairs(path, manifests, ledger):
     seeds = {}
     for row in json_lines(path, ledger):
@@ -439,13 +623,15 @@ def review_rows(path, manifests, ledger):
     return data, rejected, held
 
 
-def run(pair, accepted_seeds, journal, symbols, output, input_pins, caps=Caps(), memory_limit_mb=256, _ledger=None, _cli_pin=None):
+def run(pair, accepted_seeds, journal, symbols, output, input_pins, caps=Caps(), memory_limit_mb=256, _ledger=None, _cli_pin=None, context_mode="single"):
     """Verify immutable inputs, execute under internal lock, publish once on success.
 
     input_pins requires exact SHA256 for graph_pair/accepted_seeds/journal/symbols.
     No inferred input option exists. Output must be a NEW JSON file (atomic exclusive hard-link publication).
     """
     caps.validate()
+    if context_mode not in ('single', 'multi-positive'):
+        raise ValueError('Unsupported context mode')
     if type(memory_limit_mb) is not int or not 128 <= memory_limit_mb <= 256:
         raise ValueError('Diagnostic memory cap must be 128..256MiB')
     paths = {k: Path(v).resolve() for k, v in [('graph_pair', pair), ('accepted_seeds', accepted_seeds), ('journal', journal), ('symbols', symbols)]}
@@ -509,7 +695,8 @@ def run(pair, accepted_seeds, journal, symbols, output, input_pins, caps=Caps(),
                 for side, (index, provenance) in verified.items():
                     db = stack.enter_context(closing(sqlite3.connect(index.as_uri() + '?mode=ro&immutable=1', uri=True)))
                     caches[side] = Cache(db, manifests[side], ledger)
-                result = diagnose(caches, seeds, data, ranges, rejected, held, ledger)
+                diagnostic = diagnose if context_mode == 'single' else diagnose_multi_positive
+                result = diagnostic(caches, seeds, data, ranges, rejected, held, ledger)
             # Recheck all verified files and hashes before publication. Cache verifier
             # already stream-hashed exports/index; signatures bind that exact snapshot.
             for side, (index, provenance) in verified.items():
@@ -529,6 +716,9 @@ def run(pair, accepted_seeds, journal, symbols, output, input_pins, caps=Caps(),
                                     'module_sha256': graph._file_hash(Path(__file__)),
                                     'method': 'accepted parent/ordered nearest accepted callee anchors/full context multiset/global competition/exact reviewed data role summaries; names posthoc only',
                                     'metadata_accounting': 'Descriptor captures charge actual returned bytes before parse/check; JSONL and bounded SQL payloads actual; verifier manifest/marker 64KiB+1 bounds per side reserved; stream hashes separate, no code read'}
+            if context_mode == 'multi-positive':
+                result['provenance']['method'] = 'multi-parent positive accepted-anchor intervals; all observed rivals before retention; no absent-edge penalties or inferred feedback'
+                result['provenance']['context_mode'] = context_mode
             result['ledger'] = ledger.snapshot()
             # Encode/check each candidate/hold row before whole output. Failure leaves
             # neither destination nor partial manifest, even after temporary creation.
@@ -567,6 +757,7 @@ def main():
     defaults = Caps()
     for name, value in vars(defaults).items():
         parser.add_argument('--max-' + name.replace('_', '-'), type=int, default=value)
+    parser.add_argument('--context-mode', choices=('single', 'multi-positive'), default='single')
     parser.add_argument('--memory-limit-mb', type=int, default=256)
     args = parser.parse_args()
     values = {k: getattr(args, 'max_' + k) for k in vars(defaults)}
@@ -585,7 +776,7 @@ def main():
                           'bytes': len(payload), 'signatures': pin_signatures}
         result = run(args.graph_pair, args.accepted_seeds, args.journal, args.symbols,
                      args.output, pins, caps, args.memory_limit_mb,
-                     _ledger=ledger, _cli_pin=pin_provenance)
+                     _ledger=ledger, _cli_pin=pin_provenance, context_mode=args.context_mode)
     except (ValueError, OSError, sqlite3.Error) as error:
         print(json.dumps({'status': 'failed; no completed output', 'error': str(error),
                           'ledger': getattr(error, 'diagnostic_ledger', ledger.snapshot() if ledger else None)}))

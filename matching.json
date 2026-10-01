@@ -8,16 +8,16 @@
     "src/externals.h": "3382382faeac231f3c7962ffb276f5c091463416d3cd41afd89c57fe6c4eef62",
     "src/saga.h": "2e2cfb2393674eb86067c16512dbb7c31f7e9294a650b4705752df17ab1e88f4",
     "config/data.md": "148fd2b094bbf1330d84ac4dfa8cf6b0384511be674edd0563ea259a99ed43f8",
-    "config/identification-decisions.jsonl": "84e64659c1359c1cf43b47fe27dccac694a19a3c5895533d9c3d82b74ef064ce",
+    "config/identification-decisions.jsonl": "a9894bad6f617a42432ae85afe3039d7a60fe497fccaf59e7c995b3827890123",
     "config/identification-plan.md": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
-    "config/identification-tools.md": "5dd0646a398eb744115818abf90e7a69db84bdbe73ac8269172eb12fa001ec1d",
+    "config/identification-tools.md": "d4ded8a1a764e84fd23f6520e53946049edb9e80d58f27b5e80217b4bf321746",
     "config/identification.md": "ecfbf8977bb20b3c0b8fc8cf0c4a7cc7d7cd0f9915f3abe77145c532651e31e4",
     "config/numain.md": "3f25abbf6d2df3515fa97714b637d71ad5d5aa1dd2bca0a6162a76bfa01e8ca6",
     "config/progress-plan.md": "3b9ac0100b31fc3de9ee7c0a73d4b312ad476ac6def9b3c23b740254424ad789",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
     "config/strategy.md": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
-    "config/symbols.csv": "e8eef1e892682784d7da1d0a055315ec21d2b638762f128c3716e237f22ed9ea",
-    "config/symbols.md": "4bf3d06ac48ed3fc529d763a0202adf48cbe259205e2327c1d39f0e1de908850",
+    "config/symbols.csv": "381db3813f8749258cbdae9d99f04b49db9d98ac040a9220647ec5a22ab19eda",
+    "config/symbols.md": "5d908afcdffa44aaf8fcd89b4b204628e2e71fce0e9c725eebe8c2e21d183201",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
@@ -27,7 +27,7 @@
     "tools/check.py": "c8546d7e6ab3c89f7ea96bc2b549ff631700c293ecc0b1ef012c2e040007fbdc",
     "tools/crt_archive.py": "63955f21a150f37cca3e35b9a4190b145e268764690f01d75b98f4f001f60edd",
     "tools/identification.py": "4eb468f8dd11754cebae7bb6a9c73fca3f7a507fe347069c1d1175a65a82760f",
-    "tools/identification_context.py": "5f5fc784cfa5e10b1d000f7afb1affcf2db9034ebaa4eb52091c6c6e16771831",
+    "tools/identification_context.py": "f5f714f84b2e90160fe2649639604f6367a0953c270af02b80642fc1a6d18f2b",
     "tools/identification_graph.py": "c8b9ba1a838165e7c03fb9fd0c6a60eb464dd91a67dc9f2cdecfac4ed99afa9c",
     "tools/identification_inspect.py": "84826efbbfadc24eab86b408e83ad30534bf4fe7df038a6bf318769975a9b34d",
     "tools/identification_joint.py": "49d479f5611e4ce2c8925e20197f09ff5e1923618951242617c152b49290edc5",
@@ -54,7 +54,7 @@
     "tools/test_dat.py": "e8d311ac6f55e67d102999c6d8ba3ba0932366979d6f22008ea883154f7e0b4f",
     "tools/test_ghidra_graph.py": "d5dd21767cef88b78204d9323adf7feaa62cceecba6ac7a71f326db3f53b99fa",
     "tools/test_identification.py": "0abb6f78c0a8a8897fd288a35598af638ad331869631e81f2ff57b7124124034",
-    "tools/test_identification_context.py": "4dd1819cf4e98ddbef683aa8e7acdbf2681ad92805a9b90bea87897c1859156a",
+    "tools/test_identification_context.py": "0f3c7337daba942339c9a918fd0c90af7925e55196ccfd5e5e33426cf68e2e05",
     "tools/test_identification_graph.py": "2a1b03cb9284b2e121b7109a0cc3c1d03f47973906deda30df2a4bf259f40699",
     "tools/test_identification_inspect.py": "9b394f9ceefe001d09760df3d095a7d7d9a7dc977479418a83d0bb142ebd92d8",
     "tools/test_identification_joint.py": "d0d3e5ffa9d0cf70efa56181364f7176f92d08f0657cf19527fcaf7fa1f00e49",
@@ -526,6 +526,16 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "StoreProgressAICharacter",
+      "symbol": "_StoreProgressAICharacter",
+      "address": "0x00414f80",
+      "units": [],
+      "target_size": 119,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "MovePlayerSpline",
       "symbol": "_MovePlayerSpline",
       "address": "0x00415c60",
@@ -748,6 +758,16 @@
       "status": "not implemented"
     },
     {
+      "name": "Customiser_InitNames",
+      "symbol": "_Customiser_InitNames",
+      "address": "0x00423bc0",
+      "units": [],
+      "target_size": 99,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Detonate",
       "symbol": "_Detonate",
       "address": "0x00426de0",
@@ -770,6 +790,16 @@
       ],
       "status": "different",
       "objdiff_percent": 55.20909
+    },
+    {
+      "name": "LSW_SetIndy",
+      "symbol": "_LSW_SetIndy",
+      "address": "0x0042aa00",
+      "units": [],
+      "target_size": 489,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "CheckResetBits",
@@ -5321,6 +5351,16 @@
       "address": "0x0048ce00",
       "units": [],
       "target_size": 2222,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "FixUpLevels",
+      "symbol": "_FixUpLevels",
+      "address": "0x0048da50",
+      "units": [],
+      "target_size": 6860,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -12534,6 +12574,16 @@
       "status": "not implemented"
     },
     {
+      "name": "MenuLoadTechnicalStrings",
+      "symbol": "_MenuLoadTechnicalStrings",
+      "address": "0x0050b4e0",
+      "units": [],
+      "target_size": 867,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "TextRegisterButtonMapFn",
       "symbol": "_TextRegisterButtonMapFn",
       "address": "0x0050c130",
@@ -19348,6 +19398,16 @@
       ],
       "status": "different",
       "objdiff_percent": 80.893616
+    },
+    {
+      "name": "DieRumble",
+      "symbol": "_DieRumble",
+      "address": "0x0054a9b0",
+      "units": [],
+      "target_size": 90,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "ReadPads",
@@ -30074,6 +30134,16 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "Collection_CreateCustom",
+      "symbol": "_Collection_CreateCustom",
+      "address": "0x00594640",
+      "units": [],
+      "target_size": 464,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "InitShadowLights",
@@ -97691,6 +97761,16 @@
       "status": "unknown size"
     },
     {
+      "name": "TerrainCountPc",
+      "symbol": "_TerrainCountPc",
+      "address": "0x02962000",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "GetSurfaceInfoWaterNormalPc",
       "symbol": "_GetSurfaceInfoWaterNormalPc",
       "address": "0x02962020",
@@ -103007,16 +103087,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 537215,
+    "mapped_code_bytes": 546203,
     "matched_code_bytes": 46519,
     "matching_percent": 1.3401239785368135,
     "fuzzy_coverage_percent": 6.4712667300063105,
-    "mapped_functions": 2070,
+    "mapped_functions": 2077,
     "matched_functions": 810,
     "objdiff_fuzzy_percent": 60.501606,
     "objdiff_total_code": 371376,
     "image_bytes": 40067072,
-    "mapped_bytes": 1131578,
-    "mapping_percent": 2.8242093657355345
+    "mapped_bytes": 1140566,
+    "mapping_percent": 2.846641751111736
   }
 }

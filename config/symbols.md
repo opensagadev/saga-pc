@@ -2429,3 +2429,40 @@ remain explicit. They add no CSV bindings, allocation sizes, source definitions
 or coverage. These anchors were tested separately after the five mapped entries
 to distinguish their propagation effects. Original and independent review
 packets and the three frozen experiment arms remain under ignored analysis.
+
+## Shared-caller and level initialization anchors (2026-10-02)
+
+Seven more original function identities have complete PC extents and qualified
+physical caller contracts, with historical ctypes left blank:
+
+| Function | PC entry | PC bytes | Native Android entry |
+| --- | --- | --- | --- |
+| StoreProgressAICharacter | 0x00414f80 | 119 | 0x000fd340 |
+| Customiser_InitNames | 0x00423bc0 | 99 | 0x001b8f90 |
+| LSW_SetIndy | 0x0042aa00 | 489 | 0x0011dc90 |
+| FixUpLevels | 0x0048da50 | 6860 | 0x0012b370 |
+| MenuLoadTechnicalStrings | 0x0050b4e0 | 867 | 0x00428340 |
+| DieRumble | 0x0054a9b0 | 90 | 0x004894b0 |
+| Collection_CreateCustom | 0x00594640 | 464 | 0x004dbbd0 |
+
+These 8,988 bytes add inventory coverage only. FixUpLevels retains the internal
+three-byte alignment omitted by the analysis body count; Collection_CreateCustom
+also retains its internal three-byte alignment. Original callers establish one
+pointer word for FixUpLevels, four words for MenuLoadTechnicalStrings and twelve
+for Collection_CreateCustom. Canonical normal music, string and engine provider
+interfaces remain explicit qualifications, without universal exception/runtime
+claims. The progress helper's private integer shift and the customiser's string
+copy, Indy setter and rumble helper effects are independently inspected.
+
+AddFade at 0x005b11e0 (56 bytes, native 0x004ff560) is journal-only pending a PC
+reconstruction linkage decision. Its thiscall input and one RET4 argument are
+qualified for the four observed static virtual-target objects. Identity, extent
+and qualified ABI are reviewed; historical class, return type and arbitrary
+replacement vtables remain held. It contributes no CSV or coverage bytes.
+
+The neutral data binding TerrainCountPc at 0x02962000 corresponds to native
+terraincnt at 0x0122c020. Two mapped function pairs provide original accumulator
+and reset instructions; the neighboring curSphereter alternative has only reset
+evidence and remains held. PC increment-by-one is not established. The CSV size
+and ctype stay blank, with ABI/type/extent flags false and no allocation or source
+credit. The Android four-byte symbol is not a recovered PC allocation size.

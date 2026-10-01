@@ -23,11 +23,10 @@ from tools import identification_graph as graph
 from tools import identification_inspect as inspect
 from tools import identification_limits as limits
 
-try:
+if Path(__file__).resolve().parent == ROOT / 'tools':
     from tools import identification_context as diag
-except ImportError:
-    # Ignored review capsule only. Integrated tests import the actual tools module.
-    spec = importlib.util.spec_from_file_location('single_parent_context', Path(__file__).with_name('identification_context.py'))
+else:
+    spec = importlib.util.spec_from_file_location('scratch_context', Path(__file__).with_name('identification_context.py'))
     diag = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = diag
     spec.loader.exec_module(diag)
@@ -46,7 +45,7 @@ if helper_path.is_file():
 class Fixture:
     """Tiny real immutable caches, not mocks of the candidate implementation."""
     def __init__(self, root, pc_calls=None, aa_calls=None, seeds=None, mapped=None,
-                 names=None, missing_role=False):
+                 names=None, missing_role=False, missing_targets=()):
         self.root = root
         self.seeds = seeds or {100: 1000, 200: 2000, 300: 3000}
         self.calls = {'pc': pc_calls or {100: [200, 400, 300]},
@@ -64,7 +63,7 @@ class Fixture:
             nodes = [{'id': graph.node_id(sha, 'function', va), 'kind': 'function',
                       'address': va, 'name': (names or {}).get(va, 'opaque_' + str(va)),
                       'size': 1, 'body_bytes': 1, 'ranges': [[va, va + 1]]}
-                     for va in sorted(vas)]
+                     for va in sorted(vas) if va not in missing_targets]
             nodes.append({'id': graph.node_id(sha, 'data-object', data), 'kind': 'data-object', 'address': data})
             edges = []
             for parent, seq in self.calls[side].items():
@@ -108,7 +107,7 @@ class Fixture:
         self.paths['symbols'].write_text('address,symbol,size,ctype\n' + ''.join(f'{va},_mapped,1,\n' for va in (mapped or [100])))
         self.pins = {name: graph._file_hash(path) for name, path in self.paths.items()}
 
-    def run(self, output='result.json', caps=diag.Caps(), pins=None):
+    def run(self, output='result.json', caps=diag.Caps(), pins=None, context_mode='single'):
         with patch.object(limits.lib, 'ROOT', self.root), \
              patch.object(inspect, '_json', helper_candidate._json), \
              patch.object(graph, '_build_index', side_effect=AssertionError('Index build forbidden')), \
@@ -116,7 +115,7 @@ class Fixture:
              patch.object(graph, 'IndexedGraph', side_effect=AssertionError('Eager graph forbidden')):
             return diag.run(self.paths['graph_pair'], self.paths['accepted_seeds'],
                             self.paths['journal'], self.paths['symbols'], self.root / output,
-                            self.pins if pins is None else pins, caps)
+                            self.pins if pins is None else pins, caps, context_mode=context_mode)
 
 
 class DiagnosticTests(unittest.TestCase):
@@ -339,6 +338,148 @@ class DiagnosticTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Another identification job'):
                 fixture.run(output='other.json')
         self.assertFalse((self.root / 'other.json').exists())
+
+
+class MultiPositiveTests(unittest.TestCase):
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory(prefix='multi-positive-test-')
+        self.addCleanup(tmp.cleanup)
+        self.root = Path(tmp.name)
+
+    def fixture(self, pc=None, aa=None, **kw):
+        return Fixture(self.root,
+                       pc_calls=pc or {100: [200, 400, 300, 500, 600, 700],
+                                      150: [200, 400, 300, 500, 600, 700]},
+                       aa_calls=aa or {1000: [2000, 4000, 3000, 5000, 6000, 7000],
+                                      1500: [2000, 4000, 3000, 5000, 6000, 7000]},
+                       seeds={100: 1000, 150: 1500, 200: 2000, 300: 3000,
+                              500: 5000, 700: 7000}, **kw)
+
+    def test_new_multicaller_order_positive_and_single_default_exclusion(self):
+        f = self.fixture()
+        single = f.run(output='single.json')
+        self.assertEqual(single['candidates'], [])
+        result = f.run(output='multi.json', context_mode='multi-positive')
+        self.assertEqual(result['schema'], diag.MULTI_SCHEMA)
+        self.assertEqual([(r['pc_address'], r['android_address']) for r in result['candidates']],
+                         [(400, 4000), (600, 6000)])
+        for r in result['candidates']:
+            self.assertEqual(r['support_parent_roots'], [100, 150])
+            self.assertEqual(r['physical_function_callers'], {'pc': 2, 'android': 2})
+            self.assertFalse(any(r[k] for k in ('identity_reviewed', 'abi_reviewed', 'extent_reviewed', 'type_reviewed')))
+
+    def test_same_interval_rivals_compete_before_topN_even_when_mapped(self):
+        f = self.fixture(pc={100: [200, 400, 600, 300], 150: [200, 400, 600, 300]},
+                         aa={1000: [2000, 4000, 3000], 1500: [2000, 4000, 3000]},
+                         mapped=[100, 600])
+        result = f.run(context_mode='multi-positive', caps=diag.Caps(retained=1))
+        self.assertEqual(result['candidates'], [])
+        self.assertEqual(result['counts']['compatible_pairs'], 2)
+        self.assertEqual(result['held_examples'][0]['competitors']['pc'], [400, 600])
+
+    def test_nonbijective_positive_anchor_refused_before_publication(self):
+        f = self.fixture()
+        p = f.paths['accepted_seeds']
+        rows = [json.loads(line) for line in p.read_text().splitlines()]
+        rows[2]['android_address'] = rows[3]['android_address']
+        rows[2]['android'] = rows[3]['android']
+        p.write_text(''.join(json.dumps(r)+'\n' for r in rows))
+        f.pins['accepted_seeds'] = graph._file_hash(p)
+        with self.assertRaisesRegex(ValueError, 'Nonbijective'):
+            f.run(context_mode='multi-positive')
+        self.assertFalse((self.root / 'result.json').exists())
+
+    def test_missing_or_inlined_slot_debt_does_not_destroy_positive_match(self):
+        f = self.fixture(pc={100: [200, 400, 300], 150: [200, 400, 300]},
+                         aa={1000: [2000, 8000, 4000, 3000], 1500: [2000, 4000, 3000]},
+                         missing_targets=[8000])
+        result = f.run(context_mode='multi-positive')
+        self.assertEqual([(r['pc_address'], r['android_address']) for r in result['candidates']], [(400, 4000)])
+        row = result['candidates'][0]
+        self.assertEqual(row['positive_interval_roots'], 2)
+        self.assertTrue(row['context_scope_holds'])
+        self.assertEqual(row['positive_interval_witnesses'][0]['android_occurrences'][0]['missing_or_hub_calls'], 1)
+        self.assertEqual(row['positive_interval_witnesses'][0]['android_occurrences'][0]['ordinal'], 1)
+
+    def test_same_parent_occurrences_and_inferred_lineage_do_not_add_roots(self):
+        f = self.fixture(pc={100: [200, 400, 300, 200, 400, 300]},
+                         aa={1000: [2000, 4000, 3000, 2000, 4000, 3000]})
+        result = f.run(context_mode='multi-positive')
+        self.assertEqual(result['candidates'], [])
+        self.assertEqual(result['counts']['compatible_pairs'], 0)
+        rows = f.paths['accepted_seeds'].read_text().splitlines()
+        row = json.loads(rows[0]);row['origin'] = 'inferred-function-lineage';rows[0] = json.dumps(row)
+        f.paths['accepted_seeds'].write_text('\n'.join(rows)+'\n')
+        f.pins['accepted_seeds'] = graph._file_hash(f.paths['accepted_seeds'])
+        with self.assertRaisesRegex(ValueError, 'Only accepted seed'):
+            f.run(output='rejected.json', context_mode='multi-positive')
+
+    def test_missing_data_roles_leave_order_lead_not_strong_data(self):
+        result = self.fixture(missing_role=True).run(context_mode='multi-positive')
+        self.assertEqual(len(result['candidates']), 2)
+        for row in result['candidates']:
+            self.assertFalse(row['nonempty_data_profile_exact'])
+            self.assertIn('missing-canonical-access-role-width-offset', row['data_role_holds'])
+
+    def test_one_root_rival_and_unequal_absent_interval_are_not_hidden(self):
+        f = self.fixture(pc={100: [200, 400, 300], 150: [200, 400, 300]},
+                         aa={1000: [2000, 4000, 8000, 3000], 1500: [2000, 4000, 3000]})
+        result = f.run(context_mode='multi-positive')
+        self.assertEqual(result['candidates'], [])
+        self.assertEqual(result['held_examples'][0]['competitors']['android'], [4000, 8000])
+        self.assertEqual(result['held_examples'][0]['positive_interval_roots'], 2)
+
+    def test_multi_fanout_comparison_and_publish_caps_abort_atomically(self):
+        f = self.fixture(pc={100: [200, 400, 600, 300], 150: [200, 400, 600, 300]},
+                         aa={1000: [2000, 4000, 6000, 3000], 1500: [2000, 4000, 6000, 3000]})
+        for caps, pattern in [(diag.Caps(hub_parents=1), 'interval fanout'),
+                              (diag.Caps(comparisons=1), 'comparison cap'),
+                              (diag.Caps(output_bytes=1), 'Output cap')]:
+            with self.assertRaisesRegex(diag.Guard, pattern):
+                f.run(output='overflow.json', caps=caps, context_mode='multi-positive')
+            self.assertFalse((self.root / 'overflow.json').exists())
+            self.assertFalse(list(self.root.glob('.overflow.json.pending-*')))
+        calls = {'pc': {100: [(1, 200), (2, 400), (3, 600), (4, 300)]},
+                 'android': {100: [(1, 2000), (2, 4000), (3, 3000)]}}
+        cap = diag.Caps(hub_parents=1);ledger = diag.Ledger(cap)
+        contexts, hubs = diag.positive_interval_groups(calls, {100: 1000, 200: 2000, 300: 3000}, cap, ledger)
+        with self.assertRaisesRegex(diag.Guard, 'interval fanout'):
+            diag.multi_parent_interval_candidates(contexts, cap, ledger)
+
+    def test_optional_CLI_mode_uses_real_fixture_cache_and_exclusive_publication(self):
+        f = self.fixture()
+        pins = self.root / 'pins.json'
+        pins.write_text(json.dumps(f.pins))
+        prefix = ('import resource;resource.setrlimit(resource.RLIMIT_AS,(268435456,268435456));'
+                  'import sys,runpy;from pathlib import Path;from tools import identification_limits as l;'
+                  'l.lib.ROOT=Path(sys.argv[1]);sys.argv=sys.argv[2:];'
+                  'runpy.run_path(sys.argv[0],run_name="__main__")')
+        args = [sys.executable, '-c', prefix, str(self.root), str(Path(diag.__file__).resolve()),
+                '--context-mode', 'multi-positive', '--graph-pair', str(f.paths['graph_pair']),
+                '--accepted-seeds', str(f.paths['accepted_seeds']), '--journal', str(f.paths['journal']),
+                '--symbols', str(f.paths['symbols']), '--input-pins', str(pins),
+                '--output', str(self.root / 'cli-multi.json')]
+        child = subprocess.run(args, cwd=ROOT, capture_output=True, text=True, timeout=10)
+        self.assertEqual(child.returncode, 0, child.stdout+child.stderr)
+        result = json.loads((self.root / 'cli-multi.json').read_text())
+        self.assertEqual(result['schema'], diag.MULTI_SCHEMA)
+        self.assertEqual(result['counts']['retained'], 2)
+        self.assertEqual(result['provenance']['context_mode'], 'multi-positive')
+        child = subprocess.run(args, cwd=ROOT, capture_output=True, text=True, timeout=10)
+        self.assertNotEqual(child.returncode, 0)
+        self.assertIn('already exists', child.stdout)
+
+    def test_unchanged_single_mode_full_semantic_payload(self):
+        from tools import identification_context as baseline
+        f = Fixture(self.root)
+        current = f.run(output='new-single.json')
+        with patch.object(limits.lib, 'ROOT', self.root):
+            old = baseline.run(f.paths['graph_pair'], f.paths['accepted_seeds'], f.paths['journal'],
+                               f.paths['symbols'], self.root/'old-single.json', f.pins)
+        # Only the immutable producer file SHA changes for this optional extension.
+        current['provenance'].pop('module_sha256')
+        old['provenance'].pop('module_sha256')
+        self.assertEqual(current, old)
 
 
 if __name__ == '__main__':

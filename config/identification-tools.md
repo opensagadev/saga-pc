@@ -1652,3 +1652,50 @@ the same evidence and holds. Two now-mapped initializer candidates leave the
 list and two lower-ranked pairs enter it. These are retrieval changes, not
 precision or reconstruction gains. Frozen manifests and independent membership
 audits remain under ignored analysis.
+
+## Positive intervals across multiple accepted callers
+
+Pass `--context-mode multi-positive` to the same bounded context CLI to inspect
+shared helpers that the default single-caller mode excludes. It requires matching
+positive intervals around known callee anchors in at least two distinct accepted
+parent pairs. Repeated calls from one parent count as one root. Call ordinal,
+interval length and missing calls remain descriptive debts; absent or inlined
+edges do not reject a pair. All observed interval rivals, including mapped,
+one-root and hub rivals, participate before the output limit. Hubs are held;
+fanout overflow aborts publication rather than silently hiding alternatives.
+
+This optional mode retains the 256 MiB address-space limit, bounded immutable
+SQL caches/work, original input pins, internal heavy-job lock and exclusive
+publication. It accepts no inferred anchors and writes no scorer state or map.
+The default mode preserves the prior results. Twenty-six synthetic tests cover
+both modes; independent controls check asymmetric parent support and hub rivals.
+
+With the same 1,483 accepted parents as the final counterfactual, the first real
+multi-parent run inspects 1,069 observed rival pairs in 1,192 comparisons. Of 42
+pairs supported by multiple parents, three are eligible unmapped review leads:
+
+| Candidate | PC entry | Native Android entry | Distinct accepted parent roots |
+| --- | --- | --- | ---: |
+| AISysGetPathPos2 | 0x0043e040 | 0x00181410 | 3 |
+| GameCam_Judder | 0x00549de0 | 0x004d8370 | 3 |
+| Player_ResetContexts | 0x0055e4e0 | 0x0046b240 | 3 |
+
+All three were already inferred by the normal matcher. This adds review evidence
+for shared helpers, not three newly discovered identities. Their reviewed data
+profiles are empty, so equality of those profiles is not strong data evidence.
+The run takes 1.25 seconds at 45,192 KiB RSS with zero swaps. A same-input default
+control reproduces the previous complete result except the producer file hash.
+Original bodies, caller contracts and complete extents still require review.
+
+After seven further qualified function bindings, a journal-only AddFade identity
+and the unknown-extent terrain-counter identity, the normal matcher has 1,491
+accepted function anchors, 1,507 inferred pairs, 2,356 data candidates and 110
+reviewed data anchors. Four old inferred pairs convert to anchors; four other
+accepted pairs were previously candidates. Candidate PC 0x00578e10 against
+native 0x0030f230 moves from baseline rank two into the inferred set. This is a
+new inferred membership, not a newly generated raw candidate. All old accepted
+or inferred pairs survive, and their union gains five pairs. Data candidates gain
+225 pairs and lose five, for a net increase of 220. These are retrieval changes,
+with no automatic identity, allocation or source credit. The run again reaches
+a fixed point in eight rounds, taking 48.46 seconds at 742,244 KiB maximum RSS
+with zero swaps and the same 1,024 MiB address-space cap.
