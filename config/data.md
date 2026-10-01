@@ -889,3 +889,45 @@ establish full PC allocation or historical types.
 These rows add zero allocation, source or exact-data credit. Canonical graph
 IDs distinguish the PodRace data-object from the two data-sites. Original
 review and independent mapping-release evidence preserve the unknown owners.
+
+## Data identities from structural function ancestry (2026-10-01)
+
+Ten fixed experimental leads now have independent original operand/semantic
+reviews and neutral PC inventory names. All original sizes and ctypes remain
+blank; no source definitions, allocation coverage or exact-data credit are added.
+
+| PC address | Inventory name | Native Android address |
+| --- | --- | --- |
+| 0x007f8cc8 | GizForceSfxLoadVersionPc | 0x00623150 |
+| 0x008028b0 | LegoContextNetWaitPc | 0x0066723c |
+| 0x0087b9dc | DrawBossHitPointsActorPc | 0x006a1bb0 |
+| 0x00950600 | FindSlamOriginUseCurrentPositionFnPc | 0x012a5890 |
+| 0x009507cc | ExBlowupFlagsPc | 0x012a2280 |
+| 0x009513d8 | DoorExitNamePc | 0x01279e60 |
+| 0x0095144c | LastDoorPointerPc | 0x01279db0 |
+| 0x00956640 | RippleEffectsWorldInfoPc | 0x012a4980 |
+| 0x0095deb4 | RunOutOfPosTabSpacePc | 0x012a5b50 |
+| 0x00973904 | DdMaxJointsPc | 0x011aa080 |
+
+The reviews establish distinctive reset/read/write behavior: the version
+initializer and byte-loader gate, network context predicate, boss actor/icon
+guard, explosion bits, door compare/copy/recompute/store chain, ripple world
+pointer consumers, animation joint-count maximum and sticky position-table
+overflow. Original native ELF records and actual GOT relocation addends support
+the bindings. Loader zeros alone supply no identity evidence. The callback slot
+has an independently observed installer and consumer; its callback signature,
+target identity, complete alias writers and runtime state remain unapproved.
+
+The exit-name view has no established PC string capacity. Android object sizes,
+four-byte accesses, graph undefined types and lack of nearby symbols do not prove
+PC allocation boundaries. Tentative user functions remain semantic witnesses;
+none receives a function/ABI/source binding merely because it supports a data
+identity. Five frozen `structural-selected-data-pair*-original-next1` packets
+retain these distinctions under ignored continuation. The fixed ten-lead result
+does not measure accuracy across the experimental candidate pool.
+
+An independent ELF routing audit checks the actual PT_LOAD file offsets for
+all eight data GOT addends and the two initialized native values. The writable
+segment's virtual addresses differ from file offsets by 0x1000; each read uses
+its containing segment. All values and relocation records agree with the
+reviewed identities. These checks do not establish PC allocation sizes.

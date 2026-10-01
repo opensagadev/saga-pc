@@ -7,17 +7,17 @@
     "Makefile": "f9040c679f18bc5dcca7b43bbc1f080e8df87c881b03a2275ce844af3a45d2bb",
     "src/externals.h": "3382382faeac231f3c7962ffb276f5c091463416d3cd41afd89c57fe6c4eef62",
     "src/saga.h": "2e2cfb2393674eb86067c16512dbb7c31f7e9294a650b4705752df17ab1e88f4",
-    "config/data.md": "e3545b4eafe9baa199ed2bf70e41ba8d40788c1032e0eacc1388b57e9de5994e",
-    "config/identification-decisions.jsonl": "87fb6d96c7d72dbdd5b1de7237cc0f081d2f0e02c877feb00ca10a6875db448d",
+    "config/data.md": "148fd2b094bbf1330d84ac4dfa8cf6b0384511be674edd0563ea259a99ed43f8",
+    "config/identification-decisions.jsonl": "af610bc34a4d9513acc2d0b9ac5521ad22e803db8b28a4e1e2f1ae01846c0028",
     "config/identification-plan.md": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
-    "config/identification-tools.md": "5f6eaa900bd4407b555c39364fb91fe1dab1223706c8ec3b8991ef5010fc12de",
+    "config/identification-tools.md": "9afb309ef41f06eb9f53ccf8ff5f8a7e1d523f3b02f4d7229f34a8d44f75c1f5",
     "config/identification.md": "ecfbf8977bb20b3c0b8fc8cf0c4a7cc7d7cd0f9915f3abe77145c532651e31e4",
     "config/numain.md": "3f25abbf6d2df3515fa97714b637d71ad5d5aa1dd2bca0a6162a76bfa01e8ca6",
-    "config/progress-plan.md": "df39feac9b24badd94c85bce91822e86dcdecc90c5dcdaf074a476e6c657db4c",
+    "config/progress-plan.md": "bd6f3f1c32d6958a4a6d9c03a19dae2f64f5df52d39576efad0937e641ae38c0",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
     "config/strategy.md": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
-    "config/symbols.csv": "a049cb031a4c4e99cce6c89191fd16eea929c480c2565ee4d12b9d71a3a6a19e",
-    "config/symbols.md": "fbbaa1f92773d8655e7b047320cf28b0df1abcb289dafecf54de7b25f8d438ff",
+    "config/symbols.csv": "bc2a79e6837abcd11d128def955a73d0453bb385a96836bfc64ea21a5e40a7ea",
+    "config/symbols.md": "202a542510542ddf6785a6c3678885c6f51f39e678dc699dd06cfad92b0e2afe",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
@@ -716,6 +716,16 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "ResetAICreature",
+      "symbol": "_ResetAICreature",
+      "address": "0x0041c120",
+      "units": [],
+      "target_size": 1276,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Detonate",
       "symbol": "_Detonate",
       "address": "0x00426de0",
@@ -1222,6 +1232,16 @@
       "objdiff_percent": 26.761805
     },
     {
+      "name": "AlertSurroundingCreatures",
+      "symbol": "_AlertSurroundingCreatures",
+      "address": "0x004399e0",
+      "units": [],
+      "target_size": 101,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "MakeBaddiesForgetAboutParty",
       "symbol": "_MakeBaddiesForgetAboutParty",
       "address": "0x0043a910",
@@ -1453,6 +1473,46 @@
       "address": "0x0043d500",
       "units": [],
       "target_size": 32,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "oneAtOnce_SetAttackersPerRow",
+      "symbol": "_oneAtOnce_SetAttackersPerRow",
+      "address": "0x0043d520",
+      "units": [],
+      "target_size": 16,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "oneAtOnce_SetDistPerRow",
+      "symbol": "_oneAtOnce_SetDistPerRow",
+      "address": "0x0043d530",
+      "units": [],
+      "target_size": 41,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "oneAtOnce_SetInitDistPerRow",
+      "symbol": "_oneAtOnce_SetInitDistPerRow",
+      "address": "0x0043d560",
+      "units": [],
+      "target_size": 41,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "AddDynamicCreature",
+      "symbol": "_AddDynamicCreature",
+      "address": "0x0043d890",
+      "units": [],
+      "target_size": 1963,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -6878,6 +6938,16 @@
       ],
       "status": "different",
       "objdiff_percent": 57.20354
+    },
+    {
+      "name": "FreeTorpedoPacket",
+      "symbol": "_FreeTorpedoPacket",
+      "address": "0x004d22f0",
+      "units": [],
+      "target_size": 90,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "TrafficAnimSys_Configure",
@@ -20918,6 +20988,16 @@
       "objdiff_percent": 76.86567
     },
     {
+      "name": "CharCategory_IsCategory",
+      "symbol": "_CharCategory_IsCategory",
+      "address": "0x0055bc80",
+      "units": [],
+      "target_size": 115,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "?ClearPause@@YAXXZ",
       "symbol": "?ClearPause@@YAXXZ",
       "address": "0x0055c5e0",
@@ -21288,11 +21368,31 @@
       "objdiff_percent": 47.73
     },
     {
+      "name": "GameObjectSetCanUse",
+      "symbol": "_GameObjectSetCanUse",
+      "address": "0x0055dd70",
+      "units": [],
+      "target_size": 47,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "RememberPlayerIDs",
       "symbol": "_RememberPlayerIDs",
       "address": "0x0055e1b0",
       "units": [],
       "target_size": 249,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "SetPlayer",
+      "symbol": "_SetPlayer",
+      "address": "0x0055e410",
+      "units": [],
+      "target_size": 85,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -29942,6 +30042,16 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "DestroySnakeBody",
+      "symbol": "_DestroySnakeBody",
+      "address": "0x00597350",
+      "units": [],
+      "target_size": 47,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "CharacterMiniKits_Dump",
       "symbol": "_CharacterMiniKits_Dump",
       "address": "0x0059a030",
@@ -37534,6 +37644,16 @@
       ],
       "status": "different",
       "objdiff_percent": 18.970415
+    },
+    {
+      "name": "NuGScnGetSpecial",
+      "symbol": "_NuGScnGetSpecial",
+      "address": "0x005da860",
+      "units": [],
+      "target_size": 98,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "NuHGobjGetLayerIndex",
@@ -75247,6 +75367,16 @@
       "status": "unknown size"
     },
     {
+      "name": "GizForceSfxLoadVersionPc",
+      "symbol": "_GizForceSfxLoadVersionPc",
+      "address": "0x007f8cc8",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "GizForceSFX_ConfigKeywords",
       "symbol": "_GizForceSFX_ConfigKeywords",
       "address": "0x007f8ccc",
@@ -78863,6 +78993,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "LegoContextNetWaitPc",
+      "symbol": "_LegoContextNetWaitPc",
+      "address": "0x008028b0",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "DEFAULT_PLAYERHITPOINTS",
@@ -86768,6 +86908,16 @@
       "status": "exact"
     },
     {
+      "name": "DrawBossHitPointsActorPc",
+      "symbol": "_DrawBossHitPointsActorPc",
+      "address": "0x0087b9dc",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "ShadowMode",
       "symbol": "_ShadowMode",
       "address": "0x0087bb10",
@@ -92135,6 +92285,16 @@
       "status": "not implemented"
     },
     {
+      "name": "FindSlamOriginUseCurrentPositionFnPc",
+      "symbol": "_FindSlamOriginUseCurrentPositionFnPc",
+      "address": "0x00950600",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "MainRenderTime",
       "symbol": "_MainRenderTime",
       "address": "0x00950698",
@@ -92286,6 +92446,16 @@
       "name": "gizmoblowupnametable_numids",
       "symbol": "_gizmoblowupnametable_numids",
       "address": "0x009507c8",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "ExBlowupFlagsPc",
+      "symbol": "_ExBlowupFlagsPc",
+      "address": "0x009507cc",
       "units": [],
       "target_size": null,
       "exact_match": false,
@@ -92737,6 +92907,16 @@
       "status": "not implemented"
     },
     {
+      "name": "DoorExitNamePc",
+      "symbol": "_DoorExitNamePc",
+      "address": "0x009513d8",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "Door_UseCutCam",
       "symbol": "_Door_UseCutCam",
       "address": "0x00951440",
@@ -92756,6 +92936,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "LastDoorPointerPc",
+      "symbol": "_LastDoorPointerPc",
+      "address": "0x0095144c",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "LevelHackData",
@@ -94111,6 +94301,26 @@
       "status": "exact"
     },
     {
+      "name": "RippleEffectsWorldInfoPc",
+      "symbol": "_RippleEffectsWorldInfoPc",
+      "address": "0x00956640",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "RunOutOfPosTabSpacePc",
+      "symbol": "_RunOutOfPosTabSpacePc",
+      "address": "0x0095deb4",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "CharPivot",
       "symbol": "_CharPivot",
       "address": "0x0095df40",
@@ -95170,6 +95380,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "DdMaxJointsPc",
+      "symbol": "_DdMaxJointsPc",
+      "address": "0x00973904",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "DebrisGlassTextureWidth",
@@ -102665,16 +102885,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 525174,
+    "mapped_code_bytes": 529094,
     "matched_code_bytes": 46519,
     "matching_percent": 1.3401239785368135,
     "fuzzy_coverage_percent": 6.4712667300063105,
-    "mapped_functions": 2046,
+    "mapped_functions": 2058,
     "matched_functions": 810,
     "objdiff_fuzzy_percent": 60.501606,
     "objdiff_total_code": 371376,
     "image_bytes": 40067072,
-    "mapped_bytes": 1119537,
-    "mapping_percent": 2.7941572571112756
+    "mapped_bytes": 1123457,
+    "mapping_percent": 2.803940851979401
   }
 }

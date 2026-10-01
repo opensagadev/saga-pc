@@ -2320,3 +2320,50 @@ The release reaches 2,046 mapped functions and 1,119,537 / 40,067,072 known
 mapped image bytes. Three identity-only data rows add no extent credit. The
 mapping release and independent original packets are retained under ignored
 `build/analysis/identification/continuation/structural-wave25-*` evidence.
+
+## Structural leaf and caller-context release (2026-10-01)
+
+Twelve further original identities add 3,920 known PC code bytes, with blank ctypes:
+AlertSurroundingCreatures 0x004399e0/101,
+oneAtOnce_SetAttackersPerRow 0x0043d520/16,
+oneAtOnce_SetDistPerRow 0x0043d530/41,
+oneAtOnce_SetInitDistPerRow 0x0043d560/41,
+FreeTorpedoPacket 0x004d22f0/90,
+CharCategory_IsCategory 0x0055bc80/115,
+GameObjectSetCanUse 0x0055dd70/47,
+SetPlayer 0x0055e410/85,
+DestroySnakeBody 0x00597350/47, NuGScnGetSpecial 0x005da860/98,
+ResetAICreature 0x0041c120/1276 and AddDynamicCreature 0x0043d890/1963.
+Paired original bodies, native ELF identities, actual PC callers and complete
+PC extents establish these bindings independently of propagation scores.
+
+The floating setters require two free x87 slots and their stated normal finite
+input domain; negative inputs also overwrite their own argument stack slot with
+positive zero. Seven trailing INT3 bytes are outside each 41-byte body.
+GameObjectSetCanUse consumes five caller words, with the fourth unused.
+SetPlayer clears only player when neither actor qualifies, leaving player2
+unchanged. NuGScnGetSpecial retains the initialized backing, writable output
+prefix and nonnegative-index domain. FreeTorpedoPacket and DestroySnakeBody
+retain qualified normal canonical-memset effects, without transferring native
+aggregate sizes or approving unknown backing allocations.
+
+The creature pair preserves reviewed local ESP/nonvolatile-register and x87
+effects, with all outgoing calls entering at local x87 depth zero. The actual
+private integer-shift helper is reviewed; engine child calls retain explicit
+normal return, stack/register and float-effect qualifications. Transitive
+callbacks, malformed aggregate domains and exception behavior remain held.
+
+The three setters required graph repair. A disposable export preserves all
+8,046 previous function IDs/extents and adds exactly those three functions,
+for 8,049 PC functions. The retained project and Android export remain pinned.
+Graph repair alone adds no mapping or source credit. StartLaunch and
+instNuGCutSceneEnd remain excluded because their physical callee contracts
+are unresolved. Independent release evidence
+`structural-wave26-mapping-release-independent-next1.json` covers the first ten
+functions; the combined function/data release is recorded separately under
+ignored continuation. There are now 2,058 mapped functions and
+1,123,457 / 40,067,072 known mapped image bytes. Ten newly reviewed data
+identities have blank extents/types and add zero image coverage. This release
+adds no source comparison bytes. TerrainInitEx's separately reviewed 3,491-byte
+identity and physical-contract supplement await the next mapping release;
+PanelRender's physical child/virtual-call contracts remain held.

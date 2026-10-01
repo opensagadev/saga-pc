@@ -454,3 +454,37 @@ selected data users/owners against both originals. Preserve callback/ABI holds
 and unknown allocation boundaries. Heavy jobs remain serialized; the expanded
 data experiment used a 1.5 GiB address-space cap and about 1 GiB peak RSS after
 the original 1 GiB cap safely stopped an earlier attempt.
+
+## Structural leaf expansion
+
+Twelve independently verified function identities add 3,920 known code bytes,
+reaching 1,123,457 / 40,067,072 mapped image bytes. Their historical types remain
+blank. Ten independently reviewed data identities retain blank allocation sizes
+and types and add zero extent credit. Source comparison stays at 371,376 original bytes, with 810 exact
+functions / 46,519 exact code bytes and 6.4712667% whole-PC fuzzy coverage.
+The missing setter repairs preserve all 8,046 earlier function extents and
+bring the graph to 8,049 functions.
+
+Before the creature pair and data identities, the refreshed run has 1,467 accepted function seeds, 1,522 inferred function
+pairs and 2,060 normal data candidates, with 99 reviewed data anchors and no
+stale decisions. Six earlier hypotheses became accepted seeds; all other
+1,522 hypotheses are retained, with zero new pairs or other disappearances.
+Eight rounds reach a fixed point. Candidate counts are not
+verified identity or accuracy counts. Next compare exact hypothesis sets as
+reviewed seeds replace candidates, extend global shared-caller discovery and
+test a separate single-parent call-context diagnostic. Review the fixed data
+shortlist through actual original user operands and owners; ancestry and
+address-only evidence cannot authorize data names, allocations or types.
+The single-parent context diagnostic supplies 102 review leads but recovers
+only six of twenty known withheld controls; this is a research queue, not a
+measured accuracy gain or an automatic acceptance rule. TerrainInitEx's qualified
+physical follow-up and the new Batarangs_Reset identity await the next release;
+PanelRender retains finite physical-contract holds. Continue original review
+and turn the diagnostic prototype into a bounded, reproducible tool.
+
+After the creature pair and ten data identities, the final run has 1,469 accepted
+function seeds, 1,522 inferred pairs, 2,063 normal data candidates and 109
+reviewed data anchors, with no stale decisions. Eight rounds reach a fixed point.
+This run takes 47.36 seconds at 746,344 KiB RSS under the 1 GiB address-space
+limit, with zero swaps. Equal inferred totals do not establish equal pair sets
+or scoring accuracy; preserve the exact frozen outputs for comparison.

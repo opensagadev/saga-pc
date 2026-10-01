@@ -1550,3 +1550,37 @@ preserves all 8,045 previous function IDs/extents and verifies exactly one new
 function, for 8,046 PC functions. The retained project is unchanged. This is
 graph completeness progress with zero new mapping or source credit; the
 1,528-pair experiment above predates this repair.
+
+The next structural release reviews ten more functions (681 known code bytes).
+Three missing single-parent setter targets are repaired with complete extents
+16, 41 and 41; trailing alignment is excluded. Independent scalar preservation
+keeps every prior function ID/extent, bringing the PC graph to 8,049 functions.
+With the new identities, 1,467 accepted function seeds yield 1,522 inferred
+pairs and 2,060 normal data candidates at an eight-round fixed point. Reviewed
+data anchors remain 99 and stale decisions zero. The run finishes in 48.71
+seconds at 757,524 KiB RSS, under a 1,024 MiB address-space cap, with zero swaps.
+Do not interpret fewer inferred rows as lost accepted identities; compare
+pair sets separately when candidates become reviewed seeds. Original identity,
+physical caller effects, full PC extent and historical types remain distinct
+gates. Mapping identities adds no source reconstruction or exact/fuzzy credit.
+
+The combined release also reviews the creature creation/reset pair and all ten
+fixed experimental data leads through original users/operands. It totals twelve
+function identities / 3,920 code bytes and ten blank-extent data identities,
+without source or exact-data credit. The final run has 1,469 accepted function
+seeds, 1,522 inferred pairs, 2,063 normal data candidates and 109 reviewed data
+anchors. It reaches an eight-round fixed point in 47.36 seconds, at 746,344 KiB
+RSS under the 1,024 MiB address-space limit, with zero swaps. The original
+ten-function counterfactual remains frozen separately; six of its hypotheses
+became seeds and all remaining pairs survived unchanged.
+
+A separate single-parent context prototype uses ordered neighboring accepted
+calls and reviewed data-role profiles to propose 102 unmapped leads. It retains
+global competitors and excludes inferred anchors. Known-pair controls recover
+six of twenty exact withheld pairs, and five of twenty with two same-parent
+neighbors withheld; no wrong-known-neighbor control is recovered. These tests
+show fragility, not unknown-pair precision or an accuracy gain. All prototype
+leads require original identity, physical ABI and complete PC boundary review.
+Candidate-only diagnostic publication must remain separate from accepted
+scoring and state. Bounded cache pinning and atomic publication are required
+before the prototype becomes an operator tool.
