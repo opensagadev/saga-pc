@@ -1650,3 +1650,44 @@ void SockRotationMatrix(SOCKSYS_PC *system, SOCKPOSITION_PC *position, NUMTX *ou
         *out = matrices[1];
     }
 }
+
+void SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 index, i32 segment, f32 fraction) {
+    SOCK_PC *sock;
+    i32 limit;
+
+    position->sock_index = -1;
+    if (system == NULL || (u32)index > 63u) {
+        return;
+    }
+    sock = &system->socks[index];
+    limit = sock->length;
+    if (sock->unknown_33 != 0) {
+        ++limit;
+        if (segment > limit) {
+            segment = 0;
+        }
+    } else if (segment > limit) {
+        segment = limit;
+    }
+    if (segment < 0) {
+        segment = 0;
+    }
+    if (fraction < 0.0f) {
+        fraction = 0.0f;
+    } else if (fraction > 1.0f) {
+        fraction = 1.0f;
+    }
+    position->next_segment = (i16)(u16)((u32)segment + 1u);
+    position->ratio = fraction;
+    position->sock_index = (i8)index;
+    position->segment = (i16)segment;
+    if ((i32)position->next_segment == limit && sock->unknown_33 != 0) {
+        position->next_segment = 0;
+    }
+    position->candidate_count = 1;
+    position->flags = 0;
+    position->candidate_mask = 1u << ((u32)index & 31u);
+    FillSockPosition(system, position);
+    position->camera_position = temp_sockcampos;
+    SockSysPointAlongMID(sock, position, &position->midpoint);
+}

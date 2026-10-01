@@ -4349,4 +4349,7 @@ extern "C" {
 #pragma const_seg(".rdata$AIScaleOverrideResetName")
     const char AIScaleOverrideResetName[6] = "reset";
 #pragma const_seg()
+#pragma bss_seg(".bss$SurfaceInfo_ExtraReflectFn")
+    void(__cdecl *SurfaceInfo_ExtraReflectFn)(GAMEOBJECT *object);
+#pragma bss_seg()
 }

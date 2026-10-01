@@ -332,3 +332,21 @@ the next connected closure over instruction-order tuning. Next review
 SnapToPosition/SnapToSockPosition's shared surface helpers and socket helper.
 Candidate helper sizes/identities stay unaccepted until fresh original
 extent, physical ABI and provider closure pass independent review.
+
+
+## Surface and socket helper release
+
+Two independently identified complete helpers add 474 newly compared and
+known mapped PC bytes: SetObjOnSurface233 and SetSockPostion241. Unique compared
+code reaches 356,133 bytes (356,188 with the existing 55-byte overlap). Whole-PC
+fuzzy coverage increases from 6.276357% to 6.285899%, gaining 0.009542 percentage
+points. All 801 exact functions and 45,746 exact code bytes remain unchanged.
+Known mapped image extent reaches 1,117,300 / 40,067,072. The callback pointer
+access view has unknown allocation extent/type and earns no coverage credit.
+
+Source and actual compilation reviews cover PC float rounding/predicates,
+socket boundary controls and the generated private helper cohort. The two
+new bodies remain nonexact, scoring 72.968254% and 66.89286%; continue provider
+closure rather than instruction tuning. Next close InitSurfaceInfo's actual
+query and shadow/reflection providers to release the accepted snap callback
+family. The separate SetCurrentSpeed indirect lookup remains unresolved.

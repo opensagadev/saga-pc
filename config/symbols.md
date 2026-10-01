@@ -1997,3 +1997,58 @@ extent/exact credit. Frozen evidence under the continuation directory:
 `scaleoverride-source-draft-independent-next1.json`,
 `scaleoverride-source-fields-independent-next1.json` and
 `scaleoverride-compiled-contract-independent-next1.json`.
+
+
+### Surface and socket helper source transfer
+
+`SetObjOnSurface` at PC `0x572660`/233 is independently paired with original
+Android `0x4e2470`/303; `SetSockPostion` at PC `0x53f640`/241 with
+Android `0x3c00b4`/418. The socket name retains the native misspelling.
+Their complete original ranges exclude following padding, already agree with
+the retained graph, and add 474 known mapped and compared code bytes. Physical
+two-word and five-word call interfaces are reviewed separately from historical
+formal types; CSV ctypes remain blank. Genuine C joins the existing gameobjects
+and socksys units, reusing verified fields and providers.
+
+Surface placement retains the PC F64 epsilon `0.10000000149011612`, extended
+product/subtraction arithmetic and F32 Y storage before the three position
+writes. The Android-specific extra subtraction is absent. Sentinel/level gates
+return before velocity changes; equal or unordered floor comparisons permit
+placement, and remaining paths set vertical velocity to minus one. Actual VC8
+output preserves both required F32 storage/reload checkpoints. Its 246-byte
+body scores 72.968254% against all 233 original bytes.
+
+Socket placement invalidates the output before null/unsigned-index checks,
+preserves open/closed segment limits, signed narrowed next-segment equality,
+NaN and negative-zero fraction behavior, and the hardware-masked shift for
+accepted indices 32 through 63. FillSockPosition, camera-position copying and
+SockSysPointAlongMID retain their order. Original private register interfaces
+and the compiler's same-unit interfaces differ; the complete generated caller
+and static providers are reviewed together, with no public stack wrappers.
+The new 244-byte body scores 66.89286% against all 241 original bytes.
+Both new functions remain nonexact. All 2,022 previous function report rows,
+including both private providers, are unchanged; all 801 exact functions and
+45,746 exact code bytes remain preserved.
+
+`SurfaceInfo_ExtraReflectFn` at PC `0x951030` is independently paired with the
+native Android OBJECT `0x12a48f0`. The source emits a four-byte pointer access
+view, but its complete original allocation and formal type are unknown: CSV
+size/type stay blank, with zero extent or exact credit. Retained direct accesses
+comprise writer `0x42f12c` and readers `0x572645`/`0x572aa8`. The writer installs
+unnamed call-free target `0x42a690`/167; the reviewed null/literal-target states
+do not prove arbitrary alias closure or name that target from the slot name.
+The original zero-filled initializer does not imply a permanently null slot.
+
+The checkpoint compares 356,188 original bytes including the unchanged 55-byte
+alias overlap (356,133 unique). Whole-PC fuzzy coverage is
+6.285899057426779%; known mapped image extent is 1,117,300 / 40,067,072.
+The additional exact eight-byte epsilon copy reuses an existing allocation and
+adds no original coverage. Frozen continuation proofs include
+`snap-setobjonsurface-independent-next1.json`,
+`snap-setsockpostion-independent-next1.json`,
+`setobjonsurface-source-draft-independent-next1.json`,
+`setsockpostion-source-draft-independent-next1.json`,
+`setobjonsurface-compiled-contract-independent-next1.json`,
+`setsockpostion-compiled-contract-independent-next1.json` and
+`surface-callback-data-independent-next1.json`. InitSurfaceInfo and the two
+snap callbacks remain held for their separate query/shadow/reflection closure.

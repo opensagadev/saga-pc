@@ -6186,6 +6186,9 @@ extern "C" {
                                     i32 count, i32 first_time, f32 elapsed);
     i32 __cdecl Action_SetAnimSpeedMul(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                        char **params, i32 num_params, i32 first_time, f32 elapsed);
+    i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode);
+    void __cdecl SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 index, i32 segment, f32 fraction);
+    extern void(__cdecl *SurfaceInfo_ExtraReflectFn)(GAMEOBJECT *object);
     void __cdecl CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socket_rotation);
     i32 __cdecl Action_UseCurrentSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                        char **params, i32 num_params, i32 first_time, f32 elapsed);

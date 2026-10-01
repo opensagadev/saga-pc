@@ -732,3 +732,21 @@ fields; no aggregate layout is expanded. Distinct original F32 and F64
 1,000,000,000 constants remain bound separately. NuRandFloat's fresh original
 52-byte body includes F32 storage/reload, and actual callback output also
 preserves timed-target and rate rounding before interpolation.
+
+
+### Surface reflection callback access view
+
+PC `SurfaceInfo_ExtraReflectFn` at `0x951030` corresponds to native Android
+OBJECT `0x12a48f0`, with independent original ELF/GOT and PC access evidence.
+The source defines a four-byte zero-initialized pointer access view; CSV size
+and ctype remain blank because the complete owner allocation and historical
+formal type are unproved. This adds no known extent or exact-data credit.
+
+The retained direct writer installs unnamed PC `0x42a690`/167; two readers call
+through the slot with one object pointer and ignore the return. Reviewed native
+null/literal-target states establish a qualified physical interface, without
+universal writer/alias closure or naming the callback from the global's name.
+BSS initialization is not permanent runtime nullness. The new surface/socket
+helpers otherwise reuse existing layouts and data. Gameobjects adds another
+exact copy of the existing eight-byte F64 epsilon at `0x751788`, with no new
+original allocation credit.

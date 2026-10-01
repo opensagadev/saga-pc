@@ -804,6 +804,7 @@ address    , symbol                                                         , si
 0x53ebf0   , _BestSockPosition                                              , 1261  , "f32 __cdecl (SOCKSYS_PC *, NUVEC *, SOCKPOSITION_PC *, i32, i32)"
 0x53f0e0   , _MoveSockPosition                                              , 669   , "void __cdecl (SOCKSYS_PC *, SOCKPOSITION_PC *, f32, SOCKPOSITION_PC *)"
 0x53f380   , _ComplexSockAngles                                             , 696   , void __cdecl (SOCKROT_PC *)
+0x0053f640 , _SetSockPostion                                                , 241   ,
 0x53f7a0   , _MidDistanceFromSockStart                                      , 64    , "f32 __cdecl (SOCKSYS_PC *, SOCKPOSITION_PC *)"
 0x53f940   , _SockParCircuit                                                , 10    , "void __cdecl (NUFPAR_PC *, void *)"
 0x53f950   , _SockParCurSpeed                                               , 23    , "void __cdecl (NUFPAR_PC *, void *)"
@@ -1068,6 +1069,7 @@ address    , symbol                                                         , si
 0x00571c50 , _PartStop_Flickerer                                            , 38    , void __cdecl (PART_PC *)
 0x00571c80 , _PartDraw_Flickerer                                            , 108   , i32 __cdecl (PART_PC *)
 0x00572380 , _Surfaces_Reset                                                , 182   , void __cdecl (void)
+0x00572660 , _SetObjOnSurface                                               , 233   ,
 0x00572b00 , _Areas_ConfigureList                                           , 1853  , "AREA_DATA_PC *__cdecl (char *, VARIPTR *, VARIPTR *, i32, i32 *)"
 0x00573240 , _Areas_ConfigureResidents                                      , 481   , "void __cdecl (VARIPTR *, VARIPTR *)"
 0x00573430 , _Area_FindByName                                               , 107   , "AREA_DATA_PC * __cdecl (char *, i32 *)"
@@ -4706,6 +4708,7 @@ address    , symbol                                                         , si
 0x00951018 , _part_debris_count                                             , 4     , i32
 0x00951024 , _SURFACEBITS_DUST                                              , 2     , u16
 0x00951028 , _SURFACEBITS_NODUST                                            , 2     , u16
+0x00951030 , _SurfaceInfo_ExtraReflectFn                                    ,       ,
 0x00951174 , _BonusArea                                                     , 4     , i32
 0x0095123c , _last_area                                                     , 4     , i32
 0x009512a8 , _VehicleArea                                                   , 4     , i32

@@ -684,3 +684,15 @@ review before release. InitSurfaceInfo's optional callback951030 and its
 unimplemented query/shadow/reflection providers remain concrete holds;
 SetObjOnSurface and SetSockPostion are separate bounded closure candidates.
 The independent SetCurrentSpeed slot923924 debt remains unresolved.
+
+
+The independent surface/socket release now implements SetObjOnSurface572660/233
+and SetSockPostion53f640/241, adding 474 compared and mapped original bytes.
+Both actual compiler contracts are reviewed in their existing compilation
+units; previous private helper report rows and all 801 exact functions remain
+unchanged. The callback slot951030 has a qualified null/literal-target access
+view, with unknown owner extent/type and zero coverage credit. InitSurfaceInfo
+and the accepted SnapToPosition/SnapToSockPosition callbacks still need their
+separate surface-query, shadow and reflection closure; mapping the slot alone
+does not complete that provider family. SetCurrentSpeed's independent indirect
+lookup at923924 remains held.

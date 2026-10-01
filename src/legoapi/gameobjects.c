@@ -3119,3 +3119,37 @@ void __cdecl CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socke
     object->ai_packet.flags &= ~0x40000u;
     object->target_velocity = object->velocity;
 }
+
+i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
+    WORLDINFO *world;
+    volatile f32 rounded_y;
+    f32 y;
+    i32 placed;
+
+    placed = 0;
+    if (object->floor_height == GameObjectNearFloorNoFloorHeight)
+        return 0;
+    world = WorldInfo_CurrentlyActive();
+    if ((world->current_level->flags & 0x40000u) != 0)
+        return 0;
+    if (mode == 2) {
+        rounded_y =
+            (f64)object->collision_min.y - (f64)object->character_bottom * object->origin_scale + 0.10000000149011612;
+        y = rounded_y;
+        object->position.y = y;
+        object->initial_position.y = y;
+        object->collision_position.y = y;
+    }
+    if (mode == 0 || !((f64)object->floor_height + 0.10000000149011612 <
+                       (f64)object->position.y + (f64)object->character_bottom * object->origin_scale)) {
+        rounded_y =
+            (f64)object->floor_height - (f64)object->character_bottom * object->origin_scale + 0.10000000149011612;
+        y = rounded_y;
+        object->position.y = y;
+        object->initial_position.y = y;
+        object->collision_position.y = y;
+        placed = 1;
+    }
+    object->velocity.y = -1.0f;
+    return placed;
+}
