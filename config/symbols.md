@@ -2103,3 +2103,59 @@ terrain-vector-source-independent-next1.json, with actual compiled-contract
 reviews for each of the query/getter/vector cohorts. The next larger closure
 is NewScanRot/NewCast (8,155 PC bytes), its terrain skin providers and the
 shadow/reflection wrappers before InitSurfaceInfo and the snap callbacks.
+
+
+## Terrain skin and scratch source continuation
+
+TerrainSkin (`0x66ed90`, 984 bytes), SkinPlatform (`0x66f170`, 1,475),
+NuScratchAlloc32 (`0x6de8d0`, 37) and NuScratchRelease (`0x6de960`, 15)
+now have genuine PC C implementations. The two skin identities were already
+in the accepted inventory; only the scratch pair adds 52 mapped code bytes.
+All historical formal ctypes remain blank. The source adds 2,511 compared
+original bytes, reaching 359,540 including the unchanged 55-byte overlap
+(359,485 unique). Whole-PC fuzzy coverage is 6.349062864687342%. All 805
+previous exact functions survive; the 15-byte scratch release is exact,
+bringing exact code to 45,870 / 3,471,246 bytes across 806 functions.
+Mapped image extent is 1,117,997 / 40,067,072 bytes.
+
+The skin code shares nuterrain.c and its verified 100-byte polygon view.
+Original REP MOVSD copies all 25 words, including material bytes60/61.
+Skin writers establish Y bounds at8/c; group origin/data/bounds/radius
+refinements preserve the prior38-byte stride and every existing getter.
+TerrainSkin returns its original output pointer in EAX; the actual same-unit
+caller uses the five-word interface and caller cleanup. Signed negative-eight
+sampling, 16 matrix stores, quantized float temporaries, and normal/squared
+length/length/inverse rounding are retained. Existing SkinFlipTab[8],
+NuTrigTable, CurrentTerrain, NuTimeBarTop and BoltTargetRandomDenominator
+owners are reused. Table access is qualified to vertex_order0/1 and valid
+initialized variable records with enough output storage. The compiled x87
+peak is eight from empty entry, including FTOL fallback effects; future
+caller live-prefix closure is separate from this finite source approval.
+
+TerrainSkin compiles to889 bytes and scores49.66265%; SkinPlatform compiles
+to1331 and scores67.70601%. The allocator compiles to36 versus37 original
+bytes and scores74.166664%; its normal unsigned alignment/trailer effects
+are independently reviewed. These three functions remain nonexact. Release
+has full byte equality at15 bytes. The scratch backing is a 0xa20 (2,592)
+byte minimum source view for the reviewed empty-start nested0x948 (2,376)
+and0xd0 (208) requests plus two four-byte trailers. Its pointer initializer
+resolves symbolically to original0x2976d00; unknown larger requests, deeper
+nesting, original full allocations and historical types remain unproved.
+
+Frozen evidence includes terrain-scratch-independent-next1.json and its
+declaration-scope supplement, terrain-scratch-compiled-independent-next1.json,
+terrain-skin-source-independent-next1.json,
+terrain-skin-selector-data-independent-next1.json,
+terrain-skin-compiled-independent-next1.json and its map correction supplement,
+and terrain-wave20-data-independent-next1.json. The compiled scratch ledger
+explicitly records its initial metadata bookkeeping overrun and authorized
+bounded supplement; its AS256MiB memory cap remained in force.
+
+Next are TerrainSkinAllocate345 and the connected NewScanRot/NewCast8155
+bytes. Their accepted identities do not establish source closure. Finite
+scan writer limits, W-lane values, active platform-list writers, cell/SET
+float associations and promoted-float constants have separate reviewed
+proofs. NewCast's initial+2million equality path reads uninitialized original
+stack normal data; regular-input source is qualified separately and has no
+fabricated normal initializer or prior-global carry. Whole shadow/reflection,
+InitSurfaceInfo and the snap callbacks remain incomplete.

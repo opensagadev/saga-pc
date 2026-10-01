@@ -4383,3 +4383,26 @@ extern "C" {
     u8 GetSurfaceInfoDefaultMaskPc = 0x20;
 #pragma data_seg()
 }
+
+extern "C" {
+// Minimum access view for the reviewed 0x948 and nested 0xd0 requests,
+// including their two pointer trailers. The full original extent is unknown.
+#pragma bss_seg(".bss$NuScratchBackingAccessPc")
+    __declspec(align(4)) u8 NuScratchBackingAccessPc[0xa20];
+#pragma bss_seg()
+#pragma data_seg(".data$NuScratchCurrentPc")
+    u8 *NuScratchCurrentPc = NuScratchBackingAccessPc;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$TerrainSkinSampleCountPc")
+    extern const f64 TerrainSkinSampleCountPc = 8.0;
+#pragma const_seg(".rdata$TerrainSkinSampleIndexScalePc")
+    extern const f64 TerrainSkinSampleIndexScalePc = -8.0;
+#pragma const_seg(".rdata$TerrainSkinBoundsMaxPc")
+    extern const f32 TerrainSkinBoundsMaxPc = 123456792.0f;
+#pragma const_seg(".rdata$TerrainSkinBoundsMinPc")
+    extern const f32 TerrainSkinBoundsMinPc = -123456792.0f;
+#pragma const_seg()
+}

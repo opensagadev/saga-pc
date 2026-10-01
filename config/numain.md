@@ -707,3 +707,24 @@ still needs actual shadow/reflection implementations. Their NewShadowEx path
 reaches NewScanRot/NewCast8155 and the terrain skin group, whose record and
 local initialization source gates remain explicit. No playable entry-path
 closure follows from these comparisons; slot923924 remains a separate debt.
+
+
+The terrain skin and scratch batch now compares2,511 more original bytes.
+TerrainSkin984 and SkinPlatform1475 share the existing terrain unit and
+passed independent actual compiler ABI/rounding/defined-local reviews.
+NuScratchRelease15 is exact, with all805 earlier exact functions preserved;
+NuScratchAlloc3237 is genuine nonexact source. The scratch initializer and
+minimum backing view are verified without full original allocation credit.
+The skin compiler reaches x87 peak8 from empty entry, so future callers
+require their own live-prefix check. Valid-record selector/output-capacity
+qualifications remain explicit.
+
+The next concrete provider is TerrainSkinAllocate66f790/345, whose genuine
+pool-reuse/eviction draft needs independent source/data review and compiler
+verification. Its actual globals differ from the previously inspected query
+cursor pool. NewScanRot/NewCast8155 then become the next larger source
+family; cell/SET associations, W values, pointer-list append limits and
+96-entry platform-list writer evidence are frozen. NewCast retains a
+qualified regular-input draft; original+2million sentinel-first ties may
+read undefined stack normal values, so no invented default is ported.
+Shadow/reflection wrappers and InitSurfaceInfo still need this closure.

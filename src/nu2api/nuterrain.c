@@ -1,16 +1,41 @@
 #include "saga.h"
 
 struct TERRAIN_POLYGON_INFO_PC {
-    u8 unknown_00[0x60];
-    u8 material[2];
+    f32 min_x, max_x, min_y, max_y, min_z, max_z;
+    NUVEC vertices[4];
+    NUVEC normals[2];
+    union {
+        u32 packed_metadata;
+        struct {
+            u8 material[2];
+            u8 unknown_62[2];
+        };
+    };
 };
+STATIC_ASSERT(sizeof(TERRAIN_POLYGON_INFO_PC) == 0x64);
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, min_y) == 8);
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, max_y) == 0xc);
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, vertices) == 0x18);
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, normals) == 0x48);
 STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, material) == 0x60);
 
+typedef struct TERRAIN_SKIN_STREAM_VIEW_PC TERRAIN_SKIN_STREAM_VIEW_PC;
+typedef struct TERRAIN_XZ_BOUNDS_VIEW_PC {
+    f32 x;
+    u8 unknown_04[4];
+    f32 z;
+} TERRAIN_XZ_BOUNDS_VIEW_PC;
+
 typedef struct TERRAIN_GROUP_PC {
-    u8 unknown_00[0x2c];
+    NUVEC origin;
+    TERRAIN_SKIN_STREAM_VIEW_PC *data;
+    TERRAIN_XZ_BOUNDS_VIEW_PC bounds_min;
+    TERRAIN_XZ_BOUNDS_VIEW_PC bounds_max;
+    u8 unknown_28[4];
     i32 chunk_type;
     i16 scene_index;
-    u8 unknown_32[6];
+    u8 unknown_32[2];
+    f32 radius;
 } TERRAIN_GROUP_PC;
 
 typedef struct TERRAIN_PLATFORM_PC {
@@ -62,8 +87,12 @@ typedef struct TERRAIN_SET_PC {
 } TERRAIN_SET_PC;
 
 STATIC_ASSERT(sizeof(TERRAIN_GROUP_PC) == 0x38);
+STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, data) == 0xc);
+STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, bounds_min) == 0x10);
+STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, bounds_max) == 0x1c);
 STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, chunk_type) == 0x2c);
 STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, scene_index) == 0x30);
+STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, radius) == 0x34);
 STATIC_ASSERT(sizeof(TERRAIN_PLATFORM_PC) == 0x6c);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, scene_object) == 0x40);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, terrain_group_index) == 0x48);
@@ -236,3 +265,245 @@ i32 __cdecl NewShadowOnPlatform(void) {
         return -1;
     return group->scene_index;
 }
+
+typedef struct TERRAIN_SKIN_BLEND_VIEW_PC {
+    NUMTX end_matrix;    /* +00 */
+    NUVEC row_amplitude; /* +40 */
+    u8 opaque4c_50[4];
+    NUVEC translation_amplitude; /* +50 */
+} TERRAIN_SKIN_BLEND_VIEW_PC;
+
+typedef struct TERRAIN_SKIN_INFO_VIEW_PC {
+    NUMTX *matrix;                           /* +00 */
+    const TERRAIN_SKIN_BLEND_VIEW_PC *blend; /* +04 */
+    const NUVEC4 *sample_rows;               /* +08: sampled row banks */
+    f32 scale;                               /* +0c */
+    u8 opaque10_18[8];
+    i16 mode;         /* +18 */
+    i16 vertex_order; /* +1a */
+} TERRAIN_SKIN_INFO_VIEW_PC;
+
+typedef struct TERRAIN_SKIN_BATCH_VIEW_PC {
+    i16 kind;
+    i16 count;
+    f32 min_x, max_x, min_z, max_z;
+} TERRAIN_SKIN_BATCH_VIEW_PC;
+
+typedef TERRAIN_POLYGON_INFO_PC TERRAIN_SKIN_POLYGON_VIEW_PC;
+
+/* Raw records remain variable-length. These named views expose the observed
+ * 20-byte header followed by count 100-byte polygons; they are not an owner. */
+struct TERRAIN_SKIN_STREAM_VIEW_PC {
+    TERRAIN_SKIN_BATCH_VIEW_PC header;
+    TERRAIN_SKIN_POLYGON_VIEW_PC polygons[1];
+};
+
+extern const f64 TerrainSkinSampleCountPc;
+extern const f64 TerrainSkinSampleIndexScalePc;
+extern const f32 TerrainSkinBoundsMaxPc;
+extern const f32 TerrainSkinBoundsMinPc;
+
+/* Explicit output-pointer interface preserves the verified PC five-word ABI.
+ * Android's aggregate return is a source candidate, not a historical PC type. */
+NUVEC *TerrainSkin(NUVEC *result, const TERRAIN_SKIN_INFO_VIEW_PC *info, const NUVEC *position, f32 weight, i32 mode) {
+    NUVEC4 point;
+    NUMTX matrix;
+    if (mode == 1) {
+        point.x = position->x;
+        point.y = position->y;
+        point.z = position->z;
+        point.w = 1.0f;
+        NuVec4MtxTransformVU0(&point, &point, info->matrix);
+    } else {
+        f64 t = weight;
+        if (t < 0.0)
+            t = (f32)(position->z / info->scale);
+        if (t > 1.0)
+            t = 1.0;
+        if (t < 0.0)
+            t = 0.0;
+        point.x = position->x;
+        point.y = position->y;
+        point.w = 1.0f;
+        if (info->sample_rows != NULL) {
+            i32 sample;
+            t = (f32)((i32)(t * TerrainSkinSampleCountPc + 0.5) * 0.125);
+            point.z = (f32)(position->z - info->scale * t);
+            sample = (i32)(t * TerrainSkinSampleIndexScalePc);
+            /* Original computes negative sample; -sample is0..8 for the
+             * qualified quantized finite0..1 weights. Four banks stride11. */
+            matrix.m00 = info->sample_rows[-sample].x;
+            matrix.m01 = info->sample_rows[-sample].y;
+            matrix.m02 = info->sample_rows[-sample].z;
+            matrix.m03 = info->sample_rows[-sample].w;
+            matrix.m10 = info->sample_rows[11 - sample].x;
+            matrix.m11 = info->sample_rows[11 - sample].y;
+            matrix.m12 = info->sample_rows[11 - sample].z;
+            matrix.m13 = info->sample_rows[11 - sample].w;
+            matrix.m20 = info->sample_rows[22 - sample].x;
+            matrix.m21 = info->sample_rows[22 - sample].y;
+            matrix.m22 = info->sample_rows[22 - sample].z;
+            matrix.m23 = info->sample_rows[22 - sample].w;
+            matrix.m30 = info->sample_rows[33 - sample].x;
+            matrix.m31 = info->sample_rows[33 - sample].y;
+            matrix.m32 = info->sample_rows[33 - sample].z;
+            matrix.m33 = info->sample_rows[33 - sample].w;
+        } else {
+            const NUMTX *start = info->matrix;
+            const TERRAIN_SKIN_BLEND_VIEW_PC *blend = info->blend;
+            f64 inverse, wave, sx, sy, sz;
+            t = (f32)((i32)(t * 10.0 + 0.5) / 10.0);
+            point.z = (f32)(position->z - info->scale * t);
+            inverse = 1.0 - t;
+            wave = NuTrigTable[((i32)(t * 32768.0) >> 1) & 0x7fff];
+            sx = 1.0 + blend->row_amplitude.x * wave;
+            sy = 1.0 + blend->row_amplitude.y * wave;
+            sz = 1.0 + blend->row_amplitude.z * wave;
+#define SKIN_ROW(MEMBER, AMPLITUDE)                                                                                    \
+    matrix.MEMBER = (f32)((start->MEMBER * inverse + blend->end_matrix.MEMBER * t) * (AMPLITUDE))
+            SKIN_ROW(m00, sx);
+            SKIN_ROW(m01, sx);
+            SKIN_ROW(m02, sx);
+            SKIN_ROW(m03, sx);
+            SKIN_ROW(m10, sy);
+            SKIN_ROW(m11, sy);
+            SKIN_ROW(m12, sy);
+            SKIN_ROW(m13, sy);
+            SKIN_ROW(m20, sz);
+            SKIN_ROW(m21, sz);
+            SKIN_ROW(m22, sz);
+            SKIN_ROW(m23, sz);
+#undef SKIN_ROW
+            matrix.m30 =
+                (f32)(start->m30 * inverse + blend->end_matrix.m30 * t + blend->translation_amplitude.x * wave);
+            matrix.m31 =
+                (f32)(start->m31 * inverse + blend->end_matrix.m31 * t + blend->translation_amplitude.y * wave);
+            matrix.m32 =
+                (f32)(start->m32 * inverse + blend->end_matrix.m32 * t + blend->translation_amplitude.z * wave);
+            matrix.m33 = (f32)(start->m33 * inverse + blend->end_matrix.m33 * t);
+        }
+        NuVec4MtxTransformVU0(&point, &point, &matrix);
+    }
+    result->x = point.x;
+    result->y = point.y;
+    result->z = point.z;
+    return result;
+}
+
+#define TERRAIN_SKIN_NORMAL(normal, a, b)                                                                              \
+    do {                                                                                                               \
+        f32 length, inverse;                                                                                           \
+        (normal)->x = (f32)((f64)(a)->y * (b)->z - (f64)(a)->z * (b)->y);                                              \
+        (normal)->y = (f32)((f64)(a)->z * (b)->x - (f64)(a)->x * (b)->z);                                              \
+        (normal)->z = (f32)((f64)(a)->x * (b)->y - (f64)(a)->y * (b)->x);                                              \
+        length = NuFsqrt(                                                                                              \
+            (f32)((f64)(normal)->x * (normal)->x + (f64)(normal)->y * (normal)->y + (f64)(normal)->z * (normal)->z));  \
+        inverse = length != 0.0f ? (f32)(1.0 / length) : 0.0f;                                                         \
+        (normal)->x = (f32)((f64)(normal)->x * inverse);                                                               \
+        (normal)->y = (f32)((f64)(normal)->y * inverse);                                                               \
+        (normal)->z = (f32)((f64)(normal)->z * inverse);                                                               \
+    } while (0)
+
+/* Valid initialized variable records, vertex_order 0 or 1, and enough output
+ * storage for each complete 20-byte header and 100-byte polygon. */
+void SkinPlatform(TERRAIN_GROUP_PC *group, TERRAIN_SKIN_STREAM_VIEW_PC *output, const TERRAIN_SKIN_INFO_VIEW_PC *info) {
+    TERRAIN_SKIN_STREAM_VIEW_PC *input;
+    TERRAIN_SKIN_STREAM_VIEW_PC *output_base = output;
+    if (CurrentTerrain == NULL || (group->chunk_type != 0 && group->chunk_type != 1))
+        return;
+    input = group->data;
+    while (input->header.kind >= 0) {
+        TERRAIN_SKIN_BATCH_VIEW_PC *header = &output->header;
+        TERRAIN_SKIN_POLYGON_VIEW_PC *destination = output->polygons;
+        const TERRAIN_SKIN_POLYGON_VIEW_PC *source = input->polygons;
+        f32 min_x = TerrainSkinBoundsMaxPc, max_x = TerrainSkinBoundsMinPc;
+        f32 min_z = TerrainSkinBoundsMaxPc, max_z = TerrainSkinBoundsMinPc;
+        i32 count = input->header.count;
+        header->kind = input->header.kind;
+        header->count = input->header.count;
+        while (count > 0) {
+            TERRAIN_SKIN_POLYGON_VIEW_PC *polygon = destination;
+            f32 pmin_x = TerrainSkinBoundsMaxPc, pmax_x = TerrainSkinBoundsMinPc;
+            f32 pmin_y = TerrainSkinBoundsMaxPc, pmax_y = TerrainSkinBoundsMinPc;
+            f32 pmin_z = TerrainSkinBoundsMaxPc, pmax_z = TerrainSkinBoundsMinPc;
+            i32 last = source->normals[1].y > BoltTargetRandomDenominator ? 2 : 3;
+            i32 vertex;
+            *polygon = *source; /* Original REP MOVSD copies25DWORDs. */
+            for (vertex = last; vertex >= 0; --vertex) {
+                NUVEC transformed;
+                i32 selected = SkinFlipTab[vertex + info->vertex_order * 4];
+                const NUVEC *position = &source->vertices[selected];
+                NUVEC *p = &polygon->vertices[vertex];
+                TerrainSkin(&transformed, info, position, -1.0f, info->mode);
+                p->x = transformed.x;
+                p->y = transformed.y;
+                p->z = transformed.z;
+                p->x = (f32)(p->x - info->matrix->m30);
+                p->y = (f32)(p->y - info->matrix->m31);
+                p->z = (f32)(p->z - info->matrix->m32);
+#define SKIN_BOUNDS(VALUE, LO, HI)                                                                                     \
+    if ((VALUE) < (LO))                                                                                                \
+        (LO) = (VALUE);                                                                                                \
+    if ((VALUE) > (HI))                                                                                                \
+    (HI) = (VALUE)
+                SKIN_BOUNDS(p->x, pmin_x, pmax_x);
+                SKIN_BOUNDS(p->y, pmin_y, pmax_y);
+                SKIN_BOUNDS(p->z, pmin_z, pmax_z);
+                SKIN_BOUNDS(p->x, min_x, max_x);
+                SKIN_BOUNDS(p->z, min_z, max_z);
+#undef SKIN_BOUNDS
+            }
+            polygon->min_x = pmin_x - NuTimeBarTop;
+            polygon->max_x = pmax_x + NuTimeBarTop;
+            polygon->min_y = pmin_y - NuTimeBarTop;
+            polygon->max_y = pmax_y + NuTimeBarTop;
+            polygon->min_z = pmin_z - NuTimeBarTop;
+            polygon->max_z = pmax_z + NuTimeBarTop;
+            {
+                NUVEC a, b;
+                if (source->normals[1].y < BoltTargetRandomDenominator) {
+                    a.x = polygon->vertices[1].x - polygon->vertices[3].x;
+                    a.y = polygon->vertices[1].y - polygon->vertices[3].y;
+                    a.z = polygon->vertices[1].z - polygon->vertices[3].z;
+                    b.x = polygon->vertices[2].x - polygon->vertices[3].x;
+                    b.y = polygon->vertices[2].y - polygon->vertices[3].y;
+                    b.z = polygon->vertices[2].z - polygon->vertices[3].z;
+                    TERRAIN_SKIN_NORMAL(&polygon->normals[1], &a, &b);
+                }
+                a.x = polygon->vertices[2].x - polygon->vertices[0].x;
+                a.y = polygon->vertices[2].y - polygon->vertices[0].y;
+                a.z = polygon->vertices[2].z - polygon->vertices[0].z;
+                b.x = polygon->vertices[1].x - polygon->vertices[0].x;
+                b.y = polygon->vertices[1].y - polygon->vertices[0].y;
+                b.z = polygon->vertices[1].z - polygon->vertices[0].z;
+                TERRAIN_SKIN_NORMAL(&polygon->normals[0], &a, &b);
+            }
+            ++source;
+            ++destination;
+            --count;
+        }
+        header->min_x = min_x - NuTimeBarTop;
+        header->max_x = max_x + NuTimeBarTop;
+        header->min_z = min_z - NuTimeBarTop;
+        header->max_z = max_z + NuTimeBarTop;
+        /* Advance to the next verified variable record after its polygons. */
+        input = (TERRAIN_SKIN_STREAM_VIEW_PC *)source;
+        output = (TERRAIN_SKIN_STREAM_VIEW_PC *)destination;
+    }
+    output->header.kind = -1;
+    output->header.count = -1;
+    group->data = output_base; /* original arg2, not terminal cursor */
+}
+
+#undef TERRAIN_SKIN_NORMAL
+
+STATIC_ASSERT(sizeof(TERRAIN_SKIN_BATCH_VIEW_PC) == 0x14);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_STREAM_VIEW_PC, polygons) == 0x14);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_VIEW_PC, matrix) == 0);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_VIEW_PC, blend) == 4);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_VIEW_PC, sample_rows) == 8);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_VIEW_PC, scale) == 0xc);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_VIEW_PC, mode) == 0x18);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_VIEW_PC, vertex_order) == 0x1a);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_BLEND_VIEW_PC, row_amplitude) == 0x40);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_BLEND_VIEW_PC, translation_amplitude) == 0x50);

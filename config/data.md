@@ -776,3 +776,31 @@ reused. The additional exact float2e6 copy reuses an already mapped constant.
 Object fields224/E42/284 preserve their exact accessed widths and surrounding
 layout; unknown286 remains opaque. Independent data/field evidence is frozen
 in surface-query-data-fields-independent-next1.json.
+
+
+### Terrain scratch and skin constant access views
+
+NuScratchCurrentPc827730 has a file-backed pointer initializer02976d00.
+NuScratchBackingAccessPc2976d00 is an aligned2,592-byte rebuilt minimum
+BSS view for the reviewed two nested requests and pointer trailers. It is
+not a recovered full original buffer allocation or capacity for other users.
+The current pointer starts at rebuilt backing through an actual DIR32
+relocation; no literal originalVA or null initializer is substituted.
+
+Four additional neutral constant views preserve actual raw values:
+TerrainSkinSampleCountPc753170 is F64+8, SampleIndexScalePc76e130 F64-8,
+BoundsMinPc76e138 F32-123456792 and BoundsMaxPc76e13c F32+123456792.
+The two bounds map addresses were corrected from the initial integration
+proposal using independent original data reads before release. Existing
+SkinFlipTab32, NuTrigTable and F64 NuTimeBarTop/BoltTargetRandomDenominator
+storage are reused. NuTimeBarTop is exactly0.05000000074505806, the promoted
+float value, rather than the nearest double to decimal0.05.
+
+All six new CSV sizes and ctypes stay blank and earn zero original-data
+extent or exact credit. They emit2,620 source bytes including the backing
+minimum. Eight existing compiler constant rows gain additional exact
+source copies, preserving all previous copies and original extents.
+The local polygon view expands to the observed100-byte stride; verified
+Y bounds8/c and material60/61 preserve prior offsets. Group access refinements
+retain stride38; unused Y bounds and unknown group fields stay opaque.
+Frozen final data reconciliation: terrain-wave20-data-independent-next1.json.
