@@ -8,16 +8,16 @@
     "src/externals.h": "3382382faeac231f3c7962ffb276f5c091463416d3cd41afd89c57fe6c4eef62",
     "src/saga.h": "bc18ee32ad09246d69582fd9c4bcfa4d4b1b68b690889e94fe80334ff46d6788",
     "config/data.md": "b46d28a41b8d3d2d61ee37a9eaee793a8857aed771d8c46412ec3df2a8c151a1",
-    "config/identification-decisions.jsonl": "8b3b27281554772c469816f8401c4ab03f2eaf4ce166b9931be0fafe31abe11e",
+    "config/identification-decisions.jsonl": "3de7cb7b90a9b042bbabeecc854b877b5d61acde5afb4400d61d1c2a49e74626",
     "config/identification-plan.md": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
-    "config/identification-tools.md": "b0861ec839f2e52db64b21862342ea0d609383e1800d4335ee5b9baa460f7343",
+    "config/identification-tools.md": "71c2490fbe43c857f31fbb784a29bbb3387180e44168cb04bd6e907306d7a6ff",
     "config/identification.md": "ecfbf8977bb20b3c0b8fc8cf0c4a7cc7d7cd0f9915f3abe77145c532651e31e4",
     "config/numain.md": "b1bf36c6b55647064f79402997c5d956060e13cbf6d6648bcde831ea4e0c5e74",
     "config/progress-plan.md": "cf144b1f5e0b8d5d0a17e0f2a1d065ad64c13a95d1b491c88792e046bb65a3ff",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
     "config/strategy.md": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
-    "config/symbols.csv": "2b8605bdc3693e6902d64fcc2fd3aa0dc28f552cfcc75f333571ed4494047d4e",
-    "config/symbols.md": "b4506bfedb383debad16cada69e7584832923aec19a8427dd7ab4f17a7d20ff4",
+    "config/symbols.csv": "31d921c06b80b96d878c241d3e27028e0056e230f6eb3f1318a9892316f0a5bd",
+    "config/symbols.md": "aa382e0e9a1dd0a3d4b11968f4969f939ccb0e888db6ce248052429b294ef08f",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
@@ -6695,6 +6695,16 @@
       "address": "0x004d6060",
       "units": [],
       "target_size": 3774,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetLapTime",
+      "symbol": "_Action_SetLapTime",
+      "address": "0x004db130",
+      "units": [],
+      "target_size": 324,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -40985,6 +40995,16 @@
       "address": "0x0068ea00",
       "units": [],
       "target_size": 338,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "NewTerrainScaleYMask",
+      "symbol": "_NewTerrainScaleYMask",
+      "address": "0x0068f940",
+      "units": [],
+      "target_size": 1984,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -89503,6 +89523,16 @@
       "status": "exact"
     },
     {
+      "name": "GameCamera",
+      "symbol": "_GameCamera",
+      "address": "0x00925188",
+      "units": [],
+      "target_size": 560,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "NarrowSockException",
       "symbol": "_NarrowSockException",
       "address": "0x009253c0",
@@ -95024,6 +95054,16 @@
       "status": "exact"
     },
     {
+      "name": "part_types",
+      "symbol": "_part_types",
+      "address": "0x02913a78",
+      "units": [],
+      "target_size": 48128,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Part",
       "symbol": "_Part",
       "address": "0x0291f684",
@@ -95064,6 +95104,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "part_scene",
+      "symbol": "_part_scene",
+      "address": "0x029208f0",
+      "units": [],
+      "target_size": 128,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "PartRTL",
@@ -100751,16 +100801,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 518601,
+    "mapped_code_bytes": 520909,
     "matched_code_bytes": 45746,
     "matching_percent": 1.3178553176582704,
     "fuzzy_coverage_percent": 6.211660510525754,
-    "mapped_functions": 2012,
+    "mapped_functions": 2014,
     "matched_functions": 801,
     "objdiff_fuzzy_percent": 61.122322,
     "objdiff_total_code": 352861,
     "image_bytes": 40067072,
-    "mapped_bytes": 1063984,
-    "mapping_percent": 2.655507245450828
+    "mapped_bytes": 1115108,
+    "mapping_percent": 2.783103292399305
   }
 }

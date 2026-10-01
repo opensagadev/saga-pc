@@ -629,6 +629,61 @@ The serialized old/new runs take 91.45/66.32 seconds and peak at 1,010/1,046 MiB
 RSS under the same 1.5 GiB process cap; timings alone do not establish a general
 performance improvement.
 
+## Further registry and allocation review
+
+The next bounded registry review establishes six complete PC callback extents.
+Only `SetLapTime` closes its qualified normal ABI and enters the accepted map;
+five specific callee-effect holds remain. All six missing endpoints are repaired
+for analysis, preserving every previous function range and the explicit
+mixed/table/data packets. A separate namespace review recovers the already mapped
+API `DontPush` and `SetLocator` graph endpoints; their game-registry counterparts
+are distinct. These two repairs add no mapping bytes. `SetLocator`'s new transitive
+ABI review remains held and does not claim a new contract.
+
+The graph now contains 8,033 PC and 13,242 Android functions. The two serial
+repair/export jobs take 21.66 and 21.64 seconds, each using a 512 MiB Java heap
+and peaking at about 748 MiB RSS. Every prior function and the explicit reviewed
+mixed/table/data owners are preserved. Preparing the new PC SQLite cache takes
+10.49 seconds and peaks at 61 MiB under an external 256 MiB limit.
+
+The allocation review accepts the 560-byte private camera, the 48,128-byte
+particle-definition arena and the separate 128-byte scene-pointer table. Exact
+PC initialization, independent capacities, literal bases and allocation-end
+observations establish their extents; aggregate types remain unresolved. Three
+wrong particle bindings remain rejected. One superseding rejection corrects
+lifecycle wording without changing the exclusion. Trusted PE section metadata
+establishes the large original zero initializer without reading a 48-KiB array.
+The static tables stay distinct from the dynamic particle buffer. `InitParts`'s
+631 owned bytes lie in three ranges within a 643-byte span; no missing tail is
+invented from that count.
+
+A cache-only view of `SetLapTime` compares two bounded call/reference
+neighborhoods with explicit reviewed PC labels. It takes 1.13 seconds and peaks
+at 31 MiB; its depth, fanout, node, edge and output limits stay enforced. Labels
+are presentation annotations and do not turn raw graph observations into
+identity or ABI proofs. The ignored `setlaptime-call-reference-tree.{json,md}`
+retain raw versus normalized incidence and explicit truncation.
+
+The terrain Mask review closes its qualified normal physical ABI after composing
+37 independently checked owner contracts and seven original runtime interfaces.
+All 82 call bindings verify, including private `ftol` inputs and 39 `NuFsqrt`
+calls with no caller-owned floating values. The complete 1,984-byte function
+enters the map with blank ctype and unreviewed formal types. Valid runtime
+memory/state/domain, direction flag and normal return remain conditions; hooks,
+exceptions and exact internal CRT floating peak are outside the claim.
+
+The production replay takes 46.39 seconds and peaks at 750 MiB under the unchanged
+1 GiB cap. It freezes the exact accepted map and journal, records 1,418 function
+seeds, 91 reviewed data anchors, fourteen exclusions and zero stale decisions.
+Its full ledgers contain 1,503 tentative pairs, 16,649 function candidates and
+2,039 data candidates. Registry diagnostics resolve 244 physical pairs, with
+sixteen missing PC endpoints and one Android-only name. These changed candidate
+counts are research results on changed graphs and anchors, not retrieval-quality
+or reconstruction gains. The preserved complete baseline and hashed outputs
+retain the semantic delta. An initial launch was refused by the shared lock
+while the baseline copy ran; the identical completed baseline was revalidated
+before the successful serial replay.
+
 ## Installed tools and input identity
 
 The installed Ghidra is `/opt/ghidra`, version `12.1.2_DEV`, with Java
@@ -1089,10 +1144,12 @@ formatting and Clang-tidy. The object check passed 1,638 function and 2,604 data
 definitions across 123 objects. Final compilation/matching checks use two Make
 workers to keep resource use bounded.
 Retail matching preserves all 801 previous exact function rows. Pre-existing
-function comparisons and all 123 object hashes are unchanged. The newly verified
-44-byte `FadeSys` extent now gives its existing compiled BSS definition an exact
-data comparison; no code comparison or reconstruction coverage is added.
-Fuzzy code coverage rounds to 6.212%; mapping coverage reaches 2.656%.
+function comparisons, all previous data comparisons and all 123 object hashes
+are unchanged. The existing 44-byte `FadeSys` exact data comparison is preserved.
+The new accepted extents add 2,308 code bytes and 48,816 data bytes to the map,
+with no code comparison or reconstruction coverage added. Final project and
+object checks cover the complete accepted map after these additions.
+Fuzzy code coverage rounds to 6.212%; mapping coverage reaches 2.783%.
 The first pushed tool snapshot exposed a test relying on a local ignored file;
 the fixture now isolates both repository roots and its job lock, so the required
 legacy-default inputs are entirely synthetic.

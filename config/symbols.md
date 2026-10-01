@@ -1621,3 +1621,77 @@ receive identity-only mappings with blank extent and type; unresolved gaps and
 terminal-record boundaries receive no credit. Frozen
 `nonregistry-data-frontier-next7` and its independent audit retain original
 PC boundaries, Android named symbols, PIC/GOT references and initializers.
+
+## Lap-time callback and remaining registry analysis gaps
+
+`Action_SetLapTime` at `0x4db130` has a complete 324-byte PC body. Independent
+original registry and named Android ELF checks establish its game-AI identity.
+The actual seven-slot dispatcher, full CFG and original parser/string leaves
+close its stack, saved-register and private-input contracts. Floating results
+are consumed from ST0, including the parser's zero-result path; integer EAX is
+not an input there. The observed `ftol` consumer includes its alternate compiler
+entry and closes the combined floating-stack peak at three under the retained
+normal CRT boundary. Exceptional paths and runtime hooks remain outside that
+contract. Aggregate types remain opaque.
+
+Frozen `ai-registry-new-callback-batch13` and its independent audit retain the
+proofs. The other five callbacks have reviewed identities and complete extents
+for graph analysis, but remain outside the accepted map because specific callee
+or indirect-call effects are unresolved. This callback adds 324 mapped code
+bytes and no compiled definition or comparison credit.
+
+The private `GameCamera` at `0x925188` has a complete 560-byte PC allocation.
+The original initialized `GameCam` pointer at `0x8021b4` selects that address;
+the original initialization call at `0x428d2d` clears `0x230` bytes through it.
+An independent reset cell at `0x9253b8` bounds the exclusive end. Paired original
+reset consumers and the named Android ELF allocation establish identity; the
+PC clear and neighbors establish extent. The initializer is original virtual
+zero-filled storage. Its aggregate declaration remains unknown, so ctype stays
+blank and the journal keeps type review false.
+
+Three particle candidates are rejected: the PC record arena cannot bind to the
+Android pointer table, its `+0x90` WORD field cannot bind to the whole record
+arena, and the separate PC pointer table cannot bind to the Android record arena.
+Original literal bases, 376-byte strides and actual PIC/GOT targets distinguish
+these roles. Corrected pairings remain research candidates until a separate
+fixed review closes their allocations. Frozen `nonregistry-data-frontier-next8`
+and its independent audit retain the camera and negative-pair proofs.
+
+The separate fixed review accepts the corrected `part_types` arena at
+`0x2913a78` with 48,128 bytes and `part_scene` at `0x29208f0` with 128 bytes.
+Original PC initialization clears `0xbc00` bytes in the arena; independent
+load/clear loops traverse 128 records with a 376-byte stride to `0x291f678`.
+Separate original vector stores begin at that exact exclusive end. The scene
+table has all 32 DWORD initializer stores and independent insertion, load and
+clear capacities of 32. These PC observations establish the extents; named
+Android ELF objects and actual PIC/GOT consumers establish paired identities.
+Both original initializers are virtual zero-filled storage, verified from trusted
+section headers without reading a 48-KiB array from the executable. Aggregate
+and scene-pointee types remain unknown, so both ctypes stay blank.
+
+`KillPartsByScene` deactivates matching runtime particles; it does not free scene
+allocations. A superseding rejection decision corrects that lifecycle wording
+while retaining the wrong-pair exclusion. `InitParts` owns 631 bytes across three
+ranges within its 643-byte span; its last two stores and RET are already present.
+The twelve-byte difference consists of internal alignment gaps, so no tail
+repair or function mapping follows from the byte count. Frozen
+`nonregistry-data-frontier-next9` and its independent audit retain these proofs.
+The static tables remain distinct from the dynamic particle buffer and its
+PC-specific 544-byte records; Android's runtime record layout is not imported.
+
+`NewTerrainScaleYMask` at `0x68f940` now has a qualified normal ABI review for
+its complete 1,984-byte extent. Independent physical and floating-state checks
+compose 37 acyclic owner contracts with seven original runtime interfaces and
+82 exact call bindings. The actual caller supplies ten stack words and removes
+40 bytes; stack, saved-register and private-input requirements close. The
+private `ftol` consumes one owned ST0 value and preserves deeper values. All
+39 `NuFsqrt` call sites have no caller-owned floating values at entry and use
+the retained atomic normal-return boundary.
+
+Valid memory, runtime state, domain, clear direction flag and normal return are
+explicit conditions. Exceptional paths, hooks and exact internal CRT floating
+peak remain outside the review; formal return, scalar and aggregate types remain
+unresolved. Its ctype stays blank. Frozen
+`terrain-scale-ymask-runtime-boundaries-next1` and its independent audit retain
+the final composition, actual interfaces and earlier proof hashes. This adds
+1,984 mapped code bytes with no source definition or comparison credit.
