@@ -2,7 +2,7 @@
 // Args PACKET ORIGINAL REPORT. Schema identification-reviewed-data-v1:
 // binary_sha256,image_base,disposable_project,source_project_file,disposable_project_file;
 // bounds:[{start,size,range_sha256}], superseded:[{start,size,data_type_path,range_sha256}],
-// definitions:[{start,size,kind:"char-array"|"float64",range_sha256}].
+// definitions:[{start,size,kind:"char-array"|"float32"|"float64",range_sha256}].
 // Every touched byte must be inside packet bounds. Only exact superseded data
 // may be cleared; all other defined data/instructions/functions are conflicts.
 import ghidra.app.script.GhidraScript;
@@ -137,8 +137,9 @@ public class RepairReviewedData extends GhidraScript {
             AddressSet newRanges = new AddressSet();
             for (JsonElement value : packet.getAsJsonArray("definitions")) {
                 Item i = item(value.getAsJsonObject()); require(bounds.contains(i.range) && !newRanges.intersects(i.range), "New definitions outside bounds or overlapping");
-                require("char-array".equals(i.kind) || "float64".equals(i.kind), "Unsupported reviewed data type");
+                require("char-array".equals(i.kind) || "float32".equals(i.kind) || "float64".equals(i.kind), "Unsupported reviewed data type");
                 require(!"float64".equals(i.kind) || i.size == 8, "float64 requires8 bytes");
+                require(!"float32".equals(i.kind) || i.size == 4, "float32 requires4 bytes");
                 verifyBytes(i, file);
                 if ("char-array".equals(i.kind)) {
                     byte[] bytes = originalBytes(file, i.start.getOffset(), i.size);
@@ -155,6 +156,7 @@ public class RepairReviewedData extends GhidraScript {
             for (Item i : old) { monitor.checkCancelled(); listing.clearCodeUnits(i.start, i.end, false, monitor); }
             for (Item i : fresh) {
                 monitor.checkCancelled(); DataType type = "float64".equals(i.kind) ? DoubleDataType.dataType
+                    : "float32".equals(i.kind) ? FloatDataType.dataType
                     : new ArrayDataType(CharDataType.dataType, i.size, 1);
                 Data d = listing.createData(i.start, type, i.size);
                 require(d != null && d.getLength() == i.size, "Created data extent mismatch");

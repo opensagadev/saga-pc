@@ -36,10 +36,14 @@ def _number(value):
 
 
 def _data_type(row):
+    if type(row["size"]) is not int or not 0 < row["size"] <= 65536:
+        raise ValueError("Unsupported reviewed data kind or size")
     if row["kind"] == "char-array":
         return f"/char[{row['size']}]"
     if row["kind"] == "float64" and row["size"] == 8:
         return "/double"
+    if row["kind"] == "float32" and row["size"] == 4:
+        return "/float"
     raise ValueError("Unsupported reviewed data kind or size")
 
 
@@ -146,7 +150,8 @@ def validate_saved_nodes(packet, nodes_path):
         if address in found:
             raise ValueError("Duplicate reopened reviewed owner or function")
         if data_mode:
-            if row.get("size") != wanted["size"] or row.get("data_type") != _data_type(wanted):
+            if (type(row.get("size")) is not int or row["size"] != wanted["size"] or
+                    row.get("data_type") != _data_type(wanted)):
                 raise ValueError("Saved data owner differs from reviewed size/type")
         else:
             ranges, size = _function_extent(row)
@@ -214,6 +219,8 @@ def validate_repair(report, packet, packet_path, project):
         raise ValueError("Fresh repair report differs from pinned inputs")
     if data_mode:
         validate_data_packet(packet)
+        if any(type(row.get("size")) is not int for row in report["definitions"]):
+            raise ValueError("Data repair report requires integer sizes")
         expected = {(_number(row["start"]), row["size"], row["range_sha256"],
                      row["kind"], _data_type(row)) for row in packet["definitions"]}
         actual = {(int(row["start"], 16), row["size"], row["range_sha256"],

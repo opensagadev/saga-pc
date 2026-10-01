@@ -192,6 +192,50 @@ class ReviewedDataRepairTests(unittest.TestCase):
         repair.validate_data_packet(self.packet)
         repair.validate_repair(self.report, self.packet, self.packet_path, self.project)
 
+    def float32_fixture(self):
+        packet = copy.deepcopy(self.packet)
+        packet["definitions"][0].update(kind="float32", size=4)
+        self.packet_path.write_text(json.dumps(packet))
+        report = copy.deepcopy(self.report)
+        report["packet_sha256"] = repair.sha256(self.packet_path)
+        report["definitions"][0].update(kind="float32", size=4, data_type_path="/float")
+        owners = copy.deepcopy(self.owners)
+        owners[0].update(size=4, data_type="/float")
+        return packet, report, owners
+
+    def test_float32_packet_report_and_reopened_owner(self):
+        packet, report, owners = self.float32_fixture()
+        repair.validate_data_packet(packet)
+        repair.validate_repair(report, packet, self.packet_path, self.project)
+        self.assertEqual(repair.validate_saved_nodes(packet, self.nodes("float32.jsonl", owners)), 2)
+
+    def test_float_kind_requires_exact_integer_width(self):
+        for kind, size in (("float32", True), ("float32", 4.0), ("float32", 8),
+                           ("float64", 4), ("float64", False), ("float64", 8.0),
+                           ("float16", 2), ("char-array", True)):
+            with self.subTest(kind=kind, size=size):
+                packet = copy.deepcopy(self.packet)
+                packet["definitions"][0].update(kind=kind, size=size)
+                with self.assertRaises(ValueError):
+                    repair.validate_data_packet(packet)
+                with self.assertRaises(ValueError):
+                    repair._data_type(packet["definitions"][0])
+
+    def test_float32_report_and_reopened_type_or_width_mismatch(self):
+        packet, report, owners = self.float32_fixture()
+        for key, value in (("data_type_path", "/double"), ("size", 8),
+                           ("size", 4.0), ("size", True), ("kind", "float64")):
+            changed = copy.deepcopy(report)
+            changed["definitions"][0][key] = value
+            with self.subTest(report_key=key, value=value), self.assertRaises(ValueError):
+                repair.validate_repair(changed, packet, self.packet_path, self.project)
+        for key, value in (("data_type", "/double"), ("size", 8),
+                           ("size", 4.0), ("size", True)):
+            changed = copy.deepcopy(owners)
+            changed[0][key] = value
+            with self.subTest(owner_key=key, value=value), self.assertRaises(ValueError):
+                repair.validate_saved_nodes(packet, self.nodes("wrong-float.jsonl", changed))
+
     def test_data_authorizations_reject_escapes_overlaps_and_unsupported_types(self):
         mutations = [("definitions", 0, "start", "0x00700014"),
                      ("superseded", 0, "size", 14),

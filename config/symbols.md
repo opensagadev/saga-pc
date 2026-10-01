@@ -910,3 +910,53 @@ which is not transferred to PC. Parent reinspection verified the original table
 row, literal, body and dispatcher window. The ignored
 `continuation/force-remove-frontier` packet retains this proof. No whole action
 table, PART pool extent, aggregate layout or source definition is added.
+
+
+Three more ZipUp sound arrays are reviewed: GrapDetach at `0x0075c1d4`
+(`char[11]`, Android `0x0056797a`), GrapAttach at `0x0075c1e0` (`char[11]`,
+Android `0x0056796f`), and GrapSwing at `0x0075d464` (`char[10]`, Android
+`0x0056c161`). Original ZipUp argument pushes use those exact PC starts;
+full Android ZipUp PIC flow resolves the corresponding LEA addresses into its
+PlaySfx arguments, subject to the usual SysV callee-preserved EBX convention.
+Each extent ends after its first NUL; subsequent alignment and enclosing
+allocations are excluded. The PC Attach/Detach alignment differs from Android.
+
+GrapSwing's old Ghidra string begins at `0x0075d463`, absorbing the final byte
+of the preceding float. Original `FLD DWORD [0x0075d460]` at `0x004d5343`
+establishes that separate four-byte scalar; following independent floats begin
+at `0x0075d470` and `0x0075d474`. The disposable typed-data repair replaces the
+incorrect thirteen-byte string with the float and exact ten-byte character
+array, preserving original bytes and leaving alignment unclaimed. Parent review
+rechecked each literal's hash and exact pointer push. The ignored
+`continuation/zipup-literal-frontier` packet contains storage/PIC evidence.
+The three prospective `_Name_text` bindings remain unimplemented mappings.
+
+
+Six adjacent original AI registry rows recover four further unique callbacks:
+
+| Identity | PC entry | Complete PC bytes | Named Android entry |
+| --- | --- | ---: | --- |
+| Action_SetFormationCommander | `0x00449cf0` | 282 | `0x001881a0` |
+| Action_AlwaysTriggerObstacle | `0x0044e8f0` | 186 | `0x001902b0` |
+| Action_CanTriggerObstacle | `0x0044e9b0` | 186 | `0x00190190` |
+| Action_PlayGizObstacle | `0x0044ea70` | 362 | `0x00191bc0` |
+
+The original named twelve-byte rows seed these entries. Formation commander
+selects the last member, checks count/remainder, chooses a character ID and
+copies the new hitpoints. The two obstacle toggles parse name=/FALSE and insert
+distinct bits four/eight. PlayGizObstacle parses direction, persistent state and
+SNAP, dispatches playback or instant jump, and updates those same flags. Their
+PC DWORD flag field is at `0x9c`; Android uses a byte at `0xa0`. Formation packet
+and actor fields also differ; no complete layout or dependency identity is
+transferred. Original AIScriptProcess establishes the shared seven-argument
+cdecl action interface, and each body's used arguments and balanced returns
+corroborate it. Parent inspection verified all table bytes, literal names,
+function hashes and complete reachable instruction sets; following alignment is
+excluded.
+
+PlayGizObstacle and PlayObstacle are two registry names for one physical callback
+in both shipped binaries. The reconstructed Android source has NULL placeholders,
+but the original ELF rows share the named Action_PlayGizObstacle function.
+Only one function row is accepted. The ignored `continuation/action-registry-frontier`
+packet records this source gap and the three missing PC graph entries. The four
+functions add 1,016 inventory bytes without implementations or match credit.

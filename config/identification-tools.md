@@ -155,6 +155,31 @@ nine; function evidence rows gained eighteen, changed 400 and removed thirty.
 These remain hypothesis deltas. Peak Python RSS was 695 MiB under the serialized
 1 GiB guard; the callback Ghidra repair peaked at 748 MiB with a 512 MiB heap.
 
+A following original registry/literal wave accepts four action callbacks
+(1,016 PC bytes) and three ZipUp sound arrays (32 bytes), adding 1,048 mapped bytes.
+Accepted image coverage is now 939,129 bytes (2.344%). Two Play registry names
+share one physical callback in both original binaries; the reconstructed Android
+source's NULL entries do not override that original evidence. Independent
+original-byte review confirms the callback dispatcher, used arguments, complete
+reachable bodies and stack balance. Full aggregate layouts remain unreviewed.
+
+GrapSwing had the same preceding-scalar ownership error, this time beside a
+four-byte float. Explicit float32 repair support recreates that scalar and the
+ten-byte literal, preserving all original bytes and 7,849 existing functions.
+The subsequent three-function repair preserves both typed owners and all prior
+functions, giving 7,852 PC graph functions. Peak Ghidra RSS was 761 MiB for data
+repair and 763 MiB for function repair, each with a 512 MiB heap.
+
+The resulting replay uses 1,189 accepted function seeds and seventeen reviewed
+data correspondences; it has 1,242 tentative function pairs, 1,763 data candidates,
+and zero stale decisions. Compared with the preceding replay, four data rows are
+added; none change or disappear. Function evidence changes 63 rows and removes
+twelve, with none added. Peak Python RSS was 694 MiB under the 1 GiB guard.
+The repaired GrapWindLp owner has two accepted PC users, so it contributes no
+new candidate data roots; this is expected. A bounded post-replay audit finds no
+duplicate site/owner observations and confirms accepted ZipUp is excluded from
+tentative endpoints.
+
 `tools/repair_graph.py` makes the independent copy, pins the reviewed packet and
 executed script, checks a fresh repair report, and verifies the saved function
 extents in the new export before publishing a graph pair. Use a fresh output
@@ -174,7 +199,7 @@ Typed-data repair uses the same wrapper with an
 `identification-reviewed-data-v1` packet, documented in
 `tools/ghidra/RepairReviewedData.java`. Authorizations include original-byte
 bounds and hashes, exact superseded data starts/sizes/type paths, and the new
-`float64` or NUL-terminated `char-array` definitions. It clears only the explicitly
+four-byte `float32`, eight-byte `float64`, or NUL-terminated `char-array` definitions. It clears only the explicitly
 superseded definitions in a disposable project, rejects every other code/data
 conflict, and performs the entire replacement in one transaction. Original
 memory bytes remain unchanged. Reopening and exporting must recover the exact
@@ -590,7 +615,7 @@ tooling/map changes. Keep generated graphs, original bytes, H2 databases and
 downloaded binaries ignored. Only tooling, synthetic tests, reviewed proposals
 and documentation belong in tracked changes.
 
-The latest checkpoint `make -j2 check` passed 314 tests (three optional Ghidra fixture skips), source
+The latest checkpoint `make -j2 check` passed 317 tests (three optional Ghidra fixture skips), source
 formatting and Clang-tidy. The object check passed 1,638 function and 2,604 data
 definitions across 123 objects. Final compilation/matching checks use two Make
 workers to keep resource use bounded.
