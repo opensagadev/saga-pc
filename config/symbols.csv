@@ -922,12 +922,14 @@ address    , symbol                                                         , si
 0x00549430 , _ResetFrameCounters                                            , 30    , void __cdecl (void)
 0x00549450 , _UpdateFrameCounters                                           , 119   , void __cdecl (void)
 0x00549bb0 , _GameCam_NewShake                                              , 43    , "void __cdecl (GAMECAMERA *, f32, f32, f32)"
+0x00549f10 , _GameCam_HitJudder                                             , 186    ,
 0x0054a1c0 , _NarrowSockPositionAllowed                                     , 123   , ""
 0x54a240   , _ObjInNarrowSock                                               , 163   , "i32 __cdecl (GAMEOBJECT *,SOCKSYS_PC *,i32)"
 0x0054a2f0 , _GameCam_Reset                                                 , 232   ,
 0x0054a5e0 , _GamePads_Init                                                 , 117   , void __cdecl (void)
 0x0054a690 , _GamePad_Rotate                                                , 224   , f32 __cdecl (GAMEOBJECT *)
 0x0054a770 , _GamePad_Waggle                                                , 113   , i32 __cdecl (GAMEPAD_PC *)
+0x0054a850 , _NewRumble                                                     , 66     ,
 0x0054a910 , _NewRumbleAllPlayers                                           , 145   , "void __cdecl (f32, f32, i32, f32)"
 0x0054b090 , _ReadPads                                                      , 32    , void (void)
 0x0054b0b0 , _DoInput                                                       , 786   , void __cdecl (WORLD *)
@@ -952,6 +954,7 @@ address    , symbol                                                         , si
 0x0054fad0 , _SeekLinearF                                                   , 104   , "f32 __cdecl (f32, f32, f32)"
 0x0054fb40 , _SeekValF                                                      , 64    , "f32 __cdecl (f32, f32, f32)"
 0x0054fb80 , _SeekVec                                                       , 94    , "void __cdecl (NUVEC *, NUVEC *, NUVEC *, f32)"
+0x0054fc70 , _SphereSphereOverlap                                           , 101    ,
 0x0054fce0 , _SphereSphereOverlapScaleY                                     , 165   , "i32 __cdecl (NUVEC *, f32, f32, NUVEC *, f32, f32)"
 0x0054fec0 , _FindAnglesZX                                                  , 126   , "void __cdecl (NUVEC *, u16 *, u16 *)"
 0x00550040 , _RotDiff                                                       , 38    , "i32 __cdecl (u16, u16)"
@@ -1084,6 +1087,7 @@ address    , symbol                                                         , si
 0x0056e5d0 , _ResetExplosions                                               , 31    , void __cdecl (void)
 0x0056e5f0 , _AddExplosion                                                  , 168   , "EXPLOSION_PC *__cdecl (NUVEC *, f32, f32, GAMEOBJECT *, i32, u32)"
 0x00570c90 , _SpecialMiniKits_Configure                                     , 786   , "void __cdecl (WORLDINFO *, char *)"
+0x00571890 , _InitPartDebris                                                , 352    ,
 0x00571a50 , _LoadPartFile                                                  , 204   , void __cdecl (WORLDINFO *)
 0x00571b20 , _Parts_Start                                                   , 30    , void __cdecl (WORLDINFO *)
 0x00571b40 , _Parts_Stop                                                    , 30    , void __cdecl (WORLDINFO *)
@@ -1858,6 +1862,7 @@ address    , symbol                                                         , si
 0x00648a30 , _edpartStopPage                                                , 17    , void __cdecl (u8)
 0x0064a450 , _NuPartSetSeed                                                 , 10    , void __cdecl (i32)
 0x0064a460 , _NuPartGetSeed                                                 , 6     , u32 __cdecl (void)
+0x0064a4b0 , _InitParts                                                     , 643    ,
 0x0064a740 , _NewPartRotation                                               , 127   , void __cdecl (PART_PC *)
 0x0064a7c0 , _NewPartOrderedRotation                                        , 133   , void __cdecl (PART_PC *)
 0x0064ab10 , _HitParts                                                      , 371   , "PART_PC *__cdecl (GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, u32)"

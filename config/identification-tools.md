@@ -1617,3 +1617,38 @@ function mappings, the diagnostic retains twenty from 180 compatible pairs in
 bytes, with no original code/data reads. These are candidate yields, not measured
 precision. Missing-role handling is stricter than the old prototype; the old
 holdout result and lead count do not establish this tool's accuracy.
+
+The next counterfactual freezes three runs on the same 8,049-function PC export:
+the previous baseline, five new qualified CSV bindings, and those bindings plus
+two journal-only identity anchors whose ABI/type flags remain false.
+
+| Run | Accepted function anchors | Inferred function pairs | Data candidate pairs |
+| --- | ---: | ---: | ---: |
+| Baseline | 1476 | 1515 | 2087 |
+| Five mapped functions | 1481 | 1512 | 2118 |
+| Plus two research anchors | 1483 | 1510 | 2136 |
+
+Exact pair comparisons distinguish promotion from discovery. The five mappings
+convert four inferred pairs into anchors and produce one new inferred pair;
+there are no other inferred-pair losses. The research anchors convert two more
+inferred pairs and produce no new function inference. Data candidates change by
+31 additions with no losses in the first stage, then 24 additions and six losses
+in the second. Across both stages, that is 55 additions and six losses, rather
+than 49 newly discovered identities. Data candidates still require original
+instruction and ownership review; ambiguous counter/global neighbors are not
+accepted automatically.
+
+The newly inferred pair is candidate DieRumble, PC 0x0054a9b0 against native
+Android 0x004894b0. SphereSphereOverlap is the new accepted pair that was not
+previously inferred. The union of accepted and inferred function pairs gains
+exactly two pairs across both stages and loses none; promotion alone does not
+count as finding another function.
+
+Both runs reach a fixed point in eight rounds with the sixteen-round cap. Their
+maximum resident sizes are 735,740 and 735,220 KiB, with zero swaps. The final
+ordered-call diagnostic takes 1.28 seconds at 44,060 KiB RSS; it retains twenty
+candidates from 178 compatible pairs. Its eighteen common retained pairs keep
+the same evidence and holds. Two now-mapped initializer candidates leave the
+list and two lower-ranked pairs enter it. These are retrieval changes, not
+precision or reconstruction gains. Frozen manifests and independent membership
+audits remain under ignored analysis.

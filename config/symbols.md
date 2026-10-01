@@ -2401,3 +2401,31 @@ remain research identities with explicit installed-callback or child-contract
 holds. Native sizes, argument layouts and runtime callback effects are not
 transferred to PC source. Frozen original and independent release packets remain
 under ignored continuation.
+
+## Structural propagation counterfactual (2026-10-02)
+
+Five further bindings have independently reviewed original identities, complete
+PC extents and qualified physical caller contracts. Their ctypes remain blank:
+
+| Function | PC entry | PC bytes | Native Android entry |
+| --- | --- | --- | --- |
+| GameCam_HitJudder | 0x00549f10 | 186 | 0x004d84b0 |
+| NewRumble | 0x0054a850 | 66 | 0x004890c0 |
+| SphereSphereOverlap | 0x0054fc70 | 101 | 0x004904d0 |
+| InitPartDebris | 0x00571890 | 352 | 0x004a2ed0 |
+| InitParts | 0x0064a4b0 | 643 | 0x0041d640 |
+
+The 1,348 bytes add inventory coverage only. The two initializers retain their
+internal alignment, including seven bytes in InitPartDebris and twelve in
+InitParts. InitParts receives three physical caller words, although its body
+uses only two. The sphere helper mutates its outgoing argument storage. The
+rumble conversion and camera random helpers have reviewed local stack, register
+and floating-point effects under their stated normal input/provider domains.
+
+ReadPad at 0x0054ae40 (591 bytes) and GizmoBlowUp_Hit at 0x00569c70 (1,046)
+are journal-only identity anchors with reviewed complete extents. Their ABI and
+type flags remain false; unresolved installed callbacks and child contracts
+remain explicit. They add no CSV bindings, allocation sizes, source definitions
+or coverage. These anchors were tested separately after the five mapped entries
+to distinguish their propagation effects. Original and independent review
+packets and the three frozen experiment arms remain under ignored analysis.
