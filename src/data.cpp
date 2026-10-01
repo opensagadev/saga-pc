@@ -4346,4 +4346,7 @@ extern "C" {
 #pragma const_seg(".rdata$AIUseCurrentSpeedSnapName")
     const char AIUseCurrentSpeedSnapName[12] = "snaptospeed";
 #pragma const_seg()
+#pragma const_seg(".rdata$AIScaleOverrideResetName")
+    const char AIScaleOverrideResetName[6] = "reset";
+#pragma const_seg()
 }

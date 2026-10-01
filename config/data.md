@@ -716,3 +716,19 @@ A retained graph owner labels the latter as 12 bytes although the first NUL
 occurs within 11; the extra zero does not establish the complete allocation.
 Both CSV sizes and ctypes remain blank, and both receive zero original extent
 or exact-data credit despite their 23 emitted reconstruction bytes.
+
+
+### Scale-override reset view
+
+`AIScaleOverrideResetName` at PC `0x757ca0` has the verified initializer view
+`reset\0` (six reconstruction bytes). Its analyzed six-byte graph owner and
+first NUL corroborate the access but do not independently establish the
+complete original allocation. CSV size and ctype stay blank, so it earns no
+mapping or exact-data credit. Existing `AIActionTimeName` at `0x757ca8` and
+min/max strings are reused without new allocation claims.
+
+The scale callback reuses known collision-scale and processor70/74 float
+fields; no aggregate layout is expanded. Distinct original F32 and F64
+1,000,000,000 constants remain bound separately. NuRandFloat's fresh original
+52-byte body includes F32 storage/reload, and actual callback output also
+preserves timed-target and rate rounding before interpolation.

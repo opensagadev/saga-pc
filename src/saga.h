@@ -643,6 +643,7 @@ STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, active_ref_count) == 0x64);
 STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_data_1) == 0x68);
 STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_data_3) == 0x6c);
 STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_data_4) == 0x70);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_data_5) == 0x74);
 STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_pos) == 0x78);
 STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, path_info) == 0x84);
 STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_timer) == 0x9c);
@@ -6188,6 +6189,9 @@ extern "C" {
     void __cdecl CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socket_rotation);
     i32 __cdecl Action_UseCurrentSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                        char **params, i32 num_params, i32 first_time, f32 elapsed);
+    i32 __cdecl Action_SetScaleOverride(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                        char **params, i32 num_params, i32 first_time, f32 elapsed);
+    extern const char AIScaleOverrideResetName[6];
     extern const char AIUseCurrentSpeedMultiplierName[11];
     extern const char AIUseCurrentSpeedSnapName[12];
     extern const char AIAnimSpeedValueName[7];

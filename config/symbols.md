@@ -1952,3 +1952,48 @@ Frozen evidence under `build/analysis/identification/continuation/`:
 `usecurrentspeed-source-draft-independent-next1.json`,
 `currentstart-compiled-contract-independent-next1.json` and
 `usecurrentspeed-compiled-contract-independent-next1.json`.
+
+
+### SetScaleOverride source transfer
+
+Accepted `Action_SetScaleOverride` at PC `0x44c750`/687 (original named
+Android `0x186bf0`/993) now has genuine C in the existing gameaiactions unit.
+Its complete original range is `[0x44c750, 0x44c9ff)`, SHA256
+`471a0143bcc441d31311e63bbe8d8a9315655c43b1245bdd95947af995887d74`.
+Fresh independent source review covers 226 instructions/six returns and
+319 bit-aware register/flag/stack/x87 states, with five providers and two
+parser children checked separately. Existing collision_scale_override102c,
+processor action_data_4/5 at70/74, FRAMETIME and distinct F32/F64 billion
+sentinels are reused; only the missing processor74 assertion is added.
+
+The callback preserves token priority, reset, min/max randomization,
+substring `time` plus NuStrLen+1, immediate and timed scale paths. Both
+bounds must compare unequal to the double sentinel to randomize; unordered
+comparisons count as unequal. Only ordered zero time selects the immediate
+path. Nonpositive or unordered remaining time completes, and interpolation
+continues only for ordered FRAMETIME < remaining time. These conditions are
+reviewed within the qualified initialized, masked-floating, DF0 domain;
+historical aggregate/formal types and universal exceptional effects remain
+unproved. The previous source-convention signature is explicitly superseded
+to blank, preserving the accepted identity and complete original extent.
+
+Actual VC8 output independently preserves the important rounding boundaries:
+timed random target FSTP32/reload before division and processor74 FSTP32
+followed by a fresh F32 load before interpolation. NuRandFloat returns and
+call-site random locals are F32; weighting products/addition remain extended
+without intermediate product rounding. The source-local volatile target
+expresses required storage, not a recovered historical volatile declaration.
+All eleven compiled direct calls, private input/register effects, stack and
+owned x87 return states pass. The compiled body is 645 bytes and scores
+54.141594%; it is not exact and its full original extent remains compared.
+
+This adds 687 compared original bytes, reaching 355,714 including the
+unchanged 55-byte alias overlap (355,659 unique). Whole-PC fuzzy coverage
+increases to 6.276357013318698%. All 801 exact functions and 45,746 exact
+code bytes are preserved. Since the callback was already accepted inventory,
+no mapped code extent is added; the new reset literal access view earns zero
+extent/exact credit. Frozen evidence under the continuation directory:
+`scaleoverride-source-cohort-next1-handoff.json`,
+`scaleoverride-source-draft-independent-next1.json`,
+`scaleoverride-source-fields-independent-next1.json` and
+`scaleoverride-compiled-contract-independent-next1.json`.

@@ -672,3 +672,15 @@ exact; literal complete extents remain held. Next prepare the accepted
 and collision-scale/process fields. Its x87 NaN predicates, timed rounding
 and interpolation require their own source and compiled review. The separate
 SetCurrentSpeed indirect lookup at slot923924 remains unresolved.
+
+
+SetScaleOverride44c750/687 is now genuine source with independently checked
+parser/random closure and actual compiled float-storage/predicate contracts.
+Its full comparison is nonexact at 54.141594%; 687 additional original bytes
+are compared without new mapping extent. The next connected family is
+SnapToPosition446d90/663 and SnapToSockPosition447230/1413. Their surface
+and socket helpers require original identity, private-register ABI and field
+review before release. InitSurfaceInfo's optional callback951030 and its
+unimplemented query/shadow/reflection providers remain concrete holds;
+SetObjOnSurface and SetSockPostion are separate bounded closure candidates.
+The independent SetCurrentSpeed slot923924 debt remains unresolved.

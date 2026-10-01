@@ -120,7 +120,7 @@ address    , symbol                                                         , si
 0x44c3f0   , _Action_SetMaxMovementRange                                    , 404   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44c590   , _Action_SetDefaultMovementRange                                , 82    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44c5f0   , _Action_SetGravityHeight                                        , 342   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
-0x0044c750 , _Action_SetScaleOverride                                       , 687   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x0044c750 , _Action_SetScaleOverride                                       , 687   ,
 0x44ca00,_Action_ApplyGravity,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44ca80,_Action_IgnoreShoveSystem,110,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44caf0,_Action_CannotBeForcedBack,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -2738,6 +2738,7 @@ address    , symbol                                                         , si
 0x00757c80 , _AIControlLocatorName                                          , 8     , const char[8]
 0x00757c88 , _AIControlAllNonPartyName                                      , 14    , const char[14]
 0x00757c98 , _AIControlDefaultTitleName                                     , 8     , const char[8]
+0x00757ca0 , _AIScaleOverrideResetName                                      ,       ,
 0x00757ca8 , _AIActionTimeName                                              , 5     , const char[5]
 0x00757cf4 , _AIActionIDName                                                , 3     , const char[3]
 0x00757d6c , _AIActionToName                                                , 3     , const char[3]

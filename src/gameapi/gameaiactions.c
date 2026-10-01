@@ -1181,3 +1181,62 @@ i32 __cdecl Action_UseCurrentSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *process
         CurrentStart(object, 1, 1);
     return 1;
 }
+
+i32 __cdecl Action_SetScaleOverride(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                    i32 num_params, i32 first_time, f32 elapsed) {
+    GAMEOBJECT *object;
+    f32 minimum;
+    f32 maximum;
+    volatile f32 target;
+    f32 time;
+    f32 random;
+    char *value;
+    i32 index;
+
+    minimum = 1000000000.0f;
+    maximum = 1000000000.0f;
+    target = 1000000000.0f;
+    time = 0.0f;
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL)
+        return 1;
+    object = ((APIOBJECT_PC *)packet->owner)->owner;
+    if (first_time) {
+        for (index = 0; index < num_params; index++) {
+            if (NuStrICmp(params[index], (char *)AIScaleOverrideResetName) == 0)
+                target = 1000000000.0f;
+            else if ((value = NuStrIStr(params[index], (char *)AIControlMinimumName)) != NULL)
+                minimum = AIParamToFloat(processor, value + 4);
+            else if ((value = NuStrIStr(params[index], (char *)AIControlMaximumName)) != NULL)
+                maximum = AIParamToFloat(processor, value + 4);
+            else if ((value = NuStrIStr(params[index], (char *)AIActionTimeName)) != NULL)
+                time = AIParamToFloat(processor, value + NuStrLen(AIActionTimeName) + 1);
+            else
+                target = AIParamToFloat(processor, params[index]);
+        }
+        if (time == 0.0f) {
+            if (minimum != MoveSplineRunSpeedSentinel && maximum != MoveSplineRunSpeedSentinel) {
+                random = NuRandFloat();
+                object->collision_scale_override = (1.0f - random) * minimum + random * maximum;
+            } else {
+                object->collision_scale_override = target;
+            }
+            return 1;
+        }
+        if (minimum != MoveSplineRunSpeedSentinel && maximum != MoveSplineRunSpeedSentinel) {
+            random = NuRandFloat();
+            target = (1.0f - random) * minimum + random * maximum;
+        }
+        processor->action_data_4 = time;
+        processor->action_data_5 = (target - object->collision_scale_override) / time;
+    }
+    if (!(0.0f < processor->action_data_4))
+        return 1;
+    if (FRAMETIME < processor->action_data_4) {
+        object->collision_scale_override += FRAMETIME * processor->action_data_5;
+        processor->action_data_4 -= FRAMETIME;
+        return 0;
+    }
+    object->collision_scale_override += processor->action_data_5 * processor->action_data_4;
+    processor->action_data_4 = 0.0f;
+    return 1;
+}

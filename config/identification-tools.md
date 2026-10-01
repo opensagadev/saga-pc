@@ -1428,3 +1428,37 @@ checks. There are 1,647 compiled functions and 2,618 data definitions across
 functions/45,746 exact code bytes. Source-only linking still does not
 establish reconstructed gameplay. The separate SetCurrentSpeed indirect
 lookup remains held; the next source packet is SetScaleOverride687.
+
+
+### Scale-override checkpoint replay
+
+The accepted SetScaleOverride44c750/687 inventory callback now has genuine
+C and independent source/actual compiled-contract approval. The 645-byte
+VC8 output preserves timed-target F32 narrowing, rounded rate storage/reload,
+extended weighting and ordered/unordered predicates. Historical signature
+remains blank through an explicit supersession; the reset literal view has
+unknown original extent/type and receives no coverage or exact credit.
+
+Before integration, all 20 completed wave16 run files, the committed report
+and 124 report-listed objects were frozen. All 20 files were copied and
+hash-verified before scoring. The scorer used its internal heavy-job lock
+and a 1,024 MiB address-space limit; no duplicate outer lock was added. The
+replay passed in 42.69 seconds, at 704,144 KiB peak RSS (about 688 MiB), with
+zero swaps. Independent single-pass audit verifies all output/input hashes,
+previous-state equality, exact map/journal changes and baseline preservation.
+
+Graph counts/fingerprints and research counts are unchanged: 8,043 PC and
+13,242 Android functions, 1,432 name seeds, 1,308 inferred pairs, 16,851
+function rows, 2,042 data rows, 95 reviewed data anchors, 15 rejections and
+zero stale decisions. Research counts establish no accuracy or source credit.
+The source transfer adds 687 compared original bytes, reaches 6.276357013318698%
+whole-PC fuzzy coverage and preserves all 801 exact functions/45,746 bytes.
+Known mapped image bytes remain 1,116,826/40,067,072.
+
+Required checks pass: all 434 tests (three skipped), formatting 126 files,
+static analysis 124 units, source-only link and object coverage. There are
+1,648 compiled functions and 2,619 data definitions across 124 reported objects.
+The full original callback remains nonexact at 54.141594%; source-only linking
+does not establish playable gameplay. Next bounded helper work targets the
+SnapToPosition/SnapToSockPosition family; optional InitSurfaceInfo callback
+951030 and source/query dependencies remain held rather than replaced.

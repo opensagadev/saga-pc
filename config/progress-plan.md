@@ -313,3 +313,22 @@ no historical aggregate signature or complete data owner is inferred. The
 next connected source target is SetScaleOverride's accepted 687-byte body
 with existing fields and parser/random providers. SetCurrentSpeed's distinct
 indirect lookup remains held. NuMain and playable gameplay remain incomplete.
+
+
+## Scale-override source release
+
+SetScaleOverride adds 687 compared original code bytes, reaching 355,659
+unique bytes (355,714 with the unchanged 55-byte overlap). Whole-PC fuzzy
+coverage rises from 6.265642% to 6.276357%, a gain of 0.010715 percentage
+points. All 801 exact functions and 45,746 exact code bytes are preserved.
+The accepted inventory extent already existed, so mapped bytes remain
+1,116,826 / 40,067,072. The reset source literal has an unknown complete
+allocation and receives zero mapping or exact credit.
+
+Source and actual compiler reviews preserve floating-point predicates,
+random weighting, timed-target rounding and rounded rate reuse. The
+645-byte compiled body scores 54.141594% and remains nonexact; prioritize
+the next connected closure over instruction-order tuning. Next review
+SnapToPosition/SnapToSockPosition's shared surface helpers and socket helper.
+Candidate helper sizes/identities stay unaccepted until fresh original
+extent, physical ABI and provider closure pass independent review.
