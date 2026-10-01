@@ -4406,3 +4406,82 @@ extern "C" {
     extern const f32 TerrainSkinBoundsMinPc = -123456792.0f;
 #pragma const_seg()
 }
+
+struct TERRAIN_SKIN_INFO_VIEW_PC;
+struct TERRAIN_SKIN_USE_RECORD_PC;
+
+extern "C" {
+// Accessed terrain state and literals; full original allocation extents remain unknown.
+#pragma bss_seg(".bss$TerI")
+    void *TerI;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainPlatformsOffPc")
+    u16 TerrainPlatformsOffPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainScaledShapeCursorPc")
+    TERRAIN_POLYGON_INFO_PC *TerrainScaledShapeCursorPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainShadowFloorIndexPc")
+    i16 TerrainShadowFloorIndexPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainCastAuxPolygonPc")
+    TERRAIN_POLYGON_INFO_PC *TerrainCastAuxPolygonPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainShadowHeightPc")
+    f32 TerrainShadowHeightPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainCastAuxValidPc")
+    u16 TerrainCastAuxValidPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainCastAuxIndexPc")
+    i16 TerrainCastAuxIndexPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainCastAuxNormalPc")
+    NUVEC TerrainCastAuxNormalPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainWaterCastIndexPc")
+    u16 TerrainWaterCastIndexPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainRoofValidPc")
+    u16 TerrainRoofValidPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainRoofIndexPc")
+    i16 TerrainRoofIndexPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainRoofNormalPc")
+    NUVEC TerrainRoofNormalPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainSurfaceClassPc")
+    u16 TerrainSurfaceClassPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainSkinInfoCountPc")
+    i32 TerrainSkinInfoCountPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainSkinInfosPc")
+    struct TERRAIN_SKIN_INFO_VIEW_PC *TerrainSkinInfosPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainSkinUseEpochPc")
+    u32 TerrainSkinUseEpochPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainSkinUseRecordsPc")
+    struct TERRAIN_SKIN_USE_RECORD_PC *TerrainSkinUseRecordsPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainSkinPoolSlotCountPc")
+    i32 TerrainSkinPoolSlotCountPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainSkinPoolSlotBytesPc")
+    i32 TerrainSkinPoolSlotBytesPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainSkinPoolBasePc")
+    u8 *TerrainSkinPoolBasePc;
+#pragma bss_seg()
+#pragma const_seg(".rdata$TerrainScanRadiusEpsilon")
+    extern const f64 TerrainScanRadiusEpsilon = 9.999999747378752e-06;
+#pragma const_seg()
+#pragma const_seg(".rdata$TerrainScanTriangleSentinel")
+    extern const f32 TerrainScanTriangleSentinel = 65536.0f;
+#pragma const_seg()
+#pragma const_seg(".rdata$TerrainCastLowerSentinel")
+    extern const f32 TerrainCastLowerSentinel = -2000000.0f;
+#pragma const_seg()
+}

@@ -728,3 +728,25 @@ family; cell/SET associations, W values, pointer-list append limits and
 qualified regular-input draft; original+2million sentinel-first ties may
 read undefined stack normal values, so no invented default is ported.
 Shadow/reflection wrappers and InitSurfaceInfo still need this closure.
+
+The scan/cast/pool batch now compares another 8,500 original bytes in the
+existing terrain unit. This supersedes the earlier pending-source queue for
+TerrainSkinAllocate, NewScanRot and NewCast. Their actual compiled ABI,
+rounding, stack/register and provider-depth gates pass with the documented
+valid-engine qualifications; all 806 earlier exact functions remain intact.
+Whole-PC fuzzy coverage moves from 6.3490629% to 6.3935661%, while exact
+code remains 45,870 / 3,471,246 bytes. Compared original bytes become
+368,040 (367,985 unique after the unchanged 55-byte alias overlap).
+
+Next is the genuine NewShadowEx wrapper, then GameShadow/reflection and
+InitSurfaceInfo/snap callers. NewShadowEx uses a local position copy and
+returns its resulting Y after discarding NewCast's ST0 return and releasing
+scratch. Its null-terrain path resets the observed outputs without allocation
+or clearing the platform-off word. The two switch providers and the world
+platform-list fields require separate acceptance/compilation before the
+larger wrappers can be released. No playable entry-path closure is claimed.
+
+CI for the preceding `d4e209f1` checkpoint timed out twice during Wine package
+downloads, before lint/tests/build ran. Those cancelled runs are not passes.
+The build job limit is increased from 20 to 60 minutes for the next push;
+its exact commit must still receive terminal CI verification.

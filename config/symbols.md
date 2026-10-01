@@ -2159,3 +2159,46 @@ proofs. NewCast's initial+2million equality path reads uninitialized original
 stack normal data; regular-input source is qualified separately and has no
 fabricated normal initializer or prior-global carry. Whole shadow/reflection,
 InitSurfaceInfo and the snap callbacks remain incomplete.
+
+## Terrain scan, cast and pool source transfer (2026-10-01)
+
+The existing accepted entries now have genuine C in `src/nu2api/nuterrain.c`:
+`TerrainSkinAllocate` at `0x0066f790` / 345 bytes,
+`NewScanRot` at `0x00671750` / 4,748 bytes, and
+`NewCast` at `0x006729e0` / 3,407 bytes. Their Android reference entries are
+native `0x00376940`, `0x00378fb0` and `0x0037aa40`, respectively. This adds
+8,500 compared original bytes; it does not add new function identities.
+The rebuilt sizes are 333, 5,060 and 2,693 bytes. All three remain nonexact:
+58.26923%, 9.219463% and 26.593693% native objdiff similarity. Low similarity
+is retained honestly; broad source transfer does not establish byte equality.
+
+The pool source preserves epoch updates, first-free/strict signed oldest
+selection, eviction and sixteen cache-age resets. The scan uses the reviewed
+96-entry active group view, signed record headers, ordered cell overlap,
+strict SET containment and five logical unsigned append limits. VC8 unrolls
+those limits into eleven machine guards. Header slot 509 terminates the list;
+512 storage words do not mean 512 available polygon slots.
+
+Actual compiler reviews preserve extended midpoint/radius arithmetic and
+one explicit squared-distance `f32` spill/reload. Both cast plane paths
+round the quotient to `f32` before adding the base height, then round the
+final height before comparisons. Scan and allocator return with owned x87
+depth zero; all seven scan provider calls enter at zero. Cast takes three
+stack words and returns positive zero in ST0, with entry depth zero and
+peak eight. The existing skin bodies and relocation semantics are unchanged.
+The macro naming repair also leaves every emitted terrain function unchanged.
+
+These are qualified initialized-engine/normal-provider source contracts.
+Original sentinel-first above-plane ties can read undefined stack residue;
+no artificial normal initializer or unconditional all-input equivalence is
+claimed. Valid skin indices, pool slots, spans and backing capacity remain
+caller qualifications. Full original aggregate/data owner types remain held.
+
+Frozen local evidence: `terrain-scan-source-independent-next2.json`,
+`terrain-scan-compiled-independent-next1.json`,
+`terrain-cast-compiled-independent-next1.json`,
+`terrain-skin-allocate-compiled-independent-next1.json`,
+`terrain-wave21-data-independent-next1.json`, and
+`registry-wave21-macro-rename-compiled-supplement.json`, under ignored
+`build/analysis/identification/continuation/`. The next shadow wrappers still
+need separate provider/caller closure; their inventory names are not source.

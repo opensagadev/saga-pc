@@ -804,3 +804,36 @@ The local polygon view expands to the observed100-byte stride; verified
 Y bounds8/c and material60/61 preserve prior offsets. Group access refinements
 retain stride38; unused Y bounds and unknown group fields stay opaque.
 Frozen final data reconciliation: terrain-wave20-data-independent-next1.json.
+
+## Terrain scan and pool access views (2026-10-01)
+
+The scan/cast/pool implementation adds 24 source definitions and 23 neutral
+blank-extent CSV rows. `TerI` already had a blank inventory row and now has
+one `void *` storage definition. Existing terrain/polygon/normal owners are
+reused. All these partial views retain blank original sizes and ctypes and
+receive zero original allocation or exact-data credit.
+
+Seven pool cells are separate from the scaled-query cursor/work pool:
+`TerrainSkinInfoCountPc` (`0x02947c1c`), `TerrainSkinInfosPc` (`0x02947c84`),
+`TerrainSkinUseEpochPc` (`0x0292fc24`), `TerrainSkinUseRecordsPc` (`0x0296202c`),
+`TerrainSkinPoolSlotCountPc` (`0x02924b68`), `TerrainSkinPoolSlotBytesPc`
+(`0x0292fc28`) and `TerrainSkinPoolBasePc` (`0x02924b6c`). Pointer storage
+uses local opaque tag declarations rather than exporting unreviewed owners.
+The accessed skin-info stride remains `0x1c`: original-shape pointer `+0x10`,
+group WORD `+0x14`, pool-slot WORD `+0x16`. Use records have stride eight.
+
+`TerrainSurfaceClassPc` is a WORD view at `0x02947db0`; the distinct DWORD
+at `0x0292fde8` is not aliased to it. Normal component accesses share their
+canonical vector views. New state starts at the reviewed loader-zero state.
+The three literals are promoted float epsilon `9.999999747378752e-06` as
+F64 at `0x00763d68`, F32 `65536` at `0x00753200`, and F32 `-2000000` at
+`0x0076e148`. The generated F64 `0.05000000074505806` copy is separately
+bound to the established eight-byte `NuTimeBarTop` cell at `0x007517c0`.
+Existing compiler-literal aliases and their known extents are preserved.
+No new image-extent credit follows from overlapping access views.
+
+The independently checked data packet is
+`terrain-wave21-data-independent-next1.json`. Its selected original reads
+are 24 bytes, and its cumulative semantic metadata is 4,010,331 bytes under
+a 4 MiB cap. Earlier predicate failures and the CSV whitespace-only repair
+are recorded, rather than omitted from the bookkeeping.

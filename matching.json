@@ -7,17 +7,17 @@
     "Makefile": "f9040c679f18bc5dcca7b43bbc1f080e8df87c881b03a2275ce844af3a45d2bb",
     "src/externals.h": "3382382faeac231f3c7962ffb276f5c091463416d3cd41afd89c57fe6c4eef62",
     "src/saga.h": "616a4b0186671faabe460edbdec1d41417ed21cfcc26856c8bac0029b97fa6dd",
-    "config/data.md": "5ecab115d5206f9f696c1f10a5acedb1af514362037f8f18592eef646ea6a283",
+    "config/data.md": "ee7aabd8a4614954844067f75a4d8ef1f1d99c70d6ee1d5dc6fc25aec405f29e",
     "config/identification-decisions.jsonl": "e10c2d140be392aec734795793f39b83246ea536ad324cfa0678df6a01ce1c51",
     "config/identification-plan.md": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
     "config/identification-tools.md": "249149a150d3ae29418d177805402edc6fb235e54ea3bfee4560d152c2848419",
     "config/identification.md": "ecfbf8977bb20b3c0b8fc8cf0c4a7cc7d7cd0f9915f3abe77145c532651e31e4",
-    "config/numain.md": "3d95ef5574952b77509d045e47fc85376b2ad538e3e4d2c34b6b49bcdc5f6641",
+    "config/numain.md": "b7458ceb0ff8a37b28dad5e8d10d7d1e3653758fbfe6ebd9347301718c40e1a9",
     "config/progress-plan.md": "990f99fb88edf6da6797167d47c288c6b5376a44af835c670460f4382b9ef856",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
     "config/strategy.md": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
-    "config/symbols.csv": "ad5344394446ef15a156d255763e693de263406d0d5a8c56806d853c3cf0ea38",
-    "config/symbols.md": "7baff517d5d47e13a2ecd4c56273858849ab8d05e9ab577aa3e952e6dc0fe635",
+    "config/symbols.csv": "0d489161cdd4952c957278d4ddf9005cfb91ffcc2ff495f09f474513948c84a5",
+    "config/symbols.md": "b3a4135f0cb18455de432828dc860ea5b0c366adc8659534d065bc59761e743b",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
@@ -68,7 +68,7 @@
     "tools/test_match.py": "794c052372646961512004b82d37c0b2656438a321a2280ed6420d87766f16dd",
     "tools/test_repair_graph.py": "834c7c34dd991e77e7e8d21462c38d6fc1eecc250287dc300e3d46b5d90cf4db",
     "tools/test_setup.py": "d7a31492511f3d96c3f4c68d36c82ac5887931505e56ee8ebba9344b991c73ff",
-    "src/data.cpp": "180bf5ac39b9971a27fa6cd4740a4b90823b6beadd0ba2f2864835b0dd70238f",
+    "src/data.cpp": "e34cd15e89ddd375296edd5094d79889bcf8a900e256744d416d3a83aba6d6b5",
     "src/legoapi/fade.cpp": "73f1076d3ee6b210268db546579b25fb82f28a777ff3d3861db57db8aecd5407",
     "src/legoapi/gamestructure.cpp": "525caf4d5a56d5b11ad2f55cd652adde1ea72e5a8845d17dd62d33dec7c8dabe",
     "src/legoapi/sfx.cpp": "0ad373e50c409256fd1f2fc0de932ce868bc6f382c1e1998e7f42e5cb95b89a1",
@@ -182,7 +182,7 @@
     "src/nu2api/nuspecial.c": "d15f7e4905b609b35f6d095fcb51d75d157b5d47ecaa7110dddd3e729ec45c8c",
     "src/nu2api/nuspline.c": "58f6ae0d4d41413b32d8005a91db646237d617bd486c637063a122dc3d4ddd37",
     "src/nu2api/nustring.c": "d4aede9c2b4d9b0de39ed9f62fe8e2d878e487ddc4c4fa718f245c9b86a883a2",
-    "src/nu2api/nuterrain.c": "27ce17fb2b60c3e83c99685591fd7cda32d30c95306385c1e25fbd713c64a533",
+    "src/nu2api/nuterrain.c": "9e2c81fb2d09ce8e6353a7ef87e2df96f427bd136937582218f1a29f8233ce74",
     "src/nu2api/nuthread.c": "24ddc6692373ef18657b6921ff6d06ab6a231a753accf143dafe42906d608b2b",
     "src/nu2api/nutimebar.c": "7381e9914ccf5cdee8566082e3cc21ccbc27d1b9212ba342e2890b0f98e1da1c",
     "src/nu2api/nutrig.c": "b8302d657c77da8d1c9670e610107c2a6a1dd51bb272f4662d13e25705c017f5",
@@ -196,7 +196,7 @@
   },
   "objects": {
     "build/obj/batman.obj": "9287459470f97f4bce18cdb9453662e77de8f07e00430a83d5ffde4fa28cdf30",
-    "build/obj/data.obj": "93f854c58c85ce845163ba626b302b0e572f7d0d56beae16cb0c4fc46443023c",
+    "build/obj/data.obj": "22e0c177f159b86bde88de9ef47c11cf9cafc9fd59789e01f97eec3f52262674",
     "build/obj/gameapi/aiscript.obj": "4c0c59d50a24a03310fd1834077235705a32440ccbcae959850e34bd6ef261a0",
     "build/obj/gameapi/aisys.obj": "0742e663c72547869c929b6cfbe1000055814a0c134979ae3832dd655fc57dc8",
     "build/obj/gameapi/apiobject.obj": "8cba6b792b7d4c77ab3eb3626fb4f05c44903299794a26e256c74042dc785afd",
@@ -309,7 +309,7 @@
     "build/obj/nu2api/nuspline.obj": "36ea884ea94554559dc2bbebe6279e30c964f1935698d452f9999c788c48ff8b",
     "build/obj/nu2api/nustream.obj": "508ef0e6f3b96e38870120c06789f79c927ec324852d974cc937c187188702e9",
     "build/obj/nu2api/nustring.obj": "ba8459e2b2f0f8cb97ee78366b635caa3b8d0d7da2535d8329bbb9a14339f86d",
-    "build/obj/nu2api/nuterrain.obj": "6468edd7fb264b95fb5ef3a825df2a4fe456cf9e57b8714ae85018c614182700",
+    "build/obj/nu2api/nuterrain.obj": "797af9dc4c75cb8374db24b4f22862d298b67ed47f4be8d6a77c0bb4d8affff7",
     "build/obj/nu2api/nuthread.obj": "dfd502f943ec119abbb0500524fded07bb3cdbe2e1a4db621566fcf088f101bd",
     "build/obj/nu2api/nutimebar.obj": "7d1a5815ba14377c18325cf22eea2280d1a144a79ed8bd4993afb1ef727e4f9a",
     "build/obj/nu2api/nutrig.obj": "e851218294ef5138cb22090da8144c6a6980632897bbe23dd61982ea508c44a4",
@@ -41055,11 +41055,25 @@
       "name": "TerrainSkinAllocate",
       "symbol": "_TerrainSkinAllocate",
       "address": "0x0066f790",
-      "units": [],
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
       "target_size": 345,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/nu2api/nuterrain.c",
+          "base_size": 333,
+          "exact_match": false,
+          "target_sha256": "6b3e207a20d66e3489db2f92d252e20d2e99d99d639b619d6ae7e483a6107607",
+          "base_sha256": "6cbadf6ba280b29ee9f7abe639af5104019720f5619ca93b4fc5395f57335119",
+          "relocation_count": 18,
+          "comparison_unit": "0066f790-5187e120774c",
+          "objdiff_percent": 58.26923
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 58.26923
     },
     {
       "name": "ScanTerrIDRemovePlat",
@@ -41089,21 +41103,49 @@
       "name": "NewScanRot",
       "symbol": "_NewScanRot",
       "address": "0x00671750",
-      "units": [],
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
       "target_size": 4748,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/nu2api/nuterrain.c",
+          "base_size": 5060,
+          "exact_match": false,
+          "target_sha256": "fa3ca5e4acefac37764b2276381345187f6e90665545ab03dbf4bc27c4e95ed2",
+          "base_sha256": "cc3f8efbf6d5cf814a4800a02bec3583cf56a0d1f0442997d09061df964be3bc",
+          "relocation_count": 21,
+          "comparison_unit": "00671750-7418d3187f63",
+          "objdiff_percent": 9.219463
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 9.219463
     },
     {
       "name": "NewCast",
       "symbol": "_NewCast",
       "address": "0x006729e0",
-      "units": [],
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
       "target_size": 3407,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/nu2api/nuterrain.c",
+          "base_size": 2693,
+          "exact_match": false,
+          "target_sha256": "b1b87e5569afddf132bd84de7460f86d28556b354cfae282c0ac4a1ba7dec078",
+          "base_sha256": "8be4b227631c28bf2dde32c1029f435dd46b533fefe5792d8cb5d29055f1cbe5",
+          "relocation_count": 66,
+          "comparison_unit": "006729e0-b93ad38810c0",
+          "objdiff_percent": 26.593693
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 26.593693
     },
     {
       "name": "NewShadowEx",
@@ -46805,7 +46847,8 @@
         "src/legoapi/objectsall.c",
         "src/legoapi/parts.c",
         "src/legoapi/speederchase.c",
-        "src/legogame/startup.c"
+        "src/legogame/startup.c",
+        "src/nu2api/nuterrain.c"
       ],
       "target_size": 8,
       "exact_match": true,
@@ -46860,6 +46903,14 @@
         },
         {
           "unit": "src/legogame/startup.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "3e2a4d232d889625aa1c184b27588b7c6ebdfef18e01332502d986209f65b905",
+          "base_sha256": "3e2a4d232d889625aa1c184b27588b7c6ebdfef18e01332502d986209f65b905"
+        },
+        {
+          "unit": "src/nu2api/nuterrain.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -47223,7 +47274,8 @@
       "address": "0x007517b8",
       "units": [
         "src/legoapi/gameobjects.c",
-        "src/legoapi/parts.c"
+        "src/legoapi/parts.c",
+        "src/nu2api/nuterrain.c"
       ],
       "target_size": 4,
       "exact_match": true,
@@ -47238,6 +47290,14 @@
         },
         {
           "unit": "src/legoapi/parts.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d",
+          "base_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d"
+        },
+        {
+          "unit": "src/nu2api/nuterrain.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -47259,6 +47319,27 @@
       "objects": [
         {
           "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "f6695ce73944e91633628832ea0c0f88a3ea4f28087ed24fa862b40ffeec8154",
+          "base_sha256": "f6695ce73944e91633628832ea0c0f88a3ea4f28087ed24fa862b40ffeec8154"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "__real@3fa99999a0000000",
+      "symbol": "__real@3fa99999a0000000",
+      "address": "0x007517c0",
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "target_size": 8,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nuterrain.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -47929,7 +48010,8 @@
       "units": [
         "src/legoapi/gameobjects.c",
         "src/legoapi/menu.c",
-        "src/legoapi/move.c"
+        "src/legoapi/move.c",
+        "src/nu2api/nuterrain.c"
       ],
       "target_size": 8,
       "exact_match": true,
@@ -47952,6 +48034,14 @@
         },
         {
           "unit": "src/legoapi/move.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "e163f8cb0f7067a7fc78ca859a77f849aea3214f38fb75b884e4a16be725c905",
+          "base_sha256": "e163f8cb0f7067a7fc78ca859a77f849aea3214f38fb75b884e4a16be725c905"
+        },
+        {
+          "unit": "src/nu2api/nuterrain.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -49769,6 +49859,18 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "TerrainScanTriangleSentinel",
+      "symbol": "_TerrainScanTriangleSentinel",
+      "address": "0x00753200",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "__real@bdcccccd",
@@ -71441,6 +71543,18 @@
       "status": "exact"
     },
     {
+      "name": "TerrainScanRadiusEpsilon",
+      "symbol": "_TerrainScanRadiusEpsilon",
+      "address": "0x00763d68",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "__real@3fdffffc00000000",
       "symbol": "__real@3fdffffc00000000",
       "address": "0x00763fb0",
@@ -72245,6 +72359,18 @@
       "name": "TerrainSkinBoundsMaxPc",
       "symbol": "_TerrainSkinBoundsMaxPc",
       "address": "0x0076e13c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "TerrainCastLowerSentinel",
+      "symbol": "_TerrainCastLowerSentinel",
+      "address": "0x0076e148",
       "units": [
         "src/data.cpp"
       ],
@@ -96014,6 +96140,18 @@
       "status": "exact"
     },
     {
+      "name": "TerrainCastAuxPolygonPc",
+      "symbol": "_TerrainCastAuxPolygonPc",
+      "address": "0x02920ad0",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "DebrisGlassV1",
       "symbol": "_DebrisGlassV1",
       "address": "0x02920ae8",
@@ -96066,6 +96204,30 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "TerrainCastAuxValidPc",
+      "symbol": "_TerrainCastAuxValidPc",
+      "address": "0x029211a8",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "TerrainCastAuxNormalPc",
+      "symbol": "_TerrainCastAuxNormalPc",
+      "address": "0x02921228",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "NuSound3GroupSampleIds",
@@ -96137,7 +96299,45 @@
       "name": "TerI",
       "symbol": "_TerI",
       "address": "0x0292188c",
-      "units": [],
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "TerrainRoofIndexPc",
+      "symbol": "_TerrainRoofIndexPc",
+      "address": "0x029231c0",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "TerrainShadowHeightPc",
+      "symbol": "_TerrainShadowHeightPc",
+      "address": "0x02924b28",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "TerrainRoofValidPc",
+      "symbol": "_TerrainRoofValidPc",
+      "address": "0x02924b2c",
+      "units": [
+        "src/data.cpp"
+      ],
       "target_size": null,
       "exact_match": false,
       "objects": [],
@@ -96165,6 +96365,42 @@
       "status": "exact"
     },
     {
+      "name": "TerrainScaledShapeCursorPc",
+      "symbol": "_TerrainScaledShapeCursorPc",
+      "address": "0x02924b54",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "TerrainSkinPoolSlotCountPc",
+      "symbol": "_TerrainSkinPoolSlotCountPc",
+      "address": "0x02924b68",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "TerrainSkinPoolBasePc",
+      "symbol": "_TerrainSkinPoolBasePc",
+      "address": "0x02924b6c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "edpp_ptls",
       "symbol": "_edpp_ptls",
       "address": "0x02924b70",
@@ -96175,9 +96411,69 @@
       "status": "not implemented"
     },
     {
+      "name": "TerrainPlatformsOffPc",
+      "symbol": "_TerrainPlatformsOffPc",
+      "address": "0x0292fb74",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "ShadPoly",
       "symbol": "_ShadPoly",
       "address": "0x0292fc10",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "TerrainShadowFloorIndexPc",
+      "symbol": "_TerrainShadowFloorIndexPc",
+      "address": "0x0292fc14",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "TerrainSkinUseEpochPc",
+      "symbol": "_TerrainSkinUseEpochPc",
+      "address": "0x0292fc24",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "TerrainSkinPoolSlotBytesPc",
+      "symbol": "_TerrainSkinPoolSlotBytesPc",
+      "address": "0x0292fc28",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "TerrainRoofNormalPc",
+      "symbol": "_TerrainRoofNormalPc",
+      "address": "0x0292fc50",
       "units": [
         "src/data.cpp"
       ],
@@ -96284,6 +96580,18 @@
       "status": "unknown size"
     },
     {
+      "name": "TerrainWaterCastIndexPc",
+      "symbol": "_TerrainWaterCastIndexPc",
+      "address": "0x0292fdec",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "AnimParams",
       "symbol": "_AnimParams",
       "address": "0x0292fe38",
@@ -96326,6 +96634,18 @@
       "status": "exact"
     },
     {
+      "name": "TerrainSkinInfoCountPc",
+      "symbol": "_TerrainSkinInfoCountPc",
+      "address": "0x02947c1c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "TerrWallDeflectYScale",
       "symbol": "_TerrWallDeflectYScale",
       "address": "0x02947c20",
@@ -96355,6 +96675,30 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "TerrainCastAuxIndexPc",
+      "symbol": "_TerrainCastAuxIndexPc",
+      "address": "0x02947c3c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "TerrainSkinInfosPc",
+      "symbol": "_TerrainSkinInfosPc",
+      "address": "0x02947c84",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "edanim_page_scene",
@@ -96418,6 +96762,18 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "TerrainSurfaceClassPc",
+      "symbol": "_TerrainSurfaceClassPc",
+      "address": "0x02947db0",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "edpp_page_on",
@@ -96487,6 +96843,18 @@
       "name": "GetSurfaceInfoWaterNormalPc",
       "symbol": "_GetSurfaceInfoWaterNormalPc",
       "address": "0x02962020",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "TerrainSkinUseRecordsPc",
+      "symbol": "_TerrainSkinUseRecordsPc",
+      "address": "0x0296202c",
       "units": [
         "src/data.cpp"
       ],
@@ -101779,11 +102147,11 @@
     "mapped_code_bytes": 523634,
     "matched_code_bytes": 45870,
     "matching_percent": 1.3214275219906628,
-    "fuzzy_coverage_percent": 6.349062864687342,
+    "fuzzy_coverage_percent": 6.39356607959202,
     "mapped_functions": 2031,
     "matched_functions": 806,
-    "objdiff_fuzzy_percent": 61.313477,
-    "objdiff_total_code": 359540,
+    "objdiff_fuzzy_percent": 60.31716,
+    "objdiff_total_code": 368040,
     "image_bytes": 40067072,
     "mapped_bytes": 1117997,
     "mapping_percent": 2.7903137019845126

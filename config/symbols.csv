@@ -2494,6 +2494,7 @@ address    , symbol                                                         , si
 0x007517b8 , _NuPrimTwo                                                     , 4     , const f32
 0x007517b8 , __real@40000000                                                , 4     , const f32
 0x007517c0 , _NuTimeBarTop                                                  , 8     , const f64
+0x007517c0 , __real@3fa99999a0000000                                         , 8     , const f64
 0x007518d4 , ??_C@_0P@GEMADFMM@exp_thermalDet?$AA@                          , 15    , const char[]
 0x007518e4 , __real@3f400000                                                , 4     , const f32
 0x00751928 , _MoveSplineRunSpeedSentinel                                    , 8     , const f64
@@ -2593,6 +2594,7 @@ address    , symbol                                                         , si
 0x7531c8   , __real@403e000000000000                                        , 8     , const f64
 0x007531d8 , __real@4022000000000000                                        , 8     , const f64
 0x007531f8 , __real@406fe00000000000                                        , 8     , const f64
+0x00753200 , _TerrainScanTriangleSentinel                                   ,       ,
 0x00753220 , __real@bdcccccd                                                , 4     , const f32
 0x00753270 , _AIScriptKeywordBase                                           , 5     , const char[5]
 0x0075327c , __real@3f666666                                                ,       ,
@@ -3639,6 +3641,7 @@ address    , symbol                                                         , si
 0x007639f0 , _EpisodeConfigKeyword_episode_end                              , 12    , const char[12]
 0x00763a38 , _NuTimeBarVerticalScale                                        , 8     , const f64
 0x763d68   , __real@3ee4f8b580000000                                        , 8     , const f64
+0x00763d68 , _TerrainScanRadiusEpsilon                                      ,       ,
 0x00763fb0 , __real@3fdffffc00000000                                        , 8     , const f64
 0x00763fb8 , __real@3fa554ede0000000                                        , 8     , const f64
 0x00763fc0 , __real@3f56b2aaa0000000                                        , 8     , const f64
@@ -3679,6 +3682,7 @@ address    , symbol                                                         , si
 0x0076e130 , _TerrainSkinSampleIndexScalePc                                ,       ,
 0x0076e138 , _TerrainSkinBoundsMinPc                                       ,       ,
 0x0076e13c , _TerrainSkinBoundsMaxPc                                       ,       ,
+0x0076e148 , _TerrainCastLowerSentinel                                      ,       ,
 0x0076eef0 , __real@40cfff8000000000                                        , 8     , const f64
 0x0076ef00 , _PCSoundOggExtensionText                                       , 5     , const char[5]
 0x007759a8 , _PCKeyboard2Name_candidate                                     , 10    , const char[10]
@@ -4924,35 +4928,55 @@ address    , symbol                                                         , si
 0x029208bc , _part_page_used                                                , 32    , i32[8]
 0x029208f0,_part_scene,128,
 0x02920aac , _PartRTL                                                       , 4     , RTLSET_PC *
+0x02920ad0 , _TerrainCastAuxPolygonPc                                       ,       ,
 0x02920ae8 , _DebrisGlassV1                                                 , 4     , f32
 0x02920da4 , _GetSurfaceInfoWaterHeightPc                                   ,       ,
 0x02920da8 , _NuSound3Groups                                                , 1024  , SFX_GROUP_PC[128]
+0x029211a8 , _TerrainCastAuxValidPc                                         ,       ,
+0x02921228 , _TerrainCastAuxNormalPc                                        ,       ,
 0x02921280 , _NuSound3GroupSampleIds                                        , 1024  , i16[512]
 0x02921780 , _SfxBits                                                       , 200   , u16[100]
 0x0292184c , _ShadowRoofPolygonPc                                           ,       ,
 0x02921884 , _GetSurfaceInfoRoofHeightPc                                    ,       ,
 0x0292188c , _TerI                                                           ,        ,
+0x029231c0 , _TerrainRoofIndexPc                                            ,       ,
+0x02924b28 , _TerrainShadowHeightPc                                         ,       ,
+0x02924b2c , _TerrainRoofValidPc                                            ,       ,
 0x02924b30 , _edpp_page_used                                                , 32    , i32[8]
+0x02924b54 , _TerrainScaledShapeCursorPc                                    ,       ,
+0x02924b68 , _TerrainSkinPoolSlotCountPc                                    ,       ,
+0x02924b6c , _TerrainSkinPoolBasePc                                         ,       ,
 0x2924b70  , _edpp_ptls                                                      , 45056 ,
+0x0292fb74 , _TerrainPlatformsOffPc                                         ,       ,
 0x0292fc10 , _ShadPoly                                                       ,        ,
+0x0292fc14 , _TerrainShadowFloorIndexPc                                     ,       ,
+0x0292fc24 , _TerrainSkinUseEpochPc                                         ,       ,
+0x0292fc28 , _TerrainSkinPoolSlotBytesPc                                    ,       ,
+0x0292fc50 , _TerrainRoofNormalPc                                           ,       ,
 0x0292fc88 , _CurTerr                                                       , 4     , TERRSET *
 0x0292fc88 , _CurrentTerrain                                                , 4     , void *
 0x0292fd64 , _EShadowPolygonPc                                              ,       ,
 0x0292fda0 , _edanim_page_on                                                , 32    , i32[8]
 0x0292fdc0 , _SfxHashHeads                                                  , 4     , i16 *
 0x0292fdd8 , _GetSurfaceInfoSurfaceNormalPc                                 ,       ,
+0x0292fdec , _TerrainWaterCastIndexPc                                       ,       ,
 0x0292fe38 , _AnimParams                                                    , 46336 , EDANIM_PARAM_PC[64]
 0x02947b94 , _SfxInfo                                                       , 4     , SFX_RECORD_PC *
+0x02947c1c , _TerrainSkinInfoCountPc                                        ,       ,
 0x02947c20 , _TerrWallDeflectYScale                                         , 4     , f32
 0x02947c30 , _edanim_next_param                                             , 4     , i32
+0x02947c3c , _TerrainCastAuxIndexPc                                         ,       ,
+0x02947c84 , _TerrainSkinInfosPc                                            ,       ,
 0x02947c9c , _edanim_page_scene                                             , 32    , NUGSCN *[8]
 0x02947cc8 , _GlobalSfxBits                                                 , 200   , u16[100]
 0x02947da0 , _SfxCRCTable                                                   , 4     , u32 *
+0x02947db0 , _TerrainSurfaceClassPc                                         ,       ,
 0x02948ed0 , _edpp_page_on                                                  , 32    , i32[8]
 0x02961fa0 , _edanim_page_used                                              , 32    , i32[8]
 0x02961fd4 , _DebrisGlassU1                                                 , 4     , f32
 0x02961ffc , _TerrainShadowGroupIndexPc                                     ,       ,
 0x02962020 , _GetSurfaceInfoWaterNormalPc                                   ,       ,
+0x0296202c , _TerrainSkinUseRecordsPc                                       ,       ,
 0x02962040 , _NuSound3GroupSampleCount                                      , 4     , i32
 0x02962044 , _NuSound3GroupCount                                            , 4     , i32
 0x02962048 , _SfxFileTable                                                  , 4     , SFX_FILE_INFO_PC *
