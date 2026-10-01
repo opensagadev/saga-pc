@@ -120,6 +120,7 @@ address    , symbol                                                         , si
 0x44c3f0   , _Action_SetMaxMovementRange                                    , 404   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44c590   , _Action_SetDefaultMovementRange                                , 82    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44c5f0   , _Action_SetGravityHeight                                        , 342   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x0044c750 , _Action_SetScaleOverride                                       , 687   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44ca00,_Action_ApplyGravity,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44ca80,_Action_IgnoreShoveSystem,110,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44caf0,_Action_CannotBeForcedBack,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -138,16 +139,20 @@ address    , symbol                                                         , si
 0x44d500   , _Action_SetHintComplete                                         , 103   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44d570   , _Action_CancelHint                                              , 11    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44d580   , _Action_DisableNarrowSocks                                      , 61    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x0044d5c0 , _Action_CycleCharacter                                         , 674   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x0044d900 , _Action_CnxController                                          , 1581  , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x0044df30 , _Action_CnxHelper                                              , 445   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44e160,_Action_SetPath,388,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44e2f0   , _Action_GoToLevelPath                                          , 381   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x0044e470 , _Action_MoveAwayFromLastAttacker                               , 258   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44e580,_Action_GoToOriginalPath,724,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44e860   , _Action_SetAnimation                                           , 91    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44e8c0   , _Action_AnimTimeRandom                                         , 47    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x0044e8f0 , _Action_AlwaysTriggerObstacle                                 , 186   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x0044e9b0 , _Action_CanTriggerObstacle                                    , 186   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x0044ea70 , _Action_PlayGizObstacle                                       , 362   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x0044ebe0 , _Action_PlayGizSpecial                                         , 398   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x0044ed70 , _Action_SetObstacleToEnd                                       , 110   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44ede0   , _Action_CanOpenDoors                                           , 139   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44ee70   , _Action_CanShootOffScreen                                      , 139   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44ef00   , _Action_KeepWeaponOut                                          , 190   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -176,9 +181,16 @@ address    , symbol                                                         , si
 0x4502b0   , _Action_TriggerBlowUp                                           , 140   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x00450340 , _Action_ForcePush                                              , 521   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x00450550 , _Action_DeflectPlayersPart                                     , 113   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x004505d0 , _Action_SetPathCnxFlag                                         , 480   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x004507b0 , _Action_PlaySfx                                                , 539   , "i32 __cdecl (void *, void *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x004509d0 , _Action_CameraCut                                              , 1890  , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x00451140 , _Action_DynamicCameraCut                                       , 2780  , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x451c20   , _Action_EndCameraCut                                            , 176   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x451cd0   , _Action_DontRaycastLOS                                          , 121   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x00451d50 , _Action_SetForceBack                                           , 455   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x00451f20 , _Action_FaceCamera                                             , 456   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x004520f0 , _Action_FaceCharacter                                          , 213   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x004521d0 , _Action_SpinOnSpot                                             , 552   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x452400   , _Action_FollowCharacter                                        , 353   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x452570   , _Action_GameFollowPlayer                                       , 619   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4527e0   , _Action_MoveForward                                            , 634   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -1593,6 +1605,7 @@ address    , symbol                                                         , si
 0x005c03d0 , _NuMtxPreScaleVU0                                              , 5     , "void __cdecl (NUMTX *, NUVEC *)"
 0x005c03e0 , _NuVec4MtxTransformVU0                                         , 163   , "void __cdecl (NUVEC4 *, NUVEC4 *, NUMTX *)"
 0x005c0500 , _NuMtxMulVU0                                                   , 21    , "void __cdecl (NUMTX *, NUMTX *, NUMTX *)"
+0x005c0620 , _NuVec4MtxTransformVU0x3                                       , 196   ,
 0x005c1300 , _PCSpecialEmptyHandler_candidate                               , 1     , void __cdecl (void)
 0x005c9130 , _NuPause                                                       , 11    , void __cdecl (i32)
 0x005c9140 , _buildBitCountTable                                            , 118   , void __cdecl (void)
@@ -1864,6 +1877,9 @@ address    , symbol                                                         , si
 0x0066cbb0 , _TerrainSetCur                                                 , 10    , void __cdecl (void *)
 0x0066cbc0 , _TerrainGetCur                                                 , 6     , void *__cdecl (void)
 0x0066cc50 , _TerrSetPlatScanDist                                           , 11    , void __cdecl (f32)
+0x0066ed90 , _TerrainSkin                                                   , 984   ,
+0x0066f170 , _SkinPlatform                                                  , 1475  ,
+0x0066f790 , _TerrainSkinAllocate                                           , 345   ,
 0x00670560 , _ScanTerrIDRemovePlat                                          , 57    , void __cdecl (i32)
 0x00671750 , _NewScanRot                                                    , 4748  ,
 0x006729e0 , _NewCast                                                       , 3407  ,
@@ -1871,6 +1887,7 @@ address    , symbol                                                         , si
 0x0067bf50 , _NewPlatInst                                                   , 528   , "i32 __cdecl (void *, i32)"
 0x0067c860 , _PlatInstGetHit                                                , 45    , i32 __cdecl (i32)
 0x0067c930 , _DeletePlatinst                                                , 335   , i32 __cdecl (i32)
+0x0067fb50 , _TerrainPlatGetMtx                                             , 49    ,
 0x00681e90 , _PlaySfxById                                                   , 31    , "void __cdecl (i32, NUVEC *)"
 0x00681eb0 , _PlaySfxByIdAndSetVolume                                       , 35    , "void __cdecl (i32, NUVEC *, f32)"
 0x00681f40 , _PlaySfx                                                       , 45    , "void __cdecl (char *, NUVEC *)"
@@ -4719,6 +4736,7 @@ address    , symbol                                                         , si
 0x009553ec , _CHARPAK                                                       , 4     , i32
 0x9553f0   , _SecondCharConfigure                                           , 4     , i32
 0x009553f4 , _MissionSys                                                    , 4     , MISSIONSYS_PC *
+0x00955650 , _Accessory                                                     , 576   ,
 0x00955894 , _Customiser_AccessoriesLoaded                                  ,       , ""
 0x00955898 , _CollectCount                                                  , 4     , i32
 0x0095589c , _CollectList                                                   , 4     , COLLECTID_PC *
@@ -4868,6 +4886,7 @@ address    , symbol                                                         , si
 0x02947c9c , _edanim_page_scene                                             , 32    , NUGSCN *[8]
 0x02947cc8 , _GlobalSfxBits                                                 , 200   , u16[100]
 0x02947da0 , _SfxCRCTable                                                   , 4     , u32 *
+0x02948ed0 , _edpp_page_on                                                  , 32    , i32[8]
 0x02961fa0 , _edanim_page_used                                              , 32    , i32[8]
 0x02961fd4 , _DebrisGlassU1                                                 , 4     , f32
 0x02962040 , _NuSound3GroupSampleCount                                      , 4     , i32

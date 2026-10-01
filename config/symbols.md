@@ -1519,3 +1519,55 @@ same numeric PC address. The append-only journal retains this negative evidence.
 
 These additions identify 12,644 PC code bytes and 40 data bytes. They add no
 compiled definitions, newly compared bytes or reconstruction matching credit.
+
+## Further camera callbacks and terrain leaves
+
+Twelve independently reviewed callbacks add 8,953 complete PC bytes:
+CameraCut, DynamicCameraCut, SetForceBack, FaceCamera, FaceCharacter,
+SpinOnSpot, PlayGizSpecial, SetObstacleToEnd, MoveAwayFromLastAttacker,
+SetPathCnxFlag, CycleCharacter and SetScaleOverride. Original registry namespace,
+relative Android pointers, ELF symbols and complete paired bodies establish
+identity. Original seven-slot dispatch, entry liveness, stack/nonvolatile and
+floating-state reviews establish physical contracts; aggregate types remain
+unreviewed. The independent audit normalizes known x87 store semantics before
+liveness checks and rechecks the preceding two frozen batches without new
+original decoding. Four missing entries are repaired in a project copy,
+preserving all 8,019 preceding function extents and the explicit mixed/table/data
+owners; the graph now contains 8,023 PC functions. Frozen
+`ai-registry-new-callback-batch11` and its independent audit retain the proofs.
+
+Five further terrain helper identities add 3,049 PC bytes: TerrainSkinAllocate
+(`0x66f790`, 345), SkinPlatform (`0x66f170`, 1,475), TerrainSkin (`0x66ed90`,
+984), TerrainPlatGetMtx (`0x67fb50`, 49) and NuVec4MtxTransformVU0x3
+(`0x5c0620`, 196). Original callers establish their physical one-, three- and
+five-word frames, including TerrainSkin's explicit twelve-byte result buffer.
+Android's hidden-result RET 4 is not transferred. Allocate's seven-byte internal
+LEA and SkinPlatform's one-byte internal NOP belong to the complete extents;
+following CC alignment does not. PC's negative sample index and subtraction
+cancel to Android's positive indexing for the explicitly clamped finite path;
+the apparent direction difference is not a behavioral discrepancy. Floating
+environment and exceptional inputs remain qualified. All five CSV ctypes stay
+blank. Frozen `terrain-helper-paired-identity-frontier-next2`, `next3` and their
+independent audits retain original constants, callers, ranges and decode budgets.
+
+NewTerrainScaleYMask at `0x68f940` has positive identity and complete 1,984-byte
+extent evidence, plus an actual ten-word caller frame. Fifteen opaque call sites
+over ten targets still prevent full ABI approval; it receives no CSV row.
+The held callee queue records those concrete dependencies rather than treating
+unknown floating effects as zero.
+
+Two further data allocations have independently established PC extents:
+Accessory at `0x955650` contains eighteen 32-byte records (576 bytes), and
+edpp_page_on at `0x2948ed0` is eight four-byte integer cells (32 bytes).
+Accessory's original eight-DWORD record clear and cleanup reach the terminal
+record; the exclusive end `0x955890` is independently used pointer storage.
+Its field cohort distinguishes scene/special-handle state, saved material id,
+integer texture id, integer material index and opaque model pointer. The proposed
+aggregate declaration remains research in this map-only release, with blank
+CSV ctype and no aggregate type promotion. The page array has an explicit
+eight-cell clear and a separate pointer at its exclusive end `0x2948ef0`.
+Four Accessory interior-to-base pairings and the PC loop-terminal constant
+`0x292fb80` / Android page-array pairing are explicit exclusions. Frozen
+`nonregistry-data-frontier-next5` and its independent audit retain the allocation,
+neighbor and literal-operand proofs. These additions identify 12,002 code bytes
+and 608 data bytes; they add no compiled definitions or comparison credit.

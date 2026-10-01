@@ -8,16 +8,16 @@
     "src/externals.h": "3382382faeac231f3c7962ffb276f5c091463416d3cd41afd89c57fe6c4eef62",
     "src/saga.h": "bc18ee32ad09246d69582fd9c4bcfa4d4b1b68b690889e94fe80334ff46d6788",
     "config/data.md": "b46d28a41b8d3d2d61ee37a9eaee793a8857aed771d8c46412ec3df2a8c151a1",
-    "config/identification-decisions.jsonl": "1cc2b009320e6bfc3aac8b7ca03879d836551c33560718321f17a9c9fa85c960",
+    "config/identification-decisions.jsonl": "8363cb381e099f16a11d7df4186696cd72023a1a135ee931956ed768fd3db5eb",
     "config/identification-plan.md": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
-    "config/identification-tools.md": "45865e7fe7e216affdd65adaf8434a88f2d06df6248b7bfe42628be08b1ef617",
+    "config/identification-tools.md": "65b3b79e4f4adcc9dabe5efd2ec2d5692341bf4c57224b139f7c15f7fb3d5ebc",
     "config/identification.md": "ecfbf8977bb20b3c0b8fc8cf0c4a7cc7d7cd0f9915f3abe77145c532651e31e4",
     "config/numain.md": "b1bf36c6b55647064f79402997c5d956060e13cbf6d6648bcde831ea4e0c5e74",
     "config/progress-plan.md": "cf144b1f5e0b8d5d0a17e0f2a1d065ad64c13a95d1b491c88792e046bb65a3ff",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
     "config/strategy.md": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
-    "config/symbols.csv": "3e2d4f2d0695ebda898fb61b5453252abef437b5a7a7f798f8e76db4c98b1613",
-    "config/symbols.md": "fa829cb6b6fe57141589ed2188374ad74fa33f1f7cc75d0ddf5294c3e23befb3",
+    "config/symbols.csv": "ed8950f9c1c9edf195cccd963c6c59035e51dc62530bdc21ed491567e6739b50",
+    "config/symbols.md": "20af11ef1606d5bd840a39615b681fb2d00ddfb729bc4524b814830117d7c932",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
@@ -2293,6 +2293,16 @@
       "status": "not implemented"
     },
     {
+      "name": "Action_SetScaleOverride",
+      "symbol": "_Action_SetScaleOverride",
+      "address": "0x0044c750",
+      "units": [],
+      "target_size": 687,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_ApplyGravity",
       "symbol": "_Action_ApplyGravity",
       "address": "0x0044ca00",
@@ -2473,6 +2483,16 @@
       "status": "not implemented"
     },
     {
+      "name": "Action_CycleCharacter",
+      "symbol": "_Action_CycleCharacter",
+      "address": "0x0044d5c0",
+      "units": [],
+      "target_size": 674,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_CnxController",
       "symbol": "_Action_CnxController",
       "address": "0x0044d900",
@@ -2525,6 +2545,16 @@
       ],
       "status": "different",
       "objdiff_percent": 45.14516
+    },
+    {
+      "name": "Action_MoveAwayFromLastAttacker",
+      "symbol": "_Action_MoveAwayFromLastAttacker",
+      "address": "0x0044e470",
+      "units": [],
+      "target_size": 258,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "Action_GoToOriginalPath",
@@ -2582,6 +2612,26 @@
       "address": "0x0044ea70",
       "units": [],
       "target_size": 362,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_PlayGizSpecial",
+      "symbol": "_Action_PlayGizSpecial",
+      "address": "0x0044ebe0",
+      "units": [],
+      "target_size": 398,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetObstacleToEnd",
+      "symbol": "_Action_SetObstacleToEnd",
+      "address": "0x0044ed70",
+      "units": [],
+      "target_size": 110,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -2867,6 +2917,16 @@
       "status": "not implemented"
     },
     {
+      "name": "Action_SetPathCnxFlag",
+      "symbol": "_Action_SetPathCnxFlag",
+      "address": "0x004505d0",
+      "units": [],
+      "target_size": 480,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_PlaySfx",
       "symbol": "_Action_PlaySfx",
       "address": "0x004507b0",
@@ -2891,6 +2951,26 @@
       "objdiff_percent": 81.23204
     },
     {
+      "name": "Action_CameraCut",
+      "symbol": "_Action_CameraCut",
+      "address": "0x004509d0",
+      "units": [],
+      "target_size": 1890,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_DynamicCameraCut",
+      "symbol": "_Action_DynamicCameraCut",
+      "address": "0x00451140",
+      "units": [],
+      "target_size": 2780,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_EndCameraCut",
       "symbol": "_Action_EndCameraCut",
       "address": "0x00451c20",
@@ -2906,6 +2986,46 @@
       "address": "0x00451cd0",
       "units": [],
       "target_size": 121,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetForceBack",
+      "symbol": "_Action_SetForceBack",
+      "address": "0x00451d50",
+      "units": [],
+      "target_size": 455,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_FaceCamera",
+      "symbol": "_Action_FaceCamera",
+      "address": "0x00451f20",
+      "units": [],
+      "target_size": 456,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_FaceCharacter",
+      "symbol": "_Action_FaceCharacter",
+      "address": "0x004520f0",
+      "units": [],
+      "target_size": 213,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SpinOnSpot",
+      "symbol": "_Action_SpinOnSpot",
+      "address": "0x004521d0",
+      "units": [],
+      "target_size": 552,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -34429,6 +34549,16 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "NuVec4MtxTransformVU0x3",
+      "symbol": "_NuVec4MtxTransformVU0x3",
+      "address": "0x005c0620",
+      "units": [],
+      "target_size": 196,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "PCSpecialEmptyHandler_candidate",
       "symbol": "_PCSpecialEmptyHandler_candidate",
       "address": "0x005c1300",
@@ -40541,6 +40671,36 @@
       "status": "not implemented"
     },
     {
+      "name": "TerrainSkin",
+      "symbol": "_TerrainSkin",
+      "address": "0x0066ed90",
+      "units": [],
+      "target_size": 984,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "SkinPlatform",
+      "symbol": "_SkinPlatform",
+      "address": "0x0066f170",
+      "units": [],
+      "target_size": 1475,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "TerrainSkinAllocate",
+      "symbol": "_TerrainSkinAllocate",
+      "address": "0x0066f790",
+      "units": [],
+      "target_size": 345,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "ScanTerrIDRemovePlat",
       "symbol": "_ScanTerrIDRemovePlat",
       "address": "0x00670560",
@@ -40665,6 +40825,16 @@
       ],
       "status": "different",
       "objdiff_percent": 23.632183
+    },
+    {
+      "name": "TerrainPlatGetMtx",
+      "symbol": "_TerrainPlatGetMtx",
+      "address": "0x0067fb50",
+      "units": [],
+      "target_size": 49,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "PlaySfxById",
@@ -92072,6 +92242,16 @@
       "status": "exact"
     },
     {
+      "name": "Accessory",
+      "symbol": "_Accessory",
+      "address": "0x00955650",
+      "units": [],
+      "target_size": 576,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Customiser_AccessoriesLoaded",
       "symbol": "_Customiser_AccessoriesLoaded",
       "address": "0x00955894",
@@ -95119,6 +95299,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "edpp_page_on",
+      "symbol": "_edpp_page_on",
+      "address": "0x02948ed0",
+      "units": [],
+      "target_size": 32,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "edanim_page_used",
@@ -100431,16 +100621,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 505464,
+    "mapped_code_bytes": 517466,
     "matched_code_bytes": 45746,
     "matching_percent": 1.3178553176582704,
     "fuzzy_coverage_percent": 6.211660510525754,
-    "mapped_functions": 1994,
+    "mapped_functions": 2011,
     "matched_functions": 801,
     "objdiff_fuzzy_percent": 61.122322,
     "objdiff_total_code": 352861,
     "image_bytes": 40067072,
-    "mapped_bytes": 1049163,
-    "mapping_percent": 2.618516771078256
+    "mapped_bytes": 1061773,
+    "mapping_percent": 2.6499889984474034
   }
 }

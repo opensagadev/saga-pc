@@ -490,6 +490,27 @@ peaks at 718 MiB RSS under the unchanged 1 GiB cap and publishes a verified
 completed run. Its state shrinks from 41,182,703 to 15,741,922 bytes despite added
 anchors, with 18,330,080 bytes of full data evidence retained separately.
 
+The following map-only batch accepts seventeen functions (12,002 PC bytes) and
+two data allocations (608 bytes), reaching 1,061,773 image bytes (2.650%).
+Camera/path callbacks and five terrain leaves retain independent identity,
+physical ABI and complete-range proofs. A larger terrain query remains held
+because fifteen opaque calls leave ABI effects unknown. Accessory's 32-byte
+record cohort stays research; the accepted allocation has blank aggregate type.
+Five new interior/literal pairings become explicit exclusions.
+
+Four missing callback entries are repaired on a project copy, preserving every
+one of 8,019 prior functions and all explicit mixed-body/table/data owners.
+The resulting graph has 8,023 PC functions; its 512 MiB heap job peaks at
+753 MiB RSS. Production replay uses the complete verified digest-v2 baseline,
+takes 50.72 seconds and peaks at 712 MiB RSS under the 1 GiB cap. It has 1,415
+accepted function seeds, 76 reviewed data anchors, eleven exclusions and zero
+stale decisions. It records 1,471 tentative function pairs, 30,952 full function
+candidate rows and 2,077 data candidates. Function evidence adds 129, changes 290
+and removes 224 rows; data evidence adds 124, changes 196 and removes 19.
+Registry diagnostics report 234 physical candidates, no ambiguous joins and
+27 unresolved names, including the Android-only callback. These counts establish
+neither retrieval-quality gains nor newly compared code.
+
 ```sh
 python3 tools/repair_graph.py \
   --config build/analysis/identification/current-graphs/export-config.json \
