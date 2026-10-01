@@ -6198,6 +6198,10 @@ extern "C" {
                                     i32 count, i32 first_time, f32 elapsed);
     i32 __cdecl Action_SetAnimSpeedMul(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                        char **params, i32 num_params, i32 first_time, f32 elapsed);
+    i32 __cdecl Action_SnapToPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                      char **params, i32 count, i32 first_time, f32 elapsed);
+    i32 __cdecl Action_SnapToSockPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                          char **params, i32 count, i32 first_time, f32 elapsed);
     void __cdecl InitSurfaceInfo(GAMEOBJECT *object);
     f32 __cdecl GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask);
     f32 __cdecl FindReflectionNoPlatforms(NUVEC *position);

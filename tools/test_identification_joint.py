@@ -111,6 +111,21 @@ class JointIntegrationTests(unittest.TestCase):
         self.assertTrue((output / "inventory.json").is_file())
         self.assertTrue((output / "hypotheses.csv").is_file())
 
+    def test_joint_run_records_round_limit_and_confirmed_seed_snapshot(self):
+        pair = self.export_pair()
+        with self.run_context() as run:
+            summary = score.generate(run=run, joint_graph=pair, max_rounds=1)
+        output = self.root / "output"
+        self.assertEqual(summary["propagation"],
+                         {"max_rounds": 1, "rounds_completed": 1, "stop_reason": "no-new-pairs"})
+        seeds = [json.loads(line) for line in (output / "function-seeds.snapshot.jsonl").read_text().splitlines()]
+        self.assertEqual(len(seeds), summary["unique_name_seeds"])
+        self.assertEqual({row["source_name"] for row in seeds}, {"AnchorOne", "AnchorTwo"})
+        self.assertTrue(all(row["status"] == "seed" and not row["new_mapping"] for row in seeds))
+        self.assertTrue(all(row["origin"] == "accepted-map-unique-name" for row in seeds))
+        manifest = validate_completed_run(output)
+        self.assertIn("function-seeds.snapshot.jsonl", manifest["outputs"])
+
     def test_pair_cannot_replace_the_configured_supported_original(self):
         pair = self.export_pair()
         target = {**self.target, "sha256": "0" * 64}
@@ -330,3 +345,58 @@ class ReviewedAliasIndependenceTests(unittest.TestCase):
                 self.assertAlmostEqual(first['score'], 0.7 if extra else 0.4)
                 self.assertEqual(first['reviewed_data_evidence'], evidence)
                 self.assertEqual(len(result['proposals']), 1 if extra else 0)
+
+
+class PropagationCascadeTests(unittest.TestCase):
+    def cascade(self, max_rounds, ambiguous=False):
+        from types import SimpleNamespace
+        android = {i: {"size": 20, "source_name": f"node{i}",
+                       "calls": {i - 1, i - 2} if i > 2 else set()} for i in range(1, 10)}
+        pc = {100 + i: {"address": 100 + i, "size": 20, "min": 100 + i,
+                       "end": 119 + i, "ranges": 1, "body_bytes": 20} for i in android}
+        a_out, a_in = score.adjacency_for_android(android)
+        p_out = {100 + i: {100 + dst for dst in row["calls"]} for i, row in android.items()}
+        if ambiguous:
+            pc[999] = {"address": 999, "size": 20, "min": 999, "end": 1018, "ranges": 1, "body_bytes": 20}
+            p_out[999] = {101, 102}
+        p_in = {p: set() for p in pc}
+        for parent, children in p_out.items():
+            for child in children:
+                p_in[child].add(parent)
+        inputs = {"pc": pc, "android": android, "pc_out": p_out, "pc_in": p_in,
+                  "android_out": a_out, "android_in": a_in}
+        side = SimpleNamespace(resolve=lambda value, kind: str(value), nodes={})
+        with patch.object(graph, "reviewed_data_function_support", return_value={}):
+            return joint._function_retrieval({"pc": side, "android": side}, inputs,
+                                              {101: 1, 102: 2}, {101, 102}, [], set(), score,
+                                              max_rounds=max_rounds)
+
+    def test_long_cascade_continues_beyond_historical_four_round_cap(self):
+        short, complete = self.cascade(4), self.cascade(16)
+        self.assertEqual(len(short["proposals"]), 4)
+        self.assertEqual(short["propagation"]["stop_reason"], "round-limit")
+        self.assertEqual([(row["pc_address"], row["android_address"]) for row in complete["proposals"]],
+                         [(100 + i, i) for i in range(3, 10)])
+        self.assertEqual(complete["propagation"],
+                         {"max_rounds": 16, "rounds_completed": 8, "stop_reason": "no-new-pairs"})
+        self.assertEqual(complete["proposals"][:4], short["proposals"])
+
+    def test_more_rounds_do_not_break_an_ambiguous_first_branch(self):
+        result = self.cascade(16, ambiguous=True)
+        self.assertEqual(result["proposals"], [])
+        self.assertEqual(result["propagation"]["stop_reason"], "no-new-pairs")
+
+    def test_invalid_work_limits_fail_before_creating_a_run(self):
+        import tempfile
+        for limit in (0, -1, 65, True, 1.5):
+            with self.subTest(limit=limit), tempfile.TemporaryDirectory() as directory, \
+                 patch.object(score.lib, "ROOT", score.Path(directory)), \
+                 self.assertRaisesRegex(ValueError, "max_rounds"):
+                score.generate(max_rounds=limit)
+
+    def test_direct_joint_invalid_limit_does_not_open_graphs(self):
+        for limit in (0, 65, True, 1.5):
+            with self.subTest(limit=limit), patch.object(joint, "_register_pair") as load, \
+                 self.assertRaisesRegex(ValueError, "max_rounds"):
+                joint.generate_joint(None, None, max_rounds=limit)
+            load.assert_not_called()

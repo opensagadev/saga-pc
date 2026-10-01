@@ -951,6 +951,28 @@ python3 tools/check.py --identify \
   --analysis-dir build/analysis/identification/joint-run-002
 ```
 
+Use `--max-rounds N` (1–64, default 4) to extend function propagation in either
+mode. Summaries record the configured limit, completed rounds and whether the
+run stopped at a fixed point (`no-new-pairs`) or its limit (`round-limit`). More
+rounds do not relax the score, margin, independent-root or mutual-best rules.
+Joint runs also publish `function-seeds.snapshot.jsonl`, the exact accepted
+function crosswalk used for retrieval. Its origin distinguishes reviewed-journal
+seeds from accepted-map unique-name seeds; it does not approve new mappings.
+
+A controlled retained-graph experiment with 1,444 seeds produced 1,304 tentative
+pairs in four rounds and 1,326 in seven rounds, then stopped adding pairs.
+The additional rounds added 22 hypotheses; they do not establish 22 identities.
+An independent direct-call pilot found 13 previously unmapped review leads from
+shared accepted caller signatures. Both results require original-PC identity,
+physical ABI and complete-boundary review before insertion into the symbol map.
+A disposable Ghidra repair adds the independently reviewed code entries
+`0x0049b960` / 98 bytes and `0x0049ca10` / 108 bytes, preserving all 8,043
+previous PC function extents and reusing the Android export. Their former
+nonfunction call targets could not participate in function propagation. Boundary
+repair alone does not approve a historical name, type or source implementation.
+Inferred function pairs currently do not feed the confirmed-user data scorer;
+adding a separate candidate channel with explicit lineage is the next experiment.
+
 Optional joint inputs are `--reviewed-pairs JOURNAL.jsonl`, repeated
 `--similarity-candidates CANDIDATES.json`, and `--holdout` with
 `--holdout-mode pair`, `family` or `data`. Use `--holdout-selection FILE` for a

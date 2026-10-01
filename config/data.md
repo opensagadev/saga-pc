@@ -857,3 +857,20 @@ no owner count or universal capacity. GAMEOBJECT exposes the float at +0xd6c
 without changing size0x10d8. Existing floor, roof, surface IDs, normals and
 character links are reused. Compiler layout assertions and independently
 reviewed original/COFF selected cells preserve these distinctions.
+
+## Snap action data views (2026-10-01)
+
+The actions reuse Player at 0x0093d810, the existing eight-pointer party owner;
+LevGameObject is a different owner. RaceOpponentDistancePrefix at 0x007578c8
+keeps its canonical gameaiactions definition and existing blank map extent;
+exporting it lets the new action reuse that storage without a duplicate owner.
+Eleven first-NUL parser string views add blank-size, blank-type map rows, with
+zero allocation coverage or exact-data credit. Source array lengths do not prove
+full original allocations.
+
+Two source F64 aliases reuse established eight-byte scalar cells: yaw factor
+182.04444885253906 at 0x007578a0 and positive zero at 0x00751790. All compiled
+copies match the original bits; overlapping aliases add no mapped-image extent.
+Sock retains four random calls and four external F64-zero multiplications.
+`action-snap-wave23-data-independent-next1.json` records the original cells,
+canonical owners and generated readonly data; unknown owner extents remain held.

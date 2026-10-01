@@ -2245,3 +2245,31 @@ Ignored continuation evidence includes the corrected paired identity,
 `registry-wave22-map-independent-next1.json`, the shadow source and actual
 compiled gates, and the Init source/compiled gates. No extracted retail bytes
 or original inputs are committed.
+
+## Snap action source and structural discovery (2026-10-01)
+
+Action_SnapToPosition663 and Action_SnapToSockPosition1413 now have genuine C
+implementations using the reviewed surface and socket providers. Their existing
+accepted identities add no new mapped function extent. The complete rebuilt
+bodies are 677 and 1,370 bytes and score 72.567566% and 83.48301%; both remain
+nonexact. Position preserves parser shadowing, float-to-integer yaw conversion,
+actor/camera writes and conditional terrain queries. Sock preserves discarded
+parameter parses, socket guards, four actual random calls weighted by the
+external F64 zero, signed remainder/spread and the eight-slot Player traversal.
+These remain qualified normal-engine/provider contracts.
+
+Actual compiled review caught a misleading member name: the heading writes
+belong at actor +0x27a, represented by the existing asserted field_0x276 member;
+supporting_platform_id is at +0x27e. Both new writes were corrected. Each complete
+body changed only that displacement byte; all other bytes and semantic
+relocations remained unchanged. The earlier failed gates are retained locally.
+No aggregate layout changed. Frozen corrected gates are
+`action-snap-position-compiled-independent-next2.json` and
+`action-snap-sock-compiled-independent-next2.json` under ignored continuation.
+
+Structural discovery now takes priority over further source backlog. Configurable
+round limits expose convergence, and a streamed accepted-seed crosswalk supports
+bounded independent caller-signature retrieval. The four-to-seven-round experiment
+adds 22 tentative pairs; a separate pilot supplies 13 unmapped review leads.
+Neither publishes names automatically. Missing function nodes and candidate data
+feedback are being reviewed separately so uncertain edges retain their lineage.

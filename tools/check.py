@@ -302,6 +302,8 @@ def main():
     parser.add_argument("--analysis-dir", type=Path, help="With --identify, atomically publish research outputs here")
     parser.add_argument("--memory-limit-mb", type=int, default=1024,
                         help="With --identify, bound process address space in MiB (default: 1024)")
+    parser.add_argument("--max-rounds", type=int, default=4,
+                        help="With --identify, propagate up to this many rounds, stopping when no pairs are added (1–64; default: 4)")
     parser.add_argument("--symbols", type=Path, help="With --identify, freeze this reviewed symbol map")
     parser.add_argument("--joint-graph", type=Path, help="With --identify, use a hash-verified original code/data graph pair")
     parser.add_argument("--reviewed-pairs", type=Path, help="With --identify, freeze a reviewed decision journal")
@@ -330,11 +332,13 @@ def main():
         return
     if (args.holdout or args.source_graph or args.refresh_features or args.analysis_dir or args.symbols
             or args.joint_graph or args.reviewed_pairs or args.registry_descriptors or args.similarity_candidates or args.holdout_selection
-            or args.holdout_mode != "pair" or args.memory_limit_mb != 1024) and not args.identify:
+            or args.holdout_mode != "pair" or args.memory_limit_mb != 1024 or args.max_rounds != 4) and not args.identify:
         parser.error("Identification options require --identify")
     if args.identify:
         if args.memory_limit_mb < 128:
             parser.error("--memory-limit-mb must be at least 128")
+        if not 1 <= args.max_rounds <= 64:
+            parser.error("--max-rounds must be between 1 and 64")
         if args.registry_descriptors and not args.joint_graph:
             parser.error("--registry-descriptors requires --joint-graph")
         if __package__:
@@ -347,6 +351,7 @@ def main():
                  reviewed_pairs=args.reviewed_pairs, holdout_mode=args.holdout_mode,
                  holdout_selection=args.holdout_selection, similarity_candidates=args.similarity_candidates,
                  registry_descriptors=args.registry_descriptors,
+                 max_rounds=args.max_rounds,
                  memory_limit_mb=args.memory_limit_mb)
         return
     if args.format:

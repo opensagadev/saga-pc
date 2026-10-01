@@ -390,3 +390,21 @@ Next review the accepted 2,076-byte SnapToPosition/SnapToSockPosition action
 family, including parser rounding, socket providers, actor writes and the
 separate eight-slot party pointer view. The unrelated current-speed indirect
 lookup and the playable entry path remain incomplete.
+
+## Snap actions and structural propagation checkpoint
+
+Two previously mapped actions add 2,076 newly compared original bytes: 371,376
+total and 371,321 unique after the unchanged 55-byte overlap. Whole-PC fuzzy
+coverage rises from 6.4234240% to 6.4712667%, a gain of 0.04784270 percentage
+points. All 810 exact functions and 46,519 exact code bytes remain unchanged;
+known mapped image extent remains 1,118,618 / 40,067,072. Eleven unknown-size
+strings and two overlapping scalar aliases add zero extent credit.
+
+The next work is structural discovery: verify shared-caller signature leads,
+repair independently established missing code nodes, and test a candidate-only
+function-to-data propagation channel with explicit accepted-root lineage. A
+longer propagation experiment reaches a fixed point after seven rounds, adding
+22 tentative pairs beyond the four-round pool. This modest yield is evidence
+against assuming exponential growth from more rounds alone. Preserve original
+identity/ABI/extent review and distinguish tentative propagation from accepted
+mapping and source comparison progress.

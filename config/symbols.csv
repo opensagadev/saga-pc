@@ -2488,6 +2488,7 @@ address    , symbol                                                         , si
 0x00751780 , __real@3fe6a09e60000000                                        , 8     , const f64
 0x00751788 , __real@3fb99999a0000000                                        , 8     , const f64
 0x00751790 , __real@0000000000000000                                        , 8     , const f64
+0x00751790 , _ActionSnapWeightedRandomZeroPc                                 , 8      , const f64
 0x00751798 , _NuTimeBarQFontSize                                            , 4     , const f32
 0x00751798 , __real@41800000                                                , 4     , const f32
 0x007517a0 , __real@4000000000000000                                        , 8     , const f64
@@ -2623,6 +2624,7 @@ address    , symbol                                                         , si
 0x0075503c , __real@40100000                                                , 4     , const f32
 0x00755044 , __real@40733333                                                , 4     , const f32
 0x0075504c , _PermLegalScale                                                , 4     , const f32
+0x755148   , _ActionSnapPartyName                                            ,        ,
 0x0075515c , __real@40c80000                                                , 4     , const f32
 0x755174   , __real@becccccd                                                , 4     , const f32
 0x00755180 , _NuScale1000                                                   , 8     , const f64
@@ -2688,6 +2690,7 @@ address    , symbol                                                         , si
 0x007575d8 , __real@3fc0000000000000                                        , 8     , const f64
 0x00757680 , _AIGameOpponentName                                            , 9     , const char[9]
 0x7576b8   , ??_C@_06DKGIHPCG@baddie?$AA@                                   , 7     , const char[7]
+0x7576c8   , _ActionSnapPlayer1Name                                          ,        ,
 0x007576ec , _AICombatOpponentName                                          , 10    , const char[10]
 0x00757700 , _AIGameSetName                                                 , 5     , const char[5]
 0x00757708 , _AIGameCharacterName                                           , 11    , const char[11]
@@ -2707,14 +2710,24 @@ address    , symbol                                                         , si
 0x007577ec , _AIActionIndexedName                                           , 8     , const char[8]
 0x007577f4 , _AIActionPersonalName                                          , 9     , const char[9]
 0x00757800 , _AIScriptActionNameArgPrefix                                   , 6     , const char[6]
+0x757808   , _ActionSnapDontCheckTerrainName                                 ,        ,
 0x757824   , ??_C@_06NLFCANPD@random?$AA@                                   , 7     , const char[7]
 0x75782c   , ??_C@_04MEMAJGDJ@name?$AA@                                     , 5     , const char[]
 0x00757854 , _ZArgPrefix                                                    , 3     , const char[3]
 0x00757858 , _YArgPrefix                                                    , 3     , const char[3]
 0x0075785c , _XArgPrefix                                                    , 3     , const char[3]
+0x757890   , _ActionSnapZName                                                ,        ,
 0x757894   , ??_C@_01EANLCPLP@y?$AA@                                        , 2     , const char[]
+0x757898   , _ActionSnapXName                                                ,        ,
 0x007578a0 , __real@4066c16c20000000                                        , 8     , const f64
+0x007578a0 , _ActionSnapRotationFactorPc                                     , 8      , const f64
+0x7578a8   , _ActionSnapRotationYName                                        ,        ,
+0x7578b0   , _ActionSnapPlayer2Name                                          ,        ,
+0x7578b8   , _ActionSnapDyName                                               ,        ,
+0x7578bc   , _ActionSnapDxName                                               ,        ,
+0x7578c0   , _ActionSnapSockName                                             ,        ,
 0x007578c8 , _RaceOpponentDistancePrefix                                    ,       ,
+0x7578d4   , _ActionSnapDistanceFromEndName                                  ,        ,
 0x007578e8 , _AICombatOpponentTypeName                                      , 13    , const char[13]
 0x007578f8 , _AICombatLastAttackerName                                      , 14    , const char[14]
 0x00757908 , _AICombatNearestEnemyName                                      , 23    , const char[23]

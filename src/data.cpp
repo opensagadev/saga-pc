@@ -4497,3 +4497,33 @@ extern "C" {
     u32 LAYER_HOVERIGNORE = 0xffffffffu;
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma const_seg(".rdata$ActionSnapPlayer1Name")
+    extern const char ActionSnapPlayer1Name[8] = "player1";
+#pragma const_seg(".rdata$ActionSnapPlayer2Name")
+    extern const char ActionSnapPlayer2Name[8] = "player2";
+#pragma const_seg(".rdata$ActionSnapRotationYName")
+    extern const char ActionSnapRotationYName[5] = "roty";
+#pragma const_seg(".rdata$ActionSnapXName")
+    extern const char ActionSnapXName[2] = "x";
+#pragma const_seg(".rdata$ActionSnapZName")
+    extern const char ActionSnapZName[2] = "z";
+#pragma const_seg(".rdata$ActionSnapDontCheckTerrainName")
+    extern const char ActionSnapDontCheckTerrainName[19] = "dont_check_terrain";
+#pragma const_seg(".rdata$ActionSnapPartyName")
+    extern const char ActionSnapPartyName[6] = "party";
+#pragma const_seg(".rdata$ActionSnapDistanceFromEndName")
+    extern const char ActionSnapDistanceFromEndName[18] = "distance_from_end";
+#pragma const_seg(".rdata$ActionSnapSockName")
+    extern const char ActionSnapSockName[5] = "sock";
+#pragma const_seg(".rdata$ActionSnapDxName")
+    extern const char ActionSnapDxName[3] = "dx";
+#pragma const_seg(".rdata$ActionSnapDyName")
+    extern const char ActionSnapDyName[3] = "dy";
+#pragma const_seg(".rdata$ActionSnapRotationFactorPc")
+    extern const f64 ActionSnapRotationFactorPc = 182.04444885253906;
+#pragma const_seg(".rdata$ActionSnapWeightedRandomZeroPc")
+    extern const f64 ActionSnapWeightedRandomZeroPc = 0.0;
+#pragma const_seg()
+}

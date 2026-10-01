@@ -159,7 +159,8 @@ def _reviewed_data_components(pair, data_pairs):
     return {(pc, aa): labels[find(("pc", pc))] for pc, aa in rows}
 
 
-def _function_retrieval(pair, inputs, seeds, mapped, data_pairs, rejected, scorer, capture_round1=True):
+def _function_retrieval(pair, inputs, seeds, mapped, data_pairs, rejected, scorer, capture_round1=True,
+                        max_rounds=None):
     android, pc = inputs["android"], inputs["pc"]
     pairs, root_by_aa = dict(seeds), {}
     data_components = _reviewed_data_components(pair, data_pairs)
@@ -204,7 +205,8 @@ def _function_retrieval(pair, inputs, seeds, mapped, data_pairs, rejected, score
                 evidence["supports"] = len(roots)
         return support
 
-    for iteration in range(1, scorer.MAX_ROUNDS + 1):
+    round_limit = scorer.MAX_ROUNDS if max_rounds is None else max_rounds
+    for iteration in range(1, round_limit + 1):
         support = score_current()
         ranked, reverse = scorer.ranked_candidates(support)
         if iteration == 1 and capture_round1:
@@ -241,7 +243,9 @@ def _function_retrieval(pair, inputs, seeds, mapped, data_pairs, rejected, score
                          "status": "candidate", "round": None, "rank": rank, "score": evidence["score"],
                          "supports": evidence["supports"], "support_roots": evidence["support_roots"], "evidence": evidence,
                          "alternatives": [{"pc_address": va, "score": item["score"]} for va, item in values[:5]]})
-    return {"rows": rows, "proposals": proposals, "rounds": rounds, "round1": round1 or {}}
+    return {"rows": rows, "proposals": proposals, "rounds": rounds, "round1": round1 or {},
+            "propagation": {"max_rounds": round_limit, "rounds_completed": len(rounds),
+                            "stop_reason": "no-new-pairs" if rounds and not rounds[-1]["new_pairs"] else "round-limit"}}
 
 
 def _evaluate_functions(result, held, pair):
@@ -375,7 +379,7 @@ def _similarity_evaluation(run, paths, selection, result, pair):
 
 
 def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdout_selection=None,
-                    similarity_candidates=None, pair=None, registry_descriptors=None):
+                    similarity_candidates=None, pair=None, registry_descriptors=None, max_rounds=None):
     """Generate ignored research outputs; caller publishes through IdentificationRun."""
     if __package__:
         from . import identification as scorer
@@ -441,12 +445,21 @@ def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdou
                 if query.get("android_address") is not None and seeds.get(pva) != graph.address(query["android_address"]):
                     raise ValueError("Fixed evaluation label disagrees with frozen map seed")
     rejected = journal["rejected"]
+    reviewed_functions = set(graph.normalize_pairs(pair, journal["function_pairs"]))
+    with (run.work_dir / "function-seeds.snapshot.jsonl").open("w") as stream:
+        for pva, ava in sorted(seeds.items()):
+            pc_id, aa_id = pair["pc"].resolve(pva, "function"), pair["android"].resolve(ava, "function")
+            stream.write(json.dumps({"pc": pc_id, "android": aa_id, "pc_address": pva,
+                                     "android_address": ava, "source_name": inputs["android"][ava]["source_name"],
+                                     "origin": "reviewed-journal" if (pc_id, aa_id) in reviewed_functions else "accepted-map-unique-name",
+                                     "status": "seed", "new_mapping": False}, sort_keys=True) + "\n")
     data_state, data_delta = graph.replay_state(pair, seeds, data_pairs, rejected,
                                                previous=run.previous_state,
                                                context={"map_sha256": run.inputs["symbols"]["sha256"],
                                                         "decisions_sha256": journal["fingerprint"]},
                                                reserved_data_pairs=data_labels)
-    result = _function_retrieval(pair, inputs, seeds, mapped, data_pairs, rejected, scorer, capture_round1=False)
+    result = _function_retrieval(pair, inputs, seeds, mapped, data_pairs, rejected, scorer,
+                                 capture_round1=False, max_rounds=max_rounds)
     data_rows = data_state["data_candidates"]
     held_metrics = None
     evaluated_result = result
@@ -491,7 +504,8 @@ def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdou
             for va in held_function_vas:
                 split_inputs["pc"][va] = {**inputs["pc"][va], "analysis_name": ""}
             evaluated_result = _function_retrieval(split["pair"], split_inputs, training_seeds, reserved,
-                                                   training_reviewed_data, training_rejected, scorer)
+                                                   training_reviewed_data, training_rejected, scorer,
+                                                   max_rounds=max_rounds)
             held_metrics = _evaluate_functions(evaluated_result, split["held"], pair)
         held_metrics.update({"mode": holdout_mode, "training_function_seeds": len(training_seeds),
                              "training_data_anchors": len(training_reviewed_data),
@@ -587,6 +601,7 @@ def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdou
                "map_name_data_labels": len(map_data_labels), "data_holdout_labels": len(data_labels),
                "data_candidate_pairs": len(data_rows), "function_candidate_rows": len(result["rows"]),
                "inferred_function_pairs": len(result["proposals"]), "iterations": result["rounds"],
+               "propagation": result["propagation"],
                "stale_decisions": len(journal["stale"]), "rejections": len(rejected), "source_overlay": source_meta,
                "graph_fingerprints": {side: pair[side].fingerprint for side in ("pc", "android")},
                "holdout": held_metrics,
@@ -600,13 +615,16 @@ def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdou
 
 
 def generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdout_selection=None,
-                   similarity_candidates=None, registry_descriptors=None):
+                   similarity_candidates=None, registry_descriptors=None, max_rounds=None):
     """Own/close lazy original graph indices while the run owns publication."""
+    if max_rounds is not None and (isinstance(max_rounds, bool) or not isinstance(max_rounds, int)
+                                   or not 1 <= max_rounds <= 64):
+        raise ValueError("max_rounds must be an integer between 1 and 64")
     pair = _register_pair(run, joint_graph)
     try:
         return _generate_joint(run, joint_graph, holdout=holdout, holdout_mode=holdout_mode,
                                holdout_selection=holdout_selection, similarity_candidates=similarity_candidates,
-                               pair=pair, registry_descriptors=registry_descriptors)
+                               pair=pair, registry_descriptors=registry_descriptors, max_rounds=max_rounds)
     finally:
         for side in ("pc", "android"):
             if isinstance(pair[side], graph.IndexedGraph):

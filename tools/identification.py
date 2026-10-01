@@ -34,6 +34,12 @@ MIN_SUPPORTS_TO_PROPAGATE = 2
 MIN_RAW_MARGIN = 0.08
 
 
+def propagation_status(rounds, max_rounds):
+    """Distinguish a stopped cascade from one cut short by its work limit."""
+    return {"max_rounds": max_rounds, "rounds_completed": len(rounds),
+            "stop_reason": "no-new-pairs" if rounds and rounds[-1]["new_pairs"] == 0 else "round-limit"}
+
+
 def input_provenance(run=None):
     """Fingerprint the actual inputs and corroborate exported direct PC calls."""
     pe = lib.retail(run.target if run else lib.project()["target"])
@@ -99,15 +105,15 @@ def refresh_features(android_root, run=None):
 
 
 def benchmark(android, pc, seeds, mapped, a_out, a_in, p_out, p_in,
-              a_features=None, p_features=None, output_dir=None):
+              a_features=None, p_features=None, output_dir=None, max_rounds=MAX_ROUNDS):
     """Hide every fourth known pair before scoring; no names of held pairs seed calls."""
     held = {va: aa for index, (va, aa) in enumerate(sorted(seeds.items())) if index % 4 == 0}
     training = {va: aa for va, aa in seeds.items() if va not in held}
     known = {va: row for va, row in mapped.items() if va not in held}
     expected = {aa: va for va, aa in held.items()}
-    pairs, predictions = dict(training), []
+    pairs, predictions, rounds = dict(training), [], []
     connected = top1 = top5 = 0
-    for iteration in range(1, MAX_ROUNDS + 1):
+    for iteration in range(1, max_rounds + 1):
         support = score_round(android, pc, pairs, set(training), a_out, a_in, p_out, p_in,
                               known, a_features, p_features)
         ranked, reverse = ranked_candidates(support)
@@ -118,6 +124,7 @@ def benchmark(android, pc, seeds, mapped, a_out, a_in, p_out, p_in,
                 top1 += bool(options and options[0][0] == va)
                 top5 += va in [candidate for candidate, _ in options[:MAX_ALTERNATIVES]]
         accepted_android = set(pairs.values())
+        before = len(pairs)
         for va, aa, evidence, am, pm in eligible_propagations(ranked, reverse):
             if va in pairs or aa in accepted_android:
                 continue
@@ -129,10 +136,15 @@ def benchmark(android, pc, seeds, mapped, a_out, a_in, p_out, p_in,
                                     "correct": va == expected[aa], "raw_score": evidence["score"],
                                     "android_margin": am, "pc_margin": pm,
                                     "evidence": support_names(evidence, android)})
+        added = len(pairs) - before
+        rounds.append({"iteration": iteration, "new_pairs": added})
+        if not added:
+            break
     result = {"held_out": len(held), "training_seeds": len(training),
               "round1_connected": connected, "round1_top1_correct": top1,
               "round1_top5_correct": top5, "held_out_proposed": len(predictions),
               "held_out_correct": sum(row["correct"] for row in predictions),
+              "propagation": propagation_status(rounds, max_rounds),
               "warning": "Existing mappings are labels; this biased sample does not calibrate probabilities for unknown functions."}
     ((Path(output_dir) if output_dir else OUT) / "holdout.json").write_text(json.dumps({**result, "predictions": predictions}, indent=2) + "\n")
     return result
@@ -495,7 +507,8 @@ def support_names(evidence, android):
     return ";".join(sorted(set(labels)))
 
 
-def _generate(run, holdout=False, source_graph=None, refresh=False, android_root=ROOT.parent / "saga"):
+def _generate(run, holdout=False, source_graph=None, refresh=False, android_root=ROOT.parent / "saga",
+              max_rounds=MAX_ROUNDS):
     """Write research hypotheses only; never change the accepted symbol map."""
     out = run.work_dir
     run.validate_inputs()
@@ -526,7 +539,7 @@ def _generate(run, holdout=False, source_graph=None, refresh=False, android_root
     seed_pc = set(seed_map)
     pair_map = dict(seed_map)
     rounds = []
-    for iteration in range(1, MAX_ROUNDS + 1):
+    for iteration in range(1, max_rounds + 1):
         candidate_support = score_round(a_out_graph, pc, pair_map, seed_pc,
                                         a_out, a_in, p_out, p_in, mapped, a_features, p_features)
         ranked, reverse_rank = ranked_candidates(candidate_support)
@@ -645,6 +658,7 @@ def _generate(run, holdout=False, source_graph=None, refresh=False, android_root
                "mapped_pc_addresses": len(mapped), "unique_name_seeds": len(seed_map),
                "mapped_address_alias_conflicts_excluded_from_seeds": len(ambiguous_pc_addresses),
                "inferred_pairs": len(inferred), "ledger_rows": len(rows),
+               "propagation": propagation_status(rounds, max_rounds),
                "iterations": [{"iteration": state["iteration"], "mutual_top_proposals": len(state["proposals"]),
                                "new_pairs": state["new_pairs"]}
                               for state in rounds],
@@ -667,7 +681,7 @@ def _generate(run, holdout=False, source_graph=None, refresh=False, android_root
                      "frequency weight; tentative anchors contribute 0.35 of a seed edge. Exact referenced strings "
                      "and normalized named-data anchors from the bounded parallel reference exports also create "
                      "direct feature evidence, down-weighted by feature frequency. A small extent-ratio "
-                     "term breaks ties only. Up to four rounds propagate one-to-one mutual-top pairs only when "
+                     f"term breaks ties only. Up to {max_rounds} rounds propagate one-to-one mutual-top pairs only when "
                      f"there are at least {MIN_SUPPORTS_TO_PROPAGATE} distinct supports, raw score is at least 0.25, "
                      f"and both raw score margins are at least {MIN_RAW_MARGIN}. These are workflow filters, not "
                      "confidence calibration.\n\n")
@@ -681,7 +695,8 @@ def _generate(run, holdout=False, source_graph=None, refresh=False, android_root
     summary["source_overlay"] = source_meta
     if holdout:
         summary["holdout"] = benchmark(a_out_graph, pc, seed_map, mapped,
-                                       a_out, a_in, p_out, p_in, a_features, p_features, output_dir=out)
+                                       a_out, a_in, p_out, p_in, a_features, p_features, output_dir=out,
+                                       max_rounds=max_rounds)
     (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     return summary
 
@@ -696,8 +711,10 @@ else:
 def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.parent / "saga",
              analysis_dir=None, symbols=None, reviewed_pairs=None, run=None,
              joint_graph=None, holdout_mode="pair", holdout_selection=None,
-             similarity_candidates=None, registry_descriptors=None):
+             similarity_candidates=None, registry_descriptors=None, max_rounds=MAX_ROUNDS):
     """Snapshot inputs and atomically publish a completed research run."""
+    if isinstance(max_rounds, bool) or not isinstance(max_rounds, int) or not 1 <= max_rounds <= 64:
+        raise ValueError("max_rounds must be an integer between 1 and 64")
     if holdout_mode != "pair" and not holdout:
         raise ValueError("A family or data holdout requires --holdout")
     if holdout_selection and not (holdout or similarity_candidates):
@@ -726,11 +743,11 @@ def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.
             summary = generate_joint(run, joint_graph, holdout=holdout,
                                      holdout_mode=holdout_mode, holdout_selection=holdout_selection,
                                      similarity_candidates=similarity_candidates,
-                                     registry_descriptors=registry_descriptors)
+                                     registry_descriptors=registry_descriptors, max_rounds=max_rounds)
         else:
             if holdout_mode != "pair" or holdout_selection or similarity_candidates or reviewed_pairs:
                 raise ValueError("Review journals, similarity and explicit/family/data holdouts require --joint-graph")
-            summary = _generate(run, holdout, source_graph, refresh, android_root)
+            summary = _generate(run, holdout, source_graph, refresh, android_root, max_rounds=max_rounds)
             if "android_original" not in run.inputs:
                 summary["android_original_identity"] = "unavailable: legacy call graph has no verified original ELF fingerprint"
         run.publish(summary)

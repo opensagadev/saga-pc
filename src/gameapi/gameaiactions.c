@@ -1040,7 +1040,7 @@ choose_level:
     return 1;
 }
 
-static const char RaceOpponentDistancePrefix[9] = "distance";
+const char RaceOpponentDistancePrefix[9] = "distance";
 
 i32 __cdecl Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                 i32 count, i32 first_time, f32 elapsed) {
