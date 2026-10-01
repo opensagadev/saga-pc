@@ -8,16 +8,16 @@
     "src/externals.h": "3382382faeac231f3c7962ffb276f5c091463416d3cd41afd89c57fe6c4eef62",
     "src/saga.h": "bc18ee32ad09246d69582fd9c4bcfa4d4b1b68b690889e94fe80334ff46d6788",
     "config/data.md": "b46d28a41b8d3d2d61ee37a9eaee793a8857aed771d8c46412ec3df2a8c151a1",
-    "config/identification-decisions.jsonl": "9cbb49625e2084b19fc7b88adf131cdfceb7acff7f826d3c08c45fb3e0708c1a",
+    "config/identification-decisions.jsonl": "af102e9d16720a15f28e5aac6846a7f485cb6f2e49c081f86f64d372a431a572",
     "config/identification-plan.md": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
-    "config/identification-tools.md": "9b9179ae09a30da86b8173dc6691413500e294dee019844566e03ca65d16de64",
+    "config/identification-tools.md": "b6da319a1c45dbce288dc7cb846d4c6b53a2e556dc6c17fa18c90b92ae6d857c",
     "config/identification.md": "ecfbf8977bb20b3c0b8fc8cf0c4a7cc7d7cd0f9915f3abe77145c532651e31e4",
     "config/numain.md": "b1bf36c6b55647064f79402997c5d956060e13cbf6d6648bcde831ea4e0c5e74",
     "config/progress-plan.md": "cf144b1f5e0b8d5d0a17e0f2a1d065ad64c13a95d1b491c88792e046bb65a3ff",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
     "config/strategy.md": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
-    "config/symbols.csv": "1ea699609866e6c7accb35ce2f878a9c442a720d8d1ca22185ce18a5a1efa432",
-    "config/symbols.md": "1f0467acf40fdf04d4122c2b56dc70815a56c014e9debc86c0d98e3d29623e6a",
+    "config/symbols.csv": "3a728d6ee6bf7004ec0a6cf827821252d6cfdf55ac236579d13a36c4466afecb",
+    "config/symbols.md": "ffd70509267c1f517627392726b46505db493ae16077ce0855856630ea863ea0",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
@@ -27,7 +27,7 @@
     "tools/check.py": "304e380caa8ba84da40f4b68421cb4b63c760271070aa1111d579648791ab6e8",
     "tools/identification.py": "eb8678dbbeea7e30684a191a3e6cd76690d223ee87f3e9f4b9fff14b31591f8f",
     "tools/identification_graph.py": "e73e652683a1641ace0a5956e155c905af8cb87e45b5309e4eba0e929aa0e4ad",
-    "tools/identification_inspect.py": "1a3e4a3277a1e155885bd3f0eedeec5b4cc4d99cd4e07a04c9136ca1bf95da47",
+    "tools/identification_inspect.py": "1bdaa9f14aacdf9b5e3cae97ed04b34da59558dc20ee36417148b0b716fcdcc1",
     "tools/identification_joint.py": "511d0f76a00dd0b5bcd18d4d60d4f5ba09a183802c7c4eb32ae6e5d8e5e1f885",
     "tools/identification_limits.py": "c44fb5fb1eacd2f20126515e28421863eb4c66d35250340ba1708e2c4f9440cb",
     "tools/identification_literals.py": "52b26a61109aed9711523d3d852d3222b7fbc0de786f013503f9246cf90e610c",
@@ -51,7 +51,7 @@
     "tools/test_ghidra_graph.py": "d5dd21767cef88b78204d9323adf7feaa62cceecba6ac7a71f326db3f53b99fa",
     "tools/test_identification.py": "0abb6f78c0a8a8897fd288a35598af638ad331869631e81f2ff57b7124124034",
     "tools/test_identification_graph.py": "2a1b03cb9284b2e121b7109a0cc3c1d03f47973906deda30df2a4bf259f40699",
-    "tools/test_identification_inspect.py": "aea76917abdd85495606cc1829af0a7bbe6a9fc4551f18066f99359e17d8d59d",
+    "tools/test_identification_inspect.py": "26a4a51eeb54303684e0ae7f8a5069ef8adddc64a0cf51f431305bb51afeef8c",
     "tools/test_identification_joint.py": "add50bb38db9cdccb806097aa95fbfb5e33e9c268c24863868b27e0817140b91",
     "tools/test_identification_limits.py": "de46aa361901c31ca434236504cf318f64a9dc5b1a52042e0957dd1b3d3e9bb6",
     "tools/test_identification_literals.py": "4464803d23947e66a0669c4d36fa1cd6da53cf7707936fab81221b687be1bd43",
@@ -541,6 +541,16 @@
       ],
       "status": "different",
       "objdiff_percent": 76.818535
+    },
+    {
+      "name": "TerrainPlayer",
+      "symbol": "_TerrainPlayer",
+      "address": "0x00416d60",
+      "units": [],
+      "target_size": 7994,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "AnakinGreenSabre",
@@ -2253,6 +2263,16 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "Action_SetGravityHeight",
+      "symbol": "_Action_SetGravityHeight",
+      "address": "0x0044c5f0",
+      "units": [],
+      "target_size": 342,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_ApplyGravity",
       "symbol": "_Action_ApplyGravity",
       "address": "0x0044ca00",
@@ -2308,6 +2328,146 @@
       "address": "0x0044ccd0",
       "units": [],
       "target_size": 110,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetVisibility",
+      "symbol": "_Action_SetVisibility",
+      "address": "0x0044cd40",
+      "units": [],
+      "target_size": 187,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_EnableSock",
+      "symbol": "_Action_EnableSock",
+      "address": "0x0044ce00",
+      "units": [],
+      "target_size": 288,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_AddDebris",
+      "symbol": "_Action_AddDebris",
+      "address": "0x0044cf20",
+      "units": [],
+      "target_size": 495,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_JudderGameCamera",
+      "symbol": "_Action_JudderGameCamera",
+      "address": "0x0044d110",
+      "units": [],
+      "target_size": 246,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CameraShake",
+      "symbol": "_Action_CameraShake",
+      "address": "0x0044d210",
+      "units": [],
+      "target_size": 227,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_ResetGameCamera",
+      "symbol": "_Action_ResetGameCamera",
+      "address": "0x0044d300",
+      "units": [],
+      "target_size": 27,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_PlayCutScene",
+      "symbol": "_Action_PlayCutScene",
+      "address": "0x0044d320",
+      "units": [],
+      "target_size": 103,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetLevelPath",
+      "symbol": "_Action_SetLevelPath",
+      "address": "0x0044d390",
+      "units": [],
+      "target_size": 212,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetHint",
+      "symbol": "_Action_SetHint",
+      "address": "0x0044d470",
+      "units": [],
+      "target_size": 142,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_SetHintComplete",
+      "symbol": "_Action_SetHintComplete",
+      "address": "0x0044d500",
+      "units": [],
+      "target_size": 103,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CancelHint",
+      "symbol": "_Action_CancelHint",
+      "address": "0x0044d570",
+      "units": [],
+      "target_size": 11,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_DisableNarrowSocks",
+      "symbol": "_Action_DisableNarrowSocks",
+      "address": "0x0044d580",
+      "units": [],
+      "target_size": 61,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CnxController",
+      "symbol": "_Action_CnxController",
+      "address": "0x0044d900",
+      "units": [],
+      "target_size": 1581,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CnxHelper",
+      "symbol": "_Action_CnxHelper",
+      "address": "0x0044df30",
+      "units": [],
+      "target_size": 445,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -2657,6 +2817,16 @@
       "status": "not implemented"
     },
     {
+      "name": "Action_TriggerBlowUp",
+      "symbol": "_Action_TriggerBlowUp",
+      "address": "0x004502b0",
+      "units": [],
+      "target_size": 140,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_ForcePush",
       "symbol": "_Action_ForcePush",
       "address": "0x00450340",
@@ -2699,6 +2869,26 @@
       ],
       "status": "different",
       "objdiff_percent": 81.23204
+    },
+    {
+      "name": "Action_EndCameraCut",
+      "symbol": "_Action_EndCameraCut",
+      "address": "0x00451c20",
+      "units": [],
+      "target_size": 176,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_DontRaycastLOS",
+      "symbol": "_Action_DontRaycastLOS",
+      "address": "0x00451cd0",
+      "units": [],
+      "target_size": 121,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "Action_FollowCharacter",
@@ -2773,6 +2963,86 @@
       "objdiff_percent": 91.94924
     },
     {
+      "name": "Action_HelpWithTriggers",
+      "symbol": "_Action_HelpWithTriggers",
+      "address": "0x00452a60",
+      "units": [],
+      "target_size": 1545,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_UseTriggerSet",
+      "symbol": "_Action_UseTriggerSet",
+      "address": "0x00453070",
+      "units": [],
+      "target_size": 268,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_PullLever",
+      "symbol": "_Action_PullLever",
+      "address": "0x00453180",
+      "units": [],
+      "target_size": 568,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_UsePanel",
+      "symbol": "_Action_UsePanel",
+      "address": "0x004533c0",
+      "units": [],
+      "target_size": 530,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_UseTechno",
+      "symbol": "_Action_UseTechno",
+      "address": "0x004535e0",
+      "units": [],
+      "target_size": 546,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_ReleaseLocator",
+      "symbol": "_Action_ReleaseLocator",
+      "address": "0x00453810",
+      "units": [],
+      "target_size": 143,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_AssignLocator",
+      "symbol": "_Action_AssignLocator",
+      "address": "0x004538a0",
+      "units": [],
+      "target_size": 502,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_GetLocatorFromSet",
+      "symbol": "_Action_GetLocatorFromSet",
+      "address": "0x00453aa0",
+      "units": [],
+      "target_size": 1159,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Action_UseTimeBasedUpdate",
       "symbol": "_Action_UseTimeBasedUpdate",
       "address": "0x00455290",
@@ -2788,6 +3058,16 @@
       "address": "0x00455320",
       "units": [],
       "target_size": 201,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Action_CircleLocator",
+      "symbol": "_Action_CircleLocator",
+      "address": "0x00456080",
+      "units": [],
+      "target_size": 517,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -19357,6 +19637,16 @@
       "status": "not implemented"
     },
     {
+      "name": "GizObstacles_AddGizmos",
+      "symbol": "_GizObstacles_AddGizmos",
+      "address": "0x00558710",
+      "units": [],
+      "target_size": 92,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "GizmoObstacle_GetGizmoName",
       "symbol": "_GizmoObstacle_GetGizmoName",
       "address": "0x00558770",
@@ -19745,6 +20035,16 @@
       "objdiff_percent": 81.13158
     },
     {
+      "name": "AddGizmo",
+      "symbol": "_AddGizmo",
+      "address": "0x00559ee0",
+      "units": [],
+      "target_size": 112,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "GizmoFindByName",
       "symbol": "_GizmoFindByName",
       "address": "0x0055a020",
@@ -19887,6 +20187,16 @@
       ],
       "status": "different",
       "objdiff_percent": 83.41129
+    },
+    {
+      "name": "GizmoSysAddGizmos",
+      "symbol": "_GizmoSysAddGizmos",
+      "address": "0x0055af20",
+      "units": [],
+      "target_size": 169,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "GizmoActivateReverse",
@@ -72827,6 +73137,16 @@
       "status": "exact"
     },
     {
+      "name": "FalconDebKey",
+      "symbol": "_FalconDebKey",
+      "address": "0x007f5dc4",
+      "units": [],
+      "target_size": 8,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "timebase_updates",
       "symbol": "_timebase_updates",
       "address": "0x007f6588",
@@ -91631,6 +91951,16 @@
       "status": "exact"
     },
     {
+      "name": "takeoverobjects",
+      "symbol": "_takeoverobjects",
+      "address": "0x00956458",
+      "units": [],
+      "target_size": 352,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "BuckStartExtraFn",
       "symbol": "_BuckStartExtraFn",
       "address": "0x0095662c",
@@ -94230,6 +94560,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "edpp_ptls",
+      "symbol": "_edpp_ptls",
+      "address": "0x02924b70",
+      "units": [],
+      "target_size": 45056,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "CurTerr",
@@ -99731,16 +100071,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 473768,
+    "mapped_code_bytes": 492820,
     "matched_code_bytes": 45746,
     "matching_percent": 1.3178553176582704,
     "fuzzy_coverage_percent": 6.211660510525754,
-    "mapped_functions": 1941,
+    "mapped_functions": 1972,
     "matched_functions": 801,
     "objdiff_fuzzy_percent": 61.122322,
     "objdiff_total_code": 352861,
     "image_bytes": 40067072,
-    "mapped_bytes": 972011,
-    "mapping_percent": 2.4259596508574424
+    "mapped_bytes": 1036479,
+    "mapping_percent": 2.5868598533978227
   }
 }

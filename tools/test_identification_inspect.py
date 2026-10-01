@@ -230,4 +230,77 @@ class InspectorTests(unittest.TestCase):
         with self.assertRaises(SystemExit): inspector.main(['--pair','missing','--pc','1','--android','1','--output',str(self.root/'bad')])
 
 
+class SymbolLabelTests(unittest.TestCase):
+    setUp = InspectorTests.setUp
+    node = InspectorTests.node
+    edge = InspectorTests.edge
+    cache = InspectorTests.cache
+    def symbol_map(self, content):
+        path = self.root / 'symbols.csv'
+        path.write_text('address,symbol,size,ctype\n' + content)
+        return path
+
+    def pair_fixture(self):
+        self.node(1); self.node(1, 'data-site'); self.node(2)
+        self.edge(1, node_id(self.sha, 'function', 1), node_id(self.sha, 'function', 2))
+        path, _ = self.cache()
+        pair = self.root / 'pair.json'
+        pair.write_text(json.dumps({'schema': PAIR_SCHEMA, 'pc': path.name, 'android': path.name}))
+        return pair
+
+    def test_exact_alias_labels_no_extent_or_android_inference(self):
+        pair = self.pair_fixture()
+        symbols = self.symbol_map('0x1,first,,\n0x1,alias,99,i32\n0x3,interior,4,i32\n')
+        plain = inspector.inspect_pair(pair, 1, 1)
+        labeled = inspector.inspect_pair(pair, 1, 1, symbols=symbols)
+        self.assertEqual(plain['sides'], labeled['sides'])
+        self.assertNotIn('presentation_labels', plain)
+        names = labeled['presentation_labels']['pc']
+        self.assertEqual(len(names), 1)
+        self.assertEqual(next(iter(names.values()))['names'], ['first', 'alias'])
+        self.assertNotIn('android', labeled['presentation_labels'])
+        self.assertNotIn('interior', inspector.mermaid(labeled))
+
+    def test_cap_and_malicious_mermaid_label(self):
+        symbols = self.symbol_map('0x1,"bad ] --> x [ <html> ` quote""",,\n' + ''.join('0x1,name%d,,\n' % i for i in range(8)))
+        rows, provenance = inspector._symbol_snapshot(symbols)
+        packet = {'limitations': [], 'sides': {'pc': {'nodes': [{'id':'pc', 'address':1, 'kind':'function', 'depth':0}], 'edges': []}, 'android': {'nodes': [], 'edges': []}}}
+        inspector._attach_labels(packet, rows, provenance)
+        self.assertEqual(len(packet['presentation_labels']['pc']['pc']['names']), 4)
+        self.assertTrue(packet['presentation_labels']['pc']['pc']['truncated'])
+        diagram = inspector.mermaid(packet)
+        self.assertNotIn('<html>', diagram)
+        self.assertNotIn('--> x', diagram)
+        self.assertIn('stroke-width:3px', diagram)
+        self.assertNotIn('` quote', diagram)
+
+    def test_oversize_map_and_map_race_rejected(self):
+        path = self.symbol_map('0x1,name,,\n')
+        path.write_bytes(b'x' * (2*1024*1024+1))
+        with self.assertRaisesRegex(ValueError, '2 MiB'): inspector._symbol_snapshot(path)
+        path = self.symbol_map('0x1,name,,\n')
+        pair = self.pair_fixture()
+        original = inspector.traverse
+        def changing(*args, **kwargs):
+            result = original(*args, **kwargs)
+            path.write_text('changed')
+            return result
+        with patch.object(inspector, 'traverse', side_effect=changing):
+            with self.assertRaisesRegex(ValueError, 'Symbol map changed'): inspector.inspect_pair(pair, 1, 1, symbols=path)
+
+    def test_same_address_owner_site_labels_and_interior_excluded(self):
+        rows = [{'address': 10, 'symbol': 'allocation', 'size': 100}, {'address': 11, 'symbol': 'interior', 'size': None}]
+        nodes = [{'id': 'owner', 'address': 10}, {'id': 'site', 'address': 10}, {'id': 'neighbor', 'address': 12}]
+        packet = {'limitations': [], 'sides': {'pc': {'nodes': nodes}, 'android': {'nodes': [{'id': 'android', 'address': 10}]}}}
+        inspector._attach_labels(packet, rows, {})
+        self.assertEqual(set(packet['presentation_labels']['pc']), {'owner', 'site'})
+        self.assertNotIn('size', packet['presentation_labels']['pc']['owner'])
+        self.assertEqual(packet['sides']['pc']['nodes'], nodes)
+
+    def test_default_never_reads_symbols(self):
+        pair = self.pair_fixture()
+        with patch('tools.lib.load_symbols', side_effect=AssertionError('implicit map')):
+            inspector.inspect_pair(pair, 1, 1)
+
+
 if __name__ == '__main__': unittest.main()

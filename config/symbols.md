@@ -1369,3 +1369,86 @@ The independent identity/endpoint audit and root streaming preservation audit
 retain separate attribution. Non-registry data review also holds six existing
 owner interiors, the unknown FadeSys allocation and the camera extent; pointee
 or indexed-field references do not prove an independent whole-object allocation.
+
+## Registry and original data continuation
+
+Eleven further AI callbacks cover 7,804 complete PC bytes: HelpWithTriggers,
+UseTriggerSet, PullLever, UsePanel, UseTechno, ReleaseLocator, AssignLocator,
+GetLocatorFromSet, CnxController, CnxHelper and CircleLocator. Original registry
+pointers and independently verified namespaces establish identities before
+disassembly. The original seven-slot dispatcher, each callback's stack and
+nonvolatile-register behavior, terminal extent and original range hash have
+independent reviews. Nine missing entries are repaired on a project copy;
+GetLocatorFromSet and CnxHelper already had analyzed functions. Frozen
+`ai-registry-new-callback-batch8` and its independent audit retain the proof.
+
+The original WorldInfo_Load caller closes the AddGizmos dispatcher gap.
+GizmoSysAddGizmos at `0x55af20` (169 bytes) supplies four arguments to runtime
+callback slot `+0x30`. GizObstacles_AddGizmos at `0x558710` (92 bytes) passes four
+arguments to AddGizmo at `0x559ee0` (112 bytes). Original callers, registration,
+paired bodies and complete extents are independently reviewed; all three
+functions already exist in the graph. Aggregate types remain opaque.
+This supersedes the earlier AddGizmos ABI hold; GetNumOutputs remains held.
+The ignored `gizmo-add-gizmos-dispatcher-closure` and independent audit record
+the actual consumers and original Android PIC materialization.
+
+Three data identities have independently proved original PC storage extents:
+
+| Identity | PC storage | Complete bytes | Original Android storage |
+| --- | --- | ---: | --- |
+| FalconDebKey | `0x7f5dc4` | 8 | `0x61e748` |
+| takeoverobjects | `0x956458` | 352 | `0x12a5d40` |
+| edpp_ptls | `0x2924b70` | 45,056 | `0x11e9ea0` |
+
+FalconDebKey is two signed sentinel keys initialized to -1, with independently
+bounded indices and a separate adjacent float. Takeover storage is explicitly
+cleared for 352 bytes and indexed as eight 44-byte records; its count at
+`0x956628` is separate. The particle base, 512 positions and 88-byte stride alone
+initially left six terminal bytes unproved. Original serializer reads and loader
+writes then established every terminal byte through record offset `+0x57`;
+the final record ends at `0x292fb70`, before an independently allocated pointer.
+The journal preserves the initial identity-only review and explicitly supersedes
+it with the complete extent. Neither Android sizes nor BSS zero fill supply the
+PC allocation proof. Partial aggregate field cohorts remain research; their CSV
+ctypes and type-review flags stay blank/false until declarations are integrated.
+
+Original operands independently reject three previous graph hypotheses:
+PC key capacity `0x29620b4` versus Android debkeydata pointer `0x1203ec0`,
+takeover array `0x956458` versus Android count `0x12a5d30`, and particle instance
+field `0x2924b80` versus Android array base `0x11e9ea0`. These are explicit
+negative journal decisions, not automatic corrections from names. The ignored
+`nonregistry-data-frontier-next2`, its independent audit, and both
+`edpp-particle-storage-boundary` reviews preserve the distinct proofs and holds.
+
+TerrainPlayer is independently identified at PC `0x416d60` / Android `0x1026a0`.
+Its complete PC span is 7,994 bytes through RET `0x418c99`; all 2,143 instructions
+are reachable, with no indirect jump, local table or unexplained interior gap.
+Original UpdateGameObjects callers pass one object pointer and clean four bytes.
+Entry liveness finds no private incoming GPR, XMM, condition-flag or x87 argument;
+the sole return restores the stack and nonvolatile registers. Three initially
+opaque float-return helpers required a separate bounded dependency review.
+Their verified returns close five underdefined floating reads, and all five
+calls enter with owned FP depth zero. The combined core peak is eight, under the
+existing reviewed NuFsqrt contract. Normal DF zero, well-formed local counts and
+conventional other callee effects remain explicit assumptions; full CRT error
+semantics are not newly proved. Return type and aggregate layout remain unknown,
+so the CSV ctype stays blank. Its existing analyzed function needs no repair.
+Frozen `terrain-player-original-closure`, independent/entry-input audits and
+both helper-return audits retain these separate proofs and decode budgets.
+
+Sixteen more reviewed registry callbacks cover 2,881 PC bytes: SetLevelPath,
+ResetGameCamera, PlayCutScene, SetHint, SetHintComplete, CancelHint,
+DisableNarrowSocks, CameraShake, SetGravityHeight, SetVisibility, EnableSock,
+JudderGameCamera, AddDebris, TriggerBlowUp, EndCameraCut and DontRaycastLOS.
+Original registry pointers, namespaces, actual seven-slot dispatch, full paired
+bodies and independent entry/stack/FP/register reviews establish the contracts.
+SetGravityHeight retains all 342 bytes, including six interior LEA padding bytes;
+its 336-byte sparse analysis body is not the complete symbol extent. The two
+Android hint callbacks are twelve-byte no-ops while PC retains richer behavior.
+This platform difference is explicit and does not alter the registry identity.
+SetLevelPath's original Android entry is `0x192910`, verified by original row
+`0x61f534` and the ELF symbol; erroneous `0x19a910` review prose is superseded
+by the independent original-byte audit. Thirteen missing entries require repair;
+CameraShake, SetVisibility and SetGravityHeight already exist. Aggregate types
+remain unreviewed. Frozen `ai-registry-new-callback-batch9` and its independent
+audit preserve the original proof, full ranges and separate decode ledgers.

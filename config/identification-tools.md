@@ -400,6 +400,37 @@ candidates, no ambiguous joins and 67 unresolved names: 66 missing PC callbacks
 plus the Android-only CharClipToBlobShadows. These diagnostics remain separate
 from scoring and acceptance. No identification-quality gain is established.
 
+The following checkpoint accepts 31 complete function identities (19,052 PC
+bytes) and three data allocations (45,416 bytes), bringing mapping to
+1,036,479 / 40,067,072 bytes (2.587%). Two registry batches, the AddGizmos family
+and TerrainPlayer retain independent original identity, ABI and extent proofs.
+TerrainPlayer's floating helper dependencies require a separately bounded review;
+its return type stays unknown. The particle array's initially held tail is
+affirmatively proved by original reads and writes, then explicitly superseded in
+the journal. Aggregate declarations remain research, and three incorrect
+count/pointer/interior pairings become explicit exclusions.
+
+Nine then thirteen missing callback entries are repaired on independent copies.
+The latest graph has 8,005 PC functions, preserving all 7,992 prior extents in
+the last job and all explicitly reviewed scalar, literal and switch-table owners.
+Both 512 MiB heap jobs peak below 760 MiB RSS. The Android graph is reused without
+another export. Incremental replay uses a complete verified preceding run and
+peaks at 741 MiB under the 1 GiB Python limit. It has 1,376 accepted function seeds,
+60 reviewed data anchors, five rejected pairs and zero stale decisions. There are
+1,427 tentative function pairs and 1,923 data candidates. Full function candidate
+rows grow from 16,686 to 34,284: 19,798 added, 5,415 changed and 2,200 removed;
+data candidates add 70, change 255 and remove 34. These are evidence deltas,
+not accepted pairs or a retrieval-quality improvement. Registry diagnostics have
+216 physical candidates and 45 unresolved names: 44 missing PC callbacks and the
+Android-only CharClipToBlobShadows. Diagnostics remain outside scoring.
+
+All 123 COFF objects, all 1,941 previous function rows and all 2,528 previous data
+rows remain identical. There are 1,972 function and 2,531 data inventory rows.
+All 801 exact functions and 45,746 exact bytes survive; whole-code fuzzy coverage
+remains 6.211660511%. No additional original code bytes are compiled or compared.
+Optional reviewed PC labels in the bounded inspector are presentation only;
+the AddGizmos depth-two view uses 31 MiB RSS and preserves raw graph evidence.
+
 ```sh
 python3 tools/repair_graph.py \
   --config build/analysis/identification/current-graphs/export-config.json \
@@ -689,6 +720,16 @@ The first real `WalkBackwards` depth-two probe used 28 MiB RSS and 0.73 seconds,
 with explicit node/fanout truncation. This inspection has no scoring, acceptance,
 state, journal or source overlay effects.
 
+Add `--symbols config/symbols.csv` to show reviewed PC map names in a separate
+presentation layer. This explicit input is read once into a private immutable
+snapshot, parsed with the normal map parser, and pinned by hash and file identity
+through traversal. Its limit is 2 MiB. Only exact retained PC addresses receive
+labels, capped at four names of 96 characters; parents and interior sites are not
+rebound. Original nodes, edges, owners and unknown extents remain unchanged, and
+no Android name or cross-binary identity is inferred. Mermaid labels use a fixed
+safe character alphabet. The real PunchCode probe used 28 MiB RSS; the inspector
+suite has 25 synthetic tests, including changed-input and hostile-label cases.
+
 Persistent function state contains compact summaries and an exact digest of each
 full evidence row. Replay streams legacy state row by row, so an old 100 MiB
 state does not allocate another complete evidence tree. Data rows retain full
@@ -861,6 +902,16 @@ alternative shortlist. Annotated PC names may contain accepted-map labels, so
 this saved pilot is not a leakage-free holdout evaluation. No pair was accepted
 automatically and no identification-quality gain is established by setup success.
 
+A later retrospective check queries only 30 original-reviewed entries from two
+AI callback batches and the AddGizmos family. Eight have saved BinDiff selections;
+all eight select different Android counterparts. The other 22 have no selected
+pair, which does not establish their absence from BinExport. This fixed sample,
+saved warnings and annotated inputs do not establish general accuracy. They do
+reinforce keeping BinDiff assignments advisory and using original registries,
+callers and complete-body review as authority. The ignored
+`continuation/reviewed-new-callback-bindiff-diagnostic` pins the originals and
+records every selected counterpart and normalization.
+
 ## Verification and boundaries
 
 Fixture exports and adapter tests verify serialization, normalization and
@@ -874,14 +925,13 @@ tooling/map changes. Keep generated graphs, original bytes, H2 databases and
 downloaded binaries ignored. Only tooling, synthetic tests, reviewed proposals
 and documentation belong in tracked changes.
 
-The latest checkpoint `make -j2 check` passed 386 tests (three optional Ghidra fixture skips), source
+The latest checkpoint `make -j2 check` passed 391 tests (three optional Ghidra fixture skips), source
 formatting and Clang-tidy. The object check passed 1,638 function and 2,604 data
 definitions across 123 objects. Final compilation/matching checks use two Make
 workers to keep resource use bounded.
 Retail matching preserves all 801 previous exact function rows. Pre-existing
-comparisons are unchanged except the independently corrected Gizmo wrappers
-and ProcessGizmoFlowBox call target. Fuzzy code coverage rounds to 6.212%;
-mapping coverage reaches 2.426%.
+comparisons and all 123 object hashes are unchanged in this inventory release.
+Fuzzy code coverage rounds to 6.212%; mapping coverage reaches 2.587%.
 The first pushed tool snapshot exposed a test relying on a local ignored file;
 the fixture now isolates both repository roots and its job lock, so the required
 legacy-default inputs are entirely synthetic.

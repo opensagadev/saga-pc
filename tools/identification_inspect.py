@@ -10,6 +10,8 @@ if __name__ == '__main__':
 
 import argparse
 import json
+import hashlib
+import tempfile
 import sqlite3
 import time
 from contextlib import ExitStack, closing
@@ -198,7 +200,56 @@ def traverse(db, manifest, va, depth=1, edge_budget=256, deadline=None):
         result['truncations'] = sorted(set(result['truncations']))
 
 
-def inspect_pair(pair_path, pc, android, depth=1):
+def _symbol_snapshot(path):
+    """Read explicit map once; reuse canonical parsing on a private snapshot."""
+    try:
+        from .lib import load_symbols
+    except ImportError:
+        from lib import load_symbols
+    path = Path(path).resolve()
+    signature = _signature(path)
+    if signature[2] > 2 * 1024 * 1024:
+        raise ValueError('Symbol map exceeds 2 MiB budget')
+    with path.open('rb') as stream:
+        raw = stream.read(2 * 1024 * 1024 + 1)
+    if len(raw) > 2 * 1024 * 1024 or _signature(path) != signature:
+        raise ValueError('Symbol map changed or exceeds budget')
+    with tempfile.TemporaryDirectory(prefix='inspection-symbols-') as directory:
+        snapshot = Path(directory) / 'symbols.csv'
+        snapshot.write_bytes(raw)
+        rows = load_symbols(snapshot)
+    return rows, {'path': str(path), 'sha256': hashlib.sha256(raw).hexdigest(),
+                  'signature': signature, 'role': 'presentation-only reconstructed accepted-map labels',
+                  'max_names_per_node': 4, 'max_name_characters': 96}
+
+
+def _attach_labels(packet, rows, provenance):
+    retained = {node['address'] for node in packet['sides']['pc']['nodes']}
+    labels = {}
+    counts = {}
+    for row in rows:
+        va = row['address']
+        if va not in retained:
+            continue
+        counts[va] = counts.get(va, 0) + 1
+        names = labels.setdefault(va, [])
+        if len(names) < 4:
+            names.append(row['symbol'][:96])
+    packet['presentation_labels'] = {'provenance': provenance,
+        'pc': {node['id']: {'names': labels[node['address']],
+                           'total_names': counts[node['address']],
+                           'truncated': counts[node['address']] > 4}
+               for node in packet['sides']['pc']['nodes'] if node['address'] in labels}}
+    packet['limitations'].append('Explicit PC map labels are reconstructed presentation annotations; they prove no graph identity, ABI, type or extent.')
+
+
+def _safe_label(value):
+    # Fixed safe alphabet avoids HTML/entities, Mermaid syntax and Markdown fences.
+    return ''.join(c if c.isascii() and (c.isalnum() or c in ' _.$:+-') else '?' for c in value[:96])
+
+
+def inspect_pair(pair_path, pc, android, depth=1, symbols=None):
+    symbol_rows, symbol_provenance = _symbol_snapshot(symbols) if symbols is not None else (None, None)
     pair_path = Path(pair_path).resolve()
     pair_signatures = {str(pair_path): _signature(pair_path)}
     pair = _json(pair_path)
@@ -218,6 +269,8 @@ def inspect_pair(pair_path, pc, android, depth=1):
               'limitations': ['Supplied pair is advisory; no identity/ABI/type/full extent acceptance.', 'Original VAs are already normalized; no relocation is applied.', 'No candidate, journal, state or source labels loaded.'], 'sides': {}}
     if _signature(pair_path) != pair_signatures[str(pair_path)]:
         raise ValueError('Pair changed before traversal')
+    if symbol_provenance is not None and _signature(symbol_provenance['path']) != symbol_provenance['signature']:
+        raise ValueError('Symbol map changed before traversal')
     deadline, remaining = time.monotonic() + 5, 256
     with ExitStack() as stack:
         for side, va in (('pc', pc), ('android', android)):
@@ -239,6 +292,10 @@ def inspect_pair(pair_path, pc, android, depth=1):
                 raise ValueError('Verified input changed during traversal')
     if _signature(pair_path) != pair_signatures[str(pair_path)]:
         raise ValueError('Pair changed during traversal')
+    if symbol_provenance is not None:
+        if _signature(symbol_provenance['path']) != symbol_provenance['signature']:
+            raise ValueError('Symbol map changed during inspection')
+        _attach_labels(result, symbol_rows, symbol_provenance)
     return result
 
 
@@ -250,7 +307,11 @@ def mermaid(packet):
         ids = {node['id']: f'{side}_{index}' for index, node in enumerate(nodes)}
         lines.append(f'  subgraph {side}["{side.upper()}"]')
         for node in nodes:
-            lines.append(f'    {ids[node["id"]]}["0x{node["address"]:08x} {node["kind"]}"]')
+            extra = packet.get('presentation_labels', {}).get('pc', {}).get(node['id']) if side == 'pc' else None
+            label = (' map: ' + '; '.join(_safe_label(name) for name in extra['names'])) if extra else ''
+            lines.append(f'    {ids[node["id"]]}["0x{node["address"]:08x} {node["kind"]}{label}"]')
+            if 'presentation_labels' in packet and node['depth'] == 0:
+                lines.append(f'    style {ids[node["id"]]} stroke:#2563eb,stroke-width:3px')
         for edge in sorted(view['edges'], key=lambda edge: edge['cached_sequence']):
             source, target = edge.get('source'), edge.get('target')
             if source in ids and target in ids:
@@ -281,6 +342,7 @@ def main(argv=None):
     parser.add_argument('--pc', required=True)
     parser.add_argument('--android', required=True)
     parser.add_argument('--depth', type=int, choices=(1, 2), default=1)
+    parser.add_argument('--symbols', type=Path, help='Explicit PC CSV; presentation only')
     parser.add_argument('--output', type=Path, required=True, help='Fresh output stem under build/analysis')
     args = parser.parse_args(argv)
     root = Path(__file__).resolve().parents[1] / 'build' / 'analysis'
@@ -290,7 +352,7 @@ def main(argv=None):
     outputs = [Path(str(stem) + suffix) for suffix in ('.json', '.md')]
     if any(p.exists() for p in outputs):
         parser.error('Output must be fresh')
-    packet = inspect_pair(args.pair, args.pc, args.android, args.depth)
+    packet = inspect_pair(args.pair, args.pc, args.android, args.depth, symbols=args.symbols)
     payloads = [json.dumps(packet, sort_keys=True, separators=(',', ':')) + '\n', markdown(packet)]
     if sum(len(p.encode()) for p in payloads) > 4 * 1024 * 1024:
         raise ValueError('Output exceeds 4 MiB budget')
