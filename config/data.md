@@ -677,3 +677,22 @@ callback unit. Their original pool/allocation boundaries remain unknown. These
 three views also have blank CSV sizes/ctypes and receive no extent/exact credit.
 All four unknown views resolve compiled references without treating source
 emission sizes or Android allocations as PC ownership proof.
+
+
+## Race and animation-speed literal access views
+
+The source-private RaceOpponentDistancePrefix at `0x007578c8` is exactly the
+nine-byte NUL-backed `distance` initializer. The original substring consumer
+advances by nine; the source does not strengthen it to a `distance=` token.
+Compiler float bindings at `0x0075327c` and `0x0075852c` have independently
+verified bits `0x3f666666` (0.9f) and `0x3f8ccccd` (1.1f). Actual COFF definitions
+resolve through their emitted __real names.
+
+The animation callback's shared `value=` and `multiply_by=` source initializers
+at `0x00757c44` and `0x00757ed0` occupy seven and thirteen emitted bytes including
+NUL. Original PC operands and bytes prove these source initializers and access
+roles. Complete allocation/pooling boundaries and historical data types for all
+five literals remain unknown. Every new CSV row keeps size and ctype blank;
+37 emitted source data bytes earn zero original extent or exact-match credit.
+No first-NUL span, four-byte scalar access or Android allocation size is treated
+as complete PC ownership proof.

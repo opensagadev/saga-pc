@@ -856,6 +856,7 @@ typedef struct APIOBJECT_PC {
     u8 unknown_28c;
     u8 object_id;
 } APIOBJECT_PC;
+STATIC_ASSERT(offsetof(APIOBJECT_PC, owner) == 0);
 STATIC_ASSERT(offsetof(APIOBJECT_PC, ai) == 4);
 STATIC_ASSERT(offsetof(APIOBJECT_PC, position) == 0x5c);
 STATIC_ASSERT(offsetof(APIOBJECT_PC, object_id) == 0x28d);
@@ -3889,7 +3890,7 @@ typedef struct gameobject_s {
     u32 ai_opponent_exclusion_mask[2];
     u32 field_ec0;
     f32 field_ec4;
-    u8 unknown_0ec8[4];
+    f32 movement_speed_scale_pc;
     f32 timer_ecc;
     u8 unknown_0ed0[4];
     f32 run_speed_override;
@@ -3929,7 +3930,9 @@ typedef struct gameobject_s {
     u8 unknown_1024[4];
     f32 hover_height_override;
     f32 collision_scale_override;
-    u8 unknown_1030[0xc];
+    u8 unknown_1030[4];
+    f32 animation_speed_multiplier;
+    u8 unknown_1038[4];
     f32 fall_acceleration_timer;
     u8 unknown_1040[8];
     u32 layer_mask;
@@ -4055,6 +4058,8 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, fall_hover_height) == 0xdb4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, wall_run_state) == 0xe37);
 STATIC_ASSERT(offsetof(GAMEOBJECT, fall_acceleration_timer) == 0x103c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, animation_speed_multiplier) == 0x1034);
+STATIC_ASSERT(offsetof(GAMEOBJECT, movement_speed_scale_pc) == 0xec8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, contact_count) == 0x1078);
 STATIC_ASSERT(offsetof(GAMEOBJECT, move_override) == 0x10b0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, contact_position) == 0x6a8);
@@ -6172,6 +6177,12 @@ extern "C" {
     extern u32 LevelCompletionFallbackFlagPC;
     i32 __cdecl Action_CompleteLevel(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                      char **params, i32 count, i32 first_time, f32 elapsed);
+    i32 __cdecl Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                    i32 count, i32 first_time, f32 elapsed);
+    i32 __cdecl Action_SetAnimSpeedMul(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                       char **params, i32 num_params, i32 first_time, f32 elapsed);
+    extern const char AIAnimSpeedValueName[7];
+    extern const char AIAnimSpeedMultiplyByName[13];
     i32 __cdecl CharIDFromName(char *name);
     i32 __cdecl Cheat_FindByName(char *name);
     void __cdecl Cheat_SetArea(i32 cheat, i32 area_index);

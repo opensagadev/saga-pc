@@ -652,3 +652,11 @@ runtime conditions. No unknown allocation receives extent or exact credit.
 This closes that AI callback's reviewed source dependencies, not the larger
 NuMain loading, rendering and gameplay gaps. RaceOpponent's reviewed movement
 closure is the next source preparation target.
+
+
+RaceOpponent and animation-speed callbacks now use genuine C with existing
+movement, socket and parser providers, adding 976 compared original code bytes.
+Their partial typed field cohorts preserve the object layout; full owner types
+and literal allocations remain held. This extends the reviewed AI source path
+without closing NuMain's unrelated gameplay/loading/rendering gaps. The next
+connected dependency review is UseCurrentSpeed and its CurrentStart provider.

@@ -4334,4 +4334,10 @@ extern "C" {
 #pragma bss_seg(".bss$LevelCompletionFallbackFlagPC")
     u32 LevelCompletionFallbackFlagPC;
 #pragma bss_seg()
+#pragma const_seg(".rdata$AIAnimSpeedValueName")
+    const char AIAnimSpeedValueName[7] = "value=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIAnimSpeedMultiplyByName")
+    const char AIAnimSpeedMultiplyByName[13] = "multiply_by=";
+#pragma const_seg()
 }

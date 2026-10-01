@@ -1351,3 +1351,44 @@ journal additions. Separate source/compiled-contract audits preserve formal
 type, allocation and runtime-domain limitations. The next source cohort is
 RaceOpponent's existing movement closure; speed-control dependencies retain
 specific field and callee holds.
+
+
+## Race and animation-speed checkpoint
+
+The next source transfer implements two previously accepted callbacks covering
+976 original code bytes. Independent current-object audits verify required
+float32 rounding, double distance/lateral operations, NaN and clamp ordering,
+actual call arguments and normal dependency effects. RaceOpponent scores
+91.99448% and SetAnimSpeedMul 85.79032%; neither is exact. Whole-PC fuzzy coverage
+reaches 6.249405124% from 6.224200609%, with native objdiff averaging 61.226074%
+over 354,403 original bytes including the unchanged 55-byte overlap. Every old
+exact function and data result remains unchanged: 801 exact functions and
+45,746 exact code bytes. Mapped extent remains 1,116,538 / 40,067,072; five new
+literal bindings have unknown complete original allocations and receive zero
+extent/exact credit.
+
+The append-only journal explicitly supersedes the previous SetAnimSpeedMul
+same-pair decision, refining its normal parser/source contract while keeping
+formal types false and clearing the prior source-convention CSV signature.
+The first replay correctly rejected the initially missing supersedes ID.
+Root verified all 20 copied baseline files remained unchanged before retry;
+preserved failure logs and a retrospective root command record distinguish
+that observed pre-retry check from later completed-run integrity.
+
+The complete `joint-registry-wave15-run` reuses the unchanged 8,043 PC and
+13,242 Android function graphs. Counts remain 1,431 seeds, 95 reviewed data
+anchors, 15 exclusions, zero stale decisions, 1,309 inferred function pairs,
+16,852 function candidate rows and 2,042 data candidates. These remain advisory;
+source transfer and improved reviewed contracts do not imply a scoring accuracy
+gain. All 20 prior completed-run files were frozen and hash-verified before
+dependent replay. The run finished in 42.34 seconds at 706,168 KiB peak RSS
+(about 690 MiB) under the 1024 MiB address-space cap and shared heavy-job lock;
+that job reported zero swaps.
+
+`make -j2 check` passed 434 tests in 154.480 seconds with three optional Ghidra
+fixture skips, formatting for 126 files and Clang-tidy for 124 units. The source
+EXE links and 1,645 function / 2,616 data definitions resolve across 124 objects.
+Matching and compilation use two workers. Complete owner/type and broader
+runtime safety claims remain held. Next investigate the original CurrentStart
+provider blocking UseCurrentSpeed; PC dogfight-level and zero-speed behavior
+must replace Android-specific assumptions.

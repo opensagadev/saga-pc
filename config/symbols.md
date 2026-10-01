@@ -1858,3 +1858,45 @@ Frozen `completelevel-source-draft-next1-handoff`,
 result, volatile-access and initializer evidence. Normal queue range 0..8 and
 valid initialized runtime/table/string conditions remain explicit; source
 interfaces do not prove unrestricted safety or historical aggregate types.
+
+
+## RaceOpponent and animation-speed source
+
+Action_RaceOpponent (`0x4569b0`, 606 original bytes) and Action_SetAnimSpeedMul
+(`0x44f6e0`, 370) now have genuine C in the existing game action unit. Their
+original registry identities, complete extents and qualified normal physical
+contracts remain separate from formal aggregate types. SetAnimSpeedMul's prior
+CSV signature described a source convention despite type_reviewed being false;
+it is now blank, with an explicit journal supersession naming the earlier
+same-pair decision. The seven-word source declarations do not recover historical
+formal types.
+
+Race uses the existing named APIOBJECT owner/AI prefix, the packet's own script
+processor for parsing and the separate processor's action_data_4 for distance
+state. Actor byte `0x408` is movement_stopped, distinct from goal_speed_mode at
+`0x407`. Its new descriptive float field movement_speed_scale_pc at `0xec8`
+replaces only four opaque bytes. Animation speed similarly exposes only the
+verified float at `0x1034`. Existing GAMEOBJECT offsets and size are preserved.
+
+Independent current-object audits verify Race's two float32 subtraction
+rounding checkpoints before strict double half-distance comparisons, double
+lateral products/addition before the float32 destination store, all eleven
+call targets, and parser/movement arguments. Compiler lateral product order
+is different within the reviewed finite normal domain; no arbitrary NaN-payload
+or exact-byte claim follows. The stable goal-speed callback and normal socket,
+table and math conditions retain their original qualifications.
+
+The animation callback performs immediate value writes, has no first_time
+guard, and applies multiplication/clamping only when the multiplier is not
+ordered-equal to one. Its source-local volatile float enforces the original
+explicit float32 storage/reload before comparisons; this does not claim a
+historical volatile local or volatile GAMEOBJECT field. Actual VC8 output
+preserves maximum-first then minimum clamping, inverted-bound ordering and
+NaN behavior, balanced returns and the normal six-body parser closure.
+
+Full comparison adds 976 original code bytes. Race scores 91.99448% with a
+617-byte rebuilt body; SetAnimSpeedMul scores 85.79032% with a 396-byte body.
+Neither is exact. Frozen source, field, physical-closure and compiled-contract
+reviews remain under `raceopponent-source-*`, `raceopponent-compiled-contract-*`
+and `animspeedmul-source-*` / `animspeedmul-compiled-contract-*`. No original
+bytes are copied into the rebuilt functions or masked out of comparison.

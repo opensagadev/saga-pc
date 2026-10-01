@@ -274,3 +274,23 @@ before instruction ordering refinements. Next prepare the accepted 606-byte
 RaceOpponent callback using the existing movement providers. Speed-control
 callbacks require separate field and dependency review; indirect lookup and
 unmapped providers remain concrete holds. NuMain and gameplay remain partial.
+
+
+## Race and animation-speed transfer
+
+The next connected source release adds 976 original code bytes, reaching
+354,348 unique compared bytes (354,403 with the unchanged 55-byte overlap).
+Whole-PC fuzzy coverage rises from 6.224201% to 6.249405%, a gain of 0.025205
+percentage points. All 801 exact functions and 45,746 exact code bytes remain
+unchanged. Previously accepted code inventory is now implemented, so mapped
+bytes remain 1,116,538 / 40,067,072. Five new literal bindings have unknown
+complete original extents and earn no mapping or exact-data credit.
+
+The release closes RaceOpponent's existing movement/socket/parser providers
+and the animation-speed callback's small parser chain. Both actual compiled
+rounding and argument contracts pass independent review; full original byte
+comparison retains their nonexact regions. Next prepare CurrentStart and
+UseCurrentSpeed as a connected 624-byte source closure. CurrentStart's 288-byte
+PC identity/ABI proposal requires independent approval; its PC dogfight-level
+check differs from Android TwistLevel. The separate SetCurrentSpeed indirect
+lookup remains a concrete unresolved provider boundary.

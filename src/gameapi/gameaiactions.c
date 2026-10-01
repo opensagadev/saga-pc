@@ -1039,3 +1039,109 @@ choose_level:
         CompleteLevel(WORLD);
     return 1;
 }
+
+static const char RaceOpponentDistancePrefix[9] = "distance";
+
+i32 __cdecl Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                i32 count, i32 first_time, f32 elapsed) {
+    GAMEOBJECT *actor;
+    GAMEOBJECT *opponent;
+    APIOBJECT_PC *owner;
+    SOCKPOSITION_PC projected_position;
+    NUVEC opponent_offset;
+    NUVEC actor_offset;
+    NUVEC destination;
+    f64 actor_distance;
+    f32 distance_delta;
+    char *value;
+    i32 index;
+
+    if (packet == NULL || packet->owner == NULL)
+        return 1;
+    owner = (APIOBJECT_PC *)packet->owner;
+    if (owner->owner == NULL)
+        return 1;
+    actor = (GAMEOBJECT *)owner->owner;
+
+    if (first_time != 0) {
+        actor->portal_flags |= 0x4000u;
+        actor->flags_ef4 |= 0x200000u;
+        actor->movement_speed_scale_pc = 1.0f;
+        actor->ai_packet.movement_stopped = 1;
+        processor->action_data_4 = 10.0f;
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], (char *)RaceOpponentDistancePrefix);
+            if (value != NULL)
+                processor->action_data_4 = AIParamToFloat(&packet->script_processor, value + 9);
+        }
+    }
+
+    MoveSockPosition(WORLD->sock_sys, &actor->sock_position, 10.0f, &projected_position);
+    opponent = packet->opponent;
+    if (opponent != NULL && ((APIOBJECT_PC *)opponent)->ai != NULL) {
+        actor_distance = MidDistanceFromSockStart(WORLD->sock_sys, &actor->sock_position);
+        distance_delta = (f32)(actor_distance - MidDistanceFromSockStart(WORLD->sock_sys, &opponent->sock_position));
+        distance_delta = distance_delta - processor->action_data_4;
+        if ((f64)distance_delta > (f64)processor->action_data_4 * 0.5)
+            actor->movement_speed_scale_pc = 0.9f;
+        else if ((f64)distance_delta < -((f64)processor->action_data_4 * 0.5))
+            actor->movement_speed_scale_pc = 1.1f;
+        else
+            actor->movement_speed_scale_pc = 1.0f;
+
+        NuVecSub(&opponent_offset, &opponent->position, &opponent->sock_position.midpoint);
+        NuVecRotateY(&opponent_offset, &opponent_offset, -(i32)opponent->sock_position.heading);
+        NuVecSub(&actor_offset, &actor->position, &actor->sock_position.midpoint);
+        NuVecRotateY(&actor_offset, &actor_offset, -(i32)actor->sock_position.heading);
+        destination.z = 0.0f;
+        destination.y = 0.0f;
+        destination.x = (f32)((f64)opponent_offset.x * 0.5 + (f64)actor_offset.x * 0.5);
+        NuVecAdd(&destination, &destination, &projected_position.midpoint);
+    } else {
+        actor->movement_speed_scale_pc = 1.0f;
+        destination = projected_position.midpoint;
+    }
+
+    AIMoveInstruction(packet, &destination, 0.0f, NULL, 1, 0.0f);
+    return 0;
+}
+
+i32 __cdecl Action_SetAnimSpeedMul(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                   i32 num_params, i32 first_time, f32 elapsed) {
+    GAMEOBJECT *object;
+    f32 multiplier;
+    f32 minimum;
+    f32 maximum;
+    volatile f32 product;
+    char *value;
+    i32 index;
+
+    multiplier = 1.0f;
+    minimum = 0.0f;
+    maximum = 1000000000.0f;
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL)
+        return 1;
+    object = ((APIOBJECT_PC *)packet->owner)->owner;
+    if (num_params == 0)
+        return 1;
+    for (index = 0; index < num_params; index++) {
+        value = NuStrIStr(params[index], (char *)AIAnimSpeedValueName);
+        if (value != NULL)
+            object->animation_speed_multiplier = AIParamToFloat(processor, value + 6);
+        else if ((value = NuStrIStr(params[index], (char *)AIAnimSpeedMultiplyByName)) != NULL)
+            multiplier = AIParamToFloat(processor, value + 12);
+        else if ((value = NuStrIStr(params[index], (char *)AIControlMaximumName)) != NULL)
+            maximum = AIParamToFloat(processor, value + 4);
+        else if ((value = NuStrIStr(params[index], (char *)AIControlMinimumName)) != NULL)
+            minimum = AIParamToFloat(processor, value + 4);
+    }
+    if (multiplier != 1.0f) {
+        product = object->animation_speed_multiplier * multiplier;
+        object->animation_speed_multiplier = product;
+        if (maximum < product)
+            object->animation_speed_multiplier = maximum;
+        else if (minimum > product)
+            object->animation_speed_multiplier = minimum;
+    }
+    return 1;
+}
