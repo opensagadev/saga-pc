@@ -432,3 +432,25 @@ including existing candidates, and have no mapping/extent/source credit.
 Normal function/data/state outputs agree between disabled/enabled runs at the
 same round limit. The final experimental run peaks at 1,006,836 KiB RSS with
 zero swaps; the first 10,000-row guard failure is retained explicitly.
+## Structural anchor cascade
+
+Seven reviewed function identities add 389 mapped code bytes, bringing known
+image extent to 1,119,537 / 40,067,072. Three data identities retain unknown
+allocation/type and zero extent credit. This release adds no source comparison
+bytes: 371,376 compared bytes, 810 exact functions / 46,519 exact code bytes
+and 6.4712667% whole-PC fuzzy coverage remain unchanged.
+
+The improved anchors produce a larger cascade: 1,528 tentative function pairs,
+a net increase of 199, reaching a fixed point after eight rounds. The separate
+function-to-data channel produces 10,835 hypotheses. Its compact CSV now allows
+bounded selection followed by exact JSONL evidence seeks. Candidate counts do
+not measure accuracy; inferred roots must remain explicit and cannot become
+reviewed anchors without original verification.
+
+The disposable repair of the already accepted 192-byte AIPathCnxSetTemporaryBlock
+now preserves all 8,045 prior function extents and adds exactly one function.
+Next replay propagation on that graph, review remaining global caller-signature leads and examine
+selected data users/owners against both originals. Preserve callback/ABI holds
+and unknown allocation boundaries. Heavy jobs remain serialized; the expanded
+data experiment used a 1.5 GiB address-space cap and about 1 GiB peak RSS after
+the original 1 GiB cap safely stopped an earlier attempt.

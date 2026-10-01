@@ -2299,3 +2299,24 @@ The two repaired graph nodes expose the original calls from 0x00449f61 and
 than the same longer run before repair. Original inputs, prior extents and retained
 projects remain pinned. Ignored evidence comprises the two structural callee
 reviews, missing-callee review, repair audit and structural-wave24-root-release.
+## Structural anchor expansion (2026-10-01)
+
+Seven independently reviewed identities add 389 known PC code bytes:
+SetFlicker 0x00414ab0/25, oneAtOnce_SetNumAttackers 0x0043d500/32,
+ResetForceBack 0x004a48f0/13, ResetGameMessages 0x00560b40/32,
+Player_ClearContext 0x0055e4a0/58, PlayDieSfx 0x00548460/209 and
+NuMtlCreate3D 0x005e4d40/20. All historical ctypes remain blank. Original
+identity, complete PC boundaries and physical caller effects are independently
+reviewed; graph scores alone do not authorize names.
+
+Player_ClearContext retains normal callback/provider qualifications.
+PlayDieSfx requires the original null hook or an independently verified ordinary
+one-actor hook. NuMtlCreate3D retains the positive-count, initialized material
+pool and capacity domain, with reviewed normal finalizer/memset effects;
+nonpositive-count/error paths remain held. These qualifications do not establish
+arbitrary callback effects or source implementation completeness.
+
+The release reaches 2,046 mapped functions and 1,119,537 / 40,067,072 known
+mapped image bytes. Three identity-only data rows add no extent credit. The
+mapping release and independent original packets are retained under ignored
+`build/analysis/identification/continuation/structural-wave25-*` evidence.

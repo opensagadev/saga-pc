@@ -1514,3 +1514,39 @@ The full original callback remains nonexact at 54.141594%; source-only linking
 does not establish playable gameplay. Next bounded helper work targets the
 SnapToPosition/SnapToSockPosition family; optional InitSurfaceInfo callback
 951030 and source/query dependencies remain held rather than replaced.
+## Structural propagation and bounded data review (2026-10-01)
+
+The candidate-only data channel now exports a compact
+`tentative-function-data-candidates.csv` alongside the full JSONL evidence.
+Scalar user/root counts support bounded selection; `evidence_record`,
+`evidence_byte_offset` and `evidence_byte_length` locate the exact UTF-8 JSONL
+record. Review selected records with bounded seeks rather than loading the
+whole evidence ledger. Counts alone do not establish independent ancestry,
+identity, original allocation or types. Disabled reruns remove both exports.
+
+The seven function and three data identities grow the longer run from 1,329 to
+1,528 tentative function pairs, with 1,456 accepted function seeds. This batch
+was tested together; the contribution of each anchor is not isolated. Round yields are
+763, 437, 200, 80, 33, 12, 3 and 0: convergence takes eight rounds. Normal data
+candidates number 2,059; the separate experimental channel has 10,835 rows.
+Its CSV is 3,667,180 bytes and full evidence is 315,702,666 bytes. These counts
+describe hypotheses, not verified mappings or measured accuracy.
+
+The expanded experiment safely stopped at its original 1,024 MiB address-space
+limit without publishing a completed run. A separate retry under 1,536 MiB
+completed in 71.20 seconds at 1,055,132 KiB peak RSS with zero swaps. Heavy jobs
+remain serialized. Both the failed capture and successful retry are retained.
+
+Global accepted-caller discovery supplies fifteen unmapped review leads before
+this release. All published lead signatures use direct calls on both sides;
+the broader competitor inventory includes resolved indirect calls. The missing
+target audit separates eleven direct edges to nine local text targets from
+twenty computed calls to sixteen synthetic external targets. Those external
+targets are not missing local functions.
+
+A further disposable repair restores the already accepted
+`AIPathCnxSetTemporaryBlock` at `0x0052d5f0` / 192 bytes. Independent replay
+preserves all 8,045 previous function IDs/extents and verifies exactly one new
+function, for 8,046 PC functions. The retained project is unchanged. This is
+graph completeness progress with zero new mapping or source credit; the
+1,528-pair experiment above predates this repair.

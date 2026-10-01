@@ -34,8 +34,35 @@ def _csv(path, rows, fields):
         writer = csv.DictWriter(stream, fieldnames=fields, extrasaction="ignore")
         writer.writeheader()
         for row in rows:
-            writer.writerow({key: json.dumps(value, sort_keys=True) if isinstance(value, (dict, list)) else value
-                             for key, value in row.items()})
+            writer.writerow({key: json.dumps(row[key], sort_keys=True) if isinstance(row[key], (dict, list)) else row[key]
+                             for key in fields if key in row})
+
+
+def _tentative_data_exports(directory, rows):
+    """Scalar filtering plus byte-addressable full lineage, without a second encoding."""
+    fields = ["pc", "android", "pc_address", "android_address", "rank", "score", "supports",
+              "evidence_users_total", "seed_function_users", "inferred_function_users",
+              "accepted_function_root_count", "reviewed_data_root_count", "mutual_top",
+              "android_margin", "pc_margin", "pc_extent", "pc_analysis_extent", "android_extent",
+              "boundary_status", "status", "eligible_as_reviewed_anchor", "channel",
+              "evidence_record", "evidence_byte_offset", "evidence_byte_length"]
+
+    def records():
+        with (directory / "tentative-function-data-candidates.jsonl").open("wb") as stream:
+            for index, row in enumerate(rows, 1):
+                offset = stream.tell()
+                raw = (json.dumps(row, sort_keys=True) + "\n").encode("utf-8")
+                stream.write(raw)
+                scalar = {key: row[key] for key in fields if key in row}
+                observations = [item["function_observation"]["status"] for item in row["evidence"]]
+                scalar.update(seed_function_users=observations.count("seed"),
+                              inferred_function_users=observations.count("inferred-mutual-top"),
+                              accepted_function_root_count=sum(root.startswith("function:") for root in row["support_roots"]),
+                              reviewed_data_root_count=sum(root.startswith("reviewed-data:") for root in row["support_roots"]),
+                              evidence_record=index, evidence_byte_offset=offset, evidence_byte_length=len(raw))
+                yield scalar
+
+    _csv(directory / "tentative-function-data-candidates.csv", records(), fields)
 
 
 def _register_pair(run, path):
@@ -471,9 +498,7 @@ def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdou
         tentative_data_rows = tentative.tentative_data_candidates(
             graph, pair, seeds, result["proposals"], data_pairs, rejected,
             reserved_data_pairs=data_labels)
-        with (run.work_dir / "tentative-function-data-candidates.jsonl").open("w") as stream:
-            for row in tentative_data_rows:
-                stream.write(json.dumps(row, sort_keys=True) + "\n")
+        _tentative_data_exports(run.work_dir, tentative_data_rows)
     held_metrics = None
     evaluated_result = result
     if holdout or similarity_candidates is not None:

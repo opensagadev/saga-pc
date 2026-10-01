@@ -5,6 +5,7 @@ address    , symbol                                                         , si
 0x00408800 , _InitCables                                                    , 127   , void __cdecl (WORLDINFO *)
 0x0040aa60 , _ViewCamGetGamePad                                             , 6     , GAMEPAD_PC *__cdecl (void)
 0x40e690   , _GoingForwardsAlongNarrowSock                                  , 106   , i32 __cdecl (GAMEOBJECT *)
+0x00414ab0 , _SetFlicker                                                    , 25    ,
 0x00414bb0 , _DeactivateGameObject                                          , 158   , void __cdecl (GAMEOBJECT *)
 0x00415c60 , _MovePlayerSpline                                              , 1322  , void __cdecl (GAMEOBJECT *)
 0x416190   , _MovePlayer                                                    , 2718  , void __cdecl (GAMEOBJECT *)
@@ -49,6 +50,7 @@ address    , symbol                                                         , si
 0x0043c830 , _GameAISysInit                                                 , 353   , void __cdecl (void)
 0x43d410   , _oneAtOnce_CanAttack                                           , 61    , "i32 __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
 0x43d450   , _oneAtOnce_GetHoldRange                                        , 174   , f32 __cdecl (GAMEOBJECT *)
+0x0043d500 , _oneAtOnce_SetNumAttackers                                     , 32    ,
 0x00440120 , _GetNamedGameObject                                            , 34    , "GAMEOBJECT *__cdecl (void *, char *)"
 0x440150   , _PartyMemberInWay                                              , 312   , "i32 __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
 0x443fc0   , _Action_SetTakeOverTarget                                       , 739   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -349,6 +351,7 @@ address    , symbol                                                         , si
 0x004a3b60 , _ForcePushEligible                                             , 123   , "i32 (GAMEOBJECT *, GAMEOBJECT *, GAMEOBJECT *) [private EAX first input; two stack pointers]"
 0x004a3eb0 , _ForcePushed_SetTargetMom                                      , 1014  , "i32 __cdecl (GAMEOBJECT *, f32 *)"
 0x004a42b0 , _ForcePushed_YRotation                                         , 146   , i32 __cdecl (GAMEOBJECT *)
+0x004a48f0 , _ResetForceBack                                                , 13    ,
 0x004a56a0 , _BobaRocket_Move                                               , 1001  , "void __cdecl (PART_PC *, f32)"
 0x004a5a90 , _BobaRocket_Kill                                               , 104   , "void __cdecl (PART_PC *, i32)"
 0x004a5b00 , _BobaRocket_Deflect                                            , 37    , void __cdecl (PART_PC *)
@@ -890,6 +893,7 @@ address    , symbol                                                         , si
 0x00547ba0 , _ResetLevSfx                                                   , 36    , void __cdecl (WORLDINFO *)
 0x00547bd0 , _AddLevSfx                                                     , 223   , "void __cdecl (WORLDINFO *, NUVEC *, char *, i32)"
 0x00547f30 , _PlayJumpSfx                                                   , 210   , "void __cdecl (GAMEOBJECT *, i32)"
+0x00548460 , _PlayDieSfx                                                    , 209   ,
 0x00548690 , _UpdateLevelSfx                                                , 121   , "void __cdecl (WORLDINFO *, i32)"
 0x005487c0 , _PlayRepeatSfx                                                 , 209   , "void __cdecl (char *, i32, f32, i32, f32, NUVEC *)"
 0x005488a0 , _UpdateRepeatSfx                                               , 135   , void __cdecl (void)
@@ -1017,6 +1021,7 @@ address    , symbol                                                         , si
 0x0055d720 , _SnapCreaturePos                                               , 408   , "void __cdecl (GAMEOBJECT *, NUVEC *, i32, AIPATHINFO_PC *, i32)"
 0x55d8c0   , _UpdateLastSafePosition                                        , 1198  , void __cdecl (GAMEOBJECT *)
 0x0055e1b0 , _RememberPlayerIDs                                             , 249   , "void __cdecl (i32, i32, i32)"
+0x0055e4a0 , _Player_ClearContext                                           , 58    ,
 0x0055f320 , _Player_HasDoubleWeaponDamage                                  , 49    , i32 __cdecl (GAMEOBJECT *)
 0x0055f430 , _WorldInfo_InitOnce                                            , 21    , void __cdecl (void)
 0x0055f450 , _WorldInfo_CurrentlyActive                                     , 6     , WORLDINFO *__cdecl (void)
@@ -1039,6 +1044,7 @@ address    , symbol                                                         , si
 0x005605b0 , _WorldInfo_ClearAllIfScreenFaded                               , 115   , void __cdecl (void)
 0x00560630 , _WorldInfo_StreamLevel                                         , 154   , void __cdecl (BGPROCINFO *)
 0x00560aa0 , _WorldInfo_Activate                                            , 18    , void __cdecl (void)
+0x00560b40 , _ResetGameMessages                                             , 32    ,
 0x00561ba0 , _StartJump                                                     , 244   , "void __cdecl (GAMEOBJECT *,i32)"
 0x00561d80 , _BigJump_JumpAction_Default                                    , 66    , i32 __cdecl (GAMEOBJECT *)
 0x00561e20 , _StartBigJump                                                  , 489   , "i32 __cdecl (GAMEOBJECT *,NUVEC *,i32,f32,f32,i32)"
@@ -1737,6 +1743,7 @@ address    , symbol                                                         , si
 0x005dece0 , _NuDisplayListPurge_candidate                                  , 92    , void __cdecl (void)
 0x005df480 , _NuDisplayListUpdateSpecial                                    , 813   , void __cdecl (NUSPECIALHANDLE *)
 0x005dfab0 , _NuDisplayListBeginFrame                                       , 187   , void __cdecl (void)
+0x005e4d40 , _NuMtlCreate3D                                                 , 20    ,
 0x005e50e0 , _NuMtlDestroy                                                  , 95    , void (NUMTL *)
 0x005e8430 , _NuOcclusionManagerBeginFrame                                  , 59    , void __cdecl (void)
 0x005e91f0 , _NuAnimData2FixPtrs                                            , 269   , "void *__cdecl (void *, i32, i32, i32)"
@@ -2778,6 +2785,7 @@ address    , symbol                                                         , si
 0x00757df0 , _CompleteLevelCutscenePrefix                                   ,       ,
 0x00757e18 , _AIActionBothWaysName                                          , 9     , const char[9]
 0x00757e80 , _AIPathFaceName                                                , 5     , const char[5]
+0x00757e88 , _GizmoSnapOptionNamePc                                         ,       ,
 0x00757ed0 , _AIAnimSpeedMultiplyByName                                     ,       ,
 0x00757f40 , _AIActionFromName                                              , 5     , const char[5]
 0x00757f48 , _CharacterPosArgPrefix                                         , 15    , const char[15]
@@ -2934,6 +2942,7 @@ address    , symbol                                                         , si
 0x00759f40 , _LevelConfigGameKeyword_max_signals                            , 12    , const char[12]
 0x00759f4c , _LevelConfigGameKeyword_max_tightropes                         , 15    , const char[15]
 0x0075a0dc , _DebrisGlassMaterialOpacity                                    , 4     , const f32
+0x0075a1fc , _SceneFileExtensionPc                                          ,       ,
 0x75a204   , ??_C@_01KICIPPFI@?2?$AA@                                       , 2     , const char[2]
 0x0075a208 , _AreaResidentsDirectory                                        , 8     , const char[8]
 0x0075a2b0 , __real@45000000                                                , 4     , const f32
@@ -4485,6 +4494,7 @@ address    , symbol                                                         , si
 0x00880f90 , _tALONGTIMEAGO                                                 , 2     , i16
 0x00882430 , _podrace_section                                               , 4     , i32
 0x00882438 , _podsprint                                                     , 148   , PODSPRINT_PC
+0x00882a8c , _PodRacePc                                                     ,       ,
 0x00889058 , _kamino_plate_1                                                , 4     , KAMINOEPLATE *
 0x0088905c , _kamino_plate_2                                                , 4     , KAMINOEPLATE *
 0x00889060 , _kamino_plate_3                                                , 4     , KAMINOEPLATE *

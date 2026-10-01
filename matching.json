@@ -7,17 +7,17 @@
     "Makefile": "f9040c679f18bc5dcca7b43bbc1f080e8df87c881b03a2275ce844af3a45d2bb",
     "src/externals.h": "3382382faeac231f3c7962ffb276f5c091463416d3cd41afd89c57fe6c4eef62",
     "src/saga.h": "2e2cfb2393674eb86067c16512dbb7c31f7e9294a650b4705752df17ab1e88f4",
-    "config/data.md": "7a7e9d4d93aa40ac77c8f538620a76371f27d11ffbce8d9435913673c6a573d4",
-    "config/identification-decisions.jsonl": "abd21ac1586f4e7e8306c4c415d68fa9273c051dde02336be67f0b21ca5966a2",
+    "config/data.md": "e3545b4eafe9baa199ed2bf70e41ba8d40788c1032e0eacc1388b57e9de5994e",
+    "config/identification-decisions.jsonl": "87fb6d96c7d72dbdd5b1de7237cc0f081d2f0e02c877feb00ca10a6875db448d",
     "config/identification-plan.md": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
-    "config/identification-tools.md": "1d09a23d972b0930d869b5763eb7bf86bcd812d1e9c48d291ea1e68e67187284",
+    "config/identification-tools.md": "5f6eaa900bd4407b555c39364fb91fe1dab1223706c8ec3b8991ef5010fc12de",
     "config/identification.md": "ecfbf8977bb20b3c0b8fc8cf0c4a7cc7d7cd0f9915f3abe77145c532651e31e4",
     "config/numain.md": "3f25abbf6d2df3515fa97714b637d71ad5d5aa1dd2bca0a6162a76bfa01e8ca6",
-    "config/progress-plan.md": "9ed4b27d08832e3ee3df1f7aa4c4e7ba909f751e0bfbcec6158d1fbca57bbc5e",
+    "config/progress-plan.md": "df39feac9b24badd94c85bce91822e86dcdecc90c5dcdaf074a476e6c657db4c",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
     "config/strategy.md": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
-    "config/symbols.csv": "25fe9b959503c9faa66413e7baae6c1ec7a856e59dce93df977ccfbe0c447f10",
-    "config/symbols.md": "3356d24ae3375819307d17c5f620b077b30d84a9fa403ce901c8f3b9320f26e6",
+    "config/symbols.csv": "a049cb031a4c4e99cce6c89191fd16eea929c480c2565ee4d12b9d71a3a6a19e",
+    "config/symbols.md": "fbbaa1f92773d8655e7b047320cf28b0df1abcb289dafecf54de7b25f8d438ff",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
@@ -29,13 +29,13 @@
     "tools/identification.py": "4eb468f8dd11754cebae7bb6a9c73fca3f7a507fe347069c1d1175a65a82760f",
     "tools/identification_graph.py": "c8b9ba1a838165e7c03fb9fd0c6a60eb464dd91a67dc9f2cdecfac4ed99afa9c",
     "tools/identification_inspect.py": "b0e41c7f14a5fb497864a5ea059cb9a71a029fac627ebec92dc7fc907934a9ef",
-    "tools/identification_joint.py": "efb7cfb93d79db00bd789168c24be16d07a2f59fc5afe3c850e67f04ae692c3d",
+    "tools/identification_joint.py": "49d479f5611e4ce2c8925e20197f09ff5e1923618951242617c152b49290edc5",
     "tools/identification_limits.py": "c44fb5fb1eacd2f20126515e28421863eb4c66d35250340ba1708e2c4f9440cb",
     "tools/identification_literals.py": "52b26a61109aed9711523d3d852d3222b7fbc0de786f013503f9246cf90e610c",
     "tools/identification_registry.py": "066ed2cc43b2aaed4755a076850de8792c69333a2c67dafe859998c39f3229e5",
     "tools/identification_registry_run.py": "c42b429298988bf05a45d8e48ca2a1d7e439fb574a0a9e93057e3ae95493200d",
     "tools/identification_review.py": "e92eacc56382d50d952457caf410d34d64be450565d86f7b449b80f22d47137f",
-    "tools/identification_run.py": "5c339f1e0ca486d8697c5eaf840b80b0f5410cd03892c14d159dff771205d990",
+    "tools/identification_run.py": "60b308ff0d92632356991849beb483f08bc6c7bc11021b959f4d1b2d4076e555",
     "tools/identification_state.py": "bd74afbaea3e4a071cb103663de6b21684da75710fc8dfd927cd46a0b84c2a50",
     "tools/identification_tables.py": "02af9327955f2a5fb6594e739461d280a17c28ec96b6a07ee86500bd9a4a8b76",
     "tools/identification_tentative_data.py": "157e746be9a712d9649e638c50d631d0fe552e86a2387dcdf6a64b56a2b08301",
@@ -65,7 +65,7 @@
     "tools/test_identification_run.py": "d67f590ebaff4dc935172360ff6c1635c882270ad8ef6ac325dcbcd715839e40",
     "tools/test_identification_state.py": "7042cc53952e76f785a37794c9cca48fe6102874609bfe601088155cae267cf4",
     "tools/test_identification_tables.py": "0428ce56acdcc268e5af8fd170b719b599fb0274357bcfa6e099f109b1c90392",
-    "tools/test_identification_tentative_data.py": "d2560c2d64c1348ed87ff7b750deff25841e795a0ad7ba7ebecee557ebbf59f9",
+    "tools/test_identification_tentative_data.py": "95fd38736f45d40d60175dd0c86c99b2dcc63540609566840c2c15b5681a6891",
     "tools/test_lib.py": "54561f44ee40367574c6f1824c77198ee3a93a455ba88e2ae4c83545b79a7e78",
     "tools/test_match.py": "794c052372646961512004b82d37c0b2656438a321a2280ed6420d87766f16dd",
     "tools/test_repair_graph.py": "834c7c34dd991e77e7e8d21462c38d6fc1eecc250287dc300e3d46b5d90cf4db",
@@ -478,6 +478,16 @@
       ],
       "status": "different",
       "objdiff_percent": 48.764706
+    },
+    {
+      "name": "SetFlicker",
+      "symbol": "_SetFlicker",
+      "address": "0x00414ab0",
+      "units": [],
+      "target_size": 25,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "DeactivateGameObject",
@@ -1436,6 +1446,16 @@
       ],
       "status": "different",
       "objdiff_percent": 48.484375
+    },
+    {
+      "name": "oneAtOnce_SetNumAttackers",
+      "symbol": "_oneAtOnce_SetNumAttackers",
+      "address": "0x0043d500",
+      "units": [],
+      "target_size": 32,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "GetNamedGameObject",
@@ -6200,6 +6220,16 @@
       ],
       "status": "different",
       "objdiff_percent": 27.142857
+    },
+    {
+      "name": "ResetForceBack",
+      "symbol": "_ResetForceBack",
+      "address": "0x004a48f0",
+      "units": [],
+      "target_size": 13,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "BobaRocket_Move",
@@ -18672,6 +18702,16 @@
       "objdiff_percent": 69.74
     },
     {
+      "name": "PlayDieSfx",
+      "symbol": "_PlayDieSfx",
+      "address": "0x00548460",
+      "units": [],
+      "target_size": 209,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "UpdateLevelSfx",
       "symbol": "_UpdateLevelSfx",
       "address": "0x00548690",
@@ -21258,6 +21298,16 @@
       "status": "not implemented"
     },
     {
+      "name": "Player_ClearContext",
+      "symbol": "_Player_ClearContext",
+      "address": "0x0055e4a0",
+      "units": [],
+      "target_size": 58,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "Player_HasDoubleWeaponDamage",
       "symbol": "_Player_HasDoubleWeaponDamage",
       "address": "0x0055f320",
@@ -21585,6 +21635,16 @@
       "address": "0x00560aa0",
       "units": [],
       "target_size": 18,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "ResetGameMessages",
+      "symbol": "_ResetGameMessages",
+      "address": "0x00560b40",
+      "units": [],
+      "target_size": 32,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -37726,6 +37786,16 @@
       "objdiff_percent": 65.20339
     },
     {
+      "name": "NuMtlCreate3D",
+      "symbol": "_NuMtlCreate3D",
+      "address": "0x005e4d40",
+      "units": [],
+      "target_size": 20,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "NuMtlDestroy",
       "symbol": "_NuMtlDestroy",
       "address": "0x005e50e0",
@@ -53350,6 +53420,16 @@
       "status": "exact"
     },
     {
+      "name": "GizmoSnapOptionNamePc",
+      "symbol": "_GizmoSnapOptionNamePc",
+      "address": "0x00757e88",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "AIAnimSpeedMultiplyByName",
       "symbol": "_AIAnimSpeedMultiplyByName",
       "address": "0x00757ed0",
@@ -56651,6 +56731,16 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "SceneFileExtensionPc",
+      "symbol": "_SceneFileExtensionPc",
+      "address": "0x0075a1fc",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "??_C@_01KICIPPFI@?2?$AA@",
@@ -87308,6 +87398,16 @@
       "status": "exact"
     },
     {
+      "name": "PodRacePc",
+      "symbol": "_PodRacePc",
+      "address": "0x00882a8c",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "kamino_plate_1",
       "symbol": "_kamino_plate_1",
       "address": "0x00889058",
@@ -102565,16 +102665,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 524785,
+    "mapped_code_bytes": 525174,
     "matched_code_bytes": 46519,
     "matching_percent": 1.3401239785368135,
     "fuzzy_coverage_percent": 6.4712667300063105,
-    "mapped_functions": 2039,
+    "mapped_functions": 2046,
     "matched_functions": 810,
     "objdiff_fuzzy_percent": 60.501606,
     "objdiff_total_code": 371376,
     "image_bytes": 40067072,
-    "mapped_bytes": 1119148,
-    "mapping_percent": 2.7931863850695153
+    "mapped_bytes": 1119537,
+    "mapping_percent": 2.7941572571112756
   }
 }

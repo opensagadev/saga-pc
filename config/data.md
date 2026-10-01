@@ -874,3 +874,18 @@ copies match the original bits; overlapping aliases add no mapped-image extent.
 Sock retains four random calls and four external F64-zero multiplications.
 `action-snap-wave23-data-independent-next1.json` records the original cells,
 canonical owners and generated readonly data; unknown owner extents remain held.
+## Structural identity-only data release (2026-10-01)
+
+Three paired original identities retain blank sizes and ctypes:
+`_PodRacePc` at 0x00882a8c (Android 0x006a9540),
+`_SceneFileExtensionPc` at 0x0075a1fc (Android 0x00565a14) and
+`_GizmoSnapOptionNamePc` at 0x00757e88 (Android 0x005694cf).
+The first is pointer storage established by paired writer/access operands;
+the other two are first-NUL `.gsc` and `SNAP` views established by paired
+string-consumer operands. A pointed-object clear does not establish pointer
+storage allocation. Android ELF size and pooled string view lengths do not
+establish full PC allocation or historical types.
+
+These rows add zero allocation, source or exact-data credit. Canonical graph
+IDs distinguish the PodRace data-object from the two data-sites. Original
+review and independent mapping-release evidence preserve the unknown owners.

@@ -1,4 +1,5 @@
 import copy
+import csv
 import json
 import tempfile
 from pathlib import Path
@@ -162,16 +163,66 @@ class AdditionalCoverage(unittest.TestCase):
         self.assertGreater(len(candidates), 0)
         self.assertTrue(all(not row['feeds_function_retrieval'] and not row['feeds_state']
                             and not row['eligible_as_reviewed_anchor'] for row in candidates))
+        with experiment.with_suffix('.csv').open(newline='') as stream:
+            scalar = list(csv.DictReader(stream))
+        self.assertEqual(len(scalar), len(candidates))
+        with experiment.open('rb') as stream:
+            for index, row in enumerate(scalar, 1):
+                stream.seek(int(row['evidence_byte_offset']))
+                raw = stream.read(int(row['evidence_byte_length']))
+                self.assertTrue(raw.endswith(b'\n'))
+                evidence = json.loads(raw)
+                self.assertEqual(int(row['evidence_record']), index)
+                self.assertEqual(evidence, candidates[index - 1])
+                self.assertEqual(row['pc'], evidence['pc'])
+                self.assertEqual(row['android'], evidence['android'])
+                self.assertEqual(int(row['supports']), len(set(evidence['support_roots'])))
+                self.assertEqual(int(row['seed_function_users']) + int(row['inferred_function_users']),
+                                 evidence['evidence_users_total'])
+                self.assertNotIn('evidence', row)
+                self.assertNotIn('support_roots', row)
 
     def test_disabled_enabled_disabled_publication_removes_old_experimental_output(self):
         fixture, pair = self.fixture_with_inference()
-        filename = 'tentative-function-data-candidates.jsonl'
+        filenames = ('tentative-function-data-candidates.jsonl', 'tentative-function-data-candidates.csv')
         for enabled in (False, True, False):
             with fixture.run_context('rerun') as run:
                 score.generate(run=run, joint_graph=pair, tentative_data_feedback=enabled)
             output = fixture.root / 'rerun'
             manifest = score.validate_completed_run(output)
-            self.assertEqual((output / filename).exists(), enabled)
-            self.assertEqual(filename in manifest['outputs'], enabled)
+            for filename in filenames:
+                self.assertEqual((output / filename).exists(), enabled)
+                self.assertEqual(filename in manifest['outputs'], enabled)
             if enabled:
-                self.assertTrue((output / filename).read_text().strip())
+                self.assertTrue((output / filenames[0]).read_text().strip())
+
+    def test_scalar_csv_does_not_encode_ignored_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            destination = Path(directory) / 'scalar.csv'
+            joint._csv(destination, [{'name': 'tiny', 'evidence': {'opaque': object()}}], ['name'])
+            with destination.open(newline='') as stream:
+                self.assertEqual(list(csv.DictReader(stream)), [{'name': 'tiny'}])
+
+    def test_evidence_offsets_span_multiple_records_and_empty_exports_have_headers(self):
+        pair, roots, proposals = ChannelTests().fixture()
+        rows = channel.tentative_data_candidates(graph, pair, {100: 10, 200: 20}, proposals)
+        rows.append(copy.deepcopy(rows[0]))
+        rows[0]['annotation'] = '\u03c0'
+        rows[1]['annotation'] = 'second record'
+        with tempfile.TemporaryDirectory() as directory:
+            destination = Path(directory)
+            joint._tentative_data_exports(destination, rows)
+            with (destination / 'tentative-function-data-candidates.csv').open(newline='') as stream:
+                scalar = list(csv.DictReader(stream))
+            self.assertEqual(len(scalar), 2)
+            self.assertEqual(int(scalar[1]['evidence_byte_offset']), int(scalar[0]['evidence_byte_length']))
+            with (destination / 'tentative-function-data-candidates.jsonl').open('rb') as stream:
+                for item, expected in zip(scalar, rows):
+                    stream.seek(int(item['evidence_byte_offset']))
+                    self.assertEqual(json.loads(stream.read(int(item['evidence_byte_length']))), expected)
+            joint._tentative_data_exports(destination, [])
+            self.assertEqual((destination / 'tentative-function-data-candidates.jsonl').stat().st_size, 0)
+            with (destination / 'tentative-function-data-candidates.csv').open(newline='') as stream:
+                reader = csv.DictReader(stream)
+                self.assertIn('evidence_byte_offset', reader.fieldnames)
+                self.assertEqual(list(reader), [])
