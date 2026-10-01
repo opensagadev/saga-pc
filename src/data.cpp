@@ -4352,4 +4352,34 @@ extern "C" {
 #pragma bss_seg(".bss$SurfaceInfo_ExtraReflectFn")
     void(__cdecl *SurfaceInfo_ExtraReflectFn)(GAMEOBJECT *object);
 #pragma bss_seg()
+#pragma bss_seg(".bss$ShadPoly")
+    TERRAIN_POLYGON_INFO_PC *ShadPoly;
+#pragma bss_seg()
+#pragma bss_seg(".bss$EShadowPolygonPc")
+    TERRAIN_POLYGON_INFO_PC *EShadowPolygonPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShadowRoofPolygonPc")
+    TERRAIN_POLYGON_INFO_PC *ShadowRoofPolygonPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainShadowGroupIndexPc")
+    i16 TerrainShadowGroupIndexPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GetSurfaceInfoWaterHeightPc")
+    f32 GetSurfaceInfoWaterHeightPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GetSurfaceInfoRoofHeightPc")
+    f32 GetSurfaceInfoRoofHeightPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GetSurfaceInfoSurfaceNormalPc")
+    NUVEC GetSurfaceInfoSurfaceNormalPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GetSurfaceInfoWaterNormalPc")
+    NUVEC GetSurfaceInfoWaterNormalPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GetSurfaceInfoRuntimeMaskPc")
+    u8 GetSurfaceInfoRuntimeMaskPc;
+#pragma bss_seg()
+#pragma data_seg(".data$GetSurfaceInfoDefaultMaskPc")
+    u8 GetSurfaceInfoDefaultMaskPc = 0x20;
+#pragma data_seg()
 }

@@ -350,3 +350,24 @@ new bodies remain nonexact, scoring 72.968254% and 66.89286%; continue provider
 closure rather than instruction tuning. Next close InitSurfaceInfo's actual
 query and shadow/reflection providers to release the accepted snap callback
 family. The separate SetCurrentSpeed indirect lookup remains unresolved.
+
+
+## Surface query and terrain provider release
+
+GetSurfaceInfo536, four getters109 and the previously mapped vector transform196
+add 841 compared original bytes (357,029 total, 356,974 unique). Whole-PC fuzzy
+coverage rises from 6.285899% to 6.304993%, gaining 0.019094 percentage points.
+The four getters are exact, adding 109 original bytes; all 801 earlier exact
+functions survive, yielding 805 functions and 45,855 exact bytes. New function
+identities add 645 mapped bytes, reaching 1,117,945 / 40,067,072. Unknown global
+access views add no original allocation coverage or exact-data credit.
+
+The query and vector bodies remain nonexact at 67.30769% and 98.477615%.
+Their source preserves qualified PC predicates, field access, in-place staging
+and required float storage; instruction scheduling can wait. Next close the
+8,155-byte NewScanRot/NewCast source group with PC query/scan/cache/polygon
+records and its TerrainSkinAllocate/SkinPlatform/TerrainSkin provider cohort.
+Physical effects are reviewed separately from unresolved source fields and
+initialization/bounds. Then close shadow/reflection and release InitSurfaceInfo
+and the accepted snap callbacks. SetCurrentSpeed's unrelated indirect lookup
+remains held.

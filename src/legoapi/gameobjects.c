@@ -3153,3 +3153,97 @@ i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
     object->velocity.y = -1.0f;
     return placed;
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
+STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
+STATIC_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, water_height) == 0x220);
+STATIC_ASSERT(offsetof(GAMEOBJECT, roof_height_pc) == 0x224);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_283) == 0x283);
+STATIC_ASSERT(offsetof(GAMEOBJECT, roof_surface_id_pc) == 0x284);
+STATIC_ASSERT(offsetof(GAMEOBJECT, jump_animation_state) == 0x285);
+STATIC_ASSERT(offsetof(GAMEOBJECT, raw_surface_id_pc) == 0xe42);
+STATIC_ASSERT(offsetof(GAMEOBJECT, surface_normal) == 0xf24);
+STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_105c) == 0x105c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_105e) == 0x105e);
+STATIC_ASSERT(offsetof(GAMEOBJECT, terrain_platform_id) == 0x106c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
+STATIC_ASSERT(sizeof(TERRAIN_SURFACE_PC) == 12);
+STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, flags) == 4);
+
+void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
+    i32 raw_surface;
+    i32 surface_index;
+    i8 material;
+    i8 roof_surface;
+    u8 material_mask;
+    void(__cdecl * extra_reflect)(GAMEOBJECT *);
+
+    if (floor_height != GameObjectNearFloorNoFloorHeight) {
+        raw_surface = ShadowInfo();
+        surface_index = raw_surface;
+        if (surface_index < 0 || surface_index >= 32)
+            surface_index = 0;
+        object->reflection_enabled = 2;
+        if ((object->character_data->game_character->flags_090 & 0x8000u) == 0 &&
+            (TerSurface[surface_index].flags & 2u) != 0)
+            object->reflection_height = floor_height;
+        else
+            object->reflection_height = 2000000.0f;
+        object->terrain_platform_id = (i16)NewShadowOnPlatform();
+    } else {
+        raw_surface = 0;
+        surface_index = 0;
+        object->reflection_height = 2000000.0f;
+        object->reflection_enabled = 0;
+        object->terrain_platform_id = -1;
+    }
+
+    if (update_fields != 0) {
+        object->raw_surface_id_pc = (u8)raw_surface;
+        object->jump_animation_state = (u8)surface_index;
+        if (object->floor_height == GameObjectNearFloorNoFloorHeight)
+            object->surface_normal = v010;
+        else
+            object->surface_normal = GetSurfaceInfoSurfaceNormalPc;
+    }
+
+    object->water_height = GetSurfaceInfoWaterHeightPc;
+    if (object->water_height != GameObjectNearFloorNoFloorHeight) {
+        material = (i8)EShadowInfo();
+        object->field_283 = material;
+        if (VehicleArea != 0 && BonusArea != 0 && (material == 7 || material == 16)) {
+            object->water_height = 2000000.0f;
+            object->field_105e = 0;
+            object->field_105c = 0;
+            object->field_283 = -1;
+        } else {
+            if (material < 0 || material >= 17)
+                object->field_283 = 0;
+            material_mask = GetSurfaceInfoDefaultMaskPc | GetSurfaceInfoRuntimeMaskPc | 0x40u;
+            object->field_283 = (i8)((u8)object->field_283 & (u8)~material_mask);
+            FindAnglesZX(&GetSurfaceInfoWaterNormalPc, NULL, NULL);
+            object->field_105c = temp_zrot;
+            object->field_105e = temp_xrot;
+        }
+    } else {
+        object->field_105e = 0;
+        object->field_105c = 0;
+        object->field_283 = -1;
+    }
+
+    object->roof_height_pc = GetSurfaceInfoRoofHeightPc;
+    if (object->roof_height_pc != GameObjectNearFloorNoFloorHeight) {
+        roof_surface = (i8)ShadowRoofInfo();
+        object->roof_surface_id_pc = (u8)roof_surface;
+        if (roof_surface < 0 || roof_surface >= 32)
+            object->roof_surface_id_pc = 0;
+    } else
+        object->roof_surface_id_pc = 0xff;
+
+    extra_reflect = SurfaceInfo_ExtraReflectFn;
+    if (extra_reflect != NULL)
+        extra_reflect(object);
+}

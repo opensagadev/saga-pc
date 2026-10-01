@@ -750,3 +750,29 @@ BSS initialization is not permanent runtime nullness. The new surface/socket
 helpers otherwise reuse existing layouts and data. Gameobjects adds another
 exact copy of the existing eight-byte F64 epsilon at `0x751788`, with no new
 original allocation credit.
+
+
+### Surface query and getter access views
+
+The query adds six neutral PC source views: GetSurfaceInfoDefaultMaskPc8034c4
+(byte20), RuntimeMaskPc95102c (zero byte), WaterHeightPc2920da4 and
+RoofHeightPc2921884 (zero float words), SurfaceNormalPc292fdd8 and
+WaterNormalPc2962020 (three zero words each). Only the default mask has
+file-backed bytes; the others are in the hash-pinned PE virtual tail and
+start zero under the loader. This does not establish runtime invariants.
+
+The getters use existing unknown-extent ShadPoly292fc10, new neutral
+EShadowPolygonPc292fd64 and ShadowRoofPolygonPc292184c pointer views, and
+TerrainShadowGroupIndexPc2961ffc as a signed16 source view. The index name
+does not identify the native TerI query pointer. Existing CurrentTerrain292fc88
+storage is reused despite two retained inventory aliases. Polygon materials
+at60/61 and existing terrain group stride38/type2c/scene30 are verified access
+cohorts; no full polygon owner or historical aggregate type is inferred.
+
+All ten emitted views total 48 source bytes. CSV sizes/types remain blank,
+including the existing ShadPoly binding, so they earn zero allocation or
+exact-data credit. Existing TerSurface384, v01012 and angle/area globals are
+reused. The additional exact float2e6 copy reuses an already mapped constant.
+Object fields224/E42/284 preserve their exact accessed widths and surrounding
+layout; unknown286 remains opaque. Independent data/field evidence is frozen
+in surface-query-data-fields-independent-next1.json.

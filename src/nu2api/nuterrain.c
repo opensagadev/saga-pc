@@ -1,5 +1,11 @@
 #include "saga.h"
 
+struct TERRAIN_POLYGON_INFO_PC {
+    u8 unknown_00[0x60];
+    u8 material[2];
+};
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, material) == 0x60);
+
 typedef struct TERRAIN_GROUP_PC {
     u8 unknown_00[0x2c];
     i32 chunk_type;
@@ -206,4 +212,27 @@ i32 __cdecl DeletePlatinst(i32 platform_index) {
     terrain->platform_cell.group_count--;
     ScanTerrIDRemovePlat(platform_index);
     return 1;
+}
+
+i32 __cdecl ShadowInfo(void) {
+    return ShadPoly != NULL ? ShadPoly->material[0] : -1;
+}
+
+i32 __cdecl EShadowInfo(void) {
+    return EShadowPolygonPc != NULL ? EShadowPolygonPc->material[1] : -1;
+}
+
+i32 __cdecl ShadowRoofInfo(void) {
+    return ShadowRoofPolygonPc != NULL ? ShadowRoofPolygonPc->material[0] : -1;
+}
+
+i32 __cdecl NewShadowOnPlatform(void) {
+    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    TERRAIN_GROUP_PC *group;
+    if (terrain == NULL || TerrainShadowGroupIndexPc == -1)
+        return -1;
+    group = &terrain->groups[TerrainShadowGroupIndexPc];
+    if (group->chunk_type != 1)
+        return -1;
+    return group->scene_index;
 }

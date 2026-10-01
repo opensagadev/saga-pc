@@ -2052,3 +2052,54 @@ adds no original coverage. Frozen continuation proofs include
 `setsockpostion-compiled-contract-independent-next1.json` and
 `surface-callback-data-independent-next1.json`. InitSurfaceInfo and the two
 snap callbacks remain held for their separate query/shadow/reflection closure.
+
+
+### Surface query, getter and vector source release
+
+GetSurfaceInfo PC `0x572440`/536 is independently identified with native
+Android `0x4e21b0`/699. Complete original extent, three caller-cleaned words
+and ignored return are reviewed independently of historical formal types;
+CSV ctype remains blank. Four zero-argument leaf getters are independently
+identified and implemented in the existing nuterrain unit: ShadowInfo
+`0x67a600`/18, EShadowInfo `0x67a670`/18, ShadowRoofInfo `0x67a690`/18 and
+NewShadowOnPlatform `0x67a6e0`/55. Each matches the original bytes exactly.
+The five new identities add 645 known mapped original code bytes.
+
+The query preserves raw versus clamped surface IDs, signed byte checks,
+reflection gates, material masks, angle calls and ordered-equal versus
+unordered-unequal sentinel branches. The direct character-data chain and
+existing TerSurface flags, area gates, vector and angle globals are reused.
+The three new object fields are narrow access views: roof float224 (also
+preserving the old opaque four-byte alias), roof byte284 and raw byteE42.
+Historical full object types are unproved. The optional callback retains the
+qualified original null/literal42a690 states; arbitrary runtime target or
+writer closure and whole InitSurfaceInfo remain separate holds.
+
+NuVec4MtxTransformVU0x3 PC `0x5c0620`/196, already accepted against native
+Android `0x291221`/551, joins the existing nuvec unit as genuine C. It transforms
+exactly three four-component vectors and preserves observed in-place use.
+Actual output rounds Y/Z/W through FSTP32 locals before X output, then reloads
+them for the remaining stores. The compiler exchanges the first two operands
+of one Z addition and swaps pointer increments; qualified finite normal
+behavior is preserved, but the full equal-size bodies remain byte-different.
+It scores 98.477615%. GetSurfaceInfo compiles to 622 bytes and scores
+67.30769%; its complete 536 original bytes remain compared.
+
+The group adds 841 compared original bytes, reaching 357,029 including the
+unchanged 55-byte overlap (356,974 unique). Whole-PC fuzzy coverage increases
+to 6.30499264352814%. All 801 prior exact functions remain preserved; four new
+exact getters bring the total to 805 and exact code to 45,855 / 3,471,246 bytes
+(1.3209954004988411%). Mapped image extent is 1,117,945 / 40,067,072.
+Neutral global access views have unknown owner sizes/types and earn zero
+original extent or exact-data credit; existing ShadPoly/CurrentTerrain owners
+are reused, and the additional exact 2e6 constant copy adds no allocation.
+
+Frozen continuation evidence: surface-query-independent-next1.json,
+surface-query-getter-independent-next1.json,
+surface-query-data-fields-independent-next1.json,
+getsurfaceinfo-source-draft-independent-next1.json,
+surface-query-getter-source-independent-next1.json and
+terrain-vector-source-independent-next1.json, with actual compiled-contract
+reviews for each of the query/getter/vector cohorts. The next larger closure
+is NewScanRot/NewCast (8,155 PC bytes), its terrain skin providers and the
+shadow/reflection wrappers before InitSurfaceInfo and the snap callbacks.

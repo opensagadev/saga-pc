@@ -423,6 +423,7 @@ typedef struct terrain_layer_pc_s {
     u32 unknown_04;
     u32 unknown_08;
 } TERRAIN_LAYER_PC;
+typedef struct TERRAIN_POLYGON_INFO_PC TERRAIN_POLYGON_INFO_PC;
 STATIC_ASSERT(sizeof(TERRAIN_LAYER_PC) == 0xc);
 STATIC_ASSERT(offsetof(TERRAIN_LAYER_PC, flags) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_LAYER_PC, unknown_04) == 4);
@@ -3662,7 +3663,10 @@ typedef struct gameobject_s {
     f32 previous_floor_height;
     f32 floor_height;
     f32 water_height;
-    u8 unknown_0224[4];
+    union {
+        u8 unknown_0224[4];
+        f32 roof_height_pc;
+    };
     f32 velocity_magnitude;
     f32 horizontal_velocity_magnitude;
     u8 unknown_0230[0x48];
@@ -3674,7 +3678,10 @@ typedef struct gameobject_s {
     u8 field_281;
     u8 field_282;
     i8 field_283;
-    u8 unknown_0284;
+    union {
+        u8 unknown_0284;
+        u8 roof_surface_id_pc;
+    };
     u8 jump_animation_state;
     u8 unknown_0286;
     u8 water_intersects;
@@ -3865,7 +3872,8 @@ typedef struct gameobject_s {
     i8 debris_joint;
     i8 quick_shoot_bolt_id;
     i8 slam_effect;
-    u8 unknown_0e41[2];
+    u8 unknown_0e41;
+    u8 raw_surface_id_pc;
     i8 blade_index;
     i8 blade_states[4];
     u8 unknown_0e48[4];
@@ -6187,6 +6195,22 @@ extern "C" {
     i32 __cdecl Action_SetAnimSpeedMul(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                        char **params, i32 num_params, i32 first_time, f32 elapsed);
     i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode);
+    void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height);
+    i32 __cdecl ShadowInfo(void);
+    i32 __cdecl EShadowInfo(void);
+    i32 __cdecl ShadowRoofInfo(void);
+    i32 __cdecl NewShadowOnPlatform(void);
+    void __cdecl NuVec4MtxTransformVU0x3(NUVEC4 *out, NUVEC4 *in, NUMTX *matrix);
+    extern TERRAIN_POLYGON_INFO_PC *ShadPoly;
+    extern TERRAIN_POLYGON_INFO_PC *EShadowPolygonPc;
+    extern TERRAIN_POLYGON_INFO_PC *ShadowRoofPolygonPc;
+    extern i16 TerrainShadowGroupIndexPc;
+    extern f32 GetSurfaceInfoWaterHeightPc;
+    extern f32 GetSurfaceInfoRoofHeightPc;
+    extern NUVEC GetSurfaceInfoSurfaceNormalPc;
+    extern NUVEC GetSurfaceInfoWaterNormalPc;
+    extern u8 GetSurfaceInfoDefaultMaskPc;
+    extern u8 GetSurfaceInfoRuntimeMaskPc;
     void __cdecl SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 index, i32 segment, f32 fraction);
     extern void(__cdecl *SurfaceInfo_ExtraReflectFn)(GAMEOBJECT *object);
     void __cdecl CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socket_rotation);

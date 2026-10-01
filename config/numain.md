@@ -696,3 +696,14 @@ and the accepted SnapToPosition/SnapToSockPosition callbacks still need their
 separate surface-query, shadow and reflection closure; mapping the slot alone
 does not complete that provider family. SetCurrentSpeed's independent indirect
 lookup at923924 remains held.
+
+
+GetSurfaceInfo572440/536 and four terrain getters109 now have genuine source,
+as does the accepted three-vector transform5c0620/196. The getters add109 exact
+bytes while preserving every earlier exact function. The query keeps the
+qualified callback slot interface and precise surface/water/roof field views;
+unknown global owner sizes/types remain held. InitSurfaceInfo's genuine draft
+still needs actual shadow/reflection implementations. Their NewShadowEx path
+reaches NewScanRot/NewCast8155 and the terrain skin group, whose record and
+local initialization source gates remain explicit. No playable entry-path
+closure follows from these comparisons; slot923924 remains a separate debt.
