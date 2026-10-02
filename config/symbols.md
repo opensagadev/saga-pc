@@ -2969,3 +2969,58 @@ and independent actual audits pass, while the interpretation helper's source
 budget and the call-frontier setup-SQL accounting remain explicitly qualified in
 their immutable scratch corrections. No scorer or mapping release relies on
 those budget-compliance claims.
+
+### Character effects and drawing: compound structural review
+
+Two larger connected functions pass independent original identity and complete
+PC extent review:
+
+| PC entry | Native entry | Identity | Complete PC bytes |
+| --- | --- | --- | --- |
+| `0x0062c7e0` | `0x003caa06` | AddAnimEffects | 2,808 |
+| `0x0062fbf0` | `0x003d0563` | APIDrawCharacterModel | 2,690 |
+
+The effect consumer matches animation selection, sentinel-terminated 52-byte
+effect records, state and event-time filters, a sixteen-locator mask and averaging,
+position/height alternatives, callbacks, bits-on/off updates, velocity/rate/random
+gates, debris modes and sound dispatch. The drawing orchestrator matches frame
+`0xffff` and evaluation-only flags, hierarchy bounds/clipping/layer selection,
+DWA and ordinary animation dispatch, locator updates followed by effect
+consumption, lighting/transparency, sixteen-point surface effects, reflection
+start/render/end and cleanup gates. These compound behaviors distinguish the
+functions beyond their shared data anchor and call counts.
+
+Closed original control-flow graphs confirm both complete PC spans, including
+nine and eight interior alignment bytes respectively. The effect consumer's
+sole RET is at `0x0062c96f`; drawing returns at `0x0062fca5` and `0x00630671`.
+Native original symbol records independently establish the two names. The
+Draw-to-Add call corroborates their relationship; it adds no independent root.
+
+The journal records 5,498 reviewed PC code bytes with blank signatures and held
+ABI/types. PC field offsets, x87 predicates, callback guards and the unexplained
+effect-consumer call to `0x006dea60` remain separate reconstruction obligations.
+No CSV binding, source implementation or reconstruction coverage is added.
+The producer and independent evidence are frozen as
+`structural-wave42-character-consumers-role-original-next1.json` and
+`structural-wave42-character-consumers-independent-next1.json` under ignored
+analysis; earlier accounting failures remain disclosed in their original scopes.
+
+The compound call contexts retain six unapproved child candidates: plain,
+rotated, matrix and momentum debris emission, locator-coordinate storage and
+transparent character drawing. They are candidates for original review rather
+than automatic identities inferred from a parent.
+
+The normal control promotes both prior round-one function hypotheses and retains
+the exact 2,841-function union. Accepted/inferred counts become 1,527/1,314.
+All 2,416 prior DATA pairs remain, with one additional candidate
+`0x0097390c` / `0x011a7cb0`. That candidate remains unreviewed. The graph and
+scoring rules are unchanged; this checkpoint adds no reconstruction credit.
+
+The native loader normalizer's original effect proof and corrected two-entry
+certificate metadata pass independent review. Its writable finite-string and
+control-storage nonalias conditions are unproved for arbitrary loader inputs.
+A separate scratch prototype therefore keeps such calls as barriers by default;
+explicit domain assumptions preserve only reviewed effects and keep downstream
+field roles conditional. All 51 fixtures pass independent review. Actual
+discrimination remains an experiment, and no production scorer uses these
+conditional certificates.
