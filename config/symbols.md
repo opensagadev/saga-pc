@@ -2921,3 +2921,51 @@ The extra same-site native `+0x20c` target stays unqualified. The diagnostic now
 groups both already-reviewed AddGameMsg users under the pool, without adding an
 independent root, scoring change or new identity. This is a local indexed static
 reference proof, not a complete runtime address or a general field-offset map.
+
+### Message rendering and nearest security-door search (2026-10-02)
+
+Two connected hypotheses pass independent original identity and full PC extent
+review:
+
+| PC entry | Native entry | Identity | Complete PC bytes |
+| --- | --- | --- | --- |
+| `0x00561400` | `0x004a5720` | DrawGameMessages | 1,235 |
+| `0x004bd3d0` | `0x001e12f0` | SecurityDoor_FindNearest | 207 |
+
+The message renderer shares 128-slot lifecycle gates/easing, screen clamp and
+interpolation, custom callbacks, object/text branches, alpha/color handling and
+the optional extra-object callback. The full PC extent includes thirteen
+interior JMP/LEA alignment bytes absent from Ghidra's 1,222-byte owned count;
+its sole RET at `0x005618d2` and following CC/distinct-entry guards close the body.
+Renderer, callback and floating-point conversion effects remain held.
+
+The door search shares the special-array/count loop, `0xc0` stride, optional
+filter, flags/state/zero-field predicate, strict nearest-distance selection and
+optional output distance. The native combined word mask enforces the same flag
+and zero-state conditions for all 65,536 input words. Original constants confirm
+the float minimum of 1e9; equal distances retain the first candidate and unordered
+distances are rejected. The complete 207-byte PC body ends after RET at
+`0x004bd49e`. Its reviewed parent passes four words, but unqualified NuVecDistSqr
+effects keep the complete caller contract unresolved.
+
+Both journal rows release identity and extent only: 1,442 reviewed PC code bytes,
+with ABI/type held and no CSV/source/reconstruction credit. Original and peer
+evidence are frozen as `structural-wave41-message-door-original-next1.json` and
+`structural-wave41-message-door-independent-next1.json` under ignored analysis.
+
+The normal control promotes the two existing round-one inferences and retains
+all previous pairs. Accepted/inferred counts become 1,525/1,316; the union remains
+2,841 and all 2,416 DATA pairs are identical. These reviews add no new inference
+or reconstruction credit.
+
+The generic value/control-flow annotation trial preserves the prior field and
+pair results exactly. It records a conditional writer access-order motif,
+write A/read A/write B/read B, but every writer STORE value ancestry remains
+unknown and all four loader cross-pairs still tie. Both native loaders call the
+same unqualified helper at `0x003cbed2`; its imported graph label is not an exact
+original symbol or an effect certificate. That original callee and the held
+reader/Reset providers are the next field-evidence frontier. Prototype fixtures
+and independent actual audits pass, while the interpretation helper's source
+budget and the call-frontier setup-SQL accounting remain explicitly qualified in
+their immutable scratch corrections. No scorer or mapping release relies on
+those budget-compliance claims.
