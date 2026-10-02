@@ -2808,3 +2808,26 @@ release held. Message-pool and cursor addresses remain binding hypotheses.
 Evidence is frozen under ignored continuation analysis as
 `structural-wave37-tag-message-original-next1.json` and
 `structural-wave37-tag-message-independent-next1.json`.
+
+### Message-pool and cursor data identities (2026-10-02)
+
+Original AddGameMsg and ResetGameMessages review, independently repeated,
+identifies the PC pool base `0x00947be0` with native `0x01298800`, and the PC
+circular scan/replacement cursor `0x009505e0` with native `0x012a1200`.
+The native pool is the original GameMessage OBJECT; GOT carrier `0x00616318`
+and its relative relocation carry the pool address. The cursor endpoint follows
+the original PIC reads and writes; its annotated native local name remains
+advisory until its exact symbol record is established.
+
+Both algorithms address 128 records at stride `0x114`. Reset clears each
+record's active byte only and does not reset the cursor. The native 35,328-byte
+symbol and equal base-to-cursor gaps do not establish the PC allocation extent.
+Both journal rows therefore release identity only, with sizes, aggregate types,
+ABI and source/CSV release held and no coverage credit.
+
+PC `0x00947cd8` is the active-byte member at pool offset `0xf8`; its candidate
+pairing with the whole native owner remains an ambiguity. Only explicitly
+reviewed member/site incidences may support a partial-owner diagnostic; no
+arbitrary interval is normalized. Evidence is frozen as
+`structural-wave38-message-data-original-next1.json` and
+`structural-wave38-message-data-independent-next1.json` under ignored analysis.

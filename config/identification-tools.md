@@ -2132,3 +2132,35 @@ transport, whose backend is absent from the original library. Any preservation
 under an external System V i386 ABI and normal-return assumption must use a
 separate opt-in contract and leave downstream observations conditional. It is
 not a verified leaf-effect certificate or an additional matching root.
+
+The V3 field consumer passes 35 fixtures and a separate source review. Three
+pinned trials retain strict behavior, add only reviewed PC effects, and then
+add the conditional native import contract. Strict functions and pair rows
+exactly match V2. PC effects recover nine positive writer events; the opt-in
+native contract recovers nine conditional events and three conditional-inclusive
+shared role classes. There are still no shared positive writer roles, and all
+four loader cross-pairs remain unchanged and tied. The trials take 0.23/0.20/0.20
+seconds at 30,820/30,860/30,948 KiB RSS, with zero swaps under 256 MiB. Event
+output lacks store-value ancestry and CFG partial-order witnesses, so field
+correspondence is still a hypothesis. The controls are frozen in
+`structural-field-origin-actual-three-arm-independent-next1.json`.
+
+Original shared-message pool and cursor identities add two data anchors in
+wave38, with allocation extents and types held. The normal run retains all
+1,519 accepted function pairs and adds four inferences, reaching 1,321 inferred
+pairs and an accepted-plus-inferred union of 2,840. There are no function-pair
+losses or reroutes. Data candidates decrease from 2,417 to 2,416: the only lost
+pair was the PC active-byte member `0x00947cd8` paired with the entire native
+pool `0x01298800`. Reviewed data anchors rise from 118 to 120; name labels stay
+at 872. These are fixed-run transitions, with no inferred-identity accuracy or
+individual-anchor causal claim. The run takes 45.86 seconds at 692,044 KiB RSS
+with zero swaps under 1 GiB. Exact membership and root lineage are retained in
+`structural-wave38-normal-control-independent-next1.json` and its supplements.
+
+The next owner diagnostic must distinguish an indexed static reference base
+from a runtime effective address. Reviewed member/site incidences can connect
+that field family to its parent while preserving raw targets, offsets and access
+widths. Unknown runtime indices and PC allocation boundaries remain held; no
+arbitrary owner interval or extra independent root is introduced. The original
+library's GOT carrier continues to represent address transport separately from
+object or member access.
