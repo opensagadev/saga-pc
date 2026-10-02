@@ -2062,3 +2062,36 @@ distinguish their roles. This prototype remains separate from scoring until
 its actual output is checked. Cross-platform field correspondence, unknown
 call effects, partial register writes and unresolved targets remain explicit
 limitations; repeated uses of one anchor do not create independent roots.
+
+### Animation anchors and field provenance trial (2026-10-02)
+
+Original-code review confirms Animate_CHARACTER at PC `0x004a8f20` and native
+`0x0016ae60`, and UpdateMiniAnimPacket at PC `0x0062f0a0` and native
+`0x003cf1e7`. Their complete PC bodies are 1,024 and 85 bytes. Both identities
+enter the research journal; unresolved caller contracts and aggregate types keep
+them out of the source map. The normal wave36 run converts their earlier
+inferences to reviewed anchors, reaching 1,517 accepted and 1,318 inferred
+pairs. Accepted-plus-inferred membership stays exactly 2,835, without losses or
+reroutes. The 2,400 data hypotheses retain 2,395 pairs and exchange five pairs
+in each direction. The new PC targets are interiors of existing ContextInfoTable
+and WorldInfo owners; these proposals do not identify new standalone objects.
+The run takes 45.60 seconds at 692,040 KiB RSS with zero swaps under 1 GiB.
+
+The field trial exports raw Pcode operands and machine control flow for the
+initializer and two animation loaders on each platform. Existing body checks
+validate all six selected exports against the originals. Serialized read-only
+Ghidra jobs take 4.41/4.31 seconds and peak at 468,464/397,432 KiB RSS, with zero
+swaps. This scratch exporter preserves register storage and overlapping writes,
+instruction-local unique values and branches, and distinct RAM and other address
+spaces. It adds no roots or scoring inputs.
+
+The bounded consumer follows a reviewed slot into loaded pointers and subsequent
+field accesses. Store values are snapshots; events are collected after the
+control-flow fixed point. The native GOT carrier supplies an address, separately
+from a loaded object value. Unknown calls, unreviewed Pcode user operations and
+unresolved computed flow keep downstream provenance conditional. Reviewed leaf
+effects are qualified by their original-code contracts; they do not establish
+cross-platform function identities. The pilot retains the writer control and
+all four loader cross-pairs, with outside alternatives held. Generic roles may
+support correspondence without equal numeric offsets or strides; neither raw
+operand exports nor synthetic fixtures alone establish useful discrimination.

@@ -2750,3 +2750,36 @@ providers; these 610 reviewed code bytes add no inventory or reconstruction
 coverage. Original producer/peer packets are frozen under ignored continuation
 analysis with `structural-api-animation-provider-*wave35*` and
 `structural-apicharsys-writer-*wave35*` names.
+
+### Character state animation and mini-packet update (2026-10-02)
+
+Two new inferences from the reviewed `apicharsys` anchor pass independent
+original identity and complete PC boundary review:
+
+| PC entry | Native entry | Identity | Complete PC bytes |
+| --- | --- | --- | --- |
+| `0x004a8f20` | `0x0016ae60` | Animate_CHARACTER | 1,024 |
+| `0x0062f0a0` | `0x003cf1e7` | UpdateMiniAnimPacket | 85 |
+
+Animate_CHARACTER shares distinctive class/state selection, timer updates,
+signed remap access, model selection and two mini-packet update paths with the
+original native GLOBAL function. Native movement selection adds operations,
+and native SSE/PC x87 unordered comparisons differ. Identity does not establish
+source or floating-point equivalence. The complete PC CFG includes five returns
+through `0x004a931f`; the next analyzed entry at `0x004a9320` is distinct even
+without intervening CC padding.
+
+Both reviewed callers supply five words to UpdateMiniAnimPacket twice. The
+helper converts a mini packet into a local full view, calls the full updater
+with six words including an additional zero, then converts back. Its PC local
+reserve and outgoing argument staging remain observed operations, not a
+transferred native type. The complete 85-byte body ends at `0x0062f0f4`, before
+eleven CC bytes. Conversion/updater effects, private animation providers,
+caller contracts and aggregate types remain held.
+
+The journal records both identities and complete extents; CSV/source and
+coverage are unchanged. Producer and independent packets are frozen as
+`structural-wave36-animate-mini-original-next1.json` and
+`structural-wave36-animate-mini-independent-next1.json` under ignored
+continuation analysis. GOT address carriage remains separate from the reviewed
+`apicharsys` data object; no additional data allocation or type is claimed.
