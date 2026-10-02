@@ -3024,3 +3024,81 @@ explicit domain assumptions preserve only reviewed effects and keep downstream
 field roles conditional. All 51 fixtures pass independent review. Actual
 discrimination remains an experiment, and no production scorer uses these
 conditional certificates.
+
+### Following the character call contexts
+
+All six selected character callees pass independent original identity and full
+PC extent review. Their branch and data roles distinguish helpers whose call
+graphs alone look similar:
+
+| PC entry | Native entry | Identity | Complete PC bytes |
+| --- | --- | --- | --- |
+| `0x0062c560` | `0x003ca5b6` | AddGameDebris | 72 |
+| `0x0062c680` | `0x003ca789` | AddGameDebrisRot | 73 |
+| `0x0062c6d0` | `0x003ca839` | AddGameDebrisMtx | 137 |
+| `0x0062c760` | `0x003ca91d` | AddGameDebrisMom | 104 |
+| `0x0062e1e0` | `0x003cd5ec` | StoreLocatorCoordinates | 171 |
+| `0x0062fac0` | `0x003d03aa` | APITransparentCharDraw | 291 |
+
+The debris family shares signed index bounds, twenty-byte record stepping and
+a `-1` identifier gate. Plain emission supplies a sentinel pointer to a distinct
+backend; rotation forwards angles; matrix emission constructs a quarter-turn
+matrix and multiplies it by its input; momentum emission substitutes a local
+zero vector for a NULL momentum pointer. The latter two share a backend, so
+that call alone cannot distinguish them. All twelve crossed sibling alternatives
+are rejected by their internal roles. Native rotation narrows two angle words
+to signed sixteen-bit values; PC forwards full words. Backend effects and
+complete interfaces remain held.
+
+Locator storage evaluates sixteen presence slots and optionally copies twelve-
+byte positions and sixty-four-byte matrices, leaving missing slots unchanged.
+Transparent drawing removes selected type-list entries by swapping in the last
+entry, brackets rendering with state changes, saves/restores an object byte and
+conditionally restores removed entries. Its PC render-context calls and snapshot
+at `0x00973910` are absent in native and remain explicit PC obligations. Neither
+output allocation nor complete list equality is inferred.
+
+A separate compound review confirms LOCAL `CutScene_DrawCharacter` at
+PC `0x0057d3a0` / native `0x00498db0`, complete PC extent 3,767 bytes. Animation
+transitions, matrix construction, sixteen-locator shadows, distance/material
+reflection gates, bracketed rendering and attachment traversal establish the
+identity. All PC instructions are reachable; RET at `0x0057e256` and the following
+nine CC bytes close the span. Native extras and PC level/platform shadow gates
+remain distinct.
+
+These seven journal identities cover 4,615 reviewed PC code bytes. Original
+names, bodies and bounds pass independent review; ABI/types, CSV bindings and
+source reconstruction remain held. Frozen evidence uses the
+`structural-wave43-debris-callees-*`, `structural-wave43-locator-transparent-*`
+and `structural-wave43-cutscene-*` packets under ignored analysis. Parent call
+contexts corroborate the matches without adding independent roots; the earlier
+callee-context SQL accounting failure remains held in its original scope.
+
+The field trial's default barriers and explicit conditional-domain policy pass
+independent actual review. They add no field, value, ordering or pair-role gain
+over the preceding trial. All four loader cross-pairs still tie; reader/provider
+and Reset effects remain unresolved. Conditional register preservation alone
+does not remove those later barriers, and it supplies no new mapping credit.
+
+The newly proposed DATA pair also passes independent original identity review:
+PC `0x0097390c` corresponds to native `nurndr_force_lod` at `0x011a7cb0`.
+The reviewed display-list renderer reads it as a LOD selection bound; character
+drawing writes one around reflection rendering and zero afterward. Original
+native PIC/GOT transport and both original symbol tables confirm the same object.
+The four-byte GOT carrier is separate from that object. Native symbol size and
+observed four-byte accesses establish neither the complete PC allocation nor
+its historical type or initializer. Its journal identity has unknown PC size
+and held extent/type, adding one data anchor with no CSV or coverage credit.
+
+The normal control retains every prior accepted/inferred function pair. Five
+reviews promote earlier inferences; AddGameDebrisMom and StoreLocatorCoordinates
+were previously candidates without inferred status. Seven further pairs become
+inferred, expanding the function union from 2,841 to 2,850, with no loss or
+reroute. Accepted/inferred counts are 1,534/1,316. This is candidate propagation,
+not original review or source reconstruction of those seven additions.
+
+DATA candidates change by fourteen gains and six removals, reaching 2,425.
+One removal is the force-LOD pair promoted into the 121 reviewed data anchors;
+the remaining candidate changes stay advisory. The observed root lineage does
+not isolate a single cause for the gains. Graph, scoring and source inputs are
+unchanged apart from the journal and documentation.
