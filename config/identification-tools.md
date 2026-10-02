@@ -2095,3 +2095,40 @@ cross-platform function identities. The pilot retains the writer control and
 all four loader cross-pairs, with outside alternatives held. Generic roles may
 support correspondence without equal numeric offsets or strides; neither raw
 operand exports nor synthetic fixtures alone establish useful discrimination.
+
+The actual five-pair consumer trial passes its source, input and publication
+checks and takes 0.21 seconds at 30,320 KiB RSS with zero swaps under 256 MiB.
+All four loader cross-pairs share the same single positive role. Each PC loader
+has two positive and twenty-two conditional field events; each native loader
+has one positive event. Distinct PC fields at offsets 36 and 44 collapse to
+the same generic role, so this prototype does not distinguish the loaders.
+The writer has twenty-three conditional PC events and no native field events,
+with no shared roles. No pair is promoted. The next refinement must preserve
+distinct field identities and learn correspondence from paired value-source and
+access context, without requiring equal platform offsets.
+
+Exact graph queries locate the first writer barriers at PC `0x00630b49`, calling
+`0x0062a5e0`, and native `0x003cbaf3`, calling the `memset` PLT endpoint at
+`0x000d8b80`. Complete writer direct-call lists retain six incidences on each
+side. Original provider effects and the dynamic backend remain separate review
+questions; an imported name alone supplies no preservation certificate.
+
+Two more reviewed function identities, Tag_DrawIcon_Batman and AddGameMsg,
+convert prior inferences in wave37. The normal run retains all 1,517 previous
+accepted pairs and reaches 1,519 accepted and 1,317 inferred pairs. One former
+rank-one candidate, PC `0x00570a00` / native `0x004c17a0`, becomes an inference;
+there are no unconverted losses or reroutes. Accepted-plus-inferred membership
+grows from 2,835 to 2,836. Data hypotheses have 27 gains and ten losses, with
+2,390 common pairs and 2,417 total; reviewed data anchors and name labels stay
+at 118 and 872. These transitions do not verify the new hypotheses or establish
+single-input causation. The run stops after seven rounds with no new pairs,
+taking 45.46 seconds at 692,160 KiB RSS, zero swaps and a 1 GiB limit.
+
+Original provider review verifies the PC return-only target. The 122-byte PC
+memset wrapper has an optimized tail outside the reviewed normal path; the
+writer's first 56-byte call proves the normal-path domain, while its other three
+counts are dynamic and remain held. The native endpoint is an exact ELF import
+transport, whose backend is absent from the original library. Any preservation
+under an external System V i386 ABI and normal-return assumption must use a
+separate opt-in contract and leave downstream observations conditional. It is
+not a verified leaf-effect certificate or an additional matching root.

@@ -2783,3 +2783,28 @@ coverage are unchanged. Producer and independent packets are frozen as
 `structural-wave36-animate-mini-independent-next1.json` under ignored
 continuation analysis. GOT address carriage remains separate from the reviewed
 `apicharsys` data object; no additional data allocation or type is claimed.
+
+### Icon messages and shared message pool (2026-10-02)
+
+Original PC/native instruction review and an independent review identify
+Tag_DrawIcon_Batman at PC `0x004bbd10` / native `0x00144c00`, and AddGameMsg at
+PC `0x00560b60` / native `0x004a4ce0`. The first has a complete 927-byte PC body;
+the second requires all 1,078 bytes, including seven internal alignment bytes
+and the final jump back into its body. Ghidra's 1,071-byte owned-range count
+does not describe the complete message function.
+
+The icon routine shares modal/fade/actor gates, color selection, averaging of
+sixteen model attachment positions, three message emissions and the final
+165/166 icon selection. AddGameMsg shares a 128-slot circular pool with a
+`0x114` record stride, free/replacement selection, callback gates, a bounded
+119-byte text copy and a distinctive group of input-to-record assignments.
+PC x87 and native SSE arithmetic, actor offsets, clearing code and stack-cookie
+handling differ. These witnesses support identity without transferring layouts
+or exact floating-point behavior.
+
+Both entries are journal identities with complete PC extents. Unresolved message
+callbacks and provider effects keep caller ABI, aggregate types, source and CSV
+release held. Message-pool and cursor addresses remain binding hypotheses.
+Evidence is frozen under ignored continuation analysis as
+`structural-wave37-tag-message-original-next1.json` and
+`structural-wave37-tag-message-independent-next1.json`.
