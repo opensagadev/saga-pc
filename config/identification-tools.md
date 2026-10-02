@@ -2013,3 +2013,52 @@ losses or reroutes. All 117 reviewed data anchors and 872 map-name data labels
 remain unchanged. The run takes 49.02 seconds at 688,876 KiB RSS with zero swaps,
 under the unchanged 1 GiB limit. The new path diagnostic is separate from scoring.
 These exact transitions do not establish accuracy or single-input causation.
+
+### Shared state and field access refinement (2026-10-02)
+
+The `apicharsys` shared-state frontier captures 52 PC and 67 native users,
+including twenty already paired users. Its 32 by 47 unpaired alternatives
+remain held. Both captured sides have one observed writer, but writer incidence
+alone does not establish identity. Original instruction, caller and native
+symbol review independently confirms APICharacterSysInit at PC `0x00630b40`
+and native `0x003cba8f`, with a complete 541-byte PC body. The packed-buffer
+dependency NuAnimData2LoadBuffFromPAK adds a separate 69-byte reviewed identity.
+Provider effects and formal types remain unresolved; neither function enters
+the CSV or contributes reconstruction coverage.
+
+The writer and three reviewed helper reads identify the PC slot `0x02913104`
+with the original native GLOBALOBJECT `0x0123f918`. The native GOT cell at
+`0x006122f0` carries that address and remains distinct from the object. This
+journal row establishes data identity only. Four-byte accesses and the native
+four-byte symbol do not establish a complete PC allocation or a transferred
+type. The existing source and CSV stay unchanged.
+
+The normal wave35 run retains all previous accepted pairs and reaches 1,515
+accepted anchors, 1,320 tentative pairs, 118 reviewed data anchors and the same
+2,400 data hypotheses. Both new function identities convert previous inferences.
+Six other functions become inferences, with no losses or reroutes, increasing
+accepted-plus-inferred membership from 2,829 to 2,835. All six carry the new data
+anchor in their evidence lineage. The run takes 45.60 seconds at 692,036 KiB
+peak RSS, zero swaps and the unchanged 1 GiB address-space limit.
+
+A controlled third run adds only the reviewed `apicharsys` data row to the
+frozen baseline journal. Every other input hash stays fixed. It reproduces
+exactly the same six new accepted-plus-inferred pairs, with no losses and
+unchanged data hypotheses. Its 1,513 accepted and 1,322 inferred pairs differ
+from the normal run only because the two function promotions remain inferences.
+Thus this one data anchor causes the six output additions under these fixed
+inputs; it does not establish their original identities or general accuracy.
+The control takes 45.39 seconds at 692,304 KiB RSS with zero swaps. Independent
+membership and composition proofs are frozen as
+`structural-wave35-apicharsys-only-control-independent-next1.json` and its
+`-composition.json` under ignored continuation analysis.
+
+Field access refinement is the next diagnostic: follow a reviewed global slot
+through its loaded pointer, field offsets and indexed accesses, preserving
+reads, writes and caller context. The initializer and both animation loaders
+form the finite pilot, including all four crossed loader alternatives. Existing
+Pcode histograms tie the loaders; operands and value origins are needed to
+distinguish their roles. This prototype remains separate from scoring until
+its actual output is checked. Cross-platform field correspondence, unknown
+call effects, partial register writes and unresolved targets remain explicit
+limitations; repeated uses of one anchor do not create independent roots.

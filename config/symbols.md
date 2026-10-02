@@ -2710,3 +2710,43 @@ source, inventory coverage or matching gain is claimed. The retained independent
 packet is `structural-api-character-private-triad-independent-next1.json` under
 ignored continuation analysis. Next review the four actual loader providers,
 starting with the unmapped raw-buffer reader at `0x005f6420` and its full extent.
+
+### Character arena writer and packed-buffer dependency (2026-10-02)
+
+The character-model family opens two more reviewed identities in the journal:
+
+| PC entry | Native entry | Identity | Complete PC bytes |
+| --- | --- | --- | --- |
+| `0x005f6420` | `0x002bc4d0` | NuAnimData2LoadBuffFromPAK | 69 |
+| `0x00630b40` | `0x003cba8f` | APICharacterSysInit | 541 |
+
+The packed-buffer reader returns NULL for zero size, then routes the signed
+header comparison to pointer-block fixing or animation fixup. PC `>= ANI5`
+and native `> ANI4` are equivalent. Both returns and the following eleven CC
+bytes establish its complete PC boundary. The filename wrapper's incoming-ECX
+scratch word and backend write-before-read behavior remain separate debts.
+Original NuStrICmp and NuStrCpy are call-free under finite valid storage
+conditions. Native NuStrCmp is case-sensitive; its standalone pairing with PC
+NuStrICmp is rejected by the original `a`/`A` behavior. This platform difference
+does not reject the corresponding animation-loader roles.
+
+The initializer aligns an arena to sixteen bytes and reserves/clears its
+56-byte header, 84-byte model records, three pointer arrays per model, two-byte
+remap entries and 52-byte animation entries. These are observed PC operations,
+not copied native layouts or a proposed aggregate type. Actual callers supply
+eight words and discard EAX. The unused second word, PC optional existing-slot
+action and differing incidental returns keep formal types and return behavior
+unresolved. Complete branch review reaches both PC returns through byte 541;
+three following CC bytes and the separate RET at `0x00630d60` are excluded.
+
+The corresponding original writer and three reviewed helper reads identify
+PC `apicharsys` at `0x02913104` with the exact native GLOBALOBJECT at
+`0x0123f918`. Native GOT cell `0x006122f0` supplies that address and is not an
+object alias. Both initial zero views and four-byte accesses are verified.
+The new data journal row reviews identity only: it does not establish a PC
+allocation extent or transfer the native size/type. Existing CSV/source
+inventory is preserved. Both functions retain ABI/type holds on their
+providers; these 610 reviewed code bytes add no inventory or reconstruction
+coverage. Original producer/peer packets are frozen under ignored continuation
+analysis with `structural-api-animation-provider-*wave35*` and
+`structural-apicharsys-writer-*wave35*` names.
