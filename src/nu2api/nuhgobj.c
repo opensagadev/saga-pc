@@ -143,3 +143,112 @@ void __cdecl NuHGobjEvalAnimBlend2(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *anim
     NuHGobjEvalAnimBlend2Root_3(object, animation_a, time_a, animation_b, time_b, blend, override_count, overrides,
                                 matrices, NULL, NULL);
 }
+
+DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwa2(i32 count, i16 *indices, NUANIMDATA2_PC *animation, f32 frame) {
+    NUANIM_TIME2_PC time;
+    DWA_WEIGHT_BLOCK_PC **result;
+    i32 render;
+    if (animation == NULL || count == 0)
+        return NULL;
+    NuAnimData2CalcTime(animation, frame, &time);
+    if (indices == NULL)
+        count = 1;
+    result = NuRndrCreateBlendShapeDWAPointers(count);
+    memset(result, 0, ((u32)count * 4 + 15u) >> 4);
+    if (result == NULL)
+        return NULL;
+    for (render = 0; render < count; ++render) {
+        i32 node = indices == NULL ? 0 : indices[render];
+        i32 curve_count, curve;
+        DWA_WEIGHT_BLOCK_PC *weights;
+        DWA_CURVE_CELL_PC *cells;
+        i8 *types;
+        if (node < 0)
+            continue;
+        if (node >= NuAnimNumNodes(animation)) {
+            result[render] = NuRndrCreateBlendShapeDeformerWeightsArray(0);
+            continue;
+        }
+        curve_count = animation->curve_count;
+        weights = NuRndrCreateBlendShapeDeformerWeightsArray(curve_count);
+        result[render] = weights;
+        cells = &animation->curves[curve_count * node];
+        types = &animation->curve_types[curve_count * node];
+        if (weights == NULL)
+            continue;
+        for (curve = 0; curve < curve_count; ++curve) {
+            volatile f32 value =
+                types[curve] == 0 ? cells[curve].constant : NuAnimCurve2CalcValEx(&cells[curve], &time, types[curve]);
+            weights->values[curve] = value;
+        }
+    }
+    return result;
+}
+
+DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwaBlend2(i32 count, i16 *indices, NUANIMDATA2_PC *animation_a, f32 frame_a,
+                                                   NUANIMDATA2_PC *animation_b, f32 frame_b, f32 blend) {
+    NUANIM_TIME2_PC time_a, time_b;
+    DWA_WEIGHT_BLOCK_PC **result;
+    i32 render;
+    if ((animation_a == NULL && animation_b == NULL) || count == 0)
+        return NULL;
+    if (animation_a != NULL)
+        NuAnimData2CalcTime(animation_a, frame_a, &time_a);
+    if (animation_b != NULL)
+        NuAnimData2CalcTime(animation_b, frame_b, &time_b);
+    if (indices == NULL)
+        count = 1;
+    result = NuRndrCreateBlendShapeDWAPointers(count);
+    memset(result, 0, ((u32)count * 4 + 15u) >> 4);
+    if (result == NULL)
+        return NULL;
+    for (render = 0; render < count; ++render) {
+        i32 node = indices == NULL ? 0 : indices[render];
+        i32 count_a = 0, count_b = 0, curves, curve;
+        DWA_CURVE_CELL_PC *cells_a = NULL, *cells_b = NULL;
+        i8 *types_a = NULL, *types_b = NULL;
+        DWA_WEIGHT_BLOCK_PC *weights;
+        volatile f64 inverse;
+        if (node < 0)
+            continue;
+        if (animation_a != NULL && node < NuAnimNumNodes(animation_a)) {
+            count_a = animation_a->curve_count;
+            cells_a = &animation_a->curves[count_a * node];
+            types_a = &animation_a->curve_types[count_a * node];
+        }
+        if (animation_b != NULL && node < NuAnimNumNodes(animation_b)) {
+            count_b = animation_b->curve_count;
+            cells_b = &animation_b->curves[count_b * node];
+            types_b = &animation_b->curve_types[count_b * node];
+        }
+        curves = count_a > count_b ? count_a : count_b;
+        weights = NuRndrCreateBlendShapeDeformerWeightsArray(curves);
+        result[render] = weights;
+        if (weights == NULL || curves <= 0)
+            continue;
+        inverse = 1.0 - (f64)blend;
+        for (curve = 0; curve < curves; ++curve) {
+            volatile f32 value_a = 0.0f, value_b = 0.0f;
+            if (curve < count_a)
+                value_a = types_a[curve] == 0 ? cells_a[curve].constant
+                                              : NuAnimCurve2CalcValEx(&cells_a[curve], &time_a, types_a[curve]);
+            if (curve < count_b)
+                value_b = types_b[curve] == 0 ? cells_b[curve].constant
+                                              : NuAnimCurve2CalcValEx(&cells_b[curve], &time_b, types_b[curve]);
+            weights->values[curve] = (f64)value_b * blend + (f64)value_a * inverse;
+        }
+    }
+    return result;
+}
+
+void __cdecl NuHGobjEvalAnimBlend2Root(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *animation_a, f32 time_a,
+                                       ANI3_HEADER_PC *animation_b, f32 time_b, f32 blend, i32 override_count,
+                                       void *overrides, NUMTX *matrices, ANI3_ROOT_CALLBACK_PC root_fn,
+                                       void *root_data) {
+    if ((i32)animation_a->magic < 0x414e4934 || (i32)animation_a->magic > 0x414e4935) {
+        AnimationDiagnosticNoOpPc();
+        return;
+    }
+    NuHGobjEvalAnimBlend2Root_3(object, animation_a, time_a, animation_b, time_b, blend, override_count, overrides,
+                                matrices, root_fn, root_data);
+}

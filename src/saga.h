@@ -4539,6 +4539,60 @@ STATIC_ASSERT(offsetof(ANI3_HEADER_PC, keys) == 0x30);
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, node_flags) == 0x34);
 STATIC_ASSERT(sizeof(ANI3_HEADER_PC) == 0x3c);
 
+typedef union DWA_CURVE_CELL_PC {
+    f32 constant;
+    void *encoded;
+} DWA_CURVE_CELL_PC;
+typedef union DWA_FRAME_HEADER_PC {
+    f32 duration;
+    u32 magic;
+} DWA_FRAME_HEADER_PC;
+typedef union DWA_NODE_COUNT_PC {
+    i16 legacy;
+    u16 modern;
+} DWA_NODE_COUNT_PC;
+typedef struct NUANIMDATA2_PC {
+    DWA_FRAME_HEADER_PC header;
+    DWA_NODE_COUNT_PC node_count;
+    i16 curve_count;
+    i16 chunk_count;
+    u16 modern_frame_count;
+    DWA_CURVE_CELL_PC *curves;
+    i8 *curve_types;
+} NUANIMDATA2_PC;
+typedef struct NUANIM_TIME2_PC {
+    f32 time;
+    f32 time_offset;
+    i32 chunk;
+    u32 time_mask;
+    u32 time_byte;
+    i32 chunk_frame;
+} NUANIM_TIME2_PC;
+typedef struct DWA_WEIGHT_BLOCK_PC {
+    u32 unknown_00[2];
+    f32 values[128];
+} DWA_WEIGHT_BLOCK_PC;
+STATIC_ASSERT(sizeof(DWA_CURVE_CELL_PC) == 4);
+STATIC_ASSERT(offsetof(NUANIMDATA2_PC, curve_count) == 6);
+STATIC_ASSERT(offsetof(NUANIMDATA2_PC, chunk_count) == 8);
+STATIC_ASSERT(offsetof(NUANIMDATA2_PC, modern_frame_count) == 0x0a);
+STATIC_ASSERT(offsetof(NUANIMDATA2_PC, curves) == 0x0c);
+STATIC_ASSERT(offsetof(NUANIMDATA2_PC, curve_types) == 0x10);
+STATIC_ASSERT(sizeof(NUANIM_TIME2_PC) == 24);
+STATIC_ASSERT(offsetof(NUANIM_TIME2_PC, time_mask) == 0x0c);
+STATIC_ASSERT(offsetof(DWA_WEIGHT_BLOCK_PC, values) == 8);
+STATIC_ASSERT(sizeof(DWA_WEIGHT_BLOCK_PC) == 0x208);
+
+STATIC_ASSERT(offsetof(NUANIMDATA2_PC, header) == 0);
+STATIC_ASSERT(offsetof(NUANIMDATA2_PC, node_count) == 4);
+STATIC_ASSERT(offsetof(NUANIMDATA2_PC, curve_types) == 0x10);
+STATIC_ASSERT(sizeof(NUANIMDATA2_PC) == 0x14);
+STATIC_ASSERT(offsetof(NUANIM_TIME2_PC, time) == 0);
+STATIC_ASSERT(offsetof(NUANIM_TIME2_PC, time_offset) == 4);
+STATIC_ASSERT(offsetof(NUANIM_TIME2_PC, chunk) == 8);
+STATIC_ASSERT(offsetof(NUANIM_TIME2_PC, time_byte) == 0x10);
+STATIC_ASSERT(offsetof(NUANIM_TIME2_PC, chunk_frame) == 0x14);
+
 typedef struct ANI3_JOINT_PC {
     NUVEC4 translation;
     NUVEC4 rotation;
@@ -8169,6 +8223,19 @@ extern "C" {
                                             ANI3_ROOT_CALLBACK_PC, NUVEC *, void *);
     void __cdecl NuAnimBuffEvaluate_3(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *,
                                       ANI3_ROOT_CALLBACK_PC, NUVEC *, void *);
+    void __cdecl NuHGobjEvalAnimBlend2Root(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, ANI3_HEADER_PC *, f32, f32, i32,
+                                           void *, NUMTX *, ANI3_ROOT_CALLBACK_PC, void *);
+    void __cdecl NuAnimData2CalcTime(NUANIMDATA2_PC *, f32, NUANIM_TIME2_PC *);
+    i32 __cdecl NuAnimNumNodes(NUANIMDATA2_PC *);
+    f32 __cdecl NuAnimCurve2CalcValEx(DWA_CURVE_CELL_PC *, NUANIM_TIME2_PC *, i32);
+    extern i32 DwaWeightCursorPc;
+    extern i32 DwaPointerCursorPc;
+    extern DWA_WEIGHT_BLOCK_PC DwaWeightPoolPc[60669];
+    extern DWA_WEIGHT_BLOCK_PC *DwaPointerPoolPc[2048];
+    DWA_WEIGHT_BLOCK_PC *__cdecl NuRndrCreateBlendShapeDeformerWeightsArray(i32);
+    DWA_WEIGHT_BLOCK_PC **__cdecl NuRndrCreateBlendShapeDWAPointers(i32);
+    DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwa2(i32, i16 *, NUANIMDATA2_PC *, f32);
+    DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwaBlend2(i32, i16 *, NUANIMDATA2_PC *, f32, NUANIMDATA2_PC *, f32, f32);
     extern i32 AnimQuatDepthPc;
     extern u8 AnimQuatSavedPc[4];
     void __cdecl AnimationDiagnosticNoOpPc(void);

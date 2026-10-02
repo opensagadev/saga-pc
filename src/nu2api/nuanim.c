@@ -1863,3 +1863,216 @@ void __cdecl NuAnimBuffEvaluate_3_QuatB(NUMTX *base, ANI3_BUFFER_PC *buffer, NUH
 
 void __cdecl AnimationDiagnosticNoOpPc(void) {
 }
+
+void __cdecl NuAnimData2CalcTime(NUANIMDATA2_PC *animation, f32 frame, NUANIM_TIME2_PC *time) {
+    i32 chunk_frame;
+    i32 shift;
+    if ((i32)animation->header.magic >= 0x414e4934 && (i32)animation->header.magic <= 0x414e4935) {
+        if (frame < 1.0f)
+            time->time = 1.0f;
+        else if (frame >= animation->modern_frame_count)
+            time->time = (f32)((f64)animation->modern_frame_count - (f64)0.01f);
+        else
+            time->time = frame;
+        return;
+    }
+    if (animation->header.duration <= frame) {
+        if (animation->header.duration == 1.0f) {
+            time->time = 1.0f;
+            time->chunk = 0;
+            time->time_byte = 0;
+            time->time_mask = 1;
+            return;
+        }
+        time->time = (f32)((f64)animation->header.duration - (f64)0.01f);
+    } else if (frame < 1.0f)
+        time->time = 1.0f;
+    else
+        time->time = frame;
+    time->chunk = ((i32)time->time - 1) >> 5;
+    if (time->chunk >= animation->chunk_count)
+        time->chunk = animation->chunk_count - 1;
+    time->time_offset = (f32)((f64)time->time - (i32)((u32)time->chunk << 5));
+    chunk_frame = (i32)NuFloor(time->time_offset) - 1;
+    time->chunk_frame = chunk_frame;
+    time->time_byte = (u8)(chunk_frame / 8);
+    shift = chunk_frame % 8 + 1;
+    time->time_mask = (u8)((1u << ((u32)shift & 31)) - 1);
+}
+
+i32 __cdecl NuAnimNumNodes(NUANIMDATA2_PC *animation) {
+    if ((i32)animation->header.magic >= 0x414e4934 && (i32)animation->header.magic <= 0x414e4935)
+        return animation->node_count.modern;
+    return animation->node_count.legacy;
+}
+
+typedef struct PCCurveFullKey {
+    f32 frame, inverse_duration, value, tangent;
+} PCCurveFullKey;
+typedef struct PCCurvePacked6Key {
+    i16 value;
+    i8 tangent;
+    u8 unused;
+    u16 frame;
+} PCCurvePacked6Key;
+typedef struct PCCurvePacked4Key {
+    i16 value;
+    i8 tangent;
+    u8 frame;
+} PCCurvePacked4Key;
+typedef struct PCCurvePacked6 {
+    f32 tangent_scale, value_scale, value_offset;
+    PCCurvePacked6Key keys[1];
+} PCCurvePacked6;
+typedef struct PCCurvePacked4 {
+    f32 tangent_scale, value_scale;
+    PCCurvePacked4Key keys[1];
+} PCCurvePacked4;
+typedef struct PCCurveScaled4 {
+    f32 tangent_scale, value_scale, value_offset, time_scale;
+    PCCurvePacked4Key keys[1];
+} PCCurveScaled4;
+typedef struct PCCurveStepKey {
+    f32 value;
+    u32 unused;
+} PCCurveStepKey;
+typedef union PCCurveValues {
+    PCCurveFullKey *full;
+    PCCurvePacked6 *packed6;
+    PCCurvePacked4 *packed4;
+    PCCurveScaled4 *scaled4;
+    PCCurveStepKey *step;
+} PCCurveValues;
+typedef struct PCCurveBlock {
+    u32 *chunk_bits;
+    u16 *chunk_starts;
+    PCCurveValues values;
+} PCCurveBlock;
+
+STATIC_ASSERT(offsetof(PCCurveBlock, chunk_bits) == 0);
+STATIC_ASSERT(offsetof(PCCurveBlock, chunk_starts) == 4);
+STATIC_ASSERT(offsetof(PCCurveBlock, values) == 8);
+STATIC_ASSERT(sizeof(PCCurveFullKey) == 16);
+STATIC_ASSERT(offsetof(PCCurveFullKey, frame) == 0);
+STATIC_ASSERT(offsetof(PCCurveFullKey, inverse_duration) == 4);
+STATIC_ASSERT(offsetof(PCCurveFullKey, value) == 8);
+STATIC_ASSERT(offsetof(PCCurveFullKey, tangent) == 12);
+STATIC_ASSERT(sizeof(PCCurvePacked6Key) == 6);
+STATIC_ASSERT(offsetof(PCCurvePacked6Key, value) == 0);
+STATIC_ASSERT(offsetof(PCCurvePacked6Key, tangent) == 2);
+STATIC_ASSERT(offsetof(PCCurvePacked6Key, frame) == 4);
+STATIC_ASSERT(sizeof(PCCurvePacked4Key) == 4);
+STATIC_ASSERT(offsetof(PCCurvePacked4Key, value) == 0);
+STATIC_ASSERT(offsetof(PCCurvePacked4Key, tangent) == 2);
+STATIC_ASSERT(offsetof(PCCurvePacked4Key, frame) == 3);
+STATIC_ASSERT(offsetof(PCCurvePacked6, keys) == 12);
+STATIC_ASSERT(offsetof(PCCurvePacked6, tangent_scale) == 0);
+STATIC_ASSERT(offsetof(PCCurvePacked6, value_scale) == 4);
+STATIC_ASSERT(offsetof(PCCurvePacked6, value_offset) == 8);
+STATIC_ASSERT(offsetof(PCCurvePacked4, keys) == 8);
+STATIC_ASSERT(offsetof(PCCurvePacked4, tangent_scale) == 0);
+STATIC_ASSERT(offsetof(PCCurvePacked4, value_scale) == 4);
+STATIC_ASSERT(offsetof(PCCurveScaled4, keys) == 16);
+STATIC_ASSERT(offsetof(PCCurveScaled4, tangent_scale) == 0);
+STATIC_ASSERT(offsetof(PCCurveScaled4, value_scale) == 4);
+STATIC_ASSERT(offsetof(PCCurveScaled4, value_offset) == 8);
+STATIC_ASSERT(offsetof(PCCurveScaled4, time_scale) == 12);
+STATIC_ASSERT(sizeof(PCCurveStepKey) == 8);
+STATIC_ASSERT(offsetof(PCCurveStepKey, value) == 0);
+
+f32 __cdecl NuAnimCurve2CalcValEx(DWA_CURVE_CELL_PC *curve, NUANIM_TIME2_PC *time, i32 format) {
+    PCCurveBlock *block = (PCCurveBlock *)curve->encoded;
+    u32 bits = block->chunk_bits[time->chunk];
+    u8 *bytes = (u8 *)&bits;
+    i32 consumed = 0, index;
+    volatile f32 value0, value1;
+    volatile f32 t, tangent0, tangent1, duration;
+    if (format == 4) {
+        i32 shift = (i32)NuFloor(time->time_offset) - 1;
+        return (f32)((bits >> ((u32)shift & 31)) & 1);
+    }
+    switch (time->time_byte) {
+        case 3:
+            consumed += NuAnimDataBitCount[bytes[2]];
+        case 2:
+            consumed += NuAnimDataBitCount[bytes[1]];
+        case 1:
+            consumed += NuAnimDataBitCount[bytes[0]];
+        case 0:
+            consumed += NuAnimDataBitCount[bytes[time->time_byte] & time->time_mask];
+            break;
+        default:
+            break;
+    }
+    index = block->chunk_starts[time->chunk] + consumed;
+    switch (format) {
+        case 0:
+            return 0.0f;
+        case 1: {
+            PCCurveFullKey *key = &block->values.full[index - 1];
+            volatile f32 key_duration = (f32)((f64)key[1].frame - (f64)key[0].frame);
+            t = (f32)(((f64)time->time - (f64)key[0].frame) * (f64)key[0].inverse_duration);
+            tangent0 = (f32)((f64)key[0].tangent * (f64)key_duration);
+            tangent1 = (f32)((f64)key[1].tangent * (f64)key_duration);
+
+            value0 = key[0].value;
+            value1 = key[1].value;
+            goto hermite;
+        }
+        case 2: {
+            PCCurvePacked4 *data = block->values.packed4;
+            PCCurvePacked4Key *key = &data->keys[index - 1];
+            volatile f32 inverse_duration;
+            duration = (f32)key[1].frame - (f32)key[0].frame;
+            inverse_duration = duration == 0.0f ? 0.0f : (f32)(1.0 / (f64)duration);
+            t = (f32)((((f64)time->time - 1.0) - (f64)key[0].frame) * (f64)inverse_duration);
+            tangent0 = (f32)(((f64)key[0].tangent * (f64)data->tangent_scale) * (f64)duration);
+            tangent1 = (f32)(((f64)key[1].tangent * (f64)data->tangent_scale) * (f64)duration);
+            value0 = (f32)((f64)key[0].value * (f64)data->value_scale);
+            value1 = (f32)((f64)key[1].value * (f64)data->value_scale);
+            goto hermite;
+        }
+        case 3:
+            return block->values.step[index - 1].value;
+        case 5: {
+            PCCurvePacked6 *data = block->values.packed6;
+            PCCurvePacked6Key *key = &data->keys[index];
+            volatile f32 inverse_duration;
+            duration = (f32)key[1].frame - (f32)key[0].frame;
+            tangent0 = (f32)(((f64)key[0].tangent * (f64)data->tangent_scale) * (f64)duration);
+            tangent1 = (f32)(((f64)key[1].tangent * (f64)data->tangent_scale) * (f64)duration);
+            value0 = (f32)((f64)key[0].value * (f64)data->value_scale + (f64)data->value_offset);
+            value1 = (f32)((f64)key[1].value * (f64)data->value_scale + (f64)data->value_offset);
+            inverse_duration = (f32)(1.0 / (f64)duration);
+            t = (f32)((((f64)time->time - 1.0) - (f64)key[0].frame) * (f64)inverse_duration);
+            goto hermite;
+        }
+        case 6: {
+            PCCurveScaled4 *data = block->values.scaled4;
+            PCCurvePacked4Key *key = &data->keys[index - 1];
+            volatile f32 inverse_duration;
+            volatile f32 frame0 = (f32)((f64)key[0].frame * (f64)data->time_scale);
+            volatile f32 frame1 = (f32)((f64)key[1].frame * (f64)data->time_scale);
+            if (frame0 == frame1)
+                frame1 = (f32)((f64)frame0 + 1.0);
+            duration = frame1 - frame0;
+            tangent0 = (f32)(((f64)key[0].tangent * (f64)data->tangent_scale) * (f64)duration);
+            tangent1 = (f32)(((f64)key[1].tangent * (f64)data->tangent_scale) * (f64)duration);
+            value0 = (f32)((f64)key[0].value * (f64)data->value_scale + (f64)data->value_offset);
+            value1 = (f32)((f64)key[1].value * (f64)data->value_scale + (f64)data->value_offset);
+            inverse_duration = (f32)(1.0 / (f64)duration);
+            t = (f32)(((f64)time->time - (f64)frame0) * (f64)inverse_duration);
+            goto hermite;
+        }
+        default:
+            return 0.0f;
+    }
+
+hermite: {
+
+    volatile f32 coefficient = (f32)(((2.0 * ((f64)value0 - (f64)value1) + (f64)tangent0 + (f64)tangent1) * (f64)t) -
+                                     3.0 * ((f64)value0 - (f64)value1) - 2.0 * (f64)tangent0 - (f64)tangent1);
+    volatile f32 result = (f32)((((f64)coefficient * (f64)t + (f64)tangent0) * (f64)t) + (f64)value0);
+    return result;
+}
+}

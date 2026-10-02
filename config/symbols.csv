@@ -1679,9 +1679,12 @@ address    , symbol                                                         , si
 0x005c1300 , _PCSpecialEmptyHandler_candidate                               , 1     , void __cdecl (void)
 0x005c9130 , _NuPause                                                       , 11    , void __cdecl (i32)
 0x005c9140 , _buildBitCountTable                                            , 118   , void __cdecl (void)
+0x005c9520,_NuAnimCurve2CalcValEx,1373,
+0x005c9c40,_NuAnimData2CalcTime,303,
 0x005c9e70 , _NuAnimCurveSetCreate                                          , 120   , void *__cdecl (i32)
 0x005c9ff0 , _NuRegisterEndFrameCallBackFn                                  , 10    , void __cdecl (void (*)(void))
 0x005ca320 , _ANI_FixUpAddrs                                                , 107   , "void __cdecl (ANI3_HEADER_PC *, i32, i32)"
+0x005ca450,_NuAnimNumNodes,30,
 0x005ca470 , _NuAnimEndFrame                                                , 58    , f32 __cdecl (void *)
 0x005ca4b0 , _NuAnimEndFrameOld                                             , 65    , f32 __cdecl (void *)
 0x005ca5a0 , _CalcValue1648Get2Values                                       , 629   , "void __cdecl (char *, i32, i32, ANI3_SCALEMIN_PC *, f32 *, f32 *)"
@@ -1744,6 +1747,8 @@ address    , symbol                                                         , si
 0x005d0fa0 , _NuQFntSetColourRS                                             , 14    , "void __cdecl (void *, VUFNT *, u32)"
 0x005d10e0 , _NuQFntMoveRS                                                  , 94    , "void __cdecl (void *, VUFNT *, f32, f32, f32)"
 0x005d36d0,_NuHGobjEval,456,
+0x005d3a20,_NuHGobjEvalDwa2,345,
+0x005d3dc0,_NuHGobjEvalDwaBlend2,663,
 0x005d4290 , _NuRndrBeginScene                                              , 109   , i32 (i32)
 0x005d5330 , _NuCameraCreate                                                , 99    , NUCAMERA * __cdecl (void)
 0x005d60c0 , _NuCameraGet                                                   , 21    , void __cdecl (NUCAMERA *)
@@ -1807,6 +1812,7 @@ address    , symbol                                                         , si
 0x005eb250 , _NuQFntPrintCharW                                              , 1210  , "void __cdecl (VUFNT *, u16 *, u32)"
 0x005eb790,_NuHGobjEvalAnim2Root_3,230,
 0x005ebb90,_NuHGobjEvalAnimBlend2Root_3,388,
+0x005ebd20,_NuHGobjEvalAnimBlend2Root,96,
 0x005ebd80 , _NuRndrClear                                                   , 111   , "void (i32, i32, f32)"
 0x005ed300 , _NuCameraSetVPortClipMtx                                       , 282   , "void __cdecl (NUMTX *, NUMTX *, NUCAMERA *, i32)"
 0x005ed420 , _NuCameraSetScissorClipMtx                                     , 274   , "void __cdecl (NUMTX *, NUMTX *, NUCAMERA *, i32)"
@@ -1852,6 +1858,8 @@ address    , symbol                                                         , si
 0x005fd160 , _RndrStateResetSharedGlobalState                               , 80    , void __cdecl (void)
 0x005fd220 , _RndrStateSetConstAlphaTint                                    , 58    , "void __cdecl (i32, i32, f32, const NUVEC *, NUMTL *)"
 0x005fd3c0 , _RndrStateSetReflection                                        , 38    , void __cdecl (i32)
+0x005fe5a0,_NuRndrCreateBlendShapeDeformerWeightsArray,63,
+0x005fe5e0,_NuRndrCreateBlendShapeDWAPointers,39,
 0x005feab0 , _NuRndrGradClear                                               , 27    , "void (i32, i32, i32, f32)"
 0x5ff2d0, _NuVpBuildScalingTemplatePc, 189,
 0x5ff390, _NuVpUpdate, 715,
@@ -4205,6 +4213,8 @@ address    , symbol                                                         , si
 0x0080c0c0 , ??_R0?AVNuDeferredFilter@@@8                                   , 31    ,
 0x0080c0e8 , _NuTimeBarRenderPeakReset                                      , 4     , i32
 0x0080c0ec , _NuTimeBarHorizontalPeakReset                                  , 4     , i32
+0x0080e1a8,_DwaWeightCursorPc,,
+0x0080e1ac,_DwaPointerCursorPc,,
 0x0080e26c , _NuPrimCurrentPrimitiveType                                    , 4     , i32
 0x0080e270 , _numtx_identity                                                , 64    , NUMTX
 0x0080e2b0 , _NuPrimXScale                                                  , 4     , f32
@@ -5030,11 +5040,13 @@ address    , symbol                                                         , si
 0x0097bb54 , _nurndr_tritot_this_frame                                      , 4     , i32
 0x0097c1cc , _nudlist_stream_cursor                                         , 8     , VARIPTR
 0x0097c1d0 , _clip_outcode_workspace_prefix                                 ,       , u32[8] (minimum source prefix; full extent unknown)
+0x0097c250,_DwaPointerPoolPc,,
 0x981c68, _NuCameraProjectionGlobalScaleY, ,
 0x00981c70 , _NuPrimCoordSystemStack                                        ,       , i32[]
 0x981cb4, _NuCameraProjectionGlobalOffsetY, ,
 0x009868c0 , _render_state                                                  , 420   , NUGLOBALRNDRSTATE_PC
 0x9922b4, _NuCameraProjectionGlobalOffsetX, ,
+0x009922b8,_DwaWeightPoolPc,,
 0x0280c4a0 , _clip_test_mtx                                                 , 64    , NUMTX
 0x2849318, _NuCameraProjectionGlobalScaleX, ,
 0x02854ba8 , _nuprim_field_ba8                                              , 4     , u32

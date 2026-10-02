@@ -1,5 +1,7 @@
 #include "saga.h"
 
+#include <string.h>
+
 NURNDRLIBSCENE currentScene;
 NUVPCURRENT vpCurrent;
 i32 sceneParametersCount;
@@ -281,4 +283,25 @@ void __cdecl NuDisplayListInit(VARIPTR *cursor, i32 arg2) {
     STUBBED_NAMED("NuDisplayListInit: 0x4ffa60 setup");
     STUBBED_NAMED("NuDisplayListInit: 0x5f0d70 first-frame draw");
     STUBBED_NAMED("NuDisplayListInit: NuDisplayListBeginFrame (0x5dfab0)");
+}
+
+DWA_WEIGHT_BLOCK_PC *__cdecl NuRndrCreateBlendShapeDeformerWeightsArray(i32 count) {
+    i32 clear_bytes = count * 4 + 0x204;
+    DWA_WEIGHT_BLOCK_PC *result;
+    DwaWeightCursorPc -= clear_bytes;
+    if (DwaWeightCursorPc < 0) {
+        PCClipScreenUnsupported();
+        return NULL;
+    }
+    result = &DwaWeightPoolPc[DwaWeightCursorPc];
+    memset(result, 0, clear_bytes);
+    return result;
+}
+DWA_WEIGHT_BLOCK_PC **__cdecl NuRndrCreateBlendShapeDWAPointers(i32 count) {
+    DwaPointerCursorPc -= count;
+    if (DwaWeightCursorPc < 0) {
+        PCClipScreenUnsupported();
+        return NULL;
+    }
+    return &DwaPointerPoolPc[DwaPointerCursorPc];
 }

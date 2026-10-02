@@ -964,3 +964,28 @@ types stay blank in the inventory, so these definitions supply zero data
 coverage and exact credit. The supported working domain is depth zero through
 four; the original signed upper guard does not establish negative backing
 storage or arbitrary runtime initialization.
+
+## Conditional deformer backing views (wave 49)
+
+Four source views keep blank original sizes and types: weight cursor 0x80e1a8
+(initial 61184), pointer cursor 0x80e1ac (initial 2048), pointer backing 0x97c250,
+and weight backing 0x9922b8. Cursor values and selected loader zeros are original
+verified. They receive zero allocation and exact-data credit. The promoted-float
+epsilon at 0x7531a8 reuses its existing literal binding.
+
+The reconstruction weight view has 60669 blocks of 520 bytes (31,547,880 bytes);
+its maximum endpoint follows from cursor 0..61184, counts 0..128 and no
+cursor-raising writes. Increasing count lowers the selected index enough to
+keep the endpoint below the count-zero case. The 2048 pointer slots additionally
+require a maintained nonnegative pointer budget, since the original allocator
+tests the weight counter. These conditional prefixes fit the PE virtual zero
+tail and avoid every captured mapped base/known extent; they do not prove
+original allocations, reset writers or arbitrary alias states. Their BSS
+backing is checked without reading or materializing a 31MiB original byte array.
+
+The DWA header exposes only its verified 20-byte prefix through the curve-type
+pointer at +0x10. An unaccessed node-flags proposal at +0x14 was removed before
+validated publication. The later skeletal path needs its own separately
+reviewed +0x14 pointer view. Time fields and 128-value weight-block working
+strides retain asserted offsets. `dwa-pool-data-independent-next1` records the
+conditional bounds, raw scalar initializers and ownership holds.

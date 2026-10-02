@@ -3402,3 +3402,76 @@ The raw locator copies issue no floating-point operations. Frozen emitted-code
 audits are `animation-children-compiled-independent-next1` and
 `model-helpers-compiled-independent-next1`, with the animation literal authority
 kept in its additive supplement.
+
+### Wave 49: DWA curve and animation closure
+
+Eight complete original functions now have genuine source: curve evaluation
+0x5c9520/1373, time staging 0x5c9c40/303, node count 0x5ca450/30, DWA evaluation
+0x5d3a20/345 and blend 0x5d3dc0/663, modern blend-root wrapper 0x5ebd20/96, and
+the two deformer allocators 0x5fe5a0/63 and 0x5fe5e0/39. They share the existing
+animation, hierarchy and renderer units and add 2912 compared original bytes.
+Original curve code 1373, alignment 3 and switch tables 44 stay separate. The
+compiled complete curve extent contains its own tail tables; comparison keeps
+both whole extents without masking, truncation or enlarged original credit.
+
+Independent arithmetic review rejected the first curve draft: format 1 scales
+tangents by frame duration, and formats 5/6 round the reciprocal before
+normalization. The corrected source preserves all format actions and the
+coefficient/result checkpoints. Its shared polynomial block is real C within
+the function, avoiding an invented standalone helper binding. Two and three
+retain their original double operands at 0x7517a0/0x7519b8. The time endpoint
+uses 0x7531a8, the exact promoted 0.01f value, rather than a double 0.01 literal.
+Time staging preserves partial writes and the float offset before Floor/FTOL.
+
+The allocators retain unusual original behavior: weight cursor 61184 subtracts
+count*4+0x204 and selects a block at remaining-cursor*0x208; pointer cursor 2048
+subtracts count but tests the weight cursor. Both negative-weight paths call
+the existing RET-only hook at 0x5f7490 and return NULL. A root task description
+incorrectly said execution continued after that hook; original review corrected
+it before source acceptance. The DWA parents clear the tiny original byte
+count ((count*4+15)>>4) before testing the returned pointer; no inferred factor 16
+or safer call order replaces that behavior. Canonical CRT behavior is an
+explicit inherited provider qualification, not a fresh CRT reconstruction.
+
+The supported source domain requires valid storage and initialized fields for
+each requested curve format. The modern ANI4/ANI5 time path writes only time;
+encoded requests that consume its untouched fields remain held. The legacy
+duration-one shortcut also leaves offset/chunk frame untouched. No stack
+initialization or content invariant is invented to hide those paths. Numerical
+review retains finite, valid conversion/provider qualifications; exceptional
+NaN equivalence is not claimed. All parent curve calls enter with empty x87,
+allowing the reviewed curve peak of eight.
+
+The 96-byte NuHGobjEvalAnimBlend2Root wrapper independently forwards eleven
+words after the signed ANI4/ANI5 guard, with a separate tail to the RET leaf.
+Exact original ELF records identify its native peer at 0x2ce8e0. Earlier
+propagation paired modern blend 0x5ebb90 with native 0x2c6560; original review
+identifies that native entry as NuAnimBuffAccumulate_3, a different algorithm.
+The independently reviewed modern seed at 0x2ce760 replaces that hypothesis.
+Tentative scores never supplied acceptance for the old pair.
+
+Frozen ignored packets include `dwa-curve-independent-next1`, its additive
+`dwa-curve-single-function-source-next1` proposal,
+`dwa-time-node-allocators-compiled-independent-next1`,
+`dwa-parents-compiled-independent-next1` and its mandatory time-definedness
+supplement, plus `animation-blend-root-compiled-independent-next1`. Historical
+types, pool ownership, exceptional paths and remaining skeletal closure stay
+separate from code comparison.
+
+The actual compiled curve gate (`dwa-curve-compiled-independent-next1`) passes
+all eight actions under the stated domain. Its 980 executable bytes and 44 table
+bytes form a complete 1024-byte COFF region; extraction uses the sole function
+through section end, not an auxiliary size. All four returns balance the stack
+and preserve nonvolatiles/ST0 ownership. Required float checkpoints remain;
+polynomial intermediates stay in x87 without extra double spills. The inline
+float-to-int path restores its control word under the canonical valid conversion
+qualification. Whole retail comparison still reports this curve nonexact, with
+zero advisory similarity; that score does not reverse its semantic gate or
+supply byte equality.
+
+The batch adds 228 exact bytes while preserving all 823 previous exact function
+rows and 2257 exact data rows. The wrapper 96, node helper 30 and allocator 63/39
+match completely. Time/curve/DWA parents remain nonexact. Whole-code fuzzy
+coverage reaches 6.637517%, exact code 47651 / 3471246 bytes, and compared original
+bytes 381501. Inventory/identified union 591659 (17.044571% of text) is separate
+from reconstruction and includes reviewed bodies awaiting source closure.

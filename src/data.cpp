@@ -308,6 +308,19 @@ extern "C" {
     u8 ForceEulerToQuat;
 #pragma bss_seg()
     ANI3_GLOBALBUFFER_PC *globalbuffer;
+#pragma data_seg(".data$DwaWeightCursorPc")
+    i32 DwaWeightCursorPc = 61184;
+#pragma data_seg()
+#pragma data_seg(".data$DwaPointerCursorPc")
+    i32 DwaPointerCursorPc = 2048;
+#pragma data_seg()
+#pragma bss_seg(".bss$DwaWeightPoolPc")
+    DWA_WEIGHT_BLOCK_PC DwaWeightPoolPc[60669];
+#pragma bss_seg()
+#pragma bss_seg(".bss$DwaPointerPoolPc")
+    DWA_WEIGHT_BLOCK_PC *DwaPointerPoolPc[2048];
+#pragma bss_seg()
+
 #pragma bss_seg(".bss$AnimQuatDepthPc")
     i32 AnimQuatDepthPc;
 #pragma bss_seg()

@@ -612,3 +612,35 @@ their disjoint-range cleanup. Build RSS peaks at 38156 KiB and full checks at
 120088 KiB, both with no swaps. Larger animation bodies remain genuine
 nonexact source; no instruction-order tuning is needed before advancing the
 real DWA/time/curve provider closure.
+
+### Wave 49: close the real deformer providers
+
+Implement the 1373-byte curve,333-byte time/node helpers,102-byte allocators,
+1008-byte DWA parents and 96-byte verified blend-root wrapper as one connected
+batch. Keep all format actions, source field assertions, float checkpoints,
+partial-time definedness limits and unusual original allocator/clear behavior.
+Four source backing views keep unknown original extents and zero credit.
+Compile against the settled 20-byte DWA prefix; compare whole functions and
+retain every previous exact row, then run full checks and the fixed graph
+control before publishing.
+
+The next connected skeletal family has a 1400-byte eleven-word backend and
+777-byte parent plus 46-byte wrapper. Its children are already mapped or part
+of the current curve family. Review shared pivot/override fields, the separate
+skeletal 24-byte header, lower x87 prefixes at FTOL and initialized-local
+requirements before integrating genuine source. This will advance the larger
+model animation caller without skipping its legacy branch.
+
+Wave 49 adds 2912 compared bytes and 228 exact bytes; the full LLVM 18 check
+passes 643 tests with three skips. The settled build links 128 objects with
+complete bindings. Normal propagation reaches 1563 accepted plus 1309 inferred
+pairs: three old hypotheses are promoted and three new seeds enter the union,
+with no new inferred pairs or unconverted losses. Seven rounds reach a fixed
+point. Two additional data candidates remain advisory. The graph process peaks
+at 692440 KiB RSS with no swaps; its address-space cap remains 1024 MiB.
+
+The skeletal parent draft needs the original identity-template owner and signed
+override-loop entry guard; preserve the rejected draft and independent review.
+Missing-node scale and partially written time fields remain explicit source
+domains. Integrate the corrected family only after this checkpoint's final
+whole-body comparison, previous exact-match preservation and pushed CI pass.
