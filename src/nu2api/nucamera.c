@@ -38,13 +38,12 @@ void __cdecl NuCameraSetAxes(NUVEC *axes) {
 void __cdecl NuCameraSet(NUCAMERA *camera) {
     NuCameraSetEx(camera, 0);
 
-    NuMtxSetIdentity(&cmtx);
+    NuVpSetIdentityPc(&cmtx);
     NuMtxMulH(&vpc_vport_mtx, &vpmtx, &cmtx);
     vpc_sci_mtx = vpc_vport_mtx;
 
-    /* The final two calls submit the viewport and projection matrices to D3D. */
-    STUBBED_NAMED(0x006e56a0);
-    STUBBED_NAMED(0x006e56a0);
+    PCDeviceSetTransform(2, &vmtx);
+    PCDeviceSetTransform(3, &pmtx);
 }
 
 void __cdecl NuCameraGetAxes(NUVEC *axes) {
@@ -229,34 +228,45 @@ i32 __cdecl NuCameraClipTestExtents(NUVEC *min, NUVEC *max, NUMTX *world, f32 fa
     return combined == 0 ? 1 : 2;
 }
 
+/* Reconstructed storage qualifiers express the original F32 checkpoints;
+   they do not assert historical volatile declarations. */
 void __cdecl NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast) {
     if (fast == 0) {
-        f32 far_clip = camera->unknown_64 == 0.0f ? camera->far_clip : camera->unknown_64;
-        f32 near_clip = camera->unknown_60 == 0.0f ? camera->near_clip : camera->unknown_60;
-        f32 half_fov = camera->fov * 0.5f;
-        i32 angle = (i32)((f64)half_fov * AIPathAngularScale);
-        f32 cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
-        f32 horizontal = camera->aspect * cotangent * NuCameraVPortProjectionScaleX;
-        far_clip -= NuCameraProjectionFarClipBias;
+        volatile f32 far_clip =
+            (camera->unknown_64 == 0.0f ? camera->far_clip : camera->unknown_64) - NuCameraProjectionFarClipBias;
+        volatile f32 near_clip = camera->unknown_60 == 0.0f ? camera->near_clip : camera->unknown_60;
+        volatile f32 half_fov;
+        volatile f32 cotangent;
+        volatile f32 horizontal;
+        i32 angle;
+        half_fov = (f32)((f64)camera->fov * 0.5);
+        angle = (i32)((f64)half_fov * AIPathAngularScale);
+        cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
+        horizontal = (camera->aspect * cotangent) * NuCameraVPortProjectionScaleX;
         memset(&pc_vport_mtx, 0, sizeof(pc_vport_mtx));
         pc_vport_mtx.m00 = horizontal;
         pc_vport_mtx.m11 = NuCameraVPortProjectionScaleY * cotangent;
         pc_vport_mtx.m22 = (far_clip + near_clip) / (far_clip - near_clip);
         pc_vport_mtx.m23 = 1.0f;
         pc_vport_mtx.m32 = ((-2.0f * far_clip) * near_clip) / (far_clip - near_clip);
+        pc_vport_mtx.m33 = 0.0f;
     }
     NuMtxMulVU0(out, view, &pc_vport_mtx);
 }
 
 void __cdecl NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast) {
     if (fast == 0) {
-        f32 far_clip = camera->unknown_64 == 0.0f ? camera->far_clip : camera->unknown_64;
-        f32 near_clip = camera->unknown_60 == 0.0f ? camera->near_clip : camera->unknown_60;
-        f32 half_fov = camera->fov * 0.5f;
-        i32 angle = (i32)((f64)half_fov * AIPathAngularScale);
-        f32 cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
-        f32 horizontal = camera->aspect * cotangent * NuCameraScissorProjectionScaleX;
-        far_clip -= NuCameraProjectionFarClipBias;
+        volatile f32 far_clip =
+            (camera->unknown_64 == 0.0f ? camera->far_clip : camera->unknown_64) - NuCameraProjectionFarClipBias;
+        volatile f32 near_clip = camera->unknown_60 == 0.0f ? camera->near_clip : camera->unknown_60;
+        volatile f32 half_fov;
+        volatile f32 cotangent;
+        volatile f32 horizontal;
+        i32 angle;
+        half_fov = (f32)((f64)camera->fov * 0.5);
+        angle = (i32)((f64)half_fov * AIPathAngularScale);
+        cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
+        horizontal = (camera->aspect * NuCameraScissorProjectionScaleX) * cotangent;
         memset(&NuCameraScissorProjectionScratch, 0, sizeof(NuCameraScissorProjectionScratch));
         NuCameraScissorProjectionScratch.m00 = horizontal;
         NuCameraScissorProjectionScratch.m11 = NuCameraScissorProjectionScaleY * cotangent;
@@ -314,7 +324,7 @@ void __cdecl NuCameraSetEx(NUCAMERA *camera, i32 fast) {
     NuAtan2D(-global_camera.mtx.m20, -global_camera.mtx.m22);
     STUBBED_NAMED("NuCameraSetEx: FaceYDirStream at 0x005ff830");
     if (fast == 0)
-        STUBBED_NAMED("NuCameraSetEx: NuVpUpdate");
+        NuVpUpdate();
     if (NuCameraMode == 0) {
         NuMtxInvVU0(&vmtx, &global_camera.mtx);
         NuMtxScaleVU0(&vmtx, &global_camera.scale);

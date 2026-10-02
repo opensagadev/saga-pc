@@ -4578,3 +4578,43 @@ extern "C" {
     f32 NuCameraOrthoScale = 0.1f;
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$NuVpDirtyPc")
+    i32 NuVpDirtyPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuVpMinZPc")
+    f32 NuVpMinZPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuVpMaxZPc")
+    f32 NuVpMaxZPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuVpProjectionMinXPc")
+    f32 NuVpProjectionMinXPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuVpProjectionMinYPc")
+    f32 NuVpProjectionMinYPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuVpProjectionMaxXPc")
+    f32 NuVpProjectionMaxXPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuVpProjectionMaxYPc")
+    f32 NuVpProjectionMaxYPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDeviceBackend")
+    PC_DEVICE_BACKEND_PC PCDeviceBackend;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDeviceLastResult")
+    HRESULT PCDeviceLastResult;
+#pragma bss_seg()
+#pragma data_seg(".data$NuVpIdentityMatrixPc")
+    NUMTX NuVpIdentityMatrixPc = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+                                  0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+#pragma data_seg()
+#pragma const_seg(".rdata$NuVpFixed16ScalePc")
+    extern const f64 NuVpFixed16ScalePc = 1.0 / 65536.0;
+#pragma const_seg()
+#pragma const_seg(".rdata$NuVpDepthRangePc")
+    extern const f64 NuVpDepthRangePc = 16777215.0;
+#pragma const_seg()
+}

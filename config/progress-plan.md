@@ -551,3 +551,39 @@ Continue the connected EvalModelAnim/APIDumpCharacterModels/APICharacterSysInit
 cohort (1465 prospective PC bytes) using the retained character-system views
 and animation providers. Keep CutScene's actual callback dispatch and the
 camera backend gaps as separate contract gates.
+
+### Wave 47: close the viewport family and evaluate hierarchy joints
+
+Implement the six-body viewport/backend family and the connected hierarchy
+evaluator (1596 new original code bytes), with twelve minimum data views carrying
+no original allocation credit. Replace the three verified camera call markers
+and correct the existing projection builders' PC rounding/association. Keep the
+remaining camera actions explicit and retain historical type holds.
+
+The CutScene callback inventory release follows its actual installed dispatch;
+it supplies no source coverage. Seven model/animation identity reviews add 2524
+identified bytes with provider holds kept separate. Continue the blend animation
+child and wrapper using existing buffer evaluators, then the default layer
+selector and model animation caller. Scene cleanup still needs five real child
+contracts; do not substitute an allocator with a different argument count.
+
+Keep the frozen wave-46 report and exact pair sets as the wave-47 baseline.
+Verify the complete VC8 build, new emitted bodies, old exact-match preservation,
+full checks and normal graph transition before publishing metrics. Heavy jobs
+stay serialized; disk-backed scratch and bounded graph/helper processes protect
+the host's memory.
+
+Wave 47 adds 1596 compared bytes and 327 exact bytes while retaining every prior
+exact function/data row. Whole-code fuzzy coverage reaches 6.583432%, exact code
+47161 / 3471246 bytes, and reviewed identification 589065 bytes (16.969843%).
+The final normal control has 1555 accepted plus 1313 inferred pairs: four
+hypotheses are promoted, four new seeds enter the union, and no unconverted
+losses or new inferred pairs occur. Seven rounds reach a fixed point; increasing
+the round cap cannot expand this control.
+
+Next integrate the independently reviewed 708-byte animation player/wrapper
+subset and 242-byte model layer/locator helpers using existing providers. Two
+new animation scratch views keep unknown original extents; preserve the existing
+callback owner and qualify its actual four-word invocation explicitly. Investigate
+the callsite/CFG context lost by direct-neighbor sets with bounded review
+annotations and production controls before changing propagation safeguards.

@@ -4596,11 +4596,24 @@ STATIC_ASSERT(sizeof(NUHGOBJ_POI_PC) == 0x50);
 STATIC_ASSERT(offsetof(NUHGOBJ_POI_PC, matrix) == 0);
 STATIC_ASSERT(offsetof(NUHGOBJ_POI_PC, joint_index) == 0x44);
 
+typedef struct NUHGOBJ_JOINT_OVERRIDE_PC {
+    NUVEC rotation;
+    NUVEC translation;
+    u8 unknown_18[24];
+    u8 joint_index;
+    u8 unknown_31[3];
+} NUHGOBJ_JOINT_OVERRIDE_PC;
+STATIC_ASSERT(sizeof(NUHGOBJ_JOINT_OVERRIDE_PC) == 0x34);
+STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, rotation) == 0);
+STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, translation) == 0xc);
+STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, joint_index) == 0x30);
+
 typedef struct NUHGOBJ_EVAL_PC {
     u8 unknown_000_167[0x168];
     i32 joint_count;
     NUHGOBJ_EVAL_JOINT_PC *joints;
-    u8 unknown_170_177[8];
+    NUMTX *bind_matrices;
+    u8 unknown_174[4];
     i32 joint_override_map_count;
     u8 *joint_override_map;
     u8 unknown_180[4];
@@ -4612,6 +4625,7 @@ typedef struct NUHGOBJ_EVAL_PC {
 } NUHGOBJ_EVAL_PC;
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joint_count) == 0x168);
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joints) == 0x16c);
+STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, bind_matrices) == 0x170);
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joint_override_map_count) == 0x178);
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joint_override_map) == 0x17c);
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, points) == 0x184);
@@ -5311,6 +5325,50 @@ STATIC_ASSERT(offsetof(NUAPI, frame_end_state) == 0x88);
 STATIC_ASSERT(offsetof(NUAPI, reversible_characters) == 0x7c);
 STATIC_ASSERT(offsetof(NUAPI, force_shadows_on_characters) == 0x84);
 STATIC_ASSERT(offsetof(NUAPI, video_brightness) == 0x8c);
+
+typedef struct PC_VIEWPORT_PC {
+    u32 x;
+    u32 y;
+    u32 width;
+    u32 height;
+    f32 min_z;
+    f32 max_z;
+} PC_VIEWPORT_PC;
+
+typedef struct PC_D3D9_DEVICE_PC PC_D3D9_DEVICE_PC;
+typedef struct PC_D3D9_METHODS_PC {
+    void *unknown_0000[44];
+    HRESULT(__stdcall *set_transform)(PC_D3D9_DEVICE_PC *, i32, const NUMTX *);
+    void *unknown_00b4;
+    void *unknown_00b8;
+    HRESULT(__stdcall *set_viewport)(PC_D3D9_DEVICE_PC *, const PC_VIEWPORT_PC *);
+} PC_D3D9_METHODS_PC;
+struct PC_D3D9_DEVICE_PC {
+    const PC_D3D9_METHODS_PC *methods;
+};
+
+typedef struct PC_DEVICE_BACKEND_PC {
+    u8 unknown_0000[4];
+    PC_D3D9_DEVICE_PC *device;
+    u8 unknown_0008[0x168];
+    PC_VIEWPORT_PC requested_viewport;
+#ifdef __cplusplus
+    void __thiscall ApplyViewport(const PC_VIEWPORT_PC *viewport);
+#endif
+} PC_DEVICE_BACKEND_PC;
+
+STATIC_ASSERT(sizeof(PC_VIEWPORT_PC) == 24);
+STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, x) == 0);
+STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, y) == 4);
+STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, width) == 8);
+STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, height) == 12);
+STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, min_z) == 0x10);
+STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, max_z) == 0x14);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_transform) == 0xb0);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_viewport) == 0xbc);
+STATIC_ASSERT(offsetof(PC_D3D9_DEVICE_PC, methods) == 0);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, device) == 4);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, requested_viewport) == 0x170);
 
 struct nusound_filename_info_s;
 
@@ -7593,6 +7651,7 @@ extern "C" {
     void __cdecl NuMtxTransposeR(NUMTX *out, NUMTX *source);
     void __cdecl NuMtxTranspose(NUMTX *out, NUMTX *source);
     void __cdecl NuHGobjPOIMtx(NUHGOBJ_EVAL_PC *, u8, NUMTX *, NUMTX *, NUMTX *);
+    void __cdecl NuHGobjEval(NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *, NUMTX *);
     extern NUCAMERA global_camera;
     extern i32 NuCameraMode;
     extern NUMTX NuCameraReflection;
@@ -7600,6 +7659,23 @@ extern "C" {
     extern i32 NuCameraPreviousClipScissorToViewport;
     extern i32 NuCameraOrthographic;
     extern NUMTX NuCameraScalingTemplate;
+    extern PC_DEVICE_BACKEND_PC PCDeviceBackend;
+    extern HRESULT PCDeviceLastResult;
+    extern i32 NuVpDirtyPc;
+    extern f32 NuVpMinZPc;
+    extern f32 NuVpMaxZPc;
+    extern f32 NuVpProjectionMinXPc;
+    extern f32 NuVpProjectionMinYPc;
+    extern f32 NuVpProjectionMaxXPc;
+    extern f32 NuVpProjectionMaxYPc;
+    extern NUMTX NuVpIdentityMatrixPc;
+    extern const f64 NuVpFixed16ScalePc;
+    extern const f64 NuVpDepthRangePc;
+    void __cdecl NuVpSubmitPc(const PC_VIEWPORT_PC *viewport);
+    HRESULT __cdecl PCDeviceSetTransform(i32 state, const NUMTX *matrix);
+    void __cdecl NuVpBuildScalingTemplatePc(void);
+    void __cdecl NuVpSetIdentityPc(NUMTX *matrix);
+    void __cdecl NuVpUpdate(void);
     extern NUMTX psmtx;
     extern f32 NuCameraOrthoScale;
     extern f32 NuCameraProjectionGlobalScaleX;

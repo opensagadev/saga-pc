@@ -3262,3 +3262,90 @@ and the distinct D3DX forwarding entry. Whole-code fuzzy coverage increases
 from 6.471500% to 6.550184%. Camera backend markers and the original animation
 scratch-backing qualifications remain; these results do not establish a
 complete renderer or playable game.
+
+### Wave 47: viewport/backend and hierarchy evaluation
+
+`NuHGobjEval` (`0x5d36d0`, 456 bytes) now evaluates the connected hierarchy
+using the verified joint parent, bind-matrix pointer and 52-byte override
+record. The PC loops retain their byte counters, remap sentinel, matrix aliases
+and double-precision angle conversion. These are minimum working views with
+asserted offsets; the original complete object types and historical return
+signature remain unresolved. Valid engine counts, readable joint/bind arrays
+and the existing matrix-provider contracts qualify this implementation.
+
+The viewport family adds six complete original bodies (1140 bytes): the
+scaling-template builder, signed fixed-point clipping/update, null-safe viewport
+submission, the private PC backend method, matrix submission and null-safe
+identity-copy provider. The private method keeps its actual thiscall receiver
+and one stack argument; the indirect
+COM calls use the original physical slots and cleanup. It submits a clamped
+temporary viewport before caching the six original requested fields. Matrix
+submission stores and returns the backend result. The final two camera calls
+now submit `(2, &vmtx)` then `(3, &pmtx)`; the camera builder calls `NuVpUpdate`
+only when its initial fast flag is zero. Other camera gaps remain explicit.
+
+Original operands distinguish the mutable identity matrix at `0x80ba68` from
+the existing identity template at `0x806680`. Review caught and corrected this
+distinction before source integration. The viewport's constants are explicit
+double-precision views of `0x761610` (1/65536) and `0x76a7c8` (16777215), preserving
+their actual reference addresses. Twelve new data bindings have reviewed minimum
+initializers but blank original allocation sizes/types, supplying zero data
+coverage or exact-match credit. Backend objects and their normal API providers
+must be initialized before these routines are used.
+
+Complete camera comparison also distinguishes `NuVpSetIdentityPc` (`0x5db100`,
+25 bytes): it accepts a nullable matrix pointer and copies the mutable matrix
+at `0x80ba68`. `NuCameraSet` uses this distinct provider rather than the general
+identity-template copier. A 100% advisory instruction score had hidden that
+different external call destination; complete byte comparison exposed it.
+
+The existing viewport/scissor projection builders now preserve the PC F32
+checkpoints and distinct multiplication association. Ordered comparisons,
+zero-only optional clip defaults and the fast path are retained. Volatile locals
+express observed storage rounding; they do not assert original source spelling.
+
+The actual installed CutScene callback's six-word physical dispatch permits its
+3767-byte inventory row with a blank historical signature. Its body remains
+unimplemented. Seven independently reviewed model/animation identities add
+2524 identified code bytes; only the 456-byte hierarchy evaluator enters source
+in this release. The remaining identities retain their source/interface holds.
+The blend wrapper's PC format guards and its external return-stub tail remain
+separate from the Android child; no guard equivalence was assumed.
+
+Retained authorities under ignored `build/analysis/identification/continuation/`
+include the corrected `camera-viewport-scissor-source-next2` capsule, independent
+source/data/emitted-code reviews, hierarchy evaluator reviews and the model
+identity cohort. The failed matrix proposal remains preserved. Source combines
+the Android animation-family reference with authoritative PC caller, operand,
+layout and full-boundary evidence. Inventory counts remain separate from
+compiled comparison and exact-byte reconstruction.
+
+The final wave-47 source compiles and links as 127 objects with complete symbol
+bindings and relocation resolution. Full checks pass 640 tests with three skips;
+LLVM 18 formatting/static analysis passes after the final source corrections.
+Independent emitted-code review confirms the viewport's signed clipping,
+floating-point checkpoints, actual constant references and call order, and the
+backend's receiver/COM transport, clamps, raw cache copies and result store.
+The first emitted backend used x87 to copy depth fields; genuine `memcpy` now
+emits the original integer-copy behavior. The failed first audit remains retained.
+These checks qualify normal initialized engine objects and providers rather than
+proving arbitrary external callbacks or API exception behavior. The source EXE
+continues to have explicit unreconstructed camera and game actions.
+
+Retail comparison adds 1596 original code bytes, reaching 377638 compared bytes.
+Five additional functions are exact (327 bytes), including the repaired camera
+setter and all three backend routines. All 815 earlier exact functions and 2257
+earlier exact DATA rows are retained. Whole-code fuzzy coverage increases from
+6.550184% to 6.583432%; exact code is 47161 of 3471246 bytes. The identification
+union is 589065 bytes (16.969843%), measured separately from reconstruction.
+The remaining differences include compiler register/frame choices and the
+explicit unreconstructed portions of the larger camera builder.
+
+The unchanged graph control reaches 1555 accepted seeds and 1313 inferred pairs.
+Four prior hypotheses become seeds; four additional seeds enter the union,
+with no unconverted losses or new inferred pairs. DATA candidates increase from
+2457 to 2459, with 122 reviewed anchors and zero stale decisions. Seven rounds
+reach a fixed point under the 1 GiB address-space cap; candidate counts remain
+advisory. The added PC identity-copy provider has a distinct working name and
+does not invent an Android pair. The final provider rescore preserves all pair
+table hashes from the preceding run.
