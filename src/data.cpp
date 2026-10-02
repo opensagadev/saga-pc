@@ -308,6 +308,12 @@ extern "C" {
     u8 ForceEulerToQuat;
 #pragma bss_seg()
     ANI3_GLOBALBUFFER_PC *globalbuffer;
+#pragma bss_seg(".bss$AnimQuatDepthPc")
+    i32 AnimQuatDepthPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$AnimQuatSavedPc")
+    u8 AnimQuatSavedPc[4];
+#pragma bss_seg()
 #pragma bss_seg(".bss$AISysSpecialNodeCallback")
     AISYS_SPECIAL_NODE_CALLBACK_PC AISysSpecialNodeCallback;
 #pragma bss_seg()

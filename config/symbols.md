@@ -3349,3 +3349,56 @@ reach a fixed point under the 1 GiB address-space cap; candidate counts remain
 advisory. The added PC identity-copy provider has a distinct working name and
 does not invent an Android pair. The final provider rescore preserves all pair
 table hashes from the preceding run.
+
+### Wave 48: animation children and model helpers
+
+The connected animation subset adds `NuHGobjEvalAnim2Root_3` (0x5eb790,
+230 bytes), `NuHGobjEvalAnimBlend2Root_3` (0x5ebb90, 388 bytes) and
+`NuHGobjEvalAnimBlend2` (0x5f38f0, 90 bytes) in the existing hierarchy unit.
+Each owns its complete PC span; the wrapper's external return leaf is separate.
+Scratch sizing sign-extends the 16-bit capacity at globalbuffer pointee +4,
+keeps 16-byte joint alignment, and releases the two allocations in LIFO order.
+Time subtraction retains the PC float checkpoint. The two root translations
+and blend output remain distinct; the blend output is not given an invented
+initializer. The wrapper dereferences the first animation before its signed
+ANI4/ANI5 guard and forwards nine arguments to the eleven-argument child.
+
+The existing callback cell at 0x9738a4 keeps its owner, name and declaration.
+An explicit local working view invokes it with four words only when the override
+count and pointer are nonzero. This source requires a compatible installed
+callback and the previously reviewed valid scratch/provider domain; it does not
+establish all callback targets or full historical aggregate types.
+
+Quaternion state preserves the original overflow behavior: a failed push at
+depth four still permits the final pop to restore slot three. No balanced-push
+repair is introduced. `AnimationDiagnosticNoOpPc` (0x5c12e0, one byte) represents
+the complete original RET leaf as genuine empty C in the animation provider unit,
+separate from its hierarchy callers. Its descriptive name is not historical.
+
+`PCBuildModelLayerList` (0x62e190, 71 bytes) and
+`PCStoreModelLocatorCoordinates` (0x62e1e0, 171 bytes) share the model animation
+unit and existing qualified character/hierarchy fields. The selector retains
+its nullable model, signed render-count limit, 32-bit mask and 16-bit outputs.
+The locator helper uses the implemented POI matrix provider and preserves
+missing outputs and locators. Its translation and matrix copies retain raw
+bits, including all float payloads. Nonnull output arrays require sixteen
+elements and valid input/provider storage. Alternate layer-callback targets
+and the larger model animation/DWA family remain separate contract gates.
+
+Ignored continuation retains the source and independent packets
+`animation-children-source-independent-next1`,
+`animation-children-data-independent-next1`,
+`model-eval-connected-source-independent-next1` and
+`animation-diagnostic-locator-copy-independent-next1`. Compiler and whole-extent
+comparison gates remain required before claiming exactness.
+
+Actual VC8 review passes for all six released bodies, preserving the qualified
+stack/register/x87 interfaces and complete relocation targets. The wrapper
+(90 bytes), diagnostic leaf (one byte) and locator helper (171 bytes) match
+completely. The selector and two larger animation children remain nonexact;
+matching extents alone are not byte equality. The animation children use the
+verified double-one operand at 0x751698 and store/reload their float checkpoint.
+The raw locator copies issue no floating-point operations. Frozen emitted-code
+audits are `animation-children-compiled-independent-next1` and
+`model-helpers-compiled-independent-next1`, with the animation literal authority
+kept in its additive supplement.

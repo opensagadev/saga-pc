@@ -4562,10 +4562,14 @@ STATIC_ASSERT(offsetof(ANI3_BUFFER_PC, joint_flags) == 0x0c);
 STATIC_ASSERT(sizeof(ANI3_BUFFER_PC) == 0x10);
 
 typedef struct ANI3_GLOBALBUFFER_PC {
-    u8 unknown_00[8];
+    u8 unknown_00[4];
+    i16 scratch_joint_capacity;
+    u8 unknown_06[2];
     f32 *animation_values;
 } ANI3_GLOBALBUFFER_PC;
+STATIC_ASSERT(offsetof(ANI3_GLOBALBUFFER_PC, scratch_joint_capacity) == 4);
 STATIC_ASSERT(offsetof(ANI3_GLOBALBUFFER_PC, animation_values) == 8);
+STATIC_ASSERT(sizeof(ANI3_GLOBALBUFFER_PC) == 12);
 
 typedef void(__cdecl *ANI3_ROOT_CALLBACK_PC)(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
 typedef void(__cdecl *ANI3_EVAL_CALLBACK_PC)(NUMTX *, void *, NUQUAT *);
@@ -8165,6 +8169,17 @@ extern "C" {
                                             ANI3_ROOT_CALLBACK_PC, NUVEC *, void *);
     void __cdecl NuAnimBuffEvaluate_3(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *,
                                       ANI3_ROOT_CALLBACK_PC, NUVEC *, void *);
+    extern i32 AnimQuatDepthPc;
+    extern u8 AnimQuatSavedPc[4];
+    void __cdecl AnimationDiagnosticNoOpPc(void);
+    void __cdecl NuHGobjEvalAnim2Root_3(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, i32, void *, NUMTX *,
+                                        ANI3_ROOT_CALLBACK_PC, void *);
+    void __cdecl NuHGobjEvalAnimBlend2Root_3(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, ANI3_HEADER_PC *, f32, f32, i32,
+                                             void *, NUMTX *, ANI3_ROOT_CALLBACK_PC, void *);
+    void __cdecl NuHGobjEvalAnimBlend2(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, ANI3_HEADER_PC *, f32, f32, i32,
+                                       void *, NUMTX *);
+    i32 __cdecl PCBuildModelLayerList(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
+    void __cdecl PCStoreModelLocatorCoordinates(CHARACTER_MODEL_LAYERS_PC *, NUMTX *, NUMTX *, NUVEC *, NUMTX *);
     i32 __cdecl Action_NoTerrain(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
     i32 __cdecl Action_NoLosCheck(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
     i32 __cdecl Action_FlatTerrain(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);

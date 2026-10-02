@@ -949,3 +949,18 @@ Original and independent packets are frozen as
 `structural-fixed-data-families-original-next1.json` and
 `structural-fixed-data-families-independent-next1.json` under ignored continuation;
 [symbols.md](symbols.md) records the reviewed roles and remaining limits.
+
+## Animation scratch working views (wave 48)
+
+The existing `ANI3_GLOBALBUFFER_PC` prefix now names the signed 16-bit capacity
+at +4; its animation-values pointer remains at +8 and the working prefix is
+12 bytes. These offsets describe selected accesses, not a complete historical
+allocation. The callback owner at 0x9738a4 remains unchanged.
+
+`AnimQuatDepthPc` at 0x9738a8 is a signed 32-bit working counter, and
+`AnimQuatSavedPc` at 0x96e508 is a four-byte working save view. Selected loader
+zeros and accesses are independently verified. Original allocation sizes and
+types stay blank in the inventory, so these definitions supply zero data
+coverage and exact credit. The supported working domain is depth zero through
+four; the original signed upper guard does not establish negative backing
+storage or arbitrary runtime initialization.

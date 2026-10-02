@@ -688,3 +688,27 @@ Source release additionally needs verified accessed fields and real dependency
 behavior, with any retained normal-provider conditions or explicit missing actions
 recorded. Review an existing mapped provider at the relevant call rather than
 requiring an unrelated whole-backend reconstruction to expose a caller's name.
+
+### Final candidate boundary diagnostics (wave 48)
+
+The joint retriever now emits the same analyzed boundary fields on final raw
+candidates that it already emits on propagated rows. The previous export left
+all 15114 final candidate extent cells blank even where indexed analysis was
+available; filtering those blanks as zero discarded the useful frontier.
+Numeric addresses remain numeric in joint evidence/state APIs.
+
+A single analyzed range supplies a diagnostic extent, while fragmented ranges
+retain their span/body/range count and leave extent blank. Neither case proves
+a reviewed PC boundary or grants map/coverage credit. Ranking, support roots,
+mutual margins and propagation safeguards are unchanged. Production fixtures
+exercise two independent roots with equal scores and no propagation, fragmented
+analysis, and a single-root control.
+
+A bounded current-frontier probe found competing functions with many inherited
+roots but small score margins. Multiple callers can share the same direct
+callee set, so known neighbors alone do not resolve them. Retained graph
+callsite addresses can support review annotations, but physical address order
+does not prove runtime precedence and these exports do not contain internal
+CFG dominance. Extra propagation rounds cannot resolve a fixed point. Any
+future CFG/order feature needs a production counterfactual and original review
+before it can support automatic matching.

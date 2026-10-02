@@ -587,3 +587,28 @@ new animation scratch views keep unknown original extents; preserve the existing
 callback owner and qualify its actual four-word invocation explicitly. Investigate
 the callsite/CFG context lost by direct-neighbor sets with bounded review
 annotations and production controls before changing propagation safeguards.
+
+### Wave 48: release connected animation and model helpers
+
+Integrate the reviewed animation children/wrapper (708 original bytes), the
+one-byte cross-unit diagnostic return provider, and the model layer/locator
+helpers (242 bytes). Preserve signed capacity, callback ownership, actual
+overflow/pop behavior and raw locator copies. Compile, link and review emitted
+interfaces, then compare all complete bodies and retain every prior exact row.
+The two scratch data views keep unknown allocation extents and no credit.
+
+Restore analyzed boundary diagnostics on final joint candidate rows without
+changing their scores or eligibility. Test tied production candidates with
+callsite/CFG annotations as review evidence; do not treat annotations or analyzed
+boundaries as verified mappings. Continue the real DWA/provider closure needed
+by the larger model animation caller.
+
+The 128-object build and complete binding/link gate pass. The batch adds
+951 compared original bytes and 262 exact bytes, preserving all 820 previous
+exact functions and 2257 exact data rows. Whole-code fuzzy coverage reaches
+6.605381%; exact code is 47423 / 3471246 bytes. The full LLVM 18 check passes
+643 tests with three skips; final candidate diagnostic fixtures also pass after
+their disjoint-range cleanup. Build RSS peaks at 38156 KiB and full checks at
+120088 KiB, both with no swaps. Larger animation bodies remain genuine
+nonexact source; no instruction-order tuning is needed before advancing the
+real DWA/time/curve provider closure.

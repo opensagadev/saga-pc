@@ -400,3 +400,75 @@ class PropagationCascadeTests(unittest.TestCase):
                  self.assertRaisesRegex(ValueError, "max_rounds"):
                 joint.generate_joint(None, None, max_rounds=limit)
             load.assert_not_called()
+
+
+def candidate_boundary_fixture(fragmented=False):
+    pair = {}
+    for side, values, binary in (("pc", [100, 140, 200, 300], "1" * 64),
+                                  ("android", [10, 40, 70, 100], "2" * 64)):
+        nodes = {}
+        for address in values:
+            key = graph.node_id(binary, "function", address)
+            ranges = [[address, address + 16]]
+            if fragmented and address == 140 and side == "pc":
+                ranges = [[address, address + 8], [address + 12, address + 20]]
+            nodes[key] = {"id": key, "kind": "function", "address": address,
+                          "size": 16, "ranges": ranges, "body_bytes": 16,
+                          "aliases": [{"name": "opaque" + str(address), "primary": True}]}
+        manifest = {"schema": graph.GRAPH_SCHEMA, "binary_sha256": binary,
+                    "address_space": "ram", "address_transform": {"delta": 0}}
+        side_graph = graph.Graph(manifest, nodes, [])
+        sources, targets = ([100, 140], [200, 300]) if side == "pc" else ([10, 40], [70, 100])
+        edges = [{"source": side_graph.resolve(source, "function"),
+                  "target": side_graph.resolve(target, "function"), "target_address": target,
+                  "site": source + 1 + index, "kind": "call", "role": "direct"}
+                 for source in sources for index, target in enumerate(targets)]
+        pair[side] = graph.Graph(manifest, nodes, edges)
+    return pair, graph.scorer_inputs(pair)
+
+
+def retrieve_boundary_candidates(pair, inputs, seeds):
+    return joint._function_retrieval(pair, inputs, seeds, {200: 70, 300: 100}, [], set(), score, max_rounds=2)
+
+
+class CandidateBoundaryTests(unittest.TestCase):
+    def test_two_roots_tie_keeps_candidates_and_analysis_diagnostics(self):
+        pair, inputs = candidate_boundary_fixture()
+        result = retrieve_boundary_candidates(pair, inputs, {200: 70, 300: 100})
+        self.assertEqual(result["proposals"], [])
+        self.assertEqual(result["rounds"], [{"iteration": 1, "new_pairs": 0}])
+        self.assertEqual(len(result["rows"]), 4)
+        for options in result["round1"].values():
+            self.assertEqual([e["score"] for _, e in options], [1.08, 1.08])
+            for _, evidence in options:
+                self.assertEqual(evidence["supports"], 2)
+                self.assertEqual(len(evidence["support_roots"]), 2)
+        for row in result["rows"]:
+            self.assertIsInstance(row["pc_address"], int)
+            self.assertEqual(row["pc_extent_bytes"], 16)
+            self.assertEqual(row["boundary_status"], "single-analysis-range")
+            self.assertEqual(row["status"], "candidate")
+            self.assertNotIn("complete_ranges", row)
+            self.assertNotIn("extent_reviewed", row)
+
+    def test_fragmented_candidate_exposes_ranges_without_verified_extent(self):
+        pair, inputs = candidate_boundary_fixture(fragmented=True)
+        result = retrieve_boundary_candidates(pair, inputs, {200: 70, 300: 100})
+        self.assertFalse(result["proposals"])
+        rows = [row for row in result["rows"] if row["pc_address"] == 140]
+        self.assertEqual(len(rows), 2)
+        for row in rows:
+            self.assertEqual(row["pc_body_bytes"], 16)
+            self.assertEqual(row["pc_span_from_entry"], 20)
+            self.assertEqual(row["pc_ranges"], 2)
+            self.assertEqual(row["pc_extent_bytes"], "")
+            self.assertEqual(row["boundary_status"], "needs-range-review")
+
+    def test_one_root_candidate_diagnostics_do_not_add_support(self):
+        pair, inputs = candidate_boundary_fixture()
+        result = retrieve_boundary_candidates(pair, inputs, {200: 70})
+        self.assertFalse(result["proposals"])
+        self.assertTrue(result["rows"])
+        for row in result["rows"]:
+            self.assertEqual(row["supports"], 1)
+            self.assertEqual(row["pc_extent_bytes"], 16)

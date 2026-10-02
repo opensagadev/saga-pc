@@ -1860,3 +1860,6 @@ void __cdecl NuAnimBuffEvaluate_3_QuatB(NUMTX *base, ANI3_BUFFER_PC *buffer, NUH
 }
 
 #undef ANI3_COMPOSE_PARENT_QUAT
+
+void __cdecl AnimationDiagnosticNoOpPc(void) {
+}

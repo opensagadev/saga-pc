@@ -265,11 +265,16 @@ def _function_retrieval(pair, inputs, seeds, mapped, data_pairs, rejected, score
     rows = list(proposals)
     for aa, values in sorted(final.items()):
         for rank, (pva, evidence) in enumerate(values[:5], 1):
-            rows.append({"pc": pair["pc"].resolve(pva, "function"), "android": pair["android"].resolve(aa, "function"),
-                         "pc_address": pva, "android_address": aa, "kind": "function", "source_name": android[aa]["source_name"],
-                         "status": "candidate", "round": None, "rank": rank, "score": evidence["score"],
-                         "supports": evidence["supports"], "support_roots": evidence["support_roots"], "evidence": evidence,
-                         "alternatives": [{"pc_address": va, "score": item["score"]} for va, item in values[:5]]})
+            row = {"pc": pair["pc"].resolve(pva, "function"), "android": pair["android"].resolve(aa, "function"),
+                   "pc_address": pva, "android_address": aa, "kind": "function", "source_name": android[aa]["source_name"],
+                   "status": "candidate", "round": None, "rank": rank, "score": evidence["score"],
+                   "supports": evidence["supports"], "support_roots": evidence["support_roots"], "evidence": evidence,
+                   "alternatives": [{"pc_address": va, "score": item["score"]} for va, item in values[:5]],
+                   **scorer.boundary_fields(pc[pva])}
+            # These are analysis diagnostics, not an original extent review.
+            # Keep addresses numeric for joint evidence/state APIs.
+            row["pc_address"] = pva
+            rows.append(row)
     return {"rows": rows, "proposals": proposals, "rounds": rounds, "round1": round1 or {},
             "propagation": {"max_rounds": round_limit, "rounds_completed": len(rounds),
                             "stop_reason": "no-new-pairs" if rounds and not rounds[-1]["new_pairs"] else "round-limit"}}
