@@ -3102,3 +3102,45 @@ One removal is the force-LOD pair promoted into the 121 reviewed data anchors;
 the remaining candidate changes stay advisory. The observed root lineage does
 not isolate a single cause for the gains. Graph, scoring and source inputs are
 unchanged apart from the journal and documentation.
+
+### Player replacement and startup structure
+
+Three connected functions pass independent original identity and complete PC
+extent review:
+
+| PC entry | Native entry | Identity | Complete PC bytes |
+| --- | --- | --- | --- |
+| `0x0055eaa0` | `0x0046c730` | Player_ToggleCharacter | 1,787 |
+| `0x0041f940` | `0x000fe280` | Players_Init | 1,355 |
+| `0x0041bc20` | `0x000ff530` | NewPlayerCharacter | 1,273 |
+
+Toggle handles directional input and repeat timing, searches the model list with
+wrapping and availability gates, brackets replacement with callbacks and camera
+effects, then remembers both player IDs. NewPlayerCharacter rejects invalid IDs,
+preserves selected old-object state across replacement, resets context and
+animation packets, and initializes surface state in the same ordered sequence.
+Players_Init clears eight player slots, selects remembered/default IDs, creates
+bounded player contexts and establishes backup snapshots. The PC snapshot copy
+is `0x10d8` bytes; native copies `0x10e4`. Native allocation/init combines separate
+PC calls, and several finishing paths differ in inlining and platform behavior.
+
+All six crossed alternatives fail their compound algorithm roles. Independent
+original CFGs establish every PC instruction as reachable and close each full
+span with RET and following CC/entry guards. Original native symbol sizes include
+alignment and remain separate from analyzed reachable bytes. Incoming private
+ABIs, unknown providers, callbacks and complete aggregate types remain held.
+
+These three journal identities cover 4,415 reviewed PC code bytes. They supply
+no CSV binding, source implementation or matching coverage. Frozen producer and
+peer packets are `structural-wave44-connected-parents-original-next1.json` and
+`structural-wave44-connected-parents-independent-next1.json` under ignored
+analysis. The previous frontier's accounting failures remain preserved.
+
+The normal control promotes all three existing round-one inferences, retaining
+the exact 2,850-function union with no new pair, loss or reroute. Accepted/inferred
+counts become 1,537/1,313. DATA candidates gain twenty-eight pairs and lose three,
+reaching 2,450; reviewed data anchors remain 121. These candidate changes receive
+no identity or extent approval. An initial run also enabled the separate
+tentative function-to-data diagnostic channel. Its core output hashes agree with
+the normal control; the additional 9,813 diagnostic rows do not feed function
+retrieval or accepted state. Both runs and their memory measurements are retained.

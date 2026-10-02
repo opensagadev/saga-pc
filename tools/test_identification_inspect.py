@@ -314,7 +314,8 @@ class InspectorTests(unittest.TestCase):
     def test_invalid_depth_and_output_location(self):
         for depth in (0,3,True):
             with self.assertRaises(ValueError): inspector.traverse(self.db,self.manifest,1,depth)
-        with self.assertRaises(SystemExit): inspector.main(['--pair','missing','--pc','1','--android','1','--output',str(self.root/'bad')])
+        invalid_output = Path(inspector.__file__).resolve().parents[1] / 'invalid-inspector-output'
+        with self.assertRaises(SystemExit): inspector.main(['--pair','missing','--pc','1','--android','1','--output',str(invalid_output)])
 
 
 class SymbolLabelTests(unittest.TestCase):
