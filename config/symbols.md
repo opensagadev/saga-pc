@@ -2873,3 +2873,51 @@ The field-role trial likewise leaves all four animation-loader cross-pairs tied.
 Further structural discrimination needs value ancestry and control-flow context,
 while retaining the platform/provider qualifications. These experiments remain
 under ignored analysis and do not alter the maintained scorer.
+
+### Rocket firing and security-door movement (2026-10-02)
+
+Independent original review confirms the other two function hypotheses opened
+after the message-pool/cursor review:
+
+| PC entry | Native entry | Identity | Complete PC bytes |
+| --- | --- | --- | --- |
+| `0x004a69e0` | `0x001666d0` | FireBountyHunterRocket | 442 |
+| `0x004bdaf0` | `0x001e1630` | SecurityDoor_MoveCode | 436 |
+
+The rocket routine shares the idle-state weapon/action lookup, capability-27
+gate, message lookup, 2/77 mode selection and animation/timer/state-14 setup.
+PC additionally handles an already-active state-14 update and has a live ESI
+private input. These differences remain explicit; the native firing function
+does not supply the PC's complete behavior or caller contract.
+
+The door routine shares state-`0x5c` frame/completion handling, `0x20`/`0x40`
+flags, special-object mode 2 and rumble 0.6 with argument zero. PC delegates
+activation to a private helper at `0x004bda50` with EAX and one stack word;
+native inlines that setup. Helper and floating-point return effects remain held.
+Both complete PC CFGs and following RET/CC/next-entry guards are verified.
+
+The two journal rows add 878 reviewed PC code bytes, with ABI/type held and no
+CSV/source/coverage credit. Evidence is frozen as
+`structural-wave40-pool-consumers-original-next1.json` and
+`structural-wave40-pool-consumers-independent-next1.json` under ignored analysis.
+
+A separate original symbol/name review and independent peer verify native
+cursor spelling `_ZL9i_gamemsg` at `0x012a1200`, from the exact LOCAL OBJECT
+record and terminated string. This closes the earlier spelling hold only;
+its native four-byte size does not establish PC extent or type. The immutable
+supplement packets are `structural-message-cursor-name-original-next1.json` and
+`structural-message-cursor-name-independent-next1.json`.
+
+The normal control retains every previous pair, promotes these two functions
+and adds one inference: PC `0x004bd3d0` / native `0x001e12f0`. Its observed roots
+include the reviewed door mover and NuVecDistSqr. Accepted/inferred counts are
+1,523/1,318, the union grows to 2,841, and all 2,416 DATA pairs remain unchanged.
+The new inference still needs original identity and boundary review.
+
+The native pool's indexed active-byte read at `0x004a4d8c` is independently
+verified through its original PIC/GOT load and index arithmetic. It supplies
+the third proved member/site in the 99-reference diagnostic; 96 remain unknown.
+The extra same-site native `+0x20c` target stays unqualified. The diagnostic now
+groups both already-reviewed AddGameMsg users under the pool, without adding an
+independent root, scoring change or new identity. This is a local indexed static
+reference proof, not a complete runtime address or a general field-offset map.
