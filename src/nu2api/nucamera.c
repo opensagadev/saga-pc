@@ -36,11 +36,10 @@ void __cdecl NuCameraSetAxes(NUVEC *axes) {
 }
 
 void __cdecl NuCameraSet(NUCAMERA *camera) {
-    /* The PC camera-state builder at 0x005ed540 is still a dependency. */
-    STUBBED_NAMED(0x005ed540);
+    NuCameraSetEx(camera, 0);
 
     NuMtxSetIdentity(&cmtx);
-    NuMtxMulVU0(&vpc_vport_mtx, &vpmtx, &cmtx);
+    NuMtxMulH(&vpc_vport_mtx, &vpmtx, &cmtx);
     vpc_sci_mtx = vpc_vport_mtx;
 
     /* The final two calls submit the viewport and projection matrices to D3D. */
@@ -291,4 +290,108 @@ i32 __cdecl NuCameraClipTestSphere(NUVEC *point, f32 radius, NUMTX *world) {
     if (-radius > plane_distances.w)
         return 1;
     return 0;
+}
+
+void __cdecl NuCameraSetProjectionMtx(NUMTX *out, f32 fov, f32 aspect, f32 near_clip, f32 far_clip) {
+    volatile f32 half_fov = (f32)((f64)fov * 0.5);
+    i32 angle = (i32)((f64)half_fov * AIPathAngularScale);
+    volatile f32 cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
+    volatile f32 depth_factor = far_clip / (far_clip - near_clip);
+    memset(out, 0, sizeof(*out));
+    out->m00 = aspect * cotangent;
+    out->m11 = cotangent;
+    out->m22 = depth_factor;
+    out->m23 = 1.0f;
+    out->m32 = -depth_factor * near_clip;
+    pmtx.m00 *= NuCameraProjectionGlobalScaleX;
+    pmtx.m11 *= NuCameraProjectionGlobalScaleY;
+    pmtx.m20 = NuCameraProjectionGlobalOffsetX;
+    pmtx.m21 = NuCameraProjectionGlobalOffsetY;
+}
+
+void __cdecl NuCameraSetEx(NUCAMERA *camera, i32 fast) {
+    global_camera = *camera;
+    NuAtan2D(-global_camera.mtx.m20, -global_camera.mtx.m22);
+    STUBBED_NAMED("NuCameraSetEx: FaceYDirStream at 0x005ff830");
+    if (fast == 0)
+        STUBBED_NAMED("NuCameraSetEx: NuVpUpdate");
+    if (NuCameraMode == 0) {
+        NuMtxInvVU0(&vmtx, &global_camera.mtx);
+        NuMtxScaleVU0(&vmtx, &global_camera.scale);
+    } else {
+        NUMTX mirror;
+        NUMTX camera_inverse;
+        NUMTX reflection_inverse;
+        mirror = ANI3_EVAL_IDENTITY_MATRIX;
+        mirror.m11 = -1.0f;
+        NuMtxInv(&camera_inverse, &global_camera.mtx);
+        NuMtxInv(&reflection_inverse, &NuCameraReflection);
+        vmtx = reflection_inverse;
+        if (NuCameraMode == 1)
+            NuMtxMul(&vmtx, &vmtx, &mirror);
+        NuMtxMul(&vmtx, &vmtx, &NuCameraReflection);
+        NuMtxMul(&vmtx, &vmtx, &camera_inverse);
+    }
+    if (fast == 0) {
+        if (NuCameraOrthographic == 0) {
+            NuCameraSetProjectionMtx(&pmtx, global_camera.fov, global_camera.aspect, global_camera.near_clip,
+                                     global_camera.far_clip);
+            pmtx.m00 *= global_camera.unknown_58;
+            pmtx.m11 *= global_camera.unknown_5c;
+            pmtx.m20 += global_camera.unknown_50;
+            pmtx.m21 += global_camera.unknown_54;
+        } else {
+            memset(&pmtx, 0, sizeof(pmtx));
+            pmtx.m00 = NuCameraOrthoScale * global_camera.aspect;
+            pmtx.m11 = NuCameraOrthoScale;
+            pmtx.m22 = 1.0f;
+            pmtx.m33 = 1.0f;
+        }
+    }
+    NuCameraSetVPortClipMtx(&vpc_vport_mtx, &vmtx, &global_camera, fast);
+    if (NuCameraClipScissorToViewport != NuCameraPreviousClipScissorToViewport) {
+        fast = 0;
+        NuCameraPreviousClipScissorToViewport = NuCameraClipScissorToViewport;
+    }
+    if (NuCameraClipScissorToViewport != 0)
+        NuCameraSetVPortClipMtx(&vpc_sci_mtx, &vmtx, &global_camera, fast);
+    else
+        NuCameraSetScissorClipMtx(&vpc_sci_mtx, &vmtx, &global_camera, fast);
+    smtx = NuCameraScalingTemplate;
+    NuMtxMulH(&vpmtx, &vmtx, &pmtx);
+    NuMtxMulH(&vpsmtx, &vpmtx, &smtx);
+    NuMtxMulH(&psmtx, &pmtx, &smtx);
+    if (fast == 0) {
+        volatile f32 half_fov = (f32)((f64)global_camera.fov * 0.5);
+        i32 angle = (i32)((f64)half_fov * AIPathAngularScale);
+        volatile f32 side;
+        volatile f32 squared;
+        volatile f32 reciprocal;
+        zy = NuTrigTable[(angle >> 1) & 0x7fff] / NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+        zx = zy / global_camera.aspect;
+        STUBBED_NAMED("NuCameraSetEx: scissor frustum ratios");
+        clip_planes.m02 = 0.0f;
+        clip_planes.m12 = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+        clip_planes.m22 = NuTrigTable[(angle >> 1) & 0x7fff];
+        clip_planes.m32 = 0.0f;
+        clip_planes.m03 = 0.0f;
+        clip_planes.m13 = -clip_planes.m12;
+        clip_planes.m23 = clip_planes.m22;
+        clip_planes.m33 = 0.0f;
+        side = (clip_planes.m22 / clip_planes.m12) / camera->aspect;
+        squared = (f32)((f64)side * side + 1.0);
+        reciprocal = 1.0f / NuFsqrt(squared);
+        clip_planes.m00 = -reciprocal;
+        clip_planes.m10 = 0.0f;
+        clip_planes.m20 = reciprocal * side;
+        clip_planes.m30 = 0.0f;
+        clip_planes.m11 = 0.0f;
+        clip_planes.m01 = reciprocal;
+        clip_planes.m21 = clip_planes.m20;
+        clip_planes.m31 = 0.0f;
+        STUBBED_NAMED("NuCameraSetEx: frustum setup at 0x005d5500");
+    }
+    STUBBED_NAMED("NuCameraSetEx: viewport/scissor render state submission");
+    STUBBED_NAMED("NuCameraSetEx: renderer flags, viewport offsets and clip-mode synchronization");
+    STUBBED_NAMED("NuCameraSetEx: conditional renderer cache invalidation");
 }

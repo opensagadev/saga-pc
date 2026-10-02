@@ -21,3 +21,10 @@ i32 __cdecl NuHGobjForceShadowsOnCharacters(i32 enabled) {
     nuapi.force_shadows_on_characters = enabled;
     return previous;
 }
+
+void __cdecl NuHGobjPOIMtx(NUHGOBJ_EVAL_PC *object, u8 index, NUMTX *world_matrix, NUMTX *joint_matrices,
+                           NUMTX *result) {
+    NUHGOBJ_POI_PC *point = &object->points[object->point_index_map[index]];
+    NuMtxMulVU0(result, &point->matrix, &joint_matrices[point->joint_index]);
+    NuMtxMulVU0(result, result, world_matrix);
+}

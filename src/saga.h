@@ -4586,6 +4586,16 @@ typedef struct NUHGOBJ_RENDER_PART_PC {
 } NUHGOBJ_RENDER_PART_PC;
 STATIC_ASSERT(sizeof(NUHGOBJ_RENDER_PART_PC) == 0x14);
 STATIC_ASSERT(offsetof(NUHGOBJ_RENDER_PART_PC, name) == 0);
+typedef struct NUHGOBJ_POI_PC {
+    NUMTX matrix;
+    u8 unknown_40[4];
+    u8 joint_index;
+    u8 unknown_45[11];
+} NUHGOBJ_POI_PC;
+STATIC_ASSERT(sizeof(NUHGOBJ_POI_PC) == 0x50);
+STATIC_ASSERT(offsetof(NUHGOBJ_POI_PC, matrix) == 0);
+STATIC_ASSERT(offsetof(NUHGOBJ_POI_PC, joint_index) == 0x44);
+
 typedef struct NUHGOBJ_EVAL_PC {
     u8 unknown_000_167[0x168];
     i32 joint_count;
@@ -4593,7 +4603,10 @@ typedef struct NUHGOBJ_EVAL_PC {
     u8 unknown_170_177[8];
     i32 joint_override_map_count;
     u8 *joint_override_map;
-    u8 unknown_180[0x10];
+    u8 unknown_180[4];
+    NUHGOBJ_POI_PC *points;
+    u8 unknown_188[4];
+    u8 *point_index_map;
     i32 render_count;
     NUHGOBJ_RENDER_PART_PC *render_parts;
 } NUHGOBJ_EVAL_PC;
@@ -4601,6 +4614,8 @@ STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joint_count) == 0x168);
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joints) == 0x16c);
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joint_override_map_count) == 0x178);
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joint_override_map) == 0x17c);
+STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, points) == 0x184);
+STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, point_index_map) == 0x18c);
 
 typedef struct nuglobalrndrstate_pc_s {
     u8 unknown_0000[8];
@@ -7386,6 +7401,7 @@ extern "C" {
     void __cdecl NuMtxSetRotationZ(NUMTX *matrix, NUANG angle);
     void __cdecl NuMtxSetRotationAxis(NUMTX *matrix, NUANG angle, NUVEC *axis);
     void __cdecl NuMtxInv(NUMTX *output, NUMTX *input);
+    void __cdecl NuMtxInvVU0(NUMTX *output, NUMTX *input);
     void __cdecl NuMtxInvR(NUMTX *output, NUMTX *input);
     void __cdecl NuMtxRotateAng(NUANG angle, f32 x, f32 z, f32 *rx, f32 *rz);
     void __cdecl NuMtxTranslate(NUMTX *matrix, NUVEC *translation);
@@ -7576,7 +7592,24 @@ extern "C" {
     void __cdecl NuMtxRotateZ(NUMTX *matrix, NUANG angle);
     void __cdecl NuMtxTransposeR(NUMTX *out, NUMTX *source);
     void __cdecl NuMtxTranspose(NUMTX *out, NUMTX *source);
+    void __cdecl NuHGobjPOIMtx(NUHGOBJ_EVAL_PC *, u8, NUMTX *, NUMTX *, NUMTX *);
     extern NUCAMERA global_camera;
+    extern i32 NuCameraMode;
+    extern NUMTX NuCameraReflection;
+    extern i32 NuCameraClipScissorToViewport;
+    extern i32 NuCameraPreviousClipScissorToViewport;
+    extern i32 NuCameraOrthographic;
+    extern NUMTX NuCameraScalingTemplate;
+    extern NUMTX psmtx;
+    extern f32 NuCameraOrthoScale;
+    extern f32 NuCameraProjectionGlobalScaleX;
+    extern f32 NuCameraProjectionGlobalScaleY;
+    extern f32 NuCameraProjectionGlobalOffsetX;
+    extern f32 NuCameraProjectionGlobalOffsetY;
+    void __cdecl NuCameraSetEx(NUCAMERA *, i32);
+    void __cdecl NuCameraSetProjectionMtx(NUMTX *, f32, f32, f32, f32);
+    void __cdecl NuMtxMulH(NUMTX *, NUMTX *, NUMTX *);
+    void __cdecl NuMtxMulRVU0(NUMTX *, NUMTX *, NUMTX *);
     extern NUMTX clip_test_mtx;
     extern f32 zx;
     extern f32 zy;

@@ -4527,3 +4527,54 @@ extern "C" {
     extern const f64 ActionSnapWeightedRandomZeroPc = 0.0;
 #pragma const_seg()
 }
+
+extern "C" {
+
+#pragma bss_seg(".bss$NuCameraMode")
+    i32 NuCameraMode;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCameraReflection")
+    NUMTX NuCameraReflection;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCameraClipScissorToViewport")
+    i32 NuCameraClipScissorToViewport;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCameraPreviousClipScissorToViewport")
+    i32 NuCameraPreviousClipScissorToViewport;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCameraOrthographic")
+    i32 NuCameraOrthographic;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCameraScalingTemplate")
+    NUMTX NuCameraScalingTemplate;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCameraProjectionGlobalScaleX")
+    f32 NuCameraProjectionGlobalScaleX;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCameraProjectionGlobalScaleY")
+    f32 NuCameraProjectionGlobalScaleY;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCameraProjectionGlobalOffsetX")
+    f32 NuCameraProjectionGlobalOffsetX;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCameraProjectionGlobalOffsetY")
+    f32 NuCameraProjectionGlobalOffsetY;
+#pragma bss_seg()
+
+#pragma data_seg(".data$psmtx")
+    NUMTX psmtx = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+#pragma data_seg()
+
+#pragma data_seg(".data$NuCameraOrthoScale")
+    f32 NuCameraOrthoScale = 0.1f;
+#pragma data_seg()
+}

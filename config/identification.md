@@ -668,3 +668,23 @@ thirty crossed alternatives. Plain and momentum debris stayed four-way tied.
 Shared push-context support was zero, so this result does not demonstrate
 cross-platform argument matching. It establishes local ranking utility only;
 outside rivals, inlining, indirect calls and provider effects remain unresolved.
+
+## Identification coverage and usable bindings
+
+`matching.json.reviewed_identification` reports the union of known PC function
+inventory extents and active, explicit journal reviews with complete PC ranges.
+Overlaps count once; gaps in disjoint functions remain uncovered. It separately
+records journal identities, complete reviewed bytes, and additional reviewed
+bytes outside inventory. Unknown extents supply an identity count only. Rejected,
+superseded, ambiguous, inferred and unresolved graph-bound reviews supply no new
+byte credit. The journal hash is checked against the report's frozen input hash.
+This section leaves reconstruction, objdiff, exact-code and image-mapping metrics
+unchanged. Its denominator is the full configured retail `.text` extent.
+
+An independently established identity and complete extent can enter the inventory
+after reviewing the actual PC caller interface. Leave `ctype` blank when formal
+types remain unresolved. Such an inventory row supplies no implementation.
+Source release additionally needs verified accessed fields and real dependency
+behavior, with any retained normal-provider conditions or explicit missing actions
+recorded. Review an existing mapped provider at the relevant call rather than
+requiring an unrelated whole-backend reconstruction to expose a caller's name.

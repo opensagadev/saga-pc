@@ -3185,3 +3185,80 @@ lineage includes the newly reviewed lighting transaction, existing anchors and
 literal evidence; no isolated cause or original identity is inferred. All 2,450
 prior DATA candidates remain, with eight gains reaching 2,458. Reviewed DATA
 anchors remain 121. Graph/scoring rules and reconstruction coverage are unchanged.
+
+## Connected identity and source release (wave 46)
+
+The player/character cohort now exposes five independently identified, complete
+PC functions as inventory with blank `ctype`: `Players_Init` (`0x41f940`, 1355),
+`NewPlayerCharacter` (`0x41bc20`, 1273), `Player_ToggleCharacter` (`0x55eaa0`, 1787),
+`AddAnimEffects` (`0x62c7e0`, 2808), and `APIDrawCharacterModel` (`0x62fbf0`, 2690).
+Actual callers supply respectively 0, 4, 3, 10 and 17 physical stack words;
+complete own normal-return paths balance ESP and owned x87 state under the
+recorded normal-child preservation conditions. These 9913 bytes remain
+unimplemented. Formal types, callback/private-child behavior and source closure
+remain held. `CutScene_DrawCharacter` retains its identity/extent review, but
+registration alone has not established its actual dispatch interface.
+
+`NuHGobjPOIMtx` (`0x5daae0`, 72 bytes) has a reviewed five-word cdecl interface.
+The partial hierarchy view now names the point-record pointer at `+0x184` and
+byte index map at `+0x18c`. An 80-byte record contains a matrix at zero and joint
+index byte at `+0x44`. Genuine C performs the record/joint product followed by
+in-place world composition. The existing three-word D3DX matrix-multiply
+boundary is retained as a qualified normal imported-math contract; no complete
+hierarchy allocation or DLL implementation is inferred.
+
+Both buffer evaluators now have genuine C in `nuanim.c`:
+`NuAnimBuffEvaluate_3_QuatB` (`0x5e96d0`, 1720 bytes) and
+`NuAnimBuffEvaluate_3` (`0x5e9d90`, 1325 bytes). They use the existing verified
+joint, buffer, hierarchy and callback views. Parent/flag branches, six sign
+changes, callback aliasing and one-time root callback, identity tails and
+callback cleanup follow the PC original. The private quaternion product uses
+explicit SSE products and their original add/subtract grouping, including
+zero-minus-product W lanes. VC8 lacks `_mm_cvtss_f32`; supported `_mm_store_ss`
+expresses those four scalar stores without changing the reviewed operation.
+The original quaternion path writes quaternion slot 255 and reads scale slot
+255 despite smaller allocator requests. Source preserves this behavior under
+explicit physical scratch backing and initialized scale-slot conditions;
+successful allocation requests alone establish neither. Callback-table
+initialization, valid engine counts/indices and normal math-provider conditions
+remain explicit qualifications. No root-scale initializer was invented.
+
+`NuCameraSetEx` (`0x5ed540`, 1105 bytes) now brings the camera copy, ordinary and
+reflection matrix paths, perspective/orthographic selection, clip-mode change
+ordering, matrix products and clip-plane math into comparison. `NuCameraSet`
+calls it with `(camera, 0)` and uses the original `NuMtxMulH` entry. Viewport,
+scissor-ratio, frustum/backend submissions and renderer-cache work remain
+explicit `STUBBED_NAMED` actions; this builder remains partial.
+`NuCameraSetProjectionMtx` (`0x604a80`, 200 bytes) preserves its five arguments,
+F32 checkpoints and four additional updates to global `pmtx` even when the
+supplied output is another matrix. Source uses explicit volatile locals for
+required F32 storage rounds. `NuMtxInvVU0` (`0x5c0940`, 212 bytes) has the same
+complete original bytes as the existing inverse and reuses its genuine C body;
+scale and rotational-multiply variants retain their actual five-byte tail
+entries. `NuMtxMulH` retains its distinct 21-byte D3DX forwarding entry.
+
+Twelve camera data bindings are minimum source views with unknown original
+allocation extents and blank CSV sizes/types. Original image evidence supplies
+an identity `psmtx`, the `0.1f` orthographic scalar and ten loader-zero views.
+They receive no data coverage or initializer-match credit. The projection Y
+offset may lie inside the unresolved coordinate-stack owner; no independent
+historical global allocation is claimed.
+
+Frozen independent authorities are retained under ignored
+`build/analysis/identification/continuation/`: the player and render interface
+packets, POI matrix source audit, animation source audit, camera source audit and
+camera data initializer packet. Android source remains attributed to
+`src/nu2api/nucore/nucore_plain.cpp` and the animation buffer evaluator family;
+PC original bytes, caller roles, constants and field offsets establish this
+release. Compiled comparison and reconstruction metrics are reported separately
+in `matching.json`.
+
+The wave-46 VC8 build and independent emitted-code reviews pass for the
+qualified animation and partial camera contracts. All 125 objects have complete
+bindings and resolved relocations; full checks pass 640 tests with three skips.
+Retail comparison adds 4665 original code bytes and five exact functions
+totalling 315 bytes: POI matrix composition, inverse, scale, rotational multiply
+and the distinct D3DX forwarding entry. Whole-code fuzzy coverage increases
+from 6.471500% to 6.550184%. Camera backend markers and the original animation
+scratch-backing qualifications remain; these results do not establish a
+complete renderer or playable game.

@@ -512,3 +512,42 @@ and complete PC boundary; actual installed callback tables and four helper
 interfaces need qualified physical closure before map release. ReadPad's callback
 and PanelRender's child/virtual interfaces remain separate holds. Keep heavy
 jobs serialized and frozen counterfactual outputs intact.
+
+### Wave 46: turn retained identities into usable inventory and source
+
+Review the 18-function character/player cohort as one finite dependency family.
+Five retained identities now supply 9913 usable inventory bytes with blank formal
+types; the actual CutScene callback dispatch remains the next interface gate.
+This inventory release adds no compiled behavior by itself.
+
+The source batch adds the two animation buffer evaluators (3045 original bytes),
+POI matrix composition, the camera matrix builder with explicit backend gaps,
+and their finite matrix/projection providers. Existing partial typed views are
+extended only with original-verified fields. Whole original extents enter
+comparison; scratch-slot and normal-provider qualifications remain recorded.
+The verified batch adds 4665 compared original code bytes. Whole-code fuzzy
+coverage rises from 6.471500% to 6.550184%; exact code rises by 315 bytes to
+46834 of 3471246 bytes. The camera builder remains explicitly partial.
+The 125-object build, complete bindings/relocations and 640-test suite pass.
+The normal scorer peaks at 689584 KiB RSS with no swap under its 1 GiB cap;
+the tests peak at 131152 KiB and retail comparison at 58672 KiB.
+
+The matching report now separates inventory/journal identification coverage from
+reconstruction. Reviewed complete ranges outside CSV count in the identification
+union, with overlaps and disjoint gaps handled explicitly. ABI-held identities
+and unknown data extents never acquire compiled or exact-byte credit through
+this reporting change. Heavy jobs remain serialized; fixtures use disk-backed
+TMPDIR and helper processes retain bounded memory.
+
+The normal graph run retains all 1541 previous accepted seeds and reaches
+1547 accepted plus 1317 inferred pairs. Exact set comparison finds fourteen
+union gains and one lost inference, for thirteen net gains. The lost pair
+remains a rank-one raw candidate; pair counts do not establish accuracy.
+The new identification union is 585401 bytes (16.864290% of original text),
+including 26605 explicitly reviewed bytes outside the CSV inventory.
+This percentage measures identified ranges, not reconstructed behavior.
+
+Continue the connected EvalModelAnim/APIDumpCharacterModels/APICharacterSysInit
+cohort (1465 prospective PC bytes) using the retained character-system views
+and animation providers. Keep CutScene's actual callback dispatch and the
+camera backend gaps as separate contract gates.

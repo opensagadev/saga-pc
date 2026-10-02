@@ -8,10 +8,12 @@ import subprocess
 import sys
 
 if __package__:
+    from .identification_coverage import reviewed_identification_file
     from .binary import compare_data, relocate_function, write_function
     from .lib import (ROOT, bindings_for, compiled_objects, covered_bytes, definitions_for,
                       digest, external_symbols, load_json, load_symbols, mapping_progress, number, object_path, project, retail, sha256)
 else:
+    from identification_coverage import reviewed_identification_file
     from binary import compare_data, relocate_function, write_function
     from lib import (ROOT, bindings_for, compiled_objects, covered_bytes, definitions_for,
                      digest, external_symbols, load_json, load_symbols, mapping_progress, number, object_path, project, retail, sha256)
@@ -273,6 +275,12 @@ def main():
         result["progress"] = progress(functions, target)
         result["progress"].update(objdiff_progress(report, functions))
         result["progress"].update(mapping_progress(records, target))
+        coverage = reviewed_identification_file(
+            ROOT / "config/identification-decisions.jsonl", target, inventory_functions=functions)
+        if coverage.get("journal_status") == "present" and (
+                result["inputs"].get("config/identification-decisions.jsonl") != coverage["journal_sha256"]):
+            raise ValueError("Review journal changed after report input hashing")
+        result["reviewed_identification"] = coverage
     (OUT / "summary.json").write_text(json.dumps(result, indent=2) + "\n")
     if args.update:
         update_badge(result["progress"])
@@ -285,6 +293,13 @@ def main():
               f"({stats['matching_percent']:.3f}% of original .text)")
         print(f"Mapped image: {stats['mapped_bytes']}/{stats['image_bytes']} bytes "
               f"({stats['mapping_percent']:.3f}% of original virtual image)")
+    if args.update:
+        reviewed = result["reviewed_identification"]
+        print(f"Identified/inventory code union: {reviewed['combined_identified_code_bytes']} bytes "
+              f"({reviewed['combined_identified_code_percent']:.3f}% of original .text); "
+              f"{reviewed['additional_reviewed_code_bytes_outside_inventory']} reviewed bytes outside inventory")
+        print(f"Explicit journal identities: {reviewed['journal_reviewed_identity_functions']} functions; "
+              f"complete extent union {reviewed['journal_reviewed_code_bytes']} bytes")
     if args.function and units:
         for unit in units:
             diff_path = OUT / (unit["name"] + ".diff.json")

@@ -814,3 +814,42 @@ void __cdecl NuMtxGetEulerXYZ(NUMTX *matrix, NUANG *x, NUANG *y, NUANG *z) {
     z_vector.z = matrix->m22;
     NuMtxVecToEulerXYZ(&x_vector, &z_vector, x, y, z);
 }
+
+void __cdecl NuMtxInvVU0(NUMTX *m, NUMTX *source) {
+    f32 tx = -source->m30;
+    f32 ty = -source->m31;
+    f32 tz = -source->m32;
+    f32 t;
+
+    t = source->m01;
+    m->m01 = source->m10;
+    m->m10 = t;
+    t = source->m02;
+    m->m02 = source->m20;
+    m->m20 = t;
+    t = source->m12;
+    m->m12 = source->m21;
+    m->m21 = t;
+    m->m00 = source->m00;
+    m->m11 = source->m11;
+    m->m22 = source->m22;
+    m->m30 = m->m00 * tx + m->m10 * ty + m->m20 * tz;
+    m->m31 = m->m01 * tx + m->m11 * ty + m->m21 * tz;
+    m->m32 = m->m02 * tx + m->m12 * ty + m->m22 * tz;
+    m->m23 = 0.0f;
+    m->m13 = m->m23;
+    m->m03 = m->m13;
+    m->m33 = 1.0f;
+}
+
+void __cdecl NuMtxScaleVU0(NUMTX *matrix, NUVEC *scale) {
+    NuMtxScale(matrix, scale);
+}
+
+void __cdecl NuMtxMulH(NUMTX *result, NUMTX *left, NUMTX *right) {
+    D3DXMatrixMultiply((D3DXMATRIX *)result, (D3DXMATRIX *)left, (D3DXMATRIX *)right);
+}
+
+void __cdecl NuMtxMulRVU0(NUMTX *result, NUMTX *left, NUMTX *right) {
+    NuMtxMulR(result, left, right);
+}
