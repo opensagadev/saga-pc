@@ -1952,3 +1952,64 @@ The independent main and lineage audits are frozen as
 `structural-wave33-normal-control-independent-next1.json` and its `-lineage.json`
 under ignored continuation analysis. A separate `-prose-correction.json`
 preserves a wording correction without changing the frozen JSON results.
+
+### Captured paths and larger child cohorts (2026-10-02)
+
+`tools/identification_paths.py` records finite paired A-to-B-to-C paths from a
+compact `anchored-child-capture-v1` input. It preserves caller context while
+opening children behind a bridge that the direct-neighbor comparison could
+miss. It does not manufacture independent roots by repeating the same path,
+traversing a cycle or promoting a bridge. Its capture producer must pin the
+graph pair, accepted crosswalk, journal, CSV and both indexes, and preserve all
+captured outgoing incidences for every selected bridge.
+
+Run `python3 tools/identification_paths.py --capture CAPTURE --pins PINS
+--output NEW_OUTPUT`. The pins JSON contains exactly `input_sha256` and
+`producer_sha256`. The standalone worker caps address space at 256 MiB before
+imports; eight MiB metadata, two MiB output, 64 KiB rows, 200,000 work units,
+128 declared child pairs, 64 children per bridge side and 4,096 edges per side
+bound the job. Input and producer changes abort publication. Twenty-nine
+fixtures cover paths, rivalry, cycles, aliases, limits and publication races.
+
+A null target is permitted only with unknown role and target kind. It retains
+its real source and site, supplies no positive path and is excluded only from
+the known-address child set. Known addresses with unknown roles also supply no
+positive path. Declared completeness means captured known incidences plus
+recorded unresolved observations; runtime target completeness remains false.
+Every candidate retains outside rivalry and original identity/ABI/extent/type
+review holds. Qualified data-alias metadata is deduplicated, without establishing
+object contracts or adding roots. Historical rows retain their prior input pin
+and supply no current evidence.
+
+The LoadPerm2-to-APILoadCharacterModels pilot preserves 165 captured control
+occurrences, 19 PC and 17 native known children and ten unresolved targets.
+Eleven already mapped child pairs serve as controls. All 48 combinations of the
+remaining eight PC and six native children are retained, giving 59 declared
+pairs. The accepted-map name joins for the two parent anchors remain explicit
+limitations. All rows remain held; the diagnostic alone verifies no identities.
+The V3 trial takes 0.05 seconds at 22,476 KiB RSS, with no original or SQL reads.
+The maintained reader additionally bounds a read by remaining metadata capacity
+plus one guard byte, charging failed reads before aborting. Its default-cap
+replay preserves every path, unresolved observation and hold.
+
+Selected Ghidra exports cover those fourteen unpaired endpoints, including the
+nullsubs, PIC thunk and security-cookie rival. The 48-pair comparison runs in
+0.05 seconds at 22,096 KiB RSS, charging 80,504 metadata bytes. Sequential
+read-only PC/native exports peak at 385,556/386,940 KiB RSS with zero swaps.
+The reset helper shares five positive memory direction/width tokens with its
+reviewed counterpart, versus at most four with the inspected alternatives.
+The two animation loaders each tie both native loaders at two memory tokens
+and eighteen Pcode operations. Generic shape cannot distinguish those siblings;
+their raw-buffer versus filename-reader dependency and caller arguments require
+original-code review. No shape count is a probability or global uniqueness proof.
+
+With the three private helpers independently reviewed for identity and complete
+PC extent, the normal matcher retains every earlier accepted pair and reaches
+1,513 accepted anchors, 1,316 tentative pairs and the same 2,400 data candidates.
+Two accepted loaders convert earlier inferences; reset converts a rank-one
+candidate. One other rank-one candidate (`0x00630b40` / `0x003cba8f`) becomes an
+inference. Accepted-plus-inferred membership grows from 2,827 to 2,829, with no
+losses or reroutes. All 117 reviewed data anchors and 872 map-name data labels
+remain unchanged. The run takes 49.02 seconds at 688,876 KiB RSS with zero swaps,
+under the unchanged 1 GiB limit. The new path diagnostic is separate from scoring.
+These exact transitions do not establish accuracy or single-input causation.

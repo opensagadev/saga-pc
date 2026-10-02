@@ -2679,3 +2679,34 @@ native camera function is rejected: its original is a private actor-target
 helper with different state writes and register inputs. This adds 298 inventory
 bytes without source or exact-match credit; ForceThrow's remaining ABI debts
 are unaffected.
+
+### Character-model private helper identities (2026-10-02)
+
+Original review of APILoadCharacterModels and its six PC/native helper bodies
+confirms three journal-only pairs:
+
+| PC entry | Native entry | Identity | Complete PC bytes |
+| --- | --- | --- | --- |
+| `0x0062d2e0` | `0x003cbde7` | APICharacterModelReset | 125 |
+| `0x0062d360` | `0x003cbf1f` | LoadAnimFromPAK | 147 |
+| `0x0062d400` | `0x003cc039` | LoadAnim | 148 |
+
+Reset clears record fields, three count-scaled pointer arrays and a 64-byte
+tail. The loaders share a name cache, counters and slot selection, but the
+packed-buffer path passes two values to PC `0x005f6420`; the filename path calls
+NuAnimData2LoadBuff with a filename, third word and address of a copied fourth
+word. The parent supplies one/four/four stack words respectively and stores
+the loaders' EAX results. The native extra name-normalization call remains a
+platform difference. Exact original ELF GLOBAL/LOCAL records supply the native
+names; source annotations alone do not establish them.
+
+Independent original instruction and branch review confirms the complete PC
+spans, including internal flow and excluding following CC padding. All six
+crossed role pairs are explicitly rejected. Generic Pcode shape leaves the two
+loaders tied, demonstrating why common parent membership is insufficient.
+Unknown reader/string-provider physical and floating-point effects keep ABI
+and types held. These rows enter the decision journal only: no CSV declarations,
+source, inventory coverage or matching gain is claimed. The retained independent
+packet is `structural-api-character-private-triad-independent-next1.json` under
+ignored continuation analysis. Next review the four actual loader providers,
+starting with the unmapped raw-buffer reader at `0x005f6420` and its full extent.
