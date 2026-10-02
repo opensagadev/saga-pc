@@ -2570,3 +2570,60 @@ Platform field offsets differ and are not transferred. Native GOT addends,
 relative relocation records and exact ELF symbol records are checked together
 through their actual load segments. These rows add zero allocation, mapped-image,
 source or exact-match credit; ABI/type/extent flags remain false.
+
+## Force-back reference expansion (2026-10-02)
+
+The reviewed position global exposes SetForceBack at PC 0x004a4900 against native
+Android 0x0015f830. Its complete 58-byte PC leaf is mapped with a blank ctype.
+Both originals select actor+0x80 or a fallback vector, then store magnitude,
+its squared value and a mode. Actual PC callers supply four stack words and
+clean sixteen bytes. The leaf preserves nonvolatile registers and stack state;
+its owned floating stack returns to depth zero with a peak of one, qualified
+for valid storage and normal masked floating-point operation. These 58 bytes
+add inventory coverage only; the companion globals' sizes remain unknown.
+
+ForcedBackCode at PC 0x004a4a20 against native 0x0015fa00 has a reviewed identity
+and complete 635-byte extent, including two returns. State 22, distance/radius
+modes, timers, context changes and effect/rumble branches establish the match.
+It remains journal-only with ABI and type flags false. The effect chain reaches
+unreviewed 0x006561d0, while Player_ClearContext's optional callback also remains
+unresolved. Three immediate private matrix leaf contracts are conditional local
+evidence; they do not close the whole routine. Frozen original, independent and
+physical-hold supplements remain under ignored analysis.
+
+The same data-reference expansion identifies DrawParaphernalia at PC 0x0041e4c0
+against native 0x0010b770 and ForceThrowCode at PC 0x004a4420 against native
+0x0014c8a0. Independent originals verify distinctive branch, level, geometry
+and throw-state behavior alongside fifteen and six accepted callee relationships.
+Their complete PC extents are 4,024 and 1,223 bytes. DrawParaphernalia retains
+three bytes of internal alignment and four returns; ForceThrowCode has three
+returns and a tail jump through 0x00576960 to an unresolved provider. Its PC
+entry receives an object in EAX plus one stack word, unlike the native specialized
+function's source signature. Both identities are journal-only with ABI/type
+flags false; unresolved private providers prevent CSV or source release. The
+5,247 reviewed bytes add no mapping or reconstructed-code coverage.
+
+The actor global is independently identified as `_ForceBackObjPc` at PC
+0x0087b8e8 against native 0x006a2570 (`_ZL12ForceBackObj`). Original SetForceBack
+stores, reset clears and ForcedBackCode exclusions establish its role; the
+native address comes from the actual PIC calculation, not adjacency to the
+position global. Its four-function consumer cohort also exposes DrawForceBackEffect
+at PC 0x004a4940 against native 0x0015f880 for separate review. The data row has
+blank size and ctype: the native four-byte allocation does not establish the PC
+allocation, and this identity adds no mapped-image or source coverage.
+
+The DrawForceBackEffect review finds an existing extent error in
+NuSpecialSetVisibility at 0x005cfc00: its mapped 184 bytes omit the shared return
+at 0x005cfcb8. Independent original decoding verifies all 185 bytes, four returns
+and five conditional branches to that last return. Seven following alignment
+bytes remain excluded before NuSpecialSetCollision. The row is corrected to
+185 bytes with its existing name and ctype preserved; this adds no new identity
+or ABI claim. Matching is refreshed against the complete range.
+
+DrawForceBackEffect itself is independently reviewed at PC 0x004a4940 against
+native 0x0015f880. Its nullable actor and mode-3 visibility rule, 64-byte matrix
+copy, actor position, radius scale and draw-matrix update agree. The complete
+220-byte PC body has two returns; four following alignment bytes stay excluded.
+Its entry reads one stack word, but an actual PC caller and downstream provider
+effects remain unverified. It is therefore a journal identity/extent anchor with
+ABI/type false and no CSV, source or coverage credit.

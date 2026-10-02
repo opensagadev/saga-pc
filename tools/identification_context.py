@@ -23,6 +23,7 @@ import sqlite3
 import tempfile
 from contextlib import ExitStack, closing
 from dataclasses import dataclass
+from fractions import Fraction
 from pathlib import Path
 
 import sys
@@ -622,7 +623,7 @@ def review_rows(path, manifests, ledger):
         raise Guard('Reviewed root cap exceeded')
     return data, rejected, held
 
-NEIGHBOR_SCHEMA = 'accepted-neighbor-positive-components-v4'
+NEIGHBOR_SCHEMA = 'accepted-neighbor-positive-components-v7'
 
 
 def neighbor_review_rows(path, manifests, ledger):
@@ -740,8 +741,177 @@ def neighbor_data_incidence(cache, address, roots):
     return profile, strong, sorted(debts), provenance
 
 
+def rank_neighbor_review_candidates(pairs, wanted, profiles, root_users, ledger, global_counts=None):
+    """Advisory positive ranking, independent of conservative eligibility.
+
+    Global token-user counts include every weak/reserved/rejected incidence.
+    One maximum weight per independent root/component; site multiplicity and
+    absent/unknown edges cannot manufacture weight or roots. Induced support
+    uses fixed direct bases only, with no iteration or inherited evidence.
+    """
+    started = ledger.work
+    by_pair = {(r['pc_address'],r['android_address']):r for r in pairs}
+    fixed, weights, keys = {}, {}, {}
+    def token_weight(token):
+        if global_counts is not None:
+            return Fraction(1,max(1,*(global_counts[side,token]['possible_user_upper_bound']for side in ('pc','android'))))
+        if ('pc',token) not in root_users or ('android',token) not in root_users:
+            raise ValueError('Review ranking lacks complete global token-user counts')
+        return Fraction(1,max(1,len(root_users['pc',token]),len(root_users['android',token])))
+    def known_signature(p):
+        #Known canonical memory channels only. Advisory GOT/unknown channels
+        #remain competitors but do not contribute strong ranking components.
+        channels={k for k in p['data'] if k[0] in p['data_components']
+                  and k[2] in ('read','write','readwrite','read-write')
+                  and type(k[3])is int and k[3]>0 and type(k[4])is int}
+        return set(p['functions']),channels
+    def known_reference_components(p):
+        return {row['component']for row in p['data_incidence']
+                if any(ref['channel']=='normalized_target' and ref['kind']in graph.DATA_KINDS
+                       for ref in row['references'])}
+    for row in pairs:
+        ledger.step()
+        pair=row['pc_address'],row['android_address']
+        left,right=profiles['pc',pair[0]],profiles['android',pair[1]]
+        lf,ld=known_signature(left);rf,rd=known_signature(right)
+        fn=lf&rf;data_channels=ld&rd
+        function_weights={}
+        for root,direction in sorted(fn):
+            ledger.step()
+            value=token_weight(('function',root,direction))
+            function_weights[root]=max(function_weights.get(root,Fraction(0)),value)
+        data_weights={component:token_weight(('data',component))
+                      for component in sorted({k[0]for k in data_channels})}
+        weak_components=(known_reference_components(left)&known_reference_components(right))-set(data_weights)
+        weak_weights={c:token_weight(('data',c))for c in sorted(weak_components)}
+        roots=sorted(function_weights);data=sorted(data_weights)
+        value=sum(function_weights.values(),Fraction(0))+sum(data_weights.values(),Fraction(0))+sum(weak_weights.values(),Fraction(0))
+        direct=len(roots)>=2 or bool(roots and data)
+        fixed[pair]=direct;weights[pair]=value
+        classification=('two-or-more-direct-function-roots'if len(roots)>=2 else
+                        'function-plus-reviewed-canonical-data'if roots and data else
+                        'incidental-single-function-root'if roots else 'data-only-or-weak-incidence')
+        row['review_ranking']={
+            'advisory_only':True,'changes_conservative_eligibility':False,
+            'direct_positive_support_class':classification,
+            'independent_function_root_count':len(roots),
+            'canonical_data_component_count':len(data),
+            'weak_reference_identity_component_count':len(weak_weights),
+            'weak_reference_identity_weights':[[root,v.numerator,v.denominator]for root,v in sorted(weak_weights.items())],
+            'weak_reference_is_not_memory_width_type_or_strong_support':True,
+            'rank_direct_support':direct,
+            'positive_discrimination_weight':[value.numerator,value.denominator],
+            'function_root_weights':[[root,v.numerator,v.denominator]for root,v in sorted(function_weights.items())],
+            'data_component_weights':[[root,v.numerator,v.denominator]for root,v in sorted(data_weights.items())],
+            'shared_function_direction_tokens':[list(k)for k in sorted(fn)],
+            'shared_known_canonical_data_channels':[list(k)for k in sorted(data_channels,key=str)],
+            'known_observed_signatures_equal_in_frozen_scope':bool(fn or data_channels)and lf==rf and ld==rd,
+            'signature_equality_is_not_an_absence_penalty_or_identity_proof':True,
+            'profile_scopes':row['endpoint_profile_scopes'],
+            'unrelated_rival_signatures_inspected':False,
+            'unknown_scope_debts':row['scope_debts'],
+            'review_endpoint_status':('reserved-or-rejected'if any(v in row['eligibility_holds']for v in
+                ['mapped-or-accepted-reserved-endpoint','reviewed-journal-rejected-pair'])else 'unassigned-hypothesis'),
+            'site_multiplicity_does_not_boost_root_weight':True}
+    for row in pairs:
+        pair=row['pc_address'],row['android_address']
+        targets=set()
+        for witness in row['positive_component_edge_witnesses']:
+            ledger.step()
+            target=tuple(witness['hypothesis_target_pair'])
+            if fixed[pair]and fixed[target]:targets.add(target)
+        pc_targets={p for p,a in targets};aa_targets={a for p,a in targets}
+        balanced=min(len(pc_targets),len(aa_targets))
+        feature=row['review_ranking']
+        feature['mutually_supported_induced_edges']={
+            'distinct_target_pairs':[list(t)for t in sorted(targets)],
+            'distinct_PC_targets':len(pc_targets),'distinct_AA_targets':len(aa_targets),
+            'balanced_distinct_target_count':balanced,
+            'source_and_target_have_fixed_direct_support':True,
+            'no_iteration_root_inheritance_or_score_feedback':True,
+            'outside_induced_edges_unknown':True}
+        keys[pair]=(int(fixed[pair]),feature['independent_function_root_count'],
+                    feature['canonical_data_component_count'],feature['weak_reference_identity_component_count'],weights[pair],balanced)
+    #Source-index rival sets preserve every positive pair. There is no new
+    #quadratic global rivalry retrieval or top-N-dependent inverse fanout.
+    by_pc=collections.defaultdict(list);by_aa=collections.defaultdict(list)
+    for pair in by_pair:
+        by_pc[pair[0]].append(pair);by_aa[pair[1]].append(pair)
+    def summary(pair):
+        r=by_pair[pair];f=r['review_ranking']
+        return {'pair':list(pair),'independent_function_roots':f['independent_function_root_count'],
+                'canonical_data_components':f['canonical_data_component_count'],
+                'weak_reference_identity_components':f['weak_reference_identity_component_count'],
+                'positive_discrimination_weight':f['positive_discrimination_weight'],
+                'balanced_supported_target_count':f['mutually_supported_induced_edges']['balanced_distinct_target_count'],
+                'endpoint_status':f['review_endpoint_status'],'exact_query_pair':r['exact_query_pair'],
+                'full_rival_scope_complete':r['full_profile_global_endpoint_rivals_complete']}
+    for row in wanted:
+        pair=row['pc_address'],row['android_address']
+        alternatives=(set(by_pc[pair[0]])|set(by_aa[pair[1]]))-{pair}
+        ledger.step(len(alternatives))
+        ordered=sorted(alternatives,key=lambda v:(tuple(-x for x in keys[v]),v))
+        viable=[p for p in ordered if by_pair[p]['review_ranking']['review_endpoint_status']=='unassigned-hypothesis']
+        row['review_ranking']['strongest_observed_rival']=summary(ordered[0])if ordered else None
+        row['review_ranking']['strongest_unassigned_rival']=summary(viable[0])if viable else None
+        row['review_ranking']['all_observed_rival_pairs']=len(alternatives)
+        row['review_ranking']['incidental_one_root_rival_pairs']=sum(
+            by_pair[p]['review_ranking']['direct_positive_support_class']=='incidental-single-function-root'for p in alternatives)
+        row['review_ranking']['direct_supported_rival_pairs']=sum(fixed[p]for p in alternatives)
+        row['review_ranking']['rival_scope']=row['global_competitor_counts_scope']
+    ordered=sorted((r for r in wanted if r['review_ranking']['review_endpoint_status']=='unassigned-hypothesis'),
+        key=lambda r:(tuple(-x for x in keys[r['pc_address'],r['android_address']]),r['pc_address'],r['android_address']))
+    previous=None;group=0
+    for row in ordered:
+        key=keys[row['pc_address'],row['android_address']]
+        if key!=previous:group+=1;previous=key
+        row['review_ranking']['advisory_rank_tie_group']=group
+        row['review_ranking']['tie_is_not_broken_by_names_or_claimed_uniqueness']=True
+    return ordered,{'advisory_only':True,'eligibility_unchanged':True,
+        'score_order':['fixed direct support','distinct function roots','canonical data components','weak reviewed reference-only components',
+                       'max-per-root inverse GLOBAL fanout positive weight','balanced distinct fixed-supported induced targets'],
+        'signature_equality_explanatory_only':True,'no_absence_penalties':True,
+        'weak_reserved_rejected_all_still_compete':True,'ranked_unassigned_rows':len(ordered),
+        'ranking_work_units':ledger.work-started,'no_accuracy_or_identity_claim':True}
+
+
+def global_token_fanout_count(cache, token, inverse, components):
+    """Exact DISTINCT known-user count; unknown endpoints reported separately.
+
+    Scalar aggregation alone never retrieves an outside function profile. Alias
+    predicates are ORed in one query, not summed; source remains e.source for
+    data. Physical weak/GOT/reserved/rejected incidence stays in the denominator.
+    """
+    if token[0]=='function':
+        _,root,direction=token
+        anchor=cache.identifier(inverse[root])
+        endpoint='e.target'if direction=='caller'else'e.source'
+        anchor_field='e.source'if direction=='caller'else'e.target'
+        sql=("FROM edges e LEFT JOIN nodes n ON n.id="+endpoint+
+             " WHERE e.kind='call' AND "+anchor_field+"=?")
+        args=(anchor,)
+    else:
+        endpoint='e.source'
+        aliases=sorted(components[token[1]])
+        marks=','.join('?'for _ in aliases)
+        sql=("FROM edges e LEFT JOIN nodes n ON n.id=e.source "
+             "LEFT JOIN nodes r ON r.id=e.target LEFT JOIN nodes o ON o.id=e.owner "
+             "LEFT JOIN nodes t ON t.id=e.normalized_target WHERE e.kind='access' "
+             "AND (r.address IN ("+marks+") OR o.address IN ("+marks+") OR t.address IN ("+marks+"))")
+        args=(*aliases,*aliases,*aliases)
+    projection=("SELECT json_array(count(DISTINCT CASE WHEN n.kind='function' THEN n.id END),"
+                "count(DISTINCT CASE WHEN n.id IS NULL OR n.kind<>'function' THEN "+endpoint+" END),"
+                "sum(CASE WHEN "+endpoint+" IS NULL THEN 1 ELSE 0 END),count(*)) AS payload ")
+    known,unresolved,nulls,rows=cache.rows(projection+sql,args,1)[0]
+    nulls=nulls or 0
+    return {'known_function_users_DISTINCT':known,'unresolved_user_ids_DISTINCT':unresolved,
+            'null_endpoint_rows':nulls,'physical_incidence_rows':rows,
+            'possible_user_upper_bound':known+unresolved+nulls,
+            'outside_profiles_inspected':False,'scalar_count_only':True}
+
+
 def diagnose_neighbor_positive(caches, seeds, components, map_ranges, rejected, held,
-                               ledger, query_pc, query_android):
+                               ledger, query_pc, query_android, selected_data_roots=()):
     """Positive direct authoritative roots only; no ancestry or absence penalties.
 
     Freeze all possible tokens of the exact query endpoints, enumerate every
@@ -753,7 +923,14 @@ def diagnose_neighbor_positive(caches, seeds, components, map_ranges, rejected, 
     caps = ledger.caps
     query = {'pc': sorted({addr(value) for value in query_pc}),
              'android': sorted({addr(value) for value in query_android})}
-    if any(not values or len(values) > 64 for values in query.values()):
+    cohort_mode=bool(selected_data_roots)
+    declared_query={side:list(values)for side,values in query.items()}
+    selected_components=set()
+    for value in selected_data_roots:
+        matches=[c for c,members in components.items()if addr(value)in members['pc']]
+        if len(matches)!=1:raise ValueError('Selected data root is not one reviewed canonical alias component')
+        selected_components.add(matches[0])
+    if not cohort_mode and any(not values or len(values) > 64 for values in query.values()):
         raise Guard('Neighbor mode needs 1..64 exact query entries on both sides')
     accepted = {'pc': {p: p for p in seeds}, 'android': {a: p for p, a in seeds.items()}}
     inverse = {'pc': {p: p for p in seeds}, 'android': {p: a for p, a in seeds.items()}}
@@ -762,7 +939,7 @@ def diagnose_neighbor_positive(caches, seeds, components, map_ranges, rejected, 
     profiles, root_users, expansion = {}, {}, collections.Counter()
     frozen_tokens = None
     global_debts = set()
-    universe = {side: set(values) for side, values in query.items()}
+    universe = {side: (set()if cohort_mode else set(values)) for side, values in query.items()}
     def profile(side, address):
         key = side, address
         if key in profiles:
@@ -777,11 +954,11 @@ def diagnose_neighbor_positive(caches, seeds, components, map_ranges, rejected, 
                 ('caller', "SELECT json_array(n.address,n.kind,json_extract(e.raw,'$.site'),json_extract(e.raw,'$.role')) AS payload FROM edges e LEFT JOIN nodes n ON n.id=e.source WHERE e.target=? AND e.kind='call' ORDER BY e.sequence"),
                 ('callee', "SELECT json_array(n.address,n.kind,json_extract(e.raw,'$.site'),json_extract(e.raw,'$.role')) AS payload FROM edges e LEFT JOIN nodes n ON n.id=e.target WHERE e.source=? AND e.kind='call' ORDER BY e.sequence")]:
             arguments = (identifier,)
-            if not full_query:
+            if cohort_mode or not full_query:
                 #Initial full query vocabulary is already frozen. Unrelated
                 #hub edges are neither inspected nor reported absent.
-                anchors = sorted(inverse[side][root] for kind, root, *tail in frozen_tokens
-                                 if kind == 'function' and tail == [direction])
+                anchors = (sorted(accepted[side])if cohort_mode else sorted(inverse[side][root] for kind, root, *tail in frozen_tokens
+                                 if kind == 'function' and tail == [direction]))
                 if not anchors:
                     continue
                 marks = ','.join('?' for _ in anchors)
@@ -798,13 +975,13 @@ def diagnose_neighbor_positive(caches, seeds, components, map_ranges, rejected, 
                         witnesses.append((accepted[side][target], direction, site))
                     else:
                         debt.add('accepted-neighbor-not-proved-direct-site')
-        roots = data_roots[side] if full_query else {va:component for va,component in data_roots[side].items() if ('data',component) in frozen_tokens}
+        roots = data_roots[side] if cohort_mode or full_query else {va:component for va,component in data_roots[side].items() if ('data',component) in frozen_tokens}
         data, strong_data, missing, data_incidence = neighbor_data_incidence(cache, address, roots)
         result = {'functions': {(root, direction) for root, direction, site in witnesses},
                   'possible_functions': possible,
                   'witnesses': witnesses, 'data': data, 'data_components': strong_data,
                   'debts': sorted(debt | set(missing)), 'data_incidence':data_incidence,
-                  'inspection_scope':('full initial query profile' if full_query else 'frozen query tokens only; unrelated signatures uninspected')}
+                  'inspection_scope':('all accepted-neighbor and reviewed-data signatures within selected data-user cohort; unrelated nonaccepted edges unknown'if cohort_mode else 'full initial query profile' if full_query else 'frozen query tokens only; unrelated signatures uninspected')}
         profiles[key] = result
         return result
     def users(side, token):
@@ -819,6 +996,10 @@ def diagnose_neighbor_positive(caches, seeds, components, map_ranges, rejected, 
             sql = ("SELECT json_array(n.address,n.kind,json_extract(e.raw,'$.role'),json_extract(e.raw,'$.site')) AS payload FROM edges e LEFT JOIN nodes n ON n.id=e.target WHERE e.source=? AND e.kind='call' ORDER BY e.sequence" if direction == 'caller' else
                    "SELECT json_array(n.address,n.kind,json_extract(e.raw,'$.role'),json_extract(e.raw,'$.site')) AS payload FROM edges e LEFT JOIN nodes n ON n.id=e.source WHERE e.target=? AND e.kind='call' ORDER BY e.sequence")
             rows = cache.rows(sql, (anchor,), caps.call_edges_per_parent)
+        elif cohort_mode:
+            aliases=sorted(components[token[1]][side]);marks=','.join('?'for _ in aliases)
+            sql=("SELECT json_array(s.address,s.kind,json_extract(e.raw,'$.role'),json_extract(e.raw,'$.site')) AS payload FROM edges e LEFT JOIN nodes s ON s.id=e.source LEFT JOIN nodes r ON r.id=e.target LEFT JOIN nodes o ON o.id=e.owner LEFT JOIN nodes n ON n.id=e.normalized_target WHERE e.kind='access' AND (r.address IN ("+marks+") OR o.address IN ("+marks+") OR n.address IN ("+marks+")) ORDER BY e.sequence")
+            rows=cache.rows(sql,(*aliases,*aliases,*aliases),caps.data_edges_per_target)
         else:
             rows = []
             for address in components[token[1]][side]:
@@ -836,20 +1017,43 @@ def diagnose_neighbor_positive(caches, seeds, components, map_ranges, rejected, 
     # query endpoint. Freeze that union before inspecting rivals; unrelated
     # rival tokens cannot expand retrieval into an unbounded program component.
     frozen_tokens = set()
-    for side in caches:
-        for address in query[side]:
-            ledger.step()
-            p = profile(side, address)
-            frozen_tokens.update(('function', root, direction)
-                                 for root, direction in p['possible_functions'])
-            frozen_tokens.update(('data', key[0]) for key in p['data'])
-    for token in sorted(frozen_tokens):
+    global_counts=None
+    if cohort_mode:
+        for component in sorted(selected_components):
+            for side in caches:
+                universe[side].update(users(side,('data',component)))
+                if len(universe[side])>128:
+                    raise Guard('Selected data-user cohort exceeds128 entries; no truncated output')
         for side in caches:
-            for target in users(side, token):
-                if target not in universe[side]:
-                    universe[side].add(target); expansion[side] += 1
-                    if len(universe[side]) > 128:
-                        raise Guard('Frozen-query global rival universe exceeds 128 entries; no truncated unique output')
+            if not universe[side]:raise Guard('Selected reviewed component has no known function-user cohort')
+            if query[side]and not set(query[side])<=universe[side]:
+                raise ValueError('Priority query outside selected data-user cohort; missing incidence is not negative identity evidence')
+            if not query[side]:query[side]=sorted(universe[side])
+        for side in caches:
+            for address in sorted(universe[side]):
+                p=profile(side,address)
+                frozen_tokens.update(('function',root,direction)for root,direction in p['possible_functions'])
+                frozen_tokens.update(('data',key[0])for key in p['data'])
+        global_counts={}
+        for token in sorted(frozen_tokens):
+            for side in caches:
+                global_counts[side,token]=global_token_fanout_count(caches[side],token,inverse[side],
+                    {c:members[side]for c,members in components.items()})
+    else:
+        for side in caches:
+            for address in query[side]:
+                ledger.step()
+                p = profile(side, address)
+                frozen_tokens.update(('function', root, direction)
+                                     for root, direction in p['possible_functions'])
+                frozen_tokens.update(('data', key[0]) for key in p['data'])
+        for token in sorted(frozen_tokens):
+            for side in caches:
+                for target in users(side, token):
+                    if target not in universe[side]:
+                        universe[side].add(target); expansion[side] += 1
+                        if len(universe[side]) > 128:
+                            raise Guard('Frozen-query global rival universe exceeds 128 entries; no truncated unique output')
     if len(universe['pc']) * len(universe['android']) > min(16384, caps.comparisons):
         raise Guard('Neighbor frozen-query universe pair cap exceeded')
     #Do not fetch full rival profiles: unknown unrelated vocabulary cannot
@@ -890,6 +1094,8 @@ def diagnose_neighbor_positive(caches, seeds, components, map_ranges, rejected, 
             overlap = [row for start, length, row in map_ranges if start <= pc < start+length]
             exact_query_pair = pc in query['pc'] and aa in query['android']
             reasons = []
+            if cohort_mode:
+                reasons.append('outside-global-rivals-uninspected')
             if not exact_query_pair:
                 reasons.append('nonexact-query-pair-full-rival-scope-unproven')
             if not strong:
@@ -914,8 +1120,8 @@ def diagnose_neighbor_positive(caches, seeds, components, map_ranges, rejected, 
                    'scope_debts': sorted(set(left['debts']+right['debts']) | global_debts),
                    'endpoint_profile_scopes':{side:profile(side,address)['inspection_scope'] for side,address in [('pc',pc),('android',aa)]},
                    'exact_query_pair': exact_query_pair,
-                   'full_profile_global_endpoint_rivals_complete': exact_query_pair and not bool(global_debts),
-                   'global_competitor_counts_scope': ('complete full positive-signature rivals of declared query endpoints' if exact_query_pair and not global_debts else 'observed rivals inside frozen-query universe; full endpoint scope unproved'),
+                   'full_profile_global_endpoint_rivals_complete': not cohort_mode and exact_query_pair and not bool(global_debts),
+                   'global_competitor_counts_scope': ('selected data-user cohort only; outside global rivals uninspected'if cohort_mode else 'complete full positive-signature rivals of declared query endpoints' if exact_query_pair and not global_debts else 'observed rivals inside frozen-query universe; full endpoint scope unproved'),
                    'eligibility_holds': reasons, 'CSV_overlap': overlap,
                    'journal_holds': held.get(pc, []), 'strong_direct_support': strong,
                    'identity_reviewed': False, 'abi_reviewed': False,
@@ -956,26 +1162,39 @@ def diagnose_neighbor_positive(caches, seeds, components, map_ranges, rejected, 
         row['component_support_does_not_mint_or_inherit_roots'] = True
     # Exact-query Cartesian pairs alone may be eligible. Secondary query-connected
     # hypotheses remain held because their full-profile rivalry was not enumerated.
-    wanted = [row for row in pairs if row['pc_address'] in query['pc'] or row['android_address'] in query['android']]
+    wanted = [row for row in pairs if cohort_mode or row['pc_address'] in query['pc'] or row['android_address'] in query['android']]
     wanted.sort(key=lambda r: (-r['strong_direct_support'], -len(r['authoritative_function_roots']),
                                -len(r['reviewed_data_component_ids']), r['pc_address'], r['android_address']))
     eligible = [row for row in wanted if not row['eligibility_holds']]
     holds = [row for row in wanted if row['eligibility_holds']]
-    for row in eligible[:caps.retained] + holds[:caps.retained]:
+    review, ranking_method = rank_neighbor_review_candidates(pairs,wanted,profiles,root_users,ledger,global_counts)
+    annotated=set()
+    for row in eligible[:caps.retained] + holds[:caps.retained] + review[:caps.retained]:
+        pair=row['pc_address'],row['android_address']
+        if pair in annotated:continue
+        annotated.add(pair)
         row['posthoc_annotations'] = {side: caches[side].annotation(row[side+'_address']) for side in caches}
     return {'schema': NEIGHBOR_SCHEMA, 'status': 'candidate-only bounded positive component hypotheses; no promotion',
             'candidates': eligible[:caps.retained], 'held_examples': holds[:caps.retained],
+            'review_candidates':review[:caps.retained],'review_ranking_method':ranking_method,
             'counts': {'accepted_pairs':len(seeds),'global_component_PC':len(universe['pc']),
                        'global_component_AA':len(universe['android']),'all_positive_pairs':len(pairs),
                        'strong_query_pairs':sum(row['strong_direct_support'] for row in wanted),
-                       'retained':min(len(eligible),caps.retained),'holds':len(holds)},
+                       'retained':min(len(eligible),caps.retained),'holds':len(holds),
+                       'ranked_review_retained':min(len(review),caps.retained)},
             'query_cohort':query, 'bounded_SQL_queries_complete':True,
-            'global_endpoint_scope_complete':not bool(global_debts),
-            'global_endpoint_scope_definition':'all global users of frozen query endpoint signatures; not full-profile rivalry for secondary endpoints or full-program component closure',
+            'data_root_cohort_scope':({'selected_components':sorted(selected_components),
+                'selected_aliases':{c:components[c]for c in sorted(selected_components)},
+                'declared_priority_queries':declared_query,'selected_data_user_scope_complete':not bool(global_debts),
+                'outside_global_rival_profiles_inspected':False,
+                'global_fanout_counts':[{"side":side,"token":list(token),**count}for (side,token),count in sorted(global_counts.items())],
+                'mandatory_hold':'outside-global-rivals-uninspected'}if cohort_mode else None),
+            'global_endpoint_scope_complete':not cohort_mode and not bool(global_debts),
+            'global_endpoint_scope_definition':('complete selected data-user cohort only; all outside global rivalry uninspected'if cohort_mode else 'all global users of frozen query endpoint signatures; not full-profile rivalry for secondary endpoints or full-program component closure'),
             'frozen_query_tokens':[list(token) for token in sorted(frozen_tokens)],
             'unexpanded_rival_tokens':None,
             'rival_unrelated_signatures_inspected':False,
-            'profile_inspection_scope':'full initial query endpoints; rivals only frozen query tokens; unrelated rival signatures unknown',
+            'profile_inspection_scope':('full accepted-neighbor/reviewed-data signatures inside selected data-user cohort; outside rivalry unknown'if cohort_mode else 'full initial query endpoints; rivals only frozen query tokens; unrelated rival signatures unknown'),
             'induced_component_complete':False,
             'global_component_endpoints':{s:sorted(v) for s,v in universe.items()},
             'reviewed_data_components':components, 'thresholds':vars(caps),
@@ -989,23 +1208,27 @@ def diagnose_neighbor_positive(caches, seeds, components, map_ranges, rejected, 
             'original_code_bytes':0,'inferred_inputs':False}
 
 
-def run(pair, accepted_seeds, journal, symbols, output, input_pins, caps=Caps(), memory_limit_mb=256, _ledger=None, _cli_pin=None, context_mode="single", query_pc=(), query_android=()):
+def run(pair, accepted_seeds, journal, symbols, output, input_pins, caps=Caps(), memory_limit_mb=256, _ledger=None, _cli_pin=None, context_mode="single", query_pc=(), query_android=(), selected_data_roots=()):
     """Verify immutable inputs, execute under internal lock, publish once on success.
 
     input_pins requires exact SHA256 for graph_pair/accepted_seeds/journal/symbols.
     No inferred input option exists. Output must be a NEW JSON file (atomic exclusive hard-link publication).
     """
     caps.validate()
-    if context_mode not in ('single', 'multi-positive', 'neighbor-positive'):
+    if context_mode not in ('single', 'multi-positive', 'neighbor-positive', 'data-root-cohort'):
         raise ValueError('Unsupported context mode')
-    if context_mode != 'neighbor-positive' and (query_pc or query_android):
+    if context_mode not in ('neighbor-positive','data-root-cohort') and (query_pc or query_android):
         raise ValueError('Explicit cohort applies only to neighbor-positive mode')
-    if context_mode == 'neighbor-positive':
+    if context_mode in ('neighbor-positive','data-root-cohort'):
         if caps.metadata_bytes > 8*1024*1024 or caps.work_units > 500000 or caps.sql_steps > 50000000 or caps.output_bytes > 2*1024*1024:
             raise Guard('Neighbor mode exceeds finite metadata/work/SQL/output interface')
-        if not query_pc or not query_android or len(query_pc) > 64 or len(query_android) > 64:
+        if (context_mode=='neighbor-positive'and(not query_pc or not query_android))or len(query_pc)>64 or len(query_android)>64:
             raise Guard('Neighbor mode needs1..64 explicit entries per side')
         query_pc, query_android = tuple(addr(v) for v in query_pc), tuple(addr(v) for v in query_android)
+    if context_mode=='data-root-cohort':
+        if not selected_data_roots or len(selected_data_roots)>8:raise Guard('Data-root cohort needs1..8 reviewed component selectors')
+        selected_data_roots=tuple(addr(v)for v in selected_data_roots)
+    elif selected_data_roots:raise ValueError('Data-root selector requires explicit data-root-cohort mode')
     if type(memory_limit_mb) is not int or not 128 <= memory_limit_mb <= 256:
         raise ValueError('Diagnostic memory cap must be 128..256MiB')
     paths = {k: Path(v).resolve() for k, v in [('graph_pair', pair), ('accepted_seeds', accepted_seeds), ('journal', journal), ('symbols', symbols)]}
@@ -1044,7 +1267,7 @@ def run(pair, accepted_seeds, journal, symbols, output, input_pins, caps=Caps(),
                 manifest, index, provenance = inspect.verified_cache(manifest_path, expected)
                 verified[side], manifests[side] = (index, provenance), manifest
             seeds = accepted_pairs(paths['accepted_seeds'], manifests, ledger)
-            data, rejected, held = (neighbor_review_rows if context_mode == 'neighbor-positive' else review_rows)(paths['journal'], manifests, ledger)
+            data, rejected, held = (neighbor_review_rows if context_mode in ('neighbor-positive','data-root-cohort') else review_rows)(paths['journal'], manifests, ledger)
             csv_payload = read_bytes(paths['symbols'], ledger, signatures=signatures)
             ranges = []
             reader = csv.DictReader(io.StringIO(csv_payload.decode('utf-8')), skipinitialspace=True)
@@ -1069,8 +1292,8 @@ def run(pair, accepted_seeds, journal, symbols, output, input_pins, caps=Caps(),
                 for side, (index, provenance) in verified.items():
                     db = stack.enter_context(closing(sqlite3.connect(index.as_uri() + '?mode=ro&immutable=1', uri=True)))
                     caches[side] = Cache(db, manifests[side], ledger)
-                if context_mode == 'neighbor-positive':
-                    result = diagnose_neighbor_positive(caches, seeds, data, ranges, rejected, held, ledger, query_pc, query_android)
+                if context_mode in ('neighbor-positive','data-root-cohort'):
+                    result = diagnose_neighbor_positive(caches, seeds, data, ranges, rejected, held, ledger, query_pc, query_android, selected_data_roots)
                 else:
                     diagnostic = diagnose if context_mode == 'single' else diagnose_multi_positive
                     result = diagnostic(caches, seeds, data, ranges, rejected, held, ledger)
@@ -1096,7 +1319,7 @@ def run(pair, accepted_seeds, journal, symbols, output, input_pins, caps=Caps(),
             if context_mode == 'multi-positive':
                 result['provenance']['method'] = 'multi-parent positive accepted-anchor intervals; all observed rivals before retention; no absent-edge penalties or inferred feedback'
                 result['provenance']['context_mode'] = context_mode
-            if context_mode == 'neighbor-positive':
+            if context_mode in ('neighbor-positive','data-root-cohort'):
                 result['provenance']['method'] = 'frozen exact-query authoritative caller/callee and canonical data token incidence; complete query endpoint rivalry before retention, secondary pairs held; induced component hypotheses only'
                 result['provenance']['context_mode'] = context_mode
                 result['provenance']['query_scope'] = {'exact_addresses': result['query_cohort'],
@@ -1113,10 +1336,16 @@ def run(pair, accepted_seeds, journal, symbols, output, input_pins, caps=Caps(),
                     'positive_consistency_work_cap':200000,
                     'bounded_SQL_queries_complete':result['bounded_SQL_queries_complete'],
                     'global_endpoint_scope_complete':result['global_endpoint_scope_complete']}
+                result['provenance']['review_ranking_method']=result['review_ranking_method']
+                if context_mode=='data-root-cohort':
+                    result['provenance']['method']='explicit selected reviewed data-user cohort; full accepted signatures within cohort; scalar GLOBAL fanout only; EVERY row outside-global-rivals-uninspected'
+                    result['provenance']['data_root_cohort_scope']=result['data_root_cohort_scope']
+                    result['provenance']['data_root_cohort_scope_sha256']=graph.canonical_hash(result['data_root_cohort_scope'])
+                    result['provenance']['query_scope']['eligible_pair_scope']='NONE; all data-root-cohort hypotheses held for outside rivalry'
             result['ledger'] = ledger.snapshot()
             # Encode/check each candidate/hold row before whole output. Failure leaves
             # neither destination nor partial manifest, even after temporary creation.
-            for row in result['candidates'] + result['held_examples']:
+            for row in result['candidates'] + result['held_examples'] + result.get('review_candidates',[]):
                 if len(json.dumps(row).encode()) > ROW:
                     raise Guard('Candidate row exceeds 64KiB')
             encoded = (json.dumps(result, indent=2, sort_keys=True) + '\n').encode()
@@ -1151,8 +1380,9 @@ def main():
     defaults = Caps()
     for name, value in vars(defaults).items():
         parser.add_argument('--max-' + name.replace('_', '-'), type=int, default=value)
-    parser.add_argument('--context-mode', choices=('single', 'multi-positive', 'neighbor-positive'), default='single')
+    parser.add_argument('--context-mode', choices=('single', 'multi-positive', 'neighbor-positive', 'data-root-cohort'), default='single')
     parser.add_argument('--memory-limit-mb', type=int, default=256)
+    parser.add_argument('--data-root-pc',type=addr,action='append',default=[])
     parser.add_argument('--query-pc', type=addr, action='append', default=[])
     parser.add_argument('--query-android', type=addr, action='append', default=[])
     args = parser.parse_args()
@@ -1173,7 +1403,7 @@ def main():
         result = run(args.graph_pair, args.accepted_seeds, args.journal, args.symbols,
                      args.output, pins, caps, args.memory_limit_mb,
                      _ledger=ledger, _cli_pin=pin_provenance, context_mode=args.context_mode,
-                     query_pc=args.query_pc, query_android=args.query_android)
+                     query_pc=args.query_pc, query_android=args.query_android,selected_data_roots=args.data_root_pc)
     except (ValueError, OSError, sqlite3.Error) as error:
         print(json.dumps({'status': 'failed; no completed output', 'error': str(error),
                           'ledger': getattr(error, 'diagnostic_ledger', ledger.snapshot() if ledger else None)}))

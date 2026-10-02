@@ -1789,3 +1789,111 @@ Data candidates fall from 2,380 to 2,365: the fifteen removals include the three
 newly reviewed identities, which leave the candidate pool. No new data candidate
 appears. This run settles in seven rounds, taking 46.95 seconds at 690,676 KiB
 maximum RSS with zero swaps and the unchanged 1,024 MiB address-space limit.
+
+The next version adds a separate `review_candidates` ranking without changing
+conservative eligibility or removing rivals. It ranks distinct common function
+roots and known data components, then weights positive evidence by inverse
+global anchor fanout. Each function root or alias component contributes at most
+once. Distinct induced target pairs provide a final comparison feature only
+when both endpoints already have direct support; repeated sites and unrooted
+cycles cannot manufacture evidence. Equal scores share a rank group. Signature
+equality within the inspected scope is descriptive, never an absent-edge penalty
+or proof of whole-function identity. Sixty-four context tests cover these rules.
+
+On the same frozen AnimMiscFlags inputs, all earlier candidates, holds, rivals
+and witnesses survive unchanged. The new ranking puts the real query in its
+first group alongside five unassigned alternatives. It distinguishes 120
+incidental one-root rivals from fourteen stronger rivals, but resolves no
+identity. This trial takes 2.26 seconds at 63,968 KiB maximum RSS with zero swaps.
+
+A new SetForceBack query, using 1,503 anchors, inspects eight PC and ten Android
+endpoints, sixty positive pairs and seventeen holds. Four review rows remain;
+the real pair ties the PIC thunk on one function root. Its reviewed normalized
+data reference lacks compatible known access widths, so the current strong-data
+ranking does not use that identity link. Reference identity and access-contract
+evidence need separate treatment. This trial takes 1.56 seconds at 41,452 KiB
+RSS with zero swaps. A preceding two-function query exceeds the unchanged
+128-endpoint limit and aborts without output, using 40,572 KiB RSS. These are
+bounded retrieval/ranking observations, not accuracy or source-coverage gains.
+
+The focused mode separates reviewed data-reference identity from a verified
+memory-access contract. A canonical reference contributes at most once per
+reviewed alias component, with inverse global user count as advisory weight.
+An unknown-width normalized GOT reference remains weak evidence: it supplies
+neither a four-byte object read nor strong support, type or eligibility credit.
+On the same frozen SetForceBack inputs, the real pair now ranks ahead of the PIC
+thunk (weights 3/8 versus 1/8); the already assigned ResetForceBack remains a
+competing pair of equal weight. All sixty positive pairs, seventeen holds and
+previous witnesses remain. The trial uses 41,768 KiB RSS with zero swaps.
+
+`--context-mode data-root-cohort --data-root-pc 0x87b8ec` compares all function
+users of the selected reviewed data component. Selectors may repeat for up to
+eight components. Incidence includes raw target, allocation owner and normalized
+target while retaining the physical source function. Each cohort member receives
+its accepted caller/callee and reviewed-data profile. Global fanout uses scalar
+distinct-user counts; profiles of outside functions remain uninspected. Every
+row consequently retains an outside-rivalry hold and cannot become an automatic
+match. Alias components, call sites and direction tokens cannot multiply roots.
+
+The position-global trial inspects exactly four PC and four native Android
+functions, sixteen positive pairs and sixteen held rows. Four unassigned review
+rows remain; the true ForcedBackCode pair ranks first with six distinct accepted
+callee roots. This finishes in 3.08 seconds at 43,336 KiB RSS with zero swaps,
+under unchanged limits. Seventy-one context fixtures cover weak-reference
+ranking, complete selected cohorts, scalar fanout, reserved rivals, outside
+holds, alias deduplication and overflow. This mode narrows review work; it does
+not establish global uniqueness or reconstruct source automatically.
+
+`tools/ghidra/ExportSelectedFunctionShapes.java` adds selected-function summaries
+from existing analyzed programs. Invoke it with `analyzeHeadless -readOnly
+-noanalysis -postScript ExportSelectedFunctionShapes.java OUTPUT ORIGINAL DELTA
+SELECTORS`; a `selected-function-shape-selectors-v1` JSON record supplies `side`,
+`program`, `binary_sha256`, `delta` and a list of canonical original `entries`.
+Use the existing identification heavy lock, local Ghidra configuration/cache and
+sequential jobs. The tested PC/native jobs use 512 MiB/1 GiB Java heaps. Validate
+each result with `python3 tools/identification_shapes.py SELECTORS OUTPUT
+tools/ghidra/ExportSelectedFunctionShapes.java`.
+
+The exporter checks original/program body hashes and emits instruction classes,
+Pcode, conservative memory summaries and analyzed intrabody CFG relationships.
+It permits sixteen functions, 128 KiB total selected body, 4,096 instructions per
+function and a two MiB output. It never emits raw code or grants identity, ABI,
+extent, type or complete-runtime-CFG review. Direct memory storage varnodes are
+counted alongside intrinsic LOAD/STORE operations; flow operands and embedded
+LOAD/STORE storage operands are excluded with explicit debt counters. These are
+incomplete raw-Pcode occurrence summaries, not exact instruction-access counts.
+Indirect flow operands can contain real data reads, so absence cannot prove an
+object is unused. Fifteen checker fixtures cover accounting, pins, bounds and
+import-safe resource limits; seven Java accounting fixtures run before export.
+
+Actual exports of three PC and four native functions pass body and schema checks
+at 376,068/383,756 KiB RSS with zero swaps. SetForceBack has five absolute PC and
+five indirect native non-stack stores; the PIC helper has none. Nevertheless,
+its four PC CFG blocks become one native block through conditional moves.
+AnimMiscFlags also differs in return/block counts across compilers. Shapes remain
+advisory context; they are not new anchor roots or exact cross-platform CFG tests.
+The earlier LOAD/STORE-only output omitted direct PC stores and is preserved as
+a failed memory-accounting control under ignored analysis.
+
+After five newly reviewed function identities and the actor data identity, the
+normal matcher has 1,508 accepted function anchors, 1,495 inferred pairs and 114
+reviewed data anchors. All five new function anchors were already inferences.
+The exact two-run comparison retains all 1,503 earlier accepted anchors, finds
+184 newly inferred memberships and three former inferences now held as rank-one
+candidates. Accepted-plus-inferred membership grows from 2,822 to 3,003, a net
+181 hypotheses rather than 181 verified identities. No existing pair is rerouted
+to another endpoint. The three demotions remain available for review.
+
+Data candidates grow from 2,365 to 2,400: 54 appear and nineteen leave, with
+2,346 retained. The actor identity is the only new reviewed data anchor. Graphs,
+original hashes, readers and normal scoring features remain unchanged; reviewed
+decisions and the symbol inventory are the changed inputs. The run reaches its
+fixed point in eight rounds, taking 48.15 seconds at 738,148 KiB RSS with zero
+swaps and the unchanged 1,024 MiB address-space limit. This measures the spread
+of structural hypotheses after review; it does not establish their accuracy.
+
+A further exact historical comparison finds that 181 of the 184 added
+inferences restore pairs demoted in wave 30. Three additions lie outside that
+historical loss set; their presence in still older raw candidate pools remains
+uninspected. Restored membership establishes neither correctness nor the cause
+of recovery, and the larger total is not evidence of exponential mapping growth.

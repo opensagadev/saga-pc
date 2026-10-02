@@ -497,14 +497,14 @@ class NeighborPositiveTests(unittest.TestCase):
             f.pins['journal'] = graph._file_hash(f.paths['journal'])
         return f
 
-    def run_neighbor(self, f, output='neighbor.json', caps=None, pc=(400,), aa=(4000,)):
+    def run_neighbor(self, f, output='neighbor.json', caps=None, pc=(400,), aa=(4000,), mode='neighbor-positive', roots=()):
         with patch.object(limits.lib, 'ROOT', f.root), \
              patch.object(graph, '_build_index', side_effect=AssertionError('No index build')), \
              patch.object(graph, 'load_graph', side_effect=AssertionError('No eager graph')):
             return diag.run(f.paths['graph_pair'], f.paths['accepted_seeds'],
                             f.paths['journal'], f.paths['symbols'], f.root/output,
-                            f.pins, caps or diag.Caps(), context_mode='neighbor-positive',
-                            query_pc=pc, query_android=aa)
+                            f.pins, caps or diag.Caps(), context_mode=mode,
+                            query_pc=pc, query_android=aa,selected_data_roots=roots)
 
     def row(self, result, pc=400, aa=4000):
         return next(r for r in result['candidates']+result['held_examples']
@@ -735,6 +735,225 @@ class NeighborPositiveTests(unittest.TestCase):
         self.assertEqual(r['competitors']['pc'],[400,401])
         self.assertIn('globally-competing-positive-signature',r['eligibility_holds'])
 
+    def ranked(self,result,pc=400,aa=4000):
+        return next(r for r in result['review_candidates']
+                    if r['pc_address']==pc and r['android_address']==aa)
+
+    def cohort(self,f,**kwargs):
+        return self.run_neighbor(f,mode='data-root-cohort',roots=(900,),pc=(),aa=(),**kwargs)
+
+    def test_reviewed_weak_GOT_identity_outranks_incidental_PIC_no_strong_credit(self):
+        f=self.fixture({100:[400]},{1000:[4000,4001]},data=True)
+        db=sqlite3.connect(f.indices['android']);sha=f.hashes['android']
+        pic=graph.node_id(sha,'function',4001)
+        db.execute("DELETE FROM edges WHERE source=? AND kind='access'",(pic,))
+        slot=graph.node_id(sha,'data-object',9001);root=graph.node_id(sha,'data-object',9000)
+        db.execute('INSERT INTO nodes VALUES(?,?,?,?,?)',(slot,9001,'data-object','.got',json.dumps({'id':slot,'address':9001,'kind':'data-object'})))
+        source=graph.node_id(sha,'function',4000)
+        seq,raw=db.execute("SELECT sequence,raw FROM edges WHERE source=? AND kind='access'",(source,)).fetchone()
+        raw=json.loads(raw);raw.update(role='read',width=4,offset=0)
+        db.execute('UPDATE edges SET target=?,owner=?,normalized_target=?,via=?,raw=? WHERE sequence=?',(slot,slot,root,slot,json.dumps(raw),seq))
+        db.commit();db.close();self.repin_index(f,'android')
+        result=self.run_neighbor(f)
+        target=self.ranked(result);incidental=self.ranked(result,aa=4001)
+        self.assertEqual(result['candidates'],[])
+        self.assertFalse(target['strong_direct_support'])
+        self.assertFalse(target['review_ranking']['rank_direct_support'])
+        self.assertEqual(target['review_ranking']['canonical_data_component_count'],0)
+        self.assertEqual(target['review_ranking']['weak_reference_identity_component_count'],1)
+        self.assertEqual(incidental['review_ranking']['weak_reference_identity_component_count'],0)
+        self.assertEqual(result['review_candidates'][0]['android_address'],4000)
+        self.assertTrue(all(not target[k]for k in ['identity_reviewed','abi_reviewed','extent_reviewed','type_reviewed']))
+        self.assertEqual(target['canonical_data_incidence']['android'][0]['effective_channel'],[900,'access','address',None,None])
+        self.assertEqual(target['competitors']['android'],[4000,4001])
+
+    def test_selected_data_root_cohort_exact_four_by_four_every_row_held(self):
+        f=self.fixture({100:[400,401,402,403]},
+                       {1000:[4000,4001,4002,4003]},data=True)
+        result=self.cohort(f,caps=diag.Caps(retained=100))
+        self.assertEqual(result['global_component_endpoints'],{'pc':[400,401,402,403],'android':[4000,4001,4002,4003]})
+        self.assertEqual(result['counts']['all_positive_pairs'],16)
+        self.assertEqual(len(result['review_candidates']),16)
+        self.assertEqual(result['candidates'],[])
+        self.assertTrue(result['data_root_cohort_scope']['selected_data_user_scope_complete'])
+        self.assertFalse(result['global_endpoint_scope_complete'])
+        for r in result['review_candidates']:
+            self.assertIn('outside-global-rivals-uninspected',r['eligibility_holds'])
+            self.assertFalse(r['full_profile_global_endpoint_rivals_complete'])
+        self.assertEqual(result['provenance']['data_root_cohort_scope_sha256'],
+                         graph.canonical_hash(result['data_root_cohort_scope']))
+
+    def test_cohort_global_fanout_counts_outside_users_without_profiles(self):
+        outside=list(range(10000,10600))
+        f=self.fixture({100:[400,401,402,403]+outside},
+                       {1000:[4000,4001,4002,4003]},data=True)
+        db=sqlite3.connect(f.indices['pc'])
+        db.execute("DELETE FROM edges WHERE kind='access' AND source IN (SELECT id FROM nodes WHERE address>=10000)")
+        db.commit();db.close();self.repin_index(f)
+        result=self.cohort(f)
+        self.assertEqual(result['global_component_endpoints']['pc'],[400,401,402,403])
+        row=next(c for c in result['data_root_cohort_scope']['global_fanout_counts']if c['side']=='pc'and c['token']==['function',100,'caller'])
+        self.assertEqual(row['known_function_users_DISTINCT'],604)
+        self.assertFalse(row['outside_profiles_inspected'])
+        self.assertIn('outside-global-rivals-uninspected',self.ranked(result)['eligibility_holds'])
+        self.assertEqual(self.ranked(result)['review_ranking']['function_root_weights'],[[100,1,604]])
+
+    def test_cohort_alias_selectors_and_three_channels_one_component_once(self):
+        f=self.fixture({100:[400]},{1000:[4000]},data=True)
+        row=json.loads(f.paths['journal'].read_text());row.update(id='pcalias',pc=901,status='alias')
+        with f.paths['journal'].open('a')as out:out.write(json.dumps(row)+'\n')
+        f.pins['journal']=graph._file_hash(f.paths['journal'])
+        result=self.run_neighbor(f,mode='data-root-cohort',roots=(900,901),pc=(),aa=())
+        self.assertEqual(result['data_root_cohort_scope']['selected_components'],[900])
+        r=self.ranked(result)
+        self.assertEqual(r['review_ranking']['canonical_data_component_count'],1)
+        self.assertEqual(r['review_ranking']['weak_reference_identity_component_count'],0)
+        self.assertEqual(r['review_ranking']['data_component_weights'],[[900,1,1]])
+        counts=[c for c in result['data_root_cohort_scope']['global_fanout_counts']if c['token']==['data',900]]
+        self.assertTrue(all(c['known_function_users_DISTINCT']==1 for c in counts))
+
+    def test_cohort_selection_does_not_limit_profile_function_roots(self):
+        f=self.fixture({100:[400],200:[400],300:[400]},
+                       {1000:[4000],2000:[4000],3000:[4000]},data=True)
+        result=self.cohort(f)
+        r=self.ranked(result)
+        self.assertEqual(r['authoritative_function_roots'],[100,200,300])
+        self.assertEqual(r['review_ranking']['independent_function_root_count'],3)
+        self.assertEqual(result['candidates'],[])
+        self.assertIn('outside-global-rivals-uninspected',r['eligibility_holds'])
+        self.assertIn('unrelated nonaccepted edges unknown',r['endpoint_profile_scopes']['pc'])
+
+    def test_cohort_reserved_user_and_outside_rival_never_global_unique(self):
+        f=self.fixture({100:[400,401,402]},
+                       {1000:[4000]},data=True,mapped=[100,401])
+        db=sqlite3.connect(f.indices['pc']);outside=graph.node_id(f.hashes['pc'],'function',402)
+        db.execute("DELETE FROM edges WHERE source=? AND kind='access'",(outside,));db.commit();db.close();self.repin_index(f)
+        result=self.cohort(f)
+        self.assertEqual(result['global_component_endpoints']['pc'],[400,401])
+        self.assertEqual(self.ranked(result)['competitors']['pc'],[400,401])
+        self.assertTrue(any(r['pc_address']==401 for r in result['held_examples']))
+        self.assertEqual(result['candidates'],[])
+        self.assertFalse(self.ranked(result)['full_profile_global_endpoint_rivals_complete'])
+        self.assertIn('outside-global-rivals-uninspected',self.ranked(result)['eligibility_holds'])
+
+    def test_cohort_unknown_selector_priority_and_fanout_fail_no_publication(self):
+        f=self.fixture(data=True)
+        with self.assertRaises(ValueError):self.run_neighbor(f,mode='data-root-cohort',roots=(12345,),pc=(),aa=())
+        self.assertFalse((self.root/'neighbor.json').exists())
+        with self.assertRaises(ValueError):self.run_neighbor(f,mode='data-root-cohort',roots=(900,),pc=(999,),aa=())
+        self.assertFalse((self.root/'neighbor.json').exists())
+        #Add a secondphysical edge to make an exact union fanout overflow.
+        db=sqlite3.connect(f.indices['pc']);row=db.execute("SELECT source,target,owner,kind,normalized_target,via,raw FROM edges WHERE kind='access'").fetchone()
+        seq=db.execute('SELECT max(sequence) FROM edges').fetchone()[0]+1
+        db.execute('INSERT INTO edges VALUES(?,?,?,?,?,?,?,?)',(seq,*row));db.commit();db.close();self.repin_index(f)
+        with self.assertRaises(diag.Guard)as error:self.cohort(f,caps=diag.Caps(data_edges_per_target=1))
+        self.assertGreater(error.exception.diagnostic_ledger['metadata_bytes_charged'],0)
+        self.assertFalse((self.root/'neighbor.json').exists())
+
+    def test_advisory_two_roots_outrank_incidental_rivals_without_release(self):
+        f=self.fixture({100:[400,401],200:[400]},
+                       {1000:[4000,4001],2000:[4000]})
+        result=self.run_neighbor(f)
+        self.assertEqual(result['candidates'],[])
+        self.assertEqual((result['review_candidates'][0]['pc_address'],
+                          result['review_candidates'][0]['android_address']),(400,4000))
+        r=self.ranked(result)
+        self.assertEqual(r['competitors'],{'pc':[400,401],'android':[4000,4001]})
+        self.assertIn('globally-competing-positive-signature',r['eligibility_holds'])
+        self.assertEqual(r['review_ranking']['independent_function_root_count'],2)
+        self.assertEqual(r['review_ranking']['strongest_observed_rival']['independent_function_roots'],1)
+        self.assertTrue(result['review_ranking_method']['eligibility_unchanged'])
+        secondary=self.ranked(result,aa=4001)
+        self.assertFalse(secondary['full_profile_global_endpoint_rivals_complete'])
+        self.assertIn('nonexact-query-pair-full-rival-scope-unproven',secondary['eligibility_holds'])
+
+    def test_equal_two_root_signatures_keep_ties_and_global_competition(self):
+        f=self.fixture({100:[400,401],200:[400,401]},
+                       {1000:[4000,4001],2000:[4000,4001]})
+        result=self.run_neighbor(f,pc=(400,401),aa=(4000,4001))
+        self.assertEqual(result['candidates'],[])
+        self.assertEqual(len(result['review_candidates']),4)
+        self.assertEqual({r['review_ranking']['advisory_rank_tie_group']for r in result['review_candidates']},{1})
+        for r in result['review_candidates']:
+            self.assertTrue(r['review_ranking']['known_observed_signatures_equal_in_frozen_scope'])
+            self.assertIn('globally-competing-positive-signature',r['eligibility_holds'])
+            self.assertFalse(r['identity_reviewed'])
+
+    def test_inverse_fanout_uses_all_global_users_not_query_cohort(self):
+        pc={100:[400,402,403],200:[400,402],300:[401],500:[401]}
+        aa={1000:[4000,4002,4003],2000:[4000,4002],3000:[4001],5000:[4001]}
+        f=self.fixture(pc,aa,seeds={100:1000,200:2000,300:3000,500:5000})
+        result=self.run_neighbor(f,pc=(400,401),aa=(4000,4001))
+        self.assertEqual((result['review_candidates'][0]['pc_address'],
+                          result['review_candidates'][0]['android_address']),(401,4001))
+        self.assertEqual(self.ranked(result)['review_ranking']['positive_discrimination_weight'],[5,6])
+        self.assertEqual(self.ranked(result,401,4001)['review_ranking']['positive_discrimination_weight'],[2,1])
+        self.assertIn(403,result['global_component_endpoints']['pc'])
+
+    def test_repeated_sites_cannot_beat_distinct_supported_targets(self):
+        pc={100:[400,400,400,401,450,451],200:[400,401,450,451],
+            400:[450]*4,401:[450,451]}
+        aa={1000:[4000,4000,4000,4001,4500,4510],2000:[4000,4001,4500,4510],
+            4000:[4500]*4,4001:[4500,4510]}
+        f=self.fixture(pc,aa)
+        result=self.run_neighbor(f,caps=diag.Caps(retained=100),pc=(400,401),aa=(4000,4001))
+        repeated=self.ranked(result);distinct=self.ranked(result,401,4001)
+        self.assertEqual(repeated['review_ranking']['positive_discrimination_weight'],distinct['review_ranking']['positive_discrimination_weight'])
+        self.assertEqual(len(repeated['positive_component_edge_witnesses']),16)
+        self.assertEqual(len(distinct['positive_component_edge_witnesses']),4)
+        self.assertEqual(repeated['review_ranking']['mutually_supported_induced_edges']['balanced_distinct_target_count'],1)
+        self.assertEqual(distinct['review_ranking']['mutually_supported_induced_edges']['balanced_distinct_target_count'],2)
+        self.assertEqual((result['review_candidates'][0]['pc_address'],
+                          result['review_candidates'][0]['android_address']),(401,4001))
+
+    def test_two_directions_and_data_aliases_credit_each_root_once(self):
+        f=self.fixture({100:[400],400:[100]},
+                       {1000:[4000],4000:[1000]},data=True)
+        row=json.loads(f.paths['journal'].read_text());row.update(id='rankalias',android=9001,status='alias')
+        with f.paths['journal'].open('a')as out:out.write(json.dumps(row)+'\n')
+        f.pins['journal']=graph._file_hash(f.paths['journal'])
+        result=self.run_neighbor(f);rank=self.ranked(result)['review_ranking']
+        self.assertEqual(rank['function_root_weights'],[[100,1,1]])
+        self.assertEqual(rank['data_component_weights'],[[900,1,1]])
+        self.assertEqual(rank['independent_function_root_count'],1)
+        self.assertEqual(rank['canonical_data_component_count'],1)
+        self.assertEqual(rank['positive_discrimination_weight'],[2,1])
+
+    def test_missing_edge_unknown_is_no_negative_or_false_support(self):
+        f=Fixture(self.root,pc_calls={100:[400],200:[400],400:[999]},
+                  aa_calls={1000:[4000],2000:[4000]},missing_targets={999})
+        f.paths['journal'].write_text('');f.pins['journal']=graph._file_hash(f.paths['journal'])
+        rank=self.ranked(self.run_neighbor(f))['review_ranking']
+        self.assertEqual(rank['positive_discrimination_weight'],[2,1])
+        self.assertEqual(rank['independent_function_root_count'],2)
+        self.assertIn('missing-function-edge-or-inlining-unknown',rank['unknown_scope_debts'])
+        self.assertEqual(rank['mutually_supported_induced_edges']['balanced_distinct_target_count'],0)
+
+    def test_reserved_rival_kept_but_not_ranked_as_new_assignment(self):
+        f=self.fixture({100:[400,401],200:[400,401]},
+                       {1000:[4000],2000:[4000]},mapped=[100,401])
+        result=self.run_neighbor(f)
+        r=self.ranked(result)
+        self.assertEqual(r['competitors']['pc'],[400,401])
+        self.assertEqual(r['review_ranking']['strongest_observed_rival']['pair'],[401,4000])
+        self.assertEqual(r['review_ranking']['strongest_observed_rival']['endpoint_status'],'reserved-or-rejected')
+        self.assertIsNone(r['review_ranking']['strongest_unassigned_rival'])
+        self.assertEqual(result['candidates'],[])
+        self.assertTrue(any(v['pc_address']==401 for v in result['held_examples']))
+        self.assertFalse(any(v['pc_address']==401 for v in result['review_candidates']))
+
+    def test_mutual_cycle_cannot_bootstrap_two_roots(self):
+        f=self.fixture({100:[400],200:[450],400:[450],450:[400]},
+                       {1000:[4000],2000:[4500],4000:[4500],4500:[4000]})
+        result=self.run_neighbor(f,pc=(400,450),aa=(4000,4500))
+        self.assertEqual(result['candidates'],[])
+        for r in result['review_candidates']:
+            rank=r['review_ranking']
+            self.assertEqual(rank['independent_function_root_count'],1)
+            self.assertFalse(rank['rank_direct_support'])
+            self.assertEqual(rank['mutually_supported_induced_edges']['distinct_target_pairs'],[])
+            self.assertTrue(r['positive_component_edge_witnesses'])
+
     def test_source_index_preserves_reference_witness_order_and_sites(self):
         pc={100:[400,401],200:[400,401],400:[401,401,400],401:[400]}
         aa={1000:[4000,4001],2000:[4000,4001],4000:[4001,4000,4001],4001:[4000]}
@@ -774,7 +993,8 @@ class NeighborPositiveTests(unittest.TestCase):
         row=self.row(result)
         self.assertEqual(len(row['positive_component_edge_witnesses']),256)
         self.assertEqual(result['counts']['all_positive_pairs'],256)
-        self.assertLess(result['ledger']['work_units'],100000)
+        self.assertLess(result['ledger']['work_units'],200000)
+        self.assertGreater(result['review_ranking_method']['ranking_work_units'],65536)
         self.assertEqual(row['authoritative_function_roots'],[100,200])
         self.assertIn('globally-competing-positive-signature',row['eligibility_holds'])
 
