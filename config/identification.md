@@ -625,3 +625,46 @@ Its display-special tail and material/render-state closure still need their own
 PC layout review. Do not supply a placeholder return value to the 43-byte wrapper.
 WithinConnection's direct callers clean 0x2c bytes (eleven stack arguments);
 earlier twelve-argument research was rejected before source integration.
+
+### Bounded call-context comparison
+
+`tools/identification_call_context.py` compares selected cached x86 bodies using
+positive CFG patterns, memory access widths, block-local push origins and the
+order/dominance of separately reviewed callees. It retains every Cartesian
+candidate and exact tie. Its observations cannot approve an identity, ABI, type,
+extent or independent root; they do not feed production scoring or the journal.
+
+Prepare an ignored JSON capture with schema `structural-call-context-capture-v1`.
+Each `functions` record contains `side` (`pc` or `android`), integer original
+`entry`, hex `bytes` and the body's `sha256`. Optional `external_anchors` records
+contain opaque `id`, integer `pc`/`android` and an authority
+`review_proof_sha256`. Verify that authority separately; the tool checks its
+format, not the referenced review. Cohort endpoints cannot appear as anchors.
+Keep friendly names and paired truth out of the capture preparation. Original
+game bytes belong only in ignored analysis files.
+
+With the optional Capstone package already available, run:
+
+```sh
+python3 tools/identification_call_context.py --input CAPTURE.json \
+  --input-sha256 CAPTURE_SHA256 --output NEW_DIAGNOSTIC.json
+```
+
+The CLI limits address space to 256 MiB before other imports. Defaults bound
+semantic metadata to 16 MiB, input/output to 2 MiB each, individual output rows
+to 64 KiB, each side to sixteen functions, each function to 4,096 instructions
+and computation to 200,000 work units. Input, module and decoder pins are checked
+again before exclusive atomic publication. Existing outputs are refused.
+Library imports leave the caller's resource limits unchanged.
+
+All 32 synthetic controls pass locally, including register-alias writes, stack
+adjustments, unknown control, ties and publication races. CI explicitly skips
+these decoder fixtures when Capstone is absent; an installed broken decoder
+fails the tests. Run them in an equipped environment before changing this tool.
+
+In the fixed six-pair pilot, reviewed external calls/order increased correct
+unique top ranks from two to four, with no false unique top among the selected
+thirty crossed alternatives. Plain and momentum debris stayed four-way tied.
+Shared push-context support was zero, so this result does not demonstrate
+cross-platform argument matching. It establishes local ranking utility only;
+outside rivals, inlining, indirect calls and provider effects remain unresolved.

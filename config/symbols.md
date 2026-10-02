@@ -3144,3 +3144,44 @@ no identity or extent approval. An initial run also enabled the separate
 tentative function-to-data diagnostic channel. Its core output hashes agree with
 the normal control; the additional 9,813 diagnostic rows do not feed function
 retrieval or accepted state. Both runs and their memory measurements are retained.
+
+### Lighting and character-scene propagation
+
+Following the new cutscene hypotheses confirms four further original identities:
+
+| PC entry | Native entry | Identity | Complete PC bytes |
+| --- | --- | --- | --- |
+| `0x005958b0` | `0x004a6a40` | SetZeroLights | 96 |
+| `0x00595910` | `0x004a6b10` | FindAndSetLights | 92 |
+| `0x0055b520` | `0x00460260` | CharScene_FindHSpecial | 80 |
+| `0x0055b570` | `0x004602d0` | CharScene_Draw | 63 |
+
+The lighting routines distinguish a fixed zero-vector/ambient setup from an
+ordered scratch-context transaction: disable, search with incoming position and
+context, enable, then commit. Character-scene lookup tries global override and
+world fallback arrays, selects a sixteen-byte entry and checks its handle.
+Drawing holds the lookup result and conditionally renders each of two matrices.
+All twelve crossed roles fail their compound algorithms. Original native records
+and complete PC CFGs pass independent review; adjacent functions without CC
+padding are closed by their independently verified next entries.
+
+These four journal identities cover 331 PC bytes. Unknown lighting/render
+providers, PC private register setup, platform differences and full signatures
+remain held. No CSV, source or coverage credit is added. Frozen original and
+peer evidence uses `structural-wave45-lighting-charscene-*` under ignored analysis.
+
+The generic call-context diagnostic now has a maintained command and 32 controls.
+Independent actual review of all 36 pilot pairs confirms two additional unique
+correct ranks from external call anchors/order. The remaining debris ties stay
+explicit, and local push-origin observations add no shared support in this pilot.
+The tool supplies advisory structure only; automatic identities and production
+graph scores remain unchanged. Its earlier stale-origin bugs and held prototype
+receipts remain preserved alongside the corrected source and actual reviews.
+
+The normal control promotes all four earlier inferences and retains every prior
+function pair. One new hypothesis, PC `0x00595660` / native `0x004a6670`, expands
+the function union to 2,851, with 1,541 accepted and 1,310 inferred pairs. Its
+lineage includes the newly reviewed lighting transaction, existing anchors and
+literal evidence; no isolated cause or original identity is inferred. All 2,450
+prior DATA candidates remain, with eight gains reaching 2,458. Reviewed DATA
+anchors remain 121. Graph/scoring rules and reconstruction coverage are unchanged.
