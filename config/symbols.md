@@ -2503,3 +2503,70 @@ extent retains internal alignment and four returns. Six physical caller words
 are observed, but complete child-call contract closure remains pending; ABI and
 type flags stay false. It adds no CSV binding, source definition or coverage.
 Frozen original and independent release packets remain under ignored analysis.
+
+## Collision-tree leaf contracts (2026-10-02)
+
+Seven original leaf identities have complete PC extents and qualified physical
+caller contracts, with historical ctypes left blank:
+
+| Function | PC entry | PC bytes | Native Android entry |
+| --- | --- | --- | --- |
+| NewBuzz | 0x0054a8a0 | 40 | 0x00489130 |
+| KillRumble | 0x0054aa10 | 94 | 0x00489530 |
+| HitRumble | 0x0054aa70 | 108 | 0x004895b0 |
+| TakeHitRumble | 0x0054aae0 | 92 | 0x00489630 |
+| Player_HasInvincibility | 0x0055f1d0 | 49 | 0x0046d0d0 |
+| Player_HasFastBuild | 0x0055f210 | 49 | 0x0046d140 |
+| AnimMiscFlags | 0x0062a6a0 | 36 | 0x003c678b |
+
+The 468 bytes add inventory coverage only. Rumble helpers are distinguished by
+their original amplitudes and durations: KillRumble uses 0.7 and 0.1, HitRumble
+uses 0.5 and two frames, while TakeHitRumble receives its duration. The native
+frame conversion is inspected rather than transferring a native frame-rate
+layout. The reviewed FTOL primary entry consumes one owned floating value and
+preserves lower values under finite representable inputs and masked normal
+exceptions. Combined rumble headroom is three slots. HitRumble deliberately
+reuses its incoming object argument word as float scratch; the actual caller
+discards that word after the call. The two nearby caller sites are alternative
+branches, not sequential calls.
+
+The player predicates have distinct original cheat masks and object timer tests.
+AnimMiscFlags is a call-free integer table lookup with a sentinel and optional
+table pointer; its two caller words and EAX bit test are verified. Its native
+unaligned entry is confirmed by the original ELF symbol record. Historical
+argument types and allocation capacities remain held.
+
+ObjHitObj remains journal-only with ABI/type flags false. Several immediate
+integer contracts now close, but paths reach Player_ClearContext's optional
+callback and other unresolved helper effects. Original code installs a callback
+at 0x00429010 into slot 0x0093d848; four child effects remain held. The native
+slot calculation is proved through the complete get-PC thunk and real GOT
+mapping, but the initializer pair is not an accepted anchor. These research
+contracts supply no extra CSV, data allocation or source coverage.
+
+## Shared state and level-data identities (2026-10-02)
+
+Three global identities have independent original instruction and native
+symbol/GOT review. Their PC sizes and ctypes remain blank:
+
+| Reconstruction name | PC entry | Native Android entry |
+| --- | --- | --- |
+| ForceBackPosPc | 0x0087b8ec | 0x006a2520 |
+| MAULA_LDATA | 0x0087b0d8 | 0x006a15e0 |
+| DOOKUC_LDATA | 0x0087b13c | 0x006a1570 |
+
+The force-back reset, setter and directional movement pairs provide distinct
+pointer roles: the position cell receives either actor+0x80 or the second setter
+argument. The companion actor cell remains separate and unproposed. This does
+not establish a PC pointer allocation extent or a recovered C type.
+
+Similar field stores initially suggested the wrong Maul-to-Dooku correspondence.
+Original PC constructor strings identify Maul_A and Dooku_C; the returned values
+are stored in their respective globals. Original PartKill selectors distinguish
+Maul's 0x2d/9 case from Dooku's 0x34/10 case on both platforms. The wrong
+0x0087b0d8-to-0x006a1570 pair is explicitly rejected. Native MAULF and Explode1
+alternatives remain held rather than being rejected through absent edges.
+Platform field offsets differ and are not transferred. Native GOT addends,
+relative relocation records and exact ELF symbol records are checked together
+through their actual load segments. These rows add zero allocation, mapped-image,
+source or exact-match credit; ABI/type/extent flags remain false.

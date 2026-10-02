@@ -931,3 +931,21 @@ all eight data GOT addends and the two initialized native values. The writable
 segment's virtual addresses differ from file offsets by 0x1000; each read uses
 its containing segment. All values and relocation records agree with the
 reviewed identities. These checks do not establish PC allocation sizes.
+
+## Collision and level-state identities (2026-10-02)
+
+Three independently reviewed identities are added with blank PC sizes and types:
+ForceBackPosPc at 0x0087b8ec (native 0x006a2520), MAULA_LDATA at 0x0087b0d8
+(0x006a15e0), and DOOKUC_LDATA at 0x0087b13c (0x006a1570). Reset, setter and
+directional movement operands establish the force-back position cell. Original
+Maul_A/Dooku_C constructor strings, returned-pointer stores and distinct PartKill
+dispatch cases establish the level globals. Similar field offsets alone gave a
+wrong Maul-to-Dooku proposal, now explicitly rejected in the journal.
+
+These bindings add no source definitions, allocation coverage or exact-data
+credit. The companion force-back actor cell and MAULF/Explode1 alternatives remain
+held. Native sizes and platform field layouts do not establish PC ownership.
+Original and independent packets are frozen as
+`structural-fixed-data-families-original-next1.json` and
+`structural-fixed-data-families-independent-next1.json` under ignored continuation;
+[symbols.md](symbols.md) records the reviewed roles and remaining limits.

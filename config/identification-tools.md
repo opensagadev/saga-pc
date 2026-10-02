@@ -1729,3 +1729,63 @@ The diagnostic takes 1.47 seconds at 45,016 KiB RSS with zero swaps. An initial
 attempt supplied the JSON symbol inventory where the accepted-seed JSONL was
 required; the format guard rejected it before publication. The failed and
 successful runs together charge 2,991,059 metadata bytes, below eight MiB.
+
+## Caller, callee and data neighborhoods
+
+The optional `--context-mode neighbor-positive` diagnostic compares explicit
+PC and Android query cohorts against accepted caller/callee anchors and reviewed
+data identities. Supply one or more `--query-pc` and `--query-android` entries,
+using the same graph, accepted-seed JSONL, journal, symbol CSV and input-pin
+arguments as the other context modes. For example, append:
+
+```sh
+--context-mode neighbor-positive --query-pc 0x0062a6a0 --query-android 0x003c678b
+```
+
+Distinct accepted function pairs count as independent roots; repeated calls and
+caller/callee directions do not multiply a root. Data aliases form one component.
+Known data access roles, widths and offsets can support a comparison; GOT address
+loads alone cannot establish the accessed object's width. Two function roots, or
+one function root plus a compatible reviewed data component, provide stronger
+review evidence. These thresholds do not establish identity or a PC contract.
+
+The initial query signatures freeze the retrieval vocabulary. All observed
+users of those anchors, including mapped, weak and rejected alternatives, remain
+in the rival pool. Secondary endpoints have only that vocabulary inspected and
+remain held because their complete signatures are unknown. Induced call edges
+between hypotheses provide descriptive witnesses without creating accepted
+roots. Missing calls remain unknown because the compilers inline differently.
+
+The first retained trial queries AnimMiscFlags against the frozen preacceptance
+registry: 1,496 anchors produce 71 PC and 65 Android endpoints, with 3,132 positive
+pairs and 15 stronger query-connected pairs. It takes 2.15 seconds at 57,284 KiB
+maximum RSS with zero swaps. No pair is eligible: the conservative competition
+rule includes every pair sharing even one positive token. This exposes a need
+for full-signature ranking; the result is not an accuracy measurement or proof
+that the query identity is wrong. Original review separately verifies the query.
+
+Three preceding attempts abort without publishing partial results: recursive
+endpoint growth, unrelated hub-profile fanout, then excessive component work.
+Their combined metadata charge is 5,897,481 bytes. Freezing the query vocabulary,
+restricting rival profiles and indexing induced edges by source lets the retained
+trial finish without increasing the limits. Its positive component witnesses
+preserve physical call-site multiplicity and ordering.
+
+The mode permits at most 64 queries and 128 retrieved endpoints per side, 16,384
+endpoint pairs, 4,096 induced edges per side and 200,000 component comparisons.
+It retains the 256 MiB address-space limit, eight MiB metadata cap, bounded SQL
+work and exclusive publication. Overflow aborts rather than hiding rivals.
+Fifty-six context tests cover the new mode and existing controls, including
+normalized GOT rivals, alias roots, exact-query scope and genuine work overflow.
+It changes neither the normal scorer nor the symbol map automatically.
+
+After seven original-reviewed function additions and three data identities, the
+normal matcher has 1,503 accepted anchors, 1,319 inferred pairs and 113 reviewed
+data anchors. Six previous inferences become accepted. AnimMiscFlags becomes
+accepted from a prior rank-one candidate; PC 0x004a4900 against native Android
+0x0015f830 becomes inferred from another prior rank-one candidate. All previous
+accepted and inferred membership survives, so their union grows by two pairs.
+Data candidates fall from 2,380 to 2,365: the fifteen removals include the three
+newly reviewed identities, which leave the candidate pool. No new data candidate
+appears. This run settles in seven rounds, taking 46.95 seconds at 690,676 KiB
+maximum RSS with zero swaps and the unchanged 1,024 MiB address-space limit.
