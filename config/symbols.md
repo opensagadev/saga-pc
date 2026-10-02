@@ -2831,3 +2831,45 @@ reviewed member/site incidences may support a partial-owner diagnostic; no
 arbitrary interval is normalized. Evidence is frozen as
 `structural-wave38-message-data-original-next1.json` and
 `structural-wave38-message-data-independent-next1.json` under ignored analysis.
+
+### Message update and ID search (2026-10-02)
+
+Two function hypotheses opened by the message-pool/cursor anchors pass
+independent original identity and complete PC boundary review:
+
+| PC entry | Native entry | Identity | Complete PC bytes |
+| --- | --- | --- | --- |
+| `0x00561020` | `0x004a5210` | UpdateGameMessages | 718 |
+| `0x005618e0` | `0x004a5e60` | FindGameMsgsWithID | 88 |
+
+The updater shares 128-record active/ended handling, lifetime progression, four
+easing selectors, position/scale/alpha interpolation and three callback fields.
+Its complete PC CFG ends after RET at `0x005612ed`; padding and the distinct next
+entry are excluded. PC x87/native SSE and callback/provider effects differ.
+
+The finder shares signed ID/sub-ID matching with a minus-one wildcard, record
+exclusion, match counting and optional active-byte clearing. Its complete PC
+body ends after RET at `0x00561937`. The native function uses four specialized
+loops, explaining its larger extent. Its internal stack observations do not
+qualify the still-unreviewed external caller contract.
+
+Both journal rows release identity and complete extent, with ABI/type held.
+They add 806 reviewed PC code bytes and no CSV, source or reconstruction coverage.
+Producer and independent evidence are frozen as
+`structural-wave39-message-children-original-next1.json` and
+`structural-wave39-message-children-independent-next1.json` under ignored
+continuation analysis.
+
+The normal propagation pass retains all previous pairs: accepted functions rise
+from 1,519 to 1,521 while inferred functions fall from 1,321 to 1,319. The union
+remains 2,840 and all 2,416 DATA candidates remain identical. These two reviews
+promote existing hypotheses; they do not demonstrate another discovery burst.
+
+The auxiliary exact-site owner trial preserves all 99 AddGameMsg references.
+Only the two reviewed indexed active-byte sites can be associated with the pool;
+97 references retain unknown ownership. Four declared parent cross-pairs remain
+held, with no bilateral distinguishing evidence, new roots or scoring changes.
+The field-role trial likewise leaves all four animation-loader cross-pairs tied.
+Further structural discrimination needs value ancestry and control-flow context,
+while retaining the platform/provider qualifications. These experiments remain
+under ignored analysis and do not alter the maintained scorer.
