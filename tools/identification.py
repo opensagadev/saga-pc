@@ -712,7 +712,7 @@ def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.
              analysis_dir=None, symbols=None, reviewed_pairs=None, run=None,
              joint_graph=None, holdout_mode="pair", holdout_selection=None,
              similarity_candidates=None, registry_descriptors=None, max_rounds=MAX_ROUNDS,
-             tentative_data_feedback=False):
+             tentative_data_feedback=False, reviewed_wrapper_anchors=None):
     """Snapshot inputs and atomically publish a completed research run."""
     if isinstance(max_rounds, bool) or not isinstance(max_rounds, int) or not 1 <= max_rounds <= 64:
         raise ValueError("max_rounds must be an integer between 1 and 64")
@@ -726,6 +726,8 @@ def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.
         raise ValueError("An explicit selection requires --holdout or similarity comparison")
     if registry_descriptors and not joint_graph:
         raise ValueError("Registry diagnostics require --joint-graph")
+    if reviewed_wrapper_anchors is not None and (not joint_graph or holdout or similarity_candidates is not None or tentative_data_feedback):
+        raise ValueError("Reviewed wrapper anchors require a joint training-only run")
     owned = run is None
     if owned:
         output = Path(analysis_dir or OUT)
@@ -749,7 +751,8 @@ def generate(holdout=False, source_graph=None, refresh=False, android_root=ROOT.
                                      holdout_mode=holdout_mode, holdout_selection=holdout_selection,
                                      similarity_candidates=similarity_candidates,
                                      registry_descriptors=registry_descriptors, max_rounds=max_rounds,
-                                     tentative_data_feedback=tentative_data_feedback)
+                                     tentative_data_feedback=tentative_data_feedback,
+                                     reviewed_wrapper_anchors=reviewed_wrapper_anchors)
         else:
             if holdout_mode != "pair" or holdout_selection or similarity_candidates or reviewed_pairs:
                 raise ValueError("Review journals, similarity and explicit/family/data holdouts require --joint-graph")

@@ -1,6 +1,6 @@
 # Identification tools operator runbook
 
-Checked setup and continuation: 2026-10-01. Run commands from the repository root. These tools
+Checked setup and continuation: 2026-10-02. Run commands from the repository root. These tools
 produce research evidence; they never add accepted rows to `config/symbols.csv`
 or establish reconstruction matching coverage. The identity, ABI/type and
 complete-extent rules in [identification.md](identification.md) still apply.
@@ -2164,3 +2164,56 @@ widths. Unknown runtime indices and PC allocation boundaries remain held; no
 arbitrary owner interval or extra independent root is introduced. The original
 library's GOT carrier continues to represent address transport separately from
 object or member access.
+
+## Reviewed forwarding-wrapper paths
+
+`--reviewed-wrapper-anchors FILE` is an optional joint training-only experiment.
+Use the existing `tools/check.py --identify --joint-graph ...` entry point,
+reviewed symbol map/journal, `--max-rounds 16` and the default 1024 MiB cap.
+Holdout, similarity-comparison and tentative-data-feedback modes reject this
+option until their evaluation quarantine supports these paths. Leaving the
+option absent preserves ordinary graph retrieval.
+
+The manifest uses `reviewed-wrapper-anchors-v1`, the exact PC and Android binary
+hashes, canonical function IDs, witnessed inner call sites and complete reviewed
+forwarder contracts. Each `reviewed-whole-forwarder-contract-v1` supplies a
+whole-body hash, a relative pinned proof document, a qualified normal domain,
+argument-word forwarding/defaults and reviewed normal stack/register/FP effects.
+Body/proof hashes identify documentary evidence; this is not an automatic
+machine verifier of the original body or universal ABI/type acceptance.
+
+Only an accepted downstream callee can supply a virtual anchor. The projection
+adds one hop from original direct callers through the reviewed wrapper, keeping
+raw nodes/edges and the complete outer/inner call-site witnesses. Chains, cycles,
+unsupported transforms, unreviewed contracts and held/rejected endpoints stay
+unavailable. Copy, signed-low-byte and NULL-default argument transforms are
+supported; owned FP entry/exit must be zero. Accepted forwarded wrappers and
+their callees share one canonical dependency root and their existing per-direction
+weight is counted at most once. Existing uniqueness, margin and rejection rules
+remain in force; a path cannot create another independent observation.
+
+Limits are 32 relations, 4096 incidences/paths, one MiB for manifest plus proof
+files and two MiB for path diagnostics. All schemas and proof sizes are checked
+before registration; proof paths stay within the manifest directory and symlink,
+traversal, nonregular, growth and fingerprint-change cases abort publication.
+Explicit bounded input registration also checks the actual read and final pin.
+
+`reviewed-wrapper-paths.json` records the projected paths, qualifications and
+held contracts. Summary/manifest inputs record the experiment and pinned proofs.
+Before reporting new mappings, compare feature-off/on normal runs against the
+same graph, symbol and journal inputs. Research pairs still require separate PC
+identity, caller ABI and full-boundary review before CSV or coverage changes.
+
+The wave-51 pilot uses the retained 115-byte native joint forwarder at
+`0x2c81e0`, forwarding nine arguments into the accepted `0x2c7990` callee,
+with signed-low-byte argument 2 and two trailing NULLs. Its real graph supplies
+one outer path and no held contracts. Feature-off/on runs both stop after seven
+rounds at 1565 accepted roots, 1307 inferred pairs and 2462 data candidates.
+There is no new pair or independent root from this already-anchored caller.
+Off reproduces all 17 previous output files exactly. Synthetic controls prove
+that a wrapper-only caller can acquire a callee observation when a distinct
+second anchor exists; this pilot does not demonstrate production growth.
+
+The integrated full check passes 665 tests with three skips. Peak RSS is
+120216 KiB for checks, 693808 KiB for the off run and 694704 KiB for the on run;
+all report zero swaps. Graph runs remain capped at 1024 MiB address space.

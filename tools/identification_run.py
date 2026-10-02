@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import json
+import hashlib
+import stat
 import fcntl
 import os
 import resource
@@ -15,6 +17,20 @@ if __package__:
 else:
     import lib
     from identification_state import load_previous_state
+
+
+def _open_no_symlink_components(path):
+    """Open every parent with no-follow; a swapped parent cannot redirect reads."""
+    parts = Path(path).absolute().parts
+    directory = os.open(parts[0], os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        for part in parts[1:-1]:
+            child = os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=directory)
+            os.close(directory)
+            directory = child
+        return os.open(parts[-1], os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory)
+    finally:
+        os.close(directory)
 
 
 SCHEMA = "identification-run-v1"
@@ -74,7 +90,7 @@ class IdentificationRun:
                 shutil.copytree(self.output_dir, self.work_dir, dirs_exist_ok=True)
             (self.work_dir / "run-manifest.json").unlink(missing_ok=True)
             for name in ("summary.json", "holdout.json", "hypotheses.csv", "method.md",
-                         "anchor-crosswalk.csv", "data-candidates.csv", "function-candidates.csv",
+                         "reviewed-wrapper-paths.json", "anchor-crosswalk.csv", "data-candidates.csv", "function-candidates.csv",
                          "function-candidates.jsonl", "data-candidates.jsonl", "tentative-function-data-candidates.jsonl", "tentative-function-data-candidates.csv", "evidence.jsonl", "inventory.json", "state.json", "delta.json", "review.md"):
                 (self.work_dir / name).unlink(missing_ok=True)
             self.target = dict(target or lib.project()["target"])
@@ -171,12 +187,58 @@ class IdentificationRun:
         self.inputs[role] = {"path": path.name, "sha256": lib.sha256(path),
                              "snapshot": path.relative_to(self.work_dir).as_posix()}
 
-    def add_raw_input(self, role, path):
-        return self._raw(role, path)
+    @staticmethod
+    def _bounded_raw_digest(path, max_bytes):
+        if type(max_bytes) is not int or max_bytes < 0:
+            raise ValueError("Identification raw input byte cap")
+        path = Path(path).absolute()
+        if any(part.is_symlink() for part in (path, *path.parents)):
+            raise ValueError("Identification bounded input symlink")
+        descriptor = _open_no_symlink_components(path)
+        try:
+            before = os.fstat(descriptor)
+            if not stat.S_ISREG(before.st_mode) or before.st_size > max_bytes:
+                raise ValueError("Identification bounded input regular file/byte cap")
+            digest = hashlib.sha256()
+            total = 0
+            while True:
+                # Never hash bytes beyond the declared cap, including growth races.
+                chunk = os.read(descriptor, min(65536, max_bytes - total + 1))
+                if not chunk:
+                    break
+                total += len(chunk)
+                if total > max_bytes:
+                    raise ValueError("Identification bounded input byte cap")
+                digest.update(chunk)
+            after = os.fstat(descriptor)
+            signature = lambda item: (item.st_dev, item.st_ino, item.st_size, item.st_mtime_ns, item.st_ctime_ns)
+            if signature(before) != signature(after) or signature(after) != signature(path.lstat()) or total != before.st_size:
+                raise ValueError("Identification bounded input changed")
+            return path, digest.hexdigest()
+        finally:
+            os.close(descriptor)
+
+    def add_raw_input(self, role, path, *, max_bytes=None, expected_sha256=None):
+        if max_bytes is None:
+            return self._raw(role, path)
+        path, digest = self._bounded_raw_digest(path, max_bytes)
+        if expected_sha256 is not None and digest != expected_sha256:
+            raise ValueError(f"Identification bounded input changed: {role}")
+        self.inputs[role] = {"path": str(path), "sha256": digest}
+        self.raw_inputs[role] = path
+        if not hasattr(self, "bounded_raw_inputs"):
+            self.bounded_raw_inputs = {}
+        self.bounded_raw_inputs[role] = max_bytes
+        return path
 
     def validate_inputs(self):
         for role, path in self.raw_inputs.items():
-            if not path.is_file() or lib.sha256(path) != self.inputs[role]["sha256"]:
+            cap = getattr(self, "bounded_raw_inputs", {}).get(role)
+            if cap is None:
+                digest = lib.sha256(path) if path.is_file() else None
+            else:
+                _, digest = self._bounded_raw_digest(path, cap)
+            if digest != self.inputs[role]["sha256"]:
                 raise ValueError(f"Identification input changed during run: {role} ({path})")
         for role, record in self.inputs.items():
             if "snapshot" in record and lib.sha256(self.work_dir / record["snapshot"]) != record["sha256"]:

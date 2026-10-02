@@ -190,9 +190,13 @@ def _function_retrieval(pair, inputs, seeds, mapped, data_pairs, rejected, score
                         max_rounds=None):
     android, pc = inputs["android"], inputs["pc"]
     pairs, root_by_aa = dict(seeds), {}
+    wrapper_aliases = inputs.get("_wrapper_root_aliases", {})
+    pc_by_aa = {aa: pc for pc, aa in seeds.items()}
     data_components = _reviewed_data_components(pair, data_pairs)
     for pva, ava in seeds.items():
-        root_by_aa[ava] = {f"function:{pair['pc'].resolve(pva, 'function')}:{pair['android'].resolve(ava, 'function')}"}
+        root_aa = wrapper_aliases.get(ava, ava)
+        root_pc = pc_by_aa[root_aa]
+        root_by_aa[ava] = {f"function:{pair['pc'].resolve(root_pc, 'function')}:{pair['android'].resolve(root_aa, 'function')}"}
     rejected_va = {(pair["pc"].nodes[p]["address"], pair["android"].nodes[a]["address"])
                    for p, a in rejected if pair["pc"].nodes[p]["kind"] == pair["android"].nodes[a]["kind"] == "function"}
     proposals, rounds, round1 = [], [], None
@@ -220,6 +224,15 @@ def _function_retrieval(pair, inputs, seeds, mapped, data_pairs, rejected, score
                 if (pva, aa) in rejected_va:
                     del values[pva]
                     continue
+                if wrapper_aliases:
+                    if __package__:
+                        from .identification_wrappers import deduplicate_score
+                    else:
+                        from identification_wrappers import deduplicate_score
+                    deduplicate_score(evidence, wrapper_aliases)
+                    evidence["seed_supports"] = len({wrapper_aliases.get(neighbor, neighbor)
+                                                    for direction, neighbor, pc_neighbor, _ in evidence["support_rows"]
+                                                    if direction != "feature" and pc_neighbor in seeds})
                 roots = set()
                 for direction, neighbor, _, _ in evidence["support_rows"]:
                     if direction == "feature":
@@ -411,7 +424,7 @@ def _similarity_evaluation(run, paths, selection, result, pair):
 
 
 def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdout_selection=None,
-                    similarity_candidates=None, pair=None, registry_descriptors=None, max_rounds=None, tentative_data_feedback=False):
+                    similarity_candidates=None, pair=None, registry_descriptors=None, max_rounds=None, tentative_data_feedback=False, reviewed_wrapper_anchors=None):
     """Generate ignored research outputs; caller publishes through IdentificationRun."""
     if __package__:
         from . import identification as scorer
@@ -454,6 +467,14 @@ def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdou
     seeds = scorer.unique_name_seeds(inputs["android"], inputs["pc"], mapped, ambiguous)
     journal = graph.load_decisions(run.reviewed_pairs, pair)
     seeds = _merge_pairs(pair, seeds, journal["function_pairs"])
+    wrapper_metadata = None
+    if reviewed_wrapper_anchors is not None:
+        if __package__:
+            from .identification_wrappers import load as load_wrappers
+        else:
+            from identification_wrappers import load as load_wrappers
+        inputs, wrapper_metadata = load_wrappers(run, reviewed_wrapper_anchors, pair, inputs, seeds, journal)
+        _json(run.work_dir / "reviewed-wrapper-paths.json", wrapper_metadata)
     map_data_labels = _map_data_pairs(pair, run.symbol_rows, scorer)
     data_pairs = [{"pc": p, "android": aa, "kind": "data"} for p, aa in graph.normalize_pairs(pair, journal["data_pairs"], "data")
                   if (p, aa) not in journal["rejected"]]
@@ -657,13 +678,15 @@ def _generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdou
             "enabled": True, "candidate_rows": len(tentative_data_rows),
             "score_version": "tentative-function-data-lineage-v1",
             "feeds_function_retrieval": False, "feeds_state": False}
+    if wrapper_metadata is not None:
+        summary["reviewed_wrapper_anchors"] = {"enabled": True, "paths": len(wrapper_metadata["paths"]), "held": len(wrapper_metadata["held"]), "raw_edges_unchanged": True, "new_independent_roots": 0}
     _json(run.work_dir / "summary.json", summary)
     run.validate_inputs()
     return summary
 
 
 def generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdout_selection=None,
-                   similarity_candidates=None, registry_descriptors=None, max_rounds=None, tentative_data_feedback=False):
+                   similarity_candidates=None, registry_descriptors=None, max_rounds=None, tentative_data_feedback=False, reviewed_wrapper_anchors=None):
     """Own/close lazy original graph indices while the run owns publication."""
     if max_rounds is not None and (isinstance(max_rounds, bool) or not isinstance(max_rounds, int)
                                    or not 1 <= max_rounds <= 64):
@@ -672,12 +695,15 @@ def generate_joint(run, joint_graph, holdout=False, holdout_mode="pair", holdout
         raise ValueError("tentative_data_feedback must be boolean")
     if tentative_data_feedback and (holdout or similarity_candidates is not None):
         raise ValueError("Tentative data experiment requires a separate fixed training-only holdout design")
+    if reviewed_wrapper_anchors is not None and (holdout or similarity_candidates is not None or tentative_data_feedback):
+        raise ValueError("Wrapper anchors require a separate training-only run; holdout/evaluation feedback is unsupported")
     pair = _register_pair(run, joint_graph)
     try:
         return _generate_joint(run, joint_graph, holdout=holdout, holdout_mode=holdout_mode,
                                holdout_selection=holdout_selection, similarity_candidates=similarity_candidates,
                                pair=pair, registry_descriptors=registry_descriptors, max_rounds=max_rounds,
-                               tentative_data_feedback=tentative_data_feedback)
+                               tentative_data_feedback=tentative_data_feedback,
+                               reviewed_wrapper_anchors=reviewed_wrapper_anchors)
     finally:
         for side in ("pc", "android"):
             if isinstance(pair[side], graph.IndexedGraph):

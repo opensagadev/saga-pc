@@ -687,3 +687,39 @@ with a separate second anchor, reject unreviewed paths and duplicate roots,
 and preserve rejection/uniqueness rules. Compare feature-off/on normal runs
 with identical inputs before claiming any new mappings. The present skeletal
 pair is already accepted and supplies no feature-induced growth claim.
+
+### Wave 51: test explicit forwarding paths
+
+Freeze the clean pushed wave-50 report, objects, map, journal and real graph run
+before integrating the optional wrapper experiment. Preserve raw graph edges,
+accepted dependency roots, score weights and rejection/uniqueness rules. Review
+whole original forwarding bodies and contained proof inputs; test positive
+wrapper-only callers with an independent second root alongside ties, duplicate
+roots, rejected pairs, path/file limits and unchanged-default behavior.
+
+Run identical-input feature-off/on controls under the 1024 MiB cap. The native
+115-byte joint forwarder is a reviewed pilot; its known skeletal parent already
+has the direct backend anchor, so this path is not evidence of new independent
+support or new identities. Full checks, exact-match retention, report freshness
+and exact pushed-head CI gate release.
+
+The next source batch has three generic cutscene parents (2381 PC bytes) and
+four selected providers (1180 bytes): 3561 prospective connected bytes. Keep
+signed format guards, lazy output behavior, asserted working field cohorts and
+actual compiler/provider/FP verification as release gates. Candidate source and
+paired names do not establish transferred code until compilation and whole-body
+comparison pass.
+
+The integrated wrapper controls and full check pass (665 tests, three skips).
+Feature-off reproduces all 17 prior graph outputs exactly. Feature-on records
+one qualified path but adds no accepted/inferred pair or independent root;
+both runs remain at union 2872 and DATA 2462 after seven rounds. Peak graph
+RSS stays below 695 MiB with no swaps. The feature is optional research support,
+not a claim that this pilot raises production matching coverage.
+
+All seven cutscene source proposals pass independent action/field review and
+compile in a bounded ignored pilot. Its four provider compiler reviews pass
+under their normal input domains; final translation-unit compilation and
+complete comparisons still gate the next source release. Preserve the signed
+format checks, generic-vs-provider integer conversion differences, raw scale
+copy and outputs intentionally left untouched.
