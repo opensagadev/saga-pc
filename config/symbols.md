@@ -2627,3 +2627,55 @@ copy, actor position, radius scale and draw-matrix update agree. The complete
 Its entry reads one stack word, but an actual PC caller and downstream provider
 effects remain unverified. It is therefore a journal identity/extent anchor with
 ABI/type false and no CSV, source or coverage credit.
+
+## Hint-state reference expansion (2026-10-02)
+
+Hint_SaveGameState at PC 0x005766e0 against native 0x004e7690 is independently
+mapped with its complete 99-byte extent and a blank ctype. Both originals scan
+16-bit IDs up to a 0xffff sentinel and set the matching index in a saved bitmap.
+The PC inlines the operation; native Hint_SaveBits calls SET_HINT_COMPLETE.
+The original table strides are 0x1c and 0x24 respectively, so neither layouts
+nor native bitmap capacities are transferred to the PC.
+
+Actual PC callers pass one pointer through a push and four-byte cleanup or an
+argument rewrite before a tail jump. The PC leaf is call-free, uses no floating
+stack or private register/flag contract, and preserves stack and nonvolatile
+registers. The physical ABI is qualified for a finite readable sentinel table
+and valid bitmap/index storage. Historical formal types and allocation extents
+remain unknown. This adds inventory bytes, with no source or exact-match credit.
+
+The reviewed SetForceBack producer and its DrawForceBackEffect/ForcedBack users
+also identify radius at PC 0x0087b8b0 against native 0x006a2590, squared radius
+at PC 0x0087b8b4 against native 0x006a25a0, and mode at PC 0x0087b8f0 against
+native 0x006a2580. The producer writes the unchanged third float, its square,
+and the raw fourth word respectively. Draw scales by radius and tests mode 3;
+Forced uses radius in distance arithmetic and tests modes 2/3. Squared radius
+has one indexed writer and no indexed reader on either platform; this does not
+prove absence of aliases or other consumers. Exact native local OBJECT names
+and original PIC arithmetic confirm the distinct identities. Crossed radius/mode
+and radius/square bindings are explicitly rejected.
+
+All three PC rows leave size and ctype blank. Radius and squared radius retain
+their actual data-site graph IDs; mode has an object ID, which still does not
+establish its allocation boundary. Native four-byte extents and zero-filled
+loader views do not prove PC allocation sizes. These data anchors add no mapped
+bytes, source or exact-match credit and do not discharge consumer ABI debts.
+
+The ForceThrowCode camera call identifies GameCam_Blend at PC 0x0054a3e0
+against native 0x004d8b20. Independent original review confirms the camera
+snapshot/blend algorithm, complete 298-byte body, two returns and six excluded
+alignment bytes. The actual caller supplies camera, duration, secondary float
+and mode in four stack words. Its deferred 24-byte cleanup also includes the
+following call's eight bytes. The call-free leaf preserves stack/nonvolatile
+state and a valid lower x87 prefix with three free registers; its own x87 use
+has net zero and peak three. Native unsigned CMP/SBB and PC SETNE encode zero
+as 1 and every nonzero 32-bit mode as 2. No boolean-only restriction is needed.
+
+The row has a blank ctype. Its ABI is qualified for valid initialized nonalias
+camera storage through the accessed prefix, a valid default for NULL, and the
+normal engine floating environment. Historical types, return type and full
+allocation remain unknown. The earlier inferred PC 0x004a1fb0 binding to this
+native camera function is rejected: its original is a private actor-target
+helper with different state writes and register inputs. This adds 298 inventory
+bytes without source or exact-match credit; ForceThrow's remaining ABI debts
+are unaffected.

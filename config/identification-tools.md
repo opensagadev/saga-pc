@@ -1897,3 +1897,58 @@ inferences restore pairs demoted in wave 30. Three additions lie outside that
 historical loss set; their presence in still older raw candidate pools remains
 uninspected. Restored membership establishes neither correctness nor the cause
 of recovery, and the larger total is not evidence of exponential mapping growth.
+
+`tools/identification_shape_pairs.py` compares declared pairs from two validated
+selected-shape exports. It requires six explicit input pins: PC/native shapes,
+their selectors, exporter source and a `selected-positive-shape-pairs-v1` record
+whose `pairs` contain canonical `pc` and `android` addresses. Supply these through
+the corresponding CLI arguments and `--input-pins`; `--producer-pins` additionally
+binds the expected module and checker source hashes. The worker captures producer
+pins before checking and verifies them again before publishing. Changing either
+producer aborts without a completed output, including a change after staging.
+
+Each pair reports shared positive non-stack memory direction/width tokens and
+Pcode operation presence. Absolute and register-relative access classes do not
+prove the same object, and duplicate occurrences do not increase the weight.
+There are no identity-specific motifs, names, absent-edge penalties or required
+CFG equivalence. Missing selected bodies yield null comparisons and explicit
+holds. Every row retains outside-scope rivalry and original-review holds, with
+zero new roots and no scoring, identity, ABI, extent or type promotion. Limits
+remain 256 MiB address space, eight MiB metadata, two MiB output, 64 KiB rows,
+200,000 work units and 128 declared pairs. Twenty pair fixtures supplement the
+existing fifteen shape-checker fixtures.
+
+The complete six-pair AnimMiscFlags tie uses three PC and four native endpoints.
+The true pair shares two non-stack read widths and fifteen Pcode operations;
+the five alternatives share zero or one width and four to thirteen operations.
+All six remain present and held. This separates the inspected alternatives with
+generic positive features, not a global uniqueness or accuracy claim. The
+maintained CLI reproduces the frozen trial's features, holds and accounting in
+0.05 seconds at 21,664 KiB RSS with zero swaps. Its metadata charge is 50,579 bytes;
+no original bytes or SQL queries are read by the pair comparison itself.
+### Reference expansion and corrected camera cohort (2026-10-02)
+
+The normal wave33 run uses the unchanged graph pair and scorer with the reviewed
+Hint_SaveGameState and corrected GameCam_Blend mappings, three ForceBack data
+identities, four specific crossed data rejections and one camera rejection.
+It retains all 1,508 previous function anchors and adds two, with 117 reviewed
+data anchors, 22 rejections and no stale decisions. It converges in seven rounds
+to 1,317 tentative function pairs and 2,400 data hypotheses. The measured run
+takes 45.84 seconds with 689,944 KiB peak RSS, zero swaps and a 1 GiB address-space
+limit. Heavy jobs remain serialized.
+
+Exact baseline comparison shows Hint converted from an inference to a reviewed
+anchor; the correct camera pair was absent from the previous raw candidate pool.
+There are no new inferred pairs and 177 unconverted inference losses. Of those,
+174 are earlier wave30 losses that wave32 restored. The rejected private-helper
+camera pair is absent from the new pool; exact candidate projections and ranks
+for other losses remain in the audit. The accepted-plus-inferred union loses
+177 pairs and gains the corrected camera pair. Data hypotheses have four gains
+and four losses, with 2,396 common pairs. These are output transitions, with no
+single-input causal attribution or inferred-identity accuracy claim. The two
+functions add 397 inventory bytes; unknown data extents add no mapped bytes.
+
+The independent main and lineage audits are frozen as
+`structural-wave33-normal-control-independent-next1.json` and its `-lineage.json`
+under ignored continuation analysis. A separate `-prose-correction.json`
+preserves a wording correction without changing the frozen JSON results.

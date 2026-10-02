@@ -8,16 +8,16 @@
     "src/externals.h": "3382382faeac231f3c7962ffb276f5c091463416d3cd41afd89c57fe6c4eef62",
     "src/saga.h": "2e2cfb2393674eb86067c16512dbb7c31f7e9294a650b4705752df17ab1e88f4",
     "config/data.md": "4e0ffc6f168e6e4b72e611a7ff7a9609158504e19ef42177565ef8aad1a803c6",
-    "config/identification-decisions.jsonl": "ae407965b45360bff49e28c995e429b9c21f66219891cfebea7a817fbdc6ef80",
+    "config/identification-decisions.jsonl": "3e82cd4822941c115c18935ae713e0886eb8c69d56dfcb00d62a1a589037f26e",
     "config/identification-plan.md": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
-    "config/identification-tools.md": "6d8e59bf2912a62e119910ac494c85ab3964d8e05738edbcb7aae8e1a29e921e",
+    "config/identification-tools.md": "14777749d782899b75e08c141f973934b6b864c16b62e2dd04f6852f3fbcad46",
     "config/identification.md": "ecfbf8977bb20b3c0b8fc8cf0c4a7cc7d7cd0f9915f3abe77145c532651e31e4",
     "config/numain.md": "3f25abbf6d2df3515fa97714b637d71ad5d5aa1dd2bca0a6162a76bfa01e8ca6",
     "config/progress-plan.md": "3b9ac0100b31fc3de9ee7c0a73d4b312ad476ac6def9b3c23b740254424ad789",
     "config/project.json": "ce2a6c3d87ef7e8f949a23df7e18c1dff00a7dc87d0f0d50173202d4de428d03",
     "config/strategy.md": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
-    "config/symbols.csv": "96b87eaaa22aa76b1b3d886247c8390e7a4ca76e80f2a41333fb85a2def7fd4f",
-    "config/symbols.md": "4e7b8f0037756746e9777d3e0a5cb341b45bea2528f9dba087451e1d7747cf25",
+    "config/symbols.csv": "3988558ee4004978d9de08247c26043f8e1f208b79dfe3cfb74f7fb5852b0a92",
+    "config/symbols.md": "a10e360d081b0a17834fa2a45e51a6bb8a04811c9e138598cf4720cec354171a",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
     "tools/binary.py": "f81e031cd506bb87cbc4afe2b9e891354d36bb3e6f404213319ad76c4ce6b050",
@@ -37,6 +37,7 @@
     "tools/identification_registry_run.py": "c42b429298988bf05a45d8e48ca2a1d7e439fb574a0a9e93057e3ae95493200d",
     "tools/identification_review.py": "e92eacc56382d50d952457caf410d34d64be450565d86f7b449b80f22d47137f",
     "tools/identification_run.py": "60b308ff0d92632356991849beb483f08bc6c7bc11021b959f4d1b2d4076e555",
+    "tools/identification_shape_pairs.py": "cac022a35a254c24c98974faa01bd28069556f5fe39c3a4542f5bd16520700a5",
     "tools/identification_shapes.py": "ff327189835df597728d443063b145d897e8ea6dfd027dfd8adbad32a5762cfa",
     "tools/identification_state.py": "bd74afbaea3e4a071cb103663de6b21684da75710fc8dfd927cd46a0b84c2a50",
     "tools/identification_tables.py": "02af9327955f2a5fb6594e739461d280a17c28ec96b6a07ee86500bd9a4a8b76",
@@ -66,6 +67,7 @@
     "tools/test_identification_registry_run.py": "40c0e144d80c186a4fd199bf3fdf7cc7889f4d9e8ec104c7a9097b0e781da5db",
     "tools/test_identification_review.py": "e554e56de00abf23de3bd58e4f64d9f7317e274398bb6b7e793ea31cbd9a1bf7",
     "tools/test_identification_run.py": "d67f590ebaff4dc935172360ff6c1635c882270ad8ef6ac325dcbcd715839e40",
+    "tools/test_identification_shape_pairs.py": "8766f01214238a1ad4178b2015cf7312894ed977f0a8632edd14563a2d62e27f",
     "tools/test_identification_shapes.py": "1944e4e86a67d388db420c795539b83fd44c428f9149278ecf417b7412322882",
     "tools/test_identification_state.py": "7042cc53952e76f785a37794c9cca48fe6102874609bfe601088155cae267cf4",
     "tools/test_identification_tables.py": "0428ce56acdcc268e5af8fd170b719b599fb0274357bcfa6e099f109b1c90392",
@@ -19326,6 +19328,16 @@
       "status": "not implemented"
     },
     {
+      "name": "GameCam_Blend",
+      "symbol": "_GameCam_Blend",
+      "address": "0x0054a3e0",
+      "units": [],
+      "target_size": 298,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "GamePads_Init",
       "symbol": "_GamePads_Init",
       "address": "0x0054a5e0",
@@ -22973,6 +22985,16 @@
       "address": "0x00575450",
       "units": [],
       "target_size": 23,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "Hint_SaveGameState",
+      "symbol": "_Hint_SaveGameState",
+      "address": "0x005766e0",
+      "units": [],
+      "target_size": 99,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -86948,6 +86970,26 @@
       "status": "exact"
     },
     {
+      "name": "ForceBackRadiusPc",
+      "symbol": "_ForceBackRadiusPc",
+      "address": "0x0087b8b0",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "ForceBackRadius2Pc",
+      "symbol": "_ForceBackRadius2Pc",
+      "address": "0x0087b8b4",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "VehicleAreaRememberSpeed",
       "symbol": "_VehicleAreaRememberSpeed",
       "address": "0x0087b8d8",
@@ -87024,6 +87066,16 @@
       "name": "ForceBackPosPc",
       "symbol": "_ForceBackPosPc",
       "address": "0x0087b8ec",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "ForceBackTypePc",
+      "symbol": "_ForceBackTypePc",
+      "address": "0x0087b8f0",
       "units": [],
       "target_size": null,
       "exact_match": false,
@@ -103249,16 +103301,16 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 547971,
+    "mapped_code_bytes": 548368,
     "matched_code_bytes": 46519,
     "matching_percent": 1.3401239785368135,
     "fuzzy_coverage_percent": 6.471499817404898,
-    "mapped_functions": 2089,
+    "mapped_functions": 2091,
     "matched_functions": 810,
     "objdiff_fuzzy_percent": 60.503616,
     "objdiff_total_code": 371377,
     "image_bytes": 40067072,
-    "mapped_bytes": 1142334,
-    "mapping_percent": 2.851054352062462
+    "mapped_bytes": 1142731,
+    "mapping_percent": 2.852045190624361
   }
 }
