@@ -644,3 +644,46 @@ override-loop entry guard; preserve the rejected draft and independent review.
 Missing-node scale and partially written time fields remain explicit source
 domains. Integrate the corrected family only after this checkpoint's final
 whole-body comparison, previous exact-match preservation and pushed CI pass.
+
+### Wave 50: release the connected skeletal and model caller
+
+Integrate the corrected 1400-byte skeletal backend, 777-byte parent, 46-byte
+wrapper and 852-byte model animation caller as one family. Preserve the
+separate skeletal header, actual field offsets, partial-time and scale
+definedness qualifications, and indirect layer dispatch. Compile and review
+whole emitted bodies and data relocations, retain every previous exact row,
+and run the unchanged graph control before publishing metrics.
+
+The structural shortlist contains distinct cutscene-transform, joint-local
+transform and root-evaluator families. Review original paired behavior and
+specialized native callee differences before treating their similar anchor
+sets as identities. More rounds or weaker tie margins cannot resolve those
+structural ambiguities. Continue into the higher caller's remaining connected
+character/model setup after this family passes its full gates.
+
+The full build/link/binding gate and 643-test LLVM 18 check pass (three skips).
+All four complete affected comparisons pass. The batch adds 3075 compared
+bytes and 46 exact bytes with previous exact rows preserved. Whole-code fuzzy
+coverage reaches 6.704052%; exact code is 47697 / 3471246 bytes. Final report
+freshness, fixed graph transition, independent retention and exact pushed-head
+CI remain the checkpoint gates.
+
+The next three cutscene transform candidates cover 2381 prospective PC bytes.
+Their forwarding providers at 0x500d50, 0x502260 and 0x502e10 remain
+explicit closure gates; paired identity/extent research does not release
+complete source by itself. A reviewed wrapper feature needs unchanged-input
+controls and canonical root deduplication before affecting propagation.
+
+The final unchanged graph control has 1565 accepted and 1307 inferred pairs.
+Two old hypotheses become reviewed roots; the union remains 2872 with no new
+inferred pairs or unconverted losses. DATA remains 2462 candidates, with one
+advisory correspondence replaced. Seven rounds reach a fixed point. Peak
+RSS is 695672 KiB with no swaps under the 1024 MiB graph address-space cap.
+
+Next implement optional, explicitly reviewed wrapper-path anchors under a
+clean checkpoint baseline. Keep raw edges and canonical independent-root
+counts intact. Production fixtures must demonstrate a wrapper-only caller
+with a separate second anchor, reject unreviewed paths and duplicate roots,
+and preserve rejection/uniqueness rules. Compare feature-off/on normal runs
+with identical inputs before claiming any new mappings. The present skeletal
+pair is already accepted and supplies no feature-induced growth claim.

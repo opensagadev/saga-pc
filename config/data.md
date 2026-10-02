@@ -989,3 +989,20 @@ validated publication. The later skeletal path needs its own separately
 reviewed +0x14 pointer view. Time fields and 128-value weight-block working
 strides retain asserted offsets. `dwa-pool-data-independent-next1` records the
 conditional bounds, raw scalar initializers and ownership holds.
+
+## Skeletal maximum and layer dispatch working views (wave 50)
+
+DdMaxJointsPc at 0x973904 now has a source definition for its signed 32-bit
+running-maximum accesses. Retained original PE virtual-tail evidence establishes
+the selected zero initializer. Its existing inventory size and type remain blank.
+
+ModelAnimLayerListDispatchPc at 0x80fb94 is a conditional three-word cdecl
+function-pointer view. Exactly four original file-backed bytes establish its
+initial target, PCBuildModelLayerList at 0x62e190. Source preserves indirect
+dispatch and requires a compatible installed callback producing valid indices
+in the 32-entry caller array. This does not prove later writers or all callback
+states. Actual DIR32 emission remains a compiler gate.
+
+Both views receive zero original allocation and exact-data credit. Shared
+skeletal, pivot/override and model/packet additions replace only verified
+working field cohorts; they do not promote historical allocation/type claims.

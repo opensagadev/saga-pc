@@ -252,3 +252,74 @@ void __cdecl NuHGobjEvalAnimBlend2Root(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *
     NuHGobjEvalAnimBlend2Root_3(object, animation_a, time_a, animation_b, time_b, blend, override_count, overrides,
                                 matrices, root_fn, root_data);
 }
+
+/* Proposal only. Normal finite skeleton/override counts 0..255, readable
+ * indexed payloads and hierarchy, writable outputs; optional installed root
+ * callback obeys the existing six-word normal engine contract. Legacy duration1
+ * leaves time_offset undefined: format4 requires a separately valid offset.
+ * Missing-node scales remain undefined; later scale-dependent children require
+ * a valid prior parent node or the initialized parent255 sentinel. */
+void __cdecl NuHGobjEvalAnim2Root(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *animation, f32 time, i32 override_count,
+                                  NUHGOBJ_JOINT_OVERRIDE_PC *overrides, NUMTX *matrices, ANI3_ROOT_CALLBACK_PC root_fn,
+                                  void *root_data) {
+    NUANIMDATA2_SKELETAL_PC *legacy;
+    NUANIM_TIME2_PC anim_time;
+    NUVEC scales[256];
+    NUHGOBJ_JOINT_OVERRIDE_PC *joint_overrides[256];
+    NUMTX local_matrix;
+    NUVEC translation, locator_translation;
+    u8 i;
+    if ((i32)animation->magic >= (i32)0x414e4934 && (i32)animation->magic <= (i32)0x414e4935) {
+        NuHGobjEvalAnim2Root_3(object, animation, time, override_count, overrides, matrices, root_fn, root_data);
+        return;
+    }
+    if (object->joint_count > DdMaxJointsPc)
+        DdMaxJointsPc = object->joint_count;
+    legacy = (NUANIMDATA2_SKELETAL_PC *)animation;
+    scales[255].x = scales[255].y = scales[255].z = 1.0f;
+    NuAnimData2CalcTime(&legacy->prefix, time, &anim_time);
+    if (override_count != 0) {
+        memset(joint_overrides, 0, object->joint_count * 4);
+        for (i = 0; (i32)i < override_count; ++i) {
+            if ((i32)overrides[i].joint_index < object->joint_override_map_count) {
+                u8 index = object->joint_override_map[overrides[i].joint_index];
+                if (index != 255)
+                    joint_overrides[index] = &overrides[i];
+            }
+        }
+    }
+    for (i = 0; (i32)i < object->joint_count; ++i) {
+        NUMTX *output = &matrices[i];
+        NUHGOBJ_JOINT_OVERRIDE_PC *override_anim;
+        NUHGOBJ_EVAL_JOINT_PC *joint;
+        DWA_CURVE_CELL_PC *curves;
+        i8 *types;
+        i8 flags;
+        if ((i32)i >= legacy->prefix.node_count.legacy) {
+            *output = NuMtxSetIdentityTemplate;
+            continue;
+        }
+        override_anim = override_count != 0 ? joint_overrides[i] : NULL;
+        curves = &legacy->prefix.curves[i * legacy->prefix.curve_count];
+        types = &legacy->prefix.curve_types[i * legacy->prefix.curve_count];
+        flags = legacy->node_flags[i];
+        joint = &object->joints[i];
+        PCBuildLegacySkeletalJoint(curves, types, flags, &anim_time, joint, &scales[i], &scales[joint->parent_index],
+                                   &local_matrix, override_anim, i == 0 ? &translation : NULL,
+                                   i == 0 ? &locator_translation : NULL);
+        if (i == 0 && root_fn != NULL)
+            root_fn(&local_matrix, root_data, &translation, NULL, &locator_translation, 0.0f);
+        if (joint->parent_index == 255) {
+            if (flags & 0x40)
+                scales[i].x = scales[i].y = scales[i].z = 1.0f;
+            *output = local_matrix;
+        } else {
+            NuMtxMulVU0(output, &local_matrix, &matrices[joint->parent_index]);
+        }
+    }
+}
+
+void __cdecl NuHGobjEvalAnim2(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *animation, f32 time, i32 override_count,
+                              NUHGOBJ_JOINT_OVERRIDE_PC *overrides, NUMTX *matrices) {
+    NuHGobjEvalAnim2Root(object, animation, time, override_count, overrides, matrices, NULL, NULL);
+}

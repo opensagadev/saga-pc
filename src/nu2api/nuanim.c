@@ -1,6 +1,7 @@
 #include "saga.h"
 
 #include <xmmintrin.h>
+#include <string.h>
 
 typedef struct NuAnimDataPrefixView {
     union {
@@ -2076,3 +2077,153 @@ hermite: {
     return result;
 }
 }
+
+/* Genuine in-place operations; no reconstruction-only helper symbols. */
+#define PC_LEGACY_CURVE_STORE(destination, channel)                                                                    \
+    do {                                                                                                               \
+        volatile f32 pc_curve_value;                                                                                   \
+        if (formats[(channel)] == 0)                                                                                   \
+            pc_curve_value = curves[(channel)].constant;                                                               \
+        else                                                                                                           \
+            pc_curve_value = NuAnimCurve2CalcValEx(&curves[(channel)], time, (i32)formats[(channel)]);                 \
+        (destination) = pc_curve_value;                                                                                \
+    } while (0)
+
+#define PC_LEGACY_LIMIT_ANGLE(destination, maximum, minimum)                                                           \
+    do {                                                                                                               \
+        (destination) = (i32)((u32)(destination) & 0xffff);                                                            \
+        if ((destination) >= 0x8000)                                                                                   \
+            (destination) -= 0x10000;                                                                                  \
+        if ((destination) > (maximum))                                                                                 \
+            (destination) = (maximum);                                                                                 \
+        else if ((destination) < (minimum))                                                                            \
+            (destination) = (minimum);                                                                                 \
+    } while (0)
+
+/* Eleven physical words. Name is a distinct PC reconstruction convention.
+ * Root translation and locator output may be NULL; all other backing is valid.
+ * Curve calls always enter an empty owned x87 stack; FTOL preserves lower prefix.
+ * Return convention is source-only; original result type remains unapproved. */
+void __cdecl PCBuildLegacySkeletalJoint(DWA_CURVE_CELL_PC *curves, i8 *formats, u8 node_flags, NUANIM_TIME2_PC *time,
+                                        NUHGOBJ_EVAL_JOINT_PC *joint, NUVEC *scale, NUVEC *parent_scale, NUMTX *matrix,
+                                        NUHGOBJ_JOINT_OVERRIDE_PC *override, NUVEC *root_translation,
+                                        NUVEC *locator_translation) {
+    NUVEC rotation, translation, reciprocal, negative_pivot;
+    NUANGVEC angles;
+    u8 override_flags = override != NULL ? override->flags_pc : 0;
+    if (root_translation != NULL) {
+        root_translation->x = 0.0f;
+        root_translation->y = 0.0f;
+        root_translation->z = 0.0f;
+    }
+    if (locator_translation != NULL) {
+        locator_translation->x = 0.0f;
+        locator_translation->y = 0.0f;
+        locator_translation->z = 0.0f;
+    }
+
+    if ((node_flags & 1) == 0 && (override_flags & 1) == 0) {
+        NuMtxSetIdentity(matrix);
+    } else {
+        if ((node_flags & 1) != 0) {
+            PC_LEGACY_CURVE_STORE(rotation.x, 3);
+            PC_LEGACY_CURVE_STORE(rotation.y, 4);
+            PC_LEGACY_CURVE_STORE(rotation.z, 5);
+        } else {
+            rotation.x = rotation.y = rotation.z = 0.0f;
+        }
+        if ((override_flags & 1) != 0) {
+            rotation.x = (f32)((f64)rotation.x + override->rotation.x);
+            rotation.y = (f32)((f64)rotation.y + override->rotation.y);
+            rotation.z = (f32)((f64)rotation.z + override->rotation.z);
+        }
+        angles.x = (i32)((f64)rotation.x * AIPathAngularScale);
+        angles.y = (i32)((f64)rotation.y * AIPathAngularScale);
+        angles.z = (i32)((f64)rotation.z * AIPathAngularScale);
+        if ((override_flags & 8) != 0)
+            PC_LEGACY_LIMIT_ANGLE(angles.x, override->rotation_max_pc[0], override->rotation_min_pc[0]);
+        if ((override_flags & 0x10) != 0)
+            PC_LEGACY_LIMIT_ANGLE(angles.y, override->rotation_max_pc[1], override->rotation_min_pc[1]);
+        if ((override_flags & 0x20) != 0)
+            PC_LEGACY_LIMIT_ANGLE(angles.z, override->rotation_max_pc[2], override->rotation_min_pc[2]);
+        NuMtxSetRotateXYZVU0(matrix, &angles);
+    }
+    if ((node_flags & 0x20) != 0)
+        NuMtxMulRVU0(matrix, matrix, &joint->bind_matrix);
+
+    if ((node_flags & 8) == 0 && (override_flags & 4) == 0) {
+        /* Original three DWORD loads/stores: preserve all IEEE payload bits. */
+        memcpy(scale, parent_scale, sizeof(*scale));
+    } else {
+        if ((node_flags & 8) != 0) {
+            PC_LEGACY_CURVE_STORE(scale->x, 6);
+            PC_LEGACY_CURVE_STORE(scale->y, 7);
+            PC_LEGACY_CURVE_STORE(scale->z, 8);
+        } else {
+            scale->x = scale->y = scale->z = 0.0f;
+        }
+        if ((override_flags & 4) != 0) {
+            scale->x = (f32)((f64)scale->x + override->scale_pc.x);
+            scale->y = (f32)((f64)scale->y + override->scale_pc.y);
+            scale->z = (f32)((f64)scale->z + override->scale_pc.z);
+        }
+        NuMtxPreScaleVU0(matrix, scale);
+        scale->x = (f32)((f64)scale->x * parent_scale->x);
+        scale->y = (f32)((f64)scale->y * parent_scale->y);
+        scale->z = (f32)((f64)scale->z * parent_scale->z);
+    }
+    if ((node_flags & 0x10) != 0) {
+        /* Equality detects either signed zero; unordered values proceed to
+         * reciprocal just as original x87 parity tests, no NaN safety guard. */
+        if (parent_scale->x == 0.0f || parent_scale->y == 0.0f || parent_scale->z == 0.0f) {
+            reciprocal.x = reciprocal.y = reciprocal.z = 0.0f;
+        } else {
+            reciprocal.x = (f32)(1.0 / parent_scale->x);
+            reciprocal.y = (f32)(1.0 / parent_scale->y);
+            reciprocal.z = (f32)(1.0 / parent_scale->z);
+        }
+        NuMtxScaleVU0(matrix, &reciprocal);
+        scale->x = (f32)((f64)scale->x * reciprocal.x);
+        scale->y = (f32)((f64)scale->y * reciprocal.y);
+        scale->z = (f32)((f64)scale->z * reciprocal.z);
+    }
+
+    /* Translation is always evaluated, independent of node flag2. */
+    PC_LEGACY_CURVE_STORE(translation.x, 0);
+    PC_LEGACY_CURVE_STORE(translation.y, 1);
+    PC_LEGACY_CURVE_STORE(translation.z, 2);
+    if (root_translation != NULL) {
+        root_translation->x = translation.x;
+        root_translation->y = translation.y;
+        root_translation->z = -translation.z;
+    }
+    if ((override_flags & 2) != 0) {
+        translation.x = (f32)((f64)translation.x + override->translation.x);
+        translation.y = (f32)((f64)translation.y + override->translation.y);
+        translation.z = (f32)((f64)translation.z + override->translation.z);
+    }
+    NuMtxTranslate(matrix, &translation);
+    if ((joint->flags_pc & 8) != 0) {
+        NuMtxPreTranslate(matrix, &joint->pivot_pc);
+        negative_pivot.x = -joint->pivot_pc.x;
+        negative_pivot.y = -joint->pivot_pc.y;
+        negative_pivot.z = -joint->pivot_pc.z;
+        NuMtxTranslate(matrix, &negative_pivot);
+        if (locator_translation != NULL) {
+            NuVecMtxRotate(locator_translation, &joint->pivot_pc, matrix);
+            NuVecSub(locator_translation, locator_translation, &joint->pivot_pc);
+            /* Original FMUL F64(-1), not FCHS: finite values agree; NaN
+             * payload/exception equivalence remains actual compiler HOLD. */
+            locator_translation->z = -locator_translation->z;
+        }
+    }
+    matrix->m02 = -matrix->m02;
+    matrix->m12 = -matrix->m12;
+    matrix->m20 = -matrix->m20;
+    matrix->m21 = -matrix->m21;
+    matrix->m23 = -matrix->m23;
+    matrix->m32 = -matrix->m32;
+}
+
+#undef PC_LEGACY_CURVE_STORE
+#undef PC_LEGACY_LIMIT_ANGLE

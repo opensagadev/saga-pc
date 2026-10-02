@@ -3475,3 +3475,67 @@ match completely. Time/curve/DWA parents remain nonexact. Whole-code fuzzy
 coverage reaches 6.637517%, exact code 47651 / 3471246 bytes, and compared original
 bytes 381501. Inventory/identified union 591659 (17.044571% of text) is separate
 from reconstruction and includes reviewed bodies awaiting source closure.
+
+### Wave 50: connected skeletal and model evaluation
+
+Four complete PC bodies receive genuine source: the neutral eleven-word
+PCBuildLegacySkeletalJoint at 0x5ceee0/1400, NuHGobjEvalAnim2Root at
+0x5eb880/777, its six-word wrapper at 0x5f38c0/46, and EvalModelAnim at
+0x62e290/852. The batch covers 3075 original bytes. Compiler and complete
+comparison gates remain required before crediting exact results.
+
+The skeletal header has a separate 24-byte working prefix, preserving DWA's
+20-byte prefix. Joint pivot and flag accesses use asserted offsets 0x40/0x51;
+overrides use scale at 0x18, signed rotation maxima at 0x24 and minima at 0x2a,
+with index/flags at 0x30/0x31. Existing object strides remain unchanged.
+Backend source retains all 25 original actions, raw parent-scale copies, the
+override-only zero scale, any-zero reciprocal branch, root translation before
+overrides, pivot locator handling and six matrix sign changes. Nine curve
+operations and three clamps are expanded in place, avoiding invented helper
+bindings. Finite arithmetic, normal providers and initialized payloads remain
+explicit qualifications; exceptional locator payload equivalence stays held.
+
+Independent review rejected the first parent draft's identity owner and loop
+entry. The corrected source uses NuMtxSetIdentityTemplate at 0x806680 and the
+original signed override entry guard. Missing nodes retain undefined scale
+locals; later scale readers require a valid initialized prior parent or the
+initialized parent-255 sentinel. Legacy duration-one encoded requests retain
+the earlier time-offset qualification. No safe initialization replaces
+original behavior, and callback effects remain conditional on the reviewed
+normal engine contract.
+
+The model caller preserves the independent DWA and skeletal fallback chains:
+valid blend, target, source, current animation, then NULL DWA/static skeleton.
+Both blend quotients materialize separately as floats before child calls.
+Model and animation-packet fields retain asserted offsets and existing strides.
+The layer-list dispatch stays indirect through 0x80fb94. Its original four-byte
+initializer points to PCBuildModelLayerList at 0x62e190; arbitrary installed
+callback behavior and writer ownership are separate holds.
+
+Ignored continuation keeps the original rejected parent gate, its corrected
+source review, the two backend source gates, shared-view review and the model
+caller review. These qualify behavior and working interfaces; historical
+types, full original allocations and nonfinite behavior remain separate.
+
+Actual compiler gates pass for the complete backend (1367 rebuilt bytes),
+parent (717), wrapper (46) and model caller (794). The wrapper matches all
+46 original bytes. The parent compiler merges two original backend sites into
+one call with equivalent root-only optional outputs. The child consumes only
+the low byte of its flag word, so unspecified upper bits in the caller do not
+change behavior. All nine backend curve calls enter with empty x87 and consume
+the float result; the combined curve peak remains eight. Both model blend
+quotients keep their separate float stores, and the slot emits a genuine DIR32
+to the existing selector. Larger functions remain nonexact.
+
+This batch adds 3075 compared bytes and 46 exact bytes, retaining all 827
+previous exact functions and 2257 exact data rows. Compared original code
+reaches 384576 bytes; exact code is 47697 / 3471246 bytes and whole-code fuzzy
+coverage reaches 6.704052%. Reviewed/inventory identification is separate,
+with union 593836 bytes (17.107287% of text).
+
+Paired original review confirms the backend and root evaluator identities.
+Android's nonroot nine-word wrapper at 0x2c81e0 forwards to 0x2c7990 with two
+NULL outputs, while PC calls 0x5ceee0 directly for both roles. Raw callsite
+context therefore differs; both parents already have the direct backend
+anchor, so this observation does not create a second independent root or
+prove additional automatic mapping. The wrapper gets no invented PC binding.

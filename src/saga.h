@@ -2200,7 +2200,8 @@ STATIC_ASSERT(offsetof(TUBE_PC, flags) == 0x34);
 typedef struct animpacket_pc_s {
     f32 current_time;
     f32 previous_time;
-    u8 unknown_08[8];
+    f32 blend_elapsed_pc;
+    f32 blend_duration_pc;
     f32 blend_source_time;
     f32 blend_target_time;
     u8 unknown_18[0x18];
@@ -2218,6 +2219,8 @@ typedef struct animpacket_pc_s {
     i16 overlay_animation;
 } ANIMPACKET_PC;
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, current_time) == 0);
+STATIC_ASSERT(offsetof(ANIMPACKET_PC, blend_elapsed_pc) == 8);
+STATIC_ASSERT(offsetof(ANIMPACKET_PC, blend_duration_pc) == 0xc);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, blend_source_time) == 0x10);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, blend_target_time) == 0x14);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, blending) == 0x31);
@@ -2799,13 +2802,14 @@ typedef struct CHARACTER_MODEL_LAYERS_PC {
         void **action_animations;
         void **model_data_b;
     };
-    u8 unknown_010[4];
+    struct NUANIMDATA2_PC **model_data_c;
     void *points_of_interest[16];
 } CHARACTER_MODEL_LAYERS_PC;
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, animations) == 0x8);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, points_of_interest) == 0x14);
 STATIC_ASSERT(sizeof(CHARACTER_MODEL_LAYERS_PC) == 0x54);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, hierarchy) == 4);
+STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_data_c) == 0x10);
 
 typedef struct LEVEL_OBJECT_CONFIG_PC {
     u8 kind;
@@ -4560,6 +4564,14 @@ typedef struct NUANIMDATA2_PC {
     DWA_CURVE_CELL_PC *curves;
     i8 *curve_types;
 } NUANIMDATA2_PC;
+typedef struct NUANIMDATA2_SKELETAL_PC {
+    NUANIMDATA2_PC prefix;
+    i8 *node_flags;
+} NUANIMDATA2_SKELETAL_PC;
+STATIC_ASSERT(offsetof(NUANIMDATA2_SKELETAL_PC, prefix) == 0);
+STATIC_ASSERT(offsetof(NUANIMDATA2_SKELETAL_PC, node_flags) == 0x14);
+STATIC_ASSERT(sizeof(NUANIMDATA2_SKELETAL_PC) == 0x18);
+
 typedef struct NUANIM_TIME2_PC {
     f32 time;
     f32 time_offset;
@@ -4630,12 +4642,16 @@ typedef void(__cdecl *ANI3_EVAL_CALLBACK_PC)(NUMTX *, void *, NUQUAT *);
 
 typedef struct NUHGOBJ_EVAL_JOINT_PC {
     NUMTX bind_matrix;
-    u8 unknown_40_4f[0x10];
+    NUVEC pivot_pc;
+    u8 unknown_4c_4f[4];
     u8 parent_index;
-    u8 unknown_51_5f[0xf];
+    u8 flags_pc;
+    u8 unknown_52_5f[14];
 } NUHGOBJ_EVAL_JOINT_PC;
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_JOINT_PC, bind_matrix) == 0);
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_JOINT_PC, parent_index) == 0x50);
+STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_JOINT_PC, pivot_pc) == 0x40);
+STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_JOINT_PC, flags_pc) == 0x51);
 STATIC_ASSERT(sizeof(NUHGOBJ_EVAL_JOINT_PC) == 0x60);
 
 typedef struct NUHGOBJ_RENDER_PART_PC {
@@ -4657,14 +4673,21 @@ STATIC_ASSERT(offsetof(NUHGOBJ_POI_PC, joint_index) == 0x44);
 typedef struct NUHGOBJ_JOINT_OVERRIDE_PC {
     NUVEC rotation;
     NUVEC translation;
-    u8 unknown_18[24];
+    NUVEC scale_pc;
+    i16 rotation_max_pc[3];
+    i16 rotation_min_pc[3];
     u8 joint_index;
-    u8 unknown_31[3];
+    u8 flags_pc;
+    u8 unknown_32[2];
 } NUHGOBJ_JOINT_OVERRIDE_PC;
 STATIC_ASSERT(sizeof(NUHGOBJ_JOINT_OVERRIDE_PC) == 0x34);
 STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, rotation) == 0);
 STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, translation) == 0xc);
 STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, joint_index) == 0x30);
+STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, scale_pc) == 0x18);
+STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, rotation_max_pc) == 0x24);
+STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, rotation_min_pc) == 0x2a);
+STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, flags_pc) == 0x31);
 
 typedef struct NUHGOBJ_EVAL_PC {
     u8 unknown_000_167[0x168];
@@ -8228,6 +8251,7 @@ extern "C" {
     void __cdecl NuAnimData2CalcTime(NUANIMDATA2_PC *, f32, NUANIM_TIME2_PC *);
     i32 __cdecl NuAnimNumNodes(NUANIMDATA2_PC *);
     f32 __cdecl NuAnimCurve2CalcValEx(DWA_CURVE_CELL_PC *, NUANIM_TIME2_PC *, i32);
+    extern i32 DdMaxJointsPc;
     extern i32 DwaWeightCursorPc;
     extern i32 DwaPointerCursorPc;
     extern DWA_WEIGHT_BLOCK_PC DwaWeightPoolPc[60669];
@@ -8245,6 +8269,14 @@ extern "C" {
                                              void *, NUMTX *, ANI3_ROOT_CALLBACK_PC, void *);
     void __cdecl NuHGobjEvalAnimBlend2(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, ANI3_HEADER_PC *, f32, f32, i32,
                                        void *, NUMTX *);
+    void __cdecl PCBuildLegacySkeletalJoint(DWA_CURVE_CELL_PC *, i8 *, u8, NUANIM_TIME2_PC *, NUHGOBJ_EVAL_JOINT_PC *,
+                                            NUVEC *, NUVEC *, NUMTX *, NUHGOBJ_JOINT_OVERRIDE_PC *, NUVEC *, NUVEC *);
+    void __cdecl NuHGobjEvalAnim2Root(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, i32, NUHGOBJ_JOINT_OVERRIDE_PC *,
+                                      NUMTX *, ANI3_ROOT_CALLBACK_PC, void *);
+    void __cdecl NuHGobjEvalAnim2(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, i32, NUHGOBJ_JOINT_OVERRIDE_PC *, NUMTX *);
+    extern i32(__cdecl *ModelAnimLayerListDispatchPc)(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
+    void __cdecl EvalModelAnim(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, DWA_WEIGHT_BLOCK_PC ***,
+                               NUVEC *, NUMTX *, u32);
     i32 __cdecl PCBuildModelLayerList(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
     void __cdecl PCStoreModelLocatorCoordinates(CHARACTER_MODEL_LAYERS_PC *, NUMTX *, NUMTX *, NUVEC *, NUMTX *);
     i32 __cdecl Action_NoTerrain(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);

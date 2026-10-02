@@ -308,6 +308,12 @@ extern "C" {
     u8 ForceEulerToQuat;
 #pragma bss_seg()
     ANI3_GLOBALBUFFER_PC *globalbuffer;
+#pragma bss_seg(".bss$DdMaxJointsPc")
+    i32 DdMaxJointsPc;
+#pragma bss_seg()
+#pragma data_seg(".data$ModelAnimLayerListDispatchPc")
+    i32(__cdecl *ModelAnimLayerListDispatchPc)(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32) = PCBuildModelLayerList;
+#pragma data_seg()
 #pragma data_seg(".data$DwaWeightCursorPc")
     i32 DwaWeightCursorPc = 61184;
 #pragma data_seg()
