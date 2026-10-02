@@ -640,6 +640,13 @@ address    , symbol                                                         , si
 0x004ffb90 , _NuTimeGetTicksPerSecondPS                                     , 29    , "void __cdecl (u32 *, u32 *)"
 0x005001c0 , _NuGCutSceneSysPostBackgroundLoad                              , 55    , void __cdecl (void)
 0x00500b90 , _NuGCutSceneUpdateMtx                                          , 86    , void (NUMTX *)
+0x00500d50,_PCCutLocatorAni3,253,"f32 *__cdecl (CUT_LOCATOR_ANIMATION_PC *, NUMTX *, f32)"
+0x00500e50,_NuGCutLocatorCalcMtx,474,"f32 *__cdecl (CUT_LOCATOR_GENERIC_PC *, f32, NUMTX *, NUANIM_TIME2_PC *)"
+0x00502260,_PCCutRigidAni3,296,"void __cdecl (CUT_RIGID_ANIMATION_PC *, f32, NUMTX *)"
+0x00502390,_NuGCutRigidCalcMtx,644,"void __cdecl (CUT_RIGID_GENERIC_PC *, f32, NUMTX *)"
+0x00502dc0,_PCCutAni3CurveInteger,67,"i32 __cdecl (ANI3_HEADER_PC *, f32 *, i32)"
+0x00502e10,_PCCutCharacterAni3,564,"void __cdecl (CUT_CHARACTER_ANIMATION_PC *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *)"
+0x00503050,_NuGCutCharAnimProcess,1263,"void __cdecl (CUT_CHARACTER_GENERIC_PC *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *)"
 0x00505b20 , _NuGCutSceneDestroy                                            , 26    , void __cdecl (NUGCUTSCENE *)
 0x00505e10 , _instNuGCutSceneStop                                           , 56    , void __cdecl (instNUGCUTSCENE *)
 0x00506430 , _instNuGCutSceneSetMtx                                         , 41    , "void __cdecl (INSTNUGCUTSCENE *, NUMTX *)"

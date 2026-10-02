@@ -1,5 +1,7 @@
 #include "saga.h"
 
+#include <string.h>
+
 i32 __cdecl CutScene_StartFn_LSW(CUTINFO *cut) {
     NUMTX matrix;
     NUVEC *position;
@@ -255,3 +257,307 @@ i32 __cdecl KaminoE_CheckPlatHit(BOLT *bolt) {
     }
     return 0;
 }
+
+#define CUT_HAND_FLIP(m)                                                                                               \
+    do {                                                                                                               \
+        (m)->m02 = -(m)->m02;                                                                                          \
+        (m)->m12 = -(m)->m12;                                                                                          \
+        (m)->m20 = -(m)->m20;                                                                                          \
+        (m)->m21 = -(m)->m21;                                                                                          \
+        (m)->m23 = -(m)->m23;                                                                                          \
+        (m)->m32 = -(m)->m32;                                                                                          \
+    } while (0)
+
+i32 __cdecl PCCutAni3CurveInteger(ANI3_HEADER_PC *animation, f32 *values, i32 index) {
+    if (animation->curve_types[index] == 10) {
+        i32 raw;
+        memcpy(&raw, &values[index], sizeof(raw));
+        return raw;
+    }
+    return (i32)(values[index] < 0.0f ? values[index] - NuQFntHalfScale : values[index] + NuQFntHalfScale);
+}
+
+f32 *__cdecl PCCutLocatorAni3(CUT_LOCATOR_ANIMATION_PC *locator, NUMTX *matrix, f32 frame) {
+    f32 *values = NuAnimCurveExtractAllNodeCurves_3(locator->animation, 0, frame, NULL);
+    NUVEC translation;
+    if (locator->animation->node_flags[0] & 1) {
+        NUANGVEC angle;
+        angle.x = (i32)(values[3] * AIPathAngularScale);
+        angle.y = (i32)(values[4] * AIPathAngularScale);
+        angle.z = (i32)(values[5] * AIPathAngularScale);
+        NuMtxSetRotateXYZ(matrix, &angle);
+    } else
+        NuMtxSetIdentity(matrix);
+    translation.x = values[0];
+    translation.y = values[1];
+    translation.z = values[2];
+    NuMtxTranslate(matrix, &translation);
+    CUT_HAND_FLIP(matrix);
+    NuMtxTranslate(matrix, (NUVEC *)&locator->base_matrix.m30);
+    return values;
+}
+
+void __cdecl PCCutRigidAni3(CUT_RIGID_ANIMATION_PC *rigid, f32 frame, NUMTX *matrix) {
+    f32 *values = NuAnimCurveExtractAllNodeCurves_3(rigid->animation, 0, frame, NULL);
+    u8 flags = rigid->animation->node_flags[0];
+    NUVEC translation, scale;
+    if (flags & 1) {
+        NUANGVEC angle;
+        angle.x = (i32)(values[3] * AIPathAngularScale);
+        angle.y = (i32)(values[4] * AIPathAngularScale);
+        angle.z = (i32)(values[5] * AIPathAngularScale);
+        NuMtxSetRotateXYZ(matrix, &angle);
+    } else
+        NuMtxSetIdentity(matrix);
+    if (flags & 8) {
+        scale.x = values[6];
+        scale.y = values[7];
+        scale.z = values[8];
+        NuMtxPreScale(matrix, &scale);
+    }
+    translation.x = values[0];
+    translation.y = values[1];
+    translation.z = values[2];
+    NuMtxTranslate(matrix, &translation);
+    CUT_HAND_FLIP(matrix);
+    NuMtxTranslate(matrix, (NUVEC *)&rigid->base_matrix.m30);
+}
+
+void __cdecl PCCutCharacterAni3(CUT_CHARACTER_ANIMATION_PC *character, f32 frame, NUMTX *matrix, i32 *visible,
+                                u32 *animation_index, f32 *animation_rate, f32 *blend_time, f32 *start_frame,
+                                i32 *layer_mask) {
+    ANI3_HEADER_PC *animation = character->animation;
+    f32 *values = NuAnimCurveExtractAllNodeCurves_3(animation, 0, frame, NULL);
+    u8 flags = animation->node_flags[0];
+    NUVEC scale;
+    if (animation->curve_count > 6)
+        *visible = (i32)(values[6] < 0.0f ? values[6] - NuQFntHalfScale : values[6] + NuQFntHalfScale);
+    else
+        *visible = character->flags & 1;
+    if (animation_index != NULL) {
+        if (animation->curve_count > 7)
+            *animation_index = (i32)(values[7] < 0.0f ? values[7] - NuQFntHalfScale : values[7] + NuQFntHalfScale);
+        else
+            *animation_index = character->animation_index;
+        if (start_frame != NULL) {
+            if (*animation_index == 0 || *animation_index == 255)
+                *start_frame = 0.0f;
+            else if (animation->curve_count > 10)
+                *start_frame = values[10];
+            else
+                *start_frame = character->start_frame;
+        }
+    } else if (start_frame != NULL)
+        *start_frame = 0.0f;
+    if (*visible == 0)
+        return;
+    if (layer_mask != NULL)
+        *layer_mask = animation->curve_count > 11 ? PCCutAni3CurveInteger(animation, values, 11) : -1;
+    if (flags & 1) {
+        NUANGVEC angle;
+        angle.x = (i32)(values[3] * AIPathAngularScale);
+        angle.y = (i32)(values[4] * AIPathAngularScale);
+        angle.z = (i32)(values[5] * AIPathAngularScale);
+        NuMtxSetRotateXYZ(matrix, &angle);
+    } else
+        NuMtxSetIdentity(matrix);
+    NuMtxTranslate(matrix, (NUVEC *)values);
+    CUT_HAND_FLIP(matrix);
+    scale = *NuMtxGetScale(&scale, &character->base_matrix);
+    NuMtxPreScale(matrix, &scale);
+    if (animation_rate != NULL)
+        *animation_rate = animation->curve_count > 9 ? values[9] : character->animation_rate;
+    if (blend_time != NULL)
+        *blend_time = animation->curve_count > 8 ? values[8] : character->blend_time;
+}
+#undef CUT_HAND_FLIP
+
+#define CUT2_VALUE(c, t, k, n) ((k)[n] == 0 ? (c)[n].constant : NuAnimCurve2CalcValEx(&(c)[n], (t), (i32)(k)[n]))
+#define CUT2_FLIP(m)                                                                                                   \
+    do {                                                                                                               \
+        (m)->m02 = -(m)->m02;                                                                                          \
+        (m)->m12 = -(m)->m12;                                                                                          \
+        (m)->m20 = -(m)->m20;                                                                                          \
+        (m)->m21 = -(m)->m21;                                                                                          \
+        (m)->m23 = -(m)->m23;                                                                                          \
+        (m)->m32 = -(m)->m32;                                                                                          \
+    } while (0)
+
+f32 *__cdecl NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC_PC *locator, f32 frame, NUMTX *matrix, NUANIM_TIME2_PC *time) {
+    CUT_ANIMATION_PC *animation = locator->animation;
+    DWA_CURVE_CELL_PC *curves;
+    i8 *types;
+    NUVEC translation;
+    if (animation == NULL) {
+        *matrix = locator->base_matrix;
+        return NULL;
+    }
+    if ((i32)animation->prefix.header.magic >= (i32)0x414e4934 &&
+        (i32)animation->prefix.header.magic <= (i32)0x414e4935)
+        return PCCutLocatorAni3((CUT_LOCATOR_ANIMATION_PC *)locator, matrix, frame);
+    curves = animation->prefix.curves;
+    types = animation->prefix.curve_types;
+    if (animation->node_flags[0] & 1) {
+        volatile f32 rx = CUT2_VALUE(curves, time, types, 3);
+        volatile f32 ry = CUT2_VALUE(curves, time, types, 4);
+        volatile f32 rz = CUT2_VALUE(curves, time, types, 5);
+        NUANGVEC angle;
+        angle.x = (i32)(rx * AIPathAngularScale);
+        angle.y = (i32)(ry * AIPathAngularScale);
+        angle.z = (i32)(rz * AIPathAngularScale);
+        NuMtxSetRotateXYZ(matrix, &angle);
+    } else
+        NuMtxSetIdentity(matrix);
+    translation.x = CUT2_VALUE(curves, time, types, 0);
+    translation.y = CUT2_VALUE(curves, time, types, 1);
+    translation.z = CUT2_VALUE(curves, time, types, 2);
+    NuMtxTranslate(matrix, &translation);
+    CUT2_FLIP(matrix);
+    NuMtxTranslate(matrix, (NUVEC *)&locator->base_matrix.m30);
+    return NULL;
+}
+
+void __cdecl NuGCutRigidCalcMtx(CUT_RIGID_GENERIC_PC *rigid, f32 frame, NUMTX *matrix) {
+    CUT_ANIMATION_PC *animation = rigid->animation;
+    NUANIM_TIME2_PC time;
+    DWA_CURVE_CELL_PC *curves;
+    i8 *types;
+    u8 flags;
+    NUVEC translation, scale;
+    if (animation == NULL) {
+        *matrix = rigid->base_matrix;
+        return;
+    }
+    if ((i32)animation->prefix.header.magic >= (i32)0x414e4934 &&
+        (i32)animation->prefix.header.magic <= (i32)0x414e4935) {
+        PCCutRigidAni3((CUT_RIGID_ANIMATION_PC *)rigid, frame, matrix);
+        return;
+    }
+    types = animation->prefix.curve_types;
+    curves = animation->prefix.curves;
+    flags = animation->node_flags[0];
+    NuAnimData2CalcTime(&animation->prefix, frame, &time);
+    if (flags & 1) {
+        volatile f32 rx = CUT2_VALUE(curves, &time, types, 3);
+        volatile f32 ry = CUT2_VALUE(curves, &time, types, 4);
+        volatile f32 rz = CUT2_VALUE(curves, &time, types, 5);
+        NUANGVEC angle;
+        angle.x = (i32)(rx * AIPathAngularScale);
+        angle.y = (i32)(ry * AIPathAngularScale);
+        angle.z = (i32)(rz * AIPathAngularScale);
+        NuMtxSetRotateXYZ(matrix, &angle);
+    } else
+        NuMtxSetIdentity(matrix);
+    if (flags & 8) {
+        scale.x = CUT2_VALUE(curves, &time, types, 6);
+        scale.y = CUT2_VALUE(curves, &time, types, 7);
+        scale.z = CUT2_VALUE(curves, &time, types, 8);
+        NuMtxPreScale(matrix, &scale);
+    }
+    translation.x = CUT2_VALUE(curves, &time, types, 0);
+    translation.y = CUT2_VALUE(curves, &time, types, 1);
+    translation.z = CUT2_VALUE(curves, &time, types, 2);
+    NuMtxTranslate(matrix, &translation);
+    CUT2_FLIP(matrix);
+    NuMtxTranslate(matrix, (NUVEC *)&rigid->base_matrix.m30);
+}
+
+void __cdecl NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 frame, NUMTX *matrix, i32 *visible,
+                                   u32 *animation_index, f32 *animation_rate, f32 *blend_time, f32 *start_frame,
+                                   i32 *layer_mask) {
+    CUT_ANIMATION_PC *animation = character->animation;
+    NUANIM_TIME2_PC time;
+    DWA_CURVE_CELL_PC *curves;
+    i8 *types;
+    i8 flags;
+    NUVEC translation, scale;
+    if (animation == NULL) {
+        *visible = character->flags & 1;
+        if (animation_index != NULL)
+            *animation_index = character->animation_index;
+        *matrix = character->base_matrix;
+        if (animation_rate != NULL)
+            *animation_rate = character->animation_rate;
+        if (blend_time != NULL)
+            *blend_time = character->blend_time;
+        return;
+    }
+    if ((i32)animation->prefix.header.magic >= (i32)0x414e4934 &&
+        (i32)animation->prefix.header.magic <= (i32)0x414e4935) {
+        PCCutCharacterAni3((CUT_CHARACTER_ANIMATION_PC *)character, frame, matrix, visible, animation_index,
+                           animation_rate, blend_time, start_frame, layer_mask);
+        return;
+    }
+    NuAnimData2CalcTime(&animation->prefix, frame, &time);
+    curves = animation->prefix.curves;
+    types = animation->prefix.curve_types;
+    flags = animation->node_flags[0];
+    if (character->animation->prefix.curve_count > 6) {
+        volatile f32 value = CUT2_VALUE(curves, &time, types, 6);
+        *visible = (i32)value;
+    } else
+        *visible = character->flags & 1;
+    if (animation_index != NULL) {
+        if (character->animation->prefix.curve_count > 7) {
+            volatile f32 value = CUT2_VALUE(curves, &time, types, 7);
+            if (value < 0.0f)
+                *animation_index = 255;
+            else
+                *animation_index = (i32)value;
+        } else
+            *animation_index = character->animation_index;
+        if (start_frame != NULL) {
+            if (*animation_index == 0 || *animation_index == 255)
+                *start_frame = 0.0f;
+            else if (character->animation->prefix.curve_count > 10) {
+                volatile f32 value = CUT2_VALUE(curves, &time, types, 10);
+                *start_frame = value;
+            } else
+                *start_frame = character->start_frame;
+        }
+    } else if (start_frame != NULL)
+        *start_frame = 0.0f;
+    if (*visible == 0)
+        return;
+    if (layer_mask != NULL) {
+        if (character->animation->prefix.curve_count > 11) {
+            volatile f32 value = CUT2_VALUE(curves, &time, types, 11);
+            *layer_mask = (i32)value;
+        } else
+            *layer_mask = -1;
+    }
+    if (flags & 1) {
+        volatile f32 rx = CUT2_VALUE(curves, &time, types, 3);
+        volatile f32 ry = CUT2_VALUE(curves, &time, types, 4);
+        volatile f32 rz = CUT2_VALUE(curves, &time, types, 5);
+        NUANGVEC angle;
+        angle.x = (i32)(rx * AIPathAngularScale);
+        angle.y = (i32)(ry * AIPathAngularScale);
+        angle.z = (i32)(rz * AIPathAngularScale);
+        NuMtxSetRotateXYZ(matrix, &angle);
+    } else
+        NuMtxSetIdentity(matrix);
+    translation.x = CUT2_VALUE(curves, &time, types, 0);
+    translation.y = CUT2_VALUE(curves, &time, types, 1);
+    translation.z = CUT2_VALUE(curves, &time, types, 2);
+    NuMtxTranslate(matrix, &translation);
+    CUT2_FLIP(matrix);
+    scale = *NuMtxGetScale(&scale, &character->base_matrix);
+    NuMtxPreScale(matrix, &scale);
+    if (animation_rate != NULL) {
+        if (character->animation->prefix.curve_count > 9) {
+            volatile f32 value = CUT2_VALUE(curves, &time, types, 9);
+            *animation_rate = value;
+        } else
+            *animation_rate = character->animation_rate;
+    }
+    if (blend_time != NULL) {
+        if (character->animation->prefix.curve_count > 8) {
+            volatile f32 value = CUT2_VALUE(curves, &time, types, 8);
+            *blend_time = value;
+        } else
+            *blend_time = character->blend_time;
+    }
+}
+#undef CUT2_VALUE
+#undef CUT2_FLIP

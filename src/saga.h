@@ -4572,6 +4572,73 @@ STATIC_ASSERT(offsetof(NUANIMDATA2_SKELETAL_PC, prefix) == 0);
 STATIC_ASSERT(offsetof(NUANIMDATA2_SKELETAL_PC, node_flags) == 0x14);
 STATIC_ASSERT(sizeof(NUANIMDATA2_SKELETAL_PC) == 0x18);
 
+typedef struct CUT_LOCATOR_ANIMATION_PC {
+    NUMTX base_matrix;
+    u8 unknown_40_4f[16];
+    ANI3_HEADER_PC *animation;
+} CUT_LOCATOR_ANIMATION_PC;
+typedef struct CUT_RIGID_ANIMATION_PC {
+    NUMTX base_matrix;
+    u8 unknown_40_4b[12];
+    ANI3_HEADER_PC *animation;
+} CUT_RIGID_ANIMATION_PC;
+typedef struct CUT_CHARACTER_ANIMATION_PC {
+    NUMTX base_matrix;
+    u8 unknown_40[4];
+    ANI3_HEADER_PC *animation;
+    u8 unknown_48_57[16];
+    f32 animation_rate;
+    u8 flags;
+    u8 animation_index;
+    u8 unknown_5e_60[3];
+    u8 blend_time;
+    u8 unknown_62;
+    i8 start_frame;
+} CUT_CHARACTER_ANIMATION_PC;
+STATIC_ASSERT(offsetof(CUT_LOCATOR_ANIMATION_PC, animation) == 0x50);
+STATIC_ASSERT(offsetof(CUT_RIGID_ANIMATION_PC, animation) == 0x4c);
+STATIC_ASSERT(offsetof(CUT_CHARACTER_ANIMATION_PC, animation) == 0x44);
+STATIC_ASSERT(offsetof(CUT_CHARACTER_ANIMATION_PC, animation_rate) == 0x58);
+STATIC_ASSERT(offsetof(CUT_CHARACTER_ANIMATION_PC, flags) == 0x5c);
+STATIC_ASSERT(offsetof(CUT_CHARACTER_ANIMATION_PC, blend_time) == 0x61);
+STATIC_ASSERT(offsetof(CUT_CHARACTER_ANIMATION_PC, start_frame) == 0x63);
+
+typedef NUANIMDATA2_SKELETAL_PC CUT_ANIMATION_PC;
+typedef struct CUT_LOCATOR_GENERIC_PC {
+    NUMTX base_matrix;
+    u8 unknown_40_4f[16];
+    CUT_ANIMATION_PC *animation;
+} CUT_LOCATOR_GENERIC_PC;
+typedef struct CUT_RIGID_GENERIC_PC {
+    NUMTX base_matrix;
+    u8 unknown_40_4b[12];
+    CUT_ANIMATION_PC *animation;
+} CUT_RIGID_GENERIC_PC;
+typedef struct CUT_CHARACTER_GENERIC_PC {
+    NUMTX base_matrix;
+    u8 unknown_40[4];
+    CUT_ANIMATION_PC *animation;
+    u8 unknown_48_57[16];
+    f32 animation_rate;
+    u8 flags;
+    u8 animation_index;
+    u8 unknown_5e_60[3];
+    u8 blend_time;
+    u8 unknown_62;
+    i8 start_frame;
+} CUT_CHARACTER_GENERIC_PC;
+STATIC_ASSERT(offsetof(CUT_ANIMATION_PC, node_flags) == 0x14);
+STATIC_ASSERT(offsetof(CUT_LOCATOR_GENERIC_PC, animation) == 0x50);
+STATIC_ASSERT(offsetof(CUT_RIGID_GENERIC_PC, animation) == 0x4c);
+STATIC_ASSERT(offsetof(CUT_CHARACTER_GENERIC_PC, animation) == 0x44);
+STATIC_ASSERT(offsetof(CUT_CHARACTER_GENERIC_PC, animation_rate) == 0x58);
+STATIC_ASSERT(offsetof(CUT_CHARACTER_GENERIC_PC, flags) == 0x5c);
+STATIC_ASSERT(offsetof(CUT_CHARACTER_GENERIC_PC, animation_index) == 0x5d);
+STATIC_ASSERT(offsetof(CUT_CHARACTER_GENERIC_PC, blend_time) == 0x61);
+STATIC_ASSERT(offsetof(CUT_CHARACTER_GENERIC_PC, start_frame) == 0x63);
+
+STATIC_ASSERT(offsetof(CUT_CHARACTER_ANIMATION_PC, animation_index) == 0x5d);
+
 typedef struct NUANIM_TIME2_PC {
     f32 time;
     f32 time_offset;
@@ -6020,6 +6087,15 @@ extern "C" {
     extern u16 podrace_die_angle_b;
     extern u16 podrace_die_angle_c;
     void __cdecl instNuGCutSceneSetMtx(INSTNUGCUTSCENE *inst, NUMTX *mtx);
+    f32 *__cdecl PCCutLocatorAni3(CUT_LOCATOR_ANIMATION_PC *, NUMTX *, f32);
+    void __cdecl PCCutRigidAni3(CUT_RIGID_ANIMATION_PC *, f32, NUMTX *);
+    void __cdecl PCCutCharacterAni3(CUT_CHARACTER_ANIMATION_PC *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *,
+                                    i32 *);
+    i32 __cdecl PCCutAni3CurveInteger(ANI3_HEADER_PC *, f32 *, i32);
+    f32 *__cdecl NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC_PC *, f32, NUMTX *, NUANIM_TIME2_PC *);
+    void __cdecl NuGCutRigidCalcMtx(CUT_RIGID_GENERIC_PC *, f32, NUMTX *);
+    void __cdecl NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *,
+                                       i32 *);
     extern NULSTHDR *bgproc_procinfo_pool;
     extern volatile u32 nu_current_thread_id;
     extern void(__cdecl *NuThreadDisableThreadSwap)(void);

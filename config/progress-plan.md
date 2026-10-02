@@ -723,3 +723,27 @@ under their normal input domains; final translation-unit compilation and
 complete comparisons still gate the next source release. Preserve the signed
 format checks, generic-vs-provider integer conversion differences, raw scale
 copy and outputs intentionally left untouched.
+
+Wave 52 integrates all seven complete cutscene functions, totaling 3561
+original PC bytes, in the existing cutscene unit. Independent identity,
+source and actual compiler gates pass; the final object reproduces the
+reviewed pilot bytes and relocations for every function. Full build and
+665 checks pass (three skips), with all address mappings and relocations
+resolved. Complete affected retail comparisons pass without truncation or
+masking; the seven functions remain nonexact. Complete matching reaches
+388137 compared bytes, 47697 exact bytes and 6.787306% whole-code fuzzy
+coverage, up 3561 compared bytes and 0.083254 percentage points. All 828
+previous exact functions and 2257 exact data rows remain a release gate.
+
+The unchanged graph policy now has 1572 accepted and 1301 inferred pairs:
+six old hypotheses become reviewed anchors, and the integer provider is one
+new reviewed pair. Union grows from 2872 to 2873 without new inferred pairs
+or lost union pairs. DATA stays at 2462 with one competing candidate replaced;
+122 reviewed data anchors and 30 rejections remain unchanged. The graph run
+peaks at 692424 KiB RSS with zero swaps under the 1024 MiB limit.
+
+The next connected target is the 1266-byte look-at locator update at PC
+0x506e40, paired with native 0x438d90. Review its private providers and
+working fields together. Keep the crossed camera proposal rejected as a
+candidate: native 0x4361a0 requires a new complete body review before the
+1463-byte PC camera update can advance.

@@ -1006,3 +1006,18 @@ states. Actual DIR32 emission remains a compiler gate.
 Both views receive zero original allocation and exact-data credit. Shared
 skeletal, pivot/override and model/packet additions replace only verified
 working field cohorts; they do not promote historical allocation/type claims.
+
+## Cutscene animation working views (wave 52)
+
+The generic locator, rigid and character animation views assert the PC
+animation pointer offsets 0x50, 0x4c and 0x44 respectively. Character rate,
+flags, index, unsigned blend and signed start accesses retain offsets 0x58,
+0x5c, 0x5d, 0x61 and 0x63. ANI3 uses distinct working prefixes and curve-type
+storage; the legacy skeletal view reuses its separately verified flags
+pointer at 0x14. These are access contracts, with zero new original allocation
+credit. The existing DWA prefix remains unchanged.
+
+Compilation emits an additional copy of the already mapped zero literal at
+0x751658. Every copy is compared, and the copy does not create another
+original extent. Angular conversion uses the existing verified double at
+0x755d18; no new source backing globals are introduced.

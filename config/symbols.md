@@ -3539,3 +3539,46 @@ NULL outputs, while PC calls 0x5ceee0 directly for both roles. Raw callsite
 context therefore differs; both parents already have the direct backend
 anchor, so this observation does not create a second independent root or
 prove additional automatic mapping. The wrapper gets no invented PC binding.
+
+## Cutscene matrix and character animation family (wave 52)
+
+Seven complete PC functions are reconstructed together in `cutscene_hooks.c`:
+NuGCutLocatorCalcMtx at 0x500e50 (474 bytes), NuGCutRigidCalcMtx at 0x502390
+(644), NuGCutCharAnimProcess at 0x503050 (1263), and their selected ANI3
+providers at 0x500d50 (253), 0x502260 (296), 0x502e10 (564) and 0x502dc0 (67).
+Independent paired original-body reviews establish all seven identities and
+complete extents. The providers use the neutral PC names PCCutLocatorAni3,
+PCCutRigidAni3, PCCutCharacterAni3 and PCCutAni3CurveInteger; retained native
+names identify the corresponding `_3` routines and GetIntCurveVal. Android
+source remains a reference, with the PC bodies authoritative.
+
+The working interfaces have four, three and nine physical argument words for
+the generic parents, and three, three, nine and three for the providers.
+Asserted field cohorts distinguish legacy skeletal animation from ANI3;
+they establish accessed offsets rather than historical complete types.
+Source preserves signed format guards, lazy visibility/output writes,
+translation and handedness changes, raw scale copies, and the different
+generic and provider index conversions. Curve type 10 returns the raw integer
+bits. Character paths that leave start/layer outputs untouched still do so.
+Angular conversion reuses the verified existing double at 0x755d18.
+
+Independent compiler reviews cover every normal return, physical call
+arguments, nonvolatile registers, stack and x87 balance under the documented
+valid pointer, curve, finite conversion and engine-provider domains. The
+final translation unit emits the same complete bytes and relocations as the
+reviewed pilot for all seven functions. Complete retail comparisons retain
+their original extents; all seven remain nonexact. The new functions introduce
+one compiler copy of the existing zero literal at 0x751658, with no new original
+data range. The journal accepts identities/extents and explicitly leaves
+historical ABI/type promotion false. Compared original code reaches 388137
+bytes, with 47697 exact bytes and 6.787306% whole-code fuzzy coverage. This
+family adds 3561 compared bytes and no new exact bytes.
+
+Next, review NuGCutLookAtLocatorUpdate at PC 0x506e40 against native 0x438d90
+(1266 PC bytes; the retained native span is 1546 bytes with 1519 reachable).
+Independent compound identity and PC extent review passes, but private
+incoming ECX, providers, field contracts and the exact original native name
+remain held. It receives no source coverage or CSV binding yet.
+The first camera pairing was crossed: PC 0x506880 is a camera interpolation
+body, whereas native 0x4393a0 is a locator/debris update. Native 0x4361a0 is a
+camera candidate requiring its own complete original-body review.
