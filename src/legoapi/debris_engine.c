@@ -981,3 +981,78 @@ void __cdecl DebrisProcessTriggers(void) {
     for (i = 0; i <= last_switch_change; ++i)
         debris_object_switches[switch_changes[i][0]] = switch_changes[i][1];
 }
+
+void __cdecl DebrisTimeSlip(i32 group) {
+    DEBRIS_CHUNK_CONTROL_PC *control;
+    i32 i, chunk_index, particle_index;
+    if (group == 0) {
+        globaltime = debris_render_global_time;
+        for (control = debris_chunk_control_stack[0]; control != NULL; control = control->next)
+            control->expiry_time -= 800.0;
+    } else if (group == 1) {
+        panelglobaltime = debris_render_panel_time;
+        for (control = debris_chunk_control_stack[1]; control != NULL; control = control->next)
+            control->expiry_time -= 800.0;
+    }
+    for (i = 0; i < maxdebkeys; ++i) {
+        DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[i];
+        DEBRIS_INFO_PC *effect = debtab[key->effect_index];
+        if (effect->time_group == 4 ? group != 1 : group != 0)
+            continue;
+        key->last_update_time -= 800.0;
+        key->emission_epoch -= 800.0;
+        key->emission_time -= 800.0;
+        key->previous_emission_time -= 800.0;
+        key->emission_end_time -= 800.0;
+        for (chunk_index = 0; chunk_index < 32; ++chunk_index) {
+            DEBRIS_PARTICLE_CHUNK_PC *chunk = key->particle_chunks[chunk_index];
+            i32 count;
+            if (chunk == NULL)
+                continue;
+            count = effect->particle_type == 7 ? 12 : 32;
+            for (particle_index = 0; particle_index < count; ++particle_index)
+                chunk->particles[particle_index].start_time -= 800.0;
+        }
+    }
+    for (i = 1; i < debinf_count; ++i) {
+        DEBRIS_INFO_PC *effect = debtab[i];
+        if (effect == NULL)
+            continue;
+        if (effect->time_group == 4 ? group != 1 : group != 0)
+            continue;
+        effect->last_render_time -= 800.0;
+        if (effect->native_data != NULL)
+            effect->native_data->last_render_time -= 800.0;
+    }
+}
+
+void __cdecl DebrisProcessTimeSlip(void) {
+    if (globaltime - 1.0 > debris_render_global_time)
+        DebrisTimeSlip(0);
+    else if (globaltime > 900.0)
+        debris_render_global_time -= 800.0;
+    if (panelglobaltime - 1.0 > debris_render_panel_time)
+        DebrisTimeSlip(1);
+    else if (panelglobaltime > 900.0)
+        debris_render_panel_time -= 800.0;
+}
+
+void __cdecl DebrisFreeOldestDmaDebTypeTable(void) {
+    i32 i, oldest = 0;
+    f32 oldest_age = 0.0f;
+    for (i = 1; i < debinf_count; ++i) {
+        DEBRIS_INFO_PC *effect = debtab[i];
+        f32 age;
+        if (effect == NULL || effect->native_data == NULL)
+            continue;
+        age = (effect->time_group == 4 ? panelglobaltime : globaltime) - effect->last_render_time;
+        if (age > oldest_age) {
+            oldest_age = age;
+            oldest = i;
+        }
+    }
+    if (oldest != 0) {
+        DmaDebTypes[--freeDmaDebType] = debtab[oldest]->native_data;
+        debtab[oldest]->native_data = NULL;
+    }
+}

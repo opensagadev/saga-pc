@@ -12,7 +12,7 @@ i32 nused_sort_pris;
 NUSORTPRI *sort_list;
 i32 render_scene_index;
 NURNDRLIBSCENE sceneParameters[32];
-NUDISPLAYLISTRENDERSCENE *render_scene_ptrs[16];
+NUDISPLAYLISTRENDERSCENE *render_scene_ptrs[24];
 i32 nudlist_alloc_count;
 u32 nudlist_alloc_base;
 u32 nudlist_alloc_end;
@@ -106,7 +106,7 @@ i32 __cdecl NuDisplayListAddRenderScene(void) {
     count = 0;
 
     for (node = sort_list; node != NULL; node = node->sys_next) {
-        sub = node->display_scene;
+        sub = node->legacy_display_scene;
         if (sub != NULL && (sub->flags & 0x10) != 0) {
             if ((sub->flags & 0x2) != 0) {
                 continue;

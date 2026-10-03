@@ -51,9 +51,13 @@ typedef struct NuSpecialSceneView {
 } NuSpecialSceneView;
 
 typedef struct NuSpecialLegacyObjectView {
-    u8 unknown_00[0x34];
+    u8 unknown_00[0x1c];
+    NUVEC bounds_min;
+    NUVEC bounds_max;
     NUVEC center;
     f32 radius;
+    u8 unknown_44[8];
+    struct NuSpecialLegacyObjectView *next;
 } NuSpecialLegacyObjectView;
 
 typedef struct NuSpecialLegacyInstanceIndexView {
@@ -772,5 +776,37 @@ void __cdecl NuSpecialSetDrawMtx(NUSPECIALHANDLE *special, NUMTX *matrix) {
     if ((display_list->instance_visibility_enabled & 1) != 0) {
         NuDisplayListUpdateSpecial(special);
         ((NuSpecialDisplayView *)special->display_special)->flags |= 0x400;
+    }
+}
+
+STATIC_ASSERT(offsetof(NuSpecialLegacyObjectView, bounds_min) == 0x1c);
+STATIC_ASSERT(offsetof(NuSpecialLegacyObjectView, bounds_max) == 0x28);
+STATIC_ASSERT(offsetof(NuSpecialLegacyObjectView, next) == 0x4c);
+
+void __cdecl NuSpecialGetBounds(NUSPECIALHANDLE *special, NUVEC *minimum, NUVEC *maximum) {
+    NuSpecialLegacyView *legacy;
+    NuSpecialLegacyInstanceIndexView *instance;
+    NuSpecialLegacySceneObjectsView *scene;
+    NuSpecialLegacyObjectView *object;
+    NUDISPLAY_SPECIAL_PC *display;
+    legacy = (NuSpecialLegacyView *)special->special;
+    if (legacy != NULL) {
+        instance = (NuSpecialLegacyInstanceIndexView *)legacy->instance;
+        scene = (NuSpecialLegacySceneObjectsView *)special->scene;
+        object = scene->objects[instance->object_index];
+        while (object->next != NULL)
+            object = object->next;
+        *minimum = object->bounds_min;
+        *maximum = object->bounds_max;
+        return;
+    }
+    display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
+    if (display != NULL) {
+        minimum->x = display->bounds_min.x;
+        minimum->y = display->bounds_min.y;
+        minimum->z = display->bounds_min.z;
+        maximum->x = display->bounds_max.x;
+        maximum->y = display->bounds_max.y;
+        maximum->z = display->bounds_max.z;
     }
 }

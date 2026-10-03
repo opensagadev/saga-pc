@@ -4,3 +4,12 @@
 void __cdecl TerrainDiagnosticNoOpPC(const void *context, ...) {
     (void)context;
 }
+
+f32 __cdecl TerrainDivideNonzeroPC(f32 numerator, f32 denominator) {
+    if (numerator != 0.0f && denominator != 0.0f) {
+        numerator /= denominator;
+    } else {
+        numerator = 0.0f;
+    }
+    return numerator;
+}

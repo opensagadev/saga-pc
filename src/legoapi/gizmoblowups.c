@@ -188,3 +188,93 @@ i32 __cdecl GizmoBlowupCheckProximity(WORLDINFO *world, GAMEOBJECT *object) {
     }
     return count;
 }
+
+void *__cdecl GameAntinode_RegisterAntiNodeUsingData(void *, NUVEC *, u16, void *, f32, i32);
+
+typedef struct blowup_mid_type_pc_s {
+    u8 unknown_00[0x30];
+    NUSPECIALHANDLE animated_special;
+    u8 unknown_3c[0x78];
+    u8 anti_node_data[0x24];
+} BLOWUP_MID_TYPE_PC;
+typedef struct blowup_mid_view_pc_s {
+    NUMTX transform;
+    u8 unknown_40[0xc];
+    NUVEC mid_position;
+    u8 unknown_58[0x3c];
+    u32 status_flags, draw_flags;
+    u8 unknown_9c[8];
+    BLOWUP_MID_TYPE_PC *type;
+    f32 target_scale;
+    u8 unknown_ac[0x2c];
+    void *anti_node;
+    u8 unknown_dc[0xe];
+    u16 angle_a, angle_b;
+} BLOWUP_MID_VIEW_PC;
+STATIC_ASSERT(offsetof(BLOWUP_MID_TYPE_PC, animated_special) == 0x30);
+STATIC_ASSERT(offsetof(BLOWUP_MID_TYPE_PC, anti_node_data) == 0xb4);
+STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, transform) == 0);
+STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, mid_position) == 0x4c);
+STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, status_flags) == 0x94);
+STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, draw_flags) == 0x98);
+STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, type) == 0xa4);
+STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, target_scale) == 0xa8);
+STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, anti_node) == 0xd8);
+STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, angle_a) == 0xea);
+STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, angle_b) == 0xec);
+
+void __cdecl UpdateMidPos(GIZMOBLOWUP_PC *opaque_blowup) {
+    BLOWUP_MID_VIEW_PC *blowup = (BLOWUP_MID_VIEW_PC *)opaque_blowup;
+    NUVEC minimum, maximum, corners[8];
+    f32 x, y, z;
+    i32 i;
+    if (blowup->draw_flags & 0x1000)
+        blowup->mid_position = *(NUVEC *)&blowup->transform.m30;
+    if (blowup->anti_node == NULL || (blowup->draw_flags & 0x1000) == 0) {
+        NuSpecialGetBounds(&blowup->type->animated_special, &minimum, &maximum);
+        corners[0].x = minimum.x;
+        corners[0].y = minimum.y;
+        corners[0].z = minimum.z;
+        corners[1].x = maximum.x;
+        corners[1].y = minimum.y;
+        corners[1].z = minimum.z;
+        corners[2].x = maximum.x;
+        corners[2].y = minimum.y;
+        corners[2].z = maximum.z;
+        corners[3].x = minimum.x;
+        corners[3].y = minimum.y;
+        corners[3].z = maximum.z;
+        corners[4].x = minimum.x;
+        corners[4].y = maximum.y;
+        corners[4].z = minimum.z;
+        corners[5].x = maximum.x;
+        corners[5].y = maximum.y;
+        corners[5].z = minimum.z;
+        corners[6].x = maximum.x;
+        corners[6].y = maximum.y;
+        corners[6].z = maximum.z;
+        corners[7].x = minimum.x;
+        corners[7].y = maximum.y;
+        corners[7].z = maximum.z;
+        NuVecMtxTransformVU0(&minimum, &minimum, &blowup->transform);
+        NuVecMtxTransformVU0(&maximum, &maximum, &blowup->transform);
+        for (i = 0; i < 8; ++i)
+            NuVecMtxTransformVU0(&corners[i], &corners[i], &blowup->transform);
+        if ((blowup->draw_flags & 0x1000) == 0) {
+            blowup->mid_position.x = (maximum.x - minimum.x) * NuQFntHalfScale + minimum.x;
+            blowup->mid_position.y = (maximum.y - minimum.y) * NuQFntHalfScale + minimum.y;
+            blowup->mid_position.z = (maximum.z - minimum.z) * NuQFntHalfScale + minimum.z;
+        }
+    }
+    if (blowup->anti_node == NULL && (blowup->status_flags & 0x4000) != 0)
+        blowup->anti_node = GameAntinode_RegisterAntiNodeUsingData(
+            WORLD->game_antinode_sys, &blowup->mid_position, (u16)(blowup->angle_a + blowup->angle_b),
+            blowup->type->anti_node_data, 0.0f, blowup->draw_flags & 0x4000);
+    if ((blowup->draw_flags & 0x1000) == 0) {
+        x = maximum.x - blowup->mid_position.x;
+        y = maximum.y - blowup->mid_position.y;
+        z = maximum.z - blowup->mid_position.z;
+        blowup->target_scale = NuFsqrt(x * x + y * y + z * z);
+    }
+    blowup->status_flags &= ~0x10000;
+}

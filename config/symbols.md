@@ -3623,3 +3623,14 @@ as transferred source. Broad level-registration crosswalk hypotheses likewise
 remain unpromoted until individually reviewed. The neutral terrain diagnostic at
 0x0064fdb0 is a genuine one-byte return; importing Android's active NaN-check
 behavior there would be incorrect.
+
+
+### Publication/scanner contracts (2026-10-03)
+
+Complete reviewed PC spans and calling conventions underpin the movement,
+display, scanner, debris and gameplay source families. Compiler literal aliases
+at the same VA retain existing bindings; overlapping bytes count only once.
+Display front/safe registries expose 24 pointers; their historical allocation
+extents remain unknown. Native frustum accessed groups assert stride 0x380,
+planes at 0x1a0 and count at 0x260, without claiming backing capacity. Private
+display ABI differences are documented in transfer-execution.md.

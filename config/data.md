@@ -1106,3 +1106,15 @@ is 128 zero bytes with original extent blank; valid tested trigger indices are
 0 through 127, with -1 preserved as the sentinel. Receipts, canonical-owner
 proof and sorted proposals are retained under the ignored transfer-execution
 data directory.
+
+
+### Publication/scanner data checkpoint (2026-10-03)
+
+Added 86 genuine definitions; all 435 baseline proofs are unchanged. Scoped
+receipt: 521 definitions, 286 known extents covering 134,250 unique bytes;
+235 unknown extents expose 15,837 source bytes without extent/exact credit.
+BSS, pointers, initialized values and eight camera corners were independently
+checked against PC. Carry 8.0/blowup owners are reused; compiler constant aliases
+retain prior bindings. Scanner margin doubles have exact 8-byte initializer
+views but blank original extents. Camera/cache/output/registry backing remains
+bounded source views without guessed allocation capacity.

@@ -550,3 +550,15 @@ void __cdecl WorldInfo_LoadObjectAnimFile(WORLDINFO *world) {
         }
     }
 }
+
+void __cdecl LoadTerrainFile(WORLDINFO *world) {
+    LEVELDATA_PC *level = world->current_level;
+
+    world->terrain = NULL;
+    if ((level->flags & 8) != 0) {
+        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3U;
+        world->terrain = TerrainInitEx(world->level_idx, &world->giz_buffer, world->buffer_end.void_ptr, 0,
+                                       world->config_file, world->current_gscn, 0, (u32)(u16)level->max_ter_groups,
+                                       (u32)(u16)level->max_ter_groups, (u32)(u16)level->max_ter_platforms);
+    }
+}

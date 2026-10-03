@@ -368,3 +368,42 @@ corrected: 5f0470 is NuDisplaySceneClone with a complete 1,612-byte extent, and
 the former combined sort range separates private clipping (688 bytes) from frame
 publication (392 bytes). Broad callback hypotheses remain separate from accepted
 PC identities. The ongoing goal remains active.
+
+
+## Publication, scanning and movement checkpoint — 2026-10-03
+
+Transferred 57 newly compared functions covering 27,055 unique original PC code
+bytes. Compared code grows from 496,034 to 523,089 bytes. Whole-PC fuzzy coverage
+grows from 8.8455625% to 9.2502337% over 3,471,246 retail text bytes. Exact code
+grows from 58,644 to 59,426 bytes (+782); all prior exact code and data remain
+exact. Inventory-only additions are excluded.
+
+Connected families: movement backends (6,130 bytes), terrain scanners/native
+division (9,351), display publication/native frustum (4,690), gameplay
+bounds/force/boss/antinode helpers (2,316), debris clock/cache/camera setters
+(2,468), Episode VI callbacks/terrain loader (2,100). Directional movement,
+general combat, and shader/material/GHG remain next-wave work.
+
+PC corrections include all 24 display registry slots in both publication copies,
+preserving the front registry; 32 normal versus 12 glass timestamps; cache eviction
+tie order; cached camera behavior; actual movement constants and field offsets.
+Antinode radius selects x for equal or unordered comparisons, preserving PC
+NaN/signed-zero semantics. Its final advisory similarity is 0%; it is nonexact.
+
+The private display helper/caller group remains coherent ordinary C. One rebuilt
+helper uses a stack scene parameter instead of retail ESI: a documented nonexact
+internal ABI difference, with full comparisons and no register adapter.
+ScanTerrain first score is 22.338854%, ScanWallSplineTerrain 27.37013%; complete
+original extents, out-of-line tails and genuine actions are retained.
+
+Real-provider native fixtures pass: display publication 96 pointer assertions
+over all 24 slots/repeated updates, frustum 505 cases, debris clock isolation,
+timestamp shifts, equal-age eviction, pool recycle, camera cache hold/update,
+inverse ranges and rotation pointers. Source-only linkage remains an incomplete
+game entry path; full gameplay and original level resources remain unverified.
+
+Required aggregate checks pass: 665 tests with three expected skips, LLVM18
+formatting and tidy over 180 translation units, and a source-only link across
+180 objects with 2,156 function and 3,428 data definitions; all mappings and
+relocations resolve. The native movement backend fixture also passes. All source
+families remain frozen during final report refresh and direct-main push.

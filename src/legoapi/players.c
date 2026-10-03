@@ -111,6 +111,351 @@ i32 __cdecl Climb_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     return 1;
 }
 
+extern i16 LEGOACT_SUPERCARRY_WALK;
+extern i32 LEGOCONTEXT_COMBO;
+extern const f64 PlayerStepInnerActionPc, PlayerStepOuterActionPc, PlayerStepInnerPc, PlayerStepOuterPc;
+extern const f64 TerrainSkinSampleCountPc;
+extern const f64 PlayerSlideSpeedPc, PlayerTightRopePhasePc, PlayerRandomScalePc;
+extern const f32 PlayerPanelVariantZeroX, PlayerPanelVariantZeroZ, PlayerPanelVariantOneX, PlayerPanelVariantOneZ;
+extern void *PlayerSpecialMoveDataPc;
+
+typedef struct specialmove_distance_pc_s {
+    u8 unknown_00[0xc];
+    f32 distance_apart;
+} SPECIALMOVE_DISTANCE_PC;
+STATIC_ASSERT(sizeof(SPECIALMOVE_DISTANCE_PC) == 0x10);
+STATIC_ASSERT(offsetof(SPECIALMOVE_DISTANCE_PC, distance_apart) == 0xc);
+
+__declspec(noinline) void __cdecl SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *object) {
+    SPECIALMOVE_DISTANCE_PC *moves = (SPECIALMOVE_DISTANCE_PC *)PlayerSpecialMoveDataPc;
+    f32 distance = object->special_move_pc != -1 ? moves[object->special_move_pc].distance_apart : 0.0f;
+    u16 angle = object->movement_facing_angle;
+    f32 z = object->force_target->position.z - NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * distance;
+    f32 x = object->force_target->position.x - NuTrigTable[angle >> 1] * distance;
+    object->target_velocity.z = (z - object->position.z) * 10.0;
+    object->velocity.z = object->target_velocity.z;
+    object->target_velocity.x = (x - object->position.x) * 10.0;
+    object->velocity.x = object->target_velocity.x;
+}
+
+typedef struct blowup_movement_pc_s {
+    u8 unknown_00[0x4c];
+    NUVEC mid_position;
+    u8 unknown_58[0x50];
+    f32 target_radius;
+} BLOWUP_MOVEMENT_PC;
+STATIC_ASSERT(offsetof(BLOWUP_MOVEMENT_PC, mid_position) == 0x4c);
+STATIC_ASSERT(offsetof(BLOWUP_MOVEMENT_PC, target_radius) == 0xa8);
+
+__declspec(noinline) i32 __cdecl CanStepBack(GAMEOBJECT *object) {
+    i8 context = object->character_context;
+    if ((CInfo[context].flags & 0x10000) ||
+        (LEGOCONTEXT_JUMP != -1 && LEGOCONTEXT_JUMP == context && object->action_movement_state == 3))
+        return 1;
+    if ((object->character_data->game_character->flags_090 & 0x8000) && LEGOCONTEXT_COMBO != 0 &&
+        LEGOCONTEXT_COMBO == context)
+        return 1;
+    return 0;
+}
+
+__declspec(noinline) i32 __cdecl StepBackFromTarget(GAMEOBJECT *object) {
+    NUVEC *target_position;
+    BLOWUP_MOVEMENT_PC *blowup = (BLOWUP_MOVEMENT_PC *)object->blowup_target;
+    f32 inner_distance, outer_distance, speed, distance_squared, blend;
+    if (blowup != NULL) {
+        target_position = &blowup->mid_position;
+        if ((LEGOCONTEXT_COMBO != -1 && LEGOCONTEXT_COMBO == object->character_context) ||
+            (LEGOCONTEXT_JUMP != -1 && LEGOCONTEXT_JUMP == object->character_context &&
+             object->action_movement_state == 3)) {
+            inner_distance = object->collision_radius * PlayerStepInnerActionPc + blowup->target_radius;
+            outer_distance = object->collision_radius * PlayerStepOuterActionPc + blowup->target_radius;
+        } else {
+            inner_distance = object->collision_radius * PlayerStepInnerPc + blowup->target_radius;
+            outer_distance = object->collision_radius * PlayerStepOuterPc + blowup->target_radius;
+        }
+    } else {
+        if (!(object->character_data->game_character->flags_090 & 0x8000) || object->force_target == NULL)
+            return 0;
+        if ((LEGOCONTEXT_COMBO == -1 || LEGOCONTEXT_COMBO != object->character_context) &&
+            (LEGOCONTEXT_JUMP == -1 || LEGOCONTEXT_JUMP != object->character_context ||
+             object->action_movement_state != 3))
+            return 0;
+        target_position = &object->force_target->collision_position;
+        inner_distance = object->bounds_radius * PlayerStepInnerActionPc + object->force_target->bounds_radius;
+        outer_distance = object->bounds_radius * PlayerStepOuterActionPc + object->force_target->bounds_radius;
+    }
+    speed = AnimSpeed(object->character_model, object->field_7aa);
+    if (speed != 0.0f) {
+        distance_squared = NuVecXZDistSqr(&object->collision_position, target_position, NULL);
+        if (!(distance_squared >= outer_distance * outer_distance)) {
+            blend = 1.0f;
+            if (!(inner_distance * inner_distance >= distance_squared))
+                blend = 1.0f - (NuFsqrt(distance_squared) - inner_distance) / (outer_distance - inner_distance);
+            speed = (-speed - speed) * blend + speed;
+            object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
+            object->target_velocity.z = speed * NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff];
+            return 1;
+        }
+    }
+    return 0;
+}
+
+typedef struct tightrope_movement_pc_s {
+    u8 unknown_00[0x40];
+    f32 horizontal_length;
+    u16 rotation;
+} TIGHTROPE_MOVEMENT_PC;
+STATIC_ASSERT(offsetof(TIGHTROPE_MOVEMENT_PC, horizontal_length) == 0x40);
+STATIC_ASSERT(offsetof(TIGHTROPE_MOVEMENT_PC, rotation) == 0x44);
+
+__declspec(noinline) i32 __cdecl SuperCarry_SetTargetMom(GAMEOBJECT *object, f32 input_speed) {
+    f32 speed;
+    i16 animation;
+    object->target_velocity.x = 0.0f;
+    object->target_velocity.z = 0.0f;
+    if (input_speed > 0.0f) {
+        animation = object->field_7aa;
+        if ((object->field_7b3 == 1 || object->field_7b3 == 3) && animation != -1 &&
+            object->character_model->model_data_b[animation] != NULL) {
+            speed = AnimSpeed(object->character_model, animation);
+        } else if (object->field_7b3 == 3 || object->field_7b3 == 6) {
+            if (object->field_7b3 == 6 && LEGOACT_SUPERCARRY_WALK != 0 &&
+                object->character_model->model_data_b[LEGOACT_SUPERCARRY_WALK] != NULL)
+                speed = AnimSpeed(object->character_model, LEGOACT_SUPERCARRY_WALK);
+            else
+                speed = NuQFntHalfScale * object->character_data->game_character->run_speed;
+        } else {
+            return 0;
+        }
+        if (speed > 0.0f) {
+            object->target_velocity.x = NuTrigTable[object->facing_angle >> 1] * speed;
+            object->target_velocity.z = NuTrigTable[((object->facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
+        }
+    }
+    return 0;
+}
+
+__declspec(noinline) i32 __cdecl SuperCarry_YRotation(GAMEOBJECT *object, u16 input_angle) {
+    if (object->field_7b3 == 0) {
+        object->facing_angle = SeekRot(object->facing_angle, object->movement_facing_angle, 12.0f);
+        object->field_0x276 = object->facing_angle;
+    } else if (object->field_7b3 == 5) {
+        if (object->force_target != NULL)
+            object->movement_facing_angle =
+                NuAtan2D(object->force_target->collision_position.x - object->collision_position.x,
+                         object->force_target->collision_position.z - object->collision_position.z);
+        object->facing_angle = SeekRot(object->facing_angle, object->movement_facing_angle, 8.0f);
+        object->field_0x276 = object->facing_angle;
+    } else if (object->field_7b3 == 2 || object->field_7b3 == 3 || object->field_7b3 == 6) {
+        if (object->pad->input_magnitude > 0.0f)
+            object->facing_angle = TurnRot(
+                object->facing_angle, input_angle,
+                (i32)(VehicleTurnPhaseOffset * object->context_hover_target_y * TerrainSkinSampleCountPc), NULL);
+        object->field_0x276 = SeekRot(object->field_0x276, object->facing_angle, 10.0f);
+        object->movement_facing_angle = object->facing_angle;
+    }
+    return 1;
+}
+
+__declspec(noinline) i32 __cdecl SuperCarry_Carrying(GAMEOBJECT *object) {
+    if (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY) {
+        if (object->field_7b3 == 2 || object->field_7b3 == 3 || object->field_7b3 == 6)
+            return 1;
+    }
+    return 0;
+}
+
+__declspec(noinline) i32 __cdecl Slide_SetTargetMom(GAMEOBJECT *object, u16 input_angle, f32 input_speed) {
+    u16 direction;
+    NUVEC lateral;
+    if (object->field_281 != 0 &&
+        (fabsf(object->surface_normal.x) > 0.001f || fabsf(object->surface_normal.z) > 0.001f))
+        direction = NuAtan2D(object->surface_normal.x, object->surface_normal.z);
+    else
+        direction = object->movement_facing_angle;
+    object->target_velocity.x = NuTrigTable[direction >> 1] * PlayerSlideSpeedPc;
+    object->target_velocity.z = NuTrigTable[((direction + 0x4000) >> 1) & 0x7fff] * PlayerSlideSpeedPc;
+    if (object->field_281 != 0 && input_speed > 0.0f) {
+        lateral.x = NuTrigTable[input_angle >> 1] * input_speed;
+        lateral.y = 0.0f;
+        lateral.z = NuTrigTable[((input_angle + 0x4000) >> 1) & 0x7fff] * input_speed;
+        NuVecRotateY(&lateral, &lateral, -(i32)direction);
+        lateral.z = 0.0f;
+        NuVecRotateY(&lateral, &lateral, direction);
+        object->target_velocity.x += lateral.x;
+        object->target_velocity.z += lateral.z;
+    }
+    return 0;
+}
+
+__declspec(noinline) i32 __cdecl TightRope_SetTargetMom(GAMEOBJECT *object) {
+    NUVEC *anchor;
+    TIGHTROPE_MOVEMENT_PC *rope = (TIGHTROPE_MOVEMENT_PC *)object->grapple;
+    u16 rotation = rope->rotation + 0x4000;
+    f32 fraction, amplitude, direction;
+    anchor = (object->character_data->game_character->flags_090 & 0x80000) ? &object->lower_position
+                                                                           : &object->upper_position;
+    object->target_velocity.x = (object->launch_origin.x - anchor->x) * NuTimeBarColumnStep;
+    object->target_velocity.y = (object->launch_origin.y - anchor->y) * NuTimeBarColumnStep;
+    object->target_velocity.z = (object->launch_origin.z - anchor->z) * NuTimeBarColumnStep;
+    fraction = object->context_hover_target_y / rope->horizontal_length;
+    if (fraction > 1.0f)
+        fraction = 1.0f;
+    amplitude = NuQFntHalfScale * NuTrigTable[(((i32)(fraction * PlayerTightRopePhasePc)) >> 1) & 0x7fff];
+    direction = NuTrigTable[rotation >> 1];
+    object->target_velocity.x += (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude * direction;
+    object->target_velocity.y -= qrand() * PlayerRandomScalePc * amplitude;
+    direction = NuTrigTable[((rotation + 0x4000) >> 1) & 0x7fff];
+    object->target_velocity.z += (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude * direction;
+    return object->field_7aa != 5 && object->field_7aa != 6;
+}
+
+i32 __cdecl CanClimbSurface(GAMEOBJECT *, i32);
+extern i32(__cdecl *CanMagnetClimbFn)(GAMEOBJECT *);
+extern i32 LEGOCONTEXT_PUSHSPINNER, PlayerPushSpinnerDegreesPc;
+extern i16 LEGOACT_WALLSHUFFLE_LEFT, LEGOACT_WALLSHUFFLE_RIGHT;
+
+typedef struct spinner_movement_pc_s {
+    u8 unknown_00[0x84];
+    u32 state_flags;
+} SPINNER_MOVEMENT_PC;
+STATIC_ASSERT(offsetof(SPINNER_MOVEMENT_PC, state_flags) == 0x84);
+
+typedef struct world_conveyor_pc_s {
+    u8 unknown_00[0x128];
+    LEVELDATA_PC *current_level;
+    u8 unknown_12c[0x5044];
+    void *conveyor;
+} WORLD_CONVEYOR_PC;
+STATIC_ASSERT(offsetof(WORLD_CONVEYOR_PC, current_level) == 0x128);
+STATIC_ASSERT(offsetof(WORLD_CONVEYOR_PC, conveyor) == 0x5170);
+
+__declspec(noinline) i32 __cdecl CanClimbSurface(GAMEOBJECT *object, i32 surface) {
+    i32 result = 0;
+    if ((u32)surface < 32 && (TerSurface[surface].flags & 0x10000)) {
+        result = 1;
+        if (surface == 5 && (CanMagnetClimbFn == NULL || CanMagnetClimbFn(object) == 0))
+            result = 0;
+    }
+    return result;
+}
+
+__declspec(noinline) i32 __cdecl Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_difference) {
+    i32 pushing_obstacle = 0, difference;
+    u16 input_angle, angle;
+    if (LEGOCONTEXT_PUSHOBSTACLE != -1 && LEGOCONTEXT_PUSHOBSTACLE == object->character_context)
+        pushing_obstacle = 1;
+    else if (LEGOCONTEXT_JUMP != -1 && LEGOCONTEXT_JUMP == object->character_context &&
+             object->action_movement_state == 9)
+        pushing_obstacle = 1;
+    if (((object->flags_1fc & 0x80) || (object->flags_ef4 & 0x30000)) &&
+        (object->pad->input_magnitude > 0.0f || pushing_obstacle) && object->contact_count &&
+        CanClimbSurface(object, (i8)object->contact_material[0]) == 0 &&
+        fabsf(object->contact_normal.y) < NuTrigTable[0x3c71]) {
+        input_angle = pushing_obstacle ? object->movement_facing_angle : GamePad_InputAngle(object, object->pad);
+        angle = NuAtan2D(object->contact_normal.x, object->contact_normal.z);
+        difference = RotDiff(input_angle, angle);
+        if (angle_difference != NULL)
+            *angle_difference = difference;
+        if (difference < 0)
+            difference = -difference;
+        if (difference > 0x4e38 ||
+            (difference > 0x1555 && object->field_7aa != -1 &&
+             (object->field_7aa == LEGOACT_WALLSHUFFLE_RIGHT || object->field_7aa == LEGOACT_WALLSHUFFLE_LEFT))) {
+            if (normal_angle != NULL)
+                *normal_angle = angle;
+            if (surface != NULL)
+                *surface = (i8)object->contact_material[0];
+            return 1;
+        }
+    }
+    if (surface != NULL)
+        *surface = -1;
+    return 0;
+}
+
+void __cdecl SetPushAngle(GAMEOBJECT *object) {
+    SPINNER_MOVEMENT_PC *spinner;
+    u16 angle;
+    i32 adjustment;
+    if (Pushing(object, &angle, NULL, NULL)) {
+        adjustment = 0;
+        spinner = (SPINNER_MOVEMENT_PC *)object->grapple;
+        if (spinner != NULL && LEGOCONTEXT_PUSHSPINNER != -1 && LEGOCONTEXT_PUSHSPINNER == object->character_context &&
+            (spinner->state_flags & 0x40)) {
+            adjustment = PlayerPushSpinnerDegreesPc;
+            if (spinner->state_flags & 1)
+                adjustment = -adjustment;
+        }
+        object->movement_facing_angle = angle + ((adjustment + 180) * 65536) / 360;
+    }
+}
+
+i32 __cdecl Conveyor_AdjustSpeed(NUVEC *velocity) {
+    WORLD_CONVEYOR_PC *world = (WORLD_CONVEYOR_PC *)WorldInfo_CurrentlyActive();
+    if (world != NULL && world->conveyor != NULL) {
+        velocity->x += world->current_level->conveyor_x_speed;
+        velocity->z += world->current_level->conveyor_z_speed;
+    }
+    return 0;
+}
+
+__declspec(noinline) void __cdecl PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum,
+                                           GAMEOBJECT *object, GAMEOBJECT *excluded, f32 speed_multiplier, u32 flags) {
+    i32 count = 1, i;
+    NUVEC bounds_min, bounds_max;
+    f32 dx, dz, combined_radius, speed, target_x, target_z;
+    u16 angle;
+    if (object == NULL) {
+        object = Obj;
+        count = HIGHGAMEOBJECT;
+    }
+    if (maximum == NULL || minimum == NULL) {
+        bounds_min.x = position->x - radius;
+        bounds_min.y = position->y - radius;
+        bounds_min.z = position->z - radius;
+        bounds_max.x = position->x + radius;
+        bounds_max.y = position->y + radius;
+        bounds_max.z = position->z + radius;
+        minimum = &bounds_min;
+        maximum = &bounds_max;
+    }
+    for (i = 0; i < count; ++i, ++object) {
+        if (object == excluded || (object->flags_1fc_word & 0x1001) != 0x1001 || object->dead ||
+            (object->flags_e20 & 0x20))
+            continue;
+        if ((flags & 2) && !object->field_281)
+            continue;
+        if (CInfo[object->character_context].flags & 0x40000000)
+            continue;
+        if (object->character_data->game_character->flags_090 & 0x8000)
+            continue;
+        if (minimum->x > object->collision_max.x || object->collision_min.x > maximum->x ||
+            minimum->z > object->collision_max.z || object->collision_min.z > maximum->z)
+            continue;
+        if ((flags & 1) && (minimum->y > object->collision_max.y || object->collision_min.y > maximum->y))
+            continue;
+        dx = object->position.x - position->x;
+        dz = object->position.z - position->z;
+        combined_radius = radius + object->bounds_radius;
+        if (dx * dx + dz * dz < combined_radius * combined_radius) {
+            if (dz == 0.0f && dx == 0.0f)
+                angle = qrand();
+            else
+                angle = NuAtan2D(dx, dz);
+            speed = speed_multiplier * object->character_data->game_character->run_speed;
+            if (speed < 1.0f)
+                speed = 1.0f;
+            else if (speed > 3.0f)
+                speed = 3.0f;
+            target_x = speed * NuTrigTable[angle >> 1];
+            target_z = speed * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+            object->velocity.x = SeekValF(object->velocity.x, target_x, 10.0f);
+            object->velocity.z = SeekValF(object->velocity.z, target_z, 10.0f);
+        }
+    }
+}
+
 typedef struct SPECIAL_LAYER_PC_s {
     i16 *character_id;
     const char *name;

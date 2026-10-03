@@ -6057,3 +6057,269 @@ extern "C" {
     u8 debris_object_switches[128];
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$LEGOACT_SUPERCARRY_WALK")
+    i16 LEGOACT_SUPERCARRY_WALK = -1;
+#pragma data_seg()
+#pragma const_seg(".rdata$PlayerSlideSpeedPc")
+    extern const f64 PlayerSlideSpeedPc = 1.2000000476837158;
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerTightRopePhasePc")
+    extern const f64 PlayerTightRopePhasePc = 32768.0;
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerRandomScalePc")
+    extern const f64 PlayerRandomScalePc = 1.5259021893143654e-05;
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerPanelVariantZeroX")
+    extern const f32 PlayerPanelVariantZeroX = -0.03999999910593033f;
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerPanelVariantZeroZ")
+    extern const f32 PlayerPanelVariantZeroZ = -0.30000001192092896f;
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerPanelVariantOneX")
+    extern const f32 PlayerPanelVariantOneX = 0.03500000014901161f;
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerPanelVariantOneZ")
+    extern const f32 PlayerPanelVariantOneZ = -0.25f;
+#pragma const_seg()
+#pragma data_seg(".data$LEGOCONTEXT_COMBO")
+    i32 LEGOCONTEXT_COMBO = -1;
+#pragma data_seg()
+#pragma const_seg(".rdata$PlayerStepInnerActionPc")
+    extern const f64 PlayerStepInnerActionPc = 1.75;
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerStepOuterActionPc")
+    extern const f64 PlayerStepOuterActionPc = 2.25;
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerStepInnerPc")
+    extern const f64 PlayerStepInnerPc = 0.75;
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerStepOuterPc")
+    extern const f64 PlayerStepOuterPc = 1.25;
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerBuildItNegativeLimitPc")
+    extern const f32 PlayerBuildItNegativeLimitPc = -1000000000.0f;
+#pragma const_seg()
+#pragma data_seg(".data$LEGOCONTEXT_PUSHSPINNER")
+    i32 LEGOCONTEXT_PUSHSPINNER = -1;
+#pragma data_seg()
+#pragma data_seg(".data$PlayerPushSpinnerDegreesPc")
+    i32 PlayerPushSpinnerDegreesPc = 4;
+#pragma data_seg()
+#pragma bss_seg(".bss$CanMagnetClimbFn")
+    i32(__cdecl *CanMagnetClimbFn)(GAMEOBJECT *);
+#pragma bss_seg()
+#pragma bss_seg(".bss$PlayerSpecialMoveDataPc")
+    void *PlayerSpecialMoveDataPc;
+#pragma bss_seg()
+#pragma const_seg(".rdata$EpisodeVI_ShowHearts")
+    extern const char EpisodeVI_ShowHearts[11] = "ShowHearts";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_ElectricFloor")
+    extern const char EpisodeVI_ElectricFloor[14] = "ElectricFloor";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_obstacle21")
+    extern const char EpisodeVI_obstacle21[11] = "obstacle21";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_force15")
+    extern const char EpisodeVI_force15[8] = "force15";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_force16")
+    extern const char EpisodeVI_force16[8] = "force16";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_lift_force_lnull1")
+    extern const char EpisodeVI_lift_force_lnull1[18] = "lift_force_lnull1";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_lift_force_rnull1")
+    extern const char EpisodeVI_lift_force_rnull1[18] = "lift_force_rnull1";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_lift_main1")
+    extern const char EpisodeVI_lift_main1[11] = "lift_main1";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_electric_on")
+    extern const char EpisodeVI_electric_on[12] = "electric_on";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_electric_off")
+    extern const char EpisodeVI_electric_off[13] = "electric_off";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_elecpad_zero_format")
+    extern const char EpisodeVI_elecpad_zero_format[15] = "elecpad_0%d_on";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_elecpad_format")
+    extern const char EpisodeVI_elecpad_format[14] = "elecpad_%d_on";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_eFloor_AlwaysOn")
+    extern const char EpisodeVI_eFloor_AlwaysOn[16] = "eFloor_AlwaysOn";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_eFloor_AlwaysOf")
+    extern const char EpisodeVI_eFloor_AlwaysOf[16] = "eFloor_AlwaysOf";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_eFloor_OnOff")
+    extern const char EpisodeVI_eFloor_OnOff[13] = "eFloor_OnOff";
+#pragma const_seg()
+#pragma data_seg(".data$force_gizmotype_id")
+    i32 force_gizmotype_id = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$LevAIMessage")
+    GIZAIMESSAGE *LevAIMessage[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$LevArea")
+    AIAREA_PC *LevArea[1];
+#pragma bss_seg()
+#pragma bss_seg(".bss$routemask_efloor_on")
+    u64 routemask_efloor_on;
+#pragma bss_seg()
+#pragma bss_seg(".bss$routemask_efloor_off")
+    u64 routemask_efloor_off;
+#pragma bss_seg()
+#pragma bss_seg(".bss$eFloor_timer")
+    f32 eFloor_timer;
+#pragma bss_seg()
+#pragma bss_seg(".bss$hspecial_efloor")
+    NUSPECIALHANDLE *hspecial_efloor;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SarlaccBlowUpTargetCountPc")
+    i32 SarlaccBlowUpTargetCountPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SarlaccTakenOverPc")
+    i32 SarlaccTakenOverPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SarlaccPowerPc")
+    i32 SarlaccPowerPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SarlaccRechargingPc")
+    i32 SarlaccRechargingPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SarlaccRechargeTimerPc")
+    f32 SarlaccRechargeTimerPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SarlaccTargetShieldPc")
+    i32 SarlaccTargetShieldPc[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$SarlaccBlowUpTargetsPc")
+    GIZMOBLOWUP_PC *SarlaccBlowUpTargetsPc[4];
+#pragma bss_seg()
+#pragma const_seg(".rdata$EpisodeVI_magnet_drop")
+    extern const char EpisodeVI_magnet_drop[21] = "imp_c3po_magnet_drop";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_magnet_on")
+    extern const char EpisodeVI_magnet_on[14] = "env_magnet_on";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_ffieldoff")
+    extern const char EpisodeVI_ffieldoff[10] = "ffieldoff";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_ffield")
+    extern const char EpisodeVI_ffield[7] = "ffield";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_cannon_1")
+    extern const char EpisodeVI_cannon_1[9] = "cannon_1";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_cover_format")
+    extern const char EpisodeVI_cover_format[9] = "cover_%d";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_cover_gizmo_format")
+    extern const char EpisodeVI_cover_gizmo_format[10] = "cover_%d1";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_spinner_format")
+    extern const char EpisodeVI_spinner_format[17] = "spinner%d_null_1";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_shot_format")
+    extern const char EpisodeVI_shot_format[9] = "shot_0%d";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_shot_a_format")
+    extern const char EpisodeVI_shot_a_format[10] = "shot_0%da";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_panel2")
+    extern const char EpisodeVI_panel2[7] = "panel2";
+#pragma const_seg()
+#pragma data_seg(".data$gizpanel_gizmotype_id")
+    i32 gizpanel_gizmotype_id = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$PCDisplayMaterialAddCount")
+    i32 PCDisplayMaterialAddCount;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDisplayMaterialAddQueue")
+    NUMTL **PCDisplayMaterialAddQueue;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDisplayMaterialReferenceCounts")
+    u8 *PCDisplayMaterialReferenceCounts;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDisplayMaterialStreamStart")
+    VARIPTR PCDisplayMaterialStreamStart;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDisplayMaterialStreamEnd")
+    VARIPTR PCDisplayMaterialStreamEnd;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDisplayMaterialStreamUsed")
+    u8 *PCDisplayMaterialStreamUsed;
+#pragma bss_seg()
+#pragma data_seg(".data$PCMaterialBlockItemCount")
+    i32 PCMaterialBlockItemCount = 8;
+#pragma data_seg()
+#pragma data_seg(".data$PCMaterialGeometryItemIndex")
+    i32 PCMaterialGeometryItemIndex = 6;
+#pragma data_seg()
+#pragma data_seg(".data$PCMaterialLinkItemIndex")
+    i32 PCMaterialLinkItemIndex = 7;
+#pragma data_seg()
+#pragma bss_seg(".bss$PCSafeRenderScenes")
+    NUDISPLAYLISTRENDERSCENE *PCSafeRenderScenes[24];
+#pragma bss_seg()
+#pragma bss_seg(".bss$debris_render_global_time")
+    f32 debris_render_global_time;
+#pragma bss_seg()
+#pragma bss_seg(".bss$debris_render_panel_time")
+    f32 debris_render_panel_time;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BossKillDelayTimePc")
+    f32 BossKillDelayTimePc;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$WallSplCount")
+    i32 WallSplCount;
+#pragma bss_seg()
+#pragma bss_seg(".bss$curPickInst")
+    i32 curPickInst;
+#pragma bss_seg()
+#pragma bss_seg(".bss$IgnoreWallSplines")
+    i32 IgnoreWallSplines;
+#pragma bss_seg()
+#pragma bss_seg(".bss$WallSplinesOnly")
+    i32 WallSplinesOnly;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrOverRideScan")
+    void *TerrOverRideScan;
+#pragma bss_seg()
+#pragma const_seg(".rdata$TerrainScanMargin02Pc")
+    extern const f64 TerrainScanMargin02Pc = 0.019999999552965164;
+#pragma const_seg()
+#pragma const_seg(".rdata$TerrainScanMargin10Pc")
+    extern const f64 TerrainScanMargin10Pc = 0.10000000149011612;
+#pragma const_seg()
+#pragma bss_seg(".bss$NuRndr_DebrisRotMtxPtr")
+    NUMTX *NuRndr_DebrisRotMtxPtr;
+#pragma bss_seg()
+#pragma bss_seg(".bss$debris_box_camera_cache")
+    NUMTX debris_box_camera_cache;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuRndrStopUpdate")
+    i32 NuRndrStopUpdate;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuRndrDebBase")
+    NUVEC NuRndrDebBase;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuRndrDebRange")
+    NUVEC NuRndrDebRange;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuRndrDebRangeInv")
+    NUVEC NuRndrDebRangeInv;
+#pragma bss_seg()
+#pragma const_seg(".rdata$debris_box_corners")
+    extern const NUVEC debris_box_corners[8] = {{-0.2f, -0.2f, -0.05f}, {0.2f, -0.2f, -0.05f}, {-0.2f, 0.2f, -0.05f},
+                                                {0.2f, 0.2f, -0.05f},   {-0.5f, -0.5f, 0.8f},  {0.5f, -0.5f, 0.8f},
+                                                {-0.5f, 0.5f, 0.8f},    {0.5f, 0.5f, 0.8f}};
+#pragma const_seg()
+}

@@ -56,3 +56,50 @@ void __cdecl NuDisplaySceneAddPS(NUDISPLAY_LIST_PC *scene) {
             item->type = 0x82;
     }
 }
+
+void __cdecl NuDisplayListAddClut(NUDISPLAYLISTITEM *item, i32 texture_id) {
+    (void)texture_id;
+    item->type = 0x87;
+    item->id = 0;
+    item->next = NULL;
+}
+
+void __cdecl NuDisplayListAddTexture(NUDISPLAYLISTITEM *item, i32 texture_id) {
+    (void)texture_id;
+    item->type = 0x87;
+    item->id = 0;
+    item->next = NULL;
+}
+
+void __cdecl NuDisplayListAddMaterialState(NUDISPLAYLISTITEM *item, NUMTL *material) {
+    item->type = 0x80;
+    item->id = 3;
+    item->next = material;
+}
+
+void __cdecl NuDisplayListAddMicrocode(NUDISPLAYLISTITEM *item, NUMTL *material) {
+    (void)material;
+    item->type = 0x87;
+    item->id = 0;
+    item->next = NULL;
+}
+
+void __cdecl NuDisplayListAddLightState(NUDISPLAYLISTITEM *item, NUMTL *material) {
+    (void)material;
+    item->type = 0x87;
+    item->id = 0;
+    item->next = NULL;
+}
+
+void __cdecl DisplayListSetAlphaPS(NUDISPLAYLISTITEM *item, NUDISPLAYLISTITEM *geometry, f32 alpha) {
+    NUMTX *matrix = (NUMTX *)item->next;
+    (void)geometry;
+    if (alpha < 0.0f)
+        alpha = 0.0f;
+    if (alpha > 1.0f)
+        alpha = 1.0f;
+    matrix->m33 = alpha;
+}
+
+void __cdecl DisplayListSwapBuffersPS(void) {
+}
