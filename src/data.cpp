@@ -8202,3 +8202,186 @@ extern "C" {
     TIMER LevelTimer;
 #pragma bss_seg()
 }
+
+extern "C" {
+
+#pragma data_seg(".data$VehicleBoltLevelObjectIndexPc")
+    i16 VehicleBoltLevelObjectIndexPc = 52;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f17d0Pc")
+    i16 VehicleBoltId7f17d0Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f17d4Pc")
+    i16 VehicleBoltId7f17d4Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f18b4Pc")
+    i16 VehicleBoltId7f18b4Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f190cPc")
+    i16 VehicleBoltId7f190cPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1910Pc")
+    i16 VehicleBoltId7f1910Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1924Pc")
+    i16 VehicleBoltId7f1924Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1928Pc")
+    i16 VehicleBoltId7f1928Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f195cPc")
+    i16 VehicleBoltId7f195cPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f196cPc")
+    i16 VehicleBoltId7f196cPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_JAWA")
+    i16 id_JAWA = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f19a4Pc")
+    i16 VehicleBoltId7f19a4Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f19a8Pc")
+    i16 VehicleBoltId7f19a8Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f19e8Pc")
+    i16 VehicleBoltId7f19e8Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_REPUBLICGUNSHIP")
+    i16 id_REPUBLICGUNSHIP = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1a24Pc")
+    i16 VehicleBoltId7f1a24Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1a28Pc")
+    i16 VehicleBoltId7f1a28Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1a2cPc")
+    i16 VehicleBoltId7f1a2cPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_SENTRYDROID")
+    i16 id_SENTRYDROID = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1a38Pc")
+    i16 VehicleBoltId7f1a38Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1a9cPc")
+    i16 VehicleBoltId7f1a9cPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1aa0Pc")
+    i16 VehicleBoltId7f1aa0Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1aacPc")
+    i16 VehicleBoltId7f1aacPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleSpecialShooterIdPc")
+    i16 VehicleSpecialShooterIdPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1ad8Pc")
+    i16 VehicleBoltId7f1ad8Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1aecPc")
+    i16 VehicleBoltId7f1aecPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1af0Pc")
+    i16 VehicleBoltId7f1af0Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1b00Pc")
+    i16 VehicleBoltId7f1b00Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1b04Pc")
+    i16 VehicleBoltId7f1b04Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1b08Pc")
+    i16 VehicleBoltId7f1b08Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1b0cPc")
+    i16 VehicleBoltId7f1b0cPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1b34Pc")
+    i16 VehicleBoltId7f1b34Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleBoltId7f1b38Pc")
+    i16 VehicleBoltId7f1b38Pc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_ZAMSSPEEDER")
+    i16 id_ZAMSSPEEDER = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleGunshipAngleADefaultPc")
+    i32 VehicleGunshipAngleADefaultPc = 8;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleGunshipAngleAPlayer1Pc")
+    i32 VehicleGunshipAngleAPlayer1Pc = 10;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleGunshipAngleAPlayer2Pc")
+    i32 VehicleGunshipAngleAPlayer2Pc = 5;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleGunshipAngleBDefaultPc")
+    i32 VehicleGunshipAngleBDefaultPc = 3;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleGunshipAngleBPlayer1Pc")
+    i32 VehicleGunshipAngleBPlayer1Pc = 4;
+#pragma data_seg()
+
+#pragma data_seg(".data$DEACTIVATEDTIME")
+    f32 DEACTIVATEDTIME = 8.0f;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$GUNSHIPB_LDATA")
+    LEVELDATA_PC *GUNSHIPB_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$ForcePush_SuperMindTrick")
+    i32 ForcePush_SuperMindTrick;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$VehicleGunshipAngleBPlayer2Pc")
+    i32 VehicleGunshipAngleBPlayer2Pc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$BOLT_OVERRIDE_PLAYERBOLTSPEED")
+    f32 BOLT_OVERRIDE_PLAYERBOLTSPEED;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$BOLT_OVERRIDE_PLAYERBOLTDURATION")
+    f32 BOLT_OVERRIDE_PLAYERBOLTDURATION;
+#pragma bss_seg()
+}

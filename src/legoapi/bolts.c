@@ -317,3 +317,149 @@ void __cdecl Bolts_Update(WORLDINFO *world) {
         (void)surface_hit;
     }
 }
+
+typedef struct VEHICLE_FIRE_STATE_PC {
+    u8 unknown_000[0x7f4];
+    WEAPON_AMMO_PC weapon_ammo;
+    u8 unknown_7fc[0xe3a - 0x7fc];
+    u8 bolt_fire_phase;
+} VEHICLE_FIRE_STATE_PC;
+STATIC_ASSERT(offsetof(VEHICLE_FIRE_STATE_PC, weapon_ammo) == 0x7f4);
+STATIC_ASSERT(offsetof(VEHICLE_FIRE_STATE_PC, weapon_ammo) + offsetof(WEAPON_AMMO_PC, ammo) == 0x7f8);
+STATIC_ASSERT(offsetof(VEHICLE_FIRE_STATE_PC, bolt_fire_phase) == 0xe3a);
+extern i16 VehicleSpecialShooterIdPc;
+extern i16 VehicleBoltId7f19a4Pc;
+extern i16 VehicleBoltId7f1a9cPc;
+extern i16 VehicleBoltId7f1aa0Pc;
+extern i16 VehicleBoltId7f1b34Pc;
+extern i16 VehicleBoltId7f1b38Pc;
+extern i16 id_ZAMSSPEEDER;
+extern i16 VehicleBoltId7f195cPc;
+extern i16 VehicleBoltId7f19a8Pc;
+extern i16 VehicleBoltId7f18b4Pc;
+extern i16 VehicleBoltId7f1a24Pc;
+extern i16 VehicleBoltId7f1a28Pc;
+extern i16 VehicleBoltId7f196cPc;
+extern i16 VehicleBoltId7f1a2cPc;
+extern i16 VehicleBoltId7f1b00Pc;
+extern i16 VehicleBoltId7f1ad8Pc;
+extern i16 VehicleBoltId7f1b04Pc;
+extern i16 VehicleBoltId7f1aecPc;
+extern i16 VehicleBoltId7f1b08Pc;
+extern i16 VehicleBoltId7f1b0cPc;
+extern i16 VehicleBoltId7f1af0Pc;
+extern i16 VehicleBoltId7f19e8Pc;
+extern i16 VehicleBoltId7f17d0Pc;
+extern i16 VehicleBoltId7f17d4Pc;
+extern i16 VehicleBoltId7f1aacPc;
+extern i16 id_CATAPULT;
+extern i16 VehicleBoltId7f190cPc;
+extern i16 VehicleBoltId7f1910Pc;
+extern i16 VehicleBoltId7f1924Pc;
+extern i16 VehicleBoltId7f1928Pc;
+extern i16 id_REPUBLICGUNSHIP;
+extern i16 id_SENTRYDROID;
+extern i16 VehicleBoltId7f1a38Pc;
+extern LEVELDATA_PC *GUNSHIPB_LDATA;
+extern i16 VehicleBoltLevelObjectIndexPc;
+extern AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA;
+void __cdecl Move_CANNON(GAMEOBJECT *);
+
+i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    VEHICLE_FIRE_STATE_PC *state = (VEHICLE_FIRE_STATE_PC *)object;
+    i32 id, result;
+    PLAYERCHARACTERCONFIG_PC *config;
+    if (object == NULL)
+        return fallback;
+    if (StartupGameFlag0 != 0 && state->weapon_ammo.type != NULL && state->weapon_ammo.type->bolt_override != -1)
+        return state->weapon_ammo.type->bolt_override;
+    id = (i16)object->id;
+    if (id == (i16)VehicleSpecialShooterIdPc)
+        return 43;
+    if (id == (i16)VehicleBoltId7f19a4Pc) {
+        result = 7 + 2 * (state->bolt_fire_phase != 0);
+        if (result == 7 && world->current_level == ASTEROIDCHASED_LDATA)
+            return 8;
+        return result;
+    }
+    if (id == (i16)VehicleBoltId7f1a9cPc || id == (i16)VehicleBoltId7f1aa0Pc)
+        return 34;
+    if (id == (i16)VehicleBoltId7f1b34Pc || id == (i16)VehicleBoltId7f1b38Pc || id == (i16)id_ZAMSSPEEDER)
+        return 11;
+    if (id == (i16)id_FLASHSPEEDER)
+        return 20;
+    if (id == (i16)id_XWING || id == (i16)VehicleBoltId7f195cPc)
+        return 6;
+    if (id == (i16)id_SPEEDERBIKE || id == (i16)VehicleBoltId7f19a8Pc)
+        return 10;
+    if (id == (i16)VehicleBoltId7f18b4Pc || id == (i16)VehicleBoltId7f1a24Pc)
+        return 11;
+    if (id == (i16)id_TIEFIGHTER || id == (i16)VehicleBoltId7f1a28Pc || id == (i16)VehicleBoltId7f196cPc ||
+        id == (i16)id_TIEBOMBER || id == (i16)VehicleBoltId7f1a2cPc) {
+        if (world != NULL) {
+            if (world->current_level == DEATHSTARBATTLED_LDATA)
+                return 13;
+            if (world->current_level == DOGFIGHTA_LDATA)
+                return 14;
+        }
+        return 12;
+    }
+    if (id == (i16)VehicleBoltId7f1b00Pc || id == (i16)VehicleBoltId7f1ad8Pc || id == (i16)VehicleBoltId7f1b04Pc ||
+        id == (i16)id_MINITIEBOMBER || id == (i16)VehicleBoltId7f1aecPc || id == (i16)VehicleBoltId7f1b08Pc ||
+        id == (i16)VehicleBoltId7f1b0cPc || id == (i16)id_MINIATAT || id == (i16)id_MINISTARDESTROYER)
+        return 23;
+    if (id == (i16)VehicleBoltId7f1af0Pc)
+        return 21 + (state->bolt_fire_phase != 0);
+    if (id == (i16)id_JEDISTARFIGHTERYELLOWEP3 || id == (i16)VehicleBoltId7f19e8Pc) {
+        if (WORLD->area != NULL && WORLD->area == BATTLEOVERCORUSCANT_ADATA && WORLD->level_objects[0x12d].active != 0)
+            return 32;
+        return 33;
+    }
+    if (id == (i16)VehicleBoltId7f17d0Pc || id == (i16)VehicleBoltId7f17d4Pc || id == (i16)VehicleBoltId7f1aacPc)
+        return WORLD->level_objects[VehicleBoltLevelObjectIndexPc].active != 0 ? 42 : 0;
+    if (id == (i16)id_CATAPULT)
+        return 29;
+    if (object->character_data->move_fn == Move_CANNON)
+        return 20;
+    config = &GCDataList[id];
+    if (config->weapon_action == 8 || config->weapon_model == 22)
+        return 2;
+    if (id == (i16)id_BIGGUN)
+        return 20;
+    if (id == (i16)id_BOBAFETT || id == (i16)VehicleBoltId7f190cPc)
+        return 26;
+    if (id == (i16)VehicleBoltId7f1910Pc)
+        return 3;
+    if (id == (i16)id_ATAT)
+        return 24;
+    if (id == (i16)GameObjectRotationAtstId || id == (i16)id_CLONEWALKER)
+        return 4;
+    if (id == (i16)id_ATST_LOWRES)
+        return 25;
+    if (id == (i16)id_DROIDEKA || id == (i16)id_MINIDROIDEKA)
+        return 17;
+    if (id == (i16)id_STAP || id == (i16)id_STAP2)
+        return 0;
+    if (id == (i16)VehicleBoltId7f1924Pc)
+        return 27 + (Cheat_IsOn(0x29) != 0 ? 3 : 0);
+    if (id == (i16)VehicleBoltId7f1928Pc)
+        return 28 + (Cheat_IsOn(0x29) != 0 ? 3 : 0);
+    if (id == (i16)id_REPUBLICGUNSHIP || id == (i16)id_REPUBLICGUNSHIP_GREEN) {
+        if (WORLD->current_level == BONUS_GUNSHIPA_LDATA)
+            return 35;
+        if (WORLD->current_level == BONUS_GUNSHIPB_LDATA)
+            return 36;
+        return fallback;
+    }
+    if (id == (i16)id_NEW_REPUBLIC_GUNSHIP || id == (i16)id_NEW_REPUBLIC_GUNSHIP_GREEN) {
+        if (WORLD->current_level == GUNSHIPA_LDATA)
+            return 37;
+        if (WORLD->current_level == GUNSHIPB_LDATA)
+            return 38;
+        return fallback;
+    }
+    if (id == (i16)id_SENTRYDROID || id == (i16)VehicleBoltId7f1a38Pc)
+        return 0;
+    return fallback;
+}

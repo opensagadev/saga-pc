@@ -3644,3 +3644,688 @@ void __cdecl SetHeadTarget(GAMEOBJECT *object, NUVEC *position, i8 priority, f32
         object->head_target_position = *object->head_target;
     }
 }
+
+typedef struct DEACTIVATED_MOVE_VIEW_PC {
+    u8 unknown_000[0x778];
+    f32 action_delay;
+} DEACTIVATED_MOVE_VIEW_PC;
+STATIC_ASSERT(offsetof(DEACTIVATED_MOVE_VIEW_PC, action_delay) == 0x778);
+extern f32 DEACTIVATEDTIME;
+extern i32 ForcePush_SuperMindTrick;
+void __cdecl ActivatePlayer(GAMEOBJECT *);
+void __cdecl GameCam_HitJudder(void);
+i32 __cdecl ZapTarget(GAMEOBJECT *);
+
+extern i16 id_JAWA;
+
+typedef struct vehicle_shoot_state_pc_s {
+    u8 unknown_00[0x28b];
+    u8 shoot_blocked;
+    u8 unknown_28c[0x7f4 - 0x28c];
+    WEAPON_AMMO_PC weapon;
+    u8 unknown_7fc[0xe31 - 0x7fc];
+    u8 shot_latched;
+    u8 unknown_e32[0xe3a - 0xe32];
+    u8 bolt_fire_phase;
+    u8 action_suppressed;
+} VEHICLE_SHOOT_STATE_PC;
+STATIC_ASSERT(offsetof(VEHICLE_SHOOT_STATE_PC, shoot_blocked) == 0x28b);
+STATIC_ASSERT(offsetof(VEHICLE_SHOOT_STATE_PC, weapon) == 0x7f4);
+STATIC_ASSERT(offsetof(VEHICLE_SHOOT_STATE_PC, shot_latched) == 0xe31);
+STATIC_ASSERT(offsetof(VEHICLE_SHOOT_STATE_PC, action_suppressed) == 0xe3b);
+i32 __cdecl PlayerItem_GotAmmo(WEAPON_AMMO_PC *);
+void __cdecl StartQuickShoot(GAMEOBJECT *, i32);
+void __cdecl SetWeaponOut(GAMEOBJECT *);
+void __cdecl FastWeaponOut(GAMEOBJECT *, i32);
+void __cdecl SlowWeaponOut(GAMEOBJECT *);
+void __cdecl SlowWeaponIn(GAMEOBJECT *);
+void __cdecl Move_CANNON(GAMEOBJECT *);
+extern f32 animduration_blendouttime;
+extern i16 id_SENTRYDROID, id_ATST_LOWRES, VehicleSpecialShooterIdPc, id_CATAPULT;
+
+STATIC_ASSERT(offsetof(VEHICLE_SHOOT_STATE_PC, bolt_fire_phase) == 0xe3a);
+
+static __declspec(noinline) i32 DeactivatedMindTrickFilterPc(GAMEOBJECT *owner, GAMEOBJECT *target) {
+    i8 context;
+    PLAYERCHARACTERCONFIG_PC *data;
+    if ((target->flags_1fc_word & 0x1001) != 0x1001 || target->dead != 0 || target->field_281 == 0 ||
+        (owner != NULL && target == owner) || target->field_280 != 0xff || (target->portal_flags & 0x08000000) != 0 ||
+        CannotKill(target) || target->character_model->model_data_b[0x41] == NULL)
+        return 0;
+    context = target->character_context;
+    if (context == 0x39 || context == 0x3c || context == 0x3b || context == 0x17 || context == 0x41 || context == 0xf ||
+        context == 0x47 || context == 0x46 || (target->character_data->model_flags & 0x10) != 0)
+        return 0;
+    data = target->character_data->game_character;
+    if ((data->flags_090 & 0x8000) != 0 || (CInfo[context].flags & 0x8000) != 0)
+        return 0;
+    return (data->flags_094 & 0x200) == 0;
+}
+static __declspec(noinline) i32 DeactivatedZapFilterPc(GAMEOBJECT *owner, GAMEOBJECT *target) {
+    i8 context;
+    u32 flags;
+    if (!ZapTarget(target) || (owner != NULL && target == owner) || target->field_280 != 0xff ||
+        (target->portal_flags & 0x08000000) != 0 || CannotKill(target))
+        return 0;
+    flags = target->character_data->game_character->flags_090;
+    if ((flags & 0x40) != 0)
+        return 0;
+    context = target->character_context;
+    if (context == 0x3c || context == 0xf || context == 0x47 || context == 0x46)
+        return 0;
+    return (flags & 0x8000) == 0;
+}
+static __declspec(noinline) void DeactivatedCode(GAMEOBJECT *object) {
+    i32 controlled = 0, i, kind, count, selected;
+    f32 elapsed, duration, range;
+    GAMEOBJECT *targets[10], *candidate, *target, *player;
+    DEACTIVATED_MOVE_VIEW_PC *view = (DEACTIVATED_MOVE_VIEW_PC *)object;
+    if (object->character_context == 0x41) {
+        if (AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL)
+            return;
+        object->context_duration += FRAMETIME;
+        object->context_timer -= FRAMETIME;
+        if (object->context_timer <= 0.0f)
+            object->character_context = -1;
+        return;
+    }
+    if ((object->character_data->model_flags & 0x20000000) != 0) {
+        for (i = 0; i < 8; ++i) {
+            player = (GAMEOBJECT *)Player[i];
+            if (player != NULL && player->character_context == 0x51 && player->techno != NULL &&
+                player->techno->controlled_object == object)
+                controlled = 1;
+        }
+        if (controlled || object->takeover_source != NULL || (object->flags_1fc & 0x80) != 0) {
+            if (object->character_context == 0x17)
+                ActivatePlayer(object);
+        } else if (object->character_context != 0x2b && object->character_context != 0x3e) {
+            if (object->character_context != 0x17)
+                DeactivatePlayer(object, 1000000000.0f, NULL);
+            else
+                object->context_timer = 1000000000.0f;
+        }
+    }
+    if (object->character_context != 0x17)
+        return;
+    if (object->character_model->model_data_b[object->field_7aa] == NULL) {
+        object->context_duration += FRAMETIME;
+    } else {
+        if (AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL)
+            return;
+        elapsed = object->context_duration + FRAMETIME;
+        object->context_duration = elapsed;
+        if (object->field_7aa == 0x81) {
+            if (AnimDuration((i16)object->id, 0x81, 0.0f, 0.0f, 1) <= elapsed) {
+                if (object->character_model->model_data_b[0x41] == NULL) {
+                    ActivatePlayer(object);
+                    return;
+                }
+                object->field_7aa = 0x41;
+                if (object->context_timer != 1000000000.0f)
+                    object->context_timer -= object->context_duration;
+                object->context_duration = 0.0f;
+            }
+        } else if ((object->character_model->animation_configs[object->field_7aa]->flags & 2) == 0 &&
+                   AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1) <= elapsed) {
+            ActivatePlayer(object);
+            return;
+        }
+    }
+    if (object->context_timer != 1000000000.0f && object->context_timer < object->context_duration)
+        ActivatePlayer(object);
+    else if ((object->character_data->model_flags & 0x20) != 0)
+        SetProtocolDroidDeactivatedAction(object);
+    if (!(view->action_delay > 0.0f))
+        return;
+    view->action_delay -= FRAMETIME;
+    if (!(view->action_delay <= 0.0f))
+        return;
+    if (object->action_movement_state == 2) {
+        kind = 2;
+        duration = DEACTIVATEDTIME;
+        range = 3.0f;
+    } else {
+        if (!ForcePush_SuperMindTrick || object->action_movement_state != 1)
+            return;
+        kind = 1;
+        duration = 5.0f;
+        range = 1.0f;
+    }
+    range *= range;
+    count = 0;
+    candidate = Obj;
+    for (i = 0; i < HIGHGAMEOBJECT && count < 10; ++i, ++candidate) {
+        target = candidate;
+        if (kind == 1) {
+            if (!DeactivatedMindTrickFilterPc(object, target))
+                continue;
+        } else if (!DeactivatedZapFilterPc(object, target))
+            continue;
+        if (NuVecDistSqr(&target->collision_position, &object->collision_position, NULL) < range)
+            targets[count++] = target;
+    }
+    selected = count == 1 ? 0 : count > 1 ? qrand() / (0xffff / count + 1) : -1;
+    if (selected == -1)
+        return;
+    target = targets[selected];
+    if (DeactivatePlayer(target, duration, NULL)) {
+        target->action_movement_state = (u8)kind;
+        target->context_variant_flags =
+            (target->context_variant_flags & ~0x100) | (object->context_variant_flags & 0x100);
+        if (kind == 2) {
+            PlaySfx("R2Zap", &object->collision_position);
+            AddGameDebris(WORLD->game_debris_sys, (target->context_variant_flags & 0x100) != 0 ? 1 : 3,
+                          &target->collision_position);
+            GameCam_HitJudder();
+        }
+        ((DEACTIVATED_MOVE_VIEW_PC *)target)->action_delay =
+            (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.3f + (f64)0.2f);
+        if (target->id == (u16)id_JAWA)
+            PlaySfx("Jawa_Dizzy", &target->collision_position);
+    }
+}
+i32 __cdecl ZapTarget(GAMEOBJECT *object) {
+    u32 flags;
+    void **animations;
+    i8 context;
+    if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0)
+        return 0;
+    flags = object->character_data->model_flags;
+    if ((flags & 0x10) == 0)
+        return 0;
+    animations = object->character_model->model_data_b;
+    if (animations[0x41] == NULL)
+        return 0;
+    context = object->character_context;
+    if ((CInfo[context].flags & 0x8000) != 0)
+        return 0;
+    if ((flags & 0x20) != 0 && (animations[0x42] == NULL || animations[0x43] == NULL || animations[0x44] == NULL))
+        return 0;
+    if (context == 0x15 || context == 0x17 || context == 0x41 || context == 0x33 || context == 0x3b || context == 0x39)
+        return 0;
+    return 1;
+}
+
+void __cdecl SetWeaponIn(GAMEOBJECT *);
+i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *, i32);
+i32 __cdecl SetObjTarget(GAMEOBJECT *, GAMEOBJECT *);
+i32 __cdecl SetGizmoBlowUpTarget(GAMEOBJECT *, GIZMOBLOWUP_PC *);
+i32 __cdecl SetPartTarget(GAMEOBJECT *, PART_PC *);
+GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Target(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
+PART_PC *__cdecl TargetPart(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32);
+i32 __cdecl GizmoSys_SetBestBoltTarget(void *, WORLDINFO *, GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
+extern f32 BOLT_OVERRIDE_PLAYERBOLTSPEED, BOLT_OVERRIDE_PLAYERBOLTDURATION;
+extern AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA;
+extern i16 id_REPUBLICGUNSHIP;
+extern i32 VehicleGunshipAngleADefaultPc, VehicleGunshipAngleAPlayer1Pc, VehicleGunshipAngleAPlayer2Pc;
+extern i32 VehicleGunshipAngleBDefaultPc, VehicleGunshipAngleBPlayer1Pc, VehicleGunshipAngleBPlayer2Pc;
+static __declspec(noinline) void ShootThisFrame(GAMEOBJECT *object, i32 bolt_id, i32 flags) {
+    VEHICLE_SHOOT_STATE_PC *state = (VEHICLE_SHOOT_STATE_PC *)object;
+    if ((object->flags_1f8 & 0x40000) != 0 && object->field_280 != 0xff)
+        return;
+    NewBuzzFrames(object->pad->bound_pad, (object->character_data->model_flags & 0x2000) != 0 ? 1 : 2, 0);
+    object->portal_flags |= 0x800;
+    object->quick_shoot_bolt_id = (i8)bolt_id;
+    object->quick_shoot_flags = (u8)flags;
+    if ((object->character_data->game_character->flags_098[0] & 2) != 0)
+        SetWeaponIn(object);
+    if (state->weapon.type != NULL && state->weapon.type->type == 2 && state->weapon.ammo != 0)
+        --state->weapon.ammo;
+}
+static __declspec(noinline) void FireCode(GAMEOBJECT *object, i32 pressed, i32 held, f32 fire_delay,
+                                          i32 delay_pressed) {
+    BOLTTYPE_PC *bolt;
+    GAMEOBJECT *target;
+    GIZMOBLOWUP_PC *blowup;
+    PART_PC *part;
+    VEHICLE_SHOOT_STATE_PC *state = (VEHICLE_SHOOT_STATE_PC *)object;
+    NUVEC origin, direction, offset, lateral, position;
+    f32 range, range_squared, lead, progress;
+    i32 bolt_id, target_mode, angle, player_index;
+    i16 animation;
+    i8 context;
+    if (object->quick_shoot_timer > 0.0f)
+        object->quick_shoot_timer -= FRAMETIME;
+    if (BonusWinner != -1)
+        return;
+    context = object->character_context;
+    if ((context != -1 && context != 0x2a && context != 0x36 && context != 0x3a) || object->dead != 0)
+        return;
+    if (context == 0x36) {
+        progress = 1.0f - object->context_timer / object->context_duration;
+        if (progress > (f64)0.2f && progress < 0.666f)
+            return;
+    }
+    if ((delay_pressed != 0 && object->quick_shoot_timer > 0.0f) ||
+        (pressed == 0 && (held == 0 || !(object->quick_shoot_timer <= 0.0f))))
+        return;
+    bolt_id = BoltType_FindIDByCreature(object, (object->character_data->model_flags & 0x4000000) != 0 ? 0x15 : 5);
+    bolt = BoltType_FindByID(bolt_id, WORLD);
+    target_mode = ((bolt->flags_60 >> 14) ^ 1) & 1;
+    if ((object->flags_1fc & 0x80) != 0) {
+        BoltSys->shoot_direction(object, &direction);
+        range = BOLT_OVERRIDE_PLAYERBOLTSPEED != 0.0f && BOLT_OVERRIDE_PLAYERBOLTDURATION != 0.0f
+                    ? BOLT_OVERRIDE_PLAYERBOLTSPEED * BOLT_OVERRIDE_PLAYERBOLTDURATION
+                    : bolt->field_10 * bolt->field_14;
+        animation = object->field_7aa;
+        object->field_7aa = 2;
+        range_squared = range * range;
+        BoltSys->shoot_origin(object, &origin);
+        if (WORLD->area != NULL && WORLD->area == BONUS_GUNSHIP_ADATA) {
+            if (object->id == (u16)id_REPUBLICGUNSHIP || object->id == (u16)id_REPUBLICGUNSHIP_GREEN) {
+                player_index = player2 == NULL ? -1 : object == player ? 0 : object == player2 ? 1 : -1;
+                if (WORLD->current_level == BONUS_GUNSHIPB_LDATA)
+                    angle = player_index == 0   ? VehicleGunshipAngleBPlayer1Pc
+                            : player_index == 1 ? VehicleGunshipAngleBPlayer2Pc
+                                                : VehicleGunshipAngleBDefaultPc;
+                else
+                    angle = player_index == 0   ? VehicleGunshipAngleAPlayer1Pc
+                            : player_index == 1 ? VehicleGunshipAngleAPlayer2Pc
+                                                : VehicleGunshipAngleADefaultPc;
+                offset.x = offset.y = 0.0f;
+                offset.z = 100.0f;
+                NuVecRotateX(&offset, &offset, (angle << 16) / 360);
+                NuVecRotateY(&offset, &offset, object->movement_facing_angle);
+                NuVecAdd(&object->attack_target_position, &origin, &offset);
+                object->field_c8c = v000.x;
+                object->field_c90 = v000.y;
+                object->field_c94 = v000.z;
+                object->flags_e20 |= 0x800;
+            }
+        } else if ((bolt->flags_60 & 0x800) == 0 && (WORLD->area == NULL || WORLD->area != BATTLEOVERCORUSCANT_ADATA)) {
+            target = TargetGameObject(object, &origin, &direction, range, range_squared, 0, target_mode, 0, bolt_id);
+            if (target != NULL) {
+                SetObjTarget(object, target);
+                if (VehicleArea != 0 && (target->character_data->model_flags & 0x2000) != 0) {
+                    NuVecRotateY(&lateral, &v001, NuAtan2D(target->velocity.x, target->velocity.z) + 0x4000);
+                    lead = (f32)((f64)fabsf(lateral.x * direction.x + lateral.z * direction.z) * 0.5 * bolt->field_14);
+                    position.x = target->collision_position.x + target->velocity.x * lead;
+                    position.y = target->collision_position.y + target->velocity.y * lead;
+                    position.z = target->collision_position.z + target->velocity.z * lead;
+                    NuVecSub(&position, &position, &origin);
+                    NuVecNorm(&position, &position);
+                    NuVecScale(&position, &position, range);
+                    NuVecAdd(&object->attack_target_position, &origin, &position);
+                }
+            } else if (!GizmoSys_SetBestBoltTarget(WORLD->gizmo_sys, WORLD, object, &origin, &direction, range,
+                                                   range_squared, target_mode, 0, bolt_id)) {
+                blowup = GizmoBlowUp_Target(object, &origin, &direction, range, range_squared, target_mode, 0, bolt_id);
+                if (blowup != NULL)
+                    SetGizmoBlowUpTarget(object, blowup);
+                else {
+                    part = TargetPart(object, &origin, &direction, range, range_squared, target_mode, bolt_id);
+                    if (part != NULL)
+                        SetPartTarget(object, part);
+                    else if ((bolt->flags_60 & 0x400) != 0) {
+                        object->attack_target_position.x =
+                            direction.x * range + origin.x + object->velocity.x * bolt->field_14;
+                        object->attack_target_position.z =
+                            direction.z * range + origin.z + object->velocity.z * bolt->field_14;
+                        object->attack_target_position.y =
+                            object->movement_mode == 4
+                                ? direction.y * range + origin.y + object->velocity.y * bolt->field_14
+                                : origin.y;
+                        object->field_c8c = v000.x;
+                        object->field_c90 = v000.y;
+                        object->field_c94 = v000.z;
+                        object->flags_e20 |= 0x800;
+                    }
+                }
+            }
+        }
+        object->field_7aa = animation;
+    }
+    ShootThisFrame(object, bolt_id, 3);
+    object->quick_shoot_timer = fire_delay;
+    state->bolt_fire_phase = state->bolt_fire_phase == 0;
+}
+
+void __cdecl StartQuickShoot(GAMEOBJECT *object, i32 action) {
+    i32 bolt_id, flags, fire_now;
+    NUVEC direction;
+    f32 speed, range, range_squared;
+    GAMEOBJECT *target;
+    object->flags_e20 &= ~0x800;
+    bolt_id = BoltType_FindIDByCreature(object, 0);
+    BoltSys->shoot_direction(object, &direction);
+    speed = BoltType_FindByID(bolt_id, WORLD)->field_10;
+    range = speed * BoltType_FindByID(bolt_id, WORLD)->field_14;
+    range_squared = range * range;
+    target = TargetGameObject(object, &object->collision_position, &direction, range, range_squared, 0, 1, 0, bolt_id);
+    if (target != NULL)
+        SetObjTarget(object, target);
+    else if ((object->flags_1fc & 0x80) != 0 &&
+             GizmoSys_SetBestBoltTarget(WORLD->gizmo_sys, WORLD, object, &object->collision_position, &direction, range,
+                                        range_squared, 1, 0, bolt_id) == 0) {
+        GIZMOBLOWUP_PC *blowup =
+            GizmoBlowUp_Target(object, &object->collision_position, &direction, range, range_squared, 1, 0, bolt_id);
+        if (blowup != NULL)
+            SetGizmoBlowUpTarget(object, blowup);
+        else {
+            PART_PC *part =
+                TargetPart(object, &object->collision_position, &direction, range, range_squared, 1, bolt_id);
+            if (part != NULL)
+                SetPartTarget(object, part);
+            else {
+                target = TargetGameObject(object, &object->collision_position, &direction, range, range_squared, 0x200,
+                                          1, 0, bolt_id);
+                if (target != NULL)
+                    SetObjTarget(object, target);
+            }
+        }
+    }
+    object->character_context = 10;
+    object->field_7aa = action;
+    object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, action != 0x57);
+    ResetAnimPacket(&object->anim_packet, -1);
+    object->anim_packet.flags |= 0x10;
+    fire_now = !(AnimListFrame(object->character_model, object->field_7aa, 1) > 1.0f);
+    bolt_id = BoltType_FindIDByCreature(object, 0);
+    flags = 1 + 2 * fire_now;
+    ShootThisFrame(object, bolt_id, flags);
+    object->quick_shoot_timer = 0.0f;
+    ++((VEHICLE_SHOOT_STATE_PC *)object)->action_suppressed;
+    SetWeaponOut(object);
+}
+
+i32 __cdecl ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_mode, i32 allow_airborne,
+                      i32 fire_mode) {
+    GAMEOBJECT *target = NULL;
+    i32 bolt_id, ammunition;
+    i8 context;
+    i16 previous_animation;
+    VEHICLE_SHOOT_STATE_PC *state = (VEHICLE_SHOOT_STATE_PC *)object;
+    bolt_id = object->id == (u16)id_GEONOSIAN && (object->flags_ef0 & 0x200) != 0
+                  ? 0x13
+                  : BoltType_FindIDByCreature(object, 0);
+    if (object->quick_shoot_timer > 0.0f)
+        object->quick_shoot_timer -= FRAMETIME;
+    if (object->character_context == 0x0a) {
+        if (AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL)
+            return 0;
+        ammunition = PlayerItem_GotAmmo(&state->weapon) != 0;
+        if (ammunition && pressed != 0 && object->quick_shoot_timer <= 0.0f && object->field_7aa == 0x57 &&
+            state->action_suppressed <= 2) {
+            if (object->pad->input_magnitude > 0.0f) {
+                u16 angle = GamePad_InputAngle(object, object->pad);
+                object->movement_facing_angle = angle;
+                object->facing_angle = angle;
+                object->field_0x276 = angle;
+            }
+            StartQuickShoot(object, 0x57);
+            if (state->action_suppressed == 3)
+                object->quick_shoot_timer = 0.5f;
+            return 0;
+        }
+        if ((u16)(object->field_7aa - 0x5a) <= 2) {
+            if ((object->flags_e20 & 0x40000) == 0) {
+                f32 event_frame = AnimListFrame(object->character_model, object->field_7aa, 0);
+                if (event_frame > 1.0f) {
+                    f32 frame = object->anim_packet.blending != 0 ? object->anim_packet.blend_target_time
+                                                                  : object->anim_packet.current_time;
+                    if (frame >= event_frame) {
+                        if (ammunition) {
+                            ShootThisFrame(object, bolt_id, 1);
+                            object->flags_e20 |= 0x800;
+                        }
+                        object->flags_e20 |= 0x40000;
+                    }
+                }
+            }
+        } else if (state->shot_latched == 0) {
+            f32 event_frame = AnimListFrame(object->character_model, object->field_7aa, 1);
+            if (event_frame > 1.0f) {
+                f32 frame = object->anim_packet.blending != 0 ? object->anim_packet.blend_target_time
+                                                              : object->anim_packet.current_time;
+                if (frame >= event_frame) {
+                    if (ammunition)
+                        ShootThisFrame(object, bolt_id, 2);
+                    state->shot_latched = 1;
+                }
+            }
+        }
+        object->context_timer -= FRAMETIME;
+        if (!(object->context_timer <= 0.0f))
+            return 0;
+        object->flags_e20 &= ~0x800;
+        object->character_context = -1;
+        if ((u16)(object->field_7aa - 0x5a) <= 2 && (object->flags_e20 & 0x40000) == 0 && ammunition)
+            ShootThisFrame(object, bolt_id, 1);
+        return 0;
+    }
+
+    context = object->character_context;
+    if ((object->portal_flags & 8) == 0 || pressed == 0 || (CInfo[context].flags & 0x20) != 0) {
+    shoot_weapon_in:
+        if (weapon_mode == 0 || ((object->pad->runtime_flags & 4) == 0 && special_pressed == 0) ||
+            (object->flags_e20 & 0x10000) == 0 || object->field_e33 != 0 || context == 6 || context == 7 ||
+            context == 0x47 || context == 0x46 || context == 0x0b || context == 0x2e ||
+            (object->character_data->game_character->weapon_action == 2 && object->jump_variant_state == 1) ||
+            context == 8 || context == 0x1b || context == 0x1d)
+            return 0;
+        if (weapon_mode == 2) {
+            SetWeaponIn(object);
+        } else {
+            if (object->field_281 != 0 && object->pad->input_magnitude == 0.0f &&
+                object->character_model->model_data_b[object->character_data->game_character->weapon_action == 0 &&
+                                                              (object->character_data->model_flags & 0x80) != 0
+                                                          ? 0x7e
+                                                          : 0x10] != NULL &&
+                (object->character_context == -1 || (CInfo[object->character_context].flags & 4) != 0))
+                SlowWeaponIn(object);
+            else
+                FastWeaponIn(object, 1);
+        }
+        return 0;
+    }
+    if ((object->flags_1fc & 0x80) != 0) {
+        if ((context == 6 || context == 7) && (object->character_data->game_character->flags_094 & 0x1000) != 0)
+            return 0;
+    } else if (context == 6 || context == 7 ||
+               (context == 1 && (object->field_7aa == 0xb3 || object->field_7aa == 0x59))) {
+        goto shoot_weapon_in;
+    }
+    if (BonusWinner != -1)
+        return 0;
+    if (weapon_mode != 0 && (object->flags_e20 & 0x10000) == 0) {
+        if (weapon_mode == 2) {
+            SetWeaponOut(object);
+        } else {
+            if (object->field_e33 == 0 && object->field_281 != 0 && object->pad->input_magnitude == 0.0f &&
+                object->character_model->model_data_b[object->character_data->game_character->weapon_action == 0 &&
+                                                              (object->character_data->model_flags & 0x80) != 0
+                                                          ? 0x7f
+                                                          : 0x11] != NULL &&
+                (context == -1 || (CInfo[context].flags & 4) != 0))
+                SlowWeaponOut(object);
+            else
+                FastWeaponOut(object, 1);
+            return 0;
+        }
+    }
+    if (object->character_context == -1 && object->jump_variant_state == 1)
+        fire_mode = 2;
+    if (!PlayerItem_GotAmmo(&state->weapon) || !(object->quick_shoot_timer <= 0.0f) || object->dead != 0)
+        return 0;
+    if (fire_mode == 0 && object->field_281 == 0) {
+        if (object->character_context != 0 || allow_airborne == 0 ||
+            (object->character_data->game_character->flags_094 & 0x400000) != 0)
+            return 0;
+    } else if (object->character_context == 0x25) {
+        return 0;
+    }
+    if (object->character_context == 0 && object->jump_sequence > 1)
+        return 0;
+    if (Cheat_IsOn(0x0f)) {
+        u8 kind = object->character_data->game_character->weapon_action;
+        if (kind == 8 || kind == 1)
+            return 0;
+    }
+    previous_animation = object->field_7aa;
+    object->field_7aa = 0x16;
+    if (object->id == (u16)VehicleSpecialShooterIdPc && (object->flags_1fc & 0x80) == 0 &&
+        object->character_model->model_data_b[0x3c] != NULL)
+        object->field_7aa = 0x3c;
+    if (fire_mode == 2)
+        object->field_7aa = 0x3c;
+    if (UnderPlayerControl(object)) {
+        NUVEC position = object->collision_position;
+        NUVEC direction, forward;
+        f32 speed, range, range_squared;
+        BoltSys->shoot_direction(object, &direction);
+        forward = direction;
+        speed = BoltType_FindByID(bolt_id, WORLD)->field_10;
+        range = (f64)speed * BoltType_FindByID(bolt_id, WORLD)->field_14;
+        range_squared = range * range;
+        target = TargetGameObject(object, &position, &direction, range, range_squared, 0, 1, 0, bolt_id);
+        if (target == NULL) {
+            if ((object->flags_1fc & 0x80) != 0 && object->pad->input_magnitude == 0.0f && object->field_281 != 0 &&
+                object->character_context != 0) {
+                if (object->character_model->model_data_b[0x5b] != NULL &&
+                    AnimPlaying(&object->anim_packet, 0x5b, 1, 1) == NULL) {
+                    direction.x = forward.z;
+                    direction.z = -forward.x;
+                    target = TargetGameObject(object, &position, &direction, range, range_squared, 0, 1, 1, bolt_id);
+                    if (target != NULL)
+                        object->field_7aa = 0x5b;
+                }
+                if (target == NULL && object->character_model->model_data_b[0x5a] != NULL &&
+                    AnimPlaying(&object->anim_packet, 0x5a, 1, 1) == NULL) {
+                    direction.x = -forward.z;
+                    direction.z = forward.x;
+                    target = TargetGameObject(object, &position, &direction, range, range_squared, 0, 1, 1, bolt_id);
+                    if (target != NULL)
+                        object->field_7aa = 0x5a;
+                }
+                if (target == NULL && object->character_model->model_data_b[0x5c] != NULL &&
+                    AnimPlaying(&object->anim_packet, 0x5c, 1, 1) == NULL) {
+                    direction.x = -forward.x;
+                    direction.z = -forward.z;
+                    target = TargetGameObject(object, &position, &direction, range, range_squared, 0, 1, 1, bolt_id);
+                    if (target != NULL)
+                        object->field_7aa = 0x5c;
+                }
+            }
+            if (target == NULL) {
+                if (!GizmoSys_SetBestBoltTarget(WORLD->gizmo_sys, WORLD, object, &position, &forward, range,
+                                                range_squared, 1, 0, bolt_id)) {
+                    GIZMOBLOWUP_PC *blowup =
+                        GizmoBlowUp_Target(object, &position, &forward, range, range_squared, 1, 0, bolt_id);
+                    if (blowup != NULL) {
+                        SetGizmoBlowUpTarget(object, blowup);
+                    } else {
+                        PART_PC *part = TargetPart(object, &position, &forward, range, range_squared, 1, bolt_id);
+                        if (part != NULL)
+                            SetPartTarget(object, part);
+                        else
+                            target = TargetGameObject(object, &position, &forward, range, range_squared, 0x200, 1, 0,
+                                                      bolt_id);
+                    }
+                }
+            }
+        }
+        if (target != NULL)
+            SetObjTarget(object, target);
+    }
+    object->quick_shoot_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 0);
+    object->flags_e20 &= ~0x40000;
+    state->shot_latched = 0;
+    if ((object->id == (u16)GameObjectRotationAtstId || object->id == (u16)id_MINIATST ||
+         object->id == (u16)id_ATST_LOWRES || object->id == (u16)id_ATAT || object->id == (u16)id_MINIATAT ||
+         object->id == (u16)id_MINIATTE) &&
+        AnimPlaying(&object->anim_packet, object->field_7aa, 1, 1) == NULL &&
+        AnimPlaying(&object->anim_packet, 1, 0, 0) == NULL)
+        goto immediate_shot;
+    if ((u16)(object->field_7aa - 0x5a) <= 2) {
+        if (AnimListFrame(object->character_model, object->field_7aa, 0) > 1.0f) {
+            object->context_timer = object->quick_shoot_timer - animduration_blendouttime;
+            if (!(object->context_timer <= 0.0f)) {
+                object->character_context = 0x0a;
+                goto cooldown;
+            }
+            object->quick_shoot_timer = 0.0f;
+            goto finish;
+        }
+    } else {
+        PLAYERCHARACTERCONFIG_PC *data = object->character_data->game_character;
+        if ((data->flags_098[0] & 4) == 0) {
+            i16 animation = object->anim_packet.animation_index;
+            if (data->weapon_action == 4 && animation == 3)
+                goto immediate_shot;
+            if (animation == 0x17) {
+                if (object->character_model->model_data_b[0x17] != NULL)
+                    goto immediate_shot;
+            } else if (data->weapon_action == 0 && animation == 0x73) {
+                if (object->character_model->model_data_b[0x73] != NULL)
+                    goto immediate_shot;
+            } else if (animation == 6 && object->character_model->model_data_b[6] != NULL) {
+                goto immediate_shot;
+            }
+        }
+    }
+    {
+        f32 duration = object->quick_shoot_timer - animduration_blendouttime;
+        if (duration > 0.0f) {
+            object->character_context = 0x0a;
+            object->context_timer = duration;
+            ResetAnimPacket(&object->anim_packet, -1);
+            object->anim_packet.flags |= 0x10;
+            SetWeaponOut(object);
+            if (object->id == (u16)id_CATAPULT) {
+                NewRumble(object->pad->bound_pad, 0.6f, 0);
+                GameCam_NewShake(GameCam, 0.5f, 0.5f, 1.0f);
+            }
+        }
+        if ((object->character_data->game_character->flags_098[0] & 8) == 0) {
+            i32 flags =
+                duration > 0.0f ? 1 + 2 * !(AnimListFrame(object->character_model, object->field_7aa, 1) > 1.0f) : 3;
+            ShootThisFrame(object, bolt_id, flags);
+        }
+    }
+    goto cooldown;
+immediate_shot:
+    if ((object->character_data->game_character->flags_098[0] & 8) == 0) {
+        ShootThisFrame(object, bolt_id, 3);
+        object->velocity.x *= 0.5f;
+        object->velocity.z *= 0.5f;
+    }
+cooldown:
+    if (object->quick_shoot_timer <= 0.0f) {
+        object->quick_shoot_timer = (qrand() * (1.0f / 65535.0f)) * 0.2f + 0.2f;
+        if (object->id == (u16)id_SENTRYDROID)
+            object->quick_shoot_timer *= 5.0f;
+    }
+finish:
+    if (object->character_context == 0x0a) {
+        object->context_variant_flags &= ~0x40;
+        if (object->character_data->move_fn == Move_CANNON) {
+            object->facing_angle = object->field_0x276;
+            object->movement_facing_angle = object->field_0x276;
+        }
+    } else {
+        object->field_7aa = previous_animation;
+    }
+    return 1;
+}
+
+void __cdecl Move_CANNON(GAMEOBJECT *object) {
+    KeepWeaponOut(object);
+    ApplyGravity(object, NULL,
+                 object->character_context == 0x17 ? 0.0f : object->character_data->game_character->field_028, 8.0f,
+                 NULL);
+    DeactivatedCode(object);
+    if ((object->portal_flags & 8) != 0) {
+        if (object->id == (u16)id_CATAPULT || object->id == (u16)id_BASKETCANNON)
+            ShootCode(object, (GAMEPAD_ACTION | GAMEPAD_SPECIAL) & object->pad->buttons_pressed, 0, 0, 0, 0);
+        FireCode(object, GAMEPAD_ACTION & object->pad->buttons_pressed, 0, 0.4f, 1);
+    }
+    AwkwardShapeCode(object, 0);
+    if (object->pad->input_magnitude > 0.0f &&
+        (f64)abs(RotDiff(object->previous_movement_angle, object->field_0x276)) > 910.0 * (f64)FRAMETIME) {
+        if (object->id == (u16)id_CATAPULT || object->id == (u16)id_BASKETCANNON)
+            PlaySfx("fly_paddle_rotate_lp", &object->collision_position);
+        else
+            PlaySfx("R2Move", &object->collision_position);
+    }
+}

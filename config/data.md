@@ -1328,3 +1328,21 @@ owning extents. Twenty-three initializer regions totaling548 bytes are verified,
 including genuine callback/parser tables. They are reported separately from
 the shared data scope. The future49-definition vehicle proposal stays scratch
 until the connected Cannon/weapon callers are released.
+
+
+### Required Cannon/weapon mutable views (2026-10-03)
+
+The sole writer releases exactly45 required canonical mutable owners/112 bytes,
+each with a real emitted reader and full initializer comparison. All1034 prior
+regions remain unchanged. All45 original owning extents remain unknown and
+receive zero allocation/exact-allocation credit. Scope1079 comprises553 known
+extents/137551 unique bytes and526 unknown views/66195 emitted bytes.
+StartupGameFlag0, BATTLEOVERCORUSCANT_ADATA and id_CATAPULT reuse existing owners;
+id_ZAMSSPEEDER and the physical WORD7f0e98 each have one canonical owner.
+
+The unused SmartBomb/Shield NUL strings20 bytes, Shield scalar4 and Launch
+scalar4 remain scratch, with no production definitions. Actual compiler-owned
+R2Move7, paddle sound21, R2Zap6, Jawa_Dizzy11 and910.0f64/8 regions are separately
+proved and mapped. They add53 complete literal bytes, rather than invented
+shared allocations. Initializer equality does not prove runtime state or owning
+capacity for the unknown mutable views.

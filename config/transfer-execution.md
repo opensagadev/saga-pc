@@ -959,3 +959,47 @@ functions8,170 and four private helpers1,841: at most10,361 PC bytes. Release
 counts will include only actual emitted functions with genuine caller context;
 Shield/SmartBomb/Dodgem await the true Move_VEHICLE caller. Parallel
 resource/render/UI work continues from the retained bank.
+
+
+### Connected Cannon, weapon firing and creature bolt selection checkpoint (2026-10-03)
+
+Ten newly compiled functions transfer9,130 complete PC bytes over d214711:
+FindID1,317 in bolts.c and nine genuine move.c bodies7,813 (Cannon350,
+Shoot3,449, Fire1,460, StartQuickShoot553, ShootThisFrame160, Deactivated1,327,
+filters232/109 and ZapTarget173). Whole-PC fuzzy coverage rises from11.743011%
+to11.955131% of3,471,246 bytes. Unique compared code reaches670,559; native
+objdiff's denominator is670,671. Cannon350 and ZapFilter109 add459 exact bytes,
+reaching67,545 (1.945843%). No previous exact code or data is lost.
+
+The10,361-byte candidate ceiling was reduced to actual emitted9,130:
+Shield/SmartBomb/Dodgem1,231 await the genuine Move_VEHICLE caller. No artificial
+retaining calls, public register bridges or unrelated Thrust/Launch bodies were
+added. The original move caller group retains its real private register ABIs;
+the MindTrick helper's rebuilt register swap is coherent with its actual callers.
+The CHARACTERDATA+18 callback is proven by actual cdecl invocation and genuine
+Cannon function identity. Weapon ammunition is an inline8-byte record at7f4,
+with item pointer at7f4 and ammo BYTE at7f8; unsigned phase/latch bytes preserve
+native comparisons and wrapping increments. Minimal other views remain local.
+
+Pinned build/link and all2517 function/4421 data definitions pass across218
+objects. LLVM18 checks220 format files/218 analysis units;665 tests pass with
+three skips. Actual current-production fixtures pass15 Cannon/weapon cases and
+39 FindID cases, including unsigned128 rejection,255 wrapping, real consumable
+ammo/phase, native callback identity and signed mutable IDs. Fixture inputs
+explicitly select gravity/Awkward/animation guards; full gameplay/assets remain
+unverified. Existing real partial services remain explicit and unchanged.
+
+All2507 prior function copies remain,2506 identical. The unchanged particle source
+rebuilds713->719 bytes; independent full-code/x87/relocation review establishes
+ordinary finite-float equivalence. Its actual88.32124 score stays nonexact;
+unmasked signaling-NaN exception order is outside that proof. A scratch source composition
+step accidentally omitted seven source definitions; the complete-object gate
+caught this before release, and genuine retained fragments restored the group.
+
+Forty-five required mutable initializer views add112 bytes, all with unknown
+allocation extents/no allocation credit; all1034 previous regions remain
+unchanged. Four unused Shield/SmartBomb/Launch owners remain excluded. Five genuine
+compiler-owned NUL/numeric literal regions add53 independently verified bytes.
+Next release targets rendering/API/root-motion7,663 with minimal shared storage,
+alongside search/text/input providers. Cutscene10,374 and level audio9,548 remain
+connected research while genuine missing callbacks and Beast services close.

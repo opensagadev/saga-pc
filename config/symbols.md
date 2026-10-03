@@ -3886,3 +3886,22 @@ no new native guard or original allocation bound is inferred. All2484 earlier
 function copies remain identical. Complete retail comparisons and independent
 ABI/field/initializer evidence are retained in continuation-vehicle-parents/,
 platform/force-best-review/, mapping/music-next/ and apiobject/parser-config-next/.
+
+
+### Genuine Cannon and weapon caller group (2026-10-03)
+
+Ten complete functions9,130 PC bytes compile with actual original caller groups.
+FindID1,317 has ordinary cdecl2 ABI in bolts.c. The nine move functions retain
+private Fire EAX+four stack arguments, ShootThisFrame ESI+two stack arguments,
+Deactivated EAX, ZapFilter EDI/ESI and coherent MindTrick register-pair codegen.
+No public bridge changes those native interfaces. CHARACTERDATA.move_fn18 is
+proven by actual TerrainPlayer cdecl invocation as well as genuine Cannon
+identity; allocation stride4c and the neighboring game-character field24 stay
+unchanged. Inline weapon/ammo7f4/7f8 and phase/latch bytes remain asserted local
+consumer records. Shield/SmartBomb/Dodgem lack a genuine released caller and are
+excluded, reducing the candidate ceiling10,361 to emitted9,130.
+
+Full source/ABI/extent/caller/literal proofs are retained in
+coherent10361-next/, findid-next/production/ and platform/cannon-weapon-review/.
+Actual retail comparisons remain nonexact except Cannon350/ZapFilter109;
+neither private ABI differences nor field proofs substitute for byte equality.
