@@ -1,5 +1,38 @@
 #include "saga.h"
 
+void __cdecl NuWindSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 group_count);
+void __cdecl NuFadeObjSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 group_count);
+
+void __cdecl edgraClumpsReset(void) {
+    i32 i;
+    for (i = 0; i < EDGRA_MAX_CLUMPS; ++i)
+        GrassClumps[i].element_count = 0;
+    memset(edgra_page_used, 0, sizeof(edgra_page_used));
+    memset(edgra_page_scene, 0, sizeof(edgra_page_scene));
+    memset(edgra_page_on, 0, sizeof(edgra_page_on));
+    edgra_clumps_used = 0;
+    for (i = 0; i < EDGRA_MAX_INDIVIDUAL_CLUMPS; ++i)
+        IndGrassClumpsUsed[i] = 0;
+    edgra_ind_clumps_used = 0;
+}
+
+void __cdecl edgraSetup(VARIPTR *buffer, VARIPTR end, i32 clumps, i32 individual_clumps, i32 units_per_clump) {
+    EDGRA_MAX_CLUMPS = clumps;
+    EDGRA_MAX_INDIVIDUAL_CLUMPS = individual_clumps;
+    EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP = units_per_clump;
+    if (units_per_clump == 0)
+        EDGRA_MAX_INDIVIDUAL_CLUMPS = 0;
+    buffer->addr = (buffer->addr + 15) & ~15u;
+    GrassClumps = (PC_EDGRACLUMP *)buffer->void_ptr;
+    buffer->addr += EDGRA_MAX_CLUMPS * sizeof(PC_EDGRACLUMP);
+    IndGrassClumps = (PC_EDGRAINDIVIDUAL *)buffer->void_ptr;
+    buffer->addr += EDGRA_MAX_INDIVIDUAL_CLUMPS * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * sizeof(PC_EDGRAINDIVIDUAL);
+    IndGrassClumpsUsed = (i32 *)buffer->void_ptr;
+    buffer->addr += EDGRA_MAX_INDIVIDUAL_CLUMPS * sizeof(i32);
+    NuWindSetup(buffer, end, 0x3000, clumps);
+    NuFadeObjSetup(buffer, end, 0x3000, clumps);
+}
+
 void __cdecl edgraStartPage(i8 page) {
     i32 page_index = page;
     i32 i;
@@ -63,6 +96,43 @@ void __cdecl edgraInitAllClumps(void) {
             edgraStartPage((i8)page);
         }
     }
+}
+
+void __cdecl edgraStopPage(i8 page) {
+    i32 i;
+    if (edgra_page_on[page]) {
+        edgra_page_on[page] = 0;
+        edgra_units_used = 0;
+        NuWindInit();
+        NuFadeObjInit();
+        for (i = 0; i < 8; ++i) {
+            if (edgra_page_on[i]) {
+                edgra_page_on[i] = 0;
+                edgraStartPage((i8)i);
+            }
+        }
+    }
+}
+
+void __cdecl edgraClearPage(i8 page) {
+    i32 i;
+    edgraStopPage(page);
+    for (i = 0; i < EDGRA_MAX_CLUMPS; ++i) {
+        PC_EDGRACLUMP *clump = &GrassClumps[i];
+        if (clump->element_count && clump->page == (u8)page) {
+            if (clump->kind == 3) {
+                IndGrassClumpsUsed[clump->individual_index] = 0;
+                --edgra_ind_clumps_used;
+            }
+            clump->element_count = 0;
+            --edgra_clumps_used;
+        }
+    }
+    edgra_page_used[page] = 0;
+    edgra_page_scene[page] = NULL;
+    edgra_page_matrix_stack[page] = NULL;
+    edgra_page_vectors_valid[page] = 0;
+    edgra_page_calculate_done[page] = 0;
 }
 
 void __cdecl edgraSortVectorBuffer(i32 index) {

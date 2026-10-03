@@ -771,3 +771,259 @@ void PartKill_ForceThrow(PART_PC *part, i32 reason) {
     GameCam_NewShake(GameCam, 0.6f, 0.6f, 1.0f);
     PlaySfx((char *)ForceThrowExplodeNamePc, &part->position);
 }
+
+#define DEBRIS_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
+static __declspec(noinline) f32 DebrisDivide(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f)
+        return 0.0f;
+    return a / b;
+}
+
+void __cdecl DebrisEmitterOrientationMtx(i32 handle, NUMTX *source) {
+    if (handle != -1) {
+        DEBRISKEY_PC *key = &DEBRIS_KEYS_PC[handle];
+        key->emitter_orientation = *source;
+        key->emitter_orientation.m30 = 0.0f;
+        key->emitter_orientation.m31 = 0.0f;
+        key->emitter_orientation.m32 = 0.0f;
+        key->orientation_dirty = 0.0f;
+    }
+}
+
+void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position, NUVEC *momentum,
+                                               NUVEC *position_delta, i32 count, f32 duration,
+                                               NUMTX *emitter_orientation, NUMTX *particle_orientation,
+                                               u16 render_priority, i8 timed_flags) {
+    DEBRIS_INFO_PC *effect;
+    NUVEC clipped_position;
+    NUVEC extent;
+    f32 thinning;
+    f32 emission_interval;
+    f32 rate;
+    f32 now;
+    f32 end_time;
+    f32 elapsed_intervals;
+    f32 emission_epoch;
+    f32 emission_time;
+    f32 next_emission_time;
+    i32 panel_time;
+    i32 emission_count;
+    i32 i;
+    i32 j;
+    i32 particle;
+    i32 particle_count;
+    i32 particles_per_chunk;
+    i32 maximum_particles;
+    i32 particle_key_slot;
+    i32 new_key_index;
+    DEBRISKEY_PC *key;
+    i32 required_particles;
+    i32 required_chunks;
+    i32 allocated_chunks;
+    i32 new_chunk_count;
+    i32 *free_chunk_count;
+    i32 available_chunk_count;
+    DEBRIS_PARTICLE_CHUNK_PC **free_chunks;
+    DEBRIS_PARTICLE_CHUNK_PC *chunk;
+    i32 total_chunk_count;
+    DEBRIS_RENDER_CHUNK_PC *render_chunk;
+    DEBRISPARTICLE_PC *generated;
+    i32 chunk_index;
+    DEBRIS_CHUNK_CONTROL_PC *control;
+    DEBRIS_CHUNK_CONTROL_PC **stack;
+    DEBRIS_PARTICLE_CHUNK_PC *last_chunk;
+
+    if (debris_suspended != 0 || update_debris_enabled == 0 || effect_index == -1 || effect_index == 0 ||
+        effect_index >= debinf_count)
+        return;
+    effect = debtab[effect_index];
+    if (effect == NULL || effect->disabled != 0 || count < 1)
+        return;
+    if (effect->time_group != 4) {
+        clipped_position = *position;
+        extent.x = 1.0f;
+        extent.y = 1.0f;
+        extent.z = 1.0f;
+        if (NuCameraClipTestExtentsAxisAligned(&clipped_position, &extent, effect->clip_extent) == 0)
+            return;
+    }
+    thinning = forced_debris_thinning != 0
+                   ? debris_thinning_level
+                   : (debris_thinning_level > effect->thinning ? effect->thinning : debris_thinning_level);
+    rate = DebrisDivide((f32)count, thinning);
+    emission_interval = DebrisDivide(1.0f, rate);
+    if (emitter_orientation == NULL)
+        emitter_orientation = &NuMtxSetIdentityTemplate;
+    if (particle_orientation == NULL)
+        particle_orientation = &NuMtxSetIdentityTemplate;
+    panel_time = effect->time_group == 4;
+    now = panel_time ? panelglobaltime : globaltime;
+    end_time = now + duration;
+    elapsed_intervals = (f32)(i32)DebrisDivide(now, emission_interval);
+    emission_epoch = elapsed_intervals * emission_interval;
+    emission_time = emission_interval + emission_epoch;
+    if (end_time < emission_time)
+        return;
+    emission_count = 0;
+    next_emission_time = emission_time;
+    for (i = 1; i < 100 && next_emission_time <= end_time; ++i) {
+        ++emission_count;
+        next_emission_time += emission_interval;
+    }
+    if (emission_count == 0)
+        return;
+    particle_count = emission_count * ((i32)effect->trail_count + 1);
+    particles_per_chunk = effect->particle_type == 7 ? 12 : 32;
+    maximum_particles = effect->particle_type == 7 ? 0x180 : 0x400;
+    particle_key_slot = -1;
+    key = NULL;
+    for (i = 0; i < 8; ++i) {
+        if (effect->particle_keys[i] != -1) {
+            key = &DEBRIS_KEYS_PC[effect->particle_keys[i]];
+            if (key->particle_count + particle_count <= maximum_particles) {
+                particle_key_slot = i;
+                break;
+            }
+        } else if (freedebkeyptr < maxdebkeys) {
+            new_key_index = DebAlloc();
+            effect->particle_keys[i] = (i16)new_key_index;
+            key = &DEBRIS_KEYS_PC[(i16)new_key_index];
+            key->effect_index = (i16)effect_index;
+            key->finite_count = 0;
+            key->generator = gensorttab[effect->generator_type];
+            key->momentum_adjuster = gencodetab[effect->momentum_adjustment_type];
+            key->effect_orientation = *particle_orientation;
+            key->effect_orientation.m30 = 0.0f;
+            key->effect_orientation.m31 = 0.0f;
+            key->effect_orientation.m32 = 0.0f;
+            DebrisEmitterPos(effect->particle_keys[i], 0.0f, 0.0f, 0.0f);
+            key->timed_flags = timed_flags;
+            key->render_priority = render_priority;
+            particle_key_slot = i;
+            break;
+        }
+    }
+    if (key == NULL)
+        return;
+    required_particles = key->particle_count + particle_count;
+    allocated_chunks = key->allocated_chunk_count;
+    if (required_particles > allocated_chunks * particles_per_chunk) {
+        if (allocated_chunks < 0) {
+            key->allocated_chunk_count = 0;
+            allocated_chunks = 0;
+        }
+        required_chunks = (required_particles + particles_per_chunk - 1) / particles_per_chunk;
+        new_chunk_count = required_chunks - allocated_chunks;
+        free_chunk_count = effect->particle_type == 7 ? &freedebchkptrg : &freedebchkptr;
+        available_chunk_count = effect->particle_type == 7 ? debrischunksglass : debrischunks;
+        free_chunks = effect->particle_type == 7 ? freedebchunksglass : freedebchunks;
+        if (*free_chunk_count + new_chunk_count >= available_chunk_count || required_chunks > 32)
+            return;
+        for (i = 0; i < new_chunk_count; ++i) {
+            chunk = free_chunks[(*free_chunk_count)++];
+            key->particle_chunks[key->allocated_chunk_count] = chunk;
+            for (particle = 0; particle < particles_per_chunk; ++particle) {
+                chunk->particles[particle].start_time = 0.0f;
+                chunk->particles[particle].inverse_lifetime = 32768.0f;
+            }
+            ++key->allocated_chunk_count;
+        }
+        key->allocated_chunk_count = (i16)required_chunks;
+        LinkDmaParticalSets(key->particle_chunks, required_chunks);
+        if (required_chunks == new_chunk_count) {
+            total_chunk_count = debrischunks + debrischunksglass;
+            render_chunk = NULL;
+            for (j = 0; j < total_chunk_count; ++j) {
+                if (ParticleChunkToRender[j].particle_chunk == NULL) {
+                    render_chunk = &ParticleChunkToRender[j];
+                    break;
+                }
+            }
+            if (render_chunk != NULL) {
+                render_chunk->particle_chunk = key->particle_chunks[0];
+                render_chunk->effect = effect;
+                render_chunk->key = key;
+                render_chunk->render_priority = render_priority;
+                AddChunkToRenderStack(render_chunk, &ParticleChunkRenderStack[effect->time_group]);
+            }
+        }
+    }
+    key->particle_count += (i16)particle_count;
+    if (momentum == NULL) {
+        key->momentum.x = 0.0f;
+        key->momentum.y = 0.0f;
+        key->momentum.z = 0.0f;
+    } else
+        key->momentum = *momentum;
+    DebrisEmitterOrientationMtx(effect->particle_keys[particle_key_slot], emitter_orientation);
+    key->emission_epoch = emission_epoch;
+    for (i = 1; i < 100 && emission_time <= end_time; ++i) {
+        if (position_delta == NULL)
+            key->emission_position = *position;
+        else
+            NuVecAddScale(&key->emission_position, position, position_delta, emission_time - end_time);
+        key->emission_time = emission_time;
+        generated = key->generator(key, effect, emission_time);
+        if (effect->process_spheres != 0 && generated != NULL && i == 1)
+            DebrisProcessSpheres(generated, emission_time, effect, key, 1);
+        emission_time = key->emission_epoch + emission_interval;
+    }
+    DebrisGetControlStackLock();
+    for (chunk_index = key->controlled_chunk_count; chunk_index < key->allocated_chunk_count; ++chunk_index) {
+        if (freechunkcontrolsptr < (debrischunks + debrischunksglass) * 2) {
+            control = freechunkcontrols[freechunkcontrolsptr];
+            control->particle_chunk = key->particle_chunks[chunk_index];
+            control->active = 1;
+            control->owner = key;
+            control->expiry_time = now + effect->particle_lifetime + (f32)effect->trail_count * effect->trail_time;
+            AddChunkControlToStack(control, &debris_chunk_control_stack[panel_time ? 1 : 0]);
+            ++freechunkcontrolsptr;
+            ++key->controlled_chunk_count;
+        }
+    }
+    if (key->controlled_chunk_count == key->allocated_chunk_count) {
+        stack = &debris_chunk_control_stack[panel_time ? 1 : 0];
+        last_chunk = key->particle_chunks[key->controlled_chunk_count - 1];
+        for (control = *stack; control != NULL; control = control->next) {
+            if (control->particle_chunk == last_chunk) {
+                RemoveChunkControlFromStack(control, stack);
+                control->expiry_time = now + effect->particle_lifetime + (f32)effect->trail_count * effect->trail_time;
+                AddChunkControlToStack(control, stack);
+                break;
+            }
+        }
+    }
+    DebrisReleaseControlStackLock();
+    key->previous_particle_count = key->particle_count;
+    key->previous_allocated_chunk_count = key->allocated_chunk_count;
+}
+
+void __cdecl AddVariableShotDebrisEffectMtx3(i32 effect, NUVEC *position, NUVEC *momentum, i32 count,
+                                             NUMTX *emitter_orientation, NUMTX *particle_orientation) {
+    u16 priority = 20000;
+    if (effect < 0 || debtab[effect] == NULL)
+        return;
+    switch (debtab[effect]->particle_type) {
+        case 2:
+            priority = 40000;
+            break;
+        case 3:
+            priority = 30000;
+            break;
+        case 7:
+            priority = 10000;
+            break;
+    }
+    AddVariableShotDebrisEffectTimed5(effect, position, momentum, NULL, count * 30, debris_time_increment,
+                                      emitter_orientation, particle_orientation, priority, 0);
+}
+
+void __cdecl AddVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count, i16 z_rotation, i16 y_rotation) {
+    NUMTX orientation;
+    DebrisMtxCopyPrivate(&orientation, &ANI3_EVAL_IDENTITY_MATRIX);
+    DebrisMtxRotateZPrivate(&orientation, z_rotation);
+    DebrisMtxRotateYPrivate(&orientation, y_rotation);
+    AddVariableShotDebrisEffectMtx3(effect, position, &APIObjectZeroMomentumPC, count, &orientation, NULL);
+}
+
+#undef DEBRIS_KEYS_PC

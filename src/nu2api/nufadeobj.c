@@ -1,5 +1,17 @@
 #include "saga.h"
 
+void __cdecl NuFadeObjSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 group_count) {
+    buffer->addr = (buffer->addr + 15) & ~15u;
+    NuFadeObjGroup = (PC_NUFADEGROUP *)buffer->void_ptr;
+    NuFadeMaxGroupsPC = group_count;
+    buffer->addr += group_count * sizeof(PC_NUFADEGROUP);
+    buffer->addr = (buffer->addr + 15) & ~15u;
+    NuFadeMaxDataPC = matrix_count;
+    NuFadeData = (i16 *)buffer->void_ptr;
+    buffer->addr += matrix_count * sizeof(i16);
+    (void)end;
+}
+
 NUVEC __cdecl NuFadeObjGetAngleTerrainValues(NUVEC *position) {
     NUVEC values;
     values.y = NewShadow(position, 0.0f, 5.0f, 0);

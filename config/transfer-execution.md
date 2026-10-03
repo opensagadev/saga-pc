@@ -209,3 +209,44 @@ Evidence and reproduction logs are under
 build/analysis/transfer-execution-20261003/continuation-resources/, with current
 subsystem handoffs under parser, mapping/resource, debris, apiobject, data and
 world. Initial checkpoint evidence remains historical.
+
+
+### Lifecycle and particle checkpoint (2026-10-03)
+
+Against a00c901, the frozen release adds 51 newly compared functions and 12,218
+unique PC code bytes. Whole-code fuzzy coverage rises from 8.20058% to 8.44939%
+against the unchanged 3,471,246-byte PC text extent. Exact code increases by
+1,497 bytes to 57,029; no previously exact code function is lost.
+
+The connected release contains complete variable particle emission, genuine
+finite PART creation replacing its old return-minus-one stub, camera axis bounds,
+particle allocator/chunk/control/render providers, full AddAnimEffects with real
+providers, scene native resource creation/destruction, texture animation cleanup,
+material/ripple destruction, and grass/bridge storage and resets. Coherent original
+helper/caller groups and genuine cross-unit calls remain intact. Two actual D3DX
+DLL imports complete source-only linking; no DLL substitutes were introduced.
+
+Producer inspection corrects native particle chunks to0x424 and controls to0x2c;
+previous0x430/0x58 interpretations were reservation estimates. The display-scene
+registry is an inline100-pointer access view, not the old four-byte pointer slot.
+PART emitters start at291f7c8 with position before effect_id at+c and stride6c;
+the old map incorrectly started at the interior effect field291f7d4. Its old
+4,320-byte exact-data credit is withdrawn: the corrected full source view is zero
+and independently compares, but original allocation size is not yet established.
+These are evidence corrections, not byte tuning or hidden coverage gains.
+
+All required validation passes: source-only link, 157 objects with2,042 function
+and3,214 data definitions and complete relocations; LLVM18 format159 files/tidy157
+units; 665 tests with three expected skips; full retail comparison. A pinned
+native runtime fixture verifies arena partitions,32 particle initializers,
+normal/glass chunk links, control recycling, render ordering/unlinks, and sphere
+wrap/finite lifetimes. Full gameplay and real level loading remain unverified.
+
+The embedded fallback DDS contains a varying original image asset with no source
+initializer. Its five dependent removal/restoration/lazy-texture functions
+(1,050 identified bytes) stay in ignored scratch under the repository prohibition
+on committing game assets; no fake texture or dependency was substituted.
+Dependent scene consumers remain held. Model/GHG private ABI, scene upload/fixup,
+remaining particle allocation services and world lifecycle are the next targets.
+Logs/deltas are retained under continuation-lifecycle, with subsystem handoffs.
+The ongoing goal and30-minute heartbeat remain active; commits go directly tomain.

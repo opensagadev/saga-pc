@@ -1,5 +1,7 @@
 ; x86 import metadata for the real DirectX runtime; no implementation is included.
 LIBRARY d3dx9_35.dll
 EXPORTS
+    D3DXCreateTextureFromFileInMemoryEx@60
+    D3DXCreateCubeTextureFromFileInMemory@16
     D3DXCreateTextureFromFileInMemory@16
     D3DXMatrixMultiply@12

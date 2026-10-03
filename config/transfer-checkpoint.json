@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 612108,
-    "matched_code_bytes": 55532,
-    "matching_percent": 1.5997713789227268,
-    "fuzzy_coverage_percent": 8.200579596788158,
-    "mapped_functions": 2281,
-    "matched_functions": 933,
-    "objdiff_fuzzy_percent": 62.17932,
-    "objdiff_total_code": 457897,
+    "mapped_code_bytes": 621799,
+    "matched_code_bytes": 57029,
+    "matching_percent": 1.6428971038065294,
+    "fuzzy_coverage_percent": 8.449390082548772,
+    "mapped_functions": 2329,
+    "matched_functions": 956,
+    "objdiff_fuzzy_percent": 62.40049,
+    "objdiff_total_code": 470115,
     "image_bytes": 40067072,
-    "mapped_bytes": 1245125,
-    "mapping_percent": 3.107601673513852
+    "mapped_bytes": 1250682,
+    "mapping_percent": 3.1214709175654263
   },
   "newly_compared": [
     {
@@ -2800,6 +2800,576 @@
         "guarded_entry_smoke": true
       },
       "ongoing_goal": "Whole-project transfer; user requests indefinite continuation and half-hour validated commits directly to main."
+    },
+    {
+      "baseline_commit": "a00c901cec512f0bbf35c0ccf4622a7df2150bec",
+      "new_functions": 51,
+      "new_unique_PC_bytes": 12218,
+      "previous_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 612108,
+        "matched_code_bytes": 55532,
+        "matching_percent": 1.5997713789227268,
+        "fuzzy_coverage_percent": 8.200579596788158,
+        "mapped_functions": 2281,
+        "matched_functions": 933,
+        "objdiff_fuzzy_percent": 62.17932,
+        "objdiff_total_code": 457897,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1245125,
+        "mapping_percent": 3.107601673513852
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 621799,
+        "matched_code_bytes": 57029,
+        "matching_percent": 1.6428971038065294,
+        "fuzzy_coverage_percent": 8.449390082548772,
+        "mapped_functions": 2329,
+        "matched_functions": 956,
+        "objdiff_fuzzy_percent": 62.40049,
+        "objdiff_total_code": 470115,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1250682,
+        "mapping_percent": 3.1214709175654263
+      },
+      "newly_compared": [
+        {
+          "name": "NuFadeObjSetup",
+          "symbol": "_NuFadeObjSetup",
+          "address": "0x00545db0",
+          "target_size": 68,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/nufadeobj.c"
+          ]
+        },
+        {
+          "name": "NuWindSetup",
+          "symbol": "_NuWindSetup",
+          "address": "0x00546f90",
+          "target_size": 44,
+          "exact_match": true,
+          "units": [
+            "src/gamelib/nuwind_groups.c"
+          ]
+        },
+        {
+          "name": "DestroyRippleMtls",
+          "symbol": "_DestroyRippleMtls",
+          "address": "0x005a29d0",
+          "target_size": 80,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/ripples.c"
+          ]
+        },
+        {
+          "name": "NuTexAnimEnvCreate",
+          "symbol": "_NuTexAnimEnvCreate",
+          "address": "0x005d1c20",
+          "target_size": 146,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/nutexanim.c"
+          ]
+        },
+        {
+          "name": "NuTexAnimRemoveList",
+          "symbol": "_NuTexAnimRemoveList",
+          "address": "0x005d3400",
+          "target_size": 129,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/nutexanim.c"
+          ]
+        },
+        {
+          "name": "NuCameraClipTestExtentsAxisAligned",
+          "symbol": "_NuCameraClipTestExtentsAxisAligned",
+          "address": "0x005d69a0",
+          "target_size": 787,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/nucamera.c"
+          ]
+        },
+        {
+          "name": "NuDisplayListDestroyMtl",
+          "symbol": "_NuDisplayListDestroyMtl",
+          "address": "0x005de220",
+          "target_size": 176,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/nudlist.c"
+          ]
+        },
+        {
+          "name": "NuDisplaySceneDestroy",
+          "symbol": "_NuDisplaySceneDestroy",
+          "address": "0x005dee40",
+          "target_size": 293,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/nudlist.c"
+          ]
+        },
+        {
+          "name": "NuMtlDestroy",
+          "symbol": "_NuMtlDestroy",
+          "address": "0x005e50e0",
+          "target_size": 95,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/numtl.c"
+          ]
+        },
+        {
+          "name": "CreateDmaParticleSet",
+          "symbol": "_CreateDmaParticleSet",
+          "address": "0x005ffdc0",
+          "target_size": 173,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "CreateDmaParticleSetGlass",
+          "symbol": "_CreateDmaParticleSetGlass",
+          "address": "0x005ffe70",
+          "target_size": 5,
+          "exact_match": true,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "CreateDmaPartEffectList",
+          "symbol": "_CreateDmaPartEffectList",
+          "address": "0x005ffe80",
+          "target_size": 21,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "LinkDmaParticalSets",
+          "symbol": "_LinkDmaParticalSets",
+          "address": "0x005ffea0",
+          "target_size": 53,
+          "exact_match": true,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "NuGScnCreatePS",
+          "symbol": "_NuGScnCreatePS",
+          "address": "0x00602370",
+          "target_size": 63,
+          "exact_match": true,
+          "units": [
+            "src/nu2api/nuscene_pc.c"
+          ]
+        },
+        {
+          "name": "NuGScnDestroyPS",
+          "symbol": "_NuGScnDestroyPS",
+          "address": "0x006026a0",
+          "target_size": 350,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/nugscn_pc.c"
+          ]
+        },
+        {
+          "name": "NuDisplaySceneDestroyPS",
+          "symbol": "_NuDisplaySceneDestroyPS",
+          "address": "0x006039b0",
+          "target_size": 1,
+          "exact_match": true,
+          "units": [
+            "src/nu2api/nudlist.c"
+          ]
+        },
+        {
+          "name": "AddGameDebrisMomentum",
+          "symbol": "_AddGameDebrisMomentum",
+          "address": "0x0062c5b0",
+          "target_size": 82,
+          "exact_match": true,
+          "units": [
+            "src/gameapi/apiobject.c"
+          ]
+        },
+        {
+          "name": "AddGameDebrisXYZ",
+          "symbol": "_AddGameDebrisXYZ",
+          "address": "0x0062c610",
+          "target_size": 105,
+          "exact_match": true,
+          "units": [
+            "src/gameapi/apiobject.c"
+          ]
+        },
+        {
+          "name": "AddGameDebrisRot",
+          "symbol": "_AddGameDebrisRot",
+          "address": "0x0062c680",
+          "target_size": 73,
+          "exact_match": true,
+          "units": [
+            "src/gameapi/apiobject.c"
+          ]
+        },
+        {
+          "name": "AddGameDebrisMtx",
+          "symbol": "_AddGameDebrisMtx",
+          "address": "0x0062c6d0",
+          "target_size": 137,
+          "exact_match": true,
+          "units": [
+            "src/gameapi/apiobject.c"
+          ]
+        },
+        {
+          "name": "AddGameDebrisMom",
+          "symbol": "_AddGameDebrisMom",
+          "address": "0x0062c760",
+          "target_size": 104,
+          "exact_match": true,
+          "units": [
+            "src/gameapi/apiobject.c"
+          ]
+        },
+        {
+          "name": "SetAPIObjPlaySfxByIdFn",
+          "symbol": "_SetAPIObjPlaySfxByIdFn",
+          "address": "0x0062c7d0",
+          "target_size": 10,
+          "exact_match": true,
+          "units": [
+            "src/gameapi/apiobject.c"
+          ]
+        },
+        {
+          "name": "AddAnimEffects",
+          "symbol": "_AddAnimEffects",
+          "address": "0x0062c7e0",
+          "target_size": 2808,
+          "exact_match": false,
+          "units": [
+            "src/gameapi/apiobject.c"
+          ]
+        },
+        {
+          "name": "PARTStartOffset",
+          "symbol": "_PARTStartOffset",
+          "address": "0x0064ae50",
+          "target_size": 373,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/game_deb.c"
+          ]
+        },
+        {
+          "name": "AddPARTEffect",
+          "symbol": "_AddPARTEffect",
+          "address": "0x0064b1c0",
+          "target_size": 249,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/game_deb.c"
+          ]
+        },
+        {
+          "name": "DebrisDivide",
+          "symbol": "_DebrisDivide",
+          "address": "0x0064fde0",
+          "target_size": 54,
+          "exact_match": true,
+          "units": [
+            "src/legoapi/parts.c"
+          ]
+        },
+        {
+          "name": "DebrisReserveTrashableSpace",
+          "symbol": "_DebrisReserveTrashableSpace",
+          "address": "0x00654b40",
+          "target_size": 93,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "DebrisTrashableSetup",
+          "symbol": "_DebrisTrashableSetup",
+          "address": "0x00654ba0",
+          "target_size": 604,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "AddChunkToRenderStack",
+          "symbol": "_AddChunkToRenderStack",
+          "address": "0x00654e00",
+          "target_size": 154,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "RemoveChunkFromRenderStack",
+          "symbol": "_RemoveChunkFromRenderStack",
+          "address": "0x00654ea0",
+          "target_size": 70,
+          "exact_match": true,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "RemoveChunkControlFromStack",
+          "symbol": "_RemoveChunkControlFromStack",
+          "address": "0x00655210",
+          "target_size": 52,
+          "exact_match": true,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "RemoveAnyChunkControls",
+          "symbol": "_RemoveAnyChunkControls",
+          "address": "0x00655250",
+          "target_size": 104,
+          "exact_match": true,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "DebrisEmitterOrientationMtx",
+          "symbol": "_DebrisEmitterOrientationMtx",
+          "address": "0x00655b30",
+          "target_size": 98,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/parts.c"
+          ]
+        },
+        {
+          "name": "DebrisProcessSpheres",
+          "symbol": "_DebrisProcessSpheres",
+          "address": "0x00656080",
+          "target_size": 332,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "AddVariableShotDebrisEffectTimed5",
+          "symbol": "_AddVariableShotDebrisEffectTimed5",
+          "address": "0x006561d0",
+          "target_size": 2846,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/parts.c"
+          ]
+        },
+        {
+          "name": "AddVariableShotDebrisEffectMtx3",
+          "symbol": "_AddVariableShotDebrisEffectMtx3",
+          "address": "0x00656dc0",
+          "target_size": 126,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/parts.c"
+          ]
+        },
+        {
+          "name": "edbriStopPage",
+          "symbol": "_edbriStopPage",
+          "address": "0x0065ce60",
+          "target_size": 65,
+          "exact_match": true,
+          "units": [
+            "src/gameapi/edbri.c"
+          ]
+        },
+        {
+          "name": "edbriClearPage",
+          "symbol": "_edbriClearPage",
+          "address": "0x0065ceb0",
+          "target_size": 81,
+          "exact_match": true,
+          "units": [
+            "src/gameapi/edbri.c"
+          ]
+        },
+        {
+          "name": "edbriBridgesReset",
+          "symbol": "_edbriBridgesReset",
+          "address": "0x0065d470",
+          "target_size": 159,
+          "exact_match": false,
+          "units": [
+            "src/gameapi/edbri.c"
+          ]
+        },
+        {
+          "name": "edgraSetup",
+          "symbol": "_edgraSetup",
+          "address": "0x0065e040",
+          "target_size": 155,
+          "exact_match": true,
+          "units": [
+            "src/gameapi/edgrass.c"
+          ]
+        },
+        {
+          "name": "edgraClumpsReset",
+          "symbol": "_edgraClumpsReset",
+          "address": "0x0065ee90",
+          "target_size": 202,
+          "exact_match": false,
+          "units": [
+            "src/gameapi/edgrass.c"
+          ]
+        },
+        {
+          "name": "AddVariableShotDebrisEffect",
+          "symbol": "_AddVariableShotDebrisEffect",
+          "address": "0x00684c90",
+          "target_size": 71,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/parts.c"
+          ]
+        },
+        {
+          "name": "edgraStopPage",
+          "symbol": "_edgraStopPage",
+          "address": "0x00689e70",
+          "target_size": 84,
+          "exact_match": true,
+          "units": [
+            "src/gameapi/edgrass.c"
+          ]
+        },
+        {
+          "name": "edgraClearPage",
+          "symbol": "_edgraClearPage",
+          "address": "0x00689ed0",
+          "target_size": 158,
+          "exact_match": false,
+          "units": [
+            "src/gameapi/edgrass.c"
+          ]
+        },
+        {
+          "name": "PCAnimationEffectCheckpoint",
+          "symbol": "_PCAnimationEffectCheckpoint",
+          "address": "0x006dea60",
+          "target_size": 1,
+          "exact_match": true,
+          "units": [
+            "src/nu2api/nudebug.c"
+          ]
+        },
+        {
+          "name": "PCFrameLoadingYieldEnabled",
+          "symbol": "_PCFrameLoadingYieldEnabled",
+          "address": "0x006df330",
+          "target_size": 9,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/nuscene_pc.c"
+          ]
+        },
+        {
+          "name": "PCDeviceCreateIndexBuffer",
+          "symbol": "_PCDeviceCreateIndexBuffer",
+          "address": "0x006e46f0",
+          "target_size": 63,
+          "exact_match": true,
+          "units": [
+            "src/nu2api/pc_device.cpp"
+          ]
+        },
+        {
+          "name": "PCDeviceCreateVertexBuffer",
+          "symbol": "_PCDeviceCreateVertexBuffer",
+          "address": "0x006e4810",
+          "target_size": 60,
+          "exact_match": true,
+          "units": [
+            "src/nu2api/pc_device.cpp"
+          ]
+        },
+        {
+          "name": "PCDeviceCreateTextureFromMemoryEx",
+          "symbol": "_PCDeviceCreateTextureFromMemoryEx",
+          "address": "0x006e5a30",
+          "target_size": 88,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/pc_device.cpp"
+          ]
+        },
+        {
+          "name": "PCDeviceCreateCubeTextureFromMemory",
+          "symbol": "_PCDeviceCreateCubeTextureFromMemory",
+          "address": "0x006e5a90",
+          "target_size": 32,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/pc_device.cpp"
+          ]
+        },
+        {
+          "name": "PCShaderRecordFromHandle",
+          "symbol": "_PCShaderRecordFromHandle",
+          "address": "0x007416d0",
+          "target_size": 31,
+          "exact_match": true,
+          "units": [
+            "src/nu2api/nushader.c"
+          ]
+        }
+      ],
+      "checkpoint": "lifecycle-particle-20261003",
+      "exact_function_losses": [],
+      "exact_data_credit_corrections": [
+        {
+          "symbol": "_part_emits",
+          "old_address": "0x291f7d4",
+          "new_address": "0x291f7c8",
+          "previous_claimed_extent": 4320,
+          "new_original_extent": null,
+          "reason": "Old map bound the effect_id interior field as allocation base. Verified producers establish position prefix and0x6c stride; full zero source view checks, but allocationextent stays unproven."
+        }
+      ],
+      "verified_checks": {
+        "tests": 665,
+        "skipped": 3,
+        "llvm": 18,
+        "format_files": 159,
+        "tidy_units": 157,
+        "objects": 157,
+        "function_definitions": 2042,
+        "data_definitions": 3214,
+        "build_link": true,
+        "native_debris_engine_fixture": true
+      },
+      "ongoing_goal": "Indefinite whole-project transfer with validated commits roughly every30minutes and directmainpush; do notmarkcomplete."
     }
   ]
 }

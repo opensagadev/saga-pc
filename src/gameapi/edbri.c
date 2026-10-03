@@ -1,5 +1,46 @@
 #include "saga.h"
 
+extern i32 edbri_page_on[8];
+
+void __cdecl edbriBridgesReset(void) {
+    i32 i;
+    NuBridgeInit();
+    for (i = 0; i < 64; ++i) {
+        edBridges[i].instance_id = -1;
+        edBridges[i].connection_index = 0xff;
+    }
+    memset(edbri_page_used, 0, sizeof(edbri_page_used));
+    memset(edbri_page_scene, 0, sizeof(edbri_page_scene));
+    memset(edbri_page_on, 0, sizeof(edbri_page_on));
+    edbri_bridges_used = 0;
+}
+
+void __cdecl edbriStopPage(i8 page) {
+    i32 index;
+    if (edbri_page_used[page]) {
+        for (index = 0; index < 64; ++index) {
+            PC_EDBRIDGE *bridge = &edBridges[index];
+            if (bridge->connection_index == (u8)page && bridge->instance_id != -1) {
+                NuBridgeRemove(bridge->instance_id);
+                bridge->instance_id = -1;
+            }
+        }
+    }
+}
+
+void __cdecl edbriClearPage(i8 page) {
+    i32 index;
+    edbriStopPage(page);
+    for (index = 0; index < 64; ++index) {
+        if (edBridges[index].connection_index == (u8)page) {
+            edBridges[index].connection_index = 0xff;
+            --edbri_bridges_used;
+        }
+    }
+    edbri_page_used[page] = 0;
+    edbri_page_scene[page] = NULL;
+}
+
 void __cdecl edbriDetermineNearest(f32 distance) {
     NUVEC delta;
     i32 index;

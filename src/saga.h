@@ -1382,12 +1382,14 @@ typedef struct numtlattrib_s {
 STATIC_ASSERT(sizeof(NUMTLATTRIB) == 4);
 typedef struct nudisplaylist_pc_s NUDISPLAYLIST_PC;
 typedef struct numtl_s {
-    u8 unknown_0000[0x3c];
+    u16 flags;
+    u8 unknown_0002[0x3a];
     NUDISPLAYLIST_PC *display_list;
     NUMTLATTRIB attribs;
     u8 unknown_0044[0x30];
     i16 texture_id;
 } NUMTL;
+STATIC_ASSERT(offsetof(NUMTL, flags) == 0);
 STATIC_ASSERT(offsetof(NUMTL, display_list) == 0x3c);
 STATIC_ASSERT(offsetof(NUMTL, attribs) == 0x40);
 STATIC_ASSERT(offsetof(NUMTL, texture_id) == 0x74);
@@ -1444,7 +1446,7 @@ STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_PC, methods) == 0);
 typedef struct nutexdim_pc_s {
     i32 width;
     i32 height;
-    u8 unknown_0008[0x10];
+    u8 checksum[0x10];
     i32 ref_count;
     void *image_data;
     u32 image_size;
@@ -1460,22 +1462,59 @@ STATIC_ASSERT(sizeof(NUTEXDIM_PC) == 0x28);
 
 typedef struct parttype_lookup_pc_s {
     char name[16];
-    u8 unknown_0010[0x168];
+    u8 unknown_010[0x80];
+    i16 effect_ids[8];
+    u8 unknown_0a0[0x12];
+    i8 page;
+    u8 unknown_0b3[0x19];
+    f32 emission_rate;
+    u8 unknown_0d0[0x1c];
+    f32 emission_period, emission_period_random, emission_pause, emission_pause_random;
+    u8 unknown_0fc[0x7c];
 } PARTTYPE_LOOKUP_PC;
 STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, name) == 0);
+STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, effect_ids) == 0x90);
+STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, page) == 0xb2);
+STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, emission_rate) == 0xcc);
+STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, emission_period) == 0xec);
+STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, emission_period_random) == 0xf0);
+STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, emission_pause) == 0xf4);
+STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, emission_pause_random) == 0xf8);
 STATIC_ASSERT(sizeof(PARTTYPE_LOOKUP_PC) == 0x178);
 
 typedef struct part_emit_pc_s {
+    NUVEC position;
     i32 effect_id;
-    u8 unknown_0004[0x22];
+    char name[16];
+    f32 time_20, time_24, time_28;
+    i16 rotation_2c, rotation_2e, rotation_30;
     i8 page;
-    u8 unknown_0027[0x0d];
+    u8 field_33;
+    i32 shots_remaining;
+    f32 time_38;
+    u8 field_3c, field_3d, field_3e, field_3f;
     f32 camera_distance;
-    u8 unknown_0038[0x34];
+    i16 field_44, field_46;
+    u8 unknown_048[0x24];
 } PART_EMIT_PC;
 STATIC_ASSERT(sizeof(PART_EMIT_PC) == 0x6c);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, page) == 0x26);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, camera_distance) == 0x34);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, position) == 0);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, effect_id) == 0xc);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, name) == 0x10);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, time_20) == 0x20);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, time_24) == 0x24);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, time_28) == 0x28);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, rotation_2c) == 0x2c);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, rotation_2e) == 0x2e);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, rotation_30) == 0x30);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, page) == 0x32);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, shots_remaining) == 0x34);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, time_38) == 0x38);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, field_33) == 0x33);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, field_3d) == 0x3d);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, camera_distance) == 0x40);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, field_44) == 0x44);
+STATIC_ASSERT(offsetof(PART_EMIT_PC, field_46) == 0x46);
 
 typedef struct nupad_init_state_s {
     u8 unknown_00[0x88];
@@ -1954,10 +1993,16 @@ STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, flags) == 0xb8);
 STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, instance_ix) == 0xc0);
 
 typedef struct nudisplay_list_pc_s {
-    u8 unknown_0000[0x44];
+    void *allocation;
+    i32 item_count;
+    void *items;
+    u8 unknown_000c[0x38];
     NUVEC4 *clip_bounds;
     u8 *visibility_flags;
-    u8 unknown_004c_6c[0x20];
+    u8 unknown_004c[0x14];
+    i32 sort_count;
+    struct nusortpri_s *sort_pris;
+    f32 *alpha_values;
     i32 special_count;
     NUDISPLAY_SPECIAL_PC *specials;
     union {
@@ -1968,7 +2013,17 @@ typedef struct nudisplay_list_pc_s {
             u8 unknown_0077[0x1];
         };
     };
+    u8 unknown_0078[0x14];
+    struct PC_MATERIAL_ANIM_SET *material_animations;
 } NUDISPLAY_LIST_PC;
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, material_animations) == 0x8c);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, allocation) == 0);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, item_count) == 4);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, items) == 8);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, sort_count) == 0x60);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, sort_pris) == 0x64);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, alpha_values) == 0x68);
+
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, clip_bounds) == 0x44);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, render_flags) == 0x74);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, visibility_flags) == 0x48);
@@ -1991,23 +2046,42 @@ typedef struct nulegacyspecial_s {
 } NULEGACYSPECIAL;
 
 typedef struct NUGSCN_s {
-    u8 unknown_0000[0x24];
+    i32 *texture_ids;
+    i32 texture_count;
+    NUTEXDIM_PC **textures;
+    NUMTL **materials;
+    i32 material_count;
+    u8 unknown_0014[0x10];
     i32 special_count;
     NUSPECIAL_LEGACY_PC *specials;
     u8 unknown_002c[4];
     i32 spline_count;
     struct nugspline_s *splines;
-    u8 unknown_0038[0x14];
+    u8 unknown_0038[8];
+    struct NUGSCN_s **additional_scenes;
+    u8 unknown_0044[8];
     struct nuinstanim_time_view_s *instance_animations;
     struct numtx_s *instance_animation_matrices;
     void **instance_animation_data;
-    u8 unknown_0058[0x18];
+    u8 unknown_0058[0xc];
+    void *texture_animations;
+    u8 unknown_0068[8];
     NUPORTAL *portals;
     i32 num_rooms;
     NUGSCNROOM *rooms;
     u8 unknown_007c[0x94];
     NUDISPLAY_LIST_PC *display_list;
+    u8 unknown_0114[0xbc];
+    void *native_scene;
 } NUGSCN;
+STATIC_ASSERT(offsetof(NUGSCN, additional_scenes) == 0x40);
+STATIC_ASSERT(offsetof(NUGSCN, texture_animations) == 0x64);
+STATIC_ASSERT(offsetof(NUGSCN, native_scene) == 0x1d0);
+STATIC_ASSERT(offsetof(NUGSCN, texture_ids) == 0x0);
+STATIC_ASSERT(offsetof(NUGSCN, texture_count) == 0x4);
+STATIC_ASSERT(offsetof(NUGSCN, textures) == 0x8);
+STATIC_ASSERT(offsetof(NUGSCN, materials) == 0xc);
+STATIC_ASSERT(offsetof(NUGSCN, material_count) == 0x10);
 STATIC_ASSERT(offsetof(NUGSCN, special_count) == 0x24);
 STATIC_ASSERT(offsetof(NUGSCN, specials) == 0x28);
 STATIC_ASSERT(offsetof(NUGSCN, spline_count) == 0x30);
@@ -2870,7 +2944,10 @@ typedef struct debris_info_pc_s {
     u8 unknown_2ac[0x44];
     i8 process_spheres;
     i8 time_group;
-    u8 unknown_2f2[0xee];
+    u8 unknown_2f2[2];
+    f32 thinning;
+    u8 unknown_2f8[0xd8];
+    i16 particle_keys[8];
     i32 sound_data[12];
     i8 trail_count, radial_segments;
     u8 unknown_412[2];
@@ -2895,6 +2972,8 @@ STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, rotor_speed_x) == 0x50);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, rotor_speed_y) == 0x54);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, process_spheres) == 0x2f0);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, time_group) == 0x2f1);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, thinning) == 0x2f4);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, particle_keys) == 0x3d0);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, sound_data) == 0x3e0);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, momentum_base) == 0x48);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, momentum_random_x) == 0x4c);
@@ -5962,9 +6041,44 @@ STATIC_ASSERT(offsetof(NULGTVERTEX_PC, colour) == 0xc);
 STATIC_ASSERT(offsetof(NULGTVERTEX_PC, u) == 0x10);
 STATIC_ASSERT(offsetof(NULGTVERTEX_PC, v) == 0x14);
 
+typedef struct PC_BUFFER_RESOURCE_PC PC_BUFFER_RESOURCE_PC;
+typedef struct PC_BUFFER_RESOURCE_METHODS_PC {
+    void *unknown_0000[2];
+    ULONG(__stdcall *release)(PC_BUFFER_RESOURCE_PC *);
+    void *unknown_000c[8];
+    HRESULT(__stdcall *lock)(PC_BUFFER_RESOURCE_PC *, u32, u32, void **, u32);
+    HRESULT(__stdcall *unlock)(PC_BUFFER_RESOURCE_PC *);
+} PC_BUFFER_RESOURCE_METHODS_PC;
+struct PC_BUFFER_RESOURCE_PC {
+    const PC_BUFFER_RESOURCE_METHODS_PC *methods;
+};
+STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_PC, methods) == 0);
+STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_METHODS_PC, release) == 8);
+STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_METHODS_PC, lock) == 0x2c);
+STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_METHODS_PC, unlock) == 0x30);
+typedef struct SCENE_VIDEO_RESOURCE_HEADER_PC {
+    u16 vertex_buffer_count, unknown_02;
+    PC_BUFFER_RESOURCE_PC **vertex_buffers;
+    u16 index_buffer_count, unknown_0a;
+    PC_BUFFER_RESOURCE_PC **index_buffers;
+    u16 texture_count, unknown_12;
+    PC_TEXTURE_RESOURCE_PC **textures;
+} SCENE_VIDEO_RESOURCE_HEADER_PC;
+STATIC_ASSERT(sizeof(SCENE_VIDEO_RESOURCE_HEADER_PC) == 0x18);
+STATIC_ASSERT(offsetof(SCENE_VIDEO_RESOURCE_HEADER_PC, vertex_buffer_count) == 0x0);
+STATIC_ASSERT(offsetof(SCENE_VIDEO_RESOURCE_HEADER_PC, vertex_buffers) == 0x4);
+STATIC_ASSERT(offsetof(SCENE_VIDEO_RESOURCE_HEADER_PC, index_buffer_count) == 0x8);
+STATIC_ASSERT(offsetof(SCENE_VIDEO_RESOURCE_HEADER_PC, index_buffers) == 0xc);
+STATIC_ASSERT(offsetof(SCENE_VIDEO_RESOURCE_HEADER_PC, texture_count) == 0x10);
+STATIC_ASSERT(offsetof(SCENE_VIDEO_RESOURCE_HEADER_PC, textures) == 0x14);
 typedef struct PC_D3D9_DEVICE_PC PC_D3D9_DEVICE_PC;
 typedef struct PC_D3D9_METHODS_PC {
-    void *unknown_0000[44];
+    void *unknown_0000[26];
+    HRESULT(__stdcall *create_vertex_buffer)
+    (PC_D3D9_DEVICE_PC *, u32, u32, u32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *);
+    HRESULT(__stdcall *create_index_buffer)
+    (PC_D3D9_DEVICE_PC *, u32, u32, i32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *);
+    void *unknown_0070[16];
     HRESULT(__stdcall *set_transform)(PC_D3D9_DEVICE_PC *, i32, const NUMTX *);
     void *unknown_00b4;
     void *unknown_00b8;
@@ -5999,6 +6113,8 @@ STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, width) == 8);
 STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, height) == 12);
 STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, min_z) == 0x10);
 STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, max_z) == 0x14);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, create_vertex_buffer) == 0x68);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, create_index_buffer) == 0x6c);
 STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_transform) == 0xb0);
 STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_viewport) == 0xbc);
 STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_render_state) == 0xe4);
@@ -7941,7 +8057,7 @@ extern "C" {
         u8 process_collision_sound;
         u8 field_2f6;
         u8 field_2f7;
-        u8 unknown_2f8;
+        i8 timed_flags;
         u8 field_2f9;
         u8 field_2fa;
         u8 unknown_2fb;
@@ -8001,6 +8117,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(DEBRISKEY_PC, process_collision_sound) == 0x2f5);
     STATIC_ASSERT(offsetof(DEBRISKEY_PC, field_2f6) == 0x2f6);
     STATIC_ASSERT(offsetof(DEBRISKEY_PC, field_2f7) == 0x2f7);
+    STATIC_ASSERT(offsetof(DEBRISKEY_PC, timed_flags) == 0x2f8);
     STATIC_ASSERT(offsetof(DEBRISKEY_PC, field_2f9) == 0x2f9);
     STATIC_ASSERT(offsetof(DEBRISKEY_PC, field_2fa) == 0x2fa);
     STATIC_ASSERT(offsetof(DEBRISKEY_PC, gscene) == 0x2fc);
@@ -8030,6 +8147,18 @@ extern "C" {
     void __cdecl AddDebrisEffect(i32 *, i32, f32, f32, f32);
     void __cdecl AddFiniteShotDebrisEffect2(i32 *, i32, NUVEC *, NUVEC *, NUVEC *, i32);
     void __cdecl AddFiniteShotDebrisEffect(i32 *, i32, NUVEC *, i32);
+
+    extern f32 partglobaltime, debris_thinning_level;
+    extern i32 part_emits_used, forced_debris_thinning;
+    extern NUMTX AxisClipFrustumPlanesPc, AxisClipScissorPlanesPc, AxisClipNearFarPlanesPc;
+    extern NUMTX AxisClipAbsFrustumPlanesPc, AxisClipAbsScissorPlanesPc;
+    i32 __cdecl NuCameraClipTestExtentsAxisAligned(NUVEC *, NUVEC *, f32);
+    i32 __cdecl AddPARTEffect(i32, NUVEC *);
+    void __cdecl PARTStartOffset(i32, f32);
+    void __cdecl DebrisEmitterOrientationMtx(i32, NUMTX *);
+    void __cdecl AddVariableShotDebrisEffectTimed5(i32, NUVEC *, NUVEC *, NUVEC *, i32, f32, NUMTX *, NUMTX *, u16, i8);
+    void __cdecl AddVariableShotDebrisEffectMtx3(i32, NUVEC *, NUVEC *, i32, NUMTX *, NUMTX *);
+    void __cdecl AddVariableShotDebrisEffect(i32, NUVEC *, i32, i16, i16);
 
     i32 __cdecl edbitsLookupInstance(char *, NUGSCN *);
     void __cdecl edgraCalculatePage(i8, i32);
@@ -8150,22 +8279,20 @@ extern "C" {
     void __cdecl NuFadeObjInit(void);
 
     struct debris_particle_chunk_pc_s {
-        u8 header[0x20];
+        u8 command;
+        u8 unknown_001[3];
+        struct debris_particle_chunk_pc_s *next;
+        u8 unknown_008[0xc];
+        u32 field_014, field_018, field_01c;
         DEBRISPARTICLE_PC particles[32];
         u32 end_command;
-        u8 unknown_424[0xc];
     };
+    STATIC_ASSERT(sizeof(DEBRIS_PARTICLE_CHUNK_PC) == 0x424);
+    STATIC_ASSERT(offsetof(DEBRIS_PARTICLE_CHUNK_PC, command) == 0);
+    STATIC_ASSERT(offsetof(DEBRIS_PARTICLE_CHUNK_PC, next) == 4);
+    STATIC_ASSERT(offsetof(DEBRIS_PARTICLE_CHUNK_PC, field_014) == 0x14);
     STATIC_ASSERT(offsetof(DEBRIS_PARTICLE_CHUNK_PC, particles) == 0x20);
-    STATIC_ASSERT(sizeof(DEBRIS_PARTICLE_CHUNK_PC) == 0x430);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndex(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebDummy(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndexRadial(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndexRadialRotor(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndexSpheroid(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndexBounceY(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndexBounceXZ(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndexImprovedRadial(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndexRadialStar(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    STATIC_ASSERT(offsetof(DEBRIS_PARTICLE_CHUNK_PC, end_command) == 0x420);
 
     typedef struct debris_chunk_control_pc_s {
         DEBRIS_PARTICLE_CHUNK_PC *particle_chunk;
@@ -8181,9 +8308,8 @@ extern "C" {
         i16 field_022;
         f32 collision_plane;
         f32 restitution;
-        u8 unknown_02c[0x2c];
     } DEBRIS_CHUNK_CONTROL_PC;
-    STATIC_ASSERT(sizeof(DEBRIS_CHUNK_CONTROL_PC) == 0x58);
+    STATIC_ASSERT(sizeof(DEBRIS_CHUNK_CONTROL_PC) == 0x2c);
     STATIC_ASSERT(offsetof(DEBRIS_CHUNK_CONTROL_PC, expiry_time) == 4);
     STATIC_ASSERT(offsetof(DEBRIS_CHUNK_CONTROL_PC, next) == 0x10);
     STATIC_ASSERT(offsetof(DEBRIS_CHUNK_CONTROL_PC, particle_index) == 0x14);
@@ -8214,6 +8340,65 @@ extern "C" {
     extern i32 *NuTextureLoadOrderPC;
     extern const f32 AIPositionUnsetPc;
     i32 __cdecl AddGameDebris(APIDEBRISSYS_PC *, i32, NUVEC *);
+    typedef struct debris_render_chunk_pc_s {
+        DEBRIS_PARTICLE_CHUNK_PC *particle_chunk;
+        DEBRIS_INFO_PC *effect;
+        DEBRISKEY_PC *key;
+        NUMTX effect_orientation;
+        NUVEC position;
+        struct debris_render_chunk_pc_s *previous, *next;
+        u16 render_priority;
+        u8 unknown_062[2];
+    } DEBRIS_RENDER_CHUNK_PC;
+    STATIC_ASSERT(sizeof(DEBRIS_RENDER_CHUNK_PC) == 0x64);
+    STATIC_ASSERT(offsetof(DEBRIS_RENDER_CHUNK_PC, effect) == 4);
+    STATIC_ASSERT(offsetof(DEBRIS_RENDER_CHUNK_PC, key) == 8);
+    STATIC_ASSERT(offsetof(DEBRIS_RENDER_CHUNK_PC, effect_orientation) == 0xc);
+    STATIC_ASSERT(offsetof(DEBRIS_RENDER_CHUNK_PC, position) == 0x4c);
+    STATIC_ASSERT(offsetof(DEBRIS_RENDER_CHUNK_PC, previous) == 0x58);
+    STATIC_ASSERT(offsetof(DEBRIS_RENDER_CHUNK_PC, next) == 0x5c);
+    STATIC_ASSERT(offsetof(DEBRIS_RENDER_CHUNK_PC, render_priority) == 0x60);
+    extern u32 debris_trash_space, debris_trash_size;
+    extern i32 debris_setup_called, freedebchkptr, freedebchkptrg;
+    extern DEBRIS_CHUNK_CONTROL_PC *debris_chunk_controls;
+    extern DEBRIS_PARTICLE_CHUNK_PC **freedebchunks, **freedebchunksglass;
+    extern DEBRIS_RENDER_CHUNK_PC *ParticleChunkToRender;
+    extern DEBRIS_RENDER_CHUNK_PC *ParticleChunkRenderStack[5];
+    DEBRIS_PARTICLE_CHUNK_PC *__cdecl CreateDmaParticleSet(void *, i32 *);
+    DEBRIS_PARTICLE_CHUNK_PC *__cdecl CreateDmaParticleSetGlass(void *, i32 *);
+    DEBRIS_PART_HEADER_PC *__cdecl CreateDmaPartEffectList(void *, i32 *);
+    void __cdecl LinkDmaParticalSets(DEBRIS_PARTICLE_CHUNK_PC **, i32);
+    void __cdecl DebrisReserveTrashableSpace(VARIPTR *, VARIPTR, i32, i32);
+    void __cdecl DebrisTrashableSetup(VARIPTR *, VARIPTR *);
+    void __cdecl AddChunkToRenderStack(DEBRIS_RENDER_CHUNK_PC *, DEBRIS_RENDER_CHUNK_PC **);
+    void __cdecl RemoveChunkFromRenderStack(DEBRIS_RENDER_CHUNK_PC *, DEBRIS_RENDER_CHUNK_PC **);
+    void __cdecl RemoveChunkControlFromStack(DEBRIS_CHUNK_CONTROL_PC *, DEBRIS_CHUNK_CONTROL_PC **);
+    void __cdecl RemoveAnyChunkControls(DEBRIS_PARTICLE_CHUNK_PC *);
+    void __cdecl DebrisProcessSpheres(DEBRISPARTICLE_PC *, f32, DEBRIS_INFO_PC *, DEBRISKEY_PC *, i32);
+
+    void __cdecl edbriStopPage(i8 page);
+    void __cdecl edbriClearPage(i8 page);
+    void __cdecl edgraStopPage(i8 page);
+    void __cdecl edgraClearPage(i8 page);
+
+    void __cdecl NuGScnCreatePS(NUGSCN *, VARIPTR *, VARIPTR *);
+    void __cdecl PCDeviceCreateVertexBuffer(u32, u32, u32, i32, PC_BUFFER_RESOURCE_PC **);
+    void __cdecl PCDeviceCreateIndexBuffer(u32, u32, i32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *);
+    void __cdecl PCDeviceCreateTextureFromMemoryEx(const void *, u32, u32, u32, u32, u32, i32, i32, u32, u32, u32,
+                                                   D3DXIMAGE_INFO *, PALETTEENTRY *, PC_TEXTURE_RESOURCE_PC **);
+    void __cdecl PCDeviceCreateCubeTextureFromMemory(const void *, u32, PC_TEXTURE_RESOURCE_PC **);
+    i32 __cdecl PCFrameLoadingYieldEnabled(void);
+    extern SCENE_VIDEO_RESOURCE_HEADER_PC SceneVideoResourcesPC;
+    extern i32 PCDeviceHardwareVertexProcessingPC;
+    extern u8 PCFrameLoadingYieldEnabledPC;
+    void __cdecl NuMtlDestroy(NUMTL *);
+    void __cdecl NuDisplayListDestroyMtl(NUMTL *);
+    void __cdecl DestroyRippleMtls(WORLDINFO *);
+    void __cdecl CharScenes_LevelDump(WORLDINFO *);
+    void __cdecl CharacterMiniKits_Dump(WORLDINFO *);
+    extern NULSTHDR *g_overrideList;
+    extern i32 *Char_MiniKit;
+    extern VARIPTR minikits_savecharacterbufferptr;
     extern const char GizmoConfigPathFormat[7];
     void __cdecl LoadGizmoSys(void *system, void *world, char *config_file);
     void __cdecl EdFileSetMedia(i32 media);
@@ -9795,6 +9980,166 @@ extern "C" {
     extern i32 qseed;
     i32 __cdecl qrand(void);
     i32 __cdecl getqseed(void);
+    typedef struct PC_SCENE_MTL_VIEW {
+        u8 unknown_000[116];
+        i16 texture_id;
+        u8 unknown_076[66];
+        i32 diffuse_map_tex_id[4];
+        u8 unknown_0c8[32];
+        i32 lightmap_tex_id[2];
+        u8 unknown_0f0[12];
+        i32 specular_map_tid;
+        i32 normal_map_tid;
+        i32 envmap_cubic_tid;
+        i32 shine_map_tid;
+        i32 vtf_height_map_tid;
+        i32 vtf_normal_map_tid;
+        u8 unknown_114[224];
+        i16 shader_handles[2];
+        u8 unknown_1f8[84];
+        i32 unknown_texture_24c;
+        u8 unknown_250[72];
+        i32 unknown_texture_298;
+        i32 unknown_texture_29c;
+        u8 unknown_2a0[0x24];
+    } PC_SCENE_MTL_VIEW;
+    STATIC_ASSERT(sizeof(PC_SCENE_MTL_VIEW) == 0x2c4);
+    STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, texture_id) == 116);
+    STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, diffuse_map_tex_id) == 184);
+    STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, lightmap_tex_id) == 232);
+    STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, specular_map_tid) == 252);
+    STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, normal_map_tid) == 256);
+    STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, envmap_cubic_tid) == 260);
+    STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, shine_map_tid) == 264);
+    STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, vtf_height_map_tid) == 268);
+    STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, vtf_normal_map_tid) == 272);
+    STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, shader_handles) == 500);
+    STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, unknown_texture_24c) == 588);
+    STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, unknown_texture_298) == 664);
+    STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, unknown_texture_29c) == 668);
+
+    typedef struct PC_MATERIAL_ANIM_SET {
+        u8 unknown_0[12];
+        struct PC_MATERIAL_ANIM_SET *next;
+    } PC_MATERIAL_ANIM_SET;
+    STATIC_ASSERT(offsetof(PC_MATERIAL_ANIM_SET, next) == 12);
+    typedef struct PC_TEXTURE_ANIM_LIST {
+        void *first;
+        struct PC_TEXTURE_ANIM_LIST *next, *previous;
+    } PC_TEXTURE_ANIM_LIST;
+    STATIC_ASSERT(sizeof(PC_TEXTURE_ANIM_LIST) == 12);
+    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_LIST, next) == 4);
+    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_LIST, previous) == 8);
+    typedef struct PC_TEXTURE_ANIM_ENV {
+        void *program;
+        i32 instruction_index;
+        i32 loop_counts[16], loop_starts[16];
+        i32 loop_depth;
+        i32 return_stack[16];
+        i32 call_depth, wait_base, wait_random, wait_remaining;
+        NUMTL *material;
+        u16 *texture_ids;
+        i32 texture_index;
+        u32 flags;
+    } PC_TEXTURE_ANIM_ENV;
+    STATIC_ASSERT(sizeof(PC_TEXTURE_ANIM_ENV) == 0xec);
+    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_ENV, loop_depth) == 0x88);
+    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_ENV, call_depth) == 0xcc);
+    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_ENV, material) == 0xdc);
+    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_ENV, texture_ids) == 0xe0);
+    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_ENV, texture_index) == 0xe4);
+    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_ENV, flags) == 0xe8);
+    typedef struct PC_GSCN_GEOMETRY_VIEW {
+        u8 unknown_0[0x28];
+        u32 vertex_format;
+        u8 unknown_2c[4];
+        PC_TEXTURE_RESOURCE_PC *resource;
+    } PC_GSCN_GEOMETRY_VIEW;
+    STATIC_ASSERT(offsetof(PC_GSCN_GEOMETRY_VIEW, vertex_format) == 0x28);
+    STATIC_ASSERT(offsetof(PC_GSCN_GEOMETRY_VIEW, resource) == 0x30);
+    typedef struct PC_GSCN_NATIVE_VIEW {
+        u16 vertex_buffer_count;
+        u8 unknown_2[2];
+        PC_TEXTURE_RESOURCE_PC **vertex_buffers;
+        u16 index_buffer_count;
+        u8 unknown_a[2];
+        PC_TEXTURE_RESOURCE_PC **index_buffers;
+        PC_GSCN_GEOMETRY_VIEW **geometries;
+        i32 geometry_count;
+    } PC_GSCN_NATIVE_VIEW;
+    STATIC_ASSERT(offsetof(PC_GSCN_NATIVE_VIEW, vertex_buffers) == 4);
+    STATIC_ASSERT(offsetof(PC_GSCN_NATIVE_VIEW, index_buffer_count) == 8);
+    STATIC_ASSERT(offsetof(PC_GSCN_NATIVE_VIEW, index_buffers) == 12);
+    STATIC_ASSERT(offsetof(PC_GSCN_NATIVE_VIEW, geometries) == 16);
+    STATIC_ASSERT(offsetof(PC_GSCN_NATIVE_VIEW, geometry_count) == 20);
+    typedef struct PC_SHADER_RECORD_VIEW {
+        u32 unknown_0;
+        i32 ref_count;
+    } PC_SHADER_RECORD_VIEW;
+    typedef struct PC_SHADER_SLOT_VIEW {
+        u32 unknown_0;
+        PC_SHADER_RECORD_VIEW record;
+        u8 unknown_c[0x4cc];
+    } PC_SHADER_SLOT_VIEW;
+    STATIC_ASSERT(sizeof(PC_SHADER_SLOT_VIEW) == 0x4d8);
+    STATIC_ASSERT(offsetof(PC_SHADER_SLOT_VIEW, record) == 4);
+    STATIC_ASSERT(offsetof(PC_SHADER_RECORD_VIEW, ref_count) == 4);
+    extern i32 g_texAnimCriticalSection;
+    extern PC_TEXTURE_ANIM_LIST *ntal_first;
+    extern PC_TEXTURE_ANIM_LIST *ntal_free;
+    extern PC_SHADER_SLOT_VIEW *PCShaderSlots;
+    extern NUGSCN *PCRegisteredNativeScenes[100];
+    extern i32 NuUnresolvedTextureIDPC;
+    extern const u8 NuUnresolvedTextureDDS[8320];
+    void __cdecl NuGScnRemove(NUGSCN *);
+    i32 __cdecl NuGScnRestoreTID(NUGSCN *, i32);
+    void __cdecl NuGScnRestoreTIDs(NUGSCN *);
+    void __cdecl NuGScnRestoreTIDsPS(NUGSCN *);
+    void __cdecl NuGScnDestroyPS(NUGSCN *);
+    void __cdecl NuDisplaySceneDestroy(NUDISPLAY_LIST_PC *);
+    void __cdecl NuDisplaySceneDestroyPS(NUDISPLAY_LIST_PC *);
+    void __cdecl NuDisplayListDestroyMtl(NUMTL *);
+    void __cdecl NuTexAnimRemoveList(void *);
+    PC_TEXTURE_ANIM_ENV *__cdecl NuTexAnimEnvCreate(VARIPTR *, NUMTL *, u16 *, void *);
+    i32 __cdecl NuTexGetUnresolvedTextureTIDPS(void);
+    PC_SHADER_RECORD_VIEW *__cdecl PCShaderRecordFromHandle(u32);
+    extern const char NuTextureSourcePathPC[55];
+    extern const char NuTextureAnimationSourcePathPC[50];
+
+    extern NUMTL **PCDisplayMaterialRegistry;
+    extern u32 PCDisplayMaterialCount;
+    extern NUMTL **PCDisplayMaterialDeleteQueue;
+    extern i32 PCDisplayMaterialDeleteCount;
+    extern NUDISPLAY_LIST_PC *PCDisplayScenes[100];
+
+    extern i32 NuWindMaxMatsPC;
+    extern i32 edbri_page_on[8];
+    void __cdecl edbriBridgesReset(void);
+    void __cdecl edgraSetup(VARIPTR *, VARIPTR, i32, i32, i32);
+    void __cdecl NuWindSetup(VARIPTR *, VARIPTR, i32, i32);
+    void __cdecl NuFadeObjSetup(VARIPTR *, VARIPTR, i32, i32);
+
+    void __cdecl edgraClumpsReset(void);
+
+    i32 __cdecl AddGameDebrisMomentum(APIDEBRISSYS_PC *, i32, NUVEC *, NUVEC *, NUVEC *);
+    i32 __cdecl AddGameDebrisXYZ(APIDEBRISSYS_PC *, i32, f32, f32, f32);
+    i32 __cdecl AddGameDebrisRot(APIDEBRISSYS_PC *, i32, NUVEC *, i32, u16, u16);
+    i32 __cdecl AddGameDebrisMtx(APIDEBRISSYS_PC *, i32, NUVEC *, i32, NUMTX *);
+    i32 __cdecl AddGameDebrisMom(APIDEBRISSYS_PC *, i32, NUVEC *, i32, NUVEC *);
+    void __cdecl SetAPIObjPlaySfxByIdFn(void(__cdecl *)(i32, NUVEC *));
+    void __cdecl AddAnimEffects(CHARACTER_MODEL_LAYERS_PC *, APICHARACTERDATA *, ANIMPACKET_PC *, NUMTX *, GAMEOBJECT *,
+                                CHARACTER_EFFECT_CONFIG_PC *, i32, f32, void(__cdecl *)(void *, GAMEOBJECT *, i32, i32),
+                                APIDEBRISSYS_PC *);
+    void __cdecl PCAnimationEffectCheckpoint(void);
+    DEBRISPARTICLE_PC *__cdecl GenDebIndex(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *__cdecl GenDebDummy(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *__cdecl GenDebIndexRadial(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *__cdecl GenDebIndexRadialRotor(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *__cdecl GenDebIndexSpheroid(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *__cdecl GenDebIndexBounceY(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *__cdecl GenDebIndexBounceXZ(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *__cdecl GenDebIndexImprovedRadial(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *__cdecl GenDebIndexRadialStar(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
 #ifdef __cplusplus
 }
 

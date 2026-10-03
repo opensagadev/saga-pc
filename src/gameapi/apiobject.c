@@ -367,3 +367,305 @@ i32 __cdecl AddGameDebris(APIDEBRISSYS_PC *system, i32 type, NUVEC *position) {
     }
     return 0;
 }
+
+i32 __cdecl AddGameDebrisMomentum(APIDEBRISSYS_PC *system, i32 type, NUVEC *position, NUVEC *emitter_momentum,
+                                  NUVEC *particle_momentum) {
+    if (type >= 0 && type < system->capacity && system->entries[type].effect != -1) {
+        i32 handle = -1;
+        AddFiniteShotDebrisEffect2(&handle, system->entries[type].effect, position, emitter_momentum, particle_momentum,
+                                   1);
+        return 1;
+    }
+    return 0;
+}
+
+i32 __cdecl AddGameDebrisXYZ(APIDEBRISSYS_PC *system, i32 type, f32 x, f32 y, f32 z) {
+    if (type >= 0 && type < system->capacity && system->entries[type].effect != -1) {
+        i32 handle = -1;
+        NUVEC position = {x, y, z};
+        AddFiniteShotDebrisEffect(&handle, system->entries[type].effect, &position, 1);
+        return 1;
+    }
+    return 0;
+}
+
+i32 __cdecl AddGameDebrisRot(APIDEBRISSYS_PC *system, i32 type, NUVEC *position, i32 count, u16 z_rotation,
+                             u16 y_rotation) {
+    if (type >= 0 && type < system->capacity && system->entries[type].effect != -1 && count > 0) {
+        AddVariableShotDebrisEffect(system->entries[type].effect, position, count, z_rotation, y_rotation);
+        return 1;
+    }
+    return 0;
+}
+
+i32 __cdecl AddGameDebrisMtx(APIDEBRISSYS_PC *system, i32 type, NUVEC *position, i32 count, NUMTX *matrix) {
+    if (type >= 0 && type < system->capacity && system->entries[type].effect != -1 && count > 0) {
+        NUMTX orientation;
+        NuMtxSetRotationX(&orientation, 0x4000);
+        NuMtxMulR(&orientation, &orientation, matrix);
+        AddVariableShotDebrisEffectMtx3(system->entries[type].effect, position, &APIObjectZeroMomentumPC, count,
+                                        &orientation, &NuMtxSetIdentityTemplate);
+        return 1;
+    }
+    return 0;
+}
+
+i32 __cdecl AddGameDebrisMom(APIDEBRISSYS_PC *system, i32 type, NUVEC *position, i32 count, NUVEC *momentum) {
+    if (type >= 0 && type < system->capacity && system->entries[type].effect != -1 && count > 0) {
+        NUVEC zero = {0.0f, 0.0f, 0.0f};
+        if (momentum == NULL)
+            momentum = &zero;
+        AddVariableShotDebrisEffectMtx3(system->entries[type].effect, position, momentum, count, NULL, NULL);
+        return 1;
+    }
+    return 0;
+}
+
+void __cdecl SetAPIObjPlaySfxByIdFn(void(__cdecl *play_sfx)(i32, NUVEC *)) {
+    APIObjPlaySfxByIdFn = play_sfx;
+}
+
+void __cdecl AddAnimEffects(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *character_data, ANIMPACKET_PC *packet,
+                            NUMTX *locator_matrices, GAMEOBJECT *object, CHARACTER_EFFECT_CONFIG_PC *effects,
+                            i32 paused, f32 frame_time,
+                            void(__cdecl *footprint_callback)(void *, GAMEOBJECT *, i32, i32),
+                            APIDEBRISSYS_PC *debris_sys) {
+    i32 animation_id;
+    f32 animation_time;
+    CHARACTER_EFFECT_CONFIG_PC *effect;
+    u32 flags;
+    GAMEOBJECT *api;
+    i32 active, event, locator, i, locator_index;
+    f32 event_time;
+    NUVEC position;
+    NUVEC locator_positions[16];
+    i32 locator_indices[16];
+    i32 locator_count, position_count, speed_rejected, count;
+    NUVEC velocity;
+    (void)character_data;
+    if (paused != 0 || effects == NULL) {
+        return;
+    }
+
+    if (packet->blending != 0 && packet->blend_target_animation >= 0 &&
+        packet->blend_target_animation < apicharsys->model_id_capacity &&
+        model->model_data_b[packet->blend_target_animation] != NULL) {
+        animation_id = packet->blend_target_animation;
+        animation_time = packet->blend_target_time;
+    } else if (packet->blending != 0 && packet->blend_source_animation >= 0 &&
+               packet->blend_source_animation < apicharsys->model_id_capacity &&
+               model->model_data_b[packet->blend_source_animation] != NULL) {
+        animation_id = packet->blend_source_animation;
+        animation_time = packet->blend_source_time;
+    } else if (packet->blending == 0 && packet->animation_index >= 0 &&
+               packet->animation_index < apicharsys->model_id_capacity &&
+               model->model_data_b[packet->animation_index] != NULL) {
+        animation_id = packet->animation_index;
+        animation_time = packet->current_time;
+    } else {
+        return;
+    }
+
+    for (effect = effects; effect->character_id != -1; ++effect) {
+        if (effect->character_id != model->model_id || effect->action_id != animation_id) {
+            continue;
+        }
+
+        flags = effect->flags;
+        if (object != NULL) {
+            api = object;
+            if ((flags & 0x400) != 0 && api->field_280 == 255) {
+                continue;
+            }
+            if ((flags & 0x10) != 0 && (api->field_281 & 2) == 0) {
+                continue;
+            }
+            if ((flags & 0x40) != 0 && api->is_underwater != 0) {
+                continue;
+            }
+            if ((flags & 0x20) != 0 && api->is_underwater == 0) {
+                continue;
+            }
+            if ((flags & 0x80) != 0 && api->water_intersects == 0) {
+                continue;
+            }
+            if ((flags & 0x03000000) != 0 && (api->model_draw_result == 0 || (api->field_281 & 2) == 0)) {
+                continue;
+            }
+        } else if ((flags & 0x03000000) != 0) {
+            continue;
+        }
+
+        active = 0;
+        if ((flags & 0x4) != 0) {
+            active = 1;
+        } else if ((flags & 0x8) != 0) {
+            if (effect->frame_2 > 1.0f && effect->frame_1 > effect->frame_2) {
+                active = animation_time >= effect->frame_1 || animation_time <= effect->frame_2;
+            } else {
+                active = animation_time >= effect->frame_1 &&
+                         (effect->frame_2 <= 1.0f ||
+                          (effect->frame_2 > effect->frame_1 && animation_time <= effect->frame_2));
+            }
+        } else {
+            for (event = 0; event <= 1; ++event) {
+                event_time = event == 0 ? effect->frame_1 : effect->frame_2;
+                if (event_time <= 1.0f) {
+                    continue;
+                }
+                if ((packet->flags & 8) == 0) {
+                    if (animation_time > event_time) {
+                        if (packet->previous_time <= event_time ||
+                            ((packet->flags & 2) != 0 && packet->previous_time > animation_time)) {
+                            active = 1;
+                        }
+                    } else if ((packet->flags & 2) != 0 && packet->previous_time > animation_time &&
+                               packet->previous_time <= event_time) {
+                        active = 1;
+                    }
+                } else if (animation_time < event_time) {
+                    if (packet->previous_time >= event_time) {
+                        active = 1;
+                    }
+                } else if ((packet->flags & 2) != 0 && packet->previous_time > animation_time &&
+                           packet->previous_time >= event_time) {
+                    active = 1;
+                }
+            }
+        }
+        if (active == 0) {
+            continue;
+        }
+
+        position.x = position.y = position.z = 0.0f;
+        locator_count = 0;
+        position_count = 0;
+        for (locator = 0; locator < 16; ++locator) {
+            if ((effect->locators & (1 << locator)) == 0 || model->points_of_interest[locator] == NULL) {
+                continue;
+            }
+            locator_indices[locator_count] = locator;
+            locator_positions[locator_count] = locator_matrices[locator].translation;
+            if (locator_count == 0 || (flags & 0x800) != 0) {
+                NuVecAdd(&position, &position, &locator_positions[locator_count]);
+            }
+            ++locator_count;
+        }
+        if (locator_count > 0 && (flags & 0x800) != 0) {
+            NuVecScale(&position, &position, 1.0f / (f32)locator_count);
+        }
+        position_count = locator_count;
+        if ((flags & 0x1000) != 0 && object != NULL) {
+            position.x = object->position.x;
+            position.y = object->collision_min.y;
+            position.z = object->position.z;
+            position_count = 1;
+            locator_count = 0;
+        }
+        if (object != NULL) {
+            if (position_count == 0) {
+                locator_positions[0] = object->position;
+                position = locator_positions[0];
+                position_count = 1;
+                if ((flags & 0x2000) != 0 && object->floor_height != 2000000.0) {
+                    position.y = object->floor_height;
+                } else if ((flags & 0x4000) != 0 && object->water_height != 2000000.0) {
+                    position.y = object->water_height;
+                }
+            } else if ((flags & 0x2000) != 0 && object->floor_height != 2000000.0) {
+                for (i = 0; i < locator_count; ++i) {
+                    locator_positions[i].y = object->floor_height;
+                }
+            } else if ((flags & 0x4000) != 0 && object->water_height != 2000000.0) {
+                for (i = 0; i < locator_count; ++i) {
+                    locator_positions[i].y = object->water_height;
+                }
+            }
+        }
+
+        if (footprint_callback != NULL && locator_count == 0 && (flags & 0x03000000) != 0) {
+            footprint_callback(&object->position, object, flags & 0x01000000, 1);
+        } else if (footprint_callback != NULL && position_count > 0 && (flags & 0x03000000) != 0) {
+            for (i = 0; i < locator_count; ++i) {
+                locator_index = locator_indices[i];
+                if (((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->points_of_interest[locator_index] != NULL) {
+                    footprint_callback(&locator_matrices[locator_index], object, flags & 0x01000000, 0);
+                }
+            }
+        }
+
+        if (object != NULL) {
+            if (effect->bits_on != 0)
+                object->effect_flags |= effect->bits_on;
+            if (effect->bits_off != 0)
+                object->effect_flags &= ~effect->bits_off;
+        }
+        if (position_count > 0 && object != NULL &&
+            (((flags & 0x40) != 0 && object->is_underwater != 0) ||
+             ((flags & 0x20) != 0 && object->is_underwater == 0))) {
+            continue;
+        }
+
+        speed_rejected = 0;
+        if (object != NULL) {
+            if ((flags & 0x100000) != 0) {
+                speed_rejected = effect->minimum > object->velocity_magnitude;
+            } else if ((flags & 0x40000) != 0) {
+                speed_rejected = effect->minimum > object->horizontal_velocity_magnitude;
+            }
+            if ((flags & 0x200000) != 0) {
+                speed_rejected |= object->velocity_magnitude > effect->maximum;
+            } else if ((flags & 0x80000) != 0) {
+                speed_rejected |= object->horizontal_velocity_magnitude > effect->maximum;
+            }
+        }
+
+        if (!speed_rejected && position_count > 0 && effect->debris_id != -1 &&
+            effect->debris_id < debris_sys->capacity) {
+            if ((flags & 1) != 0) {
+                count = effect->particle_rate > 0.0f
+                            ? ((flags & 0x800000) != 0 ? ParticlesPerSecond(effect->particle_rate, frame_time)
+                                                       : ParticlesPerFrame(effect->particle_rate, frame_time))
+                            : effect->particle_count;
+                if (count < 0) {
+                    count = 1;
+                }
+                if (count > 0 && (effect->random == 0 || (NuRandInt() >> 16) <= (effect->random << 8))) {
+                    if ((flags & 0x1000) != 0 || (flags & 0x800) != 0 || locator_count == 0) {
+                        if ((flags & 0x400000) != 0 && object != NULL) {
+                            AddGameDebrisMom(debris_sys, effect->debris_id, &position, count, &object->velocity);
+                        } else {
+                            AddGameDebrisRot(debris_sys, effect->debris_id, &position, count, 0, 0);
+                        }
+                    } else {
+                        for (i = 0; i < locator_count; ++i) {
+                            if ((flags & 0x400000) != 0 && object != NULL) {
+                                NuVecSub(&velocity, &object->position, &object->start_position);
+                                NuVecScale(&velocity, &velocity, 1.0f / frame_time);
+                                AddGameDebrisMom(debris_sys, effect->debris_id, &locator_positions[i], count,
+                                                 &velocity);
+                            } else if ((flags & 0x4000000) != 0) {
+                                AddGameDebrisMtx(debris_sys, effect->debris_id, &locator_positions[i], count,
+                                                 &locator_matrices[i]);
+                            } else {
+                                AddGameDebrisRot(debris_sys, effect->debris_id, &locator_positions[i], count, 0, 0);
+                            }
+                        }
+                    }
+                }
+            } else if ((flags & 0x1000) != 0 || (flags & 0x800) != 0) {
+                AddGameDebris(debris_sys, effect->debris_id, &position);
+            } else if (locator_count != 0) {
+                for (i = 0; i < position_count; ++i) {
+                    AddGameDebris(debris_sys, effect->debris_id, &locator_positions[i]);
+                }
+            } else {
+                AddGameDebris(debris_sys, effect->debris_id, &position);
+            }
+        }
+        PCAnimationEffectCheckpoint();
+        if (APIObjPlaySfxByIdFn != NULL && object != NULL && effect->sound_id != -1) {
+            APIObjPlaySfxByIdFn(effect->sound_id, (flags & 0x8000) != 0 ? &object->collision_position : NULL);
+        }
+    }
+}

@@ -121,3 +121,36 @@ extern "C" void __cdecl PCDeviceCreateTextureFromMemory(const void *data, u32 si
     PCDeviceLastResult = D3DXCreateTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device),
                                                            data, size, reinterpret_cast<IDirect3DTexture9 **>(texture));
 }
+
+extern "C" void __cdecl PCDeviceCreateVertexBuffer(u32 size, u32 usage, u32 vertex_format, i32 pool,
+                                                   PC_BUFFER_RESOURCE_PC **resource) {
+    if (PCDeviceHardwareVertexProcessingPC == 0)
+        usage |= 0x10;
+    PCDeviceLastResult = PCDeviceBackend.device->methods->create_vertex_buffer(PCDeviceBackend.device, size, usage,
+                                                                               vertex_format, pool, resource, NULL);
+}
+
+extern "C" void __cdecl PCDeviceCreateIndexBuffer(u32 size, u32 usage, i32 format, i32 pool,
+                                                  PC_BUFFER_RESOURCE_PC **resource, HANDLE *shared_handle) {
+    if (PCDeviceHardwareVertexProcessingPC == 0)
+        usage |= 0x10;
+    PCDeviceLastResult = PCDeviceBackend.device->methods->create_index_buffer(PCDeviceBackend.device, size, usage,
+                                                                              format, pool, resource, shared_handle);
+}
+
+extern "C" void __cdecl PCDeviceCreateTextureFromMemoryEx(const void *data, u32 size, u32 width, u32 height, u32 levels,
+                                                          u32 usage, i32 format, i32 pool, u32 filter, u32 mip_filter,
+                                                          u32 colour_key, D3DXIMAGE_INFO *information,
+                                                          PALETTEENTRY *palette, PC_TEXTURE_RESOURCE_PC **resource) {
+    PCDeviceLastResult = D3DXCreateTextureFromFileInMemoryEx(
+        reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data, size, width, height, levels, usage,
+        static_cast<D3DFORMAT>(format), static_cast<D3DPOOL>(pool), filter, mip_filter, colour_key, information,
+        palette, reinterpret_cast<IDirect3DTexture9 **>(resource));
+}
+
+extern "C" void __cdecl PCDeviceCreateCubeTextureFromMemory(const void *data, u32 size,
+                                                            PC_TEXTURE_RESOURCE_PC **resource) {
+    PCDeviceLastResult =
+        D3DXCreateCubeTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data, size,
+                                              reinterpret_cast<IDirect3DCubeTexture9 **>(resource));
+}

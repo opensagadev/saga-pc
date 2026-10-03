@@ -3582,3 +3582,14 @@ remain held. It receives no source coverage or CSV binding yet.
 The first camera pairing was crossed: PC 0x506880 is a camera interpolation
 body, whereas native 0x4393a0 is a locator/debris update. Native 0x4361a0 is a
 camera candidate requiring its own complete original-body review.
+
+
+Lifecycle transfer evidence (2026-10-03): complete PC extents and actual VC8
+comparisons are retained in transfer-execution-20261003/{debris/next,debris/engine,
+apiobject,mapping/scene,parser/resource-cleanup,world} analysis packets. Producer
+proof corrects chunk/control strides to424/2c, display registry9739dc to an inline
+100-pointer bounded view, and PART emitter base291f7c8 (effect_id+c). Unknown
+allocation extents stay blank. Scene removal/restoration bindings are identified
+but remain unimplemented because their embedded fallback image initializer is
+held; they receive no reconstructed-byte credit. All accepted bodies retain full
+returns, ABI and branches; no previous exact code match is lost.

@@ -405,3 +405,55 @@ void __cdecl NuCameraSetEx(NUCAMERA *camera, i32 fast) {
     STUBBED_NAMED("NuCameraSetEx: renderer flags, viewport offsets and clip-mode synchronization");
     STUBBED_NAMED("NuCameraSetEx: conditional renderer cache invalidation");
 }
+
+i32 __cdecl NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32 far_clip) {
+    struct BoundProjection {
+        NUVEC sides;
+        f32 fourth;
+        f32 far_plane;
+        f32 near_plane;
+    } distance, radius;
+    f32 saved_far = AxisClipNearFarPlanesPc.m30;
+    if (far_clip != 0.0f) {
+        AxisClipNearFarPlanesPc.m30 -= global_camera.far_clip;
+        AxisClipNearFarPlanesPc.m30 += far_clip;
+    }
+    NuVecMtxTransform(&distance.sides, center, &AxisClipFrustumPlanesPc);
+    distance.fourth = AxisClipFrustumPlanesPc.m33 +
+                      (center->z * AxisClipFrustumPlanesPc.m23 +
+                       (center->x * AxisClipFrustumPlanesPc.m03 + center->y * AxisClipFrustumPlanesPc.m13));
+    distance.far_plane = AxisClipNearFarPlanesPc.m30 +
+                         (center->z * AxisClipNearFarPlanesPc.m20 +
+                          (center->x * AxisClipNearFarPlanesPc.m00 + center->y * AxisClipNearFarPlanesPc.m10));
+    distance.near_plane = AxisClipNearFarPlanesPc.m31 +
+                          (center->z * AxisClipNearFarPlanesPc.m21 +
+                           (center->x * AxisClipNearFarPlanesPc.m01 + center->y * AxisClipNearFarPlanesPc.m11));
+    NuVecMtxTransform(&radius.sides, extent, &AxisClipAbsFrustumPlanesPc);
+    radius.fourth = extent->x * AxisClipAbsFrustumPlanesPc.m03 + extent->y * AxisClipAbsFrustumPlanesPc.m13 +
+                    extent->z * AxisClipAbsFrustumPlanesPc.m23;
+    radius.far_plane = extent->x * AxisClipNearFarPlanesPc.m02 + extent->y * AxisClipNearFarPlanesPc.m12 +
+                       extent->z * AxisClipNearFarPlanesPc.m22;
+    radius.near_plane = extent->x * AxisClipNearFarPlanesPc.m03 + extent->y * AxisClipNearFarPlanesPc.m13 +
+                        extent->z * AxisClipNearFarPlanesPc.m23;
+    AxisClipNearFarPlanesPc.m30 = saved_far;
+
+    if (distance.sides.x < -radius.sides.x || distance.sides.y < -radius.sides.y ||
+        distance.sides.z < -radius.sides.z || distance.fourth < -radius.fourth ||
+        distance.far_plane < -radius.far_plane || distance.near_plane < -radius.near_plane)
+        return 0;
+    if (distance.sides.x < radius.sides.x || distance.sides.y < radius.sides.y || distance.sides.z < radius.sides.z ||
+        distance.fourth < radius.fourth) {
+        NuVecMtxTransform(&distance.sides, center, &AxisClipScissorPlanesPc);
+        distance.fourth = AxisClipScissorPlanesPc.m33 +
+                          (center->z * AxisClipScissorPlanesPc.m23 +
+                           (center->x * AxisClipScissorPlanesPc.m03 + center->y * AxisClipScissorPlanesPc.m13));
+        NuVecMtxTransform(&radius.sides, extent, &AxisClipAbsScissorPlanesPc);
+        radius.fourth = AxisClipAbsScissorPlanesPc.m33 +
+                        (extent->z * AxisClipAbsScissorPlanesPc.m23 +
+                         (extent->x * AxisClipAbsScissorPlanesPc.m03 + extent->y * AxisClipAbsScissorPlanesPc.m13));
+        if (distance.sides.x < radius.sides.x || distance.sides.y < radius.sides.y ||
+            distance.sides.z < radius.sides.z || distance.fourth < radius.fourth)
+            return 2;
+    }
+    return 1;
+}

@@ -5643,3 +5643,147 @@ extern "C" {
     extern const f32 AIPositionUnsetPc = 1000000000.0f;
 #pragma const_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$g_overrideList")
+    NULSTHDR *g_overrideList;
+#pragma bss_seg()
+#pragma bss_seg(".bss$Char_MiniKit")
+    i32 *Char_MiniKit;
+#pragma bss_seg()
+#pragma bss_seg(".bss$minikits_savecharacterbufferptr")
+    VARIPTR minikits_savecharacterbufferptr;
+#pragma bss_seg()
+#pragma bss_seg(".bss$forced_debris_thinning")
+    i32 forced_debris_thinning;
+#pragma bss_seg()
+#pragma data_seg(".data$debris_thinning_level")
+    f32 debris_thinning_level = 1.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$partglobaltime")
+    f32 partglobaltime;
+#pragma bss_seg()
+#pragma bss_seg(".bss$part_emits_used")
+    i32 part_emits_used;
+#pragma bss_seg()
+#pragma data_seg(".data$SceneUploadBufferSizePC")
+    i32 SceneUploadBufferSizePC = 41943040;
+#pragma data_seg()
+#pragma bss_seg(".bss$SceneUploadBufferStartPC")
+    VARIPTR SceneUploadBufferStartPC;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SceneUploadBufferCursorPC")
+    VARIPTR SceneUploadBufferCursorPC;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SceneUploadBufferEndPC")
+    VARIPTR SceneUploadBufferEndPC;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDeviceHardwareVertexProcessingPC")
+    i32 PCDeviceHardwareVertexProcessingPC;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCFrameLoadingYieldEnabledPC")
+    u8 PCFrameLoadingYieldEnabledPC;
+#pragma bss_seg()
+#pragma const_seg(".rdata$SceneUploadSourcePathPC")
+    extern const char SceneUploadSourcePathPC[57] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugscn_dlist.c";
+#pragma const_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$AxisClipFrustumPlanesPc")
+    NUMTX AxisClipFrustumPlanesPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$AxisClipScissorPlanesPc")
+    NUMTX AxisClipScissorPlanesPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$AxisClipNearFarPlanesPc")
+    NUMTX AxisClipNearFarPlanesPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$AxisClipAbsFrustumPlanesPc")
+    NUMTX AxisClipAbsFrustumPlanesPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$AxisClipAbsScissorPlanesPc")
+    NUMTX AxisClipAbsScissorPlanesPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$freedebchunksglass")
+    DEBRIS_PARTICLE_CHUNK_PC **freedebchunksglass;
+#pragma bss_seg()
+#pragma bss_seg(".bss$freedebchunks")
+    DEBRIS_PARTICLE_CHUNK_PC **freedebchunks;
+#pragma bss_seg()
+#pragma bss_seg(".bss$freedebchkptrg")
+    i32 freedebchkptrg;
+#pragma bss_seg()
+#pragma bss_seg(".bss$debris_chunk_controls")
+    DEBRIS_CHUNK_CONTROL_PC *debris_chunk_controls;
+#pragma bss_seg()
+#pragma bss_seg(".bss$freedebchkptr")
+    i32 freedebchkptr;
+#pragma bss_seg()
+#pragma bss_seg(".bss$debris_trash_space")
+    u32 debris_trash_space;
+#pragma bss_seg()
+#pragma bss_seg(".bss$debris_trash_size")
+    u32 debris_trash_size;
+#pragma bss_seg()
+#pragma bss_seg(".bss$debris_setup_called")
+    i32 debris_setup_called;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$SceneVideoResourcesPC")
+    SCENE_VIDEO_RESOURCE_HEADER_PC SceneVideoResourcesPC;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ParticleChunkToRender")
+    DEBRIS_RENDER_CHUNK_PC *ParticleChunkToRender;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ParticleChunkRenderStack")
+    DEBRIS_RENDER_CHUNK_PC *ParticleChunkRenderStack[5];
+#pragma bss_seg()
+#pragma data_seg(".data$g_texAnimCriticalSection")
+    i32 g_texAnimCriticalSection = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$ntal_first")
+    PC_TEXTURE_ANIM_LIST *ntal_first;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ntal_free")
+    PC_TEXTURE_ANIM_LIST *ntal_free;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCShaderSlots")
+    PC_SHADER_SLOT_VIEW *PCShaderSlots;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCRegisteredNativeScenes")
+    NUGSCN *PCRegisteredNativeScenes[100];
+#pragma bss_seg()
+#pragma data_seg(".data$NuUnresolvedTextureIDPC")
+    i32 NuUnresolvedTextureIDPC = -1;
+#pragma data_seg()
+#pragma const_seg(".rdata$NuTextureSourcePathPC")
+    extern const char NuTextureSourcePathPC[55] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nutex_pc.cpp";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTextureAnimationSourcePathPC")
+    extern const char NuTextureAnimationSourcePathPC[50] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c";
+#pragma const_seg()
+#pragma bss_seg(".bss$PCDisplayMaterialRegistry")
+    NUMTL **PCDisplayMaterialRegistry;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDisplayMaterialCount")
+    u32 PCDisplayMaterialCount;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDisplayMaterialDeleteQueue")
+    NUMTL **PCDisplayMaterialDeleteQueue;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDisplayMaterialDeleteCount")
+    i32 PCDisplayMaterialDeleteCount;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDisplayScenes")
+    NUDISPLAY_LIST_PC *PCDisplayScenes[100];
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuWindMaxMatsPC")
+    i32 NuWindMaxMatsPC;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edbri_page_on")
+    i32 edbri_page_on[8];
+#pragma bss_seg()
+}

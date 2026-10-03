@@ -224,7 +224,7 @@ void __cdecl NuDisplayListBeginFrame(void) {
     nudlist_flags = flags;
     NuDisplayListRender2D(0);
     if (nudlist_field_9d8 > 0) {
-        entry = (NUSORTPRI **)0x9739dc;
+        entry = (NUSORTPRI **)PCDisplayScenes;
         for (index = 0; index < nudlist_field_9d8; index++, entry++) {
             node = *entry;
             node_flags = node->flags;
