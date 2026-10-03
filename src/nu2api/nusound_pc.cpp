@@ -351,3 +351,138 @@ void __thiscall SoundVoiceManagerPC::SetSampleName(const char *name, i32 sample_
     }
     NuStrCat(this->samples[sample_index].file_name, PCSoundOggExtension);
 }
+
+class SoundQueueVolumeSink {
+  public:
+    virtual void Slot00(void) = 0;
+    virtual void Slot04(void) = 0;
+    virtual void Slot08(void) = 0;
+    virtual void Slot0c(void) = 0;
+    virtual void Slot10(void) = 0;
+    virtual void Slot14(void) = 0;
+    virtual void Slot18(void) = 0;
+    virtual void Slot1c(void) = 0;
+    virtual void Slot20(void) = 0;
+    virtual void Slot24(void) = 0;
+    virtual void Slot28(void) = 0;
+    virtual void Slot2c(void) = 0;
+    virtual void Slot30(void) = 0;
+    virtual void Slot34(void) = 0;
+    virtual void Slot38(void) = 0;
+    virtual i32 SetVolume(i32 volume) = 0;
+};
+
+struct SoundQueue {
+    i32 active;
+    u32 unknown_0004;
+    i32 stream_state;
+    i32 stream_flags;
+    i32 requested_volume;
+    i32 applied_volume;
+    u8 unknown_0018[0x3c];
+    SoundQueueVolumeSink *volume_sink;
+    u32 unknown_0058;
+    LPTIMECALLBACK timer_callback;
+    HANDLE event;
+    UINT timer_id;
+    u8 unknown_0068[8];
+    CRITICAL_SECTION lock;
+    u8 unknown_0088[0x18];
+    CRITICAL_SECTION volume_lock;
+    i32 command[32];
+    i32 argument[32];
+    i32 count;
+    i32 read_index;
+    i32 write_index;
+    u8 unknown_01c4[0x1c];
+    char stream_path[0x104];
+    u8 unknown_02e4[0x108];
+    f32 start_offset;
+    u32 unknown_03f0;
+    i32 unknown_03f4;
+
+    i32 SendCommand(i32 command, i32 argument);
+    __declspec(noinline) i32 Stop();
+    __declspec(noinline) i32 Pause();
+    __declspec(noinline) i32 Resume();
+    __declspec(noinline) i32 SetVolume(i32 volume);
+    __declspec(noinline) i32 HasCommand(i32 command);
+    __declspec(noinline) i32 IsStreamIdle();
+    __declspec(noinline) i32 GetStatus();
+    void StartTimer();
+    void StopTimer();
+    __declspec(noinline) i32 SetStreamFile(const char *path, f32 offset);
+    __declspec(noinline) i32 SetStreamFlags(i32 flags);
+};
+STATIC_ASSERT(offsetof(SoundQueue, stream_state) == 0x08);
+STATIC_ASSERT(offsetof(SoundQueue, stream_flags) == 0x0c);
+STATIC_ASSERT(offsetof(SoundQueue, requested_volume) == 0x10);
+STATIC_ASSERT(offsetof(SoundQueue, applied_volume) == 0x14);
+STATIC_ASSERT(offsetof(SoundQueue, volume_sink) == 0x54);
+STATIC_ASSERT(offsetof(SoundQueue, timer_callback) == 0x5c);
+STATIC_ASSERT(offsetof(SoundQueue, event) == 0x60);
+STATIC_ASSERT(offsetof(SoundQueue, timer_id) == 0x64);
+STATIC_ASSERT(offsetof(SoundQueue, lock) == 0x70);
+STATIC_ASSERT(offsetof(SoundQueue, volume_lock) == 0xa0);
+STATIC_ASSERT(offsetof(SoundQueue, command) == 0xb8);
+STATIC_ASSERT(offsetof(SoundQueue, argument) == 0x138);
+STATIC_ASSERT(offsetof(SoundQueue, count) == 0x1b8);
+STATIC_ASSERT(offsetof(SoundQueue, write_index) == 0x1c0);
+STATIC_ASSERT(offsetof(SoundQueue, stream_path) == 0x1e0);
+STATIC_ASSERT(offsetof(SoundQueue, start_offset) == 0x3ec);
+STATIC_ASSERT(offsetof(SoundQueue, unknown_03f4) == 0x3f4);
+
+extern SoundQueue *NuSound3StereoStreams[2];
+
+struct PC_STEREO_PLAY_PACKET {
+    i32 option11;
+    i32 reserved;
+    i32 stream_index;
+    i32 first_sample;
+    i32 last_sample;
+    i32 volume_left;
+    i32 volume_right;
+    i32 option9_mode;
+    f32 start_offset;
+};
+STATIC_ASSERT(sizeof(PC_STEREO_PLAY_PACKET) == 36);
+STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, stream_index) == 8);
+STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, first_sample) == 12);
+STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, last_sample) == 16);
+STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, option9_mode) == 28);
+STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, start_offset) == 32);
+struct PC_STEREO_SAMPLE_METADATA {
+    u8 unknown_00[8];
+    i32 flags;
+    u8 unknown_0c[16];
+};
+STATIC_ASSERT(sizeof(PC_STEREO_SAMPLE_METADATA) == 28);
+STATIC_ASSERT(offsetof(PC_STEREO_SAMPLE_METADATA, flags) == 8);
+extern "C" {
+    extern i32 PCStereoChannel0A, PCStereoChannel0B, PCStereoChannel1A, PCStereoChannel1B;
+    extern PC_STEREO_SAMPLE_METADATA *PCStereoSampleMetadata;
+}
+extern "C" void PCStereoStartPacket(PC_STEREO_PLAY_PACKET *packet) {
+    i32 channel_a;
+    i32 channel_b;
+    if (packet->stream_index != 0) {
+        channel_a = PCStereoChannel1A;
+        channel_b = PCStereoChannel1B;
+    } else {
+        channel_a = PCStereoChannel0A;
+        channel_b = PCStereoChannel0B;
+    }
+    if (packet->last_sample == -1)
+        packet->last_sample = packet->first_sample + 1;
+    if (channel_a != -1 && channel_b != -1) {
+        i32 flags = 0;
+        if (packet->option9_mode == 0)
+            flags = 2;
+        if (PCStereoSampleMetadata != NULL && PCStereoSampleMetadata[packet->first_sample].flags == 0)
+            flags |= 1;
+        NuSound3StereoStreams[packet->stream_index]->Stop();
+        NuSound3StereoStreams[packet->stream_index]->SetStreamFile(
+            SoundVoiceManager.samples[packet->first_sample].file_name, packet->start_offset);
+        NuSound3StereoStreams[packet->stream_index]->SetStreamFlags(flags);
+    }
+}

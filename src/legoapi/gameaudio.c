@@ -29,3 +29,15 @@ extra:
     if (ExtraHurtSfxFn != NULL)
         ExtraHurtSfxFn(object);
 }
+
+void __cdecl PlayGruntSfx(GAMEOBJECT *object) {
+    CHARACTERDATA_PC *character = object->character_data;
+    i32 sfx = character->game_character->sfx_grunt;
+    if (sfx == -1) {
+        if (character->model_flags & 0x44002010)
+            return;
+        sfx = GameAudio->sfx_ids[(object->flags_ef4 & 0x800) != 0 ? 0x14 : 0x15];
+    }
+    if (sfx != -1)
+        PlaySfxById(sfx, &object->collision_position);
+}

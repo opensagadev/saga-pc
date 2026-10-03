@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 780088,
-    "matched_code_bytes": 66566,
-    "matching_percent": 1.9176399483067463,
-    "fuzzy_coverage_percent": 11.550616199486567,
-    "mapped_functions": 2731,
-    "matched_functions": 1087,
-    "objdiff_fuzzy_percent": 61.474308,
-    "objdiff_total_code": 652406,
+    "mapped_code_bytes": 785358,
+    "matched_code_bytes": 67086,
+    "matching_percent": 1.932620160023231,
+    "fuzzy_coverage_percent": 11.743010775843304,
+    "mapped_functions": 2750,
+    "matched_functions": 1096,
+    "objdiff_fuzzy_percent": 61.634964,
+    "objdiff_total_code": 661541,
     "image_bytes": 40067072,
-    "mapped_bytes": 1417478,
-    "mapping_percent": 3.5377628792041507
+    "mapped_bytes": 1422852,
+    "mapping_percent": 3.5511753891075446
   },
   "newly_compared": [
     {
@@ -14445,6 +14445,108 @@
       ],
       "next_connected_wave": "Repaired Awkward/Ray1471 with true output regression fixture, genuineCannon350 andweapon/Shoot/FindID connected closure, Force/POD/Move_VEHICLE/PostReset/TerrainPlayer; parallel broad resource/render/UI replenishment.",
       "ongoing_goal": "Continue whole-project transfer indefinitely until user stops/pauses; validated direct main pushes authorized."
+    },
+    {
+      "baseline_commit": "4bf989dae46dbd2c44ec8039a4fdc5caf1336f92",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 780088,
+        "matched_code_bytes": 66566,
+        "matching_percent": 1.9176399483067463,
+        "fuzzy_coverage_percent": 11.550616199486567,
+        "mapped_functions": 2731,
+        "matched_functions": 1087,
+        "objdiff_fuzzy_percent": 61.474308,
+        "objdiff_total_code": 652406,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1417478,
+        "mapping_percent": 3.5377628792041507
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 785358,
+        "matched_code_bytes": 67086,
+        "matching_percent": 1.932620160023231,
+        "fuzzy_coverage_percent": 11.743010775843304,
+        "mapped_functions": 2750,
+        "matched_functions": 1096,
+        "objdiff_fuzzy_percent": 61.634964,
+        "objdiff_total_code": 661541,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1422852,
+        "mapping_percent": 3.5511753891075446
+      },
+      "newly_compared_functions": 23,
+      "new_original_code_bytes": 9135,
+      "compared_code_delta": 9135,
+      "baseline_unique_compared_pc_bytes": 652294,
+      "unique_compared_pc_bytes": 661429,
+      "exact_code_added": 520,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 2484,
+      "prior_compiled_function_copies_identical": 2484,
+      "user_journal_unchanged": true,
+      "checkpoint": "Terrain, force selection, particles, world configuration and PC music (2026-10-03)",
+      "families_original_bytes": {
+        "movement_terrain_support": 1829,
+        "traffic_faders": 1658,
+        "pc_music_stream": 2219,
+        "particle_emitter": 1441,
+        "force_selector": 1988
+      },
+      "prior_exact_code_and_data_preserved": true,
+      "shared_data_definitions_added": 11,
+      "shared_initializer_view_bytes_added": 6356,
+      "known_allocation_credit_added": 0,
+      "private_parser_data": {
+        "owners": 6,
+        "view_bytes": 396,
+        "initializer_regions": 23,
+        "initializer_region_bytes": 548,
+        "allocation_credit": 0
+      },
+      "data_scope": {
+        "proofs": 1034,
+        "known_extents": 553,
+        "known_unique_bytes": 137551,
+        "unknown_extents": 481,
+        "unknown_view_bytes": 66083,
+        "previous_proofs_preserved": 1023
+      },
+      "verified_checks": {
+        "tests": 665,
+        "skipped": 3,
+        "test_seconds": 39.146,
+        "llvm": 18,
+        "format_files": 220,
+        "tidy_units": 218,
+        "objects": 218,
+        "function_definitions": 2507,
+        "data_definitions": 4367,
+        "source_only_link": true,
+        "native_awkward_ray_checks": 22,
+        "native_traffic_faders_checks": 30,
+        "native_music_checks": 39,
+        "native_particle_checks": 21,
+        "native_force_checks": 11,
+        "native_failures": 0
+      },
+      "extent_corrections": [
+        "NuMusic::Process complete span is 1432, replacing older incomplete1398 inventory span; includes actual alignment and switch table.",
+        "LevelTimer inventory16 was withdrawn to unknown owning extent; typed16 access/initializer view remains verified.",
+        "Uncompiled PCMusicProcessOne candidate constant4 is replaced by genuine mutable PCMusicDuckOverride owner with unknown original extent."
+      ],
+      "limitations": [
+        "Selected actual-source fixtures establish bounded contracts, not full gameplay or differential retail execution.",
+        "Force target backing PC capacity/allocation is UNKNOWN; reconstructed384-record view is qualified by cumulative eligible writes<=384. Original unguarded writer remains unchanged; no allocation credit.",
+        "Force fixture does not exercise group expansion or nonempty terrain.",
+        "Physical audio streaming/device playback remain unverified.",
+        "Existing AddPart and death/pickup services retain explicit partial behavior."
+      ],
+      "next_connected_wave": "Candidate ceiling10361 PC bytes: Cannon350 + weapon/Shoot/FindID8170 + required private vehicle helpers1841. Release only actual emitted code with genuine caller context; Shield/SmartBomb/Dodgem1231 await true Move_VEHICLE, so current releasable subset may be9130 or lower. Parallel resource/render/UI replenishment continues.",
+      "checkpoint_delay": "The 19:32 checkpoint waited for coherent final shared data, full checks, retail comparison, preservation audit and final production force fixture; no broken batch committed.",
+      "ongoing_goal": "Continue whole-project transfer indefinitely until user stops or pauses; validated direct main pushes authorized."
     }
   ]
 }

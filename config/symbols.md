@@ -3866,3 +3866,23 @@ Current-source retail results and prior-copy reviews are retained under
 continuation-vehicle-public/, mapping/{targets2575,takehit866}-accepted-packet.json
 and apiobject/. Ordinary nonexact source is retained, including TakeHit's
 15.475837 score; no extent masks or copied native bytes improve comparisons.
+
+
+### Terrain, force, world configuration and PC music transfer (2026-10-03)
+
+Twenty-three genuine production functions add 9,135 full native bytes. Verified
+PC contracts include the second SuperCarry output in AwkwardShapeCode818,
+six-argument NewRayCastScaleYMask473, complete RayImpact180 tables, real
+TerrainPlatId6, SuperWeirdo60, PlayGruntSfx98 and SetHeadTarget194. Traffic/Faders
+retain original private callback groups, signed limits64/16 and world stride51ac.
+Music1432 includes actual alignment and eight switch-table DWORDs omitted by the
+old1398 inventory; Voice::Unload209 is thiscall, StereoV396 is variadic cdecl
+and the cross-unit181-byte backend calls genuine existing queue providers.
+
+GizForce_FindBestForceTarget1988 retains native cached-u32 conversion, raw timer
+bits, facing/tie/LOS rules and unguarded candidate writes. Storage capacity is
+unproved: <=384 cumulative eligible writes qualifies the source working view;
+no new native guard or original allocation bound is inferred. All2484 earlier
+function copies remain identical. Complete retail comparisons and independent
+ABI/field/initializer evidence are retained in continuation-vehicle-parents/,
+platform/force-best-review/, mapping/music-next/ and apiobject/parser-config-next/.

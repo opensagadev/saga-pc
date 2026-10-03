@@ -1248,3 +1248,91 @@ extern "C" {
         return 0;
     }
 }
+
+STATIC_ASSERT(offsetof(TerrainQuery_s, start_position) == 4);
+STATIC_ASSERT(offsetof(TerrainQuery_s, start_movement) == 0x10);
+STATIC_ASSERT(offsetof(TerrainQuery_s, object_index) == 0x36);
+STATIC_ASSERT(offsetof(TerrainQuery_s, hit_flags) == 0x40);
+STATIC_ASSERT(offsetof(TerrainQuery_s, collision_radius_sq) == 0x54);
+STATIC_ASSERT(offsetof(TerrainQuery_s, inverse_collision_radius) == 0x58);
+STATIC_ASSERT(offsetof(TerrainQuery_s, inverse_object_scale_sq) == 0x68);
+STATIC_ASSERT(offsetof(TerrainQuery_s, hit_type) == 0x88);
+STATIC_ASSERT(offsetof(TerrainQuery_s, hit_time) == 0x98);
+STATIC_ASSERT(offsetof(TerrainQuery_s, separation_epsilon) == 0xa0);
+STATIC_ASSERT(offsetof(TerrainQuery_s, compare_epsilon) == 0xa4);
+STATIC_ASSERT(offsetof(TerrainQuery_s, movement_normal) == 0xa8);
+extern "C" void RayImpact(NUVEC *movement) {
+    TerrainMoveImpactData();
+    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    switch (query->hit_type) {
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+            query->hit_time -= query->separation_epsilon;
+            if (query->hit_time < 0.0f)
+                query->hit_time = 0.0f;
+            movement->x = query->movement.x * query->hit_time;
+            movement->y = query->movement.y * query->hit_time;
+            movement->z = query->movement.z * query->hit_time;
+            break;
+        case 0x11:
+        case 0x12:
+        case 0x13:
+        case 0x14:
+            movement->x = 0.0f;
+            movement->y = 0.0f;
+            movement->z = 0.0f;
+            break;
+    }
+}
+extern "C" i32 NewRayCastScaleYMask(NUVEC *position, NUVEC *movement, f32 radius, f32 scale_y, i32 scan_flags,
+                                    u32 terrain_mask) {
+    plathitid = -1;
+    TerrainShadowStatusPc = -1;
+    TerrPoly = NULL;
+    TerrWallInfo = 0;
+    TerrainShadowGroupIndexPc = -1;
+    if (CurrentTerrain == NULL)
+        return 0;
+    TerI = NuScratchAlloc32(sizeof(TerrainQuery_s));
+    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    query->object_scale = scale_y;
+    query->object_scale_sq = scale_y * scale_y;
+    TerrOverRideScan = NULL;
+    query->inverse_object_scale = scale_y == 0.0f ? 1.0f : 1.0f / scale_y;
+    query->inverse_object_scale_sq = query->inverse_object_scale * query->inverse_object_scale;
+    query->collision_radius = radius;
+    query->inverse_collision_radius = radius == 0.0f ? 1.0f : 1.0f / radius;
+    query->collision_radius_sq = radius * radius;
+    query->start_position.x = query->position.x = position->x;
+    query->start_position.y = query->position.y = position->y;
+    query->start_position.z = query->position.z = position->z;
+    query->movement = *movement;
+    query->start_movement = *movement;
+    query->object_index = -1;
+    query->hit_flags = NULL;
+    query->scan_result = 1;
+    query->separation_epsilon = 0.01f;
+    query->compare_epsilon = 0.00001f;
+    ScanTerrain(1, terrain_mask, scan_flags != 0 ? 0x40 : 0);
+    query = static_cast<TerrainQuery_s *>(TerI);
+    query->position.y *= query->inverse_object_scale;
+    query->movement.y *= query->inverse_object_scale;
+    DerotateMovementVector();
+    HitTerrain();
+    query = static_cast<TerrainQuery_s *>(TerI);
+    if (query->hit_type != 0) {
+        RayImpact(movement);
+        TerrainImpactNorm();
+        query = static_cast<TerrainQuery_s *>(TerI);
+        GetSurfaceInfoSurfaceNormalPc = query->movement_normal;
+        movement->y *= query->object_scale;
+    }
+    NuScratchRelease();
+    return static_cast<TerrainQuery_s *>(TerI)->hit_type;
+}
+
+extern "C" i32 __cdecl TerrainPlatId(void) {
+    return plathitid;
+}

@@ -3561,3 +3561,86 @@ i32 __cdecl SetObjTarget(GAMEOBJECT *object, GAMEOBJECT *target) {
     object->collision_target = VehicleArea != 0 ? NULL : target;
     return 1;
 }
+
+void __cdecl AwkwardShapeCode(GAMEOBJECT *object, i32 forced) {
+    i32 joints[8] = {0};
+    u32 flags[8] = {0};
+    f32 radii[8] = {0};
+    NUVEC *positions[8] = {0};
+    NUVEC forced_position, unused_position, displacement, extension, hit_position;
+    AWKWARD_SHAPE_SPHERE_PC *sphere;
+    NUVEC *position;
+    i32 count = 0, i;
+    if (!object->origin_joint_ready || !object->model_draw_result)
+        return;
+    if (WORLD->area != NULL && (WORLD->area->flags & 1) != 0 && object->id == (u16)id_ATAT)
+        return;
+    if (forced) {
+        SuperCarry_GetObjectPos(object, &unused_position, &forced_position);
+        positions[0] = &forced_position;
+        radii[0] = 0.1f;
+        flags[0] = 1;
+        count = 1;
+    } else if (object->id == (u16)id_SPEEDERBIKE) {
+        if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks) {
+            joints[0] = 2;
+            radii[0] = 0.325f;
+            count = 1;
+        }
+    } else {
+        for (sphere = AwkwardShapeSpherePc; sphere->character_id != NULL && count < 8; ++sphere) {
+            if (*sphere->character_id == (i16)object->id) {
+                joints[count] = sphere->joint;
+                flags[count] = sphere->flags;
+                radii[count] = sphere->radius;
+                ++count;
+            }
+        }
+    }
+    for (i = 0; i < count; ++i) {
+        position = positions[i];
+        if (position == NULL) {
+            if (object->character_model->points_of_interest[joints[i]] == NULL)
+                continue;
+            position = (NUVEC *)&object->locator_matrices[joints[i]].m30;
+        }
+        if (position == NULL)
+            continue;
+        PushAway(position, radii[i], NULL, NULL, NULL, object, 2.0f, 5);
+        if (flags[i] != 0 && ((object->flags_1fc & 0x80) != 0 || (object->flags_ef4 & 0x80) != 0)) {
+            NuVecSub(&displacement, position, &object->collision_position);
+            NuVecNorm(&extension, &displacement);
+            NuVecScale(&extension, &extension, radii[i]);
+            NuVecAdd(&displacement, &displacement, &extension);
+            if (NewRayCastScaleYMask(&object->collision_position, &displacement, 0.0f, 1.0f, 0,
+                                     GetSurfaceInfoDefaultMaskPc.word | 0x1f)) {
+                NuVecAdd(&hit_position, &object->collision_position, &displacement);
+                PushAway(&hit_position, 10.0f, NULL, NULL, object, NULL, 3.0f, 1);
+            }
+        }
+    }
+}
+
+void __cdecl SetHeadTarget(GAMEOBJECT *object, NUVEC *position, i8 priority, f32 time, f32 minimum_delay,
+                           f32 maximum_delay) {
+    i32 random;
+    f32 fraction, delay;
+    if (position == NULL) {
+        object->head_target = NULL;
+        object->head_target_priority = 0;
+        object->head_target_timer = 0.0f;
+        object->head_target_delay = 0.0f;
+    } else {
+        if (object->head_target == NULL ||
+            (position != object->head_target && object->head_target_priority <= priority)) {
+            random = qrand();
+            object->head_target = position;
+            object->head_target_priority = priority;
+            fraction = (f32)((f64)random * (f64)(1.0f / 65535.0f));
+            delay = (1.0f - fraction) * minimum_delay + maximum_delay * fraction;
+            object->head_target_delay = delay;
+            object->head_target_timer = time + delay;
+        }
+        object->head_target_position = *object->head_target;
+    }
+}

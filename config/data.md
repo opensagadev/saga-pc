@@ -1304,3 +1304,27 @@ Awkward's14-row sphere table and two ID words are verified scratch proposals
 for the next coherent source group, not current production storage. FindID
 reuses the existing StartupGameFlag0 owner rather than defining its8765a0
 flag again, and duplicate WORD views at7f0e98 are reconciled before release.
+
+
+### Terrain/music/force source views (2026-10-03)
+
+The sole writer adds11 shared definitions/6356 initialized view bytes: three
+Awkward sphere/ID views172, six music mutable views24, force records6144 and
+canonical LevelTimer16. All initializers match their full emitted regions, all
+1023 prior regions remain unchanged and all new owning extents stay unknown.
+Scope reaches1034 proofs:553 known extents/137551 unique bytes and481 unknown
+views/66083 emitted bytes. Unknown views receive zero allocation coverage credit.
+
+PossibleForceTargetsPc has a384-record working view, not an established PC
+capacity. The original unguarded writer is retained under the selected contract
+of <=384 cumulative eligible writes. LevelTimer's typed16-byte layout is proven
+by real initialization/reset/update/selector accesses; its separate original
+allocation boundary is not proven, so the old16 inventory extent is withdrawn.
+PCMusicDuckOverride810bf0 is mutable1.0f and replaces the uncompiled constant
+candidate; sound sample storage reuses the existing manager member at2973974.
+
+Six traffic-private owners remain in traffic.c with396 emitted bytes and blank
+owning extents. Twenty-three initializer regions totaling548 bytes are verified,
+including genuine callback/parser tables. They are reported separately from
+the shared data scope. The future49-definition vehicle proposal stays scratch
+until the connected Cannon/weapon callers are released.

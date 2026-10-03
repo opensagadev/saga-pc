@@ -914,3 +914,48 @@ corrected source passes22 checks, while the prior wrong output fails its regress
 case. Cannon/Shoot/FindID, Force/POD and Move_VEHICLE then connect the held terrain
 parent. Parallel retained inventory replenishes resource/render/UI/audio families;
 the whole-project mandate continues.
+
+
+### Terrain, force selection, particles, world configuration and PC music checkpoint (2026-10-03)
+
+This batch transfers 23 functions over 9,135 complete PC bytes from 4bf989d:
+movement/terrain support 1,829, traffic/faders 1,658, PC music/stream 2,219,
+particle emission 1,441 and force selection 1,988. Unique compared code reaches
+661,429 bytes; native objdiff compares 661,541 including overlapping aliases.
+Whole-PC fuzzy coverage rises from 11.550616% to 11.743011% of 3,471,246 bytes.
+Exact code adds 520 bytes to 67,086 (1.932620%). All 2,484 earlier function copies
+remain identical and all previous exact code/data remain exact.
+
+The source executable links 218 genuine objects with 2,507 function and 4,367
+data definitions. LLVM18 checks 220 format files and 218 analysis units; 665
+tests pass with three skips. Actual source-object fixtures pass 22 movement/ray,
+30 traffic/faders, 39 music, 21 particle and 11 force checks. Wrong carry-output,
+music-state and signed-cache controls fail the corresponding tests as expected.
+These selected contracts do not establish full gameplay or hardware playback.
+
+AwkwardShapeCode uses the PC's second carry-position output, and zero ray scale
+uses inverse 1.0. RayImpact includes its complete native switch tables. Music
+retains actual PC state transitions, promoted-double varargs, original C++ ABI,
+real cross-unit queue providers and the executable's genuine one-byte diagnostic.
+Traffic callbacks and private storage remain with their original caller units;
+the particle emitter uses the actual PC identity-matrix owner and scene indices.
+
+The force selector preserves the actual unguarded writer. Original PC capacity
+and allocation extent remain UNKNOWN. Its 384-record working view is qualified
+by cumulative eligible writes <=384, receives no allocation credit and is not
+claimed as recovered historical capacity. Group expansion and nonempty terrain
+are outside the fixture. Existing partial AddPart/death services remain explicit.
+
+Eleven shared initializer views add 6,356 bytes with unknown owning extents;
+all 1,023 prior views remain unchanged. Six private traffic owners emit 396 bytes,
+with 23 independently checked initializer regions totaling 548 bytes. Unknown
+views receive no full-allocation credit. NuMusic::Process's incomplete 1,398-byte
+inventory span becomes its complete 1,432-byte extent; unproved LevelTimer16 and
+the old music constant4 inventory extents are withdrawn.
+
+The 19:32 checkpoint waited for final data, required checks and production
+contract verification. The next connected candidate group is Cannon350, eight weapon
+functions8,170 and four private helpers1,841: at most10,361 PC bytes. Release
+counts will include only actual emitted functions with genuine caller context;
+Shield/SmartBomb/Dodgem await the true Move_VEHICLE caller. Parallel
+resource/render/UI work continues from the retained bank.

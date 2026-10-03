@@ -1409,7 +1409,9 @@ typedef struct gamesave_s {
     OPTIONSSAVE options_save;
     u8 unknown_0011[0x781b];
     AREA_SAVE_PICKUP_PC area_save[72];
-    u8 unknown_7b8c[0xa2];
+    u8 unknown_7b8c[0x8f];
+    u8 customizer_weirdo_flags;
+    u8 unknown_7c1c[0x12];
     u16 customizer_cape_piece;
     u8 unknown_7c30[0x36];
     u16 customizer_secondary_cape_piece;
@@ -1418,6 +1420,7 @@ typedef struct gamesave_s {
 STATIC_ASSERT(offsetof(GAMESAVE, difficulty) == 0x1);
 STATIC_ASSERT(sizeof(GAMESAVE) == 0x7e4c);
 STATIC_ASSERT(offsetof(GAMESAVE, options_save) == 4);
+STATIC_ASSERT(offsetof(GAMESAVE, customizer_weirdo_flags) == 0x7c1b);
 STATIC_ASSERT(offsetof(GAMESAVE, customizer_cape_piece) == 0x7c2e);
 STATIC_ASSERT(offsetof(GAMESAVE, customizer_secondary_cape_piece) == 0x7c66);
 
@@ -4628,7 +4631,11 @@ typedef struct gameobject_s {
     NUVEC target_velocity;
     NUVEC surface_normal;
     NUVEC facing_direction;
-    u8 unknown_0f3c[0xb4];
+    u8 unknown_0f3c[0x9c];
+    NUVEC *head_target;
+    NUVEC head_target_position;
+    f32 head_target_timer;
+    f32 head_target_delay;
     f32 character_bottom;
     f32 character_top;
     f32 collision_scale;
@@ -4687,7 +4694,8 @@ typedef struct gameobject_s {
     u8 unknown_107c[2];
     u8 field_107e;
     i8 current_hp;
-    u8 unknown_1080[2];
+    i8 head_target_priority;
+    u8 unknown_1081;
     u8 helmet;
     u8 unknown_1083;
     u8 one_at_once_player;
@@ -4865,6 +4873,11 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, velocity) == 0x68);
 STATIC_ASSERT(offsetof(GAMEOBJECT, previous_velocity) == 0x74);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
+STATIC_ASSERT(offsetof(GAMEOBJECT, head_target) == 0xfd8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, head_target_position) == 0xfdc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, head_target_timer) == 0xfe8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, head_target_delay) == 0xfec);
+STATIC_ASSERT(offsetof(GAMEOBJECT, head_target_priority) == 0x1080);
 STATIC_ASSERT(offsetof(GAMEOBJECT, start_position) == 0x8c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, initial_position) == 0x98);
 STATIC_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);
@@ -6764,6 +6777,29 @@ typedef struct weapon_ammo_pc_s {
 } WEAPON_AMMO_PC;
 STATIC_ASSERT(offsetof(WEAPON_AMMO_PC, ammo) == 4);
 
+typedef struct awkward_shape_sphere_pc_s {
+    i16 *character_id;
+    i16 joint;
+    u16 flags;
+    f32 radius;
+} AWKWARD_SHAPE_SPHERE_PC;
+STATIC_ASSERT(sizeof(AWKWARD_SHAPE_SPHERE_PC) == 12);
+STATIC_ASSERT(offsetof(AWKWARD_SHAPE_SPHERE_PC, character_id) == 0);
+STATIC_ASSERT(offsetof(AWKWARD_SHAPE_SPHERE_PC, joint) == 4);
+STATIC_ASSERT(offsetof(AWKWARD_SHAPE_SPHERE_PC, flags) == 6);
+STATIC_ASSERT(offsetof(AWKWARD_SHAPE_SPHERE_PC, radius) == 8);
+
+typedef struct gizforce_target_record_pc_s {
+    GIZFORCE_PC *force;
+    GAMEANIMOBJ *animation;
+    f32 distance;
+    i32 index;
+} GIZFORCE_TARGET_RECORD_PC;
+STATIC_ASSERT(sizeof(GIZFORCE_TARGET_RECORD_PC) == 16);
+STATIC_ASSERT(offsetof(GIZFORCE_TARGET_RECORD_PC, animation) == 4);
+STATIC_ASSERT(offsetof(GIZFORCE_TARGET_RECORD_PC, distance) == 8);
+STATIC_ASSERT(offsetof(GIZFORCE_TARGET_RECORD_PC, index) == 12);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -6914,6 +6950,35 @@ extern "C" {
     /* FloatAdvancePc static same originalTU; no public prototype. */
 
     extern HINTSYS_PC hintsys;
+    extern GIZFORCE_TARGET_RECORD_PC PossibleForceTargetsPc[];
+    i32 __cdecl GizForce_FindBestForceTarget(void *, GAMEOBJECT *);
+
+    extern TIMER LevelTimer;
+
+    struct PC_STEREO_PLAY_PACKET;
+    struct PC_STEREO_SAMPLE_METADATA;
+    void __cdecl PCStereoUnknownToken(void);
+    i32 __cdecl NuSound3PlayStereoV(i32 token, ...);
+    void __cdecl PCStereoStartPacket(struct PC_STEREO_PLAY_PACKET *packet);
+    extern i32 PCStereoChannel0A, PCStereoChannel0B, PCStereoChannel1A, PCStereoChannel1B;
+    extern struct PC_STEREO_SAMPLE_METADATA *PCStereoSampleMetadata;
+    extern f32 PCMusicDuckOverride;
+
+    void __cdecl TrafficAnimSys_Configure(WORLDINFO *world, char *config);
+    void __cdecl Faders_Configure(WORLDINFO *world, char *config);
+    void __cdecl AddVariableShotPARTEffect(i32, NUVEC *, f32, f32, NUMTX *);
+
+    extern AWKWARD_SHAPE_SPHERE_PC AwkwardShapeSpherePc[14];
+    extern i16 id_CATAPULT, id_FIRETRUCK;
+    void __cdecl AwkwardShapeCode(GAMEOBJECT *, i32);
+    i32 __cdecl NewRayCastScaleYMask(NUVEC *, NUVEC *, f32, f32, i32, u32);
+    void __cdecl RayImpact(NUVEC *);
+    void __cdecl PlayGruntSfx(GAMEOBJECT *);
+    i32 __cdecl TerrainPlatId(void);
+
+    i32 __cdecl SuperWeirdo(GAMEOBJECT *);
+    void __cdecl SetHeadTarget(GAMEOBJECT *, NUVEC *, i8, f32, f32, f32);
+
     void __cdecl SetWeaponOut(GAMEOBJECT *);
     void __cdecl FastWeaponOut(GAMEOBJECT *, i32);
     void __cdecl SlowWeaponOut(GAMEOBJECT *);
@@ -11743,6 +11808,7 @@ class NuMusic {
         f32 play_time;
         u8 flags;
         u8 unknown_0031[3];
+        i32 Unload(void);
     };
     struct Album {
         char *name;
@@ -11763,11 +11829,11 @@ class NuMusic {
     f32 fader_current;
     f32 fader_target;
     f32 fader_rate;
-    u8 unknown_01a8[4];
+    f32 duck_gain;
     f32 duck_current;
-    u8 unknown_01b0[4];
+    f32 duck_rate;
     f32 class_volumes[6];
-    u8 unknown_01cc[4];
+    f32 global_attenuation;
     i32 track_index;
     u8 unknown_01d4[4];
     Album *album;
@@ -11797,6 +11863,12 @@ class NuMusic {
     void Process(f32 delta);
 };
 STATIC_ASSERT(sizeof(NuMusic::Track) == 0x3c);
+STATIC_ASSERT(offsetof(NuMusic::Track, attenuation) == 0x34);
+STATIC_ASSERT(offsetof(NuMusic::Track, duck_fade) == 0x30);
+STATIC_ASSERT(offsetof(NuMusic::Track, duck_volume) == 0x2c);
+STATIC_ASSERT(offsetof(NuMusic, global_attenuation) == 0x1cc);
+STATIC_ASSERT(offsetof(NuMusic, duck_rate) == 0x1b0);
+STATIC_ASSERT(offsetof(NuMusic, duck_gain) == 0x1a8);
 STATIC_ASSERT(offsetof(NuMusic::Track, filenames) == 0);
 STATIC_ASSERT(offsetof(NuMusic::Track, ident) == 0x08);
 STATIC_ASSERT(offsetof(NuMusic::Track, file_indexes) == 0x0c);

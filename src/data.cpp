@@ -8137,3 +8137,68 @@ extern "C" {
     i32(__cdecl *Fighting_WeaponOutActionFn)(GAMEOBJECT *);
 #pragma bss_seg()
 }
+
+extern "C" {
+    extern i16 id_CATAPULT, id_FIRETRUCK;
+#pragma data_seg(".data$AwkwardShapeSpherePc")
+    AWKWARD_SHAPE_SPHERE_PC AwkwardShapeSpherePc[14] = {{&id_RANCOR, 4, 0, 0.30000001192092896f},
+                                                        {&id_DEWBACK, 1, 1, 0.20000000298023224f},
+                                                        {&id_DEWBACK, 2, 0, 0.125f},
+                                                        {&id_DEWBACK, 3, 0, 0.10000000149011612f},
+                                                        {&id_DEWBACK, 4, 0, 0.07500000298023224f},
+                                                        {&id_BIGGUN, 3, 0, 0.17499999701976776f},
+                                                        {&id_BIGGUN, 4, 0, 0.17499999701976776f},
+                                                        {&id_BIGGUN, 5, 0, 0.17499999701976776f},
+                                                        {&id_BANTHA, 1, 1, 0.25f},
+                                                        {&id_ATAT, 7, 1, 1.2000000476837158f},
+                                                        {&id_CATAPULT, 1, 0, 0.25f},
+                                                        {&id_FIRETRUCK, 1, 1, 0.30000001192092896f},
+                                                        {&id_FIRETRUCK, 2, 1, 0.30000001192092896f},
+                                                        {NULL, 0, 0, 0.0f}};
+#pragma data_seg()
+
+#pragma data_seg(".data$id_CATAPULT")
+    i16 id_CATAPULT = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_FIRETRUCK")
+    i16 id_FIRETRUCK = -1;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$PCMusicDuckOverride")
+    f32 PCMusicDuckOverride = 1.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$PCStereoChannel0B")
+    i32 PCStereoChannel0B = 1;
+#pragma data_seg()
+
+#pragma data_seg(".data$PCStereoChannel1A")
+    i32 PCStereoChannel1A = 2;
+#pragma data_seg()
+
+#pragma data_seg(".data$PCStereoChannel1B")
+    i32 PCStereoChannel1B = 3;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$PCStereoSampleMetadata")
+    PC_STEREO_SAMPLE_METADATA *PCStereoSampleMetadata;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCStereoChannel0A")
+    i32 PCStereoChannel0A;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$PossibleForceTargetsPc")
+    // Selected input view: cumulative eligible writes <=384; actual PC capacity unknown.
+    GIZFORCE_TARGET_RECORD_PC PossibleForceTargetsPc[384];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LevelTimer")
+    TIMER LevelTimer;
+#pragma bss_seg()
+}
