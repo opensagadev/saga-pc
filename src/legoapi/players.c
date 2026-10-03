@@ -894,3 +894,142 @@ void __cdecl SetToLastSafePos(GAMEOBJECT *object) {
     object->position = object->last_safe_position;
     object->ai_update_position = object->last_safe_position;
 }
+
+typedef struct player_reset_packet_pc_s {
+    u8 unknown_000[0xe8];
+    i16 context_animation;
+    u8 unknown_0ea[0x4];
+    u8 context_mode;
+    u8 unknown_0ef[0x2];
+    i8 build_context;
+    u8 unknown_0f2[0x2];
+    u8 action_movement_state;
+    u8 action_movement_variant;
+    u8 unknown_0f6[0x6];
+    f32 context_animation_time;
+    i8 context_target;
+    u8 unknown_101[0x4df];
+    GAMEPAD_PC *gamepad;
+    u8 unknown_5e4[0x28];
+    void *linked_object;
+    u8 unknown_610[0x38];
+    i32 unknown_648;
+    u8 unknown_64c[0x10];
+    i32 input_state;
+    u8 unknown_660[0x4];
+    f32 unknown_664;
+    u8 unknown_668[0x4];
+    f32 unknown_66c;
+    f32 unknown_670;
+    f32 unknown_674;
+    f32 context_blend;
+    f32 context_distance;
+    u8 unknown_680[0x14];
+    f32 unknown_694;
+    f32 unknown_698;
+    u8 unknown_69c[0x34];
+    f32 unknown_6d0;
+    u8 unknown_6d4[0x14];
+    f32 unknown_6e8;
+    u8 unknown_6ec[0x14];
+    f32 unknown_700;
+    u8 unknown_704[0x10];
+    f32 unknown_714;
+    u8 unknown_718[0x8];
+    f32 unknown_720;
+    f32 unknown_724;
+    u8 unknown_728[0x24];
+    i16 movement_angle_0;
+    u8 unknown_74e[0x2];
+    i16 movement_angle_2;
+    i16 movement_angle_3;
+    u8 unknown_754[0x8];
+    u32 secondary_flags;
+    u8 unknown_760[0xe];
+    u8 unknown_76e;
+    u8 unknown_76f;
+    u8 unknown_770[0xd];
+    i8 random_context;
+} PLAYER_RESET_PACKET_PC;
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, context_animation) == 0xe8);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, context_mode) == 0xee);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, build_context) == 0xf1);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, action_movement_state) == 0xf4);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, action_movement_variant) == 0xf5);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, context_animation_time) == 0xfc);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, context_target) == 0x100);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, gamepad) == 0x5e0);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, linked_object) == 0x60c);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_648) == 0x648);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, input_state) == 0x65c);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_664) == 0x664);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_66c) == 0x66c);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_670) == 0x670);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_674) == 0x674);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, context_blend) == 0x678);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, context_distance) == 0x67c);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_694) == 0x694);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_698) == 0x698);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_6d0) == 0x6d0);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_6e8) == 0x6e8);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_700) == 0x700);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_714) == 0x714);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_720) == 0x720);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_724) == 0x724);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, movement_angle_0) == 0x74c);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, movement_angle_2) == 0x750);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, movement_angle_3) == 0x752);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, secondary_flags) == 0x75c);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_76e) == 0x76e);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_76f) == 0x76f);
+STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, random_context) == 0x77d);
+STATIC_ASSERT(offsetof(GAMEPAD_PC, runtime_flags) == 0x5a);
+void __cdecl Player_ResetContexts(void *packet_ptr) {
+    PLAYER_RESET_PACKET_PC *packet = (PLAYER_RESET_PACKET_PC *)packet_ptr;
+    packet->context_animation_time = 0.0f;
+    packet->context_target = -1;
+    packet->context_blend = (packet->secondary_flags & 0x10000) ? 1.0f : 0.0f;
+    packet->context_distance = 5.0f;
+    packet->unknown_76f = 0;
+    packet->unknown_66c = 0.0f;
+    packet->build_context = -1;
+    packet->unknown_674 = 0.0f;
+    packet->action_movement_variant = 0;
+    packet->action_movement_state = 0;
+    packet->unknown_664 = 0.0f;
+    packet->gamepad->runtime_flags &= ~4;
+    packet->gamepad->runtime_flags &= ~0x10;
+    packet->secondary_flags &= ~0x400;
+    packet->input_state = 0;
+    packet->unknown_648 = 0;
+    packet->random_context = (i8)(qrand() / 0x8000);
+    packet->unknown_694 = 0.0f;
+    packet->unknown_698 = 0.0f;
+    packet->unknown_670 = 0.0f;
+    packet->unknown_6d0 = 0.0f;
+    packet->unknown_6e8 = 0.0f;
+    packet->unknown_700 = 0.0f;
+    packet->unknown_714 = 0.0f;
+    packet->context_animation = 0;
+    packet->unknown_720 = 0.0f;
+    packet->context_mode = 0;
+    packet->unknown_76e = 0;
+    packet->unknown_724 = 0.0f;
+    packet->linked_object = NULL;
+    packet->movement_angle_0 = -1;
+    packet->movement_angle_2 = -1;
+    packet->movement_angle_3 = -1;
+}
+void __cdecl SetFlicker(GAMEOBJECT *object, f32 duration) {
+    object->flags_e24 &= ~0x70000;
+    object->vehicle_hit_timer = duration;
+}
+
+void __cdecl SetProtocolDroidDeactivatedAction(GAMEOBJECT *object) {
+    if (object->saved_hitpoints == 3)
+        object->field_7aa = 0x42;
+    else if (object->saved_hitpoints == 2)
+        object->field_7aa = 0x43;
+    else if (object->saved_hitpoints == 1)
+        object->field_7aa = 0x44;
+}

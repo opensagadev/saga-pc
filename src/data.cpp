@@ -6323,3 +6323,927 @@ extern "C" {
                                                 {-0.5f, 0.5f, 0.8f},    {0.5f, 0.5f, 0.8f}};
 #pragma const_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$CRC16TablePC")
+    u32 CRC16TablePC[256];
+#pragma bss_seg()
+#pragma data_seg(".data$ShaderProgramHashPC")
+    u32 ShaderProgramHashPC[2] = {1482109315U, 2845988928U};
+#pragma data_seg()
+#pragma bss_seg(".bss$PCVertexDeclarationCountPC")
+    i32 PCVertexDeclarationCountPC;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCVertexDeclarationCachePC")
+    PC_VERTEX_DECL_ENTRY_PC PCVertexDeclarationCachePC[1];
+#pragma bss_seg()
+}
+
+#pragma bss_seg(".bss$CRC16InstancePC")
+CRC16 CRC16InstancePC;
+#pragma bss_seg()
+
+extern "C" {
+#pragma const_seg(".rdata$PlayerActionNamePc_001")
+    extern const char PlayerActionNamePc_001[5] = "walk";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_003")
+    extern const char PlayerActionNamePc_003[5] = "fire";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_004")
+    extern const char PlayerActionNamePc_004[4] = "run";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_005")
+    extern const char PlayerActionNamePc_005[7] = "tiptoe";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_006")
+    extern const char PlayerActionNamePc_006[5] = "fall";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_007")
+    extern const char PlayerActionNamePc_007[5] = "jump";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_008")
+    extern const char PlayerActionNamePc_008[5] = "land";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_009")
+    extern const char PlayerActionNamePc_009[6] = "idle4";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_010")
+    extern const char PlayerActionNamePc_010[6] = "jump2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_011")
+    extern const char PlayerActionNamePc_011[6] = "land2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_012")
+    extern const char PlayerActionNamePc_012[6] = "force";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_013")
+    extern const char PlayerActionNamePc_013[5] = "flip";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_014")
+    extern const char PlayerActionNamePc_014[9] = "flipland";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_015")
+    extern const char PlayerActionNamePc_015[6] = "jump3";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_016")
+    extern const char PlayerActionNamePc_016[6] = "idle2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_017")
+    extern const char PlayerActionNamePc_017[9] = "weaponin";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_018")
+    extern const char PlayerActionNamePc_018[10] = "weaponout";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_019")
+    extern const char PlayerActionNamePc_019[10] = "combojump";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_020")
+    extern const char PlayerActionNamePc_020[10] = "comboland";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_021")
+    extern const char PlayerActionNamePc_021[6] = "idle3";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_022")
+    extern const char PlayerActionNamePc_022[6] = "land3";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_023")
+    extern const char PlayerActionNamePc_023[6] = "shoot";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_024")
+    extern const char PlayerActionNamePc_024[5] = "run2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_025")
+    extern const char PlayerActionNamePc_025[10] = "interface";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_026")
+    extern const char PlayerActionNamePc_026[11] = "weaponidle";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_027")
+    extern const char PlayerActionNamePc_027[7] = "block1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_028")
+    extern const char PlayerActionNamePc_028[7] = "block2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_029")
+    extern const char PlayerActionNamePc_029[7] = "block3";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_030")
+    extern const char PlayerActionNamePc_030[5] = "run3";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_031")
+    extern const char PlayerActionNamePc_031[6] = "crawl";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_032")
+    extern const char PlayerActionNamePc_032[6] = "lunge";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_033")
+    extern const char PlayerActionNamePc_033[10] = "lungeland";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_035")
+    extern const char PlayerActionNamePc_035[9] = "slamland";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_037")
+    extern const char PlayerActionNamePc_037[6] = "hover";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_038")
+    extern const char PlayerActionNamePc_038[4] = "fly";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_039")
+    extern const char PlayerActionNamePc_039[5] = "left";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_040")
+    extern const char PlayerActionNamePc_040[7] = "force2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_041")
+    extern const char PlayerActionNamePc_041[6] = "fall2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_042")
+    extern const char PlayerActionNamePc_042[11] = "weaponback";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_043")
+    extern const char PlayerActionNamePc_043[3] = "up";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_044")
+    extern const char PlayerActionNamePc_044[7] = "pushed";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_045")
+    extern const char PlayerActionNamePc_045[3] = "in";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_046")
+    extern const char PlayerActionNamePc_046[4] = "out";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_047")
+    extern const char PlayerActionNamePc_047[9] = "combo1_1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_048")
+    extern const char PlayerActionNamePc_048[10] = "combo1_2a";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_049")
+    extern const char PlayerActionNamePc_049[10] = "combo1_2b";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_050")
+    extern const char PlayerActionNamePc_050[10] = "combo1_3a";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_051")
+    extern const char PlayerActionNamePc_051[10] = "combo1_3b";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_052")
+    extern const char PlayerActionNamePc_052[10] = "combo1_3c";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_053")
+    extern const char PlayerActionNamePc_053[10] = "combo1_3d";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_054")
+    extern const char PlayerActionNamePc_054[9] = "combo2_1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_055")
+    extern const char PlayerActionNamePc_055[10] = "combo2_2a";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_056")
+    extern const char PlayerActionNamePc_056[10] = "combo2_2b";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_057")
+    extern const char PlayerActionNamePc_057[10] = "combo2_3a";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_058")
+    extern const char PlayerActionNamePc_058[10] = "combo2_3b";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_059")
+    extern const char PlayerActionNamePc_059[10] = "combo2_3c";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_060")
+    extern const char PlayerActionNamePc_060[10] = "combo2_3d";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_061")
+    extern const char PlayerActionNamePc_061[7] = "shoot2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_062")
+    extern const char PlayerActionNamePc_062[8] = "takehit";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_063")
+    extern const char PlayerActionNamePc_063[9] = "takehit2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_064")
+    extern const char PlayerActionNamePc_064[8] = "tiptoe2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_065")
+    extern const char PlayerActionNamePc_065[6] = "walk2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_066")
+    extern const char PlayerActionNamePc_066[12] = "deactivated";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_067")
+    extern const char PlayerActionNamePc_067[13] = "deactivated2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_068")
+    extern const char PlayerActionNamePc_068[13] = "deactivated3";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_069")
+    extern const char PlayerActionNamePc_069[13] = "deactivated4";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_070")
+    extern const char PlayerActionNamePc_070[11] = "interface2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_071")
+    extern const char PlayerActionNamePc_071[11] = "interface3";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_072")
+    extern const char PlayerActionNamePc_072[11] = "interface4";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_073")
+    extern const char PlayerActionNamePc_073[8] = "hoverup";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_074")
+    extern const char PlayerActionNamePc_074[10] = "hoverdown";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_075")
+    extern const char PlayerActionNamePc_075[6] = "land4";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_076")
+    extern const char PlayerActionNamePc_076[6] = "fall3";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_077")
+    extern const char PlayerActionNamePc_077[6] = "fall4";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_078")
+    extern const char PlayerActionNamePc_078[6] = "fire2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_079")
+    extern const char PlayerActionNamePc_079[4] = "eat";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_080")
+    extern const char PlayerActionNamePc_080[6] = "right";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_081")
+    extern const char PlayerActionNamePc_081[14] = "walkbackwards";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_082")
+    extern const char PlayerActionNamePc_082[6] = "punch";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_083")
+    extern const char PlayerActionNamePc_083[5] = "push";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_084")
+    extern const char PlayerActionNamePc_084[7] = "choked";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_085")
+    extern const char PlayerActionNamePc_085[7] = "zapped";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_086")
+    extern const char PlayerActionNamePc_086[7] = "punch2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_087")
+    extern const char PlayerActionNamePc_087[7] = "punch3";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_088")
+    extern const char PlayerActionNamePc_088[16] = "combatroll_fire";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_089")
+    extern const char PlayerActionNamePc_089[9] = "forwards";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_090")
+    extern const char PlayerActionNamePc_090[9] = "fallland";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_091")
+    extern const char PlayerActionNamePc_091[10] = "shootleft";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_092")
+    extern const char PlayerActionNamePc_092[11] = "shootright";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_093")
+    extern const char PlayerActionNamePc_093[10] = "shootback";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_094")
+    extern const char PlayerActionNamePc_094[10] = "pulllever";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_095")
+    extern const char PlayerActionNamePc_095[9] = "helmeton";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_096")
+    extern const char PlayerActionNamePc_096[6] = "build";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_097")
+    extern const char PlayerActionNamePc_097[6] = "idle5";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_098")
+    extern const char PlayerActionNamePc_098[6] = "idle6";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_099")
+    extern const char PlayerActionNamePc_099[6] = "idle7";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_100")
+    extern const char PlayerActionNamePc_100[6] = "idle8";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_101")
+    extern const char PlayerActionNamePc_101[7] = "attack";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_102")
+    extern const char PlayerActionNamePc_102[6] = "throw";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_103")
+    extern const char PlayerActionNamePc_103[7] = "pickup";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_104")
+    extern const char PlayerActionNamePc_104[5] = "drop";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_105")
+    extern const char PlayerActionNamePc_105[8] = "grabbed";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_106")
+    extern const char PlayerActionNamePc_106[9] = "attacked";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_107")
+    extern const char PlayerActionNamePc_107[6] = "slide";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_108")
+    extern const char PlayerActionNamePc_108[12] = "communicate";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_109")
+    extern const char PlayerActionNamePc_109[5] = "ride";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_110")
+    extern const char PlayerActionNamePc_110[10] = "helmeton2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_111")
+    extern const char PlayerActionNamePc_111[7] = "throw2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_112")
+    extern const char PlayerActionNamePc_112[7] = "throw3";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_113")
+    extern const char PlayerActionNamePc_113[6] = "ride2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_114")
+    extern const char PlayerActionNamePc_114[13] = "extra_tiptoe";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_115")
+    extern const char PlayerActionNamePc_115[11] = "extra_walk";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_116")
+    extern const char PlayerActionNamePc_116[10] = "extra_run";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_117")
+    extern const char PlayerActionNamePc_117[11] = "extra_fall";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_118")
+    extern const char PlayerActionNamePc_118[11] = "extra_idle";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_119")
+    extern const char PlayerActionNamePc_119[17] = "extra_weaponidle";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_120")
+    extern const char PlayerActionNamePc_120[9] = "backflip";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_121")
+    extern const char PlayerActionNamePc_121[11] = "extra_jump";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_122")
+    extern const char PlayerActionNamePc_122[12] = "extra_jump2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_123")
+    extern const char PlayerActionNamePc_123[11] = "extra_land";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_124")
+    extern const char PlayerActionNamePc_124[12] = "extra_land2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_125")
+    extern const char PlayerActionNamePc_125[12] = "extra_lunge";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_126")
+    extern const char PlayerActionNamePc_126[16] = "extra_lungeland";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_127")
+    extern const char PlayerActionNamePc_127[15] = "extra_weaponin";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_128")
+    extern const char PlayerActionNamePc_128[16] = "extra_weaponout";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_129")
+    extern const char PlayerActionNamePc_129[9] = "activate";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_130")
+    extern const char PlayerActionNamePc_130[11] = "deactivate";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_131")
+    extern const char PlayerActionNamePc_131[6] = "walk3";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_132")
+    extern const char PlayerActionNamePc_132[6] = "ride3";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_133")
+    extern const char PlayerActionNamePc_133[6] = "ride4";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_134")
+    extern const char PlayerActionNamePc_134[6] = "splat";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_135")
+    extern const char PlayerActionNamePc_135[6] = "ride5";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_136")
+    extern const char PlayerActionNamePc_136[11] = "climb_idle";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_137")
+    extern const char PlayerActionNamePc_137[15] = "tightrope_idle";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_138")
+    extern const char PlayerActionNamePc_138[15] = "tightrope_move";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_139")
+    extern const char PlayerActionNamePc_139[17] = "wallshuffle_idle";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_140")
+    extern const char PlayerActionNamePc_140[17] = "wallshuffle_left";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_141")
+    extern const char PlayerActionNamePc_141[18] = "wallshuffle_right";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_142")
+    extern const char PlayerActionNamePc_142[8] = "putdown";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_143")
+    extern const char PlayerActionNamePc_143[6] = "float";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_144")
+    extern const char PlayerActionNamePc_144[16] = "tightrope_geton";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_145")
+    extern const char PlayerActionNamePc_145[7] = "target";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_146")
+    extern const char PlayerActionNamePc_146[10] = "hang_idle";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_147")
+    extern const char PlayerActionNamePc_147[10] = "hang_move";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_148")
+    extern const char PlayerActionNamePc_148[6] = "glide";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_149")
+    extern const char PlayerActionNamePc_149[13] = "punch_behind";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_150")
+    extern const char PlayerActionNamePc_150[17] = "tightrope_getoff";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_151")
+    extern const char PlayerActionNamePc_151[7] = "change";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_152")
+    extern const char PlayerActionNamePc_152[11] = "throw_wait";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_153")
+    extern const char PlayerActionNamePc_153[6] = "catch";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_154")
+    extern const char PlayerActionNamePc_154[5] = "hack";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_155")
+    extern const char PlayerActionNamePc_155[8] = "attract";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_156")
+    extern const char PlayerActionNamePc_156[9] = "transfer";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_157")
+    extern const char PlayerActionNamePc_157[6] = "sonar";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_158")
+    extern const char PlayerActionNamePc_158[11] = "ledge_idle";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_159")
+    extern const char PlayerActionNamePc_159[11] = "ledge_left";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_160")
+    extern const char PlayerActionNamePc_160[12] = "ledge_right";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_161")
+    extern const char PlayerActionNamePc_161[10] = "transform";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_162")
+    extern const char PlayerActionNamePc_162[14] = "walljump_wait";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_163")
+    extern const char PlayerActionNamePc_163[9] = "walljump";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_164")
+    extern const char PlayerActionNamePc_164[18] = "supercarry_pickup";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_165")
+    extern const char PlayerActionNamePc_165[16] = "supercarry_idle";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_166")
+    extern const char PlayerActionNamePc_166[16] = "supercarry_walk";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_167")
+    extern const char PlayerActionNamePc_167[17] = "supercarry_throw";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_168")
+    extern const char PlayerActionNamePc_168[5] = "stun";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_169")
+    extern const char PlayerActionNamePc_169[6] = "stun2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_170")
+    extern const char PlayerActionNamePc_170[6] = "stun3";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_171")
+    extern const char PlayerActionNamePc_171[8] = "stunned";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_172")
+    extern const char PlayerActionNamePc_172[9] = "stunned2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_173")
+    extern const char PlayerActionNamePc_173[9] = "stunned3";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_174")
+    extern const char PlayerActionNamePc_174[9] = "security";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_175")
+    extern const char PlayerActionNamePc_175[15] = "superpush_idle";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_176")
+    extern const char PlayerActionNamePc_176[15] = "superpush_push";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_177")
+    extern const char PlayerActionNamePc_177[15] = "superpush_pull";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_178")
+    extern const char PlayerActionNamePc_178[11] = "ballooning";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_179")
+    extern const char PlayerActionNamePc_179[12] = "throw_quick";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_180")
+    extern const char PlayerActionNamePc_180[17] = "backpackfallland";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_181")
+    extern const char PlayerActionNamePc_181[16] = "combatroll_jump";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_182")
+    extern const char PlayerActionNamePc_182[16] = "combatroll_fall";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_183")
+    extern const char PlayerActionNamePc_183[16] = "combatroll_land";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_184")
+    extern const char PlayerActionNamePc_184[7] = "recoil";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_185")
+    extern const char PlayerActionNamePc_185[8] = "die_air";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_186")
+    extern const char PlayerActionNamePc_186[9] = "stun_die";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_187")
+    extern const char PlayerActionNamePc_187[13] = "grapple_idle";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_188")
+    extern const char PlayerActionNamePc_188[11] = "grapple_up";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_189")
+    extern const char PlayerActionNamePc_189[13] = "grapple_down";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_190")
+    extern const char PlayerActionNamePc_190[13] = "grapple_hang";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_191")
+    extern const char PlayerActionNamePc_191[6] = "idle9";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_192")
+    extern const char PlayerActionNamePc_192[7] = "idle10";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_193")
+    extern const char PlayerActionNamePc_193[6] = "ride6";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_194")
+    extern const char PlayerActionNamePc_194[6] = "ride7";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_195")
+    extern const char PlayerActionNamePc_195[6] = "ride8";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_196")
+    extern const char PlayerActionNamePc_196[6] = "ride9";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_197")
+    extern const char PlayerActionNamePc_197[7] = "ride10";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_198")
+    extern const char PlayerActionNamePc_198[18] = "magnet_walk_metal";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_199")
+    extern const char PlayerActionNamePc_199[14] = "magnet_tiptoe";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_200")
+    extern const char PlayerActionNamePc_200[12] = "magnet_walk";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_201")
+    extern const char PlayerActionNamePc_201[11] = "magnet_run";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_202")
+    extern const char PlayerActionNamePc_202[12] = "magnet_jump";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_203")
+    extern const char PlayerActionNamePc_203[12] = "magnet_land";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_204")
+    extern const char PlayerActionNamePc_204[7] = "dropin";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_205")
+    extern const char PlayerActionNamePc_205[8] = "dropout";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_206")
+    extern const char PlayerActionNamePc_206[9] = "climb_up";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_207")
+    extern const char PlayerActionNamePc_207[11] = "climb_down";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_208")
+    extern const char PlayerActionNamePc_208[11] = "climb_left";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_209")
+    extern const char PlayerActionNamePc_209[12] = "climb_right";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_210")
+    extern const char PlayerActionNamePc_210[13] = "ai_override1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_211")
+    extern const char PlayerActionNamePc_211[13] = "ai_override2";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_212")
+    extern const char PlayerActionNamePc_212[13] = "ai_override3";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_213")
+    extern const char PlayerActionNamePc_213[13] = "ai_override4";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_214")
+    extern const char PlayerActionNamePc_214[19] = "supercarry_putdown";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_215")
+    extern const char PlayerActionNamePc_215[16] = "supercarry_bash";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_216")
+    extern const char PlayerActionNamePc_216[16] = "supercarry_jump";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_217")
+    extern const char PlayerActionNamePc_217[16] = "supercarry_land";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_218")
+    extern const char PlayerActionNamePc_218[20] = "supercarry_fallland";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_219")
+    extern const char PlayerActionNamePc_219[11] = "ledge_grab";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_220")
+    extern const char PlayerActionNamePc_220[7] = "teeter";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_221")
+    extern const char PlayerActionNamePc_221[11] = "whip_start";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_222")
+    extern const char PlayerActionNamePc_222[11] = "whip_crack";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_223")
+    extern const char PlayerActionNamePc_223[10] = "whip_grab";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_224")
+    extern const char PlayerActionNamePc_224[11] = "whip_break";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_225")
+    extern const char PlayerActionNamePc_225[17] = "whip_swing_start";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_226")
+    extern const char PlayerActionNamePc_226[17] = "whip_swing_swing";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_227")
+    extern const char PlayerActionNamePc_227[16] = "whip_swing_jump";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_228")
+    extern const char PlayerActionNamePc_228[11] = "crawl_idle";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_229")
+    extern const char PlayerActionNamePc_229[11] = "crawl_move";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_230")
+    extern const char PlayerActionNamePc_230[5] = "swim";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_231")
+    extern const char PlayerActionNamePc_231[5] = "wade";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_232")
+    extern const char PlayerActionNamePc_232[4] = "dig";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerActionNamePc_233")
+    extern const char PlayerActionNamePc_233[6] = "winch";
+#pragma const_seg()
+#pragma data_seg(".data$PlayerActionInfoListPc")
+    API_ACTION_INFO_PC PlayerActionInfoListPc[234] = {
+        {Text_UnknownText, 0U},       {PlayerActionNamePc_001, 2U},  {"idle", 0U},
+        {PlayerActionNamePc_003, 0U}, {PlayerActionNamePc_004, 4U},  {PlayerActionNamePc_005, 1U},
+        {PlayerActionNamePc_006, 0U}, {PlayerActionNamePc_007, 0U},  {PlayerActionNamePc_008, 0U},
+        {PlayerActionNamePc_009, 0U}, {PlayerActionNamePc_010, 0U},  {PlayerActionNamePc_011, 0U},
+        {PlayerActionNamePc_012, 0U}, {PlayerActionNamePc_013, 0U},  {PlayerActionNamePc_014, 0U},
+        {PlayerActionNamePc_015, 0U}, {PlayerActionNamePc_016, 0U},  {PlayerActionNamePc_017, 0U},
+        {PlayerActionNamePc_018, 0U}, {PlayerActionNamePc_019, 0U},  {PlayerActionNamePc_020, 0U},
+        {PlayerActionNamePc_021, 0U}, {PlayerActionNamePc_022, 0U},  {PlayerActionNamePc_023, 0U},
+        {PlayerActionNamePc_024, 4U}, {PlayerActionNamePc_025, 0U},  {PlayerActionNamePc_026, 0U},
+        {PlayerActionNamePc_027, 8U}, {PlayerActionNamePc_028, 8U},  {PlayerActionNamePc_029, 8U},
+        {PlayerActionNamePc_030, 4U}, {PlayerActionNamePc_031, 0U},  {PlayerActionNamePc_032, 0U},
+        {PlayerActionNamePc_033, 0U}, {AITransferLiteral75786c, 0U}, {PlayerActionNamePc_035, 0U},
+        {AIActionOpenName, 0U},       {PlayerActionNamePc_037, 0U},  {PlayerActionNamePc_038, 0U},
+        {PlayerActionNamePc_039, 0U}, {PlayerActionNamePc_040, 0U},  {PlayerActionNamePc_041, 0U},
+        {PlayerActionNamePc_042, 0U}, {PlayerActionNamePc_043, 0U},  {PlayerActionNamePc_044, 0U},
+        {PlayerActionNamePc_045, 0U}, {PlayerActionNamePc_046, 0U},  {PlayerActionNamePc_047, 0U},
+        {PlayerActionNamePc_048, 0U}, {PlayerActionNamePc_049, 0U},  {PlayerActionNamePc_050, 0U},
+        {PlayerActionNamePc_051, 0U}, {PlayerActionNamePc_052, 0U},  {PlayerActionNamePc_053, 0U},
+        {PlayerActionNamePc_054, 0U}, {PlayerActionNamePc_055, 0U},  {PlayerActionNamePc_056, 0U},
+        {PlayerActionNamePc_057, 0U}, {PlayerActionNamePc_058, 0U},  {PlayerActionNamePc_059, 0U},
+        {PlayerActionNamePc_060, 0U}, {PlayerActionNamePc_061, 0U},  {PlayerActionNamePc_062, 0U},
+        {PlayerActionNamePc_063, 0U}, {PlayerActionNamePc_064, 1U},  {PlayerActionNamePc_065, 2U},
+        {PlayerActionNamePc_066, 0U}, {PlayerActionNamePc_067, 0U},  {PlayerActionNamePc_068, 0U},
+        {PlayerActionNamePc_069, 0U}, {PlayerActionNamePc_070, 0U},  {PlayerActionNamePc_071, 0U},
+        {PlayerActionNamePc_072, 0U}, {PlayerActionNamePc_073, 0U},  {PlayerActionNamePc_074, 0U},
+        {PlayerActionNamePc_075, 0U}, {PlayerActionNamePc_076, 0U},  {PlayerActionNamePc_077, 0U},
+        {PlayerActionNamePc_078, 0U}, {PlayerActionNamePc_079, 0U},  {PlayerActionNamePc_080, 0U},
+        {PlayerActionNamePc_081, 0U}, {PlayerActionNamePc_082, 0U},  {PlayerActionNamePc_083, 0U},
+        {PlayerActionNamePc_084, 0U}, {PlayerActionNamePc_085, 0U},  {PlayerActionNamePc_086, 0U},
+        {PlayerActionNamePc_087, 0U}, {PlayerActionNamePc_088, 0U},  {PlayerActionNamePc_089, 0U},
+        {PlayerActionNamePc_090, 0U}, {PlayerActionNamePc_091, 0U},  {PlayerActionNamePc_092, 0U},
+        {PlayerActionNamePc_093, 0U}, {PlayerActionNamePc_094, 0U},  {PlayerActionNamePc_095, 0U},
+        {PlayerActionNamePc_096, 0U}, {PlayerActionNamePc_097, 0U},  {PlayerActionNamePc_098, 0U},
+        {PlayerActionNamePc_099, 0U}, {PlayerActionNamePc_100, 0U},  {PlayerActionNamePc_101, 0U},
+        {PlayerActionNamePc_102, 0U}, {PlayerActionNamePc_103, 0U},  {PlayerActionNamePc_104, 0U},
+        {PlayerActionNamePc_105, 0U}, {PlayerActionNamePc_106, 0U},  {PlayerActionNamePc_107, 0U},
+        {PlayerActionNamePc_108, 0U}, {PlayerActionNamePc_109, 0U},  {PlayerActionNamePc_110, 0U},
+        {PlayerActionNamePc_111, 0U}, {PlayerActionNamePc_112, 0U},  {PlayerActionNamePc_113, 0U},
+        {PlayerActionNamePc_114, 1U}, {PlayerActionNamePc_115, 2U},  {PlayerActionNamePc_116, 4U},
+        {PlayerActionNamePc_117, 0U}, {PlayerActionNamePc_118, 0U},  {PlayerActionNamePc_119, 0U},
+        {PlayerActionNamePc_120, 0U}, {PlayerActionNamePc_121, 0U},  {PlayerActionNamePc_122, 0U},
+        {PlayerActionNamePc_123, 0U}, {PlayerActionNamePc_124, 0U},  {PlayerActionNamePc_125, 0U},
+        {PlayerActionNamePc_126, 0U}, {PlayerActionNamePc_127, 0U},  {PlayerActionNamePc_128, 0U},
+        {PlayerActionNamePc_129, 0U}, {PlayerActionNamePc_130, 0U},  {PlayerActionNamePc_131, 2U},
+        {PlayerActionNamePc_132, 0U}, {PlayerActionNamePc_133, 0U},  {PlayerActionNamePc_134, 0U},
+        {PlayerActionNamePc_135, 0U}, {PlayerActionNamePc_136, 0U},  {PlayerActionNamePc_137, 0U},
+        {PlayerActionNamePc_138, 0U}, {PlayerActionNamePc_139, 0U},  {PlayerActionNamePc_140, 0U},
+        {PlayerActionNamePc_141, 0U}, {PlayerActionNamePc_142, 0U},  {PlayerActionNamePc_143, 0U},
+        {PlayerActionNamePc_144, 0U}, {PlayerActionNamePc_145, 0U},  {PlayerActionNamePc_146, 0U},
+        {PlayerActionNamePc_147, 0U}, {PlayerActionNamePc_148, 0U},  {PlayerActionNamePc_149, 0U},
+        {PlayerActionNamePc_150, 0U}, {PlayerActionNamePc_151, 0U},  {PlayerActionNamePc_152, 0U},
+        {PlayerActionNamePc_153, 0U}, {PlayerActionNamePc_154, 0U},  {PlayerActionNamePc_155, 0U},
+        {PlayerActionNamePc_156, 0U}, {PlayerActionNamePc_157, 0U},  {PlayerActionNamePc_158, 0U},
+        {PlayerActionNamePc_159, 0U}, {PlayerActionNamePc_160, 0U},  {PlayerActionNamePc_161, 0U},
+        {PlayerActionNamePc_162, 0U}, {PlayerActionNamePc_163, 0U},  {PlayerActionNamePc_164, 0U},
+        {PlayerActionNamePc_165, 0U}, {PlayerActionNamePc_166, 0U},  {PlayerActionNamePc_167, 0U},
+        {PlayerActionNamePc_168, 0U}, {PlayerActionNamePc_169, 0U},  {PlayerActionNamePc_170, 0U},
+        {PlayerActionNamePc_171, 0U}, {PlayerActionNamePc_172, 0U},  {PlayerActionNamePc_173, 0U},
+        {PlayerActionNamePc_174, 0U}, {PlayerActionNamePc_175, 0U},  {PlayerActionNamePc_176, 0U},
+        {PlayerActionNamePc_177, 0U}, {PlayerActionNamePc_178, 0U},  {PlayerActionNamePc_179, 0U},
+        {PlayerActionNamePc_180, 0U}, {PlayerActionNamePc_181, 0U},  {PlayerActionNamePc_182, 0U},
+        {PlayerActionNamePc_183, 0U}, {PlayerActionNamePc_184, 0U},  {PlayerActionNamePc_185, 0U},
+        {PlayerActionNamePc_186, 0U}, {PlayerActionNamePc_187, 0U},  {PlayerActionNamePc_188, 0U},
+        {PlayerActionNamePc_189, 0U}, {PlayerActionNamePc_190, 0U},  {PlayerActionNamePc_191, 0U},
+        {PlayerActionNamePc_192, 0U}, {PlayerActionNamePc_193, 0U},  {PlayerActionNamePc_194, 0U},
+        {PlayerActionNamePc_195, 0U}, {PlayerActionNamePc_196, 0U},  {PlayerActionNamePc_197, 0U},
+        {PlayerActionNamePc_198, 2U}, {PlayerActionNamePc_199, 1U},  {PlayerActionNamePc_200, 2U},
+        {PlayerActionNamePc_201, 4U}, {PlayerActionNamePc_202, 0U},  {PlayerActionNamePc_203, 0U},
+        {PlayerActionNamePc_204, 0U}, {PlayerActionNamePc_205, 0U},  {PlayerActionNamePc_206, 0U},
+        {PlayerActionNamePc_207, 0U}, {PlayerActionNamePc_208, 0U},  {PlayerActionNamePc_209, 0U},
+        {PlayerActionNamePc_210, 0U}, {PlayerActionNamePc_211, 0U},  {PlayerActionNamePc_212, 0U},
+        {PlayerActionNamePc_213, 0U}, {PlayerActionNamePc_214, 0U},  {PlayerActionNamePc_215, 0U},
+        {PlayerActionNamePc_216, 0U}, {PlayerActionNamePc_217, 0U},  {PlayerActionNamePc_218, 0U},
+        {PlayerActionNamePc_219, 0U}, {PlayerActionNamePc_220, 0U},  {PlayerActionNamePc_221, 0U},
+        {PlayerActionNamePc_222, 0U}, {PlayerActionNamePc_223, 0U},  {PlayerActionNamePc_224, 0U},
+        {PlayerActionNamePc_225, 0U}, {PlayerActionNamePc_226, 0U},  {PlayerActionNamePc_227, 0U},
+        {PlayerActionNamePc_228, 0U}, {PlayerActionNamePc_229, 0U},  {PlayerActionNamePc_230, 0U},
+        {PlayerActionNamePc_231, 0U}, {PlayerActionNamePc_232, 0U},  {PlayerActionNamePc_233, 0U}};
+#pragma data_seg()
+#pragma data_seg(".data$PlayerBlockActionInfoPc")
+    void *PlayerBlockActionInfoPc = &PlayerActionInfoListPc[1];
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$NuDebrisVertexBuffers")
+    PC_BUFFER_RESOURCE_PC *NuDebrisVertexBuffers[4];
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuDebrisSystemBuffers")
+    void *NuDebrisSystemBuffers[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuDebrisUseSystemMemory")
+    i32 NuDebrisUseSystemMemory;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuDebrisCurrentBufferIndex")
+    u32 NuDebrisCurrentBufferIndex;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuDebrisCurrentVertexCount")
+    u32 NuDebrisCurrentVertexCount;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuDebrisVertexBufferSize")
+    u32 NuDebrisVertexBufferSize;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuDebrisMaxVertexCount")
+    u32 NuDebrisMaxVertexCount;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuDebrisVertexData")
+    void *NuDebrisVertexData;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuDebrisCurrentPacket")
+    NATIVE_PARTICLE_PACKET_PC *NuDebrisCurrentPacket;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuDebrisLastHeader")
+    DEBRIS_PART_HEADER_PC *NuDebrisLastHeader;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuDebrisFrameVertexCount")
+    u32 NuDebrisFrameVertexCount;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuRndr_DebrisMtx")
+    NUMTX NuRndr_DebrisMtx;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuRndr_DebrisPlane")
+    NUVEC4 NuRndr_DebrisPlane;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDisplayClipSet")
+    void *PCDisplayClipSet;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDisplayClipGroupIndex")
+    i32 PCDisplayClipGroupIndex;
+#pragma bss_seg()
+#pragma data_seg(".data$PlayerFloatHeightFractionPc")
+    f32 PlayerFloatHeightFractionPc = 0.625f;
+#pragma data_seg()
+#pragma data_seg(".data$PlayerBackwardMomentumScalePc")
+    f32 PlayerBackwardMomentumScalePc = 1.2000000476837158f;
+#pragma data_seg()
+#pragma data_seg(".data$PlayerSecondBackwardMomentumScalePc")
+    f32 PlayerSecondBackwardMomentumScalePc = 1.2000000476837158f;
+#pragma data_seg()
+#pragma data_seg(".data$PlayerGrappleSwingModePc")
+    i32 PlayerGrappleSwingModePc = 1;
+#pragma data_seg()
+#pragma const_seg(".rdata$PlayerGrappleWindSoundPc")
+    extern const char PlayerGrappleWindSoundPc[11] = "GrapWindLp";
+#pragma const_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$GHGTextureProgramsPC")
+    void *GHGTextureProgramsPC;
+#pragma bss_seg()
+#pragma const_seg(".rdata$GHGJointFormatWarningPC")
+    extern const char GHGJointFormatWarningPC[95] =
+        "Your Character version is %d, whereas the Engine only accepts Character versions from %d to %d";
+#pragma const_seg()
+#pragma const_seg(".rdata$GHGSceneFormatWarningPC")
+    extern const char GHGSceneFormatWarningPC[87] =
+        "Your Scene version is %d, whereas the Engine only accepts Scene versions from %d to %d";
+#pragma const_seg()
+#pragma data_seg(".data$id_GRABCONTROL")
+    i16 id_GRABCONTROL = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_GRABR2CONTROL")
+    i16 id_GRABR2CONTROL = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_MINIATST")
+    i16 id_MINIATST = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_ATST_LOWRES")
+    i16 id_ATST_LOWRES = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_MINIATAT")
+    i16 id_MINIATAT = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_MINIATTE")
+    i16 id_MINIATTE = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_RANCOR")
+    i16 id_RANCOR = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_YODA")
+    i16 id_YODA = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_YODAGHOST")
+    i16 id_YODAGHOST = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_C3PO")
+    i16 id_C3PO = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_TC14")
+    i16 id_TC14 = -1;
+#pragma data_seg()
+#pragma data_seg(".data$id_DROIDEKA")
+    i16 id_DROIDEKA = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$VADERA_LDATA")
+    LEVELDATA_PC *VADERA_LDATA;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$TerrWallTab")
+    u8 TerrWallTab[4];
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$CRUISERD_LDATA")
+    LEVELDATA_PC *CRUISERD_LDATA;
+#pragma bss_seg()
+}

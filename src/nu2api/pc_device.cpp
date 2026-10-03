@@ -154,3 +154,30 @@ extern "C" void __cdecl PCDeviceCreateCubeTextureFromMemory(const void *data, u3
         D3DXCreateCubeTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data, size,
                                               reinterpret_cast<IDirect3DCubeTexture9 **>(resource));
 }
+
+struct PC_MATERIAL_DEVICE_CAPS_VIEW {
+    u8 unknown_000[0x654];
+    u8 shader_caps;
+    i32 __thiscall ShaderVariant16();
+    i32 __thiscall ShaderVariant1();
+};
+STATIC_ASSERT(offsetof(PC_MATERIAL_DEVICE_CAPS_VIEW, shader_caps) == 0x654);
+i32 __thiscall PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant16() {
+    return (shader_caps & 0x20) ? 16 : 0;
+}
+i32 __thiscall PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant1() {
+    return (shader_caps & 0x20) ? 1 : 0;
+}
+extern "C" void __cdecl PCDeviceCreateVertexDeclaration(const PC_VERTEX_ELEMENT_PC *elements,
+                                                        PC_TEXTURE_RESOURCE_PC **out) {
+    PC_D3D9_DEVICE_PC *device = PCDeviceBackend.device;
+    PCDeviceLastResult = device->methods->create_vertex_declaration(device, elements, out);
+}
+
+extern "C" void __cdecl PCDeviceLockVertexBuffer(u32 offset, u32 size, void **data, u32 flags,
+                                                 PC_BUFFER_RESOURCE_PC *resource) {
+    PCDeviceLastResult = resource->methods->lock(resource, offset, size, data, flags);
+}
+extern "C" HRESULT __cdecl PCDeviceUnlockVertexBuffer(PC_BUFFER_RESOURCE_PC *resource) {
+    return resource->methods->unlock(resource);
+}

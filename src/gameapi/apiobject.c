@@ -1,12 +1,5 @@
 #include "saga.h"
 
-typedef struct API_ACTION_INFO_PC {
-    char *name;
-    u32 flags;
-} API_ACTION_INFO_PC;
-STATIC_ASSERT(sizeof(API_ACTION_INFO_PC) == 8);
-STATIC_ASSERT(offsetof(API_ACTION_INFO_PC, name) == 0);
-
 typedef struct API_EXTRA_ACTION_PC {
     char *name;
     i32 action;

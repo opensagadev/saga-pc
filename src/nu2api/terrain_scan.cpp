@@ -806,12 +806,12 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                                   ((local)).max_y >= ((*shape)).min_y && ((*shape)).max_y > ((local)).min_y &&
                                   ((local)).max_z >= ((*shape)).min_z && ((*shape)).max_z > ((local)).min_z))
                                 continue;
-                            platinrange = 1;
                             if (((u8 *)((&writer)->cursor)) >= (&writer)->limit ||
                                 (shape->material[1] != 0 && (shape->material[1] & (terrain_mask)) == 0) ||
                                 (shape->flags & (scan_flags)) == 0x40)
                                 continue;
                             if (!rotating) {
+                                platinrange = 1;
                                 if (!(false)) {
                                     do {
                                         TERRAIN_SHAPE *&scale_candidate = ((shape));
@@ -902,6 +902,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                                 }
                                 if (!above_min_x || !below_max_x || !above_min_z || !below_max_z)
                                     continue;
+                                platinrange = 1;
                                 TERRAIN_SHAPE *transformed =
                                     &((TERRAIN_SHAPE *)TerrainScaledShapeCursorPc)[(&writer)->scaled_shape_count++];
                                 transformed->material[0] = shape->material[0];

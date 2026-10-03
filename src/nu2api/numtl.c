@@ -27,3 +27,8 @@ void __cdecl NuMtlDestroy(NUMTL *material) {
         }
     }
 }
+
+void __cdecl NuMtlUpdate(NUMTL *material) {
+    NuMtlUpdatePS(material);
+    ++((PC_SCENE_MTL_VIEW *)material)->version;
+}

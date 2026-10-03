@@ -1113,3 +1113,59 @@ void __cdecl AddVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count,
 }
 
 #undef DEBRIS_KEYS_PC
+
+void __cdecl DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *effect, DEBRISKEY_PC *key) {
+    NUMTX matrix;
+    f32 emission_time, lifetime, padding, horizontal, radius;
+    NUVEC extent, minimum;
+    union {
+        f32 value;
+        u32 bits;
+    } velocity_x, velocity_y, velocity_z, momentum;
+    DebrisMtxCopyPrivate(&matrix, &key->effect_orientation);
+    NuMtxTranslate(&matrix, &key->position);
+    emission_time = effect->emission_period + effect->emission_period_random;
+    lifetime = effect->particle_lifetime;
+    velocity_x.value = effect->emitter_velocity.x;
+    velocity_y.value = effect->emitter_velocity.y;
+    velocity_z.value = effect->emitter_velocity.z;
+    momentum.value = effect->momentum_base;
+    velocity_x.bits &= 0x7fffffff;
+    velocity_y.bits &= 0x7fffffff;
+    velocity_z.bits &= 0x7fffffff;
+    momentum.bits &= 0x7fffffff;
+    extent.x =
+        (velocity_x.value * emission_time + effect->momentum_random_x * lifetime) + effect->emitter_random_extent.x;
+    extent.y = (velocity_y.value * emission_time + (momentum.value + effect->rotor_speed_x) * lifetime) +
+               effect->emitter_random_extent.y;
+    extent.z = (velocity_z.value * emission_time + effect->rotor_speed_y * lifetime) + effect->emitter_random_extent.z;
+    NuVecMtxRotate(&extent, &extent, &key->emitter_orientation);
+    if (extent.x < 0.0f)
+        extent.x = -extent.x;
+    if (extent.y < 0.0f)
+        extent.y = -extent.y;
+    if (extent.z < 0.0f)
+        extent.z = -extent.z;
+    padding = (f32)((f64)0.0001f * effect->max_size);
+    extent.x = (f32)((extent.x + padding) + (f64)0.2f);
+    extent.y = (f32)((extent.y + padding) + (f64)0.2f);
+    extent.z = (f32)((extent.z + padding) + (f64)0.2f);
+    minimum.x = -extent.x;
+    minimum.y = -extent.y;
+    minimum.z = -extent.z;
+    if (effect->gravity > 0.0f)
+        extent.y += (effect->gravity * lifetime) * lifetime;
+    else if (effect->gravity < 0.0f)
+        minimum.y = (effect->gravity * lifetime) * lifetime - extent.y;
+    horizontal = extent.x > extent.z ? extent.x : extent.z;
+    if (extent.y > -minimum.y)
+        radius = horizontal > extent.y ? horizontal : extent.y;
+    else if (horizontal > -minimum.y)
+        radius = horizontal;
+    else
+        radius = extent.y > -minimum.y ? extent.y : -minimum.y;
+    key->clip_max = extent;
+    key->clip_radius = radius;
+    key->clip_min = minimum;
+    DebrisMtxCopyPrivate(&key->clip_matrix, &matrix);
+}

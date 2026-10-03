@@ -1118,3 +1118,29 @@ checked against PC. Carry 8.0/blowup owners are reused; compiler constant aliase
 retain prior bindings. Scanner margin doubles have exact 8-byte initializer
 views but blank original extents. Camera/cache/output/registry backing remains
 bounded source views without guessed allocation capacity.
+
+
+### Directional/native/geometry data checkpoint (2026-10-03)
+
+The verified scoped receipt now contains 798 definitions: 521 known extents cover
+136,648 unique original bytes; 277 unknown extents expose 20,606 source-view bytes
+without original allocation or exact-data credit. This release adds 276 physical
+definitions, including the genuine compiler-generated CRC startup entry, and expands
+one existing PCDeviceBackend owner. All 521 prior definitions remain unchanged.
+
+ActionInfo retains all 234 actual eight-byte entries, with 231 new complete NUL
+names and existing canonical/pool strings reused. PlayerBlockActionInfoPc points to
+entry 1 through a real relocation with addend 8. CRC instance/table/program hashes
+and actual constructor startup pointer are verified against PC. CRUISERD_LDATA
+is genuine null-initialized LEVELDATA_PC pointer storage, with its actual producer
+and guarded consumers checked. Shader capabilities extend the same backend source
+view to 0x658, preserving its old prefix; its historical allocation extent is blank.
+
+Vertex declaration cache exposes one entry at 0x0297cc98 and count at 0x0297cc90.
+Initial insertion and same-key reuse are its established source-view domain; a second
+distinct insertion is outside it. No historical array capacity is inferred from
+Android. Particle native/software buffers use verified selected domains of four/eight.
+TerrWallTab provides four zero bytes for observed indices 0/1 with unknown original
+extent. ATST IDs, camera translation and idle string reuse canonical existing owners;
+GrapWindLp's old uncompiled inventory name now binds its actual full string owner.
+Compiler immutable aliases are preserved; overlapping coverage is counted once.

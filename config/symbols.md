@@ -3634,3 +3634,30 @@ Display front/safe registries expose 24 pointers; their historical allocation
 extents remain unknown. Native frustum accessed groups assert stride 0x380,
 planes at 0x1a0 and count at 0x260, without claiming backing capacity. Private
 display ABI differences are documented in transfer-execution.md.
+
+
+### Directional/native/geometry release contracts (2026-10-03)
+
+The release adds actual source for 59 complete PC spans, 30,650 unique original
+bytes, independently reviewed for identity, caller ABI, fields and out-of-line exits.
+Terrain geometry includes Derotate 171, Rotate 230, DeRotateTerrain 554,
+DeRotatePoint 254, InsideLineF 68, InsidePolLines 1,320, CheckCylinder 2,145,
+CheckSphere 558, CheckSphereTer 408, HitPoly 1,689 and HitWallSpline 1,803.
+Their 948-byte query/100-byte polygon field cohorts are asserted. Zero advisory
+scores on two complete bodies remain visible rather than being masked or shortened.
+
+Shader CRC hash at 0x00746360 spans 61 original bytes: its following two CC bytes
+are alignment, not part of the body. The constructor spans 255. The genuine
+compiler startup spans 10 and its initializer pointer four. Native lock/unlock
+wrappers span 38/13; the diagnostic return is an actual one-byte C3 routine.
+Private Walking remains ECX object, stack float, ST0 result/plain RET within its
+original movement TU. DisplayClipMaterialsPC is 688 bytes with retail ESI scene;
+its rebuilt logical stack signature is explicitly nonexact in the coherent C++ TU.
+
+GHG/model identities retain only inventory credit while their 3,712-byte source
+closure is held. SceneFixupTIDs 397/FixupTID 186 depend on the genuine 81-byte DDS
+fallback and its 8,320-byte embedded original image; no fake provider or blank asset
+is substituted. Accepted identities alone do not imply newly transferred source.
+Finite next-wave solver maps likewise require actual integration/compilation before
+source credit. Existing immutable aliases retain original names and addresses;
+new mutable storage reuses canonical owners where they already exist.

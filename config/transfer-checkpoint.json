@@ -5762,6 +5762,1492 @@
         "native_frustum_cases": 505,
         "native_debris_clock_cache_camera_fixture": true
       }
+    },
+    {
+      "baseline_commit": "62f830d36e3ed69b2eaedf6178203f57b2e269ff",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 668893,
+        "matched_code_bytes": 59426,
+        "matching_percent": 1.7119501181996322,
+        "fuzzy_coverage_percent": 9.250233652391996,
+        "mapped_functions": 2428,
+        "matched_functions": 985,
+        "objdiff_fuzzy_percent": 61.406418,
+        "objdiff_total_code": 523089,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1302885,
+        "mapping_percent": 3.251759948917655
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 688346,
+        "matched_code_bytes": 60691,
+        "matching_percent": 1.7483923640099261,
+        "fuzzy_coverage_percent": 9.736648876152291,
+        "mapped_functions": 2483,
+        "matched_functions": 1007,
+        "objdiff_fuzzy_percent": 61.05673,
+        "objdiff_total_code": 553739,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1324805,
+        "mapping_percent": 3.3064682140985995
+      },
+      "newly_compared": [
+        {
+          "name": "SetFlicker",
+          "symbol": "_SetFlicker",
+          "address": "0x00414ab0",
+          "units": [
+            "src/legoapi/players.c"
+          ],
+          "target_size": 25,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/players.c",
+              "base_size": 25,
+              "exact_match": true,
+              "target_sha256": "96ebde844e04e32e1111e30c20c8d7d969db701e8b01e79ae522e7c669cb6f7e",
+              "base_sha256": "96ebde844e04e32e1111e30c20c8d7d969db701e8b01e79ae522e7c669cb6f7e",
+              "relocation_count": 0,
+              "comparison_unit": "00414ab0-fc9eb057bac4",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "Hub_InMenu",
+          "symbol": "_Hub_InMenu",
+          "address": "0x0047a8d0",
+          "units": [
+            "src/legoapi/menu.c"
+          ],
+          "target_size": 49,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/menu.c",
+              "base_size": 29,
+              "exact_match": false,
+              "target_sha256": "f82f28e89535e5f57d46eb90db2864706c24442087339a2de8ae99f7bbe41933",
+              "base_sha256": "dd6ac678650c6ffaf651d27daf2bd0ac874c7b57a84913dda8be95a49a5ec4e1",
+              "relocation_count": 1,
+              "comparison_unit": "0047a8d0-f17cacfa7fe4",
+              "objdiff_percent": 51.42105
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 51.42105
+        },
+        {
+          "name": "MovementWalkingSpeedPC",
+          "symbol": "_MovementWalkingSpeedPC",
+          "address": "0x00499590",
+          "units": [
+            "src/legoapi/move.c"
+          ],
+          "target_size": 126,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/move.c",
+              "base_size": 126,
+              "exact_match": false,
+              "target_sha256": "fe7268676620eeaea4bd1de3785cd4bdf537542d0e2dddbaabcf41c35d5144e9",
+              "base_sha256": "c13941e4d545b1d1657b99f543b5dd571f6b6045b6f06c87297243811151cc64",
+              "relocation_count": 2,
+              "comparison_unit": "00499590-f03152bf6106",
+              "objdiff_percent": 60.67442
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 60.67442
+        },
+        {
+          "name": "SetProtocolDroidDeactivatedAction",
+          "symbol": "_SetProtocolDroidDeactivatedAction",
+          "address": "0x004aa200",
+          "units": [
+            "src/legoapi/players.c"
+          ],
+          "target_size": 52,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/players.c",
+              "base_size": 52,
+              "exact_match": true,
+              "target_sha256": "0da7c7b4251a052d1a13ad1691c33fae8f09be9f08b7934f86020d42ce53e881",
+              "base_sha256": "0da7c7b4251a052d1a13ad1691c33fae8f09be9f08b7934f86020d42ce53e881",
+              "relocation_count": 0,
+              "comparison_unit": "004aa200-00fe82cf48cb",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "MovePlayer_DIRECTIONAL",
+          "symbol": "_MovePlayer_DIRECTIONAL",
+          "address": "0x004ac620",
+          "units": [
+            "src/legoapi/move.c"
+          ],
+          "target_size": 10904,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/move.c",
+              "base_size": 10750,
+              "exact_match": false,
+              "target_sha256": "6106a8e30bb2b7d499210c7cdab5a8be08bba6add7a10c6a6663d794c989d094",
+              "base_sha256": "05e629c8e9c853430baf4f0fd79c72e0df8c4cacf497ca308663521880522b63",
+              "relocation_count": 306,
+              "comparison_unit": "004ac620-b5a03df6ad89",
+              "objdiff_percent": 51.061344
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 51.061344
+        },
+        {
+          "name": "GameAudio_GetPlrSfxBits",
+          "symbol": "_GameAudio_GetPlrSfxBits",
+          "address": "0x00547820",
+          "units": [
+            "src/legoapi/gameaudio.c"
+          ],
+          "target_size": 34,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/gameaudio.c",
+              "base_size": 36,
+              "exact_match": false,
+              "target_sha256": "c5b20f0803f3aff3c34c04c952ebdff7a9741926be4dde711f9ff24cd8996a76",
+              "base_sha256": "3d667ac239f93f0999bdf680fd8e543d45897cbd78c50670a34fc5f6ce4fac43",
+              "relocation_count": 0,
+              "comparison_unit": "00547820-ed267e9c5188",
+              "objdiff_percent": 0.0
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 0.0
+        },
+        {
+          "name": "NewRumble",
+          "symbol": "_NewRumble",
+          "address": "0x0054a850",
+          "units": [
+            "src/legoapi/gamepads.c"
+          ],
+          "target_size": 66,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/gamepads.c",
+              "base_size": 62,
+              "exact_match": false,
+              "target_sha256": "7357498d6bf6e9cbb2af39a593b0e75f258b99a3c51efcf8412886d1c466f7e6",
+              "base_sha256": "717e4e0331c787b490118815f7cfcc62c9bacade4eb024d7355f0b2a5d1c72f5",
+              "relocation_count": 3,
+              "comparison_unit": "0054a850-b7b49ba0738e",
+              "objdiff_percent": 86.08696
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 86.08696
+        },
+        {
+          "name": "NewBuzz",
+          "symbol": "_NewBuzz",
+          "address": "0x0054a8a0",
+          "units": [
+            "src/legoapi/gamepads.c"
+          ],
+          "target_size": 40,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/gamepads.c",
+              "base_size": 36,
+              "exact_match": false,
+              "target_sha256": "af29318d7ceb477781fb01d741cad99e2f8d28619851ae8dda4fe56b674b359f",
+              "base_sha256": "ec503db134f36e97de04f67df063c9452e8d865382ed51ffcf3d2418ae768e7c",
+              "relocation_count": 1,
+              "comparison_unit": "0054a8a0-412fa01644e5",
+              "objdiff_percent": 82.26667
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 82.26667
+        },
+        {
+          "name": "Player_ResetContexts",
+          "symbol": "_Player_ResetContexts",
+          "address": "0x0055e4e0",
+          "units": [
+            "src/legoapi/players.c"
+          ],
+          "target_size": 280,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/players.c",
+              "base_size": 289,
+              "exact_match": false,
+              "target_sha256": "398fa3a21873c4fef9d5c6ff48eb23a65ec58123fdd57cb11286b11becb3fc75",
+              "base_sha256": "4bd55f54815428f3e8315b0a5589d095b5779444f4d1c3c91ce1f49bae254080",
+              "relocation_count": 2,
+              "comparison_unit": "0055e4e0-b0816e049ded",
+              "objdiff_percent": 86.76786
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 86.76786
+        },
+        {
+          "name": "NewBlockAction",
+          "symbol": "_NewBlockAction",
+          "address": "0x0058dfa0",
+          "units": [
+            "src/legoapi/playeractions.c"
+          ],
+          "target_size": 154,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/playeractions.c",
+              "base_size": 160,
+              "exact_match": false,
+              "target_sha256": "bc85c6d70811aaa23e1ce6fe05e1f85d2885823b74153bfbb1aa1794e984a6f1",
+              "base_sha256": "6b848a56fd6340d0c054af5c98ab47feda8f79477a558593566c0a9ed09e4ce6",
+              "relocation_count": 3,
+              "comparison_unit": "0058dfa0-e8004bc7b263",
+              "objdiff_percent": 74.6
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 74.6
+        },
+        {
+          "name": "NuMtlUpdate",
+          "symbol": "_NuMtlUpdate",
+          "address": "0x005e4b00",
+          "units": [
+            "src/nu2api/numtl.c"
+          ],
+          "target_size": 24,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/numtl.c",
+              "base_size": 24,
+              "exact_match": true,
+              "target_sha256": "e44132db66ef4e9ed63ef0d5992f3aa1475fe502d664bf621c91ca5fb64e1fd5",
+              "base_sha256": "e44132db66ef4e9ed63ef0d5992f3aa1475fe502d664bf621c91ca5fb64e1fd5",
+              "relocation_count": 1,
+              "comparison_unit": "005e4b00-95af3debcf50",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "NuTextureGetDimensions",
+          "symbol": "_NuTextureGetDimensions",
+          "address": "0x005e5310",
+          "units": [
+            "src/nu2api/nutex.c"
+          ],
+          "target_size": 22,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nutex.c",
+              "base_size": 22,
+              "exact_match": true,
+              "target_sha256": "f78dc49a444ece6739df6bdf2289e60397239c99cc003b08186646ee8a89c3af",
+              "base_sha256": "f78dc49a444ece6739df6bdf2289e60397239c99cc003b08186646ee8a89c3af",
+              "relocation_count": 1,
+              "comparison_unit": "005e5310-643bcb6fb5b7",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "DisplayClipMaterialsPC",
+          "symbol": "_DisplayClipMaterialsPC",
+          "address": "0x005f0ac0",
+          "units": [
+            "src/nu2api/nudlist.cpp"
+          ],
+          "target_size": 688,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nudlist.cpp",
+              "base_size": 664,
+              "exact_match": false,
+              "target_sha256": "8f51114f46b12fbc4093b00c9de94d0f8b2927d0de5f1439361ddd35855a32a8",
+              "base_sha256": "946f3f7a93a74396b040cbe5b235a82d341c040da8db2fbc5391957d462a3aad",
+              "relocation_count": 9,
+              "comparison_unit": "005f0ac0-1a23a11a8fa2",
+              "objdiff_percent": 70.19831
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 70.19831
+        },
+        {
+          "name": "NuDebrisRendererFlushBuffers",
+          "symbol": "_NuDebrisRendererFlushBuffers",
+          "address": "0x005ffc30",
+          "units": [
+            "src/nu2api/nuparticle_runtime.c"
+          ],
+          "target_size": 78,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nuparticle_runtime.c",
+              "base_size": 78,
+              "exact_match": true,
+              "target_sha256": "8275e67891b7d67a45fec6bb453212e9f5f8b6520c97a9ec4937929230b8a64b",
+              "base_sha256": "8275e67891b7d67a45fec6bb453212e9f5f8b6520c97a9ec4937929230b8a64b",
+              "relocation_count": 11,
+              "comparison_unit": "005ffc30-18d9aabc48a2",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "NuDebrisRendererNextBuffer",
+          "symbol": "_NuDebrisRendererNextBuffer",
+          "address": "0x005ffc80",
+          "units": [
+            "src/nu2api/nuparticle_runtime.c"
+          ],
+          "target_size": 185,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nuparticle_runtime.c",
+              "base_size": 185,
+              "exact_match": true,
+              "target_sha256": "509cfcb65dc583eac603cff8f5776e3ff69dec0f9b58165b54a151f92378eaad",
+              "base_sha256": "509cfcb65dc583eac603cff8f5776e3ff69dec0f9b58165b54a151f92378eaad",
+              "relocation_count": 18,
+              "comparison_unit": "005ffc80-e5d9f752cac5",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "NuRndrParticleSetRepeat",
+          "symbol": "_NuRndrParticleSetRepeat",
+          "address": "0x005ffee0",
+          "units": [
+            "src/nu2api/nuparticle_runtime.c"
+          ],
+          "target_size": 231,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nuparticle_runtime.c",
+              "base_size": 231,
+              "exact_match": true,
+              "target_sha256": "aca0f5a8c604f71f5bca83bd7c5419b93cdcdbc582ce0275376239ff720bee5b",
+              "base_sha256": "aca0f5a8c604f71f5bca83bd7c5419b93cdcdbc582ce0275376239ff720bee5b",
+              "relocation_count": 14,
+              "comparison_unit": "005ffee0-f7cccf228d9d",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "NuMtlUpdatePS",
+          "symbol": "_NuMtlUpdatePS",
+          "address": "0x00601030",
+          "units": [
+            "src/nu2api/numtl_pc.cpp"
+          ],
+          "target_size": 471,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/numtl_pc.cpp",
+              "base_size": 463,
+              "exact_match": false,
+              "target_sha256": "b0204970a4d1d6b72e9970080f26ed3a81b6065a93ea2172ea5a61e8ac7598b8",
+              "base_sha256": "60a3bd736119a2c2fea9ca0aad5a90c9464ee020910773dde05fa8cd6878ab87",
+              "relocation_count": 15,
+              "comparison_unit": "00601030-4504a0961caf",
+              "objdiff_percent": 90.5625
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 90.5625
+        },
+        {
+          "name": "NuGScnFixupPS",
+          "symbol": "_NuGScnFixupPS",
+          "address": "0x00602550",
+          "units": [
+            "src/nu2api/nuscene_pc.c"
+          ],
+          "target_size": 329,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nuscene_pc.c",
+              "base_size": 329,
+              "exact_match": false,
+              "target_sha256": "5112e9f8d8075af76b82f15db553bb75a8edd6c8e91d882fe00e9a07ab1ef54e",
+              "base_sha256": "bce0c0b9bfa9686dee4cde6253063d9d29b6d0ed3706daf4b5f37263776b0a7f",
+              "relocation_count": 18,
+              "comparison_unit": "00602550-bb8ecde93ca8",
+              "objdiff_percent": 99.454544
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 99.454544
+        },
+        {
+          "name": "AddParticleGroupToDisplayList",
+          "symbol": "_AddParticleGroupToDisplayList",
+          "address": "0x00607cb0",
+          "units": [
+            "src/nu2api/nuparticle_runtime.c"
+          ],
+          "target_size": 178,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nuparticle_runtime.c",
+              "base_size": 161,
+              "exact_match": false,
+              "target_sha256": "76b073b364daa060a1d9a028a9c2ffaadf5e1fa04834c1d7272608b5f9c67be3",
+              "base_sha256": "7cf23503380a86e68dcbb39f05df1c9b143b5d31604bad02cb5ed69a2e2fe682",
+              "relocation_count": 3,
+              "comparison_unit": "00607cb0-b94b11b526f0",
+              "objdiff_percent": 58.92647
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 58.92647
+        },
+        {
+          "name": "BuildDebrisVerts",
+          "symbol": "_BuildDebrisVerts",
+          "address": "0x0060b5d0",
+          "units": [
+            "src/nu2api/nuparticle_runtime.c"
+          ],
+          "target_size": 1360,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nuparticle_runtime.c",
+              "base_size": 1261,
+              "exact_match": false,
+              "target_sha256": "e8f4c811a716b5d3956047c9a2b7be052075a3a56052871ac9467fa8365b361f",
+              "base_sha256": "69912363aa2123961b89acc69b6ca9a441ab0c49605a93d1e1c89e541ea2e6a7",
+              "relocation_count": 33,
+              "comparison_unit": "0060b5d0-4e6c5666c78c",
+              "objdiff_percent": 60.47644
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 60.47644
+        },
+        {
+          "name": "NuRndrParticleGroup",
+          "symbol": "_NuRndrParticleGroup",
+          "address": "0x0060c410",
+          "units": [
+            "src/nu2api/nuparticle_runtime.c"
+          ],
+          "target_size": 705,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nuparticle_runtime.c",
+              "base_size": 713,
+              "exact_match": false,
+              "target_sha256": "d27889de1935f1f61cedbe40b059ce6ac731759f361e067d9b51fbcebc20aa11",
+              "base_sha256": "4aec3d49d650a845629f9b7c72ccf7e63cd616033532557f6605fcfa8b54b7e9",
+              "relocation_count": 34,
+              "comparison_unit": "0060c410-299b6672cedc",
+              "objdiff_percent": 88.419685
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 88.419685
+        },
+        {
+          "name": "PCCharacterModelDiagnosticNoOp",
+          "symbol": "_PCCharacterModelDiagnosticNoOp",
+          "address": "0x0062a5f0",
+          "units": [
+            "src/nu2api/nudebug.c"
+          ],
+          "target_size": 1,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nudebug.c",
+              "base_size": 1,
+              "exact_match": true,
+              "target_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
+              "base_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
+              "relocation_count": 0,
+              "comparison_unit": "0062a5f0-0e55445be7a9",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "DebrisDrawCalculateClipBoxes",
+          "symbol": "_DebrisDrawCalculateClipBoxes",
+          "address": "0x00656e50",
+          "units": [
+            "src/legoapi/parts.c"
+          ],
+          "target_size": 703,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/parts.c",
+              "base_size": 659,
+              "exact_match": false,
+              "target_sha256": "7c9fdb4120155b9b7f66ae680cdc3d6bb36eb01528bc49e40591624cf8ff6540",
+              "base_sha256": "32822df8c63077dce073980c23662901f86ab7039c5e90c30fe2dd4a65b6529e",
+              "relocation_count": 6,
+              "comparison_unit": "00656e50-d592723adcb0",
+              "objdiff_percent": 60.164318
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 60.164318
+        },
+        {
+          "name": "DerotateMovementVector",
+          "symbol": "_DerotateMovementVector",
+          "address": "0x0066f8f0",
+          "units": [
+            "src/nu2api/terrain_collision.cpp"
+          ],
+          "target_size": 171,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_collision.cpp",
+              "base_size": 164,
+              "exact_match": false,
+              "target_sha256": "7a4ac0bf5de3290fb391cb287594f9188550b21ed5bafc988e3bc7c872484d8a",
+              "base_sha256": "442a297d081b9a9fda1360e2a11f5dedd79aafe5e251d0c889b5d0f929fd5d40",
+              "relocation_count": 5,
+              "comparison_unit": "0066f8f0-e15a8ea4cfc7",
+              "objdiff_percent": 76.87037
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 76.87037
+        },
+        {
+          "name": "RotateVec",
+          "symbol": "_RotateVec",
+          "address": "0x0066f9a0",
+          "units": [
+            "src/nu2api/terrain_collision.cpp"
+          ],
+          "target_size": 230,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_collision.cpp",
+              "base_size": 241,
+              "exact_match": false,
+              "target_sha256": "af57005baf7ce32b70939ca8a97872ead7b35f6f3b55461d8f1de44281d14b78",
+              "base_sha256": "7bd17243cf93266666d95a275496056569b283b260d8ff7c606e1c2bf422ed9d",
+              "relocation_count": 10,
+              "comparison_unit": "0066f9a0-6176c6e2510b",
+              "objdiff_percent": 8.710145
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 8.710145
+        },
+        {
+          "name": "DeRotateTerrain",
+          "symbol": "_DeRotateTerrain",
+          "address": "0x0066fc70",
+          "units": [
+            "src/nu2api/terrain_collision.cpp"
+          ],
+          "target_size": 554,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_collision.cpp",
+              "base_size": 651,
+              "exact_match": false,
+              "target_sha256": "fdd6f8d9d98b3c1bfd58014518e584aec89fc833efa00415c45aa3e532ec8154",
+              "base_sha256": "b14685c40e0343661d1bd45e67cc14c2cf2a78fadb2445613abfe79b3f193a58",
+              "relocation_count": 11,
+              "comparison_unit": "0066fc70-951cc1b128af",
+              "objdiff_percent": 48.518715
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 48.518715
+        },
+        {
+          "name": "DeRotatePoint",
+          "symbol": "_DeRotatePoint",
+          "address": "0x0066fea0",
+          "units": [
+            "src/nu2api/terrain_collision.cpp"
+          ],
+          "target_size": 254,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_collision.cpp",
+              "base_size": 263,
+              "exact_match": false,
+              "target_sha256": "b18860c3740943bc4c6056d6f2c29a344a572ee436801e090f85290b98747645",
+              "base_sha256": "cd3ed5f302f773c81700fd100a67b1d269f42c44a6f3b6d2dee86d24ea05e8e4",
+              "relocation_count": 10,
+              "comparison_unit": "0066fea0-bdaea4f6f70c",
+              "objdiff_percent": 40.575
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 40.575
+        },
+        {
+          "name": "InsideLineF",
+          "symbol": "_InsideLineF",
+          "address": "0x0066ffa0",
+          "units": [
+            "src/nu2api/terrain_collision.cpp"
+          ],
+          "target_size": 68,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_collision.cpp",
+              "base_size": 68,
+              "exact_match": true,
+              "target_sha256": "9bf22402df893ff23b7b787019f90916fa78bf29df67abd78d67d86c6bbd5839",
+              "base_sha256": "9bf22402df893ff23b7b787019f90916fa78bf29df67abd78d67d86c6bbd5839",
+              "relocation_count": 1,
+              "comparison_unit": "0066ffa0-6039ea5fe072",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "InsidePolLines",
+          "symbol": "_InsidePolLines",
+          "address": "0x0066fff0",
+          "units": [
+            "src/nu2api/terrain_collision.cpp"
+          ],
+          "target_size": 1320,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_collision.cpp",
+              "base_size": 1257,
+              "exact_match": false,
+              "target_sha256": "00aa5a124acbc22d14c8a2f500171e8c1ee4c644f90957f87f065b4a5ea32a7a",
+              "base_sha256": "e37f8edcfb29a8a7e6a153c26fc0231466f0de0b2c658ca59feb9f97eeff687b",
+              "relocation_count": 13,
+              "comparison_unit": "0066fff0-3f845f33c86d",
+              "objdiff_percent": 78.4124
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 78.4124
+        },
+        {
+          "name": "CheckCylinder",
+          "symbol": "_CheckCylinder",
+          "address": "0x00673850",
+          "units": [
+            "src/nu2api/terrain_collision.cpp"
+          ],
+          "target_size": 2145,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_collision.cpp",
+              "base_size": 2299,
+              "exact_match": false,
+              "target_sha256": "b4be7e049f0668a9a6a52ba9f156bfcff57e620a9be3fb5d95171c67a7fd5d1d",
+              "base_sha256": "c7a4f2660ea2079b383df88f619014239008c3e2a8745b38429384dc6b237553",
+              "relocation_count": 14,
+              "comparison_unit": "00673850-8d41981218cd",
+              "objdiff_percent": 52.810616
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 52.810616
+        },
+        {
+          "name": "CheckSphere",
+          "symbol": "_CheckSphere",
+          "address": "0x006740c0",
+          "units": [
+            "src/nu2api/terrain_collision.cpp"
+          ],
+          "target_size": 558,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_collision.cpp",
+              "base_size": 619,
+              "exact_match": false,
+              "target_sha256": "dcac9ea43b6b49f2bc1ebd81db48734d3efc785e06deef051ba93b8bc7627eef",
+              "base_sha256": "f2405f1adca281996a0960378a58058ae8a481dcf7c7ec67ac905c4b1737341e",
+              "relocation_count": 14,
+              "comparison_unit": "006740c0-12b3c4f62731",
+              "objdiff_percent": 0.0
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 0.0
+        },
+        {
+          "name": "CheckSphereTer",
+          "symbol": "_CheckSphereTer",
+          "address": "0x006742f0",
+          "units": [
+            "src/nu2api/terrain_collision.cpp"
+          ],
+          "target_size": 408,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_collision.cpp",
+              "base_size": 481,
+              "exact_match": false,
+              "target_sha256": "e0bbae460ab82fa552576664c2f1e750e40bd2e9e244f038808d13665bbdc36e",
+              "base_sha256": "bc062ae38e02f76b2ee1e8fb76de7d437000ccd64db214cff51452d972ff27b6",
+              "relocation_count": 13,
+              "comparison_unit": "006742f0-6688857d9900",
+              "objdiff_percent": 59.237762
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 59.237762
+        },
+        {
+          "name": "HitPoly",
+          "symbol": "_HitPoly",
+          "address": "0x00674490",
+          "units": [
+            "src/nu2api/terrain_collision.cpp"
+          ],
+          "target_size": 1689,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_collision.cpp",
+              "base_size": 1760,
+              "exact_match": false,
+              "target_sha256": "ca092371ca306a2ed5fe914d8b8b475d61e049093d71608febab5fa4c1ea77fd",
+              "base_sha256": "9079b3cb00769c0c74e51732c1b600fdcc4231463273a38ff11fc61479ee2a11",
+              "relocation_count": 25,
+              "comparison_unit": "00674490-97542644bcd8",
+              "objdiff_percent": 64.03309
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 64.03309
+        },
+        {
+          "name": "HitWallSpline",
+          "symbol": "_HitWallSpline",
+          "address": "0x00674b30",
+          "units": [
+            "src/nu2api/terrain_collision.cpp"
+          ],
+          "target_size": 1803,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_collision.cpp",
+              "base_size": 1800,
+              "exact_match": false,
+              "target_sha256": "ac22b06c94e6c64fe72dcc5f3e7f27958c783bb7511d1314cfb2ac55d9b68744",
+              "base_sha256": "dfafc2939119848d5b0827221051d7c550135ffb67b58c5ceae54407f71b7355",
+              "relocation_count": 36,
+              "comparison_unit": "00674b30-7e8bcfae1987",
+              "objdiff_percent": 0.0
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 0.0
+        },
+        {
+          "name": "?ShaderVariant16@PC_MATERIAL_DEVICE_CAPS_VIEW@@QAEHXZ",
+          "symbol": "?ShaderVariant16@PC_MATERIAL_DEVICE_CAPS_VIEW@@QAEHXZ",
+          "address": "0x006e27d0",
+          "units": [
+            "src/nu2api/pc_device.cpp"
+          ],
+          "target_size": 17,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/pc_device.cpp",
+              "base_size": 13,
+              "exact_match": false,
+              "target_sha256": "a29e3b040f4837fe93452bb80bed1046aaccc345f85535f0c1b1efe5d67ec46e",
+              "base_sha256": "20357300d40f934337e7902ac11451ffcd58ad3b7db11847095e00049f7b1254",
+              "relocation_count": 0,
+              "comparison_unit": "006e27d0-2af94e397577",
+              "objdiff_percent": 44.0
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 44.0
+        },
+        {
+          "name": "?ShaderVariant1@PC_MATERIAL_DEVICE_CAPS_VIEW@@QAEHXZ",
+          "symbol": "?ShaderVariant1@PC_MATERIAL_DEVICE_CAPS_VIEW@@QAEHXZ",
+          "address": "0x006e27f0",
+          "units": [
+            "src/nu2api/pc_device.cpp"
+          ],
+          "target_size": 17,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/pc_device.cpp",
+              "base_size": 14,
+              "exact_match": false,
+              "target_sha256": "bc24291de3c4d7c6b1522c21e76eae318e5897555d2bf56789cd270d8e3abe5e",
+              "base_sha256": "3328f42b41e6abfe6461300ba034c60cb942b1c99fc551e4ff92967d14c4f9b4",
+              "relocation_count": 0,
+              "comparison_unit": "006e27f0-1f3222091db2",
+              "objdiff_percent": 44.0
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 44.0
+        },
+        {
+          "name": "PCDeviceCreateVertexDeclaration",
+          "symbol": "_PCDeviceCreateVertexDeclaration",
+          "address": "0x006e4850",
+          "units": [
+            "src/nu2api/pc_device.cpp"
+          ],
+          "target_size": 32,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/pc_device.cpp",
+              "base_size": 32,
+              "exact_match": true,
+              "target_sha256": "892ef907777facc5c7c7bd0e2f8fe69a114abe79c38bc87c889d6068df0839aa",
+              "base_sha256": "892ef907777facc5c7c7bd0e2f8fe69a114abe79c38bc87c889d6068df0839aa",
+              "relocation_count": 2,
+              "comparison_unit": "006e4850-67a67f39cb92",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "PCDeviceLockVertexBuffer",
+          "symbol": "_PCDeviceLockVertexBuffer",
+          "address": "0x006e5b90",
+          "units": [
+            "src/nu2api/pc_device.cpp"
+          ],
+          "target_size": 38,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/pc_device.cpp",
+              "base_size": 38,
+              "exact_match": true,
+              "target_sha256": "89cb5b1dbc27a438f06b24a8d5a5782b3c54f755278fe852517c8135c1dc7c08",
+              "base_sha256": "89cb5b1dbc27a438f06b24a8d5a5782b3c54f755278fe852517c8135c1dc7c08",
+              "relocation_count": 1,
+              "comparison_unit": "006e5b90-0cb02cacda73",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "PCDeviceUnlockVertexBuffer",
+          "symbol": "_PCDeviceUnlockVertexBuffer",
+          "address": "0x006e5bc0",
+          "units": [
+            "src/nu2api/pc_device.cpp"
+          ],
+          "target_size": 13,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/pc_device.cpp",
+              "base_size": 13,
+              "exact_match": true,
+              "target_sha256": "e1b5d6a8a2353b78a87a8cd4c6ba130b203d6c17662ae4ccfba86c13f67e246c",
+              "base_sha256": "e1b5d6a8a2353b78a87a8cd4c6ba130b203d6c17662ae4ccfba86c13f67e246c",
+              "relocation_count": 0,
+              "comparison_unit": "006e5bc0-d6f4d89307e1",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "?AllocateSlot@PC_SHADER_MANAGER_VIEW@@QAEPAUPC_SHADER_OBJECT_FULL_VIEW@@PAH@Z",
+          "symbol": "?AllocateSlot@PC_SHADER_MANAGER_VIEW@@QAEPAUPC_SHADER_OBJECT_FULL_VIEW@@PAH@Z",
+          "address": "0x00741570",
+          "units": [
+            "src/nu2api/nushadermanager.cpp"
+          ],
+          "target_size": 128,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushadermanager.cpp",
+              "base_size": 140,
+              "exact_match": false,
+              "target_sha256": "544cce7d2acf9f0fd319fe609429538d1ddba9508733a7023407972d56f89d2d",
+              "base_sha256": "5c4fcff494175f9e0b7bf50644bd673fbb85a463a820313c20e3899b146e7088",
+              "relocation_count": 1,
+              "comparison_unit": "00741570-97b7a5b09daf",
+              "objdiff_percent": 81.13636
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 81.13636
+        },
+        {
+          "name": "NuShaderManagerReleaseShader",
+          "symbol": "_NuShaderManagerReleaseShader",
+          "address": "0x00741660",
+          "units": [
+            "src/nu2api/nushader.c"
+          ],
+          "target_size": 9,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushader.c",
+              "base_size": 9,
+              "exact_match": true,
+              "target_sha256": "b42d455b28d70700f7894f0ea353b8a52092c28bae28fe14bd4e4817bdd35855",
+              "base_sha256": "b42d455b28d70700f7894f0ea353b8a52092c28bae28fe14bd4e4817bdd35855",
+              "relocation_count": 0,
+              "comparison_unit": "00741660-314bfb26fdb3",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "?Retrieve@PC_SHADER_MANAGER_VIEW@@QAEPAUPC_SHADER_OBJECT_FULL_VIEW@@PBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH_N@Z",
+          "symbol": "?Retrieve@PC_SHADER_MANAGER_VIEW@@QAEPAUPC_SHADER_OBJECT_FULL_VIEW@@PBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH_N@Z",
+          "address": "0x00741750",
+          "units": [
+            "src/nu2api/nushadermanager.cpp"
+          ],
+          "target_size": 208,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushadermanager.cpp",
+              "base_size": 208,
+              "exact_match": false,
+              "target_sha256": "2f45c1d582c79370c8bfce41fd9f4814c89105a1eb5f215773c33d559f120781",
+              "base_sha256": "5e89c66cc237b698bc07900f79ed65b05e28a322ce4b3c442978eb3a4f8520c6",
+              "relocation_count": 3,
+              "comparison_unit": "00741750-81960b4bbda5",
+              "objdiff_percent": 90.20731
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 90.20731
+        },
+        {
+          "name": "NuShaderManagerRetrieveShader",
+          "symbol": "_NuShaderManagerRetrieveShader",
+          "address": "0x00741820",
+          "units": [
+            "src/nu2api/nushadermanager.cpp"
+          ],
+          "target_size": 28,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushadermanager.cpp",
+              "base_size": 28,
+              "exact_match": true,
+              "target_sha256": "728818df96bdeed2fff527566521bf25a2905c9e22a4c4f83c01a642b0e46f03",
+              "base_sha256": "728818df96bdeed2fff527566521bf25a2905c9e22a4c4f83c01a642b0e46f03",
+              "relocation_count": 2,
+              "comparison_unit": "00741820-a4aa81ba4215",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "NuShaderManagerRetrieveShaderVariant",
+          "symbol": "_NuShaderManagerRetrieveShaderVariant",
+          "address": "0x00741840",
+          "units": [
+            "src/nu2api/nushadermanager.cpp"
+          ],
+          "target_size": 31,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushadermanager.cpp",
+              "base_size": 31,
+              "exact_match": true,
+              "target_sha256": "0d2c6ae0e97628d6108a874b5ced39de4594da2deba3401c2a5d4ad4bf4c09bc",
+              "base_sha256": "0d2c6ae0e97628d6108a874b5ced39de4594da2deba3401c2a5d4ad4bf4c09bc",
+              "relocation_count": 2,
+              "comparison_unit": "00741840-d3558a5dd77c",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "PCVertexDeclarationFindSlot",
+          "symbol": "_PCVertexDeclarationFindSlot",
+          "address": "0x00741910",
+          "units": [
+            "src/nu2api/nuvertexdecl.c"
+          ],
+          "target_size": 82,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nuvertexdecl.c",
+              "base_size": 82,
+              "exact_match": true,
+              "target_sha256": "c5371dfcedbb3e46f7baad7207233162ac8b84b5a59a1ee8f493367adc1e9b45",
+              "base_sha256": "c5371dfcedbb3e46f7baad7207233162ac8b84b5a59a1ee8f493367adc1e9b45",
+              "relocation_count": 0,
+              "comparison_unit": "00741910-6d041efd5529",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "NuGetVertexDeclaration",
+          "symbol": "_NuGetVertexDeclaration",
+          "address": "0x00741970",
+          "units": [
+            "src/nu2api/nuvertexdecl.c"
+          ],
+          "target_size": 1684,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nuvertexdecl.c",
+              "base_size": 1660,
+              "exact_match": false,
+              "target_sha256": "e0c05ce1b8d2d391d0ce6a354c299d6e421d124954130f65f44034b304f3b263",
+              "base_sha256": "1188a9c219d18e5d8cc1c15aee0727e98777d0d95ea604c173a1f94f0fa383bc",
+              "relocation_count": 23,
+              "comparison_unit": "00741970-afcbbd933522",
+              "objdiff_percent": 62.53215
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 62.53215
+        },
+        {
+          "name": "NuShaderObjectUnInit",
+          "symbol": "_NuShaderObjectUnInit",
+          "address": "0x00742380",
+          "units": [
+            "src/nu2api/nushaderobject.c"
+          ],
+          "target_size": 5,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushaderobject.c",
+              "base_size": 5,
+              "exact_match": true,
+              "target_sha256": "1b5aa7516410e729be9a464c583ce6112bb5190f4327327b8d27b7b5f5ef684e",
+              "base_sha256": "1b5aa7516410e729be9a464c583ce6112bb5190f4327327b8d27b7b5f5ef684e",
+              "relocation_count": 1,
+              "comparison_unit": "00742380-cde0703389c5",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "NuShaderObjectBaseUnInit",
+          "symbol": "_NuShaderObjectBaseUnInit",
+          "address": "0x007439e0",
+          "units": [
+            "src/nu2api/nushaderobjectbase.c"
+          ],
+          "target_size": 11,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushaderobjectbase.c",
+              "base_size": 11,
+              "exact_match": true,
+              "target_sha256": "2bb7a7919666a8183589c51b0677cff5663c0e4581aecd72e297228e488d6bf3",
+              "base_sha256": "2bb7a7919666a8183589c51b0677cff5663c0e4581aecd72e297228e488d6bf3",
+              "relocation_count": 0,
+              "comparison_unit": "007439e0-f043efd18e93",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "PCShaderNativeUnInit",
+          "symbol": "_PCShaderNativeUnInit",
+          "address": "0x007440c0",
+          "units": [
+            "src/nu2api/nushaderobject_pc.c"
+          ],
+          "target_size": 72,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushaderobject_pc.c",
+              "base_size": 72,
+              "exact_match": true,
+              "target_sha256": "19ce2249a505a66521bc38eab66bea4a0f131d4dc00d0b2218c19db579effdc1",
+              "base_sha256": "19ce2249a505a66521bc38eab66bea4a0f131d4dc00d0b2218c19db579effdc1",
+              "relocation_count": 1,
+              "comparison_unit": "007440c0-c1c03634b0e2",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "?Initialize@PC_SHADER_MATERIAL_FILTER_VIEW@@QAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH@Z",
+          "symbol": "?Initialize@PC_SHADER_MATERIAL_FILTER_VIEW@@QAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH@Z",
+          "address": "0x007443d0",
+          "units": [
+            "src/nu2api/nushadermanager.cpp"
+          ],
+          "target_size": 272,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushadermanager.cpp",
+              "base_size": 259,
+              "exact_match": false,
+              "target_sha256": "613773a783ac9efe09e4519fad4343c0dd6a425306e24bf9f0424e62983065df",
+              "base_sha256": "32ba6927d160bec82682357377977f61c26fa9addb81e2f655c74a59fe33281d",
+              "relocation_count": 0,
+              "comparison_unit": "007443d0-e26b725ff33c",
+              "objdiff_percent": 89.49495
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 89.49495
+        },
+        {
+          "name": "?UnfilteredHasLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z",
+          "symbol": "?UnfilteredHasLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z",
+          "address": "0x007444e0",
+          "units": [
+            "src/nu2api/nushadermanager.cpp"
+          ],
+          "target_size": 128,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushadermanager.cpp",
+              "base_size": 128,
+              "exact_match": true,
+              "target_sha256": "5f57e66cab8d5acb960f0f1fa86ca37d96f2eac7055084e5e33a9e512b44538b",
+              "base_sha256": "5f57e66cab8d5acb960f0f1fa86ca37d96f2eac7055084e5e33a9e512b44538b",
+              "relocation_count": 5,
+              "comparison_unit": "007444e0-57a17cbc99af",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "?HasDiffuse@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z",
+          "symbol": "?HasDiffuse@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z",
+          "address": "0x00744560",
+          "units": [
+            "src/nu2api/nushadermanager.cpp"
+          ],
+          "target_size": 120,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushadermanager.cpp",
+              "base_size": 120,
+              "exact_match": true,
+              "target_sha256": "7ace607c7e823b48778baf5ff1846c66da606338b593fca4af6877cacf17eb96",
+              "base_sha256": "7ace607c7e823b48778baf5ff1846c66da606338b593fca4af6877cacf17eb96",
+              "relocation_count": 5,
+              "comparison_unit": "00744560-9914a6a1af32",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "?HasLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z",
+          "symbol": "?HasLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z",
+          "address": "0x00744660",
+          "units": [
+            "src/nu2api/nushadermanager.cpp"
+          ],
+          "target_size": 75,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushadermanager.cpp",
+              "base_size": 53,
+              "exact_match": false,
+              "target_sha256": "ae1de01ac08df70ae6436d1cd42a23d3265443c89758bc1086d0b76e2ec6778d",
+              "base_sha256": "260626103e9c093ed15662f3ab6f68a2e76632292d9a9024c7b16b9a2d72ef63",
+              "relocation_count": 2,
+              "comparison_unit": "00744660-2244edfb67cd",
+              "objdiff_percent": 48.8
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 48.8
+        },
+        {
+          "name": "?GetVertexFlags@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEIXZ",
+          "symbol": "?GetVertexFlags@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEIXZ",
+          "address": "0x007446b0",
+          "units": [
+            "src/nu2api/nushadermanager.cpp"
+          ],
+          "target_size": 292,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushadermanager.cpp",
+              "base_size": 209,
+              "exact_match": false,
+              "target_sha256": "44586efc4f285cd9394121d4e627a737ee4a514d3ae9d26a84c7e997e736bfc1",
+              "base_sha256": "b6f8202f295fbd1b8e97fcf49285b2207bb52f8b85af14603a02b2b99236842e",
+              "relocation_count": 0,
+              "comparison_unit": "007446b0-84eb055e9b76",
+              "objdiff_percent": 43.266666
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 43.266666
+        },
+        {
+          "name": "NuShaderObjectKeyGenerate3",
+          "symbol": "_NuShaderObjectKeyGenerate3",
+          "address": "0x00744c20",
+          "units": [
+            "src/nu2api/nushaderkey.cpp"
+          ],
+          "target_size": 1093,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushaderkey.cpp",
+              "base_size": 718,
+              "exact_match": false,
+              "target_sha256": "85980f602e04aaf6b1d6e657a6bc4b959c50d44bae8822ee0c75c903084c0c32",
+              "base_sha256": "a98b7b8fd1df6eaf3328276587feed7892ebff9d075c551b826fbcf3907cd8eb",
+              "relocation_count": 12,
+              "comparison_unit": "00744c20-4eb90eedd516",
+              "objdiff_percent": 38.22222
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 38.22222
+        },
+        {
+          "name": "??0CRC16@@QAE@XZ",
+          "symbol": "??0CRC16@@QAE@XZ",
+          "address": "0x00746260",
+          "units": [
+            "src/nu2api/crc16.cpp"
+          ],
+          "target_size": 255,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/crc16.cpp",
+              "base_size": 353,
+              "exact_match": false,
+              "target_sha256": "90b7270b77238c783639d8345675996f4ca85f6b07a7e3e1671f5bceb00a22a7",
+              "base_sha256": "7dbab30a98c6ff7a28d62a669c5df083a76602d6b8a9fccdbf8fddad8619c0e5",
+              "relocation_count": 1,
+              "comparison_unit": "00746260-d9e36972c7e9",
+              "objdiff_percent": 4.189189
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 4.189189
+        },
+        {
+          "name": "?hash@CRC16@@SAIPBEH@Z",
+          "symbol": "?hash@CRC16@@SAIPBEH@Z",
+          "address": "0x00746360",
+          "units": [
+            "src/nu2api/crc16.cpp"
+          ],
+          "target_size": 61,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/crc16.cpp",
+              "base_size": 63,
+              "exact_match": false,
+              "target_sha256": "87bb94e1384fb06d3c4d06a3989ae48233a72f7cf0eef5565a5b7f98ae71ad77",
+              "base_sha256": "8a5ffae4dd1832a3945975ee56e797c4a93ef0016014eb0e37923774347a7751",
+              "relocation_count": 1,
+              "comparison_unit": "00746360-726861473397",
+              "objdiff_percent": 49.47619
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 49.47619
+        },
+        {
+          "name": "?hashInverse@CRC16@@SAIPBEH@Z",
+          "symbol": "?hashInverse@CRC16@@SAIPBEH@Z",
+          "address": "0x007463a0",
+          "units": [
+            "src/nu2api/crc16.cpp"
+          ],
+          "target_size": 64,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/crc16.cpp",
+              "base_size": 67,
+              "exact_match": false,
+              "target_sha256": "9c49c0deb56ed8c402c7f4935c75d60ea476fd10fe5513215bfe83e861c1c528",
+              "base_sha256": "160eaf57832209429b9ff0bad6a4d865253636372ea31cfafdce564fa87400fe",
+              "relocation_count": 1,
+              "comparison_unit": "007463a0-f9af289abe7c",
+              "objdiff_percent": 59.272728
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 59.272728
+        },
+        {
+          "name": "??__ECRC16InstancePC@@YAXXZ",
+          "symbol": "??__ECRC16InstancePC@@YAXXZ",
+          "address": "0x007502f0",
+          "units": [
+            "src/data.cpp"
+          ],
+          "target_size": 10,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/data.cpp",
+              "base_size": 10,
+              "exact_match": true,
+              "target_sha256": "83c10c84b1234c82ee6b05e36f3468e80a0fe527bb2a2495b84f045bd7d7d505",
+              "base_sha256": "83c10c84b1234c82ee6b05e36f3468e80a0fe527bb2a2495b84f045bd7d7d505",
+              "relocation_count": 2,
+              "comparison_unit": "007502f0-1328ae395547",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "newly_compared_functions": 59,
+      "new_original_code_bytes": 30650,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "exact_code_added": 1265,
+      "checkpoint": "directional-shaders-particles-geometry-20261003",
+      "accepted_new_source_bytes": 30650,
+      "accepted_new_source_functions": 59,
+      "prior_exact_code_and_data_preserved": true,
+      "data_definitions_added": 276,
+      "existing_data_owners_expanded": 1,
+      "ongoing_goal": "Indefinite whole-project transfer; validated half-hour checkpoints and direct main pushes continue.",
+      "verified_checks": {
+        "tests": 665,
+        "skipped": 3,
+        "llvm": 18,
+        "tidy_units": 191,
+        "objects": 191,
+        "function_definitions": 2215,
+        "data_definitions": 3741,
+        "source_only_link": true,
+        "native_walking_fixture": true,
+        "native_particle_software_fixture": true,
+        "native_display_clip_cases": 9,
+        "native_terrain_scan_acceptance_cases": 6,
+        "production_shader_material_mode_2": true,
+        "shader_missing_branch_negative_control_exit": 12,
+        "native_geometry_analytical_cases": 37,
+        "geometry_float_spill_negative_control_exit": 1
+      },
+      "limitations": [
+        "Full gameplay and original resource loading remain unverified.",
+        "Native particle hardware and host rumble playback were not exercised.",
+        "Vertex declaration cache has one verified source-view entry; distinct second insertion remains outside that domain.",
+        "CheckSphere and HitWallSpline retain zero advisory similarity and lack broad runtime equivalence evidence.",
+        "GHG/model and embedded DDS fallback source closure remains held."
+      ]
     }
   ]
 }

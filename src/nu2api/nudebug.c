@@ -12,3 +12,6 @@ void __cdecl NuPtlDmaSlotsExhaustedPc(void) {
 
 void __cdecl PCAnimationEffectCheckpoint(void) {
 }
+
+void __cdecl PCCharacterModelDiagnosticNoOp(void) {
+}

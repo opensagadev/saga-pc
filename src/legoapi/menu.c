@@ -201,3 +201,17 @@ i32 GetParentMenuID(void) {
     }
     return MenuInfo[menu].id;
 }
+
+i32 __cdecl Hub_InMenu(void) {
+    switch (GetMenuID()) {
+        case 8:
+        case 12:
+        case 13:
+        case 14:
+        case 15:
+        case 16:
+        case 17:
+            return 1;
+    }
+    return 0;
+}

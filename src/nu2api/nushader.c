@@ -5,3 +5,7 @@ PC_SHADER_RECORD_VIEW *__cdecl PCShaderRecordFromHandle(u32 handle) {
         return &PCShaderSlots[handle].record;
     return NULL;
 }
+
+void __cdecl NuShaderManagerReleaseShader(PC_SHADER_RECORD_VIEW *shader) {
+    --shader->ref_count;
+}

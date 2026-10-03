@@ -407,3 +407,78 @@ formatting and tidy over 180 translation units, and a source-only link across
 180 objects with 2,156 function and 3,428 data definitions; all mappings and
 relocations resolve. The native movement backend fixture also passes. All source
 families remain frozen during final report refresh and direct-main push.
+
+
+## Directional movement, shader, particle and geometry checkpoint — 2026-10-03
+
+This release adds 59 newly compared functions spanning 30,650 unique original PC
+bytes. Compared code grows from 523,089 to 553,739 bytes. Whole-PC fuzzy coverage
+rises from 9.250233652% to 9.736648876% over 3,471,246 retail text bytes; exact
+code rises from 59,426 to 60,691 bytes (+1,265), or 1.748392364%. All previous
+exact function and data comparisons remain exact. The 61.05673% advisory score
+among compared code uses a different denominator and is not whole-game coverage.
+
+The connected groups comprise directional movement/private Walking/clipbox/feedback
+(11,839 bytes), shader/native/material providers and genuine CRC startup/diagnostic
+(5,568), particle renderer (2,737), display clipping/material update (712),
+terrain geometry (9,200), and gameplay context/block/audio/menu/droid actions (594).
+The actual directional call replaces its former marker. Walking's private ECX,
+stack float and ST0 contract survives in its original caller group. Display clipping
+moves the existing display TU to genuine C++ for its native frustum provider;
+all 17 prior candidates remain byte-identical. Its reconstructed stack scene
+parameter remains a documented nonexact difference from retail's private ESI
+contract. No register adapter or invented helper mapping was added.
+
+Independent review found and repaired three PC behavior errors. ScanTerrain now
+sets platinrange only on accepted nonrotating/rotating branches, after capacity,
+material, flag and clip checks. Six actual-production native cases pass; the
+similarity falls from 22.338854% to 22.225605%, an honest correctness correction.
+Shader material mode 2 clears first/second path flags while preserving deferred
+state before layer counting. A fixture linked to the actual production manager
+passes; the previous missing-branch object fails the same test with exit 12.
+Copied fixture method definitions were removed from the validation claim.
+InsideLineF no longer spills the side expression to f32 before testing its sign.
+Retail compares the unrounded x87 sum: a tiny negative result must remain outside
+even if a float store would round it to signed zero. The previous actual object
+fails that discriminating case; the repaired real object passes 37 geometry
+checks and preserves retail's direct FADDP-to-FCOMP contract. A proposed native
+retail differential loader did not relocate the EXE under Wine, so these are
+analytical PC-contract tests, not an executed retail equivalence claim.
+
+Real-provider native fixtures also exercise Walking thresholds/ties/scales/NaNs,
+nine display/frustum cases, and particle interpolation, gravity, color/UV,
+two-particle output, near clipping, bank publication, cache behavior, software
+buffer exhaustion, overflow, flush and repeat. The PC renderer uses four native
+and eight software buffers, rather than Android's different buffer counts.
+Hardware D3D paths and host rumble playback were not executed. CheckSphere and
+HitWallSpline compare their complete verified bodies with zero advisory score;
+broad runtime equivalence for those geometry routines remains unverified.
+
+Canonical storage is shared: ATST IDs use the existing u16 owner with a signed
+cast; clip camera position uses the canonical camera matrix translation; idle
+uses the existing compiler string pool. The real CRUISERD_LDATA pointer storage
+closes a link failure that object/map checks alone did not reveal. No fake
+callee, duplicate mutable owner, copied retail implementation or DDS asset is added.
+
+Required aggregate checks pass: source-only executable linkage across 191 objects,
+2,215 function and 3,741 data definitions; all mappings/relocations resolve.
+Pinned LLVM18 format/tidy and 665 tests with three expected skips pass. Complete
+retail comparisons and regression receipts are retained under the ignored
+continuation-native directory. The scoped data receipt is 798 definitions:
+521 known extents cover 136,648 unique original bytes; 277 unknown extents expose
+20,606 source-view bytes with zero unknown-allocation credit. There are 276 new
+physical definitions plus one expanded legacy backend owner.
+
+The selected vertex declaration cache is a single verified entry: initial empty
+insertion and same-key reuse are within its source-view domain, while a second
+distinct insertion is outside it. General cache capacity and full backend readiness
+are not established. GHG/model bodies totaling 3,712 bytes remain held behind real
+scene/material closure, including a noncommittable original DDS fallback asset.
+Full gameplay, game entry completion and original level resources remain unverified.
+
+The next retained wave is 14,915 original bytes of terrain solver/player/sphere
+providers plus Mask, with finite header/data proposals; combat and DebrisDraw/portal
+closure are prepared separately. The ongoing goal remains active. This checkpoint
+exceeded the requested half-hour interval because automatic approval execution
+timed out and integration exposed real ownership/provider and formatting defects;
+the delay is not counted as progress.

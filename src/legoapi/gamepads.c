@@ -61,3 +61,20 @@ i32 __cdecl GamePad_Waggle(GAMEPAD_PC *pad) {
     }
     return (pad->input_magnitude != 0.0f) != (pad->previous_input_magnitude != 0.0f);
 }
+
+void __cdecl NewRumble(void *pad, f32 strength, i32 ignored) {
+    i32 amount;
+    (void)ignored;
+    if (pad != NULL) {
+        amount = (i32)(strength * 255.0);
+        if (amount > 255)
+            amount = 255;
+        NuSound3AddRumble(pad, 0.0f, amount, 0, strength);
+    }
+}
+
+void __cdecl NewBuzz(void *pad, f32 duration, i32 ignored) {
+    (void)ignored;
+    if (pad != NULL)
+        NuSound3AddRumble(pad, duration, 0, 0, 0.0f);
+}

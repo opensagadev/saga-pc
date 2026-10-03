@@ -32,3 +32,9 @@ i32 __cdecl NuTexCreateNative(NUTEXDIM_PC *texture) {
     AnimationDiagnosticNoOpPc();
     return 0;
 }
+
+NUTEXDIM_PC *__cdecl NuTextureGetDimensions(i32 id) {
+    if (id <= 0)
+        return NULL;
+    return NuTextureDimensions[id - 1];
+}

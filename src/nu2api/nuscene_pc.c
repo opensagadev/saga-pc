@@ -155,3 +155,95 @@ i32 __cdecl NuGScnUploadGfxDataFromFilePS(VARIPTR *cursor, VARIPTR end, NUFILE f
         NuFileRead(file, &padding, 1);
     return section_size;
 }
+
+typedef struct SCENE_FIXUP_GEOMETRY_PC {
+    u8 unknown_00[8];
+    u16 vertex_stride;
+    u8 unknown_0a[0xe];
+    u32 vertex_count;
+    u8 unknown_1c[4];
+    PC_BUFFER_RESOURCE_PC *index_buffer;
+    PC_BUFFER_RESOURCE_PC *vertex_buffer;
+    u32 vertex_format;
+    u8 unknown_2c[4];
+    PC_BUFFER_RESOURCE_PC *dynamic_vertex_buffer;
+} SCENE_FIXUP_GEOMETRY_PC;
+STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, vertex_stride) == 8);
+STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, vertex_count) == 0x18);
+STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, index_buffer) == 0x20);
+STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, vertex_buffer) == 0x24);
+STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, vertex_format) == 0x28);
+STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, dynamic_vertex_buffer) == 0x30);
+typedef struct SCENE_FIXUP_VERTEX_STREAM_PC {
+    u8 unknown_00[8];
+    PC_BUFFER_RESOURCE_PC *vertex_buffer;
+} SCENE_FIXUP_VERTEX_STREAM_PC;
+STATIC_ASSERT(offsetof(SCENE_FIXUP_VERTEX_STREAM_PC, vertex_buffer) == 8);
+typedef struct SCENE_FIXUP_NATIVE_PC {
+    u16 vertex_buffer_count;
+    u8 unknown_02[2];
+    PC_BUFFER_RESOURCE_PC **vertex_buffers;
+    u16 index_buffer_count;
+    u8 unknown_0a[2];
+    PC_BUFFER_RESOURCE_PC **index_buffers;
+    SCENE_FIXUP_GEOMETRY_PC **geometries;
+    u32 geometry_count;
+    SCENE_FIXUP_VERTEX_STREAM_PC **vertex_streams;
+    u32 vertex_stream_count;
+} SCENE_FIXUP_NATIVE_PC;
+STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, vertex_buffers) == 4);
+STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, index_buffer_count) == 8);
+STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, index_buffers) == 0xc);
+STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, geometries) == 0x10);
+STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, geometry_count) == 0x14);
+STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, vertex_streams) == 0x18);
+STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, vertex_stream_count) == 0x1c);
+typedef struct SCENE_FIXUP_PORTAL_FIELDS_PC {
+    u8 unknown_00[0x6c];
+    i32 max_portals;
+} SCENE_FIXUP_PORTAL_FIELDS_PC;
+STATIC_ASSERT(offsetof(SCENE_FIXUP_PORTAL_FIELDS_PC, max_portals) == 0x6c);
+void __cdecl NuMtlUpdate(NUMTL *);
+void __cdecl NuPortalMaxDepth(NUGSCN *, i32);
+
+void __cdecl NuGScnFixupPS(NUGSCN *scene) {
+    SCENE_FIXUP_NATIVE_PC *native = scene->native_scene;
+    SCENE_FIXUP_GEOMETRY_PC *geometry;
+    SCENE_FIXUP_VERTEX_STREAM_PC *stream;
+    u32 i;
+    u8 dynamic = 0;
+    i32 material_index, registry_index;
+    for (i = 0; i != native->geometry_count; ++i) {
+        geometry = native->geometries[i];
+        geometry->index_buffer = SceneVideoResourcesPC.index_buffers[(u32)geometry->index_buffer];
+        geometry->vertex_buffer = SceneVideoResourcesPC.vertex_buffers[(u32)geometry->vertex_buffer];
+        if (geometry->vertex_format != 0) {
+            dynamic = 1;
+            PCFrameCriticalSectionEnter_candidate();
+            PCDeviceCreateVertexBuffer(geometry->vertex_stride * geometry->vertex_count, 0x208, 0, 0,
+                                       &geometry->dynamic_vertex_buffer);
+            PCFrameCriticalSectionLeave_candidate();
+        }
+    }
+    if (dynamic != 0) {
+        for (registry_index = 0; registry_index < 100; ++registry_index) {
+            if (PCRegisteredNativeScenes[registry_index] == NULL) {
+                PCRegisteredNativeScenes[registry_index] = scene;
+                break;
+            }
+        }
+    }
+    for (i = 0; i != native->vertex_stream_count; ++i) {
+        stream = native->vertex_streams[i];
+        stream->vertex_buffer = SceneVideoResourcesPC.vertex_buffers[(u32)stream->vertex_buffer];
+    }
+    native->vertex_buffer_count = SceneVideoResourcesPC.vertex_buffer_count;
+    native->index_buffer_count = SceneVideoResourcesPC.index_buffer_count;
+    memcpy(native->vertex_buffers, SceneVideoResourcesPC.vertex_buffers,
+           SceneVideoResourcesPC.vertex_buffer_count * sizeof(*native->vertex_buffers));
+    memcpy(native->index_buffers, SceneVideoResourcesPC.index_buffers,
+           SceneVideoResourcesPC.index_buffer_count * sizeof(*native->index_buffers));
+    for (material_index = 0; material_index < scene->material_count; ++material_index)
+        NuMtlUpdate(scene->materials[material_index]);
+    NuPortalMaxDepth(scene, ((SCENE_FIXUP_PORTAL_FIELDS_PC *)scene)->max_portals);
+}
