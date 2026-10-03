@@ -24,3 +24,22 @@ i32 __cdecl ObjHitObj_Flags(GAMEOBJECT *object) {
     }
     return flags;
 }
+
+void __cdecl KillRumble(GAMEOBJECT *object) {
+    PAD_INPUT_PC *pad;
+    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+        NewRumble(object->pad->bound_pad, 0.7f, 0);
+        pad = object->pad->bound_pad;
+        if (pad != NULL)
+            NuSound3AddRumble(pad, 0.1f, 0, 0, 0.0f);
+    }
+}
+void __cdecl HitRumble(GAMEOBJECT *object) {
+    PAD_INPUT_PC *pad;
+    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+        NewRumble(object->pad->bound_pad, 0.5f, 0);
+        pad = object->pad->bound_pad;
+        if (pad != NULL)
+            NuSound3AddRumble(pad, 2.0f / DEFAULTFPS, 0, 0, 0.0f);
+    }
+}

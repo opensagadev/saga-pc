@@ -6370,9 +6370,13 @@ STATIC_ASSERT(sizeof(PC_FRUSTUM_GROUP_PC) == 0x380);
 class PCFrustumClipSet {
   public:
     PC_FRUSTUM_GROUP_PC first_group;
+    u8 unknown_0380[0x390];
+    i32 active_render_set_count;
+    i32 __thiscall TestBoxes(const NUVEC *, const NUVEC *);
     bool __thiscall TestBox(const NUVEC *minimum, const NUVEC *maximum, i32 group_index);
 };
 STATIC_ASSERT(offsetof(PCFrustumClipSet, first_group) == 0);
+STATIC_ASSERT(offsetof(PCFrustumClipSet, active_render_set_count) == 0x710);
 #endif
 
 #ifdef __cplusplus
@@ -6711,9 +6715,69 @@ STATIC_ASSERT(offsetof(GAMECAMERA, mode) == 0x22c);
 STATIC_ASSERT(offsetof(GAMECAMERA, previous_mode) == 0x22d);
 STATIC_ASSERT(offsetof(GAMECAMERA, previous_camera_mode) == 0x22e);
 
+struct PC_SPECIAL_SHADOW_LIGHT;
+typedef struct PC_SPECIAL_PROJECTION_ADJUST {
+    f32 x_scale, y_scale, x_offset, y_offset;
+} PC_SPECIAL_PROJECTION_ADJUST;
+STATIC_ASSERT(sizeof(PC_SPECIAL_PROJECTION_ADJUST) == 0x10);
+STATIC_ASSERT(offsetof(PC_SPECIAL_PROJECTION_ADJUST, x_scale) == 0);
+STATIC_ASSERT(offsetof(PC_SPECIAL_PROJECTION_ADJUST, y_scale) == 4);
+STATIC_ASSERT(offsetof(PC_SPECIAL_PROJECTION_ADJUST, x_offset) == 8);
+STATIC_ASSERT(offsetof(PC_SPECIAL_PROJECTION_ADJUST, y_offset) == 0xc);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+    i32 __cdecl NuDisplayListRndrSpecial(NUSPECIALHANDLE *, NUMTX *, i32, NUMTX *, void *);
+    void __cdecl WindShear(NUMTX *, NUMTX *, i32, i32);
+    void __cdecl NuMtxCalcCheapFaceY_v2(NUMTX *, NUVEC *);
+    VARIPTR *__cdecl NuDisplayListLinkItems(NUDISPLAYLIST_PC *, i32);
+    void *__cdecl DisplayListCreateGeomTransformPS(VARIPTR *, NUMTX *, NUMTL *, void *, void *);
+    void *__cdecl DisplayListCreateFaceonTransformPS(VARIPTR *, NUMTX *, NUMTL *, void *);
+    void *__cdecl DisplayListCreateSkinTransformPS(VARIPTR *, NUMTX *, void *, void *, void **, void *);
+    void *__cdecl NuDisplayListPrepareFaceonPS(VARIPTR *, void *, NUMTX *);
+    void __cdecl DisplayListSetShadowCasterFlagPS(NUDISPLAYLISTITEM *, NUDISPLAYLISTITEM *, i32);
+    void __cdecl DisplayListUpdateRenderStateShadow(NUDISPLAYLIST_PC *, NUGLOBALRNDRSTATE_PC *);
+    extern PC_SPECIAL_PROJECTION_ADJUST PCSpecialProjectionAdjust;
+    extern NUMTX PCSpecialProjectionTranslate, PCSpecialProjectionScale;
+    extern i32 PCSpecialClipState, PCSpecialActiveShadowLights, PCSpecialShadowClipResultsPresent;
+    extern i32 PCSpecialForcedLOD, PCSpecialReflectionPass;
+    extern NUMTL **PCSpecialForcedMaterialTable;
+    extern NUMTL *PCSpecialForcedMaterial;
+    extern struct PC_SPECIAL_SHADOW_LIGHT *PCSpecialShadowLights[4];
+    extern u32 PCSpecialShadowClipResults[4];
+    extern f32 global_windscale, global_windspeed;
+    extern u32 PCWindFrameCount;
+
+    void __cdecl GizBuildIt_SetToStart(void *, i32, i32);
+    void __cdecl KillRumble(GAMEOBJECT *);
+    void __cdecl HitRumble(GAMEOBJECT *);
+    void __cdecl TakeHitRumble(GAMEOBJECT *, f32);
+
+    i32 __cdecl NuSpecialClipTestShadowLights(NUVEC *, NUVEC *, i32);
+    /* Forward view remains local to the original material group. */
+    typedef struct PC_MATERIAL_CREATE_SHADER PC_MATERIAL_CREATE_SHADER;
+    /* Add inside existing C declarations. Native register helpers stay local. */
+    void __cdecl NuShaderMtlDescInit(PC_MATERIAL_CREATE_SHADER *);
+    void __cdecl NuMtlCreatePS(NUMTL *, i32);
+    NUMTL *__cdecl NuMtlCreate(i32);
+    NUMTL *__cdecl NuMtlCreate3D(i32);
+    NUMTL *__cdecl NuMtlCreateEx(i32, u32);
+    NUMTL *__cdecl NuMtlCreateEx3D(i32, u32);
+    void __cdecl NuMtlRegisterForOverride(NUMTL *, u32 *, i32);
+    NUMTL *__cdecl NuMtlFindVariantMtl(NUMTL *, NUMTL *);
+    NULNKHDR *__cdecl NuLstAllocHead(NULSTHDR *);
+    NULNKHDR *__cdecl NuLstAlloc(NULSTHDR *);
+    extern NUMTL *PCMaterialPoolPc;
+    extern i32 PCMaterialPoolCountPc;
+    void __cdecl SnakeBeenHit(GAMEOBJECT *);
+    void __cdecl NuMtxSetRotationXYVU0(NUMTX *, NUANGVEC *);
+    extern f32 SnakeSegmentHeightPc, SnakeDebrisUpwardSpeedPc;
+
+    void __cdecl Arcade_Kill(i32, i32);
+    void __cdecl Arcade_AIKilled(i32);
+    extern const char ArcadeAiKilledSoundNamePc[16];
 
     extern HINTSYS_PC hintsys;
     extern NEW_MINI_PIECE_PC NewMiniPiece[10];

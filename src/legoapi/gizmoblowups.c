@@ -343,3 +343,124 @@ void __cdecl GizBlowup_Respawn(GIZMOBLOWUP_PC *blowup) {
         }
     }
 }
+
+typedef struct blowup_effect_instance_pc_s {
+    u8 unknown_00[0x7c];
+    NUVEC effect_offset;
+    u8 unknown_88[0xa0 - 0x88];
+    i32 pickup_value;
+    u8 unknown_a4[0xee - 0xa4];
+    u16 launch_pitch;
+    u16 launch_yaw;
+    u8 unknown_f2[0x10d - 0xf2];
+    i8 pickup_multiplier;
+} BLOWUP_EFFECT_INSTANCE_PC;
+typedef struct blowup_effect_type_pc_s {
+    NUSPECIALHANDLE alternate_specials[4];
+    u8 unknown_30[0x94 - 0x30];
+    f32 fragment_gravity;
+    f32 fragment_speed;
+    u8 unknown_9c[4];
+    i16 particle_types[7];
+    u8 unknown_ae[0xfa - 0xae];
+    u8 fragment_count;
+} BLOWUP_EFFECT_TYPE_PC;
+STATIC_ASSERT(offsetof(BLOWUP_EFFECT_INSTANCE_PC, effect_offset) == 0x7c);
+STATIC_ASSERT(offsetof(BLOWUP_EFFECT_INSTANCE_PC, pickup_value) == 0xa0);
+STATIC_ASSERT(offsetof(BLOWUP_EFFECT_INSTANCE_PC, launch_pitch) == 0xee);
+STATIC_ASSERT(offsetof(BLOWUP_EFFECT_INSTANCE_PC, launch_yaw) == 0xf0);
+STATIC_ASSERT(offsetof(BLOWUP_EFFECT_INSTANCE_PC, pickup_multiplier) == 0x10d);
+STATIC_ASSERT(offsetof(BLOWUP_EFFECT_TYPE_PC, alternate_specials) == 0);
+STATIC_ASSERT(offsetof(BLOWUP_EFFECT_TYPE_PC, fragment_gravity) == 0x94);
+STATIC_ASSERT(offsetof(BLOWUP_EFFECT_TYPE_PC, fragment_speed) == 0x98);
+STATIC_ASSERT(offsetof(BLOWUP_EFFECT_TYPE_PC, particle_types) == 0xa0);
+STATIC_ASSERT(offsetof(BLOWUP_EFFECT_TYPE_PC, fragment_count) == 0xfa);
+extern i32 MAXBLOWUPRANDSPANG;
+extern void(__cdecl *GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *);
+i32 __cdecl ReleaseHearts(void);
+void __cdecl AddPickups(i32, i32, i32, i32, NUVEC *, NUVEC *, f32, i32, f32, f32, GAMEOBJECT *, i32, i32);
+void __cdecl GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 offset, i32 flags,
+                                    GAMEOBJECT *object) {
+    BLOWUP_EFFECT_TYPE_PC *type = (BLOWUP_EFFECT_TYPE_PC *)blowup->type;
+    BLOWUP_EFFECT_INSTANCE_PC *instance = (BLOWUP_EFFECT_INSTANCE_PC *)blowup;
+    NUVEC effect_position = *position;
+    i32 i, j, count, key, hearts, range, half, random, explosion_flags;
+    NUVEC direction, velocity;
+    NUMTX matrix;
+    ADDPART_PC part;
+    if (offset) {
+        effect_position.x += instance->effect_offset.x;
+        effect_position.y += instance->effect_offset.y;
+        effect_position.z += instance->effect_offset.z;
+    }
+    if (flags & 1)
+        for (i = 4; i < 7; ++i)
+            if (type->particle_types[i] != -1) {
+                key = -1;
+                AddFiniteShotDebrisEffect(&key, type->particle_types[i], &effect_position, 1);
+            }
+    if (flags & 2)
+        for (i = 0; i < 2; ++i)
+            if (type->particle_types[i] != -1)
+                AddFiniteShotPART(type->particle_types[i], &effect_position, 1);
+    if (flags & 4) {
+        count = instance->pickup_multiplier * instance->pickup_value;
+        direction = v010;
+        NuVecRotateX(&direction, &direction, instance->launch_pitch);
+        NuVecRotateY(&direction, &direction, instance->launch_yaw);
+        hearts = count > 0 ? ReleaseHearts() : 0;
+        AddPickups(count, hearts, 0, (blowup->draw_flags >> 8) & 1, position, &direction, 0.0f, -1, 1.5f, 2000000.0f,
+                   NULL, 1, 1);
+    }
+    if (flags & 0x10) {
+        GameCam_NewShake(GameCam, 1.0f, 1.0f, 1.0f);
+        NewRumbleAllPlayers(1.0f, 0.1f, 0, 0.0f);
+    }
+    if ((i32)blowup->draw_flags < 0 || (i8)blowup->remaining_health <= 0)
+        for (i = 0; i < 4; ++i) {
+            if (!NuSpecialExistsFn(&type->alternate_specials[i]))
+                continue;
+            for (j = 0; j < type->fragment_count; ++j) {
+                NuMtxSetIdentity(&matrix);
+                matrix.m30 = position->x;
+                matrix.m31 = position->y;
+                matrix.m32 = position->z;
+                velocity = v010;
+                range = (MAXBLOWUPRANDSPANG << 16) / 360;
+                half = ((i16)(MAXBLOWUPRANDSPANG * 0.5) << 16) / 360;
+                random = (i16)(qrand() * PlayerRandomScalePc * range - half);
+                NuVecRotateX(&velocity, &velocity, instance->launch_pitch + random);
+                range = (MAXBLOWUPRANDSPANG << 16) / 360;
+                half = ((i16)(MAXBLOWUPRANDSPANG * 0.5) << 16) / 360;
+                random = (i16)(qrand() * PlayerRandomScalePc * range - half);
+                NuVecRotateY(&velocity, &velocity, instance->launch_yaw + random);
+                NuVecScale(&velocity, &velocity, type->fragment_speed);
+                if (object != NULL) {
+                    velocity.x += 0.75 * object->velocity.x;
+                    velocity.y += 0.75 * object->velocity.y;
+                    velocity.z += 0.75 * object->velocity.z;
+                }
+                part = Default_ADDPART;
+                part.matrix = &matrix;
+                part.velocity = &velocity;
+                part.special = &type->alternate_specials[i];
+                part.gravity = type->fragment_gravity;
+                part.flags |= 0x80;
+                part.stop_fn = PartStop_Flickerer;
+                part.draw_fn = PartDraw_Flickerer;
+                part.time_step = FRAMETIME;
+                part.field_c4 = 1;
+                AddPart(&part);
+            }
+        }
+    if (GizmoBlowUp_SfxFn != NULL)
+        GizmoBlowUp_SfxFn(blowup, position);
+    else
+        GameAudio_PlaySfx(0x33, position, 0, 0);
+    if (flags & 8) {
+        explosion_flags = (blowup->draw_flags & 0x40) ? 0x122 : 0x127;
+        if (blowup->draw_flags & 0x10000000)
+            explosion_flags |= 8;
+        AddExplosion(position, blowup->effect_delay, 0.5f, NULL, -1, explosion_flags);
+    }
+}

@@ -1337,6 +1337,28 @@ static void __cdecl PartMove_VehicleHeart(PART_PC *part, f32 timestep) {
     part->position.z = start.z + (recipient->collision_position.z - start.z) * progress;
 }
 
+static i32 __cdecl PartDraw_VehicleHeart(PART_PC *part) {
+    f32 factor;
+    NUVEC scaling;
+    NUMTX matrix;
+    if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA)
+        factor = PartVehicleHeartPodraceScale_PC;
+    else if ((BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA) ||
+             (GUNSHIP_ADATA != NULL && WORLD->area == GUNSHIP_ADATA))
+        factor = PartVehicleHeartGunshipScale_PC;
+    else
+        factor = PartVehicleHeartScale_PC;
+    scaling.x = (1.0f - part->time_remaining / PartVehicleHeartLifetime_PC) * factor;
+    if (scaling.x > 0.0f) {
+        scaling.y = scaling.z = scaling.x;
+        matrix = part->transform;
+        NuMtxPreScale(&matrix, &scaling);
+        if (NuSpecialDrawAt(&part->special, &matrix) != 0)
+            part->active |= 0x600;
+    }
+    return 0;
+}
+
 void __cdecl PartUpdate_Heart(PART_PC *part) {
     NUVEC position = part->position;
     part->rotation_y = (u16)(i32)((f64)part->rotation_y + (f64)FRAMETIME * 16384.0);
@@ -1369,6 +1391,109 @@ static void __cdecl PowerUp_UpdatePart(PART_PC *part) {
     NuMtxTranslate(&part->transform, &position);
     PowerUp_Particles(WorldInfo_CurrentlyActive(), &position);
     PlaySfx((char *)PowerUpLoopSfx_PC, &position);
+}
+
+static i32 __cdecl PowerUp_DrawPart(PART_PC *part) {
+    i32 draw = PartDraw_Flickerer(part);
+    if (draw && WORLD->level_objects[0xd1].active != 0) {
+        NUMTX matrix = part->transform;
+        NuSpecialDrawAt(&WORLD->level_objects[0xd1].special, &matrix);
+    }
+    return draw;
+}
+
+void __cdecl AddHeartAsPart(GAMEOBJECT *recipient, NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    ADDPART_PC params;
+    PART_PC *part;
+    if (recipient == NULL)
+        return;
+    params = Default_ADDPART;
+    params.position = position;
+    params.velocity = velocity;
+    params.part_id = 0xcb;
+    params.flags = 0x256;
+    params.field_18 = params.field_14 = scale * GizmoPickupType[5].shadow_radius_x;
+    params.gravity = AreaPickupGravity;
+    params.special = &world->level_objects[0xcb].special;
+    params.field_88 = lifetime;
+    params.collision_fn = PartCollide_3D;
+    params.update_fn = PartUpdate_Heart;
+    if ((world->current_level->flags & 0x80000) != 0) {
+        params.field_a4 = PartVehicleHeartLifetime_PC;
+        params.move_fn = PartMove_VehicleHeart;
+        params.flags |= 0x400;
+        params.recipient = recipient;
+        params.draw_fn = PartDraw_VehicleHeart;
+    } else {
+        params.stop_fn = PartStop_Flickerer;
+        params.draw_fn = PartDraw_Flickerer;
+        if (params.gravity == 0.0f)
+            params.move_fn = PartMove_VehiclePickup;
+    }
+    params.time_step = FRAMETIME;
+    params.field_c0 = scale;
+    part = AddPart(&params);
+    if (part != NULL)
+        part->rotation_y = (u16)qrand();
+}
+
+void __cdecl AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    ADDPART_PC params = Default_ADDPART;
+    PART_PC *part;
+    params.position = position;
+    params.velocity = velocity;
+    params.field_14 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)GizmoPickupType[8].shadow_radius_x);
+    params.field_18 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)GizmoPickupType[8].shadow_extent_x);
+    params.gravity = AreaPickupGravity;
+    params.special = &world->level_objects[0x79].special;
+    params.part_id = 0x79;
+    params.flags = 0x256;
+    if (params.gravity == 0.0f) {
+        params.field_a4 = 5.0f;
+        params.move_fn = PartMove_VehiclePickup;
+    } else {
+        params.stop_fn = PartStop_Flickerer;
+    }
+    params.collision_fn = PartCollide_3D;
+    params.update_fn = NULL;
+    params.draw_fn = PartDraw_Torp;
+    params.field_88 = lifetime;
+    params.time_step = FRAMETIME;
+    params.field_c0 = scale;
+    part = AddPart(&params);
+    if (part != NULL) {
+        part->rotation_y = (u16)qrand();
+        part->field_206 = 3;
+        part->field_214 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)NuTrigTable[0x2000]);
+    }
+}
+
+void __cdecl PowerUp_AddPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    ADDPART_PC params = Default_ADDPART;
+    PART_PC *part;
+    params.position = position;
+    params.velocity = velocity;
+    params.special = &world->level_objects[0xd0].special;
+    params.field_18 = params.field_14 = scale * GizmoPickupType[9].shadow_radius_x;
+    params.gravity = AreaPickupGravity;
+    params.part_id = 0xd0;
+    params.flags = 0x256;
+    params.impact_fn = PowerUp_ImpactPart;
+    params.collision_fn = PartCollide_3D;
+    params.update_fn = PowerUp_UpdatePart;
+    params.stop_fn = PartStop_Flickerer;
+    params.draw_fn = PowerUp_DrawPart;
+    if (params.gravity == 0.0f)
+        params.move_fn = PartMove_VehiclePickup;
+    params.field_88 = lifetime;
+    params.time_step = FRAMETIME;
+    params.field_c0 = scale;
+    part = AddPart(&params);
+    if (part != NULL)
+        part->rotation_y = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
 }
 
 static __declspec(noinline) void PartExtraCoinsPrivate(NUVEC *position, i32 index) {

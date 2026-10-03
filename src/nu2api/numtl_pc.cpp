@@ -95,3 +95,24 @@ extern "C" void __cdecl NuMtlUpdatePS(NUMTL *material) {
     }
     PCFrameCriticalSectionLeave_candidate();
 }
+
+typedef struct PC_MATERIAL_CREATE_SHADER PC_MATERIAL_CREATE_SHADER;
+extern "C" void __cdecl NuShaderMtlDescInit(PC_MATERIAL_CREATE_SHADER *);
+extern "C" void __cdecl NuMtlCreatePS(NUMTL *material, i32 is_3d) {
+    PC_MATERIAL_UPDATE_VIEW *mtl = reinterpret_cast<PC_MATERIAL_UPDATE_VIEW *>(material);
+    NuShaderMtlDescInit(reinterpret_cast<PC_MATERIAL_CREATE_SHADER *>(&mtl->shader));
+    if (mtl->texture_id > 0) {
+        mtl->shader.diffuse_map_id = mtl->texture_id;
+        if (mtl->shader.texture_unit_count == 0)
+            mtl->shader.texture_unit_count = 1;
+        if ((mtl->shader.vertex_format & 0x3800) == 0)
+            mtl->shader.vertex_format = (mtl->shader.vertex_format & 0xffffcfff) | 0x800;
+    } else {
+        u32 colour = (static_cast<i32>(mtl->diffuse.z * 255.0) & 0xff) | 0xffffff00;
+        colour = (colour << 8) | (static_cast<i32>(mtl->diffuse.y * 255.0) & 0xff);
+        colour = (colour << 8) | (static_cast<i32>(mtl->diffuse.x * 255.0) & 0xff);
+        mtl->shader.packed_diffuse_colour = colour;
+    }
+    if (is_3d == 0)
+        mtl->shader.vertex_format |= 0x40000;
+}

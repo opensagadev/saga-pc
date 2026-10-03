@@ -42,3 +42,12 @@ bool PCFrustumClipSet::TestBox(const NUVEC *minimum, const NUVEC *maximum, i32 g
     }
     return true;
 }
+
+i32 PCFrustumClipSet::TestBoxes(const NUVEC *minimum, const NUVEC *maximum) {
+    u32 result = 0;
+    for (i32 group = 0; group < active_render_set_count; ++group) {
+        if (TestBox(minimum, maximum, group))
+            result |= 1u << (group & 31);
+    }
+    return static_cast<i32>(result);
+}

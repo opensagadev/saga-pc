@@ -853,3 +853,25 @@ void __cdecl NuMtxMulH(NUMTX *result, NUMTX *left, NUMTX *right) {
 void __cdecl NuMtxMulRVU0(NUMTX *result, NUMTX *left, NUMTX *right) {
     NuMtxMulR(result, left, right);
 }
+
+void __cdecl NuMtxSetRotationXYVU0(NUMTX *matrix, NUANGVEC *angles) {
+    f32 cx = NuTrigTable[((angles->x + 0x4000) >> 1) & 0x7fff];
+    f32 sx = NuTrigTable[(angles->x >> 1) & 0x7fff];
+    f32 cy = NuTrigTable[((angles->y + 0x4000) >> 1) & 0x7fff];
+    f32 sy = NuTrigTable[(angles->y >> 1) & 0x7fff];
+    f32 cz = NuTrigTable[0x2000], sz = NuTrigTable[0];
+    matrix->m00 = cy * cz;
+    matrix->m01 = cy * sz;
+    matrix->m02 = -sy;
+    matrix->m03 = 0.0f;
+    matrix->m10 = sx * sy * cz - cx * sz;
+    matrix->m11 = sx * sy * sz + cx * cz;
+    matrix->m12 = sx * cy;
+    matrix->m13 = 0.0f;
+    matrix->m20 = cx * sy * cz + sx * sz;
+    matrix->m21 = cx * sy * sz - sx * cz;
+    matrix->m22 = cx * cy;
+    matrix->m23 = 0.0f;
+    matrix->m30 = matrix->m31 = matrix->m32 = 0.0f;
+    matrix->m33 = 1.0f;
+}

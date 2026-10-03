@@ -754,3 +754,45 @@ The old 576-byte accessory allocation is preserved under one typed owner, never
 counted twice. Next work closes genuine renderer material, shadow, wind and display
 list dependencies, then releases the held pickup and combat callers. The unbounded
 whole-project goal and direct-main checkpoint cadence remain active.
+
+
+### Renderer closure and restored pickup checkpoint (2026-10-03)
+
+Fifty-two newly compiled functions add 12,631 complete original PC bytes over
+b146862. The source-only executable links 208 objects, 2,420 functions and 4,167
+data definitions with all mappings and relocations resolved. Compared code reaches
+627,439 bytes; whole-code fuzzy coverage is 11.071185% of 3,471,246 bytes, up
+0.272068 percentage points. Exact code increases by 1,081 bytes to 65,033
+(1.873477%); all earlier exact code and data remain exact.
+
+Genuine material allocation/variants, wind, shadow clipping, display-list transforms
+and the 1,491-byte special renderer close the six held pickup bodies. Their three
+private helpers naturally compile again: 1,991 bytes total. AddPickups1284 and
+GizmoBlowUp_AddEffects1322 now release with their actual renderer dependencies.
+No renderer substitute, public private-register bridge or copied binary is used.
+Material private helpers and callers remain in the original generic material unit;
+platform creation remains separate. Its private ABI mismatch stays nonexact and
+explicit. The positive-count pool domain is tested; the original uninitialized
+nonpositive-count path is not replaced by invented NULL behavior.
+
+Other connected providers include build-it reset393, rumble294, Snake549 plus its
+matrix278 leaf, and arcade kill67/AI-kill258. Matrix rotation retains actual mutable
+NuTrigTable[0]/[0x2000] reads and its qword product spill. PC shadow producer evidence
+covers exactly four working pointer/result slots; unknown allocation extents remain
+blank. PC material copies preserve fields28/2c and actual shader/vertex metadata.
+
+LLVM18 checks 210 format files and 208 tidy units; all 665 tests pass with three
+skips. The restored caller fixture strictly links all 208 actual objects and passes
+28 guarded checks. Selected actual-object fixtures pass 25 material, 25 shadow,
+15 reset, 15 rumble and 20 Snake checks. The transform fixture passes; replacing
+the PC widened-float reciprocal with Android division fails with exit22. These
+selected tests do not establish full gameplay, asset loading or hardware rendering.
+
+All 2,368 prior function copies remain. Of these, 2,366 have identical relocated
+bytes; the two changed copies exactly reproduce earlier independently proved x87
+and integer-load scheduling hashes. Actual advisory changes remain in the report.
+Twenty new canonical data definitions have full initializer proofs over 248 bytes:
+one complete NUL string establishes 16 original bytes, while nineteen views totaling
+232 bytes retain blank original extents. All 961 prior data proofs remain unchanged.
+Next work releases the genuine combat/context, carrying/whip and TerrainPlayer
+families by closing their finite remaining providers. The unbounded goal continues.

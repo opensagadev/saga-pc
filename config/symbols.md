@@ -3781,3 +3781,26 @@ credit comes only from actual compiled object comparisons. Six renderer-dependen
 pickup bodies plus AddPickups/AddEffects remain scratch, along with their three
 naturally elided private helpers. No unimplemented row counts as transferred code.
 All prior exact code/data remains exact in the final aggregate report.
+
+
+### Genuine renderer and restored pickup contracts (2026-10-03)
+
+The compiled checkpoint adds 52 complete functions/12,631 PC bytes. Actual
+NuSpecialDrawAt43 calls NuDisplayListRndrSpecial1491; the coherent private item
+dispatcher/helpers, material variants, shadow methods and native transforms are
+real source. Private material ABI differences stay within the original caller
+group and remain nonexact. NuLstAlloc5 is the real tail wrapper to the newly
+recovered head allocator118, rather than an alias to the tail allocator.
+
+PCFrustumClipSet::TestBoxes69 retains its ECX receiver/RET8, count at0x710 and
+actual TestBox642 provider. Shadow wrapper293 preserves signed-positive cached
+mask behavior and forced invalidation; the Android no-op is rejected. The producer
+caps four lights. Native reciprocal at0x0075be20 is the promoted float-third value,
+not Android's double division3. Rotation278 reads mutable sine/cosine table values
+and preserves the qword product spill. Arcade_Kill67 includes its late tail jump
+after the early RET; AIKilled258 uses unsigned counter/target comparison and signed
+mode indexing. The full16-byte sound string includes its NUL terminator.
+
+Previously held constructors/private helpers1,991 and pickup/effect parents2,606
+now have actual linked providers and receive source credit. All prior exact code
+and data remains exact; unimplemented combat/terrain candidates remain scratch.

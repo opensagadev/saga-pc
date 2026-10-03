@@ -7878,3 +7878,78 @@ extern "C" {
     f32 PANEL_COINSCALE_START = 1.0f;
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$global_windscale")
+    f32 global_windscale = 1.0f;
+#pragma data_seg()
+#pragma data_seg(".data$global_windspeed")
+    f32 global_windspeed = 1.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$PCWindFrameCount")
+    u32 PCWindFrameCount;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$PCSpecialClipState")
+    i32 PCSpecialClipState = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$PCSpecialActiveShadowLights")
+    i32 PCSpecialActiveShadowLights;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSpecialShadowClipResultsPresent")
+    i32 PCSpecialShadowClipResultsPresent;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSpecialForcedLOD")
+    i32 PCSpecialForcedLOD;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSpecialForcedMaterialTable")
+    NUMTL **PCSpecialForcedMaterialTable;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSpecialForcedMaterial")
+    NUMTL *PCSpecialForcedMaterial;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSpecialReflectionPass")
+    i32 PCSpecialReflectionPass;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$PCSpecialProjectionAdjust")
+    PC_SPECIAL_PROJECTION_ADJUST PCSpecialProjectionAdjust = {1.0f, 1.0f, 0.0f, 0.0f};
+#pragma data_seg()
+#pragma bss_seg(".bss$PCSpecialShadowLights")
+    struct PC_SPECIAL_SHADOW_LIGHT *PCSpecialShadowLights[4];
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSpecialShadowClipResults")
+    u32 PCSpecialShadowClipResults[4];
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSpecialProjectionTranslate")
+    NUMTX PCSpecialProjectionTranslate;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSpecialProjectionScale")
+    NUMTX PCSpecialProjectionScale;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$SnakeSegmentHeightPc")
+    f32 SnakeSegmentHeightPc = 0.019999999552965164f;
+#pragma data_seg()
+#pragma data_seg(".data$SnakeDebrisUpwardSpeedPc")
+    f32 SnakeDebrisUpwardSpeedPc = 1.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$PCMaterialPoolPc")
+    NUMTL *PCMaterialPoolPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCMaterialPoolCountPc")
+    i32 PCMaterialPoolCountPc;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$ArcadeAiKilledSoundNamePc")
+    extern const char ArcadeAiKilledSoundNamePc[16] = "env_padLight_on";
+#pragma const_seg()
+}

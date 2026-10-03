@@ -145,3 +145,39 @@ void __cdecl Arcade_PlayerKilled(i32 player_index, i32 extra) {
         Arcade_AwardPoint(player_index, 0, 0);
     }
 }
+
+extern const char ArcadeAiKilledSoundNamePc[];
+void __cdecl Arcade_AIKilled(i32 player_index) {
+    GAMEOBJECT *object;
+    if ((u32)player_index > 1 || (Arcade_Mode[(i8)ArcadeItem.mode].flags & 2) == 0)
+        return;
+    if (Arcade_BothPlayersActive()) {
+        ++AreaGlobals_PC.arcade_ai_kills[player_index];
+        PlaySfx((char *)ArcadeAiKilledSoundNamePc, NULL);
+        object = (GAMEOBJECT *)Player[player_index];
+        if (object != NULL && object->coin_packet != NULL)
+            ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->scale = 1.5f;
+        if (AreaGlobals_PC.arcade_ai_kills[player_index] >= (u32)Arcade_Mode[(i8)ArcadeItem.mode].target) {
+            Arcade_AwardPoint(player_index, 0, 0);
+            AreaGlobals_PC.arcade_ai_kills[0] = 0;
+            AreaGlobals_PC.arcade_ai_kills[1] = 0;
+            object = (GAMEOBJECT *)Player[player_index == 0 ? 1 : 0];
+            if (object != NULL && object->coin_packet != NULL)
+                ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->scale = 1.5f;
+        }
+    } else {
+        GameAudio_PlaySfx(0x32, NULL, 0, 0);
+        object = (GAMEOBJECT *)Player[player_index];
+        if (object != NULL && object->coin_packet != NULL)
+            ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->scale = 1.5f;
+        Arcade_NeedTwoPlayers_Scale = 1.5f;
+    }
+}
+void __cdecl Arcade_Kill(i32 player_index, i32 killed_player) {
+    if (Arcade != 0 && (u32)player_index <= 1) {
+        if ((u32)killed_player <= 1)
+            Arcade_PlayerKilled(player_index, 0);
+        else if (killed_player == -1)
+            Arcade_AIKilled(player_index);
+    }
+}

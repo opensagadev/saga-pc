@@ -1242,3 +1242,21 @@ unrelated. PANEL_COINSCALE_START is mutable float 1.0 at 0x007fc2f0, not the unr
 four-byte multiplier format is at 0x00758ca8. All four are checked against retail.
 Nine TerrainPlayer-only definitions remain held. Renderer-specific data stays in
 reviewed scratch until its genuine source/provider batch is ready.
+
+
+### Renderer and connected provider data checkpoint (2026-10-03)
+
+Twenty new physical shared definitions have exact complete initializers totaling
+248 bytes. Scoped proofs reach 981: 550 known extents/137,513 unique bytes and
+431 unknown extents/58,602 source-view bytes. All 961 baseline proofs remain
+unchanged. Only env_padLight_on at 0x00759718 establishes a new complete 16-byte
+NUL string extent; nineteen new views total 232 bytes and receive no allocation
+credit. Wind and renderer scalars have verified zero/one/minus-one initializers;
+projection adjustment is {1,1,0,0}, and its two matrix views are initially zero.
+
+Actual shadow append code caps the pointer list at four records; the two working
+pointer/result arrays therefore have four entries each. This producer domain does
+not infer original allocation extents or introduce corrupt-state guards. Material
+pool pointer/count retain genuine zero storage at 0x0096e580/0x009715b0. Snake
+segment height and upward speed are the actual .02f/1.0f at 0x00805140/0x00805144.
+All source owners are canonical, with full compiled-region and raw retail proofs.

@@ -145,3 +145,35 @@ NULNKHDR *NuLstGetNext(NULSTHDR *list, NULNKHDR *node) {
 
     return NULL;
 }
+
+NULNKHDR *__cdecl NuLstAllocHead(NULSTHDR *list) {
+    u32 current_thread;
+    NULNKHDR *node;
+    if (list->free == NULL)
+        return NULL;
+    current_thread = nu_current_thread_id;
+    if (list->safe_thread != current_thread)
+        NuThreadDisableThreadSwap();
+    node = list->free;
+    list->free = node->next;
+    if (list->free == NULL)
+        list->free_tail = NULL;
+    else
+        list->free->prev = NULL;
+    node->next = list->head;
+    if (list->head != NULL)
+        list->head->prev = node;
+    else
+        list->tail = node;
+    node->prev = NULL;
+    list->head = node;
+    node->is_used = 1;
+    ++list->used_count;
+    if (list->safe_thread != current_thread)
+        NuThreadEnableThreadSwap();
+    return node + 1;
+}
+
+NULNKHDR *__cdecl NuLstAlloc(NULSTHDR *list) {
+    return NuLstAllocHead(list);
+}

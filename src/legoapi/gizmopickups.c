@@ -121,3 +121,121 @@ void __cdecl AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused,
         }
     }
 }
+
+void __cdecl AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *position, NUVEC *direction,
+                        f32 unused, i32 player_id, f32 speed, f32 lifetime, GAMEOBJECT *owner, i32 random_types,
+                        i32 panel) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    const f32 scale = AreaPickupScale;
+    u32 arcade_flags;
+    i32 to_panel, remainder, remaining, i, j, type, score, count, both_players;
+    u8 counts[10] = {0};
+    NUVEC velocity;
+    GAMEOBJECT *recipient;
+    GAMEOBJECT *eligible[2];
+    (void)unused;
+    Arcade_GetMode(&arcade_flags);
+    if (arcade_flags & 0x10)
+        coins = torpedoes = 0;
+    if (world->area != NULL && (world->area->flags & 0x104) == 4)
+        random_types = 0;
+    if (world->current_level->flags & 0x80000) {
+        to_panel = 1;
+        if (player_id == -1) {
+            if (player2 != NULL)
+                player_id = qrand() / 32768;
+            else if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80))
+                player_id = 0;
+            else
+                player_id = 1;
+        }
+    } else if (world->area != NULL && (world->area->flags & 0x100)) {
+        player_id = qrand() / 32768;
+        to_panel = 1;
+    } else
+        to_panel = player_id == -1 ? 0 : panel;
+    if (ChallengeMode != 0 || Mission_Active(NULL) != NULL)
+        coins = 0;
+    if (speed == 1.0f)
+        speed *= scale;
+    if (netclient != 0)
+        return;
+    remainder = coins % 10;
+    if (remainder > 0)
+        coins -= remainder;
+    if (coins > 512000)
+        coins = 512000;
+    if (coins > 0)
+        PlaySfx((char *)PickupCoinsLandName, position);
+    remaining = coins;
+    if (random_types) {
+        while (remaining > 0) {
+            type = CoinTab[qrand() / 16384];
+            score = GizmoPickupType[type].score;
+            if (remaining - score < 0)
+                continue;
+            ++counts[type];
+            remaining -= score;
+        }
+    } else if (remaining > 0) {
+        for (i = 3; remaining > 0; --i) {
+            type = CoinTab[i];
+            score = GizmoPickupType[type].score;
+            while (remaining - score >= 0) {
+                remaining -= score;
+                ++counts[type];
+            }
+        }
+    }
+    if (player_id != 0 && player_id != 1)
+        player_id = -1;
+    if (to_panel) {
+        if (coins > 0)
+            DrawBuildUpTime = (f32)(COINMSGTIME + 1.0);
+        AddCoinsToPanel(coins, position, player_id, speed, owner, random_types);
+    } else {
+        for (i = 0; i < 4; ++i) {
+            type = CoinTab[i];
+            for (j = 0; j < counts[type]; ++j) {
+                MakePartVector(&velocity, direction, speed);
+                AddCoinsAsParts(type, position, &velocity, lifetime, scale);
+            }
+        }
+    }
+    both_players = 0;
+    if (hearts > 0 && VehicleArea != 0 && Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) &&
+        Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80)) {
+        both_players = 1;
+        hearts = 2;
+    }
+    for (i = 0; i < hearts; ++i) {
+        if (to_panel)
+            velocity = v000;
+        else
+            MakePartVector(&velocity, direction, speed);
+        recipient = NULL;
+        if (both_players)
+            recipient = (GAMEOBJECT *)Player[i == 0 ? 0 : 1];
+        else if (owner != NULL)
+            recipient = owner;
+        else {
+            count = 0;
+            if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80))
+                eligible[count++] = (GAMEOBJECT *)Player[0];
+            if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80))
+                eligible[count++] = (GAMEOBJECT *)Player[1];
+            if (count > 0)
+                recipient = eligible[count == 1 ? 0 : qrand() / 32768];
+        }
+        AddHeartAsPart(recipient, position, &velocity, scale, lifetime);
+    }
+    for (i = 0; i < torpedoes; ++i) {
+        MakePartVector(&velocity, direction, speed);
+        AddTorpedoAsPart(position, &velocity, scale, lifetime);
+    }
+    if (!(world->current_level->flags & 0x80000))
+        for (i = 0; i < powerups; ++i) {
+            MakePartVector(&velocity, direction, speed);
+            PowerUp_AddPart(position, &velocity, scale, lifetime);
+        }
+}

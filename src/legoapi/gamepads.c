@@ -84,3 +84,10 @@ void __cdecl NewBuzzFrames(void *pad, i32 frames, i32 ignored) {
     if (pad != NULL)
         NuSound3AddRumble(pad, (f32)frames / DEFAULTFPS, 0, 0, 0.0f);
 }
+
+void __cdecl TakeHitRumble(GAMEOBJECT *object, f32 strength) {
+    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+        NewRumble(object->pad->bound_pad, strength, 0);
+        NewBuzz(object->pad->bound_pad, 0.1f, 0);
+    }
+}

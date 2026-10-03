@@ -139,3 +139,74 @@ void __cdecl GizBuildItPushAwayFromStart(GAMEOBJECT *player, void *context) {
     minimum.z += centre.z;
     PushAway(&centre, radius, &minimum, &maximum, player, NULL, 1.0f, 0);
 }
+
+typedef struct buildit_reset_matrices_pc_s {
+    NUMTX start_mtx, end_mtx, draw_mtx;
+} BUILDIT_RESET_MATRICES_PC;
+STATIC_ASSERT(offsetof(BUILDIT_RESET_MATRICES_PC, start_mtx) == 0);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_MATRICES_PC, end_mtx) == 0x40);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_MATRICES_PC, draw_mtx) == 0x80);
+typedef struct buildit_reset_pc_s {
+    u8 unknown_000[0x10];
+    GAMEANIMSET *anim_set;
+    GAMEANIMOBJ **anim_objects;
+    void *linked_buildit;
+    u8 unknown_01c[0x44 - 0x1c];
+    f32 reset_step_timer, reset_step_duration;
+    u8 unknown_04c[0x6c - 0x4c];
+    u8 anim_object_count, build_state, builders_active, built_object_count;
+    u8 unknown_070[0xa];
+    u16 availability_flags;
+} BUILDIT_RESET_PC;
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, anim_set) == 0x10);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, anim_objects) == 0x14);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, linked_buildit) == 0x18);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, reset_step_timer) == 0x44);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, reset_step_duration) == 0x48);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, anim_object_count) == 0x6c);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, build_state) == 0x6d);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, builders_active) == 0x6e);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, built_object_count) == 0x6f);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, availability_flags) == 0x7a);
+void __cdecl GizBuildIt_SetToStart(void *buildit_pointer, i32 emit_debris, i32 keep_built_pieces) {
+    BUILDIT_RESET_PC *buildit = (BUILDIT_RESET_PC *)buildit_pointer;
+    i32 restored_count = 0, i;
+    f32 progress;
+    if (buildit == NULL || buildit->anim_set == NULL)
+        return;
+    if (keep_built_pieces && buildit->anim_object_count != 0) {
+        progress = (f32)buildit->built_object_count / (i32)buildit->anim_object_count;
+        if (progress >= 0.5f) {
+            if (progress < (f64)0.9f)
+                restored_count = buildit->anim_object_count >> 1;
+            else
+                restored_count = buildit->built_object_count;
+        }
+    }
+    buildit->availability_flags |= 2;
+    for (i = 0; i < buildit->anim_object_count; ++i) {
+        if (emit_debris && i < buildit->built_object_count) {
+            BUILDIT_RESET_MATRICES_PC *data = (BUILDIT_RESET_MATRICES_PC *)buildit->anim_objects[i]->object_data;
+            AddGameDebris(WORLD->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab], (NUVEC *)&data->end_mtx.m30);
+        }
+    }
+    if (buildit->linked_buildit != NULL) {
+        for (i = restored_count; i < buildit->anim_object_count; ++i) {
+            BUILDIT_RESET_MATRICES_PC *data = (BUILDIT_RESET_MATRICES_PC *)buildit->anim_objects[i]->object_data;
+            data->draw_mtx = data->start_mtx;
+        }
+    } else {
+        GameAnimSet_SetVisibility(buildit->anim_set, 1);
+        for (i = restored_count; i < buildit->anim_object_count; ++i) {
+            GAMEANIMOBJ *object = buildit->anim_objects[i];
+            object->instance_animation->flags &= ~1u;
+            object->instance_animation->ltime = object->start_frame;
+        }
+        buildit->reset_step_timer = 0.3f;
+        buildit->reset_step_duration = 0.3f;
+    }
+    buildit->availability_flags &= ~4;
+    buildit->built_object_count = (u8)restored_count;
+    buildit->builders_active = 0;
+    buildit->build_state = 0;
+}

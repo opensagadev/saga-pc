@@ -457,3 +457,16 @@ i32 __cdecl NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32
     }
     return 1;
 }
+
+void __cdecl NuMtxCalcCheapFaceY_v2(NUMTX *matrix, NUVEC *direction) {
+    NUVEC *first = (NUVEC *)&matrix->m00;
+    NUVEC *second = (NUVEC *)&matrix->m10;
+    NUVEC *third = (NUVEC *)&matrix->m20;
+    NuVecCross(first, (NUVEC *)&global_camera.mtx.m20, direction);
+    NuVecNorm(first, first);
+    *second = *direction;
+    NuVecCross(third, first, second);
+    matrix->m03 = matrix->m13 = matrix->m23 = 0.0f;
+    matrix->m30 = matrix->m31 = matrix->m32 = 0.0f;
+    matrix->m33 = 1.0f;
+}
