@@ -8636,6 +8636,120 @@
         "TerrainPlayer, its private helper group and pickup/effects/message frontiers remain scratch until their finite real contracts/providers are integrated.",
         "Selected native expectations derive from reviewed PC instructions, not executed retail differential equivalence."
       ]
+    },
+    {
+      "checkpoint": "message-producer-legacy-literal-corrections-20261003",
+      "baseline_commit": "d40c4136018514ba5e6597c3965b52e858ca8c3e",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 719777,
+        "matched_code_bytes": 61746,
+        "matching_percent": 1.7787849089347167,
+        "fuzzy_coverage_percent": 10.206869876367197,
+        "mapped_functions": 2531,
+        "matched_functions": 1019,
+        "objdiff_fuzzy_percent": 60.20922,
+        "objdiff_total_code": 588643,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1356420,
+        "mapping_percent": 3.385373405873032
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 720855,
+        "matched_code_bytes": 61778,
+        "matching_percent": 1.7797067681172698,
+        "fuzzy_coverage_percent": 10.230999386442253,
+        "mapped_functions": 2532,
+        "matched_functions": 1020,
+        "objdiff_fuzzy_percent": 60.237938,
+        "objdiff_total_code": 589753,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1357506,
+        "mapping_percent": 3.3880838609819057
+      },
+      "newly_compared": [
+        {
+          "name": "ResetGameMessages",
+          "symbol": "_ResetGameMessages",
+          "address": "0x00560b40",
+          "units": [
+            "src/legoapi/gamemessages.c"
+          ],
+          "target_size": 32,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/gamemessages.c",
+              "base_size": 32,
+              "exact_match": true,
+              "target_sha256": "0881fcb57e30b1594f0ea44e59681482f792a298816a79992322c98fae194051",
+              "base_sha256": "0881fcb57e30b1594f0ea44e59681482f792a298816a79992322c98fae194051",
+              "relocation_count": 2,
+              "comparison_unit": "00560b40-2a56e33f13de",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "AddGameMsg",
+          "symbol": "_AddGameMsg",
+          "address": "0x00560b60",
+          "units": [
+            "src/legoapi/gamemessages.c"
+          ],
+          "target_size": 1078,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/gamemessages.c",
+              "base_size": 1030,
+              "exact_match": false,
+              "target_sha256": "a17c6a447a8afa7446766f7bab16dc923324725ebe0805456277bc116fcbd150",
+              "base_sha256": "9ab865350db503c14c06a7ce027f5a89393f719b23b8cff3f535391030b3f138",
+              "relocation_count": 10,
+              "comparison_unit": "00560b60-5c03093ea434",
+              "objdiff_percent": 73.83972
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 73.83972
+        }
+      ],
+      "newly_compared_functions": 2,
+      "new_original_code_bytes": 1110,
+      "exact_code_added": 32,
+      "prior_exact_code_and_data_preserved": true,
+      "data_definitions_added": 2,
+      "known_allocation_credit_added": 0,
+      "legacy_corrected_functions": [
+        "_edgraCalculatePage",
+        "_PointAlongSpline",
+        "_GamePad_Rotate"
+      ],
+      "verified_checks": {
+        "tests": 665,
+        "skipped": 3,
+        "test_seconds": 34.121,
+        "llvm": 18,
+        "tidy_units": 200,
+        "format_files": 202,
+        "objects": 200,
+        "function_definitions": 2269,
+        "data_definitions": 3859,
+        "source_only_link": true,
+        "native_message_cases": 16,
+        "native_grass_fixture": true,
+        "native_grass_old_formula_failures": 10
+      },
+      "limitations": [
+        "Full gameplay and original resources remain unverified.",
+        "New message array/index original extents remain unknown despite complete emitted initializer checks.",
+        "Pickup constructors/table callbacks, gameplay parents and combat caller remain in scratch pending their finite genuine services/data."
+      ],
+      "ongoing_goal": "Indefinite whole-project transfer and direct main pushes continue."
     }
   ]
 }

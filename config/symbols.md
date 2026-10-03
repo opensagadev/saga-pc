@@ -3714,3 +3714,18 @@ thresholds and terrain 1.02 margin are promoted f32 values in f64 compiler liter
 Full initializer equality verifies these bindings. No comparison extent is
 masked or shortened. See transfer-execution.md for actual-object fixtures and
 the remaining scene/pickup/gameplay providers.
+
+
+### Message and legacy literal correction contracts (2026-10-03)
+
+AddGameMsg 0x00560b60/1,078 ends after JMP 0x00560f91 to the common return;
+RET 0x00560d15 is not its boundary. ResetGameMessages 0x00560b40/32 is exact.
+Input/runtime named views are 0x50/0x114, with the observed pool loop bounded
+to 128 records. The end callback takes one message pointer; copied delay/tick/
+update pointer types retain source hints without claiming additional caller proof.
+
+Actual spline/gamepad qword operands bind true 1/65536 at 0x00761610.
+Grass operands prove true 1.25 at 0x00751720, promoted 1.2f at 0x00758be0
+and promoted 1.7625f at 0x0076d7b8. Wrong .1/true-1.7625 literal aliases are
+revoked. These correct existing source/bindings; no additional function extents
+or source bytes are credited for the three old affected functions.

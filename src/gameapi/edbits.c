@@ -117,9 +117,9 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
                 switch ((i8)clump->unknown_26) {
                     case 1: {
                         random = (f32)(NuRandFloatSeeded(&seed) - 0.25);
-                        computed_scale = (f32)(0.1 * sample->scale);
-                        computed_scale = (f32)((1.25 - computed_scale) + random * random);
-                        computed_scale = (f32)(computed_scale / 1.7625 * clump->field_30);
+                        computed_scale = (f32)(1.25 * sample->scale);
+                        computed_scale = (f32)(((f64)1.2f - computed_scale) + random * random);
+                        computed_scale = (f32)(computed_scale / (f64)1.7625f * clump->field_30);
                         if (computed_scale < clump->field_2c)
                             computed_scale = clump->field_2c;
                         sample->scale = computed_scale;

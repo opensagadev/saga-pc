@@ -1189,3 +1189,15 @@ and its optional sound callback is actual NULL. TerrainPlayer movement scales
 2.5/15, connection tolerance .01 and shadow switch 1 remain mutable storage,
 not substituted literals. Source-view/relocation proofs use the actual compiled
 data.cpp object; unknown original capacities are not inferred from these reads.
+
+
+### Message storage checkpoint (2026-10-03)
+
+Added actual zero GameMessage[128] at 0x00947be0 (35,328 emitted bytes) and
+GameMessageIndex at 0x009505e0 (four bytes). The array view ends exactly before
+the index; independent overlap checks and complete source initializer comparisons
+pass. Both historical original extents remain blank. Scoped proofs become 848:
+522 known extents/136,652 unique bytes and 326 unknown extents/56,792 source-view
+bytes, with no additional allocation credit. All 846 previous proofs remain
+unchanged. Pickup table initializers remain held on their genuine nonzero callback
+providers; no raw addresses or NULL substitutes are introduced.

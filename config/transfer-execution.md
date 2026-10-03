@@ -606,3 +606,47 @@ Next connected releases are the message producer/reset, genuine pickup callbacks
 and constructors, carry graph, TerrainPlayer and further terrain scanners.
 Full gameplay, hardware rendering and level resources remain unverified. The
 unbounded whole-project goal remains active.
+
+
+## Message producer and legacy literal correction checkpoint (2026-10-03)
+
+Compared with d40c413, two actual production message bodies add 1,110 original
+PC bytes, bringing compared code to 589,753.
+Whole-code fuzzy coverage becomes 10.230999386%,
+up from 10.206869876%; exact code adds 32 bytes
+to 61,778. Every previous exact code and data
+result remains exact. AddGameMsg1078 retains all late blocks beyond its sole early
+RET and preserves the PC protected-slot overwrite behavior. ResetGameMessages32
+is fully byte exact and clears only active flags, preserving the index and record
+contents. Sixteen native cases link actual production providers and verify
+wrapping, ratios/NaNs, flags, text bounds, real special rejection, protected-slot
+overwrite, temporary records and callback-before-validation ordering.
+
+A bounded audit of all compiled known-size nonexact readonly compiler literals
+found an older incorrect reciprocal binding and three grass operation constants.
+PointAlongSpline/GamePad_Rotate correctly use true 1/65536; their actual PC
+operands read 0x00761610, so the alias moves there from the erroneous 0x00751700
+binding. The pickup-vector promoted-f32 1/65535 at 0x00751700 remains independently
+verified and unchanged. Grass case 1 must multiply by true 1.25, subtract from
+promoted 1.2f and divide by promoted 1.7625f, retaining its float spills.
+The two revoked wrong-value aliases are removed and the actual generated aliases
+are bound from decoded PC operands and exact eight-byte initializers.
+
+Actual production grass fixture scales are 1.29306257 and 1.18206549 for its two
+unclamped seeds, with a separate lower clamp of 3 and matrix/pointer/guard checks.
+The old three-constant source fails ten assertions against the same true providers.
+This is a semantic correction, not new source-span credit or byte tuning.
+
+The source-only link passes across 200 objects, 2269 functions and
+3859 data definitions with complete mappings/relocations. LLVM18 format/tidy
+and 665 tests pass with three expected skips. Two actual BSS owners add 35,332
+source-view bytes: 128 message records and the separate index. Both initializers
+match PC in full. Scoped data totals are 848 proofs, 522 known extents/136,652
+unique bytes and 326 unknown extents/56,792 source-view bytes; no historical
+allocation credit is inferred. All 846 prior scoped proofs remain unchanged.
+
+The previous d40c413 checkpoint passed exact-head CI run 37127951525.
+Next connected work covers the genuine pickup table callbacks/children,
+terrain gameplay parents, KillParts, combat and UI score/menu services.
+Their compiled scratch candidates remain distinct from released source.
+The unbounded whole-project goal remains active; full gameplay is unverified.

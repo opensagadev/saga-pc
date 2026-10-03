@@ -1146,7 +1146,8 @@ address    , symbol                                                         , si
 0x005605b0 , _WorldInfo_ClearAllIfScreenFaded                               , 115   , void __cdecl (void)
 0x00560630 , _WorldInfo_StreamLevel                                         , 154   , void __cdecl (BGPROCINFO *)
 0x00560aa0 , _WorldInfo_Activate                                            , 18    , void __cdecl (void)
-0x00560b40 , _ResetGameMessages                                             , 32    ,
+0x560b40,_ResetGameMessages,32,void __cdecl (void)
+0x560b60,_AddGameMsg,1078,GAME_MESSAGE_PC * __cdecl (ADD_GAME_MESSAGE_PC *)
 0x00561ba0,_StartJump,244,"void __cdecl (GAMEOBJECT *, i32)"
 0x00561d80 , _BigJump_JumpAction_Default                                    , 66    , i32 __cdecl (GAMEOBJECT *)
 0x00561e20,_StartBigJump,489,"i32 __cdecl (GAMEOBJECT *, NUVEC *, i32, f32, f32, i32)"
@@ -2969,14 +2970,12 @@ address    , symbol                                                         , si
 0x007516e8 , __real@3fd0000000000000                                        , 8     , const f64
 0x007516f8 , __real@3fd99999a0000000                                        , 8     , const f64
 0x751700,_PlayerRandomScalePc,8,const f64
-0x00751700 , __real@3ef0000000000000                                        , 8     , const f64
 0x00751700 , __real@3ef0001000000000                                        , 8     , const f64
 0x00751708 , __real@40400000                                                , 4     , const f32
 0x0075170c , __real@41200000                                                , 4     , const f32
 0x00751710 , __real@4010000000000000                                        , 8     , const f64
 0x00751718 , __real@3e800000                                                , 4     , const f32
 0x751720,_PlayerStepOuterPc,8,const f64
-0x751720,__real@3fb999999999999a,8,const f64
 0x00751720 , __real@3ff4000000000000                                        , 8     , const f64
 0x00751728 , __real@3e99999a                                                , 4     , const f32
 0x00751730 , _Text_TimeS                                                    , 3     , const char[3]
@@ -3423,6 +3422,7 @@ address    , symbol                                                         , si
 0x758b54,_PlayerBuildItNegativeLimitPc,4,const f32
 0x00758b54 , __real@ce6e6b28                                                , 4     , const f32
 0x758be0,_PlayerSlideSpeedPc,8,const f64
+0x758be0,__real@3ff3333340000000,8,const f64
 0x758d08,_PlayerPanelVariantOneX,4,const f32
 0x758d0c,_PlayerPanelVariantZeroZ,4,const f32
 0x758d10,_PlayerPanelVariantZeroX,4,const f32
@@ -4204,6 +4204,7 @@ address    , symbol                                                         , si
 0x761594,__real@3a23d70b,4,const f32
 0x007615b0 , _NuLstCreateTag                                                , 52    , const char[52]
 0x761610, _NuVpFixed16ScalePc, ,
+0x761610,__real@3ef0000000000000,8,const f64
 0x0076161c , _Text_PathJapaneseText                                         , 9     , const char[9]
 0x00761628 , _Text_PathDanishText                                           , 7     , const char[7]
 0x00761630 , _Text_PathSpanishText                                          , 8     , const char[8]
@@ -4688,7 +4689,7 @@ address    , symbol                                                         , si
 0x0076d288,__real@40159999a0000000,8,const f64
 0x0076d290,__real@41d6666660000000,8,const f64
 0x76d29c,__real@501502f9,4,const f32
-0x76d7b8,__real@3ffc333333333333,8,const f64
+0x76d7b8,__real@3ffc333340000000,8,const f64
 0x76e0e0,_TerrainUnusedSpatialBlockPc,4,const f32
 0x76e0e0,__real@4f000000,4,const f32
 0x0076e0e4,??_C@_04PAGELMPD@?4ter?$AA@,5,const char[5]
@@ -5914,6 +5915,8 @@ address    , symbol                                                         , si
 0x00947bd0 , _WorldInfo_InitMenuFn                                          , 4     , "void (__cdecl *)(WORLDINFO *, i32 *, i32 *)"
 0x00947bd4 , _WorldInfo_InitLastFn                                          , 4     , void (__cdecl *)(WORLDINFO *)
 0x00947bdc , _Grass_Available                                               , 4     , i32
+0x947be0,_GameMessage,,GAME_MESSAGE_PC[128]
+0x9505e0,_GameMessageIndex,,i32
 0x00950600 , _FindSlamOriginUseCurrentPositionFnPc                          ,       ,
 0x00950698 , _MainRenderTime                                                , 4     , f32
 0x0095069c , _MainRenderTargetTime                                          , 4     , f32

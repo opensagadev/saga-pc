@@ -6366,6 +6366,115 @@ struct level_fixup_pc_s;
 #define PCWarningPrefix NuBlankStringValue            // NOLINT(readability-identifier-naming)
 #define PCWarningNativeFormat GizAIMessage_NameFormat // NOLINT(readability-identifier-naming)
 
+typedef struct game_message_pc_s GAME_MESSAGE_PC;
+typedef void(__cdecl *GAME_MESSAGE_CALLBACK_PC)(GAME_MESSAGE_PC *);
+typedef struct add_game_message_pc_s {
+    char *text;
+    NUVEC *position;
+    NUVEC *target_position;
+    f32 scale, target_scale;
+    u8 red, green, blue, alpha;
+    u32 flags;
+    f32 duration, delay;
+    u16 unknown_24;
+    i16 icon;
+    void *special;
+    u32 score;
+    f32 unknown_30, unknown_34;
+    GAME_MESSAGE_CALLBACK_PC delay_fn, tick_fn, update_fn;
+    void *unknown_44;
+    GAME_MESSAGE_CALLBACK_PC end_fn;
+    i8 player_index;
+    u8 allow_temporary, target_is_coin_total, unknown_4f;
+} ADD_GAME_MESSAGE_PC;
+
+struct game_message_pc_s {
+    char *text;
+    char text_buffer[0x78];
+    NUVEC position_a, target_position, position, start_position;
+    f32 scale_start, target_scale, scale_initial, scale_current;
+    f32 elapsed, duration, parameter_c4, parameter_c8, scale_multiplier, delay, parameter_d4;
+    u32 flags, score;
+    u16 parameter_e0, parameter_e2, parameter_e4, icon;
+    NUSPECIALHANDLE special;
+    u8 red, green, blue, alpha;
+    u8 active, has_start_position, expired, parameter_fb, parameter_fc;
+    i8 player_index;
+    u8 target_is_coin_total, allow_temporary;
+    GAME_MESSAGE_CALLBACK_PC delay_fn, tick_fn, update_fn;
+    void *parameter_10c;
+    GAME_MESSAGE_CALLBACK_PC end_fn;
+};
+STATIC_ASSERT(sizeof(GAME_MESSAGE_PC) == 0x114);
+STATIC_ASSERT(sizeof(ADD_GAME_MESSAGE_PC) == 0x50);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, text) == 0x0);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, text_buffer) == 0x4);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, position_a) == 0x7c);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, target_position) == 0x88);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, position) == 0x94);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, start_position) == 0xa0);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, scale_start) == 0xac);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, target_scale) == 0xb0);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, scale_initial) == 0xb4);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, scale_current) == 0xb8);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, elapsed) == 0xbc);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, duration) == 0xc0);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, parameter_c4) == 0xc4);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, parameter_c8) == 0xc8);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, scale_multiplier) == 0xcc);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, delay) == 0xd0);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, parameter_d4) == 0xd4);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, flags) == 0xd8);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, score) == 0xdc);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, parameter_e0) == 0xe0);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, parameter_e2) == 0xe2);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, parameter_e4) == 0xe4);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, icon) == 0xe6);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, special) == 0xe8);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, red) == 0xf4);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, green) == 0xf5);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, blue) == 0xf6);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, alpha) == 0xf7);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, active) == 0xf8);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, has_start_position) == 0xf9);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, expired) == 0xfa);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, parameter_fb) == 0xfb);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, parameter_fc) == 0xfc);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, player_index) == 0xfd);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, target_is_coin_total) == 0xfe);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, allow_temporary) == 0xff);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, delay_fn) == 0x100);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, tick_fn) == 0x104);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, update_fn) == 0x108);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, parameter_10c) == 0x10c);
+STATIC_ASSERT(offsetof(GAME_MESSAGE_PC, end_fn) == 0x110);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, text) == 0x0);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, position) == 0x4);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, target_position) == 0x8);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, scale) == 0xc);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, target_scale) == 0x10);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, red) == 0x14);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, green) == 0x15);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, blue) == 0x16);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, alpha) == 0x17);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, flags) == 0x18);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, duration) == 0x1c);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, delay) == 0x20);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, icon) == 0x26);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, special) == 0x28);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, score) == 0x2c);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, unknown_30) == 0x30);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, unknown_34) == 0x34);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, delay_fn) == 0x38);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, tick_fn) == 0x3c);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, update_fn) == 0x40);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, unknown_44) == 0x44);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, end_fn) == 0x48);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, player_index) == 0x4c);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, allow_temporary) == 0x4d);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, target_is_coin_total) == 0x4e);
+STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, unknown_4f) == 0x4f);
+
 typedef union PC_SURFACE_MASK_PC {
     u8 low;
     u32 word;
@@ -6426,6 +6535,11 @@ STATIC_ASSERT(offsetof(OcclusionManager, query_count) == 0x164);
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+    extern GAME_MESSAGE_PC GameMessage[128];
+    extern i32 GameMessageIndex;
+    GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message);
+    void __cdecl ResetGameMessages(void);
 
     void __cdecl NewScan(NUVEC *position, i32 terrain_mask, i32 scan_platforms);
     void __cdecl ScanTerrainHandel(i32 terrain_mask, i16 *handle);

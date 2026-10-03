@@ -7403,3 +7403,12 @@ extern "C" {
     f32 AreaPickupScale;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$GameMessage")
+    GAME_MESSAGE_PC GameMessage[128];
+#pragma bss_seg()
+#pragma bss_seg(".bss$GameMessageIndex")
+    i32 GameMessageIndex;
+#pragma bss_seg()
+}
