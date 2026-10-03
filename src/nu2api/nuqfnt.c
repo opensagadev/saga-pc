@@ -6,6 +6,58 @@ extern f32 qfnt_rezscale_h;
 extern f32 qfnt_offscale_x;
 extern f32 qfnt_offscale_y;
 
+void __cdecl NuQFntPushPrintMode(u32 mode) {
+    if (NuQFntModeStackIndex < 16) {
+        NuQFntModeStack[NuQFntModeStackIndex++] = NuQFntMode;
+    }
+    NuQFntMode = mode;
+}
+
+void __cdecl NuQFntPopPrintMode(void) {
+    if (NuQFntModeStackIndex > 0) {
+        NuQFntMode = NuQFntModeStack[--NuQFntModeStackIndex];
+    }
+}
+
+void __cdecl NuQFntSet(VUFNT *font) {
+    if (font == NULL) {
+        font = system_qfont;
+    }
+    if (font != NULL) {
+        font->mode = 1;
+        nuqfnt_space_width = font->space_width;
+    }
+}
+
+void __cdecl NuQFntSetScale(VUFNT *font, f32 x_scale, f32 y_scale) {
+    if (font == NULL) {
+        font = system_qfont;
+    }
+    if (font != NULL) {
+        *font->x_scale = x_scale;
+        if ((NuQFntMode & 4) != 0) {
+            *font->y_scale = y_scale;
+        } else {
+            *font->y_scale = (f32)(y_scale * NuQFntHalfScale);
+        }
+    }
+}
+
+void __cdecl NuQFntSetColour(VUFNT *font, u32 colour) {
+    if (font == NULL) {
+        font = system_qfont;
+    }
+    if (font != NULL) {
+        font->platform_data->colour = colour;
+    }
+}
+
+void __cdecl NuQFntSetUVSizePc(VUFNT *font, f32 x_scale, f32 y_scale) {
+    NuQFntPushPrintMode(2);
+    NuQFntSetScale(font, x_scale, y_scale);
+    NuQFntPopPrintMode();
+}
+
 void __cdecl NuQFntSetRS(void *stream, VUFNT *font) {
     (void)stream;
     font->mode = 1;

@@ -35,6 +35,11 @@ int __cdecl NuMain(int argc, char **argv) {
     }
     Text_InitLanguageList(Game_LanguageList);
     Text_SetLanguage(-1);
+    // LoadPerm calls NuFrameBegin, which needs the still-unreconstructed input owner.
+    if (nu_input_state == NULL) {
+        STUBBED_NAMED("NuMain: PC input-state setup before LoadPerm");
+        return 0;
+    }
     StartPerm();
     LoadPerm();
     EndPerm();

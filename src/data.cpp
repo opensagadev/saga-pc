@@ -1,6 +1,7 @@
 #include "saga.h"
 
 struct SoundQueue;
+struct PC_SOUND_COMMIT_PC;
 #pragma bss_seg(".bss$music_man")
 NuMusic music_man;
 #pragma bss_seg()
@@ -3618,6 +3619,18 @@ extern "C" {
 #pragma const_seg(".rdata$AIActionStateName")
     const char AIActionStateName[6] = "state";
 #pragma const_seg()
+#pragma const_seg(".rdata$AIActionCircleTeleportName")
+    extern const char AIActionCircleTeleportName[9] = "teleport";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionCircleReverseName")
+    extern const char AIActionCircleReverseName[8] = "reverse";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionCircleAnticlockwiseName")
+    extern const char AIActionCircleAnticlockwiseName[14] = "anticlockwise";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIActionCircleClockwiseName")
+    extern const char AIActionCircleClockwiseName[10] = "clockwise";
+#pragma const_seg()
 #pragma const_seg(".rdata$AIPathAnticlockwiseName")
     const char AIPathAnticlockwiseName[14] = "ANTICLOCKWISE";
 #pragma const_seg()
@@ -3680,6 +3693,21 @@ extern "C" {
 #pragma const_seg()
 #pragma bss_seg(".bss$AIActionDiagnosticMode")
     i32 AIActionDiagnosticMode;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ForceBackRadiusPc")
+    f32 ForceBackRadiusPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ForceBackRadius2Pc")
+    f32 ForceBackRadius2Pc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ForceBackObjPc")
+    GAMEOBJECT *ForceBackObjPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ForceBackPosPc")
+    NUVEC *ForceBackPosPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ForceBackTypePc")
+    i32 ForceBackTypePc;
 #pragma bss_seg()
 
 #pragma data_seg(".data$Tag_Mode")
@@ -4642,4 +4670,717 @@ extern "C" {
 #pragma const_seg(".rdata$NuVpDepthRangePc")
     extern const f64 NuVpDepthRangePc = 16777215.0;
 #pragma const_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$WorldPathSeparator")
+    extern const char WorldPathSeparator[2] = "\\";
+#pragma const_seg()
+#pragma const_seg(".rdata$WorldObjectAnimFormat")
+    extern const char WorldObjectAnimFormat[7] = "%s.anm";
+#pragma const_seg()
+#pragma const_seg(".rdata$WorldLevelConfigFormat")
+    extern const char WorldLevelConfigFormat[7] = "%s.txt";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileSourcePathPC")
+    extern const char NuFileSourcePathPC[50] = "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757834")
+    extern const char AITransferLiteral757834[13] = "jump_factor=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757874")
+    extern const char AITransferLiteral757874[15] = "tgt_character=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757844")
+    extern const char AITransferLiteral757844[14] = "check_terrain";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral75786c")
+    extern const char AITransferLiteral75786c[5] = "slam";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757860")
+    extern const char AITransferLiteral757860[10] = "to_origin";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757bb4")
+    extern const char AITransferLiteral757bb4[13] = "speed=TIPTOE";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757ba8")
+    extern const char AITransferLiteral757ba8[11] = "speed=WALK";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757b9c")
+    extern const char AITransferLiteral757b9c[10] = "speed=RUN";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757ec4")
+    extern const char AITransferLiteral757ec4[10] = "keep_out=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757ebc")
+    extern const char AITransferLiteral757ebc[5] = "TRUE";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757a5c")
+    extern const char AITransferLiteral757a5c[12] = "dont_avoid=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757ee0")
+    extern const char AITransferLiteral757ee0[8] = "tag_to=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757a7c")
+    extern const char AITransferLiteral757a7c[8] = "looping";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757a84")
+    extern const char AITransferLiteral757a84[8] = "spline=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757cd8")
+    extern const char AITransferLiteral757cd8[5] = "mul=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757cd0")
+    extern const char AITransferLiteral757cd0[6] = "time=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757cc8")
+    extern const char AITransferLiteral757cc8[7] = "speed=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757e68")
+    extern const char AITransferLiteral757e68[5] = "path";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757e70")
+    extern const char AITransferLiteral757e70[15] = "path=LevelPath";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral75772c")
+    extern const char AITransferLiteral75772c[5] = "type";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757a44")
+    extern const char AITransferLiteral757a44[23] = "still_do_take_hit_anim";
+#pragma const_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$PCSoundMixSource")
+    void *PCSoundMixSource;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSoundMixSampleCount")
+    i32 PCSoundMixSampleCount;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSoundMixDestination")
+    void *PCSoundMixDestination;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSoundUpdateClock")
+    i32 PCSoundUpdateClock;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSoundLoopVoiceCount")
+    i32 PCSoundLoopVoiceCount;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSoundOneShotVoiceCount")
+    i32 PCSoundOneShotVoiceCount;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSoundMixEvent")
+    HANDLE PCSoundMixEvent;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSoundCommitTarget")
+    PC_SOUND_COMMIT_PC *PCSoundCommitTarget;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$AITransferLiteral7576b8")
+    extern const char AITransferLiteral7576b8[7] = "baddie";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7576a8")
+    extern const char AITransferLiteral7576a8[7] = "goodie";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7576b0")
+    extern const char AITransferLiteral7576b0[6] = "goody";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757724")
+    extern const char AITransferLiteral757724[7] = "range=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral75768c")
+    extern const char AITransferLiteral75768c[13] = "goodiebaddie";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral75769c")
+    extern const char AITransferLiteral75769c[11] = "goodybaddy";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral75773c")
+    extern const char AITransferLiteral75773c[8] = "neutral";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7576c0")
+    extern const char AITransferLiteral7576c0[6] = "baddy";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7576e0")
+    extern const char AITransferLiteral7576e0[10] = "maxrange=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7576f8")
+    extern const char AITransferLiteral7576f8[6] = "type=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7576d0")
+    extern const char AITransferLiteral7576d0[14] = "ifCanTakeover";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757744")
+    extern const char AITransferLiteral757744[7] = "State=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757eb4")
+    extern const char AITransferLiteral757eb4[8] = "Restart";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757ea8")
+    extern const char AITransferLiteral757ea8[10] = "backwards";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7583d0")
+    extern const char AITransferLiteral7583d0[18] = "attacker=opponent";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7583c4")
+    extern const char AITransferLiteral7583c4[10] = "attacker=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7583b4")
+    extern const char AITransferLiteral7583b4[16] = "attacker=player";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757a20")
+    extern const char AITransferLiteral757a20[8] = "victim=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757f7c")
+    extern const char AITransferLiteral757f7c[7] = "myself";
+#pragma const_seg()
+#pragma data_seg(".data$gizspecial_gizmotype_id")
+    i32 gizspecial_gizmotype_id = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$APIObjPlaySfxByIdFn")
+    void(__cdecl *APIObjPlaySfxByIdFn)(i32, NUVEC *);
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$WorldGrassFormat")
+    extern const char WorldGrassFormat[7] = "%s.gra";
+#pragma const_seg()
+#pragma const_seg(".rdata$WorldBridgeFormat")
+    extern const char WorldBridgeFormat[7] = "%s.bri";
+#pragma const_seg()
+#pragma bss_seg(".bss$Grass_Available")
+    i32 Grass_Available;
+#pragma bss_seg()
+#pragma bss_seg(".bss$APIObjectZeroMomentumPC")
+    NUVEC APIObjectZeroMomentumPC;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$PCDeviceStateCacheEnabled")
+    u8 PCDeviceStateCacheEnabled = 1;
+#pragma data_seg()
+#pragma bss_seg(".bss$PCDeviceRenderStateCache")
+    i32 PCDeviceRenderStateCache[12];
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDeviceCacheStateKey")
+    i32 PCDeviceCacheStateKey;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDeviceTextureCache")
+    void *PCDeviceTextureCache[5];
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDeviceSamplerStateCache")
+    i32 PCDeviceSamplerStateCache[8][14];
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDeviceSamplerInvalidation")
+    i32 PCDeviceSamplerInvalidation[8][2];
+#pragma bss_seg()
+#pragma data_seg(".data$nufile_lsn_allowed")
+    i32 nufile_lsn_allowed = 1;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$BackupGame")
+    GAMESAVE BackupGame;
+#pragma bss_seg()
+#pragma bss_seg(".bss$areaSuitBits")
+    u32 areaSuitBits;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$SceneFileExtensionPc")
+    extern const char SceneFileExtensionPc[5] = ".gsc";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_dds_PC")
+    extern const char NuFileExt_dds_PC[5] = ".dds";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_at3_PC")
+    extern const char NuFileExt_at3_PC[5] = ".at3";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_psc_PC")
+    extern const char NuFileExt_psc_PC[5] = ".psc";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_phg_PC")
+    extern const char NuFileExt_phg_PC[5] = ".phg";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_nx2_PC")
+    extern const char NuFileExt_nx2_PC[5] = ".nx2";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_hx2_PC")
+    extern const char NuFileExt_hx2_PC[5] = ".hx2";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_h4m_PC")
+    extern const char NuFileExt_h4m_PC[5] = ".h4m";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_gcm_PC")
+    extern const char NuFileExt_gcm_PC[5] = ".gcm";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_dsp_PC")
+    extern const char NuFileExt_dsp_PC[5] = ".dsp";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_ctx_PC")
+    extern const char NuFileExt_ctx_PC[5] = ".ctx";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_csc_PC")
+    extern const char NuFileExt_csc_PC[5] = ".csc";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_chg_PC")
+    extern const char NuFileExt_chg_PC[5] = ".chg";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_pss_PC")
+    extern const char NuFileExt_pss_PC[5] = ".pss";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_vag_PC")
+    extern const char NuFileExt_vag_PC[5] = ".vag";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_pnt_PC")
+    extern const char NuFileExt_pnt_PC[5] = ".pnt";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_ghg_PC")
+    extern const char NuFileExt_ghg_PC[5] = ".ghg";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_pc_ghg_PC")
+    extern const char NuFileExt_pc_ghg_PC[8] = "_pc.ghg";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_lr_pc_ghg_PC")
+    extern const char NuFileExt_lr_pc_ghg_PC[11] = "_lr_pc.ghg";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_pc_gsc_PC")
+    extern const char NuFileExt_pc_gsc_PC[8] = "_pc.gsc";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_bik_PC")
+    extern const char NuFileExt_bik_PC[5] = ".bik";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_wav_PC")
+    extern const char NuFileExt_wav_PC[5] = ".wav";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_cu2_PC")
+    extern const char NuFileExt_cu2_PC[5] = ".cu2";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_pc_dds_PC")
+    extern const char NuFileExt_pc_dds_PC[8] = "_pc.dds";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_bsa_PC")
+    extern const char NuFileExt_bsa_PC[5] = ".bsa";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_an3_PC")
+    extern const char NuFileExt_an3_PC[5] = ".an3";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_pam_PC")
+    extern const char NuFileExt_pam_PC[5] = ".pam";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_mib_PC")
+    extern const char NuFileExt_mib_PC[5] = ".mib";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_msf_PC")
+    extern const char NuFileExt_msf_PC[5] = ".msf";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_ps3_tex_PC")
+    extern const char NuFileExt_ps3_tex_PC[9] = "_ps3.tex";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_ps3_gsc_PC")
+    extern const char NuFileExt_ps3_gsc_PC[9] = "_ps3.gsc";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_ps3_ghg_PC")
+    extern const char NuFileExt_ps3_ghg_PC[9] = "_ps3.ghg";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_wmv_PC")
+    extern const char NuFileExt_wmv_PC[5] = ".wmv";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_wavm_PC")
+    extern const char NuFileExt_wavm_PC[6] = ".wavm";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_wavx_PC")
+    extern const char NuFileExt_wavx_PC[6] = ".wavx";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_cc2_PC")
+    extern const char NuFileExt_cc2_PC[5] = ".cc2";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_360_tex_PC")
+    extern const char NuFileExt_360_tex_PC[9] = "_360.tex";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_360_gsc_PC")
+    extern const char NuFileExt_360_gsc_PC[9] = "_360.gsc";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_360_ghg_PC")
+    extern const char NuFileExt_360_ghg_PC[9] = "_360.ghg";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_cbs_PC")
+    extern const char NuFileExt_cbs_PC[5] = ".cbs";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuFileExt_ca3_PC")
+    extern const char NuFileExt_ca3_PC[5] = ".ca3";
+#pragma const_seg()
+#pragma bss_seg(".bss$extensions")
+    PC_FILEEXTINFO extensions[64];
+#pragma bss_seg()
+#pragma bss_seg(".bss$num_extensions")
+    i32 num_extensions;
+#pragma bss_seg()
+#pragma bss_seg(".bss$Game_Customiser")
+    void *Game_Customiser;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CUTCAM")
+    void *CUTCAM;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$APIObjectCharsDirectory")
+    extern const char APIObjectCharsDirectory[7] = "chars\\";
+#pragma const_seg()
+#pragma const_seg(".rdata$APIObjectPakExtension")
+    extern const char APIObjectPakExtension[5] = ".fpk";
+#pragma const_seg()
+#pragma bss_seg(".bss$append")
+    i32 append;
+#pragma bss_seg()
+#pragma bss_seg(".bss$nopakfile")
+    i32 nopakfile;
+#pragma bss_seg()
+#pragma bss_seg(".bss$RedirectAnimFn")
+    i32(__cdecl *RedirectAnimFn)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *);
+#pragma bss_seg()
+#pragma bss_seg(".bss$RedirectAnimList")
+    void *RedirectAnimList;
+#pragma bss_seg()
+#pragma data_seg(".data$RedirectAnimDir")
+    char RedirectAnimDir[64] = "chars\\commonanims\\";
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$turret_gizmotype_id")
+    i32 turret_gizmotype_id = -1;
+#pragma data_seg()
+#pragma data_seg(".data$blowup_gizmotype_id")
+    i32 blowup_gizmotype_id = -1;
+#pragma data_seg()
+#pragma data_seg(".data$obstacle_gizmotype_id")
+    i32 obstacle_gizmotype_id = -1;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$AITransferLiteral758430")
+    extern const char AITransferLiteral758430[5] = "True";
+#pragma const_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$LSW2")
+    i32 LSW2;
+#pragma bss_seg()
+#pragma data_seg(".data$HIGHJUMPHEIGHT")
+    f32 HIGHJUMPHEIGHT = 1.14f;
+#pragma data_seg()
+#pragma bss_seg(".bss$AreaTimer")
+    TIMER AreaTimer;
+#pragma bss_seg()
+#pragma bss_seg(".bss$OldBonusScore")
+    i32 OldBonusScore[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$BonusScore")
+    i32 BonusScore[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$BombGenerator_PlayerBomb")
+    GAMEOBJECT *BombGenerator_PlayerBomb[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$Lap")
+    i32 Lap;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BuildUpTotal")
+    i32 BuildUpTotal;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BuildUpDone")
+    i32 BuildUpDone;
+#pragma bss_seg()
+#pragma bss_seg(".bss$AreaGlobals_PC")
+    AREA_GLOBALS_PC AreaGlobals_PC;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$NuLgtLaserCnt")
+    i32 NuLgtLaserCnt;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuLgtLaserOldCnt")
+    i32 NuLgtLaserOldCnt;
+#pragma bss_seg()
+#pragma data_seg(".data$NuLgtSeed")
+    u32 NuLgtSeed = 12345;
+#pragma data_seg()
+#pragma bss_seg(".bss$NuLgtArcMtl")
+    NULGTARCMATERIAL_PC NuLgtArcMtl[4];
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuLgtLaserData")
+    NULGTLASER_PC NuLgtLaserData[64];
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuLgtArcLaserCnt")
+    i32 NuLgtArcLaserCnt;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuLgtArcLaserOldCnt")
+    i32 NuLgtArcLaserOldCnt;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuLgtArcLaserFrame")
+    i32 NuLgtArcLaserFrame;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuLgtArcLaserData")
+    NULGTARCLASER_PC NuLgtArcLaserData[16];
+#pragma bss_seg()
+#pragma bss_seg(".bss$PS2_REZ_W")
+    i32 PS2_REZ_W;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PS2_REZ_H")
+    i32 PS2_REZ_H;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$AITransferLiteral75782c")
+    extern const char AITransferLiteral75782c[5] = "name";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7583e4")
+    extern const char AITransferLiteral7583e4[12] = "controller=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7583f0")
+    extern const char AITransferLiteral7583f0[8] = "turret=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757a38")
+    extern const char AITransferLiteral757a38[12] = "hold_button";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757a70")
+    extern const char AITransferLiteral757a70[11] = "rotational";
+#pragma const_seg()
+#pragma bss_seg(".bss$BeenAttacked")
+    i32 BeenAttacked;
+#pragma bss_seg()
+#pragma bss_seg(".bss$takeoverobjects")
+    u8 takeoverobjects[352];
+#pragma bss_seg()
+#pragma bss_seg(".bss$num_takeoverobjects")
+    i32 num_takeoverobjects;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DoorExitNamePc")
+    char DoorExitNamePc[1];
+#pragma bss_seg()
+#pragma bss_seg(".bss$Door_Start")
+    i32 Door_Start;
+#pragma bss_seg()
+#pragma data_seg(".data$Door_NextSock")
+    i32 Door_NextSock = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$minikitCounter_C")
+    u8 minikitCounter_C;
+#pragma bss_seg()
+#pragma bss_seg(".bss$minikitCounter_A")
+    u8 minikitCounter_A;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$GizmoSnapOptionNamePc")
+    extern const char GizmoSnapOptionNamePc[5] = "SNAP";
+#pragma const_seg()
+#pragma bss_seg(".bss$debkeydata")
+    void *debkeydata;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$Door_Last")
+    void *Door_Last;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$NuPrimCoordSystemStack")
+    i32 NuPrimCoordSystemStack[2];
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$AITransferLiteral7577dc")
+    extern const char AITransferLiteral7577dc[8] = "random=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757824")
+    extern const char AITransferLiteral757824[7] = "random";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral75781c")
+    extern const char AITransferLiteral75781c[8] = "player=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757884")
+    extern const char AITransferLiteral757884[12] = "take_damage";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757a68")
+    extern const char AITransferLiteral757a68[6] = "Reset";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757c10")
+    extern const char AITransferLiteral757c10[13] = "dont_set_max";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757c20")
+    extern const char AITransferLiteral757c20[12] = "messageval=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral758194")
+    extern const char AITransferLiteral758194[11] = "type=CHOKE";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral758188")
+    extern const char AITransferLiteral758188[11] = "type=DROID";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7581a0")
+    extern const char AITransferLiteral7581a0[8] = "radius=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral758174")
+    extern const char AITransferLiteral758174[19] = "type=ComboOpponent";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7581d4")
+    extern const char AITransferLiteral7581d4[10] = "rot_rate=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7581ec")
+    extern const char AITransferLiteral7581ec[9] = "mintime=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7581e0")
+    extern const char AITransferLiteral7581e0[9] = "maxtime=";
+#pragma const_seg()
+#pragma const_seg(".rdata$GizObstacleActionNamePC")
+    extern const char GizObstacleActionNamePC[5] = "Name";
+#pragma const_seg()
+#pragma const_seg(".rdata$GizObstacleActionBackwardPC")
+    extern const char GizObstacleActionBackwardPC[9] = "BACKWARD";
+#pragma const_seg()
+#pragma const_seg(".rdata$GizObstacleActionForwardPC")
+    extern const char GizObstacleActionForwardPC[8] = "FORWARD";
+#pragma const_seg()
+#pragma const_seg(".rdata$GizObstacleActionStayOpenPC")
+    extern const char GizObstacleActionStayOpenPC[9] = "STAYOPEN";
+#pragma const_seg()
+#pragma const_seg(".rdata$GizObstacleActionStayShutPC")
+    extern const char GizObstacleActionStayShutPC[9] = "STAYSHUT";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugClassInvalid")
+    extern const char NuMusicDebugClassInvalid[8] = "INVALID";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugClassQuiet")
+    extern const char NuMusicDebugClassQuiet[6] = "QUIET";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugClassAction")
+    extern const char NuMusicDebugClassAction[7] = "ACTION";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugClassSignature")
+    extern const char NuMusicDebugClassSignature[10] = "SIGNATURE";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugClassOverlay")
+    extern const char NuMusicDebugClassOverlay[8] = "OVERLAY";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugClassCutscene")
+    extern const char NuMusicDebugClassCutscene[9] = "CUTSCENE";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugClassNoMusic")
+    extern const char NuMusicDebugClassNoMusic[8] = "NOMUSIC";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugVoiceFormat")
+    extern const char NuMusicDebugVoiceFormat[9] = "VOICE:%d";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugTrackFormat")
+    extern const char NuMusicDebugTrackFormat[9] = "TRACK:%s";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugClassFormat")
+    extern const char NuMusicDebugClassFormat[9] = "CLASS:%s";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugTrackNone")
+    extern const char NuMusicDebugTrackNone[11] = "TRACK:NONE";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugClassNone")
+    extern const char NuMusicDebugClassNone[11] = "CLASS:NONE";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugStatusFormat")
+    extern const char NuMusicDebugStatusFormat[10] = "STATUS:%s";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugVolumeFormat")
+    extern const char NuMusicDebugVolumeFormat[15] = "VOLUME:%f (%f)";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugFadeFormat")
+    extern const char NuMusicDebugFadeFormat[8] = "FADE:%f";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugPositionFormat")
+    extern const char NuMusicDebugPositionFormat[7] = "POS:%f";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugStatus0")
+    extern const char NuMusicDebugStatus0[13] = "IDLE_PENDING";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugStatus1")
+    extern const char NuMusicDebugStatus1[5] = "IDLE";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugStatus2")
+    extern const char NuMusicDebugStatus2[15] = "PAUSED_PENDING";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugStatus3")
+    extern const char NuMusicDebugStatus3[7] = "PAUSED";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugStatus4")
+    extern const char NuMusicDebugStatus4[16] = "SEEKING_PENDING";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugStatus5")
+    extern const char NuMusicDebugStatus5[8] = "SEEKING";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugStatus6")
+    extern const char NuMusicDebugStatus6[12] = "PLAYPENDING";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuMusicDebugStatus7")
+    extern const char NuMusicDebugStatus7[8] = "PLAYING";
+#pragma const_seg()
+#pragma data_seg(".data$NuMusicVoiceStatusText")
+    const char *NuMusicVoiceStatusText[8] = {NuMusicDebugStatus0, NuMusicDebugStatus1, NuMusicDebugStatus2,
+                                             NuMusicDebugStatus3, NuMusicDebugStatus4, NuMusicDebugStatus5,
+                                             NuMusicDebugStatus6, NuMusicDebugStatus7};
+#pragma data_seg()
+#pragma data_seg(".data$NuMusicDebugColour")
+    u32 NuMusicDebugColour = 0x80ffffff;
+#pragma data_seg()
+#pragma bss_seg(".bss$bonus_gunship_store_progress_flag")
+    i32 bonus_gunship_store_progress_flag;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCUseHiresFlag")
+    u8 PCUseHiresFlag;
+#pragma bss_seg()
+#pragma data_seg(".data$LEDGETERRAINLOOKAHEAD")
+    f32 LEDGETERRAINLOOKAHEAD = 0.02f;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOACT_HANG_MOVE")
+    i16 LEGOACT_HANG_MOVE = -1;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$AITransferLiteral757a94")
+    extern const char AITransferLiteral757a94[9] = "splines=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757a8c")
+    extern const char AITransferLiteral757a8c[7] = "unused";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757c64")
+    extern const char AITransferLiteral757c64[4] = "dx=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757c60")
+    extern const char AITransferLiteral757c60[4] = "dy=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757c5c")
+    extern const char AITransferLiteral757c5c[4] = "dz=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral757f28")
+    extern const char AITransferLiteral757f28[8] = "target=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AITransferLiteral7583f8")
+    extern const char AITransferLiteral7583f8[8] = "release";
+#pragma const_seg()
+#pragma bss_seg(".bss$part_types")
+    PARTTYPE_LOOKUP_PC part_types[128];
+#pragma bss_seg()
+#pragma bss_seg(".bss$script_spline_selected")
+    NUGSPLINE *script_spline_selected;
+#pragma bss_seg()
 }

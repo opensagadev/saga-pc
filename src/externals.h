@@ -58,7 +58,7 @@ struct IDirectSoundBufferVtbl {
     DSOUND_OPAQUE_METHOD get_caps;
     DSOUND_OPAQUE_METHOD get_current_position;
     DSOUND_OPAQUE_METHOD get_format;
-    DSOUND_OPAQUE_METHOD get_volume;
+    HRESULT(__stdcall *get_volume)(IDirectSoundBuffer *, LONG *);
     DSOUND_OPAQUE_METHOD get_pan;
     DSOUND_OPAQUE_METHOD get_frequency;
     HRESULT(__stdcall *get_status)(IDirectSoundBuffer *, DWORD *);

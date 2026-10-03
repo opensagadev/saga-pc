@@ -1,0 +1,2068 @@
+{
+  "baseline_commit": "680ca578092fafa147d5887da14104b1cc85f8da",
+  "retail_sha256": "239f6c09b73e5764ced7469f158b621ff34c9984b5b0a850fe77248add259113",
+  "compiler": "14.00.50727.42",
+  "objdiff": "3.8.1",
+  "scope": "Whole-project plan in progress; these are compiled transfer checkpoints, not full game completion",
+  "baseline_progress": {
+    "text_bytes": 3471246,
+    "mapped_code_bytes": 574658,
+    "matched_code_bytes": 47697,
+    "matching_percent": 1.374059919694542,
+    "fuzzy_coverage_percent": 6.787305537102669,
+    "mapped_functions": 2135,
+    "matched_functions": 828,
+    "objdiff_fuzzy_percent": 60.715378,
+    "objdiff_total_code": 388137,
+    "image_bytes": 40067072,
+    "mapped_bytes": 1169021,
+    "mapping_percent": 2.9176601674312512
+  },
+  "progress": {
+    "text_bytes": 3471246,
+    "mapped_code_bytes": 592704,
+    "matched_code_bytes": 53115,
+    "matching_percent": 1.5301422025405287,
+    "fuzzy_coverage_percent": 7.710590237148418,
+    "mapped_functions": 2217,
+    "matched_functions": 898,
+    "objdiff_fuzzy_percent": 61.75655,
+    "objdiff_total_code": 433490,
+    "image_bytes": 40067072,
+    "mapped_bytes": 1225584,
+    "mapping_percent": 3.058830952259252
+  },
+  "newly_compared": [
+    {
+      "symbol": "_StoreProgressAICharacter",
+      "pc": "0x00414f80",
+      "original_bytes": 119,
+      "units": [
+        "src/legoapi/creature.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 94.117645
+    },
+    {
+      "symbol": "_Action_SetTakeOverTarget",
+      "pc": "0x00443fc0",
+      "original_bytes": 739,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 77.323006
+    },
+    {
+      "symbol": "_Action_ClearTakeOverTarget",
+      "pc": "0x004442b0",
+      "original_bytes": 52,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Action_DeActivate",
+      "pc": "0x00444490",
+      "original_bytes": 295,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 71.85849
+    },
+    {
+      "symbol": "_Action_CanDefend",
+      "pc": "0x004445c0",
+      "original_bytes": 110,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 59.333332
+    },
+    {
+      "symbol": "_Action_DontAimAt",
+      "pc": "0x00444630",
+      "original_bytes": 110,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 75.25641
+    },
+    {
+      "symbol": "_Action_ImmuneToKillTerrain",
+      "pc": "0x004446a0",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.97436
+    },
+    {
+      "symbol": "_Action_ImmuneToBolts",
+      "pc": "0x00444720",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 59.333332
+    },
+    {
+      "symbol": "_Action_Respawnable",
+      "pc": "0x004447a0",
+      "original_bytes": 165,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 69.38
+    },
+    {
+      "symbol": "_Action_CanUseWeapon",
+      "pc": "0x00444850",
+      "original_bytes": 110,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 59.333332
+    },
+    {
+      "symbol": "_Action_SetBoss",
+      "pc": "0x004448c0",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 59.333332
+    },
+    {
+      "symbol": "_Action_SetSide",
+      "pc": "0x00444940",
+      "original_bytes": 1496,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 67.9315
+    },
+    {
+      "symbol": "_Action_SetStateArea",
+      "pc": "0x00444f20",
+      "original_bytes": 651,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 77.02885
+    },
+    {
+      "symbol": "_Action_UpdateSockPos",
+      "pc": "0x004451b0",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 59.333332
+    },
+    {
+      "symbol": "_Action_Explode",
+      "pc": "0x00445710",
+      "original_bytes": 38,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Action_SetAIOverrideControl",
+      "pc": "0x00445910",
+      "original_bytes": 403,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 88.045044
+    },
+    {
+      "symbol": "_Action_SetLastSafePathPos",
+      "pc": "0x00445ab0",
+      "original_bytes": 179,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 88.316666
+    },
+    {
+      "symbol": "_Action_SetDontMove",
+      "pc": "0x00445b70",
+      "original_bytes": 180,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 37.985714
+    },
+    {
+      "symbol": "_Action_DontSetStoppedFlag",
+      "pc": "0x00445c30",
+      "original_bytes": 180,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 45.0
+    },
+    {
+      "symbol": "_Action_GameSetLocator",
+      "pc": "0x00445cf0",
+      "original_bytes": 745,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 69.51316
+    },
+    {
+      "symbol": "_Action_SetLocatorSet",
+      "pc": "0x00445fe0",
+      "original_bytes": 115,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Action_SnapToLocator",
+      "pc": "0x00446060",
+      "original_bytes": 1001,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 75.238266
+    },
+    {
+      "symbol": "_Action_BigJumpToLocator",
+      "pc": "0x00446450",
+      "original_bytes": 698,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 69.81364
+    },
+    {
+      "symbol": "_Action_BigJump",
+      "pc": "0x00446710",
+      "original_bytes": 1047,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 71.453125
+    },
+    {
+      "symbol": "_Action_SetDoomedEscapeLocator",
+      "pc": "0x00446b30",
+      "original_bytes": 608,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 76.4709
+    },
+    {
+      "symbol": "_Action_SnapToOrigin",
+      "pc": "0x00447030",
+      "original_bytes": 504,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 57.485073
+    },
+    {
+      "symbol": "_Action_PressSpecialButton",
+      "pc": "0x004492e0",
+      "original_bytes": 163,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 63.88889
+    },
+    {
+      "symbol": "_Action_PressTagButton",
+      "pc": "0x00449390",
+      "original_bytes": 50,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 87.5
+    },
+    {
+      "symbol": "_Action_PressActionButton",
+      "pc": "0x004493d0",
+      "original_bytes": 60,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 88.23529
+    },
+    {
+      "symbol": "_Action_UseWeapon",
+      "pc": "0x00449410",
+      "original_bytes": 45,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 85.71429
+    },
+    {
+      "symbol": "_Action_SetInvulnerable",
+      "pc": "0x00449440",
+      "original_bytes": 565,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 61.81818
+    },
+    {
+      "symbol": "_Action_DontAvoidCharacter",
+      "pc": "0x00449680",
+      "original_bytes": 291,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 62.941746
+    },
+    {
+      "symbol": "_Action_GameDontPush",
+      "pc": "0x004497b0",
+      "original_bytes": 435,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 62.98611
+    },
+    {
+      "symbol": "_Action_PressJumpButton",
+      "pc": "0x00449970",
+      "original_bytes": 50,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 87.5
+    },
+    {
+      "symbol": "_Action_AddToSet",
+      "pc": "0x004499b0",
+      "original_bytes": 151,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 61.7451
+    },
+    {
+      "symbol": "_Action_SetControlSystem",
+      "pc": "0x00449a50",
+      "original_bytes": 109,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 67.5641
+    },
+    {
+      "symbol": "_Action_SetSpline",
+      "pc": "0x00449ac0",
+      "original_bytes": 236,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.29269
+    },
+    {
+      "symbol": "_Action_SetZeroAcceleration",
+      "pc": "0x00449bb0",
+      "original_bytes": 215,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 77.08108
+    },
+    {
+      "symbol": "_Action_BreakFormation",
+      "pc": "0x00449c90",
+      "original_bytes": 33,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Action_FormationMove",
+      "pc": "0x00449cc0",
+      "original_bytes": 33,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Action_SelectRandomSpline",
+      "pc": "0x00449f70",
+      "original_bytes": 538,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 71.13333
+    },
+    {
+      "symbol": "_Action_SetCurrentSpeed",
+      "pc": "0x0044aac0",
+      "original_bytes": 382,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 63.138687
+    },
+    {
+      "symbol": "_Action_SetWalkSpeed",
+      "pc": "0x0044b0e0",
+      "original_bytes": 107,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Action_SetHitPoints",
+      "pc": "0x0044b150",
+      "original_bytes": 316,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 75.16822
+    },
+    {
+      "symbol": "_Action_SetShieldHitPoints",
+      "pc": "0x0044b290",
+      "original_bytes": 201,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 65.0
+    },
+    {
+      "symbol": "_Action_AddPartDebris",
+      "pc": "0x0044b950",
+      "original_bytes": 495,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 97.99383
+    },
+    {
+      "symbol": "_Action_SetHoverPhase",
+      "pc": "0x0044c1d0",
+      "original_bytes": 201,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 78.30645
+    },
+    {
+      "symbol": "_Action_SetGravityHeight",
+      "pc": "0x0044c5f0",
+      "original_bytes": 342,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 83.40367
+    },
+    {
+      "symbol": "_Action_ApplyGravity",
+      "pc": "0x0044ca00",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 59.333332
+    },
+    {
+      "symbol": "_Action_IgnoreShoveSystem",
+      "pc": "0x0044ca80",
+      "original_bytes": 110,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.97436
+    },
+    {
+      "symbol": "_Action_CannotBeForcedBack",
+      "pc": "0x0044caf0",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.97436
+    },
+    {
+      "symbol": "_Action_CanTurn",
+      "pc": "0x0044cb70",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 62.564102
+    },
+    {
+      "symbol": "_Action_NoIdleSpeed",
+      "pc": "0x0044cbf0",
+      "original_bytes": 211,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 63.36986
+    },
+    {
+      "symbol": "_Action_CannotBeSeen",
+      "pc": "0x0044ccd0",
+      "original_bytes": 110,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 59.333332
+    },
+    {
+      "symbol": "_Action_CameraShake",
+      "pc": "0x0044d210",
+      "original_bytes": 227,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 84.46154
+    },
+    {
+      "symbol": "_Action_SetLevelPath",
+      "pc": "0x0044d390",
+      "original_bytes": 212,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 85.246574
+    },
+    {
+      "symbol": "_Action_DisableNarrowSocks",
+      "pc": "0x0044d580",
+      "original_bytes": 61,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 41.4
+    },
+    {
+      "symbol": "_Action_SetPath",
+      "pc": "0x0044e160",
+      "original_bytes": 388,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 63.463234
+    },
+    {
+      "symbol": "_Action_MoveAwayFromLastAttacker",
+      "pc": "0x0044e470",
+      "original_bytes": 258,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 44.882355
+    },
+    {
+      "symbol": "_Action_GoToOriginalPath",
+      "pc": "0x0044e580",
+      "original_bytes": 724,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 72.43636
+    },
+    {
+      "symbol": "_Action_AlwaysTriggerObstacle",
+      "pc": "0x0044e8f0",
+      "original_bytes": 186,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.77419
+    },
+    {
+      "symbol": "_Action_CanTriggerObstacle",
+      "pc": "0x0044e9b0",
+      "original_bytes": 186,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.81967
+    },
+    {
+      "symbol": "_Action_PlayGizSpecial",
+      "pc": "0x0044ebe0",
+      "original_bytes": 398,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 76.78519
+    },
+    {
+      "symbol": "_Action_CanOpenDoors",
+      "pc": "0x0044ede0",
+      "original_bytes": 139,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 84.854164
+    },
+    {
+      "symbol": "_Action_CanShootOffScreen",
+      "pc": "0x0044ee70",
+      "original_bytes": 139,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 83.520836
+    },
+    {
+      "symbol": "_Action_KeepWeaponOut",
+      "pc": "0x0044ef00",
+      "original_bytes": 190,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 59.083332
+    },
+    {
+      "symbol": "_Action_SnapWeaponOut",
+      "pc": "0x0044efc0",
+      "original_bytes": 319,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 67.55238
+    },
+    {
+      "symbol": "_Action_PrefersPlayers",
+      "pc": "0x0044f1b0",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 45.641026
+    },
+    {
+      "symbol": "_Action_SetBoltsDontGetDeflectedBack",
+      "pc": "0x0044f230",
+      "original_bytes": 100,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 71.447365
+    },
+    {
+      "symbol": "_Action_CanShootObstructions",
+      "pc": "0x0044f2a0",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 71.666664
+    },
+    {
+      "symbol": "_Action_UseBigJumpToJump",
+      "pc": "0x0044f320",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 71.53846
+    },
+    {
+      "symbol": "_Action_IgnoreTurnAroundSpline",
+      "pc": "0x0044f3a0",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 76.410255
+    },
+    {
+      "symbol": "_Action_CanMoveWhenDeactivated",
+      "pc": "0x0044f420",
+      "original_bytes": 100,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 78.68421
+    },
+    {
+      "symbol": "_Action_DontAttack",
+      "pc": "0x0044f490",
+      "original_bytes": 100,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 46.842106
+    },
+    {
+      "symbol": "_Action_CanPullLevers",
+      "pc": "0x0044f500",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 41.410255
+    },
+    {
+      "symbol": "_Action_CanHitForceObjects",
+      "pc": "0x0044f580",
+      "original_bytes": 100,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 69.86842
+    },
+    {
+      "symbol": "_Action_AlwaysBackFlip",
+      "pc": "0x0044f5f0",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 68.20513
+    },
+    {
+      "symbol": "_Action_PlayerSpeederHack",
+      "pc": "0x0044f670",
+      "original_bytes": 100,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 71.447365
+    },
+    {
+      "symbol": "_Action_CatchUpForbidden",
+      "pc": "0x0044f860",
+      "original_bytes": 193,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 77.675674
+    },
+    {
+      "symbol": "_Action_CannotDropIn",
+      "pc": "0x0044fa90",
+      "original_bytes": 249,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 62.744446
+    },
+    {
+      "symbol": "_Action_NotWithParty",
+      "pc": "0x0044fb90",
+      "original_bytes": 184,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 37.985714
+    },
+    {
+      "symbol": "_Action_CanAttack",
+      "pc": "0x0044fc50",
+      "original_bytes": 184,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 37.985714
+    },
+    {
+      "symbol": "_Action_TriggerBlowUp",
+      "pc": "0x004502b0",
+      "original_bytes": 140,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 81.58491
+    },
+    {
+      "symbol": "_Action_DeflectPlayersPart",
+      "pc": "0x00450550",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 70.475
+    },
+    {
+      "symbol": "_Action_DontRaycastLOS",
+      "pc": "0x00451cd0",
+      "original_bytes": 121,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Action_SetForceBack",
+      "pc": "0x00451d50",
+      "original_bytes": 455,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.26
+    },
+    {
+      "symbol": "_Action_FaceCharacter",
+      "pc": "0x004520f0",
+      "original_bytes": 213,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 75.92308
+    },
+    {
+      "symbol": "_Action_SpinOnSpot",
+      "pc": "0x004521d0",
+      "original_bytes": 552,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 91.36871
+    },
+    {
+      "symbol": "_Action_SetLastAttacker",
+      "pc": "0x004541e0",
+      "original_bytes": 296,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 69.04808
+    },
+    {
+      "symbol": "_Action_LinkTurretToController",
+      "pc": "0x00454310",
+      "original_bytes": 206,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 86.84722
+    },
+    {
+      "symbol": "_Action_TakeOver",
+      "pc": "0x004543e0",
+      "original_bytes": 493,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 65.01797
+    },
+    {
+      "symbol": "_Action_ReleaseTakeOver",
+      "pc": "0x004545d0",
+      "original_bytes": 158,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 80.48333
+    },
+    {
+      "symbol": "_Action_SetCanTakeOver",
+      "pc": "0x00454960",
+      "original_bytes": 135,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 70.895836
+    },
+    {
+      "symbol": "_Action_UseTimeBasedUpdate",
+      "pc": "0x00455290",
+      "original_bytes": 141,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 43.923077
+    },
+    {
+      "symbol": "_Action_WalkBackwards",
+      "pc": "0x00455320",
+      "original_bytes": 201,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 39.057144
+    },
+    {
+      "symbol": "_Action_SetUseOneAtOnce",
+      "pc": "0x004559e0",
+      "original_bytes": 250,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 72.74699
+    },
+    {
+      "symbol": "_Action_CircleLocator",
+      "pc": "0x00456080",
+      "original_bytes": 517,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 70.07051
+    },
+    {
+      "symbol": "_Action_CanHelpWithTriggers",
+      "pc": "0x00456490",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.97436
+    },
+    {
+      "symbol": "_Action_CanCollideWithObjects",
+      "pc": "0x00456510",
+      "original_bytes": 113,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.97436
+    },
+    {
+      "symbol": "_Action_PartyCanBeUnderCover",
+      "pc": "0x00456850",
+      "original_bytes": 94,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizActions_PlayObstacle",
+      "pc": "0x00465590",
+      "original_bytes": 389,
+      "units": [
+        "src/legoapi/gizobstacle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 85.27419
+    },
+    {
+      "symbol": "_GizObstacle_PlayForwards",
+      "pc": "0x00557960",
+      "original_bytes": 111,
+      "units": [
+        "src/legoapi/gizobstacle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 94.51219
+    },
+    {
+      "symbol": "_GizObstacle_PlayBackwards",
+      "pc": "0x005579d0",
+      "original_bytes": 119,
+      "units": [
+        "src/legoapi/gizobstacle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 95.0
+    },
+    {
+      "symbol": "_GizObstacle_JumpToStart",
+      "pc": "0x00558970",
+      "original_bytes": 25,
+      "units": [
+        "src/legoapi/gizobstacle.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizObstacle_JumpToEnd",
+      "pc": "0x00558990",
+      "original_bytes": 25,
+      "units": [
+        "src/legoapi/gizobstacle.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Grabber_StoreProgress",
+      "pc": "0x00470e10",
+      "original_bytes": 76,
+      "units": [
+        "src/legoapi/grabber.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_WorldStoreScriptProgressPC",
+      "pc": "0x0048a250",
+      "original_bytes": 177,
+      "units": [
+        "src/legoapi/world.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 74.45614
+    },
+    {
+      "symbol": "_WorldStoreScriptsProgressPC",
+      "pc": "0x0048a3f0",
+      "original_bytes": 54,
+      "units": [
+        "src/legoapi/world.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 72.95
+    },
+    {
+      "symbol": "_CalculateWorldSize",
+      "pc": "0x0048c630",
+      "original_bytes": 470,
+      "units": [
+        "src/legoapi/world.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 85.10564
+    },
+    {
+      "symbol": "_StoreLevelProgressFn",
+      "pc": "0x0048f840",
+      "original_bytes": 333,
+      "units": [
+        "src/legoapi/world.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 93.68
+    },
+    {
+      "symbol": "_StoreLevelProgress",
+      "pc": "0x0048f990",
+      "original_bytes": 27,
+      "units": [
+        "src/legoapi/world.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_SaveSceneObjectAnimTFactors",
+      "pc": "0x005528b0",
+      "original_bytes": 60,
+      "units": [
+        "src/legoapi/world.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 75.63636
+    },
+    {
+      "symbol": "_NewArea_ResetGlobalsPC",
+      "pc": "0x0048a430",
+      "original_bytes": 126,
+      "units": [
+        "src/legoapi/areas.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 78.57143
+    },
+    {
+      "symbol": "_ClearAreaProgress",
+      "pc": "0x0048f740",
+      "original_bytes": 252,
+      "units": [
+        "src/legoapi/areas.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 59.533333
+    },
+    {
+      "symbol": "_NewArea",
+      "pc": "0x0048f9b0",
+      "original_bytes": 631,
+      "units": [
+        "src/legoapi/areas.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 75.52631
+    },
+    {
+      "symbol": "_Glide_SetTargetMom",
+      "pc": "0x0049d910",
+      "original_bytes": 215,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 41.847458
+    },
+    {
+      "symbol": "_ResetForceBack",
+      "pc": "0x004a48f0",
+      "original_bytes": 13,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_SetForceBack",
+      "pc": "0x004a4900",
+      "original_bytes": 58,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 55.6
+    },
+    {
+      "symbol": "_Grapple_SetRotOrder",
+      "pc": "0x0054f900",
+      "original_bytes": 21,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MovingBackwards",
+      "pc": "0x0055e600",
+      "original_bytes": 85,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 63.48
+    },
+    {
+      "symbol": "_LedgeTerrain_SetTargetMom",
+      "pc": "0x0056bf30",
+      "original_bytes": 126,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 96.296295
+    },
+    {
+      "symbol": "_Climb_UpdateMagnetRotation",
+      "pc": "0x0056c040",
+      "original_bytes": 95,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 66.208336
+    },
+    {
+      "symbol": "_Hang_SetTargetMom",
+      "pc": "0x0056c980",
+      "original_bytes": 213,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_ResetMinikitCounter",
+      "pc": "0x004e8640",
+      "original_bytes": 13,
+      "units": [
+        "src/legoapi/minikits.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuFileGetLastError",
+      "pc": "0x004eff30",
+      "original_bytes": 6,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuFileFindDevice",
+      "pc": "0x004eff40",
+      "original_bytes": 99,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 99.73684
+    },
+    {
+      "symbol": "_NuDatFileClose",
+      "pc": "0x004f0ba0",
+      "original_bytes": 47,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuDatFileOpenSize",
+      "pc": "0x004f0d00",
+      "original_bytes": 33,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuFileExtGetExt",
+      "pc": "0x004f0d60",
+      "original_bytes": 96,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 95.24324
+    },
+    {
+      "symbol": "_NuPPUnpack",
+      "pc": "0x004f37c0",
+      "original_bytes": 948,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 12.839506
+    },
+    {
+      "symbol": "_NuFileMatchExtensionPC",
+      "pc": "0x004f77d0",
+      "original_bytes": 81,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 89.589745
+    },
+    {
+      "symbol": "_NuFileAddExtensionPC",
+      "pc": "0x004f7830",
+      "original_bytes": 113,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 66.7
+    },
+    {
+      "symbol": "_NuFileExtInit",
+      "pc": "0x004f78b0",
+      "original_bytes": 954,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 96.42491
+    },
+    {
+      "symbol": "_NuFileExtGetInfoPC",
+      "pc": "0x004f7c70",
+      "original_bytes": 84,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 78.289474
+    },
+    {
+      "symbol": "_NuFileExtGetType",
+      "pc": "0x004f7cd0",
+      "original_bytes": 26,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 98.888885
+    },
+    {
+      "symbol": "_NuFileExtConvert",
+      "pc": "0x004f7cf0",
+      "original_bytes": 153,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 76.703125
+    },
+    {
+      "symbol": "_NuFileExtRemove",
+      "pc": "0x004f7d90",
+      "original_bytes": 84,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 98.28571
+    },
+    {
+      "symbol": "_NuFileInitEx",
+      "pc": "0x004f9940",
+      "original_bytes": 123,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 86.48485
+    },
+    {
+      "symbol": "_NuFileInit",
+      "pc": "0x004f99c0",
+      "original_bytes": 18,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuPPLoadBuffer",
+      "pc": "0x004fcc60",
+      "original_bytes": 1003,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 42.411587
+    },
+    {
+      "symbol": "_NuFileLoad",
+      "pc": "0x004fd550",
+      "original_bytes": 118,
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuDatGetFileInfo",
+      "pc": "0x004fa740",
+      "original_bytes": 205,
+      "units": [
+        "src/nu2api/nudatlookup.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 55.57647
+    },
+    {
+      "symbol": "_NuPSFileInitDevices",
+      "pc": "0x004ff4a0",
+      "original_bytes": 1,
+      "units": [
+        "src/nu2api/nufile_pc.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuFileUseHiresPC",
+      "pc": "0x006db910",
+      "original_bytes": 8,
+      "units": [
+        "src/nu2api/nufile_pc.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NewAreaMusicChanges",
+      "pc": "0x005489a0",
+      "original_bytes": 11,
+      "units": [
+        "src/legoapi/gameaudio.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GameCam_Judder",
+      "pc": "0x00549de0",
+      "original_bytes": 301,
+      "units": [
+        "src/legoapi/camera.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 73.46667
+    },
+    {
+      "symbol": "_Door_Reset",
+      "pc": "0x00575450",
+      "original_bytes": 23,
+      "units": [
+        "src/legoapi/doors.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Level_LoadConfigFile",
+      "pc": "0x0057a420",
+      "original_bytes": 164,
+      "units": [
+        "src/legoapi/level_area_load.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_ClearTakeOverObjectSys",
+      "pc": "0x0059f970",
+      "original_bytes": 31,
+      "units": [
+        "src/legoapi/takeoverobjects.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuVec4Scale",
+      "pc": "0x005b3e20",
+      "original_bytes": 45,
+      "units": [
+        "src/nu2api/nulgtlaser.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuVec4ScaleForwardPc",
+      "pc": "0x005c03b0",
+      "original_bytes": 27,
+      "units": [
+        "src/nu2api/nulgtlaser.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuRndrBeginSceneEx",
+      "pc": "0x005d4300",
+      "original_bytes": 14,
+      "units": [
+        "src/nu2api/nulgtlaser.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuRndrEndSceneEx",
+      "pc": "0x005f39e0",
+      "original_bytes": 5,
+      "units": [
+        "src/nu2api/nulgtlaser.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuLgtSetVertexColor",
+      "pc": "0x005f77d0",
+      "original_bytes": 108,
+      "units": [
+        "src/nu2api/nulgtlaser.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 82.15151
+    },
+    {
+      "symbol": "_NuLgtLaser",
+      "pc": "0x006018c0",
+      "original_bytes": 283,
+      "units": [
+        "src/nu2api/nulgtlaser.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 23.047619
+    },
+    {
+      "symbol": "_NuLgtSetArcMatEx",
+      "pc": "0x00601c10",
+      "original_bytes": 67,
+      "units": [
+        "src/nu2api/nulgtlaser.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 96.411766
+    },
+    {
+      "symbol": "_NuLgtArcLaserEx",
+      "pc": "0x00601c60",
+      "original_bytes": 382,
+      "units": [
+        "src/nu2api/nulgtlaser.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 22.595959
+    },
+    {
+      "symbol": "_NuLgtLaserDraw",
+      "pc": "0x00608590",
+      "original_bytes": 2766,
+      "units": [
+        "src/nu2api/nulgtlaser.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 56.746635
+    },
+    {
+      "symbol": "_NuLgtArcLaserDraw",
+      "pc": "0x006091c0",
+      "original_bytes": 2506,
+      "units": [
+        "src/nu2api/nulgtlaser.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 44.053764
+    },
+    {
+      "symbol": "_PCAnimationLoadFailureNoOp",
+      "pc": "0x005c12f0",
+      "original_bytes": 1,
+      "units": [
+        "src/nu2api/nudebug.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_PCCharacterSystemExistingNoOp",
+      "pc": "0x0062a5e0",
+      "original_bytes": 1,
+      "units": [
+        "src/nu2api/nudebug.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuSplineFindAllBeg",
+      "pc": "0x005d0740",
+      "original_bytes": 93,
+      "units": [
+        "src/nu2api/nuspline.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuQFntPushPrintMode",
+      "pc": "0x005d0880",
+      "original_bytes": 52,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuQFntPopPrintMode",
+      "pc": "0x005d08c0",
+      "original_bytes": 30,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuQFntSet",
+      "pc": "0x005d0fb0",
+      "original_bytes": 34,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuQFntSetScale",
+      "pc": "0x005d0fe0",
+      "original_bytes": 69,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuQFntSetColour",
+      "pc": "0x005d1060",
+      "original_bytes": 27,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuQFntSetUVSizePc",
+      "pc": "0x005d1530",
+      "original_bytes": 144,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuTexDestroy",
+      "pc": "0x005e5630",
+      "original_bytes": 66,
+      "units": [
+        "src/nu2api/nutex.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 46.304348
+    },
+    {
+      "symbol": "_NuQFntSetPointSize",
+      "pc": "0x005eaad0",
+      "original_bytes": 220,
+      "units": [
+        "src/nu2api/nufont.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 51.438354
+    },
+    {
+      "symbol": "_NuAnimData2LoadBuffEx",
+      "pc": "0x005f3270",
+      "original_bytes": 154,
+      "units": [
+        "src/nu2api/nuanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 95.14706
+    },
+    {
+      "symbol": "_NuAnimData2LoadBuff",
+      "pc": "0x005f3310",
+      "original_bytes": 29,
+      "units": [
+        "src/nu2api/nuanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuAnimData2LoadBuffFromPAK",
+      "pc": "0x005f6420",
+      "original_bytes": 69,
+      "units": [
+        "src/nu2api/nuanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 53.857143
+    },
+    {
+      "symbol": "_NuTexDestroyPS",
+      "pc": "0x005f8ed0",
+      "original_bytes": 34,
+      "units": [
+        "src/nu2api/nutex_pc.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_AnimMiscFlags",
+      "pc": "0x0062a6a0",
+      "original_bytes": 36,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_InitGameDebris",
+      "pc": "0x0062c400",
+      "original_bytes": 339,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 74.94215
+    },
+    {
+      "symbol": "_APICharacterModelReset",
+      "pc": "0x0062d2e0",
+      "original_bytes": 125,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_APIObjectRegisterAnimRedirect",
+      "pc": "0x0062d4a0",
+      "original_bytes": 83,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_APIResetCharacterRemap",
+      "pc": "0x0062d500",
+      "original_bytes": 53,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_APICharacterLoaded",
+      "pc": "0x0062df80",
+      "original_bytes": 41,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 66.78571
+    },
+    {
+      "symbol": "_AnimSpeed",
+      "pc": "0x0062f1c0",
+      "original_bytes": 35,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_AnimListFrame",
+      "pc": "0x0062f1f0",
+      "original_bytes": 45,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_AnimStopFrame",
+      "pc": "0x0062f220",
+      "original_bytes": 35,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_AnimListFrameArray",
+      "pc": "0x0062f250",
+      "original_bytes": 35,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_APICharacterSysInit",
+      "pc": "0x00630b40",
+      "original_bytes": 541,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 94.531425
+    },
+    {
+      "symbol": "_PARTLookupType",
+      "pc": "0x0064afd0",
+      "original_bytes": 74,
+      "units": [
+        "src/legoapi/parts.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.117645
+    },
+    {
+      "symbol": "_DebrisEmitterPos",
+      "pc": "0x00655940",
+      "original_bytes": 82,
+      "units": [
+        "src/legoapi/parts.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_DebrisEmitterMomentum",
+      "pc": "0x006559a0",
+      "original_bytes": 67,
+      "units": [
+        "src/legoapi/parts.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_DebrisParticleMomentum",
+      "pc": "0x006559f0",
+      "original_bytes": 67,
+      "units": [
+        "src/legoapi/parts.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_LookupDebrisEffectPageIgnore",
+      "pc": "0x00658330",
+      "original_bytes": 307,
+      "units": [
+        "src/legoapi/game_deb.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 76.00952
+    },
+    {
+      "symbol": "_LookupDebrisEffectPage",
+      "pc": "0x00658470",
+      "original_bytes": 21,
+      "units": [
+        "src/legoapi/game_deb.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?Debug@NuMusic@@QAEXHH@Z",
+      "pc": "0x00694e70",
+      "original_bytes": 757,
+      "units": [
+        "src/nu2api/nusound_music.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 69.65258
+    },
+    {
+      "symbol": "_NuSound3GetStreamInfo",
+      "pc": "0x00698a40",
+      "original_bytes": 1,
+      "units": [
+        "src/nu2api/nustream.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuSound3KillAllAudio",
+      "pc": "0x00698ed0",
+      "original_bytes": 32,
+      "units": [
+        "src/nu2api/nustream.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?StopAllVoices@SoundVoiceManagerPC@@QAEXXZ",
+      "pc": "0x00698c50",
+      "original_bytes": 101,
+      "units": [
+        "src/nu2api/nusound_pc.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?UpdateVoices@SoundVoiceManagerPC@@QAEXXZ",
+      "pc": "0x00698cc0",
+      "original_bytes": 336,
+      "units": [
+        "src/nu2api/nusound_pc.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 81.33898
+    },
+    {
+      "symbol": "_NuSound3Update",
+      "pc": "0x00698e70",
+      "original_bytes": 86,
+      "units": [
+        "src/nu2api/nusound_pc.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_PCDeviceResetState",
+      "pc": "0x006df940",
+      "original_bytes": 220,
+      "units": [
+        "src/nu2api/nuvideo.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_PCDeviceSetRenderState",
+      "pc": "0x006e5340",
+      "original_bytes": 414,
+      "units": [
+        "src/nu2api/pc_device.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_PCDeviceSetSamplerState",
+      "pc": "0x006e54e0",
+      "original_bytes": 111,
+      "units": [
+        "src/nu2api/pc_device.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_PCDeviceSetTexture",
+      "pc": "0x006e5630",
+      "original_bytes": 64,
+      "units": [
+        "src/nu2api/pc_device.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 87.0
+    },
+    {
+      "symbol": "_PCDeviceSetTextureStageState",
+      "pc": "0x006e5670",
+      "original_bytes": 37,
+      "units": [
+        "src/nu2api/pc_device.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_PCDeviceReleaseTexture",
+      "pc": "0x006e5b70",
+      "original_bytes": 27,
+      "units": [
+        "src/nu2api/pc_device.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    }
+  ],
+  "previous_exact_functions_lost": []
+}

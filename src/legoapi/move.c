@@ -18,6 +18,105 @@ extern const f64 VehicleTurnPhaseScale;
 extern const f64 VehicleTurnPhaseOffset;
 extern const f64 MoveSplineRunSpeedSentinel;
 extern const f32 MoveSplineTurnRate;
+extern f32 ForceBackRadiusPc;
+extern f32 ForceBackRadius2Pc;
+extern GAMEOBJECT *ForceBackObjPc;
+extern NUVEC *ForceBackPosPc;
+extern i32 ForceBackTypePc;
+
+void __cdecl ResetForceBack(void) {
+    ForceBackObjPc = NULL;
+    ForceBackPosPc = NULL;
+}
+
+void __cdecl SetForceBack(GAMEOBJECT *object, NUVEC *position, f32 radius, i32 type) {
+    ForceBackRadiusPc = radius;
+    ForceBackObjPc = object;
+    ForceBackPosPc = object != NULL ? &object->collision_position : position;
+    ForceBackRadius2Pc = radius * radius;
+    ForceBackTypePc = type;
+}
+
+i32 __cdecl MovingBackwards(GAMEOBJECT *object) {
+    GAMEPAD_PC *pad = object->pad;
+    u16 camera_yaw;
+    i32 difference;
+    if (pad->operator_data == NULL || pad->input_magnitude == 0.0f)
+        return 0;
+    camera_yaw = (u16)GameCam->input_yaw;
+    difference = RotDiff((u16)(pad->input_angle + camera_yaw), object->field_0x276);
+    return (u32)(difference + 0x4000) > 0x8000;
+}
+
+void __cdecl Climb_UpdateMagnetRotation(GAMEOBJECT *object) {
+    object->movement_mode = 0;
+    object->pitch_angle = SeekRot(object->pitch_angle, (u16)(-0x4000 - object->field_7a4), 6.0f);
+    object->roll_angle = SeekRot(object->roll_angle, 0, 10.0f);
+}
+
+extern f32 LEDGETERRAINLOOKAHEAD;
+extern i16 LEGOACT_HANG_MOVE;
+STATIC_ASSERT(offsetof(GAMEOBJECT, upper_position) == 0x190);
+STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
+
+i32 __cdecl LedgeTerrain_SetTargetMom(GAMEOBJECT *object) {
+    u16 angle = object->movement_facing_angle;
+    object->target_velocity.x =
+        (NuTrigTable[angle >> 1] * LEDGETERRAINLOOKAHEAD + object->external_force.x - object->upper_position.x) * 10.0f;
+    object->target_velocity.z = (NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * LEDGETERRAINLOOKAHEAD +
+                                 object->external_force.z - object->upper_position.z) *
+                                10.0f;
+    object->target_velocity.y = (object->external_force.y - object->upper_position.y) * 10.0f;
+    return 1;
+}
+
+i32 __cdecl Hang_SetTargetMom(GAMEOBJECT *object) {
+    if (object->pad->input_magnitude > 0.0f) {
+        f32 speed;
+        if (LEGOACT_HANG_MOVE != -1 &&
+            ((MOVEMENT_MODEL_PC *)object->character_model)->model_data_b[LEGOACT_HANG_MOVE] != NULL) {
+            speed = AnimSpeed((CHARACTER_MODEL_LAYERS_PC *)object->character_model, LEGOACT_HANG_MOVE);
+            if (speed < 0.25f)
+                speed = 0.25f;
+        } else {
+            speed = 0.5f;
+        }
+        object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
+        object->target_velocity.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
+    } else {
+        object->target_velocity.x = object->target_velocity.z = 0.0f;
+    }
+    object->target_velocity.y = 0.5f;
+    return 1;
+}
+
+void __cdecl Grapple_SetRotOrder(GAMEOBJECT *object) {
+    if (object->field_7b3 != 1)
+        object->movement_mode = 2;
+}
+
+i32 __cdecl Glide_SetTargetMom(GAMEOBJECT *object) {
+    f32 speed;
+    if (((MOVEMENT_MODEL_PC *)object->character_model)->model_data_b[object->field_7aa] != NULL)
+        speed = AnimSpeed((CHARACTER_MODEL_LAYERS_PC *)object->character_model, object->field_7aa);
+    else
+        speed = object->character_data->game_character->run_speed;
+    if (object->grapple != NULL) {
+        speed *= 0.25f;
+        object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
+        object->target_velocity.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
+    } else {
+        f32 descent;
+        object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
+        object->target_velocity.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
+        descent = (object->flags_1fc & 0x80) != 0 ? -0.5f : -0.375f;
+        object->target_velocity.y = descent;
+        if (object->context_timer < 0.5f)
+            object->target_velocity.y = (object->context_timer + object->context_timer) * descent;
+    }
+    return 1;
+}
 
 u16 __cdecl SeekRot(u16 current, u16 target, f32 rate) {
     f32 blend;

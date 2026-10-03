@@ -5,6 +5,9 @@
 extern "C" void __cdecl PCSoundAlreadyPlayingHook(void) {
 }
 
+extern "C" void __cdecl NuSound3FlushLoops(void) {
+}
+
 extern "C" void __cdecl PCSoundFailure(...) {
 }
 
@@ -232,6 +235,89 @@ void __thiscall SoundVoiceManagerPC::StopVoice(i32 voice_id) {
         --active_count;
     }
     memset(slot, 0, sizeof(*slot));
+}
+
+void __thiscall SoundVoiceManagerPC::StopAllVoices(void) {
+    SoundVoiceSlotPC *slot = voices;
+    i32 count = 64;
+
+    do {
+        if (slot->voice != NULL) {
+            if (slot->aux != NULL) {
+                slot->aux->vtable->release(slot->aux);
+            }
+            slot->voice->vtable->stop(slot->voice);
+            slot->voice->vtable->release(slot->voice);
+            slot->voice = NULL;
+            slot->aux = NULL;
+            --active_count;
+        }
+        memset(slot, 0, sizeof(*slot));
+        ++slot;
+        --count;
+    } while (count != 0);
+}
+
+void __thiscall SoundVoiceManagerPC::UpdateVoices(void) {
+    SoundVoiceSlotPC *slot;
+    i32 voice_id;
+    DWORD status;
+
+    PCSoundLoopVoiceCount = 0;
+    PCSoundOneShotVoiceCount = 0;
+    PCSoundUpdateClock = (i32)(timeGetTime() & 0x7fffffff);
+
+    slot = &voices[32];
+    for (voice_id = 32; voice_id < 64; ++voice_id, ++slot) {
+        if (slot->voice != NULL) {
+            ++PCSoundLoopVoiceCount;
+            slot->voice->vtable->get_status(slot->voice, &status);
+            if (slot->sound_key != 0 && (status & 4) != 0) {
+                i32 elapsed = (i32)((u32)PCSoundUpdateClock - (u32)slot->field_28);
+                if (elapsed < 0) {
+                    elapsed = (i32)((u32)elapsed - 0x80000000u);
+                }
+                slot->field_19 = elapsed > slot->field_2c;
+                if (slot->field_19 != 0) {
+                    LONG volume = 0;
+                    slot->voice->vtable->get_volume(slot->voice, &volume);
+                    volume += (i32)(nuapi.frame_time * -3500.0);
+                    if (volume < -7000) {
+                        StopVoice(voice_id);
+                    } else {
+                        PCSoundSetRawVolume(slot->voice, volume);
+                    }
+                }
+                slot->field_18 = 0;
+            }
+        }
+    }
+
+    slot = voices;
+    for (voice_id = 0; voice_id < 32; ++voice_id, ++slot) {
+        if (slot->voice != NULL) {
+            ++PCSoundOneShotVoiceCount;
+            slot->voice->vtable->get_status(slot->voice, &status);
+            if ((status & 1) == 0) {
+                StopVoice(voice_id);
+            }
+        }
+    }
+}
+
+extern "C" void __cdecl NuSound3Update(void) {
+    if (PCSoundMixDestination != NULL) {
+        if (PCSoundMixSource != NULL && PCSoundMixSampleCount != 0) {
+            memcpy(PCSoundMixDestination, PCSoundMixSource, (u32)PCSoundMixSampleCount * 2u);
+        }
+        if (PCSoundMixEvent != NULL) {
+            SetEvent(PCSoundMixEvent);
+        }
+        if (PCSoundCommitTarget != NULL) {
+            PCSoundCommitTarget->vtable->commit_deferred_settings(PCSoundCommitTarget);
+        }
+        SoundVoiceManager.UpdateVoices();
+    }
 }
 
 void __thiscall SoundVoiceManagerPC::Setup3DVoice(i32 voice_id, const NUVEC *position, i32 update_mode) {

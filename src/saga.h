@@ -35,6 +35,7 @@ typedef double f64;
 #define STATIC_ASSERT(expression) typedef char SAGA_JOIN(saga_static_assert_, __LINE__)[(expression) ? 1 : -1]
 #define STUBBED() ((void)0)
 #define STUBBED_NAMED(name) ((void)0)
+#define AREA_GLOBALS_PROGRESS_FLAGS_PC (AreaGlobals_PC.progress_flags)
 
 // VC8-compatible C/C++ checks for the retail x86 data model.
 STATIC_ASSERT(sizeof(i8) == 1);
@@ -161,6 +162,8 @@ typedef struct SoundVoiceManagerPC {
     void __thiscall SetVolumeTableIndex(i32, i32);
     void __thiscall SetFrequencyParameter(i32, i32);
     void __thiscall StopVoice(i32);
+    void __thiscall StopAllVoices(void);
+    void __thiscall UpdateVoices(void);
     void __thiscall Setup3DVoice(i32, const NUVEC *, i32);
 #endif
 } SoundVoiceManagerPC;
@@ -169,6 +172,17 @@ STATIC_ASSERT(offsetof(SoundVoiceManagerPC, samples) == 0xd0c);
 STATIC_ASSERT(offsetof(SoundVoiceManagerPC, active_count) == 0xd10);
 STATIC_ASSERT(offsetof(SoundVoiceManagerPC, factory) == 0xd18);
 STATIC_ASSERT(sizeof(SoundVoiceManagerPC) == 0xd98);
+
+typedef struct PC_SOUND_COMMIT_PC PC_SOUND_COMMIT_PC;
+typedef struct PC_SOUND_COMMIT_METHODS_PC {
+    void *unknown_000[17];
+    HRESULT(__stdcall *commit_deferred_settings)(PC_SOUND_COMMIT_PC *);
+} PC_SOUND_COMMIT_METHODS_PC;
+struct PC_SOUND_COMMIT_PC {
+    const PC_SOUND_COMMIT_METHODS_PC *vtable;
+};
+STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS_PC, commit_deferred_settings) == 0x44);
+STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, get_volume) == 0x18);
 
 typedef struct NUSTRING {
     char *id;
@@ -392,15 +406,20 @@ STATIC_ASSERT(offsetof(FLOWBOX_CALLBACKS_PC, process) == 4);
 STATIC_ASSERT(offsetof(FLOWBOX_CALLBACKS_PC, check_output) == 8);
 
 typedef struct AIOWNER_PC {
-    u8 unknown_000[0x5c];
+    struct gameobject_s *game_object;
+    u8 unknown_004[0x58];
     NUVEC position;
-    u8 unknown_068[0x190];
+    u8 unknown_068[0x18];
+    NUVEC collision_position;
+    u8 unknown_08c[0x16c];
     u32 flags_1f8;
     u32 flags_1fc;
     u8 unknown_200[0x2c];
     f32 horizontal_velocity_magnitude;
 } AIOWNER_PC;
 STATIC_ASSERT(offsetof(AIOWNER_PC, flags_1f8) == 0x1f8);
+STATIC_ASSERT(offsetof(AIOWNER_PC, game_object) == 0);
+STATIC_ASSERT(offsetof(AIOWNER_PC, collision_position) == 0x80);
 STATIC_ASSERT(offsetof(AIOWNER_PC, flags_1fc) == 0x1fc);
 typedef struct repeat_sfx_entry_pc_s {
     i16 sfx_id;
@@ -620,7 +639,13 @@ struct AISCRIPTPROCESS_PC {
     f32 action_timer;
     u8 unknown_a0[4];
     struct AILOCATOR_PC *locator;
-    u8 unknown_a8[8];
+    union {
+        u8 unknown_a8[8];
+        struct {
+            struct AILOCATORSET_PC *locator_set;
+            u8 unknown_ac[4];
+        };
+    };
     u8 unknown_b0[2];
     u16 unknown_b2;
     u8 interrupt_priority;
@@ -711,7 +736,7 @@ struct AIPACKET_PC {
     f32 opponent_metric;
     struct gameobject_s *target_ec;
     f32 target_metric_f0;
-    u8 unknown_0f4[4];
+    struct gameobject_s *dont_avoid_character;
     NUVEC creature_origin;
     NUVEC movement_destination;
     f32 movement_stopping_distance;
@@ -838,7 +863,16 @@ typedef struct APIOBJECT_PC {
     NUVEC position;
     u8 unknown_068[0x44];
     f32 collision_radius;
-    u8 unknown_0b0[0x148];
+    union {
+        u8 unknown_0b0[0x148];
+        struct {
+            u8 unknown_b0_to_1b4[0x104];
+            NUVEC last_safe_position;
+            NUVEC previous_position;
+            NUVEC respawn_position;
+            u8 unknown_1d8[0x20];
+        };
+    };
     u32 motion_flags;
     u32 flags_low;
     u8 unknown_200[0xc];
@@ -1062,7 +1096,8 @@ typedef struct AICREATURE_PC {
     i32 y_rotation;
     AIPATHINFO_PC path_info;
     i32 flags;
-    u8 unknown_4c[4];
+    u8 unknown_4c[2];
+    i16 type;
     u8 count;
     u8 unknown_51[0xb];
     f32 x_spacing;
@@ -1385,11 +1420,37 @@ STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, material_last) == 0x14);
 STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, dynamic_geometry) == 0x18);
 STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, items) == 0x24);
 
+typedef struct PC_TEXTURE_RESOURCE_PC PC_TEXTURE_RESOURCE_PC;
+typedef struct PC_TEXTURE_RESOURCE_METHODS_PC {
+    void *unknown_0000[2];
+    ULONG(__stdcall *release)(PC_TEXTURE_RESOURCE_PC *);
+} PC_TEXTURE_RESOURCE_METHODS_PC;
+struct PC_TEXTURE_RESOURCE_PC {
+    const PC_TEXTURE_RESOURCE_METHODS_PC *methods;
+};
+STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, release) == 8);
+STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_PC, methods) == 0);
+
 typedef struct nutexdim_pc_s {
     i32 width;
     i32 height;
+    u8 unknown_0008[0x10];
+    i32 ref_count;
+    u8 unknown_001c[8];
+    PC_TEXTURE_RESOURCE_PC *resource;
 } NUTEXDIM_PC;
-STATIC_ASSERT(sizeof(NUTEXDIM_PC) == 8);
+STATIC_ASSERT(offsetof(NUTEXDIM_PC, width) == 0);
+STATIC_ASSERT(offsetof(NUTEXDIM_PC, height) == 4);
+STATIC_ASSERT(offsetof(NUTEXDIM_PC, ref_count) == 0x18);
+STATIC_ASSERT(offsetof(NUTEXDIM_PC, resource) == 0x24);
+STATIC_ASSERT(sizeof(NUTEXDIM_PC) == 0x28);
+
+typedef struct parttype_lookup_pc_s {
+    char name[16];
+    u8 unknown_0010[0x168];
+} PARTTYPE_LOOKUP_PC;
+STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, name) == 0);
+STATIC_ASSERT(sizeof(PARTTYPE_LOOKUP_PC) == 0x178);
 
 typedef struct part_emit_pc_s {
     i32 effect_id;
@@ -1744,6 +1805,8 @@ struct nufile_device_s {
     i32 (*interrogate_fn)(NUFILE_DEVICE *);
 };
 STATIC_ASSERT(sizeof(NUFILE_DEVICE) == 0x234);
+STATIC_ASSERT(offsetof(NUFILE_DEVICE, id) == 0);
+STATIC_ASSERT(offsetof(NUFILE_DEVICE, unit) == 4);
 STATIC_ASSERT(offsetof(NUFILE_DEVICE, dir_separator) == 0x10);
 STATIC_ASSERT(offsetof(NUFILE_DEVICE, name) == 0x34);
 STATIC_ASSERT(offsetof(NUFILE_DEVICE, match_len) == 0x44);
@@ -1755,6 +1818,18 @@ STATIC_ASSERT(offsetof(NUFILE_DEVICE, sys_dir) == 0x12c);
 STATIC_ASSERT(offsetof(NUFILE_DEVICE, dll_dir) == 0x1ac);
 STATIC_ASSERT(offsetof(NUFILE_DEVICE, format_name_fn) == 0x22c);
 STATIC_ASSERT(offsetof(NUFILE_DEVICE, interrogate_fn) == 0x230);
+
+typedef struct PC_FILEEXTINFO {
+    char extension[13];
+    char type;
+    char platform;
+    char len;
+} PC_FILEEXTINFO;
+STATIC_ASSERT(sizeof(PC_FILEEXTINFO) == 16);
+STATIC_ASSERT(offsetof(PC_FILEEXTINFO, extension) == 0);
+STATIC_ASSERT(offsetof(PC_FILEEXTINFO, type) == 13);
+STATIC_ASSERT(offsetof(PC_FILEEXTINFO, platform) == 14);
+STATIC_ASSERT(offsetof(PC_FILEEXTINFO, len) == 15);
 
 #define NU_PORTAL_STACK_SIZE 0x3000
 
@@ -2173,8 +2248,16 @@ typedef struct APIOBJECTSYS_PC {
     u32 hostility_masks[64][2];
     i32 los_cursor_208;
     i32 los_cursor_20c;
-    u8 flags;
-    u8 unknown_211[7];
+    union {
+        struct {
+            u8 flags;
+            u8 unknown_211[7];
+        };
+        struct {
+            u32 flags_word;
+            u8 unknown_214[4];
+        };
+    };
 } APIOBJECTSYS_PC;
 STATIC_ASSERT(sizeof(APIOBJECTSYS_PC) == 0x218);
 STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, objects) == 4);
@@ -2569,19 +2652,42 @@ STATIC_ASSERT(offsetof(TECHNO_PC, target_mode) == 0x37);
 STATIC_ASSERT(offsetof(TECHNO_PC, controlled_object) == 0x6c);
 STATIC_ASSERT(sizeof(TECHNO_PC) == 0x70);
 typedef struct cutsys_pc_s CUTSYS_PC;
+// Access prefix only; the original allocation extent remains unknown.
+typedef struct area_globals_pc_s {
+    i32 field_00;
+    i32 field_04;
+    i32 field_08;
+    i32 area_phase;
+    i32 new_minikit_count;
+    i32 progress_flags;
+    i32 field_18;
+    i32 field_1c;
+    i32 field_20;
+    u32 arcade_player_kills[2];
+    u32 arcade_ai_kills[2];
+} AREA_GLOBALS_PC;
+STATIC_ASSERT(sizeof(AREA_GLOBALS_PC) == 0x34);
+STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, area_phase) == 0x0c);
+STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, new_minikit_count) == 0x10);
+STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, progress_flags) == 0x14);
+STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, arcade_player_kills) == 0x24);
+STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, arcade_ai_kills) == 0x2c);
+
 typedef struct WORLDINFO_s {
-    u32 unknown_0000[0x40];
+    char name[0x80];
+    char config_file[0x80];
     void *buffer_start;
     VARIPTR giz_buffer;
     VARIPTR buffer_end;
-    u32 unknown_010c;
+    i32 config_count;
     i32 loaded;
     u32 unknown_0114[2];
     i32 level_idx;
-    u32 unknown_0120[2];
+    i32 area_index;
+    i32 episode_index;
     struct level_data_pc_s *current_level;
     struct area_data_pc_s *area;
-    u32 unknown_0130;
+    LEVEL_PROGRESS *level_progress;
     APIDEBRISSYS_PC *game_debris_sys;
     PARTDEBRISSYS *part_debris_sys;
     NUGSCN *current_gscn;
@@ -2598,7 +2704,10 @@ typedef struct WORLDINFO_s {
     u8 *rooms_visible_ptr;
     i32 page_pp;
     i32 page_part;
-    u32 unknown_2aa0[4];
+    i32 page_anim;
+    i32 page_grass;
+    i32 page_bridge;
+    i32 page_unknown;
     CUTSYS_PC *cutscene_sys;
     RTLSET_PC *rtl_set;
     u8 unknown_2ab8[8];
@@ -2636,6 +2745,16 @@ STATIC_ASSERT(offsetof(WORLDINFO, ai_sys) == 0x2ae8);
 STATIC_ASSERT(offsetof(WORLDINFO, tube_count) == 0x4694);
 
 STATIC_ASSERT(offsetof(WORLDINFO, buffer_start) == 0x100);
+STATIC_ASSERT(offsetof(WORLDINFO, name) == 0);
+STATIC_ASSERT(offsetof(WORLDINFO, config_file) == 0x80);
+STATIC_ASSERT(offsetof(WORLDINFO, config_count) == 0x10c);
+STATIC_ASSERT(offsetof(WORLDINFO, area_index) == 0x120);
+STATIC_ASSERT(offsetof(WORLDINFO, episode_index) == 0x124);
+STATIC_ASSERT(offsetof(WORLDINFO, level_progress) == 0x130);
+STATIC_ASSERT(offsetof(WORLDINFO, page_anim) == 0x2aa0);
+STATIC_ASSERT(offsetof(WORLDINFO, page_grass) == 0x2aa4);
+STATIC_ASSERT(offsetof(WORLDINFO, page_bridge) == 0x2aa8);
+STATIC_ASSERT(offsetof(WORLDINFO, page_unknown) == 0x2aac);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
 STATIC_ASSERT(offsetof(WORLDINFO, buffer_end) == 0x108);
 STATIC_ASSERT(offsetof(WORLDINFO, loaded) == 0x110);
@@ -2784,20 +2903,123 @@ typedef struct SUIT_LAYERS_PC {
 } SUIT_LAYERS_PC;
 STATIC_ASSERT(offsetof(SUIT_LAYERS_PC, flags) == 0xc);
 
+typedef struct CHARACTERANIM_CONFIG_PC {
+    char *name;
+    u32 flags;
+    i16 action_id;
+    u8 unknown_0a;
+    u8 priority;
+    i8 minimum_repetitions;
+    i8 maximum_repetitions;
+    u8 unknown_0e[2];
+    f32 blend_in_time;
+    f32 blend_out_time;
+    f32 playback_rate;
+    f32 movement_speed;
+    f32 movement_rate_cap;
+    f32 action_speed;
+    union {
+        struct {
+            f32 event_frame_1;
+            f32 event_frame_2;
+            f32 event_frame_3;
+            f32 event_frame_4;
+        };
+        f32 event_frames[4];
+    };
+    f32 stop_frame;
+    NUVEC root_translation;
+    u16 misc_flags;
+    u8 locator;
+    u8 unknown_4b;
+} CHARACTERANIM_CONFIG_PC;
+STATIC_ASSERT(sizeof(CHARACTERANIM_CONFIG_PC) == 0x4c);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, name) == 0);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, flags) == 4);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, action_id) == 8);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, priority) == 0xb);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, minimum_repetitions) == 0xc);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, maximum_repetitions) == 0xd);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, blend_in_time) == 0x10);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, blend_out_time) == 0x14);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, playback_rate) == 0x18);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, movement_speed) == 0x1c);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, movement_rate_cap) == 0x20);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, action_speed) == 0x24);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, event_frame_1) == 0x28);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, event_frame_2) == 0x2c);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, event_frame_3) == 0x30);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, event_frame_4) == 0x34);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, stop_frame) == 0x38);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, root_translation) == 0x3c);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, misc_flags) == 0x48);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, locator) == 0x4a);
+
+typedef struct CHARACTER_EFFECT_CONFIG_PC {
+    i16 character_id;
+    i16 debris_id;
+    i16 action_id;
+    u8 bits_on;
+    u8 bits_off;
+    f32 frame_1;
+    f32 frame_2;
+    f32 particle_rate;
+    u32 flags;
+    u16 locators;
+    u8 random;
+    u8 particle_count;
+    f32 rumble;
+    f32 shake;
+    f32 judder;
+    i16 sound_id;
+    u16 surfaces;
+    f32 minimum;
+    f32 maximum;
+} CHARACTER_EFFECT_CONFIG_PC;
+STATIC_ASSERT(sizeof(CHARACTER_EFFECT_CONFIG_PC) == 0x34);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, character_id) == 0);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, debris_id) == 2);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, action_id) == 4);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, bits_on) == 6);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, bits_off) == 7);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, frame_1) == 8);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, frame_2) == 0xc);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, particle_rate) == 0x10);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, flags) == 0x14);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, locators) == 0x18);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, random) == 0x1a);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, particle_count) == 0x1b);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, rumble) == 0x1c);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, shake) == 0x20);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, judder) == 0x24);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, sound_id) == 0x28);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, surfaces) == 0x2a);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, minimum) == 0x2c);
+STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, maximum) == 0x30);
+
 typedef struct CHARACTER_ANIMATION_LOCATOR_PC {
     u8 unknown_00[0x14];
     f32 blend_out_time;
     f32 playback_rate;
-    u8 unknown_1c[0x2e];
+    u8 unknown_1c[8];
+    f32 action_speed;
+    u8 unknown_28[0x20];
+    u16 misc_flags;
     i8 locator;
 } CHARACTER_ANIMATION_LOCATOR_PC;
 STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR_PC, locator) == 0x4a);
+STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR_PC, action_speed) == 0x24);
+STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR_PC, misc_flags) == 0x48);
 
 typedef struct CHARACTER_MODEL_LAYERS_PC {
     i16 model_id;
-    u8 unknown_02[2];
+    u8 flags;
+    u8 state;
     struct NUHGOBJ_EVAL_PC *hierarchy;
-    struct CHARACTER_ANIMATION_LOCATOR_PC **animations;
+    union {
+        struct CHARACTER_ANIMATION_LOCATOR_PC **animations;
+        CHARACTERANIM_CONFIG_PC **animation_configs;
+    };
     union {
         void **action_animations;
         void **model_data_b;
@@ -3519,7 +3741,9 @@ STATIC_ASSERT(offsetof(CUTSYS_PC, records) == 0);
 STATIC_ASSERT(offsetof(CUTSYS_PC, count) == 4);
 
 typedef struct apicharacterdata_s {
-    u8 opaque_00_0c[0xc];
+    u8 opaque_00[4];
+    u32 model_flags;
+    u8 opaque_08[4];
     char *name;
     u8 opaque_10_24[0x14];
     PLAYERCHARACTERCONFIG_PC *game_character;
@@ -3527,20 +3751,45 @@ typedef struct apicharacterdata_s {
 } APICHARACTERDATA;
 STATIC_ASSERT(sizeof(APICHARACTERDATA) == 0x4c);
 STATIC_ASSERT(offsetof(APICHARACTERDATA, name) == 0xc);
+STATIC_ASSERT(offsetof(APICHARACTERDATA, model_flags) == 4);
+
+typedef struct API_ANIMATION_CACHE_PC {
+    char path[0x30];
+    void *animation;
+} API_ANIMATION_CACHE_PC;
+STATIC_ASSERT(sizeof(API_ANIMATION_CACHE_PC) == 0x34);
+STATIC_ASSERT(offsetof(API_ANIMATION_CACHE_PC, animation) == 0x30);
 
 typedef struct apicharsys_s {
     i32 character_count;
-    u8 opaque_04[4];
+    i32 model_capacity;
     i32 model_id_capacity;
-    u8 opaque_0c[4];
+    i32 permanent_model_count;
     i32 loaded_model_count;
-    u8 opaque_14[4];
+    i32 animation_capacity;
     CHARACTER_MODEL_LAYERS_PC *models;
     i16 *playermodelids;
     APICHARACTERDATA *char_data;
-    u8 opaque_24_1c[0x1c];
+    API_ANIMATION_CACHE_PC *animations;
+    i32 area_animation_count;
+    i32 loaded_animation_count;
+    i32 animation_load_attempts;
+    void(__cdecl *set_creature_lights)(APIOBJECT_PC *);
 } APICHARSYS;
+STATIC_ASSERT(sizeof(APICHARSYS) == 0x38);
 STATIC_ASSERT(offsetof(APICHARSYS, model_id_capacity) == 8);
+STATIC_ASSERT(offsetof(APICHARSYS, model_capacity) == 4);
+STATIC_ASSERT(offsetof(APICHARSYS, permanent_model_count) == 0xc);
+STATIC_ASSERT(offsetof(APICHARSYS, animation_capacity) == 0x14);
+STATIC_ASSERT(offsetof(APICHARSYS, animations) == 0x24);
+STATIC_ASSERT(offsetof(APICHARSYS, area_animation_count) == 0x28);
+STATIC_ASSERT(offsetof(APICHARSYS, loaded_animation_count) == 0x2c);
+STATIC_ASSERT(offsetof(APICHARSYS, animation_load_attempts) == 0x30);
+STATIC_ASSERT(offsetof(APICHARSYS, set_creature_lights) == 0x34);
+STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, flags) == 2);
+STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, state) == 3);
+STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, animation_configs) == 8);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, event_frames) == 0x28);
 
 typedef struct cutscenecharacter_s {
     u8 opaque_00_40[0x40];
@@ -3689,10 +3938,19 @@ typedef struct gameobject_s {
         u8 roof_surface_id_pc;
     };
     u8 jump_animation_state;
-    u8 unknown_0286;
+    union {
+        u8 unknown_0286;
+        u8 is_underwater;
+    };
     u8 water_intersects;
     u8 model_draw_result;
-    u8 unknown_0289[2];
+    union {
+        u8 unknown_0289[2];
+        struct {
+            u8 effect_flags;
+            u8 unknown_028a;
+        };
+    };
     u8 dead;
     u8 origin_joint_ready;
     u8 hostility_group;
@@ -3753,17 +4011,28 @@ typedef struct gameobject_s {
     u16 takeover_start_angle;
     u16 field_7a8;
     i16 field_7aa;
-    u8 unknown_07ac[6];
+    i16 queued_context_animation;
+    u8 combo_branch;
+    u8 unknown_07af;
+    u8 combo_input_latched;
+    u8 unknown_07b1;
     u8 combo_stage;
     u8 field_7b3;
     u8 big_jump_animation;
     i8 character_context;
     u8 context_variant;
-    u8 unknown_07b7;
+    i8 special_move_pc;
     u8 action_movement_state;
     u8 jump_sequence;
     u8 unknown_07ba[2];
-    u32 context_variant_flags;
+    union {
+        u32 context_variant_flags;
+        struct {
+            u8 context_flags_pc;
+            i8 context_variant_bits_pc;
+            u8 unknown_07be[2];
+        };
+    };
     f32 tag_cooldown;
     i8 tag_player_index;
     u8 tag_flags;
@@ -3786,16 +4055,24 @@ typedef struct gameobject_s {
     f32 socket_current_speed_pc;
     u8 unknown_0c50[0x24];
     NUVEC camera_saved_position;
-    void *field_c80;
-    void *field_c84;
-    void *field_c88;
+    union {
+        struct {
+            void *field_c80;
+            void *field_c84;
+            void *field_c88;
+        };
+        NUVEC attack_target_position;
+    };
     f32 field_c8c;
     f32 field_c90;
     f32 field_c94;
     NUVEC suspension_normal;
     GAMEPAD_PC *pad;
     SOCKPOSITION_PC *previous_sock_position;
-    u8 unknown_0cac[0x10];
+    u8 unknown_0cac[4];
+    struct PART_PC *incoming_part;
+    struct PART_PC *blocked_part;
+    u8 unknown_0cb8[4];
     SUIT_LAYERS_PC *suit;
     u8 unknown_0cc0[4];
     struct TORPEDOPACKET_PC *torpedo;
@@ -3807,7 +4084,12 @@ typedef struct gameobject_s {
     };
     struct gameobject_s *takeover_owner;
     void *sabre_streaks[4][2];
-    u8 unknown_0cf8[0x24];
+    struct gameobject_s *block_attacker;
+    struct gameobject_s *incoming_melee;
+    u8 unknown_0d00[4];
+    BOLT *incoming_bolt;
+    BOLT *blocked_bolt;
+    u8 unknown_0d0c[0x10];
     struct gameobject_s *airborne_collision_target;
     u8 unknown_0d20[0xc];
     f32 airborne_input_timer;
@@ -3820,12 +4102,14 @@ typedef struct gameobject_s {
     f32 delayed_turn_timer;
     u8 unknown_0d4c[0x8];
     f32 field_d54;
-    u8 unknown_0d58[8];
+    f32 quick_shoot_timer;
+    u8 unknown_0d5c[4];
     f32 hud_icon_timer;
     f32 jump_variant_timer;
     u8 unknown_0d68[4];
     f32 surface_flag8_scale_pc;
-    u8 unknown_0d70[0xc];
+    u8 unknown_0d70[8];
+    f32 directional_seek_multiplier;
     f32 terrain_origin_floor_offset;
     u8 unknown_0d80[0x18];
     f32 turn_braking;
@@ -3849,7 +4133,7 @@ typedef struct gameobject_s {
     NUVEC reset_velocity;
     u8 unknown_0e04[4];
     u16 delayed_turn_target_angle;
-    u8 unknown_0e0a[2];
+    u16 force_heading;
     u16 current_input_angle;
     u16 previous_boundary_angle;
     i16 previous_block_animation;
@@ -3860,7 +4144,8 @@ typedef struct gameobject_s {
     u8 unknown_0e1e[2];
     u32 flags_e20;
     u32 flags_e24;
-    u8 unknown_0e28[8];
+    u8 unknown_0e28[7];
+    u8 block_latch;
     u8 quick_shoot_flags;
     u8 unknown_0e31;
     u8 jump_variant_state;
@@ -3920,15 +4205,23 @@ typedef struct gameobject_s {
     u32 portal_flags;
     u32 flags_ef0;
     u32 flags_ef4;
-    u8 field_ef8;
-    u8 unknown_0ef9[3];
+    union {
+        u32 flags_ef8_word;
+        struct {
+            u8 field_ef8;
+            u8 unknown_0ef9[3];
+        };
+    };
     u8 field_efc;
     u8 unknown_0efd[3];
     u8 field_f00;
     u8 unknown_0f01[0xb];
     f32 big_jump_height;
     f32 field_f10;
-    u8 unknown_0f14[0x4];
+    union {
+        u8 unknown_0f14[0x4];
+        AILOCATOR_PC *doomed_escape_locator;
+    };
     NUVEC target_velocity;
     NUVEC surface_normal;
     NUVEC facing_direction;
@@ -3953,7 +4246,8 @@ typedef struct gameobject_s {
     f32 animation_speed_multiplier;
     u8 unknown_1038[4];
     f32 fall_acceleration_timer;
-    u8 unknown_1040[8];
+    u8 unknown_1040[4];
+    u32 flags_1044;
     u32 layer_mask;
     u32 extra_layer_mask;
     union {
@@ -5357,16 +5651,26 @@ typedef struct gizobstacle_s {
     GAMEANIMSET *anim_set;
     u8 opaque_38_44[0xc];
     f32 trigger_radius;
-    u8 opaque_48_8c[0x44];
+    f32 animation_speed;
+    f32 forward_speed_factor;
+    f32 backward_speed_factor;
+    u8 opaque_54_8c[0x38];
     i16 start_sfx_id;
-    u8 opaque_8e_91[0x3];
+    u8 opaque_8e_90[2];
+    u8 playback_state;
     u8 mode;
-    u8 opaque_92_94[0x3];
+    u8 opaque_92_9c[0xa];
+    u32 runtime_flags;
 } GIZOBSTACLE;
 STATIC_ASSERT(offsetof(GIZOBSTACLE, anim_set) == 0x34);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, trigger_radius) == 0x44);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, start_sfx_id) == 0x8c);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, mode) == 0x91);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, animation_speed) == 0x48);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, forward_speed_factor) == 0x4c);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, backward_speed_factor) == 0x50);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, playback_state) == 0x90);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, runtime_flags) == 0x9c);
 
 typedef struct memorymanager_s {
     u32 buffer_start;
@@ -5483,6 +5787,46 @@ typedef struct PC_VIEWPORT_PC {
     f32 max_z;
 } PC_VIEWPORT_PC;
 
+#include <math.h>
+
+typedef struct nulgtlaser_pc_s {
+    NUVEC start, end;
+    f32 width, segment_length, width_wobble, end_width_ratio, length;
+    u8 type, arc, padding[2];
+    u32 colour;
+    i32 seed;
+} NULGTLASER_PC;
+STATIC_ASSERT(sizeof(NULGTLASER_PC) == 0x38);
+STATIC_ASSERT(offsetof(NULGTLASER_PC, width) == 0x18);
+STATIC_ASSERT(offsetof(NULGTLASER_PC, arc) == 0x2d);
+STATIC_ASSERT(offsetof(NULGTLASER_PC, colour) == 0x30);
+STATIC_ASSERT(offsetof(NULGTLASER_PC, seed) == 0x34);
+typedef struct nulgtarclaser_pc_s {
+    NUVEC start, end, bend;
+    f32 width, segment_length, wobble, bend_amount;
+    u8 type, padding[3];
+    i32 colour, flags, seed;
+} NULGTARCLASER_PC;
+STATIC_ASSERT(sizeof(NULGTARCLASER_PC) == 0x44);
+STATIC_ASSERT(offsetof(NULGTARCLASER_PC, width) == 0x24);
+STATIC_ASSERT(offsetof(NULGTARCLASER_PC, colour) == 0x38);
+STATIC_ASSERT(offsetof(NULGTARCLASER_PC, seed) == 0x40);
+typedef struct nulgtarcmaterial_pc_s {
+    NUMTL *material;
+    f32 u0, v0, u1, v1;
+} NULGTARCMATERIAL_PC;
+STATIC_ASSERT(sizeof(NULGTARCMATERIAL_PC) == 0x14);
+STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, v0) == 8);
+STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, v1) == 0x10);
+typedef struct nulgtvertex_pc_s {
+    f32 x, y, z;
+    u32 colour;
+    f32 u, v;
+} NULGTVERTEX_PC;
+STATIC_ASSERT(offsetof(NULGTVERTEX_PC, colour) == 0xc);
+STATIC_ASSERT(offsetof(NULGTVERTEX_PC, u) == 0x10);
+STATIC_ASSERT(offsetof(NULGTVERTEX_PC, v) == 0x14);
+
 typedef struct PC_D3D9_DEVICE_PC PC_D3D9_DEVICE_PC;
 typedef struct PC_D3D9_METHODS_PC {
     void *unknown_0000[44];
@@ -5490,6 +5834,14 @@ typedef struct PC_D3D9_METHODS_PC {
     void *unknown_00b4;
     void *unknown_00b8;
     HRESULT(__stdcall *set_viewport)(PC_D3D9_DEVICE_PC *, const PC_VIEWPORT_PC *);
+    void *unknown_00c0[9];
+    HRESULT(__stdcall *set_render_state)(PC_D3D9_DEVICE_PC *, i32, u32);
+    void *unknown_00e8[7];
+    HRESULT(__stdcall *set_texture)(PC_D3D9_DEVICE_PC *, u32, void *);
+    void *unknown_0108;
+    HRESULT(__stdcall *set_texture_stage_state)(PC_D3D9_DEVICE_PC *, u32, i32, u32);
+    void *unknown_0110;
+    HRESULT(__stdcall *set_sampler_state)(PC_D3D9_DEVICE_PC *, u32, i32, u32);
 } PC_D3D9_METHODS_PC;
 struct PC_D3D9_DEVICE_PC {
     const PC_D3D9_METHODS_PC *methods;
@@ -5514,6 +5866,10 @@ STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, min_z) == 0x10);
 STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, max_z) == 0x14);
 STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_transform) == 0xb0);
 STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_viewport) == 0xbc);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_render_state) == 0xe4);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_texture) == 0x104);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_texture_stage_state) == 0x10c);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_sampler_state) == 0x114);
 STATIC_ASSERT(offsetof(PC_D3D9_DEVICE_PC, methods) == 0);
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, device) == 4);
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, requested_viewport) == 0x170);
@@ -6256,6 +6612,8 @@ extern "C" {
     void __cdecl NuFileEndBlkRead(NUFILE file);
     i32 __cdecl NuFileGetBlkSize(void);
     i64 __cdecl NuDatFileSeek(NUFILE file, i64 offset, i32 origin);
+    void __cdecl NuDatFileClose(NUFILE file);
+    i32 __cdecl NuDatFileOpenSize(NUFILE file);
     i32 __cdecl NuMcFileOpenSize(NUFILE file);
     i32 __cdecl NuMcOpen(i32 port, i32 slot, char *filepath, i32 mode, i32 async);
     i32 __cdecl NuMcRead(i32 file, void *destination, i32 size, i32 async);
@@ -8296,6 +8654,399 @@ extern "C" {
     extern const char AIScriptParamPrefix[6];
     f32 __cdecl AIParamToFloat(AISCRIPTPROCESS_PC *, char *);
     extern const char AIScriptActionNameArgPrefix[6];
+    extern const char AITransferLiteral757834[13];
+    extern const char AITransferLiteral757874[15];
+    extern const char AITransferLiteral757844[14];
+    extern const char AITransferLiteral75786c[5];
+    extern const char AITransferLiteral757860[10];
+    extern const char AITransferLiteral757bb4[13];
+    extern const char AITransferLiteral757ba8[11];
+    extern const char AITransferLiteral757b9c[10];
+    extern const char AITransferLiteral757ec4[10];
+    extern const char AITransferLiteral757ebc[5];
+    extern const char AITransferLiteral757a5c[12];
+    extern const char AITransferLiteral757ee0[8];
+    extern const char AITransferLiteral757a7c[8];
+    extern const char AITransferLiteral757a84[8];
+    extern const char AITransferLiteral757cd8[5];
+    extern const char AITransferLiteral757cd0[6];
+    extern const char AITransferLiteral757cc8[7];
+    extern const char AITransferLiteral757e68[5];
+    extern const char AITransferLiteral757e70[15];
+    extern const char AITransferLiteral75772c[5];
+    extern const char AITransferLiteral757a44[23];
+    i32 __cdecl LookupDebrisEffectPageIgnore(char *, i8, i32);
+    i32 __cdecl LookupDebrisEffectPage(char *, i8);
+    extern i32 nufile_lsn_allowed;
+    i32 __cdecl NuDatGetFileInfo(NUDATHDR *, char *, i64 *, i32 *);
+    i32 __cdecl Action_BigJump(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_SetCurrentSpeed(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_SetGravityHeight(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_SnapWeaponOut(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_DontAvoidCharacter(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_MoveAwayFromLastAttacker(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32,
+                                                f32);
+    i32 __cdecl Action_CannotDropIn(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_SetSpline(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_CameraShake(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_SetZeroAcceleration(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_FaceCharacter(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_SetPath(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_SetInvulnerable(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    extern const char AITransferLiteral7576b8[7];
+    extern const char AITransferLiteral7576a8[7];
+    extern const char AITransferLiteral7576b0[6];
+    extern const char AITransferLiteral757724[7];
+    extern const char AITransferLiteral75768c[13];
+    extern const char AITransferLiteral75769c[11];
+    extern const char AITransferLiteral75773c[8];
+    extern const char AITransferLiteral7576c0[6];
+    extern const char AITransferLiteral7576e0[10];
+    extern const char AITransferLiteral7576f8[6];
+    extern const char AITransferLiteral7576d0[14];
+    extern const char AITransferLiteral757744[7];
+    extern const char AITransferLiteral757eb4[8];
+    extern const char AITransferLiteral757ea8[10];
+    extern const char AITransferLiteral7583d0[18];
+    extern const char AITransferLiteral7583c4[10];
+    extern const char AITransferLiteral7583b4[16];
+    extern const char AITransferLiteral757a20[8];
+    extern const char AITransferLiteral757f7c[7];
+    extern i32 gizspecial_gizmotype_id;
+    extern void(__cdecl *APIObjPlaySfxByIdFn)(i32, NUVEC *);
+    extern const char WorldGrassFormat[7];
+    extern const char WorldBridgeFormat[7];
+    extern i32 Grass_Available;
+    extern NUVEC APIObjectZeroMomentumPC;
+    extern GAMESAVE BackupGame;
+    extern u32 areaSuitBits;
+    extern const char SceneFileExtensionPc[5];
+    extern const char NuFileExt_dds_PC[5];
+    extern const char NuFileExt_at3_PC[5];
+    extern const char NuFileExt_psc_PC[5];
+    extern const char NuFileExt_phg_PC[5];
+    extern const char NuFileExt_nx2_PC[5];
+    extern const char NuFileExt_hx2_PC[5];
+    extern const char NuFileExt_h4m_PC[5];
+    extern const char NuFileExt_gcm_PC[5];
+    extern const char NuFileExt_dsp_PC[5];
+    extern const char NuFileExt_ctx_PC[5];
+    extern const char NuFileExt_csc_PC[5];
+    extern const char NuFileExt_chg_PC[5];
+    extern const char NuFileExt_pss_PC[5];
+    extern const char NuFileExt_vag_PC[5];
+    extern const char NuFileExt_pnt_PC[5];
+    extern const char NuFileExt_ghg_PC[5];
+    extern const char NuFileExt_pc_ghg_PC[8];
+    extern const char NuFileExt_lr_pc_ghg_PC[11];
+    extern const char NuFileExt_pc_gsc_PC[8];
+    extern const char NuFileExt_bik_PC[5];
+    extern const char NuFileExt_wav_PC[5];
+    extern const char NuFileExt_cu2_PC[5];
+    extern const char NuFileExt_pc_dds_PC[8];
+    extern const char NuFileExt_bsa_PC[5];
+    extern const char NuFileExt_an3_PC[5];
+    extern const char NuFileExt_pam_PC[5];
+    extern const char NuFileExt_mib_PC[5];
+    extern const char NuFileExt_msf_PC[5];
+    extern const char NuFileExt_ps3_tex_PC[9];
+    extern const char NuFileExt_ps3_gsc_PC[9];
+    extern const char NuFileExt_ps3_ghg_PC[9];
+    extern const char NuFileExt_wmv_PC[5];
+    extern const char NuFileExt_wavm_PC[6];
+    extern const char NuFileExt_wavx_PC[6];
+    extern const char NuFileExt_cc2_PC[5];
+    extern const char NuFileExt_360_tex_PC[9];
+    extern const char NuFileExt_360_gsc_PC[9];
+    extern const char NuFileExt_360_ghg_PC[9];
+    extern const char NuFileExt_cbs_PC[5];
+    extern const char NuFileExt_ca3_PC[5];
+    extern PC_FILEEXTINFO extensions[64];
+    extern i32 num_extensions;
+    extern void *Game_Customiser;
+    extern void *CUTCAM;
+    extern const char APIObjectCharsDirectory[7];
+    extern const char APIObjectPakExtension[5];
+    extern i32 append;
+    extern i32 nopakfile;
+    extern i32(__cdecl *RedirectAnimFn)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *);
+    extern void *RedirectAnimList;
+    extern char RedirectAnimDir[64];
+    extern PC_FILEEXTINFO extensions[64];
+    extern i32 num_extensions;
+    void __cdecl NuFileExtInit(i32);
+    i32 __cdecl NuFileInitEx(i32 device_id, i32 reboot_iop, i32 eject);
+    void __cdecl NuFileInit(i32 device_id);
+    void __cdecl NuPSFileInitDevices(i32 device_id, i32 reboot_iop, i32 eject);
+    i32 __cdecl NuFileUseHiresPC(void);
+    extern u8 PCUseHiresFlag;
+    i32 __cdecl NuFileExtGetType(char *path, i32 path_len);
+    i32 __cdecl NuFileExtRemove(char *destination, char *path);
+    i32 __cdecl NuFileExtGetExt(char *destination, i32 capacity, i32 type);
+    i32 __cdecl NuFileExtConvert(char *destination, char *path);
+    void __cdecl PCDeviceResetState(void);
+    void __cdecl PCDeviceSetRenderState(i32, u32);
+    void __cdecl PCDeviceSetSamplerState(u32, i32, u32);
+    void __cdecl PCDeviceSetTexture(u32, void *);
+    void __cdecl PCDeviceSetTextureStageState(u32, i32, u32);
+    extern u8 PCDeviceStateCacheEnabled;
+    extern i32 PCDeviceRenderStateCache[12];
+    extern i32 PCDeviceCacheStateKey;
+    extern void *PCDeviceTextureCache[5];
+    extern i32 PCDeviceSamplerStateCache[8][14];
+    extern i32 PCDeviceSamplerInvalidation[8][2];
+    void __cdecl Customiser_DumpAll(void *, WORLDINFO *);
+    void __cdecl ClearAreaProgress(i32, i32);
+    i32 __cdecl MovingBackwards(GAMEOBJECT *);
+    void __cdecl Climb_UpdateMagnetRotation(GAMEOBJECT *);
+    void *__cdecl NuAnimData2LoadBuffFromPAK(void *, i32);
+    void *__cdecl NuAnimData2LoadBuffEx(char *, VARIPTR *, VARIPTR *, void **);
+    void *__cdecl NuAnimData2LoadBuff(char *, VARIPTR *, VARIPTR *);
+    void __cdecl PCAnimationLoadFailureNoOp(char *);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef8_word) == 0xef8);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1044) == 0x1044);
+    i32 __cdecl Action_SetSide(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_SetTakeOverTarget(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_SetStateArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_SnapToOrigin(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_GameDontPush(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_SetAIOverrideControl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_PlayGizSpecial(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_SetLastAttacker(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_SetUseOneAtOnce(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    extern i32 NuLgtLaserCnt;
+    extern i32 NuLgtLaserOldCnt;
+    extern u32 NuLgtSeed;
+    extern NULGTARCMATERIAL_PC NuLgtArcMtl[4];
+    extern NULGTLASER_PC NuLgtLaserData[64];
+    extern i32 NuLgtArcLaserCnt;
+    extern i32 NuLgtArcLaserOldCnt;
+    extern i32 NuLgtArcLaserFrame;
+    extern NULGTARCLASER_PC NuLgtArcLaserData[16];
+    extern i32 PS2_REZ_W;
+    extern i32 PS2_REZ_H;
+    extern const char AITransferLiteral75782c[5];
+    extern const char AITransferLiteral7583e4[12];
+    extern const char AITransferLiteral7583f0[8];
+    extern const char AITransferLiteral757a38[12];
+    extern const char AITransferLiteral757a70[11];
+    extern i32 BeenAttacked;
+    extern u8 takeoverobjects[352];
+    extern i32 num_takeoverobjects;
+    extern char DoorExitNamePc[1];
+    extern i32 Door_Start;
+    extern i32 Door_NextSock;
+    extern u8 minikitCounter_C;
+    extern u8 minikitCounter_A;
+    extern const char AITransferLiteral758430[5];
+    extern AREA_GLOBALS_PC AreaGlobals_PC;
+    extern i32 LSW2;
+    extern f32 HIGHJUMPHEIGHT;
+    extern TIMER AreaTimer;
+    extern i32 OldBonusScore[2];
+    extern i32 BonusScore[2];
+    extern GAMEOBJECT *BombGenerator_PlayerBomb[2];
+    extern i32 Lap;
+    extern i32 BuildUpTotal;
+    extern i32 BuildUpDone;
+    void __cdecl NewArea_ResetGlobalsPC(void);
+    void __cdecl NewArea(void);
+    void __cdecl ResetMinikitCounter(void);
+    STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, locator_set) == 0xa8);
+    STATIC_ASSERT(offsetof(APIOBJECT_PC, last_safe_position) == 0x1b4);
+    STATIC_ASSERT(offsetof(APIOBJECT_PC, previous_position) == 0x1c0);
+    STATIC_ASSERT(offsetof(APIOBJECT_PC, respawn_position) == 0x1cc);
+    STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, flags_word) == 0x210);
+    STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hover_fall_mode) == 0x116);
+    STATIC_ASSERT(offsetof(AIGROUP_PC, flags) == 0x50);
+    void __cdecl NuPPUnpack(void *, void *);
+    i32 __cdecl NuPPLoadBuffer(NUFILE file, void *buffer, i32 capacity);
+    extern const char AITransferLiteral757a94[9];
+    extern const char AITransferLiteral757a8c[7];
+    extern const char AITransferLiteral757c64[4];
+    extern const char AITransferLiteral757c60[4];
+    extern const char AITransferLiteral757c5c[4];
+    extern const char AITransferLiteral757f28[8];
+    extern const char AITransferLiteral7583f8[8];
+    extern PARTTYPE_LOOKUP_PC part_types[128];
+    extern NUGSPLINE *script_spline_selected;
+
+    extern PARTTYPE_LOOKUP_PC part_types[128];
+    extern NUGSPLINE *script_spline_selected;
+    i32 __cdecl PARTLookupType(char *name);
+    i32 __cdecl NuSplineFindAllBeg(NUGSCN *scene, char *name, NUGSPLINE **results, i32 capacity);
+    extern const char AITransferLiteral7577dc[8];
+    extern const char AITransferLiteral757824[7];
+    extern const char AITransferLiteral75781c[8];
+    extern const char AITransferLiteral757884[12];
+    extern const char AITransferLiteral757a68[6];
+    extern const char AITransferLiteral757c10[13];
+    extern const char AITransferLiteral757c20[12];
+    extern const char AITransferLiteral758194[11];
+    extern const char AITransferLiteral758188[11];
+    extern const char AITransferLiteral7581a0[8];
+    extern const char AITransferLiteral758174[19];
+    extern const char AITransferLiteral7581d4[10];
+    extern const char AITransferLiteral7581ec[9];
+    extern const char AITransferLiteral7581e0[9];
+    extern const char GizObstacleActionNamePC[5];
+    extern const char GizObstacleActionBackwardPC[9];
+    extern const char GizObstacleActionForwardPC[8];
+    extern const char GizObstacleActionStayOpenPC[9];
+    extern const char GizObstacleActionStayShutPC[9];
+    extern const char NuMusicDebugClassInvalid[8];
+    extern const char NuMusicDebugClassQuiet[6];
+    extern const char NuMusicDebugClassAction[7];
+    extern const char NuMusicDebugClassSignature[10];
+    extern const char NuMusicDebugClassOverlay[8];
+    extern const char NuMusicDebugClassCutscene[9];
+    extern const char NuMusicDebugClassNoMusic[8];
+    extern const char NuMusicDebugVoiceFormat[9];
+    extern const char NuMusicDebugTrackFormat[9];
+    extern const char NuMusicDebugClassFormat[9];
+    extern const char NuMusicDebugTrackNone[11];
+    extern const char NuMusicDebugClassNone[11];
+    extern const char NuMusicDebugStatusFormat[10];
+    extern const char NuMusicDebugVolumeFormat[15];
+    extern const char NuMusicDebugFadeFormat[8];
+    extern const char NuMusicDebugPositionFormat[7];
+    extern const char NuMusicDebugStatus0[13];
+    extern const char NuMusicDebugStatus1[5];
+    extern const char NuMusicDebugStatus2[15];
+    extern const char NuMusicDebugStatus3[7];
+    extern const char NuMusicDebugStatus4[16];
+    extern const char NuMusicDebugStatus5[8];
+    extern const char NuMusicDebugStatus6[12];
+    extern const char NuMusicDebugStatus7[8];
+    extern const char *NuMusicVoiceStatusText[8];
+    extern u32 NuMusicDebugColour;
+    extern i32 bonus_gunship_store_progress_flag;
+    extern u8 PCUseHiresFlag;
+    extern f32 LEDGETERRAINLOOKAHEAD;
+    extern i16 LEGOACT_HANG_MOVE;
+
+    void __cdecl StoreProgressAICharacter(LEVEL_PROGRESS *progress);
+    void __cdecl Grabber_StoreProgress(WORLDINFO *world, LEVEL_PROGRESS *progress);
+    void __cdecl StoreLevelProgressFn(WORLDINFO *world, LEVEL_PROGRESS *progress, i32 area_progress);
+    void __cdecl StoreLevelProgress(WORLDINFO *world);
+    extern i32 bonus_gunship_store_progress_flag;
+
+    void __cdecl NuSound3GetStreamInfo(i32 stream_index, void *info);
+    void __cdecl NuQFntPushPrintMode(u32 mode);
+    void __cdecl NuQFntPopPrintMode(void);
+    void __cdecl NuQFntSet(VUFNT *font);
+    void __cdecl NuQFntSetScale(VUFNT *font, f32 x_scale, f32 y_scale);
+    void __cdecl NuQFntSetColour(VUFNT *font, u32 colour);
+    void __cdecl NuQFntSetPointSize(VUFNT *font, f32 width, f32 height);
+    void __cdecl NuQFntSetUVSizePc(VUFNT *font, f32 x_scale, f32 y_scale);
+    extern u32 NuQFntModeStack[16];
+    extern i32 NuQFntModeStackIndex;
+    extern const char NuMusicDebugClassInvalid[8];
+    extern const char NuMusicDebugClassQuiet[6];
+    extern const char NuMusicDebugClassAction[7];
+    extern const char NuMusicDebugClassSignature[10];
+    extern const char NuMusicDebugClassOverlay[8];
+    extern const char NuMusicDebugClassCutscene[9];
+    extern const char NuMusicDebugClassNoMusic[8];
+    extern const char NuMusicDebugVoiceFormat[9];
+    extern const char NuMusicDebugTrackFormat[9];
+    extern const char NuMusicDebugClassFormat[9];
+    extern const char NuMusicDebugTrackNone[11];
+    extern const char NuMusicDebugClassNone[11];
+    extern const char NuMusicDebugStatusFormat[10];
+    extern const char NuMusicDebugVolumeFormat[15];
+    extern const char NuMusicDebugFadeFormat[8];
+    extern const char NuMusicDebugPositionFormat[7];
+    extern const char NuMusicDebugStatus0[13];
+    extern const char NuMusicDebugStatus1[5];
+    extern const char NuMusicDebugStatus2[15];
+    extern const char NuMusicDebugStatus3[7];
+    extern const char NuMusicDebugStatus4[16];
+    extern const char NuMusicDebugStatus5[8];
+    extern const char NuMusicDebugStatus6[12];
+    extern const char NuMusicDebugStatus7[8];
+    extern const char *NuMusicVoiceStatusText[8];
+    extern u32 NuMusicDebugColour;
+    void __cdecl PCCharacterSystemExistingNoOp(void);
+    void __cdecl APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_count, i32 model_capacity,
+                                     i32 model_id_capacity, i32 animation_capacity, APICHARACTERDATA *characters,
+                                     void(__cdecl *set_lights)(APIOBJECT_PC *));
+    void __cdecl GameCam_Judder(GAMECAMERA *camera, f32 amount, i32 axis, NUVEC *position);
+    extern const char GizmoSnapOptionNamePc[];
+    extern const char ActionSnapPlayer1Name[8];
+    extern const char ActionSnapPlayer2Name[8];
+    extern const char ActionSnapDontCheckTerrainName[19];
+    void __cdecl NuTexDestroy(i32 texture_id);
+    void __cdecl NuTexDestroyPS(NUTEXDIM_PC *texture);
+    void __cdecl PCDeviceReleaseTexture(PC_TEXTURE_RESOURCE_PC **texture);
+    void __cdecl PCFrameCriticalSectionEnter_candidate(void);
+    void __cdecl PCFrameCriticalSectionLeave_candidate(void);
+    CHARACTER_MODEL_LAYERS_PC *__cdecl APICharacterLoaded(i32);
+    f32 __cdecl AnimListFrame(CHARACTER_MODEL_LAYERS_PC *, i32, i32);
+    f32 __cdecl AnimStopFrame(CHARACTER_MODEL_LAYERS_PC *, i32);
+    f32 *__cdecl AnimListFrameArray(CHARACTER_MODEL_LAYERS_PC *, i32);
+    extern const char AIActionCircleTeleportName[9];
+    extern const char AIActionCircleReverseName[8];
+    extern const char AIActionCircleAnticlockwiseName[14];
+    extern const char AIActionCircleClockwiseName[10];
+    i32 __cdecl Action_CircleLocator(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_GoToOriginalPath(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    void __cdecl ResetForceBack(void);
+    void __cdecl SetForceBack(GAMEOBJECT *, NUVEC *, f32, i32);
+    extern f32 ForceBackRadiusPc;
+    extern f32 ForceBackRadius2Pc;
+    extern GAMEOBJECT *ForceBackObjPc;
+    extern NUVEC *ForceBackPosPc;
+    extern i32 ForceBackTypePc;
+    i32 __cdecl AnimMiscFlags(CHARACTER_MODEL_LAYERS_PC *, i32);
+    f32 __cdecl AnimSpeed(CHARACTER_MODEL_LAYERS_PC *, i32);
+    void __cdecl APIResetCharacterRemap(void);
+    void __cdecl NuSound3KillAllAudio(void);
+    void __cdecl NuSound3Update(void);
+    extern void *PCSoundMixSource;
+    extern i32 PCSoundMixSampleCount;
+    extern void *PCSoundMixDestination;
+    extern i32 PCSoundUpdateClock;
+    extern i32 PCSoundLoopVoiceCount;
+    extern i32 PCSoundOneShotVoiceCount;
+    extern HANDLE PCSoundMixEvent;
+    extern PC_SOUND_COMMIT_PC *PCSoundCommitTarget;
+    extern const char NuFileSourcePathPC[50];
+    void *__cdecl NuFileLoad(char *);
+    i32 __cdecl NuFileGetLastError(void);
+    NUFILE_DEVICE *__cdecl NuFileFindDevice(i32, i32);
+    void __cdecl WorldInfo_Dump(WORLDINFO *);
+    i32 __cdecl WorldInfo_Reset(WORLDINFO *, i32);
+    void __cdecl WorldInfo_Load(WORLDINFO *);
+    void __cdecl WorldInfo_Init(WORLDINFO *);
+    void __cdecl WorldInfo_LoadObjectAnimFile(WORLDINFO *);
+    i32 __cdecl edanimLoadPage(char *, NUGSCN *);
+    void __cdecl SetLevelExBlowupFlags(u32);
+    extern const char WorldPathSeparator[2];
+    extern const char WorldObjectAnimFormat[7];
+    extern const char WorldLevelConfigFormat[7];
+    void __cdecl GameCam_NewShake(GAMECAMERA *, f32, f32, f32);
+    STATIC_ASSERT(offsetof(AIPACKET_PC, dont_avoid_character) == 0xf4);
+    STATIC_ASSERT(offsetof(AICREATURE_PC, type) == 0x4e);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, is_underwater) == 0x286);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, effect_flags) == 0x289);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_pc) == 0x7b7);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, force_heading) == 0xe0a);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, context_flags_pc) == 0x7bc);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_bits_pc) == 0x7bd);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, combo_input_latched) == 0x7b0);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, combo_branch) == 0x7ae);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, queued_context_animation) == 0x7ac);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, quick_shoot_timer) == 0xd58);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, attack_target_position) == 0xc80);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, incoming_bolt) == 0xd04);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, blocked_bolt) == 0xd08);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, incoming_melee) == 0xcfc);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, block_attacker) == 0xcf8);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, incoming_part) == 0xcb0);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, blocked_part) == 0xcb4);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, block_latch) == 0xe2f);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, directional_seek_multiplier) == 0xd78);
     extern const char PlayCountArgPrefix[11];
     extern const char RepeatDelayArgPrefix[10];
     extern const char StartDelayArgPrefix[12];
@@ -8434,7 +9185,7 @@ class NuMusic {
   public:
     class Track {
       public:
-        u8 unknown_0000[8];
+        char *filenames[2];
         char *ident;
         i32 file_indexes[2];
         u32 clazz;
@@ -8499,6 +9250,7 @@ class NuMusic {
     i32 GetAlbumHandle(const char *name);
     static i32 ClassToIX(u32 class_mask);
     void SetClassVolume(u32 class_mask, f32 volume);
+    void Debug(i32 unused, i32 y);
     void GetSoundFiles(nusound_filename_info_s **files, i32 *count);
     i32 PauseTrack(u32 class_mask);
     i32 ResumeTrack(u32 class_mask);
@@ -8516,6 +9268,7 @@ class NuMusic {
     void Process(f32 delta);
 };
 STATIC_ASSERT(sizeof(NuMusic::Track) == 0x3c);
+STATIC_ASSERT(offsetof(NuMusic::Track, filenames) == 0);
 STATIC_ASSERT(offsetof(NuMusic::Track, ident) == 0x08);
 STATIC_ASSERT(offsetof(NuMusic::Track, file_indexes) == 0x0c);
 STATIC_ASSERT(offsetof(NuMusic::Track, clazz) == 0x14);

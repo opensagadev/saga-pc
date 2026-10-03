@@ -1,4 +1,21 @@
 #include "saga.h"
+#include <stdio.h>
+
+void __cdecl Level_LoadConfigFile(WORLDINFO *world) {
+    char name[128];
+    i32 bytes_read;
+
+    ConfigBuffer[0] = '\0';
+    sprintf(name, WorldLevelConfigFormat, world->config_file);
+    world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3U;
+    bytes_read = NuFileLoadBuffer(name, world->giz_buffer.void_ptr, 0x10000);
+    world->config_count = bytes_read;
+    if (bytes_read > 0) {
+        world->giz_buffer.char_ptr[bytes_read] = '\0';
+        bytes_read = Text_StripComments(world->giz_buffer.char_ptr, ConfigBuffer, 1);
+        world->config_count = bytes_read;
+    }
+}
 
 i32 __cdecl LevelObject_FindIndexFromName(char *name) {
     i32 i;

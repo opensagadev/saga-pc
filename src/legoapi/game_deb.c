@@ -3,6 +3,46 @@
 extern void *debris_cutoff_camera_vec;
 extern i32 debris_render_group;
 
+i32 __cdecl LookupDebrisEffectPageIgnore(char *name, i8 page, i32 ignore) {
+    i32 i;
+    u8 requested_page = (u8)page;
+
+    if (name == NULL) {
+        return -1;
+    }
+
+    if (requested_page < 8 && edpp_page_used[requested_page] != 0) {
+        for (i = 1; i < debinf_count; ++i) {
+            DEBRIS_INFO_PC *effect = debtab[i];
+            if (i != ignore && effect != NULL && effect->page == requested_page && NuStrICmp(effect->name, name) == 0) {
+                return i;
+            }
+        }
+    }
+
+    for (i = 1; i < debinf_count; ++i) {
+        DEBRIS_INFO_PC *effect = debtab[i];
+        if (i != ignore && effect != NULL &&
+            ((effect->page == 0 && edpp_page_used[0] != 0) || (effect->page == 1 && edpp_page_used[1] != 0)) &&
+            NuStrICmp(effect->name, name) == 0) {
+            return i;
+        }
+    }
+
+    for (i = 1; i < debinf_count; ++i) {
+        DEBRIS_INFO_PC *effect = debtab[i];
+        if (i != ignore && effect != NULL && edpp_page_used[(i8)effect->page] != 0 &&
+            NuStrICmp(effect->name, name) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+i32 __cdecl LookupDebrisEffectPage(char *name, i8 page) {
+    return LookupDebrisEffectPageIgnore(name, page, 0);
+}
+
 i32 __cdecl LookupDebrisEffectPageOnly(char *name, i8 page) {
     i32 i;
     u8 requested_page = (u8)page;

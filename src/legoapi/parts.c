@@ -318,3 +318,60 @@ void __cdecl PartCollide_3D(PART_PC *part) {
     STUBBED_NAMED(
         "PartCollide_3D: entire private PartCollide PC42c740 collision action, PART in EDI and mode1 on stack");
 }
+
+typedef struct DEBRIS_KEY_EMISSION_PC {
+    u8 unknown_000[0x190];
+    NUVEC emitter_position;
+    u8 unknown_19c[0xc];
+    NUVEC particle_momentum;
+    NUVEC emitter_momentum;
+    u8 unknown_1c0[0x140];
+    f32 position_reset_300;
+    u8 unknown_304[0x2c];
+} DEBRIS_KEY_EMISSION_PC;
+STATIC_ASSERT(sizeof(DEBRIS_KEY_EMISSION_PC) == 0x330);
+STATIC_ASSERT(offsetof(DEBRIS_KEY_EMISSION_PC, emitter_position) == 0x190);
+STATIC_ASSERT(offsetof(DEBRIS_KEY_EMISSION_PC, particle_momentum) == 0x1a8);
+STATIC_ASSERT(offsetof(DEBRIS_KEY_EMISSION_PC, emitter_momentum) == 0x1b4);
+STATIC_ASSERT(offsetof(DEBRIS_KEY_EMISSION_PC, position_reset_300) == 0x300);
+
+extern void *debkeydata;
+#define DEBRIS_EMISSION_KEYS_PC ((DEBRIS_KEY_EMISSION_PC *)debkeydata)
+
+void __cdecl DebrisEmitterPos(i32 handle, f32 x, f32 y, f32 z) {
+    if (handle != -1) {
+        DEBRIS_EMISSION_KEYS_PC[handle].emitter_position.x = x;
+        DEBRIS_EMISSION_KEYS_PC[handle].emitter_position.y = y;
+        DEBRIS_EMISSION_KEYS_PC[handle].emitter_position.z = z;
+        DEBRIS_EMISSION_KEYS_PC[handle].position_reset_300 = 0.0f;
+    }
+}
+
+void __cdecl DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z) {
+    if (handle != -1) {
+        DEBRIS_EMISSION_KEYS_PC[handle].emitter_momentum.x = x;
+        DEBRIS_EMISSION_KEYS_PC[handle].emitter_momentum.y = y;
+        DEBRIS_EMISSION_KEYS_PC[handle].emitter_momentum.z = z;
+    }
+}
+
+void __cdecl DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z) {
+    if (handle != -1) {
+        DEBRIS_EMISSION_KEYS_PC[handle].particle_momentum.x = x;
+        DEBRIS_EMISSION_KEYS_PC[handle].particle_momentum.y = y;
+        DEBRIS_EMISSION_KEYS_PC[handle].particle_momentum.z = z;
+    }
+}
+
+#undef DEBRIS_EMISSION_KEYS_PC
+
+i32 __cdecl PARTLookupType(char *name) {
+    i32 index;
+    if (name != NULL && name[0] != 0) {
+        for (index = 0; index < 128; ++index) {
+            if (NuStrNICmp(name, part_types[index].name, 16) == 0)
+                return index;
+        }
+    }
+    return -1;
+}

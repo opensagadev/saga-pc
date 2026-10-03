@@ -1,4 +1,54 @@
 #include "saga.h"
+#include <string.h>
+
+typedef struct area_save_restore_pc_s {
+    union {
+        u32 values[3];
+        struct {
+            u8 unknown_0000[5];
+            u8 phase;
+            u8 unknown_0006[6];
+        };
+    };
+} AREA_SAVE_RESTORE_PC;
+STATIC_ASSERT(sizeof(AREA_SAVE_RESTORE_PC) == 0x0c);
+STATIC_ASSERT(offsetof(AREA_SAVE_RESTORE_PC, phase) == 5);
+
+typedef struct game_save_restore_pc_s {
+    u8 unknown_0000[0x11];
+    u8 level_save[0x781b];
+    AREA_SAVE_RESTORE_PC area_save[72];
+    u8 unknown_7b8c[0x70];
+    u32 initial_store_pack_flags;
+} GAME_SAVE_RESTORE_PC;
+STATIC_ASSERT(offsetof(GAME_SAVE_RESTORE_PC, level_save) == 0x11);
+STATIC_ASSERT(offsetof(GAME_SAVE_RESTORE_PC, area_save) == 0x782c);
+STATIC_ASSERT(offsetof(GAME_SAVE_RESTORE_PC, initial_store_pack_flags) == 0x7bfc);
+
+extern GAMESAVE BackupGame;
+extern u32 areaSuitBits;
+
+void __cdecl ClearAreaProgress(i32 area_index, i32 restore) {
+    GAME_SAVE_RESTORE_PC *game = (GAME_SAVE_RESTORE_PC *)&Game;
+    GAME_SAVE_RESTORE_PC *backup = (GAME_SAVE_RESTORE_PC *)&BackupGame;
+    AREA_DATA_PC *area;
+    i32 index;
+
+    for (index = 0; index < 12; ++index) {
+        ClearLevelProgress(index, NULL);
+    }
+    areaSuitBits = game->initial_store_pack_flags;
+    if (restore == 0 || area_index == -1) {
+        return;
+    }
+    AREA_GLOBALS_PROGRESS_FLAGS_PC = 0;
+    game->area_save[area_index] = backup->area_save[area_index];
+    area = &ADataList[area_index];
+    for (index = 0; index < area->level_count; ++index) {
+        i32 level_index = area->levels[index];
+        memcpy(&game->level_save[level_index * 0x54], &backup->level_save[level_index * 0x54], 0x54);
+    }
+}
 
 typedef struct area_gizmotype_pc_s {
     u8 unknown_0000[0x44];
@@ -581,4 +631,94 @@ void __cdecl CompleteLevel(WORLDINFO *world) {
         NewLData = HUB_LDATA;
     if (waiting_for_level != -1)
         waiting_for_new_level = 1;
+}
+
+typedef struct level_progress_flags_pc_s {
+    SCENEPROGRESS scene_progress;
+    u32 flags;
+} LEVEL_PROGRESS_FLAGS_PC;
+STATIC_ASSERT(offsetof(LEVEL_PROGRESS_FLAGS_PC, flags) == 0x2800);
+
+typedef struct player_progress_hp_pc_s {
+    u8 unknown_0000[8];
+    u8 hitpoints;
+    u8 unknown_0009[7];
+} PLAYER_PROGRESS_HP_PC;
+STATIC_ASSERT(sizeof(PLAYER_PROGRESS_HP_PC) == 0x10);
+STATIC_ASSERT(offsetof(PLAYER_PROGRESS_HP_PC, hitpoints) == 8);
+
+extern void *Door_Last;
+extern AREA_DATA_PC *HOTHBATTLE_ADATA;
+void __cdecl NewAreaMusicChanges(void);
+void __cdecl ClearTakeOverObjectSys(void);
+void __cdecl Door_Reset(void);
+
+void __cdecl NewArea_ResetGlobalsPC(void) {
+    GAME_SAVE_RESTORE_PC *game = (GAME_SAVE_RESTORE_PC *)&Game;
+    i32 phase = Area == -1 ? 0 : game->area_save[Area].phase;
+
+    AreaGlobals_PC.new_minikit_count = 0;
+    AreaGlobals_PC.area_phase = phase;
+    AreaGlobals_PC.progress_flags = phase;
+    Door_UseCutCam = 0;
+    AreaGlobals_PC.field_00 = 0;
+    AreaGlobals_PC.field_1c = 0;
+    AreaGlobals_PC.field_08 = 0;
+    AreaGlobals_PC.field_18 = 0;
+    AreaGlobals_PC.arcade_player_kills[0] = 0;
+    AreaGlobals_PC.arcade_player_kills[1] = 0;
+    AreaGlobals_PC.arcade_ai_kills[0] = 0;
+    AreaGlobals_PC.arcade_ai_kills[1] = 0;
+    BuildUpTotal = 0;
+    BuildUpDone = 0;
+    if (WORLD->area == HOTHBATTLE_ADATA) {
+        ResetMinikitCounter();
+    }
+}
+
+void __cdecl NewArea(void) {
+    LEVEL_PROGRESS_FLAGS_PC *progress;
+    i32 i;
+
+    LSW1 = 0;
+    LSW2 = 0;
+    if (StartupGameFlag1 != 0 && WORLD != NULL && WORLD->area != NULL && WORLD->area->episode_index >= 0) {
+        if (WORLD->area->episode_index < 3) {
+            LSW1 = 1;
+            HIGHJUMPHEIGHT = 1.14f;
+            goto have_jump;
+        }
+        LSW2 = 1;
+    }
+    HIGHJUMPHEIGHT = Arcade != 0 ? 1.14f : 0.75f;
+have_jump:
+    ClearAreaProgress(Area, 0);
+    progress = (LEVEL_PROGRESS_FLAGS_PC *)WORLD->level_progress;
+    if (progress != NULL && (progress->flags & 1) == 0) {
+        memcpy(&progress->scene_progress, &WORLD->scene_progress, sizeof(progress->scene_progress));
+        progress->flags |= 1;
+    }
+    SuperCounters_Reset(Area);
+    NewArea_ResetGlobalsPC();
+    for (i = 0; i < 8; ++i) {
+        GAMEOBJECT *player = (GAMEOBJECT *)Player[i];
+        ((PLAYER_PROGRESS_HP_PC *)PlayerProgress)[i].hitpoints = (u8)DEFAULT_PLAYERHITPOINTS;
+        if (player != NULL) {
+            player->current_hp = (i8)player->field_107e;
+        }
+    }
+    ResetTimer(&AreaTimer, 0.0f);
+    memcpy(&BackupGame, &Game, sizeof(Game));
+    NewAreaMusicChanges();
+    VehicleAreaRememberSpeed = 0.0f;
+    ClearTakeOverObjectSys();
+    BonusScore[0] = OldBonusScore[0];
+    BonusScore[1] = OldBonusScore[1];
+    BonusCoinTotal = 0;
+    Door_Last = NULL;
+    Door_Reset();
+    BombGenerator_PlayerBomb[0] = NULL;
+    BombGenerator_PlayerBomb[1] = NULL;
+    LevelChange = 1;
+    Lap = 1;
 }

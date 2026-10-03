@@ -3,6 +3,7 @@
 #include <string.h>
 
 extern i32 NuPrimCSPos;
+extern i32 NuPrimCoordSystemStack[];
 extern i32 NuPrimVertexCount;
 extern i32 *NuPrimVertexCountPointer;
 extern VARIPTR *NuPrimStreamBufferPointer;
@@ -522,7 +523,7 @@ void __cdecl NuPrim3DBegin(u32 primitive_type, u32 vertex_format, NUMTL *materia
 }
 
 void __cdecl NuPrimSetCoordinateSystem(i32 scale_mode) {
-    STUBBED_NAMED(0x00981c70); /* PC coordinate-system stack write; extent unknown. */
+    NuPrimCoordSystemStack[NuPrimCSPos] = scale_mode;
 
     switch (scale_mode) {
         case 0:

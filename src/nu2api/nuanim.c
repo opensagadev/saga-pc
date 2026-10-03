@@ -1559,6 +1559,49 @@ void *__cdecl NuAnimData2Fixup(i32 file_size, void **data) {
     return (void *)header[2];
 }
 
+typedef struct ANIMATION_PACK_HEADER_PC {
+    u32 first_word;
+    i32 format_tag;
+} ANIMATION_PACK_HEADER_PC;
+STATIC_ASSERT(offsetof(ANIMATION_PACK_HEADER_PC, format_tag) == 4);
+STATIC_ASSERT(sizeof(ANIMATION_PACK_HEADER_PC) == 8);
+
+void *__cdecl NuAnimData2LoadBuffFromPAK(void *data, i32 file_size) {
+    if (file_size == 0)
+        return NULL;
+    if (((ANIMATION_PACK_HEADER_PC *)data)->format_tag >= (i32)0x414e4935)
+        return NuPtrBlockFix(data);
+    return NuAnimData2Fixup(file_size, &data);
+}
+
+void *__cdecl NuAnimData2LoadBuffEx(char *path, VARIPTR *cursor, VARIPTR *end, void **result) {
+    i32 file_size;
+    i32 pointer_block = 0;
+    cursor->addr = (cursor->addr + 15) & ~15u;
+    file_size = NuFileLoadBuffer(path, cursor->void_ptr, (i32)(end->addr - cursor->addr));
+    if (file_size == 0) {
+        if (NuFileGetLastError() == -1)
+            *cursor = *end;
+        PCAnimationLoadFailureNoOp(path);
+        *result = NULL;
+        return NULL;
+    }
+    if (((ANIMATION_PACK_HEADER_PC *)cursor->void_ptr)->format_tag >= (i32)0x414e4935) {
+        cursor->void_ptr = NuPtrBlockFix(cursor->void_ptr);
+        pointer_block = 1;
+    }
+    *result = cursor->void_ptr;
+    cursor->addr += file_size;
+    if (pointer_block)
+        return *result;
+    return NuAnimData2Fixup(file_size, result);
+}
+
+void *__cdecl NuAnimData2LoadBuff(char *path, VARIPTR *cursor, VARIPTR *end) {
+    void *result;
+    return NuAnimData2LoadBuffEx(path, cursor, end, &result);
+}
+
 #undef NUANIM_REBASE_POINTER
 
 f32 __cdecl NuAnimEndFrame(void *animation_data) {

@@ -1,5 +1,10 @@
 #include "saga.h"
 
+extern "C" void __cdecl NuSound3GetStreamInfo(i32 stream_index, void *info) {
+    (void)stream_index;
+    (void)info;
+}
+
 class SoundQueueVolumeSink {
   public:
     virtual void Slot00(void) = 0;
@@ -83,6 +88,12 @@ STATIC_ASSERT(offsetof(SoundQueue, unknown_03f4) == 0x3f4);
 extern SoundQueue *NuSound3StereoStreams[2];
 extern "C" f32 NuSound3VolumeTable[0x4000];
 extern "C" i32 NuSound3VolumeOffset;
+
+extern "C" void __cdecl NuSound3KillAllAudio(void) {
+    NuSound3StereoStreams[0]->Stop();
+    NuSound3StereoStreams[1]->Stop();
+    SoundVoiceManager.StopAllVoices();
+}
 
 i32 SoundQueue::SendCommand(i32 command_value, i32 argument_value) {
     i32 success = 0;

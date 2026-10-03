@@ -8,7 +8,7 @@ address    , symbol                                                         , si
 0x40e690   , _GoingForwardsAlongNarrowSock                                  , 106   , i32 __cdecl (GAMEOBJECT *)
 0x00414ab0 , _SetFlicker                                                    , 25    ,
 0x00414bb0 , _DeactivateGameObject                                          , 158   , void __cdecl (GAMEOBJECT *)
-0x00414f80 , _StoreProgressAICharacter                                      , 119    ,
+0x00414f80,_StoreProgressAICharacter,119,void __cdecl (LEVEL_PROGRESS *)
 0x00415c60 , _MovePlayerSpline                                              , 1322  , void __cdecl (GAMEOBJECT *)
 0x416190   , _MovePlayer                                                    , 2718  , void __cdecl (GAMEOBJECT *)
 0x00416d60 , _TerrainPlayer                                                  , 7994  ,
@@ -245,6 +245,7 @@ address    , symbol                                                         , si
 0x004669e0 , _GizForceSFX_Configure                                         , 258   , "void __cdecl (WORLDINFO *, char *)"
 0x0046c7d0 , _GizmoPickups_SetOnOff                                         , 686   , void __cdecl (void)
 0x00470370 , _Grabber_Configure                                             , 691   , "void __cdecl (WORLDINFO *, char *)"
+0x470e10,_Grabber_StoreProgress,76,"void __cdecl (WORLDINFO *, LEVEL_PROGRESS *)"
 0x00475850 , _Arcade_GetMode                                                , 62    , i32 __cdecl (u32 *)
 0x0047aa30 , _Hub_MakeModelList                                             , 151   , void __cdecl (void)
 0x00482f40 , _DrawStatusText                                                , 583   , "void __cdecl (char *, u16, f32, f32, f32, u32, i32)"
@@ -266,6 +267,9 @@ address    , symbol                                                         , si
 0x0048a170 , _EffectOffProgress_Reset                                       , 48    , void __cdecl (LEVEL_PROGRESS *)
 0x0048a1a0 , _LevelProgress_ReserveBufferSpace                              , 26    , "void __cdecl (VARIPTR *, VARIPTR)"
 0x0048a1c0 , _ClearLevelProgress                                            , 133   , "void __cdecl (i32, WORLDINFO *)"
+0x0048a250,_WorldStoreScriptProgressPC,177,"void private_register (WORLDINFO *, WORLD_SCRIPT_PROCESSOR_PC *, LEVEL_PROGRESS *)"
+0x0048a3f0,_WorldStoreScriptsProgressPC,54,"void private_register (WORLDINFO *, LEVEL_PROGRESS *)"
+0x0048a430,_NewArea_ResetGlobalsPC,126,void __cdecl(void)
 0x0048a4b0 , _ClearLevData                                                  , 482   , void __cdecl (void)
 0x0048a6a0 , _LoadPerm1                                                     , 1351  , void __cdecl (void)
 0x0048abf0 , _LoadPerm2                                                     , 835   , void __cdecl (void)
@@ -348,7 +352,7 @@ address    , symbol                                                         , si
 0x00499300 , _KeepVehicleOnScreen                                           , 509    ,
 0x00499500 , _FaceOpponent                                                  , 133   , "i32 __cdecl (GAMEOBJECT *, NUVEC *)"
 0x499610   , _VehicleCollisionCode                                          , 770   , void __cdecl (GAMEOBJECT *)
-0x4999e0   , _GetVehicleSpeedMul                                            , 342   , "f32 __cdecl (GAMEOBJECT *,f32)"
+0x4999e0,_GetVehicleSpeedMul,342,"f32 __cdecl (GAMEOBJECT *, f32)"
 0x499be0   , _ForceAlongSock                                                , 178   , f32 __cdecl (GAMEOBJECT *)
 0x00499ca0 , _CurrentStart                                                  , 288   ,
 0x499e20   , _MovePlayer_GUNSHIPIN                                          , 1076  , i32 __cdecl (GAMEOBJECT *)
@@ -357,8 +361,9 @@ address    , symbol                                                         , si
 0x49a8f0   , _MovePlayer_POD                                                , 1099  , i32 __cdecl (GAMEOBJECT *)
 0x49ad40   , _StartTurn                                                     , 76    , void __cdecl (GAMEOBJECT *)
 0x0049b2b0 , _IsTurnRequested                                               , 123   , ""
-0x49b330   , _TurnCode                                                      , 1206  , "void __cdecl (GAMEOBJECT *,i32,GAMEPAD_PC *)"
+0x49b330,_TurnCode,1206,"void __cdecl (GAMEOBJECT *, i32, GAMEPAD_PC *)"
 0x0049ca10 , _EatVictim                                                     , 108   ,
+0x49d910,_Glide_SetTargetMom,215,i32 __cdecl(GAMEOBJECT *)
 0x0049ea70 , _PunchCode                                                     , 3000  ,
 0x0049f630 , _MakeThrowVector                                               , 329   , "void __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32, f32)"
 0x0049f780 , _GetBladeJoints                                                , 115   , "i32 (GAMEOBJECT *, i32, i32 *, i32 *) [private stack object; EAX blade; ESI joints; EDX optional output]"
@@ -367,8 +372,8 @@ address    , symbol                                                         , si
 0x004a3b60 , _ForcePushEligible                                             , 123   , "i32 (GAMEOBJECT *, GAMEOBJECT *, GAMEOBJECT *) [private EAX first input; two stack pointers]"
 0x004a3eb0 , _ForcePushed_SetTargetMom                                      , 1014  , "i32 __cdecl (GAMEOBJECT *, f32 *)"
 0x004a42b0 , _ForcePushed_YRotation                                         , 146   , i32 __cdecl (GAMEOBJECT *)
-0x004a48f0 , _ResetForceBack                                                , 13    ,
-0x004a4900 , _SetForceBack                                                   , 58     ,
+0x004a48f0,_ResetForceBack,13,void __cdecl (void)
+0x004a4900,_SetForceBack,58,"void __cdecl (GAMEOBJECT *, NUVEC *, f32, i32)"
 0x004a56a0 , _BobaRocket_Move                                               , 1001  , "void __cdecl (PART_PC *, f32)"
 0x004a5a90 , _BobaRocket_Kill                                               , 104   , "void __cdecl (PART_PC *, i32)"
 0x004a5b00 , _BobaRocket_Deflect                                            , 37    , void __cdecl (PART_PC *)
@@ -411,6 +416,7 @@ address    , symbol                                                         , si
 0x004dd810 , _Action_CreatePod                                               , 1135   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x004e1460 , _KaminoE_CheckPlatHit                                          , 228   , i32 __cdecl (BOLT *)
 0x004e8380 , _TakeOverYodaSeekDistanceHack                                  , 129   , "i32 __cdecl (GAMEOBJECT *, GAMEOBJECT *, NUVEC *)"
+0x4e8640,_ResetMinikitCounter,13,void __cdecl(void)
 0x4ea8e0   , _DeathStar2BattleFire_GetSlowDownMul                           , 90    , f32 __cdecl (GAMEOBJECT *)
 0x004eed92 , _SendMessageA@16                                               , 6     , "LRESULT __stdcall (HWND, UINT, WPARAM, LPARAM)"
 0x004eef40 , _NuAlloc                                                       , 471   , "void *__cdecl (i32, const char *, i32)"
@@ -439,6 +445,7 @@ address    , symbol                                                         , si
 0x004f0d00 , _NuDatFileOpenSize                                             , 33    , i32 __cdecl (NUFILE)
 0x004f0d40 , _NuDatSet                                                      , 16    , NUDATHDR *__cdecl (NUDATHDR *)
 0x004f0d50 , _NuDatGet                                                      , 6     , NUDATHDR *__cdecl (void)
+0x004f0d60,_NuFileExtGetExt,96,"i32 __cdecl (char *, i32, i32)"
 0x004f0dc0 , _GetPakItems                                                   , 26    , PC_FILEPAKITEM *(PC_FILEPAKHDR_V0 *) [private ECX ABI]
 0x004f0de0 , @PCFilePakChecksum_candidate@8                                 , 33    , "u32 __fastcall (i32, const u8 *)"
 0x004f0e10 , _DecryptPakData                                                , 54    , ""
@@ -492,6 +499,7 @@ address    , symbol                                                         , si
 0x004f34f0 , _NuStringBadSubString                                          , 342   , "u16 *__cdecl (const u16 *, const u16 *, i32 *, i32)"
 0x004f3650 , _NuStringFilterBadWordsW                                       , 212   , "i32 __cdecl (u16 *, u16 *, u16 *)"
 0x004f3730 , _NuStringFilterBadWords                                        , 130   , "i32 __cdecl (u8 *, u8 *, u8 *)"
+0x4f37c0,_NuPPUnpack,948,"void __cdecl(void *, void *)"
 0x004f3bd0 , _NuTimeGet                                                     , 18    , void __cdecl (NuTime *)
 0x004f3bf0 , _NuTimeSub                                                     , 58    , "void __cdecl (NuTime *, NuTime *, NuTime *)"
 0x004f3c30 , _NuTimeSeconds                                                 , 102   , f32 __cdecl (NuTime *)
@@ -537,7 +545,13 @@ address    , symbol                                                         , si
 0x004f6de0 , _NuFileSeek                                                    , 190   , "i64 __cdecl (NUFILE, i64, i32)"
 0x004f6ea0 , _NuFileEndBlkRead                                              , 82    , void __cdecl (NUFILE)
 0x004f76f0 , _NuDatFileFindHash                                             , 214   , "i32 __cdecl (NUDATHDR *, char *)"
+0x004f77d0,_NuFileMatchExtensionPC,81,
+0x004f7830,_NuFileAddExtensionPC,113,
 0x004f78b0 , _NuFileExtInit                                                 , 954   , void __cdecl (i32)
+0x004f7c70,_NuFileExtGetInfoPC,84,
+0x004f7cd0,_NuFileExtGetType,26,"i32 __cdecl (char *, i32)"
+0x004f7cf0,_NuFileExtConvert,153,"i32 __cdecl (char *, char *)"
+0x004f7d90,_NuFileExtRemove,84,"i32 __cdecl (char *, char *)"
 0x004f7df0 , _NuFParGetWordW                                                , 434   , i32 __cdecl (NUFPAR_PC *)
 0x004f7fb0 , _NuFParGetWord                                                 , 335   , i32 __cdecl (NUFPAR_PC *)
 0x004f8100 , _NuFParGetFloat                                                , 149   , f32 __cdecl (NUFPAR_PC *)
@@ -601,7 +615,7 @@ address    , symbol                                                         , si
 0x004fc8c0 , _NuFParCreateGivenFH                                           , 61    , "NUFPAR_PC *__cdecl (char *, NUFILE)"
 0x004fc900 , _NuFParCreateMem                                               , 181   , "NUFPAR_PC *__cdecl (char *, char *, i32)"
 0x004fc9c0 , _GetLineW                                                      , 480   , "i32 __cdecl (u16 *, NUFILE)"
-0x004fcc60 , _NuPPLoadBuffer                                                , 1003  , "i32 __cdecl (NUFILE, void *, i32)"
+0x004fcc60,_NuPPLoadBuffer,1003,"i32 __cdecl(NUFILE, void *, i32)"
 0x004fd050 , _NuFrameEnd                                                    , 987   , f32 __cdecl (void)
 0x004fd550 , _NuFileLoad                                                    , 118   , void *__cdecl (char *)
 0x004fd5d0 , _NuFileLoadBuffer                                              , 344   , "i32 __cdecl (char *, void *, i32)"
@@ -633,6 +647,7 @@ address    , symbol                                                         , si
 0x004ff3b0 , _NuPSFileRead                                                  , 49    , "i32 __cdecl (i32, void *, i32)"
 0x004ff3f0 , _NuPSFileWrite                                                 , 53    , "i32 __cdecl (i32, const void *, i32)"
 0x004ff430 , _NuPSFileLSeek                                                 , 98    , "i64 __cdecl (i32, i64, i32)"
+0x4ff4a0,_NuPSFileInitDevices,1,"void __cdecl(i32, i32, i32)"
 0x004ffa60 , _PCThreadCriticalSectionCreate_candidate                       , 48    , i32 __cdecl (void)
 0x004ffaa0 , _PCThreadCriticalSectionEnter_candidate                        , 30    , void __cdecl (i32)
 0x004ffac0 , _PCThreadCriticalSectionLeave_candidate                        , 30    , void __cdecl (i32)
@@ -938,10 +953,10 @@ address    , symbol                                                         , si
 0x00549430 , _ResetFrameCounters                                            , 30    , void __cdecl (void)
 0x00549450 , _UpdateFrameCounters                                           , 119   , void __cdecl (void)
 0x00549bb0 , _GameCam_NewShake                                              , 43    , "void __cdecl (GAMECAMERA *, f32, f32, f32)"
-0x00549de0 , _GameCam_Judder                                                , 301    ,
+0x00549de0,_GameCam_Judder,301,"void __cdecl(GAMECAMERA *, f32, i32, NUVEC *)"
 0x00549f10 , _GameCam_HitJudder                                             , 186    ,
 0x0054a1c0 , _NarrowSockPositionAllowed                                     , 123   , ""
-0x54a240   , _ObjInNarrowSock                                               , 163   , "i32 __cdecl (GAMEOBJECT *,SOCKSYS_PC *,i32)"
+0x54a240,_ObjInNarrowSock,163,"i32 __cdecl (GAMEOBJECT *, SOCKSYS_PC *, i32)"
 0x0054a2f0 , _GameCam_Reset                                                 , 232   ,
 0x0054a3e0 , _GameCam_Blend                                                 , 298   ,
 0x0054a5e0 , _GamePads_Init                                                 , 117   , void __cdecl (void)
@@ -956,7 +971,7 @@ address    , symbol                                                         , si
 0x0054aae0 , _TakeHitRumble                                                 , 92     ,
 0x0054b090 , _ReadPads                                                      , 32    , void (void)
 0x0054b0b0 , _DoInput                                                       , 786   , void __cdecl (WORLD *)
-0x54b3d0   , _GamePad_InputAngle                                            , 99    , "u16 __cdecl (GAMEOBJECT *,GAMEPAD_PC *)"
+0x54b3d0,_GamePad_InputAngle,99,"u16 __cdecl (GAMEOBJECT *, GAMEPAD_PC *)"
 0x0054b540 , _Text_InitLanguageList                                         , 49    , void __cdecl (LANGUAGEDATA *)
 0x0054b580 , _Text_SetLanguage                                              , 27    , void __cdecl (i32)
 0x0054b5a0 , _Text_GetLanguagePath                                          , 96    , char *__cdecl (i32)
@@ -971,6 +986,8 @@ address    , symbol                                                         , si
 0x0054be70 , _Text_StripComments                                            , 141   , "i32 __cdecl (char *, char *, i32)"
 0x0054bf00 , _IntroText_SetTextID                                           , 26    , void __cdecl (i32)
 0x0054bf20 , _IntroText_Draw                                                , 262   , void (f32)
+0x54f860,_Grapple_SetTargetMom,159,i32 __cdecl(GAMEOBJECT *)
+0x54f900,_Grapple_SetRotOrder,21,void __cdecl(GAMEOBJECT *)
 0x0054fa60 , _qrand                                                         , 25    , i32 __cdecl (void)
 0x0054fa80 , _getqseed                                                      , 6     , i32 __cdecl (void)
 0x0054fa90 , _ResetSeeds                                                    , 61    , void __cdecl (void)
@@ -1044,6 +1061,7 @@ address    , symbol                                                         , si
 0x0055c5e0 , ?ClearPause@@YAXXZ                                             , 13    , void __cdecl (void)
 0x0055c600 , _RestoreOptions                                                , 79    , void __cdecl (void)
 0x0055c6d0 , ?Game_Exit@@YAHH@Z                                             , 175   , i32 __cdecl (i32)
+0x55c950,_ClearGameObjects,42,void __cdecl(APIOBJECTSYS *)
 0x0055c980 , _RecomputeHighGameObject                                       , 111   , void (void)
 0x0055cad0 , _RemoveGameObject                                              , 365   , "void __cdecl (GAMEOBJECT *, i32)"
 0x0055cc40 , _GameObjectDimensions                                          , 139   , void __cdecl (GAMEOBJECT *)
@@ -1062,6 +1080,7 @@ address    , symbol                                                         , si
 0x0055e410 , _SetPlayer                                                     , 85    ,
 0x0055e4a0 , _Player_ClearContext                                           , 58    ,
 0x0055e4e0 , _Player_ResetContexts                                          , 280    ,
+0x55e600,_MovingBackwards,85,i32 __cdecl(GAMEOBJECT *)
 0x0055eaa0,_Player_ToggleCharacter,1787,
 0x0055f1d0 , _Player_HasInvincibility                                       , 49     ,
 0x0055f210 , _Player_HasFastBuild                                           , 49     ,
@@ -1088,9 +1107,9 @@ address    , symbol                                                         , si
 0x00560630 , _WorldInfo_StreamLevel                                         , 154   , void __cdecl (BGPROCINFO *)
 0x00560aa0 , _WorldInfo_Activate                                            , 18    , void __cdecl (void)
 0x00560b40 , _ResetGameMessages                                             , 32    ,
-0x00561ba0 , _StartJump                                                     , 244   , "void __cdecl (GAMEOBJECT *,i32)"
+0x00561ba0,_StartJump,244,"void __cdecl (GAMEOBJECT *, i32)"
 0x00561d80 , _BigJump_JumpAction_Default                                    , 66    , i32 __cdecl (GAMEOBJECT *)
-0x00561e20 , _StartBigJump                                                  , 489   , "i32 __cdecl (GAMEOBJECT *,NUVEC *,i32,f32,f32,i32)"
+0x00561e20,_StartBigJump,489,"i32 __cdecl (GAMEOBJECT *, NUVEC *, i32, f32, f32, i32)"
 0x00565470 , _WidescreenCode                                                , 339   , void __cdecl (i32)
 0x00565700 , _DrawCutBorders                                                , 279   , void __cdecl (i32)
 0x00565ba0 , _GrabStillScreen                                               , 51    , void __cdecl (void)
@@ -1102,6 +1121,10 @@ address    , symbol                                                         , si
 0x00569c60 , _GetLevelExBlowupFlags                                         , 6      ,
 0x0056a5b0 , _GizmoBlowupCheckProximity                                     , 522   , "i32 __cdecl (WORLDINFO *, GAMEOBJECT *)"
 0x0056a9b0 , _GizmoBlowupResetNameTable                                     , 31    , void __cdecl (void)
+0x56bf30,_LedgeTerrain_SetTargetMom,126,i32 __cdecl(GAMEOBJECT *)
+0x56c040,_Climb_UpdateMagnetRotation,95,void __cdecl(GAMEOBJECT *)
+0x56c620,_Climb_SetTargetMom,373,"i32 __cdecl(GAMEOBJECT *, u16)"
+0x56c980,_Hang_SetTargetMom,213,i32 __cdecl(GAMEOBJECT *)
 0x0056d760 , _Tube_InCylinder                                               , 152   , "i32 __cdecl (GAMEOBJECT *, TUBE_PC *, f32 *, i32)"
 0x0056d800 , _Tube_InAnyCylinder                                            , 96    , "TUBE_PC * __cdecl (WORLDINFO *, GAMEOBJECT *, i32)"
 0x0056db40 , _ObjInTube                                                     , 64    , i32 __cdecl (GAMEOBJECT *)
@@ -1452,6 +1475,7 @@ address    , symbol                                                         , si
 0x00592a70 , _Customiser_LoadAccessories                                    , 648   , "void __cdecl (CUSTOMISER*, APICHARACTERMODELLIST_s*)"
 0x005930c0 , _Customiser_DumpAccessories                                    , 211   , void __cdecl (CUSTOMISER*)
 0x005931a0 , _Customiser_LoadAll                                            , 811   , "void __cdecl (CUSTOMISER*, WORLDINFO*)"
+0x5934d0,_Customiser_DumpAll,145,"void __cdecl(void *, WORLDINFO *)"
 0x00594250 , _InCollectList_Index                                           , 82    , "i32 __cdecl (i32, COLLECTID_PC *, i32)"
 0x00594640 , _Collection_CreateCustom                                       , 464    ,
 0x00596530 , _InitShadowLights                                              , 632   , void __cdecl (void)
@@ -1459,6 +1483,7 @@ address    , symbol                                                         , si
 0x00597350 , _DestroySnakeBody                                              , 47    ,
 0x0059a030 , _CharacterMiniKits_Dump                                        , 270   , void __cdecl (WORLDINFO *)
 0x0059b360 , _Episodes_ConfigureList                                        , 702   , "EPISODEDATA_PC * __cdecl (char *, VARIPTR *, VARIPTR *, i32, i32 *)"
+0x59c980,_WallShuffle_SetTargetMom,376,"i32 __cdecl(GAMEOBJECT *, u16)"
 0x0059d8e0 , _ResetGizmoFlowBox                                             , 67    , "void __cdecl (GIZFLOW_PC *, FLOWBOX_PC *)"
 0x0059d930 , _CheckOutputGizmoFlowBox                                       , 141   , "i32 __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, u8 output)"
 0x0059d9d0 , _LoopCountLoopingInputsEx                                      , 96    , "i32 __cdecl(FLOWBOX_PC *, FLOWBOX_PC *, i32, u8)"
@@ -1480,9 +1505,9 @@ address    , symbol                                                         , si
 0x0059f8d0 , _ProcessActionFlowBox                                          , 114   , "i32 __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, u8)"
 0x0059f970 , _ClearTakeOverObjectSys                                        , 31    , void __cdecl (void)
 0x0059fa80 , _StoreStatusTakeOverObjectSys                                  , 342   , void __cdecl (void)
-0x005a01f0 , _Buck_StartRiderJump                                           , 294   , "void __cdecl (GAMEOBJECT *,GAMEOBJECT *)"
-0x005a0320 , _Buck_Start                                                    , 168   , "void __cdecl (GAMEOBJECT *,GAMEOBJECT *)"
-0x005a03d0 , _Buck_MoveCode                                                 , 110   , "void __cdecl (GAMEOBJECT *,i32)"
+0x005a01f0,_Buck_StartRiderJump,294,"void __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
+0x005a0320,_Buck_Start,168,"void __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
+0x005a03d0,_Buck_MoveCode,110,"void __cdecl (GAMEOBJECT *, i32)"
 0x005a0480 , _GameAnimSys_AllocateLevelProgressData                         , 108   , "void __cdecl (VARIPTR *, VARIPTR *, i32, i32)"
 0x005a04f0 , _GameAnimSys_StoreProgress                                     , 83    , "void __cdecl (GAMEANIMSYS *, i32)"
 0x005a0550 , _GameAnimSys_GetProgressData                                   , 29    , u8 *__cdecl (i32)
@@ -1570,6 +1595,7 @@ address    , symbol                                                         , si
 0x005b3c50 , _NuVecDistSqr                                                  , 156   , "f32 __cdecl (NUVEC *v0, NUVEC *v1, NUVEC *delta)"
 0x005b3cf0 , _NuVecXZDistSqr                                                , 133   , "f32 __cdecl (NUVEC *v0, NUVEC *v1, NUVEC *delta)"
 0x005b3d80 , _NuVecLerp                                                     , 61    , "void __cdecl (NUVEC *, NUVEC *, NUVEC *, f32)"
+0x005b3e20,_NuVec4Scale,45,"void __cdecl(NUVEC4 *, NUVEC4 *, f32)"
 0x005b3ec0 , _NuVec4MtxTransform                                            , 143   , "void __cdecl (NUVEC4 *, NUVEC *, NUMTX *)"
 0x005b44e0 , _NuMtxSetIdentity                                              , 21    , void __cdecl (NUMTX *)
 0x005b4500 , _NuMtxSetTranslation                                           , 68    , "void __cdecl (NUMTX *, NUVEC *)"
@@ -1676,6 +1702,7 @@ address    , symbol                                                         , si
 0x005c0330 , _NuMtxSetRotateXYZVU0                                          , 5     , "void __cdecl (NUMTX *, NUANGVEC *)"
 0x005c0340,_NuMtxScaleVU0,5,"void __cdecl (NUMTX *, NUVEC *)"
 0x005c0390,_NuMtxMulRVU0,5,"void __cdecl (NUMTX *, NUMTX *, NUMTX *)"
+0x5c03b0,_NuVec4ScaleForwardPc,27,"void __cdecl(NUVEC4 *, NUVEC4 *, f32)"
 0x005c03d0 , _NuMtxPreScaleVU0                                              , 5     , "void __cdecl (NUMTX *, NUVEC *)"
 0x005c03e0 , _NuVec4MtxTransformVU0                                         , 163   , "void __cdecl (NUVEC4 *, NUVEC4 *, NUMTX *)"
 0x005c0500 , _NuMtxMulVU0                                                   , 21    , "void __cdecl (NUMTX *, NUMTX *, NUMTX *)"
@@ -1683,6 +1710,7 @@ address    , symbol                                                         , si
 0x005c0940,_NuMtxInvVU0,212,"void __cdecl (NUMTX *, NUMTX *)"
 0x005c1240,_NuMtxMulH,21,"void __cdecl (NUMTX *, NUMTX *, NUMTX *)"
 0x005c12e0,_AnimationDiagnosticNoOpPc,1,
+0x005c12f0,_PCAnimationLoadFailureNoOp,1,void __cdecl (char *)
 0x005c1300 , _PCSpecialEmptyHandler_candidate                               , 1     , void __cdecl (void)
 0x005c9130 , _NuPause                                                       , 11    , void __cdecl (i32)
 0x005c9140 , _buildBitCountTable                                            , 118   , void __cdecl (void)
@@ -1736,6 +1764,9 @@ address    , symbol                                                         , si
 0x005d0450 , _NuSpecialCompare                                              , 41    , "i32 __cdecl (NUSPECIALHANDLE *, NUSPECIALHANDLE *)"
 0x005d0480 , _NuSpecialClear                                                , 15    , void __cdecl (NUSPECIALHANDLE *)
 0x005d0690 , _NuSplineFind                                                  , 74    , "NUGSPLINE *__cdecl (NUGSCN *, char *)"
+0x5d0740,_NuSplineFindAllBeg,93,"i32 __cdecl (NUGSCN *, char *, NUGSPLINE **, i32)"
+0x5d0880,_NuQFntPushPrintMode,52,void __cdecl(u32)
+0x5d08c0,_NuQFntPopPrintMode,30,void __cdecl(void)
 0x005d0940 , _NuQFntSetCoordinateSystem                                     , 244   , i32 __cdecl (i32)
 0x005d0a40 , _NuQFntPushCoordinateSystem                                    , 36    , void __cdecl (i32)
 0x005d0a70 , _NuQFntPopCoordinateSystem                                     , 32    , void __cdecl (void)
@@ -1753,11 +1784,16 @@ address    , symbol                                                         , si
 0x005d0f40 , _NuQFntSetMtxRS                                                , 26    , "void __cdecl (void *, VUFNT *, NUMTX *)"
 0x005d0f60 , _NuQFntSetScaleRS                                              , 56    , "void __cdecl (void *, VUFNT *, f32, f32)"
 0x005d0fa0 , _NuQFntSetColourRS                                             , 14    , "void __cdecl (void *, VUFNT *, u32)"
+0x5d0fb0,_NuQFntSet,34,void __cdecl(VUFNT *)
+0x5d0fe0,_NuQFntSetScale,69,"void __cdecl(VUFNT *, f32, f32)"
+0x5d1060,_NuQFntSetColour,27,"void __cdecl(VUFNT *, u32)"
 0x005d10e0 , _NuQFntMoveRS                                                  , 94    , "void __cdecl (void *, VUFNT *, f32, f32, f32)"
+0x5d1530,_NuQFntSetUVSizePc,144,"void __cdecl(VUFNT *, f32, f32)"
 0x005d36d0,_NuHGobjEval,456,
 0x005d3a20,_NuHGobjEvalDwa2,345,
 0x005d3dc0,_NuHGobjEvalDwaBlend2,663,
 0x005d4290 , _NuRndrBeginScene                                              , 109   , i32 (i32)
+0x5d4300,_NuRndrBeginSceneEx,14,"i32 __cdecl(i32, i32, i32)"
 0x005d5330 , _NuCameraCreate                                                , 99    , NUCAMERA * __cdecl (void)
 0x005d60c0 , _NuCameraGet                                                   , 21    , void __cdecl (NUCAMERA *)
 0x005d6120 , _NuCameraSetAxes                                               , 30    , void __cdecl (NUVEC *)
@@ -1809,6 +1845,7 @@ address    , symbol                                                         , si
 0x005dfab0 , _NuDisplayListBeginFrame                                       , 187   , void __cdecl (void)
 0x005e4d40 , _NuMtlCreate3D                                                 , 20    ,
 0x005e50e0 , _NuMtlDestroy                                                  , 95    , void (NUMTL *)
+0x5e5630,_NuTexDestroy,66,void __cdecl(i32)
 0x005e8430 , _NuOcclusionManagerBeginFrame                                  , 59    , void __cdecl (void)
 0x005e91f0 , _NuAnimData2FixPtrs                                            , 269   , "void *__cdecl (void *, i32, i32, i32)"
 0x005e9300 , _NuAnimDataRead                                                , 688   , void* __cdecl (NUFILE)
@@ -1817,6 +1854,7 @@ address    , symbol                                                         , si
 0x005e9d90 , _NuAnimBuffEvaluate_3                                          , 1325  , "void __cdecl (ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *, ANI3_ROOT_CALLBACK_PC, NUVEC *, void *)"
 0x005ea390 , _NuAnimCurve2SetApplyToMatrix_3                                , 234   , "void __cdecl (ANI3_HEADER_PC *, i32, f32, NUMTX *)"
 0x005ea660 , _NuSpecialUpdate                                               , 59    , void __cdecl (NUSPECIALHANDLE *)
+0x5eaad0,_NuQFntSetPointSize,220,"void __cdecl(VUFNT *, f32, f32)"
 0x005eb250 , _NuQFntPrintCharW                                              , 1210  , "void __cdecl (VUFNT *, u16 *, u32)"
 0x005eb790,_NuHGobjEvalAnim2Root_3,230,
 0x005eb880,_NuHGobjEvalAnim2Root,777,
@@ -1830,7 +1868,9 @@ address    , symbol                                                         , si
 0x005edd70 , _NuMtxCalcDebrisFaceOn                                         , 113   , void __cdecl (NUMTX *)
 0x005eddf0 , _NuTimeBarInitEx                                               , 111   , "void __cdecl (VARIPTR *, VARIPTR)"
 0x005ede60 , _NuTimeBarInit                                                 , 13    , void __cdecl (void)
+0x5eeb30,_NuPortalVisibility,506,i32 __cdecl(NUGSCN *)
 0x005ef7f0 , _NuGScnRead                                                    , 26    , "NUGSCN * __cdecl (VARIPTR *, VARIPTR, char *)"
+0x5ef810,_NuGHGRead,101,"void *__cdecl(char *, VARIPTR *, VARIPTR)"
 0x005ef880 , _NuGScnRemove                                                  , 200   , void __cdecl (NUGSCN *)
 0x005efbf0 , _NuDisplayListCreateDynMtlList_candidate                       , 1011  , void __cdecl (void)
 0x005efff0 , _NuDisplayListAddRenderScene                                   , 746   , i32 (void)
@@ -1850,10 +1890,14 @@ address    , symbol                                                         , si
 0x005f38c0,_NuHGobjEvalAnim2,46,
 0x005f38f0,_NuHGobjEvalAnimBlend2,90,
 0x005f3950 , _NuRndrEndScene                                                , 139   , void (void)
+0x005f39e0,_NuRndrEndSceneEx,5,void __cdecl(i32)
 0x005f3d60 , _NuTimeBarSetRender                                            , 2130  , void __cdecl (i32)
 0x005f45c0 , _NuTimeBarSetRenderHorizontal                                  , 1475  , void __cdecl (i32)
+0x5f6420,_NuAnimData2LoadBuffFromPAK,69,"void *__cdecl(void *, i32)"
 0x005f7490 , _DisplayListUpdateSpecialTransformPS                           , 1     , "void __cdecl (NUSPECIALHANDLE *, NUMTX *)"
 0x005f7490 , _PCClipScreenUnsupported                                       , 1     , void __cdecl (void)
+0x005f77d0,_NuLgtSetVertexColor,108,
+0x005f8ed0,_NuTexDestroyPS,34,void __cdecl(NUTEXDIM_PC *)
 0x005f9530 , _NuWaterReset                                                  , 21    , void __cdecl (void)
 0x005f9e90 , _NuRndrShadowOnOff_candidate                                   , 10    , void __cdecl (i32)
 0x005fca40 , _NuDisplayListResetStateCache                                  , 37    , void (NURNDRLIBSTATE *)
@@ -1878,6 +1922,10 @@ address    , symbol                                                         , si
 0x006009c0 , _NuPrim3DEnd                                                   , 24    , void __cdecl (void)
 0x006009e0 , _NuPrim2DAddXYZ                                                , 302   , "void __cdecl (f32, f32, f32)"
 0x00600b20 , _NuPrimSetCoordinateSystem                                     , 132   , void __cdecl (i32)
+0x006018c0,_NuLgtLaser,283,"void __cdecl(i32, f32, f32, f32, NUVEC *, NUVEC *, u32, f32, f32)"
+0x00601c10,_NuLgtSetArcMatEx,67,"void __cdecl(i32, NUMTL *, f32, f32, f32, f32)"
+0x00601c60,_NuLgtArcLaserEx,382,"void __cdecl(i32, NUVEC *, NUVEC *, NUVEC *, f32, f32, f32, f32, i32, i32)"
+0x601df0,_NuGScnRndr3,19,void __cdecl(NUGSCN *)
 0x00603350 , _NuDisplayListInit                                             , 147   , "void __cdecl (VARIPTR *, i32)"
 0x006034b0 , _NuDisplayListLinkItem                                         , 117   , "void __cdecl (NUDISPLAYLIST *, u8, void *)"
 0x00603580 , _DisplayListCreateGeomTransformPS                              , 142   , "void *__cdecl (VARIPTR *, NUMTX *, NUMTL *, void *, void *)"
@@ -1886,9 +1934,12 @@ address    , symbol                                                         , si
 0x00604110 , _PCVecMtxTransformClipBlocks                                   , 456   , "void __cdecl (NUVEC4BLOCK_PC *, NUVEC4BLOCK_PC *, NUMTX *, i32, u32 *)"
 0x006042e0 , _NuCameraClipTestExtents                                       , 1608  , "i32 __cdecl (NUVEC *, NUVEC *, NUMTX *, f32, i32)"
 0x00604a80,_NuCameraSetProjectionMtx,200,"void __cdecl (NUMTX *, f32, f32, f32, f32)"
+0x604c50,_NuHGobjGetPOI,49,"NUHGOBJ_POI_PC *__cdecl(NUHGOBJ_EVAL_PC *, u8)"
 0x00607590 , _DisplayListUpdateRenderState                                  , 649   , "void __cdecl (NUDISPLAYLIST_PC *, NUGLOBALRNDRSTATE_PC *)"
 0x00607d70 , _NuPrim2DBegin                                                 , 331   , "void __cdecl (u32, u32, NUMTL *)"
 0x00607ec0 , _NuPrim3DBegin                                                 , 319   , "void __cdecl (u32, u32, NUMTL *, NUMTX *)"
+0x00608590,_NuLgtLaserDraw,2766,void __cdecl(i32)
+0x006091c0,_NuLgtArcLaserDraw,2506,void __cdecl(i32)
 0x0061e6b0 , _NuKeyToAscii                                                  , 50    , "i32 __cdecl (u32, i32)"
 0x6211c0   , _EdFileSetMedia                                                , 10    , void __cdecl (i32)
 0x6211d0   , _EdFileSetPakFile                                              , 10    , void __cdecl (void *)
@@ -1900,26 +1951,37 @@ address    , symbol                                                         , si
 0x6216f0   , _EdFileRead                                                    , 162   , "void __cdecl (void *, i32)"
 0x6217e0   , _EdFileReadInt                                                 , 59    , i32 __cdecl (void)
 0x6218c0   , _EdFileReadChar                                                , 21    , char __cdecl (void)
-0x0062a6a0 , _AnimMiscFlags                                                 , 36     ,
+0x0062a5e0,_PCCharacterSystemExistingNoOp,1,void __cdecl(void)
+0x0062a6a0,_AnimMiscFlags,36,"i32 __cdecl (CHARACTER_MODEL_LAYERS_PC *, i32)"
 0x0062b040 , _APIObjectVelocities                                           , 169   , void __cdecl (GAMEOBJECT *)
 0x0062c300 , _ParticlesPerFrame                                             , 76    , "i32 __cdecl (f32, f32)"
 0x0062c350 , _ParticlesPerSecond                                            , 90    , "i32 __cdecl (f32, f32)"
 0x0062c3b0 , _FindGameDebris                                                , 79    , "i32 __cdecl (APIDEBRISSYS_PC *, char *)"
 0x0062c400 , _InitGameDebris                                                , 339    ,
 0x0062c7e0,_AddAnimEffects,2808,
-0x0062d500 , _APIResetCharacterRemap                                        , 53    ,
+0x62d2e0,_APICharacterModelReset,125,void __cdecl(CHARACTER_MODEL_LAYERS_PC *)
+0x62d360,_LoadAnimFromPAK,147,"void *__cdecl(char *, i32, void *, i32)"
+0x62d400,_LoadAnim,148,"void *__cdecl(char *, i32, VARIPTR *, VARIPTR)"
+0x0062d4a0,_APIObjectRegisterAnimRedirect,83,"void __cdecl (i32 (__cdecl *)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *), void *, char *)"
+0x0062d500,_APIResetCharacterRemap,53,void __cdecl (void)
 0x0062d540 , _APILoadCharacterModels                                        , 2619  , "void __cdecl (APICHARACTERMODELLIST_s*, i32, VARIPTR*, VARIPTR, i32)"
+0x0062df80,_APICharacterLoaded,41,CHARACTER_MODEL_LAYERS_PC *__cdecl (i32)
 0x0062e040 , _AnimDuration                                                  , 324   , "f32 __cdecl (i32, i32, f32, f32, i32)"
 0x0062e190,_PCBuildModelLayerList,71,
 0x0062e1e0,_PCStoreModelLocatorCoordinates,171,
 0x0062e290,_EvalModelAnim,852,
 0x0062e650 , _ResetAnimPacket                                               , 59    , "void __cdecl (ANIMPACKET_PC *, i16)"
-0x62f150   , _AnimPlaying                                                   , 68    , "f32 *__cdecl (ANIMPACKET_PC *,i32,i32,i32)"
+0x62f150,_AnimPlaying,68,"f32 *__cdecl (ANIMPACKET_PC *, i32, i32, i32)"
 0x0062f1a0 , _CurrentAnim                                                   , 20    , i32 __cdecl (ANIMPACKET_PC *)
-0x0062f1c0 , _AnimSpeed                                                     , 35    ,
+0x0062f1c0,_AnimSpeed,35,"f32 __cdecl (CHARACTER_MODEL_LAYERS_PC *, i32)"
+0x0062f1f0,_AnimListFrame,45,"f32 __cdecl (CHARACTER_MODEL_LAYERS_PC *, i32, i32)"
+0x0062f220,_AnimStopFrame,35,"f32 __cdecl (CHARACTER_MODEL_LAYERS_PC *, i32)"
+0x0062f250,_AnimListFrameArray,35,"f32 *__cdecl (CHARACTER_MODEL_LAYERS_PC *, i32)"
 0x0062f970 , _APITransparentInit                                            , 325   , void __cdecl (void)
 0x0062fbf0,_APIDrawCharacterModel,2690,
 0x00630740 , _ActionFromName                                                , 127   , i32 __cdecl (const char *)
+0x00630b40,_APICharacterSysInit,541,"void __cdecl (VARIPTR *, VARIPTR, i32, i32, i32, i32, APICHARACTERDATA *, void (__cdecl *)(APIOBJECT_PC *))"
+0x635a20,_rtlResetDynamic,79,i32 __cdecl(void)
 0x006489f0 , _edpartStartPage                                               , 57    , void __cdecl (u8)
 0x00648a30 , _edpartStopPage                                                , 17    , void __cdecl (u8)
 0x0064a450 , _NuPartSetSeed                                                 , 10    , void __cdecl (i32)
@@ -1930,6 +1992,7 @@ address    , symbol                                                         , si
 0x0064ab10 , _HitParts                                                      , 371   , "PART_PC *__cdecl (GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, u32)"
 0x0064ac90 , _KillPart                                                      , 175   , "void __cdecl (PART_PC *, i32)"
 0x0064ae40 , _SetPartRTLSet                                                 , 10    , void __cdecl (RTLSET_PC *)
+0x64afd0,_PARTLookupType,74,i32 __cdecl (char *)
 0x0064b370 , _PartDebrisCreatePart_candidate                                , 154   , "i32 __cdecl (i32, NUVEC *, i32)"
 0x0064c6e0 , _edpartClearPage                                               , 198   , void __cdecl (i8)
 0x0064d270 , _AddPart                                                       , 1884  , PART_PC *__cdecl (ADDPART_PC *)
@@ -1962,8 +2025,13 @@ address    , symbol                                                         , si
 0x00653000 , _RestoreGameCut                                                , 67    , void __cdecl (void)
 0x00655320 , _DebrisTypeStatusAlwaysOff                                     , 23    , void __cdecl (i32)
 0x00655340 , _DebrisTypeStatusAlwaysOn                                      , 23    , void __cdecl (i32)
+0x00655940,_DebrisEmitterPos,82,"void __cdecl(i32, f32, f32, f32)"
+0x006559a0,_DebrisEmitterMomentum,67,"void __cdecl(i32, f32, f32, f32)"
+0x006559f0,_DebrisParticleMomentum,67,"void __cdecl(i32, f32, f32, f32)"
 0x00656e40 , _DebrisSetRenderGroup                                          , 10    , void __cdecl (i32)
 0x006579f0 , _DebrisSetTimeIncrement                                        , 11    , void __cdecl (f32)
+0x00658330,_LookupDebrisEffectPageIgnore,307,"i32 __cdecl (char *, i8, i32)"
+0x00658470,_LookupDebrisEffectPage,21,"i32 __cdecl (char *, i8)"
 0x00658490 , _LookupDebrisEffectPageOnly                                    , 212   , "i32 __cdecl (char *, i8)"
 0x00658590 , _DebrisRegisterCutoffCameraVec                                 , 10    , void __cdecl (void *)
 0x00659230 , _DebrisSetSeed                                                 , 10    , void __cdecl (i32)
@@ -2011,12 +2079,14 @@ address    , symbol                                                         , si
 0x00684c90 , _AddVariableShotDebrisEffect                                   , 71    ,
 0x00684ee0 , _AddDebrisEffect                                               , 1025   ,
 0x00687850 , _edanimLoadPage                                                , 1489  , "i32 __cdecl (char *, NUGSCN *)"
+0x6893e0,_edbriLoadPage,646,"i32 __cdecl(char *, void *)"
 0x00689e70 , _edgraStopPage                                                 , 84    , void __cdecl (i8)
 0x00689ed0 , _edgraClearPage                                                , 158   , void __cdecl (i8)
 0x0068e890 , _edppStartPage                                                 , 103   , void __cdecl (i32)
 0x0068e900 , _edppStopPage                                                  , 252   , void __cdecl (i8)
 0x0068ea00 , _edppClearPage                                                 , 338   , void __cdecl (i8)
 0x0068f940,_NewTerrainScaleYMask,1984,
+0x690f60,_edgraLoadPage,1657,"i32 __cdecl(char *, void *, i32, VARIPTR *, VARIPTR *)"
 0x00693bb0 , ?GetPlayer@NuMusic@@SAPAV1@XZ                                  , 6     , NuMusic *__cdecl (void)
 0x00693bc0 , ??0NuMusic@@QAE@XZ                                             , 66    , NuMusic *__thiscall (NuMusic *)
 0x00693c20 , ?NoMusic@NuMusic@@QAEXH@Z                                      , 31    , "void __thiscall (NuMusic *, i32)"
@@ -2040,6 +2110,7 @@ address    , symbol                                                         , si
 0x00694cc0 , ?SetMasterVolume@NuMusic@@QAEXM@Z                              , 139   , "void __thiscall (NuMusic *, f32)"
 0x00694d50 , ?SetFader@NuMusic@@QAEXMM@Z                                    , 84    , "void __thiscall (NuMusic *, f32, f32)"
 0x00694db0 , ?SetClassVolume@NuMusic@@QAEXIM@Z                              , 184   , "void __thiscall NuMusic::SetClassVolume(u32, f32)"
+0x694e70,?Debug@NuMusic@@QAEXHH@Z,757,"void __thiscall NuMusic::Debug(i32, i32)"
 0x00695170 , ?GetSoundFiles@NuMusic@@QAEXPAPAUnusound_filename_info_s@@PAH@Z, 66    , "void __thiscall (NuMusic *, nusound_filename_info_s **, i32 *)"
 0x006951c0 , _numusicGetDuckVolume                                          , 34    , f32 __cdecl (void)
 0x00695950 , ?Process@NuMusic@@QAEXM@Z                                      , 1398  , "void __thiscall (NuMusic *, f32)"
@@ -2074,6 +2145,9 @@ address    , symbol                                                         , si
 0x00698910 , _NuSound3StopRumble                                            , 1     , void __cdecl (void)
 0x00698930 , _NuSound3SetRumblePads                                         , 1     , "void __cdecl (void *, void *)"
 0x00698a00 , _NuSound3SetLoopHoldTime                                       , 21    , void __cdecl (f32)
+0x698a40,_NuSound3GetStreamInfo,1,"void __cdecl(i32, void *)"
+0x698c50,?StopAllVoices@SoundVoiceManagerPC@@QAEXXZ,101,void __thiscall (SoundVoiceManagerPC *)
+0x698cc0,?UpdateVoices@SoundVoiceManagerPC@@QAEXXZ,336,void __thiscall (SoundVoiceManagerPC *)
 0x00698e70 , _NuSound3Update                                                , 86    , void (void)
 0x00698ed0 , _NuSound3KillAllAudio                                          , 32    , void __cdecl (void)
 0x00699180 , ?SendCommand@SoundQueue@@QAEHHH@Z                              , 117   , "i32 __thiscall (SoundQueue *, i32, i32)"
@@ -2105,6 +2179,7 @@ address    , symbol                                                         , si
 0x006d96b0 , @NuKeyboardInitializeDefaultRecords_candidate@4                , 802   , void __fastcall (NuKeyboardState_PC *)
 0x006d9bd0 , @NuKeyboardInitializeCommandProfiles_candidate@4               , 496   , void __fastcall (NuKeyboardState_PC *)
 0x006da560 , @NuKeyboardStateInitialize_candidate@4                         , 949   , NuKeyboardState_PC *__fastcall (NuKeyboardState_PC *)
+0x6db910,_NuFileUseHiresPC,8,i32 __cdecl(void)
 0x006dd390 , _NuWindowsProcessMessages                                      , 97    , i32 __cdecl (void)
 0x006de0e0 , _WinMain@16                                                    , 200   , "int __stdcall (HINSTANCE, HINSTANCE, LPSTR, int)"
 0x006de8d0 , _NuScratchAlloc32                                             , 37    ,
@@ -2118,9 +2193,15 @@ address    , symbol                                                         , si
 0x006df080 , _NuKeyboardCreateWindowState_candidate                         , 55    , "void __cdecl (HWND, HINSTANCE)"
 0x006df300 , _PCFrameCriticalSectionEnter_candidate                         , 13    , void __cdecl (void)
 0x006df310 , _PCFrameCriticalSectionLeave_candidate                         , 13    , void __cdecl (void)
+0x6df940,_PCDeviceResetState,220,void __cdecl (void)
 0x006e2470, ?ApplyViewport@PC_DEVICE_BACKEND_PC@@QAEXPBUPC_VIEWPORT_PC@@@Z, 159,
+0x6e5340,_PCDeviceSetRenderState,414,"void __cdecl (i32, u32)"
+0x6e54e0,_PCDeviceSetSamplerState,111,"void __cdecl (u32, i32, u32)"
+0x6e5630,_PCDeviceSetTexture,64,"void __cdecl (u32, void *)"
+0x6e5670,_PCDeviceSetTextureStageState,37,"void __cdecl (u32, i32, u32)"
 0x6e56a0, _PCDeviceSetTransform, 32,
 0x6e57b0, _NuVpSubmitPc, 20,
+0x006e5b70,_PCDeviceReleaseTexture,27,void __cdecl(PC_TEXTURE_RESOURCE_PC **)
 0x006e693a , @__security_check_cookie@4                                     , 15    , void __fastcall (u32)
 0x006e6950 , _memset                                                        ,       , "void *__cdecl (void *, int, size_t)"
 0x006e69d0 , __allshl                                                       , 31    , MSVC x86 compiler u64 left-shift helper (EDX:EAX; CL)
@@ -2131,6 +2212,7 @@ address    , symbol                                                         , si
 0x006e7570 , _malloc                                                        ,       , void *__cdecl (size_t)
 0x006e7633 , _free                                                          , 133   , void __cdecl (void *)
 0x006e7b25 , _vsprintf                                                      , 23    , "i32 __cdecl (char *, const char *, va_list)"
+0x006e8380,__alldiv,170,"i64 compiler helper (i64, i64); callee stack cleanup 16; supplied pinned CRT"
 0x006e8430 , __allmul                                                       , 52    , "i64 __cdecl (i64, i64)"
 0x006e8e11 , _srand                                                         , 13    , void __cdecl (unsigned int)
 0x006e8e80 , __CIsin                                                        , 79    , f64 (x87 ST0 -> ST0)
@@ -2612,6 +2694,7 @@ address    , symbol                                                         , si
 0x007519e8 , _MoveSplineTurnRate                                            , 4     , const f32
 0x007519e8 , __real@41000000                                                , 4     , const f32
 0x007519f0 , __real@4059000000000000                                        , 8     , const f64
+0x007519f8,__real@40c00000,4,const f32
 0x00751a10 , _NuTimeBarSlotWidth                                            , 8     , const f64
 0x00751a40 , _PCKeyboardDefaultValue_candidate                              , 4     , const f32
 0x00751a40 , __real@3dcccccd                                                , 4     , const f32
@@ -2687,21 +2770,25 @@ address    , symbol                                                         , si
 0x00752c30 , _AreaFixUpName_Gungan                                          , 8     , char[8]
 0x00753164 , _GameObjectState_InActive                                      , 9     , const char[9]
 0x00753170 , _TerrainSkinSampleCountPc                                     ,       ,
+0x753178,__real@401c000000000000,8,const f64
 0x00753180 , __real@3f50624de0000000                                        , 8     , const f64
 0x00753188 , __real@3f80101020000000                                        , 8     , const f64
 0x00753190 , __real@409c390000000000                                        , 8     , const f64
 0x00753198 , __real@42ff0000                                                , 4     , const f32
 0x0075319c , __real@c2ff0000                                                , 4     , const f32
+0x7531a4,__real@bf000000,4,const f32
 0x007531a8 , __real@3f847ae140000000                                        , 8     , const f64
 0x007531b4 , __real@3fa00000                                                , 4     , const f32
 0x007531b8 , __real@3e19999a                                                , 4     , const f32
 0x007531c0 , __real@3fd3333340000000                                        , 8     , const f64
 0x7531c8   , __real@403e000000000000                                        , 8     , const f64
 0x007531d8 , __real@4022000000000000                                        , 8     , const f64
+0x7531e0,__real@4032000000000000,8,const f64
 0x007531f8 , __real@406fe00000000000                                        , 8     , const f64
 0x00753200 , _TerrainScanTriangleSentinel                                   ,       ,
 0x00753220 , __real@bdcccccd                                                , 4     , const f32
 0x00753270 , _AIScriptKeywordBase                                           , 5     , const char[5]
+0x753278,__real@3f4ccccd,4,const f32
 0x0075327c , __real@3f666666                                                ,       ,
 0x00753288 , _NuTimeBarUnsignedBias                                         , 4     , const f32
 0x00753288 , __real@4f800000                                                , 4     , f32
@@ -2790,16 +2877,29 @@ address    , symbol                                                         , si
 0x756da4   , _PCContextName_BeenTakenOver                                   , 14    , const char [14]
 0x007575d8 , __real@3fc0000000000000                                        , 8     , const f64
 0x00757680 , _AIGameOpponentName                                            , 9     , const char[9]
+0x75768c,_AITransferLiteral75768c,13,const char[13]
+0x75769c,_AITransferLiteral75769c,11,const char[11]
+0x7576a8,_AITransferLiteral7576a8,7,const char[7]
+0x7576b0,_AITransferLiteral7576b0,6,const char[6]
 0x7576b8   , ??_C@_06DKGIHPCG@baddie?$AA@                                   , 7     , const char[7]
+0x7576b8,_AITransferLiteral7576b8,7,const char[7]
+0x7576c0,_AITransferLiteral7576c0,6,const char[6]
 0x7576c8   , _ActionSnapPlayer1Name                                          ,        ,
+0x7576d0,_AITransferLiteral7576d0,14,const char[14]
+0x7576e0,_AITransferLiteral7576e0,10,const char[10]
 0x007576ec , _AICombatOpponentName                                          , 10    , const char[10]
+0x7576f8,_AITransferLiteral7576f8,6,const char[6]
 0x00757700 , _AIGameSetName                                                 , 5     , const char[5]
 0x00757708 , _AIGameCharacterName                                           , 11    , const char[11]
 0x00757714 , _AIScriptFalse                                                 , 6     , const char[6]
 0x0075771c , _AIPathOriginName                                              , 7     , const char[7]
+0x757724,_AITransferLiteral757724,7,const char[7]
 0x75772c   , ??_C@_04GPMDFGEJ@type?$AA@                                     , 5     , const char[5]
+0x75772c,_AITransferLiteral75772c,5,const char[5]
 0x00757734 , _GizmoDefaultOutputName                                        , 8     , char[8]
 0x75773c   , ??_C@_07JAOEMGIL@neutral?$AA@                                  , 8     , const char[8]
+0x75773c,_AITransferLiteral75773c,8,const char[8]
+0x757744,_AITransferLiteral757744,7,const char[7]
 0x75779c   , ??_C@_07PABIOCAD@respawn?$AA@                                  , 8     , const char[8]
 0x007577b0 , _AreaConfigKeyword_character                                   , 10    , const char[10]
 0x7577b0   , ??_C@_09MNKJOHH@character?$AA@                                 , 10    , const char[10]
@@ -2807,16 +2907,26 @@ address    , symbol                                                         , si
 0x007577c4 , _AIActionFalseName                                             , 6     , const char[6]
 0x007577cc , _AILocatorPersonalFormat                                       , 6     , const char[6]
 0x007577d4 , _AILocatorIndexedFormat                                        , 6     , const char[6]
+0x7577dc,_AITransferLiteral7577dc,8,const char[8]
 0x007577e4 , _AIGameNearestName                                             , 8     , const char[8]
 0x007577ec , _AIActionIndexedName                                           , 8     , const char[8]
 0x007577f4 , _AIActionPersonalName                                          , 9     , const char[9]
 0x00757800 , _AIScriptActionNameArgPrefix                                   , 6     , const char[6]
 0x757808   , _ActionSnapDontCheckTerrainName                                 ,        ,
+0x75781c,_AITransferLiteral75781c,8,const char[8]
 0x757824   , ??_C@_06NLFCANPD@random?$AA@                                   , 7     , const char[7]
+0x757824,_AITransferLiteral757824,7,const char[7]
 0x75782c   , ??_C@_04MEMAJGDJ@name?$AA@                                     , 5     , const char[]
+0x75782c,_AITransferLiteral75782c,5,const char[5]
+0x757834,_AITransferLiteral757834,13,const char[13]
+0x757844,_AITransferLiteral757844,14,const char[14]
 0x00757854 , _ZArgPrefix                                                    , 3     , const char[3]
 0x00757858 , _YArgPrefix                                                    , 3     , const char[3]
 0x0075785c , _XArgPrefix                                                    , 3     , const char[3]
+0x757860,_AITransferLiteral757860,10,const char[10]
+0x75786c,_AITransferLiteral75786c,5,const char[5]
+0x757874,_AITransferLiteral757874,15,const char[15]
+0x757884,_AITransferLiteral757884,12,const char[12]
 0x757890   , _ActionSnapZName                                                ,        ,
 0x757894   , ??_C@_01EANLCPLP@y?$AA@                                        , 2     , const char[]
 0x757898   , _ActionSnapXName                                                ,        ,
@@ -2852,8 +2962,21 @@ address    , symbol                                                         , si
 0x007579ec , _AICombatMinimumRangeName                                      , 10    , const char[10]
 0x007579f8 , _AIGameFireRangeName                                           , 10    , const char[10]
 0x00757a04 , _AICombatFrontArcOnlyName                                      , 13    , const char[13]
+0x757a20,_AITransferLiteral757a20,8,const char[8]
 0x00757a28 , _AIGameEndName                                                 , 5     , const char[5]
 0x00757a30 , _AIGameStartName                                               , 7     , const char[7]
+0x757a38,_AITransferLiteral757a38,12,const char[12]
+0x757a44,_AITransferLiteral757a44,23,const char[23]
+0x757a5c,_AITransferLiteral757a5c,12,const char[12]
+0x757a68,_AITransferLiteral757a68,6,const char[6]
+0x757a70,_AITransferLiteral757a70,11,const char[11]
+0x757a7c,_AITransferLiteral757a7c,8,const char[8]
+0x757a84,_AITransferLiteral757a84,8,const char[8]
+0x757a8c,_AITransferLiteral757a8c,7,const char[7]
+0x757a94,_AITransferLiteral757a94,9,const char[9]
+0x757b9c,_AITransferLiteral757b9c,10,const char[10]
+0x757ba8,_AITransferLiteral757ba8,11,const char[11]
+0x757bb4,_AITransferLiteral757bb4,13,const char[13]
 0x00757bc4 , _AIControlPlayerRunSpeedName                                   , 17    , const char[17]
 0x00757bd8 , _AIControlSeekName                                             , 6     , const char[6]
 0x00757be0 , _AIControlMinimumName                                          , 5     , const char[5]
@@ -2861,7 +2984,12 @@ address    , symbol                                                         , si
 0x00757bf0 , _AIControlClearName                                            , 6     , const char[6]
 0x00757bf8 , _AIControlMaximumDefaultName                                   , 12    , const char[12]
 0x00757c04 , _AIControlMultiplyName                                         , 10    , const char[10]
+0x757c10,_AITransferLiteral757c10,13,const char[13]
+0x757c20,_AITransferLiteral757c20,12,const char[12]
 0x00757c44 , _AIAnimSpeedValueName                                          ,       ,
+0x757c5c,_AITransferLiteral757c5c,4,const char[4]
+0x757c60,_AITransferLiteral757c60,4,const char[4]
+0x757c64,_AITransferLiteral757c64,4,const char[4]
 0x00757c68 , _AIUseCurrentSpeedSnapName                                     ,       ,
 0x00757c74 , _AIUseCurrentSpeedMultiplierName                               ,       ,
 0x00757c80 , _AIControlLocatorName                                          , 8     , const char[8]
@@ -2869,21 +2997,40 @@ address    , symbol                                                         , si
 0x00757c98 , _AIControlDefaultTitleName                                     , 8     , const char[8]
 0x00757ca0 , _AIScaleOverrideResetName                                      ,       ,
 0x00757ca8 , _AIActionTimeName                                              , 5     , const char[5]
+0x757cc8,_AITransferLiteral757cc8,7,const char[7]
+0x757cd0,_AITransferLiteral757cd0,6,const char[6]
+0x757cd8,_AITransferLiteral757cd8,5,const char[5]
 0x00757cf4 , _AIActionIDName                                                , 3     , const char[3]
 0x00757d6c , _AIActionToName                                                , 3     , const char[3]
 0x00757df0 , _CompleteLevelCutscenePrefix                                   ,       ,
 0x00757e18 , _AIActionBothWaysName                                          , 9     , const char[9]
+0x757e68,_AITransferLiteral757e68,5,const char[5]
+0x757e70,_AITransferLiteral757e70,15,const char[15]
 0x00757e80 , _AIPathFaceName                                                , 5     , const char[5]
-0x00757e88 , _GizmoSnapOptionNamePc                                         ,       ,
+0x00757e88,_GizmoSnapOptionNamePc,5,const char[5]
+0x757ea8,_AITransferLiteral757ea8,10,const char[10]
+0x757eb4,_AITransferLiteral757eb4,8,const char[8]
+0x757ebc,_AITransferLiteral757ebc,5,const char[5]
+0x757ec4,_AITransferLiteral757ec4,10,const char[10]
 0x00757ed0 , _AIAnimSpeedMultiplyByName                                     ,       ,
+0x757ee0,_AITransferLiteral757ee0,8,const char[8]
+0x757f28,_AITransferLiteral757f28,8,const char[8]
 0x00757f40 , _AIActionFromName                                              , 5     , const char[5]
 0x00757f48 , _CharacterPosArgPrefix                                         , 15    , const char[15]
 0x00757f58 , _StartDelayArgPrefix                                           , 12    , const char[12]
 0x00757f64 , _RepeatDelayArgPrefix                                          , 10    , const char[10]
 0x00757f70 , _PlayCountArgPrefix                                            , 11    , const char[11]
+0x757f7c,_AITransferLiteral757f7c,7,const char[7]
+0x758174,_AITransferLiteral758174,19,const char[19]
+0x758188,_AITransferLiteral758188,11,const char[11]
+0x758194,_AITransferLiteral758194,11,const char[11]
+0x7581a0,_AITransferLiteral7581a0,8,const char[8]
 0x007581a8 , _AIPathLocatorName                                             , 9     , const char[9]
 0x007581b4 , _AIActionMaxTimeName                                           , 8     , const char[8]
 0x007581bc , _AIActionMinTimeName                                           , 8     , const char[8]
+0x7581d4,_AITransferLiteral7581d4,10,const char[10]
+0x7581e0,_AITransferLiteral7581e0,9,const char[9]
+0x7581ec,_AITransferLiteral7581ec,9,const char[9]
 0x007581f8 , _AIGameTakeOverTargetName                                      , 15    , const char[15]
 0x00758208 , _AIPathCanGoOffPathName                                        , 16    , const char[16]
 0x00758218 , _AIActionIgnoreRadiusName                                      , 14    , const char[14]
@@ -2893,11 +3040,22 @@ address    , symbol                                                         , si
 0x00758254 , _AIGameMaximumTurnName                                         , 9     , const char[9]
 0x00758260 , _AIGameMinimumTurnName                                         , 9     , const char[9]
 0x758280   , ??_C@_07PAIKCKMF@locator?$AA@                                  , 8     , const char[8]
+0x7583b4,_AITransferLiteral7583b4,16,const char[16]
+0x7583c4,_AITransferLiteral7583c4,10,const char[10]
+0x7583d0,_AITransferLiteral7583d0,18,const char[18]
+0x7583e4,_AITransferLiteral7583e4,12,const char[12]
+0x7583f0,_AITransferLiteral7583f0,8,const char[8]
+0x7583f8,_AITransferLiteral7583f8,8,const char[8]
+0x758430,_AITransferLiteral758430,5,const char[5]
 0x00758464 , _AIScriptParamPrefix                                           , 6     , const char[6]
 0x007584a8 , _AIExpressionMaxName                                           , 4     , const char [4]
 0x7584c4   , _PCContextName_Techno                                          , 7     , const char [7]
 0x007584d4 , _NewLevelPrefix                                                ,       ,
+0x007584e8,_AIActionCircleClockwiseName,10,const char[10]
+0x007584f4,_AIActionCircleAnticlockwiseName,14,const char[14]
+0x00758504,_AIActionCircleReverseName,8,const char[8]
 0x75850c   , ??_C@_08LOCMGIHJ@teleport?$AA@                                 , 9     , const char[9]
+0x0075850c,_AIActionCircleTeleportName,9,const char[9]
 0x0075852c , __real@3f8ccccd                                                ,       ,
 0x75866c   , ??_C@_05GGJMBGBG@zipup?$AA@                                    , 6     , const char[6]
 0x007586e0 , _NuTimeBarHorizontalTop                                        , 8     , const f64
@@ -2905,6 +3063,11 @@ address    , symbol                                                         , si
 0x758774   , _PCContextName_Jump                                            , 5     , const char [5]
 0x00758808 , __real@3fefffffe0000000                                        , 8     , const f64
 0x00758828 , _GizAIMessage_NameFormat                                       , 3     , const char[3]
+0x758a60,_GizObstacleActionNamePC,5,const char[5]
+0x758a84,_GizObstacleActionStayShutPC,9,const char[9]
+0x758a90,_GizObstacleActionStayOpenPC,9,const char[9]
+0x758a9c,_GizObstacleActionForwardPC,8,const char[8]
+0x758aa4,_GizObstacleActionBackwardPC,9,const char[9]
 0x00758b54 , __real@ce6e6b28                                                , 4     , const f32
 0x758dec   , ??_C@_05MHMEBBGO@scale?$AA@                                    , 6     , const char[6]
 0x758dfc   , ??_C@_05HJCMGBKF@speed?$AA@                                    , 6     , const char[6]
@@ -3031,11 +3194,13 @@ address    , symbol                                                         , si
 0x00759f40 , _LevelConfigGameKeyword_max_signals                            , 12    , const char[12]
 0x00759f4c , _LevelConfigGameKeyword_max_tightropes                         , 15    , const char[15]
 0x0075a0dc , _DebrisGlassMaterialOpacity                                    , 4     , const f32
-0x0075a1fc , _SceneFileExtensionPc                                          ,       ,
+0x0075a1fc,_SceneFileExtensionPc,5,const char[5]
 0x75a204   , ??_C@_01KICIPPFI@?2?$AA@                                       , 2     , const char[2]
+0x0075a204,_WorldPathSeparator,2,const char[2]
 0x0075a208 , _AreaResidentsDirectory                                        , 8     , const char[8]
 0x0075a2b0 , __real@45000000                                                , 4     , const f32
 0x0075ac2c , __real@44000000                                                , 4     , const f32
+0x0075ac30,__real@3f91eb85,4,const f32
 0x0075ad8c , _EpisodeVIDat                                                  , 15    , const char[15]
 0x0075ad9c , _EpisodeVDat                                                   , 14    , const char[14]
 0x0075adac , _EpisodeIVDat                                                  , 15    , const char[15]
@@ -3140,6 +3305,7 @@ address    , symbol                                                         , si
 0x0075bd7c , _TurnLoopSfx                                                   , 17    , const char [17]
 0x0075bd98 , __real@40d38e0000000000                                        , 8     , f64
 0x0075bda8 , __real@3fdf5c28e0000000                                        , 8     , const f64
+0x75bdb0,__real@bec00000,4,const f32
 0x0075bdc0 , _SaberSparksName                                               , 12    , const char [12]
 0x0075bdec , __real@3a83126f                                                , 4     , const f32
 0x75be2c   , _ForcePushApproachOuterSquare                                  , 4     , const f32
@@ -3167,6 +3333,7 @@ address    , symbol                                                         , si
 0x0075cff8 , _PermLegalSpanish                                              , 11    , const char[11]
 0x0075d004 , _PermLegalFrench                                               , 10    , const char[10]
 0x0075d010 , _PermLegalUS                                                   , 4     , const char[4]
+0x75d014,_NuFileExt_dds_PC,5,const char[5]
 0x0075d0c0 , _LoadPermEpisodesPath                                          , 20    , const char[20]
 0x0075d0d4 , _LoadPermAreasPath                                             , 17    , const char[17]
 0x0075d0e8 , _LoadPermLevelsPath                                            , 18    , const char[18]
@@ -3197,10 +3364,51 @@ address    , symbol                                                         , si
 0x0075d4f0 , __real@3fefd70a40000000                                        , 8     , const f64
 0x0075da40 , __real@c066c16c20000000                                        , 8     , const f64
 0x0075e948 , ??_C@_02LHFGBEJL@PC?$AA@                                       , 3     , const char[3]
+0x0075e978,_NuFileSourcePathPC,50,const char[50]
 0x0075e9e0 , __real@41f0000000000000                                        , 8     , const f64
 0x0075e9e8 , _NuTime_LowScale                                               , 8     , const f64
 0x0075e9f0 , _NuTime_MicroScale                                             , 8     , const f64
 0x0075e9f8 , _NuTime_ScanlineScale                                          , 8     , const f64
+0x75ea54,_NuFileExt_at3_PC,5,const char[5]
+0x75ea5c,_NuFileExt_psc_PC,5,const char[5]
+0x75ea64,_NuFileExt_phg_PC,5,const char[5]
+0x75ea6c,_NuFileExt_nx2_PC,5,const char[5]
+0x75ea74,_NuFileExt_hx2_PC,5,const char[5]
+0x75ea7c,_NuFileExt_h4m_PC,5,const char[5]
+0x75ea84,_NuFileExt_gcm_PC,5,const char[5]
+0x75ea8c,_NuFileExt_dsp_PC,5,const char[5]
+0x75ea94,_NuFileExt_ctx_PC,5,const char[5]
+0x75ea9c,_NuFileExt_csc_PC,5,const char[5]
+0x75eaa4,_NuFileExt_chg_PC,5,const char[5]
+0x75eaac,_NuFileExt_pss_PC,5,const char[5]
+0x75eab4,_NuFileExt_vag_PC,5,const char[5]
+0x75eabc,_NuFileExt_pnt_PC,5,const char[5]
+0x75eac4,_NuFileExt_ghg_PC,5,const char[5]
+0x75eacc,_NuFileExt_pc_ghg_PC,8,const char[8]
+0x75ead4,_NuFileExt_lr_pc_ghg_PC,11,const char[11]
+0x75eae0,_NuFileExt_pc_gsc_PC,8,const char[8]
+0x75eae8,_NuFileExt_bik_PC,5,const char[5]
+0x75eaf0,_NuFileExt_wav_PC,5,const char[5]
+0x75eaf8,_NuFileExt_cu2_PC,5,const char[5]
+0x75eb00,_NuFileExt_pc_dds_PC,8,const char[8]
+0x75eb08,_NuFileExt_bsa_PC,5,const char[5]
+0x75eb10,_NuFileExt_an3_PC,5,const char[5]
+0x75eb18,_NuFileExt_pam_PC,5,const char[5]
+0x75eb20,_NuFileExt_mib_PC,5,const char[5]
+0x75eb28,_NuFileExt_msf_PC,5,const char[5]
+0x75eb30,_NuFileExt_ps3_tex_PC,9,const char[9]
+0x75eb3c,_NuFileExt_ps3_gsc_PC,9,const char[9]
+0x75eb48,_NuFileExt_ps3_ghg_PC,9,const char[9]
+0x75eb54,_NuFileExt_wmv_PC,5,const char[5]
+0x75eb5c,_NuFileExt_wavm_PC,6,const char[6]
+0x75eb64,_NuFileExt_wavx_PC,6,const char[6]
+0x75eb6c,_NuFileExt_cc2_PC,5,const char[5]
+0x75eb74,_NuFileExt_360_tex_PC,9,const char[9]
+0x75eb80,_NuFileExt_360_gsc_PC,9,const char[9]
+0x75eb8c,_NuFileExt_360_ghg_PC,9,const char[9]
+0x75eb98,_NuFileExt_cbs_PC,5,const char[5]
+0x75eba0,_NuFileExt_ca3_PC,5,const char[5]
+0x0075ebb0,__real@4062c00000000000,8,
 0x0075ebd0 , _nufile_disc_suffix                                            , 3     , const char[3]
 0x0075ec90 , _bgproc_resume_event_name                                      , 9     , const char[9]
 0x0075ec9c , _bgproc_work_event_name                                        , 11    , const char[11]
@@ -3373,6 +3581,9 @@ address    , symbol                                                         , si
 0x007616d8 , __real@40ac200000000000                                        , 8     , const f64
 0x00761810,_GizObstacleName_text,12,char[12]
 0x0076186c , _GizmoConfigPathFormat                                         , 7     , const char [7]
+0x007618a4,_WorldObjectAnimFormat,7,const char[7]
+0x7618e8,_WorldGrassFormat,7,const char[7]
+0x7618f0,_WorldBridgeFormat,7,const char[7]
 0x761a90   , ??_C@_09CKCBMNI@orientate?$AA@                                 , 10    , const char[10]
 0x00761b28 , _AreaConfigKeyword_area_start                                  , 11    , const char[11]
 0x00761b34 , _AreaConfigKeyword_redbrick_extra                              , 15    , const char[15]
@@ -3476,6 +3687,7 @@ address    , symbol                                                         , si
 0x00762298 , _LevelConfigKeyword_zspeed                                     , 7     , const char[7]
 0x007622a0 , _LevelConfigKeyword_xspeed                                     , 7     , const char[7]
 0x007622a8 , _LevelAfterLoadName                                            , 15    , const char[15]
+0x007622e0,_WorldLevelConfigFormat,7,const char[7]
 0x7623d4   , ??_C@_03MINGLPN@sfx?$AA@                                       , 4     , const char[4]
 0x7624ac   , ??_C@_05BAAEGMAJ@fpsec?$AA@                                    , 6     , const char[6]
 0x7624e4   , ??_C@_05MIJNFGED@frame?$AA@                                    , 6     , const char[6]
@@ -3753,6 +3965,7 @@ address    , symbol                                                         , si
 0x763618   , ??_C@_0BA@FCCKOOFM@can_direct_land?$AA@                        , 16    , const char[16]
 0x763628   , ??_C@_0L@IPNNAMAM@can_get_up?$AA@                              , 11    , const char[11]
 0x763634   , ??_C@_06BJLHAJHF@chars?2?$AA@                                  , 7     , const char[7]
+0x763634,_APIObjectCharsDirectory,7,const char[7]
 0x76363c   , ??_C@_0BD@EJCIEOFH@chars?2charstxt?4fpk?$AA@                   , 19    , const char[19]
 0x00763958 , ??_C@_0M@MGCAMLPP@Snake_bit_3?$AA@                             , 12    , const char[12]
 0x00763964 , ??_C@_0M@NPDLPKLO@Snake_bit_2?$AA@                             , 12    , const char[12]
@@ -3799,13 +4012,43 @@ address    , symbol                                                         , si
 0x00765680 , _NuTimeBarNameMargin                                           , 8     , const f64
 0x00765688 , _NuTimeBarHalfFontScale                                        , 4     , const f32
 0x76a7c8, _NuVpDepthRangePc, ,
+0x0076a858,__real@44048000,4,
+0x0076a85c,__real@442f0000,4,
+0x0076a860,__real@c049000000000000,8,
+0x0076a868,__real@406e000000000000,8,
+0x76b188,_APIObjectPakExtension,5,const char[5]
 0x0076b190 , __real@3fa1111120000000                                        , 8     , const f64
+0x76bc20,_NuMusicDebugClassInvalid,8,const char[8]
 0x0076e130 , _TerrainSkinSampleIndexScalePc                                ,       ,
 0x0076e138 , _TerrainSkinBoundsMinPc                                       ,       ,
 0x0076e13c , _TerrainSkinBoundsMaxPc                                       ,       ,
 0x0076e148 , _TerrainCastLowerSentinel                                      ,       ,
+0x76ed7c,_NuMusicDebugClassCutscene,9,const char[9]
+0x76ed88,_NuMusicDebugClassSignature,10,const char[10]
+0x76ed94,_NuMusicDebugClassOverlay,8,const char[8]
+0x76ed9c,_NuMusicDebugClassQuiet,6,const char[6]
+0x76eda4,_NuMusicDebugClassAction,7,const char[7]
+0x76ee00,_NuMusicDebugClassNoMusic,8,const char[8]
+0x76ee20,_NuMusicDebugStatus7,8,const char[8]
+0x76ee28,_NuMusicDebugStatus6,12,const char[12]
+0x76ee34,_NuMusicDebugStatus5,8,const char[8]
+0x76ee3c,_NuMusicDebugStatus4,16,const char[16]
+0x76ee4c,_NuMusicDebugStatus3,7,const char[7]
+0x76ee54,_NuMusicDebugStatus2,15,const char[15]
+0x76ee64,_NuMusicDebugStatus1,5,const char[5]
+0x76ee6c,_NuMusicDebugStatus0,13,const char[13]
+0x76ee84,_NuMusicDebugPositionFormat,7,const char[7]
+0x76ee8c,_NuMusicDebugFadeFormat,8,const char[8]
+0x76ee94,_NuMusicDebugVolumeFormat,15,const char[15]
+0x76eea4,_NuMusicDebugStatusFormat,10,const char[10]
+0x76eeb0,_NuMusicDebugClassNone,11,const char[11]
+0x76eebc,_NuMusicDebugTrackNone,11,const char[11]
+0x76eec8,_NuMusicDebugClassFormat,9,const char[9]
+0x76eed4,_NuMusicDebugTrackFormat,9,const char[9]
+0x76eee0,_NuMusicDebugVoiceFormat,9,const char[9]
 0x0076eef0 , __real@40cfff8000000000                                        , 8     , const f64
 0x0076ef00 , _PCSoundOggExtensionText                                       , 5     , const char[5]
+0x0076ef78,__real@c0ab580000000000,8,f64
 0x007759a8 , _PCKeyboard2Name_candidate                                     , 10    , const char[10]
 0x007759b4 , _PCKeyboardMouse2Name_candidate                                , 16    , const char[16]
 0x007759c4 , _PCKeyboard1Name_candidate                                     , 10    , const char[10]
@@ -4086,7 +4329,7 @@ address    , symbol                                                         , si
 0x00802524 , _LAYER_HOVERIGNORE                                             , 4     , u32
 0x00802538 , _GAMERAND                                                      , 4     , i32
 0x0080253c , _qseed                                                         , 4     , i32
-0x00802644 , _obstacle_gizmotype_id                                         ,       ,
+0x00802644,_obstacle_gizmotype_id,,i32
 0x00802724 , _gizmoerrorlogsize                                             , 4     , i32
 0x00802814 , _LEGOCONTEXT_TUBE                                              , 4     , i32
 0x00802818 , _LEGOCONTEXT_GLIDE                                             , 4     , i32
@@ -4112,6 +4355,7 @@ address    , symbol                                                         , si
 0x00802c5c , _other_level                                                   , 4     , i32
 0x00802c68 , _level_already_loaded                                          , 4     , i32
 0x00802c6c , _reset_load                                                    , 4     , i32
+0x802d94,_HIGHJUMPHEIGHT,4,f32
 0x00802d98 , _BigJump_JumpActionFn                                          , 4     , i32 (__cdecl *)(GAMEOBJECT *)
 0x802da4   , _SLAMGRAVITY                                                   , 4     , f32
 0x00802e14 , _FinishLoop_On                                                 , 4     , i32
@@ -4121,6 +4365,8 @@ address    , symbol                                                         , si
 0x00802eec , ??_R0?AVFadeWipe@@@8                                           , 23    ,
 0x00802f04 , ??_R0?AVFadeStillWipe@@@8                                      , 28    ,
 0x00802f20 , ??_R0?AVFadeStill@@@8                                          , 24    ,
+0x802f54,_blowup_gizmotype_id,4,i32
+0x8030e8,_LEDGETERRAINLOOKAHEAD,,f32
 0x008032c4 , _CheatSystemPtr                                                , 4     , CHEATSYSTEM_PC *
 0x008032cc , _ONEPLAYERPOWERUPS                                             , 4     , i32
 0x008034c4 , _GetSurfaceInfoDefaultMaskPc                                   ,       ,
@@ -4129,6 +4375,7 @@ address    , symbol                                                         , si
 0x00803784 , _Area                                                          , 4     , i32
 0x00803788 , _AREA_DEFAULTBONUSTIMETRIALTIME                                ,       , u16 [observed low word; full owner unknown]
 0x0080378c , _AREA_DEFAULTCHALLENGETIME                                     ,       , u16 [observed low word; full owner unknown]
+0x803874,_Door_NextSock,4,i32
 0x00803b64 , _MAXLDATA                                                      , 4     , i32
 0x00803b68 , _levspl_i_start                                                , 4     , i32
 0x00803b6c , _levspl_i_startcam                                             , 4     , i32
@@ -4155,6 +4402,7 @@ address    , symbol                                                         , si
 0x00804c20 , _BoltShootClassId0                                             , 2     , u16
 0x00804c24 , _BoltShootClassId1                                             , 2     , u16
 0x00804c28 , _BoltShootClassId2                                             , 2     , u16
+0x804c40,_LEGOACT_HANG_MOVE,,i16
 0x00804d08 , _LEGOACT_BUCK                                                  , 2     , i16
 0x00805030 , _GhostLightMul                                                 , 4     , f32
 0x00805034 , _GhostLightTargetMul                                           , 4     , f32
@@ -4173,6 +4421,8 @@ address    , symbol                                                         , si
 0x00805c94 , _TrooperStepFrames                                             , 16    , i32[4]
 0x00805ca4 , _trooperspeedtab                                               , 16    , f32[4]
 0x00805d48 , _gizaimessage_prefix                                           , 5     , char[5]
+0x805e24,_turret_gizmotype_id,4,i32
+0x00805ebc,_gizspecial_gizmotype_id,4,i32
 0x00806370 , ??_R0?AVThingManager@@@8                                       , 27    ,
 0x0080638c , ??_R0?AVGameThingManager@@@8                                   , 31    ,
 0x008065bc , _NuWindQS                                                      , 4     , u32
@@ -4232,6 +4482,7 @@ address    , symbol                                                         , si
 0x0080e2b4 , _NuPrimYScale                                                  , 4     , f32
 0x0080e694 , _PS2_VREZ_W                                                    , 4     , i32
 0x0080e698 , _PS2_VREZ_H                                                    , 4     , i32
+0x80e6c8,_NuLgtSeed,4,u32
 0x0080e85c , _PCClipExtentsEnabled                                          , 4     , i32
 0x0080e870 , _ClipOutcodeMask32                                             , 16    , const u32[4]
 0x0080e880 , _ClipOutcodeMask16                                             , 16    , const u32[4]
@@ -4268,6 +4519,7 @@ address    , symbol                                                         , si
 0x0080f5a0 , _NuKeyChar                                                     , 520   , NUKEYCHAR[65]
 0x80f884   , _edfile_handle                                                 , 4     , i32
 0x0080fb94,_ModelAnimLayerListDispatchPc,,
+0x0080fb98,_RedirectAnimDir,,char[64]
 0x0080fff4 , ??_R0?AVEdClassInterface@@@8                                   , 31    ,
 0x00810014 , ??_R0?AVEdControl@@@8                                          , 24    ,
 0x0081002c , ??_R0?AVEdEnumControl@@@8                                      , 28    ,
@@ -4296,6 +4548,8 @@ address    , symbol                                                         , si
 0x00810b34 , _TerrPlatScanDist                                              , 4     , f32
 0x00810b38 , _SkinFlipTab                                                   , 32    , i32[8]
 0x00810bf0 , _PCMusicProcessOne_candidate                                   , 4     , const f32
+0x810bf4,_NuMusicVoiceStatusText,,const char *[8]
+0x810c14,_NuMusicDebugColour,4,u32
 0x00810d90 , _PCSoundOggExtension                                           , 4     , const char *
 0x00810d98 , _nusound_fade_end                                              , 4     , f32
 0x00810d9c , _nusound_fade_start                                            , 4     , f32
@@ -4353,8 +4607,10 @@ address    , symbol                                                         , si
 0x00826498 , _InitOnceOptionInput0                                          , 4     , u32
 0x0082649c , _InitOnceOptionInput1                                          , 4     , u32
 0x008264a0 , _InitOnceOptionInput2                                          , 4     , u32
+0x8264c7,_PCUseHiresFlag,,u8
 0x00827610 , _SoundVoiceEnabledGate                                         , 4     , i32
 0x00827730 , _NuScratchCurrentPc                                           ,       ,
+0x8282b4,_PCDeviceStateCacheEnabled,1,u8
 0x00829524 , ??_R0?AVinvalid_argument@std@@@8                               , 35    ,
 0x00829548 , ??_R0?AVout_of_range@std@@@8                                   , 31    ,
 0x00829570 , ___security_cookie                                             , 4     , u32
@@ -4379,13 +4635,17 @@ address    , symbol                                                         , si
 0x00855f44 , _MiniKitCollection                                             ,       ,
 0x00855f94 , _DEFAULT_MOVE_RANGE                                            , 4     , f32
 0x008569a0 , _CharacterCustomiser                                           , 4     , CUSTOMISER_LAYERS_PC *
+0x856c10,_OldBonusScore,,i32[2]
 0x00856c28 , _ChallengeMode                                                 , 4     , i32
 0x00856c2c , _adaptivedifficulty                                            ,       , ADAPTIVEDIFFICULTY_PC
 0x0085ea94 , _BonusCoinTotal                                                , 4     , i32
 0x008668e8 , _Game                                                          , 32332 , GAMESAVE
+0x86e734,_BonusScore,,i32[2]
+0x86e740,_BackupGame,32332,GAMESAVE
 0x0087658c , _TempOptions                                                   , 13    , OPTIONSSAVE
 0x008765a0 , _StartupGameFlag0                                              , 4     , i32
 0x008765a4 , _LSW1                                                          , 4     , i32
+0x8765a8,_LSW2,4,i32
 0x008765ac , _NewMode                                                       , 4     , i32
 0x008765e4 , _reset_restart                                                 , 4     , i32
 0x008765f0 , _game_cutscenes_podrace_pod_explode                            , 4     , void *
@@ -4411,8 +4671,9 @@ address    , symbol                                                         , si
 0x876cf8   , _alert_obj                                                     , 4     , GAMEOBJECT *
 0x876cfc   , _alert_timer                                                   , 4     , f32
 0x00876d04 , _drop_back_in_timer                                            , 4     , f32
-0x00876db4 , _script_spline_selected                                         ,        ,
+0x00876db4,_script_spline_selected,,NUGSPLINE *
 0x00876db8 , _prev_droid_ix                                                 , 4     , i32
+0x876e14,_BombGenerator_PlayerBomb,,GAMEOBJECT *[2]
 0x00879508 , _Hub_PadAngle                                                  ,       , u16[2]
 0x00879540 , _Hub_ModelList                                                 , 24    , APICHARACTERMODELLIST[6]
 0x00879b24 , _Hub_PadSpeed                                                  ,       , f32[2]
@@ -4431,6 +4692,7 @@ address    , symbol                                                         , si
 0x0087a9e8 , _makefreeplaymodellist                                         , 4     , i32
 0x0087aa40 , _LevFlag                                                       , 16    , i32[4]
 0x87aa74   , _TargetDist_Mid2                                               , 4     , f32
+0x87aaac,_areaSuitBits,4,u32
 0x0087aaf8 , _LevHSpecial                                                   , 1056  , NUSPECIALHANDLE [88]
 0x0087ad50 , _LevHSpecial_50                                                , 12    , NUSPECIALHANDLE
 0x0087ad5c , _LevHSpecial_51                                                , 12    , NUSPECIALHANDLE
@@ -4551,14 +4813,14 @@ address    , symbol                                                         , si
 0x0087b760 , _startnewgame_initiated                                        , 4     , i32
 0x0087b764 , _startnewgame                                                  , 4     , i32
 0x0087b8a8 , _avg_currentspeed_mul                                          , 4     , f32
-0x0087b8b0 , _ForceBackRadiusPc                                             ,        ,
-0x0087b8b4 , _ForceBackRadius2Pc                                            ,        ,
+0x0087b8b0,_ForceBackRadiusPc,,f32
+0x0087b8b4,_ForceBackRadius2Pc,,f32
 0x0087b8d8 , _VehicleAreaRememberSpeed                                      , 4     , f32
 0x0087b8dc , _IDLESPEEDINNARROWSOCKSONLY                                    , 4     , i32
 0x0087b8e0 , _SaberSparksTimer                                              , 4     , f32
-0x0087b8e8 , _ForceBackObjPc                                                ,        ,
-0x0087b8ec , _ForceBackPosPc                                                ,        ,
-0x0087b8f0 , _ForceBackTypePc                                               ,        ,
+0x0087b8e8,_ForceBackObjPc,,GAMEOBJECT *
+0x0087b8ec,_ForceBackPosPc,,NUVEC *
+0x0087b8f0,_ForceBackTypePc,,i32
 0x87b8fc   , _applygravity_extrahoveroffset                                 , 4     , f32
 0x0087b900 , _getvehiclehoverheight_hothbattlehack                          , 4     , i32
 0x0087b904 , _TwistScaleLean                                                , 4     , i32
@@ -4569,6 +4831,8 @@ address    , symbol                                                         , si
 0x87b938   , _magdif                                                        , 4     , private f32
 0x0087b944 , _DoubleScore                                                   , 4     , i32
 0x0087b958 , _PANEL3DMULX                                                   , 4     , f32
+0x87b9a0,_BuildUpTotal,4,i32
+0x87b9b4,_BuildUpDone,4,i32
 0x0087b9b8 , _PANEL3DMULY                                                   , 4     , f32
 0x0087b9dc , _DrawBossHitPointsActorPc                                      ,       ,
 0x0087bb10 , _ShadowMode                                                    , 4     , i32
@@ -4602,6 +4866,7 @@ address    , symbol                                                         , si
 0x00882430 , _podrace_section                                               , 4     , i32
 0x00882438 , _podsprint                                                     , 148   , PODSPRINT_PC
 0x00882a8c , _PodRacePc                                                     ,       ,
+0x882a90,_Lap,4,i32
 0x00889058 , _kamino_plate_1                                                , 4     , KAMINOEPLATE *
 0x0088905c , _kamino_plate_2                                                , 4     , KAMINOEPLATE *
 0x00889060 , _kamino_plate_3                                                , 4     , KAMINOEPLATE *
@@ -4612,7 +4877,10 @@ address    , symbol                                                         , si
 0x00889074 , _kamino_plate_3_active                                         , 4     , i32
 0x00889078 , _kamino_plate_4_active                                         , 4     , i32
 0x008890a6 , _kamino_plate_id                                               , 2     , u16
+0x8894dc,_bonus_gunship_store_progress_flag,,i32
 0x00889634 , _CarWashHack                                                   , 4     , GAMEOBJECT *
+0x88a2a8,_minikitCounter_A,1,u8
+0x88a2a9,_minikitCounter_C,1,u8
 0x0088a56c , _dagobah_training                                              , 4     , i32
 0x0088a668 , _slowDownTimer                                                 , 8     , f32 [2]
 0x0088ab38 , _NuAllocRecordHead                                             , 4     , NUALLOC_RECORD *
@@ -4775,6 +5043,7 @@ address    , symbol                                                         , si
 0x00925058 , _MainFrameCounters                                             , 5     , MAINFRAMECOUNTERS
 0x00925074 , _MAXFRAMETIME                                                  , 4     , f32
 0x92507c   , _GameTimer                                                     , 16    , TIMER
+0x92509c,_AreaTimer,16,TIMER
 0x009250bc , _LevelTimer                                                    , 16    , TIMER
 0x009250d0 , _PAL                                                           , 4     , i32
 0x009250e8 , _do_multiframe_update                                          , 4     , i32
@@ -4869,6 +5138,8 @@ address    , symbol                                                         , si
 0x00951030 , _SurfaceInfo_ExtraReflectFn                                    ,       ,
 0x00951174 , _BonusArea                                                     , 4     , i32
 0x0095123c , _last_area                                                     , 4     , i32
+0x951244,_AreaGlobals_PC,,AREA_GLOBALS_PC
+0x951258,_AreaGlobalsProgressFlagsPC,,i32
 0x009512a8 , _VehicleArea                                                   , 4     , i32
 0x00951374 , _ADataList                                                     , 4     , AREA_DATA_PC *
 0x00951378 , _LastAData                                                     , 4     , AREA_DATA_PC *
@@ -4877,7 +5148,8 @@ address    , symbol                                                         , si
 0x00951388 , _reset_area                                                    , 4     , i32
 0x009513a8 , _gone_through_door_to_new_level                                , 4     , i32
 0x009513d0 , _Door_Last                                                     , 4     , void *
-0x009513d8 , _DoorExitNamePc                                                ,       ,
+0x009513d8,_DoorExitNamePc,,char[1]
+0x951438,_Door_Start,4,i32
 0x00951440 , _Door_UseCutCam                                                , 4     , i32
 0x0095144c , _LastDoorPointerPc                                             ,       ,
 0x00951a0c , _LevelHackData                                                 , 4     , void *
@@ -4914,6 +5186,7 @@ address    , symbol                                                         , si
 0x00951c00 , _CUTSTOPGAME                                                   , 4     , i32
 0x951c08   , _CutStopInfo                                                    , 4     , void *
 0x00951c2c , _NewCutInfo                                                    ,       ,
+0x951c54,_CUTCAM,,void *
 0x00951c7c , _CUTSKIPLOCK                                                   , 4     , i32
 0x00951c9c , _NewCutInfoCount                                               , 4     , i32
 0x00951cac , _CutScene_StartFn                                              , 4     , i32 (__cdecl *)(void *)
@@ -4934,6 +5207,7 @@ address    , symbol                                                         , si
 0x9553f0   , _SecondCharConfigure                                           , 4     , i32
 0x009553f4 , _MissionSys                                                    , 4     , MISSIONSYS_PC *
 0x00955650 , _Accessory                                                     , 576   ,
+0x955890,_Game_Customiser,,void *
 0x00955894 , _Customiser_AccessoriesLoaded                                  ,       , ""
 0x00955898 , _CollectCount                                                  , 4     , i32
 0x0095589c , _CollectList                                                   , 4     , COLLECTID_PC *
@@ -4953,6 +5227,7 @@ address    , symbol                                                         , si
 0x0095df40 , _CharPivot                                                     , 4     , struct CHARPIVOT_PC *
 0x0095df6c , _gizaimessagesys                                               , 4     , GIZAIMESSAGESYS *
 0x0095e434 , ?fade_draw_suppressed@@3HA                                     , 4     , i32
+0x95e5e8,_APIObjectZeroMomentumPC,,NUVEC
 0x0095e5f4 , _fseed                                                         , 4     , u32
 0x0095e690 , _numtl_defaultmtl3d                                            , 4     , NUMTL *
 0x95e694, _NuVpDirtyPc, ,
@@ -5015,7 +5290,9 @@ address    , symbol                                                         , si
 0x009738ec , _NuQFntModeStackIndex                                          , 4     , i32
 0x00973904 , _DdMaxJointsPc                                                 ,       ,
 0x00973920 , _DebrisGlassTextureWidth                                       , 4     , i32
+0x973920,_PS2_REZ_W,4,i32
 0x00973924 , _DebrisGlassTextureHeight                                      , 4     , i32
+0x973924,_PS2_REZ_H,4,i32
 0x973964, _NuCameraMode, ,
 0x973970, _NuCameraClipScissorToViewport, ,
 0x973974, _NuCameraPreviousClipScissorToViewport, ,
@@ -5053,14 +5330,23 @@ address    , symbol                                                         , si
 0x0097c1cc , _nudlist_stream_cursor                                         , 8     , VARIPTR
 0x0097c1d0 , _clip_outcode_workspace_prefix                                 ,       , u32[8] (minimum source prefix; full extent unknown)
 0x0097c250,_DwaPointerPoolPc,,
+0x97f994,_NuLgtLaserOldCnt,4,i32
+0x97f9d8,_PCDeviceSamplerInvalidation,,i32[8][2]
 0x981c68, _NuCameraProjectionGlobalScaleY, ,
-0x00981c70 , _NuPrimCoordSystemStack                                        ,       , i32[]
+0x00981c70,_NuPrimCoordSystemStack,,i32[2]
+0x981cb0,_NuLgtArcLaserOldCnt,4,i32
 0x981cb4, _NuCameraProjectionGlobalOffsetY, ,
+0x986480,_NuLgtArcLaserData,1088,NULGTARCLASER_PC[16]
 0x009868c0 , _render_state                                                  , 420   , NUGLOBALRNDRSTATE_PC
+0x986f1c,_NuLgtLaserCnt,4,i32
 0x9922b4, _NuCameraProjectionGlobalOffsetX, ,
 0x009922b8,_DwaWeightPoolPc,,
+0x280a2b8,_NuLgtArcMtl,80,NULGTARCMATERIAL_PC[4]
 0x0280c4a0 , _clip_test_mtx                                                 , 64    , NUMTX
+0x28358c4,_NuLgtArcLaserCnt,4,i32
+0x2835ad0,_NuLgtLaserData,3584,NULGTLASER_PC[64]
 0x2849318, _NuCameraProjectionGlobalScaleX, ,
+0x2854b64,_NuLgtArcLaserFrame,4,i32
 0x02854ba8 , _nuprim_field_ba8                                              , 4     , u32
 0x02854bf8 , _nu_water_reset_state                                          , 4     , i32
 0x02854c00 , _nu_water_reset_status                                         , 4     , i32
@@ -5082,12 +5368,16 @@ address    , symbol                                                         , si
 0x2912f64  , _edfile_write_flag                                             , 4     , i32
 0x2912f68  , _edfile_readwrongendianess                                     , 4     , i32
 0x02913104 , _apicharsys                                                    , 4     , APICHARSYS *
+0x2913108,_append,,i32
 0x291310c  , _apiloadcharactermodels_nopakfile                               , 4     , i32
+0x291310c,_nopakfile,,i32
+0x2913110,_RedirectAnimFn,,"i32 (__cdecl *)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *)"
+0x2913114,_RedirectAnimList,,void *
 0x0291313c , _APIActionInfo                                                 , 4     , API_ACTION_INFO_PC *
 0x02913140 , _APIExtraActionData                                            , 4     , API_EXTRA_ACTION_PC *
 0x002913270, _theMemoryManager                                              , 584   , MEMORYMANAGER
 0x02913a4c , _part_page_on                                                  , 32    , i32[8]
-0x02913a78,_part_types,48128,
+0x02913a78,_part_types,48128,PARTTYPE_LOOKUP_PC[128]
 0x0291f684 , _Part                                                          , 4     , PART_PC *
 0x0291f6a8 , _part_scene_pageid                                             , 128   , i32[32]
 0x0291f7d4 , _part_emits                                                    , 4320  , PART_EMIT_PC[40]
@@ -5170,8 +5460,16 @@ address    , symbol                                                         , si
 0x02962bcc , _NuSound3Initialized                                           , 4     , i32
 0x02962bd0 , _NuSound3VolumeTable                                           , 65536 , f32[0x4000]
 0x02972bec , _SoundVoiceCriticalSection                                     , 24    , CRITICAL_SECTION
+0x2972c08,_PCSoundMixSource,4,void *
+0x2972c10,_PCSoundMixSampleCount,4,i32
+0x2972c14,_PCSoundMixDestination,4,void *
 0x02972c20 , ?NuSound3StereoStreams@@3PAPAUSoundQueue@@A                    , 8     , SoundQueue *[2]
+0x2972c38,_PCSoundUpdateClock,4,i32
+0x2972c3c,_PCSoundLoopVoiceCount,4,i32
+0x2972c40,_PCSoundOneShotVoiceCount,4,i32
+0x2972c44,_PCSoundMixEvent,4,HANDLE
 0x02972c50 , _NuSoundDat                                                    , 4     , NUDATHDR *
+0x2972c54,_PCSoundCommitTarget,4,PC_SOUND_COMMIT_PC *
 0x02972c58 , _NuSound3Listener                                              , 4     , NUMTX *
 0x02972c68 , _SoundVoiceManager                                             ,       , SoundVoiceManagerPC (minimum source prefix; original extent unknown)
 0x0297397c , _NuSound3Reverb                                                , 1     , u8
@@ -5195,6 +5493,10 @@ address    , symbol                                                         , si
 0x0297ad94 , _nuvideo_global_vbcnt                                          , 4     , volatile i32
 0x0297ae40 , _PCFrameCriticalSectionIndex_candidate                         , 4     , i32
 0x297bec0, _PCDeviceLastResult, ,
+0x297bee0,_PCDeviceTextureCache,,void *[5]
+0x297bef4,_PCDeviceSamplerStateCache,,i32[8][14]
+0x297c0b4,_PCDeviceCacheStateKey,4,i32
+0x297c0b8,_PCDeviceRenderStateCache,,i32[12]
 0x0297c0f0 , _PCClipUseSSE                                                  , 4     , i32
 0x0297dbe0 , _nuapi                                                         , 144   , NUAPI
 0x0297dc00 , _NuVideoFrameRate                                              , 4     , f32
@@ -5213,4 +5515,5 @@ address    , symbol                                                         , si
 0x029892e0 , _NuBridgeProc                                                  , 4     , i32
 0x029899c0 , _NuTrigTable                                                   , 131072, f32[32768]
 0x029a99c4 , _animduration_blendouttime                                     , 4     , f32
+0x029a99d0,_APIObjPlaySfxByIdFn,,"void (__cdecl *)(i32, NUVEC *)"
 inlined    , ?HashString@@YAIPAE@Z                                          ,       , u32 __cdecl (u8 *)

@@ -1021,3 +1021,24 @@ Compilation emits an additional copy of the already mapped zero literal at
 0x751658. Every copy is compared, and the copy does not create another
 original extent. Angular conversion uses the existing verified double at
 0x755d18; no new source backing globals are introduced.
+
+## Android transfer execution (2026-10-03)
+
+The shared data transfers include PC extension registrations and their original
+suffix literals, audio state, AI parameters, world transition state, laser arrays,
+font diagnostics and the fixed 128-record part-type lookup table. Arrays use
+producer-established strides and counts; the part table spans 0x2913a78 through
+0x291f678 with 0x178-byte records and a 16-byte lookup name. Its untouched initial
+state is zero. Unknown record fields remain opaque.
+
+Unknown original allocation extents remain blank in the symbol map. In particular,
+`AreaGlobals_PC` is a 0x34-byte access view; its progress field has one mutable
+owner rather than a second independently allocated overlapping scalar.
+`NuPrimCoordSystemStack` has a minimum two-element access view for the currently
+transferred, nonnested laser push/pop paths. This does not establish original
+capacity; transferring callers with greater nesting requires extending the view
+from evidence. The eight diagnostic status pointers and bounded character-ID
+views likewise receive no complete-allocation matching credit.
+
+See [the execution record](transfer-execution.md) for verification and remaining
+source dependencies.

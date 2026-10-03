@@ -1,6 +1,7 @@
 """Run source DAT parsing and uncompressed member I/O on original-free fixtures."""
 import os
 from pathlib import Path
+import re
 import shutil
 import struct
 import subprocess
@@ -23,6 +24,10 @@ VALID_CASES = (
 def write_fixtures(directory):
     (directory / "HOST.BIN").write_bytes(b"host\0io!")
     (directory / "EMPTY.BIN").write_bytes(b"")
+    # RNC method 2: two reserved bits, three literals, and a terminating block.
+    payload = bytes((0x07, ord("A"), ord("B"), ord("C"), 0x80, 0))
+    header = b"RNC\x02" + struct.pack(">II", 3, len(payload)) + bytes(6)
+    (directory / "PACKED.BIN").write_bytes(header + payload)
     for version, header_size in enumerate((12, 20, 24)):
         pak = bytearray(256)
         struct.pack_into("<III", pak, 0, 0x12345678 + version, 3, len(pak))
@@ -68,6 +73,21 @@ def write_fixtures(directory):
     return [name for name, _, _ in malformed]
 
 
+def write_file_constants(directory):
+    """Reuse actual source literals without pulling the whole game data TU into a test."""
+    definitions = re.findall(
+        r'extern const char ((?:NuFileExt_\w+|NuFileSourcePathPC|SceneFileExtensionPc))'
+        r'\[(\d+)\]\s*=\s*("(?:\\.|[^"\\])*")\s*;',
+        (ROOT / "src/data.cpp").read_text())
+    required = {"NuFileSourcePathPC", "SceneFileExtensionPc"}
+    if not required.issubset({name for name, _, _ in definitions}):
+        raise ValueError("DAT fixture is missing the production file source literals")
+    source = directory / "file_constants.c"
+    source.write_text("/* Source constants for the isolated file-I/O fixture. */\n" + "".join(
+        f"const char {name}[{size}] = {value};\n" for name, size, value in definitions))
+    return source
+
+
 class DatParserTests(unittest.TestCase):
     def setUp(self):
         if not (ROOT / "build/tools/msvc8/bin/cl.exe").is_file() or not shutil.which("wine"):
@@ -90,9 +110,10 @@ class DatParserTests(unittest.TestCase):
             malformed = write_fixtures(directory)
             objects = []
             sources = [ROOT / f"src/nu2api/{name}.c" for name in
-                       ("nufile", "nufile_host", "nufile_device", "nupsfile", "nustring",
+                       ("nufile", "nufile_pc", "nufile_host", "nufile_device", "nupsfile", "nustring",
                         "nudatfile", "nudatlookup", "nufile_position", "nufile_mc", "nuthread", "numemfile", "nufpar", "nurdpi")]
             sources.append(ROOT / "tools/test_dat_fixture.c")
+            sources.append(write_file_constants(directory))
             for source in sources:
                 output = directory / (source.stem + ".obj")
                 self.run_command([

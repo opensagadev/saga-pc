@@ -1,6 +1,42 @@
 #include "saga.h"
 
 extern void __cdecl NuFileCorrectSlashes(NUFILE_DEVICE *device, char *path);
+extern i32 nufile_lsn_allowed;
+
+STATIC_ASSERT(offsetof(NUDATHDR, unknown_b4) == 0xb4);
+
+i32 __cdecl NuDatGetFileInfo(NUDATHDR *header, char *name, i64 *position, i32 *length) {
+    i32 index;
+    const NUDATFINFO *file;
+    i64 file_position;
+
+    if (header == NULL) {
+        return -1;
+    }
+
+    index = NuDatFileFindTree(header, name);
+    if (index < 0) {
+        return -1;
+    }
+
+    file = &header->file_info[index];
+    file_position = file->file_offset;
+    if (header->version <= -2) {
+        file_position = (i64)((u64)file_position << 8);
+    }
+    file_position += datsys_offset;
+    if (position != NULL) {
+        if (nufile_lsn_allowed != 0 && header->unknown_b4 != 0) {
+            *position = (i64)(i32)((u32)header->unknown_b4 + (u32)(file_position / 0x800));
+        } else {
+            *position = file_position;
+        }
+    }
+    if (length != NULL) {
+        *length = header->file_info[index].file_len;
+    }
+    return index;
+}
 
 i32 __cdecl ExplodeBufferSize(char *header) {
     u32 size;

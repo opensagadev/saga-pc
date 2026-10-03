@@ -9,6 +9,34 @@ extern i32 NuQFntCSModeStack[16];
 extern i32 NuQFntCSModeStackIndex;
 extern void __cdecl NuQFntMoveRS(void *stream, VUFNT *font, f32 x, f32 y, f32 z);
 extern void __cdecl NuQFntPrintU(VUFNT *font, char *text);
+extern u16 __cdecl UnicodeToIndexFast(VUCHARIDX *map, i32 count, u16 unicode);
+
+void __cdecl NuQFntSetPointSize(VUFNT *font, f32 width, f32 height) {
+    u16 glyph_index;
+    f32 x_scale;
+    f32 y_scale;
+    if (font == NULL) {
+        font = system_qfont;
+    }
+    if (font == NULL) {
+        return;
+    }
+    glyph_index = UnicodeToIndexFast(font->unicode_map, font->unicode_count, 'M');
+    if (glyph_index == 0xffff) {
+        y_scale = (f32)(height * 18.0 / font->height);
+        x_scale = y_scale / height;
+    } else {
+        x_scale = (f32)(width * 7.0 / font->glyphs[glyph_index].width);
+        y_scale = (f32)(height * 18.0 / font->height);
+    }
+    *font->x_scale = x_scale;
+    if ((NuQFntMode & 4) != 0) {
+        *font->y_scale = y_scale;
+    } else {
+        *font->y_scale = (f32)(y_scale * NuQFntHalfScale);
+    }
+    NuQFntSetUVSizePc(font, x_scale, y_scale);
+}
 
 i32 __cdecl NuQFntSetCoordinateSystem(i32 mode) {
     i32 previous = nuqfnt_cs_mode;

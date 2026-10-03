@@ -1,5 +1,15 @@
 # NuMain investigation queue
 
+Current whole-project transfer status is recorded in
+[transfer-execution.md](transfer-execution.md). Portable rendering, sound, resource
+I/O and gameplay additions do not close NuMain's full lifecycle. The existing
+entry-path guard remains necessary while device/input initialization, fixups,
+resource creation and world lifecycle providers are incomplete. A linked source
+executable is not yet a playable reconstruction. The input guard also stops
+before `LoadPerm` calls `NuFrameBegin`; keyboard polling requires the missing
+input owner.
+
+
 The original PC `NuMain` is at `0x00492b40`, with a complete 4,332-byte extent.
 [Identification notes](identification.md) explain its entry chain and implemented
 dependencies. Treat each row as a queue item: `symbols.csv` holds accepted

@@ -1,5 +1,11 @@
 # Execution plan: broad PC source transfer
 
+> Current whole-project mandate: [SOL_IMPLEMENTATION_PLAN.md](../SOL_IMPLEMENTATION_PLAN.md).
+> The 2026-10-03 implementation and remaining provider queue are recorded in
+> [transfer-execution.md](transfer-execution.md). The historical baseline below
+> is retained for context; use `matching.json` for current coverage.
+
+
 Based on [the strategy review](strategy.md), starting at `ba24830`.
 Execution authorized on 2026-09-30. All subagents use GPT-6.1 Sol; no Luna agents.
 

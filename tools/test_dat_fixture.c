@@ -1,5 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 /* Generated synthetic expectations; no game bytes. */
 static const NUDATFINFO expected_files[2] = {
@@ -40,6 +41,10 @@ i32 read_buffer_decoded_size;
 u32 PCImplodeWordMask = 0xffffffff;
 i32 nufile_lasterror;
 i32 nufile_try_packed;
+i32 nufile_lsn_allowed = 1;
+PC_FILEEXTINFO extensions[64];
+i32 num_extensions;
+u8 PCUseHiresFlag;
 i32 fpk_err;
 i32 PCThreadCriticalSectionCount_candidate;
 CRITICAL_SECTION PCThreadCriticalSections_candidate[13];
@@ -62,6 +67,16 @@ i32 old_line_pos;
 void(__cdecl *fnInterpreterError)(NUFPAR_PC *);
 
 extern i32 __cdecl PCThreadCriticalSectionCreate_candidate(void);
+
+/* Fixture-only allocation provider; production keeps its real memory manager. */
+void *__cdecl NuAlloc(i32 size, const char *file, i32 line) {
+    (void)file;
+    (void)line;
+    if (size <= 0 || size > 0x10000) {
+        return NULL;
+    }
+    return malloc((size_t)size);
+}
 
 #define REQUIRE(condition)                                                                                             \
     do {                                                                                                               \
@@ -121,6 +136,7 @@ static int exercise_loaders(NUDATHDR *header) {
     char output[16];
     VARIPTR buffer, end;
     i32 index;
+    void *allocated;
 
     memset(output, 0xa5, sizeof(output));
     nufile_lasterror = 777;
@@ -165,12 +181,27 @@ static int exercise_loaders(NUDATHDR *header) {
     REQUIRE(NuFileLoadBuffer("ABSENT.BIN", output, sizeof(output)) == 0);
     REQUIRE(nufile_lasterror == -2);
     nufile_try_packed = 1;
-    REQUIRE(NuFileLoadBuffer("HOST.BIN", output, sizeof(output)) == 0);
-    REQUIRE(nufile_lasterror == -1);
+    REQUIRE(NuFileLoadBuffer("HOST.BIN", output, sizeof(output)) == sizeof(host_payload));
+    REQUIRE(nufile_lasterror == 0 && memcmp(output, host_payload, sizeof(host_payload)) == 0);
+    {
+        u8 packed_output[0x120];
+        memset(packed_output, 0xa5, sizeof(packed_output));
+        REQUIRE(NuFileLoadBuffer("PACKED.BIN", packed_output, sizeof(packed_output)) == 3);
+        REQUIRE(nufile_lasterror == 0 && memcmp(packed_output, "ABC", 3) == 0);
+        for (index = 3; index < 3 + 256 - 24; ++index) {
+            REQUIRE(packed_output[index] == 0xa5);
+        }
+        for (index = 3 + 256 - 4; index < sizeof(packed_output); ++index) {
+            REQUIRE(packed_output[index] == 0xa5);
+        }
+    }
     nufile_try_packed = 0;
     curr_dat = NULL;
     REQUIRE(NuFileLoadBuffer("HOST.BIN", output, sizeof(output)) == sizeof(host_payload));
     REQUIRE(nufile_lasterror == 0 && memcmp(output, host_payload, sizeof(host_payload)) == 0);
+    allocated = NuFileLoad("HOST.BIN");
+    REQUIRE(allocated != NULL && memcmp(allocated, host_payload, sizeof(host_payload)) == 0);
+    free(allocated);
     curr_dat = previous;
 
     for (index = 0; index < 20; ++index)
@@ -399,8 +430,24 @@ int main(int argc, char **argv) {
     host_device.dir_separator = '\\';
     host_device.format_name_fn = DEV_FormatName;
     host_device.interrogate_fn = DEVHOST_Interrogate;
-    file_criticalsection = PCThreadCriticalSectionCreate_candidate();
+    memset(pc_memfiles, 0xa5, sizeof(pc_memfiles));
+    memset(pc_dat_file_infos, 0xa5, sizeof(pc_dat_file_infos));
+    unpack_file_info = pc_dat_file_infos;
+    unpack_file_odi = (NUDATOPENFILEINFO *)untouched;
+    unpack_file_pos = 123;
+    REQUIRE(NuFileInitEx(7, 1, 0) == 7);
     REQUIRE(file_criticalsection == 1);
+    REQUIRE(unpack_file_info == NULL && unpack_file_odi == NULL && unpack_file_pos == -1);
+    REQUIRE(num_extensions == 63);
+    for (i = 0; i < sizeof(pc_memfiles); ++i)
+        REQUIRE(((const u8 *)pc_memfiles)[i] == 0);
+    for (i = 0; i < sizeof(pc_dat_file_infos); ++i)
+        REQUIRE(((const u8 *)pc_dat_file_infos)[i] == 0);
+    DeleteCriticalSection(&PCThreadCriticalSections_candidate[file_criticalsection]);
+    PCUseHiresFlag = 1;
+    NuFileInit(0);
+    REQUIRE(file_criticalsection == 2 && num_extensions == 63);
+    REQUIRE(NuFileUseHiresPC() == 1);
     for (buffered = 0; buffered < 2; ++buffered) {
         for (i = 0; i < 4; ++i)
             REQUIRE(exercise(paths[i], i == 2 ? 64 : 0, buffered, 1) == 0);

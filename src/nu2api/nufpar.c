@@ -4,6 +4,11 @@
 
 extern i32 old_line_pos;
 
+#define CLAMP_LINE(position) ((position) & (parser->line_buffer_size - 1))
+#define CLAMP_WORD(position) ((position) & (parser->word_buffer_size - 1))
+#define CLAMP_WIDE_LINE(position) ((position) & ((parser->line_buffer_size >> 1) - 1))
+#define CLAMP_WIDE_WORD(position) ((position) & ((parser->word_buffer_size >> 1) - 1))
+
 void __cdecl NuFParGetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position) {
     position->line_number = parser->line_number;
     position->line_position = parser->line_position;
@@ -176,40 +181,44 @@ void __cdecl NuFParDestroy(NUFPAR_PC *parser) {
 }
 
 char __cdecl NuGetChar(NUFPAR_PC *parser) {
-    i32 offset = parser->buffer_end < 0 ? 0 : parser->buffer_end;
+    char c;
+    i32 len;
+
+    i32 read_to = parser->buffer_end >= 0 ? parser->buffer_end : 0;
 
     if (parser->character_position > parser->buffer_end) {
-        i32 bytes_to_read;
-        i32 bytes_read;
+        if (parser->buffer_end + 1 <= parser->file_size) {
+            len = NuFileRead(parser->file_handle, parser->file_buffer,
+                             parser->file_size - read_to <= 0x1000 ? parser->file_size - read_to : 0x1000);
 
-        if (parser->buffer_end + 1 > parser->file_size) {
+            parser->buffer_start = parser->buffer_end + 1;
+            parser->buffer_end += len;
+        } else {
             return '\0';
         }
 
-        bytes_to_read = parser->file_size - offset;
-        if (bytes_to_read > 0x1000) {
-            bytes_to_read = 0x1000;
-        }
-        bytes_read = NuFileRead(parser->file_handle, parser->file_buffer, bytes_to_read);
-        parser->buffer_start = parser->buffer_end + 1;
-        parser->buffer_end += bytes_read;
-        if (bytes_read == 0) {
+        if (len == 0) {
             return '\0';
         }
     }
 
-    {
-        char value = parser->file_buffer[parser->character_position - parser->buffer_start];
-        parser->character_position++;
-        return value;
-    }
+    c = parser->file_buffer[parser->character_position - parser->buffer_start];
+    parser->character_position++;
+
+    return c;
 }
 
 u16 __cdecl NuGetWChar(NUFPAR_PC *parser) {
-    u16 low_byte = (u8)NuGetChar(parser);
-    u16 high_byte = (u8)NuGetChar(parser);
+    unsigned char lo;
+    unsigned char hi;
+    u16 c;
 
-    return (u16)(low_byte | (u16)(high_byte << 8));
+    lo = NuGetChar(parser);
+    hi = NuGetChar(parser);
+
+    c = lo + (hi << 8);
+
+    return c;
 }
 
 i32 __cdecl NuFParGetWordW(NUFPAR_PC *parser) {
@@ -275,48 +284,51 @@ i32 __cdecl NuFParGetWordW(NUFPAR_PC *parser) {
 }
 
 i32 __cdecl NuFParGetLineW(NUFPAR_PC *parser) {
-    u16 character;
-    i32 length = 0;
-    u16 *line = (u16 *)parser->line_buffer_ptr;
+    u16 c;
+    i32 len;
+    u16 *line;
     i32 at_end_of_line;
-    i32 is_done = 0;
-    i32 in_quoted_text = 0;
+    i32 is_done;
+    i32 in_quoted_text;
 
+    in_quoted_text = 0;
+    line = (u16 *)parser->line_buffer_ptr;
+    len = 0;
     parser->line_position = 0;
     parser->line_number++;
+    is_done = 0;
 
-    for (;;) {
-        character = NuGetWChar(parser);
-        switch (character) {
+    do {
+        c = NuGetWChar(parser);
+        switch (c) {
             case '\r':
-                (void)NuGetWChar(parser);
-                /* fall through */
+                NuGetWChar(parser);
             case '\n':
-                if (length == 0 || !is_done) {
+                if (len == 0 || !is_done) {
                     parser->line_number++;
                     is_done = 0;
+
                     break;
                 }
-                /* fall through */
             case '\0':
-                line[length] = 0;
-                return length;
+                line[len] = '\0';
+                return len;
             case '"':
                 in_quoted_text = 1 - in_quoted_text;
                 is_done = 1;
-                line[length & ((parser->word_buffer_size >> 1) - 1)] = character;
-                length++;
+                line[CLAMP_WIDE_WORD(len)] = c;
+                len++;
                 break;
             case ';':
                 if (!in_quoted_text) {
-                    if (length == 0 || !is_done) {
+                    if (len == 0 || !is_done) {
                         at_end_of_line = 0;
+
                         do {
-                            character = NuGetWChar(parser);
-                            switch (character) {
+                            c = NuGetWChar(parser);
+                            switch (c) {
                                 case '\r':
-                                    (void)NuGetWChar(parser);
-                                    /* fall through */
+                                    NuGetWChar(parser);
                                 case '\n':
                                 case '\0':
                                     at_end_of_line = 1;
@@ -326,88 +338,90 @@ i32 __cdecl NuFParGetLineW(NUFPAR_PC *parser) {
                             }
                         } while (!at_end_of_line);
 
-                        length = 0;
+                        len = 0;
                         parser->line_position = 0;
                         parser->line_number++;
                         is_done = 0;
                     } else {
-                        for (;;) {
-                            character = NuGetWChar(parser);
-                            switch (character) {
+                        do {
+                            c = NuGetWChar(parser);
+                            switch (c) {
                                 case '\r':
-                                    (void)NuGetWChar(parser);
-                                    /* fall through */
+                                    NuGetWChar(parser);
                                 case '\n':
                                 case '\0':
-                                    line[length] = 0;
-                                    return length;
+                                    line[len] = '\0';
+                                    return len;
                                 default:
                                     break;
                             }
-                        }
+                        } while (1);
+
+                        return len;
                     }
+
                     break;
                 }
-                /* fall through */
             default:
                 is_done = 1;
-                /* fall through */
             case '\t':
             case ' ':
-                line[length & ((parser->word_buffer_size >> 1) - 1)] = character;
-                length++;
+                line[CLAMP_WIDE_WORD(len)] = c;
+                len++;
                 break;
         }
-    }
+    } while (1);
 }
 
 i32 __cdecl NuFParGetLine(NUFPAR_PC *parser) {
-    char character;
-    i32 length = 0;
-    char *line = parser->line_buffer_ptr;
-    i32 is_done = 0;
-    i32 in_quoted_text = 0;
+    char c;
+    i32 len;
+    i32 at_end_of_line;
+    i32 is_done;
+    i32 in_quoted_text;
 
-    if (parser->is_utf16 != 0) {
+    in_quoted_text = 0;
+
+    if (parser->is_utf16) {
         return NuFParGetLineW(parser);
     }
 
+    len = 0;
     parser->line_position = 0;
     parser->line_number++;
+    is_done = 0;
 
-    for (;;) {
-        character = NuGetChar(parser);
-        switch (character) {
+    do {
+        c = NuGetChar(parser);
+        switch (c) {
             case '\r':
-                (void)NuGetChar(parser);
-                /* fall through */
+                NuGetChar(parser);
             case '\n':
-                if (length == 0 || !is_done) {
+                if (len == 0 || !is_done) {
                     parser->line_number++;
                     is_done = 0;
+
                     break;
                 }
-                /* fall through */
             case '\0':
-                line[length] = '\0';
-                return length;
+                parser->line_buffer_ptr[len] = '\0';
+                return len;
             case '"':
                 in_quoted_text = 1 - in_quoted_text;
                 is_done = 1;
-                line[length & (parser->line_buffer_size - 1)] = character;
-                length++;
+                parser->line_buffer_ptr[CLAMP_LINE(len)] = c;
+                len++;
                 break;
             case ';':
                 if (!in_quoted_text) {
-                    if (length == 0 || !is_done) {
-                        i32 at_end_of_line = 0;
+                    if (len == 0 || !is_done) {
+                        at_end_of_line = 0;
 
                         do {
-                            character = NuGetChar(parser);
-                            switch (character) {
+                            c = NuGetChar(parser);
+                            switch (c) {
                                 case '\r':
-                                    (void)NuGetChar(parser);
-                                    /* fall through */
+                                    NuGetChar(parser);
                                 case '\n':
                                 case '\0':
                                     at_end_of_line = 1;
@@ -417,39 +431,39 @@ i32 __cdecl NuFParGetLine(NUFPAR_PC *parser) {
                             }
                         } while (!at_end_of_line);
 
-                        length = 0;
+                        len = 0;
                         parser->line_position = 0;
                         parser->line_number++;
                         is_done = 0;
                     } else {
-                        for (;;) {
-                            character = NuGetChar(parser);
-                            switch (character) {
+                        do {
+                            c = NuGetChar(parser);
+                            switch (c) {
                                 case '\r':
-                                    (void)NuGetChar(parser);
-                                    /* fall through */
+                                    NuGetChar(parser);
                                 case '\n':
                                 case '\0':
-                                    line[length] = '\0';
-                                    return length;
+                                    parser->line_buffer_ptr[len] = '\0';
+                                    return len;
                                 default:
                                     break;
                             }
-                        }
+                        } while (1);
+
+                        return len;
                     }
+
                     break;
                 }
-                /* fall through */
             default:
                 is_done = 1;
-                /* fall through */
             case '\t':
             case ' ':
-                line[length & (parser->line_buffer_size - 1)] = character;
-                length++;
+                parser->line_buffer_ptr[CLAMP_LINE(len)] = c;
+                len++;
                 break;
         }
-    }
+    } while (1);
 }
 
 i32 __cdecl NuFParGetWord(NUFPAR_PC *parser) {
@@ -463,7 +477,7 @@ i32 __cdecl NuFParGetWord(NUFPAR_PC *parser) {
 
     old_line_pos = parser->line_position;
 
-    while (parser->line_buffer_ptr[parser->line_position] != '\0') {
+    while (parser->line_buffer_ptr[parser->line_position & (parser->line_buffer_size - 1)] != '\0') {
         char character = parser->line_buffer_ptr[parser->line_position];
 
         if (parser->separator_tokens != NULL && !in_quoted_text &&

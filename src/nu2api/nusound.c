@@ -489,8 +489,8 @@ void __cdecl SoundStopMusic(void) {
 void __cdecl SoundKillAll(void) {
     SoundStopMusic();
     NuSound3FlushLoops();
-    STUBBED_NAMED("stop all active sound voices through the NuSound queue manager");
-    STUBBED_NAMED("run the NuSound update after killing all audio");
+    NuSound3KillAllAudio();
+    NuSound3Update();
 }
 
 void __cdecl ResetLevSfx(WORLDINFO *world) {
@@ -554,9 +554,6 @@ i32 __cdecl NuSound3SetReverb(i32 enable) {
 
 void NuSound3SetLoopHoldTime(f32 time) {
     NuSound3LoopHoldTime = (i32)(time * NuScale1000);
-}
-
-void __cdecl NuSound3FlushLoops(void) {
 }
 
 void __cdecl NuSound3StopRumble(void) {
