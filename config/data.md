@@ -1382,3 +1382,21 @@ Key capacity and other backing extents remain unknown. Every2971 complete named
 data region agrees between aggregate and frozen isolated production objects.
 Selected presets0..9, button/axis11/16, overrides32, links0..2 and keys0..237
 define the tested working domains, not inferred historical allocations.
+
+
+### Beast, level sound and torpedo required views (2026-10-04)
+
+Thirty Beast/Punch/opponent views120B and fifty audio/Torpedo views207B add80
+physical definitions327B. Scope1362 retains553 known extents137551 uniqueB;
+809 unknown views97701 sourceB receive zero allocation/coverage credit. All1282
+prior scoped proofs remain; every3051 complete emitted normal data region,
+extent, raw initializer and symbolic relocation equals the frozen isolated object.
+
+The canonical ComboOpponent_Behind and MOSEISLEYC pointer have one physical
+owner each. Actual NetWait stores-1. Cheat flags are BYTE views, not four-byte
+neighbor copies. Audio adds45 pointer views180B after reusing MOSEISLEYC;
+Torpedo adds five views27B, including full XWing_Torpedo14-byte NUL storage.
+The existing two-byte Text keyX owner supplies the target marker. Eight earlier
+uncompiled pointer inventory rows lose unsupported4-byte owning extents,
+retiring32 mapped inventory bytes with no previous exact initializer loss.
+Bounded initialized views remain proven independently from allocation extent.

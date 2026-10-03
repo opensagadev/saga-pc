@@ -36,3 +36,62 @@ i32 __cdecl SpecialMove_ReleaseVictim(GAMEOBJECT *object) {
         victim->character_context = -1;
     return 1;
 }
+
+typedef struct SPECIALMOVE_TABLE_VIEW_PC {
+    i16 attacker_animation;
+    i16 attacker_id;
+    i8 attacker_action_type;
+    i8 victim_action_type;
+    i16 victim_id;
+    i16 victim_animation;
+    u16 flags;
+    f32 distance;
+} SPECIALMOVE_TABLE_VIEW_PC;
+STATIC_ASSERT(sizeof(SPECIALMOVE_TABLE_VIEW_PC) == 0x10);
+STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, attacker_animation) == 0);
+STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, attacker_id) == 2);
+STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, attacker_action_type) == 4);
+STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, victim_action_type) == 5);
+STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, victim_id) == 6);
+
+STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, victim_animation) == 8);
+STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, flags) == 0xa);
+extern i32 PlayerSpecialMoveCountPc;
+i32 __cdecl SpecialMove_GetAttackerAction(i32 index) {
+    SPECIALMOVE_TABLE_VIEW_PC *moves = (SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc;
+    return index == -1 ? -1 : moves[index].attacker_animation;
+}
+i32 __cdecl SpecialMove_GetVictimAction(i32 index) {
+    SPECIALMOVE_TABLE_VIEW_PC *moves = (SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc;
+    return index == -1 ? -1 : moves[index].victim_animation;
+}
+u32 __cdecl SpecialMove_GetFlags(i32 index, u32 mask) {
+    SPECIALMOVE_TABLE_VIEW_PC *moves = (SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc;
+    if (index == -1)
+        return 0;
+    if (mask != 0)
+        return moves[index].flags & mask;
+    return moves[index].flags;
+}
+i32 __cdecl SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
+    SPECIALMOVE_TABLE_VIEW_PC *moves = (SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc;
+    i32 i;
+    if (moves != NULL && (!(attacker->flags_1fc & 0x80) || !(attacker->field_da8 > 0.0f)) &&
+        LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && LEGOCONTEXT_SPECIALMOVE_VICTIM != -1) {
+        for (i = 0; i < PlayerSpecialMoveCountPc; ++i) {
+            SPECIALMOVE_TABLE_VIEW_PC *move = &moves[i];
+            if (((u16)move->attacker_id == attacker->id ||
+                 (move->attacker_action_type != -1 &&
+                  move->attacker_action_type == attacker->character_data->game_character->weapon_action)) &&
+                attacker->character_model->model_data_b[move->attacker_animation] != NULL &&
+                ((u16)move->victim_id == victim->id ||
+                 (move->victim_action_type != -1 &&
+                  move->victim_action_type == victim->character_data->game_character->weapon_action)) &&
+                victim->character_model->model_data_b[move->victim_animation] != NULL &&
+                (!(victim->flags_1fc & 0x80) ||
+                 (!(victim->spawn_protection_timer > 0.0f) && !(victim->flags_ef0 & 0x400000))))
+                return i;
+        }
+    }
+    return -1;
+}

@@ -9284,3 +9284,327 @@ extern "C" {
     TEXT_INPUT_DEVICE_LINK_PC TextInputDeviceLinksPc[3];
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$PunchRangeUnitIdPc")
+    i16 PunchRangeUnitIdPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$PunchRangeCompanionIdPc")
+    i16 PunchRangeCompanionIdPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_CAPTAINTARPALS")
+    i16 id_CAPTAINTARPALS = -1;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$CheatPooPartsEnabledPc")
+    u8 CheatPooPartsEnabledPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CheatPooCoinsEnabledPc")
+    u8 CheatPooCoinsEnabledPc;
+#pragma bss_seg()
+
+#pragma data_seg(".data$test_ai_combo")
+    i32 test_ai_combo = 1;
+#pragma data_seg()
+
+#pragma data_seg(".data$LEGOCONTEXT_PUNCH")
+    i32 LEGOCONTEXT_PUNCH = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$LEGOCONTEXT_LAND_JUMP")
+    i32 LEGOCONTEXT_LAND_JUMP = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$LegoContextNetWaitPc")
+    i32 LegoContextNetWaitPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$LEGOACT_FALLLAND")
+    i16 LEGOACT_FALLLAND = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$LEGOACT_BACKPACKFALLLAND")
+    i16 LEGOACT_BACKPACKFALLLAND = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$LegoActPunchBehindPc")
+    i16 LegoActPunchBehindPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$LEGOACT_EXTRA_LAND2")
+    i16 LEGOACT_EXTRA_LAND2 = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$PUNCHGAP")
+    f32 PUNCHGAP = 0.30000001192092896f;
+#pragma data_seg()
+
+#pragma data_seg(".data$PUNCHCHARGAP")
+    f32 PUNCHCHARGAP = 0.6000000238418579f;
+#pragma data_seg()
+
+#pragma data_seg(".data$CanPunchGirls")
+    i32 CanPunchGirls = 1;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$MOSEISLEYC_LDATA")
+    LEVELDATA_PC *MOSEISLEYC_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$ComboOpponent_Behind")
+    i32 ComboOpponent_Behind;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$ComboOpponent_Range2")
+    f32 ComboOpponent_Range2;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PooPositionPc")
+    NUVEC PooPositionPc[2];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$objopponent_ignoreaiopponent")
+    i32 objopponent_ignoreaiopponent;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$IsWearingBackPackFn")
+    i32(__cdecl *IsWearingBackPackFn)(GAMEOBJECT *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$GizmoBlowUpOpponent_Behind")
+    i32 GizmoBlowUpOpponent_Behind;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$GizmoBlowUpOpponent_Range2")
+    f32 GizmoBlowUpOpponent_Range2;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PlayerSpecialMoveCountPc")
+    i32 PlayerSpecialMoveCountPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$UsingExtraActionsFn")
+    i32(__cdecl *UsingExtraActionsFn)(GAMEOBJECT *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CanStartHoldFn")
+    i32(__cdecl *CanStartHoldFn)(GAMEOBJECT *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$Punch_GetDamageFn")
+    i32(__cdecl *Punch_GetDamageFn)(GAMEOBJECT *, GAMEOBJECT *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$Punch_HitExtraCodeFn")
+    void(__cdecl *Punch_HitExtraCodeFn)(GAMEOBJECT *, NUVEC *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$Punch_HitHoldFn")
+    void(__cdecl *Punch_HitHoldFn)(GAMEOBJECT *, GAMEOBJECT *);
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$NEGOTIATIONSA_LDATA")
+    LEVELDATA_PC *NEGOTIATIONSA_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NEGOTIATIONSB_LDATA")
+    LEVELDATA_PC *NEGOTIATIONSB_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$GUNGAN_A_LDATA")
+    LEVELDATA_PC *GUNGAN_A_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$RESCUEC_LDATA")
+    LEVELDATA_PC *RESCUEC_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$RETAKEB_LDATA")
+    LEVELDATA_PC *RETAKEB_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$RETAKED_LDATA")
+    LEVELDATA_PC *RETAKED_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$RETAKEE_LDATA")
+    LEVELDATA_PC *RETAKEE_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$MAULD_LDATA")
+    LEVELDATA_PC *MAULD_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$FACTORYB_LDATA")
+    LEVELDATA_PC *FACTORYB_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$FACTORYD_LDATA")
+    LEVELDATA_PC *FACTORYD_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$FACTORYF_LDATA")
+    LEVELDATA_PC *FACTORYF_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$FACTORYG_LDATA")
+    LEVELDATA_PC *FACTORYG_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$KAMINOC_LDATA")
+    LEVELDATA_PC *KAMINOC_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$KASHYYYKD_LDATA")
+    LEVELDATA_PC *KASHYYYKD_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CRUISERG_LDATA")
+    LEVELDATA_PC *CRUISERG_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$TATOOINEA_LDATA")
+    LEVELDATA_PC *TATOOINEA_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$TATOOINEB_LDATA")
+    LEVELDATA_PC *TATOOINEB_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$MOSEISLEYA_LDATA")
+    LEVELDATA_PC *MOSEISLEYA_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DEATHSTARRESCUEB_LDATA")
+    LEVELDATA_PC *DEATHSTARRESCUEB_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DEATHSTARRESCUEC_LDATA")
+    LEVELDATA_PC *DEATHSTARRESCUEC_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DEATHSTARRESCUEE_LDATA")
+    LEVELDATA_PC *DEATHSTARRESCUEE_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DEATHSTARESCAPEA_LDATA")
+    LEVELDATA_PC *DEATHSTARESCAPEA_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DEATHSTARESCAPEB_LDATA")
+    LEVELDATA_PC *DEATHSTARESCAPEB_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DEATHSTARESCAPEC_LDATA")
+    LEVELDATA_PC *DEATHSTARESCAPEC_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DEATHSTARESCAPED_LDATA")
+    LEVELDATA_PC *DEATHSTARESCAPED_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DEATHSTARBATTLEA_LDATA")
+    LEVELDATA_PC *DEATHSTARBATTLEA_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DEATHSTARBATTLEB_LDATA")
+    LEVELDATA_PC *DEATHSTARBATTLEB_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DEATHSTARBATTLEC_LDATA")
+    LEVELDATA_PC *DEATHSTARBATTLEC_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$HOTHESCAPEA_LDATA")
+    LEVELDATA_PC *HOTHESCAPEA_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$HOTHESCAPEC_LDATA")
+    LEVELDATA_PC *HOTHESCAPEC_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CLOUDCITYESCAPEA_LDATA")
+    LEVELDATA_PC *CLOUDCITYESCAPEA_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CLOUDCITYESCAPEC_LDATA")
+    LEVELDATA_PC *CLOUDCITYESCAPEC_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CLOUDCITYTRAPA_LDATA")
+    LEVELDATA_PC *CLOUDCITYTRAPA_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DEATHSTAR2BATTLEB_LDATA")
+    LEVELDATA_PC *DEATHSTAR2BATTLEB_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DEATHSTAR2BATTLED_LDATA")
+    LEVELDATA_PC *DEATHSTAR2BATTLED_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$EMPERORFIGHTA_LDATA")
+    LEVELDATA_PC *EMPERORFIGHTA_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$SARLACCPITB_LDATA")
+    LEVELDATA_PC *SARLACCPITB_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$SARLACCPITC_LDATA")
+    LEVELDATA_PC *SARLACCPITC_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$JABBASPALACEA_LDATA")
+    LEVELDATA_PC *JABBASPALACEA_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$JABBASPALACEB_LDATA")
+    LEVELDATA_PC *JABBASPALACEB_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$JABBASPALACED_LDATA")
+    LEVELDATA_PC *JABBASPALACED_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$JABBASPALACEE_LDATA")
+    LEVELDATA_PC *JABBASPALACEE_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$ENDORBATTLEA_LDATA")
+    LEVELDATA_PC *ENDORBATTLEA_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$ENDORBATTLEB_LDATA")
+    LEVELDATA_PC *ENDORBATTLEB_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$ENDORBATTLED_LDATA")
+    LEVELDATA_PC *ENDORBATTLED_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$TorpedoFillEnabledPc")
+    u8 TorpedoFillEnabledPc;
+#pragma bss_seg()
+
+#pragma data_seg(".data$TorpedoGrabRangeSquaredPc")
+    f32 TorpedoGrabRangeSquaredPc = 36.0f;
+#pragma data_seg()
+
+#pragma const_seg(".rdata$TorpedoFireSfxPc")
+    const char TorpedoFireSfxPc[14] = "XWing_Torpedo";
+#pragma const_seg()
+
+#pragma data_seg(".data$TorpedoStealTimerPc")
+    f32 TorpedoStealTimerPc = 2.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$TorpedoStealRangePc")
+    f32 TorpedoStealRangePc = 2.0f;
+#pragma data_seg()
+}

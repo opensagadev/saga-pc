@@ -204,3 +204,75 @@ void __cdecl BigJumpCode(GAMEOBJECT *object) {
     if (object->character_context != -1)
         object->ai_packet.flags |= 0x2000000;
 }
+
+struct minianimpacket_pc_s {
+    f32 current_time;
+    f32 previous_time;
+    u8 unknown_08[0xc];
+    f32 blend_target_time;
+    u8 flags;
+    u8 blending;
+    u8 unknown_1a[4];
+    i16 current_animation_id;
+    i16 previous_animation_id;
+    i16 requested_animation_id;
+};
+STATIC_ASSERT(sizeof(MINIANIMPACKET_PC) == 0x24);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, current_time) == 0);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, previous_time) == 4);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, blend_target_time) == 0x14);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, flags) == 0x18);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, blending) == 0x19);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, current_animation_id) == 0x1e);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, previous_animation_id) == 0x20);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, requested_animation_id) == 0x22);
+
+typedef struct beast_fall_land_view_pc_s {
+    u8 unknown_0[0x7d0];
+    MINIANIMPACKET_PC mini_animation;
+    u8 unknown_7f4[0xdac - 0x7f4];
+    f32 fall_animation_time;
+} BEAST_FALL_LAND_VIEW_PC;
+STATIC_ASSERT(offsetof(BEAST_FALL_LAND_VIEW_PC, mini_animation) == 0x7d0);
+STATIC_ASSERT(offsetof(BEAST_FALL_LAND_VIEW_PC, fall_animation_time) == 0xdac);
+extern i32 LEGOCONTEXT_LAND_JUMP;
+extern i32(__cdecl *IsWearingBackPackFn)(GAMEOBJECT *);
+extern i32(__cdecl *UsingExtraActionsFn)(GAMEOBJECT *);
+extern i16 LEGOACT_BACKPACKFALLLAND, LEGOACT_EXTRA_LAND2, LEGOACT_FALLLAND;
+void __cdecl ResetMiniAnimPacket(MINIANIMPACKET_PC *, i32);
+i32 __cdecl StartFallLand(GAMEOBJECT *object, i32 action) {
+    i16 selected;
+    BEAST_FALL_LAND_VIEW_PC *view = (BEAST_FALL_LAND_VIEW_PC *)object;
+    PlayLandSfx(object, 0, 0);
+    if (LEGOCONTEXT_LAND_JUMP == -1) {
+        object->flags_e24 &= ~0x400;
+        return 0;
+    }
+    if (action != -1 && object->character_model->model_data_b[action] != NULL) {
+        selected = (i16)action;
+    } else if (IsWearingBackPackFn != NULL && IsWearingBackPackFn(object) && LEGOACT_BACKPACKFALLLAND != -1 &&
+               object->character_model->model_data_b[LEGOACT_BACKPACKFALLLAND] != NULL) {
+        selected = LEGOACT_BACKPACKFALLLAND;
+    } else if (UsingExtraActionsFn != NULL && UsingExtraActionsFn(object) && LEGOACT_EXTRA_LAND2 != -1 &&
+               object->character_model->model_data_b[LEGOACT_EXTRA_LAND2] != NULL) {
+        selected = LEGOACT_EXTRA_LAND2;
+    } else if (LEGOACT_FALLLAND != -1 && object->character_model->model_data_b[LEGOACT_FALLLAND] != NULL) {
+        selected = LEGOACT_FALLLAND;
+    } else if (BigJumpLandSecondaryPc != -1 && object->character_model->model_data_b[BigJumpLandSecondaryPc] != NULL) {
+        selected = BigJumpLandSecondaryPc;
+    } else {
+        selected = BigJumpLandFallbackPc;
+    }
+    object->field_7aa = selected;
+    if (object->character_model->model_data_b[selected] == NULL) {
+        object->flags_e24 &= ~0x400;
+        return 0;
+    }
+    object->character_context = (i8)LEGOCONTEXT_LAND_JUMP;
+    ResetAnimPacket(&object->anim_packet, -1);
+    ResetMiniAnimPacket(&view->mini_animation, -1);
+    view->fall_animation_time = 0.0f;
+    object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+    object->flags_e24 = (object->flags_e24 & ~0x800) | ((object->flags_e24 & 0x400) << 1);
+    return 1;
+}

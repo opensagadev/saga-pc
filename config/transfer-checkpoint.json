@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 812906,
-    "matched_code_bytes": 69648,
-    "matching_percent": 2.0064265108263717,
-    "fuzzy_coverage_percent": 12.389965879068205,
-    "mapped_functions": 2845,
-    "matched_functions": 1143,
-    "objdiff_fuzzy_percent": 62.18718,
-    "objdiff_total_code": 691779,
+    "mapped_code_bytes": 824953,
+    "matched_code_bytes": 70418,
+    "matching_percent": 2.028608747406551,
+    "fuzzy_coverage_percent": 12.95207756088824,
+    "mapped_functions": 2871,
+    "matched_functions": 1148,
+    "objdiff_fuzzy_percent": 62.837555,
+    "objdiff_total_code": 715671,
     "image_bytes": 40067072,
-    "mapped_bytes": 1451177,
-    "mapping_percent": 3.6218693494748004
+    "mapped_bytes": 1466053,
+    "mapping_percent": 3.6589970936733285
   },
   "newly_compared": [
     {
@@ -14834,6 +14834,120 @@
         "Cutscene Configure/Listed/Load/Draw6330 and their diagnostic remain held; no artificial private helper retention."
       ],
       "next_connected_wave": "Genuine Beast8043 plus barrier48, public Punch2683 and opponent1179 provider closure; true Beast identity unlocks level audio8845. Four cutscene load/fixup/create providers remain bounded research.",
+      "ongoing_goal": "Continue whole-project transfer indefinitely until user stops or pauses; validated direct main pushes authorized."
+    },
+    {
+      "baseline_commit": "25b06802f5f425eabb5a69c2dadfea4b9f856310",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 812906,
+        "matched_code_bytes": 69648,
+        "matching_percent": 2.0064265108263717,
+        "fuzzy_coverage_percent": 12.389965879068205,
+        "mapped_functions": 2845,
+        "matched_functions": 1143,
+        "objdiff_fuzzy_percent": 62.18718,
+        "objdiff_total_code": 691779,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1451177,
+        "mapping_percent": 3.6218693494748004
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 824953,
+        "matched_code_bytes": 70418,
+        "matching_percent": 2.028608747406551,
+        "fuzzy_coverage_percent": 12.95207756088824,
+        "mapped_functions": 2871,
+        "matched_functions": 1148,
+        "objdiff_fuzzy_percent": 62.837555,
+        "objdiff_total_code": 715671,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1466053,
+        "mapping_percent": 3.6589970936733285
+      },
+      "newly_compared_functions": 28,
+      "new_original_code_bytes": 23892,
+      "compared_code_delta": 23892,
+      "baseline_unique_compared_pc_bytes": 691667,
+      "unique_compared_pc_bytes": 715559,
+      "exact_code_added": 770,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 2603,
+      "prior_compiled_function_copies_identical": 2602,
+      "renamed_owner_copies_with_identical_complete_bodies": [],
+      "user_journal_unchanged": true,
+      "checkpoint": "Beast/Punch, targeting, level audio and torpedo parents (2026-10-04)",
+      "prior_exact_code_and_data_preserved": true,
+      "family_bytes": {
+        "beast_hold_fall_barrier": 8195,
+        "public_punch_services": 2350,
+        "opponent_selection_and_range": 1408,
+        "level_audio_parent": 8845,
+        "torpedo_parents": 3094
+      },
+      "shared_data_definitions_added": 80,
+      "shared_initializer_view_bytes_added": 327,
+      "known_allocation_credit_added": 0,
+      "data_scope": {
+        "proofs": 1362,
+        "known_extents": 553,
+        "known_unique_bytes": 137551,
+        "unknown_extents": 809,
+        "unknown_view_bytes": 97701,
+        "previous_proofs_preserved": 1282
+      },
+      "verified_checks": {
+        "all_required_checks_passed": true,
+        "prior_copy_review_passed": true,
+        "tests": 665,
+        "skipped": 3,
+        "test_seconds": 36.469,
+        "llvm": 18,
+        "format_files": 225,
+        "tidy_units": 223,
+        "objects": 223,
+        "function_definitions": 2631,
+        "data_definitions": 5068,
+        "source_only_link": true,
+        "native_beast_checks": 30,
+        "native_punch_checks": 49,
+        "native_opponent_checks": 31,
+        "native_torpedo_checks": 49,
+        "native_audio_checks": 47,
+        "native_total_checks": 206,
+        "native_failures": 0,
+        "negative_opponent_checks": 31,
+        "negative_opponent_expected_failures": 1,
+        "negative_audio_checks": 47,
+        "negative_audio_expected_failures": 2,
+        "native_receipts": {
+          "beast": "player-cohort/terrain-next/parents/vehicle-next/beast-next/production/runtime/receipt.json",
+          "punch": "debris/beast-providers-next/fixture-receipt.json",
+          "opponent": "platform/beast-opponent-next/runtime/receipt.json",
+          "torpedo": "parser/torpedo-nextparent/production-fixture-receipt.json",
+          "audio": "apiobject/level-sfx-next/parent-release/runtime-receipt.json"
+        },
+        "all_emitted_data_regions_preserved": 3051,
+        "scoped_initializer_proofs": 1362,
+        "prior_copy_review": "Unchanged particle source717->713 equals historical proved scheduling variant;186 other instructions/CFG edges and all34 relocations preserved. Initialized finite f32 x87 domain; unmasked signaling-NaN or invalid-memory trap order unproved. Actual88.419685 retained.",
+        "fixture_domain_corrections": "Beast Poo requires valid WORLD.level_objects[24]; audio requires camera_splines[19..23]. Fixtures now provide real typed inactive/null tables; production source unchanged; no added guards/fake providers."
+      },
+      "inventory_extent_corrections": {
+        "previously_uncompiled_pointer_views": 8,
+        "retired_inventory_mapped_bytes": 32,
+        "previous_exact_data_lost": []
+      },
+      "checkpoint_delay_reason": "Required all223-object native Beast/audio fixtures needed valid typed level-object/camera tables; the unrelated particle scheduling recurrence required retained full-body proof. Source stayed frozen; final validation completed before commit.",
+      "limitations": [
+        "Selected fixtures do not establish full gameplay, assets, visual output or active hardware audio/emission.",
+        "Audio parent uses a genuine C partition to preserve actual public cross-unit calls; exact historical TU ownership is unproved.",
+        "New data owning extents remain unknown and receive zero allocation credit.",
+        "Private PunchRanges native/candidate register allocation differs; all real caller/helper source context is retained with no adapters.",
+        "Inherited initialization and graphics/font partials remain explicit."
+      ],
+      "next_connected_wave": "Cutscene load/fixup/create kernel4478 plus real Load/Configure/Listed and diagnostic2564; resource family7161 and Vehicle/POD genuine private caller group, followed by Terrain8287. Draw3767 remains a finite separate closure.",
       "ongoing_goal": "Continue whole-project transfer indefinitely until user stops or pauses; validated direct main pushes authorized."
     }
   ]

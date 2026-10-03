@@ -434,8 +434,10 @@ address    , symbol                                                         , si
 0x00495310 , _UpdateGameMenu                                                , 1070  , "void (void *, i32)"
 0x00495740 , _MenuEnterTitles                                               , 34    , void __cdecl (MENU *)
 0x497c40   , _MovementArcSine                                               , 320   , ""
+0x497de0,_MovementMtxSetRotationXPc,160,
 0x00497e80 , _MovementMtxRotateX                                            , 217   , void private-register (NUMTX * EAX; i32 ECX)
 0x00497f60 , _MovementMtxRotateY                                            , 219   , void private-register (NUMTX * EAX; i32 ECX)
+0x498040,_MovementMtxRotateZPc,215,
 0x498120,_PreResetCanAccelerateFallPc,388,i32 (GAMEOBJECT *)
 0x004982f0 , _IsAFallAnim                                                   , 37    , private EAX i32 animation -> i32 bool; same-TU static
 0x00498320 , _VehicleTurnOrLoopOffset                                       , 342   , f32 __cdecl (GAMEOBJECT *)
@@ -465,11 +467,16 @@ address    , symbol                                                         , si
 0x49be00,_FlattenCode,560,void __cdecl (GAMEOBJECT *)
 0x0049c080,_TakeHitCode,866,void __cdecl(GAMEOBJECT *)
 0x49c3f0,_DeactivatedMindTrickFilterPc,232,"static i32(GAMEOBJECT*,GAMEOBJECT*)"
+0x49c610,_GrabCode,811,
+0x49c940,_BeastCrushCodePc,197,
 0x0049ca10 , _EatVictim                                                     , 108   ,
+0x49ca80,_ObjOpponent,1179,"GAMEOBJECT *__cdecl(GAMEOBJECT *,f32,f32,i32,i32,i32)"
+0x49cf20,_PunchSelectOpponentPc,189,
 0x49d430,_ShootThisFrame,160,"static void(GAMEOBJECT*,i32,i32)"
 0x49d540,_LetGoOfBalloon,373,void __cdecl(GAMEOBJECT*)
 0x49d6c0,_PopBalloon,5,void __cdecl(GAMEOBJECT*)
 0x49d910,_Glide_SetTargetMom,215,i32 __cdecl(GAMEOBJECT *)
+0x49ea00,_PunchRangesPc,107,
 0x0049ea70 , _PunchCode                                                     , 3000  ,
 0x0049f630 , _MakeThrowVector                                               , 329   , "void __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32, f32)"
 0x0049f780 , _GetBladeJoints                                                , 115   , "i32 (GAMEOBJECT *, i32, i32 *, i32 *) [private stack object; EAX blade; ESI joints; EDX optional output]"
@@ -480,10 +487,12 @@ address    , symbol                                                         , si
 0x4a24d0,_ForceLightning_Origin,210,"void __cdecl (GAMEOBJECT *, NUVEC *, NUVEC *)"
 0x4a25b0,_ReleaseForce,246,"void __cdecl(GAMEOBJECT*,i32)"
 0x004a3b60 , _ForcePushEligible                                             , 123   , "i32 (GAMEOBJECT *, GAMEOBJECT *, GAMEOBJECT *) [private EAX first input; two stack pointers]"
+0x4a3be0,_ForcePushed_MoveCode,712,
 0x004a3eb0 , _ForcePushed_SetTargetMom                                      , 1014  , "i32 __cdecl (GAMEOBJECT *, f32 *)"
 0x004a42b0 , _ForcePushed_YRotation                                         , 146   , i32 __cdecl (GAMEOBJECT *)
 0x004a48f0,_ResetForceBack,13,void __cdecl (void)
 0x004a4900,_SetForceBack,58,"void __cdecl (GAMEOBJECT *, NUVEC *, f32, i32)"
+0x4a4a20,_ForcedBackCode,635,void __cdecl(GAMEOBJECT*)
 0x4a4ca0,_ResetForceGlow,51,void __cdecl(void *)
 0x004a56a0 , _BobaRocket_Move                                               , 1001  , "void __cdecl (PART_PC *, f32)"
 0x004a5a90 , _BobaRocket_Kill                                               , 104   , "void __cdecl (PART_PC *, i32)"
@@ -501,6 +510,8 @@ address    , symbol                                                         , si
 0x4a76c0,_Slide_SetTargetMom,371,"i32 __cdecl(GAMEOBJECT *,u16,float)"
 0x4a7840,_FloatAdvancePc,53,void private (GAMEOBJECT * ECX)
 0x4a7880,_FloatCode,883,void __cdecl(GAMEOBJECT*)
+0x4a7d00,_BeastStartFallCodePc,149,
+0x4a7da0,_PooCode,1278,void __cdecl(GAMEOBJECT*)
 0x4a82a0,_AwkwardShapeCode,818,"void __cdecl(GAMEOBJECT*,i32)"
 0x4a8b60,_Disorientate,712,"void __cdecl(GAMEOBJECT*,NUVEC*)"
 0x4a8e30,_DisorientateCode,178,"void __cdecl(GAMEOBJECT*,NUVEC*,f32)"
@@ -516,12 +527,13 @@ address    , symbol                                                         , si
 0x4b0c80,_DeactivatedCode,1327,static void(GAMEOBJECT*)
 0x4b11b0,_StartQuickShoot,553,"void __cdecl(GAMEOBJECT*,i32)"
 0x004b1ab0 , _GameObjectStuffAfterAnimation                                 , 3904  , void __cdecl (void)
+0x4b3000,_Move_BEAST,224,void __cdecl(GAMEOBJECT*)
 0x4b30e0,_Move_CANNON,350,void __cdecl(GAMEOBJECT*)
 0x4b3d40,_ShootCode,3449,"i32 __cdecl(GAMEOBJECT*,i32,i32,i32,i32,i32)"
 0x4b7120,_PowerUp_GetPanelY,108,f32 __cdecl (i32)
 0x004b8fc0 , _InDoubleScoreZone                                             , 116   , i32 __cdecl (GAMEOBJECT *)
 0x004badd0 , _InitPanel                                                     , 106   , void __cdecl (i32)
-0x004bde10 , _SetLevelSfxBits                                               , 8845  , void __cdecl (WORLDINFO *)
+0x4bde10,_SetLevelSfxBits,8845,void __cdecl(WORLDINFO*)
 0x004c00c0 , _Shadow_SetMode                                                , 60    , void __cdecl (void)
 0x4c91e0,_ObjIsTargetSpeeder,47,i32 __cdecl(GAMEOBJECT*)
 0x004c99b0 , _SpeederChaseATATInOutMul                                      , 85    , f32 __cdecl (GAMEOBJECT *)
@@ -548,9 +560,11 @@ address    , symbol                                                         , si
 0x004d22f0 , _FreeTorpedoPacket                                             , 90    ,
 0x4d2350,_DropTorpedoPickups,133,"void __cdecl(TORPEDOPACKET_PC*,i32)"
 0x4d23e0,_getMaxTorpedos,72,i32 __cdecl(GAMEOBJECT*)
+0x4d24f0,_Torpedo_UpdateJobbies,1274,void __cdecl(GAMEOBJECT*)
 0x4d29f0,_FindNearestTorpTarget,582,"void *__cdecl(WORLDINFO*,NUVEC*,f32,u8*)"
 0x4d3220,_DrawGameMessage_Targets,546,"void __cdecl(GAME_MESSAGE_PC*,NUVEC*,f32)"
 0x4d3760,_PartDraw_Torp,133,i32 __cdecl (PART_PC *)
+0x4d3800,_TorpedoCode,1820,"void __cdecl(GAMEOBJECT*,i32,f32)"
 0x4d41f0,_TrafficAnim_yoffset,32,void __cdecl (NUFPAR_PC *)
 0x4d4210,_Traffic_animobj,258,void __cdecl (NUFPAR_PC *)
 0x4d4320,_Traffic_frame_interval,20,void __cdecl (NUFPAR_PC *)
@@ -564,6 +578,7 @@ address    , symbol                                                         , si
 0x004dbb60 , _PodSprint_InStartCountdown                                    , 28    , f32 __cdecl (WORLDINFO *)
 0x004dd810 , _Action_CreatePod                                               , 1135   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x004e1460 , _KaminoE_CheckPlatHit                                          , 228   , i32 __cdecl (BOLT *)
+0x4e4a80,_MosEisleyC_PastBarrier,48,i32 __cdecl(GAMEOBJECT*)
 0x004e8380 , _TakeOverYodaSeekDistanceHack                                  , 129   , "i32 __cdecl (GAMEOBJECT *, GAMEOBJECT *, NUVEC *)"
 0x4e8640,_ResetMinikitCounter,13,void __cdecl(void)
 0x4ea8e0   , _DeathStar2BattleFire_GetSlowDownMul                           , 90    , f32 __cdecl (GAMEOBJECT *)
@@ -1125,6 +1140,7 @@ address    , symbol                                                         , si
 0x548370,_PlayGruntSfx,98,void __cdecl(GAMEOBJECT *)
 0x5483e0,_PlayHurtSfx,116,void __cdecl(GAMEOBJECT*)
 0x548460,_PlayDieSfx,209,void __cdecl (GAMEOBJECT *)
+0x548540,_PlaySabreSfx,171,"void __cdecl(char *,GAMEOBJECT *,NUVEC *,i32)"
 0x5485f0,_AddLevelSfxFromName,73,"void __cdecl (char *, i32 *, i32 *, i32)"
 0x548640,_AddLevelSfxFromId,69,"void __cdecl (i32, i32 *, i32 *, i32)"
 0x00548690 , _UpdateLevelSfx                                                , 121   , "void __cdecl (WORLDINFO *, i32)"
@@ -1325,6 +1341,7 @@ address    , symbol                                                         , si
 0x561dd0,_BigJump_LandAction_Default,66,i32 __cdecl (GAMEOBJECT *)
 0x00561e20,_StartBigJump,489,"i32 __cdecl (GAMEOBJECT *, NUVEC *, i32, f32, f32, i32)"
 0x562010,_FindSlamOrigin,215,"void __cdecl (GAMEOBJECT *, NUVEC *, NUVEC *)"
+0x5621a0,_StartFallLand,366,"i32 __cdecl(GAMEOBJECT*,i32)"
 0x563ec0,_BigJumpCode,1068,void __cdecl (GAMEOBJECT *)
 0x00565470 , _WidescreenCode                                                , 339   , void __cdecl (i32)
 0x00565700 , _DrawCutBorders                                                , 279   , void __cdecl (i32)
@@ -1338,6 +1355,7 @@ address    , symbol                                                         , si
 0x5672d0,_GizmoBlowUp_AddEffects,1322,"void __cdecl (NUVEC *, GIZMOBLOWUP_PC *, i32, i32, GAMEOBJECT *)"
 0x00567800 , _GizmoBlowupBlowup                                             , 1385  , "i32 __cdecl (GIZMOBLOWUP_PC *, i32, i32, i32, GAMEOBJECT *, i32)"
 0x567da0,_UpdateMidPos,616,void __cdecl(GIZMOBLOWUP_PC*)
+0x569980,_GizmoBlowUpOpponent,724,"GIZMOBLOWUP_PC *__cdecl(GAMEOBJECT *,f32,f32,f32,i32,u32,u32,u32)"
 0x00569c60 , _GetLevelExBlowupFlags                                         , 6      ,
 0x56a240,_GizmoBlowUp_Target,878,"GIZMOBLOWUP_PC* __cdecl(GAMEOBJECT*,NUVEC*,NUVEC*,f32,f32,i32,i32,i32)"
 0x0056a5b0 , _GizmoBlowupCheckProximity                                     , 522   , "i32 __cdecl (WORLDINFO *, GAMEOBJECT *)"
@@ -1399,6 +1417,7 @@ address    , symbol                                                         , si
 0x576910,_Hint_SetHintFromId,70,"void __cdecl (i32,i32,i32)"
 0x00576960,_Hint_SetComplete,72,void __cdecl(i32)
 0x00578750,_SetLevelHack,64,void *__cdecl (i32)
+0x578790,_objInNetWaitContext,52,"i32 __cdecl(GAMEOBJECT *,i32)"
 0x005788d0 , _Level_RegisterGameConfigKeywords                              , 20    , "void __cdecl (NUFPCOMJMP *, NUFPCOMJMP *)"
 0x005788f0 , _Levels_ConfigureList                                          , 1196  , "LEVELDATA_PC *__cdecl (char *, VARIPTR *, VARIPTR *, i32, i32 *, void *)"
 0x00578da0 , _Level_FindByName                                              , 107   , "LEVELDATA_PC * __cdecl (char *, i32 *)"
@@ -1743,6 +1762,10 @@ address    , symbol                                                         , si
 0x589ac0   , _CharConfig_ConfigureAll                                       , 1139  , "void (i32 permanent, NUFPCOMJMP *game_keywords)"
 0x0058a8d0 , _Mission_Clear                                                 , 44    , void __cdecl (void *)
 0x0058a900 , _Mission_Active                                                , 33    , MISSIONDATA_PC *__cdecl (MISSIONSYS_PC *)
+0x58aec0,_SpecialMove_GetAttackerAction,27,i32 __cdecl(i32)
+0x58aee0,_SpecialMove_GetVictimAction,28,i32 __cdecl(i32)
+0x58af20,_SpecialMove_GetFlags,49,"u32 __cdecl(i32,u32)"
+0x58af60,_SpecialMove_Check,273,"i32 __cdecl(GAMEOBJECT *,GAMEOBJECT *)"
 0x58b080,_SpecialMoveApplyDamagePc,108,void private (GAMEOBJECT * ESI)
 0x58b0f0,_SpecialMove_ReleaseVictim,133,i32 __cdecl(GAMEOBJECT*)
 0x58b2a0,_SpecialMove_Attacker_SetTargetMom,172,void __cdecl(GAMEOBJECT *)
@@ -1753,6 +1776,7 @@ address    , symbol                                                         , si
 0x0058b8d0 , _CharPlatforms_Configure                                       , 358   , "void __cdecl (WORLDINFO *, char *)"
 0x58bbf0,_CharPlatform_FindObjFromPlatID,72,"GAMEOBJECT * __cdecl (void *, i32)"
 0x58bee0,_SetHeadTarget,194,"void __cdecl(GAMEOBJECT*,NUVEC*,i8,f32,f32,f32)"
+0x58d340,_ObjOpponentStillThere,229,"i32 __cdecl(GAMEOBJECT *,GAMEOBJECT *,f32)"
 0x58d430,_SetWeaponOut,66,void __cdecl(GAMEOBJECT *)
 0x58d480,_FastWeaponOut,220,"void __cdecl(GAMEOBJECT *, i32)"
 0x58d560,_SlowWeaponOut,316,void __cdecl(GAMEOBJECT *)
@@ -1763,6 +1787,8 @@ address    , symbol                                                         , si
 0x58dfa0,_NewBlockAction,154,i32 __cdecl(GAMEOBJECT *)
 0x58e0c0,_CanStepBack,103,i32 __cdecl(GAMEOBJECT *)
 0x58e130,_StepBackFromTarget,558,i32 __cdecl(GAMEOBJECT *)
+0x58e3b0,_StartHold,104,void __cdecl(GAMEOBJECT *)
+0x58e4e0,_Punch_Hit,1026,"void __cdecl(GAMEOBJECT *,GAMEOBJECT *,f32,f32)"
 0x58f1f0,_GizGetBuildItPlayerPos,502,"void __cdecl(GAMEOBJECT *,NUVEC *,NUVEC *)"
 0x58f3f0,_GizBuildItPushAwayFromStart,1774,"void __cdecl(GAMEOBJECT *,void *)"
 0x58ff10,_ReleaseBuildIt,91,"void __cdecl(GAMEOBJECT*,i32)"
@@ -3320,8 +3346,16 @@ address    , symbol                                                         , si
 0x007517c0 , _NuTimeBarTop                                                  , 8     , const f64
 0x007517c0 , __real@3fa99999a0000000                                         , 8     , const f64
 0x751858,??_C@_0N@EBMKNCBE@wpn_bib_stab?$AA@,13,const char[13]
+0x751880,??_C@_0BB@IJKIODOI@PodX_TuskenBlast?$AA@,17,const char[17]
+0x7518a0,??_C@_0BA@LKLLKNOA@imp_proton_torp?$AA@,16,const char[16]
+0x7518b0,??_C@_0O@NFIPIGCD@XWing_Torpedo?$AA@,14,const char[14]
+0x7518b0,_TorpedoFireSfxPc,,const char[14]
 0x007518d4 , ??_C@_0P@GEMADFMM@exp_thermalDet?$AA@                          , 15    , const char[]
 0x007518e4 , __real@3f400000                                                , 4     , const f32
+0x7518e8,??_C@_0O@BHNIEGAE@TowCable_Fire?$AA@,14,const char[14]
+0x7518f8,??_C@_0BA@PMBJBBAK@TowCable_Detach?$AA@,16,const char[16]
+0x751908,??_C@_0O@LNKJNHC@TowCable_Snap?$AA@,14,const char[14]
+0x751918,??_C@_0P@BKFDLGDJ@TowCable_Latch?$AA@,15,const char[15]
 0x00751928 , _MoveSplineRunSpeedSentinel                                    , 8     , const f64
 0x00751928 , __real@41cdcd6500000000                                        , 8     , const f64
 0x00751948 , __real@41f00000                                                , 4     , const f32
@@ -3353,10 +3387,17 @@ address    , symbol                                                         , si
 0x00751ab8 , __real@3fc00000                                                , 4     , const f32
 0x751ac0,_PlayerStepInnerPc,8,const f64
 0x00751ac0 , __real@3fe8000000000000                                        , 8     , const f64
+0x751bb0,??_C@_0BD@GEDFNHGE@Dog_TriFighterGuns?$AA@,19,const char[19]
+0x751bc4,??_C@_0BG@PHHIKGAO@Dog_DroidFighterBlast?$AA@,22,const char[22]
+0x751bdc,??_C@_0BD@KCCJNHHN@Dog_CloneARC170Gun?$AA@,19,const char[19]
 0x00751bf8 , __real@4024000000000000                                        , 8     , const f64
 0x00751c00 , _GizAIMessage_PrefixedNameFormat                               , 5     , const char[5]
 0x00751c30 , __real@4049000000000000                                        , 8     , const f64
 0x00751c40 , __real@40200000                                                , 4     , const f32
+0x751c44,??_C@_0BI@HPLEJGDL@Ep3_1_ProtoXWingMissile?$AA@,24,const char[24]
+0x751c60,??_C@_0BE@GNEDADNP@Dog_TriFighterEngLp?$AA@,20,const char[20]
+0x751c74,??_C@_0BG@POINPNKD@Dog_DroidFighterEngLp?$AA@,22,const char[22]
+0x751c8c,??_C@_0BF@PDGJKHKF@Dog_CloneARC170EngLp?$AA@,21,const char[21]
 0x00751ca4 , _NuPrimMinusTwo                                                , 4     , const f32
 0x00751ca4 , __real@c0000000                                                , 4     , const f32
 0x00751ca8 , __real@49742400                                                , 4     , const f32
@@ -3369,6 +3410,9 @@ address    , symbol                                                         , si
 0x00751d0c , __real@3eb33333                                                , 4     , const f32
 0x751d28,_GrappleMomentumNearScalePc,8,const f64
 0x751d28,__real@4034000000000000,8,const f64
+0x751d40,??_C@_0BD@FAEJAHCF@Ep3_1_ExplosionXXL?$AA@,19,const char[19]
+0x751d54,??_C@_0BC@GKABDEAG@Dog_TriFighterHit?$AA@,18,const char[18]
+0x751d68,??_C@_0BE@LMEIANHN@Dog_DroidFighterHit?$AA@,20,const char[20]
 0x00751d84 , _LevelConfigFarDistance                                        , 4     , const f32
 0x00751d84 , __real@49f42400                                                , 4     , const f32
 0x00751d90 , __real@42480000                                                , 4     , const f32
@@ -3467,19 +3511,21 @@ address    , symbol                                                         , si
 0x007533d0 , _GameObjectNearFloorRadiusDivisor                              , 8     , const f64
 0x007533d8 , __real@3f600000                                                , 4     , const f32
 0x007533dc , __real@3fa80000                                                , 4     , const f32
+0x7533e4,??_C@_0BG@HIHHGAPE@imp_thermalDet_attach?$AA@,22,const char[22]
 0x00753428 , __real@3feb333340000000                                        , 8     , const f64
 0x754390,_PlayerActionNamePc_145,7,const char[7]
 0x754568,_PlayerActionNamePc_233,6,const char[6]
 0x7546c8   , ??_C@_03NBAOADML@gun?$AA@                                      , 4     , const char[4]
 0x007547a4 , _PermLegalBase                                                 , 6     , const char[6]
-0x007548ec , _LevelSplinesStartCamName                                      , 10    , const char[10]
 0x7548ec,??_C@_09FBNHKBDB@start_cam?$AA@,10,const char[10]
-0x007548f8 , _LevelSplinesStartName                                         , 6     , const char[6]
+0x007548ec , _LevelSplinesStartCamName                                      , 10    , const char[10]
 0x7548f8,??_C@_05FAGFPHJG@start?$AA@,6,char[6]
+0x007548f8 , _LevelSplinesStartName                                         , 6     , const char[6]
 0x754f70   , ??_C@_04OBGPFBCN@blue?$AA@                                     , 5     , const char[5]
 0x00754fa4 , _ApplyGravityMinimumFrameTime                                  , 4     , const f32
 0x754fb8,__real@3ca3d70a,4,const f32
 0x754fd8,??_C@_07PJLLFKBJ@WhipHit?$AA@,8,const char[8]
+0x754ff0,??_C@_08JIGLBIFB@C3_Death?$AA@,9,const char[9]
 0x755004,__real@41400000,4,const f32
 0x75500c   , _ForcePushSeekRate                                             , 4     , const f32
 0x0075500c , __real@41a00000                                                , 4     , const f32
@@ -3489,15 +3535,20 @@ address    , symbol                                                         , si
 0x0075503c , __real@40100000                                                , 4     , const f32
 0x00755044 , __real@40733333                                                , 4     , const f32
 0x0075504c , _PermLegalScale                                                , 4     , const f32
+0x7550ec,??_C@_0BB@JEBIMDEB@PodX_PurpCrysHit?$AA@,17,const char[17]
 0x75510c,__real@be4ccccd,4,const f32
+0x755118,??_C@_07FPEFHBMO@Victory?$AA@,8,const char[8]
 0x755148   , _ActionSnapPartyName                                            ,        ,
 0x0075515c , __real@40c80000                                                , 4     , const f32
 0x755160,__real@c0b5550000000000,8,const f64
+0x755168,??_C@_08EGHPLGIH@Explode1?$AA@,9,const char[9]
 0x755168,_ForceThrowExplodeNamePc,9,const char[9]
 0x755174   , __real@becccccd                                                , 4     , const f32
 0x00755180 , _NuScale1000                                                   , 8     , const f64
+0x7552e0,??_C@_06NNBDCBAP@SwPPad?$AA@,7,const char[7]
 0x007552e0 , _GetSfxSwPPadName                                              , 7     , const char[7]
 0x007552e8 , __real@3c23d70a                                                , 4     , const f32
+0x755348,??_C@_08BIMHHCLM@MK?9Panel?$AA@,9,const char[9]
 0x755348,_ScorePanelName,9,char[9]
 0x00755470 , _AIGamePunch2Name                                              , 8     , const char[8]
 0x00755478 , _AIGamePunch1Name                                              , 8     , const char[8]
@@ -3508,6 +3559,7 @@ address    , symbol                                                         , si
 0x00755b48 , __real@402e000000000000                                        , 8     , f64
 0x755b50,__real@42b40000,4,const f32
 0x755b58,__real@c0e0000000000000,8,const f64
+0x755b60,??_C@_09GCGBFPMF@Tie_Spins?$AA@,10,const char[10]
 0x755b60,_KillPartsTieSpinsTextPc,10,char[10]
 0x755b6c,__real@c1000000,4,const f32
 0x755b70,__real@3ffcccccc0000000,8,const f64
@@ -3636,8 +3688,8 @@ address    , symbol                                                         , si
 0x757884,_AITransferLiteral757884,12,const char[12]
 0x757890   , _ActionSnapZName                                                ,        ,
 0x757894   , ??_C@_01EANLCPLP@y?$AA@                                        , 2     , const char[]
-0x757898   , _ActionSnapXName                                                ,        ,
 0x757898,??_C@_01FJMABOPO@x?$AA@,2,const char[2]
+0x757898   , _ActionSnapXName                                                ,        ,
 0x007578a0 , _ActionSnapRotationFactorPc                                     , 8      , const f64
 0x007578a0 , __real@4066c16c20000000                                        , 8     , const f64
 0x7578a8   , _ActionSnapRotationYName                                        ,        ,
@@ -3663,8 +3715,8 @@ address    , symbol                                                         , si
 0x007579a0 , __real@461c3f9a                                                , 4     , const f32
 0x007579a4 , _AICombatInstantName                                           , 8     , const char[8]
 0x007579ac , _AIGameFireIntervalName                                        , 13    , const char[13]
-0x007579bc , _AICombatCircleName                                            , 7     , const char[7]
 0x7579bc,??_C@_06EPAGOIP@circle?$AA@,7,char[7]
+0x007579bc , _AICombatCircleName                                            , 7     , const char[7]
 0x007579c4 , _AICombatNoFireInMiniCutName                                   , 19    , const char[19]
 0x007579d8 , _AICombatOffscreenName                                         , 10    , const char[10]
 0x007579e4 , _AICombatStaticName                                            , 7     , const char[7]
@@ -3679,8 +3731,8 @@ address    , symbol                                                         , si
 0x757a5c,_AITransferLiteral757a5c,12,const char[12]
 0x757a68,_AITransferLiteral757a68,6,const char[6]
 0x757a70,_AITransferLiteral757a70,11,const char[11]
-0x757a7c,_AITransferLiteral757a7c,8,const char[8]
 0x757a7c,??_C@_07EOMMFHON@looping?$AA@,8,const char[8]
+0x757a7c,_AITransferLiteral757a7c,8,const char[8]
 0x757a84,_AITransferLiteral757a84,8,const char[8]
 0x757a8c,_AITransferLiteral757a8c,7,const char[7]
 0x757a94,_AITransferLiteral757a94,9,const char[9]
@@ -3758,6 +3810,7 @@ address    , symbol                                                         , si
 0x7583f8,_AITransferLiteral7583f8,8,const char[8]
 0x758430,_AITransferLiteral758430,5,const char[5]
 0x00758464 , _AIScriptParamPrefix                                           , 6     , const char[6]
+0x75848c,??_C@_0BB@PGCHANHM@ForceLightningLp?$AA@,17,const char[17]
 0x007584a8 , _AIExpressionMaxName                                           , 4     , const char [4]
 0x7584c4   , _PCContextName_Techno                                          , 7     , const char [7]
 0x007584d4 , _NewLevelPrefix                                                ,       ,
@@ -3775,10 +3828,20 @@ address    , symbol                                                         , si
 0x007586e8 , __real@3fb70a3d80000000                                        , 8     , const f64
 0x7586f8,__real@4000ccccc0000000,8,const f64
 0x758704,__real@40066666,4,const f32
+0x758708,??_C@_0P@KMHAGGAM@TrueJedi_100pc?$AA@,15,const char[15]
+0x758718,??_C@_0N@KOFOPOOP@TrueJedi_NOT?$AA@,13,const char[13]
+0x758728,??_C@_0BC@HLBJPJHH@Status_GoldBarDec?$AA@,18,const char[18]
 0x00758758,__real@4050000000000000,8,const f64
+0x758764,??_C@_0O@IODBGCBF@Shop_BuyCheat?$AA@,14,const char[14]
 0x758774   , _PCContextName_Jump                                            , 5     , const char [5]
+0x75877c,??_C@_0O@JLLKHNHH@Char_Icon_App?$AA@,14,const char[14]
+0x75878c,??_C@_0M@HBOGFPCF@StatusAward?$AA@,12,const char[12]
 0x7587b8,__real@409c700000000000,8,const f64
+0x7587c0,??_C@_0L@FMEHDMAG@PickupCoin?$AA@,11,const char[11]
 0x7587c0,_PickupCoinSfx_PC,11,const char[11]
+0x7587d4,??_C@_0L@LJNJLHJF@LegoClicks?$AA@,11,const char[11]
+0x7587e0,??_C@_0BA@NPIBEEBC@Char_Icon_Slide?$AA@,16,const char[16]
+0x7587f8,??_C@_0M@BFEAIAEK@Jp_Ana_Jump?$AA@,12,const char[12]
 0x00758808 , __real@3fefffffe0000000                                        , 8     , const f64
 0x758810,__real@3ff4ccccc0000000,8,const f64
 0x00758828 , _GizAIMessage_NameFormat                                       , 3     , const char[3]
@@ -3791,6 +3854,7 @@ address    , symbol                                                         , si
 0x758b40,??_C@_01OJONOECF@b?$AA@,2,const char[2]
 0x758b54,_PlayerBuildItNegativeLimitPc,4,const f32
 0x00758b54 , __real@ce6e6b28                                                , 4     , const f32
+0x758b58,??_C@_0L@CDJCMAFF@JForcePush?$AA@,11,compiler literal
 0x758be0,_PlayerSlideSpeedPc,8,const f64
 0x758be0,__real@3ff3333340000000,8,const f64
 0x758c00,_PickupTypeLiteral758c00,9,char[9]
@@ -3806,6 +3870,7 @@ address    , symbol                                                         , si
 0x758c68,_PickupTypeLiteral758c68,10,char[10]
 0x758c74,_PickupTypeLiteral758c74,10,char[10]
 0x758c80,_PickupTypeLiteral758c80,12,char[12]
+0x758c8c,??_C@_0BC@FFMMLBKH@Grv_GuardWeaponLp?$AA@,18,const char[18]
 0x758c8c,_PowerUpLoopSfx_PC,18,const char[18]
 0x758ca0,_ScoreCounterName,8,char[8]
 0x758ca8,_PickupMultiplierFormat,4,const char[4]
@@ -3819,15 +3884,30 @@ address    , symbol                                                         , si
 0x758d10,_PlayerPanelVariantZeroX,4,const f32
 0x758d40,__real@3f99999a,4,const f32
 0x758d48,__real@3f40624de0000000,8,const f64
+0x758d6c,??_C@_08EDPKMLDD@TC14_VLN?$AA@,9,const char[9]
+0x758d78,??_C@_08LPILCDOJ@R2D2_VLA?$AA@,9,const char[9]
+0x758d84,??_C@_08MEGCNHPM@TC14_VLA?$AA@,9,const char[9]
 0x758dec   , ??_C@_05MHMEBBGO@scale?$AA@                                    , 6     , const char[6]
 0x758dfc   , ??_C@_05HJCMGBKF@speed?$AA@                                    , 6     , const char[6]
 0x758e04   , ??_C@_06KGHINEPG@radius?$AA@                                   , 7     , const char[7]
 0x758e24   , ??_C@_03MCADLMAF@off?$AA@                                      , 4     , const char[4]
 0x00758e24 , _LevelConfigOff                                                , 4     , const char[4]
+0x758e60,??_C@_08GNFCOFEE@Explode2?$AA@,9,const char[9]
+0x758e6c,??_C@_0BA@JDPKNNHK@imp_C3PO_magnet?$AA@,16,const char[16]
+0x758ea8,__real@c0c00000,4,compiler literal
+0x758eac,??_C@_0BF@LJILEAKG@imp_C3PO_magnet_drop?$AA@,21,const char[21]
+0x758ec4,??_C@_0BD@CPBACLCI@env_grabber_pickup?$AA@,19,const char[19]
+0x758ed8,??_C@_0P@DBMBODPB@env_grabber_up?$AA@,15,const char[15]
+0x758ee8,??_C@_0BB@MLJOJDPI@env_grabber_down?$AA@,17,const char[17]
+0x758f04,??_C@_0BB@IELLJPCI@env_crane_mvt_lp?$AA@,17,const char[17]
+0x758f18,??_C@_0BE@MDKAICAP@CarbonFreezeCraneLp?$AA@,20,const char[20]
+0x758f38,??_C@_0BB@FBCIAHCF@env_hover_box_lp?$AA@,17,const char[17]
+0x758f84,??_C@_07FMLCOFMD@SwLever?$AA@,8,const char[8]
 0x758f90,__real@3fd6666660000000,8,const f64
 0x00758fb8,__real@4030000000000000,8,const f64
 0x00758fc0 , _NuTime_RefreshRate                                            , 8     , const f64
 0x758fc0,__real@404e000000000000,8,const f64
+0x758fc8,??_C@_05GNIBDDLP@HatOn?$AA@,6,const char[6]
 0x758fd0   , _PCContextName_HatMachine                                      , 11    , const char [11]
 0x00759080 , _AreaFixUpName_Senate                                          , 8     , char[8]
 0x0075909c , _AreaFixUpName_Losttemple                                      , 12    , char[12]
@@ -3842,10 +3922,12 @@ address    , symbol                                                         , si
 0x00759700 , _Menu_ColonSeparator                                           , 3     , const char[3]
 0x759710,__real@3f0e147b,4,const f32
 0x759714,__real@bf19999a,4,const f32
+0x759718,??_C@_0BA@NECHOIAM@env_padLight_on?$AA@,16,const char[16]
 0x00759718,_ArcadeAiKilledSoundNamePc,16,const char[16]
 0x759740,__real@3f647ae140000000,8,const f64
 0x759758,__real@3f00000000000000,8,const f64
 0x00759760 , __real@47000000                                                , 4     , const f32
+0x759764,??_C@_0M@BMDKLHLG@ui_hover_lp?$AA@,12,const char[12]
 0x759770,_TextInputKeyNameTextPc759770,,char[2]
 0x7597a4,__real@3ba3d70a,4,const f32
 0x7598d8   , _PCContextName_Ledge                                           , 6     , const char [6]
@@ -3858,6 +3940,7 @@ address    , symbol                                                         , si
 0x0075996c , _TakeOverState_MapRunAway                                      , 11    , const char[11]
 0x00759978 , _TakeOverState_ReleasedTakeOver                                , 17    , const char[17]
 0x0075998c , __real@41100000                                                , 4     , f32
+0x759990,??_C@_0N@JGNMHJOL@env_crane_in?$AA@,13,const char[13]
 0x007599a0 , _AreaFixUpName_Fairground                                      , 12    , char[12]
 0x007599ac , _AreaFixUpName_Rooftops                                        , 12    , char[12]
 0x007599b8 , _AreaFixUpName_Gothamstreets                                   , 16    , char[16]
@@ -4120,8 +4203,8 @@ address    , symbol                                                         , si
 0x75b6a8,_PlayerActionNamePc_083,5,const char[5]
 0x75b6b0,_PlayerActionNamePc_082,6,const char[6]
 0x75b6b8,_PlayerActionNamePc_081,14,const char[14]
-0x75b6c8,_PlayerActionNamePc_080,6,const char[6]
 0x75b6c8,??_C@_05DHJDAOHK@right?$AA@,6,const char[6]
+0x75b6c8,_PlayerActionNamePc_080,6,const char[6]
 0x75b6d0,_PlayerActionNamePc_079,4,const char[4]
 0x75b6d4,_PlayerActionNamePc_078,6,const char[6]
 0x75b6dc,_PlayerActionNamePc_077,6,const char[6]
@@ -4162,8 +4245,8 @@ address    , symbol                                                         , si
 0x75b850,_PlayerActionNamePc_042,11,const char[11]
 0x75b85c,_PlayerActionNamePc_041,6,const char[6]
 0x75b864,_PlayerActionNamePc_040,7,const char[7]
-0x75b86c,_PlayerActionNamePc_039,5,const char[5]
 0x75b86c,??_C@_04GOOOJOPP@left?$AA@,5,const char[5]
+0x75b86c,_PlayerActionNamePc_039,5,const char[5]
 0x75b874,_PlayerActionNamePc_038,4,const char[4]
 0x75b878,_PlayerActionNamePc_037,6,const char[6]
 0x0075b880 , _AIActionOpenName                                              , 5     , const char[5]
@@ -4273,6 +4356,7 @@ address    , symbol                                                         , si
 0x75bc84   , _PCContextName_HoverUp                                         , 8     , const char [8]
 0x75bc8c   , _PCContextName_ForceThrow                                      , 11    , const char [11]
 0x75bc98   , _PCContextName_Tube                                            , 5     , const char [5]
+0x75bca0,??_C@_05IFIAFHOB@Swipe?$AA@,6,compiler literal
 0x75bca0   , _PCContextName_Swipe                                           , 6     , const char [6]
 0x75bca8   , _PCContextName_LandSlam                                        , 9     , const char [9]
 0x75bcb4   , _PCContextName_LandLunge                                       , 10    , const char [10]
@@ -4296,18 +4380,23 @@ address    , symbol                                                         , si
 0x75bd70   , __real@bf12f1aa                                                , 4     , const f32
 0x75bd74   , __real@3f12f1aa                                                , 4     , const f32
 0x0075bd78 , __real@bf200000                                                , 4     , const f32
+0x75bd7c,??_C@_0BB@EIGJHPFP@XWing_LoopDeLoop?$AA@,17,const char[17]
 0x0075bd7c , _TurnLoopSfx                                                   , 17    , const char [17]
 0x0075bd98 , __real@40d38e0000000000                                        , 8     , f64
 0x75bda0,__real@bfe99999a0000000,8,const f64
 0x0075bda8 , __real@3fdf5c28e0000000                                        , 8     , const f64
 0x75bdb0,__real@bec00000,4,const f32
+0x75bdb4,??_C@_09PPJPILBG@WhipSwish?$AA@,10,compiler literal
 0x0075bdc0 , _SaberSparksName                                               , 12    , const char [12]
 0x0075bdec , __real@3a83126f                                                , 4     , const f32
 0x75bdf0,??_C@_0L@GAFGMFNG@Jawa_Dizzy?$AA@,11,const char[11]
+0x75bdfc,??_C@_0BB@MDDPNKNA@ForceChokeCrunch?$AA@,17,const char[17]
+0x75be10,??_C@_0P@BCEMCEH@ForceMindTrick?$AA@,15,const char[15]
 0x75be20,__real@3fd5555560000000,8,const f64
 0x75be2c   , _ForcePushApproachOuterSquare                                  , 4     , const f32
 0x75be30   , _ForcePushApproachInnerSquare                                  , 4     , const f32
 0x0075be30 , __real@3c23d70b                                                , 4     , const f32
+0x75be34,__real@40bb3333,4,compiler literal
 0x0075be44 , ??_C@_07GDIDDJMN@BBounce?$AA@                                  , 8     , const char[8]
 0x0075be50 , __real@4003333340000000                                        , 8     , const f64
 0x75be58   , __real@3eb851ec                                                , 4     , const f32
@@ -4315,9 +4404,15 @@ address    , symbol                                                         , si
 0x75be70,??_C@_0O@MPBJCNBH@Char_Slide_Lp?$AA@,14,const char [14]
 0x75be80,__real@3f200000,4,const f32
 0x75be84,__real@3e000000,4,const f32
+0x75be88,??_C@_07GICFGJOC@FliesLp?$AA@,8,compiler literal
+0x75be90,??_C@_08NOEINGLE@Lego_Poo?$AA@,9,compiler literal
 0x75bec0,__real@4052c00000000000,8,const f64
 0x75bed4,??_C@_0BD@KEDIDCPA@env_tractorbeam_lp?$AA@,19,const char[19]
 0x75bee8,??_C@_06BELLIOBE@R2Move?$AA@,7,const char[7]
+0x75bef0,??_C@_0BE@ICGIBACL@drd_r2_mvt_water_lp?$AA@,20,const char[20]
+0x75bf20,??_C@_0BC@CCFOPOCO@drd_r2_scope_down?$AA@,18,const char[18]
+0x75bf34,??_C@_0BA@EFCCJBJD@drd_r2_scope_up?$AA@,16,const char[16]
+0x75bf6c,??_C@_0N@KCDMCLKM@PodX_Booster?$AA@,13,const char[13]
 0x0075bf80 , _ApplyGravityFrameScale                                        , 8     , const f64
 0x75bf80   , __real@4066800000000000                                        , 8     , const f64
 0x75bf88,__real@3ff0aaaaa0000000,8,const f64
@@ -4332,12 +4427,141 @@ address    , symbol                                                         , si
 0x0075c070 , __real@43e00000                                                , 4     , const f32
 0x0075c074 , __real@44200000                                                , 4     , const f32
 0x0075c0a8 , _NuTimeBarFontScale                                            , 4     , const f32
+0x75c1ac,??_C@_07EHPEANFD@swdisco?$AA@,8,const char[8]
 0x0075c1d4 , _GrapDetach_text                                              , 11    , char[11]
 0x0075c1e0 , _GrapAttach_text                                              , 11    , char[11]
+0x75c290,??_C@_0O@HJFPJKO@Block_Push_Lp?$AA@,14,const char[14]
+0x75c2a0,??_C@_0M@BHEJPJKP@Block_Shove?$AA@,12,const char[12]
 0x75c314,_KillPartsLegoSingleTextPc,11,char[11]
+0x75c320,??_C@_0BB@KKENPEBK@fly_paddle_stuck?$AA@,17,const char[17]
+0x75c334,??_C@_0BD@NNLNBGMG@ui_DoubleScoreText?$AA@,19,const char[19]
+0x75c384,??_C@_0BA@KOEGAKHN@NegC_MagnetCoil?$AA@,16,const char[16]
+0x75c3d4,??_C@_0BD@MHJNCOEN@CountdownTimerTock?$AA@,19,const char[19]
+0x75c3e8,??_C@_0BD@OCPGHBJB@CountdownTimerTick?$AA@,19,const char[19]
+0x75c534,??_C@_08OLCDOOAB@fs_swamp?$AA@,9,const char[9]
+0x75c540,??_C@_06KJDFCMDJ@fs_ice?$AA@,7,const char[7]
+0x75c548,??_C@_0BE@HNCGDLAJ@ui_DoubleScoreEntry?$AA@,20,const char[20]
+0x75c55c,??_C@_08PGHEFNLI@exp_bomb?$AA@,9,const char[9]
+0x75c568,??_C@_0O@MNAPBAA@wpn_bomb_drop?$AA@,14,const char[14]
+0x75c578,??_C@_09PMKDCECH@Lego_PLOP?$AA@,10,const char[10]
+0x75c584,??_C@_07HBNIKDJP@C3_Hurt?$AA@,8,const char[8]
+0x75c58c,??_C@_0N@ECDPENEK@TieDoorsOpen?$AA@,13,const char[13]
+0x75c59c,??_C@_0N@JKFHLCNL@Dianoga_Roar?$AA@,13,const char[13]
+0x75c5ac,??_C@_0O@NPDBLAMG@Dianoga_Groan?$AA@,14,const char[14]
+0x75c5bc,??_C@_07LJCOGKDD@SwDisco?$AA@,8,const char[8]
+0x75c5c4,??_C@_0BA@FGNGGKKP@env_padlight_on?$AA@,16,const char[16]
+0x75c5d4,??_C@_0BD@PCJNBPAF@env_block_light_on?$AA@,19,const char[19]
+0x75c5e8,??_C@_09OJOLMIAJ@waterfall?$AA@,10,const char[10]
+0x75c5f4,??_C@_0P@NGIHEHPC@env_lantern_lp?$AA@,15,const char[15]
+0x75c604,??_C@_0O@ODEIDFHP@env_magnet_on?$AA@,14,const char[14]
 0x75c604,_EpisodeVI_magnet_on,14,const char[14]
+0x75c614,??_C@_0BF@NCIJDEBK@imp_c3po_magnet_drop?$AA@,21,const char[21]
 0x75c614,_EpisodeVI_magnet_drop,21,const char[21]
+0x75c62c,??_C@_0P@LMJAPFII@env_curtain_lp?$AA@,15,const char[15]
+0x75c63c,??_C@_0N@NHDKEBAJ@exp_minecart?$AA@,13,const char[13]
+0x75c64c,??_C@_0BB@ECOJCBKD@Env_ctrl_desk_on?$AA@,17,const char[17]
+0x75c660,??_C@_0N@BLJABCCO@env_steam_lp?$AA@,13,const char[13]
+0x75c670,??_C@_0N@BCFCJNJI@Env_Steam_Lp?$AA@,13,const char[13]
+0x75c680,??_C@_0N@PIDFMLLP@exp_asteroid?$AA@,13,const char[13]
+0x75c690,??_C@_0BA@NFDJPKN@ThermalDet_Beep?$AA@,16,const char[16]
+0x75c6a0,??_C@_0L@PDFIDPAG@SqueakWash?$AA@,11,const char[11]
+0x75c6ac,??_C@_0L@FOKAFCGO@Turbo_Fire?$AA@,11,const char[11]
+0x75c6b8,??_C@_0N@BFFEPMID@Turret_YawLp?$AA@,13,const char[13]
+0x75c6c8,??_C@_0P@IOBCINPO@Turret_PitchLp?$AA@,15,const char[15]
+0x75c6d8,??_C@_06IMNODLPD@ffield?$AA@,7,const char[7]
 0x75c6d8,_EpisodeVI_ffield,7,const char[7]
+0x75c6e0,??_C@_0BE@IEKAHGCD@env_tractorbeam_off?$AA@,20,const char[20]
+0x75c6f4,??_C@_09JLHNGPEF@FFieldOff?$AA@,10,const char[10]
+0x75c700,??_C@_0N@JGJFKHGF@Droid_BeamLp?$AA@,13,const char[13]
+0x75c710,??_C@_0P@MMDCNICC@env_jacuzzi_lp?$AA@,15,const char[15]
+0x75c720,??_C@_0L@MCDJNPIE@conveyorlp?$AA@,11,const char[11]
+0x75c72c,??_C@_0BE@MHAJGDCI@env_suckerspit_gonk?$AA@,20,const char[20]
+0x75c740,??_C@_0BD@ODGMALBA@env_suckerspit_3PO?$AA@,19,const char[19]
+0x75c754,??_C@_0N@LAOHJHDL@greenlighton?$AA@,13,const char[13]
+0x75c764,??_C@_0O@OGIIEPB@env_shower_lp?$AA@,14,const char[14]
+0x75c774,??_C@_0BB@FACBALMG@Kas_BoulderExplo?$AA@,17,const char[17]
+0x75c788,??_C@_0BA@MIKEDCPO@Kas_BoulderLoop?$AA@,16,const char[16]
+0x75c798,??_C@_0BD@NLGLFFCA@Cru_HugeWallMoveLp?$AA@,19,const char[19]
+0x75c7ac,??_C@_0BE@NGLBBPKC@Dog_TowerBreakExplo?$AA@,20,const char[20]
+0x75c7c0,??_C@_0BG@FMEBECFB@Dog_StDestTurretSpins?$AA@,22,const char[22]
+0x75c7d8,??_C@_0BB@PFMEKPAG@Dog_ShipDoorOpen?$AA@,17,const char[17]
+0x75c7ec,??_C@_0BD@KJJHCNFE@Dog_ShipBreakExplo?$AA@,19,const char[19]
+0x75c800,??_C@_0BF@BLBBGIBM@Dog_SepShieldPwrDown?$AA@,21,const char[21]
+0x75c818,??_C@_0BC@POMPHOIA@Dog_HugeBeamGunLp?$AA@,18,const char[18]
+0x75c82c,??_C@_0BE@KEGABJNH@Dog_HugeBeamGunFire?$AA@,20,const char[20]
+0x75c840,??_C@_0BE@KHMLMEOH@Dog_TriFighterGuns2?$AA@,20,const char[20]
+0x75c854,??_C@_0BH@NKBHPCJG@Dog_JediStFighterEngLp?$AA@,23,const char[23]
+0x75c86c,??_C@_0BG@HNOBOKBP@Dog_JediStFighterGun3?$AA@,22,const char[22]
+0x75c884,??_C@_0BG@GEPKNLFO@Dog_JediStFighterGun2?$AA@,22,const char[22]
+0x75c89c,??_C@_0BF@FJKEMPJJ@Dog_JediStFighterGun?$AA@,21,const char[21]
+0x75c8b4,??_C@_0P@PAPFEHEP@Dog_TurretFire?$AA@,15,const char[15]
+0x75c8c4,??_C@_0BB@ENAMBBLP@Ep3_1_ExplosionM?$AA@,17,const char[17]
+0x75c8d8,??_C@_0BE@BLBCOG@Ep3_1_StarDestEngLp?$AA@,20,const char[20]
+0x75c8ec,??_C@_0BC@DHKFFGDO@Dooku_LightningLp?$AA@,18,const char[18]
+0x75c900,??_C@_0BF@CKPIDBJH@Fac_ObiRestraintLoop?$AA@,21,const char[21]
+0x75c918,??_C@_0BC@FOFCCENA@Fac_LaserGateLoop?$AA@,18,const char[18]
+0x75c92c,??_C@_0BA@DBLAEDGC@Fac_BucketOpens?$AA@,16,const char[16]
+0x75c93c,??_C@_0BF@MFGINDIA@Fac_BucketArriveLock?$AA@,21,const char[21]
+0x75c954,??_C@_0N@PALECFKA@Fac_BucketLp?$AA@,13,const char[13]
+0x75c964,??_C@_0BB@DGBGDIMI@Fac_BucketAwayFB?$AA@,17,const char[17]
+0x75c978,??_C@_0BB@IEODJDMM@Fac_BucketGearUD?$AA@,17,const char[17]
+0x75c98c,??_C@_0O@FACKHJBJ@Fac_BonusBeep?$AA@,14,const char[14]
+0x75c99c,??_C@_0P@GGMGJJOI@Fac_BonusCylUp?$AA@,15,const char[15]
+0x75c9ac,??_C@_0BB@KCMBGBAL@Fac_StampImpacts?$AA@,17,const char[17]
+0x75c9c0,??_C@_0BA@MALLLEAM@Fac_StampHydros?$AA@,16,const char[16]
+0x75c9d0,??_C@_0O@MCNBNJDN@FacB_ConvStop?$AA@,14,const char[14]
+0x75c9e0,??_C@_0M@OJBBENIM@FacB_BeltLp?$AA@,12,const char[12]
+0x75c9ec,??_C@_0BC@HDDKFLOB@Kam_ForceFieldOff?$AA@,18,const char[18]
+0x75ca00,??_C@_0BB@FMECKNGE@Kam_ForceFieldLp?$AA@,17,const char[17]
+0x75ca14,??_C@_0M@BAJAFEPP@Kam_SparkLp?$AA@,12,const char[12]
+0x75ca20,??_C@_0BI@MLEEDNDO@Kam_DiscoFloorPanelDone?$AA@,24,const char[24]
+0x75ca38,??_C@_0BG@FOCEICCI@Kam_DiscoFloorPanelOn?$AA@,22,const char[22]
+0x75ca50,??_C@_0BA@KDBMKAEL@Slave1_EngineLp?$AA@,16,const char[16]
+0x75ca60,??_C@_0BG@IEBKGIAA@Kam_Slave1BlasterFire?$AA@,22,const char[22]
+0x75ca78,??_C@_0BE@ELOMGDKN@Ep1_7_FloatPlatRise?$AA@,20,const char[20]
+0x75ca8c,??_C@_0BA@FOIGDNNC@Ep1_7_SFTakeOff?$AA@,16,const char[16]
+0x75ca9c,??_C@_0BA@LBOGCFDD@Ep1_7_SFHoverLp?$AA@,16,const char[16]
+0x75caac,??_C@_0BA@MGBDEEPH@Ep1_7_SFPowerUp?$AA@,16,const char[16]
+0x75cabc,??_C@_0BC@PNMJFGP@Ep1_7_BDroidPlatf?$AA@,18,const char[18]
+0x75cad0,??_C@_0BG@BODLKGPB@Ep1_5_OutdoorPlatform?$AA@,22,const char[22]
+0x75cae8,??_C@_0BA@JFKNGKIG@ResX_PortCulEnd?$AA@,16,const char[16]
+0x75caf8,??_C@_0P@IDGPKFNJ@ResX_PortCulLp?$AA@,15,const char[15]
+0x75cb08,??_C@_0BE@OGLFAGOB@ResX_PoleLift_Lower?$AA@,20,const char[20]
+0x75cb1c,??_C@_0BD@JFODCOLM@ResX_PoleLift_Rise?$AA@,19,const char[19]
+0x75cb30,??_C@_0P@LHKDFCME@ResX_MarbColLp?$AA@,15,const char[15]
+0x75cb40,??_C@_0L@JECBEPIM@KaaduGrowl?$AA@,11,const char[11]
+0x75cb4c,??_C@_09HJLFDPIF@KaaduBark?$AA@,10,const char[10]
+0x75cb58,??_C@_0L@ELCCHEHN@IkopiGrowl?$AA@,11,const char[11]
+0x75cb64,??_C@_0L@LNIDMBPA@FS_CreaRun?$AA@,11,const char[11]
+0x75cb70,??_C@_0O@KPIBOADO@GunA_TreeFall?$AA@,14,const char[14]
+0x75cb80,??_C@_0BB@LPIMEFBM@NegC_MagnetCoilS?$AA@,17,const char[17]
+0x75cb94,??_C@_0BB@BGLKIOIG@NegC_MagnetCoilH?$AA@,17,const char[17]
+0x75cba8,??_C@_0L@KPDDAHJG@NegC_Crate?$AA@,11,const char[11]
+0x75cbb4,??_C@_06EEMPAHFJ@FField?$AA@,7,const char[7]
+0x75cbbc,??_C@_0BB@NCFMNPJO@NegA_CoinMDoorDn?$AA@,17,const char[17]
+0x75cbd0,??_C@_0BB@BLPJCJAG@NegA_CoinMDoorUp?$AA@,17,const char[17]
+0x75cbe4,??_C@_0L@OMCMABOC@PodX_Crash?$AA@,11,const char[11]
+0x75cbf0,??_C@_0N@KMIADICM@PodX_Collide?$AA@,13,const char[13]
+0x75cc00,??_C@_0BD@ONCCPACA@PodX_EngGeneric_Lp?$AA@,19,const char[19]
+0x75cc14,??_C@_0P@INAIOBPA@Pod_Race_Light?$AA@,15,const char[15]
+0x75cc24,??_C@_0M@OPDEOODF@Pod_Race_Go?$AA@,12,const char[12]
+0x75cc30,??_C@_0BB@EBMDEOAM@PodX_EngStartup2?$AA@,17,const char[17]
+0x75cc44,??_C@_0BB@GKOOBNMP@PodX_EngStartup1?$AA@,17,const char[17]
+0x75cc58,??_C@_0BE@CHKDAFAH@PodX_EngGeneric3_Lp?$AA@,20,const char[20]
+0x75cc6c,??_C@_0BE@BKMDCMLH@PodX_EngGeneric2_Lp?$AA@,20,const char[20]
+0x75cc80,??_C@_0BE@FNGDFGGH@PodX_EngGeneric1_Lp?$AA@,20,const char[20]
+0x75cc94,??_C@_0BC@MAHNPLFA@PodX_EngAnakin_Lp?$AA@,18,const char[18]
+0x75cca8,??_C@_0BD@EOGEMBGG@PodX_EngSebulba_Lp?$AA@,19,const char[19]
+0x75ccbc,??_C@_0N@FJGGPBLL@GC_LaserBeam?$AA@,13,const char[13]
+0x75cccc,??_C@_0BA@HFDLHPPN@GC_GunshipDeath?$AA@,16,const char[16]
+0x75ccdc,??_C@_0BD@OHDOLPEC@GC_GunshipEngineLp?$AA@,19,const char[19]
+0x75ccf0,??_C@_0BG@DNJNIDDO@GC_GunshipBlasterFire?$AA@,22,const char[22]
+0x75cd08,??_C@_0L@GABCJCOM@ui_ZoomOut?$AA@,11,const char[11]
+0x75cd14,??_C@_09FIMPDLJC@ui_ZoomIn?$AA@,10,const char[10]
+0x75cd20,??_C@_0BB@CDJPEAMD@Shop_NotEnufMuny?$AA@,17,const char[17]
+0x75cd34,??_C@_0L@GKNAPDAF@exp_debris?$AA@,11,const char[11]
+0x75cd40,??_C@_0BC@MPDNLAOA@CarbonFreezeCrane?$AA@,18,const char[18]
+0x75cd54,??_C@_0O@CHIEINJL@env_door_flap?$AA@,14,const char[14]
 0x0075ce98 , __real@3e333333                                                , 4     , const f32
 0x0075cff4 , ??_C@_01IDAFKMJL@_?$AA@                                        , 2     , const char[2]
 0x0075cff4 , _PermLegalSeparator                                            , 2     , const char[2]
@@ -4361,8 +4585,8 @@ address    , symbol                                                         , si
 0x0075d360 , __real@3deb851f                                                , 4     , const f32
 0x0075d364 , __real@3f133333                                                , 4     , const f32
 0x0075d368 , __real@3e051eb8                                                , 4     , const f32
-0x0075d36c , _Text_CrossCodeword                                            , 6     , const char[6]
 0x75d36c,??_C@_05HCKPILGO@cross?$AA@,6,char[6]
+0x0075d36c , _Text_CrossCodeword                                            , 6     , const char[6]
 0x0075d374 , _Text_WibbleCodeword                                           , 7     , const char[7]
 0x0075d37c , _TextLoadPermTRCPath                                           , 19    , const char[19]
 0x0075d390 , _TextLoadPermAPIExtension                                      , 9     , const char[9]
@@ -4375,8 +4599,8 @@ address    , symbol                                                         , si
 0x75d3f0,??_C@_0O@KHPFFDJG@rand_interval?$AA@,14,const char[14]
 0x75d400,??_C@_0P@HHEJLFJH@frame_interval?$AA@,15,const char[15]
 0x75d410,??_C@_07KEEICBFD@animobj?$AA@,8,const char[8]
-0x0075d418 , _nu_wind_phase_scale                                           , 8     , const f64
 0x75d418,__real@3f70000000000000,8,const f64
+0x0075d418 , _nu_wind_phase_scale                                           , 8     , const f64
 0x75d420,??_C@_0O@LFCBNLLB@traffic_start?$AA@,14,const char[14]
 0x75d430,??_C@_0M@GHNNDFBF@traffic_end?$AA@,12,const char[12]
 0x75d43c,??_C@_07PCAHCCKO@Traffic?$AA@,8,const char[8]
@@ -4501,8 +4725,8 @@ address    , symbol                                                         , si
 0x75f760,??_C@_05CIAMLOHJ@padup?$AA@,6,char[6]
 0x75f768,??_C@_0M@JDFCCMFN@playstation?$AA@,12,char[12]
 0x75f774,??_C@_04KJKHNPDG@logo?$AA@,5,char[5]
-0x0075f77c , _TextPlatformWii                                               , 4     , const char[4]
 0x75f77c,??_C@_03NLGKJIIH@wii?$AA@,4,char[4]
+0x0075f77c , _TextPlatformWii                                               , 4     , const char[4]
 0x75f780,??_C@_04JFCNHLLM@back?$AA@,5,char[5]
 0x75f788,??_C@_06MPKMECK@accept?$AA@,7,char[7]
 0x0075feb8 , _AIActionRandomName                                            , 7     , const char[7]
@@ -4683,8 +4907,8 @@ address    , symbol                                                         , si
 0x00761b34 , _AreaConfigKeyword_redbrick_extra                              , 15    , const char[15]
 0x00761b44 , _AreaConfigKeyword_redbrick_cheat                              , 15    , const char[15]
 0x00761b54 , _AreaConfigKeyword_timetrial_time                              , 15    , const char[15]
-0x00761b64 , _AreaConfigKeyword_text_id                                     , 8     , const char[8]
 0x761b64,??_C@_07FFJDFEOF@text_id?$AA@,8,const char[8]
+0x00761b64 , _AreaConfigKeyword_text_id                                     , 8     , const char[8]
 0x761b6c   , ??_C@_07ECDMHAAP@name_id?$AA@                                  , 8     , const char[8]
 0x00761b6c , _AreaConfigKeyword_name_id                                     , 8     , const char[8]
 0x00761b74 , _AreaConfigKeyword_no_freeplay                                 , 12    , const char[12]
@@ -4705,8 +4929,8 @@ address    , symbol                                                         , si
 0x761c84   , ??_C@_07IJLDNLID@minikit?$AA@                                  , 8     , const char[8]
 0x00761c84 , _AreaConfigKeyword_minikit                                     , 8     , const char[8]
 0x00761c8c , _AreaConfigKeyword_single_buffer                               , 14    , const char[14]
-0x00761c9c , _AreaConfigKeyword_level                                       , 6     , const char[6]
 0x761c9c,??_C@_05KJNJLLGA@level?$AA@,6,const char[6]
+0x00761c9c , _AreaConfigKeyword_level                                       , 6     , const char[6]
 0x00761ca4 , _LevelConfigKeywordFile                                        , 5     , const char[5]
 0x00761cac , _LevelConfigKeywordDir                                         , 4     , const char[4]
 0x00761cb0 , _AreaConfigKeyword_area_end                                    , 9     , const char[9]
@@ -4743,24 +4967,24 @@ address    , symbol                                                         , si
 0x00762090 , _LevelConfigGenericKeyword_in_space                            , 9     , const char[9]
 0x0076209c , _LevelConfigGenericKeyword_metal                               , 6     , const char[6]
 0x007620a4 , _LevelConfigGenericKeyword_reflect_y                           , 10    , const char[10]
-0x007620b0 , _LevelConfigGenericKeyword_reflect_range                       , 14    , const char[14]
 0x7620b0,??_C@_0O@GIMMBBKL@reflect_range?$AA@,14,const char[14]
-0x007620c0 , _LevelConfigGenericKeyword_blobshadow_fadefar                  , 19    , const char[19]
+0x007620b0 , _LevelConfigGenericKeyword_reflect_range                       , 14    , const char[14]
 0x7620c0,??_C@_0BD@FDBOJJEG@blobshadow_fadefar?$AA@,19,const char[19]
-0x007620d4 , _LevelConfigGenericKeyword_blobshadow_fadenear                 , 20    , const char[20]
+0x007620c0 , _LevelConfigGenericKeyword_blobshadow_fadefar                  , 19    , const char[19]
 0x7620d4,??_C@_0BE@CDJHCAPH@blobshadow_fadenear?$AA@,20,const char[20]
+0x007620d4 , _LevelConfigGenericKeyword_blobshadow_fadenear                 , 20    , const char[20]
 0x7620e8   , ??_C@_0BB@CKDMNEID@blobshadow_alpha?$AA@                       , 17    , const char[17]
 0x007620e8 , _LevelConfigGenericKeyword_blobshadow_alpha                    , 17    , const char[17]
 0x7620fc   , ??_C@_0N@FCJDHOAN@hover_height?$AA@                            , 13    , const char[13]
 0x007620fc , _LevelConfigGenericKeyword_hover_height                        , 13    , const char[13]
-0x0076210c , _LevelConfigGenericKeyword_nearclip_pc                         , 12    , const char[12]
 0x76210c,??_C@_0M@MJKOEILF@nearclip_pc?$AA@,12,const char[12]
-0x00762118 , _LevelConfigGenericKeyword_farclip_pc                          , 11    , const char[11]
+0x0076210c , _LevelConfigGenericKeyword_nearclip_pc                         , 12    , const char[12]
 0x762118,??_C@_0L@IBHNOGCB@farclip_pc?$AA@,11,const char[11]
-0x00762124 , _LevelConfigGenericKeyword_nearclip                            , 9     , const char[9]
+0x00762118 , _LevelConfigGenericKeyword_farclip_pc                          , 11    , const char[11]
 0x762124,??_C@_08LJCMDIFM@nearclip?$AA@,9,const char[9]
-0x00762130 , _LevelConfigGenericKeyword_farclip                             , 8     , const char[8]
+0x00762124 , _LevelConfigGenericKeyword_nearclip                            , 9     , const char[9]
 0x762130,??_C@_07CACJKOEO@farclip?$AA@,8,const char[8]
+0x00762130 , _LevelConfigGenericKeyword_farclip                             , 8     , const char[8]
 0x00762138 , _LevelConfigGenericKeyword_farclip_hack                        , 13    , const char[13]
 0x00762148 , _LevelConfigGenericKeyword_backb_bottom                        , 13    , const char[13]
 0x00762158 , _LevelConfigGenericKeyword_backg_bottom                        , 13    , const char[13]
@@ -5429,6 +5653,8 @@ address    , symbol                                                         , si
 0x7f17b0,_TerrainPlayerOtherMovementScalePc,,f32
 0x7f17b4,_TerrainPlayerBikeMovementScalePc,,f32
 0x007f17b8 , _ID_DEFAULTCHARACTER_A                                         , 2     , i16
+0x7f17c0,_PunchRangeUnitIdPc,,i16
+0x7f17c4,_PunchRangeCompanionIdPc,,i16
 0x7f17d0,_VehicleBoltId7f17d0Pc,,i16
 0x7f17d4,_VehicleBoltId7f17d4Pc,,i16
 0x007f1808 , _id_DEFAULTCHARACTER                                           , 4     , i16[2]
@@ -5440,6 +5666,7 @@ address    , symbol                                                         , si
 0x007f1850 , _id_GYROCOPTER                                                 , 2     , i16
 0x007f185c , _ID_DEFAULTCHARACTER_LSW_A                                     , 2     , i16
 0x007f1860 , _ID_DEFAULTCHARACTER_LSW_B                                     , 2     , i16
+0x7f1874,_id_CAPTAINTARPALS,,i16
 0x007f1878 , _id_IMPERIALGUARD                                              , 2     , i16
 0x007f187c , _id_BODYGUARD                                                  , 2     , i16
 0x007f1880 , _id_DARTHMAUL                                                  , 2     , i16
@@ -5560,6 +5787,8 @@ address    , symbol                                                         , si
 0x007f39f0 , _adtabentries                                                  , 36    , i8[9][4]
 0x007f3a14 , _adtab                                                         , 4     , i8 (*)[4]
 0x007f3b14 , _BonusWinner                                                   , 4     , i32
+0x7f3dc0,_CheatPooPartsEnabledPc,,u8
+0x7f3ec0,_CheatPooCoinsEnabledPc,,u8
 0x7f4140,_TractorBeamEnabledPc,,u8
 0x007f4358 , _LevelSplinesTable                                             , 4     , LEVELSPLINE_PC *
 0x007f5c74 , __real@42de0000                                                , 4     , const f32
@@ -5609,6 +5838,7 @@ address    , symbol                                                         , si
 0x7f904c,_PartVehicleHeartGunshipScale_PC,,f32
 0x7f9050,_PartVehicleHeartScale_PC,,f32
 0x7f90d0,_gizpanel_gizmotype_id,,i32
+0x7f9144,_TorpedoGrabRangeSquaredPc,,f32
 0x7f9f5c,_PCArcadePointGoals,,i32[5]
 0x007fa130 , _Arcade_Mode                                                   , 84    , ARCADE_MODE_PC [7]
 0x007fa184 , _ArcadeItem                                                    , 24    , ARCADE_ITEM_PC
@@ -5671,6 +5901,7 @@ address    , symbol                                                         , si
 0x7fc044,_VehicleLoopTimePc,,f32
 0x7fc04c,_CombatReactionHorizontalScalePc,,f32
 0x7fc050,_CombatReactionVerticalScalePc,,f32
+0x7fc054,_test_ai_combo,,i32
 0x007fc078 , _rocket_speed                                                  , 4     , f32
 0x7fc07c,_VehicleGunshipAngleADefaultPc,,i32
 0x7fc080,_VehicleGunshipAngleAPlayer1Pc,,i32
@@ -5706,6 +5937,8 @@ address    , symbol                                                         , si
 0x007fc3c8 , _PanelWideHeight                                               , 4     , f32
 0x007fce84 , _PermDataLoaded                                                , 4     , i32
 0x007ff950 , _Game_LanguageList                                             , 56    , LANGUAGEDATA[7]
+0x7ffa84,_TorpedoStealTimerPc,,f32
+0x7ffa88,_TorpedoStealRangePc,,f32
 0x7ffaf8,_TrafficAnim_ConfigKeywords,,NUFPCOMJMP[2]
 0x7ffb08,_Traffic_ConfigKeywords,,NUFPCOMJMP[6]
 0x007fffec , _GUNSHIPAHACK                                                  , 4     , i32
@@ -5823,6 +6056,7 @@ address    , symbol                                                         , si
 0x00802838 , _LEGOCONTEXT_JUMP                                              , 4     , i32
 0x0080283c , _LEGOCONTEXT_BIGJUMP                                           , 4     , i32
 0x802844,_LEGOCONTEXT_COMBO,,i32
+0x802848,_LEGOCONTEXT_PUNCH,,i32
 0x802850,_LEGOCONTEXT_PUSHSPINNER,,i32
 0x00802854 , _LEGOCONTEXT_PUSHOBSTACLE                                      , 4     , i32
 0x00802858 , _LEGOCONTEXT_BEENTAKENOVER                                     , 4     , i32
@@ -5831,6 +6065,7 @@ address    , symbol                                                         , si
 0x802864,_LEGOCONTEXT_WEAPONIN,,i32
 0x802868,_LEGOCONTEXT_WEAPONOUT,,i32
 0x00802878 , _LEGOCONTEXT_SUPERCARRY                                        , 4     , i32
+0x80287c,_LEGOCONTEXT_LAND_JUMP,,i32
 0x80288c,_LEGOCONTEXT_LAND_LUNGE,,i32
 0x802890,_LEGOCONTEXT_LAND_SLAM,,i32
 0x0080289c , _LEGOCONTEXT_EATEN                                             , 4     , i32
@@ -5838,7 +6073,7 @@ address    , symbol                                                         , si
 0x008028a4 , _LEGOCONTEXT_SPECIALMOVE_VICTIM                                , 4     , i32
 0x008028a8 , _LEGOCONTEXT_BUCK                                              , 4     , i32
 0x008028ac , _LEGOCONTEXT_WHIP                                              , 4     , i32
-0x008028b0 , _LegoContextNetWaitPc                                          ,       ,
+0x8028b0,_LegoContextNetWaitPc,,i32
 0x00802bd4 , _DEFAULT_PLAYERHITPOINTS                                       , 4     , i32
 0x00802bd8 , _PlayerID                                                      , 8     , i32[2]
 0x00802be8 , _TOGGLEHOLDTIME                                                , 4     , f32
@@ -5913,6 +6148,9 @@ address    , symbol                                                         , si
 0x00804c04 , _LEGOACT_COMBOJUMP                                             , 2     , i16
 0x804c08,_BigJumpLandPreferredPc,,i16
 0x00804c0c , _LEGOACT_FALL                                                  , 2     , i16
+0x804c10,_LEGOACT_FALLLAND,,i16
+0x804c14,_LEGOACT_BACKPACKFALLLAND,,i16
+0x804c1c,_LegoActPunchBehindPc,,i16
 0x00804c20 , _BoltShootClassId0                                             , 2     , u16
 0x00804c24 , _BoltShootClassId1                                             , 2     , u16
 0x00804c28 , _BoltShootClassId2                                             , 2     , u16
@@ -5926,7 +6164,11 @@ address    , symbol                                                         , si
 0x804c60,_LEGOACT_WALLSHUFFLE_RIGHT,,i16
 0x804ca4,_LEGOACT_SUPERCARRY_WALK,,i16
 0x804cc0,_LEGOACT_MAGNET_WALK_METAL,,i16
+0x804d04,_LEGOACT_EXTRA_LAND2,,i16
 0x00804d08 , _LEGOACT_BUCK                                                  , 2     , i16
+0x804dc4,_PUNCHGAP,,f32
+0x804dc8,_PUNCHCHARGAP,,f32
+0x804dcc,_CanPunchGirls,,i32
 0x804e38,_GizBuilditGDeb,,i16[6]
 0x00805030 , _GhostLightMul                                                 , 4     , f32
 0x00805034 , _GhostLightTargetMul                                           , 4     , f32
@@ -6353,43 +6595,81 @@ address    , symbol                                                         , si
 0x0087b060 , _BONUSKAMINO_ADATA                                             , 4     , AREA_DATA_PC *
 0x0087b064 , _BONUSKASHYYYK_ADATA                                           , 4     , AREA_DATA_PC *
 0x0087b068 , _JIMTEST_ADATA                                                 , 4     , AREA_DATA_PC *
+0x87b06c,_NEGOTIATIONSA_LDATA,,LEVELDATA_PC *
+0x87b070,_NEGOTIATIONSB_LDATA,,LEVELDATA_PC *
 0x0087b074 , _NEGOTIATIONSC_LDATA                                           , 4     , LEVELDATA_PC *
+0x87b078,_GUNGAN_A_LDATA,,LEVELDATA_PC *
+0x87b07c,_RESCUEC_LDATA,,LEVELDATA_PC *
 0x0087b0ac , _PODRACEA_LDATA                                                , 4     , LEVELDATA_PC *
 0x0087b0b0 , _PODRACEB_LDATA                                                , 4     , LEVELDATA_PC *
 0x0087b0c0 , _PODSPRINTA_LDATA                                              , 4     , LEVELDATA_PC *
+0x87b0c4,_RETAKEB_LDATA,,LEVELDATA_PC *
+0x87b0c8,_RETAKED_LDATA,,LEVELDATA_PC *
+0x87b0cc,_RETAKEE_LDATA,,LEVELDATA_PC *
 0x87b0d8,_MAULA_LDATA,,LEVELDATA_PC *
+0x87b0e0,_MAULD_LDATA,,LEVELDATA_PC *
 0x87b0e8,_MAULF_LDATA,,LEVELDATA_PC *
 0x0087b0f4 , _GUNSHIPA_LDATA                                                , 4     , LEVELDATA_PC *
 0x87b0f8,_GUNSHIPB_LDATA,,LEVELDATA_PC *
 0x0087b0fc , _BONUS_GUNSHIPA_LDATA                                          , 4     , LEVELDATA_PC *
 0x0087b100 , _BONUS_GUNSHIPB_LDATA                                          , 4     , LEVELDATA_PC *
 0x0087b118 , _DOGFIGHTA_LDATA                                               , 4     , LEVELDATA_PC *
+0x87b11c,_FACTORYB_LDATA,,LEVELDATA_PC *
+0x87b120,_FACTORYD_LDATA,,LEVELDATA_PC *
+0x87b124,_FACTORYF_LDATA,,LEVELDATA_PC *
+0x87b128,_FACTORYG_LDATA,,LEVELDATA_PC *
+0x87b130,_KAMINOC_LDATA,,LEVELDATA_PC *
 0x0087b134 , _KAMINOE_LDATA                                                 , 4     , LEVELDATA_PC *
 0x87b13c,_DOOKUC_LDATA,,LEVELDATA_PC *
+0x87b160,_KASHYYYKD_LDATA,,LEVELDATA_PC *
 0x87b168,_CRUISERC_LDATA,,LEVELDATA_PC*
 0x0087b16c , _CRUISERD_LDATA                                                 , 4      , LEVELDATA_PC *
+0x87b174,_CRUISERG_LDATA,,LEVELDATA_PC *
 0x87b178,_VADERA_LDATA,,LEVELDATA_PC *
 0x0087b180 , _VADERC_LDATA                                                  , 4     , LEVELDATA_PC *
+0x87b1a0,_TATOOINEA_LDATA,,LEVELDATA_PC *
+0x87b1a4,_TATOOINEB_LDATA,,LEVELDATA_PC *
+0x87b1b0,_MOSEISLEYA_LDATA,,LEVELDATA_PC *
 0x0087b1b4 , _MOSEISLEYB_LDATA                                              , 4     , LEVELDATA_PC *
+0x87b1b8,_MOSEISLEYC_LDATA,,LEVELDATA_PC *
 0x87b1c4   , _DEATHSTARRESCUEA_LDATA                                        , 4     , LEVELDATA_PC *
+0x87b1c8,_DEATHSTARRESCUEB_LDATA,,LEVELDATA_PC *
+0x87b1cc,_DEATHSTARRESCUEC_LDATA,,LEVELDATA_PC *
+0x87b1d4,_DEATHSTARRESCUEE_LDATA,,LEVELDATA_PC *
+0x87b1d8,_DEATHSTARESCAPEA_LDATA,,LEVELDATA_PC *
+0x87b1dc,_DEATHSTARESCAPEB_LDATA,,LEVELDATA_PC *
+0x87b1e0,_DEATHSTARESCAPEC_LDATA,,LEVELDATA_PC *
+0x87b1e4,_DEATHSTARESCAPED_LDATA,,LEVELDATA_PC *
+0x87b1e8,_DEATHSTARBATTLEA_LDATA,,LEVELDATA_PC *
+0x87b1ec,_DEATHSTARBATTLEB_LDATA,,LEVELDATA_PC *
+0x87b1f0,_DEATHSTARBATTLEC_LDATA,,LEVELDATA_PC *
 0x0087b1f4 , _DEATHSTARBATTLED_LDATA                                        , 4     , LEVELDATA_PC *
 0x0087b1fc , _HOTHBATTLEA_LDATA                                             , 4     , LEVELDATA_PC *
+0x87b214,_HOTHESCAPEA_LDATA,,LEVELDATA_PC *
+0x87b21c,_HOTHESCAPEC_LDATA,,LEVELDATA_PC *
 0x87b230   , _ASTEROIDCHASED_LDATA                                          , 4     , LEVELDATA_PC *
-0x0087b238 , _CLOUDCITYESCAPEA_LDATA                                        , 4     , LEVELDATA_PC *
-0x0087b240 , _CLOUDCITYESCAPEC_LDATA                                        , 4     , LEVELDATA_PC *
-0x0087b244 , _CLOUDCITYTRAPA_LDATA                                          , 4     , LEVELDATA_PC *
+0x87b238,_CLOUDCITYESCAPEA_LDATA,,LEVELDATA_PC *
+0x87b240,_CLOUDCITYESCAPEC_LDATA,,LEVELDATA_PC *
+0x87b244,_CLOUDCITYTRAPA_LDATA,,LEVELDATA_PC *
 0x87b248,_CLOUDCITYTRAPB_LDATA,4,LEVELDATA_PC *
 0x0087b254 , _SPEEDERCHASEA_LDATA                                           , 4     , LEVELDATA_PC *
 0x87b26c   , _DEATHSTAR2BATTLEA_LDATA                                       , 4     , LEVELDATA_PC *
+0x87b270,_DEATHSTAR2BATTLEB_LDATA,,LEVELDATA_PC *
+0x87b274,_DEATHSTAR2BATTLED_LDATA,,LEVELDATA_PC *
 0x0087b278 , _DEATHSTAR2BATTLEE_LDATA                                       , 4     , LEVELDATA_PC *
 0x0087b27c , _DEATHSTAR2BATTLEF_LDATA                                       , 4     , LEVELDATA_PC *
 0x0087b280 , _DEATHSTAR2BATTLEG_LDATA                                       , 4     , LEVELDATA_PC *
+0x87b288,_EMPERORFIGHTA_LDATA,,LEVELDATA_PC *
 0x87b28c,_SARLACCPITA_LDATA,,LEVELDATA_PC *
-0x0087b2a0 , _JABBASPALACEA_LDATA                                           , 4     , LEVELDATA_PC *
-0x0087b2a4 , _JABBASPALACEB_LDATA                                           , 4     , LEVELDATA_PC *
-0x0087b2a8 , _JABBASPALACED_LDATA                                           , 4     , LEVELDATA_PC *
-0x0087b2ac , _JABBASPALACEE_LDATA                                           , 4     , LEVELDATA_PC *
-0x0087b2b4 , _ENDORBATTLEA_LDATA                                            , 4     , LEVELDATA_PC *
+0x87b290,_SARLACCPITB_LDATA,,LEVELDATA_PC *
+0x87b294,_SARLACCPITC_LDATA,,LEVELDATA_PC *
+0x87b2a0,_JABBASPALACEA_LDATA,,LEVELDATA_PC *
+0x87b2a4,_JABBASPALACEB_LDATA,,LEVELDATA_PC *
+0x87b2a8,_JABBASPALACED_LDATA,,LEVELDATA_PC *
+0x87b2ac,_JABBASPALACEE_LDATA,,LEVELDATA_PC *
+0x87b2b4,_ENDORBATTLEA_LDATA,,LEVELDATA_PC *
+0x87b2b8,_ENDORBATTLEB_LDATA,,LEVELDATA_PC *
+0x87b2c0,_ENDORBATTLED_LDATA,,LEVELDATA_PC *
 0x0087b2c8 , _UpdateSockets_LDATA                                           , 4     , LEVELDATA_PC *
 0x0087b2ec , _LevelProgressData                                             , 4     , LEVEL_PROGRESS *
 0x0087b2f0 , _LevDeaths                                                      , 4      , i32
@@ -6411,6 +6691,9 @@ address    , symbol                                                         , si
 0x0087b8a8 , _avg_currentspeed_mul                                          , 4     , f32
 0x0087b8b0,_ForceBackRadiusPc,,f32
 0x0087b8b4,_ForceBackRadius2Pc,,f32
+0x87b8b8,_ComboOpponent_Behind,,i32
+0x87b8bc,_ComboOpponent_Range2,,f32
+0x87b8c0,_PooPositionPc,,NUVEC[2]
 0x0087b8d8 , _VehicleAreaRememberSpeed                                      , 4     , f32
 0x0087b8dc , _IDLESPEEDINNARROWSOCKSONLY                                    , 4     , i32
 0x0087b8e0 , _SaberSparksTimer                                              , 4     , f32
@@ -6423,6 +6706,7 @@ address    , symbol                                                         , si
 0x0087b908 , _CurrentSpeedOverride                                          , 4     , f32
 0x0087b90c , _pod_roll                                                      , 8     , f32[2]
 0x0087b914 , _pod_roll_target                                               , 8     , f32[2]
+0x87b920,_objopponent_ignoreaiopponent,,i32
 0x87b928   , _ForcePush_SuperPush                                           , 4     , i32
 0x87b92c,_ForcePush_SuperMindTrick,,i32
 0x87b934,_VehicleGunshipAngleBPlayer2Pc,,i32
@@ -6470,6 +6754,7 @@ address    , symbol                                                         , si
 0x00880918 , _tAUDIOVOLUME                                                  , 2     , i16
 0x0088093c , _tMUSIC                                                        , 2     , i16
 0x00880f90 , _tALONGTIMEAGO                                                 , 2     , i16
+0x881b00,_TorpedoFillEnabledPc,,u8
 0x881b08,_parse_trafficanimsys,,TRAFFICANIMSYS_PC *
 0x881b0c,_parse_trafficanim,,TRAFFICANIM_PC *
 0x881b10,_reference_trafficanim,,TRAFFICANIM_PC
@@ -6756,6 +7041,7 @@ address    , symbol                                                         , si
 0x0093d834 , _player2                                                       , 4     , GAMEOBJECT *
 0x0093d838 , _PLAYERCOUNT                                                   , 4     , i32
 0x0093d83c , _UsePlayerList                                                 , 4     , i32
+0x93d844,_IsWearingBackPackFn,,i32 (__cdecl *)(GAMEOBJECT *)
 0x0093d848 , _Player_ClearContextFn                                         , 4     , PLAYER_CLEAR_CONTEXT_CALLBACK_PC
 0x0093d850 , _LIFTPLAYER                                                    , 4     , i32
 0x0093d860 , _abort_load                                                    , 4     , volatile i32
@@ -6783,6 +7069,8 @@ address    , symbol                                                         , si
 0x009507c8 , _gizmoblowupnametable_numids                                    ,        ,
 0x009507cc , _ExBlowupFlagsPc                                               ,       ,
 0x009507d0 , _gizmoblowupnametable                                           , 1024   , char[32][32]
+0x950bd0,_GizmoBlowUpOpponent_Behind,,i32
+0x950bd4,_GizmoBlowUpOpponent_Range2,,f32
 0x00950bd8 , _GameBlowUpBlownUpFn                                           , 4     , void (__cdecl *)(void *)
 0x00950be4,_GizmoBlowUp_SfxFn,,"void (__cdecl *)(GIZMOBLOWUP_PC *, NUVEC *)"
 0x950be8,_GizmoBlowUp_NoTargetFn,,"i32(__cdecl*)(WORLDINFO*,GAMEOBJECT*)"
@@ -6888,15 +7176,21 @@ address    , symbol                                                         , si
 0x9553f0   , _SecondCharConfigure                                           , 4     , i32
 0x009553f4 , _MissionSys                                                    , 4     , MISSIONSYS_PC *
 0x9553fc,_PlayerSpecialMoveDataPc,,void *
+0x955400,_PlayerSpecialMoveCountPc,,i32
 0x95558c,_objhitobj_bolt,,BOLT*
 0x955590,_objhitobj_nohurtsfx,,i32
 0x955594,_objhitobj_noimpactsfx,,i32
 0x955598,_objhitobj_noattackerrumble,,i32
 0x95559c,_objhitobj_throwkillpartsup,,i32
 0x9555a0,_objhitobj_killparts_yrot,,i16*
+0x9555a4,_UsingExtraActionsFn,,i32 (__cdecl *)(GAMEOBJECT *)
 0x9555ac,_Fighting_WeaponInActionFn,,i32 (__cdecl *)(GAMEOBJECT *)
 0x9555b0,_Fighting_WeaponOutActionFn,,i32 (__cdecl *)(GAMEOBJECT *)
 0x9555b4,_WeaponInOut_NoAIJediSfx,,i32
+0x9555b8,_CanStartHoldFn,,i32 (__cdecl *)(GAMEOBJECT *)
+0x9555bc,_Punch_GetDamageFn,,"i32 (__cdecl *)(GAMEOBJECT *,GAMEOBJECT *)"
+0x9555c0,_Punch_HitExtraCodeFn,,"void (__cdecl *)(GAMEOBJECT *,NUVEC *)"
+0x9555c4,_Punch_HitHoldFn,,"void (__cdecl *)(GAMEOBJECT *,GAMEOBJECT *)"
 0x955650,_KillPartsAccessoriesPc,576,KILLPARTS_ACCESSORY_PC[2][9]
 0x955890,_Game_Customiser,,void *
 0x00955894 , _Customiser_AccessoriesLoaded                                  ,       , ""

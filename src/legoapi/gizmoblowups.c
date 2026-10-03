@@ -541,3 +541,110 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Target(GAMEOBJECT *object, NUVEC *position, 
     }
     return nearest != NULL ? nearest : fallback;
 }
+
+typedef struct PUNCH_BLOWUP_VIEW_PC {
+    u8 unknown_00[0x4c];
+    NUVEC mid_position;
+    NUVEC bounds_min;
+    NUVEC bounds_max;
+    u8 unknown_70[0x24];
+    u32 status_flags;
+    u32 draw_flags;
+    u32 secondary_flags;
+    u8 unknown_a0[8];
+    f32 target_scale;
+    u8 unknown_ac[0x56];
+    i16 platform_id;
+    u8 unknown_104[0x10];
+} PUNCH_BLOWUP_VIEW_PC;
+STATIC_ASSERT(sizeof(PUNCH_BLOWUP_VIEW_PC) == 0x114);
+STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, mid_position) == 0x4c);
+STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, draw_flags) == 0x98);
+
+STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, bounds_min) == 0x58);
+STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, bounds_max) == 0x64);
+STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, status_flags) == 0x94);
+STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, secondary_flags) == 0x9c);
+STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, target_scale) == 0xa8);
+STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, platform_id) == 0x102);
+
+extern i32 GizmoBlowUpOpponent_Behind;
+extern f32 GizmoBlowUpOpponent_Range2;
+extern i16 LegoActPunchBehindPc;
+GIZMOBLOWUP_PC *__cdecl GizmoBlowUpOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius, f32 minimum_radius,
+                                            i32 mode, u32 mask, u32 value, u32 secondary_mask) {
+    PUNCH_BLOWUP_VIEW_PC *target = (PUNCH_BLOWUP_VIEW_PC *)WORLD->gizmo_blowups;
+    PUNCH_BLOWUP_VIEW_PC *nearest = NULL;
+    f32 nearest_distance, distance, radius, maximum, minimum;
+    u32 flags;
+    NUVEC delta;
+    i32 i, behind;
+    if (target == NULL)
+        return NULL;
+    nearest_distance = range * range;
+    GizmoBlowUpOpponent_Behind = 0;
+    for (i = 0; i < WORLD->gizmo_blowup_count; ++i, ++target) {
+        if ((target->status_flags & 0x80c001) != 0x80c000 || ((object->flags_1fc & 0x80) && target->platform_id != -1 &&
+                                                              target->platform_id == object->supporting_platform_id))
+            continue;
+        flags = target->draw_flags;
+        if ((flags & 0x20) && ShadowMode == 0)
+            continue;
+        if (mask != 0) {
+            if (value != 0) {
+                if ((flags & mask) != value)
+                    continue;
+            } else if (!(flags & mask))
+                continue;
+        }
+        if (secondary_mask != 0 && !(target->secondary_flags & secondary_mask))
+            continue;
+        if (mode == 4 && !(flags & 0x80))
+            continue;
+        if (mode == 5) {
+            if ((object->collision_max.y - object->collision_min.y) * 1.5 + object->collision_max.y <
+                    target->bounds_min.y ||
+                target->bounds_max.y < object->collision_min.y)
+                continue;
+            distance = NuVecXZDistSqr(&object->collision_position, &target->mid_position, &delta);
+        } else {
+            if (target->bounds_min.y > object->collision_max.y)
+                continue;
+            distance = NuVecDistSqr(&object->collision_position, &target->mid_position, &delta);
+        }
+        if (!(distance < nearest_distance))
+            continue;
+        if (mode == 2) {
+            GizmoBlowUpOpponent_Behind = 0;
+            nearest = target;
+            nearest_distance = distance;
+            continue;
+        }
+        if (extra_radius > 0.0f) {
+            radius = object->bounds_radius + target->target_scale;
+            maximum = radius + extra_radius;
+            if (distance >= maximum * maximum)
+                continue;
+            if (minimum_radius > 0.0f) {
+                minimum = radius + minimum_radius;
+                if (distance < minimum * minimum)
+                    continue;
+            }
+        }
+        NuVecRotateY(&delta, &delta, -(i32)object->movement_facing_angle);
+        behind = 0;
+        if (delta.z >= 0.0f) {
+            if (mode != 4 || LegoActPunchBehindPc == -1 ||
+                object->character_model->model_data_b[LegoActPunchBehindPc] == NULL)
+                continue;
+            behind = 1;
+        }
+        if (distance < nearest_distance) {
+            nearest = target;
+            nearest_distance = distance;
+            GizmoBlowUpOpponent_Behind = behind;
+        }
+    }
+    GizmoBlowUpOpponent_Range2 = nearest_distance;
+    return (GIZMOBLOWUP_PC *)nearest;
+}

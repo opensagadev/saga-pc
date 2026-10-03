@@ -291,3 +291,26 @@ extern "C" {
                 type->add_level_sfx(world, set->data, ids, count, capacity);
     }
 }
+
+extern "C" void __cdecl PlaySabreSfx(char *name, GAMEOBJECT *object, NUVEC *position, i32 unused) {
+    u8 player = object->field_280;
+    i32 bits = 0;
+    i32 sfx;
+    (void)unused;
+    if (player == 0xff && WORLD->rooms_visible_ptr[object->portal_room] == 0)
+        return;
+    if (object->flags_1fc & 0x80)
+        bits = 1 << (player & 31);
+    if (name != NULL) {
+        sfx = GetSfxId(name);
+        if (position == NULL)
+            position = &object->collision_position;
+        PlaySfxById(sfx, position);
+    } else {
+        sfx = object->character_data->game_character->sfx_sabre;
+        if (sfx != -1)
+            GameAudio_PlaySfxById(sfx, &object->collision_position, bits, 1);
+        else
+            PlaySfxById(GameAudio->sfx_ids[0x40], &object->collision_position);
+    }
+}

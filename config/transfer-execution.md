@@ -1089,3 +1089,61 @@ The sole writer adds180 required initializer views/1964B with unknown owning
 extents/no allocation credit. Next is the genuinely connected Beast/Punch/
 opponent group, with true Beast identity closing the retained8845-byte level
 audio parent. Cutscene load/fixup/create providers remain separate bounded work.
+
+
+### Beast/Punch, targeting, level audio and torpedo parents (2026-10-04)
+
+Twenty-eight actual functions add23,892 complete PC bytes over25b0680:
+Beast/Hold/fall/barrier8195, public Punch services2350, opponent selection/range1408,
+level sound setup8845 and torpedo parents3094. Whole-PC fuzzy coverage rises from
+12.389966% to12.952078% of3471246B.
+Unique compared code reaches715559B; native objdiff denominator715671B and
+advisory62.837555% remain separate. Five newly exact functions add770B,
+reaching70418B (2.028609%). No previous exact code or data is lost.
+
+The real Move_BEAST224 and its original static caller/helper group retain private
+register interfaces naturally. Punch includes the full3000-byte native body and
+switch table, restored combo-style chooser BYTEe41, StartupGameFlag1 range split,
+quiet unordered timer/hit-frame paths and real public children. Its rebuilt
+register choices remain nonexact; no assembly, public adapters or artificial
+retention calls are added. StartHold104 joins that actual owner. Range selection
+uses the true WORD27a heading rather than roll27c; the radius square must round
+to f32 before comparison. An intentional old unrounded-square control fails
+exactly the discriminating boundary case. GizmoBlowUpOpponent's complete724-byte
+extent corrects the earlier uncompiled718-byte inventory truncation.
+
+The full8845-byte audio parent uses actual Move_BEAST identity, existing audio
+services and199 verified compiler-owned literal regions. A C partition retains
+the retail's real public cross-unit calls; historical original TU identity is
+unproved. Combining with the existing C++ helper owner inlined113 lookups and
+changed codegen substantially; no compiler pragmas, flags or fake shims replace
+the real interfaces. EWOK/WICKET readers use canonical signed WORD ID owners.
+Torpedo parents reuse the three target searches, real target callback and input/
+text providers. The XWing_Torpedo view includes all14 bytes with NUL; markerX
+reuses the existing Text key owner rather than duplicating storage.
+
+Pinned build/link, all2631 function/5068 data definitions across223 objects,
+LLVM18 checks225 files/223 units, and665 tests (three skips) pass. Native replay
+passes206 cases: Beast30, Punch49, opponent31, Torpedo49 and level audio47, each
+using all223 actual normal objects with no substitutes. Intentional reverse
+Beast identity fails two audio checks; wrong radius-square fails one opponent
+check. Poo and audio fixture faults were invalid test inputs: actual readers
+require level_objects[24] and camera_splines[19..23]. Real typed inactive/null
+tables repair the fixtures; no production guards or missing providers are added.
+Active visual/audio/emission and complete gameplay remain outside these fixtures.
+
+All2603 previous function copies remain;2602 are identical. The unchanged
+particle717->713 body equals the independently proved historical variant:
+only FLD/FXCH scheduling differs, two FXCH are removed, all186 other instructions/
+CFG edges and34 relocations remain. Initialized finite f32 stack behavior is
+preserved; unmasked signaling-NaN/invalid-memory trap order remains unproved.
+Its actual88.419685 nonexact score is retained. The checkpoint waited for final
+native replay and this bounded retained proof, preserving the user journal.
+
+The sole data writer adds80 required views327B, all with blank original owning
+extents/no allocation credit. All3051 complete data regions agree between actual
+normal and frozen isolated objects. Eight older uncompiled pointer inventory
+extents lack allocation proof and become blank, retiring32 inventory bytes with
+no previous exact loss. Next are the compiled4478-byte cutscene kernel and its
+2564-byte real loader/private callers, with resource and Vehicle/POD families
+prepared concurrently. Draw3767 remains separate bounded work.

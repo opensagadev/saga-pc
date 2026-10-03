@@ -3944,3 +3944,22 @@ verified. Device links are three12-byte records based at297e060. The input
 wrapper uses canonical nu_input_state rather than a duplicate manager owner.
 MiniAnim43 is exact, preserves WORD truncation and initializes verified fields;
 FindPart182 retains real typed Part/MAXPARTS and strict nearest selection.
+
+
+### Connected Beast/Punch, audio and torpedo transfer (2026-10-04)
+
+Twenty-eight complete PC functions23892B are emitted in original subsystem
+owners, with private movement helpers retained by real callers. Move_BEAST224,
+Beast fall149, opponent chooser189, matrix rotation160 and barrier48 are fully
+exact. Public function extents include GizmoBlowUpOpponent724's cold tail;
+the former718 inventory length was incomplete. Native Punch3000 includes its
+seven-entry dispatch table. Private register ABI qualifications remain in the
+retained evidence and blank ctype rows; no public stack ABI is invented.
+
+Opponent1179 plus StillThere229 use canonical bounds_radius1dc, physical
+headingWORD27a and a rounded f32 squared radius. Final native cases distinguish
+27a/27c and a real rounding boundary. Complete torpedo spans1820/1274 retain
+mandatory WORLD reads, fill-before-cheat and unordered timer behavior. Canonical
+text marker storage is reused. Level sound8845 uses the genuine exact Beast
+pointer and signed WORD EWOK/WICKET IDs; the pure C partition preserves actual
+public cross-unit calls without claiming historical TU identity.
