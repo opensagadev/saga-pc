@@ -270,3 +270,60 @@ DWA_WEIGHT_BLOCK_PC **__cdecl NuRndrCreateBlendShapeDWAPointers(i32 count) {
     }
     return &DwaPointerPoolPc[DwaPointerCursorPc];
 }
+
+typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
+typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
+
+void NuRndrCalcRandEllipsePos(NUVEC4 *position, NUMTX *matrix, NUVEC *axes) {
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 length;
+    f32 scale;
+
+    x = (f32)((f64)(i32)NuWindRand() - 32768.0);
+    y = (f32)((f64)(i32)NuWindRand() - 32768.0);
+    z = (f32)((f64)(i32)NuWindRand() - 32768.0);
+    length = (f32)((f64)x * x + (f64)y * y + (f64)z * z);
+    scale = 1.0f / NuFsqrt(length);
+    x *= scale;
+    y *= scale;
+    z *= scale;
+    position->x = axes[1].x * x + axes[2].x * y + axes[3].x * z + axes[0].x;
+    position->y = axes[1].y * x + axes[2].y * y + axes[3].y * z + axes[0].y;
+    position->z = axes[1].z * x + axes[2].z * y + axes[3].z * z + axes[0].z;
+    position->w = 1.0f;
+    NuVec4MtxTransformVU0(position, position, matrix);
+}
+
+void NuRndrCalcRandCylinderPos(NUVEC4 *position, NUMTX *matrix, NUVEC *axes) {
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 length;
+    f32 scale;
+
+    x = (f32)((f64)((i32)NuWindRand() - 32768) * (1.0 / 32768.0));
+    y = (f32)((f64)(i32)NuWindRand() - 32768.0);
+    z = (f32)((f64)(i32)NuWindRand() - 32768.0);
+    length = (f32)((f64)y * y + (f64)z * z);
+    scale = 1.0f / NuFsqrt(length);
+    y *= scale;
+    z *= scale;
+    position->x = axes[1].x * x + axes[2].x * y + axes[3].x * z + axes[0].x;
+    position->y = axes[1].y * x + axes[2].y * y + axes[3].y * z + axes[0].y;
+    position->z = axes[1].z * x + axes[2].z * y + axes[3].z * z + axes[0].z;
+    position->w = 1.0f;
+    NuVec4MtxTransformVU0(position, position, matrix);
+}
+
+void NuRndrStartReflectionRender(i32 clip) {
+    PCSpecialReflectionPass = 1;
+    RndrStateSetReflection(1);
+    (void)clip;
+}
+
+void NuRndrEndReflectionRender(void) {
+    PCSpecialReflectionPass = 0;
+    RndrStateSetReflection(0);
+}

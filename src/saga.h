@@ -6802,6 +6802,27 @@ STATIC_ASSERT(offsetof(GIZFORCE_TARGET_RECORD_PC, animation) == 4);
 STATIC_ASSERT(offsetof(GIZFORCE_TARGET_RECORD_PC, distance) == 8);
 STATIC_ASSERT(offsetof(GIZFORCE_TARGET_RECORD_PC, index) == 12);
 
+struct PC_HG_SHADOW_PACKET {
+    NUMTX matrix;
+    void *ellipse, *cylinder, *third_shape;
+    i32 state0, state1, state2, state_byte;
+    f32 near_value, far_value;
+    u8 ellipse_count, cylinder_count, third_count, sequence;
+};
+struct PC_HG_SHADOW_STATE_VIEW {
+    i32 state0, state1, state2;
+    u8 unknown_0c[3];
+    i8 state_byte;
+};
+
+STATIC_ASSERT(sizeof(struct PC_HG_SHADOW_PACKET) == 104);
+STATIC_ASSERT(offsetof(struct PC_HG_SHADOW_PACKET, sequence) == 103);
+STATIC_ASSERT(sizeof(struct PC_HG_SHADOW_STATE_VIEW) == 16);
+STATIC_ASSERT(offsetof(struct PC_HG_SHADOW_STATE_VIEW, state_byte) == 15);
+struct PC_HG_RENDER_VIEW;
+
+typedef struct level_sfx_pulse_prefix_s LEVEL_SFX_PULSE_PC;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -7001,6 +7022,68 @@ extern "C" {
     extern i32 VehicleGunshipAngleBPlayer2Pc;
     extern f32 BOLT_OVERRIDE_PLAYERBOLTSPEED;
     extern f32 BOLT_OVERRIDE_PLAYERBOLTDURATION;
+
+    extern i32 PCShadowSubmissionEnabled;
+    extern i32 PCShadowSurfaceSamplingEnabled;
+    extern i32 PCShadowDrawMode;
+    extern u8 PCShadowDrawEnabled;
+    extern struct PC_HG_SHADOW_PACKET PCShadowPackets[280];
+    extern i32 PCSpecialForceMaterialCount;
+    extern u8 CutSceneBoundingBoxTrackRoot;
+    extern i32 PCShadowPacketSequence;
+    extern f32 PCShadowNearValue;
+    extern f32 PCShadowFarValue;
+    extern i32 PCShadowPacketCount;
+    extern struct PC_HG_SHADOW_STATE_VIEW PCShadowState;
+    extern i32 drawcharactermodel_nobsa;
+    extern i32 drawcharactermodel_noani;
+    extern i32 drawcharactermodel_restpose;
+    extern i32 drawcharactermodel_keepmergeaction;
+    extern i32 drawcharactermodel_locatorsupdated;
+    extern u8 TempNumJoints;
+    extern i32 notransparentchardraw;
+    extern void(__cdecl *APIObjResetShadowMapRenderingFn)(void);
+    extern void(__cdecl *APIObjEnableShadowMapRenderingFn)(void);
+    extern struct PC_HG_RENDER_VIEW *Temphgobj;
+    extern NUMTL *APITrans_Mtl[2];
+
+    void __cdecl NuMtxMulHArrayPc(NUMTX *, NUMTX *, NUMTX *, i32);
+    void __cdecl NuSpecialForceMaterials(i32, NUMTL **);
+    void __cdecl NuRndrStartReflectionRender(i32);
+    void __cdecl NuRndrEndReflectionRender(void);
+    void __cdecl NuRndrCalcRandEllipsePos(NUVEC4 *, NUMTX *, NUVEC *);
+    void __cdecl NuRndrCalcRandCylinderPos(NUVEC4 *, NUMTX *, NUVEC *);
+    i32 __cdecl NuHGobjRndrRandShadowSurfacePoints(NUHGOBJ_EVAL_PC *, NUMTX *, NUMTX *, i32, NUVEC *, i32);
+    i32 __cdecl NuCameraClipHGobj(NUHGOBJ_EVAL_PC *, NUMTX *, NUMTX *);
+    i32 __cdecl NuHGobjRndrMtxDwa(NUHGOBJ_EVAL_PC *, NUMTX *, i32, i16 *, NUMTX *, DWA_WEIGHT_BLOCK_PC **, i32);
+    void __cdecl PCEnqueueHierarchyShadowGroup(NUMTX *, void *, i32, void *, i32, void *, i32);
+    void __cdecl NuHGobjSubmitShadowGroupsPc(NUHGOBJ_EVAL_PC *, NUMTX *, NUMTX *);
+    void __cdecl RootFnEx(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32, i32);
+    void __cdecl RootFn(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
+    void __cdecl RootFnY(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
+    void __cdecl BlendRootFn(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
+    void __cdecl NuHGobjRestrictEvaluation(NUHGOBJ_EVAL_PC *);
+    void __cdecl NuHGobjRestoreEvaluation(void);
+    void __cdecl APITransparentCharDraw(NUHGOBJ_EVAL_PC *, NUMTX *, i32, i16 *, NUMTX *, DWA_WEIGHT_BLOCK_PC **, i32);
+    i32 __cdecl APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, APICHARACTERDATA *, ANIMPACKET_PC *, NUMTX *,
+                                      NUMTX *, NUMTX *, NUVEC *, NUMTX *, GAMEOBJECT *, u32,
+                                      NUHGOBJ_JOINT_OVERRIDE_PC *, i32, i32, f32, NUMTX *,
+                                      void(__cdecl *)(void *, GAMEOBJECT *, i32, i32), APIDEBRISSYS_PC *);
+    void __cdecl AddLevelSfxFromName(char *, i32 *, i32 *, i32);
+    void __cdecl AddLevelSfxFromId(i32, i32 *, i32 *, i32);
+    void __cdecl GameAudio_AddSfx(i32, i32 *, i32 *, i32);
+    void __cdecl Pulses_AddSfx(LEVEL_SFX_PULSE_PC *, i32 *, i32 *, i32);
+    void __cdecl AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *, WORLDINFO *, i32 *, i32 *, i32);
+    void __cdecl SetSpecialSfxBits(i32 *, i32 *, WORLDINFO *);
+    void __cdecl SetSoundBitsById(const i32 *, void(__cdecl *)(i32));
+    i32 __cdecl CanObjSlide(GAMEOBJECT *, i32);
+    i32 __cdecl StartSlide(GAMEOBJECT *, i32);
+    void __cdecl SlideCode(GAMEOBJECT *);
+    void __cdecl FlattenCode(GAMEOBJECT *);
+    BOLT_PC *__cdecl Bolt_Find(i32, NUVEC *, GAMEOBJECT *);
+    void *__cdecl GizTorpMachine_FindNearest(WORLDINFO *, NUVEC *, f32 *);
+    void *__cdecl FindNearestTorpTarget(WORLDINFO *, NUVEC *, f32, u8 *);
+    extern AREA_DATA_PC *BOUNTYHUNTERPURSUIT_ADATA;
 
     extern HINTSYS_PC hintsys;
     extern GIZFORCE_TARGET_RECORD_PC PossibleForceTargetsPc[];

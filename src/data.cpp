@@ -8385,3 +8385,97 @@ extern "C" {
     f32 BOLT_OVERRIDE_PLAYERBOLTDURATION;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$PCShadowSubmissionEnabled")
+    i32 PCShadowSubmissionEnabled = 1;
+#pragma data_seg()
+
+#pragma data_seg(".data$PCShadowSurfaceSamplingEnabled")
+    i32 PCShadowSurfaceSamplingEnabled = 1;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$PCShadowDrawMode")
+    i32 PCShadowDrawMode;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCShadowDrawEnabled")
+    u8 PCShadowDrawEnabled;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCShadowPackets")
+    PC_HG_SHADOW_PACKET PCShadowPackets[280];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCSpecialForceMaterialCount")
+    i32 PCSpecialForceMaterialCount;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CutSceneBoundingBoxTrackRoot")
+    u8 CutSceneBoundingBoxTrackRoot;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCShadowPacketSequence")
+    i32 PCShadowPacketSequence;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCShadowNearValue")
+    f32 PCShadowNearValue;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCShadowFarValue")
+    f32 PCShadowFarValue;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCShadowPacketCount")
+    i32 PCShadowPacketCount;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCShadowState")
+    PC_HG_SHADOW_STATE_VIEW PCShadowState;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$drawcharactermodel_nobsa")
+    i32 drawcharactermodel_nobsa;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$drawcharactermodel_noani")
+    i32 drawcharactermodel_noani;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$drawcharactermodel_restpose")
+    i32 drawcharactermodel_restpose;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$drawcharactermodel_keepmergeaction")
+    i32 drawcharactermodel_keepmergeaction;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$drawcharactermodel_locatorsupdated")
+    i32 drawcharactermodel_locatorsupdated;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$TempNumJoints")
+    u8 TempNumJoints;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$notransparentchardraw")
+    i32 notransparentchardraw;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$APIObjResetShadowMapRenderingFn")
+    void(__cdecl *APIObjResetShadowMapRenderingFn)(void);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$APIObjEnableShadowMapRenderingFn")
+    void(__cdecl *APIObjEnableShadowMapRenderingFn)(void);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$Temphgobj")
+    PC_HG_RENDER_VIEW *Temphgobj;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$APITrans_Mtl")
+    NUMTL *APITrans_Mtl[2];
+#pragma bss_seg()
+}

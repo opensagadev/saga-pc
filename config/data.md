@@ -1346,3 +1346,20 @@ R2Move7, paddle sound21, R2Zap6, Jawa_Dizzy11 and910.0f64/8 regions are separate
 proved and mapped. They add53 complete literal bytes, rather than invented
 shared allocations. Initializer equality does not prove runtime state or owning
 capacity for the unknown mutable views.
+
+
+### Required rendering and root-motion views (2026-10-03)
+
+Twenty-three canonical shared physical owners provide29,215 complete initialized
+bytes for actual rendering readers. Every view matches retail, and all1079
+previous scoped regions remain unchanged. All23 original owning extents remain
+unknown/blank, adding no allocation or coverage credit. Scope1102 comprises553
+known extents/137551 unique bytes and549 unknown views/95410 emitted bytes.
+
+PCShadowPackets is a280x104 working view supported by the signed native count
+guard and complete record accesses. Selected valid nonnegative counts do not
+establish original backing capacity or justify invented invalid-input guards.
+Future cutscene owners reuse PCShadowDrawMode8264bc and PCShadowDrawEnabled8264c4.
+Every2790 complete old/new emitted data region agrees between aggregate and
+frozen isolated production objects. A TempOptions20-to16 padding movement was
+scratch-only; actual production preserves its prior20-byte emitted view.

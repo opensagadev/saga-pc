@@ -243,3 +243,51 @@ extern "C" {
 extern "C" void __cdecl PlaySfxByIdAndSetVolumeAndPitch(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
     PlaySfxByIdEx(sfx_id, position, volume, pitch);
 }
+
+typedef struct level_sfx_gizmotype_s {
+    u8 unknown_00[0x94];
+    void(__cdecl *add_level_sfx)(WORLDINFO *, void *, i32 *, i32 *, i32);
+    u8 unknown_98[4];
+} LEVEL_SFX_GIZMOTYPE_PC;
+STATIC_ASSERT(sizeof(LEVEL_SFX_GIZMOTYPE_PC) == 0x9c);
+STATIC_ASSERT(offsetof(LEVEL_SFX_GIZMOTYPE_PC, add_level_sfx) == 0x94);
+
+extern "C" {
+    void __cdecl AddLevelSfxFromName(char *name, i32 *ids, i32 *count, i32 capacity) {
+        i32 id, i;
+        if (ids == NULL || count == NULL || *count >= capacity)
+            return;
+        id = GetSfxId(name);
+        if (id == -1)
+            return;
+        for (i = 0; i < *count; ++i)
+            if (ids[i] == id)
+                return;
+        ids[*count] = id;
+        ++*count;
+    }
+
+    void __cdecl AddLevelSfxFromId(i32 id, i32 *ids, i32 *count, i32 capacity) {
+        i32 i;
+        if (ids == NULL || count == NULL || *count >= capacity || id == -1)
+            return;
+        for (i = 0; i < *count; ++i)
+            if (ids[i] == id)
+                return;
+        ids[*count] = id;
+        ++*count;
+    }
+
+    void __cdecl AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *system, WORLDINFO *world, i32 *ids, i32 *count, i32 capacity) {
+        LEVEL_SFX_GIZMOTYPE_PC *type;
+        GIZMOSET_PC *set;
+        i32 i;
+        if (gizmotypes == NULL || system == NULL)
+            return;
+        set = system->sets;
+        type = (LEVEL_SFX_GIZMOTYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
+        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set)
+            if (type->add_level_sfx != NULL)
+                type->add_level_sfx(world, set->data, ids, count, capacity);
+    }
+}

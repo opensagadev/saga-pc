@@ -592,3 +592,19 @@ HRESULT __cdecl PCSoundSetLinearVolume(IDirectSoundBuffer *buffer, f32 volume) {
 
     return buffer->vtable->set_volume(buffer, raw_volume);
 }
+
+void __cdecl SetSoundBitsById(const i32 *ids, void(__cdecl *set_bit)(i32)) {
+    i32 id;
+    while ((id = *ids++) != -1) {
+        i32 group, i, samples;
+        if (id < 0)
+            continue;
+        set_bit(id);
+        group = SfxInfo[id].group;
+        if (group == -1)
+            continue;
+        samples = NuSound3Groups[group].sample_count;
+        for (i = 0; i < samples; ++i)
+            set_bit(NuSound3GroupSampleIds[NuSound3Groups[group].first_sample + i]);
+    }
+}

@@ -332,3 +332,376 @@ NUHGOBJ_POI_PC *__cdecl NuHGobjGetPOI(NUHGOBJ_EVAL_PC *object, u8 index) {
     }
     return NULL;
 }
+
+typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
+typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
+typedef struct PC_HG_SHADOW_SHAPE48 PC_HG_SHADOW_SHAPE48;
+typedef struct PC_HG_SHADOW_SHAPE64 PC_HG_SHADOW_SHAPE64;
+typedef struct PC_HG_SHADOW_GROUP PC_HG_SHADOW_GROUP;
+typedef struct PC_HG_RENDER_PART PC_HG_RENDER_PART;
+typedef struct PC_HG_RENDER_VIEW PC_HG_RENDER_VIEW;
+typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
+typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
+
+struct PC_HG_SHADOW_SHAPE48 {
+    union {
+        NUVEC axes[4];
+        struct {
+            f32 center_x;
+            u32 flags;
+            u8 rest[40];
+        } filter;
+    };
+};
+struct PC_HG_SHADOW_SHAPE64 {
+    PC_HG_SHADOW_SHAPE48 position;
+    u8 unknown_30[16];
+};
+struct PC_HG_SHADOW_GROUP {
+    PC_HG_SHADOW_SHAPE48 *ellipses;
+    PC_HG_SHADOW_SHAPE64 *cylinders;
+    void *third_shape;
+    u8 ellipse_count, cylinder_count, third_count, joint_index;
+};
+struct PC_HG_RENDER_PART {
+    char *name;
+    NUSPECIALHANDLE **rigid;
+    NUSPECIALHANDLE *smooth;
+    NUSPECIALHANDLE **alternate_rigid;
+    NUSPECIALHANDLE *alternate_smooth;
+};
+struct PC_HG_RENDER_VIEW {
+    u8 unknown_000[0x168];
+    i32 joint_count;
+    NUHGOBJ_EVAL_JOINT_PC *joints;
+    NUMTX *bind_matrices;
+    NUMTX *inverse_bind;
+    i32 joint_override_map_count;
+    u8 *joint_override_map;
+    u8 unknown_180[4];
+    NUHGOBJ_POI_PC *points;
+    i32 point_index_count;
+    u8 *point_index_map;
+    i32 render_count;
+    PC_HG_RENDER_PART *render_parts;
+    u8 unknown_198[4];
+    PC_HG_SHADOW_GROUP *shadow_groups;
+    u8 suppress_shadow_points;
+    u8 unknown_1a1[11];
+    NUVEC bounds_min, bounds_max;
+};
+STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE48) == 48);
+STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE64) == 64);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_SHAPE48, filter.flags) == 4);
+STATIC_ASSERT(sizeof(PC_HG_SHADOW_GROUP) == 16);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, ellipses) == 0);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, cylinders) == 4);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, third_shape) == 8);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, ellipse_count) == 12);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, cylinder_count) == 13);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, third_count) == 14);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, joint_index) == 15);
+STATIC_ASSERT(sizeof(PC_HG_RENDER_PART) == 20);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_PART, rigid) == 4);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_PART, smooth) == 8);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_PART, alternate_rigid) == 12);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_PART, alternate_smooth) == 16);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, joint_count) == 0x168);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, joints) == 0x16c);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, bind_matrices) == 0x170);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, inverse_bind) == 0x174);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, joint_override_map_count) == 0x178);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, joint_override_map) == 0x17c);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, points) == 0x184);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, point_index_count) == 0x188);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, point_index_map) == 0x18c);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, render_count) == 0x190);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, render_parts) == 0x194);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, shadow_groups) == 0x19c);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, suppress_shadow_points) == 0x1a0);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, bounds_min) == 0x1ac);
+STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, bounds_max) == 0x1b8);
+STATIC_ASSERT(sizeof(PC_HG_SHADOW_PACKET) == 0x68);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, ellipse) == 0x40);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, cylinder) == 0x44);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, third_shape) == 0x48);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state0) == 0x4c);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state1) == 0x50);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state2) == 0x54);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state_byte) == 0x58);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, near_value) == 0x5c);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, far_value) == 0x60);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, ellipse_count) == 0x64);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, cylinder_count) == 0x65);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, third_count) == 0x66);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, sequence) == 0x67);
+STATIC_ASSERT(sizeof(PC_HG_SHADOW_STATE_VIEW) == 16);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_STATE_VIEW, state_byte) == 15);
+
+i32 NuHGobjRndrRandShadowSurfacePoints(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, NUMTX *joints, i32 count,
+                                       NUVEC *positions, i32 exclusion_mask) {
+    i32 i;
+    PC_HG_RENDER_VIEW *object;
+    PC_HG_SHADOW_GROUP *groups;
+    i32 total;
+    PC_HG_SHADOW_GROUP *group;
+    i16 counts[256];
+    i32 index;
+    NUMTX combined;
+    NUVEC4 point;
+
+    object = ((PC_HG_RENDER_VIEW *)(hierarchy));
+    if (PCShadowSurfaceSamplingEnabled == 0 ||
+        NuCameraClipTestExtents(&object->bounds_min, &object->bounds_max, world, 0.0f, 0) == 0)
+        return 0;
+    groups = object->shadow_groups;
+    if (groups == NULL || object->suppress_shadow_points != 0)
+        return 1;
+    total = 0;
+
+    for (group = groups; group->joint_index != 255; ++group) {
+        i32 i;
+
+        for (i = 0; i < group->ellipse_count; ++i)
+            if ((group->ellipses[i].filter.flags & 1) == 0)
+                ++total;
+        for (i = 0; i < group->cylinder_count; ++i)
+            if ((group->cylinders[i].position.filter.flags & 1) == 0)
+                ++total;
+    }
+    if (total == 0)
+        return 1;
+
+    for (i = 0; i < total; ++i)
+        counts[i] = 0;
+    for (i = 0; i < count; ++i)
+        ++counts[((i32)NuWindRand() >> 8) % total];
+    index = 0;
+
+    for (group = groups; group->joint_index != 255; ++group) {
+        i32 i;
+        i32 matrix_ready;
+
+        if (count == 0)
+            continue;
+        matrix_ready = 0;
+        for (i = 0; i < group->ellipse_count; ++i) {
+            i32 n;
+
+            if (exclusion_mask != 0 && (group->ellipses[i].filter.flags & exclusion_mask) != 0)
+                continue;
+            n = counts[index];
+            if (n != 0) {
+                if (matrix_ready == 0)
+                    NuMtxMulVU0(&combined, &joints[group->joint_index], world);
+                if (n > 0) {
+                    i32 j;
+
+                    count -= n;
+                    for (j = n - 1; j >= 0; --j) {
+                        NuRndrCalcRandEllipsePos(&point, &combined, group->ellipses[i].axes);
+                        positions[count + j].x = point.x;
+                        positions[count + j].y = point.y;
+                        positions[count + j].z = point.z;
+                    }
+                }
+                matrix_ready = 1;
+            }
+            ++index;
+        }
+        for (i = 0; i < group->cylinder_count; ++i) {
+            i32 n;
+
+            if (exclusion_mask != 0 && (group->ellipses[i].filter.flags & exclusion_mask) != 0)
+                continue;
+            n = counts[index];
+            if (n != 0) {
+                if (matrix_ready == 0)
+                    NuMtxMulVU0(&combined, &joints[group->joint_index], world);
+                if (n > 0) {
+                    i32 j;
+
+                    count -= n;
+                    for (j = n - 1; j >= 0; --j) {
+                        NuRndrCalcRandCylinderPos(&point, &combined, group->cylinders[i].position.axes);
+                        positions[count + j].x = point.x;
+                        positions[count + j].y = point.y;
+                        positions[count + j].z = point.z;
+                    }
+                }
+                matrix_ready = 1;
+            }
+            ++index;
+        }
+    }
+    return 1;
+}
+
+i32 NuCameraClipHGobj(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, NUMTX *root) {
+    PC_HG_RENDER_VIEW *object;
+    NUVEC half;
+    NUVEC min;
+    NUMTX matrix;
+
+    object = ((PC_HG_RENDER_VIEW *)(hierarchy));
+    if (CutSceneBoundingBoxTrackRoot == 0)
+        return NuCameraClipTestExtents(&object->bounds_min, &object->bounds_max, world, 0.0f, 0);
+
+    NuVecSub(&half, &object->bounds_max, &object->bounds_min);
+    NuVecScale(&half, &half, 0.5f);
+    NuVecNeg(&min, &half);
+    matrix = *world;
+    NuMtxPreTranslate(&matrix, &root->translation);
+    return NuCameraClipTestExtents(&min, &half, &matrix, 0.0f, 0);
+}
+
+void NuMtxMulHArrayPc(NUMTX *out, NUMTX *left, NUMTX *right, i32 count) {
+    while (count != 0) {
+        D3DXMatrixMultiply(((D3DXMATRIX *)(out)), ((D3DXMATRIX *)(left)), ((D3DXMATRIX *)(right)));
+        ++out;
+        ++left;
+        ++right;
+        --count;
+    }
+}
+
+void PCEnqueueHierarchyShadowGroup(NUMTX *matrix, void *ellipse, i32 ellipse_count, void *cylinder, i32 cylinder_count,
+                                   void *third, i32 third_count) {
+    PC_HG_SHADOW_PACKET *packet;
+
+    if (PCShadowPacketCount >= 280)
+        return;
+    packet = &PCShadowPackets[PCShadowPacketCount];
+    packet->near_value = PCShadowNearValue;
+    packet->far_value = PCShadowFarValue;
+    packet->state0 = PCShadowState.state0;
+    packet->state1 = PCShadowState.state1;
+    packet->state2 = PCShadowState.state2;
+    packet->state_byte = PCShadowState.state_byte;
+    packet->matrix = *matrix;
+    packet->ellipse = ellipse;
+    packet->ellipse_count = (u8)ellipse_count;
+    packet->cylinder = cylinder;
+    packet->cylinder_count = (u8)cylinder_count;
+    packet->third_shape = third;
+    packet->third_count = (u8)third_count;
+    packet->sequence = (u8)PCShadowPacketSequence;
+    ++PCShadowPacketCount;
+    ++PCShadowPacketSequence;
+}
+
+void NuHGobjSubmitShadowGroupsPc(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, NUMTX *joints) {
+    PC_HG_SHADOW_GROUP *group;
+    PC_HG_RENDER_VIEW *object;
+
+    object = ((PC_HG_RENDER_VIEW *)(hierarchy));
+    if (PCShadowDrawEnabled == 0 || PCShadowDrawMode != 1 || object->shadow_groups == NULL ||
+        object->suppress_shadow_points != 0)
+        return;
+    for (group = object->shadow_groups; group->joint_index != 255; ++group) {
+        if (PCShadowPacketCount < 280 && PCShadowSubmissionEnabled != 0) {
+            NUMTX combined;
+
+            NuMtxMulVU0(&combined, &joints[group->joint_index], world);
+            PCEnqueueHierarchyShadowGroup(&combined, group->ellipses, group->ellipse_count, group->cylinders,
+                                          group->cylinder_count, group->third_shape, group->third_count);
+            currentScene.clear_flags = 1;
+        }
+    }
+}
+
+i32 NuHGobjRndrMtxDwa(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, i32 render_count, i16 *render_indices, NUMTX *joints,
+                      DWA_WEIGHT_BLOCK_PC **weights, i32 render_flags) {
+    i32 index;
+    PC_HG_RENDER_VIEW *object;
+    i32 clip;
+    i32 shadow;
+    i32 old_clip;
+    i32 drawn;
+
+    object = ((PC_HG_RENDER_VIEW *)(hierarchy));
+    clip = PCSpecialClipState;
+    if (clip == -1)
+        clip = NuCameraClipHGobj(hierarchy, world, joints);
+    shadow = 0;
+    if (PCSpecialActiveShadowLights > 0) {
+        NUVEC min;
+        NUVEC max;
+
+        NuVecMtxTransform(&min, &object->bounds_min, world);
+        NuVecMtxTransform(&max, &object->bounds_max, world);
+        shadow = NuSpecialClipTestShadowLights(&min, &max, 1);
+    }
+    if (clip == 0 && shadow == 0) {
+        PCSpecialShadowClipResultsPresent = 0;
+        return 0;
+    }
+    old_clip = PCSpecialClipState;
+    PCSpecialClipState = clip;
+    NuHGobjSubmitShadowGroupsPc(hierarchy, world, joints);
+    drawn = 0;
+    for (index = 0; index < render_count; ++index) {
+        i32 pass;
+        i32 layer;
+        PC_HG_RENDER_PART *part;
+        NUMTX *skin;
+        DWA_WEIGHT_BLOCK_PC *blend;
+        NUSPECIALHANDLE **lists[2];
+
+        if (render_indices != NULL) {
+            layer = render_indices[index];
+            if (layer < 0 || layer >= object->render_count)
+                continue;
+        } else {
+            render_count = 1;
+            layer = 0;
+        }
+        part = &object->render_parts[layer];
+        skin = NULL;
+        if (part->smooth != NULL || part->alternate_smooth != NULL) {
+            NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
+            NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 127) & ~127u;
+            skin = ((NUMTX *)(NuDisplayListStreamCursor->addr));
+            NuDisplayListStreamCursor->addr += object->joint_count * sizeof(NUMTX);
+        }
+        blend = weights != NULL ? weights[index] : NULL;
+        lists[0] = part->rigid;
+        lists[1] = part->alternate_rigid;
+        for (pass = 0; pass < 2; ++pass)
+            if (lists[pass] != NULL) {
+                i32 joint;
+
+                for (joint = 0; joint < object->joint_count; ++joint)
+                    if (lists[pass][joint] != NULL) {
+                        NUMTX matrix;
+
+                        NuMtxMulVU0(&matrix, &joints[joint], world);
+                        if (lists[pass][joint]->scene != NULL && lists[pass][joint]->display_special != NULL)
+                            drawn |= NuDisplayListRndrSpecial(lists[pass][joint], &matrix, 0, NULL, NULL);
+                    }
+            }
+        if (part->smooth != NULL || part->alternate_smooth != NULL) {
+            NuMtxMulHArrayPc(skin, object->inverse_bind, joints, object->joint_count);
+            if (part->smooth != NULL && part->smooth->scene != NULL && part->smooth->display_special != NULL)
+                drawn |= NuDisplayListRndrSpecial(part->smooth, world, 2, skin, blend);
+            if (part->alternate_smooth != NULL && part->alternate_smooth->scene != NULL &&
+                part->alternate_smooth->display_special != NULL)
+                drawn |= NuDisplayListRndrSpecial(part->alternate_smooth, world, 2, skin, blend);
+        }
+    }
+    PCSpecialClipState = old_clip;
+    PCSpecialShadowClipResultsPresent = 0;
+    (void)render_flags;
+    return drawn;
+}
+
+void NuSpecialForceMaterials(i32 count, NUMTL **materials) {
+    if (count == 0) {
+        PCSpecialForcedMaterialTable = NULL;
+        nuspecial_draw_state &= ~4;
+    } else {
+        nuspecial_draw_state |= 4;
+        PCSpecialForcedMaterialTable = materials;
+        PCSpecialForceMaterialCount = count;
+    }
+}

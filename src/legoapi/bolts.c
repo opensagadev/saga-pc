@@ -463,3 +463,27 @@ i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
         return 0;
     return fallback;
 }
+
+STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
+STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
+STATIC_ASSERT(offsetof(BOLT_PC, active) == 0x100);
+STATIC_ASSERT(offsetof(BOLT_PC, type_id) == 0x101);
+BOLT_PC *__cdecl Bolt_Find(i32 type_id, NUVEC *position, GAMEOBJECT *owner) {
+    BOLT_PC *nearest = NULL;
+    f32 nearest_distance = 1000000.0f;
+    i32 index;
+    for (index = 0; index < 32; ++index) {
+        BOLT_PC *bolt = &Bolt[index];
+        f32 distance;
+        if (bolt->active == 0 || (type_id != -1 && bolt->type_id != type_id) || (owner != NULL && bolt->owner != owner))
+            continue;
+        if (position == NULL)
+            return bolt;
+        distance = NuVecDistSqr(&bolt->position, position, NULL);
+        if (distance < nearest_distance) {
+            nearest_distance = distance;
+            nearest = bolt;
+        }
+    }
+    return nearest;
+}

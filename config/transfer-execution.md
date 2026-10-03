@@ -1003,3 +1003,42 @@ compiler-owned NUL/numeric literal regions add53 independently verified bytes.
 Next release targets rendering/API/root-motion7,663 with minimal shared storage,
 alongside search/text/input providers. Cutscene10,374 and level audio9,548 remain
 connected research while genuine missing callbacks and Beast services close.
+
+
+### Rendering, root motion, audio services and target searches (2026-10-03)
+
+Thirty-three actual newly compiled functions transfer10,384 complete PC bytes
+over73fb2ab: rendering/API/root motion19/7,663, public movement4/1,100,
+Torpedo searches3/918 and level audio services7/703. Related C routines are
+consolidated into their existing owners; the genuine pulse subsystem adds
+pulses.c. Whole-PC fuzzy coverage rises from11.955131%
+to12.197465% of3,471,246 bytes. Unique compared code is
+680,943; native objdiff's denominator is681,055. Twelve new exact functions
+add852 bytes, reaching68,397 (1.970388%). All previous exact code/data survives.
+
+Pinned build/link and all2550 function/4456 data definitions pass across219
+actual objects. LLVM18 checks and665 tests pass with three skips. Selected
+actual aggregate-object fixtures pass27 rendering/root/queue cases,31 audio
+service cases,21 movement cases and20 search cases; reversed root interpolation
+fails exactly three expected controls. These fixtures retain real game
+providers and mutable storage. Assets, general GPU submissions and active
+turret/special/obstacle search paths remain outside the selected fixture domain.
+
+Review repaired StartSlide's VehicleArea early return before any object read;
+StartSlide(NULL,0) is now tested with VehicleArea enabled. Root callbacks retain
+their physical floating-point/stack ABI and the real vector interpolation
+operand order. Shadow packets preserve signed count and state-byte behavior,
+WORD/BYTE truncation and the native280 guard. The280x104-byte working view does
+not establish the original allocation capacity. No guard or fake provider was
+invented. ForcePushed_MoveCode712 remains held without a genuine Beast caller;
+it receives no transfer credit.
+
+All2517 prior compiled function copies remain,2515 identical. The unchanged
+particle and debris sources reschedule; independent full-code/relocation review
+is retained with actual new nonexact scores. Every prior data initializer is
+preserved. The sole writer adds23 required complete initializer views/29,215B,
+all retail-equal but unknown original owning extents/no allocation credit.
+Next release is the connected cutscene loader/rendering/callback family10,374B
+plus its genuine1B diagnostic, alongside retained text/input and Beast closure.
+Authoritative review confirms GetMusicIndex is genuinely constant-1 in this PC
+build; the earlier proposed missing music lookup was an incorrect qualification.

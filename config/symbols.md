@@ -3905,3 +3905,23 @@ Full source/ABI/extent/caller/literal proofs are retained in
 coherent10361-next/, findid-next/production/ and platform/cannon-weapon-review/.
 Actual retail comparisons remain nonexact except Cannon350/ZapFilter109;
 neither private ABI differences nor field proofs substitute for byte equality.
+
+
+### Renderer, movement, audio and search source families (2026-10-03)
+
+Thirty-three complete PC functions10,384B are released with real source
+dependencies and original owner context. Rendering/root motion19/7663 uses
+existing apiobject.c, nuhgobj.c and nurndr.c rather than parallel C++ wrappers;
+all58 previous owner bodies and symbolic relocations survive consolidation.
+Root callback signatures carry six physical words (seven for RootFnEx), and
+NuVecLerp's actual reversed operand convention is preserved. Evaluator joint
+restriction saves a BYTE, writes DWORD1 and restores the zero-extended BYTE.
+Skin working buffers retain the verified16/128 alignment.
+
+Public movement4/1100 includes the verified early-return ordering repair;
+private ForcePushed712 and Beast helpers are not credited. Search3/918 retains
+PC's1,000,000-float nearest-bolt threshold, full target masks and real canonical
+BOUNTYHUNTERPURSUIT_ADATA. Audio7/703 retains pulse WORD fields6/8/a/c/e,
+ten-byte event stride and five-argument gizmo callbacks with count reload.
+Full extents and actual current-source comparisons remain authoritative,
+including nonexact bodies. Three compiler literal bindings add26 bytes.

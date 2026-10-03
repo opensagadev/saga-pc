@@ -4329,3 +4329,100 @@ void __cdecl Move_CANNON(GAMEOBJECT *object) {
             PlaySfx("R2Move", &object->collision_position);
     }
 }
+
+i32 __cdecl CanObjSlide(GAMEOBJECT *object, i32 unused_surface) {
+    i8 surface = (i8)object->jump_animation_state;
+    (void)unused_surface;
+    if ((u8)surface >= 32 || (TerSurface[surface].flags & 0x400) == 0)
+        return 0;
+    if (surface == 5 && CanMagnetClimbFn != NULL && CanMagnetClimbFn(object) != 0)
+        return 0;
+    return 1;
+}
+
+i32 __cdecl StartSlide(GAMEOBJECT *object, i32 check_contact) {
+    i32 can_slide;
+    u16 id;
+    if (VehicleArea)
+        return 0;
+    if ((object->flags_ef4 & 0x400) != 0 || object->character_context == 0x2b || object->character_context == 0x1f)
+        return 0;
+    id = object->id;
+    if (id == (u16)GameObjectRotationAtstId || id == (u16)id_MINIATST || id == (u16)id_ATST_LOWRES ||
+        id == (u16)id_ATAT || id == (u16)id_MINIATAT || id == (u16)id_MINIATTE)
+        return 0;
+    can_slide = CanObjSlide(object, (i8)object->jump_animation_state);
+    if (check_contact && object->field_281 == 0) {
+        if (object->contact_count == 0 || can_slide == 0 ||
+            !(object->collision_position.y > object->contact_position.y))
+            return 0;
+        can_slide = CanObjSlide(object, (i8)object->contact_material[0]);
+    }
+    if (can_slide == 0)
+        return 0;
+    object->character_context = 0x33;
+    object->field_7aa = object->character_model->model_data_b[106] != NULL ? 106 : 5;
+    object->context_duration = 0.25f;
+    object->jump_variant_state = 0;
+    return 1;
+}
+
+void __cdecl SlideCode(GAMEOBJECT *object) {
+    if (object->character_context != 0x33) {
+        StartSlide(object, 1);
+    } else {
+        if (object->field_281 != 0 && CanObjSlide(object, (i8)object->jump_animation_state) != 0)
+            object->context_duration = 0.25f;
+        else if (object->context_duration > 0.0f) {
+            object->context_duration -= FRAMETIME;
+            if (object->context_duration <= 0.0f)
+                object->character_context = -1;
+        }
+        if (object->field_281 != 0)
+            PlaySfx("Char_Slide_Lp", &object->lower_position);
+    }
+}
+
+void __cdecl FlattenCode(GAMEOBJECT *object) {
+    GAMEOBJECT *nearest = NULL;
+    GAMEOBJECT *candidate = Obj;
+    f32 nearest_distance = 1000000000.0f;
+    i32 index;
+    if (object->character_context != 0x3d)
+        return;
+    for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
+        f32 radius;
+        f32 distance;
+        if ((candidate->flags_1fc_word & 0x1001) != 0x1001 || candidate->dead != 0 ||
+            (candidate->character_data->game_character->flags_090 & 0x1000) == 0 ||
+            (CInfo[candidate->character_context].flags & 0x8000) != 0)
+            continue;
+        radius = (f32)((f64)object->bounds_radius + (f64)candidate->bounds_radius + (f64)0.1f);
+        distance = NuVecDistSqr(&object->collision_position, &candidate->collision_position, NULL);
+        if (distance < radius * radius && (object->flags_1fc & 0x80) == 0) {
+            object->context_timer = 0.0f;
+            return;
+        }
+        if (distance < nearest_distance && candidate != object) {
+            nearest_distance = distance;
+            nearest = candidate;
+        }
+    }
+    object->context_timer += FRAMETIME;
+    if (object->context_timer >= object->context_duration) {
+        object->character_context = -1;
+        if (object->character_model->model_data_b[6] != NULL) {
+            StartJump(object, 0);
+            if (nearest != NULL && (object->flags_1fc & 0x80) != 0) {
+                NUVEC direction;
+                NuVecSub(&direction, &object->position, &nearest->position);
+                direction.y = 0.0f;
+                NuVecNorm(&direction, &direction);
+                NuVecScale(&direction, &direction, 12.0f);
+                NuVecAdd(&object->velocity, &object->velocity, &direction);
+            }
+        }
+    } else {
+        NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f), 0);
+    }
+}

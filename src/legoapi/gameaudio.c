@@ -41,3 +41,19 @@ void __cdecl PlayGruntSfx(GAMEOBJECT *object) {
     if (sfx != -1)
         PlaySfxById(sfx, &object->collision_position);
 }
+
+void __cdecl GameAudio_AddSfx(i32 code, i32 *ids, i32 *count, i32 capacity) {
+    i32 id, i;
+    if (ids == NULL || count == NULL || *count >= capacity)
+        return;
+    if ((u32)code >= 0x54)
+        return;
+    id = GameAudio->sfx_ids[code];
+    if (id == -1)
+        return;
+    for (i = 0; i < *count; ++i)
+        if (ids[i] == id)
+            return;
+    ids[*count] = id;
+    ++*count;
+}

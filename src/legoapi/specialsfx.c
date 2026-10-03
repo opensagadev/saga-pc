@@ -109,3 +109,30 @@ void __cdecl DisorientateCode(GAMEOBJECT *object, NUVEC *target, f32 distance) {
         StartTurn(object);
     }
 }
+
+typedef struct level_sfx_special_event_s {
+    u8 unknown_00[6];
+    i16 sfx_id;
+    u8 unknown_08[8];
+} LEVEL_SFX_SPECIAL_EVENT_PC;
+STATIC_ASSERT(sizeof(LEVEL_SFX_SPECIAL_EVENT_PC) == 0x10);
+STATIC_ASSERT(offsetof(LEVEL_SFX_SPECIAL_EVENT_PC, sfx_id) == 6);
+typedef struct level_sfx_special_world_s {
+    u8 unknown_00[0x46d4];
+    i32 special_sfx_event_count;
+    LEVEL_SFX_SPECIAL_EVENT_PC *special_sfx_events;
+} LEVEL_SFX_SPECIAL_WORLD_PC;
+STATIC_ASSERT(offsetof(LEVEL_SFX_SPECIAL_WORLD_PC, special_sfx_event_count) == 0x46d4);
+STATIC_ASSERT(offsetof(LEVEL_SFX_SPECIAL_WORLD_PC, special_sfx_events) == 0x46d8);
+
+void __cdecl SetSpecialSfxBits(i32 *ids, i32 *count, WORLDINFO *world) {
+    LEVEL_SFX_SPECIAL_WORLD_PC *view = (LEVEL_SFX_SPECIAL_WORLD_PC *)world;
+    i32 i;
+    if (world == NULL)
+        return;
+    for (i = 0; i < view->special_sfx_event_count; ++i) {
+        i32 id = view->special_sfx_events[i].sfx_id;
+        if (id != -1)
+            ids[(*count)++] = id;
+    }
+}
