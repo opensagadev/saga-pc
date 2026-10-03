@@ -1191,3 +1191,45 @@ f32 __cdecl GetHoverPosY(GAMEOBJECT *object) {
         hover = object->character_data->game_character->field_028;
     return (f32)(height + hover + offset);
 }
+
+i32 __cdecl KillGameObject(GAMEOBJECT *, i32, i32);
+void __cdecl Arcade_PlayerKilled(i32, i32);
+i32 __cdecl KillPlayer(GAMEOBJECT *object, i32 reason, i32 ignore_spawn_protection, NUVEC *unused) {
+    i32 other, active;
+    (void)unused;
+    if (object->dead != 0)
+        return 0;
+    if (ignore_spawn_protection != 0)
+        object->spawn_protection_timer = 0.0f;
+    else if (object->spawn_protection_timer > 0.0f)
+        return 0;
+    if (Arcade != 0) {
+        other = 1;
+        if (object->field_280 != 0) {
+            if (object->field_280 != 1)
+                return KillGameObject(object, reason, 0);
+            other = 0;
+        }
+        active = 0;
+        if (Player[other] != NULL)
+            active = (((GAMEOBJECT *)Player[other])->flags_1f8 >> 18) & 1;
+        Arcade_PlayerKilled(other, active);
+    }
+    return KillGameObject(object, reason, 0);
+}
+
+extern f32 TerrainChatterWaitPc;
+extern i32 TerrainLastChatterSfxPc;
+void __cdecl ChatterSfx(GAMEOBJECT *object, i32 sound, f32 interval) {
+    if (TerrainChatterWaitPc <= 0.0f && ParticlesPerSecond(2.0f, FRAMETIME) > 0 && object->dead == 0 &&
+        object->character_context == -1) {
+        if (sound != TerrainLastChatterSfxPc || !(interval > 0.0f)) {
+            PlaySfxById(sound, &object->collision_position);
+            TerrainLastChatterSfxPc = sound;
+            TerrainChatterWaitPc = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0 + 3.0);
+        } else {
+            TerrainChatterWaitPc = interval;
+            TerrainLastChatterSfxPc = -1;
+        }
+    }
+}

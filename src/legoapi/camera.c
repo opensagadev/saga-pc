@@ -148,3 +148,14 @@ void __cdecl GameCam_Blend(GAMECAMERA *camera, f32 duration, f32 curve, i32 mode
     blend->blend_duration = duration;
     blend->blend_curve = curve;
 }
+
+u16 __cdecl GameCam_GetAdjustedYRot(GAMECAMERA *camera) {
+    if (camera == NULL)
+        camera = GameCam;
+    return (u16)(camera->input_yaw + (i32)camera->adjusted_yaw_offset);
+}
+
+void __cdecl GameCam_HitRoll(void) {
+    f32 amount = qrand() >= 0x8000 ? 0.25f : -0.25f;
+    GameCam_Judder(GameCam, amount, 2, NULL);
+}

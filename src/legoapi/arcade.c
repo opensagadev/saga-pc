@@ -134,3 +134,14 @@ void __cdecl Arcade_CoinCollected(i32 player_index, u32 *score, u32 previous_sco
         *score = previous_score;
     }
 }
+
+void __cdecl Arcade_PlayerKilled(i32 player_index, i32 extra) {
+    if ((u32)player_index > 1 || (Arcade_Mode[ArcadeItem.mode].flags & 1) == 0)
+        return;
+    if (Arcade_BothPlayersActive()) {
+        ++AreaGlobals_PC.arcade_player_kills[player_index];
+        Arcade_AwardPoint(player_index, 0, extra);
+    } else {
+        Arcade_AwardPoint(player_index, 0, 0);
+    }
+}

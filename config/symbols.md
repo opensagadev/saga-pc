@@ -3757,3 +3757,27 @@ pickup-type table's actual nonzero callbacks. Compiler literal aliases are
 checked against full raw initializer witnesses. Unknown runtime allocation
 extents remain blank; source initializer proofs and map inventory are distinct
 from transferred code. All earlier exact code/data comparisons remain exact.
+
+
+### Pickup, vehicle breakup and service contracts (2026-10-03)
+
+Seventy-two newly compiled/compared functions contribute 18,176 original PC bytes.
+The 19-function breakup unit preserves its genuine private register groups;
+AddVariableShotDebrisEffectTimed1/3 retain original private matrix owners in parts.c.
+CharScene_FindHSpecial has complete extent 80 bytes. FindNearestGameObject has the
+verified eleven-argument ABI; GizmoPickup_CollectCoin has six arguments and a full
+994-byte span. The short blue/purple extra-coin entries preserve their real tail
+jumps to the 136-byte private provider rather than shortening either comparison.
+
+Pickup records are 0x2c; pickup-type records are 0x38, with callback fields at
+0x24/0x28. The true ten-record table's twelve nonzero slots target nine real bodies.
+The public camera source prefix covers all observed accesses through 0x22e, with
+named asserted fields; this does not establish the original allocation size.
+World pickup/torpedo state, save-area records, mini-piece and hint views retain
+asserted offsets without guessing Android layouts. Unknown data extents stay blank.
+
+Accepted inventory includes held constructor and parent identities, while source
+credit comes only from actual compiled object comparisons. Six renderer-dependent
+pickup bodies plus AddPickups/AddEffects remain scratch, along with their three
+naturally elided private helpers. No unimplemented row counts as transferred code.
+All prior exact code/data remains exact in the final aggregate report.

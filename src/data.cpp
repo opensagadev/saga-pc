@@ -7549,3 +7549,332 @@ extern "C" {
     NUVEC alert_pos;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$PickupTypeLiteral758c00")
+    char PickupTypeLiteral758c00[9] = "Power Up";
+#pragma data_seg()
+#pragma data_seg(".data$PickupTypeLiteral758c0c")
+    char PickupTypeLiteral758c0c[8] = "Torpedo";
+#pragma data_seg()
+#pragma data_seg(".data$PickupTypeLiteral758c14")
+    char PickupTypeLiteral758c14[10] = "MK-Pickup";
+#pragma data_seg()
+#pragma data_seg(".data$PickupTypeLiteral758c20")
+    char PickupTypeLiteral758c20[8] = "Charkit";
+#pragma data_seg()
+#pragma data_seg(".data$PickupTypeLiteral758c28")
+    char PickupTypeLiteral758c28[10] = "Red Brick";
+#pragma data_seg()
+#pragma data_seg(".data$PickupTypeLiteral758c34")
+    char PickupTypeLiteral758c34[6] = "Heart";
+#pragma data_seg()
+#pragma data_seg(".data$PickupTypeLiteral758c3c")
+    char PickupTypeLiteral758c3c[10] = "MK-Appear";
+#pragma data_seg()
+#pragma data_seg(".data$PickupTypeLiteral758c48")
+    char PickupTypeLiteral758c48[8] = "Minikit";
+#pragma data_seg()
+#pragma data_seg(".data$PickupTypeLiteral758c50")
+    char PickupTypeLiteral758c50[12] = "Purple Coin";
+#pragma data_seg()
+#pragma data_seg(".data$PickupTypeLiteral758c5c")
+    char PickupTypeLiteral758c5c[12] = "PickupCoinB";
+#pragma data_seg()
+#pragma data_seg(".data$PickupTypeLiteral758c68")
+    char PickupTypeLiteral758c68[10] = "Blue Coin";
+#pragma data_seg()
+#pragma data_seg(".data$PickupTypeLiteral758c74")
+    char PickupTypeLiteral758c74[10] = "Gold Coin";
+#pragma data_seg()
+#pragma data_seg(".data$PickupTypeLiteral758c80")
+    char PickupTypeLiteral758c80[12] = "Silver Coin";
+#pragma data_seg()
+#pragma data_seg(".data$GizmoPickupType")
+    GIZMO_PICKUP_TYPE_PC GizmoPickupType[10] = {
+        {PickupTypeLiteral758c80, NULL, NULL, 115, 4, 64, 0, 183, 10, 0.04500000178813934f, 0.04500000178813934f, 10.0f,
+         0.0f, NULL, Pup_CollectCoin, -1, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c74, NULL, NULL, 103, 4, 64, 0, 191, 100, 0.04500000178813934f, 0.04500000178813934f,
+         10.0f, 0.0f, NULL, Pup_CollectCoin, -1, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c68, PickupTypeLiteral758c5c, NULL, 98, 4, 64, 0, 199, 1000, 0.04500000178813934f,
+         0.04500000178813934f, 6.0f, 0.0f, Pup_UpdateBlueCoin, Pup_CollectCoin, 8, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c50, PickupTypeLiteral758c5c, NULL, 112, 4, 64, 0, 213, 10000, 0.04500000178813934f,
+         0.04500000178813934f, 6.0f, 0.0f, Pup_UpdatePurpleCoin, Pup_CollectCoin, 8, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c48, PickupTypeLiteral758c3c, NULL, 109, 0, 69, 0, 206, 0, 0.125f, 0.15000000596046448f,
+         2.0f, 0.05000000074505806f, NULL, Pup_CollectMinikit, 20, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c34, NULL, NULL, 104, 0, 2, 0, 203, 0, 0.10000000149011612f, 0.07999999821186066f, 4.0f,
+         0.0f, NULL, Pup_CollectHeart, -1, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c28, PickupTypeLiteral758c3c, NULL, 114, 0, 73, 0, 210, 0, 0.11999999731779099f,
+         0.05999999865889549f, 2.0f, 0.10000000149011612f, NULL, Pup_CollectRedBrick, 99, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c20, PickupTypeLiteral758c3c, PickupTypeLiteral758c14, 99, 0, 33, 0, 207, 0, 0.125f,
+         0.15000000596046448f, 2.0f, 0.05000000074505806f, NULL, Pup_CollectCharKit, 20, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c0c, NULL, NULL, 116, 0, 2, 0, 121, 0, 0.10000000149011612f, 0.10000000149011612f, 5.0f,
+         0.0f, NULL, NULL, -1, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c00, PickupTypeLiteral758c3c, NULL, 117, 0, 1, 0, 208, 0, 0.125f, 0.125f, 2.0f,
+         0.05000000074505806f, Pup_UpdatePowerUp, Pup_CollectPowerUp, -1, 209, 0.0f, 0.0f}};
+#pragma data_seg()
+#pragma data_seg(".data$POWERUPYPOS1")
+    f32 POWERUPYPOS1 = -0.33500000834465027f;
+#pragma data_seg()
+#pragma data_seg(".data$POWERUPYPOS2")
+    f32 POWERUPYPOS2 = -0.20000000298023224f;
+#pragma data_seg()
+#pragma data_seg(".data$CHEAT_POWERUPTIME")
+    f32 CHEAT_POWERUPTIME = 20.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$PowerUp_PanelPosMul")
+    f32 PowerUp_PanelPosMul[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$POWERUP_TEXTID")
+    i32 POWERUP_TEXTID;
+#pragma bss_seg()
+#pragma bss_seg(".bss$hintsys")
+    HINTSYS_PC hintsys;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$KITPOSX")
+    f32 KITPOSX = -0.7250000238418579f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$KITPOSY")
+    f32 KITPOSY = -0.699999988079071f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$PANEL_MINIKITSCALE")
+    f32 PANEL_MINIKITSCALE = 0.25f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$PANEL_MINIKITY")
+    f32 PANEL_MINIKITY = 0.029999999329447746f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$DrawMiniKitTime")
+    f32 DrawMiniKitTime;
+#pragma bss_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$MiniKitScale")
+    f32 MiniKitScale;
+#pragma bss_seg()
+}
+extern "C" {
+#pragma data_seg(".data$MiniKitModelId_PC")
+    i32 MiniKitModelId_PC = -1;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$CharKitModelId_PC")
+    i32 CharKitModelId_PC = -1;
+#pragma data_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$NewMiniPiece")
+    NEW_MINI_PIECE_PC NewMiniPiece[10];
+#pragma bss_seg()
+}
+extern "C" {
+#pragma data_seg(".data$PANEL_REDBRICKSCALE")
+    f32 PANEL_REDBRICKSCALE = 0.4000000059604645f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$REDBRICKPOSX")
+    f32 REDBRICKPOSX = 0.7250000238418579f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$REDBRICKPOSY")
+    f32 REDBRICKPOSY = -0.7450000047683716f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$DrawRedBrickTime")
+    f32 DrawRedBrickTime;
+#pragma bss_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$RedBrickScale")
+    f32 RedBrickScale;
+#pragma bss_seg()
+}
+extern "C" {
+#pragma data_seg(".data$ICONX")
+    f32 ICONX = 0.7749999761581421f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$POWERUPOBJSIZE")
+    f32 POWERUPOBJSIZE = 0.25f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$PowerUp_PanelYRot")
+    u16 PowerUp_PanelYRot[2];
+#pragma bss_seg()
+}
+extern "C" {
+#pragma data_seg(".data$PartExtraCoinRate_PC")
+    f32 PartExtraCoinRate_PC = 5.0f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$PartVehicleHeartLifetime_PC")
+    f32 PartVehicleHeartLifetime_PC = 1.0f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$PartVehicleHeartPodraceHeight_PC")
+    f32 PartVehicleHeartPodraceHeight_PC = 2.0f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$PartVehicleHeartHeight_PC")
+    f32 PartVehicleHeartHeight_PC = 3.0f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$PartVehicleHeartPodraceScale_PC")
+    f32 PartVehicleHeartPodraceScale_PC = 4.0f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$PartVehicleHeartGunshipScale_PC")
+    f32 PartVehicleHeartGunshipScale_PC = 7.5f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$PartVehicleHeartScale_PC")
+    f32 PartVehicleHeartScale_PC = 5.0f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$coinimpactwait")
+    f32 coinimpactwait;
+#pragma bss_seg()
+}
+extern "C" {
+#pragma const_seg(".rdata$PowerUpBounceSfx_PC")
+    extern const char PowerUpBounceSfx_PC[21] = "Gungan_BlueOrbBounce";
+#pragma const_seg()
+}
+extern "C" {
+#pragma const_seg(".rdata$PickupCoinSfx_PC")
+    extern const char PickupCoinSfx_PC[11] = "PickupCoin";
+#pragma const_seg()
+}
+extern "C" {
+#pragma const_seg(".rdata$CoinDropSilverSfx_PC")
+    extern const char CoinDropSilverSfx_PC[10] = "CoinDropS";
+#pragma const_seg()
+}
+extern "C" {
+#pragma const_seg(".rdata$CoinDropGoldSfx_PC")
+    extern const char CoinDropGoldSfx_PC[10] = "CoinDropG";
+#pragma const_seg()
+}
+extern "C" {
+#pragma const_seg(".rdata$PowerUpLoopSfx_PC")
+    extern const char PowerUpLoopSfx_PC[18] = "Grv_GuardWeaponLp";
+#pragma const_seg()
+}
+extern "C" {
+#pragma data_seg(".data$id_BOBAFETT")
+    i16 id_BOBAFETT = -1;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$id_MINIDROIDEKA")
+    i16 id_MINIDROIDEKA = -1;
+#pragma data_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$SARLACCPITA_LDATA")
+    LEVELDATA_PC *SARLACCPITA_LDATA;
+#pragma bss_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$KillPartsPreviousVariantPc")
+    i32 KillPartsPreviousVariantPc;
+#pragma bss_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$KillPartsZeroLightingPc")
+    PART_LIGHTING_DATA_PC KillPartsZeroLightingPc;
+#pragma bss_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$KillPartsBrickImpactWaitPc")
+    f32 KillPartsBrickImpactWaitPc;
+#pragma bss_seg()
+}
+extern "C" {
+#pragma data_seg(".data$KillPartsLegoSingleTextPc")
+    char KillPartsLegoSingleTextPc[11] = "LegoSingle";
+#pragma data_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$KillPartsCharSceneAreaPc")
+    KILLPARTS_CHARSCENE_PC *KillPartsCharSceneAreaPc;
+#pragma bss_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$KillPartsAccessoriesPc")
+    KILLPARTS_ACCESSORY_PC KillPartsAccessoriesPc[2][9];
+#pragma bss_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$KillPartsBikesPc")
+    KILLPARTS_BIKE_PC KillPartsBikesPc[4];
+#pragma bss_seg()
+}
+extern "C" {
+#pragma data_seg(".data$KillPartsTieSpinsTextPc")
+    char KillPartsTieSpinsTextPc[10] = "Tie_Spins";
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$KillPartsTieSpinRatePc")
+    i32 KillPartsTieSpinRatePc = 200000;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$KillPartsTieTrailScalePc")
+    f32 KillPartsTieTrailScalePc = 0.10000000149011612f;
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$KillPartsTieSpinTranslationPc")
+    NUVEC KillPartsTieSpinTranslationPc = {0.0f, 0.0f, -0.05000000074505806f};
+#pragma data_seg()
+}
+extern "C" {
+#pragma data_seg(".data$KillPartsAtatExplodeTextPc")
+    char KillPartsAtatExplodeTextPc[9] = "EXPLODE1";
+#pragma data_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$ExtraHurtSfxFn")
+    void(__cdecl *ExtraHurtSfxFn)(GAMEOBJECT *);
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$GizBuilditGDeb")
+    i16 GizBuilditGDeb[6] = {-1, -1, -1, -1, -1, -1};
+#pragma data_seg()
+#pragma const_seg(".rdata$PickupMultiplierFormat")
+    extern const char PickupMultiplierFormat[4] = "x%i";
+#pragma const_seg()
+#pragma bss_seg(".bss$DrawCoinTotalTime")
+    f32 DrawCoinTotalTime;
+#pragma bss_seg()
+#pragma data_seg(".data$PANEL_COINSCALE_START")
+    f32 PANEL_COINSCALE_START = 1.0f;
+#pragma data_seg()
+}

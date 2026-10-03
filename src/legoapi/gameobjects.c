@@ -3377,3 +3377,60 @@ void __cdecl ClearGameObjects(APIOBJECTSYS_PC *system) {
     APIObjectDestroyAll(system);
     HIGHGAMEOBJECT = 0;
 }
+
+GAMEOBJECT *__cdecl FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, u32 required_flags, f32 radius,
+                                          f32 extra_radius, i32 animation, i32 character_id, i32 player_index,
+                                          f32 *distance_squared, i32 horizontal_only, i32 (*filter)(GAMEOBJECT *)) {
+    GAMEOBJECT *nearest = NULL;
+    f32 nearest_distance = 100000000.0f;
+    f32 radius_squared = radius * radius;
+    GAMEOBJECT *object = Obj;
+    i32 i;
+    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
+        f32 x, y, z, distance;
+        if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0 || (object->flags_e20 & 0x20) ||
+            (CInfo[object->character_context].flags & 0x8000))
+            continue;
+        if (character_id != -1 && object->id != character_id)
+            continue;
+        if (player_index >= 0) {
+            if (player_index <= 1) {
+                if (((i8)object->field_280) != player_index)
+                    continue;
+            } else if (player_index == 99) {
+                if (((i8)object->field_280) == -1)
+                    continue;
+            } else if (player_index == 100) {
+                if (((i8)object->field_280) != -1)
+                    continue;
+            }
+        }
+        if (exclude && object == exclude)
+            continue;
+        if (required_flags && (object->character_data->model_flags & required_flags) != required_flags)
+            continue;
+        if (animation != -1 && object->character_model->model_data_b[animation] == NULL)
+            continue;
+        if (filter && !filter(object))
+            continue;
+        x = object->collision_position.x - position->x;
+        y = object->collision_position.y - position->y;
+        z = object->collision_position.z - position->z;
+        distance = horizontal_only ? x * x + z * z : x * x + y * y + z * z;
+        if (exclude) {
+            if (radius_squared <= 0.0f || distance < radius_squared) {
+                f32 combined_radius = exclude->collision_radius + object->collision_radius + extra_radius;
+                if (distance < combined_radius * combined_radius && distance < nearest_distance) {
+                    nearest_distance = distance;
+                    nearest = object;
+                }
+            }
+        } else if ((radius_squared <= 0.0f || distance < radius_squared) && distance < nearest_distance) {
+            nearest_distance = distance;
+            nearest = object;
+        }
+    }
+    if (nearest && distance_squared)
+        *distance_squared = nearest_distance;
+    return nearest;
+}

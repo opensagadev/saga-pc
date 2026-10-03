@@ -1220,3 +1220,25 @@ The separate BuildUpDone 0x0087b9b4 is unchanged. The private landing pointer
 original source group, with the complete pointer initializer and callback exact.
 Nine optional TerrainPlayer-only data definitions and the full pickup table
 remain held; no surrogate pointer or callback storage is created.
+
+
+### Pickup table and vehicle breakup data checkpoint (2026-10-03)
+
+Seventy new physical shared definitions have exact complete initializer regions
+totaling 2,113 bytes. The scoped proof set reaches 961: 549 known original extents
+cover 137,497 unique bytes; 412 unknown extents cover 58,370 source-view bytes and
+receive no allocation credit. All 891 prior proofs remain unchanged. Of the new
+definitions, 47 retain blank original extents; their source views total 1,308 bytes.
+Twenty-three known extents total 805 bytes, including the already inventoried
+576-byte accessory allocation, so this is not 805 bytes of new mapping coverage.
+
+GizmoPickupType at 0x007f8df8 is the actual ten-record, 56-byte typed table. Its
+twelve nonzero callback slots bind nine genuine production functions; no NULL or
+integer-address substitutes are used. Table literals have single canonical owners.
+PowerUpLoopSfx_PC includes its actual 18-byte NUL-terminated initializer.
+GizBuilditGDeb is the twelve-byte all-minus-one view at 0x00804e38; 0x00805638 is
+unrelated. PANEL_COINSCALE_START is mutable float 1.0 at 0x007fc2f0, not the unrelated
+0x008033a4. DrawCoinTotalTime at 0x0087b960 is genuine zero storage, and the complete
+four-byte multiplier format is at 0x00758ca8. All four are checked against retail.
+Nine TerrainPlayer-only definitions remain held. Renderer-specific data stays in
+reviewed scratch until its genuine source/provider batch is ready.

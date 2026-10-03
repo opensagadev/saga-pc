@@ -715,3 +715,42 @@ providers and canonical data. It covers bonus/adaptive-cheat scaling, coin
 mutation before suppressed return values, NaN double-score time, unsigned
 64-bit score accumulation/saturation, icon conversion, actual menus 19/20,
 message reset, camera blending and repeat-sound queue behavior.
+
+
+### Pickup and vehicle breakup checkpoint (2026-10-03)
+
+Seventy-two newly compiled functions add 18,176 complete original PC bytes over
+e34447e. Compared code rises to 614,808 bytes; whole-code fuzzy coverage reaches
+10.799117% of 3,471,246 bytes, up 0.400315 percentage points. Exact code grows by
+1,674 bytes to 63,952 (1.842336%); all earlier exact code and data remain exact.
+This is transferred source, distinct from the larger accepted inventory.
+
+The production subset includes 45 pickup, collection, hint and message providers
+(8,001 PC bytes), the 19-function vehicle breakup group (8,423), coin-panel and
+connected gameplay services. Both timed debris wrappers remain with their genuine
+private matrix state in parts.c. TIE private register helpers remain with callers
+in parts_breakup.cpp. Existing partial KillGameObject is reused honestly; its
+remaining STUBBED paths and full gameplay are not declared reconstructed.
+
+The actual ten-record pickup table retains twelve nonzero callback slots targeting
+nine real functions. AddCoinsToPanel854 now uses that genuine table. Six new pickup
+bodies totaling 1,408 bytes still need the missing renderer; three private helpers
+totaling 583 bytes naturally stop compiling when those callers are held. AddPickups
+and GizmoBlowUp_AddEffects (2,606 bytes) also remain complete reviewed scratch.
+None receives source-transfer credit, and no renderer substitute closes the link.
+
+The source-only executable links 206 objects with 2,368 function and 4,107 data
+definitions; all mappings and supported relocations resolve. LLVM18 checks 208
+format files and 206 tidy units; 665 tests pass with three skips. A native fixture
+links the actual 206-object set and passes 23 checks covering messages, panel coin
+conservation/suppression, interpolation, nearest-object filtering, ties and NaNs.
+The independent real hint/panel fixture passes. All 2,296 prior compiled function
+copies remain: 2,295 have identical relocated bytes. DebReAlloc2 restores the
+previously verified equivalent scheduling hash, with equal extent and score.
+
+Seventy new canonical shared definitions have complete initializer proofs covering
+2,113 bytes. Forty-seven source views retain unknown original allocation extents.
+The old 576-byte accessory allocation is preserved under one typed owner, never
+counted twice. Next work closes genuine renderer material, shadow, wind and display
+list dependencies, then releases the held pickup and combat callers. The unbounded
+whole-project goal and direct-main checkpoint cadence remain active.

@@ -217,3 +217,33 @@ counter_sound:
 void __cdecl GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE_PC *message) {
     message->target_position.x = cointotal_x[message->player_index];
 }
+
+i32 __cdecl FindGameMsgsWithID(i32 id, i32 remove, i32 player, GAME_MESSAGE_PC *exclude) {
+    GAME_MESSAGE_PC *message = GameMessage;
+    i32 count = 0, index;
+    for (index = 0; index < 128; ++index, ++message) {
+        if (message->active != 0 && (i8)message->target_is_coin_total == id && message != exclude &&
+            (player == -1 || message->player_index == player)) {
+            ++count;
+            if (remove != 0)
+                message->active = 0;
+        }
+    }
+    return count;
+}
+
+GAME_MESSAGE_PC *__cdecl AddGameMessage(char *text, NUVEC *position, f32 scale, NUVEC *target_position,
+                                        f32 target_scale, u8 red, u8 green, u8 blue, u32 flags, f32 duration) {
+    ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
+    message.text = text;
+    message.position = position;
+    message.scale = scale;
+    message.target_position = target_position;
+    message.target_scale = target_scale;
+    message.red = red;
+    message.green = green;
+    message.blue = blue;
+    message.flags = flags;
+    message.duration = duration;
+    return AddGameMsg(&message);
+}

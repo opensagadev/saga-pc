@@ -1,5 +1,7 @@
 #include "saga.h"
 
+extern const char PowerUpLoopSfx_PC[18];
+
 void __cdecl InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
     i32 i, j;
     MAXPARTS = count;
@@ -1290,5 +1292,579 @@ void __cdecl MakePartVector(NUVEC *velocity, NUVEC *direction, f32 scale) {
         NuVecRotateZ(velocity, velocity, (u16)(z_random + temp_xrot));
         NuVecRotateX(velocity, velocity, (u16)(x_random + temp_zrot));
         NuVecScale(velocity, velocity, scale);
+    }
+}
+
+static void __cdecl PartMove_VehiclePickup(PART_PC *part, f32 timestep) {
+    f32 gain;
+    GAMEOBJECT *object;
+    (void)timestep;
+    if (part->initial_time == 0.0f)
+        gain = 0.0f;
+    else
+        gain = 1.0f - (part->scale_time != 0.0f ? part->scale_time / part->initial_time : 0.0f);
+    if (gain <= 0.0f) {
+        part->active |= 2;
+        if (part->stop_fn != NULL)
+            part->stop_fn(part);
+        return;
+    }
+    object = FindNearestGameObject(&part->position, NULL, 0, 0.0f, 0.0f, -1, -1, 99, NULL, 0, NULL);
+    if (object != NULL)
+        part->velocity.y =
+            SeekValF(part->velocity.y, (f32)((f64)(object->collision_position.y - part->position.y) * 3.0), 3.0f);
+    part->position.x += part->velocity.x * gain * FRAMETIME;
+    part->position.y += part->velocity.y * gain * FRAMETIME;
+    part->position.z += part->velocity.z * gain * FRAMETIME;
+}
+
+static void __cdecl PartMove_VehicleHeart(PART_PC *part, f32 timestep) {
+    GAMEOBJECT *recipient = part->recipient;
+    f32 progress = 1.0f - part->time_remaining / PartVehicleHeartLifetime_PC;
+    NUVEC start;
+    f32 height;
+    (void)timestep;
+    if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA) {
+        NuVecAdd(&start, &recipient->collision_position, &part->previous_position);
+        height = PartVehicleHeartPodraceHeight_PC;
+    } else {
+        start = part->previous_position;
+        height = PartVehicleHeartHeight_PC;
+    }
+    part->position.x = start.x + (recipient->collision_position.x - start.x) * progress;
+    part->position.y = start.y + (recipient->collision_position.y - start.y) * progress +
+                       NuTrigTable[((i32)((f64)progress * 32768.0) >> 1) & 0x7fff] * height;
+    part->position.z = start.z + (recipient->collision_position.z - start.z) * progress;
+}
+
+void __cdecl PartUpdate_Heart(PART_PC *part) {
+    NUVEC position = part->position;
+    part->rotation_y = (u16)(i32)((f64)part->rotation_y + (f64)FRAMETIME * 16384.0);
+    NuMtxSetRotationY(&part->transform, part->rotation_y);
+    NuMtxTranslate(&part->transform, &position);
+}
+
+static void __cdecl PowerUp_ImpactPart(PART_PC *part) {
+    f32 scale = AreaPickupScale;
+    f32 maximum = (f32)((f64)scale * 2.5);
+    f32 minimum = (f32)((f64)scale * (f64)0.1f);
+    f32 speed = NuVecMag(&part->velocity);
+    f32 volume;
+    if (speed >= maximum)
+        volume = 1.0f;
+    else {
+        if (speed < minimum)
+            return;
+        volume = (speed - minimum) / (maximum - minimum);
+        if (volume <= 0.0f)
+            return;
+    }
+    PlaySfxAndSetVolume((char *)PowerUpBounceSfx_PC, &part->position, volume);
+}
+
+static void __cdecl PowerUp_UpdatePart(PART_PC *part) {
+    NUVEC position = part->position;
+    part->rotation_y = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+    NuMtxSetRotationY(&part->transform, part->rotation_y);
+    NuMtxTranslate(&part->transform, &position);
+    PowerUp_Particles(WorldInfo_CurrentlyActive(), &position);
+    PlaySfx((char *)PowerUpLoopSfx_PC, &position);
+}
+
+static __declspec(noinline) void PartExtraCoinsPrivate(NUVEC *position, i32 index) {
+    i32 effect = WORLD->game_debris_sys->entries[index].effect;
+    f32 rate;
+    i32 count;
+    if (effect == -1)
+        return;
+    rate = PartExtraCoinRate_PC;
+    if (WORLD->area != NULL && (WORLD->area->flags & 0x104) == 4)
+        rate = (f32)((f64)rate * 0.5);
+    count = ParticlesPerSecond(rate, FRAMETIME);
+    if (count > 0)
+        AddVariableShotDebrisEffect(effect, position, count, 0, 0);
+}
+
+static void __cdecl PartExtra_BlueCoin(PART_PC *part) {
+    if ((part->active & 0x200) != 0)
+        PartExtraCoinsPrivate(&part->position, 56);
+}
+
+void __cdecl PartExtra_PurpleCoin(PART_PC *part) {
+    if ((part->active & 0x200) != 0)
+        PartExtraCoinsPrivate(&part->position, 57);
+}
+
+static void __cdecl PartImpact_Coin(PART_PC *part) {
+    f32 speed, volume;
+    i32 angle;
+    if (coinimpactwait > 0.0f)
+        return;
+    speed = NuVecMag(&part->velocity);
+    if (speed <= 0.0f)
+        return;
+    if (speed > 1.5f)
+        speed = 1.5f;
+    angle = (i32)(((1.5 - (f64)speed) / 1.5) * 16384.0 + 16384.0);
+    volume = NuTrigTable[(angle >> 1) & 0x7fff];
+    if (GAMEDEMO != 0) {
+        PlaySfxAndSetVolume((char *)PickupCoinSfx_PC, &part->position, volume);
+        coinimpactwait = 0.1f;
+    } else if (part->part_id >= 0xb7 && part->part_id <= 0xba) {
+        PlaySfxAndSetVolume((char *)CoinDropSilverSfx_PC, &part->position, volume);
+    } else {
+        PlaySfxAndSetVolume((char *)CoinDropGoldSfx_PC, &part->position, volume);
+    }
+}
+
+static void __cdecl PartStolen_Coin(PART_PC *part) {
+    GAMEOBJECT *recipient;
+    i32 first_active, second_active;
+    GIZMOPICKUP_PC pickup;
+    if (netclient != 0 || (part->active & 0x200) == 0)
+        return;
+    recipient = Player[0];
+    first_active = recipient != NULL && (recipient->flags_1fc & 0x80) != 0;
+    second_active = Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0;
+    if (first_active) {
+        if (second_active)
+            recipient = Player[qrand() / 32768];
+    } else if (second_active) {
+        recipient = Player[1];
+    } else {
+        return;
+    }
+    if (recipient != NULL) {
+        SetCoinType(part->part_id, &pickup);
+        GizmoPickup_CollectCoin(WORLD, &part->position, pickup.type_index, pickup.model_variant, recipient, 1);
+    }
+}
+
+static void __cdecl PartStop_Coin(PART_PC *part) {
+    if (netclient == 0) {
+        PICKUP_RUNTIME_SYS_PC *system = WORLD->pickup_runtime_sys;
+        GIZMOPICKUP_PC *pickup = &system->pickups[system->cursor];
+        ++system->cursor;
+        if (WORLD->pickup_runtime_sys->cursor >= 64)
+            WORLD->pickup_runtime_sys->cursor = 0;
+        if ((pickup->flags & 1) != 0)
+            GizmoPickup_CollectCoin(WORLD, &pickup->position, pickup->type_index, pickup->model_variant, NULL, 1);
+        SetCoinType(part->part_id, pickup);
+        pickup->flags = (pickup->flags & 0xf7) | 0x17;
+        pickup->position = part->position;
+        pickup->rotation = 0;
+        pickup->room = WORLD->current_gscn != NULL ? (i8)NuPortalWhichRoom(WORLD->current_gscn, &pickup->position) : -1;
+        pickup->floor = 2000000.0f;
+        pickup->timer = 5.0f;
+        pickup->shadow_x = 0;
+        pickup->shadow_z = 0;
+        pickup->flags = (pickup->flags | 0x20) & ~0x40;
+    }
+    part->active &= ~1;
+}
+
+void __cdecl AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 lifetime, f32 scale) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    GIZMO_PICKUP_TYPE_PC *type = &GizmoPickupType[type_id];
+    i32 model = type->first_model_id;
+    LEVEL_OBJECT_RUNTIME_PC *object;
+    ADDPART_PC params;
+    PART_PC *part;
+    if (type->random_model_count != 0)
+        model += qrand() / (65535 / type->random_model_count + 1);
+    object = &world->level_objects[model];
+    if (object->active == 0)
+        return;
+    params = Default_ADDPART;
+    params.special = &object->special;
+    params.part_id = model;
+    params.position = position;
+    params.velocity = velocity;
+    params.field_14 = params.field_18 = scale * type->shadow_radius_x;
+    params.flags = 0x56;
+    params.gravity = AreaPickupGravity;
+    if (model >= 0xd5 && model <= 0xd8) {
+        params.flags |= 0x200;
+    } else if (model >= 0xc7 && model <= 0xca) {
+        params.flags |= 0x200;
+        params.callback_30 = PartExtra_BlueCoin;
+    } else if (model >= 0xd5 && model <= 0xd8) {
+        params.flags |= 0x200;
+        params.callback_30 = PartExtra_PurpleCoin;
+    } else {
+        params.destroy_fn = PartStolen_Coin;
+    }
+    params.field_88 = lifetime;
+    params.collision_fn = PartCollide_3D;
+    params.stop_fn = PartStop_Coin;
+    params.impact_fn = PartImpact_Coin;
+    params.time_step = FRAMETIME;
+    params.field_c0 = scale;
+    part = AddPart(&params);
+    if (part != NULL) {
+        part->time_remaining = 30.0f;
+        if (params.gravity == 0.0f) {
+            part->move_fn = PartMove_VehiclePickup;
+            part->initial_time = (f32)((f64)qrand() * (f64)(f32)(1.0f / 65535.0f) + 4.0);
+        }
+    }
+}
+
+void __cdecl Pup_CollectCoin(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 type, GAMEOBJECT *object, i32 flags) {
+    GizmoPickup_CollectCoin(world, &pickup->position, type, pickup->model_variant, object, flags);
+}
+
+void __cdecl Pup_UpdateBlueCoin(WORLDINFO *world, GIZMOPICKUP_PC *pickup) {
+    (void)world;
+    if ((pickup->flags & 0x10) != 0 && (pickup->flags & 0x20) != 0)
+        PartExtraCoinsPrivate(&pickup->position, 56);
+}
+
+void __cdecl Pup_UpdatePurpleCoin(WORLDINFO *world, GIZMOPICKUP_PC *pickup) {
+    (void)world;
+    if ((pickup->flags & 0x10) != 0 && (pickup->flags & 0x20) != 0)
+        PartExtraCoinsPrivate(&pickup->position, 57);
+}
+
+void __cdecl Pup_UpdatePowerUp(WORLDINFO *world, GIZMOPICKUP_PC *pickup) {
+    PowerUp_Particles(world, &pickup->position);
+    PlaySfx((char *)PowerUpLoopSfx_PC, &pickup->position);
+}
+
+void __cdecl Pup_CollectPowerUp(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 type, GAMEOBJECT *object, i32 flags) {
+    (void)world;
+    (void)type;
+    CollectPowerUp(object, &pickup->position, pickup->rotation, flags);
+}
+
+void __cdecl Pup_CollectMinikit(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 type, GAMEOBJECT *object, i32 flags) {
+    (void)world;
+    (void)type;
+    CollectMinikit(&pickup->position, pickup->name, flags);
+    NewBuzz(object->pad->bound_pad, 0.2f, 0);
+}
+
+void __cdecl Pup_CollectHeart(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 type, GAMEOBJECT *object, i32 flags) {
+    (void)world;
+    (void)type;
+    CollectHitPoint(object, &pickup->position, flags);
+}
+
+void __cdecl Pup_CollectRedBrick(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 type, GAMEOBJECT *object, i32 flags) {
+    (void)world;
+    (void)type;
+    (void)flags;
+    CollectRedBrick(&pickup->position);
+    NewBuzz(object->pad->bound_pad, 0.2f, 0);
+}
+
+void __cdecl Pup_CollectCharKit(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 type, GAMEOBJECT *object, i32 flags) {
+    NUVEC target;
+    ADD_GAME_MESSAGE_PC message;
+    GAME_MESSAGE_PC *queued;
+    (void)world;
+    (void)type;
+    (void)flags;
+    NewBuzz(object->pad->bound_pad, 0.2f, 0);
+    AddGameDebris(WORLD->game_debris_sys, 0x13, &pickup->position);
+    if (WORLD->level_objects[0xcf].active == 0)
+        return;
+    target.x = KITPOSX;
+    target.y = KITPOSY + PANEL_MINIKITY;
+    target.z = 1.0f;
+    message = AddGameMsg_Default;
+    message.position = &pickup->position;
+    message.target_position = &target;
+    message.scale = AreaPickupScale;
+    message.target_scale = PANEL_MINIKITSCALE;
+    message.flags = 0x2112d;
+    message.duration = 1.0f;
+    message.icon = 0xcf;
+    message.special = &WORLD->level_objects[0xcf].special;
+    message.tick_fn = MiniKit_GameMsg_Update;
+    message.end_fn = MiniKit_GameMsg_End;
+    message.allow_temporary = 1;
+    queued = AddGameMsg(&message);
+    if (queued != NULL)
+        queued->target_is_coin_total = 6;
+    DrawMiniKitTime = 2.0f;
+    if (AreaGlobals_PC.field_1c < 10)
+        ++AreaGlobals_PC.field_1c;
+}
+
+static void __cdecl EndRedBrickMessage(GAME_MESSAGE_PC *message) {
+    (void)message;
+    if (AreaGlobals_PC.field_08 != 0)
+        AreaGlobals_PC.field_08 = 2;
+    RedBrickScale = 2.0f;
+    GameAudio_PlaySfx(0x26, NULL, 0, 0);
+    NewRumbleAllPlayers(0.6f, 0.0f, 0, 0.0f);
+    GameCam_Judder(GameCam, -0.2f, 0, NULL);
+}
+
+void __cdecl CollectRedBrick(NUVEC *position) {
+    ADD_GAME_MESSAGE_PC message;
+    NUVEC target;
+    AddGameDebris(WORLD->game_debris_sys, 0x62, position);
+    GameAudio_PlaySfxById(GetSfxId(PickupTypeLiteral758c14), position, 3, 0);
+    if (WORLD->area_index == -1 || Game.area_save[WORLD->area_index].red_brick_collected == 0) {
+        target.x = REDBRICKPOSX;
+        target.y = REDBRICKPOSY;
+        target.z = 1.0f;
+        message = AddGameMsg_Default;
+        message.position = position;
+        message.target_position = &target;
+        message.scale = AreaPickupScale;
+        message.target_scale = PANEL_REDBRICKSCALE;
+        message.flags = 0x2112d;
+        message.duration = 1.0f;
+        message.icon = 0xd2;
+        message.special = &WORLD->level_objects[0xd2].special;
+        message.tick_fn = MiniKit_GameMsg_Update;
+        message.end_fn = EndRedBrickMessage;
+        message.allow_temporary = 1;
+        AddGameMsg(&message);
+        DrawRedBrickTime = 2.0f;
+        if (WORLD->area_index != -1)
+            AreaGlobals_PC.field_08 = 1;
+    }
+}
+
+void __cdecl CollectHitPoint(GAMEOBJECT *object, NUVEC *position, i32 flags) {
+    NUVEC momentum;
+    (void)flags;
+    if (object->current_hp > 0 && object->current_hp < object->field_107e)
+        ++object->current_hp;
+    if (object->saved_hitpoints < 4)
+        ++object->saved_hitpoints;
+    if (object->character_data->model_flags & 0x2000) {
+        NuVecScale(&momentum, &object->velocity, 0.5f);
+        AddGameDebrisMom(WORLD->game_debris_sys, 0x10, position, 15, &momentum);
+    } else
+        AddGameDebris(WORLD->game_debris_sys, 15, position);
+    GameAudio_PlaySfx(0x27, position, 0, 0);
+    NewBuzz(object->pad->bound_pad, 0.1f, 0);
+}
+
+static __declspec(noinline) void PowerUp_ExistingIconPrivate(i32 player_index) {
+    NUVEC position;
+    ADD_GAME_MESSAGE_PC message;
+    position.x = player_index == 0 ? -ICONX : ICONX;
+    position.y = PowerUp_GetPanelY(player_index) + STATSPOSY;
+    position.z = 1.0f;
+    message = AddGameMsg_Default;
+    message.icon = 0x35;
+    message.special = &WORLD->level_objects[0x35].special;
+    message.flags = 0x20;
+    message.position = &position;
+    message.scale = 0.6f;
+    message.target_scale = 0.0f;
+    message.duration = 0.3f;
+    AddGameMsg(&message);
+}
+
+static void __cdecl PowerUp_UpdateMsg(GAME_MESSAGE_PC *message) {
+    message->parameter_e2 = (u16)(i32)(message->parameter_e2 + 16384.0 * FRAMETIME);
+    if ((u8)message->player_index <= 1)
+        message->target_position.y = PowerUp_GetPanelY(message->player_index) + STATSPOSY;
+}
+
+static void __cdecl PowerUp_EndMsg(GAME_MESSAGE_PC *message) {
+    GameAudio_PlaySfx(0x26, NULL, 0, 0);
+    if (FindGameMsgsWithID(7, 0, message->player_index, message))
+        PowerUp_ExistingIconPrivate(message->player_index);
+}
+
+void __cdecl CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i32 flags) {
+    NUVEC target;
+    ADD_GAME_MESSAGE_PC message;
+    GAME_MESSAGE_PC *queued;
+    u16 panel_rotation;
+    (void)flags;
+    if (object == NULL || (u8)(i8)object->field_280 >= 2)
+        return;
+    if (ONEPLAYERPOWERUPS != 0) {
+        panel_rotation = (u16)(rotation - RotDiff(0, GameCam_GetAdjustedYRot(NULL)));
+        target.x = (i8)object->field_280 == 0 ? -ICONX : ICONX;
+        target.y = PowerUp_GetPanelY((i8)object->field_280) + STATSPOSY;
+        target.z = 1.0f;
+        if (object->powerup_time > 0.0f)
+            PowerUp_ExistingIconPrivate((i8)object->field_280);
+        message = AddGameMsg_Default;
+        message.position = position;
+        message.target_position = &target;
+        message.scale = AreaPickupScale;
+        message.target_scale = POWERUPOBJSIZE;
+        message.flags = 0x2112d;
+        message.duration = 1.0f;
+        message.icon = 0xd0;
+        message.special = &WORLD->level_objects[0xd0].special;
+        message.update_fn = PowerUp_UpdateMsg;
+        message.end_fn = PowerUp_EndMsg;
+        message.player_index = (i8)object->field_280;
+        message.allow_temporary = 1;
+        message.target_is_coin_total = 7;
+        queued = AddGameMsg(&message);
+        if (queued != NULL) {
+            queued->parameter_e2 = panel_rotation;
+            PowerUp_PanelYRot[(i8)object->field_280] = panel_rotation;
+        }
+    }
+    Cheat_StartPowerUp(position, object);
+    NewRumble(object->pad->bound_pad, 1.0f, 0);
+    NewBuzz(object->pad->bound_pad, 0.2f, 0);
+}
+
+void __cdecl AddVariableShotDebrisEffectTimed3(i32 effect, NUVEC *position, NUVEC *momentum, i32 count, f32 time,
+                                               NUMTX *emitter_orientation, NUMTX *particle_orientation) {
+    u16 priority = 20000;
+    if (effect < 0 || debtab[effect] == NULL)
+        return;
+    switch (debtab[effect]->particle_type) {
+        case 2:
+            priority = 40000;
+            break;
+        case 3:
+            priority = 30000;
+            break;
+        case 7:
+            priority = 10000;
+            break;
+    }
+    AddVariableShotDebrisEffectTimed5(effect, position, momentum, NULL, count, time, emitter_orientation,
+                                      particle_orientation, priority, 0);
+}
+void __cdecl AddVariableShotDebrisEffectTimed1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z_rotation,
+                                               i16 y_rotation, NUMTX *particle_orientation) {
+    NUMTX orientation;
+    DebrisMtxCopyPrivate(&orientation, &ANI3_EVAL_IDENTITY_MATRIX);
+    DebrisMtxRotateZPrivate(&orientation, z_rotation);
+    DebrisMtxRotateYPrivate(&orientation, y_rotation);
+    AddVariableShotDebrisEffectTimed3(effect, position, &APIObjectZeroMomentumPC, count, time, &orientation,
+                                      particle_orientation);
+}
+
+void __cdecl SetCoinType(i32 model, GIZMOPICKUP_PC *pickup) {
+    u8 count;
+    if ((u32)(model - 0xb7) <= 3) {
+        pickup->type_index = 0;
+        pickup->model_variant = (u8)(model - 0xb7);
+    } else if ((u32)(model - 0xbf) <= 3) {
+        pickup->type_index = 1;
+        pickup->model_variant = (u8)(model - 0xbf);
+    } else if ((u32)(model - 0xc7) <= 3) {
+        pickup->type_index = 2;
+        pickup->model_variant = (u8)(model - 0xc7);
+    } else {
+        pickup->type_index = 3;
+        pickup->model_variant = (u8)(model - 0xd5);
+    }
+    count = GizmoPickupType[pickup->type_index].random_model_count;
+    pickup->model_variant = count ? pickup->model_variant % count : 0;
+}
+void __cdecl PowerUp_Particles(WORLDINFO *world, NUVEC *position) {
+    if (VehicleArea == 0 && ParticlesPerSecond(10.0f, FRAMETIME) > 0)
+        AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 10923], position);
+}
+
+typedef struct coinpacket_pickup_pc_s {
+    u8 unknown0[0xa];
+    u8 multiplier, unknown_b;
+    f32 timer;
+} COINPACKET_PICKUP_PC;
+STATIC_ASSERT(offsetof(COINPACKET_PICKUP_PC, multiplier) == 0xa);
+STATIC_ASSERT(offsetof(COINPACKET_PICKUP_PC, timer) == 0xc);
+void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, i32 model_variant,
+                                     GAMEOBJECT *object, i32 ignored) {
+    i32 player_index, player0_active, main_total, model_id, multiplier = 0;
+    NUVEC target;
+    f32 target_scale;
+    u32 score;
+    ADD_GAME_MESSAGE_PC message;
+    COINPACKET_PICKUP_PC *packet;
+    char text[8];
+    (void)ignored;
+    if (object != NULL)
+        player_index = (i8)object->field_280;
+    else {
+        player0_active = Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0;
+        if (Player[1] == NULL || (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) == 0) {
+            if (!player0_active)
+                return;
+            player_index = 0;
+        } else if (!player0_active)
+            player_index = 1;
+        else
+            player_index = qrand() / 32768;
+    }
+    if ((u32)player_index > 1)
+        return;
+    if (type_index >= 2 && type_index <= 3 && object != NULL) {
+        if (world->area != NULL && (world->area->flags & 0x104) == 4)
+            NewBuzzFrames(object->pad->bound_pad, 1, 0);
+        else
+            NewBuzz(object->pad->bound_pad, 0.1f, 0);
+    }
+    PlaySfx((char *)(DoubleScoreTime > 0.0f || type_index == 2 || type_index == 3 ? PickupTypeLiteral758c5c
+                                                                                  : PickupCoinSfx_PC),
+            position);
+    main_total = CoinsGoToMainTotal() != 0;
+    if (main_total) {
+        target.x = cointotal_x[player_index];
+        target.y = STATSPOSY;
+        DrawCoinTotalTime = (f32)(COINMSGTIME + 1.0);
+        target_scale = COINTOTAL_COINSIZE;
+    } else {
+        target.x = player_index == 1 ? PANEL_COINX : -PANEL_COINX;
+        target.y = STATSPOSY + PANEL_COINY;
+        DrawBuildUpTime = (f32)(COINMSGTIME + 1.0);
+        target_scale = PANEL_COINSCALE_END;
+    }
+    target.z = 1.0f;
+    model_id = GizmoPickupType[type_index].first_model_id + model_variant;
+    if (model_id == -1 || world->level_objects[model_id].active == 0)
+        return;
+    message = AddGameMsg_Default;
+    message.icon = (i16)model_id;
+    message.special = &world->level_objects[message.icon];
+    message.player_index = (i8)player_index;
+    score = GizmoPickupType[type_index].score;
+    if (object != NULL && object->coin_packet != NULL) {
+        if (DoubleScore & (1 << player_index)) {
+            if (StartupGameFlag1)
+                score += score;
+            else {
+                packet = (COINPACKET_PICKUP_PC *)object->coin_packet;
+                multiplier = packet->multiplier;
+                score *= multiplier;
+                if (packet->multiplier < 10)
+                    ++packet->multiplier;
+                ((COINPACKET_PICKUP_PC *)object->coin_packet)->timer = 0.5f;
+            }
+        }
+        if (object->powerup_time > 0.0f)
+            score += score;
+    }
+    message.score = score;
+    if (main_total)
+        message.update_fn = GameMsg_DrawAdjustNewPos_CoinToTotal;
+    message.scale = AreaPickupScale * PANEL_COINSCALE_START;
+    message.position = position;
+    message.target_position = &target;
+    message.target_scale = target_scale;
+    message.flags = 0x2012d;
+    message.duration = COINMSGTIME;
+    message.end_fn = EndScoreMessage;
+    AddGameMsg(&message);
+    if (multiplier > 0) {
+        sprintf(text, PickupMultiplierFormat, multiplier);
+        message = AddGameMsg_Default;
+        message.scale = message.target_scale = 2.0f;
+        message.duration = 0.25f;
+        message.text = text;
+        message.position = position;
+        message.target_position = position;
+        message.flags = 0x8007;
+        AddGameMsg(&message);
     }
 }

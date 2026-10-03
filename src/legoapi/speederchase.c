@@ -31,3 +31,9 @@ f32 __cdecl SpeederChaseATATInOutMul(NUVEC *start, NUVEC *end) {
         multiplier = 0.1f;
     return multiplier;
 }
+
+i32 __cdecl ObjIsTargetSpeeder(GAMEOBJECT *object) {
+    if (object->id != id_SPEEDERBIKE || object->rider == NULL)
+        return 0;
+    return object->field_280 == 0xff;
+}
