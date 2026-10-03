@@ -24,6 +24,7 @@ address    , symbol                                                         , si
 0x0041f940,_Players_Init,1355,
 0x00423bc0 , _Customiser_InitNames                                          , 99     ,
 0x00426de0 , _Detonate                                                      , 374   , "EXPLOSION_PC *__cdecl (NUVEC *, u16)"
+0x00427b40,_DropInOutCode,196,void __cdecl(GAMEOBJECT *)
 0x4289a0,_AdaptiveDifficultyAdjustPc,156,"f32 __cdecl(ADAPTIVEDIFFICULTY_PC*,f32)"
 0x0042aa00 , _LSW_SetIndy                                                   , 489    ,
 0x42b6f0,_SetBonusWinner,55,void __cdecl (i32)
@@ -52,6 +53,7 @@ address    , symbol                                                         , si
 0x4321a0,_PlayerTakeHit,394,"void __cdecl(GAMEOBJECT*,GAMEOBJECT*)"
 0x432330,_PlayerTakeHitReactionPc,739,"i32 __cdecl(GAMEOBJECT*,GAMEOBJECT*,f32,u16)"
 0x432620,_DeactivatePlayer,381,"i32 __cdecl(GAMEOBJECT*,f32,GAMEOBJECT*)"
+0x4327a0,_ActivatePlayer,94,void __cdecl (GAMEOBJECT *)
 0x00432860 , _GameObjectToCameraCode                                        , 341   , void __cdecl (GAMEOBJECT *)
 0x4329c0,_SetKillPartMom,48,void __cdecl(NUVEC *)
 0x4329f0,_TiePart_Kill,32,"void __cdecl(PART_PC *, i32)"
@@ -449,6 +451,7 @@ address    , symbol                                                         , si
 0x49ad40   , _StartTurn                                                     , 76    , void __cdecl (GAMEOBJECT *)
 0x0049b2b0 , _IsTurnRequested                                               , 123   , ""
 0x49b330,_TurnCode,1206,"void __cdecl (GAMEOBJECT *, i32, GAMEPAD_PC *)"
+0x49bc30,_StartFlatten,454,"void __cdecl(GAMEOBJECT *,GAMEOBJECT *)"
 0x0049ca10 , _EatVictim                                                     , 108   ,
 0x49d540,_LetGoOfBalloon,373,void __cdecl(GAMEOBJECT*)
 0x49d6c0,_PopBalloon,5,void __cdecl(GAMEOBJECT*)
@@ -474,6 +477,8 @@ address    , symbol                                                         , si
 0x004a5bb0 , _PartImpact_Basketball                                         , 128   , void __cdecl (PART_PC *)
 0x4a76c0,_Slide_SetTargetMom,371,"i32 __cdecl(GAMEOBJECT *,u16,float)"
 0x4aa200,_SetProtocolDroidDeactivatedAction,52,void __cdecl(GAMEOBJECT *)
+0x004aa5a0,_FindGunshipHoverHeight,143,f32 __cdecl(GAMEOBJECT *)
+0x004ab1f0,_CatchUpCode,350,"void __cdecl(GAMEOBJECT *,f32,f32,i32)"
 0x004abac0 , _ApplyGravity                                                  , 2543  , "void __cdecl (GAMEOBJECT *, f32 *, f32, f32, f32 *)"
 0x004ac620 , _MovePlayer_DIRECTIONAL                                        , 10904 , void __cdecl (GAMEOBJECT *)
 0x4af0c0   , _MovePlayer_VEHICLEDIRECTIONAL                                 , 6146  , void __cdecl (GAMEOBJECT *)
@@ -1063,6 +1068,7 @@ address    , symbol                                                         , si
 0x00547ba0 , _ResetLevSfx                                                   , 36    , void __cdecl (WORLDINFO *)
 0x00547bd0 , _AddLevSfx                                                     , 223   , "void __cdecl (WORLDINFO *, NUVEC *, char *, i32)"
 0x547cb0,_ChatterSfx,183,"void __cdecl (GAMEOBJECT *, i32, f32)"
+0x00547dc0,_EngineNoiseCode,354,"void __cdecl(GAMEOBJECT *,i32)"
 0x00547f30 , _PlayJumpSfx                                                   , 210   , "void __cdecl (GAMEOBJECT *, i32)"
 0x548020,_PlayLandSfx,308,"void __cdecl (GAMEOBJECT *, i32, i32)"
 0x5483e0,_PlayHurtSfx,116,void __cdecl(GAMEOBJECT*)
@@ -1086,7 +1092,7 @@ address    , symbol                                                         , si
 0x00549450 , _UpdateFrameCounters                                           , 119   , void __cdecl (void)
 0x00549bb0 , _GameCam_NewShake                                              , 43    , "void __cdecl (GAMECAMERA *, f32, f32, f32)"
 0x00549de0,_GameCam_Judder,301,"void __cdecl(GAMECAMERA *, f32, i32, NUVEC *)"
-0x00549f10 , _GameCam_HitJudder                                             , 186    ,
+0x549f10,_GameCam_HitJudder,186,void __cdecl (void)
 0x549fd0,_GameCam_HitRoll,138,void __cdecl (void)
 0x0054a1c0 , _NarrowSockPositionAllowed                                     , 123   , ""
 0x54a240,_ObjInNarrowSock,163,"i32 __cdecl (GAMEOBJECT *, SOCKSYS_PC *, i32)"
@@ -1121,6 +1127,8 @@ address    , symbol                                                         , si
 0x0054be70 , _Text_StripComments                                            , 141   , "i32 __cdecl (char *, char *, i32)"
 0x0054bf00 , _IntroText_SetTextID                                           , 26    , void __cdecl (i32)
 0x0054bf20 , _IntroText_Draw                                                , 262   , void (f32)
+0x54e750,_Grapple_AddDynamic,121,"GRAPPLE_DYNAMIC_PC * __cdecl (void *, i32)"
+0x54e7d0,_Grapple_RemoveDynamic,70,GRAPPLE_DYNAMIC_PC * __cdecl (void *)
 0x0054f7d0,_Grapple_SetPlayerTargetPoint,141,"void __cdecl (GAMEOBJECT *, NUVEC *)"
 0x54f860,_Grapple_SetTargetMom,159,i32 __cdecl(GAMEOBJECT *)
 0x54f900,_Grapple_SetRotOrder,21,void __cdecl(GAMEOBJECT *)
@@ -1645,7 +1653,8 @@ address    , symbol                                                         , si
 0x58b870,_BossKilled,58,GAMEOBJECT* __cdecl(i32)
 0x0058b8d0 , _CharPlatforms_Configure                                       , 358   , "void __cdecl (WORLDINFO *, char *)"
 0x58bbf0,_CharPlatform_FindObjFromPlatID,72,"GAMEOBJECT * __cdecl (void *, i32)"
-0x0058d8e0 , _SetWeaponIn                                                   , 66    ,
+0x0058d8b0,_KeepWeaponOut,37,void __cdecl(GAMEOBJECT *)
+0x58d8e0,_SetWeaponIn,66,void __cdecl(GAMEOBJECT *)
 0x58dfa0,_NewBlockAction,154,i32 __cdecl(GAMEOBJECT *)
 0x58e0c0,_CanStepBack,103,i32 __cdecl(GAMEOBJECT *)
 0x58e130,_StepBackFromTarget,558,i32 __cdecl(GAMEOBJECT *)
@@ -2491,6 +2500,7 @@ address    , symbol                                                         , si
 0x67fd40,_ScanTerrainPlatform,3582,"void __cdecl (i32, i32)"
 0x00681e90 , _PlaySfxById                                                   , 31    , "void __cdecl (i32, NUVEC *)"
 0x00681eb0 , _PlaySfxByIdAndSetVolume                                       , 35    , "void __cdecl (i32, NUVEC *, f32)"
+0x00681f10,_PlaySfxByIdAndSetVolumeAndPitch,37,"void __cdecl(i32,NUVEC *,f32,f32)"
 0x00681f40 , _PlaySfx                                                       , 45    , "void __cdecl (char *, NUVEC *)"
 0x00681f70,_GenDebIndexSpheroid,788,"DEBRISPARTICLE_PC *__cdecl (DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32)"
 0x00682290,_GenDebIndexBounceY,1025,"DEBRISPARTICLE_PC *__cdecl (DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32)"
@@ -4433,6 +4443,8 @@ address    , symbol                                                         , si
 0x761588,__real@4b189680,4,const f32
 0x761594,__real@3a23d70b,4,const f32
 0x007615b0 , _NuLstCreateTag                                                , 52    , const char[52]
+0x007615e8,__real@3fef851ec0000000,8,const f64
+0x007615f0,__real@404f800000000000,8,const f64
 0x761610, _NuVpFixed16ScalePc, ,
 0x761610,__real@3ef0000000000000,8,const f64
 0x0076161c , _Text_PathJapaneseText                                         , 9     , const char[9]
@@ -5212,6 +5224,9 @@ address    , symbol                                                         , si
 0x7fc04c,_CombatReactionHorizontalScalePc,,f32
 0x7fc050,_CombatReactionVerticalScalePc,,f32
 0x007fc078 , _rocket_speed                                                  , 4     , f32
+0x7fc164,_VehicleGunshipHoverBasePc,,f32
+0x7fc168,_VehicleGunshipHoverOtherPc,,f32
+0x7fc16c,_VehicleGunshipHoverSeparationPc,,f32
 0x007fc210 , _VehicleCollisionDamageSpeedFraction                           , 4     , f32
 0x007fc214 , _VehicleCollisionFrontAngle                                    , 4     , i32
 0x007fc218 , _VehicleCollisionRearAngle                                     , 4     , i32
@@ -5350,6 +5365,8 @@ address    , symbol                                                         , si
 0x00802858 , _LEGOCONTEXT_BEENTAKENOVER                                     , 4     , i32
 0x0080285c , _LEGOCONTEXT_GETIN                                             , 4     , i32
 0x00802860 , _LEGOCONTEXT_BUILDIT                                           , 4     , i32
+0x802864,_LEGOCONTEXT_WEAPONIN,,i32
+0x802868,_LEGOCONTEXT_WEAPONOUT,,i32
 0x00802878 , _LEGOCONTEXT_SUPERCARRY                                        , 4     , i32
 0x80288c,_LEGOCONTEXT_LAND_LUNGE,,i32
 0x802890,_LEGOCONTEXT_LAND_SLAM,,i32
@@ -6205,6 +6222,7 @@ address    , symbol                                                         , si
 0x00926c58 , _Text_MaxStrings_Overall                                       , 4     , i32
 0x00926c5c , _Text_StringBits                                               , 4     , u32 *
 0x00926c60 , _Text_GameSetLanguageFn                                        , 4     , void (*)(i32)
+0x926c78,_DynamicGrapplePc,,GRAPPLE_DYNAMIC_PC[4]
 0x9270d8   , _MiniBuffer                                                    , 16384 , char[16384]
 0x0092b0e0 , _temp_xrot                                                     , 2     , u16
 0x0092b0e4 , _temp_zrot                                                     , 2     , u16

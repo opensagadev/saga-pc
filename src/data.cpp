@@ -8071,3 +8071,33 @@ extern "C" {
     i16 *objhitobj_killparts_yrot;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$VehicleGunshipHoverBasePc")
+    f32 VehicleGunshipHoverBasePc = 2.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleGunshipHoverOtherPc")
+    f32 VehicleGunshipHoverOtherPc = 1.25f;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleGunshipHoverSeparationPc")
+    f32 VehicleGunshipHoverSeparationPc = 0.800000011920929f;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$DynamicGrapplePc")
+    GRAPPLE_DYNAMIC_PC DynamicGrapplePc[4];
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$LEGOCONTEXT_WEAPONIN")
+    i32 LEGOCONTEXT_WEAPONIN = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$LEGOCONTEXT_WEAPONOUT")
+    i32 LEGOCONTEXT_WEAPONOUT = -1;
+#pragma data_seg()
+}

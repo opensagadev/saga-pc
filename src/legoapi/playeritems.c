@@ -76,3 +76,20 @@ void __cdecl LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
     }
     object->helmet = 0;
 }
+
+void __cdecl KeepWeaponOut(GAMEOBJECT *object) {
+    object->weapon_scale = 1.0f;
+    object->flags_e20 |= 0x10000;
+    object->portal_flags |= 0x10;
+    object->field_e33 = 0;
+}
+
+extern i32 LEGOCONTEXT_WEAPONIN, LEGOCONTEXT_WEAPONOUT;
+void __cdecl SetWeaponIn(GAMEOBJECT *object) {
+    i8 context = object->character_context;
+    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT))
+        object->character_context = -1;
+    object->weapon_scale = 0.0f;
+    object->flags_e20 &= ~0x10000u;
+    object->field_e33 = 0;
+}

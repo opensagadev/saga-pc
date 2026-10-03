@@ -6725,6 +6725,19 @@ STATIC_ASSERT(offsetof(PC_SPECIAL_PROJECTION_ADJUST, y_scale) == 4);
 STATIC_ASSERT(offsetof(PC_SPECIAL_PROJECTION_ADJUST, x_offset) == 8);
 STATIC_ASSERT(offsetof(PC_SPECIAL_PROJECTION_ADJUST, y_offset) == 0xc);
 
+typedef struct GRAPPLE_DYNAMIC_PC {
+    u8 unknown_00[0x1d];
+    u8 retain_attachment;
+    u8 flags;
+    u8 unknown_1f[0x35];
+    GAMEOBJECT *attached_object;
+    u8 unknown_58[0xa0];
+} GRAPPLE_DYNAMIC_PC;
+STATIC_ASSERT(sizeof(GRAPPLE_DYNAMIC_PC) == 0xf8);
+STATIC_ASSERT(offsetof(GRAPPLE_DYNAMIC_PC, retain_attachment) == 0x1d);
+STATIC_ASSERT(offsetof(GRAPPLE_DYNAMIC_PC, flags) == 0x1e);
+STATIC_ASSERT(offsetof(GRAPPLE_DYNAMIC_PC, attached_object) == 0x54);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -6838,6 +6851,29 @@ extern "C" {
     void __cdecl ReleasePush(GAMEOBJECT *);
     void __cdecl LightSabreDebris(GAMEOBJECT *);
     /* ObjHitObj/Shield prototypes belong to the independently reviewed combat SCC packet. */
+
+    void __cdecl EngineNoiseCode(GAMEOBJECT *, i32);
+    void __cdecl KeepWeaponOut(GAMEOBJECT *);
+    void __cdecl PlaySfxByIdAndSetVolumeAndPitch(i32, NUVEC *, f32, f32);
+    /* Shared declarations must have existing extern C linkage; no newsharedfield needed. */
+
+    void __cdecl StartFlatten(GAMEOBJECT *, GAMEOBJECT *);
+    void __cdecl ActivatePlayer(GAMEOBJECT *);
+    void __cdecl GameCam_HitJudder(void);
+
+    void __cdecl DropInOutCode(GAMEOBJECT *);
+    f32 __cdecl FindGunshipHoverHeight(GAMEOBJECT *);
+    void __cdecl CatchUpCode(GAMEOBJECT *, f32, f32, i32);
+    extern f32 VehicleGunshipHoverBasePc, VehicleGunshipHoverOtherPc, VehicleGunshipHoverSeparationPc;
+    /* Existing extern C shared block; no new shared layout fields. */
+
+    GRAPPLE_DYNAMIC_PC *__cdecl Grapple_AddDynamic(void *, i32);
+    GRAPPLE_DYNAMIC_PC *__cdecl Grapple_RemoveDynamic(void *);
+    extern GRAPPLE_DYNAMIC_PC DynamicGrapplePc[4];
+
+    void __cdecl SetWeaponIn(GAMEOBJECT *);
+    extern i32 LEGOCONTEXT_WEAPONIN, LEGOCONTEXT_WEAPONOUT;
+    /* Existing shared extern C scope. No new fields/providers. */
 
     extern HINTSYS_PC hintsys;
     extern NEW_MINI_PIECE_PC NewMiniPiece[10];

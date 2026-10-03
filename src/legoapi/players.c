@@ -1332,3 +1332,13 @@ void __cdecl Player_ClearContext(GAMEOBJECT *object, i32 mode) {
     SpecialMove_ReleaseVictim(object);
     object->flags_e24 &= ~0xc00;
 }
+
+void __cdecl ActivatePlayer(GAMEOBJECT *object) {
+    object->character_context = -1;
+    if (object->character_model->model_data_b[0x80] != NULL) {
+        object->character_context = 0x41;
+        object->field_7aa = 0x80;
+        object->context_timer = AnimDuration((i16)object->id, 0x80, 0.0f, 0.0f, 1);
+        object->context_duration = 0.0f;
+    }
+}

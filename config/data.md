@@ -1273,3 +1273,16 @@ Fourteen new compiler-owned aliases are mapped from actual emitted literals,
 including the deflection f64 constants10922/-5461; no duplicate storage is added.
 Torpedo max5 is now independently established by actual getMaxTorpedos72; local
 count/state/timer/positions views retain asserted PC offsets and selected domains.
+
+
+### Vehicle and dynamic grapple data checkpoint (2026-10-03)
+
+Six new canonical views have exact complete initializers totaling 1,012 bytes:
+three mutable gunship hover controls (2.0f/1.25f/.8f), two weapon context values
+(-1), and the four-record dynamic grapple view (992 zero-filled PE virtual bytes).
+All 1,010 previous proofs remain unchanged. Scoped totals are 1,016 definitions,
+553 known extents/137,551 unique original bytes, and 463 unknown extents/59,705
+source-view bytes. All six new extents remain blank with zero allocation credit.
+The grapple loops establish four working records at f8 stride and fields1d/1e/54;
+they do not establish a complete original allocation extent. Actual production
+compiled initializer regions are compared through the repository relocator.

@@ -834,3 +834,40 @@ The half-hour checkpoint was delayed to integrate and validate the actual collis
 family with its combat callers. Next comes genuine vehicle engine/audio/weapon
 428 and private thrust/launch/deactivation, then Move_VEHICLE1789/PostReset111
 and reviewed TerrainPlayer8287. The whole-project continuation remains authorized.
+
+
+### Vehicle leaves, reactivation and grapples checkpoint (2026-10-03)
+
+Twelve newly compiled functions add 2,108 complete original PC bytes over a140055.
+Compared code reaches 643,321 bytes; whole-code fuzzy coverage is 11.349925% of
+3,471,246 bytes, up 0.049127 percentage points. Exact code adds 234 bytes to
+65,926 (1.899203%). All previous exact code and data remain exact.
+
+The connected providers include engine/audio/weapon routines 428, StartFlatten454,
+DropInOut196, mutable gunship hover143, CatchUp350, ActivatePlayer94, camera
+hit judder186, dynamic grapple allocation/removal191 and SetWeaponIn66.
+PC engine pitch spills, drop NaN hold, signed player selector, looped socket wrap
+and camera ordered guards are preserved. Grapple allocation searches existing
+attachments before empty slots, keeps duplicate retention, and preserves the
+actual pointer return from removal despite Android's void signature. Its full
+121-byte allocation extent includes the final LEA/RET omitted by advisory118.
+
+The source-only executable links 216 objects, 2,456 functions and 4,277 data
+definitions with all mappings and relocations resolved. LLVM18 checks 218 format
+files and 216 tidy units; all 665 tests pass with three skips. Actual-object
+fixtures pass 14 engine/flatten, 18 drop/hover/catch, 80 reactivation/camera and
+20 grapple contract checks. These cover meaningful selected behavior; full game,
+asset loading and physical audio/input/rendering remain unverified.
+
+All 2,444 prior function copies remain, with 2,443 byte-identical. The particle
+copy changes 713 to 715 bytes: independently verified x87 load reordering and one
+extra exchange leave identical stack state. All remaining 186 instruction pairs
+and 34 relocations agree; actual advisory changes remain in the report. Six new
+canonical data views have complete initializer proofs over 1,012 bytes and all
+1,010 earlier proofs remain unchanged. All six original extents stay unknown.
+
+The next connected wave is the reviewed 3,380-byte vehicle/float/tractor family
+and 1,051-byte Loop/Twist/Hint family. Private weapon/target and vehicle groups
+continue in genuine caller contexts. Move_VEHICLE1789/PostReset111 still require
+real provider closure before TerrainPlayer8287 can link. No replacement vehicle
+body or fabricated private ABI wrapper is used.

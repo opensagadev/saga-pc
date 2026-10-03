@@ -3415,3 +3415,64 @@ void __cdecl LightSabreDebris(GAMEOBJECT *object) {
             AddGameDebris(WORLD->game_debris_sys, effect, &points[first]);
     }
 }
+
+typedef struct terrain_parent_context_view_pc_s {
+    u8 unknown_0[0x6c4];
+    u8 reset_context;
+} TERRAIN_PARENT_CONTEXT_VIEW_PC;
+STATIC_ASSERT(offsetof(TERRAIN_PARENT_CONTEXT_VIEW_PC, reset_context) == 0x6c4);
+void __cdecl Player_ClearContext(GAMEOBJECT *, i32);
+void __cdecl Player_ResetContexts(void *);
+void __cdecl NewBuzzFrames(void *, i32, i32);
+void __cdecl StartFlatten(GAMEOBJECT *source, GAMEOBJECT *target) {
+    PLAYERCHARACTERCONFIG_PC *data;
+    NUVEC direction;
+    u16 angle;
+    data = target->character_data->game_character;
+    if (target->character_context == 0x33 || target->character_context == 0x3d || (data->flags_090 & 0x40) != 0)
+        return;
+    if (data->field_028 != 0.0f && target->jump_variant_state == 1)
+        return;
+    if ((source->flags_1fc_word & 4) != 0 || target->field_281 == 0)
+        return;
+    Player_ClearContext(target, 0);
+    Player_ResetContexts(&((TERRAIN_PARENT_CONTEXT_VIEW_PC *)target)->reset_context);
+    target->character_context = 0x3d;
+    target->context_timer = 0.0f;
+    target->velocity.x *= 0.5;
+    target->velocity.z *= 0.5;
+    target->field_7aa = target->character_model->model_data_b[0x85] != NULL ? 0x85 : 5;
+    target->context_duration = (f32)qrand() * (f64)(1.0f / 65535.0f) + 1.0;
+    NuVecSub(&direction, &target->collision_position, &source->collision_position);
+    angle = NuAtan2D(direction.x, direction.z);
+    if (direction.x * target->facing_direction.x + direction.z * target->facing_direction.z < 0.0) {
+        angle += 0x8000;
+        target->field_7b3 = 1;
+    } else {
+        target->field_7b3 = 0;
+    }
+    if (target->field_7aa != 0x85)
+        target->field_0x276 = target->facing_angle = target->movement_facing_angle = angle;
+    target->delayed_turn_timer = 0.0f;
+    NewBuzzFrames(source->pad->bound_pad, 1, 0);
+    data = target->character_data->game_character;
+    GameAudio_PlaySfxById(data->sfx_hurt, &target->collision_position, 0, 0);
+    NewBuzz(target->pad->bound_pad, 0.1f, 0);
+}
+
+extern f32 VehicleGunshipHoverBasePc, VehicleGunshipHoverOtherPc, VehicleGunshipHoverSeparationPc;
+f32 __cdecl FindGunshipHoverHeight(GAMEOBJECT *object) {
+    f32 height = VehicleGunshipHoverBasePc;
+    if ((i8)object->field_280 < 2) {
+        if (WORLD->current_level != BONUS_GUNSHIPA_LDATA)
+            height = VehicleGunshipHoverOtherPc;
+        if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) && Player[1] != NULL &&
+            (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80)) {
+            if (object == Player[0])
+                height += VehicleGunshipHoverSeparationPc;
+            else
+                height -= VehicleGunshipHoverSeparationPc;
+        }
+    }
+    return height;
+}

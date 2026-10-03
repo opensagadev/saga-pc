@@ -159,3 +159,10 @@ void __cdecl GameCam_HitRoll(void) {
     f32 amount = qrand() >= 0x8000 ? 0.25f : -0.25f;
     GameCam_Judder(GameCam, amount, 2, NULL);
 }
+
+void __cdecl GameCam_HitJudder(void) {
+    f32 amount = VehicleArea != 0 ? -0.3f : -0.2f;
+    if (qrand() < 0x8000)
+        amount = -amount;
+    GameCam_Judder(GameCam, amount, qrand() / 0x5556, NULL);
+}

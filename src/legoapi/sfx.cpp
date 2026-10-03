@@ -239,3 +239,7 @@ extern "C" {
         }
     }
 }
+
+extern "C" void __cdecl PlaySfxByIdAndSetVolumeAndPitch(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
+    PlaySfxByIdEx(sfx_id, position, volume, pitch);
+}

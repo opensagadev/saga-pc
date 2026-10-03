@@ -3827,3 +3827,23 @@ RET49fa4f immediately before49fa50, preserving lowWORD character ID comparisons.
 PC normal-pickup delay uses promoted.05f times slot modulo11 plus.75; owner age
 and pickup age retain distinct unordered behavior. Selected real-object runtime
 checks pass without replacement providers; successful damage remains unverified.
+
+
+### Real vehicle leaves and grapple contracts (2026-10-03)
+
+The source checkpoint adds 12 complete functions/2,108 PC bytes. EngineNoise
+547dc0/354 preserves PC float spills before hostility jitter. DropInOut427b40/196
+retains unordered hold; CatchUp4ab1f0/350 preserves signed socket index, loop wrap
+and clamp. Its equivalent ordered negative-distance comparison reuses a genuine
+existing positive-half constant; no unrelated negative-half qword binding is added.
+FindGunshipHoverHeight4aa5a0/143 reads mutable controls and signed BYTE280.
+ActivatePlayer4327a0 ends4327fe (94 bytes), before a distinct function432800;
+GameCam_HitJudder549f10 spans186 bytes and preserves actual sign/axis behavior.
+
+Grapple_AddDynamic54e750 spans121 bytes through RET54e7c8, rather than advisory
+118; Grapple_RemoveDynamic54e7d0 spans70 through RET54e815. Both return the
+actual record pointer in EAX with ordinary cdecl2/1 stack arguments. Their table
+view starts926c78, with f8 stride and attached pointer54/retention1d/flags1e.
+SetWeaponIn58d8e0/66 is complete byte-exact and reads signed object context
+against actual mutable DWORD selectors802864/802868. All prior exact matches
+remain exact; pending vehicle/terrain contracts receive no compiled source credit.

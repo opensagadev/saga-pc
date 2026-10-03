@@ -13312,6 +13312,379 @@
       "next_connected_wave": "Vehicle finite engine/audio/weapon428, private thrust/launch/deactivation; real Move_VEHICLE1789 and PostReset111 then reviewed TerrainPlayer8287.",
       "checkpoint_delay_reason": "Connected combat/context10373 plus real collision3332 newbytes integrated as coherent family; full original-TU owner compiles, real-object fixtures, aggregate checks and retail matching still pending. No unvalidated commit or fake provider introduced.",
       "ongoing_goal": "Continue indefinitely until user pauses/stops; direct main checkpoints remain authorized."
+    },
+    {
+      "baseline_commit": "a14005527e3668a62e3a09ff0d78fe1f679c2782",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 769147,
+        "matched_code_bytes": 65692,
+        "matching_percent": 1.8924616693832705,
+        "fuzzy_coverage_percent": 11.300798039126569,
+        "mapped_functions": 2693,
+        "matched_functions": 1075,
+        "objdiff_fuzzy_percent": 61.19504,
+        "objdiff_total_code": 641213,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1406478,
+        "mapping_percent": 3.510308914012983
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 771003,
+        "matched_code_bytes": 65926,
+        "matching_percent": 1.8992027646556884,
+        "fuzzy_coverage_percent": 11.349924636970979,
+        "mapped_functions": 2703,
+        "matched_functions": 1079,
+        "objdiff_fuzzy_percent": 61.259583,
+        "objdiff_total_code": 643321,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1408350,
+        "mapping_percent": 3.514981079725516
+      },
+      "newly_compared": [
+        {
+          "name": "DropInOutCode",
+          "symbol": "_DropInOutCode",
+          "address": "0x00427b40",
+          "units": [
+            "src/legoapi/dropinout.c"
+          ],
+          "target_size": 196,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/dropinout.c",
+              "base_size": 198,
+              "exact_match": false,
+              "target_sha256": "c46ca0f2ed62b1e474583cc0ab328962c98611714fabe4743d5fc67c61e06d5c",
+              "base_sha256": "34343cf0a2965f08d6dfd28e5b1f357ed7a9279217ef03137d4374b34088a4ae",
+              "relocation_count": 8,
+              "comparison_unit": "00427b40-f5ae918e88ff",
+              "objdiff_percent": 61.150944
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 61.150944
+        },
+        {
+          "name": "ActivatePlayer",
+          "symbol": "_ActivatePlayer",
+          "address": "0x004327a0",
+          "units": [
+            "src/legoapi/players.c"
+          ],
+          "target_size": 94,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/players.c",
+              "base_size": 94,
+              "exact_match": true,
+              "target_sha256": "bdd0fed3b0f0c1018595042d31ace2aff7cf0ab88fca2ab9edd4f3d8f0fa774b",
+              "base_sha256": "bdd0fed3b0f0c1018595042d31ace2aff7cf0ab88fca2ab9edd4f3d8f0fa774b",
+              "relocation_count": 1,
+              "comparison_unit": "004327a0-32c388964db8",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "StartFlatten",
+          "symbol": "_StartFlatten",
+          "address": "0x0049bc30",
+          "units": [
+            "src/legoapi/move.c"
+          ],
+          "target_size": 454,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/move.c",
+              "base_size": 451,
+              "exact_match": false,
+              "target_sha256": "cd575df4019ee801b953f31f05391c9f38b8c61e348d00be6de993693b1983c1",
+              "base_sha256": "b9894f56a199597355f3fc9a27ee7d969197e9a904c839f7680dc6144ff0cd1d",
+              "relocation_count": 13,
+              "comparison_unit": "0049bc30-5d0c0e34313f",
+              "objdiff_percent": 82.52066
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 82.52066
+        },
+        {
+          "name": "FindGunshipHoverHeight",
+          "symbol": "_FindGunshipHoverHeight",
+          "address": "0x004aa5a0",
+          "units": [
+            "src/legoapi/move.c"
+          ],
+          "target_size": 143,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/move.c",
+              "base_size": 134,
+              "exact_match": false,
+              "target_sha256": "54655637e57c53fd812b1cb654384f8e3423b922c439d866c7ddb96a5fd68773",
+              "base_sha256": "00b350f56cce9782d491619476a4d22e12a048928aca12cc3fabddb176674f92",
+              "relocation_count": 8,
+              "comparison_unit": "004aa5a0-4ba49a04124b",
+              "objdiff_percent": 79.78261
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 79.78261
+        },
+        {
+          "name": "CatchUpCode",
+          "symbol": "_CatchUpCode",
+          "address": "0x004ab1f0",
+          "units": [
+            "src/legoapi/supportall.c"
+          ],
+          "target_size": 350,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/supportall.c",
+              "base_size": 356,
+              "exact_match": false,
+              "target_sha256": "32502b1ab31f7a104d4c87248f922fc3ad66f05a69c438aed800b153c4e73c89",
+              "base_sha256": "d0dba3db109533a979ee1e4c8a799c8119d3a8d75877ec53450706daf16bbf87",
+              "relocation_count": 7,
+              "comparison_unit": "004ab1f0-023f0d841207",
+              "objdiff_percent": 85.368935
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 85.368935
+        },
+        {
+          "name": "EngineNoiseCode",
+          "symbol": "_EngineNoiseCode",
+          "address": "0x00547dc0",
+          "units": [
+            "src/legoapi/specialsfx.c"
+          ],
+          "target_size": 354,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/specialsfx.c",
+              "base_size": 356,
+              "exact_match": false,
+              "target_sha256": "a095efd81d11cb900c7cf065e15f508509416ac00d05d7c785a72e8de60f995e",
+              "base_sha256": "4359795a5e7a57f03317da56bd576c0b05a30261ab344905ddfacc73aecf366a",
+              "relocation_count": 14,
+              "comparison_unit": "00547dc0-818c66210e7a",
+              "objdiff_percent": 82.391304
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 82.391304
+        },
+        {
+          "name": "GameCam_HitJudder",
+          "symbol": "_GameCam_HitJudder",
+          "address": "0x00549f10",
+          "units": [
+            "src/legoapi/camera.c"
+          ],
+          "target_size": 186,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/camera.c",
+              "base_size": 172,
+              "exact_match": false,
+              "target_sha256": "494b107d0bed30055553f76a3bbfe81f956bb6470a034ad8111d774aeb38baa7",
+              "base_sha256": "c2f6c63ad583f73972f154742ab541dc6c1086625c4c58a4abae9942321b65ba",
+              "relocation_count": 6,
+              "comparison_unit": "00549f10-5a969cb9805c",
+              "objdiff_percent": 68.94915
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 68.94915
+        },
+        {
+          "name": "Grapple_AddDynamic",
+          "symbol": "_Grapple_AddDynamic",
+          "address": "0x0054e750",
+          "units": [
+            "src/legoapi/grapples.c"
+          ],
+          "target_size": 121,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/grapples.c",
+              "base_size": 96,
+              "exact_match": false,
+              "target_sha256": "aa5d844269c49bae75454c5470f0801dbb9c5bb46d743312e2dfea98e540ae9a",
+              "base_sha256": "ac37038e3321497ce8bb79e163d183eb7a2106f1dd16f7f74ea064478bd2828d",
+              "relocation_count": 5,
+              "comparison_unit": "0054e750-17861ea8b595",
+              "objdiff_percent": 80.757576
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 80.757576
+        },
+        {
+          "name": "Grapple_RemoveDynamic",
+          "symbol": "_Grapple_RemoveDynamic",
+          "address": "0x0054e7d0",
+          "units": [
+            "src/legoapi/grapples.c"
+          ],
+          "target_size": 70,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/grapples.c",
+              "base_size": 48,
+              "exact_match": false,
+              "target_sha256": "1c931b766fa612ff5ff2ce51bdb8301e3436c7228e156491588eaa535d140ebb",
+              "base_sha256": "01c481b8496fea84f054659a73316adac00901cef499cc0c45c3e305bf3d7892",
+              "relocation_count": 2,
+              "comparison_unit": "0054e7d0-bc78961afca1",
+              "objdiff_percent": 64.0
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 64.0
+        },
+        {
+          "name": "KeepWeaponOut",
+          "symbol": "_KeepWeaponOut",
+          "address": "0x0058d8b0",
+          "units": [
+            "src/legoapi/playeritems.c"
+          ],
+          "target_size": 37,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/playeritems.c",
+              "base_size": 37,
+              "exact_match": true,
+              "target_sha256": "9bd11ddb2ee15b909b91082aee94ce81484012687b39adf30b71f83ffd7dac45",
+              "base_sha256": "9bd11ddb2ee15b909b91082aee94ce81484012687b39adf30b71f83ffd7dac45",
+              "relocation_count": 0,
+              "comparison_unit": "0058d8b0-4f59e88ac6f0",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "SetWeaponIn",
+          "symbol": "_SetWeaponIn",
+          "address": "0x0058d8e0",
+          "units": [
+            "src/legoapi/playeritems.c"
+          ],
+          "target_size": 66,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/playeritems.c",
+              "base_size": 66,
+              "exact_match": true,
+              "target_sha256": "1626e0be245a61bd6ef31334a2ba849566175c52ddd9c9e14e7c50f756fbda2d",
+              "base_sha256": "1626e0be245a61bd6ef31334a2ba849566175c52ddd9c9e14e7c50f756fbda2d",
+              "relocation_count": 2,
+              "comparison_unit": "0058d8e0-5c4a853cb15e",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "PlaySfxByIdAndSetVolumeAndPitch",
+          "symbol": "_PlaySfxByIdAndSetVolumeAndPitch",
+          "address": "0x00681f10",
+          "units": [
+            "src/legoapi/sfx.cpp"
+          ],
+          "target_size": 37,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/sfx.cpp",
+              "base_size": 37,
+              "exact_match": true,
+              "target_sha256": "ce1604c45b76904b38d78d375e269adae45ddd07311f869dd072a002c4366422",
+              "base_sha256": "ce1604c45b76904b38d78d375e269adae45ddd07311f869dd072a002c4366422",
+              "relocation_count": 1,
+              "comparison_unit": "00681f10-391a401d4eaf",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "newly_compared_functions": 12,
+      "new_original_code_bytes": 2108,
+      "compared_code_delta": 2108,
+      "exact_code_added": 234,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 2444,
+      "prior_compiled_function_copies_identical": 2443,
+      "user_journal_unchanged": true,
+      "checkpoint": "Vehicle leaves, player reactivation and dynamic grapples (2026-10-03)",
+      "prior_exact_code_and_data_preserved": true,
+      "shared_data_definitions_added": 6,
+      "data_definitions_added": 24,
+      "data_initializer_regions_verified": 6,
+      "data_initializer_view_bytes": 1012,
+      "known_allocation_credit_added": 0,
+      "unknown_new_data_extent_count": 6,
+      "unknown_new_data_view_bytes": 1012,
+      "data_scope": {
+        "proofs": 1016,
+        "known_extents": 553,
+        "known_unique_bytes": 137551,
+        "unknown_extents": 463,
+        "unknown_view_bytes": 59705,
+        "previous_proofs_preserved": 1010
+      },
+      "verified_checks": {
+        "tests": 665,
+        "skipped": 3,
+        "test_seconds": 213.286,
+        "llvm": 18,
+        "format_files": 218,
+        "tidy_units": 216,
+        "objects": 216,
+        "function_definitions": 2456,
+        "data_definitions": 4277,
+        "source_only_link": true,
+        "native_engine_flatten_checks": 14,
+        "native_drop_hover_catch_checks": 18,
+        "native_reactivation_camera_checks": 80,
+        "native_grapple_checks": 20,
+        "native_failures": 0
+      },
+      "prior_copy_review": "NuRndrParticleGroup713->715: independently reproduced hashes, identical x87 state after reordered loads/extra FXCH2, 186 remaining instruction pairs and 34 relocations agree. Actual nonexact advisory retained.",
+      "limitations": [
+        "Full gameplay, original assets and physical audio/input/rendering remain unverified.",
+        "Vehicle1789 and TerrainPlayer8287 remain held until genuine finite provider closure; reviewed private caller groups are not retained with invented wrappers.",
+        "Six new shared storage extents remain unknown and receive zero allocation credit.",
+        "The grapple table has four proven working slots with f8 stride; its complete original allocation extent remains unknown."
+      ],
+      "next_connected_wave": "Closed vehicle9/3380 incl Float and actual private helper, carrying/item/rumble/rotation/disorientation/tractor; Loop/Twist/Hint1051; real private weapon/target and vehicle groups, then Move_VEHICLE/PostReset/TerrainPlayer.",
+      "ongoing_goal": "Continue whole-project transfer indefinitely until user stops/pauses; validated direct main pushes remain authorized."
     }
   ]
 }
