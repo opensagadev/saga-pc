@@ -210,3 +210,12 @@ void __cdecl GizBuildIt_SetToStart(void *buildit_pointer, i32 emit_debris, i32 k
     buildit->builders_active = 0;
     buildit->build_state = 0;
 }
+
+void __cdecl ReleaseBuildIt(GAMEOBJECT *player, i32 completed) {
+    f32 completion_blend;
+    if (LEGOCONTEXT_BUILDIT == -1 || LEGOCONTEXT_BUILDIT != player->character_context)
+        return;
+    player->character_context = -1;
+    completion_blend = completed != 0 ? 0.6f : 0.0f;
+    GameCam_Blend(GameCam, 0.5f, completion_blend, 1);
+}

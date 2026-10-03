@@ -3804,3 +3804,26 @@ mode indexing. The full16-byte sound string includes its NUL terminator.
 Previously held constructors/private helpers1,991 and pickup/effect parents2,606
 now have actual linked providers and receive source credit. All prior exact code
 and data remains exact; unimplemented combat/terrain candidates remain scratch.
+
+
+### Complete combat and private collision contracts (2026-10-03)
+
+The source checkpoint adds24 functions/13,774 original PC bytes, plus replaces
+the existing17-byte PartCollide_3D placeholder with its real dispatch. ObjHitObj
+438230 spans5,764 bytes through its cold finalRET4398b3; all late paths remain
+in the comparison. Shield433be0/520 and reaction432330/739 retain actual PC
+fields and flags. The private SpecialMoveApplyDamagePc58b080/108 receives ESI
+inside the genuine ReleaseVictim58b0f0/133 caller TU. No public ABI adapter
+substitutes for the private call. Clear58 remains exact; new player callers
+naturally inline it within their original unit and retain full nonexact extents.
+
+PartCollidePC42c740/1973 receives PART in EDI and one caller-clean stack mode;
+the real2D42cf00/17 and3D42cf20/17 wrappers are both exact. Its complete
+nonexact comparison is preserved. DeflectPart42c500/569 uses the actual deflect
+callback field; getMaxTorpedos4d23e0/72 reads lowWORD IDs and establishes3/5
+limits. DropTorpedoPickups4d2350/133 calls plural AddPickups46d270 with thirteen
+stack arguments, not a singular allocator. LightSabreDebris49f850/512 ends
+RET49fa4f immediately before49fa50, preserving lowWORD character ID comparisons.
+PC normal-pickup delay uses promoted.05f times slot modulo11 plus.75; owner age
+and pickup age retain distinct unordered behavior. Selected real-object runtime
+checks pass without replacement providers; successful damage remains unverified.

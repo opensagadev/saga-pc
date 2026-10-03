@@ -43,3 +43,36 @@ i32 __cdecl ReleaseHearts(void) {
     }
     return chance > qrand();
 }
+
+void __cdecl LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
+    i32 locator;
+    NUVEC velocity;
+    ADDPART_PC params;
+    (void)unused1;
+    (void)unused2;
+    if (object->helmet == 0)
+        return;
+    locator = object->character_data->game_character->helmet_locator;
+    if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
+        velocity.x = 0.0f;
+        velocity.y = 1.0f;
+        velocity.z = 0.0f;
+        NuVecRotateZ(&velocity, &velocity, qrand());
+        NuVecRotateX(&velocity, &velocity, qrand());
+        params = Default_ADDPART;
+        params.matrix = &object->locator_matrices[locator];
+        params.velocity = &velocity;
+        params.field_14 = 0.1f;
+        params.field_18 = 0.1f;
+        params.gravity = -5.0f;
+        params.special = &WORLD->level_objects[object->helmet + 0xf9].special;
+        params.flags = 0x90;
+        params.time_step = FRAMETIME;
+        params.stop_fn = PartStop_Flickerer;
+        params.draw_fn = PartDraw_Flickerer;
+        params.impact_fn = PartImpact_Brick;
+        params.field_c4 = 1;
+        AddPart(&params);
+    }
+    object->helmet = 0;
+}

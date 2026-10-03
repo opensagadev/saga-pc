@@ -796,3 +796,41 @@ one complete NUL string establishes 16 original bytes, while nineteen views tota
 232 bytes retain blank original extents. All 961 prior data proofs remain unchanged.
 Next work releases the genuine combat/context, carrying/whip and TerrainPlayer
 families by closing their finite remaining providers. The unbounded goal continues.
+
+
+### Combat, contexts and genuine collision checkpoint (2026-10-03)
+
+Twenty-four newly compiled functions add 13,774 complete original PC bytes over
+043fbdc. Compared code reaches 641,213 bytes. Whole-code fuzzy coverage rises
+from 11.071185% to 11.300798% of 3,471,246 bytes; exact code adds 659 bytes to
+65,692 (1.892462%). All previous exact code and data remain exact.
+
+The connected release includes ObjHitObj5764, shield520, player hit/deactivation
+775, reaction739, Clear58, genuine private special-move helper/caller241, carrying
+1296, whip163, item817 and InstantKillParts69. The real private collision1973
+with both public17-byte wrappers replaces the earlier skipped collision action.
+Deflection569, torpedo limit72, build/push release189 and sabre512 close its direct
+providers. Original-TU private EDI/ESI calling contexts are preserved. LowWORD
+sabre ID comparisons, promoted-float pickup delay, PC adaptive difficulty and
+NaN branch behavior are retained. The collision body remains nonexact, with its
+actual 0.05009634 advisory score; that score is not behavioral equivalence.
+
+The source-only executable links 213 objects with 2,444 function and 4,253 data
+definitions; all mappings and relocations resolve. LLVM18 checks all213 tidy
+units; 665 tests pass with three skips. A fixture strictly links the actual213
+production objects and passes39 selected checks for guard/reset ordering, NaNs,
+context masks, real private helper calls, torpedo limits and collision rejection.
+Successful collision/damage/effects, full gameplay and hardware remain unverified.
+Existing partial AddPart, KillPart and KillGameObject services stay explicit.
+
+All2,420 prior function copies remain:2,418 are byte-identical. PartCollide_3D
+now implements its actual17-byte callback. The other change exactly restores the
+previously proved713-byte particle scheduling hash with equivalent x87 loop state;
+its advisory decrease is retained. Twenty-nine canonical data initializers129B
+are fully proved: three NUL strings38B have known extents, while26 mutable views
+91B retain blank extents. All981 prior data proofs remain unchanged.
+
+The half-hour checkpoint was delayed to integrate and validate the actual collision
+family with its combat callers. Next comes genuine vehicle engine/audio/weapon
+428 and private thrust/launch/deactivation, then Move_VEHICLE1789/PostReset111
+and reviewed TerrainPlayer8287. The whole-project continuation remains authorized.

@@ -12652,6 +12652,666 @@
         "platform/combat-next/snake-provider-packet.json",
         "player-cohort/terrain-next/parents/arcade-kill-next/root-accepted-review.json"
       ]
+    },
+    {
+      "baseline_commit": "043fbdc92862978e89bc6d60768141df7f66af05",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 755431,
+        "matched_code_bytes": 65033,
+        "matching_percent": 1.8734771318425718,
+        "fuzzy_coverage_percent": 11.071185247807305,
+        "mapped_functions": 2670,
+        "matched_functions": 1065,
+        "objdiff_fuzzy_percent": 61.26812,
+        "objdiff_total_code": 627439,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1392551,
+        "mapping_percent": 3.4755496982659477
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 769147,
+        "matched_code_bytes": 65692,
+        "matching_percent": 1.8924616693832705,
+        "fuzzy_coverage_percent": 11.300798039126569,
+        "mapped_functions": 2693,
+        "matched_functions": 1075,
+        "objdiff_fuzzy_percent": 61.19504,
+        "objdiff_total_code": 641213,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1406478,
+        "mapping_percent": 3.510308914012983
+      },
+      "newly_compared": [
+        {
+          "name": "DeflectPart",
+          "symbol": "_DeflectPart",
+          "address": "0x0042c500",
+          "units": [
+            "src/legoapi/fighting.c"
+          ],
+          "target_size": 569,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/fighting.c",
+              "base_size": 629,
+              "exact_match": false,
+              "target_sha256": "7b5feb44819997226e1aed92054e7bb1a46c75456cef6e088aefd300dacc3fca",
+              "base_sha256": "76adc86ef9419a3f0100f0a5332c700f70e026a6947c9785234a49d9d6c05723",
+              "relocation_count": 27,
+              "comparison_unit": "0042c500-f8e3735c597f",
+              "objdiff_percent": 77.06173
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 77.06173
+        },
+        {
+          "name": "PartCollidePC",
+          "symbol": "_PartCollidePC",
+          "address": "0x0042c740",
+          "units": [
+            "src/legoapi/parts.c"
+          ],
+          "target_size": 1973,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/parts.c",
+              "base_size": 1932,
+              "exact_match": false,
+              "target_sha256": "4da4707acf936c9ccf76ac3df6a4f39336766d6d0f4bc6e7928f8e6a1dadb40b",
+              "base_sha256": "d4c5366e71752f4905b6321a0c14c12bcdc3bd525f4e77270f119b7a1ae730dc",
+              "relocation_count": 47,
+              "comparison_unit": "0042c740-b812334051c6",
+              "objdiff_percent": 0.05009634
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 0.05009634
+        },
+        {
+          "name": "PartCollide_2D",
+          "symbol": "_PartCollide_2D",
+          "address": "0x0042cf00",
+          "units": [
+            "src/legoapi/parts.c"
+          ],
+          "target_size": 17,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/parts.c",
+              "base_size": 17,
+              "exact_match": true,
+              "target_sha256": "68fa034494c057f5d644b91f9211cd34b50580e581a3c7839437728a2a6bc621",
+              "base_sha256": "68fa034494c057f5d644b91f9211cd34b50580e581a3c7839437728a2a6bc621",
+              "relocation_count": 1,
+              "comparison_unit": "0042cf00-05dd3270ac6f",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "PlayerTakeHit",
+          "symbol": "_PlayerTakeHit",
+          "address": "0x004321a0",
+          "units": [
+            "src/legoapi/players.c"
+          ],
+          "target_size": 394,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/players.c",
+              "base_size": 410,
+              "exact_match": false,
+              "target_sha256": "79bb7fd8af0832b63478f6dc56595fdb0cbea076898ffc35ad981154dff6dec2",
+              "base_sha256": "70a5bf5c50f7c8dcab78f1d1bfc052157042c8863b389b98304fde2260429c9a",
+              "relocation_count": 12,
+              "comparison_unit": "004321a0-a5cb95866790",
+              "objdiff_percent": 41.431194
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 41.431194
+        },
+        {
+          "name": "PlayerTakeHitReactionPc",
+          "symbol": "_PlayerTakeHitReactionPc",
+          "address": "0x00432330",
+          "units": [
+            "src/legoapi/hits.c"
+          ],
+          "target_size": 739,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/hits.c",
+              "base_size": 742,
+              "exact_match": false,
+              "target_sha256": "f87569ba4e4b71a3d1fa5dde8af4dcde8baf265bce1689756a01aac65b0ed232",
+              "base_sha256": "771f675664caa0a2c71a9fb5b3ec5a63ebdf67d73e1bfe7647086f89e17c84a7",
+              "relocation_count": 15,
+              "comparison_unit": "00432330-e15e1804afeb",
+              "objdiff_percent": 83.13861
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 83.13861
+        },
+        {
+          "name": "DeactivatePlayer",
+          "symbol": "_DeactivatePlayer",
+          "address": "0x00432620",
+          "units": [
+            "src/legoapi/players.c"
+          ],
+          "target_size": 381,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/players.c",
+              "base_size": 404,
+              "exact_match": false,
+              "target_sha256": "99f9ce25d346ecceade85ac992f670da0757b2192069bb6b7eff41585e5414e0",
+              "base_sha256": "cd94a1411868f32e11536c651facc0ed9a04b18aa07202067826a8f278976230",
+              "relocation_count": 14,
+              "comparison_unit": "00432620-9027b6fb42c5",
+              "objdiff_percent": 72.00952
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 72.00952
+        },
+        {
+          "name": "LoseHelmet",
+          "symbol": "_LoseHelmet",
+          "address": "0x00433aa0",
+          "units": [
+            "src/legoapi/playeritems.c"
+          ],
+          "target_size": 306,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/playeritems.c",
+              "base_size": 336,
+              "exact_match": false,
+              "target_sha256": "4cac08622703a173d3aa438db882e4999295bd797fef36c21b0757fbd90ac900",
+              "base_sha256": "88f92aa338d06927cc328f736a4214fe896a11268834235629d59c7a263b1bbd",
+              "relocation_count": 15,
+              "comparison_unit": "00433aa0-3e7c6a18cd76",
+              "objdiff_percent": 77.207794
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 77.207794
+        },
+        {
+          "name": "ObjHitShield",
+          "symbol": "_ObjHitShield",
+          "address": "0x00433be0",
+          "units": [
+            "src/legoapi/hits.c"
+          ],
+          "target_size": 520,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/hits.c",
+              "base_size": 520,
+              "exact_match": false,
+              "target_sha256": "3145da61776c0d678312c514e150cefb16f2cc767abc108c82346879af1fe9e6",
+              "base_sha256": "9470a91a5378ab534b02135256ca52ef4d05b74209f2bf0b1cb5b8cbff23fc2f",
+              "relocation_count": 20,
+              "comparison_unit": "00433be0-0f8bcd003c3f",
+              "objdiff_percent": 93.554214
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 93.554214
+        },
+        {
+          "name": "InstantKillParts",
+          "symbol": "_InstantKillParts",
+          "address": "0x004381e0",
+          "units": [
+            "src/legoapi/parts.c"
+          ],
+          "target_size": 69,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/parts.c",
+              "base_size": 69,
+              "exact_match": true,
+              "target_sha256": "c2b87655038dd7038e168066828f5e29942c43fcc26e425adf02fd9e2ea9faf7",
+              "base_sha256": "c2b87655038dd7038e168066828f5e29942c43fcc26e425adf02fd9e2ea9faf7",
+              "relocation_count": 2,
+              "comparison_unit": "004381e0-8eb790bed0db",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "ObjHitObj",
+          "symbol": "_ObjHitObj",
+          "address": "0x00438230",
+          "units": [
+            "src/legoapi/hits.c"
+          ],
+          "target_size": 5764,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/hits.c",
+              "base_size": 5705,
+              "exact_match": false,
+              "target_sha256": "1b9c29543cc5f96bda8e4b4bd5f46ee5574880ea3160ff8f52be8eac8a2e37f9",
+              "base_sha256": "6a8cc2b86633b386df048758904aa34a5f9bc486bae573e14dd7b033dfc11012",
+              "relocation_count": 236,
+              "comparison_unit": "00438230-90dccb2777c4",
+              "objdiff_percent": 58.612286
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 58.612286
+        },
+        {
+          "name": "LetGoOfBalloon",
+          "symbol": "_LetGoOfBalloon",
+          "address": "0x0049d540",
+          "units": [
+            "src/legoapi/carrying.c"
+          ],
+          "target_size": 373,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/carrying.c",
+              "base_size": 425,
+              "exact_match": false,
+              "target_sha256": "7ef663f5b18c4400f44b776f5e38048c991fad7b921e6b0b765f37e148493f61",
+              "base_sha256": "0b13219181356b4932d6818085a0fbee9c458f7becfdabc01576436a458c9808",
+              "relocation_count": 15,
+              "comparison_unit": "0049d540-f8c3e90d47ad",
+              "objdiff_percent": 81.51087
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 81.51087
+        },
+        {
+          "name": "PopBalloon",
+          "symbol": "_PopBalloon",
+          "address": "0x0049d6c0",
+          "units": [
+            "src/legoapi/specialsfx.c"
+          ],
+          "target_size": 5,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/specialsfx.c",
+              "base_size": 5,
+              "exact_match": true,
+              "target_sha256": "eb72e10f67211e5f72d92e31162c41f3df54056a9e5c05187a44cb2f1ca45f08",
+              "base_sha256": "eb72e10f67211e5f72d92e31162c41f3df54056a9e5c05187a44cb2f1ca45f08",
+              "relocation_count": 1,
+              "comparison_unit": "0049d6c0-76e100600fed",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "LightSabreDebris",
+          "symbol": "_LightSabreDebris",
+          "address": "0x0049f850",
+          "units": [
+            "src/legoapi/move.c"
+          ],
+          "target_size": 512,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/move.c",
+              "base_size": 496,
+              "exact_match": false,
+              "target_sha256": "a3a38ba73da3cf7a5cc8c5b1708c4a7dff3941ee64f729b0279cc0746b870c01",
+              "base_sha256": "67d5326c83ad7fd2cd6d695cbe63c319fca8ae5233cba02f5769343b5a367bbc",
+              "relocation_count": 11,
+              "comparison_unit": "0049f850-707198a978ce",
+              "objdiff_percent": 92.61029
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 92.61029
+        },
+        {
+          "name": "DropTorpedoPickups",
+          "symbol": "_DropTorpedoPickups",
+          "address": "0x004d2350",
+          "units": [
+            "src/legoapi/torpedo.c"
+          ],
+          "target_size": 133,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/torpedo.c",
+              "base_size": 133,
+              "exact_match": true,
+              "target_sha256": "5b759f76b87c2d599dc4edc1eb9a4be52adbc4f36b144fe07250ca78ba322811",
+              "base_sha256": "5b759f76b87c2d599dc4edc1eb9a4be52adbc4f36b144fe07250ca78ba322811",
+              "relocation_count": 4,
+              "comparison_unit": "004d2350-d831a4dd7f4f",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "getMaxTorpedos",
+          "symbol": "_getMaxTorpedos",
+          "address": "0x004d23e0",
+          "units": [
+            "src/legoapi/torpedo.c"
+          ],
+          "target_size": 72,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/torpedo.c",
+              "base_size": 72,
+              "exact_match": true,
+              "target_sha256": "9e41b357a65012067df2a83f647d16dcb58c0050226aea9b788648ee8009d35d",
+              "base_sha256": "9e41b357a65012067df2a83f647d16dcb58c0050226aea9b788648ee8009d35d",
+              "relocation_count": 5,
+              "comparison_unit": "004d23e0-c0573eb28101",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "Player_ClearContext",
+          "symbol": "_Player_ClearContext",
+          "address": "0x0055e4a0",
+          "units": [
+            "src/legoapi/players.c"
+          ],
+          "target_size": 58,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/players.c",
+              "base_size": 58,
+              "exact_match": true,
+              "target_sha256": "a7bb06e60f291807b753fbd2ed4bed99b6647c5c275cd2acfda06a84d0572141",
+              "base_sha256": "a7bb06e60f291807b753fbd2ed4bed99b6647c5c275cd2acfda06a84d0572141",
+              "relocation_count": 4,
+              "comparison_unit": "0055e4a0-a7a5bcbb0846",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "SpecialMoveApplyDamagePc",
+          "symbol": "_SpecialMoveApplyDamagePc",
+          "address": "0x0058b080",
+          "units": [
+            "src/legoapi/specialmoves.c"
+          ],
+          "target_size": 108,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/specialmoves.c",
+              "base_size": 104,
+              "exact_match": false,
+              "target_sha256": "887032ad3b0a4ebaee6bf461345510e01e731710e801b2b11570b3b8f1487534",
+              "base_sha256": "06702f18af0b1cb42c1823974e24271c0e2bb9a8a9a2c008a1bec1463086d3eb",
+              "relocation_count": 4,
+              "comparison_unit": "0058b080-f28d3c39819b",
+              "objdiff_percent": 50.322582
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 50.322582
+        },
+        {
+          "name": "SpecialMove_ReleaseVictim",
+          "symbol": "_SpecialMove_ReleaseVictim",
+          "address": "0x0058b0f0",
+          "units": [
+            "src/legoapi/specialmoves.c"
+          ],
+          "target_size": 133,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/specialmoves.c",
+              "base_size": 123,
+              "exact_match": false,
+              "target_sha256": "5118a3d37f163ef59e0ba6de6d9b8b120da42148aa23d31388b82dfde4411958",
+              "base_sha256": "9e65b4d07019e7a5e14e8e691577b20a3cc0970846697fa4e11de0580239875d",
+              "relocation_count": 4,
+              "comparison_unit": "0058b0f0-e5c528bf3b52",
+              "objdiff_percent": 88.60465
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 88.60465
+        },
+        {
+          "name": "ReleaseBuildIt",
+          "symbol": "_ReleaseBuildIt",
+          "address": "0x0058ff10",
+          "units": [
+            "src/legoapi/gizbuildit_pc.c"
+          ],
+          "target_size": 91,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/gizbuildit_pc.c",
+              "base_size": 91,
+              "exact_match": false,
+              "target_sha256": "19a0bac072b4ee1fb8c4e176366a16bd804ad0f04689f8defc84964491ac4358",
+              "base_sha256": "e62ffcc20f609cebd622139a6a5e3be51eaceed27cb92d2510aa982ac3b6d47d",
+              "relocation_count": 5,
+              "comparison_unit": "0058ff10-31e95b4bfbeb",
+              "objdiff_percent": 99.62963
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 99.62963
+        },
+        {
+          "name": "SuperCarry_PartKill",
+          "symbol": "_SuperCarry_PartKill",
+          "address": "0x00597d90",
+          "units": [
+            "src/legoapi/carrying.c"
+          ],
+          "target_size": 61,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/carrying.c",
+              "base_size": 61,
+              "exact_match": true,
+              "target_sha256": "a015d5d9440db26f7e52da7287bbea460551fa4bbb135ed8df77b0bacc2e6ded",
+              "base_sha256": "a015d5d9440db26f7e52da7287bbea460551fa4bbb135ed8df77b0bacc2e6ded",
+              "relocation_count": 2,
+              "comparison_unit": "00597d90-95fbca3d7d0e",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "SuperCarry_Throw",
+          "symbol": "_SuperCarry_Throw",
+          "address": "0x005980c0",
+          "units": [
+            "src/legoapi/carrying.c"
+          ],
+          "target_size": 1171,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/carrying.c",
+              "base_size": 1267,
+              "exact_match": false,
+              "target_sha256": "3f37ca77cf8f8667366f69e2fca70430aa608fdf813c1207b4f89ed4ad9e46a5",
+              "base_sha256": "4023748909de76afc2c5f628200115d9c0ef36c2e3a329c9da9aad428bea513e",
+              "relocation_count": 34,
+              "comparison_unit": "005980c0-7ef18a3ea278",
+              "objdiff_percent": 51.761192
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 51.761192
+        },
+        {
+          "name": "SuperCarry_Release",
+          "symbol": "_SuperCarry_Release",
+          "address": "0x005999a0",
+          "units": [
+            "src/legoapi/carrying.c"
+          ],
+          "target_size": 64,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/carrying.c",
+              "base_size": 64,
+              "exact_match": true,
+              "target_sha256": "bc86b0254d7d6da773f9d2322bf92b8131896b6175ff86ce5f711b856e5ca52f",
+              "base_sha256": "bc86b0254d7d6da773f9d2322bf92b8131896b6175ff86ce5f711b856e5ca52f",
+              "relocation_count": 2,
+              "comparison_unit": "005999a0-eb1725e55a26",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "ReleasePush",
+          "symbol": "_ReleasePush",
+          "address": "0x0059cb00",
+          "units": [
+            "src/legoapi/pushing.c"
+          ],
+          "target_size": 98,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/pushing.c",
+              "base_size": 95,
+              "exact_match": false,
+              "target_sha256": "8a1e521b432d3882181c98b8766f8830287647206e4577867714d874e2052438",
+              "base_sha256": "29e7fa408152fab6e4b3995b2ac7337e208cc98e3d2e33f8eb4f306e0ac575a0",
+              "relocation_count": 4,
+              "comparison_unit": "0059cb00-22025b3d5248",
+              "objdiff_percent": 86.833336
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 86.833336
+        },
+        {
+          "name": "Whip_Release",
+          "symbol": "_Whip_Release",
+          "address": "0x005b2cf0",
+          "units": [
+            "src/legoapi/whip.c"
+          ],
+          "target_size": 163,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/whip.c",
+              "base_size": 163,
+              "exact_match": true,
+              "target_sha256": "e3b2e8eaf95fc6193d35bfd4c650b19a4515202bbada2bb7cf33aad4d72d4aad",
+              "base_sha256": "e3b2e8eaf95fc6193d35bfd4c650b19a4515202bbada2bb7cf33aad4d72d4aad",
+              "relocation_count": 11,
+              "comparison_unit": "005b2cf0-75ac9dc184d6",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "newly_compared_functions": 24,
+      "new_original_code_bytes": 13774,
+      "compared_code_delta": 13774,
+      "exact_code_added": 659,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 2420,
+      "prior_compiled_function_copies_identical": 2418,
+      "user_journal_unchanged": true,
+      "checkpoint": "Combat, contexts and genuine part collision (2026-10-03)",
+      "prior_exact_code_and_data_preserved": true,
+      "shared_data_definitions_added": 29,
+      "data_definitions_added": 86,
+      "data_initializer_regions_verified": 29,
+      "data_initializer_view_bytes": 129,
+      "known_allocation_credit_added": 38,
+      "unknown_new_data_extent_count": 26,
+      "unknown_new_data_view_bytes": 91,
+      "data_scope": {
+        "proofs": 1010,
+        "known_extents": 553,
+        "known_unique_bytes": 137551,
+        "unknown_extents": 457,
+        "unknown_view_bytes": 58693,
+        "previous_proofs_preserved": 981
+      },
+      "verified_checks": {
+        "tests": 665,
+        "skipped": 3,
+        "test_seconds": 34.877,
+        "llvm": 18,
+        "tidy_units": 213,
+        "objects": 213,
+        "function_definitions": 2444,
+        "data_definitions": 4253,
+        "source_only_link": true,
+        "native_connected_checks": 39,
+        "native_connected_failures": 0
+      },
+      "replaced_existing_partial_callback_bytes": 17,
+      "changed_previous_function_copy_review": "Real collision callback replacement; particle scheduling exactly reproduces independently proved713-byte hash4aec3d49 with equivalent x87 loop-entry state. Advisory decrease retained.",
+      "limitations": [
+        "Selected39-check fixture covers guard, mask, private-call and rejection paths; successful collision/damage/effects, fullgame, originalassets and hardware remain unverified.",
+        "AddPart, KillPart and KillGameObject retain existing explicit partial paths; new bodies introduce no placeholder providers or omitted actions.",
+        "Private PartCollide1973 remains complete/nonexact with actual0.05009634 advisory score; no extent masking or correctness claim based on that score.",
+        "PlayerTakeHit/DeactivatePlayer naturally inline Clear in actual original players TU; honest full-span nonexact comparisons retained.",
+        "26 new canonical data extents remain unknown and receive zero allocationcredit."
+      ],
+      "next_connected_wave": "Vehicle finite engine/audio/weapon428, private thrust/launch/deactivation; real Move_VEHICLE1789 and PostReset111 then reviewed TerrainPlayer8287.",
+      "checkpoint_delay_reason": "Connected combat/context10373 plus real collision3332 newbytes integrated as coherent family; full original-TU owner compiles, real-object fixtures, aggregate checks and retail matching still pending. No unvalidated commit or fake provider introduced.",
+      "ongoing_goal": "Continue indefinitely until user pauses/stops; direct main checkpoints remain authorized."
     }
   ]
 }

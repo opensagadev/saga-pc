@@ -3385,3 +3385,33 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
     object->secondary_lean_angle = SeekRot(object->secondary_lean_angle, secondary_lean, 5.0f);
     GizmoBlowupCheckProximity(WORLD, object);
 }
+
+void __cdecl LightSabreDebris(GAMEOBJECT *object) {
+    i32 hit_effect = -1, blade_count, blade, effect, first, second;
+    PLAYERCHARACTERCONFIG_PC *data;
+    NUVEC points[3];
+    if (object->blade_index != -1)
+        hit_effect = BladeTab[object->blade_index].hit_effect;
+    blade_count = object->id == (u16)id_GRIEVOUS ? 4 : object->id == (u16)id_DARTHMAUL ? 2 : 1;
+    for (blade = 0; blade < blade_count; ++blade) {
+        effect = hit_effect;
+        if (object->id == (u16)id_GRIEVOUS && !(object->field_280 != 0xff && Cheat_IsOn(25)) &&
+            !(object->field_280 != 0xff && Player_HasPurpleForce(object)))
+            effect = (blade == 3 || blade == 0) ? 3 : 2;
+        if (effect == -1 || object->origin_joint_ready == 0 || (object->flags_e20 & 0x08000000) == 0)
+            continue;
+        data = object->character_data->game_character;
+        first = data->streak_joints[blade][0];
+        if (first == -1 || object->character_model->points_of_interest[first] == NULL)
+            continue;
+        second = data->streak_joints[blade][1];
+        if (second == -1 || object->character_model->points_of_interest[second] == NULL)
+            continue;
+        points[0] = *(NUVEC *)&object->locator_matrices[first].m30;
+        points[2] = *(NUVEC *)&object->locator_matrices[second].m30;
+        NuVecAdd(&points[1], &points[0], &points[2]);
+        NuVecScale(&points[1], &points[1], 0.5f);
+        for (first = 0; first < 3; ++first)
+            AddGameDebris(WORLD->game_debris_sys, effect, &points[first]);
+    }
+}

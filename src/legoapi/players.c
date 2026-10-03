@@ -1233,3 +1233,102 @@ void __cdecl ChatterSfx(GAMEOBJECT *object, i32 sound, f32 interval) {
         }
     }
 }
+
+typedef struct player_hit_context_view_pc_s {
+    u8 unknown_0000[0x6c4];
+    u8 reset_contexts;
+    u8 unknown_06c5[0xd30 - 0x6c5];
+    f32 model_state;
+} PLAYER_HIT_CONTEXT_VIEW_PC;
+STATIC_ASSERT(offsetof(PLAYER_HIT_CONTEXT_VIEW_PC, reset_contexts) == 0x6c4);
+STATIC_ASSERT(offsetof(PLAYER_HIT_CONTEXT_VIEW_PC, model_state) == 0xd30);
+STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
+STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
+void __cdecl PlayerTakeHit(GAMEOBJECT *object, GAMEOBJECT *attacker) {
+    PLAYER_HIT_CONTEXT_VIEW_PC *view = (PLAYER_HIT_CONTEXT_VIEW_PC *)object;
+    u8 state;
+    i32 animation;
+    f32 duration;
+    u16 angle;
+    if (object->field_280 != 0xff)
+        return;
+    state = object->jump_variant_state;
+    animation = state == 1 ? 0x3e : 0x3d;
+    if (object->character_model->model_data_b[animation] == NULL) {
+        if (object->portal_flags & 0x08000000) {
+            ResetAnimPacket(&object->anim_packet, -1);
+            Player_ClearContext(object, 1);
+            Player_ResetContexts(&view->reset_contexts);
+        }
+        return;
+    }
+    if (object->character_context == 0x1b && object->force_target != NULL &&
+        object->force_target->character_context == 0x1c)
+        object->force_target->character_context = -1;
+    object->field_7aa = (i16)animation;
+    ResetAnimPacket(&object->anim_packet, -1);
+    Player_ClearContext(object, 1);
+    Player_ResetContexts(&view->reset_contexts);
+    object->character_context = 0x15;
+    duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+    object->context_timer = duration;
+    if (duration <= 0.0f)
+        object->context_timer = 1.0f;
+    object->jump_variant_state = state;
+    SetFlicker(object, 0.4f);
+    if (attacker != NULL) {
+        angle = NuAtan2D(attacker->collision_position.x - object->collision_position.x,
+                         attacker->collision_position.z - object->collision_position.z);
+        object->field_0x276 = angle;
+        object->movement_facing_angle = angle;
+        object->facing_angle = angle;
+    }
+}
+i32 __cdecl DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
+    PLAYER_HIT_CONTEXT_VIEW_PC *view = (PLAYER_HIT_CONTEXT_VIEW_PC *)object;
+    f32 model_state;
+    CHARACTERDATA_PC *character;
+    CHARACTER_MODEL_LAYERS_PC *model;
+    PLAYERCHARACTERCONFIG_PC *runtime;
+    if (object->character_context == 0x17 && !(duration > object->context_timer))
+        return 0;
+    model_state = view->model_state;
+    Player_ClearContext(object, 1);
+    if (object->character_context == 0x3e)
+        return 0;
+    Player_ResetContexts(&view->reset_contexts);
+    object->character_context = 0x17;
+    view->model_state = model_state;
+    if (AIScriptSetBaseScriptStateByName((AISCRIPTPROCESS_PC *)&object->ai_packet, (char *)PlayerBeenDeactivatedPc))
+        AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet,
+                        (AISCRIPTPROCESS_PC *)&object->ai_packet, FRAMETIME);
+    character = object->character_data;
+    model = object->character_model;
+    runtime = character->game_character;
+    if (source != NULL && (source->character_data->model_flags & 0x40) && runtime->weapon_action == 1 &&
+        model->model_data_b[0x62] != NULL) {
+        duration = 4.0f;
+        object->field_7aa = 0x62;
+    } else if (model->model_data_b[0x81] != NULL && !(model->animation_configs[0x81]->flags & 2))
+        object->field_7aa = 0x81;
+    else
+        object->field_7aa = model->model_data_b[0x41] != NULL ? 0x41 : 1;
+    if (character->model_flags & 0x20)
+        SetProtocolDroidDeactivatedAction(object);
+    object->action_movement_state = 0;
+    object->context_timer = duration;
+    object->context_duration = 0.0f;
+    object->context_hover_target_y = 0.0f;
+    NewBuzz(object->pad->bound_pad, 0.1f, 0);
+    return 1;
+}
+
+void __cdecl Player_ClearContext(GAMEOBJECT *object, i32 mode) {
+    if (Player_ClearContextFn != NULL)
+        Player_ClearContextFn(object, mode);
+    Whip_Release(object);
+    SuperCarry_Release(object);
+    SpecialMove_ReleaseVictim(object);
+    object->flags_e24 &= ~0xc00;
+}

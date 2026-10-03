@@ -1260,3 +1260,16 @@ not infer original allocation extents or introduce corrupt-state guards. Materia
 pool pointer/count retain genuine zero storage at 0x0096e580/0x009715b0. Snake
 segment height and upward speed are the actual .02f/1.0f at 0x00805140/0x00805144.
 All source owners are canonical, with full compiled-region and raw retail proofs.
+
+
+### Combat/context initializer checkpoint (2026-10-03)
+
+Twenty-nine new canonical definitions have exact complete initializers129B.
+Scoped proofs reach1,010:553 known extents/137,551 unique bytes and457 unknown
+extents/58,693 source-view bytes. All981 previous proofs are unchanged. Three
+complete NUL strings at0x755b28/0x755b88/0x755b94 establish38 bytes;26 mutable
+views totaling91 bytes retain blank original extents and zero allocationcredit.
+Fourteen new compiler-owned aliases are mapped from actual emitted literals,
+including the deflection f64 constants10922/-5461; no duplicate storage is added.
+Torpedo max5 is now independently established by actual getMaxTorpedos72; local
+count/state/timer/positions views retain asserted PC offsets and selected domains.

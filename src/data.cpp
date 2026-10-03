@@ -7953,3 +7953,121 @@ extern "C" {
     extern const char ArcadeAiKilledSoundNamePc[16] = "env_padLight_on";
 #pragma const_seg()
 }
+
+extern "C" {
+#pragma const_seg(".rdata$PlayerBeenDeactivatedPc")
+    extern const char PlayerBeenDeactivatedPc[16] = "BeenDeactivated";
+#pragma const_seg()
+
+#pragma const_seg(".rdata$ShieldHitSfxPc")
+    extern const char ShieldHitSfxPc[9] = "DDekaHit";
+#pragma const_seg()
+
+#pragma const_seg(".rdata$ShieldFlickerSfxPc")
+    extern const char ShieldFlickerSfxPc[13] = "DDekaFlicker";
+#pragma const_seg()
+
+#pragma data_seg(".data$id_GAMORREANGUARD")
+    i16 id_GAMORREANGUARD = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_SNAKE")
+    i16 id_SNAKE = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_WOOKIEE")
+    i16 id_WOOKIEE = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_OBIWANKENOBIEP3")
+    i16 id_OBIWANKENOBIEP3 = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_ANAKINJEDI")
+    i16 id_ANAKINJEDI = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_ROYALGUARD")
+    i16 id_ROYALGUARD = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$CombatNpcKillDifficultyAmountPc")
+    f32 CombatNpcKillDifficultyAmountPc = 0.009999999776482582f;
+#pragma data_seg()
+
+#pragma data_seg(".data$CombatPlayerDeathDifficultyAmountPc")
+    f32 CombatPlayerDeathDifficultyAmountPc = -0.02500000037252903f;
+#pragma data_seg()
+
+#pragma data_seg(".data$CombatHitReactionIntervalPc")
+    i32 CombatHitReactionIntervalPc = 3;
+#pragma data_seg()
+
+#pragma data_seg(".data$CombatReactionDurationPc")
+    f32 CombatReactionDurationPc = 3.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$objhit_damage_joints")
+    u8 objhit_damage_joints[3] = {6, 8, 7};
+#pragma data_seg()
+
+#pragma data_seg(".data$SHIELDFLICKERTIME")
+    f32 SHIELDFLICKERTIME = 0.10000000149011612f;
+#pragma data_seg()
+
+#pragma data_seg(".data$CombatReactionHorizontalScalePc")
+    f32 CombatReactionHorizontalScalePc = 1.5f;
+#pragma data_seg()
+
+#pragma data_seg(".data$CombatReactionVerticalScalePc")
+    f32 CombatReactionVerticalScalePc = 2.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$LEGOCONTEXT_HOLD")
+    i32 LEGOCONTEXT_HOLD = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$LEGOCONTEXT_LAND_LUNGE")
+    i32 LEGOCONTEXT_LAND_LUNGE = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$LEGOCONTEXT_LAND_SLAM")
+    i32 LEGOCONTEXT_LAND_SLAM = -1;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$CRUISERC_LDATA")
+    LEVELDATA_PC *CRUISERC_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$builduptime")
+    f32 builduptime;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$ObstacleCamHoldUntilPlayersMove")
+    i32 ObstacleCamHoldUntilPlayersMove;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$objhitobj_bolt")
+    BOLT *objhitobj_bolt;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$objhitobj_nohurtsfx")
+    i32 objhitobj_nohurtsfx;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$objhitobj_noimpactsfx")
+    i32 objhitobj_noimpactsfx;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$objhitobj_noattackerrumble")
+    i32 objhitobj_noattackerrumble;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$objhitobj_throwkillpartsup")
+    i32 objhitobj_throwkillpartsup;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$objhitobj_killparts_yrot")
+    i16 *objhitobj_killparts_yrot;
+#pragma bss_seg()
+}

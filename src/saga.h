@@ -6779,6 +6779,66 @@ extern "C" {
     void __cdecl Arcade_AIKilled(i32);
     extern const char ArcadeAiKilledSoundNamePc[16];
 
+    void __cdecl InstantKillParts(GAMEOBJECT *, i32, f32);
+    i32 __cdecl ObjHitObj(GAMEOBJECT *, GAMEOBJECT *, i32, u16, i32, i32);
+    void __cdecl ObjHitShield(GAMEOBJECT *, GAMEOBJECT *, i32, void *);
+    void __cdecl PlayerTakeHit(GAMEOBJECT *, GAMEOBJECT *);
+    i32 __cdecl DeactivatePlayer(GAMEOBJECT *, f32, GAMEOBJECT *);
+    i32 __cdecl PlayerTakeHitReactionPc(GAMEOBJECT *, GAMEOBJECT *, f32, u16);
+    void __cdecl Player_ClearContext(GAMEOBJECT *, i32);
+    i32 __cdecl SpecialMove_ReleaseVictim(GAMEOBJECT *);
+    /* SpecialMoveApplyDamagePc stays static with private ESI ABI in original caller TU; no public declaration. */
+    extern BOLT *objhitobj_bolt;
+    extern i32 objhitobj_nohurtsfx;
+    extern i32 objhitobj_noimpactsfx;
+    extern i32 objhitobj_noattackerrumble;
+    extern i32 objhitobj_throwkillpartsup;
+    extern i16 *objhitobj_killparts_yrot;
+    extern i32 ObstacleCamHoldUntilPlayersMove;
+    extern u8 objhit_damage_joints[3];
+    extern i32 CombatHitReactionIntervalPc;
+    extern f32 CombatReactionHorizontalScalePc;
+    extern f32 CombatReactionVerticalScalePc;
+    extern f32 CombatReactionDurationPc;
+    extern f32 CombatNpcKillDifficultyAmountPc;
+    extern f32 CombatPlayerDeathDifficultyAmountPc;
+    extern i16 id_GAMORREANGUARD;
+    extern i16 id_ROYALGUARD;
+    extern i16 id_WOOKIEE;
+    extern i16 id_OBIWANKENOBIEP3;
+    extern i16 id_ANAKINJEDI;
+    extern i16 id_SNAKE;
+    extern i32 LEGOCONTEXT_HOLD;
+    extern i32 LEGOCONTEXT_LAND_LUNGE;
+    extern i32 LEGOCONTEXT_LAND_SLAM;
+    extern LEVELDATA_PC *CRUISERC_LDATA;
+    extern f32 builduptime;
+    /* LevelCompletionFallbackFlagPC: reuse existing canonical u32 declaration. */
+    extern f32 SHIELDFLICKERTIME;
+    extern const char PlayerBeenDeactivatedPc[16];
+    extern const char ShieldHitSfxPc[9];
+    extern const char ShieldFlickerSfxPc[13];
+
+    void __cdecl LoseHelmet(GAMEOBJECT *, i32, i32);
+    void __cdecl DropTorpedoPickups(TORPEDOPACKET_PC *, i32);
+    void __cdecl LetGoOfBalloon(GAMEOBJECT *);
+    void __cdecl PopBalloon(GAMEOBJECT *);
+
+    void __cdecl SuperCarry_Throw(GAMEOBJECT *, i32);
+    void __cdecl SuperCarry_Release(GAMEOBJECT *);
+    void __cdecl Whip_Release(GAMEOBJECT *);
+    /* SuperCarry_PartKill is static original carrying TU callback; no public declaration. */
+
+    extern AREA_DATA_PC *HOTHBATTLE_ADATA;
+    /* New public declarations only; private PartCollidePC stays original parts.c-local. */
+    void __cdecl PartCollide_2D(PART_PC *);
+    void __cdecl DeflectPart(PART_PC *, GAMEOBJECT *, f32, f32, i32, i32);
+    i32 __cdecl getMaxTorpedos(GAMEOBJECT *);
+    void __cdecl ReleaseBuildIt(GAMEOBJECT *, i32);
+    void __cdecl ReleasePush(GAMEOBJECT *);
+    void __cdecl LightSabreDebris(GAMEOBJECT *);
+    /* ObjHitObj/Shield prototypes belong to the independently reviewed combat SCC packet. */
+
     extern HINTSYS_PC hintsys;
     extern NEW_MINI_PIECE_PC NewMiniPiece[10];
     extern f32 KITPOSX, KITPOSY, PANEL_MINIKITSCALE, PANEL_MINIKITY, DrawMiniKitTime;

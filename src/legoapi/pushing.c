@@ -88,3 +88,19 @@ f32 __cdecl ForceTowardsMid(GAMEOBJECT *object) {
     }
     return amount;
 }
+
+typedef struct PART_RELEASE_PUSH_PC {
+    u8 unknown_000[0xdc4];
+    f32 push_timer;
+} PART_RELEASE_PUSH_PC;
+STATIC_ASSERT(offsetof(PART_RELEASE_PUSH_PC, push_timer) == 0xdc4);
+
+void __cdecl ReleasePush(GAMEOBJECT *object) {
+    i32 context = object->character_context;
+    if ((CInfo[context].flags & 0x2000) != 0) {
+        if (LEGOCONTEXT_PUSHOBSTACLE != -1 && LEGOCONTEXT_PUSHOBSTACLE == context)
+            GameCam_Blend(NULL, 0.5f, 0.0f, 1);
+        ((PART_RELEASE_PUSH_PC *)object)->push_timer = 0.0f;
+        object->character_context = -1;
+    }
+}
