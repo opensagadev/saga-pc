@@ -5,6 +5,12 @@ This is an implementation handoff for the **entire PC reconstruction**. It
 supersedes the earlier AI-focused draft. The AI and parser experiments are
 worked examples of a general transfer process, not the project's scope.
 
+The user activated indefinite continuation with validated checkpoints every half
+hour and direct pushes to main on opensagadev/saga-pc. This remains a
+whole-project mandate; a passing transfer checkpoint does not finish the goal.
+See config/transfer-execution.md for current released families and retained
+provider frontiers.
+
 ## 1. Mandate and destination
 
 Reconstruct the complete PC game from source, using the existing Android

@@ -3370,3 +3370,10 @@ void __cdecl InitSurfaceInfo(GAMEOBJECT *object) {
     if (extra_reflect != NULL)
         extra_reflect(object);
 }
+
+#include <string.h>
+void __cdecl ClearGameObjects(APIOBJECTSYS_PC *system) {
+    memset(Obj, 0, sizeof(GAMEOBJECT) * 64);
+    APIObjectDestroyAll(system);
+    HIGHGAMEOBJECT = 0;
+}

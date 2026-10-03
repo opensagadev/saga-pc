@@ -720,3 +720,29 @@ i32 __cdecl NuSpecialFind(NUGSCN *scene, NUSPECIALHANDLE *handle, char *name, i3
     handle->display_special = NULL;
     return 0;
 }
+
+i32 __cdecl NuGScnNumSpecials(NUGSCN *scene) {
+    if (scene->display_list != NULL)
+        return scene->display_list->special_count;
+    return scene->special_count;
+}
+
+void __cdecl NuGScnGetSpecial(NUSPECIALHANDLE *special, NUGSCN *scene, i32 index) {
+    if (scene != NULL && special != NULL) {
+        if (scene->display_list != NULL && index < scene->display_list->special_count) {
+            special->scene = scene;
+            special->special = NULL;
+            special->display_special = (NUMTX *)&scene->display_list->specials[index];
+            return;
+        }
+        if (index < scene->special_count) {
+            special->scene = scene;
+            special->special = (NUMTX *)&scene->specials[index];
+            special->display_special = NULL;
+            return;
+        }
+    }
+    special->scene = NULL;
+    special->special = NULL;
+    special->display_special = NULL;
+}

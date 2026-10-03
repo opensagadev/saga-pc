@@ -323,3 +323,12 @@ void __cdecl NuHGobjEvalAnim2(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *animation
                               NUHGOBJ_JOINT_OVERRIDE_PC *overrides, NUMTX *matrices) {
     NuHGobjEvalAnim2Root(object, animation, time, override_count, overrides, matrices, NULL, NULL);
 }
+
+NUHGOBJ_POI_PC *__cdecl NuHGobjGetPOI(NUHGOBJ_EVAL_PC *object, u8 index) {
+    if ((i32)index < object->point_index_count) {
+        index = object->point_index_map[index];
+        if (index != 0xff)
+            return &object->points[index];
+    }
+    return NULL;
+}

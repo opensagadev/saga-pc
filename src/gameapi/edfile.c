@@ -19,6 +19,10 @@ void __cdecl EdFileSetPakFile(void *pak) {
     edfile_pakfile = pak;
 }
 
+void __cdecl EdFileSetReadWrongEndianess(i32 value) {
+    (void)value;
+}
+
 void __cdecl EdFileResetBuffers(void) {
     memset(edfile_buffer, 0, sizeof(edfile_buffer));
     edfile_buffer_pointer = 0;
@@ -156,6 +160,53 @@ i32 __cdecl EdFileReadInt(void) {
         data.bytes.third = temporary;
     }
     return data.value;
+}
+
+f32 __cdecl EdFileReadFloat(void) {
+    union {
+        f32 value;
+        struct {
+            u8 first;
+            u8 second;
+            u8 third;
+            u8 fourth;
+        } bytes;
+    } data;
+    u8 temporary;
+    EdFileRead(&data.value, sizeof(data.value));
+    if (edfile_readwrongendianess != 0) {
+        temporary = data.bytes.first;
+        data.bytes.first = data.bytes.fourth;
+        data.bytes.fourth = temporary;
+        temporary = data.bytes.second;
+        data.bytes.second = data.bytes.third;
+        data.bytes.third = temporary;
+    }
+    return data.value;
+}
+
+i16 __cdecl EdFileReadShort(void) {
+    union {
+        i16 value;
+        struct {
+            u8 first;
+            u8 second;
+        } bytes;
+    } data;
+    u8 temporary;
+    EdFileRead(&data.value, sizeof(data.value));
+    if (edfile_readwrongendianess != 0) {
+        temporary = data.bytes.first;
+        data.bytes.first = data.bytes.second;
+        data.bytes.second = temporary;
+    }
+    return data.value;
+}
+
+void __cdecl EdFileReadNuVec(NUVEC *out) {
+    out->x = EdFileReadFloat();
+    out->y = EdFileReadFloat();
+    out->z = EdFileReadFloat();
 }
 
 char __cdecl EdFileReadChar(void) {

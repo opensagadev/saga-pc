@@ -375,3 +375,399 @@ i32 __cdecl PARTLookupType(char *name) {
     }
     return -1;
 }
+
+#include "saga.h"
+extern void *debkeydata;
+#include <string.h>
+#define DEBRIS_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
+static __declspec(noinline) void DebrisMtxCopyPrivate(NUMTX *destination, const NUMTX *source) {
+    *destination = *source;
+}
+
+static __declspec(noinline) void DebrisMtxRotateXPrivate(NUMTX *m, i32 a) {
+    f32 cosx;
+    f32 sinx;
+    f32 m01;
+    f32 m11;
+    f32 m21;
+    f32 m31;
+    cosx = NuTrigTable[((a + 0x4000) >> 1) & 0x7fff];
+    sinx = NuTrigTable[(a >> 1) & 0x7fff];
+    m01 = m->m01;
+    m11 = m->m11;
+    m21 = m->m21;
+    m31 = m->m31;
+
+    m->m01 = m01 * cosx - m->m02 * sinx;
+    m->m02 = m01 * sinx + m->m02 * cosx;
+    m->m11 = m11 * cosx - m->m12 * sinx;
+    m->m12 = m11 * sinx + m->m12 * cosx;
+    m->m21 = m21 * cosx - m->m22 * sinx;
+    m->m22 = m21 * sinx + m->m22 * cosx;
+    m->m31 = m31 * cosx - m->m32 * sinx;
+    m->m32 = m31 * sinx + m->m32 * cosx;
+}
+
+static __declspec(noinline) void DebrisMtxRotateYPrivate(NUMTX *m, i32 a) {
+    f32 cosx;
+    f32 sinx;
+    f32 m00;
+    f32 m10;
+    f32 m20;
+    f32 m30;
+    cosx = NuTrigTable[((a + 0x4000) >> 1) & 0x7fff];
+    sinx = NuTrigTable[(a >> 1) & 0x7fff];
+    m00 = m->m00;
+    m10 = m->m10;
+    m20 = m->m20;
+    m30 = m->m30;
+
+    m->m00 = m00 * cosx + m->m02 * sinx;
+    m->m02 = m->m02 * cosx - m00 * sinx;
+    m->m10 = m10 * cosx + m->m12 * sinx;
+    m->m12 = m->m12 * cosx - m10 * sinx;
+    m->m20 = m20 * cosx + m->m22 * sinx;
+    m->m22 = m->m22 * cosx - m20 * sinx;
+    m->m30 = m30 * cosx + m->m32 * sinx;
+    m->m32 = m->m32 * cosx - m30 * sinx;
+}
+
+static __declspec(noinline) void DebrisMtxRotateZPrivate(NUMTX *m, i32 a) {
+    f32 cosx;
+    f32 sinx;
+    f32 m00;
+    f32 m10;
+    f32 m20;
+    f32 m30;
+    cosx = NuTrigTable[((a + 0x4000) >> 1) & 0x7fff];
+    sinx = NuTrigTable[(a >> 1) & 0x7fff];
+    m00 = m->m00;
+    m10 = m->m10;
+    m20 = m->m20;
+    m30 = m->m30;
+
+    m->m00 = m00 * cosx - m->m01 * sinx;
+    m->m01 = m00 * sinx + m->m01 * cosx;
+    m->m10 = m10 * cosx - m->m11 * sinx;
+    m->m11 = m10 * sinx + m->m11 * cosx;
+    m->m20 = m20 * cosx - m->m21 * sinx;
+    m->m21 = m20 * sinx + m->m21 * cosx;
+    m->m30 = m30 * cosx - m->m31 * sinx;
+    m->m31 = m30 * sinx + m->m31 * cosx;
+}
+
+void __cdecl DebrisOrientation(i32 handle, i16 z, i16 y) {
+    if (handle == -1)
+        return;
+    DebrisMtxCopyPrivate(&DEBRIS_KEYS_PC[handle].effect_orientation, &ANI3_EVAL_IDENTITY_MATRIX);
+    DebrisMtxRotateZPrivate(&DEBRIS_KEYS_PC[handle].effect_orientation, z);
+    DebrisMtxRotateYPrivate(&DEBRIS_KEYS_PC[handle].effect_orientation, y);
+    DEBRIS_KEYS_PC[handle].orientation_dirty = 0.0f;
+}
+void __cdecl DebrisEmitterOrientation(i32 handle, i16 z, i16 y, i16 x) {
+    if (handle == -1)
+        return;
+    DebrisMtxCopyPrivate(&DEBRIS_KEYS_PC[handle].emitter_orientation, &ANI3_EVAL_IDENTITY_MATRIX);
+    DebrisMtxRotateZPrivate(&DEBRIS_KEYS_PC[handle].emitter_orientation, z);
+    DebrisMtxRotateYPrivate(&DEBRIS_KEYS_PC[handle].emitter_orientation, y);
+    DebrisMtxRotateXPrivate(&DEBRIS_KEYS_PC[handle].emitter_orientation, x);
+    DEBRIS_KEYS_PC[handle].orientation_dirty = 0.0f;
+}
+
+void DebrisReflectionOrientation(i32 handle, i16 x, i16 y, f32 plane, f32 scale) {
+    DEBRISKEY_PC *key;
+    if (handle != -1) {
+        key = &DEBRIS_KEYS_PC[handle];
+        key->collision_plane = plane;
+        key->reflection_x = x;
+        key->reflection_y = y;
+        key->reflection_scale = scale;
+    }
+}
+
+void DebrisSetTrigger(i32 handle, i32 first, i32 second, f32 third) {
+    if (handle != -1) {
+        DEBRISKEY_PC *key = &DEBRIS_KEYS_PC[handle];
+        key->switch_variable = third;
+        key->trigger_first = first;
+        key->trigger_second = second;
+    }
+}
+
+void DebrisStartOffset(i32 handle, f32 offset) {
+
+    DebrisStartOffsetEx(DEBRIS_KEYS_PC + handle, offset);
+}
+
+void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
+    i32 i;
+    DEBRIS_INFO_PC *effect;
+    i32 newly_allocated;
+    i32 key_index;
+    f32 now;
+    DEBRISKEY_PC *key;
+    if (effect_index == -1 || effect_index == 0 || effect_index >= debinf_count) {
+        return;
+    }
+    effect = debtab[effect_index];
+    if (effect == NULL)
+        return;
+    if (effect->disabled != 0) {
+        return;
+    }
+
+    newly_allocated = 0;
+    key_index = *handle;
+    if (key_index == -1) {
+        key_index = DebAlloc();
+        *handle = key_index;
+        if (key_index == -1) {
+            return;
+        }
+        newly_allocated = 1;
+    }
+
+    now = effect->time_group == 4 ? panelglobaltime : globaltime;
+    DEBRIS_KEYS_PC[key_index].finite = 0;
+    DEBRIS_KEYS_PC[key_index].effect_index = (i16)(effect_index);
+    DebrisStartOffset(key_index, effect->emission_start_offset);
+    DEBRIS_KEYS_PC[key_index].generator = gensorttab[(i8)(effect->generator_type)];
+    DEBRIS_KEYS_PC[key_index].momentum_adjuster = gencodetab[(i8)(effect->momentum_adjustment_type)];
+    DEBRIS_KEYS_PC[key_index].finite_count = 0;
+    DEBRIS_KEYS_PC[key_index].sphere_next_time = 0.0f;
+    DEBRIS_KEYS_PC[key_index].emitter_rotation_x = 0;
+    DEBRIS_KEYS_PC[key_index].emitter_rotation_y = 0;
+    DEBRIS_KEYS_PC[key_index].sphere_index = 0;
+    for (i = 0; i < effect->process_spheres; ++i) {
+        DEBRIS_KEYS_PC[key_index].process_spheres[i].time = -1.0f;
+    }
+    memset(&DEBRIS_KEYS_PC[key_index].emission_position, 0, sizeof(DEBRIS_KEYS_PC[key_index].emission_position));
+    memset(&DEBRIS_KEYS_PC[key_index].momentum, 0, sizeof(DEBRIS_KEYS_PC[key_index].momentum));
+    memset(&DEBRIS_KEYS_PC[key_index].emitter_momentum, 0, sizeof(DEBRIS_KEYS_PC[key_index].emitter_momentum));
+    DEBRIS_KEYS_PC[key_index].orientation_dirty = 0.0f;
+    DEBRIS_KEYS_PC[key_index].cutoff_distance = 999999.0f;
+    DEBRIS_KEYS_PC[key_index].field_2f2 = -1;
+    DEBRIS_KEYS_PC[key_index].emission_disabled = 0;
+    DEBRIS_KEYS_PC[key_index].orientation_flags = 7;
+    DEBRIS_KEYS_PC[key_index].gscene = NULL;
+    DEBRIS_KEYS_PC[key_index].process_collision_sound = 0;
+    DEBRIS_KEYS_PC[key_index].last_update_time = now;
+    DEBRIS_KEYS_PC[key_index].field_2f9 = 1;
+    DEBRIS_KEYS_PC[key_index].user_data = NULL;
+    DEBRIS_KEYS_PC[key_index].field_2fa = 0;
+    DEBRIS_KEYS_PC[key_index].emission_epoch =
+        DEBRIS_KEYS_PC[key_index].emission_end_time < now ? DEBRIS_KEYS_PC[key_index].emission_end_time : now;
+
+    switch (effect->particle_type) {
+        case 3:
+            DEBRIS_KEYS_PC[key_index].render_priority = (i16)(40000);
+            break;
+        case 7:
+            DEBRIS_KEYS_PC[key_index].render_priority = (i16)(20000);
+            break;
+        case 2:
+            DEBRIS_KEYS_PC[key_index].render_priority = (i16)(50000);
+            break;
+        default:
+            DEBRIS_KEYS_PC[key_index].render_priority = (i16)(30000);
+            break;
+    }
+    for (i = 0; i < 4; ++i) {
+        DEBRIS_KEYS_PC[key_index].collision_timers[i] = 9999;
+        if (effect->sound_data[i * 3] != -1) {
+            if (effect->sound_data[i * 3 + 1] == 3 || effect->sound_data[i * 3 + 1] == 4)
+                DEBRIS_KEYS_PC[key_index].collision_timers[i] = 1;
+            DEBRIS_KEYS_PC[key_index].process_collision_sound = 1;
+        }
+    }
+    DebrisEmitterPos(key_index, x, y, z);
+    DebrisEmitterOrientation(key_index, 0, 0, 0);
+    DebrisOrientation(key_index, 0, 0);
+    DebrisReflectionOrientation(key_index, 0, 0, 0, 0.9f);
+    DebrisSetTrigger(key_index, 0, -1, 0);
+    if (newly_allocated) {
+        key = DEBRIS_KEYS_PC + key_index;
+        if (debris_keystack != NULL)
+            debris_keystack->next = key;
+        key->previous = debris_keystack;
+        debris_keystack = key;
+    }
+}
+
+void AddFiniteShotDebrisEffect2(i32 *handle, i32 effect, NUVEC *position, NUVEC *emitter_momentum,
+                                NUVEC *particle_momentum, i32 count) {
+    i32 sound;
+    f32 now;
+    f32 offset;
+    f32 range;
+    f32 volume;
+    if (debris_suspended != 0 || update_debris_enabled == 0)
+        return;
+    AddDebrisEffect(handle, effect, position->x, position->y, position->z);
+    if (*handle == -1)
+        return;
+    DEBRIS_KEYS_PC[*handle].finite_count = count;
+    now = debtab[effect]->time_group == 4 ? panelglobaltime : globaltime;
+    DEBRIS_KEYS_PC[*handle].finite = 1;
+    DEBRIS_KEYS_PC[*handle].emission_disabled = 0;
+    offset = DEBRIS_KEYS_PC[*handle].emission_time - now;
+    DEBRIS_KEYS_PC[*handle].emission_time -= offset;
+    DEBRIS_KEYS_PC[*handle].emission_end_time -= offset;
+    DEBRIS_KEYS_PC[*handle].emission_epoch = DEBRIS_KEYS_PC[*handle].last_update_time;
+    DEBRIS_KEYS_PC[*handle].cutoff_distance =
+        (debris_cutoff_camera_vec != NULL ? NuVecDist(position, (NUVEC *)debris_cutoff_camera_vec, NULL) : 0.0f);
+    if (DEBRIS_KEYS_PC[*handle].process_collision_sound != 0) {
+        range = debtab[effect]->sound_range_override;
+        if (range == 0.0f)
+            range = debtab[effect]->sound_range;
+        if (range == 0.0f)
+            range = debtab[effect]->clip_extent;
+        volume = 0.0f;
+        if (DEBRIS_KEYS_PC[*handle].cutoff_distance < range) {
+            for (sound = 0; sound < 4; ++sound) {
+                if (debtab[effect]->sound_data[sound * 3] != -1)
+                    SetSfxBit_On(debtab[effect]->sound_data[sound * 3]);
+            }
+            volume = (range - DEBRIS_KEYS_PC[*handle].cutoff_distance) / range;
+        }
+        if (DEBRIS_KEYS_PC[*handle].cutoff_distance < range) {
+            for (sound = 0; sound < 4; ++sound) {
+                if (debtab[effect]->sound_data[sound * 3] != -1 && debtab[effect]->sound_data[sound * 3 + 1] == 1)
+                    PlaySfxByIdEx(debtab[effect]->sound_data[sound * 3], position, volume, 1.0f);
+            }
+        }
+    }
+    if (emitter_momentum != NULL) {
+        DebrisEmitterMomentum(*handle, emitter_momentum->x, emitter_momentum->y, emitter_momentum->z);
+    }
+    if (particle_momentum != NULL) {
+        DebrisParticleMomentum(*handle, particle_momentum->x, particle_momentum->y, particle_momentum->z);
+    }
+}
+
+void AddFiniteShotDebrisEffect(i32 *handle, i32 effect, NUVEC *position, i32 count) {
+    AddFiniteShotDebrisEffect2(handle, effect, position, NULL, NULL, count);
+}
+
+#undef DEBRIS_KEYS_PC
+
+#define DEBRIS_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
+i32 __cdecl DebrisNuASin(f32);
+DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
+    i32 trail;
+    i16 particle_index;
+    DEBRISPARTICLE_PC *particle;
+    NUVEC vector;
+    i32 angle_y;
+    f32 random;
+    f32 sine;
+    i16 angle_z;
+    NUMTX scale;
+    i16 trail_index;
+    DEBRISPARTICLE_PC *trail_particle;
+    particle_index = key->particle_cursor;
+    if (particle_index < key->particle_count) {
+        ++key->particle_cursor;
+    } else {
+        particle_index = 0;
+        key->particle_cursor = 1;
+    }
+
+    particle = &key->particle_chunks[particle_index / (effect->particle_type == 7 ? 12 : 32)]
+                    ->particles[particle_index % (effect->particle_type == 7 ? 12 : 32)];
+    particle->start_time = time;
+    key->emission_epoch = time;
+    particle->inverse_lifetime = 64.0f / effect->particle_lifetime;
+
+    vector.x = NuFsqrt(NuRandFloatSeeded(&debrisseed));
+    vector.y = 0.0f;
+    vector.z = 0.0f;
+    angle_y = (i32)(NuRandFloatSeeded(&debrisseed) * 65536.0f);
+    random = NuRandFloatSeeded(&debrisseed);
+    sine = random + random - 1.0f;
+    angle_z = (i16)(DebrisNuASin(sine));
+    NuVecRotateZ(&vector, &vector, angle_z);
+    NuVecRotateY(&vector, &vector, angle_y);
+
+    DebrisMtxCopyPrivate(&scale, &ANI3_EVAL_IDENTITY_MATRIX);
+    scale.m00 = effect->emitter_random_extent.x;
+    scale.m11 = effect->emitter_random_extent.y;
+    scale.m22 = effect->emitter_random_extent.z;
+    NuVecMtxTransformVU0(&vector, &vector, &scale);
+    NuVecMtxTransformVU0(&vector, &vector, &key->emitter_orientation);
+    particle->position = vector;
+    random = NuRandFloatSeeded(&debrisseed);
+    vector.x = (random + random) * effect->momentum_random_x - effect->momentum_random_x;
+    random = NuRandFloatSeeded(&debrisseed);
+    vector.y = (random + random) * effect->rotor_speed_x - effect->rotor_speed_x + effect->momentum_base;
+    random = NuRandFloatSeeded(&debrisseed);
+    vector.z = (random + random) * effect->rotor_speed_y - effect->rotor_speed_y;
+    NuVecMtxTransformVU0(&vector, &vector, &key->emitter_orientation);
+    particle->momentum = vector;
+    if (key->momentum_adjuster != NULL) {
+        key->momentum_adjuster(key, effect, particle);
+    }
+    NuVecAdd(&particle->position, &particle->position, &key->emission_position);
+    NuVecAdd(&particle->momentum, &particle->momentum, &key->momentum);
+
+    for (trail = 0; trail < (i8)(effect->trail_count); ++trail) {
+        trail_index = key->particle_cursor;
+        if (trail_index < key->particle_count) {
+            ++key->particle_cursor;
+        } else {
+            trail_index = 0;
+            key->particle_cursor = 1;
+        }
+        trail_particle = &key->particle_chunks[trail_index / (effect->particle_type == 7 ? 12 : 32)]
+                              ->particles[trail_index % (effect->particle_type == 7 ? 12 : 32)];
+        *trail_particle = *particle;
+        trail_particle->start_time += (f32)(trail + 1) * effect->trail_time;
+    }
+
+    if (effect->native_data == NULL) {
+        GenericDebinfoDmaTypeUpdate(effect);
+    }
+    return particle;
+}
+
+#undef DEBRIS_KEYS_PC
+
+extern LEVELDATA_PC *CLOUDCITYTRAPB_LDATA;
+extern LEVELDATA_PC *MAULA_LDATA;
+extern LEVELDATA_PC *MAULF_LDATA;
+extern LEVELDATA_PC *DOOKUC_LDATA;
+extern const char ForceThrowExplodeNamePc[9];
+i32 __cdecl AddGameDebris(APIDEBRISSYS_PC *, i32, NUVEC *);
+void PartKill_ForceThrow(PART_PC *part, i32 reason) {
+    LEVELDATA_PC *level = WorldInfo_CurrentlyActive()->current_level;
+    i32 debris = -1;
+    i32 part_debris = -1;
+    i32 type;
+    if (level == CLOUDCITYTRAPB_LDATA) {
+        debris = 0x75;
+        part_debris = 8;
+    } else if (level == MAULA_LDATA) {
+        debris = 0x2d;
+        part_debris = 9;
+    } else if (level == MAULF_LDATA) {
+        type = 11;
+        if (NuSpecialExistsFn(&LevHSpecial[0]) && NuSpecialCompare(&LevHSpecial[0], &part->special))
+            type = 11;
+        else if (NuSpecialExistsFn(&LevHSpecial[1]) && NuSpecialCompare(&LevHSpecial[1], &part->special))
+            type = 12;
+        else if (NuSpecialExistsFn(&LevHSpecial[2]) && NuSpecialCompare(&LevHSpecial[2], &part->special))
+            type = 13;
+        part_debris = type;
+    } else if (level == DOOKUC_LDATA) {
+        debris = 0x34;
+        part_debris = 10;
+    }
+    if (debris != -1)
+        AddGameDebris(WORLD->game_debris_sys, debris, &part->position);
+    if (part_debris != -1)
+        AddPartDebris(WORLD->part_debris_sys, part_debris, &part->position);
+    NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
+    GameCam_Judder(GameCam, qrand() > 0x7fff ? -0.4f : 0.4f, 2, NULL);
+    GameCam_NewShake(GameCam, 0.6f, 0.6f, 1.0f);
+    PlaySfx((char *)ForceThrowExplodeNamePc, &part->position);
+}

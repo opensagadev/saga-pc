@@ -1042,3 +1042,19 @@ views likewise receive no complete-allocation matching credit.
 
 See [the execution record](transfer-execution.md) for verification and remaining
 source dependencies.
+
+
+### Resource continuation data checkpoint (2026-10-03)
+
+The resource/debris continuation adds 79 independently checked definitions to
+src/data.cpp (307 total). Real generator/momentum dispatch tables use named
+rebuilt functions and retain original null slots. Grass matrices/clumps, wind/fade
+groups, native particle tables and texture load-order storage are runtime pointer
+owners; no backing capacities are guessed. Native particle maximum defaults to
+64, debris chunk counts to 256/32, and the terrain context is an opaque pointer.
+
+206 proven extents compare exactly across 88,072 original bytes. The other 101
+views cover 5,820 source bytes with blank original extents and no allocation or
+exact-data coverage credit. Retained initializer evidence and combined map/header
+proposals are in the execution analysis data handoff. See the updated execution
+record for the whole-wave comparisons and still-missing real provider families.

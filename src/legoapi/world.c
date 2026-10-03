@@ -517,3 +517,26 @@ void __cdecl StoreLevelProgress(WORLDINFO *world) {
         StoreLevelProgressFn(world, world->level_progress, 0);
     }
 }
+
+void __cdecl LoadGrassFile(WORLDINFO *world) {
+    char path[256];
+
+    world->page_grass = -1;
+    if (Grass_Available != 0) {
+        sprintf(path, WorldGrassFormat, world->config_file);
+        if (NuFileExists(path) != 0) {
+            world->page_grass =
+                edgraLoadPage(path, world->current_gscn, (i32)world->terrain, &world->giz_buffer, &world->buffer_end);
+        }
+    }
+}
+
+void __cdecl LoadBridgeFile(WORLDINFO *world) {
+    char path[256];
+
+    world->page_bridge = -1;
+    sprintf(path, WorldBridgeFormat, world->config_file);
+    if (NuFileExists(path) != 0) {
+        world->page_bridge = edbriLoadPage(path, world->current_gscn);
+    }
+}

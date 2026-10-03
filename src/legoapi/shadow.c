@@ -24,3 +24,7 @@ void __cdecl InitShadowLights(void) {
      */
     STUBBED_NAMED("PC InitShadowLights renderer initialization");
 }
+
+f32 __cdecl NewShadow(NUVEC *position, f32 unused, f32 height, i32 mask) {
+    return NewShadowEx(position, unused, height, height, mask);
+}

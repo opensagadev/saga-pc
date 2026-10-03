@@ -150,3 +150,62 @@ views receive no complete-allocation credit.
 Retained commands/logs: `final-check.log`, `final-match.log`, `final-build.log`,
 `entry-smoke-after-guard.json`, and each subsystem handoff in the execution
 analysis directory. The initial failing entry smoke is also retained.
+
+
+## Resource and debris continuation checkpoint (2026-10-03)
+
+The user requested indefinite whole-project continuation, commits every half hour,
+and pushes directly to main on opensagadev/saga-pc. The active goal and thread
+heartbeat preserve this cadence. A checkpoint requires coherent passing source;
+validation failures are repaired before committing.
+
+From the pushed b22c8d0 checkpoint this wave adds **76 compared functions and
+24,407 unique original PC code bytes**. Whole-code fuzzy coverage increases from
+**7.710590% to 8.200580%** across the unchanged 3,471,246-byte PC text extent.
+Exact code increases **2,417 bytes** to **55,532 bytes** (933 exact functions).
+Every previously exact function and data comparison survives.
+
+Transferred families include EdFile float/short/vector reads; bridge and grass
+loaders, nearest/sort/page initialization, complete PC grass calculation including
+dispatch tables, real wind/fade matrix groups, terrain/scene-special providers;
+list/RTL/object resets; debris emitter/orientation helpers, generators, momentum
+and chunk-control callbacks, ForceThrow and the AddDebris action; native particle
+table generation; animation-cache/POI helpers; and real native texture creation.
+Native texture creation uses the actual D3DX import through the existing
+d3dx9_35 import library. No platform implementation surrogate was added.
+
+The particle producer specifically omits Android's FLY patch, uses PC ARGB packing
+and alpha doubling/clamping, and retains the float-rounded double UV multiplier.
+Its full 1,855-byte PC body compares at 85.09%; a native fixture exercises all 64
+interpolated frames, UV/color handling, exhausted slots and that platform divergence.
+The exhaustion provider is a verified one-byte PC RET, with a neutral PC name.
+Low-scoring full bodies remain recorded; FadeCreate has no reported objdiff score
+and receives zero fuzzy credit rather than invented progress.
+
+The single data writer adds **79 definitions**: 307 verified shared definitions
+total, including real named debris dispatch pointers. Of those, 206 established
+extents compare exactly across 88,072 original bytes; 101 bounded access views
+cover 5,820 source bytes and receive no original allocation credit. Runtime group
+capacities and allocations are not inferred from adjacent addresses.
+
+Final aggregate validation passes: 149 objects, 1,991 function and 3,156 data
+definitions, complete maps/relocations, source-only link, LLVM 18 formatting for
+151 files and tidy for 149 units, and all 665 tests with three expected skips.
+The linked executable exits successfully under Wine/Xvfb through the documented
+incomplete-input guard. Full gameplay and real level resource loading remain
+unverified. A transient header read during integration failed one lint run;
+the final frozen-source run passes without weakening checks.
+
+Remaining high-value families are the real scene remove/display/material/texture
+animation services, GHG model loaders and upload/fixup providers, part-template
+creation, and connected world lifecycle consumers. The existing
+PartDebrisCreatePart_candidate remains explicitly partial: the emitter transfer
+does not establish that part-template backend or the held variable/AddAnimEffects
+backend. GHG/model code remains scratch until real providers and its private PC
+register ABI are recovered. Keep these as source implementation waves rather
+than repeating broad inventory audits.
+
+Evidence and reproduction logs are under
+build/analysis/transfer-execution-20261003/continuation-resources/, with current
+subsystem handoffs under parser, mapping/resource, debris, apiobject, data and
+world. Initial checkpoint evidence remains historical.

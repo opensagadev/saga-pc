@@ -16,3 +16,19 @@ void __cdecl NuTexDestroy(i32 texture_id) {
     NuTexDestroyPS(texture);
     NuTextureDimensions[texture_id - 1] = NULL;
 }
+
+i32 __cdecl NuTexCreateNative(NUTEXDIM_PC *texture) {
+    i32 index;
+    if (texture == NULL)
+        return 0;
+    for (index = 0; index < NuTextureCapacityPC; ++index) {
+        if (NuTextureDimensions[index] == NULL) {
+            NuTextureDimensions[index] = texture;
+            NuTextureLoadOrderPC[index] = NuTextureLoadCountPC++;
+            NuTexCreatePS(texture);
+            return index + 1;
+        }
+    }
+    AnimationDiagnosticNoOpPc();
+    return 0;
+}

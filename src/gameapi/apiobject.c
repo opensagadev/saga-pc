@@ -310,3 +310,60 @@ void __cdecl APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_cou
     apicharsys->char_data = characters;
     apicharsys->set_creature_lights = lights;
 }
+
+void *__cdecl LoadAnimFromPAK(char *path, i32 area_animation, void *data, i32 size) {
+    API_ANIMATION_CACHE_PC *entry = apicharsys->animations;
+    i32 i;
+    for (i = 0; i < apicharsys->loaded_animation_count; ++i, ++entry) {
+        if (NuStrICmp(path, entry->path) == 0)
+            return entry->animation;
+    }
+    if (i >= apicharsys->animation_capacity) {
+        ++apicharsys->animation_load_attempts;
+        return NULL;
+    }
+    NuStrCpy(entry->path, path);
+    entry->animation = NuAnimData2LoadBuffFromPAK(data, size);
+    if (entry->animation != NULL) {
+        if (area_animation != 0)
+            ++apicharsys->area_animation_count;
+        ++apicharsys->loaded_animation_count;
+        ++apicharsys->animation_load_attempts;
+    }
+    return entry->animation;
+}
+void *__cdecl LoadAnim(char *path, i32 area_animation, VARIPTR *cursor, VARIPTR end) {
+    API_ANIMATION_CACHE_PC *entry = apicharsys->animations;
+    i32 i;
+    for (i = 0; i < apicharsys->loaded_animation_count; ++i, ++entry) {
+        if (NuStrICmp(path, entry->path) == 0)
+            return entry->animation;
+    }
+    if (i >= apicharsys->animation_capacity) {
+        ++apicharsys->animation_load_attempts;
+        return NULL;
+    }
+    NuStrCpy(entry->path, path);
+    entry->animation = NuAnimData2LoadBuff(entry->path, cursor, &end);
+    if (entry->animation != NULL) {
+        if (area_animation != 0)
+            ++apicharsys->area_animation_count;
+        ++apicharsys->loaded_animation_count;
+        ++apicharsys->animation_load_attempts;
+    }
+    return entry->animation;
+}
+
+void __cdecl APIObjectDestroyAll(APIOBJECTSYS_PC *system) {
+    if (system != NULL)
+        memset(system->objects, 0, system->object_size * 64);
+}
+
+i32 __cdecl AddGameDebris(APIDEBRISSYS_PC *system, i32 type, NUVEC *position) {
+    if (type >= 0 && type < system->capacity && system->entries[type].effect != -1) {
+        i32 handle = -1;
+        AddFiniteShotDebrisEffect(&handle, system->entries[type].effect, position, 1);
+        return 1;
+    }
+    return 0;
+}

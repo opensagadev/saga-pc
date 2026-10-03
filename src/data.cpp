@@ -5384,3 +5384,262 @@ extern "C" {
     NUGSPLINE *script_spline_selected;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$edBridges")
+    PC_EDBRIDGE edBridges[64];
+#pragma bss_seg()
+#pragma bss_seg(".bss$edbri_page_used")
+    i32 edbri_page_used[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$edbri_page_scene")
+    NUGSCN *edbri_page_scene[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$edbri_bridges_used")
+    i32 edbri_bridges_used;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edbri_nearest")
+    i32 edbri_nearest;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edbri_cam_pos")
+    NUVEC edbri_cam_pos;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edgra_page_used")
+    i32 edgra_page_used[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$edgra_page_scene")
+    NUGSCN *edgra_page_scene[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$edgra_page_terrain")
+    void *edgra_page_terrain[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$edgra_page_matrix_stack")
+    NUMTX *edgra_page_matrix_stack[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$edgra_page_vectors_valid")
+    i32 edgra_page_vectors_valid[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$edgra_nearest")
+    i32 edgra_nearest;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edgra_cam_pos")
+    NUVEC edgra_cam_pos;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edbits_editmode")
+    i32 edbits_editmode;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edgra_mtxbuffer")
+    NUMTX *edgra_mtxbuffer;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edgra_vecbuffer")
+    NUVEC *edgra_vecbuffer;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edgra_free_vecbuffer")
+    void *edgra_free_vecbuffer;
+#pragma bss_seg()
+#pragma bss_seg(".bss$EDGRA_MAX_CLUMPS")
+    i32 EDGRA_MAX_CLUMPS;
+#pragma bss_seg()
+#pragma bss_seg(".bss$EDGRA_MAX_INDIVIDUAL_CLUMPS")
+    i32 EDGRA_MAX_INDIVIDUAL_CLUMPS;
+#pragma bss_seg()
+#pragma bss_seg(".bss$EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP")
+    i32 EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP;
+#pragma bss_seg()
+#pragma bss_seg(".bss$GrassClumps")
+    PC_EDGRACLUMP *GrassClumps;
+#pragma bss_seg()
+#pragma bss_seg(".bss$IndGrassClumps")
+    PC_EDGRAINDIVIDUAL *IndGrassClumps;
+#pragma bss_seg()
+#pragma bss_seg(".bss$IndGrassClumpsUsed")
+    i32 *IndGrassClumpsUsed;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edgra_ind_clumps_used")
+    i32 edgra_ind_clumps_used;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edgra_clumps_used")
+    i32 edgra_clumps_used;
+#pragma bss_seg()
+#pragma data_seg(".data$edgra_last_clump_in_buffer")
+    i32 edgra_last_clump_in_buffer = -1;
+#pragma data_seg()
+#pragma data_seg(".data$edgra_global_fadein")
+    f32 edgra_global_fadein = 15.0f;
+#pragma data_seg()
+#pragma data_seg(".data$edgra_global_fadeout")
+    f32 edgra_global_fadeout = 25.0f;
+#pragma data_seg()
+#pragma data_seg(".data$edgra_clumpthin")
+    i32 edgra_clumpthin = 1;
+#pragma data_seg()
+#pragma data_seg(".data$edgra_elementthin")
+    i32 edgra_elementthin = 1;
+#pragma data_seg()
+#pragma bss_seg(".bss$edgra_page_on")
+    i32 edgra_page_on[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShadNorm")
+    NUVEC ShadNorm;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCGrassTerrainScene")
+    void *PCGrassTerrainScene;
+#pragma bss_seg()
+#pragma bss_seg(".bss$rtl_dynamic_pool")
+    NULSTHDR *rtl_dynamic_pool;
+#pragma bss_seg()
+#pragma bss_seg(".bss$rtl_dynamic_max")
+    i32 rtl_dynamic_max;
+#pragma bss_seg()
+#pragma bss_seg(".bss$rtl_dynamic_cnt")
+    i32 rtl_dynamic_cnt;
+#pragma bss_seg()
+#pragma bss_seg(".bss$debris_suspended")
+    i32 debris_suspended;
+#pragma bss_seg()
+#pragma bss_seg(".bss$globaltime")
+    f32 globaltime;
+#pragma bss_seg()
+#pragma bss_seg(".bss$panelglobaltime")
+    f32 panelglobaltime;
+#pragma bss_seg()
+#pragma data_seg(".data$update_debris_enabled")
+    i32 update_debris_enabled = 1;
+#pragma data_seg()
+#pragma bss_seg(".bss$debris_keystack")
+    DEBRISKEY_PC *debris_keystack;
+#pragma bss_seg()
+#pragma bss_seg(".bss$freedebkeyptr")
+    i32 freedebkeyptr;
+#pragma bss_seg()
+#pragma bss_seg(".bss$maxdebkeys")
+    i32 maxdebkeys;
+#pragma bss_seg()
+#pragma bss_seg(".bss$freedebkeys")
+    i16 *freedebkeys;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$NuFadeObjGroup")
+    PC_NUFADEGROUP *NuFadeObjGroup;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuFadeMaxGroupsPC")
+    i32 NuFadeMaxGroupsPC;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuFadeMaxDataPC")
+    i32 NuFadeMaxDataPC;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuFadeData")
+    i16 *NuFadeData;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuFadeObjDataIndex")
+    i32 NuFadeObjDataIndex;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuFadeObjWave")
+    i32 NuFadeObjWave;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuFadeObjDir")
+    i32 NuFadeObjDir;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuFadeObjDir2")
+    i32 NuFadeObjDir2;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuWindGroup")
+    PC_NUWINDGROUP *NuWindGroup;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuWindMaxGroupsPC")
+    i32 NuWindMaxGroupsPC;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuWindWave")
+    i32 NuWindWave;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuWindDir")
+    i32 NuWindDir;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuWindDir2")
+    i32 NuWindDir2;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edgra_units_used")
+    i32 edgra_units_used;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edgra_page_calculate_done")
+    i32 edgra_page_calculate_done[8];
+#pragma bss_seg()
+#pragma data_seg(".data$debrischunks")
+    i32 debrischunks = 256;
+#pragma data_seg()
+#pragma data_seg(".data$debrischunksglass")
+    i32 debrischunksglass = 32;
+#pragma data_seg()
+#pragma bss_seg(".bss$freechunkcontrols")
+    DEBRIS_CHUNK_CONTROL_PC **freechunkcontrols;
+#pragma bss_seg()
+#pragma bss_seg(".bss$freechunkcontrolsptr")
+    i32 freechunkcontrolsptr;
+#pragma bss_seg()
+#pragma bss_seg(".bss$debris_control_stack_lock")
+    volatile i32 debris_control_stack_lock;
+#pragma bss_seg()
+#pragma bss_seg(".bss$debris_chunk_control_stack")
+    DEBRIS_CHUNK_CONTROL_PC *debris_chunk_control_stack[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$CLOUDCITYTRAPB_LDATA")
+    LEVELDATA_PC *CLOUDCITYTRAPB_LDATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$MAULA_LDATA")
+    LEVELDATA_PC *MAULA_LDATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$MAULF_LDATA")
+    LEVELDATA_PC *MAULF_LDATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DOOKUC_LDATA")
+    LEVELDATA_PC *DOOKUC_LDATA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$freeDmaDebType")
+    i32 freeDmaDebType;
+#pragma bss_seg()
+#pragma data_seg(".data$EDPP_MAX_DMADEBTYPES")
+    i32 EDPP_MAX_DMADEBTYPES = 64;
+#pragma data_seg()
+#pragma bss_seg(".bss$DmaDebTypes")
+    DEBRIS_PART_HEADER_PC **DmaDebTypes;
+#pragma bss_seg()
+#pragma const_seg(".rdata$ForceThrowExplodeNamePc")
+    extern const char ForceThrowExplodeNamePc[9] = "Explode1";
+#pragma const_seg()
+#pragma data_seg(".data$gensorttab")
+    DEBRISGENERATOR_PC gensorttab[13] = {
+        GenDebIndex,          GenDebDummy,        GenDebDummy,         GenDebDummy,
+        GenDebDummy,          GenDebDummy,        GenDebIndexRadial,   GenDebIndexRadialRotor,
+        GenDebIndexSpheroid,  GenDebIndexBounceY, GenDebIndexBounceXZ, GenDebIndexImprovedRadial,
+        GenDebIndexRadialStar};
+#pragma data_seg()
+#pragma data_seg(".data$gencodetab")
+    DEBRISMOMENTUMADJUSTER_PC gencodetab[7] = {NULL,
+                                               GenDebMomAdjFromPos,
+                                               GenDebMomAdjFromPosRev,
+                                               GenDebMomAdjFromSplash,
+                                               GenDebMomAdjFromAshRock,
+                                               GenDebMomAdjFromPosRevTree,
+                                               GenDebMomAdjFromPosAll};
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$NuTextureCapacityPC")
+    i32 NuTextureCapacityPC;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuTextureLoadOrderPC")
+    i32 *NuTextureLoadOrderPC;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuTextureLoadCountPC")
+    i32 NuTextureLoadCountPC;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$AIPositionUnsetPc")
+    extern const f32 AIPositionUnsetPc = 1000000000.0f;
+#pragma const_seg()
+}

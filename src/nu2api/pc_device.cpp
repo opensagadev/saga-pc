@@ -116,3 +116,8 @@ extern "C" void __cdecl PCDeviceSetTextureStageState(u32 stage, i32 state, u32 v
     PCDeviceLastResult =
         PCDeviceBackend.device->methods->set_texture_stage_state(PCDeviceBackend.device, stage, state, value);
 }
+
+extern "C" void __cdecl PCDeviceCreateTextureFromMemory(const void *data, u32 size, PC_TEXTURE_RESOURCE_PC **texture) {
+    PCDeviceLastResult = D3DXCreateTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device),
+                                                           data, size, reinterpret_cast<IDirect3DTexture9 **>(texture));
+}
