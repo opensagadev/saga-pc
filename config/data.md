@@ -1090,3 +1090,19 @@ withdrawal was justified by the evidence available at that checkpoint. The separ
 canonical CurrentTerrain four-byte owner and unchanged GizObstacle callback remain
 exact; the latter uses a dedicated BSS section to prevent compiler padding from
 becoming an apparent eight-byte definition. No data comparison is truncated.
+
+
+### Terrain/movement continuation, 3 October 2026
+
+The frozen data cohort now contains 435 scoped definitions: 248 known extents
+covering 133,853 unique bytes and 187 unknown extents providing 15,343 source-view
+bytes with zero original allocation credit. This checkpoint adds 61 real
+definitions. Every previous proof remains unchanged. Diagnostics reuse the
+canonical blank string and message format; the native debug prefix is 12 bytes
+including NUL. ScaleTerrainT1 aliases the existing TerrainScaleWorkBasePc owner
+at 0x02962b50 rather than defining duplicate storage. The terrain counter's old
+inventory-only label is replaced by terraincnt. The selected object-switch view
+is 128 zero bytes with original extent blank; valid tested trigger indices are
+0 through 127, with -1 preserved as the sentinel. Receipts, canonical-owner
+proof and sorted proposals are retained under the ignored transfer-execution
+data directory.

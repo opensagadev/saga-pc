@@ -1,5 +1,25 @@
 #include "saga.h"
 
+void __cdecl NuTexAnimAddList(void *animation) {
+    PC_TEXTURE_ANIM_LIST *node;
+    if (animation == NULL)
+        return;
+    PCThreadCriticalSectionEnter_candidate(g_texAnimCriticalSection);
+    node = ntal_free;
+    if (node != NULL) {
+        if (node->next == NULL)
+            NuSevereWarning(NuTextureAnimationSlotsWarning);
+        ntal_free = ntal_free->next;
+        node->next = ntal_first;
+        node->previous = NULL;
+        node->first = animation;
+        if (ntal_first != NULL)
+            ntal_first->previous = node;
+        ntal_first = node;
+    }
+    PCThreadCriticalSectionLeave_candidate(g_texAnimCriticalSection);
+}
+
 void __cdecl NuTexAnimRemoveList(void *animation) {
     PC_TEXTURE_ANIM_LIST *node;
     PCThreadCriticalSectionEnter_candidate(g_texAnimCriticalSection);

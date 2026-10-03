@@ -5865,3 +5865,195 @@ extern "C" {
     u32 numtl_renderplane;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$PCNativeWarningDebugState")
+    PC_NATIVE_DEBUG_STATE_PC PCNativeWarningDebugState;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCNativeDebugFormatBuffer")
+    char PCNativeDebugFormatBuffer[2048];
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCNativeDebugOutputBuffer")
+    char PCNativeDebugOutputBuffer[2048];
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCWarningFormatBuffer")
+    char PCWarningFormatBuffer[1024];
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCWarningOutputBuffer")
+    char PCWarningOutputBuffer[1024];
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCWarningMessages")
+    char PCWarningMessages[1024];
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCWarningHandler")
+    void(__cdecl *PCWarningHandler)(char *);
+#pragma bss_seg()
+#pragma const_seg(".rdata$PCNativeDebugPrefix")
+    extern const char PCNativeDebugPrefix[12] = "NUDEBUG: %s";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCWarningSuffix")
+    extern const char PCWarningSuffix[2] = "\n";
+#pragma const_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$ScaleTerrainT2")
+    void *ScaleTerrainT2;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TempScanStack")
+    void *TempScanStack;
+#pragma bss_seg()
+#pragma bss_seg(".bss$WallSplList")
+    void *WallSplList;
+#pragma bss_seg()
+#pragma bss_seg(".bss$terraincnt")
+    i32 terraincnt;
+#pragma bss_seg()
+#pragma bss_seg(".bss$curSphereter")
+    i32 curSphereter;
+#pragma bss_seg()
+#pragma bss_seg(".bss$platinrange")
+    i32 platinrange;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrPoly")
+    TERRAIN_POLYGON_INFO_PC *TerrPoly;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrWallInfo")
+    u8 TerrWallInfo;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PlatImpactId")
+    i32 PlatImpactId;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrShapeAdjCnt")
+    i32 TerrShapeAdjCnt;
+#pragma bss_seg()
+#pragma bss_seg(".bss$debug_index")
+    i16 debug_index;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainCrashDataPc")
+    u8 *TerrainCrashDataPc;
+#pragma bss_seg()
+#pragma const_seg(".rdata$TerrainUnusedSpatialBlockPc")
+    extern const f32 TerrainUnusedSpatialBlockPc = 2147483648.0f;
+#pragma const_seg()
+#pragma const_seg(".rdata$TerrainBoundsMinimumPc")
+    extern const f32 TerrainBoundsMinimumPc = -200000000.0f;
+#pragma const_seg()
+#pragma const_seg(".rdata$TerrainBoundsMaximumPc")
+    extern const f32 TerrainBoundsMaximumPc = 200000000.0f;
+#pragma const_seg()
+#pragma const_seg(".rdata$TerrainSteepNormalYPc")
+    extern const f32 TerrainSteepNormalYPc = 0.707f;
+#pragma const_seg()
+#pragma const_seg(".rdata$TerrainSourcePathPc")
+    extern const char TerrainSourcePathPc[53] = "d:\\projects\\game_saga\\gameapi.saga\\gamelib\\terrain.c";
+#pragma const_seg()
+#pragma data_seg(".data$LEGOACT_CLIMB_UP")
+    i16 LEGOACT_CLIMB_UP = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOACT_CLIMB_DOWN")
+    i16 LEGOACT_CLIMB_DOWN = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOACT_CLIMB_LEFT")
+    i16 LEGOACT_CLIMB_LEFT = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOACT_CLIMB_RIGHT")
+    i16 LEGOACT_CLIMB_RIGHT = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOACT_WALLSHUFFLE_IDLE")
+    i16 LEGOACT_WALLSHUFFLE_IDLE = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOACT_WALLSHUFFLE_LEFT")
+    i16 LEGOACT_WALLSHUFFLE_LEFT = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOACT_WALLSHUFFLE_RIGHT")
+    i16 LEGOACT_WALLSHUFFLE_RIGHT = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOACT_MAGNET_WALK_METAL")
+    i16 LEGOACT_MAGNET_WALK_METAL = -1;
+#pragma data_seg()
+#pragma const_seg(".rdata$GrappleMomentumNearScalePc")
+    extern const f64 GrappleMomentumNearScalePc = 20.0;
+#pragma const_seg()
+#pragma bss_seg(".bss$LevelHackSendTimer")
+    f32 LevelHackSendTimer;
+#pragma bss_seg()
+#pragma const_seg(".rdata$NuTextureAnimationSlotsWarning")
+    extern const char NuTextureAnimationSlotsWarning[31] = "Ran out of texture anim slots!";
+#pragma const_seg()
+#pragma data_seg(".data$debris_detail_level")
+    i32 debris_detail_level = 4;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$EpisodeVI_liftrlightbon1")
+    extern const char EpisodeVI_liftrlightbon1[17] = "lift_rlight_bon1";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_liftrlightbon2")
+    extern const char EpisodeVI_liftrlightbon2[17] = "lift_rlight_bon2";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_liftrlightbon3")
+    extern const char EpisodeVI_liftrlightbon3[17] = "lift_rlight_bon3";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_liftrlightbon4")
+    extern const char EpisodeVI_liftrlightbon4[17] = "lift_rlight_bon4";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_liftrarron1")
+    extern const char EpisodeVI_liftrarron1[14] = "lift_rarr_on1";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_liftrarron2")
+    extern const char EpisodeVI_liftrarron2[14] = "lift_rarr_on2";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_liftrarron3")
+    extern const char EpisodeVI_liftrarron3[14] = "lift_rarr_on3";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_liftrarron4")
+    extern const char EpisodeVI_liftrarron4[14] = "lift_rarr_on4";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_doton01")
+    extern const char EpisodeVI_doton01[10] = "dot_on_01";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_doton02")
+    extern const char EpisodeVI_doton02[10] = "dot_on_02";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_doton03")
+    extern const char EpisodeVI_doton03[10] = "dot_on_03";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_doton04")
+    extern const char EpisodeVI_doton04[10] = "dot_on_04";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_doton05")
+    extern const char EpisodeVI_doton05[10] = "dot_on_05";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_doton06")
+    extern const char EpisodeVI_doton06[10] = "dot_on_06";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_doton07")
+    extern const char EpisodeVI_doton07[10] = "dot_on_07";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_doton08")
+    extern const char EpisodeVI_doton08[10] = "dot_on_08";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_doton09")
+    extern const char EpisodeVI_doton09[10] = "dot_on_09";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_doton10")
+    extern const char EpisodeVI_doton10[10] = "dot_on_10";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_doton11")
+    extern const char EpisodeVI_doton11[10] = "dot_on_11";
+#pragma const_seg()
+#pragma const_seg(".rdata$EpisodeVI_doton12")
+    extern const char EpisodeVI_doton12[10] = "dot_on_12";
+#pragma const_seg()
+#pragma bss_seg(".bss$emperorfighta_netpacket")
+    void *emperorfighta_netpacket;
+#pragma bss_seg()
+#pragma bss_seg(".bss$LevSfxFlag")
+    i32 LevSfxFlag[3];
+#pragma bss_seg()
+#pragma bss_seg(".bss$debris_object_switches")
+    u8 debris_object_switches[128];
+#pragma bss_seg()
+}

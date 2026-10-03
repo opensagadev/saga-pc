@@ -1,5 +1,116 @@
 #include "saga.h"
 
+extern i16 LEGOACT_CLIMB_UP, LEGOACT_CLIMB_DOWN, LEGOACT_CLIMB_LEFT, LEGOACT_CLIMB_RIGHT;
+extern i16 LEGOACT_WALLSHUFFLE_IDLE, LEGOACT_WALLSHUFFLE_LEFT, LEGOACT_WALLSHUFFLE_RIGHT;
+extern i16 LEGOACT_MAGNET_WALK_METAL;
+extern const f64 GrappleMomentumNearScalePc;
+
+typedef struct grapple_movement_pc_s {
+    u8 unknown_00[0x3c];
+    NUVEC shadow_probe_position;
+    u8 unknown_48[4];
+    f32 swing_scale;
+} GRAPPLE_MOVEMENT_PC;
+STATIC_ASSERT(offsetof(GRAPPLE_MOVEMENT_PC, shadow_probe_position) == 0x3c);
+STATIC_ASSERT(offsetof(GRAPPLE_MOVEMENT_PC, swing_scale) == 0x4c);
+
+__declspec(noinline) void __cdecl Grapple_SetPlayerTargetPoint(GAMEOBJECT *object, NUVEC *target) {
+    GRAPPLE_MOVEMENT_PC *grapple = (GRAPPLE_MOVEMENT_PC *)object->grapple;
+    i32 amplitude, angle;
+    target->x = 0.0f;
+    target->z = 0.0f;
+    target->y = -object->context_hover_target_y;
+    amplitude = ((i32)object->big_jump_animation << 16) / 360;
+    angle = (i32)((f32)amplitude * NuTrigTable[object->field_7a8 >> 1] * grapple->swing_scale);
+    NuVecRotateX(target, target, angle);
+    NuVecRotateY(target, target, object->takeover_start_angle);
+    NuVecAdd(target, target, &grapple->shadow_probe_position);
+}
+
+i32 __cdecl Grapple_SetTargetMom(GAMEOBJECT *object) {
+    NUVEC point;
+    if (object->field_7b3 == 1) {
+        object->target_velocity.x = (object->external_force.x - object->upper_position.x) * GrappleMomentumNearScalePc;
+        object->target_velocity.y = (object->external_force.y - object->upper_position.y) * GrappleMomentumNearScalePc;
+        object->target_velocity.z = (object->external_force.z - object->upper_position.z) * GrappleMomentumNearScalePc;
+    } else {
+        Grapple_SetPlayerTargetPoint(object, &point);
+        object->target_velocity.x = (point.x - object->upper_position.x) * nu_wind_scaled_time_multiplier;
+        object->target_velocity.y = (point.y - object->upper_position.y) * nu_wind_scaled_time_multiplier;
+        object->target_velocity.z = (point.z - object->upper_position.z) * nu_wind_scaled_time_multiplier;
+    }
+    return 1;
+}
+
+__declspec(noinline) f32 __cdecl PushingTowardsAngle(u16 input_angle, u16 direction) {
+    NUVEC input, target;
+    NuVecRotateY(&input, &v001, input_angle);
+    NuVecRotateY(&target, &v001, direction);
+    return input.x * target.x + input.z * target.z;
+}
+
+i32 __cdecl WallShuffle_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
+    CHARACTER_MODEL_LAYERS_PC *model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
+    u16 sideways_angle;
+    f32 direction, speed;
+    object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1];
+    object->target_velocity.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff];
+    sideways_angle = object->movement_facing_angle + 0x4000;
+    direction = PushingTowardsAngle(input_angle, sideways_angle);
+    if (direction > NuTrigTable[0x3555]) {
+        if (LEGOACT_WALLSHUFFLE_RIGHT != -1 && model->model_data_b[LEGOACT_WALLSHUFFLE_RIGHT] != NULL) {
+            object->field_7aa = LEGOACT_WALLSHUFFLE_RIGHT;
+            speed = AnimSpeed(model, LEGOACT_WALLSHUFFLE_RIGHT);
+        } else {
+            speed = 0.5f;
+        }
+    } else if (direction < -NuTrigTable[0x3555]) {
+        if (LEGOACT_WALLSHUFFLE_LEFT != -1 && model->model_data_b[LEGOACT_WALLSHUFFLE_LEFT] != NULL) {
+            object->field_7aa = LEGOACT_WALLSHUFFLE_LEFT;
+            speed = -AnimSpeed(model, LEGOACT_WALLSHUFFLE_LEFT);
+        } else {
+            speed = -0.5f;
+        }
+    } else {
+        object->field_7aa = LEGOACT_WALLSHUFFLE_IDLE;
+        return 0;
+    }
+    if (speed != 0.0f) {
+        object->target_velocity.x += NuTrigTable[sideways_angle >> 1] * speed;
+        object->target_velocity.z += NuTrigTable[((sideways_angle + 0x4000) >> 1) & 0x7fff] * speed;
+    }
+    return 0;
+}
+
+i32 __cdecl Climb_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
+    CHARACTER_MODEL_LAYERS_PC *model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
+    f32 speed = 0.0f;
+    i16 animation = object->field_7aa;
+    u16 angle;
+    f32 lateral, vertical;
+    if (animation != -1 &&
+        (animation == LEGOACT_CLIMB_UP || animation == LEGOACT_CLIMB_DOWN || animation == LEGOACT_CLIMB_LEFT ||
+         animation == LEGOACT_CLIMB_RIGHT || animation == LEGOACT_MAGNET_WALK_METAL)) {
+        if (model->model_data_b[animation] != NULL)
+            speed = fabsf(AnimSpeed(model, animation));
+    }
+    if (speed == 0.0f)
+        speed = 0.5f;
+    angle = object->movement_facing_angle;
+    object->target_velocity.x = NuTrigTable[angle >> 1] * speed;
+    object->target_velocity.y = 0.0f;
+    object->target_velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * speed;
+    if (object->pad->input_magnitude > 0.0f) {
+        angle += 0x4000;
+        lateral = PushingTowardsAngle(input_angle, angle);
+        object->target_velocity.x += NuTrigTable[angle >> 1] * lateral * speed;
+        object->target_velocity.z += lateral * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * speed;
+        vertical = PushingTowardsAngle(input_angle, object->movement_facing_angle);
+        object->target_velocity.y += vertical * speed;
+    }
+    return 1;
+}
+
 typedef struct SPECIAL_LAYER_PC_s {
     i16 *character_id;
     const char *name;

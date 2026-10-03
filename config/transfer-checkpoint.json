@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 633632,
-    "matched_code_bytes": 58377,
-    "matching_percent": 1.68173042187157,
-    "fuzzy_coverage_percent": 8.701130682656059,
-    "mapped_functions": 2357,
-    "matched_functions": 968,
-    "objdiff_fuzzy_percent": 62.145275,
-    "objdiff_total_code": 486107,
+    "mapped_code_bytes": 644184,
+    "matched_code_bytes": 58644,
+    "matching_percent": 1.6894221844259958,
+    "fuzzy_coverage_percent": 8.845562515159719,
+    "mapped_functions": 2386,
+    "matched_functions": 973,
+    "objdiff_fuzzy_percent": 61.91292,
+    "objdiff_total_code": 496034,
     "image_bytes": 40067072,
-    "mapped_bytes": 1266860,
-    "mapping_percent": 3.1618482129165817
+    "mapped_bytes": 1277791,
+    "mapping_percent": 3.18912996687155
   },
   "newly_compared": [
     {
@@ -3844,6 +3844,498 @@
         "data_repair_scoped_lint": true
       },
       "ongoing_goal": "Indefinite whole-project transfer with validated half-hour checkpoints and directmainpush; goal remains active."
+    },
+    {
+      "baseline_commit": "fcc7eb55fe432fec9dcd4d844e65aab9cf33200d",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 633632,
+        "matched_code_bytes": 58377,
+        "matching_percent": 1.68173042187157,
+        "fuzzy_coverage_percent": 8.701130682656059,
+        "mapped_functions": 2357,
+        "matched_functions": 968,
+        "objdiff_fuzzy_percent": 62.145275,
+        "objdiff_total_code": 486107,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1266860,
+        "mapping_percent": 3.1618482129165817
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 644184,
+        "matched_code_bytes": 58644,
+        "matching_percent": 1.6894221844259958,
+        "fuzzy_coverage_percent": 8.845562515159719,
+        "mapped_functions": 2386,
+        "matched_functions": 973,
+        "objdiff_fuzzy_percent": 61.91292,
+        "objdiff_total_code": 496034,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1277791,
+        "mapping_percent": 3.18912996687155
+      },
+      "newly_compared": [
+        {
+          "name": "EmperorFightA_Init",
+          "symbol": "_EmperorFightA_Init",
+          "address": "0x004ea940",
+          "units": [
+            "src/legoapi/episode_vi.c"
+          ],
+          "target_size": 564,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/episode_vi.c",
+              "base_size": 552,
+              "exact_match": false,
+              "target_sha256": "177412e078f735d496e394e58ebe22c2eb5bb753b3d85ce1eded4f22515a4f66",
+              "base_sha256": "e0517d0bcf1fb3c5982db1a8f6b328a5e7510d608b41bb9e075ec3ad949b4034",
+              "relocation_count": 67,
+              "comparison_unit": "004ea940-d9129ef976aa",
+              "objdiff_percent": 0.0
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 0.0
+        },
+        {
+          "name": "NuSevereWarning",
+          "symbol": "_NuSevereWarning",
+          "address": "0x004feaa0",
+          "units": [
+            "src/nu2api/nuerror.c"
+          ],
+          "target_size": 172,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nuerror.c",
+              "base_size": 172,
+              "exact_match": false,
+              "target_sha256": "773466af75fb708c98510445572642ba2a9081e61549d3fd1811cd7bf1e94b99",
+              "base_sha256": "6eb56bc9d9c184f11970eae08bd086e0912c38e92ffd8245e9a4fffef44f242f",
+              "relocation_count": 23,
+              "comparison_unit": "004feaa0-f4c79c66c520",
+              "objdiff_percent": 81.021736
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 81.021736
+        },
+        {
+          "name": "Grapple_SetPlayerTargetPoint",
+          "symbol": "_Grapple_SetPlayerTargetPoint",
+          "address": "0x0054f7d0",
+          "units": [
+            "src/legoapi/players.c"
+          ],
+          "target_size": 141,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/players.c",
+              "base_size": 137,
+              "exact_match": false,
+              "target_sha256": "dfa9820b7a5212a7c50def5358499c611e6ebb8429bbf9cc672d969c352fdbe7",
+              "base_sha256": "68d5b2e45fad4b8e410b7536a547e19f6fddac80dc793af34db5c6fe7185e198",
+              "relocation_count": 5,
+              "comparison_unit": "0054f7d0-957fa3d789af",
+              "objdiff_percent": 77.891304
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 77.891304
+        },
+        {
+          "name": "Grapple_SetTargetMom",
+          "symbol": "_Grapple_SetTargetMom",
+          "address": "0x0054f860",
+          "units": [
+            "src/legoapi/players.c"
+          ],
+          "target_size": 159,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/players.c",
+              "base_size": 189,
+              "exact_match": false,
+              "target_sha256": "c3fef93ec80df00ca8ba79cb742e313e76e116aa8b612b8716d241cdbec0bb77",
+              "base_sha256": "d1657e1d7577762839234de08ab66d37702f522259ffdce7229aa3248a4696c1",
+              "relocation_count": 7,
+              "comparison_unit": "0054f860-71909b2856d9",
+              "objdiff_percent": 66.4
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 66.4
+        },
+        {
+          "name": "PushingTowardsAngle",
+          "symbol": "_PushingTowardsAngle",
+          "address": "0x00550180",
+          "units": [
+            "src/legoapi/players.c"
+          ],
+          "target_size": 75,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/players.c",
+              "base_size": 75,
+              "exact_match": true,
+              "target_sha256": "4f5dd4d8abc46a117610e9bc3c5f7d3e998a77f48b23fcf992a6b45f5e3a6d3f",
+              "base_sha256": "4f5dd4d8abc46a117610e9bc3c5f7d3e998a77f48b23fcf992a6b45f5e3a6d3f",
+              "relocation_count": 4,
+              "comparison_unit": "00550180-1010387e313e",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "Climb_SetTargetMom",
+          "symbol": "_Climb_SetTargetMom",
+          "address": "0x0056c620",
+          "units": [
+            "src/legoapi/players.c"
+          ],
+          "target_size": 373,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/players.c",
+              "base_size": 375,
+              "exact_match": false,
+              "target_sha256": "45a54b589b7ca1125ebcc65bf2b774e6bb8fd2414038e5dffe083903d33d6317",
+              "base_sha256": "69c37b1c031bb8fe1dd12b30cca521ebb53a11e03469da74344a0328f999e2a6",
+              "relocation_count": 13,
+              "comparison_unit": "0056c620-d9cc2e952a42",
+              "objdiff_percent": 82.02778
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 82.02778
+        },
+        {
+          "name": "SetLevelHack",
+          "symbol": "_SetLevelHack",
+          "address": "0x00578750",
+          "units": [
+            "src/legoapi/leveldata.c"
+          ],
+          "target_size": 64,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/leveldata.c",
+              "base_size": 64,
+              "exact_match": true,
+              "target_sha256": "ced8a78b9a99cf10316836e9ea2e3b83ca047639c5af7679e98b963dd2c948b1",
+              "base_sha256": "ced8a78b9a99cf10316836e9ea2e3b83ca047639c5af7679e98b963dd2c948b1",
+              "relocation_count": 7,
+              "comparison_unit": "00578750-80c13a20aa42",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "Levels_FixUp",
+          "symbol": "_Levels_FixUp",
+          "address": "0x00578e10",
+          "units": [
+            "src/legoapi/level_lifecycle.c"
+          ],
+          "target_size": 227,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/level_lifecycle.c",
+              "base_size": 211,
+              "exact_match": false,
+              "target_sha256": "fa5c8a6a2155401bfb7a812d02192f83aa9f68218ede23601b7d4341ad91a898",
+              "base_sha256": "20e6d9285fe8d060971e5dd1a081ad8d830de8d7866543341efe8a9e20b483b2",
+              "relocation_count": 5,
+              "comparison_unit": "00578e10-f56c030d5e65",
+              "objdiff_percent": 84.09091
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 84.09091
+        },
+        {
+          "name": "WallShuffle_SetTargetMom",
+          "symbol": "_WallShuffle_SetTargetMom",
+          "address": "0x0059c980",
+          "units": [
+            "src/legoapi/players.c"
+          ],
+          "target_size": 376,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/players.c",
+              "base_size": 375,
+              "exact_match": false,
+              "target_sha256": "d24ebdf0147fad213b3d1deeeb45e4975e5abf9a7c11d071a8ebf8dea58aeded",
+              "base_sha256": "9bb95188d367aca90a1895099c8d35bae13d08cfefd87a417406550a72274e7c",
+              "relocation_count": 15,
+              "comparison_unit": "0059c980-371d85faa962",
+              "objdiff_percent": 83.990654
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 83.990654
+        },
+        {
+          "name": "NuTexAnimAddList",
+          "symbol": "_NuTexAnimAddList",
+          "address": "0x005d3380",
+          "units": [
+            "src/nu2api/nutexanim.c"
+          ],
+          "target_size": 123,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nutexanim.c",
+              "base_size": 122,
+              "exact_match": false,
+              "target_sha256": "e22814076849165eea5371c1e607370c755985ed032d05bb4d8585de46709c0e",
+              "base_sha256": "3c873f5903418692706db08ac5c0ca0f627f04716f5c0dd612e481c8730aee50",
+              "relocation_count": 12,
+              "comparison_unit": "005d3380-61e2505bc5a1",
+              "objdiff_percent": 62.5
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 62.5
+        },
+        {
+          "name": "TerrainDiagnosticNoOpPC",
+          "symbol": "_TerrainDiagnosticNoOpPC",
+          "address": "0x0064fdb0",
+          "units": [
+            "src/nu2api/terrain_diagnostic.c"
+          ],
+          "target_size": 1,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_diagnostic.c",
+              "base_size": 1,
+              "exact_match": true,
+              "target_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
+              "base_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
+              "relocation_count": 0,
+              "comparison_unit": "0064fdb0-b39294fe4380",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "CameraEmitterDistance",
+          "symbol": "_CameraEmitterDistance",
+          "address": "0x006585a0",
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ],
+          "target_size": 29,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/debris_engine.c",
+              "base_size": 29,
+              "exact_match": false,
+              "target_sha256": "95647f04e64496a5f90b152dd9c61d57c6e72a4d97798c9ae0a168ea6b3a192f",
+              "base_sha256": "86a20ece1e46827fcbe71483c0b013bfb6996e5efd44622df73583e6a58329e4",
+              "relocation_count": 2,
+              "comparison_unit": "006585a0-6552e4791546",
+              "objdiff_percent": 61.666668
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 61.666668
+        },
+        {
+          "name": "ReadTerrain",
+          "symbol": "_ReadTerrain",
+          "address": "0x0066b330",
+          "units": [
+            "src/nu2api/nuterrain.c"
+          ],
+          "target_size": 1248,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nuterrain.c",
+              "base_size": 1097,
+              "exact_match": false,
+              "target_sha256": "9f936bf4e0e4fd59d868718324bf3bcd844d6c1d16417d5f5c49b1b5a664180c",
+              "base_sha256": "89ef2881b4659b6dc770bbe953bcf2187a0ea37bd093397e9d48c860f8e416dd",
+              "relocation_count": 13,
+              "comparison_unit": "0066b330-5d033d02a81f",
+              "objdiff_percent": 48.730392
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 48.730392
+        },
+        {
+          "name": "TerrainInitEx",
+          "symbol": "_TerrainInitEx",
+          "address": "0x0066b8c0",
+          "units": [
+            "src/nu2api/nuterrain.c"
+          ],
+          "target_size": 3491,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/nuterrain.c",
+              "base_size": 3495,
+              "exact_match": false,
+              "target_sha256": "60252e788c34f98748ea7f3193eb2876a2959f835c130b8908541356534761b9",
+              "base_sha256": "0a43812ac1835176d4433b849111d2b0826b9f509bf1414e5d1a866e0ca7b5cc",
+              "relocation_count": 43,
+              "comparison_unit": "0066b8c0-0d1bd0cadd54",
+              "objdiff_percent": 40.10222
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 40.10222
+        },
+        {
+          "name": "DebrisProcessTriggers",
+          "symbol": "_DebrisProcessTriggers",
+          "address": "0x00685c40",
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ],
+          "target_size": 613,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/debris_engine.c",
+              "base_size": 804,
+              "exact_match": false,
+              "target_sha256": "1f19fb993c4d517f65d3c6c1fe3b0e66c55a515afae5da9924634411e154792c",
+              "base_sha256": "e1d6e7660f7d51293f8d7f012ebda8daf04e45d3f8fb849f63740babe879bbb1",
+              "relocation_count": 23,
+              "comparison_unit": "00685c40-fb1ebca3e624",
+              "objdiff_percent": 31.171429
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 31.171429
+        },
+        {
+          "name": "DebrisProcessAllocation",
+          "symbol": "_DebrisProcessAllocation",
+          "address": "0x00685eb0",
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ],
+          "target_size": 55,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/debris_engine.c",
+              "base_size": 55,
+              "exact_match": true,
+              "target_sha256": "cbac591a4b209787d700434f49c4bd2d7e52c6b80ea9e9fc3917b471a3733dd2",
+              "base_sha256": "cbac591a4b209787d700434f49c4bd2d7e52c6b80ea9e9fc3917b471a3733dd2",
+              "relocation_count": 2,
+              "comparison_unit": "00685eb0-0b48c75de5d6",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "DebrisProcessGeneration",
+          "symbol": "_DebrisProcessGeneration",
+          "address": "0x00685ef0",
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ],
+          "target_size": 2144,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/debris_engine.c",
+              "base_size": 1858,
+              "exact_match": false,
+              "target_sha256": "b6f065cfbdf25a7b389ee96397f22d13cbc1a383030f7627e2512f1254cfe252",
+              "base_sha256": "26d1dddd1836d10545d0941e36c63c60611b4735ea5e6d26a9baafd785298156",
+              "relocation_count": 32,
+              "comparison_unit": "00685ef0-58a12621c447",
+              "objdiff_percent": 68.543045
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 68.543045
+        },
+        {
+          "name": "PCNativeDebugPrint",
+          "symbol": "_PCNativeDebugPrint",
+          "address": "0x006e0030",
+          "units": [
+            "src/nu2api/nudebug_pc.c"
+          ],
+          "target_size": 72,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nudebug_pc.c",
+              "base_size": 72,
+              "exact_match": true,
+              "target_sha256": "bf5c176de01b938087a020f41db8a7bad22cf6c6d46f7560c5de05b54d32ffba",
+              "base_sha256": "bf5c176de01b938087a020f41db8a7bad22cf6c6d46f7560c5de05b54d32ffba",
+              "relocation_count": 8,
+              "comparison_unit": "006e0030-2f4e3cdd9b64",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "newly_compared_functions": 18,
+      "new_original_code_bytes": 9927,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "data_scoped_receipt": "build/analysis/transfer-execution-20261003/data/initializer-packet.json",
+      "checkpoint": "terrain-movement-20261003",
+      "verified_checks": {
+        "tests": 665,
+        "skipped": 3,
+        "llvm": 18,
+        "format_files": 172,
+        "tidy_units": 170,
+        "objects": 170,
+        "function_definitions": 2099,
+        "data_definitions": 3310,
+        "source_only_link": true,
+        "native_momentum_fixture": true,
+        "native_warning_boundary_fixture": true,
+        "old_warning_negative_control_failed": true,
+        "native_debris_generation_fixture": true
+      },
+      "accepted_new_source_bytes": 9927,
+      "accepted_new_source_functions": 18,
+      "exact_code_added": 267,
+      "prior_exact_code_and_data_preserved": true,
+      "data_definitions_added": 61,
+      "ongoing_goal": "Indefinite whole-project transfer; validated half-hour checkpoints and direct main pushes continue."
     }
   ]
 }

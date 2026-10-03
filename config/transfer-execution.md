@@ -306,3 +306,65 @@ families and level-script callbacks. The next wave is preparing substantial play
 terrain and world/area cohorts plus genuine diagnostics. Evidence is retained in
 continuation-runtime and the engine-next/pages, parser/lifecycle-next, scene-next,
 world/cutscene and platform fixture handoffs. The goal remains active indefinitely.
+
+
+## Terrain and movement checkpoint, 3 October 2026
+
+The next full source checkpoint adds 18 newly compared functions spanning 9,927
+unique original PC bytes. Compared code rises from 486,107 to 496,034 bytes,
+whole-PC fuzzy coverage from 8.701130682656059% to 8.845562515159719%, and exact
+code from 58,377 to 58,644 bytes. None of the previous exact code or data
+comparisons is lost. Mapping-only movement and callback identities are excluded
+from these source counts.
+
+The connected release includes the full terrain initializer/reader and its
+genuine one-byte diagnostic return; five movement momentum providers; particle
+generation, trigger dispatch and allocation; the warning/native-debug backend;
+level lookup/fixup and level-hack setup; Emperor fight initialization; and texture
+animation list insertion. All bodies use reviewed PC boundaries, ABI and accessed
+field cohorts. Some advisory scores remain low or zero, including the complete
+Emperor initializer; no bytes are masked or omitted to improve them.
+
+Independent review corrected the warning loop to check the cumulative limit on
+every copied byte. Boundary-crossing tests at starting indices 1020 and 1022
+pass against actual compiled providers; the former incorrect loop fails the
+same test. The native format prefix has 12 bytes including its terminator.
+Existing blank-string and format-string owners are reused through aliases.
+Moving real error accessors into their original error subsystem preserves their
+17 exact bytes and four previous frame exact functions, while the incomplete
+NuFrameEnd comparison falls from 20.70412% to 2.329588% because VC8 loses
+same-unit interprocedural knowledge. That nonexact change is included in the
+net whole-PC result.
+
+The terrain initializer preserves x87 sum precision through its minimum-height
+comparison and integer conversion. Its new workspace name aliases the existing
+TerrainScaleWorkBasePc owner; duplicate reconstructed storage was removed.
+All 18 prior terrain bodies remain byte-identical after relocation. Particle
+emission and pause formulas follow PC coefficients rather than Android's
+different formulas. Emperor initialization omits the Android obstacle/force
+operations that are absent from the complete PC body.
+
+The sole data owner adds 61 verified definitions. Its scoped inventory is now 435:
+248 established extents cover 133,853 unique original bytes, while 187 unknown
+extents provide 15,343 source-view bytes without original allocation or exact-data
+credit. The 128-byte object-switch view has a selected-input contract of the -1
+sentinel or indices 0 through 127; its original allocation remains unknown.
+
+All required checks pass: source-only link, 170 objects with 2,099 function and
+3,310 data definitions and resolved mappings, LLVM18 formatting of 172 files and
+tidy of 170 units, and 665 tests with three expected skips. Native fixtures use
+real production providers for movement momentum, warning boundaries, and particle
+generation/triggers. The particle fixture exercises genuine generation, random
+timing, finite-count transitions, shrink/free and switch states; audio IDs are
+disabled, so hardware sound playback is not claimed. Full gameplay and real level
+resources remain unverified.
+
+The next wave retains a compiled 5,322-byte movement backend group, larger
+directional movement and terrain scanner/collision providers, Episode VI reset
+and update families, and display scene publication. Fifteen reviewed immediate
+movement callees and three reviewed children now provide symbol anchors; their
+inventory entries alone carry no transfer credit. Rendering inventory errors are
+corrected: 5f0470 is NuDisplaySceneClone with a complete 1,612-byte extent, and
+the former combined sort range separates private clipping (688 bytes) from frame
+publication (392 bytes). Broad callback hypotheses remain separate from accepted
+PC identities. The ongoing goal remains active.

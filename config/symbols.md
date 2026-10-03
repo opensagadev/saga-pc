@@ -3604,3 +3604,22 @@ their original caller group. InitParts64a4b0 independently proves the corrected
 PART emitter extent. Display/terrain global ownership is canonical in rebuilt
 source; aliases retain verified relocation base/addends. Retained full comparisons
 and real-provider runtime fixtures support the execution checkpoint.
+
+
+### Reviewed transfer corrections, 3 October 2026
+
+The next source checkpoint corrects three rendering inventory ranges.
+NuDisplaySceneClone at 0x005f0470 has the complete 1,612-byte body through its
+final return; the previous process-sort candidate name was wrong.
+DisplayClipMaterialsPC at 0x005f0ac0 is a 688-byte private ESI-scene routine
+including its out-of-line return path. NuDisplayListSwapBuffersEndFrame starts
+a separate 392-byte body at 0x005f0d70; the former 1,079-byte sort candidate
+incorrectly crossed that boundary. Logical C signatures remain in the map;
+private physical register contracts stay in retained evidence.
+
+Fifteen immediate movement callees totaling 5,025 original bytes have independently
+reviewed identities, ABI and full PC hashes. Their new inventory rows do not count
+as transferred source. Broad level-registration crosswalk hypotheses likewise
+remain unpromoted until individually reviewed. The neutral terrain diagnostic at
+0x0064fdb0 is a genuine one-byte return; importing Android's active NaN-check
+behavior there would be incorrect.

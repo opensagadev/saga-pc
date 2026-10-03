@@ -160,24 +160,6 @@ void __cdecl Cheats_Init(CHEAT_PC *cheats) {
     } while ((++cheats)->name != NULL);
 }
 
-LEVELDATA_PC *__cdecl Level_FindByName(char *name, i32 *index_out) {
-    i32 index;
-
-    for (index = 0; index < LEVELCOUNT; ++index) {
-        if (NuStrICmp(LDataList[index].name, name) == 0) {
-            if (index_out != NULL) {
-                *index_out = index;
-            }
-            return &LDataList[index];
-        }
-    }
-
-    if (index_out != NULL) {
-        *index_out = -1;
-    }
-    return NULL;
-}
-
 i32 __cdecl CharIDFromName(char *name) {
     i32 index;
 

@@ -2952,7 +2952,8 @@ typedef struct debris_info_pc_s {
     i8 momentum_adjustment_type;
     i8 particle_type;
     u8 status;
-    u8 unknown_030[8];
+    u8 unknown_030[4];
+    f32 cut_on;
     f32 clip_extent;
     f32 sound_range;
     f32 sound_range_override;
@@ -2972,10 +2973,12 @@ typedef struct debris_info_pc_s {
     u8 unknown_218[0x80];
     f32 texture_u0, texture_v0, texture_u1, texture_v1;
     DEBRIS_PART_HEADER_PC *native_data;
-    u8 unknown_2ac[0x44];
+    f32 last_render_time;
+    u8 unknown_2b0[0x40];
     i8 process_spheres;
     i8 time_group;
-    u8 unknown_2f2[2];
+    u8 collision_flags;
+    u8 use_explicit_clip_box;
     f32 thinning;
     u8 unknown_2f8[0xd8];
     i16 particle_keys[8];
@@ -2996,6 +2999,10 @@ STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, generator_type) == 0x2c);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, momentum_adjustment_type) == 0x2d);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, particle_type) == 0x2e);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, status) == 0x2f);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, cut_on) == 0x34);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, last_render_time) == 0x2ac);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, collision_flags) == 0x2f2);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, use_explicit_clip_box) == 0x2f3);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, clip_extent) == 0x38);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, sound_range) == 0x3c);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, sound_range_override) == 0x40);
@@ -4119,7 +4126,7 @@ typedef struct gameobject_s {
         };
     };
     u8 unknown_004c[4];
-    void *character_model;
+    CHARACTER_MODEL_LAYERS_PC *character_model;
     CHARACTERDATA_PC *character_data;
     u16 facing_angle;
     u16 movement_facing_angle;
@@ -4144,7 +4151,7 @@ typedef struct gameobject_s {
     NUVEC last_safe_position;
     NUVEC previous_position;
     NUVEC respawn_position;
-    u8 unknown_01d8[4];
+    f32 respawn_timer;
     f32 bounds_radius;
     f32 bounds_half_height;
     u8 unknown_01e4[4];
@@ -4228,7 +4235,11 @@ typedef struct gameobject_s {
     };
     NUVEC contact_position;
     NUVEC contact_normal;
-    u8 unknown_06c0[0x68];
+    union {
+        u32 contact_material_word;
+        u8 contact_material[4];
+    };
+    u8 unknown_06c4[0x64];
     struct {
         f32 height;
         f32 velocity;
@@ -4316,7 +4327,7 @@ typedef struct gameobject_s {
     u8 unknown_0cac[4];
     struct PART_PC *incoming_part;
     struct PART_PC *blocked_part;
-    u8 unknown_0cb8[4];
+    struct PART_PC *force_part;
     SUIT_LAYERS_PC *suit;
     u8 unknown_0cc0[4];
     struct TORPEDOPACKET_PC *torpedo;
@@ -4335,7 +4346,8 @@ typedef struct gameobject_s {
     BOLT *blocked_bolt;
     u8 unknown_0d0c[0x10];
     struct gameobject_s *airborne_collision_target;
-    u8 unknown_0d20[0xc];
+    u32 field_d20;
+    u8 unknown_0d24[8];
     f32 airborne_input_timer;
     f32 origin_scale_override;
     f32 timer_d34;
@@ -4361,7 +4373,8 @@ typedef struct gameobject_s {
     u8 unknown_0da0[4];
     f32 input_toggle_hold_time;
     f32 field_da8;
-    u8 unknown_0dac[8];
+    u8 unknown_0dac[4];
+    f32 field_db0;
     f32 fall_hover_height;
     u8 unknown_0db8[0x10];
     f32 field_dc8;
@@ -4486,7 +4499,7 @@ typedef struct gameobject_s {
     u8 unknown_1024[4];
     f32 hover_height_override;
     f32 collision_scale_override;
-    u8 unknown_1030[4];
+    f32 terrain_impact_speed;
     f32 animation_speed_multiplier;
     u8 unknown_1038[4];
     f32 fall_acceleration_timer;
@@ -4692,6 +4705,13 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_efc) == 0xefc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, hover_height_override) == 0x1028);
 STATIC_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
+STATIC_ASSERT(offsetof(GAMEOBJECT, respawn_timer) == 0x1d8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, contact_material_word) == 0x6c0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, contact_material) == 0x6c0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, force_part) == 0xcb8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_d20) == 0xd20);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_db0) == 0xdb0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, terrain_impact_speed) == 0x1030);
 STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
 STATIC_ASSERT(offsetof(GAMEOBJECT, facing_angle) == 0x58);
 STATIC_ASSERT(offsetof(GAMEOBJECT, movement_facing_angle) == 0x5a);
@@ -6165,6 +6185,19 @@ STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, requested_viewport) == 0x170);
 
 struct nusound_filename_info_s;
 
+typedef struct PC_NATIVE_DEBUG_STATE_PC {
+    u8 unknown_0;
+    u8 enabled;
+} PC_NATIVE_DEBUG_STATE_PC;
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_STATE_PC, enabled) == 1);
+
+struct level_fixup_pc_s;
+
+#define ScaleTerrainT1 TerrainScaleWorkBasePc // NOLINT(readability-identifier-naming)
+
+#define PCWarningPrefix NuBlankStringValue            // NOLINT(readability-identifier-naming)
+#define PCWarningNativeFormat GizAIMessage_NameFormat // NOLINT(readability-identifier-naming)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -6833,6 +6866,77 @@ extern "C" {
     void __cdecl NuClearError(void);
     extern i32 ShowingError;
     extern i32 bHaveErr;
+    void __cdecl NuSevereWarning(const char *format, ...);
+    void __cdecl PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...);
+    extern PC_NATIVE_DEBUG_STATE_PC PCNativeWarningDebugState;
+    extern char PCNativeDebugFormatBuffer[];
+    extern char PCNativeDebugOutputBuffer[];
+    extern const char PCNativeDebugPrefix[];
+    extern char PCWarningFormatBuffer[];
+    extern char PCWarningOutputBuffer[];
+    extern char PCWarningMessages[];
+    extern void(__cdecl *PCWarningHandler)(char *);
+    extern const char PCWarningSuffix[];
+    void __cdecl Levels_FixUp(struct level_fixup_pc_s *levels);
+    void __cdecl EmperorFightA_Init(WORLDINFO *world);
+    extern const char EpisodeVI_liftrlightbon1[17];
+    extern const char EpisodeVI_liftrlightbon2[17];
+    extern const char EpisodeVI_liftrlightbon3[17];
+    extern const char EpisodeVI_liftrlightbon4[17];
+    extern const char EpisodeVI_liftrarron1[14];
+    extern const char EpisodeVI_liftrarron2[14];
+    extern const char EpisodeVI_liftrarron3[14];
+    extern const char EpisodeVI_liftrarron4[14];
+    extern const char EpisodeVI_doton01[10];
+    extern const char EpisodeVI_doton02[10];
+    extern const char EpisodeVI_doton03[10];
+    extern const char EpisodeVI_doton04[10];
+    extern const char EpisodeVI_doton05[10];
+    extern const char EpisodeVI_doton06[10];
+    extern const char EpisodeVI_doton07[10];
+    extern const char EpisodeVI_doton08[10];
+    extern const char EpisodeVI_doton09[10];
+    extern const char EpisodeVI_doton10[10];
+    extern const char EpisodeVI_doton11[10];
+    extern const char EpisodeVI_doton12[10];
+    extern void *emperorfighta_netpacket;
+    extern i32 LevSfxFlag[3];
+    void *__cdecl TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *path, void *gscn,
+                                i32 scene_id, u32 max_group_indices, u32 max_groups, u32 max_platforms);
+    void __cdecl TerrainDiagnosticNoOpPC(const void *context, ...);
+    extern const char TerrainSourcePathPc[53];
+    extern const f32 TerrainUnusedSpatialBlockPc;
+    extern const f32 TerrainBoundsMinimumPc, TerrainBoundsMaximumPc, TerrainSteepNormalYPc;
+    extern void *ScaleTerrainT2, *TempScanStack, *WallSplList;
+    extern TERRAIN_POLYGON_INFO_PC *TerrainScaleWorkBasePc;
+    extern i32 terraincnt, curSphereter, platinrange, PlatImpactId, TerrShapeAdjCnt;
+    extern TERRAIN_POLYGON_INFO_PC *TerrPoly;
+    extern u8 TerrWallInfo;
+    extern i16 debug_index;
+    extern u8 *TerrainCrashDataPc;
+    void *__cdecl SetLevelHack(i32 size);
+    extern f32 LevelHackSendTimer;
+    f32 __cdecl PushingTowardsAngle(u16 push_heading, u16 target_heading);
+    void __cdecl GizPanel_GetAbsTargetPos(void *, NUVEC *, i32);
+    NUVEC *__cdecl Grabber_GetGrabPos(void *, NUMTX *);
+    i32 __cdecl Slide_SetTargetMom(GAMEOBJECT *, u16, float);
+    i32 __cdecl TightRope_SetTargetMom(GAMEOBJECT *);
+    i32 __cdecl Conveyor_AdjustSpeed(NUVEC *);
+    void __cdecl SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *);
+    i32 __cdecl CanStepBack(GAMEOBJECT *);
+    i32 __cdecl StepBackFromTarget(GAMEOBJECT *);
+    void __cdecl GizGetBuildItPlayerPos(GAMEOBJECT *, NUVEC *, NUVEC *);
+    void __cdecl GizBuildItPushAwayFromStart(GAMEOBJECT *, void *);
+    i32 __cdecl SuperCarry_SetTargetMom(GAMEOBJECT *, float);
+    i32 __cdecl SuperCarry_YRotation(GAMEOBJECT *, u16);
+    i32 __cdecl SuperCarry_Carrying(GAMEOBJECT *);
+    void __cdecl SetPushAngle(GAMEOBJECT *);
+    void __cdecl Grapple_SetPlayerTargetPoint(GAMEOBJECT *object, NUVEC *target);
+    i32 __cdecl Grapple_SetTargetMom(GAMEOBJECT *object);
+    void __cdecl NuTexAnimAddList(void *list);
+    extern const char NuTextureAnimationSlotsWarning[31];
+    i32 __cdecl WallShuffle_SetTargetMom(GAMEOBJECT *object, u16 heading);
+    i32 __cdecl Climb_SetTargetMom(GAMEOBJECT *object, u16 heading);
     void __cdecl FinishLoop(i32 frames);
     extern i32 finishloop_backdroponly;
     NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *buf, i32 *size_out, i16 mode);
@@ -8662,6 +8766,12 @@ extern "C" {
     extern f32 FRAMETIME;
     extern void *debris_cutoff_camera_vec;
     extern i32 debris_render_group;
+    f32 __cdecl CameraEmitterDistance(NUVEC *position);
+    void __cdecl DebrisProcessAllocation(void);
+    void __cdecl DebrisProcessTriggers(void);
+    void __cdecl DebrisProcessGeneration(void);
+    extern i32 debris_detail_level;
+    extern u8 debris_object_switches[];
     void __cdecl DebrisRegisterCutoffCameraVec(void *position);
     void __cdecl DebrisSetRenderGroup(i32 group);
     void __cdecl ResetFrameCounters(void);
