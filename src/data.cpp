@@ -7412,3 +7412,140 @@ extern "C" {
     i32 GameMessageIndex;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$ScorePanelName")
+    char ScorePanelName[9] = "MK-Panel";
+#pragma data_seg()
+#pragma const_seg(".rdata$TerrainWaterJumpSoundNamePc")
+    extern const char TerrainWaterJumpSoundNamePc[13] = "FS_WaterJump";
+#pragma const_seg()
+#pragma data_seg(".data$ScoreCounterName")
+    char ScoreCounterName[8] = "Counter";
+#pragma data_seg()
+#pragma data_seg(".data$PickupCoinsLandName")
+    char PickupCoinsLandName[10] = "CoinsLand";
+#pragma data_seg()
+#pragma data_seg(".data$CoinTab")
+    u8 CoinTab[4] = {0, 1, 2, 3};
+#pragma data_seg()
+#pragma data_seg(".data$PCArcadePointGoals")
+    i32 PCArcadePointGoals[5] = {5, 10, 25, 50, 0};
+#pragma data_seg()
+#pragma data_seg(".data$Arcade_NeedTwoPlayers_Scale")
+    f32 Arcade_NeedTwoPlayers_Scale = 1.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PCArcadeIconMessageY")
+    f32 PCArcadeIconMessageY = -0.550000011920929f;
+#pragma data_seg()
+#pragma data_seg(".data$PANEL_COINX")
+    f32 PANEL_COINX = 0.6499999761581421f;
+#pragma data_seg()
+#pragma data_seg(".data$PANEL_COINY")
+    f32 PANEL_COINY = 0.04500000178813934f;
+#pragma data_seg()
+#pragma data_seg(".data$PANEL_COINSCALE_END")
+    f32 PANEL_COINSCALE_END = 0.3499999940395355f;
+#pragma data_seg()
+#pragma data_seg(".data$STATSPOSY")
+    f32 STATSPOSY = 0.7450000047683716f;
+#pragma data_seg()
+#pragma data_seg(".data$COINTOTAL_COINSIZE")
+    f32 COINTOTAL_COINSIZE = 0.5f;
+#pragma data_seg()
+#pragma data_seg(".data$cointotal_i_obj")
+    i32 cointotal_i_obj[2] = {187, 187};
+#pragma data_seg()
+#pragma data_seg(".data$TerrainLastChatterSfxPc")
+    i32 TerrainLastChatterSfxPc = -1;
+#pragma data_seg()
+#pragma data_seg(".data$AddGameMsg_Default")
+    ADD_GAME_MESSAGE_PC AddGameMsg_Default = {NULL, &v000, &v000, 1.0f, 1.0f, 255,  255, 255,  128,
+                                              0,    1.0f,  0.0f,  0,    -1,   NULL, 0,   0.0f, 0.0f,
+                                              NULL, NULL,  NULL,  NULL, NULL, -1,   0,   255,  0};
+#pragma data_seg()
+#pragma data_seg(".data$COINMSGTIME")
+    f32 COINMSGTIME = 1.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PCArcadeUnpairedIconModel")
+    i32 PCArcadeUnpairedIconModel = -1;
+#pragma data_seg()
+#pragma data_seg(".data$BigJumpLandFallbackPc")
+    i16 BigJumpLandFallbackPc = -1;
+#pragma data_seg()
+#pragma data_seg(".data$BigJumpLandSecondaryPc")
+    i16 BigJumpLandSecondaryPc = -1;
+#pragma data_seg()
+#pragma data_seg(".data$BigJumpLandPreferredPc")
+    i16 BigJumpLandPreferredPc = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$BonusCoinTarget")
+    u32 BonusCoinTarget;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BonusWinFlag")
+    i32 BonusWinFlag;
+#pragma bss_seg()
+#pragma bss_seg(".bss$Arcade_Points")
+    i32 Arcade_Points[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$Arcade_Score")
+    i32 Arcade_Score[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$BuildUpScale")
+    f32 BuildUpScale;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CoinTotalScale")
+    f32 CoinTotalScale;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DrawBuildUpTime")
+    f32 DrawBuildUpTime;
+#pragma bss_seg()
+#pragma bss_seg(".bss$cointotal_x")
+    f32 cointotal_x[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$MenuStopDraw")
+    i32 MenuStopDraw;
+#pragma bss_seg()
+#pragma bss_seg(".bss$MenuValidated")
+    i32 MenuValidated;
+#pragma bss_seg()
+#pragma bss_seg(".bss$MenuAlpha")
+    f32 MenuAlpha;
+#pragma bss_seg()
+#pragma bss_seg(".bss$MenuA")
+    i32 MenuA;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CurrentMenuId")
+    i32 CurrentMenuId;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrainChatterWaitPc")
+    f32 TerrainChatterWaitPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DoubleScoreTime")
+    f32 DoubleScoreTime;
+#pragma bss_seg()
+#pragma bss_seg(".bss$LookAtBoth")
+    i32 LookAtBoth;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SuperStoryScore")
+    u32 SuperStoryScore;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BigJump_EndOfLandFn")
+    void(__cdecl *BigJump_EndOfLandFn)(GAMEOBJECT *);
+#pragma bss_seg()
+#pragma bss_seg(".bss$FindSlamOrigin_UseCPosFn")
+    i32(__cdecl *FindSlamOrigin_UseCPosFn)(GAMEOBJECT *);
+#pragma bss_seg()
+#pragma bss_seg(".bss$AddCoinDelay")
+    f32 AddCoinDelay[2];
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$alert_time")
+    f32 alert_time = 10.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$alert_pos")
+    NUVEC alert_pos;
+#pragma bss_seg()
+}

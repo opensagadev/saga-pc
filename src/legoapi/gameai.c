@@ -138,3 +138,22 @@ NUVEC *__cdecl GetAICreatureOrigin(AISYS_PC *system, AIPACKET_PC *packet) {
     }
     return &packet->creature_origin;
 }
+
+f32 __cdecl AdaptiveDifficultyAdjustPc(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount) {
+    if (difficulty != NULL && Cheat_IsOn(44) && !BonusArea && !GAMEDEMO) {
+        f32 sum = amount + difficulty->accumulator;
+        difficulty->accumulator = sum;
+        if (sum >= 1.0f) {
+            if (difficulty->level < 4) {
+                ++difficulty->level;
+                difficulty->accumulator = 0.5f;
+                difficulty->time_elapsed = 0.0f;
+            }
+        } else if (sum <= 0.0f && difficulty->level > -4) {
+            --difficulty->level;
+            difficulty->accumulator = 0.5f;
+            difficulty->time_elapsed = 0.0f;
+        }
+    }
+    return difficulty->accumulator;
+}

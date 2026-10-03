@@ -203,3 +203,39 @@ extra:
     if (ExtraDieSfxFn != NULL)
         ExtraDieSfxFn(object);
 }
+
+extern "C" {
+    void __cdecl PlayLandSfx(GAMEOBJECT *object, i32 type, i32 ignored) {
+        i32 sfx;
+        i32 alternate;
+        (void)ignored;
+        if (type == 1) {
+            if ((object->character_data->model_flags & 8) == 0)
+                return;
+            sfx = GameAudio->sfx_ids[11];
+        } else if (type == 2) {
+            sfx = GameAudio->sfx_ids[12];
+        } else if (type == 3) {
+            sfx = GameAudio->sfx_ids[13];
+        } else if (type == 4) {
+            sfx = GameAudio->sfx_ids[14];
+        } else {
+            if (object->is_underwater != 0 || object->water_intersects != 0)
+                return;
+            alternate = (WorldInfo_CurrentlyActive()->current_level->flags & 0x1000) != 0;
+            if ((object->character_data->model_flags & 0x10) != 0)
+                sfx = GameAudio->sfx_ids[alternate ? 10 : 9];
+            else {
+                if (type != 0)
+                    return;
+                sfx = GameAudio->sfx_ids[alternate ? 8 : 7];
+            }
+        }
+        if (sfx != -1) {
+            if ((object->flags_1fc_word & 0x80) != 0 || (object->portal_flags & 0x8000000) != 0)
+                PlaySfxById(sfx, &object->lower_position);
+            else
+                PlaySfxByIdAndSetVolume(sfx, &object->lower_position, 0.5f);
+        }
+    }
+}

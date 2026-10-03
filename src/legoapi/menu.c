@@ -215,3 +215,114 @@ i32 __cdecl Hub_InMenu(void) {
     }
     return 0;
 }
+
+typedef struct PC_MENU_SERVICE_VIEW {
+    f32 menu_time, time_04;
+    i16 selected_column, selected_row;
+    i16 first_column, first_row, last_column, last_row, menu;
+    i8 previous_menu, flags;
+    f32 transition_18, transition_1c;
+    u8 unknown_20[0x30];
+    i32 state_50;
+    u8 unknown_54[0x38];
+    i32 draw_item;
+    u8 unknown_90[0x20];
+    i32 state_b0, state_b4, state_b8, state_bc, state_c0;
+    u8 unknown_c4[0x18];
+    i32 state_dc;
+} PC_MENU_SERVICE_VIEW;
+STATIC_ASSERT(sizeof(PC_MENU_SERVICE_VIEW) == sizeof(MENU));
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, first_column) == 0xc);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, menu) == 0x14);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, previous_menu) == 0x16);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, transition_18) == 0x18);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_50) == 0x50);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, draw_item) == 0x8c);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_b0) == 0xb0);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_bc) == 0xbc);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_dc) == 0xdc);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, menu_time) == 0x0);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, time_04) == 0x4);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, selected_column) == 0x8);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, selected_row) == 0xa);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, first_row) == 0xe);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, last_column) == 0x10);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, last_row) == 0x12);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, flags) == 0x17);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, transition_1c) == 0x1c);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_b4) == 0xb4);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_b8) == 0xb8);
+STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_c0) == 0xc0);
+
+MENU *__cdecl NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
+    i32 index, selected = -1, previous_index;
+    PC_MENU_SERVICE_VIEW *previous, *menu = NULL;
+    MENUFNINFO *info;
+    (void)unused;
+    MenuSetPlatformState(1);
+    CurrentMenuId = menu_id;
+    for (index = 0; index < MenusUsed; index++) {
+        if (MenuInfo[index].id == menu_id) {
+            selected = index;
+            break;
+        }
+    }
+    previous = (PC_MENU_SERVICE_VIEW *)&GameMenu[GameMenuLevel];
+    previous->state_bc = 0;
+    previous_index = previous->menu;
+    if (previous_index != -1) {
+        info = &MenuInfo[previous_index];
+        if (info->memory_x != -1)
+            info->memory_x = previous->selected_column;
+        if (info->memory_y != -1)
+            info->memory_y = previous->selected_row;
+    }
+    if (selected == -1) {
+        previous->menu = -1;
+    } else {
+        GameMenuLevel++;
+        if (GameMenuLevel >= 10)
+            GameMenuLevel--;
+        menu = (PC_MENU_SERVICE_VIEW *)&GameMenu[GameMenuLevel];
+        menu->menu_time = menu->time_04 = 0.0f;
+        menu->first_column = menu->first_row = menu->last_column = menu->last_row = 0;
+        menu->state_dc = menu->draw_item = 0;
+        menu->state_b4 = menu->state_b8 = 1;
+        menu->state_b0 = menu->state_c0 = menu->state_50 = 0;
+        menu->previous_menu = (i8)previous_index;
+        menu->menu = (i16)selected;
+        MenuStopDraw = 1;
+        info = &MenuInfo[menu->menu];
+        if (info->id != -1 && info->draw_fn != NULL)
+            info->draw_fn((MENU *)menu);
+        menu->last_row = (i16)((i16)menu->draw_item - 1);
+        MenuStopDraw = 0;
+        menu->selected_row = menu_y >= menu->first_row && menu_y <= menu->last_row ? (i16)menu_y : 0;
+        menu->selected_column = 0;
+        info = &MenuInfo[menu->menu];
+        if (info->enter_fn != NULL)
+            info->enter_fn((MENU *)menu);
+        info = &MenuInfo[menu->menu];
+        if (info->memory_x != -1)
+            menu->selected_column = info->memory_x;
+        if (menu->selected_column < menu->first_column)
+            menu->selected_column = menu->first_column;
+        else if (menu->selected_column > menu->last_column)
+            menu->selected_column = menu->last_column;
+        if (menu_y >= menu->first_row && menu_y <= menu->last_row)
+            menu->selected_row = (i16)menu_y;
+        else {
+            if (info->memory_y != -1)
+                menu->selected_row = info->memory_y;
+            if (menu->selected_row < menu->first_row)
+                menu->selected_row = menu->first_row;
+            else if (menu->selected_row > menu->last_row)
+                menu->selected_row = menu->last_row;
+        }
+        menu->menu_time = menu->time_04 = menu->transition_18 = menu->transition_1c = 0.0f;
+        menu->flags = -1;
+    }
+    MenuAlpha = 0.0f;
+    MenuA = MenuValidated = 0;
+    return (MENU *)menu;
+}

@@ -25,3 +25,14 @@ void __cdecl StoreProgressAICharacter(LEVEL_PROGRESS *progress) {
         }
     }
 }
+
+extern NUVEC alert_pos;
+extern f32 alert_time;
+void __cdecl AlertSurroundingCreatures(GAMEOBJECT *object, NUVEC *position) {
+    if (object != NULL && ((object->flags_1fc_word & 0x1001) != 0x1001 || (object->flags_1f8 & 5) != 0 ||
+                           (object->character_data->game_character->flags_090 & 0x8000) != 0))
+        return;
+    alert_obj = object;
+    alert_pos = *position;
+    alert_timer = alert_time;
+}

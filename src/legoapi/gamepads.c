@@ -78,3 +78,9 @@ void __cdecl NewBuzz(void *pad, f32 duration, i32 ignored) {
     if (pad != NULL)
         NuSound3AddRumble(pad, duration, 0, 0, 0.0f);
 }
+
+void __cdecl NewBuzzFrames(void *pad, i32 frames, i32 ignored) {
+    (void)ignored;
+    if (pad != NULL)
+        NuSound3AddRumble(pad, (f32)frames / DEFAULTFPS, 0, 0, 0.0f);
+}

@@ -119,3 +119,101 @@ void __cdecl ResetGameMessages(void) {
     for (i = 0; i < 128; ++i)
         GameMessage[i].active = 0;
 }
+
+typedef struct coin_packet_pc_s {
+    u32 coins;
+    f32 scale;
+    i16 last_coin;
+    u8 unknown_0a[2];
+} COIN_PACKET_PC;
+typedef struct object_coin_packet_pc_s {
+    u8 unknown_000[0x7fc];
+    COIN_PACKET_PC *coin_packet;
+} OBJECT_COIN_PACKET_PC;
+typedef struct game_save_score_pc_s {
+    u8 unknown_0000[0x7c14];
+    u32 coins;
+} GAME_SAVE_SCORE_PC;
+STATIC_ASSERT(offsetof(COIN_PACKET_PC, coins) == 0);
+STATIC_ASSERT(offsetof(COIN_PACKET_PC, scale) == 4);
+STATIC_ASSERT(offsetof(COIN_PACKET_PC, last_coin) == 8);
+STATIC_ASSERT(offsetof(OBJECT_COIN_PACKET_PC, coin_packet) == 0x7fc);
+STATIC_ASSERT(offsetof(GAME_SAVE_SCORE_PC, coins) == 0x7c14);
+void __cdecl EndScoreMessage(GAME_MESSAGE_PC *message) {
+    i32 icon;
+    i8 player_index;
+    GAMEOBJECT *player;
+    COIN_PACKET_PC *packet;
+    u32 old_coins;
+    WORLDINFO *world;
+    if (CoinsGoToMainTotal()) {
+        icon = (i16)message->icon;
+        if (message->icon != 0xffff) {
+            if ((u32)(icon - 0xb7) < 4)
+                icon -= 4;
+            else if ((u32)(icon - 0xbf) < 4)
+                icon -= 4;
+            else if ((u32)(icon - 0xc7) < 4)
+                icon -= 4;
+            else if ((u32)(icon - 0xd5) < 4)
+                icon += 4;
+            cointotal_i_obj[message->player_index] = icon;
+        }
+        CoinTotalScale = 1.5f;
+        if (SuperStory != 0)
+            IncreaseScore(&SuperStoryScore, (u64)message->score, 0);
+        else {
+            world = WorldInfo_CurrentlyActive();
+            if (world->area != NULL && (world->area->flags & 0x100)) {
+                if ((u32)BonusCoinTotal < BonusCoinTarget) {
+                    IncreaseScore((u32 *)&BonusCoinTotal, (u64)message->score, 0);
+                    if ((u32)BonusCoinTotal >= BonusCoinTarget) {
+                        BonusCoinTotal = (i32)BonusCoinTarget;
+                        SetBonusWinner(message->player_index);
+                        BonusWinFlag = 0;
+                        NewMenu(20, -1, -1);
+                        PlaySfx((char *)ScorePanelName, NULL);
+                        ResetGameMessages();
+                    }
+                }
+            } else
+                IncreaseScore(&((GAME_SAVE_SCORE_PC *)&Game)->coins, (u64)message->score, 1);
+        }
+    } else {
+        player_index = message->player_index;
+        if ((u8)player_index > 1 || Player[player_index] == NULL)
+            goto counter_sound;
+        player = (GAMEOBJECT *)Player[player_index];
+        packet = ((OBJECT_COIN_PACKET_PC *)player)->coin_packet;
+        if (packet == NULL)
+            goto counter_sound;
+        old_coins = packet->coins;
+        if (message->icon != 0xffff)
+            packet->last_coin = (i16)message->icon;
+        if (BonusWinner == -1) {
+            IncreaseScore(&packet->coins, (u64)message->score, 1);
+            packet->scale = 1.5f;
+        }
+        if (BuildUpTotal == 0)
+            BuildUpScale = 1.5f;
+        if (Arcade != 0)
+            Arcade_CoinCollected(player_index, &packet->coins, old_coins);
+        else if (BonusArea != 0 && BonusWinner == -1 && packet->coins >= 1000000u) {
+            packet->coins = 1000000;
+            SetBonusWinner(player_index);
+            BonusWinFlag = 0;
+            NewMenu(19, -1, -1);
+            PlaySfx((char *)ScorePanelName, NULL);
+            ResetGameMessages();
+        }
+    }
+counter_sound:
+    if (DoubleScoreTime > 0.0f)
+        PlayRepeatSfx((char *)ScoreCounterName, -1, 0.0f, 2, 0.1f, NULL);
+    else
+        PlaySfx((char *)ScoreCounterName, NULL);
+}
+
+void __cdecl GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE_PC *message) {
+    message->target_position.x = cointotal_x[message->player_index];
+}

@@ -1701,6 +1701,37 @@ void __cdecl MovePlayer_ROLLING(GAMEOBJECT *object) {
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
+extern i32(__cdecl *FindSlamOrigin_UseCPosFn)(GAMEOBJECT *);
+void __cdecl FindSlamOrigin(GAMEOBJECT *object, NUVEC *start, NUVEC *end) {
+    i32 joint;
+    if (FindSlamOrigin_UseCPosFn != NULL && FindSlamOrigin_UseCPosFn(object)) {
+        start->x = object->collision_position.x;
+        start->z = object->collision_position.z;
+    } else {
+        joint = object->character_data->game_character->streak_joints[0][0];
+        if (joint == -1 || object->origin_joint_ready == 0 || object->character_model == NULL ||
+            object->character_model->points_of_interest[joint] == NULL) {
+            start->x = object->position.x;
+            start->z = object->position.z;
+        } else {
+            start->x = object->locator_matrices[joint].m30;
+            start->z = object->locator_matrices[joint].m32;
+        }
+    }
+    start->y = object->floor_height;
+    if (end != NULL) {
+        joint = object->character_data->game_character->streak_joints[0][1];
+        if (joint == -1 || object->origin_joint_ready == 0 || object->character_model == NULL ||
+            object->character_model->points_of_interest[joint] == NULL)
+            *end = *start;
+        else {
+            end->x = object->locator_matrices[joint].m30;
+            end->y = object->locator_matrices[joint].m31;
+            end->z = object->locator_matrices[joint].m32;
+        }
+    }
+}
+
 f32 __cdecl ForceAlongSock(GAMEOBJECT *object) {
     NUVEC force;
     f32 speed;

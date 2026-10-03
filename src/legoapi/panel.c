@@ -75,3 +75,12 @@ i32 __cdecl InDoubleScoreZone(GAMEOBJECT *object) {
     }
     return 0;
 }
+
+i32 __cdecl CoinsGoToMainTotal(void) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    if ((HUB_ADATA != NULL && world->area == HUB_ADATA) || SuperStory != 0 ||
+        (world->area != NULL && (world->area->flags & 0x100)) ||
+        (world->current_level != NULL && (world->current_level->flags & 0x400)))
+        return 1;
+    return 0;
+}

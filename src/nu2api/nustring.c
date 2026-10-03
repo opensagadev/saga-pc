@@ -1,6 +1,8 @@
 #include "saga.h"
 
 #include <string.h>
+#include <stdarg.h>
+#include <stdio.h>
 
 extern char *NuBlankString;
 
@@ -1079,3 +1081,14 @@ i32 __cdecl NuStringFilterBadWords(u8 *dest, u8 *source, u8 *replacement) {
 #undef NU_WIDE_LENGTH
 #undef NU_CHAR_EQUIV
 #undef NU_IS_FLUFF
+
+i32 __cdecl NuSPrintf(char *dest, const char *format, ...) {
+    va_list args;
+    i32 length = 0;
+    va_start(args, format);
+    vsprintf(dest, format, args);
+    va_end(args);
+    while (dest[length] != '\0')
+        length++;
+    return length;
+}

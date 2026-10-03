@@ -1033,3 +1033,161 @@ void __cdecl SetProtocolDroidDeactivatedAction(GAMEOBJECT *object) {
     else if (object->saved_hitpoints == 1)
         object->field_7aa = 0x44;
 }
+
+i32 __cdecl Player_HasInvincibility(GAMEOBJECT *object) {
+    return Cheats_CheckFlags(0x80) != 0 || (object != NULL && object->powerup_time > 0.0f);
+}
+i32 __cdecl Player_HasFastBuild(GAMEOBJECT *object) {
+    return Cheats_CheckFlags(0x4000) != 0 || (object != NULL && object->powerup_time > 0.0f);
+}
+
+typedef struct player_reset_fields_pc_s {
+    u8 unknown_0[0xc50];
+    NUVEC weapon_trail_offset;
+    u8 unknown_c5c[0xa4];
+    void *incoming_special;
+    u8 unknown_d04[0x14];
+    void *force_glow_candidate;
+    u8 unknown_d1c[8];
+    f32 ground_contact_grace_timer;
+    u8 unknown_d28[0x78];
+    f32 nearby_floor_distance;
+    u8 unknown_da4[0x14];
+    f32 pre_reset_hover_height;
+    u8 unknown_dbc[0x28];
+    f32 hold_timer;
+    u8 unknown_de8[0x1c];
+    i32 dynamic_light_id;
+    u8 unknown_e08[0x275];
+    u8 pre_reset_state;
+} PLAYER_RESET_FIELDS_PC;
+STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, weapon_trail_offset) == 0xc50);
+STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, incoming_special) == 0xd00);
+STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, force_glow_candidate) == 0xd18);
+STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, ground_contact_grace_timer) == 0xd24);
+STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, nearby_floor_distance) == 0xda0);
+STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, pre_reset_hover_height) == 0xdb8);
+STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, hold_timer) == 0xde4);
+STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, dynamic_light_id) == 0xe04);
+STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, pre_reset_state) == 0x107d);
+void __cdecl DrawOffsetCode(GAMEOBJECT *, i32);
+i32 __cdecl rtlDynamicEnable(i32, i32);
+f32 __cdecl GetHoverPosY(GAMEOBJECT *);
+i32 __cdecl Player_HasPurpleForce(GAMEOBJECT *);
+static __declspec(noinline) i32 PreResetCanAccelerateFallPc(GAMEOBJECT *object) {
+    NUVEC direction;
+    f32 delta, threshold;
+    if (VehicleArea != 0 || (object->flags_1fc_word & 0x80) == 0)
+        return 0;
+    if (object->character_context == 0 &&
+        object->context_timer < object->character_data->game_character->jump_duration * 0.5)
+        return 0;
+    if (!(object->pad->input_magnitude > 0.0f) && object->velocity.x == 0.0f && object->velocity.z == 0.0f)
+        return 0;
+    if ((object->field_281 & 2) != 0 || object->contact_count == 0)
+        return 0;
+    if (!(object->contact_normal.y > NuTrigTable[0x4000]) || !(object->contact_normal.y < NuTrigTable[0x3000]))
+        return 0;
+    delta = object->collision_min.y - object->floor_height;
+    threshold = (f32)(object->bounds_half_height / (f64)0.21f);
+    if (!(delta > threshold * (f64)0.035f))
+        return 0;
+    if (object->pad->input_magnitude > 0.0f) {
+        NuVecRotateY(&direction, &v001, object->movement_facing_angle);
+    } else {
+        direction.x = object->velocity.x;
+        direction.y = 0.0f;
+        direction.z = object->velocity.z;
+        NuVecNorm(&direction, &direction);
+    }
+    return (object->contact_position.x - object->position.x) * direction.x +
+               (object->contact_position.z - object->position.z) * direction.z >
+           0.0;
+}
+void __cdecl PreResetCode(GAMEOBJECT *object) {
+    PLAYER_RESET_FIELDS_PC *reset = (PLAYER_RESET_FIELDS_PC *)object;
+    PLAYERCHARACTERCONFIG_PC *character;
+    object->flags_e24 &= 0xffffafcf;
+    object->flags_e20 &= 0xf83fffef;
+    object->flags_ef4 &= 0xdfffffff;
+    object->quick_shoot_bolt_id = -1;
+    object->slam_effect = -1;
+    object->batarang_release = 0;
+    object->debris_joint = -1;
+    DrawOffsetCode(object, 0);
+    if ((object->flags_ef4 & 8) == 0)
+        return;
+    object->flags_e20 &= 0xfff7ffff;
+    reset->weapon_trail_offset.x = (f32)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.03f - (f64)0.015f;
+    reset->weapon_trail_offset.y = (f32)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.03f - (f64)0.015f;
+    object->flags_e20 &= ~4u;
+    reset->weapon_trail_offset.z = (f32)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.03f - (f64)0.015f;
+    object->incoming_bolt = NULL;
+    object->incoming_melee = NULL;
+    reset->incoming_special = NULL;
+    object->incoming_part = NULL;
+    if (object->character_context != 0xa)
+        object->flags_e20 &= ~0x800u;
+    object->flags_e20 &= 0xfffddfff;
+    object->terrain_origin_floor_offset = 0.0f;
+    object->sabre_flags = 1;
+    reset->force_glow_candidate = NULL;
+    object->blade_states[3] = object->blade_states[2] = object->blade_states[1] = object->blade_states[0] = -1;
+    object->anim_packet.overlay_animation = -1;
+    if ((object->character_data->model_flags & 0x8040) == 0)
+        object->jump_variant_state = 0;
+    object->flags_e20 &= 0x7fffffff;
+    if (reset->dynamic_light_id != -1)
+        rtlDynamicEnable(reset->dynamic_light_id, 0);
+    object->flags_e24 &= 0xfffffdbf;
+    reset->pre_reset_state = 0;
+    if (object->field_281 != 0)
+        reset->ground_contact_grace_timer = 0.2f;
+    else if (reset->ground_contact_grace_timer > 0.0f)
+        reset->ground_contact_grace_timer -= FRAMETIME;
+    if ((object->flags_1fc_word & 0x80) != 0 && PreResetCanAccelerateFallPc(object))
+        object->fall_acceleration_timer = 0.1f;
+    else if (object->fall_acceleration_timer > 0.0f)
+        object->fall_acceleration_timer -= FRAMETIME;
+    GameObjectNearFloor(object, 1.0f, &reset->nearby_floor_distance);
+    reset->pre_reset_hover_height = GetHoverPosY(object);
+    character = object->character_data->game_character;
+    if (character->blade_colour != -1) {
+        if (object->field_280 != 0xff && Cheat_IsOn(0x19))
+            object->blade_index = 0;
+        else if (object->field_280 != 0xff && Player_HasPurpleForce(object))
+            object->blade_index = 3;
+        else
+            object->blade_index = object->character_data->game_character->blade_colour;
+    } else {
+        object->blade_index = -1;
+    }
+    if ((object->pad->buttons_held & GAMEPAD_ACTION) != 0) {
+        object->flags_e24 &= 0xffff5fff;
+        reset->hold_timer += FRAMETIME;
+    } else {
+        if (reset->hold_timer > 0.0f && reset->hold_timer < 0.25f)
+            object->flags_e24 |= 0x40;
+        object->flags_e24 &= 0xffff5fff;
+        reset->hold_timer = 0.0f;
+    }
+}
+
+f32 __cdecl GetHoverPosY(GAMEOBJECT *object) {
+    f32 offset, height, hover;
+    if ((object->character_data->model_flags & 0x2000) == 0 ||
+        (WorldInfo_CurrentlyActive()->current_level->flags & 0x40000) != 0)
+        return 0.0f;
+    offset = VehicleTurnOrLoopOffset(object);
+    if (object->field_283 == 7 || object->field_283 == 0x10)
+        return object->water_height + offset;
+    height = object->floor_height;
+    if (height == 0.0f)
+        return 0.0f;
+    if (object->water_height != 0.0f && object->water_height > height)
+        height = object->water_height;
+    hover = WORLD->current_level->hover_height;
+    if (hover == 0.0f)
+        hover = object->character_data->game_character->field_028;
+    return (f32)(height + hover + offset);
+}

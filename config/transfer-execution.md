@@ -650,3 +650,68 @@ Next connected work covers the genuine pickup table callbacks/children,
 terrain gameplay parents, KillParts, combat and UI score/menu services.
 Their compiled scratch candidates remain distinct from released source.
 The unbounded whole-project goal remains active; full gameplay is unverified.
+
+
+## UI and gameplay parent checkpoint (2026-10-03)
+
+Compared with c7a7e92, 27 actual production functions add 6,879 original PC bytes:
+UI/menu/arcade services 2,078, jump/reset/water and their children 3,439,
+score-message/coin-total services 782, LoseCoins 225 and player predicates/alert/
+adaptive difficulty 355. Compared code reaches 596,632 bytes. Whole-code fuzzy
+coverage rises from 10.230999386% to 10.398802651%; exact code adds 500 to 62,278
+bytes (1.794110818%). Every prior exact function and data result remains exact.
+Similarity among compared code is 60.519690%, with a 596,632-byte denominator.
+
+The menu, score and arcade services retain PC pointer returns, menu remembered
+selection, saturating/multiplied score arithmetic, actual player activity flags,
+point goals and message icons. The selected native fixture links final production
+objects and canonical globals without copied functions or replacement callees.
+It passes; an Android both-players-active implementation fails the discriminating
+negative fixture with exit 22. All 50 old functions in those original groups
+retain their complete hashes.
+
+PreReset retains its genuine private ESI helper in players.c; all observed reset
+fields have named asserted local views. BigJump keeps the real 66-byte default
+landing callback and initialized pointer in jumping.c. The complete callback is
+byte exact and selects preferred/secondary/fallback model B IDs without the
+Android variant switch. Water splash is byte exact across 122 bytes; NuLst lookup,
+arcade activity, bonus winner, coin position callback and adaptive updater are
+also exact. Full comparisons retain all other mismatches rather than tuning or
+shortening them. Retained private reset fixtures cover 15 branches; full gameplay
+remains unverified.
+
+The source-only executable links across 203 objects, 2,296 functions and 3,947
+data definitions with complete symbol and relocation resolution. LLVM18 checks
+205 format files and 203 tidy units; 665 tests pass with three expected skips.
+The first aggregate link caught an accidental replacement of panel.c's old
+providers. Its complete HEAD prefix was restored before the successful link,
+final lint and exact-regression comparison; no provider replacement remains.
+
+Forty-three canonical shared definitions and one genuine private callback pointer
+are added. Four complete NUL strings contribute 40 known bytes; 40 other source
+views retain blank original extents. Shared initializer receipts cover 891
+proofs: 526 known extents/136,692 unique bytes and 365 unknown extents/57,062
+source-view bytes, preserving all 848 prior proofs. STATSPOSY, AddGameMsg_Default
+and BuildUpTotal remain single mutable owners; alternate consumer names alias
+them. Nine TerrainPlayer-only data definitions remain held.
+
+AddCoinsToPanel's 854-byte source remains held because it needs the genuine full
+pickup-type table: twelve nonzero callback slots, nine targets, plus the remaining
+hint/power-up/message/camera services. No partial table or NULL substitutes are
+released. Next connected work closes this table and the combat/context cycle,
+KillParts and vehicle callbacks. The unbounded whole-project goal remains active.
+
+A full audit checks all 2,269 previously compiled function copies: 2,267 retain
+identical relocated bytes. Paired old/new-header recompiles reproduce two
+nonexact scheduling changes. NuRndrParticleGroup loads the same four x87 values
+in another order, reaches the identical loop-entry stack and removes two FXCH
+instructions (717 to 713 bytes); its lower advisory score is retained.
+DebReAlloc2 exchanges two independent ESI/EDI stack loads around FSTP with the
+same 1,458-byte extent. No accessed fields, behavior or prior exact results
+change. The paired evidence is retained under mapping/header-regression/.
+
+The selected score/loss native fixture passes 42 checks using actual production
+providers and canonical data. It covers bonus/adaptive-cheat scaling, coin
+mutation before suppressed return values, NaN double-score time, unsigned
+64-bit score accumulation/saturation, icon conversion, actual menus 19/20,
+message reset, camera blending and repeat-sound queue behavior.

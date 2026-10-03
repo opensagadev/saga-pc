@@ -3729,3 +3729,31 @@ Grass operands prove true 1.25 at 0x00751720, promoted 1.2f at 0x00758be0
 and promoted 1.7625f at 0x0076d7b8. Wrong .1/true-1.7625 literal aliases are
 revoked. These correct existing source/bindings; no additional function extents
 or source bytes are credited for the three old affected functions.
+
+
+### UI and gameplay parent release contracts (2026-10-03)
+
+Twenty-seven compiled/compared bodies add 6,879 original PC bytes. NewMenu at
+0x00509830/629 returns MENU*, correcting the old MENUSCREEN inventory signature.
+Arcade_AwardPoint 0x00475c60/833 ends after RET at 0x00475fa0; the earlier 841-byte
+scratch estimate is rejected. NuSPrintf 0x004f2740/43 is cdecl variadic and uses
+the genuine CRT vsprintf/strlen; its reconstruction name does not establish an
+Android identity. Arcade_BothPlayersActive 0x0055f1a0/45 preserves null tests and
+flags_1fc bit 0x80, rather than Android's unconditional activity.
+
+PreResetCode 0x00498a40/753 keeps PreResetCanAccelerateFallPc 0x00498120/388
+with its genuine ESI private ABI. BigJumpCode 0x00563ec0/1068 keeps the default
+landing callback 0x00561dd0/66 in jumping.c and its actual initialized pointer.
+The callback selects model_data_b preferred/secondary/fallback IDs and is exact.
+Full byte equality also confirms AddWaterSplash122, NuLstGetByIdx31,
+SetBonusWinner55, both-player activity45 and coin-position callback25.
+AdaptiveDifficultyAdjustPc 0x004289a0/156 is a neutral, fully exact PC provider
+which retains float spills, cheat/bonus/demo gates, capped level changes and
+unordered accumulator behavior; it has no asserted Android source identity.
+
+EndScoreMessage679, CoinsGoToMainTotal78 and LoseCoins225 retain full extents and
+real production dependencies. AddCoinsToPanel854 remains held on the complete
+pickup-type table's actual nonzero callbacks. Compiler literal aliases are
+checked against full raw initializer witnesses. Unknown runtime allocation
+extents remain blank; source initializer proofs and map inventory are distinct
+from transferred code. All earlier exact code/data comparisons remain exact.

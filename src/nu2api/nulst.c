@@ -45,6 +45,11 @@ NULNKHDR *__cdecl NuLstAllocTail(NULSTHDR *list) {
     return NULL;
 }
 
+NULNKHDR *__cdecl NuLstGetByIdx(NULSTHDR *list, i32 index) {
+    NULNKHDR *node = (NULNKHDR *)((u8 *)(list + 1) + (i16)list->element_size_total * index);
+    return (node->is_used & 1) != 0 ? node + 1 : NULL;
+}
+
 NULSTHDR *__cdecl NuLstCreate(i32 element_count, i32 element_size) {
     NULSTHDR *list;
     i32 element_size_total;

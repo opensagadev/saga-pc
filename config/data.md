@@ -1201,3 +1201,22 @@ pass. Both historical original extents remain blank. Scoped proofs become 848:
 bytes, with no additional allocation credit. All 846 previous proofs remain
 unchanged. Pickup table initializers remain held on their genuine nonzero callback
 providers; no raw addresses or NULL substitutes are introduced.
+
+
+### UI, scoring and jump data checkpoint (2026-10-03)
+
+Added 43 physical shared definitions plus the real private landing function
+pointer in jumping.c. Every complete source initializer matches PC. Four NUL
+strings establish 40 original bytes; the other 40 new views have blank original
+extents, so initializer equality establishes no allocation credit. Shared scoped
+proofs become 891: 526 known extents/136,692 unique bytes and 365 unknown
+extents/57,062 source-view bytes. All 848 previous proofs remain unchanged.
+
+STATSPOSY 0x007fc310 also supplies PCArcadePointMessageY; AddGameMsg_Default
+0x00802cd8 supplies PCArcadeMessageTemplate; existing BuildUpTotal 0x0087b9a0
+supplies ScoreBuildUpDonePc. Header aliases preserve one canonical mutable owner.
+The separate BuildUpDone 0x0087b9b4 is unchanged. The private landing pointer
+0x00802d9c relocates to genuine BigJump_LandAction_Default 0x00561dd0 in its
+original source group, with the complete pointer initializer and callback exact.
+Nine optional TerrainPlayer-only data definitions and the full pickup table
+remain held; no surrogate pointer or callback storage is created.

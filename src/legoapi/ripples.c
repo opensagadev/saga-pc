@@ -25,3 +25,12 @@ void __cdecl DestroyRippleMtls(WORLDINFO *world) {
         }
     }
 }
+
+extern const char TerrainWaterJumpSoundNamePc[13];
+void __cdecl NewBuzzFrames(void *, i32, i32);
+void __cdecl AddWaterSplash(GAMEOBJECT *object, NUVEC *position) {
+    AddGameDebrisXYZ(WORLD->game_debris_sys, 13, position->x, object->water_height, position->z);
+    PlaySfx((char *)TerrainWaterJumpSoundNamePc, &object->collision_position);
+    NewRumble(object->pad->bound_pad, 0.5f, 0);
+    NewBuzzFrames(object->pad->bound_pad, 1, 0);
+}

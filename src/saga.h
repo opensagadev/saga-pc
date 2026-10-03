@@ -6536,6 +6536,88 @@ STATIC_ASSERT(offsetof(OcclusionManager, query_count) == 0x164);
 extern "C" {
 #endif
 
+    void __cdecl IncreaseScore(u32 *score, u64 amount, i32 update_super_story);
+    void __cdecl SetBonusWinner(i32 player_index);
+    MENU *__cdecl NewMenu(i32 menu_id, i32 remember, i32 argument);
+    void __cdecl Arcade_CoinCollected(i32 player_index, u32 *coins, u32 amount);
+    void __cdecl Arcade_AwardPoint(i32 player_index, i32 reset_scores, i32 argument);
+    i32 __cdecl NuSPrintf(char *buffer, const char *format, ...);
+    void __cdecl AddCoinsToPanel(i32 player_index, NUVEC *position, i32 coins, f32 scale, GAMEOBJECT *object, i32 mode);
+    void __cdecl EndScoreMessage(GAME_MESSAGE_PC *message);
+    i32 __cdecl CoinsGoToMainTotal(void);
+    void __cdecl GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE_PC *message);
+    i32 __cdecl LoseCoins(GAMEOBJECT *object, i32 cause);
+    void __cdecl PreResetCode(GAMEOBJECT *object);
+    f32 __cdecl GetHoverPosY(GAMEOBJECT *object);
+    void __cdecl AddWaterSplash(GAMEOBJECT *object, NUVEC *position);
+    void __cdecl BigJumpCode(GAMEOBJECT *object);
+    void __cdecl StartEndOfJump(GAMEOBJECT *object);
+    void __cdecl NewBuzzFrames(void *pad, i32 frames, i32 ignored);
+    void __cdecl FindSlamOrigin(GAMEOBJECT *object, NUVEC *start, NUVEC *end);
+    void __cdecl PlayLandSfx(GAMEOBJECT *object, i32 variant, i32 ignored);
+    i32 __cdecl rtlDynamicEnable(i32 id, i32 enabled);
+    NULNKHDR *__cdecl NuLstGetByIdx(NULSTHDR *list, i32 index);
+    i32 __cdecl Arcade_BothPlayersActive(void);
+    i32 __cdecl Player_HasInvincibility(GAMEOBJECT *);
+    i32 __cdecl Player_HasFastBuild(GAMEOBJECT *);
+    void __cdecl AlertSurroundingCreatures(GAMEOBJECT *, NUVEC *);
+    extern f32 alert_time;
+    extern NUVEC alert_pos;
+    extern char ScorePanelName[9];
+    extern const char TerrainWaterJumpSoundNamePc[13];
+    extern char ScoreCounterName[8];
+    extern char PickupCoinsLandName[10];
+    extern i16 id_SNAKE;
+    extern i16 id_TRACTOR;
+    extern u8 CoinTab[4];
+    extern i32 PCArcadePointGoals[5];
+    extern f32 Arcade_NeedTwoPlayers_Scale;
+    extern f32 PCArcadeIconMessageY;
+    extern f32 PANEL_COINX;
+    extern f32 PANEL_COINY;
+    extern f32 PANEL_COINSCALE_END;
+    extern f32 STATSPOSY;
+    extern f32 COINTOTAL_COINSIZE;
+    extern i32 cointotal_i_obj[2];
+    extern i32 TerrainLastChatterSfxPc;
+    extern ADD_GAME_MESSAGE_PC AddGameMsg_Default;
+    extern i32(__cdecl *BigJump_LandActionFn)(GAMEOBJECT *);
+    extern f32 COINMSGTIME;
+    extern i32 PCArcadeUnpairedIconModel;
+    extern i16 BigJumpLandFallbackPc;
+    extern i16 BigJumpLandSecondaryPc;
+    extern i16 BigJumpLandPreferredPc;
+    extern u32 BonusCoinTarget;
+    extern i32 BonusWinFlag;
+    extern i32 Arcade_Points[2];
+    extern i32 Arcade_Score[2];
+    extern f32 MiscTime;
+    extern LEVELDATA_PC *ASTEROIDCHASEC_LDATA;
+    extern LEVELDATA_PC *ENDORBATTLEC_LDATA;
+    extern i32 NOTERRAINSTOP;
+    extern f32 BuildUpScale;
+    extern f32 CoinTotalScale;
+    extern f32 DrawBuildUpTime;
+    extern f32 cointotal_x[2];
+    extern i32 MenuStopDraw;
+    extern i32 MenuValidated;
+    extern f32 MenuAlpha;
+    extern i32 MenuA;
+    extern i32 CurrentMenuId;
+    extern f32 TerrainChatterWaitPc;
+    extern f32 DoubleScoreTime;
+    extern i32 LookAtBoth;
+    extern u32 SuperStoryScore;
+    extern void(__cdecl *BigJump_EndOfLandFn)(GAMEOBJECT *);
+    extern i32(__cdecl *FindSlamOrigin_UseCPosFn)(GAMEOBJECT *);
+    extern i32 LEGO_AIPATHCNX_BLOCKAGE;
+    extern i32 LEGO_AIPATHCNX_WALLSHUFFLE;
+    extern i32 LEGO_AIPATHCNX_FULLTERRAIN;
+    extern f32 AddCoinDelay[2];
+#define PCArcadePointMessageY STATSPOSY            // NOLINT(readability-identifier-naming)
+#define PCArcadeMessageTemplate AddGameMsg_Default // NOLINT(readability-identifier-naming)
+#define ScoreBuildUpDonePc BuildUpTotal            // NOLINT(readability-identifier-naming)
+
     extern GAME_MESSAGE_PC GameMessage[128];
     extern i32 GameMessageIndex;
     GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message);
@@ -10251,6 +10333,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(ADAPTIVEDIFFICULTY_PC, time_elapsed) == 8);
     /* Working source access view; complete original object extent unproved. */
     extern ADAPTIVEDIFFICULTY_PC adaptivedifficulty;
+    f32 __cdecl AdaptiveDifficultyAdjustPc(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount);
     extern i8 adtabentries[9][4];
     extern i8 (*adtab)[4];
 
