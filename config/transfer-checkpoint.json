@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 840487,
-    "matched_code_bytes": 71565,
-    "matching_percent": 2.061651637481181,
-    "fuzzy_coverage_percent": 13.494166151417398,
-    "mapped_functions": 2920,
-    "matched_functions": 1159,
-    "objdiff_fuzzy_percent": 63.269043,
-    "objdiff_total_code": 740532,
+    "mapped_code_bytes": 844127,
+    "matched_code_bytes": 72686,
+    "matching_percent": 2.093945516969987,
+    "fuzzy_coverage_percent": 13.617747741267841,
+    "mapped_functions": 2934,
+    "matched_functions": 1173,
+    "objdiff_fuzzy_percent": 63.274574,
+    "objdiff_total_code": 747247,
     "image_bytes": 40067072,
-    "mapped_bytes": 1481674,
-    "mapping_percent": 3.6979842200598037
+    "mapped_bytes": 1485340,
+    "mapping_percent": 3.7071338779135146
   },
   "newly_compared": [
     {
@@ -15057,6 +15057,107 @@
       ],
       "next_connected_wave": "Independently accepted renderer16/4745 (includes spline1309 once), UI7/1903 plus routing67, resource3/966 with canonical48-byte reset view, and prompt6/1277. Follow real CutScenes_Draw3767/provider groups and gameplay control/init parents toward UpdateGameObjects6847.",
       "ongoing_goal": "Continue whole-project transfer indefinitely until user stops or pauses; validated direct main pushes authorized."
+    },
+    {
+      "baseline_commit": "dcaa8f6e1e3d786f4552145a3cfbf32c93fa1ea0",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 840487,
+        "matched_code_bytes": 71565,
+        "matching_percent": 2.061651637481181,
+        "fuzzy_coverage_percent": 13.494166151417398,
+        "mapped_functions": 2920,
+        "matched_functions": 1159,
+        "objdiff_fuzzy_percent": 63.269043,
+        "objdiff_total_code": 740532,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1481674,
+        "mapping_percent": 3.6979842200598037
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 844127,
+        "matched_code_bytes": 72686,
+        "matching_percent": 2.093945516969987,
+        "fuzzy_coverage_percent": 13.617747741267841,
+        "mapped_functions": 2934,
+        "matched_functions": 1173,
+        "objdiff_fuzzy_percent": 63.274574,
+        "objdiff_total_code": 747247,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1485340,
+        "mapping_percent": 3.7071338779135146
+      },
+      "newly_compared_functions": 26,
+      "new_original_code_bytes": 6715,
+      "compared_code_delta": 6715,
+      "baseline_unique_compared_pc_bytes": 740420,
+      "unique_compared_pc_bytes": 747135,
+      "exact_code_added": 1121,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 2682,
+      "prior_compiled_function_copies_identical": 2682,
+      "renamed_owner_copies_with_identical_complete_bodies": [],
+      "user_journal_unchanged": true,
+      "checkpoint": "Renderer, spline, UI and input source checkpoint (2026-10-04)",
+      "family_bytes": {
+        "renderer_including_spline_once": 4745,
+        "ui_font": 1903,
+        "input_routing": 67
+      },
+      "shared_data_definitions_added": 19,
+      "shared_initializer_view_bytes_added": 138,
+      "known_extent_definitions_added": 2,
+      "known_extent_bytes_added": 24,
+      "unknown_extent_definitions_added": 17,
+      "unknown_extent_source_bytes_added": 114,
+      "mutable_allocation_credit_added": 0,
+      "inventory_extent_bytes_retired": 10,
+      "data_scope": {
+        "proofs": 1430,
+        "known_extents": 559,
+        "known_unique_bytes": 137619,
+        "unknown_extents": 871,
+        "unknown_view_bytes": 98025,
+        "previous_proofs_preserved": 1411
+      },
+      "verified_checks": {
+        "all_required_checks_passed": true,
+        "tests": 665,
+        "skipped": 3,
+        "test_seconds": 37.247,
+        "llvm": 18,
+        "format_files": 230,
+        "tidy_units": 228,
+        "objects": 228,
+        "function_definitions": 2708,
+        "data_definitions": 5223,
+        "source_only_link": true,
+        "native_render_checks": 40,
+        "native_spline_checks": 151,
+        "native_ui_input_checks": 25,
+        "native_total_checks": 216,
+        "native_failures": 0,
+        "native_manifests_equal_current_normal_sources_and_objects": true,
+        "normal_data_regions": 3119,
+        "scoped_initializer_proofs": 1430,
+        "previous_function_copies_identical": 2682,
+        "prior_exact_code_and_data_preserved": true,
+        "limitations": [
+          "Selected native fixtures do not establish hardware graphics or audio, full asset loading, out-of-range/NaN spline behavior or complete gameplay.",
+          "Existing real partial font/graphics providers remain explicit.",
+          "Resource966 remains held: its canonical storage proposal retires two previously exact WORD symbols totaling four bytes."
+        ]
+      },
+      "checkpoint_delay_reason": "The final LLVM18 suite, authoritative retail comparison and normal-object replay completed after the half-hour deadline. No unvalidated source was committed.",
+      "remaining_contracts": [
+        "Real font glyph/coordinate and hardware graphics providers remain partial; selected replay does not establish visuals.",
+        "Original mutable allocation extents remain unknown and receive zero allocation credit.",
+        "Resource966 is held: its canonical48B storage merge would retire two previously exact WORD records4B. A verified named-field representation is required before release."
+      ],
+      "next_connected_wave": "Draw/RTL26/6122 and naturally retained CutScenes_Draw/locator34/10654; connected UI/prompt6137, renderer replenishment885, and genuinely closed gameplay/animation subsets from the6631-byte candidate bank. Candidate bytes receive no transfer credit.",
+      "ongoing_goal": "Continue whole-project transfer until user stops or pauses; validated direct main pushes authorized."
     }
   ]
 }

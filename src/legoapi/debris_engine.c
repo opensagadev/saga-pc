@@ -1056,3 +1056,14 @@ void __cdecl DebrisFreeOldestDmaDebTypeTable(void) {
         debtab[oldest]->native_data = NULL;
     }
 }
+
+void __cdecl DebFreeAllCreatedEffects(void) {
+    i32 i;
+    for (i = 0; i < maxdebkeys; ++i) {
+        DEBRISKEY_PC *key = &((DEBRISKEY_PC *)debkeydata)[i];
+        if (key->effect_index != 0 && key->field_2f9 != 0) {
+            i32 handle = i;
+            DebFreeInstantly(&handle);
+        }
+    }
+}

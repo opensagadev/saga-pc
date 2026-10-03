@@ -1426,3 +1426,25 @@ MiscTime f32+20 plus target-degree WORD fields+24/+28. A future release must mer
 those three physical owners into one asserted typed view, preserve each initializer
 and report changed nonexact getter codegen explicitly. No duplicate mutable reset
 array may be introduced. That reconciliation is not part of this checkpoint.
+
+
+### Renderer and UI physical views (2026-10-04)
+
+Nineteen new shared owners add138 complete initializer bytes: two immutable NUL
+strings24B have known extents;17 mutable/pointer/array views114B retain blank
+original extents and zero allocation credit. Scope1,430 comprises559 known
+extents137,619 uniqueB and871 unknown views98,025 sourceB. All1,411 earlier proofs
+and all3,100 earlier complete emitted regions remain unchanged; every3,119 normal
+emitted region agrees with the frozen isolated object in bytes, size and symbolic
+relocations. Original private compiler literals remain with genuine source owners.
+
+DEBPAGE_AREA4, things_scene4 and SURFACEBITS_NODUST2 were uncompiled inventory
+extents without allocation evidence and become blank, retiring10 inventory bytes
+without old exact-data loss. Existing canonical font/input/spline state is reused.
+
+The future resource reset union preserves all physical initializers, but merging
+TargetDeg_Mid and TargetDeg_Far into its typed fields removes two historical exact
+WORD records4B from the current COFF-symbol report. Contrary earlier research
+notes, those records were compiled and exact. That release remains held. VC8
+global anonymous unions cannot emit the required external field symbols; no
+assembly aliases, duplicate mutable owners or hidden metric adjustments are used.

@@ -326,3 +326,9 @@ MENU *__cdecl NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
     MenuA = MenuValidated = 0;
     return (MENU *)menu;
 }
+
+NUGSCN *__cdecl IconScene_FindById(i32 id) {
+    if (id < 0 || id >= CHARCOUNT)
+        return NULL;
+    return IconScenePc[id];
+}

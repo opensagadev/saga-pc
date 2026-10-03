@@ -7250,6 +7250,76 @@ extern "C" {
     extern i32 LEGO_AIPATHCNX_WALLSHUFFLE;
     extern i32 LEGO_AIPATHCNX_FULLTERRAIN;
 
+    typedef struct flight_spline_resource_pc_s {
+        NUVEC4 points[64];
+        i32 point_count;
+        u8 unknown_0404[12];
+        f32 length;
+        f32 cumulative_distances[64];
+        u8 unknown_0514[16];
+        i32 id;
+        u8 unknown_0528[8];
+    } FLIGHT_SPLINE_RESOURCE_PC;
+    STATIC_ASSERT(sizeof(FLIGHT_SPLINE_RESOURCE_PC) == 0x530);
+    STATIC_ASSERT(offsetof(FLIGHT_SPLINE_RESOURCE_PC, point_count) == 0x400);
+    STATIC_ASSERT(offsetof(FLIGHT_SPLINE_RESOURCE_PC, length) == 0x410);
+    STATIC_ASSERT(offsetof(FLIGHT_SPLINE_RESOURCE_PC, cumulative_distances) == 0x414);
+    STATIC_ASSERT(offsetof(FLIGHT_SPLINE_RESOURCE_PC, id) == 0x524);
+
+    void __cdecl LevelSplines_InitForLevel(WORLDINFO *);
+    void __cdecl Surfaces_Reset(void);
+    void __cdecl Particles_Stop(WORLDINFO *);
+    void __cdecl DebFreeAllCreatedEffects(void);
+    i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *, NUMTX *, f32);
+/* Windows SDK commctrl.h aliases DrawStatusText to DrawStatusTextA. */
+#ifdef DrawStatusText
+#undef DrawStatusText
+#endif
+    void __cdecl DrawStatusText(char *, u16, f32, f32, f32, u32, i32);
+    void __cdecl WidescreenCode(i32);
+    void __cdecl NuQFntSetMtx(VUFNT *, NUMTX *);
+    f32 __cdecl NuCameraFocalLenToFOV(f32);
+    i32 __cdecl DrawPanel3DObject(f32, f32, f32, f32, f32, f32, u16, u16, u16, NUSPECIALHANDLE *, i32, f32);
+    void __cdecl DrawCharIcon(i32, f32, f32, f32, f32, i32, f32, f32, i32, NUSPECIALHANDLE *);
+    void __cdecl BackDrop_Draw(f32, i32);
+    void __cdecl NoRender(void);
+    void __cdecl CalcSplinePoint(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 along);
+    void __cdecl CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 distance);
+
+    void __cdecl Shadow_SetMode(void);
+
+    void __cdecl Customiser_InitNames(CUSTOMISER_LAYERS_PC *);
+    NUGSCN *__cdecl IconScene_FindById(i32);
+    void __cdecl IntroText_Draw(f32);
+    void __cdecl SetQFont2D(void);
+    void __cdecl NuQFntSetSpaceWidth(VUFNT *, f32);
+    f32 __cdecl NuQFntPrintJustifiedW(VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, NUMTX *);
+    f32 __cdecl NuQFntPrintJustifiedRSW(void *, VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, NUMTX *);
+
+    extern const char RenderSplineShopStartPc[11];
+    extern const char RenderSplineBountyStartPc[13];
+    extern f32 DrawStatusScaleXPc;
+    extern f32 DrawStatusScaleYPc;
+    extern i32 DrawCharIconPanelPc;
+    extern i32 LegoObjectIconQuestionPc;
+    extern i32 DEBPAGE_GENERAL;
+    extern i32 DEBPAGE_CHARACTER;
+    extern i32 DEBPAGE_AREA;
+    extern f32 CutSceneCameraFocalLengthPc;
+    extern NUGSCN *things_scene;
+    extern i32 DrawCharIconFindPc;
+    extern NUSPECIALHANDLE RenderBackdropSpecialsPc[4];
+    extern i32 RenderBackgroundColoursPc[2];
+    extern NUGSCN *RenderBackdropScenePc;
+    extern void(__cdecl *RenderBackdropAlphaFnPc)(f32 *);
+    extern u16 SURFACEBITS_NODUST;
+    extern i32 RenderHubFromCutscenePlayerPc;
+    extern NUGSCN **IconScenePc;
+
+    void __cdecl TextInputSetKeyboardOverridePc(i32);
+    void __cdecl TextInputSetLastDevicePc(i32);
+    i32 __cdecl TextInputIsKeyboardDevicePc(i32);
+
     extern HINTSYS_PC hintsys;
     extern i32 CutSceneSingleStreamBufferPc;
     extern INSTNUGCUTSCENE *CutSceneBackgroundInstancesPc;

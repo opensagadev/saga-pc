@@ -470,3 +470,9 @@ void __cdecl NuMtxCalcCheapFaceY_v2(NUMTX *matrix, NUVEC *direction) {
     matrix->m30 = matrix->m31 = matrix->m32 = 0.0f;
     matrix->m33 = 1.0f;
 }
+
+f32 __cdecl NuCameraFocalLenToFOV(f32 focal_length) {
+    f32 ratio = (f32)(18.0 / focal_length);
+    f32 result = (f32)(NuAtan2DAF(ratio, 1.0f) * PCAtan2RadianScale * 2.0);
+    return result;
+}

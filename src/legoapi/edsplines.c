@@ -368,3 +368,154 @@ i32 __cdecl OutSideSplineArea(NUVEC *position, NUGSPLINE *spline, NUVEC *edge_en
     }
     return 1;
 }
+
+extern i32 RenderHubFromCutscenePlayerPc;
+extern const char RenderSplineBountyStartPc[13];
+extern const char RenderSplineShopStartPc[11];
+STATIC_ASSERT(offsetof(WORLDINFO, camera_splines) == 0x2ac4);
+STATIC_ASSERT(offsetof(LEVELSPLINE_PC, scene) == 0);
+STATIC_ASSERT(offsetof(LEVELSPLINE_PC, max_points) == 0xa);
+STATIC_ASSERT(offsetof(LEVELSPLINE_PC, level) == 0xc);
+void __cdecl LevelSplines_InitForLevel(WORLDINFO *world) {
+    i32 i;
+    world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
+    world->camera_splines = (NUGSPLINE **)world->giz_buffer.void_ptr;
+    world->giz_buffer.addr += LEVELSPLINECOUNT * sizeof(*world->camera_splines);
+    memset(world->camera_splines, 0, LEVELSPLINECOUNT * sizeof(*world->camera_splines));
+    if (LevSplList == NULL)
+        return;
+    for (i = 0; i < LEVELSPLINECOUNT; ++i) {
+        LEVELSPLINE_PC *entry = &LevSplList[i];
+        NUGSCN *scene;
+        NUGSPLINE *spline;
+        char name[64];
+        if ((entry->area != -1 && world->area_index != entry->area) ||
+            (entry->level != -1 && world->level_idx != entry->level))
+            continue;
+        scene = *(entry->scene != NULL ? entry->scene : &world->current_gscn);
+        if (scene != NULL) {
+            spline = NuSplineFind(scene, (char *)entry->name);
+            world->camera_splines[i] = spline;
+            if (spline != NULL && ((entry->min_points > 0 && spline->length < entry->min_points) ||
+                                   (entry->max_points > 0 && entry->max_points >= entry->min_points &&
+                                    spline->length > entry->max_points)))
+                world->camera_splines[i] = NULL;
+        }
+        if (levspl_i_start != -1) {
+            name[0] = '\0';
+            if (Mission_Active(NULL) != NULL)
+                NuStrCpy(name, RenderSplineBountyStartPc);
+            else if (world->area_index != -1 && (ADataList[world->area_index].flags & 0x40) &&
+                     RenderHubFromCutscenePlayerPc != 0)
+                NuStrCpy(name, RenderSplineShopStartPc);
+            if (name[0] != '\0') {
+                spline = NuSplineFind(scene, name);
+                if (spline != NULL && spline->length >= 2) {
+                    world->camera_splines[levspl_i_start] = spline;
+                    if (levspl_i_startcam != -1)
+                        world->camera_splines[levspl_i_startcam] = NULL;
+                }
+            }
+        }
+    }
+}
+
+void __cdecl CalcSplinePoint(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 along);
+void __cdecl CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 distance);
+
+void __cdecl CalcSplinePoint(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 along) {
+    f32 scaled = (spline->point_count - 1) * along;
+    i32 index = (i32)scaled;
+    f32 fraction = scaled - index;
+    __declspec(align(16)) NUVEC4 first, last;
+    __declspec(align(16)) NUVEC direction;
+    NUVEC4 *previous, *current, *next, *following;
+    f32 squared, cubed;
+    if (index > 0) {
+        if (index > spline->point_count - 1)
+            index = spline->point_count;
+        previous = &spline->points[index - 1];
+    } else {
+        direction.x = spline->points[0].x - spline->points[1].x;
+        direction.y = spline->points[0].y - spline->points[1].y;
+        direction.z = spline->points[0].z - spline->points[1].z;
+        NuVecNorm(&direction, &direction);
+        direction.x *= 10.0;
+        direction.y *= 10.0;
+        direction.z *= 10.0;
+        first.x = spline->points[0].x + direction.x;
+        first.y = spline->points[0].y + direction.y;
+        first.z = spline->points[0].z + direction.z;
+        first.w = spline->points[0].w;
+        previous = &first;
+        index = 0;
+    }
+    current = &spline->points[index];
+    next = &spline->points[index + 1];
+    if (index >= spline->point_count - 2) {
+        i32 end = spline->point_count - 1;
+        direction.x = spline->points[end].x - spline->points[end - 1].x;
+        direction.y = spline->points[end].y - spline->points[end - 1].y;
+        direction.z = spline->points[end].z - spline->points[end - 1].z;
+        NuVecNorm(&direction, &direction);
+        direction.x *= 10.0;
+        direction.y *= 10.0;
+        direction.z *= 10.0;
+        last.x = spline->points[end].x + direction.x;
+        last.y = spline->points[end].y + direction.y;
+        last.z = spline->points[end].z + direction.z;
+        last.w = spline->points[end].w;
+        following = &last;
+    } else {
+        following = &spline->points[index + 2];
+    }
+    squared = fraction * fraction;
+    cubed = (f32)((f64)fraction * fraction * fraction);
+    /* Original vector arithmetic rounds each vector operation to its PC f32 field. */
+#define SPLINE_COMPONENT(member)                                                                                       \
+    {                                                                                                                  \
+        f32 constant = current->member * 2.0f;                                                                         \
+        f32 linear = next->member - previous->member;                                                                  \
+        f32 quadratic = previous->member * 2.0f;                                                                       \
+        f32 coefficient = current->member * 5.0;                                                                       \
+        f32 cubic = current->member - next->member;                                                                    \
+        f32 sum;                                                                                                       \
+        linear *= fraction;                                                                                            \
+        quadratic -= coefficient;                                                                                      \
+        coefficient = next->member * 4.0;                                                                              \
+        quadratic += coefficient;                                                                                      \
+        quadratic -= following->member;                                                                                \
+        quadratic *= squared;                                                                                          \
+        cubic *= 3.0;                                                                                                  \
+        cubic -= previous->member;                                                                                     \
+        cubic += following->member;                                                                                    \
+        cubic *= cubed;                                                                                                \
+        sum = linear + constant;                                                                                       \
+        sum += quadratic;                                                                                              \
+        sum += cubic;                                                                                                  \
+        result->member = sum * 0.5;                                                                                    \
+    }
+    SPLINE_COMPONENT(x);
+    SPLINE_COMPONENT(y);
+    SPLINE_COMPONENT(z);
+#undef SPLINE_COMPONENT
+    result->w = current->w + (next->w - current->w) * fraction;
+}
+
+void __cdecl CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 distance) {
+    i32 index;
+    if (distance >= spline->length) {
+        distance = 1.0f;
+    } else {
+        for (index = 0; index < spline->point_count; ++index) {
+            f32 end = spline->cumulative_distances[index];
+            if (end > distance) {
+                f32 start = index == 0 ? 0.0f : spline->cumulative_distances[index - 1];
+                f32 segment_fraction = (distance - start) / (end - start);
+                distance = (segment_fraction + index) / spline->point_count;
+                break;
+            }
+        }
+    }
+    CalcSplinePoint(spline, result, distance);
+}

@@ -1196,3 +1196,47 @@ proofs; all 3,100 complete named normal data regions equal the frozen isolated
 object. The checkpoint waited for final review and validation before committing;
 the user's journal remains untouched. Next are the accepted renderer 4,745B
 (including spline 1,309 once), UI 1,903+67B, resource 966B and prompt 1,277B waves.
+
+
+### Renderer, spline, UI and input source checkpoint (2026-10-04)
+
+Twenty-six actual functions add 6,715 complete PC bytes over dcaa8f6: renderer
+16/4,745 (including two spline functions 1,309B exactly once), UI/font 7/1,903,
+and input routing 3/67. Whole-PC fuzzy coverage rises from 13.494166% to
+13.617748% of 3,471,246B. Unique compared code reaches 747,135B; native objdiff
+compares 747,247B and reports 63.274574% separately. Fourteen new exact functions
+add 1,121B to 72,686B (2.093946%). All 2,682 previous complete function copies
+remain identical; no previous exact function or data match is lost.
+
+The source includes the real spline interpolation/distance readers and their
+asserted PC resource fields, level spline setup, particle shutdown and genuine
+effect cleanup, surface reset, shadow mode, camera focal conversion, status/icon/
+backdrop rendering, widescreen and NoRender. The original font owner contains
+both the matrix wrapper and complete 1,345-byte justified-text body, with the
+real 110-byte wrapper and existing diagnostic provider. UI adds customiser names,
+intro text and icon scene lookup; input setters preserve signed BYTE truncation,
+the real six-frame keyboard countdown and device10..13 test. No fake providers,
+artificial retention calls, public private-ABI wrappers or flag tuning are used.
+
+Pinned build/link and all 2,708 function/5,223 data definitions across 228 actual
+objects pass. LLVM18 checks 230 files/228 units; 665 tests pass with three skips.
+Final replay passes 216 checks using every current normal object and genuine
+normal data, without substitutions: renderer40, analytical spline151, UI/input25.
+Selected typed records cover native state, signed sentinels, normal interpolation,
+font justification and input routing. Full asset loading, hardware visual/audio
+submission, arbitrary NaN/out-of-range spline inputs and complete gameplay remain
+outside the tested domain. Existing real partial font/graphics services stay explicit.
+
+Nineteen shared physical views add 138 source bytes: two complete NUL strings24B
+have known extents,17 mutable/pointer/array views114B remain unknown with zero
+allocation credit. Scope1,430 retains all1,411 prior proofs. All3,119 complete
+normal data regions equal the frozen isolated object. Three unsupported inventory
+extents retire10B with no old compiled or exact loss. The checkpoint waited for
+final validation beyond its half-hour deadline; the user's journal is unchanged.
+
+Resource966 is deliberately held: its canonical48B reset storage proposal preserves
+physical initializers but would retire two previously exact WORD records totaling
+4B. Named field views need an honest verified matcher representation before that
+storage can merge. Next connected work combines Draw/RTL26/6,122 with the real
+CutScenes_Draw/locator34/10,654 graph, larger UI/prompt and renderer providers,
+plus closed animation/gameplay subsets. Those candidate bytes are not progress.

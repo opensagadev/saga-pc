@@ -3986,3 +3986,24 @@ actual same-TU private context, including Configure 510, Listed 720 and Load 1,3
 Original inherited camera/locator registers remain documented separately from
 candidate compiler allocation. Both one-byte kernel diagnostics and the separate
 one-byte config diagnostic are genuine retail RET functions, not fake providers.
+
+
+### Renderer, spline, font and input release (2026-10-04)
+
+Actual production owners compare26 complete functions/6,715B. CalcSplinePoint
+1,119 and CalcSplinePointFromDist190 share the existing spline owner; asserted
+530-byte FLIGHT_SPLINE_RESOURCE_PC has point_count400, length410,
+cumulative414 and id524. Finite reader domains do not prove original allocation
+capacity. DrawStatusText583, DrawPanel3DObject255, DrawCharIcon641 and byte-exact
+BackDrop_Draw285 use genuine shared camera/font/special providers. Camera55,
+Shadow_SetMode60, NoRender159, Particles_Stop113, DebFreeAllCreatedEffects84 and
+the font matrix39 are fully exact. Private storage/literals stay in original
+subsystem owners; DrawStatusText's SDK macro collision is explicitly undefined.
+
+NuQFntPrintJustifiedRSW1,345 includes the complete native body and real diagnostic
+call; its110-byte wrapper is exact. The word-width/scale computation preserves
+the PC's f32 rounding, language0 FFFE hyphen and unordered predicates. Customiser
+IDs are signed WORDs at6c; names use actual128-byte rows. Input3/67 preserves
+signed BYTE state/truncation and physical caller contracts. All prior bodies and
+relocations are identical after aggregate reconstruction. No bounds or bindings
+were changed to hide comparison differences.

@@ -9812,3 +9812,81 @@ extern "C" {
     i32 CUTCOUNT;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma const_seg(".rdata$RenderSplineShopStartPc")
+    const char RenderSplineShopStartPc[11] = "shop_start";
+#pragma const_seg()
+
+#pragma const_seg(".rdata$RenderSplineBountyStartPc")
+    const char RenderSplineBountyStartPc[13] = "bounty_start";
+#pragma const_seg()
+
+#pragma data_seg(".data$DrawStatusScaleXPc")
+    f32 DrawStatusScaleXPc = 350.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$DrawStatusScaleYPc")
+    f32 DrawStatusScaleYPc = 300.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$DrawCharIconPanelPc")
+    i32 DrawCharIconPanelPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$LegoObjectIconQuestionPc")
+    i32 LegoObjectIconQuestionPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$DEBPAGE_GENERAL")
+    i32 DEBPAGE_GENERAL = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$DEBPAGE_CHARACTER")
+    i32 DEBPAGE_CHARACTER = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$DEBPAGE_AREA")
+    i32 DEBPAGE_AREA = -1;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$CutSceneCameraFocalLengthPc")
+    f32 CutSceneCameraFocalLengthPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$things_scene")
+    NUGSCN *things_scene;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DrawCharIconFindPc")
+    i32 DrawCharIconFindPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$RenderBackdropSpecialsPc")
+    NUSPECIALHANDLE RenderBackdropSpecialsPc[4];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$RenderBackgroundColoursPc")
+    i32 RenderBackgroundColoursPc[2];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$RenderBackdropScenePc")
+    NUGSCN *RenderBackdropScenePc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$RenderBackdropAlphaFnPc")
+    void(__cdecl *RenderBackdropAlphaFnPc)(f32 *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$SURFACEBITS_NODUST")
+    u16 SURFACEBITS_NODUST;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$RenderHubFromCutscenePlayerPc")
+    i32 RenderHubFromCutscenePlayerPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$IconScenePc")
+    NUGSCN **IconScenePc;
+#pragma bss_seg()
+}

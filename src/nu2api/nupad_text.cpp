@@ -246,3 +246,19 @@ extern "C" i32 __cdecl TextInputButtonNamePc(i32 device, i32 button, char *desti
     *destination = 0;
     return 0;
 }
+
+extern "C" {
+    void __cdecl TextInputSetKeyboardOverridePc(i32 mode) {
+        TEXT_INPUT_MANAGER_PC *manager = reinterpret_cast<TEXT_INPUT_MANAGER_PC *>(nu_input_state);
+        i32 previous = (i8)manager->use_keyboard_override;
+        manager->use_keyboard_override = (u8)mode;
+        if (mode != previous)
+            nu_keyboard_repeat_countdown = 6;
+    }
+    void __cdecl TextInputSetLastDevicePc(i32 device) {
+        TextInputLastDeviceIndexPc = (i8)device;
+    }
+    i32 __cdecl TextInputIsKeyboardDevicePc(i32 device) {
+        return (u32)device - 10u <= 3u;
+    }
+}

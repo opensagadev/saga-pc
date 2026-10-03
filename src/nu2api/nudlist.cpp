@@ -1217,3 +1217,16 @@ extern "C" {
         return NuDisplayListRndrSpecial(handle, matrix, 0, NULL, NULL);
     }
 }
+
+extern "C" i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *handle, NUMTX *matrix, f32 alpha) {
+    i32 result;
+    if (handle->scene == NULL || alpha <= 0.0f)
+        return 0;
+    if (alpha < 1.0f) {
+        NuSpecialConstAlpha(1, alpha);
+        result = NuDisplayListRndrSpecial(handle, matrix, 0, NULL, NULL);
+        NuSpecialConstAlpha(0, 0.0f);
+        return result;
+    }
+    return NuDisplayListRndrSpecial(handle, matrix, 0, NULL, NULL);
+}

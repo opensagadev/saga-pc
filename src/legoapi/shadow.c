@@ -28,3 +28,17 @@ void __cdecl InitShadowLights(void) {
 f32 __cdecl NewShadow(NUVEC *position, f32 unused, f32 height, i32 mask) {
     return NewShadowEx(position, unused, height, height, mask);
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
+STATIC_ASSERT(offsetof(SUIT_LAYERS_PC, flags) == 0xc);
+void __cdecl Shadow_SetMode(void) {
+    i32 i;
+    ShadowMode = 0;
+    for (i = 0; i < 8; ++i) {
+        GAMEOBJECT *player = Player[i];
+        if (player != NULL && player->suit != NULL && (player->suit->flags & 1) != 0) {
+            ShadowMode = 1;
+            return;
+        }
+    }
+}

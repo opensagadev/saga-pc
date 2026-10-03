@@ -17,3 +17,21 @@ void __cdecl Surface_Deflect(NUVEC *normal, NUVEC *movement, NUVEC *result, i32 
     result->y = movement->y + normal->y * correction;
     result->z = movement->z + normal->z * correction;
 }
+
+extern u16 SURFACEBITS_NODUST;
+void __cdecl Surfaces_Reset(void) {
+    i32 i;
+    u16 dust = 0, no_dust = 0;
+    LAYER_HOVERIGNORE = 0x10;
+    SURFACEBITS_DUST = 0;
+    SURFACEBITS_NODUST = 0;
+    for (i = 0; i < 32; ++i) {
+        u16 surface_bit = (u16)(1u << i);
+        if (TerSurface[i].flags & 4)
+            dust |= surface_bit;
+        else
+            no_dust |= surface_bit;
+    }
+    SURFACEBITS_DUST = dust;
+    SURFACEBITS_NODUST = no_dust;
+}

@@ -293,3 +293,140 @@ void __cdecl NuQFntMove(VUFNT *font, f32 x, f32 y, f32 z) {
         NuQFntMoveRS(stream, font, x, y, z);
     }
 }
+
+void __cdecl NuQFntSetMtx(VUFNT *font, NUMTX *matrix) {
+    if (font == NULL)
+        font = system_qfont;
+    if (font != NULL)
+        NuQFntSetMtxRS(NULL, font, matrix);
+}
+
+typedef struct font_stream_anchor_pc_s {
+    u8 prefix[4];
+    u8 stream_anchor;
+} FONT_STREAM_ANCHOR_PC;
+STATIC_ASSERT(offsetof(FONT_STREAM_ANCHOR_PC, stream_anchor) == 4);
+
+void __cdecl NuQFntSetSpaceWidth(VUFNT *font, f32 width) {
+    (void)font;
+    nuqfnt_space_width = width;
+}
+f32 __cdecl NuQFntPrintJustifiedRSW(void *stream, VUFNT *font, u16 *text, f32 x, f32 y, f32 z, f32 sx, f32 sy,
+                                    f32 width, f32 line_spacing, u32 colour, NUMTX *matrix) {
+    f32 saved_space_width = nuqfnt_space_width;
+    f32 space_width = saved_space_width == 0.0f ? font->space_width : saved_space_width;
+    f32 saved_ic_gap = font->ic_gap, printed_space_width, line_height;
+    u16 encoded_space[2] = {0x20, 0};
+    u16 hyphen;
+    i32 line_number = 0;
+    (void)stream;
+    NuQFntSetColourRS(stream, font, colour);
+    NuQFntSetScaleRS(stream, font, sx, sy);
+    NuQFntSetSpaceWidth(font, space_width);
+    printed_space_width = NuQFntPrintLenW(font, encoded_space);
+    if (matrix != NULL)
+        NuQFntSetMtxRS(stream, font, matrix);
+    line_height = font->height * *font->y_scale * qfnt_height_scale;
+    hyphen = NuLanguageGet() == 0 ? 0xfffe : UnicodeToIndexFast(font->unicode_map, font->unicode_count, '-');
+    do {
+        u16 line[256], *next = text, *copy_cursor;
+        i32 words = 0, punctuation_spaces = 0, length, spaces;
+        f32 words_width = 0.0f, scale, scaled_words_width;
+        font->ic_gap = saved_ic_gap;
+        NuQFntSetScaleRS(stream, font, sx, sy);
+        for (;;) {
+            u16 *word_start = next;
+            i32 extra_spaces = 0;
+            f32 word_width;
+            f64 combined_word_width;
+            length = 0;
+            while (*next != 0 && *next != hyphen) {
+                if (*next != 0x20) {
+                    line[length] = *next;
+                    line[length + 1] = 0;
+                    if (NuQFntPrintLenW(font, line) > width) {
+                        line[length] = 0;
+                        break;
+                    }
+                    ++length;
+                } else {
+                    u16 following = next[1];
+                    if (following != '!' && following != '?' && following != '.' && following != ',')
+                        break;
+                    ++extra_spaces;
+                }
+                ++next;
+            }
+            if (length > 256)
+                AnimationDiagnosticNoOpPc();
+            if (*next == hyphen)
+                line[length++] = *next++;
+            while (*next == 0x20)
+                ++next;
+            line[length] = 0;
+            word_width = NuQFntPrintLenW(font, line);
+            combined_word_width = (f64)word_width + words_width;
+            if (words != 0 &&
+                !((f64)width * qfnt_justify_squash >=
+                  (f64)(words + punctuation_spaces + extra_spaces) * printed_space_width + combined_word_width)) {
+                next = word_start;
+                break;
+            }
+            words_width = (f32)combined_word_width;
+            ++words;
+            punctuation_spaces += extra_spaces;
+            if (*next == 0)
+                break;
+        }
+        if ((next - text) > 256)
+            AnimationDiagnosticNoOpPc();
+        length = 0;
+        copy_cursor = text;
+        while (copy_cursor < next) {
+            if (*copy_cursor != 0x20)
+                line[length++] = *copy_cursor++;
+            else {
+                line[length++] = 0x20;
+                do {
+                    ++copy_cursor;
+                } while (*copy_cursor == 0x20);
+            }
+        }
+        line[length] = 0;
+        spaces = words - 1 + punctuation_spaces;
+        if (*next == 0) {
+            f64 ratio = (f64)width / ((f64)printed_space_width * spaces + words_width);
+            scale = (f32)(1.0 < ratio ? 1.0 : ratio);
+        } else if (words == 1)
+            scale = width / words_width;
+        else {
+            f64 ratio = (f64)width / ((f64)printed_space_width * spaces + words_width);
+            scale = (f32)(qfnt_justify_stretch < ratio ? qfnt_justify_stretch : ratio);
+        }
+        NuQFntSetScaleRS(stream, font, sx * scale, sy);
+        scaled_words_width = words_width * scale;
+        if (*next == 0)
+            NuQFntSetSpaceWidth(font, space_width * scale);
+        else if (words == 1)
+            NuQFntSetSpaceWidth(font, space_width);
+        else
+            NuQFntSetSpaceWidth(font, (f32)((f64)space_width * ((f64)width - scaled_words_width) /
+                                            ((f64)scale * printed_space_width * (spaces < 0 ? 0 : spaces))));
+        NuQFntMoveRS(stream, font, x, (f32)((f64)line_number * line_height * line_spacing + y), z);
+        NuQFntPrintCharW(font, line, matrix == NULL ? 0 : 4);
+        ++line_number;
+        text = next;
+    } while (*text != 0);
+    NuQFntSetSpaceWidth(font, saved_space_width);
+    font->ic_gap = saved_ic_gap;
+    return (f32)((f64)line_number * line_height * line_spacing);
+}
+f32 __cdecl NuQFntPrintJustifiedW(VUFNT *font, u16 *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 width,
+                                  f32 line_spacing, u32 colour, NUMTX *matrix) {
+    if (font == NULL)
+        font = system_qfont;
+    if (font == NULL)
+        return 0.0f;
+    return NuQFntPrintJustifiedRSW(&((FONT_STREAM_ANCHOR_PC *)font->material)->stream_anchor, font, text, x, y, z, sx,
+                                   sy, width, line_spacing, colour, matrix);
+}
