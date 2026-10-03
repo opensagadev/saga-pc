@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 802182,
-    "matched_code_bytes": 68397,
-    "matching_percent": 1.9703875784084446,
-    "fuzzy_coverage_percent": 12.197464551844199,
-    "mapped_functions": 2792,
-    "matched_functions": 1110,
-    "objdiff_fuzzy_percent": 62.18525,
-    "objdiff_total_code": 681055,
+    "mapped_code_bytes": 812906,
+    "matched_code_bytes": 69648,
+    "matching_percent": 2.0064265108263717,
+    "fuzzy_coverage_percent": 12.389965879068205,
+    "mapped_functions": 2845,
+    "matched_functions": 1143,
+    "objdiff_fuzzy_percent": 62.18718,
+    "objdiff_total_code": 691779,
     "image_bytes": 40067072,
-    "mapped_bytes": 1439755,
-    "mapping_percent": 3.5933621503462994
+    "mapped_bytes": 1451177,
+    "mapping_percent": 3.6218693494748004
   },
   "newly_compared": [
     {
@@ -14723,6 +14723,117 @@
         "Private ForcePushed_MoveCode remains held without a genuine emitted Beast caller."
       ],
       "next_connected_wave": "Cutscene loader/rendering and 37 installed callbacks10374 plus genuine1-byte diagnostic; text/input6406 and Torpedo callback closure; level audio8845 with actual Beast dependencies.",
+      "ongoing_goal": "Continue whole-project transfer indefinitely until user stops or pauses; validated direct main pushes authorized."
+    },
+    {
+      "baseline_commit": "451acbeb0f5f9d3ef5af0470d17e2c132e3e1616",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 802182,
+        "matched_code_bytes": 68397,
+        "matching_percent": 1.9703875784084446,
+        "fuzzy_coverage_percent": 12.197464551844199,
+        "mapped_functions": 2792,
+        "matched_functions": 1110,
+        "objdiff_fuzzy_percent": 62.18525,
+        "objdiff_total_code": 681055,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1439755,
+        "mapping_percent": 3.5933621503462994
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 812906,
+        "matched_code_bytes": 69648,
+        "matching_percent": 2.0064265108263717,
+        "fuzzy_coverage_percent": 12.389965879068205,
+        "mapped_functions": 2845,
+        "matched_functions": 1143,
+        "objdiff_fuzzy_percent": 62.18718,
+        "objdiff_total_code": 691779,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1451177,
+        "mapping_percent": 3.6218693494748004
+      },
+      "newly_compared_functions": 53,
+      "new_original_code_bytes": 10724,
+      "compared_code_delta": 10724,
+      "baseline_unique_compared_pc_bytes": 680943,
+      "unique_compared_pc_bytes": 691667,
+      "exact_code_added": 1251,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 2550,
+      "prior_compiled_function_copies_identical": 2549,
+      "renamed_owner_copies_with_identical_complete_bodies": [
+        {
+          "symbol": "_CutScene_Find",
+          "before_unit": "src/legoapi/cutscene_runtime.c",
+          "after_unit": "src/legoapi/cutscene_runtime.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_NewCutScene",
+          "before_unit": "src/legoapi/cutscene_runtime.c",
+          "after_unit": "src/legoapi/cutscene_runtime.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_CutScenes_Destroy",
+          "before_unit": "src/legoapi/cutscene_runtime.c",
+          "after_unit": "src/legoapi/cutscene_runtime.cpp",
+          "full_relocated_body_identical": true
+        }
+      ],
+      "user_journal_unchanged": true,
+      "checkpoint": "Cutscene callbacks, text/input and real Beast providers (2026-10-03)",
+      "prior_exact_code_and_data_preserved": true,
+      "family_bytes": {
+        "cutscene_callbacks": 4044,
+        "text_input_target_callback": 6406,
+        "mini_animation_and_part_search": 225,
+        "in_story": 49
+      },
+      "shared_data_definitions_added": 180,
+      "shared_initializer_view_bytes_added": 1964,
+      "known_allocation_credit_added": 0,
+      "data_scope": {
+        "proofs": 1282,
+        "known_extents": 553,
+        "known_unique_bytes": 137551,
+        "unknown_extents": 729,
+        "unknown_view_bytes": 97374,
+        "previous_proofs_preserved": 1102
+      },
+      "verified_checks": {
+        "all_required_checks_passed": true,
+        "prior_copy_review_passed": true,
+        "tests": 665,
+        "skipped": 3,
+        "test_seconds": 38.197,
+        "llvm": 18,
+        "format_files": 223,
+        "tidy_units": 221,
+        "objects": 221,
+        "function_definitions": 2603,
+        "data_definitions": 4758,
+        "source_only_link": true,
+        "native_callback_story_checks": 58,
+        "native_mini_part_checks": 32,
+        "native_text_input_checks": 30,
+        "native_total_checks": 120,
+        "native_failures": 0,
+        "prior_copy_review": "Particle717->717: five FLD/FXCH scheduling changes;188 other instructions, every call/branch/RET and all34 relocations unchanged. Source unchanged; ordinary finite initialized input domain, unmasked NaN exception order unproved. Real new89.98446 score retained.",
+        "owner_rename_review": "Exact old C source prefix preserved in C++ owner, all3 prior full relocated bodies identical; real NuMusic method requires C++."
+      },
+      "checkpoint_delay_reason": "Required final LLVM18 checks, retail comparison and all221-object fixture replays were still running at the half-hour checkpoint; source stayed frozen until validation completed.",
+      "limitations": [
+        "Existing NuQFntPrintCharW visual submissions remain explicit partial source; no rendered output or full gameplay claim.",
+        "Input keynames use a verified238-entry working view; original allocation capacity remains unknown.",
+        "Private cutscene table has a full352-byte initializer proof but unknown original owning extent and zero allocation credit.",
+        "Cutscene Configure/Listed/Load/Draw6330 and their diagnostic remain held; no artificial private helper retention."
+      ],
+      "next_connected_wave": "Genuine Beast8043 plus barrier48, public Punch2683 and opponent1179 provider closure; true Beast identity unlocks level audio8845. Four cutscene load/fixup/create providers remain bounded research.",
       "ongoing_goal": "Continue whole-project transfer indefinitely until user stops or pauses; validated direct main pushes authorized."
     }
   ]

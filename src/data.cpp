@@ -8479,3 +8479,808 @@ extern "C" {
     NUMTL *APITrans_Mtl[2];
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$CUTSUBTITLEDEFAULT_R")
+    u8 CUTSUBTITLEDEFAULT_R = 255;
+#pragma data_seg()
+
+#pragma data_seg(".data$CUTSUBTITLEDEFAULT_G")
+    u8 CUTSUBTITLEDEFAULT_G = 255;
+#pragma data_seg()
+
+#pragma data_seg(".data$CUTSUBTITLEDEFAULT_B")
+    u8 CUTSUBTITLEDEFAULT_B = 255;
+#pragma data_seg()
+
+#pragma data_seg(".data$CUTSUBTITLEDEFAULT_A")
+    u8 CUTSUBTITLEDEFAULT_A = 128;
+#pragma data_seg()
+
+#pragma data_seg(".data$CUTSUBTITLEDEFAULT_Y")
+    f32 CUTSUBTITLEDEFAULT_Y = -0.5f;
+#pragma data_seg()
+
+#pragma data_seg(".data$CUTSUBTITLEDEFAULT_SCALEX")
+    f32 CUTSUBTITLEDEFAULT_SCALEX = 1.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$CUTSUBTITLEDEFAULT_SCALEY")
+    f32 CUTSUBTITLEDEFAULT_SCALEY = 1.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$CUTSUBTITLEDEFAULT_FITWIDTH")
+    f32 CUTSUBTITLEDEFAULT_FITWIDTH = 1.7000000476837158f;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$CS_area")
+    i32 CS_area;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CS_fadefogcount")
+    i32 CS_fadefogcount;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CS_texanimcount")
+    i32 CS_texanimcount;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CS_buffptr")
+    VARIPTR *CS_buffptr;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CS_CutInfo")
+    CUT_LOAD_RECORD_PC *CS_CutInfo;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CS_worldinfo")
+    WORLDINFO *CS_worldinfo;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CUTSUBTITLEDEFAULT_ALIGN")
+    u8 CUTSUBTITLEDEFAULT_ALIGN;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CUTSUBTITLEDEFAULT_X")
+    f32 CUTSUBTITLEDEFAULT_X;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$TextInputKeyNameTextPc7516c0")
+    char TextInputKeyNameTextPc7516c0[1] = "";
+#pragma bss_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc753370")
+    char TextInputKeyNameTextPc753370[2] = "]";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc753374")
+    char TextInputKeyNameTextPc753374[2] = "[";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc759770")
+    char TextInputKeyNameTextPc759770[2] = "X";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc75ac34")
+    char TextInputKeyNameTextPc75ac34[5] = "Down";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc76fde8")
+    char TextInputKeyNameTextPc76fde8[7] = "Delete";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc7719bc")
+    char TextInputKeyNameTextPc7719bc[12] = "MEDIASELECT";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc7719c8")
+    char TextInputKeyNameTextPc7719c8[5] = "MAIL";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc7719d0")
+    char TextInputKeyNameTextPc7719d0[11] = "MYCOMPUTER";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc7719dc")
+    char TextInputKeyNameTextPc7719dc[8] = "WEBBACK";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc7719e4")
+    char TextInputKeyNameTextPc7719e4[11] = "WEBFORWARD";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc7719f0")
+    char TextInputKeyNameTextPc7719f0[8] = "WEBSTOP";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc7719f8")
+    char TextInputKeyNameTextPc7719f8[11] = "WEBREFRESH";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a04")
+    char TextInputKeyNameTextPc771a04[13] = "WEBFAVORITES";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a14")
+    char TextInputKeyNameTextPc771a14[10] = "WEBSEARCH";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a20")
+    char TextInputKeyNameTextPc771a20[5] = "WAKE";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a28")
+    char TextInputKeyNameTextPc771a28[6] = "SLEEP";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a30")
+    char TextInputKeyNameTextPc771a30[6] = "POWER";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a38")
+    char TextInputKeyNameTextPc771a38[5] = "APPS";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a40")
+    char TextInputKeyNameTextPc771a40[7] = "R. Win";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a48")
+    char TextInputKeyNameTextPc771a48[7] = "L. Win";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a50")
+    char TextInputKeyNameTextPc771a50[7] = "Insert";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a58")
+    char TextInputKeyNameTextPc771a58[9] = "Pg. Down";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a64")
+    char TextInputKeyNameTextPc771a64[4] = "End";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a68")
+    char TextInputKeyNameTextPc771a68[6] = "Right";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a70")
+    char TextInputKeyNameTextPc771a70[5] = "Left";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a78")
+    char TextInputKeyNameTextPc771a78[7] = "Pg. Up";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a80")
+    char TextInputKeyNameTextPc771a80[3] = "Up";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a84")
+    char TextInputKeyNameTextPc771a84[5] = "Home";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a8c")
+    char TextInputKeyNameTextPc771a8c[6] = "Pause";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a94")
+    char TextInputKeyNameTextPc771a94[7] = "R. Alt";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771a9c")
+    char TextInputKeyNameTextPc771a9c[6] = "SysRq";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771aa4")
+    char TextInputKeyNameTextPc771aa4[7] = "Num. /";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771aac")
+    char TextInputKeyNameTextPc771aac[11] = "Num. COMMA";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771ab8")
+    char TextInputKeyNameTextPc771ab8[8] = "WEBHOME";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771ac0")
+    char TextInputKeyNameTextPc771ac0[6] = "VOLUP";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771ac8")
+    char TextInputKeyNameTextPc771ac8[8] = "VOLDOWN";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771ad0")
+    char TextInputKeyNameTextPc771ad0[10] = "MEDIASTOP";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771adc")
+    char TextInputKeyNameTextPc771adc[5] = "PLAY";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771ae4")
+    char TextInputKeyNameTextPc771ae4[5] = "CALC";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771aec")
+    char TextInputKeyNameTextPc771aec[5] = "MUTE";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771af4")
+    char TextInputKeyNameTextPc771af4[8] = "R. Ctrl";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771afc")
+    char TextInputKeyNameTextPc771afc[11] = "Num. Enter";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b08")
+    char TextInputKeyNameTextPc771b08[10] = "NEXTTRACK";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b14")
+    char TextInputKeyNameTextPc771b14[10] = "UNLABELED";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b20")
+    char TextInputKeyNameTextPc771b20[3] = "AX";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b24")
+    char TextInputKeyNameTextPc771b24[5] = "STOP";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b2c")
+    char TextInputKeyNameTextPc771b2c[6] = "KANJI";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b34")
+    char TextInputKeyNameTextPc771b34[10] = "UNDERLINE";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b40")
+    char TextInputKeyNameTextPc771b40[6] = "COLON";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b48")
+    char TextInputKeyNameTextPc771b48[3] = "AT";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b4c")
+    char TextInputKeyNameTextPc771b4c[10] = "PREVTRACK";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b58")
+    char TextInputKeyNameTextPc771b58[7] = "Num. =";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b60")
+    char TextInputKeyNameTextPc771b60[8] = "ABNT_C2";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b68")
+    char TextInputKeyNameTextPc771b68[4] = "YEN";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b6c")
+    char TextInputKeyNameTextPc771b6c[10] = "NOCONVERT";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b78")
+    char TextInputKeyNameTextPc771b78[8] = "CONVERT";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b80")
+    char TextInputKeyNameTextPc771b80[8] = "ABNT_C1";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b88")
+    char TextInputKeyNameTextPc771b88[5] = "KANA";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b90")
+    char TextInputKeyNameTextPc771b90[4] = "F15";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b94")
+    char TextInputKeyNameTextPc771b94[4] = "F14";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b98")
+    char TextInputKeyNameTextPc771b98[4] = "F13";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771b9c")
+    char TextInputKeyNameTextPc771b9c[4] = "F12";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771ba0")
+    char TextInputKeyNameTextPc771ba0[4] = "F11";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771ba4")
+    char TextInputKeyNameTextPc771ba4[11] = "Num. Point";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771bb0")
+    char TextInputKeyNameTextPc771bb0[7] = "Num. 0";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771bb8")
+    char TextInputKeyNameTextPc771bb8[7] = "Num. 3";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771bc0")
+    char TextInputKeyNameTextPc771bc0[7] = "Num. 2";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771bc8")
+    char TextInputKeyNameTextPc771bc8[7] = "Num. 1";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771bd0")
+    char TextInputKeyNameTextPc771bd0[7] = "Num. +";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771bd8")
+    char TextInputKeyNameTextPc771bd8[7] = "Num. 6";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771be0")
+    char TextInputKeyNameTextPc771be0[7] = "Num. 5";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771be8")
+    char TextInputKeyNameTextPc771be8[7] = "Num. 4";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771bf0")
+    char TextInputKeyNameTextPc771bf0[7] = "Num. -";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771bf8")
+    char TextInputKeyNameTextPc771bf8[7] = "Num. 9";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c00")
+    char TextInputKeyNameTextPc771c00[7] = "Num. 8";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c08")
+    char TextInputKeyNameTextPc771c08[7] = "Num. 7";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c10")
+    char TextInputKeyNameTextPc771c10[12] = "Scroll Lock";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c1c")
+    char TextInputKeyNameTextPc771c1c[9] = "Num Lock";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c28")
+    char TextInputKeyNameTextPc771c28[4] = "F10";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c2c")
+    char TextInputKeyNameTextPc771c2c[3] = "F9";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c30")
+    char TextInputKeyNameTextPc771c30[3] = "F8";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c34")
+    char TextInputKeyNameTextPc771c34[3] = "F7";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c38")
+    char TextInputKeyNameTextPc771c38[3] = "F6";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c3c")
+    char TextInputKeyNameTextPc771c3c[3] = "F5";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c40")
+    char TextInputKeyNameTextPc771c40[3] = "F4";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c44")
+    char TextInputKeyNameTextPc771c44[3] = "F3";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c48")
+    char TextInputKeyNameTextPc771c48[3] = "F2";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c4c")
+    char TextInputKeyNameTextPc771c4c[3] = "F1";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c50")
+    char TextInputKeyNameTextPc771c50[10] = "Caps Lock";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c5c")
+    char TextInputKeyNameTextPc771c5c[6] = "Space";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c64")
+    char TextInputKeyNameTextPc771c64[7] = "L. Alt";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c6c")
+    char TextInputKeyNameTextPc771c6c[7] = "Num. *";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c74")
+    char TextInputKeyNameTextPc771c74[9] = "R. Shift";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c80")
+    char TextInputKeyNameTextPc771c80[11] = "For. Slash";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c8c")
+    char TextInputKeyNameTextPc771c8c[5] = "Stop";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c94")
+    char TextInputKeyNameTextPc771c94[6] = "Comma";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771c9c")
+    char TextInputKeyNameTextPc771c9c[2] = "M";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771ca0")
+    char TextInputKeyNameTextPc771ca0[2] = "N";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771ca4")
+    char TextInputKeyNameTextPc771ca4[2] = "B";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771ca8")
+    char TextInputKeyNameTextPc771ca8[2] = "V";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771cac")
+    char TextInputKeyNameTextPc771cac[2] = "C";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771cb0")
+    char TextInputKeyNameTextPc771cb0[2] = "#";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771cb4")
+    char TextInputKeyNameTextPc771cb4[9] = "L. Shift";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771cc0")
+    char TextInputKeyNameTextPc771cc0[6] = "Grave";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771cc8")
+    char TextInputKeyNameTextPc771cc8[11] = "Apostrophe";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771cd4")
+    char TextInputKeyNameTextPc771cd4[10] = "Semicolon";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771ce0")
+    char TextInputKeyNameTextPc771ce0[2] = "L";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771ce4")
+    char TextInputKeyNameTextPc771ce4[2] = "K";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771ce8")
+    char TextInputKeyNameTextPc771ce8[2] = "J";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771cec")
+    char TextInputKeyNameTextPc771cec[2] = "H";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771cf0")
+    char TextInputKeyNameTextPc771cf0[2] = "G";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771cf4")
+    char TextInputKeyNameTextPc771cf4[2] = "F";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771cf8")
+    char TextInputKeyNameTextPc771cf8[2] = "D";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771cfc")
+    char TextInputKeyNameTextPc771cfc[2] = "S";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d00")
+    char TextInputKeyNameTextPc771d00[2] = "A";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d04")
+    char TextInputKeyNameTextPc771d04[8] = "L. Ctrl";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d0c")
+    char TextInputKeyNameTextPc771d0c[6] = "Enter";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d14")
+    char TextInputKeyNameTextPc771d14[2] = "P";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d18")
+    char TextInputKeyNameTextPc771d18[2] = "O";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d1c")
+    char TextInputKeyNameTextPc771d1c[2] = "I";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d20")
+    char TextInputKeyNameTextPc771d20[2] = "U";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d24")
+    char TextInputKeyNameTextPc771d24[2] = "T";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d28")
+    char TextInputKeyNameTextPc771d28[2] = "R";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d2c")
+    char TextInputKeyNameTextPc771d2c[2] = "E";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d30")
+    char TextInputKeyNameTextPc771d30[2] = "W";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d34")
+    char TextInputKeyNameTextPc771d34[2] = "Q";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d38")
+    char TextInputKeyNameTextPc771d38[4] = "Tab";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d3c")
+    char TextInputKeyNameTextPc771d3c[10] = "Backspace";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d48")
+    char TextInputKeyNameTextPc771d48[7] = "Equals";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d50")
+    char TextInputKeyNameTextPc771d50[6] = "Minus";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d58")
+    char TextInputKeyNameTextPc771d58[2] = "0";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d5c")
+    char TextInputKeyNameTextPc771d5c[2] = "9";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d60")
+    char TextInputKeyNameTextPc771d60[2] = "8";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d64")
+    char TextInputKeyNameTextPc771d64[2] = "7";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d68")
+    char TextInputKeyNameTextPc771d68[2] = "6";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d6c")
+    char TextInputKeyNameTextPc771d6c[2] = "5";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d70")
+    char TextInputKeyNameTextPc771d70[2] = "4";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d74")
+    char TextInputKeyNameTextPc771d74[2] = "3";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d78")
+    char TextInputKeyNameTextPc771d78[2] = "2";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d7c")
+    char TextInputKeyNameTextPc771d7c[4] = "Esc";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc771d80")
+    char TextInputKeyNameTextPc771d80[8] = "(empty)";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc774180")
+    char TextInputKeyNameTextPc774180[2] = "Z";
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTextPc774184")
+    char TextInputKeyNameTextPc774184[2] = "Y";
+#pragma data_seg()
+
+#pragma data_seg(".data$QFONTSCALEY")
+    f32 QFONTSCALEY = 1.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$text_preset_r")
+    u8 text_preset_r[10] = {128, 128, 0, 0, 0, 128, 128, 128, 0, 0};
+#pragma data_seg()
+
+#pragma data_seg(".data$text_preset_g")
+    u8 text_preset_g[10] = {128, 0, 128, 0, 128, 0, 128, 96, 0, 0};
+#pragma data_seg()
+
+#pragma data_seg(".data$text_preset_b")
+    u8 text_preset_b[10] = {128, 0, 0, 128, 128, 128, 0, 0, 0, 0};
+#pragma data_seg()
+
+#pragma data_seg(".data$current_rgba")
+    u32 current_rgba = 2155905152;
+#pragma data_seg()
+
+#pragma data_seg(".data$apitext_half_rgb")
+    i32 apitext_half_rgb = 1;
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNameTablePc")
+    char *TextInputKeyNameTablePc[238] = {
+        TextInputKeyNameTextPc771d80, TextInputKeyNameTextPc771d7c, "1",
+        TextInputKeyNameTextPc771d78, TextInputKeyNameTextPc771d74, TextInputKeyNameTextPc771d70,
+        TextInputKeyNameTextPc771d6c, TextInputKeyNameTextPc771d68, TextInputKeyNameTextPc771d64,
+        TextInputKeyNameTextPc771d60, TextInputKeyNameTextPc771d5c, TextInputKeyNameTextPc771d58,
+        TextInputKeyNameTextPc771d50, TextInputKeyNameTextPc771d48, TextInputKeyNameTextPc771d3c,
+        TextInputKeyNameTextPc771d38, TextInputKeyNameTextPc771d34, TextInputKeyNameTextPc771d30,
+        TextInputKeyNameTextPc771d2c, TextInputKeyNameTextPc771d28, TextInputKeyNameTextPc771d24,
+        TextInputKeyNameTextPc774184, TextInputKeyNameTextPc771d20, TextInputKeyNameTextPc771d1c,
+        TextInputKeyNameTextPc771d18, TextInputKeyNameTextPc771d14, TextInputKeyNameTextPc753374,
+        TextInputKeyNameTextPc753370, TextInputKeyNameTextPc771d0c, TextInputKeyNameTextPc771d04,
+        TextInputKeyNameTextPc771d00, TextInputKeyNameTextPc771cfc, TextInputKeyNameTextPc771cf8,
+        TextInputKeyNameTextPc771cf4, TextInputKeyNameTextPc771cf0, TextInputKeyNameTextPc771cec,
+        TextInputKeyNameTextPc771ce8, TextInputKeyNameTextPc771ce4, TextInputKeyNameTextPc771ce0,
+        TextInputKeyNameTextPc771cd4, TextInputKeyNameTextPc771cc8, TextInputKeyNameTextPc771cc0,
+        TextInputKeyNameTextPc771cb4, TextInputKeyNameTextPc771cb0, TextInputKeyNameTextPc774180,
+        TextInputKeyNameTextPc759770, TextInputKeyNameTextPc771cac, TextInputKeyNameTextPc771ca8,
+        TextInputKeyNameTextPc771ca4, TextInputKeyNameTextPc771ca0, TextInputKeyNameTextPc771c9c,
+        TextInputKeyNameTextPc771c94, TextInputKeyNameTextPc771c8c, TextInputKeyNameTextPc771c80,
+        TextInputKeyNameTextPc771c74, TextInputKeyNameTextPc771c6c, TextInputKeyNameTextPc771c64,
+        TextInputKeyNameTextPc771c5c, TextInputKeyNameTextPc771c50, TextInputKeyNameTextPc771c4c,
+        TextInputKeyNameTextPc771c48, TextInputKeyNameTextPc771c44, TextInputKeyNameTextPc771c40,
+        TextInputKeyNameTextPc771c3c, TextInputKeyNameTextPc771c38, TextInputKeyNameTextPc771c34,
+        TextInputKeyNameTextPc771c30, TextInputKeyNameTextPc771c2c, TextInputKeyNameTextPc771c28,
+        TextInputKeyNameTextPc771c1c, TextInputKeyNameTextPc771c10, TextInputKeyNameTextPc771c08,
+        TextInputKeyNameTextPc771c00, TextInputKeyNameTextPc771bf8, TextInputKeyNameTextPc771bf0,
+        TextInputKeyNameTextPc771be8, TextInputKeyNameTextPc771be0, TextInputKeyNameTextPc771bd8,
+        TextInputKeyNameTextPc771bd0, TextInputKeyNameTextPc771bc8, TextInputKeyNameTextPc771bc0,
+        TextInputKeyNameTextPc771bb8, TextInputKeyNameTextPc771bb0, TextInputKeyNameTextPc771ba4,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, (char *)WorldPathSeparator,
+        TextInputKeyNameTextPc771ba0, TextInputKeyNameTextPc771b9c, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771b98, TextInputKeyNameTextPc771b94,
+        TextInputKeyNameTextPc771b90, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771b88, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771b80, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771b78, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc771b6c, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771b68,
+        TextInputKeyNameTextPc771b60, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc771b58, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc771b4c, TextInputKeyNameTextPc771b48, TextInputKeyNameTextPc771b40,
+        TextInputKeyNameTextPc771b34, TextInputKeyNameTextPc771b2c, TextInputKeyNameTextPc771b24,
+        TextInputKeyNameTextPc771b20, TextInputKeyNameTextPc771b14, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc771b08, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc771afc, TextInputKeyNameTextPc771af4, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771aec, TextInputKeyNameTextPc771ae4,
+        TextInputKeyNameTextPc771adc, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771ad0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc771ac8, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771ac0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771ab8, TextInputKeyNameTextPc771aac,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771aa4, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc771a9c, TextInputKeyNameTextPc771a94, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a8c,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a84, TextInputKeyNameTextPc771a80,
+        TextInputKeyNameTextPc771a78, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a70,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a68, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc771a64, TextInputKeyNameTextPc75ac34, TextInputKeyNameTextPc771a58,
+        TextInputKeyNameTextPc771a50, TextInputKeyNameTextPc76fde8, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc771a48, TextInputKeyNameTextPc771a40, TextInputKeyNameTextPc771a38,
+        TextInputKeyNameTextPc771a30, TextInputKeyNameTextPc771a28, TextInputKeyNameTextPc7516c0,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a20,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a14, TextInputKeyNameTextPc771a04,
+        TextInputKeyNameTextPc7719f8, TextInputKeyNameTextPc7719f0, TextInputKeyNameTextPc7719e4,
+        TextInputKeyNameTextPc7719dc, TextInputKeyNameTextPc7719d0, TextInputKeyNameTextPc7719c8,
+        TextInputKeyNameTextPc7719bc};
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyNamesPc")
+    char **TextInputKeyNamesPc = TextInputKeyNameTablePc;
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputKeyboardOverridePc")
+    u8 TextInputKeyboardOverridePc[32] = {0, 0, 0, 0, 0, 0, 0, 0, 200, 205, 208, 203, 60, 1, 28, 59,
+                                          0, 0, 0, 0, 0, 0, 0, 0, 20,  0,   0,   0,   0,  0, 0,  0};
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputAxisLabelIndexPc")
+    i8 TextInputAxisLabelIndexPc[16] = {14, 15, 16, 17, 0, 0, 18, 19, 20, 21, 0, 0, 28, 28, 29, 29};
+#pragma data_seg()
+
+#pragma data_seg(".data$TextInputButtonLabelIndexPc")
+    i8 TextInputButtonLabelIndexPc[11] = {24, 23, 25, 22, 26, 27, 33, 32, 30, 31, 0};
+#pragma data_seg()
+
+#pragma bss_seg(".bss$text3d_height")
+    f32 text3d_height;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$text3d_width")
+    f32 text3d_width;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$followon_line")
+    i32 followon_line;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$TextPrintModePc")
+    i32 TextPrintModePc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$TextInputAlternateLabelsPc")
+    TEXT_INPUT_LABELS_PC *TextInputAlternateLabelsPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$TextInputDefaultLabelsPc")
+    TEXT_INPUT_LABELS_PC *TextInputDefaultLabelsPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$TextInputNameCallbackPc")
+    void(__cdecl *TextInputNameCallbackPc)(i32, char *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$TextInputLastDeviceIndexPc")
+    i8 TextInputLastDeviceIndexPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$TextInputDeviceLinksPc")
+    TEXT_INPUT_DEVICE_LINK_PC TextInputDeviceLinksPc[3];
+#pragma bss_seg()
+}

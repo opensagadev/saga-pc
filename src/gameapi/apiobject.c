@@ -1368,3 +1368,38 @@ void APITransparentCharDraw(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, i32 render
     if (zero != 0)
         indices[zero] = 0;
 }
+
+typedef struct minianimpacket_pc_s {
+    f32 current_time;
+    f32 previous_time;
+    u8 unknown_08[0xc];
+    f32 blend_target_time;
+    u8 flags;
+    u8 blending;
+    u8 unknown_1a[4];
+    i16 current_animation_id;
+    i16 previous_animation_id;
+    i16 requested_animation_id;
+} MINIANIMPACKET_PC;
+STATIC_ASSERT(sizeof(MINIANIMPACKET_PC) == 0x24);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, current_time) == 0);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, previous_time) == 4);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, blend_target_time) == 0x14);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, flags) == 0x18);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, blending) == 0x19);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, current_animation_id) == 0x1e);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, previous_animation_id) == 0x20);
+STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, requested_animation_id) == 0x22);
+
+void __cdecl ResetMiniAnimPacket(MINIANIMPACKET_PC *packet, i32 animation) {
+    if (packet == NULL)
+        return;
+    packet->previous_time = 1.0f;
+    packet->requested_animation_id = (i16)animation;
+    packet->blend_target_time = 1.0f;
+    packet->previous_animation_id = (i16)animation;
+    packet->current_time = 1.0f;
+    packet->current_animation_id = (i16)animation;
+    packet->blending = 0;
+    packet->flags = 4;
+}

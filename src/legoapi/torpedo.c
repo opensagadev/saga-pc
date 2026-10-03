@@ -131,3 +131,23 @@ void *__cdecl FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 dista
         *target_type = type;
     return nearest;
 }
+
+void __cdecl DrawGameMessage_Targets(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale) {
+    u16 phase = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.25f) * 4.0 * 65536.0);
+    i32 alpha = (i32)(((f64)NuTrigTable[phase >> 1] * (f64)0.2f + (f64)0.8f) * message->alpha);
+    f64 vertical_offset = (f64)scale * (f64)0.3f;
+    f64 horizontal_offset = (f64)scale * 0.25;
+    char vertical[3];
+    vertical[0] = (char)0xc2;
+    vertical[1] = (char)0xa3;
+    vertical[2] = 0;
+    Text3DEx(vertical, position->x, (f32)(position->y + vertical_offset), position->z, scale, scale, scale, 0,
+             message->red, message->green, message->blue, alpha);
+    vertical[1] = (char)0xac;
+    Text3DEx(vertical, position->x, (f32)(position->y - vertical_offset), position->z, scale, scale, scale, 0,
+             message->red, message->green, message->blue, alpha);
+    Text3DEx(">", (f32)(position->x - horizontal_offset), position->y, position->z, scale, scale, scale, 0,
+             message->red, message->green, message->blue, alpha);
+    Text3DEx("<", (f32)(position->x + horizontal_offset), position->y, position->z, scale, scale, scale, 0,
+             message->red, message->green, message->blue, alpha);
+}

@@ -1363,3 +1363,22 @@ Future cutscene owners reuse PCShadowDrawMode8264bc and PCShadowDrawEnabled8264c
 Every2790 complete old/new emitted data region agrees between aggregate and
 frozen isolated production objects. A TempOptions20-to16 padding movement was
 scratch-only; actual production preserves its prior20-byte emitted view.
+
+
+### Callback and Text/input required views (2026-10-03)
+
+The sole writer adds16 callback views49B and164 Text/input views1915B, each
+with a real emitted reader and full initializer proof. All1102 previous scoped
+definitions remain unchanged. Scope1282 comprises553 known extents/137551 unique
+bytes and729 unknown views/97374 source-view bytes. All180 new original owning
+extents remain blank, adding no allocation/coverage credit.
+
+Callback state excludes five unused loader globals. Its private352-byte table
+remains in the original callback owner, never duplicated in data.cpp. Input
+adds19 state views170B,144 named key strings793B and238-pointer table952B.
+The existing singleton, literal1 and WorldPathSeparator are reused. The link
+array's3x12 rawzeros match retail; runtime reset stores are not initializers.
+Key capacity and other backing extents remain unknown. Every2971 complete named
+data region agrees between aggregate and frozen isolated production objects.
+Selected presets0..9, button/axis11/16, overrides32, links0..2 and keys0..237
+define the tested working domains, not inferred historical allocations.

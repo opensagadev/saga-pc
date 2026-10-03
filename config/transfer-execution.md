@@ -1042,3 +1042,50 @@ Next release is the connected cutscene loader/rendering/callback family10,374B
 plus its genuine1B diagnostic, alongside retained text/input and Beast closure.
 Authoritative review confirms GetMusicIndex is genuinely constant-1 in this PC
 build; the earlier proposed missing music lookup was an incorrect qualification.
+
+
+### Cutscene callbacks, text/input and real Beast providers (2026-10-03)
+
+Fifty-three actual functions add10,724 complete PC bytes over451acbe:
+37 cutscene callbacks4,044,13 text/input/target-draw bodies6,406, MiniAnim reset
+and part search225, and InStory49. Whole-PC fuzzy coverage rises from
+12.197465% to12.389966% of
+3,471,246 bytes. Unique compared code reaches691,667; native objdiff's
+denominator is691,779. Thirty-three new exact functions add1,251 bytes,
+reaching69,648 (2.006427%). No previous exact code or data is lost.
+
+The existing cutscene_runtime.c owner becomes.cpp for the real NuMusic method
+call. Its complete previous source prefix and all three function bodies and
+relocations are preserved. The genuine43 installed slots plus terminator retain
+37 static callbacks and the full352-byte table in that owner. The table's
+original owning extent remains unknown/no allocation credit. Configure510,
+Listed720, Load1333, Draw3767 and their genuine diagnostic remain held; none
+is forced into the build with fake references or public ABI adapters.
+
+Text review repaired actual behavior before release: inclusive screen boundaries
+and unordered coordinates, unordered width/scale branches, reversed input
+types5/6, sufficient34-slot label access and producer-proven custom4x32 rows.
+The actual device-link producer establishes3x12 records, not32x24; its raw
+initializer is zero, separately from runtime reset values. The singleton
+reuses nu_input_state. Genuine keyboard names use a238-pointer working view
+with146 distinct pointees,144 new and two canonical reuses. Capacity remains
+unknown. Target drawing consolidates into existing torpedo.c; the39-byte font
+generic wrapper retains the real cross-unit backend call. Existing font visual
+submission gaps remain explicit; selected fixtures do not establish visuals.
+
+Pinned source build/link, all2603 function/4758 data definitions across221
+objects, LLVM18 checks223 format files/221 units and665 tests (three skips)
+pass. Final fixtures pass58 callback/story,32 MiniAnim/part and30 text/input
+cases using only all221 actual normal objects and real data, without providers
+or globals substituted. Every prior data initializer remains unchanged.
+All2550 prior function copies remain,2549 identical, including the reviewed
+three-owner rename. The unchanged particle source's717-byte rescheduling has
+independent full x87/CFG/34-relocation proof for finite initialized inputs;
+unmasked NaN exception order remains outside that proof. Its real89.98446
+score is retained. The checkpoint waited for final validation rather than
+committing the frozen batch while checks were still running.
+
+The sole writer adds180 required initializer views/1964B with unknown owning
+extents/no allocation credit. Next is the genuinely connected Beast/Punch/
+opponent group, with true Beast identity closing the retained8845-byte level
+audio parent. Cutscene load/fixup/create providers remain separate bounded work.

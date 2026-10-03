@@ -2396,3 +2396,26 @@ void __cdecl AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 ra
         emission_time += interval;
     } while (emission_time <= end_time && --remaining != 0);
 }
+
+STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
+PART_PC *__cdecl FindPart(NUVEC *position, i32 player, GAMEOBJECT *owner) {
+    PART_PC *part = Part, *result = NULL;
+    f32 nearest = 1000000.0f;
+    i32 i;
+    if (part == NULL)
+        return NULL;
+    for (i = 0; i < MAXPARTS; ++i, ++part) {
+        f32 distance;
+        if ((part->active & 1) == 0 || (player != -1 && part->field_206 != player) ||
+            (owner != NULL && part->owner != owner))
+            continue;
+        if (position == NULL)
+            return part;
+        distance = NuVecDistSqr(position, &part->position, NULL);
+        if (distance < nearest) {
+            nearest = distance;
+            result = part;
+        }
+    }
+    return result;
+}

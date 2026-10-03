@@ -6823,6 +6823,20 @@ struct PC_HG_RENDER_VIEW;
 
 typedef struct level_sfx_pulse_prefix_s LEVEL_SFX_PULSE_PC;
 
+typedef struct CUT_LOAD_RECORD_PC CUT_LOAD_RECORD_PC;
+
+typedef struct minianimpacket_pc_s MINIANIMPACKET_PC;
+
+typedef struct TEXT_INPUT_LABELS_PC TEXT_INPUT_LABELS_PC;
+typedef struct TEXT_INPUT_DEVICE_LINK_PC {
+    i32 unknown_0000;
+    i32 device;
+    i32 available;
+} TEXT_INPUT_DEVICE_LINK_PC;
+STATIC_ASSERT(sizeof(TEXT_INPUT_DEVICE_LINK_PC) == 12);
+STATIC_ASSERT(offsetof(TEXT_INPUT_DEVICE_LINK_PC, device) == 4);
+STATIC_ASSERT(offsetof(TEXT_INPUT_DEVICE_LINK_PC, available) == 8);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -7084,6 +7098,63 @@ extern "C" {
     void *__cdecl GizTorpMachine_FindNearest(WORLDINFO *, NUVEC *, f32 *);
     void *__cdecl FindNearestTorpTarget(WORLDINFO *, NUVEC *, f32, u8 *);
     extern AREA_DATA_PC *BOUNTYHUNTERPURSUIT_ADATA;
+
+    extern u8 CUTSUBTITLEDEFAULT_R;
+    extern u8 CUTSUBTITLEDEFAULT_G;
+    extern u8 CUTSUBTITLEDEFAULT_B;
+    extern u8 CUTSUBTITLEDEFAULT_A;
+    extern f32 CUTSUBTITLEDEFAULT_Y;
+    extern f32 CUTSUBTITLEDEFAULT_SCALEX;
+    extern f32 CUTSUBTITLEDEFAULT_SCALEY;
+    extern f32 CUTSUBTITLEDEFAULT_FITWIDTH;
+    extern i32 CS_area;
+    extern i32 CS_fadefogcount;
+    extern i32 CS_texanimcount;
+    extern VARIPTR *CS_buffptr;
+    extern CUT_LOAD_RECORD_PC *CS_CutInfo;
+    extern WORLDINFO *CS_worldinfo;
+    extern u8 CUTSUBTITLEDEFAULT_ALIGN;
+    extern f32 CUTSUBTITLEDEFAULT_X;
+
+    void __cdecl ResetMiniAnimPacket(MINIANIMPACKET_PC *, i32);
+    PART_PC *__cdecl FindPart(NUVEC *, i32, GAMEOBJECT *);
+
+    void __cdecl Text3DStringEncodeFont(u8 *source, u16 *destination, VUFNT *font);
+    void __cdecl Text3DStringEncode(char *source, u16 *destination);
+    void __cdecl TextDecodeCodeword(char *source, char *destination);
+    void __cdecl TextDecode(char *source, u8 *destination);
+    f32 __cdecl TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, i32 colour,
+                                   i32 button_font);
+    void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
+                          u8 green, u8 blue, i32 alpha);
+    void __cdecl NuQFntMove(VUFNT *font, f32 x, f32 y, f32 z);
+    void __cdecl NuQFntPrintW(VUFNT *font, u16 *text);
+    void __cdecl DrawGameMessage_Targets(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale);
+    i32 __cdecl TextInputLastDevicePc(void);
+    i32 __cdecl TextInputLinkedDevicePc(i32 index);
+    i32 __cdecl TextInputButtonNamePc(i32 device, i32 button, char *destination);
+    extern f32 QFONTSCALEY;
+    extern u8 text_preset_r[10];
+    extern u8 text_preset_g[10];
+    extern u8 text_preset_b[10];
+    extern u32 current_rgba;
+    extern i32 apitext_half_rgb;
+    extern char *TextInputKeyNameTablePc[238];
+    extern char **TextInputKeyNamesPc;
+    extern u8 TextInputKeyboardOverridePc[32];
+    extern i8 TextInputAxisLabelIndexPc[16];
+    extern i8 TextInputButtonLabelIndexPc[11];
+    extern f32 text3d_height;
+    extern f32 text3d_width;
+    extern i32 followon_line;
+    extern i32 TextPrintModePc;
+    extern TEXT_INPUT_LABELS_PC *TextInputAlternateLabelsPc;
+    extern TEXT_INPUT_LABELS_PC *TextInputDefaultLabelsPc;
+    extern void(__cdecl *TextInputNameCallbackPc)(i32, char *);
+    extern i8 TextInputLastDeviceIndexPc;
+    extern TEXT_INPUT_DEVICE_LINK_PC TextInputDeviceLinksPc[3];
+
+    i32 __cdecl InStory(void);
 
     extern HINTSYS_PC hintsys;
     extern GIZFORCE_TARGET_RECORD_PC PossibleForceTargetsPc[];

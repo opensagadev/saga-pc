@@ -275,3 +275,21 @@ void __cdecl NuQFntPrintU(VUFNT *font, char *text) {
         NuQFntPrintCharW(font, encoded, NuQFntMode);
     }
 }
+
+typedef struct qfont_material_stream_view_pc_s {
+    u8 unknown_0000[4];
+    u8 stream_begin;
+} QFONT_MATERIAL_STREAM_VIEW_PC;
+STATIC_ASSERT(offsetof(QFONT_MATERIAL_STREAM_VIEW_PC, stream_begin) == 4);
+
+void __cdecl NuQFntMove(VUFNT *font, f32 x, f32 y, f32 z) {
+    void *stream;
+    if (font == NULL) {
+        font = system_qfont;
+    }
+    if (font != NULL) {
+        stream =
+            (NuQFntMode & 2) != 0 ? NULL : (void *)&((QFONT_MATERIAL_STREAM_VIEW_PC *)font->material)->stream_begin;
+        NuQFntMoveRS(stream, font, x, y, z);
+    }
+}

@@ -3925,3 +3925,22 @@ BOUNTYHUNTERPURSUIT_ADATA. Audio7/703 retains pulse WORD fields6/8/a/c/e,
 ten-byte event stride and five-argument gizmo callbacks with count reload.
 Full extents and actual current-source comparisons remain authoritative,
 including nonexact bodies. Three compiler literal bindings add26 bytes.
+
+
+### Cutscene callbacks and corrected text/input transfer (2026-10-03)
+
+Fifty-three functions10,724B compile with full PC extent/ABI evidence. The
+cutscene owner retains37 static cdecl callbacks in its genuine43-slot table,
+including six alias slots and the terminator. Renaming the existing C owner to
+C++ permits the genuine NuMusic thiscall without a shim; all three old bodies
+and source prefix remain unchanged. Private held loader helpers receive no
+source credit. InStory49 is exact and calls real Mission_Active33.
+
+Text3DEx uses native12-argument cdecl ABI and inclusive/unordered screen guards.
+The input member's full1328-byte span includes its thirteen-entry switch table,
+with ECX receiver, eight stack arguments and RET32. Types5/6 directional choices,
+signed label indexes,34-slot overlapping label view and custom4x32 rows are
+verified. Device links are three12-byte records based at297e060. The input
+wrapper uses canonical nu_input_state rather than a duplicate manager owner.
+MiniAnim43 is exact, preserves WORD truncation and initializes verified fields;
+FindPart182 retains real typed Part/MAXPARTS and strict nearest selection.
