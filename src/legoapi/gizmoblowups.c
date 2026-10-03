@@ -464,3 +464,80 @@ void __cdecl GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32
         AddExplosion(position, blowup->effect_delay, 0.5f, NULL, -1, explosion_flags);
     }
 }
+
+i32 __cdecl SetGizmoBlowUpTarget(GAMEOBJECT *object, GIZMOBLOWUP_PC *target) {
+    object->attack_target_position = target->mid_position;
+    object->field_c8c = v000.x;
+    object->field_c90 = v000.y;
+    object->field_c94 = v000.z;
+    object->flags_e20 |= 0x800;
+    object->collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)target;
+    return 1;
+}
+
+GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Target(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius,
+                                           f32 range_squared, i32 directional, i32 planar, i32 bolt_id) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    BOLTTYPE_PC *bolt = BoltType_FindByID(bolt_id, world);
+    u16 near_angle = TargetDeg_Near, mid_angle = TargetDeg_Mid, far_angle = TargetDeg_Far, angle;
+    f32 near_distance = TargetDist_Near2, mid_distance = TargetDist_Mid2;
+    GIZMOBLOWUP_PC *blowup = world->gizmo_blowups, *nearest = NULL, *fallback = NULL;
+    f32 min_x, max_x, min_z, max_z, nearest_distance = 100000000.0f, distance, dot;
+    NUVEC aim, delta;
+    i32 count, i;
+    if (blowup == NULL || (GizmoBlowUp_NoTargetFn != NULL && GizmoBlowUp_NoTargetFn(world, object) != 0))
+        return NULL;
+    aim = *direction;
+    min_x = position->x - radius;
+    max_x = position->x + radius;
+    min_z = position->z - radius;
+    max_z = position->z + radius;
+    if (directional != 0 && (bolt->flags_60 & 0x20000) != 0) {
+        aim.y = 0.0f;
+        NuVecNorm(&aim, &aim);
+    }
+    count = world->blowup_target_candidate_count;
+    if (count <= 0) {
+        count = world->gizmo_blowup_count;
+        if (world->blowup_target_candidate_count == 0)
+            blowup = world->gizmo_blowups;
+    }
+    for (i = 0; i < count; ++i, ++blowup) {
+        if (world->blowup_target_candidate_count != 0)
+            blowup = world->blowup_target_candidates[i];
+        if ((blowup->draw_flags & 0x8000) == 0 || (blowup->status_flags & 1) != 0 ||
+            (blowup->status_flags & 0x08800000) == 0 || (blowup->status_flags & 0x4000) == 0)
+            continue;
+        if ((blowup->draw_flags & 0x20) != 0 && ShadowMode == 0)
+            continue;
+        if (blowup->mid_position.x < min_x || blowup->mid_position.x > max_x || blowup->mid_position.z < min_z ||
+            blowup->mid_position.z > max_z)
+            continue;
+        distance = planar != 0 ? NuVecXZDistSqr(&blowup->mid_position, position, &delta)
+                               : NuVecDistSqr(&blowup->mid_position, position, &delta);
+        if (!(range_squared > distance))
+            continue;
+        if (directional == 0)
+            NuVecRotateY(&aim, &v001,
+                         NuAtan2D(blowup->mid_position.x - position->x, blowup->mid_position.z - position->z));
+        if ((bolt->flags_60 & 0x20000) != 0)
+            delta.y = 0.0f;
+        NuVecNorm(&delta, &delta);
+        dot = NuVecDot(&delta, &aim);
+        if (distance < near_distance && directional != 0)
+            angle = near_angle;
+        else if (distance < mid_distance)
+            angle = mid_angle;
+        else
+            angle = far_angle;
+        if (!(dot > NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff]) || !(nearest_distance > distance))
+            continue;
+        if (object != NULL && object->collision_target == (GAMEOBJECT *)blowup)
+            fallback = blowup;
+        else {
+            nearest_distance = distance;
+            nearest = blowup;
+        }
+    }
+    return nearest != NULL ? nearest : fallback;
+}

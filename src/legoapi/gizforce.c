@@ -70,3 +70,72 @@ void __cdecl ReleaseForce(GAMEOBJECT *object, i32 mode) {
         return;
     EndForce(object, mode);
 }
+
+typedef struct force_glow_packet_pc_s {
+    u8 unknown000[0x650];
+    void *object, *candidate;
+    u8 unknown658[0x6bc - 0x658];
+    f32 alpha, target, recovery, unknown6c8, hold;
+} FORCE_GLOW_PACKET_PC;
+STATIC_ASSERT(offsetof(FORCE_GLOW_PACKET_PC, object) == 0x650);
+STATIC_ASSERT(offsetof(FORCE_GLOW_PACKET_PC, candidate) == 0x654);
+STATIC_ASSERT(offsetof(FORCE_GLOW_PACKET_PC, alpha) == 0x6bc);
+STATIC_ASSERT(offsetof(FORCE_GLOW_PACKET_PC, target) == 0x6c0);
+STATIC_ASSERT(offsetof(FORCE_GLOW_PACKET_PC, recovery) == 0x6c4);
+STATIC_ASSERT(offsetof(FORCE_GLOW_PACKET_PC, hold) == 0x6cc);
+void __cdecl ResetForceGlow(void *packet) {
+    FORCE_GLOW_PACKET_PC *view = (FORCE_GLOW_PACKET_PC *)packet;
+    view->alpha = 0.0f;
+    view->target = 0.0f;
+    view->object = NULL;
+    view->hold = 0.0f;
+    view->candidate = NULL;
+    view->recovery = 0.2f;
+}
+
+struct gizforce_pc_s {
+    u8 unknown_000[0x1c];
+    NUVEC position;
+    GAMEANIMSET *anim_set;
+    u8 unknown_02c[0x20];
+    f32 force_range;
+    u8 unknown_050[0x24];
+    u32 config_flags;
+    u8 unknown_078[0x28];
+    u32 runtime_flags;
+};
+STATIC_ASSERT(offsetof(GIZFORCE_PC, position) == 0x1c);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, anim_set) == 0x28);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, force_range) == 0x4c);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, config_flags) == 0x74);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, runtime_flags) == 0xa0);
+typedef struct GIZFORCE_ANIMATION_DATA_PC {
+    u8 unknown_00[2];
+    i16 platform_id;
+} GIZFORCE_ANIMATION_DATA_PC;
+STATIC_ASSERT(offsetof(GIZFORCE_ANIMATION_DATA_PC, platform_id) == 2);
+i32 __cdecl GizForce_StoodOnForce(GIZFORCE_PC *force, GAMEOBJECT *object) {
+    GAMEANIMOBJ *animation;
+    if (!(force->runtime_flags & 0x100) || object->terrain_platform_id == -1)
+        return 0;
+    for (animation = force->anim_set->objects; animation != NULL; animation = animation->next)
+        if (((GIZFORCE_ANIMATION_DATA_PC *)animation->object_data)->platform_id == object->terrain_platform_id)
+            return 1;
+    return 0;
+}
+u16 __cdecl GizForces_AngleToForce(NUVEC *position, GIZFORCE_PC *force) {
+    f32 dz = force->position.z - position->z;
+    f32 dx = force->position.x - position->x;
+    return NuAtan2D(dx, dz);
+}
+i32 __cdecl GizForce_Complete(GIZFORCE_PC *force) {
+    if ((force->config_flags & 2) || (force->force_range > 0.0f && !(force->runtime_flags & 0x2000)))
+        return 0;
+    if ((force->config_flags & 0x40) && !(force->runtime_flags & 0x800))
+        return 0;
+    if (force->anim_set == NULL)
+        return 1;
+    if (force->runtime_flags & 0x40)
+        return force->anim_set->state == 0;
+    return force->anim_set->state == 2;
+}

@@ -241,6 +241,8 @@ typedef struct gizmo_pc_s {
 STATIC_ASSERT(sizeof(GIZMO_PC) == 8);
 STATIC_ASSERT(offsetof(GIZMO_PC, type_id) == 6);
 
+struct gizmoset_pc_s;
+struct gameobject_s;
 typedef struct gizmotype_pc_s {
     u8 unknown_00[0x44];
     char *(__cdecl *get_gizmo_name)(void *gizmo);
@@ -250,7 +252,10 @@ typedef struct gizmotype_pc_s {
     void(__cdecl *activate)(void *gizmo, i32 active);
     i32(__cdecl *activate_reverse)(void *gizmo, i32 reverse, i32 visibility);
     void(__cdecl *set_visibility)(void *gizmo, i32 visible);
-    u8 unknown_60[0x3c];
+    u8 unknown_60[0x10];
+    void *(__cdecl *get_best_bolt_target)(struct gizmoset_pc_s *, f32 *, NUVEC *, NUVEC *, struct gameobject_s *,
+                                          NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
+    u8 unknown_74[0x28];
 } GIZMOTYPE_PC;
 STATIC_ASSERT(sizeof(GIZMOTYPE_PC) == 0x9c);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, get_gizmo_name) == 0x44);
@@ -259,6 +264,7 @@ STATIC_ASSERT(offsetof(GIZMOTYPE_PC, get_output_name) == 0x4c);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, activate) == 0x54);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, activate_reverse) == 0x58);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, set_visibility) == 0x5c);
+STATIC_ASSERT(offsetof(GIZMOTYPE_PC, get_best_bolt_target) == 0x70);
 
 typedef struct gizmotypes_pc_s {
     i32 count;
@@ -2972,7 +2978,9 @@ typedef struct WORLDINFO_s {
     i32 gizmo_blowup_count;
     u8 unknown_50c4[4];
     GIZMOBLOWUP_PC *gizmo_blowups;
-    u8 unknown_50cc[0x34];
+    i32 blowup_target_candidate_count;
+    GIZMOBLOWUP_PC **blowup_target_candidates;
+    u8 unknown_50d4[0x2c];
     struct TORPEDO_MACHINE_SYS_PC *torpedo_machine_sys;
     u8 unknown_5104[8];
     void *game_antinode_sys;
@@ -2985,6 +2993,8 @@ STATIC_ASSERT(offsetof(NUGSCN, portal_frusta) == 0x9c);
 STATIC_ASSERT(offsetof(NUGSCN, num_portal_frusta) == 0xdc);
 STATIC_ASSERT(offsetof(NUGSCN, camera_room) == 0xe0);
 STATIC_ASSERT(sizeof(WORLDINFO) == 0x51ac);
+STATIC_ASSERT(offsetof(WORLDINFO, blowup_target_candidate_count) == 0x50cc);
+STATIC_ASSERT(offsetof(WORLDINFO, blowup_target_candidates) == 0x50d0);
 STATIC_ASSERT(offsetof(WORLDINFO, object_sys) == 0x298c);
 STATIC_ASSERT(offsetof(WORLDINFO, tubes) == 0x4690);
 STATIC_ASSERT(offsetof(WORLDINFO, ai_sys) == 0x2ae8);
@@ -6738,6 +6748,22 @@ STATIC_ASSERT(offsetof(GRAPPLE_DYNAMIC_PC, retain_attachment) == 0x1d);
 STATIC_ASSERT(offsetof(GRAPPLE_DYNAMIC_PC, flags) == 0x1e);
 STATIC_ASSERT(offsetof(GRAPPLE_DYNAMIC_PC, attached_object) == 0x54);
 
+typedef struct gizforce_pc_s GIZFORCE_PC;
+
+/* Minimum shared consumer records; offsets verified, no item allocation extent claimed. */
+typedef struct vehicle_weapon_item_pc_s {
+    u8 unknown_00[8];
+    u8 type;
+    i8 bolt_override;
+} VEHICLE_WEAPON_ITEM_PC;
+STATIC_ASSERT(offsetof(VEHICLE_WEAPON_ITEM_PC, type) == 8);
+STATIC_ASSERT(offsetof(VEHICLE_WEAPON_ITEM_PC, bolt_override) == 9);
+typedef struct weapon_ammo_pc_s {
+    VEHICLE_WEAPON_ITEM_PC *type;
+    u8 ammo;
+} WEAPON_AMMO_PC;
+STATIC_ASSERT(offsetof(WEAPON_AMMO_PC, ammo) == 4);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -6875,7 +6901,46 @@ extern "C" {
     extern i32 LEGOCONTEXT_WEAPONIN, LEGOCONTEXT_WEAPONOUT;
     /* Existing shared extern C scope. No new fields/providers. */
 
+    void __cdecl FloatRumble(GAMEOBJECT *);
+    void __cdecl SuperCarry_GetObjectPos(GAMEOBJECT *, NUVEC *, NUVEC *);
+    void __cdecl FastWeaponIn(GAMEOBJECT *, i32);
+    void __cdecl FloatCode(GAMEOBJECT *);
+    void __cdecl GetRotationAngles(NUVEC *, u16 *, u16 *);
+    void __cdecl Disorientate(GAMEOBJECT *, NUVEC *);
+    void __cdecl DisorientateCode(GAMEOBJECT *, NUVEC *, f32);
+    void __cdecl TractorBeamCode(GAMEOBJECT *);
+    extern i32 WeaponInOut_NoAIJediSfx;
+    extern u8 DisorientAxisPc, TractorBeamEnabledPc;
+    /* FloatAdvancePc static same originalTU; no public prototype. */
+
     extern HINTSYS_PC hintsys;
+    void __cdecl SetWeaponOut(GAMEOBJECT *);
+    void __cdecl FastWeaponOut(GAMEOBJECT *, i32);
+    void __cdecl SlowWeaponOut(GAMEOBJECT *);
+    void __cdecl SlowWeaponIn(GAMEOBJECT *);
+    i32 __cdecl PlayerItem_GotAmmo(WEAPON_AMMO_PC *);
+    extern i32(__cdecl *Fighting_WeaponInActionFn)(GAMEOBJECT *);
+    extern i32(__cdecl *Fighting_WeaponOutActionFn)(GAMEOBJECT *);
+
+    i32 __cdecl GizmoSys_SetBestBoltTarget(void *, WORLDINFO *, GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32,
+                                           i32);
+    i32 __cdecl SetObjTarget(GAMEOBJECT *, GAMEOBJECT *);
+    i32 __cdecl SetGizmoBlowUpTarget(GAMEOBJECT *, GIZMOBLOWUP_PC *);
+    i32 __cdecl SetPartTarget(GAMEOBJECT *, PART_PC *);
+    GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Target(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
+    PART_PC *__cdecl TargetPart(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32);
+    extern i32(__cdecl *GizmoBlowUp_NoTargetFn)(WORLDINFO *, GAMEOBJECT *);
+
+    i32 __cdecl GizForce_StoodOnForce(GIZFORCE_PC *, GAMEOBJECT *);
+    u16 __cdecl GizForces_AngleToForce(NUVEC *, GIZFORCE_PC *);
+    i32 __cdecl GizForce_Complete(GIZFORCE_PC *);
+    void __cdecl TakeHitCode(GAMEOBJECT *object);
+    void __cdecl ResetForceGlow(void *packet);
+    i32 __cdecl TwistLevel(LEVELDATA_PC *);
+    void __cdecl LoopCode(GAMEOBJECT *, i32, i32, GAMEPAD_PC *, i32);
+    void __cdecl Hint_SetComplete(i32);
+    extern f32 VehicleLoopTimePc;
+
     extern NEW_MINI_PIECE_PC NewMiniPiece[10];
     extern f32 KITPOSX, KITPOSY, PANEL_MINIKITSCALE, PANEL_MINIKITY, DrawMiniKitTime;
     extern f32 MiniKitScale, RedBrickScale, PANEL_REDBRICKSCALE, REDBRICKPOSX, REDBRICKPOSY, DrawRedBrickTime;

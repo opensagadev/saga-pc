@@ -3847,3 +3847,22 @@ view starts926c78, with f8 stride and attached pointer54/retention1d/flags1e.
 SetWeaponIn58d8e0/66 is complete byte-exact and reads signed object context
 against actual mutable DWORD selectors802864/802868. All prior exact matches
 remain exact; pending vehicle/terrain contracts receive no compiled source credit.
+
+
+### Vehicle public provider transfer (2026-10-03)
+
+The accepted28-function9085-PC-byte cohort implements real float/tractor,
+loop/hint, force-query, targeting and item/weapon services. Full native extents
+include FloatAdvance53 in its original caller TU, all seven TakeHit returns
+and GizmoBest's630-byte tail omitted by the older624 advisory boundary.
+Gizmo callback70 has12 cdecl stack arguments; its registry count is reloaded
+after external flag/callback actions. WORLD count50cc/array50d0 preserve the
+PC order and existing51ac stride. Weapon callbacks9555ac/9555b0 and target
+filter950be8 use their actual NULL initializers, blank storage extents and real
+callback contracts. ResetForceGlow remains a standalone void packet service;
+its original TU is unknown and it is not forced into a private move group.
+
+Current-source retail results and prior-copy reviews are retained under
+continuation-vehicle-public/, mapping/{targets2575,takehit866}-accepted-packet.json
+and apiobject/. Ordinary nonexact source is retained, including TakeHit's
+15.475837 score; no extent masks or copied native bytes improve comparisons.

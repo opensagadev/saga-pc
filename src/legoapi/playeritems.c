@@ -93,3 +93,115 @@ void __cdecl SetWeaponIn(GAMEOBJECT *object) {
     object->flags_e20 &= ~0x10000u;
     object->field_e33 = 0;
 }
+
+extern i32 WeaponInOut_NoAIJediSfx;
+typedef struct weapon_rate_pc_s {
+    u8 unknown_000[0xd40];
+    f32 weapon_scale_rate;
+} WEAPON_RATE_PC;
+STATIC_ASSERT(offsetof(WEAPON_RATE_PC, weapon_scale_rate) == 0xd40);
+void __cdecl FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
+    i8 context = object->character_context;
+    i32 animation;
+    CHARACTERANIM_CONFIG_PC *config;
+    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT))
+        object->character_context = -1;
+    if (force_sound != 0 && object->weapon_scale == 1.0f && object->field_e33 != 2) {
+        animation = CurrentAnim(&object->anim_packet);
+        config = animation != -1 ? object->character_model->animation_configs[animation] : NULL;
+        if (config == NULL || (config->flags & 0x800) == 0) {
+            if (object->character_data->model_flags & 8) {
+                if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0)
+                    GameAudio_PlaySfx(0x3d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
+            } else if (object->character_data->model_flags & 0x80)
+                GameAudio_PlaySfx(0x42, &object->collision_position, 0, 1);
+        }
+    }
+    ((WEAPON_RATE_PC *)object)->weapon_scale_rate = 5.0f;
+    object->field_e33 = 2;
+}
+
+extern i32(__cdecl *Fighting_WeaponInActionFn)(GAMEOBJECT *);
+extern i32(__cdecl *Fighting_WeaponOutActionFn)(GAMEOBJECT *);
+void __cdecl SetWeaponOut(GAMEOBJECT *object) {
+    i8 context = object->character_context;
+    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT))
+        object->character_context = -1;
+    object->weapon_scale = 1.0f;
+    object->flags_e20 |= 0x10000;
+    object->field_e33 = 0;
+}
+void __cdecl FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
+    i8 context = object->character_context;
+    i32 animation;
+    CHARACTERANIM_CONFIG_PC *config;
+    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT))
+        object->character_context = -1;
+    if (force_sound != 0 && object->weapon_scale == 0.0f && object->field_e33 != 1) {
+        animation = CurrentAnim(&object->anim_packet);
+        config = animation != -1 ? object->character_model->animation_configs[animation] : NULL;
+        if (config == NULL || (config->flags & 0x400) == 0) {
+            if (object->character_data->model_flags & 8) {
+                if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0)
+                    GameAudio_PlaySfx(0x3e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
+            } else if (object->character_data->model_flags & 0x80)
+                GameAudio_PlaySfx(0x43, &object->collision_position, 0, 1);
+        }
+    }
+    ((WEAPON_RATE_PC *)object)->weapon_scale_rate = 5.0f;
+    object->field_e33 = 1;
+}
+void __cdecl SlowWeaponOut(GAMEOBJECT *object) {
+    i32 action;
+    f32 end, start, finish;
+    if (LEGOCONTEXT_WEAPONOUT != -1 && Fighting_WeaponOutActionFn != NULL) {
+        action = Fighting_WeaponOutActionFn(object);
+        if (action != -1 && object->character_model->model_data_b[action] != NULL) {
+            end = NuAnimEndFrame(object->character_model->model_data_b[action]);
+            start = AnimListFrame(object->character_model, action, 0);
+            if (start < 1.0f)
+                start = 1.0f;
+            if (start >= 1.0f && start < end) {
+                finish = AnimListFrame(object->character_model, action, 1);
+                if (end > finish)
+                    end = finish;
+                if (start < end) {
+                    object->field_7aa = (i16)action;
+                    object->character_context = (i8)LEGOCONTEXT_WEAPONOUT;
+                    object->context_timer = AnimDuration((i16)object->id, (i16)action, 0.0f, 0.0f, 1);
+                    object->weapon_scale = 0.0f;
+                    return;
+                }
+            }
+        }
+    }
+    FastWeaponOut(object, 1);
+}
+void __cdecl SlowWeaponIn(GAMEOBJECT *object) {
+    i32 action = -1;
+    f32 end, start, finish;
+    if (LEGOCONTEXT_WEAPONIN != -1) {
+        if (Fighting_WeaponInActionFn != NULL)
+            action = Fighting_WeaponInActionFn(object);
+        /* Native indexes model_data_b with -1 when the callback is absent or returns -1. */
+        if (object->character_model->model_data_b[action] != NULL) {
+            end = NuAnimEndFrame(object->character_model->model_data_b[action]);
+            start = AnimListFrame(object->character_model, action, 0);
+            if (start < 1.0f)
+                start = 1.0f;
+            if (start >= 1.0f && start < end) {
+                finish = AnimListFrame(object->character_model, action, 1);
+                if (end > finish)
+                    end = finish;
+                if (start < end) {
+                    object->field_7aa = (i16)action;
+                    object->character_context = (i8)LEGOCONTEXT_WEAPONIN;
+                    object->context_timer = AnimDuration((i16)object->id, (i16)action, 0.0f, 0.0f, 1);
+                    object->weapon_scale = 1.0f;
+                    return;
+                }
+            }
+        }
+    }
+    FastWeaponIn(object, 1);
+}

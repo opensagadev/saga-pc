@@ -2169,3 +2169,63 @@ void __cdecl InstantKillParts(GAMEOBJECT *object, i32 mode, f32 vertical_scale) 
     excluded_layer = object->id == (u16)id_BODYGUARD && object->current_hp <= 1 ? 4 : -1;
     KillParts(object, -1, excluded_layer, mode, vertical_scale, 0, NULL);
 }
+
+i32 __cdecl SetPartTarget(GAMEOBJECT *object, PART_PC *target) {
+    object->attack_target_position = target->position;
+    object->field_c8c = target->velocity.x;
+    object->field_c90 = target->velocity.y;
+    object->field_c94 = target->velocity.z;
+    object->flags_e20 |= 0x800;
+    object->collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)target;
+    return 1;
+}
+
+PART_PC *__cdecl TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius, f32 range_squared,
+                            i32 directional, i32 bolt_id) {
+    NUVEC aim = *direction, delta;
+    BOLTTYPE_PC *bolt = BoltType_FindByID(bolt_id, WORLD);
+    PART_PC *part = Part, *best = NULL, *previous = NULL;
+    f32 min_x = position->x - radius, max_x = position->x + radius;
+    f32 min_z = position->z - radius, max_z = position->z + radius;
+    f32 nearest_distance = range_squared, distance, dot;
+    u16 angle;
+    i32 i;
+    if (directional != 0) {
+        aim = *direction;
+        if ((bolt->flags_60 & 0x20000) != 0) {
+            aim.y = 0.0f;
+            NuVecNorm(&aim, &aim);
+        }
+    }
+    for (i = 0; i < MAXPARTS; ++i, ++part) {
+        if ((part->active & 1) == 0 || ((part->flags & 0x8000000) == 0 && (part->flags & 0xa) != 0xa))
+            continue;
+        if (part->position.x < min_x || part->position.x > max_x || part->position.z < min_z ||
+            part->position.z > max_z)
+            continue;
+        distance = NuVecDistSqr(&part->position, position, &delta);
+        if (!(range_squared > distance))
+            continue;
+        if (directional == 0)
+            NuVecRotateY(&aim, &v001, NuAtan2D(part->position.x - position->x, part->position.z - position->z));
+        if ((bolt->flags_60 & 0x20000) != 0)
+            delta.y = 0.0f;
+        NuVecNorm(&delta, &delta);
+        dot = NuVecDot(&delta, &aim);
+        if (TargetDist_Near2 > distance && directional != 0)
+            angle = TargetDeg_Near;
+        else if (TargetDist_Mid2 > distance)
+            angle = TargetDeg_Mid;
+        else
+            angle = TargetDeg_Far;
+        if (!(dot > NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff]) || !(nearest_distance > distance))
+            continue;
+        if ((PART_PC *)object->collision_target == part)
+            previous = part;
+        else {
+            nearest_distance = distance;
+            best = part;
+        }
+    }
+    return best != NULL ? best : previous;
+}

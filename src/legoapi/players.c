@@ -1342,3 +1342,9 @@ void __cdecl ActivatePlayer(GAMEOBJECT *object) {
         object->context_duration = 0.0f;
     }
 }
+
+i32 __cdecl PlayerItem_GotAmmo(WEAPON_AMMO_PC *item) {
+    if (item != NULL && item->type != NULL && item->type->type == 2)
+        return item->ammo != 0;
+    return 1;
+}

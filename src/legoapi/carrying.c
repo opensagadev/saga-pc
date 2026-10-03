@@ -241,3 +241,29 @@ void __cdecl LetGoOfBalloon(GAMEOBJECT *object) {
     if (part != NULL)
         part->force_flags = (u16)ObjHitObj_Flags(object);
 }
+
+void __cdecl SuperCarry_GetObjectPos(GAMEOBJECT *object, NUVEC *position, NUVEC *secondary_position) {
+    PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
+    i32 first, second;
+    NUVEC *other, offset;
+    *position = object->collision_position;
+    first = config->hand_locators[0];
+    if (first != -1 && object->character_model->points_of_interest[first] != NULL) {
+        second = config->hand_locators[1];
+        if (second != -1 && object->character_model->points_of_interest[second] != NULL) {
+            *position = *(NUVEC *)&object->locator_matrices[first].m30;
+            other = (NUVEC *)&object->locator_matrices[second].m30;
+            position->x += ((f64)other->x - position->x) * 0.5;
+            position->y += ((f64)other->y - position->y) * 0.5;
+            position->z += ((f64)other->z - position->z) * 0.5;
+        }
+    }
+    if (SuperCarry_AlignObject != 0) {
+        if (secondary_position != NULL) {
+            NuVecRotateY(&offset, &object->launch_origin, object->field_0x276);
+            NuVecAdd(secondary_position, position, &offset);
+        }
+        NuVecRotateY(&offset, &object->external_force, object->field_0x276);
+        NuVecAdd(position, position, &offset);
+    }
+}

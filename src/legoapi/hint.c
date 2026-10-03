@@ -69,3 +69,14 @@ void __cdecl Hint_SetHintFromId(i32 hint_id, i32 force, i32 allow_completed) {
     if (hint != NULL)
         Hint_SetHint(hint, force, allow_completed);
 }
+
+void __cdecl Hint_SetComplete(i32 hint_id) {
+    HINT_PC *hint;
+    if (hint_id == -1)
+        return;
+    hint = Hint_FindHint(hint_id);
+    if (hint != NULL && hint->completed == 0) {
+        hint->completed = 1;
+        Hint_SaveGameState(hint);
+    }
+}

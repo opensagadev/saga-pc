@@ -668,3 +668,24 @@ refill:
     result = 0;
     goto hurt;
 }
+
+void __cdecl FloatRumble(GAMEOBJECT *object) {
+    union {
+        f32 value;
+        u32 bits;
+    } absolute_velocity;
+    f32 strength;
+    PAD_INPUT_PC *pad;
+    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+        absolute_velocity.value = object->velocity.y;
+        absolute_velocity.bits &= 0x7fffffff;
+        strength =
+            (f32)((f64)absolute_velocity.value / object->character_data->game_character->run_speed * (f64)0.15f + 0.25);
+        if (strength > 1.0f)
+            strength = 1.0f;
+        NewRumble(object->pad->bound_pad, strength, 0);
+        pad = object->pad->bound_pad;
+        if (pad != NULL)
+            NuSound3AddRumble(pad, 1.0f / DEFAULTFPS, 0, 0, 0.0f);
+    }
+}

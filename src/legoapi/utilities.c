@@ -105,3 +105,11 @@ void __cdecl MakeThrowVector(NUVEC *result, NUVEC *origin, NUVEC *target, NUVEC 
     result->y = vertical_speed;
     result->z = speed * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
 }
+
+void __cdecl GetRotationAngles(NUVEC *direction, u16 *x_rotation, u16 *y_rotation) {
+    NUVEC rotated, copy = *direction;
+    u16 y_angle = (u16)-NuAtan2D(copy.z, copy.x);
+    NuVecRotateY(&rotated, &copy, -(i32)y_angle);
+    *x_rotation = (u16)-NuAtan2D(rotated.x, rotated.y);
+    *y_rotation = y_angle;
+}

@@ -157,3 +157,93 @@ f32 __cdecl AdaptiveDifficultyAdjustPc(ADAPTIVEDIFFICULTY_PC *difficulty, f32 am
     }
     return difficulty->accumulator;
 }
+
+extern AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA;
+extern f32 VehicleLoopTimePc;
+i32 __cdecl TwistLevel(LEVELDATA_PC *);
+void __cdecl Hint_SetComplete(i32);
+void __cdecl LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_PC *pad, i32 allow_loop) {
+    GAMEOBJECT *other;
+    i32 index, angle_difference, loop_request = 0, roll_request = 0, turn_request = 0;
+    (void)unused;
+    if (WORLD->area != NULL) {
+        if (WORLD->area == BATTLEOVERCORUSCANT_ADATA)
+            allow_loop = 0;
+        else if (WORLD->area == PODSPRINT_ADATA)
+            return;
+    }
+    if (object->character_context == 0x3a) {
+        object->context_timer -= FRAMETIME;
+        if (object->context_timer <= 0.0f)
+            object->character_context = -1;
+        return;
+    }
+    if (object->character_context == 0x36) {
+        object->context_timer -= FRAMETIME;
+        if (object->context_timer <= 0.0f) {
+            object->character_context = -1;
+            object->secondary_lean_angle = 0;
+            object->delayed_turn_timer = .3f;
+        } else {
+            index = (i32)((1.0 - (f64)object->context_timer / (f64)object->context_duration) * 32768.0 + 16384.0);
+            object->secondary_lean_angle =
+                (u16)(i32)((1.0 - ((f64)NuTrigTable[(index >> 1) & 0x7fff] + 1.0) * .5) * 65536.0);
+        }
+        return;
+    }
+    if (!(object->character_data->game_character->field_088 > 0.0f) || object->character_context != -1)
+        return;
+    other = GetOtherActivePlayer(object);
+    if (allow_loop != 0 && object->in_narrow_socket != 0 && other != NULL && other->in_narrow_socket != 0 &&
+        other->character_context == 0x36 && other->context_timer < (f64)other->context_duration - (f64).2f &&
+        other->context_timer > .3f && GoingForwardsAlongNarrowSock(other) == GoingForwardsAlongNarrowSock(object)) {
+        loop_request = 2;
+        jump_pressed = 1;
+    } else if (object->delayed_turn_timer <= 0.0f) {
+        if (TwistLevel(WORLD->current_level))
+            angle_difference = RotDiff(0, pad->input_angle);
+        else
+            angle_difference = RotDiff(object->field_0x276, GamePad_InputAngle(object, pad));
+        if (object->movement_spline_position.spline == NULL && pad->input_magnitude > 0.0f) {
+            if ((u32)(angle_difference + 0x5fff) <= 0x58e2)
+                roll_request = 2;
+            else if ((u32)(angle_difference - 0x71d) <= 0x58e2)
+                roll_request = 1;
+            else if ((angle_difference < 0 ? -angle_difference : angle_difference) >= 0x4000)
+                turn_request = 1;
+            else
+                loop_request = 1;
+        } else
+            loop_request = 1;
+        if (allow_loop == 0) {
+            loop_request = 0;
+            turn_request = 0;
+        }
+    }
+    if (jump_pressed == 0)
+        return;
+    if (loop_request != 0) {
+        if (loop_request != 2 && object->in_narrow_socket && other != NULL &&
+            (other->character_context == 0x2a || other->character_context == 0x36 || other->character_context == 0x3a))
+            return;
+        object->character_context = 0x36;
+        object->field_7aa = 1;
+        object->context_duration = object->context_timer = VehicleLoopTimePc;
+        PlaySfx((char *)TurnLoopSfx, &object->collision_position);
+        Hint_SetComplete(0x287);
+    } else if (roll_request != 0) {
+        if (object->in_narrow_socket && other != NULL &&
+            (other->character_context == 0x2a || other->character_context == 0x36))
+            return;
+        object->context_duration = object->context_timer = .75f;
+        object->character_context = 0x3a;
+        object->field_7aa = 1;
+        object->field_7b3 = (u8)(roll_request - 1);
+        PlaySfx((char *)TurnLoopSfx, &object->collision_position);
+    } else if (turn_request != 0) {
+        if (object->in_narrow_socket && other != NULL &&
+            (other->character_context == 0x2a || other->character_context == 0x36 || other->character_context == 0x3a))
+            return;
+        StartTurn(object);
+    }
+}

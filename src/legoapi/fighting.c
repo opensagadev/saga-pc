@@ -50,3 +50,103 @@ void __cdecl DeflectPart(PART_PC *part, GAMEOBJECT *object, f32 speed, f32 gravi
             LightSabreDebris(object);
     }
 }
+
+typedef struct TAKEHIT_VARIANT_VIEW_PC {
+    u8 unknown_000[0x7bb];
+    i8 hit_variant;
+} TAKEHIT_VARIANT_VIEW_PC;
+STATIC_ASSERT(offsetof(TAKEHIT_VARIANT_VIEW_PC, hit_variant) == 0x7bb);
+void __cdecl TakeHitCode(GAMEOBJECT *object) {
+    i32 active = 0, mode, coins, hearts, random_types, panel;
+    i16 animation = object->field_7aa;
+    f32 timer;
+    TAKEHIT_VARIANT_VIEW_PC *variant = (TAKEHIT_VARIANT_VIEW_PC *)object;
+    if (animation != -1) {
+        if (object->character_model->model_data_b[animation] == NULL ||
+            AnimPlaying(&object->anim_packet, animation, 1, 0) != NULL)
+            active = 1;
+    }
+    if (object->character_context == 0x5f) {
+        if (!active)
+            return;
+        timer = object->context_timer + FRAMETIME;
+        object->context_timer = timer;
+        if (timer >= object->context_duration)
+            goto airborne_finished;
+        if (!(timer > 0.5f))
+            return;
+        if (object->reset_velocity.y < 0.0f && object->field_281 != 0)
+            goto airborne_finished;
+        if (object->contact_count == 0)
+            return;
+        if (!((f64)timer / (f64)object->context_duration * (f64)-0.8f + (f64)0.8f < (f64)object->terrain_impact_speed))
+            return;
+    airborne_finished:
+        mode = 2;
+        if (Arcade != 0 && (variant->hit_variant == 0 || variant->hit_variant == 1))
+            Arcade_Kill(variant->hit_variant, (i8)object->field_280);
+        goto kill_object;
+    }
+    if (object->character_context == 0x5a) {
+        if (!active)
+            return;
+        timer = object->context_timer - FRAMETIME;
+        object->context_timer = timer;
+        if (!(0.0f >= timer))
+            return;
+        if (object->field_7b3 != 0) {
+            if (object->field_7b3 == 1)
+                object->character_context = -1;
+            return;
+        }
+        object->flags_e24 |= 0x8000;
+        if (animation == 0xb9) {
+            mode = 1;
+            goto kill_object;
+        }
+        if (animation == 0x3d) {
+            object->character_context = -1;
+            return;
+        }
+        if (animation == 0xa7)
+            object->field_7aa = 0xaa;
+        else if (animation == 0xa8)
+            object->field_7aa = 0xab;
+        else if (animation == 0xa9)
+            object->field_7aa = 0xac;
+        else
+            object->field_7aa = 1;
+        object->field_7b3 = 1;
+        animation = object->field_7aa;
+        if (object->character_model->model_data_b[animation] != NULL &&
+            (object->character_model->animation_configs[animation]->flags & 2) == 0)
+            object->context_timer = AnimDuration((i16)object->id, animation, 0.0f, 0.0f, 1);
+        else
+            object->context_timer = object->context_hover_target_y;
+        return;
+    }
+    if (object->character_context == 0x15 && active) {
+        timer = object->context_timer - FRAMETIME;
+        object->context_timer = timer;
+        if (0.0f >= timer)
+            object->character_context = -1;
+    }
+    return;
+kill_object:
+    KillParts(object, -1, -1, 1, 0.0f, mode == 2, NULL);
+    KillGameObject(object, 2, 0);
+    if (object->field_280 != 0xff)
+        return;
+    coins = 0;
+    if (BonusArea != 0)
+        coins = (u16)object->character_data->game_character->coin_value;
+    else if (Cheat_IsOn(0x10) != 0)
+        coins = 350;
+    hearts = ReleaseHearts();
+    if (coins <= 0 && hearts == 0)
+        return;
+    random_types = BonusArea == 0 && coins < 2500;
+    panel = BonusArea != 0;
+    AddPickups(coins, hearts, 0, 0, &object->collision_position, NULL, 2.0f, -1, 1.0f, 2000000.0f, NULL, random_types,
+               panel);
+}

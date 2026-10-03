@@ -43,3 +43,69 @@ void __cdecl EngineNoiseCode(GAMEOBJECT *object, i32 silent) {
     pitch = (f32)(((f64)qrand() * (f64)1.5259022e-5f * (f64).03f + (f64).985f) * (f64)pitch);
     PlaySfxByIdAndSetVolumeAndPitch(sfx_id, &object->collision_position, volume, pitch);
 }
+
+extern u8 DisorientAxisPc;
+typedef struct disorient_movement_pc_s {
+    u8 unknown000[0x200];
+    NUVEC movement;
+} DISORIENT_MOVEMENT_PC;
+STATIC_ASSERT(offsetof(DISORIENT_MOVEMENT_PC, movement) == 0x200);
+void __cdecl StartTurn(GAMEOBJECT *);
+void __cdecl Disorientate(GAMEOBJECT *object, NUVEC *unused) {
+    i32 elapsed_seconds = (i32)object->context_timer;
+    NUVEC delta;
+    f32 speed, ratio, x_velocity, z_velocity;
+    f64 fraction;
+    (void)unused;
+    if ((elapsed_seconds % 2) == 0 && (f32)elapsed_seconds != object->field_780) {
+        object->field_780 = (f32)elapsed_seconds;
+        DisorientAxisPc = 0;
+        while ((DisorientAxisPc & 5) == 0) {
+            if (NuFloatRand((NURAND *)&GAMERAND) < 0.5f)
+                DisorientAxisPc |= 1;
+            if (NuFloatRand((NURAND *)&GAMERAND) < 0.5f)
+                DisorientAxisPc |= 2;
+            if (NuFloatRand((NURAND *)&GAMERAND) < 0.5f)
+                DisorientAxisPc |= 4;
+        }
+    }
+    if (DisorientAxisPc & 1)
+        object->pitch_angle = SeekRot(object->pitch_angle, (u16)(object->pitch_angle + 0x4000), 3.0f);
+    if (DisorientAxisPc & 2)
+        object->field_0x276 = SeekRot(object->field_0x276, (u16)(object->field_0x276 + 0x4000), 3.0f);
+    if (DisorientAxisPc & 4)
+        object->roll_angle = SeekRot(object->roll_angle, (u16)(object->roll_angle + 0x4000), 3.0f);
+    speed = (f32)(75.0 / (NuVecDistSqr(&object->collision_position, &object->external_force, &delta) / 6.0 + 1.0));
+    ratio = (f32)(((f64)delta.x + (f64)0.01f) / ((f64)delta.z + (f64)0.01f));
+    fraction = 1.0 / (f64)ratio;
+    x_velocity = (f32)((1.0 - fraction) * speed);
+    z_velocity = (f32)(fraction * speed);
+    if (x_velocity > 100.0f)
+        x_velocity = 100.0f;
+    else if (z_velocity > 100.0f)
+        z_velocity = 100.0f;
+    if ((delta.x < 0.0f && x_velocity > 0.0f) || (delta.x > 0.0f && x_velocity < 0.0f))
+        x_velocity = -x_velocity;
+    if ((delta.z < 0.0f && z_velocity > 0.0f) || (delta.z > 0.0f && z_velocity < 0.0f))
+        z_velocity = -z_velocity;
+    ((DISORIENT_MOVEMENT_PC *)object)->movement.x = x_velocity;
+    ((DISORIENT_MOVEMENT_PC *)object)->movement.y = 0.0f;
+    ((DISORIENT_MOVEMENT_PC *)object)->movement.z = z_velocity;
+}
+void __cdecl DisorientateCode(GAMEOBJECT *object, NUVEC *target, f32 distance) {
+    if (target != NULL) {
+        if (object->character_context != 0x40)
+            object->context_timer = 0.0f;
+        object->character_context = 0x40;
+        object->external_force = *target;
+    }
+    if (object->character_context != 0x40)
+        return;
+    Disorientate(object, &object->external_force);
+    object->context_timer += FRAMETIME;
+    if (NuVecDistSqr(&object->collision_position, &object->external_force, NULL) > (f64)distance * 1.5 &&
+        object->context_timer > 3.0f) {
+        object->character_context = -1;
+        StartTurn(object);
+    }
+}

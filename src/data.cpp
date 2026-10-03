@@ -8101,3 +8101,39 @@ extern "C" {
     i32 LEGOCONTEXT_WEAPONOUT = -1;
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$TractorBeamEnabledPc")
+    u8 TractorBeamEnabledPc;
+#pragma bss_seg()
+
+#pragma data_seg(".data$DisorientAxisPc")
+    u8 DisorientAxisPc = 7;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$WeaponInOut_NoAIJediSfx")
+    i32 WeaponInOut_NoAIJediSfx;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$VehicleLoopTimePc")
+    f32 VehicleLoopTimePc = 1.5f;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$GizmoBlowUp_NoTargetFn")
+    i32(__cdecl *GizmoBlowUp_NoTargetFn)(WORLDINFO *, GAMEOBJECT *);
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$Fighting_WeaponInActionFn")
+    i32(__cdecl *Fighting_WeaponInActionFn)(GAMEOBJECT *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$Fighting_WeaponOutActionFn")
+    i32(__cdecl *Fighting_WeaponOutActionFn)(GAMEOBJECT *);
+#pragma bss_seg()
+}

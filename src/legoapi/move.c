@@ -3476,3 +3476,88 @@ f32 __cdecl FindGunshipHoverHeight(GAMEOBJECT *object) {
     }
     return height;
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_283) == 0x283);
+STATIC_ASSERT(offsetof(GAMEOBJECT, water_height) == 0x220);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, lower_position) == 0x19c);
+static __declspec(noinline) void FloatAdvancePc(GAMEOBJECT *object) {
+    if (object->pad->input_magnitude > 0.0f && object->character_model->model_data_b[0xe5] != NULL)
+        object->field_7aa = 0xe5;
+    else
+        object->field_7aa = 0x8e;
+}
+void __cdecl FloatCode(GAMEOBJECT *object) {
+    f32 exit_fraction, entry_fraction, jump_fraction;
+    i32 vehicle, float_allowed;
+    if (StartupGameFlag1 && !StartupGameFlag0)
+        return;
+    vehicle = (object->character_data->model_flags & 0x2000) != 0;
+    if (vehicle) {
+        exit_fraction = 0.15f;
+        entry_fraction = 0.1f;
+        jump_fraction = 0.5f;
+    } else {
+        exit_fraction = 0.25f;
+        entry_fraction = 0.125f;
+        jump_fraction = 0.625f;
+    }
+    float_allowed = vehicle || (object->character_data->game_character->flags_090 & 0x4000000) != 0;
+    if ((object->field_283 == 1 || object->field_283 == 6) && object->water_height > object->collision_min.y &&
+        object->water_height <= (f64)object->collision_min.y - ((f64)object->position.y - object->start_position.y)) {
+        if (object->velocity.y < -1.0f)
+            AddGameDebrisXYZ(WORLD->game_debris_sys, 13, object->collision_position.x, object->water_height,
+                             object->collision_position.z);
+        FloatRumble(object);
+    }
+    if (object->character_context == 0x4b) {
+        object->context_timer += FRAMETIME;
+        if ((object->field_283 == 6 && !float_allowed) || (object->field_283 != 1 && object->field_283 != 6))
+            object->character_context = -1;
+        else if (!vehicle && object->context_timer >= 0.6f && (object->pad->buttons_pressed & GAMEPAD_JUMP) != 0 &&
+                 ((f64)object->upper_position.y - object->water_height) >
+                     ((f64)object->upper_position.y - object->lower_position.y) * jump_fraction) {
+            StartJump(object, 0);
+            object->flags_e24 |= 0x1000;
+            AddGameDebrisXYZ(WORLD->game_debris_sys, 13, object->collision_position.x, object->water_height,
+                             object->collision_position.z);
+        } else if (object->field_281 &&
+                   object->water_height < ((f64)object->collision_max.y - object->collision_min.y) * entry_fraction +
+                                              object->collision_min.y)
+            object->character_context = -1;
+        else if (object->water_height <
+                 ((f64)object->collision_max.y - object->collision_min.y) * exit_fraction + object->collision_min.y) {
+            object->character_context = -1;
+            AddGameDebrisXYZ(WORLD->game_debris_sys, 13, object->collision_position.x, object->water_height,
+                             object->collision_position.z);
+        }
+        if (object->character_context == -1)
+            FloatRumble(object);
+        else if (object->character_context == 0x4b)
+            FloatAdvancePc(object);
+    } else if ((object->field_283 == 1 || (object->field_283 == 6 && float_allowed)) &&
+               object->water_height > ((f64)object->collision_max.y - object->collision_min.y) * entry_fraction +
+                                          object->collision_min.y &&
+               (object->character_context != 0 || object->velocity.y < 0.0f) && object->character_context != 0x5b) {
+        object->character_context = 0x4b;
+        if (object->suit != NULL && (((SUIT_LAYERS_PC *)object->suit)->flags & 0x10) != 0)
+            object->velocity.y *= 0.25f;
+        FloatAdvancePc(object);
+        object->context_timer = 0.0f;
+        FastWeaponIn(object, 0);
+        FloatRumble(object);
+        ReleaseForce(object, 0);
+    }
+}
+
+i32 __cdecl SetObjTarget(GAMEOBJECT *object, GAMEOBJECT *target) {
+    object->attack_target_position = target->collision_position;
+    if ((object->character_data->model_flags & 0x2000) == 0 && (object->flags_1f8 & 1) != 0)
+        object->attack_target_position.y += Bolt_ObjTargetPosYAdjust(target);
+    object->field_c8c = v000.x;
+    object->field_c90 = v000.y;
+    object->field_c94 = v000.z;
+    object->flags_e20 |= 0x800;
+    object->collision_target = VehicleArea != 0 ? NULL : target;
+    return 1;
+}

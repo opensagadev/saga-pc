@@ -871,3 +871,46 @@ and 1,051-byte Loop/Twist/Hint family. Private weapon/target and vehicle groups
 continue in genuine caller contexts. Move_VEHICLE1789/PostReset111 still require
 real provider closure before TerrainPlayer8287 can link. No replacement vehicle
 body or fabricated private ABI wrapper is used.
+
+
+### Vehicle movement, targeting and weapon checkpoint (2026-10-03)
+
+Twenty-eight newly compiled functions add 9,085 complete original PC bytes over
+9c0d056. Unique compared code reaches 652,294 bytes; native objdiff's denominator
+is 652,406 because overlapping aliases remain visible. Whole-PC fuzzy coverage
+rises from 11.349925% to 11.550616% of 3,471,246 bytes. Exact code adds 640 bytes
+to 66,566 (1.917640%); all previous exact code and data remain exact.
+
+Connected providers include Float's actual private53-byte helper and883-byte
+caller, rumble/carrying/rotation/disorientation/tractor routines, genuine Loop955
+with Twist24 and Hint72, ResetForceGlow51, TakeHit866, three force queries219,
+six target selectors/setters2575 and five item/weapon providers943. Original
+private helper/caller context, actual PC phase constants, mutable table reads,
+registry reloads after calls and exact callback stack conventions are retained.
+The source-only executable links216 objects,2484 functions and4325 data
+definitions with all references resolved. No replacement private-register bridge
+or artificial storage provider is introduced.
+
+LLVM18 checks218 format files and216 tidy units; all665 tests pass with three
+skips. Actual compiled-object fixtures pass18 float/tractor/carry checks,19
+Loop/Twist/Hint cases,4 glow reset canary patterns,12 TakeHit behavior checks
+plus12 guards,21 force-query checks and13 target-selection checks. TakeHit's
+death/pickup paths remain untested and call genuine existing partial services.
+SlowWeaponIn retains the original negative-action array access: neither a new
+guard nor a fake callback replaces that behavior. Full game/assets and physical
+audio/input/rendering remain unverified.
+
+All2456 prior function copies remain;2454 are byte-identical. The particle and
+DebReAlloc2 copies retain actual nonexact scores, with independent review of their
+changed relocated bytes. Seven new canonical initializer views total22 bytes;
+all1016 previous views remain unchanged. All seven original extents stay unknown
+and receive zero allocation credit. The sole writer's scope reaches1023 proofs.
+
+This half-hour checkpoint waited for the coherent targeting/weapon integration
+and final comparison review. Next releases the independently repaired Awkward
+plus true six-argument ray query and full switch-table impact helper1471. A
+genuine-object fixture distinguishes the PC's second carry-position output: the
+corrected source passes22 checks, while the prior wrong output fails its regression
+case. Cannon/Shoot/FindID, Force/POD and Move_VEHICLE then connect the held terrain
+parent. Parallel retained inventory replenishes resource/render/UI/audio families;
+the whole-project mandate continues.

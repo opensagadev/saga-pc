@@ -1286,3 +1286,21 @@ source-view bytes. All six new extents remain blank with zero allocation credit.
 The grapple loops establish four working records at f8 stride and fields1d/1e/54;
 they do not establish a complete original allocation extent. Actual production
 compiled initializer regions are compared through the repository relocator.
+
+
+### Vehicle public callback/state views (2026-10-03)
+
+The sole writer adds seven canonical initializer views totaling22 bytes:
+WeaponInOut_NoAIJediSfx4, DisorientAxisPc1, TractorBeamEnabledPc1,
+VehicleLoopTimePc4=1.5f, GizmoBlowUp_NoTargetFn4=NULL and the two fighting
+action callback pointers4 each=NULL. All full initializer regions match
+retail and all1016 previous proofs remain unchanged. Original allocation
+extents remain unknown; no full-allocation coverage credit is assigned.
+The scope is1023 definitions:553 known extents over137551 unique bytes,
+470 unknown views over59727 emitted bytes. Literal/NUL aliases used by
+actual compiled instructions are separately checked and mapped.
+
+Awkward's14-row sphere table and two ID words are verified scratch proposals
+for the next coherent source group, not current production storage. FindID
+reuses the existing StartupGameFlag0 owner rather than defining its8765a0
+flag again, and duplicate WORD views at7f0e98 are reconciled before release.

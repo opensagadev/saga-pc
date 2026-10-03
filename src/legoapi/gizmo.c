@@ -540,3 +540,62 @@ void __cdecl LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
     GizmoSysPostLoad(system, world);
     system->flags &= ~4;
 }
+
+i32 __cdecl TwistLevel(LEVELDATA_PC *level) {
+    return DOGFIGHTA_LDATA != NULL && level == DOGFIGHTA_LDATA;
+}
+
+i32 __cdecl GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJECT *object, NUVEC *position,
+                                       NUVEC *direction, f32 radius, f32 range_squared, i32 directional, i32 planar,
+                                       i32 bolt_id) {
+    GIZMOTYPES_PC *registry = (GIZMOTYPES_PC *)gizmotypes;
+    GIZMOTYPE_PC *type;
+    GIZMOSET_PC *set;
+    void *best = NULL, *previous = NULL, *target;
+    f32 best_distance = 1.0e9f, distance;
+    NUVEC best_position, best_velocity, previous_position, previous_velocity, target_position, target_velocity;
+    i32 i;
+    (void)world;
+    if (registry == NULL || system == NULL || object == NULL || (ObjHitObj_Flags(object) & 0x800) == 0)
+        return 0;
+    registry = (GIZMOTYPES_PC *)gizmotypes;
+    type = (GIZMOTYPE_PC *)registry->types;
+    set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
+    for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set) {
+        if (type->get_best_bolt_target == NULL)
+            continue;
+        target = type->get_best_bolt_target(set, &distance, &target_position, &target_velocity, object, position,
+                                            direction, radius, range_squared, directional, planar, bolt_id);
+        if (target == NULL)
+            continue;
+        if (target == object->collision_target) {
+            previous = target;
+            previous_position = target_position;
+            previous_velocity = target_velocity;
+        } else if (best_distance > distance) {
+            best = target;
+            best_position = target_position;
+            best_velocity = target_velocity;
+            best_distance = distance;
+        }
+    }
+    if (best != NULL) {
+        object->attack_target_position = best_position;
+        object->field_c8c = best_velocity.x;
+        object->field_c90 = best_velocity.y;
+        object->field_c94 = best_velocity.z;
+        object->flags_e20 |= 0x800;
+        object->collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)best;
+        return 1;
+    }
+    if (previous != NULL) {
+        object->attack_target_position = previous_position;
+        object->field_c8c = previous_velocity.x;
+        object->field_c90 = previous_velocity.y;
+        object->field_c94 = previous_velocity.z;
+        object->flags_e20 |= 0x800;
+        object->collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)previous;
+        return 1;
+    }
+    return 0;
+}
