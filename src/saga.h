@@ -6366,9 +6366,91 @@ struct level_fixup_pc_s;
 #define PCWarningPrefix NuBlankStringValue            // NOLINT(readability-identifier-naming)
 #define PCWarningNativeFormat GizAIMessage_NameFormat // NOLINT(readability-identifier-naming)
 
+typedef union PC_SURFACE_MASK_PC {
+    u8 low;
+    u32 word;
+} PC_SURFACE_MASK_PC;
+STATIC_ASSERT(sizeof(PC_SURFACE_MASK_PC) == 4);
+STATIC_ASSERT(offsetof(PC_SURFACE_MASK_PC, low) == 0);
+STATIC_ASSERT(offsetof(PC_SURFACE_MASK_PC, word) == 0);
+
+#ifdef __cplusplus
+struct PC_OCCLUDER_RECORD {
+    NUVEC4 vertices[4];
+    NUVEC4 transformed[4];
+    f32 min_x, max_x, min_y, max_y, min_depth, depth;
+    u8 unknown_98[8];
+};
+STATIC_ASSERT(sizeof(PC_OCCLUDER_RECORD) == 0xa0);
+STATIC_ASSERT(offsetof(PC_OCCLUDER_RECORD, transformed) == 0x40);
+STATIC_ASSERT(offsetof(PC_OCCLUDER_RECORD, min_x) == 0x80);
+STATIC_ASSERT(offsetof(PC_OCCLUDER_RECORD, depth) == 0x94);
+
+struct OccluderSet {
+    PC_OCCLUDER_RECORD *occluders;
+    u32 *indices;
+    u32 capacity;
+    u32 count;
+    bool queries_prepared;
+    u8 unknown_11[15];
+    NUMTX projection_matrix;
+    NUMTX query_matrix;
+    bool IsOccludedOBB(const NUVEC *, const NUVEC *, const NUMTX *);
+    void PrepareForQueries(const NUMTX *, const NUMTX *);
+    static i32 __cdecl SortByDepth(const void *, const void *);
+};
+STATIC_ASSERT(sizeof(OccluderSet) == 0xa0);
+STATIC_ASSERT(offsetof(OccluderSet, count) == 0xc);
+STATIC_ASSERT(offsetof(OccluderSet, queries_prepared) == 0x10);
+STATIC_ASSERT(offsetof(OccluderSet, projection_matrix) == 0x20);
+STATIC_ASSERT(offsetof(OccluderSet, query_matrix) == 0x60);
+
+struct OcclusionManager {
+    bool initialized;
+    bool enabled;
+    u8 unknown_02[14];
+    OccluderSet sets[2];
+    OccluderSet *building_set;
+    OccluderSet *current_set;
+    f32 unknown_158, unknown_15c;
+    u32 occluded_count, query_count;
+    u8 unknown_168[8];
+    bool IsOccludedOBB(const NUVEC *, const NUVEC *, const NUMTX *);
+};
+STATIC_ASSERT(sizeof(OcclusionManager) == sizeof(OCCLUSIONMANAGER));
+STATIC_ASSERT(offsetof(OcclusionManager, current_set) == 0x154);
+STATIC_ASSERT(offsetof(OcclusionManager, occluded_count) == 0x160);
+STATIC_ASSERT(offsetof(OcclusionManager, query_count) == 0x164);
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+    void __cdecl NewScan(NUVEC *position, i32 terrain_mask, i32 scan_platforms);
+    void __cdecl ScanTerrainHandel(i32 terrain_mask, i16 *handle);
+    void __cdecl ScanTerrainPlatform(i32 group_index, i32 terrain_mask);
+    i32 __cdecl HitTerrPoly(TERRAIN_POLYGON_INFO_PC *surface, i32 group_index);
+    i32 __cdecl NuOcclusionManagerIsEnabled(void);
+    i32 __cdecl ReleaseHearts(void);
+    void __cdecl MakePartVector(NUVEC *velocity, NUVEC *direction, f32 scale);
+    i32 __cdecl UnderWater(GAMEOBJECT *object);
+    i32 __cdecl IntersectWater(GAMEOBJECT *object);
+    void __cdecl Surface_Deflect(NUVEC *normal, NUVEC *movement, NUVEC *result, i32 mode);
+    GAMEOBJECT *__cdecl CharPlatform_FindObjFromPlatID(void *system, i32 platform_id);
+    void __cdecl TerrainSetImpactData(void *records, i32 *count, i32 max_records);
+    void __cdecl TerrainSetPlatConnectTol(f32 tolerance);
+    extern f32 TerrainPlayerOtherMovementScalePc;
+    extern f32 TerrainPlayerBikeMovementScalePc;
+    extern f32 TerrainPlayerPlatConnectTolerancePc;
+    extern i32 TerrainPlayerShadowFixPc;
+    extern i32 MAXBLOWUPRANDSPANG;
+    extern void(__cdecl *GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *);
+    extern i32 TerrPlatDis;
+    extern i32 PCPortalsEnabled;
+    extern i32 PartVectorSpreadDegrees_PC;
+    extern f32 AreaPickupGravity;
+    extern f32 AreaPickupScale;
 
     int __cdecl NuMain(int argc, char **argv);
     void __cdecl NuCommandLine(i32 *__restrict argc, char ***__restrict argv);
@@ -7687,8 +7769,8 @@ extern "C" {
     extern f32 GetSurfaceInfoRoofHeightPc;
     extern NUVEC GetSurfaceInfoSurfaceNormalPc;
     extern NUVEC GetSurfaceInfoWaterNormalPc;
-    extern u8 GetSurfaceInfoDefaultMaskPc;
-    extern u8 GetSurfaceInfoRuntimeMaskPc;
+    extern PC_SURFACE_MASK_PC GetSurfaceInfoDefaultMaskPc;
+    extern PC_SURFACE_MASK_PC GetSurfaceInfoRuntimeMaskPc;
     void __cdecl SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 index, i32 segment, f32 fraction);
     extern void(__cdecl *SurfaceInfo_ExtraReflectFn)(GAMEOBJECT *object);
     void __cdecl CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socket_rotation);

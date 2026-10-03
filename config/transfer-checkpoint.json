@@ -8134,6 +8134,508 @@
         "Carry Throw/PartKill/Clear/SpecialMove and TerrainPlayer remain held on genuine remaining providers.",
         "Native retail differential execution was not available under Wine; solver expectations derive from verified PC instructions."
       ]
+    },
+    {
+      "baseline_commit": "5bb33ccb3d807a134eb54efe972779d85c7a3f2e",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 703912,
+        "matched_code_bytes": 61605,
+        "matching_percent": 1.7747229669115931,
+        "fuzzy_coverage_percent": 10.058667660874546,
+        "mapped_functions": 2512,
+        "matched_functions": 1016,
+        "objdiff_fuzzy_percent": 60.906567,
+        "objdiff_total_code": 573457,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1340527,
+        "mapping_percent": 3.34570741780183
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 719777,
+        "matched_code_bytes": 61746,
+        "matching_percent": 1.7787849089347167,
+        "fuzzy_coverage_percent": 10.206869876367197,
+        "mapped_functions": 2531,
+        "matched_functions": 1019,
+        "objdiff_fuzzy_percent": 60.20922,
+        "objdiff_total_code": 588643,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1356420,
+        "mapping_percent": 3.385373405873032
+      },
+      "newly_compared": [
+        {
+          "name": "ReleaseHearts",
+          "symbol": "_ReleaseHearts",
+          "address": "0x0046c4f0",
+          "units": [
+            "src/legoapi/playeritems.c"
+          ],
+          "target_size": 288,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/playeritems.c",
+              "base_size": 289,
+              "exact_match": false,
+              "target_sha256": "458266393f33040f45d073cbd0a9d6375eb4cab8e1ad1ecb08c0fb2b043c39be",
+              "base_sha256": "49ef9a5896a767b2e0c6c2b3c0834199b515b18dc508d462b33513db66e116e7",
+              "relocation_count": 10,
+              "comparison_unit": "0046c4f0-4e968ac16a5b",
+              "objdiff_percent": 86.623764
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 86.623764
+        },
+        {
+          "name": "MakePartVector",
+          "symbol": "_MakePartVector",
+          "address": "0x00571ea0",
+          "units": [
+            "src/legoapi/parts.c"
+          ],
+          "target_size": 380,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/parts.c",
+              "base_size": 391,
+              "exact_match": false,
+              "target_sha256": "4c6ccbd7a6069c4963d7cfdaaa87ca2000f95f095c3595e747c313b073cbf97a",
+              "base_sha256": "9eb35e437116dee798890e5035618d992389770e3360c896582951c563e534e4",
+              "relocation_count": 26,
+              "comparison_unit": "00571ea0-e9a8becf63f7",
+              "objdiff_percent": 0.0
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 0.0
+        },
+        {
+          "name": "UnderWater",
+          "symbol": "_UnderWater",
+          "address": "0x00572790",
+          "units": [
+            "src/legoapi/surfaces_pc.c"
+          ],
+          "target_size": 48,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/surfaces_pc.c",
+              "base_size": 48,
+              "exact_match": false,
+              "target_sha256": "9cc1dd3e7f32f6a881677b711c1e3346d5cf3896f85e13e26ddd296c4205a76d",
+              "base_sha256": "72c8b02ec93f60514e9d1fdfd69d0b5d6e3f50cef2c6c19d746536ca40b2bdd7",
+              "relocation_count": 0,
+              "comparison_unit": "00572790-6c41fa1eba8f",
+              "objdiff_percent": 96.0625
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 96.0625
+        },
+        {
+          "name": "IntersectWater",
+          "symbol": "_IntersectWater",
+          "address": "0x005727c0",
+          "units": [
+            "src/legoapi/surfaces_pc.c"
+          ],
+          "target_size": 69,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/surfaces_pc.c",
+              "base_size": 69,
+              "exact_match": false,
+              "target_sha256": "997c1fb09c5ee765fc0d8729c5200f7c6987ffa7b20960510da731242c48cf46",
+              "base_sha256": "95973bb5165c6c3650e9d90259932137fd2b1d434bb476b51cb1c4db3ba139e9",
+              "relocation_count": 0,
+              "comparison_unit": "005727c0-430a78522af7",
+              "objdiff_percent": 24.0
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 24.0
+        },
+        {
+          "name": "Surface_Deflect",
+          "symbol": "_Surface_Deflect",
+          "address": "0x00572810",
+          "units": [
+            "src/legoapi/surfaces_pc.c"
+          ],
+          "target_size": 135,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/surfaces_pc.c",
+              "base_size": 129,
+              "exact_match": false,
+              "target_sha256": "551b2c167d50df44c4d3bdea301d395f6461efb7205ec871a83507d941a40b64",
+              "base_sha256": "0c07a53622afd3e42a570b05b1f8d8ce61487c7ea71766886c632477765b978f",
+              "relocation_count": 4,
+              "comparison_unit": "00572810-6365d56ad8ee",
+              "objdiff_percent": 71.44444
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 71.44444
+        },
+        {
+          "name": "CharPlatform_FindObjFromPlatID",
+          "symbol": "_CharPlatform_FindObjFromPlatID",
+          "address": "0x0058bbf0",
+          "units": [
+            "src/legoapi/charplatforms_pc.c"
+          ],
+          "target_size": 72,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/charplatforms_pc.c",
+              "base_size": 72,
+              "exact_match": false,
+              "target_sha256": "d8d58c7d3fe8dc30d325b0b5540bdbd71f05badfd99c5e1a317159acb693aac1",
+              "base_sha256": "0e4c5638422944472980bbfa807a875f230c9d12cf73781ebdfbc5e9c19b4f3c",
+              "relocation_count": 0,
+              "comparison_unit": "0058bbf0-02048224f7b9",
+              "objdiff_percent": 54.794117
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 54.794117
+        },
+        {
+          "name": "?OcclusionMtxCopyPrivate@@YAXPAUnumtx_s@@PBU1@@Z",
+          "symbol": "?OcclusionMtxCopyPrivate@@YAXPAUnumtx_s@@PBU1@@Z",
+          "address": "0x005c19d0",
+          "units": [
+            "src/legoapi/occlusion.cpp"
+          ],
+          "target_size": 95,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/legoapi/occlusion.cpp",
+              "base_size": 95,
+              "exact_match": true,
+              "target_sha256": "51832375d4244db31130e3ec3b00637ef7b0eb6679e7023644a232e287ba89f8",
+              "base_sha256": "51832375d4244db31130e3ec3b00637ef7b0eb6679e7023644a232e287ba89f8",
+              "relocation_count": 0,
+              "comparison_unit": "005c19d0-f14315a685c3",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "?SortByDepth@OccluderSet@@SAHPBX0@Z",
+          "symbol": "?SortByDepth@OccluderSet@@SAHPBX0@Z",
+          "address": "0x005c5420",
+          "units": [
+            "src/legoapi/occlusion.cpp"
+          ],
+          "target_size": 75,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/occlusion.cpp",
+              "base_size": 75,
+              "exact_match": false,
+              "target_sha256": "dae0ea00dc8dab72af89bc976eee4df18e3344d9fa251532acd514dcdfa9c859",
+              "base_sha256": "6be77c8e7953440bc0456ba6476ede1888188603a6c4bf0f3cf63cfa4568ea59",
+              "relocation_count": 1,
+              "comparison_unit": "005c5420-b45ec213236e",
+              "objdiff_percent": 87.666664
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 87.666664
+        },
+        {
+          "name": "?IsOccludedOBB@OccluderSet@@QAE_NPBUnuvec_s@@0PBUnumtx_s@@@Z",
+          "symbol": "?IsOccludedOBB@OccluderSet@@QAE_NPBUnuvec_s@@0PBUnumtx_s@@@Z",
+          "address": "0x005c5750",
+          "units": [
+            "src/legoapi/occlusion.cpp"
+          ],
+          "target_size": 1247,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/occlusion.cpp",
+              "base_size": 1126,
+              "exact_match": false,
+              "target_sha256": "39a7a11ae625e2170edaf2a62d6641669162579e03e77daaa2586e00eb8a4a59",
+              "base_sha256": "c7cce0580f82031a98ab7b08db1024cc5444e9b5f96ca842fe84c26e5af691d7",
+              "relocation_count": 8,
+              "comparison_unit": "005c5750-d762636b33c7",
+              "objdiff_percent": 59.1268
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 59.1268
+        },
+        {
+          "name": "NuOcclusionManagerIsEnabled",
+          "symbol": "_NuOcclusionManagerIsEnabled",
+          "address": "0x005c60a0",
+          "units": [
+            "src/legoapi/occlusion.cpp"
+          ],
+          "target_size": 45,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/occlusion.cpp",
+              "base_size": 27,
+              "exact_match": false,
+              "target_sha256": "c203034bfee1ebce45101b8312e42fe200215ec445523f8ab455a869199badbc",
+              "base_sha256": "9d4b210657d6fc728ca68a1f01e7b941c00eae7adca0fabb3fd6884b4539e12e",
+              "relocation_count": 2,
+              "comparison_unit": "005c60a0-f8cad5a9f2f7",
+              "objdiff_percent": 50.0
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 50.0
+        },
+        {
+          "name": "?PrepareForQueries@OccluderSet@@QAEXPBUnumtx_s@@0@Z",
+          "symbol": "?PrepareForQueries@OccluderSet@@QAEXPBUnumtx_s@@0@Z",
+          "address": "0x005e8190",
+          "units": [
+            "src/legoapi/occlusion.cpp"
+          ],
+          "target_size": 668,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/occlusion.cpp",
+              "base_size": 687,
+              "exact_match": false,
+              "target_sha256": "8e9b6d29e85309d5e30844b5934913dfdd763539dbcaf42046c2e1b927e6515c",
+              "base_sha256": "50a98ee61e0d4c148e3242fded0d499765e31aaf2c1a8dc3a6003cf350c0b221",
+              "relocation_count": 8,
+              "comparison_unit": "005e8190-1d11bbbcc110",
+              "objdiff_percent": 71.92417
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 71.92417
+        },
+        {
+          "name": "?IsOccludedOBB@OcclusionManager@@QAE_NPBUnuvec_s@@0PBUnumtx_s@@@Z",
+          "symbol": "?IsOccludedOBB@OcclusionManager@@QAE_NPBUnuvec_s@@0PBUnumtx_s@@@Z",
+          "address": "0x005f27a0",
+          "units": [
+            "src/legoapi/occlusion.cpp"
+          ],
+          "target_size": 95,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/legoapi/occlusion.cpp",
+              "base_size": 110,
+              "exact_match": false,
+              "target_sha256": "eae91cd8a9e5d002bb506d6903a379027faf81c04d1b69e32c2895e629129b96",
+              "base_sha256": "50e4813c3858ab0fd838a3c9bb6ee9aa481abbd13268810e0b0c4b22fafd34a2",
+              "relocation_count": 4,
+              "comparison_unit": "005f27a0-d4918749521d",
+              "objdiff_percent": 62.931034
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 62.931034
+        },
+        {
+          "name": "TerrainSetImpactData",
+          "symbol": "_TerrainSetImpactData",
+          "address": "0x0066b2e0",
+          "units": [
+            "src/nu2api/nuterrain.c"
+          ],
+          "target_size": 35,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nuterrain.c",
+              "base_size": 35,
+              "exact_match": true,
+              "target_sha256": "0b4cbfb740ec51d678faac552e294d2a8c34ead2505c067bd22d6a2014516da3",
+              "base_sha256": "0b4cbfb740ec51d678faac552e294d2a8c34ead2505c067bd22d6a2014516da3",
+              "relocation_count": 3,
+              "comparison_unit": "0066b2e0-6eb9cfe82f78",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "TerrainSetPlatConnectTol",
+          "symbol": "_TerrainSetPlatConnectTol",
+          "address": "0x0066b310",
+          "units": [
+            "src/nu2api/nuterrain.c"
+          ],
+          "target_size": 11,
+          "exact_match": true,
+          "objects": [
+            {
+              "unit": "src/nu2api/nuterrain.c",
+              "base_size": 11,
+              "exact_match": true,
+              "target_sha256": "864badeb2d16054597a9d9251015240982e489b354eabb8fe1f9bf6338ec84f1",
+              "base_sha256": "864badeb2d16054597a9d9251015240982e489b354eabb8fe1f9bf6338ec84f1",
+              "relocation_count": 1,
+              "comparison_unit": "0066b310-e73cb0e2984e",
+              "objdiff_percent": 100.0
+            }
+          ],
+          "status": "exact",
+          "objdiff_percent": 100.0
+        },
+        {
+          "name": "NewScan",
+          "symbol": "_NewScan",
+          "address": "0x00670640",
+          "units": [
+            "src/nu2api/terrain_query.cpp"
+          ],
+          "target_size": 4361,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_query.cpp",
+              "base_size": 3198,
+              "exact_match": false,
+              "target_sha256": "97572f1ba08c3b72f1997a40a2b6e781b50271326a20b9e983373a3cffa03dc5",
+              "base_sha256": "192355864d067ada62fc0b0a589a5b3add3f3a431d2db8cd1927446aa4245b65",
+              "relocation_count": 19,
+              "comparison_unit": "00670640-f1678949b15b",
+              "objdiff_percent": 33.944717
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 33.944717
+        },
+        {
+          "name": "HitTerrPoly",
+          "symbol": "_HitTerrPoly",
+          "address": "0x00675610",
+          "units": [
+            "src/nu2api/terrain_query.cpp"
+          ],
+          "target_size": 553,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_query.cpp",
+              "base_size": 637,
+              "exact_match": false,
+              "target_sha256": "52eccc02c0fdc102ca2eaa57fe101098bf3606c1e0b0e584e13317bb509e9cf1",
+              "base_sha256": "8914d002fca91d4999db9b35e1e740486b533e3566c5c41e3b41aefb18b3bcd9",
+              "relocation_count": 18,
+              "comparison_unit": "00675610-4bd7b0b219f3",
+              "objdiff_percent": 54.585106
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 54.585106
+        },
+        {
+          "name": "ScanTerrainHandel",
+          "symbol": "_ScanTerrainHandel",
+          "address": "0x0067eac0",
+          "units": [
+            "src/nu2api/terrain_query.cpp"
+          ],
+          "target_size": 3427,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_query.cpp",
+              "base_size": 3454,
+              "exact_match": false,
+              "target_sha256": "9b98082bc3289d4409ed5a693243b5841557ae38e019dd9adb2e9fcdcd78ceb1",
+              "base_sha256": "0b46127f5db0c1e16585697ed87fad9378d9d96fe354ad819ffa2c19c96d2e8f",
+              "relocation_count": 25,
+              "comparison_unit": "0067eac0-131d025273f9",
+              "objdiff_percent": 41.347107
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 41.347107
+        },
+        {
+          "name": "ScanTerrainPlatform",
+          "symbol": "_ScanTerrainPlatform",
+          "address": "0x0067fd40",
+          "units": [
+            "src/nu2api/terrain_query.cpp"
+          ],
+          "target_size": 3582,
+          "exact_match": false,
+          "objects": [
+            {
+              "unit": "src/nu2api/terrain_query.cpp",
+              "base_size": 3391,
+              "exact_match": false,
+              "target_sha256": "d5dfa2d1361bc0f3745448052833b4f0f040bc6000ff844854e57c6c48d5ad9d",
+              "base_sha256": "8f281a1a0d5fbd87afc21c2cc100bbaf9a0e736d59587f5aff28edf80e8959e4",
+              "relocation_count": 43,
+              "comparison_unit": "0067fd40-2754e7b7e1b5",
+              "objdiff_percent": 0.0
+            }
+          ],
+          "status": "different",
+          "objdiff_percent": 0.0
+        }
+      ],
+      "newly_compared_functions": 18,
+      "new_original_code_bytes": 15186,
+      "exact_code_added": 141,
+      "prior_exact_losses": [],
+      "checkpoint": "terrain-query-occlusion-pickup-20261003",
+      "accepted_new_source_bytes": 15186,
+      "accepted_new_source_functions": 18,
+      "prior_exact_code_and_data_preserved": true,
+      "data_definitions_added": 11,
+      "existing_data_owner_width_corrections": 2,
+      "known_allocation_credit_added": 0,
+      "ongoing_goal": "Indefinite whole-project transfer; validated checkpoints and direct main pushes continue.",
+      "verified_checks": {
+        "tests": 665,
+        "skipped": 3,
+        "test_seconds": 218.539,
+        "llvm": 18,
+        "format_files": 201,
+        "objects": 199,
+        "function_definitions": 2267,
+        "data_definitions": 3854,
+        "source_only_link": true,
+        "native_platform_cases": 8,
+        "native_occlusion_fixture": true,
+        "native_occlusion_wrong_stride_exit": 11,
+        "native_release_hearts_cases": 19,
+        "native_vector_fixture": true,
+        "native_water_platform_deflect_fixture": true
+      },
+      "limitations": [
+        "Full gameplay and original resources remain unverified.",
+        "Terrain ScanTerrainPlatform and MakePartVector have zero advisory similarity despite reviewed PC behavior and passing selected real-object fixtures; complete spans remain nonexact.",
+        "Scene fade/private clipping retain verified scratch bodies only; their genuine original scene caller and render graph remain held.",
+        "Original allocation extents of 324 scoped data source views remain unknown.",
+        "TerrainPlayer, its private helper group and pickup/effects/message frontiers remain scratch until their finite real contracts/providers are integrated.",
+        "Selected native expectations derive from reviewed PC instructions, not executed retail differential equivalence."
+      ]
     }
   ]
 }

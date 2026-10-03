@@ -3222,7 +3222,7 @@ void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_hei
         } else {
             if (material < 0 || material >= 17)
                 object->field_283 = 0;
-            material_mask = GetSurfaceInfoDefaultMaskPc | GetSurfaceInfoRuntimeMaskPc | 0x40u;
+            material_mask = GetSurfaceInfoDefaultMaskPc.low | GetSurfaceInfoRuntimeMaskPc.low | 0x40u;
             object->field_283 = (i8)((u8)object->field_283 & (u8)~material_mask);
             FindAnglesZX(&GetSurfaceInfoWaterNormalPc, NULL, NULL);
             object->field_105c = temp_zrot;

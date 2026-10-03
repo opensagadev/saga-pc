@@ -4430,10 +4430,10 @@ extern "C" {
     NUVEC GetSurfaceInfoWaterNormalPc;
 #pragma bss_seg()
 #pragma bss_seg(".bss$GetSurfaceInfoRuntimeMaskPc")
-    u8 GetSurfaceInfoRuntimeMaskPc;
+    PC_SURFACE_MASK_PC GetSurfaceInfoRuntimeMaskPc;
 #pragma bss_seg()
 #pragma data_seg(".data$GetSurfaceInfoDefaultMaskPc")
-    u8 GetSurfaceInfoDefaultMaskPc = 0x20;
+    PC_SURFACE_MASK_PC GetSurfaceInfoDefaultMaskPc = {0x20};
 #pragma data_seg()
 }
 
@@ -7362,5 +7362,44 @@ extern "C" {
 extern "C" {
 #pragma bss_seg(".bss$TerrWallDeflectYScale")
     f32 TerrWallDeflectYScale;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$TerrainPlayerOtherMovementScalePc")
+    f32 TerrainPlayerOtherMovementScalePc = 2.5f;
+#pragma data_seg()
+#pragma data_seg(".data$TerrainPlayerBikeMovementScalePc")
+    f32 TerrainPlayerBikeMovementScalePc = 15.0f;
+#pragma data_seg()
+#pragma data_seg(".data$TerrainPlayerPlatConnectTolerancePc")
+    f32 TerrainPlayerPlatConnectTolerancePc = 0.01f;
+#pragma data_seg()
+#pragma data_seg(".data$TerrainPlayerShadowFixPc")
+    i32 TerrainPlayerShadowFixPc = 1;
+#pragma data_seg()
+#pragma data_seg(".data$MAXBLOWUPRANDSPANG")
+    i32 MAXBLOWUPRANDSPANG = 60;
+#pragma data_seg()
+#pragma bss_seg(".bss$GizmoBlowUp_SfxFn")
+    void(__cdecl *GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *);
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$TerrPlatDis")
+    i32 TerrPlatDis = -1;
+#pragma data_seg()
+#pragma data_seg(".data$PCPortalsEnabled")
+    i32 PCPortalsEnabled = 1;
+#pragma data_seg()
+#pragma data_seg(".data$PartVectorSpreadDegrees_PC")
+    i32 PartVectorSpreadDegrees_PC = 30;
+#pragma data_seg()
+#pragma bss_seg(".bss$AreaPickupGravity")
+    f32 AreaPickupGravity;
+#pragma bss_seg()
+#pragma bss_seg(".bss$AreaPickupScale")
+    f32 AreaPickupScale;
 #pragma bss_seg()
 }

@@ -548,3 +548,61 @@ unmapped services, genuine carry Throw/PartKill/Clear/SpecialMove dependency clo
 and additional renderer/scene/resource families. GHG/model closure remains held
 behind the original embedded DDS fallback asset. Full gameplay and original level
 resources remain unverified. The unbounded whole-project goal remains active.
+
+
+## Terrain query, occlusion and pickup checkpoint (2026-10-03)
+
+Compared with 5bb33cc, this release adds 18 actual compiled functions spanning
+15,186 unique PC bytes: four terrain query kernels (11,923), six occlusion backend
+bodies (2,225), water/platform/deflection and terrain setters (370), ReleaseHearts
+(288) and MakePartVector (380). Compared original code grows from 573,457 to
+588,643 bytes. Whole-code fuzzy coverage rises from 10.058667661% to
+10.206869876%; exact code increases by 141 to 61,746 bytes (1.778784909%).
+All previous exact code and data results remain exact. Similarity among compared
+code is 60.209220%, with the 588,643-byte denominator.
+
+The terrain kernels preserve the 16-entry cache, signed ages, group/platform
+layouts, null handle guard, scaled polygons, filtered scan output and complete
+post-return tails. Eight native cases execute the actual production object with
+real scratch allocation, transformation and data providers: accepted/rejected
+materials, group bounds, output limit, scaled/rotating polygons and scratch
+restoration. ScanTerrainPlatform's advisory score remains zero across its full
+3,582-byte span; this is a reviewed, tested but nonexact reconstruction.
+
+Occlusion uses the PC 0xa0 record stride, projection/query matrices, actual depth
+sorting, lazy preparation and query counters. A selected fixture links the final
+production providers and canonical data; the wrong Android 0x98 stride fails a
+discriminating two-valid-record case with exit 11. The private 95-byte matrix copy
+remains with its real callers and is byte exact. Two verified scratch scene
+fade/clipping bodies (1,036 bytes) are withheld because their only current caller
+is a fixture adapter; the actual 454-byte scene caller still needs genuine
+visibility/render services. No fixture entry is transferred into the game.
+
+Water tests distinguish contact bytes 1/9 from high-bit variants, retain unordered
+intersection comparisons and check output aliasing in deflection. Both terrain
+setters add 46 exact bytes. ReleaseHearts has 19 real-source cases covering signed
+health, active heart parts, difficulty, adaptive cheat scaling and random bounds.
+The vector fixture uses real qrand, trig initialization, angle/rotation and scaling
+providers, checking the null-direction branch's mutable scale/gravity, random
+draw count, cone/norm and signed scale. Its complete 380-byte comparison remains
+zero advisory similarity rather than being shortened or tuned for credit.
+
+The source-only executable links across 199 objects with 2,267 function and
+3,854 data definitions; all mappings and relocations resolve. LLVM18 formatting
+checks 201 files. The 665 tests pass with three expected skips. Final lint and
+comparison receipts are retained under the ignored continuation-frontier and
+owning subsystem directories.
+
+Eleven real globals add 44 source-view bytes. Two existing surface mask owners
+are widened in place from one to four bytes: the existing GetSurfaceInfo consumer
+still reads .low, while the reviewed TerrainPlayer contract reads .word.
+No duplicate mutable owner is introduced. All thirteen four-byte initializers
+match PC; historical allocation extents remain blank, with no extra allocation
+or prior exact-data credit. The scoped data receipt now has 846 definitions,
+522 known extents covering 136,652 unique bytes and 324 unknown extents exposing
+21,460 source-view bytes. All 833 previous scoped proofs are preserved.
+
+Next connected releases are the message producer/reset, genuine pickup callbacks
+and constructors, carry graph, TerrainPlayer and further terrain scanners.
+Full gameplay, hardware rendering and level resources remain unverified. The
+unbounded whole-project goal remains active.

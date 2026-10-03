@@ -2122,3 +2122,14 @@ void __cdecl TerrainPlatGetMtx(i32 index, NUMTX **previous, NUMTX **current) {
         *current = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_object;
     }
 }
+
+void __cdecl TerrainSetImpactData(void *records, i32 *count, i32 max_records) {
+    TerImpactData = records;
+    TerImpactDataCount = count;
+    *count = 0;
+    TerImpactDataMax = max_records;
+}
+
+void __cdecl TerrainSetPlatConnectTol(f32 tolerance) {
+    TerConTol = tolerance;
+}

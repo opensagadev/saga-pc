@@ -3689,3 +3689,28 @@ The corrected compiled literals match actual PC bytes; no relocation masking
 or lookup rewrite conceals a source constant mismatch. The terrain matrix
 getter's second global read is verified by actual alias behavior and full byte
 equality. Refer to transfer-execution.md for native evidence and remaining gaps.
+
+
+### Query and occlusion release contracts (2026-10-03)
+
+Eighteen actual source spans total 15,186 original bytes. NewScan 0x00670640/4,361
+ends after the second RET at 0x00671748; its internal return is not the boundary.
+ScanTerrainHandel 0x0067eac0/3,427, ScanTerrainPlatform 0x0067fd40/3,582 and
+HitTerrPoly 0x00675610/553 retain their complete accepted tails. The platform
+kernel's zero advisory score remains visible alongside its selected native cases.
+
+Six occlusion backend bodies total 2,225 bytes. PrepareForQueries
+0x005e8190/668 includes the x87 cleanup tails after its early RET 8.
+The 95-byte private copy takes source in EAX and destination in ECX, emitted by
+ordinary VC8 within the original helper/caller group. IsOccludedOBB uses
+thiscall/RET 12 and an AL boolean. Sort uses the actual pinned CRT qsort body
+0x006e96b0/679; that SDK provider receives inventory credit only, no reconstructed
+source credit. Fade/private clip remain scratch without a production caller.
+
+Water contact/intersection spans are 48/69, deflection 135, character platform
+lookup 72, terrain setters 35/11, ReleaseHearts 288 and MakePartVector 380.
+The deflection argument order is normal, movement, output, mode; its .015/.006
+thresholds and terrain 1.02 margin are promoted f32 values in f64 compiler literals.
+Full initializer equality verifies these bindings. No comparison extent is
+masked or shortened. See transfer-execution.md for actual-object fixtures and
+the remaining scene/pickup/gameplay providers.

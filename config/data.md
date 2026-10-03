@@ -1165,3 +1165,27 @@ previous inventory-only four-byte extent is cleared absent allocation proof;
 its entire source initializer is checked, with no new exact/extent credit and no
 loss of prior compiled exact data. Solver literal comparisons separately prove
 actual promoted-f32 .95/.003/.001 constants.
+
+
+### Query/occlusion/pickup data checkpoint (2026-10-03)
+
+Eleven new physical definitions and two in-place mask width corrections have
+complete source initializer proofs. Scoped totals are 846 definitions:
+522 known original extents/136,652 unique bytes and 324 unknown extents/21,460
+source-view bytes. Every previous 833 scoped proof is preserved. All thirteen
+new/corrected four-byte views retain blank original extents, so their source
+initializer equality adds no historical allocation or exact-data coverage.
+
+The surface mask union exposes byte .low and DWORD .word in the same canonical
+owner. GetSurfaceInfo retains its original byte reads; reviewed TerrainPlayer
+and real address-taking setters require four bytes. Initial default is 0x20,
+runtime is zero; dynamic setters write DWORD values. No duplicate storage or
+retirement of prior exact-data credit occurs.
+
+TerrPlatDis is signed -1, PCPortalsEnabled is 1, and PartVectorSpreadDegrees_PC
+is integer 30. AreaPickupGravity/AreaPickupScale are actual zero f32 owners.
+The reviewed blowup angular span is integer 60, proven by MOV/FILD consumers,
+and its optional sound callback is actual NULL. TerrainPlayer movement scales
+2.5/15, connection tolerance .01 and shadow switch 1 remain mutable storage,
+not substituted literals. Source-view/relocation proofs use the actual compiled
+data.cpp object; unknown original capacities are not inferred from these reads.
