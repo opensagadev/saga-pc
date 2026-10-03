@@ -314,3 +314,7 @@ extern "C" void __cdecl PlaySabreSfx(char *name, GAMEOBJECT *object, NUVEC *posi
             PlaySfxById(GameAudio->sfx_ids[0x40], &object->collision_position);
     }
 }
+
+extern "C" void __cdecl PlaySfxByIdAndSetPitch(i32 sfx_id, NUVEC *position, f32 pitch) {
+    PlaySfxByIdEx(sfx_id, position, 1.0f, pitch);
+}

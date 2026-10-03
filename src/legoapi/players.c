@@ -1348,3 +1348,15 @@ i32 __cdecl PlayerItem_GotAmmo(WEAPON_AMMO_PC *item) {
         return item->ammo != 0;
     return 1;
 }
+
+void __cdecl Move_VEHICLE(GAMEOBJECT *);
+void __cdecl PostResetCode(GAMEOBJECT *object) {
+    PLAYERCHARACTERCONFIG_PC *character;
+    object->attack_override = 0;
+    character = object->character_data->game_character;
+    if (character->sfx_chatter != -1)
+        ChatterSfx(object, character->sfx_chatter, (f32)(u32)character->flags_11e);
+    if (object->character_data->move_fn != Move_VEHICLE && object->tertiary_lean_angle != 0 &&
+        (object->flags_e24 & 0x2000) == 0)
+        object->tertiary_lean_angle = 0;
+}

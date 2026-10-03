@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 824953,
-    "matched_code_bytes": 70418,
-    "matching_percent": 2.028608747406551,
-    "fuzzy_coverage_percent": 12.95207756088824,
-    "mapped_functions": 2871,
-    "matched_functions": 1148,
-    "objdiff_fuzzy_percent": 62.837555,
-    "objdiff_total_code": 715671,
+    "mapped_code_bytes": 840487,
+    "matched_code_bytes": 71565,
+    "matching_percent": 2.061651637481181,
+    "fuzzy_coverage_percent": 13.494166151417398,
+    "mapped_functions": 2920,
+    "matched_functions": 1159,
+    "objdiff_fuzzy_percent": 63.269043,
+    "objdiff_total_code": 740532,
     "image_bytes": 40067072,
-    "mapped_bytes": 1466053,
-    "mapping_percent": 3.6589970936733285
+    "mapped_bytes": 1481674,
+    "mapping_percent": 3.6979842200598037
   },
   "newly_compared": [
     {
@@ -14948,6 +14948,114 @@
         "Inherited initialization and graphics/font partials remain explicit."
       ],
       "next_connected_wave": "Cutscene load/fixup/create kernel4478 plus real Load/Configure/Listed and diagnostic2564; resource family7161 and Vehicle/POD genuine private caller group, followed by Terrain8287. Draw3767 remains a finite separate closure.",
+      "ongoing_goal": "Continue whole-project transfer indefinitely until user stops or pauses; validated direct main pushes authorized."
+    },
+    {
+      "baseline_commit": "b9c64dd24a6c1b8d539f6e11dbb544c1833682be",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 824953,
+        "matched_code_bytes": 70418,
+        "matching_percent": 2.028608747406551,
+        "fuzzy_coverage_percent": 12.95207756088824,
+        "mapped_functions": 2871,
+        "matched_functions": 1148,
+        "objdiff_fuzzy_percent": 62.837555,
+        "objdiff_total_code": 715671,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1466053,
+        "mapping_percent": 3.6589970936733285
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 840487,
+        "matched_code_bytes": 71565,
+        "matching_percent": 2.061651637481181,
+        "fuzzy_coverage_percent": 13.494166151417398,
+        "mapped_functions": 2920,
+        "matched_functions": 1159,
+        "objdiff_fuzzy_percent": 63.269043,
+        "objdiff_total_code": 740532,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1481674,
+        "mapping_percent": 3.6979842200598037
+      },
+      "newly_compared_functions": 51,
+      "new_original_code_bytes": 24861,
+      "compared_code_delta": 24861,
+      "baseline_unique_compared_pc_bytes": 715559,
+      "unique_compared_pc_bytes": 740420,
+      "exact_code_added": 1147,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 2631,
+      "prior_compiled_function_copies_identical": 2631,
+      "renamed_owner_copies_with_identical_complete_bodies": [],
+      "user_journal_unchanged": true,
+      "checkpoint": "Vehicle/POD/terrain and connected cutscene loader (2026-10-04)",
+      "family_bytes": {
+        "vehicle_pod_terrain_and_postreset": 17819,
+        "cutscene_kernel_and_loader": 7042
+      },
+      "shared_data_definitions_added": 49,
+      "shared_initializer_view_bytes_added": 254,
+      "known_extent_definitions_added": 4,
+      "known_extent_bytes_added": 44,
+      "unknown_extent_definitions_added": 45,
+      "unknown_extent_source_bytes_added": 210,
+      "mutable_allocation_credit_added": 0,
+      "data_scope": {
+        "proofs": 1411,
+        "known_extents": 557,
+        "known_unique_bytes": 137595,
+        "unknown_extents": 854,
+        "unknown_view_bytes": 97911,
+        "previous_proofs_preserved": 1362
+      },
+      "verified_checks": {
+        "all_required_checks_passed": true,
+        "tests": 665,
+        "skipped": 3,
+        "test_seconds": 29.425,
+        "llvm": 18,
+        "format_files": 226,
+        "tidy_units": 224,
+        "objects": 224,
+        "function_definitions": 2682,
+        "data_definitions": 5175,
+        "source_only_link": true,
+        "native_vehicle_checks": 18,
+        "native_cable_checks": 55,
+        "native_loader_checks": 74,
+        "native_kernel_checks": 23,
+        "native_total_checks": 170,
+        "native_failures": 0,
+        "native_receipts": {
+          "vehicle": "player-cohort/terrain-next/parents/vehicle-next/vehicle-pod-next/runtime/receipt.json",
+          "cable": "apiobject/vehicle-cable-next/normal-runtime-receipt.json",
+          "loader": "world/broad-release-next/load-providers-next/callers-normal-runtime-receipt.json",
+          "kernel": "world/broad-release-next/load-providers-next/kernel-normal-runtime-receipt.json"
+        },
+        "native_manifests_equal_current_normal_sources_and_objects": true,
+        "normal_data_regions": 3100,
+        "scoped_initializer_proofs": 1411,
+        "previous_function_copies_identical": 2631,
+        "prior_exact_code_and_data_preserved": true,
+        "terrain_c_semantics_review": "All7461 execution/controlflow tokens preserve initializer order; natural helpers emit without annotation. C threshold retains PC extended precision instead of the prior CPP f32 spill.",
+        "limitations": [
+          "Selected fixtures do not establish complete terrain gameplay, successful asset loading/constructor initialization, hardware graphics or audio.",
+          "Real inherited partial services and initialization gaps remain explicit."
+        ]
+      },
+      "source_correction": "Removed unproved noinline annotations; both helpers naturally emit. Terrain source adapted to C89 preserving7461 executable/controlflow tokens and initializer order. C removes a prior CPP threshold spill absent from native PC; actual slightly lower advisory score retained.",
+      "checkpoint_delay_reason": "Coherent connected source/data/native validation plus bounded late terrain annotation/language/FP review completed before commit; rejected unsafe intermediate syntax draft never reached production.",
+      "remaining_contracts": [
+        "Successful cutscene asset load/create runtime needs genuine inherited thread callback initialization.",
+        "Terrain full gameplay and active audio/graphics paths remain outside selected fixtures.",
+        "Current renderer/font/entry path partial services remain explicit.",
+        "Unknown mutable allocation extents receive no coverage credit."
+      ],
+      "next_connected_wave": "Independently accepted renderer16/4745 (includes spline1309 once), UI7/1903 plus routing67, resource3/966 with canonical48-byte reset view, and prompt6/1277. Follow real CutScenes_Draw3767/provider groups and gameplay control/init parents toward UpdateGameObjects6847.",
       "ongoing_goal": "Continue whole-project transfer indefinitely until user stops or pauses; validated direct main pushes authorized."
     }
   ]

@@ -183,3 +183,26 @@ i32 __cdecl ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 
     }
     return result;
 }
+
+extern NUVEC PodSprintLiftPositionsPc[3];
+f32 __cdecl FindPodHoverHeight(GAMEOBJECT *object) {
+    f32 height = 0.15f;
+    if (object == Player[1] && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
+        f32 distance_squared = NuVecDistSqr(&((GAMEOBJECT *)Player[0])->position, &object->position, NULL);
+        if (distance_squared < 4.0f) {
+            f32 distance = NuFsqrt(distance_squared);
+            i32 angle = (i32)((1.0 - (f64)distance * 0.5) * 16384.0);
+            height = (f32)((f64)NuTrigTable[(angle >> 1) & 0x7fff] * 0.5 + (f64)0.15f);
+        }
+    }
+    if (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA && (object->flags_1fc & 0x80) != 0) {
+        i32 index;
+        for (index = 0; index < 3; ++index) {
+            if (NuVecXZDistSqr(&object->position, &PodSprintLiftPositionsPc[index], NULL) < 2.0f) {
+                height = (f32)((f64)height + 1.5);
+                break;
+            }
+        }
+    }
+    return height;
+}

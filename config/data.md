@@ -1400,3 +1400,29 @@ The existing two-byte Text keyX owner supplies the target marker. Eight earlier
 uncompiled pointer inventory rows lose unsupported4-byte owning extents,
 retiring32 mapped inventory bytes with no previous exact initializer loss.
 Bounded initialized views remain proven independently from allocation extent.
+
+
+### Vehicle/POD/terrain and cutscene shared views (2026-10-04)
+
+Eight kernel views 32B plus36 Vehicle/POD/terrain views 202B and five loader states 20B
+add 49 physical owners 254B. Four actual NUL strings 44B have complete known extents;
+45 mutable/pointer/array views 210B have blank original extents and zero allocation
+credit. Scope 1,411 comprises 557 known extents 137,595 uniqueB and 854 unknown views
+97,911 sourceB. All1,362 previous scoped initializer proofs remain unchanged;
+all 3,100 emitted normal regions, extents, raw initializers and symbolic relocations
+match the isolated frozen data object. Existing canonical snake ID and text marker
+storage are reused.
+
+Pod pitch history uses actual player indices0/1 and sprint lift positions the
+actual three-iteration producer. These finite source views do not prove original
+allocation capacities. Loader CS_buffend/CS_cutsys/override callback/CutList/CUTCOUNT
+are five genuine four-byte BSS owners, separate from CutSceneSys draw settings.
+Cutscene single-stream mode is actually2, while the other kernel states retain
+their verified zero/NULL initializers. Source-private compiler literals remain
+with their real owners.
+
+The next resource reset working view at 87a830 spans 48B and overlaps canonical
+MiscTime f32+20 plus target-degree WORD fields+24/+28. A future release must merge
+those three physical owners into one asserted typed view, preserve each initializer
+and report changed nonexact getter codegen explicitly. No duplicate mutable reset
+array may be introduced. That reconciliation is not part of this checkpoint.

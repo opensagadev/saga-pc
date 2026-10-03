@@ -576,3 +576,278 @@ extern "C" {
         {const_cast<char *>("drawgizmosys"), CS_draw_gizmo_sys},
         {NULL, NULL}};
 }
+
+typedef struct CUT_LOAD_SYS_PC {
+    CUT_LOAD_RECORD_PC **records;
+    i32 count;
+    u32 *character_bits;
+} CUT_LOAD_SYS_PC;
+STATIC_ASSERT(sizeof(CUT_LOAD_SYS_PC) == 12);
+STATIC_ASSERT(offsetof(CUT_LOAD_SYS_PC, character_bits) == 8);
+typedef struct CUT_LOAD_LIST_ENTRY_PC {
+    char *directory;
+    char *name;
+    i16 level;
+    u8 unknown_0a[2];
+} CUT_LOAD_LIST_ENTRY_PC;
+STATIC_ASSERT(sizeof(CUT_LOAD_LIST_ENTRY_PC) == 12);
+STATIC_ASSERT(offsetof(CUT_LOAD_LIST_ENTRY_PC, level) == 8);
+typedef struct CUT_LOAD_INSTANCE_RATE_PC {
+    u8 unknown_00[0x98];
+    f32 rate;
+} CUT_LOAD_INSTANCE_RATE_PC;
+STATIC_ASSERT(offsetof(CUT_LOAD_INSTANCE_RATE_PC, rate) == 0x98);
+extern "C" {
+    extern CUT_LOAD_LIST_ENTRY_PC *CutList;
+    extern i32 CUTCOUNT;
+    extern CUT_LOAD_SYS_PC *CS_cutsys;
+    extern VARIPTR *CS_buffend;
+    extern void(__cdecl *CutScene_OverrideConfigFileNameFn)(char *, i32, i32);
+    void __cdecl CutSceneConfigMissingPc(char *);
+    void *__cdecl NuGCutSceneLoad(char *, VARIPTR *, VARIPTR *, i32);
+    void __cdecl NuGCutSceneFixUp(void *, NUGSCN *, void *, i32);
+    void __cdecl NuGCutSceneFixUpExtra(void *, NUGSCN *);
+    INSTNUGCUTSCENE *__cdecl instNuGCutSceneCreate(void *, NUGSCN *, void *, char *, VARIPTR *, i32);
+}
+
+extern "C" {
+    static __declspec(noinline) void CutSceneConfigurePc(CUT_LOAD_RECORD_PC *cut, char *name, VARIPTR *buf,
+                                                         VARIPTR *buf_end) {
+        CUT_LOAD_STATE_PC states[32];
+        CS_buffend = buf_end;
+        CS_CutInfo = cut;
+        CS_buffptr = buf;
+        for (i32 i = 0; i < 6; ++i)
+            cut->sfx[i].id = -1;
+        cut->end_flags &= 0xfc;
+        cut->frames_per_second = 30.0f;
+        cut->legacy_music_index = -1;
+        cut->music_handle = -1;
+        cut->burnout_threshold = 1.0f;
+        cut->debris_render_group = 2;
+        cut->skip_level = -1;
+        cut->burnout_intensity = 0.0f;
+        cut->flags = 3;
+        cut->burnout_flare = 0.0f;
+        cut->camera_near_clip = 0.0f;
+        cut->state_count = 0;
+        cut->linked_audio = 0;
+        cut->door_name[0] = 0;
+        cut->next_cutscene[0] = 0;
+        cut->camera_far_clip = 0;
+        cut->state_entries = states;
+        cut->blob_shadow_alpha = 0xff;
+        cut->blob_shadow_fade_near = 0xff;
+        cut->blob_shadow_fade_far = 0xff;
+        cut->reflection_range = 0xff;
+        for (i32 i = 0; i < 4; ++i)
+            cut->texture_animations[i].index = -1;
+        cut->fade_fog[0].value = 0.0f;
+        cut->fade_fog[0].far_distance = 0.0f;
+        cut->fade_fog[0].near_distance = 0.0f;
+        cut->fade_fog[0].frame = 0.0f;
+        cut->fade_fog[1].value = 0.0f;
+        cut->fade_fog[1].far_distance = 0.0f;
+        cut->fade_fog[1].near_distance = 0.0f;
+        cut->fade_fog[1].frame = 0.0f;
+        cut->subtitle_data = NULL;
+        cut->subtitle_count = 0;
+        cut->unknown_18b = 0;
+        NUFPAR_PC *fp = NuFParCreate(name);
+        if (fp == NULL) {
+            CutSceneConfigMissingPc(name);
+            return;
+        }
+        CS_texanimcount = 0;
+        CS_fadefogcount = 0;
+        NuFParPushCom(fp, CutScene_ConfigKeywords);
+        while (NuFParGetLine(fp) != 0) {
+            if (NuFParGetWord(fp) != 0)
+                NuFParInterpretWord(fp);
+        }
+        NuFParDestroy(fp);
+        CUT_LOAD_RECORD_PC *current = CS_CutInfo;
+        if (current->blob_shadow_fade_near > current->blob_shadow_fade_far)
+            current->blob_shadow_fade_near = current->blob_shadow_fade_far;
+        if (current->subtitle_data != NULL && current->subtitle_count == 0)
+            current->subtitle_data = NULL;
+        if (current->state_count != 0) {
+            buf->addr = (buf->addr + 3) & ~3U;
+            current->state_entries = reinterpret_cast<CUT_LOAD_STATE_PC *>(buf->void_ptr);
+            u32 bytes = current->state_count * sizeof(CUT_LOAD_STATE_PC);
+            PCByteCopy_candidate(current->state_entries, states, bytes);
+            buf->addr += bytes;
+        } else
+            current->state_entries = NULL;
+    }
+
+    static __declspec(noinline) CUT_LOAD_SYS_PC *CutScenesLoadListedPc(NUGSCN *gscn1, NUGSCN *gscn2, i32 fixup_mode,
+                                                                       VARIPTR *buf, VARIPTR *buf_end, i32 area,
+                                                                       i32 level, WORLDINFO *world) {
+        CUT_LOAD_RECORD_PC *entries[32];
+        char path[128], config_path[128];
+        void *initial = buf->void_ptr;
+        CUT_LOAD_SYS_PC *sys = reinterpret_cast<CUT_LOAD_SYS_PC *>((buf->addr + 3) & ~3U);
+        CS_area = area;
+        buf->addr = (reinterpret_cast<u32>(sys) + 15) & ~3U;
+        sys->character_bits = reinterpret_cast<u32 *>(buf->void_ptr);
+        buf->addr = (buf->addr + ((CHARCOUNT + 31) / 32) * 4 + 3) & ~3U;
+        CS_cutsys = sys;
+        CS_worldinfo = world;
+        for (i32 i = 0; i < CUTCOUNT; ++i) {
+            if (CutList[i].level != level)
+                continue;
+            CUT_LOAD_RECORD_PC *cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(buf->void_ptr);
+            entries[sys->count] = cut;
+            buf->addr = (buf->addr + sizeof(CUT_LOAD_RECORD_PC) + 3) & ~3U;
+            NuStrCpy(path, "cut\\");
+            NuStrCat(path, CutList[i].directory);
+            NuStrCat(path, WorldPathSeparator);
+            NuStrCat(path, CutList[i].name);
+            NuStrCpy(config_path, path);
+            NuStrCat(config_path, AreaResidentsExtension);
+            CutSceneConfigurePc(cut, config_path, buf, buf_end);
+            if (!(cut->flags & 0x800) && InStory() == 0 && !(LDataList[level].flags & 0xe0)) {
+                buf->void_ptr = cut;
+                continue;
+            }
+            NuStrCpy(config_path, path);
+            NuStrCat(config_path, NuFileExt_cu2_PC);
+            cut->scene = NuGCutSceneLoad(config_path, buf, buf_end, 0);
+            if (cut->scene == NULL) {
+                buf->void_ptr = cut;
+                continue;
+            }
+            NuStrCpy(cut->name, CutList[i].name);
+            NuGCutSceneFixUp(cut->scene, gscn1, 0, fixup_mode);
+            NuGCutSceneFixUpExtra(cut->scene, gscn2);
+            cut->instance = instNuGCutSceneCreate(cut->scene, NULL, NULL, CutList[i].name, buf, 0);
+            if (cut->instance != NULL) {
+                reinterpret_cast<CUT_LOAD_INSTANCE_RATE_PC *>(cut->instance)->rate =
+                    cut->frames_per_second * DEFAULTFRAMETIME;
+                buf->addr = (buf->addr + 15) & ~15U;
+            }
+            ++sys->count;
+        }
+        if (sys->count <= 0) {
+            buf->void_ptr = initial;
+            return NULL;
+        }
+        sys->records = reinterpret_cast<CUT_LOAD_RECORD_PC **>(buf->void_ptr);
+        PCByteCopy_candidate(sys->records, entries, sys->count * 4);
+        buf->addr = (buf->addr + sys->count * 4 * sys->count + 3) & ~3U;
+        return sys;
+    }
+
+    extern "C" CUT_LOAD_SYS_PC *__cdecl CutScenes_Load(char *config, NUGSCN *gscn1, NUGSCN *gscn2, i32 param1,
+                                                       VARIPTR *buf, VARIPTR *buf_end, i32 param2, i32 param3,
+                                                       WORLDINFO *world) {
+        NUFPAR_PC *fp;
+        CUT_LOAD_SYS_PC *sys;
+        void *initial;
+        CUT_LOAD_RECORD_PC *cut;
+        char name[128];
+        char full_path[128];
+        char config_name[128];
+        CUT_LOAD_RECORD_PC *entries[32];
+
+        if (CutList != NULL && CUTCOUNT > 0)
+            return CutScenesLoadListedPc(gscn1, gscn2, param1, buf, buf_end, param2, param3, world);
+        if (config == NULL) {
+            return NULL;
+        }
+
+        fp = NuFParCreateMem("cutscenes", config, 0xffff);
+        if (fp == NULL) {
+            return NULL;
+        }
+
+        initial = buf->void_ptr;
+        sys = (CUT_LOAD_SYS_PC *)((reinterpret_cast<u32>(initial) + 3) & ~3U);
+        sys->character_bits = reinterpret_cast<u32 *>((reinterpret_cast<u32>(sys) + 15) & ~3U);
+        CS_area = param2;
+        CS_worldinfo = world;
+        CS_cutsys = sys;
+        buf->addr = (reinterpret_cast<u32>(sys->character_bits) + ((CHARCOUNT + 31) / 32) * 4 + 3) & ~3U;
+
+        while (NuFParGetLine(fp) != 0) {
+            if (NuFParGetWord(fp) == 0 || NuStrICmp(fp->word_buffer_ptr, "cutscene") != 0 || sys->count > 0x1f ||
+                NuFParGetWord(fp) == 0) {
+                continue;
+            }
+
+            cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(buf->void_ptr);
+            entries[sys->count] = cut;
+            buf->addr = (buf->addr + sizeof(CUT_LOAD_RECORD_PC) + 3) & ~3U;
+            NuStrLwr(name, fp->word_buffer_ptr);
+            i32 len = NuStrLen(name);
+            while (len > 0 && name[len - 1] != '.') {
+                --len;
+            }
+            if (len > 0) {
+                name[len - 1] = '\0';
+            }
+
+            if (name[0] == 'c' && name[1] == 'u' && name[2] == 't' && name[3] == '\\') {
+                NuStrCpy(name, name + 4);
+            }
+            NuStrCpy(config_name, name);
+            if (CutScene_OverrideConfigFileNameFn != NULL) {
+                CutScene_OverrideConfigFileNameFn(config_name, param2, param3);
+            }
+            NuStrCpy(full_path, "cut\\");
+            NuStrCat(full_path, config_name);
+            NuStrCat(full_path, AreaResidentsExtension);
+            CutSceneConfigurePc(cut, full_path, buf, buf_end);
+            NuStrCpy(full_path, "cut\\");
+            NuStrCat(full_path, name);
+            NuStrCat(full_path, AreaResidentsExtension);
+
+            if ((cut->flags & 0x800) == 0 && InStory() == 0 && (LDataList[param3].flags & 0xe0) == 0) {
+                buf->void_ptr = cut;
+                continue;
+            }
+            buf->void_ptr = (char *)((buf->addr + 63) & ~63U);
+            NuStrCpy(full_path, "cut\\");
+            NuStrCat(full_path, name);
+            NuStrCat(full_path, NuFileExt_cu2_PC);
+            cut->scene = NuGCutSceneLoad(full_path, buf, buf_end, 0);
+            if (cut->scene == NULL) {
+                NuStrCpy(full_path, "cut\\");
+                NuStrCat(full_path, name);
+                NuStrCat(full_path, ".cut");
+                cut->scene = NuGCutSceneLoad(full_path, buf, buf_end, 0);
+                if (cut->scene == NULL) {
+                    buf->void_ptr = cut;
+                    continue;
+                }
+            }
+            char *base_name = name;
+            for (char *cursor = name; *cursor != '\0'; ++cursor) {
+                if (*cursor == '\\') {
+                    base_name = cursor + 1;
+                }
+            }
+            NuStrCpy(cut->name, base_name);
+            NuGCutSceneFixUp(cut->scene, gscn1, 0, param1);
+            NuGCutSceneFixUpExtra(cut->scene, gscn2);
+            cut->instance = instNuGCutSceneCreate(cut->scene, NULL, NULL, name, buf, 0);
+            if (cut->instance != NULL) {
+                reinterpret_cast<CUT_LOAD_INSTANCE_RATE_PC *>(cut->instance)->rate =
+                    cut->frames_per_second * DEFAULTFRAMETIME;
+                buf->void_ptr = (char *)((buf->addr + 15) & ~15U);
+            }
+            sys->count++;
+        }
+        NuFParDestroy(fp);
+        if (sys->count <= 0) {
+            buf->void_ptr = initial;
+            return NULL;
+        }
+        sys->records = reinterpret_cast<CUT_LOAD_RECORD_PC **>(buf->void_ptr);
+        PCByteCopy_candidate(sys->records, entries, sys->count * sizeof(CUT_LOAD_RECORD_PC *));
+        // Retail reserves count pointer-table rows after copying the count entries.
+        buf->addr = ((buf->addr + sys->count * sizeof(CUT_LOAD_RECORD_PC *) * sys->count + 3) & ~3U);
+        return sys;
+    }
+}

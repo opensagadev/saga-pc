@@ -1147,3 +1147,52 @@ extents lack allocation proof and become blank, retiring32 inventory bytes with
 no previous exact loss. Next are the compiled4478-byte cutscene kernel and its
 2564-byte real loader/private callers, with resource and Vehicle/POD families
 prepared concurrently. Draw3767 remains separate bounded work.
+
+
+### Vehicle/POD/terrain and connected cutscene loader (2026-10-04)
+
+Fifty-one actual functions transfer 24,861 complete original PC bytes over b9c64dd:
+Vehicle/POD/terrain/PostReset22/17,819 and cutscene kernel/loader29/7,042.
+Whole-PC fuzzy coverage rises from 12.952078%
+to 13.494166% of 3,471,246B. Unique compared code is
+740,420B; native objdiff compares 740,532B including overlapping aliases and
+reports 63.269043% separately. Eleven new exact functions
+add 1,147B, reaching71,565B (2.061652%). Every previous exact code/data match survives.
+All 2,631 prior complete function copies remain identical.
+
+The genuine private movement group now contains Vehicle/POD/Force/glow/shield/
+smart-bomb/cable helpers and callers. Actual ForceGlow 1,204 includes its native
+post-return switch table; CreateCable 147 and CableTarget 517 close Cable 362,
+which matches completely. Cable records use WORD flags at 1ea and stride 1ec,
+not Android BYTE 1e9. Minimal working array views retain unknown owning extents.
+Terrain includes the complete 7,994-byte parent and real 91/202-byte helpers.
+Both naturally emit after removing unsupported noinline annotations. The source
+is C89 with all 7,461 executable/controlflow tokens and initializer order preserved.
+Its threshold comparison keeps the retail's extended x87 value, removing the prior
+CPP DWORD spill absent from PC. Actual nonexact 53.880543% remains in the report.
+
+Cutscene relocation/fixup/instance creation retains genuine private caller
+contexts and actual register-interface evidence. The real 510/720-byte Configure/
+Listed helpers are naturally retained by public Load 1,333 in the existing CPP
+runtime owner; no retention pins or public private-ABI adapters are added.
+Listed has no invented capacity guard; its working view is qualified by at most
+32 eligible entries. Five loader states are distinct from the older draw-system
+pointer. Original callbacks, table and NuMusic implementation remain unchanged.
+
+Required LLVM18 checks 226 files/224 units, pinned build/link and all 2,682 function/
+5,175 data definitions pass; 665 tests pass with three skips. Final native replay
+passes 170 checks using all 224 actual normal objects without substitutions:
+Vehicle 18, cable 55, loader 74 and kernel 23. A wrong Android cable field fails 19
+controls. Hover fixture initialization now calls the real NuTrigInit startup
+provider; the earlier omitted-init failure remains retained. Selected loader
+cases use the genuine memory/file parser and real Configure/Listed/story gates.
+Successful asset construction, complete terrain gameplay and active hardware
+visual/audio paths remain untested; inherited real partials stay explicit.
+
+Forty-nine required physical views add 254 source bytes: four complete immutable
+NUL strings 44B have known extents,45 mutable/pointer/array views 210B remain
+unknown and receive zero allocation credit. Scope 1,411 retains all 1,362 prior
+proofs; all 3,100 complete named normal data regions equal the frozen isolated
+object. The checkpoint waited for final review and validation before committing;
+the user's journal remains untouched. Next are the accepted renderer 4,745B
+(including spline 1,309 once), UI 1,903+67B, resource 966B and prompt 1,277B waves.

@@ -6827,6 +6827,11 @@ typedef struct CUT_LOAD_RECORD_PC CUT_LOAD_RECORD_PC;
 
 typedef struct minianimpacket_pc_s MINIANIMPACKET_PC;
 
+typedef struct cut_scene_load_pc_s CUT_SCENE_LOAD_PC;
+typedef struct cut_load_character_s CUT_LOAD_CHARACTER;
+typedef struct cut_load_character_instance_s CUT_LOAD_CHARACTER_INSTANCE;
+typedef struct cut_locator_function_entry_pc_s CUT_LOCATOR_FUNCTION_ENTRY_PC;
+
 typedef struct TEXT_INPUT_LABELS_PC TEXT_INPUT_LABELS_PC;
 typedef struct TEXT_INPUT_DEVICE_LINK_PC {
     i32 unknown_0000;
@@ -6836,6 +6841,11 @@ typedef struct TEXT_INPUT_DEVICE_LINK_PC {
 STATIC_ASSERT(sizeof(TEXT_INPUT_DEVICE_LINK_PC) == 12);
 STATIC_ASSERT(offsetof(TEXT_INPUT_DEVICE_LINK_PC, device) == 4);
 STATIC_ASSERT(offsetof(TEXT_INPUT_DEVICE_LINK_PC, available) == 8);
+
+typedef struct CABLE_RECORD_PC CABLE_RECORD_PC;
+
+typedef struct CUT_LOAD_SYS_PC CUT_LOAD_SYS_PC;
+typedef struct CUT_LOAD_LIST_ENTRY_PC CUT_LOAD_LIST_ENTRY_PC;
 
 #ifdef __cplusplus
 extern "C" {
@@ -7183,7 +7193,72 @@ extern "C" {
 
     i32 __cdecl InStory(void);
 
+    void __cdecl Move_VEHICLE(GAMEOBJECT *);
+    void __cdecl Move_POD(GAMEOBJECT *);
+    void __cdecl PodCollisionCode(GAMEOBJECT *);
+    f32 __cdecl FindPodHoverHeight(GAMEOBJECT *);
+    void __cdecl PlaySfxByIdAndSetPitch(i32, NUVEC *, f32);
+    void __cdecl CableCode(GAMEOBJECT *, i32, f32);
+    void __cdecl TerrainPlayer(GAMEOBJECT *);
+    void __cdecl PostResetCode(GAMEOBJECT *);
+    GAMEOBJECT *__cdecl CableTargetGameObject(GAMEOBJECT *, NUVEC *, f32);
+    CABLE_RECORD_PC *__cdecl CreateCable(GAMEOBJECT *, GAMEOBJECT *, i32);
+
+    extern CUT_LOAD_LIST_ENTRY_PC *CutList;
+    extern i32 CUTCOUNT;
+    extern CUT_LOAD_SYS_PC *CS_cutsys;
+    extern VARIPTR *CS_buffend;
+    extern void(__cdecl *CutScene_OverrideConfigFileNameFn)(char *, i32, i32);
+    CUT_LOAD_SYS_PC *__cdecl CutScenes_Load(char *, NUGSCN *, NUGSCN *, i32, VARIPTR *, VARIPTR *, i32, i32,
+                                            WORLDINFO *);
+    void __cdecl CutSceneConfigMissingPc(char *);
+
+    extern const char ForcePushSoundNamePc[11];
+    extern const char VehicleSmartBombChargeNamePc[10];
+    extern const char VehicleShieldOnNamePc[10];
+    extern const char PodBoosterSoundNamePc[13];
+    extern i16 id_DODGEM;
+    extern i16 id_SNOWMOB;
+    extern i16 id_TRACTOR;
+    extern f32 PCForceGlowRadiusMultiplier;
+    extern f32 PCForceGlowHoldDuration;
+    extern f32 FORCEGLOWTIME;
+    extern f32 CableTargetScalePc;
+    extern f32 VehicleZamSmokeRatePc;
+    extern f32 VehicleShieldTargetPc;
+    extern f32 PodRaceMinimumSpeedPc;
+    extern f32 PodRaceBoostSpeedPc;
+    extern f32 PodSprintMinimumSpeedPc;
+    extern f32 PodSprintBoostSpeedPc;
+    extern f32 PodBoostHeightPc;
+    extern f32 PodPitchHistoryPc[2];
+    extern i32 PodSprintDebrisIndexPc;
+    extern f32 PodCollisionThresholdPc;
+    extern NUVEC PodSprintLiftPositionsPc[3];
+    extern u32 LswForceUsedHintFlagsPc;
+    extern f32 MiscTime;
+    extern LEVELDATA_PC *BOUNTYHUNTERPURSUITE_LDATA;
+    extern LEVELDATA_PC *ASTEROIDCHASEC_LDATA;
+    extern LEVELDATA_PC *DAGOBAHC_LDATA;
+    extern LEVELDATA_PC *ENDORBATTLEC_LDATA;
+    extern i32 NOTERRAINSTOP;
+    extern void(__cdecl *VehicleSlowdownCallbackPc)(GAMEOBJECT *);
+    extern f32 VehicleLaunchHoverOffsetPc;
+    extern f32 PodCollisionMagnitudePc;
+    extern f32 PCForceGlowDisabledState;
+    extern i32 LEGO_AIPATHCNX_BLOCKAGE;
+    extern i32 LEGO_AIPATHCNX_WALLSHUFFLE;
+    extern i32 LEGO_AIPATHCNX_FULLTERRAIN;
+
     extern HINTSYS_PC hintsys;
+    extern i32 CutSceneSingleStreamBufferPc;
+    extern INSTNUGCUTSCENE *CutSceneBackgroundInstancesPc;
+    extern i32(__cdecl *LookupLocatorVfxFn)(char *);
+    extern i32 CutSceneLookupAllDebrisPagesPc;
+    extern void(__cdecl *NuCutSceneFindCharacters)(CUT_SCENE_LOAD_PC *);
+    extern void(__cdecl *NuCutSceneCharacterCreateData)(CUT_LOAD_CHARACTER *, CUT_LOAD_CHARACTER_INSTANCE *, VARIPTR *);
+    extern i32(__cdecl *NuCutSceneRequestSFX)(char *);
+    extern CUT_LOCATOR_FUNCTION_ENTRY_PC *CutSceneLocatorFunctionsPc;
     extern LEVELDATA_PC *NEGOTIATIONSA_LDATA;
     extern LEVELDATA_PC *NEGOTIATIONSB_LDATA;
     extern LEVELDATA_PC *GUNGAN_A_LDATA;
@@ -12025,6 +12100,14 @@ extern "C" {
     STATIC_ASSERT(offsetof(STATE_ANIM_PC, values) == 8);
     /* C extern declarations: */
     i32 __cdecl StateAnimEvaluate(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame);
+    void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_stream_buffers);
+    void __cdecl NuGCutSceneFixUp(void *scene, NUGSCN *gscene, void *extra_scene, i32 page);
+    void __cdecl NuGCutSceneFixUpExtra(void *scene, NUGSCN *gscene);
+    INSTNUGCUTSCENE *__cdecl instNuGCutSceneCreate(void *scene, NUGSCN *gscene, void *extra_scene, char *name,
+                                                   VARIPTR *buffer, i32 background);
+    STATE_ANIM_PC *__cdecl StateAnimFixPtrs(STATE_ANIM_PC *state, i32 delta);
+    void __cdecl CutSceneLoadDiagnosticPc(void *unused, ...);
+    void __cdecl CutSceneMissingObjectDiagnosticPc(char *unused);
     void __cdecl NuSpecialSetDrawMtx(NUSPECIALHANDLE *special, NUMTX *matrix);
 
     typedef struct edpp_particle_pc_s {

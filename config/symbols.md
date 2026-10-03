@@ -3963,3 +3963,26 @@ mandatory WORLD reads, fill-before-cheat and unordered timer behavior. Canonical
 text marker storage is reused. Level sound8845 uses the genuine exact Beast
 pointer and signed WORD EWOK/WICKET IDs; the pure C partition preserves actual
 public cross-unit calls without claiming historical TU identity.
+
+
+### Vehicle/terrain and cutscene loader source release (2026-10-04)
+
+Fifty-one complete source functions 24,861B are compared in actual subsystem
+owners. ForceGlow 1,204 includes its four-entry switch table; the former rough
+1,460-byte candidate was not its full PC identity. Genuine CreateCable 147 and
+CableTarget 517 close byte-exact Cable 362. The public Create interface returns
+an opaque CABLE_RECORD_PC pointer; physical flags WORD 1ea/stride 1ec are locally
+asserted. Private helper ctypes stay blank and actual register witnesses remain
+in retained evidence. No artificial retaining calls or compiler controls are used.
+
+Terrain's genuine C89 caller/helper group contains91/202/7,994-byte PC spans.
+Removing reconstructed noinline annotations preserves both helper bodies;
+mechanical C conversion preserves initializer execution order. The main remains
+nonexact. Native417b96/417b9c/417b9e computes and compares an extended threshold
+without a DWORD spill; final C follows that precision, unlike the prior CPP build.
+
+Cutscene kernel25/4,478 plus natural loader4/2,564 uses complete entries and
+actual same-TU private context, including Configure 510, Listed 720 and Load 1,333.
+Original inherited camera/locator registers remain documented separately from
+candidate compiler allocation. Both one-byte kernel diagnostics and the separate
+one-byte config diagnostic are genuine retail RET functions, not fake providers.

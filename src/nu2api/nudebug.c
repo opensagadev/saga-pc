@@ -15,3 +15,15 @@ void __cdecl PCAnimationEffectCheckpoint(void) {
 
 void __cdecl PCCharacterModelDiagnosticNoOp(void) {
 }
+
+void __cdecl CutSceneLoadDiagnosticPc(void *unused, ...) {
+    (void)unused;
+}
+
+void __cdecl CutSceneMissingObjectDiagnosticPc(char *unused) {
+    (void)unused;
+}
+
+void __cdecl CutSceneConfigMissingPc(char *unused) {
+    (void)unused;
+}

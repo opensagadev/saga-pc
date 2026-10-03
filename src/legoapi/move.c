@@ -5232,3 +5232,911 @@ void __cdecl StartHold(GAMEOBJECT *object) {
     }
     object->character_context = -1;
 }
+
+extern f32 VehicleLaunchHoverOffsetPc, VehicleZamSmokeRatePc;
+extern i16 id_SNOWMOB, id_ZAMSSPEEDER, id_DODGEM;
+extern LEVELDATA_PC *BOUNTYHUNTERPURSUITE_LDATA;
+extern void(__cdecl *VehicleSlowdownCallbackPc)(GAMEOBJECT *);
+/* Source-only logical declarations: physical interfaces/real implementations remain explicit holds. */
+void __cdecl Move_POD(GAMEOBJECT *);
+void __cdecl KeepWeaponOut(GAMEOBJECT *);
+void __cdecl DropInOutCode(GAMEOBJECT *);
+f32 __cdecl FindGunshipHoverHeight(GAMEOBJECT *);
+void __cdecl LoopCode(GAMEOBJECT *, i32, i32, GAMEPAD_PC *, i32);
+void __cdecl DisorientateCode(GAMEOBJECT *, NUVEC *, f32);
+
+void __cdecl CatchUpCode(GAMEOBJECT *, f32, f32, i32);
+void __cdecl CableCode(GAMEOBJECT *, i32, f32);
+void __cdecl TractorBeamCode(GAMEOBJECT *);
+void __cdecl FloatCode(GAMEOBJECT *);
+void __cdecl TorpedoCode(GAMEOBJECT *, i32, f32);
+void __cdecl AwkwardShapeCode(GAMEOBJECT *, i32);
+void __cdecl EngineNoiseCode(GAMEOBJECT *, i32);
+
+/* Private original-TU bodies are pending. No public register adapters are introduced. */
+
+extern AREA_DATA_PC *DEATHSTARBATTLE_ADATA, *ANAKINSFLIGHT_ADATA, *BOUNTYHUNTERPURSUIT_ADATA;
+extern u8 TractorBeamEnabledPc;
+
+/* Four external logical-only private service declarations are research holds, not adapters or production interfaces. */
+
+typedef struct vehicle_thrust_view_pc_s {
+    u8 unknown_000[0xdcc];
+    f32 thrust_level;
+    u8 unknown_dd0[0xe28 - 0xdd0];
+    u8 effect_noise[4];
+} VEHICLE_THRUST_VIEW_PC;
+STATIC_ASSERT(offsetof(VEHICLE_THRUST_VIEW_PC, thrust_level) == 0xdcc);
+STATIC_ASSERT(offsetof(VEHICLE_THRUST_VIEW_PC, effect_noise) == 0xe28);
+
+typedef struct vehicle_joint_modifier_pc_s {
+    NUVEC rotation;
+    u8 unknown_00c[0x30 - 0xc];
+    u8 joint_index, flags;
+    u8 unknown_032[2];
+} VEHICLE_JOINT_MODIFIER_PC;
+STATIC_ASSERT(sizeof(VEHICLE_JOINT_MODIFIER_PC) == 0x34);
+STATIC_ASSERT(offsetof(VEHICLE_JOINT_MODIFIER_PC, joint_index) == 0x30);
+STATIC_ASSERT(offsetof(VEHICLE_JOINT_MODIFIER_PC, flags) == 0x31);
+typedef struct vehicle_joint_view_pc_s {
+    u8 unknown_000[0xf3c];
+    VEHICLE_JOINT_MODIFIER_PC joints[2];
+    u8 unknown_fa4[0x107d - 0xfa4];
+    u8 joint_count;
+} VEHICLE_JOINT_VIEW_PC;
+STATIC_ASSERT(offsetof(VEHICLE_JOINT_VIEW_PC, joints) == 0xf3c);
+STATIC_ASSERT(offsetof(VEHICLE_JOINT_VIEW_PC, joint_count) == 0x107d);
+
+static void __declspec(noinline) VehicleThrustPc(GAMEOBJECT *object) {
+    VEHICLE_THRUST_VIEW_PC *view = (VEHICLE_THRUST_VIEW_PC *)object;
+    f32 speed = GetVehicleSpeedMul(object, object->pad->input_magnitude);
+    f32 target;
+    i32 i;
+    if (speed > 1.0f)
+        speed = 1.0f;
+    target = (f32)((f64)speed * 0.75 + 0.75);
+    view->thrust_level = SeekValF(view->thrust_level, target, view->thrust_level < target ? 8.0f : 3.0f);
+    for (i = 0; i < 4; ++i)
+        view->effect_noise[i] = (u8)(qrand() >> 8);
+}
+static void __declspec(noinline) VehicleLaunchPc(GAMEOBJECT *object) {
+    f32 hover, time, blend;
+    i32 phase;
+    u16 pitch;
+    if (object->character_context != 0x2c)
+        return;
+    if (DEATHSTARBATTLE_ADATA != NULL && WORLD->area == DEATHSTARBATTLE_ADATA)
+        hover = -1.5f;
+    else if (ANAKINSFLIGHT_ADATA != NULL && WORLD->area == ANAKINSFLIGHT_ADATA && object->ai_packet.locator != NULL)
+        hover = object->ai_packet.locator->position.y + VehicleLaunchHoverOffsetPc;
+    else {
+        hover = GetHoverPosY(object);
+        if (hover == 2000000.0)
+            hover = 0.0f;
+    }
+    object->movement_mode = 0;
+    switch (object->field_7b3) {
+        case 0:
+            if (object->position.y >= hover)
+                object->field_7b3 = 1;
+            else {
+                object->pitch_angle = 0xc000;
+                object->roll_angle = 0;
+                object->velocity.x = object->velocity.y = 0.0f;
+                object->velocity.z = (f32)(object->character_data->game_character->run_speed * 0.5);
+                pitch = 0xc000;
+                break;
+            }
+        case 1:
+            object->pitch_angle = TurnRot(object->pitch_angle, 0, 0x10000, NULL);
+            object->roll_angle = 0;
+            object->velocity.x = object->velocity.y = 0.0f;
+            object->velocity.z = (f32)(object->character_data->game_character->run_speed * 0.5);
+            pitch = object->pitch_angle;
+            if (pitch == 0) {
+                object->field_7b3 = 2;
+                object->launch_origin.y = object->position.y;
+                object->context_timer = 0.0f;
+            }
+            break;
+        case 2:
+            time = object->context_timer + FRAMETIME;
+            object->context_timer = time;
+            if (time >= 1.0f) {
+                object->character_context = -1;
+                time = 1.0f;
+            }
+            object->pitch_angle = object->roll_angle = 0;
+            object->velocity.x = object->velocity.y = 0.0f;
+            object->velocity.z = (f32)((f64)time * object->character_data->game_character->run_speed +
+                                       (f64)object->character_data->game_character->run_speed * 0.5 * (1.0 - time));
+            phase = ((i32)((f64)time * 32768.0 + 16384.0) >> 1) & 0x7fff;
+            blend = (f32)(1.0 - (1.0 + (f64)NuTrigTable[phase]) * 0.5);
+            object->position.y = (1.0f - blend) * object->launch_origin.y + blend * hover;
+            pitch = 0;
+            break;
+        default:
+            object->character_context = -1;
+            pitch = object->pitch_angle;
+            break;
+    }
+    NuVecRotateX(&object->velocity, &object->velocity, pitch);
+    NuVecRotateY(&object->velocity, &object->velocity, object->field_0x276);
+}
+
+typedef struct VEHICLE_WEAPONS_STATE_PC {
+    u8 unknown_000[0xd24];
+    f32 ground_contact_grace_timer;
+    u8 unknown_d28[0x24];
+    f32 smartbomb_timer;
+} VEHICLE_WEAPONS_STATE_PC;
+STATIC_ASSERT(offsetof(VEHICLE_WEAPONS_STATE_PC, smartbomb_timer) == 0xd4c);
+STATIC_ASSERT(offsetof(VEHICLE_WEAPONS_STATE_PC, ground_contact_grace_timer) == 0xd24);
+extern f32 VehicleShieldTargetPc;
+extern const char VehicleShieldOnNamePc[10];
+extern const char VehicleSmartBombChargeNamePc[10];
+extern const char ForceThrowExplodeNamePc[9];
+
+static __declspec(noinline) void ShieldCode(GAMEOBJECT *object) {
+    f32 target = 0.0f, previous;
+    i32 animation;
+    if (object->shield_hitpoints != 0) {
+        if (object->id == (u16)id_ZAMSSPEEDER && WORLD->area != NULL && WORLD->area == BOUNTYHUNTERPURSUIT_ADATA) {
+            target = VehicleShieldTargetPc;
+        } else {
+            animation = CurrentAnim(&object->anim_packet);
+            if ((object->field_281 != 0 || ((VEHICLE_WEAPONS_STATE_PC *)object)->ground_contact_grace_timer > 0.0f) &&
+                animation != -1 && animation != 3 && animation != 0x23 && animation != 5 && animation != 0x6a &&
+                object->character_context != 0x17 && object->character_context != 0x3d)
+                target = 1.0f;
+        }
+    }
+    previous = object->origin_scale_override;
+    object->origin_scale_override = SeekLinearF(previous, target, (f32)((f64)FRAMETIME * 5.0));
+    if ((previous == 0.0f && object->origin_scale_override > 0.0f) ||
+        (previous == 1.0f && object->origin_scale_override < 1.0f))
+        PlaySfx((char *)VehicleShieldOnNamePc, &object->collision_position);
+}
+
+static __declspec(noinline) void SmartBombCode(GAMEOBJECT *object) {
+    VEHICLE_WEAPONS_STATE_PC *state = (VEHICLE_WEAPONS_STATE_PC *)object;
+    i32 old_phase;
+    f32 sign;
+    if (!Cheat_IsOn(20) || (object->flags_1fc & 0x80) == 0 || (object->character_data->model_flags & 0x2000) == 0 ||
+        InCollectList_Index((i16)object->id, NULL, 0) == -1) {
+        state->smartbomb_timer = 0.0f;
+        return;
+    }
+    if (state->smartbomb_timer == 0.0f) {
+        if ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0)
+            state->smartbomb_timer += FRAMETIME;
+        return;
+    }
+    if ((object->pad->buttons_held & GAMEPAD_SPECIAL) == 0)
+        return;
+    old_phase = (i32)((f64)state->smartbomb_timer / (f64)0.2f);
+    state->smartbomb_timer += FRAMETIME;
+    if (state->smartbomb_timer >= 2.0f) {
+        state->smartbomb_timer = 0.0f;
+        AddExplosion(&object->collision_position, (f32)((f64)AreaPickupScale * 7.5), 1.0f, NULL, -1, 0x4021);
+        NewRumbleAllPlayers(1.0f, 0.1f, 0, 0.0f);
+        sign = qrand() < 0x8000 ? -1.0f : 1.0f;
+        GameCam_Judder(GameCam, (f32)((f64)sign * 1.5), 2, NULL);
+        GameCam_NewShake(GameCam, 2.0f, 1.0f, 1.0f);
+        PlaySfx((char *)ForceThrowExplodeNamePc, NULL);
+    } else {
+        PlaySfxAndSetVolume((char *)VehicleSmartBombChargeNamePc, NULL, (f32)((f64)state->smartbomb_timer * 3.0 * 0.5));
+        if ((i32)((f64)state->smartbomb_timer / (f64)0.2f) != old_phase)
+            NewBuzzFrames(object->pad->bound_pad, 2, 0);
+    }
+}
+
+static __declspec(noinline) void DodgemCode(GAMEOBJECT *object) {
+    GAMEOBJECT *other;
+    NUVEC position;
+    i32 i, effect, count;
+    f32 random;
+    if (object->current_hp > 1) {
+        if (object->rider == NULL || object->field_280 != 0xff)
+            return;
+        for (i = 0; i < 2; ++i) {
+            other = (GAMEOBJECT *)Player[i];
+            if (other != NULL && (other->flags_1fc & 0x80) != 0 && other->rider != NULL &&
+                ((other->collision_contact_mask[0] & object->collision_identity_mask[0]) |
+                 (other->collision_contact_mask[1] & object->collision_identity_mask[1])) != 0 &&
+                object->vehicle_hit_timer <= 0.0f)
+                ObjHitObj(other, object, 1, 1, 0, 1);
+        }
+        return;
+    }
+    effect = WORLD->game_debris_sys->entries[24].effect;
+    if (effect == -1)
+        return;
+    count = ParticlesPerSecond(5.0f, FRAMETIME);
+    while (count > 0) {
+        random = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f));
+        position.x =
+            object->collision_position.x + (object->initial_position.x - object->collision_position.x) * random;
+        position.y =
+            object->collision_position.y + (object->initial_position.y - object->collision_position.y) * random;
+        position.z =
+            object->collision_position.z + (object->initial_position.z - object->collision_position.z) * random;
+        AddVariableShotDebrisEffect(effect, &position, 1, 0, 0);
+        --count;
+    }
+}
+
+extern f32 PodRaceMinimumSpeedPc, PodRaceBoostSpeedPc, PodSprintMinimumSpeedPc, PodSprintBoostSpeedPc;
+extern f32 PodBoostHeightPc, PodPitchHistoryPc[2], PodCollisionThresholdPc, PodCollisionMagnitudePc;
+extern i32 PodSprintDebrisIndexPc;
+extern NUVEC PodSprintLiftPositionsPc[3];
+extern const char PodBoosterSoundNamePc[13];
+typedef struct pod_boost_view_pc_s {
+    u8 unknown_0000[0x1038];
+    f32 boost_timer;
+} POD_BOOST_VIEW_PC;
+STATIC_ASSERT(offsetof(POD_BOOST_VIEW_PC, boost_timer) == 0x1038);
+
+static __declspec(noinline) void PodBoostCodePc(GAMEOBJECT *object) {
+    POD_BOOST_VIEW_PC *pod = (POD_BOOST_VIEW_PC *)object;
+    if (object->field_280 == 0xff)
+        return;
+    if ((object->flags_e20 & 0x20) == 0 && object->jump_animation_state == 0x14 &&
+        object->collision_min.y - object->floor_height < PodBoostHeightPc) {
+        NewBuzz(object->pad->bound_pad, 0.1f, 0);
+        NewRumble(object->pad->bound_pad, 0.5f, 0);
+        object->current_speed_mul = WORLD->area == PODRACE_ADATA ? PodRaceBoostSpeedPc : PodSprintBoostSpeedPc;
+        pod->boost_timer = 1.0f;
+        if ((object->flags_e20 & 1) == 0) {
+            PlaySfx((char *)PodBoosterSoundNamePc, &object->collision_position);
+            object->flags_e20 |= 1;
+        }
+    } else {
+        object->flags_e20 &= ~1u;
+        if (pod->boost_timer > 0.0f) {
+            pod->boost_timer -= FRAMETIME;
+            if (pod->boost_timer < 0.0f)
+                pod->boost_timer = 0.0f;
+        }
+    }
+    if (object->current_speed_mul > 1.0f)
+        NewRumble(object->pad->bound_pad, (f32)((f64)object->current_speed_mul - 1.0), 0);
+}
+
+static __declspec(noinline) void PodSpeedCodePc(GAMEOBJECT *object, i32 jump_held) {
+    f32 target, rate;
+    POD_BOOST_VIEW_PC *pod = (POD_BOOST_VIEW_PC *)object;
+    if (object->field_280 == 0xff)
+        return;
+    rate = (f32)((f64)FRAMETIME * 3.0);
+    if (WORLD->area == PODRACE_ADATA) {
+        f32 base;
+        if (jump_held != 0)
+            base = 1.0f;
+        else if ((FadeSys.fade == 0.0f && MiniCutCam == 0) || podrace_section == -1)
+            base = PodRaceMinimumSpeedPc;
+        else
+            base = 1.0f;
+        target = base + (PodRaceBoostSpeedPc - base) * pod->boost_timer;
+        if (jump_held != 0)
+            rate = (f32)((f64)FRAMETIME * 5.0);
+    } else {
+        target = PodSprintMinimumSpeedPc + (PodSprintBoostSpeedPc - PodSprintMinimumSpeedPc) * pod->boost_timer;
+    }
+    object->current_speed_mul = SeekLinearF(object->current_speed_mul, target, rate);
+}
+
+void __cdecl PodCollisionCode(GAMEOBJECT *object) {
+    if (GamePlayTimer.time_elapsed < 1.0f || object->field_280 == 0xff || (object->flags_1fc & 0x80) == 0 ||
+        object->contact_count == 0 || object->contact_normal.y > 0.574f || !(object->contact_normal.y >= -0.574f))
+        return;
+    if (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA) {
+        AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[PodSprintDebrisIndexPc].effect,
+                                          &object->contact_position, 50, FRAMETIME, 0, 0, NULL);
+        if (qrand() < 0x8000)
+            NewBuzzFrames(object->pad->bound_pad, 1, 0);
+        return;
+    }
+    PodCollisionMagnitudePc = (1.0f / object->pre_terrain_speed) * object->post_terrain_speed;
+    if (PodCollisionMagnitudePc < 1.0f) {
+        if (PodCollisionThresholdPc > PodCollisionMagnitudePc)
+            ObjHitObj(NULL, object, 1, 0, 0, 1);
+        object->current_speed_mul = (f32)((f64)object->current_speed_mul * 0.5);
+        if (PodRaceMinimumSpeedPc > object->current_speed_mul)
+            object->current_speed_mul = PodRaceMinimumSpeedPc;
+    }
+}
+
+struct gizforce_pc_s {
+    u8 unknown_000[0x10];
+    NUVEC file_position;
+    u8 unknown_01c[0xc];
+    GAMEANIMSET *anim_set;
+    u8 unknown_02c[0xc];
+    GAMEOBJECT *using_object;
+    u8 unknown_03c[0x34];
+    f32 horizontal_range;
+};
+STATIC_ASSERT(offsetof(GIZFORCE_PC, file_position) == 0x10);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, anim_set) == 0x28);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, using_object) == 0x38);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, horizontal_range) == 0x70);
+typedef struct FORCE_ANIMATION_OBJECT_PC {
+    u8 unknown_000[4];
+    NUSPECIALHANDLE special;
+} FORCE_ANIMATION_OBJECT_PC;
+STATIC_ASSERT(offsetof(FORCE_ANIMATION_OBJECT_PC, special) == 4);
+typedef struct FORCE_ATTENTION_PC {
+    u8 unknown_000[0xc5c];
+    f32 head_facing;
+    u8 unknown_c60[4];
+    f32 attention_timer;
+} FORCE_ATTENTION_PC;
+STATIC_ASSERT(offsetof(FORCE_ATTENTION_PC, head_facing) == 0xc5c);
+STATIC_ASSERT(offsetof(FORCE_ATTENTION_PC, attention_timer) == 0xc64);
+typedef struct FORCE_GLOW_PC {
+    u8 unknown_000[0xd18];
+    void *candidate;
+    u8 unknown_d1c[0x70];
+    f32 horizontal_range;
+    u8 unknown_d90[0x9d];
+    u8 candidate_kind;
+} FORCE_GLOW_PC;
+STATIC_ASSERT(offsetof(FORCE_GLOW_PC, candidate) == 0xd18);
+STATIC_ASSERT(offsetof(FORCE_GLOW_PC, horizontal_range) == 0xd8c);
+STATIC_ASSERT(offsetof(FORCE_GLOW_PC, candidate_kind) == 0xe2d);
+typedef struct FORCE_TARGET_PC {
+    u8 unknown_000[0x10cc];
+    GIZFORCE_PC *force;
+    FORCE_ANIMATION_OBJECT_PC *animation;
+} FORCE_TARGET_PC;
+STATIC_ASSERT(offsetof(FORCE_TARGET_PC, force) == 0x10cc);
+STATIC_ASSERT(offsetof(FORCE_TARGET_PC, animation) == 0x10d0);
+typedef struct WORLD_FORCE_PC {
+    u8 unknown_000[0x46ac];
+    void *force_system;
+} WORLD_FORCE_PC;
+STATIC_ASSERT(offsetof(WORLD_FORCE_PC, force_system) == 0x46ac);
+extern LEVELDATA_PC *DAGOBAHC_LDATA;
+extern u32 LswForceUsedHintFlagsPc;
+i32 __cdecl GizForce_Complete(GIZFORCE_PC *);
+i32 __cdecl GizForce_StoodOnForce(GIZFORCE_PC *, GAMEOBJECT *);
+u16 __cdecl GizForces_AngleToForce(NUVEC *, GIZFORCE_PC *);
+i32 __cdecl GizForce_FindBestForceTarget(void *, GAMEOBJECT *);
+void __cdecl Hint_SetComplete(i32);
+void __cdecl PlayGruntSfx(GAMEOBJECT *);
+void __cdecl SetHeadTarget(GAMEOBJECT *, NUVEC *, i8, f32, f32, f32);
+static __declspec(noinline) void ForceGlowTargetPc(GAMEOBJECT *object, GIZFORCE_PC *force,
+                                                   FORCE_ANIMATION_OBJECT_PC *animation) {
+    FORCE_GLOW_PC *glow = (FORCE_GLOW_PC *)object;
+    object->flags_e20 |= 0x20000;
+    if (animation != NULL) {
+        glow->candidate = animation;
+        glow->candidate_kind = 1;
+        glow->horizontal_range = force != NULL ? force->horizontal_range : 1.0f;
+        SetHeadTarget(object, NuSpecialGetDrawPos(&animation->special), 1, 2.0f, 5.0f, 10.0f);
+    } else {
+        glow->candidate = force;
+        glow->candidate_kind = 0;
+        if (force != NULL)
+            SetHeadTarget(object, &force->file_position, 1, 2.0f, 5.0f, 10.0f);
+    }
+    if (force != NULL)
+        SetHeadTarget(object, &force->file_position, 1, 2.0f, 5.0f, 10.0f);
+}
+static __declspec(noinline) void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
+    i32 previous = (object->flags_ef4 >> 20) & 1, start = 0, can_use;
+    FORCE_TARGET_PC *target = (FORCE_TARGET_PC *)object;
+    FORCE_ATTENTION_PC *attention = (FORCE_ATTENTION_PC *)object;
+    GIZFORCE_PC *force;
+    object->flags_ef4 &= ~0x100000u;
+    if (object->character_context == 8) {
+        if ((!held && !(object->pad->runtime_flags & 4)) || target->force == NULL)
+            object->character_context = -1;
+        else {
+            can_use = 0;
+            if (dagobah_training == 0 || object->rider != NULL || FreePlay != 0)
+                can_use = !GizForce_Complete(target->force) && !GizForce_StoodOnForce(target->force, object);
+            AlertSurroundingCreatures(object, &object->collision_position);
+            if (can_use) {
+                if (WORLD->current_level != VADERC_LDATA && (object->flags_1fc & 0x80) &&
+                    object->model_draw_result != 0 && attention->attention_timer > 0.0f &&
+                    ((f64)attention->head_facing < (f64)-0.85f || (f64)attention->head_facing > (f64)0.85f))
+                    can_use = 0;
+                if (can_use && WORLD->current_level == DAGOBAHC_LDATA && object->id == id_LUKESKYWALKERDAGOBAH &&
+                    LevGizmo[0] != NULL && target->force == LevGizmo[0]->object &&
+                    GameAnimSet_GetCompletionRatio(target->force->anim_set) > 0.5f)
+                    can_use = 0;
+                if (can_use) {
+                    target->force->using_object = object;
+                    object->force_heading = GizForces_AngleToForce(&object->position, target->force);
+                    AlertSurroundingCreatures(object, &object->collision_position);
+                    ForceGlowTargetPc(object, target->force, target->animation);
+                }
+            }
+            if (!can_use) {
+                target->force = NULL;
+                object->character_context = -1;
+            }
+        }
+        if (object->character_context == -1)
+            GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
+        return;
+    }
+    if ((object->character_data->game_character->flags_094 & 0x8000) || (object->flags_e20 & 0x1000000) ||
+        object->character_context == 0x12)
+        return;
+    if (object->field_281 && (object->character_context == -1 || (CInfo[object->character_context].flags & 4))) {
+        if (((object->flags_1fc & 0x80) && pressed) || (object->pad->runtime_flags & 4) || (held && previous))
+            start = 1;
+    }
+    if (start) {
+        if (!(object->pad->runtime_flags & 4) || target->force == NULL)
+            GizForce_FindBestForceTarget(((WORLD_FORCE_PC *)WORLD)->force_system, object);
+        if (target->force != NULL) {
+            object->context_timer = 0.5f;
+            object->character_context = 8;
+            NewRumble(object->pad->bound_pad, 0.6f, 0);
+            target->force->using_object = object;
+            GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
+            object->force_heading = GizForces_AngleToForce(&object->position, target->force);
+            if (object->flags_1fc & 0x80) {
+                Hint_SetComplete(0x259);
+                LswForceUsedHintFlagsPc |= 1;
+            }
+        }
+    } else if (object->flags_1fc & 0x80)
+        GizForce_FindBestForceTarget(((WORLD_FORCE_PC *)WORLD)->force_system, object);
+    force = target->force;
+    if (force != NULL && (object->flags_1fc & 0x80) && !(object->flags_e20 & 0x20000) && object->field_281)
+        ForceGlowTargetPc(object, force, target->animation);
+    if (object->character_context == 8 && object->id == id_LUKESKYWALKERDAGOBAH && dagobah_training != 0 &&
+        object->rider == NULL && FreePlay == 0) {
+        EndForce(object, 0);
+        if (AnimPlaying(&object->anim_packet, 0xb, 1, 1) == NULL &&
+            AnimPlaying(&object->anim_packet, 0x27, 1, 1) == NULL) {
+            PlaySfx((char *)ForcePushSoundNamePc, &object->collision_position);
+            PlayGruntSfx(object);
+        }
+        NewBuzzFrames(object->pad->bound_pad, 2, 0);
+        if (target->force != NULL) {
+            target->force->using_object = NULL;
+            object->movement_facing_angle = GizForces_AngleToForce(&object->collision_position, target->force);
+        }
+        object->flags_e20 |= 0x1000000;
+        GameCam_HitRoll();
+    }
+}
+
+void __cdecl Move_VEHICLE(GAMEOBJECT *);
+void __cdecl TakeHitCode(GAMEOBJECT *);
+void __cdecl LoopCode(GAMEOBJECT *, i32, i32, GAMEPAD_PC *, i32);
+
+f32 __cdecl FindPodHoverHeight(GAMEOBJECT *);
+void __cdecl PlaySfxByIdAndSetPitch(i32, NUVEC *, f32);
+void __cdecl Move_POD(GAMEOBJECT *object) {
+    PLAYERCHARACTERCONFIG_PC *vehicle;
+    i32 sound, player_index;
+    if (WORLD->area == NULL || (WORLD->area != PODRACE_ADATA && WORLD->area != PODSPRINT_ADATA)) {
+        Move_VEHICLE(object);
+        return;
+    }
+    ApplyGravity(object, NULL, FindPodHoverHeight(object), 8.0f, NULL);
+    vehicle = object->character_data->game_character;
+    if (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA && vehicle->field_028 > 0.0f &&
+        PodSprint_InStartCountdown(WORLD) <= 0.0f) {
+        GAMEPAD_PC *pad = object->pad;
+        LoopCode(object, pad->buttons_pressed & GAMEPAD_JUMP, pad->buttons_held & GAMEPAD_JUMP, pad, 0);
+    }
+    TakeHitCode(object);
+    if ((object->flags_1f8 & 0x40000) != 0)
+        ((POD_BOOST_VIEW_PC *)object)->boost_timer = 0.0f;
+    else {
+        PodSpeedCodePc(object, object->pad->buttons_held & GAMEPAD_JUMP);
+        PodBoostCodePc(object);
+    }
+    if (WORLD->area != NULL && (WORLD->area == PODRACE_ADATA || WORLD->area == PODSPRINT_ADATA))
+        CatchUpCode(object, 0.025f, 3.0f, 0);
+    if ((object->flags_1fc & 0x80) != 0)
+        ForceCode(object, 0, 0, 0);
+    PodCollisionCode(object);
+    vehicle = object->character_data->game_character;
+    sound = vehicle->sfx_engine;
+    if (vehicle->hover_fall_mode == 0x14) {
+        if ((object->flags_1fc & 0x80) != 0) {
+            player_index = object != Player[0];
+            if (WORLD->area != NULL && WORLD->area == PODRACE_ADATA) {
+                union {
+                    f32 value;
+                    u32 bits;
+                } sine;
+                f32 steering, speed, pitch;
+                sine.value = NuTrigTable[object->pad->input_angle >> 1];
+                sine.bits = (sine.bits & 0x7fffffff) | 0x80000000;
+                steering = (f32)((f64)sine.value * ((f64)object->pad->input_magnitude - 6.0) / 96.0);
+                speed =
+                    (f32)(avg_currentspeed_mul < 1.1f ? (f64)avg_currentspeed_mul + 1.0 + steering : 2.0 + steering);
+                pitch = (f32)(((f64)speed * 0.5 - PodPitchHistoryPc[player_index]) * FRAMETIME * 1.5 +
+                              PodPitchHistoryPc[player_index]);
+                PodPitchHistoryPc[player_index] = pitch;
+                PlaySfxByIdAndSetPitch(sound, &object->collision_position, pitch);
+            } else {
+                f32 pitch = SeekLinearF(
+                    PodPitchHistoryPc[player_index],
+                    (f32)((f64)object->velocity_magnitude / vehicle->run_speed * (f64)0.35f + (f64)0.65f), FRAMETIME);
+                PodPitchHistoryPc[player_index] = pitch;
+                PlaySfxByIdAndSetPitch(sound, &object->collision_position, pitch);
+            }
+        }
+    } else {
+        f64 facing = ((f64)object->collision_position.x - global_camera.mtx.m30) * global_camera.mtx.m20 +
+                     ((f64)object->collision_position.y - global_camera.mtx.m31) * global_camera.mtx.m21 +
+                     ((f64)object->collision_position.z - global_camera.mtx.m32) * global_camera.mtx.m22;
+        if (!(facing >= 0.0))
+            PlaySfxByIdAndSetPitch(sound, &object->collision_position, 0.7f);
+        else
+            PlaySfxById(sound, &object->collision_position);
+    }
+    GizmoBlowupCheckProximity(WORLD, object);
+}
+
+typedef struct GLOW_OBJECT_PC {
+    u8 unused_0000[0x6c4];
+    u8 player_packet[0x64];
+    u8 unused_0728[0x540];
+    NUVEC position;
+    u8 unused_0c74[0xa0];
+    void *object;
+    void *candidate;
+    u8 unused_0d1c[0x64];
+    f32 alpha;
+    f32 target;
+    f32 recovery;
+    f32 radius;
+    f32 hold;
+    u8 unused_0d94[0x8a];
+    i16 model;
+    u8 unused_0e20[0xc];
+    u8 kind;
+    u8 candidate_kind;
+} GLOW_OBJECT_PC;
+STATIC_ASSERT(offsetof(GLOW_OBJECT_PC, player_packet) == 0x6c4);
+STATIC_ASSERT(offsetof(GLOW_OBJECT_PC, position) == 0xc68);
+STATIC_ASSERT(offsetof(GLOW_OBJECT_PC, object) == 0xd14);
+STATIC_ASSERT(offsetof(GLOW_OBJECT_PC, candidate) == 0xd18);
+STATIC_ASSERT(offsetof(GLOW_OBJECT_PC, alpha) == 0xd80);
+STATIC_ASSERT(offsetof(GLOW_OBJECT_PC, target) == 0xd84);
+STATIC_ASSERT(offsetof(GLOW_OBJECT_PC, recovery) == 0xd88);
+STATIC_ASSERT(offsetof(GLOW_OBJECT_PC, radius) == 0xd8c);
+STATIC_ASSERT(offsetof(GLOW_OBJECT_PC, hold) == 0xd90);
+STATIC_ASSERT(offsetof(GLOW_OBJECT_PC, model) == 0xe1e);
+STATIC_ASSERT(offsetof(GLOW_OBJECT_PC, kind) == 0xe2c);
+STATIC_ASSERT(offsetof(GLOW_OBJECT_PC, candidate_kind) == 0xe2d);
+typedef struct GLOW_FORCE_PC {
+    u8 unused_0000[0x1c];
+    NUVEC position;
+    u8 unused_0028[0x40];
+    f32 radius;
+    u8 unused_006c[0x4];
+    f32 horizontal_scale;
+    u8 unused_0074[0x2c];
+    u32 flags;
+} GLOW_FORCE_PC;
+STATIC_ASSERT(offsetof(GLOW_FORCE_PC, position) == 0x1c);
+STATIC_ASSERT(offsetof(GLOW_FORCE_PC, radius) == 0x68);
+STATIC_ASSERT(offsetof(GLOW_FORCE_PC, horizontal_scale) == 0x70);
+STATIC_ASSERT(offsetof(GLOW_FORCE_PC, flags) == 0xa0);
+typedef struct GLOW_ANIMATION_DATA_PC {
+    u8 unused_0000[0x4];
+    u32 flags;
+} GLOW_ANIMATION_DATA_PC;
+STATIC_ASSERT(offsetof(GLOW_ANIMATION_DATA_PC, flags) == 0x4);
+
+extern f32 PCForceGlowDisabledState, PCForceGlowRadiusMultiplier, PCForceGlowHoldDuration, FORCEGLOWTIME;
+static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
+    GLOW_OBJECT_PC *glow = (GLOW_OBJECT_PC *)object;
+    f32 target, previous;
+    if (object->dead != 0 || PCForceGlowDisabledState != 0.0f) {
+        glow->alpha = 0.0f;
+        glow->target = 0.0f;
+        glow->object = NULL;
+        glow->hold = 0.0f;
+        glow->candidate = NULL;
+        glow->recovery = 0.2f;
+        return;
+    }
+    if (glow->recovery > 0.0f) {
+        glow->recovery -= FRAMETIME;
+        return;
+    }
+    if (glow->alpha == 0.0f) {
+        glow->object = glow->candidate;
+        glow->kind = glow->candidate_kind;
+    }
+    if (glow->object == NULL || glow->candidate != glow->object) {
+        if (glow->alpha == FORCEGLOWTIME && glow->hold > 0.0f) {
+            glow->hold -= FRAMETIME;
+            target = FORCEGLOWTIME;
+        } else
+            target = 0.0f;
+    } else if ((object->flags_1fc & 0x80) == 0 && glow->kind == 0 && object->character_context != 8 &&
+               AnimPlaying(&object->anim_packet, 0xb, 1, 1) == NULL &&
+               AnimPlaying(&object->anim_packet, 0x27, 1, 1) == NULL)
+        target = 0.0f;
+    else
+        target = FORCEGLOWTIME;
+    previous = glow->alpha;
+    if (glow->target == previous)
+        glow->target = target;
+    else {
+        if (previous > glow->target) {
+            glow->alpha = (f32)((f64)previous - (f64)FRAMETIME * 0.5);
+            if (glow->alpha < 0.0f)
+                glow->alpha = 0.0f;
+        } else {
+            glow->alpha = previous + FRAMETIME;
+            if (glow->alpha > glow->target)
+                glow->alpha = glow->target;
+        }
+        if (glow->alpha == FORCEGLOWTIME && previous != FORCEGLOWTIME)
+            glow->hold = PCForceGlowHoldDuration;
+    }
+    if (glow->alpha > 0.0f && glow->object == NULL)
+        ResetForceGlow(glow->player_packet);
+    if (!(glow->alpha > 0.0f) || glow->object == NULL)
+        return;
+    switch (glow->kind) {
+        case 0: {
+            GLOW_FORCE_PC *force = (GLOW_FORCE_PC *)glow->object;
+            if ((force->flags & 1) == 0) {
+                ResetForceGlow(glow->player_packet);
+                return;
+            }
+            glow->radius = force->radius;
+            glow->radius *= force->horizontal_scale;
+            glow->model = (i16)model;
+            glow->position = force->position;
+            force->flags |= 0x20000;
+            break;
+        }
+        case 1: {
+            GAMEANIMOBJ *animation = (GAMEANIMOBJ *)glow->object;
+            f32 scale = glow->radius;
+            if (!NuSpecialExistsFn(&animation->special)) {
+                ResetForceGlow(glow->player_packet);
+                return;
+            }
+            NuSpecialGetRadius(&animation->special, &glow->position, &glow->radius);
+            NuVecMtxTransformVU0(&glow->position, &glow->position, NuSpecialGetDrawMtx(&animation->special));
+            glow->model = (i16)model;
+            glow->radius *= scale;
+            if (animation->object_data != NULL)
+                ((GLOW_ANIMATION_DATA_PC *)animation->object_data)->flags |= 1;
+            break;
+        }
+        case 2: {
+            GAMEOBJECT *target_object = (GAMEOBJECT *)glow->object;
+            f32 radius;
+            if ((target_object->flags_1fc_word & 0x1001) == 0) {
+                ResetForceGlow(glow->player_packet);
+                return;
+            }
+            radius = target_object->bounds_radius > target_object->bounds_half_height
+                         ? target_object->bounds_radius
+                         : target_object->bounds_half_height;
+            glow->model = (i16)model;
+            glow->radius = (f32)((f64)radius * 1.75);
+            glow->position.x = target_object->collision_position.x;
+            glow->position.y =
+                (f32)(target_object->character_bottom * target_object->origin_scale + target_object->position.y +
+                      ((f64)target_object->character_top - target_object->character_bottom) * 0.5 *
+                          target_object->origin_scale);
+            glow->position.z = target_object->collision_position.z;
+            break;
+        }
+        case 3: {
+            PART_PC *part = (PART_PC *)glow->object;
+            if ((part->active & 1) == 0) {
+                ResetForceGlow(glow->player_packet);
+                return;
+            }
+            if (NuSpecialExistsFn(&part->special)) {
+                NUVEC center;
+                NuSpecialGetRadius(&part->special, &center, &glow->radius);
+                glow->radius += glow->radius;
+            } else
+                glow->radius = part->field_e0 + part->field_e0;
+            glow->model = (i16)model;
+            glow->position = part->position;
+            break;
+        }
+    }
+    glow->radius *= PCForceGlowRadiusMultiplier;
+}
+
+typedef struct cable_view_pc_s {
+    u8 unknown_000[0xd18];
+    GAMEOBJECT *glow_candidate;
+    u8 unknown_d1c[0xd80 - 0xd1c];
+    f32 glow_alpha;
+    u8 unknown_d84[0xe2d - 0xd84];
+    u8 candidate_kind;
+    u8 unknown_e2e[0x1040 - 0xe2e];
+    void *cable;
+} CABLE_VIEW_PC;
+STATIC_ASSERT(offsetof(CABLE_VIEW_PC, glow_candidate) == 0xd18);
+STATIC_ASSERT(offsetof(CABLE_VIEW_PC, glow_alpha) == 0xd80);
+STATIC_ASSERT(offsetof(CABLE_VIEW_PC, candidate_kind) == 0xe2d);
+STATIC_ASSERT(offsetof(CABLE_VIEW_PC, cable) == 0x1040);
+typedef struct message_draw_view_pc_s {
+    u8 unknown_000[0x10c];
+    void(__cdecl *draw)(GAME_MESSAGE_PC *, NUVEC *, f32);
+} MESSAGE_DRAW_VIEW_PC;
+STATIC_ASSERT(offsetof(MESSAGE_DRAW_VIEW_PC, draw) == 0x10c);
+
+extern f32 FORCEGLOWTIME, CableTargetScalePc;
+GAMEOBJECT *__cdecl CableTargetGameObject(GAMEOBJECT *, NUVEC *, f32);
+CABLE_RECORD_PC *__cdecl CreateCable(GAMEOBJECT *, GAMEOBJECT *, i32);
+void __cdecl Hint_SetComplete(i32);
+
+void __cdecl SuperCarry_GetObjectPos(GAMEOBJECT *, NUVEC *, NUVEC *);
+i32 __cdecl VehicleRayCastPc(NUVEC *, NUVEC *, f32, f32, i32, u32);
+void __cdecl CableCode(GAMEOBJECT *object, i32 special_pressed, f32 unused) {
+    CABLE_VIEW_PC *view = (CABLE_VIEW_PC *)object;
+    GAMEOBJECT *target;
+    GAME_MESSAGE_PC *message;
+    (void)unused;
+    if ((object->flags_1fc & 0x80) != 0 && object->character_context == -1 && view->cable == NULL) {
+        target = CableTargetGameObject(object, &object->collision_position, (f32)((f64)max_cable_length * (f64)0.9f));
+        if (target != NULL) {
+            object->flags_e24 |= 0x10;
+            if (special_pressed) {
+                view->cable = CreateCable(object, target, 1);
+                Hint_SetComplete(0x28e);
+            } else {
+                view->glow_candidate = target;
+                view->candidate_kind = 2;
+            }
+        }
+    }
+    ForceGlowCode(object, 0xe3);
+    if ((object->flags_1fc & 0x80) != 0 && view->candidate_kind != 0 && view->glow_candidate != NULL &&
+        view->glow_alpha > 0.0f) {
+        message = AddGameMessage("X", &view->glow_candidate->collision_position, AreaPickupScale * CableTargetScalePc,
+                                 NULL, 0.0f, 0xff, 0, 0, 0x10c7, 0.0f);
+        if (message != NULL) {
+            message->target_is_coin_total = 5;
+            ((MESSAGE_DRAW_VIEW_PC *)message)->draw = DrawGameMessage_Targets;
+            message->alpha = (u8)((f64)view->glow_alpha / FORCEGLOWTIME * 128.0);
+        }
+    }
+}
+
+void __cdecl Move_VEHICLE(GAMEOBJECT *object) {
+    GAMEPAD_PC *pad = object->pad;
+    PLAYERCHARACTERCONFIG_PC *character;
+    VEHICLE_JOINT_VIEW_PC *joint_view;
+    NUVEC position;
+    f32 hover, random;
+    i32 effect, count;
+    if (FreePlay != 0 && WORLD->area != NULL && WORLD->area == PODSPRINT_ADATA) {
+        Move_POD(object);
+        return;
+    }
+    KeepWeaponOut(object);
+    DropInOutCode(object);
+    if (object->flags_e20 & 0x20)
+        return;
+    character = object->character_data->game_character;
+    if ((character->flags_094 & 0x20) == 0) {
+        if (character->weapon_action == 0x15)
+            ApplyGravity(object, NULL, FindGunshipHoverHeight(object), 8.0f, NULL);
+        else {
+            if (character->field_028 > 0.0f) {
+                hover = GetVehicleHoverHeight(object, NULL);
+                if (hover != 0.0f || getvehiclehoverheight_hothbattlehack != 0) {
+                    ApplyGravity(object, NULL, hover, 10.0f, NULL);
+                    goto gravity_done;
+                }
+            }
+            hover = object->character_context != 0x17 ? character->field_028 : 0.0f;
+            ApplyGravity(object, NULL, hover, 8.0f, NULL);
+        }
+    }
+gravity_done:
+    DeactivatedCode(object);
+    if (object->id == (u16)id_SNOWMOB)
+        Buck_MoveCode(object, pad->buttons_pressed & (GAMEPAD_SPECIAL | GAMEPAD_ACTION));
+    else if (object->id == (u16)id_ZAMSSPEEDER && WORLD->current_level == BOUNTYHUNTERPURSUITE_LDATA &&
+             object->current_hp < object->field_107e) {
+        effect = WORLD->game_debris_sys->entries[134].effect;
+        if (effect != -1) {
+            count = ParticlesPerSecond(VehicleZamSmokeRatePc, FRAMETIME) *
+                    (((i32)object->field_107e - object->current_hp) / 2);
+            while (count > 0) {
+                random = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f));
+                position.x =
+                    object->collision_position.x + (object->initial_position.x - object->collision_position.x) * random;
+                position.y =
+                    object->collision_position.y + (object->initial_position.y - object->collision_position.y) * random;
+                position.z =
+                    object->collision_position.z + (object->initial_position.z - object->collision_position.z) * random;
+                AddVariableShotDebrisEffect(effect, &position, 1, 0, 0);
+                --count;
+            }
+        }
+    }
+    character = object->character_data->game_character;
+    if (character->field_028 > 0.0f && (character->flags_090 & 0x10000) == 0) {
+        LoopCode(object, pad->buttons_pressed & GAMEPAD_JUMP, pad->buttons_held & GAMEPAD_JUMP, pad, 1);
+        TurnCode(object, 0, pad);
+        DisorientateCode(object, NULL, 225.0f);
+    }
+    if ((object->character_data->model_flags & 0x10000000) &&
+        (object->character_data->game_character->flags_094 & 8) == 0) {
+        if (object->id == (u16)id_STAP || object->id == (u16)id_STAP2) {
+            if (object->character_model->model_data_b[0x16] == NULL)
+                FireCode(object, pad->buttons_pressed & GAMEPAD_ACTION, pad->buttons_held & GAMEPAD_ACTION, 0.25f, 1);
+            else
+                ShootCode(object, pad->buttons_pressed & GAMEPAD_ACTION, 0, 0, 0, 1);
+        } else
+            FireCode(object, pad->buttons_pressed & GAMEPAD_ACTION, pad->buttons_held & GAMEPAD_ACTION, 0.15f, 0);
+    }
+    if (WORLD->current_level == DOGFIGHTA_LDATA)
+        CatchUpCode(object, 0.01f, 2.0f, 0);
+    if (object->character_data->game_character->flags_090 & 0x400)
+        CableCode(object, pad->buttons_pressed & GAMEPAD_SPECIAL, 0.5f);
+    if (WORLD->area != NULL && (WORLD->area->flags & 1) && (object->flags_1fc & 0x80) &&
+        (TractorBeamEnabledPc || object->powerup_time > 0.0f))
+        TractorBeamCode(object);
+    VehicleThrustPc(object);
+    VehicleLaunchPc(object);
+    FloatCode(object);
+    TorpedoCode(object, pad->buttons_held & GAMEPAD_SPECIAL, 0.5f);
+    if (object->id == (u16)id_ZAMSSPEEDER && WORLD->area != NULL && WORLD->area == BOUNTYHUNTERPURSUIT_ADATA)
+        ShieldCode(object);
+    SmartBombCode(object);
+    AwkwardShapeCode(object, 0);
+    EngineNoiseCode(object, object->character_context == 0x17);
+    if ((((object->flags_1fc & 0x80) && object->current_hp == 1) ||
+         ((object->flags_1fc & 0x80) == 0 && object->current_hp <= 1)) &&
+        object->character_data->game_character->weapon_action == 10 &&
+        (object->character_data->model_flags & 0x4000000) == 0) {
+        effect = WORLD->game_debris_sys->entries[96].effect;
+        if (effect != -1) {
+            count = ParticlesPerSecond(50.0f, FRAMETIME);
+            while (count > 0) {
+                random = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f));
+                position.x =
+                    object->collision_position.x + (object->initial_position.x - object->collision_position.x) * random;
+                position.y =
+                    object->collision_position.y + (object->initial_position.y - object->collision_position.y) * random;
+                position.z =
+                    object->collision_position.z + (object->initial_position.z - object->collision_position.z) * random;
+                AddVariableShotDebrisEffect(effect, &position, 1, 0, 0);
+                --count;
+            }
+        }
+    }
+    if (object->character_data->game_character->flags_090 & 0x100000) {
+        if (Cheat_IsOn(7) && (pad->buttons_pressed & (GAMEPAD_ACTION | GAMEPAD_SPECIAL)))
+            GameAudio_PlaySfx(0x4b, &object->collision_position, 0, 0);
+        joint_view = (VEHICLE_JOINT_VIEW_PC *)object;
+        joint_view->joints[0].rotation.x = joint_view->joints[0].rotation.z = 0.0f;
+        joint_view->joints[0].rotation.y = (f32)(-(f64)RotDiff(object->previous_movement_angle, object->field_0x276) *
+                                                 PCAtan2RadianScale / (6.0 * (f64)FRAMETIME));
+        joint_view->joints[0].joint_index = 0;
+        joint_view->joints[0].flags = 1;
+        joint_view->joints[1] = joint_view->joints[0];
+        joint_view->joints[1].joint_index = 1;
+        joint_view->joint_count = 2;
+    }
+    if (object->field_280 == 0xff && (object->character_data->game_character->flags_090 & 0x40) &&
+        object->character_model->model_data_b[0x2a] != NULL &&
+        (object->character_data->game_character->flags_094 & 0x8000000))
+        Grapple_AddDynamic(object, 0);
+    if (object->id == (u16)id_DODGEM)
+        DodgemCode(object);
+    if (GizmoBlowupCheckProximity(WORLD, object) != 0 && VehicleSlowdownCallbackPc != NULL)
+        VehicleSlowdownCallbackPc(object);
+}

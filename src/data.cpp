@@ -9608,3 +9608,207 @@ extern "C" {
     f32 TorpedoStealRangePc = 2.0f;
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$CutSceneSingleStreamBufferPc")
+    i32 CutSceneSingleStreamBufferPc = 2;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$CutSceneBackgroundInstancesPc")
+    INSTNUGCUTSCENE *CutSceneBackgroundInstancesPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LookupLocatorVfxFn")
+    i32(__cdecl *LookupLocatorVfxFn)(char *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CutSceneLookupAllDebrisPagesPc")
+    i32 CutSceneLookupAllDebrisPagesPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCutSceneFindCharacters")
+    void(__cdecl *NuCutSceneFindCharacters)(CUT_SCENE_LOAD_PC *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCutSceneCharacterCreateData")
+    void(__cdecl *NuCutSceneCharacterCreateData)(CUT_LOAD_CHARACTER *, CUT_LOAD_CHARACTER_INSTANCE *, VARIPTR *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCutSceneRequestSFX")
+    i32(__cdecl *NuCutSceneRequestSFX)(char *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CutSceneLocatorFunctionsPc")
+    CUT_LOCATOR_FUNCTION_ENTRY_PC *CutSceneLocatorFunctionsPc;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$ForcePushSoundNamePc")
+    const char ForcePushSoundNamePc[11] = "JForcePush";
+#pragma const_seg()
+
+#pragma const_seg(".rdata$VehicleSmartBombChargeNamePc")
+    const char VehicleSmartBombChargeNamePc[10] = "JForceUse";
+#pragma const_seg()
+
+#pragma const_seg(".rdata$VehicleShieldOnNamePc")
+    const char VehicleShieldOnNamePc[10] = "DDekaShOn";
+#pragma const_seg()
+
+#pragma const_seg(".rdata$PodBoosterSoundNamePc")
+    const char PodBoosterSoundNamePc[13] = "PodX_Booster";
+#pragma const_seg()
+
+#pragma data_seg(".data$id_DODGEM")
+    i16 id_DODGEM = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_SNOWMOB")
+    i16 id_SNOWMOB = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_TRACTOR")
+    i16 id_TRACTOR = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$PCForceGlowRadiusMultiplier")
+    f32 PCForceGlowRadiusMultiplier = 1.125f;
+#pragma data_seg()
+
+#pragma data_seg(".data$PCForceGlowHoldDuration")
+    f32 PCForceGlowHoldDuration = 0.3330000042915344f;
+#pragma data_seg()
+
+#pragma data_seg(".data$FORCEGLOWTIME")
+    f32 FORCEGLOWTIME = 0.10000000149011612f;
+#pragma data_seg()
+
+#pragma data_seg(".data$CableTargetScalePc")
+    f32 CableTargetScalePc = 2.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleZamSmokeRatePc")
+    f32 VehicleZamSmokeRatePc = 10.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$VehicleShieldTargetPc")
+    f32 VehicleShieldTargetPc = 5.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$PodRaceMinimumSpeedPc")
+    f32 PodRaceMinimumSpeedPc = 0.3330000042915344f;
+#pragma data_seg()
+
+#pragma data_seg(".data$PodRaceBoostSpeedPc")
+    f32 PodRaceBoostSpeedPc = 2.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$PodSprintMinimumSpeedPc")
+    f32 PodSprintMinimumSpeedPc = 1.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$PodSprintBoostSpeedPc")
+    f32 PodSprintBoostSpeedPc = 1.399999976158142f;
+#pragma data_seg()
+
+#pragma data_seg(".data$PodBoostHeightPc")
+    f32 PodBoostHeightPc = 1.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$PodPitchHistoryPc")
+    f32 PodPitchHistoryPc[2] = {1.0f, 1.0f};
+#pragma data_seg()
+
+#pragma data_seg(".data$PodSprintDebrisIndexPc")
+    i32 PodSprintDebrisIndexPc = 117;
+#pragma data_seg()
+
+#pragma data_seg(".data$PodCollisionThresholdPc")
+    f32 PodCollisionThresholdPc = 0.9990000128746033f;
+#pragma data_seg()
+
+#pragma data_seg(".data$PodSprintLiftPositionsPc")
+    NUVEC PodSprintLiftPositionsPc[3] = {{-395.260009765625f, -5.480000019073486f, -165.0800018310547f},
+                                         {-375.3800048828125f, -5.039999961853027f, -286.5f},
+                                         {-354.9100036621094f, -4.849999904632568f, -299.32000732421875f}};
+#pragma data_seg()
+
+#pragma bss_seg(".bss$LswForceUsedHintFlagsPc")
+    u32 LswForceUsedHintFlagsPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$MiscTime")
+    f32 MiscTime;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$BOUNTYHUNTERPURSUITE_LDATA")
+    LEVELDATA_PC *BOUNTYHUNTERPURSUITE_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$ASTEROIDCHASEC_LDATA")
+    LEVELDATA_PC *ASTEROIDCHASEC_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DAGOBAHC_LDATA")
+    LEVELDATA_PC *DAGOBAHC_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$ENDORBATTLEC_LDATA")
+    LEVELDATA_PC *ENDORBATTLEC_LDATA;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NOTERRAINSTOP")
+    i32 NOTERRAINSTOP;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$VehicleSlowdownCallbackPc")
+    void(__cdecl *VehicleSlowdownCallbackPc)(GAMEOBJECT *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$VehicleLaunchHoverOffsetPc")
+    f32 VehicleLaunchHoverOffsetPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PodCollisionMagnitudePc")
+    f32 PodCollisionMagnitudePc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCForceGlowDisabledState")
+    f32 PCForceGlowDisabledState;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LEGO_AIPATHCNX_BLOCKAGE")
+    i32 LEGO_AIPATHCNX_BLOCKAGE;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LEGO_AIPATHCNX_WALLSHUFFLE")
+    i32 LEGO_AIPATHCNX_WALLSHUFFLE;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LEGO_AIPATHCNX_FULLTERRAIN")
+    i32 LEGO_AIPATHCNX_FULLTERRAIN;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$CS_buffend")
+    VARIPTR *CS_buffend;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CS_cutsys")
+    CUT_LOAD_SYS_PC *CS_cutsys;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CutScene_OverrideConfigFileNameFn")
+    void(__cdecl *CutScene_OverrideConfigFileNameFn)(char *, i32, i32);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CutList")
+    CUT_LOAD_LIST_ENTRY_PC *CutList;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CUTCOUNT")
+    i32 CUTCOUNT;
+#pragma bss_seg()
+}
