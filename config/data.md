@@ -1144,3 +1144,24 @@ TerrWallTab provides four zero bytes for observed indices 0/1 with unknown origi
 extent. ATST IDs, camera translation and idle string reuse canonical existing owners;
 GrapWindLp's old uncompiled inventory name now binds its actual full string owner.
 Compiler immutable aliases are preserved; overlapping coverage is counted once.
+
+
+### Solver/clone/draw/carry data checkpoint (2026-10-03)
+
+Added 35 real physical definitions, preserving all 798 prior scoped definitions.
+Receipt: 833 scoped definitions, 522 known extents/136,652 unique original bytes,
+311 unknown extents/21,408 source-view bytes without unknown-allocation credit.
+SphereData base is 0x02921680, not its radius member at +12: the actual producer
+stores 16-byte records while signed count is below 16. TerrPolyObj reuses the
+canonical TerrainShadowStatusPc owner directly, without duplicate storage/macro.
+
+The Draw cohort adds exact four-byte "deb\0" plus nine bounded views, including
+the actual mutable render scale initialized 1, suspend switch -1 and editor pointer
+relocated to its real zero state. Portal plane and material array capacities retain
+blank original extents. The impact threshold is actual f32 4.0 and the optional
+death callback is actual NULL. TerrWallDeflectYScale is a genuine zero f32 whose
+PC setter 0x0066b320 stores its argument and consumer 0x00678057 reads it. The
+previous inventory-only four-byte extent is cleared absent allocation proof;
+its entire source initializer is checked, with no new exact/extent credit and no
+loss of prior compiled exact data. Solver literal comparisons separately prove
+actual promoted-f32 .95/.003/.001 constants.

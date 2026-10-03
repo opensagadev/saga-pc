@@ -7247,3 +7247,120 @@ extern "C" {
     LEVELDATA_PC *CRUISERD_LDATA;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma const_seg(".rdata$TerrainOpposingContactThresholdPc")
+    extern const f64 TerrainOpposingContactThresholdPc = (f64)-0.7f;
+#pragma const_seg()
+#pragma data_seg(".data$TerConTol")
+    f32 TerConTol = 0.1f;
+#pragma data_seg()
+#pragma bss_seg(".bss$TerrImpactPos")
+    NUVEC TerrImpactPos;
+#pragma bss_seg()
+#pragma bss_seg(".bss$terrhitflags")
+    i32 terrhitflags;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrImpact")
+    i16 TerrImpact;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SphereData")
+    TERRAIN_SPHERE_PC SphereData[16];
+#pragma bss_seg()
+#pragma bss_seg(".bss$PlatCrush")
+    i32 PlatCrush;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrShape")
+    TERRAIN_AXIS_FREEDOM_SHAPE_PC *TerrShape;
+#pragma bss_seg()
+#pragma bss_seg(".bss$tertempvec4")
+    NUVEC4 tertempvec4;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrWallNorm")
+    NUVEC TerrWallNorm;
+#pragma bss_seg()
+#pragma bss_seg(".bss$plathitid")
+    i32 plathitid;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PlatImpactTer")
+    TERRAIN_POLYGON_INFO_PC PlatImpactTer;
+#pragma bss_seg()
+#pragma bss_seg(".bss$tertempmat")
+    NUMTX tertempmat;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrLastImpact")
+    TERRAIN_LAST_IMPACT_PC TerrLastImpact;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrPolyInfo")
+    TERRAIN_POLYGON_INFO_PC TerrPolyInfo;
+#pragma bss_seg()
+#pragma bss_seg(".bss$wallover")
+    f32 wallover;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CurTrackInfo")
+    TERRAIN_TRACK_SLOT_PC *CurTrackInfo;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerrImpactNormal")
+    NUVEC TerrImpactNormal;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerImpactDataMax")
+    i32 TerImpactDataMax;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerImpactDataCount")
+    i32 *TerImpactDataCount;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PlatImpactNorm")
+    NUVEC PlatImpactNorm;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TerImpactData")
+    void *TerImpactData;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$DebrisTimeBarName")
+    extern const char DebrisTimeBarName[4] = "deb";
+#pragma const_seg()
+#pragma data_seg(".data$DebrisSuspendDrawObjectSwitch")
+    i32 DebrisSuspendDrawObjectSwitch = -1;
+#pragma data_seg()
+#pragma data_seg(".data$debris_render_scale")
+    f32 debris_render_scale = 1.0f;
+#pragma data_seg()
+#pragma data_seg(".data$edbits_editor_enabled")
+    i32 *edbits_editor_enabled = &edbits_editor_state;
+#pragma data_seg()
+#pragma bss_seg(".bss$NuPortalCameraPlane")
+    NUPLANE NuPortalCameraPlane;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DebMat")
+    NUMTL *DebMat[9];
+#pragma bss_seg()
+#pragma bss_seg(".bss$xzfacingmtx")
+    NUMTX xzfacingmtx;
+#pragma bss_seg()
+#pragma bss_seg(".bss$debris_rt")
+    i32 debris_rt;
+#pragma bss_seg()
+#pragma bss_seg(".bss$g_renderingDebris")
+    i32 g_renderingDebris;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edbits_editor_state")
+    i32 edbits_editor_state;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$SuperCarryImpactSpeedPc")
+    f32 SuperCarryImpactSpeedPc = 4.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$ExtraDieSfxFn")
+    void(__cdecl *ExtraDieSfxFn)(GAMEOBJECT *);
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$TerrWallDeflectYScale")
+    f32 TerrWallDeflectYScale;
+#pragma bss_seg()
+}

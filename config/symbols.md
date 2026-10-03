@@ -3661,3 +3661,31 @@ is substituted. Accepted identities alone do not imply newly transferred source.
 Finite next-wave solver maps likewise require actual integration/compilation before
 source credit. Existing immutable aliases retain original names and addresses;
 new mutable storage reuses canonical owners where they already exist.
+
+
+### Solver, clone, Draw and carry contracts (2026-10-03)
+
+All 34 released spans (19,718 unique bytes) have accepted PC identity, ABI and
+complete extents, including terrain compiler switch tails. Native ClonePS at
+0x006039d0 spans 58 bytes through RET; its six trailing CC alignment bytes are
+excluded. The parent clone's 1,612-byte span remains accepted. Draw at 0x00685770
+ends 0x00685c40 after RET at 0x00685c3f: 1,232 bytes, correcting the truncated
+1,228-byte candidate. Portal clipping 0x005da3b0/150 and sphere helper
+0x005d94a0/212 use ordinary caller-clean stack words, not invented private GPR ABI.
+Their portal plane pointer/count/room fields at 0x80/0x9c/0x9e belong to a distinct
+minimal 0xa0 view, not the separate native 0x380 frustum.
+
+The seven carry-provider spans total 1,132 bytes. Private restore at
+0x00566ba0/119 takes its object in ESI, no stack arguments; the real respawn
+caller preserves that register contract in their original C group. Its compiled
+full body is exact. Shared clear-context callback takes (GAMEOBJECT *, i32),
+as proven by the actual PC caller's two stack words; its larger source cycle
+remains held. Camera/death audio preserve PC mode selection and the actual
+two-argument PlaySfxById call, rather than Android's different audio service.
+
+Three erroneous scratch Mask literal bindings were removed before production:
+the native qwords represent promoted-f32 .95/.003/.001, not true f64 literals.
+The corrected compiled literals match actual PC bytes; no relocation masking
+or lookup rewrite conceals a source constant mismatch. The terrain matrix
+getter's second global read is verified by actual alias behavior and full byte
+equality. Refer to transfer-execution.md for native evidence and remaining gaps.

@@ -482,3 +482,69 @@ closure are prepared separately. The ongoing goal remains active. This checkpoin
 exceeded the requested half-hour interval because automatic approval execution
 timed out and integration exposed real ownership/provider and formatting defects;
 the delay is not counted as progress.
+
+
+## Terrain solver, clone, draw and carry checkpoint — 2026-10-03
+
+Adds 34 newly compared functions covering 19,718 unique original PC bytes.
+Compared code rises from 553,739 to 573,457 bytes. Whole-PC fuzzy coverage rises
+from 9.736648876% to 10.058667661% over 3,471,246 retail text bytes; exact code
+rises from 60,691 to 61,605 (+914), or 1.774722967%. Every previous exact code
+and data result remains exact. Advisory similarity among compared code is
+60.906567% with its different 573,457-byte denominator.
+
+Connected source families are terrain solver/Mask (19 functions, 14,766 bytes),
+terrain matrix getter/camera/death audio (3, 556), scene clone/native child (2,
+1,670), particle draw/portal clipping (3, 1,594), and genuine carry/math/plug/
+respawn providers (7, 1,132). Inventory entries and held candidates receive no
+source credit. Five terrain field cohorts are shared without changing existing
+function bodies. The original private respawn helper/caller context preserves
+its actual ESI contract; its full 119-byte body is exact.
+
+Independent real-object checks found and fixed two TerrainImpact rounding errors:
+travelled products must survive position addition/movement subtraction, and contact
+products must survive their cancellation. The old objects fail discriminating
+cases (zero versus 273.581421, and zero versus -220.833664); corrected production
+bodies pass all 35 checks, including deflection aliases and 16-sphere capacity.
+Three Mask thresholds are actual f64 promotions of f32 .95/.003/.001, rather
+than true double literals; all 53 emitted solver literals now match actual PC bits.
+This is compiled-source testing against PC instruction expectations, not executed
+retail equivalence. The proposed Wine retail loader did not relocate the EXE.
+
+The matrix getter rereads CurrentTerrain after writing its first output because
+that output can alias the global. The real alias case passes; the complete 49-byte
+function is now exact. Scene cloning uses force-reset 1 and relies on its existing
+sort provider's increment, removing a redundant caller increment. Actual production
+selected-state tests pass and the wrong-force object fails with exit 12; all 21
+old clone/native bodies remain byte-identical. Particle draw's full extent is
+1,232 bytes through its final epilogue/return, not the truncated 1,228-byte candidate.
+
+Native fixtures use real production providers for portal sphere/room filtering,
+published particle vertices, mutable render scale, cache/header colors, time banks,
+visibility and rotations; getter aliases; camera null alias, NaN/nonpositive duration,
+disabled mode and signed mode selection; and 12 nearest-plug cases including ties,
+filters, empty/negative counts and nonfinite distances. The particle hardware path
+and the existing incomplete display-state camera action remain unverified.
+Scene portal count 0..16 and particle material type 0..8 are selected source-view
+domains, not new historical allocation claims.
+
+The full source-only link succeeds across 194 objects with 2,249 function and
+3,821 data definitions and resolved mappings/relocations. Pinned LLVM18 formatting
+checks 196 source/header files, tidy checks 194 units, and 665 tests pass with
+three expected skips. Final comparison and native fixture receipts are retained
+under the ignored continuation-solver and owning subsystem directories.
+A mapped terrain scale with no source storage initially caused a real LNK2019;
+its PC zero initializer and setter now support the genuine data definition.
+Its prior unproven four-byte inventory extent is cleared, with no prior exact-data loss.
+
+The data owner adds 35 physical definitions. Its final receipt is 833 scoped
+definitions: 522 known extents cover 136,652 unique original bytes, while 311
+unknown extents expose 21,408 source-view bytes with zero unknown-allocation credit.
+All 798 previous owned definitions are preserved. The optional death callback
+and impact threshold use real NULL/4.0 initializers; no fake provider is introduced.
+
+Remaining broad targets include TerrainPlayer's 7,994-byte caller, its finite
+unmapped services, genuine carry Throw/PartKill/Clear/SpecialMove dependency closure,
+and additional renderer/scene/resource families. GHG/model closure remains held
+behind the original embedded DDS fallback asset. Full gameplay and original level
+resources remain unverified. The unbounded whole-project goal remains active.

@@ -692,3 +692,183 @@ extern "C" {
         }
     }
 }
+
+typedef struct PC_CLONE_LIST_VIEW {
+    NUDISPLAYLIST list;
+    i32 scene_item_count;
+    u8 unknown_003c[8];
+} PC_CLONE_LIST_VIEW;
+STATIC_ASSERT(sizeof(PC_CLONE_LIST_VIEW) == 0x44);
+STATIC_ASSERT(offsetof(PC_CLONE_LIST_VIEW, scene_item_count) == 0x38);
+typedef struct PC_CLONE_MATERIAL_VIEW {
+    u8 unknown_0000[0x3c];
+    NUDISPLAYLIST *display_list;
+    u8 unknown_0040[0x280];
+    u16 version;
+    u8 unknown_02c2[2];
+} PC_CLONE_MATERIAL_VIEW;
+STATIC_ASSERT(sizeof(PC_CLONE_MATERIAL_VIEW) == 0x2c4);
+STATIC_ASSERT(offsetof(PC_CLONE_MATERIAL_VIEW, display_list) == 0x3c);
+STATIC_ASSERT(offsetof(PC_CLONE_MATERIAL_VIEW, version) == 0x2c0);
+typedef struct PC_CLONE_ANIMATION_VIEW {
+    NUDISPLAY_LIST_PC *scene;
+    u8 unknown_0004[8];
+    PC_MATERIAL_ANIM_SET *next;
+} PC_CLONE_ANIMATION_VIEW;
+STATIC_ASSERT(sizeof(PC_CLONE_ANIMATION_VIEW) == 0x10);
+STATIC_ASSERT(offsetof(PC_CLONE_ANIMATION_VIEW, next) == 0xc);
+typedef struct PC_CLONE_SORT_SELF_VIEW {
+    u8 unknown_0000[0x10];
+    NUSORTPRI *self;
+    u8 unknown_0014[0x10];
+} PC_CLONE_SORT_SELF_VIEW;
+STATIC_ASSERT(sizeof(PC_CLONE_SORT_SELF_VIEW) == 0x24);
+STATIC_ASSERT(offsetof(PC_CLONE_SORT_SELF_VIEW, self) == 0x10);
+STATIC_ASSERT(sizeof(NUDISPLAY_LIST_PC) == 0x90);
+extern "C" void __cdecl NuDisplaySceneClonePS(NUDISPLAY_LIST_PC *, NUDISPLAY_LIST_PC *, VARIPTR *);
+
+extern "C" NUDISPLAY_LIST_PC *__cdecl NuDisplaySceneClone(NUDISPLAY_LIST_PC *source, VARIPTR *buffer) {
+    NUDISPLAY_LIST_PC *scene;
+    PC_CLONE_LIST_VIEW *lists, *first_list;
+    NURNDRLIBSTATE *states;
+    NUDISPLAYLISTITEM *heads;
+    PC_CLONE_MATERIAL_VIEW *materials;
+    i32 i, j, clip_bytes;
+    u32 material_bytes;
+    PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    scene = static_cast<NUDISPLAY_LIST_PC *>(buffer->void_ptr);
+    buffer->addr += sizeof(*scene);
+    *scene = *source;
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    scene->items = buffer->void_ptr;
+    buffer->addr += source->item_count * sizeof(NUDISPLAYLISTITEM);
+    memcpy(scene->items, source->items, source->item_count * sizeof(NUDISPLAYLISTITEM));
+    clip_bytes = (((source->clip_count + 7) / 8) * 2 / 16 + 1) * 16;
+    for (i = 0; i < 2; ++i) {
+        buffer->addr = (buffer->addr + 15) & ~15u;
+        scene->clip_used[i] = static_cast<u8 *>(buffer->void_ptr);
+        buffer->addr += clip_bytes;
+    }
+    memset(scene->clip_used[0], 0, clip_bytes);
+    memset(scene->clip_used[1], 0, clip_bytes);
+    material_bytes = (((source->material_count + 7) >> 7) + 1) * 16;
+    for (i = 0; i < 2; ++i) {
+        buffer->addr = (buffer->addr + 15) & ~15u;
+        scene->material_used[i] = static_cast<u8 *>(buffer->void_ptr);
+        buffer->addr += material_bytes;
+    }
+    memset(scene->material_used[0], 0, material_bytes);
+    memset(scene->material_used[1], 0, material_bytes);
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    lists = static_cast<PC_CLONE_LIST_VIEW *>(buffer->void_ptr);
+    first_list = lists;
+    buffer->addr += source->material_count * sizeof(*lists);
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    scene->material_lists = static_cast<NUDISPLAYLIST **>(buffer->void_ptr);
+    buffer->addr += source->material_count * sizeof(*scene->material_lists);
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    states = static_cast<NURNDRLIBSTATE *>(buffer->void_ptr);
+    buffer->addr += source->material_count * sizeof(*states);
+    memset(states, 0, source->material_count * sizeof(*states));
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    heads = static_cast<NUDISPLAYLISTITEM *>(buffer->void_ptr);
+    buffer->addr += source->material_count * sizeof(*heads);
+    memset(heads, 0, source->material_count * sizeof(*heads));
+    for (i = 0; i < static_cast<i32>(source->material_count); ++i, ++lists, ++states, ++heads) {
+        PC_CLONE_LIST_VIEW *original = reinterpret_cast<PC_CLONE_LIST_VIEW *>(source->material_lists[i]);
+        scene->material_lists[i] = &lists->list;
+        *lists = *original;
+        lists->list.scene = scene;
+        lists->list.state = states;
+        lists->list.mtl_item = static_cast<NUDISPLAYLISTITEM *>(scene->items) +
+                               (original->list.mtl_item - static_cast<NUDISPLAYLISTITEM *>(source->items));
+        lists->list.dynamic_geometry =
+            static_cast<NUDISPLAYLISTITEM *>(scene->items) +
+            (original->list.dynamic_geometry - static_cast<NUDISPLAYLISTITEM *>(source->items));
+        lists->list.first = heads;
+        lists->list.mtl_last = heads;
+        for (j = 0; j < 2; ++j) {
+            buffer->addr = (buffer->addr + 15) & ~15u;
+            lists->list.scene_first[j] = static_cast<NUDISPLAYLISTITEM *>(buffer->void_ptr);
+            buffer->addr += original->scene_item_count * sizeof(NUDISPLAYLISTITEM);
+        }
+        heads->type = 0x8d;
+        heads->next = NULL;
+        heads->id = 1;
+    }
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    materials = static_cast<PC_CLONE_MATERIAL_VIEW *>(buffer->void_ptr);
+    buffer->addr += source->material_count * sizeof(*materials);
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    scene->display_materials = static_cast<NUMTL **>(buffer->void_ptr);
+    buffer->addr += source->material_count * sizeof(*scene->display_materials);
+    for (i = 0; i < static_cast<i32>(source->material_count); ++i, ++materials) {
+        PC_CLONE_MATERIAL_VIEW *original = reinterpret_cast<PC_CLONE_MATERIAL_VIEW *>(source->display_materials[i]);
+        scene->display_materials[i] = reinterpret_cast<NUMTL *>(materials);
+        *materials = *original;
+        materials->display_list = &first_list[(reinterpret_cast<PC_CLONE_LIST_VIEW *>(original->display_list) -
+                                               reinterpret_cast<PC_CLONE_LIST_VIEW *>(source->material_lists[0]))]
+                                       .list;
+        NuMtlUpdatePS(reinterpret_cast<NUMTL *>(materials));
+        ++materials->version;
+    }
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    scene->sort_pris = static_cast<NUSORTPRI *>(buffer->void_ptr);
+    buffer->addr += source->sort_count * sizeof(*scene->sort_pris);
+    memcpy(scene->sort_pris, source->sort_pris, source->sort_count * sizeof(*scene->sort_pris));
+    for (i = 0; i < source->sort_count; ++i) {
+        NUSORTPRI *sort = &scene->sort_pris[i];
+        sort->items = static_cast<NUDISPLAYLISTITEM *>(scene->items) +
+                      (source->sort_pris[i].items - static_cast<NUDISPLAYLISTITEM *>(source->items));
+        sort->display_scene = scene;
+        reinterpret_cast<PC_CLONE_SORT_SELF_VIEW *>(sort)->self = sort;
+    }
+    for (i = 0; i < source->item_count; ++i) {
+        NUDISPLAYLISTITEM *original = &static_cast<NUDISPLAYLISTITEM *>(source->items)[i];
+        NUDISPLAYLISTITEM *item = &static_cast<NUDISPLAYLISTITEM *>(scene->items)[i];
+        if (item->type == 0x80) {
+            for (j = 0; j < static_cast<i32>(source->material_count); ++j) {
+                if (original->next == source->display_materials[j]) {
+                    item->next = scene->display_materials[j];
+                    break;
+                }
+            }
+        } else if (item->type == 0x85) {
+            item->next =
+                static_cast<NUDISPLAYLISTITEM *>(scene->items) +
+                (static_cast<NUDISPLAYLISTITEM *>(original->next) - static_cast<NUDISPLAYLISTITEM *>(source->items));
+        }
+    }
+    if (source->material_animations != NULL) {
+        PC_CLONE_ANIMATION_VIEW *animation;
+        buffer->addr = (buffer->addr + 3) & ~3u;
+        animation = static_cast<PC_CLONE_ANIMATION_VIEW *>(buffer->void_ptr);
+        buffer->addr += sizeof(*animation);
+        *animation = *reinterpret_cast<PC_CLONE_ANIMATION_VIEW *>(source->material_animations);
+        animation->scene = scene;
+        animation->next = reinterpret_cast<PC_MATERIAL_ANIM_SET *>(nudlist_field_fc8);
+        scene->material_animations = reinterpret_cast<PC_MATERIAL_ANIM_SET *>(animation);
+        nudlist_field_fc8 = reinterpret_cast<u32>(animation);
+    } else {
+        scene->material_animations = NULL;
+    }
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    scene->local_state = static_cast<NUGLOBALRNDRSTATE_PC *>(buffer->void_ptr);
+    buffer->addr += sizeof(*scene->local_state);
+    memset(scene->local_state, 0, sizeof(*scene->local_state));
+    NuDisplaySceneClonePS(source, scene, buffer);
+    PCDisplayScenes[nudlist_field_9d8++] = scene;
+    ResetSceneBeforeFramePC(scene, 1);
+    for (i = 0; i < scene->sort_count; ++i) {
+        NUSORTPRI *sort = &scene->sort_pris[i];
+        sort->sort_pri &= 0x1ffff;
+        if (numtl_renderplane != 0)
+            sort->sort_pri += numtl_renderplane * 0x20000;
+        DisplayInsertSortPC(sort);
+    }
+    scene->render_flags = (scene->render_flags & ~16u) | 0x2000;
+    NuDisplaySceneAddPS(scene);
+    PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+    return scene;
+}

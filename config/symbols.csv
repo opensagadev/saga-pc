@@ -969,7 +969,7 @@ address    , symbol                                                         , si
 0x00547ba0 , _ResetLevSfx                                                   , 36    , void __cdecl (WORLDINFO *)
 0x00547bd0 , _AddLevSfx                                                     , 223   , "void __cdecl (WORLDINFO *, NUVEC *, char *, i32)"
 0x00547f30 , _PlayJumpSfx                                                   , 210   , "void __cdecl (GAMEOBJECT *, i32)"
-0x00548460 , _PlayDieSfx                                                    , 209   ,
+0x548460,_PlayDieSfx,209,void __cdecl (GAMEOBJECT *)
 0x00548690 , _UpdateLevelSfx                                                , 121   , "void __cdecl (WORLDINFO *, i32)"
 0x005487c0 , _PlayRepeatSfx                                                 , 209   , "void __cdecl (char *, i32, f32, i32, f32, NUVEC *)"
 0x005488a0 , _UpdateRepeatSfx                                               , 135   , void __cdecl (void)
@@ -993,7 +993,7 @@ address    , symbol                                                         , si
 0x0054a1c0 , _NarrowSockPositionAllowed                                     , 123   , ""
 0x54a240,_ObjInNarrowSock,163,"i32 __cdecl (GAMEOBJECT *, SOCKSYS_PC *, i32)"
 0x0054a2f0 , _GameCam_Reset                                                 , 232   ,
-0x0054a3e0 , _GameCam_Blend                                                 , 298   ,
+0x54a3e0,_GameCam_Blend,298,"void __cdecl (GAMECAMERA *, f32, f32, i32)"
 0x0054a5e0 , _GamePads_Init                                                 , 117   , void __cdecl (void)
 0x0054a690 , _GamePad_Rotate                                                , 224   , f32 __cdecl (GAMEOBJECT *)
 0x0054a770 , _GamePad_Waggle                                                , 113   , i32 __cdecl (GAMEPAD_PC *)
@@ -1038,6 +1038,7 @@ address    , symbol                                                         , si
 0x00550100 , _TurnRot                                                       , 114   , "u16 __cdecl (u16, u16, i32, i32 *)"
 0x00550180,_PushingTowardsAngle,75,"f32 __cdecl (u16, u16)"
 0x00550330 , _RotateGameMatrix                                              , 348   , "void __cdecl (NUMTX *, i32, u16, u16, u16)"
+0x550690,_QuatInterpolateRotationMatrix,81,"void __cdecl(NUMTX *, NUMTX *, NUMTX *, f32)"
 0x005506f0 , _GameShadow                                                    , 305   ,
 0x00550a20 , _PointAlongSpline                                              , 560   , "void __cdecl (NUGSPLINE *, f32, NUVEC *, u16 *, u16 *, i32)"
 0x00550ff0 , _LineIntersectXY                                               , 380   , "i32 __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
@@ -1049,7 +1050,7 @@ address    , symbol                                                         , si
 0x005526c0 , _EvalAnim                                                      , 157   , "void __cdecl (NUSPECIALHANDLE *, f32, NUMTX *, i32)"
 0x00552760 , _EvalAnim2                                                     , 181   , "void __cdecl (NUSPECIALHANDLE *, f32)"
 0x005528b0 , _SaveSceneObjectAnimTFactors                                   , 60    , void __cdecl (NUGSCN *)
-0x00553500 , _FindReflectionNoPlatforms                                     , 100   ,
+0x00553500,_FindReflectionNoPlatforms,100,f32 __cdecl(NUVEC *)
 0x00553570 , _InitSplinePosition                                            , 156   , "void __cdecl (SPLINEPOS *position, NUGSPLINE *spline, f32 distance, i32 looping)"
 0x00557580 , _GizmoObstacle_Activate                                        , 119   , "void __cdecl (void *, i32)"
 0x00557630 , _GizmoObstacle_SetVisibility                                   , 60    , "void __cdecl (void *, i32)"
@@ -1155,6 +1156,8 @@ address    , symbol                                                         , si
 0x005661f0 , _NoRender                                                      , 159   , void __cdecl (void)
 0x00566290 , _FinishLoop                                                    , 271   , void __cdecl (i32)
 0x00566630 , _SetLevelExBlowupFlags                                         , 10    , void __cdecl (u32)
+0x566ba0,_GizmoBlowupRestoreInitialStatePc,119,void(GIZMOBLOWUP_PC *)
+0x566c20,_GizBlowup_Respawn,379,void __cdecl(GIZMOBLOWUP_PC *)
 0x00567800 , _GizmoBlowupBlowup                                             , 1385  , "i32 __cdecl (GIZMOBLOWUP_PC *, i32, i32, i32, GAMEOBJECT *, i32)"
 0x567da0,_UpdateMidPos,616,void __cdecl(GIZMOBLOWUP_PC*)
 0x00569c60 , _GetLevelExBlowupFlags                                         , 6      ,
@@ -1531,6 +1534,8 @@ address    , symbol                                                         , si
 0x00596530 , _InitShadowLights                                              , 632   , void __cdecl (void)
 0x00597250 , _InitSnakes                                                    , 99    , void __cdecl (WORLDINFO *)
 0x00597350 , _DestroySnakeBody                                              , 47    ,
+0x597c20,_SuperCarry_TurnBlowupBackOn,213,"i32 __cdecl(GIZMOBLOWUP_PC *, NUVEC *, u16, i32)"
+0x597d00,_SuperCarry_PartImpact,134,void __cdecl(PART_PC *)
 0x599740,_SuperCarry_SetTargetMom,228,"i32 __cdecl(GAMEOBJECT *,float)"
 0x599830,_SuperCarry_YRotation,290,"i32 __cdecl(GAMEOBJECT *,u16)"
 0x599960,_SuperCarry_Carrying,53,i32 __cdecl(GAMEOBJECT *)
@@ -1619,6 +1624,8 @@ address    , symbol                                                         , si
 0x005aafb0 , _CreateGizAIMessageSys                                         , 104   , "GIZAIMESSAGESYS *__cdecl (VARIPTR *, VARIPTR *, i32)"
 0x005ab020 , _GetGizAIMessage                                               , 34    , "f32 __cdecl (GIZAIMESSAGESYS *, const char *, GIZAIMESSAGE *)"
 0x005ab050 , _SetGizAIMessage                                               , 35    , "GIZAIMESSAGE *__cdecl (GIZAIMESSAGESYS *, const char *, f32, GIZAIMESSAGE *)"
+0x5afbb0,_Plug_FindNearest,147,"CARRY_PLUG_PC *__cdecl(CARRY_PLUG_SYS_PC *, NUVEC *, f32 *, i32)"
+0x5afc50,_Plug_MakeDrawMtx,59,"void __cdecl(CARRY_PLUG_PC *, NUMTX *)"
 0x005b1080 , ?Init@FadeSystem@@QAEXXZ                                       , 29    , void __thiscall (FadeSystem *)
 0x005b10a0 , ?Update@FadeSystem@@QAEXXZ                                     , 211   , void __thiscall (FadeSystem *)
 0x005b1180 , ?Draw@FadeSystem@@QAEXXZ                                       , 36    , void __thiscall (FadeSystem *)
@@ -1896,6 +1903,8 @@ address    , symbol                                                         , si
 0x005d9030 , _NuPortalInit                                                  , 34    , void __cdecl (void)
 0x5d9130,_NuPortalMaxDepth,15,"void __cdecl(NUGSCN *,i32)"
 0x005d92b0 , _NuPortalWhichRoom                                             , 484   , "i16 __cdecl (NUGSCN *, NUVEC *)"
+0x5d94a0,_clipTestSphere,212,"i32 __cdecl(NUPORTALSPHERE_PC *,NUPORTAL_FRUSTUM_PC *)"
+0x5da3b0,_NuPortalClipTest,150,"i32 __cdecl(NUGSCN *,NUVEC *,f32,i16)"
 0x5da520,_StateAnimEvaluate,214,"i32 __cdecl(STATE_ANIM_PC *, u8 *, u8 *, f32)"
 0x5da840,_NuGScnNumSpecials,22,i32 __cdecl(NUGSCN *)
 0x5da860,_NuGScnGetSpecial,98,"void __cdecl(NUSPECIALHANDLE *, NUGSCN *, i32)"
@@ -2047,6 +2056,7 @@ address    , symbol                                                         , si
 0x603920,_DisplayListSwapBuffersPS,1,void __cdecl(void)
 0x603980,_NuDisplaySceneAddPS,42,void __cdecl(NUDISPLAY_LIST_PC *)
 0x6039b0,_NuDisplaySceneDestroyPS,1,void __cdecl(NUDISPLAY_LIST_PC *)
+0x6039d0,_NuDisplaySceneClonePS,58,"void __cdecl(NUDISPLAY_LIST_PC *,NUDISPLAY_LIST_PC *,VARIPTR *)"
 0x603ad0,_DisplayListSetAlphaPS,63,"void __cdecl(NUDISPLAYLISTITEM *,NUDISPLAYLISTITEM *,f32)"
 0x00603cc0 , _NuCameraSet                                                   , 91    , void (NUCAMERA *)
 0x00603f10 , _NuVecMtxTransformBlock                                        , 497   , "void __cdecl (NUVEC *, NUVEC *, NUMTX *, i32)"
@@ -2262,6 +2272,7 @@ address    , symbol                                                         , si
 0x66ffa0,_InsideLineF,68,"i16 __cdecl(f32,f32,f32,f32,f32,f32)"
 0x66fff0,_InsidePolLines,1320,"i16 __cdecl(f32,f32,f32,f32,f32,f32,f32,f32,f32,NUVEC *)"
 0x00670560 , _ScanTerrIDRemovePlat                                          , 57    , void __cdecl (i32)
+0x6705a0,_AllocTerrId,45,TERRAIN_TRACK_SLOT_PC *__cdecl(void)
 0x00671750 , _NewScanRot                                                    , 4748  ,
 0x006729e0 , _NewCast                                                       , 3407  ,
 0x00673730 , _NewShadowEx                                                   , 234   ,
@@ -2271,18 +2282,34 @@ address    , symbol                                                         , si
 0x6742f0,_CheckSphereTer,408,"i32 __cdecl(NUVEC *,f32)"
 0x674490,_HitPoly,1689,"i32 __cdecl(f32,f32,f32,f32,TERRAIN_SHAPE *)"
 0x674b30,_HitWallSpline,1803,i32 __cdecl(void)
+0x675240,_HitTerrain,963,i32 __cdecl(void)
 0x675840,_ScanWallSplineTerrain,1818,"void __cdecl(i32,i32,i32)"
 0x675f60,_ScanTerrain,7479,"void __cdecl(i32,i32,i32)"
+0x677fb0,_FullDeflect,87,"void __cdecl(NUVEC *,NUVEC *,NUVEC *)"
+0x678010,_FullDeflectSmallY,93,"void __cdecl(NUVEC *,NUVEC *,NUVEC *)"
+0x678070,_FullDeflectTest,108,"i32 __cdecl(NUVEC *,NUVEC *,NUVEC *)"
+0x678340,_NewTerrStoreAnyInfo,92,void __cdecl(void)
+0x6783a0,_TerrainMoveImpactData,100,void __cdecl(void)
+0x678410,_TerrainImpactNorm,364,void __cdecl(void)
+0x678640,_PlatformConnect,148,"void __cdecl(char *,NUVEC *,NUVEC *,i32)"
+0x6786f0,_TerrainImpact,2145,"void __cdecl(NUVEC *,NUVEC *,u8 *)"
+0x678f60,_TerrainImpactPlatform,277,i32 __cdecl(u8 *)
+0x679080,_TerrainPlatformMoveCheck,649,"i32 __cdecl(NUVEC *,NUVEC *,i32,i32,i32)"
+0x679310,_TerrainPlatformEmbedded,4252,i32 __cdecl(NUVEC *)
+0x67a3b0,_StorePlatImpact,436,void __cdecl(void)
 0x0067a600 , _ShadowInfo                                                    , 18    ,
 0x0067a670 , _EShadowInfo                                                   , 18    ,
 0x0067a690 , _ShadowRoofInfo                                                , 18    ,
 0x0067a6d0 , _NewTerrPlatformsOff                                            , 10    ,
 0x0067a6e0 , _NewShadowOnPlatform                                           , 55    ,
+0x67a740,_AddCollisionSphere,68,"void __cdecl(NUVEC *,f32)"
+0x67ab50,_TerrainSideClamp,239,"void __cdecl(NUVEC *,NUVEC *)"
+0x67ac40,_TerrShapeSideStep,701,"i32 __cdecl(NUVEC *,NUVEC *,u8 *)"
 0x0067bf50 , _NewPlatInst                                                   , 528   , "i32 __cdecl (void *, i32)"
 0x0067c860 , _PlatInstGetHit                                                , 45    , i32 __cdecl (i32)
 0x0067c8e0 , _PlatOnOff                                                      , 73    ,
 0x0067c930 , _DeletePlatinst                                                , 335   , i32 __cdecl (i32)
-0x0067fb50 , _TerrainPlatGetMtx                                             , 49    ,
+0x0067fb50,_TerrainPlatGetMtx,49,"void __cdecl(i32,NUMTX **,NUMTX **)"
 0x00681e90 , _PlaySfxById                                                   , 31    , "void __cdecl (i32, NUVEC *)"
 0x00681eb0 , _PlaySfxByIdAndSetVolume                                       , 35    , "void __cdecl (i32, NUVEC *, f32)"
 0x00681f40 , _PlaySfx                                                       , 45    , "void __cdecl (char *, NUVEC *)"
@@ -2298,6 +2325,7 @@ address    , symbol                                                         , si
 0x6846a0,_DebrisEmitterOrientation,122,"void __cdecl (i32, i16, i16, i16)"
 0x684c90,_AddVariableShotDebrisEffect,71,"void __cdecl (i32, NUVEC *, i32, i16, i16)"
 0x684ee0,_AddDebrisEffect,1025,"void __cdecl (i32 *, i32, f32, f32, f32)"
+0x685770,_DebrisDraw,1232,"void __cdecl(i32,i32)"
 0x685c40,_DebrisProcessTriggers,613,void __cdecl (void)
 0x685eb0,_DebrisProcessAllocation,55,void __cdecl (void)
 0x685ef0,_DebrisProcessGeneration,2144,void __cdecl (void)
@@ -2312,7 +2340,8 @@ address    , symbol                                                         , si
 0x0068e890 , _edppStartPage                                                 , 103   , void __cdecl (i32)
 0x68e900,_edppStopPage,252,void __cdecl (i8)
 0x68ea00,_edppClearPage,338,void __cdecl (i8)
-0x0068f940,_NewTerrainScaleYMask,1984,
+0x68ee40,_PlatformChecks,2015,"i32 __cdecl(i32,NUVEC *)"
+0x0068f940,_NewTerrainScaleYMask,1984,"void __cdecl(NUVEC *,NUVEC *,u8 *,i32,f32,f32,f32,i32,i32,i32)"
 0x690180,_AddFiniteShotDebrisEffect2,724,"void __cdecl (i32 *, i32, NUVEC *, NUVEC *, NUVEC *, i32)"
 0x690460,_AddFiniteShotDebrisEffect,33,"void __cdecl (i32 *, i32, NUVEC *, i32)"
 0x690d40,_edgraSortVectorBuffer,248,void __cdecl(i32)
@@ -2973,6 +3002,7 @@ address    , symbol                                                         , si
 0x007519f0 , __real@4059000000000000                                        , 8     , const f64
 0x007519f8,__real@40c00000,4,const f32
 0x00751a10 , _NuTimeBarSlotWidth                                            , 8     , const f64
+0x751a10,__real@3f999999a0000000,8,const f64
 0x00751a40 , _PCKeyboardDefaultValue_candidate                              , 4     , const f32
 0x00751a40 , __real@3dcccccd                                                , 4     , const f32
 0x00751a50 , __real@3f19999a                                                , 4     , const f32
@@ -3064,6 +3094,7 @@ address    , symbol                                                         , si
 0x7531a4,__real@bf000000,4,const f32
 0x007531a8 , __real@3f847ae140000000                                        , 8     , const f64
 0x7531b0,_TerrainSteepNormalYPc,4,const f32
+0x7531b0,__real@3f34fdf4,4,const f32
 0x007531b4 , __real@3fa00000                                                , 4     , const f32
 0x007531b8 , __real@3e19999a                                                , 4     , const f32
 0x007531c0 , __real@3fd3333340000000                                        , 8     , const f64
@@ -3358,10 +3389,12 @@ address    , symbol                                                         , si
 0x758550,_PlayerActionNamePc_178,11,const char[11]
 0x75866c   , ??_C@_05GGJMBGBG@zipup?$AA@                                    , 6     , const char[6]
 0x007586e0 , _NuTimeBarHorizontalTop                                        , 8     , const f64
+0x7586e0,__real@3fc3333340000000,8,const f64
 0x007586e8 , __real@3fb70a3d80000000                                        , 8     , const f64
 0x00758758,__real@4050000000000000,8,const f64
 0x758774   , _PCContextName_Jump                                            , 5     , const char [5]
 0x00758808 , __real@3fefffffe0000000                                        , 8     , const f64
+0x758810,__real@3ff4ccccc0000000,8,const f64
 0x00758828 , _GizAIMessage_NameFormat                                       , 3     , const char[3]
 0x758a60,_GizObstacleActionNamePC,5,const char[5]
 0x758a84,_GizObstacleActionStayShutPC,9,const char[9]
@@ -3381,6 +3414,7 @@ address    , symbol                                                         , si
 0x758e04   , ??_C@_06KGHINEPG@radius?$AA@                                   , 7     , const char[7]
 0x758e24   , ??_C@_03MCADLMAF@off?$AA@                                      , 4     , const char[4]
 0x00758e24 , _LevelConfigOff                                                , 4     , const char[4]
+0x758f90,__real@3fd6666660000000,8,const f64
 0x00758fb8,__real@4030000000000000,8,const f64
 0x00758fc0 , _NuTime_RefreshRate                                            , 8     , const f64
 0x758fc0,__real@404e000000000000,8,const f64
@@ -3396,7 +3430,9 @@ address    , symbol                                                         , si
 0x007596d4 , _AreaFixUpName_Negotiations                                    , 16    , char[16]
 0x007596f8 , _NuBlankStringValue                                            , 2     , const char[2]
 0x00759700 , _Menu_ColonSeparator                                           , 3     , const char[3]
+0x759740,__real@3f647ae140000000,8,const f64
 0x00759760 , __real@47000000                                                , 4     , const f32
+0x7597a4,__real@3ba3d70a,4,const f32
 0x7598d8   , _PCContextName_Ledge                                           , 6     , const char [6]
 0x007598e0 , __real@47c35000                                                , 4     , const f32
 0x007598e8 , __real@c000000000000000                                        , 8     , const f64
@@ -3501,6 +3537,7 @@ address    , symbol                                                         , si
 0x00759f34 , _LevelConfigGameKeyword_max_levers                             , 11    , const char[11]
 0x00759f40 , _LevelConfigGameKeyword_max_signals                            , 12    , const char[12]
 0x00759f4c , _LevelConfigGameKeyword_max_tightropes                         , 15    , const char[15]
+0x75a0d8,__real@3f100000,4,const f32
 0x0075a0dc , _DebrisGlassMaterialOpacity                                    , 4     , const f32
 0x0075a1fc,_SceneFileExtensionPc,5,const char[5]
 0x75a204   , ??_C@_01KICIPPFI@?2?$AA@                                       , 2     , const char[2]
@@ -3839,6 +3876,7 @@ address    , symbol                                                         , si
 0x0075bd78 , __real@bf200000                                                , 4     , const f32
 0x0075bd7c , _TurnLoopSfx                                                   , 17    , const char [17]
 0x0075bd98 , __real@40d38e0000000000                                        , 8     , f64
+0x75bda0,__real@bfe99999a0000000,8,const f64
 0x0075bda8 , __real@3fdf5c28e0000000                                        , 8     , const f64
 0x75bdb0,__real@bec00000,4,const f32
 0x0075bdc0 , _SaberSparksName                                               , 12    , const char [12]
@@ -3946,6 +3984,7 @@ address    , symbol                                                         , si
 0x75e894,_EpisodeVI_cover_gizmo_format,10,const char[10]
 0x75e8a0,_EpisodeVI_cover_format,9,const char[9]
 0x75e8ac,_EpisodeVI_cannon_1,9,const char[9]
+0x75e910,__real@3fee666660000000,8,const f64
 0x0075e948 , ??_C@_02LHFGBEJL@PC?$AA@                                       , 3     , const char[3]
 0x0075e978,_NuFileSourcePathPC,50,const char[50]
 0x0075e9e0 , __real@41f0000000000000                                        , 8     , const f64
@@ -4617,9 +4656,11 @@ address    , symbol                                                         , si
 0x0076a85c,__real@442f0000,4,
 0x0076a860,__real@c049000000000000,8,
 0x0076a868,__real@406e000000000000,8,
+0x76ae78,__real@3ff0ccccc0000000,8,const f64
 0x76b188,_APIObjectPakExtension,5,const char[5]
 0x0076b190 , __real@3fa1111120000000                                        , 8     , const f64
 0x76bc20,_NuMusicDebugClassInvalid,8,const char[8]
+0x76c5bc,__real@bd4ccccd,4,const f32
 0x76d130,__real@408c200000000000,8,const f64
 0x76d280,__real@bf00000000000000,8,const f64
 0x0076d288,__real@40159999a0000000,8,const f64
@@ -4639,8 +4680,25 @@ address    , symbol                                                         , si
 0x76e14c,__real@2b8cbccc,4,const f32
 0x76e150,__real@ba03126f,4,const f32
 0x76e158,__real@bf0a36e2e0000000,8,const f64
+0x76e160,__real@4479f99a,4,const f32
+0x76e168,__real@3f33a92a40000000,8,const f64
+0x76e170,__real@3f6cac0840000000,8,const f64
+0x76e178,__real@3f4d7dbf40000000,8,const f64
+0x76e180,__real@3f43a92a40000000,8,const f64
+0x76e188,__real@bf8ccccd,4,const f32
+0x76e190,__real@3f589374c0000000,8,const f64
+0x76e198,__real@3f7ae148,4,const f32
+0x76e1a0,__real@3f70624de0000000,8,const f64
+0x76e1a8,__real@bc03126f,4,const f32
+0x76e1b0,__real@3fed1eb860000000,8,const f64
+0x76e1b8,__real@3ffbae1480000000,8,const f64
 0x76e1c8,__real@497423f0,4,const f32
+0x76e1cc,_DebrisTimeBarName,4,const char [4]
 0x0076e1d0,__real@40f869f000000000,8,const f64
+0x76e7d8,_TerrainOpposingContactThresholdPc,,const f64
+0x76e7e0,__real@bbe56042,4,const f32
+0x76e7e8,__real@3f689374c0000000,8,const f64
+0x76e7f0,__real@36a7c5ac,4,const f32
 0x76e880,__real@3fe1999a,4,const f32
 0x76ed7c,_NuMusicDebugClassCutscene,9,const char[9]
 0x76ed88,_NuMusicDebugClassSignature,10,const char[10]
@@ -5064,6 +5122,7 @@ address    , symbol                                                         , si
 0x008051c8 , _SUPERCARRY_OBJGRAVITY                                         , 4     , f32
 0x008051cc , _SuperCarry_KeepObjectLevel                                    , 4     , i32
 0x008051d0 , _SuperCarry_AlignObject                                        , 4     , i32
+0x8051dc,_SuperCarryImpactSpeedPc,,f32
 0x8053c4,_PlayerPushSpinnerDegreesPc,,i32
 0x00805514 , _flowbox_callbacks                                             , 36    , FLOWBOX_CALLBACKS_PC[3]
 0x00805714 , _BUCK_RIDERJUMPCLEARANCE                                       , 4     , f32
@@ -5208,15 +5267,19 @@ address    , symbol                                                         , si
 0x8108ec,_debrischunksglass,4,i32
 0x8108fc,_EDPP_MAX_DMADEBTYPES,,i32
 0x00810900 , _debrisseed                                                    , 4     , u32
+0x810904,_DebrisSuspendDrawObjectSwitch,,i32
 0x810908,_debris_thinning_level,,f32
 0x81090c,_debris_detail_level,,i32
 0x810910,_gensorttab,,DEBRISGENERATOR_PC[13]
 0x810944,_gencodetab,,DEBRISMOMENTUMADJUSTER_PC[7]
+0x810968,_debris_render_scale,,f32
+0x8109d4,_edbits_editor_enabled,,i32 *
 0x810a70,_edgra_clumpthin,,i32
 0x810a74,_edgra_elementthin,,i32
 0x810a8c,_edgra_last_clump_in_buffer,,i32
 0x810a98,_edgra_global_fadein,,f32
 0x810a9c,_edgra_global_fadeout,,f32
+0x810b30,_TerConTol,,f32
 0x00810b34 , _TerrPlatScanDist                                              , 4     , f32
 0x00810b38 , _SkinFlipTab                                                   , 32    , i32[8]
 0x00810bf0 , _PCMusicProcessOne_candidate                                   , 4     , const f32
@@ -5737,6 +5800,7 @@ address    , symbol                                                         , si
 0x00924d18 , _CurrentSFXTAB                                                 , 200   , SoundTable
 0x00924de4 , _AmbientPairTab                                                , 4     , i16 *
 0x00924de8 , _LevMusicAction                                                , 4     , i32
+0x924e04,_ExtraDieSfxFn,,void (__cdecl *)(GAMEOBJECT *)
 0x00924e0c , _BeenAttacked                                                  , 4     , i32
 0x00924e18 , ?music_man@@3VNuMusic@@A                                       ,       , NuMusic
 0x924ffc   , _GamePlayTimer                                                 , 16    , TIMER
@@ -5959,6 +6023,7 @@ address    , symbol                                                         , si
 0x00963e64 , _NuCameraVPortProjectionScaleY                                 , 4     , f32
 0x00963e68 , _NuCameraScissorProjectionScaleX                               , 4     , f32
 0x00963e6c , _NuCameraScissorProjectionScaleY                               , 4     , f32
+0x963f98,_NuPortalCameraPlane,,NUPLANE
 0x00963fb0 , _fstack                                                        , 4     , VARIPTR
 0x963fc0,_AxisClipFrustumPlanesPc,,NUMTX
 0x964000,_AxisClipScissorPlanesPc,,NUMTX
@@ -6160,6 +6225,7 @@ address    , symbol                                                         , si
 0x02920ad0 , _TerrainCastAuxPolygonPc                                       ,       ,
 0x02920ae8 , _DebrisGlassV1                                                 , 4     , f32
 0x2920aec,_edgra_page_used,,i32[8]
+0x2920d90,_TerrImpactPos,,NUVEC
 0x02920da4 , _GetSurfaceInfoWaterHeightPc                                   ,       ,
 0x02920da8 , _NuSound3Groups                                                , 1024  , SFX_GROUP_PC[128]
 0x029211a8 , _TerrainCastAuxValidPc                                         ,       ,
@@ -6171,17 +6237,24 @@ address    , symbol                                                         , si
 0x0292121c,_freedebchunksglass,,DEBRIS_PARTICLE_CHUNK_PC **
 0x02921220,_freedebchunks,,DEBRIS_PARTICLE_CHUNK_PC **
 0x02921228 , _TerrainCastAuxNormalPc                                        ,       ,
+0x2921278,_terrhitflags,,i32
+0x292127c,_TerrImpact,,i16
 0x292127e,_TerrWallInfo,,u8
 0x02921280 , _NuSound3GroupSampleIds                                        , 1024  , i16[512]
+0x2921680,_SphereData,,TERRAIN_SPHERE_PC[16]
 0x02921780 , _SfxBits                                                       , 200   , u16[100]
 0x0292184c , _ShadowRoofPolygonPc                                           ,       ,
+0x2921854,_PlatCrush,,i32
+0x2921858,_TerrShape,,TERRAIN_AXIS_FREEDOM_SHAPE_PC *
 0x2921864,_edgra_page_terrain,,void*[8]
 0x02921884 , _GetSurfaceInfoRoofHeightPc                                    ,       ,
 0x0292188c , _TerI                                                           ,        ,
+0x2921894,_tertempvec4,,NUVEC4
 0x29218a4,_edgra_nearest,,i32
 0x29231b4,_edanim_nearest,,i32
 0x29231b8,_freechunkcontrols,4,DEBRIS_CHUNK_CONTROL_PC **
 0x029231c0 , _TerrainRoofIndexPc                                            ,       ,
+0x29231cc,_TerrWallNorm,,NUVEC
 0x2924ad8,_WallSplCount,,i32
 0x2924adc,_edbri_cam_pos,,NUVEC
 0x02924b28 , _TerrainShadowHeightPc                                         ,       ,
@@ -6195,6 +6268,7 @@ address    , symbol                                                         , si
 0x2924b70,_edpp_ptls,45056,EDPP_PARTICLE_PC[512]
 0x292fb70,_WallSplList,,void *
 0x0292fb74 , _TerrainPlatformsOffPc                                         ,       ,
+0x292fb88,_plathitid,,i32
 0x292fb90,_debris_object_switches,,u8[128]
 0x0292fc10 , _ShadPoly                                                       ,        ,
 0x0292fc14 , _TerrainShadowFloorIndexPc                                     ,       ,
@@ -6209,10 +6283,12 @@ address    , symbol                                                         , si
 0x0292fc88 , _CurTerr                                                       , 4     , TERRSET *
 0x0292fc88 , _CurrentTerrain                                                , 4     , void *
 0x292fc88,_PCGrassTerrainScene,,void *
+0x292fc98,_PlatImpactTer,,TERRAIN_POLYGON_INFO_PC
 0x292fd08,_edgra_page_matrix_stack,,NUMTX*[8]
 0x292fd30,_edgra_page_vectors_valid,,i32[8]
 0x0292fd50,_ParticleChunkRenderStack,,DEBRIS_RENDER_CHUNK_PC *[5]
 0x0292fd64 , _EShadowPolygonPc                                              ,       ,
+0x292fd6c,_DebMat,,NUMTL *[9]
 0x0292fda0 , _edanim_page_on                                                , 32    , i32[8]
 0x0292fdc0 , _SfxHashHeads                                                  , 4     , i16 *
 0x292fdc8,_edanim_cam_pos,,NUVEC
@@ -6220,16 +6296,22 @@ address    , symbol                                                         , si
 0x292fdd8,_ShadNorm,,NUVEC
 0x0292fde8 , _TerrainShadowStatusPc                                          ,       ,
 0x0292fdec , _TerrainWaterCastIndexPc                                       ,       ,
+0x292fdf0,_tertempmat,,NUMTX
 0x0292fe38 , _AnimParams                                                    , 46336 , EDANIM_PARAM_PC[64]
+0x2947b7c,_TerrLastImpact,,TERRAIN_LAST_IMPACT_PC
 0x2947b90,_freechunkcontrolsptr,4,i32
 0x02947b94 , _SfxInfo                                                       , 4     , SFX_RECORD_PC *
+0x2947b98,_TerrPolyInfo,,TERRAIN_POLYGON_INFO_PC
 0x02947c1c , _TerrainSkinInfoCountPc                                        ,       ,
-0x02947c20 , _TerrWallDeflectYScale                                         , 4     , f32
+0x02947c20,_TerrWallDeflectYScale,,f32
+0x2947c2c,_wallover,,f32
 0x02947c30 , _edanim_next_param                                             , 4     , i32
 0x2947c34,_edbri_nearest,,i32
 0x02947c3c , _TerrainCastAuxIndexPc                                         ,       ,
+0x2947c40,_xzfacingmtx,,NUMTX
 0x2947c80,_TerrShapeAdjCnt,,i32
 0x02947c84 , _TerrainSkinInfosPc                                            ,       ,
+0x2947c94,_CurTrackInfo,,TERRAIN_TRACK_SLOT_PC *
 0x02947c9c , _edanim_page_scene                                             , 32    , NUGSCN *[8]
 0x2947cc0,_TempScanStack,,void *
 0x02947cc8 , _GlobalSfxBits                                                 , 200   , u16[100]
@@ -6240,7 +6322,10 @@ address    , symbol                                                         , si
 0x02947db4,_debris_chunk_controls,,DEBRIS_CHUNK_CONTROL_PC *
 0x2947db8,_edBridges,,PC_EDBRIDGE[64]
 0x02948eb8,_freedebchkptr,4,i32
+0x2948ec0,_TerrImpactNormal,,NUVEC
 0x2948ed0,_edpp_page_on,32,i32[8]
+0x2948ef0,_TerImpactDataMax,,i32
+0x2948ef4,_TerImpactDataCount,,i32 *
 0x2948efc,_TerrOverRideScan,,void *
 0x2948f10,_edbri_page_on,,i32[8]
 0x2961f70,_curPickInst,,i32
@@ -6248,6 +6333,7 @@ address    , symbol                                                         , si
 0x2961f94,_PlatImpactId,,i32
 0x2961f9c,_edanim_particle_mode,,i32
 0x02961fa0 , _edanim_page_used                                              , 32    , i32[8]
+0x2961fc0,_PlatImpactNorm,,NUVEC
 0x02961fd4 , _DebrisGlassU1                                                 , 4     , f32
 0x02961ffc , _TerrainShadowGroupIndexPc                                     ,       ,
 0x2962000,_terraincnt,,i32
@@ -6281,8 +6367,10 @@ address    , symbol                                                         , si
 0x029620bc , _debtab                                                        , 4     , DEBRIS_INFO_PC **
 0x29620c4  , _debkeydata                                                     , 4     , void *
 0x29620c8,_debris_keystack,,DEBRISKEY_PC *
+0x29620d0,_debris_rt,,i32
 0x029620d4 , _debris_render_group                                           , 4     , i32
 0x29620d8,_forced_debris_thinning,,i32
+0x29620e4,_g_renderingDebris,,i32
 0x029620e8 , _DebrisGlassCopyMaterial                                       , 4     , void *
 0x029620ec , _DebrisGlassInitialized                                        , 4     , i32
 0x02962128 , _edanim_params_used                                            , 4     , i32
@@ -6290,6 +6378,7 @@ address    , symbol                                                         , si
 0x0296293c , _edbits_base_terrain                                           , 4     , void *
 0x2962944,_edbits_anim_page,,i32
 0x2962948,_edbits_editmode,,i32
+0x2962950,_edbits_editor_state,,i32
 0x2962994,_edbri_bridges_used,,i32
 0x29629f8,_edgra_units_used,,i32
 0x2962a00,_edgra_clumps_used,,i32
@@ -6309,6 +6398,7 @@ address    , symbol                                                         , si
 0x2962b4c,_WallSplinesOnly,,i32
 0x02962b50 , _TerrainScaleWorkBasePc                                         ,       ,
 0x2962b54,_ScaleTerrainT2,,void *
+0x2962b58,_TerImpactData,,void *
 0x02962b70 , _nusound_special_positions                                     , 60    , NUVEC[5]
 0x02962bac , ?the_music_player@@3PAVNuMusic@@A                              , 4     , NuMusic *
 0x02962bcc , _NuSound3Initialized                                           , 4     , i32

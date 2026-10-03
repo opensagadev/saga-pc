@@ -178,3 +178,28 @@ void __cdecl PlayJumpSfx(GAMEOBJECT *object, i32 type) {
             PlaySfxById(sfx, &object->lower_position);
     }
 }
+
+extern "C" void(__cdecl *ExtraDieSfxFn)(GAMEOBJECT *);
+
+extern "C" void __cdecl PlayDieSfx(GAMEOBJECT *object) {
+    CHARACTERDATA_PC *character = object->character_data;
+    PLAYERCHARACTERCONFIG_PC *config = character->game_character;
+    i32 sfx = config->sfx_die;
+    if (sfx == -1) {
+        u32 flags = character->model_flags;
+        if ((config->flags_090 & 0x800) != 0 || (flags & 0x2000) != 0)
+            sfx = GameAudio->sfx_ids[0x18];
+        else if ((flags & 0x04000000) != 0)
+            sfx = GameAudio->sfx_ids[0x19];
+        else if ((flags & 0x10) != 0)
+            sfx = GameAudio->sfx_ids[0x1a];
+        else if ((flags & 0x40000000) == 0)
+            sfx = GameAudio->sfx_ids[(object->flags_ef4 & 0x800) != 0 ? 0x1b : 0x1c];
+        if (sfx == -1)
+            goto extra;
+    }
+    PlaySfxById(sfx, &object->collision_position);
+extra:
+    if (ExtraDieSfxFn != NULL)
+        ExtraDieSfxFn(object);
+}

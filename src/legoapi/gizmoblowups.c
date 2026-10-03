@@ -278,3 +278,68 @@ void __cdecl UpdateMidPos(GIZMOBLOWUP_PC *opaque_blowup) {
     }
     blowup->status_flags &= ~0x10000;
 }
+
+typedef struct respawn_initial_pc_s {
+    u8 unknown_000[0x10f];
+    u8 initial_damage;
+    u8 remaining_health;
+    u8 initial_health;
+} RESPAWN_INITIAL_PC;
+typedef struct respawn_particle_types_pc_s {
+    u8 unknown_000[0xa4];
+    i16 initial_particle_types[2];
+} RESPAWN_PARTICLE_TYPES_PC;
+STATIC_ASSERT(offsetof(RESPAWN_INITIAL_PC, initial_damage) == 0x10f);
+STATIC_ASSERT(offsetof(RESPAWN_INITIAL_PC, remaining_health) == 0x110);
+STATIC_ASSERT(offsetof(RESPAWN_INITIAL_PC, initial_health) == 0x111);
+STATIC_ASSERT(offsetof(RESPAWN_PARTICLE_TYPES_PC, initial_particle_types) == 0xa4);
+static __declspec(noinline) void GizmoBlowupRestoreInitialStatePc(GIZMOBLOWUP_PC *blowup) {
+    RESPAWN_INITIAL_PC *initial = (RESPAWN_INITIAL_PC *)blowup;
+    NUINSTANIM_TIME_VIEW *animation;
+    blowup->status_flags = (blowup->status_flags & 0xfeff7ffe) | 0x804000;
+    blowup->remaining_health = initial->initial_health;
+    blowup->damage = initial->initial_damage;
+    animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&blowup->type->animated_special);
+    if (animation != NULL && (animation->flags & 1)) {
+        blowup->status_flags |= 0x100000;
+        if (animation->flags & 8)
+            blowup->status_flags |= 0x480000;
+    }
+    blowup->status_flags |= 0x10000;
+}
+void __cdecl GizBlowup_Respawn(GIZMOBLOWUP_PC *blowup) {
+    RESPAWN_INITIAL_PC *initial = (RESPAWN_INITIAL_PC *)blowup;
+    RESPAWN_PARTICLE_TYPES_PC *types;
+    NUINSTANIM_TIME_VIEW *animation;
+    i32 i, key;
+    if (blowup == NULL)
+        return;
+    GizmoBlowupRestoreInitialStatePc(blowup);
+    if (BonusArea && VehicleArea && (blowup->draw_flags & 0x1000000)) {
+        if (NuSpecialExistsFn(&blowup->type->animated_special))
+            NuSpecialSetVisibility(&blowup->type->animated_special, 0);
+    } else if (blowup->status_flags & 0x4000)
+        NuSpecialSetVisibility(&blowup->type->animated_special, 1);
+    if (NuSpecialExistsFn(&blowup->type->decal_special))
+        NuSpecialSetVisibility(&blowup->type->decal_special, 0);
+    blowup->animation_time = 0.0f;
+    blowup->damage = initial->initial_damage;
+    blowup->remaining_health = initial->initial_health;
+    blowup->status_flags &= 0xfdf1e401;
+    animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&blowup->type->animated_special);
+    if (animation != NULL) {
+        if (BonusArea && VehicleArea && (blowup->draw_flags & 0x1000000) && (blowup->status_flags & 0x100000))
+            animation->flags |= 1;
+        if ((animation->flags & 1) && (animation->flags & 8))
+            blowup->status_flags |= 0x480000;
+    }
+    if (blowup->platform_id != -1)
+        PlatOnOff(blowup->platform_id, 1);
+    types = (RESPAWN_PARTICLE_TYPES_PC *)blowup->type;
+    for (i = 0; i < 2; ++i) {
+        if (types->initial_particle_types[i] != -1) {
+            key = -1;
+            AddFiniteShotDebrisEffect(&key, types->initial_particle_types[i], &blowup->mid_position, 1);
+        }
+    }
+}

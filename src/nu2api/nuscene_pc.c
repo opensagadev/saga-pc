@@ -247,3 +247,22 @@ void __cdecl NuGScnFixupPS(NUGSCN *scene) {
         NuMtlUpdate(scene->materials[material_index]);
     NuPortalMaxDepth(scene, ((SCENE_FIXUP_PORTAL_FIELDS_PC *)scene)->max_portals);
 }
+
+typedef struct PC_CLONE_NATIVE_VIEW {
+    u8 unknown_0000[0x7c];
+    u32 *word;
+} PC_CLONE_NATIVE_VIEW;
+STATIC_ASSERT(offsetof(PC_CLONE_NATIVE_VIEW, word) == 0x7c);
+void __cdecl NuDisplaySceneClonePS(NUDISPLAY_LIST_PC *source_scene, NUDISPLAY_LIST_PC *clone_scene, VARIPTR *buffer) {
+    PC_CLONE_NATIVE_VIEW *source = (PC_CLONE_NATIVE_VIEW *)source_scene;
+    PC_CLONE_NATIVE_VIEW *scene = (PC_CLONE_NATIVE_VIEW *)clone_scene;
+    u32 *word;
+    scene->word = NULL;
+    if (source->word != NULL) {
+        buffer->addr = (buffer->addr + 3) & ~3u;
+        word = (u32 *)buffer->void_ptr;
+        buffer->addr += sizeof(*word);
+        *word = *source->word;
+        scene->word = word;
+    }
+}

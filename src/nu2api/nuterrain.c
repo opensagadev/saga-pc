@@ -9,26 +9,6 @@ typedef struct TERRAIN_SPATIAL_NODE TERRAIN_SPATIAL_NODE;
 typedef struct TERRAIN_SHAPE_BATCH TERRAIN_SHAPE_BATCH;
 #include "saga.h"
 
-struct TERRAIN_POLYGON_INFO_PC {
-    f32 min_x, max_x, min_y, max_y, min_z, max_z;
-    NUVEC vertices[4];
-    NUVEC normals[2];
-    union {
-        u32 packed_metadata;
-        struct {
-            u8 material[2];
-            u8 flags;
-            u8 normal_flags;
-        };
-    };
-};
-STATIC_ASSERT(sizeof(TERRAIN_POLYGON_INFO_PC) == 0x64);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, min_y) == 8);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, max_y) == 0xc);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, vertices) == 0x18);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, normals) == 0x48);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, material) == 0x60);
-
 /* Local PC accessed cohorts; historical whole owners remain unclaimed. */
 typedef struct TERRAIN_SKIN_STREAM_VIEW_PC TERRAIN_SKIN_STREAM_VIEW_PC;
 
@@ -100,15 +80,6 @@ typedef struct TERRAIN_PLATFORM_PC {
     f32 bounce_64;
     void *scene_transform;
 } TERRAIN_PLATFORM_PC;
-
-typedef struct TERRAIN_TRACK_SLOT_PC {
-    void *id;
-    i16 platform_index;
-    u16 flags;
-    i16 platform_contact_state;
-    i16 wall_contact_state;
-    NUVEC impact_normal;
-} TERRAIN_TRACK_SLOT_PC;
 
 typedef struct TERRAIN_CELL_PC {
     i16 first_group;
@@ -2143,4 +2114,11 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
 
     TerrShapeAdjCnt = 0;
     return saved_cursor.void_ptr;
+}
+
+void __cdecl TerrainPlatGetMtx(i32 index, NUMTX **previous, NUMTX **current) {
+    if (index > -1) {
+        *previous = (NUMTX *)&((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].previous_matrix;
+        *current = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_object;
+    }
 }

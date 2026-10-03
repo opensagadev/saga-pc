@@ -1169,3 +1169,104 @@ void __cdecl DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *effect, DEBRISKEY_PC *
     key->clip_min = minimum;
     DebrisMtxCopyPrivate(&key->clip_matrix, &matrix);
 }
+
+void __cdecl DebrisDraw(i32 unused, i32 pass) {
+    DEBRIS_RENDER_CHUNK_PC *chunk;
+    i32 drawn = 0;
+    (void)unused;
+    if (debris_suspended != 0)
+        return;
+    _NuTimeBarSlotBegin(0, 12, DebrisTimeBarName);
+    DebMat[7]->texture_id = (i16)debris_rt;
+    for (chunk = ParticleChunkRenderStack[pass]; chunk != NULL; chunk = chunk->next) {
+        DEBRIS_INFO_PC *effect;
+        DEBRISKEY_PC *key;
+        NUMTX matrix;
+        NUVEC position;
+        f32 render_time;
+        i32 mode;
+        if (chunk->particle_chunk == NULL)
+            continue;
+        effect = chunk->effect;
+        key = chunk->key;
+        if (DebrisCutSceneMode != 0 && effect->cutscene_only != 0)
+            continue;
+        if (DebrisSuspendDrawObjectSwitch != -1 && key != NULL && key->trigger_second == DebrisSuspendDrawObjectSwitch)
+            continue;
+        if (effect->native_data == NULL) {
+            if (freeDmaDebType == EDPP_MAX_DMADEBTYPES)
+                DebrisFreeOldestDmaDebTypeTable();
+            GenericDebinfoDmaTypeUpdate(effect);
+            if (effect->native_data == NULL)
+                continue;
+        }
+        if (key != NULL) {
+            i32 assigned = 0;
+            i32 visible = 1;
+            i32 i;
+            for (i = 0; i < 8; ++i) {
+                if (effect->particle_keys[i] != -1 && &((DEBRISKEY_PC *)debkeydata)[effect->particle_keys[i]] == key) {
+                    assigned = 1;
+                    break;
+                }
+            }
+            if (!assigned && effect->sound_range > 0.0f && effect->use_explicit_clip_box == 0 &&
+                key->cutoff_distance > effect->sound_range)
+                visible = 0;
+            if (key->field_2f7 == 0)
+                visible = 0;
+            if (pass != 4 && visible && effect->generator_type == 0 && effect->use_explicit_clip_box == 0 &&
+                !assigned) {
+                NUVEC minimum, maximum;
+                if (key->clip_radius == 0.0f || *edbits_editor_enabled != 0)
+                    DebrisDrawCalculateClipBoxes(effect, key);
+                if (edbits_editmode == 0 && key->gscene != NULL && key->field_2f2 != -1)
+                    visible = NuPortalClipTest(key->gscene, &key->position, key->clip_radius, key->field_2f2) != 0;
+                minimum = key->clip_min;
+                maximum = key->clip_max;
+                if (NuCameraClipTestExtents(&minimum, &maximum, &key->clip_matrix, 0.0f, 0) == 0)
+                    continue;
+            }
+            if (!visible)
+                continue;
+            DebrisMtxCopyPrivate(&matrix, &key->effect_orientation);
+            position = key->position;
+        } else {
+            if (effect->sound_range > 0.0f && effect->use_explicit_clip_box == 0 &&
+                CameraEmitterDistance(&chunk->position) > effect->sound_range)
+                continue;
+            matrix = chunk->effect_orientation;
+            position = chunk->position;
+        }
+        NuMtxTranslate(&matrix, &position);
+        if (pass == 4) {
+            NuMtxMulVU0(&matrix, &matrix, NuCameraGetMtx());
+            render_time = debris_render_panel_time;
+            effect->last_render_time = panelglobaltime;
+        } else {
+            render_time = debris_render_global_time;
+            effect->last_render_time = globaltime;
+        }
+        if (key != NULL && key->field_2fa != 0)
+            NuRndrSetParticleRotation(&key->particle_orientation);
+        else if (effect->camera_facing != 0)
+            NuRndrSetParticleRotation(&xzfacingmtx);
+        else
+            NuRndrSetParticleRotation(NULL);
+        NuMtxPreScaleX(&matrix, debris_render_scale);
+        if (effect->particle_type == 7)
+            mode = 4;
+        else if (effect->use_explicit_clip_box != 0) {
+            NuRndrSetDebBox(&effect->particle_box);
+            mode = 6;
+        } else
+            mode = 0;
+        NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data, DebMat[(i8)chunk->effect->particle_type],
+                            render_time, &matrix, mode, effect->particle_parameter_a, effect->particle_parameter_b,
+                            effect->clip_extent, effect->field_044);
+        drawn = 1;
+    }
+    if (drawn != 0)
+        g_renderingDebris = g_renderingDebris == 0;
+    _NuTimeBarSlotEnd(0, 12);
+}

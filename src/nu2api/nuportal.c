@@ -88,3 +88,44 @@ i16 __cdecl NuPortalWhichRoom(NUGSCN *scene, NUVEC *position) {
 void __cdecl NuPortalMaxDepth(NUGSCN *scene, i32 depth) {
     scene->portal_depth = depth;
 }
+
+i32 __cdecl clipTestSphere(NUPORTALSPHERE_PC *sphere, NUPORTAL_FRUSTUM_PC *frustum) {
+    i32 fully_inside = 0;
+    i32 i;
+    f32 camera_distance;
+    for (i = 0; i < frustum->plane_count; ++i) {
+        NUPLANE *plane = &frustum->planes[i];
+        f32 distance =
+            plane->a * sphere->center.x + plane->b * sphere->center.y + plane->c * sphere->center.z + plane->d;
+        if (distance < -sphere->radius)
+            return 0;
+        if (distance > sphere->radius)
+            ++fully_inside;
+    }
+    camera_distance = NuPortalCameraPlane.a * sphere->center.x + NuPortalCameraPlane.b * sphere->center.y +
+                      NuPortalCameraPlane.c * sphere->center.z + NuPortalCameraPlane.d;
+    if (camera_distance < -sphere->radius)
+        return 0;
+    if (camera_distance > sphere->radius)
+        ++fully_inside;
+    return fully_inside == frustum->plane_count + 1 ? 1 : 2;
+}
+
+i32 __cdecl NuPortalClipTest(NUGSCN *scene, NUVEC *position, f32 radius, i16 room_id) {
+    i32 i;
+    if (scene->max_portals == 0 || scene->camera_room == room_id)
+        return 1;
+    for (i = 0; i < scene->num_portal_frusta; ++i) {
+        NUPORTAL_FRUSTUM_PC *frustum = scene->portal_frusta[i];
+        if (frustum != NULL && frustum->room_id == room_id) {
+            NUPORTALSPHERE_PC sphere;
+            i32 result;
+            sphere.center = *position;
+            sphere.radius = radius;
+            result = clipTestSphere(&sphere, frustum);
+            if (result != 0)
+                return result;
+        }
+    }
+    return 0;
+}

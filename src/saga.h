@@ -443,6 +443,53 @@ typedef struct terrain_layer_pc_s {
     u32 unknown_08;
 } TERRAIN_LAYER_PC;
 typedef struct TERRAIN_POLYGON_INFO_PC TERRAIN_POLYGON_INFO_PC;
+struct TERRAIN_POLYGON_INFO_PC {
+    f32 min_x, max_x, min_y, max_y, min_z, max_z;
+    NUVEC vertices[4];
+    NUVEC normals[2];
+    union {
+        u32 packed_metadata;
+        struct {
+            u8 material[2];
+            u8 flags;
+            u8 normal_flags;
+        };
+    };
+};
+STATIC_ASSERT(sizeof(TERRAIN_POLYGON_INFO_PC) == 0x64);
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, min_y) == 8);
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, max_y) == 0xc);
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, vertices) == 0x18);
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, normals) == 0x48);
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, material) == 0x60);
+typedef struct TERRAIN_TRACK_SLOT_PC {
+    void *id;
+    i16 platform_index;
+    u16 flags;
+    i16 platform_contact_state;
+    i16 wall_contact_state;
+    NUVEC impact_normal;
+} TERRAIN_TRACK_SLOT_PC;
+STATIC_ASSERT(sizeof(TERRAIN_TRACK_SLOT_PC) == 24);
+STATIC_ASSERT(offsetof(TERRAIN_TRACK_SLOT_PC, platform_index) == 4);
+typedef struct TERRAIN_SPHERE_PC {
+    NUVEC position;
+    f32 radius;
+} TERRAIN_SPHERE_PC;
+STATIC_ASSERT(sizeof(TERRAIN_SPHERE_PC) == 16);
+STATIC_ASSERT(offsetof(TERRAIN_SPHERE_PC, radius) == 12);
+typedef struct TERRAIN_AXIS_FREEDOM_SHAPE_PC {
+    NUVEC offset;
+    f32 angle, radius;
+} TERRAIN_AXIS_FREEDOM_SHAPE_PC;
+STATIC_ASSERT(sizeof(TERRAIN_AXIS_FREEDOM_SHAPE_PC) == 20);
+typedef struct TERRAIN_LAST_IMPACT_PC {
+    NUVEC position;
+    f32 hit_type;
+} TERRAIN_LAST_IMPACT_PC;
+STATIC_ASSERT(sizeof(TERRAIN_LAST_IMPACT_PC) == 16);
+STATIC_ASSERT(offsetof(TERRAIN_LAST_IMPACT_PC, hit_type) == 12);
+
 STATIC_ASSERT(sizeof(TERRAIN_LAYER_PC) == 0xc);
 STATIC_ASSERT(offsetof(TERRAIN_LAYER_PC, flags) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_LAYER_PC, unknown_04) == 4);
@@ -2112,6 +2159,24 @@ typedef struct nulegacyspecial_s {
     u8 opaque_50[0x8];
 } NULEGACYSPECIAL;
 
+typedef struct NUPORTAL_FRUSTUM_PC {
+    u8 unknown_000[0x80];
+    NUPLANE *planes;
+    u8 unknown_084[0x18];
+    i16 plane_count;
+    i16 room_id;
+} NUPORTAL_FRUSTUM_PC;
+typedef struct NUPORTALSPHERE_PC {
+    NUVEC center;
+    f32 radius;
+} NUPORTALSPHERE_PC;
+STATIC_ASSERT(sizeof(NUPORTAL_FRUSTUM_PC) == 0xa0);
+STATIC_ASSERT(offsetof(NUPORTAL_FRUSTUM_PC, planes) == 0x80);
+STATIC_ASSERT(offsetof(NUPORTAL_FRUSTUM_PC, plane_count) == 0x9c);
+STATIC_ASSERT(offsetof(NUPORTAL_FRUSTUM_PC, room_id) == 0x9e);
+STATIC_ASSERT(sizeof(NUPORTALSPHERE_PC) == 0x10);
+STATIC_ASSERT(offsetof(NUPORTALSPHERE_PC, radius) == 0xc);
+
 typedef struct NUGSCN_s {
     i32 *texture_ids;
     i32 texture_count;
@@ -2133,11 +2198,15 @@ typedef struct NUGSCN_s {
     void **instance_animation_data;
     u8 unknown_0058[0xc];
     void *texture_animations;
-    u8 unknown_0068[8];
+    u8 unknown_0068[4];
+    i32 max_portals;
     NUPORTAL *portals;
     i32 num_rooms;
     NUGSCNROOM *rooms;
-    u8 unknown_007c[0x68];
+    u8 unknown_007c[0x20];
+    NUPORTAL_FRUSTUM_PC *portal_frusta[16];
+    i32 num_portal_frusta;
+    i32 camera_room;
     i32 portal_depth;
     u8 unknown_00e8[0x28];
     NUDISPLAY_LIST_PC *display_list;
@@ -2897,6 +2966,10 @@ typedef struct WORLDINFO_s {
 } WORLDINFO;
 STATIC_ASSERT(offsetof(WORLDINFO, sock_sys) == 0x2988);
 STATIC_ASSERT(offsetof(WORLDINFO, camera_splines) == 0x2ac4);
+STATIC_ASSERT(offsetof(NUGSCN, max_portals) == 0x6c);
+STATIC_ASSERT(offsetof(NUGSCN, portal_frusta) == 0x9c);
+STATIC_ASSERT(offsetof(NUGSCN, num_portal_frusta) == 0xdc);
+STATIC_ASSERT(offsetof(NUGSCN, camera_room) == 0xe0);
 STATIC_ASSERT(sizeof(WORLDINFO) == 0x51ac);
 STATIC_ASSERT(offsetof(WORLDINFO, object_sys) == 0x298c);
 STATIC_ASSERT(offsetof(WORLDINFO, tubes) == 0x4690);
@@ -3009,7 +3082,9 @@ typedef struct debris_info_pc_s {
     f32 jib_x_frequency, jib_x_amplitude, jib_y_frequency, jib_y_amplitude;
     DEBRIS_COLOUR_KEY_PC colour_keys[8];
     DEBRIS_FLOAT_KEY_PC alpha_keys[8];
-    u8 unknown_140[0xc];
+    f32 particle_parameter_a;
+    f32 particle_parameter_b;
+    u8 unknown_148[4];
     f32 max_size;
     DEBRIS_FLOAT_KEY_PC width_keys[8], height_keys[8];
     u8 unknown_1d0[8];
@@ -3024,11 +3099,13 @@ typedef struct debris_info_pc_s {
     u8 collision_flags;
     u8 use_explicit_clip_box;
     f32 thinning;
-    u8 unknown_2f8[0xd8];
+    NUVEC particle_box;
+    u8 unknown_304[0xcc];
     i16 particle_keys[8];
     i32 sound_data[12];
     i8 trail_count, radial_segments;
-    u8 unknown_412[2];
+    i8 camera_facing;
+    u8 unknown_413;
     f32 trail_time, scale_in_time, radial_floor;
 } DEBRIS_INFO_PC;
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, name) == 0x0);
@@ -7121,6 +7198,9 @@ extern "C" {
     extern const char PlayerGrappleWindSoundPc[11];
 
     void __cdecl NuMtlUpdate(NUMTL *);
+    NUDISPLAY_LIST_PC *__cdecl NuDisplaySceneClone(NUDISPLAY_LIST_PC *, VARIPTR *);
+    void __cdecl NuDisplaySceneClonePS(NUDISPLAY_LIST_PC *, NUDISPLAY_LIST_PC *, VARIPTR *);
+
     void __cdecl PCDeviceLockVertexBuffer(u32, u32, void **, u32, PC_BUFFER_RESOURCE_PC *);
     HRESULT __cdecl PCDeviceUnlockVertexBuffer(PC_BUFFER_RESOURCE_PC *);
     void __cdecl PCCharacterModelDiagnosticNoOp(void);
@@ -7130,6 +7210,29 @@ extern "C" {
     i32 __cdecl GameAudio_GetPlrSfxBits(void *);
     i32 __cdecl Hub_InMenu(void);
     void __cdecl SetProtocolDroidDeactivatedAction(GAMEOBJECT *);
+    struct carry_plug_pc_s;
+    struct carry_plug_sys_pc_s;
+    void __cdecl QuatInterpolateRotationMatrix(NUMTX *, NUMTX *, NUMTX *, f32);
+    struct carry_plug_pc_s *__cdecl Plug_FindNearest(struct carry_plug_sys_pc_s *, NUVEC *, f32 *, i32);
+    void __cdecl Plug_MakeDrawMtx(struct carry_plug_pc_s *, NUMTX *);
+    void __cdecl SuperCarry_PartImpact(PART_PC *);
+    void __cdecl GizBlowup_Respawn(GIZMOBLOWUP_PC *);
+    i32 __cdecl SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *, NUVEC *, u16, i32);
+    extern f32 SuperCarryImpactSpeedPc;
+    void __cdecl GameCam_Blend(GAMECAMERA *, f32, f32, i32);
+    void __cdecl PlayDieSfx(GAMEOBJECT *);
+    extern void(__cdecl *ExtraDieSfxFn)(GAMEOBJECT *);
+    void __cdecl DebrisDraw(i32, i32);
+    i32 __cdecl NuPortalClipTest(NUGSCN *, NUVEC *, f32, i16);
+    i32 __cdecl clipTestSphere(NUPORTALSPHERE_PC *, NUPORTAL_FRUSTUM_PC *);
+    extern NUPLANE NuPortalCameraPlane;
+    extern NUMTL *DebMat[9];
+    extern NUMTX xzfacingmtx;
+    extern i32 debris_rt, g_renderingDebris, DebrisSuspendDrawObjectSwitch;
+    extern f32 debris_render_scale;
+    extern i32 *edbits_editor_enabled;
+    extern i32 edbits_editor_state;
+    extern const char DebrisTimeBarName[4];
     extern u8 TerrWallTab[4];
     void __cdecl DerotateMovementVector(void);
     void __cdecl RotateVec(NUVEC *, NUVEC *);
@@ -7141,7 +7244,52 @@ extern "C" {
     i32 __cdecl CheckSphere(i32);
     i32 __cdecl CheckSphereTer(NUVEC *, f32);
     i32 __cdecl HitPoly(f32, f32, f32, f32, TERRAIN_POLYGON_INFO_PC *);
+    void __cdecl NewTerrainScaleYMask(NUVEC *, NUVEC *, u8 *, i32, f32, f32, f32, i32, i32, i32);
     i32 __cdecl HitWallSpline(void);
+    extern i32 TerrainShadowStatusPc;
+    i32 __cdecl TerrainPlatformEmbedded(NUVEC *);
+    void __cdecl TerrainImpact(NUVEC *, NUVEC *, u8 *);
+    i32 __cdecl PlatformChecks(i32, NUVEC *);
+    i32 __cdecl HitTerrain(void);
+    TERRAIN_TRACK_SLOT_PC *__cdecl AllocTerrId(void);
+    void __cdecl FullDeflect(NUVEC *, NUVEC *, NUVEC *);
+    void __cdecl FullDeflectSmallY(NUVEC *, NUVEC *, NUVEC *);
+    i32 __cdecl FullDeflectTest(NUVEC *, NUVEC *, NUVEC *);
+    void __cdecl PlatformConnect(char *, NUVEC *, NUVEC *, i32);
+    void __cdecl TerrainSideClamp(NUVEC *, NUVEC *);
+    void __cdecl TerrainImpactNorm(void);
+    void __cdecl StorePlatImpact(void);
+    void __cdecl NewTerrStoreAnyInfo(void);
+    i32 __cdecl TerrShapeSideStep(NUVEC *, NUVEC *, u8 *);
+    void __cdecl TerrainMoveImpactData(void);
+    i32 __cdecl TerrainImpactPlatform(u8 *);
+    i32 __cdecl TerrainPlatformMoveCheck(NUVEC *, NUVEC *, i32, i32, i32);
+    void __cdecl TerrainPlatGetMtx(i32, NUMTX **, NUMTX **);
+    void __cdecl AddCollisionSphere(NUVEC *, f32);
+    extern const f64 TerrainOpposingContactThresholdPc;
+    extern f32 TerConTol;
+    extern f32 TerrWallDeflectYScale;
+    extern NUVEC TerrImpactPos;
+    extern i32 terrhitflags;
+    extern i16 TerrImpact;
+    extern TERRAIN_SPHERE_PC SphereData[16];
+    extern i32 PlatCrush;
+    extern TERRAIN_AXIS_FREEDOM_SHAPE_PC *TerrShape;
+    extern NUVEC4 tertempvec4;
+    extern NUVEC TerrWallNorm;
+    extern i32 plathitid;
+    extern TERRAIN_POLYGON_INFO_PC PlatImpactTer;
+    extern NUMTX tertempmat;
+    extern TERRAIN_LAST_IMPACT_PC TerrLastImpact;
+    extern TERRAIN_POLYGON_INFO_PC TerrPolyInfo;
+    extern f32 wallover;
+    extern TERRAIN_TRACK_SLOT_PC *CurTrackInfo;
+    extern NUVEC TerrImpactNormal;
+    extern i32 TerImpactDataMax;
+    extern i32 *TerImpactDataCount;
+    extern NUVEC PlatImpactNorm;
+    extern void *TerImpactData;
+
     extern void *GHGTextureProgramsPC;
     extern const char GHGJointFormatWarningPC[95];
     extern const char GHGSceneFormatWarningPC[87];
@@ -9921,7 +10069,7 @@ extern "C" {
     extern const char AIControlAllNonPartyName[14];
     extern const char AIControlDefaultTitleName[8];
 
-    typedef void(__cdecl *PLAYER_CLEAR_CONTEXT_CALLBACK_PC)(GAMEOBJECT *);
+    typedef void(__cdecl *PLAYER_CLEAR_CONTEXT_CALLBACK_PC)(GAMEOBJECT *, i32);
     extern i32 LEGOCONTEXT_WHIP;
     extern i32 LEGOCONTEXT_SUPERCARRY;
     extern i32 LEGOCONTEXT_SPECIALMOVE_ATTACKER;
@@ -10875,6 +11023,14 @@ f32 GetAudioFadeLevel(void);
 STATIC_ASSERT(offsetof(WORLDINFO, shadow_platform_list_pc) == 0x2adc);
 STATIC_ASSERT(offsetof(WORLDINFO, ai_sys) == 0x2ae8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, surface_flag8_scale_pc) == 0xd6c);
+STATIC_ASSERT(offsetof(NUGSCN, max_portals) == 0x6c);
+STATIC_ASSERT(offsetof(NUGSCN, portal_frusta) == 0x9c);
+STATIC_ASSERT(offsetof(NUGSCN, num_portal_frusta) == 0xdc);
+STATIC_ASSERT(offsetof(NUGSCN, camera_room) == 0xe0);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, particle_parameter_a) == 0x140);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, particle_parameter_b) == 0x144);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, particle_box) == 0x2f8);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, camera_facing) == 0x412);
 STATIC_ASSERT(sizeof(WORLDINFO) == 0x51ac);
 STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 
