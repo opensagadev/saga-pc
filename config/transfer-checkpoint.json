@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 621799,
-    "matched_code_bytes": 57029,
-    "matching_percent": 1.6428971038065294,
-    "fuzzy_coverage_percent": 8.449390082548772,
-    "mapped_functions": 2329,
-    "matched_functions": 956,
-    "objdiff_fuzzy_percent": 62.40049,
-    "objdiff_total_code": 470115,
+    "mapped_code_bytes": 633632,
+    "matched_code_bytes": 58377,
+    "matching_percent": 1.68173042187157,
+    "fuzzy_coverage_percent": 8.701130682656059,
+    "mapped_functions": 2357,
+    "matched_functions": 968,
+    "objdiff_fuzzy_percent": 62.145275,
+    "objdiff_total_code": 486107,
     "image_bytes": 40067072,
-    "mapped_bytes": 1250682,
-    "mapping_percent": 3.1214709175654263
+    "mapped_bytes": 1266860,
+    "mapping_percent": 3.1618482129165817
   },
   "newly_compared": [
     {
@@ -3370,6 +3370,480 @@
         "native_debris_engine_fixture": true
       },
       "ongoing_goal": "Indefinite whole-project transfer with validated commits roughly every30minutes and directmainpush; do notmarkcomplete."
+    },
+    {
+      "baseline_commit": "ca845adacfd7d2a3018e992c0cb4bee2effaa5ae",
+      "new_functions": 41,
+      "new_unique_PC_bytes": 15992,
+      "previous_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 621799,
+        "matched_code_bytes": 57029,
+        "matching_percent": 1.6428971038065294,
+        "fuzzy_coverage_percent": 8.449390082548772,
+        "mapped_functions": 2329,
+        "matched_functions": 956,
+        "objdiff_fuzzy_percent": 62.40049,
+        "objdiff_total_code": 470115,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1250682,
+        "mapping_percent": 3.1214709175654263
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 633632,
+        "matched_code_bytes": 58377,
+        "matching_percent": 1.68173042187157,
+        "fuzzy_coverage_percent": 8.701130682656059,
+        "mapped_functions": 2357,
+        "matched_functions": 968,
+        "objdiff_fuzzy_percent": 62.145275,
+        "objdiff_total_code": 486107,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1266860,
+        "mapping_percent": 3.1618482129165817
+      },
+      "newly_compared": [
+        {
+          "name": "NuMemSet128",
+          "symbol": "_NuMemSet128",
+          "address": "0x004ef6e0",
+          "target_size": 25,
+          "exact_match": true,
+          "units": [
+            "src/nu2api/numem.c"
+          ]
+        },
+        {
+          "name": "instNuGCutSceneEndButNotSystems",
+          "symbol": "_instNuGCutSceneEndButNotSystems",
+          "address": "0x005003b0",
+          "target_size": 77,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/gcutscn.c"
+          ]
+        },
+        {
+          "name": "CutSceneEndLocatorsPC",
+          "symbol": "_CutSceneEndLocatorsPC",
+          "address": "0x00501760",
+          "target_size": 271,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/cutscene_lifecycle.c"
+          ]
+        },
+        {
+          "name": "CutSceneEndRigidsPC",
+          "symbol": "_CutSceneEndRigidsPC",
+          "address": "0x00502740",
+          "target_size": 263,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/cutscene_lifecycle.c"
+          ]
+        },
+        {
+          "name": "CutSceneDestroyCharactersPC",
+          "symbol": "_CutSceneDestroyCharactersPC",
+          "address": "0x00502b40",
+          "target_size": 109,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/cutscene_lifecycle.c"
+          ]
+        },
+        {
+          "name": "CutSceneEndCharactersPC",
+          "symbol": "_CutSceneEndCharactersPC",
+          "address": "0x00502cb0",
+          "target_size": 170,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/cutscene_lifecycle.c"
+          ]
+        },
+        {
+          "name": "NuGCutSceneDestroy",
+          "symbol": "_NuGCutSceneDestroy",
+          "address": "0x00505b20",
+          "target_size": 26,
+          "exact_match": true,
+          "units": [
+            "src/legoapi/cutscene_lifecycle.c"
+          ]
+        },
+        {
+          "name": "instNuGCutSceneEnd",
+          "symbol": "_instNuGCutSceneEnd",
+          "address": "0x005060e0",
+          "target_size": 251,
+          "exact_match": true,
+          "units": [
+            "src/legoapi/cutscene_lifecycle.c"
+          ]
+        },
+        {
+          "name": "instNuGCutSceneDestroy",
+          "symbol": "_instNuGCutSceneDestroy",
+          "address": "0x00507c00",
+          "target_size": 79,
+          "exact_match": true,
+          "units": [
+            "src/legoapi/cutscene_lifecycle.c"
+          ]
+        },
+        {
+          "name": "WorldInfo_LoadObjectAnimFile",
+          "symbol": "_WorldInfo_LoadObjectAnimFile",
+          "address": "0x0055f5d0",
+          "target_size": 124,
+          "exact_match": true,
+          "units": [
+            "src/legoapi/world.c"
+          ]
+        },
+        {
+          "name": "InitPartDebris",
+          "symbol": "_InitPartDebris",
+          "address": "0x00571890",
+          "target_size": 352,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/game_deb.c"
+          ]
+        },
+        {
+          "name": "CutScenes_Destroy",
+          "symbol": "_CutScenes_Destroy",
+          "address": "0x0057cf00",
+          "target_size": 108,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/cutscene_runtime.c"
+          ]
+        },
+        {
+          "name": "LoadEditorSplines",
+          "symbol": "_LoadEditorSplines",
+          "address": "0x005b1ee0",
+          "target_size": 550,
+          "exact_match": false,
+          "units": [
+            "src/gameapi/edspline_load.c"
+          ]
+        },
+        {
+          "name": "NuPortalMaxDepth",
+          "symbol": "_NuPortalMaxDepth",
+          "address": "0x005d9130",
+          "target_size": 15,
+          "exact_match": true,
+          "units": [
+            "src/nu2api/nuportal.c"
+          ]
+        },
+        {
+          "name": "StateAnimEvaluate",
+          "symbol": "_StateAnimEvaluate",
+          "address": "0x005da520",
+          "target_size": 214,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/nustateanim.c"
+          ]
+        },
+        {
+          "name": "ResetSceneBeforeFramePC",
+          "symbol": "_ResetSceneBeforeFramePC",
+          "address": "0x005ddd10",
+          "target_size": 238,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/nudlist.c"
+          ]
+        },
+        {
+          "name": "DisplayInsertSortPC",
+          "symbol": "_DisplayInsertSortPC",
+          "address": "0x005de060",
+          "target_size": 87,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/nudlist.c"
+          ]
+        },
+        {
+          "name": "NuDisplaySceneAdd",
+          "symbol": "_NuDisplaySceneAdd",
+          "address": "0x005ded80",
+          "target_size": 182,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/nudlist.c"
+          ]
+        },
+        {
+          "name": "NuSpecialSetDrawMtx",
+          "symbol": "_NuSpecialSetDrawMtx",
+          "address": "0x005ea570",
+          "target_size": 89,
+          "exact_match": true,
+          "units": [
+            "src/nu2api/nuspecial.c"
+          ]
+        },
+        {
+          "name": "NuGScnUploadGfxDataFromFilePS",
+          "symbol": "_NuGScnUploadGfxDataFromFilePS",
+          "address": "0x00601e20",
+          "target_size": 1347,
+          "exact_match": false,
+          "units": [
+            "src/nu2api/nuscene_pc.c"
+          ]
+        },
+        {
+          "name": "NuDisplaySceneAddPS",
+          "symbol": "_NuDisplaySceneAddPS",
+          "address": "0x00603980",
+          "target_size": 42,
+          "exact_match": true,
+          "units": [
+            "src/nu2api/nugscn_pc.c"
+          ]
+        },
+        {
+          "name": "InitParts",
+          "symbol": "_InitParts",
+          "address": "0x0064a4b0",
+          "target_size": 643,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/parts.c"
+          ]
+        },
+        {
+          "name": "PARTLookupTypePageOnly",
+          "symbol": "_PARTLookupTypePageOnly",
+          "address": "0x0064b020",
+          "target_size": 161,
+          "exact_match": true,
+          "units": [
+            "src/legoapi/parts.c"
+          ]
+        },
+        {
+          "name": "AddFiniteShotPART",
+          "symbol": "_AddFiniteShotPART",
+          "address": "0x0064b370",
+          "target_size": 155,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/game_deb.c"
+          ]
+        },
+        {
+          "name": "KillPartsByScene",
+          "symbol": "_KillPartsByScene",
+          "address": "0x0064b7f0",
+          "target_size": 83,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/parts.c"
+          ]
+        },
+        {
+          "name": "edpartClearPage",
+          "symbol": "_edpartClearPage",
+          "address": "0x0064c6e0",
+          "target_size": 198,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/parts.c"
+          ]
+        },
+        {
+          "name": "DebFreeChunksInstantly",
+          "symbol": "_DebFreeChunksInstantly",
+          "address": "0x006553f0",
+          "target_size": 821,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "DebFreeOrphansInstantly",
+          "symbol": "_DebFreeOrphansInstantly",
+          "address": "0x00655730",
+          "target_size": 439,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "RemoveDebrisEffectFromStack",
+          "symbol": "_RemoveDebrisEffectFromStack",
+          "address": "0x00656010",
+          "target_size": 100,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "DebrisProcessControlChunks",
+          "symbol": "_DebrisProcessControlChunks",
+          "address": "0x00657110",
+          "target_size": 2258,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "edanimDetermineNearestAnim",
+          "symbol": "_edanimDetermineNearestAnim",
+          "address": "0x00659350",
+          "target_size": 368,
+          "exact_match": true,
+          "units": [
+            "src/gameapi/edanim_load.c"
+          ]
+        },
+        {
+          "name": "edanimLookupSpecial",
+          "symbol": "_edanimLookupSpecial",
+          "address": "0x0065b630",
+          "target_size": 112,
+          "exact_match": true,
+          "units": [
+            "src/gameapi/edanim_load.c"
+          ]
+        },
+        {
+          "name": "DebReAlloc2",
+          "symbol": "_DebReAlloc2",
+          "address": "0x00683560",
+          "target_size": 2337,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "DebReAlloc",
+          "symbol": "_DebReAlloc",
+          "address": "0x00683e90",
+          "target_size": 181,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "DebFree",
+          "symbol": "_DebFree",
+          "address": "0x00683f50",
+          "target_size": 1197,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "DebFreeInstantly",
+          "symbol": "_DebFreeInstantly",
+          "address": "0x00684400",
+          "target_size": 350,
+          "exact_match": false,
+          "units": [
+            "src/legoapi/debris_engine.c"
+          ]
+        },
+        {
+          "name": "edanimLoadPage",
+          "symbol": "_edanimLoadPage",
+          "address": "0x00687850",
+          "target_size": 1489,
+          "exact_match": false,
+          "units": [
+            "src/gameapi/edanim_load.c"
+          ]
+        },
+        {
+          "name": "edppPtlDestroy",
+          "symbol": "_edppPtlDestroy",
+          "address": "0x0068bbe0",
+          "target_size": 56,
+          "exact_match": true,
+          "units": [
+            "src/gameapi/edpp.c"
+          ]
+        },
+        {
+          "name": "edppPtlShelve",
+          "symbol": "_edppPtlShelve",
+          "address": "0x0068bc20",
+          "target_size": 49,
+          "exact_match": false,
+          "units": [
+            "src/gameapi/edpp.c"
+          ]
+        },
+        {
+          "name": "edppStopPage",
+          "symbol": "_edppStopPage",
+          "address": "0x0068e900",
+          "target_size": 252,
+          "exact_match": false,
+          "units": [
+            "src/gameapi/edpp.c"
+          ]
+        },
+        {
+          "name": "edppClearPage",
+          "symbol": "_edppClearPage",
+          "address": "0x0068ea00",
+          "target_size": 338,
+          "exact_match": false,
+          "units": [
+            "src/gameapi/edpp.c"
+          ]
+        }
+      ],
+      "checkpoint": "runtime-resource-20261003",
+      "exact_function_losses": [],
+      "exact_data_credit_corrections": [
+        {
+          "symbol": "_nudlist_flags",
+          "reason": "Legacy independent scalar owner merged into sole PCDynamicDisplayScene with typed field aliases; aggregate original extent unknown, so standalone initializer credit withdrawn."
+        },
+        {
+          "symbol": "_nudlist_field_e58",
+          "reason": "Legacy independent scalar owner merged into sole PCDynamicDisplayScene with typed field aliases; aggregate original extent unknown, so standalone initializer credit withdrawn."
+        }
+      ],
+      "verified_checks": {
+        "tests": 665,
+        "skipped": 3,
+        "llvm": 18,
+        "format_files": 166,
+        "tidy_units": 164,
+        "objects": 164,
+        "function_definitions": 2081,
+        "data_definitions": 3241,
+        "build_link": true,
+        "native_engine_lifecycle_fixture": true,
+        "native_particle_page_fixture": true,
+        "state_animation_nan_fixture": true,
+        "native_display_runtime_fixture": true,
+        "data_repair_scoped_lint": true
+      },
+      "ongoing_goal": "Indefinite whole-project transfer with validated half-hour checkpoints and directmainpush; goal remains active."
     }
   ]
 }

@@ -105,6 +105,7 @@ STATIC_ASSERT(offsetof(NuSpecialLegacyInstanceView, flags) == 0x44);
 STATIC_ASSERT(sizeof(NuSpecialLegacyInstanceView) == 0x4c);
 STATIC_ASSERT(offsetof(NuSpecialDisplayView, draw_matrix) == 0x40);
 STATIC_ASSERT(offsetof(NuSpecialDisplayView, name) == 0xb4);
+STATIC_ASSERT(offsetof(NuSpecialDisplayView, flags) == 0xb8);
 STATIC_ASSERT(offsetof(NuSpecialDisplayView, instance_animation) == 0xc4);
 STATIC_ASSERT(sizeof(NuSpecialDisplayView) == 0xd0);
 STATIC_ASSERT(offsetof(NuSpecialDisplayListView, special_count) == 0x6c);
@@ -745,4 +746,31 @@ void __cdecl NuGScnGetSpecial(NUSPECIALHANDLE *special, NUGSCN *scene, i32 index
     special->scene = NULL;
     special->special = NULL;
     special->display_special = NULL;
+}
+
+typedef struct NuSpecialLegacyMatrixPc {
+    NUMTX matrix;
+} NuSpecialLegacyMatrixPc;
+STATIC_ASSERT(offsetof(NuSpecialLegacyMatrixPc, matrix) == 0);
+
+void __cdecl NuSpecialSetDrawMtx(NUSPECIALHANDLE *special, NUMTX *matrix) {
+    NuSpecialLegacyView *legacy;
+    NuSpecialDisplayView *display;
+    NUDISPLAY_LIST_PC *display_list;
+
+    if (special == NULL || special->scene == NULL) {
+        return;
+    }
+    legacy = (NuSpecialLegacyView *)special->special;
+    if (legacy != NULL) {
+        ((NuSpecialLegacyMatrixPc *)legacy->instance)->matrix = *matrix;
+        return;
+    }
+    display = (NuSpecialDisplayView *)special->display_special;
+    display->draw_matrix = *matrix;
+    display_list = ((NUGSCN *)special->scene)->display_list;
+    if ((display_list->instance_visibility_enabled & 1) != 0) {
+        NuDisplayListUpdateSpecial(special);
+        ((NuSpecialDisplayView *)special->display_special)->flags |= 0x400;
+    }
 }

@@ -1464,7 +1464,10 @@ typedef struct parttype_lookup_pc_s {
     char name[16];
     u8 unknown_010[0x80];
     i16 effect_ids[8];
-    u8 unknown_0a0[0x12];
+    i8 effect_pages[8];
+    u8 unknown_0a8[8];
+    i8 variant_count;
+    u8 unknown_0b1;
     i8 page;
     u8 unknown_0b3[0x19];
     f32 emission_rate;
@@ -1474,6 +1477,8 @@ typedef struct parttype_lookup_pc_s {
 } PARTTYPE_LOOKUP_PC;
 STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, name) == 0);
 STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, effect_ids) == 0x90);
+STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, effect_pages) == 0xa0);
+STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, variant_count) == 0xb0);
 STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, page) == 0xb2);
 STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, emission_rate) == 0xcc);
 STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, emission_period) == 0xec);
@@ -1947,15 +1952,19 @@ STATIC_ASSERT(offsetof(NUSPECIAL_LEGACY_PC, name) == 0x44);
 
 typedef struct partdebrisentry_s {
     i32 id;
-    u8 unknown_04[0x10];
+    char name[16];
 } PARTDEBRISENTRY;
 STATIC_ASSERT(sizeof(PARTDEBRISENTRY) == 0x14);
+STATIC_ASSERT(offsetof(PARTDEBRISENTRY, name) == 4);
 
 typedef struct partdebrissys_s {
-    u8 unknown_00[8];
+    i32 named_count, capacity;
     PARTDEBRISENTRY *entries;
 } PARTDEBRISSYS;
 STATIC_ASSERT(offsetof(PARTDEBRISSYS, entries) == 8);
+STATIC_ASSERT(offsetof(PARTDEBRISSYS, named_count) == 0);
+STATIC_ASSERT(offsetof(PARTDEBRISSYS, capacity) == 4);
+STATIC_ASSERT(sizeof(PARTDEBRISSYS) == 0xc);
 
 typedef struct GAMEDEBRISENTRY_PC {
     i32 effect;
@@ -1996,10 +2005,17 @@ typedef struct nudisplay_list_pc_s {
     void *allocation;
     i32 item_count;
     void *items;
-    u8 unknown_000c[0x38];
+    u8 unknown_000c[4];
+    i32 clip_count;
+    u8 unknown_0014[0x1c];
+    u8 *clip_used[2];
+    u8 unknown_0038[0xc];
     NUVEC4 *clip_bounds;
     u8 *visibility_flags;
-    u8 unknown_004c[0x14];
+    u32 material_count;
+    NUMTL **display_materials;
+    struct nudisplaylist_s **material_lists;
+    u8 *material_used[2];
     i32 sort_count;
     struct nusortpri_s *sort_pris;
     f32 *alpha_values;
@@ -2013,9 +2029,19 @@ typedef struct nudisplay_list_pc_s {
             u8 unknown_0077[0x1];
         };
     };
-    u8 unknown_0078[0x14];
+    struct NUGSCN_s *gscene;
+    u32 unknown_007c;
+    u8 unknown_0080[0xc];
     struct PC_MATERIAL_ANIM_SET *material_animations;
 } NUDISPLAY_LIST_PC;
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, clip_count) == 16);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, clip_used) == 48);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, material_count) == 76);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, display_materials) == 80);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, material_lists) == 84);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, material_used) == 88);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, gscene) == 120);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, unknown_007c) == 124);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, material_animations) == 0x8c);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, allocation) == 0);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, item_count) == 4);
@@ -2059,7 +2085,8 @@ typedef struct NUGSCN_s {
     struct nugspline_s *splines;
     u8 unknown_0038[8];
     struct NUGSCN_s **additional_scenes;
-    u8 unknown_0044[8];
+    i32 frame_reset_marker;
+    u8 unknown_0048[4];
     struct nuinstanim_time_view_s *instance_animations;
     struct numtx_s *instance_animation_matrices;
     void **instance_animation_data;
@@ -2069,11 +2096,15 @@ typedef struct NUGSCN_s {
     NUPORTAL *portals;
     i32 num_rooms;
     NUGSCNROOM *rooms;
-    u8 unknown_007c[0x94];
+    u8 unknown_007c[0x68];
+    i32 portal_depth;
+    u8 unknown_00e8[0x28];
     NUDISPLAY_LIST_PC *display_list;
     u8 unknown_0114[0xbc];
     void *native_scene;
 } NUGSCN;
+STATIC_ASSERT(offsetof(NUGSCN, frame_reset_marker) == 0x44);
+STATIC_ASSERT(offsetof(NUGSCN, portal_depth) == 0xe4);
 STATIC_ASSERT(offsetof(NUGSCN, additional_scenes) == 0x40);
 STATIC_ASSERT(offsetof(NUGSCN, texture_animations) == 0x64);
 STATIC_ASSERT(offsetof(NUGSCN, native_scene) == 0x1d0);
@@ -5666,7 +5697,14 @@ typedef struct nudisplaylist_s {
     NUDISPLAYLISTITEM *first;
     NUDISPLAYLISTITEM *mtl_last;
     u8 opaque_18_20[0x8];
+    u8 unknown_0020[8];
+    NUDISPLAYLISTITEM *scene_first[2];
+    NUDISPLAYLISTITEM *scene_next;
+    i32 scene_buffer;
 } NUDISPLAYLIST;
+STATIC_ASSERT(offsetof(NUDISPLAYLIST, scene_first) == 0x28);
+STATIC_ASSERT(offsetof(NUDISPLAYLIST, scene_next) == 0x30);
+STATIC_ASSERT(offsetof(NUDISPLAYLIST, scene_buffer) == 0x34);
 STATIC_ASSERT(offsetof(NUDISPLAYLIST, state) == 0x08);
 STATIC_ASSERT(offsetof(NUDISPLAYLIST, mtl_item) == 0x0c);
 STATIC_ASSERT(offsetof(NUDISPLAYLIST, first) == 0x10);
@@ -6737,15 +6775,12 @@ extern "C" {
     void __cdecl NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count, i32 arg4, VARIPTR *arg5);
     void __cdecl NuDisplayListInit(VARIPTR *cursor, i32 arg2);
     void __cdecl NuDisplayListBeginFrame(void);
-    void __cdecl NuDisplayListRender2D(i32 arg);
     extern u32 nuprim_field_ba8;
     extern i32 nudlist_alloc_count;
     extern u32 nudlist_alloc_base;
     extern u32 nudlist_alloc_end;
     extern u32 nudlist_item_base;
     extern i32 nudlist_frame_active;
-    extern u32 nudlist_flags;
-    extern u32 nudlist_field_e58;
     extern u32 nudlist_field_e80;
     extern u32 nudlist_field_fc8;
     extern i32 nudlist_field_fc4;
@@ -8168,7 +8203,7 @@ extern "C" {
     void __cdecl NuGScnGetSpecial(NUSPECIALHANDLE *, NUGSCN *, i32);
     extern i32 edgra_page_on[8];
     extern NUVEC ShadNorm;
-    extern void *PCGrassTerrainScene;
+#define PCGrassTerrainScene CurrentTerrain // NOLINT(readability-identifier-naming)
 #include "saga.h"
     typedef struct PC_NUFADEGROUP {
         i16 active;
@@ -10001,8 +10036,11 @@ extern "C" {
         u8 unknown_250[72];
         i32 unknown_texture_298;
         i32 unknown_texture_29c;
-        u8 unknown_2a0[0x24];
+        u8 unknown_2a0[0x20];
+        u16 version;
+        u8 unknown_2c2[2];
     } PC_SCENE_MTL_VIEW;
+    STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, version) == 0x2c0);
     STATIC_ASSERT(sizeof(PC_SCENE_MTL_VIEW) == 0x2c4);
     STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, texture_id) == 116);
     STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, diffuse_map_tex_id) == 184);
@@ -10106,11 +10144,9 @@ extern "C" {
     extern const char NuTextureSourcePathPC[55];
     extern const char NuTextureAnimationSourcePathPC[50];
 
-    extern NUMTL **PCDisplayMaterialRegistry;
-    extern u32 PCDisplayMaterialCount;
     extern NUMTL **PCDisplayMaterialDeleteQueue;
     extern i32 PCDisplayMaterialDeleteCount;
-    extern NUDISPLAY_LIST_PC *PCDisplayScenes[100];
+    extern NUDISPLAY_LIST_PC *PCDisplayScenes[256];
 
     extern i32 NuWindMaxMatsPC;
     extern i32 edbri_page_on[8];
@@ -10140,6 +10176,98 @@ extern "C" {
     DEBRISPARTICLE_PC *__cdecl GenDebIndexBounceXZ(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
     DEBRISPARTICLE_PC *__cdecl GenDebIndexImprovedRadial(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
     DEBRISPARTICLE_PC *__cdecl GenDebIndexRadialStar(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    i32 __cdecl AddFiniteShotPART(i32, NUVEC *, i32);
+    extern i32 SceneUploadBufferSizePC;
+    extern VARIPTR SceneUploadBufferStartPC, SceneUploadBufferCursorPC, SceneUploadBufferEndPC;
+    extern const char SceneUploadSourcePathPC[57];
+    i32 __cdecl NuGScnUploadGfxDataFromFilePS(VARIPTR *, VARIPTR, NUFILE);
+    void __cdecl DebReAlloc2(DEBRISKEY_PC *);
+    void __cdecl DebReAlloc(DEBRISKEY_PC *, i32);
+    extern NUDISPLAY_LIST_PC PCDynamicDisplayScene;
+#define nudlist_flags (PCDynamicDisplayScene.render_flags)                  // NOLINT(readability-identifier-naming)
+#define nudlist_field_e58 (PCDynamicDisplayScene.unknown_007c)              // NOLINT(readability-identifier-naming)
+#define PCDisplayMaterialRegistry (PCDynamicDisplayScene.display_materials) // NOLINT(readability-identifier-naming)
+#define PCDisplayMaterialCount (PCDynamicDisplayScene.material_count)       // NOLINT(readability-identifier-naming)
+    extern u32 numtl_renderplane;
+    void __cdecl NuMemSet128(void *, u32, i32);
+    void __cdecl NuPortalMaxDepth(NUGSCN *, i32);
+    void __cdecl NuDisplaySceneAdd(NUDISPLAY_LIST_PC *);
+    void __cdecl NuDisplaySceneAddPS(NUDISPLAY_LIST_PC *);
+    extern NUGSPLINE *splineStore;
+    extern i32 numSplinesLoaded;
+    extern const char *EDSPLINE_FILECHECK;
+    extern const char EditorSplineFileCheckTextPc[13];
+    i32 __cdecl LoadEditorSplines(char *, VARIPTR *, VARIPTR *);
+    void __cdecl DebFreeChunksInstantly(i32 *);
+    void __cdecl DebFreeOrphansInstantly(DEBRIS_INFO_PC *);
+    void __cdecl RemoveDebrisEffectFromStack(DEBRISKEY_PC *);
+    void __cdecl DebFreeInstantly(i32 *);
+    typedef struct state_anim_pc_s {
+        u16 count;
+        u16 unknown_0002;
+        f32 *times;
+        u8 *values;
+    } STATE_ANIM_PC;
+    STATIC_ASSERT(sizeof(STATE_ANIM_PC) == 12);
+    STATIC_ASSERT(offsetof(STATE_ANIM_PC, count) == 0);
+    STATIC_ASSERT(offsetof(STATE_ANIM_PC, times) == 4);
+    STATIC_ASSERT(offsetof(STATE_ANIM_PC, values) == 8);
+    /* C extern declarations: */
+    i32 __cdecl StateAnimEvaluate(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame);
+    void __cdecl NuSpecialSetDrawMtx(NUSPECIALHANDLE *special, NUMTX *matrix);
+
+    typedef struct edpp_particle_pc_s {
+        u8 unknown_000[0xc];
+        i32 effect_index;
+        i32 instance_id;
+        u8 unknown_014[0x3d];
+        i8 page;
+        u8 unknown_052[6];
+    } EDPP_PARTICLE_PC;
+    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, effect_index) == 0xc);
+    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, instance_id) == 0x10);
+    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, page) == 0x51);
+    STATIC_ASSERT(sizeof(EDPP_PARTICLE_PC) == 0x58);
+
+    extern i32 part_types_used, part_platimpactcnt;
+    extern NUGSCN *part_scene[32];
+    extern i32 edpp_page_on[8], edpp_instances_used, edpp_types_used;
+    extern EDPP_PARTICLE_PC edpp_ptls[512];
+    void __cdecl InitParts(i32, VARIPTR *, VARIPTR);
+    void __cdecl KillPartsByScene(NUGSCN *);
+    void __cdecl edpartClearPage(i8);
+    void __cdecl edppPtlDestroy(i32);
+    void __cdecl edppPtlShelve(i32);
+    void __cdecl edppStopPage(i8);
+    void __cdecl edppClearPage(i8);
+
+    extern void(__cdecl *NuCutSceneDestroyCharacters)(void *);
+    extern void(__cdecl *NuCutSceneCharacterDestroyData)(void *, void *);
+    extern void(__cdecl *NuCutSceneCharacterEval)(INSTNUGCUTSCENE *, void *, void *, void *, f32);
+    extern void(__cdecl *NuCutSceneCharacterRelease)(void *, void *);
+    extern void(__cdecl *ReleaseLocatorVfxFn)(i32);
+    extern INSTNUGCUTSCENE *active_cutscene_instances;
+    extern u8 CutSceneCameraCTRL;
+    extern NUGSCN *edbits_base_scene;
+    extern i32 edbits_anim_page;
+    extern i32 edanim_particle_mode;
+    extern i32 edanim_nearest;
+    extern i32 edanim_nearest_param_id;
+    extern NUVEC edanim_cam_pos;
+    i32 __cdecl edanimLookupSpecial(char *, NUGSCN *);
+    void __cdecl edanimDetermineNearestAnim(f32);
+
+    i32 __cdecl edanimLoadPage(char *, NUGSCN *);
+    PARTDEBRISSYS *__cdecl InitPartDebris(VARIPTR *, VARIPTR *, i32, i32, char **, i32);
+    i32 __cdecl PARTLookupTypePageOnly(char *, i32);
+    void __cdecl DebFree(i32 *);
+    void __cdecl NuGCutSceneDestroy(void *);
+    void __cdecl instNuGCutSceneDestroy(INSTNUGCUTSCENE *);
+    void __cdecl instNuGCutSceneEnd(INSTNUGCUTSCENE *);
+    void __cdecl instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *);
+    void __cdecl CutScenes_Destroy(CUTSYS_PC *);
+
+    void __cdecl DebrisProcessControlChunks(i32);
 #ifdef __cplusplus
 }
 

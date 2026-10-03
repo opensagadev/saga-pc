@@ -3593,3 +3593,14 @@ allocation extents stay blank. Scene removal/restoration bindings are identified
 but remain unimplemented because their embedded fallback image initializer is
 held; they receive no reconstructed-byte credit. All accepted bodies retain full
 returns, ABI and branches; no previous exact code match is lost.
+
+
+Runtime transfer corrections (2026-10-03): original5ddd10 is the complete238-byte
+private display reset, not a60-byte two-dimensional renderer. Its genuine frame
+caller5dfab0 includes the finalRET and spans188 bytes. Complete disassembly,
+logical signatures and private ESI/EBX differences are documented in scene-next.
+Cutscene private EAX/EDI helper interfaces reproduce actual PC registers and retain
+their original caller group. InitParts64a4b0 independently proves the corrected
+PART emitter extent. Display/terrain global ownership is canonical in rebuilt
+source; aliases retain verified relocation base/addends. Retained full comparisons
+and real-provider runtime fixtures support the execution checkpoint.

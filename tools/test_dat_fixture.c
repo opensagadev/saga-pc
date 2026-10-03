@@ -49,6 +49,7 @@ i32 fpk_err;
 i32 PCThreadCriticalSectionCount_candidate;
 CRITICAL_SECTION PCThreadCriticalSections_candidate[13];
 i32 PCFrameCriticalSectionIndex_candidate;
+u8 PCFrameLoadingYieldEnabledPC;
 
 /* Independent zeroed parser/string state for this synthetic file-I/O executable. */
 NUSTRINGBANK StringBank[3];

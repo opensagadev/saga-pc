@@ -18,8 +18,6 @@ u32 nudlist_alloc_base;
 u32 nudlist_alloc_end;
 u32 nudlist_item_base;
 i32 nudlist_frame_active;
-u32 nudlist_flags;
-u32 nudlist_field_e58;
 u32 nudlist_field_e80;
 u32 nudlist_field_fc8;
 i32 nudlist_field_fc4;
@@ -209,39 +207,6 @@ void __cdecl NuRndrEndScene(void) {
     }
     sceneParameters[sceneParametersCount] = currentScene;
     sceneParametersCount += 1;
-}
-
-void __cdecl NuDisplayListBeginFrame(void) {
-    u32 flags;
-    u32 node_flags;
-    NUSORTPRI **entry;
-    NUSORTPRI *node;
-    i32 index;
-
-    PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
-    flags = nudlist_flags;
-    flags ^= (~flags & 0x8000);
-    nudlist_flags = flags;
-    NuDisplayListRender2D(0);
-    if (nudlist_field_9d8 > 0) {
-        entry = (NUSORTPRI **)PCDisplayScenes;
-        for (index = 0; index < nudlist_field_9d8; index++, entry++) {
-            node = *entry;
-            node_flags = node->flags;
-            node_flags ^= (~node_flags & 0x8000);
-            node->flags = node_flags;
-            NuDisplayListRender2D(0);
-            if (node->sys_next != NULL) {
-                *(u32 *)((u8 *)node->sys_next + 0x44) = 0;
-            }
-        }
-    }
-    for (node = sort_list; node != NULL; node = node->sys_next) {
-        node->flags &= ~0x2;
-    }
-    render_scene_index = 0;
-    RndrStateResetSharedGlobalState();
-    PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
 }
 
 void __cdecl NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count, i32 arg4, VARIPTR *arg5) {

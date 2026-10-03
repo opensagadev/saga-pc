@@ -47,3 +47,12 @@ void __cdecl NuGScnDestroyPS(NUGSCN *scene) {
         }
     }
 }
+
+void __cdecl NuDisplaySceneAddPS(NUDISPLAY_LIST_PC *scene) {
+    i32 i;
+    for (i = 0; i < scene->item_count; ++i) {
+        NUDISPLAYLISTITEM *item = &((NUDISPLAYLISTITEM *)scene->items)[i];
+        if (item->type == 0x82)
+            item->type = 0x82;
+    }
+}

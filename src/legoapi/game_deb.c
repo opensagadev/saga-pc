@@ -3,6 +3,45 @@
 extern void *debris_cutoff_camera_vec;
 extern i32 debris_render_group;
 
+PARTDEBRISSYS *__cdecl InitPartDebris(VARIPTR *buffer, VARIPTR *end, i32 capacity, i32 named_count, char **names,
+                                      i32 page) {
+    PARTDEBRISSYS *system;
+    i32 i, type;
+    buffer->addr = (buffer->addr + 15) & ~(u32)15;
+    system = (PARTDEBRISSYS *)buffer->void_ptr;
+    buffer->addr += sizeof(PARTDEBRISSYS);
+    if (system == NULL)
+        return system;
+    system->entries = NULL;
+    system->capacity = capacity;
+    system->named_count = named_count;
+    buffer->addr = (buffer->addr + 15) & ~(u32)15;
+    system->entries = (PARTDEBRISENTRY *)buffer->void_ptr;
+    buffer->addr += capacity * sizeof(PARTDEBRISENTRY);
+    if (system->entries == NULL)
+        return NULL;
+    memset(system->entries, -1, capacity * sizeof(PARTDEBRISENTRY));
+    i = 0;
+    if (names != NULL) {
+        for (; i < system->named_count; ++i) {
+            NuStrCpy(system->entries[i].name, names[i]);
+            system->entries[i].id = -1;
+            system->entries[i].id = PARTLookupTypePageOnly(system->entries[i].name, page);
+        }
+    }
+    for (type = 0; type < 128 && i < system->capacity; ++type) {
+        system->entries[i].id = -1;
+        if (part_types[type].variant_count > 0) {
+            NuStrCpy(system->entries[i].name, part_types[type].name);
+            system->entries[i].id = PARTLookupTypePageOnly(system->entries[i].name, page);
+            ++i;
+        }
+    }
+    for (; i < system->capacity; ++i)
+        system->entries[i].id = -1;
+    return system;
+}
+
 i32 __cdecl LookupDebrisEffectPageIgnore(char *name, i8 page, i32 ignore) {
     i32 i;
     u8 requested_page = (u8)page;
@@ -175,7 +214,7 @@ __declspec(noinline) i32 __cdecl AddPARTEffect(i32 effect, NUVEC *position) {
     return -1;
 }
 
-i32 __cdecl PartDebrisCreatePart_candidate(i32 effect, NUVEC *position, i32 count) {
+i32 __cdecl AddFiniteShotPART(i32 effect, NUVEC *position, i32 count) {
     i32 index = -1;
     PARTTYPE_LOOKUP_PC *type;
     PART_EMIT_PC *emitter;

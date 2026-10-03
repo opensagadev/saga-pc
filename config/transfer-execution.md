@@ -250,3 +250,59 @@ Dependent scene consumers remain held. Model/GHG private ABI, scene upload/fixup
 remaining particle allocation services and world lifecycle are the next targets.
 Logs/deltas are retained under continuation-lifecycle, with subsystem handoffs.
 The ongoing goal and30-minute heartbeat remain active; commits go directly tomain.
+
+
+### Runtime and loader checkpoint (2026-10-03)
+
+Against ca845ad, the release adds 41 newly compared linker identities and 15,992
+unique PC code bytes. Whole-PC fuzzy coverage rises from8.44939% to8.70113% against
+the unchanged3,471,246-byte text extent. Compared code is486,107 bytes; exact code
+increases by1,348 bytes to58,377. All previous exact code functions are preserved.
+Identity promotions and full-boundary corrections are included in the union delta,
+so renamed functions and old truncated bytes are not counted twice.
+
+The connected release includes particle growth/shrink, immediate/deferred/orphan
+freeing and full control-chunk processing; genuine part initialization and page
+lifecycle; editor spline and animation loading; native scene upload; the complete
+cutscene end/destruction family and object-animation load caller; state animation
+and special transforms; and display scene registration/frame resets/sort insertion.
+Private original helper/caller groups remain coherent. The display reset receives
+ESI plus a stack argument in retail and ESI/EBX in our private rebuilt group; that
+register difference stays nonexact, with both callers retained and ordinary public
+interfaces intact. Some large engine bodies receive zero advisory score; their
+complete verified source and runtime checks remain present without invented credit.
+
+The old60-byte two-dimensional-render stub was a truncated misidentification of
+ResetSceneBeforeFramePC238. Its original caller had a wrongNUSORTPRI interpretation
+and an omitted finalRET: the actual frame entry is188 bytes. The real group replaces
+those implementations. The display registry is a256-pointer access view; its
+original allocation extent remains blank. Four overlapping dynamic-scene scalar
+owners are merged into one144-byte typed view with field aliases. Two old four-byte
+exact-data credits are withdrawn because the whole aggregate extent is unproven.
+The duplicate PCGrassTerrainScene storage is removed in favor of canonical
+CurrentTerrain, so both consumers share actual rebuilt runtime state.
+
+Independent InitParts producer evidence proves a4,320-byte clear at the corrected
+PART emitter base291f7c8, followed by40 effect_id stores at stride6c. Its extent and
+exact-data credit are restored from this evidence; the prior withdrawal remains a
+historical correction. A separate unchanged callback's BSS padding initially broke
+its comparison; isolating its real four-byte definition in a dedicated section
+restores the complete comparison without truncation or changing its initializer.
+
+All required checks pass after repair: source-only link,164 objects/2,081 function
+and3,241 data definitions with resolved mappings; LLVM18 formatting166 files/tidy164
+units;665 tests with three expected skips. The isolated DAT fixture now declares
+the real loading-yield state required after its provider moved into nuthread.c.
+The full suite and that parser fixture were rerun. The final data repair also passes
+scoped project formatting/tidy, actual compilation and complete retail comparison.
+Native fixtures exercise allocator limits/growth/expiry/control recycling and
+collision, part/page cleanup, state-animation boundaries/NaNs, and display bitsets,
+first/next frame buffers, sorted insertion and real critical sections. Full gameplay
+and real resource loading remain unverified; entry scaffolding is still incomplete.
+
+Remaining source gaps include embedded-image-dependent scene removal, material/
+shader/vertex declaration cache closure, GHG/model loads, broad terrain/player/world
+families and level-script callbacks. The next wave is preparing substantial player,
+terrain and world/area cohorts plus genuine diagnostics. Evidence is retained in
+continuation-runtime and the engine-next/pages, parser/lifecycle-next, scene-next,
+world/cutscene and platform fixture handoffs. The goal remains active indefinitely.

@@ -540,3 +540,13 @@ void __cdecl LoadBridgeFile(WORLDINFO *world) {
         world->page_bridge = edbriLoadPage(path, world->current_gscn);
     }
 }
+
+void __cdecl WorldInfo_LoadObjectAnimFile(WORLDINFO *world) {
+    if (world->page_anim == -1) {
+        char path[256];
+        sprintf(path, WorldObjectAnimFormat, world->config_file);
+        if (NuFileExists(path)) {
+            world->page_anim = edanimLoadPage(path, world->current_gscn);
+        }
+    }
+}

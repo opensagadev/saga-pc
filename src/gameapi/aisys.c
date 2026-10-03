@@ -8548,7 +8548,7 @@ i32 __cdecl Action_AddPartDebris(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
         }
         if (type != -1) {
             NuVecAdd(&position, &position, &offset);
-            PartDebrisCreatePart_candidate(type, &position, 1);
+            AddFiniteShotPART(type, &position, 1);
         }
     }
     return 1;

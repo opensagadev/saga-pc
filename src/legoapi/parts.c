@@ -1,5 +1,91 @@
 #include "saga.h"
 
+void __cdecl InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
+    i32 i, j;
+    MAXPARTS = count;
+    buffer->addr = (buffer->addr + 15) & ~(u32)15;
+    Part = (PART_PC *)buffer->void_ptr;
+    buffer->addr += MAXPARTS * sizeof(PART_PC);
+    if (Part != NULL)
+        memset(Part, 0, MAXPARTS * sizeof(PART_PC));
+    part_slot_cursor = 0;
+    memset(part_types, 0, sizeof(part_types));
+    for (i = 0; i < 128; ++i) {
+        for (j = 0; j < 8; ++j) {
+            part_types[i].effect_ids[j] = -1;
+            part_types[i].effect_pages[j] = -1;
+        }
+    }
+    part_types_used = 0;
+    memset(part_emits, 0, sizeof(part_emits));
+    for (i = 0; i < 40; ++i)
+        part_emits[i].effect_id = -1;
+    part_emits_used = 0;
+    memset(part_page_used, 0, sizeof(part_page_used));
+    memset(part_page_on, 0, sizeof(part_page_on));
+    memset(part_scene, 0, sizeof(part_scene));
+    memset(part_scene_pageid, -1, sizeof(part_scene_pageid));
+    part_platimpactcnt = 0;
+}
+
+__declspec(noinline) void __cdecl KillPartsByScene(NUGSCN *scene) {
+    PART_PC *part = Part;
+    i32 index;
+    for (index = 0; index < MAXPARTS; ++index, ++part) {
+        if ((part->active & 1) != 0 && part->source_special != NULL && part->special.scene == scene) {
+            part->active &= ~1;
+            memset(&part->special, 0, sizeof(part->special));
+            part->source_special = NULL;
+        }
+    }
+}
+
+void __cdecl edpartClearPage(i8 page) {
+    i32 index;
+    NuThreadDisableThreadSwap();
+    if (part_page_on[page] != 0)
+        part_page_on[page] = 0;
+    for (index = 0; index < 128; ++index) {
+        if (part_types[index].page == page && part_types[index].name[0] != 0) {
+            part_types[index].name[0] = 0;
+            part_types[index].effect_ids[0] = -1;
+            --part_types_used;
+        }
+    }
+    for (index = 0; index < 40; ++index) {
+        if (part_emits[index].page == page && part_emits[index].effect_id != -1) {
+            part_emits[index].effect_id = -1;
+            --part_emits_used;
+        }
+    }
+    for (index = 0; index < 32; ++index) {
+        if (part_scene_pageid[index] == page) {
+            KillPartsByScene(part_scene[index]);
+            part_scene_pageid[index] = -1;
+            part_scene[index] = NULL;
+        }
+    }
+    NuThreadEnableThreadSwap();
+    part_page_used[page] = 0;
+}
+
+__declspec(noinline) i32 __cdecl PARTLookupTypePageOnly(char *name, i32 page) {
+    i32 i;
+    if (name == NULL || name[0] == 0)
+        return -1;
+    if ((u32)(page - 1) <= 6) {
+        for (i = 0; i < 128; ++i) {
+            if (part_types[i].page == page && NuStrNICmp(name, part_types[i].name, 16) == 0)
+                return i;
+        }
+    }
+    for (i = 0; i < 128; ++i) {
+        if (part_types[i].page == 0 && NuStrNCmp(name, part_types[i].name, 16) == 0)
+            return i;
+    }
+    return -1;
+}
+
 #include <string.h>
 
 void __cdecl KillPart(PART_PC *part, i32 reason) {
@@ -272,7 +358,7 @@ void __cdecl AddPartDebris(PARTDEBRISSYS *sys, i32 index, NUVEC *position) {
     if (entry->id == -1) {
         return;
     }
-    PartDebrisCreatePart_candidate(entry->id, position, 1);
+    AddFiniteShotPART(entry->id, position, 1);
 }
 
 void __cdecl PartStop_Flickerer(PART_PC *part) {

@@ -84,3 +84,7 @@ i16 __cdecl NuPortalWhichRoom(NUGSCN *scene, NUVEC *position) {
     }
     return -1;
 }
+
+void __cdecl NuPortalMaxDepth(NUGSCN *scene, i32 depth) {
+    scene->portal_depth = depth;
+}

@@ -38,3 +38,7 @@ void __cdecl PCFrameCriticalSectionEnter_candidate(void) {
 void __cdecl PCFrameCriticalSectionLeave_candidate(void) {
     PCThreadCriticalSectionLeave_candidate(PCFrameCriticalSectionIndex_candidate);
 }
+
+i32 __cdecl PCFrameLoadingYieldEnabled(void) {
+    return PCFrameLoadingYieldEnabledPC;
+}

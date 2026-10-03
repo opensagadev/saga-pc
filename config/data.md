@@ -1072,3 +1072,21 @@ proof exists. The independently checked zero source view remains4,320 bytes.
 The original embedded fallback image is held rather than copied into the repo.
 See the execution record for actual source checks, producer layout corrections
 and the exact-data credit change.
+
+
+### Runtime continuation data checkpoint (2026-10-03)
+
+The shared-data cohort now contains374 checked definitions:219 known extents cover
+133,487 unique exact original bytes;155 unknown extents cover7,958 bounded source
+bytes without allocation credit. Five duplicate owners were removed, including
+terrain state and overlapping display fields. New particle page arrays retain
+actual producer-proven128/32/45,056-byte extents. The display registry's256-pointer
+view and144-byte dynamic scene have blank original extents. Two legacy display
+scalar credits are intentionally retired after ownership consolidation.
+
+The separate legacy emitter array's corrected291f7c8/4,320-byte extent is now proven
+by InitParts' explicit clear and40-record loop and compares exactly. Its prior
+withdrawal was justified by the evidence available at that checkpoint. The separate
+canonical CurrentTerrain four-byte owner and unchanged GizObstacle callback remain
+exact; the latter uses a dedicated BSS section to prevent compiler padding from
+becoming an apparent eight-byte definition. No data comparison is truncated.

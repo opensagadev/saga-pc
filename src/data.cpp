@@ -566,7 +566,9 @@ extern "C" {
     i32(__cdecl *Bolt_HitPlatFn)(BOLT *bolt);
     i32(__cdecl *Bolt_HitCustomFn)(void *bolt, void *points);
     void(__cdecl *GameBlowUpBlownUpFn)(void *blowup);
+#pragma bss_seg(".bss$GizObstacle_SetDefaultSFXFn")
     void(__cdecl *GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
+#pragma bss_seg()
     NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
     LEVEL_PROGRESS *LevelProgressData;
     LEVELSPLINE_PC *LevSplList;
@@ -576,8 +578,6 @@ extern "C" {
     u32 nudlist_alloc_end;
     u32 nudlist_item_base;
     i32 nudlist_frame_active;
-    u32 nudlist_flags;
-    u32 nudlist_field_e58;
     u32 nudlist_field_e80;
     u32 nudlist_field_fc8;
     i32 nudlist_field_fc4;
@@ -5482,9 +5482,6 @@ extern "C" {
 #pragma bss_seg(".bss$ShadNorm")
     NUVEC ShadNorm;
 #pragma bss_seg()
-#pragma bss_seg(".bss$PCGrassTerrainScene")
-    void *PCGrassTerrainScene;
-#pragma bss_seg()
 #pragma bss_seg(".bss$rtl_dynamic_pool")
     NULSTHDR *rtl_dynamic_pool;
 #pragma bss_seg()
@@ -5765,12 +5762,6 @@ extern "C" {
 #pragma const_seg(".rdata$NuTextureAnimationSourcePathPC")
     extern const char NuTextureAnimationSourcePathPC[50] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c";
 #pragma const_seg()
-#pragma bss_seg(".bss$PCDisplayMaterialRegistry")
-    NUMTL **PCDisplayMaterialRegistry;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDisplayMaterialCount")
-    u32 PCDisplayMaterialCount;
-#pragma bss_seg()
 #pragma bss_seg(".bss$PCDisplayMaterialDeleteQueue")
     NUMTL **PCDisplayMaterialDeleteQueue;
 #pragma bss_seg()
@@ -5778,12 +5769,99 @@ extern "C" {
     i32 PCDisplayMaterialDeleteCount;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PCDisplayScenes")
-    NUDISPLAY_LIST_PC *PCDisplayScenes[100];
+    NUDISPLAY_LIST_PC *PCDisplayScenes[256];
 #pragma bss_seg()
 #pragma bss_seg(".bss$NuWindMaxMatsPC")
     i32 NuWindMaxMatsPC;
 #pragma bss_seg()
 #pragma bss_seg(".bss$edbri_page_on")
     i32 edbri_page_on[8];
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$PCDynamicDisplayScene")
+    NUDISPLAY_LIST_PC PCDynamicDisplayScene;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$splineStore")
+    NUGSPLINE *splineStore;
+#pragma bss_seg()
+#pragma bss_seg(".bss$numSplinesLoaded")
+    i32 numSplinesLoaded;
+#pragma bss_seg()
+#pragma const_seg(".rdata$EditorSplineFileCheckTextPc")
+    extern const char EditorSplineFileCheckTextPc[13] = "EDSPLINE v. ";
+#pragma const_seg()
+#pragma data_seg(".data$EDSPLINE_FILECHECK")
+    const char *EDSPLINE_FILECHECK = EditorSplineFileCheckTextPc;
+#pragma data_seg()
+#pragma bss_seg(".bss$NuCutSceneDestroyCharacters")
+    void(__cdecl *NuCutSceneDestroyCharacters)(void *);
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuCutSceneCharacterDestroyData")
+    void(__cdecl *NuCutSceneCharacterDestroyData)(void *, void *);
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuCutSceneCharacterEval")
+    void(__cdecl *NuCutSceneCharacterEval)(INSTNUGCUTSCENE *, void *, void *, void *, f32);
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuCutSceneCharacterRelease")
+    void(__cdecl *NuCutSceneCharacterRelease)(void *, void *);
+#pragma bss_seg()
+#pragma bss_seg(".bss$ReleaseLocatorVfxFn")
+    void(__cdecl *ReleaseLocatorVfxFn)(i32);
+#pragma bss_seg()
+#pragma bss_seg(".bss$active_cutscene_instances")
+    INSTNUGCUTSCENE *active_cutscene_instances;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CutSceneCameraCTRL")
+    u8 CutSceneCameraCTRL;
+#pragma bss_seg()
+#pragma bss_seg(".bss$part_types_used")
+    i32 part_types_used;
+#pragma bss_seg()
+#pragma bss_seg(".bss$part_platimpactcnt")
+    i32 part_platimpactcnt;
+#pragma bss_seg()
+#pragma bss_seg(".bss$part_scene")
+    NUGSCN *part_scene[32];
+#pragma bss_seg()
+#pragma bss_seg(".bss$edpp_page_on")
+    i32 edpp_page_on[8];
+#pragma bss_seg()
+#pragma bss_seg(".bss$edpp_instances_used")
+    i32 edpp_instances_used;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edpp_types_used")
+    i32 edpp_types_used;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edpp_ptls")
+    EDPP_PARTICLE_PC edpp_ptls[512];
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edbits_anim_page")
+    i32 edbits_anim_page;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edanim_particle_mode")
+    i32 edanim_particle_mode;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edanim_nearest")
+    i32 edanim_nearest;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edanim_nearest_param_id")
+    i32 edanim_nearest_param_id;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edanim_cam_pos")
+    NUVEC edanim_cam_pos;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$numtl_renderplane")
+    u32 numtl_renderplane;
 #pragma bss_seg()
 }
