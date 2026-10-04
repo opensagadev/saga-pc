@@ -256,3 +256,8 @@ void __cdecl NuDisplayListDrawPrimitive2DPc(void *data) {
             break;
     }
 }
+
+/* Native603960 is an actual empty cross-TU operation, also empty in source. */
+void __cdecl DisplayGenerateTransformsNoOpPc(NUDISPLAY_LIST_PC *scene) {
+    (void)scene;
+}

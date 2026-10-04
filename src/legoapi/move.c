@@ -6146,3 +6146,14 @@ void __cdecl Move_DEFAULT(GAMEOBJECT *object) {
     if ((object->flags_e20 & 0x20) == 0)
         ApplyGravity(object, NULL, 0.0f, 0.0f, NULL);
 }
+
+void __cdecl SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unused_priority, f32 unused_time,
+                                f32 unused_minimum_delay, f32 unused_maximum_delay) {
+    i32 joint;
+    NUVEC *position;
+    if (target != NULL && object != NULL && target->character_data != NULL) {
+        joint = target->character_data->game_character->head_locator;
+        position = joint == -1 ? &target->collision_position : (NUVEC *)&target->locator_matrices[joint].m30;
+        SetHeadTarget(object, position, 2, 1.0f, 0.0f, 0.0f);
+    }
+}

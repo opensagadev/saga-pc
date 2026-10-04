@@ -627,3 +627,13 @@ i32 __cdecl ActionFromQuiet(i32 quiet_index) {
     }
     return -1;
 }
+
+i32 __cdecl GetSfxIdN(char *name, i32 length) {
+    i32 index;
+    for (index = 0; index < 1600; ++index) {
+        if (NuStrNICmp(name, SfxInfo[index].name, length) == 0)
+            return index;
+    }
+    TerrainDiagnosticNoOpPC(name);
+    return -1;
+}

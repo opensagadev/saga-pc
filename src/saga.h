@@ -6122,7 +6122,10 @@ STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, pending) == 0x354);
 STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, count) == 0x374);
 
 typedef struct nurndrlibscene_s {
-    i32 scene_id;
+    union {
+        i32 scene_id;
+        f32 visibility_alternate_width;
+    };
     u32 clear_flags;
     u32 clear_flags_08;
     i32 bg_colour;
@@ -6149,7 +6152,14 @@ typedef struct nurndrlibscene_s {
     u8 opaque_c8_e0[0x18];
     u32 unknown_e0;
     u32 unknown_e4;
-    u8 opaque_e8_174[0x8c];
+    union {
+        u8 opaque_e8_174[0x8c];
+        struct {
+            u8 visibility_unknown_e8_120[0x38];
+            u8 visibility_occlusion_output;
+            u8 visibility_unknown_121_174[0x53];
+        };
+    };
     u32 unknown_174;
     u32 unknown_178;
     u8 opaque_17c_188[0xc];
@@ -6159,6 +6169,8 @@ typedef struct nurndrlibscene_s {
 } NURNDRLIBSCENE;
 STATIC_ASSERT(sizeof(NURNDRLIBSCENE) == 0x218);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, scene_id) == 0x00);
+STATIC_ASSERT(offsetof(NURNDRLIBSCENE, visibility_alternate_width) == 0);
+STATIC_ASSERT(offsetof(NURNDRLIBSCENE, visibility_occlusion_output) == 0x120);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, clear_flags_08) == 0x08);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, bg_colour) == 0x0c);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, clear_alpha) == 0x10);
@@ -13861,6 +13873,100 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
 
     void __cdecl WorldInfo_Init(WORLDINFO *);
     void __cdecl NuRndrInitWorld(void);
+
+    /* Qualified CPU visibility/tree views; original owning extents remain unknown. */
+    typedef struct visibility_result_reader_pc_s {
+        i32 instance_count;
+        u8 unknown_04[4];
+        NUGSCN *source_scene;
+        void *occlusion_data;
+        u8 unknown_10[4];
+        void *instance_tree;
+        void *portal_marker;
+        u8 *portal_bits;
+        void *context;
+        u8 *instance_tree_bits;
+        u32 flags;
+    } VISIBILITY_RESULT_READER_PC;
+    STATIC_ASSERT(sizeof(VISIBILITY_RESULT_READER_PC) == 0x2c);
+    STATIC_ASSERT(offsetof(VISIBILITY_RESULT_READER_PC, source_scene) == 8);
+    STATIC_ASSERT(offsetof(VISIBILITY_RESULT_READER_PC, occlusion_data) == 0xc);
+    STATIC_ASSERT(offsetof(VISIBILITY_RESULT_READER_PC, instance_tree) == 0x14);
+    STATIC_ASSERT(offsetof(VISIBILITY_RESULT_READER_PC, context) == 0x20);
+    STATIC_ASSERT(offsetof(VISIBILITY_RESULT_READER_PC, instance_tree_bits) == 0x24);
+    STATIC_ASSERT(offsetof(VISIBILITY_RESULT_READER_PC, flags) == 0x28);
+    extern i32 VisibilityEvaluateEnabledPc;
+    extern i32 VisibilityOcclusionEnabledPc;
+    extern i32 VisibilityInstanceTreeEnabledPc;
+    extern i32 VisibilityCameraLockPc;
+    extern i32 VisibilityLoadedOcclusionPc;
+    extern i32 VisibilityUsingOcclusionPc;
+    extern i32 VisibilityCurrentViewBoxPc;
+    extern i32 VisibilityTreeInitialisedPc;
+    extern VISIBILITY_RESULT_READER_PC *VisibilityCurrentResultPc;
+    extern NUMTX VisibilityZeroMatrixTemplatePc;
+    extern NUMTX VisibilityPrimaryPlaneMatrixPc;
+    extern NUMTX VisibilityAlternatePlaneMatrixPc;
+    extern NUMTX VisibilityPrimaryWorldMatrixPc;
+    extern NUMTX VisibilityAlternateWorldMatrixPc;
+    extern NUMTX VisibilityPrimaryAbsoluteMatrixPc;
+    extern NUMTX VisibilityAlternateAbsoluteMatrixPc;
+    extern NUPLANE VisibilityDepthPlanePc;
+    extern NUPLANE VisibilityAbsoluteDepthPlanePc;
+    extern NURNDRLIBSCENE sceneParameters[32];
+/* Same-size existing sceneParameters[16] union fields; no new physical backing. */
+#define VISIBILITY_ALTERNATE_WIDTH_PC (sceneParameters[16].visibility_alternate_width)
+    extern f32 VisibilityAlternateHeightPc;
+/* One existing byte only; selected well-formed RLE output_size <= 1. */
+#define VISIBILITY_OCCLUSION_OUTPUT_PC (&sceneParameters[16].visibility_occlusion_output)
+    void __cdecl NuCameraLock(i32);
+    void __cdecl NuVisiOcclusion(VISIBILITY_RESULT_READER_PC *);
+    VISIBILITY_RESULT_READER_PC *__cdecl NuVisiEvaluate(NUGSCN *, void *);
+    void __cdecl NuVisiInstTree(VISIBILITY_RESULT_READER_PC *, NUGSCN *);
+
+    void __cdecl PortalDoors_Configure(WORLDINFO *, char *);
+    void __cdecl SpecialMiniKits_Configure(WORLDINFO *, char *);
+
+    typedef struct char_category_record_pc_s {
+        char *name;
+        u32 model_flags;
+        u32 game_flags;
+    } CHAR_CATEGORY_RECORD_PC;
+    STATIC_ASSERT(sizeof(CHAR_CATEGORY_RECORD_PC) == 12);
+    STATIC_ASSERT(offsetof(CHAR_CATEGORY_RECORD_PC, name) == 0);
+    STATIC_ASSERT(offsetof(CHAR_CATEGORY_RECORD_PC, model_flags) == 4);
+    STATIC_ASSERT(offsetof(CHAR_CATEGORY_RECORD_PC, game_flags) == 8);
+    extern u8 grapple_attach_frames;
+    extern i32 CHARCATEGORYCOUNT;
+    extern CHAR_CATEGORY_RECORD_PC *CharCategory;
+
+    void __cdecl SetBallooningHeight(GAMEOBJECT *, f32);
+    void __cdecl GameObjectSetCanUse(GAMEOBJECT *, void *, u8, u8, f32);
+    i32 __cdecl Suit_GetIndex(SUIT_LAYERS_PC *);
+    void __cdecl SetObjAsHeadTarget(GAMEOBJECT *, GAMEOBJECT *, i8, f32, f32, f32);
+    i32 __cdecl CharCategory_IsCategory(GAMEOBJECT *, i32);
+
+    extern i16 GrabMachineIdPc, GrabMagnetIdPc, RobotBaseIdPc;
+    void __cdecl Grabber_Configure(WORLDINFO *, char *);
+    void __cdecl GizForceSFX_Configure(WORLDINFO *, char *);
+    void __cdecl Doors_Configure(WORLDINFO *, char *);
+
+    void __cdecl NuDisplaySceneRndr(NUDISPLAY_LIST_PC *);
+    /* Actual empty separate original source operation; no invented provider. */
+    void __cdecl DisplayGenerateTransformsNoOpPc(NUDISPLAY_LIST_PC *);
+    extern i32 DisplaySceneRenderDisabledPc;
+    extern i32 DisplaySceneSpecialsDisabledPc;
+    extern i32 VisibilityPortalFilterEnabledPc;
+    /* Static DisplayClipFallbackPC logical source signature remains local:
+     * native/private incoming ESI scene and one caller-clean stack visibility word.
+     * Blank CSV ctype prevents an external plain two-stack-argument call. */
+
+    u32 __cdecl EdFileReadUnsignedInt(void);
+    void __cdecl edpartScaleType(i32, f32);
+    void __cdecl PartTimeSlip(void);
+    i32 __cdecl CreateScaledPARTEffect(i32, f32);
+    void __cdecl PartCleanupTypes(void);
+    i32 __cdecl GetSfxIdN(char *, i32);
 
 #ifdef __cplusplus
 }

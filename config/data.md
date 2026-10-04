@@ -1696,3 +1696,18 @@ exact copies. Exact data union gains 277 bytes to 631,720; duplicate copy counts
 are not coverage. No shared backing, inferred original extent or allocation
 credit is added. Next scene width/output views reuse record16 fields of the
 existing 0x218-stride scene owner without growing its working allocation.
+
+
+Scene/configuration checkpoint verifies all3,483 complete shared regions and
+1,797 scoped proofs against actual normal output. All3,455 old regions/1,769
+scopes and the inherited CRC16 constructor remain unchanged. The28 added views
+are547 bytes with unknown original extents and zero allocation credit. Existing
+sceneParameters32/17,152B/stride0x218 retains its complete owner; named width and
+output views use record16 without a second backing definition. All4,600 old
+exact physical copies and all four typed members/two exact/four bytes survive.
+All109 new complete initializer comparisons pass:69 known676B and40 unknown859B,
+including28 shared547B plus12 original private/unknown literal312B. Current
+exact physical copies4,669; unique exact data union632,255 adds535B. Unknown
+initializer equality does not establish original allocation or exact coverage.
+Next data proposals are finite wider Parts and interaction views; Image/cache
+at0x966298 remains held for alias/capacity evidence.

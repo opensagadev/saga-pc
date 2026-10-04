@@ -11338,3 +11338,102 @@ extern "C" {
     i16 BoltDeactivatedActionPc = -1;
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$VisibilityEvaluateEnabledPc")
+    i32 VisibilityEvaluateEnabledPc = 1;
+#pragma data_seg()
+#pragma data_seg(".data$VisibilityOcclusionEnabledPc")
+    i32 VisibilityOcclusionEnabledPc = 1;
+#pragma data_seg()
+#pragma data_seg(".data$VisibilityInstanceTreeEnabledPc")
+    i32 VisibilityInstanceTreeEnabledPc = 1;
+#pragma data_seg()
+#pragma bss_seg(".bss$VisibilityCameraLockPc")
+    i32 VisibilityCameraLockPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VisibilityLoadedOcclusionPc")
+    i32 VisibilityLoadedOcclusionPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VisibilityUsingOcclusionPc")
+    i32 VisibilityUsingOcclusionPc;
+#pragma bss_seg()
+#pragma data_seg(".data$VisibilityCurrentViewBoxPc")
+    i32 VisibilityCurrentViewBoxPc = -1;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$VisibilityTreeInitialisedPc")
+    i32 VisibilityTreeInitialisedPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VisibilityCurrentResultPc")
+    VISIBILITY_RESULT_READER_PC *VisibilityCurrentResultPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VisibilityZeroMatrixTemplatePc")
+    NUMTX VisibilityZeroMatrixTemplatePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VisibilityPrimaryPlaneMatrixPc")
+    NUMTX VisibilityPrimaryPlaneMatrixPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VisibilityAlternatePlaneMatrixPc")
+    NUMTX VisibilityAlternatePlaneMatrixPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VisibilityPrimaryWorldMatrixPc")
+    NUMTX VisibilityPrimaryWorldMatrixPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VisibilityAlternateWorldMatrixPc")
+    NUMTX VisibilityAlternateWorldMatrixPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VisibilityPrimaryAbsoluteMatrixPc")
+    NUMTX VisibilityPrimaryAbsoluteMatrixPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VisibilityAlternateAbsoluteMatrixPc")
+    NUMTX VisibilityAlternateAbsoluteMatrixPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VisibilityDepthPlanePc")
+    NUPLANE VisibilityDepthPlanePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VisibilityAbsoluteDepthPlanePc")
+    NUPLANE VisibilityAbsoluteDepthPlanePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VisibilityAlternateHeightPc")
+    f32 VisibilityAlternateHeightPc;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$grapple_attach_frames")
+    u8 grapple_attach_frames = 5;
+#pragma data_seg()
+#pragma bss_seg(".bss$CHARCATEGORYCOUNT")
+    i32 CHARCATEGORYCOUNT;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CharCategory")
+    CHAR_CATEGORY_RECORD_PC *CharCategory;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$GrabMachineIdPc")
+    i16 GrabMachineIdPc = -1;
+#pragma data_seg()
+#pragma data_seg(".data$GrabMagnetIdPc")
+    i16 GrabMagnetIdPc = -1;
+#pragma data_seg()
+#pragma data_seg(".data$RobotBaseIdPc")
+    i16 RobotBaseIdPc = -1;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$DisplaySceneRenderDisabledPc")
+    i32 DisplaySceneRenderDisabledPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$DisplaySceneSpecialsDisabledPc")
+    i32 DisplaySceneSpecialsDisabledPc;
+#pragma bss_seg()
+#pragma data_seg(".data$VisibilityPortalFilterEnabledPc")
+    i32 VisibilityPortalFilterEnabledPc = 1;
+#pragma data_seg()
+}

@@ -1384,3 +1384,157 @@ extern "C" void __cdecl NuDisplayListExecute(NUDISPLAYLISTITEM *item, void(__cde
         }
     }
 }
+
+union PC_CLIP_SCENE_VIEW {
+    NUDISPLAY_LIST_PC common;
+    struct {
+        u8 unknown_00[0xc];
+        f32 *fade_ranges;
+        u8 unknown_10[0x1c];
+        f32 *far_clip_ranges;
+    };
+};
+STATIC_ASSERT(sizeof(PC_CLIP_SCENE_VIEW) == sizeof(NUDISPLAY_LIST_PC));
+STATIC_ASSERT(offsetof(PC_CLIP_SCENE_VIEW, fade_ranges) == 0xc);
+STATIC_ASSERT(offsetof(PC_CLIP_SCENE_VIEW, far_clip_ranges) == 0x2c);
+
+static void DisplayClipFallbackPC(NUDISPLAY_LIST_PC *scene, VISIBILITY_RESULT_READER_PC *visibility) {
+    PC_CLIP_SCENE_VIEW *view = reinterpret_cast<PC_CLIP_SCENE_VIEW *>(scene);
+    i32 clip_index = 0;
+    i32 instance_index = 0;
+    scene->alpha_values = NULL;
+    if (view->fade_ranges != NULL) {
+        NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
+        NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 3) & ~3u;
+        scene->alpha_values = reinterpret_cast<f32 *>(NuDisplayListStreamCursor->addr);
+        NuDisplayListStreamCursor->addr += scene->clip_count * sizeof(f32);
+    }
+    while (clip_index < scene->clip_count) {
+        i32 visible = 1;
+        if (visibility != NULL && visibility->instance_tree_bits != NULL)
+            visible = (visibility->instance_tree_bits[instance_index >> 3] >> (instance_index & 7)) & 1;
+        i32 flags = static_cast<i8>(scene->visibility_flags[instance_index]);
+        if (visibility->portal_marker != NULL && PCPortalsEnabled != 0 && (flags & 8) == 0)
+            visible = (visibility->portal_bits[instance_index >> 3] >> (instance_index & 7)) & 1;
+        if (((flags & 8) != 0 && visibility->portal_marker != NULL && PCPortalsEnabled != 0 || visible == 1) &&
+            (flags & 1) != 0) {
+            NUVEC4 *center = &scene->clip_bounds[instance_index * 2];
+            NUVEC4 *extent = center + 1;
+            f32 x = global_camera.mtx.m30 - center->x;
+            f32 y = global_camera.mtx.m31 - center->y;
+            f32 z = global_camera.mtx.m32 - center->z;
+            f32 distance = (x * x + y * y) + z * z;
+            f32 *lod = &scene->fade_levels[clip_index];
+            if (*lod != 0.0f) {
+                while (distance < *lod) {
+                    ++lod;
+                    ++clip_index;
+                }
+            }
+            f32 far_clip = view->far_clip_ranges[clip_index];
+            i32 fades = view->fade_ranges != NULL && (flags & 0x40) != 0;
+            if (fades != 0 && view->fade_ranges[instance_index * 2] < view->fade_ranges[instance_index * 2 + 1])
+                far_clip = view->fade_ranges[instance_index * 2 + 1];
+            i32 result = NuCameraClipTestExtentsAxisAligned(reinterpret_cast<NUVEC *>(center),
+                                                            reinterpret_cast<NUVEC *>(extent), far_clip);
+            if (result != 0 && NuOcclusionManagerIsEnabled() != 0) {
+                NUVEC minimum = {center->x - extent->x, center->y - extent->y, center->z - extent->z};
+                NUVEC maximum = {center->x + extent->x, center->y + extent->y, center->z + extent->z};
+                if (reinterpret_cast<OcclusionManager *>(&g_OcclusionManager)->IsOccludedOBB(&minimum, &maximum, NULL))
+                    result = 0;
+            }
+            if (result != 0) {
+                if (scene->alpha_values != NULL) {
+                    scene->alpha_values[clip_index] = 1.0f;
+                    if (fades != 0)
+                        scene->alpha_values[clip_index] = DisplaySceneDistanceFadePC(
+                            distance, view->fade_ranges[instance_index * 2], view->fade_ranges[instance_index * 2 + 1]);
+                }
+                PC_DISPLAY_CLIP_OBJECT_PC *clip = &scene->clip_objects[clip_index];
+                u32 buffer = (scene->render_flags >> 15) & 1;
+                for (i32 material = 0; material < clip->material_count; ++material) {
+                    u32 index = clip->material_ids[material];
+                    scene->material_used[buffer][index >> 3] |= static_cast<u8>(1u << (index & 7));
+                }
+                scene->clip_used[buffer][clip_index >> 2] |= static_cast<u8>(result << ((clip_index & 3) * 2));
+            }
+        }
+        while (scene->fade_levels[clip_index] != 0.0f)
+            ++clip_index;
+        ++clip_index;
+        ++instance_index;
+    }
+}
+
+extern "C" {
+    VISIBILITY_RESULT_READER_PC *__cdecl NuVisiEvaluate(NUGSCN *, void *);
+    void __cdecl DisplayGenerateTransformsNoOpPc(NUDISPLAY_LIST_PC *);
+    extern i32 DisplaySceneRenderDisabledPc;
+    extern i32 DisplaySceneSpecialsDisabledPc;
+    extern i32 VisibilityPortalFilterEnabledPc;
+}
+
+typedef union visibility_display_special_reader_pc_u {
+    NUDISPLAY_SPECIAL_PC common;
+    struct {
+        u8 unknown_00[0x40];
+        NUMTX draw_matrix;
+        u8 unknown_80[0x44];
+        NUMTX *draw_matrix_override;
+    };
+} VISIBILITY_DISPLAY_SPECIAL_READER_PC;
+STATIC_ASSERT(sizeof(VISIBILITY_DISPLAY_SPECIAL_READER_PC) == 0xd0);
+STATIC_ASSERT(offsetof(VISIBILITY_DISPLAY_SPECIAL_READER_PC, draw_matrix) == 0x40);
+STATIC_ASSERT(offsetof(VISIBILITY_DISPLAY_SPECIAL_READER_PC, draw_matrix_override) == 0xc4);
+
+extern "C" void __cdecl NuDisplaySceneRndr(NUDISPLAY_LIST_PC *scene) {
+    u8 visibility_context[0x2800];
+    NUGSCN temporary_scene;
+    VISIBILITY_RESULT_READER_PC *visibility;
+    NUGSCN *gscene;
+    NUSPECIALHANDLE handle;
+    i32 portal_filter;
+    if (DisplaySceneRenderDisabledPc != 0)
+        return;
+    if ((scene->render_flags & 4) != 0) {
+        /* Genuine mapped RET diagnostic; native caller pushes no context. */
+        reinterpret_cast<void(__cdecl *)(void)>(PCAnimationLoadFailureNoOp)();
+        return;
+    }
+    RndrStateCopyGlobalState(scene->local_state);
+    visibility = NuVisiEvaluate(scene->gscene, visibility_context);
+    if (PCDisplayClipSet != NULL) {
+        if (visibility == NULL || (visibility->flags & 1) == 0)
+            DisplayClipMaterialsPC(scene);
+    } else {
+        if (visibility == NULL || (visibility->flags & 1) == 0)
+            DisplayClipFallbackPC(scene, visibility);
+    }
+    if (scene->clip_count != 0)
+        scene->render_flags |= 4;
+    DisplayGenerateTransformsNoOpPc(scene);
+    gscene = scene->gscene;
+    if (gscene == NULL) {
+        /* Native writes only the required display_list slot in this local. */
+        temporary_scene.display_list = scene;
+        gscene = &temporary_scene;
+    }
+    portal_filter = VisibilityPortalFilterEnabledPc != 0 && visibility->portal_marker != NULL && PCPortalsEnabled != 0;
+    if ((scene->instance_visibility_enabled & 1) != 0 || DisplaySceneSpecialsDisabledPc != 0)
+        return;
+    handle.scene = gscene;
+    for (i32 i = 0; i < scene->special_count; ++i) {
+        VISIBILITY_DISPLAY_SPECIAL_READER_PC *special =
+            reinterpret_cast<VISIBILITY_DISPLAY_SPECIAL_READER_PC *>(&scene->specials[i]);
+        if ((special->common.flags & 2) == 0)
+            continue;
+        if (portal_filter != 0 && (scene->visibility_flags[special->common.instance_ix] & 8) == 0 &&
+            ((visibility->portal_bits[special->common.instance_ix >> 3] >> (special->common.instance_ix & 7)) & 1) == 0)
+            continue;
+        handle.display_special = reinterpret_cast<NUMTX *>(special);
+        NUMTX *matrix = special->draw_matrix_override;
+        if (matrix == NULL || matrix == reinterpret_cast<NUMTX *>(-1))
+            matrix = &special->draw_matrix;
+        NuDisplayListRndrSpecial(&handle, matrix, 0, NULL, NULL);
+    }
+}

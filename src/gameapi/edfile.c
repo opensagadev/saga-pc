@@ -254,3 +254,26 @@ void __cdecl EdFileSwapEndianess32(void *value) {
     bytes[1] = bytes[2];
     bytes[2] = temp;
 }
+
+u32 __cdecl EdFileReadUnsignedInt(void) {
+    union {
+        u32 value;
+        struct {
+            u8 first;
+            u8 second;
+            u8 third;
+            u8 fourth;
+        } bytes;
+    } data;
+    u8 temporary;
+    EdFileRead(&data.value, sizeof(data.value));
+    if (edfile_readwrongendianess != 0) {
+        temporary = data.bytes.first;
+        data.bytes.first = data.bytes.fourth;
+        data.bytes.fourth = temporary;
+        temporary = data.bytes.second;
+        data.bytes.second = data.bytes.third;
+        data.bytes.third = temporary;
+    }
+    return data.value;
+}

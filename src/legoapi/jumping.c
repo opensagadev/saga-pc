@@ -276,3 +276,13 @@ i32 __cdecl StartFallLand(GAMEOBJECT *object, i32 action) {
     object->flags_e24 = (object->flags_e24 & ~0x800) | ((object->flags_e24 & 0x400) << 1);
     return 1;
 }
+
+typedef struct BALLOON_HEIGHT_VIEW_PC {
+    u8 unknown[0x778];
+    f32 height;
+} BALLOON_HEIGHT_VIEW_PC;
+STATIC_ASSERT(offsetof(BALLOON_HEIGHT_VIEW_PC, height) == 0x778);
+void __cdecl SetBallooningHeight(GAMEOBJECT *object, f32 height) {
+    if (object->character_context == 0x5d)
+        ((BALLOON_HEIGHT_VIEW_PC *)object)->height = height;
+}

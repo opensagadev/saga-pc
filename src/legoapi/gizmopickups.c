@@ -239,3 +239,106 @@ void __cdecl AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVE
             PowerUp_AddPart(position, &velocity, scale, lifetime);
         }
 }
+
+typedef struct SPECIAL_MINIKIT_PC {
+    NUSPECIALHANDLE special;
+    NUINSTANIM_TIME_VIEW *instance_animation;
+    void *animation_data;
+    f32 end_frame;
+    char special_name[16];
+    char pickup_name[8];
+    u8 unknown_30[8];
+    u32 flags;
+} SPECIAL_MINIKIT_PC;
+typedef struct SPECIAL_MINIKIT_SYSTEM_PC {
+    SPECIAL_MINIKIT_PC *items;
+    i32 count;
+} SPECIAL_MINIKIT_SYSTEM_PC;
+typedef struct SPECIAL_MINIKIT_WORLD_PC {
+    u8 unknown_0[0x5054];
+    SPECIAL_MINIKIT_SYSTEM_PC *special_minikits;
+} SPECIAL_MINIKIT_WORLD_PC;
+STATIC_ASSERT(sizeof(SPECIAL_MINIKIT_PC) == 0x3c);
+STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_PC, special) == 0);
+STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_PC, instance_animation) == 0xc);
+STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_PC, animation_data) == 0x10);
+STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_PC, end_frame) == 0x14);
+STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_PC, special_name) == 0x18);
+STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_PC, pickup_name) == 0x28);
+STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_PC, flags) == 0x38);
+STATIC_ASSERT(sizeof(SPECIAL_MINIKIT_SYSTEM_PC) == 8);
+STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_SYSTEM_PC, items) == 0);
+STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_SYSTEM_PC, count) == 4);
+STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_WORLD_PC, special_minikits) == 0x5054);
+void __cdecl SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
+    SPECIAL_MINIKIT_WORLD_PC *view = (SPECIAL_MINIKIT_WORLD_PC *)world;
+    SPECIAL_MINIKIT_PC *items, *cursor;
+    SPECIAL_MINIKIT_SYSTEM_PC *system;
+    i32 count = 0;
+    NUFPAR_PC *parser;
+    view->special_minikits = NULL;
+    if (world->current_gscn == NULL)
+        return;
+    parser = NuFParCreateMem("specialminikits", config, 0xffff);
+    if (parser == NULL)
+        return;
+    world->giz_buffer.addr = (world->giz_buffer.addr + 3U) & ~3U;
+    items = cursor = (SPECIAL_MINIKIT_PC *)world->giz_buffer.addr;
+    while (NuFParGetLine(parser) != 0) {
+        if (NuFParGetWord(parser) == 0)
+            break;
+        if (NuStrICmp(parser->word_buffer_ptr, "specialminikit") != 0)
+            continue;
+        memset(cursor, 0, sizeof(*cursor));
+        cursor->flags |= 1;
+        while (NuFParGetWord(parser) != 0) {
+            if (NuStrICmp(parser->word_buffer_ptr, "pickup") == 0) {
+                if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < sizeof(cursor->pickup_name))
+                    NuStrCpy(cursor->pickup_name, parser->word_buffer_ptr);
+            } else if (NuStrICmp(parser->word_buffer_ptr, "at_object") == 0) {
+                if (NuFParGetWord(parser) != 0) {
+                    NuSpecialFind(world->current_gscn, &cursor->special, parser->word_buffer_ptr, 1);
+                    cursor->flags &= ~0x20U;
+                }
+            } else if (NuStrICmp(parser->word_buffer_ptr, "at_gizmo") == 0) {
+                if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < sizeof(cursor->special_name)) {
+                    NuStrCpy(cursor->special_name, parser->word_buffer_ptr);
+                    cursor->flags |= 0x20;
+                }
+            } else if (NuStrICmp(parser->word_buffer_ptr, "draw_at_start") == 0) {
+                cursor->flags = (cursor->flags & ~1U) | 2;
+            } else if (NuStrICmp(parser->word_buffer_ptr, "draw_while_animating") == 0) {
+                cursor->flags = (cursor->flags & ~1U) | 4;
+            } else if (NuStrICmp(parser->word_buffer_ptr, "draw_at_end") == 0) {
+                cursor->flags = (cursor->flags & ~1U) | 8;
+            } else if (NuStrICmp(parser->word_buffer_ptr, "orientate") == 0) {
+                cursor->flags |= 0x10;
+            }
+        }
+        if (cursor->pickup_name[0] == '\0')
+            continue;
+        if ((cursor->flags & 0x20) != 0) {
+            if (cursor->special_name[0] == '\0')
+                continue;
+        } else if (NuSpecialExistsFn(&cursor->special) == 0)
+            continue;
+        if (NuSpecialExistsFn(&cursor->special) != 0) {
+            cursor->instance_animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&cursor->special);
+            if (cursor->instance_animation != NULL) {
+                cursor->animation_data = ((NUGSCN *)cursor->special.scene)
+                                             ->instance_animation_data[cursor->instance_animation->animation_index];
+                cursor->end_frame = NuAnimEndFrameOld(cursor->animation_data);
+            }
+        }
+        ++count;
+        ++cursor;
+    }
+    NuFParDestroy(parser);
+    if (count <= 0)
+        return;
+    world->giz_buffer.addr = (u32)cursor;
+    view->special_minikits = system = (SPECIAL_MINIKIT_SYSTEM_PC *)world->giz_buffer.addr;
+    system->items = items;
+    system->count = count;
+    world->giz_buffer.addr = (world->giz_buffer.addr + sizeof(*system) + 3U) & ~3U;
+}

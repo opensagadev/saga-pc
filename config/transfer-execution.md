@@ -2133,3 +2133,92 @@ that original defect is preserved, with positive-path residue equivalence
 unclaimed and selected execution limited to defined paths. GameAI and larger
 world loader parents remain held until their real services are connected.
 Whole-project work and validated direct-main pushes continue.
+
+
+### Scene visibility, configuration and gameplay providers checkpoint (2026-10-04)
+
+58 complete functions add 10,935 unique compared PC bytes over 07dc534:
+scene visibility/tree 12/3,050, configuration siblings 2/1,124, gameplay utilities
+5/324, configuration callbacks 30/3,004, display callers 3/1,296 and Parts runtime
+6/2,137. Unique compared code reaches 1,026,849; native objdiff includes retained
+aliases and compares 1,027,366. Whole-PC fuzzy coverage rises from 20.283675% to
+20.521280%. Thirty-three new exact functions add 2,760 bytes, reaching
+182,348/3,471,246 .text bytes (5.253099%). Exact data union adds 535 bytes to
+632,255. Candidate inventories, duplicate copies and unknown extents receive
+no additional coverage.
+
+Visibility preserves genuine original C private helper/caller groups and named
+fields with assertions. Width at 0x966290 and occlusion output at 0x9663b0 reuse
+record16 of the unchanged existing sceneParameters[32] working owner: 17,152
+bytes, stride0x218. Anonymous unions retain the previous typed fields and opaque
+views; no extra backing or original capacity is inferred. Macros use the actual
+LLVM18 uppercase naming policy without waivers. The native tree function reads
+an unwritten fourth local stack lane after the real transform writes three
+floats. Source preserves that defect; the 39 selected runtime assertions use
+near/far rejection before that read. Positive clipping and stack-residue equality
+remain unclaimed. Display retains signed BYTE visibility, full LOD/special
+selection and genuine original private register conventions; active GPU/asset
+rendering is not established by this CPU/source validation.
+
+Configuration siblings retain actual two-argument cdecl WorldLoad interfaces.
+Grabber, ForceSFX and Doors preserve complete original callback/keyword groups
+and field widths. PC comparison caught an invented door cutscene reset: native
+DoorConfigure preserves the existing pointer unless the optional cutscene
+callback writes it. Removing that reset passes all 26 selected assertions;
+the retained incorrect version fails one. Private ForceSFX lookup remains in its
+original TU with the native EAX/stack interface. Active SFX model parsing is
+outside the selected runtime domain. Utilities share the existing ten-record
+Suit owner and canonical category type; all 374 full utility-owner bodies and
+prior initialized data survive. Larger GameAI is still held for genuine providers.
+
+Parts adds time slip, type cleanup, scaled effects, the real editor scaler,
+unsigned file reader and bounded SFX lookup. Type stride0x178, canonical128-record
+working view and scale/float/NaN comparisons are verified. Private cleanup state
+stays in its original Parts owner. The unsigned reader has its actual distinct
+0x621820 identity. Existing genuine terrain diagnostic is reused. Runtime uses
+valid initialized types0..127; inclusive native128 guard behavior is preserved
+without claiming an out-of-array runtime domain. A fixture restores real media
+state after EdFileClose before a second open; no production guard/provider or
+assertion is removed. All27 checks pass; the retained changed unordered-cleanup
+version fails one. Full terrain/raycast, hardware sound and general gameplay
+remain untested.
+
+The genuine source-only EXE links 3,657 functions and 6,231 data definitions
+across 272 actual objects, including new nuvisibility.c, gizportal.c and edpart.c
+owners. LLVM18 validates 299 source/header files and 272 units; 700 tests pass
+with three skips. All143 selected native assertions pass against every normal
+object, with zero replacements/supplements or fabricated providers: visibility39,
+configuration26, utilities51 and Parts27. All312 frozen production pins remain
+unchanged. Full authoritative retail matching and independent endpoint review
+pass. Prior exact revision07dc534 CI passed (run37196551050).
+
+All prior exact code/data/member matches survive. Of3,599 previous function
+copies,3,597 are identical. Unchanged camera and particle source return to their
+independently accepted historical1709/713-byte compiler bodies from1789/717.
+Full raw bytes and named relocations match retained accepted copies; the prior
+717-byte particle's five-byte x87 permutation retains its separate semantic
+proof. Immediate byte equality is not claimed. Compiler flags, native extents,
+original denominators and matching rules remain pinned.
+
+28 shared definitions add547 source-view bytes with unknown owning extents and
+zero allocation/exact credit. All3,455 old complete regions and1,769 scopes
+survive; actual normal3,483 regions/1,797 scopes equal isolated output. Shared
+known scope603/138,161B is unchanged; unknown1,194/130,068B describes verified
+working views. The inherited CRC16 dynamic initializer remains unchanged; no
+new constructor is introduced. All4,600 prior exact physical initializer copies
+and all four typed members survive, including two exact members/four bytes.
+All109 new complete initializer copies are retail-equal:69 known copies/676
+emitted copy bytes yield4,669 actual exact physical copies;40 unknown copies/859
+working bytes receive zero owning-extent/allocation/exact credit. Unknown copies
+include28 shared/547B and12 original-TU or unknown literal views/312B. Counts of
+physical copies are separate from unique exact data coverage.
+
+The11:18 UTC checkpoint waited for the final retail/initializer/independent
+endpoint gates before safe commit. The user's three journal edits remain
+untouched. Next are broader Parts5/6,419 and genuine matrix/reflection/RTL
+providers, interaction7/6,338, Grid/math6,816 and Teleports/helpers16/1,853.
+Those are candidates until the next full gates. Image's native cache at0x966298
+shares record16+8 and remains held for canonical alias/capacity evidence.
+WorldInfo_Load has no production definition; its uncompiled candidate retains
+31 unique missing direct targets,21 unmapped. No parent/source credit is claimed.
+Whole-project transfer and validated direct-main checkpoints continue.

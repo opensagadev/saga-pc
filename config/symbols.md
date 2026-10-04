@@ -4257,3 +4257,21 @@ particle's five-byte x87 load/exchange permutation is independently qualified
 with equal stack values at the join and all 34 named relocations preserved.
 Neither is described as byte-identical to the immediate baseline; no new
 original extents or flags are introduced.
+
+
+Scene/configuration/gameplay release verifies58 complete functions/10,935 unique
+PC bytes and preserves all previous exact matches. New real owners are visibility,
+portal configuration and particle editor scaling. Original private register
+helpers retain genuine caller/TU groups; configuration WorldLoad interfaces use
+actual cdecl two arguments. Full native extents, named field widths and all
+58 actual-normal relocated hashes pass independent review. The unsigned reader
+is0x621820, not its signed sibling. Scene width/output reuse canonical record16
+without allocation growth. DoorConfigure's invented cutscene NULL reset was
+removed because PC preserves that pointer unless the configuration callback
+changes it. Native tree's unwritten fourth lane remains explicitly qualified.
+All143 selected native assertions use all272 normal objects without substituted
+providers. Of3,599 old full copies,3,597 remain identical; unchanged MiniCut3 and
+particle reproduce independently accepted historical1709/713-byte variants with
+full raw/named-relocation anchors. Reports and endpoint evidence are retained in
+build/analysis/transfer-execution-20261003/continuation-scene-config-gameplay.
+Broader Parts, interaction, Grid/math and Teleports candidates are not coverage.

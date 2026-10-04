@@ -334,3 +334,99 @@ void __cdecl GizForce_ResetLOS(GAMEOBJECT *object) {
     if (object->gizforce_los_info != NULL)
         memset(object->gizforce_los_info, 0, 0x630);
 }
+
+typedef struct force_sfx_config_pc_s {
+    u8 unknown_00[0x28];
+    GAMEANIMSET *anim_set;
+    u8 unknown_2c[0x82 - 0x2c];
+    i16 process_sfx, complete_sfx, return_sfx;
+    u8 unknown_88[0xa4 - 0x88];
+} FORCE_SFX_CONFIG_PC;
+STATIC_ASSERT(sizeof(FORCE_SFX_CONFIG_PC) == 0xa4);
+STATIC_ASSERT(offsetof(FORCE_SFX_CONFIG_PC, anim_set) == 0x28);
+STATIC_ASSERT(offsetof(FORCE_SFX_CONFIG_PC, process_sfx) == 0x82);
+STATIC_ASSERT(offsetof(FORCE_SFX_CONFIG_PC, complete_sfx) == 0x84);
+STATIC_ASSERT(offsetof(FORCE_SFX_CONFIG_PC, return_sfx) == 0x86);
+typedef struct force_sfx_system_pc_s {
+    FORCE_SFX_CONFIG_PC *forces;
+    u8 unknown_04[0xe - 4];
+    u16 count;
+} FORCE_SFX_SYSTEM_PC;
+STATIC_ASSERT(offsetof(FORCE_SFX_SYSTEM_PC, forces) == 0);
+STATIC_ASSERT(offsetof(FORCE_SFX_SYSTEM_PC, count) == 0xe);
+typedef struct world_force_sfx_pc_s {
+    u8 unknown_0000[0x46ac];
+    FORCE_SFX_SYSTEM_PC *force_system;
+} WORLD_FORCE_SFX_PC;
+STATIC_ASSERT(offsetof(WORLD_FORCE_SFX_PC, force_system) == 0x46ac);
+static i32 GizForceSFX_load_version = 99999;
+static FORCE_SFX_CONFIG_PC *GizForceSFX_force;
+static WORLD_FORCE_SFX_PC *GizForceSFX_worldinfo;
+static FORCE_SFX_CONFIG_PC *FindForceForSfxPc(WORLD_FORCE_SFX_PC *world, char *name) {
+    FORCE_SFX_SYSTEM_PC *system = world->force_system;
+    FORCE_SFX_CONFIG_PC *force;
+    i32 i;
+    if (system == NULL)
+        return NULL;
+    force = system->forces;
+    for (i = 0; i < system->count; ++i, ++force) {
+        GAMEANIMOBJ *object;
+        if (force->anim_set == NULL)
+            continue;
+        for (object = force->anim_set->objects; object != NULL; object = object->next) {
+            char *special_name = NuSpecialGetName(&object->special);
+            if (special_name != NULL && NuStrICmp(name, special_name) == 0)
+                return force;
+        }
+    }
+    return NULL;
+}
+static void __cdecl GizForceSFX_forcename(NUFPAR_PC *parser) {
+    GizForceSFX_force = NULL;
+    if (NuFParGetWord(parser) != 0)
+        GizForceSFX_force = FindForceForSfxPc(GizForceSFX_worldinfo, parser->word_buffer_ptr);
+}
+static void __cdecl GizForceSFX_processsfx(NUFPAR_PC *parser) {
+    if (GizForceSFX_force != NULL && NuFParGetWord(parser) != 0 && GizForceSFX_force->process_sfx == -1)
+        GizForceSFX_force->process_sfx = (i16)GetSfxId(parser->word_buffer_ptr);
+}
+static void __cdecl GizForceSFX_completesfx(NUFPAR_PC *parser) {
+    if (GizForceSFX_force != NULL && NuFParGetWord(parser) != 0 && GizForceSFX_force->complete_sfx == -1)
+        GizForceSFX_force->complete_sfx = (i16)GetSfxId(parser->word_buffer_ptr);
+}
+static void __cdecl GizForceSFX_returnsfx(NUFPAR_PC *parser) {
+    if (GizForceSFX_force != NULL && NuFParGetWord(parser) != 0 && GizForceSFX_force->return_sfx == -1)
+        GizForceSFX_force->return_sfx = (i16)GetSfxId(parser->word_buffer_ptr);
+}
+static NUFPCOMJMP GizForceSFX_ConfigKeywords[] = {{"forcename", GizForceSFX_forcename},
+                                                  {"processsfx", GizForceSFX_processsfx},
+                                                  {"completesfx", GizForceSFX_completesfx},
+                                                  {"returnsfx", GizForceSFX_returnsfx},
+                                                  {NULL, NULL}};
+void __cdecl GizForceSFX_Configure(WORLDINFO *world_ptr, char *config) {
+    WORLD_FORCE_SFX_PC *world = (WORLD_FORCE_SFX_PC *)world_ptr;
+    NUFPAR_PC *parser;
+    i32 inside = 0;
+    if (GizForceSFX_load_version > 15 || world == NULL || world->force_system == NULL ||
+        world->force_system->count == 0)
+        return;
+    GizForceSFX_force = NULL;
+    GizForceSFX_worldinfo = world;
+    parser = NuFParCreateMem("ForceSFX", config, 0xffff);
+    if (parser == NULL)
+        return;
+    NuFParPushCom(parser, GizForceSFX_ConfigKeywords);
+    while (NuFParGetLine(parser) != 0) {
+        while (NuFParGetWord(parser) != 0) {
+            if (inside) {
+                if (NuStrICmp(parser->word_buffer_ptr, "forcesfx_end") == 0)
+                    inside = 0;
+                else
+                    NuFParInterpretWord(parser);
+            } else if (NuStrICmp(parser->word_buffer_ptr, "forcesfx_start") == 0)
+                inside = 1;
+        }
+    }
+    NuFParPopCom(parser);
+    NuFParDestroy(parser);
+}

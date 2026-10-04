@@ -2715,3 +2715,201 @@ void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_bu
     xzfacingmtx = ANI3_EVAL_IDENTITY_MATRIX;
     DebrisMtxRotateXPrivate(&xzfacingmtx, -0x4000);
 }
+
+typedef struct part_runtime_type_pc_s {
+    char name[16];
+    char object_names[8][16];
+    i16 effect_ids[8];
+    i8 effect_pages[8];
+    i8 scene_indices[8];
+    i8 variant_count;
+    u8 variant_mode;
+    i8 page;
+    u8 field_b3;
+    f32 particle_scale;
+    f32 effect_scale;
+    f32 lifetime;
+    f32 lifetime_random;
+    f32 speed;
+    f32 gravity;
+    f32 emission_rate;
+    f32 bounce;
+    NUVEC position_random;
+    NUVEC velocity_random;
+    f32 emission_period;
+    f32 emission_period_random;
+    f32 emission_pause;
+    f32 emission_pause_random;
+    i32 rotation[3];
+    i32 rotation_random[3];
+    u32 flags;
+    i32 trail_effects[2];
+    f32 trail_rates[2];
+    i32 attached_effect;
+    i32 impact_effect;
+    i32 impact_part;
+    char impact_part_name[16];
+    i32 kill_effect;
+    i32 sounds[4];
+    u8 sound_modes[4];
+    f32 maximum_distance;
+    f32 field_160, field_164, field_168;
+    f32 last_used_time;
+    f32 scale;
+    u32 field_174;
+} PART_RUNTIME_TYPE_PC;
+STATIC_ASSERT(sizeof(PART_RUNTIME_TYPE_PC) == 0x178);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, name) == 0x0);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, object_names) == 0x10);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, effect_ids) == 0x90);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, effect_pages) == 0xa0);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, scene_indices) == 0xa8);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, variant_count) == 0xb0);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, variant_mode) == 0xb1);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, page) == 0xb2);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, field_b3) == 0xb3);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, particle_scale) == 0xb4);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, effect_scale) == 0xb8);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, lifetime) == 0xbc);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, lifetime_random) == 0xc0);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, speed) == 0xc4);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, gravity) == 0xc8);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, emission_rate) == 0xcc);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, bounce) == 0xd0);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, position_random) == 0xd4);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, velocity_random) == 0xe0);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, emission_period) == 0xec);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, emission_period_random) == 0xf0);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, emission_pause) == 0xf4);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, emission_pause_random) == 0xf8);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, rotation) == 0xfc);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, rotation_random) == 0x108);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, flags) == 0x114);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, trail_effects) == 0x118);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, trail_rates) == 0x120);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, attached_effect) == 0x128);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, impact_effect) == 0x12c);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, impact_part) == 0x130);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, impact_part_name) == 0x134);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, kill_effect) == 0x144);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, sounds) == 0x148);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, sound_modes) == 0x158);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, maximum_distance) == 0x15c);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, field_160) == 0x160);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, field_164) == 0x164);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, field_168) == 0x168);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, last_used_time) == 0x16c);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, scale) == 0x170);
+STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, field_174) == 0x174);
+
+void __cdecl edpartScaleType(i32, f32);
+
+void __cdecl PartTimeSlip(void) {
+    i32 i;
+    PART_RUNTIME_TYPE_PC *types = (PART_RUNTIME_TYPE_PC *)part_types;
+    for (i = 0; i < 40; ++i) {
+        if (part_emits[i].effect_id != -1) {
+            part_emits[i].time_20 -= 800.0f;
+            part_emits[i].time_24 -= 800.0f;
+            part_emits[i].time_28 -= 800.0f;
+        }
+    }
+    for (i = 0; i < 128; ++i) {
+        if (types[i].effect_ids[0] != -1)
+            types[i].last_used_time -= 800.0f;
+    }
+    partglobaltime -= 800.0f;
+}
+
+static i32 PartCleanupCursorPrivate;
+static i32 PartCleanupFramesPrivate;
+void __cdecl PartCleanupTypes(void) {
+    PART_RUNTIME_TYPE_PC *types = (PART_RUNTIME_TYPE_PC *)part_types;
+    i32 i;
+    if (++PartCleanupFramesPrivate > 5) {
+        PartCleanupFramesPrivate = 0;
+        if (types[PartCleanupCursorPrivate].effect_ids[0] != -1 &&
+            partglobaltime > (f64)types[PartCleanupCursorPrivate].last_used_time + 5.0 &&
+            types[PartCleanupCursorPrivate].scale != 1.0f) {
+            for (i = 0; i < 40; ++i) {
+                if (part_emits[i].effect_id == PartCleanupCursorPrivate) {
+                    if (part_emits[i].effect_id != -1) {
+                        part_emits[i].effect_id = -1;
+                        --part_emits_used;
+                    }
+                }
+            }
+            types[PartCleanupCursorPrivate].name[0] = 0;
+            types[PartCleanupCursorPrivate].effect_ids[0] = -1;
+            --part_types_used;
+        }
+        if (++PartCleanupCursorPrivate >= 128)
+            PartCleanupCursorPrivate = 0;
+    }
+}
+i32 __cdecl CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
+    PART_RUNTIME_TYPE_PC *types = (PART_RUNTIME_TYPE_PC *)part_types;
+    i32 closest_index, i;
+    f32 ratio, closest_distance;
+    // Retail uses this inclusive upper check; loaded type IDs are 0..127.
+    if (effect_index <= 0 || effect_index > 128 || types[effect_index].effect_ids[0] == -1) {
+        return -1;
+    }
+    if (types[effect_index].scale != 1.0f) {
+        // The final word identifies the original, unscaled type.
+        effect_index = types[effect_index].field_174;
+        if (types[effect_index].effect_ids[0] == -1) {
+            return -1;
+        }
+    }
+    if (requested_scale == 1.0f && effect_index != 0) {
+        return effect_index;
+    }
+    if (requested_scale < 0.01f) {
+        requested_scale = 0.01f;
+    }
+
+    closest_index = effect_index;
+    ratio = requested_scale / types[effect_index].scale;
+    closest_distance = ratio <= 1.0f ? 1.0f - ratio : ratio - 1.0f;
+    for (i = 0; i < 128; ++i) {
+        f32 distance;
+        if (types[i].effect_ids[0] != -1 && types[i].field_174 == (u32)effect_index) {
+            ratio = requested_scale / types[i].scale;
+            distance = ratio <= 1.0f ? 1.0f - ratio : ratio - 1.0f;
+            if (distance < closest_distance) {
+                closest_index = i;
+                closest_distance = distance;
+            }
+        }
+    }
+    if (closest_index != 0 && closest_distance < 1.1f) {
+        return closest_index;
+    }
+
+    for (i = 0; i < 128; ++i) {
+        PART_RUNTIME_TYPE_PC *scaled;
+        PART_RUNTIME_TYPE_PC *source;
+        if (types[i].effect_ids[0] != -1) {
+            continue;
+        }
+        scaled = &types[i];
+        source = &types[effect_index];
+        *scaled = *source;
+        edpartScaleType(i, requested_scale);
+        scaled->last_used_time = partglobaltime;
+        scaled->scale = requested_scale;
+        scaled->field_174 = effect_index;
+        if (strlen(source->name) > 12) {
+            char shortened[16];
+            sprintf(shortened, "%s", source->name);
+            shortened[12] = '\0';
+            sprintf(scaled->name, "%s%03d", shortened, i);
+        } else {
+            sprintf(scaled->name, "%s%03d", source->name, i);
+        }
+        ++part_types_used;
+        return i != 0 ? i : closest_index;
+    }
+    return closest_index;
+}

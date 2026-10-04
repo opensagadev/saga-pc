@@ -3734,3 +3734,24 @@ void __cdecl GameAntiNodeData_Read(void *opaque_data) {
     data->shape = (u8)EdFileReadChar();
     data->mode = (u8)EdFileReadChar();
 }
+
+typedef struct CAN_USE_VIEW_PC {
+    u8 unknown[0xefc];
+    void *object;
+    u8 action;
+    u8 frames;
+    u8 unknown_f02[2];
+    f32 parameter;
+} CAN_USE_VIEW_PC;
+STATIC_ASSERT(offsetof(CAN_USE_VIEW_PC, object) == 0xefc);
+STATIC_ASSERT(offsetof(CAN_USE_VIEW_PC, action) == 0xf00);
+STATIC_ASSERT(offsetof(CAN_USE_VIEW_PC, frames) == 0xf01);
+STATIC_ASSERT(offsetof(CAN_USE_VIEW_PC, parameter) == 0xf04);
+extern u8 grapple_attach_frames;
+void __cdecl GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused, f32 parameter) {
+    CAN_USE_VIEW_PC *view = (CAN_USE_VIEW_PC *)object;
+    view->object = target;
+    view->parameter = parameter;
+    view->action = action;
+    view->frames = grapple_attach_frames;
+}
