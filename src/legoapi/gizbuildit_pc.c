@@ -219,3 +219,21 @@ void __cdecl ReleaseBuildIt(GAMEOBJECT *player, i32 completed) {
     completion_blend = completed != 0 ? 0.6f : 0.0f;
     GameCam_Blend(GameCam, 0.5f, completion_blend, 1);
 }
+
+f32 __cdecl GizBuildItMul(GAMEOBJECT *player) {
+    BUILDIT_MOVEMENT_PC *buildit;
+    i32 amount, completed, total;
+    if ((player->flags_1fc_word & 0x80) != 0 && Player_HasFastBuild(player))
+        return 3.0f;
+    buildit = (BUILDIT_MOVEMENT_PC *)player->grapple;
+    amount = player->big_jump_animation;
+    completed = buildit->built_object_count;
+    total = buildit->anim_object_count;
+    if ((completed - amount + total) / 2 <= completed)
+        amount = total - completed;
+    if (amount > 10)
+        amount = 10;
+    else if (amount < 0)
+        amount = 0;
+    return (f32)((f64)amount / 10.0 + 1.0);
+}

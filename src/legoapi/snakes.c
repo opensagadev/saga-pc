@@ -87,3 +87,11 @@ void __cdecl SnakeBeenHit(GAMEOBJECT *object) {
     }
     reader->snake_body->segment_count -= 2;
 }
+
+void __cdecl DestroySnakeBody(GAMEOBJECT *object) {
+    SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
+    if (object != NULL && reader->snake_body != NULL) {
+        memset(reader->snake_body, 0, sizeof(*reader->snake_body));
+        reader->snake_body = NULL;
+    }
+}

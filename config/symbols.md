@@ -4027,3 +4027,25 @@ updates. Private colour setup remains naturally retained by real callers; no
 noinline attributes or artificial wrappers are introduced. A prior nonexact
 DebReAlloc2 integer-load reorder is independently reviewed and explicitly counted
 as one changed prior copy. Every earlier exact code/data record remains exact.
+
+
+### Player animation, initialization and character transfer release (2026-10-04)
+
+Actual production compares43 complete functions/15,543B with complete PC entry,
+caller ABI, field-width and tail evidence. UpdateAnimTimer stays naturally private
+with its original caller group; rate caps, x87 intermediates, f32 spills and
+ordered NaN predicates are reviewed separately from advisory similarity. Footstep
+PC first-two-event flag10000 and forward/wrap/reverse ordering remain genuine.
+ResetCharacterIdle subtracts animduration_blendouttime; FRAMETIME was an Android
+semantic discrepancy. InitCreature clears788 bytes at6c4 and retains original
+layer selection, overwritten Bob OR, unguarded animation-table precondition and
+producer call order. POD creation preserves original reserved-slot/failure and
+last-spline behavior, without added safety branches or fake factories.
+
+NewPlayerCharacter41bc20 spans1,273B through its real finalRET. All four actual
+PC callers push four arguments and clean16 bytes; the unused fourth parameter
+is retained. Native41bf41 tests BYTEe22 bit1, so the named DWORDe20 mask is10000.
+The corrected actual production body is1,246B, advisory82.902824%; its64-check
+normal fixture verifies five valid transitions and guards. DestroySnakeBody47
+and GizForce_ResetLOS31 are fully exact. All earlier exact code/data and all2,798
+complete prior code copies are preserved.

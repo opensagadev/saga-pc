@@ -1291,3 +1291,60 @@ Init/POD613B data closure. These are candidate bytes until final production
 integration and matching. Resource966 remains held for preservation of two
 historical exact WORD records4B; NewPlayerCharacter1433 requires caller-arity
 proof. Neither hold stops the other connected source transfers.
+
+
+### Player animation, creature initialization and character transfer checkpoint (2026-10-04)
+
+Forty-three complete functions add15,543 newly compared unique PC bytes over
+source-identical report refreshaf4c378: gameplay/animation23/8,142,
+dynamic/init/POD15/5,942, character-shadow reset26 and character transfer4/1,433.
+Whole-PC fuzzy coverage rises14.222798% to14.540193% of3,471,246B. Unique
+compared code reaches789,966B; native objdiff compares790,078B with63.897194%
+advisory similarity. Seventeen newly exact functions add1,298B, reaching78,358B
+(2.257345%). Every2,798 earlier complete function copy remains identical; no
+previous exact code or data match is lost.
+
+Original source owners now contain real animation timer/packet updates, player
+capability/move/AI initialization, object allocation, idle/reset and footsteps,
+creature initialization and layer selection, dynamic creation, gamepad allocation,
+signed Suit lookup, player-start lookup and POD parsing/creation. Character
+transfer retains its four-word PC ABI despite the unused fourth parameter. The
+independent review corrected native BYTEe22 bit1 to DWORDmask10000, rather than
+Android's low bit. Idle reset uses the actual PC blendout time. Plain private
+AnimBlendModePc stays naturally emitted in its real API TU; no data_seg, new
+retaining controls, ABI wrappers or fake providers were added.
+
+Pinned build/link and all2,841 function/5,444 data definitions across235 actual
+objects pass. LLVM18 checks237 files/235 units;665 tests pass with three skips.
+Four final native fixtures pass328 checks: gameplay/shadow75, actual allocator/
+lookup/guard states167, successful controlled InitCreature22 and character
+transitions64. Every fixture uses all current normal objects and genuine normal
+data, without replacements or supplements. Character cases exercise both the
+native10000 flag and unrelated low/high bits, routes, frame state, signed health
+and velocity. This establishes selected successful initialization and transitions,
+not full game/asset loading or general AddDynamic/POD success; existing hardware,
+font/graphics/audio partials remain explicit.
+
+Fixture failures were diagnosed without changing production: long immutable
+snapshot paths exceeded Windows command length; short byte-identical paths fixed
+linking. Native Scale/GetTopBot/Dimensions order proves initial height0 with later
+y-scale1, so the successful InitCreature fixture retained22 assertions with the
+correct expectation. A character fixture omitted real CDataList, then supplied
+the legitimate typed input and passed all64 checks. No assertion was dropped to
+hide a provider or source failure.
+
+Thirty-seven shared physical views add613 complete source initializer bytes,
+all blank original extents/zero allocation credit. Rich24-byte Suit records use
+real relocated names/text IDs and actual PC magnet mask200000. Scope1,540
+preserves all1,503 earlier proofs; all3,229 normal data regions equal the frozen
+isolated object. Thirteen genuine private selection arrays43 declared/59 emittedB
+and natural private state4B stay in their source owners; their original extents
+remain unknown. Three compiler f64 literals24B are separately verified. User
+journal edits remain untouched and excluded from commits.
+
+Next coherent packets span effects25/8,022, visual creator4/1,707 plus real
+repairs to1,860 already-compared font/primitive bytes, and the music/configuration
+startup spine. They remain candidates pending independent source/data gates.
+Resource966 and graphics fallback40 aggregation remain held for preservation of
+prior exact physical WORD/scalar bytes; a typed data-member contract is only a
+scratch proposal and has not weakened current checks or entered production.

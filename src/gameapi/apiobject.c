@@ -1409,3 +1409,315 @@ f32 __cdecl AnimEndFrame(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
         return NuAnimEndFrame(model->model_data_b[animation]);
     return 0.0f;
 }
+
+static i32 AnimBlendModePc = 1;
+static f32 UpdateAnimTimer(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet, i16 animation, f32 time,
+                           f32 frame_step, f32 movement_speed, i32 report_events, char *reversed, i32 backwards,
+                           f32 backwards_multiplier) {
+    CHARACTERANIM_CONFIG_PC *animation_info;
+    f32 rate;
+    f32 delta;
+    f32 end_frame;
+    i32 looped;
+
+    animation_info = ((CHARACTERANIM_CONFIG_PC *)(model->animation_configs[animation]));
+
+    rate = animation_info->playback_rate;
+    if (animation_info->movement_speed > 0.0f) {
+        rate *= movement_speed / animation_info->movement_speed;
+        if (rate >= 0.0f) {
+            if (animation_info->movement_rate_cap > 0.0f && rate > animation_info->movement_rate_cap) {
+                rate = animation_info->movement_rate_cap;
+            }
+        } else if (animation_info->movement_rate_cap < 0.0f && rate < animation_info->movement_rate_cap) {
+            rate = animation_info->movement_rate_cap;
+        }
+    }
+
+    if (*reversed != 0) {
+        delta = (f32)((f64)rate * (((f64)frame_step * (f64)backwards_multiplier) / -30.0));
+    } else {
+        delta = (f32)((f64)rate * ((f64)frame_step / 30.0));
+    }
+    time += delta;
+    end_frame = NuAnimEndFrame(model->model_data_b[animation]);
+    looped = 0;
+
+    if (!(delta < 0.0f)) {
+        if (time > end_frame) {
+            if ((animation_info->flags & 0x02) == 0) {
+                time = end_frame;
+                if (report_events) {
+                    packet->flags |= 0x01;
+                }
+            } else {
+                if (end_frame > 1.0f) {
+                    while (time > end_frame) {
+                        time = (f32)((f64)time - ((f64)end_frame - 1.0));
+                    }
+                } else {
+                    time = 1.0f;
+                }
+                if (report_events) {
+                    packet->flags |= 0x02;
+                }
+                looped = 1;
+            }
+        }
+    } else {
+        if (report_events) {
+            packet->flags |= 0x08;
+        }
+        if (time < 1.0f) {
+            if ((animation_info->flags & 0x02) == 0) {
+                time = 1.0f;
+                if (report_events) {
+                    packet->flags |= 0x01;
+                }
+            } else {
+                if (end_frame > 1.0f) {
+                    while (time < 1.0f) {
+                        time = (f32)((f64)time + ((f64)end_frame - 1.0));
+                    }
+                } else {
+                    time = 1.0f;
+                }
+                if (report_events) {
+                    packet->flags |= 0x02;
+                }
+                looped = 1;
+            }
+        }
+    }
+
+    if (looped) {
+        if (*reversed == 0) {
+            if (backwards && (animation_info->flags & 0x80) != 0) {
+                *reversed = 1;
+            }
+        } else if (!backwards) {
+            *reversed = 0;
+        }
+    }
+    return time;
+}
+
+void UpdateAnimPacket(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet, f32 frame_step, f32 movement_speed,
+                      f32 blend_step, f32 backwards_multiplier) {
+    i32 backwards;
+    i32 interrupted_reversed;
+    i32 interrupted;
+    i32 paused;
+    i32 force_restart;
+
+    backwards = 0;
+    interrupted_reversed = 0;
+    interrupted = 0;
+    if (movement_speed < 0.0f) {
+        backwards = 1;
+        movement_speed = -movement_speed;
+    }
+
+    if (model == NULL || packet == NULL) {
+        return;
+    }
+
+    paused = packet->flags & 0x10;
+    force_restart = packet->flags & 0x80;
+    packet->flags = 0;
+    if (packet->blending != 0) {
+        packet->previous_time = packet->blend_target_time;
+    } else {
+        packet->previous_time = packet->current_time;
+    }
+    if (frame_step == 0.0f) {
+        packet->flags |= 0x20;
+        return;
+    }
+
+    if (packet->overlay_animation == -1) {
+        if (packet->blending != 0) {
+            if (packet->requested_animation != -1 && packet->requested_animation != packet->blend_target_animation &&
+                model->model_data_b[packet->requested_animation] != NULL &&
+                model->animation_configs[packet->requested_animation] != NULL &&
+                ((CHARACTERANIM_CONFIG_PC *)(model->animation_configs[packet->requested_animation]))->blend_in_time ==
+                    0.0f) {
+                packet->animation_index = packet->requested_animation;
+                if (backwards != 0 && model->model_data_b[packet->animation_index] != NULL &&
+                    model->animation_configs[packet->animation_index] != NULL &&
+                    (((CHARACTERANIM_CONFIG_PC *)(model->animation_configs[packet->animation_index]))->flags & 0x80) !=
+                        0) {
+                    packet->reversed_3e = 1;
+                    packet->current_time = NuAnimEndFrame(model->model_data_b[packet->animation_index]);
+                } else {
+                    packet->reversed_3e = 0;
+                    packet->current_time = 1.0f;
+                }
+                packet->blending = 0;
+                packet->previous_time = packet->current_time;
+                packet->flags |= 0x04;
+                goto update_timers;
+            }
+
+            packet->blend_elapsed_pc += blend_step;
+            if (packet->blend_elapsed_pc >= packet->blend_duration_pc) {
+                packet->blending = 0;
+                packet->animation_index = packet->blend_target_animation;
+                packet->current_time = packet->blend_target_time;
+                packet->reversed_3e = packet->reversed_3d;
+                packet->flags |= 0x40;
+                goto update_timers;
+            }
+
+            if (AnimBlendModePc != 1 || packet->requested_animation == packet->blend_target_animation ||
+                !(packet->requested_animation != -1 && model->model_data_b[packet->requested_animation] != NULL)) {
+                goto update_timers;
+            }
+
+            if (packet->blend_elapsed_pc < packet->blend_duration_pc * 0.5f) {
+                packet->previous_animation = packet->blend_source_animation;
+                interrupted_reversed = ((i8)(packet->reversed_3c));
+                interrupted = 1;
+            } else {
+                packet->previous_animation = packet->blend_target_animation;
+                interrupted_reversed = ((i8)(packet->reversed_3d));
+                packet->blend_source_time = packet->blend_target_time;
+                interrupted = 1;
+            }
+        } else if (packet->requested_animation == packet->previous_animation) {
+            // Interrupted blends enter the transition directly, even when
+            // returning to their source animation (retail 0x3ce858/0x3ce88a).
+            if (force_restart == 0 || packet->requested_animation != packet->animation_index ||
+                !(packet->animation_index != -1 && model->model_data_b[packet->animation_index] != NULL)) {
+                packet->animation_index = packet->requested_animation;
+                packet->blending = 0;
+                goto update_timers;
+            }
+        }
+
+        if (packet->previous_animation != -1 && packet->requested_animation != -1 &&
+            model->model_data_b[packet->previous_animation] != NULL &&
+            model->model_data_b[packet->requested_animation] != NULL) {
+            CHARACTERANIM_CONFIG_PC *source_info;
+            CHARACTERANIM_CONFIG_PC *target_info;
+
+            source_info = ((CHARACTERANIM_CONFIG_PC *)(model->animation_configs[packet->previous_animation]));
+            target_info = ((CHARACTERANIM_CONFIG_PC *)(model->animation_configs[packet->requested_animation]));
+            if (source_info != NULL && target_info != NULL && source_info->blend_out_time > blend_step &&
+                target_info->blend_in_time > blend_step) {
+                i32 synchronised;
+
+                packet->blending = 1;
+                packet->blend_source_animation = packet->previous_animation;
+                packet->reversed_3c = ((u8)(interrupted_reversed));
+                packet->blend_target_animation = packet->requested_animation;
+                if (interrupted == 0) {
+                    packet->blend_source_time = packet->current_time;
+                }
+                packet->reversed_3c = packet->reversed_3e;
+
+                synchronised = (source_info->flags & 0x02) != 0 && (target_info->flags & 0x02) != 0 &&
+                               source_info->playback_rate == target_info->playback_rate &&
+                               NuAnimEndFrame(model->model_data_b[packet->blend_source_animation]) ==
+                                   NuAnimEndFrame(model->model_data_b[packet->blend_target_animation]);
+                if (synchronised) {
+                    packet->blend_target_time = packet->blend_source_time;
+                    packet->reversed_3d = backwards != 0 && (target_info->flags & 0x80) != 0 ? 1 : 0;
+                } else if (backwards != 0 && (target_info->flags & 0x80) != 0) {
+                    packet->reversed_3d = 1;
+                    packet->blend_target_time = NuAnimEndFrame(model->model_data_b[packet->blend_target_animation]);
+                } else {
+                    packet->reversed_3d = 0;
+                    packet->blend_target_time = 1.0f;
+                }
+                packet->blend_elapsed_pc = 0.0f;
+                packet->blend_duration_pc = target_info->blend_in_time;
+                if (packet->blend_duration_pc > source_info->blend_out_time) {
+                    packet->blend_duration_pc = source_info->blend_out_time;
+                }
+                packet->flags |= 0x04;
+                goto update_timers;
+            }
+        }
+
+        packet->animation_index = packet->requested_animation;
+        if (backwards != 0 && packet->animation_index != -1 && model->model_data_b[packet->animation_index] != NULL &&
+            model->animation_configs[packet->animation_index] != NULL &&
+            (((CHARACTERANIM_CONFIG_PC *)(model->animation_configs[packet->animation_index]))->flags & 0x80) != 0) {
+            packet->reversed_3e = 1;
+            packet->current_time = NuAnimEndFrame(model->model_data_b[packet->animation_index]);
+        } else {
+            packet->reversed_3e = 0;
+            packet->current_time = 1.0f;
+        }
+        packet->blending = 0;
+        packet->previous_time = packet->current_time;
+        packet->flags |= 0x04;
+    }
+
+update_timers:
+    // End-frame services can change overlay state; retail reloads it here.
+    if (packet->overlay_animation != -1) {
+        if ((packet->requested_animation != -1 && model->model_data_b[packet->requested_animation] != NULL) &&
+            model->model_data_b[packet->overlay_animation] != NULL) {
+            packet->blend_source_time =
+                UpdateAnimTimer(model, packet, packet->requested_animation, packet->blend_source_time, frame_step,
+                                movement_speed, 0, ((char *)(&packet->reversed_3c)), backwards, backwards_multiplier);
+            packet->blend_target_time =
+                UpdateAnimTimer(model, packet, packet->overlay_animation, packet->blend_target_time, frame_step,
+                                movement_speed, 1, ((char *)(&packet->reversed_3d)), backwards, backwards_multiplier);
+        }
+    } else if (packet->blending != 0) {
+        if ((packet->blend_source_animation != -1 && model->model_data_b[packet->blend_source_animation] != NULL) &&
+            (packet->blend_target_animation != -1 && model->model_data_b[packet->blend_target_animation] != NULL)) {
+            packet->blend_source_time =
+                UpdateAnimTimer(model, packet, packet->blend_source_animation, packet->blend_source_time, frame_step,
+                                movement_speed, 0, ((char *)(&packet->reversed_3c)), backwards, backwards_multiplier);
+            packet->blend_target_time =
+                UpdateAnimTimer(model, packet, packet->blend_target_animation, packet->blend_target_time, frame_step,
+                                movement_speed, 1, ((char *)(&packet->reversed_3d)), backwards, backwards_multiplier);
+        }
+    } else if (packet->animation_index != -1 && model->model_data_b[packet->animation_index] != NULL) {
+        if (paused != 0) {
+            frame_step = 0.0f;
+        }
+        packet->current_time =
+            UpdateAnimTimer(model, packet, packet->animation_index, packet->current_time, frame_step, movement_speed, 1,
+                            ((char *)(&packet->reversed_3e)), backwards, backwards_multiplier);
+    } else {
+        i32 requested_animation;
+
+        requested_animation = packet->requested_animation;
+        ResetAnimPacket(packet, -1);
+        packet->requested_animation = requested_animation;
+    }
+}
+
+GAMEOBJECT *__cdecl APIObjectCreate(APIOBJECTSYS_PC *system) {
+    GAMEOBJECT *object;
+    i32 index;
+    if (system != NULL && system->object_size != 0) {
+        object = system->objects;
+        for (index = 0; index < 64; ++index, object = (GAMEOBJECT *)((u8 *)object + system->object_size)) {
+            if ((object->flags_1fc_word & 1) == 0) {
+                memset(object, 0, system->object_size);
+                object->flags_1fc_word |= 1;
+                object->hostility_group = (u8)index;
+                return object;
+            }
+        }
+    }
+    return NULL;
+}
+
+void __cdecl SetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet) {
+    void *animation;
+    f64 duration;
+    if (model == NULL || packet == NULL)
+        return;
+    animation = model->action_animations[packet->requested_animation];
+    if (animation != NULL) {
+        duration = (f64)NuAnimEndFrame(animation) - 1.0;
+        packet->current_time = (f32)((f64)NuRandFloat() * duration + 1.0);
+    }
+}

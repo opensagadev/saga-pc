@@ -12582,6 +12582,152 @@ extern "C" {
     void __cdecl CutScenes_Destroy(CUTSYS_PC *);
 
     void __cdecl DebrisProcessControlChunks(i32);
+    i32 __cdecl NewPlayerCharacter(GAMEOBJECT *, i32, i32, i32);
+    void __cdecl Shards_HandleLostObj(WORLDINFO *, GAMEOBJECT *);
+    void __cdecl DestroySnakeBody(GAMEOBJECT *);
+    void __cdecl GizForce_ResetLOS(GAMEOBJECT *);
+
+    /* Proposed finite public interfaces; UpdateAnimTimer remains original-TU private. */
+    void __cdecl AnimatePlayer(GAMEOBJECT *);
+    void __cdecl UpdateAnimPacket(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, f32, f32, f32, f32);
+    GAMEOBJECT *__cdecl APIObjectCreate(APIOBJECTSYS_PC *);
+    void __cdecl SetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *);
+    void __cdecl PlayerInitCapabilitiesDefaultPc(GAMEOBJECT *);
+    void __cdecl PlayerInitCapabilitiesVariant0Pc(GAMEOBJECT *);
+    void __cdecl PlayerInitCapabilitiesVariant1Pc(GAMEOBJECT *);
+    i32 __cdecl CanPullLevers(i32);
+    void __cdecl ResetPlayerPacket(void *, CHARACTERDATA_PC *);
+    void __cdecl ResetCoinPacket(void *);
+    GAMEOBJECT *__cdecl AddGameObject(void);
+    void __cdecl SetGameObjectCharacterData(GAMEOBJECT *);
+    i32 __cdecl GetDefaultIdle(GAMEOBJECT *);
+    void __cdecl ResetCharacterIdle(GAMEOBJECT *, i32, i32);
+    void __cdecl ResetPlayerMoves(GAMEOBJECT *);
+    void __cdecl ResetPlayerAI(GAMEOBJECT *);
+    void __cdecl InitPlayerAI(GAMEOBJECT *);
+    GAMEOBJECT *__cdecl AddCreature(i32, i32);
+    void __cdecl AutoWeaponOnOff(GAMEOBJECT *);
+    f32 __cdecl GizBuildItMul(GAMEOBJECT *);
+    void __cdecl AddFootSteps(GAMEOBJECT *);
+    void __cdecl PlayFootStepSfx(GAMEOBJECT *);
+
+    /* Additive shared contracts only; existing RTL/flight/game/player types reused. */
+    typedef struct RUMBLE_PACKET_RESOURCE_PC {
+        u8 unknown_00[4];
+        f32 amount;
+        u8 unknown_08[4];
+        f32 duration;
+        u8 active;
+    } RUMBLE_PACKET_RESOURCE_PC;
+    STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, amount) == 4);
+    STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, duration) == 0xc);
+    STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, active) == 0x10);
+    typedef struct SUIT_INITIALIZER_RECORD_PC {
+        char *base_character_name;
+        char *suit_character_name;
+        i16 *text_id;
+        u16 flags;
+        u8 group;
+        char letter;
+        u32 character_flags;
+        i16 character_id;
+        u8 index;
+        u8 unknown_17;
+    } SUIT_INITIALIZER_RECORD_PC;
+    STATIC_ASSERT(sizeof(SUIT_INITIALIZER_RECORD_PC) == 24);
+    STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, text_id) == 8);
+    STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, flags) == 0xc);
+    STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, character_flags) == 0x10);
+    STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, character_id) == 0x14);
+    STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, base_character_name) == 0);
+    STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, suit_character_name) == 4);
+    STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, group) == 0xe);
+    STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, letter) == 0xf);
+    STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, index) == 0x16);
+    typedef struct PLAYER_START_INITIALIZER_RECORD_PC {
+        NUVEC *position;
+        u8 unknown_04[0xc];
+    } PLAYER_START_INITIALIZER_RECORD_PC;
+    STATIC_ASSERT(sizeof(PLAYER_START_INITIALIZER_RECORD_PC) == 0x10);
+    STATIC_ASSERT(offsetof(PLAYER_START_INITIALIZER_RECORD_PC, position) == 0);
+
+    GAMEOBJECT *__cdecl AddDynamicCreature(i32, NUVEC *, i32, char *, AIPATHINFO_PC *, AIGROUP_PC *, i32, NUGSPLINE *,
+                                           NUVEC *, i32, i32);
+    i32 __cdecl InitCreature(GAMEOBJECT *, i32, i32);
+    void __cdecl ResetRumble(RUMBLE_PACKET_RESOURCE_PC *);
+    GAMEPAD_PC *__cdecl GamePad_Allocate(void);
+    SUIT_LAYERS_PC *__cdecl Suit_GetDefault(i32);
+    NUVEC *__cdecl Player_StartPos(GAMEOBJECT *);
+    i32 __cdecl Action_CreatePod(void *, void *, void *, char **, i32, i32, f32);
+    extern i32 NOAICREATURES;
+    extern i32 addcreature_override_id_check;
+    extern f32 default_mover_extra;
+    extern i16 id_MOSEISLEYCITIZEN;
+    extern i16 id_CANTINAALIEN;
+    extern i16 id_CLOUDCITYCITIZEN;
+    extern SUIT_INITIALIZER_RECORD_PC SuitRecordInitPc[10];
+    extern PLAYER_START_INITIALIZER_RECORD_PC PlayerStartRecordInitPc[8];
+    extern void *PodRacePc;
+    extern GAMEOBJECT *PodPacemakerPc;
+    extern f32 PodRaceSplineIncrementPc;
+    extern char PodCreateSplineKeywordPc[11];
+    extern char PodCreateStartKeywordPc[14];
+    extern char PodCreateEndKeywordPc[12];
+    extern char PodCreateTimeKeywordPc[13];
+    extern char PodCreatePacemakerKeywordPc[10];
+    extern char PodCreateDamagedKeywordPc[8];
+
+    typedef struct CHARACTER_SHADOW_RESET_SLOT_PC {
+        NUVEC position;
+        u8 unknown_0c[8];
+    } CHARACTER_SHADOW_RESET_SLOT_PC;
+    STATIC_ASSERT(sizeof(CHARACTER_SHADOW_RESET_SLOT_PC) == 0x14);
+    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, position) == 0);
+
+    typedef struct CHARACTER_SHADOW_PACKET_PC {
+        CHARACTER_SHADOW_RESET_SLOT_PC shadows[5];
+    } CHARACTER_SHADOW_PACKET_PC;
+    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT_PC) * 0 +
+                      offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, position) + offsetof(NUVEC, y) ==
+                  4);
+    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT_PC) * 1 +
+                      offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, position) + offsetof(NUVEC, y) ==
+                  0x18);
+    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT_PC) * 2 +
+                      offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, position) + offsetof(NUVEC, y) ==
+                  0x2c);
+    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT_PC) * 3 +
+                      offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, position) + offsetof(NUVEC, y) ==
+                  0x40);
+    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT_PC) * 4 +
+                      offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, position) + offsetof(NUVEC, y) ==
+                  0x54);
+
+    void __cdecl CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *);
+
+    extern char SuitMetadataName0075314cPc[7];
+    extern i16 tBATMANSUIT;
+    extern char SuitMetadataName0075d280Pc[14];
+    extern i16 tSHADOWSUIT;
+    extern char SuitMetadataName0075d270Pc[13];
+    extern i16 tGLIDESUIT;
+    extern char SuitMetadataName0075d25cPc[18];
+    extern i16 tDEMOLITIONSUIT;
+    extern char SuitMetadataName0075d24cPc[13];
+    extern i16 tSONARSUIT;
+    extern char SuitMetadataName00753144Pc[6];
+    extern i16 tROBINSUIT;
+    extern char SuitMetadataName0075d240Pc[12];
+    extern i16 tWATERSUIT;
+    extern char SuitMetadataName0075d22cPc[17];
+    extern i16 tTECHNOLOGYSUIT;
+    extern char SuitMetadataName0075d21cPc[13];
+    extern i16 tMAGNETSUIT;
+    extern char SuitMetadataName0075d20cPc[14];
+    extern i16 tATTRACTSUIT;
+    extern GAMEOBJECT *PodPacemakerPc;
+    extern void *PodRacePc;
+
 #ifdef __cplusplus
 }
 

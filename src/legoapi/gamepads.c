@@ -91,3 +91,20 @@ void __cdecl TakeHitRumble(GAMEOBJECT *object, f32 strength) {
         NewBuzz(object->pad->bound_pad, 0.1f, 0);
     }
 }
+
+GAMEPAD_PC *__cdecl GamePad_Allocate(void) {
+    i32 index;
+    for (index = 0; index < 64; ++index) {
+        if ((GamePadStorage[index].allocated & 1) == 0) {
+            GamePadStorage[index].allocated |= 1;
+            return (GAMEPAD_PC *)&GamePadStorage[index];
+        }
+    }
+    return NULL;
+}
+
+void __cdecl ResetRumble(RUMBLE_PACKET_RESOURCE_PC *packet) {
+    packet->duration = 0.0f;
+    packet->amount = 0.0f;
+    packet->active = 0;
+}

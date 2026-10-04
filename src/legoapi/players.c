@@ -1360,3 +1360,665 @@ void __cdecl PostResetCode(GAMEOBJECT *object) {
         (object->flags_e24 & 0x2000) == 0)
         object->tertiary_lean_angle = 0;
 }
+
+extern f32 animduration_blendouttime;
+typedef struct player_suit_name_pc_s {
+    u8 unknown_000[0x4];
+    char *name;
+} PLAYER_SUIT_NAME_PC;
+STATIC_ASSERT(offsetof(PLAYER_SUIT_NAME_PC, name) == 0x4);
+typedef struct player_movement_vector_pc_s {
+    u8 unknown_000[0x200];
+    NUVEC movement_direction;
+} PLAYER_MOVEMENT_VECTOR_PC;
+STATIC_ASSERT(offsetof(PLAYER_MOVEMENT_VECTOR_PC, movement_direction) == 0x200);
+typedef struct player_initialize_view_pc_s {
+    u8 unknown_000[0x298];
+    u32 field_298;
+    u8 unknown_29c[0x4];
+    u32 field_2a0;
+    u32 field_2a4;
+    u8 unknown_2a8[0x10];
+    f32 idle_total_time;
+    f32 idle_animation_time;
+    f32 idle_animation_limit;
+    i16 idle_animation;
+    i16 previous_idle_animation;
+    u8 unknown_2c8[0x126];
+    i16 animation_override_from;
+    i16 animation_override_to;
+    u8 unknown_3f2[0x62];
+    u32 field_454;
+    u8 unknown_458[0x868];
+    void *held_batarang;
+    u8 unknown_cc4[0x9c];
+    f32 pause_input_state;
+    u8 unknown_d64[0x16c];
+    u32 field_ed0;
+    u8 unknown_ed4[0x18];
+    u32 ai_state_flags;
+    u8 unknown_ef0[0xc];
+    u32 field_efc_word;
+    u32 field_f00_word;
+    u32 field_f04_word;
+    u32 field_f08_word;
+    u8 unknown_f0c[0x30];
+    u8 ai_reset_workspace[0x68];
+    u8 unknown_fa4[0x34];
+    u32 field_fd8;
+    u8 unknown_fdc[0x5c];
+    f32 field_1038;
+    u8 unknown_103c[0x41];
+    u8 field_107d;
+    u8 unknown_107e[0x5];
+    u8 field_1083;
+    u8 unknown_1084[0x2];
+    u8 field_1086;
+    u8 field_1087;
+    u8 field_1088;
+    u8 unknown_1089[0x3];
+    u32 field_108c;
+    f32 field_1090;
+    u8 unknown_1094[0x10];
+    u32 field_10a4;
+    u32 field_10a8;
+    u8 unknown_10ac[0x8];
+    u32 field_10b4;
+    u8 unknown_10b8[0x14];
+    u32 field_10cc;
+} PLAYER_INITIALIZE_VIEW_PC;
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_298) == 0x298);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_2a0) == 0x2a0);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_2a4) == 0x2a4);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, idle_total_time) == 0x2b8);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, idle_animation_time) == 0x2bc);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, idle_animation_limit) == 0x2c0);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, idle_animation) == 0x2c4);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, previous_idle_animation) == 0x2c6);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, animation_override_from) == 0x3ee);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, animation_override_to) == 0x3f0);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_454) == 0x454);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, held_batarang) == 0xcc0);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, pause_input_state) == 0xd60);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, ai_state_flags) == 0xeec);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_ed0) == 0xed0);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_efc_word) == 0xefc);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_f00_word) == 0xf00);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_f04_word) == 0xf04);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_f08_word) == 0xf08);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, ai_reset_workspace) == 0xf3c);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_fd8) == 0xfd8);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_1038) == 0x1038);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_107d) == 0x107d);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_1083) == 0x1083);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_1086) == 0x1086);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_1087) == 0x1087);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_1088) == 0x1088);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_108c) == 0x108c);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_1090) == 0x1090);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_10a4) == 0x10a4);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_10a8) == 0x10a8);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_10b4) == 0x10b4);
+STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_10cc) == 0x10cc);
+typedef struct player_packet_storage_pc_s {
+    u8 unknown_000[0x6c4];
+    u8 player_packet_storage[0x788];
+} PLAYER_PACKET_STORAGE_PC;
+STATIC_ASSERT(offsetof(PLAYER_PACKET_STORAGE_PC, player_packet_storage) == 0x6c4);
+
+typedef struct player_batarang_idle_pc_s {
+    u8 unknown_00[0x7d];
+    u8 active;
+} PLAYER_BATARANG_IDLE_PC;
+STATIC_ASSERT(offsetof(PLAYER_BATARANG_IDLE_PC, active) == 0x7d);
+typedef struct player_idle_character_pc_s {
+    u8 unknown_00[0x116];
+    u8 use_standard_idle;
+} PLAYER_IDLE_CHARACTER_PC;
+STATIC_ASSERT(offsetof(PLAYER_IDLE_CHARACTER_PC, use_standard_idle) == 0x116);
+extern void __cdecl ResetPlayerPacket(void *, CHARACTERDATA_PC *);
+extern void __cdecl ResetCoinPacket(void *);
+extern void __cdecl SetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *);
+extern GAMEOBJECT *__cdecl AddGameObject(void);
+extern i32 __cdecl InitCreature(GAMEOBJECT *, i32, i32);
+extern void __cdecl PlayerInitCapabilitiesVariant0Pc(GAMEOBJECT *);
+extern void __cdecl PlayerInitCapabilitiesVariant1Pc(GAMEOBJECT *);
+extern void __cdecl PlayerInitCapabilitiesDefaultPc(GAMEOBJECT *);
+extern i32 __cdecl CanPullLevers(i32);
+
+void __cdecl SetGameObjectCharacterData(GAMEOBJECT *object) {
+    CHARACTERDATA_PC *data = object->character_data;
+    object->origin_scale = data->model_scale;
+    object->collision_radius_unscaled = data->collision_radius;
+    object->character_bottom = data->bottom;
+    object->character_top = data->top;
+    ScaleGameObject(object);
+}
+
+i32 __cdecl GetDefaultIdle(GAMEOBJECT *object) {
+    i32 animation = 0x19;
+    PLAYER_BATARANG_IDLE_PC *batarang = (PLAYER_BATARANG_IDLE_PC *)((PLAYER_INITIALIZE_VIEW_PC *)object)->held_batarang;
+    if (((PLAYER_IDLE_CHARACTER_PC *)object->character_data->game_character)->use_standard_idle == 0 &&
+        (object->character_data->model_flags & 0x80) != 0)
+        animation = 0x76;
+    if (batarang != NULL && batarang->active != 0)
+        return 0x97;
+    if (object->character_model->action_animations[animation] != NULL &&
+        (object->character_model->action_animations[1] == NULL || (object->flags_e20 & 0x10000) != 0 ||
+         object->field_e33 == 1))
+        return animation;
+    return 1;
+}
+
+void __cdecl ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
+    PLAYER_INITIALIZE_VIEW_PC *state = (PLAYER_INITIALIZE_VIEW_PC *)object;
+    CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
+    CHARACTERANIM_CONFIG_PC *info;
+    i32 minimum, maximum, repetitions;
+    if (animation == 0x97)
+        return;
+    state->idle_animation = (i16)animation;
+    state->idle_animation_time = 0.0f;
+    minimum = 0;
+    if (model->action_animations[(i16)animation] != NULL) {
+        info = model->animation_configs[(i16)animation];
+        minimum = info->minimum_repetitions;
+    }
+    if (minimum > 0) {
+        maximum = info->maximum_repetitions;
+        repetitions = minimum;
+        if (maximum > minimum)
+            repetitions += qrand() / (0xffff / (maximum - minimum) + 1);
+        state->idle_animation_limit =
+            (f32)((f64)AnimDuration((i16)object->id, state->idle_animation, 0.0f, 0.0f, 0) * (f64)repetitions -
+                  (f64)animduration_blendouttime);
+    } else {
+        state->idle_animation_limit = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 7.0 + 8.0);
+    }
+    if (mode > 0) {
+        state->idle_total_time = 0.0f;
+        if (mode > 1)
+            state->previous_idle_animation = -1;
+    }
+}
+
+void __cdecl ResetPlayerMoves(GAMEOBJECT *object) {
+    PLAYER_INITIALIZE_VIEW_PC *state = (PLAYER_INITIALIZE_VIEW_PC *)object;
+    ResetPlayerPacket(((PLAYER_PACKET_STORAGE_PC *)object)->player_packet_storage, object->character_data);
+    object->fall_acceleration_timer = 0.0f;
+    state->pause_input_state = 0.0f;
+    object->movement_direction_x = v000.x;
+    ((PLAYER_MOVEMENT_VECTOR_PC *)object)->movement_direction.y = v000.y;
+    object->movement_direction_z = v000.z;
+    object->input_toggle_hold_time = TOGGLEHOLDTIME;
+    object->flags_ef0 |= 0x80;
+    ResetCharacterIdle(object, 2, GetDefaultIdle(object));
+    if (object->character_model->action_animations[1] != NULL) {
+        ResetAnimPacket(&object->anim_packet, 1);
+        SetAnimTimeRandom(object->character_model, &object->anim_packet);
+    } else
+        ResetAnimPacket(&object->anim_packet, -1);
+    object->field_282 = 0;
+    object->field_281 = 0;
+    SetGameObjectCharacterData(object);
+    object->spawn_protection_timer = 0.0f;
+    SetFlicker(object, 0.0f);
+    ResetCoinPacket(object->coin_packet);
+    object->respawn_timer = 0.0f;
+    object->flags_1fc_word &= ~0x2000u;
+    DrawOffsetCode(object, 1);
+}
+
+void __cdecl ResetPlayerAI(GAMEOBJECT *object) {
+    PLAYER_INITIALIZE_VIEW_PC *state = (PLAYER_INITIALIZE_VIEW_PC *)object;
+    state->field_1090 = 0.0f;
+    object->ai_packet.flags &= 0xfffffd9f;
+    object->flags_ef0 &= ~0x200000u;
+    object->ai_packet.intersection_connection = NULL;
+    object->ai_packet.intersection_target_connection = NULL;
+    state->animation_override_from = -1;
+    state->animation_override_to = -1;
+    object->ai_packet.path_target = NULL;
+    state->field_1086 = 0;
+    state->field_1087 = 0;
+    state->field_108c = 0;
+    state->field_1088 = 0;
+    state->field_efc_word = 0;
+    state->field_f00_word = 0;
+    state->field_f04_word = 0;
+    object->ai_packet.frame_state = 0;
+    state->field_f08_word = 0;
+    memset(&object->ai_packet.path_info, 0, sizeof(object->ai_packet.path_info));
+    object->ai_packet.current_route = 0xff;
+    object->ai_packet.next_route = 0;
+    object->ai_packet.inside_path_node = -1;
+    AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
+}
+
+void __cdecl InitPlayerAI(GAMEOBJECT *object) {
+    PLAYER_INITIALIZE_VIEW_PC *state = (PLAYER_INITIALIZE_VIEW_PC *)object;
+    CHARACTERDATA_PC *character = object->character_data;
+    i32 can_pull_levers;
+    i32 type;
+    char *name;
+    u64 route_mask;
+    u32 flags;
+    if (StartupGameFlag0 != 0)
+        PlayerInitCapabilitiesVariant0Pc(object);
+    else if (StartupGameFlag1 != 0)
+        PlayerInitCapabilitiesVariant1Pc(object);
+    else
+        PlayerInitCapabilitiesDefaultPc(object);
+    can_pull_levers = CanPullLevers((i16)object->id);
+    object->ai_packet.flags &= ~0x10000u;
+    object->flags_ef0 = (object->flags_ef0 & ~0x800000u) | (((u32)can_pull_levers << 23) & 0x800000u);
+    object->ai_packet.route_mask_low = 0;
+    object->ai_packet.route_mask_high = 0;
+    if (FreePlay != 0 && (object->flags_1f8 & 0x400) == 0) {
+        object->ai_packet.route_mask_low = 0xffffffff;
+        object->ai_packet.route_mask_high = 0xffffffff;
+    } else if (SpecialRouteCharacterTypeIDFn != NULL) {
+        name = object->suit != NULL ? ((PLAYER_SUIT_NAME_PC *)object->suit)->name : character->name;
+        type = (u8)SpecialRouteCharacterTypeIDFn(name);
+        if (type != 0xff) {
+            route_mask = (type < 64) ? ((u64)1 << type) : (u64)-1;
+            object->ai_packet.route_mask_low = (u32)route_mask;
+            object->ai_packet.route_mask_high = (u32)(route_mask >> 32);
+        }
+    }
+    object->run_speed_override = 1000000000.0f;
+    object->walk_speed_override = 1000000000.0f;
+    object->ai_packet.creature_set = 0;
+    flags = state->ai_state_flags | 2;
+    flags = (flags & ~4u) | ((character->model_flags >> 5) & 4);
+    object->flags_ef0 &= 0xc7ffe6c0;
+    object->hover_height_override = 1000000000.0f;
+    object->flags_ef4 &= 0x31f7e95c;
+    object->collision_scale_override = 1000000000.0f;
+    object->flags_ef8_word &= 0xfffffffc;
+    flags = (flags & 0x25fffc27) | 8;
+    object->doomed_escape_locator = NULL;
+    object->flags_ef4 = (object->flags_ef4 & ~0x40000u) | ((object->flags_1f8 & 0x400) == 0 ? 0x40000u : 0);
+    object->extra_layer_mask = 0;
+    object->ai_packet.movement_target_radius = DEFAULT_MOVE_RANGE;
+    object->ai_packet.flags &= ~0x10000000u;
+    object->ai_packet.flags = (object->ai_packet.flags & ~0xc000000u) | (DEFAULT_MOVE_RANGE > 0.0f ? 0x4000000u : 0);
+    object->flags_ef4 &= 0xfe5fffff;
+    flags = (flags & ~0xc0000u) | ((character->model_flags >> 7) & 0x100000);
+    object->movement_speed_scale_pc = 1.0f;
+    object->tag_flags &= ~2u;
+    object->field_ec4 = 0.0f;
+    object->ai_packet.flags &= 0xffffafff;
+    object->ai_packet.target_metric_e0 = 1000000000.0f;
+    object->ai_packet.target_metric_f0 = 1000000000.0f;
+    state->field_454 = 0;
+    state->ai_state_flags = flags & 0xfadff7fe;
+    object->timer_ecc = 0.0f;
+    object->flags_ef0 &= ~0x1000000u;
+    object->field_ec0 = 0;
+    object->ai_packet.nearest_opponent = NULL;
+    object->ai_packet.target_dc = NULL;
+    object->ai_packet.opponent = NULL;
+    object->ai_packet.target_ec = NULL;
+    object->ai_awareness_mask = 0;
+    object->ai_seen_mask = 0;
+    object->field_eb0 = 0;
+    object->field_eb4 = 0;
+    state->field_10a4 = 0;
+    state->field_10a8 = 0;
+    object->ai_opponent_exclusion_mask[0] = 0;
+    object->ai_opponent_exclusion_mask[1] = 0;
+    memset(state->ai_reset_workspace, 0, sizeof(state->ai_reset_workspace));
+    state->field_107d = 0;
+    state->field_fd8 = 0;
+    object->ai_packet.dont_avoid_character = NULL;
+    state->field_298 = 0;
+    state->field_2a0 = 0;
+    state->field_2a4 = 0;
+    object->flags_1fc_word =
+        (object->flags_1fc_word & ~2u) |
+        (((character->model_flags & 0x4000) != 0 && (object->field_280 == 0xff || object->rider != NULL)) ? 2u : 0);
+    object->flags_ef0 =
+        (object->flags_ef0 & ~0x80000000u) | ((character->game_character->flags_090 << 18) & 0x80000000u);
+    object->flags_1fc_word &= 0xffe7f7ff;
+    object->flags_ef4 &= ~4u;
+    object->animation_speed_multiplier = 1.0f;
+    object->flags_ef0 &= 0xfbbfffff;
+    object->flags_ef8_word &= 0xfffffff3;
+    state->field_1038 = 0.0f;
+    state->field_10b4 = 0;
+    state->field_1083 = 0;
+    state->field_10cc = 0;
+    ResetPlayerAI(object);
+}
+
+GAMEOBJECT *__cdecl AddCreature(i32 id, i32 parameter) {
+    GAMEOBJECT *object;
+    if ((u32)id > 0x153 || apicharsys->playermodelids[id] == -1)
+        return NULL;
+    object = AddGameObject();
+    if (object == NULL)
+        return NULL;
+    InitCreature(object, id, parameter);
+    return object;
+}
+
+NUVEC *__cdecl Player_StartPos(GAMEOBJECT *object) {
+    i32 index = (i8)object->field_280;
+    NUVEC *position;
+    if (index < 0 || index >= 8)
+        index = object->hostility_group;
+    index %= 8;
+    position = PlayerStartRecordInitPc[index].position;
+    return position != NULL ? position : PlayerStartRecordInitPc[0].position;
+}
+
+/* Minimum original PC consumer views; no full allocation extent asserted. */
+typedef struct DYNAMIC_AI_TIMER_VIEW_PC {
+    u8 unknown_000[0x18c];
+    f32 antinode_timer;
+} DYNAMIC_AI_TIMER_VIEW_PC;
+STATIC_ASSERT(offsetof(DYNAMIC_AI_TIMER_VIEW_PC, antinode_timer) == 0x18c);
+typedef struct DYNAMIC_LIGHTING_VIEW_PC {
+    u8 unknown_000[0x4d8];
+    RTL_DATA_PC lighting_packet;
+} DYNAMIC_LIGHTING_VIEW_PC;
+STATIC_ASSERT(offsetof(DYNAMIC_LIGHTING_VIEW_PC, lighting_packet) == 0x4d8);
+typedef struct DYNAMIC_RUMBLE_VIEW_PC {
+    u8 unknown_00[0x40];
+    RUMBLE_PACKET_RESOURCE_PC rumble_packet;
+} DYNAMIC_RUMBLE_VIEW_PC;
+STATIC_ASSERT(offsetof(DYNAMIC_RUMBLE_VIEW_PC, rumble_packet) == 0x40);
+/* Genuine original call declarations: no placeholder implementations. */
+GAMEOBJECT *__cdecl AddCreature(i32 model, i32 mode);
+void __cdecl InitPlayerAI(GAMEOBJECT *object);
+void __cdecl ResetPlayerMoves(GAMEOBJECT *object);
+void __cdecl ResetRumble(RUMBLE_PACKET_RESOURCE_PC *packet);
+void __cdecl ResetLights(NUVEC *position, RTL_DATA_PC *packet, void *set);
+void __cdecl rtlResetEx(RTL_DATA_PC *packet, i32 clear_cache);
+void __cdecl rtlApplySetScale(void *set, RTL_DATA_PC *packet, NUVEC *position, NUMTX *rotation, i32 identity,
+                              f32 scale);
+extern i32 NOAICREATURES;
+extern i32 complexsockposition_forcesock;
+
+#include <string.h>
+
+extern i32 addcreature_override_id_check;
+extern f32 default_mover_extra;
+extern i16 id_MOSEISLEYCITIZEN, id_CANTINAALIEN, id_CLOUDCITYCITIZEN;
+extern NUVEC *__cdecl Player_StartPos(GAMEOBJECT *);
+extern GAMEPAD_PC *__cdecl GamePad_Allocate(void);
+extern SUIT_LAYERS_PC *__cdecl Suit_GetDefault(i32);
+
+typedef struct CREATURE_RESET_PACKET_VIEW_PC {
+    u8 unknown_000[0x6c4];
+    u8 packet[0x788];
+} CREATURE_RESET_PACKET_VIEW_PC;
+STATIC_ASSERT(offsetof(CREATURE_RESET_PACKET_VIEW_PC, packet) == 0x6c4);
+STATIC_ASSERT(sizeof(((CREATURE_RESET_PACKET_VIEW_PC *)0)->packet) == 0x788);
+typedef struct CREATURE_MOVEMENT_RESET_VIEW_PC {
+    u8 unknown_000[0x200];
+    NUVEC movement;
+} CREATURE_MOVEMENT_RESET_VIEW_PC;
+STATIC_ASSERT(offsetof(CREATURE_MOVEMENT_RESET_VIEW_PC, movement) == 0x200);
+
+static const u8 CreatureMosHatPc[5] = {0, 0, 0, 7, 14};
+static const u8 CreatureMosHeadPc[5] = {20, 20, 8, 8, 4};
+static const u8 CreatureMosBodyPc[3] = {3, 9, 19};
+static const u8 CreatureMosArmsPc[3] = {1, 12, 15};
+static const u8 CreatureMosHandsPc[3] = {2, 13, 16};
+static const u8 CreatureMosWaistPc[3] = {6, 10, 17};
+static const u8 CreatureMosLegsPc[3] = {5, 11, 18};
+static const u8 CreatureCantinaHeadPc[3] = {0, 3, 6};
+static const u8 CreatureCantinaBodyPc[3] = {1, 4, 7};
+static const u8 CreatureCantinaLegsPc[3] = {2, 5, 8};
+static const u8 CreatureCloudHeadPc[3] = {1, 5, 7};
+static const u8 CreatureCloudBodyPc[3] = {2, 3, 6};
+static const u8 CreatureCloudLegsPc[3] = {0, 4, 8};
+
+static void SetLayersMosPc(GAMEOBJECT *object) {
+    object->layer_mask = 0;
+    object->layer_mask |= 1u << CreatureMosHatPc[qrand() / 0x3334];
+    object->layer_mask |= 1u << CreatureMosHeadPc[qrand() / 0x3334];
+    object->layer_mask |= 1u << CreatureMosBodyPc[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureMosArmsPc[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureMosHandsPc[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureMosWaistPc[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureMosLegsPc[qrand() / 0x5556];
+}
+static void SetLayersCantinaPc(GAMEOBJECT *object) {
+    object->layer_mask = 0;
+    object->layer_mask |= 1u << CreatureCantinaHeadPc[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureCantinaBodyPc[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureCantinaLegsPc[qrand() / 0x5556];
+}
+static void SetLayersCloudPc(GAMEOBJECT *object) {
+    object->layer_mask = 0;
+    object->layer_mask |= 1u << CreatureCloudHeadPc[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureCloudBodyPc[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureCloudLegsPc[qrand() / 0x5556];
+    object->flags_ef4 = (object->flags_ef4 & ~0x800u) | ((object->layer_mask << 4) & 0x800);
+}
+static void SetLayersBobPc(GAMEOBJECT *object) {
+    i32 head[6] = {1, 2, 3, 21, 22, 23};
+    i32 body[8] = {5, 6, 7, 8, 9, 10, 16, 17};
+    i32 legs[3] = {11, 12, 15};
+    i32 arms[2] = {13, 14};
+    i32 hands[2] = {19, 20};
+    object->flags_ef0 = (object->flags_ef0 & ~0x200u) | ((qrand() < 0x8000) ? 0x200 : 0);
+    if (qrand() < 0x8000)
+        object->layer_mask |= 0x10;
+    object->layer_mask = 1;
+    object->layer_mask |= 1u << head[qrand() / 0x2aab];
+    object->layer_mask |= 1u << body[qrand() / 0x2000];
+    object->layer_mask |= 1u << legs[qrand() / 0x5556];
+    object->layer_mask |= 1u << arms[qrand() / 0x8000];
+    object->layer_mask |= 1u << hands[qrand() / 0x8000];
+}
+static void InitCreatureModelFlagsPc(GAMEOBJECT *object) {
+    if ((object->character_data->game_character->flags_090 & 0x8000) != 0)
+        object->flags_1f8 |= 0x20000;
+    else
+        object->flags_1f8 &= ~0x20000u;
+}
+
+i32 __cdecl InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
+    CHARACTERDATA_PC *character;
+    PLAYERCHARACTERCONFIG_PC *config;
+    NUVEC start;
+    void **animations;
+    i32 animation;
+    addcreature_override_id_check = 0;
+    if (id < 0 || id >= 0x154 || apicharsys->playermodelids[id] == -1)
+        return 0;
+    character = (CHARACTERDATA_PC *)&apicharsys->char_data[id];
+    object->character_data = character;
+    config = character->game_character;
+    object->layer_mask = config->layer_mask;
+    object->flags_1f8 = 0;
+    object->level_object_index = -1;
+    memset(((CREATURE_RESET_PACKET_VIEW_PC *)object)->packet, 0, 0x788);
+    object->field_280 = 0xff;
+    start = *Player_StartPos(object);
+    object->flags_1f8 |= 2;
+    if (parameter != 0)
+        object->flags_1f8 |= 0x4000;
+    if ((WORLD->current_level->flags & 0x40000) == 0)
+        object->flags_1f8 |= 0x40;
+    object->pad = GamePad_Allocate();
+    object->pad->input_mode = 1;
+    object->field_107e = config->hitpoints;
+    object->current_hp = config->hitpoints;
+    ResetPlayerPacket(((CREATURE_RESET_PACKET_VIEW_PC *)object)->packet, character);
+    ((CREATURE_MOVEMENT_RESET_VIEW_PC *)object)->movement = v000;
+    object->shield_hitpoints = character->game_character->shield_hitpoints;
+    object->saved_hitpoints = 4;
+    object->id = (u16)id;
+    object->character_model = &apicharsys->models[apicharsys->playermodelids[id]];
+    object->suit = Suit_GetDefault((i16)id);
+    object->ai_packet.creature_index = 0xff;
+    SetGameObjectCharacterData(object);
+    object->death_delay = 0.5f;
+    object->start_position = start;
+    object->position = start;
+    object->initial_position = start;
+    object->collision_position = start;
+    GetTopBot(object);
+    GameObjectDimensions(object);
+    object->animation_index = 1;
+    if (object->character_model != NULL) {
+        animations = object->character_model->action_animations;
+        if (animations[1] == NULL) {
+            for (animation = 0; animation < 0xe9; ++animation)
+                if (animations[animation] != NULL)
+                    break;
+            if (animation < 0xe9)
+                object->animation_index = (i16)animation;
+        }
+    }
+    ResetAnimPacket(&object->anim_packet, object->animation_index);
+    ResetCharacterIdle(object, 2, GetDefaultIdle(object));
+    ResetLights(&object->position, &((DYNAMIC_LIGHTING_VIEW_PC *)object)->lighting_packet, WORLD->rtl_set);
+    object->ai_packet.mover_height = object->bounds_radius + default_mover_extra;
+    GameObjectOrigin(object);
+    object->previous_position = object->position;
+    object->ai_update_position = object->position;
+    object->flags_ef4 =
+        (object->flags_ef4 & ~0x800u) | ((object->character_data->game_character->flags_090 >> 6) & 0x800);
+    if (object->id == (u16)id_MOSEISLEYCITIZEN)
+        SetLayersMosPc(object);
+    else if (object->id == (u16)id_CANTINAALIEN)
+        SetLayersCantinaPc(object);
+    else if (object->id == (u16)id_CLOUDCITYCITIZEN)
+        SetLayersCloudPc(object);
+    else if (object->id == (u16)id_BOB)
+        SetLayersBobPc(object);
+    else if (object->id == (u16)id_GEONOSIAN)
+        object->flags_ef0 = (object->flags_ef0 & ~0x200u) | ((qrand() < 0x8000) ? 0x200 : 0);
+    InitCreatureModelFlagsPc(object);
+    return 1;
+}
+
+typedef struct PLAYER_CHARACTER_CHANGE_VIEW_PC {
+    u8 unknown_000[0x230];
+    f32 view_distance;
+    f32 hear_distance;
+    f32 max_view_height;
+    f32 min_view_height;
+    u8 unknown_240[0x590];
+    u8 mini_packet[0x24];
+} PLAYER_CHARACTER_CHANGE_VIEW_PC;
+STATIC_ASSERT(offsetof(PLAYER_CHARACTER_CHANGE_VIEW_PC, view_distance) == 0x230);
+STATIC_ASSERT(offsetof(PLAYER_CHARACTER_CHANGE_VIEW_PC, hear_distance) == 0x234);
+STATIC_ASSERT(offsetof(PLAYER_CHARACTER_CHANGE_VIEW_PC, max_view_height) == 0x238);
+STATIC_ASSERT(offsetof(PLAYER_CHARACTER_CHANGE_VIEW_PC, min_view_height) == 0x23c);
+STATIC_ASSERT(offsetof(PLAYER_CHARACTER_CHANGE_VIEW_PC, mini_packet) == 0x7d0);
+void __cdecl Shards_HandleLostObj(WORLDINFO *, GAMEOBJECT *);
+void __cdecl DestroySnakeBody(GAMEOBJECT *);
+void __cdecl GizForce_ResetLOS(GAMEOBJECT *);
+
+i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
+    PLAYER_INITIALIZE_VIEW_PC *init = (PLAYER_INITIALIZE_VIEW_PC *)object;
+    PLAYER_CHARACTER_CHANGE_VIEW_PC *change = (PLAYER_CHARACTER_CHANGE_VIEW_PC *)object;
+    PLAYERCHARACTERCONFIG_PC *config;
+    NUVEC velocity;
+    AIPATHINFO_PC path;
+    AILOCATOR_PC *saved_locator;
+    u32 saved_f08, saved_frame_state, saved_ai_flag, lean_enabled, saved_flag;
+    i16 lean;
+    i8 context;
+    u8 health, hitpoints, route, next_route;
+    i32 on_surface;
+    if (id == old_id || id < 0 || id >= CHARCOUNT || apicharsys->playermodelids[id] == -1)
+        return 0;
+    Shards_HandleLostObj(WORLD, object);
+    if (VehicleArea == 0)
+        AddGameDebris(WORLD->game_debris_sys, 0x5c, &object->collision_position);
+    context = object->character_context;
+    lean = (i16)object->movement_lean_angle;
+    lean_enabled = object->character_data->model_flags & 0x2000;
+    LoseHelmet(object, 0, 1);
+    DestroySnakeBody(object);
+    object->id = (u16)id;
+    object->character_model = &apicharsys->models[apicharsys->playermodelids[id]];
+    object->character_data = (CHARACTERDATA_PC *)&apicharsys->char_data[id];
+    velocity = object->velocity;
+    health = (u8)object->current_hp;
+    hitpoints = object->field_107e;
+    saved_flag = object->flags_1fc_word & 0x2000;
+    object->takeover_owner = NULL;
+    object->suit = Suit_GetDefault(id);
+    saved_locator = object->doomed_escape_locator;
+    saved_f08 = init->field_f08_word;
+    saved_ai_flag = object->flags_ef0 & 0x200000;
+    route = object->ai_packet.current_route;
+    next_route = object->ai_packet.next_route;
+    path = object->ai_packet.path_info;
+    saved_frame_state = object->ai_packet.navigation_flags;
+    InitPlayerAI(object);
+    object->flags_ef0 = (object->flags_ef0 & ~0x200000u) | saved_ai_flag;
+    object->doomed_escape_locator = saved_locator;
+    init->field_f08_word = saved_f08;
+    object->ai_packet.current_route = route;
+    object->ai_packet.next_route = next_route;
+    object->ai_packet.path_info = path;
+    object->ai_packet.navigation_flags = saved_frame_state;
+    object->collision_scale = 1.0f;
+    config = object->character_data->game_character;
+    object->layer_mask = config->layer_mask;
+    object->shield_hitpoints = config->shield_hitpoints;
+    object->saved_hitpoints = 4;
+    Player_ClearContext(object, 1);
+    ResetPlayerMoves(object);
+    SetGameObjectCharacterData(object);
+    ResetAnimPacket(&object->anim_packet, -1);
+    Player_ResetContexts(((CREATURE_RESET_PACKET_VIEW_PC *)object)->packet);
+    GetTopBot(object);
+    GameObjectDimensions(object);
+    object->hud_icon_timer = 2.0f;
+    object->input_toggle_hold_time = TOGGLEHOLDTIME;
+    object->flags_ef0 |= 0x80;
+    InitSurfaceInfo(object);
+    on_surface = SetObjOnSurface(object, 1);
+    GizForce_ResetLOS(object);
+    object->tag_reset_timer = 0.0f;
+    object->pause_context_state = 0.0f;
+    object->flags_ef0 &= ~0x80000u;
+    object->current_hp = (i8)health;
+    object->field_107e = hitpoints;
+    object->flags_1fc_word = (object->flags_1fc_word & ~0x2000u) | saved_flag;
+    ResetMiniAnimPacket((MINIANIMPACKET_PC *)change->mini_packet, -1);
+    object->weapon_scale = (object->flags_e20 & 0x10000) != 0 ? 1.0f : 0.0f;
+    object->field_e33 = 0;
+    if (on_surface != 0)
+        ((PLAYER_RESET_FIELDS_PC *)object)->ground_contact_grace_timer = 0.2f;
+    else
+        object->velocity.y = velocity.y;
+    if (context == 0x33 && StartSlide(object, 0)) {
+        object->velocity.x = velocity.x;
+        object->velocity.z = velocity.z;
+    }
+    if (object->velocity.y == 0.0f)
+        object->velocity.y = -0.1f;
+    if (lean_enabled != 0 && (object->character_data->model_flags & 0x2000) != 0)
+        object->movement_lean_angle = (u16)lean;
+    config = apicharsys->char_data[(i16)object->id].game_character;
+    change->view_distance = config->viewdistance;
+    change->hear_distance = config->heardistance;
+    change->max_view_height = config->maxviewheight;
+    change->min_view_height = config->minviewheight;
+    config = object->character_data->game_character;
+    object->flags_ef4 = (object->flags_ef4 & ~0x800u) | ((config->flags_090 >> 6) & 0x800);
+    if (object->id == (u16)id_MOSEISLEYCITIZEN)
+        SetLayersMosPc(object);
+    else if (object->id == (u16)id_CANTINAALIEN)
+        SetLayersCantinaPc(object);
+    else if (object->id == (u16)id_CLOUDCITYCITIZEN)
+        SetLayersCloudPc(object);
+    else if (object->id == (u16)id_BOB)
+        SetLayersBobPc(object);
+    else if (object->id == (u16)id_GEONOSIAN)
+        object->flags_ef0 = (object->flags_ef0 & ~0x200u) | ((qrand() < 0x8000) ? 0x200 : 0);
+    InitCreatureModelFlagsPc(object);
+    return 1;
+}

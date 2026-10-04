@@ -318,3 +318,79 @@ extern "C" void __cdecl PlaySabreSfx(char *name, GAMEOBJECT *object, NUVEC *posi
 extern "C" void __cdecl PlaySfxByIdAndSetPitch(i32 sfx_id, NUVEC *position, f32 pitch) {
     PlaySfxByIdEx(sfx_id, position, 1.0f, pitch);
 }
+
+extern "C" {
+    typedef struct footstep_audio_callbacks_pc_s {
+        i32(__cdecl *override_footstep)(GAMEOBJECT *, i32);
+    } FOOTSTEP_AUDIO_CALLBACKS_PC;
+    STATIC_ASSERT(offsetof(FOOTSTEP_AUDIO_CALLBACKS_PC, override_footstep) == 0);
+    void __cdecl PlayFootStepSfx(GAMEOBJECT *object) {
+        i32 on_platform = 1;
+        i8 surface = (i8)object->jump_animation_state;
+        i32 sound;
+        i32 alternate;
+        CHARACTERANIM_CONFIG_PC *config;
+        ANIMPACKET_PC *packet = &object->anim_packet;
+        if (object->terrain_platform_id == -1 && object->supporting_platform_id == -1 &&
+            (surface == -1 || (TerSurface[surface].flags & 2) == 0))
+            on_platform = 0;
+        sound = object->character_data->game_character->sfx_footstep;
+        if (sound == -1 &&
+            (((FOOTSTEP_AUDIO_CALLBACKS_PC *)GameAudio)->override_footstep == NULL ||
+             (sound = ((FOOTSTEP_AUDIO_CALLBACKS_PC *)GameAudio)->override_footstep(object, on_platform)) == -1)) {
+            if (object->is_underwater == 0 && object->water_intersects == 0) {
+                alternate = (WorldInfo_CurrentlyActive()->current_level->flags & 0x1000) != 0;
+                sound =
+                    GameAudio->sfx_ids[(object->character_data->model_flags & 0x10) != 0 ? (alternate ? 0x12 : 0x11)
+                                                                                         : (alternate ? 0x10 : 0x0f)];
+            } else
+                sound = GameAudio->sfx_ids[0x13];
+        }
+        if (sound != -1) {
+            if ((object->flags_1fc_word & 0x80) != 0 || (object->portal_flags & 0x8000000) != 0)
+                PlaySfxById(sound, &object->lower_position);
+            else
+                PlaySfxByIdAndSetVolume(sound, &object->lower_position, 0.5f);
+        }
+        if (packet->blending == 0 && packet->animation_index != -1) {
+            config = object->character_model->animation_configs[packet->animation_index];
+            if (config != NULL) {
+                if ((config->flags & 0x20000) != 0) {
+                    GameCam_Judder(GameCam, -0.25f, 0, &object->collision_position);
+                    NewRumbleAllPlayers(0.6f, 0.0f, 0, 0.0f);
+                } else if ((config->flags & 0x40000) != 0 && VehicleArea == 0) {
+                    GameCam_NewShake(GameCam, 0.5f, 0.5f, 1.0f);
+                    NewRumbleAllPlayers(0.5f, 0.0f, 0, 0.0f);
+                }
+            }
+        }
+    }
+
+    void __cdecl AddFootSteps(GAMEOBJECT *object) {
+        ANIMPACKET_PC *packet = &object->anim_packet;
+        CHARACTERANIM_CONFIG_PC *config;
+        i32 index;
+        i32 valid_interval;
+        i32 crossed = 0;
+        f32 frame;
+        if (packet->blending != 0 || packet->animation_index == -1 ||
+            object->character_model->action_animations[packet->animation_index] == NULL)
+            return;
+        config = object->character_model->animation_configs[packet->animation_index];
+        if ((config->flags & 0x100) == 0 || packet->current_time == packet->previous_time)
+            return;
+        valid_interval = (packet->flags & 2) != 0 ? packet->previous_time > packet->current_time
+                                                  : packet->previous_time < packet->current_time;
+        for (index = (config->flags & 0x10000) != 0 ? 0 : 2; index < 4; ++index) {
+            frame = config->event_frames[index];
+            if (!(frame >= 1.0f) || !valid_interval)
+                continue;
+            if (packet->previous_time > packet->current_time)
+                crossed |= frame > packet->previous_time || frame <= packet->current_time;
+            else
+                crossed |= frame > packet->previous_time && frame <= packet->current_time;
+        }
+        if (crossed)
+            PlayFootStepSfx(object);
+    }
+}

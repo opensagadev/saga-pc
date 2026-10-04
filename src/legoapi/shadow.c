@@ -56,3 +56,11 @@ f32 __cdecl BlobShadowFade(NUVEC *position, f32 fade_start, f32 fade_end, f32 al
         return alpha;
     return (1.0f - (NuFsqrt(distance_squared) - fade_start) / (fade_end - fade_start)) * alpha;
 }
+
+void __cdecl CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *packet) {
+    packet->shadows[0].position.y = 2000000.0f;
+    packet->shadows[1].position.y = 2000000.0f;
+    packet->shadows[2].position.y = 2000000.0f;
+    packet->shadows[3].position.y = 2000000.0f;
+    packet->shadows[4].position.y = 2000000.0f;
+}

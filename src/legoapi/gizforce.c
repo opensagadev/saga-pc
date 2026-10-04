@@ -329,3 +329,8 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
     }
     return 0;
 }
+
+void __cdecl GizForce_ResetLOS(GAMEOBJECT *object) {
+    if (object->gizforce_los_info != NULL)
+        memset(object->gizforce_los_info, 0, 0x630);
+}

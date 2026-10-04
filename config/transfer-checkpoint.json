@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 866871,
-    "matched_code_bytes": 77060,
-    "matching_percent": 2.2199521439851857,
-    "fuzzy_coverage_percent": 14.222797526896697,
-    "mapped_functions": 3019,
-    "matched_functions": 1217,
-    "objdiff_fuzzy_percent": 63.756966,
-    "objdiff_total_code": 774535,
+    "mapped_code_bytes": 877929,
+    "matched_code_bytes": 78358,
+    "matching_percent": 2.2573450570774876,
+    "fuzzy_coverage_percent": 14.540193456693663,
+    "mapped_functions": 3057,
+    "matched_functions": 1234,
+    "objdiff_fuzzy_percent": 63.897194,
+    "objdiff_total_code": 790078,
     "image_bytes": 40067072,
-    "mapped_bytes": 1508171,
-    "mapping_percent": 3.7641158305752915
+    "mapped_bytes": 1519253,
+    "mapping_percent": 3.791774452597884
   },
   "newly_compared": [
     {
@@ -15273,6 +15273,128 @@
         "Next39/14110 source wave requires production typed Init/POD data integration and full final source-owner verification."
       ],
       "next_connected_wave": "Independently accepted39 functions/14110PC bytes: gameplay23/8142, dynamic/init/POD15/5942 and CharShadowsReset26. Genuine37 Init/POD physical data views613B are scratch-verified. NewPlayerCharacter cohort1433 remains held for physical caller-arity proof. Candidate bytes receive no transfer credit.",
+      "ongoing_goal": "Continue whole-project transfer until user stops or pauses; validated direct main pushes authorized."
+    },
+    {
+      "baseline_commit": "af4c378bb6e7742ede5db721637f20201f49e78e",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 866871,
+        "matched_code_bytes": 77060,
+        "matching_percent": 2.2199521439851857,
+        "fuzzy_coverage_percent": 14.222797526896697,
+        "mapped_functions": 3019,
+        "matched_functions": 1217,
+        "objdiff_fuzzy_percent": 63.756966,
+        "objdiff_total_code": 774535,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1508171,
+        "mapping_percent": 3.7641158305752915
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 877929,
+        "matched_code_bytes": 78358,
+        "matching_percent": 2.2573450570774876,
+        "fuzzy_coverage_percent": 14.540193456693663,
+        "mapped_functions": 3057,
+        "matched_functions": 1234,
+        "objdiff_fuzzy_percent": 63.897194,
+        "objdiff_total_code": 790078,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1519253,
+        "mapping_percent": 3.791774452597884
+      },
+      "newly_compared_functions": 43,
+      "new_original_code_bytes": 15543,
+      "compared_code_delta": 15543,
+      "baseline_unique_compared_pc_bytes": 774423,
+      "unique_compared_pc_bytes": 789966,
+      "exact_code_added": 1298,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 2798,
+      "prior_compiled_function_copies_identical": 2798,
+      "renamed_owner_copies_with_identical_complete_bodies": [],
+      "user_journal_unchanged": true,
+      "checkpoint": "Player animation, creature initialization and character transfer checkpoint (2026-10-04)",
+      "family_bytes": {
+        "gameplay_animation": 8142,
+        "dynamic_init_pod": 5942,
+        "character_shadow_reset": 26,
+        "character_transfer": 1433
+      },
+      "shared_data_definitions_added": 37,
+      "shared_initializer_view_bytes_added": 613,
+      "known_extent_definitions_added": 0,
+      "known_extent_bytes_added": 0,
+      "unknown_extent_definitions_added": 37,
+      "unknown_extent_source_bytes_added": 613,
+      "mutable_allocation_credit_added": 0,
+      "private_data": {
+        "selection_tables": 13,
+        "declared_array_bytes": 43,
+        "complete_emitted_array_bytes": 59,
+        "natural_static_state_bytes": 4,
+        "original_extents": "unknown, blank, zero credit",
+        "compiler_f64_literals": 3,
+        "compiler_f64_known_bytes": 24
+      },
+      "data_scope": {
+        "proofs": 1540,
+        "known_extents": 559,
+        "known_unique_bytes": 137619,
+        "unknown_extents": 981,
+        "unknown_view_bytes": 102126,
+        "previous_proofs_preserved": 1503
+      },
+      "verified_checks": {
+        "all_required_checks_passed": true,
+        "tests": 665,
+        "skipped": 3,
+        "test_seconds": 39.316,
+        "llvm": 18,
+        "format_files": 237,
+        "tidy_units": 235,
+        "objects": 235,
+        "function_definitions": 2841,
+        "data_definitions": 5444,
+        "source_only_link": true,
+        "native_gameplay_and_shadow_checks": 75,
+        "native_init_pod_guard_lookup_checks": 167,
+        "native_successful_init_checks": 22,
+        "native_character_transition_checks": 64,
+        "native_total_checks": 328,
+        "native_failures": 0,
+        "native_manifests_verified": 4,
+        "native_manifests_equal_current_normal_sources_and_objects": true,
+        "normal_data_regions": 3229,
+        "scoped_initializer_proofs": 1540,
+        "previous_function_copies_identical": 2798,
+        "prior_exact_code_and_data_preserved": true,
+        "limitations": [
+          "Selected real InitCreature construction and selected gameplay/lookup states are tested; full assets, general AddDynamic/POD success, complete gameplay, visuals/audio and hardware are unverified.",
+          "Original allocation extents for new shared and private views remain unknown and receive zero credit.",
+          "Resource966 and graphics fallback aggregates remain held to preserve earlier exact WORD/scalar physical data."
+        ]
+      },
+      "semantic_corrections": [
+        "ResetCharacterIdle uses actual animduration_blendouttime, rather than Android FRAMETIME.",
+        "InitCreature clears actual788 bytes at6c4; retains signed IDs, native layer selection and real producer ordering.",
+        "NewPlayerCharacter native four-word caller ABI retained despite unused fourth parameter; BYTEe22 bit1 is DWORDflags_e20 mask10000.",
+        "Actual PC Suit metadata magnet mask200000 retained; Android2000 differs."
+      ],
+      "validation_findings": [
+        "Long Windows fixture link command was corrected with short identical normal-object snapshot paths.",
+        "Valid InitCreature fixture height expectation was corrected using native Scale/GetTopBot/Dimensions order; all22 assertions retained.",
+        "Focused character fixture supplied missing real CDataList input; production code stayed frozen."
+      ],
+      "remaining_contracts": [
+        "Selected real InitCreature and character transitions are tested; general AddDynamic/POD creation, assets, full gameplay, hardware visuals/audio remain unverified.",
+        "Unknown original shared/private allocation extents receive zero credit.",
+        "Resource966 and fallback40 aggregation remain held to preserve old exact WORD/scalar regions; typed member-binding design remains scratch-only."
+      ],
+      "next_connected_wave": "Connected effects25/8022; visual creators4/1707 plus repair of1860 already-compared primitive/font bytes; genuine music/configuration and NuExp10 audio spine. All require independent final source/data gates and receive no current credit.",
       "ongoing_goal": "Continue whole-project transfer until user stops or pauses; validated direct main pushes authorized."
     }
   ]

@@ -5,3 +5,212 @@ f32 __cdecl PodSprint_InStartCountdown(WORLDINFO *world) {
         return podsprint.speed;
     return 0.0f;
 }
+
+typedef struct racepod_resource_pc_s {
+    NUMTX matrix;
+    NUVEC4 previous_axis;
+    NUVEC4 previous_position;
+    NUVEC4 previous_displacement;
+    i32 pitch, yaw, unknown_0078;
+    f32 speed;
+    FLIGHT_SPLINE_RESOURCE_PC *spline;
+    f32 start;
+    i16 model_id;
+    i16 unknown_008a;
+    f32 distance;
+    GAMEOBJECT *object;
+    void *next;
+    u8 unknown_0098[8];
+} RACEPOD_RESOURCE_PC;
+STATIC_ASSERT(sizeof(RACEPOD_RESOURCE_PC) == 0xa0);
+STATIC_ASSERT(offsetof(RACEPOD_RESOURCE_PC, pitch) == 0x70);
+STATIC_ASSERT(offsetof(RACEPOD_RESOURCE_PC, yaw) == 0x74);
+STATIC_ASSERT(offsetof(RACEPOD_RESOURCE_PC, speed) == 0x7c);
+STATIC_ASSERT(offsetof(RACEPOD_RESOURCE_PC, spline) == 0x80);
+STATIC_ASSERT(offsetof(RACEPOD_RESOURCE_PC, start) == 0x84);
+STATIC_ASSERT(offsetof(RACEPOD_RESOURCE_PC, model_id) == 0x88);
+STATIC_ASSERT(offsetof(RACEPOD_RESOURCE_PC, distance) == 0x8c);
+STATIC_ASSERT(offsetof(RACEPOD_RESOURCE_PC, object) == 0x90);
+STATIC_ASSERT(offsetof(RACEPOD_RESOURCE_PC, next) == 0x94);
+
+typedef struct podrace_resource_pc_s {
+    FLIGHT_SPLINE_RESOURCE_PC splines[32];
+    RACEPOD_RESOURCE_PC lap_entries[16];
+    u8 unknown_b000[12];
+    f32 previous_lap_display;
+} PODRACE_RESOURCE_PC;
+STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, lap_entries) == 0xa600);
+STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, previous_lap_display) == 0xb00c);
+
+static void PodMatrixCopyPrivatePc(NUMTX *destination, const NUMTX *source) {
+    destination->m00 = source->m00;
+    destination->m01 = source->m01;
+    destination->m02 = source->m02;
+    destination->m03 = source->m03;
+    destination->m10 = source->m10;
+    destination->m11 = source->m11;
+    destination->m12 = source->m12;
+    destination->m13 = source->m13;
+    destination->m20 = source->m20;
+    destination->m21 = source->m21;
+    destination->m22 = source->m22;
+    destination->m23 = source->m23;
+    destination->m30 = source->m30;
+    destination->m31 = source->m31;
+    destination->m32 = source->m32;
+    destination->m33 = source->m33;
+}
+
+static RACEPOD_RESOURCE_PC *RacePodAllocatePrivatePc(void) {
+    PODRACE_RESOURCE_PC *race = (PODRACE_RESOURCE_PC *)PodRacePc;
+    i32 slot;
+    for (slot = 0; slot < 16; ++slot) {
+        if (race->lap_entries[slot].next == NULL)
+            return &race->lap_entries[slot];
+    }
+    return NULL;
+}
+
+static void RacePodAlignPrivatePc(RACEPOD_RESOURCE_PC *pod, NUVEC4 *direction, f32 blend, i32 alternate) {
+    __declspec(align(16)) NUVEC local;
+    __declspec(align(16)) NUVEC rotated_direction;
+    __declspec(align(16)) NUVEC4 axis;
+    i32 yaw, pitch, direction_yaw, direction_pitch;
+    f32 roll;
+    f64 max_roll, min_roll;
+    i32 angle;
+    NuVecInvMtxRotate(&local, (NUVEC *)direction, &pod->matrix);
+    yaw = (i16)NuAtan2D(local.x, local.z);
+    pod->yaw = yaw;
+    NuVecRotateY(&local, &local, -yaw);
+    pitch = (i16)NuAtan2D(local.y, local.z);
+    pod->pitch = pitch;
+    NuMtxPreRotateY(&pod->matrix, yaw);
+    NuMtxPreRotateX(&pod->matrix, -pitch);
+    if (alternate != 0) {
+        NuMtxPreRotateZ(&pod->matrix, 0x200);
+        return;
+    }
+    direction_yaw = (i16)NuAtan2D(direction->x, direction->z);
+    NuVecRotateY(&rotated_direction, (NUVEC *)direction, -direction_yaw);
+    direction_pitch = (i16)NuAtan2D(rotated_direction.y, rotated_direction.z);
+    axis.x = 1.0f;
+    axis.y = axis.z = axis.w = 0.0f;
+    NuVecRotateZ((NUVEC *)&axis, (NUVEC *)&axis, (i16)(i32)pod->previous_position.w + 0x4000);
+    NuVecRotateX((NUVEC *)&axis, (NUVEC *)&axis, -direction_pitch);
+    NuVecRotateY((NUVEC *)&axis, (NUVEC *)&axis, direction_yaw);
+    NuVecInvMtxRotate((NUVEC *)&axis, (NUVEC *)&axis, &pod->matrix);
+    roll = (f32)(i16)NuAtan2D(axis.x, axis.y);
+    max_roll = 24000.0 * FRAMETIME;
+    if (roll > max_roll)
+        roll = (f32)(i16)(i32)max_roll;
+    min_roll = -24000.0 * FRAMETIME;
+    if (roll < min_roll)
+        roll = (f32)(i16)(i32)min_roll;
+    if (blend > 2.0f)
+        roll = 0.0f;
+    else if (blend > 1.0f)
+        roll = (f32)((2.0 - blend) * roll);
+    angle = -(i16)(i32)roll;
+    NuMtxPreRotateZ(&pod->matrix, angle);
+}
+
+i32 __cdecl Action_CreatePod(void *system, void *process, void *packet, char **params, i32 param_count, i32 first_time,
+                             f32 ignored) {
+    i32 spline_id = -1, pacemaker = 0, damaged = 0;
+    i16 model_id = -1;
+    f32 start = 0.0f, end = 1.0f, time_factor = 1.0f;
+    i32 i, spline_index;
+    PODRACE_RESOURCE_PC *race;
+    FLIGHT_SPLINE_RESOURCE_PC *spline;
+    RACEPOD_RESOURCE_PC *pod;
+    f64 duration;
+    f32 difference;
+    __declspec(align(16)) NUVEC4 position, next_position, direction;
+    GAMEOBJECT *object;
+    (void)system;
+    (void)process;
+    (void)ignored;
+    if (first_time == 0 || param_count <= 0)
+        return 1;
+    for (i = 0; i < param_count; ++i) {
+        char *value = NuStrIStr(params[i], PodCreateSplineKeywordPc);
+        if (value != NULL)
+            spline_id = (i32)AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 10);
+        else if ((value = NuStrIStr(params[i], (char *)AITransferLiteral7576f8)) != NULL) {
+            if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
+                u8 type = LevelCharacterTypeIDFn(value + 5);
+                model_id = type;
+                if (type != 0xff)
+                    model_id = LevelCharacterGlobalIDFn(type);
+            }
+        } else if ((value = NuStrIStr(params[i], PodCreateStartKeywordPc)) != NULL)
+            start = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 13);
+        else if ((value = NuStrIStr(params[i], PodCreateEndKeywordPc)) != NULL)
+            end = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 11);
+        else if ((value = NuStrIStr(params[i], PodCreateTimeKeywordPc)) != NULL)
+            time_factor = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 12);
+        else if (NuStrICmp(params[i], PodCreatePacemakerKeywordPc) == 0)
+            pacemaker = 1;
+        else if (NuStrICmp(params[i], PodCreateDamagedKeywordPc) == 0)
+            damaged = 1;
+    }
+    if ((u32)spline_id > 31 || model_id == -1)
+        return 1;
+    race = (PODRACE_RESOURCE_PC *)PodRacePc;
+    spline = &race->splines[0];
+    for (spline_index = 0; spline_index < 32; ++spline_index) {
+        spline = &race->splines[spline_index];
+        if (spline->id == spline_id)
+            break;
+    }
+    if (start < 0.0f)
+        start = 0.0f;
+    else if (start > 1.0f)
+        start = 1.0f;
+    if (end < 0.0f)
+        end = 0.0f;
+    else if (end > 1.0f)
+        end = 1.0f;
+    if (spline == NULL || spline->point_count == 0 || start == end)
+        return 1;
+    pod = RacePodAllocatePrivatePc();
+    if (pod == NULL)
+        return 1;
+    pod->spline = spline;
+    pod->start = start;
+    pod->model_id = model_id;
+    pod->next = (void *)1;
+    duration = (f64)time_factor * race->previous_lap_display;
+    difference = end - start;
+    pod->speed = duration > 0.0 ? (f32)((difference * (f64)spline->length) / duration) : 1.0f;
+    CalcSplinePointFromDist(spline, &position, start * spline->length);
+    CalcSplinePointFromDist(spline, &next_position, (start + PodRaceSplineIncrementPc) * spline->length);
+    PodMatrixCopyPrivatePc(&pod->matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+    pod->matrix.m30 = position.x;
+    pod->matrix.m31 = position.y;
+    pod->matrix.m32 = position.z;
+    pod->matrix.m33 = position.w;
+    direction.x = next_position.x - position.x;
+    direction.y = next_position.y - position.y;
+    direction.z = next_position.z - position.z;
+    direction.w = 0.0f;
+    RacePodAlignPrivatePc(pod, &direction, 1.0f, 0);
+    pod->previous_axis.x = pod->previous_axis.y = pod->previous_axis.z = 0.0f;
+    pod->previous_axis.w = 1.0f;
+    pod->previous_position = position;
+    pod->distance = start;
+    object = AddDynamicCreature((i32)pod->model_id, (NUVEC *)spline, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, 0);
+    pod->object = object;
+    if (object == NULL)
+        return 1;
+    object->flags_ef4 |= 0x04000000;
+    object->movement_mode = 5;
+    if (pacemaker != 0) {
+        PodPacemakerPc = object;
+        object->flags_ef4 |= 0x20;
+    }
+    if (damaged != 0)
+        object->flags_ef4 |= 0x08000000;
+    return 1;
+}

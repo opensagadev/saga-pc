@@ -10193,3 +10193,163 @@ extern "C" {
     void *CutStopInfo;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$SuitMetadataName0075314cPc")
+    char SuitMetadataName0075314cPc[7] = "batman";
+#pragma data_seg()
+
+#pragma bss_seg(".bss$tBATMANSUIT")
+    i16 tBATMANSUIT;
+#pragma bss_seg()
+
+#pragma data_seg(".data$SuitMetadataName0075d280Pc")
+    char SuitMetadataName0075d280Pc[14] = "batman_shadow";
+#pragma data_seg()
+
+#pragma bss_seg(".bss$tSHADOWSUIT")
+    i16 tSHADOWSUIT;
+#pragma bss_seg()
+
+#pragma data_seg(".data$SuitMetadataName0075d270Pc")
+    char SuitMetadataName0075d270Pc[13] = "batman_glide";
+#pragma data_seg()
+
+#pragma bss_seg(".bss$tGLIDESUIT")
+    i16 tGLIDESUIT;
+#pragma bss_seg()
+
+#pragma data_seg(".data$SuitMetadataName0075d25cPc")
+    char SuitMetadataName0075d25cPc[18] = "batman_demolition";
+#pragma data_seg()
+
+#pragma bss_seg(".bss$tDEMOLITIONSUIT")
+    i16 tDEMOLITIONSUIT;
+#pragma bss_seg()
+
+#pragma data_seg(".data$SuitMetadataName0075d24cPc")
+    char SuitMetadataName0075d24cPc[13] = "batman_sonar";
+#pragma data_seg()
+
+#pragma bss_seg(".bss$tSONARSUIT")
+    i16 tSONARSUIT;
+#pragma bss_seg()
+
+#pragma data_seg(".data$SuitMetadataName00753144Pc")
+    char SuitMetadataName00753144Pc[6] = "robin";
+#pragma data_seg()
+
+#pragma bss_seg(".bss$tROBINSUIT")
+    i16 tROBINSUIT;
+#pragma bss_seg()
+
+#pragma data_seg(".data$SuitMetadataName0075d240Pc")
+    char SuitMetadataName0075d240Pc[12] = "robin_water";
+#pragma data_seg()
+
+#pragma bss_seg(".bss$tWATERSUIT")
+    i16 tWATERSUIT;
+#pragma bss_seg()
+
+#pragma data_seg(".data$SuitMetadataName0075d22cPc")
+    char SuitMetadataName0075d22cPc[17] = "robin_technology";
+#pragma data_seg()
+
+#pragma bss_seg(".bss$tTECHNOLOGYSUIT")
+    i16 tTECHNOLOGYSUIT;
+#pragma bss_seg()
+
+#pragma data_seg(".data$SuitMetadataName0075d21cPc")
+    char SuitMetadataName0075d21cPc[13] = "robin_magnet";
+#pragma data_seg()
+
+#pragma bss_seg(".bss$tMAGNETSUIT")
+    i16 tMAGNETSUIT;
+#pragma bss_seg()
+
+#pragma data_seg(".data$SuitMetadataName0075d20cPc")
+    char SuitMetadataName0075d20cPc[14] = "robin_attract";
+#pragma data_seg()
+
+#pragma bss_seg(".bss$tATTRACTSUIT")
+    i16 tATTRACTSUIT;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NOAICREATURES")
+    i32 NOAICREATURES;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$addcreature_override_id_check")
+    i32 addcreature_override_id_check;
+#pragma bss_seg()
+
+#pragma data_seg(".data$default_mover_extra")
+    f32 default_mover_extra = 0.05000000074505806f;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_MOSEISLEYCITIZEN")
+    i16 id_MOSEISLEYCITIZEN = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_CANTINAALIEN")
+    i16 id_CANTINAALIEN = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$id_CLOUDCITYCITIZEN")
+    i16 id_CLOUDCITYCITIZEN = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$SuitRecordInitPc")
+    SUIT_INITIALIZER_RECORD_PC SuitRecordInitPc[10] = {
+        {SuitMetadataName0075314cPc, SuitMetadataName0075314cPc, &tBATMANSUIT, 0, 98, 'b', 0x0, 0, 0, 0},
+        {SuitMetadataName0075314cPc, SuitMetadataName0075d280Pc, &tSHADOWSUIT, 1, 98, 'i', 0x0, 0, 0, 0},
+        {SuitMetadataName0075314cPc, SuitMetadataName0075d270Pc, &tGLIDESUIT, 258, 98, 'a', 0x4, 0, 0, 0},
+        {SuitMetadataName0075314cPc, SuitMetadataName0075d25cPc, &tDEMOLITIONSUIT, 260, 98, 'c', 0x0, 0, 0, 0},
+        {SuitMetadataName0075314cPc, SuitMetadataName0075d24cPc, &tSONARSUIT, 8, 98, 'h', 0x0, 0, 0, 0},
+        {SuitMetadataName00753144Pc, SuitMetadataName00753144Pc, &tROBINSUIT, 0, 114, 'r', 0x0, 0, 0, 0},
+        {SuitMetadataName00753144Pc, SuitMetadataName0075d240Pc, &tWATERSUIT, 272, 114, 'w', 0x0, 0, 0, 0},
+        {SuitMetadataName00753144Pc, SuitMetadataName0075d22cPc, &tTECHNOLOGYSUIT, 288, 114, 't', 0x0, 0, 0, 0},
+        {SuitMetadataName00753144Pc, SuitMetadataName0075d21cPc, &tMAGNETSUIT, 64, 114, 'm', 0x200000, 0, 0, 0},
+        {SuitMetadataName00753144Pc, SuitMetadataName0075d20cPc, &tATTRACTSUIT, 384, 114, 'd', 0x0, 0, 0, 0}};
+#pragma data_seg()
+
+#pragma bss_seg(".bss$PlayerStartRecordInitPc")
+    PLAYER_START_INITIALIZER_RECORD_PC PlayerStartRecordInitPc[8];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PodPacemakerPc")
+    GAMEOBJECT *PodPacemakerPc;
+#pragma bss_seg()
+
+#pragma data_seg(".data$PodRaceSplineIncrementPc")
+    f32 PodRaceSplineIncrementPc = 0.0010000000474974513f;
+#pragma data_seg()
+
+#pragma data_seg(".data$PodCreateSplineKeywordPc")
+    char PodCreateSplineKeywordPc[11] = "spline_id=";
+#pragma data_seg()
+
+#pragma data_seg(".data$PodCreateStartKeywordPc")
+    char PodCreateStartKeywordPc[14] = "spline_start=";
+#pragma data_seg()
+
+#pragma data_seg(".data$PodCreateEndKeywordPc")
+    char PodCreateEndKeywordPc[12] = "spline_end=";
+#pragma data_seg()
+
+#pragma data_seg(".data$PodCreateTimeKeywordPc")
+    char PodCreateTimeKeywordPc[13] = "time_factor=";
+#pragma data_seg()
+
+#pragma data_seg(".data$PodCreatePacemakerKeywordPc")
+    char PodCreatePacemakerKeywordPc[10] = "pacemaker";
+#pragma data_seg()
+
+#pragma data_seg(".data$PodCreateDamagedKeywordPc")
+    char PodCreateDamagedKeywordPc[8] = "damaged";
+#pragma data_seg()
+
+#pragma bss_seg(".bss$PodRacePc")
+    void *PodRacePc;
+#pragma bss_seg()
+}

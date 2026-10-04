@@ -3434,3 +3434,229 @@ GAMEOBJECT *__cdecl FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, 
         *distance_squared = nearest_distance;
     return nearest;
 }
+
+typedef struct gameobject_collision_reset_pc_s {
+    u8 unknown_000[0x2b0];
+    u32 collision_overlap_low;
+    u32 collision_overlap_high;
+} GAMEOBJECT_COLLISION_RESET_PC;
+STATIC_ASSERT(offsetof(GAMEOBJECT_COLLISION_RESET_PC, collision_overlap_low) == 0x2b0);
+STATIC_ASSERT(offsetof(GAMEOBJECT_COLLISION_RESET_PC, collision_overlap_high) == 0x2b4);
+extern GAMEOBJECT *__cdecl APIObjectCreate(APIOBJECTSYS_PC *);
+GAMEOBJECT *__cdecl AddGameObject(void) {
+    GAMEOBJECT *object = APIObjectCreate(WORLD->object_sys);
+    u64 identity;
+    if (object == NULL)
+        return NULL;
+    object->sock_index = 0xff;
+    object->field_283 = -1;
+    object->jump_animation_state = 0xff;
+    object->roof_surface_id_pc = 0xff;
+    object->movement_mode = 2;
+    object->flags_1fc_word |= 0x1001;
+    object->layer_mask = 1;
+    identity = (u64)1 << object->hostility_group;
+    object->collision_identity_mask[0] = (u32)identity;
+    object->collision_identity_mask[1] = (u32)(identity >> 32);
+    object->origin_scale = 1.0f;
+    object->collision_scale = 1.0f;
+    object->reflection_height = 2000000.0f;
+    object->roof_height_pc = 2000000.0f;
+    object->water_height = 2000000.0f;
+    object->floor_height = 2000000.0f;
+    RecomputeHighGameObject();
+    object->ai_packet.owner = (AIOWNER_PC *)object;
+    ((APIOBJECT_PC *)object)->owner = object;
+    ((APIOBJECT_PC *)object)->ai = &object->ai_packet;
+    ((GAMEOBJECT_COLLISION_RESET_PC *)object)->collision_overlap_low = 0;
+    ((GAMEOBJECT_COLLISION_RESET_PC *)object)->collision_overlap_high = 0;
+    return object;
+}
+
+/* Minimum original PC consumer views; no full allocation extent asserted. */
+typedef struct DYNAMIC_AI_TIMER_VIEW_PC {
+    u8 unknown_000[0x18c];
+    f32 antinode_timer;
+} DYNAMIC_AI_TIMER_VIEW_PC;
+STATIC_ASSERT(offsetof(DYNAMIC_AI_TIMER_VIEW_PC, antinode_timer) == 0x18c);
+typedef struct DYNAMIC_LIGHTING_VIEW_PC {
+    u8 unknown_000[0x4d8];
+    RTL_DATA_PC lighting_packet;
+} DYNAMIC_LIGHTING_VIEW_PC;
+STATIC_ASSERT(offsetof(DYNAMIC_LIGHTING_VIEW_PC, lighting_packet) == 0x4d8);
+typedef struct DYNAMIC_RUMBLE_VIEW_PC {
+    u8 unknown_00[0x40];
+    RUMBLE_PACKET_RESOURCE_PC rumble_packet;
+} DYNAMIC_RUMBLE_VIEW_PC;
+STATIC_ASSERT(offsetof(DYNAMIC_RUMBLE_VIEW_PC, rumble_packet) == 0x40);
+/* Genuine original call declarations: no placeholder implementations. */
+GAMEOBJECT *__cdecl AddCreature(i32 model, i32 mode);
+void __cdecl InitPlayerAI(GAMEOBJECT *object);
+void __cdecl ResetPlayerMoves(GAMEOBJECT *object);
+void __cdecl ResetRumble(RUMBLE_PACKET_RESOURCE_PC *packet);
+void __cdecl ResetLights(NUVEC *position, RTL_DATA_PC *packet, void *set);
+void __cdecl rtlResetEx(RTL_DATA_PC *packet, i32 clear_cache);
+void __cdecl rtlApplySetScale(void *set, RTL_DATA_PC *packet, NUVEC *position, NUMTX *rotation, i32 identity,
+                              f32 scale);
+extern i32 NOAICREATURES;
+extern i32 complexsockposition_forcesock;
+
+#include <string.h>
+
+GAMEOBJECT *__cdecl AddDynamicCreature(i32 model, NUVEC *position, i32 angle, char *script_name,
+                                       AIPATHINFO_PC *path_info, AIGROUP_PC *group, i32 set_on_surface,
+                                       NUGSPLINE *spline, NUVEC *spline_offset, i32 spline_mode, i32 creature_set) {
+    GAMEOBJECT *object;
+    APIOBJECT_PC *api;
+    AIPACKET_PC *ai;
+    PLAYERCHARACTERCONFIG_PC *config;
+    u32 flags;
+    NUVEC offset, point, rotated;
+    u16 yaw, pitch;
+    AIROW_PC *row;
+    u32 column;
+    if (position == NULL && spline == NULL)
+        return NULL;
+    if (NOAICREATURES != 0 && model != (i16)id_DRAGBOMB)
+        return NULL;
+    if (Arcade_GetMode(NULL) == 0 || (u32)model >= 0x154 || apicharsys->playermodelids[model] == -1)
+        return NULL;
+    object = AddCreature(model, 0);
+    if (object == NULL)
+        return NULL;
+    api = (APIOBJECT_PC *)object;
+    ai = &object->ai_packet;
+    object->flags_1f8 |= 0x400;
+    flags = apicharsys->char_data[model].model_flags;
+    if ((flags & 0x200) != 0)
+        object->flags_1f8 |= 4;
+    else if ((flags & 4) != 0)
+        object->flags_1f8 |= 1;
+    object->flags_1044 |= 1;
+    if ((apicharsys->char_data[model].model_flags & 0x1000) != 0)
+        object->flags_1044 |= 4;
+    api->view_distance = apicharsys->char_data[model].game_character->viewdistance;
+    api->hear_distance = apicharsys->char_data[model].game_character->heardistance;
+    api->max_view_height = apicharsys->char_data[model].game_character->maxviewheight;
+    api->min_view_height = apicharsys->char_data[model].game_character->minviewheight;
+    ai->flags &= ~0x5000;
+    object->portal_flags &= ~0x801;
+    ai->nearest_opponent = NULL;
+    ai->target_dc = NULL;
+    ai->target_ec = NULL;
+    ai->opponent = NULL;
+    ai->target_metric_e0 = 1000000000.0f;
+    ai->target_metric_f0 = 1000000000.0f;
+    ((DYNAMIC_AI_TIMER_VIEW_PC *)ai)->antinode_timer = 0.0f;
+    object->ai_awareness_mask = object->ai_seen_mask = 0;
+    object->field_eb0 = object->field_eb4 = object->field_ec0 = 0;
+    object->field_ec4 = object->timer_ecc = 0.0f;
+    InitPlayerAI(object);
+    if (spline != NULL) {
+        InitSplinePosition(&object->movement_spline_position, spline, 0.0f, spline_mode);
+        PointAlongSpline(object->movement_spline_position.spline, object->movement_spline_position.along, &point, &yaw,
+                         &pitch, (i8)object->movement_spline_position.looping);
+        object->facing_angle = object->movement_facing_angle = object->field_0x276 = yaw;
+        object->pitch_angle = (u16)-pitch;
+        if (spline_offset != NULL) {
+            object->movement_spline_offset = *spline_offset;
+            if (spline_offset->x != 0.0f || spline_offset->y != 0.0f || spline_offset->z != 0.0f) {
+                NuVecRotateX(&rotated, &object->movement_spline_offset, object->pitch_angle);
+                NuVecRotateY(&rotated, &rotated, object->field_0x276);
+                NuVecAdd(&point, &point, &rotated);
+            }
+        }
+        object->position = point;
+    } else {
+        object->position = *position;
+        object->facing_angle = object->movement_facing_angle = object->field_0x276 = (u16)angle;
+        if (group != NULL) {
+            AddToAIGroup(group, api);
+            offset.x = ((ai->group_column + 1) / 2) * group->x_spacing;
+            if ((ai->group_column & 1) != 0)
+                offset.x = -offset.x;
+            offset.y = 0.0f;
+            offset.z = -group->z_spacing * ai->group_row;
+            NuVecRotateY(&offset, &offset, angle);
+            NuVecAdd(&object->position, &object->position, &offset);
+        }
+    }
+    ResetPlayerMoves(object);
+    object->collision_position = object->position;
+    object->start_position = object->collision_position;
+    object->initial_position = object->collision_position;
+    plr_lastpos = object->collision_position;
+    object->velocity = v000;
+    GetTopBot(object);
+    GameObjectDimensions(object);
+    ResetRumble(&((DYNAMIC_RUMBLE_VIEW_PC *)object->pad)->rumble_packet);
+    ResetLights(&object->position, &((DYNAMIC_LIGHTING_VIEW_PC *)object)->lighting_packet, WORLD->rtl_set);
+    object->sock_position.sock_index = -1;
+    object->sock_position.segment = -1;
+    if (WORLD->sock_sys != NULL) {
+        if (Door_NextSock != -1 && WORLD->sock_sys->socks[Door_NextSock].valid != 0)
+            complexsockposition_forcesock = Door_NextSock;
+        ComplexSockPosition(WORLD->sock_sys, &object->position, (i8)object->sock_position.sock_index,
+                            (i16)object->sock_position.segment, &object->sock_position);
+        ComplexSockAngles(&object->sock_angles);
+    }
+    NuVecRotateYValZ(&object->facing_direction, 1.0f, object->field_0x276);
+    object->model_draw_result = 1;
+    object->use_model_origin = 0;
+    object->origin_joint_ready = 0;
+    object->flags_ef0 &= ~0x40000;
+    if (spline == NULL) {
+        InitSurfaceInfo(object);
+        if (set_on_surface != 0)
+            SetObjOnSurface(object, 0);
+    }
+    PortalGameObject(object, 1, 1, -1, WORLD->current_gscn);
+    if (reset_restart != 0) {
+        config = object->character_data->game_character;
+        object->field_107e = object->current_hp = config->hitpoints;
+        object->shield_hitpoints = config->shield_hitpoints;
+        object->vehicle_secondary_hp = 4;
+    }
+    object->flags_1f8 &= ~0x100;
+    object->flags_1fc_word &= ~4;
+    object->spawn_protection_timer = 1.0f;
+    object->dead = 0;
+    object->character_context = -1;
+    object->effect_flags = 0;
+    memset(&ai->path_info, 0, sizeof(ai->path_info));
+    ai->inside_path_node = -1;
+    ai->creature_index = 0xff;
+    ai->path_update_flag = 0;
+    if (spline == NULL) {
+        if (path_info != NULL) {
+            AISysCharacterSetPath(ai, path_info->path);
+            AISysCharacterSetPathCnx(ai, &object->position, path_info->connection, path_info->direction);
+        }
+        if (ai->path_info.connection == NULL)
+            AISysGetCharacterPathPos(WORLD->ai_sys, api, ai, 0xff, (i8)object->field_281);
+    }
+    AIScriptProcessorInit(WORLD->ai_sys, ai, &ai->script_processor, NULL, script_name, NULL, 1, NULL, NULL);
+    object->previous_floor_height = 2000000.0f;
+    if (ai->group != NULL) {
+        ai->group->member_is_alive |= (u32)((u64)1 << ai->group_member_index);
+        row = &ai->group->rows[ai->group_row];
+        column = ai->group_member_index - ai->group_row * ai->group->count_across;
+        row->is_alive |= (u8)((u64)1 << column);
+        if (ai->group_column == 0) {
+            row->position = object->position;
+            row->path_info = ai->path_info;
+            row->rotation = object->field_0x276;
+            row->next_connection = NULL;
+            row->flags &= ~2;
+        }
+    }
+    PreResetCode(object);
+    PostResetCode(object);
+    GameObjectOrigin(object);
+    object->previous_position = object->ai_update_position = object->position;
+    if ((u32)(creature_set - 1) < 16) {
+        ai->creature_set = (u8)creature_set;
+        ++aicreature_sets_alive[creature_set - 1];
+    }
+    return object;
+}

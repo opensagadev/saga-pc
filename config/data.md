@@ -1468,3 +1468,29 @@ provider fixes the actual final-link dependency. No invented capacity or retail
 address initializer is used. Next Init/POD37 physical views613B include the real
 relocated24-byte Suit records and10 mutable text IDs; those scratch proposals
 remain outside current source/data credit until production release.
+
+
+### Creature, Suit and POD initializer release (2026-10-04)
+
+Thirty-seven shared physical views add613 complete initializer bytes, all with
+blank original extents and zero allocation credit. Scope1,540 retains1,503 old
+proofs:559 known extents137,619 uniqueB and981 unknown views102,126 sourceB.
+All3,192 earlier complete regions remain unchanged; every3,229 normal named
+region equals the frozen isolated object in full bytes, size and symbolic
+relocations. Rich24-byte Suit metadata preserves30 real name/text pointer
+relocations, WORDflags atc, DWORDcapability at10 and signed WORDid at14. The PC
+magnet mask is200000; PlayerStart uses the actual16-byte record and pointer0.
+The existing type= literal7576f8 is reused without duplicate storage.
+
+Thirteen static selection tables remain in players.c: two5-byte and eleven
+3-byte arrays (43 declared bytes,59 complete emitted bytes including alignment).
+Their original allocation extents are unknown, so CSV sizes stay blank and types
+reflect actual[5]/[3] declarations. Natural plain static AnimBlendModePc1 stays
+in apiobject.c without a new section pragma or shared duplicate. Three actual
+compiler f64 literals are each8 bytes/24 total known bytes. All17 private entries
+and every actual normal emitted copy are independently initializer-exact.
+
+Two known WORDs in resource966 and three known scalars in the graphics fallback
+still require honest physical field ownership before aggregation. No exact-data
+credit is retired, no aliases/backing are fabricated, and no scratch member-view
+prototype has changed production matching rules.

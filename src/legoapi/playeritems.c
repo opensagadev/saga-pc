@@ -205,3 +205,29 @@ void __cdecl SlowWeaponIn(GAMEOBJECT *object) {
     }
     FastWeaponIn(object, 1);
 }
+
+void __cdecl AutoWeaponOnOff(GAMEOBJECT *object) {
+    i32 animation;
+    u32 flags;
+    i8 context = object->character_context;
+    ANIMPACKET_PC *packet = &object->anim_packet;
+    if (context != -1 && (context == LEGOCONTEXT_WEAPONOUT || context == LEGOCONTEXT_WEAPONIN))
+        return;
+    animation = CurrentAnim(packet);
+    if (animation == -1)
+        return;
+    flags = object->character_model->animation_configs[animation]->flags;
+    if ((flags & 0x400) != 0) {
+        if (object->weapon_scale > 0.0f) {
+            if ((packet->flags & 4) != 0 && packet->blending != 0)
+                FastWeaponIn(object, 0);
+            else if ((packet->flags & 4) != 0 || object->field_e33 != 2)
+                SetWeaponIn(object);
+        }
+    } else if ((flags & 0x800) != 0 && object->weapon_scale < 1.0f) {
+        if ((packet->flags & 4) != 0 && packet->blending != 0)
+            FastWeaponOut(object, 0);
+        else if ((packet->flags & 4) != 0 || object->field_e33 != 1)
+            SetWeaponOut(object);
+    }
+}

@@ -971,3 +971,80 @@ void __cdecl edanimStartAllPages(void) {
         }
     }
 }
+
+typedef struct animate_character_reader_pc_s {
+    u8 unknown_00[0x1c];
+    void(__cdecl *animate_fn)(GAMEOBJECT *);
+} ANIMATE_CHARACTER_READER_PC;
+STATIC_ASSERT(offsetof(ANIMATE_CHARACTER_READER_PC, animate_fn) == 0x1c);
+typedef struct animate_player_reader_pc_s {
+    u8 unknown_00[0x3ee];
+    i16 animation_override_from;
+    i16 animation_override_to;
+    u8 unknown_3f2[0x7ee - 0x3f2];
+    i16 mini_current_animation;
+    i16 mini_previous_animation;
+} ANIMATE_PLAYER_READER_PC;
+STATIC_ASSERT(offsetof(ANIMATE_PLAYER_READER_PC, animation_override_from) == 0x3ee);
+STATIC_ASSERT(offsetof(ANIMATE_PLAYER_READER_PC, animation_override_to) == 0x3f0);
+STATIC_ASSERT(offsetof(ANIMATE_PLAYER_READER_PC, mini_current_animation) == 0x7ee);
+STATIC_ASSERT(offsetof(ANIMATE_PLAYER_READER_PC, mini_previous_animation) == 0x7f0);
+extern f32 __cdecl GizBuildItMul(GAMEOBJECT *);
+extern void __cdecl UpdateAnimPacket(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, f32, f32, f32, f32);
+extern void __cdecl AutoWeaponOnOff(GAMEOBJECT *);
+extern void __cdecl AddFootSteps(GAMEOBJECT *);
+
+void __cdecl AnimatePlayer(GAMEOBJECT *object) {
+    ANIMPACKET_PC *packet = &object->anim_packet;
+    ANIMATE_PLAYER_READER_PC *state = (ANIMATE_PLAYER_READER_PC *)object;
+    GAMEPAD_PC *pad = object->pad;
+    CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
+    i16 override_from;
+    f32 direction, movement_speed, multiplier;
+    packet->previous_animation = packet->animation_index;
+    state->mini_previous_animation = state->mini_current_animation;
+    if ((object->flags_1f8 & 0x40000) == 0)
+        ((ANIMATE_CHARACTER_READER_PC *)object->character_data)->animate_fn(object);
+    override_from = state->animation_override_from;
+    if (override_from != -1 &&
+        ((override_from == 0xe9 && object->character_context != 0x1c) || override_from == packet->requested_animation))
+        packet->requested_animation = state->animation_override_to;
+    if (model == NULL || (object->dead != 0 && (object->death_delay == 0.0f || object->dead == 1)))
+        return;
+    direction = (object->flags_ef0 & 0x4000) != 0 ? -1.0f : 1.0f;
+    if (model->action_animations[1] != NULL) {
+        movement_speed = pad->animation_input_magnitude;
+        if (movement_speed > 0.0f && (u16)object->id == id_GONKDROID && Cheat_IsOn(8) == 0)
+            movement_speed = object->character_data->game_character->walk_speed;
+    } else if ((object->character_data->game_character->flags_090 & 0x100000) != 0) {
+        movement_speed =
+            object->velocity.x * object->facing_direction.x + object->velocity.z * object->facing_direction.z;
+        if (movement_speed < 0.0f)
+            movement_speed = 0.0f;
+    } else {
+        movement_speed = pad->input_magnitude;
+    }
+    multiplier = 1.0f;
+    if (object->character_context == 0x2d && object->grapple != NULL)
+        multiplier = GizBuildItMul(object);
+    UpdateAnimPacket(model, packet, (f32)((f64)FRAMETIME * 30.0 * (f64)multiplier), movement_speed * direction,
+                     multiplier * FRAMETIME, object->character_data->game_character->backwards_factor);
+    if ((packet->flags & 4) != 0 &&
+        (packet->blending != 0 ? packet->blend_target_animation : packet->animation_index) == 0x5f) {
+        f32 *time = packet->blending != 0 ? &packet->blend_target_time : &packet->current_time;
+        f32 duration = AnimDuration((i16)object->id, 0x5f, 0.0f, 0.0f, 0);
+        i32 count = (i32)((f64)duration / (f64)0.3f);
+        i32 phase;
+        f32 start;
+        if (NuFmod(duration, 3.0f) > 0.15f)
+            ++count;
+        phase = qrand() / (0xffff / count + 1);
+        model = object->character_model;
+        start = (f32)((f64)phase * ((f64)0.3f * (f64)model->animation_configs[0x5f]->playback_rate) + 1.0);
+        if (NuAnimEndFrame(model->action_animations[0x5f]) > start)
+            *time = start;
+        object->flags_e20 = (object->flags_e20 & ~0x4000u) | ((phase & 1) << 14);
+    }
+    AutoWeaponOnOff(object);
+    AddFootSteps(object);
+}
