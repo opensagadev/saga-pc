@@ -1522,3 +1522,29 @@ WORDs4B remain exact. Their canonical aggregate/member-view contract is research
 only. Embedded fallback DDS8,320B remains an ignored asset research input, with
 existing NuUnresolvedTextureIDPC=-1 and canonical55-byte filename reused; no
 extracted asset payload or fabricated fallback is committed.
+
+
+### Startup/lifecycle/native audio initializer release (2026-10-04)
+
+Twenty-two shared physical owners add13,916 source-view bytes: startup13/13,788,
+terrain lifecycle4/76 and native audio5/52. Each owning extent stays blank and
+receives zero allocation credit. TerrPlatScanDist810b34 contains10f; prior
+uncompiled inventory4B proved scalar access rather than owning allocation, so
+its size becomes blank with no previous exact/source loss. Actual manager BSS
+2972c68 view growsd98→da8 (3,480→3,496) under its native full-clear producer53,
+preserving all3,480 prefix bytes plus a zero16-byte tail. It gains no owning extent
+or allocation credit. Its existing retail+d14 reverb overlap remains a separate
+explicit global-domain hold; no duplicate new owner/alias is created.
+
+All3,252 other old complete shared regions remain identical in size/rawbytes/
+symbolic relocations; all3,275 actual normal regions equal the isolated object.
+Scope1,587 is1,564 old unchanged proofs +22 new physical definitions +one existing
+manager proof added to scope. Known559/137,619 unique bytes stay unchanged;
+unknown1,028/120,737 source bytes carry zero allocation credit. Source-private
+TorpedoPackets2176 stays torpedo.c with native16-slot/address/stride evidence;
+it is not duplicated in data.cpp. Every4,315 actual previous exact initializer
+copy preserves full bytes/relocations, and3 additional literal copies match
+retail. Current3,330 prior exact-owner rows/4,318 copies are all preserved/exact.
+Protected resource WORD4B/fallback scalar12B stay unchanged. Shared queue types
+have no constructor or implicit global initialization. Embedded DDS8320 and
+optional member migration remain ignored research, without fabricated providers.

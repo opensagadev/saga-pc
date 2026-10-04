@@ -4083,3 +4083,35 @@ code/data is lost; new additional genuine font helper108 is overlap-only and add
 zero unique original bytes. All50 new exact functions total2,513B separately from
 PrintU108. Final matching retains actual nonexact scores for incomplete byte
 reconstructions and selected fixture qualifications.
+
+
+### Resource/world/terrain/audio source release (2026-10-04)
+
+Thirty-seven independently reviewed complete bodies add9,432 unique PC bytes.
+Texture resolver5e5390/224 preserves unsigned ID/load order. Obstacle output
+558780/168 includes its full switch table; controls use nativea0 record fields,
+DWORD progress/runtime flags and signed WORD SFX. Startup5/1,865 retains signed
+health and exact flag widths; full Players_Init1355 follows the native sentinel
+load before index bound, so tested lists terminate within0..7. GetTorpedoPacket
+4d22b0/52 reserves the genuine private16x136-byte pool; AreaFromMiniKitID58 and
+archive selector6d34c0/39 are complete exact PC bodies. The selector has the real
+count/first-pointer gate with no invented index clamp.
+
+Terrain/scene/state7/3,065 includes native NewUpdate1791 and scene874 full spans.
+The naturally emitted private matrix-copy5c19d0/95 is the same native operation
+as existing Occlusion copy, EAXsource/ECXdestination; the additional real owner
+receives zero unique credit. All34 prior terrain/state/scene copies survive.
+Native stream Run6999e0/1,232 includes switch table699e98:4 pause/5 resume. Decoder
+slot08 stays opaque; GetFormat10 and genuine thiscall call slots are verified.
+Stream buffer COM calls reload their object after external calls. Existing
+SoundQueue::SetVolume82 corrects thiscall to stdcall SDK semantics; its former72
+rebuilt bytes become73 and nonexact advisory decrease is retained. New manager
+ResetStorage53 is a neutral ordinary method, not an invented C++ constructor.
+No implicit global initialization or fake decoder backing is emitted.
+
+Actual matching reports15.065450% whole-text fuzzy and81,593 exact bytes; all2,923
+prior function copies remain,2,922 identical and exactlyone accepted ABI repair.
+Thirty-eight new comparison rows include overlap-only matrix95; source transfer
+is37/9,432, native denominator delta9,527. Fifteen new unique exact bodies614B
+are separate from the additional existing95B exact alias. No earlier exact code
+or data is lost. Optional physical member contracts remain scratch/inactive.

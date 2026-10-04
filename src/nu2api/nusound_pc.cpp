@@ -352,86 +352,6 @@ void __thiscall SoundVoiceManagerPC::SetSampleName(const char *name, i32 sample_
     NuStrCat(this->samples[sample_index].file_name, PCSoundOggExtension);
 }
 
-class SoundQueueVolumeSink {
-  public:
-    virtual void Slot00(void) = 0;
-    virtual void Slot04(void) = 0;
-    virtual void Slot08(void) = 0;
-    virtual void Slot0c(void) = 0;
-    virtual void Slot10(void) = 0;
-    virtual void Slot14(void) = 0;
-    virtual void Slot18(void) = 0;
-    virtual void Slot1c(void) = 0;
-    virtual void Slot20(void) = 0;
-    virtual void Slot24(void) = 0;
-    virtual void Slot28(void) = 0;
-    virtual void Slot2c(void) = 0;
-    virtual void Slot30(void) = 0;
-    virtual void Slot34(void) = 0;
-    virtual void Slot38(void) = 0;
-    virtual i32 SetVolume(i32 volume) = 0;
-};
-
-struct SoundQueue {
-    i32 active;
-    u32 unknown_0004;
-    i32 stream_state;
-    i32 stream_flags;
-    i32 requested_volume;
-    i32 applied_volume;
-    u8 unknown_0018[0x3c];
-    SoundQueueVolumeSink *volume_sink;
-    u32 unknown_0058;
-    LPTIMECALLBACK timer_callback;
-    HANDLE event;
-    UINT timer_id;
-    u8 unknown_0068[8];
-    CRITICAL_SECTION lock;
-    u8 unknown_0088[0x18];
-    CRITICAL_SECTION volume_lock;
-    i32 command[32];
-    i32 argument[32];
-    i32 count;
-    i32 read_index;
-    i32 write_index;
-    u8 unknown_01c4[0x1c];
-    char stream_path[0x104];
-    u8 unknown_02e4[0x108];
-    f32 start_offset;
-    u32 unknown_03f0;
-    i32 unknown_03f4;
-
-    i32 SendCommand(i32 command, i32 argument);
-    __declspec(noinline) i32 Stop();
-    __declspec(noinline) i32 Pause();
-    __declspec(noinline) i32 Resume();
-    __declspec(noinline) i32 SetVolume(i32 volume);
-    __declspec(noinline) i32 HasCommand(i32 command);
-    __declspec(noinline) i32 IsStreamIdle();
-    __declspec(noinline) i32 GetStatus();
-    void StartTimer();
-    void StopTimer();
-    __declspec(noinline) i32 SetStreamFile(const char *path, f32 offset);
-    __declspec(noinline) i32 SetStreamFlags(i32 flags);
-};
-STATIC_ASSERT(offsetof(SoundQueue, stream_state) == 0x08);
-STATIC_ASSERT(offsetof(SoundQueue, stream_flags) == 0x0c);
-STATIC_ASSERT(offsetof(SoundQueue, requested_volume) == 0x10);
-STATIC_ASSERT(offsetof(SoundQueue, applied_volume) == 0x14);
-STATIC_ASSERT(offsetof(SoundQueue, volume_sink) == 0x54);
-STATIC_ASSERT(offsetof(SoundQueue, timer_callback) == 0x5c);
-STATIC_ASSERT(offsetof(SoundQueue, event) == 0x60);
-STATIC_ASSERT(offsetof(SoundQueue, timer_id) == 0x64);
-STATIC_ASSERT(offsetof(SoundQueue, lock) == 0x70);
-STATIC_ASSERT(offsetof(SoundQueue, volume_lock) == 0xa0);
-STATIC_ASSERT(offsetof(SoundQueue, command) == 0xb8);
-STATIC_ASSERT(offsetof(SoundQueue, argument) == 0x138);
-STATIC_ASSERT(offsetof(SoundQueue, count) == 0x1b8);
-STATIC_ASSERT(offsetof(SoundQueue, write_index) == 0x1c0);
-STATIC_ASSERT(offsetof(SoundQueue, stream_path) == 0x1e0);
-STATIC_ASSERT(offsetof(SoundQueue, start_offset) == 0x3ec);
-STATIC_ASSERT(offsetof(SoundQueue, unknown_03f4) == 0x3f4);
-
 extern SoundQueue *NuSound3StereoStreams[2];
 
 struct PC_STEREO_PLAY_PACKET {
@@ -485,4 +405,30 @@ extern "C" void PCStereoStartPacket(PC_STEREO_PLAY_PACKET *packet) {
             SoundVoiceManager.samples[packet->first_sample].file_name, packet->start_offset);
         NuSound3StereoStreams[packet->stream_index]->SetStreamFlags(flags);
     }
+}
+
+SoundVoiceManagerPC *SoundVoiceManagerPC::ResetStoragePc(void) {
+    memset(this, 0, sizeof(*this));
+    if (PCSoundStorageLockReadyPc == 0) {
+        InitializeCriticalSection(&PCSoundStorageLockPc);
+        PCSoundStorageLockReadyPc = 1;
+    }
+    return this;
+}
+void SoundVoiceManagerPC::UnloadSample(i32 index) {
+    EnterCriticalSection(&SoundVoiceCriticalSection);
+    SoundSamplePC *sample = &samples[index];
+    if (sample->buffer != NULL) {
+        sample->buffer->vtable->release(sample->buffer);
+        samples[index].buffer = NULL;
+    }
+    samples[index].buffer = NULL;
+    samples[index].valid_byte = 0;
+    LeaveCriticalSection(&SoundVoiceCriticalSection);
+}
+void SoundVoiceManagerPC::SetOptionD14Pc(u8 mode) {
+    option_d14 = mode;
+}
+IDirectSound8 *SoundVoiceManagerPC::GetFactory(void) {
+    return factory;
 }

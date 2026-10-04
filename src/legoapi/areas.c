@@ -704,3 +704,12 @@ have_jump:
     LevelChange = 1;
     Lap = 1;
 }
+
+i32 __cdecl AreaFromMiniKitID(i32 id) {
+    i32 index;
+    for (index = 0; index < AREACOUNT; ++index) {
+        if (ADataList[index].minikit_id == id)
+            return index;
+    }
+    return -1;
+}

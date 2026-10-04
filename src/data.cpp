@@ -1,4 +1,94 @@
 #include "saga.h"
+extern "C" {
+#pragma const_seg(".rdata$PCSoundBuffer8IIDPc")
+    extern const IID PCSoundBuffer8IIDPc = {
+        0x6825a449, 0x7524, 0x4d82, {0x92, 0xf, 0x50, 0xe3, 0x6a, 0xb3, 0xab, 0x1e}};
+#pragma const_seg()
+
+#pragma data_seg(".data$LEGOOBJ_DEFAULTLASTCOIN")
+    i16 LEGOOBJ_DEFAULTLASTCOIN = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$TerrPlatScanDist")
+    f32 TerrPlatScanDist = 10.0f;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$BatarangPacketsPc")
+    PLAYER_BATARANG_SLOT_PC BatarangPacketsPc[8];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PlayerSuit")
+    SUIT_LAYERS_PC *PlayerSuit[8];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CoinPacket")
+    PLAYER_COIN_PACKET_PC CoinPacket[2];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$GizForceLOSInfo")
+    PLAYER_FORCE_LOS_SLOT_PC GizForceLOSInfo[2];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PlayerTorpedoCount")
+    u8 PlayerTorpedoCount[8];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$Game_CharacterSave")
+    u8 *Game_CharacterSave;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$BackUpPlayers")
+    GAMEOBJECT BackUpPlayers[2];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$OldPlrSPos")
+    SOCKPOSITION_PC OldPlrSPos[8];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$Hub_UsePlayerList")
+    i32 Hub_UsePlayerList;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$Area_PlayerIDList")
+    i16 Area_PlayerIDList[8];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$Area_StoryModelListPc")
+    i16 Area_StoryModelListPc[3];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$Game_AreaSave")
+    COLLECTION_AREA_SAVE_PC *Game_AreaSave;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$cntrots")
+    i32 cntrots;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PlatCallback")
+    TERRAIN_CALLBACK_LIFECYCLE_PC PlatCallback[8];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PlatCodeCallback")
+    i32 PlatCodeCallback;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCSoundStorageLockPc")
+    CRITICAL_SECTION PCSoundStorageLockPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCSoundStorageLockReadyPc")
+    i32 PCSoundStorageLockReadyPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCSoundDrainStartPc")
+    i32 PCSoundDrainStartPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCSoundDrainRemainingPc")
+    i32 PCSoundDrainRemainingPc;
+#pragma bss_seg()
+}
 
 extern "C" {
 #pragma const_seg(".rdata$PCDynamicDisplaySceneNameText")

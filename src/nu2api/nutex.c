@@ -38,3 +38,33 @@ NUTEXDIM_PC *__cdecl NuTextureGetDimensions(i32 id) {
         return NULL;
     return NuTextureDimensions[id - 1];
 }
+
+i32 __cdecl NuTexResolveReference(NUGSCN *scene, i32 tid) {
+    i32 index, byte, resolved = 0;
+    u32 latest = 0;
+    if ((tid & 0x4000) == 0)
+        return scene->texture_ids[tid];
+    if (NuTextureCapacityPC == 0)
+        return 0;
+    for (index = 0; index != NuTextureCapacityPC; ++index) {
+        NUTEXDIM_PC *texture = NuTextureDimensions[index];
+        NUTEXDIM_PC *reference;
+        if (texture == NULL || texture->ref_count < 0)
+            continue;
+        reference = scene->textures[tid & 0x3fff];
+        for (byte = 0; byte < 16; ++byte) {
+            if (texture->checksum[byte] != reference->checksum[byte])
+                break;
+        }
+        if (byte == 16 && (u32)NuTextureLoadOrderPC[index] > latest) {
+            resolved = index + 1;
+            latest = NuTextureLoadOrderPC[index];
+        }
+    }
+    if (resolved != 0) {
+        if (resolved > 0 && NuTextureDimensions[resolved - 1] != NULL)
+            ++NuTextureDimensions[resolved - 1]->ref_count;
+        scene->texture_ids[tid & 0x3fff] = resolved;
+    }
+    return resolved;
+}

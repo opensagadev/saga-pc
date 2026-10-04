@@ -5,86 +5,6 @@ extern "C" void __cdecl NuSound3GetStreamInfo(i32 stream_index, void *info) {
     (void)info;
 }
 
-class SoundQueueVolumeSink {
-  public:
-    virtual void Slot00(void) = 0;
-    virtual void Slot04(void) = 0;
-    virtual void Slot08(void) = 0;
-    virtual void Slot0c(void) = 0;
-    virtual void Slot10(void) = 0;
-    virtual void Slot14(void) = 0;
-    virtual void Slot18(void) = 0;
-    virtual void Slot1c(void) = 0;
-    virtual void Slot20(void) = 0;
-    virtual void Slot24(void) = 0;
-    virtual void Slot28(void) = 0;
-    virtual void Slot2c(void) = 0;
-    virtual void Slot30(void) = 0;
-    virtual void Slot34(void) = 0;
-    virtual void Slot38(void) = 0;
-    virtual i32 SetVolume(i32 volume) = 0;
-};
-
-struct SoundQueue {
-    i32 active;
-    u32 unknown_0004;
-    i32 stream_state;
-    i32 stream_flags;
-    i32 requested_volume;
-    i32 applied_volume;
-    u8 unknown_0018[0x3c];
-    SoundQueueVolumeSink *volume_sink;
-    u32 unknown_0058;
-    LPTIMECALLBACK timer_callback;
-    HANDLE event;
-    UINT timer_id;
-    u8 unknown_0068[8];
-    CRITICAL_SECTION lock;
-    u8 unknown_0088[0x18];
-    CRITICAL_SECTION volume_lock;
-    i32 command[32];
-    i32 argument[32];
-    i32 count;
-    i32 read_index;
-    i32 write_index;
-    u8 unknown_01c4[0x1c];
-    char stream_path[0x104];
-    u8 unknown_02e4[0x108];
-    f32 start_offset;
-    u32 unknown_03f0;
-    i32 unknown_03f4;
-
-    i32 SendCommand(i32 command, i32 argument);
-    __declspec(noinline) i32 Stop();
-    __declspec(noinline) i32 Pause();
-    __declspec(noinline) i32 Resume();
-    __declspec(noinline) i32 SetVolume(i32 volume);
-    __declspec(noinline) i32 HasCommand(i32 command);
-    __declspec(noinline) i32 IsStreamIdle();
-    __declspec(noinline) i32 GetStatus();
-    void StartTimer();
-    void StopTimer();
-    __declspec(noinline) i32 SetStreamFile(const char *path, f32 offset);
-    __declspec(noinline) i32 SetStreamFlags(i32 flags);
-};
-STATIC_ASSERT(offsetof(SoundQueue, stream_state) == 0x08);
-STATIC_ASSERT(offsetof(SoundQueue, stream_flags) == 0x0c);
-STATIC_ASSERT(offsetof(SoundQueue, requested_volume) == 0x10);
-STATIC_ASSERT(offsetof(SoundQueue, applied_volume) == 0x14);
-STATIC_ASSERT(offsetof(SoundQueue, volume_sink) == 0x54);
-STATIC_ASSERT(offsetof(SoundQueue, timer_callback) == 0x5c);
-STATIC_ASSERT(offsetof(SoundQueue, event) == 0x60);
-STATIC_ASSERT(offsetof(SoundQueue, timer_id) == 0x64);
-STATIC_ASSERT(offsetof(SoundQueue, lock) == 0x70);
-STATIC_ASSERT(offsetof(SoundQueue, volume_lock) == 0xa0);
-STATIC_ASSERT(offsetof(SoundQueue, command) == 0xb8);
-STATIC_ASSERT(offsetof(SoundQueue, argument) == 0x138);
-STATIC_ASSERT(offsetof(SoundQueue, count) == 0x1b8);
-STATIC_ASSERT(offsetof(SoundQueue, write_index) == 0x1c0);
-STATIC_ASSERT(offsetof(SoundQueue, stream_path) == 0x1e0);
-STATIC_ASSERT(offsetof(SoundQueue, start_offset) == 0x3ec);
-STATIC_ASSERT(offsetof(SoundQueue, unknown_03f4) == 0x3f4);
-
 extern SoundQueue *NuSound3StereoStreams[2];
 extern "C" f32 NuSound3VolumeTable[0x4000];
 extern "C" i32 NuSound3VolumeOffset;
@@ -268,4 +188,372 @@ extern "C" i32 __cdecl NuSound3GetStereoStreamStatus(i32 index) {
         index = 1;
     }
     return NuSound3StereoStreams[index]->GetStatus();
+}
+
+void SoundQueue::CancelPausePc(void) {
+    if (this == NULL || unknown_03f4 == 0)
+        return;
+    EnterCriticalSection(&volume_lock);
+    IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
+    if (stream_state == 2 && buffer != NULL)
+        buffer->vtable->play(buffer, 0, 0, 1);
+    LeaveCriticalSection(&volume_lock);
+    unknown_03f4 = 0;
+    LeaveCriticalSection(&operation_lock);
+}
+SoundQueue::~SoundQueue(void) {
+    if (this == NULL)
+        return;
+    if (active != 0) {
+        if (unknown_03f4 != 0)
+            CancelPausePc();
+        if (active != 0)
+            SendCommand(3, 0);
+        SendCommand(6, 0);
+        if (thread != NULL) {
+            do {
+                Sleep(10);
+            } while (thread != NULL);
+        }
+    }
+    if (decoder != NULL)
+        decoder->vtable->destroy(decoder, 1);
+    decoder = NULL;
+    DeleteCriticalSection(&volume_lock);
+    DeleteCriticalSection(&operation_lock);
+    DeleteCriticalSection(&lock);
+    if (event != INVALID_HANDLE_VALUE)
+        CloseHandle(event);
+    if ((HANDLE)timer_callback != INVALID_HANDLE_VALUE)
+        CloseHandle((HANDLE)timer_callback);
+    event = INVALID_HANDLE_VALUE;
+    timer_callback = (LPTIMECALLBACK)INVALID_HANDLE_VALUE;
+    if (timer_id != 0)
+        timeKillEvent(timer_id);
+    timer_id = 0;
+    IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
+    if (buffer != NULL)
+        buffer->vtable->release(buffer);
+    volume_sink = NULL;
+    active = 0;
+}
+i32 SoundQueue::SetFormatPc(const WAVEFORMATEX *format) {
+    if (volume_sink != NULL) {
+        EnterCriticalSection(&volume_lock);
+        IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
+        buffer->vtable->release(buffer);
+        volume_sink = NULL;
+        wave_format.nSamplesPerSec = format->nSamplesPerSec;
+        wave_format.nChannels = format->nChannels;
+        wave_format.nBlockAlign = format->nBlockAlign;
+        wave_format.wBitsPerSample = format->wBitsPerSample;
+        wave_format.nAvgBytesPerSec = format->nAvgBytesPerSec;
+        buffer_seconds = 4;
+        memset(&descriptor, 0, sizeof(descriptor));
+        descriptor.size = sizeof(descriptor);
+        descriptor.flags = 0x10080;
+        descriptor.bytes = buffer_seconds * wave_format.nAvgBytesPerSec;
+        descriptor.format = &wave_format;
+        IDirectSoundBuffer *temporary = NULL;
+        volume_sink = NULL;
+        if (SUCCEEDED(factory->vtable->create_sound_buffer(factory, &descriptor, &temporary, NULL))) {
+            if (SUCCEEDED(temporary->vtable->query_interface(temporary, PCSoundBuffer8IIDPc, (void **)&volume_sink))) {
+                buffer = (IDirectSoundBuffer *)volume_sink;
+                buffer->vtable->set_volume(buffer, requested_volume);
+                applied_volume = requested_volume;
+            }
+            temporary->vtable->release(temporary);
+        }
+        LeaveCriticalSection(&volume_lock);
+    }
+    return 0;
+}
+i32 SoundQueue::FillBufferPc(i32 bytes, u32 flags) {
+    if (stream_state != 1 && stream_state != 2)
+        return 0;
+    IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
+    if (buffer == NULL)
+        return 0;
+    DWORD play_cursor;
+    HRESULT result = buffer->vtable->get_current_position(buffer, &play_cursor, NULL);
+    i32 requested = bytes;
+    i32 total = buffer_seconds * wave_format.nAvgBytesPerSec;
+    if (SUCCEEDED(result)) {
+        i32 available = (i32)play_cursor - buffer_write_position;
+        if (available < 0)
+            available += total;
+        if ((flags & 2) == 0) {
+            requested = 2 * wave_format.nAvgBytesPerSec;
+            if (available < requested)
+                requested = available;
+            if (buffer_write_position + requested > total)
+                requested = total - buffer_write_position;
+        }
+    }
+    if ((flags & 2) == 0 && (i32)play_cursor >= buffer_write_position &&
+        (i32)play_cursor < buffer_write_position + requested)
+        return 0;
+    i32 amount = decoder->vtable->get_size(decoder) - decoded_bytes;
+    i32 decoded;
+    if (requested < amount)
+        decoded = requested;
+    else
+        decoded = decoder->vtable->get_size(decoder) - decoded_bytes;
+    void *data, *second;
+    DWORD data_bytes, second_bytes;
+    buffer = (IDirectSoundBuffer *)volume_sink;
+    result =
+        buffer->vtable->lock(buffer, buffer_write_position, requested, &data, &data_bytes, &second, &second_bytes, 0);
+    if (result == (HRESULT)0x88780096) {
+        buffer = (IDirectSoundBuffer *)volume_sink;
+        if (FAILED(buffer->vtable->restore(buffer)))
+            return 0;
+        buffer = (IDirectSoundBuffer *)volume_sink;
+        result = buffer->vtable->lock(buffer, buffer_write_position, requested, &data, &data_bytes, &second,
+                                      &second_bytes, 0);
+    }
+    if (FAILED(result))
+        return 0;
+    if (data_bytes < (u32)requested) {
+        buffer = (IDirectSoundBuffer *)volume_sink;
+        buffer->vtable->unlock(buffer, data, 0, second, 0);
+    } else {
+        if ((flags & 1) != 0)
+            decoded = 0;
+        else if (decoded != 0) {
+            u32 read_count;
+            if (FAILED(decoder->vtable->read(decoder, data, decoded, &read_count)) || read_count != (u32)decoded) {
+                decoded_bytes = decoder->vtable->get_size(decoder);
+                decoded = 0;
+                buffer = (IDirectSoundBuffer *)volume_sink;
+                if (SUCCEEDED(buffer->vtable->stop(buffer)))
+                    stream_state = 0;
+            }
+        }
+        if ((loop_flags & 1) != 0) {
+            if (decoded < requested) {
+                do {
+                    decoder->vtable->reset(decoder);
+                    decoded_bytes = 0;
+                    i32 remaining = requested - decoded;
+                    i32 available = decoder->vtable->get_size(decoder) - decoded_bytes;
+                    i32 block = remaining;
+                    if (available < remaining)
+                        block = decoder->vtable->get_size(decoder) - decoded_bytes;
+                    u32 read_count;
+                    if (FAILED(decoder->vtable->read(decoder, (u8 *)data + decoded, block, &read_count)) ||
+                        read_count != (u32)block) {
+                        decoded_bytes = decoder->vtable->get_size(decoder);
+                        memset(data, 0, requested);
+                        buffer = (IDirectSoundBuffer *)volume_sink;
+                        if (SUCCEEDED(buffer->vtable->stop(buffer)))
+                            stream_state = 0;
+                        decoded = block;
+                        break;
+                    }
+                    decoded += block;
+                    if (decoded >= requested) {
+                        decoded = block;
+                        break;
+                    }
+                } while (1);
+            }
+        } else if (decoded < requested) {
+            memset((u8 *)data + decoded, 0, requested - decoded);
+            total = buffer_seconds * wave_format.nAvgBytesPerSec;
+            if (decoded != 0) {
+                PCSoundDrainRemainingPc = total;
+                PCSoundDrainStartPc = play_cursor;
+            } else {
+                i32 elapsed;
+                if ((i32)play_cursor >= PCSoundDrainStartPc)
+                    elapsed = (i32)play_cursor - PCSoundDrainStartPc;
+                else
+                    elapsed = total - PCSoundDrainStartPc + play_cursor;
+                PCSoundDrainRemainingPc -= elapsed;
+                PCSoundDrainStartPc = play_cursor;
+                if (PCSoundDrainRemainingPc <= 0)
+                    ++pending_bytes;
+            }
+        }
+        buffer = (IDirectSoundBuffer *)volume_sink;
+        buffer->vtable->unlock(buffer, data, requested, second, 0);
+        decoded_bytes += decoded;
+        buffer_write_position =
+            (u32)(buffer_write_position + requested) % (u32)(buffer_seconds * wave_format.nAvgBytesPerSec);
+    }
+    return 1;
+}
+DWORD SoundQueue::Run(void) {
+    i32 quitting = 0;
+    i32 command_arg;
+    do {
+        DWORD wait = WaitForMultipleObjects(2, wait_events, FALSE, INFINITE);
+        if (wait == WAIT_OBJECT_0 + 1) {
+            ResetEvent(event);
+            i32 cmd = 0;
+            EnterCriticalSection(&lock);
+            if (count > 0) {
+                command_arg = argument[read_index];
+                cmd = command[read_index];
+                read_index = (read_index + 1) & 31;
+                --count;
+            }
+            LeaveCriticalSection(&lock);
+            while (cmd != 0) {
+                EnterCriticalSection(&operation_lock);
+                IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
+                switch (cmd) {
+                    case 1: {
+                        NuStrNCpy(current_path, stream_path, 0x104);
+                        current_offset = start_offset;
+                        if (stream_state == 2) {
+                            if (timer_id != 0)
+                                timeKillEvent(timer_id);
+                            timer_id = 0;
+                            buffer = (IDirectSoundBuffer *)volume_sink;
+                            if (buffer != NULL)
+                                buffer->vtable->stop(buffer);
+                        }
+                        stream_flags = 0;
+                        stream_state = 0;
+                        pending_bytes = 0;
+                        decoded_bytes = 0;
+                        buffer_write_position = 0;
+                        unknown_0004 = -1;
+                        decoder->vtable->close(decoder);
+                        WAVEFORMATEX format;
+                        if (SUCCEEDED(decoder->vtable->open(decoder, NULL, current_path, &format))) {
+                            if (wave_format.nSamplesPerSec != format.nSamplesPerSec ||
+                                wave_format.nChannels != format.nChannels)
+                                SetFormatPc(&format);
+                            unknown_0004 = 1;
+                        }
+                        break;
+                    }
+                    case 2:
+                        if ((i32)unknown_0004 < 0) {
+                            if (timer_id != 0)
+                                timeKillEvent(timer_id);
+                            timer_id = 0;
+                        } else if (stream_state != 2) {
+                            pending_bytes = 0;
+                            stream_flags = 0;
+                            decoded_bytes = 0;
+                            buffer_write_position = 0;
+                            loop_flags = 0;
+                            decoder->vtable->reset(decoder);
+                            i32 duration = buffer_seconds * 1000;
+                            if (duration < 2000)
+                                duration = 2000;
+                            u32 preload = (u32)(wave_format.nAvgBytesPerSec * duration) / 1000;
+                            stream_state = 1;
+                            decoded_bytes = decoder->vtable->seek_time(decoder, current_offset);
+                            buffer = (IDirectSoundBuffer *)volume_sink;
+                            if (buffer != NULL)
+                                buffer->vtable->set_current_position(buffer, 0);
+                            FillBufferPc(preload, 2);
+                            buffer = (IDirectSoundBuffer *)volume_sink;
+                            if (buffer != NULL && SUCCEEDED(buffer->vtable->set_current_position(buffer, 0))) {
+                                if ((command_arg & 2) != 0) {
+                                    stream_state = 3;
+                                    loop_flags = command_arg;
+                                    StartTimer();
+                                    break;
+                                }
+                                buffer = (IDirectSoundBuffer *)volume_sink;
+                                if (SUCCEEDED(buffer->vtable->play(buffer, 0, 0, 1))) {
+                                    stream_flags = 1;
+                                    stream_state = 2;
+                                    loop_flags = command_arg;
+                                    StartTimer();
+                                    break;
+                                }
+                            }
+                            if (timer_id != 0)
+                                timeKillEvent(timer_id);
+                            timer_id = 0;
+                        }
+                        break;
+                    case 3:
+                        if (timer_id != 0)
+                            timeKillEvent(timer_id);
+                        timer_id = 0;
+                        buffer = (IDirectSoundBuffer *)volume_sink;
+                        if (buffer != NULL && SUCCEEDED(buffer->vtable->stop(buffer))) {
+                            buffer_write_position = 0;
+                            FillBufferPc(buffer_seconds * wave_format.nAvgBytesPerSec, 3);
+                        }
+                        stream_state = 0;
+                        break;
+                    case 4:
+                        if (stream_state == 2) {
+                            if (timer_id != 0)
+                                timeKillEvent(timer_id);
+                            timer_id = 0;
+                            buffer = (IDirectSoundBuffer *)volume_sink;
+                            if (buffer != NULL && SUCCEEDED(buffer->vtable->stop(buffer)))
+                                stream_state = 3;
+                        }
+                        break;
+                    case 5:
+                        if (stream_state == 3 && buffer != NULL && SUCCEEDED(buffer->vtable->play(buffer, 0, 0, 1))) {
+                            stream_state = 2;
+                            stream_flags = 1;
+                            if (timer_id != 0)
+                                timeKillEvent(timer_id);
+                            timer_id = timeSetEvent(500, 100, timer_callback, 0, 0x21);
+                        }
+                        break;
+                    case 6:
+                        thread = NULL;
+                        quitting = 1;
+                        break;
+                }
+                LeaveCriticalSection(&operation_lock);
+                cmd = 0;
+                EnterCriticalSection(&lock);
+                if (count > 0) {
+                    command_arg = argument[read_index];
+                    cmd = command[read_index];
+                    read_index = (read_index + 1) & 31;
+                    --count;
+                }
+                LeaveCriticalSection(&lock);
+                if (applied_volume != requested_volume || applied_volume == 1) {
+                    EnterCriticalSection(&volume_lock);
+                    buffer = (IDirectSoundBuffer *)volume_sink;
+                    if (buffer != NULL) {
+                        buffer->vtable->set_volume(buffer, requested_volume);
+                        applied_volume = requested_volume;
+                    }
+                    LeaveCriticalSection(&volume_lock);
+                }
+            }
+        } else if (wait == WAIT_OBJECT_0 && (i32)unknown_0004 >= 0) {
+            FillBufferPc((u32)(buffer_seconds * wave_format.nAvgBytesPerSec) >> 2, 0);
+            if (pending_bytes > 0 && stream_state == 2) {
+                IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
+                if (buffer != NULL)
+                    buffer->vtable->stop(buffer);
+                stream_state = 0;
+                if (timer_id != 0)
+                    timeKillEvent(timer_id);
+                timer_id = 0;
+            }
+        }
+        if (applied_volume != requested_volume || applied_volume == 1) {
+            EnterCriticalSection(&volume_lock);
+            IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
+            if (buffer != NULL) {
+                buffer->vtable->set_volume(buffer, requested_volume);
+                applied_volume = requested_volume;
+            }
+            LeaveCriticalSection(&volume_lock);
+        }
+    } while (quitting == 0);
+    return 0;
+}
+extern "C" DWORD __stdcall PCSoundStreamWorkerPc(void *context) {
+    return ((SoundQueue *)context)->Run();
 }

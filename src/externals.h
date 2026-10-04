@@ -36,6 +36,12 @@ typedef struct IDirectSound3DBufferVtbl IDirectSound3DBufferVtbl;
 
 typedef void *DSOUND_OPAQUE_METHOD;
 
+typedef struct PC_DS_BUFFER_DESC_VIEW {
+    DWORD size, flags, bytes, reserved;
+    WAVEFORMATEX *format;
+    GUID algorithm;
+} PC_DS_BUFFER_DESC_VIEW;
+
 struct IDirectSound8 {
     const IDirectSound8Vtbl *vtable;
 };
@@ -43,7 +49,8 @@ struct IDirectSound8Vtbl {
     HRESULT(__stdcall *query_interface)(IDirectSound8 *, REFIID, void **);
     ULONG(__stdcall *add_ref)(IDirectSound8 *);
     ULONG(__stdcall *release)(IDirectSound8 *);
-    DSOUND_OPAQUE_METHOD create_sound_buffer;
+    HRESULT(__stdcall *create_sound_buffer)
+    (IDirectSound8 *, const PC_DS_BUFFER_DESC_VIEW *, IDirectSoundBuffer **, IUnknown *);
     DSOUND_OPAQUE_METHOD get_caps;
     HRESULT(__stdcall *duplicate_sound_buffer)(IDirectSound8 *, IDirectSoundBuffer *, IDirectSoundBuffer **);
 };
@@ -56,22 +63,23 @@ struct IDirectSoundBufferVtbl {
     ULONG(__stdcall *add_ref)(IDirectSoundBuffer *);
     ULONG(__stdcall *release)(IDirectSoundBuffer *);
     DSOUND_OPAQUE_METHOD get_caps;
-    DSOUND_OPAQUE_METHOD get_current_position;
+    HRESULT(__stdcall *get_current_position)(IDirectSoundBuffer *, DWORD *, DWORD *);
     DSOUND_OPAQUE_METHOD get_format;
     HRESULT(__stdcall *get_volume)(IDirectSoundBuffer *, LONG *);
     DSOUND_OPAQUE_METHOD get_pan;
     DSOUND_OPAQUE_METHOD get_frequency;
     HRESULT(__stdcall *get_status)(IDirectSoundBuffer *, DWORD *);
     DSOUND_OPAQUE_METHOD initialize;
-    DSOUND_OPAQUE_METHOD lock;
+    HRESULT(__stdcall *lock)(IDirectSoundBuffer *, DWORD, DWORD, void **, DWORD *, void **, DWORD *, DWORD);
     HRESULT(__stdcall *play)(IDirectSoundBuffer *, DWORD, DWORD, DWORD);
-    DSOUND_OPAQUE_METHOD set_current_position;
-    DSOUND_OPAQUE_METHOD set_format;
+    HRESULT(__stdcall *set_current_position)(IDirectSoundBuffer *, DWORD);
+    HRESULT(__stdcall *set_format)(IDirectSoundBuffer *, const WAVEFORMATEX *);
     HRESULT(__stdcall *set_volume)(IDirectSoundBuffer *, LONG);
     DSOUND_OPAQUE_METHOD set_pan;
     HRESULT(__stdcall *set_frequency)(IDirectSoundBuffer *, DWORD);
     HRESULT(__stdcall *stop)(IDirectSoundBuffer *);
-    DSOUND_OPAQUE_METHOD unlock;
+    HRESULT(__stdcall *unlock)(IDirectSoundBuffer *, void *, DWORD, void *, DWORD);
+    HRESULT(__stdcall *restore)(IDirectSoundBuffer *);
 };
 
 struct IDirectSound3DBuffer {

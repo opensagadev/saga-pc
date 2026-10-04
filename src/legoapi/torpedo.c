@@ -436,3 +436,21 @@ void __cdecl TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
         }
     }
 }
+
+typedef struct torpedo_packet_alloc_pc_s {
+    u8 count, flags;
+    u8 unknown_02[0x86];
+} TORPEDO_PACKET_ALLOC_PC;
+STATIC_ASSERT(sizeof(TORPEDO_PACKET_ALLOC_PC) == 0x88);
+STATIC_ASSERT(offsetof(TORPEDO_PACKET_ALLOC_PC, flags) == 1);
+static TORPEDO_PACKET_ALLOC_PC TorpedoPackets[16];
+TORPEDOPACKET_PC *__cdecl GetTorpedoPacket(void) {
+    i32 index;
+    for (index = 0; index < 16; ++index) {
+        if ((TorpedoPackets[index].flags & 1) == 0) {
+            TorpedoPackets[index].flags |= 1;
+            return (TORPEDOPACKET_PC *)&TorpedoPackets[index];
+        }
+    }
+    return NULL;
+}

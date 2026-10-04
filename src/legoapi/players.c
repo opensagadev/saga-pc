@@ -2022,3 +2022,165 @@ i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unuse
     InitCreatureModelFlagsPc(object);
     return 1;
 }
+
+typedef struct player_init_progress_pc_s {
+    u32 coins;
+    i16 previous_state;
+    u8 active, stored_flag;
+    i8 hitpoints;
+    u8 unknown_09, helmet, unknown_0b;
+    f32 powerup_time;
+} PLAYER_INIT_PROGRESS_PC;
+STATIC_ASSERT(sizeof(PLAYER_INIT_PROGRESS_PC) == 0x10);
+STATIC_ASSERT(offsetof(PLAYER_INIT_PROGRESS_PC, previous_state) == 4);
+STATIC_ASSERT(offsetof(PLAYER_INIT_PROGRESS_PC, active) == 6);
+STATIC_ASSERT(offsetof(PLAYER_INIT_PROGRESS_PC, stored_flag) == 7);
+STATIC_ASSERT(offsetof(PLAYER_INIT_PROGRESS_PC, hitpoints) == 8);
+STATIC_ASSERT(offsetof(PLAYER_INIT_PROGRESS_PC, helmet) == 0xa);
+STATIC_ASSERT(offsetof(PLAYER_INIT_PROGRESS_PC, powerup_time) == 0xc);
+typedef struct player_init_extra_pc_s {
+    u8 unknown_0000[0x454];
+    f32 field_454;
+    u8 unknown_0458[0xcc0 - 0x458];
+    PLAYER_BATARANG_SLOT_PC *batarang;
+    u8 unknown_0cc4[0x1062 - 0xcc4];
+    i16 previous_state;
+} PLAYER_INIT_EXTRA_PC;
+STATIC_ASSERT(offsetof(PLAYER_INIT_EXTRA_PC, batarang) == 0xcc0);
+STATIC_ASSERT(offsetof(PLAYER_INIT_EXTRA_PC, field_454) == 0x454);
+STATIC_ASSERT(offsetof(PLAYER_INIT_EXTRA_PC, previous_state) == 0x1062);
+
+void __cdecl RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
+    i32 ids[2], index;
+    if (VehicleArea != 0 || GAMEDEMO != 0)
+        return;
+    if (force == 0 && (WORLD->current_level->flags & 0x4e2) != 2)
+        return;
+    ids[0] = first_id;
+    ids[1] = second_id;
+    for (index = 0; index < 2; ++index) {
+        i32 id = ids[index];
+        if (id != -1 && (CDataList[id].model_flags & 0x2000) == 0 && PlayerID[index] != id && Collection_Got(id) == 1 &&
+            GCDataList[id].hover_fall_mode != 0 && PlayerID[(index - 1) & 1] != id)
+            PlayerID[index] = id;
+    }
+    if (first_id != second_id && PlayerID[1] == first_id && PlayerID[0] == second_id) {
+        PlayerID[0] = first_id;
+        PlayerID[1] = second_id;
+    }
+}
+
+void __cdecl Players_Init(void) {
+    GAMEOBJECT **players = (GAMEOBJECT **)Player;
+    PLAYER_INIT_PROGRESS_PC *progress = (PLAYER_INIT_PROGRESS_PC *)PlayerProgress;
+    i16 *list;
+    i32 index;
+    for (index = 0; index < 8; ++index)
+        players[index] = NULL;
+    if (netclient != 0)
+        return;
+    PLAYERCOUNT = 0;
+    if ((WORLD->current_level->flags & 2) != 0) {
+        if (FreePlay == 0 && (Hub_UsePlayerList == 0 || HUB_ADATA == NULL || HUB_ADATA != WORLD->area) &&
+            (UsePlayerList != 1 ||
+             (PlayerList[0] != -1 && (apicharsys->playermodelids[PlayerList[0]] == -1 ||
+                                      (PlayerList[1] != -1 && apicharsys->playermodelids[PlayerList[1]] == -1)))))
+            list = Area_PlayerIDList;
+        else
+            list = PlayerList;
+        if (LevelChangesInArea == 0 && UsePlayerList != 0 && progress[0].active == 0 && progress[1].active != 0 &&
+            FreePlay == 0 && (WORLD->area->flags & 5) == 1 && list[0] != -1 && list[0] == Area_StoryModelListPc[0] &&
+            list[1] != -1 && list[1] == Area_StoryModelListPc[2] && list[0] != list[1]) {
+            i16 first = list[0];
+            list[0] = list[1];
+            list[1] = first;
+        }
+        for (index = 0; list[index] != -1 && index < 8; ++index) {
+            i32 id = list[index];
+            GAMEOBJECT *object;
+            PLAYER_INIT_EXTRA_PC *extra;
+            APIOBJECT_PC *api;
+            if ((u32)id > 0x153 || apicharsys->playermodelids[id] == -1)
+                continue;
+            object = AddGameObject();
+            if (object == NULL)
+                continue;
+            InitCreature(object, id, 1);
+            PreResetCode(object);
+            PostResetCode(object);
+            extra = (PLAYER_INIT_EXTRA_PC *)object;
+            api = (APIOBJECT_PC *)object;
+            object->previous_sock_position = &OldPlrSPos[PLAYERCOUNT];
+            players[PLAYERCOUNT] = object;
+            object->field_280 = (u8)PLAYERCOUNT;
+            extra->batarang = &BatarangPacketsPc[PLAYERCOUNT];
+            object->torpedo = GetTorpedoPacket();
+            ++PLAYERCOUNT;
+            object->flags_1044 |= 1;
+            object->field_107e = (u8)DEFAULT_PLAYERHITPOINTS;
+            object->helmet = 0;
+            if (UsePlayerList != 0) {
+                i32 slot = (i8)object->field_280;
+                object->flags_1fc_word = (object->flags_1fc_word & ~0x80u) | ((u32)(progress[slot].active & 1) << 7);
+                if (Area != last_area) {
+                    object->flags_e20 &= ~0x10000u;
+                    extra->previous_state = 0;
+                } else if (UsePlayerList == 1) {
+                    object->flags_e20 = (object->flags_e20 & ~0x10000u) | ((u32)(progress[slot].stored_flag & 1) << 16);
+                    object->current_hp = progress[slot].hitpoints;
+                    if (object->current_hp > object->field_107e)
+                        object->current_hp = (i8)object->field_107e;
+                    object->helmet = (i8)progress[slot].helmet;
+                    extra->previous_state = progress[slot].previous_state;
+                    object->powerup_time = progress[slot].powerup_time;
+                    object->suit = PlayerSuit[slot];
+                    if (object->torpedo != NULL)
+                        object->torpedo->count = PlayerTorpedoCount[slot];
+                }
+            } else {
+                u8 slot = object->hostility_group;
+                object->flags_1fc_word = (object->flags_1fc_word & ~0x80u) | ((u32)(slot == 0) << 7);
+                progress[slot].hitpoints = object->current_hp;
+                extra->previous_state = 0;
+            }
+            api->view_distance = apicharsys->char_data[(i16)object->id].game_character->viewdistance;
+            api->hear_distance = apicharsys->char_data[(i16)object->id].game_character->heardistance;
+            api->max_view_height = apicharsys->char_data[(i16)object->id].game_character->maxviewheight;
+            api->min_view_height = apicharsys->char_data[(i16)object->id].game_character->minviewheight;
+            object->ai_packet.flags &= ~0x5000u;
+            object->portal_flags &= ~0x801u;
+            object->flags_ef4 |= 0x40;
+            object->ai_packet.target_metric_e0 = 1.0e9f;
+            object->ai_packet.target_metric_f0 = 1.0e9f;
+            object->ai_packet.nearest_opponent = NULL;
+            object->ai_packet.target_dc = NULL;
+            object->ai_packet.opponent = NULL;
+            object->ai_packet.target_ec = NULL;
+            object->field_ec4 = 0.0f;
+            extra->field_454 = 0.0f;
+            object->ai_awareness_mask = 0;
+            object->ai_seen_mask = 0;
+            object->field_eb0 = 0;
+            object->field_eb4 = 0;
+            object->opponent = NULL;
+            object->last_attacker = NULL;
+            object->field_ec0 = 0;
+            object->ai_opponent_exclusion_mask[0] = 0;
+            object->ai_opponent_exclusion_mask[1] = 0;
+            object->timer_ecc = 0.0f;
+        }
+    }
+    UsePlayerList = 0;
+    for (index = 0; index < 2; ++index) {
+        if (players[index] != NULL) {
+            PLAYER_COIN_PACKET_PC *coins;
+            players[index]->coin_packet = &CoinPacket[index];
+            coins = (PLAYER_COIN_PACKET_PC *)players[index]->coin_packet;
+            coins->last_coin = LEGOOBJ_DEFAULTLASTCOIN;
+            coins->coins = Area == last_area ? progress[index].coins : 0;
+            players[index]->gizforce_los_info = &GizForceLOSInfo[index];
+            memcpy(&BackUpPlayers[index], players[index], 0x10d8);
+        }
+    }
+    RememberPlayerIDs(0, players[0] != NULL ? (i16)players[0]->id : -1, players[1] != NULL ? (i16)players[1]->id : -1);
+}

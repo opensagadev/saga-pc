@@ -41,3 +41,18 @@ void __cdecl ResetCoinPacket(void *packet) {
         view->active = 1;
     }
 }
+
+i32 __cdecl Collection_Got(i32 id) {
+    i32 area;
+    if (InCollectList_Index(id, NULL, 0) == -1)
+        return 0;
+    area = AreaFromMiniKitID(id);
+    if (area != -1) {
+        if (Game_AreaSave == NULL)
+            return 0;
+        return Game_AreaSave[area].minikit_complete != 0 ? 2 : 0;
+    }
+    if (Game_CharacterSave != NULL && (Game_CharacterSave[id] & 1) == 0)
+        return 0;
+    return 1;
+}

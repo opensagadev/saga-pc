@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 891064,
-    "matched_code_bytes": 80979,
-    "matching_percent": 2.3328510857484606,
-    "fuzzy_coverage_percent": 14.87144992446575,
-    "mapped_functions": 3138,
-    "matched_functions": 1285,
-    "objdiff_fuzzy_percent": 64.193184,
-    "objdiff_total_code": 804486,
+    "mapped_code_bytes": 897917,
+    "matched_code_bytes": 81593,
+    "matching_percent": 2.350539258813694,
+    "fuzzy_coverage_percent": 15.065449931074042,
+    "mapped_functions": 3163,
+    "matched_functions": 1301,
+    "objdiff_fuzzy_percent": 64.28082,
+    "objdiff_total_code": 814013,
     "image_bytes": 40067072,
-    "mapped_bytes": 1532598,
-    "mapping_percent": 3.8250811040048047
+    "mapped_bytes": 1539447,
+    "mapping_percent": 3.8421749410588326
   },
   "newly_compared": [
     {
@@ -15558,6 +15558,178 @@
       ],
       "next_connected_wave": "Resource/model/scene/area-load connected providers from retained source drafts, independent native audio SDK initialization/shutdown, and remaining visual submission providers. Asset-dependent fallback and physical field aggregation holds remain explicit.",
       "ongoing_goal": "Continue whole-project transfer until user stops or pauses; validated direct main pushes authorized."
+    },
+    {
+      "baseline_commit": "b83d90d528b70646ef5ea04c8aba494b44c614fb",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 891064,
+        "matched_code_bytes": 80979,
+        "matching_percent": 2.3328510857484606,
+        "fuzzy_coverage_percent": 14.87144992446575,
+        "mapped_functions": 3138,
+        "matched_functions": 1285,
+        "objdiff_fuzzy_percent": 64.193184,
+        "objdiff_total_code": 804486,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1532598,
+        "mapping_percent": 3.8250811040048047
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 897917,
+        "matched_code_bytes": 81593,
+        "matching_percent": 2.350539258813694,
+        "fuzzy_coverage_percent": 15.065449931074042,
+        "mapped_functions": 3163,
+        "matched_functions": 1301,
+        "objdiff_fuzzy_percent": 64.28082,
+        "objdiff_total_code": 814013,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1539447,
+        "mapping_percent": 3.8421749410588326
+      },
+      "newly_compared_functions": 38,
+      "new_original_code_bytes": 9432,
+      "new_compared_row_original_bytes_including_aliases": 9527,
+      "new_alias_rows": [
+        "_SceneUpdateMtxCopyPrivatePc"
+      ],
+      "compared_code_delta": 9527,
+      "baseline_unique_compared_pc_bytes": 804266,
+      "unique_compared_pc_bytes": 813698,
+      "exact_code_added": 614,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 2923,
+      "prior_compiled_function_copies_identical": 2922,
+      "renamed_owner_copies_with_identical_complete_bodies": [],
+      "user_journal_unchanged": true,
+      "checkpoint": "Resource, world startup, terrain and native audio source checkpoint (2026-10-04)",
+      "new_source_functions": 37,
+      "family_bytes": {
+        "resource_texture_resolver": 224,
+        "obstacle_controls_progress": 1035,
+        "players_collection_area_startup": 1865,
+        "customiser_archive": 336,
+        "terrain_scene_state_lifecycle": 3065,
+        "native_audio_manager_stream_worker": 2907
+      },
+      "newly_exact_unique_functions": 15,
+      "newly_exact_unique_function_bytes": 614,
+      "overlap_only_additional_function": {
+        "symbol": "_SceneUpdateMtxCopyPrivatePc",
+        "original_bytes": 95,
+        "unique_original_byte_credit": 0,
+        "native_denominator_credit": 95,
+        "exact": true
+      },
+      "qualified_old_abi_repair": {
+        "symbol": "?SetVolume@SoundQueue@@QAEHH@Z",
+        "native_original_bytes": 82,
+        "before_rebuilt_bytes": 72,
+        "after_rebuilt_bytes": 73,
+        "before_advisory_percent": 83.90625,
+        "after_advisory_percent": 81.5625,
+        "reason": "Actual COM slot3c uses stdcall with buffer and volume pushed, no caller cleanup; prior default thiscall was incorrect.",
+        "unique_original_byte_credit": 0
+      },
+      "shared_data_definitions_added": 22,
+      "shared_initializer_view_bytes_added": 13916,
+      "existing_unknown_data_owner_growth": {
+        "symbol": "_SoundVoiceManager",
+        "old_bytes": 3480,
+        "new_bytes": 3496,
+        "old_prefix_preserved": true,
+        "new_tail_zero_bytes": 16,
+        "allocation_credit": 0,
+        "previously_unscoped_owner_added_to_proof": true
+      },
+      "data_scope": {
+        "proofs": 1587,
+        "known_extents": 559,
+        "known_unique_bytes": 137619,
+        "unknown_extents": 1028,
+        "unknown_view_bytes": 120737,
+        "previous_proofs_preserved": 1564
+      },
+      "private_data": {
+        "owner": "src/legoapi/torpedo.c",
+        "name": "TorpedoPackets",
+        "source_view_bytes": 2176,
+        "owning_extent": null,
+        "allocation_credit": 0,
+        "duplicate_shared_storage": false
+      },
+      "retired_uncompiled_inventory_extent": {
+        "symbol": "_TerrPlatScanDist",
+        "unsupported_known_bytes": 4,
+        "new_owning_extent": null,
+        "source_scalar_view_bytes": 4,
+        "initializer": "10.0f",
+        "previous_compiled_or_exact_loss": false
+      },
+      "verified_checks": {
+        "all_required_checks_passed": true,
+        "tests": 665,
+        "skipped": 3,
+        "test_seconds": 45.224,
+        "llvm": 18,
+        "format_files": 238,
+        "tidy_units": 236,
+        "objects": 236,
+        "function_definitions": 2961,
+        "data_definitions": 5544,
+        "source_only_link": true,
+        "native_resolver_checks": 16,
+        "native_scene_checks": 32,
+        "native_terrain_checks": 29,
+        "native_startup_checks": 59,
+        "native_obstacle_checks": 68,
+        "native_customiser_archive_checks": 16,
+        "native_audio_checks": 25,
+        "native_total_checks": 245,
+        "native_failures": 0,
+        "native_manifests_verified": 5,
+        "native_manifests_equal_current_normal_sources_and_objects": true,
+        "accepted_new_complete_bodies_verified": 38,
+        "new_function_families": 37,
+        "existing_alias_bytes": 95,
+        "existing_alias_unique_credit": 0,
+        "normal_data_regions": 3275,
+        "scoped_initializer_proofs": 1587,
+        "previous_function_copies_identical": 2922,
+        "previous_function_copies_checked": 2923,
+        "qualified_old_abi_repair_count": 1,
+        "prior_exact_code_and_data_preserved": true,
+        "limitations": [
+          "Selected caller-backed bounded pool/list/cache/visibility/bounce/lookup/controls/animation/archive/localaudio/nullbuffer and genuine Win32 synchronization domains tested; full successful player creation/restoration, scenes/assets, hardware playback/rendering and whole-game startup remain unverified.",
+          "Scene curve/matrix backend and constructed active decoder paths remain untested.",
+          "SoundVoiceManager global d14 overlaps exact canonical reverb byte in retail; separate existing reconstruction owners remain an explicit global-domain hold, local manager cases only.",
+          "New data owning allocation extents remain unknown; private TorpedoPackets stays in its genuine original TU; member tooling remains scratch/inactive."
+        ]
+      },
+      "semantic_corrections": [
+        "Stream Run retains actual switch table: command4 pauses, command5 resumes; negative ready command2 kills/clears timer.",
+        "Stream Run/FillBuffer reload volume sink after native decoder/COM/timer calls.",
+        "Startup uses native signed current health, BYTE/WORD flags, model bounds and list sentinel before index bound; selected sentinel indices0..7 only.",
+        "Shared queue class/decoder protocol preserves reviewed thiscall versus SDK stdcall dispatch without constructing a decoder, fake vtable or implicit global C++ initializer."
+      ],
+      "validation_findings": [
+        "Required terrain scene-special table was initially NULL in a fixture; supplied actual typed caller-owned table, preserving every assertion and frozen source.",
+        "Obstacle fixture alignment expectations corrected from4 to actual16-byte GizmoBufferAlloc alignment; all68 checks preserved.",
+        "Preserved incorrect audio v1 negative fails exactly2 real timer-cleanup controls; production v3 passes all25."
+      ],
+      "remaining_contracts": [
+        "Selected caller-backed bounded pool/list/cache/visibility/bounce/lookup/controls/animation/archive/localaudio/nullbuffer and genuine Win32 synchronization domains tested; full successful player creation/restoration, scenes/assets, hardware playback/rendering and whole-game startup remain unverified.",
+        "Scene curve/matrix backend and constructed active decoder paths remain untested.",
+        "SoundVoiceManager global d14 overlaps exact canonical reverb byte in retail; separate existing reconstruction owners remain an explicit global-domain hold, local manager cases only.",
+        "New data owning allocation extents remain unknown; private TorpedoPackets stays in its genuine original TU; member tooling remains scratch/inactive.",
+        "Embedded fallbackDDS8320 asset-dependent4581 readers remain held; no asset bytes or fabricated fallback provider committed.",
+        "Optional typed physical member tooling is reviewed scratch, pending strict prior-exact-member retirement fix and production aggregate gates; resource966/fallback40/reverb alias stay unchanged."
+      ],
+      "next_connected_wave": "Accepted connected environment loader12/2101 and bridge487, ActionFromQuiet82 and remaining genuine WorldInfo_Init1029 providers; optional typed physical-member tools, then canonical resource/fallback/reverb storage, real Wav/Ogg reader/backend families and retained area loaders.",
+      "ongoing_goal": "Continue whole-project source transfer until user stops or pauses; validated direct main pushes authorized."
     }
   ]
 }

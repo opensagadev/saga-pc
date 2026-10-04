@@ -48,6 +48,13 @@ STATIC_ASSERT(sizeof(void *) == 4);
 STATIC_ASSERT(sizeof(MSG) == 28);
 
 STATIC_ASSERT(offsetof(IDirectSound8Vtbl, duplicate_sound_buffer) == 0x14);
+STATIC_ASSERT(offsetof(IDirectSound8Vtbl, create_sound_buffer) == 0xc);
+STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, get_current_position) == 0x10);
+STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, lock) == 0x2c);
+STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, set_current_position) == 0x34);
+STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, set_format) == 0x38);
+STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, unlock) == 0x4c);
+STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, restore) == 0x50);
 STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, get_status) == 0x24);
 STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, play) == 0x30);
 STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, set_volume) == 0x3c);
@@ -152,10 +159,20 @@ typedef struct SoundVoiceManagerPC {
     SoundVoiceSlotPC voices[64];
     SoundSamplePC *samples;
     i32 active_count;
-    u32 unknown_d14;
+    union {
+        u32 unknown_d14;
+        struct {
+            u8 option_d14;
+            u8 unknown_d15[3];
+        };
+    };
     IDirectSound8 *factory;
-    u8 unknown_d1c[0x7c];
+    u8 unknown_d1c[0x8c];
 #ifdef __cplusplus
+    SoundVoiceManagerPC *__thiscall ResetStoragePc(void);
+    void __thiscall UnloadSample(i32);
+    void __thiscall SetOptionD14Pc(u8);
+    IDirectSound8 *__thiscall GetFactory(void);
     void __thiscall SetSampleName(const char *name, i32 sample_index);
     i32 __thiscall AllocateVoice(i32, i32);
     void __thiscall SetVoice(i32, i32, f32, i32);
@@ -171,7 +188,11 @@ STATIC_ASSERT(offsetof(SoundVoiceManagerPC, voices) == 0xc);
 STATIC_ASSERT(offsetof(SoundVoiceManagerPC, samples) == 0xd0c);
 STATIC_ASSERT(offsetof(SoundVoiceManagerPC, active_count) == 0xd10);
 STATIC_ASSERT(offsetof(SoundVoiceManagerPC, factory) == 0xd18);
-STATIC_ASSERT(sizeof(SoundVoiceManagerPC) == 0xd98);
+STATIC_ASSERT(sizeof(SoundVoiceManagerPC) == 0xda8);
+STATIC_ASSERT(offsetof(SoundVoiceManagerPC, option_d14) == 0xd14);
+STATIC_ASSERT(sizeof(PC_DS_BUFFER_DESC_VIEW) == 0x24);
+STATIC_ASSERT(offsetof(PC_DS_BUFFER_DESC_VIEW, format) == 0x10);
+STATIC_ASSERT(offsetof(PC_DS_BUFFER_DESC_VIEW, algorithm) == 0x14);
 
 typedef struct PC_SOUND_COMMIT_PC PC_SOUND_COMMIT_PC;
 typedef struct PC_SOUND_COMMIT_METHODS_PC {
@@ -6136,7 +6157,9 @@ extern FADEINFO_PC FadeSys;
 #endif
 
 typedef struct gizobstacle_s {
-    u8 opaque_00_34[0x34];
+    char name[16];
+    NUVEC position;
+    u8 opaque_1c_34[0x18];
     GAMEANIMSET *anim_set;
     u8 opaque_38_44[0xc];
     f32 trigger_radius;
@@ -6145,12 +6168,20 @@ typedef struct gizobstacle_s {
     f32 backward_speed_factor;
     u8 opaque_54_8c[0x38];
     i16 start_sfx_id;
-    u8 opaque_8e_90[2];
+    i16 stop_sfx_id;
     u8 playback_state;
     u8 mode;
-    u8 opaque_92_9c[0xa];
+    u8 unknown_092[2];
+    u32 progress_flags;
+    i32 proximity_output;
     u32 runtime_flags;
 } GIZOBSTACLE;
+STATIC_ASSERT(sizeof(GIZOBSTACLE) == 0xa0);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, name) == 0);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, position) == 0x10);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, stop_sfx_id) == 0x8e);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, progress_flags) == 0x94);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, proximity_output) == 0x98);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, anim_set) == 0x34);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, trigger_radius) == 0x44);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, start_sfx_id) == 0x8c);
@@ -7320,6 +7351,72 @@ extern "C" {
     void __cdecl CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 distance);
 
     void __cdecl Shadow_SetMode(void);
+
+    typedef struct player_batarang_slot_pc_s {
+        u8 unknown_00[0xb4];
+    } PLAYER_BATARANG_SLOT_PC;
+    typedef struct player_force_los_slot_pc_s {
+        u8 unknown_00[0x630];
+    } PLAYER_FORCE_LOS_SLOT_PC;
+    STATIC_ASSERT(sizeof(PLAYER_BATARANG_SLOT_PC) == 0xb4);
+    STATIC_ASSERT(sizeof(PLAYER_FORCE_LOS_SLOT_PC) == 0x630);
+    typedef struct player_coin_packet_pc_s {
+        u32 coins;
+        f32 scale;
+        i16 last_coin;
+        u8 active, unknown_0b;
+        f32 multiplier_time;
+    } PLAYER_COIN_PACKET_PC;
+    STATIC_ASSERT(sizeof(PLAYER_COIN_PACKET_PC) == 0x10);
+    STATIC_ASSERT(offsetof(PLAYER_COIN_PACKET_PC, last_coin) == 8);
+    typedef struct collection_area_save_pc_s {
+        u8 unknown_00[4];
+        u8 minikit_complete;
+        u8 unknown_05[7];
+    } COLLECTION_AREA_SAVE_PC;
+    STATIC_ASSERT(sizeof(COLLECTION_AREA_SAVE_PC) == 0xc);
+    STATIC_ASSERT(offsetof(COLLECTION_AREA_SAVE_PC, minikit_complete) == 4);
+    extern i32 Hub_UsePlayerList;
+    extern i16 Area_PlayerIDList[8], Area_StoryModelListPc[3];
+    extern SOCKPOSITION_PC OldPlrSPos[8];
+    extern PLAYER_BATARANG_SLOT_PC BatarangPacketsPc[8];
+    extern SUIT_LAYERS_PC *PlayerSuit[8];
+    extern u8 PlayerTorpedoCount[8];
+    extern PLAYER_COIN_PACKET_PC CoinPacket[2];
+    extern PLAYER_FORCE_LOS_SLOT_PC GizForceLOSInfo[2];
+    extern GAMEOBJECT BackUpPlayers[2];
+    extern i16 LEGOOBJ_DEFAULTLASTCOIN;
+    void __cdecl RememberPlayerIDs(i32, i32, i32);
+    TORPEDOPACKET_PC *__cdecl GetTorpedoPacket(void);
+    i32 __cdecl Collection_Got(i32);
+    extern COLLECTION_AREA_SAVE_PC *Game_AreaSave;
+    extern u8 *Game_CharacterSave;
+    i32 __cdecl AreaFromMiniKitID(i32);
+    void __cdecl Players_Init(void);
+
+    void __cdecl Customiser_SetAnimsToLoad(CUSTOMISER_LAYERS_PC *, i32);
+    void __cdecl Customiser_ResetModelTextureIDs(CUSTOMISER_LAYERS_PC *);
+    void __cdecl StartupDatsSelectPc(i32);
+
+    void __cdecl noterraininit(void);
+    void __cdecl TerrSetPlatScanDist(f32 distance);
+    void __cdecl TerrainSetWallDeflectYScale(f32 scale);
+    void __cdecl TerrainPlatformOldUpdate(void);
+    void __cdecl TerrainPlatformNewUpdate(void);
+    void __cdecl NuGScnUpdate(NUGSCN *scene, f32 delta);
+
+    typedef struct TERRAIN_CALLBACK_LIFECYCLE_PC {
+        void(__cdecl *function)(void *argument);
+        void *argument;
+    } TERRAIN_CALLBACK_LIFECYCLE_PC;
+    STATIC_ASSERT(sizeof(TERRAIN_CALLBACK_LIFECYCLE_PC) == 8);
+    STATIC_ASSERT(offsetof(TERRAIN_CALLBACK_LIFECYCLE_PC, argument) == 4);
+    extern i32 PCSoundStorageLockReadyPc;
+    extern CRITICAL_SECTION PCSoundStorageLockPc;
+    extern i32 PCSoundDrainStartPc, PCSoundDrainRemainingPc;
+    extern f32 TerrPlatScanDist;
+    extern i32 PlatCodeCallback, cntrots;
+    extern TERRAIN_CALLBACK_LIFECYCLE_PC PlatCallback[8];
 
     void __cdecl Customiser_InitNames(CUSTOMISER_LAYERS_PC *);
     NUGSCN *__cdecl IconScene_FindById(i32);
@@ -12518,6 +12615,7 @@ void __cdecl PCStereoUnknownToken(void);
     STATIC_ASSERT(offsetof(STATE_ANIM_PC, times) == 4);
     STATIC_ASSERT(offsetof(STATE_ANIM_PC, values) == 8);
     /* C extern declarations: */
+    i32 __cdecl StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame);
     i32 __cdecl StateAnimEvaluate(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame);
     void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_stream_buffers);
     void __cdecl NuGCutSceneFixUp(void *scene, NUGSCN *gscene, void *extra_scene, i32 page);
@@ -12787,6 +12885,18 @@ void __cdecl PCStereoUnknownToken(void);
     void __cdecl edppDeleteEffect(i32);
     NUMTL *__cdecl CreateCopyMat(NUMTL *, i32, i32, i32, i32);
     NUMTL *__cdecl CreateAlphaBlendTexture(VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);
+    void __cdecl GizObstacles_AddLevelSfx(void *, void *, i32 *, i32 *, i32);
+    void __cdecl GizmoObstacle_Activate(void *, i32);
+    void __cdecl GizmoObstacle_SetVisibility(void *, i32);
+    NUVEC *__cdecl GizmoObstacle_GetPos(GIZMO_PC *);
+    char *__cdecl GizmoObstacle_GetGizmoName(GIZMO_PC *);
+    i32 __cdecl GizmoObstacle_GetOutput(GIZMO_PC *, i32, i32);
+    i32 __cdecl GizmoObstacle_GetNumOutputs(GIZMO_PC *);
+    void *__cdecl GizObstacles_AllocateProgressData(VARIPTR *, VARIPTR *);
+    void __cdecl GizObstacles_ClearProgress(void *, void *);
+    void __cdecl GizObstacles_StoreProgress(void *, void *, void *);
+    i32 __cdecl GizmoObstacle_ActivateRev(void *, i32, i32);
+    i32 __cdecl NuTexResolveReference(NUGSCN *, i32);
     i32 __cdecl NuTexReadPc(char *, VARIPTR *, VARIPTR);
     void __cdecl NuApiSetEndFrameCallbackPc(void(__cdecl *)(void));
     void __cdecl DebrisSetup2(VARIPTR *, VARIPTR, VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);
@@ -13065,5 +13175,166 @@ STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, particle_box) == 0x2f8);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, camera_facing) == 0x412);
 STATIC_ASSERT(sizeof(WORLDINFO) == 0x51ac);
 STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
+
+#ifdef __cplusplus
+struct PC_AUDIO_DECODER_VIEW;
+struct PC_AUDIO_DECODER_METHODS {
+    void *(__thiscall *destroy)(PC_AUDIO_DECODER_VIEW *, u32);
+    HRESULT(__thiscall *open)(PC_AUDIO_DECODER_VIEW *, NUDATHDR *, char *, WAVEFORMATEX *);
+    void *unknown_08;
+    HRESULT(__thiscall *close)(PC_AUDIO_DECODER_VIEW *);
+    WAVEFORMATEX *(__thiscall *get_format)(PC_AUDIO_DECODER_VIEW *);
+    i32(__thiscall *get_size)(PC_AUDIO_DECODER_VIEW *);
+    HRESULT(__thiscall *reset)(PC_AUDIO_DECODER_VIEW *);
+    HRESULT(__thiscall *read)(PC_AUDIO_DECODER_VIEW *, void *, u32, u32 *);
+    i32(__thiscall *seek_time)(PC_AUDIO_DECODER_VIEW *, f32);
+};
+struct PC_AUDIO_DECODER_VIEW {
+    const PC_AUDIO_DECODER_METHODS *vtable;
+};
+class SoundQueueVolumeSink {
+  public:
+    virtual void Slot00(void) = 0;
+    virtual void Slot04(void) = 0;
+    virtual void Slot08(void) = 0;
+    virtual void Slot0c(void) = 0;
+    virtual void Slot10(void) = 0;
+    virtual void Slot14(void) = 0;
+    virtual void Slot18(void) = 0;
+    virtual void Slot1c(void) = 0;
+    virtual void Slot20(void) = 0;
+    virtual void Slot24(void) = 0;
+    virtual void Slot28(void) = 0;
+    virtual void Slot2c(void) = 0;
+    virtual void Slot30(void) = 0;
+    virtual void Slot34(void) = 0;
+    virtual void Slot38(void) = 0;
+    virtual i32 __stdcall SetVolume(i32 volume) = 0;
+};
+
+struct SoundQueue {
+    i32 active;
+    u32 unknown_0004;
+    i32 stream_state;
+    i32 stream_flags;
+    i32 requested_volume;
+    i32 applied_volume;
+    i32 format_mode;
+    WAVEFORMATEX wave_format;
+    u8 unknown_02e[2];
+    PC_DS_BUFFER_DESC_VIEW descriptor;
+    SoundQueueVolumeSink *volume_sink;
+    i32 buffer_seconds;
+    union {
+        struct {
+            LPTIMECALLBACK timer_callback;
+            HANDLE event;
+        };
+        HANDLE wait_events[2];
+    };
+    UINT timer_id;
+    HANDLE thread;
+    DWORD thread_id;
+    CRITICAL_SECTION lock;
+    CRITICAL_SECTION operation_lock;
+    CRITICAL_SECTION volume_lock;
+    i32 command[32];
+    i32 argument[32];
+    i32 count;
+    i32 read_index;
+    i32 write_index;
+    i32 unknown_1c4;
+    i32 decoded_bytes;
+    i32 buffer_write_position;
+    i32 loop_flags;
+    i32 unknown_1d4;
+    i32 pending_bytes;
+    PC_AUDIO_DECODER_VIEW *decoder;
+    union {
+        struct {
+            char stream_path[0x104];
+            u8 unknown_2e4;
+        };
+        char pending_path[0x105];
+    };
+    char current_path[0x105];
+    u8 unknown_3ea[2];
+    f32 start_offset;
+    f32 current_offset;
+    i32 unknown_03f4;
+    i32 serial;
+    IDirectSound8 *factory;
+
+    ~SoundQueue(void);
+    void CancelPausePc(void);
+    DWORD Run(void);
+    i32 SetFormatPc(const WAVEFORMATEX *);
+    i32 FillBufferPc(i32, u32);
+    i32 SendCommand(i32 command, i32 argument);
+    __declspec(noinline) i32 Stop();
+    __declspec(noinline) i32 Pause();
+    __declspec(noinline) i32 Resume();
+    __declspec(noinline) i32 SetVolume(i32 volume);
+    __declspec(noinline) i32 HasCommand(i32 command);
+    __declspec(noinline) i32 IsStreamIdle();
+    __declspec(noinline) i32 GetStatus();
+    void StartTimer();
+    void StopTimer();
+    __declspec(noinline) i32 SetStreamFile(const char *path, f32 offset);
+    __declspec(noinline) i32 SetStreamFlags(i32 flags);
+};
+STATIC_ASSERT(offsetof(SoundQueue, stream_state) == 0x08);
+STATIC_ASSERT(offsetof(SoundQueue, stream_flags) == 0x0c);
+STATIC_ASSERT(offsetof(SoundQueue, requested_volume) == 0x10);
+STATIC_ASSERT(offsetof(SoundQueue, applied_volume) == 0x14);
+STATIC_ASSERT(offsetof(SoundQueue, volume_sink) == 0x54);
+STATIC_ASSERT(offsetof(SoundQueue, timer_callback) == 0x5c);
+STATIC_ASSERT(offsetof(SoundQueue, event) == 0x60);
+STATIC_ASSERT(offsetof(SoundQueue, timer_id) == 0x64);
+STATIC_ASSERT(offsetof(SoundQueue, lock) == 0x70);
+STATIC_ASSERT(offsetof(SoundQueue, volume_lock) == 0xa0);
+STATIC_ASSERT(offsetof(SoundQueue, command) == 0xb8);
+STATIC_ASSERT(offsetof(SoundQueue, argument) == 0x138);
+STATIC_ASSERT(offsetof(SoundQueue, count) == 0x1b8);
+STATIC_ASSERT(offsetof(SoundQueue, write_index) == 0x1c0);
+STATIC_ASSERT(offsetof(SoundQueue, stream_path) == 0x1e0);
+STATIC_ASSERT(offsetof(SoundQueue, start_offset) == 0x3ec);
+STATIC_ASSERT(offsetof(SoundQueue, unknown_03f4) == 0x3f4);
+
+STATIC_ASSERT(sizeof(WAVEFORMATEX) == 0x12);
+STATIC_ASSERT(offsetof(SoundQueue, active) == 0);
+STATIC_ASSERT(offsetof(SoundQueue, unknown_0004) == 4);
+STATIC_ASSERT(offsetof(SoundQueue, read_index) == 0x1bc);
+STATIC_ASSERT(offsetof(SoundQueue, pending_path) == 0x1e0);
+STATIC_ASSERT(offsetof(PC_AUDIO_DECODER_METHODS, destroy) == 0);
+STATIC_ASSERT(offsetof(PC_AUDIO_DECODER_METHODS, open) == 4);
+STATIC_ASSERT(offsetof(PC_AUDIO_DECODER_METHODS, unknown_08) == 8);
+STATIC_ASSERT(offsetof(PC_AUDIO_DECODER_METHODS, close) == 0xc);
+STATIC_ASSERT(offsetof(PC_AUDIO_DECODER_METHODS, get_format) == 0x10);
+STATIC_ASSERT(offsetof(PC_AUDIO_DECODER_METHODS, get_size) == 0x14);
+STATIC_ASSERT(offsetof(PC_AUDIO_DECODER_METHODS, reset) == 0x18);
+STATIC_ASSERT(offsetof(PC_AUDIO_DECODER_METHODS, read) == 0x1c);
+STATIC_ASSERT(offsetof(PC_AUDIO_DECODER_METHODS, seek_time) == 0x20);
+STATIC_ASSERT(offsetof(SoundQueue, format_mode) == 0x18);
+STATIC_ASSERT(offsetof(SoundQueue, wave_format) == 0x1c);
+STATIC_ASSERT(offsetof(SoundQueue, descriptor) == 0x30);
+STATIC_ASSERT(offsetof(SoundQueue, buffer_seconds) == 0x58);
+STATIC_ASSERT(offsetof(SoundQueue, thread) == 0x68);
+STATIC_ASSERT(offsetof(SoundQueue, thread_id) == 0x6c);
+STATIC_ASSERT(offsetof(SoundQueue, operation_lock) == 0x88);
+STATIC_ASSERT(offsetof(SoundQueue, decoded_bytes) == 0x1c8);
+STATIC_ASSERT(offsetof(SoundQueue, buffer_write_position) == 0x1cc);
+STATIC_ASSERT(offsetof(SoundQueue, loop_flags) == 0x1d0);
+STATIC_ASSERT(offsetof(SoundQueue, pending_bytes) == 0x1d8);
+STATIC_ASSERT(offsetof(SoundQueue, decoder) == 0x1dc);
+STATIC_ASSERT(offsetof(SoundQueue, current_path) == 0x2e5);
+STATIC_ASSERT(offsetof(SoundQueue, current_offset) == 0x3f0);
+STATIC_ASSERT(offsetof(SoundQueue, serial) == 0x3f8);
+STATIC_ASSERT(offsetof(SoundQueue, factory) == 0x3fc);
+STATIC_ASSERT(sizeof(SoundQueue) == 0x400);
+extern "C" const IID PCSoundBuffer8IIDPc;
+extern "C" DWORD __stdcall PCSoundStreamWorkerPc(void *);
+
+#endif
 
 #endif

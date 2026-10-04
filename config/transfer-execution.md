@@ -1416,3 +1416,72 @@ fallback DDS8,320B is a game asset, retained only in ignored research; its gette
 closure remains held with canonical existing cache/path, rather than fabricated
 storage. Physical resource966/fallback40 aggregation also remains held without
 weakening exact-data preservation.
+
+
+### Resource, world startup, terrain and native audio source checkpoint (2026-10-04)
+
+Thirty-seven new complete functions add9,432 unique PC bytes overb83d90d:
+resource resolver224; obstacle controls/progress11/1,035; players/collection/area
+startup5/1,865; customiser/archive3/336; terrain/scene/state7/3,065; and native
+audio manager/stream10/2,907. Whole-PC fuzzy coverage rises14.871450% to15.065450%
+of3,471,246B. Unique compared code reaches813,698B; native objdiff compares814,013B
+and reports64.280820% separately. Fifteen new exact functions add614 unique bytes,
+reaching81,593B/2.350539%. A genuine private scene matrix-copy95 alias reproduces
+exactly at the existing Occlusion helper VA and receives zero new unique credit;
+38 newly compared rows include that alias, adding9,527 to the native denominator.
+
+All2,923 previous complete function copies survive;2,922 remain identical. The
+one reviewed existing SetVolume body repairs a real ABI bug: retail pushes both
+buffer and volume, calls SDK slot3c and performs no caller cleanup. The former
+thiscall declaration was incorrect; canonical shared sink now uses stdcall. Its
+complete82-byte PC extent remains unchanged; rebuilt72 becomes73 and advisory
+score honestly decreases83.906250 to81.562500. It receives no new transfer credit.
+No previous exact code or data match is lost. Every38 accepted complete normal
+body agrees with independently reviewed candidates, including full native tables.
+
+Connected source now includes real bounded torpedo reservation, remembered
+player IDs, collection/minikit lookup and player reset/init; customiser animation
+flags/18 texture IDs and archive switching; obstacle visibility/activation,
+progress and SFX; texture references; terrain reset/platform aging/bounds/bounce,
+scene time/visibility and state lookup; ordinary audio storage/unload methods,
+stream destruction/format/fill and worker command dispatch. Native audio command4
+pauses and5 resumes; negative-ready command2 still clears its timer, and buffers
+are reloaded after external decoder/COM/timer calls. Shared declarations preserve
+actual stack/thiscall/stdcall contracts, natural private register helpers and
+prior attributes. No new constructor, fake decoder/vtable, compiler control,
+retaining call or ABI adapter is introduced.
+
+Pinned build/link and2,961 function/5,544 data definitions across236 actual objects
+pass. LLVM18 checks238 files/236 units;665 tests pass with3 skips. Five strict
+normal-object fixture groups pass245 selected checks: resolver16, scene32, terrain29,
+startup59, obstacle68, customiser/archive16 and native audio25. Every fixture uses
+all236 actual normal objects and genuine data with zero replacements/supplements;
+root verifies each source/object/snapshot pin. The preserved wrong audio version
+fails2 timer controls. Fixture corrections supplied the mandatory scene-special
+table and actual16-byte gizmo allocator alignment; all assertions remained and
+production source stayed frozen. Successful player creation/restoration, asset
+loading, scene curve/backend matrix evaluation, constructed decoder/hardware
+playback/rendering and whole-game startup remain outside tested domains.
+
+Twenty-two shared views add13,916 initializer bytes, all unknown owning extents
+and zero allocation credit. The actual existing manager view grows3,480 to3,496B,
+preserving the complete old prefix plus a zero16-byte tail. All other3,252 prior
+complete shared regions remain identical; all3,275 current named normal regions
+equal the isolated object. Scope1,587 includes1,564 unchanged prior proofs,
+22 new physical owners and one previously unscoped existing manager owner. Known
+559/137,619 unique bytes stay unchanged; unknown1,028/120,737 source bytes receive
+zero allocation credit. Private TorpedoPackets[16]/2,176B stays in torpedo.c.
+All4,315 actual previous exact initializer copies retain complete sizes/raw bytes/
+symbolic relocations;3 additional literal copies are retail-exact. Unsupported
+uncompiled TerrPlatScanDist extent4 becomes blank, retiring4 mapped inventory
+bytes without previous source/exact loss. Its genuine scalar initializer is10f.
+
+The retail manager+d14 overlaps exact canonical reverb BYTE; existing separate
+source storage remains an explicit global-domain hold, with local manager cases
+qualified. Physical resource966/fallback40/member tooling stays research only.
+Asset-dependent4581 readers remain held on embedded DDS8,320B, retained only in
+ignored research. Next are accepted connected environment loader2,101B/bridge487B,
+world startup providers, native Wav/Ogg families and reviewed optional physical
+member tools. This checkpoint waited past the half-hour deadline for actual
+source/data integration, independent semantic fixes and final validation. The
+user's three journal edits remain untouched and excluded from commits.
