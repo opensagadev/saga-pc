@@ -905,3 +905,403 @@ i32 __cdecl rtlInitDynamic(VARIPTR *buffer, VARIPTR end, i32 max_lights) {
     rtl_dynamic_cnt = 0;
     return max_lights;
 }
+
+#include <string.h>
+struct BURN_PARAMETERS_PC {
+    i32 field_00;
+    f32 field_04;
+    f32 field_08;
+    f32 field_0c;
+    f32 field_10;
+    f32 field_14;
+    i32 field_18;
+    f32 field_1c;
+    f32 field_20;
+    f32 field_24;
+    i32 field_28;
+    f32 field_2c;
+    f32 field_30;
+    f32 field_34;
+    f32 field_38;
+    f32 field_3c;
+    f32 field_40;
+    f32 field_44;
+    f32 field_48;
+    f32 field_4c;
+    f32 field_50;
+};
+typedef struct BURN_OUT_PC {
+    i32 active;
+    NUVEC position;
+    f32 field_10, field_14, field_18, field_1c, field_20;
+} BURN_OUT_PC;
+struct BURN_SET_PC {
+    BURN_PARAMETERS_PC parameters, parameters_copy;
+    i32 field_a8, field_ac, field_b0, field_b4;
+    f32 field_b8, field_bc, field_c0, field_c4, field_c8, field_cc;
+    BURN_OUT_PC burnouts[32];
+    i32 active_count, selected_index;
+    f32 field_558, field_55c;
+    i32 field_560;
+};
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_00) == 0x0);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_00) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_04) == 0x4);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_04) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_08) == 0x8);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_08) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_0c) == 0xc);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_0c) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_10) == 0x10);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_10) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_14) == 0x14);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_14) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_18) == 0x18);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_18) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_1c) == 0x1c);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_1c) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_20) == 0x20);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_20) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_24) == 0x24);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_24) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_28) == 0x28);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_28) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_2c) == 0x2c);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_2c) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_30) == 0x30);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_30) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_34) == 0x34);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_34) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_38) == 0x38);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_38) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_3c) == 0x3c);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_3c) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_40) == 0x40);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_40) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_44) == 0x44);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_44) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_48) == 0x48);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_48) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_4c) == 0x4c);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_4c) == 4);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_50) == 0x50);
+STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_50) == 4);
+STATIC_ASSERT(sizeof(BURN_PARAMETERS_PC) == 0x54);
+STATIC_ASSERT(sizeof(BURN_OUT_PC) == 0x24);
+STATIC_ASSERT(sizeof(BURN_SET_PC) == 0x564);
+STATIC_ASSERT(offsetof(BURN_OUT_PC, active) == 0x0);
+STATIC_ASSERT(offsetof(BURN_OUT_PC, position) == 0x4);
+STATIC_ASSERT(offsetof(BURN_OUT_PC, field_10) == 0x10);
+STATIC_ASSERT(offsetof(BURN_OUT_PC, field_14) == 0x14);
+STATIC_ASSERT(offsetof(BURN_OUT_PC, field_18) == 0x18);
+STATIC_ASSERT(offsetof(BURN_OUT_PC, field_1c) == 0x1c);
+STATIC_ASSERT(offsetof(BURN_OUT_PC, field_20) == 0x20);
+STATIC_ASSERT(offsetof(BURN_SET_PC, parameters) == 0x0);
+STATIC_ASSERT(offsetof(BURN_SET_PC, parameters_copy) == 0x54);
+STATIC_ASSERT(offsetof(BURN_SET_PC, field_a8) == 0xa8);
+STATIC_ASSERT(offsetof(BURN_SET_PC, field_ac) == 0xac);
+STATIC_ASSERT(offsetof(BURN_SET_PC, field_b0) == 0xb0);
+STATIC_ASSERT(offsetof(BURN_SET_PC, field_b4) == 0xb4);
+STATIC_ASSERT(offsetof(BURN_SET_PC, field_b8) == 0xb8);
+STATIC_ASSERT(offsetof(BURN_SET_PC, field_bc) == 0xbc);
+STATIC_ASSERT(offsetof(BURN_SET_PC, field_c0) == 0xc0);
+STATIC_ASSERT(offsetof(BURN_SET_PC, field_c4) == 0xc4);
+STATIC_ASSERT(offsetof(BURN_SET_PC, field_c8) == 0xc8);
+STATIC_ASSERT(offsetof(BURN_SET_PC, field_cc) == 0xcc);
+STATIC_ASSERT(offsetof(BURN_SET_PC, burnouts) == 0xd0);
+STATIC_ASSERT(offsetof(BURN_SET_PC, active_count) == 0x550);
+STATIC_ASSERT(offsetof(BURN_SET_PC, selected_index) == 0x554);
+STATIC_ASSERT(offsetof(BURN_SET_PC, field_558) == 0x558);
+STATIC_ASSERT(offsetof(BURN_SET_PC, field_55c) == 0x55c);
+STATIC_ASSERT(offsetof(BURN_SET_PC, field_560) == 0x560);
+
+static NUVEC burn_editor_position_pc;
+// NOLINTNEXTLINE(readability-identifier-naming) -- original same-TU public state name.
+BURN_SET_PC *edrtl_edit_burnset;
+// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public identity.
+void edrtlInitBurnset(BURN_SET_PC *set) {
+    i32 i;
+    set->parameters.field_00 = 1;
+    set->parameters.field_04 = 0.0f;
+    set->parameters.field_08 = 0.0f;
+    set->parameters.field_0c = 180.0f;
+    set->parameters.field_10 = 1.0f;
+    set->parameters.field_14 = 0.0f;
+    set->parameters.field_18 = 0;
+    set->parameters.field_1c = 0.0f;
+    set->parameters.field_20 = 4.0f;
+    set->parameters.field_24 = 0.0f;
+    set->parameters.field_28 = 0;
+    set->parameters.field_2c = 0.577f;
+    set->parameters.field_30 = 0.577f;
+    set->parameters.field_34 = 0.577f;
+    set->parameters.field_38 = 0.0f;
+    set->parameters.field_3c = 1.0f;
+    set->parameters.field_40 = 180.0f;
+    set->parameters.field_44 = 0.0f;
+    set->parameters.field_48 = 1.0f;
+    set->parameters.field_4c = 0.0f;
+    set->parameters.field_50 = 0.0f;
+    set->parameters_copy = set->parameters;
+    set->field_a8 = 0;
+    set->field_ac = 0;
+    set->field_b0 = 0;
+    set->field_b4 = 1;
+    set->field_b8 = 1.0f;
+    set->field_bc = 4.0f;
+    set->field_c0 = 0.2f;
+    set->field_c4 = 0.5f;
+    set->field_c8 = 1.9f;
+    set->field_cc = 0.0f;
+    set->active_count = 0;
+    set->selected_index = -1;
+    set->field_558 = 1.0f;
+    set->field_55c = 0.2f;
+    set->field_560 = 0;
+    for (i = 0; i < 32; ++i)
+        set->burnouts[i].active = 0;
+}
+
+// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public identity.
+void edrtlDetermineNearestBurn(float distance, BURN_SET_PC *set) {
+    i32 i;
+    NUVEC delta;
+    float distance_squared;
+    if (set->selected_index != -1) {
+        NuVecSub(&delta, &burn_editor_position_pc, &set->burnouts[set->selected_index].position);
+        distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+        if (distance_squared == 0.0f)
+            return;
+    }
+    set->selected_index = -1;
+    for (i = 0; i < 32; ++i) {
+        if (set->burnouts[i].active) {
+            NuVecSub(&delta, &burn_editor_position_pc, &set->burnouts[i].position);
+            distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+            if (distance < 0.0f || distance_squared < distance) {
+                set->selected_index = i;
+                distance = distance_squared;
+            }
+        }
+    }
+}
+
+// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public identity.
+i32 edrtlBurnoutLoadSet(char *filename, BURN_SET_PC *set) {
+    i32 i;
+    i32 max_version;
+    i32 version;
+    i32 count;
+    i32 slot;
+    max_version = 5;
+    if (!set)
+        return 0;
+    EdFileSetMedia(1);
+    if (EdFileOpen(filename, 0)) {
+        EdFileSetReadWrongEndianess(1);
+        version = EdFileReadInt();
+        if (version > max_version) {
+            EdFileSetReadWrongEndianess(0);
+            EdFileClose();
+            return 0;
+        }
+        count = EdFileReadInt();
+        set->parameters.field_24 = EdFileReadFloat();
+        set->parameters.field_14 = EdFileReadFloat();
+        set->parameters.field_1c = EdFileReadFloat();
+        if (version > 1) {
+            set->field_b8 = EdFileReadFloat();
+            set->field_bc = EdFileReadFloat();
+            set->field_c0 = EdFileReadFloat();
+            set->field_c4 = EdFileReadFloat();
+            if (version == 2)
+                set->field_c4 = set->field_c4 - 1.0f;
+            set->field_c8 = EdFileReadFloat();
+            set->field_cc = EdFileReadFloat();
+        } else {
+            set->field_b8 = 1.0f;
+            set->field_bc = 4.0f;
+            set->field_c0 = 0.2f;
+            set->field_c4 = 0.5f;
+            set->field_c8 = 1.9f;
+            set->field_cc = 0.0f;
+        }
+        if (set->active_count + count > 32)
+            count = 32 - set->active_count;
+        slot = 0;
+        for (i = 0; i < count; ++i) {
+            while (set->burnouts[slot].active && slot < 32)
+                ++slot;
+            if (slot < 32) {
+                set->burnouts[slot].active = 1;
+                EdFileReadNuVec(&set->burnouts[slot].position);
+                set->burnouts[slot].field_10 = EdFileReadFloat();
+                set->burnouts[slot].field_14 = EdFileReadFloat();
+                set->burnouts[slot].field_18 = EdFileReadFloat();
+                set->burnouts[slot].field_1c = EdFileReadFloat();
+                set->burnouts[slot].field_20 = EdFileReadFloat();
+                set->active_count = set->active_count + 1;
+            }
+        }
+        if (version > 4) {
+            set->parameters.field_04 = EdFileReadFloat();
+            set->parameters.field_08 = EdFileReadFloat();
+            set->parameters.field_0c = EdFileReadFloat();
+            set->parameters.field_10 = EdFileReadFloat();
+            set->parameters.field_20 = EdFileReadFloat();
+            set->parameters.field_28 = EdFileReadInt();
+            set->parameters.field_2c = EdFileReadFloat();
+            set->parameters.field_30 = EdFileReadFloat();
+            set->parameters.field_34 = EdFileReadFloat();
+            set->parameters.field_38 = EdFileReadFloat();
+            set->parameters.field_3c = EdFileReadFloat();
+            set->parameters.field_40 = EdFileReadFloat();
+            set->parameters.field_44 = EdFileReadFloat();
+            set->parameters.field_48 = EdFileReadFloat();
+        }
+        EdFileSetReadWrongEndianess(0);
+        EdFileClose();
+        set->selected_index = -1;
+        edrtlDetermineNearestBurn(1.0f, set);
+        set->field_b4 = 1;
+        return 1;
+    }
+    return 0;
+}
+
+// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public identity.
+BURN_SET_PC *edrtlBurnoutLoad(char *filename, VARIPTR *buffer, i32 unused_end) {
+    BURN_SET_PC *set;
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    set = (BURN_SET_PC *)buffer->addr;
+    edrtlInitBurnset(set);
+    set->field_560 = edrtlBurnoutLoadSet(filename, set);
+    edrtl_edit_burnset = set;
+    buffer->addr += sizeof(BURN_SET_PC);
+    return set;
+}
+
+// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public identity.
+void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32 *dispersion, NUVEC *camera_position,
+                           f32 frame_time) {
+    i32 i;
+    f32 nearest_distance;
+    i32 nearest_index;
+    BURN_OUT_PC *burnout;
+    f32 distance;
+    f32 desired_threshold;
+    f32 desired_intensity;
+    f32 desired_dispersion;
+    f32 fraction;
+    f32 step;
+    f32 moved;
+    f32 intensity_target;
+    if (set == NULL)
+        set = edrtl_edit_burnset;
+    if (set == NULL) {
+        *threshold = 0.0f;
+        *intensity = 0.0f;
+        *dispersion = 0.0f;
+        return;
+    }
+
+    nearest_distance = -1.0f;
+    nearest_index = -1;
+    for (i = 0; i < 32; ++i) {
+        burnout = &set->burnouts[i];
+        if (!burnout->active)
+            continue;
+        distance = NuVecDist(camera_position, &burnout->position, NULL);
+        if (distance < burnout->field_1c + burnout->field_20 &&
+            (nearest_distance < 0.0f || distance < nearest_distance)) {
+            nearest_index = i;
+            nearest_distance = distance;
+        }
+    }
+
+    if (nearest_index == -1) {
+        desired_threshold = set->parameters.field_24;
+        desired_intensity = set->parameters.field_14;
+        desired_dispersion = set->parameters.field_1c;
+    } else {
+        burnout = &set->burnouts[nearest_index];
+        if (nearest_distance <= burnout->field_1c) {
+            desired_threshold = burnout->field_10;
+            desired_intensity = burnout->field_14;
+            desired_dispersion = burnout->field_18;
+        } else {
+            fraction = (nearest_distance - burnout->field_1c) / burnout->field_20;
+            desired_threshold = burnout->field_10 * (1.0f - fraction) + set->parameters.field_24 * fraction;
+            desired_intensity = burnout->field_14 * (1.0f - fraction) + set->parameters.field_14 * fraction;
+            desired_dispersion = burnout->field_18 * (1.0f - fraction) + set->parameters.field_1c * fraction;
+        }
+    }
+
+    if (set->field_b4) {
+        set->parameters_copy.field_24 = desired_threshold;
+        set->parameters_copy.field_14 = desired_intensity;
+        set->parameters_copy.field_1c = desired_dispersion;
+        set->field_b4 = 0;
+    } else {
+        step = set->field_b8 * frame_time;
+        if (desired_threshold > set->parameters_copy.field_24) {
+            moved = set->parameters_copy.field_24 + step;
+            set->parameters_copy.field_24 = moved > desired_threshold ? desired_threshold : moved;
+        } else if (desired_threshold < set->parameters_copy.field_24) {
+            moved = set->parameters_copy.field_24 - step;
+            set->parameters_copy.field_24 = desired_threshold > moved ? desired_threshold : moved;
+        }
+        if (desired_dispersion > set->parameters_copy.field_1c) {
+            moved = set->parameters_copy.field_1c + step;
+            set->parameters_copy.field_1c = desired_dispersion > moved ? desired_dispersion : moved;
+        } else if (desired_dispersion < set->parameters_copy.field_1c) {
+            moved = set->parameters_copy.field_1c - step;
+            set->parameters_copy.field_1c = moved > desired_dispersion ? desired_dispersion : moved;
+        }
+
+        if (!set->field_b0 && !set->field_a8 && !set->field_ac) {
+            if (desired_intensity >= set->parameters_copy.field_14 + set->field_c0)
+                set->field_a8 = 1;
+            else if (set->parameters_copy.field_14 - set->field_c0 >= desired_intensity)
+                set->field_ac = 1;
+        }
+
+        intensity_target = desired_intensity;
+        if (set->field_a8 || set->field_ac) {
+            step = set->field_bc * frame_time;
+            if (set->field_a8) {
+                intensity_target = desired_intensity + set->field_c4;
+                if (intensity_target > set->field_c8)
+                    intensity_target = desired_intensity > set->field_c8 ? desired_intensity : set->field_c8;
+            } else {
+                intensity_target = desired_intensity - set->field_c4;
+                if (intensity_target < set->field_cc)
+                    intensity_target = set->field_cc > desired_intensity ? desired_intensity : set->field_cc;
+            }
+        }
+        if (intensity_target > set->parameters_copy.field_14) {
+            moved = set->parameters_copy.field_14 + step;
+            set->parameters_copy.field_14 = moved > intensity_target ? intensity_target : moved;
+        } else if (intensity_target < set->parameters_copy.field_14) {
+            moved = set->parameters_copy.field_14 - step;
+            set->parameters_copy.field_14 = intensity_target > moved ? intensity_target : moved;
+        }
+        if (set->field_b0 && set->parameters_copy.field_14 == intensity_target)
+            set->field_b0 = 0;
+        if ((set->field_a8 || set->field_ac) && set->parameters_copy.field_14 == intensity_target) {
+            set->field_a8 = 0;
+            set->field_ac = 0;
+            set->field_b0 = 1;
+        }
+    }
+    *threshold = set->parameters_copy.field_24;
+    *intensity = set->parameters_copy.field_14;
+    *dispersion = set->parameters_copy.field_1c;
+}
+
+// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public identity.
+void edrtlCalculateBurnoutEx(BURN_SET_PC *set, BURN_PARAMETERS_PC *parameters, NUVEC *camera_position, f32 frame_time) {
+    memcpy(parameters, &set->parameters, sizeof(*parameters));
+    edrtlCalculateBurnout(set, &parameters->field_24, &parameters->field_14, &parameters->field_1c, camera_position,
+                          frame_time);
+}

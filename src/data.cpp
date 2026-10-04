@@ -11642,3 +11642,42 @@ extern "C" {
     LEVELDATA_PC *CollisionVehicleExcludedLevelPc = NULL;
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$RippleSetPc")
+    RIPPLE_SET_PC *RippleSetPc = NULL;
+#pragma data_seg()
+#pragma data_seg(".data$RipplePerturbationPc")
+    f32 RipplePerturbationPc = 0.15f;
+#pragma data_seg()
+#pragma data_seg(".data$RippleSfxCooldownPc")
+    f32 RippleSfxCooldownPc = 0.5f;
+#pragma data_seg()
+#pragma data_seg(".data$ForceFieldRippleRatePc")
+    f32 ForceFieldRippleRatePc = 100.0f;
+#pragma data_seg()
+#pragma data_seg(".data$RippleForceFieldSoundNamePc")
+    const char RippleForceFieldSoundNamePc[10] = "SabFField";
+#pragma data_seg()
+#pragma data_seg(".data$PodDustLocatorIndicesPc")
+    i32 PodDustLocatorIndicesPc[2] = {1, 2};
+#pragma data_seg()
+#pragma data_seg(".data$PodDustEmissionRatePc")
+    f32 PodDustEmissionRatePc = 100.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PodDustHeightScalePc")
+    f32 PodDustHeightScalePc = 2.0f;
+#pragma data_seg()
+#pragma data_seg(".data$GunshipDustEmissionRatePc")
+    f32 GunshipDustEmissionRatePc = 75.0f;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$CameraSavedStateCountPc")
+    i32 CameraSavedStateCountPc = 0;
+#pragma data_seg()
+#pragma data_seg(".data$CameraSavedStatesPc")
+    CAMERA_SAVED_STATE_PC CameraSavedStatesPc[16] = {{0}};
+#pragma data_seg()
+}

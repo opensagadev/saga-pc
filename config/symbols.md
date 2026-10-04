@@ -4399,3 +4399,29 @@ endpoint are retained under build/analysis/transfer-execution-20261003/platform/
 camera-collision-animation-final-review and continuation-camera-collision-
 animation/consolidated. Selected finite CPU, initialized object/key/array and
 adequate storage domains remain qualified; no full game/GPU/hardware claim.
+
+
+### Surface, saved-camera and lighting loader source release (2026-10-04)
+
+Surface7/3,692 retains original private ECX ring allocator, complete native
+matrix/axis/ripple/debris/dust extents and asserted named WORD/f32/link fields.
+Old3,792 aggregate metadata is superseded by an independently raw-PE-verified
+arithmetic-only addendum; seven body hashes/ABI findings are unchanged.
+Saved-camera9/1,313 promotes exact named/asserted94/150/420 type views and
+original global bank/count ownership; actual16 bound/stride is verified but
+unknown owning extent receives no allocation credit. Lighting7/2,540 keeps
+actual serialized count/version policy, named record slots/widths, arena math
+and native float stages. Android is source reference; PC data/control/ABI
+remain authoritative. No missing direct providers or fabricated helpers.
+
+Independent source/runtime packets remain under transfer-execution-20261004/
+mapping/surface3792-review (staticd80041f5/runtime2ccc900d/arithmeticb2149bb6),
+and transfer-execution-20261003/mapping/camera-frustum1313-review (staticfa5c2ba6/
+runtimef9f619ec), platform/lighting-load2540-review (source4ffafc33/runtimec089f82b)
+and platform/surface-savedcamera-lighting-final-review (complete final endpoint).
+All23 full hashes agree with normal283 output; all3,865 prior copies survive,
+with only eight proven same-section/value local-label metadata renames.
+Authoritative comparison adds912 exact bytes/eight functions;200 actual-normal
+CPU assertions pass. Selected finite PC53, initialized/valid record, adequate
+arena and disjoint-output qualifications remain; no general game/GPU/device
+or particle/audio output claim. Next frame/input/scene services stay scratch.

@@ -206,3 +206,95 @@ f32 __cdecl FindPodHoverHeight(GAMEOBJECT *object) {
     }
     return height;
 }
+
+extern i32 PodDustLocatorIndicesPc[2];
+extern f32 PodDustEmissionRatePc, PodDustHeightScalePc;
+static i32 PodRaceKeyPc[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
+void __cdecl PodDust(WORLDINFO *world, GAMEOBJECT *object) {
+    NUVEC positions[2], previous[2], delta, position;
+    NUMTX matrix, *joint;
+    f32 rate, fraction, sine, cosine;
+    i32 count = 0, i, j, locator, key, particles;
+    u16 angle;
+    if (object->floor_height == 2000000.0f)
+        return;
+    if (world->game_debris_sys->entries[25].effect == -1)
+        return;
+    for (i = 0; i < 2; ++i) {
+        locator = PodDustLocatorIndicesPc[i];
+        if (object->origin_joint_ready == 0 || object->character_model->points_of_interest[locator] == NULL)
+            continue;
+        joint = &object->locator_matrices[locator];
+        positions[count].x = joint->m30;
+        positions[count].y = (f32)((f64)object->floor_height + (f64).1f);
+        positions[count].z = joint->m32;
+        ++count;
+        if (!(object->flags_1fc_word & 0x80))
+            continue;
+        if (object == (GAMEOBJECT *)Player[0])
+            key = i;
+        else if (object == (GAMEOBJECT *)Player[1])
+            key = i + 4;
+        else
+            continue;
+        matrix.m00 = joint->m00;
+        matrix.m01 = joint->m01;
+        matrix.m02 = joint->m02;
+        matrix.m03 = joint->m03;
+        matrix.m10 = joint->m20;
+        matrix.m11 = joint->m21;
+        matrix.m12 = joint->m22;
+        matrix.m13 = joint->m23;
+        matrix.m20 = -joint->m10;
+        matrix.m21 = -joint->m11;
+        matrix.m22 = -joint->m12;
+        matrix.m23 = -joint->m13;
+        matrix.m30 = joint->m30;
+        matrix.m31 = joint->m31;
+        matrix.m32 = joint->m32;
+        matrix.m33 = joint->m33;
+        if (PodRaceKeyPc[key] == -1)
+            AddDebrisEffect(&PodRaceKeyPc[key], world->game_debris_sys->entries[53].effect, 0, 0, 0);
+        else
+            DebrisPosOrientationMtx(PodRaceKeyPc[key], &matrix);
+        key += 2;
+        if (PodRaceKeyPc[key] == -1)
+            AddDebrisEffect(&PodRaceKeyPc[key], world->game_debris_sys->entries[54].effect, 0, 0, 0);
+        else {
+            angle = object->field_0x276;
+            sine = NuTrigTable[angle >> 1];
+            cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+            matrix.m00 = -cosine;
+            matrix.m01 = 0;
+            matrix.m02 = sine;
+            matrix.m10 = -sine;
+            matrix.m11 = 0;
+            matrix.m12 = -cosine;
+            matrix.m20 = 0;
+            matrix.m21 = 1;
+            matrix.m22 = 0;
+            matrix.m31 = (f32)((f64)object->floor_height + (f64).1f);
+            DebrisPosOrientationMtx(PodRaceKeyPc[key], &matrix);
+        }
+    }
+    if (count == 0) {
+        positions[0].x = object->collision_position.x;
+        positions[0].y = object->floor_height;
+        positions[0].z = object->collision_position.z;
+        count = 1;
+    }
+    NuVecSub(&delta, &object->start_position, &object->position);
+    rate = (f32)(((f64)avg_currentspeed_mul * (f64)PodDustEmissionRatePc) *
+                 (1.0 - (((f64)object->collision_min.y - (f64)object->floor_height) / (f64)PodDustHeightScalePc)));
+    for (i = 0; i < count; ++i) {
+        NuVecAdd(&previous[i], &positions[i], &delta);
+        particles = ParticlesPerSecond(rate, FRAMETIME);
+        for (j = 0; j < particles; ++j) {
+            fraction = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f));
+            position.x = (f32)((((f64)positions[i].x - (f64)previous[i].x) * (f64)fraction) + (f64)previous[i].x);
+            position.y = (f32)((((f64)positions[i].y - (f64)previous[i].y) * (f64)fraction) + (f64)previous[i].y);
+            position.z = (f32)((((f64)positions[i].z - (f64)previous[i].z) * (f64)fraction) + (f64)previous[i].z);
+            AddVariableShotDebrisEffect(world->game_debris_sys->entries[25].effect, &position, 1, 0, 0);
+        }
+    }
+}

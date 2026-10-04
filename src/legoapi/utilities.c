@@ -183,3 +183,35 @@ void __cdecl CalculateInterceptVector(NUVEC *origin, NUVEC *target, NUVEC *veloc
     if (intercept != NULL)
         *intercept = prediction;
 }
+
+void __cdecl VecRotateAxis(NUVEC *vector, u16 angle, NUVEC *axis) {
+    f32 cosine, sine, partial, x_result, y_result, z_result;
+    f64 complement, tx, ty, tz, xy, xz, yz, sx, sy, sz;
+    NUVEC input;
+    NuVecNorm(axis, axis);
+    input = *vector;
+    cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    sine = NuTrigTable[angle >> 1];
+    complement = 1.0 - (f64)cosine;
+    tx = complement * (f64)axis->x;
+    ty = complement * (f64)axis->y;
+    tz = complement * (f64)axis->z;
+    xy = tx * (f64)axis->y;
+    xz = tx * (f64)axis->z;
+    yz = ty * (f64)axis->z;
+    sx = (f64)sine * axis->x;
+    sy = (f64)sine * axis->y;
+    sz = (f64)sine * axis->z;
+    partial = (f32)(((tx * (f64)axis->x + (f64)cosine) * (f64)input.x) + 0.0);
+    partial = (f32)((f64)partial + (xy - sz) * (f64)input.y);
+    x_result = (f32)((f64)partial + (xz + sy) * (f64)input.z);
+    partial = (f32)(((xy + sz) * (f64)input.x) + 0.0);
+    partial = (f32)((f64)partial + (ty * (f64)axis->y + (f64)cosine) * (f64)input.y);
+    y_result = (f32)((f64)partial + (yz - sx) * (f64)input.z);
+    partial = (f32)(((xz - sy) * (f64)input.x) + 0.0);
+    partial = (f32)((f64)partial + (sx + yz) * (f64)input.y);
+    z_result = (f32)((f64)partial + (tz * (f64)axis->z + (f64)cosine) * (f64)input.z);
+    vector->x = x_result;
+    vector->y = y_result;
+    vector->z = z_result;
+}

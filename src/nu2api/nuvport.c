@@ -154,3 +154,8 @@ void __cdecl RenderPostViewportResetPc(void) {
     f32 height = (f32)PS2_VREZ_H;
     RenderPostViewportSetPc(0.0f, 0.0f, width, height, 0.0f, 0.0f, width, height);
 }
+
+void __cdecl NuVpGetSize2(f32 *width, f32 *height) {
+    *width = (f32)((vpCurrent.width * 0.0625) / ((f64)DebrisGlassTextureWidth / PS2_VREZ_W));
+    *height = (f32)((vpCurrent.height * 0.0625) / ((f64)DebrisGlassTextureHeight / PS2_VREZ_H));
+}

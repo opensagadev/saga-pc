@@ -2615,3 +2615,76 @@ revision. The user's three journal edits remain untouched. Next are surface
 7/3,792 and saved-camera9/1,313 candidates, then world/lighting ingestion and
 PC frame/timing services. Those scratch spans are not production transfer.
 Whole-project engine, resources, gameplay, rendering and platform work continues.
+
+
+### Surface effects, saved camera and lighting loaders checkpoint (2026-10-04)
+
+23 complete functions add7,545 unique compared PC bytes over6211d10:
+surface effects7/3,692, saved-camera/transform9/1,313 and lighting/burnout
+loaders7/2,540. Unique compared code reaches1,118,349; native objdiff compares
+1,118,866 including existing aliases. Whole-PC fuzzy coverage rises22.168891%
+to22.314018%; eight exact functions add912 bytes, reaching189,420/3,471,246
+.text bytes (5.456830%). Data union grows10 to632,566. Already compared
+parents/provider aliases receive zero new transfer credit.
+
+Surface keeps full ripple-ring allocation/reuse, native WORD capacity/counts,
+record stride and pointer links, matrix/axis transforms and actual water/force-
+field emission into genuine pools. Original PodRaceKey32 and random-radius4
+stay in their private owners.53 selected CPU checks cover those paths and
+legitimate PodDust/Debris early guards; particle/audio/hardware output remains
+unclaimed. Native unwritten no-emission forcefield sound position is retained.
+Axis precision uses the pinned CRT x87 PC53 environment; no instruction tuning
+was performed. The earlier3,792 aggregate was an arithmetic error: all seven
+unchanged full native spans sum3,692. Immutable old packets remain, with a
+separate independently verified arithmetic correction and zero body changes.
+
+Saved camera keeps the native16 bound and complete0x420 record/0x150 planes,
+public original-TU count/bank ownership and private inverse matrix. The bank
+is one16,896-byte working view, not16 invented allocations.116 selected checks
+exercise16 saves/full guard/clear retention, four direct/world/in-place/zero
+transforms, projection/cache, viewport and renderer camera state. Correct
+startup uses actual NuTrigInit; initial116/2 and116/1 fixture failures remain
+retained. Native scale10430.3779296875 quantizes the chosen angle8191 rather
+than8192. Original source was unchanged by those expectation corrections.
+GPU/device/asset output and malformed-state capacity remain unclaimed.
+
+Lighting loaders preserve actual serialized versions1/2/5 and reject6, the
+native32 slot clamp, arena alignment, nearest/tie/cutoff and extended outer-
+radius/f32 stages. LoadLights reuses real rtlLoadSet/IndexLights with zero new
+credit for those providers.31 selected checks cover real file parsing and
+missing-file paths plus burnout calculations with initialized records and
+outputs disjoint from live set fields. Editor/device/general alias behavior
+is unclaimed. Two true12+4 RTL private views stay in the original TU, with
+unknown owning extents. Shared opaque aliases required only declaration-wrapper
+cleanup for RippleSet and two Burn types; all fields/body tokens and prior
+emitted code/data remain unchanged.
+
+The source-only EXE links3,888 functions and6,570 data definitions across283
+actual normal objects. LLVM18 format310/tidy283, static9,908 mappings and all
+710 tests pass with three existing skips (54.826s suite). Required build,
+object checks, make check and authoritative retail match return exit0. All200
+native checks use all283 actual normal providers and zero replacements or
+supplements: Surface53, Camera116 and Lighting31. All327 frozen inputs/283
+source-object pins survive. All3,865 prior complete raw/official-relocated
+function copies remain identical; old exact code/data/member matches survive.
+Eight compiler-local ordinal label renames preserve same-function section/value
+and full bytes; external semantic names stay strict, with no body variant.
+
+Eleven shared views add16,946 working bytes: readonly NUL literal10 and ten
+unknown views16,936, including real saved count4/bank16,896. Unknown original
+owning extents stay blank with zero allocation/exact credit. Normal3,551 data
+regions/1,865 scopes equal isolated proof, preserving all3,540 old regions,
+four members/complete parents and CRC. All44 new initializer copies equal
+retail:24 known copies raise physical exact4,806->4,830;20 unknown copies/
+17,078 working bytes remain uncredited. Known scope605/138,175 bytes and
+unknown1,260/147,356 working bytes are distinct from owning capacities. Exact
+WORD members remain4 bytes. Private RTL, camera and surface storage retains
+original owners without duplicate backing.
+
+Prior6211d10 CI37216313002 passed on its exact pushed revision. The user's
+three journal edits remain untouched. Next are real PC frame/pad/display-list
+22/4,020, required gameplay5/529 and SpecialSfx3/841 scratch candidates, followed
+by installed scene callbacks and actual device/shader methods. DDS-dependent
+HGOBJ reader4,805 remains held rather than receiving fabricated assets. These
+candidate spans supply zero production credit until accepted and compared.
+Whole-project transfer and authorized validated direct-main checkpoints continue.

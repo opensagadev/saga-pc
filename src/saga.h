@@ -14808,4 +14808,119 @@ extern "C" {
 }
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    typedef struct ripple_set_pc_s RIPPLE_SET_PC;
+    void __cdecl AddRipple(RIPPLE_SET_PC *, NUMTX *, f32, f32, f32, f32, u32, u32, i32, NUMTL *, NUVEC *);
+    void __cdecl BuildRippleMtx(NUMTX *, NUVEC *, NUVEC *, u16, u16);
+    void __cdecl VecRotateAxis(NUVEC *, u16, NUVEC *);
+    void __cdecl AddSurfaceRipples(GAMEOBJECT *);
+    void __cdecl PodDust(WORLDINFO *, GAMEOBJECT *);
+    void __cdecl AddSurfaceDebris(GAMEOBJECT *);
+
+    extern RIPPLE_SET_PC *RippleSetPc;
+    extern f32 RipplePerturbationPc;
+    extern f32 RippleSfxCooldownPc;
+    extern f32 ForceFieldRippleRatePc;
+    extern const char RippleForceFieldSoundNamePc[10];
+    extern i32 PodDustLocatorIndicesPc[2];
+    extern f32 PodDustEmissionRatePc;
+    extern f32 PodDustHeightScalePc;
+    extern f32 GunshipDustEmissionRatePc;
+
+    typedef struct BURN_SET_PC BURN_SET_PC;
+    typedef struct BURN_PARAMETERS_PC BURN_PARAMETERS_PC;
+    void __cdecl edrtlInitBurnset(BURN_SET_PC *);
+    void __cdecl edrtlDetermineNearestBurn(f32, BURN_SET_PC *);
+    i32 __cdecl edrtlBurnoutLoadSet(char *, BURN_SET_PC *);
+    BURN_SET_PC *__cdecl edrtlBurnoutLoad(char *, VARIPTR *, i32);
+    void __cdecl edrtlCalculateBurnout(BURN_SET_PC *, f32 *, f32 *, f32 *, NUVEC *, f32);
+    void __cdecl edrtlCalculateBurnoutEx(BURN_SET_PC *, BURN_PARAMETERS_PC *, NUVEC *, f32);
+    void __cdecl LoadLights(void *, char *);
+
+    typedef struct CAMERA_CLIP_PACKET_PC {
+        NUMTX clip;
+        NUMTX projection;
+        u32 flags;
+        f32 far_clip;
+        f32 near_clip;
+        f32 x_scale;
+        f32 y_scale;
+    } CAMERA_CLIP_PACKET_PC;
+    STATIC_ASSERT(sizeof(CAMERA_CLIP_PACKET_PC) == 0x94);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PACKET_PC, projection) == 0x40);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PACKET_PC, flags) == 0x80);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PACKET_PC, far_clip) == 0x84);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PACKET_PC, near_clip) == 0x88);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PACKET_PC, x_scale) == 0x8c);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PACKET_PC, y_scale) == 0x90);
+
+    typedef struct CAMERA_CLIP_PLANES_PC {
+        NUMTX frustum;
+        NUMTX scissor;
+        NUMTX near_far;
+        NUVEC4 near_plane;
+        NUMTX abs_frustum;
+        NUMTX abs_scissor;
+    } CAMERA_CLIP_PLANES_PC;
+    STATIC_ASSERT(sizeof(CAMERA_CLIP_PLANES_PC) == 0x150);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, scissor) == 0x40);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, near_far) == 0x80);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, near_plane) == 0xc0);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, abs_frustum) == 0xd0);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, abs_scissor) == 0x110);
+
+    typedef struct CAMERA_SAVED_STATE_PC {
+        NUCAMERA camera;
+        NUMTX view;
+        NUMTX projection;
+        NUMTX screen;
+        NUMTX view_projection;
+        NUMTX view_projection_scissor;
+        NUMTX view_projection_viewport;
+        NUMTX viewport;
+        NUMTX view_projection_screen;
+        NUMTX projection_screen;
+        i32 effects;
+        f32 zx;
+        f32 zy;
+        f32 zxs;
+        f32 zys;
+        u32 unknown_2cc;
+        CAMERA_CLIP_PLANES_PC planes;
+    } CAMERA_SAVED_STATE_PC;
+    STATIC_ASSERT(sizeof(CAMERA_SAVED_STATE_PC) == 0x420);
+    STATIC_ASSERT(offsetof(CAMERA_SAVED_STATE_PC, view) == 0x78);
+    STATIC_ASSERT(offsetof(CAMERA_SAVED_STATE_PC, projection) == 0xb8);
+    STATIC_ASSERT(offsetof(CAMERA_SAVED_STATE_PC, screen) == 0xf8);
+    STATIC_ASSERT(offsetof(CAMERA_SAVED_STATE_PC, view_projection) == 0x138);
+    STATIC_ASSERT(offsetof(CAMERA_SAVED_STATE_PC, view_projection_scissor) == 0x178);
+    STATIC_ASSERT(offsetof(CAMERA_SAVED_STATE_PC, view_projection_viewport) == 0x1b8);
+    STATIC_ASSERT(offsetof(CAMERA_SAVED_STATE_PC, viewport) == 0x1f8);
+    STATIC_ASSERT(offsetof(CAMERA_SAVED_STATE_PC, view_projection_screen) == 0x238);
+    STATIC_ASSERT(offsetof(CAMERA_SAVED_STATE_PC, projection_screen) == 0x278);
+    STATIC_ASSERT(offsetof(CAMERA_SAVED_STATE_PC, effects) == 0x2b8);
+    STATIC_ASSERT(offsetof(CAMERA_SAVED_STATE_PC, zx) == 0x2bc);
+    STATIC_ASSERT(offsetof(CAMERA_SAVED_STATE_PC, zy) == 0x2c0);
+    STATIC_ASSERT(offsetof(CAMERA_SAVED_STATE_PC, zxs) == 0x2c4);
+    STATIC_ASSERT(offsetof(CAMERA_SAVED_STATE_PC, zys) == 0x2c8);
+    STATIC_ASSERT(offsetof(CAMERA_SAVED_STATE_PC, planes) == 0x2d0);
+    extern i32 CameraSavedStateCountPc;
+    extern CAMERA_SAVED_STATE_PC CameraSavedStatesPc[16];
+
+    void __cdecl NuCameraCalcClipMtx(CAMERA_CLIP_PACKET_PC *, NUCAMERA *, i32);
+    void __cdecl NuCameraTransformView(NUVEC *, NUVEC *, i32, NUMTX *);
+    void __cdecl NuCameraTransformScreenClip(NUVEC *, NUVEC *, i32, NUMTX *);
+    void __cdecl NuCameraTransformScissorClip(NUVEC *, NUVEC *, i32, NUMTX *);
+    void __cdecl NuCameraTransformScreen(NUVEC *, NUVEC *, i32, NUMTX *);
+    i32 __cdecl NuCameraSaveState(void);
+    void __cdecl NuCameraClearStateBuffer(void);
+    i32 __cdecl NuRndrStateUpdateCameraState(void);
+    void __cdecl NuVpGetSize2(f32 *, f32 *);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

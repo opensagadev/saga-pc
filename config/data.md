@@ -1807,3 +1807,22 @@ retail, including8 unknown/76 working bytes. Known604/138,165 scoped bytes are
 unchanged; unknown1,250/130,420 are working views, not capacities. Private force
 constants and specular state stay with original owners; CRC is preserved.
 Camera saved-bank/count views remain scratch-only for the next wave.
+
+
+### Surface and saved-camera eleven-view release (2026-10-04)
+
+11 genuine shared definitions add16,946 working bytes: complete named readonly
+NUL literal10 and ten unknown views16,936. Saved count4 and bank16,896 are true
+original nucamera_gen public owners; bank is16 records of0x420, one physical
+view. Native16 guard/stride proves the working contract; owning extent remains
+blank with zero allocation/exact credit. Surface eight mutable working views
+use36 bytes; private radius4/PodRaceKey32, camera inverse64 and two RTL12+4
+owners remain in their original source contexts. No duplicate state/backing.
+
+All3,540 prior full shared regions and1,854 scopes survive; normal3,551/1,865
+matches isolated proof. All4,806 prior physical exact copies and four complete
+members/parents survive;24 new known exact copies yield4,830. All44 new complete
+initializer copies match retail;20 unknown copies/17,078 working bytes receive
+zero original extent/allocation/exact credit. Data union grows10 to632,566.
+Known scope605/138,175 and unknown1,260/147,356 working bytes describe verified
+views; exact WORD members remain4 bytes and complete CRC is unchanged.

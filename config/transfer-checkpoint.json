@@ -20,18 +20,18 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1174439,
-    "matched_code_bytes": 188508,
-    "matching_percent": 5.430557212021275,
-    "fuzzy_coverage_percent": 22.16889064166178,
-    "mapped_functions": 4067,
-    "matched_functions": 1850,
-    "objdiff_fuzzy_percent": 69.290054,
-    "objdiff_total_code": 1111321,
+    "mapped_code_bytes": 1181984,
+    "matched_code_bytes": 189420,
+    "matching_percent": 5.456830198724032,
+    "fuzzy_coverage_percent": 22.31401782845897,
+    "mapped_functions": 4090,
+    "matched_functions": 1858,
+    "objdiff_fuzzy_percent": 69.27307,
+    "objdiff_total_code": 1118866,
     "image_bytes": 40067072,
-    "mapped_bytes": 1817680,
-    "mapping_percent": 4.536593040789205,
-    "matched_data_region_bytes": 632556
+    "mapped_bytes": 1825235,
+    "mapping_percent": 4.5554489232455015,
+    "matched_data_region_bytes": 632566
   },
   "newly_compared": [
     {
@@ -3523,6 +3523,236 @@
       ],
       "exact": false,
       "objdiff_percent": 67.658165
+    },
+    {
+      "symbol": "_AddSurfaceDebris",
+      "pc": "0x0042f5e0",
+      "original_bytes": 869,
+      "units": [
+        "src/legoapi/supportall.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 75.14616
+    },
+    {
+      "symbol": "_BuildRippleMtx",
+      "pc": "0x0042fbb0",
+      "original_bytes": 63,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_AddSurfaceRipples",
+      "pc": "0x0042fcf0",
+      "original_bytes": 1063,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 10.925795
+    },
+    {
+      "symbol": "_PodDust",
+      "pc": "0x004db740",
+      "original_bytes": 1054,
+      "units": [
+        "src/legoapi/speederchase.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 82.15589
+    },
+    {
+      "symbol": "_VecRotateAxis",
+      "pc": "0x00552520",
+      "original_bytes": 333,
+      "units": [
+        "src/legoapi/utilities.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 31.0
+    },
+    {
+      "symbol": "_LoadLights",
+      "pc": "0x00595970",
+      "original_bytes": 150,
+      "units": [
+        "src/legoapi/lighting.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_RippleAllocPc",
+      "pc": "0x005a2400",
+      "original_bytes": 107,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 63.227272
+    },
+    {
+      "symbol": "_AddRipple",
+      "pc": "0x005a24f0",
+      "original_bytes": 203,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.48485
+    },
+    {
+      "symbol": "_NuCameraCalcClipMtx",
+      "pc": "0x005d53f0",
+      "original_bytes": 268,
+      "units": [
+        "src/nu2api/nucamera.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuCameraClearStateBuffer",
+      "pc": "0x005d6280",
+      "original_bytes": 11,
+      "units": [
+        "src/nu2api/nucamera.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuCameraSaveState",
+      "pc": "0x005d6290",
+      "original_bytes": 303,
+      "units": [
+        "src/nu2api/nucamera.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 52.569443
+    },
+    {
+      "symbol": "_NuCameraTransformView",
+      "pc": "0x005d63c0",
+      "original_bytes": 112,
+      "units": [
+        "src/nu2api/nucamera.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 66.818184
+    },
+    {
+      "symbol": "_NuCameraTransformScreenClip",
+      "pc": "0x005d6430",
+      "original_bytes": 114,
+      "units": [
+        "src/nu2api/nucamera.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 67.55556
+    },
+    {
+      "symbol": "_NuCameraTransformScissorClip",
+      "pc": "0x005d64b0",
+      "original_bytes": 114,
+      "units": [
+        "src/nu2api/nucamera.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 67.55556
+    },
+    {
+      "symbol": "_NuCameraTransformScreen",
+      "pc": "0x005d6530",
+      "original_bytes": 114,
+      "units": [
+        "src/nu2api/nucamera.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 67.55556
+    },
+    {
+      "symbol": "_NuVpGetSize2",
+      "pc": "0x005daef0",
+      "original_bytes": 63,
+      "units": [
+        "src/nu2api/nuvport.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuRndrStateUpdateCameraState",
+      "pc": "0x005fcc80",
+      "original_bytes": 214,
+      "units": [
+        "src/nu2api/nurndrstat.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 86.42857
+    },
+    {
+      "symbol": "_edrtlInitBurnset",
+      "pc": "0x006354a0",
+      "original_bytes": 259,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 97.64706
+    },
+    {
+      "symbol": "_edrtlDetermineNearestBurn",
+      "pc": "0x0063c1b0",
+      "original_bytes": 240,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_edrtlCalculateBurnout",
+      "pc": "0x0063c2a0",
+      "original_bytes": 1125,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 55.614555
+    },
+    {
+      "symbol": "_edrtlCalculateBurnoutEx",
+      "pc": "0x0063c710",
+      "original_bytes": 58,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_edrtlBurnoutLoadSet",
+      "pc": "0x00641020",
+      "original_bytes": 649,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 97.02793
+    },
+    {
+      "symbol": "_edrtlBurnoutLoad",
+      "pc": "0x006412b0",
+      "original_bytes": 59,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
     }
   ],
   "previous_exact_functions_lost": [],
@@ -19645,6 +19875,142 @@
         "Full startup and WorldLoad asset/service dependencies remain incomplete."
       ],
       "next_connected_wave": "Surface effects7/3792 and camera saved-state9/1313 remain scratch candidates pending complete data and runtime contracts; continue connected world/lighting resource ingestion and PC frame/timing suppliers.",
+      "ongoing_goal": "Continue whole-project Android-to-PC transfer until user stops or pauses; validated direct-main pushes authorized."
+    },
+    {
+      "reviewed_physical_member_migrations": [],
+      "physical_exact_rows_retired_with_same_complete_member": [],
+      "baseline_commit": "6211d10ce66ef0215ea147ae31f8083b1cc97d09",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1174439,
+        "matched_code_bytes": 188508,
+        "matching_percent": 5.430557212021275,
+        "fuzzy_coverage_percent": 22.16889064166178,
+        "mapped_functions": 4067,
+        "matched_functions": 1850,
+        "objdiff_fuzzy_percent": 69.290054,
+        "objdiff_total_code": 1111321,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1817680,
+        "mapping_percent": 4.536593040789205,
+        "matched_data_region_bytes": 632556
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1181984,
+        "matched_code_bytes": 189420,
+        "matching_percent": 5.456830198724032,
+        "fuzzy_coverage_percent": 22.31401782845897,
+        "mapped_functions": 4090,
+        "matched_functions": 1858,
+        "objdiff_fuzzy_percent": 69.27307,
+        "objdiff_total_code": 1118866,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1825235,
+        "mapping_percent": 4.5554489232455015,
+        "matched_data_region_bytes": 632566
+      },
+      "newly_compared_functions": 23,
+      "new_original_code_bytes": 7545,
+      "new_compared_row_original_bytes_including_aliases": 7545,
+      "new_alias_rows": [],
+      "compared_code_delta": 7545,
+      "baseline_unique_compared_pc_bytes": 1110804,
+      "unique_compared_pc_bytes": 1118349,
+      "exact_code_added": 912,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 3865,
+      "prior_compiled_function_copies_identical": 3865,
+      "reviewed_Bolt_original_C_to_CPP_owner_supersessions": [],
+      "renamed_owner_copies_with_identical_complete_bodies": [],
+      "user_journal_unchanged": true,
+      "checkpoint": "Surface effects, saved camera and lighting loaders checkpoint (2026-10-04)",
+      "new_source_functions": 23,
+      "new_unique_compared_PC_bytes": 7545,
+      "new_exact_PC_bytes": 912,
+      "new_exact_functions": 8,
+      "family_bytes": {
+        "surface_effects": 3692,
+        "saved_camera_and_transform": 1313,
+        "lighting_resource_and_burnout": 2540
+      },
+      "verified_checks": {
+        "build_function_definitions": 3888,
+        "build_data_definitions": 6570,
+        "normal_object_count": 283,
+        "LLVM18_format_files": 310,
+        "LLVM18_tidy_units": 283,
+        "static_mappings": 9908,
+        "full_test_count": 710,
+        "existing_skips": 3,
+        "full_test_time_seconds": 54.826,
+        "make_build_check_objects_check_match_exit_code": 0,
+        "actual_normal_runtime_checks": 200,
+        "actual_normal_runtime_failures": 0,
+        "whole_owner_replacements": 0,
+        "supplements": 0,
+        "all3865_previous_function_copies_identical": true,
+        "user_journal_preserved": true,
+        "runtime_receipts": [
+          {
+            "path": "build/analysis/transfer-execution-20261004/gameplay-update-suppliers-next/surface-next/production/final-normal-runtime/normal-receipt.json",
+            "sha256": "ddf9dab8cf452bf988d74fc817945d8c395e6a7aa19a84ad3df749bc4179122f"
+          },
+          {
+            "path": "build/analysis/transfer-execution-20261003/parser/camera-frustum-next/extra-nine-runtime/normal-runtime/receipt.json",
+            "sha256": "8367718961ac4370efe4fad57b552829b9ae0e39b2b4d74427553c218cdce156"
+          },
+          {
+            "path": "build/analysis/transfer-execution-20261003/apiobject/resource-lifecycle-next/world-load-next/lighting-load-next/runtime-final-normal/receipt.json",
+            "sha256": "041cdda3bee06357627b4333859a5e4d0715f032736a0289c0b9ee8027209fe1"
+          }
+        ],
+        "pins": {
+          "build/analysis/transfer-execution-20261003/continuation-surface-savedcamera-lighting/aggregate.log": "7a46d1742ba097debfa6b86e2fb0597ecc4f315add8f13d730fc240fdda6fbb5",
+          "build/analysis/transfer-execution-20261003/continuation-surface-savedcamera-lighting/check.log": "925eb87aea77362fc01db542d25bcb03e1753b9a54eefaac5d6dc7b10098929b",
+          "build/analysis/transfer-execution-20261003/continuation-surface-savedcamera-lighting/match.log": "3db5f888e1aa0bcc08ca33612f487fdb733b1c3706c24a3eba37aeb61e2ea8ee",
+          "build/analysis/transfer-execution-20261003/continuation-surface-savedcamera-lighting/authoritative-source-report.json": "c626de5fcf934602cdf7a3f75102abc8bd95a90770d8c5e46135b7c00523f21d",
+          "build/analysis/transfer-execution-20261003/continuation-surface-savedcamera-lighting/verified-source-delta.json": "f9320162e279b593a1af91f319db42a4272e15d941640746d5ace51d7e3306db",
+          "build/analysis/transfer-execution-20261003/continuation-surface-savedcamera-lighting/accepted-complete-functions.json": "35a8a223ca9fe37cbee90606df5b4aca3c4b8baa0fc4d5f59dd941a81732ea14",
+          "build/analysis/transfer-execution-20261003/continuation-surface-savedcamera-lighting/frozen-production-inputs.json": "121d1da5a410fd831f0476035cde62b6b3e1832d9893bad670c99875d11662ce",
+          "build/analysis/transfer-execution-20261003/continuation-surface-savedcamera-lighting/normal-object-manifest.json": "3b01a0b2bc5c4d5e0ff1ee3e3166675155253bf992bdad49b4a8d89cac7d616a"
+        }
+      },
+      "shared_views_added": 11,
+      "shared_working_bytes_added": 16946,
+      "shared_unknown_working_bytes_added": 16936,
+      "original_allocation_credit": 0,
+      "baseline_exact_initializer_copies": 4806,
+      "current_exact_initializer_copies": 4830,
+      "new_complete_initializer_copies": 44,
+      "new_known_initializer_copies": 24,
+      "new_unknown_initializer_copies": 20,
+      "new_unknown_working_copy_bytes": 17078,
+      "new_exact_data_union_bytes": 10,
+      "previous_pushed_CI": {
+        "revision": "6211d10ce66ef0215ea147ae31f8083b1cc97d09",
+        "all_exact_revision_runs_success": true,
+        "runs": [
+          {
+            "revision": "6211d10ce66ef0215ea147ae31f8083b1cc97d09",
+            "run_id": 37216313002,
+            "name": "Build",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/opensagadev/saga-pc/actions/runs/37216313002"
+          }
+        ]
+      },
+      "remaining_contracts": [
+        "Surface selected CPU53 covers real water/forcefield ripple paths and early PodDust/Debris guards; particle/audio/device/asset output remains unclaimed.",
+        "Surface native no-emission forcefield sound position can be unwritten; no fabricated initialization or guard is added.",
+        "Camera save domains use valid count0..16 and working16x0x420 state; original owning extent is unknown despite verified native16 bound.",
+        "Burnout inputs use initialized valid32-record sets, adequate arenas and disjoint outputs/live-set fields; arbitrary aliases/editor/device behavior unclaimed.",
+        "Full WorldLoad/WorldInfo_Load and frame/input/device services still require real dependencies."
+      ],
+      "next_connected_wave": "Real PC frame/pad/display-list22/4020 candidates, required gameplay suppliers5/529, SpecialSfx3/841, then installed scene callbacks with real device/shader methods. Retain DDS-dependent HGOBJ loader4805 hold; do not fabricate embedded assets.",
       "ongoing_goal": "Continue whole-project Android-to-PC transfer until user stops or pauses; validated direct-main pushes authorized."
     }
   ]
