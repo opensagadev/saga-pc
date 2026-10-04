@@ -711,3 +711,62 @@ ADD_GIZMO_CONFIG_TYPE_PC Default_ADDGIZMOTYPE = {NULL,
                                                  {-1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
                                                   (void *)DefaultGizmo_GetOutput, (void *)DefaultGizmo_GetOutputName,
                                                   (void *)DefaultGizmo_GetNumOutputs}};
+
+typedef struct bolt_gizmo_type_pc_s {
+    u8 unknown_00[0x6c];
+    i32(__cdecl *hit_platform)(WORLDINFO *, void *, BOLT_PC *, u8 *);
+    u8 unknown_70[4];
+    i32(__cdecl *hit_bolt)(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32,
+                           u8 *);
+    u8 unknown_78[0x24];
+} BOLT_GIZMO_TYPE_PC;
+STATIC_ASSERT(sizeof(BOLT_GIZMO_TYPE_PC) == 0x9c);
+STATIC_ASSERT(offsetof(BOLT_GIZMO_TYPE_PC, hit_platform) == 0x6c);
+STATIC_ASSERT(offsetof(BOLT_GIZMO_TYPE_PC, hit_bolt) == 0x74);
+void __cdecl Bolt_PlayHitSfx(BOLT_PC *);
+void __cdecl Bolt_End(BOLT_PC *, i32);
+
+i32 __cdecl GizmoSys_BoltHitPlat(void *system, WORLDINFO *world, BOLT_PC *bolt, u8 *hit_flags) {
+    BOLT_GIZMO_TYPE_PC *type;
+    GIZMOSET_PC *set;
+    i32 i;
+    if (gizmotypes == NULL || system == NULL || bolt == NULL)
+        return 0;
+    type = (BOLT_GIZMO_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
+    set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
+    for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set) {
+        if (type->hit_platform != NULL && type->hit_platform(world, set->data, bolt, hit_flags) != 0)
+            return 1;
+    }
+    return 0;
+}
+i32 __cdecl GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT_PC *bolt, NUVEC *points, NUVEC *minimum,
+                             NUVEC *maximum, f32 radius, u8 *hit_flags) {
+    NUVEC *hit_points;
+    i32 mode, i;
+    BOLT_GIZMO_TYPE_PC *type;
+    GIZMOSET_PC *set;
+    if (bolt->flags & 0x200) {
+        hit_points = points + 1;
+        mode = 1;
+    } else {
+        hit_points = points;
+        mode = 3;
+    }
+    if (gizmotypes == NULL || system == NULL || (bolt->hit_flags & 0x800) == 0)
+        return 0;
+    type = (BOLT_GIZMO_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
+    set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
+    for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set) {
+        if (type->hit_bolt != NULL && type->hit_bolt(world, set->data, (GAMEOBJECT *)bolt->owner, hit_points, mode,
+                                                     radius, minimum, maximum, bolt, 1, hit_flags) != 0) {
+            BoltSys->debris(bolt, points, -1, NULL, 0);
+            if (bolt->owner != NULL)
+                NewRumble(((GAMEOBJECT *)bolt->owner)->pad->bound_pad, .6f, 0);
+            Bolt_End(bolt, 1);
+            Bolt_PlayHitSfx(bolt);
+            return 1;
+        }
+    }
+    return 0;
+}

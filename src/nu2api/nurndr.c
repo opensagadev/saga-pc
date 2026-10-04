@@ -474,3 +474,105 @@ i32 __cdecl NuRndrStrip3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *m
 i32 __cdecl NuRndrTriStrip3dClip(NURND_VERTEX3D_PC *vertices, i32 count, NUMTX *matrix, NUMTL *material) {
     return NuRndrStrip3d(vertices, material, matrix, count);
 }
+
+extern i32 NuPrimCoordSystemStack[2];
+
+void __cdecl NuRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour) {
+    LOCATOR_PRIM_VERTEX_PC *output;
+    NuPrim3DBegin(14, 5, NULL, &NuMtxSetIdentityTemplate);
+    NuRndrPrimSetColourPrivate(colour);
+    output = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    output->x = x0;
+    output->y = y0;
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = z0;
+    NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX_PC);
+    ++NuPrimVertexCount;
+    NuRndrPrimSetColourPrivate(colour);
+    output = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    output->x = x1;
+    output->y = y1;
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = z1;
+    NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX_PC);
+    ++NuPrimVertexCount;
+    NuPrim3DEnd();
+}
+
+i32 __cdecl NuRndrLineStrip2d(NURND_VERTEX2D_PC *vertices, NUMTL *material, i32 count) {
+    i32 i;
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(0);
+    NuPrim2DBegin(14, 7, material);
+    for (i = 0; i < count; ++i) {
+        LOCATOR_PRIM_VERTEX_PC *output;
+        f32 x, y;
+        NuRndrPrimSetColourPrivate(-1);
+        output = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+        output->u = 0.0f;
+        output->v = 0.0f;
+        x = vertices[i].x * 0.0625;
+        y = vertices[i].y * 0.0625;
+        NuPrim2DAddXYZ(x, y, 0.0f);
+    }
+    NuPrim2DEnd();
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+    return 1;
+}
+
+#define PORTAL_DEBUG_SIN(ANGLE) NuTrigTable[((i32)(ANGLE) >> 1) & 0x7fff]
+#define PORTAL_DEBUG_COS(ANGLE) NuTrigTable[(((i32)(ANGLE) + 16384) >> 1) & 0x7fff]
+void __cdecl NuRndrSphere(NUVEC *centre, f32 radius, i32 colour, f32 vertical_scale) {
+    f64 radius_squared = (f64)radius * radius;
+    i32 band, angle;
+    for (band = 0; band < 8; ++band) {
+        f32 lower_radius = radius * PORTAL_DEBUG_SIN((band < 4 ? band : 8 - band) * 4096);
+        f32 upper_radius = radius * PORTAL_DEBUG_SIN((band < 3 ? band + 1 : 7 - band) * 4096);
+        f32 lower_y = NuFsqrt((f32)(radius_squared - (f64)lower_radius * lower_radius)) * vertical_scale;
+        f32 upper_y = NuFsqrt((f32)(radius_squared - (f64)upper_radius * upper_radius)) * vertical_scale;
+        if (band > 4)
+            lower_y = -lower_y;
+        if (band > 3)
+            upper_y = -upper_y;
+        lower_y += centre->y;
+        upper_y += centre->y;
+        for (angle = 0; angle < 65536; angle += 2048) {
+            NuRndrLine3dDbg(centre->x + lower_radius * PORTAL_DEBUG_COS(angle), lower_y,
+                            centre->z + lower_radius * PORTAL_DEBUG_SIN(angle),
+                            centre->x + upper_radius * PORTAL_DEBUG_COS(angle), upper_y,
+                            centre->z + upper_radius * PORTAL_DEBUG_SIN(angle), colour);
+            NuRndrLine3dDbg(centre->x + lower_radius * PORTAL_DEBUG_COS(angle), lower_y,
+                            centre->z + lower_radius * PORTAL_DEBUG_SIN(angle),
+                            centre->x + lower_radius * PORTAL_DEBUG_COS(angle + 2048), lower_y,
+                            centre->z + lower_radius * PORTAL_DEBUG_SIN(angle + 2048), colour);
+        }
+    }
+}
+void __cdecl NuRndrSphereEx(NUVEC *centre, f32 radius, i32 colour, f32 vertical_scale, i32 angle_step) {
+    f64 radius_squared = (f64)radius * radius;
+    i32 band, angle;
+    for (band = 0; band < 8; ++band) {
+        f32 lower_radius = radius * PORTAL_DEBUG_SIN((band < 4 ? band : 8 - band) * 4096);
+        f32 upper_radius = radius * PORTAL_DEBUG_SIN((band < 3 ? band + 1 : 7 - band) * 4096);
+        f32 lower_y = NuFsqrt((f32)(radius_squared - (f64)lower_radius * lower_radius)) * vertical_scale;
+        f32 upper_y = NuFsqrt((f32)(radius_squared - (f64)upper_radius * upper_radius)) * vertical_scale;
+        if (band > 4)
+            lower_y = -lower_y;
+        if (band > 3)
+            upper_y = -upper_y;
+        lower_y += centre->y;
+        upper_y += centre->y;
+        for (angle = 0; angle < 65536; angle += angle_step) {
+            NuRndrLine3dDbg(centre->x + lower_radius * PORTAL_DEBUG_COS(angle), lower_y,
+                            centre->z + lower_radius * PORTAL_DEBUG_SIN(angle),
+                            centre->x + upper_radius * PORTAL_DEBUG_COS(angle), upper_y,
+                            centre->z + upper_radius * PORTAL_DEBUG_SIN(angle), colour);
+            NuRndrLine3dDbg(centre->x + lower_radius * PORTAL_DEBUG_COS(angle), lower_y,
+                            centre->z + lower_radius * PORTAL_DEBUG_SIN(angle),
+                            centre->x + lower_radius * PORTAL_DEBUG_COS(angle + angle_step), lower_y,
+                            centre->z + lower_radius * PORTAL_DEBUG_SIN(angle + angle_step), colour);
+        }
+    }
+}
+
+#undef PORTAL_DEBUG_SIN
+#undef PORTAL_DEBUG_COS

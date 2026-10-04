@@ -145,3 +145,41 @@ i32 __cdecl MatrixReflection(NUMTX *matrix, i32 axis, f32 plane, f32 override_pl
             return 0;
     }
 }
+
+void __cdecl FindAnglesXY(NUVEC *direction, u16 *x_rotation, u16 *y_rotation) {
+    f32 horizontal_squared;
+    ConfigBuffer.fields.find_angles_y_rotation = (u16)NuAtan2D(direction->x, direction->z);
+    if (y_rotation)
+        *y_rotation = ConfigBuffer.fields.find_angles_y_rotation;
+    horizontal_squared = direction->x * direction->x + direction->z * direction->z;
+    FindAnglesXFullTempPc = -NuAtan2D(direction->y, NuFsqrt(horizontal_squared));
+    temp_zrot = (u16)FindAnglesXFullTempPc;
+    if (x_rotation)
+        *x_rotation = temp_zrot;
+}
+i32 __cdecl SphereSphereOverlap(NUVEC *a, f32 radius_a, NUVEC *b, f32 radius_b) {
+    f32 x = b->x - a->x;
+    f32 y = b->y - a->y;
+    f32 z = b->z - a->z;
+    f32 radius = radius_a + radius_b;
+    return x * x + y * y + z * z <= radius * radius;
+}
+
+void __cdecl CalculateInterceptVector(NUVEC *origin, NUVEC *target, NUVEC *velocity, f32 speed, NUVEC *direction,
+                                      NUVEC *intercept) {
+    NUVEC prediction = *target;
+    i32 i;
+    for (i = 0; i < 3; ++i) {
+        f32 distance, time;
+        NuVecSub(direction, &prediction, origin);
+        distance = NuVecMag(direction);
+        if (distance == 0.0f || speed == 0.0f)
+            time = 0.0f;
+        else
+            time = distance / speed;
+        NuVecAddScale(&prediction, target, velocity, time);
+    }
+    NuVecSub(direction, &prediction, origin);
+    if (intercept != NULL)
+        *intercept = prediction;
+}

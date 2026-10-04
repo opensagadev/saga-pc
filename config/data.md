@@ -1660,3 +1660,24 @@ views 1,123/127,217. All 4,443 old exact copies and two exact members/four bytes
 survive. 38 new known exact copies yield 4,481. All 66 new complete initializer
 copies match retail; 28 unknown views receive no exact credit. The 4,509 verified
 copy union is not coverage. Exact data union increases by 59 to 630,991 bytes.
+
+
+Bolt/camera/portal checkpoint adds 81 genuine shared owners/2,740 source-view
+bytes: 38 known NUL definitions/436 bytes and 43 unknown views/2,304 bytes.
+All 3,374 prior regions and 1,688 scopes survive; 3,455 normal regions equal
+isolated output across 1,769 proofs. Known scope is 603/138,161 bytes; unknown
+working scope is 1,166/129,521. The same 65,538-byte ConfigBuffer owner exposes
+its native Y rotation WORD as a named member at 0x10000, asserted and verified
+without a second COFF definition or extent credit. All three old members remain
+unchanged; two exact fields retain four bytes. All 4,481 old exact physical copies
+survive; 79 new known exact copies
+yield 4560. All 122 newly emitted
+complete initializer copies match retail; 43 unknown views receive zero owning
+extent/allocation credit. Exact data union rises 452 bytes to 631,443.
+
+The inherited sceneParameters[32] working view overlaps canonical zx, texture
+count, shadow state and fstack_limit. Native stride 0x218 and its zero initializer
+are established; original owning capacity is unknown. A proposed grown union is
+held, with no live migration or new backing aliases. Selected portal/render CPU
+fixtures exclude scene-stack alias writes. Private compiler and message owners
+remain genuine source definitions; initializer equality is not full game proof.

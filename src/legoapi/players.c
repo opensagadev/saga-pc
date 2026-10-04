@@ -2543,3 +2543,20 @@ void __cdecl Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound
             GameAudio_PlaySfx(0x24, &object->collision_position, 0, 0);
     }
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, powerup_time) == 0xdec);
+i32 __cdecl Player_HasDeflectBolts(GAMEOBJECT *object) {
+    return Cheats_CheckFlags(0x80000) != 0 || (object != NULL && object->powerup_time > 0.0f);
+}
+i32 __cdecl Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *bolt) {
+    GAMEOBJECT *object;
+    i32 player;
+    if (bolt->flags & 1)
+        player = 0;
+    else if (bolt->flags & 2)
+        player = 1;
+    else
+        return 0;
+    object = Player[player];
+    return Cheats_CheckFlags(2) != 0 || (object != NULL && object->powerup_time > 0.0f);
+}

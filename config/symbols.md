@@ -4223,3 +4223,21 @@ Independent endpoint acceptance verifies all complete relocated hashes and old
 exact matches. Private frustum callers and larger Bolt providers remain held
 scratch hypotheses. Retained proof paths are under ignored build/analysis/
 transfer-execution-20261003; the user's journal edits remain untouched.
+
+
+Bolt/camera/portal/renderer checkpoint verifies 59 complete PC functions and
+27,668 newly compared unique bytes. Original private portal C and Bolt C++
+helper/caller register groups remain in ordinary original-TU source. Camera's
+MiniCut3 extent is 1,496 bytes: the rejected scratch 1,532 included alignment and
+a disconnected 28-byte routine. Actual production emits 1,709 bytes under its
+shared declaration context, independently reaccepted in full with the same PC
+behavior/ABI; no special compiler flags, truncation or copied code are used.
+Portal bounds preserve native ordered comparisons and first operand on ties or
+NaNs. Renderer colour offset 0x10/stride 0x1c and sphere f64 radius squared are
+verified. Bolt PC model_flags+4, callback owner reload, deactivation feedback and
+jitter constants are checked against retail. FindAnglesXY references the existing
+ConfigBuffer owner at offset 0x10000 through its asserted named WORD member;
+no duplicate Y global is emitted. Complete candidate hashes, native fixtures,
+initializer proofs and preservation gates are retained under ignored
+build/analysis/transfer-execution-20261003/continuation-bolt-portal-camera and
+subsystem production receipts. Unknown owning extents receive no coverage credit.

@@ -1974,3 +1974,81 @@ journal edits remain untouched. Next are four accepted utilities/terrain getters
 private portal/frustum caller and camera-action banks. Those scratch candidates
 receive no source credit. Broad whole-project transfers and direct-main pushes
 continue until the user stops or pauses them.
+
+
+### Bolt, camera, portal and renderer checkpoint (2026-10-04)
+
+59 complete functions add 27,668 unique compared PC bytes over 83b4d3a:
+utilities/terrain/Parts 7/839, renderer 4/1,617, camera 8/7,850, portal
+21/7,206 and Bolt runtime/collision 19/10,156. Whole-PC fuzzy coverage rises
+from 19.502728% to 20.086058%; unique compared code reaches 1,008,097 bytes.
+The native objdiff denominator is 1,008,614 with prior aliases retained.
+Thirteen new exact functions add 897 bytes, reaching 179,174/3,471,246
+.text bytes (5.161662%). All prior exact code/data/member matches survive.
+Of 3,520 prior function copies, 3,519 remain identical; unchanged particle
+source reproduces its independently reviewed full 717/713 scheduling pair,
+with the same 34 named relocations and qualified x87 behavior. Compiler flags,
+original extents and matching rules remain pinned.
+
+FindAnglesXY reuses the full existing 65,538-byte ConfigBuffer physical owner:
+its native Y WORD at 0x93b0e8 becomes an asserted typed member at offset 0x10000,
+without a second global, guessed owning extent or data credit. Existing parser
+consumers use the same byte view. Terrain getters retain native unsigned material
+BYTE and asserted state offsets. Parts dispatch has a typed callback and real
+collision/SFX/rumble providers; inherited KillPart behavior remains partial.
+
+The renderer's 28-byte vertex has colour at 0x10, and sphere radius squared uses
+native f64 precision. Camera commands retain the native 32-command queue and
+index 32 metadata alias. MiniCut3's complete original extent is 1,496 bytes; the
+old scratch 1,532 span included alignment and another disconnected function and
+never entered production. Ordinary shared declaration context changes its rebuilt
+body from 1,789 to 1,709 bytes; independent full-body/ABI review accepts the actual
+emission without tuning or compiler controls. Portal helpers remain together in
+the original C translation unit with native private register conventions.
+Intersections retain ordered comparisons, first-operand ties/NaNs, signed plane
+counts, allocator alignment and genuine overflow diagnostics. Debug rectangle
+vertices share the corrected renderer layout.
+
+The genuine C++ Bolt helper/caller owner connects Init/Add/Deflect, message sender
+and receiver, points/orientation/raycast and collision services. Verified PC
+behavior uses model_flags at CHARACTERDATA+4, reloads bolt.owner after callbacks,
+retains deactivation feedback rumble and the native jitter/float spill constants.
+C++ message ABI and original private helper ownership remain intact; no provider
+adapters or fabricated definitions are added. Selected ray-disabled, CPU and
+valid-input fixtures do not establish full terrain/shadow, hardware audio/GPU,
+networked gameplay or arbitrary original backing capacities.
+
+The source-only EXE links 3,579 functions/6,083 data definitions across 269 real
+objects. LLVM18 checks 296 source/header files and 269 units; 700 tests pass with
+three skips. All 207 selected native checks pass with all 269
+normal objects, zero replacements/supplements and 309 unchanged production pins.
+Authoritative full retail comparison and independent endpoint acceptance pass.
+Previous exact-SHA CI 83b4d3a passed (run 37189555505).
+
+81 real shared definitions add 2,740 source-view bytes: 38 known NUL owners/436B
+and 43 unknown working views/2,304B. All 3,374 old shared regions and 1,688 scopes
+survive; normal 3,455 regions equal isolated output across 1,769 scopes. Shared
+known scope 603/138,161B and unknown 1,166/129,521B describe initializer proofs,
+not inferred allocation sizes. All 4,481 old exact physical initializer copies
+and 2 exact typed members/4B survive; all 3 old active members remain unchanged.
+The new Y member is a verified 2B unknown-extent view with zero exact credit.
+79 new known exact copies yield
+4560; all 122 new complete initializer
+copies are retail-equal, including 43 unknown views with zero owning-extent credit.
+Exact data union rises 452B to 631,443B. The verified-copy union is not coverage.
+
+The preexisting sceneParameters[32] working view overlaps canonical zx, texture
+count, shadow state and fstack_limit. Its full initializer is verified, but native
+owning capacity is unresolved. The proposed larger union migration remains held;
+new portal code reuses the existing canonical state without fresh aliases. Selected
+fixtures exclude scene-stack alias writes and do not claim whole-game correctness.
+
+The 09:08 checkpoint was delayed until real PC repairs, connected data, complete
+native/retail validation and endpoint acceptance were safe. The user's three
+journal edits remain untouched. Next are the full 2,738-byte Bolts_Update parent
+alongside MiniCam consumers, scene visibility/instance-tree callers,
+ManageGameObjects with three missing callees and closed world configuration
+producers. Larger resource/world lifecycle parents have actual callback/config/
+loader gaps; their seven-parent 18,699-byte hypothesis bank remains held.
+Candidate inventory receives no transfer credit. Broad whole-project work and
+validated direct-main pushes continue until the user stops or pauses them.

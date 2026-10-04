@@ -1336,3 +1336,13 @@ extern "C" i32 NewRayCastScaleYMask(NUVEC *position, NUVEC *movement, f32 radius
 extern "C" i32 __cdecl TerrainPlatId(void) {
     return plathitid;
 }
+
+STATIC_ASSERT(offsetof(TerrainQuery_s, surface) == 0x90);
+STATIC_ASSERT(offsetof(TERRAIN_SHAPE, material) == 0x60);
+extern "C" f32 __cdecl NewRayCastGetTOFI(void) {
+    return static_cast<TerrainQuery_s *>(TerI)->hit_time;
+}
+extern "C" i32 __cdecl NewRayCastGetImpactTerrainType(void) {
+    TERRAIN_SHAPE *surface = static_cast<TerrainQuery_s *>(TerI)->surface;
+    return surface ? surface->material[0] : 0;
+}

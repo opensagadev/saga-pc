@@ -500,3 +500,63 @@ i8 __cdecl BoltType_FindIDByName(char *name, WORLDINFO *world) {
             return (i8)index;
     return -1;
 }
+
+typedef i32(__cdecl *BOLT_HIT_PART_FN_PC)(BOLT_PC *, PART_PC *);
+STATIC_ASSERT(offsetof(BOLTSYS_PC, hit_part) == 0x18);
+STATIC_ASSERT(offsetof(PART_PC, position) == 0x30);
+STATIC_ASSERT(offsetof(PART_PC, velocity) == 0x80);
+STATIC_ASSERT(offsetof(PART_PC, collision_min) == 0x8c);
+STATIC_ASSERT(offsetof(PART_PC, collision_max) == 0x98);
+STATIC_ASSERT(offsetof(PART_PC, field_e4) == 0xe4);
+STATIC_ASSERT(offsetof(PART_PC, flags) == 0x108);
+STATIC_ASSERT(offsetof(PART_PC, active) == 0x144);
+STATIC_ASSERT(sizeof(PART_PC) == 0x220);
+void __cdecl Bolt_PlayHitSfx(BOLT_PC *bolt) {
+    if (bolt->type->field_66 != -1)
+        GameAudio_PlaySfxById(bolt->type->field_66, &bolt->position, 0, 0);
+    else
+        GameAudio_PlaySfx(0x28, &bolt->position, 0, 0);
+}
+i32 __cdecl Bolt_HitPartMode(BOLT_PC *bolt) {
+    GAMEOBJECT *owner = (GAMEOBJECT *)bolt->owner;
+    if (!owner)
+        return 3;
+    if (owner->field_280 == 0)
+        return 4;
+    return owner->field_280 == 1 ? 5 : 3;
+}
+PART_PC *__cdecl Bolt_HitParts(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius, i32 reason) {
+    PART_PC *part = Part;
+    i32 i, point;
+    for (i = 0; i < MAXPARTS; ++i, ++part) {
+        if (!(part->active & 1))
+            continue;
+        if (!(part->flags & 0x08000000) && (part->flags & 0xa) != 0xa)
+            continue;
+        if (minimum->x > part->collision_max.x || part->collision_min.x > maximum->x ||
+            minimum->z > part->collision_max.z || part->collision_min.z > maximum->z ||
+            minimum->y > part->collision_max.y || part->collision_min.y > maximum->y)
+            continue;
+        for (point = 2; point >= 0; --point) {
+            if ((bolt->flags & 0x200) && point != 1)
+                continue;
+            if (SphereSphereOverlapScaleY(&part->position, part->field_e4, part->field_e4, &points[point], radius,
+                                          radius))
+                break;
+        }
+        if (point < 0)
+            continue;
+        BoltSys->debris(bolt, points, point, &part->velocity, 0);
+        Bolt_PlayHitSfx(bolt);
+        if (bolt->owner && (((GAMEOBJECT *)bolt->owner)->flags_1fc & 1))
+            NewRumble(((GAMEOBJECT *)bolt->owner)->pad->bound_pad, .7f, 0);
+        bolt->active = 0;
+        if (bolt->type && bolt->type->end_callback)
+            bolt->type->end_callback(bolt);
+        if (BoltSys->hit_part && BoltSys->hit_part(bolt, part) == 1)
+            return part;
+        KillPart(part, reason);
+        return part;
+    }
+    return NULL;
+}

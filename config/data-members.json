@@ -43,6 +43,19 @@
       "historical_symbol": "_TargetDeg_Far",
       "qualification": "Known complete2-byte original field; exact historical comparison preserved through actual parent storage",
       "owner_identifier": "LevInstAnimResetPc"
+    },
+    {
+      "id": "ConfigBuffer.fields.find_angles_y_rotation",
+      "kind": "data_member",
+      "owner_symbol": "_ConfigBuffer",
+      "owner_identifier": "ConfigBuffer",
+      "owner_unit": "src/data.cpp",
+      "owner_type": "CONFIG_BUFFER_PC",
+      "member_path": "fields.find_angles_y_rotation",
+      "original_address": "0x0093b0e8",
+      "original_size": null,
+      "ctype": "u16",
+      "qualification": "New minimum WORD view from actual full119-byte native store; original owning extent unknown, no old Y compiled/exact provider and no coverage credit. Same complete ConfigBuffer backing, not duplicate storage."
     }
   ]
 }

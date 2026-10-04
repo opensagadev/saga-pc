@@ -764,6 +764,425 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
     return 1;
 }
 
+i32 Action_CameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                     i32 param_count, i32 first_time, f32 elapsed) {
+    NUVEC target_position;
+    NUVEC camera_position;
+    NUVEC camera_delta;
+    f32 range;
+    i32 rotation_x;
+    i32 rotation_y;
+    char *target_locator;
+    char *target_character;
+    char *target_object;
+    char *camera_locator;
+    i32 follow_target;
+    i32 borders;
+    i32 use_current_camera;
+    f32 start;
+    f32 end;
+    f32 blend_in;
+    f32 blend_out;
+    char *value;
+    NUVEC *target;
+    AILOCATOR_PC *locator;
+    GAMEOBJECT *object;
+    NUSPECIALHANDLE special;
+    NUMTX *matrix;
+    i32 index;
+
+    target_position.x = 1000000000.0f;
+    target_position.y = 1000000000.0f;
+    target_position.z = 1000000000.0f;
+    camera_position.x = 1000000000.0f;
+    camera_position.y = 1000000000.0f;
+    camera_position.z = 1000000000.0f;
+    camera_delta.x = 0.0f;
+    camera_delta.y = 0.0f;
+    camera_delta.z = 0.0f;
+    if (first_time == 0 || param_count <= 0)
+        return 1;
+
+    range = 1.0f;
+    rotation_x = 0;
+    rotation_y = 0;
+    target_locator = NULL;
+    target_character = NULL;
+    target_object = NULL;
+    camera_locator = NULL;
+    follow_target = 0;
+    borders = 1;
+    use_current_camera = 0;
+    start = 0.0f;
+    end = 1000000000.0f;
+    blend_in = 0.0f;
+    blend_out = 0.0f;
+    for (index = 0; index < param_count; ++index) {
+        if (NuStrICmp((char *)AITransferLiteral757a68, params[index]) == 0) {
+            GameCameraMakeMiniCut2(NULL, NULL, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0, 0, 0);
+            return 1;
+        } else if (NuStrICmp((char *)AICameraLiteral758090, params[index]) == 0) {
+            use_current_camera = 1;
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758084)) != NULL) {
+            start = AIParamToFloat(processor, value + 11);
+        } else if (NuStrICmp((char *)AICameraLiteral758070, params[index]) == 0) {
+            end = 1000000000.0f;
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758064)) != NULL) {
+            end = AIParamToFloat(processor, value + 9);
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758054)) != NULL) {
+            blend_in = AIParamToFloat(processor, value + 14);
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758044)) != NULL) {
+            blend_out = AIParamToFloat(processor, value + 15);
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758034)) != NULL) {
+            target_locator = value + 12;
+        } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757874)) != NULL) {
+            target_character = value + 14;
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758028)) != NULL) {
+            target_object = value + 8;
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758018)) != NULL) {
+            camera_locator = value + 12;
+        } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757724)) != NULL) {
+            range = AIParamToFloat(processor, value + 6);
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758010)) != NULL) {
+            rotation_y = (i32)AIParamToFloat(processor, value + 5) * (65536 / 360.0f);
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758008)) != NULL) {
+            rotation_x = -(i32)AIParamToFloat(processor, value + 5) * (65536 / 360.0f);
+        } else if (NuStrICmp(params[index], (char *)AICameraLiteral757ffc) == 0) {
+            follow_target = 1;
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757ff0)) != NULL) {
+            camera_delta.x = AIParamToFloat(processor, value + 10);
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757fe4)) != NULL) {
+            camera_delta.y = AIParamToFloat(processor, value + 10);
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757fd8)) != NULL) {
+            camera_delta.z = AIParamToFloat(processor, value + 10);
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757fcc)) != NULL) {
+            camera_position.x = AIParamToFloat(processor, value + 9);
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757fc0)) != NULL) {
+            camera_position.y = AIParamToFloat(processor, value + 9);
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757fb4)) != NULL) {
+            camera_position.z = AIParamToFloat(processor, value + 9);
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757fa8)) != NULL) {
+            target_position.x = AIParamToFloat(processor, value + 9);
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757f9c)) != NULL) {
+            target_position.y = AIParamToFloat(processor, value + 9);
+        } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757f90)) != NULL) {
+            target_position.z = AIParamToFloat(processor, value + 9);
+        } else if (NuStrICmp((char *)AICameraLiteral757f84, params[index]) == 0) {
+            borders = 0;
+        }
+    }
+
+    if (target_locator != NULL) {
+        locator = AIPathFindLocator(system, target_locator);
+        if (locator == NULL)
+            return 1;
+        target = &locator->position;
+    } else if (target_character != NULL) {
+        if (packet != NULL && packet->owner != NULL &&
+            NuStrICmp(target_character, (char *)AITransferLiteral757f7c) == 0)
+            object = packet->owner->game_object;
+        else
+            object = GetNamedGameObject(system, target_character);
+        if (object == NULL)
+            return 1;
+        target = &object->collision_position;
+    } else if (target_object != NULL) {
+        if (NuSpecialFind(WORLD->current_gscn, &special, target_object, 1) == 0)
+            return 1;
+        target = NuSpecialGetDrawPos(&special);
+        if (target == NULL)
+            return 1;
+    } else {
+        if (target_position.x == 1000000000.0f || target_position.y == 1000000000.0f ||
+            target_position.z == 1000000000.0f)
+            return 1;
+        target = &target_position;
+    }
+
+    if (use_current_camera != 0) {
+        matrix = NuCameraGetMtx();
+        if (matrix != NULL) {
+            camera_position.x = matrix->m30;
+            camera_position.y = matrix->m31;
+            camera_position.z = matrix->m32;
+            NuVecAdd(&camera_position, &camera_position, &camera_delta);
+            goto camera_ready;
+        }
+    } else {
+        if (camera_position.x != 1000000000.0f && camera_position.y != 1000000000.0f &&
+            camera_position.z != 1000000000.0f)
+            goto camera_ready;
+        if (camera_locator != NULL) {
+            locator = AIPathFindLocator(system, camera_locator);
+            if (locator != NULL) {
+                camera_position = locator->position;
+                goto camera_ready;
+            }
+        }
+    }
+    camera_position.x = 0.0f;
+    camera_position.y = 0.0f;
+    camera_position.z = range;
+    NuVecRotateX(&camera_position, &camera_position, rotation_x);
+    NuVecRotateY(&camera_position, &camera_position, rotation_y);
+    NuVecAdd(&camera_position, &camera_position, target);
+camera_ready:
+    GameCameraMakeMiniCut2(&camera_position, target, 0, start, end, blend_in, blend_out, follow_target, 0, borders);
+    return 1;
+}
+
+i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                            i32 param_count, i32 first_time, f32 elapsed) {
+    NUVEC target_position;
+    NUVEC camera_position;
+    NUVEC camera_offset;
+    u32 flags;
+    f32 range;
+    i32 rotation_x;
+    i32 rotation_y;
+    i32 rotation_z;
+    f32 start_time;
+    f32 blend_in_time;
+    f32 end_time;
+    f32 blend_out_time;
+    f32 blend_time;
+    f32 hold_time;
+    f32 max_time;
+    i32 borders;
+    i32 use_current_position;
+    i8 mode;
+    i8 interpolation;
+    NUGSPLINE *spline;
+    char *target_locator;
+    char *target_character;
+    char *target_object;
+    char *camera_locator;
+    char *value;
+    NUVEC *target;
+    AILOCATOR_PC *locator;
+    GAMEOBJECT *object;
+    NUSPECIALHANDLE special;
+    i32 have_camera_position;
+    NUMTX *matrix;
+    i32 index;
+
+    target_position.x = 1000000000.0f;
+    target_position.y = 1000000000.0f;
+    target_position.z = 1000000000.0f;
+    camera_position.x = 1000000000.0f;
+    camera_position.y = 1000000000.0f;
+    camera_position.z = 1000000000.0f;
+    camera_offset.x = 0.0f;
+    camera_offset.y = 0.0f;
+    camera_offset.z = 0.0f;
+    if (first_time != 0) {
+        flags = 0;
+        range = 1.0f;
+        rotation_x = 0;
+        rotation_y = 0;
+        rotation_z = 0;
+        start_time = 0.0f;
+        blend_in_time = 0.0f;
+        end_time = 1000000000.0f;
+        blend_out_time = 0.0f;
+        blend_time = 0.0f;
+        hold_time = 0.0f;
+        max_time = 0.0f;
+        borders = 1;
+        use_current_position = 0;
+        mode = -1;
+        interpolation = -1;
+        spline = NULL;
+        target_locator = NULL;
+        target_character = NULL;
+        target_object = NULL;
+        camera_locator = NULL;
+        for (index = 0; index < param_count; ++index) {
+            if (NuStrICmp((char *)AICameraLiteral758090, params[index]) == 0) {
+                flags |= 0x100;
+                use_current_position = 1;
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758160)) != NULL) {
+                flags |= 0x2000;
+                spline = NuSplineFind(WORLD->current_gscn, value + 17);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral75814c)) != NULL) {
+                flags |= 0x4000;
+                range = AIParamToFloat(processor, value + 17);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758084)) != NULL) {
+                flags |= 0x200;
+                start_time = AIParamToFloat(processor, value + 11);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758140)) != NULL) {
+                flags |= 0x800;
+                blend_time = AIParamToFloat(processor, value + 11);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758054)) != NULL) {
+                blend_in_time = AIParamToFloat(processor, value + 14);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758044)) != NULL) {
+                blend_out_time = AIParamToFloat(processor, value + 15);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758064)) != NULL) {
+                flags |= 0x400;
+                end_time = AIParamToFloat(processor, value + 9);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758134)) != NULL) {
+                max_time = AIParamToFloat(processor, value + 9);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758128)) != NULL) {
+                flags |= 0x1000;
+                hold_time = AIParamToFloat(processor, value + 10);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758034)) != NULL) {
+                target_locator = value + 12;
+            } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757874)) != NULL) {
+                target_character = value + 14;
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758028)) != NULL) {
+                target_object = value + 8;
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758018)) != NULL) {
+                camera_locator = value + 12;
+            } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757724)) != NULL) {
+                flags |= 1;
+                range = AIParamToFloat(processor, value + 6);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral75811c)) != NULL) {
+                flags |= 0x20;
+                rotation_y = (i32)((i32)AIParamToFloat(processor, value + 10) * 182.0444488525390625f);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758010)) != NULL) {
+                flags |= 0x4;
+                rotation_y = (i32)((i32)AIParamToFloat(processor, value + 5) * 182.0444488525390625f);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758110)) != NULL) {
+                flags |= 0x10;
+                rotation_x = (i32)((i32)AIParamToFloat(processor, value + 10) * 182.0444488525390625f);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758008)) != NULL) {
+                flags |= 0x2;
+                rotation_x = (i32)(-(i32)AIParamToFloat(processor, value + 5) * 182.0444488525390625f);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758104)) != NULL) {
+                flags |= 0x40;
+                rotation_z = (i32)((i32)AIParamToFloat(processor, value + 10) * 182.0444488525390625f);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral7580fc)) != NULL) {
+                flags |= 0x8;
+                rotation_z = (i32)(-(i32)AIParamToFloat(processor, value + 5) * 182.0444488525390625f);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757fcc)) != NULL) {
+                camera_position.x = AIParamToFloat(processor, value + 9);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757fc0)) != NULL) {
+                camera_position.y = AIParamToFloat(processor, value + 9);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757fb4)) != NULL) {
+                camera_position.z = AIParamToFloat(processor, value + 9);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757fa8)) != NULL) {
+                target_position.x = AIParamToFloat(processor, value + 9);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757f9c)) != NULL) {
+                target_position.y = AIParamToFloat(processor, value + 9);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757f90)) != NULL) {
+                target_position.z = AIParamToFloat(processor, value + 9);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757ff0)) != NULL) {
+                camera_offset.x = AIParamToFloat(processor, value + 10);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757fe4)) != NULL) {
+                camera_offset.y = AIParamToFloat(processor, value + 10);
+            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757fd8)) != NULL) {
+                camera_offset.z = AIParamToFloat(processor, value + 10);
+            } else if (NuStrICmp((char *)AICameraLiteral757f84, params[index]) == 0) {
+                borders = 0;
+            } else if (NuStrICmp((char *)AICameraLiteral7580f0, params[index]) == 0) {
+                mode = 0;
+            } else if (NuStrICmp((char *)AICameraLiteral7580e4, params[index]) == 0) {
+                mode = 1;
+            } else if (NuStrICmp((char *)AICameraLiteral7580dc, params[index]) == 0) {
+                interpolation = 0;
+            } else if (NuStrICmp((char *)AICameraLiteral7580cc, params[index]) == 0) {
+                interpolation = 2;
+            } else if (NuStrICmp((char *)AICameraLiteral7580c0, params[index]) == 0) {
+                interpolation = 1;
+            } else if (NuStrICmp((char *)AICameraLiteral7580b0, params[index]) == 0) {
+                interpolation = 4;
+            } else if (NuStrICmp((char *)AICameraLiteral7580a4, params[index]) == 0) {
+                interpolation = 3;
+            }
+        }
+        target = NULL;
+        if (target_locator != NULL) {
+            locator = AIPathFindLocator(system, target_locator);
+            if (locator != NULL)
+                target = &locator->position;
+        } else if (target_character != NULL) {
+            if (packet != NULL && packet->owner != NULL &&
+                NuStrICmp(target_character, (char *)AITransferLiteral757f7c) == 0)
+                object = packet->owner->game_object;
+            else
+                object = GetNamedGameObject(system, target_character);
+            if (object != NULL)
+                target = &object->collision_position;
+        } else if (target_object != NULL) {
+            if (NuSpecialFind(WORLD->current_gscn, &special, target_object, 1) != 0)
+                target = NuSpecialGetDrawPos(&special);
+        } else if (target_position.x != 1000000000.0f && target_position.y != 1000000000.0f &&
+                   target_position.z != 1000000000.0f) {
+            target = &target_position;
+        }
+        if (target != NULL)
+            flags |= 0x80;
+
+        have_camera_position = 0;
+        if (use_current_position != 0) {
+            matrix = NuCameraGetMtx();
+            if (matrix != NULL) {
+                camera_position.x = matrix->m30;
+                camera_position.y = matrix->m31;
+                camera_position.z = matrix->m32;
+                have_camera_position = 1;
+            }
+        } else if (camera_position.x != 1000000000.0f && camera_position.y != 1000000000.0f &&
+                   camera_position.z != 1000000000.0f) {
+            have_camera_position = 1;
+        } else if (camera_locator != NULL) {
+            locator = AIPathFindLocator(system, camera_locator);
+            if (locator != NULL) {
+                camera_position = locator->position;
+                have_camera_position = 1;
+            }
+        }
+        if (spline != NULL) {
+            PointAlongSpline(spline, 0.0f, &camera_position, NULL, NULL, 0);
+            if (mode == -1)
+                mode = 2;
+        } else if (have_camera_position != 0) {
+            flags |= 0x100;
+            NuVecAdd(&camera_position, &camera_position, &camera_offset);
+            if (mode == -1)
+                mode = 1;
+        } else {
+            if (target != NULL) {
+                camera_position.x = 0.0f;
+                camera_position.y = 0.0f;
+                camera_position.z = range;
+                NuVecRotateX(&camera_position, &camera_position, rotation_x);
+                NuVecRotateY(&camera_position, &camera_position, rotation_y);
+                NuVecAdd(&camera_position, &camera_position, target);
+            }
+            if (mode == -1)
+                mode = 0;
+        }
+        GameCameraMakeMiniCut3(flags, range, rotation_x, rotation_y, rotation_z, target, 0, &camera_position,
+                               start_time, blend_in_time, end_time, blend_out_time, blend_time, hold_time, max_time,
+                               borders, spline, mode, interpolation);
+    }
+    return 1;
+}
+
+i32 Action_EndCameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                        i32 param_count, i32 first_time, f32 elapsed) {
+    char *value;
+    f32 duration;
+    i32 i;
+
+    if (first_time != 0 && MiniCutCam != 0) {
+        for (i = 0; i < param_count; ++i) {
+            value = NuStrIStr(params[i], (char *)AICameraLiteral758064);
+            if (value != NULL) {
+                duration = AIParamToFloat(processor, value + 9);
+                ObstacleCamEnd = duration + ObstacleCamTime;
+            } else {
+                value = NuStrIStr(params[i], (char *)AICameraLiteral758044);
+                if (value != NULL) {
+                    ObstacleCamBlendOutTime = AIParamToFloat(processor, value + 15);
+                }
+            }
+        }
+    }
+    return 1;
+}
+
 f32 __cdecl AIPathNodeDistanceToPathNode(AIPATH_PC *path, i32 start_node, i32 destination_node, i32 route_index,
                                          u32 excluded_route_mask) {
     AIPATHNODE_PC *nodes;

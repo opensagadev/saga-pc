@@ -4106,10 +4106,10 @@ extern "C" {
 #pragma bss_seg(".bss$CheckLostDataFn")
     CHECK_LOST_DATA_PC CheckLostDataFn;
 #pragma bss_seg()
-// Reconstruction backing: 64 KiB source bound plus two emitted terminators.
+// Existing complete working bytes view retained, including the native utility WORD at +0x10000.
 // The original owner capacity remains unknown; the CSV extent intentionally stays blank.
 #pragma bss_seg(".bss$ConfigBuffer")
-    char ConfigBuffer[0x10002];
+    CONFIG_BUFFER_PC ConfigBuffer;
 #pragma bss_seg()
 }
 
@@ -11081,5 +11081,260 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$GrapSwing_text")
     char GrapSwing_text[10] = "GrapSwing";
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$FindAnglesXFullTempPc")
+    i32 FindAnglesXFullTempPc;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$MiniCam")
+    MINICAM_PC MiniCam;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ObstacleCamCutSpline")
+    NUGSPLINE ObstacleCamCutSpline;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ObstacleCamTargetGuid")
+    i32 ObstacleCamTargetGuid;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ObstacleCamCutPts")
+    NUVEC ObstacleCamCutPts[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$ObstacleCamSpl")
+    NUGSPLINE *ObstacleCamSpl;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ObstacleCamStart")
+    f32 ObstacleCamStart;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ObstacleCamEnd")
+    f32 ObstacleCamEnd;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ObstacleCamTime")
+    f32 ObstacleCamTime;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ObstacleCamRotZ")
+    i16 ObstacleCamRotZ;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ObstacleCamBlendInTime")
+    f32 ObstacleCamBlendInTime;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ObstacleCamBlendOutTime")
+    f32 ObstacleCamBlendOutTime;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ObstacleCamCutTgtPtr")
+    NUVEC *ObstacleCamCutTgtPtr;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ObstacleCamCutCamPtr")
+    NUVEC *ObstacleCamCutCamPtr;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ObstacleCamBorders")
+    i32 ObstacleCamBorders;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ObstacleCamAlwaysSnapAnglesPc")
+    u8 ObstacleCamAlwaysSnapAnglesPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CutBorderScale")
+    f32 CutBorderScale;
+#pragma bss_seg()
+#pragma const_seg(".rdata$AICameraLiteral758090")
+    const char AICameraLiteral758090[19] = "use_current_campos";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758084")
+    const char AICameraLiteral758084[12] = "start_time=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758070")
+    const char AICameraLiteral758070[18] = "end_time=infinite";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758064")
+    const char AICameraLiteral758064[10] = "end_time=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758054")
+    const char AICameraLiteral758054[15] = "blend_in_time=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758044")
+    const char AICameraLiteral758044[16] = "blend_out_time=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758034")
+    const char AICameraLiteral758034[13] = "tgt_locator=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758028")
+    const char AICameraLiteral758028[9] = "tgt_obj=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758018")
+    const char AICameraLiteral758018[13] = "cam_locator=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758010")
+    const char AICameraLiteral758010[6] = "roty=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758008")
+    const char AICameraLiteral758008[6] = "rotx=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral757ffc")
+    const char AICameraLiteral757ffc[10] = "FollowTgt";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral757ff0")
+    const char AICameraLiteral757ff0[11] = "dcampos_x=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral757fe4")
+    const char AICameraLiteral757fe4[11] = "dcampos_y=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral757fd8")
+    const char AICameraLiteral757fd8[11] = "dcampos_z=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral757fcc")
+    const char AICameraLiteral757fcc[10] = "campos_x=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral757fc0")
+    const char AICameraLiteral757fc0[10] = "campos_y=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral757fb4")
+    const char AICameraLiteral757fb4[10] = "campos_z=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral757fa8")
+    const char AICameraLiteral757fa8[10] = "tgtpos_x=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral757f9c")
+    const char AICameraLiteral757f9c[10] = "tgtpos_y=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral757f90")
+    const char AICameraLiteral757f90[10] = "tgtpos_z=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral757f84")
+    const char AICameraLiteral757f84[11] = "no_borders";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758160")
+    const char AICameraLiteral758160[18] = "attach_to_spline=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral75814c")
+    const char AICameraLiteral75814c[20] = "spline_dist_offset=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758140")
+    const char AICameraLiteral758140[12] = "blend_time=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758134")
+    const char AICameraLiteral758134[10] = "max_time=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758128")
+    const char AICameraLiteral758128[11] = "hold_time=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral75811c")
+    const char AICameraLiteral75811c[11] = "cont_roty=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758110")
+    const char AICameraLiteral758110[11] = "cont_rotx=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral758104")
+    const char AICameraLiteral758104[11] = "cont_rotz=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral7580fc")
+    const char AICameraLiteral7580fc[6] = "rotz=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral7580f0")
+    const char AICameraLiteral7580f0[12] = "mode=follow";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral7580e4")
+    const char AICameraLiteral7580e4[12] = "mode=static";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral7580dc")
+    const char AICameraLiteral7580dc[7] = "linear";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral7580cc")
+    const char AICameraLiteral7580cc[13] = "slowfastslow";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral7580c0")
+    const char AICameraLiteral7580c0[9] = "slowfast";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral7580b0")
+    const char AICameraLiteral7580b0[13] = "fastslowfast";
+#pragma const_seg()
+#pragma const_seg(".rdata$AICameraLiteral7580a4")
+    const char AICameraLiteral7580a4[9] = "fastslow";
+#pragma const_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$NuPortalCameraPc")
+    NUCAMERA *NuPortalCameraPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuPortalLocalViewPc")
+    NUMTX NuPortalLocalViewPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuPortalProjectionScratchPc")
+    NUMTX NuPortalProjectionScratchPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuPortalProjectionInversePc")
+    NUMTX NuPortalProjectionInversePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuPortalFrustaPc")
+    NUPORTAL_FRUSTUM_PC **NuPortalFrustaPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuPortalFrustumCountPc")
+    i32 *NuPortalFrustumCountPc;
+#pragma bss_seg()
+#pragma const_seg(".rdata$NuPortalBoundsOnePc")
+    const NUVEC NuPortalBoundsOnePc = {1.0f, 1.0f, 1.0f};
+#pragma const_seg()
+#pragma const_seg(".rdata$NuPortalBoundsMinusOnePc")
+    const NUVEC NuPortalBoundsMinusOnePc = {-1.0f, -1.0f, -1.0f};
+#pragma const_seg()
+#pragma bss_seg(".bss$NuPortalVisibilityBitsPc")
+    u8 NuPortalVisibilityBitsPc[625];
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuPortalWorldCameraPc")
+    NUVEC NuPortalWorldCameraPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuPortalOverrideCameraPc")
+    NUVEC *NuPortalOverrideCameraPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuPortalCameraRoomPc")
+    i16 NuPortalCameraRoomPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuPortalRoomsVisitedPc")
+    i16 NuPortalRoomsVisitedPc[16];
+#pragma bss_seg()
+#pragma data_seg(".data$NuPortalDebugDrawPc")
+    i32 NuPortalDebugDrawPc = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$NuPortalNearPlanePc")
+    NUPLANE NuPortalNearPlanePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuPortalDebugEnabledPc")
+    i32 NuPortalDebugEnabledPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuPortalCameraSelectPc")
+    i32 NuPortalCameraSelectPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuPortalDebugCameraPc")
+    NUCAMERA NuPortalDebugCameraPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuPortalRestoreCameraPc")
+    NUCAMERA NuPortalRestoreCameraPc;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$BoltNoSfxPc")
+    i32 BoltNoSfxPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BoltNoObjectMomentumPc")
+    i32 BoltNoObjectMomentumPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BoltInitSfxFn")
+    i32(__cdecl *BoltInitSfxFn)(GAMEOBJECT *);
+#pragma bss_seg()
+#pragma bss_seg(".bss$ExBlowupFlagsPc")
+    u32 ExBlowupFlagsPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BlowupExFunc")
+    i32(__cdecl *BlowupExFunc)(GIZMOBLOWUP_PC *, i32);
+#pragma bss_seg()
+#pragma data_seg(".data$BoltBlockContextPc")
+    i32 BoltBlockContextPc = -1;
+#pragma data_seg()
+#pragma data_seg(".data$BoltDeactivatedActionPc")
+    i16 BoltDeactivatedActionPc = -1;
 #pragma data_seg()
 }

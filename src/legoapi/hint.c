@@ -80,3 +80,20 @@ void __cdecl Hint_SetComplete(i32 hint_id) {
         Hint_SaveGameState(hint);
     }
 }
+
+typedef struct HINT_CANCEL_PC {
+    u8 unknown00[8];
+    f32 display_duration;
+    u8 unknown0c[0xc];
+    f32 cooldown;
+} HINT_CANCEL_PC;
+STATIC_ASSERT(offsetof(HINT_CANCEL_PC, display_duration) == 8);
+STATIC_ASSERT(offsetof(HINT_CANCEL_PC, cooldown) == 0x18);
+void __cdecl Hint_CancelCurrent(void) {
+    HINT_CANCEL_PC *hint = (HINT_CANCEL_PC *)hintsys.active_hint;
+    if (hint != NULL) {
+        if (hint->display_duration != 0.0f && (f64)hint->display_duration - 0.5 > hintsys.display_elapsed)
+            hintsys.display_elapsed = (f32)((f64)hint->display_duration - 0.5);
+        hint->cooldown = 0.0f;
+    }
+}

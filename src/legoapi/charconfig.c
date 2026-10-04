@@ -2051,7 +2051,6 @@ i32 SecondCharConfigure;
 i32 configureallcharacters_perm;
 char MiniBuffer[0x4000];
 extern i32 CHARPAK;
-extern char ConfigBuffer[];
 
 static i32 RedirectTextFile(char *text, char *filename, i32 filename_capacity) {
     i32 result = 0;
@@ -2291,7 +2290,7 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
         text = (char *)(address);
         saved = text[size];
         text[size] = 0;
-        length = Text_StripComments(text, ConfigBuffer, 1);
+        length = Text_StripComments(text, ConfigBuffer.bytes, 1);
         text[size] = saved;
         redirected = RedirectTextFile(text, filename, 64);
         if (redirected != 0) {
@@ -2307,13 +2306,13 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
                 text = (char *)(address);
                 saved = text[size];
                 text[size] = 0;
-                length = Text_StripComments(text, ConfigBuffer, 1);
+                length = Text_StripComments(text, ConfigBuffer.bytes, 1);
                 text[size] = saved;
                 if (length < 1)
                     redirected = 0;
             }
         }
-        CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 1, ConfigBuffer, length, 0, game_keywords);
+        CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 1, ConfigBuffer.bytes, length, 0, game_keywords);
         if (redirected == 2) {
             item = NuFilePakGetItem(pak, original_path);
             if (item == 0 || NuFilePakGetItemInfo(pak, item, &address, &size) == 0 || size < 1)
@@ -2321,11 +2320,12 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
             text = (char *)(address);
             saved = text[size];
             text[size] = 0;
-            length = Text_StripComments(text, ConfigBuffer, 1);
+            length = Text_StripComments(text, ConfigBuffer.bytes, 1);
             text[size] = saved;
             if (length > 0) {
                 SecondCharConfigure = 1;
-                CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 0, ConfigBuffer, length, 0, game_keywords);
+                CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 0, ConfigBuffer.bytes, length, 0,
+                           game_keywords);
             }
         }
     }
