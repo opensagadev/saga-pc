@@ -6127,8 +6127,13 @@ typedef struct nurndrlibscene_s {
         f32 visibility_alternate_width;
     };
     u32 clear_flags;
-    u32 clear_flags_08;
-    i32 bg_colour;
+    union {
+        struct {
+            u32 clear_flags_08;
+            i32 bg_colour;
+        };
+        u8 render_post_alpha_cache[8];
+    };
     f32 clear_alpha;
     f32 unknown_14;
     f32 unknown_18;
@@ -6173,6 +6178,8 @@ STATIC_ASSERT(offsetof(NURNDRLIBSCENE, visibility_alternate_width) == 0);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, visibility_occlusion_output) == 0x120);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, clear_flags_08) == 0x08);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, bg_colour) == 0x0c);
+STATIC_ASSERT(offsetof(NURNDRLIBSCENE, render_post_alpha_cache) == 0x08);
+STATIC_ASSERT(sizeof(((NURNDRLIBSCENE *)0)->render_post_alpha_cache) == 8);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, clear_alpha) == 0x10);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, calc_1c) == 0x1c);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, calc_20) == 0x20);
@@ -14037,6 +14044,64 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl FullReflect(NUVEC *normal, NUVEC *movement, NUVEC *result);
     i32 __cdecl rtlDynamicSetPos(i32 id, NUVEC *position);
 
+    typedef struct AI_TURRET_SYSTEM_PC AI_TURRET_SYSTEM_PC;
+    void __cdecl GizTurrets_OpponentSelection(AI_TURRET_SYSTEM_PC *, i32, APIOBJECT_PC **, i32, APIOBJECT_PC **);
+
+    f32 __cdecl NewRayCastGetEmbedDist(void);
+    i32 __cdecl NewRayCastHitWallSpline(void);
+    i32 __cdecl NewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags);
+
+    void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *, i32, i32, APIOBJECT_PC **, i32, APIOBJECT_PC **, f32);
+
+    typedef struct render_post_viewport_prefix_pc_s {
+        f32 source_x, source_y, source_right, source_bottom;
+        f32 dest_x, dest_y, dest_right, dest_bottom;
+        f32 width_scale, height_scale, x_offset, y_offset;
+    } RENDER_POST_VIEWPORT_PREFIX_PC;
+    STATIC_ASSERT(sizeof(RENDER_POST_VIEWPORT_PREFIX_PC) == 0x30);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_x) == 0);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_y) == 4);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_right) == 8);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_bottom) == 0xc);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_x) == 0x10);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_y) == 0x14);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_right) == 0x18);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_bottom) == 0x1c);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, width_scale) == 0x20);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, height_scale) == 0x24);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, x_offset) == 0x28);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, y_offset) == 0x2c);
+    extern RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefixPc;
+    void __cdecl RenderPostViewportSetPc(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x,
+                                         f32 dest_y, f32 dest_right, f32 dest_bottom);
+    void __cdecl RenderPostViewportResetPc(void);
+
+    /* Existing same-size scene owner union alias is required, not new backing. */
+    void __cdecl DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
+                                RENDER_POST_BLOOM_READER_PC *parameters);
+    void __cdecl RenderPostClearScreenPc(void);
+    u8 __cdecl RenderPostClampBytePc(i32 minimum_unused, i32 maximum_unused, f32 value);
+
+#define RENDER_POST_ALPHA_CACHE_PC (sceneParameters[16].render_post_alpha_cache)
+    i32 __cdecl PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags);
+    void __cdecl CastPart(PART_PC *part, f32 time);
+
+    void __cdecl GameCreatureOpponentSelection(AISYS_PC *, i32, APIOBJECT_PC **, i32, APIOBJECT_PC **, i32,
+                                               APIOBJECT_PC **, u64, f32);
+
+    extern i16 PartPlatformImpactListPc[4];
+    extern f32 PartCollisionIntervalPc;
+    extern f32 PartStopSpeedSquaredPc;
+    extern i16 id_UGNAUGHT;
+    extern f32 OpponentSelectionHysteresisPc;
+    extern i32 nbaddies_can_see_players;
+
+    void __cdecl UpdateParts(f32 time);
+    void __cdecl DrawParts(i32 keep_offscreen);
+    void __cdecl NuPartEnableRayCasts(i32 enabled);
+    i32 __cdecl AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z, i16 y,
+                                                   NUMTX *orientation, f32 scale);
+    void __cdecl DebrisStatusAlwaysOff(i32 *handle);
 #ifdef __cplusplus
 }
 

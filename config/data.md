@@ -1724,3 +1724,29 @@ The genuine12-byte checkantinodefns table remains in aisys.c with blank original
 extent; complete source initializer equality does not infer its owning allocation.
 Unique exact data union632,384 adds129B. Private Teleports/Grid/Log owners and
 inherited CRC16 initializer remain genuine. No viewport/image backing is added.
+
+
+### Ray, particle and Image storage release (2026-10-04)
+
+Seven genuine shared views add 74 verified working bytes: viewport prefix48
+at80e228, Part platform list8 at292097c, collision interval4 at8102dc,
+stop-speed squared4 at8102e0, UGNAUGHT WORD2 at7f1a30, hysteresis4 at7f67d0
+and visible-baddies count4 at876860. Original owning extents remain blank;
+none receives allocation/exact credit. Prefix48 uses the verified native
+0,0,640,224 / 0,0,640,224 / 1,1,0,0 initializer and reuses existing
+PCSpecialProjectionAdjust16 at80e258. The cache8 union retains existing
+sceneParameters[16] fields at8/c, the 0x218 record and17,152-byte owner;
+selected cols2..8 imply no original cache-capacity claim.
+
+The original parts TU owns impact normal12 and enabled flag4; the original
+nurndr TU owns seven Image static locals. All 3,500 normal full data regions
+and 1,814 scoped proofs equal isolated output, preserving all 3,493 old
+regions/1,807 scopes and the CRC initializer. All 4,712 previous exact physical
+copies and four members survive. All 37 new initializer copies are retail
+equal:21 known copies give4,733 exact physical copies;16 unknown copies/118
+working bytes remain uncredited. Matched data union stays632,384 bytes.
+Known scope603/138,161 bytes and unknown scope1,211/130,200 bytes are distinct
+from physical-copy counts and original owning allocation claims. The final
+receipt is build/analysis/transfer-execution-20261003/data/
+ray-image-world7-production-release.json, tied to the frozen314 inputs and
+274 actual normal objects. Future resource globals remain scratch evidence.

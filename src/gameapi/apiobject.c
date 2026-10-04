@@ -1721,3 +1721,167 @@ void __cdecl SetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *
         packet->current_time = (f32)((f64)NuRandFloat() * duration + 1.0);
     }
 }
+
+typedef struct LOS_OBJECT_VIEW_PC {
+    u8 unknown000[0x240];
+    f32 visibility_range_extension;
+} LOS_OBJECT_VIEW_PC;
+STATIC_ASSERT(offsetof(LOS_OBJECT_VIEW_PC, visibility_range_extension) == 0x240);
+typedef struct LOS_SYSTEM_VIEW_PC {
+    u32 object_size;
+    GAMEOBJECT *objects;
+    u64 line_of_sight[64];
+} LOS_SYSTEM_VIEW_PC;
+STATIC_ASSERT(offsetof(LOS_SYSTEM_VIEW_PC, line_of_sight) == 8);
+#define LOS_OBJECT(p) ((LOS_OBJECT_VIEW_PC *)(p))
+#define LOS_SYSTEM(p) ((LOS_SYSTEM_VIEW_PC *)(p))
+#define LOS_GEOMETRY(p) ((GAMEOBJECT *)(p))
+i32 __cdecl NewRayCast(NUVEC *, NUVEC *, f32, i32);
+static f32 APIObjectSafeDividePc(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f)
+        return 0.0f;
+    return a / b;
+}
+
+static i32 QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags, f32 max_distance, f32 step) {
+    f32 distance;
+    i32 hit;
+    NUVEC direction, travelled, current, segment;
+    if (step > 0.0f) {
+        distance = movement->x * movement->x + movement->y * movement->y + movement->z * movement->z;
+        if (distance > max_distance * max_distance)
+            return 0;
+        if (distance < step * step)
+            return NewRayCast(position, movement, radius, scan_flags);
+        distance = NuFsqrt(distance);
+        NuVecScale(&direction, movement, APIObjectSafeDividePc(1.0f, distance));
+        travelled.x = travelled.y = travelled.z = 0.0f;
+        current = *position;
+        while (distance > 0.0f) {
+            if (distance >= step) {
+                NuVecScale(&segment, &direction, step);
+                distance -= step;
+            } else {
+                NuVecScale(&segment, &direction, distance);
+                distance = 0.0f;
+            }
+            hit = NewRayCast(&current, &segment, radius, scan_flags);
+            if (hit != 0) {
+                NuVecAdd(movement, &travelled, &segment);
+                return hit;
+            }
+            NuVecAdd(&current, &current, &segment);
+            NuVecAdd(&travelled, &travelled, &segment);
+        }
+        return 0;
+    } else {
+        return NewRayCast(position, movement, radius, scan_flags);
+    }
+}
+
+void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_count, APIOBJECT_PC **sources,
+                                i32 target_count, APIOBJECT_PC **targets, f32 ray_step) {
+    i32 source_visible;
+    i32 target_visible;
+    i32 initial_target;
+    i32 initial_source;
+    APIOBJECT_PC *target, *source;
+    i32 target_index, source_index;
+    NUVEC difference;
+    f32 distance_squared, source_range, target_range;
+    if (system == NULL || checks == 0 || source_count == 0 || target_count == 0)
+        goto done;
+    if (system->los_cursor_208 >= source_count) {
+        system->los_cursor_208 = 0;
+        ++system->los_cursor_20c;
+    }
+    if (system->los_cursor_20c >= target_count)
+        system->los_cursor_20c = 0;
+    initial_target = system->los_cursor_20c;
+    initial_source = system->los_cursor_208;
+    do {
+        target = targets[system->los_cursor_20c];
+        target_index = target->object_id;
+        do {
+            source = sources[system->los_cursor_208];
+            source_index = source->object_id;
+            NuVecSub(&difference, &LOS_GEOMETRY(target)->collision_position, &LOS_GEOMETRY(source)->collision_position);
+            distance_squared = difference.x * difference.x + difference.y * difference.y + difference.z * difference.z;
+            source_range = source->view_distance + LOS_OBJECT(target)->visibility_range_extension;
+            target_range = target->view_distance + LOS_OBJECT(source)->visibility_range_extension;
+            if ((source->flags_low & 0x200)) {
+                source_visible = 1;
+            } else if (((source->flags_low & 0x4000) || (target->flags_low & 0x4000)) &&
+                       (LOS_SYSTEM(system)->line_of_sight[source_index] & ((u64)1 << target->object_id)) != 0 &&
+                       distance_squared < source_range * source_range) {
+                source_visible = 1;
+            } else if (distance_squared < source_range * source_range &&
+                       difference.y - LOS_GEOMETRY(target)->bounds_half_height < source->max_view_height &&
+                       difference.y + LOS_GEOMETRY(target)->bounds_half_height > source->min_view_height) {
+                source_visible = 1;
+            } else {
+                source_visible = 0;
+            }
+            if ((target->flags_low & 0x200)) {
+                target_visible = 1;
+            } else if (((target->flags_low & 0x4000) || (source->flags_low & 0x4000)) &&
+                       (LOS_SYSTEM(system)->line_of_sight[target_index] & ((u64)1 << source->object_id)) != 0 &&
+                       distance_squared < target_range * target_range) {
+                target_visible = 1;
+            } else if (distance_squared < target_range * target_range &&
+                       -difference.y - LOS_GEOMETRY(source)->bounds_half_height < target->max_view_height &&
+                       LOS_GEOMETRY(source)->bounds_half_height - difference.y > target->min_view_height) {
+                target_visible = 1;
+            } else {
+                target_visible = 0;
+            }
+            if ((source_visible | target_visible) != 0) {
+                if ((system->flags & 1) || (target->flags_low & 0x400) || (source->flags_low & 0x400)) {
+                    if (source_visible != 0)
+                        LOS_SYSTEM(system)->line_of_sight[source_index] |= (u64)1 << target_index;
+                    else
+                        LOS_SYSTEM(system)->line_of_sight[source_index] &= ~((u64)1 << target_index);
+                    if (target_visible != 0)
+                        LOS_SYSTEM(system)->line_of_sight[target_index] |= (u64)1 << source_index;
+                    else
+                        LOS_SYSTEM(system)->line_of_sight[target_index] &= ~((u64)1 << source_index);
+                } else if (QuickNewRayCast(&LOS_GEOMETRY(source)->collision_position, &difference, 0.0f, 0, 100.0f,
+                                           ray_step) == 0) {
+                    if (source_visible != 0)
+                        LOS_SYSTEM(system)->line_of_sight[source_index] |= (u64)1 << target_index;
+                    else
+                        LOS_SYSTEM(system)->line_of_sight[source_index] &= ~((u64)1 << target_index);
+                    if (target_visible != 0)
+                        LOS_SYSTEM(system)->line_of_sight[target_index] |= (u64)1 << source_index;
+                    else
+                        LOS_SYSTEM(system)->line_of_sight[target_index] &= ~((u64)1 << source_index);
+                } else {
+                    if (source_visible != 0 && (source->flags_low & 0x400))
+                        LOS_SYSTEM(system)->line_of_sight[source_index] |= (u64)1 << target_index;
+                    else
+                        LOS_SYSTEM(system)->line_of_sight[source_index] &= ~((u64)1 << target_index);
+                    if (target_visible != 0 && (target->flags_low & 0x400))
+                        LOS_SYSTEM(system)->line_of_sight[target_index] |= (u64)1 << source_index;
+                    else
+                        LOS_SYSTEM(system)->line_of_sight[target_index] &= ~((u64)1 << source_index);
+                }
+            } else {
+                LOS_SYSTEM(system)->line_of_sight[target_index] &= ~((u64)1 << source_index);
+                LOS_SYSTEM(system)->line_of_sight[source_index] &= ~((u64)1 << target_index);
+            }
+            ++system->los_cursor_208;
+            --checks;
+            if (checks == 0)
+                goto done;
+            if (system->los_cursor_208 == initial_source && system->los_cursor_20c == initial_target)
+                goto done;
+        } while (system->los_cursor_208 < source_count);
+        system->los_cursor_208 = 0;
+        ++system->los_cursor_20c;
+        if (system->los_cursor_20c >= target_count)
+            system->los_cursor_20c = 0;
+        if (system->los_cursor_208 == initial_source && system->los_cursor_20c == initial_target)
+            goto done;
+    } while (checks != 0);
+done:;
+}

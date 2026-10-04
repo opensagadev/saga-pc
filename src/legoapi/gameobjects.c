@@ -3919,3 +3919,366 @@ void __cdecl GameCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOB
     }
     AISysCreatureAntinodeInteraction(system, object_count, objects, immovable);
 }
+typedef struct OPPONENT_PACKET_PC {
+    u8 unknown000[0xd4];
+    APIOBJECT_PC *nearest_opponent_object;
+    f32 nearest_opponent_metric;
+    APIOBJECT_PC *pending_nearest_opponent;
+    f32 pending_nearest_metric;
+    APIOBJECT_PC *opponent_object;
+    f32 opponent_metric;
+    APIOBJECT_PC *pending_opponent;
+    f32 pending_opponent_metric;
+    u8 unknown0f4[0xf4];
+    u32 flags;
+} OPPONENT_PACKET_PC;
+STATIC_ASSERT(offsetof(OPPONENT_PACKET_PC, nearest_opponent_object) == 0xd4);
+STATIC_ASSERT(offsetof(OPPONENT_PACKET_PC, pending_nearest_opponent) == 0xdc);
+STATIC_ASSERT(offsetof(OPPONENT_PACKET_PC, opponent_object) == 0xe4);
+STATIC_ASSERT(offsetof(OPPONENT_PACKET_PC, pending_opponent) == 0xec);
+STATIC_ASSERT(offsetof(OPPONENT_PACKET_PC, flags) == 0x1e8);
+typedef struct OPPONENT_OBJECT_PC {
+    u8 unknown000[0x240];
+    f32 visibility_range_extension;
+    u8 unknown244[0x64];
+    u64 awareness;
+} OPPONENT_OBJECT_PC;
+STATIC_ASSERT(offsetof(OPPONENT_OBJECT_PC, visibility_range_extension) == 0x240);
+STATIC_ASSERT(offsetof(OPPONENT_OBJECT_PC, awareness) == 0x2a8);
+typedef struct OPPONENT_GAME_PC {
+    u8 unknown000[0xeb0];
+    u64 seen;
+    u64 exclusion;
+    APIOBJECT_PC *alert_target;
+    f32 alert_timer;
+} OPPONENT_GAME_PC;
+STATIC_ASSERT(offsetof(OPPONENT_GAME_PC, seen) == 0xeb0);
+STATIC_ASSERT(offsetof(OPPONENT_GAME_PC, exclusion) == 0xeb8);
+STATIC_ASSERT(offsetof(OPPONENT_GAME_PC, alert_target) == 0xec0);
+STATIC_ASSERT(offsetof(OPPONENT_GAME_PC, alert_timer) == 0xec4);
+typedef struct OPPONENT_SYS_PC {
+    u8 unknown000[0x1385];
+    u8 goody_cursor;
+    u16 assignment_flags;
+} OPPONENT_SYS_PC;
+STATIC_ASSERT(offsetof(OPPONENT_SYS_PC, goody_cursor) == 0x1385);
+STATIC_ASSERT(offsetof(OPPONENT_SYS_PC, assignment_flags) == 0x1386);
+typedef struct OPPONENT_LOS_PC {
+    u32 object_size;
+    GAMEOBJECT *objects;
+    u64 line_of_sight[64];
+} OPPONENT_LOS_PC;
+STATIC_ASSERT(offsetof(OPPONENT_LOS_PC, line_of_sight) == 8);
+#define OPPONENT_PACKET(p) ((OPPONENT_PACKET_PC *)(p))
+#define OPPONENT_OBJECT(p) ((OPPONENT_OBJECT_PC *)(p))
+#define OPPONENT_GAME(p) ((OPPONENT_GAME_PC *)(p))
+#define OPPONENT_SYS(p) ((OPPONENT_SYS_PC *)(p))
+#define OPPONENT_LOS(p) ((OPPONENT_LOS_PC *)(p))
+extern i16 id_UGNAUGHT;
+extern i32 nbaddies_can_see_players;
+extern f32 OpponentSelectionHysteresisPc;
+static i32 OpponentCanAcquirePc(APIOBJECT_PC *observer, APIOBJECT_PC *target, f32 distance, u64 awareness, f32 dx,
+                                f32 dz) {
+    f32 facing_dot;
+    if (party_under_cover != 0 && ((observer->motion_flags & 0x400) == 0 || (target->motion_flags & 0x400) == 0))
+        return 0;
+    if (awareness & ((u64)1 << target->object_id))
+        return 1;
+    if ((OPPONENT_LOS(WORLD->object_sys)->line_of_sight[observer->object_id] & ((u64)1 << target->object_id)) == 0)
+        return 0;
+    if (observer->flags_low & 0x800)
+        return 1;
+    facing_dot = ((GAMEOBJECT *)observer->owner)->facing_direction.x * dx +
+                 ((GAMEOBJECT *)observer->owner)->facing_direction.z * dz;
+    if (facing_dot >= 0.0f)
+        return 1;
+    return observer->hear_distance > distance && (((GAMEOBJECT *)target->owner)->portal_flags & 0x800) != 0;
+}
+
+void GameCreatureOpponentSelection(AISYS_PC *system, i32 count, APIOBJECT_PC **objects, i32 goody_count,
+                                   APIOBJECT_PC **goodies, i32 baddy_count, APIOBJECT_PC **baddies, u64 awareness,
+                                   f32 unused) {
+    i32 i, j;
+    f32 distance;
+    i32 complete;
+    u64 alert_mask;
+    APIOBJECT_PC *object;
+    i32 budget;
+    APIOBJECT_PC *goody;
+    f32 best_distance;
+    APIOBJECT_PC *best_baddy;
+    APIOBJECT_PC *baddy;
+    i32 have_distance;
+    GAMEOBJECT *baddy_object;
+    u16 baddy_id;
+    GAMEOBJECT *goody_object;
+    OPPONENT_PACKET_PC *packet;
+    f32 metric;
+    GAMEOBJECT *game_object;
+    NUVEC difference = {0.0f, 0.0f, 0.0f};
+    if (system == NULL)
+        return;
+    if (goody_count == 0)
+        return;
+    distance = 0.0f;
+    complete = baddy_count == 0;
+    if (alert_obj != NULL && (alert_obj->flags_1fc_word & 0x1000) != 0 && (alert_obj->flags_1f8 & 5) == 0 &&
+        (alert_obj->character_data->game_character->flags_090 & 0x8000) == 0) {
+        alert_mask = (u64)1 << alert_obj->hostility_group;
+        for (i = 0; i < baddy_count; ++i) {
+            object = baddies[i];
+            if ((OPPONENT_OBJECT(object)->awareness & alert_mask) != 0) {
+                OPPONENT_GAME(((GAMEOBJECT *)object->owner))->alert_timer = 5.0f;
+                OPPONENT_GAME(((GAMEOBJECT *)object->owner))->alert_target = (APIOBJECT_PC *)alert_obj;
+            } else if (WORLD->rooms_visible_ptr[((GAMEOBJECT *)object->owner)->portal_room] != 0) {
+                difference.x = alert_pos.x - ((GAMEOBJECT *)object)->collision_position.x;
+                if (object->hear_distance > difference.x) {
+                    difference.z = alert_pos.z - ((GAMEOBJECT *)object)->collision_position.z;
+                    if (object->hear_distance > difference.z) {
+                        difference.y = alert_pos.y - ((GAMEOBJECT *)object)->collision_position.y;
+                        if (object->max_view_height > difference.y && difference.y > object->min_view_height) {
+                            distance = difference.x * difference.x + difference.z * difference.z;
+                            if (!(object->hear_distance * object->hear_distance > distance))
+                                continue;
+                            if ((OPPONENT_LOS(WORLD->object_sys)->line_of_sight[object->object_id] & alert_mask) != 0 ||
+                                ((f64)alert_obj->collision_position.x -
+                                 (f64)((GAMEOBJECT *)object)->collision_position.x) *
+                                            ((f64)alert_obj->collision_position.x -
+                                             (f64)((GAMEOBJECT *)object)->collision_position.x) +
+                                        ((f64)alert_obj->collision_position.z -
+                                         (f64)((GAMEOBJECT *)object)->collision_position.z) *
+                                            ((f64)alert_obj->collision_position.z -
+                                             (f64)((GAMEOBJECT *)object)->collision_position.z) >
+                                    (f64)object->view_distance * (f64)object->view_distance) {
+                                OPPONENT_GAME(((GAMEOBJECT *)object->owner))->alert_target = (APIOBJECT_PC *)alert_obj;
+                                OPPONENT_OBJECT(object)->awareness |= alert_mask;
+                                awareness |= OPPONENT_OBJECT(object)->awareness;
+                                OPPONENT_GAME(((GAMEOBJECT *)object->owner))->alert_timer = 5.0f;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        alert_timer -= FRAMETIME;
+        if (alert_timer <= 0.0f)
+            alert_obj = NULL;
+    }
+    if (OPPONENT_SYS(system)->goody_cursor >= goody_count)
+        OPPONENT_SYS(system)->goody_cursor = 0;
+    budget = 32;
+    // Pending choices survive budget exhaustion. Publish only after a pass
+    // finishes without changing the baddies' assignments.
+    while (!complete && budget > 0) {
+        complete = 0;
+        while (OPPONENT_SYS(system)->goody_cursor < goody_count && budget > 0) {
+            goody = goodies[OPPONENT_SYS(system)->goody_cursor];
+            best_distance = 1.0e9f;
+            best_baddy = NULL;
+            for (i = 0; i < baddy_count; ++i) {
+                baddy = baddies[i];
+                if (baddy == goody || OPPONENT_PACKET(baddy->ai)->pending_opponent == goody)
+                    continue;
+                have_distance = 0;
+                if (((GAMEOBJECT *)baddy->owner)->flags_ef0 & 2) {
+                    OPPONENT_OBJECT(goody)->awareness &= ~((u64)1 << baddy->object_id);
+                } else if (OPPONENT_OBJECT(goody)->awareness & ((u64)1 << baddy->object_id)) {
+                    distance = NuVecDist(&baddy->position, &goody->position, &difference);
+                    have_distance = 1;
+                    if (distance >= goody->view_distance + OPPONENT_OBJECT(baddy)->visibility_range_extension)
+                        OPPONENT_OBJECT(goody)->awareness &= ~((u64)1 << baddy->object_id);
+                } else if (OPPONENT_LOS(WORLD->object_sys)->line_of_sight[goody->object_id] &
+                           ((u64)1 << baddy->object_id)) {
+                    distance = NuVecDist(&baddy->position, &goody->position, &difference);
+                    have_distance = 1;
+                    if (OpponentCanAcquirePc(goody, baddy, distance, awareness, difference.x, difference.z)) {
+                        OPPONENT_OBJECT(goody)->awareness |= (u64)1 << baddy->object_id;
+                        awareness |= OPPONENT_OBJECT(goody)->awareness;
+                    }
+                }
+                if (((GAMEOBJECT *)goody->owner)->flags_ef0 & 2) {
+                    OPPONENT_OBJECT(baddy)->awareness &= ~((u64)1 << goody->object_id);
+                } else if (OPPONENT_GAME(((GAMEOBJECT *)baddy->owner))->alert_target == goody) {
+                    OPPONENT_OBJECT(baddy)->awareness |= (u64)1 << goody->object_id;
+                    awareness |= OPPONENT_OBJECT(baddy)->awareness;
+                } else if (OPPONENT_OBJECT(baddy)->awareness & ((u64)1 << goody->object_id)) {
+                    if (!have_distance)
+                        distance = NuVecDist(&baddy->position, &goody->position, &difference);
+                    have_distance = 1;
+                    if (distance >= baddy->view_distance + OPPONENT_OBJECT(goody)->visibility_range_extension)
+                        OPPONENT_OBJECT(baddy)->awareness &= ~((u64)1 << goody->object_id);
+                } else if (OPPONENT_LOS(WORLD->object_sys)->line_of_sight[baddy->object_id] &
+                           ((u64)1 << goody->object_id)) {
+                    if (!have_distance)
+                        distance = NuVecDist(&baddy->position, &goody->position, &difference);
+                    have_distance = 1;
+                    if (OpponentCanAcquirePc(baddy, goody, distance, awareness, -difference.x, -difference.z)) {
+                        OPPONENT_OBJECT(baddy)->awareness |= (u64)1 << goody->object_id;
+                        awareness |= OPPONENT_OBJECT(baddy)->awareness;
+                    }
+                }
+                if (!(OPPONENT_OBJECT(goody)->awareness & ((u64)1 << baddy->object_id)) &&
+                    !(OPPONENT_OBJECT(baddy)->awareness & ((u64)1 << goody->object_id)))
+                    continue;
+                if (!have_distance)
+                    distance = NuVecDist(&baddy->position, &goody->position, &difference);
+                baddy_object = ((GAMEOBJECT *)baddy->owner);
+                baddy_id = baddy_object->id;
+                if (baddy_id == (u16)id_JAWA || baddy_id == (u16)id_UGNAUGHT) {
+                    if (!ZapTarget(((GAMEOBJECT *)goody->owner)))
+                        OPPONENT_GAME(((GAMEOBJECT *)baddy->owner))->exclusion |= (u64)1 << goody->object_id;
+                    baddy_object = ((GAMEOBJECT *)baddy->owner);
+                    baddy_id = baddy_object->id;
+                } else if (goody->character_data->model_flags & 0x80000) {
+                    OPPONENT_GAME(baddy_object)->exclusion |= (u64)1 << goody->object_id;
+                } else if ((baddy_object->portal_flags & 0x1000000) && ((GAMEOBJECT *)goody->owner) != player &&
+                           ((GAMEOBJECT *)goody->owner) != player2) {
+                    OPPONENT_GAME(baddy_object)->exclusion |= (u64)1 << goody->object_id;
+                } else if (((GAMEOBJECT *)goody->owner)->id == id_DRAGBOMB && baddy_id != (u16)id_ATAT) {
+                    OPPONENT_GAME(baddy_object)->exclusion |= (u64)1 << goody->object_id;
+                }
+                goody_object = ((GAMEOBJECT *)goody->owner);
+                if (!(OPPONENT_GAME(baddy_object)->exclusion & ((u64)1 << goody->object_id))) {
+                    packet = OPPONENT_PACKET(baddy->ai);
+                    if (packet->pending_nearest_metric > distance) {
+                        packet->pending_nearest_metric = distance;
+                        packet->pending_nearest_opponent = goody;
+                    }
+                    metric = distance;
+                    if (packet->opponent_object == goody)
+                        metric -= OpponentSelectionHysteresisPc;
+                    if (OPPONENT_OBJECT(baddy)->awareness & ((u64)1 << goody->object_id)) {
+                        if (packet->pending_opponent == NULL) {
+                            if (!(packet->flags & 0x20000) ||
+                                (OPPONENT_LOS(WORLD->object_sys)->line_of_sight[baddy->object_id] &
+                                 ((u64)1 << goody->object_id)) ||
+                                OPPONENT_GAME(baddy_object)->alert_target == goody) {
+                                if (best_distance > metric) {
+                                    best_distance = distance;
+                                    best_baddy = baddy;
+                                }
+                            }
+                        } else if ((goody->flags_low & 0x80) && (baddy_object->portal_flags & 0x40000000)) {
+                            if (!(packet->pending_opponent->flags_low & 0x80) ||
+                                packet->pending_opponent_metric > metric) {
+                                best_distance = distance;
+                                best_baddy = baddy;
+                            }
+                        }
+                    }
+                }
+                if (baddy_id == (u16)id_JAWA || baddy_id == (u16)id_UGNAUGHT ||
+                    (baddy->character_data->model_flags & 0x80000))
+                    OPPONENT_GAME(goody_object)->exclusion |= (u64)1 << baddy->object_id;
+                if (!(OPPONENT_GAME(goody_object)->exclusion & ((u64)1 << baddy->object_id))) {
+                    packet = OPPONENT_PACKET(goody->ai);
+                    if (packet->pending_nearest_metric > distance) {
+                        packet->pending_nearest_metric = distance;
+                        packet->pending_nearest_opponent = baddy;
+                    }
+                    metric = distance;
+                    if (packet->opponent_object == baddy)
+                        metric -= OpponentSelectionHysteresisPc;
+                    if ((OPPONENT_OBJECT(goody)->awareness & ((u64)1 << baddy->object_id)) &&
+                        (!(packet->flags & 0x20000) ||
+                         (OPPONENT_LOS(WORLD->object_sys)->line_of_sight[goody->object_id] &
+                          ((u64)1 << baddy->object_id)))) {
+                        if (packet->pending_opponent_metric > metric ||
+                            (packet->pending_opponent != NULL &&
+                             ((GAMEOBJECT *)packet->pending_opponent->owner) != NULL &&
+                             ((GAMEOBJECT *)packet->pending_opponent->owner)->character_context == 0x5a &&
+                             baddy_object->character_context != 0x5a)) {
+                            packet->pending_opponent_metric = distance;
+                            packet->pending_opponent = baddy;
+                        }
+                    }
+                }
+            }
+            if (baddy_count > 0) {
+                budget -= baddy_count;
+                if (best_baddy != NULL && OPPONENT_PACKET(best_baddy->ai)->pending_opponent != goody) {
+                    OPPONENT_PACKET(best_baddy->ai)->pending_opponent = goody;
+                    OPPONENT_PACKET(best_baddy->ai)->pending_opponent_metric = best_distance;
+                    OPPONENT_SYS(system)->assignment_flags |= 2;
+                    if (!(OPPONENT_GAME(((GAMEOBJECT *)goody->owner))->exclusion & ((u64)1 << best_baddy->object_id)) &&
+                        (OPPONENT_OBJECT(goody)->awareness & ((u64)1 << best_baddy->object_id))) {
+                        packet = OPPONENT_PACKET(goody->ai);
+                        if (!(packet->flags & 0x1000) || packet->pending_opponent_metric > best_distance) {
+                            packet->pending_opponent = best_baddy;
+                            packet->pending_opponent_metric = best_distance;
+                            packet->flags |= 0x1000;
+                        }
+                    }
+                }
+            }
+            ++OPPONENT_SYS(system)->goody_cursor;
+            if (OPPONENT_SYS(system)->goody_cursor >= goody_count) {
+                OPPONENT_SYS(system)->goody_cursor = 0;
+                if (OPPONENT_SYS(system)->assignment_flags & 2) {
+                    OPPONENT_SYS(system)->assignment_flags &= ~2;
+                    complete = 0;
+                } else {
+                    complete = 1;
+                }
+            }
+        }
+    }
+    if (!complete)
+        return;
+    OPPONENT_SYS(system)->goody_cursor = 0;
+    nbaddies_can_see_players = 0;
+    // Losing LOS alone does not erase the seen history; losing awareness does.
+    for (i = 0; i < goody_count; ++i) {
+        goody = goodies[i];
+        for (j = 0; j < baddy_count; ++j) {
+            baddy = baddies[j];
+            if (OPPONENT_OBJECT(goody)->awareness & ((u64)1 << baddy->object_id)) {
+                if (OPPONENT_LOS(WORLD->object_sys)->line_of_sight[goody->object_id] & ((u64)1 << baddy->object_id))
+                    OPPONENT_GAME(((GAMEOBJECT *)goody->owner))->seen |= (u64)1 << baddy->object_id;
+            } else if (OPPONENT_GAME(((GAMEOBJECT *)goody->owner))->seen & ((u64)1 << baddy->object_id)) {
+                OPPONENT_GAME(((GAMEOBJECT *)goody->owner))->seen &= ~((u64)1 << baddy->object_id);
+            }
+            if (OPPONENT_OBJECT(baddy)->awareness & ((u64)1 << goody->object_id)) {
+                if (OPPONENT_LOS(WORLD->object_sys)->line_of_sight[baddy->object_id] & ((u64)1 << goody->object_id))
+                    OPPONENT_GAME(((GAMEOBJECT *)baddy->owner))->seen |= (u64)1 << goody->object_id;
+            } else if (OPPONENT_GAME(((GAMEOBJECT *)baddy->owner))->seen & ((u64)1 << goody->object_id)) {
+                OPPONENT_GAME(((GAMEOBJECT *)baddy->owner))->seen &= ~((u64)1 << goody->object_id);
+            }
+        }
+    }
+    for (i = 0; i < count; ++i) {
+        object = objects[i];
+        packet = OPPONENT_PACKET(object->ai);
+        packet->opponent_metric = packet->pending_opponent_metric;
+        packet->opponent_object = packet->pending_opponent;
+        packet->flags = (packet->flags & ~0x800) | ((packet->flags >> 1) & 0x800);
+        packet = OPPONENT_PACKET(object->ai);
+        packet->nearest_opponent_metric = packet->pending_nearest_metric;
+        packet->nearest_opponent_object = packet->pending_nearest_opponent;
+        packet->pending_opponent_metric = 1.0e9f;
+        packet->pending_nearest_metric = 1.0e9f;
+        packet->flags &= ~0x1000;
+        packet->pending_nearest_opponent = NULL;
+        packet->pending_opponent = NULL;
+        if (awareness & ((u64)1 << object->object_id))
+            OPPONENT_PACKET(object->ai)->flags |= 0x4000;
+        else
+            OPPONENT_PACKET(object->ai)->flags &= ~0x4000;
+        ((GAMEOBJECT *)object->owner)->portal_flags &= ~0x800;
+        game_object = ((GAMEOBJECT *)object->owner);
+        OPPONENT_GAME(game_object)->exclusion = 0;
+        if (player != NULL && ((OPPONENT_GAME(game_object)->seen & ((u64)1 << player->hostility_group))) ||
+            (player2 != NULL && (OPPONENT_GAME(game_object)->seen & ((u64)1 << player2->hostility_group))))
+            ++nbaddies_can_see_players;
+        if (game_object->opponent != NULL) {
+            packet = OPPONENT_PACKET(object->ai);
+            packet->opponent_object = (APIOBJECT_PC *)game_object->opponent;
+            packet->opponent_metric = NuVecDist(&packet->opponent_object->position, &object->position, &difference);
+            packet = OPPONENT_PACKET(object->ai);
+            if (OPPONENT_PACKET(packet->opponent_object->ai)->opponent_object == object)
+                packet->flags |= 0x800;
+            else
+                packet->flags &= ~0x800;
+        }
+    }
+}

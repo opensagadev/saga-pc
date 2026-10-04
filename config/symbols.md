@@ -4291,3 +4291,35 @@ actual editor lookup is5b2110. Grid's full5,964 and math475/57/320 preserve nati
 complete spans; Log/Pow are exact. Image/cache and viewport overlap proposals
 remain scratch; no source or allocation credit. Full GameAI/WorldInfo_Load
 completion is not inferred from newly reconstructed suppliers.
+
+
+### Ray, particle, rendering and opponent family (2026-10-04)
+
+24 complete PC functions add 14,695 unique compared bytes. New entries include
+GizTurrets_OpponentSelection5acf30/493 and its original-TU bounds helper
+5ace90/160; NewRayCast67b280/389 plus getters67b260/12 and67b270/10;
+LOS62ab90/1196, privateQuick62a9a0/492 and SafeDivide62a620/54;
+PartRayCast642530/48 and CastPart642570/1315; UpdateParts64eb00/2755,
+DrawParts with two genuine private matrix/directional helpers, enable-ray,
+scaled-emitter and status-off functions; Opponent439a50/3763 with helper
+4398f0/225; Image5f14e0/2286, Clear5e1070/255, clamp5e0ff0/120 and
+viewport5ff660/227 plus reset5db310/78. All native extents and complete
+relocated candidate hashes are independently verified. The authoritative
+report adds eight exact functions/336 bytes; advisory scores and equal
+rebuilt extents alone do not establish exact matching.
+
+Private helpers retain genuine original caller groups, with any naturally
+optimized register ABI difference recorded as nonexact. Turret's five-word
+public caller, LOS seven-word caller and Opponent nine logical/ten physical
+arguments are confirmed at native callsites. __finite21 and __isnan46 are
+verified aliases to the pinned static CRT, not new engine implementations.
+No fabricated provider, boundary clipping or compiler retention control is
+used. PartNorm's source alias is named PART_NORM for the existing lint policy;
+the original private symbol/initializer and full code remain unchanged.
+
+Endpoint evidence is retained in build/analysis/transfer-execution-20261003/
+mapping/ray-image-world-final-review/endpoint-acceptance.json. All 24 full
+comparisons and 357 normal native checks pass; two prior nonexact compiler
+scheduling variants have separate finite proofs. All previous exact matches
+survive. Remaining loaded-terrain, asset, rendering-device and full-game
+behavior is qualified in config/transfer-execution.md.

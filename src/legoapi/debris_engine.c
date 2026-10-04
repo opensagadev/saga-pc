@@ -1652,3 +1652,8 @@ i32 __cdecl DebrisGetConeProperties(i32 handle, NUVEC *origin, NUVEC *end, f32 *
     *start_radius = *end_radius = *length = *speed = 0.0f;
     return 0;
 }
+
+void __cdecl DebrisStatusAlwaysOff(i32 *handle) {
+    if (*handle != -1)
+        ((DEBRISKEY_PC *)debkeydata)[*handle].field_2f4 = 0;
+}

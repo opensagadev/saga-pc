@@ -11470,3 +11470,31 @@ extern "C" {
     f32 antinode_reverse_time = 1.0f;
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$RenderPostViewportPrefixPc")
+    RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefixPc = {0.0f,   0.0f,   640.0f, 224.0f, 0.0f, 0.0f,
+                                                                 640.0f, 224.0f, 1.0f,   1.0f,   0.0f, 0.0f};
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$PartPlatformImpactListPc")
+    i16 PartPlatformImpactListPc[4] = {0, 0, 0, 0};
+#pragma data_seg()
+#pragma data_seg(".data$PartCollisionIntervalPc")
+    f32 PartCollisionIntervalPc = 0.1f;
+#pragma data_seg()
+#pragma data_seg(".data$PartStopSpeedSquaredPc")
+    f32 PartStopSpeedSquaredPc = 0.1f;
+#pragma data_seg()
+#pragma data_seg(".data$id_UGNAUGHT")
+    i16 id_UGNAUGHT = -1;
+#pragma data_seg()
+#pragma data_seg(".data$OpponentSelectionHysteresisPc")
+    f32 OpponentSelectionHysteresisPc = 0.5f;
+#pragma data_seg()
+#pragma data_seg(".data$nbaddies_can_see_players")
+    i32 nbaddies_can_see_players = 0;
+#pragma data_seg()
+}

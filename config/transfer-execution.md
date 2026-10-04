@@ -2313,3 +2313,92 @@ cache alias and a48-byte viewport prefix plus existing16-byte projection owner
 are factual scratch proposals only, with no invented original capacity. Broader
 world/resource suppliers and full GameAI remain under reconstruction. Whole-
 project transfer and validated direct-main checkpoints continue.
+
+
+### Ray, particle, rendering and opponent checkpoint (2026-10-04)
+
+24 complete functions add 14,695 unique compared PC bytes over ab761af:
+turrets 2/653, terrain unit ray 3/411, LOS 3/1,742, particle cast 2/1,363,
+particle update/draw/effects 7/3,572, opponent selection 2/3,988 and Image/
+Clear/viewport 5/2,966. Unique compared code reaches 1,064,651 bytes; native
+objdiff includes retained aliases and compares 1,065,168. Whole-PC fuzzy
+coverage rises from 20.920709% to 21.238860%. Eight new exact functions add
+336 bytes, reaching 184,602/3,471,246 .text bytes (5.318033%). Matched data
+union remains 632,384 bytes. Full source dependencies and original helper/
+caller groups remain linked; the new genuine turret owner is gizturret.c.
+
+The unit-radius NewRayCast is the actual 389-byte supplier with inverse
+collision radius zero; it is distinct from the existing ScaleYMask routine.
+LOS and PartRayCast reuse this one original terrain owner. The true 48-byte
+PartRayCast wrapper is exact. LOS preserves the native left-shift producer,
+64 hostility/visibility mask slots, directional/cached checks and the actual
+seven-word public caller. Its private ray helper naturally uses registers
+plus three float stack arguments, while retail uses six stack arguments;
+this remains an honest nonexact original-TU implementation.
+
+Turret selection preserves WORD flags/count, signed BYTE cursor, native
+record stride and real rider offset. Priority modes select the first valid
+candidate even beyond the initial nearest-distance threshold; the rejected
+old branch fails seven of 24 checks. Opponent selection retains the actual
+nine logical/ten physical arguments, awareness masks, budget/history and
+reciprocal assignment rules. Horizontal alert deltas stay extended until
+the native square/add operations; hysteresis and dot values spill at their
+native stages. Private helper ABI differences remain explicitly qualified.
+
+UpdateParts, DrawParts and their genuine private matrix/directional helpers
+retain the full native extents and signed/WORD/f32 accesses. Named matrix
+copies preserve x87 signaling-NaN quieting; the old raw-copy candidate fails
+one of 31 checks. CastPart uses actual pinned static CRT finite/isnan
+providers, with zero new engine source credit for their inventory aliases.
+The impact normal and enabled flag remain private in the original parts TU.
+Current AddPart/KillPart still have documented omitted actions; their later
+real RTL/effect completion is a separate scratch wave, not hidden credit.
+
+Image keeps native unrounded directional blend and Pow-return lifetimes,
+then stores brightness at the actual f32 boundary. Both Image and Clear
+restore the previous coordinate stack slot before decrement. The selected
+eight-byte cache union retains both existing scene DWORD names, every old
+offset and the full 17,152-byte owner. Prefix48 plus existing projection16
+avoids duplicate viewport backing. A producer-backed fixture passes 194
+checks; precision-only old source fails one, full v1 fails ten. The first
+fixture's incorrect stream record/count layout and its 118 failures remain
+recorded; only those two fixture layout facts were corrected, with all 194
+expectations retained. Stream input is finite, rows positive and cols2..8;
+GPU output and general cache capacity remain unclaimed.
+
+The source EXE links 3,719 functions and 6,332 data definitions across 274
+actual objects. LLVM18 checks 301 source/header files and 274 units; all
+700 tests pass with three skips. All 357 strict native assertions pass with
+every current normal object and zero replacements/supplements: Turret24,
+LOS42, Opponent38, Image194, Cast28 and Update31. All 314 frozen inputs and
+274 object hashes remain unchanged. Authoritative retail matching and the
+independent complete source/data endpoint pass. Previous ab761af CI passed
+on its exact revision (run37202599482).
+
+Of 3,695 prior full function copies, 3,693 remain byte-identical. The two
+nonexact compiler variants are independently proved: DebReAlloc2 swaps
+commuting stack-to-register loads without altering x87 or named relocations;
+NuRndrParticleGroup changes from 713 to 715 bytes by swapping two initial
+FLDs and adding FXCH, yielding the identical dispatch x87 stack and all 186
+remaining instructions/CFG. This new 715-byte variant is separately reviewed,
+not treated as an automatic recurrence of older 713/717-byte versions.
+Finite valid-memory behavior is verified; unmasked trapping order is not
+claimed. Every prior exact function/data/member match survives.
+
+All 3,493 old shared initializer regions and 1,807 scopes survive. Actual
+normal 3,500 regions/1,814 scopes equal isolated output; all 4,712 prior
+exact physical copies and four members remain unchanged. All 37 new full
+initializer copies equal retail: 21 known copies yield 4,733 exact physical
+copies; 16 unknown copies/118 working bytes receive zero owning-extent,
+allocation or exact credit. Seven shared views add 74 working bytes. Private
+Norm12, enabled4 and seven Image locals stay with their original owners.
+Known scope603/138,161 bytes is unchanged; unknown scope1,211/130,200 bytes
+describes verified working views. The CRC initializer remains unchanged.
+
+The 13:04 UTC checkpoint waits for complete mandatory whole-header lint,
+repository tests, retail comparison and both finite prior-variant proofs.
+The user's three journal edits remain untouched. The next connected wave
+includes source-accepted resource page7/4,698, compiled Trigger6/2,794,
+RTL3/195 and true GameAI6,245/private790, plus texture/material animation.
+Candidate bytes remain separate from production credit. World/resource,
+rendering, gameplay and PC services continue under the whole-project mandate.

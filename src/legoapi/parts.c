@@ -3444,3 +3444,445 @@ void __cdecl UpdatePartEmits(f32 time) {
     for (i = 0; i <= last_switch_change; ++i)
         debris_object_switches[switch_changes[i][0]] = switch_changes[i][1];
 }
+
+#include <float.h>
+typedef struct PART_TERRAIN_STATE_PC {
+    u8 unknown_000[0x200];
+    u32 platform_id;
+    u8 unknown_204[5];
+    i8 impact_material;
+} PART_TERRAIN_STATE_PC;
+STATIC_ASSERT(offsetof(PART_TERRAIN_STATE_PC, platform_id) == 0x200);
+STATIC_ASSERT(offsetof(PART_TERRAIN_STATE_PC, impact_material) == 0x209);
+static NUVEC PartImpactNormalPrivate;
+#define PART_NORM PartImpactNormalPrivate
+extern i32 __cdecl NewRayCast(NUVEC *, NUVEC *, f32, i32);
+extern f32 __cdecl NewRayCastGetEmbedDist(void);
+extern i32 __cdecl NewRayCastHitWallSpline(void);
+i32 __cdecl PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags) {
+    i32 hit = NewRayCast(position, movement, radius, flags);
+    NewRayCastGetImpactNormal(&PART_NORM);
+    return hit;
+}
+
+void __cdecl CastPart(PART_PC *part, f32 time) {
+    PART_TERRAIN_STATE_PC *state = (PART_TERRAIN_STATE_PC *)part;
+    i32 hit;
+    f32 distance, radius;
+    NUVEC movement;
+    NUVEC cast_movement;
+    part->active &= ~4;
+    part->field_f4 = time;
+    movement.x = time * part->velocity.x;
+    movement.y = time * part->velocity.y + time * time * (0.5f * part->gravity);
+    movement.z = time * part->velocity.z;
+    if (part->velocity.y > 0.0f && movement.y <= 0.0f) {
+        time = -part->velocity.y / part->gravity;
+        part->field_f4 = time;
+        movement.x = time * part->velocity.x;
+        movement.y = time * part->velocity.y + time * time * (0.5f * part->gravity);
+        movement.z = time * part->velocity.z;
+    }
+    distance = NuVecMagSqr(&movement);
+    if (distance < 0.001f || distance > 10000.0f || !_finite(distance) || _isnan(distance)) {
+        state->impact_material = -1;
+        return;
+    }
+    if ((part->active & 0x60) == 0x20) {
+        radius = (part->time_step + time) / PARTSCALEUPTIME * part->radius;
+        if (radius > part->radius)
+            radius = part->radius;
+        cast_movement = movement;
+        hit = PartRayCast(&part->position, &cast_movement, radius, 0);
+        if (hit == 0) {
+            state->impact_material = -1;
+            return;
+        }
+        state->impact_material = NewRayCastGetImpactTerrainType();
+        if ((NewRayCastGetTOFI() > 0.0f || PART_NORM.y > 0.5f) &&
+            ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4))
+            goto impact;
+        if (hit > 0x10) {
+            part->position.x -= PART_NORM.x * NewRayCastGetEmbedDist() * 1.05f;
+            part->position.y -= PART_NORM.y * NewRayCastGetEmbedDist() * 1.05f;
+            part->position.z -= PART_NORM.z * NewRayCastGetEmbedDist() * 1.05f;
+        }
+    }
+    part->active &= ~0x60;
+    cast_movement = movement;
+    hit = PartRayCast(&part->position, &cast_movement, part->field_e0, 0);
+    if (hit == 0) {
+        state->impact_material = -1;
+        return;
+    }
+    state->impact_material = NewRayCastGetImpactTerrainType();
+    if ((NewRayCastGetTOFI() > 0.0f || PART_NORM.y > 0.5f) &&
+        ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4))
+        goto impact;
+    if (hit > 0x10) {
+        part->position.x -= PART_NORM.x * NewRayCastGetEmbedDist() * 1.05f;
+        part->position.y -= PART_NORM.y * NewRayCastGetEmbedDist() * 1.05f;
+        part->position.z -= PART_NORM.z * NewRayCastGetEmbedDist() * 1.05f;
+    }
+    {
+        radius = (part->time_step - time) / PARTSCALEUPTIME * part->radius;
+        if (!(radius > 0.0f))
+            return;
+        part->active = (part->active & ~0x60) | 0x40;
+        cast_movement = movement;
+        if (PartRayCast(&part->position, &cast_movement, radius, 0) == 0) {
+            state->impact_material = -1;
+            return;
+        }
+        state->impact_material = NewRayCastGetImpactTerrainType();
+        if ((part->flags & 0x10000000) != 0 && NewRayCastHitWallSpline() == 4)
+            return;
+    }
+impact:
+    part->active |= 4;
+    state->platform_id = TerrainPlatId();
+    part->active = (part->active & ~0x10) | (state->platform_id != (u32)-1 ? 0x10 : 0);
+    part->field_f4 *= NewRayCastGetTOFI();
+    part->impact_normal = PART_NORM;
+    part->impact_position.x = part->position.x + cast_movement.x;
+    part->impact_position.y = part->position.y + cast_movement.y;
+    part->impact_position.z = part->position.z + cast_movement.z;
+}
+
+STATIC_ASSERT(offsetof(PART_PC, field_e0) == 0xe0);
+STATIC_ASSERT(offsetof(PART_PC, gravity) == 0xe8);
+STATIC_ASSERT(offsetof(PART_PC, field_f4) == 0xf4);
+STATIC_ASSERT(offsetof(PART_PC, time_step) == 0xf8);
+
+static i32 PartRaycastsEnabledPrivate = 1;
+extern i16 PartPlatformImpactListPc[4];
+extern f32 PartCollisionIntervalPc, PartStopSpeedSquaredPc;
+extern void __cdecl DebrisStatusAlwaysOff(i32 *handle);
+extern i32 __cdecl AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z, i16 y,
+                                                      NUMTX *orientation, f32 scale);
+
+static void PartRuntimeMatrixCopyPrivate(NUMTX *destination, NUMTX *source) {
+    destination->m00 = source->m00;
+    destination->m01 = source->m01;
+    destination->m02 = source->m02;
+    destination->m03 = source->m03;
+    destination->m10 = source->m10;
+    destination->m11 = source->m11;
+    destination->m12 = source->m12;
+    destination->m13 = source->m13;
+    destination->m20 = source->m20;
+    destination->m21 = source->m21;
+    destination->m22 = source->m22;
+    destination->m23 = source->m23;
+    destination->m30 = source->m30;
+    destination->m31 = source->m31;
+    destination->m32 = source->m32;
+    destination->m33 = source->m33;
+}
+static void PartRuntimeDirectionalLightsPrivate(NUVEC *direction0, NUVEC *colour0, NUVEC *direction1, NUVEC *colour1,
+                                                NUVEC *direction2, NUVEC *colour2) {
+    PCGlobalLightingState.direction[0] = *direction0;
+    PCGlobalLightingState.direction[1] = *direction1;
+    PCGlobalLightingState.direction[2] = *direction2;
+    PCGlobalLightingState.intensity[0] = *colour0;
+    PCGlobalLightingState.intensity[1] = *colour1;
+    PCGlobalLightingState.intensity[2] = *colour2;
+    NuRndrSetDirectionalLightsPS(direction0, colour0, direction1, colour1, direction2, colour2);
+}
+void __cdecl DrawParts(i32 keep_offscreen) {
+    PART_PC *part = Part;
+    i32 i, drawn;
+    NUMTX scaled, *matrix;
+    NUVEC scale;
+    for (i = 0; i < MAXPARTS; ++i, ++part) {
+        if ((part->active & 1) == 0 || (part->flags & 0x1000) != 0)
+            continue;
+        if (part->draw_fn != NULL && part->draw_fn(part) == 0)
+            continue;
+        if ((part->active & 8) != 0) {
+            PartRuntimeDirectionalLightsPrivate(&part->lighting[3], &part->lighting[0], &part->lighting[4],
+                                                &part->lighting[1], &part->lighting[5], &part->lighting[2]);
+            PCGlobalLightingState.ambient = part->lighting[6];
+            NuRndrSetAmbientLightPS(&part->lighting[6]);
+        } else if ((part->active & 0x2000) != 0) {
+            PCGlobalLightingState.ambient = part->lighting[6];
+            NuRndrSetAmbientLightPS(&part->lighting[6]);
+        }
+        part->active &= ~0x200;
+        matrix = &part->transform;
+        if (part->field_214 != 1.0f) {
+            PartRuntimeMatrixCopyPrivate(&scaled, matrix);
+            scale.x = part->field_214;
+            scale.y = part->field_214;
+            scale.z = part->field_214;
+            NuMtxPreScale(&scaled, &scale);
+            matrix = &scaled;
+        }
+        drawn = 0;
+        if (part->source_special != NULL && NuSpecialDrawAt(&part->special, matrix) != 0) {
+            part->active |= 0x600;
+            drawn = 1;
+        }
+        if ((drawn | keep_offscreen) == 0 && ((part->flags & 0x10) == 0 || (part->active & 0x100) != 0))
+            KillPart(part, 0);
+    }
+}
+
+void UpdateParts(f32 time) {
+    i32 key, i, axis, angle;
+    PART_PC *parts, *part;
+    PART_TERRAIN_STATE_PC *state;
+    NUVEC direction;
+    NUMTX impact_orientation;
+    NUMTX movement_orientation;
+    NUMTX emitter_orientation;
+    partglobaltime += time;
+    if (partglobaltime > 900.0f)
+        PartTimeSlip();
+    PartCleanupTypes();
+    part_platimpactcnt = 0;
+    UpdatePartEmits(time);
+    parts = Part;
+    for (i = 0; i < MAXPARTS; ++i) {
+        part = &parts[i];
+        state = (PART_TERRAIN_STATE_PC *)part;
+        if ((part->active & 1) == 0)
+            continue;
+        part->previous_transform.m00 = part->transform.m00;
+        part->previous_transform.m01 = part->transform.m01;
+        part->previous_transform.m02 = part->transform.m02;
+        part->previous_transform.m03 = part->transform.m03;
+        part->previous_transform.m10 = part->transform.m10;
+        part->previous_transform.m11 = part->transform.m11;
+        part->previous_transform.m12 = part->transform.m12;
+        part->previous_transform.m13 = part->transform.m13;
+        part->previous_transform.m20 = part->transform.m20;
+        part->previous_transform.m21 = part->transform.m21;
+        part->previous_transform.m22 = part->transform.m22;
+        part->previous_transform.m23 = part->transform.m23;
+        part->previous_transform.m30 = part->transform.m30;
+        part->previous_transform.m31 = part->transform.m31;
+        part->previous_transform.m32 = part->transform.m32;
+        part->previous_transform.m33 = part->transform.m33;
+        part->scale_time += time;
+        if ((part->active & 2) == 0) {
+            f32 movement_time = time;
+            if ((part->flags & 0x400) == 0) {
+                if (time >= part->field_f4) {
+                    part->active = (part->active & ~0x60) | (part->radius > part->field_e0 ? 0x20 : 0);
+                    if ((part->active & 4) != 0) {
+                        if ((part->flags & 0x80000) != 0 && (part->active & 0x10) != 0 && part_platimpactcnt < 4) {
+                            PartPlatformImpactListPc[part_platimpactcnt++] = state->platform_id;
+                        }
+                        if ((part->flags & 0x100) != 0) {
+                            part->active |= 2;
+                            if (part->stop_fn != NULL)
+                                part->stop_fn(part);
+                            if ((part->flags & 1) != 0 || (part->active & 0x10) != 0)
+                                KillPart(part, 0);
+                        } else {
+                            movement_time -= part->field_f4;
+                            part->position = part->impact_position;
+                            FullReflect(&part->impact_normal, &part->velocity, &part->velocity);
+                            if ((part->flags & 0x80) != 0)
+                                NewPartRotation(part);
+                            if ((part->flags & 0x100000) != 0)
+                                NewPartOrderedRotation(part);
+                            part->velocity.x *= part->field_ec;
+                            part->velocity.z *= part->field_ec;
+                            if (part->impact_normal.y > 0.5f) {
+                                part->velocity.y *= part->field_ec;
+                                if (part->velocity.x * part->velocity.x + part->velocity.y * part->velocity.y +
+                                        part->velocity.z * part->velocity.z <
+                                    PartStopSpeedSquaredPc) {
+                                    part->active |= 2;
+                                    if (part->stop_fn != NULL)
+                                        part->stop_fn(part);
+                                    if ((part->flags & 1) != 0 || (part->active & 0x10) != 0 ||
+                                        (part->active & 0x100) != 0)
+                                        KillPart(part, 0);
+                                } else if ((part->active & 0x100) != 0) {
+                                    KillPart(part, 0);
+                                }
+                            }
+                        }
+                        if (part->effect_id_1f0 != -1) {
+                            key = -1;
+                            PartRuntimeMatrixCopyPrivate(&impact_orientation, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
+                            NuMtxAlignY(&impact_orientation, &part->impact_normal);
+                            AddScaledFiniteShotDebrisEffect(&key, part->effect_id_1f0, &part->impact_position, NULL,
+                                                            NULL, 1, part->effect_scale);
+                            DebrisOrientationMtx(key, &impact_orientation);
+                        }
+                        if (part->effect_id_1f8 != -1)
+                            AddFiniteShotPART(part->effect_id_1f8, &part->impact_position, 1);
+                        if (part->impact_fn != NULL)
+                            part->impact_fn(part);
+                    }
+                    if (PartRaycastsEnabledPrivate != 0)
+                        CastPart(part, PartCollisionIntervalPc);
+                    if ((part->active & 4) != 0 && movement_time >= part->field_f4)
+                        movement_time = 0.0f;
+                }
+                part->field_f4 -= movement_time;
+            }
+            if (movement_time > 0.0f) {
+                if (part->move_fn != NULL) {
+                    part->move_fn(part, movement_time);
+                } else {
+                    part->position.x += part->velocity.x * movement_time;
+                    part->position.y += part->velocity.y * movement_time;
+                    part->position.z += part->velocity.z * movement_time;
+                    part->velocity.y += part->gravity * movement_time;
+                }
+            }
+            if ((part->active & 0x100) == 0 && part->field_f0 != 2000000.0f && part->position.y < part->field_f0)
+                part->active |= 0x100;
+            part->collision_min.x = part->position.x - part->radius;
+            part->collision_max.x = part->position.x + part->radius;
+            part->collision_min.y = part->position.y - part->radius;
+            part->collision_max.y = part->position.y + part->radius;
+            part->collision_min.z = part->position.z - part->radius;
+            part->collision_max.z = part->position.z + part->radius;
+            if ((part->active & 0x60) == 0x20) {
+                part->time_step += time;
+                part->field_e0 = part->time_step / PARTSCALEUPTIME * part->radius;
+                if (part->field_e0 > part->radius) {
+                    part->field_e0 = part->radius;
+                    part->active &= ~0x60;
+                }
+            } else if ((part->active & 0x60) == 0x40) {
+                part->time_step -= time;
+                if (part->time_step <= 0.0f)
+                    KillPart(part, 0);
+                else
+                    part->field_e0 = part->time_step / PARTSCALEUPTIME * part->radius;
+            }
+            if ((part->flags & 0x80) != 0) {
+                angle = (i32)((f64)part->field_124[3] * time);
+                switch (part->rotation_axes[0]) {
+                    case 1:
+                        NuMtxPreRotateX(&part->transform, angle);
+                        break;
+                    case 2:
+                        NuMtxPreRotateY(&part->transform, angle);
+                        break;
+                    case 3:
+                        NuMtxPreRotateZ(&part->transform, angle);
+                        break;
+                }
+                angle = (i32)((f64)part->field_124[4] * time);
+                switch (part->rotation_axes[1]) {
+                    case 1:
+                        NuMtxPreRotateX(&part->transform, angle);
+                        break;
+                    case 2:
+                        NuMtxPreRotateY(&part->transform, angle);
+                        break;
+                    case 3:
+                        NuMtxPreRotateZ(&part->transform, angle);
+                        break;
+                }
+            }
+            if ((part->flags & 0x100000) != 0) {
+                if (part->field_124[0] != 0)
+                    NuMtxPreRotateX(&part->transform, (i32)((f64)part->field_124[0] * time));
+                if (part->field_124[1] != 0)
+                    NuMtxPreRotateY(&part->transform, (i32)((f64)part->field_124[1] * time));
+                if (part->field_124[2] != 0)
+                    NuMtxPreRotateZ(&part->transform, (i32)((f64)part->field_124[2] * time));
+            }
+            if ((part->flags & 0x800) != 0) {
+                direction.x = -part->velocity.x;
+                direction.y = -part->velocity.y;
+                direction.z = -part->velocity.z;
+                movement_orientation = ANI3_EVAL_IDENTITY_MATRIX;
+                NuMtxLookAtZ(&movement_orientation, &direction);
+                memmove(&part->transform, &movement_orientation, 0x30);
+            }
+        }
+        if ((part->active & 1) != 0) {
+            if ((part->flags & 2) != 0 && part->collision_fn != NULL)
+                part->collision_fn(part);
+            if ((part->active & 1) != 0) {
+                if (part->update_fn != NULL)
+                    part->update_fn(part);
+                if (part->time_remaining > 0.0f) {
+                    part->time_remaining -= time;
+                    if (part->time_remaining <= 0.0f)
+                        KillPart(part, 0);
+                }
+            }
+        }
+        if ((part->flags & 0x20000) != 0 && part->debris_handle != NULL) {
+            emitter_orientation = ANI3_EVAL_IDENTITY_MATRIX;
+            direction = part->velocity;
+            direction.x = -direction.x;
+            direction.y = -direction.y;
+            direction.z = -direction.z;
+            NuMtxLookAtY(&emitter_orientation, &direction);
+            DebrisOrientationMtx(*part->debris_handle, &emitter_orientation);
+            DebrisEmitterPos(*part->debris_handle, part->position.x, part->position.y, part->position.z);
+            if (((part->flags & 0x200000) != 0 && (part->active & 2) != 0) || (part->flags & 0x1000) != 0)
+                DebrisStatusAlwaysOff(part->debris_handle);
+        }
+        if (time != 0.0f) {
+            if ((part->flags & 0x40000) != 0 && part->effect_id_1e0 != -1 &&
+                !((part->flags & 0x200000) != 0 && (part->active & 2) != 0) && (part->flags & 0x1000) == 0)
+                AddScaledVariableShotDebrisEffect1(part->effect_id_1e0, &part->position, (i32)(part->field_1e8), time,
+                                                   0, 0, NULL, part->effect_scale);
+            if ((part->flags & 0x40000) != 0 && part->effect_id_1e4 != -1 &&
+                !((part->flags & 0x200000) != 0 && (part->active & 2) != 0) && (part->flags & 0x1000) == 0)
+                AddScaledVariableShotDebrisEffect1(part->effect_id_1e4, &part->position, (i32)(part->field_1ec), time,
+                                                   0, 0, NULL, part->effect_scale);
+        }
+        if (part->lighting_handle != NULL) {
+            if ((part->flags & 0x1000) != 0) {
+                direction.x = direction.y = direction.z = 10000.0f;
+                rtlDynamicSetPos(*part->lighting_handle, &direction);
+            } else {
+                rtlDynamicSetPos(*part->lighting_handle, &part->position);
+            }
+        }
+        if (part->callback_1ac != NULL)
+            part->callback_1ac(part);
+        part->field_208 = 0;
+        if ((part->active & 1) == 0) {
+            KillPart(part, 0);
+            memset(part, 0, sizeof(PART_PC));
+        }
+    }
+}
+
+i32 __cdecl AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z_rotation,
+                                               i16 y_rotation, NUMTX *orientation, f32 scale) {
+    i32 scaled = CreateScaledEffect(effect, scale);
+    if (scaled != -1)
+        AddVariableShotDebrisEffectTimed1(scaled, position, count, time, z_rotation, y_rotation, orientation);
+    return scaled;
+}
+
+void __cdecl NuPartEnableRayCasts(i32 enabled) {
+    PartRaycastsEnabledPrivate = enabled;
+}
+
+STATIC_ASSERT(offsetof(PART_PC, field_ec) == 0xec);
+STATIC_ASSERT(offsetof(PART_PC, field_f0) == 0xf0);
+STATIC_ASSERT(offsetof(PART_PC, field_f4) == 0xf4);
+STATIC_ASSERT(offsetof(PART_PC, time_step) == 0xf8);
+STATIC_ASSERT(offsetof(PART_PC, scale_time) == 0xfc);
+STATIC_ASSERT(offsetof(PART_PC, field_124) == 0x124);
+STATIC_ASSERT(offsetof(PART_PC, callback_1ac) == 0x1ac);
+STATIC_ASSERT(offsetof(PART_PC, impact_fn) == 0x1b8);
+STATIC_ASSERT(offsetof(PART_PC, collision_fn) == 0x1bc);
+STATIC_ASSERT(offsetof(PART_PC, update_fn) == 0x1c4);
+STATIC_ASSERT(offsetof(PART_PC, stop_fn) == 0x1c8);
+STATIC_ASSERT(offsetof(PART_PC, lighting_handle) == 0x1dc);
+STATIC_ASSERT(offsetof(PART_PC, effect_id_1e0) == 0x1e0);
+STATIC_ASSERT(offsetof(PART_PC, effect_id_1e4) == 0x1e4);
+STATIC_ASSERT(offsetof(PART_PC, field_1e8) == 0x1e8);
+STATIC_ASSERT(offsetof(PART_PC, field_1ec) == 0x1ec);
+STATIC_ASSERT(offsetof(PART_PC, effect_id_1f0) == 0x1f0);
+STATIC_ASSERT(offsetof(PART_PC, effect_id_1f8) == 0x1f8);
+STATIC_ASSERT(offsetof(PART_PC, field_208) == 0x208);
+STATIC_ASSERT(offsetof(PART_PC, field_214) == 0x214);

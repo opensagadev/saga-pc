@@ -576,3 +576,233 @@ void __cdecl NuRndrSphereEx(NUVEC *centre, f32 radius, i32 colour, f32 vertical_
 
 #undef PORTAL_DEBUG_SIN
 #undef PORTAL_DEBUG_COS
+
+extern i32 NuPrimCoordSystemStack[];
+/* Native EAX-colour calls require the existing genuine private colour/caller owner. */
+void __cdecl RenderPostClearScreenPc(void) {
+    i32 restore_mode;
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(1);
+    NuPrim2DBegin(13, 7, NULL);
+    NuRndrPrimSetColourPrivate((i32)0x80000000);
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->u = 0.0f;
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->v = 0.0f;
+    NuPrim2DAddXYZ(-1.0f, -1.0f, 0.0f);
+    NuRndrPrimSetColourPrivate((i32)0x80000000);
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->u = 1.0f;
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->v = 0.0f;
+    NuPrim2DAddXYZ(1.0f, -1.0f, 0.0f);
+    NuRndrPrimSetColourPrivate((i32)0x80000000);
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->u = 0.0f;
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->v = 1.0f;
+    NuPrim2DAddXYZ(-1.0f, 1.0f, 0.0f);
+    NuRndrPrimSetColourPrivate((i32)0x80000000);
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->u = 1.0f;
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->v = 1.0f;
+    NuPrim2DAddXYZ(1.0f, 1.0f, 0.0f);
+    NuPrim2DEnd();
+    restore_mode = NuPrimCoordSystemStack[NuPrimCSPos - 1];
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(restore_mode);
+}
+
+STATIC_ASSERT(sizeof(RENDER_POST_VIEWPORT_PREFIX_PC) == 0x30);
+extern RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefixPc;
+void __cdecl RenderPostViewportResetPc(void);
+u8 __cdecl RenderPostClampBytePc(i32 minimum_unused, i32 maximum_unused, f32 value);
+STATIC_ASSERT(offsetof(NURNDRLIBSCENE, render_post_alpha_cache) == 8);
+STATIC_ASSERT(sizeof(((NURNDRLIBSCENE *)0)->render_post_alpha_cache) == 8);
+#ifndef RENDER_POST_ALPHA_CACHE_PC
+#define RENDER_POST_ALPHA_CACHE_PC (sceneParameters[16].render_post_alpha_cache)
+#endif
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define IMAGE_TAN_HALF_FOV(v)                                                                                          \
+    (NuTrigTable[(i32)((v) * 10430.3779296875f) >> 1 & 0x7fff] /                                                       \
+     NuTrigTable[(16384 - (i32)((v) * -10430.3779296875f)) >> 1 & 0x7fff])
+#define POST_IMAGE_UV(U, V)                                                                                            \
+    do {                                                                                                               \
+        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->u = (U);                                      \
+        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->v = (V);                                      \
+    } while (0)
+void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
+                    RENDER_POST_BLOOM_READER_PC *parameters) {
+    f32 inv_col = 1.0f / (cols - 1);
+    f32 inv_row = 1.0f / (rows - 1);
+    f32 x0 = 0.0f * inv_row * 2.0f - 1.0f;
+    f32 y_start = 0.0f * inv_col * 2.0f - 1.0f;
+    f32 x1 = inv_row * 2.0f - 1.0f;
+    f32 step_x = inv_row * 2.0f;
+    f32 step_y = inv_col * 2.0f;
+    f32 near_scale = parameters->near_scale * 128.0f;
+    f32 far_scale = parameters->far_scale * 128.0f;
+    f32 near_angle = parameters->near_angle / 180.0f;
+    f32 far_angle = parameters->far_angle / 180.0f;
+    f32 angle_delta = far_angle - near_angle;
+    f32 scale_delta = far_scale - near_scale;
+    RENDER_POST_VIEWPORT_PREFIX_PC saved_prefix = RenderPostViewportPrefixPc;
+    PC_SPECIAL_PROJECTION_ADJUST saved_adjust = PCSpecialProjectionAdjust;
+    NUCAMERA camera;
+    static f32 pixelOffsetX, pixelOffsetY;
+    static i32 first = 1;
+    static f32 camFov, adjacent;
+    static i32 row, col;
+    RenderPostViewportResetPc();
+
+    NuCameraGet(&camera);
+    if (parameters->clear_screen != 0)
+        RenderPostClearScreenPc();
+    if (parameters->directional)
+        NuVecNorm(&parameters->direction, &parameters->direction);
+
+    if (use_pixel_offsets) {
+        pixelOffsetX = 0.5f / (f32)NuTextureDimensions[material->texture_id - 1]->width;
+        pixelOffsetY = 0.5f / (f32)NuTextureDimensions[material->texture_id - 1]->height;
+    }
+
+    if (first) {
+        f32 half_fov = camera.fov * 0.5f;
+        camFov = camera.fov;
+        adjacent = 1.0f / IMAGE_TAN_HALF_FOV(half_fov);
+        first = 0;
+    }
+    if (camera.fov != camFov) {
+        f32 half_fov = camera.fov * 0.5f;
+        adjacent = 1.0f / IMAGE_TAN_HALF_FOV(half_fov);
+        camera.fov = camFov;
+    }
+    camera.mtx.m30 = 0.0f;
+    camera.mtx.m31 = 0.0f;
+    camera.mtx.m32 = 0.0f;
+    camera.mtx.m33 = 1.0f;
+
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(1);
+    for (row = 0; row < rows - 1; ++row) {
+        const i32 strip_row = row;
+        f32 direction_x;
+        f32 y0 = y_start;
+        NuPrim2DBegin(13, 7, material);
+        direction_x = (1.0f + x0) - 1.0f;
+        for (col = 0; col < cols; ++col) {
+            NUVEC direction;
+            u32 colour;
+            i32 alpha;
+            f32 brightness;
+            const f32 direction_y = ((1.0f + y0) - 1.0f) * -camera.aspect;
+            direction.x = direction_x;
+            direction.y = direction_y;
+            direction.z = adjacent;
+            NuVecNorm(&direction, &direction);
+            NuVecMtxTransform(&direction, &direction, &camera.mtx);
+            NuVecNorm(&direction, &direction);
+
+            if (strip_row > 0) {
+                colour = ((u32)RENDER_POST_ALPHA_CACHE_PC[col] << 24) | 0x808080;
+            } else {
+                brightness = direction.y * 0.5f + 0.5f;
+                if (brightness <= near_angle)
+                    brightness = near_scale * parameters->intensity;
+                else if (brightness >= far_angle)
+                    brightness = far_scale * parameters->intensity;
+                else
+                    brightness =
+                        ((brightness - near_angle) * scale_delta / angle_delta + near_scale) * parameters->intensity;
+                if (parameters->directional) {
+                    f32 angle = (i16)(0x4000 - RenderPostASinPc(NuVecDot(&parameters->direction, &direction))) *
+                                0.0054931640625f;
+                    if (angle < parameters->direction_near_angle) {
+                        brightness += 128.0f * parameters->direction_far_scale;
+                    } else if (!(angle > parameters->direction_far_angle)) {
+                        if (parameters->direction_bias != 1.0f) {
+                            brightness +=
+                                128.0f * ((1.0 - (f64)RenderPostPowPc((angle - parameters->direction_near_angle) /
+                                                                          (parameters->direction_far_angle -
+                                                                           parameters->direction_near_angle),
+                                                                      parameters->direction_bias)) *
+                                              (parameters->direction_far_scale - parameters->direction_near_scale) +
+                                          parameters->direction_near_scale);
+                        } else {
+                            brightness +=
+                                128.0f *
+                                ((1.0 - ((f64)angle - parameters->direction_near_angle) /
+                                            ((f64)parameters->direction_far_angle - parameters->direction_near_angle)) *
+                                     (parameters->direction_far_scale - parameters->direction_near_scale) +
+                                 parameters->direction_near_scale);
+                        }
+                    }
+                }
+                alpha = RenderPostClampBytePc(0, 255, brightness);
+                colour = ((u32)alpha << 24) | 0x808080;
+            }
+            NuRndrPrimSetColourPrivate(colour);
+            POST_IMAGE_UV((f32)row * inv_row + pixelOffsetX, ((f32)col * inv_col + pixelOffsetY) * 0.9f);
+            NuPrim2DAddXYZ(x0, y0, 0.0f);
+
+            direction.x = (1.0f + x1) - 1.0f;
+            direction.y = direction_y;
+            direction.z = adjacent;
+            NuVecNorm(&direction, &direction);
+            NuVecMtxTransform(&direction, &direction, &camera.mtx);
+            NuVecNorm(&direction, &direction);
+            brightness = direction.y * 0.5f + 0.5f;
+            if (brightness <= near_angle)
+                brightness = near_scale * parameters->intensity;
+            else if (brightness >= far_angle)
+                brightness = far_scale * parameters->intensity;
+            else
+                brightness =
+                    ((brightness - near_angle) * scale_delta / angle_delta + near_scale) * parameters->intensity;
+            if (parameters->directional) {
+                f32 angle =
+                    (i16)(0x4000 - RenderPostASinPc(NuVecDot(&parameters->direction, &direction))) * 0.0054931640625f;
+                if (angle < parameters->direction_near_angle) {
+                    brightness += 128.0f * parameters->direction_far_scale;
+                } else if (!(angle > parameters->direction_far_angle)) {
+                    if (parameters->direction_bias != 1.0f) {
+                        brightness +=
+                            128.0f * ((1.0 - (f64)RenderPostPowPc((angle - parameters->direction_near_angle) /
+                                                                      (parameters->direction_far_angle -
+                                                                       parameters->direction_near_angle),
+                                                                  parameters->direction_bias)) *
+                                          (parameters->direction_far_scale - parameters->direction_near_scale) +
+                                      parameters->direction_near_scale);
+                    } else {
+                        brightness +=
+                            128.0f *
+                            ((1.0 - ((f64)angle - parameters->direction_near_angle) /
+                                        ((f64)parameters->direction_far_angle - parameters->direction_near_angle)) *
+                                 (parameters->direction_far_scale - parameters->direction_near_scale) +
+                             parameters->direction_near_scale);
+                    }
+                }
+            }
+            alpha = (u8)MIN(255.0f, MAX(0.0f, brightness));
+            RENDER_POST_ALPHA_CACHE_PC[col] = (u8)alpha;
+            NuRndrPrimSetColourPrivate(((u32)alpha << 24) | 0x808080);
+            POST_IMAGE_UV((f32)(row + 1) * inv_row + pixelOffsetX, ((f32)col * inv_col + pixelOffsetY) * 0.9f);
+            NuPrim2DAddXYZ(x1, y0, 0.0f);
+            y0 += step_y;
+        }
+        NuPrim2DEnd();
+        x0 += step_x;
+        x1 += step_x;
+    }
+    {
+        i32 restore_mode = NuPrimCoordSystemStack[NuPrimCSPos - 1];
+        --NuPrimCSPos;
+        NuPrimSetCoordinateSystem(restore_mode);
+    }
+    RenderPostViewportPrefixPc = saved_prefix;
+    PCSpecialProjectionAdjust = saved_adjust;
+}
+
+u8 __cdecl RenderPostClampBytePc(i32 minimum_unused, i32 maximum_unused, f32 value) {
+    f32 nonnegative;
+    f32 clamped;
+    (void)minimum_unused;
+    (void)maximum_unused;
+    nonnegative = 0.0f > value ? 0.0f : value;
+    clamped = 255.0f < nonnegative ? 255.0f : nonnegative;
+    return (u8)clamped;
+}

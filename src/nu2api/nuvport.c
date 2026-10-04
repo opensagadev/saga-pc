@@ -108,3 +108,49 @@ submit:
         NuCameraVPortProjectionScaleY = NuCameraScissorProjectionScaleY;
     }
 }
+
+STATIC_ASSERT(sizeof(RENDER_POST_VIEWPORT_PREFIX_PC) == 0x30);
+STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_x) == 0);
+STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_y) == 4);
+STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_right) == 8);
+STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_bottom) == 0xc);
+STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_x) == 0x10);
+STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_y) == 0x14);
+STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_right) == 0x18);
+STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_bottom) == 0x1c);
+STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, width_scale) == 0x20);
+STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, height_scale) == 0x24);
+STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, x_offset) == 0x28);
+STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, y_offset) == 0x2c);
+extern RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefixPc;
+void __cdecl RenderPostViewportSetPc(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x,
+                                     f32 dest_y, f32 dest_right, f32 dest_bottom);
+void __cdecl RenderPostViewportResetPc(void);
+
+void __cdecl RenderPostViewportSetPc(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x,
+                                     f32 dest_y, f32 dest_right, f32 dest_bottom) {
+    f32 width = (f32)PS2_VREZ_W;
+    f32 height = (f32)PS2_VREZ_H;
+    RenderPostViewportPrefixPc.source_x = source_x;
+    RenderPostViewportPrefixPc.source_y = source_y;
+    RenderPostViewportPrefixPc.source_right = source_right;
+    RenderPostViewportPrefixPc.source_bottom = source_bottom;
+    RenderPostViewportPrefixPc.dest_x = dest_x;
+    RenderPostViewportPrefixPc.dest_y = dest_y;
+    RenderPostViewportPrefixPc.dest_right = dest_right;
+    RenderPostViewportPrefixPc.dest_bottom = dest_bottom;
+    RenderPostViewportPrefixPc.x_offset = dest_x;
+    RenderPostViewportPrefixPc.y_offset = dest_y;
+    RenderPostViewportPrefixPc.width_scale = (dest_right - dest_x) / width;
+    RenderPostViewportPrefixPc.height_scale = (dest_bottom - dest_y) / height;
+    PCSpecialProjectionAdjust.x_scale = width / (source_right - source_x);
+    PCSpecialProjectionAdjust.y_scale = height / (source_bottom - source_y);
+    PCSpecialProjectionAdjust.x_offset = ((width - source_right) - source_x) * 2.0f / width;
+    PCSpecialProjectionAdjust.y_offset = ((height - source_bottom) - source_y) * -2.0f / height;
+}
+
+void __cdecl RenderPostViewportResetPc(void) {
+    f32 width = (f32)PS2_VREZ_W;
+    f32 height = (f32)PS2_VREZ_H;
+    RenderPostViewportSetPc(0.0f, 0.0f, width, height, 0.0f, 0.0f, width, height);
+}
