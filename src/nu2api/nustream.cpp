@@ -1,4 +1,53 @@
 #include "saga.h"
+#include "../audio/vorbis/vorbis/vorbisfile.h"
+struct PC_OGG_CACHE_RECORD_PC {
+    char path[0x104];
+    u8 *data;
+    i32 bytes;
+    u32 last_used;
+    i32 references;
+};
+STATIC_ASSERT(sizeof(PC_OGG_CACHE_RECORD_PC) == 0x114);
+STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, data) == 0x104);
+STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, bytes) == 0x108);
+STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, last_used) == 0x10c);
+STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, references) == 0x110);
+#pragma pack(push, 4)
+class OggReader : public WavReader {
+  public:
+    OggReader(void);
+    virtual ~OggReader(void);
+    virtual HRESULT Open(NUDATHDR *, char *, WAVEFORMATEX *);
+    virtual HRESULT Unknown08Pc(u32, u32);
+    virtual HRESULT Close(void);
+    virtual WAVEFORMATEX *GetFormat(void);
+    virtual i32 GetSize(void);
+    virtual HRESULT Reset(void);
+    virtual HRESULT Read(void *, u32, u32 *);
+    virtual i32 SeekTime(f32);
+    static u32 __cdecl ReadCallbackPc(void *, u32, u32, void *);
+    static i32 __cdecl SeekCallbackPc(void *, i64, i32);
+    static i32 __cdecl CloseCallbackPc(void *);
+    // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
+    static long __cdecl TellCallbackPc(void *);
+    u8 compressed;
+    u8 unknown_041[7];
+    OggVorbis_File vorbis_state;
+    PC_OGG_CACHE_RECORD_PC *cache;
+    i32 position;
+    WAVEFORMATEX compressed_format;
+    u8 unknown_332[6];
+};
+#pragma pack(pop)
+STATIC_ASSERT(sizeof(OggReader) == 0x338);
+STATIC_ASSERT(offsetof(OggReader, compressed) == 0x40);
+STATIC_ASSERT(offsetof(OggReader, vorbis_state) == 0x48);
+STATIC_ASSERT(offsetof(OggReader, cache) == 0x318);
+STATIC_ASSERT(offsetof(OggReader, position) == 0x31c);
+STATIC_ASSERT(offsetof(OggReader, compressed_format) == 0x320);
+STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, path) == 0);
+STATIC_ASSERT(sizeof(OggVorbis_File) == 0x2d0);
+STATIC_ASSERT(offsetof(OggVorbis_File, callbacks) == 0x2c0);
 
 extern "C" void __cdecl NuSound3GetStreamInfo(i32 stream_index, void *info) {
     (void)stream_index;
@@ -556,4 +605,110 @@ DWORD SoundQueue::Run(void) {
 }
 extern "C" DWORD __stdcall PCSoundStreamWorkerPc(void *context) {
     return ((SoundQueue *)context)->Run();
+}
+
+SoundQueue::SoundQueue(IDirectSound8 *factory_value, i32 mode) {
+    serial = PCSoundStreamSerialPc++;
+    factory = factory_value;
+    active = 0;
+    format_mode = mode;
+    memset(&wave_format, 0, sizeof(wave_format));
+    memset(pending_path, 0, sizeof(pending_path));
+    memset(current_path, 0, sizeof(current_path));
+    wave_format.wFormatTag = 1;
+    switch (mode) {
+        case 1:
+            wave_format.nChannels = 1;
+            wave_format.nSamplesPerSec = 22050;
+            wave_format.nBlockAlign = 1;
+            wave_format.wBitsPerSample = 8;
+            buffer_seconds = 4;
+            break;
+        case 2:
+            wave_format.nChannels = 1;
+            wave_format.nSamplesPerSec = 22050;
+            wave_format.nBlockAlign = 2;
+            wave_format.wBitsPerSample = 16;
+            buffer_seconds = 3;
+            break;
+        case 3:
+            wave_format.nChannels = 2;
+            wave_format.nSamplesPerSec = 22050;
+            wave_format.nBlockAlign = 2;
+            wave_format.wBitsPerSample = 8;
+            buffer_seconds = 3;
+            break;
+        case 4:
+            wave_format.nChannels = 2;
+            wave_format.nSamplesPerSec = 22050;
+            wave_format.nBlockAlign = 4;
+            wave_format.wBitsPerSample = 16;
+            buffer_seconds = 3;
+            break;
+        case 5:
+            wave_format.nChannels = 1;
+            wave_format.nSamplesPerSec = 44100;
+            wave_format.nBlockAlign = 2;
+            wave_format.wBitsPerSample = 16;
+            buffer_seconds = 3;
+            break;
+        case 6:
+            wave_format.nChannels = 2;
+            wave_format.nSamplesPerSec = 44100;
+            wave_format.nBlockAlign = 4;
+            wave_format.wBitsPerSample = 16;
+            buffer_seconds = 4;
+            break;
+        case 7:
+            wave_format.nChannels = 1;
+            wave_format.nSamplesPerSec = 48000;
+            wave_format.nBlockAlign = 2;
+            wave_format.wBitsPerSample = 16;
+            buffer_seconds = 3;
+            break;
+        case 8:
+            wave_format.nChannels = 2;
+            wave_format.nSamplesPerSec = 48000;
+            wave_format.nBlockAlign = 4;
+            wave_format.wBitsPerSample = 16;
+            buffer_seconds = 3;
+            break;
+    }
+    wave_format.nAvgBytesPerSec = wave_format.nBlockAlign * wave_format.nSamplesPerSec;
+    memset(&descriptor, 0, sizeof(descriptor));
+    descriptor.size = sizeof(descriptor);
+    descriptor.flags = 0x10080;
+    descriptor.bytes = buffer_seconds * wave_format.nAvgBytesPerSec;
+    descriptor.format = &wave_format;
+    IDirectSoundBuffer *temporary = NULL;
+    volume_sink = NULL;
+    timer_callback = (LPTIMECALLBACK)INVALID_HANDLE_VALUE;
+    event = INVALID_HANDLE_VALUE;
+    count = 0;
+    read_index = 0;
+    write_index = 0;
+    unknown_0004 = -1;
+    loop_flags = 0;
+    unknown_03f4 = 0;
+    requested_volume = 0;
+    applied_volume = 1;
+    decoder = (PC_AUDIO_DECODER_VIEW *)new OggReader;
+    stream_state = 0;
+    InitializeCriticalSection(&lock);
+    InitializeCriticalSection(&operation_lock);
+    InitializeCriticalSection(&volume_lock);
+    if (SUCCEEDED(factory_value->vtable->create_sound_buffer(factory_value, &descriptor, &temporary, NULL))) {
+        if (SUCCEEDED(temporary->vtable->query_interface(temporary, PCSoundBuffer8IIDPc, (void **)&volume_sink))) {
+            timer_callback = (LPTIMECALLBACK)CreateEvent(NULL, FALSE, FALSE, NULL);
+            event = CreateEvent(NULL, TRUE, FALSE, NULL);
+            if ((HANDLE)timer_callback != INVALID_HANDLE_VALUE && event != INVALID_HANDLE_VALUE) {
+                thread = CreateThread(NULL, 0, PCSoundStreamWorkerPc, this, CREATE_SUSPENDED, &thread_id);
+                if (thread != NULL) {
+                    ResumeThread(thread);
+                    active = 1;
+                }
+            }
+        }
+        temporary->vtable->release(temporary);
+    }
 }

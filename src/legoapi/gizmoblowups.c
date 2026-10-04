@@ -1252,3 +1252,194 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
     }
     return 1;
 }
+
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, platform_id) == 0x102);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, burst_platform_id) == 0x104);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, target_scale) == 0xa8);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, initial_health) == 0x111);
+
+i32 __cdecl GizBlowup_InitSingleTerrain(GIZMOBLOWUP_PC *blowup) {
+    i32 instance;
+    if (!blowup || (blowup->status_flags & 1) || !(blowup->draw_flags & 4))
+        return 0;
+    if (blowup->platform_id == -1) {
+        instance = NuSpecialGetInstanceix(&blowup->type->animated_special);
+        if ((blowup->draw_flags & 0x802000) == 0x2000 || !(blowup->draw_flags & 0x20000000))
+            blowup->platform_id = (i16)NewPlatInst(blowup, instance);
+        else
+            blowup->platform_id = (i16)FindPlatInst(instance);
+        if (blowup->platform_id == -1)
+            return 0;
+        if (!(blowup->status_flags & 0x4000))
+            PlatOnOff(blowup->platform_id, 0);
+    }
+    PlatInstRotate(blowup->platform_id, 1);
+    if (blowup->burst_platform_id == -1 && NuSpecialExistsFn(&blowup->type->burst_special)) {
+        blowup->burst_platform_id = (i16)NewPlatInst(blowup, NuSpecialGetInstanceix(&blowup->type->burst_special));
+        if (blowup->burst_platform_id == -1)
+            return -1;
+    }
+    PlatInstRotate(blowup->burst_platform_id, 1);
+    return 1;
+}
+void __cdecl GizBlowup_InitTerrain(void) {
+    GIZMOBLOWUP_PC *blowup;
+    i32 index;
+    if (WORLD->gizmo_blowups) {
+        blowup = WORLD->gizmo_blowups;
+        for (index = 0; index < WORLD->gizmo_blowup_count; ++index, ++blowup) {
+            blowup->platform_id = -1;
+            blowup->burst_platform_id = -1;
+            if (blowup->draw_flags & 4)
+                GizBlowup_InitSingleTerrain(blowup);
+        }
+    }
+}
+void __cdecl GizBlowup_DeleteSingleTerrain(GIZMOBLOWUP_PC *blowup) {
+    if (!blowup)
+        return;
+    if (blowup->platform_id != -1) {
+        DeletePlatinst(blowup->platform_id);
+        blowup->platform_id = -1;
+    }
+    if (blowup->burst_platform_id != -1) {
+        DeletePlatinst(blowup->burst_platform_id);
+        blowup->burst_platform_id = -1;
+    }
+}
+void __cdecl GizBlowup_DeleteTerrain(void) {
+    GIZMOBLOWUP_PC *blowup;
+    i32 index;
+    if (WORLD->gizmo_blowups) {
+        blowup = WORLD->gizmo_blowups;
+        for (index = 0; index < WORLD->gizmo_blowup_count; ++index, ++blowup)
+            GizBlowup_DeleteSingleTerrain(blowup);
+    }
+}
+void __cdecl GizmoBlowupsFinalSetup(WORLDINFO *world) {
+    GIZMOBLOWUPTYPE_PC *type;
+    GIZMOBLOWUP_PC *blowup;
+    NUINSTANIM_TIME_VIEW *animation;
+    NUVEC centre;
+    i32 index;
+    for (index = 0; index < world->gizmo_blowup_type_count; ++index) {
+        type = &world->gizmo_blowup_types[index];
+        type->animation_runtime_flags &= ~1;
+        animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&type->animated_special);
+        type->animation_base_frame = animation ? animation->ltime : 1.0f;
+        if (NuSpecialExistsFn(&type->decal_special))
+            NuSpecialSetVisibility(&type->decal_special, 0);
+    }
+    for (index = 0; index < world->gizmo_blowup_count; ++index) {
+        blowup = &world->gizmo_blowups[index];
+        blowup->animation_time = 1.0f;
+        blowup->status_flags = (blowup->status_flags & 0xf7b7fc00) | 0x810000;
+        if (NuSpecialExistsFn(&blowup->type->animated_special)) {
+            if (NuSpecialExistsFn(&blowup->type->burst_special))
+                NuSpecialSetVisibility(&blowup->type->burst_special, 0);
+            if (blowup->type->animation_flags & 0x2000)
+                blowup->position = *NuSpecialGetDrawPos(&blowup->type->animated_special);
+            NuSpecialGetRadius(&blowup->type->animated_special, &centre, &blowup->target_scale);
+            centre.x += blowup->position.x;
+            centre.y += blowup->position.y;
+            centre.z += blowup->position.z;
+            blowup->bounds_min.x = centre.x - blowup->target_scale;
+            blowup->bounds_min.y = centre.y - blowup->target_scale;
+            blowup->bounds_min.z = centre.z - blowup->target_scale;
+            blowup->bounds_max.x = centre.x + blowup->target_scale;
+            blowup->bounds_max.y = centre.y + blowup->target_scale;
+            blowup->bounds_max.z = centre.z + blowup->target_scale;
+            animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&blowup->type->animated_special);
+            if (animation && (animation->flags & 1)) {
+                blowup->status_flags |= 0x100000;
+                if (animation->flags & 8)
+                    blowup->status_flags |= 0x480000;
+            }
+        } else {
+            blowup->bounds_min = v000;
+            blowup->bounds_max = v000;
+        }
+        GizmoBlowupUpdateMatrix(blowup);
+        blowup->initial_health = (u8)(blowup->initial_health * GizmoBlowupHitMultiplierPc);
+    }
+    GizBlowup_DeleteTerrain();
+    GizBlowup_InitTerrain();
+}
+void __cdecl GizmoBlowupVisibilityOverrides(WORLDINFO *world) {
+    GIZMOBLOWUP_PC *blowup = world->gizmo_blowups;
+    GIZMOBLOWUPTYPE_PC *type;
+    i32 index;
+    for (index = 0; index < world->gizmo_blowup_count; ++index, ++blowup)
+        if ((blowup->type->animation_flags & 0x2000) && !(blowup->draw_flags & 0x800000))
+            NuSpecialSetVisibility(&blowup->type->animated_special, 0);
+    for (index = 0; index < world->gizmo_blowup_type_count; ++index) {
+        type = &world->gizmo_blowup_types[index];
+        if (NuSpecialExistsFn(&type->decal_special))
+            NuSpecialSetVisibility(&type->decal_special, 0);
+    }
+}
+GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_FindFromPlatID(WORLDINFO *world, i32 platform) {
+    GIZMOBLOWUP_PC *blowup = world->gizmo_blowups;
+    i32 index;
+    if (blowup)
+        for (index = 0; index < world->gizmo_blowup_count; ++index, ++blowup)
+            if (blowup->platform_id == platform)
+                return blowup;
+    return NULL;
+}
+GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_FindByName(WORLDINFO *world, char *name) {
+    GIZMOBLOWUP_PC *blowup = world->gizmo_blowups;
+    i32 index;
+    if (blowup)
+        for (index = 0; index < world->gizmo_blowup_count; ++index, ++blowup)
+            if (!NuStrICmp(blowup->name, name))
+                return blowup;
+    return NULL;
+}
+GIZMOBLOWUP_PC *__cdecl FindNearestGizmoBlowUp(WORLDINFO *world, NUVEC *position, f32 max_distance_squared) {
+    GIZMOBLOWUP_PC *blowup, *end, *nearest = NULL;
+    f32 nearest_distance = max_distance_squared;
+    f32 x, y, z, distance;
+    if (!world || world->gizmo_blowup_count <= 0 || !position)
+        return NULL;
+    blowup = world->gizmo_blowups;
+    end = blowup + world->gizmo_blowup_count;
+    do {
+        if ((blowup->status_flags & 0x804001) != 0x804000)
+            continue;
+        x = blowup->position.x - position->x;
+        y = blowup->position.y - position->y;
+        z = blowup->position.z - position->z;
+        distance = x * x + y * y + z * z;
+        if (distance < max_distance_squared && distance < nearest_distance) {
+            nearest = blowup;
+            nearest_distance = distance;
+        }
+    } while (++blowup != end);
+    return nearest;
+}
+void __cdecl GizmoSwapBlowups(GIZMOBLOWUP_PC *first, GIZMOBLOWUP_PC *second) {
+    GIZMOBLOWUP_PC temporary = *first;
+    *first = *second;
+    *second = temporary;
+}
+void __cdecl GizmoSortBlowups(WORLDINFO *world) {
+    i32 blowup_index = 0, type_index;
+    GIZMOBLOWUPTYPE_PC *type = world->gizmo_blowup_types;
+    GIZMOBLOWUP_PC *blowup, *candidate, *end;
+    for (type_index = 0; type_index < world->gizmo_blowup_type_count; ++type_index, ++type) {
+        while (blowup_index < world->gizmo_blowup_count) {
+            blowup = &world->gizmo_blowups[blowup_index];
+            if (blowup->type != type) {
+                candidate = blowup + 1;
+                end = world->gizmo_blowups + world->gizmo_blowup_count;
+                while (candidate != end && candidate->type != type)
+                    ++candidate;
+                if (candidate == end)
+                    break;
+                GizmoSwapBlowups(blowup, candidate);
+            }
+            ++blowup_index;
+        }
+    }
+}

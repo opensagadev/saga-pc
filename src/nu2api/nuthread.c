@@ -42,3 +42,12 @@ void __cdecl PCFrameCriticalSectionLeave_candidate(void) {
 i32 __cdecl PCFrameLoadingYieldEnabled(void) {
     return PCFrameLoadingYieldEnabledPC;
 }
+
+i64 __cdecl PCThreadMillisecondsPc(void) {
+    NuTime time;
+    NuTimeGet(&time);
+    return (((i64)time.high << 32) | time.low) / 1000;
+}
+void __cdecl PCThreadCriticalSectionDeleteNoOpPc(i32 index) {
+    (void)index;
+}

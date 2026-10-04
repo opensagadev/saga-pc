@@ -112,7 +112,8 @@ typedef struct SoundSamplePC {
     IDirectSoundBuffer *buffer;
     char file_name[0x400];
     u8 valid_byte;
-    u8 unknown_405[3];
+    u8 failed_byte;
+    u8 unknown_406[2];
     u32 frequency;
 } SoundSamplePC;
 STATIC_ASSERT(sizeof(SoundSamplePC) == 0x40c);
@@ -155,7 +156,10 @@ STATIC_ASSERT(offsetof(SoundVoiceSlotPC, volume_index) == 0x24);
 STATIC_ASSERT(offsetof(SoundVoiceSlotPC, parameter) == 0x30);
 
 typedef struct SoundVoiceManagerPC {
-    u8 unknown_000[0xc];
+    u8 unknown_000[5];
+    u8 option5;
+    u8 option6;
+    u8 unknown_007[5];
     SoundVoiceSlotPC voices[64];
     SoundSamplePC *samples;
     i32 active_count;
@@ -167,8 +171,13 @@ typedef struct SoundVoiceManagerPC {
         };
     };
     IDirectSound8 *factory;
-    u8 unknown_d1c[0x8c];
+    PC_DS_CAPS_VIEW caps;
+    DWORD speaker_config;
+    IDirectSoundBuffer *primary_buffer;
+    PC_DS_BUFFER_DESC_VIEW primary_desc;
 #ifdef __cplusplus
+    void __thiscall Init(i32, u8, u8);
+    i32 __thiscall LoadWavSamplePc(const char *, i32);
     SoundVoiceManagerPC *__thiscall ResetStoragePc(void);
     void __thiscall UnloadSample(i32);
     void __thiscall SetOptionD14Pc(u8);
@@ -196,7 +205,11 @@ STATIC_ASSERT(offsetof(PC_DS_BUFFER_DESC_VIEW, algorithm) == 0x14);
 
 typedef struct PC_SOUND_COMMIT_PC PC_SOUND_COMMIT_PC;
 typedef struct PC_SOUND_COMMIT_METHODS_PC {
-    void *unknown_000[17];
+    void *unknown_00[13];
+    HRESULT(__stdcall *set_orientation)(PC_SOUND_COMMIT_PC *, float, float, float, float, float, float, DWORD);
+    HRESULT(__stdcall *set_position)(PC_SOUND_COMMIT_PC *, float, float, float, DWORD);
+    HRESULT(__stdcall *set_rolloff_factor)(PC_SOUND_COMMIT_PC *, float, DWORD);
+    void *unknown_40;
     HRESULT(__stdcall *commit_deferred_settings)(PC_SOUND_COMMIT_PC *);
 } PC_SOUND_COMMIT_METHODS_PC;
 struct PC_SOUND_COMMIT_PC {
@@ -11883,12 +11896,57 @@ void __cdecl PCStereoUnknownToken(void);
     extern const char PCSoundOggExtensionText[5];
     extern const char *PCSoundOggExtension;
     extern i32 PCSoundVolumeMultiplier;
+    /* Current shared TYPE100/INSTANCE114/TERRAIN_SET views suffice; no new layout slots. */
+    i32 __cdecl GizBlowup_InitSingleTerrain(GIZMOBLOWUP_PC *);
+    void __cdecl GizBlowup_InitTerrain(void);
+    void __cdecl GizBlowup_DeleteSingleTerrain(GIZMOBLOWUP_PC *);
+    void __cdecl GizBlowup_DeleteTerrain(void);
+    void __cdecl GizmoBlowupsFinalSetup(WORLDINFO *);
+    void __cdecl GizmoBlowupVisibilityOverrides(WORLDINFO *);
+    GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_FindFromPlatID(WORLDINFO *, i32);
+    GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_FindByName(WORLDINFO *, char *);
+    GIZMOBLOWUP_PC *__cdecl FindNearestGizmoBlowUp(WORLDINFO *, NUVEC *, f32);
+    void __cdecl GizmoSwapBlowups(GIZMOBLOWUP_PC *, GIZMOBLOWUP_PC *);
+    void __cdecl GizmoSortBlowups(WORLDINFO *);
+    void __cdecl PlatInstRotate(i32, i32);
+    extern u8 GizmoBlowupHitMultiplierPc;
+    STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, platform_id) == 0x102);
+    STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, burst_platform_id) == 0x104);
+    STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, initial_health) == 0x111);
+    struct PC_OGG_CACHE_RECORD_PC;
+    extern const IID PCSoundListenerIIDPc;
+    extern const GUID PCSampleBufferAlgorithmPc;
+    extern i32 PCSampleLoadEnabledPc;
+    extern i32 PCSoundSampleLimitPc;
+    extern i32 PCSoundStreamSerialPc;
+    extern struct PC_OGG_CACHE_RECORD_PC *PCOggCachePoolPc;
+    extern i32 PCOggCriticalSectionPc;
+    i32 __cdecl PCThreadCriticalSectionCreate_candidate(void);
+    void __cdecl PCThreadCriticalSectionEnter_candidate(i32);
+    void __cdecl PCThreadCriticalSectionLeave_candidate(i32);
+    i64 __cdecl PCThreadMillisecondsPc(void);
+    void __cdecl PCThreadCriticalSectionDeleteNoOpPc(i32);
+    STATIC_ASSERT(sizeof(PC_DS_CAPS_VIEW) == 0x60);
+    STATIC_ASSERT(offsetof(SoundVoiceManagerPC, option5) == 5);
+    STATIC_ASSERT(offsetof(SoundVoiceManagerPC, option6) == 6);
+    STATIC_ASSERT(offsetof(SoundVoiceManagerPC, caps) == 0xd1c);
+    STATIC_ASSERT(offsetof(SoundVoiceManagerPC, speaker_config) == 0xd7c);
+    STATIC_ASSERT(offsetof(SoundVoiceManagerPC, primary_buffer) == 0xd80);
+    STATIC_ASSERT(offsetof(SoundVoiceManagerPC, primary_desc) == 0xd84);
+    STATIC_ASSERT(offsetof(SoundSamplePC, failed_byte) == 0x405);
+    STATIC_ASSERT(offsetof(IDirectSound8Vtbl, set_cooperative_level) == 0x18);
+    STATIC_ASSERT(offsetof(IDirectSound8Vtbl, get_speaker_config) == 0x20);
+    STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS_PC, set_orientation) == 0x34);
+    STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS_PC, set_position) == 0x38);
+    STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS_PC, set_rolloff_factor) == 0x3c);
     void __cdecl PCSoundPlayUnpositioned(i32, i32, i32, i32, f32, i32, f32, f32, i32);
     void __cdecl PCSoundPlayUnpositionedWrapper(i32, i32, i32, i32, f32, i32, f32, f32);
     extern const GUID SoundVoice3DBufferIID;
-    void __cdecl PCSoundAlreadyPlayingHook(void);
 #ifdef __cplusplus
+    void __cdecl PCSoundAlreadyPlayingHook(...);
     void __cdecl PCSoundFailure(...);
+#else
+void __cdecl PCSoundAlreadyPlayingHook(void);
 #endif
     void __cdecl ANI_FixUpAddrs(ANI3_HEADER_PC *, i32, i32);
     void *__cdecl NuAnimData2FixPtrs(void *, i32, i32, i32);
@@ -13802,6 +13860,54 @@ class SoundQueueVolumeSink {
     virtual i32 __stdcall SetVolume(i32 volume) = 0;
 };
 
+struct PC_WAVE_CHUNK_PC {
+    u32 kind;
+    u32 bytes;
+    i32 offset;
+};
+#pragma pack(push, 4)
+class WavReader {
+  public:
+    WavReader(void);
+    virtual ~WavReader(void);
+    virtual HRESULT Open(NUDATHDR *, char *, WAVEFORMATEX *);
+    virtual HRESULT Unknown08Pc(u32, u32);
+    virtual HRESULT Close(void);
+    virtual WAVEFORMATEX *GetFormat(void);
+    virtual i32 GetSize(void);
+    virtual HRESULT Reset(void);
+    virtual HRESULT Read(void *, u32, u32 *);
+    virtual i32 SeekTime(f32);
+    u32 FourCcPc(const char *);
+    i32 FindChunkPc(HANDLE, const char *, PC_WAVE_CHUNK_PC *);
+    i32 SkipChunkPc(HANDLE, const PC_WAVE_CHUNK_PC *);
+    u32 unknown_004;
+    HANDLE file;
+    u32 unknown_00c;
+    i64 base_position;
+    WAVEFORMATEX format;
+    u8 unknown_02a[2];
+    i32 first_sample;
+    i32 end_sample;
+    i32 current_sample;
+    i32 data_offset;
+    u32 data_bytes;
+};
+#pragma pack(pop)
+STATIC_ASSERT(sizeof(WavReader) == 0x40);
+STATIC_ASSERT(offsetof(WavReader, file) == 8);
+STATIC_ASSERT(offsetof(WavReader, base_position) == 0x10);
+STATIC_ASSERT(offsetof(WavReader, format) == 0x18);
+STATIC_ASSERT(offsetof(WavReader, first_sample) == 0x2c);
+STATIC_ASSERT(offsetof(WavReader, end_sample) == 0x30);
+STATIC_ASSERT(offsetof(WavReader, current_sample) == 0x34);
+STATIC_ASSERT(offsetof(WavReader, data_offset) == 0x38);
+STATIC_ASSERT(offsetof(WavReader, data_bytes) == 0x3c);
+STATIC_ASSERT(sizeof(PC_WAVE_CHUNK_PC) == 12);
+STATIC_ASSERT(offsetof(PC_WAVE_CHUNK_PC, kind) == 0);
+STATIC_ASSERT(offsetof(PC_WAVE_CHUNK_PC, bytes) == 4);
+STATIC_ASSERT(offsetof(PC_WAVE_CHUNK_PC, offset) == 8);
+
 struct SoundQueue {
     i32 active;
     u32 unknown_0004;
@@ -13855,6 +13961,7 @@ struct SoundQueue {
     i32 serial;
     IDirectSound8 *factory;
 
+    SoundQueue(IDirectSound8 *, i32);
     ~SoundQueue(void);
     void CancelPausePc(void);
     DWORD Run(void);

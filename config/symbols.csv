@@ -885,8 +885,10 @@ address    , symbol                                                         , si
 0x004ff430 , _NuPSFileLSeek                                                 , 98    , "i64 __cdecl (i32, i64, i32)"
 0x4ff4a0,_NuPSFileInitDevices,1,"void __cdecl(i32, i32, i32)"
 0x004ffa60 , _PCThreadCriticalSectionCreate_candidate                       , 48    , i32 __cdecl (void)
+0x4ffa90,_PCThreadCriticalSectionDeleteNoOpPc,1,void __cdecl PCThreadCriticalSectionDeleteNoOpPc(i32 index)
 0x004ffaa0 , _PCThreadCriticalSectionEnter_candidate                        , 30    , void __cdecl (i32)
 0x004ffac0 , _PCThreadCriticalSectionLeave_candidate                        , 30    , void __cdecl (i32)
+0x4ffae0,_PCThreadMillisecondsPc,51,i64 __cdecl PCThreadMillisecondsPc(void)
 0x004ffb20 , _NuTimeGetTicksPS                                              , 111   , "void __cdecl (u32 *, u32 *)"
 0x004ffb90 , _NuTimeGetTicksPerSecondPS                                     , 29    , "void __cdecl (u32 *, u32 *)"
 0x4fff00,_CutSceneLoadDiagnosticPc,1,"void __cdecl(void *,...)"
@@ -1516,24 +1518,35 @@ address    , symbol                                                         , si
 0x5667a0,_InitGizmoBlowupsMtxBuffer,73,i32 __cdecl (WORLDINFO *)
 0x566ba0,_GizmoBlowupRestoreInitialStatePc,119,void(GIZMOBLOWUP_PC *)
 0x566c20,_GizBlowup_Respawn,379,void __cdecl(GIZMOBLOWUP_PC *)
+0x567130,_GizmoSwapBlowups,91,"void __cdecl (GIZMOBLOWUP_PC *, GIZMOBLOWUP_PC *)"
+0x567190,_GizmoSortBlowups,302,void __cdecl (WORLDINFO *)
 0x5672d0,_GizmoBlowUp_AddEffects,1322,"void __cdecl (NUVEC *, GIZMOBLOWUP_PC *, i32, i32, GAMEOBJECT *)"
 0x00567800 , _GizmoBlowupBlowup                                             , 1385  , "i32 __cdecl (GIZMOBLOWUP_PC *, i32, i32, i32, GAMEOBJECT *, i32)"
 0x567da0,_UpdateMidPos,616,void __cdecl(GIZMOBLOWUP_PC*)
 0x568010,_GizmoBlowupEarlyUpdate,1122,"void __cdecl (void *, void *, f32)"
 0x5684f0,_GizmoBlowupLateUpdate,98,"void __cdecl (void *, void *, f32)"
+0x568580,_GizBlowup_InitSingleTerrain,286,i32 __cdecl (GIZMOBLOWUP_PC *)
+0x5686a0,_GizBlowup_InitTerrain,106,void __cdecl (void)
+0x568710,_GizBlowup_DeleteSingleTerrain,79,void __cdecl (GIZMOBLOWUP_PC *)
+0x568760,_GizBlowup_DeleteTerrain,141,void __cdecl (void)
 0x5687f0,_GizmoBlowupUpdateMatrix,154,void __cdecl (GIZMOBLOWUP_PC *)
 0x568890,_GizmoBlowupGenDecalMatrix,191,"void __cdecl (GIZMOBLOWUP_PC *, NUMTX *, i32)"
 0x568950,_GizmoBlowupGenShadowMatrix,150,"void __cdecl (GIZMOBLOWUP_PC *, NUMTX *)"
 0x5689f0,_GizmoBlowup_FindType,131,"GIZMOBLOWUPTYPE_PC * __cdecl (char *, WORLDINFO *)"
 0x568a80,_gizmoblowup_Load,3213,"i32 __cdecl (void *, void *)"
+0x569710,_GizmoBlowupsFinalSetup,615,void __cdecl (WORLDINFO *)
 0x569980,_GizmoBlowUpOpponent,724,"GIZMOBLOWUP_PC *__cdecl(GAMEOBJECT *,f32,f32,f32,i32,u32,u32,u32)"
 0x00569c60 , _GetLevelExBlowupFlags                                         , 6      ,
+0x56a1a0,_GizmoBlowUp_FindFromPlatID,60,"GIZMOBLOWUP_PC *__cdecl (WORLDINFO *, i32)"
+0x56a1e0,_GizmoBlowUp_FindByName,83,"GIZMOBLOWUP_PC *__cdecl (WORLDINFO *, char *)"
 0x56a240,_GizmoBlowUp_Target,878,"GIZMOBLOWUP_PC* __cdecl(GAMEOBJECT*,NUVEC*,NUVEC*,f32,f32,i32,i32,i32)"
 0x0056a5b0 , _GizmoBlowupCheckProximity                                     , 522   , "i32 __cdecl (WORLDINFO *, GAMEOBJECT *)"
+0x56a7c0,_GizmoBlowupVisibilityOverrides,153,void __cdecl (WORLDINFO *)
 0x56a8c0,_GizmoBlowUpTypeBlowUp,229,"void __cdecl (WORLDINFO *, i32, NUVEC *)"
 0x0056a9b0 , _GizmoBlowupResetNameTable                                     , 31    , void __cdecl (void)
 0x56a9d0,_GizmoBlowupGetNameTableId,110,i32 __cdecl (char *)
 0x56aa40,_GizmoBlowupGetTypeFromNameTableId,110,"i32 __cdecl (WORLDINFO *, i32)"
+0x56aab0,_FindNearestGizmoBlowUp,843,"GIZMOBLOWUP_PC *__cdecl (WORLDINFO *, NUVEC *, f32)"
 0x56bf30,_LedgeTerrain_SetTargetMom,126,i32 __cdecl(GAMEOBJECT *)
 0x56bfb0,_CanClimbSurface,62,"i32 __cdecl(GAMEOBJECT *,i32)"
 0x56c040,_Climb_UpdateMagnetRotation,95,void __cdecl(GAMEOBJECT *)
@@ -2950,6 +2963,7 @@ address    , symbol                                                         , si
 0x67b430,_NewRayCastScaleYMask,473,"i32 __cdecl(NUVEC*,NUVEC*,f32,f32,i32,u32)"
 0x0067bf50 , _NewPlatInst                                                   , 528   , "i32 __cdecl (void *, i32)"
 0x67c760,_FindPlatInst,71,i32 __cdecl(i32)
+0x67c7b0,_PlatInstRotate,46,"void __cdecl (i32, i32)"
 0x0067c860 , _PlatInstGetHit                                                , 45    , i32 __cdecl (i32)
 0x0067c8e0 , _PlatOnOff                                                      , 73    ,
 0x0067c930 , _DeletePlatinst                                                , 335   , i32 __cdecl (i32)
@@ -3104,7 +3118,9 @@ address    , symbol                                                         , si
 0x00696be0 , _NuSound3GetListener                                           , 15    , NUMTX *__cdecl (void)
 0x696c50,?ResetStoragePc@SoundVoiceManagerPC@@QAEPAU1@XZ,53,SoundVoiceManagerPC *__thiscall(SoundVoiceManagerPC *)
 0x696c90,?UnloadSample@SoundVoiceManagerPC@@QAEXH@Z,109,"void __thiscall(SoundVoiceManagerPC *,i32)"
+0x696d00,?Init@SoundVoiceManagerPC@@QAEXHEE@Z,514,"void __thiscall SoundVoiceManagerPC::Init(i32 unused, u8 option5, u8 option6)"
 0x00696f10 , ?SetSampleName@SoundVoiceManagerPC@@QAEXPBDH@Z                 , 141   , "void __thiscall (SoundVoiceManagerPC *, const char *, i32)"
+0x696fa0,?LoadWavSamplePc@SoundVoiceManagerPC@@QAEHPBDH@Z,805,"i32 __thiscall SoundVoiceManagerPC::LoadWavSamplePc(const char *name, i32 index)"
 0x00697470 , ?AllocateVoice@SoundVoiceManagerPC@@QAEHHH@Z                   , 264   , "i32 __thiscall (SoundVoiceManagerPC *, i32, i32)"
 0x00697580 , ?SetVoice@SoundVoiceManagerPC@@QAEXHHMH@Z                      , 267   , "void __thiscall (SoundVoiceManagerPC *, i32, i32, f32, i32)"
 0x00697690 , ?StopVoice@SoundVoiceManagerPC@@QAEXH@Z                        , 98    , "void __thiscall (SoundVoiceManagerPC *, i32)"
@@ -3149,6 +3165,7 @@ address    , symbol                                                         , si
 0x6998f0,??1SoundQueue@@QAE@XZ,232,void __thiscall(SoundQueue *)
 0x6999e0,?Run@SoundQueue@@QAEKXZ,1232,DWORD __thiscall(SoundQueue *)
 0x699eb0,_PCSoundStreamWorkerPc@4,12,DWORD __stdcall(void *)
+0x699ec0,??0SoundQueue@@QAE@PAUIDirectSound8@@H@Z,696,"SoundQueue::SoundQueue(IDirectSound8 *factory, i32 mode)"
 0x69a180,_PCDecoderDiagnosticNoOpPc,1,void __cdecl (...)
 0x69a1b0,??0WavReader@@QAE@XZ,16,WavReader *__thiscall(WavReader *)
 0x69a1c0,?Unknown08Pc@WavReader@@UAEJII@Z,8,"HRESULT __thiscall(WavReader *,u32,u32)"
@@ -3165,6 +3182,22 @@ address    , symbol                                                         , si
 0x69a680,?Read@WavReader@@UAEJPAXIPAI@Z,291,"HRESULT __thiscall(WavReader *,void *,u32,u32 *)"
 0x69a7b0,??_EWavReader@@UAEPAXI@Z,,Natural weak vector-delete alias to emitted scalar deleting destructor; no separate sourcecredit
 0x69a7b0,??_GWavReader@@UAEPAXI@Z,52,"void *__thiscall(WavReader *,u32)"
+0x69a850,??0OggReader@@QAE@XZ,139,OggReader::OggReader(void)
+0x69a8e0,?Unknown08Pc@OggReader@@UAEJII@Z,8,"virtual HRESULT Unknown08Pc(u32, u32)"
+0x69a8f0,?GetSize@OggReader@@UAEHXZ,54,virtual i32 GetSize(void)
+0x69a930,?GetFormat@OggReader@@UAEPAUtWAVEFORMATEX@@XZ,16,virtual WAVEFORMATEX *GetFormat(void)
+0x69a940,?Reset@OggReader@@UAEJXZ,61,virtual HRESULT Reset(void)
+0x69a980,?Read@OggReader@@UAEJPAXIPAI@Z,317,"virtual HRESULT Read(void *, u32, u32 *)"
+0x69aac0,?Close@OggReader@@UAEJXZ,132,virtual HRESULT Close(void)
+0x69ab50,?SeekTime@OggReader@@UAEHM@Z,130,virtual i32 SeekTime(f32)
+0x69abe0,?ReadCallbackPc@OggReader@@SAIPAXII0@Z,160,"static u32 __cdecl ReadCallbackPc(void *, u32, u32, void *)"
+0x69ac80,?SeekCallbackPc@OggReader@@SAHPAX_JH@Z,132,"static i32 __cdecl SeekCallbackPc(void *, i64, i32)"
+0x69ad10,?CloseCallbackPc@OggReader@@SAHPAX@Z,80,static i32 __cdecl CloseCallbackPc(void *)
+0x69ad60,?TellCallbackPc@OggReader@@SAJPAX@Z,23,static long __cdecl TellCallbackPc(void *)
+0x69ad80,??1OggReader@@UAE@XZ,71,OggReader::~OggReader(void)
+0x69add0,?Open@OggReader@@UAEJPAUnudathdr_s@@PADPAUtWAVEFORMATEX@@@Z,1002,"virtual HRESULT Open(NUDATHDR *, char *, WAVEFORMATEX *)"
+0x69b1c0,??_EOggReader@@UAEPAXI@Z,,Natural weak vector-delete alias; no separate credit
+0x69b1c0,??_GOggReader@@UAEPAXI@Z,86,void *__thiscall OggReader::scalar_deleting_destructor(u32 flags)
 0x69b220,__ov_header_fseek_wrap,32,
 0x69b240,_VorbisVorbisfileVorbisFtoiPc,13,
 0x69b250,_VorbisVorbisfileVorbisFpuSetroundPc,1,
@@ -3613,6 +3646,7 @@ address    , symbol                                                         , si
 0x6e92e0,__CIpow,,CRT x87 double exponent/base inputs
 0x006e9530 , __CIsqrt                                                       , 20    , f32 __cdecl (f64)
 0x6e96b0,_qsort,679,"void __cdecl (void *, size_t, size_t, int (__cdecl *)(const void *, const void *))"
+0x6ea018,??2@YAPAXI@Z,,void *__cdecl operator new(size_t size)
 0x6eacb6,_ftell,,long __cdecl ftell(FILE *stream)
 0x6ead5f,__errno,,int *__cdecl _errno(void)
 0x6eae30,__alloca_probe_16,,
@@ -4173,6 +4207,7 @@ address    , symbol                                                         , si
 0x751bc4,??_C@_0BG@PHHIKGAO@Dog_DroidFighterBlast?$AA@,22,const char[22]
 0x751bdc,??_C@_0BD@KCCJNHHN@Dog_CloneARC170Gun?$AA@,19,const char[19]
 0x00751bf8 , __real@4024000000000000                                        , 8     , const f64
+0x751c00,??_C@_04HDOCAJNK@?$CFs?$CFs?$AA@,5,const char[5]
 0x00751c00 , _GizAIMessage_PrefixedNameFormat                               , 5     , const char[5]
 0x751c20,__real@c0d7700000000000,8,const f64
 0x751c28,__real@40d7700000000000,8,const f64
@@ -4641,6 +4676,7 @@ address    , symbol                                                         , si
 0x7587f8,??_C@_0M@BFEAIAEK@Jp_Ana_Jump?$AA@,12,const char[12]
 0x00758808 , __real@3fefffffe0000000                                        , 8     , const f64
 0x758810,__real@3ff4ccccc0000000,8,const f64
+0x758828,??_C@_02DKCKIIND@?$CFs?$AA@,3,const char[3]
 0x00758828 , _GizAIMessage_NameFormat                                       , 3     , const char[3]
 0x758844,__real@bc75c28f,4,const f32
 0x758a60,_GizObstacleActionNamePC,5,const char[5]
@@ -6390,11 +6426,14 @@ address    , symbol                                                         , si
 0x76eee0,_NuMusicDebugVoiceFormat,9,const char[9]
 0x0076eef0 , __real@40cfff8000000000                                        , 8     , const f64
 0x76eef8,_NuMusicLanguageTokenPc,,char[6]
+0x76ef00,??_C@_04EDENFOBH@?4ogg?$AA@,5,const char[]
 0x0076ef00 , _PCSoundOggExtensionText                                       , 5     , const char[5]
 0x0076ef78,__real@c0ab580000000000,8,f64
 0x76ef84,??_7WavReader@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x76efa8,??_C@_04PJOLNDGD@data?$AA@,5,const char[5]
 0x76efb0,??_C@_04CAJPEBPP@fmt?5?$AA@,5,const char[5]
+0x76efb8,??_C@_0BD@GIHKNDOI@?4?2pc?2oggreader?4cpp?$AA@,19,const char[]
+0x76efd0,??_7OggReader@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x76eff8,__real@c060600000000000,,
 0x76f000,??_C@_04CBBONHGF@pcmR?$AA@,,
 0x76f008,??_C@_04PFFPOILK@pcmL?$AA@,,
@@ -6596,11 +6635,17 @@ address    , symbol                                                         , si
 0x776e18,_PCNativeDebugPrefix,12,const char[12]
 0x777d1c,??_7type_info@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x0078490c , _SoundVoice3DBufferIID                                         , 16    , const GUID
+0x78491c,_PCSoundListenerIIDPc,,const IID
 0x78493c,_PCSoundBuffer8IIDPc,,const IID
+0x7e8abc,_PCSampleBufferAlgorithmPc,,const GUID
 0x7eb664,??_R4WavReader@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb678,??_R3WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb688,??_R2WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb690,??_R1A@?0A@EA@WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
+0x7eb6ac,??_R4OggReader@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
+0x7eb6c0,??_R3OggReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
+0x7eb6d0,??_R2OggReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
+0x7eb6dc,??_R1A@?0A@EA@OggReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x007ef01c , _SUPERBUFFERSIZE                                               , 4     , i32
 0x007ef020 , _CHARACTERBUFFERSIZE                                           , 4     , i32
 0x007ef090 , _StartupDatNames                                               , 28    , const char *[7]
@@ -7122,6 +7167,7 @@ address    , symbol                                                         , si
 0x00802f20 , ??_R0?AVFadeStill@@@8                                          , 24    ,
 0x802f54,_blowup_gizmotype_id,4,i32
 0x00802f58,_MAXBLOWUPRANDSPANG,,i32
+0x803068,_GizmoBlowupHitMultiplierPc,,u8
 0x8030e8,_LEDGETERRAINLOOKAHEAD,,f32
 0x008032c4 , _CheatSystemPtr                                                , 4     , CHEATSYSTEM_PC *
 0x8032c8,_CHEAT_POWERUPTIME,,f32
@@ -7427,6 +7473,7 @@ address    , symbol                                                         , si
 0x00810dbc , _NuSound3VolumeOffset                                          , 4     , i32
 0x00810dc0 , _SoundVoiceVolumeOffset                                        , 4     , i32
 0x00810dc8 , _NuSound3LoopHoldTime                                          , 4     , i32
+0x810dd0,_PCSampleLoadEnabledPc,,i32
 0x00810dd4 , _PCSoundVolumeMultiplier                                       , 4     , i32
 0x810ee0,??_R0?AVWavReader@@@8,24,MSVC RTTI type descriptor for WavReader
 0x00811000 , ??_R0?AVOggReader@@@8                                          , 24    ,
@@ -8916,6 +8963,7 @@ address    , symbol                                                         , si
 0x2972c10,_PCSoundMixSampleCount,4,i32
 0x2972c14,_PCSoundMixDestination,4,void *
 0x2972c18,_PCStereoChannel0A,,i32
+0x2972c1c,_PCSoundSampleLimitPc,,i32
 0x02972c20 , ?NuSound3StereoStreams@@3PAPAUSoundQueue@@A                    , 8     , SoundQueue *[2]
 0x2972c28,_PCSoundStorageLockReadyPc,,i32
 0x2972c38,_PCSoundUpdateClock,4,i32
@@ -8927,8 +8975,11 @@ address    , symbol                                                         , si
 0x02972c58 , _NuSound3Listener                                              , 4     , NUMTX *
 0x02972c68 , _SoundVoiceManager                                             ,       , SoundVoiceManagerPC (minimum source prefix; original extent unknown)
 0x0297397c , _NuSound3Reverb                                                , 1     , u8
+0x2973a10,_PCSoundStreamSerialPc,,i32
 0x2973a14,_PCSoundDrainStartPc,,i32
 0x2973a18,_PCSoundDrainRemainingPc,,i32
+0x2973a1c,_PCOggCachePoolPc,,struct PC_OGG_CACHE_RECORD_PC *
+0x2973a20,_PCOggCriticalSectionPc,,i32
 0x2973a28,?seq@?1??floor1_encode@@9@9,,
 0x2974cfc,_PCDevicePrimitiveUPCallCountPc,,u32
 0x02974d14 , _StartupDatList                                                ,       , NUDATHDR *[7]

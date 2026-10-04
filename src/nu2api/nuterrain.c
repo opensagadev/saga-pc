@@ -2343,3 +2343,12 @@ i32 __cdecl FindPlatInst(i32 instance) {
     }
     return -1;
 }
+
+void __cdecl PlatInstRotate(i32 platform_index, i32 enabled) {
+    TERRAIN_SET_PC *terrain;
+    if (platform_index >= 0) {
+        terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+        if (platform_index < terrain->max_platforms)
+            terrain->platforms[platform_index].flags = (terrain->platforms[platform_index].flags & ~1u) | (enabled & 1);
+    }
+}

@@ -4194,3 +4194,16 @@ versions, ZipUp311 has six ordinary arguments, and reader65 uses AX/AL unsigned
 returns. All prior exact code/data/members survive; the only old nonexact change
 is the independently reaccepted particle scheduling pair. Unbound _seq and
 unknown private working views get no original allocation credit.
+
+
+Native audio facade/terrain checkpoint: twenty actual native audio functions
+cover 4,478 complete PC bytes and twelve blowup/terrain lifecycle functions cover
+2,805. Queue constructor native 696 includes its 32-byte switch table and padding.
+OggReader real 0x338 layout embeds canonical Vorbis state 720 at 0x48; callback seek
+uses i64 and tell retains Win32 long identity. Genuine static CRT operator-new
+binding 6ea018 has unknown extent/no source credit; DirectSoundCreate8 is real
+DSOUND ordinal 11 rather than an invented named import. Nearest blowup selection
+retains native f32 spills, strict first-tie tests and status mask 804001. Existing
+32-byte Vorbis header callbacks emitted in two more owners receive zero unique
+transfer credit. Independent complete-body receipts and endpoint proof remain
+under ignored transfer-execution-20261003 research; user journal edits untouched.

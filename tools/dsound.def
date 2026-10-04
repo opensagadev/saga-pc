@@ -1,0 +1,4 @@
+; Actual x86 DSOUND ordinal import; implementation is supplied by the system DLL.
+LIBRARY DSOUND.dll
+EXPORTS
+    DirectSoundCreate8@12 @11 NONAME

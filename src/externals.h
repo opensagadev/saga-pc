@@ -36,6 +36,11 @@ typedef struct IDirectSound3DBufferVtbl IDirectSound3DBufferVtbl;
 
 typedef void *DSOUND_OPAQUE_METHOD;
 
+typedef struct PC_DS_CAPS_VIEW {
+    DWORD size;
+    DWORD remaining[23];
+} PC_DS_CAPS_VIEW;
+
 typedef struct PC_DS_BUFFER_DESC_VIEW {
     DWORD size, flags, bytes, reserved;
     WAVEFORMATEX *format;
@@ -51,8 +56,11 @@ struct IDirectSound8Vtbl {
     ULONG(__stdcall *release)(IDirectSound8 *);
     HRESULT(__stdcall *create_sound_buffer)
     (IDirectSound8 *, const PC_DS_BUFFER_DESC_VIEW *, IDirectSoundBuffer **, IUnknown *);
-    DSOUND_OPAQUE_METHOD get_caps;
+    HRESULT(__stdcall *get_caps)(IDirectSound8 *, PC_DS_CAPS_VIEW *);
     HRESULT(__stdcall *duplicate_sound_buffer)(IDirectSound8 *, IDirectSoundBuffer *, IDirectSoundBuffer **);
+    HRESULT(__stdcall *set_cooperative_level)(IDirectSound8 *, HWND, DWORD);
+    void *unknown_1c;
+    HRESULT(__stdcall *get_speaker_config)(IDirectSound8 *, DWORD *);
 };
 
 struct IDirectSoundBuffer {

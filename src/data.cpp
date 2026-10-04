@@ -10972,3 +10972,33 @@ extern "C" {
     NUVEC GizmoBlowupUnitScalePc = {1.0f, 1.0f, 1.0f};
 #pragma data_seg()
 }
+
+struct PC_OGG_CACHE_RECORD_PC;
+extern "C" {
+#pragma const_seg(".rdata$PCSoundListenerIIDPc")
+    extern const IID PCSoundListenerIIDPc = {
+        0x279afa84, 0x4981, 0x11ce, {0xa5, 0x21, 0x00, 0x20, 0xaf, 0x0b, 0xe5, 0x60}};
+#pragma const_seg()
+#pragma const_seg(".rdata$PCSampleBufferAlgorithmPc")
+    extern const GUID PCSampleBufferAlgorithmPc = {
+        0x00000000, 0x0000, 0x0000, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}};
+#pragma const_seg()
+#pragma data_seg(".data$GizmoBlowupHitMultiplierPc")
+    u8 GizmoBlowupHitMultiplierPc = 1;
+#pragma data_seg()
+#pragma data_seg(".data$PCSampleLoadEnabledPc")
+    i32 PCSampleLoadEnabledPc = 1;
+#pragma data_seg()
+#pragma bss_seg(".bss$PCSoundSampleLimitPc")
+    i32 PCSoundSampleLimitPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSoundStreamSerialPc")
+    i32 PCSoundStreamSerialPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCOggCachePoolPc")
+    struct PC_OGG_CACHE_RECORD_PC *PCOggCachePoolPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCOggCriticalSectionPc")
+    i32 PCOggCriticalSectionPc;
+#pragma bss_seg()
+}

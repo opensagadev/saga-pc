@@ -40,6 +40,7 @@ extern "C" {
         size_t (*read_func)(void *ptr, size_t size, size_t nmemb, void *datasource);
         int (*seek_func)(void *datasource, ogg_int64_t offset, int whence);
         int (*close_func)(void *datasource);
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
         long (*tell_func)(void *datasource);
     } ov_callbacks;
 
@@ -54,21 +55,26 @@ extern "C" {
         return fseek(f, off, whence);
     }
 
-    static ov_callbacks OV_CALLBACKS_DEFAULT = {(size_t(*)(void *, size_t, size_t, void *))fread,
-                                                (int (*)(void *, ogg_int64_t, int))_ov_header_fseek_wrap,
-                                                (int (*)(void *))fclose, (long (*)(void *))ftell};
+    static ov_callbacks OV_CALLBACKS_DEFAULT = {
+        (size_t(*)(void *, size_t, size_t, void *))fread, (int (*)(void *, ogg_int64_t, int))_ov_header_fseek_wrap,
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
+        (int (*)(void *))fclose, (long (*)(void *))ftell};
 
-    static ov_callbacks OV_CALLBACKS_NOCLOSE = {(size_t(*)(void *, size_t, size_t, void *))fread,
-                                                (int (*)(void *, ogg_int64_t, int))_ov_header_fseek_wrap,
-                                                (int (*)(void *))NULL, (long (*)(void *))ftell};
+    static ov_callbacks OV_CALLBACKS_NOCLOSE = {
+        (size_t(*)(void *, size_t, size_t, void *))fread, (int (*)(void *, ogg_int64_t, int))_ov_header_fseek_wrap,
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
+        (int (*)(void *))NULL, (long (*)(void *))ftell};
 
-    static ov_callbacks OV_CALLBACKS_STREAMONLY = {(size_t(*)(void *, size_t, size_t, void *))fread,
-                                                   (int (*)(void *, ogg_int64_t, int))NULL, (int (*)(void *))fclose,
-                                                   (long (*)(void *))NULL};
+    static ov_callbacks OV_CALLBACKS_STREAMONLY = {
+        (size_t(*)(void *, size_t, size_t, void *))fread, (int (*)(void *, ogg_int64_t, int))NULL,
+        (int (*)(void *))fclose,
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
+        (long (*)(void *))NULL};
 
-    static ov_callbacks OV_CALLBACKS_STREAMONLY_NOCLOSE = {(size_t(*)(void *, size_t, size_t, void *))fread,
-                                                           (int (*)(void *, ogg_int64_t, int))NULL,
-                                                           (int (*)(void *))NULL, (long (*)(void *))NULL};
+    static ov_callbacks OV_CALLBACKS_STREAMONLY_NOCLOSE = {
+        (size_t(*)(void *, size_t, size_t, void *))fread, (int (*)(void *, ogg_int64_t, int))NULL,
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
+        (int (*)(void *))NULL, (long (*)(void *))NULL};
 
 #define NOTOPEN 0
 #define PARTOPEN 1
@@ -88,6 +94,7 @@ extern "C" {
         int links;
         ogg_int64_t *offsets;
         ogg_int64_t *dataoffsets;
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
         long *serialnos;
         ogg_int64_t *pcmlengths; /* overloaded to maintain binary
                                     compatability; x2 size, stores both
@@ -98,6 +105,7 @@ extern "C" {
         /* Decoding working state local storage */
         ogg_int64_t pcm_offset;
         int ready_state;
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
         long current_serialno;
         int current_link;
 
@@ -115,19 +123,28 @@ extern "C" {
 
     extern int ov_clear(OggVorbis_File *vf);
     extern int ov_fopen(char *path, OggVorbis_File *vf);
+    // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
     extern int ov_open(FILE *f, OggVorbis_File *vf, char *initial, long ibytes);
+    // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
     extern int ov_open_callbacks(void *datasource, OggVorbis_File *vf, char *initial, long ibytes,
                                  ov_callbacks callbacks);
 
+    // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
     extern int ov_test(FILE *f, OggVorbis_File *vf, char *initial, long ibytes);
+    // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
     extern int ov_test_callbacks(void *datasource, OggVorbis_File *vf, char *initial, long ibytes,
                                  ov_callbacks callbacks);
     extern int ov_test_open(OggVorbis_File *vf);
 
+    // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
     extern long ov_bitrate(OggVorbis_File *vf, int i);
+    // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
     extern long ov_bitrate_instant(OggVorbis_File *vf);
+    // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
     extern long ov_streams(OggVorbis_File *vf);
+    // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
     extern long ov_seekable(OggVorbis_File *vf);
+    // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
     extern long ov_serialnumber(OggVorbis_File *vf, int i);
 
     extern ogg_int64_t ov_raw_total(OggVorbis_File *vf, int i);
@@ -153,7 +170,9 @@ extern "C" {
     extern vorbis_info *ov_info(OggVorbis_File *vf, int link);
     extern vorbis_comment *ov_comment(OggVorbis_File *vf, int link);
 
+    // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
     extern long ov_read_float(OggVorbis_File *vf, float ***pcm_channels, int samples, int *bitstream);
+    // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
     extern long ov_read(OggVorbis_File *vf, char *buffer, int length, int bigendianp, int word, int sgned,
                         int *bitstream);
     extern int ov_crosslap(OggVorbis_File *vf1, OggVorbis_File *vf2);

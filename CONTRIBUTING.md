@@ -52,6 +52,9 @@ CRT's normal `WinMain` startup; unresolved references fail the link. `/OPT:NOREF
 and `/OPT:NOICF` keep compiled routines even when the stub does not call them, and
 avoid folding distinct identical routines. `llvm-dlltool` makes an import library
 for `D3DXMatrixMultiply` from its export declaration; no DLL contents are bundled.
+The same tool generates `build/dsound.lib` from `tools/dsound.def`, importing
+actual `DSOUND.dll` ordinal 11 for `DirectSoundCreate8`; no audio implementation
+or DLL contents are bundled.
 The linked image has its own layout;
 matching still compares individual objects at the original mapped addresses.
 As source begins calling additional APIs, supply their import libraries at link

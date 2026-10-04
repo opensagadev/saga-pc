@@ -1827,3 +1827,76 @@ user's three journal edits remain untouched. Next are the now-connected native
 Ogg facade and ZIPUP loader/reset/transport bank, alongside blowup/terrain
 lifecycle work. These source/ABI hypotheses remain scratch research until
 accepted; whole-project transfer and direct-main checkpoints continue.
+
+
+### Native audio facade and terrain lifecycle checkpoint (2026-10-04)
+
+32 complete new functions add 7,283 unique PC bytes over fb3d5d9: actual native
+Ogg facade, clock, stream construction and sample/manager services 20/4,478;
+blowup selection, sorting, terrain lifecycle and platform rotation 12/2,805.
+Whole-PC fuzzy coverage rises from 19.021145% to 19.193244%. Unique compared
+code reaches 964,702; native objdiff compares 965,219 including older aliases and
+two new physical copies of the existing 32-byte header callback, at 69.076760%.
+Those 64 repeated bytes receive no new unique transfer credit. Thirteen new exact
+functions add 1,100 bytes, reaching 176,972/5.098227% of 3,471,246 bytes.
+
+All prior exact code/data/members survive. Of 3,429 old full function copies,
+3,428 remain identical; unchanged particle source toggles the independently
+reviewed historical 717/713-byte pair again, preserving all 34 relocations and
+qualified x87 behavior. Four other identical functions only regenerate numeric
+local compiler-label suffixes; their section offsets, types, addends, resolved
+addresses and actual written relocation values remain unchanged. No source or
+compiler tuning produces these differences.
+
+OggReader is the actual 0x338-byte derived WavReader class, with canonical 720-byte
+Vorbis state at 0x48, nine virtual slots and native i64 seek/long tell callbacks.
+Its real constructor allocates five 0x114-byte cache records through NuAlloc;
+only the global pointer is defined, with no invented static backing. The exact
+existing WavReader declaration moves into the shared C++ guard; identical Ogg
+class declarations remain local to two actual owners. Original canonical Vorbis
+headers remain local, with per-site type/naming lint comments merged when both
+apply. All 271 codec functions and 179 initializer regions remain unchanged.
+The queue constructor keeps the full 696-byte original extent, including its
+compiler-owned eight-DWORD switch table. Actual DSOUND.dll ordinal 11 supplies
+DirectSoundCreate8 through a declaration-only import library; no SDK function
+implementation is fabricated. Real caps/listener slots and manager/sample fields
+carry verified offsets. The source preserves original NULL-cache missing unlock,
+required read-count pointer, event policy and other qualified native behavior.
+
+Terrain setup/teardown, final setup, visibility, sorting and selection use the
+verified TYPE100/INSTANCE114 and terrain views. Nearest selection preserves
+single-precision distance rounding, ordered strict thresholds, first-tie choice
+and mask 0x804001. All 52 prior subsystem bodies and 65 prior audio/Wav bodies
+remain complete and unchanged. Hardware DirectSound, active constructed queues,
+global manager reset/reverb overlap, unsupported-extension dispatcher 65,
+destructive effects and general game execution remain unclaimed.
+
+The genuine source-only executable links 3,463 function/5,895 data definitions
+across 265 actual objects. LLVM18 validates 292 source/header files and 265 units;
+all 700 tests pass with three skips. The existing isolated DAT fixture now extracts
+both complete actual clock bodies and the actual tick-base definition to resolve
+the expanded thread owner; no clock mock or reduced assertion replaces them.
+Strict runtime uses all 265 normal objects with zero replacements/supplements:
+audio 184 and terrain/lifecycle 62, all 246 pass. Three legal mono/stereo streams
+match an independent installed decoder within one PCM16 LSB; real cache reuse,
+file/memory callbacks, seek/reset/EOF, Wav delegation and selected local failure
+paths are exercised. These domains do not establish hardware/GPU or malformed
+input capacity.
+
+Eight new genuine shared definitions add 53 source-view bytes with unknown original
+extents and zero allocation/exact credit. All 3,340 old shared regions and 1,654
+scopes survive; 3,348 normal regions equal isolated output across 1,662 scopes.
+Known 562/137,693 remains unchanged; unknown 1,100/126,617 describes source views.
+All 4,435 prior exact physical initializer copies and two exact members/four bytes
+survive. Eight new known exact copies yield 4,443. All 32 new complete initializers
+are retail-equal, including 24 unknown-extent copies that receive no coverage.
+The 4,467 verified-copy union is not exact credit. Newly exact data union adds 43
+bytes. Original private callback/RTTI/literal ownership is retained.
+
+The 07:35 checkpoint waited for normal linkage, fixture dependency and scoped lint
+repairs, full retail comparison and independent preservation review. The user's
+three journal edits remain untouched. Next are accepted anti-node/type-arena,
+portal clipping and renderer subsets alongside the broad ZIP transport/reset bank
+and actual matrix inverse/transform family. ZIP rope modulation and ArcSine x87
+intermediates were repaired before scratch source acceptance; storage and final
+normal runtime remain pending. Candidates receive no source coverage. Whole-project transfer and direct-main checkpoints continue.

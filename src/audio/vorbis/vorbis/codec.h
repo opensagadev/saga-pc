@@ -28,6 +28,7 @@ extern "C" {
     typedef struct vorbis_info {
         int version;
         int channels;
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
         long rate;
 
         /* The below bitrate declarations are *hints*.
@@ -45,9 +46,13 @@ extern "C" {
              the coder does not care to speculate.
         */
 
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
         long bitrate_upper;
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
         long bitrate_nominal;
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
         long bitrate_lower;
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
         long bitrate_window;
 
         void *codec_setup;
@@ -69,13 +74,13 @@ extern "C" {
         int preextrapolate;
         int eofflag;
 
-        // NOLINTNEXTLINE(readability-identifier-naming): Original upstream name.
+        // NOLINTNEXTLINE(readability-identifier-naming, google-runtime-int): Original upstream name and long C ABI.
         long lW;
-        // NOLINTNEXTLINE(readability-identifier-naming): Original upstream name.
+        // NOLINTNEXTLINE(readability-identifier-naming, google-runtime-int): Original upstream name and long C ABI.
         long W;
-        // NOLINTNEXTLINE(readability-identifier-naming): Original upstream name.
+        // NOLINTNEXTLINE(readability-identifier-naming, google-runtime-int): Original upstream name and long C ABI.
         long nW;
-        // NOLINTNEXTLINE(readability-identifier-naming): Original upstream name.
+        // NOLINTNEXTLINE(readability-identifier-naming, google-runtime-int): Original upstream name and long C ABI.
         long centerW;
 
         ogg_int64_t granulepos;
@@ -94,11 +99,11 @@ extern "C" {
         float **pcm; /* this is a pointer into local storage */
         oggpack_buffer opb;
 
-        // NOLINTNEXTLINE(readability-identifier-naming): Original upstream name.
+        // NOLINTNEXTLINE(readability-identifier-naming, google-runtime-int): Original upstream name and long C ABI.
         long lW;
-        // NOLINTNEXTLINE(readability-identifier-naming): Original upstream name.
+        // NOLINTNEXTLINE(readability-identifier-naming, google-runtime-int): Original upstream name and long C ABI.
         long W;
-        // NOLINTNEXTLINE(readability-identifier-naming): Original upstream name.
+        // NOLINTNEXTLINE(readability-identifier-naming, google-runtime-int): Original upstream name and long C ABI.
         long nW;
         int pcmend;
         int mode;
@@ -111,15 +116,22 @@ extern "C" {
         /* local storage to avoid remallocing; it's up to the mapping to
            structure it */
         void *localstore;
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
         long localtop;
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
         long localalloc;
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
         long totaluse;
         struct alloc_chain *reap;
 
         /* bitmetrics for the frame */
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
         long glue_bits;
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
         long time_bits;
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
         long floor_bits;
+        // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
         long res_bits;
 
         void *internal;
@@ -209,6 +221,7 @@ extern "C" {
     extern int vorbis_synthesis_pcmout(vorbis_dsp_state *v, float ***pcm);
     extern int vorbis_synthesis_lapout(vorbis_dsp_state *v, float ***pcm);
     extern int vorbis_synthesis_read(vorbis_dsp_state *v, int samples);
+    // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
     extern long vorbis_packet_blocksize(vorbis_info *vi, ogg_packet *op);
 
     extern int vorbis_synthesis_halfrate(vorbis_info *v, int flag);

@@ -88,6 +88,28 @@ def write_file_constants(directory):
     return source
 
 
+def write_clock_provider(directory):
+    """Use the actual clock bodies needed by the expanded thread owner.
+
+    The DAT fixture does not exercise timebar rendering. Extract its two complete
+    clock routines and the actual tick-base definition, without substituting a
+    clock mock or pulling rendering services into this isolated parser test.
+    """
+    production = (ROOT / "src/nu2api/nutimebar.c").read_text()
+    start = production.index("void __cdecl NuTimeGetTicksPS(")
+    end = production.index("void __cdecl NuTimeBarSlotReset(", start)
+    bodies = production[start:end]
+    if len(re.findall(r"^.*void __cdecl NuTime\w+\(", bodies, re.MULTILINE)) != 2:
+        raise ValueError("DAT clock provider no longer contains exactly the two production routines")
+    definition = re.search(r"^\s*i64 NuTime_TickBase;\s*$",
+                           (ROOT / "src/data.cpp").read_text(), re.MULTILINE)
+    if definition is None:
+        raise ValueError("DAT clock provider is missing the production tick-base definition")
+    source = directory / "clock_provider.c"
+    source.write_text('#include "saga.h"\n' + definition.group().strip() + "\n" + bodies)
+    return source
+
+
 class DatParserTests(unittest.TestCase):
     def setUp(self):
         if not (ROOT / "build/tools/msvc8/bin/cl.exe").is_file() or not shutil.which("wine"):
@@ -114,6 +136,7 @@ class DatParserTests(unittest.TestCase):
                         "nudatfile", "nudatlookup", "nufile_position", "nufile_mc", "nuthread", "numemfile", "nufpar", "nurdpi")]
             sources.append(ROOT / "tools/test_dat_fixture.c")
             sources.append(write_file_constants(directory))
+            sources.append(write_clock_provider(directory))
             for source in sources:
                 output = directory / (source.stem + ".obj")
                 self.run_command([

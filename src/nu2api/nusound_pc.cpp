@@ -1,8 +1,9 @@
 #include "saga.h"
+#include <stdio.h>
 
 #include <string.h>
 
-extern "C" void __cdecl PCSoundAlreadyPlayingHook(void) {
+extern "C" void __cdecl PCSoundAlreadyPlayingHook(...) {
 }
 
 extern "C" void __cdecl NuSound3FlushLoops(void) {
@@ -431,4 +432,124 @@ void SoundVoiceManagerPC::SetOptionD14Pc(u8 mode) {
 }
 IDirectSound8 *SoundVoiceManagerPC::GetFactory(void) {
     return factory;
+}
+
+void SoundVoiceManagerPC::Init(i32 unused, u8 option5_value, u8 option6_value) {
+    (void)unused;
+    option5 = option5_value;
+    option6 = option6_value;
+    if (FAILED(DirectSoundCreate8(NULL, &factory, NULL)))
+        return;
+    factory->vtable->set_cooperative_level(factory, (HWND)PCInputInstance_candidate, 2);
+    caps.size = sizeof(caps);
+    factory->vtable->get_caps(factory, &caps);
+    factory->vtable->get_speaker_config(factory, &speaker_config);
+    memset(&primary_desc, 0, sizeof(primary_desc));
+    primary_desc.size = sizeof(primary_desc);
+    primary_desc.flags = 0x11;
+    primary_desc.bytes = 0;
+    primary_desc.format = NULL;
+    factory->vtable->create_sound_buffer(factory, &primary_desc, &primary_buffer, NULL);
+    if (primary_buffer != NULL) {
+        WAVEFORMATEX format;
+        format.wFormatTag = 1;
+        format.nChannels = 2;
+        format.nSamplesPerSec = 44100;
+        format.nAvgBytesPerSec = 176400;
+        format.nBlockAlign = 4;
+        format.wBitsPerSample = 16;
+        format.cbSize = 0;
+        primary_buffer->vtable->set_format(primary_buffer, &format);
+    }
+    primary_buffer->vtable->query_interface(primary_buffer, PCSoundListenerIIDPc, (void **)&PCSoundCommitTarget);
+    if (PCSoundCommitTarget != NULL) {
+        PC_SOUND_COMMIT_PC *listener = PCSoundCommitTarget;
+        listener->vtable->set_position(listener, 0, 0, 0, 1);
+        listener = PCSoundCommitTarget;
+        listener->vtable->set_orientation(listener, 0, 0, 1, 0, 1, 0, 1);
+        listener = PCSoundCommitTarget;
+        listener->vtable->set_rolloff_factor(listener, 0, 1);
+        listener = PCSoundCommitTarget;
+        listener->vtable->commit_deferred_settings(listener);
+    }
+    memset(voices, 0, sizeof(voices));
+    NuSound3StereoStreams[0] = new SoundQueue(SoundVoiceManager.factory, 6);
+    NuSound3StereoStreams[1] = new SoundQueue(SoundVoiceManager.factory, 6);
+}
+
+STATIC_ASSERT(offsetof(SoundSamplePC, failed_byte) == 0x405);
+STATIC_ASSERT(offsetof(IDirectSound8Vtbl, create_sound_buffer) == 0xc);
+STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, lock) == 0x2c);
+STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, unlock) == 0x4c);
+extern "C" i32 PCSampleLoadEnabledPc;
+extern "C" i32 PCSoundSampleLimitPc;
+extern "C" const GUID PCSampleBufferAlgorithmPc;
+extern "C" char *PCSampleFilenameExtensionPc;
+
+i32 SoundVoiceManagerPC::LoadWavSamplePc(const char *name, i32 index) {
+    WavReader reader;
+    WAVEFORMATEX format;
+    PC_DS_BUFFER_DESC_VIEW descriptor;
+    char path[0x104];
+    char directory[0x104];
+    void *first, *second;
+    DWORD first_bytes, second_bytes;
+    u32 read_bytes;
+    if (PCSampleLoadEnabledPc == 0) {
+        return -1;
+    }
+    if (index > PCSoundSampleLimitPc) {
+        PCSoundAlreadyPlayingHook();
+    }
+    if (factory == NULL) {
+        samples[index].failed_byte = 1;
+        return 0;
+    }
+    if (NuSoundDat != NULL) {
+        sprintf(path, "%s", name);
+    } else {
+        NuFileGetCurrentDirectory(directory);
+        sprintf(path, "%s%s", directory, name);
+    }
+    if (reader.Open(NuSoundDat, path, &format) < 0) {
+        samples[index].failed_byte = 1;
+        return 0;
+    }
+    memset(&descriptor, 0, sizeof(descriptor));
+    descriptor.size = sizeof(descriptor);
+    descriptor.flags = 0xb8;
+    descriptor.algorithm = PCSampleBufferAlgorithmPc;
+    descriptor.bytes = reader.GetSize();
+    descriptor.format = &format;
+    if (descriptor.bytes > 0x0fffffff) {
+        PCSoundAlreadyPlayingHook(path, 0x0fffffff);
+    }
+    if (descriptor.bytes < 4) {
+        PCSoundAlreadyPlayingHook(path, 4);
+    }
+    samples[index].frequency = format.nSamplesPerSec;
+    HRESULT result = factory->vtable->create_sound_buffer(factory, &descriptor, &samples[index].buffer, NULL);
+    if (result < 0) {
+        PCSoundFailure(path);
+        reader.Close();
+        samples[index].failed_byte = 1;
+        return 0;
+    }
+    result = samples[index].buffer->vtable->lock(samples[index].buffer, 0, descriptor.bytes, &first, &first_bytes,
+                                                 &second, &second_bytes, 0);
+    if (result < 0) {
+        PCSoundFailure(path);
+        reader.Close();
+        samples[index].failed_byte = 1;
+        return 0;
+    }
+    result = reader.Read(first, first_bytes, &read_bytes);
+    if (result < 0 || read_bytes != descriptor.bytes) {
+        PCSoundFailure(path);
+        samples[index].failed_byte = 1;
+    }
+    samples[index].buffer->vtable->unlock(samples[index].buffer, first, first_bytes, second, second_bytes);
+    reader.Close();
+    samples[index].valid_byte = 1;
+    return 1;
 }

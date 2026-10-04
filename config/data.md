@@ -1634,3 +1634,15 @@ blowups10 and ZipUp1. 109 unknown-extent copies receive no allocation/exact cred
 4,544 is the verified-copy union, not the exact-copy count. Five complete loader
 NUL literals add 57 exact union bytes. Private codec storage stays in original
 owners. Unbound unused _seq receives no invented PC identity or source credit.
+
+
+The native audio/terrain checkpoint adds eight genuine shared views/53 bytes,
+all unknown original owning extents: listener IID, sample algorithm GUID, hit
+multiplier BYTE, sample-load enabled/limit, stream serial, Ogg heap-cache pointer
+and critical-section index. Actual allocation is five 0x114-byte heap records;
+no static cache backing is invented. Full 3,348 normal regions equal isolated
+output; 1,662 scopes preserve all 1,654 old proofs. Known 562/137,693 unchanged;
+unknown 1,100/126,617 are source views only. All 4,435 old exact physical copies and
+two exact members/four bytes survive; 8 new known exact copies yield 4,443. All 32
+new complete initializer copies are retail-equal;24 unknown-extent copies get
+zero exact/extent credit. Verified-copy union 4,467 is not exact coverage.
