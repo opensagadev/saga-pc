@@ -147,6 +147,35 @@ STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60)
 STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
 STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
 
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, options) == 0x0);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 0x4);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_gizmos) == 0x8);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_gizmo_name) == 0x1c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output) == 0x20);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output_name) == 0x24);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_num_outputs) == 0x28);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_visibility) == 0x38);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_pos) == 0x3c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, using_special) == 0x40);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit_plat) == 0x44);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_best_bolt_target) == 0x48);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit) == 0x4c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, clear_progress) == 0x54);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_level_sfx) == 0x6c);
+
 typedef struct gizmo_config_type_pc_s {
     char name[32];
     char prefix[8];
@@ -635,3 +664,50 @@ i32 __cdecl GizmoFileReadName(char *name) {
     EdFileRead(name, length);
     return 1;
 }
+
+GIZMO_PC *__cdecl AddGizmo(void *system_ptr, i32 type_id, char *name, void *object) {
+    GIZMO_CONFIG_SYSTEM_PC *system = (GIZMO_CONFIG_SYSTEM_PC *)system_ptr;
+    GIZMO_CONFIG_TYPES_PC *registry;
+    GIZMO_CONFIG_SET_PC *set;
+    GIZMO_PC *gizmo;
+    if (gizmotypes == NULL || system == NULL)
+        return NULL;
+    if (name != NULL)
+        type_id = GizmoGetTypeIDByName(system, name);
+    registry = (GIZMO_CONFIG_TYPES_PC *)gizmotypes;
+    if (type_id < 0 || type_id >= registry->count)
+        return NULL;
+    set = &system->sets[type_id];
+    if (set->count >= set->capacity)
+        return NULL;
+    gizmo = &set->gizmos[set->count];
+    if (gizmo == NULL)
+        return NULL;
+    if (object != NULL)
+        gizmo->object = object;
+    gizmo->field_04 = 0;
+    gizmo->type_id = (u8)type_id;
+    ++set->count;
+    return gizmo;
+}
+
+static i32 __cdecl DefaultGizmo_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    (void)gizmo;
+    (void)output;
+    (void)mode;
+    return 0;
+}
+static char *__cdecl DefaultGizmo_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    (void)gizmo;
+    (void)output;
+    return (char *)GizmoDefaultOutputName;
+}
+static i32 __cdecl DefaultGizmo_GetNumOutputs(GIZMO_PC *gizmo) {
+    (void)gizmo;
+    return 1;
+}
+ADD_GIZMO_CONFIG_TYPE_PC Default_ADDGIZMOTYPE = {NULL,
+                                                 NULL,
+                                                 {-1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                                                  (void *)DefaultGizmo_GetOutput, (void *)DefaultGizmo_GetOutputName,
+                                                  (void *)DefaultGizmo_GetNumOutputs}};

@@ -1443,3 +1443,71 @@ void __cdecl GizmoSortBlowups(WORLDINFO *world) {
         }
     }
 }
+
+STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, effect_flags) == 0x80);
+STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, field_084) == 0x84);
+STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, field_09c) == 0x9c);
+STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, field_0fb) == 0xfb);
+GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowupTypeAdd(WORLDINFO *world, NUSPECIALHANDLE *special, i32 flags, i32 *result) {
+    i32 i;
+    GIZMOBLOWUPTYPE_PC *type;
+    NUINSTANIM_TIME_VIEW *animation;
+    for (i = 0; i < world->gizmo_blowup_type_count; ++i) {
+        type = &world->gizmo_blowup_types[i];
+        if (NuSpecialCompare(&type->animated_special, special) && ((type->animation_flags & 0x2000) || flags)) {
+            *result = 0;
+            return NULL;
+        }
+    }
+    if (world->gizmo_blowup_type_count >= (u16)world->current_level->max_gizmoblowuptypes)
+        return NULL;
+    type = &world->gizmo_blowup_types[world->gizmo_blowup_type_count];
+    if (special && NuSpecialExistsFn(special)) {
+        type->animated_special = *special;
+        NuStrCpy(type->name, NuSpecialGetName(&type->animated_special));
+    }
+    for (i = 0; i < 7; ++i)
+        type->particle_types[i] = -1;
+    type->effect_flags = 100;
+    type->field_0fb = 1;
+    type->animation_flags = flags ? 0xe000 : 0xc000;
+    type->animation_start_frame = 1.0f;
+    animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&type->animated_special);
+    type->animation_end_frame =
+        animation ? NuAnimEndFrameOld(
+                        ((NUGSCN *)type->animated_special.scene)->instance_animation_data[animation->animation_index])
+                  : 1.0f;
+    type->animation_base_frame = 1.0f;
+    type->field_09c = 0.0f;
+    type->field_084 = 1.0f;
+    GameAntiNodeData_Init(&type->anti_node_data, special);
+    ++world->gizmo_blowup_type_count;
+    return type;
+}
+void __cdecl GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE_PC *type, WORLDINFO *world) {
+    GIZMOBLOWUPTYPE_PC *pool, *capacity_last, *last, *moved;
+    i32 i;
+    if (!world || world->gizmo_blowup_type_count <= 0 || !type)
+        return;
+    pool = world->gizmo_blowup_types;
+    if ((u32)type < (u32)pool || (u32)type > (u32)(pool + (u16)world->current_level->max_gizmoblowuptypes))
+        return;
+    capacity_last = pool + (u16)world->current_level->max_gizmoblowuptypes - 1;
+    for (moved = type + 1; moved <= capacity_last; ++moved)
+        for (i = 0; i < world->gizmo_blowup_count; ++i)
+            if (world->gizmo_blowups[i].type == moved)
+                world->gizmo_blowups[i].type = moved - 1;
+    last = pool + world->gizmo_blowup_type_count - 1;
+    while (type != last) {
+        *type = *(type + 1);
+        ++type;
+    }
+    memset(type, 0, sizeof(*type));
+    --world->gizmo_blowup_type_count;
+}
+void *__cdecl gizmoblowup_reservebuffers(WORLDINFO *world) {
+    InitGizmoBlowupTypes(world);
+    InitGizmoBlowups(world);
+    InitGizmoBlowupsMtxBuffer(world);
+    return world->gizmo_blowups;
+}

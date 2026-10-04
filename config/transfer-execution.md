@@ -1900,3 +1900,77 @@ portal clipping and renderer subsets alongside the broad ZIP transport/reset ban
 and actual matrix inverse/transform family. ZIP rope modulation and ArcSine x87
 intermediates were repaired before scratch source acceptance; storage and final
 normal runtime remain pending. Candidates receive no source coverage. Whole-project transfer and direct-main checkpoints continue.
+
+
+### ZIP transport, portal math and arena/message checkpoint (2026-10-04)
+
+57 complete new functions add 15,727 unique PC bytes over 0a0bb75: ZIP transport,
+reset, callbacks and gizmo services 35/10,627; rendering 3/411; anti-node pool/type
+arena 6/1,366; portal clipping 2/702; matrix/vector math 3/1,597; anti-node update
+and camera getters 3/796; Message/endian 5/228. Whole-PC fuzzy coverage rises from
+19.193244% to 19.502728%. Unique compared code reaches 980,429; the native objdiff
+denominator is 980,946 with existing aliases retained. Twenty-three new exact
+functions add 1,305 bytes, reaching 178,277/5.135822% of 3,471,246 .text bytes.
+
+All old exact code/data/member matches survive. Of 3,463 prior complete function
+copies, 3,462 remain identical. Unchanged particle source reproduces the already
+reviewed 713/717 scheduling pair; all 34 named relocations and qualified x87
+behavior survive. No flags, original boundaries or source tuning change the metric.
+
+ZIP preserves the original private ESI Reset/caller group, actual ArcSine x87
+intermediates, rope modulation state and native two-million-unit reset height.
+The independent native loader/arena/callback/movement/rope fixture passes 142
+checks. Its initial six movement failures are retained: test context 0 denotes
+Jump; context 1 is the valid LandJump. Correcting that input and asserting the
+actual ObjLandReady domain changed only the harness. Low-dot ArcSine geometry is
+qualified within two angle units; whole-domain accuracy and decorative cheat
+rope rendering remain untested. Real render-stream providers pass 45 checks with
+valid initialized materials/display lists; hardware submission and inherited
+NuPrimBegin NULL-list fallback remain unclaimed.
+
+Anti-node construction keeps native 18 + count*40 allocation and exact-end
+acceptance; unregistration retains native count behavior even for an absent node.
+Type/instance code uses actual unsigned WORD capacities and initializes seven
+particle WORDs. Update retains cached-next traversal, real timer/expiry comparisons
+and verified AI field offsets. The genuine Message C++ owner defines its private
+512-record POD pool, stride 0x4b4, with a complete 616,448-byte zero initializer;
+its original owning extent remains unknown. Shared NETMESSAGE_PC fields and
+thiscall/RET4 constructor ABI are asserted. Endian/write services preserve native
+NULL-data behavior, without added guards or fabricated networking providers.
+Arena, update and stream fixtures pass 150 checks across all current normal owners.
+
+Portal clipping stages eight f32 dot products before ordered comparisons and uses
+native signed WORD plane counts. Matrix inverse retains full scaled-pivot logic;
+three-vector homogeneous transform stages the reciprocal, while four-vector
+transform performs the PC operation without W division. Twenty arithmetic and
+nine clipping checks pass. Temporary shorter path copies overcome Windows command
+length limits; every linked normal object is hash-equal before/after, with no
+provider or content substitution. Private frustum construction/caller recursion
+is still scratch research and receives no source credit.
+
+The source-only EXE links 3,520 function/5,961 data definitions across 267 actual
+objects. LLVM18 checks 294 source/header files and 267 units; all 700 tests pass
+with three skips. All 366 selected native checks use the full 267 normal object
+set, with zero candidate replacements or supplemental/fake providers. Complete
+retail matching and independent endpoint/preservation review pass. Selected valid
+CPU domains do not establish GPU, hardware audio, networking, arbitrary malformed
+capacity or complete game execution. Prior exact-SHA CI for 0a0bb75 passed.
+
+26 shared definitions add 632 source-view bytes: three verified NUL owners/32
+known bytes and 23 unknown views/600 bytes, including the real 512-byte grid.
+All 3,348 old regions/1,662 scopes survive; 3,374 normal regions equal isolated
+output across 1,688 scopes. Known 565/137,725 and unknown 1,123/127,217 describe the
+verified shared scope. All 4,443 prior exact physical copies and two exact member
+fields/four bytes remain unchanged; 38 new known exact copies yield 4,481. All 66
+new complete native initializer copies are retail-equal; 28 unknown views receive
+zero original-extent/allocation credit. The 4,509 verified-copy union is not exact
+coverage. Exact data union rises by 59 bytes to 630,991. Private ZIP/default tables
+and Message pool retain their real source ownership.
+
+The 08:30 checkpoint waits for final complete initializer/endpoint acceptance,
+documentation and fresh report fingerprints before commit. The user's three
+journal edits remain untouched. Next are four accepted utilities/terrain getters
+(255 exact bytes), pending two real scalar views, alongside larger Bolt provider,
+private portal/frustum caller and camera-action banks. Those scratch candidates
+receive no source credit. Broad whole-project transfers and direct-main pushes
+continue until the user stops or pauses them.

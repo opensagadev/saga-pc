@@ -4207,3 +4207,19 @@ retains native f32 spills, strict first-tie tests and status mask 804001. Existi
 32-byte Vorbis header callbacks emitted in two more owners receive zero unique
 transfer credit. Independent complete-body receipts and endpoint proof remain
 under ignored transfer-execution-20261003 research; user journal edits untouched.
+
+
+ZIP/portal/math/arena/Message checkpoint transfers 57 verified complete PC
+functions/15,727 unique bytes. ZIP's Reset helper retains its original private ESI
+ABI and ordinary original-TU callers; actual ArcSine x87 intermediates and mutable
+rope modulation state are preserved. Portal comparisons retain native f32 spills
+and signed WORD plane counts. Matrix inverse and homogeneous transforms use their
+full extents; the PC four-vector transform does not divide by W. Message's native
+C++ thiscall constructor has ECX this, RET4 and EAX this; named NETMESSAGE_PC and
+nested pool fields have explicit size/offset assertions. Its genuine private POD
+pool's initializer is verified but original extent remains blank. Native unsigned
+WORD arena capacities, anti-node timer/expiry and cached-next traversal are retained.
+Independent endpoint acceptance verifies all complete relocated hashes and old
+exact matches. Private frustum callers and larger Bolt providers remain held
+scratch hypotheses. Retained proof paths are under ignored build/analysis/
+transfer-execution-20261003; the user's journal edits remain untouched.

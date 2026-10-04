@@ -238,3 +238,19 @@ u8 __cdecl EdFileReadUnsignedChar(void) {
     EdFileRead(&character, sizeof(character));
     return character;
 }
+
+void __cdecl EdFileSwapEndianess16(void *value) {
+    u8 *bytes = (u8 *)value;
+    u8 temp = bytes[0];
+    bytes[0] = bytes[1];
+    bytes[1] = temp;
+}
+void __cdecl EdFileSwapEndianess32(void *value) {
+    u8 *bytes = (u8 *)value;
+    u8 temp = bytes[0];
+    bytes[0] = bytes[3];
+    bytes[3] = temp;
+    temp = bytes[1];
+    bytes[1] = bytes[2];
+    bytes[2] = temp;
+}

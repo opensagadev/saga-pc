@@ -267,3 +267,15 @@ void __cdecl SuperCarry_GetObjectPos(GAMEOBJECT *object, NUVEC *position, NUVEC 
         NuVecAdd(position, position, &offset);
     }
 }
+
+extern i32 ZipUpLandCombatRollContextPc, ZipUpWallShuffleContextPc;
+i32 __cdecl ObjLandReady(GAMEOBJECT *object) {
+    i32 context = object->character_context;
+    if ((CInfo[context].flags & 0x1004) != 0 &&
+        (ZipUpLandCombatRollContextPc == -1 || ZipUpLandCombatRollContextPc != context || object->field_7b3 >= 1)) {
+        if (ZipUpWallShuffleContextPc != -1 && ZipUpWallShuffleContextPc == context)
+            return 0;
+        return 1;
+    }
+    return 0;
+}

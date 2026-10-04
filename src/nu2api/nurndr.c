@@ -415,3 +415,62 @@ void __cdecl NuRndrAxisArrowsMtx(NUMTX *matrix, f32 length, NUMTL *material) {
 
 void __cdecl NuRndrInitWorld(void) {
 }
+
+STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, u) == 0x10);
+STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, v) == 0x14);
+
+i32 __cdecl NuRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *matrix) {
+    i32 i;
+    NuPrim3DBegin(14, 7, material, matrix);
+    for (i = 0; i < 2; ++i) {
+        LOCATOR_PRIM_VERTEX_PC *output;
+        f32 u, v, x, y, z;
+        NuRndrPrimSetColourPrivate((i32)vertices[i].colour);
+        u = vertices[i].u;
+        v = vertices[i].v;
+        output = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+        output->u = u;
+        output->v = v;
+        x = vertices[i].position.x;
+        y = vertices[i].position.y;
+        z = vertices[i].position.z;
+        output->x = x;
+        output->y = y;
+        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = z;
+        NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX_PC);
+        ++NuPrimVertexCount;
+    }
+    NuPrim3DEnd();
+    return 1;
+}
+
+i32 __cdecl NuRndrStrip3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *matrix, i32 count) {
+    i32 i;
+    if (count == 0)
+        return 1;
+    NuPrim3DBegin(13, 7, material, matrix);
+    for (i = 0; i < count; ++i) {
+        LOCATOR_PRIM_VERTEX_PC *output;
+        f32 u, v, x, y, z;
+        NuRndrPrimSetColourPrivate((i32)vertices[i].colour);
+        u = vertices[i].u;
+        v = vertices[i].v;
+        output = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+        output->u = u;
+        output->v = v;
+        x = vertices[i].position.x;
+        y = vertices[i].position.y;
+        z = vertices[i].position.z;
+        output->x = x;
+        output->y = y;
+        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = z;
+        NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX_PC);
+        ++NuPrimVertexCount;
+    }
+    NuPrim3DEnd();
+    return 1;
+}
+
+i32 __cdecl NuRndrTriStrip3dClip(NURND_VERTEX3D_PC *vertices, i32 count, NUMTX *matrix, NUMTL *material) {
+    return NuRndrStrip3d(vertices, material, matrix, count);
+}

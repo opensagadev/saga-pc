@@ -577,3 +577,14 @@ i32 __cdecl BoundingBoxToLine(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, NUV
     }
     return 0;
 }
+
+f32 __cdecl NuVecMtxTransformH(NUVEC *out, NUVEC *v, NUMTX *m) {
+    f32 w = v->x * m->m03 + v->y * m->m13 + v->z * m->m23 + m->m33;
+    f32 reciprocal_w = w == 0.0f ? 0.0f : 1.0f / w;
+    f32 y = (v->x * m->m01 + v->y * m->m11 + v->z * m->m21 + m->m31) * reciprocal_w;
+    f32 z = (v->x * m->m02 + v->y * m->m12 + v->z * m->m22 + m->m32) * reciprocal_w;
+    out->x = (v->x * m->m00 + v->y * m->m10 + v->z * m->m20 + m->m30) * reciprocal_w;
+    out->y = y;
+    out->z = z;
+    return reciprocal_w;
+}

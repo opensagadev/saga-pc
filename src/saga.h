@@ -98,6 +98,19 @@ typedef struct numtx_s {
     f32 m33;
 } NUMTX;
 
+typedef struct nurnd_vertex3d_pc_s {
+    NUVEC position;
+    u8 unknown_0c[12];
+    u32 colour;
+    f32 u;
+    f32 v;
+} NURND_VERTEX3D_PC;
+STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
+STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, position) == 0);
+STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, colour) == 0x18);
+STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, u) == 0x1c);
+STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, v) == 0x20);
+
 typedef struct __declspec(align(16)) NUVEC4BLOCK_PC {
     f32 x[4];
     f32 y[4];
@@ -11897,6 +11910,41 @@ void __cdecl PCStereoUnknownToken(void);
     extern const char *PCSoundOggExtension;
     extern i32 PCSoundVolumeMultiplier;
     /* Current shared TYPE100/INSTANCE114/TERRAIN_SET views suffice; no new layout slots. */
+    i32 __cdecl NuRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
+    i32 __cdecl NuRndrStrip3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *, i32);
+    i32 __cdecl NuRndrTriStrip3dClip(NURND_VERTEX3D_PC *, i32, NUMTX *, NUMTL *);
+    void __cdecl EdFileSwapEndianess16(void *);
+    void __cdecl EdFileSwapEndianess32(void *);
+    void __cdecl GameAntinode_Update(void *);
+    i32 __cdecl ViewCamGetMode(void);
+    NUVEC *__cdecl ViewCamGetTgt(void);
+    void *__cdecl GameAntnode_CreateSys(WORLDINFO *, VARIPTR *, VARIPTR *, i32);
+    void __cdecl GameAntinode_UnregisterAntiNode(void *, void *);
+    void *__cdecl GameAntinode_UpdateAntiNodeUsingData(void *, void *, NUVEC *, u16, void *, f32, i32);
+    GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowupTypeAdd(WORLDINFO *, NUSPECIALHANDLE *, i32, i32 *);
+    void __cdecl GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE_PC *, WORLDINFO *);
+    void *__cdecl gizmoblowup_reservebuffers(WORLDINFO *);
+    /* All aggregate views stay named/local and already asserted; no new shared field/data required. */
+    i32 __cdecl clipTestBox(NUVEC *, NUVEC *, NUPLANE *, i32);
+    i32 __cdecl NuPortalClipTestBox(NUVEC *, NUVEC *, NUPORTAL_FRUSTUM_PC *);
+    void __cdecl NuMtxInvH(NUMTX *, NUMTX *);
+    f32 __cdecl NuVecMtxTransformH(NUVEC *, NUVEC *, NUMTX *);
+    void __cdecl NuVec4MtxTransformH(NUVEC4 *, NUVEC4 *, NUMTX *);
+    struct add_gizmo_config_type_pc_s;
+    struct zipup_progress_pc_s;
+    i32 __cdecl ZipUps_Load(WORLDINFO *world);
+    void *__cdecl ZipUps_ReserveBufferSpace(WORLDINFO *world);
+    void __cdecl ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed);
+    void __cdecl ZipUps_Reset(WORLDINFO *world, void *unused, struct zipup_progress_pc_s *progress);
+    void __cdecl ZipUps_Update(WORLDINFO *world, void *unused, f32 delta_time);
+    struct add_gizmo_config_type_pc_s *__cdecl ZipUps_RegisterGizmo(i32 type_id);
+    void __cdecl InitRopeMtl(char *name, VARIPTR *buffer, VARIPTR *buffer_end);
+    void __cdecl DrawRopeSingle(NUVEC *start, NUVEC *end, f32 amount, NUMTL *material, f32 time, f32 grow_time,
+                                f32 spacing, f32 scale);
+    void __cdecl ZipUps_DrawLines(void);
+    i32 __cdecl ObjLandReady(GAMEOBJECT *object);
+    GIZMO_PC *__cdecl AddGizmo(void *system, i32 type_id, char *name, void *object);
+
     i32 __cdecl GizBlowup_InitSingleTerrain(GIZMOBLOWUP_PC *);
     void __cdecl GizBlowup_InitTerrain(void);
     void __cdecl GizBlowup_DeleteSingleTerrain(GIZMOBLOWUP_PC *);
@@ -11919,6 +11967,33 @@ void __cdecl PCStereoUnknownToken(void);
     extern i32 PCSampleLoadEnabledPc;
     extern i32 PCSoundSampleLimitPc;
     extern i32 PCSoundStreamSerialPc;
+    extern const char PCContextName_ZipUp[6];
+    extern u64 GameAntinodeGridPc[64];
+    extern const NUVEC ZipUpHookOffsetPc;
+    extern f32 ZipUpSwingOffsetLengthPc;
+    extern f32 ZipUpSwingOffsetHeightPc;
+    extern f32 ZipUpRiderOffsetScalePc;
+    extern f32 ZipUpRiderHeightPc;
+    extern f32 ZipUpSwingDurationPc;
+    extern u16 ZipUpSwingStartAnimationPc;
+    extern u16 ZipUpSwingSwingAnimationPc;
+    extern u16 ZipUpSwingJumpAnimationPc;
+    extern i32 CanDrawZipUpSwirls;
+    extern NUMTL *ropemtl;
+    extern f32 ZipUpMarkerOffsetYPc;
+    extern f32 ZipUpMarkerOffsetZPc;
+    extern f32 ZipUpRopeHalfWidthPc;
+    extern u32 ZipUpRopeCheatColourPc;
+    extern i16 ZipUpLineCharacterIdPc;
+    extern NUMTL *ZipUpLineMaterialPc;
+    extern char *ZipUpTypeNamePtrPc;
+    extern i32 zipup_gizmotype_id;
+    extern i32 ZipUpLandCombatRollContextPc;
+    extern i32 ZipUpWallShuffleContextPc;
+    extern i32 ZipUpRopeModulationPc;
+    extern char GrapAttach_text[11];
+    extern char GrapDetach_text[11];
+    extern char GrapSwing_text[10];
     extern struct PC_OGG_CACHE_RECORD_PC *PCOggCachePoolPc;
     extern i32 PCOggCriticalSectionPc;
     i32 __cdecl PCThreadCriticalSectionCreate_candidate(void);
@@ -13859,6 +13934,29 @@ class SoundQueueVolumeSink {
     virtual void Slot38(void) = 0;
     virtual i32 __stdcall SetVolume(i32 volume) = 0;
 };
+
+struct NETMESSAGE_PC {
+    struct MessageData {
+        u8 bytes[0x4b0];
+        u32 references;
+    };
+    static MessageData sm_poolMessageData[512];
+    i32 swap_endianness;
+    MessageData *data;
+    u32 read_offset;
+    u32 write_offset;
+    NETMESSAGE_PC(u32 offset);
+    void Write16(const i16 *value);
+    void Write32(const i32 *value);
+};
+STATIC_ASSERT(sizeof(NETMESSAGE_PC) == 0x10);
+STATIC_ASSERT(offsetof(NETMESSAGE_PC, swap_endianness) == 0);
+STATIC_ASSERT(offsetof(NETMESSAGE_PC, data) == 4);
+STATIC_ASSERT(offsetof(NETMESSAGE_PC, read_offset) == 8);
+STATIC_ASSERT(offsetof(NETMESSAGE_PC, write_offset) == 0xc);
+STATIC_ASSERT(sizeof(NETMESSAGE_PC::MessageData) == 0x4b4);
+STATIC_ASSERT(offsetof(NETMESSAGE_PC::MessageData, bytes) == 0);
+STATIC_ASSERT(offsetof(NETMESSAGE_PC::MessageData, references) == 0x4b0);
 
 struct PC_WAVE_CHUNK_PC {
     u32 kind;

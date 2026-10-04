@@ -166,3 +166,10 @@ void __cdecl GameCam_HitJudder(void) {
         amount = -amount;
     GameCam_Judder(GameCam, amount, qrand() / 0x5556, NULL);
 }
+
+i32 __cdecl ViewCamGetMode(void) {
+    return ViewCam.mode;
+}
+NUVEC *__cdecl ViewCamGetTgt(void) {
+    return &ViewCam.target;
+}

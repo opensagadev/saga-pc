@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <math.h>
 
 #define ALIGN_UP_16(address) (((address) + 15u) & ~15u)
 
@@ -128,4 +129,58 @@ i32 __cdecl NuPortalClipTest(NUGSCN *scene, NUVEC *position, f32 radius, i16 roo
         }
     }
     return 0;
+}
+
+i32 __cdecl clipTestBox(NUVEC *minimum, NUVEC *maximum, NUPLANE *planes, i32 plane_count) {
+    NUVEC min = *minimum;
+    NUVEC max = *maximum;
+    i32 inside_vertices = 0;
+    i32 plane_index;
+    for (plane_index = 0; plane_index < plane_count; ++plane_index) {
+        const NUPLANE *plane = &planes[plane_index];
+        i32 inside_plane = 0;
+        f32 distance1, distance2, distance3, distance4;
+        f32 distance5, distance6, distance7, distance8;
+        distance1 = plane->a * min.x + plane->b * min.y + plane->c * min.z + plane->d;
+        if (!(distance1 < 0.0f))
+            ++inside_plane, ++inside_vertices;
+        distance2 = plane->a * max.x + plane->b * min.y + plane->c * min.z + plane->d;
+        if (!(distance2 < 0.0f))
+            ++inside_plane, ++inside_vertices;
+        distance3 = plane->a * max.x + plane->b * max.y + plane->c * min.z + plane->d;
+        if (!(distance3 < 0.0f))
+            ++inside_plane, ++inside_vertices;
+        distance4 = plane->a * min.x + plane->b * max.y + plane->c * min.z + plane->d;
+        if (!(distance4 < 0.0f))
+            ++inside_plane, ++inside_vertices;
+        distance5 = plane->a * min.x + plane->b * min.y + plane->c * max.z + plane->d;
+        if (!(distance5 < 0.0f))
+            ++inside_plane, ++inside_vertices;
+        distance6 = plane->a * max.x + plane->b * min.y + plane->c * max.z + plane->d;
+        if (!(distance6 < 0.0f))
+            ++inside_plane, ++inside_vertices;
+        distance7 = plane->a * max.x + plane->b * max.y + plane->c * max.z + plane->d;
+        if (!(distance7 < 0.0f))
+            ++inside_plane, ++inside_vertices;
+        distance8 = plane->a * min.x + plane->b * max.y + plane->c * max.z + plane->d;
+        if (!(distance8 < 0.0f))
+            ++inside_plane, ++inside_vertices;
+        if (inside_plane == 0) {
+            return 0;
+        }
+    }
+    return inside_vertices == plane_count * 8 ? 1 : 2;
+}
+
+i32 __cdecl NuPortalClipTestBox(NUVEC *center, NUVEC *extent, NUPORTAL_FRUSTUM_PC *frustum) {
+    i32 i;
+    for (i = 0; i < frustum->plane_count; ++i) {
+        const NUPLANE *plane = &frustum->planes[i];
+        const f32 distance = plane->a * center->x + plane->b * center->y + plane->c * center->z + plane->d;
+        const f32 radius = fabsf(plane->a) * extent->x + fabsf(plane->b) * extent->y + fabsf(plane->c) * extent->z;
+        if (distance < -radius) {
+            return 0;
+        }
+    }
+    return 1;
 }

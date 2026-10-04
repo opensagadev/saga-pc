@@ -8,7 +8,9 @@ address    , symbol                                                         , si
 0x00408800 , _InitCables                                                    , 127   , void __cdecl (WORLDINFO *)
 0x408880,_CreateCable,147,"CABLE_RECORD_PC *__cdecl(GAMEOBJECT*,GAMEOBJECT*,i32)"
 0x40a2a0,_CableTargetGameObject,517,"GAMEOBJECT *__cdecl(GAMEOBJECT*,NUVEC*,f32)"
+0x40aa50,_ViewCamGetMode,6,i32 __cdecl (void)
 0x0040aa60 , _ViewCamGetGamePad                                             , 6     , GAMEPAD_PC *__cdecl (void)
+0x40aa70,_ViewCamGetTgt,6,NUVEC *__cdecl (void)
 0x40e690   , _GoingForwardsAlongNarrowSock                                  , 106   , i32 __cdecl (GAMEOBJECT *)
 0x40eff0,_CalcSplinePoint,1119,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
 0x40f450,_CalcSplinePointFromDist,190,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
@@ -618,8 +620,37 @@ address    , symbol                                                         , si
 0x4d4380,_Traffic_FindVehiclePc,205,i32 __cdecl (char *)
 0x4d4450,_Traffic_vehicle,77,void __cdecl (NUFPAR_PC *)
 0x004d44a0 , _TrafficAnimSys_Configure                                      , 650   , "void __cdecl (WORLDINFO *, char *)"
+0x4d55d0,_ZipUpArcSinePc,320,
+0x4d5770,_RopeMtxSetRotationZ,160,
+0x4d5810,_RopeMtxRotateX,217,
+0x4d58f0,_RopeMtxRotateY,219,
+0x4d59d0,_RopeMtxRotateZ,215,
+0x4d5ab0,_ZipUp_ActivateRev,74,
+0x4d5b00,_ZipUps_Load,460,i32 __cdecl(WORLDINFO *)
+0x4d5cd0,_ZipUps_ReserveBufferSpace,77,void *__cdecl(WORLDINFO *)
+0x4d5d20,_ZipUpResetSinglePc,303,
+0x4d5e50,_ZipUps_Reset,167,"void __cdecl(WORLDINFO *,void *,struct zipup_progress_pc_s *)"
 0x004d5f00,_ZipUp_FindNearest,311,"ZIPUP_PC *__cdecl(WORLDINFO *,NUVEC *,f32,f32 *,i32 *,GAMEOBJECT *)"
-0x004d6060 , _ZipUp_MoveCode                                                , 3774  , "void __cdecl (GAMEOBJECT *, i32)"
+0x4d6060,_ZipUp_MoveCode,3774,"void __cdecl(GAMEOBJECT *,i32)"
+0x4d6f20,_ZipUp_GetStartPoint,165,
+0x4d6fd0,_ZipUps_Update,133,"void __cdecl(WORLDINFO *,void *,f32)"
+0x4d70f0,_ZipUpDrawMarkerPc,172,
+0x4d71a0,_ZipUps_Draw,833,
+0x4d74f0,_ZipUp_Activate,32,
+0x4d7510,_ZipUp_SetVisibility,36,
+0x4d7540,_ZipUps_GetMaxGizmos,25,
+0x4d7560,_ZipUps_AddGizmos,97,
+0x4d75d0,_ZipUp_GetGizmoName,14,
+0x4d75e0,_ZipUps_AllocateProgressData,21,
+0x4d7600,_ZipUps_ClearProgress,22,
+0x4d7620,_ZipUps_StoreProgress,126,
+0x4d76a0,_ZipUp_GetOutput,24,
+0x4d76c0,_ZipUp_GetOutputName,6,
+0x4d76d0,_ZipUp_GetNumOutputs,6,
+0x4d76e0,_ZipUps_RegisterGizmo,288,struct add_gizmo_config_type_pc_s *__cdecl(i32)
+0x4d7800,_InitRopeMtl,300,"void __cdecl(char *,VARIPTR *,VARIPTR *)"
+0x4d7930,_DrawRopeSingle,1675,"void __cdecl(NUVEC *,NUVEC *,f32,NUMTL *,f32,f32,f32,f32)"
+0x4d7fc0,_ZipUps_DrawLines,453,void __cdecl(void)
 0x4d8280,_PodMatrixCopyPrivatePc,95,
 0x4d94b0,_RacePodAllocatePrivatePc,52,
 0x4d94f0,_RacePodAlignPrivatePc,539,
@@ -1133,6 +1164,8 @@ address    , symbol                                                         , si
 0x536fc0   , _Action_MoveAwayFromNode                                       , 478   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x005371a0 , _AISysUpdateCharacterPathPos                                   , 458   , "void __cdecl (AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, i32, f32)"
 0x00537370 , _AISysProcessCharacter                                         , 1424  , "void __cdecl (AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, i32, f32, i32, i32)"
+0x53d3d0,?Write16@NETMESSAGE_PC@@QAEXPBF@Z,59,void __thiscall NETMESSAGE_PC::Write16(const i16 *)
+0x53d5d0,??0NETMESSAGE_PC@@QAE@I@Z,66,NETMESSAGE_PC::NETMESSAGE_PC(u32)
 0x53dc00   , _AdjustMinMaxBox                                               , 119   , "void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x53dc80   , _SplineLength                                                  , 141   , "f32 __cdecl (NUGSPLINE *, i32)"
 0x53dd10   , _OnOrOutsidePlane                                              , 54    , "i32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
@@ -1403,6 +1436,9 @@ address    , symbol                                                         , si
 0x5593f0,_GizObstacleUpdate_AutoStart,54,void __cdecl (GIZOBSTACLE *)
 0x00559430 , _GizObstacles_RegisterGizmo                                    , 318   , ADD_GIZMO_CONFIG_TYPE_PC * __cdecl (i32)
 0x5595b0,_GizmoFileReadName,35,i32 __cdecl (char *)
+0x5595e0,_DefaultGizmo_GetOutput,3,
+0x5595f0,_DefaultGizmo_GetOutputName,6,
+0x559600,_DefaultGizmo_GetNumOutputs,6,
 0x559610   , _GizmoBufferAlloc                                              , 67    , "void * __cdecl (VARIPTR *, VARIPTR *, i32)"
 0x559660   , _RegisterGizmoTypes                                            , 638   , "void __cdecl (VARIPTR *, VARIPTR *, REGISTER_GIZMO_CONFIG_TYPE_FN *, i32)"
 0x005598e0 , _CreateGizmoSys                                                , 289   , "void *__cdecl (void *, VARIPTR *, VARIPTR *)"
@@ -1416,7 +1452,7 @@ address    , symbol                                                         , si
 0x559d40   , _GizmoSysDraw                                                  , 97    , "void __cdecl (void *, void *, f32)"
 0x559db0   , _GizmoSysPanelDraw                                             , 97    , "void __cdecl (void *, void *, f32)"
 0x559e20   , _GizmoGetTypeIDByName                                          , 85    , "i32 __cdecl (void *, char *)"
-0x559ee0   , _AddGizmo                                                       , 112   , "GIZMO_PC * __cdecl (void *, i32, char *, void *)"
+0x559ee0,_AddGizmo,112,"GIZMO_PC *__cdecl(void *,i32,char *,void *)"
 0x0055a020 , _GizmoFindByName                                               , 244   , "void * __cdecl (void *, i32, char *)"
 0x0055a1b0 , _GizmoGetOutput                                                , 70    , "i32 __cdecl(void *system, void *gizmo, i32 output, i32 mode)"
 0x0055a200 , _GizmoGetOutputName                                            , 71    , "char * __cdecl(void *system, void *gizmo, i32 output)"
@@ -1503,6 +1539,7 @@ address    , symbol                                                         , si
 0x561dd0,_BigJump_LandAction_Default,66,i32 __cdecl (GAMEOBJECT *)
 0x00561e20,_StartBigJump,489,"i32 __cdecl (GAMEOBJECT *, NUVEC *, i32, f32, f32, i32)"
 0x562010,_FindSlamOrigin,215,"void __cdecl (GAMEOBJECT *, NUVEC *, NUVEC *)"
+0x5620f0,_ObjLandReady,86,i32 __cdecl(GAMEOBJECT *)
 0x5621a0,_StartFallLand,366,"i32 __cdecl(GAMEOBJECT*,i32)"
 0x563ec0,_BigJumpCode,1068,void __cdecl (GAMEOBJECT *)
 0x564af0,_BackDrop_Draw,285,"void __cdecl (f32,i32)"
@@ -1516,8 +1553,11 @@ address    , symbol                                                         , si
 0x5666d0,_InitGizmoBlowupTypes,93,i32 __cdecl (WORLDINFO *)
 0x566730,_InitGizmoBlowups,112,i32 __cdecl (WORLDINFO *)
 0x5667a0,_InitGizmoBlowupsMtxBuffer,73,i32 __cdecl (WORLDINFO *)
+0x5667f0,_gizmoblowup_reservebuffers,82,void *__cdecl (WORLDINFO *)
 0x566ba0,_GizmoBlowupRestoreInitialStatePc,119,void(GIZMOBLOWUP_PC *)
 0x566c20,_GizBlowup_Respawn,379,void __cdecl(GIZMOBLOWUP_PC *)
+0x566de0,_GizmoBlowupTypeAdd,395,"GIZMOBLOWUPTYPE_PC *__cdecl (WORLDINFO *, NUSPECIALHANDLE *, i32, i32 *)"
+0x566f70,_GizmoBlowupTypeRemove,290,"void __cdecl (GIZMOBLOWUPTYPE_PC *, WORLDINFO *)"
 0x567130,_GizmoSwapBlowups,91,"void __cdecl (GIZMOBLOWUP_PC *, GIZMOBLOWUP_PC *)"
 0x567190,_GizmoSortBlowups,302,void __cdecl (WORLDINFO *)
 0x5672d0,_GizmoBlowUp_AddEffects,1322,"void __cdecl (NUVEC *, GIZMOBLOWUP_PC *, i32, i32, GAMEOBJECT *)"
@@ -1752,6 +1792,7 @@ address    , symbol                                                         , si
 0x00580950 , _Bolt_GetShootDirection_Default                                , 74    , "u16 __cdecl (GAMEOBJECT *, NUVEC *)"
 0x005809a0 , _Bolt_ObjTargetPosYAdjust                                      , 54    , f32 __cdecl (GAMEOBJECT *)
 0x00580c00 , _Bolt_Debris_Default                                           , 149   , "void __cdecl (BOLT *, NUVEC *, i32, NUVEC *, i32)"
+0x580d50,?Write32@NETMESSAGE_PC@@QAEXPBH@Z,59,void __thiscall NETMESSAGE_PC::Write32(const i32 *)
 0x00581e40 , _BoltTypes_Configure                                           , 362   , "void __cdecl (WORLDINFO *, char *)"
 0x00583030 , _Bolts_Update                                                  , 2738  , void __cdecl (WORLDINFO *)
 0x00583af0 , _Bolt_Shoot                                                    , 2722  , "void __cdecl (GAMEOBJECT *, i32, i32)"
@@ -2042,11 +2083,15 @@ address    , symbol                                                         , si
 0x0059a030 , _CharacterMiniKits_Dump                                        , 270   , void __cdecl (WORLDINFO *)
 0x59a420,_MiniKit_GameMsg_Update,156,void __cdecl (GAME_MESSAGE_PC *)
 0x59a4c0,_MiniKit_GameMsg_End,213,void __cdecl (GAME_MESSAGE_PC *)
+0x59a620,_GameAntnode_CreateSys,137,"void *__cdecl (WORLDINFO *, VARIPTR *, VARIPTR *, i32)"
+0x59a6b0,_GameAntinode_UnregisterAntiNode,97,"void __cdecl (void *, void *)"
 0x59a720,_GameAntinode_FindGridPosition,550,"void __cdecl(WORLDINFO *, NUVEC *, f32, f32, u8 *, u8 *, u8 *, u8 *)"
+0x59ab00,_GameAntinode_Update,784,void __cdecl (void *)
 0x59ae10,_GameAntiNodeData_Init,325,"void __cdecl (void *, NUSPECIALHANDLE *)"
 0x59af60,_GameAntiNodeData_Read,90,void __cdecl (void *)
 0x59afc0,_GameAntinode_RegisterAntiNode,284,"void* __cdecl(void*,NUVEC*,f32,f32,f32,u16,i32,f32)"
 0x59b0e0,_GameAntinode_RegisterAntiNodeUsingData,211,"void* __cdecl(void*,NUVEC*,u16,void*,f32,i32)"
+0x59b1c0,_GameAntinode_UpdateAntiNodeUsingData,365,"void *__cdecl (void *, void *, NUVEC *, u16, void *, f32, i32)"
 0x0059b360 , _Episodes_ConfigureList                                        , 702   , "EPISODEDATA_PC * __cdecl (char *, VARIPTR *, VARIPTR *, i32, i32 *)"
 0x59b6a0,_Episode_FindAreaFromFlags,83,"u32 __cdecl(EPISODEDATA_PC*,u32,u32)"
 0x59bb30,_Pushing,389,"i32 __cdecl(GAMEOBJECT *,u16 *,i32 *,i32 *)"
@@ -2150,6 +2195,7 @@ address    , symbol                                                         , si
 0x5b2cf0,_Whip_Release,163,void __cdecl(GAMEOBJECT*)
 0x005b2e20 , _NuASin                                                        , 320   , i32 __cdecl (f32)
 0x005b30a0 , _NuVecMtxTransform                                             , 108   , "void __cdecl (NUVEC *, NUVEC *, NUMTX *)"
+0x5b3110,_NuVecMtxTransformH,183,"f32 __cdecl(NUVEC*,NUVEC*,NUMTX*)"
 0x005b3200 , _NuVecMtxRotate                                                , 99    , "void __cdecl (NUVEC *, NUVEC *, NUMTX *)"
 0x005b33c0 , _NuVecInvMtxTransform                                          , 128   , "void __cdecl (NUVEC *, NUVEC *, NUMTX *)"
 0x005b3470 , _NuVecInvMtxRotate                                             , 99    , "void __cdecl (NUVEC *, NUVEC *, NUMTX *)"
@@ -2178,6 +2224,7 @@ address    , symbol                                                         , si
 0x005b3d80 , _NuVecLerp                                                     , 61    , "void __cdecl (NUVEC *, NUVEC *, NUVEC *, f32)"
 0x005b3e20,_NuVec4Scale,45,"void __cdecl(NUVEC4 *, NUVEC4 *, f32)"
 0x005b3ec0 , _NuVec4MtxTransform                                            , 143   , "void __cdecl (NUVEC4 *, NUVEC *, NUMTX *)"
+0x5b3f50,_NuVec4MtxTransformH,163,"void __cdecl(NUVEC4*,NUVEC4*,NUMTX*)"
 0x005b44e0 , _NuMtxSetIdentity                                              , 21    , void __cdecl (NUMTX *)
 0x005b4500 , _NuMtxSetTranslation                                           , 68    , "void __cdecl (NUMTX *, NUVEC *)"
 0x005b4550 , _NuMtxSetTranslationNeg                                        , 74    , "void __cdecl (NUMTX *, NUVEC *)"
@@ -2209,6 +2256,7 @@ address    , symbol                                                         , si
 0x005b5a40 , _NuMtxInv                                                      , 212   , "void __cdecl (NUMTX *, NUMTX *)"
 0x005b5b20 , _NuMtxInvR                                                     , 110   , "void __cdecl (NUMTX *, NUMTX *)"
 0x005b5b90 , _NuMtxInvRSS                                                   , 351   , "void __cdecl (NUMTX *, NUMTX *)"
+0x5b5e90,_NuMtxInvH,1251,"void __cdecl(NUMTX*,NUMTX*)"
 0x005b6d20 , _NuMtxOrth                                                     , 308   , void __cdecl (NUMTX *)
 0x005b6e60 , _NuMtxGetXAxis                                                 , 25    , "void __cdecl (NUMTX *, NUVEC *)"
 0x005b6e80 , _NuMtxGetYAxis                                                 , 26    , "void __cdecl (NUMTX *, NUVEC *)"
@@ -2449,6 +2497,8 @@ address    , symbol                                                         , si
 0x5d9130,_NuPortalMaxDepth,15,"void __cdecl(NUGSCN *,i32)"
 0x005d92b0 , _NuPortalWhichRoom                                             , 484   , "i16 __cdecl (NUGSCN *, NUVEC *)"
 0x5d94a0,_clipTestSphere,212,"i32 __cdecl(NUPORTALSPHERE_PC *,NUPORTAL_FRUSTUM_PC *)"
+0x5d9580,_clipTestBox,486,"i32 __cdecl(NUVEC*,NUVEC*,NUPLANE*,i32)"
+0x5d9770,_NuPortalClipTestBox,216,"i32 __cdecl(NUVEC*,NUVEC*,NUPORTAL_FRUSTUM_PC*)"
 0x5da3b0,_NuPortalClipTest,150,"i32 __cdecl(NUGSCN *,NUVEC *,f32,i16)"
 0x5da480,_StateAnimEvaluate2,152,"i32 __cdecl StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame)"
 0x5da520,_StateAnimEvaluate,214,"i32 __cdecl(STATE_ANIM_PC *, u8 *, u8 *, f32)"
@@ -2462,7 +2512,10 @@ address    , symbol                                                         , si
 0x005dabe0 , _NuHGobjForceShadowsOnCharacters                               , 16    , i32 __cdecl (i32)
 0x005dad10 , _NuVpGetPosition2                                              , 360   , "void (f32 *, f32 *)"
 0x005db100, _NuVpSetIdentityPc, 25,
+0x5dbed0,_NuRndrLine3d,222,"i32 __cdecl(NURND_VERTEX3D_PC *,NUMTL *,NUMTX *)"
 0x5dd230,_NuRndrAxisArrowsMtx,903,"void __cdecl(NUMTX *, f32, NUMTL *)"
+0x5dda30,_NuRndrStrip3d,160,"i32 __cdecl(NURND_VERTEX3D_PC *,NUMTL *,NUMTX *,i32)"
+0x5ddad0,_NuRndrTriStrip3dClip,29,"i32 __cdecl(NURND_VERTEX3D_PC *,i32,NUMTX *,NUMTL *)"
 0x005ddc80 , _NuWindAnimate                                                 , 112   , "void __cdecl (NUWIND *, f32)"
 0x5ddd10,_ResetSceneBeforeFramePC,238,"void __cdecl(NUDISPLAY_LIST_PC *,i32)"
 0x5dde00,_NuDisplayListCreate,602,"void __cdecl(NUDISPLAY_LIST_PC *,VARIPTR *,VARIPTR,i32,i32,i32,i32,i32,i32,i32)"
@@ -2667,6 +2720,8 @@ address    , symbol                                                         , si
 0x60b5d0,_BuildDebrisVerts,1360,"void __cdecl (DEBRIS_PART_HEADER_PC *, DEBRIS_PARTICLE_CHUNK_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32, f32, f32)"
 0x60c410,_NuRndrParticleGroup,705,"void __cdecl (DEBRIS_PARTICLE_CHUNK_PC *, DEBRIS_PART_HEADER_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32, f32, f32)"
 0x0061e6b0 , _NuKeyToAscii                                                  , 50    , "i32 __cdecl (u32, i32)"
+0x621180,_EdFileSwapEndianess16,15,void __cdecl (void *)
+0x621190,_EdFileSwapEndianess32,29,void __cdecl (void *)
 0x006211b0,_EdFileSetReadWrongEndianess,1,void __cdecl(i32)
 0x6211c0   , _EdFileSetMedia                                                , 10    , void __cdecl (i32)
 0x6211d0   , _EdFileSetPakFile                                              , 10    , void __cdecl (void *)
@@ -4116,6 +4171,7 @@ address    , symbol                                                         , si
 0x007516b0 , __real@40f0000000000000                                        , 8     , f64
 0x007516b8 , __real@4014000000000000                                        , 8     , const f64
 0x007516b8 , _nu_wind_scaled_time_multiplier                                , 8     , const f64
+0x7516c0,??_C@_00CNPNBAHC@?$AA@,1,compiler literal
 0x7516c0,_TextInputKeyNameTextPc7516c0,,char[1]
 0x007516d0 , __real@3d4ccccd                                                , 4     , const f32
 0x007516d8 , _NuQFntHalfScale                                               , 8     , const f64
@@ -4377,11 +4433,13 @@ address    , symbol                                                         , si
 0x7552e0,??_C@_06NNBDCBAP@SwPPad?$AA@,7,const char[7]
 0x007552e0 , _GetSfxSwPPadName                                              , 7     , const char[7]
 0x007552e8 , __real@3c23d70a                                                , 4     , const f32
+0x755304,__real@40600000,4,compiler literal
 0x755348,??_C@_08BIMHHCLM@MK?9Panel?$AA@,9,const char[9]
 0x755348,_ScorePanelName,9,char[9]
 0x00755470 , _AIGamePunch2Name                                              , 8     , const char[8]
 0x00755478 , _AIGamePunch1Name                                              , 8     , const char[8]
 0x755ad4,_TerrainWaterJumpSoundNamePc,13,const char [13]
+0x755aec,??_C@_06FKILMHEK@stuff?2?$AA@,7,compiler literal
 0x00755b18 , __real@4004000000000000                                        , 8     , const f64
 0x755b28,_PlayerBeenDeactivatedPc,16,const char[16]
 0x755b38,_KillPartsAtatExplodeTextPc,9,char[9]
@@ -5465,6 +5523,8 @@ address    , symbol                                                         , si
 0x75d430,??_C@_0M@GHNNDFBF@traffic_end?$AA@,12,const char[12]
 0x75d43c,??_C@_07PCAHCCKO@Traffic?$AA@,8,const char[8]
 0x0075d464 , _GrapSwing_text                                               , 10    , char[10]
+0x75d470,__real@3f3504f4,4,compiler literal
+0x75d474,__real@bf3504f4,4,compiler literal
 0x0075d4f0 , __real@3fefd70a40000000                                        , 8     , const f64
 0x75d52c,_PodRaceAttemptsKeywordPc,,char[25]
 0x75d5a8,__real@4006666660000000,8,const f64
@@ -6767,6 +6827,7 @@ address    , symbol                                                         , si
 0x007f1aa4 , _id_FLASHSPEEDER                                               , 2     , i16
 0x7f1aac,_VehicleBoltId7f1aacPc,,i16
 0x7f1ab8,_VehicleSpecialShooterIdPc,,i16
+0x7f1ac4,_ZipUpLineCharacterIdPc,,i16
 0x7f1acc,_id_MINIDROIDEKA,,i16
 0x007f1ad4 , _id_MINIYWING                                                  , 2     , i16
 0x7f1ad8,_VehicleBoltId7f1ad8Pc,,i16
@@ -6989,6 +7050,20 @@ address    , symbol                                                         , si
 0x7ffa88,_TorpedoStealRangePc,,f32
 0x7ffaf8,_TrafficAnim_ConfigKeywords,,NUFPCOMJMP[2]
 0x7ffb08,_Traffic_ConfigKeywords,,NUFPCOMJMP[6]
+0x7ffc14,_ZipUpHookOffsetPc,,const NUVEC
+0x7ffc20,_zipup_gizmotype_id,,i32
+0x7ffc24,_ZipUpRopeHalfWidthPc,,f32
+0x7ffc28,_ZipUpSwingOffsetLengthPc,,f32
+0x7ffc2c,_ZipUpSwingOffsetHeightPc,,f32
+0x7ffc30,_ZipUpMarkerOffsetZPc,,f32
+0x7ffc34,_ZipUpMarkerOffsetYPc,,f32
+0x7ffc38,_ZipUpOutputNamePc,7,char[7]
+0x7ffca0,_ZipUpRiderOffsetScalePc,,f32
+0x7ffca4,_ZipUpRiderHeightPc,,f32
+0x7ffca8,_ZipUpSwingDurationPc,,f32
+0x7ffcac,_ZipUpTypeNamePtrPc,,char *
+0x7ffcb0,?ropedif@?1??DrawRopeSingle@@9@9,,u32
+0x7ffcb4,_ZipUpRopeCheatColourPc,,u32
 0x007fffec , _GUNSHIPAHACK                                                  , 4     , i32
 0x00800444 , _NuAllocHeaderMetadata                                         , 12    , u32[3]
 0x00800454 , _NuAllocTailMetadata                                           , 12    , u32[3]
@@ -7117,12 +7192,14 @@ address    , symbol                                                         , si
 0x00802644,_obstacle_gizmotype_id,,i32
 0x802684,_GizObstacleUpdateFnsPc,,void (__cdecl *[8])(GIZOBSTACLE *)
 0x00802724 , _gizmoerrorlogsize                                             , 4     , i32
+0x802728,_Default_ADDGIZMOTYPE,,ADD_GIZMO_CONFIG_TYPE_PC
 0x00802814 , _LEGOCONTEXT_TUBE                                              , 4     , i32
 0x00802818 , _LEGOCONTEXT_GLIDE                                             , 4     , i32
 0x802820,_LEGOCONTEXT_HOLD,,i32
 0x00802828 , _LEGOCONTEXT_DOOMED                                            , 4     , i32
 0x00802838 , _LEGOCONTEXT_JUMP                                              , 4     , i32
 0x0080283c , _LEGOCONTEXT_BIGJUMP                                           , 4     , i32
+0x802840,_ZipUpWallShuffleContextPc,,i32
 0x802844,_LEGOCONTEXT_COMBO,,i32
 0x802848,_LEGOCONTEXT_PUNCH,,i32
 0x802850,_LEGOCONTEXT_PUSHSPINNER,,i32
@@ -7136,6 +7213,7 @@ address    , symbol                                                         , si
 0x80287c,_LEGOCONTEXT_LAND_JUMP,,i32
 0x80288c,_LEGOCONTEXT_LAND_LUNGE,,i32
 0x802890,_LEGOCONTEXT_LAND_SLAM,,i32
+0x802898,_ZipUpLandCombatRollContextPc,,i32
 0x0080289c , _LEGOCONTEXT_EATEN                                             , 4     , i32
 0x008028a0 , _LEGOCONTEXT_SPECIALMOVE_ATTACKER                              , 4     , i32
 0x008028a4 , _LEGOCONTEXT_SPECIALMOVE_VICTIM                                , 4     , i32
@@ -7248,6 +7326,9 @@ address    , symbol                                                         , si
 0x804cc0,_LEGOACT_MAGNET_WALK_METAL,,i16
 0x804d04,_LEGOACT_EXTRA_LAND2,,i16
 0x00804d08 , _LEGOACT_BUCK                                                  , 2     , i16
+0x804d20,_ZipUpSwingStartAnimationPc,,u16
+0x804d24,_ZipUpSwingSwingAnimationPc,,u16
+0x804d28,_ZipUpSwingJumpAnimationPc,,u16
 0x804dc4,_PUNCHGAP,,f32
 0x804dc8,_PUNCHCHARGAP,,f32
 0x804dcc,_CanPunchGirls,,i32
@@ -7949,6 +8030,11 @@ address    , symbol                                                         , si
 0x881b0c,_parse_trafficanim,,TRAFFICANIM_PC *
 0x881b10,_reference_trafficanim,,TRAFFICANIM_PC
 0x881c50,_parse_worldinfo,,WORLDINFO *
+0x881c54,_ropemtl,,NUMTL *
+0x881c58,_CanDrawZipUpSwirls,,i32
+0x881c60,_ZipUpAddTypePc,,ADD_GIZMO_CONFIG_TYPE_PC
+0x881cd8,_ZipUpRopeModulationPc,,i32
+0x881cdc,?ROPELEN@?1??DrawRopeSingle@@9@9,,f32
 0x00882430 , _podrace_section                                               , 4     , i32
 0x00882438 , _podsprint                                                     , 148   , PODSPRINT_PC
 0x882a88,_PodPacemakerPc,,GAMEOBJECT *
@@ -8248,6 +8334,7 @@ address    , symbol                                                         , si
 0x93b118,_dco_prerotatez,,u16
 0x93b11c,_dco_locatorposonly,,i32
 0x93b120,_DisguiseAdjustFn,,"void (__cdecl *)(i32,i32,NUVEC *,NUVEC *)"
+0x93b128,_ZipUpLineMaterialPc,,NUMTL *
 0x93b1c0,_GizObstacleTriggersPc,,NUVEC *[16]
 0x93b200,_GizObstacleTriggerCountPc,,i32
 0x93b204,_GizObstacleExcludeFnPc,,"i32 (__cdecl *)(GIZOBSTACLE *, GAMEOBJECT *)"
@@ -8486,6 +8573,7 @@ address    , symbol                                                         , si
 0x955fe4,_minikits_savecharacterbufferptr,,VARIPTR
 0x955ff0,_NewMiniPiece,,NEW_MINI_PIECE_PC[10]
 0x956068,_Char_MiniKit,,i32 *
+0x956070,_GameAntinodeGridPc,,u64[64]
 0x009562b0 , _EDataList                                                     , 4     , EPISODEDATA_PC *
 0x009562b4 , _EPISODECOUNT                                                  , 4     , i32
 0x00956454 , _gizflow_loop_checksum                                         , 1     , u8
@@ -8713,6 +8801,7 @@ address    , symbol                                                         , si
 0x02854ff0 , _ClipTransformedBlocks                                         ,       , NUVEC4BLOCK_PC[2] (minimum source prefix; full extent unknown)
 0x2857210,_PCSpecialProjectionTranslate,,NUMTX
 0x2857250,_PCSpecialProjectionScale,,NUMTX
+0x02868400,?sm_poolMessageData@NETMESSAGE_PC@@2PAUMessageData@1@A,,NETMESSAGE_PC::MessageData[512]
 0x2900a7c  , _edfile_buffer_pointer                                         , 4     , i32
 0x2910cbc  , _edfile_lock                                                   , 8     , i32[2]
 0x29110d8  , _edfile_buffer                                                 , 4096  , char[4096]

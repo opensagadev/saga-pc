@@ -11002,3 +11002,84 @@ extern "C" {
     i32 PCOggCriticalSectionPc;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$GameAntinodeGridPc")
+    u64 GameAntinodeGridPc[64];
+#pragma bss_seg()
+#pragma const_seg(".rdata$ZipUpHookOffsetPc")
+    extern const NUVEC ZipUpHookOffsetPc = {0.0f, -0.11429999768733978f, -0.08590000122785568f};
+#pragma const_seg()
+#pragma data_seg(".data$ZipUpSwingOffsetLengthPc")
+    f32 ZipUpSwingOffsetLengthPc = 1.9236159324645996f;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpSwingOffsetHeightPc")
+    f32 ZipUpSwingOffsetHeightPc = 0.25150299072265625f;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpRiderOffsetScalePc")
+    f32 ZipUpRiderOffsetScalePc = 0.8999999761581421f;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpRiderHeightPc")
+    f32 ZipUpRiderHeightPc = 0.5f;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpSwingDurationPc")
+    f32 ZipUpSwingDurationPc = 1.5f;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpSwingStartAnimationPc")
+    u16 ZipUpSwingStartAnimationPc = 0xffff;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpSwingSwingAnimationPc")
+    u16 ZipUpSwingSwingAnimationPc = 0xffff;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpSwingJumpAnimationPc")
+    u16 ZipUpSwingJumpAnimationPc = 0xffff;
+#pragma data_seg()
+#pragma bss_seg(".bss$CanDrawZipUpSwirls")
+    i32 CanDrawZipUpSwirls;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ropemtl")
+    NUMTL *ropemtl;
+#pragma bss_seg()
+#pragma data_seg(".data$ZipUpMarkerOffsetYPc")
+    f32 ZipUpMarkerOffsetYPc = 0.8399999737739563f;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpMarkerOffsetZPc")
+    f32 ZipUpMarkerOffsetZPc = 0.9229000210762024f;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpRopeHalfWidthPc")
+    f32 ZipUpRopeHalfWidthPc = 0.009999999776482582f;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpRopeCheatColourPc")
+    u32 ZipUpRopeCheatColourPc = 0xff103f10;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpLineCharacterIdPc")
+    i16 ZipUpLineCharacterIdPc = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$ZipUpLineMaterialPc")
+    NUMTL *ZipUpLineMaterialPc;
+#pragma bss_seg()
+#pragma data_seg(".data$ZipUpTypeNamePtrPc")
+    char *ZipUpTypeNamePtrPc = (char *)PCContextName_ZipUp;
+#pragma data_seg()
+#pragma data_seg(".data$zipup_gizmotype_id")
+    i32 zipup_gizmotype_id = -1;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpLandCombatRollContextPc")
+    i32 ZipUpLandCombatRollContextPc = -1;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpWallShuffleContextPc")
+    i32 ZipUpWallShuffleContextPc = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$ZipUpRopeModulationPc")
+    i32 ZipUpRopeModulationPc;
+#pragma bss_seg()
+#pragma data_seg(".data$GrapAttach_text")
+    char GrapAttach_text[11] = "GrapAttach";
+#pragma data_seg()
+#pragma data_seg(".data$GrapDetach_text")
+    char GrapDetach_text[11] = "GrapDetach";
+#pragma data_seg()
+#pragma data_seg(".data$GrapSwing_text")
+    char GrapSwing_text[10] = "GrapSwing";
+#pragma data_seg()
+}

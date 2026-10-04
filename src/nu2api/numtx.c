@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <math.h>
 
 void __cdecl NuMtxSetIdentity(NUMTX *matrix) {
     *matrix = NuMtxSetIdentityTemplate;
@@ -874,4 +875,120 @@ void __cdecl NuMtxSetRotationXYVU0(NUMTX *matrix, NUANGVEC *angles) {
     matrix->m23 = 0.0f;
     matrix->m30 = matrix->m31 = matrix->m32 = 0.0f;
     matrix->m33 = 1.0f;
+}
+
+void __cdecl NuMtxInvH(NUMTX *mi, NUMTX *m0) {
+    i32 p[4];
+    i32 j;
+    i32 k;
+    i32 i;
+    f32 a[4][4];
+    i32 n;
+    f32 local_1c;
+    f32 localm20;
+    f32 localm28;
+    f32 localm30;
+    f32 pivot_magnitude;
+
+    n = 4;
+
+    a[0][0] = m0->m00;
+    a[0][1] = m0->m01;
+    a[0][2] = m0->m02;
+    a[0][3] = m0->m03;
+    a[1][0] = m0->m10;
+    a[1][1] = m0->m11;
+    a[1][2] = m0->m12;
+    a[1][3] = m0->m13;
+    a[2][0] = m0->m20;
+    a[2][1] = m0->m21;
+    a[2][2] = m0->m22;
+    a[2][3] = m0->m23;
+    a[3][0] = m0->m30;
+    a[3][1] = m0->m31;
+    a[3][2] = m0->m32;
+    a[3][3] = m0->m33;
+
+    for (i = 0; i < n; i++) {
+        localm20 = 0.0f;
+        p[i] = 0;
+
+        for (j = i; j < n; j++) {
+            local_1c = 0.0f;
+
+            for (k = i; k < n; k++) {
+                local_1c += fabsf(a[j][k]);
+            }
+
+            pivot_magnitude = fabsf(a[j][i]);
+            localm28 = pivot_magnitude == 0.0f || local_1c == 0.0f ? 0.0f : pivot_magnitude / local_1c;
+
+            if (localm20 < localm28) {
+                localm20 = localm28;
+                p[i] = j;
+            }
+        }
+
+        if (localm20 == 0.0f) {
+            return;
+        }
+
+        if (p[i] != i) {
+            for (k = 0; k < n; k++) {
+                f32 f;
+
+                f = a[i][k];
+                a[i][k] = a[p[i]][k];
+                a[p[i]][k] = f;
+            }
+        }
+
+        localm30 = a[i][i];
+
+        for (k = 0; k < n; k++) {
+            if (k != i) {
+                a[i][k] = -a[i][k] / localm30;
+                for (j = 0; j < n; j++) {
+                    if (j != i) {
+                        a[j][k] += a[j][i] * a[i][k];
+                    }
+                }
+            }
+        }
+
+        for (j = 0; j < n; j++) {
+            a[j][i] = a[j][i] / localm30;
+        }
+
+        a[i][i] = 1.0f / localm30;
+    }
+
+    for (i = n - 1; i >= 0; i--) {
+        if (p[i] != i) {
+            for (j = 0; j < n; j++) {
+                f32 f;
+
+                f = a[j][i];
+                a[j][i] = a[j][p[i]];
+                a[j][p[i]] = f;
+            }
+        }
+    }
+
+    mi->m00 = a[0][0];
+    mi->m01 = a[0][1];
+    mi->m02 = a[0][2];
+    mi->m03 = a[0][3];
+    mi->m10 = a[1][0];
+    mi->m11 = a[1][1];
+    mi->m12 = a[1][2];
+    mi->m13 = a[1][3];
+    mi->m20 = a[2][0];
+    mi->m21 = a[2][1];
+    mi->m22 = a[2][2];
+    mi->m23 = a[2][3];
+    mi->m30 = a[3][0];
+    mi->m31 = a[3][1];
+    mi->m32 = a[3][2];
+    mi->m33 = a[3][3];
 }

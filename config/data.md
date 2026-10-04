@@ -1646,3 +1646,17 @@ unknown 1,100/126,617 are source views only. All 4,435 old exact physical copies
 two exact members/four bytes survive; 8 new known exact copies yield 4,443. All 32
 new complete initializer copies are retail-equal;24 unknown-extent copies get
 zero exact/extent credit. Verified-copy union 4,467 is not exact coverage.
+
+
+ZIP/arena/message checkpoint: 26 genuine shared definitions add 632 view bytes,
+including three known NUL owners (32 bytes) and 23 unknown views (600 bytes).
+The 64-u64 grid at 0x956070 is a verified 512-byte minimum view, without original
+allocation credit. Private ZIP/default tables and MessageData's native 512-record,
+0x4b4-stride zero pool remain in their original source owners. The latter emits
+616,448 complete zero initializer bytes; its unknown original extent supplies no
+allocation/coverage credit. All 3,374 normal shared regions equal isolated output;
+1,688 scopes retain every old proof. Known scope is 565/137,725; unknown source
+views 1,123/127,217. All 4,443 old exact copies and two exact members/four bytes
+survive. 38 new known exact copies yield 4,481. All 66 new complete initializer
+copies match retail; 28 unknown views receive no exact credit. The 4,509 verified
+copy union is not coverage. Exact data union increases by 59 to 630,991 bytes.
