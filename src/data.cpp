@@ -11708,3 +11708,9 @@ extern "C" {
     f32 FrameMaterialAnimationSpeedPc = 1.0f;
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$bgproc_thread_handle_pc")
+    HANDLE bgproc_thread_handle_pc = NULL;
+#pragma data_seg()
+}

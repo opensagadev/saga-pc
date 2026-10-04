@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1189377,
-    "matched_code_bytes": 191395,
-    "matching_percent": 5.513726195147218,
-    "fuzzy_coverage_percent": 22.50451094886214,
-    "mapped_functions": 4122,
-    "matched_functions": 1879,
-    "objdiff_fuzzy_percent": 69.400215,
-    "objdiff_total_code": 1126344,
+    "mapped_code_bytes": 1189725,
+    "matched_code_bytes": 191557,
+    "matching_percent": 5.518393107258892,
+    "fuzzy_coverage_percent": 22.547283795442585,
+    "mapped_functions": 4123,
+    "matched_functions": 1880,
+    "objdiff_fuzzy_percent": 69.51055,
+    "objdiff_total_code": 1126692,
     "image_bytes": 40067072,
-    "mapped_bytes": 1832695,
-    "mapping_percent": 4.574067703275149,
+    "mapped_bytes": 1833043,
+    "mapping_percent": 4.5749362469011965,
     "matched_data_region_bytes": 632633
   },
   "newly_compared": [
@@ -4083,6 +4083,16 @@
       ],
       "exact": true,
       "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_bgProcWorkerPc@4",
+      "pc": "0x004fed90",
+      "original_bytes": 348,
+      "units": [
+        "src/nu2api/bgproc.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 84.27619
     }
   ],
   "previous_exact_functions_lost": [],
@@ -20473,6 +20483,108 @@
       "next_connected_wave": "Genuine PC window/input/D3D bootstrap, compressed-DAT decoder integration, permanent/world/scene loaders and native main/frame caller reconnection. Reconnect existing genuine suppliers in UpdateGameObjects; already compared parents receive zero new byte credit.",
       "scratch_storage_policy": "One active report/baseline pair and small manifests; reference shared objects, no repeated graph/SDK/object archives. Recovery below200MB includingLLVM18; target total generated workspace1.5GB, inspect/remove redundant owned artifacts after each checkpoint.",
       "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct-main pushes authorized."
+    },
+    {
+      "checkpoint": "Gameplay caller and real background loader checkpoint (2026-10-04)",
+      "baseline_commit": "436c8a4e33d4f96c729df6f6f2c318d31082ed9b",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1189377,
+        "matched_code_bytes": 191395,
+        "matching_percent": 5.513726195147218,
+        "fuzzy_coverage_percent": 22.50451094886214,
+        "mapped_functions": 4122,
+        "matched_functions": 1879,
+        "objdiff_fuzzy_percent": 69.400215,
+        "objdiff_total_code": 1126344,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1832695,
+        "mapping_percent": 4.574067703275149,
+        "matched_data_region_bytes": 632633
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1189725,
+        "matched_code_bytes": 191557,
+        "matching_percent": 5.518393107258892,
+        "fuzzy_coverage_percent": 22.547283795442585,
+        "mapped_functions": 4123,
+        "matched_functions": 1880,
+        "objdiff_fuzzy_percent": 69.51055,
+        "objdiff_total_code": 1126692,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1833043,
+        "mapping_percent": 4.5749362469011965,
+        "matched_data_region_bytes": 632633
+      },
+      "new_source_functions": 1,
+      "new_unique_compared_PC_bytes": 348,
+      "new_exact_PC_bytes": 162,
+      "new_exact_functions": 1,
+      "unique_compared_code_bytes": 1126175,
+      "completed_existing_parents": [
+        "UpdateGameObjects:28 real call sites across22 providers; remains partial",
+        "bgProcInit:real CreateThread, priority and ResumeThread; full162 bytes exact"
+      ],
+      "verified_checks": {
+        "make_build_check_objects_exit_code": 0,
+        "make_check_exit_code": 0,
+        "make_match_exit_code": 0,
+        "format_sources_headers": 312,
+        "tidy_normal_units": 285,
+        "static_address_mappings": 9961,
+        "tests": 710,
+        "existing_skips": 3,
+        "test_seconds": 76.049,
+        "actual_normal_objects": 285,
+        "actual_whole_function_copies": 3922,
+        "actual_data_copies": 6601,
+        "actual_normal_selected_runtime_checks": 161,
+        "actual_normal_selected_runtime_failures": 0,
+        "whole_owner_replacements": 0,
+        "supplemental_objects": 0,
+        "runtime_domains": {
+          "gameplay_parent": 23,
+          "real_worker_queue": 48,
+          "current_particle_preservation": 90
+        },
+        "particle_prior_owner_differential_checks": 90
+      },
+      "shared_views_added": 1,
+      "shared_working_bytes_added": 4,
+      "original_allocation_credit": 0,
+      "prior_function_copies": 3921,
+      "prior_function_copies_identical": 3918,
+      "prior_nonexact_compiler_variant": "Unchanged particle source715->713: same CFG/186 other instructions/34 relocation contracts, equivalent final x87 dispatch arguments.90 checks each/14 complete vertex outputs identical; finite valid/masked-x87 qualification.",
+      "prior_exact_initializer_copies": 4843,
+      "current_exact_initializer_copies": 4843,
+      "endpoint_sha256": "a356004d2a5e9bedbb17535baa8091921a837f572307806ca251fb539f6cb8ad",
+      "independent_worker_static_sha256": "de8fbd4e2712b04cf7a88bebe2d5c512c16d0ff761ab1d7cbfbcd947ab940110",
+      "independent_parent_sha256": "48f233166da75fe920d52aaa670c47326fc2f5f52bf5391b67acec0a3ef7da58",
+      "independent_particle_sha256": "168bd4c594ebdce34d5392e05fa697feb12f836d85d2b6b906ecd1adfed645b1",
+      "data_release_sha256": "89d93bcb67e05d03f653fd8697bd1205d83eff2b27c95f23e5dd5d69ddf9e8bb",
+      "user_journal_preserved": true,
+      "previous_pushed_CI": {
+        "revision": "436c8a4e33d4f96c729df6f6f2c318d31082ed9b",
+        "run_id": 37222065712,
+        "conclusion": "success"
+      },
+      "checkpoint_delay": "18:21 UTC checkpoint waited for required full validation, actual-normal thread/gameplay tests and qualification of an unchanged-source particle compiler variant.",
+      "runnable_status": {
+        "playable": false,
+        "live_PC_window_device_input_initialization": false,
+        "installed_level_loaded_through_entry_path": false,
+        "recurring_update_render_loop": false,
+        "functional_completion_percentage": null,
+        "previous_checkpoint_process_observation": {
+          "exit_code": 0,
+          "seconds": 1.94,
+          "scenario": "Source-built436c8a4 executable under Wine from installed asset directory; early process exit only.",
+          "sha256": "3a53a7dba038008972016f1079d7e33dda4cb0b3d7252428cfe3c2ddfc1438f3"
+        }
+      },
+      "next_connected_wave": "Accepted private compressed-DAT262144 observed archive-domain reader with93 real payload/boundary assertions; reviewed LoadPerm timer/font/menu correction; genuine C++ graphics constructor/factory/lifetime with canonical member migration; real window/input enum/profile/dispatcher closure; connected Coin/Mission/Pickup providers.",
+      "generated_storage_policy": "Target1.5GB; one active baseline/report and reference current normal objects. Retire duplicate whole-object snapshot sets, retain compact receipts/meaningful fixtures; no assets in evidence."
     }
   ]
 }

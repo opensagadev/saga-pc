@@ -4443,3 +4443,17 @@ scheduling pair is reverified with full bytes/CFG and90 checks per owner.
 After intentional cleanup of historical ignored evidence, fresh compact proofs
 live under /tmp/saga-pc-recovery-20261004; tracked report/layouts/checkpoint retain
 their source contracts, original spans, fingerprints, metrics and limitations.
+
+
+### Background worker and gameplay reconnection (2026-10-04)
+
+_bgProcWorkerPc@4 at4fed90 spans348 full native bytes through its terminal
+loop backedge; CreateThread establishes WINAPI one-argument interface, with no
+historical name inferred. Native callbacks at packet0/4 are direct cdecl function
+pointers, not pointer-to-pointer fields. Full bgProcInit162 matches after genuine
+CreateThread/priority/resume restoration. Real OS48-case actual-normal test and
+independent full CFG/ABI proof qualify the selected valid safe-thread domain.
+UpdateGameObjects retains full6847 original extent and restores28 native calls
+across22 real providers; its partial body gains no new original-byte credit.
+Unchanged particle source has a separately verified715/713 masked-x87 scheduling
+variant; full CFG/34 contracts and90 cases per owner qualify it, not byte equality.

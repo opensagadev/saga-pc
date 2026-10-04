@@ -2669,6 +2669,20 @@ extra:
         GameObjectDimensionsExtraFn(object);
 }
 
+/* Minimum named reader views; no new owning extent or allocation claim. */
+typedef struct UPDATE_GAMEPAD_RUMBLE_VIEW_PC {
+    u8 unknown_00[0x40];
+    RUMBLE_PACKET_RESOURCE_PC rumble;
+} UPDATE_GAMEPAD_RUMBLE_VIEW_PC;
+STATIC_ASSERT(offsetof(UPDATE_GAMEPAD_RUMBLE_VIEW_PC, rumble) == 0x40);
+STATIC_ASSERT(sizeof(UPDATE_GAMEPAD_RUMBLE_VIEW_PC) <= sizeof(GAMEPAD_PC));
+typedef struct UPDATE_GAME_SCREEN_VIEW_PC {
+    u8 unknown_000[0xc5c];
+    NUVEC screen_position;
+} UPDATE_GAME_SCREEN_VIEW_PC;
+STATIC_ASSERT(offsetof(UPDATE_GAME_SCREEN_VIEW_PC, screen_position) == 0xc5c);
+STATIC_ASSERT(sizeof(UPDATE_GAME_SCREEN_VIEW_PC) <= sizeof(GAMEOBJECT));
+
 void __cdecl UpdateGameObjects(WORLDINFO *world) {
     i32 i;
     i32 setting;
@@ -2695,7 +2709,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     i32 result;
     {
         Hub_PadSpeed[1] = Hub_PadSpeed[0] = 0.0f;
-        STUBBED_NAMED("UpdateGameObjects: SetPlayer PC55e410");
+        SetPlayer();
         AIFireIntervalMul = 1.0f;
         CarWashHack = NULL;
         if (Cheat_IsOn(0x2c) != 0) {
@@ -2755,8 +2769,8 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             }
         }
     }
-    STUBBED_NAMED("UpdateGameObjects: GameAntinode_Update PC59ab00");
-    STUBBED_NAMED("UpdateGameObjects: GameAIProcess PC43e530");
+    GameAntinode_Update(world->game_antinode_sys);
+    GameAIProcess();
 
     // AI movement precedes the separate player movement pass.
     for (i = 0; i < HIGHGAMEOBJECT; ++i) {
@@ -2766,7 +2780,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         object->flags_1fc_word = (object->flags_1fc_word & ~0x4000u) | ((object->character_context == 0) << 14);
         object->vehicle_hit_timer -= FRAMETIME;
         if (object->vehicle_hit_timer < -1.0f)
-            STUBBED_NAMED("UpdateGameObjects: SetFlicker object,0 PC414ab0");
+            SetFlicker(object, 0.0f);
         if (object->timer_d34 > 0.0f)
             object->timer_d34 -= FRAMETIME;
         if (object->field_d54 > 0.0f)
@@ -2820,9 +2834,9 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             object->tag_cooldown -= FRAMETIME;
         if (object->spawn_protection_timer > 0.0f)
             object->spawn_protection_timer -= FRAMETIME;
-        STUBBED_NAMED("UpdateGameObjects: PowerUp_Update PC46ac80");
+        PowerUp_Update(object);
         if ((object->flags_1fc_word & 0x80) != 0 && (Cheats_CheckFlags(0x1000) != 0 || object->powerup_time > 0.0f))
-            STUBBED_NAMED("UpdateGameObjects: RegenerateHearts PC58b770");
+            RegenerateHearts(object);
         object->flags_ef4 &= ~0x10000000u;
         flicker_decay = 1.0f;
         if (object->vehicle_hit_timer > 0.0f && (object->flags_1fc_word & 0x80) != 0 && Cheat_IsOn(0x2c) != 0) {
@@ -2833,7 +2847,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         }
         object->vehicle_hit_timer -= flicker_decay * FRAMETIME;
         if (object->vehicle_hit_timer < -1.0f)
-            STUBBED_NAMED("UpdateGameObjects: SetFlicker object,0 PC414ab0");
+            SetFlicker(object, 0.0f);
         if (object->timer_d34 > 0.0f)
             object->timer_d34 -= FRAMETIME;
         if (object->field_d54 > 0.0f)
@@ -2844,11 +2858,11 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         } else {
             if ((object->flags_1fc_word & 0x80) != 0) {
                 if (object->pad->bound_pad != NULL) {
-                    STUBBED_NAMED("UpdateGameObjects: UpdateRumble pad+40 PC54a810");
-                    STUBBED_NAMED("UpdateGameObjects: Player_ToggleCharacter object,0,1 PC55eaa0");
+                    UpdateRumble(&((UPDATE_GAMEPAD_RUMBLE_VIEW_PC *)object->pad)->rumble);
+                    Player_ToggleCharacter(object, 0, 1);
                 }
             } else if (FreePlay != 0) {
-                STUBBED_NAMED("UpdateGameObjects: Player_ToggleCharacter object,0,0 PC55eaa0");
+                Player_ToggleCharacter(object, 0, 0);
             }
             if (object->move_override != NULL)
                 object->move_override(object);
@@ -2864,7 +2878,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         }
     }
     CurrentSpeedOverride = -1000.0f;
-    STUBBED_NAMED("UpdateGameObjects: AveragePlayerCurrentSpeedMul PC499b60");
+    AveragePlayerCurrentSpeedMul();
 
     // AI-controlled characters use their accumulated AI interval for a full
     // terrain update when their script was processed. Between those updates,
@@ -2882,7 +2896,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         if ((object->flags_ef4 & 8) != 0) {
             frame_time = FRAMETIME;
             FRAMETIME = object->ai_elapsed_time;
-            STUBBED_NAMED("UpdateGameObjects: TerrainPlayer PC416d60");
+            TerrainPlayer(object);
 
             object->ai_update_position = object->position;
 
@@ -2894,8 +2908,8 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             }
             FRAMETIME = frame_time;
         } else {
-            STUBBED_NAMED("UpdateGameObjects: PreResetCode PC498a40");
-            STUBBED_NAMED("UpdateGameObjects: PostResetCode PC4b6b80");
+            PreResetCode(object);
+            PostResetCode(object);
             if ((object->flags_1f8 & 0x40000) != 0) {
                 GameObjectOrigin(object);
             } else {
@@ -2905,7 +2919,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             }
         }
 
-        STUBBED_NAMED("UpdateGameObjects: AnimatePlayer PC418ca0");
+        AnimatePlayer(object);
         object->context_target_position = NULL;
         if (world->sock_sys != NULL && (object->portal_flags & 0x4000) != 0) {
             ComplexSockPosition(world->sock_sys, &object->position, (i8)object->sock_position.sock_index,
@@ -2927,11 +2941,12 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         object->origin_scale = object->collision_scale * object->character_data->model_scale;
         ScaleGameObject(object);
         GameObjectDimensions(object);
-        STUBBED_NAMED("UpdateGameObjects: AddSurfaceRipples PC42fcf0");
+        AddSurfaceRipples(object);
         if (object->use_model_origin != 0xff) {
             ++object->use_model_origin;
         }
-        STUBBED_NAMED("UpdateGameObjects: entire camera projection output+c5c PC5d6430");
+        NuCameraTransformScreenClip(&((UPDATE_GAME_SCREEN_VIEW_PC *)object)->screen_position,
+                                    &object->collision_position, 1, NULL);
         GameObjectToCameraCode(object);
         object->portal_flags &= ~1;
         if (object->timer_ecc > 0.0f)
@@ -2952,13 +2967,13 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
                                                 object->reset_velocity.y * object->reset_velocity.y +
                                                 object->reset_velocity.z * object->reset_velocity.z);
         }
-        STUBBED_NAMED("UpdateGameObjects: TerrainPlayer PC416d60");
+        TerrainPlayer(object);
         object->ai_update_position = object->position;
         vertical_displacement = object->position.y - object->start_position.y;
         object->ai_vertical_velocity = vertical_displacement == 0.0f || object->ai_elapsed_time == 0.0f
                                            ? 0.0f
                                            : vertical_displacement / object->ai_elapsed_time;
-        STUBBED_NAMED("UpdateGameObjects: AnimatePlayer PC418ca0");
+        AnimatePlayer(object);
         object->context_target_position = NULL;
         if (VehicleArea != 0 || (object->character_data->model_flags & 0x2000) != 0) {
             object->post_terrain_speed =
@@ -2993,7 +3008,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             object->previous_sock_position->sock_index == -1) {
             *object->previous_sock_position = object->sock_position;
         }
-        STUBBED_NAMED("UpdateGameObjects: KeepOnScreen PC415770");
+        KeepOnScreen(object);
         STUBBED_NAMED("UpdateGameObjects: Doors_Check PC575f50");
         scale = 1.0f;
         if (object->dead == 1)
@@ -3016,17 +3031,18 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             !(object->character_context == 0x0f && object->field_7b3 == 1)) {
             STUBBED_NAMED("UpdateGameObjects: GizmoPickups_Collide PC5705b0");
         } else {
-            STUBBED_NAMED("UpdateGameObjects: ResetCoinPacket PC570a60");
+            ResetCoinPacket(object->coin_packet);
         }
-        STUBBED_NAMED("UpdateGameObjects: AddSurfaceRipples PC42fcf0");
+        AddSurfaceRipples(object);
         if ((object->character_data->model_flags & 0x2000) != 0 && object->dead == 0 &&
             object->model_draw_result != 0 && (object->flags_e20 & 0x20) == 0) {
-            STUBBED_NAMED("UpdateGameObjects: AddSurfaceDebris PC42f5e0");
+            AddSurfaceDebris(object);
         }
         if (object->use_model_origin != 0xff) {
             ++object->use_model_origin;
         }
-        STUBBED_NAMED("UpdateGameObjects: entire camera projection output+c5c PC5d6430");
+        NuCameraTransformScreenClip(&((UPDATE_GAME_SCREEN_VIEW_PC *)object)->screen_position,
+                                    &object->collision_position, 1, NULL);
         GameObjectToCameraCode(object);
     }
 
@@ -3044,14 +3060,14 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             if (object->model_draw_result == 0)
                 continue;
             if (i >= lighting_start)
-                STUBBED_NAMED("UpdateGameObjects: LightGameObject PC595af0");
+                LightGameObject(object, world->rtl_set);
             if (object->arrow_blend > 0.0f) {
                 STUBBED_NAMED("UpdateGameObjects: entire interaction-arrow message geometry/text/AddGameMsg action "
                               "PC435c27..435f10");
             }
         }
     }
-    STUBBED_NAMED("UpdateGameObjects: CollideGameObjects PC431210");
+    CollideGameObjects(world);
     if (do_player_tag != 0) {
         result = 0;
         if (player_tag_to != NULL && player_tag_from != NULL && player_tag_to != player_tag_from &&
@@ -3061,9 +3077,9 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             result = TagCode(player_tag_to, player_tag_from, 0, 0, 1);
             if (result == 1) {
                 GameAudio_PlaySfx(0x22, &player_tag_to->collision_position, 0, 0);
-                STUBBED_NAMED("UpdateGameObjects: GameCam_Blend GameCam,0.5f,0,1 PC54a3e0");
-                STUBBED_NAMED("UpdateGameObjects: RememberPlayerIDs "
-                              "0,signed-Player0-id-or-minus1,signed-Player1-id-or-minus1 PC55e1b0");
+                GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
+                RememberPlayerIDs(0, Player[0] != NULL ? (i16)((GAMEOBJECT *)Player[0])->id : -1,
+                                  Player[1] != NULL ? (i16)((GAMEOBJECT *)Player[1])->id : -1);
                 player_tag_to->hud_icon_timer = 2.0f;
                 player_tag_from->hud_icon_timer = 2.0f;
             }

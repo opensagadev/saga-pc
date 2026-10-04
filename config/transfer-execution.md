@@ -2742,3 +2742,53 @@ loading can support bounded integration tests, but no fake completion or permane
 worker bypass is accepted. Providers already implemented elsewhere still appear
 as omitted calls in UpdateGameObjects; those must be reconnected. Partial parents
 receive zero newly transferred byte credit when completed.
+
+
+### Gameplay calls and real background loader (2026-10-04)
+
+The parent update now makes28 previously omitted native calls across22 existing
+providers, preserving native argument order, collision80/screenc5c fields,
+rumble40 and world antinode510c. It remains partial: network, doors, coins,
+pickup, mission and message geometry actions are still explicit holds. This
+reconnection adds no newly compared parent bytes. Same selected23-case fixture
+passes23/0 against all285 actual normal objects; baseline fails22.
+
+bgProcInit now creates the genuine64KB suspended Windows worker, sets priority-1
+and resumes it. Its entire162-byte native body becomes exact. The348-byte
+infinite worker restores actual event/critical-section/queue control and direct
+cdecl work/ack callbacks. Correcting bgprocdofn to a function typedef removes the
+old erroneous second pointer level without changing packet0/4 fields or0x118
+stride. The sole writer adds only the real HANDLE4 zero view at921254, unknown
+original extent with no allocation/exact credit. Actual-normal48/0 tests exercise
+thread creation, once-only init, freeze/resume,16-packet FIFO/exhaustion, optional
+callbacks and freeing. The safe_thread==nu_current_thread_id==0 domain is explicit;
+uninitialized cross-thread swap callback behavior is not claimed.
+
+Only the worker adds348 unique PC bytes:1,126,175 total unique and1,126,692
+native objdiff bytes. Whole-code fuzzy similarity22.504511%->22.547284%; exact
+code191,395->191,557/3,471,246 (5.518393%), with no lost old exact code/data.
+These are comparison metrics, not playable completion. A bounded run of the
+previous436c8a4 source EXE from installed assets exited0 after1.94s under Wine;
+this proves process launch/early exit only. Window/input/device/world and recurring
+frame-loop milestones remain unverified and blocked by missing genuine producers.
+
+Required source-only build/link/check-objects and LLVM18 check pass:285 normal
+objects,3,922 function/6,601 data definitions,312 formatted files,285 tidy units,
+9,961 static mappings and710 tests/three existing skips (76.049s). Authoritative
+retail matching and full normal/report hash replay pass. All3,558 prior shared
+regions,4,843 exact physical initializers, four named members and CRC survive.
+Of3,921 previous code copies3,918 are unchanged; UpdateGameObjects and bgProcInit
+are intentional repairs. Unchanged particle source715->713 removes one FXCH while
+preserving all186 other instructions/full CFG/34 contracts and final four x87
+arguments.90 assertions for each genuine whole owner produce identical14 complete
+vertex outputs; finite valid/masked-x87 domain only, unmasked trap timing unclaimed.
+Current-normal checks total161 (23+48+90), with zero replacements/supplements;
+the90-case prior particle control uses its genuine prior whole owner explicitly.
+
+The18:21 checkpoint waited for these gates. Prior436c8a4 CI37222065712 succeeded
+on the exact pushed revision. User journal edits remain untouched. Generated
+storage remains around1GB; duplicate research object snapshots are retired.
+Next ready connected work includes private compressed-DAT loading with real
+multiblock/boundary93-case proof, corrected LoadPerm menu timers/font predicate,
+genuine graphics factory/lifetime and canonical backend/member ownership, real
+window/input producers and connected collection/mission/pickup actions.

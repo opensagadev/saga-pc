@@ -3,8 +3,10 @@
 This project reconstructs the GOG PC executable with MSVC 2005 and compares the
 resulting x86 COFF objects against the original. The default build also links
 our current sources into a Windows executable using the original MSVC linker
-and libraries. The entry path opens the PC episode archives, then exits safely
-before the still-missing level and area tables are used; the game remains incomplete.
+and libraries. The entry path opens the PC episode archives, then exits before permanent
+resources or a level are loaded because PC input initialization is missing.
+Configuration parsers exist, but their presence does not complete resource/world
+loading. The executable is not playable.
 There are no host or WebAssembly game targets.
 
 ## Requirements and setup
@@ -85,8 +87,10 @@ Complete real dependencies so the source executable continues to link. A
 ported function may remain byte-different while its PC-specific control flow or
 types are being recovered; record that honestly in the matching report. Once a
 family is structurally present, use complete byte comparisons to refine it.
-Whole-code Windows fuzzy coverage is the main transfer-progress metric; exact
-code coverage separately records complete byte equality. Android's percentage
+Whole-code Windows fuzzy coverage measures code similarity; exact code coverage
+separately records complete byte equality. Neither measures playable completion.
+Track observed process/window, installed scene/world loading and recurring gameplay
+separately; a passing build or function test does not establish those milestones. Android's percentage
 does not transfer directly across compilers and platform backends.
 
 Select transfer batches by **original PC code bytes unlocked per shared layout
@@ -113,8 +117,9 @@ Startup code may use `STUBBED()` or `STUBBED_NAMED(...)` to mark a verified PC
 call or state transition whose dependency is still missing. These markers emit
 no code in matching builds and do not imply a byte match. Keep the original call
 order, document the skipped work, and replace markers down the dependency tree.
-The source-only executable currently exits before using level/area tables until
-the PC asset-loading dependencies populate them. Its DAT metadata parser is
+The source-only executable currently exits at the missing input initialization
+guard before permanent and world loading. Real window/device/input producers,
+resource fixups and the recurring update/render loop remain incomplete. Its DAT metadata parser is
 structural and has additional short-read and null-arena guards; those are
 source-runtime safeguards, not retail byte matches.
 

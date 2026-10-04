@@ -1841,3 +1841,13 @@ physical region instead preserves initializer contracts, four typed members/pare
 and CRC. All4830 previous exact physical copies survive;13 new known copies
 yield4843. Physical known copies135B and data union67B are different overlap
 measures. Unknown views do not receive known-extent or capacity credit.
+
+
+### Background worker HANDLE (2026-10-04)
+
+The sole writer adds bgproc_thread_handle_pc at921254: native CreateThread return
+store and ResumeThread reload establish the4-byte reader/writer view and zero
+retail initializer. Owning extent remains unknown/blank with zero allocation or
+exact credit. All3,558 previous shared fullregions/CRC,4,843 known exact physical
+copies and four typed members remain unchanged. Current3559 shared regions add
+only this view; no padding or other ownership migration occurs in this checkpoint.

@@ -968,6 +968,7 @@ address    , symbol                                                         , si
 0x004feb70 , _NuVideoSetSwapModePS                                          , 1     , void __cdecl (i32)
 0x004feb80 , _NuVideoSetBrightnessPS                                        , 1     , void __cdecl (void)
 0x004fecf0 , _bgPostRequest                                                 , 151   , "BGPROCINFO * __cdecl (void (__cdecl *)(BGPROCINFO *), void (__cdecl *)(BGPROCINFO *), void *, i32)"
+0x004fed90,_bgProcWorkerPc@4,348,DWORD __stdcall (void *)
 0x004feef0 , _bgProcInit                                                    , 162   , void __cdecl(void)
 0x004ff020 , _bgprocFreeze                                                  , 36    , void __cdecl(void)
 0x004ff050 , _bgprocUnFreeze                                                , 23    , void __cdecl(void)
@@ -8815,6 +8816,7 @@ address    , symbol                                                         , si
 0x00921208 , _bgproc_critical_section                                       , 24    , CRITICAL_SECTION
 0x00921248 , _bHaveErr                                                      , 4     , i32
 0x00921250 , _bgproc_active                                                 , 4     , BGPROCINFO *
+0x00921254,_bgproc_thread_handle_pc,,HANDLE
 0x00921258 , _bgproc_thread_id                                              , 4     , DWORD
 0x0092125c , _bgproc_frozen                                                 , 4     , i32
 0x00921260 , _bgproc_freeze                                                 , 4     , i32

@@ -6198,7 +6198,7 @@ STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_188) == 0x188);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_214) == 0x214);
 
 struct bgprocinfo_s;
-typedef void(__cdecl *bgprocdofn)(struct bgprocinfo_s *);
+typedef void(__cdecl bgprocdofn)(struct bgprocinfo_s *);
 
 typedef struct bgvar_s {
     i32 type;
@@ -6223,6 +6223,8 @@ struct bgprocinfo_s {
     i32 var_count;
 };
 STATIC_ASSERT(sizeof(BGPROCINFO) == 0x118);
+STATIC_ASSERT(offsetof(BGPROCINFO, do_fn) == 0);
+STATIC_ASSERT(offsetof(BGPROCINFO, ack_fn) == 4);
 STATIC_ASSERT(offsetof(BGPROCINFO, data) == 0x10);
 STATIC_ASSERT(offsetof(BGPROCINFO, vars) == 0x110);
 STATIC_ASSERT(offsetof(BGPROCINFO, var_count) == 0x114);
@@ -9143,6 +9145,7 @@ void __cdecl PCStereoUnknownToken(void);
     extern HANDLE bgproc_work_event;
     extern HANDLE bgproc_resume_event;
     extern BGPROCINFO *bgproc_active;
+    extern HANDLE bgproc_thread_handle_pc;
     extern DWORD bgproc_thread_id;
     extern i32 bgproc_frozen;
     extern i32 bgproc_freeze;
