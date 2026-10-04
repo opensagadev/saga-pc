@@ -74,7 +74,11 @@ address    , symbol                                                         , si
 0x0042df30 , _GizObstacle_SetDefaultSFXFn_LSW                               , 52    , "void __cdecl (void *, GIZOBSTACLE *)"
 0x42f3a0,_EndChallenge,193,"void __cdecl (i32,i32)"
 0x42f950,_AddWaterSplash,122,"void __cdecl (GAMEOBJECT *, NUVEC *)"
-0x00430430 , _ManageGameObjects                                             , 2793  , void __cdecl (void)
+0x4301b0,_CreatureCrate_StopPc,206,
+0x430280,_CreatureCrate_MovePc,54,
+0x4302c0,_CreatureCrate_DrawPc,28,
+0x4302e0,_SpawnCreatureFromCrate,332,"void __cdecl(GAMEOBJECT *, f32, f32)"
+0x430430,_ManageGameObjects,2793,void __cdecl(void)
 0x00431740 , _GameObjectRotation                                            , 2650  , "void __cdecl (GAMEOBJECT *, i32)"
 0x4321a0,_PlayerTakeHit,394,"void __cdecl(GAMEOBJECT*,GAMEOBJECT*)"
 0x432330,_PlayerTakeHitReactionPc,739,"i32 __cdecl(GAMEOBJECT*,GAMEOBJECT*,f32,u16)"
@@ -605,7 +609,7 @@ address    , symbol                                                         , si
 0x004cf4c0 , _Text_LoadStrings                                              , 397   , "void __cdecl (VARIPTR *, VARIPTR *)"
 0x4d1cf0,_TightRope_SetTargetMom,384,i32 __cdecl(GAMEOBJECT *)
 0x4d22b0,_GetTorpedoPacket,52,TORPEDOPACKET_PC *__cdecl(void)
-0x004d22f0 , _FreeTorpedoPacket                                             , 90    ,
+0x4d22f0,_FreeTorpedoPacket,90,void __cdecl(TORPEDOPACKET_PC **)
 0x4d2350,_DropTorpedoPickups,133,"void __cdecl(TORPEDOPACKET_PC*,i32)"
 0x4d23e0,_getMaxTorpedos,72,i32 __cdecl(GAMEOBJECT*)
 0x4d24f0,_Torpedo_UpdateJobbies,1274,void __cdecl(GAMEOBJECT*)
@@ -1075,6 +1079,7 @@ address    , symbol                                                         , si
 0x005171b0 , _AISysSetLevelPath                                             , 106   , "i32 __cdecl (AISYS_PC *, char *)"
 0x005173b0 , _AIPathCheckExtents                                            , 123   , "i32 __cdecl (AIPATH_PC *, NUVEC *)"
 0x00518040 , _AddToAIGroup                                                  , 401   , "void __cdecl (AIGROUP_PC *, APIOBJECT_PC *)"
+0x5181e0,_DestroyAIGroup,25,void __cdecl(AIGROUP_PC *)
 0x00518210 , _AISysProcess                                                  , 854   , "void __cdecl (AISYS_PC *, APIOBJECT_PC *, APIOBJECT_PC *)"
 0x00518570 , _AIAntinodeCreate                                              , 103   , "AIANTINODE_PC *__cdecl (NUVEC *, f32)"
 0x005185e0 , _AIAntinodeCreateSingleFrame                                   , 103   , "AIANTINODE_PC *__cdecl (NUVEC *, f32)"
@@ -1461,6 +1466,7 @@ address    , symbol                                                         , si
 0x0055a200 , _GizmoGetOutputName                                            , 71    , "char * __cdecl(void *system, void *gizmo, i32 output)"
 0x0055a250 , _GizmoActivate                                                 , 92    , "void __cdecl (void *, void *, i32, i32)"
 0x0055a2b0 , _GizmoSetVisibility                                            , 107   , "void __cdecl (void *, void *, i32, i32)"
+0x55a320,_GizmoGetVisibility,60,"i32 __cdecl(void *,void *)"
 0x55abd0,_GizmoSys_BoltHitPlat,118,"i32 __cdecl(void*,WORLDINFO*,BOLT_PC*,u8*)"
 0x55ac80,_GizmoAppendSpecialErrorPrivate,74,
 0x55acd0,_Gizmo_FindNuSpecial,151,"i32 __cdecl (NUGSCN *, NUSPECIALHANDLE *, char *, i32, void *, char *, char *)"
@@ -1526,7 +1532,7 @@ address    , symbol                                                         , si
 0x0055f6c0 , _WorldInfo_Dump                                                , 471   , void __cdecl (WORLDINFO *)
 0x0055f960 , _PortalDoors_Configure                                         , 338   , "void __cdecl (WORLDINFO *, char *)"
 0x0055fac0 , _PortalDoors_Update                                            , 229   , void __cdecl (WORLD *)
-0x0055fbf0 , _EquivalentObjects_Configure                                   , 321   , "void __cdecl (WORLDINFO *, char *)"
+0x55fbf0,_EquivalentObjects_Configure,321,"void __cdecl(WORLDINFO *, char *)"
 0x0055fe10 , _LoadTerrainFile                                               , 113   , void __cdecl (WORLDINFO *)
 0x0055fe90 , _LoadGrassFile                                                 , 155   , void __cdecl (WORLDINFO *)
 0x0055ff30 , _LoadBridgeFile                                                , 125   , void __cdecl (WORLDINFO *)
@@ -1658,8 +1664,14 @@ address    , symbol                                                         , si
 0x576910,_Hint_SetHintFromId,70,"void __cdecl (i32,i32,i32)"
 0x00576960,_Hint_SetComplete,72,void __cdecl(i32)
 0x576c60,_Minicam_AddCommand,1020,"void __cdecl(i32,f32,i32,void *,NUVEC)"
+0x577060,_MiniCam_ChangeMode,122,void __cdecl(i32)
+0x5770e0,_Minicam_AddDeltas,1224,void __cdecl(f32)
+0x5775b0,_Minicam_ClearDeltas,124,void __cdecl(void)
+0x577630,_Minicam_ResetForNextCommand,178,void __cdecl(void)
+0x577710,_Minicam_CalcCamPos,119,void __cdecl(void)
 0x577790,_GameCameraMakeMiniCut,230,"void __cdecl(NUGSPLINE *,f32,f32,f32,f32,i32,i32)"
 0x577880,_GameCameraMakeMiniCut2,196,"void __cdecl(NUVEC *,NUVEC *,i32,f32,f32,f32,f32,i32,i32,i32)"
+0x577950,_Minicam_Update,2020,void __cdecl(void)
 0x578140,_GameCameraMakeMiniCut3,1496,"void __cdecl(u32,f32,i32,i32,i32,void *,i32,NUVEC *,f32,f32,f32,f32,f32,f32,f32,i32,NUGSPLINE *,i8,i8)"
 0x00578750,_SetLevelHack,64,void *__cdecl (i32)
 0x578790,_objInNetWaitContext,52,"i32 __cdecl(GAMEOBJECT *,i32)"
@@ -1799,7 +1811,7 @@ address    , symbol                                                         , si
 0x57fab0,?Bolt_GeneratePointsPrivate@@YAXPAUbolt_s@@PAUnuvec_s@@@Z,117,
 0x57fb30,?Bolt_OrientationPrivate@@YAXPAUbolt_s@@@Z,97,
 0x0057fba0 , _Bolt_Alloc                                                    , 123   , BOLT_PC *__cdecl (void)
-0x0057fc30 , _Bolt_Reflect                                                  , 79    , "void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
+0x57fc30,_Bolt_Reflect,79,"void __cdecl(NUVEC *,NUVEC *,NUVEC *)"
 0x57fc80,_Bolt_AddDeflectedBolt,512,"void __cdecl(BOLT_PC*,NUVEC*,NUVEC*,u8*)"
 0x57fe80,_Bolt_PlayHitSfx,50,void __cdecl (BOLT_PC *)
 0x580070,_Bolt_Find,165,"BOLT_PC *__cdecl(i32,NUVEC*,GAMEOBJECT*)"
@@ -1821,7 +1833,7 @@ address    , symbol                                                         , si
 0x582270,_Bolt_HitGameObjects,499,"i32 __cdecl(BOLT_PC*,NUVEC*,NUVEC*,NUVEC*,f32,u8*)"
 0x582470,_Bolt_Init,2551,"void __cdecl (void *,NETMESSAGE_PC &)"
 0x582e70,_Bolt_Add,433,"BOLT_PC *__cdecl(GAMEOBJECT*,NUVEC*,NUMTX*,i32,i32)"
-0x00583030 , _Bolts_Update                                                  , 2738  , void __cdecl (WORLDINFO *)
+0x583030,_Bolts_Update,2738,void __cdecl(WORLDINFO *)
 0x00583af0 , _Bolt_Shoot                                                    , 2722  , "void __cdecl (GAMEOBJECT *, i32, i32)"
 0x5845c0   , _CharConfigAbsFloat                                            , 18    , f32 (f32 value)
 0x584640   , _RedirectTextFile                                              , 238   , "i32 (char *text, char *filename, i32 filename_capacity)"
@@ -2054,7 +2066,7 @@ address    , symbol                                                         , si
 0x0058b7f0 , _CannotKill                                                    , 71    , i32 __cdecl (GAMEOBJECT *)
 0x0058b840 , _NoLayerKill                                                   , 40    , i32 __cdecl (GAMEOBJECT *)
 0x58b870,_BossKilled,58,GAMEOBJECT* __cdecl(i32)
-0x0058b8d0 , _CharPlatforms_Configure                                       , 358   , "void __cdecl (WORLDINFO *, char *)"
+0x58b8d0,_CharPlatforms_Configure,358,"void __cdecl(WORLDINFO *, char *)"
 0x58bbf0,_CharPlatform_FindObjFromPlatID,72,"GAMEOBJECT * __cdecl (void *, i32)"
 0x58bc60,_AddFootSteps,628,void __cdecl(GAMEOBJECT *)
 0x58bee0,_SetHeadTarget,194,"void __cdecl(GAMEOBJECT*,NUVEC*,i8,f32,f32,f32)"
@@ -2189,7 +2201,9 @@ address    , symbol                                                         , si
 0x005a1c00 , _Faders_Configure                                              , 376   , "void __cdecl (WORLDINFO *, char *)"
 0x005a2060 , _RippleEffects_Configure                                       , 431   , "void __cdecl (WORLDINFO *, char *)"
 0x005a29d0 , _DestroyRippleMtls                                             , 80    , void __cdecl (WORLDINFO *)
-0x005a2aa0 , _Pulses_Configure                                              , 1327  , "void __cdecl (WORLDINFO *, char *)"
+0x5a2aa0,_Pulses_Configure,1327,"void __cdecl(WORLDINFO *,char *)"
+0x5a2fd0,_Pulses_Reset,121,void __cdecl(LEVEL_SFX_PULSE_PC *)
+0x5a3050,_Pulses_Update,1024,void __cdecl(LEVEL_SFX_PULSE_PC *)
 0x5a3450,_Pulses_AddSfx,158,"void __cdecl (LEVEL_SFX_PULSE_PC *, i32 *, i32 *, i32)"
 0x005a8090 , _Particles_Load                                                , 188   , "void __cdecl (WORLDINFO *, char **, i32, i32)"
 0x005a81b0 , _Particles_Start                                               , 80    , void __cdecl (WORLDINFO *)
@@ -3064,10 +3078,12 @@ address    , symbol                                                         , si
 0x0067a6d0 , _NewTerrPlatformsOff                                            , 10    ,
 0x0067a6e0 , _NewShadowOnPlatform                                           , 55    ,
 0x67a740,_AddCollisionSphere,68,"void __cdecl(NUVEC *,f32)"
+0x67ab20,_NewTerrHitInfo,44,void __cdecl(u8 *)
 0x67ab50,_TerrainSideClamp,239,"void __cdecl(NUVEC *,NUVEC *)"
 0x67ac40,_TerrShapeSideStep,701,"i32 __cdecl(NUVEC *,NUVEC *,u8 *)"
 0x67b200,_NewRayCastGetTOFI,12,f32 __cdecl (void)
 0x67b210,_NewRayCastGetImpactTerrainType,23,i32 __cdecl (void)
+0x67b230,_NewRayCastGetImpactNormal,40,void __cdecl(NUVEC *)
 0x67b430,_NewRayCastScaleYMask,473,"i32 __cdecl(NUVEC*,NUVEC*,f32,f32,i32,u32)"
 0x0067bf50 , _NewPlatInst                                                   , 528   , "i32 __cdecl (void *, i32)"
 0x67c760,_FindPlatInst,71,i32 __cdecl(i32)
@@ -4493,6 +4509,8 @@ address    , symbol                                                         , si
 0x00755478 , _AIGamePunch1Name                                              , 8     , const char[8]
 0x755ad4,_TerrainWaterJumpSoundNamePc,13,const char [13]
 0x755aec,??_C@_06FKILMHEK@stuff?2?$AA@,7,compiler literal
+0x755b00,??_C@_0L@DPAJPPBB@CRATE_PART?$AA@,11,const char[11]
+0x755b0c,??_C@_09OIFHBGMD@CRATE_POP?$AA@,10,const char[10]
 0x00755b18 , __real@4004000000000000                                        , 8     , const f64
 0x755b28,_PlayerBeenDeactivatedPc,16,const char[16]
 0x755b38,_KillPartsAtatExplodeTextPc,9,char[9]
@@ -5945,6 +5963,7 @@ address    , symbol                                                         , si
 0x761884,_PlayerArcadeStartDoorPc,,char[16]
 0x761894,_PlayerMissionStartDoorPc,,char[13]
 0x007618a4,_WorldObjectAnimFormat,7,const char[7]
+0x7618d4,??_C@_0BC@NFOAGPPJ@equivalentobjects?$AA@,18,
 0x7618e8,_WorldGrassFormat,7,const char[7]
 0x7618f0,_WorldBridgeFormat,7,const char[7]
 0x761a04,??_C@_0L@GBHGOCDB@BlowUpSwap?$AA@,11,const char [11]
@@ -6406,6 +6425,8 @@ address    , symbol                                                         , si
 0x763634   , ??_C@_06BJLHAJHF@chars?2?$AA@                                  , 7     , const char[7]
 0x763634,_APIObjectCharsDirectory,7,const char[7]
 0x76363c   , ??_C@_0BD@EJCIEOFH@chars?2charstxt?4fpk?$AA@                   , 19    , const char[19]
+0x763724,??_C@_0O@OPCKIBKC@char_platform?$AA@,14,
+0x763734,??_C@_0O@BFBECABL@CharPlatforms?$AA@,14,
 0x763748,__real@c0c45f3060000000,8,const f64
 0x763750,_PlayerStepOuterActionPc,8,const f64
 0x00763958 , ??_C@_0M@MGCAMLPP@Snake_bit_3?$AA@                             , 12    , const char[12]
@@ -6418,6 +6439,23 @@ address    , symbol                                                         , si
 0x763b84,??_C@_0BA@DPHJMNGK@while_animating?$AA@,16,const char[16]
 0x763b94,??_C@_05NDJDJOAN@fader?$AA@,6,const char[6]
 0x763b9c,??_C@_06HKHAMFBG@faders?$AA@,7,const char[7]
+0x763c4c,??_C@_0L@IILFPCPH@start_wait?$AA@,11,
+0x763c58,??_C@_08ILOPPGPC@off_time?$AA@,9,
+0x763c64,??_C@_07KHLOCGAM@on_time?$AA@,8,
+0x763c6c,??_C@_05GJAGBLGB@gizmo?$AA@,6,
+0x763c74,??_C@_05ELOADNHC@pulse?$AA@,6,
+0x763c7c,??_C@_0BB@MNGMFHJH@debris_hitplayer?$AA@,17,
+0x763c90,??_C@_0BM@BHLBFIKK@hit_direction_radius_origin?$AA@,28,
+0x763cac,??_C@_0BD@CAGMCDOM@hit_direction_line?$AA@,19,
+0x763cc0,??_C@_0P@LFLLHHDA@collide_radius?$AA@,15,
+0x763cd0,??_C@_0O@LHJIJLIC@sfx_hitplayer?$AA@,14,
+0x763ce0,??_C@_0M@MNPAOEMC@sfx_turnoff?$AA@,12,
+0x763cec,??_C@_0L@ELOKBPJA@sfx_turnon?$AA@,11,
+0x763cf8,??_C@_0M@ELNJNCFJ@sfx_offloop?$AA@,12,
+0x763d04,??_C@_0L@PEAPFEKF@sfx_onloop?$AA@,11,
+0x763d10,??_C@_0L@EDOJLNHA@pulses_end?$AA@,11,
+0x763d1c,??_C@_0N@EOMIGLHF@pulses_start?$AA@,13,
+0x763d2c,??_C@_06LKFCNKBI@pulses?$AA@,7,
 0x763d3c,__real@3f7d70a4,4,const f32
 0x00763d68 , _TerrainScanRadiusEpsilon                                      ,       ,
 0x763d68   , __real@3ee4f8b580000000                                        , 8     , const f64

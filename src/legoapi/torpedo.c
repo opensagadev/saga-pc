@@ -454,3 +454,16 @@ TORPEDOPACKET_PC *__cdecl GetTorpedoPacket(void) {
     }
     return NULL;
 }
+
+void __cdecl FreeTorpedoPacket(TORPEDOPACKET_PC **packet) {
+    i32 index;
+    if (packet == NULL || *packet == NULL)
+        return;
+    for (index = 0; index < 16; ++index) {
+        if (*packet == (TORPEDOPACKET_PC *)&TorpedoPackets[index] && (TorpedoPackets[index].flags & 1) != 0) {
+            memset(&TorpedoPackets[index], 0, sizeof(TorpedoPackets[index]));
+            *packet = NULL;
+            return;
+        }
+    }
+}

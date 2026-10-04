@@ -770,3 +770,26 @@ i32 __cdecl GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT_PC *bolt, NUVE
     }
     return 0;
 }
+
+typedef struct GIZMO_VISIBILITY_TYPE_VIEW_PC {
+    u8 unknown_00[0x60];
+    i32(__cdecl *get_visibility)(void *);
+    u8 unknown_64[0x38];
+} GIZMO_VISIBILITY_TYPE_VIEW_PC;
+STATIC_ASSERT(sizeof(GIZMO_VISIBILITY_TYPE_VIEW_PC) == 0x9c);
+STATIC_ASSERT(offsetof(GIZMO_VISIBILITY_TYPE_VIEW_PC, get_visibility) == 0x60);
+
+i32 __cdecl GizmoGetVisibility(void *system, void *pointer) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)pointer;
+    GIZMOTYPES_PC *registry;
+    GIZMO_VISIBILITY_TYPE_VIEW_PC *type;
+    if (gizmotypes == NULL || system == NULL || gizmo == NULL)
+        return 0;
+    registry = (GIZMOTYPES_PC *)gizmotypes;
+    if (gizmo->type_id >= registry->count)
+        return 0;
+    type = &((GIZMO_VISIBILITY_TYPE_VIEW_PC *)registry->types)[gizmo->type_id];
+    if (type->get_visibility == NULL)
+        return 0;
+    return type->get_visibility(gizmo);
+}

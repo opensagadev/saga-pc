@@ -1,4 +1,7 @@
 #include "saga.h"
+void __cdecl SpawnCreatureFromCrate(GAMEOBJECT *, f32, f32);
+void __cdecl DestroyAIGroup(AIGROUP_PC *);
+void __cdecl FreeTorpedoPacket(TORPEDOPACKET_PC **);
 
 typedef struct grapple_rotation_pc_s {
     u8 unknown_00[0x30];
@@ -1526,7 +1529,7 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
             object->field_1010 = 1.0f;
     }
     if (object->torpedo != NULL && object->field_280 == 0xff) {
-        STUBBED_NAMED("KillGameObject: FreeTorpedoPacket PC4d22f0");
+        FreeTorpedoPacket(&object->torpedo);
         object->torpedo = NULL;
     }
     if (VehicleArea != 0 && object->field_280 < 2)
@@ -2437,7 +2440,7 @@ void __cdecl ManageGameObjects(void) {
                         object->field_0x276 = object->movement_facing_angle;
                     }
                     saved_flags = object->flags_1fc_word & 0x2000;
-                    STUBBED_NAMED("ManageGameObjects: ResetPlayerMoves PC41af70");
+                    ResetPlayerMoves(object);
                     object->dead = 0;
                     object->flags_1fc_word = (object->flags_1fc_word & ~0x2000) | saved_flags;
                     object->current_hp = object->field_107e;
@@ -2457,7 +2460,7 @@ void __cdecl ManageGameObjects(void) {
                     }
                     if ((object->flags_1fc_word & 0x80) && WORLD->current_level == SPEEDERCHASEA_LDATA &&
                         disable_narrow_socks == 0)
-                        STUBBED_NAMED("ManageGameObjects: GameCam_Blend GameCam,0.5f,0.0f,0 PC54a3e0");
+                        GameCam_Blend(GameCam, 0.5f, 0.0f, 0);
                 } else if (WORLD->current_level == PODSPRINTA_LDATA) {
                     other = GetOtherActivePlayer(object);
                     if (other != NULL)
@@ -2489,7 +2492,8 @@ void __cdecl ManageGameObjects(void) {
                     if ((object->portal_flags & 0x100000) != 0) {
                         if ((object->portal_flags & 0x200000) == 0) {
                             object->field_1010 =
-                                object->id == id_STAP2 && WORLD->current_level == NEGOTIATIONSC_LDATA ? 5.0f : 1.0f;
+                                object->id == (u16)id_STAP2 && WORLD->current_level == NEGOTIATIONSC_LDATA ? 5.0f
+                                                                                                           : 1.0f;
                             continue;
                         }
                     } else {
@@ -2528,7 +2532,7 @@ void __cdecl ManageGameObjects(void) {
                 switch (creature->activation_type) {
                     case 0:
                         if (Game.difficulty >= creature->activation_difficulty)
-                            STUBBED_NAMED("ManageGameObjects: ResetAICreature object/system PC41c120");
+                            ResetAICreature(object, system);
                         else
                             object->ai_packet.reset_mode = 4;
                         break;
@@ -2548,7 +2552,7 @@ void __cdecl ManageGameObjects(void) {
                                     object->ai_packet.spawn_delay =
                                         (f32)(u32)object->ai_packet.group_member_index * creature->start_stagger;
                                 } else {
-                                    STUBBED_NAMED("ManageGameObjects: ResetAICreature object/system PC41c120");
+                                    ResetAICreature(object, system);
                                 }
                             }
                         }
@@ -2588,7 +2592,7 @@ void __cdecl ManageGameObjects(void) {
                             target->ai_packet.spawn_delay = 0.0f;
                             target->ai_packet.script_processor.locator = locator;
                             target->ai_packet.respawn_locator = respawn_locator;
-                            STUBBED_NAMED("ManageGameObjects: ResetAICreature group member PC41c120");
+                            ResetAICreature(target, WORLD->ai_sys);
                             group = object->ai_packet.group;
                             if (group->leader == NULL)
                                 group->leader = group->members[j];
@@ -2599,11 +2603,11 @@ void __cdecl ManageGameObjects(void) {
                     object->ai_packet.group->flags &= ~4u;
                 } else {
                     object->ai_packet.spawn_delay = 0.0f;
-                    if (object->id == id_PKDROID) {
-                        STUBBED_NAMED("ManageGameObjects: ResetAICreature object/system PC41c120");
-                        STUBBED_NAMED("ManageGameObjects: SpawnCreatureFromCrate object,3.0f,0.0f PC4302e0");
+                    if (object->id == (u16)id_PKDROID) {
+                        ResetAICreature(object, system);
+                        SpawnCreatureFromCrate(object, 3.0f, 0.0f);
                     } else {
-                        STUBBED_NAMED("ManageGameObjects: ResetAICreature object/WORLD->ai_sys PC41c120");
+                        ResetAICreature(object, WORLD->ai_sys);
                     }
                 }
             }
@@ -2630,7 +2634,7 @@ void __cdecl ManageGameObjects(void) {
         if (group != NULL) {
             if (group->rows[0].is_alive == 0 && group->rows[1].is_alive == 0 && group->rows[2].is_alive == 0 &&
                 group->rows[3].is_alive == 0) {
-                STUBBED_NAMED("ManageGameObjects: DestroyAIGroup PC5181e0");
+                DestroyAIGroup(group);
             } else {
                 for (j = 0; j < group->member_count; ++j) {
                     if (group->members[j] == (APIOBJECT_PC *)object)
@@ -2638,7 +2642,7 @@ void __cdecl ManageGameObjects(void) {
                 }
             }
         }
-        STUBBED_NAMED("ManageGameObjects: FreeTorpedoPacket PC4d22f0");
+        FreeTorpedoPacket(&object->torpedo);
         RemoveGameObject(object, 1);
     }
 }

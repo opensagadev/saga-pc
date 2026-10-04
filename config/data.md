@@ -1681,3 +1681,18 @@ are established; original owning capacity is unknown. A proposed grown union is
 held, with no live migration or new backing aliases. Selected portal/render CPU
 fixtures exclude scene-stack alias writes. Private compiler and message owners
 remain genuine source definitions; initializer equality is not full game proof.
+
+
+Gameplay consumer checkpoint keeps the shared owner source unchanged: all 3,455
+complete regions and 1,769 scoped initializer proofs survive, with four typed
+members unchanged (two exact/four bytes). Corrected baseline per-object exact
+count is 4,561: TerrainUnusedSpatialBlockPc in data.cpp is exact even though its
+aggregate row includes a nonexact owner. The previous row-level 4,560 count
+missed that four-byte copy. 4,557 old physical copies remain unchanged and four
+duplicate compiler constants naturally leave bolts.c during the accepted C++
+parent migration; their full native bits survive in genuine owners. Forty-three
+new known complete initializer copies/398 emitted copy bytes yield 4,600 actual
+exact copies. Exact data union gains 277 bytes to 631,720; duplicate copy counts
+are not coverage. No shared backing, inferred original extent or allocation
+credit is added. Next scene width/output views reuse record16 fields of the
+existing 0x218-stride scene owner without growing its working allocation.

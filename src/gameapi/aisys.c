@@ -9104,3 +9104,8 @@ i32 __cdecl Action_AddDebris(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
     }
     return 1;
 }
+
+void __cdecl DestroyAIGroup(AIGROUP_PC *group) {
+    if (group != NULL)
+        memset(group, 0, sizeof(*group));
+}

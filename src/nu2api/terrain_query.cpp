@@ -1346,3 +1346,18 @@ extern "C" i32 __cdecl NewRayCastGetImpactTerrainType(void) {
     TERRAIN_SHAPE *surface = static_cast<TerrainQuery_s *>(TerI)->surface;
     return surface ? surface->material[0] : 0;
 }
+
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, material) == 0x60);
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, flags) == 0x62);
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, normal_flags) == 0x63);
+STATIC_ASSERT(offsetof(TerrainQuery_s, movement_normal) == 0xa8);
+extern "C" void __cdecl NewTerrHitInfo(u8 *info) {
+    info[0] = TerrPolyInfo.material[0];
+    info[1] = TerrPolyInfo.material[1];
+    info[2] = TerrPolyInfo.flags;
+    info[3] = TerrPolyInfo.normal_flags;
+}
+extern "C" void __cdecl NewRayCastGetImpactNormal(NUVEC *normal) {
+    if (TerI != NULL)
+        *normal = static_cast<TerrainQuery_s *>(TerI)->movement_normal;
+}

@@ -138,3 +138,82 @@ i32 __cdecl FindNearestBreak(u8 *text, i32 index) {
         --result;
     return result;
 }
+
+typedef struct EQUIVALENT_GROUP_PC {
+    i16 object_count;
+    i16 byte_size;
+    NUSPECIALHANDLE objects[1];
+} EQUIVALENT_GROUP_PC;
+typedef struct EQUIVALENT_WORLD_VIEW_PC {
+    u8 unknown_0[0x46b0];
+    EQUIVALENT_GROUP_PC *equivalent_groups;
+    i32 equivalent_group_count;
+} EQUIVALENT_WORLD_VIEW_PC;
+typedef struct CHAR_PLATFORM_PC {
+    NUSPECIALHANDLE special;
+    i16 object_id;
+    i16 platform_id;
+    GAMEOBJECT *object;
+} CHAR_PLATFORM_PC;
+typedef struct CHAR_PLATFORM_SYSTEM_PC {
+    NUGSCN *scene;
+    i32 platform_count;
+    CHAR_PLATFORM_PC platforms[1];
+} CHAR_PLATFORM_SYSTEM_PC;
+typedef struct CHAR_PLATFORM_WORLD_PC {
+    u8 unknown_0[0x2adc];
+    CHAR_PLATFORM_SYSTEM_PC *char_platform_sys;
+} CHAR_PLATFORM_WORLD_PC;
+STATIC_ASSERT(offsetof(EQUIVALENT_GROUP_PC, object_count) == 0);
+STATIC_ASSERT(offsetof(EQUIVALENT_GROUP_PC, byte_size) == 2);
+STATIC_ASSERT(offsetof(EQUIVALENT_GROUP_PC, objects) == 4);
+STATIC_ASSERT(offsetof(EQUIVALENT_WORLD_VIEW_PC, equivalent_groups) == 0x46b0);
+STATIC_ASSERT(offsetof(EQUIVALENT_WORLD_VIEW_PC, equivalent_group_count) == 0x46b4);
+STATIC_ASSERT(sizeof(CHAR_PLATFORM_PC) == 0x14);
+STATIC_ASSERT(offsetof(CHAR_PLATFORM_PC, special) == 0);
+STATIC_ASSERT(offsetof(CHAR_PLATFORM_PC, object_id) == 0xc);
+STATIC_ASSERT(offsetof(CHAR_PLATFORM_PC, platform_id) == 0xe);
+STATIC_ASSERT(offsetof(CHAR_PLATFORM_PC, object) == 0x10);
+STATIC_ASSERT(offsetof(CHAR_PLATFORM_SYSTEM_PC, scene) == 0);
+STATIC_ASSERT(offsetof(CHAR_PLATFORM_SYSTEM_PC, platform_count) == 4);
+STATIC_ASSERT(offsetof(CHAR_PLATFORM_SYSTEM_PC, platforms) == 8);
+STATIC_ASSERT(offsetof(CHAR_PLATFORM_WORLD_PC, char_platform_sys) == 0x2adc);
+
+void __cdecl EquivalentObjects_Configure(WORLDINFO *world, char *config) {
+    EQUIVALENT_WORLD_VIEW_PC *view = (EQUIVALENT_WORLD_VIEW_PC *)world;
+    NUFPAR_PC *parser;
+    EQUIVALENT_GROUP_PC *cursor;
+    view->equivalent_groups = NULL;
+    view->equivalent_group_count = 0;
+    if (world->current_gscn == NULL)
+        return;
+    parser = NuFParCreateMem("equivalentobjects", config, 0xffff);
+    if (parser == NULL)
+        return;
+    world->giz_buffer.addr = (world->giz_buffer.addr + 3U) & ~3U;
+    cursor = (EQUIVALENT_GROUP_PC *)world->giz_buffer.addr;
+    view->equivalent_groups = cursor;
+    while (NuFParGetLine(parser) != 0) {
+        NuFParGetWord(parser);
+        if (NuStrICmp(parser->word_buffer_ptr, "equivalentobjects") != 0)
+            continue;
+        cursor->object_count = 0;
+        cursor->byte_size = 4;
+        while (NuFParGetWord(parser) != 0) {
+            if (NuSpecialFind(world->current_gscn, &cursor->objects[cursor->object_count], parser->word_buffer_ptr,
+                              1) != 0) {
+                ++cursor->object_count;
+                cursor->byte_size += sizeof(NUSPECIALHANDLE);
+            }
+        }
+        if (cursor->object_count > 0) {
+            ++view->equivalent_group_count;
+            cursor = (EQUIVALENT_GROUP_PC *)((u8 *)cursor + cursor->byte_size);
+        }
+    }
+    NuFParDestroy(parser);
+    if (view->equivalent_group_count > 0)
+        world->giz_buffer.addr = ((u32)cursor + 15U) & ~15U;
+    else
+        view->equivalent_groups = NULL;
+}

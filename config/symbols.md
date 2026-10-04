@@ -4241,3 +4241,19 @@ no duplicate Y global is emitted. Complete candidate hashes, native fixtures,
 initializer proofs and preservation gates are retained under ignored
 build/analysis/transfer-execution-20261003/continuation-bolt-portal-camera and
 subsystem production receipts. Unknown owning extents receive no coverage credit.
+
+
+Gameplay consumers verify twenty complete new PC functions/7,817 unique bytes
+and four reviewed existing-parent supersessions. MiniCam dispatch tables remain
+inside full extents; Pulses preserve the PC world pointer at 0x5050 and native
+ordered comparisons; both configuration siblings use actual cdecl two-argument
+interfaces. Bolt Update and Reflect retain genuine original C++ private helper
+ownership, with old partial C definitions removed. Crate callbacks, AI group and
+torpedo providers have independently checked native ABI and complete extents.
+Full production hashes and 171 all-normal CPU checks are retained under ignored
+build/analysis/transfer-execution-20261003/continuation-gameplay-visibility-consumers.
+Unchanged MiniCut3 returns to the exact historical 1,789-byte compiler body;
+particle's five-byte x87 load/exchange permutation is independently qualified
+with equal stack values at the join and all 34 named relocations preserved.
+Neither is described as byte-identical to the immediate baseline; no new
+original extents or flags are introduced.

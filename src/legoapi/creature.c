@@ -240,3 +240,79 @@ void __cdecl ResetAICreatures(AISYS_PC *system) {
         ResetAICreature(object, system);
     }
 }
+
+typedef struct creature_crate_part_view_pc_s {
+    u8 unknown_000[0x20c];
+    f32 spawn_delay;
+} CREATURE_CRATE_PART_VIEW_PC;
+STATIC_ASSERT(offsetof(CREATURE_CRATE_PART_VIEW_PC, spawn_delay) == 0x20c);
+STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
+STATIC_ASSERT(offsetof(PART_PC, move_fn) == 0x1b0);
+STATIC_ASSERT(offsetof(PART_PC, draw_fn) == 0x1d0);
+
+static void __cdecl CreatureCrate_StopPc(PART_PC *part) {
+    GAMEOBJECT *object = part->owner;
+    i32 debris, type;
+    if (object == NULL)
+        return;
+    debris = (i16)FindGameDebris(WORLD->game_debris_sys, "CRATE_POP");
+    if (debris != -1)
+        AddGameDebris(WORLD->game_debris_sys, debris, &part->position);
+    type = PARTLookupType("CRATE_PART");
+    if (type != -1)
+        AddFiniteShotPART(type, &part->position, 1);
+    object->flags_1fc_word |= 0x1000;
+    object->ai_packet.reset_mode = 2;
+    PlaySfx("Explode1", &part->position);
+    GameCam_Judder(GameCam, 0.1f, 0, NULL);
+    NewRumbleAllPlayers(0.0f, 0.0f, 2, 0.0f);
+}
+
+static void __cdecl CreatureCrate_MovePc(PART_PC *part, f32 elapsed) {
+    CREATURE_CRATE_PART_VIEW_PC *crate = (CREATURE_CRATE_PART_VIEW_PC *)part;
+    crate->spawn_delay -= elapsed;
+    if (crate->spawn_delay <= 0.0f) {
+        part->move_fn = NULL;
+        part->draw_fn = NULL;
+    }
+}
+
+static i32 __cdecl CreatureCrate_DrawPc(PART_PC *part) {
+    return !(((CREATURE_CRATE_PART_VIEW_PC *)part)->spawn_delay > 0.0f);
+}
+
+void __cdecl SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {
+    NUVEC velocity = {0.0f, 0.0f, 0.0f};
+    NUMTX matrix;
+    ADDPART_PC parameters;
+    PART_PC *part;
+    if (NuSpecialExistsFn(&WORLD->level_objects[0xe6].special) == 0)
+        return;
+    NuMtxSetTranslation(&matrix, &object->collision_position);
+    matrix.m31 += height;
+    parameters = Default_ADDPART;
+    parameters.matrix = &matrix;
+    parameters.velocity = &velocity;
+    parameters.field_14 = 0.1f;
+    parameters.field_18 = 0.1f;
+    parameters.time_step = FRAMETIME;
+    parameters.special = &WORLD->level_objects[0xe6].special;
+    parameters.gravity = -2.0f;
+    parameters.flags = 0x313;
+    parameters.owner = object;
+    parameters.draw_fn = CreatureCrate_DrawPc;
+    parameters.move_fn = CreatureCrate_MovePc;
+    parameters.stop_fn = CreatureCrate_StopPc;
+    part = AddPart(&parameters);
+    if (part == NULL)
+        return;
+    part->force_flags = (u16)ObjHitObj_Flags(object);
+    if (!(delay > 0.0f)) {
+        part->move_fn = NULL;
+        part->draw_fn = NULL;
+        delay = 0.0f;
+    }
+    ((CREATURE_CRATE_PART_VIEW_PC *)part)->spawn_delay = delay;
+    object->flags_1fc_word &= ~0x1000u;
+    object->ai_packet.reset_mode = 3;
+}

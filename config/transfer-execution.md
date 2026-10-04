@@ -2052,3 +2052,84 @@ producers. Larger resource/world lifecycle parents have actual callback/config/
 loader gaps; their seven-parent 18,699-byte hypothesis bank remains held.
 Candidate inventory receives no transfer credit. Broad whole-project work and
 validated direct-main pushes continue until the user stops or pauses them.
+
+
+### Gameplay lifecycle, MiniCam and visibility consumers checkpoint (2026-10-04)
+
+20 complete functions add 7,817 unique compared PC bytes over 7b31086:
+MiniCam consumers 6/3,787, Pulses and Gizmo visibility 4/2,532, genuine
+object-management suppliers 6/735, configuration siblings 2/679 and terrain
+queries 2/84. Unique compared code reaches 1,015,914 bytes; native objdiff
+includes the retained aliases and compares 1,016,431. Whole-PC fuzzy coverage
+rises from 20.086058% to 20.283675%. Six newly exact functions, including the
+already-compared reflection, add 414 bytes: 179,588/3,471,246 (5.173589%).
+Exact initializer union rises 277 bytes to 631,720. Original denominators,
+extent rules and compiler settings remain unchanged.
+
+Existing ManageGameObjects (2,793 original bytes) now calls genuine crate spawn,
+AI group destruction and torpedo cleanup providers, retains native low WORD
+tests, and reloads world AI state after callbacks. KillGameObject's existing
+3,750-byte parent replaces its missing torpedo cleanup action with the real
+provider and retains the following native NULL store. The 2,738-byte Bolt update
+and 79-byte reflection move into the genuine original C++ helper/caller group;
+the old partial C copies are removed. Full update retains native callback state
+reloads, numeric comparison behavior and effect/count access widths. These
+previously compared parent spans receive no new transfer credit. Inherited
+object destruction, default debris and positive terrain/shadow collision
+services remain explicit partials outside the selected tested domains.
+
+MiniCam's six consumers preserve the complete dispatch-table extents, 32-command
+queue and metadata alias, native angular wrapping, easing and float spills.
+Pulses reconstruct parser-driven producers, reset and timer/halfspace updates;
+the shared world pulse pointer is at 0x5050, not Android's 0x5054. PC NaN/ordered
+comparisons and empty-word outer-parser termination were corrected before
+activation. Gizmo visibility uses native BYTE IDs and signed registry counts.
+EquivalentObjects and CharPlatforms configuration each have the actual two
+cdecl arguments demonstrated by the WorldLoad caller. Terrain query getters
+reuse existing typed state and the existing complete TerrPolyInfo owner.
+
+The source-only EXE links 3,599 functions and 6,122 data definitions across 269
+genuine objects. LLVM18 checks 296 source/header files and 269 units; 700 tests
+pass with three skips. All 171 selected CPU checks pass with all actual normal
+objects, zero replacements/supplements and 309 unchanged production pins:
+MiniCam 41, Pulses/configuration 33, object lifecycle 68 and Bolt update 29.
+Full retail comparison and independent final endpoint review pass. Prior exact
+revision 7b31086 CI passed (run 37193486958). Asset loading, GPU/hardware audio,
+expired stack pointers and arbitrary original storage capacities remain untested.
+
+Of 3,579 previous function copies, 3,573 remain identical. Four intentional
+existing-parent supersessions are independently accepted. Unchanged camera
+source returns to its previously accepted complete 1,789-byte MiniCut3 emission
+from 1,709 bytes. The unchanged particle source changes from 713 to 717 bytes;
+the current 717-byte body differs from its historical counterpart only in five
+bytes selecting three FLD stack operands and two FXCH indices. Independent
+symbolic x87 review verifies the same four-value stack at the join, with no
+arithmetic or branch change and all 34 named relocations unchanged. Full original
+extents and ABI remain pinned. Neither body is claimed byte-preserved against
+the immediate baseline. No exact function match is lost; compiler differences
+are recorded rather than hidden or tuned away.
+
+Shared data source is unchanged: all 3,455 complete regions and 1,769 scoped
+initializer proofs agree with isolated output; all four active typed members
+remain unchanged, including two exact members/four bytes. The actual previous
+per-object exact initializer count is 4,561, correcting the earlier 4,560
+row-level count: the exact TerrainUnusedSpatialBlockPc copy in data.cpp was
+omitted because its aggregate row has another nonexact owner. 4,557 old copies
+remain unchanged. Four duplicate compiler constants disappear from bolts.c
+during the reviewed C-to-C++ parent migration; all four retain their complete
+retail-equal bits in the genuine C++ owner and other real owners. Forty-three
+new known complete initializer copies/398 emitted copy bytes yield 4,600 actual
+exact copies. Duplicate copy counts are not unique data coverage. No shared
+allocation or unknown-extent credit is added.
+
+The 10:24 checkpoint was delayed for complete final validation; scene/tree
+scratch work did not block or enter this release. The user's three journal
+edits remain untouched. Next are twelve scene visibility/tree functions
+(3,050 new PC bytes), five gameplay utility suppliers (324 bytes), two ready
+configuration siblings (1,124 bytes), and broader configuration/collision
+provider families. Scene width/output will reuse named fields in the unchanged
+existing owner. Native tree clipping reads an unwritten fourth local stack lane;
+that original defect is preserved, with positive-path residue equivalence
+unclaimed and selected execution limited to defined paths. GameAI and larger
+world loader parents remain held until their real services are connected.
+Whole-project work and validated direct-main pushes continue.
