@@ -213,3 +213,198 @@ extern "C" void __cdecl PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE
         }
     }
 }
+
+#include <math.h>
+PC_DEVICE_BACKEND_PC::PC_DEVICE_BACKEND_PC() {
+    aspect = 1.3333334f;
+    active_aspect = 1.3333334f;
+    factory = NULL;
+    device = NULL;
+    adapter = 0;
+    device_type = 1;
+    creation_flags = 0;
+    force_software = 0;
+    unknown_5f9 = 0;
+    multithreaded = 1;
+    present_result = 0;
+    state600 = 1;
+    state604 = 1;
+    mode_count = 0;
+    modes = NULL;
+    active_mode = 0;
+    aspect_mode = 0;
+    active_aspect_mode = 0;
+    feature634 = 0;
+    multisample_index = 0;
+    multisample_tested = 0;
+    shader_flags = 0;
+    requested_windowed = 1;
+    requested_mode = 0;
+    requested_feature = 0;
+    requested_multisample = 0;
+    requested_target_count = 1;
+    declaration684 = NULL;
+    buffer688 = NULL;
+    declaration68c = NULL;
+    buffer690 = NULL;
+    buffer694 = NULL;
+    buffer698 = NULL;
+    state69c = 1;
+    state6a0 = 1;
+    state6a4 = 0;
+    state6a8 = 0;
+    declaration6ac = NULL;
+    back_buffer = NULL;
+    target_count = 1;
+    current_surface = NULL;
+    depth_surface = NULL;
+    memset(&identifier, 0, sizeof(identifier));
+    memset(&caps, 0, sizeof(caps));
+    memset(&parameters, 0, sizeof(parameters));
+    requested_viewport.x = requested_viewport.y = requested_viewport.width = requested_viewport.height = 0;
+    requested_viewport.min_z = requested_viewport.max_z = 0.0f;
+    desktop_mode.width = desktop_mode.height = desktop_mode.refresh_rate = 0;
+    desktop_mode.format = 0;
+    parameters.windowed = requested_windowed;
+    quality[1] = quality[2] = quality[3] = quality[4] = -1;
+    quality[0] = 0;
+    render_target_flags = 0;
+    for (i32 i = 0; i != 4; ++i) {
+        textures[i] = 0;
+        target_surfaces[i] = NULL;
+        target_kinds[i] = -1;
+        target_cache[i] = NULL;
+    }
+}
+void __thiscall PC_DEVICE_BACKEND_PC::InitializeFactory() {
+    factory = reinterpret_cast<GRAPHICS_FACTORY_PC *>(Direct3DCreate9(32));
+    if (factory == NULL)
+        PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState, "Failed to initialize DirectX");
+    factory->methods->get_device_caps(factory, 0, 1, &caps);
+    factory->methods->get_adapter_identifier(factory, 0, 0, &identifier);
+    factory->methods->get_adapter_display_mode(factory, 0, &desktop_mode);
+    aspect_mode = FindAspect(desktop_mode.width, desktop_mode.height);
+    active_aspect_mode = aspect_mode;
+    f32 ratio = (f32)((f64)desktop_mode.width / (f64)desktop_mode.height);
+    aspect = ratio;
+    active_aspect = ratio;
+}
+i32 __thiscall PC_DEVICE_BACKEND_PC::FindAspect(u32 width, u32 height) {
+    f32 ratio = (f32)((f64)width / (f64)height);
+    f32 closest = 1000.0f;
+    i32 selected = 0;
+    f32 distance = (f32)((f64)ratio - (f64)1.3333334f);
+    distance = (f32)fabs((f64)distance);
+    if ((f64)distance < 1000.0)
+        closest = distance;
+    distance = (f32)((f64)ratio - (f64)1.7777778f);
+    distance = (f32)fabs((f64)distance);
+    if (closest > distance) {
+        closest = distance;
+        selected = 1;
+    }
+    distance = (f32)((f64)ratio - (f64)1.6f);
+    distance = (f32)fabs((f64)distance);
+    if (closest > distance)
+        return 2;
+    return selected;
+}
+void __thiscall PC_DEVICE_BACKEND_PC::ReleaseDefaultPoolResources() {
+    if (back_buffer != NULL) {
+        back_buffer->methods->release(back_buffer);
+        back_buffer = NULL;
+    }
+    if (depth_surface != NULL) {
+        depth_surface->methods->release(depth_surface);
+        depth_surface = NULL;
+    }
+    if (buffer690 != NULL) {
+        buffer690->methods->release(buffer690);
+        buffer690 = NULL;
+    }
+    if (buffer694 != NULL) {
+        buffer694->methods->release(buffer694);
+        buffer694 = NULL;
+    }
+    if (buffer698 != NULL) {
+        buffer698->methods->release(buffer698);
+        buffer698 = NULL;
+    }
+    if (buffer688 != NULL) {
+        buffer688->methods->release(buffer688);
+        buffer688 = NULL;
+    }
+    for (i32 i = 0; i != 4; ++i) {
+        if (target_surfaces[i] != NULL) {
+            target_surfaces[i]->methods->release(target_surfaces[i]);
+            target_surfaces[i] = NULL;
+        }
+        PCGraphicsDestroyRenderTexture(textures[i]);
+        textures[i] = NULL;
+        target_cache[i] = NULL;
+    }
+}
+void __thiscall PC_DEVICE_BACKEND_PC::Shutdown() {
+    if (modes != NULL) {
+        delete modes;
+        modes = NULL;
+    }
+    ReleaseDefaultPoolResources();
+    if (declaration68c != NULL) {
+        declaration68c->methods->release(declaration68c);
+        declaration68c = NULL;
+    }
+    if (declaration6ac != NULL) {
+        declaration6ac->methods->release(declaration6ac);
+        declaration6ac = NULL;
+    }
+    if (device != NULL) {
+        PC_TEXTURE_RESOURCE_PC *release_view = reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(device);
+        release_view->methods->release(release_view);
+        device = NULL;
+    }
+    if (factory != NULL) {
+        factory->methods->release(factory);
+        factory = NULL;
+    }
+}
+PC_DEVICE_BACKEND_PC::~PC_DEVICE_BACKEND_PC() {
+    Shutdown();
+}
+
+extern "C" PC_DEVICE_BACKEND_PC PCDeviceBackend;
+PC_DEVICE_BACKEND_PC PCDeviceBackend;
+struct GRAPHICS_DEVICE_PC;
+struct GRAPHICS_DEVICE_METHODS_PC {
+    void *unknown_0000[3];
+    HRESULT(__stdcall *test_cooperative_level)(GRAPHICS_DEVICE_PC *);
+    void *unknown_0010[38];
+    HRESULT(__stdcall *end_scene)(GRAPHICS_DEVICE_PC *);
+    HRESULT(__stdcall *clear)(GRAPHICS_DEVICE_PC *, u32, const RECT *, u32, u32, f32, u32);
+};
+struct GRAPHICS_DEVICE_PC {
+    const GRAPHICS_DEVICE_METHODS_PC *methods;
+};
+STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, test_cooperative_level) == 0xc);
+STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, end_scene) == 0xa8);
+STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, clear) == 0xac);
+
+HRESULT __thiscall PC_DEVICE_BACKEND_PC::EndScene() {
+    GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
+    return view->methods->end_scene(view);
+}
+extern "C" void __cdecl PCDeviceClear(u32 count, const RECT *rectangles, u32 flags, u32 colour, f32 depth,
+                                      u32 stencil) {
+    GRAPHICS_DEVICE_PC *device = reinterpret_cast<GRAPHICS_DEVICE_PC *>(PCDeviceBackend.device);
+    PCDeviceLastResult = device->methods->clear(device, count, rectangles, flags, colour, depth, stencil);
+}
+extern "C" HRESULT __cdecl PCDeviceTestCooperativeLevel() {
+    GRAPHICS_DEVICE_PC *device = reinterpret_cast<GRAPHICS_DEVICE_PC *>(PCDeviceBackend.device);
+    return device->methods->test_cooperative_level(device);
+}
+extern "C" i32 __cdecl PCDeviceIsAbsent() {
+    return PCDeviceBackend.device == NULL;
+}
+extern "C" PC_D3D9_DEVICE_PC *__cdecl PCDeviceGetDevice() {
+    return PCDeviceBackend.device;
+}

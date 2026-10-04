@@ -342,3 +342,111 @@ void __cdecl SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
     system->count = count;
     world->giz_buffer.addr = (world->giz_buffer.addr + sizeof(*system) + 3U) & ~3U;
 }
+
+typedef struct PICKUP_COLLISION_RUNTIME_PC {
+    GIZMOPICKUP_PC *pickups, *temporary_pickups;
+    i32 pickup_count;
+} PICKUP_COLLISION_RUNTIME_PC;
+STATIC_ASSERT(offsetof(PICKUP_COLLISION_RUNTIME_PC, pickups) == 0);
+STATIC_ASSERT(offsetof(PICKUP_COLLISION_RUNTIME_PC, temporary_pickups) == 4);
+STATIC_ASSERT(offsetof(PICKUP_COLLISION_RUNTIME_PC, pickup_count) == 8);
+typedef struct PICKUP_COLLISION_FLAGS_PC {
+    u8 unknown_00[0x15];
+    u8 config_flags;
+} PICKUP_COLLISION_FLAGS_PC;
+STATIC_ASSERT(offsetof(PICKUP_COLLISION_FLAGS_PC, config_flags) == 0x15);
+STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_18) == 0x18);
+static PICKUP_TYPE_SYSTEM_PC *GizmoPickupSys = &GizmoPickupSys_Game;
+
+void __cdecl GizmoPickups_InitSys(PICKUP_TYPE_SYSTEM_PC *system) {
+    GizmoPickupSys = system;
+}
+static GIZMOPICKUP_PC *GizmoPickups_CollideListPc(GAMEOBJECT *object, GIZMOPICKUP_PC *pickups, i32 count) {
+    i32 collide_2d, coin_magnet, index;
+    f32 collide_scale, scaled_pickup, normal_pickup, scale, radius_x, radius_y, dx, dz, radius;
+    GIZMO_PICKUP_TYPE_PC *type;
+    GIZMOPICKUP_PC *pickup;
+    u8 flags;
+    if (pickups == NULL)
+        return NULL;
+    collide_2d = (object->character_data->model_flags & 0x2000) != 0 && VehicleArea != 0;
+    collide_scale = 0.0f;
+    if (GizmoPickups_Collide2DFn != NULL) {
+        collide_scale = GizmoPickups_Collide2DFn(object);
+        if (collide_scale != 0.0f)
+            collide_2d = 1;
+    }
+    coin_magnet = Cheats_CheckFlags(0x8000) != 0 || object->powerup_time > 0.0f;
+    normal_pickup = AreaPickupScale;
+    scaled_pickup = coin_magnet ? COINMAGNETSCALE * normal_pickup : normal_pickup;
+    if (collide_scale != 0.0f)
+        scaled_pickup *= collide_scale;
+    if (collide_2d && VehicleArea != 0)
+        scaled_pickup += scaled_pickup;
+    for (index = 0; index < count; ++index) {
+        pickup = &pickups[index];
+        type = &GizmoPickupSys->types[pickup->type_index];
+        flags = pickup->flags;
+        if ((type->flags & 0x10) != 0 || (flags & 1) == 0 || (flags & 8) != 0 || (flags & 2) == 0 ||
+            ((flags & 0x10) == 0 && (((PICKUP_COLLISION_FLAGS_PC *)pickup)->config_flags & 4) == 0))
+            continue;
+        if ((flags & 0x40) != 0 && GizmoPickupSys->alternate_type != -1)
+            type = &GizmoPickupSys->types[GizmoPickupSys->alternate_type];
+        if (type->field_0f != 0)
+            continue;
+        if ((((PICKUP_COLLISION_FLAGS_PC *)pickup)->config_flags & 4) != 0)
+            return pickup;
+        scale = type->score == 0 ? normal_pickup : scaled_pickup;
+        radius_x = type->shadow_extent_x * scale;
+        radius_y = (coin_magnet ? type->shadow_extent_z : type->shadow_radius_z) * scale;
+        if ((f64)object->collision_min.x > (f64)pickup->position.x + radius_x ||
+            (f64)pickup->position.x - radius_x > (f64)object->collision_max.x ||
+            (f64)object->collision_min.z > (f64)pickup->position.z + radius_x ||
+            (f64)pickup->position.z - radius_x > (f64)object->collision_max.z)
+            continue;
+        if (!collide_2d) {
+            if ((f64)object->collision_min.y > (f64)pickup->position.y + radius_y ||
+                (f64)pickup->position.y - radius_y > (f64)object->collision_max.y)
+                continue;
+            if (object->rider == NULL) {
+                if (SphereSphereOverlapScaleY(&pickup->position, radius_x, radius_y, &object->collision_position,
+                                              object->collision_radius, object->bounds_half_height))
+                    return pickup;
+                continue;
+            }
+        }
+        dx = pickup->position.x - object->collision_position.x;
+        dz = pickup->position.z - object->collision_position.z;
+        radius = radius_x + object->bounds_radius;
+        if (!((f64)dx * dx + (f64)dz * dz >= (f64)radius * radius))
+            return pickup;
+    }
+    return NULL;
+}
+GIZMOPICKUP_PC *__cdecl GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *object, i32 unused) {
+    GIZMOPICKUP_PC *pickup;
+    i32 temporary, type_index;
+    (void)unused;
+    if (world == NULL || (object->flags_1f8 & 0x40000) != 0)
+        return NULL;
+    pickup = GizmoPickups_CollideListPc(
+        object, ((PICKUP_COLLISION_RUNTIME_PC *)world->pickup_runtime_sys)->temporary_pickups, 64);
+    temporary = pickup != NULL;
+    if (pickup == NULL)
+        pickup = GizmoPickups_CollideListPc(object, ((PICKUP_COLLISION_RUNTIME_PC *)world->pickup_runtime_sys)->pickups,
+                                            ((PICKUP_COLLISION_RUNTIME_PC *)world->pickup_runtime_sys)->pickup_count);
+    if (pickup == NULL)
+        return NULL;
+    pickup->flags |= 8;
+    if (temporary)
+        pickup->flags &= ~1u;
+    type_index = (pickup->flags & 0x40) != 0 && GizmoPickupSys->alternate_type != -1 ? GizmoPickupSys->alternate_type
+                                                                                     : pickup->type_index;
+    if (GizmoPickupSys->types[type_index].collection_sfx_name != NULL)
+        PlaySfx(GizmoPickupSys->types[type_index].collection_sfx_name, &pickup->position);
+    if (GizmoPickupSys->types[type_index].collect_fn != NULL)
+        GizmoPickupSys->types[type_index].collect_fn(world, pickup, type_index, object, 0);
+    if ((GizmoPickupSys->types[type_index].flags & 0x40) != 0)
+        ++AreaGlobals_PC.field_18;
+    return pickup;
+}

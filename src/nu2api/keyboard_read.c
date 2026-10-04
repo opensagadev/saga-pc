@@ -30,7 +30,7 @@ u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner) {
     if ((nu_keyboard_device_flags & 2) != 0 || owner->device == 0) {
         page_index = nu_keyboard_page_index;
         page = nu_keyboard_pages + (i8)page_index * 0x100;
-        memset(page, 0, nu_keyboard_key_count);
+        memset(page, 0, nu_keyboard_owner.key_count);
         return page;
     }
 
@@ -39,7 +39,7 @@ u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner) {
     if (device->vtable->poll(device) < 0 && (device->vtable->acquire(device) < 0 || device->vtable->poll(device) < 0)) {
         page_index = nu_keyboard_page_index;
         page = nu_keyboard_pages + (i8)page_index * 0x100;
-        memset(page, 0, nu_keyboard_key_count);
+        memset(page, 0, nu_keyboard_owner.key_count);
         return page;
     }
 
@@ -47,14 +47,14 @@ u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner) {
     nu_keyboard_page_index = page_index;
     page = nu_keyboard_pages + (i8)page_index * 0x100;
     if (device->vtable->get_state(device, 0x100, page) != 0) {
-        memset(page, 0, nu_keyboard_key_count);
+        memset(page, 0, nu_keyboard_owner.key_count);
         return page;
     }
 
     previous_key_index = nu_keyboard_key_index;
     nu_keyboard_previous_key_index = previous_key_index;
     next_key_index = 0;
-    for (i = 0; i < nu_keyboard_key_count; ++i) {
+    for (i = 0; i < nu_keyboard_owner.key_count; ++i) {
         if (page[i] != 0 && i != previous_key_index) {
             next_key_index = i;
         }
@@ -65,7 +65,7 @@ u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner) {
         if (next_key_index != 0) {
             nu_keyboard_repeat_countdown = 6;
         }
-        memset(page, 0, nu_keyboard_key_count);
+        memset(page, 0, nu_keyboard_owner.key_count);
         if (previous_key_index != 0 && page[previous_key_index] == 0) {
             nu_keyboard_key_index = 0;
         }
@@ -111,18 +111,18 @@ i32 NuKeyToAscii(u32 key, i32 shifted) {
 
 /* PC input startup remains structurally incomplete at the marked platform
  * dependencies; these candidates preserve the verified wrapper ABI/order. */
-extern HWND PCInputWindow_candidate;
-extern HINSTANCE PCInputInstance_candidate;
+extern HINSTANCE PCInputWindow_candidate;
+extern HWND PCInputInstance_candidate;
 
 void __cdecl NuKeyboardCreateWindowState_candidate(HWND window, HINSTANCE instance) {
     PCFrameCriticalSectionIndex_candidate = PCThreadCriticalSectionCreate_candidate();
-    STUBBED_NAMED(0x006e42d0); /* PC input synchronization object construction */
+    STUBBED_NAMED(0x006e42d0); /* PC graphics adapter and capability initialization */
     STUBBED_NAMED(0x006dacb0); /* DirectInput device setup and state allocation */
 }
 
 i32 __cdecl NuKeyboardPlatformStartup_candidate(void) {
     STUBBED_NAMED(0x006d3150); /* PC input subsystem pre-configuration */
-    NuKeyboardCreateWindowState_candidate(PCInputWindow_candidate, PCInputInstance_candidate);
+    NuKeyboardCreateWindowState_candidate(PCInputInstance_candidate, PCInputWindow_candidate);
     SetCursor(NULL);
     STUBBED_NAMED(0x006e57d0);
     STUBBED_NAMED(0x006e5340);

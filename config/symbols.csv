@@ -497,6 +497,7 @@ address    , symbol                                                         , si
 0x00494df0 , _MenuEnterNewGame                                              , 38    , void __cdecl (MENU *)
 0x00495310 , _UpdateGameMenu                                                , 1070  , "void (void *, i32)"
 0x00495740 , _MenuEnterTitles                                               , 34    , void __cdecl (MENU *)
+0x4977f0,_CheckMissionEnd,336,void __cdecl(MISSIONSYS_PC*)
 0x497c40   , _MovementArcSine                                               , 320   , ""
 0x497de0,_MovementMtxSetRotationXPc,160,
 0x00497e80 , _MovementMtxRotateX                                            , 217   , void private-register (NUMTX * EAX; i32 ECX)
@@ -1695,7 +1696,11 @@ address    , symbol                                                         , si
 0x0056e580 , _Cheat_SetArea                                                 , 45    , "void __cdecl (i32, i32)"
 0x0056e5d0 , _ResetExplosions                                               , 31    , void __cdecl (void)
 0x0056e5f0 , _AddExplosion                                                  , 168   , "EXPLOSION_PC *__cdecl (NUVEC *, f32, f32, GAMEOBJECT *, i32, u32)"
+0x56f180,_GizmoPickups_InitSys,10,void __cdecl(PICKUP_TYPE_SYSTEM_PC*)
+0x570280,_GizmoPickups_CollideListPc,814,
+0x5705b0,_GizmoPickups_Collide,252,"GIZMOPICKUP_PC* __cdecl(WORLDINFO*,GAMEOBJECT*,i32)"
 0x570a60,_ResetCoinPacket,23,void __cdecl(void *)
+0x570a80,_UpdateCoinPacket,298,"void __cdecl(PLAYER_COIN_PACKET_PC*,i32,i32)"
 0x570bb0,_CoinsGoToMainTotal,78,i32 __cdecl (void)
 0x570c00,_PartUpdate_Heart,129,void __cdecl (PART_PC *)
 0x570c90,_SpecialMiniKits_Configure,786,"void __cdecl(WORLDINFO *, char *)"
@@ -2928,6 +2933,7 @@ address    , symbol                                                         , si
 0x5f74a0,_NuPtlDmaSlotsExhaustedPc,1,void __cdecl(void)
 0x5f7610,_PCSpecialTransposeMatrix,133,"void __cdecl(NUMTX *,NUMTX *)"
 0x005f77d0,_NuLgtSetVertexColor,108,
+0x5f7b40,_PCGraphicsDestroyRenderTexture,255,void __cdecl(GRAPHICS_RENDER_TEXTURE_PC*)
 0x5f8d60,_NuTexReadPc,231,"i32 __cdecl(char *,VARIPTR *,VARIPTR)"
 0x005f8e50,_NuTexCreatePS,105,void __cdecl (NUTEXDIM_PC *)
 0x005f8ed0,_NuTexDestroyPS,34,void __cdecl(NUTEXDIM_PC *)
@@ -4014,6 +4020,8 @@ address    , symbol                                                         , si
 0x6db910,_NuFileUseHiresPC,8,i32 __cdecl(void)
 0x006dd390 , _NuWindowsProcessMessages                                      , 97    , i32 __cdecl (void)
 0x006de0e0 , _WinMain@16                                                    , 200   , "int __stdcall (HINSTANCE, HINSTANCE, LPSTR, int)"
+0x6de750,_PcEnableThreadSwap,1,void __cdecl(void)
+0x6de760,_PcDisableThreadSwap,1,void __cdecl(void)
 0x006de8d0 , _NuScratchAlloc32                                             , 37    ,
 0x006de960 , _NuScratchRelease                                             , 15    ,
 0x6dea60,_PCAnimationEffectCheckpoint,1,void __cdecl (void)
@@ -4029,9 +4037,20 @@ address    , symbol                                                         , si
 0x6df330,_PCFrameLoadingYieldEnabled,9,i32 __cdecl (void)
 0x6df940,_PCDeviceResetState,220,void __cdecl (void)
 0x006e0030,_PCNativeDebugPrint,72,"void __cdecl (PC_NATIVE_DEBUG_STATE_PC *, const char *, ...)"
+0x6e0080,_PCGraphicsFatalDiagnostic,92,"void __cdecl(PC_NATIVE_DEBUG_STATE_PC*,const char*,...)"
+0x6e1930,??0PC_DEVICE_BACKEND_PC@@QAE@XZ,472,PC_DEVICE_BACKEND_PC::PC_DEVICE_BACKEND_PC(void)
+0x6e1d00,?FindAspect@PC_DEVICE_BACKEND_PC@@QAEHII@Z,206,"i32 __thiscall PC_DEVICE_BACKEND_PC::FindAspect(u32,u32)"
+0x6e2170,?ReleaseDefaultPoolResources@PC_DEVICE_BACKEND_PC@@QAEXXZ,208,void __thiscall PC_DEVICE_BACKEND_PC::ReleaseDefaultPoolResources(void)
+0x6e2240,?EndScene@PC_DEVICE_BACKEND_PC@@QAEJXZ,15,HRESULT __thiscall PC_DEVICE_BACKEND_PC::EndScene(void)
 0x006e2470, ?ApplyViewport@PC_DEVICE_BACKEND_PC@@QAEXPBUPC_VIEWPORT_PC@@@Z, 159,
 0x6e27d0,?ShaderVariant16@PC_MATERIAL_DEVICE_CAPS_VIEW@@QAEHXZ,17,i32 __thiscall PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant16(void)
 0x6e27f0,?ShaderVariant1@PC_MATERIAL_DEVICE_CAPS_VIEW@@QAEHXZ,17,i32 __thiscall PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant1(void)
+0x6e2ba0,?InitializeFactory@PC_DEVICE_BACKEND_PC@@QAEXXZ,187,void __thiscall PC_DEVICE_BACKEND_PC::InitializeFactory(void)
+0x6e2c60,?Shutdown@PC_DEVICE_BACKEND_PC@@QAEXXZ,123,void __thiscall PC_DEVICE_BACKEND_PC::Shutdown(void)
+0x6e3930,??1PC_DEVICE_BACKEND_PC@@QAE@XZ,5,PC_DEVICE_BACKEND_PC::~PC_DEVICE_BACKEND_PC(void)
+0x6e4570,_PCDeviceGetDevice,6,PC_D3D9_DEVICE_PC* __cdecl(void)
+0x6e45a0,_PCDeviceIsAbsent,12,i32 __cdecl(void)
+0x6e45e0,_PCDeviceClear,55,"void __cdecl(u32,const RECT*,u32,u32,f32,u32)"
 0x6e46f0,_PCDeviceCreateIndexBuffer,63,"void __cdecl (u32, u32, i32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *)"
 0x6e4810,_PCDeviceCreateVertexBuffer,60,"void __cdecl (u32, u32, u32, i32, PC_BUFFER_RESOURCE_PC **)"
 0x6e4850,_PCDeviceCreateVertexDeclaration,32,"void __cdecl(const PC_VERTEX_ELEMENT_PC*,PC_TEXTURE_RESOURCE_PC**)"
@@ -4042,6 +4061,7 @@ address    , symbol                                                         , si
 0x6e5670,_PCDeviceSetTextureStageState,37,"void __cdecl (u32, i32, u32)"
 0x6e56a0, _PCDeviceSetTransform, 32,
 0x6e57b0, _NuVpSubmitPc, 20,
+0x6e5850,_PCDeviceTestCooperativeLevel,14,HRESULT __cdecl(void)
 0x006e59f0,_PCDeviceCreateTextureFromMemory,32,"void __cdecl (const void *, u32, PC_TEXTURE_RESOURCE_PC **)"
 0x6e5a30,_PCDeviceCreateTextureFromMemoryEx,88,"void __cdecl (const void *, u32, u32, u32, u32, u32, i32, i32, u32, u32, u32, D3DXIMAGE_INFO *, PALETTEENTRY *, PC_TEXTURE_RESOURCE_PC **)"
 0x6e5a90,_PCDeviceCreateCubeTextureFromMemory,32,"void __cdecl (const void *, u32, PC_TEXTURE_RESOURCE_PC **)"
@@ -4058,6 +4078,7 @@ address    , symbol                                                         , si
 0x6e6c40,_ceil,,double __cdecl ceil(double value)
 0x006e6d60 , __chkstk                                                       , 43    , MSVC x86 stack probe (EAX frame size; adjusts ESP)
 0x006e6d90 , _memcpy                                                        ,       , "void *__cdecl (void *, const void *, size_t)"
+0x6e7219,_atexit,,i32 __cdecl(void (__cdecl *)(void))
 0x006e7570 , _malloc                                                        ,       , void *__cdecl (size_t)
 0x006e7633 , _free                                                          , 133   , void __cdecl (void *)
 0x6e76c1,_realloc,,"void *__cdecl (void *, size_t); supplied pinned static CRT"
@@ -4099,8 +4120,10 @@ address    , symbol                                                         , si
 0x6ebaba,_ldexp,,"double __cdecl ldexp(double value, int exponent)"
 0x6ebcb0,__CIcos,,f64 compiler helper (f64 ST0); supplied pinned static CRT
 0x6ec14b,_exit,,void __cdecl exit(int status)
+0x6ec15c,__exit,,void __cdecl(i32)
 0x6ec1d7,_frexp,,"double __cdecl frexp(double value, int *exponent)"
 0x6ec300,__CIacos,,
+0x6ed9fb,_raise,,i32 __cdecl(i32)
 0x006f05ae , _saga_thunk_KERNEL32_dll_GetCurrentThreadId_006f05ae@0         , 6     , DWORD __stdcall (void)
 0x006f05b4 , _saga_thunk_KERNEL32_dll_GetCurrentThread_006f05b4@0           , 6     , HANDLE __stdcall (void)
 0x007157c8 , _D3DXMatrixMultiply@12                                         , 6     , "D3DXMATRIX * __stdcall (D3DXMATRIX *, const D3DXMATRIX *, const D3DXMATRIX *)"
@@ -4320,7 +4343,9 @@ address    , symbol                                                         , si
 0x0074fbdc , _D3DXCompileShader@40                                          , 6     , "HRESULT __stdcall (const char *, UINT, const D3DXMACRO *, ID3DXInclude *, const char *, const char *, DWORD, ID3DXBuffer **, ID3DXBuffer **, ID3DXConstantTable **)"
 0x0074fbe2 , _D3DXCreateEffectCompiler@28                                   , 6     , "HRESULT __stdcall (const char *, UINT, const D3DXMACRO *, ID3DXInclude *, DWORD, ID3DXEffectCompiler **, ID3DXBuffer **)"
 0x0074fbe8 , _D3DXCreateBuffer@8                                            , 6     , "HRESULT __stdcall (DWORD, ID3DXBuffer **)"
+0x750280,??__EPCDeviceBackend@@YAXXZ,22,void __cdecl(void)
 0x7502f0,??__ECRC16InstancePC@@YAXXZ,10,void __cdecl(void)
+0x750750,??__FPCDeviceBackend@@YAXXZ,10,void __cdecl(void)
 0x00751000 , __imp__RegCloseKey@4                                           , 4     , LONG (__stdcall *)(HKEY)
 0x00751004 , __imp__RegOpenKeyExA@20                                        , 4     , "LONG (__stdcall *)(HKEY, LPCSTR, DWORD, REGSAM, PHKEY)"
 0x00751008 , __imp__RegQueryValueExA@24                                     , 4     , "LONG (__stdcall *)(HKEY, LPCSTR, LPDWORD, LPDWORD, LPBYTE, LPDWORD)"
@@ -4518,6 +4543,7 @@ address    , symbol                                                         , si
 0x0075133c , __imp__CoCreateInstance@20                                     , 4     , "HRESULT (__stdcall *)(REFCLSID, IUnknown *, DWORD, REFIID, void **)"
 0x00751340 , __imp__CoUninitialize@0                                        , 4     , void (__stdcall *)(void)
 0x00751344 , __imp__CoSetProxyBlanket@32                                    , 4     , "HRESULT (__stdcall *)(IUnknown *, DWORD, DWORD, OLECHAR *, DWORD, DWORD, RPC_AUTH_IDENTITY_HANDLE, DWORD)"
+0x7513fc,_PCDeviceBackend$initializer$,4,constructor initializer pointer
 0x75140c,_CRC16InstancePC$initializer$,4,void (__cdecl *)(void)
 0x007514c0 , _InitOnceAllocSource                                           , 15    , const char[15]
 0x007514d0 , _InitOnceWindowTitle                                           , 36    , const char[36]
@@ -4618,6 +4644,7 @@ address    , symbol                                                         , si
 0x00751958 , __real@40e0000000000000                                        , 8     , const f64
 0x751960,__real@3fecccccc0000000,8,const f64
 0x751968,__real@4cbebc20,4,const f32
+0x7519a8,__real@3faaaaab,4,const f32
 0x007519b8 , _NuTimeBarColumnStep                                           , 8     , const f64
 0x007519b8 , __real@4008000000000000                                        , 8     , const f64
 0x007519e8 , _MoveSplineTurnRate                                            , 4     , const f32
@@ -5935,6 +5962,7 @@ address    , symbol                                                         , si
 0x0075d0c0 , _LoadPermEpisodesPath                                          , 20    , const char[20]
 0x0075d0d4 , _LoadPermAreasPath                                             , 17    , const char[17]
 0x0075d0e8 , _LoadPermLevelsPath                                            , 18    , const char[18]
+0x75d168,__real@3ff5555560000000,8,const f64
 0x0075d170 , __real@400e666660000000                                        , 8     , const f64
 0x0075d178 , __real@40b9999a                                                , 4     , const f32
 0x75d20c,_SuitMetadataName0075d20cPc,,char[14]
@@ -6334,6 +6362,7 @@ address    , symbol                                                         , si
 0x761a20,??_C@_0O@IHBIMBCI@BlowUpEmitObj?$AA@,14,const char [14]
 0x761a30,??_C@_0M@CLOJKFHO@BlowUpDecal?$AA@,12,const char [12]
 0x761a3c,??_C@_06GGPDGGOE@BlowUp?$AA@,7,const char [7]
+0x761a88,__real@40d3880000000000,8,f64
 0x761a90   , ??_C@_09CKCBMNI@orientate?$AA@                                 , 10    , const char[10]
 0x761a9c,??_C@_0M@GHMALKMJ@draw_at_end?$AA@,12,
 0x761aa8,??_C@_0BF@POKHEJIG@draw_while_animating?$AA@,21,
@@ -7127,6 +7156,7 @@ address    , symbol                                                         , si
 0x76f630,__real@beb0c6f7a0b5ed8d,,
 0x76f638,__real@3eb0c6f7a0b5ed8d,,
 0x76f640,__real@3bc79ca10c924223,,
+0x76f888,__real@3ff99999a0000000,8,const f64
 0x76fde8,_TextInputKeyNameTextPc76fde8,,char[7]
 0x7719bc,_TextInputKeyNameTextPc7719bc,,char[12]
 0x7719c8,_TextInputKeyNameTextPc7719c8,,char[5]
@@ -7273,6 +7303,10 @@ address    , symbol                                                         , si
 0x007759c4 , _PCKeyboard1Name_candidate                                     , 10    , const char[10]
 0x007759d0 , _PCKeyboardMouse1Name_candidate                                , 15    , const char[15]
 0x776e18,_PCNativeDebugPrefix,12,const char[12]
+0x776e24,??_C@_0N@GIPICIG@Fatal?5Error?$CB?$AA@,13,const char[13]
+0x776e34,??_C@_04EINJHBMM@?6?$CFs?6?$AA@,5,const char[5]
+0x776f20,__real@3ffc71c720000000,8,const f64
+0x776f38,??_C@_0BN@PIBILGOO@Failed?5to?5initialize?5DirectX?$AA@,29,const char[29]
 0x777034,_PCDeviceTextureCubeSourcePathPc,,const char[15]
 0x777d1c,??_7type_info@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x0078490c , _SoundVoice3DBufferIID                                         , 16    , const GUID
@@ -7523,6 +7557,7 @@ address    , symbol                                                         , si
 0x7f8df4,_PartExtraCoinRate_PC,,f32
 0x7f8df8,_GizmoPickupType,,GIZMO_PICKUP_TYPE_PC[10]
 0x7f9028,_CoinTab,,u8[4]
+0x7f902c,_GizmoPickupSys_Game,,PICKUP_TYPE_SYSTEM_PC
 0x7f903c,_PartVehicleHeartLifetime_PC,,f32
 0x7f9040,_PartVehicleHeartPodraceHeight_PC,,f32
 0x7f9044,_PartVehicleHeartHeight_PC,,f32
@@ -7870,6 +7905,8 @@ address    , symbol                                                         , si
 0x8032c8,_CHEAT_POWERUPTIME,,f32
 0x008032cc , _ONEPLAYERPOWERUPS                                             , 4     , i32
 0x8033a8,_COINMSGTIME,,f32
+0x8033ac,_COINMAGNETSCALE,,f32
+0x8033b0,_GizmoPickupSys,4,PICKUP_TYPE_SYSTEM_PC*
 0x8034b0,_PartVectorSpreadDegrees_PC,,i32
 0x008034c4,_GetSurfaceInfoDefaultMaskPc,,PC_SURFACE_MASK_PC
 0x008034c8 , _TerSurface                                                    , 384   , TERRAIN_SURFACE_PC[32]
@@ -8756,13 +8793,13 @@ address    , symbol                                                         , si
 0x0088ab60 , _unpack_file_pos                                               , 8     , i64
 0x0088ab68 , _file_criticalsection                                          , 4     , i32
 0x0088ab6c , _old_line_pos                                                  , 4     , i32
-0x0088ab70 , _read_buffer                                                   ,       , u8[]
+0x88ab70,_read_buffer,,u8[262144]
 0x008cab70 , _NuFParBuffers                                                 , 16384 , char[4][0x1000]
 0x008ceb70 , _file_info                                                     , 2112  , FILEINFO[33]
 0x008cf3b0 , _decode_buffer_pos                                             , 4     , i32
 0x8cf3b4,_ImplodeSubBitsPc,,u32
 0x8cf3b8,_ImplodeOffsetTablePc,,u16[256]
-0x008cf5b8 , _decode_buffer                                                 ,       , u8[]
+0x8cf5b8,_decode_buffer,,u8[262144]
 0x90f5b8,_ImplodeLiteralLengthsPc,,u8[510]
 0x90f7bc,_ImplodeAvailableBitsPc,,u32
 0x0090fbc4 , _decode_buffer_left                                            , 4     , i32
@@ -8928,8 +8965,8 @@ address    , symbol                                                         , si
 0x924868,_NuWindMaxMatsPC,,i32
 0x92486c,_NuWindMaxGroupsPC,,i32
 0x924870,_NuWindGroup,,PC_NUWINDGROUP *
-0x00924880 , _PCInputWindow_candidate                                       , 4     , HWND
-0x00924884 , _PCInputInstance_candidate                                     , 4     , HINSTANCE
+0x00924880,_PCInputWindow_candidate,4,HINSTANCE
+0x00924884,_PCInputInstance_candidate,4,HWND
 0x0092488c , _permbuffer_size                                               , 4     , i32
 0x00924890 , _original_permbuffer_base                                      , 4     , VARIPTR
 0x00924894 , _permbuffer_base                                               , 4     , VARIPTR
@@ -9125,6 +9162,7 @@ address    , symbol                                                         , si
 0x950f7c,_AreaPickupGravity,,f32
 0x950f80,_AreaPickupScale,,f32
 0x950f84,_AddCoinDelay,,f32[2]
+0x950f98,_GizmoPickups_Collide2DFn,,f32 (__cdecl *)(GAMEOBJECT *)
 0x00951018 , _part_debris_count                                             , 4     , i32
 0x95101c,_PartDebrisNameListPc,,char **
 0x951020,_KillPartsBrickImpactWaitPc,,f32
@@ -9553,6 +9591,7 @@ address    , symbol                                                         , si
 0x009868c0 , _render_state                                                  , 420   , NUGLOBALRNDRSTATE_PC
 0x986ea8,_SceneVideoResourcesPC,,SCENE_VIDEO_RESOURCE_HEADER_PC
 0x986f1c,_NuLgtLaserCnt,4,i32
+0x986f20,_PCGraphicsRenderTextures,,GRAPHICS_RENDER_TEXTURE_PC[32] workingview
 0x987520,_NuRndr_DebrisPlane,,NUVEC4
 0x9922b4, _NuCameraProjectionGlobalOffsetX, ,
 0x009922b8,_DwaWeightPoolPc,,
@@ -9561,12 +9600,14 @@ address    , symbol                                                         , si
 0x0280c4a0 , _clip_test_mtx                                                 , 64    , NUMTX
 0x280c760,_NuRndrShadPolDat,,PC_SHADOW_QUEUE_RECORD[128]
 0x280d3ec,_NuDebrisVertexBuffers,,PC_BUFFER_RESOURCE_PC *[4]
+0x280d800,_PCGraphicsRenderTextureActive,,u8[32] workingview
 0x28358c4,_NuLgtArcLaserCnt,4,i32
 0x2835ad0,_NuLgtLaserData,3584,NULGTLASER_PC[64]
 0x2849318, _NuCameraProjectionGlobalScaleX, ,
 0x2854b64,_NuLgtArcLaserFrame,4,i32
 0x02854ba8 , _nuprim_field_ba8                                              , 4     , u32
 0x2854bac,_NuDebrisSystemBuffers,,void *[8]
+0x2854be0,_PCGraphicsRenderTextureBytes,,i32 workingview
 0x2854bf0,_NuTextureEnvironmentCubePc,,PC_TEXTURE_RESOURCE_PC *
 0x2854bf4,_NuTexturePhongCubePc,,PC_TEXTURE_RESOURCE_PC *
 0x02854bf8 , _nu_water_reset_state                                          , 4     , i32
@@ -9901,10 +9942,8 @@ address    , symbol                                                         , si
 0x2975919,_TextInputLastDeviceIndexPc,,i8
 0x02975a94 , _win_message                                                   , 28    , MSG
 0x2976098,_PCNativeWarningDebugState,,PC_NATIVE_DEBUG_STATE_PC
-0x029765a0 , _nu_keyboard_owner                                             ,       , NuKeyboardOwner_PC partial
-0x029765cc , _nu_keyboard_key_count                                         , 4     , i32
+0x29765a0,_nu_keyboard_owner,,NuKeyboardOwner_PC
 0x29765e8,_PCDeviceBackend,,PC_DEVICE_BACKEND_PC
-0x002976c18, _NuVideoDisplayAspect                                          , 4     , f32
 0x02976d00 , _NuScratchBackingAccessPc                                     ,       ,
 0x00297ad74, _nu_current_thread_id                                          , 4     , volatile u32
 0x0297ad94 , _nuvideo_global_vbcnt                                          , 4     , volatile i32

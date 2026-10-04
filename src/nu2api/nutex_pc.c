@@ -61,3 +61,31 @@ void __cdecl NuTexInitExPS(VARIPTR *buffer) {
     PCDeviceCreateCubeTextureFromFile((char *)NuTextureEnvironmentCubePathPc, &NuTextureEnvironmentCubePc);
     PCDeviceCreateCubeTextureFromFile((char *)NuTexturePhongCubePathPc, &NuTexturePhongCubePc);
 }
+
+void __cdecl PCGraphicsDestroyRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    i32 i;
+    i32 memory_delta;
+    f32 multiplier;
+    if (texture == NULL)
+        return;
+    for (i = 0; i != 32; ++i)
+        if (&PCGraphicsRenderTextures[i] == texture)
+            break;
+    if (i == 32)
+        return;
+    if (texture->external_id == -1) {
+        if (PCGraphicsRenderTextures[i].resource != NULL) {
+            PCGraphicsRenderTextures[i].resource->methods->release(PCGraphicsRenderTextures[i].resource);
+            PCGraphicsRenderTextures[i].resource = NULL;
+        }
+        if (PCGraphicsRenderTextures[i].surface != NULL) {
+            PCGraphicsRenderTextures[i].surface->methods->release(PCGraphicsRenderTextures[i].surface);
+            PCGraphicsRenderTextures[i].surface = NULL;
+        }
+    }
+    multiplier = texture->mip_count == 1 ? 1.0f : 1.5f;
+    memory_delta = (i32)((0u - (u32)texture->width * (u32)texture->height) * 4u);
+    PCGraphicsRenderTextureBytes += (i32)((f64)memory_delta * (f64)multiplier);
+    memset(&PCGraphicsRenderTextures[i], 0, sizeof(GRAPHICS_RENDER_TEXTURE_PC));
+    PCGraphicsRenderTextureActive[i] = 0;
+}

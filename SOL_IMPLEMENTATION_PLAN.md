@@ -491,3 +491,19 @@ with AI specifically.
 > drive further research. AI/parser packets are optional first examples, not the
 > scope or endpoint. Coverage milestones are checkpoints. Preserve existing user
 > edits, exact results and the repository's full-byte verification requirements.
+
+## Runtime checkpoint after connected archive/action/device-lifecycle transfer
+
+The source executable still exits before a level; no playable milestone is
+established. This batch completes actual compressed archive reads and existing
+resource/gameplay call sites, and introduces the genuine graphics object
+lifecycle. The 224 normal-object subsystem checks establish their stated domains;
+they do not establish a window, input hardware, graphics device, world or frame
+loop. See the dated checkpoint in `config/transfer-execution.md` for measurements.
+
+The next priority is one connected PC startup cohort: genuine window and input
+setup, full keyboard state constructor and configuration/file helpers with their
+real data producers. Then close graphics device/default-resource creation and
+the actual loader/loop dependencies. Keep the current early-exit guard until its
+producers exist; no dummy state, fake device or forced frame bypass. Existing
+caller/provider restoration takes priority over unused source leaves.

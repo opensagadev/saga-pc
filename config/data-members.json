@@ -56,6 +56,34 @@
       "original_size": null,
       "ctype": "u16",
       "qualification": "New minimum WORD view from actual full119-byte native store; original owning extent unknown, no old Y compiled/exact provider and no coverage credit. Same complete ConfigBuffer backing, not duplicate storage."
+    },
+    {
+      "id": "nu_keyboard_owner.key_count",
+      "kind": "data_member",
+      "owner_symbol": "_nu_keyboard_owner",
+      "owner_identifier": "nu_keyboard_owner",
+      "owner_unit": "src/data.cpp",
+      "owner_type": "NuKeyboardOwner_PC",
+      "member_path": "key_count",
+      "original_address": "0x029765cc",
+      "original_size": 4,
+      "ctype": "i32",
+      "historical_symbol": "_nu_keyboard_key_count",
+      "qualification": "Existing complete known4-byte count comparison preserved through same original address owner+0x2c; parent original owning extent unknown, only native60-byte working prefix."
+    },
+    {
+      "id": "PCDeviceBackend.active_aspect",
+      "kind": "data_member",
+      "owner_symbol": "_PCDeviceBackend",
+      "owner_identifier": "PCDeviceBackend",
+      "owner_unit": "src/nu2api/pc_device.cpp",
+      "owner_type": "PC_DEVICE_BACKEND_PC",
+      "member_path": "active_aspect",
+      "original_address": "0x02976c18",
+      "original_size": 4,
+      "ctype": "f32",
+      "historical_symbol": "_NuVideoDisplayAspect",
+      "qualification": "Existing complete known4-byte initializer preserved through genuine original C++backend owner+630; parent700 is unknown extent workingview with no original allocation credit."
     }
   ]
 }

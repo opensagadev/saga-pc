@@ -56,3 +56,38 @@ i32 __cdecl Collection_Got(i32 id) {
         return 0;
     return 1;
 }
+
+void __cdecl UpdateCoinPacket(PLAYER_COIN_PACKET_PC *packet, i32 active, i32 player_index) {
+    u32 decrement;
+    if (packet == NULL)
+        return;
+    if (active == 0) {
+        packet->active = 1;
+        packet->scale = 1.0f;
+        packet->multiplier_time = 0.0f;
+        if (BonusArea != 0) {
+            if (packet->coins < 10) {
+                packet->coins = 0;
+                return;
+            }
+            decrement = (u32)((f64)FRAMETIME * 20000.0);
+            decrement = (decrement / 10) * 10;
+            if (decrement < 10)
+                decrement = 10;
+            if (decrement > packet->coins)
+                packet->coins = 0;
+            else
+                packet->coins -= decrement;
+        }
+        return;
+    }
+    packet->scale = SeekLinearF(packet->scale, 1.0f, (f32)((f64)FRAMETIME * 3.0));
+    if (((u32)DoubleScore & (1u << ((u32)player_index & 31))) == 0) {
+        packet->active = 1;
+        packet->multiplier_time = 0.0f;
+    } else if (packet->multiplier_time > 0.0f) {
+        packet->multiplier_time -= FRAMETIME;
+        if (packet->multiplier_time <= 0.0f)
+            packet->active = 1;
+    }
+}

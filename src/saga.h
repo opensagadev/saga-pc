@@ -1702,16 +1702,34 @@ STATIC_ASSERT(offsetof(NuKeyboardState_PC, keyboard_polled) == 0x4e10);
 STATIC_ASSERT(offsetof(NuKeyboardState_PC, keyboard_state) == 0x68b0);
 
 typedef struct NuKeyboardDevice_PC NuKeyboardDevice_PC;
+typedef struct PC_DI_FACTORY_PC PC_DI_FACTORY_PC;
 typedef struct NuKeyboardOwner_PC {
     f32 unknown_0000;
     i32 unknown_0004;
     f32 unknown_0008;
-    u8 unknown_000c_to_0024[0x18];
+    i32 device_count;
+    u8 unknown_0010_to_0020[0x10];
+    NuKeyboardDevice_PC *mouse;
     NuKeyboardDevice_PC *device;
     i32 poll_status;
+    i32 key_count;
+    PC_DI_FACTORY_PC *factory;
+    i32 mouse_axes;
+    i32 mouse_buttons;
+#ifdef __cplusplus
+    void Setup(HWND window, HINSTANCE instance);
+    void ScheduleRescan(f32 interval, i32 repetitions);
+#endif
 } NuKeyboardOwner_PC;
+STATIC_ASSERT(sizeof(NuKeyboardOwner_PC) == 0x3c);
+STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, device_count) == 0x0c);
+STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse) == 0x20);
 STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, device) == 0x24);
 STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, poll_status) == 0x28);
+STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, key_count) == 0x2c);
+STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, factory) == 0x30);
+STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_axes) == 0x34);
+STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_buttons) == 0x38);
 
 typedef struct nualloc_record_s NUALLOC_RECORD;
 typedef struct nualloc_pool_s NUALLOC_POOL;
@@ -6732,17 +6750,246 @@ struct PC_D3D9_DEVICE_PC {
     const PC_D3D9_METHODS_PC *methods;
 };
 
+typedef struct GRAPHICS_DISPLAY_MODE_PC {
+    u32 width, height, refresh_rate;
+    i32 format;
+} GRAPHICS_DISPLAY_MODE_PC;
+typedef struct GRAPHICS_PRESENT_PARAMETERS_PC {
+    u32 width, height;
+    i32 format;
+    u32 count;
+    i32 multisample_type;
+    u32 multisample_quality;
+    i32 swap_effect;
+    HWND window;
+    BOOL windowed, enable_depth;
+    i32 depth_format;
+    u32 flags, refresh_rate, interval;
+} GRAPHICS_PRESENT_PARAMETERS_PC;
+typedef struct GRAPHICS_CAPS_PC {
+    u8 unknown_000[0x14];
+    u32 caps2;
+    u8 unknown_018[4];
+    u32 device_caps;
+    u8 unknown_020[0xa4];
+    u32 vertex_shader_version;
+    u8 unknown_0c8[0x28];
+    u32 simultaneous_render_targets;
+    u8 unknown_0f4[0x3c];
+} GRAPHICS_CAPS_PC;
+#pragma pack(push, 4)
+typedef struct GRAPHICS_ADAPTER_IDENTIFIER_PC {
+    char driver[512], description[512], device_name[32];
+    LARGE_INTEGER driver_version;
+    u32 vendor, device_id, subsystem_id, revision;
+    GUID device_identifier;
+    u32 whql_level;
+} GRAPHICS_ADAPTER_IDENTIFIER_PC;
+#pragma pack(pop)
+typedef struct GRAPHICS_FACTORY_PC GRAPHICS_FACTORY_PC;
+typedef struct GRAPHICS_FACTORY_METHODS_PC {
+    void *unknown_000[2];
+    ULONG(__stdcall *release)(GRAPHICS_FACTORY_PC *);
+    void *register_software;
+    void *get_adapter_count;
+    HRESULT(__stdcall *get_adapter_identifier)(GRAPHICS_FACTORY_PC *, u32, u32, GRAPHICS_ADAPTER_IDENTIFIER_PC *);
+    u32(__stdcall *get_adapter_mode_count)(GRAPHICS_FACTORY_PC *, u32, i32);
+    HRESULT(__stdcall *enum_adapter_modes)(GRAPHICS_FACTORY_PC *, u32, i32, u32, GRAPHICS_DISPLAY_MODE_PC *);
+    HRESULT(__stdcall *get_adapter_display_mode)(GRAPHICS_FACTORY_PC *, u32, GRAPHICS_DISPLAY_MODE_PC *);
+    HRESULT(__stdcall *check_device_type)(GRAPHICS_FACTORY_PC *, u32, i32, i32, i32, BOOL);
+    void *check_device_format;
+    HRESULT(__stdcall *check_multisample)(GRAPHICS_FACTORY_PC *, u32, i32, i32, BOOL, i32, u32 *);
+    void *unknown_030[2];
+    HRESULT(__stdcall *get_device_caps)(GRAPHICS_FACTORY_PC *, u32, i32, GRAPHICS_CAPS_PC *);
+    void *get_adapter_monitor;
+    HRESULT(__stdcall *create_device)
+    (GRAPHICS_FACTORY_PC *, u32, i32, HWND, u32, GRAPHICS_PRESENT_PARAMETERS_PC *, PC_D3D9_DEVICE_PC **);
+} GRAPHICS_FACTORY_METHODS_PC;
+struct GRAPHICS_FACTORY_PC {
+    const GRAPHICS_FACTORY_METHODS_PC *methods;
+};
+typedef struct GRAPHICS_RENDER_TEXTURE_PC GRAPHICS_RENDER_TEXTURE_PC;
 typedef struct PC_DEVICE_BACKEND_PC {
-    u8 unknown_0000[4];
+    GRAPHICS_FACTORY_PC *factory;
     PC_D3D9_DEVICE_PC *device;
-    u8 unknown_0008[0x168];
-    PC_VIEWPORT_PC requested_viewport;
-    u8 unknown_0188[0x4cc];
-    u8 shader_caps;
+    GRAPHICS_CAPS_PC caps;
+    GRAPHICS_PRESENT_PARAMETERS_PC parameters;
+    PC_VIEWPORT_PC requested_viewport, full_viewport;
+    u32 adapter;
+    GRAPHICS_ADAPTER_IDENTIFIER_PC identifier;
+    i32 device_type;
+    u32 creation_flags;
+    u8 force_software, unknown_5f9, multithreaded, unknown_5fb;
+    HRESULT present_result;
+    u32 state600, state604;
+    GRAPHICS_DISPLAY_MODE_PC desktop_mode;
+    u32 mode_count;
+    GRAPHICS_DISPLAY_MODE_PC *modes;
+    u32 active_mode, aspect_mode;
+    f32 aspect;
+    u32 active_aspect_mode;
+    f32 active_aspect;
+    u8 feature634, unknown_635[3];
+    i32 multisample_index;
+    u8 multisample_tested, unknown_63d[3];
+    i32 quality[5];
+    union {
+        u32 shader_flags;
+        u8 shader_caps;
+    };
+    u32 render_target_flags;
+    u8 requested_windowed, unknown_65d[3];
+    u32 requested_mode;
+    u8 requested_feature, unknown_665[3];
+    i32 requested_multisample;
+    u16 requested_target_count;
+    u8 saved_windowed, unknown_66f;
+    u32 saved_mode;
+    u8 saved_feature, unknown_675[3];
+    i32 saved_multisample;
+    u16 saved_target_count, unknown_67e;
+    i32 saved_aspect;
+    PC_TEXTURE_RESOURCE_PC *declaration684;
+    PC_BUFFER_RESOURCE_PC *buffer688;
+    PC_TEXTURE_RESOURCE_PC *declaration68c;
+    PC_BUFFER_RESOURCE_PC *buffer690, *buffer694, *buffer698;
+    i32 state69c, state6a0, state6a4, state6a8;
+    PC_TEXTURE_RESOURCE_PC *declaration6ac;
+    PC_TEXTURE_RESOURCE_PC *back_buffer;
+    GRAPHICS_RENDER_TEXTURE_PC *textures[4];
+    PC_TEXTURE_RESOURCE_PC *target_surfaces[4];
+    i32 target_kinds[4];
+    u16 target_count, unknown_6e6;
+    PC_TEXTURE_RESOURCE_PC *current_surface, *depth_surface;
+    PC_TEXTURE_RESOURCE_PC *target_cache[4];
+
 #ifdef __cplusplus
+    PC_DEVICE_BACKEND_PC();
+    ~PC_DEVICE_BACKEND_PC();
+    void __thiscall Shutdown();
+    HRESULT __thiscall EndScene();
+    void __thiscall ReleaseDefaultPoolResources();
     void __thiscall ApplyViewport(const PC_VIEWPORT_PC *viewport);
+    void __thiscall InitializeFactory();
+    i32 __thiscall FindAspect(u32 width, u32 height);
+    u32 __thiscall FindMode(u32 width, u32 height, u32 refresh);
 #endif
 } PC_DEVICE_BACKEND_PC;
+
+STATIC_ASSERT(sizeof(GRAPHICS_DISPLAY_MODE_PC) == 0x10);
+STATIC_ASSERT(sizeof(GRAPHICS_PRESENT_PARAMETERS_PC) == 0x38);
+STATIC_ASSERT(sizeof(GRAPHICS_CAPS_PC) == 0x130);
+STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, caps2) == 0x14);
+STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, device_caps) == 0x1c);
+STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, vertex_shader_version) == 0xc4);
+STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, simultaneous_render_targets) == 0xf0);
+STATIC_ASSERT(sizeof(GRAPHICS_ADAPTER_IDENTIFIER_PC) == 0x44c);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, release) == 8);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, get_device_caps) == 0x38);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, create_device) == 0x40);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, factory) == 0x0);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, device) == 0x4);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) == 0x8);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, parameters) == 0x138);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, requested_viewport) == 0x170);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, full_viewport) == 0x188);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, adapter) == 0x1a0);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, identifier) == 0x1a4);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, device_type) == 0x5f0);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, creation_flags) == 0x5f4);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, force_software) == 0x5f8);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, multithreaded) == 0x5fa);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, present_result) == 0x5fc);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, state600) == 0x600);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, state604) == 0x604);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, desktop_mode) == 0x608);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, mode_count) == 0x618);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, modes) == 0x61c);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, active_mode) == 0x620);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, aspect_mode) == 0x624);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, aspect) == 0x628);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, active_aspect_mode) == 0x62c);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, active_aspect) == 0x630);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, feature634) == 0x634);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, multisample_index) == 0x638);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, multisample_tested) == 0x63c);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, quality) == 0x640);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, shader_flags) == 0x654);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, render_target_flags) == 0x658);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, requested_windowed) == 0x65c);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, requested_mode) == 0x660);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, requested_feature) == 0x664);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, requested_multisample) == 0x668);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, requested_target_count) == 0x66c);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, saved_windowed) == 0x66e);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, saved_mode) == 0x670);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, saved_feature) == 0x674);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, saved_multisample) == 0x678);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, saved_target_count) == 0x67c);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, saved_aspect) == 0x680);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, declaration684) == 0x684);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, buffer688) == 0x688);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, declaration68c) == 0x68c);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, buffer690) == 0x690);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, buffer694) == 0x694);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, buffer698) == 0x698);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, state69c) == 0x69c);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, state6a0) == 0x6a0);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, state6a4) == 0x6a4);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, state6a8) == 0x6a8);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, declaration6ac) == 0x6ac);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, back_buffer) == 0x6b0);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, textures) == 0x6b4);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, target_surfaces) == 0x6c4);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, target_kinds) == 0x6d4);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, target_count) == 0x6e4);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, current_surface) == 0x6e8);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, depth_surface) == 0x6ec);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, target_cache) == 0x6f0);
+STATIC_ASSERT(sizeof(PC_DEVICE_BACKEND_PC) == 0x700);
+STATIC_ASSERT(offsetof(GRAPHICS_DISPLAY_MODE_PC, width) == 0x0);
+STATIC_ASSERT(offsetof(GRAPHICS_DISPLAY_MODE_PC, height) == 0x4);
+STATIC_ASSERT(offsetof(GRAPHICS_DISPLAY_MODE_PC, refresh_rate) == 0x8);
+STATIC_ASSERT(offsetof(GRAPHICS_DISPLAY_MODE_PC, format) == 0xc);
+STATIC_ASSERT(offsetof(GRAPHICS_PRESENT_PARAMETERS_PC, width) == 0x0);
+STATIC_ASSERT(offsetof(GRAPHICS_PRESENT_PARAMETERS_PC, height) == 0x4);
+STATIC_ASSERT(offsetof(GRAPHICS_PRESENT_PARAMETERS_PC, format) == 0x8);
+STATIC_ASSERT(offsetof(GRAPHICS_PRESENT_PARAMETERS_PC, count) == 0xc);
+STATIC_ASSERT(offsetof(GRAPHICS_PRESENT_PARAMETERS_PC, multisample_type) == 0x10);
+STATIC_ASSERT(offsetof(GRAPHICS_PRESENT_PARAMETERS_PC, multisample_quality) == 0x14);
+STATIC_ASSERT(offsetof(GRAPHICS_PRESENT_PARAMETERS_PC, swap_effect) == 0x18);
+STATIC_ASSERT(offsetof(GRAPHICS_PRESENT_PARAMETERS_PC, window) == 0x1c);
+STATIC_ASSERT(offsetof(GRAPHICS_PRESENT_PARAMETERS_PC, windowed) == 0x20);
+STATIC_ASSERT(offsetof(GRAPHICS_PRESENT_PARAMETERS_PC, enable_depth) == 0x24);
+STATIC_ASSERT(offsetof(GRAPHICS_PRESENT_PARAMETERS_PC, depth_format) == 0x28);
+STATIC_ASSERT(offsetof(GRAPHICS_PRESENT_PARAMETERS_PC, flags) == 0x2c);
+STATIC_ASSERT(offsetof(GRAPHICS_PRESENT_PARAMETERS_PC, refresh_rate) == 0x30);
+STATIC_ASSERT(offsetof(GRAPHICS_PRESENT_PARAMETERS_PC, interval) == 0x34);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, driver) == 0x0);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, description) == 0x200);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, device_name) == 0x400);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, driver_version) == 0x420);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, vendor) == 0x428);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, device_id) == 0x42c);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, subsystem_id) == 0x430);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, revision) == 0x434);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, device_identifier) == 0x438);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, whql_level) == 0x448);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, get_adapter_identifier) == 0x14);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, get_adapter_mode_count) == 0x18);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, enum_adapter_modes) == 0x1c);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, get_adapter_display_mode) == 0x20);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, check_device_type) == 0x24);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, check_multisample) == 0x2c);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_PC, methods) == 0x0);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, shader_caps) == 0x654);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, unknown_5f9) == 0x5f9);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, unknown_5fb) == 0x5fb);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, unknown_66f) == 0x66f);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, unknown_67e) == 0x67e);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, unknown_6e6) == 0x6e6);
+STATIC_ASSERT(sizeof(GRAPHICS_FACTORY_PC) == 4);
+STATIC_ASSERT(sizeof(GRAPHICS_FACTORY_METHODS_PC) == 0x44);
 
 STATIC_ASSERT(sizeof(PC_VIEWPORT_PC) == 24);
 STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, x) == 0);
@@ -6764,6 +7011,22 @@ STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, device) == 4);
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, requested_viewport) == 0x170);
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, shader_caps) == 0x654);
 STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, create_vertex_declaration) == 0x158);
+
+struct GRAPHICS_RENDER_TEXTURE_PC {
+    PC_TEXTURE_RESOURCE_PC *resource;
+    u16 width, height;
+    u16 unknown_08, mip_count;
+    u8 unknown_0c[0x1c];
+    PC_TEXTURE_RESOURCE_PC *surface;
+    i32 external_id;
+};
+STATIC_ASSERT(sizeof(GRAPHICS_RENDER_TEXTURE_PC) == 0x30);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, resource) == 0);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, width) == 4);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, height) == 6);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, mip_count) == 0xa);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, surface) == 0x28);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, external_id) == 0x2c);
 
 struct nusound_filename_info_s;
 
@@ -8972,7 +9235,6 @@ void __cdecl PCStereoUnknownToken(void);
     extern i32 saveload_status;
     extern NUGSCN *save_icon_scene;
     extern i32 display_aspect_mode;
-    extern f32 NuVideoDisplayAspect;
     i32 __cdecl CutScene_StartFn_LSW(CUTINFO *cut);
     CUTINFO *__cdecl CutScene_Find(CUTSYS_PC *system, char *name);
     CUTINFO *__cdecl NewCutScene(CUTINFO *cutscene, CUTSYS_PC *system, char *name, i32 unused_4);
@@ -9571,7 +9833,6 @@ void __cdecl PCStereoUnknownToken(void);
     extern PC_NUDATFILEINFO *unpack_file_info;
     extern NUDATOPENFILEINFO *unpack_file_odi;
     extern i64 unpack_file_pos;
-    extern i32 decode_buffer_left;
     extern HANDLE pc_file_handles[32];
     i32 __cdecl NuPSFileOpen(const char *filepath, i32 mode);
     i32 __cdecl NuPSFileClose(i32 handle);
@@ -9644,12 +9905,11 @@ void __cdecl PCStereoUnknownToken(void);
     extern u8 nu_keyboard_page_index;
     extern i32 nu_keyboard_device_flags;
     extern i32 nu_keyboard_key_index;
-    extern i32 nu_keyboard_key_count;
     extern i32 nu_keyboard_repeat_countdown;
     extern i32 nu_keyboard_previous_key_index;
     extern i32 nu_keyboard_no_key_state;
-    extern HWND PCInputWindow_candidate;
-    extern HINSTANCE PCInputInstance_candidate;
+    extern HINSTANCE PCInputWindow_candidate;
+    extern HWND PCInputInstance_candidate;
     i32 __cdecl NuKeyboardPlatformStartup_candidate(void);
     void __cdecl NuKeyboardCreateWindowState_candidate(HWND window, HINSTANCE instance);
     u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner);
@@ -11939,6 +12199,7 @@ void __cdecl PCStereoUnknownToken(void);
     extern f32 NuCameraProjectionGlobalScaleY;
     extern f32 NuCameraProjectionGlobalOffsetX;
     extern f32 NuCameraProjectionGlobalOffsetY;
+    void __cdecl NuCameraSet(NUCAMERA *camera);
     void __cdecl NuCameraSetEx(NUCAMERA *, i32);
     void __cdecl NuCameraSetProjectionMtx(NUMTX *, f32, f32, f32, f32);
     void __cdecl NuMtxMulH(NUMTX *, NUMTX *, NUMTX *);
@@ -12243,9 +12504,6 @@ void __cdecl PCStereoUnknownToken(void);
     void __cdecl PlaySfxById(i32, NUVEC *);
     void __cdecl PlaySfxByIdAndSetVolume(i32, NUVEC *, f32);
     void __cdecl PlaySfx(char *, NUVEC *);
-    extern u8 read_buffer[0x40000];
-    extern i32 read_buffer_size;
-    extern i32 read_buffer_decoded_size;
     extern u32 PCImplodeWordMask;
     i32 __cdecl ExplodeBufferSize(char *);
     i32 __cdecl ExplodeCompressedSize(char *);
@@ -15219,4 +15477,37 @@ extern "C" {
 }
 #endif
 
+typedef struct PICKUP_TYPE_SYSTEM_PC {
+    GIZMO_PICKUP_TYPE_PC *types;
+    u8 *random_coin_types;
+    u16 type_count;
+    i8 minikit_type, gizmo_type_id, alternate_type, unknown_0d;
+    i16 unknown_0e;
+} PICKUP_TYPE_SYSTEM_PC;
+STATIC_ASSERT(sizeof(PICKUP_TYPE_SYSTEM_PC) == 0x10);
+STATIC_ASSERT(offsetof(PICKUP_TYPE_SYSTEM_PC, types) == 0);
+STATIC_ASSERT(offsetof(PICKUP_TYPE_SYSTEM_PC, random_coin_types) == 4);
+STATIC_ASSERT(offsetof(PICKUP_TYPE_SYSTEM_PC, type_count) == 8);
+STATIC_ASSERT(offsetof(PICKUP_TYPE_SYSTEM_PC, minikit_type) == 0xa);
+STATIC_ASSERT(offsetof(PICKUP_TYPE_SYSTEM_PC, gizmo_type_id) == 0xb);
+STATIC_ASSERT(offsetof(PICKUP_TYPE_SYSTEM_PC, alternate_type) == 0xc);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern GRAPHICS_RENDER_TEXTURE_PC PCGraphicsRenderTextures[32];
+    extern u8 PCGraphicsRenderTextureActive[32];
+    extern i32 PCGraphicsRenderTextureBytes;
+    extern PICKUP_TYPE_SYSTEM_PC GizmoPickupSys_Game;
+    extern f32 COINMAGNETSCALE;
+    extern f32(__cdecl *GizmoPickups_Collide2DFn)(GAMEOBJECT *);
+    void __cdecl UpdateCoinPacket(PLAYER_COIN_PACKET_PC *packet, i32 active, i32 player_index);
+    void __cdecl CheckMissionEnd(MISSIONSYS_PC *system);
+    void __cdecl GizmoPickups_InitSys(PICKUP_TYPE_SYSTEM_PC *system);
+    GIZMOPICKUP_PC *__cdecl GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *object, i32 unused);
+    void __cdecl PCGraphicsDestroyRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture);
+    void __cdecl PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...);
+#ifdef __cplusplus
+}
+#endif
 #endif

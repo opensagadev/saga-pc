@@ -2,11 +2,19 @@
 
 #include <string.h>
 
+static i32 decode_buffer_left;
+static i32 decode_buffer_pos;
+static u8 decode_buffer[262144];
+/* Preserve the existing canonical working view; this is not a PC capacity claim. */
+static u8 read_buffer[0x40000];
+static i32 read_buffer_size;
+static i32 read_buffer_decoded_size;
+
 extern i32 file_criticalsection;
 extern PC_NUDATFILEINFO *unpack_file_info;
 extern NUDATOPENFILEINFO *unpack_file_odi;
 extern i64 unpack_file_pos;
-extern i32 decode_buffer_left;
+
 extern void __cdecl PCThreadCriticalSectionEnter_candidate(i32 section_index);
 extern void __cdecl PCThreadCriticalSectionLeave_candidate(i32 section_index);
 
@@ -141,8 +149,29 @@ i32 __cdecl NuDatFileRead(NUFILE file, void *destination, i32 size) {
     i32 bytes_read;
 
     if (info->compression_mode == 2) {
-        STUBBED_NAMED("NuDatFileRead: PC compressed block decoding");
-        return -1;
+        i32 total_read = 0;
+        u8 *output = (u8 *)destination;
+        while (size != 0) {
+            if (decode_buffer_left == 0) {
+                NuDatFileDecodeNext();
+                if (read_buffer_size == read_buffer_decoded_size) {
+                    memcpy(decode_buffer, read_buffer, read_buffer_size);
+                } else {
+                    ExplodeBufferNoHeader((char *)read_buffer, (char *)decode_buffer, read_buffer_size,
+                                          read_buffer_decoded_size);
+                }
+                decode_buffer_pos = 0;
+                decode_buffer_left = read_buffer_decoded_size;
+            }
+            bytes_read = size < decode_buffer_left ? size : decode_buffer_left;
+            memcpy(output, decode_buffer + decode_buffer_pos, bytes_read);
+            output += bytes_read;
+            decode_buffer_pos += bytes_read;
+            decode_buffer_left -= bytes_read;
+            size -= bytes_read;
+            total_read += bytes_read;
+        }
+        return total_read;
     }
 
     if (info->position != open_file->position) {
@@ -193,14 +222,6 @@ i32 __cdecl NuDatFileLoadBuffer(NUDATHDR *header, char *filepath, void *destinat
     }
 
     if (size <= capacity && size != 0) {
-        if (info->compression_mode == 2) {
-            STUBBED_NAMED("NuDatFileLoadBuffer: PC compressed block decoding");
-            /* Stop the retail retry loop until the decoder is reconstructed. */
-            nufile_lasterror = -1;
-            NuFileClose(file);
-            return 0;
-        }
-
         while (NuDatFileRead(file, destination, size) < 0) {
             do {
                 NuFileRetry();

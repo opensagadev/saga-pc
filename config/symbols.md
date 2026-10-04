@@ -4457,3 +4457,25 @@ UpdateGameObjects retains full6847 original extent and restores28 native calls
 across22 real providers; its partial body gains no new original-byte credit.
 Unchanged particle source has a separately verified715/713 masked-x87 scheduling
 variant; full CFG/34 contracts and90 cases per owner qualify it, not byte equality.
+
+### Connected archive, pickup and graphics lifecycle transfer (2026-10-04)
+
+Native constructor6e1930/472, CRT initializer750280/22 and destructor callback
+750750/10 belong to the actual `pc_device.cpp` global lifecycle; the global is no
+longer duplicate shared storage. Its shutdown6e2c60/123 and pool release6e2170/208
+retain their original same-owner calls. The working view ends at700; that is not
+a recovered allocation extent. Direct3DCreate9 is the real `d3d9.dll` import,
+with a generated import library rather than a reconstructed system provider.
+
+Pickup's private570280/814 helper keeps EDI object, EAX list and one stack count
+in the genuine caller group. The radial unordered branch follows native JNP;
+the earlier strict ordered comparison failed the retained NaN case. Five action
+functions1710 bytes plus their three existing UpdateGameObjects callers are
+connected. Parent6847, LoadPerm2004 and DAT Read451/Load477/Decode177 retain
+complete native extents; caller completion contributes no newly compared bytes.
+
+The native RET-only callbacks6de750/1 and6de760/1 restore existing pointer
+initializers800824/800820. They do not provide synchronization. Windows global
+identities are retained:924880 is HINSTANCE and924884 is HWND, despite their
+historical candidate names. Startup6d33d0/59 now passes HWND first/HINSTANCE
+second to the genuine cdecl55-byte wrapper; that wrapper remains partial.

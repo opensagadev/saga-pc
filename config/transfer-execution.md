@@ -2792,3 +2792,64 @@ Next ready connected work includes private compressed-DAT loading with real
 multiblock/boundary93-case proof, corrected LoadPerm menu timers/font predicate,
 genuine graphics factory/lifetime and canonical backend/member ownership, real
 window/input producers and connected collection/mission/pickup actions.
+
+### Connected archive decoding, actions and graphics lifecycle checkpoint (2026-10-04)
+
+The coherent wave adds 22 complete functions covering 3,394 new unique PC bytes:
+graphics lifecycle 15/1,682, pickup/collection/mission 5/1,710 and two genuine
+RET-only thread callbacks (2 bytes). Completing existing DAT readers, LoadPerm
+calls and three UpdateGameObjects callers adds zero newly compared PC bytes.
+Whole-PC fuzzy coverage is 22.6362759038% (previously 22.5472837954%); exact code
+is 192,029/3,471,246 bytes, 5.5319905302%, gaining 472 exact bytes. The report has
+3,944 complete function copies across 285 normal owners.
+
+The four shared DAT states move into their verified private original TU. Both
+minimum buffers are 262,144 bytes; independent installed archive bounds cover
+7 archives, 7,468 compressed members and 43,148 blocks, maximum decoded/packed
+262,144/255,630. No original allocation size is inferred. Mode-2 reads and buffer
+loads now use the actual decoder and preserve native private refill behavior.
+Two historical known four-byte globals become named members of their real
+keyboard/backend storage. Backend storage belongs to its genuine C++ constructor,
+CRT registration, destructor and shutdown chain. The real Direct3DCreate9
+DLL import is generated locally; no graphics implementation is substituted.
+Windows handle roles and the existing partial startup caller argument order are
+corrected while retaining their linker identities.
+
+Strict replay against all 285 actual normal objects passes 224 checks with zero
+replacements/supplements: DAT 93, actions 48, parent 26, graphics CPU lifecycle 31,
+thread/list 26. Installed DAT payloads include multi-block 262,272/393,344-byte
+resources. Parent coverage executes Coin/Mission and its prior selected paths;
+alive Pickup is covered directly, not claimed through the parent. Graphics tests
+cover genuine constructor/lifetime/aspect/texture accounting, not factory/device
+creation, COM drawing or presentation. RET callbacks provide no locking.
+
+Required LLVM 18 formatting (312 files), analysis (285 units), 710 tests
+(3 platform skips), build/link and complete object checks pass. Earlier failures
+remain retained: scratch fallback formatting, absent SDK d3d9 import library,
+and the parser test's omitted decoder plus obsolete unsupported-mode-2 contract.
+The isolated parser test now compiles the genuine decoder and source-derived
+state and checks a valid compressed/stored two-block stream in both buffering
+modes; malformed metadata and capacity/canary assertions remain. Compiler and
+production link flags remain pinned.
+
+The shared-header rebuild also changes two existing nonexact compiler bodies.
+Their unchanged sources reproduce each complete before/after owner with its
+corresponding header. MiniCut3 passes 72 cases and 376 assertions per arm with
+identical full commands; the current arm uses all normal providers and the old
+arm replaces only the real whole camera owner. DebReAlloc2 changes two independent
+register loads around x87 discards, preserving all other instructions/branches
+and 30 named relocations. The selected valid-state, masked-x87 scope is explicit;
+unmasked traps are unclaimed. All prior exact code/data contracts and four
+named members survive.
+
+Actual source EXE observation from installed assets: exit 0 after 3.993 seconds,
+with no verified window, level, recurring frame loop or gameplay. Fuzzy/exact
+coverage remains code comparison, never runnable completion. The checkpoint is
+delayed beyond its half-hour slot until complete preservation review and matching
+finish; unsafe intermediate states are not committed. Next connected closure is
+the real PC window/input setup plus full keyboard constructor/configuration
+chain, followed by device creation/default resources, world loading and the
+recurring frame loop. The original constructor boundary correction (949 cutting
+a store versus full 1,040 bytes including its table) must be integrated explicitly,
+without invented new transfer credit. Storage remains bounded; no asset payloads
+are retained. The user's three journal edits remain outside the commit.

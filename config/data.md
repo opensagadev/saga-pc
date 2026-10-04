@@ -1851,3 +1851,23 @@ retail initializer. Owning extent remains unknown/blank with zero allocation or
 exact credit. All3,558 previous shared fullregions/CRC,4,843 known exact physical
 copies and four typed members remain unchanged. Current3559 shared regions add
 only this view; no padding or other ownership migration occurs in this checkpoint.
+
+### Shared data and original owners in the connected runtime wave (2026-10-04)
+
+DAT read_buffer, read_buffer_size, read_buffer_decoded_size and decode_buffer_left
+now belong to their true private `nudatfile.c` owner with decode_buffer and
+decode_buffer_pos. Both minimum buffers are262144 bytes, which covers the
+observed decoded/packed maxima262144/255630 across all seven installed archives
+(7468 compressed members/43148 blocks). These bounds establish the tested
+installed-data domain, not original allocation sizes or malformed-input safety;
+buffer extents remain blank in the map. No asset bytes are retained as evidence.
+
+The keyboard count and display aspect are actual named owner members, preserving
+their complete historical known4-byte comparisons without second backing. The
+keyboard working view is60 bytes, with key_count+2c/factory+30/mouse axes+34 and
+buttons+38. Its producer remains under reconstruction. PCDeviceBackend moves
+from shared data into the genuine C++ owner and constructor lifecycle; aspect is
+its+630 member. Four existing member comparisons and CRC storage are preserved.
+Three render-texture views and three pickup views use proven native initializers
+with unknown allocation extents. TempOptions remains OPTIONSSAVE13; its only
+change is zero COFF tail padding20→16, not typed bytes or matching credit.

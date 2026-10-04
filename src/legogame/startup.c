@@ -80,11 +80,14 @@ void __cdecl LoadPerm(void) {
     f32 intro_timer;
     f32 tail_timer;
     f32 menu_alpha;
+    f32 menu_timer;
     f32 legal_alpha;
     f32 intro_alpha;
     f32 aspect;
     f32 half;
     f32 frame_time;
+    NUMTX scale;
+    NUVEC scale_vec = {0.125f, 0.125f, 0.125f};
 
     SetBackgroundMusic(1);
     saved_world = WORLD;
@@ -95,7 +98,7 @@ void __cdecl LoadPerm(void) {
         LoadPerm_LanguageSelect = 3;
         LoadPermData(NULL);
         if (legal_mtl != NULL) {
-            STUBBED_NAMED("LoadPerm: NuMtlDestroy(legal_mtl)");
+            NuMtlDestroy(legal_mtl);
             legal_mtl = NULL;
         }
         WORLD = saved_world;
@@ -104,10 +107,11 @@ void __cdecl LoadPerm(void) {
 
     FRAMETIME = DEFAULTFRAMETIME;
     pNuCam->mtx = NuMtxSetIdentityTemplate;
-    STUBBED_NAMED("LoadPerm: NuCameraSet(pNuCam)");
+    NuCameraSet(pNuCam);
     InitPanel(Game.options_save.widescreen);
-    STUBBED_NAMED("LoadPerm: NuQFntSetCoordinateSystem(3)");
-    STUBBED_NAMED("LoadPerm: NuMtxSetScale(&scale, &scale_vec) with scale +0x2c = 1.0f");
+    NuQFntSetCoordinateSystem(3);
+    NuMtxSetScale(&scale, &scale_vec);
+    scale.m32 = 1.0f;
     if (PAL == 0) {
         LoadPerm_LanguageSelect = 3;
     }
@@ -117,32 +121,31 @@ void __cdecl LoadPerm(void) {
     ready_timer = 0.0f;
     intro_timer = 0.0f;
     menu_alpha = 0.0f;
+    menu_timer = 0.0f;
     bgPostRequest((bgprocdofn *)LoadPermData, NULL, NULL, 0);
 
     while (PermDataLoaded == 0 || tail_timer > 0.0f) {
         NuFrameBegin();
-        STUBBED_NAMED("LoadPerm: NuCameraSet(&global_camera)");
+        NuCameraSet(&global_camera);
         readpads_always = 1;
         STUBBED_NAMED("LoadPerm: ReadPads()");
         STUBBED_NAMED("LoadPerm: UpdateGameMenu(GamePad, 0)");
         UpdateTimer(&GlobalTimer);
         menu_flash = NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.2f) < 0.1f;
 
-        if (menu_alpha > 0.5f) {
-            if (language_timer < 3.3f) {
-                if (LoadPerm_LanguageSelect == 0) {
-                    STUBBED_NAMED("LoadPerm: NewMenu(7, 0, -1)");
-                    STUBBED_NAMED("LoadPerm: fade member at 0x009507a0 = -1.0f");
-                    LoadPerm_LanguageSelect = 1;
-                }
-                if (LoadPerm_LanguageSelect == 1 && GameMenuLevel == 0) {
-                    LoadPerm_LanguageSelect = 2;
-                }
-                if (LoadPerm_LanguageSelect == 2) {
-                    menu_alpha += FRAMETIME;
-                    if (menu_alpha > 0.5f) {
-                        LoadPerm_LanguageSelect = 3;
-                    }
+        if (menu_timer < 0.5f && language_timer >= 3.3f && Text_IsFontLoaded() != NULL) {
+            if (LoadPerm_LanguageSelect == 0) {
+                NewMenu(7, 0, -1);
+                FadeSys.fade = -1.0f;
+                LoadPerm_LanguageSelect = 1;
+            }
+            if (LoadPerm_LanguageSelect == 1 && GameMenuLevel == 0) {
+                LoadPerm_LanguageSelect = 2;
+            }
+            if (LoadPerm_LanguageSelect == 2) {
+                menu_timer += FRAMETIME;
+                if (menu_timer >= 0.5f) {
+                    LoadPerm_LanguageSelect = 3;
                 }
             }
         }
@@ -195,7 +198,7 @@ void __cdecl LoadPerm(void) {
         if (tail_timer == 0.2f) {
             menu_alpha = LoadPermFadeAlpha(language_timer, 2.5f);
             STUBBED_NAMED("LoadPerm: NuSpecialDrawAtAlpha(&special, &scale, menu_alpha)");
-            STUBBED_NAMED("LoadPerm: DrawMenu(0)");
+            DrawMenu(0);
 
             legal_alpha = LoadPermFadeAlpha(legal_timer, 5.0f);
             if (legal_alpha > 0.0f) {
@@ -207,7 +210,7 @@ void __cdecl LoadPerm(void) {
                         aspect = 1.6f;
                         break;
                     case 2:
-                        aspect = NuVideoDisplayAspect;
+                        aspect = PCDeviceBackend.active_aspect;
                         break;
                     default:
                         aspect = 1.3333334f;
@@ -225,7 +228,7 @@ void __cdecl LoadPerm(void) {
 
             intro_alpha = LoadPermFadeAlpha(intro_timer, 3.0f);
             if (intro_alpha > 0.0f && StartupGameFlag1 != 0) {
-                STUBBED_NAMED("LoadPerm: IntroText_Draw(intro_alpha)");
+                IntroText_Draw(intro_alpha);
             }
         }
 
@@ -240,7 +243,7 @@ void __cdecl LoadPerm(void) {
     }
 
     if (legal_mtl != NULL) {
-        STUBBED_NAMED("LoadPerm: NuMtlDestroy(legal_mtl)");
+        NuMtlDestroy(legal_mtl);
         legal_mtl = NULL;
     }
     WORLD = saved_world;

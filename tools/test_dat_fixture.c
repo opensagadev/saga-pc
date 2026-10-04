@@ -109,9 +109,7 @@ static int exercise_members(NUDATHDR *header, i32 base_offset) {
     REQUIRE(second == 0x801 && header->open_files[1].dat_file == 2);
     REQUIRE(NuFileRead(second, payload, 4) == 4 && memcmp(payload, "ABCD", 4) == 0);
     REQUIRE(NuFileSeek(second, 0, 0) == base_offset + 256);
-    pc_dat_file_infos[1].compression_mode = 2;
-    REQUIRE(NuFileRead(second, payload, 1) == -1 && NuFilePos(second) == 0);
-    pc_dat_file_infos[1].compression_mode = 0;
+    REQUIRE(NuFileRead(second, payload, 1) == 1 && payload[0] == 'A' && NuFilePos(second) == 1);
     NuFileClose(first);
     NuFileClose(second);
     REQUIRE(header->open_files[0].info_idx == -1 && header->open_files[1].info_idx == -1);
@@ -164,10 +162,7 @@ static int exercise_loaders(NUDATHDR *header) {
     REQUIRE(NuFileLoadBufferVP("D\\B.BIN", &buffer, &end) == 0);
     REQUIRE(buffer.char_ptr == output + 8 && nufile_lasterror == -1);
 
-    /* Unsupported PC decoding must fail without entering a retry loop. */
-    header->file_info[0].compression_mode = 2;
-    REQUIRE(NuFileLoadBuffer("D\\B.BIN", output, sizeof(output)) == 0);
-    REQUIRE(nufile_lasterror == -1);
+    /* The mode-2 decoder is tested separately with a genuine serialized stream. */
     header->file_info[0].compression_mode = 3;
     REQUIRE(NuFileLoadBuffer("D\\B.BIN", output, sizeof(output)) == 4);
     REQUIRE(nufile_lasterror == 0 && memcmp(output, "wxyz", 4) == 0);
@@ -282,6 +277,46 @@ static int exercise(const char *path, i32 base_offset, i32 buffered, int want_si
     REQUIRE(file_info[0].buf == NULL);
     curr_dat = NULL;
     printf("PASS %s buffered=%d size_out=%d\n", path, buffered, want_size);
+    return 0;
+}
+
+static int exercise_compressed(i32 buffered) {
+    static const char expected[16] = "AAAAAAAAAAAABCDE";
+    __declspec(align(16)) u8 storage[1024];
+    VARIPTR arena;
+    NUDATHDR *header;
+    NUFILE member;
+    i32 size_out, i;
+    char output[20];
+    datsys_offset = 0;
+    nufile_buffering_enabled = buffered;
+    arena.void_ptr = storage;
+    header = NuDatOpenEx("MODE2.DAT", &arena, &size_out, 0);
+    REQUIRE(header != NULL && header->file_info[0].compression_mode == 2);
+    member = NuDatFileOpen(header, "D\\B.BIN", 0);
+    REQUIRE(member == 0x800 && NuFileOpenSize(member) == 16);
+    REQUIRE(unpack_file_info == &pc_dat_file_infos[0] && unpack_file_odi == &header->open_files[0]);
+    REQUIRE(unpack_file_pos == 512 && NuFilePos(member) == 0);
+    memset(output, 0xa5, sizeof(output));
+    REQUIRE(NuFileRead(member, output, 3) == 3 && memcmp(output, expected, 3) == 0);
+    REQUIRE((u8)output[3] == 0xa5 && NuFilePos(member) == 19);
+    REQUIRE(NuFileRead(member, output + 3, 10) == 10 && memcmp(output, expected, 13) == 0);
+    REQUIRE((u8)output[13] == 0xa5 && NuFilePos(member) == 35);
+    REQUIRE(NuFileRead(member, output + 13, 3) == 3 && memcmp(output, expected, 16) == 0);
+    REQUIRE((u8)output[16] == 0xa5 && NuFilePos(member) == 35);
+    NuFileClose(member);
+    memset(output, 0xa5, sizeof(output));
+    REQUIRE(NuDatFileLoadBuffer(header, "D\\B.BIN", output, 15) == 0 && nufile_lasterror == -1);
+    REQUIRE((u8)output[0] == 0xa5 && pc_dat_file_infos[0].is_used == 0);
+    REQUIRE(NuDatFileLoadBuffer(header, "D\\B.BIN", output, sizeof(output)) == 16);
+    REQUIRE(nufile_lasterror == 0 && memcmp(output, expected, 16) == 0 && (u8)output[16] == 0xa5);
+    REQUIRE(pc_dat_file_infos[0].is_used == 0 && header->open_files[0].info_idx == -1);
+    for (i = 0; i < 8; ++i) {
+        if (header->open_files[i].dat_file != 0)
+            NuFileClose(header->open_files[i].dat_file);
+    }
+    curr_dat = NULL;
+    printf("PASS mode-2 block stream buffered=%d\n", buffered);
     return 0;
 }
 
@@ -454,6 +489,8 @@ int main(int argc, char **argv) {
             REQUIRE(exercise(paths[i], i == 2 ? 64 : 0, buffered, 1) == 0);
     }
     REQUIRE(exercise("TINY.DAT", 0, 0, 0) == 0);
+    for (buffered = 0; buffered < 2; ++buffered)
+        REQUIRE(exercise_compressed(buffered) == 0);
     for (buffered = 0; buffered < 2; ++buffered) {
         REQUIRE(reject_metadata("SHORT.DAT", 0, 1, buffered) == 0);
         REQUIRE(reject_metadata("META8.DAT", 8, 1, buffered) == 0);

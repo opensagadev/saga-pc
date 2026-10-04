@@ -3026,10 +3026,11 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         if ((object->flags_1fc_word & 0x80) != 0 && FadeSys.fade == 0.0f && InDoubleScoreZone(object) != 0) {
             DoubleScore |= (i32)(1u << ((u8)object->field_280 & 31));
         }
-        STUBBED_NAMED("UpdateGameObjects: UpdateCoinPacket PC570a80");
+        UpdateCoinPacket((PLAYER_COIN_PACKET_PC *)object->coin_packet, (object->flags_1fc_word >> 7) & 1,
+                         (i8)object->field_280);
         if ((object->flags_1fc_word & 0x80) != 0 && object->dead == 0 && object->character_context != 0x2b &&
             !(object->character_context == 0x0f && object->field_7b3 == 1)) {
-            STUBBED_NAMED("UpdateGameObjects: GizmoPickups_Collide PC5705b0");
+            GizmoPickups_Collide(world, object, 1);
         } else {
             ResetCoinPacket(object->coin_packet);
         }
@@ -3104,7 +3105,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     }
     STUBBED_NAMED("UpdateGameObjects: entire two-player indicator geometry/text/AddGameMsg action PC43614c..43647e");
     if (MissionSys != NULL && Mission_Active(MissionSys) != NULL && MissionSys->active_mission != NULL) {
-        STUBBED_NAMED("UpdateGameObjects: CheckMissionEnd PC4977f0");
+        CheckMissionEnd(MissionSys);
     }
 }
 

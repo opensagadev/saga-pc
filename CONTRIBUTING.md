@@ -57,6 +57,9 @@ for `D3DXMatrixMultiply` from its export declaration; no DLL contents are bundle
 The same tool generates `build/dsound.lib` from `tools/dsound.def`, importing
 actual `DSOUND.dll` ordinal 11 for `DirectSoundCreate8`; no audio implementation
 or DLL contents are bundled.
+The factory bootstrap also generates `build/d3d9.lib` from `tools/d3d9.def`
+for the real `d3d9.dll` export `Direct3DCreate9`. This import supplies no graphics
+implementation; the bundled Platform SDK does not include that import library.
 The linked image has its own layout;
 matching still compares individual objects at the original mapped addresses.
 As source begins calling additional APIs, supply their import libraries at link

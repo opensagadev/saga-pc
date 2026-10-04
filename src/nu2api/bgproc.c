@@ -2,8 +2,13 @@
 
 NULSTHDR *bgproc_procinfo_pool;
 volatile u32 nu_current_thread_id;
-void(__cdecl *NuThreadDisableThreadSwap)(void);
-void(__cdecl *NuThreadEnableThreadSwap)(void);
+void __cdecl PcEnableThreadSwap(void) {
+}
+void __cdecl PcDisableThreadSwap(void) {
+}
+
+void(__cdecl *NuThreadDisableThreadSwap)(void) = PcDisableThreadSwap;
+void(__cdecl *NuThreadEnableThreadSwap)(void) = PcEnableThreadSwap;
 
 BGPROCINFO *__cdecl bgPostRequest(bgprocdofn *do_fn, bgprocdofn *ack_fn, void *data, i32 data_size) {
     BGPROCINFO *info;

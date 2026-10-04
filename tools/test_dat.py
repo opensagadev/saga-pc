@@ -57,6 +57,22 @@ def write_fixtures(directory):
         image[base + 768:] = metadata
         (directory / name).write_bytes(image)
 
+    # Genuine mode-2 stream: one constant-literal LH5 block, then a stored block.
+    bits = "".join(f"{value:0{width}b}" for value, width in
+                   ((12, 16), (0, 5), (0, 5), (0, 9), (ord("A"), 9), (0, 4), (0, 4)))
+    bits += "0" * (-len(bits) % 8)
+    compressed = int(bits, 2).to_bytes(len(bits) // 8, "big")
+    stream = b"LZ2K" + struct.pack("<II", 12, len(compressed)) + compressed
+    stream += b"LZ2K" + struct.pack("<II", 4, 4) + b"BCDE"
+    packed_metadata = bytearray(metadata)
+    struct.pack_into("<iiii", packed_metadata, 8, 2, len(stream), 16, 2)
+    image = bytearray(768 + len(metadata))
+    image[:8] = struct.pack("<ii", 768, len(metadata))
+    image[256:260] = b"ABCD"
+    image[512:512 + len(stream)] = stream
+    image[768:] = packed_metadata
+    (directory / "MODE2.DAT").write_bytes(image)
+
     # The reconstruction explicitly rejects these; retail lacks these checks.
     malformed = (
         ("SHORT.DAT", None, struct.pack("<i", 768)),
@@ -110,6 +126,25 @@ def write_clock_provider(directory):
     return source
 
 
+def write_implode_state(directory):
+    """Reuse the decoder's eight production backing definitions in isolation."""
+    production = (ROOT / "src/data.cpp").read_text()
+    definitions = []
+    for name in ("gExplodeInitialised", "implode_inbuffer", "implode_outbuffer",
+                 "implode_bitbuf", "implode_compsize", "implode_origsize",
+                 "implode_left", "implode_right"):
+        matches = re.findall(
+            rf"^\s*(?:i32|u32|u16|char\s*\*)\s*{re.escape(name)}"
+            r"(?:\[[^\]\n]+\])?(?:\s*=\s*[^;\n]+)?\s*;",
+            production, re.MULTILINE)
+        if len(matches) != 1:
+            raise ValueError(f"DAT fixture needs exactly one production definition of {name}")
+        definitions.append(matches[0].strip())
+    source = directory / "implode_state.c"
+    source.write_text('#include "saga.h"\n' + "\n".join(definitions) + "\n")
+    return source
+
+
 class DatParserTests(unittest.TestCase):
     def setUp(self):
         if not (ROOT / "build/tools/msvc8/bin/cl.exe").is_file() or not shutil.which("wine"):
@@ -133,10 +168,11 @@ class DatParserTests(unittest.TestCase):
             objects = []
             sources = [ROOT / f"src/nu2api/{name}.c" for name in
                        ("nufile", "nufile_pc", "nufile_host", "nufile_device", "nupsfile", "nustring",
-                        "nudatfile", "nudatlookup", "nufile_position", "nufile_mc", "nuthread", "numemfile", "nufpar", "nurdpi")]
+                        "nudatfile", "nudatlookup", "nufile_position", "nufile_mc", "nuthread", "numemfile", "nufpar", "nurdpi", "implode")]
             sources.append(ROOT / "tools/test_dat_fixture.c")
             sources.append(write_file_constants(directory))
             sources.append(write_clock_provider(directory))
+            sources.append(write_implode_state(directory))
             for source in sources:
                 output = directory / (source.stem + ".obj")
                 self.run_command([
@@ -153,6 +189,7 @@ class DatParserTests(unittest.TestCase):
             expected = [f"PASS {name} buffered={buffered} size_out=1"
                         for buffered in (0, 1) for name, _, _ in VALID_CASES]
             expected.append("PASS TINY.DAT buffered=0 size_out=0")
+            expected += [f"PASS mode-2 block stream buffered={buffered}" for buffered in (0, 1)]
             expected += [f"PASS rejected {name} buffered={buffered}"
                          for buffered in (0, 1) for name in malformed]
             expected.append("PASS memory-file read seek close")

@@ -7,7 +7,7 @@ comparison and mapping; runnable milestones are tracked separately in
 [the execution plan](SOL_IMPLEMENTATION_PLAN.md).
 
 <!-- matching-badge -->
-![fuzzy code](https://img.shields.io/badge/fuzzy%20code-22.547%25-red)<!-- /matching-badge --> <!-- mapping-badge -->![mapping](https://img.shields.io/badge/mapping-4.575%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
+![fuzzy code](https://img.shields.io/badge/fuzzy%20code-22.636%25-red)<!-- /matching-badge --> <!-- mapping-badge -->![mapping](https://img.shields.io/badge/mapping-4.584%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 **saga-pc** is a matching decompilation of the GOG PC release of
 *LEGO Star Wars: The Complete Saga*.
@@ -19,7 +19,8 @@ This project is at an early stage. Our sources build a Windows executable and
 reconstructed functions are compared with the original; the game is still incomplete.
 The first badge tracks objdiff-weighted coverage of the original code: compared
 functions contribute their fuzzy similarity, and unimplemented code contributes
-zero. It is an estimate, not an exact byte match. The second tracks mapped symbol
+zero. It is an estimate of code similarity, not a percentage of working game
+features or an exact byte match. The second tracks mapped symbol
 extents across the original virtual image. Native objdiff similarity among compared
 functions and exact code coverage are recorded in [matching.json](matching.json).
 The report also records identified code as the union of known inventory extents

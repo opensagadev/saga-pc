@@ -930,9 +930,6 @@ extern "C" {
         {NULL, ProcessActionFlowBox, CheckOutputActionFlowBox},
     };
     u8 gizflow_loop_checksum;
-    u8 read_buffer[0x40000];
-    i32 read_buffer_size;
-    i32 read_buffer_decoded_size;
     GAMEAUDIO_PC GameAudioStorage;
     GAMEAUDIO_PC *GameAudio = &GameAudioStorage;
     SoundTable CurrentSFXTAB;
@@ -1008,7 +1005,6 @@ extern "C" {
     PC_NUDATFILEINFO *unpack_file_info;
     NUDATOPENFILEINFO *unpack_file_odi;
     i64 unpack_file_pos;
-    i32 decode_buffer_left;
     f32 nuqfnt_space_width;
     f32 qfnt_len_scale = 1.0f;
     f32 qfnt_height_scale = 1.0f;
@@ -1085,7 +1081,6 @@ extern "C" {
     i32 display_aspect_mode;
     f32 TextScaleX_candidate = 1.0f;
     f32 TextScaleY_candidate = 1.0f;
-    f32 NuVideoDisplayAspect;
     void *OldLevelHackData;
     i32(__cdecl *CutScene_StartFn)(CUTINFO *cut);
     void(__cdecl *CutScene_PreUpdateFn)(CUTINFO *cut);
@@ -1244,14 +1239,13 @@ extern "C" {
     NUFILE_DEVICE *default_device = &host_device;
     i32 DontDoFileUpperCaseHack;
     NuKeyboardState_PC *nu_input_state;
-    HWND PCInputWindow_candidate;
-    HINSTANCE PCInputInstance_candidate;
+    HINSTANCE PCInputWindow_candidate;
+    HWND PCInputInstance_candidate;
     NuKeyboardOwner_PC nu_keyboard_owner;
     u8 nu_keyboard_pages[0x200];
     u8 nu_keyboard_page_index;
     i32 nu_keyboard_device_flags;
     i32 nu_keyboard_key_index;
-    i32 nu_keyboard_key_count;
     i32 nu_keyboard_repeat_countdown;
     i32 nu_keyboard_previous_key_index;
     i32 nu_keyboard_no_key_state;
@@ -5178,9 +5172,6 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$NuVpProjectionMaxYPc")
     f32 NuVpProjectionMaxYPc;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDeviceBackend")
-    PC_DEVICE_BACKEND_PC PCDeviceBackend;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PCDeviceLastResult")
     HRESULT PCDeviceLastResult;
@@ -11712,5 +11703,26 @@ extern "C" {
 extern "C" {
 #pragma data_seg(".data$bgproc_thread_handle_pc")
     HANDLE bgproc_thread_handle_pc = NULL;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$PCGraphicsRenderTextures")
+    GRAPHICS_RENDER_TEXTURE_PC PCGraphicsRenderTextures[32] = {};
+#pragma data_seg()
+#pragma data_seg(".data$PCGraphicsRenderTextureActive")
+    u8 PCGraphicsRenderTextureActive[32] = {};
+#pragma data_seg()
+#pragma data_seg(".data$PCGraphicsRenderTextureBytes")
+    i32 PCGraphicsRenderTextureBytes = 0;
+#pragma data_seg()
+#pragma data_seg(".data$GizmoPickupSys_Game")
+    PICKUP_TYPE_SYSTEM_PC GizmoPickupSys_Game = {GizmoPickupType, CoinTab, 10, 4, 4, 2, 0, 0};
+#pragma data_seg()
+#pragma data_seg(".data$COINMAGNETSCALE")
+    f32 COINMAGNETSCALE = 3.0f;
+#pragma data_seg()
+#pragma data_seg(".data$GizmoPickups_Collide2DFn")
+    f32(__cdecl *GizmoPickups_Collide2DFn)(GAMEOBJECT *) = NULL;
 #pragma data_seg()
 }
