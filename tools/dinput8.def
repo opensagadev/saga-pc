@@ -1,0 +1,4 @@
+; Actual x86 DINPUT8 import identity; implementation comes from the system DLL.
+LIBRARY DINPUT8.dll
+EXPORTS
+    DirectInput8Create@20

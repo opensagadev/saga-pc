@@ -2905,3 +2905,72 @@ creation and scene/world producers remain explicit. The input guard is retained
 until its actual initialization and frame dependencies are connected. Runtime
 milestones are reported separately from machine-code similarity. The user's
 three journal edits remain outside the source checkpoint.
+
+### Input producer checkpoint P (2026-10-04)
+
+The user clarified that matching takes priority over running. The dedicated
+startup worker checks native PC reconstruction and uses actual executable/window/
+device tests to expose errors; it cannot replace the entry path, force input/world
+state or bypass provider guards to obtain a runtime milestone. Fuzzy code coverage
+and observed runtime remain separate. Checkpoint O af1f551 passed CI on its exact
+pushed revision (run37234469795).
+
+Integrated fifteen reviewed PC input/configuration/DirectInput/WMI/file producer
+functions across five original caller/helper owners, including the genuine constructor.
+The complete selected family is6,793 native bytes. Two older fastcall candidates
+at6da560/6d9bd0 are retired in favor of actual C++ thiscall implementations. The
+true constructor extent is1,040 bytes; the old949-byte selection stopped before
+its cold language-dispatch table. Correcting that boundary earns no transferred-
+source credit. The other eight keyboard regions remain unchanged.
+
+The single data writer adds24 native producer initializers,9,584 complete working
+bytes, all retail-equal. Owning extents remain unknown, so they earn no allocation
+or exact-byte coverage credit. All4,760 existing shared regions and5,155 existing
+exact initializer contracts, six named members, CRC and thread HANDLE are preserved
+in both isolated and actual normal-object production proofs. Real DINPUT8 and
+XINPUT1_3 DLL imports use declarations/import
+libraries only; Shell32/Ole32/OleAut32 and the original CRT supply genuine APIs.
+No DLL implementations or executable bytes are fabricated.
+
+The actual WinMain/InitOnce/input wrappers still contain native-site omissions.
+This source producer does not establish a live window/device, loaded level or
+recurring frames. The next connected matching wave is the reviewed70-function/
+9,929-byte options/device/viewport cohort, canonical seven-member options storage,
+and the corrected native hardware caller/window/input wrapper chain. Four device
+reset/recreation omissions and the remaining graphics startup services stay
+explicit.
+
+The aggregate source executable links from290 normal owners. All4,000 function
+and7,924 data definitions have resolvable PC mappings/relocations. LLVM18 formatting
+and static analysis pass, as do710 project tests (three skips). The selected
+constructor/config/profile fixture passes10/0 against all290 actual normal objects
+and real SDK libraries, with zero replaced objects or supplementary providers.
+Its first10/2 result came from two incorrect expected profile kinds: native stores
+at6d9c78/6d9ce5 prove1/3/2/4, and only those fixture expectations were corrected.
+The rejected fixture is retained; production source and checks were not changed.
+
+Unique compared PC bytes rise1,138,561 to1,143,909 (+5,348):5,257 are thirteen
+new function bodies, and91 are the separately qualified constructor boundary
+correction. Whole-PC fuzzy similarity22.7904883539% to22.9082112333% increases
+0.1177228794 percentage points. Exact code193,147 to193,498 adds351 unique bytes
+(ReadConfiguration262, ScheduleRescan19, BindPreferredConfig70), reaching5.5743096283%
+of3,471,246 original text bytes. All3,985 remaining prior full function copies and
+1,917 previous exact copies are preserved. Four local compiler-label ordinals
+change; their raw instructions, class/type, target offsets and full official
+relocated bytes remain equal. There is no stricter external-name change.
+
+All41 genuinely new complete initializer copies match retail: seventeen known
+literal copies plus24 unknown-extent producer views. Previous5,155 exact physical
+copies are retained; the current5,173 includes those seventeen new copies and a
+previously compiled, unchanged Vorbis `rb` literal newly assigned its complete
+three-byte string extent. Known exact data union increases636,346 to636,531 (+185).
+Unknown producer storage receives zero extent/allocation credit; six existing
+named member contracts still account for12 known exact bytes.
+
+The dedicated runtime subagent launched actual source EXE88b89077 with real Wine,
+installed assets and an available NVIDIA/GLX display. It exits0 in0.90 seconds;
+no native TTalesWindow was observed. An actual debugger stop at the source-image
+NuMain guard reads the real input pointer asNULL before exit. Window persistence
+and input publication fail; device/BeginScene/Present/repeated frames/scene are
+not reached. These runtime failures stay separate from passed retail matching.
+Generated storage remains approximately1.2GB, below the1.5GB working target.

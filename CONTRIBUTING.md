@@ -60,6 +60,11 @@ or DLL contents are bundled.
 The factory bootstrap also generates `build/d3d9.lib` from `tools/d3d9.def`
 for the real `d3d9.dll` export `Direct3DCreate9`. This import supplies no graphics
 implementation; the bundled Platform SDK does not include that import library.
+Input producers generate `build/dinput8.lib` and `build/xinput1_3.lib` from their
+export declarations for real DirectInput creation and XINPUT1_3 ordinal 4
+(capabilities). The link also uses bundled Shell32, Ole32 and OleAut32 import
+libraries for actual folder and COM services. These libraries supply no replacement
+implementation or bundled DLL contents.
 The linked image has its own layout;
 matching still compares individual objects at the original mapped addresses.
 As source begins calling additional APIs, supply their import libraries at link

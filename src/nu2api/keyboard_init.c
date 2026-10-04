@@ -113,58 +113,6 @@ extern const char PCKeyboardMouse2Name_candidate[16];
 extern const char PCKeyboard2Name_candidate[10];
 extern const char PCKeyboard1Name_candidate[10];
 
-void __fastcall NuKeyboardInitializeCommandProfiles_candidate(NuKeyboardState_PC *state) {
-    NuKeyboardProfileLayout_PC *layout = (NuKeyboardProfileLayout_PC *)state;
-    NuKeyboardProfile_PC *profile;
-
-    profile = &layout->profiles[0];
-    profile->device_mode_a = 1;
-    profile->device_mode_b = 1;
-    profile->active_36 = 1;
-    profile->active_39 = 1;
-    profile->default_key = 0xffff;
-    NuStrCpy(profile->name, PCKeyboardMouse1Name_candidate);
-    /* PC searches this profile's configured input and may install its key. */
-    STUBBED_NAMED(0x006d43e0);
-    STUBBED_NAMED(0x006d43e0);
-    STUBBED_NAMED(0x006d45f0);
-
-    profile = &layout->profiles[1];
-    profile->device_mode_a = 3;
-    profile->device = nu_keyboard_owner.device;
-    profile->device_mode_b = 3;
-    profile->active_36 = 1;
-    profile->active_39 = 1;
-    profile->default_key = 0xffff;
-    NuStrCpy(profile->name, PCKeyboardMouse2Name_candidate);
-    STUBBED_NAMED(0x006d43e0);
-    STUBBED_NAMED(0x006d43e0);
-    STUBBED_NAMED(0x006d45f0);
-
-    profile = &layout->profiles[2];
-    profile->device_mode_a = 2;
-    profile->device_mode_b = 2;
-    profile->active_36 = 1;
-    profile->active_39 = 1;
-    profile->default_key = 0xffff;
-    NuStrCpy(profile->name, PCKeyboard2Name_candidate);
-    STUBBED_NAMED(0x006d43e0);
-    STUBBED_NAMED(0x006d43e0);
-    STUBBED_NAMED(0x006d45f0);
-
-    profile = &layout->profiles[3];
-    profile->device_mode_a = 4;
-    profile->device = nu_keyboard_owner.device;
-    profile->device_mode_b = 4;
-    profile->active_36 = 1;
-    profile->active_39 = 1;
-    profile->default_key = 0xffff;
-    NuStrCpy(profile->name, PCKeyboard1Name_candidate);
-    STUBBED_NAMED(0x006d43e0);
-    STUBBED_NAMED(0x006d43e0);
-    STUBBED_NAMED(0x006d45f0);
-}
-
 void __fastcall NuKeyboardInitializeDefaultRecords_candidate(NuKeyboardState_PC *state);
 
 void __fastcall NuKeyboardResetInputRecords_candidate(NuKeyboardState_PC *state) {
@@ -205,74 +153,6 @@ i32 __fastcall NuKeyboardGetStateValue67ec_candidate(NuKeyboardState_PC *state, 
 }
 
 extern const f32 PCKeyboardDefaultValue_candidate;
-
-NuKeyboardState_PC *__fastcall NuKeyboardStateInitialize_candidate(NuKeyboardState_PC *state) {
-    NuKeyboardInitLayout_PC *layout = (NuKeyboardInitLayout_PC *)state;
-    i32 i;
-    i32 language;
-
-    memset(layout->cleared_0000_to_26ff, 0, sizeof(layout->cleared_0000_to_26ff));
-    memset(layout->cleared_2700_to_4dff, 0, sizeof(layout->cleared_2700_to_4dff));
-    memset(layout->cleared_4e34_to_62fb, 0, sizeof(layout->cleared_4e34_to_62fb));
-    memset(layout->cleared_62fc_to_6343, 0, sizeof(layout->cleared_62fc_to_6343));
-    memset(layout->cleared_6358_to_6557, 0, sizeof(layout->cleared_6358_to_6557));
-    memset(layout->cleared_671c_to_67df, 0, sizeof(layout->cleared_671c_to_67df));
-    layout->keyboard_state = NULL;
-
-    for (i = 0; i < 32; ++i) {
-        layout->key_records[i].unknown_00 = 0;
-        layout->key_records[i].unknown_01 = 0xff;
-        layout->key_records[i].unknown_02 = 0xff;
-        layout->key_records[i].unknown_03 = 0;
-        layout->key_records[i].unknown_04 = 0;
-    }
-    layout->unknown_67e4 = 0;
-
-    STUBBED_NAMED(0x006d3aa0); /* PC keyboard-specific state initialization */
-
-    layout->unknown_4e00 = -1;
-    layout->unknown_671a = 1;
-    layout->unknown_4e04 = 0;
-    layout->unknown_4e08 = 0;
-    layout->unknown_4e0c = 0;
-
-    for (i = 0; i < 14; ++i) {
-        layout->unknown_6345_to_6352[i] = 0;
-        layout->unknown_6576_triplets[i].unknown_00 = 0;
-        layout->unknown_6576_triplets[i].unknown_01 = 0;
-        layout->unknown_6576_triplets[i].unknown_02 = 0;
-        layout->unknown_660c_triplets[i].unknown_00 = 0;
-        layout->unknown_660c_triplets[i].unknown_01 = 0;
-        layout->unknown_660c_triplets[i].unknown_02 = 0;
-    }
-    layout->unknown_6608 = -1;
-    layout->unknown_67e0 = 0;
-    layout->unknown_6604 = 0;
-    layout->unknown_6354 = 0;
-    layout->keyboard_polled = 0;
-    layout->unknown_4e11 = 0;
-    layout->unknown_4e12 = 0;
-    layout->unknown_4e13 = 0xff;
-    layout->unknown_67e1 = 0;
-    layout->unknown_6568 = 0x1fff;
-    layout->unknown_656c = 0x20;
-    layout->unknown_6570 = PCKeyboardDefaultValue_candidate;
-
-    /* PC also redundantly clears 32 16-bit entries in each of 14 tables.
-     * Those entries are already zero from the range clear above. */
-    NuKeyboardInitializeDefaultRecords_candidate(state);
-    STUBBED_NAMED(0x029755c4); /* Optional PC input-state callback */
-    NuKeyboardInitializeCommandProfiles_candidate(state);
-
-    language = NuLanguageGet();
-    if (language < 0 || language > 0x12) {
-        STUBBED_NAMED(0x006da904); /* PC fallback language tables */
-    } else {
-        STUBBED_NAMED(0x006da71d); /* PC language-specific input tables */
-    }
-
-    return state;
-}
 
 typedef struct NuKeyboardActionRecord_PC {
     u8 unknown_00_to_27[0x28];

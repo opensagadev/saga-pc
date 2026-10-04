@@ -1,0 +1,4 @@
+; Actual native XINPUT1_3 ordinal4, with the reviewed SDK alias and x86 ABI.
+LIBRARY XINPUT1_3.dll
+EXPORTS
+    XInputGetCapabilities@12 @4 NONAME

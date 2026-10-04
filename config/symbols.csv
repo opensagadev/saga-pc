@@ -4027,13 +4027,21 @@ address    , symbol                                                         , si
 0x006d3430 , _StartupParseArgument                                          , 3     , "i32 __cdecl (i32, char **)"
 0x006d3440 , _StartupOpenDats                                               , 116   , "void __cdecl (const char **, i32, VARIPTR *)"
 0x6d34c0,_StartupDatsSelectPc,39,void __cdecl (i32)
+0x6d3990,?ReadConfiguration@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_CONFIG_PC@@PBD@Z,262,"void __thiscall PC_INPUT_RUNTIME_PC::ReadConfiguration(PC_INPUT_CONFIG_PC *, const char *)"
+0x6d3aa0,?InitConfiguration@PC_INPUT_RUNTIME_PC@@QAEXXZ,108,void __thiscall PC_INPUT_RUNTIME_PC::InitConfiguration(void)
+0x6d43e0,?FindConfig@PC_INPUT_RUNTIME_PC@@QAEPAUPC_INPUT_CONFIG_PC@@EHH@Z,277,"PC_INPUT_CONFIG_PC* __thiscall(u8,i32,i32)"
+0x6d45f0,?InstallConfig@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_CONFIG_PC@@HHHH@Z,403,"void __thiscall(PC_INPUT_CONFIG_PC*,i32,i32,i32,i32)"
+0x6d47a0,?InitXInputCaps@PC_INPUT_RUNTIME_PC@@QAEXPBUPC_XINPUT_CAPABILITIES_PC@@PAUPC_INPUT_DEVICE_PC@@@Z,215,"void __thiscall(const PC_XINPUT_CAPABILITIES_PC*,PC_INPUT_DEVICE_PC*)"
 0x006d4d90 , @NuKeyboardResetInputRecords_candidate@4                       , 49    , void __fastcall (NuKeyboardState_PC *)
 0x006d4e20 , @NuKeyboardSetStateValue6354_candidate@12                      , 13    , "void __fastcall (NuKeyboardState_PC *, i32, i32)"
 0x006d4e30 , @NuKeyboardGetInputRecordCount_candidate@8                     , 7     , "i32 __fastcall (NuKeyboardState_PC *, i32)"
 0x006d4e40 , @NuKeyboardGetStateValue67e8_candidate@8                       , 7     , "i32 __fastcall (NuKeyboardState_PC *, i32)"
 0x006d4e50 , @NuKeyboardGetStateValue67ec_candidate@8                       , 7     , "i32 __fastcall (NuKeyboardState_PC *, i32)"
 0x006d4e60 , @NuKeyboardInsertInputRecord_candidate@28                      , 135   , "void __fastcall (NuKeyboardState_PC *, i32, i32, i32, i32, i32, u16)"
+0x6d5080,_IsXInputProductPc,773,u8 __cdecl(const GUID*)
+0x6d5390,_ConfigureJoystickRangesPc,797,void __cdecl(NuKeyboardDevice_PC*)
 0x006d58a0 , _NuMouseRead                                                   , 1     , void __cdecl (void)
+0x6d5950,?ScheduleRescan@NuKeyboardOwner_PC@@QAEXMH@Z,19,"void __thiscall(f32,i32)"
 0x006d5990 , @NuKeyboardPoll@4                                              , 368   , u8 *__fastcall (NuKeyboardOwner_PC *)
 0x6d60a0,_NuPad_Interface_GetMaxDevices,6,i32 __cdecl(void)
 0x6d60b0,_NuPadOpenPS,12,void __cdecl(FRAME_PAD_PC*)
@@ -4049,11 +4057,16 @@ address    , symbol                                                         , si
 0x006d9340 , _NuKeyboardRead                                                , 42    , void __cdecl (void)
 0x006d9540 , _NuKeyboardApplyActionKeys_candidate                           , 112   , "void __cdecl (const i16 *, i32)"
 0x006d96b0 , @NuKeyboardInitializeDefaultRecords_candidate@4                , 802   , void __fastcall (NuKeyboardState_PC *)
-0x006d9bd0 , @NuKeyboardInitializeCommandProfiles_candidate@4               , 496   , void __fastcall (NuKeyboardState_PC *)
+0x6d9b80,?BindPreferredConfig@PC_INPUT_RUNTIME_PC@@QAEXHH@Z,70,"void __thiscall(i32,i32)"
+0x6d9bd0,?InitKeyboardProfiles@PC_INPUT_RUNTIME_PC@@QAEXXZ,496,void __thiscall(void)
+0x6d9df0,_InputEnumDevicesPc@8,1027,"BOOL __stdcall(const PC_DI_INSTANCE_PC*,void*)"
 0x6da410,_TextInputButtonNamePc,74,"i32 __cdecl(i32,i32,char*)"
-0x006da560 , @NuKeyboardStateInitialize_candidate@4                         , 949   , NuKeyboardState_PC *__fastcall (NuKeyboardState_PC *)
+0x6da560,??0PC_INPUT_RUNTIME_PC@@QAE@XZ,1040,PC_INPUT_RUNTIME_PC::PC_INPUT_RUNTIME_PC(void)
+0x6dacb0,?Setup@NuKeyboardOwner_PC@@QAEXPAUHWND__@@PAUHINSTANCE__@@@Z,409,"void __thiscall(HWND,HINSTANCE)"
 0x6db910,_NuFileUseHiresPC,8,i32 __cdecl(void)
 0x006dd390 , _NuWindowsProcessMessages                                      , 97    , i32 __cdecl (void)
+0x6dd420,_PcGetUserFolder,56,"char *__cdecl PcGetUserFolder(const char *, const char *)"
+0x6dd9e0,_PcOpenPlatformFile,841,"FILE *__cdecl PcOpenPlatformFile(const char *, const char *, i32, const char *)"
 0x006de0e0 , _WinMain@16                                                    , 200   , "int __stdcall (HINSTANCE, HINSTANCE, LPSTR, int)"
 0x6de750,_PcEnableThreadSwap,1,void __cdecl(void)
 0x6de760,_PcDisableThreadSwap,1,void __cdecl(void)
@@ -4165,6 +4178,8 @@ address    , symbol                                                         , si
 0x6ec15c,__exit,,void __cdecl(i32)
 0x6ec1d7,_frexp,,"double __cdecl frexp(double value, int *exponent)"
 0x6ec300,__CIacos,,
+0x6ec4ee,_wcsstr,,"wchar_t *__cdecl (const wchar_t *, const wchar_t *)"
+0x6ec5ba,_swscanf,,"int __cdecl (const wchar_t *, const wchar_t *, ...)"
 0x6ed9fb,_raise,,i32 __cdecl(i32)
 0x006f05ae , _saga_thunk_KERNEL32_dll_GetCurrentThreadId_006f05ae@0         , 6     , DWORD __stdcall (void)
 0x006f05b4 , _saga_thunk_KERNEL32_dll_GetCurrentThread_006f05b4@0           , 6     , HANDLE __stdcall (void)
@@ -4186,6 +4201,9 @@ address    , symbol                                                         , si
 0x0073efba , _timeSetEvent@20                                               , 6     , "MMRESULT __stdcall (UINT, UINT, LPTIMECALLBACK, DWORD_PTR, UINT)"
 0x0073efc0 , _timeKillEvent@4                                               , 6     , MMRESULT __stdcall (UINT)
 0x0073efc6 , _DirectSoundCreate8@12                                         , 6     , "HRESULT __stdcall (LPCGUID, LPDIRECTSOUND8 *, LPUNKNOWN)"
+0x73efd0,_PcKeyboardDataFormatObjects,,PC_DI_OBJECT_FORMAT_PC[256]
+0x73ffd0,_PcJoystickDataFormatObjects,,PC_DI_OBJECT_FORMAT_PC[164]
+0x740a10,_PcMouseDataFormatObjects,,PC_DI_OBJECT_FORMAT_PC[11]
 0x00740ac0 , _DirectInput8Create@20                                         , 6     , "HRESULT __stdcall (HINSTANCE, DWORD, REFIID, void **, IUnknown *)"
 0x00740ac6 , _BinkGetRealtime@12                                            , 6     ,
 0x00740acc , _BinkCopyToBufferRect@44                                       , 6     ,
@@ -4621,13 +4639,13 @@ address    , symbol                                                         , si
 0x007516b0 , __real@40f0000000000000                                        , 8     , f64
 0x007516b8 , __real@4014000000000000                                        , 8     , const f64
 0x007516b8 , _nu_wind_scaled_time_multiplier                                , 8     , const f64
-0x7516c0,??_C@_00CNPNBAHC@?$AA@,1,
+0x7516c0,??_C@_00CNPNBAHC@?$AA@,1,const char[1]
 0x7516c0,_TextInputKeyNameTextPc7516c0,,char[1]
 0x007516d0 , __real@3d4ccccd                                                , 4     , const f32
 0x007516d8 , _NuQFntHalfScale                                               , 8     , const f64
 0x007516d8 , __real@3fe0000000000000                                        , 8     , const f64
 0x7516e0,__real@42800000,4,const f32
-0x007516e4 , __real@3e4ccccd                                                , 4     , const f32
+0x7516e4,__real@3e4ccccd,4,const f32
 0x007516e8 , _NuTimeBarQuarter                                              , 8     , const f64
 0x007516e8 , __real@3fd0000000000000                                        , 8     , const f64
 0x007516f8 , __real@3fd99999a0000000                                        , 8     , const f64
@@ -5459,7 +5477,7 @@ address    , symbol                                                         , si
 0x75a0dc,__real@3f7fbe77,4,const f32
 0x0075a180,??_C@_03HFJGAJFE@All?$AA@,,
 0x0075a1fc,_SceneFileExtensionPc,5,const char[5]
-0x75a204   , ??_C@_01KICIPPFI@?2?$AA@                                       , 2     , const char[2]
+0x75a204,??_C@_01KICIPPFI@?2?$AA@,2,const char[2]
 0x0075a204,_WorldPathSeparator,2,const char[2]
 0x0075a208 , _AreaResidentsDirectory                                        , 8     , const char[8]
 0x75a210,__real@4040000000000000,,
@@ -6360,7 +6378,7 @@ address    , symbol                                                         , si
 0x7614f4   , ??_C@_08PEBNBIBF@sock_end?$AA@                                 , 9     , const char[]
 0x761500   , ??_C@_0L@PAPOBEAE@sock_start?$AA@                              , 11    , const char[]
 0x76150c   , ??_C@_05LBOKJHLG@socks?$AA@                                    , 6     , const char[]
-0x761548,??_C@_02JDPG@rb?$AA@,,
+0x761548,??_C@_02JDPG@rb?$AA@,3,const char[3]
 0x761584,__real@cb189680,4,const f32
 0x761588,__real@4b189680,4,const f32
 0x76158c,__real@2d2febff,4,const f32
@@ -8520,12 +8538,27 @@ address    , symbol                                                         , si
 0x77567c,_PcInputText77567c,9,char[9]
 0x775688,_PcInputText775688,10,char[10]
 0x775694,_PcInputText775694,7,char[7]
+0x77569c,??_C@_0N@IPEDNLAC@Mappings?4dat?$AA@,13,const char[13]
+0x7756ac,??_C@_09EECDJGEH@?$CFs?2?$CFs?2?$CFs?2?$AA@,10,const char[10]
+0x7758bc,??_C@_1BA@GPEMCLPB@?$AAP?$AAI?$AAD?$AA_?$AA?$CF?$AA4?$AAX?$AA?$AA@,16,const wchar_t[8]
+0x7758cc,??_C@_19JEBEJPIJ@?$AAP?$AAI?$AAD?$AA_?$AA?$AA@,10,const wchar_t[5]
+0x7758d8,??_C@_1BA@DMNNECBF@?$AAV?$AAI?$AAD?$AA_?$AA?$CF?$AA4?$AAX?$AA?$AA@,16,const wchar_t[8]
+0x7758e8,??_C@_19JJAKOPMO@?$AAV?$AAI?$AAD?$AA_?$AA?$AA@,10,const wchar_t[5]
+0x7758f4,??_C@_17CNDMNMHA@?$AAI?$AAG?$AA_?$AA?$AA@,8,const wchar_t[4]
+0x7758fc,??_C@_1BC@FDHFOMEN@?$AAD?$AAe?$AAv?$AAi?$AAc?$AAe?$AAI?$AAD?$AA?$AA@,18,const wchar_t[9]
+0x775910,??_C@_1CA@KEMJJPLA@?$AAW?$AAi?$AAn?$AA3?$AA2?$AA_?$AAP?$AAN?$AAP?$AAE?$AAn?$AAt?$AAi?$AAt?$AAy?$AA?$AA@,32,const wchar_t[16]
+0x775930,??_C@_1BO@BLJMPFMI@?$AA?2?$AA?2?$AA?4?$AA?2?$AAr?$AAo?$AAo?$AAt?$AA?2?$AAc?$AAi?$AAm?$AAv?$AA2?$AA?$AA@,30,const wchar_t[15]
+0x775950,?PcWbemClassId@@3U_GUID@@B,,GUID
+0x775960,?PcWbemInterfaceId@@3U_GUID@@B,,GUID
 0x775998,??_C@_05DIALNFFA@?$CFs?5?$CFd?$AA@,6,char[6]
 0x7759a0,??_C@_04FHAANOGO@GFX?$DP?$AA@,5,char[5]
 0x007759a8 , _PCKeyboard2Name_candidate                                     , 10    , const char[10]
 0x007759b4 , _PCKeyboardMouse2Name_candidate                                , 16    , const char[16]
 0x007759c4 , _PCKeyboard1Name_candidate                                     , 10    , const char[10]
 0x007759d0 , _PCKeyboardMouse1Name_candidate                                , 15    , const char[15]
+0x7759e0,??_C@_05OPFMNJAF@P2900?$AA@,6,const char[6]
+0x7759e8,??_C@_05LHDPMJFD@P2600?$AA@,6,const char[6]
+0x7759f0,??_C@_06LGMJGAE@Saitek?$AA@,7,const char[7]
 0x775eb4,_PcInputText775eb4,10,char[10]
 0x775ec0,_PcInputText775ec0,7,char[7]
 0x776e10,??_C@_05MPFIAJAP@Arial?$AA@,6,const char[6]
@@ -8542,6 +8575,21 @@ address    , symbol                                                         , si
 0x0078490c , _SoundVoice3DBufferIID                                         , 16    , const GUID
 0x78491c,_PCSoundListenerIIDPc,,const IID
 0x78493c,_PCSoundBuffer8IIDPc,,const IID
+0x784dcc,?PcSystemKeyboardId@@3U_GUID@@B,,GUID
+0x784ddc,?PcSystemMouseId@@3U_GUID@@B,,GUID
+0x784dfc,?PcInputObjectGuid784dfc@@3U_GUID@@B,,GUID
+0x784e0c,?PcInputObjectGuid784e0c@@3U_GUID@@B,,GUID
+0x784e2c,?PcInputObjectGuid784e2c@@3U_GUID@@B,,GUID
+0x784e3c,?PcInputObjectGuid784e3c@@3U_GUID@@B,,GUID
+0x784e4c,?PcInputObjectGuid784e4c@@3U_GUID@@B,,GUID
+0x784e5c,?PcInputObjectGuid784e5c@@3U_GUID@@B,,GUID
+0x784e6c,?PcInputObjectGuid784e6c@@3U_GUID@@B,,GUID
+0x784e7c,?PcInputObjectGuid784e7c@@3U_GUID@@B,,GUID
+0x784e8c,?PcInputObjectGuid784e8c@@3U_GUID@@B,,GUID
+0x784f3c,?PcDirectInput8AId@@3U_GUID@@B,,GUID
+0x7e7b14,?PcKeyboardDataFormat@@3UPC_DI_DATA_FORMAT_PC@@B,,PC_DI_DATA_FORMAT_PC
+0x7e7d1c,?PcJoystickDataFormat@@3UPC_DI_DATA_FORMAT_PC@@B,,PC_DI_DATA_FORMAT_PC
+0x7e7f24,?PcMouseDataFormat@@3UPC_DI_DATA_FORMAT_PC@@B,,PC_DI_DATA_FORMAT_PC
 0x7e8abc,_PCSampleBufferAlgorithmPc,,const GUID
 0x7eb664,??_R4WavReader@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb678,??_R3WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
@@ -9606,7 +9654,9 @@ address    , symbol                                                         , si
 0x824828,?PcInputKeyNames824828@@3PAPADA,,char *[238]
 0x824be0,?PcInputKeyNames824be0@@3PAPADA,,char *[238]
 0x824f98,_TextInputKeyNamesPc,,char**
+0x824f9c,?PcInputSelectedPort@@3HA,,i32
 0x824fa0,_TextInputKeyboardOverridePc,,u8[32]
+0x824fc0,?PcStaticInputConfigs@@3PAUPC_INPUT_CONFIG_PC@@A,,PC_INPUT_CONFIG_PC[15]
 0x825f00,_TextInputAxisLabelIndexPc,,i8[16]
 0x825f10,_TextInputButtonLabelIndexPc,,i8[11]
 0x00826494 , _display_aspect_mode                                           , 4     , i32
@@ -11209,9 +11259,11 @@ address    , symbol                                                         , si
 0x029755cc , _nu_keyboard_key_index                                         , 4     , i32
 0x029755d0 , _nu_keyboard_repeat_countdown                                  , 4     , i32
 0x29755f8,_TextInputNameCallbackPc,,"void (__cdecl *)(i32,char*)"
+0x29755fc,?PcXInputDeviceCount@@3HA,,i32
 0x02975600 , _nu_keyboard_previous_key_index                                , 4     , i32
 0x02975604 , _nu_keyboard_no_key_state                                      , 4     , i32
 0x2975919,_TextInputLastDeviceIndexPc,,i8
+0x2975940,?PcKeyboardCapabilities@@3UPC_DI_CAPS_PC@@A,,PC_DI_CAPS_PC
 0x02975a94 , _win_message                                                   , 28    , MSG
 0x2975d90,?PcUserFolder@@3PADA,,char[260]
 0x2975e98,?PcFilePath@@3PADA,,char[128]

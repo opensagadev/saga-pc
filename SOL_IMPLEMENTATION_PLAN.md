@@ -14,7 +14,11 @@ provider frontiers.
 ## Immediate priority after the runtime audit (2026-10-04)
 
 Whole-code fuzzy/exact comparison and runtime progress are separate records.
-The current22.5% similarity does not mean22.5% of the game works. The source
+The user clarified on 2026-10-04 that matching takes priority over running.
+Reconstruct startup through the same native identity, ABI, complete-extent and
+retail-comparison checks as other families. Runtime tests check correctness;
+they do not authorize an alternate entry path or bypassing missing providers.
+The similarity percentage does not measure how much of the game works. The source
 entry path stops before loading a level; no current live window/input/device
 producer or recurring update/render loop establishes a playable application.
 

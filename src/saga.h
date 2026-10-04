@@ -10010,7 +10010,6 @@ void __cdecl PCStereoUnknownToken(void);
     void __cdecl NuKeyboardCreateWindowState_candidate(HWND window, HINSTANCE instance);
     u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner);
     extern const f32 PCKeyboardDefaultValue_candidate;
-    NuKeyboardState_PC *__fastcall NuKeyboardStateInitialize_candidate(NuKeyboardState_PC *state);
     void __fastcall NuKeyboardResetInputRecords_candidate(NuKeyboardState_PC *state);
     void __fastcall NuKeyboardInsertInputRecord_candidate(NuKeyboardState_PC *state, i32 unused_edx, i32 index,
                                                           i32 field_00, i32 field_01, i32 field_02, u16 field_04);
@@ -15625,6 +15624,246 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+#ifdef __cplusplus
+
+struct PC_DI_CAPS_PC {
+    DWORD size, flags, device_type, axes, buttons, povs;
+    DWORD ff_sample_period, ff_min_time_resolution, firmware_revision, hardware_revision, ff_driver_version;
+};
+struct PC_DI_PROPERTY_PC {
+    DWORD size, header_size, object, how, data;
+};
+struct PC_DI_OBJECT_FORMAT_PC {
+    const GUID *guid;
+    DWORD offset, type, flags;
+};
+struct PC_DI_DATA_FORMAT_PC {
+    DWORD size, object_size, flags, data_size, object_count;
+    const PC_DI_OBJECT_FORMAT_PC *objects;
+};
+struct PC_DI_INSTANCE_PC {
+    DWORD size;
+    GUID instance, product;
+    DWORD device_type;
+    char instance_name[260];
+    char product_name[260];
+    u8 unknown_230[0x14];
+};
+struct PC_DI_DEVICE_METHODS_PC {
+    void *unknown_00, *unknown_04;
+    ULONG(__stdcall *release)(NuKeyboardDevice_PC *);
+    HRESULT(__stdcall *get_caps)(NuKeyboardDevice_PC *, PC_DI_CAPS_PC *);
+    void *unknown_10, *unknown_14;
+    HRESULT(__stdcall *set_property)(NuKeyboardDevice_PC *, REFGUID, const PC_DI_PROPERTY_PC *);
+    HRESULT(__stdcall *acquire)(NuKeyboardDevice_PC *);
+    HRESULT(__stdcall *unacquire)(NuKeyboardDevice_PC *);
+    HRESULT(__stdcall *get_state)(NuKeyboardDevice_PC *, DWORD, void *);
+    void *unknown_28;
+    HRESULT(__stdcall *set_format)(NuKeyboardDevice_PC *, const PC_DI_DATA_FORMAT_PC *);
+    void *unknown_30;
+    HRESULT(__stdcall *set_cooperative_level)(NuKeyboardDevice_PC *, HWND, DWORD);
+    void *unknown_38_60[11];
+    HRESULT(__stdcall *poll)(NuKeyboardDevice_PC *);
+};
+struct NuKeyboardDevice_PC {
+    PC_DI_DEVICE_METHODS_PC *methods;
+};
+struct PC_DI_FACTORY_METHODS_PC {
+    void *unknown_00, *unknown_04, *unknown_08;
+    HRESULT(__stdcall *create_device)(PC_DI_FACTORY_PC *, REFGUID, NuKeyboardDevice_PC **, IUnknown *);
+    HRESULT(__stdcall *enum_devices)
+    (PC_DI_FACTORY_PC *, DWORD, BOOL(__stdcall *)(const PC_DI_INSTANCE_PC *, void *), void *, DWORD);
+};
+struct PC_DI_FACTORY_PC {
+    PC_DI_FACTORY_METHODS_PC *methods;
+};
+extern const GUID PcDirectInput8AId, PcSystemMouseId, PcSystemKeyboardId;
+extern const PC_DI_DATA_FORMAT_PC PcMouseDataFormat, PcKeyboardDataFormat, PcJoystickDataFormat;
+extern i32 PcInputSelectedPort, PcXInputDeviceCount;
+extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *, void *);
+STATIC_ASSERT(sizeof(PC_DI_CAPS_PC) == 44);
+STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, flags) == 4);
+STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, axes) == 12);
+STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, buttons) == 16);
+STATIC_ASSERT(sizeof(PC_DI_PROPERTY_PC) == 20);
+STATIC_ASSERT(sizeof(PC_DI_DATA_FORMAT_PC) == 24);
+STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, objects) == 20);
+STATIC_ASSERT(sizeof(PC_DI_OBJECT_FORMAT_PC) == 16);
+STATIC_ASSERT(offsetof(PC_DI_INSTANCE_PC, instance) == 4);
+STATIC_ASSERT(offsetof(PC_DI_INSTANCE_PC, product) == 0x14);
+STATIC_ASSERT(offsetof(PC_DI_INSTANCE_PC, device_type) == 0x24);
+STATIC_ASSERT(offsetof(PC_DI_INSTANCE_PC, product_name) == 0x12c);
+STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, get_caps) == 0xc);
+STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, set_property) == 0x18);
+STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, acquire) == 0x1c);
+STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, set_format) == 0x2c);
+STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, set_cooperative_level) == 0x34);
+STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, poll) == 0x64);
+STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS_PC, create_device) == 0xc);
+STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS_PC, enum_devices) == 0x10);
+STATIC_ASSERT(sizeof(NuKeyboardOwner_PC) == 0x3c);
+STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse) == 0x20);
+STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, key_count) == 0x2c);
+STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, factory) == 0x30);
+STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_axes) == 0x34);
+STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_buttons) == 0x38);
+
+STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, size) == 0x0);
+STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, device_type) == 0x8);
+STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, povs) == 0x14);
+STATIC_ASSERT(offsetof(PC_DI_PROPERTY_PC, size) == 0x0);
+STATIC_ASSERT(offsetof(PC_DI_PROPERTY_PC, header_size) == 0x4);
+STATIC_ASSERT(offsetof(PC_DI_PROPERTY_PC, object) == 0x8);
+STATIC_ASSERT(offsetof(PC_DI_PROPERTY_PC, how) == 0xc);
+STATIC_ASSERT(offsetof(PC_DI_PROPERTY_PC, data) == 0x10);
+STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, size) == 0x0);
+STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, object_size) == 0x4);
+STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, flags) == 0x8);
+STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, data_size) == 0xc);
+STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, object_count) == 0x10);
+STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, release) == 0x8);
+STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, unacquire) == 0x20);
+STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, get_state) == 0x24);
+
+struct PC_INPUT_CONFIG_PC {
+    char name[64];
+    u32 product_id;
+    u8 unknown_44[0x16];
+    u8 deadzone;
+    u8 unknown_5b;
+    u8 alternate_deadzone;
+    u8 unknown_5d;
+    i16 key;
+    u8 unknown_60[4];
+    u8 axes[4][3];
+    u8 unknown_axes[4][3];
+    u8 buttons[16][2];
+};
+struct PC_INPUT_COMMAND_PC {
+    u8 active;
+    i8 axis, button;
+    u8 unknown_03;
+    u16 unknown_04;
+};
+struct PC_INPUT_BINDING_PC {
+    u8 kind, unknown_01;
+    u16 value;
+};
+struct PC_INPUT_DEVICE_PC {
+    i32 kind;
+    NuKeyboardDevice_PC *device;
+    GUID product;
+    i16 button_count;
+    u8 axis_count, pov_count;
+    u8 deadzone, alternate_deadzone;
+    u8 unknown_1e[2];
+    u32 left_trigger, right_trigger;
+    u8 unknown_28[2];
+    u8 config_dirty, config_installed, config_present, capabilities_valid;
+    char name[64];
+    PC_INPUT_BINDING_PC bindings[32];
+    struct {
+        u16 first, second;
+    } reset_pairs[32];
+    u8 unknown_16e[0x17c - 0x16e];
+};
+struct PC_XINPUT_GAMEPAD_PC {
+    u16 buttons;
+    u8 left_trigger, right_trigger;
+    i16 thumb_lx, thumb_ly, thumb_rx, thumb_ry;
+};
+struct PC_XINPUT_CAPABILITIES_PC {
+    u8 type, subtype;
+    u16 flags;
+    PC_XINPUT_GAMEPAD_PC gamepad;
+    u16 motor_left, motor_right;
+};
+struct PC_INPUT_RUNTIME_PC {
+    PC_INPUT_CONFIG_PC primary[64], secondary[64];
+    u8 unknown_4e00[0x34];
+    PC_INPUT_DEVICE_PC devices[14];
+    u8 unknown_62fc[0x5c];
+    PC_INPUT_BINDING_PC auxiliary_bindings[4][32];
+    i32 auxiliary_ports[4];
+    u8 unknown_6568[0x9c];
+    i32 preferred_key;
+    u8 unknown_6608[0x1e8];
+    PC_INPUT_COMMAND_PC commands[32];
+    u8 *keyboard_state;
+    PC_INPUT_RUNTIME_PC();
+    void InitConfiguration();
+    void ReadConfiguration(PC_INPUT_CONFIG_PC *, const char *);
+    PC_INPUT_CONFIG_PC *FindConfig(u8 mask, i32 port, i32 key);
+    void InstallConfig(PC_INPUT_CONFIG_PC *, i32 port, i32 key, i32 auxiliary, i32 auxiliary_port);
+    void BindPreferredConfig(i32 mask, i32 port);
+    void InitKeyboardProfiles();
+    void InitXInputCaps(const PC_XINPUT_CAPABILITIES_PC *, PC_INPUT_DEVICE_PC *);
+};
+extern PC_INPUT_CONFIG_PC PcStaticInputConfigs[15];
+extern PC_DI_CAPS_PC PcKeyboardCapabilities;
+extern "C" u8 IsXInputProductPc(const GUID *);
+extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *);
+STATIC_ASSERT(sizeof(PC_INPUT_CONFIG_PC) == 0x9c);
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, product_id) == 0x40);
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, deadzone) == 0x5a);
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, alternate_deadzone) == 0x5c);
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, key) == 0x5e);
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, axes) == 0x64);
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, buttons) == 0x7c);
+STATIC_ASSERT(sizeof(PC_INPUT_DEVICE_PC) == 0x17c);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, device) == 4);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, product) == 8);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, button_count) == 0x18);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, axis_count) == 0x1a);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, pov_count) == 0x1b);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, deadzone) == 0x1c);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, left_trigger) == 0x20);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, right_trigger) == 0x24);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, config_dirty) == 0x2a);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, config_installed) == 0x2b);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, config_present) == 0x2c);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, capabilities_valid) == 0x2d);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, name) == 0x2e);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, bindings) == 0x6e);
+STATIC_ASSERT(sizeof(PC_XINPUT_CAPABILITIES_PC) == 20);
+STATIC_ASSERT(offsetof(PC_XINPUT_CAPABILITIES_PC, gamepad) == 4);
+STATIC_ASSERT(offsetof(PC_XINPUT_CAPABILITIES_PC, motor_left) == 16);
+STATIC_ASSERT(sizeof(PC_INPUT_RUNTIME_PC) == 0x68b4);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, secondary) == 0x2700);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, devices) == 0x4e34);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, auxiliary_bindings) == 0x6358);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, auxiliary_ports) == 0x6558);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, preferred_key) == 0x6604);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, commands) == 0x67f0);
+
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, name) == 0x0);
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, unknown_axes) == 0x70);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, kind) == 0x0);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, alternate_deadzone) == 0x1d);
+STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, active) == 0x0);
+STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, axis) == 0x1);
+STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, button) == 0x2);
+STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, unknown_04) == 0x4);
+STATIC_ASSERT(offsetof(PC_INPUT_BINDING_PC, kind) == 0x0);
+STATIC_ASSERT(offsetof(PC_INPUT_BINDING_PC, value) == 0x2);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, primary) == 0x0);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, keyboard_state) == 0x68b0);
+STATIC_ASSERT(offsetof(PC_XINPUT_CAPABILITIES_PC, motor_right) == 0x12);
+STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, buttons) == 0x0);
+
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, reset_pairs) == 0xee);
+STATIC_ASSERT(sizeof(((PC_INPUT_DEVICE_PC *)0)->reset_pairs[0]) == 4);
+STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, active) == 0);
+STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, axis) == 1);
+STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, button) == 2);
+STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, unknown_04) == 4);
+
+extern const GUID PcWbemClassId, PcWbemInterfaceId;
+extern "C" char *__cdecl PcGetUserFolder(const char *, const char *);
+struct _iobuf;
+extern "C" _iobuf *__cdecl PcOpenPlatformFile(const char *, const char *, i32, const char *);
+#endif
+
 #ifdef __cplusplus
 struct PC_INPUT_RUNTIME_PC;
 extern const char *PcCompanyName;
