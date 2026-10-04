@@ -1672,3 +1672,80 @@ independent release review. Proven libvorbis 1.2.0 vorbisfile source reproduces
 63/14,513 exact PC bytes; its genuine core-codec provider closure remains pending.
 These research bytes are not current reconstruction progress. DAT caller buffer
 capacity remains unresolved; no large fabricated backing array is introduced.
+
+
+### Player reset, LZ2K, Ogg and FFT source-bank checkpoint (2026-10-04)
+
+One hundred newly implemented complete source functions add 33,582 unique PC
+bytes over 6b78f90, with no new aliases: player toggle, individual/group AI reset
+and Move_DEFAULT 4/3,529; genuine LZ2K decoder 13/2,332; original libogg container
+68/6,239; original libvorbis FFT 15/21,482. Whole-PC fuzzy coverage rises from
+15.461953% to 16.403316% of 3,471,246 bytes. Unique compared code reaches 864,582;
+native objdiff compares 865,035 including older aliases at 65.873970%. Eighty-eight
+new exact functions add 27,433 bytes, reaching 110,465/3.182287%. Full nonexact
+routines retain complete original extents and actual advisory scores. All 3,043
+previous full relocated function copies remain identical; no old exact code,
+data or typed member is lost.
+
+Using the correct original source versions enables a substantial direct source
+transfer. The native vendor identifier is Xiph.Org libVorbis I 20070622, matching
+libvorbis 1.2.0. Its complete original smallft.c owner reproduces all 15 functions,
+21,482 bytes, exactly under the unchanged pinned compiler. Original libogg 1.1.3
+reproduces 67/5,713 exact bytes; its full flush routine is nonexact but has verified
+equivalent register initialization/flags and complete CFG. Original BSD licenses
+remain in the sources. Algorithms, native types, natural private helper groups
+and original initializer ownership remain intact. No transcribed retail assembly,
+asset bytes, fabricated providers, retention changes or compiler tuning is used.
+Only the verified original Ogg long/short declaration block has a narrow naming
+policy exception, preserving its actual Win32 C types and 43 asserted offsets.
+
+Player reset restores the PC angle WORD at 0x27a, unsigned model/difficulty WORD
+comparisons and low-CL disabled-mask semantics. Move_DEFAULT is the genuine exact
+50-byte provider. Natural individual/group reset and movement owners preserve
+all 156 prior copies; five generated local-label names change compiler ordinals
+but retain identical actual target addresses, types and addends. The decoder keeps
+its genuine private EDI-buffer/stack-size caller/helper group and full working
+initializers. Its diagnostic calls real NuFileError rather than Android exit(1).
+The existing two DAT callers, 928 already-compared bytes, remain unchanged and
+held: no native proof establishes a 0x40000 decode-buffer allocation.
+
+Pinned source-only EXE link and map/relocation checks pass for 3,143 function and
+5,671 data definitions across 244 actual objects. LLVM 18 checks 246 files/244
+units; all 699 tests pass with 3 skips. Strict fixtures link only all 244 normal
+objects, with zero replacements, supplemental providers or fake globals. Player
+46 checks cover toggle callbacks/timing, individual AI reset and once-only/group
+masks, unsigned difficulty and NaN stagger behavior. Decoder 28 checks cover
+legal generated LZ2K literal/overlapping-copy/ring/pending-copy/Huffman inputs.
+Ogg 57 checks cover bit packing, truncation, generated page/packet encode-decode,
+CRC, peek/consume/reset. FFT 58 checks cover radices 2/3/4/5/7, sizes 1..128,
+unnormalized roundtrips, independent impulse/DC/cosine spectra and canaries.
+All 189 checks pass. These finite CPU/container domains do not establish decoded
+audio, device/GPU execution, asset/model creation or full-game startup.
+
+Fifteen real shared working views add 4,128 source bytes, including two Huffman
+working trees, actual decoder scalars and genuine player input/callback state.
+All 3,324 prior complete shared regions and 1,638 prior scoped proofs remain
+identical. Current 3,339 normal regions equal isolated compilation; scope 1,653
+has 562 known regions/137,693 unique bytes and 1,091 unknown views/126,552 source
+bytes. All 4,343 previous actual exact physical initializer copies survive;
+nine new copies yield 4,352, plus the two unchanged exact typed members, 4 bytes.
+New exact data union grows 15 bytes. Two unsupported previously uncompiled
+4-byte inventory extents become blank while their genuine 4-byte scalar views
+remain. No allocation capacity or original owning extent is inferred from them.
+Private implode/Ogg/FFT tables remain in genuine original owners.
+
+Next is the genuine full Vorbis reader/core source bank. Its actual supplier graph
+closes with 19 original core owners including the released FFT, plus Ogg and 42
+confirmed static-CRT suppliers. Eighteen remaining original core owners and the
+63-function/14,513-byte reader can form one coherent source release. The full core probe
+223/93,791 includes the released FFT 15/21,482; the remaining core 208/72,309 plus
+reader 63/14,513 gives 271/86,822 potentially new bytes, still candidates until review. Seventeen private
+name collisions have naming-only whole-code preservation proof; 29 nonexact
+identities and 33 emitted data regions remain PC gates. Library-local private
+headers preserve original context without polluting unrelated game owners.
+Connected blowup animation/loader/zipup research proceeds in parallel, with a
+20–30 KB candidate wave and finite genuine parser/registration frontiers.
+The user's three journal edits remain untouched; whole-project work continues.
+
+The 05:59 UTC commit checkpoint awaits the final documentation/input-fingerprint
+refresh after the complete batch passed all source, native and independent gates.

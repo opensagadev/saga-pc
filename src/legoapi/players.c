@@ -2395,3 +2395,151 @@ PLAYER_ITEM_TYPE_RESET_PC *__cdecl PlayerItemType_Find(i32 id) {
     }
     return NULL;
 }
+
+void __cdecl Move_DEFAULT(GAMEOBJECT *);
+extern i32 FULLDEBUGTOGGLE;
+extern u32 GAMEPAD_TOGGLELEFT;
+extern u32 GAMEPAD_TOGGLERIGHT;
+extern f32 TOGGLEREPEATTIME;
+extern i32 LEGOHINT_FREEPLAYTOGGLE;
+extern i32(__cdecl *Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32);
+extern void(__cdecl *Player_ToggledCharacterFn)(GAMEOBJECT *, i32);
+
+void __cdecl Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
+    f32 hold_time = object->input_toggle_hold_time;
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    i32 old_id, left, right, index, attempts, id, collected, area, allowed;
+    u32 left_mask, right_mask;
+    FULLDEBUGTOGGLE = 0;
+    if ((HUB_ADATA != NULL && HUB_ADATA == world->area) || FadeSys.fade != 0.0f ||
+        (CInfo[(i8)object->character_context].flags & 0x100) != 0 || object->takeover_source != NULL || FreePlay == 0)
+        return;
+    if ((MiniCutCam != 0 && (object->flags_1fc_word & 0x180) == 0x80) || object->dead != 0 ||
+        object->pad == ViewCamGetGamePad()) {
+        object->input_toggle_hold_time = TOGGLEHOLDTIME;
+        return;
+    }
+    old_id = (i16)object->id;
+    if (direction != 0) {
+        left = direction < 1;
+        right = direction >= 1;
+    } else {
+        left_mask = GAMEPAD_TOGGLELEFT;
+        right_mask = GAMEPAD_TOGGLERIGHT;
+        if (LIFTPLAYER != 0) {
+            left_mask &= ~(u32)GAMEPAD_LIFT;
+            right_mask &= ~(u32)GAMEPAD_LIFT;
+        }
+        left = object->pad->buttons_pressed & left_mask;
+        right = object->pad->buttons_pressed & right_mask;
+        if (left != 0 && right != 0) {
+            left = 0;
+            right = 0;
+        }
+        if ((left | right) == 0 && (object->flags_1fc_word & 0x80) != 0) {
+            left = object->pad->buttons_held & left_mask;
+            right = object->pad->buttons_held & right_mask;
+            if ((left != 0 && right != 0) || (left | right) == 0) {
+                left = 0;
+                right = 0;
+                object->input_toggle_hold_time = TOGGLEHOLDTIME;
+            } else {
+                object->input_toggle_hold_time -= FRAMETIME;
+                if (!(object->input_toggle_hold_time <= 0.0f)) {
+                    left = 0;
+                    right = 0;
+                } else
+                    object->input_toggle_hold_time = TOGGLEREPEATTIME;
+            }
+        }
+        hold_time = object->input_toggle_hold_time;
+        if ((left | right) == 0)
+            return;
+    }
+    if (Player_ToggleSubCharacterFn != NULL && Player_ToggleSubCharacterFn(object, left, sound) != 0)
+        return;
+    for (index = 0; index < apicharsys->loaded_model_count; ++index)
+        if ((u16)apicharsys->models[index].model_id == object->id)
+            break;
+    if (index == apicharsys->loaded_model_count)
+        return;
+    attempts = 0;
+    allowed = 0;
+    do {
+        if (left != 0) {
+            if (--index == -1)
+                index = apicharsys->loaded_model_count - 1;
+        } else if (++index == apicharsys->loaded_model_count)
+            index = 0;
+        id = apicharsys->models[index].model_id;
+        ++attempts;
+        collected = InCollectList_Index(id, NULL, 0);
+        if ((apicharsys->models[index].flags & 1) == 0)
+            goto next_character;
+        if (collected == -1 && (i32)GCDataList[id].flags_090 >= 0 && (GCDataList[id].flags_094 & 0x1000000) == 0 &&
+            !(VehicleArea != 0 && BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 &&
+              (GCDataList[id].flags_094 & 0x2000000) != 0))
+            goto next_character;
+        if (VehicleArea != 0) {
+            if ((CDataList[id].model_flags & 0x2000) == 0 &&
+                !(BonusArea != 0 && (CDataList[id].model_flags & 0x4000000) != 0) &&
+                (i32)GCDataList[id].flags_090 >= 0 &&
+                !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 && (GCDataList[id].flags_094 & 0x2000000) != 0))
+                goto next_character;
+            if (BonusArea != 0) {
+                area = AreaFromMiniKitID(id);
+                if (area != -1) {
+                    if (Game_AreaSave == NULL || Game_AreaSave[area].minikit_complete == 0)
+                        goto next_character;
+                } else if ((i32)GCDataList[id].flags_090 >= 0 && !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 &&
+                                                                   (GCDataList[id].flags_094 & 0x2000000) != 0))
+                    goto next_character;
+                if (object->field_283 >= 0 && object->field_283 < 17 && (TerLayer[object->field_283].flags & 1) != 0 &&
+                    GCDataList[id].field_028 <= 0.0f)
+                    goto next_character;
+            }
+        } else if ((CDataList[id].model_flags & 0x2000) != 0 || (GCDataList[id].flags_090 & 0x40) != 0)
+            goto next_character;
+        if (BonusArea == 0 || VehicleArea == 0) {
+            if ((i32)GCDataList[id].flags_090 < 0) {
+                if ((object->flags_1fc_word & 0x80) == 0 || Cheats_CheckFlags(0x100) == 0)
+                    goto next_character;
+            } else {
+                if ((object->flags_1fc_word & 0x80) == 0 && collected == -1 &&
+                    (GCDataList[id].flags_094 & 0x1000000) == 0)
+                    goto next_character;
+                if ((GCDataList[id].flags_094 & 0x1000000) == 0 && (collected == -1 || Collection_Got(id) == 0))
+                    goto next_character;
+            }
+        }
+        if (object->floor_height != 2000000.0f && object->roof_height_pc != 2000000.0f &&
+            object->character_data->move_fn != Move_DEFAULT &&
+            CDataList[id].top - CDataList[id].bottom >= (f32)(object->roof_height_pc - object->floor_height)) {
+            GameAudio_PlaySfx(0x32, &object->collision_position, 0, 0);
+            goto next_character;
+        }
+        allowed = 1;
+    next_character:
+        if (attempts > apicharsys->loaded_model_count || allowed != 0 || id == (i16)object->id)
+            break;
+    } while (1);
+    if (attempts >= apicharsys->loaded_model_count || allowed == 0)
+        return;
+    if ((object->flags_1fc_word & 0x80) != 0) {
+        Hint_SetComplete(LEGOHINT_FREEPLAYTOGGLE);
+        if (VehicleArea == 0)
+            GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
+    }
+    NewPlayerCharacter(object, id, old_id, 1);
+    RememberPlayerIDs(0, Player[0] != NULL ? (i16)((GAMEOBJECT *)Player[0])->id : -1,
+                      Player[1] != NULL ? (i16)((GAMEOBJECT *)Player[1])->id : -1);
+    if (Player_ToggledCharacterFn != NULL)
+        Player_ToggledCharacterFn(object, left);
+    object->input_toggle_hold_time = hold_time;
+    if (sound != 0) {
+        if (left != 0)
+            GameAudio_PlaySfx(0x23, &object->collision_position, 0, 0);
+        else if (right != 0)
+            GameAudio_PlaySfx(0x24, &object->collision_position, 0, 0);
+    }
+}

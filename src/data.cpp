@@ -10904,3 +10904,65 @@ extern "C" {
     i32(__cdecl *GizObstacleExcludeFnPc)(GIZOBSTACLE *, GAMEOBJECT *);
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$gExplodeInitialised")
+    i32 gExplodeInitialised = 1;
+#pragma data_seg()
+
+#pragma data_seg(".data$GAMEPAD_TOGGLELEFT")
+    u32 GAMEPAD_TOGGLELEFT = 5;
+#pragma data_seg()
+
+#pragma data_seg(".data$GAMEPAD_TOGGLERIGHT")
+    u32 GAMEPAD_TOGGLERIGHT = 10;
+#pragma data_seg()
+
+#pragma data_seg(".data$TOGGLEREPEATTIME")
+    f32 TOGGLEREPEATTIME = 0.25f;
+#pragma data_seg()
+
+#pragma data_seg(".data$LEGOHINT_FREEPLAYTOGGLE")
+    i32 LEGOHINT_FREEPLAYTOGGLE = -1;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$FULLDEBUGTOGGLE")
+    i32 FULLDEBUGTOGGLE;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$Player_ToggleSubCharacterFn")
+    i32(__cdecl *Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$Player_ToggledCharacterFn")
+    void(__cdecl *Player_ToggledCharacterFn)(GAMEOBJECT *, i32);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$implode_inbuffer")
+    char *implode_inbuffer;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$implode_outbuffer")
+    char *implode_outbuffer;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$implode_bitbuf")
+    u32 implode_bitbuf;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$implode_compsize")
+    u32 implode_compsize;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$implode_left")
+    u16 implode_left[0x3fb];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$implode_right")
+    u16 implode_right[0x3fb];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$implode_origsize")
+    u32 implode_origsize;
+#pragma bss_seg()
+}

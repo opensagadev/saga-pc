@@ -4166,3 +4166,16 @@ local WORD payload offsets 0/2 retain asserted layouts. Private callback and Sho
 queue ownership remains original; unknown data extents remain blank. All 3,015
 previous function copies survive, with one independently qualified recurrence
 of an old nonexact particle x87 scheduling change. No old exact matches are lost.
+
+
+### Player, decoder and original vendor source banks (2026-10-04)
+
+Accepted 100 newly compared functions/33,582 unique PC bytes, no aliases; 88 full
+exact functions add 27,433 bytes. All 3,043 prior complete function copies remain
+identical. Original libvorbis 1.2.0 FFT source supplies 15/21,482 exact bytes;
+original libogg 1.1.3 supplies 68/6,239 with 67/5,713 exact. Full native boundaries,
+private register ABIs, tables, public Win32 layouts and genuine CRT suppliers are
+verified. Existing compiler-helper binding aliases receive no invented source
+credit or owning extents. Two uncompiled unsupported data extents totaling 8 bytes
+retire without losing source/exact data. Player and LZ2K complete source contracts
+remain separate from held DAT capacity and unreviewed full Vorbis core candidates.

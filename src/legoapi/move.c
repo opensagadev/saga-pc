@@ -6140,3 +6140,9 @@ gravity_done:
     if (GizmoBlowupCheckProximity(WORLD, object) != 0 && VehicleSlowdownCallbackPc != NULL)
         VehicleSlowdownCallbackPc(object);
 }
+
+void __cdecl Move_DEFAULT(GAMEOBJECT *object) {
+    DropInOutCode(object);
+    if ((object->flags_e20 & 0x20) == 0)
+        ApplyGravity(object, NULL, 0.0f, 0.0f, NULL);
+}

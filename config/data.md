@@ -1605,3 +1605,18 @@ members totaling 4 bytes remain separate from physical definitions/counts.
 Natural private owners retain the genuine eight-slot obstacle callback table,
 32 bytes, and Shove queue/count view, 388 bytes. Their complete source initializers
 match retail working bytes, without claiming original allocation extents.
+
+
+### Decoder and player state working views (2026-10-04)
+
+Fifteen new shared views add 4,128 source bytes; all owning extents remain unknown.
+Actual Huffman tree indices and scalar/pointer/callback readers qualify these
+working views without allocation credit. All 3,324 prior complete regions/raw/
+named relocations and 1,638 scoped proofs remain unchanged. Current normal 3,339
+equals isolated compilation; scope 1,653 retains 562 known regions/137,693 unique
+bytes and 1,091 unknown views/126,552 source bytes. All 4,343 old exact physical
+initializer copies survive; nine new actual copies produce 4,352, separately from
+two unchanged exact resource members totaling 4 bytes. Unsupported uncompiled
+_gExplodeInitialised and _GAMEPAD_TOGGLERIGHT 4-byte inventory extents become blank;
+actual DWORD state views remain genuine. Private decoder, Ogg and FFT initializers
+stay in their original owners. No DAT decode-buffer storage or capacity is guessed.
