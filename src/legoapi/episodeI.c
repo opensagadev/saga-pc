@@ -38,6 +38,8 @@ typedef struct podrace_resource_pc_s {
     RACEPOD_RESOURCE_PC lap_entries[16];
     u8 unknown_b000[12];
     f32 previous_lap_display;
+    f32 max_lap_time, lap_time_increment;
+    i32 attempts_per_increment;
 } PODRACE_RESOURCE_PC;
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, lap_entries) == 0xa600);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, previous_lap_display) == 0xb00c);
@@ -212,5 +214,34 @@ i32 __cdecl Action_CreatePod(void *system, void *process, void *packet, char **p
     }
     if (damaged != 0)
         object->flags_ef4 |= 0x08000000;
+    return 1;
+}
+
+STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, max_lap_time) == 0xb010);
+STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, lap_time_increment) == 0xb014);
+STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, attempts_per_increment) == 0xb018);
+
+i32 __cdecl Action_SetLapTime(void *system, void *process, void *packet, char **params, i32 param_count, i32 first_time,
+                              f32 ignored) {
+    i32 i;
+    PODRACE_RESOURCE_PC *race = (PODRACE_RESOURCE_PC *)PodRacePc;
+    (void)system;
+    (void)process;
+    (void)ignored;
+    if (first_time != 0 && race->previous_lap_display == 0.0f) {
+        for (i = 0; i < param_count; ++i) {
+            char *value = NuStrIStr(params[i], PodRaceMaxLapTimeKeywordPc);
+            if (value != NULL)
+                race->max_lap_time = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 11);
+            else if ((value = NuStrIStr(params[i], PodRaceLapTimeKeywordPc)) != NULL)
+                race->previous_lap_display = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 8);
+            else if ((value = NuStrIStr(params[i], PodRaceAttemptsKeywordPc)) != NULL)
+                race->attempts_per_increment = (i32)AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 24);
+            else if ((value = NuStrIStr(params[i], PodRaceIncrementKeywordPc)) != NULL)
+                race->lap_time_increment = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 10);
+        }
+        if (race->max_lap_time == 0.0f)
+            race->max_lap_time = race->previous_lap_display;
+    }
     return 1;
 }

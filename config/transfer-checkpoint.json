@@ -20,17 +20,18 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 902378,
-    "matched_code_bytes": 81990,
-    "matching_percent": 2.3619760742972407,
-    "fuzzy_coverage_percent": 15.168865105774998,
-    "mapped_functions": 3185,
-    "matched_functions": 1305,
-    "objdiff_fuzzy_percent": 64.360176,
-    "objdiff_total_code": 818587,
+    "mapped_code_bytes": 905866,
+    "matched_code_bytes": 82620,
+    "matching_percent": 2.380125176953751,
+    "fuzzy_coverage_percent": 15.295464749309618,
+    "mapped_functions": 3213,
+    "matched_functions": 1319,
+    "objdiff_fuzzy_percent": 64.465256,
+    "objdiff_total_code": 824070,
     "image_bytes": 40067072,
-    "mapped_bytes": 1543919,
-    "mapping_percent": 3.853336225816551
+    "mapped_bytes": 1547377,
+    "mapping_percent": 3.8619667541466467,
+    "matched_data_region_bytes": 630758
   },
   "newly_compared": [
     {
@@ -15894,6 +15895,412 @@
         "Global manager/reverb retail alias and physical resource owners await canonical typed member integration."
       ],
       "next_connected_wave": "Fresh canonical resource48 physical-member migration plus connected resource966, accepted natural WavReader15/1408, and accepted Players/Door/Episode/shadow6/1728 after real data and native fixtures; broader obstacle/animation CPU families and genuine static Vorbis/Ogg source bank.",
+      "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct main pushes authorized."
+    },
+    {
+      "reviewed_physical_member_migrations": [
+        {
+          "retired_coff_symbol": "_MiscTime",
+          "member_id": "LevInstAnimResetPc.fields.miscellaneous_time",
+          "address": "0x0087a850",
+          "complete_original_size": null,
+          "historical_exact_preserved": false,
+          "retired_physical_definition": true,
+          "member_is_not_new_definition": true
+        },
+        {
+          "retired_coff_symbol": "_TargetDeg_Mid",
+          "member_id": "LevInstAnimResetPc.fields.target_deg_mid",
+          "address": "0x0087a854",
+          "complete_original_size": 2,
+          "historical_exact_preserved": true,
+          "retired_physical_definition": true,
+          "member_is_not_new_definition": true
+        },
+        {
+          "retired_coff_symbol": "_TargetDeg_Far",
+          "member_id": "LevInstAnimResetPc.fields.target_deg_far",
+          "address": "0x0087a858",
+          "complete_original_size": 2,
+          "historical_exact_preserved": true,
+          "retired_physical_definition": true,
+          "member_is_not_new_definition": true
+        }
+      ],
+      "physical_exact_rows_retired_with_same_complete_member": [
+        "_TargetDeg_Mid",
+        "_TargetDeg_Far"
+      ],
+      "baseline_commit": "bfa2863ca0d063e66dd9cc83cc25b683fc0f66db",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 902378,
+        "matched_code_bytes": 81990,
+        "matching_percent": 2.3619760742972407,
+        "fuzzy_coverage_percent": 15.168865105774998,
+        "mapped_functions": 3185,
+        "matched_functions": 1305,
+        "objdiff_fuzzy_percent": 64.360176,
+        "objdiff_total_code": 818587,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1543919,
+        "mapping_percent": 3.853336225816551
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 905866,
+        "matched_code_bytes": 82620,
+        "matching_percent": 2.380125176953751,
+        "fuzzy_coverage_percent": 15.295464749309618,
+        "mapped_functions": 3213,
+        "matched_functions": 1319,
+        "objdiff_fuzzy_percent": 64.465256,
+        "objdiff_total_code": 824070,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1547377,
+        "mapping_percent": 3.8619667541466467,
+        "matched_data_region_bytes": 630758
+      },
+      "newly_compared_functions": 30,
+      "new_original_code_bytes": 5483,
+      "new_compared_row_original_bytes_including_aliases": 5483,
+      "new_alias_rows": [],
+      "compared_code_delta": 5483,
+      "baseline_unique_compared_pc_bytes": 818272,
+      "unique_compared_pc_bytes": 823755,
+      "exact_code_added": 630,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 2985,
+      "prior_compiled_function_copies_identical": 2982,
+      "renamed_owner_copies_with_identical_complete_bodies": [
+        {
+          "symbol": "_EffectOffProgress_Update",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_EffectOffProgress_Reset",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_ClearLevelProgress",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_WorldStoreScriptProgressPC",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_WorldStoreScriptsProgressPC",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_StoreSceneProgress",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_CalculateWorldSize",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_StoreLevelProgressFn",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_StoreLevelProgress",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_SaveSceneObjectAnimTFactors",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_GizmoSysClearLevelProgress",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_WorldInfo_InitOnce",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_WorldInfo_CurrentlyActive",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_WorldInfo_CurrentlyLoading",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_WorldInfo_ReArrangeBuffers",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_WorldInfo_OtherLevel",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_WorldInfo_Register",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_WorldInfo_UpdateRoomVisibility",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_WorldInfo_LoadObjectAnimFile",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_LoadTerrainFile",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_LoadGrassFile",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_LoadBridgeFile",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_EnableShadowMapRendering",
+          "before_unit": "src/legoapi/shadowmap.c",
+          "after_unit": "src/legoapi/shadowmap.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_ResetShadowMapRendering",
+          "before_unit": "src/legoapi/shadowmap.c",
+          "after_unit": "src/legoapi/shadowmap.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_SetEffectVisibility",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_ShadowMapEnablePc",
+          "before_unit": "src/legoapi/shadowmap.c",
+          "after_unit": "src/legoapi/shadowmap.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_ShadowMapResetPc",
+          "before_unit": "src/legoapi/shadowmap.c",
+          "after_unit": "src/legoapi/shadowmap.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_edanimRegisterBaseScene",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_edbitsRegisterBaseScene",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        },
+        {
+          "symbol": "_edbitsRegisterBaseTerrain",
+          "before_unit": "src/legoapi/world.c",
+          "after_unit": "src/legoapi/world.cpp",
+          "full_relocated_body_identical": true
+        }
+      ],
+      "user_journal_unchanged": true,
+      "checkpoint": "Resource reset, WAV reader and world startup checkpoint (2026-10-04)",
+      "new_source_functions": 30,
+      "family_bytes": {
+        "wav_reader": 1408,
+        "level_resource_reset_menu_lap": 966,
+        "player_positions_doors_episode_shadow": 1728,
+        "item_type_lookup": 351,
+        "world_initializer_renderer": 1030
+      },
+      "newly_exact_unique_functions": 14,
+      "newly_exact_unique_function_bytes": 630,
+      "shared_data_definitions_added": 37,
+      "shared_physical_definition_net_change": 34,
+      "shared_initializer_view_bytes_added": 557,
+      "data_scope": {
+        "physical_proofs": 1631,
+        "known_extents": 561,
+        "known_unique_bytes": 137634,
+        "unknown_extents": 1070,
+        "unknown_view_bytes": 122340,
+        "separate_typed_known_members": 2,
+        "typed_known_member_bytes_preserved": 4
+      },
+      "previous_exact_initializer_copies_preserved": 4330,
+      "current_exact_physical_initializer_copies": 4334,
+      "current_exact_typed_members": 2,
+      "new_exact_physical_initializer_copies": 6,
+      "new_exact_data_union_bytes": 34,
+      "previous_shared_complete_regions_unchanged": 3276,
+      "current_shared_complete_regions": 3317,
+      "qualified_previous_codegen_changes": [
+        {
+          "symbol": "_TargetGameObject",
+          "unit": "src/legoapi/gameobjects.c",
+          "old_bytes": 1152,
+          "new_bytes": 1152,
+          "old_advisory_percent": 81.58861,
+          "new_advisory_percent": 79.96203,
+          "reason": "Previously reviewed physical-resource member access changes with preserved offsets and full native semantics; fresh final endpoint verification.",
+          "new_source_credit": 0
+        },
+        {
+          "symbol": "_GizmoBlowUp_Target",
+          "unit": "src/legoapi/gizmoblowups.c",
+          "old_bytes": 876,
+          "new_bytes": 876,
+          "old_advisory_percent": 80.687256,
+          "new_advisory_percent": 80.436295,
+          "reason": "Previously reviewed physical-resource member access changes with preserved offsets and full native semantics; fresh final endpoint verification.",
+          "new_source_credit": 0
+        },
+        {
+          "symbol": "_TargetPart",
+          "unit": "src/legoapi/parts.c",
+          "old_bytes": 691,
+          "new_bytes": 689,
+          "old_advisory_percent": 84.30047,
+          "new_advisory_percent": 82.77934,
+          "reason": "Previously reviewed physical-resource member access changes with preserved offsets and full native semantics; fresh final endpoint verification.",
+          "new_source_credit": 0
+        }
+      ],
+      "retired_uncompiled_inventory_extents": {
+        "symbols": [
+          "newlevelfrommenu_newmenuid",
+          "LevDeaths",
+          "LevMusicOtherAmbient",
+          "LevMusicAmbient",
+          "LevMusicOtherAction",
+          "LevMusicAction",
+          "ResetBits",
+          "WorldInfo_InitMenuFn",
+          "WorldInfo_InitLastFn",
+          "newlevelfrommenu_newmenuy"
+        ],
+        "old_unsupported_bytes": 40,
+        "new_owning_extents": null,
+        "prior_compiled_or_exact_loss": false
+      },
+      "verified_checks": {
+        "all_required_checks_passed": true,
+        "tests": 699,
+        "skipped": 3,
+        "test_seconds": 48.508,
+        "llvm": 18,
+        "format_files": 241,
+        "tidy_units": 239,
+        "objects": 239,
+        "function_definitions": 3015,
+        "data_definitions": 5609,
+        "source_only_link": true,
+        "native_wav_checks": 40,
+        "native_resource_checks": 36,
+        "native_item_checks": 15,
+        "native_startup_helper_checks": 37,
+        "native_actual_parent_checks": 39,
+        "native_total_checks": 167,
+        "native_failures": 0,
+        "native_manifests_verified": 3,
+        "accepted_new_complete_bodies_verified": 30,
+        "previous_function_copies_checked": 2985,
+        "previous_function_copies_identical": 2982,
+        "prior_exact_code_and_data_preserved": true,
+        "typed_member_registry_enabled": true,
+        "preserved_exact_member_bytes": 4,
+        "qualified_old_codegen_changes": 3,
+        "member_endpoint_receipt_sha256": "f9d6e1e505167aa21394cdecb9f9647d06d7fbe4265b54338cabaddfc7628d67",
+        "limitations": [
+          "Selected valid generated PCM/file, reset/menu/lap, item/door/shadow and initialized corridor/startup-memory domains; positive audio/hardware/assets/loaded-character/full-game startup remain unverified.",
+          "Unknown original working allocations receive zero extent credit.",
+          "Embedded fallback DDS and global sound-manager/reverb physical overlap remain explicit provider frontiers."
+        ],
+        "normal_data_regions": 3317,
+        "scoped_physical_initializer_proofs": 1631,
+        "previous_data_regions_identical": 3276,
+        "previous_expanded_data_prefixes_preserved": 4,
+        "previous_exact_initializer_copies_preserved": 4330,
+        "current_exact_physical_initializer_copies": 4334,
+        "current_exact_typed_members": 2,
+        "new_exact_physical_initializer_copies": 6,
+        "parent_runtime_review_sha256": "9659999bb8b63445db22e9c48fe081642a6ec67370e719f0d9ad9bbce2bf9671",
+        "data_release_receipt_sha256": "456f56e3ea38af649eb267f8312689ffbcabbfb5ecef1b3a2e0f8cfc56a9d793",
+        "data_exact_preservation_receipt_sha256": "7da19dc2296976712661bd62a5b6de91db20d50d0eba242aff9d46dfbaba728a"
+      },
+      "physical_member_migration": {
+        "enabled": true,
+        "physical_parent": "_LevInstAnimResetPc",
+        "source_parent_bytes": 48,
+        "original_parent_extent": null,
+        "known_members_preserved": 2,
+        "known_member_bytes_preserved": 4,
+        "unknown_member": "MiscTime",
+        "no_new_member_definitions_or_bindings": true,
+        "no_parent_allocation_credit": true
+      },
+      "checkpoint_delay": {
+        "scheduled_utc": "2026-10-04 04:11 UTC",
+        "reason": "Required final239 compilation, alias naming and duplicate declaration fixes, canonical member history, source EXE link, LLVM18/general tests, strict normal runtime and authoritative retail comparison."
+      },
+      "remaining_contracts": [
+        "Selected valid generated PCM/file, reset/menu/lap, item/door/shadow and initialized corridor/startup-memory domains; positive audio/hardware/assets/loaded-character/full-game startup remain unverified.",
+        "Unknown original working allocations receive zero extent credit.",
+        "Embedded fallback DDS and global sound-manager/reverb physical overlap remain explicit provider frontiers."
+      ],
+      "next_connected_wave": "Accepted connected environment runtime22/5183 plus CPU geometry/Shove6/2200:28 functions/7383 PC bytes; genuine seven-data proposal and final runtime gates pending. Natural Ogg/Vorbis and Wav sample-manager source banks remain broader audio frontier.",
       "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct main pushes authorized."
     }
   ]

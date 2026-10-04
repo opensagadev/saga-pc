@@ -4136,3 +4136,20 @@ header-only scheduling differences, with complete native scores retained;
 they receive no new-source credit. Optional member tools stay disabled; no member
 enters symbols.csv as a linker symbol. Resource/Wav/startup proposals remain
 research until their corresponding production closure and validation.
+
+
+### Resource, WAV and startup transfer (2026-10-04)
+
+Accepted 30 complete PC source functions/5,483 unique bytes across resource reset,
+menu/lap parsing, WavReader, positions/doors/episode/shadow, item lookup and world
+initialization. Fourteen full exact functions add 630 bytes; all 2,985 prior copies
+survive, 2,982 identical. Original world/shadow C linkage stays unchanged after
+natural C++ owner conversion. Three nonexact targeting routines have independently
+qualified member-access scheduling changes, with no new source credit.
+
+Member migration retains both exact WORD extents 4 B at their original VAs via
+compiler-verified named fields of the genuine resource parent. Physical CSV
+rows/bindings retire; typed members never become extra COFF symbols. Ten old
+unsupported uncompiled 4-byte data extents become blank. Complete native runtime
+and fresh retail comparison remain authoritative; unknown working allocations,
+C++ weak aliases and pinned CRT helper references receive no invented coverage.

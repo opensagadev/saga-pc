@@ -1549,3 +1549,66 @@ credit. Next are connected resource966, natural WavReader1,408, accepted startup
 providers1,728 and larger environment/Vorbis families. No retail asset bytes are
 committed. This checkpoint waits for completed quota recovery, full validation
 and scheduling review; the user's three journal edits remain untouched.
+
+
+### Resource reset, WAV reader and world startup checkpoint (2026-10-04)
+
+Thirty complete source functions add 5,483 unique PC bytes over bfa 2863:
+WavReader 15/1,408; resource reset, menu and lap parsing 3/966;
+player positions, doors, episode lookup and shadow 6/1,728; item lookup 4/351;
+and WorldInfo_Init plus the real renderer RET 2/1,030. No new alias rows are
+counted. Whole-PC fuzzy coverage rises from 15.168865% to 15.295465% of
+3,471,246 bytes. Unique compared code reaches 823,755; native objdiff compares
+824,070 including old aliases at 64.465256%. Fourteen new exact functions add
+630 bytes, reaching 82,620/2.380125%. Full-size nonexact implementations remain
+visible with their actual scores.
+
+The resource reset uses one genuine 48-byte physical parent. MiscTime and both
+TargetDeg WORDs become named typed fields at 0x20/0x24/0x28, with original member VAs
+and the two exact WORDs 4 B preserved by active compiler-generated member proofs.
+Member records never become COFF definitions or relocation bindings. Parent
+allocation extent and MiscTime extent remain unknown, with zero allocation
+credit. ClearLevData can now reset the complete reviewed working view without
+separate conflicting global storage. Four retained PC-name aliases use narrow
+legacy naming exceptions; one redundant extern declaration was removed.
+
+All 2,985 prior function copies survive: 2,982 full relocated bodies identical,
+including 30 copies whose original C owners become C++ with unchanged C linkage.
+Three old nonexact targeting routines change compiler scheduling under the
+reviewed member access; fresh final endpoint review preserves native offsets,
+semantics and complete relocations. These changes gain no new transfer credit.
+All 4,330 previous exact initializer copies are preserved: 4,328 remain physical
+and two become complete typed members. Current physical exact copies 4,334
+plus two typed members include six new physical copies. Newly compared exact
+Wav literals/TypeDescriptor add 34 unique data bytes. All previous exact code
+and data remain exact, including the two retired physical WORD rows now
+represented by their complete typed members.
+
+Pinned source EXE link, 3,015 function and 5,609 data definitions across 239 actual
+objects pass. LLVM 18 checks 241 files/239 units; 699 tests pass with 3 skips.
+Strict runtime fixtures link all 239 normal objects with no replacements or
+supplemental providers. Wav 40, resource 36, item 15, startup helper 37 and actual
+parent 39 checks validate generated PCM/real Win32 file APIs, selected reset/menu/
+lap cases, item bounds, doors, camera-pair wrapping, real Players_InitPositions
+and WorldInfo_Init callbacks/progress/room/pool/timer/shadow state. Full startup,
+positive audio/hardware paths, asset loading and character creation remain
+outside these finite domains. The parent fixture initially assumed an exact 0.5
+corridor ratio; native trigonometric sampling gives 0x3f000001. Independent source/PC review approves
+a two-ULP bound while preserving all 39 parent assertions and discriminating
+bonus/camera/callback checks. Production source remains unchanged.
+
+Thirty-seven new physical shared views replace three old field definitions,
+net 34 physical additions. Four existing views grow 103 bytes; physical source
+storage grows 557 bytes. All 3,276 other complete shared regions remain identical,
+four prior prefixes and three field initializers remain preserved. Current
+normal 3,317 regions equal isolated compilation. Scope 1,631 contains 561 known
+regions/137,634 unique bytes and 1,070 unknown views/122,340 source bytes; the two
+known typed members 4 B are reported separately. Ten unsupported, previously
+uncompiled inventory extents totaling 40 bytes become unknown; no earlier source
+or exact match is removed. No retail assets or fabricated providers are added.
+
+Next is the accepted connected obstacle/animation runtime 22/5,183 plus real
+geometry/Shove 6/2,200: 28 functions/7,383 PC bytes, pending genuine shared data and
+all-normal runtime checks. Broader Ogg/Vorbis and audio sample-manager banks
+continue separately. The checkpoint waits for coherent final verification;
+the user's three identification-journal edits remain untouched.

@@ -1,5 +1,156 @@
 #include "saga.h"
 extern "C" {
+#pragma data_seg(".data$PlayerStartSplineIndexPc")
+    i32 PlayerStartSplineIndexPc = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$hub_startoutsidebonusdoor_area")
+    i32 hub_startoutsidebonusdoor_area = -1;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$shop_from_cutsceneplayer")
+    i32 shop_from_cutsceneplayer;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DoorExitCameraSplineNamePc")
+    char DoorExitCameraSplineNamePc[32];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DoorCutSplinePc")
+    NUGSPLINE *DoorCutSplinePc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DoorCutCameraPosition0Pc")
+    NUVEC DoorCutCameraPosition0Pc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DoorCutCameraPosition1Pc")
+    NUVEC DoorCutCameraPosition1Pc;
+#pragma bss_seg()
+
+#pragma data_seg(".data$PlayerMissionStartDoorPc")
+    char PlayerMissionStartDoorPc[13] = "mission_door";
+#pragma data_seg()
+
+#pragma data_seg(".data$PlayerArcadeStartDoorPc")
+    char PlayerArcadeStartDoorPc[16] = "door_to_network";
+#pragma data_seg()
+
+#pragma bss_seg(".bss$ResetBits")
+    u32 ResetBits;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LevMusicAction")
+    i32 LevMusicAction;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LevMusicAmbient")
+    i32 LevMusicAmbient;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LevMusicOtherAction")
+    i32 LevMusicOtherAction;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LevMusicOtherAmbient")
+    i32 LevMusicOtherAmbient;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$WorldInfo_InitMenuFn")
+    void(__cdecl *WorldInfo_InitMenuFn)(WORLDINFO *, i32 *, i32 *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$WorldInfo_InitLastFn")
+    void(__cdecl *WorldInfo_InitLastFn)(WORLDINFO *);
+#pragma bss_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$LevPathNodes")
+    i32 LevPathNodes[8];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LevPathCnx")
+    void *LevPathCnx[16];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LevGamePart")
+    PART_PC *LevGamePart[8];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LevBlowUp")
+    GIZMOBLOWUP_PC *LevBlowUp[2];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LevSfxId")
+    i32 LevSfxId[4];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LevelCodeSpline")
+    NUGSPLINE *LevelCodeSpline[8];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LevPathCnxDir")
+    i32 LevPathCnxDir;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LevelLocator")
+    void *LevelLocator;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LevPlatID")
+    i32 LevPlatID[2];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$LevLock")
+    u8 LevLock[4];
+#pragma bss_seg()
+
+#pragma data_seg(".data$SuperStoryEpisode")
+    i32 SuperStoryEpisode = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$hub_from_superstory")
+    i32 hub_from_superstory = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$hub_from_mission")
+    i32 hub_from_mission = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$PodRaceMaxLapTimeKeywordPc")
+    char PodRaceMaxLapTimeKeywordPc[12] = "maxlaptime=";
+#pragma data_seg()
+
+#pragma data_seg(".data$PodRaceLapTimeKeywordPc")
+    char PodRaceLapTimeKeywordPc[9] = "laptime=";
+#pragma data_seg()
+
+#pragma data_seg(".data$PodRaceAttemptsKeywordPc")
+    char PodRaceAttemptsKeywordPc[25] = "nattempts_per_increment=";
+#pragma data_seg()
+
+#pragma data_seg(".data$PodRaceIncrementKeywordPc")
+    char PodRaceIncrementKeywordPc[11] = "increment=";
+#pragma data_seg()
+
+#pragma bss_seg(".bss$LevDeaths")
+    i32 LevDeaths;
+#pragma bss_seg()
+
+#pragma data_seg(".data$newlevelfrommenu_newmenuid")
+    i32 newlevelfrommenu_newmenuid = -1;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$newlevelfrommenu_newmenuy")
+    i32 newlevelfrommenu_newmenuy;
+#pragma bss_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$LevInstAnimResetPc")
+    LEVEL_INST_ANIM_RESET_VIEW_PC LevInstAnimResetPc;
+#pragma bss_seg()
+}
+extern "C" {
 #pragma bss_seg(".bss$ActionPairTab")
     PC_MUSIC_ACTION_PAIR_PC *ActionPairTab;
 #pragma bss_seg()
@@ -3474,12 +3625,7 @@ extern "C" {
 #pragma bss_seg(".bss$TargetDeg_Near")
     u16 TargetDeg_Near;
 #pragma bss_seg()
-#pragma bss_seg(".bss$TargetDeg_Mid")
-    u16 TargetDeg_Mid;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TargetDeg_Far")
-    u16 TargetDeg_Far;
-#pragma bss_seg()
+
 #pragma bss_seg(".bss$DEATHSTAR2BATTLEA_LDATA")
     LEVELDATA_PC *DEATHSTAR2BATTLEA_LDATA;
 #pragma bss_seg()
@@ -5545,7 +5691,7 @@ extern "C" {
     i32 num_takeoverobjects;
 #pragma bss_seg()
 #pragma bss_seg(".bss$DoorExitNamePc")
-    char DoorExitNamePc[1];
+    char DoorExitNamePc[64];
 #pragma bss_seg()
 #pragma bss_seg(".bss$Door_Start")
     i32 Door_Start;
@@ -6430,7 +6576,7 @@ extern "C" {
     void *emperorfighta_netpacket;
 #pragma bss_seg()
 #pragma bss_seg(".bss$LevSfxFlag")
-    i32 LevSfxFlag[3];
+    i32 LevSfxFlag[4];
 #pragma bss_seg()
 #pragma bss_seg(".bss$debris_object_switches")
     u8 debris_object_switches[128];
@@ -6541,10 +6687,10 @@ extern "C" {
     i32 force_gizmotype_id = -1;
 #pragma data_seg()
 #pragma bss_seg(".bss$LevAIMessage")
-    GIZAIMESSAGE *LevAIMessage[2];
+    GIZAIMESSAGE *LevAIMessage[8];
 #pragma bss_seg()
 #pragma bss_seg(".bss$LevArea")
-    AIAREA_PC *LevArea[1];
+    AIAREA_PC *LevArea[4];
 #pragma bss_seg()
 #pragma bss_seg(".bss$routemask_efloor_on")
     u64 routemask_efloor_on;
@@ -10115,10 +10261,6 @@ extern "C" {
 
 #pragma bss_seg(".bss$LswForceUsedHintFlagsPc")
     u32 LswForceUsedHintFlagsPc;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$MiscTime")
-    f32 MiscTime;
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$BOUNTYHUNTERPURSUITE_LDATA")

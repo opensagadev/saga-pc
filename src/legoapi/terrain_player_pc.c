@@ -60,7 +60,6 @@ extern AREA_DATA_PC *HOTHBATTLE_ADATA, *DAGOBAH_ADATA;
 extern LEVELDATA_PC *ENDORBATTLEC_LDATA, *ASTEROIDCHASEC_LDATA, *CRUISERD_LDATA;
 void __cdecl Player_ClearContext(GAMEOBJECT *, i32);
 extern i32 NOTERRAINSTOP;
-extern f32 MiscTime;
 extern i16 id_TRACTOR, id_SNAKE;
 extern i32 LEGO_AIPATHCNX_BLOCKAGE, LEGO_AIPATHCNX_WALLSHUFFLE, LEGO_AIPATHCNX_FULLTERRAIN;
 extern f32 TerrainPlayerPlatConnectTolerancePc, TerrainPlayerBikeMovementScalePc, TerrainPlayerOtherMovementScalePc;

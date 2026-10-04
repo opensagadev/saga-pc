@@ -412,3 +412,6 @@ void __cdecl NuRndrAxisArrowsMtx(NUMTX *matrix, f32 length, NUMTL *material) {
     NuPrim3DEnd();
 }
 #undef LOCATOR_PRIM_POSITION
+
+void __cdecl NuRndrInitWorld(void) {
+}

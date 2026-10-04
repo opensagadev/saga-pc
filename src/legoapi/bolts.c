@@ -487,3 +487,16 @@ BOLT_PC *__cdecl Bolt_Find(i32 type_id, NUVEC *position, GAMEOBJECT *owner) {
     }
     return nearest;
 }
+
+i8 __cdecl BoltType_FindIDByName(char *name, WORLDINFO *world) {
+    i32 index;
+    if (NuStrLen(name) == 0)
+        return -1;
+    for (index = 7; index >= 0; --index)
+        if (NuStrICmp(name, world->bolt_types[index].name) == 0)
+            return (i8)(BoltSys->count + index);
+    for (index = BoltSys->count + 7; index >= 0; --index)
+        if (NuStrICmp(name, BoltSys->types[index].name) == 0)
+            return (i8)index;
+    return -1;
+}

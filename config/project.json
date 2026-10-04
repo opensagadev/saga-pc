@@ -7,5 +7,6 @@
     "text_size": "0x0034f78e",
     "image_size": "0x02636000"
   },
-  "symbols": "config/symbols.csv"
+  "symbols": "config/symbols.csv",
+  "data_members": "config/data-members.json"
 }

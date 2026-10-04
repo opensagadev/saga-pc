@@ -7342,7 +7342,7 @@ extern "C" {
     extern f32 PodCollisionThresholdPc;
     extern NUVEC PodSprintLiftPositionsPc[3];
     extern u32 LswForceUsedHintFlagsPc;
-    extern f32 MiscTime;
+
     extern LEVELDATA_PC *BOUNTYHUNTERPURSUITE_LDATA;
     extern LEVELDATA_PC *ASTEROIDCHASEC_LDATA;
     extern LEVELDATA_PC *DAGOBAHC_LDATA;
@@ -8143,7 +8143,7 @@ void __cdecl PCStereoUnknownToken(void);
     extern i32 BonusWinFlag;
     extern i32 Arcade_Points[2];
     extern i32 Arcade_Score[2];
-    extern f32 MiscTime;
+
     extern LEVELDATA_PC *ASTEROIDCHASEC_LDATA;
     extern LEVELDATA_PC *ENDORBATTLEC_LDATA;
     extern i32 NOTERRAINSTOP;
@@ -8911,8 +8911,8 @@ void __cdecl PCStereoUnknownToken(void);
     extern const char EpisodeVI_eFloor_AlwaysOf[16];
     extern const char EpisodeVI_eFloor_OnOff[13];
     extern i32 force_gizmotype_id;
-    extern GIZAIMESSAGE *LevAIMessage[2];
-    extern AIAREA_PC *LevArea[1];
+    extern GIZAIMESSAGE *LevAIMessage[8];
+    extern AIAREA_PC *LevArea[4];
     extern u64 routemask_efloor_on;
     extern u64 routemask_efloor_off;
     extern f32 eFloor_timer;
@@ -9213,7 +9213,7 @@ void __cdecl PCStereoUnknownToken(void);
     extern const char EpisodeVI_doton11[10];
     extern const char EpisodeVI_doton12[10];
     extern void *emperorfighta_netpacket;
-    extern i32 LevSfxFlag[3];
+    extern i32 LevSfxFlag[4];
     void *__cdecl TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *path, void *gscn,
                                 i32 scene_id, u32 max_group_indices, u32 max_groups, u32 max_platforms);
     void __cdecl TerrainDiagnosticNoOpPC(const void *context, ...);
@@ -10279,8 +10279,7 @@ void __cdecl PCStereoUnknownToken(void);
     extern f32 TargetDist_Near2;
     extern f32 TargetDist_Mid2;
     extern u16 TargetDeg_Near;
-    extern u16 TargetDeg_Mid;
-    extern u16 TargetDeg_Far;
+
     extern LEVELDATA_PC *DEATHSTAR2BATTLEA_LDATA;
     extern LEVELDATA_PC *ASTEROIDCHASED_LDATA;
     extern LEVELDATA_PC *DEATHSTARRESCUEA_LDATA;
@@ -12122,7 +12121,7 @@ void __cdecl PCStereoUnknownToken(void);
     extern i32 BeenAttacked;
     extern u8 takeoverobjects[352];
     extern i32 num_takeoverobjects;
-    extern char DoorExitNamePc[1];
+    extern char DoorExitNamePc[64];
     extern i32 Door_Start;
     extern i32 Door_NextSock;
     extern u8 minikitCounter_C;
@@ -13023,6 +13022,95 @@ void __cdecl PCStereoUnknownToken(void);
     extern const char PCDynamicDisplaySceneNameText[31];
     extern const char *PCDynamicDisplaySceneNamePointer;
 
+    typedef union LEVEL_INST_ANIM_RESET_VIEW_PC {
+        u32 reset_words[12];
+        struct {
+            u8 unknown_00[0x20];
+            f32 miscellaneous_time;
+            u16 target_deg_mid;
+            u16 unknown_26;
+            u16 target_deg_far;
+            u8 unknown_2a[6];
+        } fields;
+    } LEVEL_INST_ANIM_RESET_VIEW_PC;
+    STATIC_ASSERT(sizeof(LEVEL_INST_ANIM_RESET_VIEW_PC) == 48);
+    STATIC_ASSERT(offsetof(LEVEL_INST_ANIM_RESET_VIEW_PC, fields.miscellaneous_time) == 0x20);
+    STATIC_ASSERT(offsetof(LEVEL_INST_ANIM_RESET_VIEW_PC, fields.target_deg_mid) == 0x24);
+    STATIC_ASSERT(offsetof(LEVEL_INST_ANIM_RESET_VIEW_PC, fields.target_deg_far) == 0x28);
+    extern LEVEL_INST_ANIM_RESET_VIEW_PC LevInstAnimResetPc;
+// Retain the PC global spellings for these named physical members.
+// NOLINTNEXTLINE(readability-identifier-naming)
+#define LevInstAnim LevInstAnimResetPc.reset_words
+// NOLINTNEXTLINE(readability-identifier-naming)
+#define MiscTime LevInstAnimResetPc.fields.miscellaneous_time
+// NOLINTNEXTLINE(readability-identifier-naming)
+#define TargetDeg_Mid LevInstAnimResetPc.fields.target_deg_mid
+// NOLINTNEXTLINE(readability-identifier-naming)
+#define TargetDeg_Far LevInstAnimResetPc.fields.target_deg_far
+
+    extern i32 LevPathNodes[8];
+    extern void *LevPathCnx[16];
+    extern PART_PC *LevGamePart[8];
+    extern GIZMOBLOWUP_PC *LevBlowUp[2];
+    extern i32 LevSfxId[4];
+    extern NUGSPLINE *LevelCodeSpline[8];
+    extern i32 LevPathCnxDir;
+    extern void *LevelLocator;
+    extern i32 LevPlatID[2];
+    extern u8 LevLock[4];
+    extern i32 SuperStoryEpisode;
+    extern i32 hub_from_superstory;
+    extern i32 hub_from_mission;
+    extern char PodRaceMaxLapTimeKeywordPc[12];
+    extern char PodRaceLapTimeKeywordPc[9];
+    extern char PodRaceAttemptsKeywordPc[25];
+    extern char PodRaceIncrementKeywordPc[11];
+    extern i32 LevDeaths;
+    extern i32 newlevelfrommenu_newmenuid;
+    extern i32 newlevelfrommenu_newmenuy;
+    /* Replace existing declarations: LevArea[4], LevSfxFlag[4], LevAIMessage[8]. PodRacePc remains its current
+     * canonical owner. */
+
+    extern i32 PlayerStartSplineIndexPc;
+    extern i32 hub_startoutsidebonusdoor_area;
+    extern i32 shop_from_cutsceneplayer;
+    extern char DoorExitCameraSplineNamePc[32];
+    extern NUGSPLINE *DoorCutSplinePc;
+    extern NUVEC DoorCutCameraPosition0Pc;
+    extern NUVEC DoorCutCameraPosition1Pc;
+    extern char PlayerMissionStartDoorPc[13];
+    extern char PlayerArcadeStartDoorPc[16];
+    extern u32 ResetBits;
+    extern i32 LevMusicAction;
+    extern i32 LevMusicAmbient;
+    extern i32 LevMusicOtherAction;
+    extern i32 LevMusicOtherAmbient;
+    extern void(__cdecl *WorldInfo_InitMenuFn)(WORLDINFO *, i32 *, i32 *);
+    extern void(__cdecl *WorldInfo_InitLastFn)(WORLDINFO *);
+    /* Replace canonical DoorExitNamePc declaration with char[64]; selected copied exit-name length<=63. Remove
+     * standalone MiscTime/TargetDeg_Mid/TargetDeg_Far externs before introducing the reviewed member macros. */
+
+    void __cdecl Players_InitPositions(WORLDINFO *);
+    void *__cdecl Door_FindByName(WORLDINFO *, char *);
+    void *__cdecl Door_FindByIndex(WORLDINFO *, i32, i32, NUVEC *);
+    i32 __cdecl StartDoorPositions(void);
+    u32 __cdecl Episode_FindAreaFromFlags(EPISODEDATA_PC *, u32, u32);
+    /* C++ only, complete neutral class in original shadow owner; method in shared
+       declaration needed for natural WorldInfo_Init member caller later. No adapter. */
+
+    typedef struct player_item_type_reset_pc_s PLAYER_ITEM_TYPE_RESET_PC;
+    i8 __cdecl BoltType_FindIDByName(char *, WORLDINFO *);
+    void __cdecl PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *);
+    void __cdecl PlayerItemTypes_Reset(WORLDINFO *);
+    PLAYER_ITEM_TYPE_RESET_PC *__cdecl PlayerItemType_Find(i32);
+
+    void __cdecl ClearLevData(void);
+    void __cdecl NewLevelFromMenu(LEVELDATA_PC *, i32, i32, i32);
+    i32 __cdecl Action_SetLapTime(void *, void *, void *, char **, i32, i32, f32);
+
+    void __cdecl WorldInfo_Init(WORLDINFO *);
+    void __cdecl NuRndrInitWorld(void);
+
 #ifdef __cplusplus
 }
 
@@ -13430,6 +13518,17 @@ STATIC_ASSERT(sizeof(SoundQueue) == 0x400);
 extern "C" const IID PCSoundBuffer8IIDPc;
 extern "C" DWORD __stdcall PCSoundStreamWorkerPc(void *);
 
+#endif
+
+/* C++ working view only; original allocation extent remains unknown. */
+#ifdef __cplusplus
+struct PC_SPECIAL_SHADOW_LIGHT {
+    u8 unknown_000[0x808];
+    i32 enabled;
+    void SetEnabledPc(i32 enabled);
+};
+STATIC_ASSERT(offsetof(PC_SPECIAL_SHADOW_LIGHT, enabled) == 0x808);
+STATIC_ASSERT(sizeof(PC_SPECIAL_SHADOW_LIGHT) == 0x80c);
 #endif
 
 #endif

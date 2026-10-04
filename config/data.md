@@ -1570,3 +1570,24 @@ Optional member tools are present but disabled. The fresh proposed48B resource
 parent preserves all4 exact member bytes and retires two physical definitions
 honestly; actual source migration remains next-wave work, with parent extent
 blank and no48B credit. User journal edits are excluded from staging.
+
+
+### Resource physical parent and startup working views (2026-10-04)
+
+Active config/data-members.json describes 3 typed fields within the actual
+_LevInstAnimResetPc 48-byte COFF parent at 0x87a830. MiscTime 0x87a850 remains unknown
+extent; TargetDeg_Mid 0x87a854 and Far 0x87a858 retain complete 2-byte exact histories.
+Fresh VC8 and LLVM 18 proofs check exact types/offsetof/sizeof; official full
+parent relocation precedes member comparison. No member definition/binding,
+byte mask, duplicated backing storage or 48-byte original-allocation claim.
+
+Thirty-seven new shared views 462 B replace three retired fields 8 B; four existing
+unknown views grow 103 B, net 557 B source storage and 34 physical definitions.
+All 3,276 other complete regions and four old prefixes remain unchanged;
+3,317 normal regions equal isolated compilation. Scope 1,631 physical proofs
+retains 561 known extents/137,634 unique bytes and 1,070 unknown views/122,340 B.
+Known typed members 2/4 B are separate from physical proof counts. Private item
+pointer/count storage remains naturally owned by players.c with unknown extent.
+Wav RTTI/vtable/literals retain natural C++ ownership; existing TypeDescriptor 24
+is preserved, vtable owning extent remains unknown. Ten formerly uncompiled
+unsupported 4-byte inventory extents become blank with no prior exact loss.

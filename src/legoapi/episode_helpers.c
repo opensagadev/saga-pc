@@ -8,3 +8,13 @@ GAMEOBJECT *__cdecl BossKilled(i32 character_id) {
     }
     return NULL;
 }
+
+u32 __cdecl Episode_FindAreaFromFlags(EPISODEDATA_PC *episode, u32 flags, u32 wanted) {
+    i32 index;
+    for (index = 0; index < episode->area_count; ++index) {
+        AREA_DATA_PC *area = &ADataList[episode->area_ids[index]];
+        if ((area->flags & flags) == wanted)
+            return area->index;
+    }
+    return 0xffffffff;
+}

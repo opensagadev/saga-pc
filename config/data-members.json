@@ -1,0 +1,48 @@
+{
+  "format_version": 1,
+  "scope": "Verified named physical resource reset working view; parent owning extent unknown; complete historical WORD comparisons preserved.",
+  "members": [
+    {
+      "id": "LevInstAnimResetPc.fields.miscellaneous_time",
+      "kind": "data_member",
+      "owner_symbol": "_LevInstAnimResetPc",
+      "owner_unit": "src/data.cpp",
+      "owner_type": "LEVEL_INST_ANIM_RESET_VIEW_PC",
+      "member_path": "fields.miscellaneous_time",
+      "original_address": "0x0087a850",
+      "original_size": null,
+      "ctype": "f32",
+      "historical_symbol": "_MiscTime",
+      "qualification": "Full typed4-byte initializer comparison only; inherited original extent unknown, no new coverage credit",
+      "owner_identifier": "LevInstAnimResetPc"
+    },
+    {
+      "id": "LevInstAnimResetPc.fields.target_deg_mid",
+      "kind": "data_member",
+      "owner_symbol": "_LevInstAnimResetPc",
+      "owner_unit": "src/data.cpp",
+      "owner_type": "LEVEL_INST_ANIM_RESET_VIEW_PC",
+      "member_path": "fields.target_deg_mid",
+      "original_address": "0x0087a854",
+      "original_size": 2,
+      "ctype": "u16",
+      "historical_symbol": "_TargetDeg_Mid",
+      "qualification": "Known complete2-byte original field; exact historical comparison preserved through actual parent storage",
+      "owner_identifier": "LevInstAnimResetPc"
+    },
+    {
+      "id": "LevInstAnimResetPc.fields.target_deg_far",
+      "kind": "data_member",
+      "owner_symbol": "_LevInstAnimResetPc",
+      "owner_unit": "src/data.cpp",
+      "owner_type": "LEVEL_INST_ANIM_RESET_VIEW_PC",
+      "member_path": "fields.target_deg_far",
+      "original_address": "0x0087a858",
+      "original_size": 2,
+      "ctype": "u16",
+      "historical_symbol": "_TargetDeg_Far",
+      "qualification": "Known complete2-byte original field; exact historical comparison preserved through actual parent storage",
+      "owner_identifier": "LevInstAnimResetPc"
+    }
+  ]
+}
