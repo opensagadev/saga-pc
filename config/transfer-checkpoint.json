@@ -20,18 +20,18 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1181984,
-    "matched_code_bytes": 189420,
-    "matching_percent": 5.456830198724032,
-    "fuzzy_coverage_percent": 22.31401782845897,
-    "mapped_functions": 4090,
-    "matched_functions": 1858,
-    "objdiff_fuzzy_percent": 69.27307,
-    "objdiff_total_code": 1118866,
+    "mapped_code_bytes": 1189377,
+    "matched_code_bytes": 191395,
+    "matching_percent": 5.513726195147218,
+    "fuzzy_coverage_percent": 22.50451094886214,
+    "mapped_functions": 4122,
+    "matched_functions": 1879,
+    "objdiff_fuzzy_percent": 69.400215,
+    "objdiff_total_code": 1126344,
     "image_bytes": 40067072,
-    "mapped_bytes": 1825235,
-    "mapping_percent": 4.5554489232455015,
-    "matched_data_region_bytes": 632566
+    "mapped_bytes": 1832695,
+    "mapping_percent": 4.574067703275149,
+    "matched_data_region_bytes": 632633
   },
   "newly_compared": [
     {
@@ -3750,6 +3750,336 @@
       "original_bytes": 59,
       "units": [
         "src/legoapi/rtl.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GunshipKeepOnScreenPc",
+      "pc": "0x00415510",
+      "original_bytes": 600,
+      "units": [
+        "src/legoapi/camera.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 98.02591
+    },
+    {
+      "symbol": "_KeepOnScreen",
+      "pc": "0x00415770",
+      "original_bytes": 1250,
+      "units": [
+        "src/legoapi/camera.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 64.54918
+    },
+    {
+      "symbol": "_AveragePlayerCurrentSpeedMul",
+      "pc": "0x00499b60",
+      "original_bytes": 128,
+      "units": [
+        "src/legoapi/players.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuTimeGetFrameTime",
+      "pc": "0x004f3bb0",
+      "original_bytes": 7,
+      "units": [
+        "src/nu2api/nutimebar.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_DeadZoneValueXYProper",
+      "pc": "0x004f40a0",
+      "original_bytes": 112,
+      "units": [
+        "src/nu2api/nupad.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 89.35185
+    },
+    {
+      "symbol": "_DeadZoneValueXY",
+      "pc": "0x004f4110",
+      "original_bytes": 221,
+      "units": [
+        "src/nu2api/nupad.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 91.94936
+    },
+    {
+      "symbol": "_NuPadOpen",
+      "pc": "0x004f41f0",
+      "original_bytes": 105,
+      "units": [
+        "src/nu2api/nupad.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_CalcRamp",
+      "pc": "0x004f4280",
+      "original_bytes": 71,
+      "units": [
+        "src/nu2api/nupad.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuPadSetStatus",
+      "pc": "0x004f42d0",
+      "original_bytes": 109,
+      "units": [
+        "src/nu2api/nupad.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 98.0
+    },
+    {
+      "symbol": "_NuPadProcessReadData",
+      "pc": "0x004f4370",
+      "original_bytes": 1038,
+      "units": [
+        "src/nu2api/nupad.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 92.613075
+    },
+    {
+      "symbol": "_NuPadSetMaxGamePads",
+      "pc": "0x004f4790",
+      "original_bytes": 10,
+      "units": [
+        "src/nu2api/nupad.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuPadInit",
+      "pc": "0x004f4920",
+      "original_bytes": 122,
+      "units": [
+        "src/nu2api/nupad.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuPadRead",
+      "pc": "0x004f49b0",
+      "original_bytes": 528,
+      "units": [
+        "src/nu2api/nupad.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 99.9661
+    },
+    {
+      "symbol": "_NuPadResetState",
+      "pc": "0x004f4c10",
+      "original_bytes": 95,
+      "units": [
+        "src/nu2api/nupad.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuPadRecordEndFrame",
+      "pc": "0x004f4c80",
+      "original_bytes": 110,
+      "units": [
+        "src/nu2api/nupad.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuPadRecordPlay",
+      "pc": "0x004f4cf0",
+      "original_bytes": 510,
+      "units": [
+        "src/nu2api/nupad.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuGetErrN",
+      "pc": "0x004fea50",
+      "original_bytes": 53,
+      "units": [
+        "src/nu2api/nuerror.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_UpdateRumble",
+      "pc": "0x0054a810",
+      "original_bytes": 63,
+      "units": [
+        "src/legoapi/gamepads.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 97.27273
+    },
+    {
+      "symbol": "_OnOrInsidePlane",
+      "pc": "0x0054fd90",
+      "original_bytes": 238,
+      "units": [
+        "src/legoapi/utilities.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 3.819149
+    },
+    {
+      "symbol": "_SetPlayer",
+      "pc": "0x0055e410",
+      "original_bytes": 85,
+      "units": [
+        "src/legoapi/players.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_SpecialMove_Cancel",
+      "pc": "0x0058b180",
+      "original_bytes": 132,
+      "units": [
+        "src/legoapi/specialmoves.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 98.947365
+    },
+    {
+      "symbol": "_RegenerateHearts",
+      "pc": "0x0058b770",
+      "original_bytes": 121,
+      "units": [
+        "src/legoapi/playeritems.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_InitSpecialSfx",
+      "pc": "0x005b1770",
+      "original_bytes": 142,
+      "units": [
+        "src/legoapi/sfx.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_SpecialSfxLoad",
+      "pc": "0x005b1810",
+      "original_bytes": 596,
+      "units": [
+        "src/legoapi/specialsfx.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 96.81319
+    },
+    {
+      "symbol": "_LoadSpecialSfxFile",
+      "pc": "0x005b1e30",
+      "original_bytes": 103,
+      "units": [
+        "src/legoapi/sfx.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuDisplayListAnimateMtls",
+      "pc": "0x005dfbd0",
+      "original_bytes": 616,
+      "units": [
+        "src/nu2api/nudlist.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 94.03509
+    },
+    {
+      "symbol": "_NuQFntPrintV",
+      "pc": "0x005f3580",
+      "original_bytes": 90,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuMtlSetUVOffsetPS",
+      "pc": "0x00601210",
+      "original_bytes": 31,
+      "units": [
+        "src/nu2api/numtl.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuMtlAnimateShaderMtlTextures",
+      "pc": "0x006012a0",
+      "original_bytes": 129,
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuMtlAnimate",
+      "pc": "0x00601330",
+      "original_bytes": 44,
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuPad_Interface_GetMaxDevices",
+      "pc": "0x006d60a0",
+      "original_bytes": 6,
+      "units": [
+        "src/nu2api/nupad_pc.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuPadOpenPS",
+      "pc": "0x006d60b0",
+      "original_bytes": 12,
+      "units": [
+        "src/nu2api/nupad_pc.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuPadInitPS",
+      "pc": "0x006d60e0",
+      "original_bytes": 1,
+      "units": [
+        "src/nu2api/nupad_pc.c"
       ],
       "exact": true,
       "objdiff_percent": 100.0
@@ -20012,6 +20342,137 @@
       ],
       "next_connected_wave": "Real PC frame/pad/display-list22/4020 candidates, required gameplay suppliers5/529, SpecialSfx3/841, then installed scene callbacks with real device/shader methods. Retain DDS-dependent HGOBJ loader4805 hold; do not fabricate embedded assets.",
       "ongoing_goal": "Continue whole-project Android-to-PC transfer until user stops or pauses; validated direct-main pushes authorized."
+    },
+    {
+      "checkpoint": "Frame, input, camera constraints and sound-resource checkpoint (2026-10-04)",
+      "baseline_commit": "d3c5618c9f8e75d8fe549b4464c7a6ff9e791920",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1181984,
+        "matched_code_bytes": 189420,
+        "matching_percent": 5.456830198724032,
+        "fuzzy_coverage_percent": 22.31401782845897,
+        "mapped_functions": 4090,
+        "matched_functions": 1858,
+        "objdiff_fuzzy_percent": 69.27307,
+        "objdiff_total_code": 1118866,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1825235,
+        "mapping_percent": 4.5554489232455015,
+        "matched_data_region_bytes": 632566
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1189377,
+        "matched_code_bytes": 191395,
+        "matching_percent": 5.513726195147218,
+        "fuzzy_coverage_percent": 22.50451094886214,
+        "mapped_functions": 4122,
+        "matched_functions": 1879,
+        "objdiff_fuzzy_percent": 69.400215,
+        "objdiff_total_code": 1126344,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1832695,
+        "mapping_percent": 4.574067703275149,
+        "matched_data_region_bytes": 632633
+      },
+      "new_source_functions": 33,
+      "new_unique_compared_PC_bytes": 7478,
+      "new_exact_PC_bytes": 1975,
+      "new_exact_functions": 21,
+      "family_bytes": {
+        "frame_input_and_material_services": 4020,
+        "camera_constraints_and_gameplay_suppliers": 2617,
+        "special_sound_resource_ingestion": 841
+      },
+      "verified_checks": {
+        "status": "PASS_FRESH_RECOVERY_ALL_REQUIRED_CHECKS",
+        "make_build_check_objects_exit_code": 0,
+        "make_check_exit_code": 0,
+        "make_match_exit_code": 0,
+        "format_sources_headers": 312,
+        "tidy_normal_units": 285,
+        "static_address_mappings": 9959,
+        "tests": 710,
+        "existing_skips": 3,
+        "test_seconds": 42.138,
+        "actual_normal_runtime_checks": 161,
+        "actual_normal_runtime_failures": 0,
+        "actual_normal_objects": 285,
+        "actual_whole_function_copies": 3921,
+        "actual_data_copies": 6600,
+        "frozen_report_inputs": 394,
+        "whole_owner_replacements": 0,
+        "supplemental_objects": 0,
+        "native_runtime_receipts": [
+          {
+            "path": "/tmp/saga-pc-recovery-20261004/frame/fresh-runtime-receipt.json",
+            "sha256": "01dd38c516cc8fbddf78eda82d029c663f044709c503ceabbc1f4087aca6b3df",
+            "checks": 75,
+            "failures": 0
+          },
+          {
+            "path": "/tmp/saga-pc-recovery-20261004/keep/current-normal59-receipt.json",
+            "sha256": "6db7d42ba8907d322347e687a9fe0538fcc06111aa6069b2b8c2e8072438b901",
+            "checks": 59,
+            "failures": 0
+          },
+          {
+            "path": "/tmp/saga-pc-recovery-20261004/special/receipt.json",
+            "sha256": "9070468e7243177ca2d0ca1bc1af00f902a2aeff3c30371a08d3c38c95f65555",
+            "checks": 27,
+            "failures": 0
+          }
+        ],
+        "all_report_function_data_member_progress_same_after_fresh_match": true,
+        "logs": [
+          {
+            "path": "/tmp/saga-pc-recovery-20261004/build-check-objects.log",
+            "sha256": "32b03fd7bf07f4df227b3b909700d7217bb223f5982cb834c87ff6f9ef4ca3d0"
+          },
+          {
+            "path": "/tmp/saga-pc-recovery-20261004/check.log",
+            "sha256": "4852016783731c3a8885cf04993e5bbf6d4a73b9b5e197f9623419eb2dc869a0"
+          },
+          {
+            "path": "/tmp/saga-pc-recovery-20261004/match.log",
+            "sha256": "1eeabcb6166add85fc4a6e1a21fd68cc45f0188288ab0ca844ed79950ac39022"
+          }
+        ],
+        "fresh_report": {
+          "path": "/tmp/saga-pc-recovery-20261004/fresh-authoritative-matching.json",
+          "sha256": "f7e18543f0c651701b889ca51ece97ee5664492c050ccc5db17ea5ab23b93149"
+        },
+        "historical_analysis_deleted_by_user_due_to_size": true
+      },
+      "shared_views_added": 7,
+      "shared_working_bytes_added": 173,
+      "original_allocation_credit": 0,
+      "prior_function_copies": 3888,
+      "prior_function_copies_identical": 3887,
+      "prior_nonexact_compiler_variants": [
+        "NuRndrParticleGroup:717 to715, reverse of previously qualified finite masked-x87 scheduling pair; fresh90-check differential each with identical14 output hashes"
+      ],
+      "prior_exact_initializer_copies": 4830,
+      "current_exact_initializer_copies": 4843,
+      "independent_endpoint_sha256": "3cc81f7afb4ed038df9669bf990bed628163a30fa0ccd56995038f84b6ca2c1d",
+      "user_journal_preserved": true,
+      "previous_pushed_CI": {
+        "revision": "d3c5618c9f8e75d8fe549b4464c7a6ff9e791920",
+        "run_id": 37218438537,
+        "conclusion": "success"
+      },
+      "checkpoint_delay": "Mandatory full validation, then intentional removal of50GB ignored evidence; compact evidence and checks independently rebuilt before commit.",
+      "runnable_status": {
+        "playable": false,
+        "live_PC_window_device_input_initialization": false,
+        "installed_level_loaded_through_entry_path": false,
+        "recurring_update_render_loop": false,
+        "functional_completion_percentage": null
+      },
+      "next_connected_wave": "Genuine PC window/input/D3D bootstrap, compressed-DAT decoder integration, permanent/world/scene loaders and native main/frame caller reconnection. Reconnect existing genuine suppliers in UpdateGameObjects; already compared parents receive zero new byte credit.",
+      "scratch_storage_policy": "One active report/baseline pair and small manifests; reference shared objects, no repeated graph/SDK/object archives. Recovery below200MB includingLLVM18; target total generated workspace1.5GB, inspect/remove redundant owned artifacts after each checkpoint.",
+      "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct-main pushes authorized."
     }
   ]
 }

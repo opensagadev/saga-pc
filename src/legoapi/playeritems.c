@@ -231,3 +231,11 @@ void __cdecl AutoWeaponOnOff(GAMEOBJECT *object) {
             SetWeaponOut(object);
     }
 }
+
+void __cdecl RegenerateHearts(GAMEOBJECT *object) {
+    if (object->current_hp > 0 && object->current_hp < object->field_107e && object->vehicle_hit_timer <= 0.0f &&
+        object->spawn_protection_timer <= 0.0f && ParticlesPerSecond(1.0f, FRAMETIME) > 0) {
+        ++object->current_hp;
+        GameAudio_PlaySfx(0x27, &object->collision_position, 0, 0);
+    }
+}

@@ -1538,3 +1538,114 @@ extern "C" void __cdecl NuDisplaySceneRndr(NUDISPLAY_LIST_PC *scene) {
         NuDisplayListRndrSpecial(&handle, matrix, 0, NULL, NULL);
     }
 }
+
+extern "C" void PCThreadCriticalSectionEnter_candidate(i32);
+extern "C" void PCThreadCriticalSectionLeave_candidate(i32);
+extern "C" void NuDisplayListAnimateMtls(f32);
+typedef struct FRAME_MTL_ANIM_DESC_PC {
+    u8 u_mode, v_mode, reserved02[2];
+    f32 u_amplitude, v_amplitude, u_frequency, v_frequency;
+} FRAME_MTL_ANIM_DESC_PC;
+STATIC_ASSERT(sizeof(FRAME_MTL_ANIM_DESC_PC) == 0x14);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, u_frequency) == 0xc);
+typedef struct FRAME_MTL_ANIM_PC {
+    u8 reserved00[0x7b];
+    u8 disable_u_animation, disable_v_animation;
+    u8 reserved7d[0x143];
+    i32 texture_animation_data[4];
+    f32 texture_animation_offsets[4][2];
+    u8 reserved1f0[8];
+    FRAME_MTL_ANIM_DESC_PC animation[4];
+} FRAME_MTL_ANIM_PC;
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, disable_u_animation) == 0x7b);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, disable_v_animation) == 0x7c);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, texture_animation_data) == 0x1c0);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, texture_animation_offsets) == 0x1d0);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, animation) == 0x1f8);
+typedef struct FRAME_MTL_ANIM_SET_PC {
+    NUDISPLAY_LIST_PC *scene;
+    i32 material_count;
+    i32 *material_indices;
+    struct FRAME_MTL_ANIM_SET_PC *next;
+} FRAME_MTL_ANIM_SET_PC;
+STATIC_ASSERT(sizeof(FRAME_MTL_ANIM_SET_PC) == 0x10);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, next) == 0xc);
+typedef struct FRAME_MTL_SCENE_PC {
+    u8 reserved00[0x158];
+    i32 shader_texture_animation_enabled;
+} FRAME_MTL_SCENE_PC;
+STATIC_ASSERT(offsetof(FRAME_MTL_SCENE_PC, shader_texture_animation_enabled) == 0x158);
+static f32 FrameMaterialAnimationTimePc;
+extern "C" void __cdecl NuMtlSetUVOffsetPS(NUMTL *mtl, u32 layer, f32 u, f32 v);
+void __cdecl NuDisplayListAnimateMtls(f32 frame_time) {
+    FRAME_MTL_ANIM_SET_PC *set;
+    FrameMaterialAnimationTimePc += frame_time;
+    PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
+    for (set = (FRAME_MTL_ANIM_SET_PC *)nudlist_field_fc8; set != NULL; set = set->next) {
+        i32 index;
+        NUDISPLAY_LIST_PC *scene = set->scene;
+        for (index = 0; index < set->material_count; ++index) {
+            FRAME_MTL_ANIM_PC *material = (FRAME_MTL_ANIM_PC *)scene->display_materials[set->material_indices[index]];
+            u32 layer;
+            if (material->disable_u_animation == 1 || material->disable_v_animation == 1)
+                continue;
+            for (layer = 0; layer < 4; ++layer) {
+                FRAME_MTL_ANIM_DESC_PC *animation;
+                f32 u = 0.0f, v = 0.0f;
+                if (material->texture_animation_data[layer] == -1)
+                    continue;
+                animation = &material->animation[layer];
+                switch (animation->u_mode) {
+                    case 2:
+                        material->texture_animation_offsets[layer][0] += frame_time * animation->u_frequency;
+                        material->texture_animation_offsets[layer][0] -=
+                            NuFloor(material->texture_animation_offsets[layer][0]);
+                        u = material->texture_animation_offsets[layer][0];
+                        break;
+                    case 3:
+                        u = NuTrigTable[((i32)(animation->u_frequency * FrameMaterialAnimationTimePc * 65536.0) >> 1) &
+                                        0x7fff] *
+                            animation->u_amplitude;
+                        break;
+                    case 4:
+                        u = NuTrigTable[((0x4000 -
+                                          (i32)(animation->u_frequency * FrameMaterialAnimationTimePc * -65536.0)) >>
+                                         1) &
+                                        0x7fff] *
+                            animation->u_amplitude;
+                        break;
+                }
+                switch (animation->v_mode) {
+                    case 2:
+                        material->texture_animation_offsets[layer][1] += frame_time * animation->v_frequency;
+                        material->texture_animation_offsets[layer][1] -=
+                            NuFloor(material->texture_animation_offsets[layer][1]);
+                        v = material->texture_animation_offsets[layer][1];
+                        break;
+                    case 3:
+                        v = NuTrigTable[((i32)(animation->v_frequency * FrameMaterialAnimationTimePc * 65536.0) >> 1) &
+                                        0x7fff] *
+                            animation->v_amplitude;
+                        break;
+                    case 4:
+                        v = NuTrigTable[((0x4000 -
+                                          (i32)(animation->v_frequency * FrameMaterialAnimationTimePc * -65536.0)) >>
+                                         1) &
+                                        0x7fff] *
+                            animation->v_amplitude;
+                        break;
+                }
+                NuMtlSetUVOffsetPS((NUMTL *)material, layer, u, v);
+            }
+        }
+    }
+    PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+}
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, u_mode) == 0x0);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, v_mode) == 0x1);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, u_amplitude) == 0x4);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, v_amplitude) == 0x8);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, v_frequency) == 0x10);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, scene) == 0x0);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_count) == 0x4);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_indices) == 0x8);

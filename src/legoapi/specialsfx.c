@@ -656,3 +656,72 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
     effect->scale = 1.0f;
     effect->base_effect_index = 0;
 }
+
+i32 __cdecl SpecialSfxLoad(char *path, void *world_ptr) {
+    SPECIAL_RESOURCE_WORLD_PC *world = world_ptr;
+    i32 version, count, i, j;
+    char name[64];
+    i16 length;
+    SPECIAL_RESOURCE_ENTRY_PC *entry;
+    SPECIAL_RESOURCE_EVENT_PC *event, *previous;
+    if (!world)
+        return 0;
+    EdFileSetMedia(1);
+    if (!EdFileOpen(path, 0))
+        return 0;
+    version = EdFileReadInt();
+    if (version > 2) {
+        EdFileClose();
+        return 0;
+    }
+    count = EdFileReadInt();
+    if (count > 192)
+        count = 192;
+    EdFileReadInt();
+    world->entry_count = 0;
+    for (i = 0; i < count; ++i) {
+        entry = &world->entries[i];
+        length = EdFileReadShort();
+        EdFileRead(name, length);
+        name[length] = 0;
+        NuSpecialFind(world->scene, &entry->special, name, 1);
+        entry->event_count = EdFileReadChar();
+        if (version >= 2)
+            entry->flags = (entry->flags & 0xf0) | (EdFileReadChar() & 0xf);
+        ++world->entry_count;
+    }
+    event = world->events;
+    for (i = 0; i < count; ++i) {
+        entry = &world->entries[i];
+        for (j = 0; j < entry->event_count; ++j, ++event) {
+            length = EdFileReadShort();
+            EdFileRead(name, length);
+            name[length] = 0;
+            event->sfx_id = (i16)GetSfxId(name);
+            event->flags = EdFileReadChar();
+            event->flags = (event->flags & ~2) | ((IsSfxLooping(event->sfx_id) & 1) << 1);
+            event->trigger_frame = EdFileReadFloat();
+            event->previous_frame = EdFileReadFloat();
+            ++world->event_count;
+        }
+    }
+    event = world->events;
+    for (i = 0; i < world->entry_count; ++i) {
+        entry = &world->entries[i];
+        entry->events = event;
+        previous = event;
+        if (event == world->events + world->event_count)
+            event = NULL;
+        else
+            ++event;
+        for (j = 0; j < entry->event_count - 1; ++j) {
+            previous->next = event;
+            previous = event;
+            ++event;
+        }
+        if (previous)
+            previous->next = NULL;
+    }
+    EdFileClose();
+    return 1;
+}

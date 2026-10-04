@@ -2560,3 +2560,33 @@ i32 __cdecl Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *bolt) {
     object = Player[player];
     return Cheats_CheckFlags(2) != 0 || (object != NULL && object->powerup_time > 0.0f);
 }
+
+void __cdecl AveragePlayerCurrentSpeedMul(void) {
+    i32 count = 0;
+    avg_currentspeed_mul = 0.0f;
+    if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) != 0) {
+        avg_currentspeed_mul = (f32)((f64)((GAMEOBJECT *)Player[0])->current_speed_mul + 0.0);
+        count = 1;
+    }
+    if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80) != 0) {
+        avg_currentspeed_mul = (f32)((f64)((GAMEOBJECT *)Player[1])->current_speed_mul + (f64)avg_currentspeed_mul);
+        ++count;
+    }
+    if (count > 1)
+        avg_currentspeed_mul = (f32)((1.0 / (f64)count) * (f64)avg_currentspeed_mul);
+}
+void __cdecl SetPlayer(void) {
+    if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) != 0) {
+        player = Player[0];
+        if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80) != 0) {
+            player2 = Player[1];
+            return;
+        }
+    } else if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80) != 0) {
+        player = Player[1];
+    } else {
+        player = NULL;
+        return;
+    }
+    player2 = NULL;
+}

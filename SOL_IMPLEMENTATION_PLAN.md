@@ -11,6 +11,43 @@ whole-project mandate; a passing transfer checkpoint does not finish the goal.
 See config/transfer-execution.md for current released families and retained
 provider frontiers.
 
+## Immediate priority after the runtime audit (2026-10-04)
+
+Whole-code fuzzy/exact comparison and runtime progress are separate records.
+The current22.5% similarity does not mean22.5% of the game works. The source
+entry path stops before loading a level; no current live window/input/device
+producer or recurring update/render loop establishes a playable application.
+
+Prioritize a connected50–100KB candidate wave around boot to one installed
+level, releasing genuine closed subsets continuously:
+
+1. Recover native WinMain/window/configuration/hardware dispatch, input owner
+   creation and D3D9 device/reset/presentation. Verify a persistent real window,
+   responsive message pump and repeated presented frames.
+2. Connect the existing implode decoder to actual compressed DAT read groups,
+   with producer-backed buffer bounds. Complete permanent configuration/fixups,
+   scene/material/shader/texture ingestion using actual installed assets. Verify
+   an installed scene produces nontrivial displayed pixels.
+3. Complete LoadPerm1/2, FixUpLevels, area/character and WorldInfo stream/load/
+   activation/reset families; preserve true worker behavior. The native synchronous
+   loader option is available for bounded tests while the real worker is recovered.
+   Verify a populated world/player/camera from real loaders.
+4. Reconnect already-real suppliers in UpdateGameObjects and recover native private
+   main update/render helpers and recurring transitions. Verify consecutive rendered
+   frames with keyboard movement, collision and camera response. Do not remove
+   initialization guards or breaks without their actual replacement control flow.
+
+Mapped-only spine anchors already total21,139 PC bytes; private frame candidates
+and PC services add further work. Completing already-compared partial parents
+earns zero new unique-byte credit. These footprints are not an estimate of all
+remaining work. Audio, menus, transitions and level-specific gaps stay explicit.
+
+Keep generated evidence bounded: one active baseline/report pair, shared object
+references, small native/ABI receipts and current meaningful fixtures. Do not
+retain repeated graph exports, whole SDK copies or every abandoned compiler
+snapshot. Target total generated workspace1.5GB; inspect storage at checkpoints.
+The removed50GB archive is not required to resume honest source reconstruction.
+
 ## 1. Mandate and destination
 
 Reconstruct the complete PC game from source, using the existing Android

@@ -11681,3 +11681,30 @@ extern "C" {
     CAMERA_SAVED_STATE_PC CameraSavedStatesPc[16] = {{0}};
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$PlayPlanePc")
+    KEEP_SCREEN_PLANE_PC PlayPlanePc[6] = {};
+#pragma data_seg()
+#pragma data_seg(".data$KEEPONSCREEN_SIDESONLY")
+    i32 KEEPONSCREEN_SIDESONLY = 0;
+#pragma data_seg()
+#pragma data_seg(".data$GunshipANorm")
+    NUVEC GunshipANorm = {};
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$FramePadCorrectDeadZoningPc")
+    u8 FramePadCorrectDeadZoningPc = 0;
+#pragma data_seg()
+#pragma data_seg(".data$FramePadProfilePortPc")
+    i32 FramePadProfilePortPc = -1;
+#pragma data_seg()
+#pragma data_seg(".data$FramePadMaxGamePadsPc")
+    i32 FramePadMaxGamePadsPc = 2;
+#pragma data_seg()
+#pragma data_seg(".data$FrameMaterialAnimationSpeedPc")
+    f32 FrameMaterialAnimationSpeedPc = 1.0f;
+#pragma data_seg()
+}

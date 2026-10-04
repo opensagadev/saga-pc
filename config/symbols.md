@@ -4425,3 +4425,21 @@ Authoritative comparison adds912 exact bytes/eight functions;200 actual-normal
 CPU assertions pass. Selected finite PC53, initialized/valid record, adequate
 arena and disjoint-output qualifications remain; no general game/GPU/device
 or particle/audio output claim. Next frame/input/scene services stay scratch.
+
+
+### Frame/input, camera constraints and sound-resource release (2026-10-04)
+
+33 full native spans/7,478 new unique compared bytes retain ordinary/public
+ABI and private original-TU helpers. Named/asserted pad0x84/0xa4, recording0x28,
+camera plane/direction/pitch, and sound entry20/event16 layouts cover actual
+accesses. NUAPI recording48 preserves prior max_fps and unknown4c aliases.
+Camera queries read collision80; positive59/0 versus wrong-position59/12
+discriminates the corrected native field. Special resource initializer142 and
+file wrapper103 are exact; complete parser596 retains cold paths/event ordering.
+Android is source reference; PC boundaries/control/ABIs decide accepted behavior.
+Full285 source providers and161 selected assertions pass; device/GPU/malformed
+input domains are not claimed. One qualified preexisting nonexact particle
+scheduling pair is reverified with full bytes/CFG and90 checks per owner.
+After intentional cleanup of historical ignored evidence, fresh compact proofs
+live under /tmp/saga-pc-recovery-20261004; tracked report/layouts/checkpoint retain
+their source contracts, original spans, fingerprints, metrics and limitations.

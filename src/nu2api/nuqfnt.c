@@ -476,3 +476,11 @@ f32 __cdecl NuQFntPrintJustifiedW(VUFNT *font, u16 *text, f32 x, f32 y, f32 z, f
     return NuQFntPrintJustifiedRSW(&((FONT_STREAM_ANCHOR_PC *)font->material)->stream_anchor, font, text, x, y, z, sx,
                                    sy, width, line_spacing, colour, matrix);
 }
+
+#include <stdarg.h>
+
+void NuQFntPrintV(VUFNT *font, const char *format, va_list arguments) {
+    char text[1024];
+    vsprintf(text, format, arguments);
+    NuQFntPrintU(font, text);
+}

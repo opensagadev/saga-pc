@@ -108,3 +108,12 @@ void __cdecl ResetRumble(RUMBLE_PACKET_RESOURCE_PC *packet) {
     packet->amount = 0.0f;
     packet->active = 0;
 }
+
+void __cdecl UpdateRumble(RUMBLE_PACKET_RESOURCE_PC *packet) {
+    if (packet->duration > 0.0f)
+        packet->duration -= FRAMETIME;
+    if (packet->amount > 0.0f)
+        packet->amount -= FRAMETIME;
+    if (packet->active != 0)
+        --packet->active;
+}

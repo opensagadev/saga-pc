@@ -2688,3 +2688,57 @@ by installed scene callbacks and actual device/shader methods. DDS-dependent
 HGOBJ reader4,805 remains held rather than receiving fabricated assets. These
 candidate spans supply zero production credit until accepted and compared.
 Whole-project transfer and authorized validated direct-main checkpoints continue.
+
+
+### Frame, input, camera constraints and sound-resource checkpoint (2026-10-04)
+
+33 complete functions add7,478 unique compared PC bytes over d3c5618:
+frame/pad/material22/4,020, camera/gameplay8/2,617 and sound resources3/841.
+Unique compared code reaches1,125,827; native objdiff includes1,126,344.
+Whole-code fuzzy similarity rises22.314018% to22.504511%;21 exact functions
+add1,975 bytes, reaching191,395/3,471,246 (5.513726%). Neither percentage
+measures runnable gameplay. The entry path still exits before LoadPerm.
+
+Pad types preserve native0x84 scanned/0xa4 public records, original private
+CPU state and complete helpers/callers. NUAPI remains0x90: genuine recording
+view at48 shares an anonymous union with preserved max_fps/unknown4c aliases.
+Camera constraints use collision_position80, not visual position5c; the same
+59-check control fails12 assertions with the former wrong field. Gunship
+remains in the original private ESI caller group. Sound-resource parsing keeps
+signed BYTE counts/WORD IDs, native end-sentinel ordering and genuine192-record
+arena producers. Native wrapper omits the Android extra setup loop.
+
+Fresh source-only285-object build/link and all required checks pass: LLVM18
+format312/tidy285, static9,959 mappings and710 tests with three existing skips
+(42.138s). The EXE links3,921 functions and6,600 data definitions. Authoritative
+retail matching passes. All161 selected CPU checks use all285 actual normal
+providers with zero replacements/supplements: Frame75, Camera/Game59, Sound27.
+These prove their valid input domains, not graphics/input hardware or full-game
+behavior. All394 report-input pins and285 source/object pins are preserved.
+
+Of3,888 prior complete function copies,3,887 remain identical. The unchanged
+ParticleGroup source emits the reverse of the previously qualified717/715
+x87 scheduling pair. Fresh full CFG/186 remaining instructions/34 contracts
+and90 assertions for each genuine whole owner prove identical14 packet/vertex
+outputs for finite valid memory and masked-x87 state. Unmasked exception timing
+is unclaimed. Every old exact code/data match and four complete typed members
+survive. Seven genuine shared views add173 working bytes, with unknown owning
+extents and zero allocation/exact credit. Exact physical initializers4830->4843;
+all new full initializer bits and original private storage ownership are verified.
+
+The nominal17:23 UTC checkpoint waited for mandatory matching/preservation.
+The user then removed50GB of ignored analysis. Historical receipt files were
+lost; compact replacement proofs are explicitly fresh, with surviving genuine
+object snapshots used where available. Full checks/matching/runtime were rerun.
+The user's three journal lines remain untouched. Prior d3c5618 CI37218438537
+passed on that exact pushed revision. Recovery uses below200MB includingLLVM18;
+retain one active baseline/report and references rather than duplicate archives.
+
+Runtime priority now follows actual blockers: construct PC window/input/device,
+wire compressed DAT decoding, complete permanent/world/scene loading, restore
+real update/render calls and run a persistent level loop. Existing BGLOAD defaults
+to a worker path whose thread creation is still omitted; genuine synchronous
+loading can support bounded integration tests, but no fake completion or permanent
+worker bypass is accepted. Providers already implemented elsewhere still appear
+as omitted calls in UpdateGameObjects; those must be reconnected. Partial parents
+receive zero newly transferred byte credit when completed.

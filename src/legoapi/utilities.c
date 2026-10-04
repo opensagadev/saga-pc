@@ -215,3 +215,27 @@ void __cdecl VecRotateAxis(NUVEC *vector, u16 angle, NUVEC *axis) {
     vector->y = y_result;
     vector->z = z_result;
 }
+
+i32 __cdecl OnOrInsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *plane_normal, NUVEC *corrected_point,
+                            f32 normal_offset, f32 *distance_out) {
+    NUVEC test_point;
+    f32 distance, correction;
+    if (normal_offset != 0.0f) {
+        NuVecScale(&test_point, plane_normal, normal_offset);
+        NuVecAdd(&test_point, &test_point, point);
+    } else
+        test_point = *point;
+    distance = (f32)(((f64)test_point.x - (f64)plane_point->x) * (f64)plane_normal->x +
+                     ((f64)test_point.y - (f64)plane_point->y) * (f64)plane_normal->y +
+                     ((f64)test_point.z - (f64)plane_point->z) * (f64)plane_normal->z);
+    if (distance_out != NULL)
+        *distance_out = distance;
+    if (!(distance <= 0.0f))
+        return 0;
+    if (corrected_point != NULL) {
+        correction = (f32)(0.5 - (f64)distance);
+        NuVecScale(corrected_point, plane_normal, correction);
+        NuVecAdd(corrected_point, corrected_point, point);
+    }
+    return 1;
+}

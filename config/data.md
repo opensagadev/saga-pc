@@ -1826,3 +1826,18 @@ initializer copies match retail;20 unknown copies/17,078 working bytes receive
 zero original extent/allocation/exact credit. Data union grows10 to632,566.
 Known scope605/138,175 and unknown1,260/147,356 working bytes describe verified
 views; exact WORD members remain4 bytes and complete CRC is unchanged.
+
+
+### Seven frame/camera shared views (2026-10-04)
+
+Seven genuine shared definitions add173 working bytes: six24-byte PlayPlane
+records, sides-only flag4, Gunship normal12 and four frame/material scalars13.
+Owning extents remain blank with zero original allocation/exact credit. Original
+private pad arena/ramp/state and renderer animation globals stay in their source
+owners; no duplicated platform storage. Shared3551->3558 regions and1865->1872
+scope counts are historical aggregate figures: the deleted scope-identity packets
+are not recreated or claimed preserved. Fresh complete equality of every prior
+physical region instead preserves initializer contracts, four typed members/parents
+and CRC. All4830 previous exact physical copies survive;13 new known copies
+yield4843. Physical known copies135B and data union67B are different overlap
+measures. Unknown views do not receive known-extent or capacity credit.

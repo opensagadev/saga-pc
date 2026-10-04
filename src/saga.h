@@ -6401,6 +6401,165 @@ STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, current_set) == 0x154);
 STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, unknown_0160) == 0x160);
 STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, unknown_0164) == 0x164);
 
+typedef struct FRAME_SCANNED_PAD_PC {
+    u8 is_valid;
+    u8 reserved01[3];
+    i32 mapped_to_pad;
+    u8 analog_left_x, analog_left_y, analog_right_x, analog_right_y;
+    u8 analog_l1, analog_l2, analog_r1, analog_r2;
+    u32 digital_buttons, digital_buttons_pressed, digital_buttons_released, digital_buttons_prev;
+    i32 analog_button_flags;
+    i32 digital_left_x, digital_left_y, digital_right_x, digital_right_y, deadzone;
+    f32 left_x_normal, left_y_normal, left_x_unknown, left_y_unknown;
+    f32 left_x_unknown2, left_y_unknown2, right_x_unknown2, right_y_unknown2;
+    f32 right_x_normal, right_y_normal, right_x_unknown, right_y_unknown;
+    f32 left_up_ramp, left_down_ramp, left_left_ramp, left_right_ramp;
+    u8 analog_left_pad_left, analog_left_pad_right, analog_left_pad_up, analog_left_pad_down;
+    u8 unknown_7c, unknown_7d, unknown_7e, unknown_7f, unknown_80, unknown_81, unknown_82, unknown_83;
+} FRAME_SCANNED_PAD_PC;
+typedef union FRAME_RECORD_CURSOR_PC {
+    u8 *u8_ptr;
+    u32 *u32_ptr;
+    f32 *f32_ptr;
+} FRAME_RECORD_CURSOR_PC;
+typedef struct FRAME_PAD_RECORD_PC {
+    i32 mode;
+    u8 *buf_start, *buf_end;
+    FRAME_RECORD_CURSOR_PC record;
+    i32 buf_size;
+    char *filepath;
+    i32 should_end;
+    u32 end_record_buttons, end_play_buttons;
+    i32 is_recording;
+} FRAME_PAD_RECORD_PC;
+typedef struct FRAME_PAD_PC {
+    i32 device, slot, stage, id;
+    i32 digital_left_x, digital_left_y, digital_right_x, digital_right_y;
+    f32 left_x_normal, left_y_normal, left_x_unknown, left_y_unknown, left_x_unknown2, left_y_unknown2;
+    f32 right_x_normal, right_y_normal, right_x_unknown, right_y_unknown, right_x_unknown2, right_y_unknown2;
+    u8 reserved50[0x20];
+    u32 digital_buttons, digital_buttons_prev, digital_buttons_pressed, digital_buttons_released;
+    union {
+        u32 flags;
+        struct {
+            i32 has_analog_sticks : 1;
+            i32 has_analog_buttons : 1;
+            i32 is_valid : 1;
+            i32 must_have_analog_sticks : 1;
+        };
+    };
+    u8 reserved84[4];
+    u8 deadzone;
+    u8 reserved89[7];
+    u8 analog_right_x, analog_right_y, analog_left_x, analog_left_y;
+    u8 analog_left_pad_right, analog_left_pad_left, analog_left_pad_up, analog_left_pad_down;
+    u8 reserved98[4];
+    u8 analog_l1, analog_r1, analog_l2, analog_r2;
+    u8 unknown_b0, unknown_b1;
+    u8 reserveda2[2];
+} FRAME_PAD_PC;
+STATIC_ASSERT(sizeof(FRAME_SCANNED_PAD_PC) == 0x84);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, mapped_to_pad) == 4);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, analog_left_x) == 8);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, digital_buttons) == 0x10);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, digital_buttons_prev) == 0x1c);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, analog_button_flags) == 0x20);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, digital_left_x) == 0x24);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, deadzone) == 0x34);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, left_x_normal) == 0x38);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, left_x_unknown2) == 0x48);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, right_x_unknown2) == 0x50);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, right_x_normal) == 0x58);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, left_up_ramp) == 0x68);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, analog_left_pad_left) == 0x78);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, unknown_7c) == 0x7c);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, unknown_82) == 0x82);
+STATIC_ASSERT(sizeof(FRAME_PAD_RECORD_PC) == 0x28);
+STATIC_ASSERT(offsetof(FRAME_PAD_RECORD_PC, record) == 0xc);
+STATIC_ASSERT(offsetof(FRAME_PAD_RECORD_PC, should_end) == 0x18);
+STATIC_ASSERT(offsetof(FRAME_PAD_RECORD_PC, is_recording) == 0x24);
+STATIC_ASSERT(sizeof(FRAME_PAD_PC) == 0xa4);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_left_x) == 0x10);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, left_x_normal) == 0x20);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, right_x_normal) == 0x38);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons) == 0x70);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, flags) == 0x80);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, deadzone) == 0x88);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_right_x) == 0x90);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_pad_left) == 0x95);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_l1) == 0x9c);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, unknown_b0) == 0xa0);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, is_valid) == 0x0);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, analog_left_y) == 0x9);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, analog_right_x) == 0xa);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, analog_right_y) == 0xb);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, analog_l1) == 0xc);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, analog_l2) == 0xd);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, analog_r1) == 0xe);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, analog_r2) == 0xf);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, digital_buttons_pressed) == 0x14);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, digital_buttons_released) == 0x18);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, digital_left_y) == 0x28);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, digital_right_x) == 0x2c);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, digital_right_y) == 0x30);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, left_y_normal) == 0x3c);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, left_x_unknown) == 0x40);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, left_y_unknown) == 0x44);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, left_y_unknown2) == 0x4c);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, right_y_unknown2) == 0x54);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, right_y_normal) == 0x5c);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, right_x_unknown) == 0x60);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, right_y_unknown) == 0x64);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, left_down_ramp) == 0x6c);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, left_left_ramp) == 0x70);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, left_right_ramp) == 0x74);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, analog_left_pad_right) == 0x79);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, analog_left_pad_up) == 0x7a);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, analog_left_pad_down) == 0x7b);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, unknown_7d) == 0x7d);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, unknown_7e) == 0x7e);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, unknown_7f) == 0x7f);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, unknown_80) == 0x80);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, unknown_81) == 0x81);
+STATIC_ASSERT(offsetof(FRAME_SCANNED_PAD_PC, unknown_83) == 0x83);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, device) == 0x0);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, slot) == 0x4);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, stage) == 0x8);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, id) == 0xc);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_left_y) == 0x14);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_right_x) == 0x18);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_right_y) == 0x1c);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, left_y_normal) == 0x24);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, left_x_unknown) == 0x28);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, left_y_unknown) == 0x2c);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, left_x_unknown2) == 0x30);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, left_y_unknown2) == 0x34);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, right_y_normal) == 0x3c);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, right_x_unknown) == 0x40);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, right_y_unknown) == 0x44);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, right_x_unknown2) == 0x48);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, right_y_unknown2) == 0x4c);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons_prev) == 0x74);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons_pressed) == 0x78);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons_released) == 0x7c);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_right_y) == 0x91);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_x) == 0x92);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_y) == 0x93);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_pad_right) == 0x94);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_pad_up) == 0x96);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_pad_down) == 0x97);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_r1) == 0x9d);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_l2) == 0x9e);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_r2) == 0x9f);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, unknown_b1) == 0xa1);
+STATIC_ASSERT(offsetof(FRAME_PAD_RECORD_PC, mode) == 0x0);
+STATIC_ASSERT(offsetof(FRAME_PAD_RECORD_PC, buf_start) == 0x4);
+STATIC_ASSERT(offsetof(FRAME_PAD_RECORD_PC, buf_end) == 0x8);
+STATIC_ASSERT(offsetof(FRAME_PAD_RECORD_PC, buf_size) == 0x10);
+STATIC_ASSERT(offsetof(FRAME_PAD_RECORD_PC, filepath) == 0x14);
+STATIC_ASSERT(offsetof(FRAME_PAD_RECORD_PC, end_record_buttons) == 0x1c);
+STATIC_ASSERT(offsetof(FRAME_PAD_RECORD_PC, end_play_buttons) == 0x20);
+
 typedef struct nuapi_s {
     i32 language;
     i32 region;
@@ -6418,8 +6577,16 @@ typedef struct nuapi_s {
     f32 frame_time;
     i32 frame_count;
     f32 forced_frame_time;
-    i32 max_fps;
-    u8 unknown_004c[0x2c];
+    union {
+        struct {
+            i32 max_fps;
+            u8 unknown_004c[0x2c];
+        };
+        struct {
+            FRAME_PAD_RECORD_PC pad_record;
+            u8 reserved_pad_record_0070[8];
+        };
+    };
     void *wind;
     i32 reversible_characters;
     u8 unknown_0080[4];
@@ -6444,6 +6611,12 @@ STATIC_ASSERT(offsetof(NUAPI, frame_time) == 0x3c);
 STATIC_ASSERT(offsetof(NUAPI, frame_count) == 0x40);
 STATIC_ASSERT(offsetof(NUAPI, forced_frame_time) == 0x44);
 STATIC_ASSERT(offsetof(NUAPI, max_fps) == 0x48);
+STATIC_ASSERT(offsetof(NUAPI, unknown_004c) == 0x4c);
+STATIC_ASSERT(offsetof(NUAPI, pad_record) == 0x48);
+STATIC_ASSERT(offsetof(NUAPI, pad_record.record) == 0x54);
+STATIC_ASSERT(offsetof(NUAPI, pad_record.should_end) == 0x60);
+STATIC_ASSERT(offsetof(NUAPI, pad_record.end_record_buttons) == 0x64);
+STATIC_ASSERT(offsetof(NUAPI, pad_record.end_play_buttons) == 0x68);
 STATIC_ASSERT(offsetof(NUAPI, wind) == 0x78);
 STATIC_ASSERT(offsetof(NUAPI, frame_end_state) == 0x88);
 STATIC_ASSERT(offsetof(NUAPI, reversible_characters) == 0x7c);
@@ -14918,6 +15091,126 @@ extern "C" {
     void __cdecl NuCameraClearStateBuffer(void);
     i32 __cdecl NuRndrStateUpdateCameraState(void);
     void __cdecl NuVpGetSize2(f32 *, f32 *);
+
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    typedef struct SPECIAL_RESOURCE_EVENT_PC SPECIAL_RESOURCE_EVENT_PC;
+    struct SPECIAL_RESOURCE_EVENT_PC {
+        f32 previous_frame;
+        u8 flags;
+        u8 unknown_05;
+        i16 sfx_id;
+        f32 trigger_frame;
+        SPECIAL_RESOURCE_EVENT_PC *next;
+    };
+    typedef struct SPECIAL_RESOURCE_ENTRY_PC {
+        u8 flags, unknown_01;
+        i8 event_count, unknown_03;
+        NUSPECIALHANDLE special;
+        SPECIAL_RESOURCE_EVENT_PC *events;
+    } SPECIAL_RESOURCE_ENTRY_PC;
+    typedef struct SPECIAL_RESOURCE_WORLD_PC {
+        u8 unknown_000[0x80];
+        char config_file[0x80];
+        u8 unknown_100[4];
+        VARIPTR buffer;
+        u8 unknown_108[0x13c - 0x108];
+        NUGSCN *scene;
+        u8 unknown_140[0x46cc - 0x140];
+        i32 entry_count;
+        SPECIAL_RESOURCE_ENTRY_PC *entries;
+        i32 event_count;
+        SPECIAL_RESOURCE_EVENT_PC *events;
+    } SPECIAL_RESOURCE_WORLD_PC;
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_EVENT_PC, previous_frame) == 0x0);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_EVENT_PC, flags) == 0x4);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_EVENT_PC, sfx_id) == 0x6);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_EVENT_PC, trigger_frame) == 0x8);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_EVENT_PC, next) == 0xc);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, flags) == 0x0);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, event_count) == 0x2);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, special) == 0x4);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, events) == 0x10);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_WORLD_PC, config_file) == 0x80);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_WORLD_PC, buffer) == 0x104);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_WORLD_PC, scene) == 0x13c);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_WORLD_PC, entry_count) == 0x46cc);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_WORLD_PC, entries) == 0x46d0);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_WORLD_PC, event_count) == 0x46d4);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_WORLD_PC, events) == 0x46d8);
+    STATIC_ASSERT(sizeof(SPECIAL_RESOURCE_EVENT_PC) == 0x10);
+    STATIC_ASSERT(sizeof(SPECIAL_RESOURCE_ENTRY_PC) == 0x14);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT_PC *)0)->previous_frame) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT_PC *)0)->flags) == 1);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT_PC *)0)->sfx_id) == 2);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT_PC *)0)->trigger_frame) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT_PC *)0)->next) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY_PC *)0)->flags) == 1);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY_PC *)0)->event_count) == 1);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY_PC *)0)->special) == 12);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY_PC *)0)->events) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD_PC *)0)->buffer) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD_PC *)0)->scene) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD_PC *)0)->entry_count) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD_PC *)0)->entries) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD_PC *)0)->event_count) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD_PC *)0)->events) == 4);
+
+    i32 __cdecl InitSpecialSfx(void *);
+    void __cdecl LoadSpecialSfxFile(void *);
+    i32 __cdecl SpecialSfxLoad(char *, void *);
+
+    void __cdecl AveragePlayerCurrentSpeedMul(void);
+    void __cdecl SetPlayer(void);
+    void __cdecl RegenerateHearts(GAMEOBJECT *);
+    void __cdecl UpdateRumble(RUMBLE_PACKET_RESOURCE_PC *);
+    void __cdecl SpecialMove_Cancel(GAMEOBJECT *);
+
+    i32 __cdecl OnOrInsidePlane(NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32, f32 *);
+    void __cdecl KeepOnScreen(GAMEOBJECT *);
+
+    STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
+
+    typedef struct KEEP_SCREEN_PLANE_PC {
+        NUVEC point;
+        NUVEC normal;
+    } KEEP_SCREEN_PLANE_PC;
+    STATIC_ASSERT(sizeof(KEEP_SCREEN_PLANE_PC) == 24);
+    STATIC_ASSERT(offsetof(KEEP_SCREEN_PLANE_PC, point) == 0);
+    STATIC_ASSERT(offsetof(KEEP_SCREEN_PLANE_PC, normal) == 12);
+
+    extern KEEP_SCREEN_PLANE_PC PlayPlanePc[6];
+    extern i32 KEEPONSCREEN_SIDESONLY;
+    extern NUVEC GunshipANorm;
+
+    extern u8 FramePadCorrectDeadZoningPc;
+    extern i32 FramePadProfilePortPc;
+    extern i32 FramePadMaxGamePadsPc;
+    extern f32 FrameMaterialAnimationSpeedPc;
+    FRAME_PAD_PC *__cdecl NuPadOpen(i32 port, i32 slot);
+    i32 __cdecl NuPadRead(FRAME_PAD_PC *pad);
+    void __cdecl NuPadSetStatus(i32 pad, i32 status);
+    void __cdecl NuPadProcessReadData(FRAME_SCANNED_PAD_PC *pad);
+    void __cdecl NuPadSetMaxGamePads(i32 count);
+    void __cdecl NuPadInit(void);
+    void __cdecl NuPadResetState(i32 preserve_scanned_state);
+    void __cdecl NuPadRecordEndFrame(void);
+    void __cdecl NuPadRecordPlay(FRAME_SCANNED_PAD_PC *pad);
+    i32 __cdecl NuPad_Interface_GetMaxDevices(void);
+    void __cdecl NuPadOpenPS(FRAME_PAD_PC *pad);
+    void __cdecl NuPadInitPS(FRAME_SCANNED_PAD_PC *pad);
+    char *__cdecl NuGetErrN(i32 entry);
+    void __cdecl NuQFntPrintV(VUFNT *font, const char *format, char *arguments);
+    f32 __cdecl NuTimeGetFrameTime(void);
+    void __cdecl NuDisplayListAnimateMtls(f32 frame_time);
+    void __cdecl NuMtlSetUVOffsetPS(NUMTL *material, u32 layer, f32 u, f32 v);
+    void __cdecl NuMtlAnimateShaderMtlTextures(f32 frame_time);
+    void __cdecl NuMtlAnimate(f32 frame_time);
 
 #ifdef __cplusplus
 }

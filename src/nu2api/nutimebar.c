@@ -632,3 +632,7 @@ void __cdecl NuTimeBarSetRender(i32 set) {
     }
     STUBBED_NAMED(0x005f3950); /* NuRndrEndScene. */
 }
+
+f32 NuTimeGetFrameTime(void) {
+    return nuapi.frame_time;
+}

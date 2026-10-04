@@ -878,3 +878,76 @@ i32 __cdecl NuRndrSetSpecularLightPS(const NUVEC *direction, const NUVEC4 *inten
     NuRndrStateSetSpecularLightEx(&view_direction, &matrix, (const NUVEC *)&rndrstream_specular_intensity);
     return 1;
 }
+
+typedef struct FRAME_MTL_ANIM_DESC_PC {
+    u8 u_mode, v_mode, reserved02[2];
+    f32 u_amplitude, v_amplitude, u_frequency, v_frequency;
+} FRAME_MTL_ANIM_DESC_PC;
+STATIC_ASSERT(sizeof(FRAME_MTL_ANIM_DESC_PC) == 0x14);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, u_frequency) == 0xc);
+typedef struct FRAME_MTL_ANIM_PC {
+    u8 reserved00[0x7b];
+    u8 disable_u_animation, disable_v_animation;
+    u8 reserved7d[0x143];
+    i32 texture_animation_data[4];
+    f32 texture_animation_offsets[4][2];
+    u8 reserved1f0[8];
+    FRAME_MTL_ANIM_DESC_PC animation[4];
+} FRAME_MTL_ANIM_PC;
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, disable_u_animation) == 0x7b);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, disable_v_animation) == 0x7c);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, texture_animation_data) == 0x1c0);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, texture_animation_offsets) == 0x1d0);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, animation) == 0x1f8);
+typedef struct FRAME_MTL_ANIM_SET_PC {
+    NUDISPLAY_LIST_PC *scene;
+    i32 material_count;
+    i32 *material_indices;
+    struct FRAME_MTL_ANIM_SET_PC *next;
+} FRAME_MTL_ANIM_SET_PC;
+STATIC_ASSERT(sizeof(FRAME_MTL_ANIM_SET_PC) == 0x10);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, next) == 0xc);
+typedef struct FRAME_MTL_SCENE_PC {
+    u8 reserved00[0x158];
+    i32 shader_texture_animation_enabled;
+} FRAME_MTL_SCENE_PC;
+STATIC_ASSERT(offsetof(FRAME_MTL_SCENE_PC, shader_texture_animation_enabled) == 0x158);
+
+extern void NuDisplayListAnimateMtls(f32);
+
+static f32 FrameShaderMaterialAnimationTimePc;
+static i32 FrameShaderMaterialFirstCallPc = 1;
+extern f32 FrameMaterialAnimationSpeedPc;
+void NuMtlAnimateShaderMtlTextures(f32 frame_time) {
+    i32 i;
+    FrameShaderMaterialAnimationTimePc += frame_time;
+    if (FrameShaderMaterialFirstCallPc != 0) {
+        for (i = 0; i < (i32)nudlist_field_9d8; ++i) {
+            NUDISPLAY_LIST_PC *scene = PCDisplayScenes[i];
+            if (((FRAME_MTL_SCENE_PC *)scene->gscene)->shader_texture_animation_enabled != 0) {
+                i32 j;
+                for (j = 0; j < (i32)scene->material_count; ++j) {
+                    FRAME_MTL_ANIM_PC *material = (FRAME_MTL_ANIM_PC *)scene->display_materials[j];
+                    i32 layer;
+                    for (layer = 0; layer < 4; ++layer) {
+                        material->texture_animation_offsets[layer][0] = 0.0f;
+                        material->texture_animation_offsets[layer][1] = 0.0f;
+                    }
+                }
+            }
+        }
+        FrameShaderMaterialFirstCallPc = 0;
+    }
+}
+void NuMtlAnimate(f32 frame_time) {
+    NuDisplayListAnimateMtls(frame_time * FrameMaterialAnimationSpeedPc);
+    NuMtlAnimateShaderMtlTextures(frame_time);
+}
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, u_mode) == 0x0);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, v_mode) == 0x1);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, u_amplitude) == 0x4);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, v_amplitude) == 0x8);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, v_frequency) == 0x10);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, scene) == 0x0);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_count) == 0x4);
+STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_indices) == 0x8);

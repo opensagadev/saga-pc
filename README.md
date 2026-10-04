@@ -1,7 +1,13 @@
 # saga-pc
 
+**Runtime status: not playable.** The current executable exits before loading a
+level. PC window/input/device initialization, resource loading and the recurring
+update/render loop still need integration. The badges below measure code
+comparison and mapping; runnable milestones are tracked separately in
+[the execution plan](SOL_IMPLEMENTATION_PLAN.md).
+
 <!-- matching-badge -->
-![fuzzy code](https://img.shields.io/badge/fuzzy%20code-22.314%25-red)<!-- /matching-badge --> <!-- mapping-badge -->![mapping](https://img.shields.io/badge/mapping-4.555%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
+![fuzzy code](https://img.shields.io/badge/fuzzy%20code-22.505%25-red)<!-- /matching-badge --> <!-- mapping-badge -->![mapping](https://img.shields.io/badge/mapping-4.574%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 **saga-pc** is a matching decompilation of the GOG PC release of
 *LEGO Star Wars: The Complete Saga*.

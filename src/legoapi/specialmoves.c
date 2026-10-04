@@ -95,3 +95,18 @@ i32 __cdecl SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
     }
     return -1;
 }
+
+void __cdecl SpecialMove_Cancel(GAMEOBJECT *object) {
+    GAMEOBJECT *other;
+    if ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && LEGOCONTEXT_SPECIALMOVE_ATTACKER == object->character_context &&
+         object->special_move_pc != -1) ||
+        (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && LEGOCONTEXT_SPECIALMOVE_VICTIM == object->character_context)) {
+        object->character_context = -1;
+        other = object->force_target;
+        if (other != NULL &&
+            ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && LEGOCONTEXT_SPECIALMOVE_ATTACKER == other->character_context &&
+              other->special_move_pc != -1) ||
+             (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && LEGOCONTEXT_SPECIALMOVE_VICTIM == other->character_context)))
+            other->character_context = -1;
+    }
+}
