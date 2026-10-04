@@ -270,3 +270,135 @@ i32 __cdecl Draw3DObjectMtx(WORLDINFO *world, i32 object_id, NUMTX *matrix) {
         return NuSpecialDrawAt(&object->special, matrix);
     return 0;
 }
+
+/* Source-first scratch candidate; unclosed real leaf declarations only. */
+
+typedef struct render_post_prim_vertex_pc_s {
+    f32 x, y, z;
+    u32 colour;
+    f32 u, v;
+} RENDER_POST_PRIM_VERTEX_PC;
+STATIC_ASSERT(sizeof(RENDER_POST_PRIM_VERTEX_PC) == 0x18);
+STATIC_ASSERT(offsetof(RENDER_POST_PRIM_VERTEX_PC, colour) == 0xc);
+extern i32 NuPrimCoordSystemStack[];
+f32 __cdecl RenderPostPowPc(f32, f32);
+i32 __cdecl RenderPostASinPc(f32);
+#define GRID_TAN_HALF_FOV(half_fov)                                                                                    \
+    (NuTrigTable[(i32)((half_fov) * 10430.3779296875f) >> 1 & 0x7fff] /                                                \
+     NuTrigTable[(16384 - (i32)((half_fov) * -10430.3779296875f)) >> 1 & 0x7fff])
+#ifndef MIN
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#endif
+#define RGBA_TO_NUCOLOUR32(r, g, b, a)                                                                                 \
+    ((u32)(u8)(r) | ((u32)(u8)(g) << 8) | ((u32)(u8)(b) << 16) | ((u32)(u8)(a) << 24))
+#define ALPHA_GRID_VERTEX(vx, vy)                                                                                      \
+    do {                                                                                                               \
+        i32 colour;                                                                                                    \
+        direction.x = (vx);                                                                                            \
+        direction.y = -(vy) * camera.aspect;                                                                           \
+        direction.z = adjacent;                                                                                        \
+        NuVecNorm(&direction, &direction);                                                                             \
+        NuVecMtxTransform(&direction, &direction, &camera.mtx);                                                        \
+        NuVecNorm(&direction, &direction);                                                                             \
+        brightness = direction.y * 0.5f + 0.5f;                                                                        \
+        if (brightness <= near_angle)                                                                                  \
+            brightness = near_scale * parameters->intensity;                                                           \
+        else if (brightness >= far_angle)                                                                              \
+            brightness = far_scale * parameters->intensity;                                                            \
+        else                                                                                                           \
+            brightness = ((brightness - near_angle) * scale_delta / angle_delta + near_scale) * parameters->intensity; \
+        if (parameters->directional) {                                                                                 \
+            f32 angle =                                                                                                \
+                (i16)(0x4000 - RenderPostASinPc(NuVecDot(&parameters->direction, &direction))) * 0.0054931640625f;     \
+            if (angle < parameters->direction_near_angle) {                                                            \
+                brightness += 128.0f * parameters->direction_far_scale;                                                \
+            } else if (!(angle > parameters->direction_far_angle)) {                                                   \
+                f32 blend = RenderPostPowPc((angle - parameters->direction_near_angle) /                               \
+                                                (parameters->direction_far_angle - parameters->direction_near_angle),  \
+                                            parameters->direction_bias);                                               \
+                brightness +=                                                                                          \
+                    128.0f * ((1.0f - blend) * (parameters->direction_far_scale - parameters->direction_near_scale) +  \
+                              parameters->direction_near_scale);                                                       \
+            }                                                                                                          \
+        }                                                                                                              \
+        colour = RGBA_TO_NUCOLOUR32((MIN(255.0f, (MAX(0.0f, brightness)))), (MIN(255.0f, (MAX(0.0f, brightness)))),    \
+                                    (MIN(255.0f, (MAX(0.0f, brightness)))), 128);                                      \
+        if (!NuPrimNeedsOverbrightening)                                                                               \
+            ((RENDER_POST_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour =                              \
+                ((colour >> 1) & 0x7f7f7f) | (colour & 0xff000000);                                                    \
+        else                                                                                                           \
+            ((RENDER_POST_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = colour;                      \
+        NuPrim2DAddXYZ((vx), (vy), 0.0f);                                                                              \
+    } while (0)
+
+void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) {
+    f32 inv_col = 1.0f / (cols - 1);
+    f32 inv_row = 1.0f / (rows - 1);
+    f32 x0 = 0.0f * inv_row * 2.0f - 1.0f;
+    f32 y_start = 0.0f * inv_col * 2.0f - 1.0f;
+    f32 x1 = inv_row * 2.0f - 1.0f;
+    f32 y_next = inv_col * 2.0f - 1.0f;
+    f32 step_x = inv_row * 2.0f;
+    f32 step_y = inv_col * 2.0f;
+    f32 near_scale = parameters->near_scale * 128.0f;
+    f32 far_scale = parameters->far_scale * 128.0f;
+    f32 near_angle = parameters->near_angle / 180.0f;
+    f32 far_angle = parameters->far_angle / 180.0f;
+    f32 angle_delta = far_angle - near_angle;
+    f32 scale_delta = far_scale - near_scale;
+    NUCAMERA camera;
+    NUVEC direction;
+    f32 brightness;
+    static i32 first = 1;
+    static f32 saved_fov;
+    static f32 adjacent;
+    static i32 row, col;
+    NuCameraGet(&camera);
+    if (first) {
+        f32 half_fov = camera.fov * 0.5f;
+        saved_fov = camera.fov;
+        adjacent = 1.0f / GRID_TAN_HALF_FOV(half_fov);
+        first = 0;
+    }
+    if (camera.fov != saved_fov) {
+        f32 half_fov = camera.fov * 0.5f;
+        adjacent = 1.0f / GRID_TAN_HALF_FOV(half_fov);
+        // The original writes the saved FOV back into this camera copy.
+        camera.fov = saved_fov;
+    }
+    camera.mtx.m30 = 0.0f;
+    camera.mtx.m31 = 0.0f;
+    camera.mtx.m32 = 0.0f;
+    camera.mtx.m33 = 1.0f;
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(1);
+    for (row = 0; row < rows - 1; ++row) {
+        f32 y0, y1;
+        NuPrim2DBegin(14, 5, NULL);
+        y0 = y_start;
+        y1 = y_next;
+        for (col = 0; col < cols; ++col) {
+            ALPHA_GRID_VERTEX(x0, y0);
+            ALPHA_GRID_VERTEX(x1, y0);
+            if (col != cols - 1) {
+                ALPHA_GRID_VERTEX(x0, y0);
+                ALPHA_GRID_VERTEX(x0, y1);
+                ALPHA_GRID_VERTEX(x1, y0);
+                ALPHA_GRID_VERTEX(x1, y1);
+                ALPHA_GRID_VERTEX(x1, y0);
+                ALPHA_GRID_VERTEX(x0, y1);
+            }
+            y0 += step_y;
+            y1 += step_y;
+        }
+        NuPrim2DEnd();
+        x0 += step_x;
+        x1 += step_x;
+    }
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}
+#undef ALPHA_GRID_VERTEX

@@ -1107,3 +1107,9 @@ i32 __cdecl NuStrFindPosU(u8 *text, i32 character_index) {
     } while (count != character_index && text[index] != 0);
     return index;
 }
+
+u8 __cdecl NuToUpper(u8 character) {
+    if ((u8)(character - 'a') <= 'z' - 'a' || character >= 0xe0)
+        character = (u8)(character - 0x20);
+    return character;
+}

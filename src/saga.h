@@ -13968,6 +13968,75 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl PartCleanupTypes(void);
     i32 __cdecl GetSfxIdN(char *, i32);
 
+    u8 __cdecl NuToUpper(u8);
+    i32 __cdecl GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *, char *, char *, char *, i32);
+    NUGSPLINE *__cdecl edSpline_SplineFind(NUGSCN *, char *);
+    void __cdecl Teleports_Configure(WORLDINFO *, char *);
+
+    extern i32 PartLoadParticlePagePc;
+    extern char PartNullInstanceNamePc[14];
+    extern i32 PartNearestEmitterPc;
+    extern NUVEC PartEditorCameraPosPc;
+    extern PART_EMIT_PC *PartNearestEmitterPtrPc;
+    extern PARTTYPE_LOOKUP_PC *PartNearestTypePtrPc;
+    extern i32 PartGeneralPagePc;
+    extern i32 PartLevelPagePc;
+    extern f32 antinode_time;
+    extern f32 antinode_reverse_time;
+
+    void __cdecl GameCreatureInteraction2D(AISYS_PC *, i32, APIOBJECT_PC **, i32 *, f32);
+    void __cdecl AISysCreatureInteraction2D(AISYS_PC *, i32, APIOBJECT_PC **, i32 *, f32);
+    void __cdecl AISysCreatureAntinodeInteraction(AISYS_PC *, i32, APIOBJECT_PC **, i32 *);
+
+    typedef struct render_post_bloom_reader_pc_s {
+        u8 unknown_00[4];
+        f32 near_angle;
+        f32 near_scale;
+        f32 far_angle;
+        f32 far_scale;
+        f32 intensity;
+        i32 clear_screen;
+        u8 unknown_1c_28[0xc];
+        i32 directional;
+        NUVEC direction;
+        f32 direction_near_angle;
+        f32 direction_far_scale;
+        f32 direction_far_angle;
+        f32 direction_near_scale;
+        f32 direction_bias;
+    } RENDER_POST_BLOOM_READER_PC;
+    STATIC_ASSERT(sizeof(RENDER_POST_BLOOM_READER_PC) == 0x4c);
+    STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, near_angle) == 4);
+    STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, near_scale) == 8);
+    STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, far_angle) == 0xc);
+    STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, far_scale) == 0x10);
+    STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, intensity) == 0x14);
+    STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, clear_screen) == 0x18);
+    STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, directional) == 0x28);
+    STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, direction) == 0x2c);
+    STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, direction_near_angle) == 0x38);
+    STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, direction_far_scale) == 0x3c);
+    STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, direction_far_angle) == 0x40);
+    STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, direction_near_scale) == 0x44);
+    STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, direction_bias) == 0x48);
+
+    f32 __cdecl RenderPostLogPc(f32);
+    f32 __cdecl RenderPostPowPc(f32, f32);
+    i32 __cdecl RenderPostASinPc(f32);
+    void __cdecl DrawAlphaGrid(i32, i32, RENDER_POST_BLOOM_READER_PC *);
+
+    i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene);
+    void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 page);
+    void __cdecl edpartDetermineNearest(f32 distance);
+    i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count);
+    void __cdecl UpdatePartEmits(f32 time);
+    void __cdecl NuMtxAlignY(NUMTX *m, NUVEC *v);
+    void __cdecl NuMtxAlignZ(NUMTX *m, NUVEC *v);
+    void __cdecl NuMtxLookAtY(NUMTX *m, NUVEC *point);
+    void __cdecl NuMtxLookAtZ(NUMTX *m, NUVEC *point);
+    void __cdecl FullReflect(NUVEC *normal, NUVEC *movement, NUVEC *result);
+    i32 __cdecl rtlDynamicSetPos(i32 id, NUVEC *position);
+
 #ifdef __cplusplus
 }
 

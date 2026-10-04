@@ -4275,3 +4275,19 @@ particle reproduce independently accepted historical1709/713-byte variants with
 full raw/named-relocation anchors. Reports and endpoint evidence are retained in
 build/analysis/transfer-execution-20261003/continuation-scene-config-gameplay.
 Broader Parts, interaction, Grid/math and Teleports candidates are not coverage.
+
+
+Particle/interaction/Grid/Teleports release verifies38 complete functions and
+23,107 unique PC bytes. Emitter's full2,728 includes alignment and embedded
+switch table; the old2,706 body-only span is rejected. All3,657 prior full copies
+remain identical, including camera/particle variants. Private orbit/callback
+and matrix/reflection groups keep genuine original owners and native conventions.
+Circle f32 spill and three emitter x87 stages were repaired before activation,
+with unchanged semantic assertion fixtures detecting each regression. All134
+strict native checks use all273 actual normal objects with zero substitutions
+or fabricated providers. Dispatch checkantinodefns@0x801c7c has verified12 working
+bytes but blank owning extent. Teleports Unique354 includes its cold return;
+actual editor lookup is5b2110. Grid's full5,964 and math475/57/320 preserve native
+complete spans; Log/Pow are exact. Image/cache and viewport overlap proposals
+remain scratch; no source or allocation credit. Full GameAI/WorldInfo_Load
+completion is not inferred from newly reconstructed suppliers.

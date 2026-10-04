@@ -793,3 +793,83 @@ i32 __cdecl GizmoGetVisibility(void *system, void *pointer) {
         return 0;
     return type->get_visibility(gizmo);
 }
+
+#include <stdio.h>
+
+typedef struct GIZMO_NAME_TYPE_PC {
+    u8 unknown_00[0x20];
+    char prefix[0x20];
+    u8 unknown_40[4];
+    char *(__cdecl *get_gizmo_name)(void *);
+    u8 unknown_48[0x54];
+} GIZMO_NAME_TYPE_PC;
+STATIC_ASSERT(sizeof(GIZMO_NAME_TYPE_PC) == 0x9c);
+STATIC_ASSERT(offsetof(GIZMO_NAME_TYPE_PC, prefix) == 0x20);
+STATIC_ASSERT(offsetof(GIZMO_NAME_TYPE_PC, get_gizmo_name) == 0x44);
+u8 __cdecl NuToUpper(u8);
+
+i32 __cdecl GizmoIsNameUnique(GIZMOSYS_PREFIX_PC *system, char *name) {
+    GIZMO_NAME_TYPE_PC *type;
+    GIZMOSET_PC *set;
+    i32 type_index;
+    if (system == NULL || name == NULL)
+        return 1;
+    type = (GIZMO_NAME_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
+    set = system->sets;
+    for (type_index = 0; type_index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++type_index, ++type, ++set) {
+        GIZMO_PC *gizmo;
+        i32 index;
+        if (type->get_gizmo_name == NULL)
+            continue;
+        gizmo = set->gizmos;
+        for (index = 0; index < set->count; ++index, ++gizmo) {
+            if (NuStrICmp(name, type->get_gizmo_name(gizmo)) == 0)
+                return 0;
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl GizmoNameUsesPrefix(char *name, char *prefix) {
+    if (name == NULL || prefix == NULL)
+        return 0;
+    while (*name != '\0') {
+        if (NuToUpper((u8)*name) != NuToUpper((u8)*prefix))
+            return 0;
+        ++name;
+        ++prefix;
+    }
+    return 1;
+}
+
+i32 __cdecl GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *system, char *prefix, char *name, char *result, i32 result_size) {
+    char suffix[16];
+    char shortened_name[64];
+    i32 type_index;
+    i32 suffix_number;
+    i32 name_length;
+    if (system == NULL || name == NULL || result == NULL)
+        return 0;
+    for (type_index = 0; type_index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++type_index) {
+        GIZMO_NAME_TYPE_PC *type = &((GIZMO_NAME_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types)[type_index];
+        if (NuStrICmp(prefix, type->prefix) != 0 && GizmoNameUsesPrefix(name, type->prefix))
+            return 0;
+    }
+    name_length = NuStrLen(name);
+    for (suffix_number = 1; suffix_number < 999; ++suffix_number) {
+        i32 suffix_length;
+        sprintf(suffix, "%d", suffix_number);
+        suffix_length = NuStrLen(suffix);
+        if (name_length + suffix_length >= result_size) {
+            name_length = result_size - suffix_length;
+            if (name_length <= 0)
+                return 0;
+            NuStrNCpy(shortened_name, name, name_length);
+            name = shortened_name;
+        }
+        sprintf(result, "%s%s", name, suffix);
+        if (GizmoIsNameUnique(system, result))
+            return 1;
+    }
+    return 0;
+}

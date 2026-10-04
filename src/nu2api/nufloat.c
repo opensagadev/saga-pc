@@ -24,3 +24,12 @@ f32 NuFsqrt(f32 f) {
     }
     return (f32)sqrt(f);
 }
+
+f32 __cdecl RenderPostLogPc(f32 value);
+f32 __cdecl RenderPostPowPc(f32 base, f32 exponent) {
+    f32 result;
+    if (base == 0.0)
+        return 0.0;
+    result = NuExp10(RenderPostLogPc(base) * exponent);
+    return result;
+}

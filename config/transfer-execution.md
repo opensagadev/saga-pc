@@ -2222,3 +2222,94 @@ shares record16+8 and remains held for canonical alias/capacity evidence.
 WorldInfo_Load has no production definition; its uncompiled candidate retains
 31 unique missing direct targets,21 unmapped. No parent/source credit is claimed.
 Whole-project transfer and validated direct-main checkpoints continue.
+
+
+### Particles, interactions, Grid math and Teleports checkpoint (2026-10-04)
+
+38 complete functions add 23,107 unique compared PC bytes over 5e49a64:
+Teleports/name/editor helpers 16/1,853, creature interactions 7/6,338,
+Parts/matrix/reflection/RTL 11/8,100 and Grid/math 4/6,816. Unique compared
+code reaches 1,049,956; native objdiff includes retained aliases and compares
+1,050,473. Whole-PC fuzzy coverage rises from 20.521280% to 20.920709%.
+Nineteen newly exact functions add 1,918 bytes, reaching 184,266/3,471,246
+.text bytes (5.308353%). Exact initializer union adds 129 bytes to 632,384.
+All 3,657 prior full function copies remain identical. All previous exact
+code/data/member matches survive; no compiler-variant exception is needed.
+
+Interactions retain the original C helper/caller groups, ordinary four-argument
+callback table and private orbit convention. PC source uses unsigned WORD
+priorities, nullable fixed flags, collision links and actual typed timer/geometry
+fields. Native Circle spills summed squared distance to f32 before comparison;
+restoring that stage passes 40 checks, while removing it fails two boundary
+assertions. The apparent default diagnostic call is unreachable: surviving
+priority selection always fixes exactly one object, equal priorities skip the
+pair, and the diagnostic requires neither fixed flag. No substitute diagnostic
+body is added. The three-pointer dispatch table remains in the actual aisys TU;
+its full 12 working bytes are retail-equal, but its owning extent remains blank
+and receives zero allocation/exact credit.
+
+Parts reconstructs scene lookup, single-type/page loading, nearest selection
+and emitter update, plus genuine matrix orientation, reflection and RTL setters.
+The full emitter extent is 2,728 bytes, including two alignment bytes and the
+20-byte embedded switch table; an earlier 2,706-byte body-only hypothesis is
+retained as rejected. Source preserves native extended period addition, explicit
+f32 pause-duration spill and exact integer rotation-base conversion. Positive
+26 assertions pass; the original three-stage error version fails exactly three.
+All 205 prior supplier-owner function copies remain unchanged. Selected inputs
+cover initialized type/emitter state, equality crossing, >2^24 rotation bases,
+valid switch127, real model-less inherited partial AddPart and finite matrix/
+reflection/RTL paths. Asset/parser and terrain/raycast completion remain unclaimed.
+
+Grid uses the actual negative half-FOV denominator and stores brightness after
+intensity multiplication. Its minimal bloom reader retains every accessed offset;
+only that identical local type moves into the shared header. Log475 and Pow57
+are complete-byte exact; ASin320 retains native x87 products and its genuine
+conversion tail. All 45 prior render/math code/data regions survive. Finite
+scalar runtime passes 31 checks with normalized log indices0..8999. The exact
+native Log's equality10000 case reads beyond its9000-float table; source preserves
+that original defect and failed analytical fixtures remain recorded. Grid output
+and GPU execution are untested. Viewport, Image and ClearScreen stay outside this
+release; no overlapping viewport/cache backing is introduced.
+
+Teleports keeps all ten real callbacks, the native prefix/keyword cohort and
+actual editor-first spline lookup. Full unique-name extent354 includes its cold
+return. Name generation preserves alias-sensitive truncation and native byte/
+WORD behavior. Canonical NuStrNCpy copies n-1 characters: correcting the fixture's
+expectation changed no source or assertions. Parser/name/spline tests pass37;
+valid initialcount0, adequate caller arena, quoted-empty input, duplicate names,
+flags, matrices and cursor alignment are exercised. The three private state/
+cohort extents stay unknown. No full WorldInfo_Load execution is claimed.
+
+The source-only EXE links 3,695 functions and 6,295 data definitions across273
+actual objects, including the new genuine gizteleports.c owner. LLVM18 checks
+300 source/header files and273 units;700 tests pass with three skips. All134
+native assertions pass against every current normal object, with zero candidate
+replacements/supplements or fabricated providers: Teleports37, interactions40,
+scalar math31 and Parts26. All313 frozen inputs remain unchanged. Authoritative
+retail comparison and independent complete source/data endpoint review pass.
+Previous exact revision5e49a64 CI passed (run37199512352).
+
+Ten shared definitions add58 working bytes with unknown original extents and
+zero allocation/exact credit. All3,483 old complete regions and1,797 scopes
+survive; actual normal3,493 regions/1,807 scopes equal isolated output. Known
+shared scope603/138,161B is unchanged; unknown1,204/130,126B describes verified
+working views. The inherited CRC16 initializer and all four typed members stay
+unchanged, including two exact members/four bytes. All4,669 previous exact
+physical initializer copies survive. All64 new complete copies are retail-equal:
+43 known copies/300 emitted bytes yield4,712 exact physical copies;21 unknown
+copies/206 working bytes receive no owning-extent/allocation/exact credit.
+Unknown copies include the genuine dispatch12 and private Teleports/Grid/Log
+state. Copy counts are distinct from the unique data union.
+
+The12:10 UTC checkpoint was delayed when aggregate coverage found the missing
+map row for the already verified real dispatch initializer. Only that binding
+was added, with blank owning extent. The failed log and prior freeze were kept;
+all unchanged required checks and final endpoint were completed before commit.
+The user's three journal edits remain untouched. Next are accepted turret2/653
+and terrain unit-ray3/411, LOS3/1,742, then real CastPart1,315/UpdateParts2,755
+and Draw700 providers. NewRayCast has one exclusive genuine terrain owner;
+LOS reuses it rather than producing a duplicate. Image's eight-byte canonical
+cache alias and a48-byte viewport prefix plus existing16-byte projection owner
+are factual scratch proposals only, with no invented original capacity. Broader
+world/resource suppliers and full GameAI remain under reconstruction. Whole-
+project transfer and validated direct-main checkpoints continue.

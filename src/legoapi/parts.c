@@ -2913,3 +2913,534 @@ i32 __cdecl CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
     }
     return closest_index;
 }
+
+extern char PartNullInstanceNamePc[14];
+extern i32 PartLoadParticlePagePc;
+u32 __cdecl EdFileReadUnsignedInt(void);
+i32 __cdecl GetSfxIdN(char *, i32);
+i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene) {
+    NUSPECIALHANDLE special;
+    i32 count, i;
+    if (name[0] == 0)
+        return -1;
+    if (NuStrNCmp(name, PartNullInstanceNamePc, 16) == 0)
+        return 9999;
+    if (scene != NULL) {
+        count = NuGScnNumSpecials(scene);
+        for (i = 0; i < count; ++i) {
+            NuGScnGetSpecial(&special, scene, i);
+            if (NuSpecialExistsFn(&special) && NuStrNCmp(name, NuSpecialGetName(&special), 16) == 0)
+                return i;
+        }
+    }
+    return -1;
+}
+
+void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 page) {
+    PART_RUNTIME_TYPE_PC *type = (PART_RUNTIME_TYPE_PC *)record;
+    char name[16];
+    i32 i, scene, scene_page, variants;
+    char mode;
+    EdFileRead(type->name, 16);
+    if (version > 5) {
+        for (i = 0; i < 8; ++i)
+            type->effect_pages[i] = EdFileReadChar();
+    } else {
+        type->effect_pages[0] = version > 1 ? EdFileReadChar() : 0;
+        for (i = 1; i < 8; ++i)
+            type->effect_pages[i] = -1;
+    }
+    variants = version > 5 ? 8 : 1;
+    for (i = 0; i < variants; ++i) {
+        EdFileRead(type->object_names[i], 16);
+        type->effect_ids[i] = -1;
+        if (type->effect_pages[i] == 0 || type->effect_pages[i] == 1) {
+            scene_page = type->effect_pages[i] == 0 ? page : 0;
+            for (scene = 0; scene < 32; ++scene) {
+                if (part_scene_pageid[scene] == scene_page) {
+                    type->effect_ids[i] = edpartLookupObjectInScene(type->object_names[i], part_scene[scene]);
+                }
+                if (type->effect_ids[i] != -1) {
+                    type->scene_indices[i] = scene;
+                    break;
+                }
+            }
+        }
+        if (type->effect_ids[i] == -1 && type->object_names[i][0] != 0)
+            type->effect_ids[i] = 9998;
+    }
+    type->variant_count = 0;
+    for (i = 0; i < 8; ++i) {
+        if (type->effect_ids[i] != 9999 && type->effect_ids[i] != -1)
+            ++type->variant_count;
+    }
+    type->variant_mode = version > 5 ? EdFileReadChar() : 0;
+    type->particle_scale = version > 15 ? EdFileReadFloat() : 1.0f;
+    type->effect_scale = version > 15 ? EdFileReadFloat() : 1.0f;
+    type->lifetime = EdFileReadFloat();
+    type->lifetime_random = version > 13 ? EdFileReadFloat() : 0.0f;
+    type->speed = EdFileReadFloat();
+    type->gravity = EdFileReadFloat();
+    type->emission_rate = EdFileReadFloat();
+    type->bounce = version > 7 ? EdFileReadFloat() : 0.75f;
+    type->position_random.x = EdFileReadFloat();
+    type->position_random.y = EdFileReadFloat();
+    type->position_random.z = EdFileReadFloat();
+    type->velocity_random.x = EdFileReadFloat();
+    type->velocity_random.y = EdFileReadFloat();
+    type->velocity_random.z = EdFileReadFloat();
+    type->emission_period = EdFileReadFloat();
+    type->emission_period_random = EdFileReadFloat();
+    type->emission_pause = EdFileReadFloat();
+    type->emission_pause_random = EdFileReadFloat();
+    if (version > 12) {
+        for (i = 0; i < 3; ++i)
+            type->rotation[i] = EdFileReadInt();
+        for (i = 0; i < 3; ++i)
+            type->rotation_random[i] = EdFileReadInt();
+    } else {
+        for (i = 0; i < 3; ++i)
+            type->rotation[i] = EdFileReadShort();
+        for (i = 0; i < 3; ++i)
+            type->rotation_random[i] = EdFileReadShort();
+    }
+    type->flags = EdFileReadUnsignedInt();
+    if (type->effect_ids[0] == 9999)
+        type->flags |= 0x10;
+    if (version > 4) {
+        EdFileRead(name, 16);
+        type->trail_effects[0] =
+            (PartLoadParticlePagePc != -1 ? LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc)
+                                          : LookupDebrisEffect(name));
+        if (version > 8) {
+            EdFileRead(name, 16);
+            type->trail_effects[1] =
+                (PartLoadParticlePagePc != -1 ? LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc)
+                                              : LookupDebrisEffect(name));
+        } else
+            type->trail_effects[1] = -1;
+        EdFileRead(name, 16);
+        type->attached_effect =
+            (PartLoadParticlePagePc != -1 ? LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc)
+                                          : LookupDebrisEffect(name));
+        type->trail_rates[0] = EdFileReadFloat();
+        type->trail_rates[1] = version > 8 ? EdFileReadFloat() : 60.0f;
+    } else {
+        type->trail_effects[0] = -1;
+        type->trail_effects[1] = -1;
+        type->attached_effect = -1;
+        if (version > 2) {
+            mode = EdFileReadChar();
+            EdFileRead(name, 16);
+            if (mode == 0)
+                type->trail_effects[0] =
+                    (PartLoadParticlePagePc != -1 ? LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc)
+                                                  : LookupDebrisEffect(name));
+            else if (mode == 1)
+                type->attached_effect =
+                    (PartLoadParticlePagePc != -1 ? LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc)
+                                                  : LookupDebrisEffect(name));
+            type->trail_rates[0] = EdFileReadFloat();
+        } else
+            type->trail_rates[0] = 60.0f;
+        type->trail_rates[1] = 60.0f;
+    }
+    if (version > 3) {
+        EdFileRead(name, 16);
+        type->kill_effect = (PartLoadParticlePagePc != -1 ? LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc)
+                                                          : LookupDebrisEffect(name));
+        EdFileRead(name, 16);
+        type->impact_effect =
+            (PartLoadParticlePagePc != -1 ? LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc)
+                                          : LookupDebrisEffect(name));
+    } else {
+        type->impact_effect = -1;
+        type->kill_effect = -1;
+    }
+    if (version > 11) {
+        EdFileRead(type->impact_part_name, 16);
+        type->impact_part = PARTLookupType(type->impact_part_name);
+    } else {
+        type->impact_part_name[0] = 0;
+        type->impact_part = -1;
+    }
+    if (version > 6) {
+        for (i = 0; i < 4; ++i) {
+            EdFileRead(name, 16);
+            type->sounds[i] = GetSfxIdN(name, 16);
+        }
+        for (i = 0; i < 4; ++i)
+            type->sound_modes[i] = EdFileReadChar();
+    } else {
+        for (i = 0; i < 4; ++i)
+            type->sounds[i] = -1;
+        for (i = 0; i < 4; ++i)
+            type->sound_modes[i] = 0;
+    }
+    type->maximum_distance = version > 9 ? EdFileReadFloat() : 25.0f;
+    type->field_160 = version > 14 ? EdFileReadFloat() : 1.0f;
+    type->field_164 = version > 14 ? EdFileReadFloat() : 1.0f;
+    type->field_168 = version > 14 ? EdFileReadFloat() : 1.0f;
+    type->scale = 1.0f;
+    type->field_174 = 0;
+}
+
+extern i32 PartNearestEmitterPc;
+extern NUVEC PartEditorCameraPosPc;
+extern PART_EMIT_PC *PartNearestEmitterPtrPc;
+extern PARTTYPE_LOOKUP_PC *PartNearestTypePtrPc;
+extern i32 PartGeneralPagePc;
+extern i32 PartLevelPagePc;
+void __cdecl edpartDetermineNearest(f32 distance) {
+    NUVEC delta;
+    f32 squared_distance;
+    i32 i;
+    if (PartNearestEmitterPc != -1 && part_emits[PartNearestEmitterPc].effect_id != -1) {
+        NuVecSub(&delta, &PartEditorCameraPosPc, &part_emits[PartNearestEmitterPc].position);
+        squared_distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+        if (squared_distance == 0.0f)
+            return;
+    }
+    PartNearestEmitterPc = -1;
+    for (i = 0; i < 40; ++i) {
+        if (part_emits[i].effect_id != -1) {
+            NuVecSub(&delta, &PartEditorCameraPosPc, &part_emits[i].position);
+            squared_distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+            if (distance < 0.0f || squared_distance < distance) {
+                distance = squared_distance;
+                PartNearestEmitterPc = i;
+            }
+        }
+    }
+    PartNearestEmitterPtrPc = NULL;
+    PartNearestTypePtrPc = NULL;
+    if (PartNearestEmitterPc != -1) {
+        PartNearestEmitterPtrPc = &part_emits[PartNearestEmitterPc];
+        if (PartNearestEmitterPtrPc->effect_id != -1)
+            PartNearestTypePtrPc = &part_types[PartNearestEmitterPtrPc->effect_id];
+    }
+}
+
+i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
+    i32 page = 0;
+    i32 scene_slot, i, version, type_count, skipped_types, type_slot, emitter_count, emitter_slot, sound;
+    PART_RUNTIME_TYPE_PC *type;
+    PART_EMIT_PC *emitter;
+    PART_RUNTIME_TYPE_PC discarded_type;
+    if (mode != 0) {
+        for (page = 1; page < 8; ++page) {
+            if (part_page_used[page] == 0)
+                break;
+        }
+        if (page == 8)
+            return -1;
+    }
+    scene_slot = 0;
+    for (i = 0; i < scene_count; ++i) {
+        if (scenes[i] != NULL) {
+            while (part_scene[scene_slot] != NULL && scene_slot < 32)
+                ++scene_slot;
+            if (scene_slot < 32) {
+                part_scene[scene_slot] = scenes[i];
+                part_scene_pageid[scene_slot] = page;
+            }
+        }
+    }
+    EdFileSetMedia(1);
+    if (EdFileOpen(path, 0) == 0)
+        return -1;
+    EdFileSetReadWrongEndianess(1);
+    version = EdFileReadInt();
+    if ((u32)(version - 1) > 15) {
+        EdFileClose();
+        return -1;
+    }
+    type_count = EdFileReadInt();
+    skipped_types = 0;
+    if (type_count + part_types_used > 128) {
+        skipped_types = type_count + part_types_used - 128;
+        type_count -= skipped_types;
+    }
+    type_slot = 0;
+    for (i = 0; i < type_count; ++i) {
+        while (part_types[type_slot].name[0] != 0)
+            ++type_slot;
+        type = &((PART_RUNTIME_TYPE_PC *)part_types)[type_slot];
+        edpartLoadSingleType((PARTTYPE_LOOKUP_PC *)type, version, page);
+        if (type->name[0] != 0) {
+            type->page = page;
+            type->field_b3 = mode;
+            ++part_types_used;
+        }
+    }
+    for (i = 0; i < skipped_types; ++i)
+        edpartLoadSingleType((PARTTYPE_LOOKUP_PC *)&discarded_type, version, page);
+    emitter_count = EdFileReadInt();
+    if (emitter_count + part_emits_used > 40)
+        emitter_count = 40 - part_emits_used;
+    emitter_slot = 0;
+    for (i = 0; i < emitter_count; ++i) {
+        while (part_emits[emitter_slot].effect_id != -1)
+            ++emitter_slot;
+        emitter = &part_emits[emitter_slot];
+        emitter->position.x = EdFileReadFloat();
+        emitter->position.y = EdFileReadFloat();
+        emitter->position.z = EdFileReadFloat();
+        EdFileRead(emitter->name, 16);
+        emitter->effect_id = PARTLookupTypePageOnly(emitter->name, page);
+        emitter->rotation_30 = EdFileReadShort();
+        emitter->rotation_2e = EdFileReadShort();
+        emitter->rotation_2c = EdFileReadShort();
+        if (version > 10) {
+            emitter->field_44 = EdFileReadShort();
+            emitter->field_46 = EdFileReadShort();
+        } else {
+            emitter->field_44 = 0;
+            emitter->field_46 = 0;
+        }
+        emitter->page = page;
+        emitter->field_3c = 0;
+        type = &((PART_RUNTIME_TYPE_PC *)part_types)[emitter->effect_id];
+        for (sound = 0; sound < 4; ++sound) {
+            if (type->sounds[sound] != -1 && type->sound_modes[sound] != 0) {
+                emitter->field_3c = 1;
+                break;
+            }
+        }
+        if (emitter->effect_id != -1) {
+            ++part_emits_used;
+            PARTStartOffset(emitter_slot, 0.0f);
+            emitter->field_3d = 1;
+        }
+    }
+    EdFileSetReadWrongEndianess(0);
+    EdFileClose();
+    edpartDetermineNearest(1.0f);
+    part_page_used[page] = 1;
+    if (page == 0)
+        part_page_on[0] = 1;
+    if (mode == 0)
+        PartGeneralPagePc = page;
+    else if (mode == 1)
+        PartLevelPagePc = page;
+    return page;
+}
+
+void __cdecl UpdatePartEmits(f32 time) {
+    i32 switch_changes[32][2];
+    i32 i, sound, axis, state, remaining, variant;
+    i8 next;
+    PART_EMIT_PC *emitter;
+    PART_RUNTIME_TYPE_PC *type;
+    ADDPART_PC params;
+    NUVEC position, velocity;
+    NUMTX matrix;
+    NUSPECIALHANDLE special;
+    f32 interval, shift, previous_distance, emission_time, pause, random, lifetime;
+    f32 random_x, random_y, random_z, range_x, range_y, range_z;
+    i32 last_switch_change = -1;
+    for (i = 0; i < 40; ++i) {
+        emitter = &part_emits[i];
+        if (part_page_on[emitter->page] == 0 || emitter->effect_id == -1)
+            continue;
+        type = &((PART_RUNTIME_TYPE_PC *)part_types)[emitter->effect_id];
+        if (type->effect_ids[0] == -1)
+            continue;
+        interval = 1.0f / type->emission_rate;
+        if (emitter->field_44 == 1 && emitter->field_3d != 2 && emitter->field_46 != -1) {
+            state = debris_object_switches[emitter->field_46];
+            switch (state) {
+                case 0:
+                    emitter->field_3d = 0;
+                    break;
+                case 1:
+                    emitter->field_3d = 1;
+                    break;
+                case 2:
+                case 3: {
+                    last_switch_change = (last_switch_change + 1) & 31;
+                    emitter->field_3d = 2;
+                    switch_changes[last_switch_change][0] = emitter->field_46;
+                    switch_changes[last_switch_change][1] = state == 2 ? 4 : 0;
+                    PARTStartOffset(i, 0.0f);
+                    shift = emitter->time_24 - partglobaltime;
+                    emitter->time_20 = partglobaltime - interval;
+                    emitter->time_24 -= shift;
+                    emitter->time_28 -= shift;
+                    break;
+                }
+                case 4:
+                    last_switch_change = (last_switch_change + 1) & 31;
+                    switch_changes[last_switch_change][0] = emitter->field_46;
+                    switch_changes[last_switch_change][1] = 0;
+                    break;
+            }
+        }
+        previous_distance = emitter->camera_distance;
+        emitter->camera_distance = CameraEmitterDistance(&emitter->position);
+        if (emitter->field_3c != 0) {
+            for (sound = 0; sound < 4; ++sound) {
+                if (type->sounds[sound] != -1) {
+                    SetSfxBit_On(type->sounds[sound]);
+                    if (type->sound_modes[sound] == 4)
+                        PlaySfxById(type->sounds[sound], &emitter->position);
+                }
+            }
+        }
+        if ((type->flags & 0x400000) != 0) {
+            if (type->maximum_distance > emitter->camera_distance && previous_distance >= type->maximum_distance) {
+                emitter->time_24 = partglobaltime;
+                emitter->time_28 = partglobaltime - 1.0f;
+                emitter->time_20 = partglobaltime - interval + 0.001f;
+            } else if (emitter->time_24 > emitter->time_28) {
+                emitter->time_28 += time;
+                emitter->time_24 += time;
+                emitter->time_20 += time;
+            }
+        }
+        emission_time = emitter->time_20 + interval;
+        remaining = 101;
+        while (partglobaltime + time > emission_time && --remaining != 0) {
+            while (emission_time >= emitter->time_28 && emission_time > emitter->time_24 &&
+                   partglobaltime + time > emission_time) {
+                if (emitter->time_24 >= emitter->time_28) {
+                    emitter->time_28 = NuRandFloatSeeded(&partseed) * type->emission_period_random +
+                                       (type->emission_period + emitter->time_24);
+                    if (emitter->field_3c != 0 && emitter->field_3d != 0) {
+                        for (sound = 0; sound < 4; ++sound) {
+                            if (type->sounds[sound] != -1 && type->sound_modes[sound] == 1)
+                                PlaySfxById(type->sounds[sound], &emitter->position);
+                        }
+                    }
+                    if (emitter->shots_remaining != 0 && --emitter->shots_remaining == 0) {
+                        if (part_emits[i].effect_id != -1) {
+                            part_emits[i].effect_id = -1;
+                            --part_emits_used;
+                        }
+                        emission_time = partglobaltime + 99999.9f;
+                    }
+                } else {
+                    pause = NuRandFloatSeeded(&partseed) * type->emission_pause_random + type->emission_pause;
+                    emitter->time_24 = emitter->time_28 + pause;
+                    emission_time = emitter->time_24 + 0.001f;
+                    emitter->time_20 = emission_time - interval + 0.001f;
+                    if (emitter->field_3d == 2)
+                        emitter->field_3d = 0;
+                    if (emitter->field_3c != 0 && emitter->field_3d != 0) {
+                        for (sound = 0; sound < 4; ++sound) {
+                            if (type->sounds[sound] != -1 && type->sound_modes[sound] == 2)
+                                PlaySfxById(type->sounds[sound], &emitter->position);
+                        }
+                    }
+                }
+            }
+            if (partglobaltime + time <= emission_time)
+                continue;
+            if (emitter->field_3d != 0 &&
+                (type->maximum_distance == 0.0f || type->maximum_distance > emitter->camera_distance)) {
+                params = Default_ADDPART;
+                params.field_c0 = type->particle_scale;
+                random = NuRandFloatSeeded(&partseed);
+                position.x = (random + random) * type->position_random.x - type->position_random.x;
+                random = NuRandFloatSeeded(&partseed);
+                position.y = (random + random) * type->position_random.y - type->position_random.y;
+                random = NuRandFloatSeeded(&partseed);
+                position.z = (random + random) * type->position_random.z - type->position_random.z;
+                NuVecRotateZ(&position, &position, emitter->rotation_2c);
+                NuVecRotateY(&position, &position, emitter->rotation_2e);
+                NuVecRotateX(&position, &position, emitter->rotation_30);
+                NuVecAdd(&position, &position, &emitter->position);
+                params.position = &position;
+                velocity.x = 0.0f;
+                velocity.y = type->speed;
+                velocity.z = 0.0f;
+                random = NuRandFloatSeeded(&partseed);
+                velocity.x += (random + random) * type->velocity_random.x - type->velocity_random.x;
+                random = NuRandFloatSeeded(&partseed);
+                velocity.y += (random + random) * type->velocity_random.y - type->velocity_random.y;
+                random = NuRandFloatSeeded(&partseed);
+                velocity.z += (random + random) * type->velocity_random.z - type->velocity_random.z;
+                NuVecRotateZ(&velocity, &velocity, emitter->rotation_2c);
+                NuVecRotateY(&velocity, &velocity, emitter->rotation_2e);
+                NuVecRotateX(&velocity, &velocity, emitter->rotation_30);
+                params.velocity = &velocity;
+                params.gravity = type->gravity;
+                params.field_20 = type->bounce;
+                variant = 0;
+                if (type->variant_count != 0) {
+                    if (type->variant_mode == 0)
+                        variant = (i32)(NuRandFloatSeeded(&partseed) * 65535.0f) % type->variant_count;
+                    else if (type->variant_mode == 1) {
+                        next = (i8)(emitter->field_33 + 1);
+                        if (type->variant_count > next)
+                            variant = next;
+                        emitter->field_33 = variant;
+                    }
+                }
+                params.part_id = type->effect_ids[variant];
+                if ((u16)(params.part_id - 9998) <= 1)
+                    params.special = NULL;
+                else if (params.part_id != -1) {
+                    params.special = &special;
+                    NuGScnGetSpecial(&special, part_scene[type->scene_indices[variant]], params.part_id);
+                }
+                lifetime = type->lifetime;
+                params.field_a4 = lifetime + NuRandFloatSeeded(&partseed) * type->lifetime_random;
+                NuMtxSetIdentity(&matrix);
+                random_x = NuRandFloatSeeded(&partseed);
+                range_x = (f32)(type->rotation_random[0]);
+                random_y = NuRandFloatSeeded(&partseed);
+                range_y = (f32)(type->rotation_random[1]);
+                random_z = NuRandFloatSeeded(&partseed);
+                range_z = (f32)(type->rotation_random[2]);
+                for (axis = 0; axis < 3; ++axis) {
+                    params.field_a8[axis] = type->rotation[axis];
+                    params.field_a8[axis + 3] = type->rotation_random[axis];
+                }
+                NuMtxRotateX(&matrix, (i16)((i32)((random_x + random_x) * range_x + (f64)type->rotation[0] - range_x)));
+                NuMtxRotateY(&matrix, (i16)((i32)((random_y + random_y) * range_y + (f64)type->rotation[1] - range_y)));
+                NuMtxRotateZ(&matrix, (i16)((i32)((random_z + random_z) * range_z + (f64)type->rotation[2] - range_z)));
+                matrix.m30 = position.x;
+                matrix.m31 = position.y;
+                matrix.m32 = position.z;
+                params.matrix = &matrix;
+                params.flags = type->flags & ~0x60000;
+                if (type->trail_effects[0] != -1) {
+                    params.effect_id_60 = type->trail_effects[0];
+                    params.flags |= 0x40000;
+                }
+                if (type->trail_effects[1] != -1) {
+                    params.effect_id_64 = type->trail_effects[1];
+                    params.flags |= 0x40000;
+                }
+                if (type->attached_effect != -1) {
+                    params.effect_id_58 = type->attached_effect;
+                    params.flags |= 0x20000;
+                }
+                params.field_68 = type->trail_rates[0];
+                params.field_6c = type->trail_rates[1];
+                params.effect_id_70 = type->impact_effect;
+                if (type->impact_part == -1 && type->impact_part_name[0] != 0)
+                    type->impact_part = PARTLookupType(type->impact_part_name);
+                params.effect_id_74 = type->impact_part;
+                params.effect_scale = type->effect_scale;
+                params.lighting_scale_x = type->field_160;
+                params.lighting_scale_y = type->field_164;
+                params.lighting_scale_z = type->field_168;
+                params.effect_id_78 = type->kill_effect;
+                AddPart(&params);
+                if (emitter->field_3c != 0) {
+                    for (sound = 0; sound < 4; ++sound) {
+                        if (type->sounds[sound] != -1 && type->sound_modes[sound] == 3)
+                            PlaySfxById(type->sounds[sound], &emitter->position);
+                    }
+                }
+                type->last_used_time = emission_time;
+            }
+            emitter->time_20 = emission_time;
+            emission_time += interval;
+        }
+    }
+    for (i = 0; i <= last_switch_change; ++i)
+        debris_object_switches[switch_changes[i][0]] = switch_changes[i][1];
+}

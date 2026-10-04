@@ -1711,3 +1711,16 @@ exact physical copies4,669; unique exact data union632,255 adds535B. Unknown
 initializer equality does not establish original allocation or exact coverage.
 Next data proposals are finite wider Parts and interaction views; Image/cache
 at0x966298 remains held for alias/capacity evidence.
+
+
+Particle/interaction/Grid/Teleports checkpoint retains all3,483 prior complete
+shared regions and1,797 scopes; actual normal3,493/1,807 equal isolated output.
+Ten unknown views add58 working bytes without original allocation credit.
+Known603/138,161B remains unchanged; unknown1,204/130,126B denotes source views.
+All4,669 old exact physical copies and four typed members survive; two members
+remain exact/four bytes. All64 new initializer copies equal retail:43 known300B
+yield4,712 actual exact copies;21 unknown206B receive zero extent/exact credit.
+The genuine12-byte checkantinodefns table remains in aisys.c with blank original
+extent; complete source initializer equality does not infer its owning allocation.
+Unique exact data union632,384 adds129B. Private Teleports/Grid/Log owners and
+inherited CRC16 initializer remain genuine. No viewport/image backing is added.

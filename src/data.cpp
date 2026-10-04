@@ -11437,3 +11437,36 @@ extern "C" {
     i32 VisibilityPortalFilterEnabledPc = 1;
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$PartLoadParticlePagePc")
+    i32 PartLoadParticlePagePc = -1;
+#pragma data_seg()
+#pragma data_seg(".data$PartNullInstanceNamePc")
+    char PartNullInstanceNamePc[14] = "NULL instance";
+#pragma data_seg()
+#pragma bss_seg(".bss$PartNearestEmitterPc")
+    i32 PartNearestEmitterPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PartEditorCameraPosPc")
+    NUVEC PartEditorCameraPosPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PartNearestEmitterPtrPc")
+    PART_EMIT_PC *PartNearestEmitterPtrPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PartNearestTypePtrPc")
+    PARTTYPE_LOOKUP_PC *PartNearestTypePtrPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PartGeneralPagePc")
+    i32 PartGeneralPagePc;
+#pragma bss_seg()
+#pragma data_seg(".data$PartLevelPagePc")
+    i32 PartLevelPagePc = 1;
+#pragma data_seg()
+#pragma data_seg(".data$antinode_time")
+    f32 antinode_time = 1.0f;
+#pragma data_seg()
+#pragma data_seg(".data$antinode_reverse_time")
+    f32 antinode_reverse_time = 1.0f;
+#pragma data_seg()
+}

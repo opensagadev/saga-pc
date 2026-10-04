@@ -2930,3 +2930,10 @@ extern "C" void NewTerrainScaleYMask(NUVEC *position, NUVEC *movement, u8 *hit_f
     TerrShapeAdjCnt = 0;
     TerImpactData = 0;
 }
+
+extern "C" void __cdecl FullReflect(NUVEC *normal, NUVEC *movement, NUVEC *result) {
+    f32 reflection = (-movement->y * normal->y + -movement->x * normal->x) + -movement->z * normal->z;
+    result->x = movement->x + 2.0 * (normal->x * reflection);
+    result->y = movement->y + 2.0 * (normal->y * reflection);
+    result->z = movement->z + 2.0 * (normal->z * reflection);
+}

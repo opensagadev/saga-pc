@@ -9109,3 +9109,472 @@ void __cdecl DestroyAIGroup(AIGROUP_PC *group) {
     if (group != NULL)
         memset(group, 0, sizeof(*group));
 }
+
+typedef struct INTERACTION_PACKET_VIEW_PC {
+    u8 unknown[0x18c];
+    f32 antinode_timer;
+} INTERACTION_PACKET_VIEW_PC;
+STATIC_ASSERT(offsetof(INTERACTION_PACKET_VIEW_PC, antinode_timer) == 0x18c);
+typedef struct INTERACTION_OBJECT_VIEW_PC {
+    u8 unknown[0x292];
+    u16 priority;
+    u16 resolved_priority;
+    u8 unknown296[2];
+    APIOBJECT_PC *collision_link;
+} INTERACTION_OBJECT_VIEW_PC;
+STATIC_ASSERT(offsetof(INTERACTION_OBJECT_VIEW_PC, priority) == 0x292);
+STATIC_ASSERT(offsetof(INTERACTION_OBJECT_VIEW_PC, resolved_priority) == 0x294);
+STATIC_ASSERT(offsetof(INTERACTION_OBJECT_VIEW_PC, collision_link) == 0x298);
+typedef struct INTERACTION_ANTINODE_VIEW_PC {
+    u8 unknown[0x50];
+    u64 excluded_character_types;
+} INTERACTION_ANTINODE_VIEW_PC;
+STATIC_ASSERT(offsetof(INTERACTION_ANTINODE_VIEW_PC, excluded_character_types) == 0x50);
+#define INTERACTION_PACKET(p) ((INTERACTION_PACKET_VIEW_PC *)(p))
+#define INTERACTION_OBJECT(p) ((INTERACTION_OBJECT_VIEW_PC *)(p))
+#define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
+extern f32 antinode_time;
+typedef void(__cdecl *CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f32);
+/* The genuine callback definitions and initializer remain in the original aisys owner. */
+extern CHECK_ANTINODE_FN_PC checkantinodefns[3];
+
+typedef struct INTERACTION_ANTINODE_SHAPE_VIEW_PC {
+    u8 unknown[0x40];
+    f32 base_radius;
+    f32 base_height;
+} INTERACTION_ANTINODE_SHAPE_VIEW_PC;
+STATIC_ASSERT(offsetof(INTERACTION_ANTINODE_SHAPE_VIEW_PC, base_radius) == 0x40);
+STATIC_ASSERT(offsetof(INTERACTION_ANTINODE_SHAPE_VIEW_PC, base_height) == 0x44);
+#define INTERACTION_ANTINODE_SHAPE(a) ((INTERACTION_ANTINODE_SHAPE_VIEW_PC *)(a))
+#define INTERACTION_SIN(a) NuTrigTable[((a) >> 1) & 0x7fff]
+#define INTERACTION_COS(a) NuTrigTable[(((a) + 0x4000) >> 1) & 0x7fff]
+extern f32 antinode_reverse_time;
+static void AISysCheckAntinode_Rectangle(APIOBJECT_PC *object, AIANTINODE_PC *antinode, NUVEC *difference, f32 radius) {
+    NUVEC local_object;
+    NUVEC local_destination;
+    i32 object_angle;
+    i32 turn;
+    i32 turn_offset;
+    i32 corner_angle;
+    i32 angle;
+    f32 tangent_x;
+    f32 tangent_z;
+    i32 absolute_turn;
+    f32 scale;
+    difference->x = object->ai->movement_position.x - antinode->position.x;
+    if (difference->x > radius || difference->x < -radius) {
+        return;
+    }
+    difference->z = object->ai->movement_position.z - antinode->position.z;
+    if (difference->z > radius || difference->z < -radius ||
+        INTERACTION_GEOMETRY(object)->collision_min.y > antinode->max_y ||
+        antinode->min_y > INTERACTION_GEOMETRY(object)->collision_max.y) {
+        return;
+    }
+    NuVecRotateY(difference, difference, -antinode->rotation);
+    if (fabsf(difference->x) < INTERACTION_ANTINODE_SHAPE(antinode)->base_radius + object->ai->mover_height &&
+        fabsf(difference->z) < INTERACTION_ANTINODE_SHAPE(antinode)->base_height + object->ai->mover_height) {
+
+        difference->x = object->position.x - antinode->position.x;
+        difference->y = 0.0f;
+        difference->z = object->position.z - antinode->position.z;
+        NuVecRotateY(&local_object, difference, -antinode->rotation);
+        object_angle = NuAtan2D(local_object.x, local_object.z);
+        difference->x = object->ai->movement_destination.x - antinode->position.x;
+        difference->y = 0.0f;
+        difference->z = object->ai->movement_destination.z - antinode->position.z;
+        NuVecRotateY(&local_destination, difference, -antinode->rotation);
+        turn = NuAngSub(NuAtan2D(local_destination.x, local_destination.z), object_angle);
+        turn_offset = 0;
+        if (INTERACTION_PACKET(object->ai)->antinode_timer > 0.0f) {
+            if (((object->ai->path_info.flags & 3) == 2 || INTERACTION_GEOMETRY(object)->respawn_timer > 1.0f) &&
+                INTERACTION_PACKET(object->ai)->antinode_timer < antinode_time) {
+                object->ai->flags ^= 0x8000;
+                INTERACTION_PACKET(object->ai)->antinode_timer = antinode_time + antinode_reverse_time;
+            }
+            if ((object->ai->flags & 0x8000)) {
+                if (turn < 0) {
+                    turn_offset = 0x10000;
+                }
+            } else if (turn > 0) {
+                turn_offset = -0x10000;
+            }
+        } else if (turn > 0) {
+            object->ai->flags |= 0x8000;
+        } else {
+            object->ai->flags &= ~0x8000u;
+        }
+        if ((antinode->game_flags & 2) == 0 && INTERACTION_PACKET(object->ai)->antinode_timer < antinode_time) {
+            INTERACTION_PACKET(object->ai)->antinode_timer = antinode_time;
+        }
+        corner_angle = NuAtan2D(INTERACTION_ANTINODE_SHAPE(antinode)->base_radius,
+                                INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
+        angle = NuAngAdd(object_angle, 0);
+
+        if (angle > 0x8000 - corner_angle) {
+            object->ai->movement_position.x =
+                (INTERACTION_ANTINODE_SHAPE(antinode)->base_radius + object->ai->mover_height) * INTERACTION_SIN(angle);
+            object->ai->movement_position.z =
+                -(object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
+            tangent_x = -1.0f;
+            tangent_z = 0.0f;
+        } else if (angle > corner_angle) {
+            object->ai->movement_position.x =
+                INTERACTION_ANTINODE_SHAPE(antinode)->base_radius + object->ai->mover_height;
+            object->ai->movement_position.z =
+                (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height) * INTERACTION_COS(angle);
+            tangent_x = 0.0f;
+            tangent_z = -1.0f;
+        } else if (angle > -corner_angle) {
+            object->ai->movement_position.x =
+                (INTERACTION_ANTINODE_SHAPE(antinode)->base_radius + object->ai->mover_height) * INTERACTION_SIN(angle);
+            object->ai->movement_position.z =
+                object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
+            tangent_x = 1.0f;
+            tangent_z = 0.0f;
+        } else if (angle > corner_angle - 0x8000) {
+            object->ai->movement_position.x =
+                -(INTERACTION_ANTINODE_SHAPE(antinode)->base_radius + object->ai->mover_height);
+            object->ai->movement_position.z =
+                (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height) * INTERACTION_COS(angle);
+            tangent_x = 0.0f;
+            tangent_z = 1.0f;
+        } else {
+            object->ai->movement_position.x =
+                (INTERACTION_ANTINODE_SHAPE(antinode)->base_radius + object->ai->mover_height) * INTERACTION_SIN(angle);
+            object->ai->movement_position.z =
+                -(object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
+            tangent_x = -1.0f;
+            tangent_z = 0.0f;
+        }
+        if (turn + turn_offset < 0) {
+            tangent_x = -tangent_x;
+            tangent_z = -tangent_z;
+        }
+        absolute_turn = turn < 0 ? -turn : turn;
+        if (absolute_turn < 1820) {
+            scale = (f32)(absolute_turn) / 1820.0f;
+            tangent_x *= scale;
+            tangent_z *= scale;
+        }
+        object->ai->movement_position.y = 0.0f;
+        object->ai->movement_position.x += tangent_x;
+        object->ai->movement_position.z += tangent_z;
+        NuVecRotateY(&object->ai->movement_position, &object->ai->movement_position, antinode->rotation);
+        NuVecAdd(&object->ai->movement_position, &object->ai->movement_position, &antinode->position);
+        object->flags_low |= 0x40000;
+    }
+}
+
+static void AISysCheckAntinode_Ellipse(APIOBJECT_PC *object, AIANTINODE_PC *antinode, NUVEC *difference, f32 radius) {
+    f32 distance_squared;
+    f32 aspect;
+    NUVEC local_position;
+    NUVEC boundary;
+    i32 angle;
+    NUVEC local_object;
+    NUVEC object_boundary;
+    NUVEC local_destination;
+    i32 object_angle;
+    i32 turn;
+    f32 tangent_x;
+    f32 tangent_z;
+    i32 absolute_turn;
+    f32 scale;
+    distance_squared = difference->x * difference->x + difference->z * difference->z;
+    if (distance_squared < radius * radius) {
+        aspect = INTERACTION_ANTINODE_SHAPE(antinode)->base_height / INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
+
+        difference->y = 0.0f;
+        NuVecRotateY(&local_position, difference, -antinode->rotation);
+        angle = NuAtan2D(aspect * local_position.x, local_position.z);
+        boundary.x = INTERACTION_SIN(angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
+        boundary.y = 0.0f;
+        boundary.z = INTERACTION_COS(angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
+        NuVecNorm(difference, &boundary);
+        NuVecScale(difference, difference, object->ai->mover_height);
+        NuVecAdd(&boundary, &boundary, difference);
+        if (distance_squared < boundary.x * boundary.x + boundary.z * boundary.z) {
+
+            difference->x = object->position.x - antinode->position.x;
+            difference->y = 0.0f;
+            difference->z = object->position.z - antinode->position.z;
+            NuVecRotateY(&local_object, difference, -antinode->rotation);
+            object_angle = NuAtan2D(aspect * local_object.x, local_object.z);
+            object_boundary.x = INTERACTION_SIN(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
+            object_boundary.y = 0.0f;
+            object_boundary.z = INTERACTION_COS(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
+            NuVecNorm(difference, &object_boundary);
+            NuVecScale(difference, difference, object->ai->mover_height);
+            NuVecAdd(&object_boundary, &object_boundary, difference);
+            difference->x = object->ai->movement_destination.x - antinode->position.x;
+            difference->y = 0.0f;
+            difference->z = object->ai->movement_destination.z - antinode->position.z;
+            NuVecRotateY(&local_destination, difference, -antinode->rotation);
+            turn = NuAngSub(NuAtan2D(aspect * local_destination.x, local_destination.z), object_angle);
+            if (INTERACTION_PACKET(object->ai)->antinode_timer > 0.0f) {
+                if (((object->ai->path_info.flags & 3) == 2 || INTERACTION_GEOMETRY(object)->respawn_timer > 1.0f) &&
+                    INTERACTION_PACKET(object->ai)->antinode_timer < antinode_time) {
+                    object->ai->flags ^= 0x8000;
+                    INTERACTION_PACKET(object->ai)->antinode_timer = antinode_time + antinode_reverse_time;
+                }
+                if ((object->ai->flags & 0x8000)) {
+                    if (turn < 0) {
+                        turn += 0x10000;
+                    }
+                } else if (turn > 0) {
+                    turn -= 0x10000;
+                }
+            } else if (turn > 0) {
+                object->ai->flags |= 0x8000;
+            } else {
+                object->ai->flags &= ~0x8000u;
+            }
+            if ((antinode->game_flags & 2) == 0 && INTERACTION_PACKET(object->ai)->antinode_timer < antinode_time) {
+                INTERACTION_PACKET(object->ai)->antinode_timer = antinode_time;
+            }
+            tangent_x = INTERACTION_COS(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
+            tangent_z = -INTERACTION_SIN(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
+            if (turn < 0) {
+                tangent_x = -tangent_x;
+                tangent_z = -tangent_z;
+            }
+            absolute_turn = turn < 0 ? -turn : turn;
+            if (absolute_turn < 1820) {
+                scale = (f32)(absolute_turn) / 1820.0f;
+                tangent_x *= scale;
+                tangent_z *= scale;
+            }
+            object->ai->movement_position.y = 0.0f;
+            object->ai->movement_position.x = object_boundary.x + tangent_x;
+            object->ai->movement_position.z = object_boundary.z + tangent_z;
+            NuVecRotateY(&object->ai->movement_position, &object->ai->movement_position, antinode->rotation);
+            NuVecAdd(&object->ai->movement_position, &object->ai->movement_position, &antinode->position);
+            object->flags_low |= 0x40000;
+        }
+    }
+}
+
+static void AISysCheckAntinode_Circle(APIOBJECT_PC *object, AIANTINODE_PC *antinode, NUVEC *difference, f32 radius) {
+    i32 angle;
+    i32 turn;
+    f32 turn_fraction;
+    i32 max_turn;
+    f32 squared_distance;
+    squared_distance = difference->x * difference->x + difference->z * difference->z;
+    if (squared_distance < radius * radius) {
+        difference->x = object->position.x - antinode->position.x;
+        difference->z = object->position.z - antinode->position.z;
+        angle = NuAtan2D(difference->x, difference->z);
+        difference->x = object->ai->movement_destination.x - antinode->position.x;
+        difference->z = object->ai->movement_destination.z - antinode->position.z;
+        turn = NuAngSub(NuAtan2D(difference->x, difference->z), angle);
+        if (INTERACTION_PACKET(object->ai)->antinode_timer > 0.0f) {
+            if (((object->ai->path_info.flags & 3) == 2 || INTERACTION_GEOMETRY(object)->respawn_timer > 1.0f) &&
+                INTERACTION_PACKET(object->ai)->antinode_timer < antinode_time) {
+                object->ai->flags ^= 0x8000;
+                INTERACTION_PACKET(object->ai)->antinode_timer = antinode_time + antinode_reverse_time;
+            }
+            if ((object->ai->flags & 0x8000)) {
+                if (turn < 0) {
+                    turn += 0x10000;
+                }
+            } else if (turn > 0) {
+                turn -= 0x10000;
+            }
+        } else {
+            if (turn > 0) {
+                object->ai->flags |= 0x8000;
+            } else {
+                object->ai->flags &= ~0x8000u;
+            }
+        }
+        if ((antinode->game_flags & 2) == 0 && INTERACTION_PACKET(object->ai)->antinode_timer < antinode_time) {
+            INTERACTION_PACKET(object->ai)->antinode_timer = antinode_time;
+        }
+        turn_fraction = ai_moveradius / radius;
+        max_turn = (i32)((f64)turn_fraction * AIPathAngularScale);
+        if (turn > max_turn) {
+            turn = max_turn;
+        } else if (turn < -max_turn) {
+            turn = -max_turn;
+        }
+        angle = NuAngAdd(angle, turn);
+        difference->x = 0.0f;
+        difference->y = 0.0f;
+        difference->z = radius;
+        NuVecRotateY(difference, difference, angle);
+        object->ai->movement_position.x = difference->x + antinode->position.x;
+        object->ai->movement_position.y = object->ai->movement_destination.y;
+        object->ai->movement_position.z = difference->z + antinode->position.z;
+        object->flags_low |= 0x40000;
+    }
+}
+
+CHECK_ANTINODE_FN_PC checkantinodefns[3] = {AISysCheckAntinode_Circle, AISysCheckAntinode_Ellipse,
+                                            AISysCheckAntinode_Rectangle};
+
+void __cdecl AISysCreatureAntinodeInteraction(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *unused) {
+    AIANTINODE_PC *active[192];
+    i32 count, index, obstacle;
+    AIANTINODE_PC *antinode;
+    APIOBJECT_PC *object;
+    NUVEC difference;
+    f32 radius;
+    if (system != NULL) {
+        count = 0;
+        antinode = system->antinodes;
+        for (index = 0; index < system->antinode_count && count < 192; ++index, ++antinode) {
+            if (antinode->enabled && (!antinode->has_special || NuSpecialGetVisibilityFn(&antinode->special_handle)))
+                active[count++] = antinode;
+        }
+        antinode = dynamic_antinodes;
+        for (index = 0; index < 64 && count < 192; ++index, ++antinode) {
+            if (antinode->enabled && (!antinode->has_special || NuSpecialGetVisibilityFn(&antinode->special_handle)))
+                active[count++] = antinode;
+        }
+        if (count != 0) {
+            for (index = 0; index < object_count; ++index) {
+                object = objects[index];
+                if (object->flags_low & 0x20080)
+                    continue;
+                for (obstacle = 0; obstacle < count; ++obstacle) {
+                    antinode = active[obstacle];
+                    if (NuSpecialExistsFn(&object->collision_special) &&
+                        NuSpecialCompare(&object->collision_special, &antinode->special_handle))
+                        continue;
+                    if (((u64)1 << object->object_id) &
+                        ((INTERACTION_ANTINODE_VIEW_PC *)antinode)->excluded_character_types)
+                        continue;
+                    radius = object->ai->mover_height + antinode->radius;
+                    difference.x = object->ai->movement_position.x - antinode->position.x;
+                    if (difference.x > radius || difference.x < -radius)
+                        continue;
+                    difference.z = object->ai->movement_position.z - antinode->position.z;
+                    if (difference.z > radius || difference.z < -radius ||
+                        INTERACTION_GEOMETRY(object)->collision_min.y > antinode->max_y)
+                        continue;
+                    /* Native unordered min-height comparison continues to callback. */
+                    if (!(antinode->min_y > INTERACTION_GEOMETRY(object)->collision_max.y))
+                        checkantinodefns[antinode->type](object, antinode, &difference, radius);
+                }
+            }
+        }
+    }
+    AIAntinodeCullSingleFrame();
+}
+
+void __cdecl AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *immovable,
+                                        f32 delta_time) {
+    i32 index, first_index, second_index, first_fixed, second_fixed;
+    APIOBJECT_PC *first, *second;
+    AIPACKET_PC *first_packet, *second_packet, *source_packet, *target_packet;
+    NUVEC difference;
+    f32 timer, radius, distance, squared_distance, overlap, scale, first_timer, second_timer;
+    u16 first_priority, second_priority;
+    for (index = 0; index < object_count; ++index) {
+        timer = INTERACTION_PACKET(objects[index]->ai)->antinode_timer - delta_time;
+        INTERACTION_PACKET(objects[index]->ai)->antinode_timer = timer;
+        if (timer < 0.0f)
+            INTERACTION_PACKET(objects[index]->ai)->antinode_timer = 0.0f;
+    }
+    for (first_index = 0; first_index < object_count - 1; ++first_index) {
+        first = objects[first_index];
+        for (second_index = first_index + 1; second_index < object_count; ++second_index) {
+            second = objects[second_index];
+            first_packet = first->ai;
+            second_packet = second->ai;
+            radius = first_packet->mover_height + second_packet->mover_height;
+            difference.x = first_packet->movement_position.x - second_packet->movement_position.x;
+            if (difference.x > radius || difference.x < -radius)
+                continue;
+            difference.z = first_packet->movement_position.z - second_packet->movement_position.z;
+            if (difference.z > radius || difference.z < -radius)
+                continue;
+            if (INTERACTION_GEOMETRY(first)->collision_min.y > INTERACTION_GEOMETRY(second)->collision_max.y ||
+                INTERACTION_GEOMETRY(second)->collision_min.y > INTERACTION_GEOMETRY(first)->collision_max.y)
+                continue;
+            if (INTERACTION_OBJECT(first)->collision_link == second ||
+                INTERACTION_OBJECT(second)->collision_link == first)
+                continue;
+            first_fixed = immovable != NULL ? immovable[first_index] : 0;
+            second_fixed = immovable != NULL ? immovable[second_index] : 0;
+            if (first_packet->dont_avoid_character == (GAMEOBJECT *)second)
+                first_fixed = 1;
+            if (second_packet->dont_avoid_character == (GAMEOBJECT *)first)
+                second_fixed = 1;
+            if (first->flags_low & 0x80)
+                first_fixed = 1;
+            if (second->flags_low & 0x80)
+                second_fixed = 1;
+            first_priority = INTERACTION_OBJECT(first)->priority;
+            second_priority = INTERACTION_OBJECT(second)->priority;
+            if (first_priority > second_priority) {
+                first_fixed = 1;
+                if (second_fixed)
+                    continue;
+            } else if (first_priority < second_priority) {
+                second_fixed = 1;
+                if (first_fixed)
+                    continue;
+            } else {
+                continue;
+            }
+            squared_distance = difference.x * difference.x + difference.z * difference.z;
+            distance = NuFsqrt(squared_distance);
+            if (!(distance < radius))
+                continue;
+            difference.y = 0.0f;
+            overlap = radius - distance;
+            if (first_fixed) {
+                if (first_priority > INTERACTION_OBJECT(second)->resolved_priority) {
+                    scale = AIPathSafeDivide(overlap, distance);
+                    NuVecScale(&difference, &difference, scale);
+                    NuVecSub(&second->ai->movement_position, &second->ai->movement_position, &difference);
+                    INTERACTION_OBJECT(second)->resolved_priority = INTERACTION_OBJECT(first)->priority;
+                }
+            } else if (second_fixed) {
+                if (second_priority > INTERACTION_OBJECT(first)->resolved_priority) {
+                    scale = AIPathSafeDivide(overlap, distance);
+                    NuVecScale(&difference, &difference, scale);
+                    NuVecAdd(&first->ai->movement_position, &first->ai->movement_position, &difference);
+                    INTERACTION_OBJECT(first)->resolved_priority = INTERACTION_OBJECT(second)->priority;
+                }
+            } else {
+                scale = AIPathSafeDivide(overlap, distance);
+                NuVecScale(&difference, &difference, scale);
+                NuVecSub(&second->ai->movement_position, &second->ai->movement_position, &difference);
+                INTERACTION_OBJECT(first)->resolved_priority = INTERACTION_OBJECT(second)->priority;
+            }
+            first_packet = first->ai;
+            second_packet = second->ai;
+            first_timer = INTERACTION_PACKET(first_packet)->antinode_timer;
+            second_timer = INTERACTION_PACKET(second_packet)->antinode_timer;
+            source_packet = target_packet = NULL;
+            if (first_timer > antinode_time && second_timer > antinode_time) {
+                if (first_timer > second_timer) {
+                    source_packet = first_packet;
+                    target_packet = second_packet;
+                } else {
+                    source_packet = second_packet;
+                    target_packet = first_packet;
+                }
+            } else if (second_timer > antinode_time) {
+                source_packet = second_packet;
+                target_packet = first_packet;
+            } else if (first_timer > 0.0f) {
+                source_packet = first_packet;
+                target_packet = second_packet;
+            }
+            if (source_packet != NULL) {
+                INTERACTION_PACKET(target_packet)->antinode_timer = INTERACTION_PACKET(source_packet)->antinode_timer;
+                target_packet->flags ^= (source_packet->flags ^ target_packet->flags) & 0x8000;
+            }
+            if ((first->motion_flags ^ second->motion_flags) & 1) {
+                first->ai->flags |= 0x4000;
+                second->ai->flags |= 0x4000;
+            }
+        }
+    }
+    AISysCreatureAntinodeInteraction(system, object_count, objects, immovable);
+}

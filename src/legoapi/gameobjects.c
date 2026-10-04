@@ -3755,3 +3755,167 @@ void __cdecl GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8
     view->action = action;
     view->frames = grapple_attach_frames;
 }
+
+typedef struct INTERACTION_PACKET_VIEW_PC {
+    u8 unknown[0x18c];
+    f32 antinode_timer;
+} INTERACTION_PACKET_VIEW_PC;
+STATIC_ASSERT(offsetof(INTERACTION_PACKET_VIEW_PC, antinode_timer) == 0x18c);
+typedef struct INTERACTION_OBJECT_VIEW_PC {
+    u8 unknown[0x292];
+    u16 priority;
+    u16 resolved_priority;
+    u8 unknown296[2];
+    APIOBJECT_PC *collision_link;
+} INTERACTION_OBJECT_VIEW_PC;
+STATIC_ASSERT(offsetof(INTERACTION_OBJECT_VIEW_PC, priority) == 0x292);
+STATIC_ASSERT(offsetof(INTERACTION_OBJECT_VIEW_PC, resolved_priority) == 0x294);
+STATIC_ASSERT(offsetof(INTERACTION_OBJECT_VIEW_PC, collision_link) == 0x298);
+typedef struct INTERACTION_ANTINODE_VIEW_PC {
+    u8 unknown[0x50];
+    u64 excluded_character_types;
+} INTERACTION_ANTINODE_VIEW_PC;
+STATIC_ASSERT(offsetof(INTERACTION_ANTINODE_VIEW_PC, excluded_character_types) == 0x50);
+#define INTERACTION_PACKET(p) ((INTERACTION_PACKET_VIEW_PC *)(p))
+#define INTERACTION_OBJECT(p) ((INTERACTION_OBJECT_VIEW_PC *)(p))
+#define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
+extern f32 antinode_time;
+typedef void(__cdecl *CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f32);
+/* The genuine callback definitions and initializer remain in the original aisys owner. */
+extern CHECK_ANTINODE_FN_PC checkantinodefns[3];
+
+void __cdecl AISysCreatureAntinodeInteraction(AISYS_PC *, i32, APIOBJECT_PC **, i32 *);
+
+static void CreatureInteractionOrbitPc(APIOBJECT_PC *object, NUVEC *difference, APIOBJECT_PC *centre, f32 radius) {
+    f32 squared_distance, fraction;
+    i32 angle, turn, limit;
+    squared_distance = difference->x * difference->x + difference->z * difference->z;
+    if (squared_distance < (f64)radius * radius) {
+        difference->x = object->position.x - centre->position.x;
+        difference->z = object->position.z - centre->position.z;
+        angle = NuAtan2D(difference->x, difference->z);
+        difference->x = object->ai->movement_destination.x - centre->position.x;
+        difference->z = object->ai->movement_destination.z - centre->position.z;
+        turn = NuAngSub(NuAtan2D(difference->x, difference->z), angle);
+        fraction = ai_moveradius / radius;
+        limit = (i32)((f64)fraction * AIPathAngularScale);
+        if (turn > limit)
+            turn = limit;
+        else if (turn < -limit)
+            turn = -limit;
+        angle = NuAngAdd(angle, turn);
+        difference->x = 0.0f;
+        difference->y = 0.0f;
+        difference->z = radius;
+        NuVecRotateY(difference, difference, angle);
+        object->ai->movement_position.x = centre->position.x + difference->x;
+        object->ai->movement_position.y = object->ai->movement_destination.y;
+        object->ai->movement_position.z = centre->position.z + difference->z;
+    }
+}
+void __cdecl GameCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *immovable,
+                                       f32 delta_time) {
+    i32 index, first_index, second_index, first_fixed, second_fixed;
+    APIOBJECT_PC *first, *second;
+    AIPACKET_PC *first_packet, *second_packet, *source_packet, *target_packet;
+    NUVEC difference;
+    f32 timer, radius, squared_distance, first_timer, second_timer;
+    u16 first_priority, second_priority;
+    for (index = 0; index < object_count; ++index) {
+        timer = INTERACTION_PACKET(objects[index]->ai)->antinode_timer - delta_time;
+        INTERACTION_PACKET(objects[index]->ai)->antinode_timer = timer;
+        if (timer < 0.0f)
+            INTERACTION_PACKET(objects[index]->ai)->antinode_timer = 0.0f;
+    }
+    for (first_index = 0; first_index < object_count - 1; ++first_index) {
+        first = objects[first_index];
+        for (second_index = first_index + 1; second_index < object_count; ++second_index) {
+            second = objects[second_index];
+            first_packet = first->ai;
+            second_packet = second->ai;
+            radius = first_packet->mover_height + second_packet->mover_height;
+            difference.x = first_packet->movement_position.x - second_packet->movement_position.x;
+            if (difference.x > radius || difference.x < -radius)
+                continue;
+            difference.z = first_packet->movement_position.z - second_packet->movement_position.z;
+            if (difference.z > radius || difference.z < -radius)
+                continue;
+            if (INTERACTION_GEOMETRY(first)->collision_min.y > INTERACTION_GEOMETRY(second)->collision_max.y ||
+                INTERACTION_GEOMETRY(second)->collision_min.y > INTERACTION_GEOMETRY(first)->collision_max.y)
+                continue;
+            if (INTERACTION_OBJECT(first)->collision_link == second ||
+                INTERACTION_OBJECT(second)->collision_link == first)
+                continue;
+            first_fixed = immovable != NULL ? immovable[first_index] : 0;
+            second_fixed = immovable != NULL ? immovable[second_index] : 0;
+            if (first->flags_low & 0x80)
+                first_fixed = 1;
+            if (second->flags_low & 0x80)
+                second_fixed = 1;
+            first_priority = INTERACTION_OBJECT(first)->priority;
+            second_priority = INTERACTION_OBJECT(second)->priority;
+            if (first_priority > second_priority) {
+                first_fixed = 1;
+                if (second_fixed)
+                    continue;
+            } else if (first_priority < second_priority) {
+                second_fixed = 1;
+                if (first_fixed)
+                    continue;
+            } else {
+                continue;
+            }
+            squared_distance = difference.x * difference.x + difference.z * difference.z;
+            if (!(NuFsqrt(squared_distance) < radius))
+                continue;
+            difference.y = 0.0f;
+            if (first_fixed) {
+                if (first_priority > INTERACTION_OBJECT(second)->resolved_priority) {
+                    INTERACTION_OBJECT(second)->resolved_priority = first_priority;
+                    difference.x = -difference.x;
+                    difference.z = -difference.z;
+                    CreatureInteractionOrbitPc(second, &difference, first, radius);
+                }
+            } else if (second_fixed) {
+                if (second_priority > INTERACTION_OBJECT(first)->resolved_priority) {
+                    INTERACTION_OBJECT(first)->resolved_priority = second_priority;
+                    CreatureInteractionOrbitPc(first, &difference, second, radius);
+                }
+            } else {
+                INTERACTION_OBJECT(first)->resolved_priority = second_priority;
+                difference.x = -difference.x;
+                difference.z = -difference.z;
+                CreatureInteractionOrbitPc(second, &difference, first, radius);
+            }
+            first_packet = first->ai;
+            second_packet = second->ai;
+            first_timer = INTERACTION_PACKET(first_packet)->antinode_timer;
+            second_timer = INTERACTION_PACKET(second_packet)->antinode_timer;
+            source_packet = target_packet = NULL;
+            if (first_timer > antinode_time && second_timer > antinode_time) {
+                if (first_timer > second_timer) {
+                    source_packet = first_packet;
+                    target_packet = second_packet;
+                } else {
+                    source_packet = second_packet;
+                    target_packet = first_packet;
+                }
+            } else if (second_timer > antinode_time) {
+                source_packet = second_packet;
+                target_packet = first_packet;
+            } else if (first_timer > 0.0f) {
+                source_packet = first_packet;
+                target_packet = second_packet;
+            }
+            if (source_packet != NULL) {
+                INTERACTION_PACKET(target_packet)->antinode_timer = INTERACTION_PACKET(source_packet)->antinode_timer;
+                target_packet->flags ^= (source_packet->flags ^ target_packet->flags) & 0x8000;
+            }
+            if ((first->motion_flags ^ second->motion_flags) & 1) {
+                first->ai->flags |= 0x4000;
+                second->ai->flags |= 0x4000;
+            }
+        }
+    }
+    AISysCreatureAntinodeInteraction(system, object_count, objects, immovable);
+}

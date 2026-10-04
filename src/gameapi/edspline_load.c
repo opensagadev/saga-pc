@@ -72,3 +72,14 @@ i32 __cdecl LoadEditorSplines(char *path, VARIPTR *buffer, VARIPTR *end) {
     buffer->void_ptr = data_end;
     return failed ? 0 : count;
 }
+
+NUGSPLINE *__cdecl edSpline_SplineFind(NUGSCN *scene, char *name) {
+    i32 index;
+    if (splineStore != NULL) {
+        for (index = 0; index < numSplinesLoaded; ++index) {
+            if (NuStrICmp(splineStore[index].name, name) == 0)
+                return &splineStore[index];
+        }
+    }
+    return NuSplineFind(scene, name);
+}

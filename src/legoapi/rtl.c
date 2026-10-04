@@ -530,3 +530,14 @@ i32 __cdecl rtlDynamicSetType(i32 id, i32 type) {
     light->type = (u8)type;
     return 1;
 }
+
+i32 __cdecl rtlDynamicSetPos(i32 id, NUVEC *position) {
+    RTL_LIGHT_PC *light;
+    if (rtl_dynamic_pool == NULL || id < 0 || id >= rtl_dynamic_max)
+        return 0;
+    light = (RTL_LIGHT_PC *)NuLstGetByIdx(rtl_dynamic_pool, id);
+    if (light == NULL || position == NULL)
+        return 0;
+    light->position = *position;
+    return 1;
+}
