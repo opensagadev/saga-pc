@@ -676,3 +676,32 @@ i32 __cdecl GizmoBlowupGetTypeFromNameTableId(WORLDINFO *world, i32 id) {
             return i;
     return -1;
 }
+
+GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowup_FindType(char *name, WORLDINFO *world) {
+    i32 i;
+    if (!world || !world->gizmo_blowup_types || !world->gizmo_blowup_type_count || !name)
+        return NULL;
+    for (i = 0; i < world->gizmo_blowup_type_count; ++i)
+        if (!NuStrICmp(world->gizmo_blowup_types[i].name, name))
+            return &world->gizmo_blowup_types[i];
+    return NULL;
+}
+void __cdecl GizmoBlowUpTypeBlowUp(WORLDINFO *world, i32 index, NUVEC *position) {
+    char *name;
+    GIZMOBLOWUPTYPE_PC *type;
+    GIZMOBLOWUP_PC temporary;
+    i32 flags;
+    if (!world || index == -1 || index > world->gizmo_blowup_type_count)
+        return;
+    name = world->gizmo_blowup_types[index].name;
+    if (!NuStrLen(name) || !name)
+        return;
+    type = GizmoBlowup_FindType(name, world);
+    if (!type)
+        return;
+    memset(&temporary, 0, sizeof(temporary));
+    temporary.type = type;
+    flags = temporary.animation_time > 0.0f ? 15 : 7;
+    GizmoBlowUp_AddEffects(position, &temporary, 0, flags, NULL);
+    GameAudio_PlaySfx(0x33, position, 0, 0);
+}

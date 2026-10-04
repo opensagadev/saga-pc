@@ -465,3 +465,115 @@ void __cdecl NuVec4MtxRotateVU0(NUVEC4 *out, NUVEC4 *input, NUMTX *matrix) {
     out->z = z;
     out->w = input->w;
 }
+
+i32 __cdecl NuPointRelToBoundingBox(NUVEC *point, NUVEC *maximum, NUVEC *minimum) {
+    i32 result = 0;
+    if (point->x >= maximum->x)
+        result |= 1;
+    else if (point->x <= minimum->x)
+        result |= 8;
+    if (point->y >= maximum->y)
+        result |= 2;
+    else if (point->y <= minimum->y)
+        result |= 16;
+    if (point->z >= maximum->z)
+        result |= 4;
+    else if (point->z <= minimum->z)
+        result |= 32;
+    return result;
+}
+void __cdecl NuClipXPlane(NUVEC *out, NUVEC *point, NUVEC *direction, f32 *plane) {
+    f32 delta;
+    out->x = plane ? *plane : 0.0f;
+    delta = out->x - point->x;
+    out->y = point->y + (direction->y * delta) / direction->x;
+    out->z = point->z + (direction->z * delta) / direction->x;
+}
+void __cdecl NuClipYPlane(NUVEC *out, NUVEC *point, NUVEC *direction, f32 *plane) {
+    f32 delta;
+    out->y = plane ? *plane : 0.0f;
+    delta = out->y - point->y;
+    out->x = point->x + (direction->x * delta) / direction->y;
+    out->z = point->z + (direction->z * delta) / direction->y;
+}
+void __cdecl NuClipZPlane(NUVEC *out, NUVEC *point, NUVEC *direction, f32 *plane) {
+    f32 delta;
+    out->z = plane ? *plane : 0.0f;
+    delta = out->z - point->z;
+    out->x = point->x + (direction->x * delta) / direction->z;
+    out->y = point->y + (direction->y * delta) / direction->z;
+}
+i32 __cdecl BoundingBoxToLine(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, NUVEC *start, NUVEC *end, f32 expansion,
+                              NUVEC *intersection) {
+    NUVEC a, b, direction, hit, lo, hi;
+    i32 ca, cb;
+    lo.x = minimum->x - expansion;
+    lo.y = minimum->y - expansion;
+    lo.z = minimum->z - expansion;
+    hi.x = maximum->x + expansion;
+    hi.y = maximum->y + expansion;
+    hi.z = maximum->z + expansion;
+    NuVecInvMtxTransform(&a, start, matrix);
+    ca = NuPointRelToBoundingBox(&a, &hi, &lo);
+    if (!ca && !intersection)
+        return 1;
+    NuVecInvMtxTransform(&b, end, matrix);
+    cb = NuPointRelToBoundingBox(&b, &hi, &lo);
+    if (!cb && !intersection)
+        return 1;
+    if (!ca && !cb) {
+        if (intersection)
+            intersection->x = intersection->y = intersection->z = 0.0f;
+        return 1;
+    }
+    if (ca & cb)
+        return 0;
+    NuVecSub(&direction, &b, &a);
+    NuVecNorm(&direction, &direction);
+    if (ca & 1) {
+        NuClipXPlane(&hit, &a, &direction, &hi.x);
+        if (hit.y < hi.y && hit.y > lo.y && hit.z < hi.z && hit.z > lo.z) {
+            if (intersection)
+                *intersection = hit;
+            return 1;
+        }
+    } else if (ca & 8) {
+        NuClipXPlane(&hit, &a, &direction, &lo.x);
+        if (hit.y < hi.y && hit.y > lo.y && hit.z < hi.z && hit.z > lo.z) {
+            if (intersection)
+                *intersection = hit;
+            return 1;
+        }
+    }
+    if (ca & 2) {
+        NuClipYPlane(&hit, &a, &direction, &hi.y);
+        if (hit.x < hi.x && hit.x > lo.x && hit.z < hi.z && hit.z > lo.z) {
+            if (intersection)
+                *intersection = hit;
+            return 1;
+        }
+    } else if (ca & 16) {
+        NuClipYPlane(&hit, &a, &direction, &lo.y);
+        if (hit.x < hi.x && hit.x > lo.x && hit.z < hi.z && hit.z > lo.z) {
+            if (intersection)
+                *intersection = hit;
+            return 1;
+        }
+    }
+    if (ca & 4) {
+        NuClipZPlane(&hit, &a, &direction, &hi.z);
+        if (hit.x < hi.x && hit.x > lo.x && hit.y < hi.y && hit.y > lo.y) {
+            if (intersection)
+                *intersection = hit;
+            return 1;
+        }
+    } else if (ca & 32) {
+        NuClipZPlane(&hit, &a, &direction, &lo.z);
+        if (hit.x < hi.x && hit.x > lo.x && hit.y < hi.y && hit.y > lo.y) {
+            if (intersection)
+                *intersection = hit;
+            return 1;
+        }
+    }
+    return 0;
+}

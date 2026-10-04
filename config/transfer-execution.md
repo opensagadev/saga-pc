@@ -1612,3 +1612,63 @@ geometry/Shove 6/2,200: 28 functions/7,383 PC bytes, pending genuine shared data
 all-normal runtime checks. Broader Ogg/Vorbis and audio sample-manager banks
 continue separately. The checkpoint waits for coherent final verification;
 the user's three identification-journal edits remain untouched.
+
+
+### Obstacle, animation and CPU collision checkpoint (2026-10-04)
+
+Twenty-eight newly implemented source functions compare 7,383 PC row bytes over
+25a8333. One exact 138-byte NuPointRelToBoundingBox implementation shares a
+previously compared native span: the unique newly compared union is 7,245 bytes.
+Unique compared code reaches 831,000; native objdiff compares 831,453 including
+aliases at 64.604500%. Whole-PC fuzzy coverage rises from 15.295465% to
+15.461953% of 3,471,246 bytes. Exact union grows 412 bytes to 83,032/2.391994%.
+The obstacle update/mode callbacks, triggers, controls, bolt targeting, blowup
+lookup/type action, animation reflection, draw, Shove queue and CPU box/line
+geometry retain complete native extents and real source provider closure.
+
+Runtime testing found an actual transfer error: Proximity used a BYTE field
+for a native DWORD test of bit 0x1000. That candidate could never select eligible
+objects. The initial static approval was withdrawn, both eligibility tests now
+use the asserted DWORD view, and independent final native review accepts the
+repair. Signed low-BYTE behavior stays intact. A named two-WORD local payload
+replaces four raw object-data accesses without changing emitted code. All-normal
+fixtures pass 139 checks: environment 88, geometry 28 and Shove 23. Deliberately
+restoring the wrong BYTE predicate fails two checks; the wrong NaN predicate
+fails one. No assertions were removed or relaxed. Native unordered rejection
+branches, rather than an Android conjunction, determine the NaN behavior.
+
+All 3,015 previous full function copies survive; 3,014 are identical. The sole
+old nonexact NuRndrParticleGroup difference repeats a previously independently
+verified x87 scheduling pair, 717 to 713 candidate bytes, with unchanged source,
+identical symbolic stack at dispatch and all 34 relocation destinations intact.
+Its advisory score remains honestly 88.419685%. All previous exact code/data and
+the two exact typed resource members, 4 bytes, remain preserved.
+
+Pinned source-only EXE link and map/relocation checks pass for 3,043 function and
+5,626 data definitions across 240 actual objects. LLVM 18 checks 242 files/240
+units; all 699 tests pass with 3 skips. Each native fixture links all 240 normal
+objects, with zero replacements, supplemental providers, fake globals or retail
+runtime code. Domains cover initialized mode 0..7, real animation/pool producers,
+empty animation sets, valid triggers/object contexts, finite CPU bounds and a
+real Shove queue with counts 0..16. Positive device/audio/destructible effects,
+reflected scenes and full-game execution remain outside these finite fixtures.
+
+Seven physical shared views add 143 source bytes: one complete 59-byte NUL
+literal and six mutable unknown views totaling 84 bytes. All 3,317 old shared
+regions remain unchanged; current 3,324 normal regions equal isolated compilation.
+Scope 1,638 has 562 known regions/137,693 unique bytes and 1,076 unknown views/
+122,424 source bytes. All 4,334 previous actual exact physical initializer copies
+remain intact; nine new copies yield 4,343, plus the two unchanged exact members.
+The natural private 32-byte mode callback table and 388-byte Shove queue stay in
+their genuine original owners; full initializers match, owning extents remain
+unknown, and no allocation credit is assigned.
+
+The 05:19 UTC checkpoint waited for full matching, normal data/fixture proof and
+qualification of the recurring compiler difference. The user's three journal
+edits remain untouched. Next releases are the accepted player toggle/reset/
+Move_DEFAULT family, 3/3,113, and genuine LZ2K decoder, 13/2,332, with 15 shared
+views/4,128 source bytes. A genuine libogg 1.1.3 container bank, 68/6,239, undergoes
+independent release review. Proven libvorbis 1.2.0 vorbisfile source reproduces
+63/14,513 exact PC bytes; its genuine core-codec provider closure remains pending.
+These research bytes are not current reconstruction progress. DAT caller buffer
+capacity remains unresolved; no large fabricated backing array is introduced.

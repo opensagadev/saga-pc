@@ -6176,9 +6176,9 @@ typedef struct gizobstacle_s {
     NUVEC secondary_position;
     NUVEC evaluated_position;
     GAMEANIMSET *anim_set;
-    u8 opaque_38[4];
+    GAMEOBJECT *triggering_object;
     f32 auto_return_delay;
-    u8 opaque_40[4];
+    f32 auto_return_timer;
     f32 trigger_radius;
     f32 animation_speed;
     f32 forward_speed_factor;
@@ -6202,6 +6202,8 @@ typedef struct gizobstacle_s {
     u32 runtime_flags;
 } GIZOBSTACLE;
 STATIC_ASSERT(sizeof(GIZOBSTACLE) == 0xa0);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, triggering_object) == 0x38);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, auto_return_timer) == 0x40);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, name) == 0);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, position) == 0x10);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, stop_sfx_id) == 0x8e);
@@ -13021,6 +13023,33 @@ void __cdecl PCStereoUnknownToken(void);
     void __cdecl DisplayListCreatePS(NUDISPLAY_LIST_PC *, VARIPTR *, VARIPTR);
     extern const char PCDynamicDisplaySceneNameText[31];
     extern const char *PCDynamicDisplaySceneNamePointer;
+
+    void __cdecl GizObstacle_Stop(GIZOBSTACLE *);
+    void __cdecl GizObstacles_Update(void *, void *, f32);
+    GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowup_FindType(char *, WORLDINFO *);
+    void __cdecl GizmoBlowUpTypeBlowUp(WORLDINFO *, i32, NUVEC *);
+    void __cdecl AddShoveObject(NUSPECIALHANDLE *, i16);
+    extern NUVEC *GizObstacleTriggersPc[16];
+    extern i32(__cdecl *GizObstacleExcludeFnPc)(GIZOBSTACLE *, GAMEOBJECT *);
+    extern LEVELDATA_PC *ObstacleReturnLevelPc;
+    extern const char GizObstacleTriggerLimitMessagePc[59];
+    void __cdecl GizObstacles_AddTrigger(NUVEC *);
+    void __cdecl GizObstacle_SetTechnoControlled(GIZOBSTACLE *, f32);
+    void __cdecl GizObstacle_SetPushControlled(GIZOBSTACLE *, GAMEOBJECT *, f32);
+    GIZOBSTACLE *__cdecl GizObstacle_FindNearest(void *, NUVEC *, GAMEOBJECT *, f32 *, i32);
+    i32 __cdecl GizObstacles_Hit(void *, GIZOBSTACLE *, NUVEC *, i32, i32);
+    GIZMO_PC *__cdecl GizObstacles_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *,
+                                                     f32, f32, i32, i32, i32);
+    void __cdecl ShoveObjectSysReset(void);
+    void __cdecl GameAnimSet_DrawReflection(GAMEANIMSET *, i32, f32, NUMTX *);
+    void __cdecl GizObstacles_Draw(void *, void *, f32);
+    i32 __cdecl NuPointRelToBoundingBox(NUVEC *, NUVEC *, NUVEC *);
+    void __cdecl NuClipXPlane(NUVEC *, NUVEC *, NUVEC *, f32 *);
+    void __cdecl NuClipYPlane(NUVEC *, NUVEC *, NUVEC *, f32 *);
+    void __cdecl NuClipZPlane(NUVEC *, NUVEC *, NUVEC *, f32 *);
+    i32 __cdecl BoundingBoxToLine(NUVEC *, NUVEC *, NUMTX *, NUVEC *, NUVEC *, f32, NUVEC *);
+    void __cdecl ShoveSystemCheckGameObject(GAMEOBJECT *);
+    extern f32 ShoveMaximumSpeedPc, ShoveMaximumPenetrationPc, ShoveCollisionExpansionPc;
 
     typedef union LEVEL_INST_ANIM_RESET_VIEW_PC {
         u32 reset_words[12];

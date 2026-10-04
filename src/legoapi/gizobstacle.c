@@ -405,3 +405,456 @@ void __cdecl GizObstacles_Reset(void *world_ptr, void *data, void *progress_ptr)
     }
     GizObstacleTriggerCountPc = 0;
 }
+
+typedef struct gizobstacle_object_data_pc_s {
+    i16 flags;
+    i16 platform_id;
+} GIZOBSTACLE_OBJECT_DATA_PC;
+STATIC_ASSERT(sizeof(GIZOBSTACLE_OBJECT_DATA_PC) == 4);
+STATIC_ASSERT(offsetof(GIZOBSTACLE_OBJECT_DATA_PC, flags) == 0);
+STATIC_ASSERT(offsetof(GIZOBSTACLE_OBJECT_DATA_PC, platform_id) == 2);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, triggering_object) == 0x38);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, auto_return_timer) == 0x40);
+extern NUVEC *GizObstacleTriggersPc[16];
+extern i32(__cdecl *GizObstacleExcludeFnPc)(GIZOBSTACLE *, GAMEOBJECT *);
+extern LEVELDATA_PC *ObstacleReturnLevelPc;
+void __cdecl AddShoveObject(NUSPECIALHANDLE *, i16);
+void __cdecl GizmoBlowUpTypeBlowUp(WORLDINFO *, i32, NUVEC *);
+
+void __cdecl GizObstacle_Stop(GIZOBSTACLE *obstacle) {
+    if (obstacle)
+        GameAnimSet_Stop(obstacle->anim_set);
+}
+static void __cdecl GizObstacle_EvalAveragePosAndRadius(GIZOBSTACLE *obstacle, i32 state) {
+    obstacle->evaluated_radius = 1.0f;
+    obstacle->evaluated_position = obstacle->position;
+    GameAnimSet_GetCentreAndRadius(obstacle->anim_set, &obstacle->evaluated_position, &obstacle->evaluated_radius,
+                                   state, 1, 1);
+}
+static i32 __cdecl GizObstacle_PosWithinBox(GIZOBSTACLE *obstacle, NUVEC *position) {
+    NUVEC local;
+    if (obstacle->mode != 5 && obstacle->mode != 6)
+        return 1;
+    NuVecSub(&local, position, &obstacle->secondary_position);
+    NuVecRotateY(&local, &local, -(u16)obstacle->trigger_box_yaw);
+    if (local.x > obstacle->trigger_box_half_extents.x || local.x < -obstacle->trigger_box_half_extents.x)
+        return 0;
+    if (local.y > obstacle->trigger_box_half_extents.y || local.y < 0.0f)
+        return 0;
+    if (local.z > obstacle->trigger_box_half_extents.z || local.z < -obstacle->trigger_box_half_extents.z)
+        return 0;
+    return 1;
+}
+static i32 __cdecl GizObstacle_SatisfyingTerrainChecks(GIZOBSTACLE *obstacle, GAMEOBJECT *object) {
+    GAMEANIMOBJ *anim_object;
+    if ((i8)obstacle->trigger_mode < 0) {
+        if (!(obstacle->config_flags & 0x10))
+            return 1;
+        if (!object->field_281 && !(object->flags_ef4 & 0x20000000))
+            return 0;
+        if (object->supporting_platform_id >= 0 && obstacle->anim_set && (obstacle->runtime_flags & 0x10)) {
+            for (anim_object = obstacle->anim_set->objects; anim_object; anim_object = anim_object->next)
+                if (((GIZOBSTACLE_OBJECT_DATA_PC *)anim_object->object_data)->platform_id ==
+                    object->supporting_platform_id)
+                    return 1;
+        }
+        return 0;
+    }
+    if ((!object->field_281 && !(object->flags_ef4 & 0x20000000)) ||
+        obstacle->trigger_mode != object->jump_animation_state)
+        return 0;
+    return 1;
+}
+static void __cdecl GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
+    i32 state;
+    obstacle->proximity_output = 0;
+    if (!(obstacle->runtime_flags & 8)) {
+        f32 closest = obstacle->trigger_radius * obstacle->trigger_radius;
+        NUVEC *closest_position = NULL;
+        GAMEOBJECT *closest_object = NULL;
+        u32 players = 0;
+        i32 i;
+        GAMEOBJECT *object;
+        if (obstacle->mode == 1 || obstacle->mode == 2 || obstacle->mode == 5 || obstacle->mode == 6) {
+            if ((obstacle->mode == 1 || obstacle->mode == 5) && GameCam->mode != -1 && obstacle->trigger_mode == 0xff &&
+                !(obstacle->config_flags & 0x4435)) {
+                f32 distance = NuVecDistSqr(&GameCam->position, &obstacle->secondary_position, NULL);
+                if (distance < closest && GizObstacle_PosWithinBox(obstacle, &GameCam->position)) {
+                    closest = distance;
+                    closest_position = &GameCam->position;
+                }
+            }
+            if (!(obstacle->config_flags & 1)) {
+                for (i = 0; i < GizObstacleTriggerCountPc; ++i) {
+                    f32 distance = NuVecDistSqr(&obstacle->secondary_position, GizObstacleTriggersPc[i], NULL);
+                    if (distance < closest && GizObstacle_PosWithinBox(obstacle, GizObstacleTriggersPc[i])) {
+                        closest = distance;
+                        closest_position = GizObstacleTriggersPc[i];
+                    }
+                }
+            }
+        }
+        for (i = 0, object = Obj; i < HIGHGAMEOBJECT; ++i, ++object) {
+            i8 player;
+            f32 distance;
+            if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || object->dead ||
+                (LEGOCONTEXT_DOOMED != -1 && object->character_context == LEGOCONTEXT_DOOMED) ||
+                !(object->flags_1044 & 1) || (object->flags_e20 & 0x20))
+                continue;
+            player = (i8)object->field_280;
+            if (player != -1)
+                players |= 1u << ((u8)player & 31);
+            if ((obstacle->config_flags & 4) && player == -1)
+                continue;
+            if (((obstacle->config_flags & 0x20) && (i8)object->flags_1fc >= 0) ||
+                (CInfo[object->character_context].flags & 0x8000) ||
+                ((obstacle->config_flags & 0x400) && !object->rider) ||
+                ((obstacle->config_flags & 0x4000) && !(object->character_data->model_flags & 4)) ||
+                ((obstacle->config_flags & 8) && !(object->character_data->model_flags & 0x2000)) ||
+                (GizObstacleExcludeFnPc && GizObstacleExcludeFnPc(obstacle, object)))
+                continue;
+            if ((obstacle->mode == 2 || obstacle->mode == 6) && !object->field_281 &&
+                !(object->flags_ef4 & 0x20000000) && object->jump_variant_state != 1) {
+                GAMEANIMOBJ *anim_object = obstacle->anim_set ? obstacle->anim_set->objects : NULL;
+                while (anim_object) {
+                    i16 platform = ((GIZOBSTACLE_OBJECT_DATA_PC *)anim_object->object_data)->platform_id;
+                    if (platform != -1 && platform == object->supporting_platform_id)
+                        break;
+                    anim_object = anim_object->next;
+                }
+                if (!anim_object)
+                    continue;
+            }
+            distance = NuVecDistSqr(&obstacle->secondary_position, &object->lower_position, NULL);
+            if (distance < closest) {
+                if (GizObstacle_PosWithinBox(obstacle, &object->collision_position) &&
+                    GizObstacle_SatisfyingTerrainChecks(obstacle, object)) {
+                    closest = distance;
+                    closest_position = &object->lower_position;
+                    closest_object = object;
+                    if (player != -1)
+                        players &= ~(1u << ((u8)player & 31));
+                }
+            } else if ((obstacle->config_flags & 0x2000) && player != -1 &&
+                       distance < obstacle->trigger_radius * obstacle->trigger_radius &&
+                       GizObstacle_PosWithinBox(obstacle, &object->collision_position) &&
+                       GizObstacle_SatisfyingTerrainChecks(obstacle, object)) {
+                players &= ~(1u << ((u8)player & 31));
+            }
+        }
+        if (((obstacle->config_flags & 1) && !closest_position) ||
+            (!(obstacle->config_flags & 1) && closest_position && (!(obstacle->config_flags & 0x2000) || !players))) {
+            obstacle->triggering_object = closest_object;
+            obstacle->proximity_output = 1;
+        }
+    }
+    state = obstacle->anim_set->state;
+    if (state != 0 && state != 2 &&
+        !(WORLD->current_level == ObstacleReturnLevelPc && LevGizObst[0] == obstacle && state == 4))
+        return;
+    if (state == 2 && !obstacle->playback_state)
+        return;
+    if (!state) {
+        if (obstacle->proximity_output || (obstacle->runtime_flags & 0x44)) {
+            GizObstacle_PlayForwards(obstacle);
+            obstacle->auto_return_timer = obstacle->auto_return_delay;
+        }
+    } else if (!obstacle->proximity_output && !(obstacle->runtime_flags & 0x44)) {
+        if (!(obstacle->auto_return_timer > 0.0f))
+            GizObstacle_PlayBackwards(obstacle);
+        else if (state == 2)
+            obstacle->auto_return_timer -= FRAMETIME;
+    }
+}
+static void __cdecl GizObstacleUpdate_NoTrigger(GIZOBSTACLE *obstacle) {
+    if (!(obstacle->config_flags & 0x800) && !(obstacle->runtime_flags & 4) && !obstacle->anim_set->state)
+        return;
+    obstacle->runtime_flags |= 8;
+    GizObstacleUpdate_Proximity(obstacle);
+}
+static void __cdecl GizObstacleUpdate_TechnoOnly(GIZOBSTACLE *obstacle) {
+    (void)obstacle;
+}
+static void __cdecl GizObstacleUpdate_PushOnly(GIZOBSTACLE *obstacle) {
+    (void)obstacle;
+}
+static void __cdecl GizObstacleUpdate_AutoStart(GIZOBSTACLE *obstacle) {
+    if (obstacle->config_flags & 0x800) {
+        obstacle->runtime_flags |= 8;
+        GizObstacleUpdate_Proximity(obstacle);
+    } else if (!obstacle->anim_set->state || obstacle->anim_set->state == 3)
+        GizObstacle_PlayForwards(obstacle);
+}
+static void(__cdecl *GizObstacleUpdateFnsPc[8])(GIZOBSTACLE *) = {
+    GizObstacleUpdate_AutoStart,  GizObstacleUpdate_Proximity, GizObstacleUpdate_Proximity, GizObstacleUpdate_NoTrigger,
+    GizObstacleUpdate_TechnoOnly, GizObstacleUpdate_Proximity, GizObstacleUpdate_Proximity, GizObstacleUpdate_PushOnly};
+void __cdecl GizObstacles_Update(void *world_ptr, void *data, f32 time) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
+    GIZMOSET_PC *set;
+    GIZMO_PC *gizmo;
+    i32 i;
+    (void)time;
+    if (!world || !system || !world->gizmo_sys || !((GIZMOSYS_PREFIX_PC *)world->gizmo_sys)->sets)
+        return;
+    system->active_gizmo_count = 0;
+    set = &((GIZMOSYS_PREFIX_PC *)world->gizmo_sys)->sets[obstacle_gizmotype_id];
+    for (i = 0, gizmo = set->gizmos; i < set->count; ++i, ++gizmo) {
+        GIZOBSTACLE *obstacle = (GIZOBSTACLE *)gizmo->object;
+        GAMEOBJECT *previous = obstacle->triggering_object;
+        GAMEANIMSET *animation;
+        obstacle->triggering_object = NULL;
+        if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 5) || !obstacle->anim_set ||
+            (obstacle->progress_flags & 0x100) || (obstacle->runtime_flags & 0x80))
+            continue;
+        if (obstacle->mode == 7) {
+            if (!(obstacle->progress_flags & 8))
+                obstacle->animation_speed = obstacle->playback_state == 1 ? -1.0f : 0.0f;
+            else
+                obstacle->triggering_object = previous;
+            if (obstacle->animation_speed != 0.0f)
+                GizObstacle_PlayForwards(obstacle);
+            else
+                GizObstacle_Stop(obstacle);
+        } else if (obstacle->progress_flags & 4) {
+            if (obstacle->animation_speed == 0.0f)
+                GizObstacle_Stop(obstacle);
+            else
+                GizObstacle_PlayForwards(obstacle);
+        } else if (GizObstacleUpdateFnsPc[obstacle->mode])
+            GizObstacleUpdateFnsPc[obstacle->mode](obstacle);
+        animation = obstacle->anim_set;
+        if (animation->flags & 7) {
+            GizObstacle_EvalAveragePosAndRadius(obstacle, 2);
+            if (obstacle->runtime_flags & 0x20) {
+                GAMEANIMOBJ *object;
+                for (object = obstacle->anim_set->objects; object; object = object->next) {
+                    GIZOBSTACLE_OBJECT_DATA_PC *object_data = (GIZOBSTACLE_OBJECT_DATA_PC *)object->object_data;
+                    if (object_data->flags & 2)
+                        AddShoveObject(&object->special, object_data->platform_id);
+                }
+            }
+            if (obstacle->animation_speed < 0.0f) {
+                if (obstacle->stop_sfx_id != -1 &&
+                    (obstacle->anim_set->state == 2 || IsSfxLooping(obstacle->stop_sfx_id)))
+                    GameAudio_PlaySfxById(obstacle->stop_sfx_id, &obstacle->evaluated_position, 0, 0);
+            } else if (obstacle->start_sfx_id != -1 &&
+                       (!obstacle->anim_set->state || IsSfxLooping(obstacle->start_sfx_id)))
+                GameAudio_PlaySfxById(obstacle->start_sfx_id, &obstacle->evaluated_position, 0, 0);
+        }
+        animation = obstacle->anim_set;
+        if (animation->state == 2)
+            obstacle->runtime_flags &= ~0x40u;
+        if ((!obstacle->playback_state || obstacle->playback_state == 3 || (obstacle->config_flags & 0x80)) &&
+            ((animation->flags & 2) || !animation->animated_object_count) && animation->state == 2 &&
+            (obstacle->blowup_type != -1 || obstacle->pickup_count)) {
+            if (obstacle->blowup_type != -1) {
+                if (obstacle->config_flags & 0x200) {
+                    GAMEANIMOBJ *object;
+                    for (object = animation ? animation->objects : NULL; object; object = object->next) {
+                        NUVEC *position = NuSpecialGetDrawPos(&object->special);
+                        if (position)
+                            GizmoBlowUpTypeBlowUp(world, obstacle->blowup_type, position);
+                    }
+                } else
+                    GizmoBlowUpTypeBlowUp(world, obstacle->blowup_type, &obstacle->evaluated_position);
+                GameAnimSet_SetVisibility(obstacle->anim_set, 0);
+                obstacle->runtime_flags |= 0x80;
+            }
+            if (obstacle->pickup_count && (!(obstacle->runtime_flags & 1) || (obstacle->config_flags & 0x80))) {
+                NUVEC position, direction;
+                NuVecAdd(&position, &obstacle->evaluated_position, &obstacle->pickup_offset);
+                NuVecRotateX(&direction, &v010, (u16)obstacle->pickup_direction_x);
+                NuVecRotateY(&direction, &direction, (u16)obstacle->pickup_direction_y);
+                AddPickups((u16)obstacle->pickup_count, 0, 0, 0, &position, &direction, 2.0f, -1,
+                           obstacle->pickup_scatter_height, 2000000.0f, NULL, 1, 0);
+                obstacle->runtime_flags |= 1;
+            }
+            if (obstacle->playback_state == 3) {
+                GameAnimSet_JumpToStart(obstacle->anim_set);
+                GizObstacle_EvalAveragePosAndRadius(obstacle, 2);
+                GameAnimSet_SetVisibility(obstacle->anim_set, 1);
+                obstacle->runtime_flags &= ~0x80u;
+            }
+        }
+        if (!(obstacle->runtime_flags & 0x80) && (obstacle->config_flags & 0x1800))
+            system->active_gizmos[system->active_gizmo_count++] = gizmo;
+        obstacle->animation_speed = 1.0f;
+        obstacle->progress_flags &= ~0xcu;
+    }
+    GizObstacleTriggerCountPc = 0;
+}
+extern const char GizObstacleTriggerLimitMessagePc[59];
+void __cdecl GizObstacles_AddTrigger(NUVEC *position) {
+    NUVEC message_position;
+    if (!position)
+        return;
+    if (GizObstacleTriggerCountPc >= 16) {
+        message_position = v001;
+        AddGameMessage((char *)GizObstacleTriggerLimitMessagePc, &message_position, 0.4f, NULL, 0.4f, 200, 200, 200,
+                       0x2080, 0.0f);
+        return;
+    }
+    GizObstacleTriggersPc[GizObstacleTriggerCountPc++] = position;
+}
+void __cdecl GizObstacle_SetTechnoControlled(GIZOBSTACLE *obstacle, f32 speed) {
+    obstacle->progress_flags |= 4;
+    obstacle->animation_speed = speed;
+}
+void __cdecl GizObstacle_SetPushControlled(GIZOBSTACLE *obstacle, GAMEOBJECT *object, f32 speed) {
+    if (!obstacle->playback_state && obstacle->anim_set->state == 2 && !(obstacle->config_flags & 0x100))
+        return;
+    obstacle->progress_flags |= 8;
+    obstacle->triggering_object = object;
+    obstacle->animation_speed = speed;
+}
+GIZOBSTACLE *__cdecl GizObstacle_FindNearest(void *ptr, NUVEC *position, GAMEOBJECT *object, f32 *distance_squared,
+                                             i32 mode) {
+    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)ptr;
+    GIZOBSTACLE *nearest = NULL, *obstacle;
+    f32 closest = 1.0e9f;
+    i32 i;
+    if (!system)
+        return NULL;
+    for (i = 0, obstacle = system->obstacles; i < system->count; ++i, ++obstacle) {
+        f32 distance;
+        if ((mode != -1 && obstacle->mode != mode) || !(obstacle->progress_flags & 2) ||
+            !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80))
+            continue;
+        if (object && obstacle->anim_set) {
+            NUVEC average;
+            GameAnimSet_GetAveragePos(obstacle->anim_set, &average, 2, 1, 0);
+            distance = NuVecDistSqr(position, &average, NULL);
+        } else
+            distance = NuVecDistSqr(position, &obstacle->position, NULL);
+        if (distance < closest) {
+            closest = distance;
+            nearest = obstacle;
+        }
+    }
+    if (distance_squared)
+        *distance_squared = closest;
+    return nearest;
+}
+i32 __cdecl GizObstacles_Hit(void *world, GIZOBSTACLE *obstacle, NUVEC *position, i32 player, i32 damage) {
+    (void)position;
+    (void)damage;
+    if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80))
+        return 0;
+    if (obstacle->config_flags & 0x800)
+        obstacle->runtime_flags |= 0x40;
+    else {
+        if (!(obstacle->config_flags & 0x1000))
+            return 0;
+        if (obstacle->blowup_type != -1) {
+            if (obstacle->config_flags & 0x200) {
+                GAMEANIMOBJ *object;
+                for (object = obstacle->anim_set ? obstacle->anim_set->objects : NULL; object; object = object->next) {
+                    NUVEC *draw_position = NuSpecialGetDrawPos(&object->special);
+                    if (draw_position)
+                        GizmoBlowUpTypeBlowUp((WORLDINFO *)world, obstacle->blowup_type, draw_position);
+                }
+            } else
+                GizmoBlowUpTypeBlowUp((WORLDINFO *)world, obstacle->blowup_type, &obstacle->evaluated_position);
+        }
+        GameAnimSet_JumpToEnd(obstacle->anim_set);
+        GizObstacle_EvalAveragePosAndRadius(obstacle, 2);
+        GameAnimSet_SetVisibility(obstacle->anim_set, 0);
+        obstacle->runtime_flags |= 0x80;
+    }
+    if (player != -1 && (((GAMEOBJECT *)Player[player])->flags_1fc & 0x80))
+        NewBuzz(((GAMEOBJECT *)Player[player])->pad->bound_pad, 0.1f, 0);
+    return 1;
+}
+GIZMO_PC *__cdecl GizObstacles_GetBestBoltTarget(GIZMOSET_PC *set, f32 *result_distance, NUVEC *result_position,
+                                                 NUVEC *result_velocity, void *object_ptr, NUVEC *position,
+                                                 NUVEC *direction, f32 radius, f32 range_squared, i32 directional,
+                                                 i32 planar, i32 bolt_id) {
+    BOLTTYPE_PC *type = BoltType_FindByID(bolt_id, WORLD);
+    u16 near_angle = TargetDeg_Near, mid_angle = TargetDeg_Mid, far_angle = TargetDeg_Far;
+    f32 near_distance = TargetDist_Near2, mid_distance = TargetDist_Mid2;
+    GIZOBSTACLE_SYSTEM_PC *system;
+    NUVEC aim;
+    f32 min_x, max_x, min_z, max_z, nearest_distance;
+    GAMEOBJECT *object = (GAMEOBJECT *)object_ptr;
+    GIZMO_PC *best = NULL, *previous = NULL;
+    NUVEC *best_position = NULL, *previous_position = NULL;
+    i32 i;
+    if (!set || !set->data || !type)
+        return NULL;
+    system = (GIZOBSTACLE_SYSTEM_PC *)set->data;
+    aim = *direction;
+    min_x = position->x - radius;
+    max_x = position->x + radius;
+    min_z = position->z - radius;
+    max_z = position->z + radius;
+    nearest_distance = 1.0e9f;
+    if (directional && (type->flags_60 & 0x20000)) {
+        aim.y = 0.0f;
+        NuVecNorm(&aim, &aim);
+    }
+    for (i = 0; i < system->active_gizmo_count; ++i) {
+        GIZMO_PC *gizmo = system->active_gizmos[i];
+        GIZOBSTACLE *obstacle = (GIZOBSTACLE *)gizmo->object;
+        NUVEC *target = &obstacle->evaluated_position;
+        NUVEC delta;
+        f32 distance, dot;
+        u16 angle;
+        if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80))
+            continue;
+        if (target->x < min_x || target->x > max_x || target->z < min_z || target->z > max_z)
+            continue;
+        distance = planar ? NuVecXZDistSqr(target, position, &delta) : NuVecDistSqr(target, position, &delta);
+        if (!(range_squared > distance))
+            continue;
+        if (!directional)
+            NuVecRotateY(&aim, &v001, NuAtan2D(target->x - position->x, target->z - position->z));
+        if (type->flags_60 & 0x20000)
+            delta.y = 0.0f;
+        NuVecNorm(&delta, &delta);
+        dot = NuVecDot(&delta, &aim);
+        if (near_distance > distance && directional)
+            angle = near_angle;
+        else if (mid_distance > distance)
+            angle = mid_angle;
+        else
+            angle = far_angle;
+        if (!(dot > NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff]) || !(nearest_distance > distance))
+            continue;
+        if (object && (void *)object->collision_target == gizmo) {
+            previous = gizmo;
+            previous_position = target;
+        } else {
+            nearest_distance = distance;
+            best = gizmo;
+            best_position = target;
+        }
+    }
+    if (best) {
+        *result_position = *best_position;
+        *result_distance = nearest_distance;
+        result_velocity->x = result_velocity->y = result_velocity->z = 0.0f;
+        return best;
+    }
+    if (!previous)
+        return NULL;
+    *result_position = *previous_position;
+    *result_distance = 1.0e9f;
+    result_velocity->x = result_velocity->y = result_velocity->z = 0.0f;
+    return previous;
+}
+void __cdecl GameAnimSet_DrawReflection(GAMEANIMSET *, i32, f32, NUMTX *);
+void __cdecl GizObstacles_Draw(void *world_ptr, void *data, f32 time) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
+    GIZOBSTACLE *obstacle;
+    i32 i;
+    (void)time;
+    if (!system)
+        return;
+    for (i = 0, obstacle = system->obstacles; i < system->count; ++i, ++obstacle) {
+        if ((obstacle->progress_flags & 2) && (obstacle->room_id < 0 || world->rooms_visible_ptr[obstacle->room_id]) &&
+            !(obstacle->runtime_flags & 0x80) && (obstacle->config_flags & 0x40))
+            GameAnimSet_DrawReflection(obstacle->anim_set, 2, obstacle->reflection_alpha, NULL);
+    }
+}

@@ -1351,10 +1351,24 @@ address    , symbol                                                         , si
 0x00557580 , _GizmoObstacle_Activate                                        , 119   , "void __cdecl (void *, i32)"
 0x00557630 , _GizmoObstacle_SetVisibility                                   , 60    , "void __cdecl (void *, i32)"
 0x557670,_GizmoObstacle_GetPos,21,NUVEC * __cdecl (GIZMO_PC *)
+0x557690,_GizObstacle_EvalAveragePosAndRadius,48,
 0x5576c0,_GizObstacle_ResetOnePrivate,288,
 0x5577e0,_GizObstacles_Reset,349,"void __cdecl (void *, void *, void *)"
+0x557940,_GizObstacle_Stop,21,void __cdecl (GIZOBSTACLE *)
 0x00557960 , _GizObstacle_PlayForwards                                      , 111   , void __cdecl (GIZOBSTACLE *)
 0x005579d0 , _GizObstacle_PlayBackwards                                     , 119   , void __cdecl (GIZOBSTACLE *)
+0x557a50,_GizObstacle_PosWithinBox,165,
+0x557b00,_GizObstacle_SatisfyingTerrainChecks,136,
+0x557b90,_GizObstacleUpdate_Proximity,1164,void __cdecl (GIZOBSTACLE *)
+0x558020,_GizObstacleUpdate_NoTrigger,48,void __cdecl (GIZOBSTACLE *)
+0x558050,_GizObstacleUpdate_TechnoOnly,1,void __cdecl (GIZOBSTACLE *)
+0x558060,_GizObstacleUpdate_PushOnly,1,void __cdecl (GIZOBSTACLE *)
+0x558070,_GizObstacles_Update,1035,"void __cdecl (void *, void *, f32)"
+0x558480,_GizObstacles_AddTrigger,133,void __cdecl (NUVEC *)
+0x558510,_GizObstacle_SetTechnoControlled,19,"void __cdecl (GIZOBSTACLE *, f32)"
+0x558530,_GizObstacle_SetPushControlled,53,"void __cdecl (GIZOBSTACLE *, GAMEOBJECT *, f32)"
+0x558570,_GizObstacle_FindNearest,246,"GIZOBSTACLE * __cdecl (void *, NUVEC *, GAMEOBJECT *, f32 *, i32)"
+0x558670,_GizObstacles_Draw,119,"void __cdecl (void *, void *, f32)"
 0x005586f0 , _GizObstacles_GetMaxGizmos                                     , 25    , "i32 __cdecl (void *)"
 0x558710   , _GizObstacles_AddGizmos                                         , 92    , "void __cdecl (void *, i32, void *, void *)"
 0x00558770,_GizmoObstacle_GetGizmoName,14,char * __cdecl (GIZMO_PC *)
@@ -1366,7 +1380,10 @@ address    , symbol                                                         , si
 0x00558970 , _GizObstacle_JumpToStart                                       , 25    , void __cdecl (GIZOBSTACLE *)
 0x00558990 , _GizObstacle_JumpToEnd                                         , 25    , void __cdecl (GIZOBSTACLE *)
 0x005589b0 , _GizObstacles_StoreProgress                                    , 179   , "void __cdecl (void *, void *, void *)"
+0x558a70,_GizObstacles_Hit,295,"i32 __cdecl (void *, GIZOBSTACLE *, NUVEC *, i32, i32)"
+0x558c60,_GizObstacles_GetBestBoltTarget,943,"GIZMO_PC * __cdecl (GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
 0x00559300 , _GizmoObstacle_ActivateRev                                     , 229   , "i32 __cdecl (void *, i32, i32)"
+0x5593f0,_GizObstacleUpdate_AutoStart,54,void __cdecl (GIZOBSTACLE *)
 0x00559430 , _GizObstacles_RegisterGizmo                                    , 318   , ADD_GIZMO_CONFIG_TYPE_PC * __cdecl (i32)
 0x5595b0,_GizmoFileReadName,35,i32 __cdecl (char *)
 0x559610   , _GizmoBufferAlloc                                              , 67    , "void * __cdecl (VARIPTR *, VARIPTR *, i32)"
@@ -1484,10 +1501,12 @@ address    , symbol                                                         , si
 0x5672d0,_GizmoBlowUp_AddEffects,1322,"void __cdecl (NUVEC *, GIZMOBLOWUP_PC *, i32, i32, GAMEOBJECT *)"
 0x00567800 , _GizmoBlowupBlowup                                             , 1385  , "i32 __cdecl (GIZMOBLOWUP_PC *, i32, i32, i32, GAMEOBJECT *, i32)"
 0x567da0,_UpdateMidPos,616,void __cdecl(GIZMOBLOWUP_PC*)
+0x5689f0,_GizmoBlowup_FindType,131,"GIZMOBLOWUPTYPE_PC * __cdecl (char *, WORLDINFO *)"
 0x569980,_GizmoBlowUpOpponent,724,"GIZMOBLOWUP_PC *__cdecl(GAMEOBJECT *,f32,f32,f32,i32,u32,u32,u32)"
 0x00569c60 , _GetLevelExBlowupFlags                                         , 6      ,
 0x56a240,_GizmoBlowUp_Target,878,"GIZMOBLOWUP_PC* __cdecl(GAMEOBJECT*,NUVEC*,NUVEC*,f32,f32,i32,i32,i32)"
 0x0056a5b0 , _GizmoBlowupCheckProximity                                     , 522   , "i32 __cdecl (WORLDINFO *, GAMEOBJECT *)"
+0x56a8c0,_GizmoBlowUpTypeBlowUp,229,"void __cdecl (WORLDINFO *, i32, NUVEC *)"
 0x0056a9b0 , _GizmoBlowupResetNameTable                                     , 31    , void __cdecl (void)
 0x56a9d0,_GizmoBlowupGetNameTableId,110,i32 __cdecl (char *)
 0x56aa40,_GizmoBlowupGetTypeFromNameTableId,110,"i32 __cdecl (WORLDINFO *, i32)"
@@ -1923,6 +1942,9 @@ address    , symbol                                                         , si
 0x58b080,_SpecialMoveApplyDamagePc,108,void private (GAMEOBJECT * ESI)
 0x58b0f0,_SpecialMove_ReleaseVictim,133,i32 __cdecl(GAMEOBJECT*)
 0x58b2a0,_SpecialMove_Attacker_SetTargetMom,172,void __cdecl(GAMEOBJECT *)
+0x58b3a0,_ShoveObjectSysReset,11,void __cdecl (void)
+0x58b3b0,_AddShoveObject,135,"void __cdecl (NUSPECIALHANDLE *, i16)"
+0x58b440,_ShoveSystemCheckGameObject,698,void __cdecl (GAMEOBJECT *)
 0x0058b720 , _ObjHitObj_Flags                                               , 67    , i32 __cdecl (GAMEOBJECT *)
 0x0058b7f0 , _CannotKill                                                    , 71    , i32 __cdecl (GAMEOBJECT *)
 0x0058b840 , _NoLayerKill                                                   , 40    , i32 __cdecl (GAMEOBJECT *)
@@ -2049,6 +2071,7 @@ address    , symbol                                                         , si
 0x005a1590 , _GameAnimSet_GetVisibility                                     , 79    , i32 __cdecl (GAMEANIMSET *)
 0x005a15e0 , _GameAnimSet_SetVisibility                                     , 43    , "void __cdecl (GAMEANIMSET *, i32)"
 0x005a1610 , _GameAnimSet_EvalAnim                                          , 46    , void __cdecl (GAMEANIMSET *)
+0x5a16b0,_GameAnimSet_DrawReflection,196,"void __cdecl (GAMEANIMSET *, i32, f32, NUMTX *)"
 0x005a1780 , _GameAnimSys_Update                                            , 745   , void __cdecl (GAMEANIMSYS *)
 0x005a1a70 , _GameAnimSys_ReStoreProgress                                   , 157   , "void __cdecl (GAMEANIMSYS *, i32)"
 0x5a1b10,_GameAnimSet_AddObjectByName,105,"GAMEANIMOBJ * __cdecl (GAMEANIMSET *, NUGSCN *, char *, f32, f32, i32, void *, char *, char *)"
@@ -2187,6 +2210,10 @@ address    , symbol                                                         , si
 0x005b97f0 , _NuPtInPolyZY                                                  , 252   , "i32 __cdecl (NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2)"
 0x005b98f0 , _NuPlnPlnIntersect                                             , 763   , "i32 __cdecl (NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *direction)"
 0x005b9bf0 , _NuPlnDist2                                                    , 138   , "f32 __cdecl (NUPLANE *plane, NUVEC *a, NUVEC *b)"
+0x5b9bf0,_NuPointRelToBoundingBox,138,"i32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
+0x5b9c80,_NuClipXPlane,73,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, f32 *)"
+0x5b9cd0,_NuClipYPlane,75,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, f32 *)"
+0x5b9d20,_NuClipZPlane,75,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, f32 *)"
 0x005b9d70 , _NuRandSeed                                                    , 10    , void __cdecl (u32)
 0x005b9d80 , _NuRandGetSeed                                                 , 6     , u32 __cdecl (void)
 0x005b9d90 , _NuRandFloatSeeded                                             , 52    , f32 __cdecl (u32 *)
@@ -2212,6 +2239,7 @@ address    , symbol                                                         , si
 0x005becc0 , _NuVecDist                                                     , 182   , "f32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x005bed80 , _NuVecXZDist                                                   , 159   , "f32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x005bee20 , _NuLineLineIntersect                                           , 452   , "i32 __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32 *, f32 *)"
+0x5beff0,_BoundingBoxToLine,1141,"i32 __cdecl (NUVEC *, NUVEC *, NUMTX *, NUVEC *, NUVEC *, f32, NUVEC *)"
 0x005bf4f0 , _NuMtxVecToEulerXYZ                                            , 233   , "void __cdecl (NUVEC *, NUVEC *, NUANG *, NUANG *, NUANG *)"
 0x005bf5e0 , _NuMtxGetEulerXYZ                                              , 81    , "void __cdecl (NUMTX *, NUANG *, NUANG *, NUANG *)"
 0x005bf910 , _NuLineToPointDistSqrEx                                        , 431   , "f32 __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
@@ -5302,6 +5330,7 @@ address    , symbol                                                         , si
 0x007616e0,__real@43000000,4,const f32
 0x00761810,_GizObstacleName_text,12,char[12]
 0x761810,_GizObstacleTypeNamePc,12,const char[12]
+0x76181c,_GizObstacleTriggerLimitMessagePc,59,const char[59]
 0x761868,_GizmoSpecialErrorTabPc,3,const char[3]
 0x0076186c , _GizmoConfigPathFormat                                         , 7     , const char [7]
 0x761884,_PlayerArcadeStartDoorPc,,char[16]
@@ -6559,6 +6588,7 @@ address    , symbol                                                         , si
 0x802540,_dco_id,,i32
 0x802544,_dco_reflectcoord,,f32
 0x00802644,_obstacle_gizmotype_id,,i32
+0x802684,_GizObstacleUpdateFnsPc,,void (__cdecl *[8])(GIZOBSTACLE *)
 0x00802724 , _gizmoerrorlogsize                                             , 4     , i32
 0x00802814 , _LEGOCONTEXT_TUBE                                              , 4     , i32
 0x00802818 , _LEGOCONTEXT_GLIDE                                             , 4     , i32
@@ -6659,6 +6689,9 @@ address    , symbol                                                         , si
 0x00804224 , _vehicle_timebase_dist                                         , 16    , f32[4]
 0x00804234 , _vehicle_timebase_nframes                                      , 16    , i32[4]
 0x804248   , _ConfigChar_Keywords                                           , 1664  , NUFPCOMJMP[208]
+0x804a84,_ShoveMaximumSpeedPc,,f32
+0x804a88,_ShoveMaximumPenetrationPc,,f32
+0x804a8c,_ShoveCollisionExpansionPc,,f32
 0x804b04,_DEACTIVATEDTIME,,f32
 0x00804bec , _LEGOACT_JUMP                                                  , 2     , i16
 0x804bf0,_BigJumpLandFallbackPc,,i16
@@ -7188,6 +7221,7 @@ address    , symbol                                                         , si
 0x87b174,_CRUISERG_LDATA,,LEVELDATA_PC *
 0x87b178,_VADERA_LDATA,,LEVELDATA_PC *
 0x0087b180 , _VADERC_LDATA                                                  , 4     , LEVELDATA_PC *
+0x87b198,_ObstacleReturnLevelPc,,LEVELDATA_PC *
 0x87b1a0,_TATOOINEA_LDATA,,LEVELDATA_PC *
 0x87b1a4,_TATOOINEB_LDATA,,LEVELDATA_PC *
 0x87b1b0,_MOSEISLEYA_LDATA,,LEVELDATA_PC *
@@ -7630,7 +7664,9 @@ address    , symbol                                                         , si
 0x93b118,_dco_prerotatez,,u16
 0x93b11c,_dco_locatorposonly,,i32
 0x93b120,_DisguiseAdjustFn,,"void (__cdecl *)(i32,i32,NUVEC *,NUVEC *)"
+0x93b1c0,_GizObstacleTriggersPc,,NUVEC *[16]
 0x93b200,_GizObstacleTriggerCountPc,,i32
+0x93b204,_GizObstacleExcludeFnPc,,"i32 (__cdecl *)(GIZOBSTACLE *, GAMEOBJECT *)"
 0x0093b208 , _GizObstacle_SetDefaultSFXFn                                   , 4     , "void (__cdecl *)(void *, GIZOBSTACLE *)"
 0x0093b288 , _gizmotypes                                                    , 4     , void *
 0x93b290,_IconScenePc,,NUGSCN **
@@ -7833,6 +7869,7 @@ address    , symbol                                                         , si
 0x009553f4 , _MissionSys                                                    , 4     , MISSIONSYS_PC *
 0x9553fc,_PlayerSpecialMoveDataPc,,void *
 0x955400,_PlayerSpecialMoveCountPc,,i32
+0x955408,_ShoveSystemPc,,SHOVE_SYSTEM_PC
 0x95558c,_objhitobj_bolt,,BOLT*
 0x955590,_objhitobj_nohurtsfx,,i32
 0x955594,_objhitobj_noimpactsfx,,i32

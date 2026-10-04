@@ -4153,3 +4153,16 @@ rows/bindings retire; typed members never become extra COFF symbols. Ten old
 unsupported uncompiled 4-byte data extents become blank. Complete native runtime
 and fresh retail comparison remain authoritative; unknown working allocations,
 C++ weak aliases and pinned CRT helper references receive no invented coverage.
+
+
+### Obstacle, animation and CPU collision transfer (2026-10-04)
+
+Twenty-eight complete newly implemented functions compare 7,383 row bytes;
+NuPointRelToBoundingBox shares an already compared 138-byte native span, so unique
+newly compared coverage is 7,245 bytes. Exact union grows 412 bytes. Actual native
+DWORD eligibility and unordered NaN rejection behavior supersede the incorrect
+first Proximity candidate. Typed triggering-object/timer offsets 0x38/0x40 and
+local WORD payload offsets 0/2 retain asserted layouts. Private callback and Shove
+queue ownership remains original; unknown data extents remain blank. All 3,015
+previous function copies survive, with one independently qualified recurrence
+of an old nonexact particle x87 scheduling change. No old exact matches are lost.

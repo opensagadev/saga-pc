@@ -1591,3 +1591,17 @@ pointer/count storage remains naturally owned by players.c with unknown extent.
 Wav RTTI/vtable/literals retain natural C++ ownership; existing TypeDescriptor 24
 is preserved, vtable owning extent remains unknown. Ten formerly uncompiled
 unsupported 4-byte inventory extents become blank with no prior exact loss.
+
+
+### Obstacle and Shove working views (2026-10-04)
+
+Seven new shared physical views add a complete 59-byte NUL diagnostic and six
+mutable working views totaling 84 bytes. All 3,317 previous full shared regions
+preserve raw bytes and named relocations; current normal 3,324 equals isolated
+compilation. Scope 1,638 contains 562 known regions/137,693 unique bytes and
+1,076 unknown views/122,424 source bytes. All 4,334 previous actual exact physical
+initializer copies survive, with nine new exact copies; two known resource
+members totaling 4 bytes remain separate from physical definitions/counts.
+Natural private owners retain the genuine eight-slot obstacle callback table,
+32 bytes, and Shove queue/count view, 388 bytes. Their complete source initializers
+match retail working bytes, without claiming original allocation extents.

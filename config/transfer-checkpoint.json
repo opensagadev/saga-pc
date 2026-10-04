@@ -20,18 +20,18 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 905866,
-    "matched_code_bytes": 82620,
-    "matching_percent": 2.380125176953751,
-    "fuzzy_coverage_percent": 15.295464749309618,
-    "mapped_functions": 3213,
-    "matched_functions": 1319,
-    "objdiff_fuzzy_percent": 64.465256,
-    "objdiff_total_code": 824070,
+    "mapped_code_bytes": 913111,
+    "matched_code_bytes": 83032,
+    "matching_percent": 2.3919941139291194,
+    "fuzzy_coverage_percent": 15.461953463194208,
+    "mapped_functions": 3241,
+    "matched_functions": 1328,
+    "objdiff_fuzzy_percent": 64.6045,
+    "objdiff_total_code": 831453,
     "image_bytes": 40067072,
-    "mapped_bytes": 1547377,
-    "mapping_percent": 3.8619667541466467,
-    "matched_data_region_bytes": 630758
+    "mapped_bytes": 1554681,
+    "mapping_percent": 3.880196187033582,
+    "matched_data_region_bytes": 630817
   },
   "newly_compared": [
     {
@@ -16301,6 +16301,162 @@
         "Embedded fallback DDS and global sound-manager/reverb physical overlap remain explicit provider frontiers."
       ],
       "next_connected_wave": "Accepted connected environment runtime22/5183 plus CPU geometry/Shove6/2200:28 functions/7383 PC bytes; genuine seven-data proposal and final runtime gates pending. Natural Ogg/Vorbis and Wav sample-manager source banks remain broader audio frontier.",
+      "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct main pushes authorized."
+    },
+    {
+      "reviewed_physical_member_migrations": [],
+      "physical_exact_rows_retired_with_same_complete_member": [],
+      "baseline_commit": "25a8333b2744983f3b0eecef9b4c781d0d8df78e",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 905866,
+        "matched_code_bytes": 82620,
+        "matching_percent": 2.380125176953751,
+        "fuzzy_coverage_percent": 15.295464749309618,
+        "mapped_functions": 3213,
+        "matched_functions": 1319,
+        "objdiff_fuzzy_percent": 64.465256,
+        "objdiff_total_code": 824070,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1547377,
+        "mapping_percent": 3.8619667541466467,
+        "matched_data_region_bytes": 630758
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 913111,
+        "matched_code_bytes": 83032,
+        "matching_percent": 2.3919941139291194,
+        "fuzzy_coverage_percent": 15.461953463194208,
+        "mapped_functions": 3241,
+        "matched_functions": 1328,
+        "objdiff_fuzzy_percent": 64.6045,
+        "objdiff_total_code": 831453,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1554681,
+        "mapping_percent": 3.880196187033582,
+        "matched_data_region_bytes": 630817
+      },
+      "newly_compared_functions": 28,
+      "new_original_code_bytes": 7245,
+      "new_compared_row_original_bytes_including_aliases": 7383,
+      "new_alias_rows": [
+        "_NuPointRelToBoundingBox"
+      ],
+      "compared_code_delta": 7383,
+      "baseline_unique_compared_pc_bytes": 823755,
+      "unique_compared_pc_bytes": 831000,
+      "exact_code_added": 412,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 3015,
+      "prior_compiled_function_copies_identical": 3014,
+      "renamed_owner_copies_with_identical_complete_bodies": [],
+      "user_journal_unchanged": true,
+      "checkpoint": "Obstacle, animation and CPU collision checkpoint (2026-10-04)",
+      "new_source_functions": 28,
+      "new_compared_row_bytes": 7383,
+      "new_unique_compared_pc_bytes": 7245,
+      "previously_compared_alias_bytes": 138,
+      "new_exact_union_bytes": 412,
+      "shared_data_definitions_added": 7,
+      "shared_initializer_view_bytes_added": 143,
+      "data_scope": {
+        "physical_proofs": 1638,
+        "known_extents": 562,
+        "known_unique_bytes": 137693,
+        "unknown_extents": 1076,
+        "unknown_view_bytes": 122424,
+        "separate_typed_known_members": 2,
+        "typed_known_member_bytes_preserved": 4
+      },
+      "previous_exact_initializer_copies_preserved": 4334,
+      "current_exact_physical_initializer_copies": 4343,
+      "new_exact_physical_initializer_copies": 9,
+      "new_exact_data_union_bytes": 59,
+      "current_shared_complete_regions": 3324,
+      "qualified_previous_codegen_changes": [
+        {
+          "symbol": "_NuRndrParticleGroup",
+          "unit": "src/nu2api/nuparticle_runtime.c",
+          "old_bytes": 717,
+          "new_bytes": 713,
+          "old_advisory_percent": 89.98446,
+          "new_advisory_percent": 88.419685,
+          "reason": "Unchanged source; independently reproduced previously accepted x87 scheduling pair, same full CFG and symbolic relocation destinations.",
+          "new_source_credit": 0
+        }
+      ],
+      "verified_checks": {
+        "all_required_checks_passed": true,
+        "tests": 699,
+        "skipped": 3,
+        "llvm": 18,
+        "format_files": 242,
+        "tidy_units": 240,
+        "objects": 240,
+        "function_definitions": 3043,
+        "data_definitions": 5626,
+        "source_only_link": true,
+        "native_environment_checks": 88,
+        "native_geometry_checks": 28,
+        "native_shove_checks": 23,
+        "native_total_checks": 139,
+        "native_failures": 0,
+        "normal_runtime_manifests_verified": 3,
+        "negative_controls_failures": {
+          "wrong_BYTE_width": 2,
+          "wrong_NaN_predicate": 1
+        },
+        "previous_function_copies_checked": 3015,
+        "previous_function_copies_identical": 3014,
+        "qualified_old_codegen_changes": 1,
+        "prior_exact_code_and_data_preserved": true,
+        "new_compared_row_bytes": 7383,
+        "new_unique_compared_pc_bytes": 7245,
+        "alias_row_bytes": 138,
+        "new_exact_union_bytes": 412,
+        "normal_data_regions": 3324,
+        "scoped_physical_initializer_proofs": 1638,
+        "previous_exact_initializer_copies_preserved": 4334,
+        "current_exact_physical_initializer_copies": 4343,
+        "new_exact_physical_initializer_copies": 9,
+        "current_exact_typed_members": 2,
+        "preserved_exact_member_bytes": 4,
+        "data_release_receipt_sha256": "99c6a6df90c6b2726bf234659cfceb2e04c91e2f69e589012df7233c66f15db8",
+        "endpoint_receipt_sha256": "d945c14a605abe0c138a66b08cbf033d4f9f18ef3ef630733abdcdfcd01efcb7",
+        "limitations": [
+          "Valid initialized mode0..7/source views, real GameAnim system/set/pool producers, trigger count0..16, empty animation sets, bounded object/context/active queue backing. Selected queue count0 producer guard only; full16 queue/domain proven statically but not executed here. Device/audio effect/destructible effect success and reflected scene hardware excluded. Genuine existing partial providers remain qualified; native runtime uses independent compiled source only.",
+          "Independent CPU geometry selected finite vectors, ordinary invertible translation/identity matrices, nullable plane/intersection outputs, strict touching faces, six entry planes, zero contact sentinel and quiet NaN outcodes. No hardware/collision queue success claim; no substitutes or extra globals. Prior37 whole original nuvec functions preserved.",
+          "Initialized real queue count0..16, actual display-special producers and field-backed object inputs, real NuSpecial/BoundingBox/NuFsqrt CPU closure. Only ordinary finite radii/thresholds with quiet NaN vertical rejection. No hardware execution or negative count safety. Independent CPU geometry selected finite vectors, ordinary invertible translation/identity matrices, nullable plane/intersection outputs, strict touching faces, six entry planes, zero contact sentinel and quiet NaN outcodes. No hardware/collision queue success claim; no substitutes or extra globals. Prior37 whole original nuvec functions preserved."
+        ]
+      },
+      "source_correctness_repair": {
+        "function": "_GizObstacleUpdate_Proximity",
+        "native_object_field": "flags_1fc_word",
+        "reason": "Native DWORD tests bit0x1000; BYTE candidate could never select eligible objects. Initial static approval withdrawn and repaired source independently reviewed.",
+        "positive_checks": 88,
+        "wrong_BYTE_control_failures": 2,
+        "wrong_NaN_predicate_failures": 1,
+        "named_local_payload": "WORD flags/platform offsets0/2 sizeof4; no raw aggregate offsets"
+      },
+      "private_original_owners": {
+        "mode_callback_table_source_bytes": 32,
+        "shove_queue_source_bytes": 388,
+        "full_initializer_equal": true,
+        "original_allocation_extents": null,
+        "new_allocation_credit": 0
+      },
+      "checkpoint_delay": {
+        "scheduled_utc": "2026-10-04 05:19 UTC",
+        "reason": "Authoritative retail matching, all-normal runtime/data preservation and independent qualification of one recurring old compiler scheduling difference completed before commit."
+      },
+      "remaining_contracts": [
+        "Valid initialized mode0..7/source views, real GameAnim system/set/pool producers, trigger count0..16, empty animation sets, bounded object/context/active queue backing. Selected queue count0 producer guard only; full16 queue/domain proven statically but not executed here. Device/audio effect/destructible effect success and reflected scene hardware excluded. Genuine existing partial providers remain qualified; native runtime uses independent compiled source only.",
+        "Independent CPU geometry selected finite vectors, ordinary invertible translation/identity matrices, nullable plane/intersection outputs, strict touching faces, six entry planes, zero contact sentinel and quiet NaN outcodes. No hardware/collision queue success claim; no substitutes or extra globals. Prior37 whole original nuvec functions preserved.",
+        "Initialized real queue count0..16, actual display-special producers and field-backed object inputs, real NuSpecial/BoundingBox/NuFsqrt CPU closure. Only ordinary finite radii/thresholds with quiet NaN vertical rejection. No hardware execution or negative count safety. Independent CPU geometry selected finite vectors, ordinary invertible translation/identity matrices, nullable plane/intersection outputs, strict touching faces, six entry planes, zero contact sentinel and quiet NaN outcodes. No hardware/collision queue success claim; no substitutes or extra globals. Prior37 whole original nuvec functions preserved."
+      ],
+      "next_connected_wave": "Accepted player toggle/reset/Move_DEFAULT3/3113 and genuine LZ2K decoder13/2332 with15 shared views4128B; independent closed Ogg68/6239 release review and exact Vorbisfile63/14513 codec-provider closure proceed in parallel. Archive buffer capacity and resource/audio hardware remain held.",
       "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct main pushes authorized."
     }
   ]

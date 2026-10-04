@@ -10874,3 +10874,33 @@ extern "C" {
     void *PodRacePc;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma const_seg(".rdata$GizObstacleTriggerLimitMessagePc")
+    const char GizObstacleTriggerLimitMessagePc[59] = "MAXGIZOBSTACLETRIGGERS needs increasing, ask a programmer!";
+#pragma const_seg()
+
+#pragma data_seg(".data$ShoveMaximumSpeedPc")
+    f32 ShoveMaximumSpeedPc = 2.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$ShoveMaximumPenetrationPc")
+    f32 ShoveMaximumPenetrationPc = 0.10000000149011612f;
+#pragma data_seg()
+
+#pragma data_seg(".data$ShoveCollisionExpansionPc")
+    f32 ShoveCollisionExpansionPc = 0.10000000149011612f;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$ObstacleReturnLevelPc")
+    LEVELDATA_PC *ObstacleReturnLevelPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$GizObstacleTriggersPc")
+    NUVEC *GizObstacleTriggersPc[16];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$GizObstacleExcludeFnPc")
+    i32(__cdecl *GizObstacleExcludeFnPc)(GIZOBSTACLE *, GAMEOBJECT *);
+#pragma bss_seg()
+}

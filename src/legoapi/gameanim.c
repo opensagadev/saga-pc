@@ -1094,3 +1094,37 @@ i32 __cdecl GizmoFileReadGameAnimSet(GAMEANIMSET *set, void *world_ptr, void(__c
     }
     return success;
 }
+
+typedef struct gameanim_reflection_matrix_pc_s {
+    f32 m00, m01, m02, m03;
+    f32 m10, m11, m12, m13;
+    f32 m20, m21, m22;
+    f32 axis_coordinates[5];
+} GAMEANIM_REFLECTION_MATRIX_PC;
+STATIC_ASSERT(sizeof(GAMEANIM_REFLECTION_MATRIX_PC) == sizeof(NUMTX));
+STATIC_ASSERT(offsetof(GAMEANIM_REFLECTION_MATRIX_PC, axis_coordinates) == 0x2c);
+STATIC_ASSERT(offsetof(NUMTX, m23) == 0x2c);
+STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
+STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
+STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
+STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
+i32 __cdecl MatrixReflection(NUMTX *, i32, f32, f32, NUMTX *);
+void __cdecl GameAnimSet_DrawReflection(GAMEANIMSET *set, i32 axis, f32 offset, NUMTX *matrix) {
+    f32 plane;
+    GAMEANIMOBJ *object;
+    if (!set || !set->objects)
+        return;
+    if (!matrix)
+        matrix = NuSpecialGetMtx(&set->objects->special);
+    plane = offset + ((GAMEANIM_REFLECTION_MATRIX_PC *)matrix)->axis_coordinates[axis];
+    NuRndrStartReflectionRender(0);
+    for (object = set->objects; object; object = object->next) {
+        if (!(object->flags & 2) && NuSpecialGetVisibilityFn(&object->special)) {
+            NUMTX reflection;
+            NUMTX *draw_matrix = NuSpecialGetDrawMtx(&object->special);
+            if (MatrixReflection(draw_matrix, axis, plane, WORLD->current_level->reflection_y, &reflection))
+                NuSpecialDrawAt(&object->special, &reflection);
+        }
+    }
+    NuRndrEndReflectionRender();
+}
