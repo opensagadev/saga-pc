@@ -873,3 +873,26 @@ i32 __cdecl GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *system, char *prefix, char *n
     }
     return 0;
 }
+
+void __cdecl GizmoSysAddGizmos(void *system_ptr, GIZFLOW_PC *flow, void *world) {
+    GIZMO_CONFIG_SYSTEM_PC *system = system_ptr;
+    GIZMO_CONFIG_TYPE_PC *type;
+    GIZMO_CONFIG_SET_PC *set;
+    i32 index;
+    if (gizmotypes != NULL && system != NULL) {
+        type = ((GIZMO_CONFIG_TYPES_PC *)gizmotypes)->types;
+        set = system->sets;
+        for (index = 0; index < ((GIZMO_CONFIG_TYPES_PC *)gizmotypes)->count; ++index, ++type, ++set) {
+            /* Actual PC parent contains the original ResetGizmoType body inline. */
+            if (index != -1) {
+                system->sets[index].count = 0;
+                memset(system->sets[index].gizmos, 0, system->sets[index].capacity * sizeof(GIZMO_PC));
+            }
+            if (type->functions.add_gizmos != NULL)
+                ((void(__cdecl *)(void *, i32, void *, void *))type->functions.add_gizmos)(system, index, world,
+                                                                                           set->data);
+        }
+    }
+    if (flow != NULL && flow->pointers_need_reset != 0)
+        ResetGizFlowPointers(flow);
+}

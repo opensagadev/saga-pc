@@ -4348,3 +4348,26 @@ register differences remain honest nonexact outcomes, never ABI wrappers.
 NuMtlInitEx5e4840 is rejected as a different light loop; true5f1dd0/375 and
 asset-dependent PS60ddc0/265 remain unreleased candidates. Next GizFlow39 and
 RTL/list12 retain independent review and production verification gates.
+
+
+### Lighting/list and GizFlow source release (2026-10-04)
+
+51 new complete functions add7,783 unique compared PC bytes. RTL/list includes
+NuLstCreateBuff5470f0/173, native endian RET633df0/1, dynamic setters/init,
+IndexLights635b10/809, Load635e40/376, private modifier404/72 and process960,
+public Process133. The nine-DWORD process table and load switch tail remain
+inside complete source/native extents. V3 corrects native signed BYTE indexing;
+all27 old RTL/list function copies survive and actual-normal99 checks pass.
+GizFlow39/4,515 retains all genuine parser/callback/constructor groups and
+cross-unit one-byte diagnostics; all54 old regions and67 private initializer
+regions survive. Actual-normal20 checks pass; NULL-world/registry and unchecked
+capacity domains remain qualified. Canonical constructor return declarations
+replace redundant research prototypes without changing code or private data.
+
+Independent gates are retained under build/analysis/transfer-execution-20261003/
+mapping/rtl-runtime3268-review/accepted-v3-ff87f327.json and platform/
+gizflow4515-review/accepted-packet.json. All51 full native and relocated hashes
+agree with production report. Authoritative retail comparison adds27 exact
+functions/872 bytes; all3,791 prior complete function copies remain identical.
+Genuine private register ABIs remain within original caller groups. No clipped
+extents, fake providers, retention controls or fabricated allocation sizes.

@@ -1,0 +1,106 @@
+#include "saga.h"
+typedef struct GIZFLOW_LOAD_LEVEL_PC {
+    u8 unknown_000[0xe9];
+    u8 max_timers;
+    u8 unknown_0ea[0xb];
+    u8 max_specials;
+    u8 unknown_0f6[0xd];
+    u8 max_randoms;
+} GIZFLOW_LOAD_LEVEL_PC;
+typedef struct GIZFLOW_TIMER_PC {
+    u8 unknown_000[4];
+    f32 start_time;
+    u8 unknown_008[2];
+    u8 flags;
+    u8 unknown_00b;
+    char name[16];
+} GIZFLOW_TIMER_PC;
+typedef struct GIZFLOW_RANDOM_PC {
+    char name[16];
+    i32 output_count;
+    i32 output_weights[8];
+    u8 unknown_034[8];
+} GIZFLOW_RANDOM_PC;
+typedef struct GIZFLOW_RANDOM_SYSTEM_PC {
+    GIZFLOW_RANDOM_PC *randoms;
+    i32 count;
+} GIZFLOW_RANDOM_SYSTEM_PC;
+typedef struct GIZFLOW_SPECIAL_PC {
+    char name[32];
+    GAMEANIMSET *anim_set;
+    u8 unknown_024[4];
+} GIZFLOW_SPECIAL_PC;
+typedef struct GIZFLOW_SPECIAL_SYSTEM_PC {
+    GIZFLOW_SPECIAL_PC *specials;
+    i32 count;
+} GIZFLOW_SPECIAL_SYSTEM_PC;
+typedef struct GIZFLOW_LOAD_WORLD_PC {
+    u8 unknown_000[0x128];
+    GIZFLOW_LOAD_LEVEL_PC *level;
+    u8 unknown_12c[0x10];
+    NUGSCN *current_gscn;
+    u8 unknown_140[0x2988];
+    void *gizmo_sys;
+    u8 unknown_2acc[0x262c];
+    GIZFLOW_TIMER_PC *timers;
+    i32 timer_count;
+    u8 unknown_5100[4];
+    GIZFLOW_RANDOM_SYSTEM_PC *randoms;
+    GIZFLOW_SPECIAL_SYSTEM_PC *specials;
+} GIZFLOW_LOAD_WORLD_PC;
+STATIC_ASSERT(offsetof(GIZFLOW_LOAD_LEVEL_PC, max_timers) == 0xe9);
+STATIC_ASSERT(offsetof(GIZFLOW_LOAD_LEVEL_PC, max_specials) == 0xf5);
+STATIC_ASSERT(offsetof(GIZFLOW_LOAD_LEVEL_PC, max_randoms) == 0x103);
+STATIC_ASSERT(sizeof(GIZFLOW_TIMER_PC) == 0x1c);
+STATIC_ASSERT(offsetof(GIZFLOW_TIMER_PC, start_time) == 4);
+STATIC_ASSERT(offsetof(GIZFLOW_TIMER_PC, flags) == 0xa);
+STATIC_ASSERT(offsetof(GIZFLOW_TIMER_PC, name) == 0xc);
+STATIC_ASSERT(sizeof(GIZFLOW_RANDOM_PC) == 0x3c);
+STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_PC, output_count) == 0x10);
+STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_PC, output_weights) == 0x14);
+STATIC_ASSERT(sizeof(GIZFLOW_SPECIAL_PC) == 0x28);
+STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_PC, anim_set) == 0x20);
+STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, level) == 0x128);
+STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, current_gscn) == 0x13c);
+STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, gizmo_sys) == 0x2ac8);
+STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, timers) == 0x50f8);
+STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, timer_count) == 0x50fc);
+STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, randoms) == 0x5104);
+STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, specials) == 0x5108);
+
+STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_PC, name) == 0);
+STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_PC, name) == 0);
+STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_SYSTEM_PC, randoms) == 0);
+STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_SYSTEM_PC, count) == 4);
+STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, specials) == 0);
+STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, count) == 4);
+
+static char gizspecial_prefix_pc[8] = "qaz_";
+// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public name.
+GIZMO_PC *__cdecl createGizSpecial(void *unused, char *name) {
+    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)WorldInfo_CurrentlyLoading();
+    NUSPECIALHANDLE scene_special;
+    char gizmo_name[32];
+    GIZMO_PC *gizmo;
+    GIZFLOW_SPECIAL_SYSTEM_PC *system;
+    GIZFLOW_SPECIAL_PC *special;
+    if (world == NULL || name == NULL)
+        return NULL;
+    NuSpecialFind(world->current_gscn, &scene_special, name, 0);
+    NuStrCpy(gizmo_name, gizspecial_prefix_pc);
+    NuStrNCat(gizmo_name, name, 32 - NuStrLen(gizspecial_prefix_pc));
+    if (!NuSpecialExistsFn(&scene_special))
+        return NULL;
+    gizmo = GizmoFindByName(world->gizmo_sys, gizspecial_gizmotype_id, gizmo_name);
+    if (gizmo != NULL)
+        return gizmo;
+    system = world->specials;
+    if (system->count >= world->level->max_specials)
+        return NULL;
+    special = &system->specials[system->count];
+    GameAnimSet_AddObject(special->anim_set, &scene_special, 1.0f, 1000000000.0f, 0);
+    ++world->specials->count;
+    NuStrCpy(special->name, gizspecial_prefix_pc);
+    NuStrNCat(special->name, name, 32 - NuStrLen(gizspecial_prefix_pc));
+    return AddGizmo(world->gizmo_sys, gizspecial_gizmotype_id, NULL, special);
+}

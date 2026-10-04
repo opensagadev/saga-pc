@@ -177,3 +177,52 @@ NULNKHDR *__cdecl NuLstAllocHead(NULSTHDR *list) {
 NULNKHDR *__cdecl NuLstAlloc(NULSTHDR *list) {
     return NuLstAllocHead(list);
 }
+
+STATIC_ASSERT(offsetof(NULSTHDR, free) == 0x0);
+STATIC_ASSERT(offsetof(NULSTHDR, free_tail) == 0x4);
+STATIC_ASSERT(offsetof(NULSTHDR, head) == 0x8);
+STATIC_ASSERT(offsetof(NULSTHDR, tail) == 0xc);
+STATIC_ASSERT(offsetof(NULSTHDR, element_count) == 0x10);
+STATIC_ASSERT(offsetof(NULSTHDR, element_size) == 0x12);
+STATIC_ASSERT(offsetof(NULSTHDR, element_size_total) == 0x14);
+STATIC_ASSERT(offsetof(NULSTHDR, used_count) == 0x16);
+STATIC_ASSERT(offsetof(NULSTHDR, safe_thread) == 0x18);
+STATIC_ASSERT(offsetof(NULNKHDR, owner) == 0x0);
+STATIC_ASSERT(offsetof(NULNKHDR, next) == 0x4);
+STATIC_ASSERT(offsetof(NULNKHDR, prev) == 0x8);
+STATIC_ASSERT(offsetof(NULNKHDR, id) == 0xc);
+NULSTHDR *__cdecl NuLstCreateBuff(i32 count, i32 size, VARIPTR *buffer, VARIPTR end, i32 alignment) {
+    NULSTHDR *list = NULL;
+    u32 stride, bytes;
+    NULNKHDR *node, *next;
+    i32 i;
+    buffer->addr = (buffer->addr + alignment - 1) & -(u32)alignment;
+    stride = (alignment + size + sizeof(NULNKHDR) - 1) & -(u32)alignment;
+    bytes = count * stride + sizeof(NULSTHDR);
+    if (bytes < end.addr - buffer->addr) {
+        list = (NULSTHDR *)buffer->void_ptr;
+        buffer->addr += bytes;
+        list->free = (NULNKHDR *)(list + 1);
+        list->head = NULL;
+        list->tail = NULL;
+        list->element_count = (u16)count;
+        list->element_size = (u16)size;
+        list->element_size_total = (u16)stride;
+        list->used_count = 0;
+        node = list->free;
+        next = (NULNKHDR *)((u8 *)node + stride);
+        for (i = 1; i < count; ++i) {
+            node->next = next;
+            node->id = (u16)(i - 1);
+            node->owner = list;
+            node = next;
+            next = (NULNKHDR *)((u8 *)next + stride);
+        }
+        node->next = NULL;
+        list->free_tail = node;
+        node->id = (u16)(i - 1);
+        node->owner = list;
+        list->safe_thread = nu_current_thread_id;
+    }
+    return list;
+}

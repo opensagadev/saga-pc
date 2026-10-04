@@ -1772,3 +1772,23 @@ regions, old exact copies, four complete typed members/parents and CRC initializ
 Two exact WORD members remain4 bytes. Known scope604/138,165 and unknown
 scope1,245/130,388 are factual working views, not invented original heap capacities.
 No backing aliases, fake data providers or game asset bytes are introduced.
+
+
+### Lighting/list and GizFlow data release (2026-10-04)
+
+Exactly three new shared i32 views/12 bytes: version5 at80fde8 and timer/random
+IDs -1 at8061b8/806144. Original owning extents remain unknown/blank; all12
+working bytes get zero allocation or exact credit. Shared3,538 full regions/
+1,852 scopes equal isolated output, preserving every old region/initializer,
+four typed members/complete parents and inherited CRC10B plus relocations.
+Known scope604/138,165 bytes is unchanged; unknown1,248/130,400 is working-view
+evidence. Two exact WORD members remain4 bytes.
+
+Final normal receipt: build/analysis/transfer-execution-20261003/data/
+lighting-gizflow3-final-normal-release.json. All75 actual new complete copies
+are retail-equal: ten known copies give4,785 exact physical copies from4,775;
+65 unknown copies/1,045 working bytes give no extent/allocation/exact credit.
+Matched union632,544 adds12 proven numeric bytes, separate from shared views.
+Genuine67 GizFlow private initializers and five RTL compiler copies retain
+original source owners; no duplicate tables/state or new CRC constructor.
+All326 protected production inputs and282 actual normal object pins survive.

@@ -14681,4 +14681,30 @@ STATIC_ASSERT(offsetof(PC_SPECIAL_SHADOW_LIGHT, enabled) == 0x808);
 STATIC_ASSERT(sizeof(PC_SPECIAL_SHADOW_LIGHT) == 0x80c);
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 __cdecl rtlDynamicSetRadii(i32, f32, f32);
+    i32 __cdecl rtlDynamicSetColours(i32, NUVEC *, NUVEC *);
+    i32 __cdecl rtlDynamicSetDirection(i32, NUVEC *);
+    void __cdecl IndexLights(RTL_SET_PC *, VARIPTR *, i32);
+    void __cdecl rtlProcessLights(void *, f32);
+    void __cdecl rtlSwapSetEndianess(void *);
+    RTL_SET_PC *__cdecl rtlLoadSet(char *, VARIPTR *, i32);
+    extern i32 RtlFileVersionPc;
+    NULSTHDR *__cdecl NuLstCreateBuff(i32, i32, VARIPTR *, VARIPTR, i32);
+    i32 __cdecl rtlInitDynamic(VARIPTR *, VARIPTR, i32);
+    void *__cdecl LoadGizFlow(void *, void *, char *, VARIPTR *, VARIPTR *);
+    void __cdecl GizmoSysAddGizmos(void *, GIZFLOW_PC *, void *);
+    GIZMO_PC *__cdecl createGizTimer(void *, f32, i32, char *);
+    GIZMO_PC *__cdecl createGizRandom(void *, i32, i32 *, char *);
+    GIZMO_PC *__cdecl createGizSpecial(void *, char *);
+    void __cdecl GizFlowLoadDiagnosticPc(char *);
+    void __cdecl GizFlowMissingNamePc(char *, i32);
+    extern i32 giztimer_gizmotype_id;
+    extern i32 gizrandom_gizmotype_id;
+#ifdef __cplusplus
+}
+#endif
+
 #endif

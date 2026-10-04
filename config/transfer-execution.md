@@ -2476,3 +2476,73 @@ remain untouched. Next are RTL/list12/3,268 and GizFlow39/4,515 source candidate
 then real UpdateGameObjects collision/lighting/world suppliers and scene/resource
 services. Scratch candidate bytes do not count as transfer. Whole-project
 engine, gameplay, resources and platform work continues.
+
+
+### Lighting, lists and GizFlow ingestion checkpoint (2026-10-04)
+
+51 complete functions add 7,783 unique compared PC bytes over 04cc852:
+RTL/list12/3,268 and GizFlow ingestion39/4,515. Unique compared code reaches
+1,094,062 bytes; native objdiff compares 1,094,579 including existing aliases.
+Whole-PC fuzzy coverage rises from 21.632154% to 21.809572%; 27 exact
+functions add 872 bytes, reaching 187,919/3,471,246 .text bytes (5.413589%).
+Data union grows 12 bytes to 632,544. Already compared parents and inventory
+additions receive no new transfer credit.
+
+RTL retains the original private EAX chain/single and ESI process helpers,
+complete nine-DWORD dispatch table, timers, blends, modifiers and full load
+switch tail. NuLstCreateBuff uses real caller-owned arena/list fields,
+positive count, native alignment, strict remaining-capacity comparison and
+WORD truncation. Valid serialized versions0..5 preserve descending fog
+migration and wrapping UID producer. IndexLights originally used an unsigned
+incremented BYTE index; independent review found native MOVSX. V3 now sign-
+extends the count before the store. The retained count128 discriminator passes
+4/4; old unsigned source fails1/4. Native missing capacity/count127 guards
+remain explicit, with finite initialized sentinel/index/modifier storage.
+
+GizFlow preserves two-pass parsing, collapse/remap expansion, genuine private
+callback/condition tables and current registry count reloads. True constructors
+5b0550/134, 5b01b0/148 and5ae1c0/344 retain canonical GIZMO_PC* ABI; native
+Special refcount increment still occurs when its constructor returns NULL.
+Native diagnostics59d760/1 and59d770/1 retain genuine cross-unit calls; the
+original physical TU name is unknown. NuFreeFPar is the existing real close
+provider. Private constructor reader types stay separately scoped; redundant
+research declarations were removed without altering all160 accepted regions.
+No WorldInfo_Load parent bytes or general constructor/callback runtime credit
+is claimed. Parser capacities, valid noncyclic remaps and adequate arenas are
+explicit native domains rather than invented guards.
+
+The source-only EXE links 3,842 functions and 6,497 data definitions across
+282 actual normal objects. LLVM18 format309/tidy282, static9,831 mappings and
+all710 tests pass with three existing skips (108.210s suite). Required build,
+object checks, make check and authoritative retail match all return exit0.
+All119 native assertions pass using all282 actual normal objects with zero
+replacements/supplements: RTL99 and GizFlow20. All326 frozen production inputs
+and282 source/object pins survive. All3,791 previous full function copies are
+byte-identical; every old exact code/data/member survives. No prior compiler
+variant needs a new qualification in this wave.
+
+Three genuine shared working views add12 bytes: RtlFileVersionPc=5 at80fde8,
+giztimer_gizmotype_id=-1 at8061b8 and gizrandom_gizmotype_id=-1 at806144.
+All owning extents remain blank with zero allocation/exact credit. Normal
+3,538 shared regions/1,852 scopes equal isolated output, preserving all3,535
+prior regions, four complete typed members/parents and CRC10B plus relocations.
+All75 new complete initializer copies equal retail: ten known copies increase
+exact physical copies4,775->4,785;65 unknown views/1,045 working bytes remain
+uncredited. Private67 GizFlow and five RTL compiler copies stay in original
+owners. Known scope604/138,165 bytes is unchanged; unknown1,248/130,400 describes
+working views, not original capacities. Exact WORD members remain4 bytes.
+
+Previous04cc852 CI37210226070 passed on its exact pushed revision. The user's
+three journal edits remain untouched. Next are source-accepted gameplay3/1,130
+with selected CPU40/0, real API/combat collision6,992, camera/frustum and legacy
+animation families. Camera6/4,470 and animation3/1,068 are compiled scratch
+candidates under review/expansion, not production transfer. Whole-project
+engine, gameplay, resources, platform and runtime work continues.
+
+The15:11 UTC checkpoint waited for the complete independent raw-body/data
+audit. Eight relocation sites use six renamed compiler-local ordinal labels;
+each retains the identical same-function section/value, raw bytes and full
+official relocated bytes. External semantic names remain strict. This is
+metadata only, with zero changed prior function bodies. Final endpoint:
+build/analysis/transfer-execution-20261003/platform/lighting-gizflow-final-review/
+endpoint-acceptance.json.

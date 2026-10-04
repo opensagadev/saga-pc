@@ -11618,3 +11618,15 @@ extern "C" {
     const char PCDeviceTextureCubeSourcePathPc[15] = ".\\d3dCalls.cpp";
 #pragma const_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$RtlFileVersionPc")
+    i32 RtlFileVersionPc = 5;
+#pragma data_seg()
+#pragma data_seg(".data$giztimer_gizmotype_id")
+    i32 giztimer_gizmotype_id = -1;
+#pragma data_seg()
+#pragma data_seg(".data$gizrandom_gizmotype_id")
+    i32 gizrandom_gizmotype_id = -1;
+#pragma data_seg()
+}

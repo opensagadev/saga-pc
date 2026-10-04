@@ -20,18 +20,18 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1150083,
-    "matched_code_bytes": 187047,
-    "matching_percent": 5.388468578717844,
-    "fuzzy_coverage_percent": 21.6321543797855,
-    "mapped_functions": 3994,
-    "matched_functions": 1821,
-    "objdiff_fuzzy_percent": 69.1393,
-    "objdiff_total_code": 1086796,
+    "mapped_code_bytes": 1157697,
+    "matched_code_bytes": 187919,
+    "matching_percent": 5.41358924144241,
+    "fuzzy_coverage_percent": 21.809571576198834,
+    "mapped_functions": 4044,
+    "matched_functions": 1848,
+    "objdiff_fuzzy_percent": 69.21034,
+    "objdiff_total_code": 1094579,
     "image_bytes": 40067072,
-    "mapped_bytes": 1793300,
-    "mapping_percent": 4.475745070665508,
-    "matched_data_region_bytes": 632532
+    "mapped_bytes": 1800926,
+    "mapping_percent": 4.4947781559880395,
+    "matched_data_region_bytes": 632544
   },
   "newly_compared": [
     {
@@ -2783,6 +2783,516 @@
       ],
       "exact": false,
       "objdiff_percent": 96.129036
+    },
+    {
+      "symbol": "_NuLstCreateBuff",
+      "pc": "0x005470f0",
+      "original_bytes": 173,
+      "units": [
+        "src/nu2api/nulst.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.202896
+    },
+    {
+      "symbol": "_GizmoSysAddGizmos",
+      "pc": "0x0055af20",
+      "original_bytes": 169,
+      "units": [
+        "src/legoapi/gizmo.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 57.149254
+    },
+    {
+      "symbol": "_GizFlowLoadDiagnosticPc",
+      "pc": "0x0059d760",
+      "original_bytes": 1,
+      "units": [
+        "src/legoapi/gizflow_diagnostic.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowMissingNamePc",
+      "pc": "0x0059d770",
+      "original_bytes": 1,
+      "units": [
+        "src/legoapi/gizflow_diagnostic.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigCollapsePc",
+      "pc": "0x0059e260",
+      "original_bytes": 176,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 63.11111
+    },
+    {
+      "symbol": "_GizFlowConfigParentCollapsePc",
+      "pc": "0x0059e310",
+      "original_bytes": 108,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 97.74074
+    },
+    {
+      "symbol": "_GizFlowConfigChildCollapsePc",
+      "pc": "0x0059e380",
+      "original_bytes": 69,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 96.611115
+    },
+    {
+      "symbol": "_GizFlowConfigRemapParentPc",
+      "pc": "0x0059e3d0",
+      "original_bytes": 120,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 73.29269
+    },
+    {
+      "symbol": "_GizFlowConfigRemapChildrenPc",
+      "pc": "0x0059e450",
+      "original_bytes": 97,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 54.39394
+    },
+    {
+      "symbol": "_GizFlowConfigFlowBoxCountPc",
+      "pc": "0x0059e4c0",
+      "original_bytes": 8,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigFlowBoxPc",
+      "pc": "0x0059e4d0",
+      "original_bytes": 494,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 90.369125
+    },
+    {
+      "symbol": "_GizFlowConfigParentPc",
+      "pc": "0x0059e6c0",
+      "original_bytes": 92,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 48.166668
+    },
+    {
+      "symbol": "_GizFlowConfigChildPc",
+      "pc": "0x0059e720",
+      "original_bytes": 58,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigGizmoPc",
+      "pc": "0x0059e760",
+      "original_bytes": 854,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 80.96863
+    },
+    {
+      "symbol": "_GizFlowConfigGizmoTypePc",
+      "pc": "0x0059eac0",
+      "original_bytes": 48,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 96.47059
+    },
+    {
+      "symbol": "_GizFlowConfigGizmoNamePc",
+      "pc": "0x0059eaf0",
+      "original_bytes": 42,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 96.0
+    },
+    {
+      "symbol": "_GizFlowConfigStartInvisPc",
+      "pc": "0x0059eb20",
+      "original_bytes": 9,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigEndDeactPc",
+      "pc": "0x0059eb30",
+      "original_bytes": 9,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigEndInvisPc",
+      "pc": "0x0059eb40",
+      "original_bytes": 9,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigReversePc",
+      "pc": "0x0059eb50",
+      "original_bytes": 9,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigReverseInvisPc",
+      "pc": "0x0059eb60",
+      "original_bytes": 10,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigNotFreeplayPc",
+      "pc": "0x0059eb70",
+      "original_bytes": 9,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigNotStoryModePc",
+      "pc": "0x0059eb80",
+      "original_bytes": 9,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigOutputOnlyPc",
+      "pc": "0x0059eb90",
+      "original_bytes": 10,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigGizTimerPc",
+      "pc": "0x0059eba0",
+      "original_bytes": 20,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigGizRandomTimePc",
+      "pc": "0x0059ebc0",
+      "original_bytes": 8,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigRand_NumOutputsPc",
+      "pc": "0x0059ebd0",
+      "original_bytes": 19,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigRand_OutputChancePc",
+      "pc": "0x0059ebf0",
+      "original_bytes": 33,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigNamePc",
+      "pc": "0x0059ec20",
+      "original_bytes": 42,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 96.0
+    },
+    {
+      "symbol": "_GizFlowConfigNumGizmosPc",
+      "pc": "0x0059ec50",
+      "original_bytes": 19,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigAIAssistIDPc",
+      "pc": "0x0059ec70",
+      "original_bytes": 23,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigSumBoxPc",
+      "pc": "0x0059ec90",
+      "original_bytes": 19,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigConditionPc",
+      "pc": "0x0059ece0",
+      "original_bytes": 203,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 85.84746
+    },
+    {
+      "symbol": "_GizFlowConfigConditionTypePc",
+      "pc": "0x0059edb0",
+      "original_bytes": 100,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 59.23077
+    },
+    {
+      "symbol": "_GizFlowConfigMonitorInputsPc",
+      "pc": "0x0059ee20",
+      "original_bytes": 12,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GizFlowConfigActionPc",
+      "pc": "0x0059eeb0",
+      "original_bytes": 537,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 68.57143
+    },
+    {
+      "symbol": "_LoadGizFlow",
+      "pc": "0x0059f0e0",
+      "original_bytes": 443,
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 88.780304
+    },
+    {
+      "symbol": "_createGizSpecial",
+      "pc": "0x005ae1c0",
+      "original_bytes": 344,
+      "units": [
+        "src/legoapi/gizspecial.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 96.57944
+    },
+    {
+      "symbol": "_createGizRandom",
+      "pc": "0x005b01b0",
+      "original_bytes": 148,
+      "units": [
+        "src/legoapi/gizrandom.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 88.125
+    },
+    {
+      "symbol": "_createGizTimer",
+      "pc": "0x005b0550",
+      "original_bytes": 134,
+      "units": [
+        "src/legoapi/giztimers.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_rtlSwapSetEndianess",
+      "pc": "0x00633df0",
+      "original_bytes": 1,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_rtlDynamicSetRadii",
+      "pc": "0x00635890",
+      "original_bytes": 103,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 78.8
+    },
+    {
+      "symbol": "_rtlDynamicSetColours",
+      "pc": "0x00635900",
+      "original_bytes": 107,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_rtlDynamicSetDirection",
+      "pc": "0x006359c0",
+      "original_bytes": 74,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_rtlInitDynamic",
+      "pc": "0x00635a70",
+      "original_bytes": 56,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_IndexLights",
+      "pc": "0x00635b10",
+      "original_bytes": 809,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 50.8
+    },
+    {
+      "symbol": "_rtlLoadSet",
+      "pc": "0x00635e40",
+      "original_bytes": 376,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 50.645454
+    },
+    {
+      "symbol": "_RtlApplyModifiersToChainPrivate",
+      "pc": "0x006372b0",
+      "original_bytes": 404,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 77.07462
+    },
+    {
+      "symbol": "_RtlApplyModifiersToSinglePrivate",
+      "pc": "0x00637450",
+      "original_bytes": 72,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_RtlProcessLightPrivate",
+      "pc": "0x006374a0",
+      "original_bytes": 960,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 90.43642
+    },
+    {
+      "symbol": "_rtlProcessLights",
+      "pc": "0x00637860",
+      "original_bytes": 133,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
     }
   ],
   "previous_exact_functions_lost": [],
@@ -18624,6 +19134,138 @@
       ],
       "next_connected_wave": "Close GizFlow parser/constructor ingestion and real RTL/list processing, then UpdateGameObjects lighting/collision/world suppliers and scene/resource service families; continue whole-project transfer.",
       "ongoing_goal": "Continue whole-project Android-to-PC transfer until user stops or pauses; validated direct-main pushes authorized."
+    },
+    {
+      "reviewed_physical_member_migrations": [],
+      "physical_exact_rows_retired_with_same_complete_member": [],
+      "baseline_commit": "04cc852168d25757f8e8861949f5ab259968fadb",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1150083,
+        "matched_code_bytes": 187047,
+        "matching_percent": 5.388468578717844,
+        "fuzzy_coverage_percent": 21.6321543797855,
+        "mapped_functions": 3994,
+        "matched_functions": 1821,
+        "objdiff_fuzzy_percent": 69.1393,
+        "objdiff_total_code": 1086796,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1793300,
+        "mapping_percent": 4.475745070665508,
+        "matched_data_region_bytes": 632532
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1157697,
+        "matched_code_bytes": 187919,
+        "matching_percent": 5.41358924144241,
+        "fuzzy_coverage_percent": 21.809571576198834,
+        "mapped_functions": 4044,
+        "matched_functions": 1848,
+        "objdiff_fuzzy_percent": 69.21034,
+        "objdiff_total_code": 1094579,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1800926,
+        "mapping_percent": 4.4947781559880395,
+        "matched_data_region_bytes": 632544
+      },
+      "newly_compared_functions": 51,
+      "new_original_code_bytes": 7783,
+      "new_compared_row_original_bytes_including_aliases": 7783,
+      "new_alias_rows": [],
+      "compared_code_delta": 7783,
+      "baseline_unique_compared_pc_bytes": 1086279,
+      "unique_compared_pc_bytes": 1094062,
+      "exact_code_added": 872,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 3791,
+      "prior_compiled_function_copies_identical": 3791,
+      "reviewed_Bolt_original_C_to_CPP_owner_supersessions": [],
+      "renamed_owner_copies_with_identical_complete_bodies": [],
+      "user_journal_unchanged": true,
+      "checkpoint": "Lighting, lists and GizFlow ingestion checkpoint (2026-10-04)",
+      "new_source_functions": 51,
+      "new_unique_compared_PC_bytes": 7783,
+      "new_exact_PC_bytes": 872,
+      "new_exact_functions": 27,
+      "family_bytes": {
+        "RTL_and_list": 3268,
+        "GizFlow_ingestion": 4515
+      },
+      "verified_checks": {
+        "build_link_object_checks": "PASS3842functions6497data282actualobjects",
+        "LLVM18_format_files": 309,
+        "LLVM18_tidy_units": 282,
+        "full_test_count": 710,
+        "existing_skips": 3,
+        "full_test_time_seconds": 108.21,
+        "make_build_check_objects_check_match_exit_code": 0,
+        "actual_normal_runtime_checks": 119,
+        "actual_normal_runtime_failures": 0,
+        "whole_owner_replacements": 0,
+        "supplements": 0,
+        "all3791_previous_function_copies_identical": true,
+        "user_journal_preserved": true,
+        "pins": {
+          "build/analysis/transfer-execution-20261003/continuation-gizflow-lighting-world/aggregate.log": "4209c6c67ce3fc09c1bf9294e3fc064436a139ba10783cf508eb826a4847e909",
+          "build/analysis/transfer-execution-20261003/continuation-gizflow-lighting-world/check.log": "60af2044de598fc750da8ff492c08cf57c56f76e44db6501c00adaaa3afe2a6c",
+          "build/analysis/transfer-execution-20261003/continuation-gizflow-lighting-world/match.log": "15e1b0cfec0487bfdf0b14d5bf62bb9a587221db2dabe1e4149f98baebe5d929",
+          "build/analysis/transfer-execution-20261003/continuation-gizflow-lighting-world/authoritative-source-report.json": "82d112126a62aa061981ecba4736d88eee8ae60133ceaf25b9c397d3c2892bb6",
+          "build/analysis/transfer-execution-20261003/continuation-gizflow-lighting-world/verified-source-delta.json": "17a2b56d7d2ba53d58bdcfb7b6fa2bac68c1eea598251548961bdf047268d481",
+          "build/analysis/transfer-execution-20261003/continuation-gizflow-lighting-world/accepted-complete-functions.json": "fa68bc203812758000988b7d1a09c6b6126183606541cc9bc66b7cbd87ccb554",
+          "build/analysis/transfer-execution-20261003/continuation-gizflow-lighting-world/frozen-production-inputs.json": "9889ac3c6c094c3c5ac7df24686c3eb3f192205664977a2d611c205ea6d8e3dc",
+          "build/analysis/transfer-execution-20261003/continuation-gizflow-lighting-world/normal-object-manifest.json": "28b92bc4120af6d8c2520bae67d3dbcbca4747b522d3e00b8b249b624fc84c0a"
+        }
+      },
+      "shared_views_added": 3,
+      "shared_working_bytes_added": 12,
+      "shared_unknown_views_added": 3,
+      "original_allocation_credit": 0,
+      "baseline_exact_initializer_copies": 4775,
+      "current_exact_initializer_copies": 4785,
+      "new_complete_initializer_copies": 75,
+      "new_known_initializer_copies": 10,
+      "new_unknown_initializer_copies": 65,
+      "new_unknown_working_copy_bytes": 1045,
+      "new_exact_data_union_bytes": 12,
+      "previous_pushed_CI": {
+        "revision": "04cc852168d25757f8e8861949f5ab259968fadb",
+        "all_exact_revision_runs_success": true,
+        "runs": [
+          {
+            "revision": "04cc852168d25757f8e8861949f5ab259968fadb",
+            "run_id": 37210226070,
+            "name": "Build",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/opensagadev/saga-pc/actions/runs/37210226070"
+          }
+        ]
+      },
+      "remaining_contracts": [
+        "Native IndexLights lacks capacity/count127 guards; finite initialized sentinel/modifier/index storage and adequate caller arenas remain required.",
+        "List creator requires positive count and valid alignment. Serialized RTL records use valid native versions0..5.",
+        "GizFlow parser capacities and remap depth are native unchecked domains; selected NULL-loading-world/action-registry paths do not establish constructor-success or registered action behavior.",
+        "Private original diagnostic TU name remains unknown; genuine cross-unit RET calls preserve actual physical call contracts.",
+        "All65 unknown initializer views retain blank original extents and zero allocation/exact credit."
+      ],
+      "next_connected_wave": "Release source-accepted LightGameObject/ConstantRumble/PowerUp3/1130 with their40-check CPU proof, connected API/combat collision6992, camera/frustum CPU families and legacy animation evaluation/blending. Continue broad whole-project transfer.",
+      "ongoing_goal": "Continue whole-project Android-to-PC transfer until user stops or pauses; validated direct-main pushes authorized.",
+      "independent_endpoint": {
+        "path": "build/analysis/transfer-execution-20261003/platform/lighting-gizflow-final-review/endpoint-acceptance.json",
+        "sha256": "a7ecb6622e42e9ddb3a8219b84f797b616cafd6fa183557346d6103878618423"
+      },
+      "checkpoint_delay": {
+        "scheduled_UTC": "2026-10-04 15:11",
+        "reason": "Complete independent old raw-body/official-relocation audit and physical initializer/member endpoint; prove eight compiler-local ordinal label changes refer to unchanged same-function section/value while preserving every external semantic name."
+      },
+      "compiler_local_label_metadata_changes": {
+        "relocation_sites": 8,
+        "label_names": 6,
+        "all_same_function_section_and_value": true,
+        "all_raw_and_full_official_relocated_bodies_unchanged": true
+      }
     }
   ]
 }

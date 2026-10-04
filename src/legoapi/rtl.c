@@ -577,3 +577,331 @@ i32 __cdecl rtlDynamicAllocTemplate(RTL_SET_PC *set, i32 user_id) {
     }
     return -1;
 }
+
+#define RTL_MIN_PC(a, b) ((a) < (b) ? (a) : (b))
+#define RTL_MAX_PC(a, b) ((a) > (b) ? (a) : (b))
+static void RtlApplyModifiersToChainPrivate(RTL_LIGHT_PC *light) {
+    const NUVEC zero = {0.0f, 0.0f, 0.0f};
+    RTL_LIGHT_PC *source;
+    if (light->field_7c != NULL && light->field_79 != -1) {
+        light->colour = zero;
+        light->secondary_colour = zero;
+        light->direction.x = light->direction.y = light->direction.z = 0.0f;
+        source = &light->field_7c[light->field_79];
+        for (;;) {
+            f32 scale = modifiers[source->field_7b];
+            light->colour.x += source->colour.x * scale;
+            light->colour.y += source->colour.y * scale;
+            light->colour.z += source->colour.z * scale;
+            light->secondary_colour.x += source->secondary_colour.x * scale;
+            light->secondary_colour.y += source->secondary_colour.y * scale;
+            light->secondary_colour.z += source->secondary_colour.z * scale;
+            light->direction.x += source->direction.x * scale;
+            light->direction.y += source->direction.y * scale;
+            light->direction.z += source->direction.z * scale;
+            if (source->field_79 == -1)
+                break;
+            source = &light->field_7c[source->field_79];
+        }
+        NuVecNorm(&light->direction, &light->direction);
+    }
+}
+
+static void RtlApplyModifiersToSinglePrivate(RTL_LIGHT_PC *light) {
+    f32 scale;
+    if (light->field_79 == -1 && light->field_7a == -1)
+        return;
+    scale = modifiers[light->field_7b];
+    light->ambient.x += light->colour.x * scale;
+    light->ambient.y += light->colour.y * scale;
+    light->ambient.z += light->colour.z * scale;
+}
+
+static void RtlProcessLightPrivate(RTL_LIGHT_PC *light, f32 elapsed) {
+    f32 blend;
+    if (light->field_79 != -1 && light->field_7a == -1)
+        RtlApplyModifiersToChainPrivate(light);
+
+    switch (light->type) {
+        case 0:
+            return;
+        case 3:
+            if (light->parameter_54 >= 0.0f) {
+                light->parameter_54 -= elapsed;
+                light->ambient = light->colour;
+                if (light->parameter_54 <= 0.0f)
+                    light->parameter_54 = -light->parameters[2] - NuRandFloat() * light->parameters[3];
+            } else {
+                light->parameter_54 += elapsed;
+                light->ambient = light->secondary_colour;
+                if (light->parameter_54 >= 0.0f)
+                    light->parameter_54 = light->parameters[0] + NuRandFloat() * light->parameters[1];
+            }
+            break;
+        case 6:
+            if (light->field_64 == 0.0f) {
+                light->ambient.x = light->colour.x;
+                light->ambient.y = light->colour.y;
+                light->ambient.z = light->colour.z;
+                break;
+            }
+            if (light->field_64 > 0.0f) {
+                light->parameter_54 += elapsed;
+                blend = RTL_MIN_PC(1.0f, RTL_MAX_PC(0.0f, light->parameter_54 / light->field_64));
+                light->ambient.x = light->colour.x * blend + light->secondary_colour.x * (1.0f - blend);
+                light->ambient.y = light->colour.y * blend + light->secondary_colour.y * (1.0f - blend);
+                light->ambient.z = light->colour.z * blend + light->secondary_colour.z * (1.0f - blend);
+                if (light->parameter_54 >= light->field_64) {
+                    light->field_64 = -light->parameters[2] - NuRandFloat() * light->parameters[3];
+                    light->parameter_54 = 0.0f;
+                }
+            } else {
+                light->parameter_54 -= elapsed;
+                blend = RTL_MIN_PC(1.0f, RTL_MAX_PC(0.0f, light->parameter_54 / light->field_64));
+                light->ambient.x = light->secondary_colour.x * blend + light->colour.x * (1.0f - blend);
+                light->ambient.y = light->secondary_colour.y * blend + light->colour.y * (1.0f - blend);
+                light->ambient.z = light->secondary_colour.z * blend + light->colour.z * (1.0f - blend);
+                if (light->parameter_54 <= light->field_64) {
+                    light->field_64 = light->parameters[0] + NuRandFloat() * light->parameters[1];
+                    light->parameter_54 = 0.0f;
+                }
+            }
+            break;
+        case 8:
+            light->ambient.x = light->secondary_colour.x * light->blend + light->colour.x * (1.0f - light->blend);
+            light->ambient.y = light->secondary_colour.y * light->blend + light->colour.y * (1.0f - light->blend);
+            light->ambient.z = light->secondary_colour.z * light->blend + light->colour.z * (1.0f - light->blend);
+            light->blend += light->blend_rate * elapsed;
+            light->blend = RTL_MIN_PC(1.0f, RTL_MAX_PC(0.0f, light->blend));
+            light->parameter_54 -= elapsed;
+            if (light->parameter_54 <= 0.0f) {
+                light->parameter_54 = light->parameters[2];
+                if (light->blend_rate >= 0.0f)
+                    light->blend_rate = -(light->parameters[0] + NuRandFloat() * light->parameters[1]);
+                else
+                    light->blend_rate = light->parameters[0] + NuRandFloat() * light->parameters[1];
+            }
+            break;
+        default:
+            light->ambient = light->colour;
+            break;
+    }
+
+    if (light->field_79 == -1 && light->field_7a == -1)
+        RtlApplyModifiersToSinglePrivate(light);
+}
+
+void __cdecl rtlProcessLights(void *set, f32 frame_time) {
+    RTL_LIGHT_PC *light;
+    i32 i;
+    RTL_SET_PC *light_set;
+    rtl_frametime = frame_time;
+    if (rtl_dynamic_pool != NULL) {
+        light = (RTL_LIGHT_PC *)NuLstGetNext(rtl_dynamic_pool, NULL);
+        while (light != NULL) {
+            RtlProcessLightPrivate(light, frame_time);
+            light = (RTL_LIGHT_PC *)NuLstGetNext(rtl_dynamic_pool, (NULNKHDR *)light);
+        }
+    }
+    if (set != NULL) {
+        light_set = (RTL_SET_PC *)set;
+        light = light_set->lights;
+        for (i = 0; i < 128; ++i) {
+            if (light->type == 0)
+                break;
+            if (light->field_7a == -1)
+                RtlProcessLightPrivate(light, frame_time);
+            ++light;
+        }
+    }
+}
+
+#include <float.h>
+void IndexLights(RTL_SET_PC *set, VARIPTR *buffer, i32 buffer_end) {
+    f32 minimum_x, maximum_x, minimum_z, maximum_z, width, depth;
+    i32 index, row, column;
+    i8 **cells;
+
+    RTL_INDEX_PC *grid = (RTL_INDEX_PC *)buffer->void_ptr;
+    buffer->addr += sizeof(RTL_INDEX_PC);
+    memset(grid, 0, sizeof(*grid));
+    minimum_x = FLT_MAX;
+    maximum_x = -FLT_MAX;
+    minimum_z = FLT_MAX;
+    maximum_z = -FLT_MAX;
+    for (index = 0; set->lights[index].type != 0; ++index) {
+        RTL_LIGHT_PC *light = &set->lights[index];
+        minimum_x = RTL_MIN_PC(minimum_x, light->position.x - light->outer_radius);
+        maximum_x = RTL_MAX_PC(maximum_x, light->position.x + light->outer_radius);
+        minimum_z = RTL_MIN_PC(minimum_z, light->position.z - light->outer_radius);
+        maximum_z = RTL_MAX_PC(maximum_z, light->position.z + light->outer_radius);
+    }
+
+    width = maximum_x - minimum_x;
+    depth = maximum_z - minimum_z;
+    if (minimum_x > maximum_x || minimum_z > maximum_z || width <= 0.0f || depth <= 0.0f) {
+        return;
+    }
+
+    grid->offset_x = -minimum_x;
+    grid->offset_z = -minimum_z;
+    if (width <= depth) {
+        grid->depth = 16;
+        grid->width = RTL_MIN_PC((i32)(width * 16.0f / depth) + 1, 16);
+        grid->scale = 16.0f / depth;
+    } else {
+        grid->width = 16;
+        grid->depth = RTL_MIN_PC((i32)(depth * 16.0f / width) + 1, 16);
+        grid->scale = 16.0f / width;
+    }
+
+    buffer->addr = ((buffer->addr + 3) & ~3u);
+    grid->cells = (i8 **)buffer->void_ptr;
+    cells = grid->cells;
+    buffer->addr += grid->width * grid->depth * sizeof(char *);
+
+    for (row = 0; row < grid->depth; ++row) {
+        const f32 minimum_cell_z = (f32)(row) / grid->scale - grid->offset_z;
+        const f32 maximum_cell_z = (f32)(row + 1) / grid->scale - grid->offset_z;
+        for (column = 0; column < grid->width; ++column) {
+            u8 *indices;
+            const f32 minimum_cell_x = (f32)(column) / grid->scale - grid->offset_x;
+            const f32 maximum_cell_x = (f32)(column + 1) / grid->scale - grid->offset_x;
+            indices = (u8 *)buffer->void_ptr;
+            cells[row * grid->width + column] = (i8 *)indices;
+            *indices = 0;
+            ++buffer->addr;
+
+            for (index = 0; set->lights[index].type != 0; ++index) {
+                RTL_LIGHT_PC *light = &set->lights[index];
+                const i32 directional = light->type == 5;
+                const i32 overlaps = light->position.x + light->outer_radius >= minimum_cell_x &&
+                                     light->position.x - light->outer_radius <= maximum_cell_x &&
+                                     light->position.z + light->outer_radius >= minimum_cell_z &&
+                                     light->position.z - light->outer_radius <= maximum_cell_z;
+                if (directional || overlaps) {
+                    ++indices[0];
+                    indices[(i8)indices[0]] = (u8)index;
+                    ++buffer->addr;
+                }
+            }
+        }
+    }
+    (void)buffer_end;
+    grid->enabled = 1;
+}
+
+#undef RTL_MIN_PC
+#undef RTL_MAX_PC
+
+i32 rtlDynamicSetRadii(i32 id, f32 inner, f32 outer) {
+    RTL_LIGHT_PC *light;
+    if (rtl_dynamic_pool == NULL || id < 0 || id >= rtl_dynamic_max)
+        return 0;
+    light = (RTL_LIGHT_PC *)NuLstGetByIdx(rtl_dynamic_pool, id);
+    if (light == NULL)
+        return 0;
+    light->inner_radius = inner;
+    if (outer < inner)
+        outer = inner;
+    light->outer_radius = outer;
+    return 1;
+}
+
+i32 rtlDynamicSetColours(i32 id, NUVEC *colour, NUVEC *secondary) {
+    RTL_LIGHT_PC *light;
+    if (rtl_dynamic_pool == NULL || id < 0 || id >= rtl_dynamic_max)
+        return 0;
+    light = (RTL_LIGHT_PC *)NuLstGetByIdx(rtl_dynamic_pool, id);
+    if (light == NULL || (colour == NULL && secondary == NULL))
+        return 0;
+    if (colour != NULL)
+        light->colour = *colour;
+    if (secondary != NULL)
+        light->secondary_colour = *secondary;
+    return 1;
+}
+
+i32 rtlDynamicSetDirection(i32 id, NUVEC *direction) {
+    RTL_LIGHT_PC *light;
+    if (rtl_dynamic_pool == NULL || id < 0 || id >= rtl_dynamic_max)
+        return 0;
+    light = (RTL_LIGHT_PC *)NuLstGetByIdx(rtl_dynamic_pool, id);
+    if (light != NULL && direction != NULL) {
+        light->direction = *direction;
+        return 1;
+    }
+    return 0;
+}
+
+typedef struct rtl_fog_migration_pc_s {
+    u8 unknown_00[0x14];
+    i32 type;
+    u8 unknown_18[4];
+    f32 radius;
+    NUVEC position;
+    u8 unknown_2c[0x20];
+} RTL_FOG_MIGRATION_PC;
+STATIC_ASSERT(sizeof(RTL_FOG_MIGRATION_PC) == 0x4c);
+STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, type) == 0x14);
+STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, radius) == 0x1c);
+STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, position) == 0x20);
+extern i32 RtlFileVersionPc;
+void __cdecl rtlSwapSetEndianess(void *unused) {
+}
+RTL_SET_PC *__cdecl rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
+    RTL_SET_PC *set;
+    RTL_FOG_MIGRATION_PC *old_fog, *fog;
+    u32 version;
+    i32 i;
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    set = (RTL_SET_PC *)buffer->void_ptr;
+    memset(set, 0, sizeof(*set));
+    NuFileLoadBuffer(path, set, buffer_end - buffer->addr);
+    version = set->header;
+    if (version == 1) {
+        rtlSwapSetEndianess(path);
+    } else {
+        old_fog = (RTL_FOG_MIGRATION_PC *)&set->lights[64];
+        fog = (RTL_FOG_MIGRATION_PC *)set->fog;
+        if (version == 2) {
+            old_fog[0].type = 1;
+            old_fog[0].radius = 10.0f;
+            old_fog[0].position.x = old_fog[0].position.y = old_fog[0].position.z = 0.0f;
+            for (i = 1; i < 32; ++i)
+                old_fog[i].type = 0;
+        }
+        if (version == 2 || version == 3) {
+            for (i = 31; i >= 0; --i)
+                fog[i] = old_fog[i];
+            for (i = 64; i < 128; ++i)
+                set->lights[i].type = 0;
+        }
+        if (version >= 2 && version <= 4) {
+            for (i = 0; i < 128; ++i) {
+                set->lights[i].field_79 = -1;
+                set->lights[i].field_7a = -1;
+                set->lights[i].field_7b = 0;
+                set->lights[i].intensity = 1.0f;
+            }
+        }
+        for (i = 0; i < 128; ++i) {
+            set->lights[i].uid = RtlUidCounterPc++;
+            if (RtlUidCounterPc == 0)
+                ++RtlUidCounterPc;
+            set->lights[i].field_7c = set->lights;
+        }
+    }
+    set->header = RtlFileVersionPc;
+    buffer->addr += sizeof(*set);
+    IndexLights(set, buffer, buffer_end);
+    return set;
+}
+
+NULSTHDR *__cdecl NuLstCreateBuff(i32, i32, VARIPTR *, VARIPTR, i32);
+i32 __cdecl rtlInitDynamic(VARIPTR *buffer, VARIPTR end, i32 max_lights) {
+    rtl_dynamic_pool = NuLstCreateBuff(max_lights, sizeof(RTL_LIGHT_PC), buffer, end, 0x10);
+    rtl_dynamic_max = max_lights;
+    rtl_dynamic_cnt = 0;
+    return max_lights;
+}
