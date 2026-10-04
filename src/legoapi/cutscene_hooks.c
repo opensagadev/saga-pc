@@ -561,3 +561,77 @@ void __cdecl NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 fram
 }
 #undef CUT2_VALUE
 #undef CUT2_FLIP
+
+typedef struct CUT_VISIBLE_LOCATOR_PC {
+    NUMTX matrix;
+    NUVEC pivot;
+    f32 scale;
+    NUANIMDATA2_PC *animation;
+    u32 unknown_54;
+    u8 flags;
+} CUT_VISIBLE_LOCATOR_PC;
+STATIC_ASSERT(offsetof(CUT_VISIBLE_LOCATOR_PC, scale) == 0x4c);
+STATIC_ASSERT(offsetof(CUT_VISIBLE_LOCATOR_PC, animation) == 0x50);
+STATIC_ASSERT(offsetof(CUT_VISIBLE_LOCATOR_PC, flags) == 0x58);
+static char CutLocatorSfxFilterPc[] = {3, -1};
+static char CutLocatorFilterPc[] = {6, 7, -1};
+static char CutLocatorScaleFilterPc[] = {6, 7, 8, -1};
+
+i32 __cdecl NuGCutLocatorIsVisble_3(CUT_LOCATOR_GENERIC_PC *locator, f32 frame, f32 *scale, f32 *rate) {
+    ANI3_HEADER_PC *animation = (ANI3_HEADER_PC *)locator->animation;
+    char *filter;
+    f32 *values;
+    i32 result;
+    f32 visible;
+    if (animation->curve_count == 4)
+        filter = CutLocatorSfxFilterPc;
+    else if (animation->curve_count == 8)
+        filter = CutLocatorFilterPc;
+    else
+        filter = CutLocatorScaleFilterPc;
+    values = NuAnimCurveExtractAllNodeCurves_3(animation, 0, frame, filter);
+    if (animation->curve_count == 4) {
+        visible = values[3];
+        return (i32)(visible < 0.0f ? (f64)visible - 0.5 : (f64)visible + 0.5);
+    }
+    visible = values[7];
+    result = (i32)(visible < 0.0f ? (f64)visible - 0.5 : (f64)visible + 0.5);
+    if (result != 0 && scale != NULL)
+        *scale = values[6];
+    if (rate != NULL)
+        *rate = animation->curve_count <= 8 ? 1.0f : values[8];
+    return result;
+}
+
+i32 __cdecl NuGCutLocatorIsVisble(CUT_LOCATOR_GENERIC_PC *locator, f32 frame, NUANIM_TIME2_PC *time, f32 *scale,
+                                  f32 *rate) {
+    NUANIMDATA2_PC *animation = (NUANIMDATA2_PC *)locator->animation;
+    DWA_CURVE_CELL_PC *curves;
+    i8 *types;
+    i32 visible;
+    volatile f32 evaluated;
+    if (animation == NULL) {
+        CUT_VISIBLE_LOCATOR_PC *constant = (CUT_VISIBLE_LOCATOR_PC *)locator;
+        visible = constant->flags & 8;
+        if (visible != 0 && scale != NULL)
+            *scale = constant->scale;
+        return visible;
+    }
+    if ((i32)animation->header.magic >= (i32)0x414e4934 && (i32)animation->header.magic <= (i32)0x414e4935)
+        return NuGCutLocatorIsVisble_3(locator, frame, scale, rate);
+    if (rate != NULL)
+        *rate = 1.0f;
+    curves = animation->curves;
+    types = animation->curve_types;
+    if (animation->curve_count == 4) {
+        evaluated = types[3] == 0 ? curves[3].constant : NuAnimCurve2CalcValEx(&curves[3], time, types[3]);
+        return (i32)evaluated;
+    }
+    evaluated = types[7] == 0 ? curves[7].constant : NuAnimCurve2CalcValEx(&curves[7], time, types[7]);
+    visible = (i32)evaluated;
+    if (visible != 0 && scale != NULL) {
+        evaluated = types[6] == 0 ? curves[6].constant : NuAnimCurve2CalcValEx(&curves[6], time, types[6]);
+        *scale = evaluated;
+    }
+    return visible;
+}

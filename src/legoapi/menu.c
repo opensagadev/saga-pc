@@ -332,3 +332,168 @@ NUGSCN *__cdecl IconScene_FindById(i32 id) {
         return NULL;
     return IconScenePc[id];
 }
+
+extern char *MenuAcceptPromptTextPc, *MenuCancelPromptTextPc;
+extern f32 MenuTextScalePc, MenuPromptPositionScalePc, MENUDY;
+extern char **__cdecl TextInputGetKeyNamesPc(void);
+extern i32 __cdecl TextInputIsKeyboardDevicePc(i32);
+extern i32 __cdecl TextInputIsPrimaryDevicePc(i32);
+void __cdecl MenuText3DEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, i32);
+void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 enabled, u8 red, u8 green, u8 blue,
+                                     u8 alpha) {
+    char accept_text[128], cancel_text[128], axes_text[128];
+    char *accept = "[[accept]]", *back = "[[back]]", *left = "[[padleft]]", *right = "[[padright]]";
+    char **keys;
+    i32 device;
+    f64 row_delta;
+    f32 y, x, scale;
+    u32 alignment;
+    device = TextInputLinkedDevicePc(TextInputLastDevicePc());
+    if (TextInputIsKeyboardDevicePc(device)) {
+        keys = TextInputGetKeyNamesPc();
+        accept = keys[28];
+        back = keys[1];
+        left = keys[203];
+        right = keys[205];
+    }
+    if (enabled) {
+        sprintf(accept_text, "%s ~0%s", MenuAcceptPromptTextPc, accept);
+        sprintf(cancel_text, "%s ~0%s", MenuCancelPromptTextPc, back);
+    } else {
+        sprintf(accept_text, "~0$s~~ %s", accept, MenuAcceptPromptTextPc);
+        sprintf(cancel_text, "~0%s~~ %s", back, MenuCancelPromptTextPc);
+    }
+    if (TextInputIsPrimaryDevicePc(device))
+        sprintf(axes_text, "~0$s~~ %s ~0$s", left, MenuAcceptPromptTextPc, right);
+    else
+        sprintf(axes_text, "%s ~0%s~~ / ~0$s", MenuAcceptPromptTextPc, left, right);
+    row_delta = (f64)MENUDY * (f64)0.8f * MenuPromptPositionScalePc;
+    y = (f32)((f64)MENUDY * (f64)0.8f - (f64)0.85f);
+    y = (f32)((f64)y + row_delta);
+    y = (f32)((f64)y - (f64)0.05f);
+    if (confirm)
+        y = (f32)((f64)y - row_delta);
+    if (cancel)
+        y = (f32)((f64)y - row_delta);
+    if (flags)
+        y = (f32)((f64)y - row_delta);
+    x = enabled ? 0.85f : -0.85f;
+    scale = (f32)((f64)0.8f * MenuTextScalePc);
+    alignment = enabled ? 12 : 6;
+    if (confirm) {
+        scale = (f32)((f64)0.8f * MenuTextScalePc);
+        MenuText3DEx(accept_text, x, y, 1, scale, scale, scale, alignment, red, green, blue, alpha);
+        row_delta = (f64)MENUDY * (f64)0.8f * MenuPromptPositionScalePc;
+        y = (f32)((f64)y + row_delta);
+    }
+    if (cancel) {
+        scale = (f32)((f64)0.8f * MenuTextScalePc);
+        MenuText3DEx(cancel_text, x, y, 1, scale, scale, scale, alignment, red, green, blue, alpha);
+        row_delta = (f64)MENUDY * (f64)0.8f * MenuPromptPositionScalePc;
+        y = (f32)((f64)y + row_delta);
+    }
+    if (flags) {
+        scale = (f32)((f64)0.8f * MenuTextScalePc);
+        MenuText3DEx(axes_text, x, y, 1, scale, scale, scale, alignment, red, green, blue, alpha);
+    }
+}
+
+void __cdecl DrawMenuButtonPrompts(i32 confirm, i32 cancel, i32 enabled, u8 red, u8 green, u8 blue, u8 alpha) {
+    DrawMenuButtonPromptsEx(confirm, cancel, 0, enabled, red, green, blue, alpha);
+}
+
+typedef struct menu_draw_state_pc_s {
+    u8 unknown_00[0x0e];
+    i16 first_row;
+    u8 unknown_10[2];
+    i16 last_row;
+    i16 menu;
+    u8 unknown_16[0x76];
+    i32 draw_item;
+    f32 item_scale, draw_x, draw_y, draw_z, draw_offset, centre_offset;
+    u8 unknown_a8[4];
+    i32 paused;
+} MENU_DRAW_STATE_PC;
+STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, first_row) == 0xe);
+STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, last_row) == 0x12);
+STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, menu) == 0x14);
+STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, draw_item) == 0x8c);
+STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, item_scale) == 0x90);
+STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, draw_x) == 0x94);
+STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, draw_y) == 0x98);
+STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, draw_z) == 0x9c);
+STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, draw_offset) == 0xa0);
+STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, centre_offset) == 0xa4);
+STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, paused) == 0xac);
+STATIC_ASSERT(offsetof(MENUFNINFO, draw_fn) == 8);
+STATIC_ASSERT(offsetof(MENUFNINFO, confirm_prompt) == 0x19);
+STATIC_ASSERT(offsetof(MENUFNINFO, cancel_prompt) == 0x1a);
+extern i32 memcard_autosavestarted;
+extern f32 memcard_autosavepostdelay, memcard_autosavepredelay;
+extern void(__cdecl *memcard_drawasiconfn)(void);
+extern void(__cdecl *predrawfn)(MENU *);
+extern void(__cdecl *headerdrawfn)(void);
+extern f32 MENUDY;
+extern i32 g_enableButtonPrompts;
+extern u8 MENUNORMALR, MENUNORMALG, MENUNORMALB;
+void __cdecl DrawMenuButtonPromptsEx(i32, i32, i32, i32, u8, u8, u8, u8);
+void __cdecl DrawMenu(i32 paused) {
+    MENU *menu;
+    MENU_DRAW_STATE_PC *view;
+    f32 saved_baseline = 0.0f, saved_button_baseline = 0.0f, centre;
+    VUFNT *font;
+    if (memcard_autosavestarted != 0 || memcard_autosavepostdelay > 0.0f || memcard_autosavepredelay > 0.0f) {
+        if (memcard_drawasiconfn != NULL)
+            memcard_drawasiconfn();
+        return;
+    }
+    menu = &GameMenu[GameMenuLevel];
+    view = (MENU_DRAW_STATE_PC *)menu;
+    if (view->menu == -1)
+        return;
+    MenuValidated = 1;
+    font = SmartTextFont != NULL ? SmartTextFont : QFont2D;
+    if (font != NULL) {
+        saved_baseline = font->baseline;
+        font->baseline = 0.0f;
+    }
+    if (QFont2DButtons != NULL) {
+        saved_button_baseline = QFont2DButtons->baseline;
+        QFont2DButtons->baseline = 0.0f;
+    }
+    MenuHeader[0] = 0;
+    view->draw_item = view->first_row;
+    view->item_scale = 1.0f;
+    view->draw_x = 0.0f;
+    view->draw_z = 1.0f;
+    view->draw_offset = 0.0f;
+    centre = (f32)((f64)(view->last_row - view->first_row) * (f64)MENUDY * 0.5);
+    view->centre_offset = centre;
+    view->draw_y = -centre;
+    view->paused = paused;
+    if (predrawfn != NULL)
+        predrawfn(menu);
+    if (MenuInfo[view->menu].draw_fn != NULL)
+        MenuInfo[view->menu].draw_fn(menu);
+    if (headerdrawfn != NULL)
+        headerdrawfn();
+    if (MenuAlpha >= 0.5f && g_enableButtonPrompts != 0) {
+        MENUFNINFO *info = &MenuInfo[view->menu];
+        DrawMenuButtonPrompts(info->confirm_prompt, info->cancel_prompt, 1, MENUNORMALR, MENUNORMALG, MENUNORMALB,
+                              (u8)MenuA);
+    }
+    font = SmartTextFont != NULL ? SmartTextFont : QFont2D;
+    if (font != NULL)
+        font->baseline = saved_baseline;
+    if (QFont2DButtons != NULL)
+        QFont2DButtons->baseline = saved_button_baseline;
+}
+
+extern i32 MenuDisableHeaders;
+extern f32 MenuTopYPc, MenuTextScalePc;
+void __cdecl MenuSmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, i32);
+void __cdecl DrawMenuHeader(void) {
+    if (MenuDisableHeaders == 0)
+        MenuSmartTextEx(MenuHeader, 0, MenuTopYPc, 1, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
+                        (u8)header_r, (u8)header_g, (u8)header_b, 1.2f, 1, NULL, 0, MenuA);
+}

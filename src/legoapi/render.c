@@ -142,3 +142,131 @@ void __cdecl BackDrop_Draw(f32 alpha, i32 flags) {
         }
     }
 }
+
+STATIC_ASSERT(sizeof(CUT_DRAW_SETTINGS_PC) == 8);
+extern CUT_DRAW_SETTINGS_PC *CutSceneSys;
+extern i32 dco_id, dco_wearinghat, dco_reflectaxis;
+extern PLAYERCHARACTERCONFIG_PC *dco_gcdata;
+extern CHARACTER_MODEL_LAYERS_PC *dco_cmodel;
+extern f32 dco_reflectcoord;
+i32 __cdecl MatrixReflection(NUMTX *, i32, f32, f32, NUMTX *);
+
+extern i32 dco_locatorposonly;
+extern u16 dco_prerotatez;
+extern void(__cdecl *DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *);
+i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *, NUMTX *, f32);
+void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, NUSPECIALHANDLE *special, i32 locator,
+                           i32 second_locator, NUMTX *joints, i32 reflect, u32 layers, NUMTX *rotation,
+                           NUVEC *translation, f32 alpha, f32 scale) {
+    i32 position_only = dco_locatorposonly;
+    u16 rotate_z;
+    i32 id, axis, hat, use_alpha;
+    f32 plane;
+    CHARACTER_MODEL_LAYERS_PC *model;
+    NUMTX matrix, reflected;
+    dco_locatorposonly = 0;
+    rotate_z = dco_prerotatez;
+    dco_prerotatez = 0;
+    if (object != NULL) {
+        id = object->id;
+        model = object->character_model;
+        axis = object->reflection_enabled;
+        plane = object->reflection_height;
+        hat = object->helmet;
+    } else {
+        id = dco_id;
+        if (id == -1 || dco_gcdata == NULL || dco_cmodel == NULL)
+            return;
+        model = dco_cmodel;
+        axis = dco_reflectaxis;
+        plane = dco_reflectcoord;
+        hat = dco_wearinghat;
+    }
+    dco_gcdata = NULL;
+    dco_cmodel = NULL;
+    dco_id = -1;
+    dco_reflectaxis = 0;
+    dco_reflectcoord = 2000000.0f;
+    dco_wearinghat = 0;
+    if (world == NULL)
+        world = WorldInfo_CurrentlyActive();
+    if (object_id != -1) {
+        if (!world->level_objects[object_id].active)
+            return;
+    } else if (special == NULL || !NuSpecialExistsFn(special)) {
+        return;
+    }
+    if (locator == -1 || model->points_of_interest[locator] == NULL)
+        return;
+    if (position_only)
+        NuMtxSetTranslation(&matrix, (NUVEC *)&joints[locator].m30);
+    else
+        matrix = joints[locator];
+    if (second_locator != -1 && model->points_of_interest[second_locator] != NULL) {
+        NUVEC position = {matrix.m30, matrix.m31, matrix.m32};
+        if (!position_only) {
+            NUMTX first = matrix;
+            NUMTX second = joints[second_locator];
+            first.m30 = first.m31 = first.m32 = 0.0f;
+            second.m30 = second.m31 = second.m32 = 0.0f;
+            QuatInterpolateRotationMatrix(&matrix, &first, &second, 0.5f);
+        }
+        matrix.m30 = (f64)(position.x + joints[second_locator].m30) * 0.5;
+        matrix.m31 = (f64)(position.y + joints[second_locator].m31) * 0.5;
+        matrix.m32 = (f64)(position.z + joints[second_locator].m32) * 0.5;
+    }
+    if (rotate_z != 0)
+        NuMtxPreRotateZ(&matrix, rotate_z);
+    if (object_id != -1 && CutSceneSys->object_id == object_id && DisguiseAdjustFn != NULL) {
+        NUVEC adjustment, offset;
+        DisguiseAdjustFn(id, hat, &adjustment, &offset);
+        if (adjustment.x != 1.0f || adjustment.y != 1.0f || adjustment.z != 1.0f)
+            NuMtxPreScale(&matrix, &adjustment);
+        if (offset.x != 0.0f || offset.y != 0.0f || offset.z != 0.0f)
+            NuMtxPreTranslate(&matrix, &offset);
+    }
+    if (rotation != NULL) {
+        NUVEC position = {matrix.m30, matrix.m31, matrix.m32};
+        NuMtxMulR(&matrix, rotation, &matrix);
+        matrix.m30 = position.x;
+        matrix.m31 = position.y;
+        matrix.m32 = position.z;
+    }
+    if (translation != NULL)
+        NuMtxTranslate(&matrix, translation);
+    use_alpha = 0;
+    if (object_id != -1) {
+        special = &world->level_objects[object_id].special;
+        if (ObjTabList != NULL)
+            use_alpha = ObjTabList[object_id].unknown_01;
+    }
+    if (scale != 1.0f)
+        NuMtxPreScaleU(&matrix, scale);
+    if (use_alpha)
+        NuSpecialDrawAtAlpha(special, &matrix, alpha);
+    else
+        NuSpecialDrawAt(special, &matrix);
+    if (reflect && MatrixReflection(&matrix, axis, plane, world->current_level->reflection_y, &reflected)) {
+        NuRndrStartReflectionRender(0);
+        if (use_alpha)
+            NuSpecialDrawAtAlpha(special, &reflected, alpha);
+        else
+            NuSpecialDrawAt(special, &reflected);
+        NuRndrEndReflectionRender();
+    }
+}
+
+i32 __cdecl Draw3DObjectMtx(WORLDINFO *world, i32 object_id, NUMTX *matrix) {
+    LEVEL_OBJECT_RUNTIME_PC *object;
+    if (object_id == -1)
+        return 1;
+    if (world == NULL) {
+        world = WorldInfo_CurrentlyActive();
+        if (world == NULL)
+            return 1;
+    }
+    object = &world->level_objects[object_id];
+    if (object->active != 0)
+        return NuSpecialDrawAt(&object->special, matrix);
+    return 0;
+}

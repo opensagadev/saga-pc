@@ -2419,3 +2419,63 @@ PART_PC *__cdecl FindPart(NUVEC *position, i32 player, GAMEOBJECT *owner) {
     }
     return result;
 }
+
+#define DEBRIS_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
+void __cdecl DebrisSetFacing(i32 handle, u8 enabled, i16 x_angle, i16 y_angle) {
+    if (handle != -1) {
+        DEBRIS_KEYS_PC[handle].field_2fa = enabled;
+        DebrisMtxCopyPrivate(&DEBRIS_KEYS_PC[handle].particle_orientation, &ANI3_EVAL_IDENTITY_MATRIX);
+        DebrisMtxRotateXPrivate(&DEBRIS_KEYS_PC[handle].particle_orientation, x_angle);
+        DebrisMtxRotateYPrivate(&DEBRIS_KEYS_PC[handle].particle_orientation, y_angle);
+    }
+}
+void __cdecl DebrisSetRoomID(i32 handle, NUGSCN *scene) {
+    if (scene != NULL) {
+        DEBRIS_KEYS_PC[handle].field_2f2 = NuPortalWhichRoom(scene, &DEBRIS_KEYS_PC[handle].position);
+        DEBRIS_KEYS_PC[handle].gscene = DEBRIS_KEYS_PC[handle].field_2f2 != -1 ? scene : NULL;
+    } else {
+        DEBRIS_KEYS_PC[handle].field_2f2 = -1;
+        DEBRIS_KEYS_PC[handle].gscene = NULL;
+    }
+}
+
+#undef DEBRIS_KEYS_PC
+
+#define LOCATOR_DEBRIS_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
+void __cdecl DebrisOrientationMtx(i32 handle, NUMTX *source) {
+    if (handle != -1) {
+        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation = *source;
+        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation.m30 = 0.0f;
+        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation.m31 = 0.0f;
+        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation.m32 = 0.0f;
+        LOCATOR_DEBRIS_KEYS_PC[handle].orientation_dirty = 0.0f;
+    }
+}
+void __cdecl DebrisPosOrientationMtx(i32 handle, NUMTX *source) {
+    if (handle != -1) {
+        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation = *source;
+        LOCATOR_DEBRIS_KEYS_PC[handle].position.x = source->m30;
+        LOCATOR_DEBRIS_KEYS_PC[handle].position.y = source->m31;
+        LOCATOR_DEBRIS_KEYS_PC[handle].position.z = source->m32;
+        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation.m30 = 0.0f;
+        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation.m31 = 0.0f;
+        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation.m32 = 0.0f;
+        LOCATOR_DEBRIS_KEYS_PC[handle].orientation_dirty = 0.0f;
+    }
+}
+
+#undef LOCATOR_DEBRIS_KEYS_PC
+
+void __cdecl AddScaledFiniteShotDebrisEffect(i32 *key, i32 effect, NUVEC *position, NUVEC *orientation, NUVEC *momentum,
+                                             i32 count, f32 scale) {
+    i32 scaled = CreateScaledEffect(effect, scale);
+    if (scaled != -1)
+        AddFiniteShotDebrisEffect2(key, scaled, position, orientation, momentum, count);
+}
+i32 __cdecl AddScaledVariableShotDebrisEffect2(i32 effect, NUVEC *position, i32 count, f32 time, NUMTX *emitter,
+                                               NUMTX *particle, f32 scale) {
+    i32 scaled = CreateScaledEffect(effect, scale);
+    if (scaled != -1)
+        AddVariableShotDebrisEffectTimed3(scaled, position, &APIObjectZeroMomentumPC, count, time, emitter, particle);
+    return scaled;
+}

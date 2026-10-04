@@ -1240,3 +1240,54 @@ physical initializers but would retire two previously exact WORD records totalin
 storage can merge. Next connected work combines Draw/RTL26/6,122 with the real
 CutScenes_Draw/locator34/10,654 graph, larger UI/prompt and renderer providers,
 plus closed animation/gameplay subsets. Those candidate bytes are not progress.
+
+
+### Draw, RTL, UI and cutscene locator checkpoint (2026-10-04)
+
+Ninety complete functions add 27,288 newly compared unique PC bytes over62bf2b3:
+Draw/RTL26/6,122, prompts6/1,277, renderer7/885, UI8/4,860,
+cutscene drawing/locators34/10,654 and connected locator backends9/3,490.
+Whole-PC fuzzy coverage rises13.617748% to14.222798% of3,471,246 bytes.
+Unique compared code reaches774,423B; native objdiff compares774,535B with
+63.756966% advisory similarity. Forty-four new exact functions add4,374B,
+reaching77,060B (2.219952%). No earlier exact code or data match is lost.
+
+Of2,708 previous complete function copies,2,707 remain byte-identical. The
+nonexact DebReAlloc2 copy changes only two independent integer MOV loads around
+an unchanged FSTP; independent decoding verifies identical control flow and all
+30 relocations, with unchanged36.482307 advisory similarity. This is recorded
+as a reviewed codegen change, not an identical prior copy or exactness gain.
+
+Connected source now implements RTL light selection/application, global lighting,
+shadow queues, real UI wrapping and prompts, full SmartTextEx and DrawMenu,
+cutscene callback installation and drawing, locator transforms/reflections/VFX,
+scaled effect cache creation/reuse and real generator/axis publication. Private
+helper groups stay in their actual source owners with natural VC8 private ABIs.
+No fabricated providers, retaining calls, ABI wrappers or compiler controls were
+added. Named shared fields include light records, particles and the native428B
+debris effect stride; minimum views do not prove original allocation capacities.
+
+Pinned build/link and all2,798 function/5,368 data definitions across231 actual
+objects pass. LLVM18 checks233 files/231 units;665 tests pass with three skips.
+Nine final native fixtures pass391 selected checks: Draw/RTL110, UI103,
+renderer69, locator backends67 and cutscene drawing42. Every fixture uses all
+current normal source objects and genuine normal data with zero replacements or
+supplements, and root verifies each source/object hash. This establishes selected
+state, callback, cache, UTF8 and geometry behavior. Complete hardware visuals,
+audio, assets, animated locator modes4/5 and gameplay remain unverified; existing
+real partial font/graphics providers remain explicit.
+
+Seventy-three shared physical views add3,488 complete source initializer bytes,
+all with unknown original extents and zero allocation credit. Scope1,503 preserves
+all1,430 earlier proofs; all3,192 normal named data regions equal the frozen
+isolated object. The final link caught missing CutStopInfo storage. Its actual PC
+pointer use and zero initializer were independently verified and supplied; its
+unsupported uncompiled4B inventory extent became blank. All required checks and
+normal fixtures were rerun. The half-hour checkpoint was delayed for these gates.
+The user's three journal edits remain untouched and excluded from the commit.
+
+Next is independently accepted gameplay/resource39/14,110 with genuine37-view
+Init/POD613B data closure. These are candidate bytes until final production
+integration and matching. Resource966 remains held for preservation of two
+historical exact WORD records4B; NewPlayerCharacter1433 requires caller-arity
+proof. Neither hold stops the other connected source transfers.

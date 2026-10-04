@@ -15,3 +15,14 @@ void __cdecl Particles_Stop(WORLDINFO *world) {
         edppStopPage((i8)DEBPAGE_AREA);
     DebFreeAllCreatedEffects();
 }
+
+void __cdecl edppStartPage(i32 page);
+void __cdecl Particles_Start(WORLDINFO *world) {
+    if (DEBPAGE_AREA != -1)
+        edppStartPage(DEBPAGE_AREA);
+    if (world->page_pp != -1)
+        edppStartPage((u8)world->page_pp);
+    DebrisSetRenderGroup(1);
+    if (world->page_anim >= 0)
+        edanimStartPage(world->page_anim);
+}

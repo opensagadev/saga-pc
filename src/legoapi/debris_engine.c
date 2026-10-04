@@ -1,5 +1,8 @@
 #include "saga.h"
 
+#include <stdio.h>
+#include <string.h>
+
 DEBRIS_PARTICLE_CHUNK_PC *__cdecl CreateDmaParticleSet(void *memory, i32 *size) {
     DEBRIS_PARTICLE_CHUNK_PC *chunk = (DEBRIS_PARTICLE_CHUNK_PC *)memory;
     i32 i;
@@ -1065,5 +1068,152 @@ void __cdecl DebFreeAllCreatedEffects(void) {
             i32 handle = i;
             DebFreeInstantly(&handle);
         }
+    }
+}
+
+i32 __cdecl CreateScaledEffect(i32 effect_index, f32 requested_scale) {
+    DEBRIS_INFO_PC *effect, *scaled;
+    i32 i, closest_index, scaled_index;
+    f32 ratio, distance, closest_distance;
+    char shortened[16];
+    if (effect_index < 1 || effect_index > debinf_count || debtab[effect_index] == NULL)
+        return -1;
+    effect = debtab[effect_index];
+    if (effect->scale != 1.0f) {
+        effect_index = effect->base_effect_index;
+        effect = debtab[effect_index];
+        if (effect == NULL)
+            return -1;
+    }
+    if (requested_scale == 1.0f && effect_index != 0)
+        return effect_index;
+    if (requested_scale < 0.01f)
+        requested_scale = 0.01f;
+    for (i = 0; i < EDPP_SCALE_TYPES; ++i) {
+        DEBRIS_SCALE_CACHE_PC *entry = &debscale[i];
+        if (entry->base_effect_index == effect_index && entry->scale == requested_scale &&
+            entry->scaled_effect_index != 0) {
+            scaled = debtab[entry->scaled_effect_index];
+            if (scaled != NULL && scaled->base_effect_index == effect_index)
+                return entry->scaled_effect_index;
+            entry->scale = 0.0f;
+        }
+    }
+    closest_index = effect_index;
+    ratio = requested_scale / effect->scale;
+    closest_distance = ratio > 1.0f ? ratio - 1.0f : 1.0f - ratio;
+    for (i = 1; i < debinf_count; ++i) {
+        scaled = debtab[i];
+        if (scaled != NULL && scaled->base_effect_index == effect_index) {
+            ratio = TerrainDivideNonzeroPC(requested_scale, scaled->scale);
+            distance = ratio > 1.0f ? ratio - 1.0f : 1.0f - ratio;
+            if (distance < closest_distance) {
+                closest_distance = distance;
+                closest_index = i;
+            }
+        }
+    }
+    if (closest_index != 0 && closest_distance < 0.1f)
+        return closest_index;
+    for (scaled_index = 1; scaled_index < debinf_count && debtab[scaled_index] != NULL; ++scaled_index) {
+    }
+    if (scaled_index == debinf_count)
+        return closest_index;
+    scaled = &effecttypes[scaled_index];
+    debtab[scaled_index] = scaled;
+    *scaled = *effect;
+    scaled->native_data = NULL;
+    for (i = 0; i < 8; ++i)
+        scaled->particle_keys[i] = -1;
+    DebrisReScale(scaled_index, requested_scale);
+    scaled = debtab[scaled_index];
+    scaled->last_render_time = scaled->time_group == 4 ? panelglobaltime : globaltime;
+    scaled->scale = requested_scale;
+    scaled->base_effect_index = effect_index;
+    if (strlen(debtab[effect_index]->name) <= 12) {
+        sprintf(scaled->name, "%s%03d", debtab[effect_index]->name, scaled_index);
+    } else {
+        sprintf(shortened, GizAIMessage_NameFormat, debtab[effect_index]->name);
+        shortened[12] = 0;
+        sprintf(scaled->name, "%s%03d", shortened, scaled_index);
+    }
+    ++edpp_types_used;
+    for (i = 0; i < EDPP_SCALE_TYPES; ++i) {
+        if (debscale[i].scale == 0.0f) {
+            debscale[i].base_effect_index = effect_index;
+            debscale[i].scaled_effect_index = scaled_index;
+            debscale[i].scale = requested_scale;
+            break;
+        }
+    }
+    return scaled_index;
+}
+
+void __cdecl DebrisReScale(i32 effect_index, f32 scale) {
+    DEBRIS_INFO_PC *effect;
+    i32 i;
+    u8 generator;
+    if (effect_index < 0 || effect_index >= debinf_count || debtab[effect_index] == NULL)
+        return;
+    effect = debtab[effect_index];
+    for (i = 0; i < 8; ++i) {
+        effect->width_keys[i].value *= scale;
+        effect->height_keys[i].value *= scale;
+    }
+    effect->min_size *= scale;
+    effect->max_size *= scale;
+    effect->momentum_base *= scale;
+    effect->gravity *= scale;
+    generator = (u8)effect->generator_type;
+    if (generator == 0 || generator == 8 || generator == 9 || generator == 10) {
+        effect->emitter_random_extent.x *= scale;
+        effect->emitter_random_extent.y *= scale;
+        effect->emitter_random_extent.z *= scale;
+        effect->momentum_random_x *= scale;
+        effect->rotor_speed_x *= scale;
+        effect->rotor_speed_y *= scale;
+    } else if (generator == 6 || generator == 7 || generator == 11 || generator == 12) {
+        effect->emitter_random_extent.x *= scale;
+        effect->momentum_random_x *= scale;
+    }
+    effect->jib_x_amplitude *= scale;
+    effect->jib_y_amplitude *= scale;
+    GenericDebinfoDmaTypeUpdate(effect);
+}
+
+void __cdecl DebrisPopulateInstance(i32 handle, f32 duration) {
+    DEBRISKEY_PC *key;
+    DEBRIS_INFO_PC *effect;
+    f32 now, end_time, emission_time, thinning, interval;
+    i32 remaining;
+    if (duration < 0.0f || handle == -1)
+        return;
+    key = &((DEBRISKEY_PC *)debkeydata)[handle];
+    effect = debtab[key->effect_index];
+    if (effect->frequency == 0)
+        return;
+    if (duration == 0.0f)
+        duration = effect->particle_lifetime;
+    now = effect->time_group == 4 ? panelglobaltime : globaltime;
+    end_time = now + debris_time_increment;
+    emission_time = now - duration;
+    if (key->previous_allocated_chunk_count == 0) {
+        thinning = forced_debris_thinning != 0 || !(debris_thinning_level > effect->thinning) ? debris_thinning_level
+                                                                                              : effect->thinning;
+        DebReAlloc(key, (i32)((f32)effect->max_particles / thinning));
+    }
+    key->finite = 1;
+    if (key->allocated_chunk_count <= 0)
+        return;
+    thinning = forced_debris_thinning != 0 || !(debris_thinning_level > effect->thinning) ? debris_thinning_level
+                                                                                          : effect->thinning;
+    interval = 1.0f / ((f32)effect->frequency / thinning);
+    key->emission_epoch = emission_time;
+    emission_time += interval;
+    for (remaining = 999; emission_time < end_time && remaining != 0; --remaining) {
+        DEBRISPARTICLE_PC *particle = key->generator(key, effect, emission_time);
+        if (effect->process_spheres != 0 && particle != NULL)
+            DebrisProcessSpheres(particle, emission_time, effect, key, 0);
+        emission_time = key->emission_epoch + interval;
     }
 }

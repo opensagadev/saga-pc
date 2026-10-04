@@ -456,3 +456,12 @@ void __cdecl NuVec4MtxTransformVU0x3(NUVEC4 *out, NUVEC4 *in, NUMTX *m) {
         ++out;
     }
 }
+
+void __cdecl NuVec4MtxRotateVU0(NUVEC4 *out, NUVEC4 *input, NUMTX *matrix) {
+    f32 y = matrix->m01 * input->x + matrix->m11 * input->y + matrix->m21 * input->z;
+    f32 z = matrix->m02 * input->x + matrix->m12 * input->y + matrix->m22 * input->z;
+    out->x = matrix->m10 * input->y + input->x * matrix->m00 + matrix->m20 * input->z;
+    out->y = y;
+    out->z = z;
+    out->w = input->w;
+}

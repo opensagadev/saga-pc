@@ -1403,3 +1403,9 @@ void __cdecl ResetMiniAnimPacket(MINIANIMPACKET_PC *packet, i32 animation) {
     packet->blending = 0;
     packet->flags = 4;
 }
+
+f32 __cdecl AnimEndFrame(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
+    if (animation != -1 && model->model_data_b[animation] != NULL)
+        return NuAnimEndFrame(model->model_data_b[animation]);
+    return 0.0f;
+}

@@ -262,3 +262,12 @@ extern "C" {
         return (u32)device - 10u <= 3u;
     }
 }
+
+extern "C" {
+    char **__cdecl TextInputGetKeyNamesPc(void) {
+        return TextInputKeyNamesPc;
+    }
+    i32 __cdecl TextInputIsPrimaryDevicePc(i32 device) {
+        return (u32)device <= 3u;
+    }
+}

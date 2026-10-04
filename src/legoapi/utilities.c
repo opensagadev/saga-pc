@@ -113,3 +113,35 @@ void __cdecl GetRotationAngles(NUVEC *direction, u16 *x_rotation, u16 *y_rotatio
     *x_rotation = (u16)-NuAtan2D(rotated.x, rotated.y);
     *y_rotation = y_angle;
 }
+
+extern i32(__cdecl *MatrixReflection_CanOverrideFn)(void);
+i32 __cdecl MatrixReflection(NUMTX *matrix, i32 axis, f32 plane, f32 override_plane, NUMTX *result) {
+    switch (axis) {
+        case 1:
+            *result = *matrix;
+            result->m00 = -result->m00;
+            result->m10 = -result->m10;
+            result->m20 = -result->m20;
+            result->m30 = plane - (result->m30 - plane);
+            return 1;
+        case 2:
+            if ((f64)override_plane != 2000000.0 &&
+                (MatrixReflection_CanOverrideFn == NULL || MatrixReflection_CanOverrideFn() != 0))
+                plane = override_plane;
+            *result = *matrix;
+            result->m01 = -result->m01;
+            result->m11 = -result->m11;
+            result->m21 = -result->m21;
+            result->m31 = plane - (result->m31 - plane);
+            return 1;
+        case 3:
+            *result = *matrix;
+            result->m02 = -result->m02;
+            result->m12 = -result->m12;
+            result->m22 = -result->m22;
+            result->m32 = plane - (result->m32 - plane);
+            return 1;
+        default:
+            return 0;
+    }
+}

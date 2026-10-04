@@ -476,3 +476,34 @@ f32 __cdecl NuCameraFocalLenToFOV(f32 focal_length) {
     f32 result = (f32)(NuAtan2DAF(ratio, 1.0f) * PCAtan2RadianScale * 2.0);
     return result;
 }
+
+i32 __cdecl NuCameraClipTestPoints(NUVEC *points, i32 count, NUMTX *world_matrix) {
+    NUMTX matrix;
+    i32 common = -1;
+    i32 i;
+    if (world_matrix != NULL)
+        NuMtxMulH(&matrix, world_matrix, &vmtx);
+    else
+        matrix = vmtx;
+    for (i = 0; i < count; ++i) {
+        NUVEC t;
+        i32 flags = 0;
+        f32 negative_z;
+        NuVecMtxTransform(&t, &points[i], &matrix);
+        if (t.z < global_camera.near_clip)
+            flags |= 0x20;
+        if (t.z > global_camera.far_clip)
+            flags |= 0x10;
+        negative_z = -t.z;
+        if (t.x < negative_z * zx)
+            flags |= 1;
+        if (t.x > t.z * zx)
+            flags |= 2;
+        if (t.y < negative_z * zy)
+            flags |= 8;
+        if (t.y > t.z * zy)
+            flags |= 4;
+        common &= flags;
+    }
+    return common;
+}

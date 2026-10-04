@@ -4007,3 +4007,23 @@ IDs are signed WORDs at6c; names use actual128-byte rows. Input3/67 preserves
 signed BYTE state/truncation and physical caller contracts. All prior bodies and
 relocations are identical after aggregate reconstruction. No bounds or bindings
 were changed to hide comparison differences.
+
+
+### Draw, RTL, UI and locator source release (2026-10-04)
+
+Actual production owners compare90 complete functions/27,288B. All entry, ABI,
+access-width and full-extent gates use retail PC evidence. RTLCalcLights744 and
+ApplyLoop2,068 retain switch tails; SmartTextEx2,661 omits Android-only message
+box drawing according to the PC body. DrawMenu receives paused state, obtains
+its real menu from GameMenu[GameMenuLevel] and retains the native NULL callback
+guard. CutScenes_InitSystem85 naturally registers the real3,767-byte draw body
+and its original40B private type table. Private LookAt and debris/VFX helper ABIs
+remain naturally optimized in the coherent original caller/helper contexts.
+
+Locator effects use the verified428-byte DEBRIS_INFO_PC stride and12-byte cache
+records with actual source providers. PC generator interfaces retain native
+argument widths, the999 cap, unordered thinning behavior and real clock/state
+updates. Private colour setup remains naturally retained by real callers; no
+noinline attributes or artificial wrappers are introduced. A prior nonexact
+DebReAlloc2 integer-load reorder is independently reviewed and explicitly counted
+as one changed prior copy. Every earlier exact code/data record remains exact.

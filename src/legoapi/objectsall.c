@@ -49,3 +49,92 @@ void __cdecl Buck_StartRiderJump(GAMEOBJECT *rider, GAMEOBJECT *mount) {
     if (clearance > character->jump_height)
         rider->velocity.y = NuFsqrt((f32)(-2.0 * (f64)character->gravity * clearance));
 }
+
+i32 __cdecl FindNextBreak(u8 *text, i32 index) {
+    i32 japanese = NuLanguageGet() == 0, count = 0, ascii_start, length;
+    u8 ch, next;
+    length = NuStrLen((char *)text);
+    while ((u8)(text[index] - 0x80) <= 0x3f)
+        --index;
+    ch = text[index];
+    next = text[index + 1];
+    if ((ch == ' ' && next != '!' && next != '?' && next != ';' && next != ':') || (ch == '.' && next != '.') ||
+        ch == '-' || ch == ',')
+        return index;
+    ascii_start = ch <= 0x7f;
+    for (;;) {
+        ++count;
+        if ((japanese && count > 10 && !ascii_start) || count > 20)
+            break;
+        if (++index >= length)
+            return length;
+        while ((u8)(text[index] - 0x80) <= 0x3f)
+            ++index;
+        ch = text[index];
+        next = text[index + 1];
+        if ((ch == ' ' && next != '!' && next != '?' && next != ';' && next != ':') || (ch == '.' && next != '.') ||
+            ch == '-' || ch == ',')
+            return index;
+        if (japanese && ((ch <= 0x7f && !ascii_start) || (ch >= 0x80 && ascii_start)))
+            break;
+    }
+    if (text[index] == '~') {
+        if (index > 0 && text[index - 1] == '~')
+            --index;
+    } else if (index > 1 && text[index - 1] == '~' && text[index - 2] != '~')
+        --index;
+    return index;
+}
+i32 __cdecl FindNearestBreak(u8 *text, i32 index) {
+    i32 japanese = NuLanguageGet() == 0, ascii_start, length, forward, backward, count = 0, result;
+    u8 ch, next;
+    while ((u8)(text[index] - 0x80) <= 0x3f)
+        --index;
+    ch = text[index];
+    next = text[index + 1];
+    if ((ch == ' ' && next != '!' && next != '?' && next != ';' && next != ':') || (ch == '.' && next != '.') ||
+        ch == '-' || ch == ',')
+        return index;
+    ascii_start = ch <= 0x7f;
+    length = NuStrLen((char *)text);
+    forward = backward = index;
+    for (;;) {
+        ++count;
+        if ((japanese && count > 10 && !ascii_start) || count > 20) {
+            result = index;
+            break;
+        }
+        if (forward < length - 1)
+            ++forward;
+        while ((u8)(text[forward] - 0x80) <= 0x3f)
+            ++forward;
+        if (backward > 0)
+            --backward;
+        while ((u8)(text[backward] - 0x80) <= 0x3f)
+            --backward;
+        ch = text[forward];
+        next = text[forward + 1];
+        if ((ch == ' ' && next != '!' && next != '?' && next != ';' && next != ':') || (ch == '.' && next != '.') ||
+            ch == '-' || ch == ',')
+            return forward;
+        if (japanese && ((ch <= 0x7f && !ascii_start) || (ch >= 0x80 && ascii_start))) {
+            result = forward;
+            break;
+        }
+        ch = text[backward];
+        next = text[backward + 1];
+        if ((ch == ' ' && next != '!' && next != '?' && next != ';' && next != ':') || (ch == '.' && next != '.') ||
+            ch == '-' || ch == ',')
+            return backward;
+        if (japanese && ((ch <= 0x7f && !ascii_start) || (ch >= 0x80 && ascii_start))) {
+            result = backward + 1;
+            break;
+        }
+    }
+    if (text[result] == '~') {
+        if (result > 0 && text[result - 1] == '~')
+            --result;
+    } else if (result > 1 && text[result - 1] == '~' && text[result - 2] != '~')
+        --result;
+    return result;
+}

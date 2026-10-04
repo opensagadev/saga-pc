@@ -1147,3 +1147,34 @@ INSTNUGCUTSCENE *__cdecl instNuGCutSceneCreate(void *asset, NUGSCN *gscene, void
     }
     return (INSTNUGCUTSCENE *)instance;
 }
+
+typedef void(__cdecl *CUT_DRAW_RENDER_CALLBACK_PC)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
+typedef void(__cdecl *CUT_DRAW_EVAL_CALLBACK_PC)(INSTNUGCUTSCENE *, void *, void *, void *, f32);
+typedef void(__cdecl *CUT_DRAW_RIGID_CALLBACK_PC)(void *, NUSPECIALHANDLE *, NUMTX *);
+extern CUT_DRAW_RENDER_CALLBACK_PC NuCutSceneCharacterRender;
+extern void(__cdecl *NuCutSceneResetCharacters)(INSTNUGCUTSCENE *);
+extern CUT_DRAW_RIGID_CALLBACK_PC NuCutSceneRigidPostRender;
+void __cdecl NuGCutSceneSysInit(CUT_LOCATOR_FUNCTION_ENTRY_PC *functions) {
+    CutSceneBackgroundInstancesPc = NULL;
+    active_cutscene_instances = NULL;
+    CutSceneLocatorFunctionsPc = functions;
+}
+void __cdecl NuSetCutSceneCharacterRenderFn(CUT_DRAW_RENDER_CALLBACK_PC callback) {
+    NuCutSceneCharacterRender = callback;
+}
+void __cdecl NuSetCutSceneCharacterEvalFn(CUT_DRAW_EVAL_CALLBACK_PC callback) {
+    NuCutSceneCharacterEval = callback;
+}
+void __cdecl NuSetCutSceneFindCharactersFn(void(__cdecl *callback)(CUT_SCENE_LOAD_PC *)) {
+    NuCutSceneFindCharacters = callback;
+}
+void __cdecl NuSetCutSceneResetCharactersFn(void(__cdecl *callback)(INSTNUGCUTSCENE *)) {
+    NuCutSceneResetCharacters = callback;
+}
+void __cdecl NuSetCutSceneCharacterCreateDataFn(void(__cdecl *callback)(CUT_LOAD_CHARACTER *,
+                                                                        CUT_LOAD_CHARACTER_INSTANCE *, VARIPTR *)) {
+    NuCutSceneCharacterCreateData = callback;
+}
+void __cdecl NuSetCutSceneRigidPostRenderFn(CUT_DRAW_RIGID_CALLBACK_PC callback) {
+    NuCutSceneRigidPostRender = callback;
+}

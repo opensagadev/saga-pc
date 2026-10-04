@@ -37,3 +37,17 @@ void __cdecl NoRender(void) {
         BackDrop_Draw((f32)(1.0f - MainRenderTime), 0);
     NuRndrEndScene();
 }
+
+extern u8 ScreenGrabNeededPc;
+extern i32 ScreenPauseRenderTargetPc;
+extern f32 ScreenPauseFadePc;
+void __cdecl NuBackbufferCopy(i32 texture_id);
+void __cdecl GrabStillScreen(void) {
+    if (ScreenGrabNeededPc != 0) {
+        ScreenGrabNeededPc = 0;
+        NuRndrBeginScene(1);
+        NuBackbufferCopy(ScreenPauseRenderTargetPc);
+        NuRndrEndScene();
+        ScreenPauseFadePc = 0.0f;
+    }
+}

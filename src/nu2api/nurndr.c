@@ -327,3 +327,88 @@ void NuRndrEndReflectionRender(void) {
     PCSpecialReflectionPass = 0;
     RndrStateSetReflection(0);
 }
+
+void __cdecl NuRndrAddShadow(NUVEC *position, f32 radius, i32 opacity, i32 unused_x, i32 unused_y, i32 unused_z) {
+    if (NuCameraClipTestPoints(position, 1, NULL) == 0 && NuRndrShadowCnt < 128) {
+        NuRndrShadPolDat[NuRndrShadowCnt].position = *position;
+        NuRndrShadPolDat[NuRndrShadowCnt].radius = radius;
+        NuRndrShadPolDat[NuRndrShadowCnt].opacity = (u16)opacity;
+        ++NuRndrShadowCnt;
+    }
+}
+
+STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_214) == 0x214);
+void __cdecl NuBackbufferCopy(i32 texture_id) {
+    currentScene.unknown_214 = (u32)texture_id;
+}
+
+typedef struct locator_prim_vertex_pc_s {
+    f32 x, y, z;
+    u32 colour;
+    f32 u, v;
+} LOCATOR_PRIM_VERTEX_PC;
+STATIC_ASSERT(sizeof(LOCATOR_PRIM_VERTEX_PC) == 0x18);
+STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, x) == 0);
+STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, y) == 4);
+STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, z) == 8);
+STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, colour) == 0xc);
+static void NuRndrPrimSetColourPrivate(i32 colour) {
+    u32 converted;
+    if (NuPrimNeedsOverbrightening != 0)
+        converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
+    else
+        converted =
+            ((colour & 0xfe) << 15) + ((colour >> 1) & 0x7f00) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+}
+#define LOCATOR_PRIM_POSITION(X, Y, Z)                                                                                 \
+    do {                                                                                                               \
+        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = (X);                                      \
+        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = (Y);                                      \
+        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = (Z);                                      \
+        NuPrimStreamBufferPointer->void_ptr = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr + 1;       \
+        ++NuPrimVertexCount;                                                                                           \
+    } while (0)
+void __cdecl NuRndrAxisArrowsMtx(NUMTX *matrix, f32 length, NUMTL *material) {
+    f32 base = length * 0.8f;
+    f32 width = length * 0.1f;
+    NuPrim3DBegin(14, 5, material, matrix);
+    NuRndrPrimSetColourPrivate((i32)0xff0000ff);
+    LOCATOR_PRIM_POSITION(0, 0, 0);
+    NuRndrPrimSetColourPrivate((i32)0xff0000ff);
+    LOCATOR_PRIM_POSITION(length, 0, 0);
+    NuRndrPrimSetColourPrivate((i32)0xff00ff00);
+    LOCATOR_PRIM_POSITION(0, 0, 0);
+    NuRndrPrimSetColourPrivate((i32)0xff00ff00);
+    LOCATOR_PRIM_POSITION(0, length, 0);
+    NuRndrPrimSetColourPrivate((i32)0xffff0000);
+    LOCATOR_PRIM_POSITION(0, 0, 0);
+    NuRndrPrimSetColourPrivate((i32)0xffff0000);
+    LOCATOR_PRIM_POSITION(0, 0, length);
+    NuPrim3DEnd();
+    NuPrim3DBegin(15, 5, material, matrix);
+    NuRndrPrimSetColourPrivate((i32)0xff0000ff);
+    LOCATOR_PRIM_POSITION(base, -width, 0);
+    NuRndrPrimSetColourPrivate((i32)0xff0000ff);
+    LOCATOR_PRIM_POSITION(length, 0, 0);
+    NuRndrPrimSetColourPrivate((i32)0xff0000ff);
+    LOCATOR_PRIM_POSITION(base, width, 0);
+    NuPrim3DEnd();
+    NuPrim3DBegin(15, 5, material, matrix);
+    NuRndrPrimSetColourPrivate((i32)0xff00ff00);
+    LOCATOR_PRIM_POSITION(0, base, width);
+    NuRndrPrimSetColourPrivate((i32)0xff00ff00);
+    LOCATOR_PRIM_POSITION(0, length, 0);
+    NuRndrPrimSetColourPrivate((i32)0xff00ff00);
+    LOCATOR_PRIM_POSITION(0, base, -width);
+    NuPrim3DEnd();
+    NuPrim3DBegin(15, 5, material, matrix);
+    NuRndrPrimSetColourPrivate((i32)0xffff0000);
+    LOCATOR_PRIM_POSITION(0, width, base);
+    NuRndrPrimSetColourPrivate((i32)0xffff0000);
+    LOCATOR_PRIM_POSITION(0, 0, length);
+    NuRndrPrimSetColourPrivate((i32)0xffff0000);
+    LOCATOR_PRIM_POSITION(0, -width, base);
+    NuPrim3DEnd();
+}
+#undef LOCATOR_PRIM_POSITION

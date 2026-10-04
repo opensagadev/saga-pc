@@ -70,3 +70,19 @@ i32 __cdecl LevelObject_AddExtra(char *name, i32 kind) {
     }
     return 0;
 }
+
+i32 __cdecl LevelObject_FindIndexFromName_RefOnly(char *name) {
+    i32 end, i;
+    if (ObjTabList == NULL || LEVOBJREF_FIRSTOBJ == -1)
+        return -1;
+    end = LEVOBJREF_LASTOBJ - LEVOBJREF_FIRSTOBJ + 1;
+    for (i = LEVOBJREF_FIRSTOBJ; i < end; ++i)
+        if (NuStrICmp(ObjTabList[i].name, name) == 0)
+            return i;
+    return -1;
+}
+i32 __cdecl LevelObject_GetReflection(i32 index) {
+    if (index != -1 && index >= LEVOBJREF_FIRSTOBJ && index <= LEVOBJREF_LASTOBJ)
+        return LEVOBJREF_FIRSTREFOBJ - LEVOBJREF_FIRSTOBJ + index;
+    return index;
+}

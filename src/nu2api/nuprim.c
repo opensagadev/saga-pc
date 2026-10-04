@@ -592,3 +592,21 @@ void __cdecl NuPrim2DAddXYZ(f32 x, f32 y, f32 z) {
         NuPrimVertexCount += 4;
     }
 }
+
+i32 __cdecl NuRndrSetDirectionalLightsPS(const NUVEC *d0, const NUVEC *c0, const NUVEC *d1, const NUVEC *c1,
+                                         const NUVEC *d2, const NUVEC *c2) {
+    NUMTX *view = NuCameraGetViewMtx();
+    render_state.light_intensity[0] = *c0;
+    render_state.light_intensity[1] = *c1;
+    render_state.light_intensity[2] = *c2;
+    NuVecMtxRotate(&render_state.light_direction[0], (NUVEC *)d0, view);
+    NuVecMtxRotate(&render_state.light_direction[1], (NUVEC *)d1, view);
+    NuVecMtxRotate(&render_state.light_direction[2], (NUVEC *)d2, view);
+    NuVecNorm(&render_state.light_direction[0], &render_state.light_direction[0]);
+    NuVecNorm(&render_state.light_direction[1], &render_state.light_direction[1]);
+    NuVecNorm(&render_state.light_direction[2], &render_state.light_direction[2]);
+    ++render_state.counter_0020;
+    ++render_state.lights_id;
+    render_state.light_packet_cache = NULL;
+    return 1;
+}

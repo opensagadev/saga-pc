@@ -1448,3 +1448,23 @@ WORD records4B from the current COFF-symbol report. Contrary earlier research
 notes, those records were compiled and exact. That release remains held. VC8
 global anonymous unions cannot emit the required external field symbols; no
 assembly aliases, duplicate mutable owners or hidden metric adjustments are used.
+
+
+### Draw, RTL, UI and locator physical views (2026-10-04)
+
+Seventy-three new shared owners add3,488 complete emitted initializer bytes:
+Draw/RTL17/3,245, prompts8/36, renderer4/41, UI14/47, cutscene26/103,
+locator backends3/12 and CutStopInfo1/4. All retain blank original extents and
+zero allocation credit. Scope1,503 comprises559 known extents137,619 uniqueB
+and944 unknown views101,513 sourceB. All1,430 previous proofs and3,119 earlier
+complete regions are preserved; every3,192 complete normal named region equals
+the frozen isolated object in bytes, size and symbolic relocations. Compiler
+literals and callback/filter tables remain with their genuine private owners.
+
+CutStopInfo at951c08 is a real zero-initialized pointer compared by native
+cutscene drawing and cleared by CutScenes_End. Its unsupported4B inventory
+extent is retired, without an earlier compiled or exact-data loss. The source
+provider fixes the actual final-link dependency. No invented capacity or retail
+address initializer is used. Next Init/POD37 physical views613B include the real
+relocated24-byte Suit records and10 mutable text IDs; those scratch proposals
+remain outside current source/data credit until production release.

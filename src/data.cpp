@@ -9890,3 +9890,306 @@ extern "C" {
     NUGSCN **IconScenePc;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma const_seg(".rdata$RtlSearchTimebarNamePc")
+    const char RtlSearchTimebarNamePc[9] = "RTL srch";
+#pragma const_seg()
+
+#pragma data_seg(".data$LightingUnitDirectionPc")
+    NUVEC LightingUnitDirectionPc = {1.0f, 0.0f, 0.0f};
+#pragma data_seg()
+
+#pragma data_seg(".data$RtlUnitDirectionYPc")
+    NUVEC RtlUnitDirectionYPc = {0.0f, 1.0f, 0.0f};
+#pragma data_seg()
+
+#pragma data_seg(".data$rtl_dynamic_lights_enabled")
+    i32 rtl_dynamic_lights_enabled = 1;
+#pragma data_seg()
+
+#pragma data_seg(".data$rtl_shadow_blend_rate")
+    f32 rtl_shadow_blend_rate = 2.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$rtl_shadow_flicker")
+    NUVEC rtl_shadow_flicker = {0.10000000149011612f, 0.10000000149011612f, 0.10000000149011612f};
+#pragma data_seg()
+
+#pragma data_seg(".data$RtlModifierIndexZeroPc")
+    f32 RtlModifierIndexZeroPc = 1.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$modifiers")
+    f32 *modifiers = &RtlModifierIndexZeroPc;
+#pragma data_seg()
+
+#pragma data_seg(".data$rtlwob")
+    f32 rtlwob = 0.05000000074505806f;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$PCShadowCurrentLight")
+    struct PC_SPECIAL_SHADOW_LIGHT *PCShadowCurrentLight;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCGlobalLightingState")
+    PC_GLOBAL_LIGHTING_STATE PCGlobalLightingState;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuRndrShadPolDat")
+    PC_SHADOW_QUEUE_RECORD NuRndrShadPolDat[128];
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuRndrShadowCnt")
+    i32 NuRndrShadowCnt;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$rtl_error")
+    i32 rtl_error;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$rtl_frametime")
+    f32 rtl_frametime;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$rtltimer1")
+    i32 rtltimer1;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dbg_rtlindex")
+    RTL_INDEX_PC *dbg_rtlindex;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$UiBackPromptLiteralPc")
+    char UiBackPromptLiteralPc[5] = "Back";
+#pragma data_seg()
+
+#pragma data_seg(".data$UiSelectPromptLiteralPc")
+    char UiSelectPromptLiteralPc[7] = "Select";
+#pragma data_seg()
+
+#pragma data_seg(".data$MenuTextScalePc")
+    f32 MenuTextScalePc = 0.5f;
+#pragma data_seg()
+
+#pragma data_seg(".data$MENUDY")
+    f32 MENUDY = -0.10664000362157822f;
+#pragma data_seg()
+
+#pragma data_seg(".data$MenuAcceptPromptTextPc")
+    char *MenuAcceptPromptTextPc = UiSelectPromptLiteralPc;
+#pragma data_seg()
+
+#pragma data_seg(".data$MenuCancelPromptTextPc")
+    char *MenuCancelPromptTextPc = UiBackPromptLiteralPc;
+#pragma data_seg()
+
+#pragma data_seg(".data$MenuPromptPositionScalePc")
+    f32 MenuPromptPositionScalePc = 1.0f;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$QFont2DLower")
+    VUFNT *QFont2DLower;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$ScreenGrabNeededPc")
+    u8 ScreenGrabNeededPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ScreenPauseRenderTargetPc")
+    i32 ScreenPauseRenderTargetPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ScreenPauseFadePc")
+    f32 ScreenPauseFadePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$EdppPageScenesPc")
+    NUGSCN *EdppPageScenesPc[8];
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$g_enableButtonPrompts")
+    i32 g_enableButtonPrompts = 1;
+#pragma data_seg()
+
+#pragma data_seg(".data$headerdrawfn")
+    void(__cdecl *headerdrawfn)(void) = DrawMenuHeader;
+#pragma data_seg()
+
+#pragma data_seg(".data$MenuTopYPc")
+    f32 MenuTopYPc = 0.800000011920929f;
+#pragma data_seg()
+
+#pragma data_seg(".data$MENUNORMALR")
+    u8 MENUNORMALR = 255;
+#pragma data_seg()
+
+#pragma data_seg(".data$MENUNORMALG")
+    u8 MENUNORMALG = 127;
+#pragma data_seg()
+
+#pragma data_seg(".data$SmartTextDefaultWidthPc")
+    f32 SmartTextDefaultWidthPc = 1.5f;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$SmartTextLongestWidthPc")
+    f32 SmartTextLongestWidthPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$MenuDisableHeaders")
+    i32 MenuDisableHeaders;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$predrawfn")
+    void(__cdecl *predrawfn)(MENU *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$MENUNORMALB")
+    u8 MENUNORMALB;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$memcard_autosavestarted")
+    i32 memcard_autosavestarted;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$memcard_autosavepredelay")
+    f32 memcard_autosavepredelay;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$memcard_autosavepostdelay")
+    f32 memcard_autosavepostdelay;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$memcard_drawasiconfn")
+    void(__cdecl *memcard_drawasiconfn)(void);
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$CutSceneDrawSettingsPc")
+    CUT_DRAW_SETTINGS_PC CutSceneDrawSettingsPc = {-1, -1, -1, -1, 0};
+#pragma data_seg()
+#pragma data_seg(".data$dco_id")
+    i32 dco_id = -1;
+#pragma data_seg()
+
+#pragma data_seg(".data$dco_reflectcoord")
+    f32 dco_reflectcoord = 2000000.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$CutSceneSys")
+    CUT_DRAW_SETTINGS_PC *CutSceneSys = &CutSceneDrawSettingsPc;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$UpdateLocatorVfxFn")
+    void(__cdecl *UpdateLocatorVfxFn)(i32, NUMTX *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$TriggerLocatorVfxFn")
+    i32(__cdecl *TriggerLocatorVfxFn)(i32, NUMTX *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCutSceneGetHGObj")
+    NUHGOBJ_EVAL_PC *(__cdecl *NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCutSceneCharacterRender")
+    void(__cdecl *NuCutSceneCharacterRender)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCutSceneResetCharacters")
+    void(__cdecl *NuCutSceneResetCharacters)(INSTNUGCUTSCENE *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCutSceneRigidPostRender")
+    void(__cdecl *NuCutSceneRigidPostRender)(void *, NUSPECIALHANDLE *, NUMTX *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$NuCutSceneSFXUpdate")
+    void(__cdecl *NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32,
+                                       NUMTX *, i32);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CutSceneDebrisAxisSizePc")
+    f32 CutSceneDebrisAxisSizePc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CutSceneDebrisProcessModePc")
+    i32 CutSceneDebrisProcessModePc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$MatrixReflection_CanOverrideFn")
+    i32(__cdecl *MatrixReflection_CanOverrideFn)(void);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dco_gcdata")
+    PLAYERCHARACTERCONFIG_PC *dco_gcdata;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dco_cmodel")
+    CHARACTER_MODEL_LAYERS_PC *dco_cmodel;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dco_wearinghat")
+    i32 dco_wearinghat;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dco_reflectaxis")
+    i32 dco_reflectaxis;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dco_prerotatez")
+    u16 dco_prerotatez;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dco_locatorposonly")
+    i32 dco_locatorposonly;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DisguiseAdjustFn")
+    void(__cdecl *DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CutBlobShadowAlpha")
+    u8 CutBlobShadowAlpha;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CutReflectRange2")
+    f32 CutReflectRange2;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CutBlobShadowFadeNear")
+    f32 CutBlobShadowFadeNear;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CutSceneWaiting")
+    i32 CutSceneWaiting;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$CutBlobShadowFadeFar")
+    f32 CutBlobShadowFadeFar;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$effecttypes")
+    DEBRIS_INFO_PC *effecttypes;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$debscale")
+    DEBRIS_SCALE_CACHE_PC *debscale;
+#pragma bss_seg()
+
+#pragma data_seg(".data$EDPP_SCALE_TYPES")
+    i32 EDPP_SCALE_TYPES = 20;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$CutStopInfo")
+    void *CutStopInfo;
+#pragma bss_seg()
+}

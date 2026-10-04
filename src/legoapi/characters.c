@@ -10,3 +10,13 @@ i32 __cdecl TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, N
     NuVecRotateY(offset, offset, -(i32)luke->field_0x276);
     return offset->z > 0.0f;
 }
+
+void __cdecl CharScene_Draw(WORLDINFO *world, i32 character_id, NUMTX *matrix, NUMTX *reflection_matrix) {
+    NUSPECIALHANDLE *special = CharScene_FindHSpecial(world, character_id);
+    if (special != NULL) {
+        if (matrix != NULL)
+            NuSpecialDrawAt(special, matrix);
+        if (reflection_matrix != NULL)
+            NuSpecialDrawAt(special, reflection_matrix);
+    }
+}
