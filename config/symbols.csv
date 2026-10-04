@@ -2818,7 +2818,10 @@ address    , symbol                                                         , si
 0x005dab70 , _NuHGobjGetLayerIndex                                          , 84    , i32 __cdecl (const char *; NUHGOBJ_EVAL_PC *)
 0x005dabd0 , _NuHGobjReversibleCharacters                                   , 16    , i32 __cdecl (i32)
 0x005dabe0 , _NuHGobjForceShadowsOnCharacters                               , 16    , i32 __cdecl (i32)
+0x5dabf0,_NuVpSetZRange,31,"void __cdecl(f32,f32)"
+0x5dac70,_NuVpSetPosition2,150,"void __cdecl(f32,f32)"
 0x005dad10 , _NuVpGetPosition2                                              , 360   , "void (f32 *, f32 *)"
+0x5dae80,_NuVpSetSize2,103,"void __cdecl(f32,f32)"
 0x5daef0,_NuVpGetSize2,63,"void __cdecl(f32 *, f32 *)"
 0x005db100, _NuVpSetIdentityPc, 25,
 0x5db310,_RenderPostViewportResetPc,78,void __cdecl(void)
@@ -2923,6 +2926,7 @@ address    , symbol                                                         , si
 0x5ef880,_NuGScnRemove,200,void __cdecl(NUGSCN *)
 0x5ef960,_NuGScnReadFromMemory,19,void __cdecl(NUGSCN*)
 0x5ef980,_NuGHGFixup,19,"NUGSCN* __cdecl(NUGSCN*,void*)"
+0x5ef9a0,_NuVpSetPosition,344,"void __cdecl(f32,f32)"
 0x5efbf0,_NuDisplayListCreateDynMtlList_candidate,1012,"void __cdecl(VARIPTR *,VARIPTR)"
 0x005efff0 , _NuDisplayListAddRenderScene                                   , 746   , i32 (void)
 0x005f02e0 , _NuDisplayListDrawRenderScene_candidate                        , 209   , void __cdecl (i32)
@@ -4063,9 +4067,56 @@ address    , symbol                                                         , si
 0x6da410,_TextInputButtonNamePc,74,"i32 __cdecl(i32,i32,char*)"
 0x6da560,??0PC_INPUT_RUNTIME_PC@@QAE@XZ,1040,PC_INPUT_RUNTIME_PC::PC_INPUT_RUNTIME_PC(void)
 0x6dacb0,?Setup@NuKeyboardOwner_PC@@QAEXPAUHWND__@@PAUHINSTANCE__@@@Z,409,"void __thiscall(HWND,HINSTANCE)"
+0x6daef0,?SetDeviceWidth@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetDeviceWidth(i32)
+0x6daf00,?SetDeviceHeight@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetDeviceHeight(i32)
+0x6daf10,?SetWidth@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetWidth(i32)
+0x6daf20,?SetHeight@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetHeight(i32)
+0x6daf50,?SetRefresh@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetRefresh(i32)
+0x6daf60,?SetMultisample@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetMultisample(i32)
+0x6daff0,?SetBloomMethod@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetBloomMethod(i32)
+0x6db000,?SetDesiredBloomMethod@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetDesiredBloomMethod(i32)
+0x6db020,?SetDesiredShadowMethod@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetDesiredShadowMethod(i32)
+0x6db030,?SetShadowMethod@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetShadowMethod(i32)
+0x6db050,?SetSpeedBlurSupported@PC_WINDOW_OPTIONS_PC@@QAEXE@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetSpeedBlurSupported(u8)
+0x6db060,?SetSpeedBlurEnabled@PC_WINDOW_OPTIONS_PC@@QAEXE@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetSpeedBlurEnabled(u8)
+0x6db070,?SetUseHires@PC_WINDOW_OPTIONS_PC@@QAEXE@Z,19,void __thiscall PC_WINDOW_OPTIONS_PC::SetUseHires(u8)
+0x6db0a0,?SetOption459@PC_WINDOW_OPTIONS_PC@@QAEXE@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetOption459(u8)
+0x6db0c0,?Defaults@PC_WINDOW_OPTIONS_PC@@QAEXXZ,243,void __thiscall PC_WINDOW_OPTIONS_PC::Defaults(void)
+0x6db1c0,?Save@PC_WINDOW_OPTIONS_PC@@QAEXXZ,596,void __thiscall PC_WINDOW_OPTIONS_PC::Save(void)
+0x6db420,?PCOptionsReadFileVersion@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db440,?PCOptionsReadScreenWidth@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db460,?PCOptionsReadScreenHeight@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db480,?PCOptionsReadWindowWidth@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db4a0,?PCOptionsReadWindowHeight@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db4c0,?PCOptionsReadWindowLeft@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db4e0,?PCOptionsReadWindowTop@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db500,?PCOptionsReadScreenRefreshRate@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db520,?PCOptionsReadFSAA@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db540,?PCOptionsReadWidescreen@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db560,?PCOptionsReadSFXVolume@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db580,?PCOptionsReadMusicVolume@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db5a0,?PCOptionsReadMasterVolume@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db5e0,?PCOptionsReadMouseSensitivity@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db600,?PCOptionsReadInvertY@@YAXPAUnufpar_pc_s@@@Z,25,
+0x6db620,?PCOptionsReadVibration@@YAXPAUnufpar_pc_s@@@Z,25,
+0x6db640,?PCOptionsReadBloomMethod@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db660,?PCOptionsReadDesiredBloomMethod@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db680,?PCOptionsReadBloomEnabled@@YAXPAUnufpar_pc_s@@@Z,25,
+0x6db6a0,?PCOptionsReadShadowMethod@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db6c0,?PCOptionsReadDesiredShadowMethod@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db6e0,?PCOptionsReadShadowsEnabled@@YAXPAUnufpar_pc_s@@@Z,25,
+0x6db700,?PCOptionsReadSpeedBlurSupported@@YAXPAUnufpar_pc_s@@@Z,25,
+0x6db720,?PCOptionsReadSpeedBlurEnabled@@YAXPAUnufpar_pc_s@@@Z,25,
+0x6db740,?PCOptionsReadUseHires@@YAXPAUnufpar_pc_s@@@Z,25,
+0x6db760,?PCOptionsReadUseHiresPending@@YAXPAUnufpar_pc_s@@@Z,25,
+0x6db780,?PCOptionsReadForceShaderModel@@YAXPAUnufpar_pc_s@@@Z,19,
+0x6db7a0,?Validate@PC_WINDOW_OPTIONS_PC@@QAEXXZ,340,void __thiscall PC_WINDOW_OPTIONS_PC::Validate(void)
 0x6db910,_NuFileUseHiresPC,8,i32 __cdecl(void)
+0x6db940,?InitializePath@PC_WINDOW_OPTIONS_PC@@QAEXXZ,75,void __thiscall PC_WINDOW_OPTIONS_PC::InitializePath(void)
+0x6db990,?Load@PC_WINDOW_OPTIONS_PC@@QAEXXZ,285,void __thiscall PC_WINDOW_OPTIONS_PC::Load(void)
 0x006dd390 , _NuWindowsProcessMessages                                      , 97    , i32 __cdecl (void)
 0x6dd420,_PcGetUserFolder,56,"char *__cdecl PcGetUserFolder(const char *, const char *)"
+0x6dd8c0,_PCOptionsBuildFolder,284,void __cdecl(char*)
 0x6dd9e0,_PcOpenPlatformFile,841,"FILE *__cdecl PcOpenPlatformFile(const char *, const char *, i32, const char *)"
 0x006de0e0 , _WinMain@16                                                    , 200   , "int __stdcall (HINSTANCE, HINSTANCE, LPSTR, int)"
 0x6de750,_PcEnableThreadSwap,1,void __cdecl(void)
@@ -4091,16 +4142,29 @@ address    , symbol                                                         , si
 0x6e0320,?UpdateGeometry@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ,5091,void __thiscall(void)
 0x6e1750,?Initialize@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ,172,void __thiscall(void)
 0x6e1930,??0PC_DEVICE_BACKEND_PC@@QAE@XZ,472,PC_DEVICE_BACKEND_PC::PC_DEVICE_BACKEND_PC(void)
+0x6e1b10,?PCGraphicsModeCompare@@YAHPBX0@Z,87,
+0x6e1b70,?FindMode@PC_DEVICE_BACKEND_PC@@QAEIIII@Z,390,"u32 __thiscall PC_DEVICE_BACKEND_PC::FindMode(u32,u32,u32)"
 0x6e1d00,?FindAspect@PC_DEVICE_BACKEND_PC@@QAEHII@Z,206,"i32 __thiscall PC_DEVICE_BACKEND_PC::FindAspect(u32,u32)"
 0x6e2130,?GetMultisampleType@PC_DEVICE_BACKEND_PC@@QAEIXZ,14,u32 __thiscall PC_DEVICE_BACKEND_PC::GetMultisampleType(void)
 0x6e2170,?ReleaseDefaultPoolResources@PC_DEVICE_BACKEND_PC@@QAEXXZ,208,void __thiscall PC_DEVICE_BACKEND_PC::ReleaseDefaultPoolResources(void)
 0x6e2240,?EndScene@PC_DEVICE_BACKEND_PC@@QAEJXZ,15,HRESULT __thiscall PC_DEVICE_BACKEND_PC::EndScene(void)
 0x006e2470, ?ApplyViewport@PC_DEVICE_BACKEND_PC@@QAEXPBUPC_VIEWPORT_PC@@@Z, 159,
+0x6e2510,?ResetViewport@PC_DEVICE_BACKEND_PC@@QAEXXZ,255,void __thiscall PC_DEVICE_BACKEND_PC::ResetViewport(void)
+0x6e2610,?ConfigureTargetKinds@PC_DEVICE_BACKEND_PC@@QAEXXZ,433,void __thiscall PC_DEVICE_BACKEND_PC::ConfigureTargetKinds(void)
 0x6e27d0,?ShaderVariant16@PC_MATERIAL_DEVICE_CAPS_VIEW@@QAEHXZ,17,i32 __thiscall PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant16(void)
 0x6e27f0,?ShaderVariant1@PC_MATERIAL_DEVICE_CAPS_VIEW@@QAEHXZ,17,i32 __thiscall PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant1(void)
+0x6e2880,?SetRenderTarget@PC_DEVICE_BACKEND_PC@@QAEXHPAUPC_TEXTURE_RESOURCE_PC@@@Z,87,"void __thiscall PC_DEVICE_BACKEND_PC::SetRenderTarget(i32,PC_TEXTURE_RESOURCE_PC*)"
 0x6e2ba0,?InitializeFactory@PC_DEVICE_BACKEND_PC@@QAEXXZ,187,void __thiscall PC_DEVICE_BACKEND_PC::InitializeFactory(void)
 0x6e2c60,?Shutdown@PC_DEVICE_BACKEND_PC@@QAEXXZ,123,void __thiscall PC_DEVICE_BACKEND_PC::Shutdown(void)
+0x6e2d20,?BuildDefaultPoolResources@PC_DEVICE_BACKEND_PC@@QAEXXZ,1640,void __thiscall PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources(void)
+0x6e33a0,?ConfigureCurrentTargets@PC_DEVICE_BACKEND_PC@@QAEXXZ,293,void __thiscall PC_DEVICE_BACKEND_PC::ConfigureCurrentTargets(void)
+0x6e34d0,?BeginDefaultTargets@PC_DEVICE_BACKEND_PC@@QAEXXZ,383,void __thiscall PC_DEVICE_BACKEND_PC::BeginDefaultTargets(void)
+0x6e3650,?ResetTargets@PC_DEVICE_BACKEND_PC@@QAEXXZ,205,void __thiscall PC_DEVICE_BACKEND_PC::ResetTargets(void)
 0x6e3930,??1PC_DEVICE_BACKEND_PC@@QAE@XZ,5,PC_DEVICE_BACKEND_PC::~PC_DEVICE_BACKEND_PC(void)
+0x6e3940,?CreateOrResetDevice@PC_DEVICE_BACKEND_PC@@QAEXH@Z,2087,void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32)
+0x6e4170,?BeginScene@PC_DEVICE_BACKEND_PC@@QAEXXZ,48,void __thiscall PC_DEVICE_BACKEND_PC::BeginScene(void)
+0x6e41a0,?Present@PC_DEVICE_BACKEND_PC@@QAEXPBUtagRECT@@0PAUHWND__@@PBU_RGNDATA@@@Z,140,"void __thiscall PC_DEVICE_BACKEND_PC::Present(const RECT*,const RECT*,HWND,const RGNDATA*)"
+0x6e42d0,?InitializeAdapter@PC_DEVICE_BACKEND_PC@@QAEXXZ,476,void __thiscall PC_DEVICE_BACKEND_PC::InitializeAdapter(void)
 0x6e4570,_PCDeviceGetDevice,6,PC_D3D9_DEVICE_PC* __cdecl(void)
 0x6e45a0,_PCDeviceIsAbsent,12,i32 __cdecl(void)
 0x6e45e0,_PCDeviceClear,55,"void __cdecl(u32,const RECT*,u32,u32,f32,u32)"
@@ -4110,8 +4174,10 @@ address    , symbol                                                         , si
 0x6e4810,_PCDeviceCreateVertexBuffer,60,"void __cdecl (u32, u32, u32, i32, PC_BUFFER_RESOURCE_PC **)"
 0x6e4850,_PCDeviceCreateVertexDeclaration,32,"void __cdecl(const PC_VERTEX_ELEMENT_PC*,PC_TEXTURE_RESOURCE_PC**)"
 0x6e49b0,_PCDeviceDrawPrimitiveUPPc,61,"void __cdecl(i32,u32,const void *,u32)"
+0x6e4a40,_PCDeviceEvictManagedResources,19,void __cdecl(void)
 0x6e5340,_PCDeviceSetRenderState,414,"void __cdecl (i32, u32)"
 0x6e54e0,_PCDeviceSetSamplerState,111,"void __cdecl (u32, i32, u32)"
+0x6e5570,_PCDeviceSetSoftwareVertexProcessing,27,void __cdecl(BOOL)
 0x6e5630,_PCDeviceSetTexture,64,"void __cdecl (u32, void *)"
 0x6e5670,_PCDeviceSetTextureStageState,37,"void __cdecl (u32, i32, u32)"
 0x6e56a0, _PCDeviceSetTransform, 32,
@@ -4124,6 +4190,9 @@ address    , symbol                                                         , si
 0x006e5b70,_PCDeviceReleaseTexture,27,void __cdecl(PC_TEXTURE_RESOURCE_PC **)
 0x6e5b90,_PCDeviceLockVertexBuffer,38,"void __cdecl(u32,u32,void**,u32,PC_BUFFER_RESOURCE_PC*)"
 0x6e5bc0,_PCDeviceUnlockVertexBuffer,13,HRESULT __cdecl(PC_BUFFER_RESOURCE_PC*)
+0x6e5bd0,_PCDeviceLockIndexBuffer,38,"void __cdecl(u32,u32,void**,u32,PC_BUFFER_RESOURCE_PC*)"
+0x6e5c00,_PCDeviceUnlockIndexBuffer,13,HRESULT __cdecl(PC_BUFFER_RESOURCE_PC*)
+0x6e66b0,_PCGraphicsPrepareVendor,100,i32 __cdecl(void)
 0x006e693a , @__security_check_cookie@4                                     , 15    , void __fastcall (u32)
 0x006e6950 , _memset                                                        ,       , "void *__cdecl (void *, int, size_t)"
 0x006e69d0 , __allshl                                                       , 31    , MSVC x86 compiler u64 left-shift helper (EDX:EAX; CL)
@@ -6201,6 +6270,7 @@ address    , symbol                                                         , si
 0x75ee68,__real@bfceb851e0000000,8,const f64
 0x75ee70,__real@3e75c28f,4,const f32
 0x75ee78,__real@3fceb851e0000000,8,const f64
+0x75f0a4,??_C@_09IAKHNIPA@Vibration?$AA@,10,const char[10]
 0x75f0b0,_UiBackPromptLiteralPc,,char[5]
 0x75f0b8,_UiSelectPromptLiteralPc,,char[7]
 0x0075f2d4 , _Text_DanishName                                               , 6     , const char[6]
@@ -7084,6 +7154,7 @@ address    , symbol                                                         , si
 0x0076a868,__real@406e000000000000,8,
 0x76ada0,??_C@_05DNIIFBMG@?$CFs?5?$CFs?$AA@,6,char[6]
 0x76ae78,__real@3ff0ccccc0000000,8,const f64
+0x76ae90,__real@43600000,4,f32
 0x76aea0,__real@c030000000000000,8,const f64
 0x76afa8,_PcInputText76afa8,2,char[2]
 0x76b180,__real@3ff6db6dc845a8fa,,const f64
@@ -8559,6 +8630,61 @@ address    , symbol                                                         , si
 0x7759e0,??_C@_05OPFMNJAF@P2900?$AA@,6,const char[6]
 0x7759e8,??_C@_05LHDPMJFD@P2600?$AA@,6,const char[6]
 0x7759f0,??_C@_06LGMJGAE@Saitek?$AA@,7,const char[7]
+0x7759f8,??_C@_0BB@NAGDAFCB@ForceShaderModel?$AA@,17,const char[17]
+0x775a0c,??_C@_0BA@EIPPLDOA@UseHiresPending?$AA@,16,const char[16]
+0x775a1c,??_C@_08CGHDMMIN@UseHires?$AA@,9,const char[9]
+0x775a28,??_C@_0BB@KLAGNEJN@SpeedBlurEnabled?$AA@,17,const char[17]
+0x775a3c,??_C@_0BD@EKOEBBAG@SpeedBlurSupported?$AA@,19,const char[19]
+0x775a50,??_C@_0P@EKDJFINP@ShadowsEnabled?$AA@,15,const char[15]
+0x775a60,??_C@_0BE@GILCIECI@DesiredShadowMethod?$AA@,20,const char[20]
+0x775a74,??_C@_0N@MLLDPCDH@ShadowMethod?$AA@,13,const char[13]
+0x775a84,??_C@_0N@OKDNALNE@BloomEnabled?$AA@,13,const char[13]
+0x775a94,??_C@_0BD@JKCNOKIN@DesiredBloomMethod?$AA@,19,const char[19]
+0x775aa8,??_C@_0M@CHFLIBOP@BloomMethod?$AA@,12,const char[12]
+0x775ab4,??_C@_07CJIJGIP@InvertY?$AA@,8,const char[8]
+0x775abc,??_C@_0BB@HHONHOFH@MouseSensitivity?$AA@,17,const char[17]
+0x775ad0,??_C@_0N@DIDPEHKI@MasterVolume?$AA@,13,const char[13]
+0x775ae0,??_C@_0M@PHEILDHC@MusicVolume?$AA@,12,const char[12]
+0x775aec,??_C@_09IEBMFEEN@SFXVolume?$AA@,10,const char[10]
+0x775af8,??_C@_0L@BIODJLEH@Widescreen?$AA@,11,const char[11]
+0x775b04,??_C@_04KPOMJMPE@FSAA?$AA@,5,const char[5]
+0x775b0c,??_C@_0BC@MLFPEMOK@ScreenRefreshRate?$AA@,18,const char[18]
+0x775b20,??_C@_09JHGOALHG@WindowTop?$AA@,10,const char[10]
+0x775b2c,??_C@_0L@NFCEOFBF@WindowLeft?$AA@,11,const char[11]
+0x775b38,??_C@_0N@NOPBEIBO@WindowHeight?$AA@,13,const char[13]
+0x775b48,??_C@_0M@MGMEPGHD@WindowWidth?$AA@,12,const char[12]
+0x775b54,??_C@_0N@EJILFHEF@ScreenHeight?$AA@,13,const char[13]
+0x775b64,??_C@_0M@GOACCFHI@ScreenWidth?$AA@,12,const char[12]
+0x775b70,??_C@_0M@OBEGHOED@FileVersion?$AA@,12,const char[12]
+0x775b7c,??_C@_0BL@IGOECCJK@ForceShaderModel?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775b98,??_C@_0BL@HALJDGFA@UseHiresPending?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775bb4,??_C@_0BL@EGHIPIGO@UseHires?5?5?5?5?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775bd0,??_C@_0BL@GHDGDGFJ@SpeedBlurEnabled?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775bec,??_C@_0BL@MINKKAKA@SpeedBlurSupported?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775c08,??_C@_0BL@BALINLM@ShadowsEnabled?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775c24,??_C@_0BL@DPJNAACP@DesiredShadowMethod?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775c40,??_C@_0BL@ECIEFPOB@ShadowMethod?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775c5c,??_C@_0BL@GCKEKFGD@BloomEnabled?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775c78,??_C@_0BL@BPOAGHCK@DesiredBloomMethod?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775c94,??_C@_0BL@KEDNMEOE@BloomMethod?5?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775cb0,??_C@_0BL@PEMABNED@Vibration?5?5?5?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775ccc,??_C@_0BL@LEFANKCP@InvertY?5?5?5?5?5?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775ce8,??_C@_0BL@MLPIPAEF@MouseSensitivity?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775d04,??_C@_0BL@LIHKHIBC@MusicEnabled?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775d20,??_C@_0BL@DOABGALO@MasterVolume?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775d3c,??_C@_0BL@ENBPKGPN@MusicVolume?5?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775d58,??_C@_0BL@NLKHJIIN@SFXVolume?5?5?5?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775d74,??_C@_0BL@NEGEMDMI@Widescreen?5?5?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775d90,??_C@_0BL@OMEKAPBO@FSAA?5?5?5?5?5?5?5?5?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775dac,??_C@_0BL@GAEPIPAP@ScreenRefreshRate?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775dc8,??_C@_0BL@KFGFPKME@WindowTop?5?5?5?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775de4,??_C@_0BL@INHOIKAH@WindowLeft?5?5?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775e00,??_C@_0BL@LPADDHIB@WindowHeight?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775e1c,??_C@_0BL@IEKCACAO@WindowWidth?5?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775e38,??_C@_0BL@HKBGDJFM@ScreenHeight?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775e54,??_C@_0BL@EBLHAMND@ScreenWidth?5?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775e70,??_C@_0BL@FELAPACA@FileVersion?5?5?5?5?5?5?5?5?5?5?5?5?$CFd?6?$AA@,27,const char[27]
+0x775e8c,??_C@_0N@POIODCKP@pcconfig?4txt?$AA@,13,const char[13]
 0x775eb4,_PcInputText775eb4,10,char[10]
 0x775ec0,_PcInputText775ec0,7,char[7]
 0x776e10,??_C@_05MPFIAJAP@Arial?$AA@,6,const char[6]
@@ -8570,7 +8696,165 @@ address    , symbol                                                         , si
 0x776f1c,__real@44160000,4,const f32
 0x776f20,__real@3ffc71c720000000,8,const f64
 0x776f38,??_C@_0BN@PIBILGOO@Failed?5to?5initialize?5DirectX?$AA@,29,const char[29]
+0x776f58,??_C@_0CP@FAFLNBAP@Out?5of?5Video?5Memory?4?5Application@,47,const char[47]
+0x776f88,??_C@_0CL@LOJAACK@Lost?5d3d?5device?4?5Application?5wil@,43,const char[43]
+0x776fb4,??_C@_0DC@NAKKJAGN@d3d?5device?5unavailable?4?5Applicat@,50,const char[50]
+0x776fe8,??_C@_0EF@PCKHEFMH@Failed?5to?5create?5d3d?5device?4?5App@,69,const char[69]
 0x777034,_PCDeviceTextureCubeSourcePathPc,,const char[15]
+0x777054,_PCGraphicsGpuName00777054,,const char[11]
+0x777060,_PCGraphicsGpuName00777060,,const char[13]
+0x777070,_PCGraphicsGpuName00777070,,const char[7]
+0x777078,_PCGraphicsGpuName00777078,,const char[8]
+0x777080,_PCGraphicsGpuName00777080,,const char[6]
+0x777088,_PCGraphicsGpuName00777088,,const char[13]
+0x777098,_PCGraphicsGpuName00777098,,const char[23]
+0x7770b0,_PCGraphicsGpuName007770b0,,const char[23]
+0x7770c8,_PCGraphicsGpuName007770c8,,const char[5]
+0x7770d0,_PCGraphicsGpuName007770d0,,const char[35]
+0x7770f4,_PCGraphicsGpuName007770f4,,const char[23]
+0x77710c,_PCGraphicsGpuName0077710c,,const char[26]
+0x777128,_PCGraphicsGpuName00777128,,const char[26]
+0x777144,_PCGraphicsGpuName00777144,,const char[23]
+0x77715c,_PCGraphicsGpuName0077715c,,const char[23]
+0x777174,_PCGraphicsGpuName00777174,,const char[29]
+0x777194,_PCGraphicsGpuName00777194,,const char[31]
+0x7771b4,_PCGraphicsGpuName007771b4,,const char[21]
+0x7771cc,_PCGraphicsGpuName007771cc,,const char[21]
+0x7771e4,_PCGraphicsGpuName007771e4,,const char[24]
+0x7771fc,_PCGraphicsGpuName007771fc,,const char[20]
+0x777210,_PCGraphicsGpuName00777210,,const char[14]
+0x777220,_PCGraphicsGpuName00777220,,const char[23]
+0x777238,_PCGraphicsGpuName00777238,,const char[12]
+0x777244,_PCGraphicsGpuName00777244,,const char[23]
+0x77725c,_PCGraphicsGpuName0077725c,,const char[20]
+0x777270,_PCGraphicsGpuName00777270,,const char[23]
+0x777288,_PCGraphicsGpuName00777288,,const char[21]
+0x7772a0,_PCGraphicsGpuName007772a0,,const char[14]
+0x7772b0,_PCGraphicsGpuName007772b0,,const char[12]
+0x7772bc,_PCGraphicsGpuName007772bc,,const char[23]
+0x7772d4,_PCGraphicsGpuName007772d4,,const char[23]
+0x7772ec,_PCGraphicsGpuName007772ec,,const char[20]
+0x777300,_PCGraphicsGpuName00777300,,const char[26]
+0x77731c,_PCGraphicsGpuName0077731c,,const char[24]
+0x777334,_PCGraphicsGpuName00777334,,const char[22]
+0x77734c,_PCGraphicsGpuName0077734c,,const char[27]
+0x777368,_PCGraphicsGpuName00777368,,const char[24]
+0x777380,_PCGraphicsGpuName00777380,,const char[24]
+0x777398,_PCGraphicsGpuName00777398,,const char[24]
+0x7773b0,_PCGraphicsGpuName007773b0,,const char[27]
+0x7773cc,_PCGraphicsGpuName007773cc,,const char[31]
+0x7773ec,_PCGraphicsGpuName007773ec,,const char[22]
+0x777404,_PCGraphicsGpuName00777404,,const char[24]
+0x77741c,_PCGraphicsGpuName0077741c,,const char[22]
+0x777434,_PCGraphicsGpuName00777434,,const char[21]
+0x77744c,_PCGraphicsGpuName0077744c,,const char[12]
+0x777458,_PCGraphicsGpuName00777458,,const char[8]
+0x777460,_PCGraphicsGpuName00777460,,const char[10]
+0x77746c,_PCGraphicsGpuName0077746c,,const char[6]
+0x777474,_PCGraphicsGpuName00777474,,const char[15]
+0x777484,_PCGraphicsGpuName00777484,,const char[17]
+0x777498,_PCGraphicsGpuName00777498,,const char[16]
+0x7774a8,_PCGraphicsGpuName007774a8,,const char[18]
+0x7774bc,_PCGraphicsGpuName007774bc,,const char[18]
+0x7774d0,_PCGraphicsGpuName007774d0,,const char[26]
+0x7774ec,_PCGraphicsGpuName007774ec,,const char[16]
+0x7774fc,_PCGraphicsGpuName007774fc,,const char[16]
+0x77750c,_PCGraphicsGpuName0077750c,,const char[18]
+0x777520,_PCGraphicsGpuName00777520,,const char[18]
+0x777534,_PCGraphicsGpuName00777534,,const char[18]
+0x777548,_PCGraphicsGpuName00777548,,const char[18]
+0x77755c,_PCGraphicsGpuName0077755c,,const char[17]
+0x777570,_PCGraphicsGpuName00777570,,const char[17]
+0x777584,_PCGraphicsGpuName00777584,,const char[17]
+0x777598,_PCGraphicsGpuName00777598,,const char[16]
+0x7775a8,_PCGraphicsGpuName007775a8,,const char[16]
+0x7775b8,_PCGraphicsGpuName007775b8,,const char[17]
+0x7775cc,_PCGraphicsGpuName007775cc,,const char[20]
+0x7775e0,_PCGraphicsGpuName007775e0,,const char[20]
+0x7775f4,_PCGraphicsGpuName007775f4,,const char[16]
+0x777604,_PCGraphicsGpuName00777604,,const char[20]
+0x777618,_PCGraphicsGpuName00777618,,const char[16]
+0x777628,_PCGraphicsGpuName00777628,,const char[16]
+0x777638,_PCGraphicsGpuName00777638,,const char[15]
+0x777648,_PCGraphicsGpuName00777648,,const char[8]
+0x777650,_PCGraphicsGpuName00777650,,const char[14]
+0x777660,_PCGraphicsGpuName00777660,,const char[14]
+0x777670,_PCGraphicsGpuName00777670,,const char[18]
+0x777684,_PCGraphicsGpuName00777684,,const char[22]
+0x77769c,_PCGraphicsGpuName0077769c,,const char[18]
+0x7776b0,_PCGraphicsGpuName007776b0,,const char[16]
+0x7776c0,_PCGraphicsGpuName007776c0,,const char[22]
+0x7776d8,_PCGraphicsGpuName007776d8,,const char[7]
+0x7776e0,_PCGraphicsGpuName007776e0,,const char[7]
+0x7776e8,_PCGraphicsGpuName007776e8,,const char[8]
+0x7776f0,_PCGraphicsGpuName007776f0,,const char[10]
+0x7776fc,_PCGraphicsGpuName007776fc,,const char[18]
+0x777710,_PCGraphicsGpuName00777710,,const char[5]
+0x777718,_PCGraphicsGpuName00777718,,const char[18]
+0x77772c,_PCGraphicsGpuName0077772c,,const char[18]
+0x777740,_PCGraphicsGpuName00777740,,const char[16]
+0x777750,_PCGraphicsGpuName00777750,,const char[22]
+0x777768,_PCGraphicsGpuName00777768,,const char[18]
+0x77777c,_PCGraphicsGpuName0077777c,,const char[16]
+0x77778c,_PCGraphicsGpuName0077778c,,const char[22]
+0x7777a4,_PCGraphicsGpuName007777a4,,const char[18]
+0x7777b8,_PCGraphicsGpuName007777b8,,const char[5]
+0x7777c0,_PCGraphicsGpuName007777c0,,const char[16]
+0x7777d0,_PCGraphicsGpuName007777d0,,const char[22]
+0x7777e8,_PCGraphicsGpuName007777e8,,const char[12]
+0x7777f4,_PCGraphicsGpuName007777f4,,const char[15]
+0x777804,_PCGraphicsGpuName00777804,,const char[15]
+0x777814,_PCGraphicsGpuName00777814,,const char[16]
+0x777824,_PCGraphicsGpuName00777824,,const char[22]
+0x77783c,_PCGraphicsGpuName0077783c,,const char[16]
+0x77784c,_PCGraphicsGpuName0077784c,,const char[16]
+0x77785c,_PCGraphicsGpuName0077785c,,const char[16]
+0x77786c,_PCGraphicsGpuName0077786c,,const char[16]
+0x77787c,_PCGraphicsGpuName0077787c,,const char[16]
+0x77788c,_PCGraphicsGpuName0077788c,,const char[17]
+0x7778a0,_PCGraphicsGpuName007778a0,,const char[17]
+0x7778b4,_PCGraphicsGpuName007778b4,,const char[20]
+0x7778c8,_PCGraphicsGpuName007778c8,,const char[28]
+0x7778e4,_PCGraphicsGpuName007778e4,,const char[17]
+0x7778f8,_PCGraphicsGpuName007778f8,,const char[17]
+0x77790c,_PCGraphicsGpuName0077790c,,const char[5]
+0x777914,_PCGraphicsGpuName00777914,,const char[11]
+0x777920,_PCGraphicsGpuName00777920,,const char[16]
+0x777930,_PCGraphicsGpuName00777930,,const char[16]
+0x777940,_PCGraphicsGpuName00777940,,const char[9]
+0x77794c,_PCGraphicsGpuName0077794c,,const char[22]
+0x777964,_PCGraphicsGpuName00777964,,const char[18]
+0x777978,_PCGraphicsGpuName00777978,,const char[22]
+0x777990,_PCGraphicsGpuName00777990,,const char[11]
+0x77799c,_PCGraphicsGpuName0077799c,,const char[16]
+0x7779ac,_PCGraphicsGpuName007779ac,,const char[16]
+0x7779bc,_PCGraphicsGpuName007779bc,,const char[16]
+0x7779cc,_PCGraphicsGpuName007779cc,,const char[27]
+0x7779e8,_PCGraphicsGpuName007779e8,,const char[27]
+0x777a04,_PCGraphicsGpuName00777a04,,const char[29]
+0x777a24,_PCGraphicsGpuName00777a24,,const char[27]
+0x777a40,_PCGraphicsGpuName00777a40,,const char[19]
+0x777a54,_PCGraphicsGpuName00777a54,,const char[16]
+0x777a64,_PCGraphicsGpuName00777a64,,const char[16]
+0x777a74,_PCGraphicsGpuName00777a74,,const char[16]
+0x777a84,_PCGraphicsGpuName00777a84,,const char[12]
+0x777a90,_PCGraphicsGpuName00777a90,,const char[18]
+0x777aa4,_PCGraphicsGpuName00777aa4,,const char[12]
+0x777ab0,_PCGraphicsGpuName00777ab0,,const char[7]
+0x777ab8,_PCGraphicsGpuName00777ab8,,const char[15]
+0x777ac8,_PCGraphicsGpuName00777ac8,,const char[12]
+0x777ad4,_PCGraphicsGpuName00777ad4,,const char[26]
+0x777af0,_PCGraphicsGpuName00777af0,,const char[24]
+0x777b08,_PCGraphicsGpuName00777b08,,const char[20]
+0x777b1c,_PCGraphicsGpuName00777b1c,,const char[19]
+0x777b30,_PCGraphicsGpuName00777b30,,const char[12]
+0x777b3c,_PCGraphicsGpuName00777b3c,,const char[12]
+0x777b48,_PCGraphicsGpuName00777b48,,const char[13]
+0x777b58,_PCGraphicsGpuName00777b58,,const char[32]
+0x777b78,_PCGraphicsGpuName00777b78,,const char[15]
+0x777b88,_PCGraphicsGpuName00777b88,,const char[16]
+0x777b98,_PCGraphicsGpuName00777b98,,const char[19]
+0x777bac,_PCGraphicsGpuName00777bac,,const char[9]
 0x777d1c,??_7type_info@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x0078490c , _SoundVoice3DBufferIID                                         , 16    , const GUID
 0x78491c,_PCSoundListenerIIDPc,,const IID
@@ -9394,6 +9678,7 @@ address    , symbol                                                         , si
 0x80c0e4,?first@?1??DrawAlphaImage@@9@9,,i32
 0x0080c0e8 , _NuTimeBarRenderPeakReset                                      , 4     , i32
 0x0080c0ec , _NuTimeBarHorizontalPeakReset                                  , 4     , i32
+0x80e194,_PCGraphicsFrameState,,i32
 0x0080e1a8,_DwaWeightCursorPc,,
 0x0080e1ac,_DwaPointerCursorPc,,
 0x80e228,_RenderPostViewportPrefixPc,,RENDER_POST_VIEWPORT_PREFIX_PC
@@ -9659,20 +9944,22 @@ address    , symbol                                                         , si
 0x824fc0,?PcStaticInputConfigs@@3PAUPC_INPUT_CONFIG_PC@@A,,PC_INPUT_CONFIG_PC[15]
 0x825f00,_TextInputAxisLabelIndexPc,,i8[16]
 0x825f10,_TextInputButtonLabelIndexPc,,i8[11]
-0x00826494 , _display_aspect_mode                                           , 4     , i32
-0x00826498 , _InitOnceOptionInput0                                          , 4     , u32
-0x0082649c , _InitOnceOptionInput1                                          , 4     , u32
-0x008264a0 , _InitOnceOptionInput2                                          , 4     , u32
-0x8264bc,_PCShadowDrawMode,,i32
-0x8264c4,_PCShadowDrawEnabled,,u8
-0x8264c7,_PCUseHiresFlag,,u8
+0x825f20,_PCOptionsCommands,,NUFPCOMJMP[28]
+0x826000,_PCOptionsFileVersion,,i32
+0x826070,_PcWindowOptions,,PC_WINDOW_OPTIONS_PC
 0x00827610 , _SoundVoiceEnabledGate                                         , 4     , i32
 0x827618,?PcCompanyName@@3PBDB,,const char *
 0x82761c,?PcProductName@@3PBDB,,const char *
 0x827620,?PcUsePersonalFolder@@3HA,,i32
 0x00827730 , _NuScratchCurrentPc                                           ,       ,
+0x8281e0,_PCGraphicsPositionUvDeclaration,,PC_VERTEX_ELEMENT_PC[3]
+0x8281f8,_PCGraphicsScreenUvDeclaration,,PC_VERTEX_ELEMENT_PC[3]
+0x828210,_PCGraphicsScreenColourUvDeclaration,,PC_VERTEX_ELEMENT_PC[4]
 0x00828230,_PCGraphicsMultisampleTypes,,u32[5]
 0x8282b4,_PCDeviceStateCacheEnabled,1,u8
+0x8283e0,_PCGraphicsQueriedGpu,,PC_GRAPHICS_QUERIED_GPU_PC
+0x8283e8,_PCGraphicsGpuRecords,,PC_GRAPHICS_GPU_RECORD_PC[268]
+0x8294a8,_PCGraphicsGpuFallback,,PC_GRAPHICS_GPU_RECORD_PC
 0x00829524 , ??_R0?AVinvalid_argument@std@@@8                               , 35    ,
 0x00829548 , ??_R0?AVout_of_range@std@@@8                                   , 31    ,
 0x00829570 , ___security_cookie                                             , 4     , u32
@@ -10911,6 +11198,7 @@ address    , symbol                                                         , si
 0x986480,_NuLgtArcLaserData,1088,NULGTARCLASER_PC[16]
 0x009868c0 , _render_state                                                  , 420   , NUGLOBALRNDRSTATE_PC
 0x986ea8,_SceneVideoResourcesPC,,SCENE_VIDEO_RESOURCE_HEADER_PC
+0x986ed4,_PCGraphicsBoundShader,,i32
 0x986f1c,_NuLgtLaserCnt,4,i32
 0x986f20,_PCGraphicsRenderTextures,,GRAPHICS_RENDER_TEXTURE_PC[32] workingview
 0x987520,_NuRndr_DebrisPlane,,NUVEC4
@@ -10920,6 +11208,7 @@ address    , symbol                                                         , si
 0x280a310,_NuPortalVisibilityBitsPc,,u8[625]
 0x0280c4a0 , _clip_test_mtx                                                 , 64    , NUMTX
 0x280c760,_NuRndrShadPolDat,,PC_SHADOW_QUEUE_RECORD[128]
+0x280d3a4,_PCGraphicsFrameScratchCount,,i32
 0x280d3ec,_NuDebrisVertexBuffers,,PC_BUFFER_RESOURCE_PC *[4]
 0x280d800,_PCGraphicsRenderTextureActive,,u8[32] workingview
 0x28358c4,_NuLgtArcLaserCnt,4,i32
@@ -11278,6 +11567,7 @@ address    , symbol                                                         , si
 0x297ae44,_PCFrameLoadingYieldEnabledPC,,u8
 0x297aeb8,_PCNativeDebugOutputBuffer,,char[2048]
 0x297b6b8,_PCNativeDebugFormatBuffer,,char[2048]
+0x297beb8,_PCGraphicsDeviceLostCallback,,void (__cdecl *)(GRAPHICS_PRESENT_PARAMETERS_PC *)
 0x297bec0, _PCDeviceLastResult, ,
 0x297becc,_PCDeviceIndexBufferCachePc,,PC_BUFFER_RESOURCE_PC *
 0x297bed0,_PCDeviceVertexBufferCachePc,,PC_BUFFER_RESOURCE_PC *
@@ -11286,6 +11576,8 @@ address    , symbol                                                         , si
 0x297c0b4,_PCDeviceCacheStateKey,4,i32
 0x297c0b8,_PCDeviceRenderStateCache,,i32[12]
 0x0297c0f0 , _PCClipUseSSE                                                  , 4     , i32
+0x297c198,_PCGraphicsGpuSelectionEnabled,,i32
+0x297c19c,_PCGraphicsSelectedGpuRecord,,PC_GRAPHICS_GPU_RECORD_PC*
 0x297cc8c,_PCShaderSlots,,PC_SHADER_SLOT_VIEW *
 0x297cc90,_PCVertexDeclarationCountPC,,i32
 0x297cc98,_PCVertexDeclarationCachePC,,PC_VERTEX_DECL_ENTRY_PC[1]

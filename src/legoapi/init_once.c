@@ -42,9 +42,9 @@ void __cdecl InitOnce(i32 argc, char **argv) {
     STUBBED_NAMED(0x005d8270); /* fourth time-bar set */
 
     /* Three independent low bytes are copied into the PC option record. */
-    Game.options_save.sound_volume = (u8)InitOnceOptionInput0;
-    Game.options_save.music_volume = (u8)InitOnceOptionInput1;
-    Game.options_save.master_volume = (u8)InitOnceOptionInput2;
+    Game.options_save.sound_volume = (u8)PcWindowOptions.sfxvolume;
+    Game.options_save.music_volume = (u8)PcWindowOptions.musicvolume;
+    Game.options_save.master_volume = (u8)PcWindowOptions.mastervolume;
 
     GameSetSoundVolume(&Game.options_save);
     GameSetMusicVolume(&Game.options_save);

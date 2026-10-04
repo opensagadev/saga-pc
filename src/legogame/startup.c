@@ -202,7 +202,7 @@ void __cdecl LoadPerm(void) {
 
             legal_alpha = LoadPermFadeAlpha(legal_timer, 5.0f);
             if (legal_alpha > 0.0f) {
-                switch (display_aspect_mode) {
+                switch (PcWindowOptions.aspect_mode) {
                     case 0:
                         aspect = 1.7777778f;
                         break;

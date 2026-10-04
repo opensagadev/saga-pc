@@ -27,7 +27,7 @@ void __cdecl ShadowMapResetPc(void) {
     PCSpecialShadowClipResultsPresent = 0;
 }
 void __cdecl EnableShadowMapRendering(i32 unused) {
-    if (PCShadowDrawEnabled != 0 && PCShadowDrawMode == 2)
+    if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 2)
         ShadowMapEnablePc(PCShadowCurrentLight);
 }
 void __cdecl ResetShadowMapRendering(void) {

@@ -2974,3 +2974,75 @@ NuMain guard reads the real input pointer asNULL before exit. Window persistence
 and input publication fail; device/BeginScene/Present/repeated frames/scene are
 not reached. These runtime failures stay separate from passed retail matching.
 Generated storage remains approximately1.2GB, below the1.5GB working target.
+
+### Native options, device and viewport checkpoint Q (2026-10-04 UTC)
+
+Matching remains the primary objective. Checkpoint P19565c6 passed CI on the exact
+pushed revision (run37237054275). Q adds69 genuine original-PC functions/9,921
+complete native bytes: options47/2,572, partial first-device/presentation18/6,721,
+and viewport4/628. The eight-byte hires getter reuses existing NuFileUseHiresPC;
+there is no duplicate body, artificial wrapper or extra credit. All47 options
+functions are new production; ten earlier options functions were scratch only.
+
+The genuine0x460 options owner replaces seven older physical scalar views.
+All22 old initializer bytes are preserved as typed fields, including four known
+DWORD contracts/16 exact bytes. The existing six members/12 known bytes remain;
+there are now13 named members/28 known bytes. Eight existing consumers use these
+same-address members. Device aspect selection likewise uses existing
+nuapi.video_aspect at0x10, with identical full relocated output; no second aspect
+owner is emitted. Three private D3D declaration arrays and the options command
+callback table remain in their genuine source owners.
+
+The sole data writer transfers165 full retail-equal shared initializers:
+8,192 typed working bytes/8,376 complete COFF bytes. Their original owning extents
+remain unknown; they earn no allocation or exact coverage credit. The native
+frame-state initializer is1; bound-shader/frame-count/callback initializers are0.
+All4,942 actual-normal shared regions equal isolated output. CRC, HANDLE, old
+members and known exact initializer contracts are retained. A natural unknown
+DebrisDmaCleanupDelayPc COFF interval grows4 to8 with a zero tail and its entire
+old f32 initializer unchanged; this is explicitly qualified without credit.
+The existing known WORD's original eight-byte COFF interval is restored. There
+are no padding controls, synthetic constructors or fake suppliers.
+
+The first aggregate correctly rejected five missing state suppliers; one proved
+to be the existing nuapi member and four became genuine shared definitions.
+An existing archive test fixture still defined the old hires byte; only its
+storage/use migrated to PcWindowOptions.usehires. Assertions and production
+logic were not weakened. Final source EXE linking and object validation pass
+with291 actual owners,4,069 functions and8,159 data definitions. LLVM18 checks
+pass and710 tests pass (three existing skips,202.778 seconds).
+
+Unique compared code rises1,143,909 to1,153,830 (+9,921), with no prior overlap.
+Whole-PC fuzzy coverage22.9082112333% to23.1325189901% adds0.2243077568 percentage
+points. Exact code193,498 to196,591 adds3,093 unique bytes, reaching5.6634130799%
+of3,471,246 retail text bytes. All1,920 previous exact function copies remain.
+Two unchanged-source nonexact camera/allocator outputs repeat the already
+accepted historical1709/1789 and1458 scheduling pair in reverse; complete raw,
+strict named-relocation and official hashes match those actual earlier arms,
+with the retained72-case/376-check qualification. No new runtime equivalence
+claim is made for those variants. All242 genuinely new complete initializer copies match retail:72 known-extent
+copies and170 unknown-extent copies/8,682 complete working bytes. Previous5,173
+exact initializer contracts remain as5,169 physical copies plus the four migrated
+known members; there are5,241 physical exact copies after72 genuinely new copies.
+Known exact data union636,531 to637,870 adds1,339 bytes; migrated known member
+bytes are counted once.
+
+The dedicated startup subagent ran actual source EXE61146c3f from real assets
+on the real display. It exits0 after1.103 seconds without a watchdog and no
+persistent TTalesWindow is observed. Input/device/Present/frames/scene remain
+unobserved or unreached. P's debugger proved the real input pointerNULL at the
+retained NuMain guard; Q's source-supported diagnosis is not a new memory
+observation. The native hardware and Setup caller omissions remain explicit.
+
+The next connected matching wave is the independently accepted corrected
+hardware/InitOnce/keyboard caller group, native window/input producers and real
+Shutdown/helper group. Native graphics startup600b10 is genuinely RET-only;
+605660 is a65-byte render-texture-pool initializer, with its real202-byte helper,
+not an assumed deep shader graph. CPU feature source retains the explicit
+EFLAGS.ID qualification and requires genuine compiler SEH data bindings; no
+augmented exception-label addresses may be invented. The accepted partial
+WORLD Dump/Reset/Stream3/1,121 remains ready alongside the broader real world,
+permanent/area/customiser loader supplier bank. Four lost-device Reset/Recreate
+omissions remain explicit; source/retail progress does not establish boot or
+full lifecycle equivalence. Generated storage is approximately1.3GB; the user's
+three journal edits remain unchanged and outside the commit.

@@ -975,8 +975,6 @@ extern "C" {
     extern f32 CutBlobShadowFadeNear;
     extern f32 CutBlobShadowFadeFar;
     extern f32 CutReflectRange2;
-    extern i32 PCShadowDrawMode;
-    extern u8 PCShadowDrawEnabled;
     extern i32 dco_id;
     extern PLAYERCHARACTERCONFIG_PC *dco_gcdata;
     extern CHARACTER_MODEL_LAYERS_PC *dco_cmodel;
@@ -1255,7 +1253,7 @@ extern "C" {
         i32 surface = -1;
         bool shadow_sampled = false;
         if ((character->flags & 0x10) != 0 && CutBlobShadowAlpha != 0 && (character_data->model_flags & 0x10000) == 0 &&
-            PCShadowDrawMode == 1 && PCShadowDrawEnabled != 0) {
+            PcWindowOptions.shadowmethod == 1 && PcWindowOptions.shadowsenabled != 0) {
             u8 shadow_alpha = CutBlobShadowAlpha;
             if (game_data->blob_shadow_alpha != 0xff) {
                 shadow_alpha = game_data->blob_shadow_alpha;

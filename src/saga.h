@@ -6809,6 +6809,133 @@ struct GRAPHICS_FACTORY_PC {
     const GRAPHICS_FACTORY_METHODS_PC *methods;
 };
 typedef struct GRAPHICS_RENDER_TEXTURE_PC GRAPHICS_RENDER_TEXTURE_PC;
+typedef struct PC_WINDOW_OPTIONS_PC {
+    i32 context;
+    char file_name[1024];
+    i32 device_width;
+    i32 device_height;
+    i32 client_width;
+    i32 client_height;
+    i32 window_x;
+    i32 window_y;
+    i32 refresh_rate;
+    i32 multisample;
+    i32 aspect_mode;
+    i32 sfxvolume;
+    i32 musicvolume;
+    i32 mastervolume;
+    u8 musicenabled;
+    u8 unknown_435[3];
+    i32 mousesensitivity;
+    u8 inverty;
+    u8 vibration;
+    u8 unknown_43e[2];
+    i32 bloommethod;
+    i32 desiredbloommethod;
+    u8 bloomenabled;
+    u8 unknown_449[3];
+    i32 shadowmethod;
+    i32 desiredshadowmethod;
+    u8 shadowsenabled;
+    u8 speedblursupported;
+    u8 speedblurenabled;
+    u8 usehires;
+    u8 usehirespending;
+    u8 option459;
+    u8 unknown_45a[2];
+    i32 forceshadermodel;
+#ifdef __cplusplus
+    void __thiscall SetWidth(i32 value);
+    void __thiscall SetHeight(i32 value);
+    void __thiscall SetDeviceWidth(i32 value);
+    void __thiscall SetDeviceHeight(i32 value);
+    void __thiscall SetRefresh(i32 value);
+    void __thiscall SetMultisample(i32 value);
+    void __thiscall SetBloomMethod(i32 value);
+    void __thiscall SetShadowMethod(i32 value);
+    void __thiscall SetSpeedBlurSupported(u8 value);
+    void __thiscall Save();
+    void __thiscall Defaults();
+    void __thiscall Validate();
+    void __thiscall InitializePath();
+    void __thiscall Load();
+    void __thiscall SetDesiredBloomMethod(i32 value);
+    void __thiscall SetDesiredShadowMethod(i32 value);
+    void __thiscall SetSpeedBlurEnabled(u8 value);
+    void __thiscall SetUseHires(u8 value);
+    void __thiscall SetOption459(u8 value);
+
+#endif
+} PC_WINDOW_OPTIONS_PC;
+STATIC_ASSERT(sizeof(PC_WINDOW_OPTIONS_PC) == 0x460);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, context) == 0);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, file_name) == 4);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, device_width) == 0x404);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, device_height) == 0x408);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, client_width) == 0x40c);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, client_height) == 0x410);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, window_x) == 0x414);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, window_y) == 0x418);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, refresh_rate) == 0x41c);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, multisample) == 0x420);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, aspect_mode) == 0x424);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, sfxvolume) == 0x428);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, musicvolume) == 0x42c);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, mastervolume) == 0x430);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, musicenabled) == 0x434);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, mousesensitivity) == 0x438);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, inverty) == 0x43c);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, vibration) == 0x43d);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, bloommethod) == 0x440);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, desiredbloommethod) == 0x444);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, bloomenabled) == 0x448);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, shadowmethod) == 0x44c);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, desiredshadowmethod) == 0x450);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, shadowsenabled) == 0x454);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, speedblursupported) == 0x455);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, speedblurenabled) == 0x456);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, usehires) == 0x457);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, usehirespending) == 0x458);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, option459) == 0x459);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, forceshadermodel) == 0x45c);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern PC_WINDOW_OPTIONS_PC PcWindowOptions;
+#ifdef __cplusplus
+}
+#endif
+
+typedef struct PC_GRAPHICS_GPU_RECORD_PC {
+    u32 device_id;
+    u32 field_04;
+    const char *name0;
+    const char *name1;
+} PC_GRAPHICS_GPU_RECORD_PC;
+typedef struct PC_GRAPHICS_QUERIED_GPU_PC {
+    u32 vendor_id, device_id;
+} PC_GRAPHICS_QUERIED_GPU_PC;
+STATIC_ASSERT(sizeof(PC_GRAPHICS_GPU_RECORD_PC) == 16);
+STATIC_ASSERT(offsetof(PC_GRAPHICS_GPU_RECORD_PC, device_id) == 0);
+STATIC_ASSERT(offsetof(PC_GRAPHICS_GPU_RECORD_PC, field_04) == 4);
+STATIC_ASSERT(offsetof(PC_GRAPHICS_GPU_RECORD_PC, name0) == 8);
+STATIC_ASSERT(offsetof(PC_GRAPHICS_GPU_RECORD_PC, name1) == 12);
+STATIC_ASSERT(sizeof(PC_GRAPHICS_QUERIED_GPU_PC) == 8);
+STATIC_ASSERT(offsetof(PC_GRAPHICS_QUERIED_GPU_PC, vendor_id) == 0);
+STATIC_ASSERT(offsetof(PC_GRAPHICS_QUERIED_GPU_PC, device_id) == 4);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i32 PCOptionsFileVersion;
+    extern PC_GRAPHICS_GPU_RECORD_PC PCGraphicsGpuRecords[268];
+    extern PC_GRAPHICS_GPU_RECORD_PC PCGraphicsGpuFallback;
+    extern PC_GRAPHICS_QUERIED_GPU_PC PCGraphicsQueriedGpu;
+    extern i32 PCGraphicsGpuSelectionEnabled;
+    extern PC_GRAPHICS_GPU_RECORD_PC *PCGraphicsSelectedGpuRecord;
+#ifdef __cplusplus
+}
+#endif
+
 typedef struct PC_DEVICE_BACKEND_PC {
     GRAPHICS_FACTORY_PC *factory;
     PC_D3D9_DEVICE_PC *device;
@@ -6874,6 +7001,19 @@ typedef struct PC_DEVICE_BACKEND_PC {
     i32 __thiscall FindAspect(u32 width, u32 height);
     u32 __thiscall FindMode(u32 width, u32 height, u32 refresh);
     u32 __thiscall GetMultisampleType();
+
+    void __thiscall CreateOrResetDevice(i32 reposition_window);
+    void __thiscall InitializeAdapter();
+    void __thiscall Present(const RECT *, const RECT *, HWND, const RGNDATA *);
+    void __thiscall BeginScene();
+    void __thiscall BuildDefaultPoolResources();
+    void __thiscall ConfigureTargetKinds();
+    void __thiscall ResetTargets();
+    void __thiscall SetRenderTarget(i32 index, PC_TEXTURE_RESOURCE_PC *surface);
+    void __thiscall ResetViewport();
+    void __thiscall ConfigureCurrentTargets();
+    void __thiscall BeginDefaultTargets();
+
 #endif
 } PC_DEVICE_BACKEND_PC;
 
@@ -7799,8 +7939,6 @@ extern "C" {
 
     extern i32 PCShadowSubmissionEnabled;
     extern i32 PCShadowSurfaceSamplingEnabled;
-    extern i32 PCShadowDrawMode;
-    extern u8 PCShadowDrawEnabled;
     extern struct PC_HG_SHADOW_PACKET PCShadowPackets[280];
     extern i32 PCSpecialForceMaterialCount;
     extern u8 CutSceneBoundingBoxTrackRoot;
@@ -9256,9 +9394,6 @@ void __cdecl PCStereoUnknownToken(void);
     extern VARIPTR original_permbuffer_base;
     extern const char InitOnceAllocSource[15];
     extern char InitOnceCurrentDirectory[1];
-    extern u32 InitOnceOptionInput0;
-    extern u32 InitOnceOptionInput1;
-    extern u32 InitOnceOptionInput2;
     extern GAMESAVE Game;
     extern OPTIONSSAVE TempOptions;
     extern OPTIONSSAVE *Game_OptionsSave;
@@ -9330,7 +9465,6 @@ void __cdecl PCStereoUnknownToken(void);
     extern TIMER GlobalTimer;
     extern i32 saveload_status;
     extern NUGSCN *save_icon_scene;
-    extern i32 display_aspect_mode;
     i32 __cdecl CutScene_StartFn_LSW(CUTINFO *cut);
     CUTINFO *__cdecl CutScene_Find(CUTSYS_PC *system, char *name);
     CUTINFO *__cdecl NewCutScene(CUTINFO *cutscene, CUTSYS_PC *system, char *name, i32 unused_4);
@@ -12986,7 +13120,6 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl NuFileInit(i32 device_id);
     void __cdecl NuPSFileInitDevices(i32 device_id, i32 reboot_iop, i32 eject);
     i32 __cdecl NuFileUseHiresPC(void);
-    extern u8 PCUseHiresFlag;
     i32 __cdecl NuFileExtGetType(char *path, i32 path_len);
     i32 __cdecl NuFileExtRemove(char *destination, char *path);
     i32 __cdecl NuFileExtGetExt(char *destination, i32 capacity, i32 type);
@@ -13128,7 +13261,6 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern const char *NuMusicVoiceStatusText[8];
     extern u32 NuMusicDebugColour;
     extern i32 bonus_gunship_store_progress_flag;
-    extern u8 PCUseHiresFlag;
     extern f32 LEDGETERRAINLOOKAHEAD;
     extern i16 LEGOACT_HANG_MOVE;
 
@@ -15862,6 +15994,14 @@ extern const GUID PcWbemClassId, PcWbemInterfaceId;
 extern "C" char *__cdecl PcGetUserFolder(const char *, const char *);
 struct _iobuf;
 extern "C" _iobuf *__cdecl PcOpenPlatformFile(const char *, const char *, i32, const char *);
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl PCOptionsBuildFolder(char *);
+#ifdef __cplusplus
+}
 #endif
 
 #ifdef __cplusplus

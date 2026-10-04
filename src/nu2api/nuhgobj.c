@@ -595,7 +595,7 @@ void NuHGobjSubmitShadowGroupsPc(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, NUMTX
     PC_HG_RENDER_VIEW *object;
 
     object = ((PC_HG_RENDER_VIEW *)(hierarchy));
-    if (PCShadowDrawEnabled == 0 || PCShadowDrawMode != 1 || object->shadow_groups == NULL ||
+    if (PcWindowOptions.shadowsenabled == 0 || PcWindowOptions.shadowmethod != 1 || object->shadow_groups == NULL ||
         object->suppress_shadow_points != 0)
         return;
     for (group = object->shadow_groups; group->joint_index != 255; ++group) {

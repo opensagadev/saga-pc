@@ -3,7 +3,7 @@
 extern f32 CutSceneCameraFocalLengthPc;
 f32 __cdecl NuCameraFocalLenToFOV(f32 focal_length);
 void __cdecl WidescreenCode(i32 widescreen) {
-    f32 aspect = display_aspect_mode == 2 ? 0.625f : 0.5625f;
+    f32 aspect = PcWindowOptions.aspect_mode == 2 ? 0.625f : 0.5625f;
     if (widescreen != 0) {
         pNuCam->aspect = aspect;
         if (!CutSceneCameraCTRL)

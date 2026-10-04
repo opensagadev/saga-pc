@@ -70,7 +70,7 @@ i32 __cdecl NuGScnUploadGfxDataFromFilePS(VARIPTR *cursor, VARIPTR end, NUFILE f
             SceneVideoResourcesPC.textures[i] = NULL;
         } else {
             skip_texture = 0;
-            if (PCUseHiresFlag == 0 && texture.width > 0 &&
+            if (PcWindowOptions.usehires == 0 && texture.width > 0 &&
                 ((texture.flags & 0xc) != 0 || (texture.flags & 0x3c00) != 0))
                 skip_texture = 1;
             data = SceneUploadBufferCursorPC.void_ptr;

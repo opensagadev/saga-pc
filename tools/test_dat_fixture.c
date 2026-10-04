@@ -44,7 +44,7 @@ i32 nufile_try_packed;
 i32 nufile_lsn_allowed = 1;
 PC_FILEEXTINFO extensions[64];
 i32 num_extensions;
-u8 PCUseHiresFlag;
+PC_WINDOW_OPTIONS_PC PcWindowOptions;
 i32 fpk_err;
 i32 PCThreadCriticalSectionCount_candidate;
 CRITICAL_SECTION PCThreadCriticalSections_candidate[13];
@@ -480,7 +480,7 @@ int main(int argc, char **argv) {
     for (i = 0; i < sizeof(pc_dat_file_infos); ++i)
         REQUIRE(((const u8 *)pc_dat_file_infos)[i] == 0);
     DeleteCriticalSection(&PCThreadCriticalSections_candidate[file_criticalsection]);
-    PCUseHiresFlag = 1;
+    PcWindowOptions.usehires = 1;
     NuFileInit(0);
     REQUIRE(file_criticalsection == 2 && num_extensions == 63);
     REQUIRE(NuFileUseHiresPC() == 1);

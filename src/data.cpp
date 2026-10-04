@@ -1,4 +1,445 @@
 #include "saga.h"
+extern "C" {
+    i32 PCGraphicsFrameState = 1;
+    i32 PCGraphicsBoundShader = 0;
+    i32 PCGraphicsFrameScratchCount = 0;
+    void(__cdecl *PCGraphicsDeviceLostCallback)(GRAPHICS_PRESENT_PARAMETERS_PC *) = NULL;
+}
+
+extern "C" {
+    PC_WINDOW_OPTIONS_PC PcWindowOptions = {-1, {0}, 0,   0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, {0}, 0,
+                                            0,  0,   {0}, 0, 0, 0, {0}, 0, 0, 0, 1, 0, 0, 0, 1, {0}, 0};
+    i32 PCOptionsFileVersion = 2;
+    extern const char PCGraphicsGpuName00777bac[9] = "RIVA TNT";
+    extern const char PCGraphicsGpuName00777b98[19] = "RIVA TNT2/TNT2 Pro";
+    extern const char PCGraphicsGpuName00777b88[16] = "RIVA TNT2 Ultra";
+    extern const char PCGraphicsGpuName00777b78[15] = "Vanta/Vanta LT";
+    extern const char PCGraphicsGpuName00777b58[32] = "RIVA TNT2 Model 64/Model 64 Pro";
+    extern const char PCGraphicsGpuName00777b48[13] = "Aladdin TNT2";
+    extern const char PCGraphicsGpuName00777b3c[12] = "GeForce 256";
+    extern const char PCGraphicsGpuName00777b30[12] = "GeForce DDR";
+    extern const char PCGraphicsGpuName00777b1c[19] = "GeForce2 MX/MX 400";
+    extern const char PCGraphicsGpuName00777b08[20] = "GeForce2 MX 100/200";
+    extern const char PCGraphicsGpuName00777af0[24] = "GeForce2 Integrated GPU";
+    extern const char PCGraphicsGpuName00777ad4[26] = "GeForce2 GTS/GeForce2 Pro";
+    extern const char PCGraphicsGpuName00777ac8[12] = "GeForce2 Ti";
+    extern const char PCGraphicsGpuName00777ab8[15] = "GeForce2 Ultra";
+    extern const char PCGraphicsGpuName00777ab0[7] = "Quadro";
+    extern const char PCGraphicsGpuName00777aa4[12] = "Quadro2 Pro";
+    extern const char PCGraphicsGpuName00777a90[18] = "Quadro2 MXR/EX/Go";
+    extern const char PCGraphicsGpuName00777a84[12] = "GeForce2 Go";
+    extern const char PCGraphicsGpuName00777a74[16] = "GeForce4 MX 460";
+    extern const char PCGraphicsGpuName00777a64[16] = "GeForce4 MX 440";
+    extern const char PCGraphicsGpuName00777a54[16] = "GeForce4 MX 420";
+    extern const char PCGraphicsGpuName00777a40[19] = "GeForce4 MX 440-SE";
+    extern const char PCGraphicsGpuName00777a24[27] = "GeForce4 MX 440 with AGP8X";
+    extern const char PCGraphicsGpuName00777a04[29] = "GeForce4 MX 440SE with AGP8X";
+    extern const char PCGraphicsGpuName007779e8[27] = "GeForce4 MX 420 with AGP8X";
+    extern const char PCGraphicsGpuName007779cc[27] = "GeForce4 MX Integrated GPU";
+    extern const char PCGraphicsGpuName007779bc[16] = "Quadro4 380 XGL";
+    extern const char PCGraphicsGpuName007779ac[16] = "Quadro4 550 XGL";
+    extern const char PCGraphicsGpuName0077799c[16] = "Quadro4 580 XGL";
+    extern const char PCGraphicsGpuName00777990[11] = "Quadro NVS";
+    extern const char PCGraphicsGpuName00777978[22] = "Quadro NVS with AGP8X";
+    extern const char PCGraphicsGpuName00777964[18] = "Quadro NVS 50 PCI";
+    extern const char PCGraphicsGpuName0077794c[22] = "NVIDIA Quadro NVS 285";
+    extern const char PCGraphicsGpuName00777940[9] = "GeForce3";
+    extern const char PCGraphicsGpuName00777930[16] = "GeForce3 Ti 200";
+    extern const char PCGraphicsGpuName00777920[16] = "GeForce3 Ti 500";
+    extern const char PCGraphicsGpuName00777914[11] = "Quadro DCC";
+    extern const char PCGraphicsGpuName0077790c[5] = "NV25";
+    extern const char PCGraphicsGpuName007778f8[17] = "GeForce4 Ti 4200";
+    extern const char PCGraphicsGpuName007778e4[17] = "GeForce4 Ti 4800";
+    extern const char PCGraphicsGpuName007778c8[28] = "GeForce4 Ti 4200 with AGP8X";
+    extern const char PCGraphicsGpuName007778b4[20] = "GeForce4 Ti 4800 SE";
+    extern const char PCGraphicsGpuName007778a0[17] = "GeForce4 Ti 4600";
+    extern const char PCGraphicsGpuName0077788c[17] = "GeForce4 Ti 4400";
+    extern const char PCGraphicsGpuName0077787c[16] = "Quadro4 900 XGL";
+    extern const char PCGraphicsGpuName0077786c[16] = "Quadro4 750 XGL";
+    extern const char PCGraphicsGpuName0077785c[16] = "Quadro4 700 XGL";
+    extern const char PCGraphicsGpuName0077784c[16] = "Quadro4 980 XGL";
+    extern const char PCGraphicsGpuName0077783c[16] = "Quadro4 780 XGL";
+    extern const char PCGraphicsGpuName00777824[22] = "GeForce FX 5800 Ultra";
+    extern const char PCGraphicsGpuName00777814[16] = "GeForce FX 5800";
+    extern const char PCGraphicsGpuName00777804[15] = "Quadro FX 2000";
+    extern const char PCGraphicsGpuName007777f4[15] = "Quadro FX 1000";
+    extern const char PCGraphicsGpuName007777e8[12] = "ICE FX 2000";
+    extern const char PCGraphicsGpuName007777d0[22] = "GeForce FX 5600 Ultra";
+    extern const char PCGraphicsGpuName007777c0[16] = "GeForce FX 5600";
+    extern const char PCGraphicsGpuName007777b8[5] = "NV31";
+    extern const char PCGraphicsGpuName007777a4[18] = "GeForce FX 5600SE";
+    extern const char PCGraphicsGpuName0077778c[22] = "GeForce FX 5200 Ultra";
+    extern const char PCGraphicsGpuName0077777c[16] = "GeForce FX 5200";
+    extern const char PCGraphicsGpuName00777768[18] = "GeForce FX 5200LE";
+    extern const char PCGraphicsGpuName00777750[22] = "GeForce FX 5700 Ultra";
+    extern const char PCGraphicsGpuName00777740[16] = "GeForce FX 5700";
+    extern const char PCGraphicsGpuName0077772c[18] = "GeForce FX 5700LE";
+    extern const char PCGraphicsGpuName00777718[18] = "GeForce FX 5700VE";
+    extern const char PCGraphicsGpuName00777710[5] = "NV36";
+    extern const char PCGraphicsGpuName007776fc[18] = "GeForce FX Go5700";
+    extern const char PCGraphicsGpuName007776f0[10] = "NV36M Pro";
+    extern const char PCGraphicsGpuName007776e8[8] = "NV36MAP";
+    extern const char PCGraphicsGpuName007776e0[7] = "NV36GL";
+    extern const char PCGraphicsGpuName007776d8[7] = "NV34GL";
+    extern const char PCGraphicsGpuName007776c0[22] = "GeForce FX 5900 Ultra";
+    extern const char PCGraphicsGpuName007776b0[16] = "GeForce FX 5900";
+    extern const char PCGraphicsGpuName0077769c[18] = "GeForce FX 5900XT";
+    extern const char PCGraphicsGpuName00777684[22] = "GeForce FX 5950 Ultra";
+    extern const char PCGraphicsGpuName00777670[18] = "GeForce FX 5900ZT";
+    extern const char PCGraphicsGpuName00777660[14] = "Quadro FX 500";
+    extern const char PCGraphicsGpuName00777650[14] = "Quadro FX 700";
+    extern const char PCGraphicsGpuName00777648[8] = "NV34MAP";
+    extern const char PCGraphicsGpuName00777638[15] = "Quadro FX 3000";
+    extern const char PCGraphicsGpuName00777628[16] = "GeForce4 440 Go";
+    extern const char PCGraphicsGpuName00777618[16] = "GeForce4 420 Go";
+    extern const char PCGraphicsGpuName00777604[20] = "GeForce4 420 Go 32M";
+    extern const char PCGraphicsGpuName007775f4[16] = "GeForce4 460 Go";
+    extern const char PCGraphicsGpuName007775e0[20] = "GeForce4 440 Go 64M";
+    extern const char PCGraphicsGpuName007775cc[20] = "GeForce4 410 Go 16M";
+    extern const char PCGraphicsGpuName007775b8[17] = "GeForce4 MX 4000";
+    extern const char PCGraphicsGpuName007775a8[16] = "GeForce4 448 Go";
+    extern const char PCGraphicsGpuName00777598[16] = "GeForce4 488 Go";
+    extern const char PCGraphicsGpuName00777584[17] = "GeForce4 4200 Go";
+    extern const char PCGraphicsGpuName00777570[17] = "Quadro4 500 GoGL";
+    extern const char PCGraphicsGpuName0077755c[17] = "Quadro4 700 GoGL";
+    extern const char PCGraphicsGpuName00777548[18] = "GeForce FX Go5600";
+    extern const char PCGraphicsGpuName00777534[18] = "GeForce FX Go5650";
+    extern const char PCGraphicsGpuName00777520[18] = "GeForce FX Go5200";
+    extern const char PCGraphicsGpuName0077750c[18] = "GeForce FX Go5250";
+    extern const char PCGraphicsGpuName007774fc[16] = "GeForce FX 5500";
+    extern const char PCGraphicsGpuName007774ec[16] = "GeForce FX 5100";
+    extern const char PCGraphicsGpuName007774d0[26] = "GeForce FX Go5200 32M/64M";
+    extern const char PCGraphicsGpuName007774bc[18] = "GeForce FX Go53xx";
+    extern const char PCGraphicsGpuName007774a8[18] = "GeForce FX Go5100";
+    extern const char PCGraphicsGpuName00777498[16] = "Quadro FX Go700";
+    extern const char PCGraphicsGpuName00777484[17] = "Quadro FX Go1000";
+    extern const char PCGraphicsGpuName00777474[15] = "Quadro FX 1100";
+    extern const char PCGraphicsGpuName0077746c[6] = "NV31M";
+    extern const char PCGraphicsGpuName00777460[10] = "NV31M Pro";
+    extern const char PCGraphicsGpuName00777458[8] = "NV31GLM";
+    extern const char PCGraphicsGpuName0077744c[12] = "NV31GLM Pro";
+    extern const char PCGraphicsGpuName00777434[21] = "NVIDIA Quadro FX 540";
+    extern const char PCGraphicsGpuName0077741c[22] = "NVIDIA Quadro FX 4000";
+    extern const char PCGraphicsGpuName00777404[24] = "NVIDIA Quadro FX Go1400";
+    extern const char PCGraphicsGpuName007773ec[22] = "NVIDIA Quadro FX 1400";
+    extern const char PCGraphicsGpuName007773cc[31] = "NVIDIA Quadro FX 3450/4000 SDI";
+    extern const char PCGraphicsGpuName007773b0[27] = "NVIDIA Quadro FX 3400/4400";
+    extern const char PCGraphicsGpuName00777398[24] = "NVIDIA GeForce PCX 5750";
+    extern const char PCGraphicsGpuName00777380[24] = "NVIDIA GeForce PCX 5900";
+    extern const char PCGraphicsGpuName00777368[24] = "NVIDIA GeForce PCX 5300";
+    extern const char PCGraphicsGpuName0077734c[27] = "NVIDIA Quadro PCI-E Series";
+    extern const char PCGraphicsGpuName00777334[22] = "NVIDIA Quadro FX 1300";
+    extern const char PCGraphicsGpuName0077731c[24] = "NVIDIA GeForce PCX 4300";
+    extern const char PCGraphicsGpuName00777300[26] = "NVIDIA GeForce 6800 Ultra";
+    extern const char PCGraphicsGpuName007772ec[20] = "NVIDIA GeForce 6800";
+    extern const char PCGraphicsGpuName007772d4[23] = "NVIDIA GeForce 6800 LE";
+    extern const char PCGraphicsGpuName007772bc[23] = "NVIDIA GeForce 6800 GT";
+    extern const char PCGraphicsGpuName007772b0[12] = "NVIDIA NV40";
+    extern const char PCGraphicsGpuName007772a0[14] = "NVIDIA NV40GL";
+    extern const char PCGraphicsGpuName00777288[21] = "NVIDIA GeForce 6800 ";
+    extern const char PCGraphicsGpuName00777270[23] = "NVIDIA GeForce 6600 GT";
+    extern const char PCGraphicsGpuName0077725c[20] = "NVIDIA GeForce 6600";
+    extern const char PCGraphicsGpuName00777244[23] = "NVIDIA GeForce 6600 LE";
+    extern const char PCGraphicsGpuName00777238[12] = "NVIDIA NV43";
+    extern const char PCGraphicsGpuName00777220[23] = "NVIDIA GeForce 6610 XL";
+    extern const char PCGraphicsGpuName00777210[14] = "NVIDIA NV43GL";
+    extern const char PCGraphicsGpuName007771fc[20] = "NVIDIA GeForce 6200";
+    extern const char PCGraphicsGpuName007771e4[24] = "NVIDIA GeForce 6600 GT ";
+    extern const char PCGraphicsGpuName007771cc[21] = "NVIDIA GeForce 6600 ";
+    extern const char PCGraphicsGpuName007771b4[21] = "NVIDIA GeForce 6200 ";
+    extern const char PCGraphicsGpuName00777194[31] = "NVIDIA GeForce 6800 Series GPU";
+    extern const char PCGraphicsGpuName00777174[29] = "NVIDIA GeForce Go 6800 Ultra";
+    extern const char PCGraphicsGpuName0077715c[23] = "NVIDIA GeForce Go 6800";
+    extern const char PCGraphicsGpuName00777144[23] = "NVIDIA GeForce Go 6600";
+    extern const char PCGraphicsGpuName00777128[26] = "NVIDIA GeForce Go 6600 TE";
+    extern const char PCGraphicsGpuName0077710c[26] = "NVIDIA GeForce Go 6200 TE";
+    extern const char PCGraphicsGpuName007770f4[23] = "NVIDIA GeForce Go 6200";
+    extern const char PCGraphicsGpuName007770d0[35] = "NVIDIA GeForce 6200 TurboCache(TM)";
+    extern const char PCGraphicsGpuName007770c8[5] = "NV44";
+    extern const char PCGraphicsGpuName007770b0[23] = "NVIDIA GeForce Go 6290";
+    extern const char PCGraphicsGpuName00777098[23] = "NVIDIA GeForce Go 6400";
+    extern const char PCGraphicsGpuName00777088[13] = "GeForce 6200";
+    extern const char PCGraphicsGpuName00777080[6] = "NV44M";
+    extern const char PCGraphicsGpuName00777078[8] = "NV44GLM";
+    extern const char PCGraphicsGpuName00777070[7] = "NV44GL";
+    extern const char PCGraphicsGpuName00777060[13] = "NVIDIA Other";
+    extern const char PCGraphicsGpuName00777054[11] = "NVIDIA NEW";
+    PC_GRAPHICS_GPU_RECORD_PC PCGraphicsGpuRecords[268] = {
+        {32u, 0u, PCGraphicsGpuName00777bac, PCGraphicsGpuName00777bac},
+        {40u, 0u, PCGraphicsGpuName00777b98, PCGraphicsGpuName00777b98},
+        {41u, 0u, PCGraphicsGpuName00777b88, PCGraphicsGpuName00777b88},
+        {44u, 0u, PCGraphicsGpuName00777b78, PCGraphicsGpuName00777b78},
+        {45u, 0u, PCGraphicsGpuName00777b58, PCGraphicsGpuName00777b58},
+        {160u, 0u, PCGraphicsGpuName00777b48, PCGraphicsGpuName00777b48},
+        {256u, 0u, PCGraphicsGpuName00777b3c, PCGraphicsGpuName00777b3c},
+        {257u, 0u, PCGraphicsGpuName00777b30, PCGraphicsGpuName00777b30},
+        {272u, 0u, PCGraphicsGpuName00777b1c, PCGraphicsGpuName00777b1c},
+        {273u, 0u, PCGraphicsGpuName00777b08, PCGraphicsGpuName00777b08},
+        {416u, 0u, PCGraphicsGpuName00777af0, PCGraphicsGpuName00777af0},
+        {336u, 0u, PCGraphicsGpuName00777ad4, PCGraphicsGpuName00777ad4},
+        {337u, 0u, PCGraphicsGpuName00777ac8, PCGraphicsGpuName00777ac8},
+        {338u, 0u, PCGraphicsGpuName00777ab8, PCGraphicsGpuName00777ab8},
+        {259u, 0u, PCGraphicsGpuName00777ab0, PCGraphicsGpuName00777ab0},
+        {339u, 0u, PCGraphicsGpuName00777aa4, PCGraphicsGpuName00777aa4},
+        {275u, 0u, PCGraphicsGpuName00777a90, PCGraphicsGpuName00777a90},
+        {274u, 0u, PCGraphicsGpuName00777a84, PCGraphicsGpuName00777a84},
+        {368u, 0u, PCGraphicsGpuName00777a74, PCGraphicsGpuName00777a74},
+        {369u, 0u, PCGraphicsGpuName00777a64, PCGraphicsGpuName00777a64},
+        {370u, 0u, PCGraphicsGpuName00777a54, PCGraphicsGpuName00777a54},
+        {371u, 0u, PCGraphicsGpuName00777a40, PCGraphicsGpuName00777a40},
+        {385u, 0u, PCGraphicsGpuName00777a24, PCGraphicsGpuName00777a24},
+        {386u, 0u, PCGraphicsGpuName00777a04, PCGraphicsGpuName00777a04},
+        {387u, 0u, PCGraphicsGpuName007779e8, PCGraphicsGpuName007779e8},
+        {496u, 0u, PCGraphicsGpuName007779cc, PCGraphicsGpuName007779cc},
+        {395u, 0u, PCGraphicsGpuName007779bc, PCGraphicsGpuName007779bc},
+        {376u, 0u, PCGraphicsGpuName007779ac, PCGraphicsGpuName007779ac},
+        {392u, 0u, PCGraphicsGpuName0077799c, PCGraphicsGpuName0077799c},
+        {378u, 0u, PCGraphicsGpuName00777990, PCGraphicsGpuName00777990},
+        {394u, 0u, PCGraphicsGpuName00777978, PCGraphicsGpuName00777978},
+        {396u, 0u, PCGraphicsGpuName00777964, PCGraphicsGpuName00777964},
+        {357u, 0u, PCGraphicsGpuName0077794c, PCGraphicsGpuName0077794c},
+        {512u, 0u, PCGraphicsGpuName00777940, PCGraphicsGpuName00777940},
+        {513u, 0u, PCGraphicsGpuName00777930, PCGraphicsGpuName00777930},
+        {514u, 0u, PCGraphicsGpuName00777920, PCGraphicsGpuName00777920},
+        {515u, 0u, PCGraphicsGpuName00777914, PCGraphicsGpuName00777914},
+        {594u, 0u, PCGraphicsGpuName0077790c, PCGraphicsGpuName0077790c},
+        {595u, 0u, PCGraphicsGpuName007778f8, PCGraphicsGpuName007778f8},
+        {640u, 0u, PCGraphicsGpuName007778e4, PCGraphicsGpuName007778e4},
+        {641u, 0u, PCGraphicsGpuName007778c8, PCGraphicsGpuName007778c8},
+        {642u, 0u, PCGraphicsGpuName007778b4, PCGraphicsGpuName007778b4},
+        {592u, 0u, PCGraphicsGpuName007778a0, PCGraphicsGpuName007778a0},
+        {593u, 0u, PCGraphicsGpuName0077788c, PCGraphicsGpuName0077788c},
+        {600u, 0u, PCGraphicsGpuName0077787c, PCGraphicsGpuName0077787c},
+        {601u, 0u, PCGraphicsGpuName0077786c, PCGraphicsGpuName0077786c},
+        {603u, 0u, PCGraphicsGpuName0077785c, PCGraphicsGpuName0077785c},
+        {648u, 0u, PCGraphicsGpuName0077784c, PCGraphicsGpuName0077784c},
+        {649u, 0u, PCGraphicsGpuName0077783c, PCGraphicsGpuName0077783c},
+        {769u, 3u, PCGraphicsGpuName00777824, PCGraphicsGpuName00777824},
+        {770u, 3u, PCGraphicsGpuName00777814, PCGraphicsGpuName00777814},
+        {776u, 3u, PCGraphicsGpuName00777804, PCGraphicsGpuName00777804},
+        {777u, 3u, PCGraphicsGpuName007777f4, PCGraphicsGpuName007777f4},
+        {778u, 3u, PCGraphicsGpuName007777e8, PCGraphicsGpuName007777e8},
+        {785u, 3u, PCGraphicsGpuName007777d0, PCGraphicsGpuName007777d0},
+        {786u, 1u, PCGraphicsGpuName007777c0, PCGraphicsGpuName007777c0},
+        {787u, 1u, PCGraphicsGpuName007777b8, PCGraphicsGpuName007777b8},
+        {788u, 1u, PCGraphicsGpuName007777a4, PCGraphicsGpuName007777a4},
+        {801u, 1u, PCGraphicsGpuName0077778c, PCGraphicsGpuName0077778c},
+        {802u, 1u, PCGraphicsGpuName0077777c, PCGraphicsGpuName0077777c},
+        {803u, 1u, PCGraphicsGpuName00777768, PCGraphicsGpuName00777768},
+        {833u, 3u, PCGraphicsGpuName00777750, PCGraphicsGpuName00777750},
+        {834u, 3u, PCGraphicsGpuName00777740, PCGraphicsGpuName00777740},
+        {835u, 1u, PCGraphicsGpuName0077772c, PCGraphicsGpuName0077772c},
+        {836u, 1u, PCGraphicsGpuName00777718, PCGraphicsGpuName00777718},
+        {837u, 3u, PCGraphicsGpuName00777710, PCGraphicsGpuName00777710},
+        {839u, 3u, PCGraphicsGpuName007776fc, PCGraphicsGpuName007776fc},
+        {840u, 3u, PCGraphicsGpuName007776fc, PCGraphicsGpuName007776fc},
+        {841u, 3u, PCGraphicsGpuName007776f0, PCGraphicsGpuName007776f0},
+        {843u, 3u, PCGraphicsGpuName007776e8, PCGraphicsGpuName007776e8},
+        {847u, 3u, PCGraphicsGpuName007776e0, PCGraphicsGpuName007776e0},
+        {810u, 3u, PCGraphicsGpuName007776d8, PCGraphicsGpuName007776d8},
+        {815u, 3u, PCGraphicsGpuName007776d8, PCGraphicsGpuName007776d8},
+        {816u, 3u, PCGraphicsGpuName007776c0, PCGraphicsGpuName007776c0},
+        {817u, 3u, PCGraphicsGpuName007776b0, PCGraphicsGpuName007776b0},
+        {818u, 3u, PCGraphicsGpuName0077769c, PCGraphicsGpuName0077769c},
+        {819u, 3u, PCGraphicsGpuName00777684, PCGraphicsGpuName00777684},
+        {818u, 3u, PCGraphicsGpuName00777670, PCGraphicsGpuName00777670},
+        {811u, 3u, PCGraphicsGpuName00777660, PCGraphicsGpuName00777660},
+        {815u, 3u, PCGraphicsGpuName00777650, PCGraphicsGpuName00777650},
+        {809u, 3u, PCGraphicsGpuName00777648, PCGraphicsGpuName00777648},
+        {824u, 3u, PCGraphicsGpuName00777638, PCGraphicsGpuName00777638},
+        {372u, 0u, PCGraphicsGpuName00777628, PCGraphicsGpuName00777628},
+        {373u, 0u, PCGraphicsGpuName00777618, PCGraphicsGpuName00777618},
+        {374u, 0u, PCGraphicsGpuName00777604, PCGraphicsGpuName00777604},
+        {375u, 0u, PCGraphicsGpuName007775f4, PCGraphicsGpuName007775f4},
+        {377u, 0u, PCGraphicsGpuName007775e0, PCGraphicsGpuName007775e0},
+        {381u, 0u, PCGraphicsGpuName007775cc, PCGraphicsGpuName007775cc},
+        {389u, 0u, PCGraphicsGpuName007775b8, PCGraphicsGpuName007775b8},
+        {390u, 0u, PCGraphicsGpuName007775a8, PCGraphicsGpuName007775a8},
+        {391u, 0u, PCGraphicsGpuName00777598, PCGraphicsGpuName00777598},
+        {397u, 0u, PCGraphicsGpuName007775a8, PCGraphicsGpuName007775a8},
+        {646u, 0u, PCGraphicsGpuName00777584, PCGraphicsGpuName00777584},
+        {380u, 0u, PCGraphicsGpuName00777570, PCGraphicsGpuName00777570},
+        {652u, 0u, PCGraphicsGpuName0077755c, PCGraphicsGpuName0077755c},
+        {794u, 1u, PCGraphicsGpuName00777548, PCGraphicsGpuName00777548},
+        {795u, 1u, PCGraphicsGpuName00777534, PCGraphicsGpuName00777534},
+        {804u, 1u, PCGraphicsGpuName00777520, PCGraphicsGpuName00777520},
+        {805u, 1u, PCGraphicsGpuName0077750c, PCGraphicsGpuName0077750c},
+        {806u, 1u, PCGraphicsGpuName007774fc, PCGraphicsGpuName007774fc},
+        {807u, 1u, PCGraphicsGpuName007774ec, PCGraphicsGpuName007774ec},
+        {808u, 1u, PCGraphicsGpuName007774d0, PCGraphicsGpuName007774d0},
+        {812u, 1u, PCGraphicsGpuName007774bc, PCGraphicsGpuName007774bc},
+        {813u, 1u, PCGraphicsGpuName007774a8, PCGraphicsGpuName007774a8},
+        {796u, 1u, PCGraphicsGpuName00777498, PCGraphicsGpuName00777498},
+        {844u, 1u, PCGraphicsGpuName00777484, PCGraphicsGpuName00777484},
+        {846u, 1u, PCGraphicsGpuName00777474, PCGraphicsGpuName00777474},
+        {790u, 3u, PCGraphicsGpuName0077746c, PCGraphicsGpuName0077746c},
+        {791u, 3u, PCGraphicsGpuName00777460, PCGraphicsGpuName00777460},
+        {797u, 3u, PCGraphicsGpuName00777458, PCGraphicsGpuName00777458},
+        {798u, 3u, PCGraphicsGpuName0077744c, PCGraphicsGpuName0077744c},
+        {799u, 3u, PCGraphicsGpuName0077744c, PCGraphicsGpuName0077744c},
+        {334u, 1u, PCGraphicsGpuName00777434, PCGraphicsGpuName00777434},
+        {78u, 3u, PCGraphicsGpuName0077741c, PCGraphicsGpuName0077741c},
+        {204u, 3u, PCGraphicsGpuName00777404, PCGraphicsGpuName00777404},
+        {205u, 3u, PCGraphicsGpuName007773ec, PCGraphicsGpuName007773ec},
+        {206u, 3u, PCGraphicsGpuName007773cc, PCGraphicsGpuName007773cc},
+        {248u, 3u, PCGraphicsGpuName007773b0, PCGraphicsGpuName007773b0},
+        {250u, 3u, PCGraphicsGpuName00777398, PCGraphicsGpuName00777398},
+        {251u, 3u, PCGraphicsGpuName00777380, PCGraphicsGpuName00777380},
+        {252u, 1u, PCGraphicsGpuName00777368, PCGraphicsGpuName00777368},
+        {253u, 3u, PCGraphicsGpuName0077734c, PCGraphicsGpuName0077734c},
+        {254u, 1u, PCGraphicsGpuName00777334, PCGraphicsGpuName00777334},
+        {255u, 3u, PCGraphicsGpuName0077731c, PCGraphicsGpuName0077731c},
+        {240u, 67u, PCGraphicsGpuName00777300, PCGraphicsGpuName00777300},
+        {64u, 67u, PCGraphicsGpuName00777300, PCGraphicsGpuName00777300},
+        {528u, 67u, PCGraphicsGpuName007772ec, PCGraphicsGpuName007772ec},
+        {529u, 67u, PCGraphicsGpuName007772ec, PCGraphicsGpuName007772ec},
+        {530u, 67u, PCGraphicsGpuName007772d4, PCGraphicsGpuName007772d4},
+        {533u, 67u, PCGraphicsGpuName007772bc, PCGraphicsGpuName007772bc},
+        {65u, 67u, PCGraphicsGpuName007772ec, PCGraphicsGpuName007772ec},
+        {66u, 67u, PCGraphicsGpuName007772d4, PCGraphicsGpuName007772d4},
+        {67u, 67u, PCGraphicsGpuName007772b0, PCGraphicsGpuName007772d4},
+        {69u, 67u, PCGraphicsGpuName007772bc, PCGraphicsGpuName007772bc},
+        {73u, 67u, PCGraphicsGpuName007772a0, PCGraphicsGpuName007772d4},
+        {192u, 67u, PCGraphicsGpuName00777288, PCGraphicsGpuName00777288},
+        {193u, 67u, PCGraphicsGpuName00777288, PCGraphicsGpuName00777288},
+        {194u, 67u, PCGraphicsGpuName007772d4, PCGraphicsGpuName007772d4},
+        {320u, 67u, PCGraphicsGpuName00777270, PCGraphicsGpuName00777270},
+        {321u, 67u, PCGraphicsGpuName0077725c, PCGraphicsGpuName0077725c},
+        {322u, 67u, PCGraphicsGpuName00777244, PCGraphicsGpuName00777244},
+        {323u, 67u, PCGraphicsGpuName00777238, PCGraphicsGpuName00777238},
+        {325u, 67u, PCGraphicsGpuName00777220, PCGraphicsGpuName00777220},
+        {331u, 67u, PCGraphicsGpuName00777238, PCGraphicsGpuName00777238},
+        {332u, 67u, PCGraphicsGpuName00777210, PCGraphicsGpuName00777210},
+        {333u, 67u, PCGraphicsGpuName00777210, PCGraphicsGpuName00777210},
+        {335u, 67u, PCGraphicsGpuName007771fc, PCGraphicsGpuName007771fc},
+        {241u, 67u, PCGraphicsGpuName007771e4, PCGraphicsGpuName007771e4},
+        {242u, 67u, PCGraphicsGpuName007771cc, PCGraphicsGpuName007771cc},
+        {242u, 67u, PCGraphicsGpuName007771b4, PCGraphicsGpuName007771cc},
+        {249u, 67u, PCGraphicsGpuName00777194, PCGraphicsGpuName00777194},
+        {201u, 67u, PCGraphicsGpuName00777174, PCGraphicsGpuName00777174},
+        {200u, 67u, PCGraphicsGpuName0077715c, PCGraphicsGpuName0077715c},
+        {324u, 67u, PCGraphicsGpuName00777144, PCGraphicsGpuName00777144},
+        {326u, 67u, PCGraphicsGpuName00777128, PCGraphicsGpuName00777128},
+        {327u, 67u, PCGraphicsGpuName0077710c, PCGraphicsGpuName0077710c},
+        {328u, 67u, PCGraphicsGpuName00777144, PCGraphicsGpuName00777144},
+        {329u, 67u, PCGraphicsGpuName0077710c, PCGraphicsGpuName0077710c},
+        {352u, 67u, PCGraphicsGpuName007770f4, PCGraphicsGpuName007770f4},
+        {353u, 67u, PCGraphicsGpuName007770d0, PCGraphicsGpuName007770d0},
+        {354u, 67u, PCGraphicsGpuName007770d0, PCGraphicsGpuName007770d0},
+        {355u, 67u, PCGraphicsGpuName007770c8, PCGraphicsGpuName007770c8},
+        {356u, 67u, PCGraphicsGpuName007770b0, PCGraphicsGpuName007770f4},
+        {358u, 67u, PCGraphicsGpuName00777098, PCGraphicsGpuName00777098},
+        {359u, 67u, PCGraphicsGpuName007770f4, PCGraphicsGpuName007770f4},
+        {360u, 67u, PCGraphicsGpuName00777098, PCGraphicsGpuName00777098},
+        {544u, 67u, PCGraphicsGpuName007770c8, PCGraphicsGpuName007770c8},
+        {545u, 67u, PCGraphicsGpuName00777088, PCGraphicsGpuName00777088},
+        {546u, 67u, PCGraphicsGpuName007770c8, PCGraphicsGpuName007770c8},
+        {552u, 67u, PCGraphicsGpuName00777080, PCGraphicsGpuName00777080},
+        {361u, 67u, PCGraphicsGpuName00777080, PCGraphicsGpuName00777080},
+        {362u, 67u, PCGraphicsGpuName00777078, PCGraphicsGpuName00777078},
+        {363u, 67u, PCGraphicsGpuName00777078, PCGraphicsGpuName00777078},
+        {364u, 67u, PCGraphicsGpuName00777078, PCGraphicsGpuName00777078},
+        {365u, 67u, PCGraphicsGpuName00777078, PCGraphicsGpuName00777078},
+        {366u, 67u, PCGraphicsGpuName00777070, PCGraphicsGpuName00777070},
+        {367u, 67u, PCGraphicsGpuName00777078, PCGraphicsGpuName00777078},
+        {248u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {248u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {249u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {249u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {288u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {289u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {290u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {291u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {292u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {293u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {294u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {295u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {296u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {297u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {298u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {299u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {300u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {301u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {302u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {303u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {144u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {145u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {146u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {147u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {148u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {149u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {150u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {151u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {152u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {153u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {156u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {157u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {158u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {159u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {400u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {401u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {402u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {403u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {404u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {413u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {414u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {415u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {656u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {657u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {658u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {659u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {660u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {669u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {670u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {671u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {912u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {913u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {914u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {915u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {916u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {925u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {926u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {927u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {464u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {465u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {466u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {467u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {468u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {469u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {470u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {471u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {472u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {473u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {474u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {475u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {476u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {477u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {478u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {479u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {576u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {577u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {578u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {579u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {580u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {581u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {582u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {583u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {584u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {585u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {586u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {587u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {588u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {589u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {590u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {591u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
+        {4294967295u, 67u, PCGraphicsGpuName00777054, PCGraphicsGpuName00777054},
+    };
+    PC_GRAPHICS_GPU_RECORD_PC PCGraphicsGpuFallback = {4294967295u, 67u, PCGraphicsGpuName00777054,
+                                                       PCGraphicsGpuName00777054};
+    PC_GRAPHICS_QUERIED_GPU_PC PCGraphicsQueriedGpu = {0xffffffffu, 0xffffffffu};
+    i32 PCGraphicsGpuSelectionEnabled = 0;
+    PC_GRAPHICS_GPU_RECORD_PC *PCGraphicsSelectedGpuRecord = NULL;
+}
 
 extern const GUID PcWbemClassId = {0x4590f811, 0x1d3a, 0x11d0, {0x89, 0x1f, 0x00, 0xaa, 0x00, 0x4b, 0x2e, 0x24}};
 extern const GUID PcWbemInterfaceId = {0xdc12a687, 0x737f, 0x11cf, {0x88, 0x4d, 0x00, 0xaa, 0x00, 0x4b, 0x2e, 0x24}};
@@ -7049,9 +7490,6 @@ extern "C" {
     GAMESAVE Game;
     OPTIONSSAVE TempOptions;
     PLAYERPROGRESS PlayerProgress[8];
-    u32 InitOnceOptionInput0;
-    u32 InitOnceOptionInput1;
-    u32 InitOnceOptionInput2;
     i32 MenuLoadOccurred;
     i32 startnewgame_initiated;
     i32 startnewgame;
@@ -7091,7 +7529,6 @@ extern "C" {
     i32 debinf_count;
     DEBRIS_INFO_PC **debtab;
     NUGSCN *save_icon_scene;
-    i32 display_aspect_mode;
     f32 TextScaleX_candidate = 1.0f;
     f32 TextScaleY_candidate = 1.0f;
     void *OldLevelHackData;
@@ -11873,9 +12310,7 @@ extern "C" {
 #pragma bss_seg(".bss$bonus_gunship_store_progress_flag")
     i32 bonus_gunship_store_progress_flag;
 #pragma bss_seg()
-#pragma bss_seg(".bss$PCUseHiresFlag")
-    u8 PCUseHiresFlag;
-#pragma bss_seg()
+
 #pragma data_seg(".data$LEDGETERRAINLOOKAHEAD")
     f32 LEDGETERRAINLOOKAHEAD = 0.02f;
 #pragma data_seg()
@@ -14923,14 +15358,6 @@ extern "C" {
 #pragma data_seg(".data$PCShadowSurfaceSamplingEnabled")
     i32 PCShadowSurfaceSamplingEnabled = 1;
 #pragma data_seg()
-
-#pragma bss_seg(".bss$PCShadowDrawMode")
-    i32 PCShadowDrawMode;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$PCShadowDrawEnabled")
-    u8 PCShadowDrawEnabled;
-#pragma bss_seg()
 
 #pragma bss_seg(".bss$PCShadowPackets")
     PC_HG_SHADOW_PACKET PCShadowPackets[280];
