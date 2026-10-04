@@ -20,18 +20,18 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1157697,
-    "matched_code_bytes": 187919,
-    "matching_percent": 5.41358924144241,
-    "fuzzy_coverage_percent": 21.809571576198834,
-    "mapped_functions": 4044,
-    "matched_functions": 1848,
-    "objdiff_fuzzy_percent": 69.21034,
-    "objdiff_total_code": 1094579,
+    "mapped_code_bytes": 1174439,
+    "matched_code_bytes": 188508,
+    "matching_percent": 5.430557212021275,
+    "fuzzy_coverage_percent": 22.16889064166178,
+    "mapped_functions": 4067,
+    "matched_functions": 1850,
+    "objdiff_fuzzy_percent": 69.290054,
+    "objdiff_total_code": 1111321,
     "image_bytes": 40067072,
-    "mapped_bytes": 1800926,
-    "mapping_percent": 4.4947781559880395,
-    "matched_data_region_bytes": 632544
+    "mapped_bytes": 1817680,
+    "mapping_percent": 4.536593040789205,
+    "matched_data_region_bytes": 632556
   },
   "newly_compared": [
     {
@@ -3293,6 +3293,236 @@
       ],
       "exact": true,
       "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Collide2Objects",
+      "pc": "0x00430f20",
+      "original_bytes": 748,
+      "units": [
+        "src/legoapi/hits.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 66.81707
+    },
+    {
+      "symbol": "_CollideGameObjects",
+      "pc": "0x00431210",
+      "original_bytes": 1324,
+      "units": [
+        "src/legoapi/hits.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 75.14195
+    },
+    {
+      "symbol": "_PowerUp_Update",
+      "pc": "0x0046ac80",
+      "original_bytes": 140,
+      "units": [
+        "src/legoapi/gameobjects.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 87.78261
+    },
+    {
+      "symbol": "_ForcePushed_SuperPush_Occurring",
+      "pc": "0x004a4350",
+      "original_bytes": 196,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 65.527275
+    },
+    {
+      "symbol": "_ConstantRumble",
+      "pc": "0x0054ac00",
+      "original_bytes": 221,
+      "units": [
+        "src/legoapi/legoapi_misc.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 44.184616
+    },
+    {
+      "symbol": "_LightGameObject",
+      "pc": "0x00595af0",
+      "original_bytes": 769,
+      "units": [
+        "src/legoapi/lighting.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 81.95522
+    },
+    {
+      "symbol": "_NuAnimCurveCalcVal2",
+      "pc": "0x005c91c0",
+      "original_bytes": 364,
+      "units": [
+        "src/nu2api/nuanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 70.173225
+    },
+    {
+      "symbol": "_NuAnimCurveSetApplyToMatrix",
+      "pc": "0x005c9330",
+      "original_bytes": 482,
+      "units": [
+        "src/nu2api/nuanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuAnimDataCalcTime",
+      "pc": "0x005c9b60",
+      "original_bytes": 222,
+      "units": [
+        "src/nu2api/nuanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 83.0
+    },
+    {
+      "symbol": "_NuAnimCurveSetApplyBlendToJoint2",
+      "pc": "0x005ce820",
+      "original_bytes": 1722,
+      "units": [
+        "src/nu2api/nuanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 66.99652
+    },
+    {
+      "symbol": "_NuHGobjEvalDwa",
+      "pc": "0x005d38b0",
+      "original_bytes": 368,
+      "units": [
+        "src/nu2api/nuhgobj.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 73.0873
+    },
+    {
+      "symbol": "_NuHGobjEvalDwaBlend",
+      "pc": "0x005d3b80",
+      "original_bytes": 562,
+      "units": [
+        "src/nu2api/nuhgobj.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 55.363636
+    },
+    {
+      "symbol": "_NuHGobjEvalAnimBlend",
+      "pc": "0x005d4060",
+      "original_bytes": 553,
+      "units": [
+        "src/nu2api/nuhgobj.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 87.34356
+    },
+    {
+      "symbol": "_NuCameraBuildClipPlanes",
+      "pc": "0x005d5500",
+      "original_bytes": 1198,
+      "units": [
+        "src/nu2api/nucamera.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 51.256054
+    },
+    {
+      "symbol": "_NuCameraClipTestExtentsGeneric",
+      "pc": "0x005d59b0",
+      "original_bytes": 1786,
+      "units": [
+        "src/nu2api/nucamera.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 43.46869
+    },
+    {
+      "symbol": "_NuMtxCalcFaceY",
+      "pc": "0x005ed9a0",
+      "original_bytes": 235,
+      "units": [
+        "src/nu2api/nucamera.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 94.696205
+    },
+    {
+      "symbol": "_NuMtxCalcFaceOn",
+      "pc": "0x005eda90",
+      "original_bytes": 283,
+      "units": [
+        "src/nu2api/nucamera.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 93.61702
+    },
+    {
+      "symbol": "_NuRndrStateSetSpecularLightEx",
+      "pc": "0x005fcc10",
+      "original_bytes": 107,
+      "units": [
+        "src/nu2api/nurndrstat.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuRndrSetSpecularLightPS",
+      "pc": "0x005ff840",
+      "original_bytes": 861,
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 97.54317
+    },
+    {
+      "symbol": "_APIObjectCollision",
+      "pc": "0x0062b0f0",
+      "original_bytes": 1448,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 91.98795
+    },
+    {
+      "symbol": "_GameObjectForceApart2D",
+      "pc": "0x0062b6a0",
+      "original_bytes": 350,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 92.150536
+    },
+    {
+      "symbol": "_APIObjectCollision2D",
+      "pc": "0x0062b800",
+      "original_bytes": 2088,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 90.876144
+    },
+    {
+      "symbol": "_APIObjectCollisions",
+      "pc": "0x0062c030",
+      "original_bytes": 715,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 67.658165
     }
   ],
   "previous_exact_functions_lost": [],
@@ -19266,6 +19496,156 @@
         "all_same_function_section_and_value": true,
         "all_raw_and_full_official_relocated_bodies_unchanged": true
       }
+    },
+    {
+      "reviewed_physical_member_migrations": [],
+      "physical_exact_rows_retired_with_same_complete_member": [],
+      "baseline_commit": "1743e1974a6f2b340055b06cc963511127527019",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1157697,
+        "matched_code_bytes": 187919,
+        "matching_percent": 5.41358924144241,
+        "fuzzy_coverage_percent": 21.809571576198834,
+        "mapped_functions": 4044,
+        "matched_functions": 1848,
+        "objdiff_fuzzy_percent": 69.21034,
+        "objdiff_total_code": 1094579,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1800926,
+        "mapping_percent": 4.4947781559880395,
+        "matched_data_region_bytes": 632544
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1174439,
+        "matched_code_bytes": 188508,
+        "matching_percent": 5.430557212021275,
+        "fuzzy_coverage_percent": 22.16889064166178,
+        "mapped_functions": 4067,
+        "matched_functions": 1850,
+        "objdiff_fuzzy_percent": 69.290054,
+        "objdiff_total_code": 1111321,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1817680,
+        "mapping_percent": 4.536593040789205,
+        "matched_data_region_bytes": 632556
+      },
+      "newly_compared_functions": 23,
+      "new_original_code_bytes": 16742,
+      "new_compared_row_original_bytes_including_aliases": 16742,
+      "new_alias_rows": [],
+      "compared_code_delta": 16742,
+      "baseline_unique_compared_pc_bytes": 1094062,
+      "unique_compared_pc_bytes": 1110804,
+      "exact_code_added": 589,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 3842,
+      "prior_compiled_function_copies_identical": 3842,
+      "reviewed_Bolt_original_C_to_CPP_owner_supersessions": [],
+      "renamed_owner_copies_with_identical_complete_bodies": [],
+      "user_journal_unchanged": true,
+      "checkpoint": "Collision, camera and legacy animation checkpoint (2026-10-04)",
+      "new_source_functions": 23,
+      "new_unique_compared_PC_bytes": 16742,
+      "new_exact_PC_bytes": 589,
+      "new_exact_functions": 2,
+      "family_bytes": {
+        "gameplay_suppliers": 1130,
+        "API_and_combat_collision": 6869,
+        "legacy_animation": 4273,
+        "camera_and_specular": 4470
+      },
+      "verified_checks": {
+        "build_function_definitions": 3865,
+        "build_data_definitions": 6526,
+        "normal_object_count": 283,
+        "LLVM18_format_files": 310,
+        "LLVM18_tidy_units": 283,
+        "static_mappings": 9864,
+        "full_test_count": 710,
+        "existing_skips": 3,
+        "full_test_time_seconds": 195.65,
+        "make_build_check_objects_check_match_exit_code": 0,
+        "actual_normal_runtime_checks": 183,
+        "actual_normal_runtime_failures": 0,
+        "whole_owner_replacements": 0,
+        "supplements": 0,
+        "all3842_previous_function_copies_identical": true,
+        "user_journal_preserved": true,
+        "runtime_receipts": [
+          {
+            "path": "build/analysis/transfer-execution-20261004/gameplay-update-suppliers-next/consolidated-closed3-normal/normal-receipt.json",
+            "sha256": "66c762ba1082cea7e45266d017380185bf71f9f1a5ffe012ebec151cdbce12d3"
+          },
+          {
+            "path": "build/analysis/transfer-execution-20261004/gameplay-update-suppliers-next/consolidated-collision7-normal/normal-receipt.json",
+            "sha256": "020593bd2e2f09113b9492f2c4b3d7fdecd25d3da5cc682c1082780031640666"
+          },
+          {
+            "path": "build/analysis/transfer-execution-20261003/animation/cpu-evaluation-next/production/consolidated-normal-runtime/receipt.json",
+            "sha256": "c4f389280d564f232c7ab809f13510ce90e0149f8d3427a5fe436bedd25b1802"
+          },
+          {
+            "path": "build/analysis/transfer-execution-20261003/parser/camera-frustum-next/initial-six/consolidated-normal-runtime/receipt.json",
+            "sha256": "9b0290028db11999660ac81be01e3699a6a35a26e3e0656c0ba07154e541bfa4"
+          }
+        ],
+        "pins": {
+          "build/analysis/transfer-execution-20261003/continuation-camera-collision-animation/consolidated/aggregate.log": "54b4b66db13635a5d9dfebe69b230c12c3702990c895f96ec8a95451d6fe46ef",
+          "build/analysis/transfer-execution-20261003/continuation-camera-collision-animation/consolidated/check.log": "477027ce886c8ff0e2d5adc215ed3951953caee17d47f2988ac813d8d443e7c4",
+          "build/analysis/transfer-execution-20261003/continuation-camera-collision-animation/consolidated/match.log": "59de870ab2d716cd8f24e2c0d92865d96f0fbf3c61de69136225d5423d9e90a9",
+          "build/analysis/transfer-execution-20261003/continuation-camera-collision-animation/consolidated/authoritative-source-report.json": "c39f0aca1c874c8481a8470315c616f2102a8d891fd8a74ceac6649d8ea59475",
+          "build/analysis/transfer-execution-20261003/continuation-camera-collision-animation/consolidated/verified-source-delta.json": "4d5ee23f05e6fcf349d71b5318d2c06170c0844cc0dfa1488fafa673a2f735dd",
+          "build/analysis/transfer-execution-20261003/continuation-camera-collision-animation/consolidated/accepted-complete-functions.json": "3735fbf9fff8880a79173cfe8a88d4e889790a6139c7bcf1d0612e0550988b3a",
+          "build/analysis/transfer-execution-20261003/continuation-camera-collision-animation/consolidated/frozen-production-inputs.json": "37fa388aa1c590516ff8eb74ff4e614a65c5033b8998e03941198e7a1e98b2a7",
+          "build/analysis/transfer-execution-20261003/continuation-camera-collision-animation/consolidated/normal-object-manifest.json": "8fe8b73a2fa853109dc820028c3e6df3356bf70f58b437e46e21fee23f0b990c"
+        }
+      },
+      "shared_views_added": 2,
+      "shared_unknown_working_bytes_added": 20,
+      "original_allocation_credit": 0,
+      "baseline_exact_initializer_copies": 4785,
+      "current_exact_initializer_copies": 4806,
+      "new_complete_initializer_copies": 29,
+      "new_known_initializer_copies": 21,
+      "new_unknown_initializer_copies": 8,
+      "new_unknown_working_copy_bytes": 76,
+      "new_exact_data_union_bytes": 12,
+      "previous_pushed_CI": {
+        "revision": "1743e1974a6f2b340055b06cc963511127527019",
+        "all_exact_revision_runs_success": true,
+        "runs": [
+          {
+            "revision": "1743e1974a6f2b340055b06cc963511127527019",
+            "run_id": 37212619808,
+            "name": "Build",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/opensagadev/saga-pc/actions/runs/37212619808"
+          }
+        ]
+      },
+      "duplicate_helper_consolidation": {
+        "removed_duplicate_mapping": "0x4a3b60,_ForcePushedCollisionEligiblePc,123,",
+        "existing_native_owner_symbol": "_ForcePushEligible",
+        "native_address": "0x4a3b60",
+        "native_extent": 123,
+        "new_unique_credit": 0,
+        "reason": "Same-original-TU duplicate implementation; reuse existing genuine private EAX/two-stack provider.",
+        "root_authorized_source_owner": "source_actions",
+        "prior24_receipts_retained": true
+      },
+      "remaining_contracts": [
+        "Native collision pointers require initialized objects and actual character/provider state; no full gameplay or hardware input claim.",
+        "Camera/specular checks cover selected finite CPU paths; GPU effects and malformed extents remain unclaimed.",
+        "Legacy animation requires native valid key/mask/chunk/override inputs and adequate DWA arrays; general malformed data/capacity is unclaimed.",
+        "Two shared20-byte working views retain unknown original owning extents with zero allocation/exact credit.",
+        "Full startup and WorldLoad asset/service dependencies remain incomplete."
+      ],
+      "next_connected_wave": "Surface effects7/3792 and camera saved-state9/1313 remain scratch candidates pending complete data and runtime contracts; continue connected world/lighting resource ingestion and PC frame/timing suppliers.",
+      "ongoing_goal": "Continue whole-project Android-to-PC transfer until user stops or pauses; validated direct-main pushes authorized."
     }
   ]
 }

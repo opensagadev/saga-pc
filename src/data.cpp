@@ -11630,3 +11630,15 @@ extern "C" {
     i32 gizrandom_gizmotype_id = -1;
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$CameraNearClipPlanePc")
+    NUVEC4 CameraNearClipPlanePc = {0.0f, 0.0f, 0.0f, 0.0f};
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$CollisionVehicleExcludedLevelPc")
+    LEVELDATA_PC *CollisionVehicleExcludedLevelPc = NULL;
+#pragma data_seg()
+}

@@ -10,3 +10,21 @@ void __cdecl ClearLastSafeTakeOver(GAMEOBJECT *object) {
             candidate->takeover_owner = NULL;
     }
 }
+
+#include <math.h>
+void __cdecl ConstantRumble(GAMEOBJECT *object, f32 strength, f32 phase) {
+    f32 weight;
+    i32 angle;
+    phase = (f32)((f64)phase + (f64)GameTimer.time_elapsed);
+    phase = NuFmod(phase, 1.25f);
+    weight = 0.0f;
+    if (phase < 1.0f) {
+        angle = (i32)((f64)phase * 32768.0 + 16384.0);
+        weight = 1.0f - fabsf(NuTrigTable[(angle >> 1) & 0x7fff]);
+    }
+    strength = weight * strength;
+    if (object == NULL)
+        NewRumbleAllPlayers(strength, 0.0f, 0, 0.0f);
+    else if (object->flags_1fc_word & 0x80)
+        NewRumble(object->pad->bound_pad, strength, 0);
+}

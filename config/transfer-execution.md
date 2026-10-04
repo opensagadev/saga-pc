@@ -2546,3 +2546,72 @@ official relocated bytes. External semantic names remain strict. This is
 metadata only, with zero changed prior function bodies. Final endpoint:
 build/analysis/transfer-execution-20261003/platform/lighting-gizflow-final-review/
 endpoint-acceptance.json.
+
+
+### Collision, camera and legacy animation checkpoint (2026-10-04)
+
+23 complete functions add 16,742 unique compared PC bytes over1743e19:
+gameplay suppliers3/1,130, API/combat collision7/6,869, legacy animation7/4,273
+and camera/specular6/4,470. Unique compared code reaches1,110,804;
+native objdiff compares1,111,321 including previous aliases.
+Whole-PC fuzzy coverage rises21.809572% to22.168891%; two exact functions
+add589 bytes, reaching188,508/3,471,246 .text bytes (5.430557%). Exact
+new bodies are ApplyToMatrix482 and StateSetSpecular107. Data union grows12
+to632,556. Existing helpers and already compared parents add no transfer credit.
+
+Collision retains the genuine original API private ESI/EDI helper context,
+combat callback and parent paths, full dispatcher, signed/WORD accesses and
+native no-contact outcomes. Independent review corrected both inverted vehicle
+zero-state mask branches. The corrected41-check fixture passes; the old branch
+version fails8 checks. Native CRT __allshl remains the actual static CRT provider,
+with zero new engine source credit. Final review also found an unnecessary
+same-TU eligibility copy at the already compiled4a3b60/123 entry. It was removed;
+SuperPush reuses the existing real private EAX/two-stack ForcePushEligible.
+The initial24-row report and receipts remain retained separately, and the
+123 duplicated bytes receive zero new transfer credit.
+
+Animation preserves complete curve switch/table364, time calculation, matrix,
+joint blend, hierarchy and DWA bodies in original C owners. The recovered named
+legacy key/curve/set/header/chunk fields have size/offset assertions. Rotation
+plus override rounds each axis to f32 before the native f64 angle multiply.
+The discriminator selects653; the former omitted f32 store selected654. All33
+checks pass and old precision source fails1/33. Existing ANI3/4/5 parents add
+zero new bytes. Adequate key/chunk/DWA storage and valid native inputs remain
+required; malformed data and full-game animation behavior are unclaimed.
+
+Camera retains five canonical clip matrices and actual view state, complete
+frustum/extents and FaceY/FaceOn/specular control flow, true cross-TU state
+setter and genuine RET stream helper. The selected CPU69 fixture checks finite
+clip and specular paths. An initially wrong vertical/degenerate expected result
+was corrected from native weight1/65536; all69 assertions remained and source
+was unchanged. GPU output and general malformed extents are unclaimed.
+Gameplay light/rumble/power paths contribute40 checks; positive hardware
+vibration and full gameplay remain outside that selected domain.
+
+The source-only EXE links3,865 functions and
+6,526 data definitions across283 actual normal objects.
+LLVM18 format310/tidy283, static9,864 mappings and all710 tests
+pass with three existing skips. Required build, object checks, make check and
+authoritative retail match return exit0. All183 native assertions pass with
+all283 actual normal providers and zero replacements/supplements: gameplay40,
+collision41, animation33 and camera69. All327 frozen inputs and283 source/object
+pins survive. All3,842 previous full function copies remain byte-identical;
+every prior exact code/data/member is preserved. No prior body variant requires
+a qualification in this batch.
+
+Two shared working views add20 bytes: near clip NUVEC4 at964080 and excluded
+vehicle-level pointer at87b104. Owning extents remain blank, with zero allocation
+or exact credit. Normal3,540 data regions and1,854 scopes equal isolated output;
+all3,538 prior regions, four complete members/parents and CRC remain unchanged.
+All29 new full initializer copies equal retail:21 known copies increase exact
+physical copies4,785->4,806; eight unknown views/76 working bytes stay uncredited.
+Known scope604/138,165 is unchanged; unknown1,250/130,420 describes working views,
+not original capacity. Two exact WORD members remain4 bytes. Original private
+API force constants and camera specular state stay in genuine owning units.
+
+The15:50 UTC checkpoint waited for complete validation and removal/revalidation
+of the duplicate helper. Prior1743e19 CI37212619808 passed on its exact pushed
+revision. The user's three journal edits remain untouched. Next are surface
+7/3,792 and saved-camera9/1,313 candidates, then world/lighting ingestion and
+PC frame/timing services. Those scratch spans are not production transfer.
+Whole-project engine, resources, gameplay, rendering and platform work continues.

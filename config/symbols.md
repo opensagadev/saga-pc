@@ -4371,3 +4371,31 @@ agree with production report. Authoritative retail comparison adds27 exact
 functions/872 bytes; all3,791 prior complete function copies remain identical.
 Genuine private register ABIs remain within original caller groups. No clipped
 extents, fake providers, retention controls or fabricated allocation sizes.
+
+
+### Collision, camera and legacy animation source release (2026-10-04)
+
+23 complete PC functions add16,742 unique compared bytes: gameplay3/1,130,
+collision7/6,869, animation7/4,273 and camera6/4,470. PC entries, full cold
+tails/switch tables, private register ABIs and named field widths/offsets are
+independently checked. All3,842 previous complete raw and official-relocated
+function copies survive. ApplyToMatrix482 and StateSetSpecular107 are exact;
+all other new bodies retain honest differences.183 actual-normal native checks
+pass across all283 providers with zero replacements/supplements.
+
+The same-original-TU duplicate eligibility reconstruction at4a3b60/123 was
+removed before release. SuperPush now calls existing ForcePushEligible with
+the true EAX/two-stack ABI. Its complete emitted197-byte body is unchanged;
+no duplicate native mapping or transfer credit remains. Vehicle collision's
+zero-state branch follows native FCOM/TESTAH44/JNP, including NaN behavior.
+Animation rotation stores f32 before f64 angle multiplication;653-vs654
+regression discriminator and old branch negative controls remain retained.
+
+Android source candidates remain references, with PC behavior authoritative.
+Camera crosswalks use saga/src/nu2api/nu3d/generic/nucamera_gen.cpp,
+nu2api/nucore/nucore_plain.cpp and nu3d/android/nurndr.c/nurndrstat_android.c.
+Full source/data/ABI packets, source lineage, normal183 receipts and independent
+endpoint are retained under build/analysis/transfer-execution-20261003/platform/
+camera-collision-animation-final-review and continuation-camera-collision-
+animation/consolidated. Selected finite CPU, initialized object/key/array and
+adequate storage domains remain qualified; no full game/GPU/hardware claim.

@@ -14707,4 +14707,105 @@ extern "C" {
 }
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl LightGameObject(GAMEOBJECT *, void *);
+    void __cdecl ConstantRumble(GAMEOBJECT *, f32, f32);
+    void __cdecl PowerUp_Update(GAMEOBJECT *);
+/* Verified game-local light views may remain source-local: light_data4d8/current61c. No new shared fields or storage.
+ */
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    typedef struct NUANIM_LEGACY_KEY_PC {
+        f32 time;
+        f32 reciprocal_span;
+        f32 tangent;
+        f32 value;
+    } NUANIM_LEGACY_KEY_PC;
+    typedef struct NUANIM_LEGACY_CURVE_PC {
+        u8 key_mask[4];
+        NUANIM_LEGACY_KEY_PC *keys;
+        i32 key_count;
+        u32 flags;
+    } NUANIM_LEGACY_CURVE_PC;
+    typedef struct NUANIM_LEGACY_SET_PC {
+        u32 flags;
+        f32 *constants;
+        NUANIM_LEGACY_CURVE_PC **curves;
+        i8 curve_count;
+        u8 unknown_0d[3];
+    } NUANIM_LEGACY_SET_PC;
+    typedef struct NUANIM_LEGACY_HEADER_PC {
+        f32 duration;
+        u32 unknown_04;
+        i32 chunk_count;
+        void **chunks;
+    } NUANIM_LEGACY_HEADER_PC;
+    STATIC_ASSERT(sizeof(NUANIM_LEGACY_KEY_PC) == 0x10);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_KEY_PC, reciprocal_span) == 4);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_KEY_PC, tangent) == 8);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_KEY_PC, value) == 12);
+    STATIC_ASSERT(sizeof(NUANIM_LEGACY_CURVE_PC) == 0x10);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_CURVE_PC, keys) == 4);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_CURVE_PC, key_count) == 8);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_CURVE_PC, flags) == 12);
+    STATIC_ASSERT(sizeof(NUANIM_LEGACY_SET_PC) == 0x10);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_SET_PC, constants) == 4);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_SET_PC, curves) == 8);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_SET_PC, curve_count) == 12);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_HEADER_PC, duration) == 0);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_HEADER_PC, chunk_count) == 8);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_HEADER_PC, chunks) == 12);
+
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_KEY_PC, time) == 0);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_CURVE_PC, key_mask) == 0);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_SET_PC, flags) == 0);
+    STATIC_ASSERT(sizeof(NUANIM_LEGACY_HEADER_PC) == 0x10);
+    typedef struct NUANIM_LEGACY_CHUNK_PC {
+        i32 node_count;
+        u32 unknown_04;
+        NUANIM_LEGACY_SET_PC **curve_sets;
+    } NUANIM_LEGACY_CHUNK_PC;
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_CHUNK_PC, node_count) == 0);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_CHUNK_PC, curve_sets) == 8);
+
+    STATIC_ASSERT(sizeof(NUANIM_LEGACY_CHUNK_PC) == 0xc);
+    f32 __cdecl NuAnimCurveCalcVal2(NUANIM_LEGACY_CURVE_PC *, NUANIM_TIME2_PC *);
+    void __cdecl NuAnimCurveSetApplyToMatrix(NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, NUMTX *);
+    void __cdecl NuAnimDataCalcTime(NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_TIME2_PC *);
+    void __cdecl NuAnimCurveSetApplyBlendToJoint2(NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, NUANIM_LEGACY_SET_PC *,
+                                                  NUANIM_TIME2_PC *, f32, NUHGOBJ_EVAL_JOINT_PC *, NUVEC *, NUVEC *,
+                                                  NUMTX *, NUHGOBJ_JOINT_OVERRIDE_PC *);
+    DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwa(i32, i16 *, NUANIM_LEGACY_HEADER_PC *, f32);
+    DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwaBlend(i32, i16 *, NUANIM_LEGACY_HEADER_PC *, f32,
+                                                      NUANIM_LEGACY_HEADER_PC *, f32, f32);
+    void __cdecl NuHGobjEvalAnimBlend(NUHGOBJ_EVAL_PC *, NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_LEGACY_HEADER_PC *, f32,
+                                      f32, i32, NUHGOBJ_JOINT_OVERRIDE_PC *, NUMTX *);
+
+    i32 __cdecl APIObjectCollision(APIOBJECT_PC *, APIOBJECT_PC *);
+    i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *, APIOBJECT_PC *);
+    void __cdecl APIObjectCollisions(i32, APIOBJECT_PC **, NUVEC *, NUVEC *,
+                                     i32(__cdecl *)(APIOBJECT_PC *, APIOBJECT_PC *));
+    i32 __cdecl ForcePushed_SuperPush_Occurring(GAMEOBJECT *, GAMEOBJECT *);
+    void __cdecl CollideGameObjects(WORLDINFO *);
+    extern LEVELDATA_PC *CollisionVehicleExcludedLevelPc;
+
+    void __cdecl NuCameraBuildClipPlanes(void);
+    void __cdecl NuMtxCalcFaceY(NUMTX *, NUVEC *);
+    void __cdecl NuMtxCalcFaceOn(NUMTX *, NUVEC *);
+    i32 __cdecl NuCameraClipTestExtentsGeneric(NUVEC *, NUVEC *, NUMTX *, f32, i32, f32 *);
+    i32 __cdecl NuRndrSetSpecularLightPS(const NUVEC *, const NUVEC4 *);
+    void __cdecl NuRndrStateSetSpecularLightEx(const NUVEC *, const NUMTX *, const NUVEC *);
+    extern NUVEC4 CameraNearClipPlanePc;
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

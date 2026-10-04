@@ -689,3 +689,194 @@ void __cdecl FloatRumble(GAMEOBJECT *object) {
             NuSound3AddRumble(pad, 1.0f / DEFAULTFPS, 0, 0, 0.0f);
     }
 }
+
+typedef struct collision_exclusion_view_pc_s {
+    u8 unknown_0000[0x298];
+    GAMEOBJECT *excluded_object;
+    u8 unknown_029c[4];
+    u64 exclusion_mask;
+} COLLISION_EXCLUSION_VIEW_PC;
+STATIC_ASSERT(offsetof(COLLISION_EXCLUSION_VIEW_PC, excluded_object) == 0x298);
+STATIC_ASSERT(offsetof(COLLISION_EXCLUSION_VIEW_PC, exclusion_mask) == 0x2a0);
+typedef struct collision_platform_push_view_pc_s {
+    u8 unknown_0000[0xdc4];
+    f32 platform_push_timer;
+} COLLISION_PLATFORM_PUSH_VIEW_PC;
+STATIC_ASSERT(offsetof(COLLISION_PLATFORM_PUSH_VIEW_PC, platform_push_timer) == 0xdc4);
+typedef struct collision_techno_view_pc_s {
+    u8 unknown_0000[0x68];
+    u8 flags;
+} COLLISION_TECHNO_VIEW_PC;
+STATIC_ASSERT(offsetof(COLLISION_TECHNO_VIEW_PC, flags) == 0x68);
+extern LEVELDATA_PC *CollisionVehicleExcludedLevelPc;
+i32 __cdecl ForcePushed_SuperPush_Occurring(GAMEOBJECT *, GAMEOBJECT *);
+i32 __cdecl APIObjectCollision(APIOBJECT_PC *, APIOBJECT_PC *);
+i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *, APIOBJECT_PC *);
+void __cdecl APIObjectCollisions(i32, APIOBJECT_PC **, NUVEC *, NUVEC *,
+                                 i32(__cdecl *)(APIOBJECT_PC *, APIOBJECT_PC *));
+static i32 Collide2Objects(APIOBJECT_PC *first_input, APIOBJECT_PC *second_input) {
+    GAMEOBJECT *first = (GAMEOBJECT *)first_input;
+    GAMEOBJECT *second = (GAMEOBJECT *)second_input;
+    f32 first_vertical_velocity = first->velocity.y;
+    f32 second_vertical_velocity = second->velocity.y;
+    GAMEOBJECT *first_object = ((APIOBJECT_PC *)first)->owner;
+    GAMEOBJECT *second_object = ((APIOBJECT_PC *)second)->owner;
+    PLAYERCHARACTERCONFIG_PC *first_data, *second_data;
+    f32 maximum_velocity, velocity_squared, maximum_squared, scale;
+    i32 collision_result = ForcePushed_SuperPush_Occurring(first_object, second_object);
+    if (collision_result == 0) {
+        if (WORLD->current_level == DOGFIGHTA_LDATA)
+            collision_result = APIObjectCollision(first_input, second_input);
+        else
+            collision_result = APIObjectCollision2D(first_input, second_input);
+        if (collision_result == 2 && VehicleArea == 0) {
+            first_data = first_object->character_data->game_character;
+            second_data = second_object->character_data->game_character;
+            if ((first_data->flags_090 & 0x1000) && (f64)first->velocity_magnitude > (f64)first_data->run_speed * .5)
+                StartFlatten(first_object, second_object);
+            else if ((second_data->flags_090 & 0x1000) &&
+                     (f64)second->velocity_magnitude > (f64)second_data->run_speed * .5)
+                StartFlatten(second_object, first_object);
+            else if (second_vertical_velocity < 0 && (first_data->flags_090 & 0x40) &&
+                     first_object->level_object_index == -1)
+                first->velocity.y = (f32)((f64)first->velocity.y + (f64)second_vertical_velocity * .5);
+            else if (first_vertical_velocity < 0 && (second_data->flags_090 & 0x40) &&
+                     second_object->level_object_index == -1)
+                second->velocity.y = (f32)((f64)second->velocity.y + (f64)first_vertical_velocity * .5);
+        }
+        maximum_velocity = (f32)((f64)first->character_data->game_character->run_speed * 1.25);
+        if (maximum_velocity < 1)
+            maximum_velocity = 1;
+        velocity_squared =
+            (f32)((f64)first->velocity.x * first->velocity.x + (f64)first->velocity.z * first->velocity.z);
+        maximum_squared = (f32)((f64)maximum_velocity * maximum_velocity);
+        if (velocity_squared > maximum_squared) {
+            scale = maximum_velocity / NuFsqrt(velocity_squared);
+            first->velocity.x *= scale;
+            first->velocity.z *= scale;
+        }
+        maximum_velocity = (f32)((f64)second->character_data->game_character->run_speed * 1.25);
+        if (maximum_velocity < 1)
+            maximum_velocity = 1;
+        velocity_squared =
+            (f32)((f64)second->velocity.x * second->velocity.x + (f64)second->velocity.z * second->velocity.z);
+        maximum_squared = (f32)((f64)maximum_velocity * maximum_velocity);
+        if (velocity_squared > maximum_squared) {
+            scale = maximum_velocity / NuFsqrt(velocity_squared);
+            second->velocity.x *= scale;
+            second->velocity.z *= scale;
+        }
+    } else {
+        collision_result = ((second_object->collision_identity_mask[0] & first_object->collision_contact_mask[0]) |
+                            (second_object->collision_identity_mask[1] & first_object->collision_contact_mask[1]) |
+                            (first_object->collision_identity_mask[0] & second_object->collision_contact_mask[0]) |
+                            (first_object->collision_identity_mask[1] & second_object->collision_contact_mask[1]))
+                               ? 1
+                               : 2;
+        first->collision_contact_mask[0] |= second->collision_identity_mask[0];
+        first->collision_contact_mask[1] |= second->collision_identity_mask[1];
+        second->collision_contact_mask[0] |= first->collision_identity_mask[0];
+        second->collision_contact_mask[1] |= first->collision_identity_mask[1];
+    }
+    return collision_result;
+}
+void __cdecl CollideGameObjects(WORLDINFO *world) {
+    u32 narrow_speeder_mask = 0, flattened_mask = 0, player_collision_mask = 0, no_vertical_movement_mask = 0,
+        vertical_movement_mask = 0, player_slot_mask = 0;
+    GAMEOBJECT *objects = Obj, *object, *selected_player;
+    APIOBJECT_PC *collision_objects[64];
+    NUVEC collision_minimums[64], collision_maximums[64], direction;
+    PLAYERCHARACTERCONFIG_PC *data;
+    COLLISION_EXCLUSION_VIEW_PC *exclusion;
+    u32 bit, flags;
+    i32 object_count = HIGHGAMEOBJECT, index, player_index, collision_count = 0;
+    i8 context;
+    if (world->area_index != -1 && (world->area->flags & 0x80))
+        return;
+    for (index = 0, object = objects; index < object_count; ++index, ++object) {
+        flags = object->flags_1fc_word;
+        if (!(flags & 1))
+            continue;
+        bit = object->hostility_group < 32 ? (u32)1 << object->hostility_group : 0;
+        if (object->field_280 != 0xff)
+            player_slot_mask |= bit;
+        data = object->character_data->game_character;
+        if (!(data->field_028 > 0))
+            no_vertical_movement_mask |= bit;
+        else
+            vertical_movement_mask |= bit;
+        if (((flags & 0x80) || (object->flags_ef4 & 0x80000)) && !(data->flags_090 & 0x40))
+            player_collision_mask |= bit;
+        if (object->character_context == 0x3d && !(flags & 0x80))
+            flattened_mask |= bit;
+        if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 &&
+            object->id == (u16)id_SPEEDERBIKE && object->field_280 != 0xff)
+            narrow_speeder_mask |= bit;
+    }
+    for (index = 0, object = objects; index < HIGHGAMEOBJECT; ++index, ++object) {
+        if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0 || object->model_draw_result == 0 ||
+            object->use_model_origin < 2)
+            continue;
+        context = object->character_context;
+        if ((CInfo[context].flags & 0x8000) || context == 0x3b || context == 0x3c || context == 0xf || context == 0x39)
+            continue;
+        if (context == 0x26 && object->special_move_pc != -1 && (object->context_variant_flags & 0x200))
+            continue;
+        if (context == 0x1f && object->field_7b3 == 1)
+            continue;
+        data = object->character_data->game_character;
+        if ((data->flags_090 & 0x8000) || (object->flags_e20 & 0x20) ||
+            (context == 0x47 && (((COLLISION_TECHNO_VIEW_PC *)object->techno)->flags & 1)))
+            continue;
+        collision_objects[collision_count] = (APIOBJECT_PC *)object;
+        collision_minimums[collision_count] = object->collision_min;
+        collision_maximums[collision_count] = object->collision_max;
+        ++collision_count;
+        exclusion = (COLLISION_EXCLUSION_VIEW_PC *)object;
+        exclusion->exclusion_mask = 0;
+        if (data->flags_090 & 0x1000)
+            exclusion->exclusion_mask = flattened_mask;
+        if (object->level_object_index != -1) {
+            exclusion->exclusion_mask |= player_collision_mask;
+            for (player_index = 0; player_index < 8; ++player_index) {
+                selected_player = (GAMEOBJECT *)Player[player_index];
+                if (selected_player == NULL || (selected_player->flags_1fc_word & 0x1001) != 0x1001 ||
+                    selected_player == object ||
+                    !(((COLLISION_PLATFORM_PUSH_VIEW_PC *)selected_player)->platform_push_timer > 0) ||
+                    selected_player->supporting_platform_id != object->level_object_index ||
+                    (object->level_object_index == selected_player->terrain_platform_id &&
+                     (selected_player->field_281 != 0 || GameObjectNearFloor(selected_player, 3.0f, NULL) != 0)))
+                    continue;
+                direction.x = object->collision_position.x - selected_player->collision_position.x;
+                direction.y = 0;
+                direction.z = object->collision_position.z - selected_player->collision_position.z;
+                NuVecNorm(&direction, &direction);
+                object->movement_direction_x = direction.x;
+                object->movement_direction_z = direction.z;
+            }
+        }
+        if (object->character_context == 0 && object->airborne_collision_target != NULL &&
+            object->airborne_collision_target->hostility_group < 64)
+            exclusion->exclusion_mask |= (u64)1 << object->airborne_collision_target->hostility_group;
+        if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 &&
+            object->id == (u16)id_SPEEDERBIKE && object->field_280 != 0xff)
+            exclusion->exclusion_mask |= narrow_speeder_mask;
+        if (VehicleArea != 0 && WORLD->current_level != CollisionVehicleExcludedLevelPc &&
+            WORLD->current_level != DOGFIGHTA_LDATA) {
+            data = object->character_data->game_character;
+            if (object->field_280 != 0xff) {
+                if (data->field_028 != 0)
+                    exclusion->exclusion_mask |= vertical_movement_mask;
+                else
+                    exclusion->exclusion_mask |= (~player_slot_mask) & vertical_movement_mask;
+            } else {
+                if (data->field_028 != 0)
+                    exclusion->exclusion_mask |=
+                        (vertical_movement_mask & player_slot_mask) | no_vertical_movement_mask;
+                else
+                    exclusion->exclusion_mask |= (~player_slot_mask) & vertical_movement_mask;
+            }
+        }
+    }
+    APIObjectCollisions(collision_count, collision_objects, collision_minimums, collision_maximums, Collide2Objects);
+}

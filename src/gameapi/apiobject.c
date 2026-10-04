@@ -1885,3 +1885,374 @@ void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_
     } while (checks != 0);
 done:;
 }
+
+typedef struct api_collision_view_pc_s {
+    u8 unknown_0000[0x68];
+    NUVEC velocity, previous_velocity, collision_position;
+    u8 unknown_008c[0xc];
+    NUVEC initial_position;
+    f32 scaled_radius;
+    u8 unknown_00a8[0x134];
+    f32 bounds_radius, bounds_half_height;
+    u8 unknown_01e4[4];
+    u64 collision_identity_mask, collision_contact_mask;
+    u32 motion_flags, flags_low;
+    NUVEC movement_direction;
+    u8 unknown_020c[0x81];
+    u8 object_id;
+    u8 unknown_028e[0xa];
+    struct api_collision_view_pc_s *collision_excluded_object;
+    u8 unknown_029c[4];
+    u64 collision_exclusion_mask;
+} API_COLLISION_VIEW_PC;
+STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, velocity) == 0x68);
+STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, previous_velocity) == 0x74);
+STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, collision_position) == 0x80);
+STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, initial_position) == 0x98);
+STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, scaled_radius) == 0xa4);
+STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, bounds_radius) == 0x1dc);
+STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, bounds_half_height) == 0x1e0);
+STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, collision_identity_mask) == 0x1e8);
+STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, collision_contact_mask) == 0x1f0);
+STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, motion_flags) == 0x1f8);
+STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, flags_low) == 0x1fc);
+STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, movement_direction) == 0x200);
+STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, object_id) == 0x28d);
+STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, collision_excluded_object) == 0x298);
+STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, collision_exclusion_mask) == 0x2a0);
+STATIC_ASSERT(sizeof(API_COLLISION_VIEW_PC) == 0x2a8);
+
+static f32 MINFORCEAPART = 0.333f;
+static f32 MAXFORCEAPART = 0.666f;
+
+static void GameObjectForceApart2D(API_COLLISION_VIEW_PC *first, API_COLLISION_VIEW_PC *second) {
+    const u16 angle = (u16)((f64)NuRandFloat() * 65536.0);
+
+    if ((first->flags_low & 2) != 0 && (second->flags_low & 2) == 0) {
+        second->velocity.x = NuTrigTable[(u16)(angle >> 1)] * 4.0f;
+        second->velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * 4.0f;
+        second->movement_direction.x = second->velocity.x;
+        second->movement_direction.z = second->velocity.z;
+        first->movement_direction.x = first->velocity.x;
+        first->movement_direction.z = first->velocity.z;
+    } else if ((first->flags_low & 2) == 0 && (second->flags_low & 2) != 0) {
+        first->velocity.x = NuTrigTable[(u16)(angle >> 1)] * 4.0f;
+        first->velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * 4.0f;
+        first->movement_direction.x = first->velocity.x;
+        first->movement_direction.z = first->velocity.z;
+        second->movement_direction.x = second->velocity.x;
+        second->movement_direction.z = second->velocity.z;
+    } else {
+        first->velocity.x = NuTrigTable[(u16)(angle >> 1)] * 2.0f;
+        first->velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * 2.0f;
+        first->movement_direction.x = first->velocity.x;
+        first->movement_direction.z = first->velocity.z;
+        second->velocity.x = -first->velocity.x;
+        second->velocity.z = -first->velocity.z;
+        second->movement_direction.x = second->velocity.x;
+        second->movement_direction.z = second->velocity.z;
+    }
+}
+
+i32 __cdecl APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_input) {
+    API_COLLISION_VIEW_PC *first = (API_COLLISION_VIEW_PC *)first_input;
+    API_COLLISION_VIEW_PC *second = (API_COLLISION_VIEW_PC *)second_input;
+    f32 value;
+    f32 first_weight;
+    f32 second_weight;
+    i32 already_touching;
+    NUVEC *first_position = &first->initial_position;
+    NUVEC *second_position = &second->initial_position;
+    f32 first_speed;
+    f32 second_speed;
+    f32 first_dot;
+    f32 second_dot;
+    f32 force;
+    NUVEC normal;
+    NUVEC first_component;
+    NUVEC second_component;
+    NUVEC average;
+    already_touching = ((first->collision_contact_mask & second->collision_identity_mask) |
+                        (second->collision_contact_mask & first->collision_identity_mask)) != 0;
+    first->collision_contact_mask |= second->collision_identity_mask;
+    second->collision_contact_mask |= first->collision_identity_mask;
+    value = first->scaled_radius + second->scaled_radius;
+    if (value > 0.0f) {
+        first_weight = first->scaled_radius / value * 2.0f;
+        second_weight = 2.0f - first_weight;
+    } else {
+        first_weight = second_weight = 1.0f;
+    }
+    if (already_touching == 0) {
+        if ((first->motion_flags & 0x80) != 0)
+            return 2;
+        if ((second->motion_flags & 0x80) != 0)
+            return 2;
+        NuVecSub(&normal, second_position, first_position);
+        NuVecNorm(&normal, &normal);
+        first_speed = NuFsqrt(first->velocity.x * first->velocity.x + first->velocity.y * first->velocity.y +
+                              first->velocity.z * first->velocity.z);
+        value = first_speed == 0.0f ? 0.0f : 1.0f / first_speed;
+        first_component.x = first->velocity.x * value;
+        first_component.y = first->velocity.y * value;
+        first_component.z = first->velocity.z * value;
+        second_speed = NuFsqrt(second->velocity.x * second->velocity.x + second->velocity.y * second->velocity.y +
+                               second->velocity.z * second->velocity.z);
+        value = second_speed == 0.0f ? 0.0f : 1.0f / second_speed;
+        second_component.x = second->velocity.x * value;
+        second_component.y = second->velocity.y * value;
+        second_component.z = second->velocity.z * value;
+        first_dot = NuVecDot(&first_component, &normal);
+        second_dot = NuVecDot(&second_component, &normal);
+        value = first_dot * first_speed;
+        first_component.x = normal.x * value;
+        first_component.y = normal.y * value;
+        first_component.z = normal.z * value;
+        value = second_dot * second_speed;
+        second_component.x = normal.x * value;
+        second_component.y = normal.y * value;
+        second_component.z = normal.z * value;
+        if ((first->flags_low & 2) != 0 && (second->flags_low & 2) == 0) {
+            second->velocity.x += (first_component.x - second_component.x) * first_weight * 2.0f;
+            second->velocity.y += (first_component.y - second_component.y) * first_weight * 2.0f;
+            second->velocity.z += (first_component.z - second_component.z) * first_weight * 2.0f;
+        } else if ((first->flags_low & 2) == 0 && (second->flags_low & 2) != 0) {
+            first->velocity.x += (second_component.x - first_component.x) * second_weight * 2.0f;
+            first->velocity.y += (second_component.y - first_component.y) * second_weight * 2.0f;
+            first->velocity.z += (second_component.z - first_component.z) * second_weight * 2.0f;
+        } else {
+            first->velocity.x += (second_component.x - first_component.x) * second_weight;
+            first->velocity.y += (second_component.y - first_component.y) * second_weight;
+            first->velocity.z += (second_component.z - first_component.z) * second_weight;
+            second->velocity.x += (first_component.x - second_component.x) * first_weight;
+            second->velocity.y += (first_component.y - second_component.y) * first_weight;
+            second->velocity.z += (first_component.z - second_component.z) * first_weight;
+        }
+        return 2;
+    }
+    if ((first->motion_flags & 0x80) != 0)
+        return 1;
+    if ((second->motion_flags & 0x80) != 0)
+        return 1;
+    average.x = 0.5f * (first->velocity.x + second->velocity.x);
+    average.y = 0.5f * (first->velocity.y + second->velocity.y);
+    average.z = 0.5f * (first->velocity.z + second->velocity.z);
+    if (first_position->x != second_position->x || first_position->y != second_position->y ||
+        first_position->z != second_position->z) {
+        NuVecSub(&normal, second_position, first_position);
+        NuVecNorm(&normal, &normal);
+        value = NuFsqrt(average.x * average.x + average.y * average.y + average.z * average.z);
+        if (value < MINFORCEAPART)
+            value = MINFORCEAPART;
+        else if (value > MAXFORCEAPART)
+            value = MAXFORCEAPART;
+        force = 3.0f;
+        value = (f32)((f64)value * (3.0 / (f64)2.1f));
+        NuVecScale(&normal, &normal, value);
+        if ((first->flags_low & 2) != 0 && (second->flags_low & 2) == 0) {
+            NuVecAdd(&second->velocity, &average, &normal);
+            NuVecAdd(&second->velocity, &average, &normal);
+        } else if ((first->flags_low & 2) == 0 && (second->flags_low & 2) != 0) {
+            NuVecSub(&first->velocity, &average, &normal);
+            NuVecSub(&first->velocity, &average, &normal);
+        } else {
+            NuVecSub(&first->velocity, &average, &normal);
+            NuVecAdd(&second->velocity, &average, &normal);
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second_input) {
+    API_COLLISION_VIEW_PC *first = (API_COLLISION_VIEW_PC *)first_input;
+    API_COLLISION_VIEW_PC *second = (API_COLLISION_VIEW_PC *)second_input;
+    f32 value;
+    f32 first_weight;
+    f32 second_weight;
+    i32 already_touching;
+    NUVEC *first_position = &first->initial_position;
+    NUVEC *second_position = &second->initial_position;
+    f32 distance;
+    f32 first_speed;
+    f32 second_speed;
+    f32 first_dot;
+    f32 second_dot;
+    f32 force;
+    NUVEC normal;
+    NUVEC first_component;
+    NUVEC second_component;
+    NUVEC average;
+    if ((first->collision_contact_mask & second->collision_identity_mask) != 0 ||
+        (second->collision_contact_mask & first->collision_identity_mask) != 0)
+        already_touching = 1;
+    else
+        already_touching = 0;
+    first->collision_contact_mask |= second->collision_identity_mask;
+    second->collision_contact_mask |= first->collision_identity_mask;
+    value = first->scaled_radius + second->scaled_radius;
+    if (value > 0.0f) {
+        first_weight = first->scaled_radius / value * 2.0f;
+        second_weight = 2.0f - first_weight;
+    } else {
+        first_weight = second_weight = 1.0f;
+    }
+    if (already_touching == 0) {
+        if ((first->motion_flags & 0x80) != 0)
+            return 2;
+        if ((second->motion_flags & 0x80) != 0)
+            return 2;
+        if (fabsf(second_position->x - first_position->x) < 0.0001f &&
+            fabsf(second_position->z - first_position->z) < 0.0001f && fabsf(first->previous_velocity.x) < 0.0001f &&
+            fabsf(first->previous_velocity.z) < 0.0001f && fabsf(second->previous_velocity.x) < 0.0001f &&
+            fabsf(second->previous_velocity.z) < 0.0001f) {
+            GameObjectForceApart2D(first, second);
+            return 2;
+        }
+        normal.x = second_position->x - first_position->x;
+        normal.z = second_position->z - first_position->z;
+        distance = NuFsqrt(normal.x * normal.x + normal.z * normal.z);
+        if (distance == 0.0f)
+            value = 0.0f;
+        else
+            value = 1.0f / distance;
+        normal.x *= value;
+        normal.z *= value;
+        first_speed = NuFsqrt(first->previous_velocity.x * first->previous_velocity.x +
+                              first->previous_velocity.z * first->previous_velocity.z);
+        if (first_speed == 0.0f)
+            value = 0.0f;
+        else
+            value = 1.0f / first_speed;
+        first_component.x = first->previous_velocity.x * value;
+        first_component.z = first->previous_velocity.z * value;
+        second_speed = NuFsqrt(second->previous_velocity.x * second->previous_velocity.x +
+                               second->previous_velocity.z * second->previous_velocity.z);
+        if (second_speed == 0.0f)
+            value = 0.0f;
+        else
+            value = 1.0f / second_speed;
+        second_component.x = second->previous_velocity.x * value;
+        second_component.z = second->previous_velocity.z * value;
+        first_dot = first_component.x * normal.x + first_component.z * normal.z;
+        second_dot = second_component.x * normal.x + second_component.z * normal.z;
+        value = first_dot * first_speed;
+        first_component.x = normal.x * value;
+        first_component.z = normal.z * value;
+        value = second_dot * second_speed;
+        second_component.x = normal.x * value;
+        second_component.z = normal.z * value;
+        if ((first->flags_low & 2) != 0 && (second->flags_low & 2) == 0) {
+            second->velocity.x += (first_component.x - second_component.x) * first_weight * 2.0f;
+            second->velocity.z += (first_component.z - second_component.z) * first_weight * 2.0f;
+        } else if ((first->flags_low & 2) == 0 && (second->flags_low & 2) != 0) {
+            first->velocity.x += (second_component.x - first_component.x) * second_weight * 2.0f;
+            first->velocity.z += (second_component.z - first_component.z) * second_weight * 2.0f;
+        } else {
+            first->velocity.x += (second_component.x - first_component.x) * second_weight;
+            first->velocity.z += (second_component.z - first_component.z) * second_weight;
+            second->velocity.x += (first_component.x - second_component.x) * first_weight;
+            second->velocity.z += (first_component.z - second_component.z) * first_weight;
+        }
+        first->movement_direction.x = first->velocity.x;
+        first->movement_direction.z = first->velocity.z;
+        second->movement_direction.x = second->velocity.x;
+        second->movement_direction.z = second->velocity.z;
+        return 2;
+    }
+    if ((first->motion_flags & 0x80) != 0)
+        return 1;
+    if ((second->motion_flags & 0x80) != 0)
+        return 1;
+    if (fabsf(second_position->x - first_position->x) < 0.0001f &&
+        fabsf(second_position->z - first_position->z) < 0.0001f && fabsf(first->previous_velocity.x) < 0.0001f &&
+        fabsf(first->previous_velocity.z) < 0.0001f && fabsf(second->previous_velocity.x) < 0.0001f &&
+        fabsf(second->previous_velocity.z) < 0.0001f) {
+        GameObjectForceApart2D(first, second);
+        return 1;
+    }
+    average.x = 0.5f * (first->previous_velocity.x + second->previous_velocity.x);
+    average.z = 0.5f * (first->previous_velocity.z + second->previous_velocity.z);
+    if (first_position->x != second_position->x || first_position->z != second_position->z) {
+        normal.x = second_position->x - first_position->x;
+        normal.z = second_position->z - first_position->z;
+        value = APIObjectSafeDividePc(1.0f, NuFsqrt(normal.x * normal.x + normal.z * normal.z));
+        normal.x *= value;
+        normal.z *= value;
+        if (normal.x == 0.0f && normal.z == 0.0f) {
+            GameObjectForceApart2D(first, second);
+            return 1;
+        }
+        value = NuFsqrt(average.x * average.x + average.z * average.z);
+        if (value < MINFORCEAPART)
+            value = MINFORCEAPART;
+        else if (value > MAXFORCEAPART)
+            value = MAXFORCEAPART;
+        force = 3.0f;
+        value = (f32)((f64)value * (3.0 / (f64)2.1f));
+        normal.x *= value;
+        normal.z *= value;
+        if ((first->flags_low & 2) != 0 && (second->flags_low & 2) == 0) {
+            second->velocity.x = average.x + normal.x * 2.0f;
+            second->velocity.z = average.z + normal.z * 2.0f;
+        } else if ((first->flags_low & 2) == 0 && (second->flags_low & 2) != 0) {
+            first->velocity.x = average.x - normal.x * 2.0f;
+            first->velocity.z = average.z - normal.z * 2.0f;
+        } else {
+            first->velocity.x = average.x - normal.x;
+            first->velocity.z = average.z - normal.z;
+            second->velocity.x = average.x + normal.x;
+            second->velocity.z = average.z + normal.z;
+        }
+        first->movement_direction.x = first->velocity.x;
+        first->movement_direction.z = first->velocity.z;
+        second->movement_direction.x = second->velocity.x;
+        second->movement_direction.z = second->velocity.z;
+    }
+    return 1;
+}
+
+void __cdecl APIObjectCollisions(i32 count, APIOBJECT_PC **objects, NUVEC *minimums, NUVEC *maximums,
+                                 i32(__cdecl *collide)(APIOBJECT_PC *, APIOBJECT_PC *)) {
+    i32 outer, inner;
+    API_COLLISION_VIEW_PC *first, *second;
+    NUVEC *first_min, *first_max, *second_min, *second_max;
+    f32 dx, dy, dz, distance_squared, radius;
+    if (collide == NULL)
+        return;
+    for (outer = 1; outer < count; ++outer) {
+        second = (API_COLLISION_VIEW_PC *)objects[outer];
+        second_min = &minimums[outer];
+        second_max = &maximums[outer];
+        for (inner = 0; inner < outer; ++inner) {
+            first = (API_COLLISION_VIEW_PC *)objects[inner];
+            first_min = &minimums[inner];
+            first_max = &maximums[inner];
+            if (first->collision_excluded_object == second || second->collision_excluded_object == first)
+                goto no_collision;
+            if (second->object_id < 64 && (first->collision_exclusion_mask & ((u64)1 << second->object_id)))
+                goto no_collision;
+            if (first->object_id < 64 && (second->collision_exclusion_mask & ((u64)1 << first->object_id)))
+                goto no_collision;
+            if (first_min->x > second_max->x || second_min->x > first_max->x || first_min->z > second_max->z ||
+                second_min->z > first_max->z || first_min->y > second_max->y || second_min->y > first_max->y)
+                goto no_collision;
+            dx = second->collision_position.x - first->collision_position.x;
+            dy = second->collision_position.y - first->collision_position.y;
+            dz = second->collision_position.z - first->collision_position.z;
+            if (first->bounds_radius != first->bounds_half_height ||
+                second->bounds_radius != second->bounds_half_height) {
+                dy = (f32)((f64)dy * (((f64)first->bounds_radius + second->bounds_radius) /
+                                      ((f64)first->bounds_half_height + second->bounds_half_height)));
+            }
+            radius = first->bounds_radius + second->bounds_radius;
+            distance_squared = (f32)((f64)dx * dx + (f64)dy * dy + (f64)dz * dz);
+            if ((f64)distance_squared < (f64)radius * radius) {
+                collide((APIOBJECT_PC *)first, (APIOBJECT_PC *)second);
+                continue;
+            }
+        no_collision:
+            first->collision_contact_mask &= ~second->collision_identity_mask;
+            second->collision_contact_mask &= ~first->collision_identity_mask;
+        }
+    }
+}

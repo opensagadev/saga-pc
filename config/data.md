@@ -1792,3 +1792,18 @@ Matched union632,544 adds12 proven numeric bytes, separate from shared views.
 Genuine67 GizFlow private initializers and five RTL compiler copies retain
 original source owners; no duplicate tables/state or new CRC constructor.
 All326 protected production inputs and282 actual normal object pins survive.
+
+
+### Camera/collision two-view release (2026-10-04)
+
+Two genuine shared working views add20 bytes: CameraNearClipPlanePc NUVEC4
+at964080 and CollisionVehicleExcludedLevelPc LEVELDATA_PC* at87b104. Both
+complete emitted initializers equal retail; original owning extents remain
+unknown with zero allocation/exact credit. All3,538 prior shared regions and
+1,852 scopes survive; current3,540/1,854 equals isolated proof. All4,785 prior
+exact physical copies and four complete named members/parents survive;21 new
+known exact copies raise the total4,806. All29 new initializer copies equal
+retail, including8 unknown/76 working bytes. Known604/138,165 scoped bytes are
+unchanged; unknown1,250/130,420 are working views, not capacities. Private force
+constants and specular state stay with original owners; CRC is preserved.
+Camera saved-bank/count views remain scratch-only for the next wave.

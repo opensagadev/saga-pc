@@ -507,3 +507,293 @@ i32 __cdecl NuCameraClipTestPoints(NUVEC *points, i32 count, NUMTX *world_matrix
     }
     return common;
 }
+
+#include <math.h>
+extern NUVEC4 CameraNearClipPlanePc;
+extern NUMTX VisibilityZeroMatrixTemplatePc;
+void __cdecl NuCameraBuildClipPlanes(void);
+void __cdecl NuMtxCalcFaceOn(NUMTX *, NUVEC *);
+void __cdecl NuMtxCalcFaceY(NUMTX *, NUVEC *);
+void __cdecl NuMtxCalcFaceOn(NUMTX *m, NUVEC *v) {
+    NUVEC world_up = {0.0f, 1.0f, 0.0f};
+    NUVEC right;
+    NUVEC up;
+    NUVEC forward;
+    NUVEC camera_position;
+    f32 projection;
+
+    NuMtxGetTranslation(NuCameraGetMtx(), &camera_position);
+    NuVecSub(&forward, &camera_position, v);
+    NuVecNorm(&forward, &forward);
+
+    projection = NuVecDot(&world_up, &forward);
+    up.x = world_up.x - forward.x * projection;
+    up.y = world_up.y - forward.y * projection;
+    up.z = world_up.z - forward.z * projection;
+    NuVecNorm(&up, &up);
+    NuVecCross(&right, &up, &forward);
+
+    m->m00 = right.x;
+    m->m10 = up.x;
+    m->m20 = forward.x;
+    m->m01 = right.y;
+    m->m11 = up.y;
+    m->m21 = forward.y;
+    m->m02 = right.z;
+    m->m12 = up.z;
+    m->m22 = forward.z;
+    m->m33 = 1.0f;
+    m->m23 = 0.0f;
+    m->m13 = 0.0f;
+    m->m03 = 0.0f;
+    m->m30 = v->x;
+    m->m31 = v->y;
+    m->m32 = v->z;
+}
+
+void __cdecl NuMtxCalcFaceY(NUMTX *m, NUVEC *v) {
+    NUVEC world_up = {0.0f, 1.0f, 0.0f};
+    NUVEC right;
+    NUVEC up;
+    NUVEC forward;
+    NUVEC camera_position;
+
+    NuMtxGetTranslation(NuCameraGetMtx(), &camera_position);
+    NuVecSub(&forward, &camera_position, v);
+    NuVecCross(&right, &world_up, &forward);
+    NuVecNorm(&right, &right);
+    NuVecCross(&up, &forward, &right);
+    NuVecNorm(&up, &up);
+
+    m->m00 = right.x;
+    m->m10 = world_up.x;
+    m->m20 = up.x;
+    m->m01 = right.y;
+    m->m11 = world_up.y;
+    m->m21 = up.y;
+    m->m02 = right.z;
+    m->m12 = world_up.z;
+    m->m22 = up.z;
+    m->m33 = 1.0f;
+    m->m23 = 0.0f;
+    m->m13 = 0.0f;
+    m->m03 = 0.0f;
+    m->m30 = v->x;
+    m->m31 = v->y;
+    m->m32 = v->z;
+}
+
+void __cdecl NuCameraBuildClipPlanes(void) {
+    f32 near_dist;
+    f32 near_dist_sq;
+
+    f32 left_right;
+    f32 top_bottom;
+
+    f32 left_right_inv;
+    f32 top_bottom_inv;
+
+    NUMTX frustum_planes;
+    NUMTX scissor_planes;
+
+    f32 dot;
+
+    near_dist = global_camera.near_clip;
+    near_dist_sq = global_camera.near_clip * global_camera.near_clip;
+
+    // Build the frustum planes.
+    left_right = zx * near_dist;
+    top_bottom = zy * near_dist;
+
+    left_right_inv = 1.0f / NuFsqrt(left_right * left_right + near_dist_sq);
+    top_bottom_inv = 1.0f / NuFsqrt(top_bottom * top_bottom + near_dist_sq);
+
+    frustum_planes = VisibilityZeroMatrixTemplatePc;
+
+    frustum_planes.m00 = -near_dist * left_right_inv;
+    frustum_planes.m20 = left_right * left_right_inv;
+
+    frustum_planes.m01 = -frustum_planes.m00;
+    frustum_planes.m21 = frustum_planes.m20;
+
+    frustum_planes.m12 = -near_dist * top_bottom_inv;
+    frustum_planes.m22 = top_bottom * top_bottom_inv;
+
+    frustum_planes.m13 = -frustum_planes.m12;
+    frustum_planes.m23 = frustum_planes.m22;
+
+    // Build the scissor planes.
+    left_right = VISIBILITY_ALTERNATE_WIDTH_PC * near_dist;
+    top_bottom = VisibilityAlternateHeightPc * near_dist;
+
+    left_right_inv = 1.0f / NuFsqrt(left_right * left_right + near_dist_sq);
+    top_bottom_inv = 1.0f / NuFsqrt(top_bottom * top_bottom + near_dist_sq);
+
+    scissor_planes = VisibilityZeroMatrixTemplatePc;
+
+    scissor_planes.m00 = -near_dist * left_right_inv;
+    scissor_planes.m20 = left_right * left_right_inv;
+
+    scissor_planes.m01 = -scissor_planes.m00;
+    scissor_planes.m21 = scissor_planes.m20;
+
+    scissor_planes.m12 = -near_dist * top_bottom_inv;
+    scissor_planes.m22 = top_bottom * top_bottom_inv;
+
+    scissor_planes.m13 = -scissor_planes.m12;
+    scissor_planes.m23 = scissor_planes.m22;
+
+    NuMtxMulH(&AxisClipFrustumPlanesPc, &vmtx, &frustum_planes);
+    NuMtxMulH(&AxisClipScissorPlanesPc, &vmtx, &scissor_planes);
+
+    dot = global_camera.mtx.m20 * global_camera.mtx.m30 + global_camera.mtx.m21 * global_camera.mtx.m31 +
+          global_camera.mtx.m22 * global_camera.mtx.m32;
+
+    memcpy(&CameraNearClipPlanePc, &global_camera.mtx.m20, sizeof(NUVEC));
+    CameraNearClipPlanePc.w = -dot - global_camera.near_clip;
+
+    AxisClipNearFarPlanesPc.m00 = -global_camera.mtx.m20;
+    AxisClipNearFarPlanesPc.m10 = -global_camera.mtx.m21;
+    AxisClipNearFarPlanesPc.m20 = -global_camera.mtx.m22;
+    AxisClipNearFarPlanesPc.m30 = dot + global_camera.far_clip;
+
+    AxisClipNearFarPlanesPc.m01 = CameraNearClipPlanePc.x;
+    AxisClipNearFarPlanesPc.m11 = CameraNearClipPlanePc.y;
+    AxisClipNearFarPlanesPc.m21 = CameraNearClipPlanePc.z;
+    AxisClipNearFarPlanesPc.m31 = CameraNearClipPlanePc.w;
+
+    AxisClipNearFarPlanesPc.m02 = (f32)fabs(AxisClipNearFarPlanesPc.m00);
+    AxisClipNearFarPlanesPc.m12 = (f32)fabs(AxisClipNearFarPlanesPc.m10);
+    AxisClipNearFarPlanesPc.m22 = (f32)fabs(AxisClipNearFarPlanesPc.m20);
+    AxisClipNearFarPlanesPc.m32 = (f32)fabs(AxisClipNearFarPlanesPc.m30);
+
+    AxisClipNearFarPlanesPc.m03 = (f32)fabs(AxisClipNearFarPlanesPc.m01);
+    AxisClipNearFarPlanesPc.m13 = (f32)fabs(AxisClipNearFarPlanesPc.m11);
+    AxisClipNearFarPlanesPc.m23 = (f32)fabs(AxisClipNearFarPlanesPc.m21);
+    AxisClipNearFarPlanesPc.m33 = (f32)fabs(AxisClipNearFarPlanesPc.m31);
+
+    AxisClipAbsFrustumPlanesPc.m00 = (f32)fabs(AxisClipFrustumPlanesPc.m00);
+    AxisClipAbsFrustumPlanesPc.m01 = (f32)fabs(AxisClipFrustumPlanesPc.m01);
+    AxisClipAbsFrustumPlanesPc.m02 = (f32)fabs(AxisClipFrustumPlanesPc.m02);
+    AxisClipAbsFrustumPlanesPc.m03 = (f32)fabs(AxisClipFrustumPlanesPc.m03);
+
+    AxisClipAbsFrustumPlanesPc.m10 = (f32)fabs(AxisClipFrustumPlanesPc.m10);
+    AxisClipAbsFrustumPlanesPc.m11 = (f32)fabs(AxisClipFrustumPlanesPc.m11);
+    AxisClipAbsFrustumPlanesPc.m12 = (f32)fabs(AxisClipFrustumPlanesPc.m12);
+    AxisClipAbsFrustumPlanesPc.m13 = (f32)fabs(AxisClipFrustumPlanesPc.m13);
+
+    AxisClipAbsFrustumPlanesPc.m20 = (f32)fabs(AxisClipFrustumPlanesPc.m20);
+    AxisClipAbsFrustumPlanesPc.m21 = (f32)fabs(AxisClipFrustumPlanesPc.m21);
+    AxisClipAbsFrustumPlanesPc.m22 = (f32)fabs(AxisClipFrustumPlanesPc.m22);
+    AxisClipAbsFrustumPlanesPc.m23 = (f32)fabs(AxisClipFrustumPlanesPc.m23);
+
+    AxisClipAbsFrustumPlanesPc.m30 = 0.0f;
+    AxisClipAbsFrustumPlanesPc.m31 = 0.0f;
+    AxisClipAbsFrustumPlanesPc.m32 = 0.0f;
+    AxisClipAbsFrustumPlanesPc.m33 = 0.0f;
+
+    AxisClipAbsScissorPlanesPc.m00 = (f32)fabs(AxisClipScissorPlanesPc.m00);
+    AxisClipAbsScissorPlanesPc.m01 = (f32)fabs(AxisClipScissorPlanesPc.m01);
+    AxisClipAbsScissorPlanesPc.m02 = (f32)fabs(AxisClipScissorPlanesPc.m02);
+    AxisClipAbsScissorPlanesPc.m03 = (f32)fabs(AxisClipScissorPlanesPc.m03);
+
+    AxisClipAbsScissorPlanesPc.m10 = (f32)fabs(AxisClipScissorPlanesPc.m10);
+    AxisClipAbsScissorPlanesPc.m11 = (f32)fabs(AxisClipScissorPlanesPc.m11);
+    AxisClipAbsScissorPlanesPc.m12 = (f32)fabs(AxisClipScissorPlanesPc.m12);
+    AxisClipAbsScissorPlanesPc.m13 = (f32)fabs(AxisClipScissorPlanesPc.m13);
+
+    AxisClipAbsScissorPlanesPc.m20 = (f32)fabs(AxisClipScissorPlanesPc.m20);
+    AxisClipAbsScissorPlanesPc.m21 = (f32)fabs(AxisClipScissorPlanesPc.m21);
+    AxisClipAbsScissorPlanesPc.m22 = (f32)fabs(AxisClipScissorPlanesPc.m22);
+    AxisClipAbsScissorPlanesPc.m23 = (f32)fabs(AxisClipScissorPlanesPc.m23);
+
+    AxisClipAbsScissorPlanesPc.m30 = 0.0f;
+    AxisClipAbsScissorPlanesPc.m31 = 0.0f;
+    AxisClipAbsScissorPlanesPc.m32 = 0.0f;
+    AxisClipAbsScissorPlanesPc.m33 = 0.0f;
+}
+
+#include <float.h>
+i32 __cdecl NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_mtx, f32 far_clip, i32 flags,
+                                           f32 *min_depth) {
+    NUMTX transform;
+    NUVEC corners[8];
+    NUVEC view[8];
+    char results[8];
+    i32 i;
+    if (far_clip == 0.0f)
+        far_clip = global_camera.far_clip;
+    if (world_mtx == NULL || world_mtx == &NuMtxSetIdentityTemplate)
+        transform = vmtx;
+    else
+        NuMtxMul(&transform, world_mtx, &vmtx);
+    corners[0].x = min->x;
+    corners[0].y = min->y;
+    corners[0].z = min->z;
+    corners[1].x = max->x;
+    corners[1].y = max->y;
+    corners[1].z = max->z;
+    corners[2].x = min->x;
+    corners[2].y = min->y;
+    corners[2].z = max->z;
+    corners[3].x = max->x;
+    corners[3].y = max->y;
+    corners[3].z = min->z;
+    corners[4].x = min->x;
+    corners[4].y = max->y;
+    corners[4].z = min->z;
+    corners[5].x = min->x;
+    corners[5].y = max->y;
+    corners[5].z = max->z;
+    corners[6].x = max->x;
+    corners[6].y = min->y;
+    corners[6].z = min->z;
+    corners[7].x = max->x;
+    corners[7].y = min->y;
+    corners[7].z = max->z;
+    for (i = 0; i < 8; ++i)
+        NuVecMtxTransform(&view[i], &corners[i], &transform);
+    *min_depth = FLT_MAX;
+    for (i = 0; i < 8; ++i) {
+        results[i] = 0;
+        *min_depth = view[i].z < *min_depth ? view[i].z : *min_depth;
+        if ((flags & 2) == 0 && view[i].z < global_camera.near_clip)
+            results[i] |= 0x20;
+        if (view[i].z > far_clip)
+            results[i] |= 0x10;
+        if (view[i].x < -view[i].z * zx)
+            results[i] |= 1;
+        if (view[i].x > view[i].z * zx)
+            results[i] |= 2;
+        if (view[i].y < -view[i].z * zy)
+            results[i] |= 8;
+        if (view[i].y > view[i].z * zy)
+            results[i] |= 4;
+    }
+    if ((results[0] & results[1] & results[2] & results[3] & results[4] & results[5] & results[6] & results[7]) != 0)
+        return 0;
+    if ((results[0] | results[1] | results[2] | results[3] | results[4] | results[5] | results[6] | results[7]) == 0)
+        return 1;
+    if ((flags & 1) != 0)
+        return 2;
+    for (i = 0; i < 8; ++i) {
+        results[i] = 0;
+        if ((flags & 2) == 0 && view[i].z < global_camera.near_clip)
+            results[i] |= 0x20;
+        if (view[i].z > far_clip)
+            results[i] |= 0x10;
+        if (view[i].x < -view[i].z * VISIBILITY_ALTERNATE_WIDTH_PC)
+            results[i] |= 1;
+        if (view[i].x > view[i].z * VISIBILITY_ALTERNATE_WIDTH_PC)
+            results[i] |= 2;
+        if (view[i].y < -view[i].z * VisibilityAlternateHeightPc)
+            results[i] |= 8;
+        if (view[i].y > view[i].z * VisibilityAlternateHeightPc)
+            results[i] |= 4;
+    }
+    if ((results[0] & results[1] & results[2] & results[3] & results[4] & results[5] & results[6] & results[7]) != 0)
+        return 1;
+    if ((results[0] | results[1] | results[2] | results[3] | results[4] | results[5] | results[6] | results[7]) == 0)
+        return 1;
+    return 2;
+}

@@ -6157,3 +6157,23 @@ void __cdecl SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unuse
         SetHeadTarget(object, position, 2, 1.0f, 0.0f, 0.0f);
     }
 }
+
+i32 __cdecl ForcePushed_SuperPush_Occurring(GAMEOBJECT *first, GAMEOBJECT *second) {
+    GAMEOBJECT *source;
+    if (first->character_context == 0x1c) {
+        if (first->action_movement_state != 0)
+            return 0;
+        source = first->force_target;
+        if (source == NULL || source->character_context != 0x1b || (source->flags_e20 & 0x380) != 0 ||
+            second->id == (u16)id_GONKDROID)
+            return 0;
+        return ForcePushEligible(second, first, source) != 0;
+    }
+    if (second->character_context != 0x1c || second->action_movement_state != 0)
+        return 0;
+    source = second->force_target;
+    if (source == NULL || source->character_context != 0x1b || (source->flags_e20 & 0x380) != 0 ||
+        first->id == (u16)id_GONKDROID)
+        return 0;
+    return ForcePushEligible(first, second, source) != 0;
+}

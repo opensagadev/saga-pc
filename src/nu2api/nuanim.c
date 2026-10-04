@@ -2270,3 +2270,280 @@ void __cdecl PCBuildLegacySkeletalJoint(DWA_CURVE_CELL_PC *curves, i8 *formats, 
 
 #undef PC_LEGACY_CURVE_STORE
 #undef PC_LEGACY_LIMIT_ANGLE
+
+f32 NuAnimCurveCalcVal2(NUANIM_LEGACY_CURVE_PC *curve, NUANIM_TIME2_PC *time) {
+    i32 key = 0;
+    NUANIM_LEGACY_KEY_PC *first;
+    f32 t, span, tangent0, tangent1, polynomial;
+    f64 delta;
+    switch (time->time_byte) {
+        case 3:
+            key += NuAnimDataBitCount[curve->key_mask[2]];
+            key += NuAnimDataBitCount[curve->key_mask[1]];
+            key += NuAnimDataBitCount[curve->key_mask[0]];
+            key += NuAnimDataBitCount[curve->key_mask[3] & time->time_mask];
+            break;
+        case 2:
+            key += NuAnimDataBitCount[curve->key_mask[1]];
+            key += NuAnimDataBitCount[curve->key_mask[0]];
+            key += NuAnimDataBitCount[curve->key_mask[2] & time->time_mask];
+            break;
+        case 1:
+            key += NuAnimDataBitCount[curve->key_mask[0]];
+            key += NuAnimDataBitCount[curve->key_mask[1] & time->time_mask];
+            break;
+        case 0:
+            key = NuAnimDataBitCount[curve->key_mask[0] & time->time_mask];
+            break;
+    }
+    first = &curve->keys[key - 1];
+    if (curve->flags & 1) {
+        if ((curve->flags & 2) && key - 1 < curve->key_count &&
+            (f64)time->time - first->time > (f64)first[1].time - time->time)
+            return first[1].value;
+        return first->value;
+    }
+    t = (time->time - first->time) * first->reciprocal_span;
+    span = first[1].time - first->time;
+    tangent0 = first->tangent * span;
+    tangent1 = first[1].tangent * span;
+    delta = (f64)first->value - first[1].value;
+    polynomial = (delta + delta + tangent0 + tangent1) * t - delta * 3.0 - (tangent0 + (f64)tangent0) - tangent1;
+    return (polynomial * (f64)t + tangent0) * t + first->value;
+}
+
+void NuAnimDataCalcTime(NUANIM_LEGACY_HEADER_PC *animation, f32 frame, NUANIM_TIME2_PC *time) {
+    i32 chunk_frame;
+    u32 shift;
+    if (animation->duration <= frame) {
+        if (animation->duration == 1.0f) {
+            time->time = 1.0f;
+            time->chunk = 0;
+            time->time_byte = 0;
+            time->time_mask = 1;
+            return;
+        }
+        time->time = animation->duration - (f64)(f32)0.01f;
+    } else if (frame < 1.0f) {
+        time->time = 1.0f;
+    } else {
+        time->time = frame;
+    }
+    time->chunk = ((i32)time->time - 1) >> 5;
+    if (time->chunk >= animation->chunk_count)
+        time->chunk = animation->chunk_count - 1;
+    time->time_offset = time->time - (i32)((u32)time->chunk << 5);
+    chunk_frame = (i32)NuFloor(time->time_offset) - 1;
+    time->chunk_frame = chunk_frame;
+    time->time_byte = (u8)(chunk_frame / 8);
+    shift = (u32)(chunk_frame % 8 + 1) & 31;
+    time->time_mask = (u8)((shift < 8 ? (1u << shift) : 0) - 1);
+}
+
+void NuAnimCurveSetApplyToMatrix(NUANIM_LEGACY_SET_PC *set, NUANIM_TIME2_PC *time, NUMTX *matrix) {
+    NUVEC rotation, translation, scale;
+    NUANGVEC angles;
+    if (set->flags & 1) {
+        if (set->curves[3] != NULL) {
+            rotation.x = NuAnimCurveCalcVal2(set->curves[3], time);
+        } else {
+            rotation.x = set->constants[3];
+        }
+        if (set->curves[4] != NULL) {
+            rotation.y = NuAnimCurveCalcVal2(set->curves[4], time);
+        } else {
+            rotation.y = set->constants[4];
+        }
+        if (set->curves[5] != NULL) {
+            rotation.z = NuAnimCurveCalcVal2(set->curves[5], time);
+        } else {
+            rotation.z = set->constants[5];
+        }
+        angles.x = (i32)(rotation.x * 10430.378f);
+        angles.y = (i32)(rotation.y * 10430.378f);
+        angles.z = (i32)(rotation.z * 10430.378f);
+        NuMtxSetRotateXYZVU0(matrix, &angles);
+    } else {
+        NuMtxSetIdentity(matrix);
+    }
+    if (set->flags & 8) {
+        if (set->curves[6] != NULL) {
+            scale.x = NuAnimCurveCalcVal2(set->curves[6], time);
+        } else {
+            scale.x = set->constants[6];
+        }
+        if (set->curves[7] != NULL) {
+            scale.y = NuAnimCurveCalcVal2(set->curves[7], time);
+        } else {
+            scale.y = set->constants[7];
+        }
+        if (set->curves[8] != NULL) {
+            scale.z = NuAnimCurveCalcVal2(set->curves[8], time);
+        } else {
+            scale.z = set->constants[8];
+        }
+        NuMtxPreScaleVU0(matrix, &scale);
+    }
+    if (set->curves[0] != NULL) {
+        translation.x = NuAnimCurveCalcVal2(set->curves[0], time);
+    } else {
+        translation.x = set->constants[0];
+    }
+    if (set->curves[1] != NULL) {
+        translation.y = NuAnimCurveCalcVal2(set->curves[1], time);
+    } else {
+        translation.y = set->constants[1];
+    }
+    if (set->curves[2] != NULL) {
+        translation.z = NuAnimCurveCalcVal2(set->curves[2], time);
+    } else {
+        translation.z = set->constants[2];
+    }
+    NuMtxTranslate(matrix, &translation);
+    matrix->m02 = -matrix->m02;
+    matrix->m12 = -matrix->m12;
+    matrix->m20 = -matrix->m20;
+    matrix->m21 = -matrix->m21;
+    matrix->m23 = -matrix->m23;
+    matrix->m32 = -matrix->m32;
+}
+
+void __cdecl NuAnimCurveSetApplyBlendToJoint2(NUANIM_LEGACY_SET_PC *first, NUANIM_TIME2_PC *first_time,
+                                              NUANIM_LEGACY_SET_PC *second, NUANIM_TIME2_PC *second_time, f32 blend,
+                                              NUHGOBJ_EVAL_JOINT_PC *joint, NUVEC *scale, NUVEC *parent_scale,
+                                              NUMTX *matrix, NUHGOBJ_JOINT_OVERRIDE_PC *override_anim) {
+    f32 inverse_blend = 1.0f - blend;
+    u8 flags = override_anim ? override_anim->flags_pc : 0;
+    u8 rotate = flags & 1, rescale = flags & 4, translate = flags & 2;
+    NUANGVEC angles;
+    f32 r0[3], r1[3], s0[3], s1[3];
+    NUVEC translation, temporary;
+    i32 component;
+    if ((first->flags & 1) || (second->flags & 1) || rotate) {
+        for (component = 0; component < 3; ++component) {
+            r0[component] = first->curves[component + 3] ? NuAnimCurveCalcVal2(first->curves[component + 3], first_time)
+                                                         : first->constants[component + 3];
+            r1[component] = second->curves[component + 3]
+                                ? NuAnimCurveCalcVal2(second->curves[component + 3], second_time)
+                                : second->constants[component + 3];
+        }
+        r0[0] -= (f64)r0[0] - r1[0] > 3.1415927410125732 ? 6.2831854820251465 : 0.0f;
+        r1[0] -= (f64)r1[0] - r0[0] > 3.1415927410125732 ? 6.2831854820251465 : 0.0f;
+        r0[1] -= (f64)r0[1] - r1[1] > 3.1415927410125732 ? 6.2831854820251465 : 0.0f;
+        r1[1] -= (f64)r1[1] - r0[1] > 3.1415927410125732 ? 6.2831854820251465 : 0.0f;
+        r0[2] -= (f64)r0[2] - r1[2] > 3.1415927410125732 ? 6.2831854820251465 : 0.0f;
+        r1[2] -= (f64)r1[2] - r0[2] > 3.1415927410125732 ? 6.2831854820251465 : 0.0f;
+        r0[0] = r0[0] * inverse_blend + r1[0] * blend;
+        r0[1] = r0[1] * inverse_blend + r1[1] * blend;
+        r0[2] = r0[2] * inverse_blend + r1[2] * blend;
+        if (rotate) {
+            r0[0] += override_anim->rotation.x;
+            r0[1] += override_anim->rotation.y;
+            r0[2] += override_anim->rotation.z;
+            angles.x = (i32)(r0[0] * 10430.3779296875);
+            angles.y = (i32)(r0[1] * 10430.3779296875);
+            angles.z = (i32)(r0[2] * 10430.3779296875);
+            if (flags & 8) {
+                angles.x &= 0xffff;
+                if (angles.x > 32767)
+                    angles.x -= 65536;
+                if (angles.x > override_anim->rotation_max_pc[0])
+                    angles.x = override_anim->rotation_max_pc[0];
+                else if (angles.x < override_anim->rotation_min_pc[0])
+                    angles.x = override_anim->rotation_min_pc[0];
+            }
+            if (flags & 16) {
+                angles.y &= 0xffff;
+                if (angles.y > 32767)
+                    angles.y -= 65536;
+                if (angles.y > override_anim->rotation_max_pc[1])
+                    angles.y = override_anim->rotation_max_pc[1];
+                else if (angles.y < override_anim->rotation_min_pc[1])
+                    angles.y = override_anim->rotation_min_pc[1];
+            }
+            if (flags & 32) {
+                angles.z &= 0xffff;
+                if (angles.z > 32767)
+                    angles.z -= 65536;
+                if (angles.z > override_anim->rotation_max_pc[2])
+                    angles.z = override_anim->rotation_max_pc[2];
+                else if (angles.z < override_anim->rotation_min_pc[2])
+                    angles.z = override_anim->rotation_min_pc[2];
+            }
+        } else {
+            angles.x = (i32)(r0[0] * 10430.3779296875);
+            angles.y = (i32)(r0[1] * 10430.3779296875);
+            angles.z = (i32)(r0[2] * 10430.3779296875);
+        }
+        NuMtxSetRotateXYZVU0(matrix, &angles);
+    } else
+        NuMtxSetIdentity(matrix);
+    if ((first->flags & 0x20) || (second->flags & 0x20))
+        NuMtxMulRVU0(matrix, matrix, &joint->bind_matrix);
+    if ((first->flags & 8) || (second->flags & 8) || rescale) {
+        for (component = 0; component < 3; ++component) {
+            s0[component] = first->curves[component + 6] ? NuAnimCurveCalcVal2(first->curves[component + 6], first_time)
+                                                         : first->constants[component + 6];
+            s1[component] = second->curves[component + 6]
+                                ? NuAnimCurveCalcVal2(second->curves[component + 6], second_time)
+                                : second->constants[component + 6];
+        }
+        scale->x = blend * s0[0] + inverse_blend * s1[0];
+        scale->y = blend * s0[1] + inverse_blend * s1[1];
+        scale->z = blend * s0[2] + inverse_blend * s1[2];
+        if (rescale) {
+            scale->x += override_anim->scale_pc.x;
+            scale->y += override_anim->scale_pc.y;
+            scale->z += override_anim->scale_pc.z;
+        }
+        NuMtxPreScaleVU0(matrix, scale);
+        scale->x *= parent_scale->x;
+        scale->y *= parent_scale->y;
+        scale->z *= parent_scale->z;
+    } else
+        *scale = *parent_scale;
+    if ((first->flags | second->flags) & 0x10) {
+        if (parent_scale->x != 0.0f && parent_scale->y != 0.0f && parent_scale->z != 0.0f) {
+            temporary.x = 1.0f / parent_scale->x;
+            temporary.y = 1.0f / parent_scale->y;
+            temporary.z = 1.0f / parent_scale->z;
+        } else
+            temporary.x = temporary.y = temporary.z = 0.0f;
+        NuMtxScaleVU0(matrix, &temporary);
+        scale->x *= temporary.z;
+        scale->y *= temporary.y;
+        scale->z *= temporary.z;
+    }
+    translation.x =
+        (first->curves[0] ? NuAnimCurveCalcVal2(first->curves[0], first_time) : first->constants[0]) * inverse_blend;
+    translation.x +=
+        (second->curves[0] ? NuAnimCurveCalcVal2(second->curves[0], second_time) : second->constants[0]) * blend;
+    translation.y =
+        (first->curves[1] ? NuAnimCurveCalcVal2(first->curves[1], first_time) : first->constants[1]) * inverse_blend;
+    translation.y +=
+        (second->curves[1] ? NuAnimCurveCalcVal2(second->curves[1], second_time) : second->constants[1]) * blend;
+    translation.z =
+        (first->curves[2] ? NuAnimCurveCalcVal2(first->curves[2], first_time) : first->constants[2]) * inverse_blend;
+    translation.z +=
+        (second->curves[2] ? NuAnimCurveCalcVal2(second->curves[2], second_time) : second->constants[2]) * blend;
+    if (translate) {
+        translation.x += override_anim->translation.x;
+        translation.y += override_anim->translation.y;
+        translation.z += override_anim->translation.z;
+    }
+    NuMtxTranslate(matrix, &translation);
+    if (joint->flags_pc & 8) {
+        NUVEC *pivot = &joint->pivot_pc;
+        NuMtxPreTranslate(matrix, pivot);
+        temporary.x = -pivot->x;
+        temporary.y = -pivot->y;
+        temporary.z = -pivot->z;
+        NuMtxTranslate(matrix, &temporary);
+    }
+    matrix->m02 = -matrix->m02;
+    matrix->m12 = -matrix->m12;
+    matrix->m20 = -matrix->m20;
+    matrix->m21 = -matrix->m21;
+    matrix->m23 = -matrix->m23;
+    matrix->m32 = -matrix->m32;
+}

@@ -705,3 +705,162 @@ void NuSpecialForceMaterials(i32 count, NUMTL **materials) {
         PCSpecialForceMaterialCount = count;
     }
 }
+
+void __cdecl NuHGobjEvalAnimBlend(NUHGOBJ_EVAL_PC *object, NUANIM_LEGACY_HEADER_PC *animation_a, f32 frame_a,
+                                  NUANIM_LEGACY_HEADER_PC *animation_b, f32 frame_b, f32 blend, i32 override_count,
+                                  NUHGOBJ_JOINT_OVERRIDE_PC *overrides, NUMTX *matrices) {
+    NUVEC scales[256];
+    NUHGOBJ_JOINT_OVERRIDE_PC *joint_overrides[256];
+    NUMTX local_matrix;
+    NUANIM_TIME2_PC time_a, time_b;
+    NUANIM_LEGACY_CHUNK_PC *chunk_a, *chunk_b;
+    u8 index;
+    if (object->joint_count > DdMaxJointsPc)
+        DdMaxJointsPc = object->joint_count;
+    scales[255].x = scales[255].y = scales[255].z = 1.0f;
+    NuAnimDataCalcTime(animation_a, frame_a, &time_a);
+    chunk_a = (NUANIM_LEGACY_CHUNK_PC *)animation_a->chunks[time_a.chunk];
+    NuAnimDataCalcTime(animation_b, frame_b, &time_b);
+    chunk_b = (NUANIM_LEGACY_CHUNK_PC *)animation_b->chunks[time_b.chunk];
+    if (override_count != 0) {
+        memset(joint_overrides, 0, object->joint_count * sizeof(joint_overrides[0]));
+        for (index = 0; index < override_count; ++index) {
+            u8 override_index = overrides[index].joint_index;
+            if (override_index < object->joint_override_map_count) {
+                u8 joint_index = object->joint_override_map[override_index];
+                if (joint_index != 0xff)
+                    joint_overrides[joint_index] = &overrides[index];
+            }
+        }
+    }
+    for (index = 0; index < object->joint_count; ++index) {
+        NUMTX *output = &matrices[index];
+        NUHGOBJ_JOINT_OVERRIDE_PC *joint_override = override_count != 0 ? joint_overrides[index] : NULL;
+        NUANIM_LEGACY_SET_PC *first = chunk_a->curve_sets[index];
+        NUANIM_LEGACY_SET_PC *second = chunk_b->curve_sets[index];
+        NUMTX *local = &local_matrix;
+        u8 parent_index;
+        if (first != NULL && second != NULL) {
+            NUHGOBJ_EVAL_JOINT_PC *joint = &object->joints[index];
+            NuAnimCurveSetApplyBlendToJoint2(first, &time_a, second, &time_b, blend, joint, &scales[index],
+                                             &scales[joint->parent_index], &local_matrix, joint_override);
+        } else {
+            local = &object->bind_matrices[index];
+        }
+        parent_index = object->joints[index].parent_index;
+        if (parent_index == 0xff)
+            *output = *local;
+        else
+            NuMtxMulVU0(output, local, &matrices[parent_index]);
+    }
+}
+
+DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwa(i32 render_count, i16 *render_indices, NUANIM_LEGACY_HEADER_PC *animation,
+                                             f32 frame) {
+    NUANIM_TIME2_PC time;
+    DWA_WEIGHT_BLOCK_PC **weights_by_render;
+    i32 render;
+    if (animation == NULL || render_count == 0)
+        return NULL;
+    NuAnimDataCalcTime(animation, frame, &time);
+    if (render_indices == NULL)
+        render_count = 1;
+    weights_by_render = NuRndrCreateBlendShapeDWAPointers(render_count);
+    memset(weights_by_render, 0, ((u32)render_count * sizeof(void *) + 15) >> 4);
+    if (weights_by_render == NULL)
+        return NULL;
+    for (render = 0; render < render_count; ++render) {
+        i32 node = render_indices == NULL ? 0 : render_indices[render];
+        NUANIM_LEGACY_CHUNK_PC *chunk;
+        NUANIM_LEGACY_SET_PC *set;
+        DWA_WEIGHT_BLOCK_PC *weights;
+        i32 curve_count, curve;
+        if (node < 0)
+            continue;
+        chunk = (NUANIM_LEGACY_CHUNK_PC *)animation->chunks[time.chunk];
+        if (render_indices != NULL && node >= chunk->node_count) {
+            weights_by_render[render] = NuRndrCreateBlendShapeDeformerWeightsArray(0);
+            continue;
+        }
+        set = chunk->curve_sets[node];
+        if (set == NULL) {
+            weights_by_render[render] = NuRndrCreateBlendShapeDeformerWeightsArray(0);
+            continue;
+        }
+        curve_count = set->curve_count;
+        weights = NuRndrCreateBlendShapeDeformerWeightsArray(curve_count);
+        weights_by_render[render] = weights;
+        if (weights == NULL || curve_count <= 0)
+            continue;
+        for (curve = 0; curve < curve_count; ++curve) {
+            NUANIM_LEGACY_SET_PC *curve_set =
+                ((NUANIM_LEGACY_CHUNK_PC *)animation->chunks[time.chunk])->curve_sets[node];
+            weights->values[curve] = curve_set->curves[curve] != NULL
+                                         ? NuAnimCurveCalcVal2(curve_set->curves[curve], &time)
+                                         : curve_set->constants[curve];
+        }
+    }
+    return weights_by_render;
+}
+
+DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwaBlend(i32 render_count, i16 *render_indices,
+                                                  NUANIM_LEGACY_HEADER_PC *animation_a, f32 frame_a,
+                                                  NUANIM_LEGACY_HEADER_PC *animation_b, f32 frame_b, f32 blend) {
+    NUANIM_TIME2_PC time_a, time_b;
+    DWA_WEIGHT_BLOCK_PC **weights_by_render;
+    i32 render;
+    if ((animation_a == NULL && animation_b == NULL) || render_count == 0)
+        return NULL;
+    if (animation_a != NULL)
+        NuAnimDataCalcTime(animation_a, frame_a, &time_a);
+    if (animation_b != NULL)
+        NuAnimDataCalcTime(animation_b, frame_b, &time_b);
+    if (render_indices == NULL)
+        render_count = 1;
+    weights_by_render = NuRndrCreateBlendShapeDWAPointers(render_count);
+    memset(weights_by_render, 0, ((u32)render_count * sizeof(void *) + 15) >> 4);
+    if (weights_by_render == NULL)
+        return NULL;
+    for (render = 0; render < render_count; ++render) {
+        i32 node = render_indices == NULL ? 0 : render_indices[render];
+        i32 count_a = 0, count_b = 0, curve_count, curve;
+        DWA_WEIGHT_BLOCK_PC *weights;
+        f64 inverse_blend;
+        if (node < 0)
+            continue;
+        if (animation_a != NULL) {
+            NUANIM_LEGACY_CHUNK_PC *chunk = (NUANIM_LEGACY_CHUNK_PC *)animation_a->chunks[time_a.chunk];
+            if (node < chunk->node_count && chunk->curve_sets[node] != NULL)
+                count_a = chunk->curve_sets[node]->curve_count;
+        }
+        if (animation_b != NULL) {
+            NUANIM_LEGACY_CHUNK_PC *chunk = (NUANIM_LEGACY_CHUNK_PC *)animation_b->chunks[time_b.chunk];
+            if (node < chunk->node_count && chunk->curve_sets[node] != NULL)
+                count_b = chunk->curve_sets[node]->curve_count;
+        }
+        curve_count = count_a < count_b ? count_b : count_a;
+        weights = NuRndrCreateBlendShapeDeformerWeightsArray(curve_count);
+        weights_by_render[render] = weights;
+        if (weights == NULL || curve_count <= 0)
+            continue;
+        inverse_blend = 1.0 - blend;
+        for (curve = 0; curve < curve_count; ++curve) {
+            f32 value_a = 0.0f;
+            f64 value_b = 0.0;
+            if (curve < count_a) {
+                NUANIM_LEGACY_SET_PC *set =
+                    ((NUANIM_LEGACY_CHUNK_PC *)animation_a->chunks[time_a.chunk])->curve_sets[node];
+                value_a = set->curves[curve] != NULL ? NuAnimCurveCalcVal2(set->curves[curve], &time_a)
+                                                     : set->constants[curve];
+            }
+            if (curve < count_b) {
+                NUANIM_LEGACY_SET_PC *set =
+                    ((NUANIM_LEGACY_CHUNK_PC *)animation_b->chunks[time_b.chunk])->curve_sets[node];
+                value_b = set->curves[curve] != NULL ? NuAnimCurveCalcVal2(set->curves[curve], &time_b)
+                                                     : set->constants[curve];
+            }
+            weights->values[curve] = value_b * blend + inverse_blend * value_a;
+        }
+    }
+    return weights_by_render;
+}
