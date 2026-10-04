@@ -202,3 +202,57 @@ void __cdecl DisplayListUpdateRenderStateShadow(NUDISPLAYLIST_PC *list, NUGLOBAL
         previous->counter_0020 = state->counter_0020;
     }
 }
+
+void __cdecl DisplayListCreatePS(NUDISPLAY_LIST_PC *scene, VARIPTR *buffer, VARIPTR end) {
+    (void)scene;
+    (void)buffer;
+    (void)end;
+}
+
+typedef struct display_primitive_packet_pc_s {
+    u32 type;
+    u8 unknown_0004[0x14];
+    u32 vertex_count;
+    u8 unknown_001c[0x1c];
+} DISPLAY_PRIMITIVE_PACKET_PC;
+STATIC_ASSERT(sizeof(DISPLAY_PRIMITIVE_PACKET_PC) == 0x38);
+STATIC_ASSERT(offsetof(DISPLAY_PRIMITIVE_PACKET_PC, vertex_count) == 0x18);
+void __cdecl NuDisplayListDrawPrimitive2DPc(void *data) {
+    DISPLAY_PRIMITIVE_PACKET_PC *packet = (DISPLAY_PRIMITIVE_PACKET_PC *)data;
+    u32 count;
+    const void *vertices;
+    u32 point_size;
+    f32 point_size_float;
+    if (packet == NULL || PCShaderCurrentObjectPc() == NULL || packet->vertex_count == 0)
+        return;
+    count = packet->vertex_count;
+    vertices = packet + 1;
+    switch (packet->type) {
+        case 12:
+        case 16:
+            if (count > 2)
+                PCDeviceDrawPrimitiveUPPc(4, count / 3, vertices, 24);
+            break;
+        case 15:
+            if (count > 1)
+                PCDeviceDrawPrimitiveUPPc(3, count - 1, vertices, 24);
+            break;
+        case 13:
+            if (count > 2)
+                PCDeviceDrawPrimitiveUPPc(5, count - 2, vertices, 24);
+            break;
+        case 14:
+            if (count > 1)
+                PCDeviceDrawPrimitiveUPPc(2, count / 2, vertices, 24);
+            break;
+        case 18:
+            point_size_float = 32.0f;
+            memcpy(&point_size, &point_size_float, sizeof(point_size));
+            PCDeviceSetRenderState(154, point_size);
+            PCDeviceDrawPrimitiveUPPc(1, packet->vertex_count, vertices, 24);
+            point_size_float = 1.0f;
+            memcpy(&point_size, &point_size_float, sizeof(point_size));
+            PCDeviceSetRenderState(154, point_size);
+            break;
+    }
+}

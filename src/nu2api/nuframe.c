@@ -79,3 +79,8 @@ static f32 nu2api_paused;
 void __cdecl NuPause(i32 paused) {
     nu2api_paused = (f32)paused;
 }
+
+extern void(__cdecl *NuApiEndFrameCallbackPc)(void);
+void __cdecl NuApiSetEndFrameCallbackPc(void(__cdecl *callback)(void)) {
+    NuApiEndFrameCallbackPc = callback;
+}

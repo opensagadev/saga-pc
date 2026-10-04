@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 877929,
-    "matched_code_bytes": 78358,
-    "matching_percent": 2.2573450570774876,
-    "fuzzy_coverage_percent": 14.540193456693663,
-    "mapped_functions": 3057,
-    "matched_functions": 1234,
-    "objdiff_fuzzy_percent": 63.897194,
-    "objdiff_total_code": 790078,
+    "mapped_code_bytes": 891064,
+    "matched_code_bytes": 80979,
+    "matching_percent": 2.3328510857484606,
+    "fuzzy_coverage_percent": 14.87144992446575,
+    "mapped_functions": 3138,
+    "matched_functions": 1285,
+    "objdiff_fuzzy_percent": 64.193184,
+    "objdiff_total_code": 804486,
     "image_bytes": 40067072,
-    "mapped_bytes": 1519253,
-    "mapping_percent": 3.791774452597884
+    "mapped_bytes": 1532598,
+    "mapping_percent": 3.8250811040048047
   },
   "newly_compared": [
     {
@@ -15395,6 +15395,168 @@
         "Resource966 and fallback40 aggregation remain held to preserve old exact WORD/scalar regions; typed member-binding design remains scratch-only."
       ],
       "next_connected_wave": "Connected effects25/8022; visual creators4/1707 plus repair of1860 already-compared primitive/font bytes; genuine music/configuration and NuExp10 audio spine. All require independent final source/data gates and receive no current credit.",
+      "ongoing_goal": "Continue whole-project transfer until user stops or pauses; validated direct main pushes authorized."
+    },
+    {
+      "baseline_commit": "9b1c3ad800bc71a576ad89e49653dbac8337945a",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 877929,
+        "matched_code_bytes": 78358,
+        "matching_percent": 2.2573450570774876,
+        "fuzzy_coverage_percent": 14.540193456693663,
+        "mapped_functions": 3057,
+        "matched_functions": 1234,
+        "objdiff_fuzzy_percent": 63.897194,
+        "objdiff_total_code": 790078,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1519253,
+        "mapping_percent": 3.791774452597884
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 891064,
+        "matched_code_bytes": 80979,
+        "matching_percent": 2.3328510857484606,
+        "fuzzy_coverage_percent": 14.87144992446575,
+        "mapped_functions": 3138,
+        "matched_functions": 1285,
+        "objdiff_fuzzy_percent": 64.193184,
+        "objdiff_total_code": 804486,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1532598,
+        "mapping_percent": 3.8250811040048047
+      },
+      "newly_compared_functions": 81,
+      "new_original_code_bytes": 14300,
+      "compared_code_delta": 14408,
+      "baseline_unique_compared_pc_bytes": 789966,
+      "unique_compared_pc_bytes": 804266,
+      "exact_code_added": 2621,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 2841,
+      "prior_compiled_function_copies_identical": 2836,
+      "renamed_owner_copies_with_identical_complete_bodies": [],
+      "user_journal_unchanged": true,
+      "checkpoint": "Effects, graphics submission and music configuration checkpoint (2026-10-04)",
+      "family_bytes": {
+        "effects": 8022,
+        "graphics_creators_and_dispatch": 2052,
+        "music_configuration_and_NuExp10": 4226
+      },
+      "newly_exact_functions": 50,
+      "newly_exact_function_bytes": 2513,
+      "previously_compared_newly_exact": {
+        "symbol": "_NuQFntPrintU",
+        "bytes": 108
+      },
+      "previously_compared_repair_bytes": 1860,
+      "genuine_additional_copy": {
+        "original_bytes": 108,
+        "unique_original_byte_credit": 0,
+        "native_denominator_credit": 108,
+        "owner": "src/nu2api/nuqfnt.c"
+      },
+      "qualified_previous_changes": [
+        {
+          "symbol": "_NuQFntPrintCharW",
+          "unit": "src/nu2api/nuqfnt.c",
+          "before_bytes": 26,
+          "after_bytes": 1533
+        },
+        {
+          "symbol": "_NuQFntPrintU",
+          "unit": "src/nu2api/nuqfnt.c",
+          "before_bytes": 86,
+          "after_bytes": 108
+        },
+        {
+          "symbol": "_NuQFntPrintJustifiedRSW",
+          "unit": "src/nu2api/nuqfnt.c",
+          "before_bytes": 1254,
+          "after_bytes": 1309
+        },
+        {
+          "symbol": "_NuPrim2DBegin",
+          "unit": "src/nu2api/nuprim.c",
+          "before_bytes": 290,
+          "after_bytes": 322
+        },
+        {
+          "symbol": "_NuPrim3DBegin",
+          "unit": "src/nu2api/nuprim.c",
+          "before_bytes": 186,
+          "after_bytes": 323
+        }
+      ],
+      "shared_data_definitions_added": 24,
+      "shared_initializer_view_bytes_added": 1199,
+      "known_extent_definitions_added": 0,
+      "known_extent_bytes_added": 0,
+      "unknown_extent_definitions_added": 24,
+      "unknown_extent_source_bytes_added": 1199,
+      "mutable_allocation_credit_added": 0,
+      "data_scope": {
+        "proofs": 1564,
+        "known_extents": 559,
+        "known_unique_bytes": 137619,
+        "unknown_extents": 1005,
+        "unknown_view_bytes": 103325,
+        "previous_proofs_preserved": 1540
+      },
+      "verified_checks": {
+        "all_required_checks_passed": true,
+        "tests": 665,
+        "skipped": 3,
+        "test_seconds": 38.002,
+        "llvm": 18,
+        "format_files": 238,
+        "tidy_units": 236,
+        "objects": 236,
+        "function_definitions": 2923,
+        "data_definitions": 5518,
+        "source_only_link": true,
+        "native_effects_checks": 94,
+        "native_visual_checks": 48,
+        "native_audio_configuration_math_checks": 62,
+        "native_total_checks": 204,
+        "native_failures": 0,
+        "native_manifests_verified": 3,
+        "native_manifests_equal_current_normal_sources_and_objects": true,
+        "normal_data_regions": 3253,
+        "scoped_initializer_proofs": 1564,
+        "previous_function_copies_identical": 2836,
+        "previous_function_copies_checked": 2841,
+        "qualified_nonexact_function_changes": 5,
+        "prior_exact_code_and_data_preserved": true,
+        "limitations": [
+          "Selected effects, font/stream/constructor/executor guards and file/parser/arena/musicconfiguration/math are tested. Setup/material/device success, GPU drawing, playback/fullstartup/assets and full gameplay remain unverified.",
+          "Original allocation extents for new shared/private views remain unknown and receive zero credit.",
+          "Resource966 and graphics fallback40 aggregates remain held to preserve exact WORD/scalar data."
+        ]
+      },
+      "semantic_corrections": [
+        "AllCollision preserves native torus side effects then returns -1 after sphere miss; Android returns the torus result.",
+        "Setup copies 0x10a DWORDs /1064 bytes and uses native cache4B clear and texture ID1.",
+        "Cone divisor is promoted2.8f, not the different literal double2.8.",
+        "Dynamic display creator uses600 slots; complete1012-byte extent includes finalRET and native two-argument ABI.",
+        "Point dispatch reloads vertex count after actual SetRenderState COM call.",
+        "Music DUCK/ATTENUATION preserve positive values above1; Track.pitch is i32 fixed-point4096; command table includes duplicateIDENT and15 entries.",
+        "NuExp10 uses real10000-element lazy table, NuAlloc and pinnedCRT pow, including OOM retry and promoted.1f."
+      ],
+      "validation_findings": [
+        "Effects fixture omitted actual active editor page and typed free-key pool; supplying genuine caller-owned inputs retained every94 assertion and fixed a pagefault. No production code changed.",
+        "Independent negative controls reject incorrect Android collision return, music positive clamp/decimal threshold, and previous partial font submission.",
+        "Historical prose corrected hexadecimal0x428 to1,064 decimal bytes; source layout was already correct."
+      ],
+      "remaining_contracts": [
+        "Selected effects, font/stream/constructor/executor guards and file/parser/arena/musicconfiguration/math are tested. Setup/material/device success, GPU drawing, playback/fullstartup/assets and full gameplay remain unverified.",
+        "Original allocation extents for new shared/private views remain unknown and receive zero credit.",
+        "Resource966 and graphics fallback40 aggregates remain held to preserve exact WORD/scalar data.",
+        "Embedded fallbackDDS8320 is a game asset retained only in ignored research; its genuine getter/source loader closure remains held, with existing cache/path reused."
+      ],
+      "next_connected_wave": "Resource/model/scene/area-load connected providers from retained source drafts, independent native audio SDK initialization/shutdown, and remaining visual submission providers. Asset-dependent fallback and physical field aggregation holds remain explicit.",
       "ongoing_goal": "Continue whole-project transfer until user stops or pauses; validated direct main pushes authorized."
     }
   ]

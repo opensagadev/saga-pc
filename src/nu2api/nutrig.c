@@ -1,5 +1,7 @@
 #include "saga.h"
 
+#include <float.h>
+
 extern double __cdecl sin(double);
 
 void __cdecl NuTrigInit(void) {
@@ -67,4 +69,48 @@ i32 __cdecl NuASin(f32 value) {
     polynomial = d * (f64)0.785398f - t + PCPathArcSineCoefficient3 * cube + PCPathArcSineCoefficient5 * square * cube +
                  PCPathArcSineCoefficient7 * cube * fourth + PCPathArcSineCoefficient9 * fourth * fourth * t;
     return (i32)(polynomial * (f64)10430.4f);
+}
+
+extern double __cdecl pow(double, double);
+static i32 NuExp10FirstTimePc = 1;
+static f32 *NuExp10TablePc;
+static const char NuExp10SourcePathPc[] = "d:\\projects\\game_saga\\nu2api.saga\\numath\\nutrig.c";
+f32 __cdecl NuExp10(f32 value) {
+    f32 result, counter, position, fraction;
+    i32 exponent, index;
+    if (NuExp10FirstTimePc) {
+        NuExp10TablePc = (f32 *)NuAlloc(40000, NuExp10SourcePathPc, 866);
+        if (NuExp10TablePc == NULL)
+            return 0.0f;
+        for (counter = 0.0f; counter <= 9999.0f; counter += 1.0f)
+            NuExp10TablePc[(i32)counter] = (f32)pow(10.0, counter / 10000.0);
+        NuExp10FirstTimePc = 0;
+    }
+    if (value == FLT_MAX)
+        return FLT_MAX;
+    exponent = (i32)value;
+    value -= exponent;
+    if (value < 0.0f) {
+        --exponent;
+        value += 1.0f;
+    }
+    position = (f32)(value * 10000.0);
+    index = (i32)position;
+    fraction = position - index;
+    if (index < 9999)
+        result = NuExp10TablePc[index + 1] * fraction + NuExp10TablePc[index] * (1.0f - fraction);
+    else
+        result = NuExp10TablePc[index];
+    if (exponent > 0) {
+        while (exponent > 0) {
+            result *= 10.0f;
+            --exponent;
+        }
+    } else if (exponent < 0) {
+        while (exponent < 0) {
+            result *= 0.1f;
+            ++exponent;
+        }
+    }
+    return result;
 }

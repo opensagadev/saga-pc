@@ -1,5 +1,258 @@
 #include "saga.h"
 
+extern "C" {
+#pragma const_seg(".rdata$PCDynamicDisplaySceneNameText")
+    extern const char PCDynamicDisplaySceneNameText[31] = "Dynamic Material Display Scene";
+#pragma const_seg()
+
+#pragma const_seg(".rdata$NuTextureDdsExtensionPc")
+    extern const char NuTextureDdsExtensionPc[4] = "dds";
+#pragma const_seg()
+
+#pragma data_seg(".data$PCDynamicDisplaySceneNamePointer")
+    const char *PCDynamicDisplaySceneNamePointer = PCDynamicDisplaySceneNameText;
+#pragma data_seg()
+
+#pragma data_seg(".data$DebrisNullEffectPc")
+    DEBRIS_INFO_PC DebrisNullEffectPc = {"null",
+                                         0,
+                                         0,
+                                         0,
+                                         0,
+                                         100,
+                                         60,
+                                         0.0f,
+                                         1.0f,
+                                         0.0f,
+                                         0.0f,
+                                         0.0f,
+                                         0,
+                                         0,
+                                         0,
+                                         0,
+                                         40000.0f,
+                                         0.0f,
+                                         25.0f,
+                                         0.0f,
+                                         0.0f,
+                                         0.5f,
+                                         1.0f,
+                                         0.0f,
+                                         0.0f,
+                                         0.0f,
+                                         {0.0f, 0.0f, 0.0f},
+                                         {0.0f, 0.0f, 0.0f},
+                                         {0},
+                                         0.0f,
+                                         1.0f,
+                                         {0},
+                                         0.0f,
+                                         0.0f,
+                                         0.0f,
+                                         0.0f,
+                                         {{0.0f, 64, 64, 64, 0},
+                                          {1.0f, 0, 0, 0, 0},
+                                          {0.0f, 0, 0, 0, 0},
+                                          {0.0f, 0, 0, 0, 0},
+                                          {0.0f, 0, 0, 0, 0},
+                                          {0.0f, 0, 0, 0, 0},
+                                          {0.0f, 0, 0, 0, 0},
+                                          {0.0f, 0, 0, 0, 0}},
+                                         {{0.0f, 64.0f},
+                                          {1.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f}},
+                                         0.125f,
+                                         0.125f,
+                                         0.0f,
+                                         500.0f,
+                                         {{0.0f, 500.0f},
+                                          {1.0f, 500.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f}},
+                                         {{0.0f, 500.0f},
+                                          {1.0f, 500.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f}},
+                                         -360.0f,
+                                         360.0f,
+                                         {{0.0f, 0.0f},
+                                          {1.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f}},
+                                         {{0.0f, 0.0f},
+                                          {1.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f}},
+                                         {{0.0f, 0.0f},
+                                          {1.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f}},
+                                         0.0f,
+                                         0.0f,
+                                         256.0f,
+                                         256.0f,
+                                         NULL,
+                                         0.0f,
+                                         {{0.0f, 0.0f},
+                                          {1.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f}},
+                                         0,
+                                         0,
+                                         3,
+                                         0,
+                                         4.0f,
+                                         {1.0f, 1.0f, 1.0f},
+                                         1.0f,
+                                         0.10000000149011612f,
+                                         0.0f,
+                                         {{0.0f, 0.0f},
+                                          {1.0f, 1.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f}},
+                                         {{0.0f, 0.0f},
+                                          {1.0f, 1.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f}},
+                                         {{0.0f, 0.0f},
+                                          {1.0f, 1.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f},
+                                          {0.0f, 0.0f}},
+                                         {-1, -1, -1, -1, -1, -1, -1, -1},
+                                         {-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0},
+                                         0,
+                                         0,
+                                         0,
+                                         0,
+                                         0.0f,
+                                         0.0f,
+                                         0.5f,
+                                         1.0f,
+                                         0};
+#pragma data_seg()
+
+#pragma data_seg(".data$DebrisProcessingEnabledPc")
+    i32 DebrisProcessingEnabledPc = 1;
+#pragma data_seg()
+
+#pragma data_seg(".data$debris_sort_delay")
+    i32 debris_sort_delay = 6;
+#pragma data_seg()
+
+#pragma data_seg(".data$debris_update_delay")
+    i32 debris_update_delay = 3;
+#pragma data_seg()
+
+#pragma data_seg(".data$DebrisDmaCleanupIndexPc")
+    i32 DebrisDmaCleanupIndexPc = 1;
+#pragma data_seg()
+
+#pragma bss_seg(".bss$NuApiEndFrameCallbackPc")
+    void(__cdecl *NuApiEndFrameCallbackPc)(void);
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$numtoruscolldata")
+    i32 numtoruscolldata = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$edpp_cam_pos")
+    NUVEC edpp_cam_pos;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$edpp_nearest")
+    i32 edpp_nearest = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$numspherecolldata")
+    i32 numspherecolldata = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$spherecolldata")
+    DEBRIS_COLLISION_ENTRY_PC *spherecolldata;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$debris_collide_pt")
+    NUVEC debris_collide_pt;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$toruscolldata")
+    DEBRIS_COLLISION_ENTRY_PC *toruscolldata;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$globalframes")
+    i32 globalframes = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DebrisArenaInitializedPc")
+    i32 DebrisArenaInitializedPc = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$debris_sort_this_stack")
+    i32 debris_sort_this_stack = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$debris_update_this_stack")
+    i32 debris_update_this_stack = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DebrisDmaCleanupDelayPc")
+    i32 DebrisDmaCleanupDelayPc = 0;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$PCDevicePrimitiveUPCallCountPc")
+    u32 PCDevicePrimitiveUPCallCountPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDeviceIndexBufferCachePc")
+    PC_BUFFER_RESOURCE_PC *PCDeviceIndexBufferCachePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCDeviceVertexBufferCachePc")
+    PC_BUFFER_RESOURCE_PC *PCDeviceVertexBufferCachePc;
+#pragma bss_seg()
+}
+
 struct SoundQueue;
 struct PC_SOUND_COMMIT_PC;
 #pragma bss_seg(".bss$music_man")

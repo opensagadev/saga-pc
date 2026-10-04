@@ -4020,7 +4020,7 @@ guard. CutScenes_InitSystem85 naturally registers the real3,767-byte draw body
 and its original40B private type table. Private LookAt and debris/VFX helper ABIs
 remain naturally optimized in the coherent original caller/helper contexts.
 
-Locator effects use the verified428-byte DEBRIS_INFO_PC stride and12-byte cache
+Locator effects use the verified1,064-byte (0x428) DEBRIS_INFO_PC stride and12-byte cache
 records with actual source providers. PC generator interfaces retain native
 argument widths, the999 cap, unordered thinning behavior and real clock/state
 updates. Private colour setup remains naturally retained by real callers; no
@@ -4049,3 +4049,37 @@ The corrected actual production body is1,246B, advisory82.902824%; its64-check
 normal fixture verifies five valid transitions and guards. DestroySnakeBody47
 and GizForce_ResetLOS31 are fully exact. All earlier exact code/data and all2,798
 complete prior code copies are preserved.
+
+
+### Effects, graphics and music source release (2026-10-04)
+
+The actual81-function release verifies14,300 unique PC bytes, full entry/ABI,
+named-field widths and complete tails/tables. Sphere585/Torus896/precheck317
+retain real curves and f32 intermediate stores. AllCollision659090/77 discards
+torus result after side effects. Setup682b10/2,580 copies0x10a DWORDs (1,064B),
+uses44-byte controls/100-byte render records/816-byte keys and8-byte collision
+pairs; its scale-cache clearing stride is4B. The callback setter4f4040/10 writes
+91ef24, distinct from the existing5c9ff0/9738a4 API. Neutral null-template field030
+has actual40000f initializer evidence; Android EdFileReadFloat supplies only
+source-type corroboration, not an accepted PC stream-reader identity.
+
+Dynamic creator5efbf0 extent changes1011 to1012 because native finalRET5effe3 was
+clipped; actual two-word stack ABI and600 slots are verified. Execute5e0f90/92
+includes70-byte code,2 padding and20-byte switch table. 2D handler5fd560/272
+includes241-byte code,3 padding and28-byte switch table. Shader getter7416c0/12
+and SDK COM DrawPrimitiveUP6e49b0/61 are full byte exact. Slot83/0x14c takes the
+actual device this pointer plusfour arguments, with cache/counter effects.
+
+NuMusic configuration retains actual member/static callback contexts,15-entry
+track table including duplicateIDENT and11-entry top table. Track.pitch@28 is
+i32 fixed-point4096; sound file records are28 bytes. Native positive DUCK and
+ATTENUATION above1 are preserved. NuExp10's650-byte extent uses real lazy table,
+OOM/retry, promoted.1f and unique pinnedCRTpow.obj __CIpow selector. CRToriginal
+extent stays blank with no new CRT code credit; no alternate extractor is used.
+
+All2,841 old copies remain; exactly5 prior nonexact font/primitive copies undergo
+accepted repairs/context changes. PrintU108 becomes fully exact. No earlier exact
+code/data is lost; new additional genuine font helper108 is overlap-only and adds
+zero unique original bytes. All50 new exact functions total2,513B separately from
+PrintU108. Final matching retains actual nonexact scores for incomplete byte
+reconstructions and selected fixture qualifications.

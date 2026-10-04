@@ -1217,3 +1217,438 @@ void __cdecl DebrisPopulateInstance(i32 handle, f32 duration) {
         emission_time = key->emission_epoch + interval;
     }
 }
+
+typedef struct debris_collision_effect_pc_s {
+    u8 unknown_000[0x2b0];
+    DEBRIS_FLOAT_KEY_PC collision_keys[8];
+    i8 process_spheres, time_group;
+    u8 collision_flags, use_explicit_clip_box;
+    f32 thinning;
+    NUVEC particle_box;
+    f32 torus_radius1, torus_radius2, torus_lifetime;
+    DEBRIS_FLOAT_KEY_PC torus_keys1[8], torus_keys2[8], torus_keys3[8];
+    u8 unknown_3d0[0x58];
+} DEBRIS_COLLISION_EFFECT_PC;
+STATIC_ASSERT(sizeof(DEBRIS_COLLISION_EFFECT_PC) == 0x428);
+STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, collision_keys) == 0x2b0);
+STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_radius1) == 0x304);
+STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_radius2) == 0x308);
+STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_lifetime) == 0x30c);
+STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_keys1) == 0x310);
+STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_keys2) == 0x350);
+STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_keys3) == 0x390);
+extern DEBRIS_COLLISION_ENTRY_PC *spherecolldata, *toruscolldata;
+extern i32 numspherecolldata, numtoruscolldata;
+extern NUVEC debris_collide_pt;
+
+i32 __cdecl DebrisSingleCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
+    DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[key_index];
+    DEBRIS_INFO_PC *effect;
+    DEBRIS_COLLISION_EFFECT_PC *collision;
+    i32 i;
+    if (key->effect_index == 0 || key->effect_index == -1)
+        return 0;
+    effect = debtab[key->effect_index];
+    if (effect == NULL || (effect->collision_flags & flags) == 0 || effect->process_spheres <= 0)
+        return 0;
+    collision = (DEBRIS_COLLISION_EFFECT_PC *)effect;
+    for (i = 0; i < effect->process_spheres; ++i) {
+        DEBRIS_PROCESS_SPHERE_PC *sphere = &key->process_spheres[i];
+        f32 age = globaltime - sphere->time;
+        f32 time, effect_radius, dx, dy, dz;
+        if (!(age >= 0.0f && age <= effect->particle_lifetime))
+            continue;
+        debris_collide_pt.x = sphere->momentum.x * age;
+        debris_collide_pt.y = sphere->momentum.y * age;
+        debris_collide_pt.z = sphere->momentum.z * age;
+        debris_collide_pt.y = age * age * effect->gravity + debris_collide_pt.y;
+        debris_collide_pt.x += sphere->position.x;
+        debris_collide_pt.y += sphere->position.y;
+        debris_collide_pt.z += sphere->position.z;
+        time = age / effect->particle_lifetime;
+        {
+            i32 segment;
+            f32 numerator, denominator;
+            effect_radius = 0.0f;
+            for (segment = 0; segment < 7; ++segment) {
+                if (time >= collision->collision_keys[segment].time &&
+                    time <= collision->collision_keys[segment + 1].time) {
+                    numerator = time - collision->collision_keys[segment].time;
+                    denominator = collision->collision_keys[segment + 1].time - collision->collision_keys[segment].time;
+                    effect_radius = collision->collision_keys[segment].value +
+                                    (numerator / denominator) * (collision->collision_keys[segment + 1].value -
+                                                                 collision->collision_keys[segment].value);
+                    break;
+                }
+            }
+        }
+        if (!(effect_radius > 0.0f))
+            continue;
+        dx = position->x - debris_collide_pt.x;
+        dy = position->y - debris_collide_pt.y;
+        dz = position->z - debris_collide_pt.z;
+        if (y_scale != 1.0f)
+            dy *= (radius + effect_radius) / (radius * y_scale + effect_radius);
+        if ((radius + effect_radius) * (radius + effect_radius) > dx * dx + dy * dy + dz * dz)
+            return 1;
+    }
+    return 0;
+}
+i32 __cdecl DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale,
+                                                      u8 flags) {
+    DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[key_index];
+    DEBRIS_INFO_PC *effect;
+    DEBRIS_COLLISION_EFFECT_PC *collision;
+    f32 age, time, ring_radius, horizontal_radius, vertical_radius, dx, dy, dz;
+    if (key->effect_index == 0 || key->effect_index == -1)
+        return 0;
+    effect = debtab[key->effect_index];
+    if (effect == NULL || (effect->collision_flags & flags) == 0)
+        return 0;
+    collision = (DEBRIS_COLLISION_EFFECT_PC *)effect;
+    if (collision->torus_lifetime == 0.0f)
+        return 0;
+    age = globaltime > key->emission_time ? globaltime - key->emission_time : globaltime - key->previous_emission_time;
+    if (!(age > 0.0f && age < collision->torus_lifetime))
+        return 0;
+    time = age / collision->torus_lifetime;
+    {
+        i32 segment;
+        f32 numerator, denominator;
+        ring_radius = 0.0f;
+        for (segment = 0; segment < 7; ++segment) {
+            if (time >= collision->torus_keys1[segment].time && time <= collision->torus_keys1[segment + 1].time) {
+                numerator = time - collision->torus_keys1[segment].time;
+                denominator = collision->torus_keys1[segment + 1].time - collision->torus_keys1[segment].time;
+                ring_radius = collision->torus_keys1[segment].value +
+                              (numerator / denominator) *
+                                  (collision->torus_keys1[segment + 1].value - collision->torus_keys1[segment].value);
+                break;
+            }
+        }
+    }
+    {
+        i32 segment;
+        f32 numerator, denominator;
+        horizontal_radius = 0.0f;
+        for (segment = 0; segment < 7; ++segment) {
+            if (time >= collision->torus_keys2[segment].time && time <= collision->torus_keys2[segment + 1].time) {
+                numerator = time - collision->torus_keys2[segment].time;
+                denominator = collision->torus_keys2[segment + 1].time - collision->torus_keys2[segment].time;
+                horizontal_radius = collision->torus_keys2[segment].value +
+                                    (numerator / denominator) * (collision->torus_keys2[segment + 1].value -
+                                                                 collision->torus_keys2[segment].value);
+                break;
+            }
+        }
+    }
+    {
+        i32 segment;
+        f32 numerator, denominator;
+        vertical_radius = 0.0f;
+        for (segment = 0; segment < 7; ++segment) {
+            if (time >= collision->torus_keys3[segment].time && time <= collision->torus_keys3[segment + 1].time) {
+                numerator = time - collision->torus_keys3[segment].time;
+                denominator = collision->torus_keys3[segment + 1].time - collision->torus_keys3[segment].time;
+                vertical_radius = collision->torus_keys3[segment].value +
+                                  (numerator / denominator) * (collision->torus_keys3[segment + 1].value -
+                                                               collision->torus_keys3[segment].value);
+                break;
+            }
+        }
+    }
+    ring_radius *= collision->torus_radius1;
+    horizontal_radius *= collision->torus_radius2;
+    vertical_radius *= collision->torus_radius2;
+    debris_collide_pt.x = position->x - key->position.x;
+    debris_collide_pt.y = 0.0f;
+    debris_collide_pt.z = position->z - key->position.z;
+    NuVecNorm(&debris_collide_pt, &debris_collide_pt);
+    NuVecScale(&debris_collide_pt, &debris_collide_pt, ring_radius);
+    debris_collide_pt.x += key->position.x;
+    debris_collide_pt.y += key->position.y;
+    debris_collide_pt.z += key->position.z;
+    dx = position->x - debris_collide_pt.x;
+    dy = position->y - debris_collide_pt.y;
+    dz = position->z - debris_collide_pt.z;
+    if (horizontal_radius != vertical_radius || y_scale != 1.0f)
+        dy *= (radius + horizontal_radius) / (radius * y_scale + vertical_radius);
+    return (radius + horizontal_radius) * (radius + horizontal_radius) > dx * dx + dy * dy + dz * dz;
+}
+i32 __cdecl DebrisCollisionCheckScaleYFlag(NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
+    i32 i;
+    for (i = 0; i < numspherecolldata; ++i)
+        if ((spherecolldata[i].flags & flags) != 0 &&
+            DebrisSingleCollisionCheckScaleYFlag(spherecolldata[i].key_index, position, radius, y_scale, flags) != 0)
+            return spherecolldata[i].key_index;
+    return -1;
+}
+i32 __cdecl DebrisTorusCollisionCheckScaleYFlag(NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
+    i32 i;
+    for (i = 0; i < numtoruscolldata; ++i)
+        if ((toruscolldata[i].flags & flags) != 0 &&
+            DebrisSingleTorusCollisionCheckScaleYFlag(toruscolldata[i].key_index, position, radius, y_scale, flags) !=
+                0)
+            return toruscolldata[i].key_index;
+    return -1;
+}
+i32 __cdecl DebrisPreCheckCollisions(NUVEC *position, f32 radius) {
+    DEBRISKEY_PC *key = debris_keystack;
+    numspherecolldata = 0;
+    numtoruscolldata = 0;
+    while (key != NULL) {
+        i32 effect_index = key->effect_index, key_index = key->allocation_index;
+        DEBRISKEY_PC *previous = key->previous;
+        if (debtab[effect_index] == NULL) {
+            DebFreeInstantly(&key_index);
+            key->allocation_index = -1;
+        }
+        if (key->finite != 0) {
+            if (DebrisSingleCollisionCheckScaleYFlag(key_index, position, radius, 1.0f, 3) != 0) {
+                spherecolldata[numspherecolldata].key_index = key_index;
+                spherecolldata[numspherecolldata++].flags = debtab[effect_index]->collision_flags;
+            }
+            if (DebrisSingleTorusCollisionCheckScaleYFlag(key_index, position, radius, 1.0f, 3) != 0) {
+                toruscolldata[numtoruscolldata].key_index = key_index;
+                toruscolldata[numtoruscolldata++].flags = debtab[effect_index]->collision_flags;
+            }
+        }
+        key = previous;
+    }
+    return numspherecolldata + numtoruscolldata;
+}
+i32 __cdecl DebrisTorusCollisionCheckScaleY(NUVEC *p, f32 r, f32 y) {
+    return DebrisTorusCollisionCheckScaleYFlag(p, r, y, 3);
+}
+i32 __cdecl DebrisCollisionCheckScaleY(NUVEC *p, f32 r, f32 y) {
+    return DebrisCollisionCheckScaleYFlag(p, r, y, 3);
+}
+i32 __cdecl DebrisCollisionCheckFlag(NUVEC *p, f32 r, u8 f) {
+    return DebrisCollisionCheckScaleYFlag(p, r, 1.0f, f);
+}
+i32 __cdecl DebrisCollisionCheck(NUVEC *p, f32 r) {
+    return DebrisCollisionCheckScaleYFlag(p, r, 1.0f, 3);
+}
+i32 __cdecl DebrisAllCollisionCheckScaleYFlag(NUVEC *p, f32 r, f32 y, u8 f) {
+    i32 result = DebrisCollisionCheckScaleYFlag(p, r, y, f);
+    if (result == -1) {
+        DebrisTorusCollisionCheckScaleYFlag(p, r, y, f);
+        return -1;
+    }
+    return result;
+}
+extern i32 DebrisProcessingEnabledPc, globalframes;
+extern i32 debris_sort_delay, debris_sort_this_stack, debris_update_delay, debris_update_this_stack;
+extern i32 DebrisDmaCleanupDelayPc, DebrisDmaCleanupIndexPc;
+void __cdecl edppDeleteEffect(i32);
+extern i32 edpp_nearest;
+extern NUVEC edpp_cam_pos;
+void __cdecl edppDetermineNearest(f32);
+void __cdecl SortDebrisRenderStack(void) {
+    i32 stack_index;
+    DEBRIS_RENDER_CHUNK_PC *chunk;
+    if (--debris_sort_delay > 0)
+        return;
+    debris_sort_delay = 6;
+    stack_index = debris_sort_this_stack;
+    while (ParticleChunkRenderStack[stack_index] == NULL) {
+        if (++stack_index >= 5)
+            stack_index = 0;
+        if (stack_index == debris_sort_this_stack)
+            break;
+    }
+    debris_sort_this_stack = stack_index;
+    chunk = ParticleChunkRenderStack[stack_index];
+    while (chunk != NULL && chunk->next != NULL) {
+        DEBRIS_RENDER_CHUNK_PC *next = chunk->next;
+        if (chunk->render_priority < next->render_priority ||
+            (chunk->render_priority == next->render_priority &&
+             chunk->effect->particle_type > next->effect->particle_type)) {
+            RemoveChunkFromRenderStack(next, &ParticleChunkRenderStack[stack_index]);
+            AddChunkToRenderStack(next, &ParticleChunkRenderStack[debris_sort_this_stack]);
+            return;
+        }
+        chunk = next;
+    }
+}
+void __cdecl UpdateDebrisRenderStackPriority(void) {
+    i32 stack_index;
+    DEBRIS_RENDER_CHUNK_PC *chunk;
+    if (--debris_update_delay > 0)
+        return;
+    debris_update_delay = 6;
+    stack_index = debris_update_this_stack;
+    while (ParticleChunkRenderStack[stack_index] == NULL) {
+        if (++stack_index >= 5)
+            stack_index = 0;
+        if (stack_index == debris_update_this_stack) {
+            debris_update_this_stack = stack_index;
+            if (ParticleChunkRenderStack[stack_index] == NULL)
+                return;
+            break;
+        }
+    }
+    debris_update_this_stack = stack_index;
+    for (chunk = ParticleChunkRenderStack[debris_sort_this_stack]; chunk != NULL; chunk = chunk->next) {
+        DEBRISKEY_PC *key = chunk->key;
+        if (key != NULL) {
+            if (key->timed_flags != 0) {
+                f32 priority = (u16)key->render_priority + key->cutoff_distance * 25.0;
+                if (priority > 65535.0)
+                    priority = -1.0f;
+                chunk->render_priority = (u16)(i32)priority;
+            } else
+                chunk->render_priority = key->render_priority;
+        }
+    }
+}
+void __cdecl DebrisCleanUpDmaDebTypeTables(void) {
+    if (++DebrisDmaCleanupDelayPc > 5) {
+        DEBRIS_INFO_PC *effect = debtab[DebrisDmaCleanupIndexPc];
+        DebrisDmaCleanupDelayPc = 0;
+        if (effect != NULL && effect->native_data != NULL) {
+            f32 now = effect->time_group == 4 ? panelglobaltime : globaltime;
+            if (now > effect->last_render_time + 5.0) {
+                DmaDebTypes[--freeDmaDebType] = effect->native_data;
+                debtab[DebrisDmaCleanupIndexPc]->native_data = NULL;
+                if (debtab[DebrisDmaCleanupIndexPc]->scale != 1.0f)
+                    edppDeleteEffect(DebrisDmaCleanupIndexPc);
+            }
+        }
+        if (++DebrisDmaCleanupIndexPc >= debinf_count)
+            DebrisDmaCleanupIndexPc = 1;
+    }
+}
+void __cdecl Debris(i32 update_panel_time) {
+    if (update_debris_enabled == 0 || DebrisProcessingEnabledPc == 0 || debris_suspended != 0)
+        return;
+    panelglobaltime += debris_time_increment;
+    debris_render_panel_time += debris_time_increment;
+    DebrisProcessControlChunks(1);
+    if (update_panel_time == 0) {
+        globaltime += debris_time_increment;
+        debris_render_global_time += debris_time_increment;
+        ++globalframes;
+        DebrisCleanUpDmaDebTypeTables();
+        DebrisProcessTriggers();
+        DebrisProcessAllocation();
+        DebrisProcessGeneration();
+        DebrisProcessControlChunks(0);
+    }
+}
+void __cdecl DebrisShift(NUMTX *transform) {
+    i32 i;
+    for (i = 0; i < maxdebkeys; ++i) {
+        DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[i];
+        DEBRIS_INFO_PC *effect;
+        i32 slot;
+        if (key->effect_index == 0)
+            continue;
+        effect = debtab[key->effect_index];
+        for (slot = 0; slot < 8; ++slot)
+            if (effect->particle_keys[slot] == i)
+                break;
+        if (slot != 8) {
+            i32 group = effect->time_group == 4;
+            if (key->controlled_chunk_count != 0) {
+                i32 chunk;
+                for (chunk = 0; chunk < key->controlled_chunk_count; ++chunk) {
+                    DEBRIS_CHUNK_CONTROL_PC *control;
+                    for (control = debris_chunk_control_stack[group]; control != NULL; control = control->next) {
+                        if (control->particle_chunk == key->particle_chunks[chunk]) {
+                            RemoveChunkControlFromStack(control, &debris_chunk_control_stack[group]);
+                            freechunkcontrols[--freechunkcontrolsptr] = control;
+                            break;
+                        }
+                    }
+                }
+                key->controlled_chunk_count = 0;
+            }
+            DebReAlloc(key, 0);
+        } else {
+            NuMtxMulR(&key->effect_orientation, transform, &key->effect_orientation);
+            NuVecMtxTransform(&key->position, &key->position, transform);
+            key->orientation_dirty = 0.0f;
+        }
+    }
+    for (i = 0; i < debrischunks + debrischunksglass; ++i) {
+        DEBRIS_RENDER_CHUNK_PC *chunk = &ParticleChunkToRender[i];
+        if (chunk->particle_chunk != NULL && chunk->key == NULL) {
+            NuMtxMulR(&chunk->effect_orientation, transform, &chunk->effect_orientation);
+            NuVecMtxTransform(&chunk->position, &chunk->position, transform);
+        }
+    }
+}
+i32 __cdecl DebrisFindAllOfType(i32 effect_index, NUVEC *positions, i32 *handles, i32 capacity, i32 skip,
+                                i32 active_only) {
+    i32 count = 0, i;
+    for (i = 0; i < maxdebkeys; ++i) {
+        DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[i];
+        if (key->effect_index == effect_index && (active_only == 0 || key->allocated_chunk_count != 0)) {
+            i32 output_index = count - skip;
+            if (output_index >= 0 && output_index < capacity) {
+                if (positions != NULL)
+                    positions[output_index] = key->position;
+                if (handles != NULL)
+                    handles[output_index] = i;
+            }
+            ++count;
+        }
+    }
+    return count - skip;
+}
+i32 __cdecl DebrisGetRingProperties(i32 handle, NUVEC *origin, NUVEC *direction, f32 *radius) {
+    DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[handle];
+    DEBRIS_INFO_PC *effect = debtab[key->effect_index];
+    NUVEC axis;
+    if (effect == NULL)
+        return 0;
+    *origin = key->position;
+    axis.x = 0.0f;
+    if (effect->generator_type == 11) {
+        axis.y = 1.0f;
+        axis.z = 0.0f;
+    } else {
+        axis.y = 0.0f;
+        axis.z = 1.0f;
+    }
+    NuVecMtxTransform(&axis, &axis, &key->emitter_orientation);
+    *direction = axis;
+    if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11) {
+        *radius = effect->emitter_random_extent.x;
+        return 1;
+    }
+    *radius = 0.0f;
+    return 0;
+}
+i32 __cdecl DebrisGetConeProperties(i32 handle, NUVEC *origin, NUVEC *end, f32 *start_radius, f32 *end_radius,
+                                    NUVEC *direction, f32 *length, f32 *speed) {
+    DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[handle];
+    DEBRIS_INFO_PC *effect = debtab[key->effect_index];
+    NUVEC axis;
+    if (effect == NULL)
+        return 0;
+    *origin = key->position;
+    if (effect->generator_type == 8) {
+        f32 cone_length;
+        axis.x = 0.0f;
+        axis.y = 1.0f;
+        axis.z = 0.0f;
+        NuVecMtxTransform(&axis, &axis, &key->emitter_orientation);
+        *direction = axis;
+        *speed = effect->momentum_base;
+        cone_length = effect->momentum_base * effect->particle_lifetime;
+        *length = cone_length;
+        end->x = cone_length * direction->x + origin->x;
+        end->y = direction->y * *length + origin->y;
+        end->z = *length * direction->z + origin->z;
+        *start_radius = (effect->emitter_random_extent.x + effect->emitter_random_extent.z) * 0.5;
+        *end_radius =
+            (effect->momentum_random_x + effect->rotor_speed_y) / 2.8f * effect->particle_lifetime + *start_radius;
+        return 1;
+    }
+    end->x = end->y = end->z = 0.0f;
+    *direction = *end;
+    *start_radius = *end_radius = *length = *speed = 0.0f;
+    return 0;
+}

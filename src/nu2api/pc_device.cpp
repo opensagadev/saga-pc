@@ -181,3 +181,20 @@ extern "C" void __cdecl PCDeviceLockVertexBuffer(u32 offset, u32 size, void **da
 extern "C" HRESULT __cdecl PCDeviceUnlockVertexBuffer(PC_BUFFER_RESOURCE_PC *resource) {
     return resource->methods->unlock(resource);
 }
+
+struct PRIMITIVE_D3D_DEVICE_VIEW;
+struct PRIMITIVE_D3D_VTABLE_VIEW {
+    void *unknown_000[83];
+    HRESULT(__stdcall *draw_primitive_up)(PRIMITIVE_D3D_DEVICE_VIEW *, i32, u32, const void *, u32);
+};
+STATIC_ASSERT(offsetof(PRIMITIVE_D3D_VTABLE_VIEW, draw_primitive_up) == 0x14c);
+struct PRIMITIVE_D3D_DEVICE_VIEW {
+    PRIMITIVE_D3D_VTABLE_VIEW *methods;
+};
+extern "C" void __cdecl PCDeviceDrawPrimitiveUPPc(i32 type, u32 count, const void *vertices, u32 stride) {
+    ++PCDevicePrimitiveUPCallCountPc;
+    PCDeviceVertexBufferCachePc = NULL;
+    PCDeviceIndexBufferCachePc = NULL;
+    PRIMITIVE_D3D_DEVICE_VIEW *device = reinterpret_cast<PRIMITIVE_D3D_DEVICE_VIEW *>(PCDeviceBackend.device);
+    PCDeviceLastResult = device->methods->draw_primitive_up(device, type, count, vertices, stride);
+}

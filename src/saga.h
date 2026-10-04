@@ -3095,7 +3095,7 @@ typedef struct debris_info_pc_s {
     i8 momentum_adjustment_type;
     i8 particle_type;
     u8 status;
-    u8 unknown_030[4];
+    f32 field_030;
     f32 cut_on;
     f32 clip_extent;
     f32 sound_range;
@@ -3114,20 +3114,21 @@ typedef struct debris_info_pc_s {
     f32 min_size;
     f32 max_size;
     DEBRIS_FLOAT_KEY_PC width_keys[8], height_keys[8];
-    u8 unknown_1d0[8];
+    f32 min_rotation, max_rotation;
     DEBRIS_FLOAT_KEY_PC rotation_keys[8];
-    u8 unknown_218[0x80];
+    DEBRIS_FLOAT_KEY_PC field_218_keys[8], field_258_keys[8];
     f32 texture_u0, texture_v0, texture_u1, texture_v1;
     DEBRIS_PART_HEADER_PC *native_data;
     f32 last_render_time;
-    u8 unknown_2b0[0x40];
+    DEBRIS_FLOAT_KEY_PC collision_keys[8];
     i8 process_spheres;
     i8 time_group;
     u8 collision_flags;
     u8 use_explicit_clip_box;
     f32 thinning;
     NUVEC particle_box;
-    u8 unknown_304[0xcc];
+    f32 torus_radius1, torus_radius2, torus_lifetime;
+    DEBRIS_FLOAT_KEY_PC torus_keys1[8], torus_keys2[8], torus_keys3[8];
     i16 particle_keys[8];
     i32 sound_data[12];
     i8 trail_count, radial_segments;
@@ -3137,6 +3138,16 @@ typedef struct debris_info_pc_s {
     f32 scale;
     i32 base_effect_index;
 } DEBRIS_INFO_PC;
+STATIC_ASSERT(sizeof(DEBRIS_FLOAT_KEY_PC) == 8);
+STATIC_ASSERT(sizeof(DEBRIS_INFO_PC) == 0x428);
+STATIC_ASSERT(sizeof(DEBRIS_INFO_PC) == 1064);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, field_030) == 0x30);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, min_rotation) == 0x1d0);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, max_rotation) == 0x1d4);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, field_218_keys) == 0x218);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, field_258_keys) == 0x258);
+STATIC_ASSERT(sizeof(((DEBRIS_INFO_PC *)0)->field_218_keys) == 0x40);
+STATIC_ASSERT(sizeof(((DEBRIS_INFO_PC *)0)->field_258_keys) == 0x40);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, name) == 0x0);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, page) == 0x11);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, disabled) == 0x13);
@@ -3193,6 +3204,20 @@ STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, radial_segments) == 0x411);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, trail_time) == 0x414);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, scale_in_time) == 0x418);
 STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, radial_floor) == 0x41c);
+
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, collision_keys) == 0x2b0);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, torus_radius1) == 0x304);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, torus_radius2) == 0x308);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, torus_lifetime) == 0x30c);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, torus_keys1) == 0x310);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, torus_keys2) == 0x350);
+STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, torus_keys3) == 0x390);
+typedef struct debris_collision_entry_pc_s {
+    i32 key_index;
+    u32 flags;
+} DEBRIS_COLLISION_ENTRY_PC;
+STATIC_ASSERT(sizeof(DEBRIS_COLLISION_ENTRY_PC) == 8);
+STATIC_ASSERT(offsetof(DEBRIS_COLLISION_ENTRY_PC, flags) == 4);
 
 typedef struct area_data_pc_s {
     char dir[0x40];
@@ -7737,7 +7762,11 @@ extern "C" {
 
     struct PC_STEREO_PLAY_PACKET;
     struct PC_STEREO_SAMPLE_METADATA;
-    void __cdecl PCStereoUnknownToken(void);
+#ifdef __cplusplus
+    void __cdecl PCStereoUnknownToken(...);
+#else
+void __cdecl PCStereoUnknownToken(void);
+#endif
     i32 __cdecl NuSound3PlayStereoV(i32 token, ...);
     void __cdecl PCStereoStartPacket(struct PC_STEREO_PLAY_PACKET *packet);
     extern i32 PCStereoChannel0A, PCStereoChannel0B, PCStereoChannel1A, PCStereoChannel1B;
@@ -11278,6 +11307,7 @@ extern "C" {
     extern WORLDINFO *LWORLD;
     extern u16 ang[513];
     extern f32 NuTrigTable[32768];
+    f32 __cdecl NuExp10(f32);
     void __cdecl NuTrigInit(void);
     void __cdecl NuMtxRotateX(NUMTX *matrix, NUANG angle);
     void __cdecl NuMtxRotateY(NUMTX *matrix, NUANG angle);
@@ -12725,8 +12755,68 @@ extern "C" {
     extern i16 tMAGNETSUIT;
     extern char SuitMetadataName0075d20cPc[14];
     extern i16 tATTRACTSUIT;
+    void __cdecl NuDisplayListDrawPrimitive2DPc(void *);
+    void *__cdecl PCShaderCurrentObjectPc(void);
+    void __cdecl PCDeviceDrawPrimitiveUPPc(i32, u32, const void *, u32);
+    extern u32 PCDevicePrimitiveUPCallCountPc;
+    extern PC_BUFFER_RESOURCE_PC *PCDeviceIndexBufferCachePc;
+    extern PC_BUFFER_RESOURCE_PC *PCDeviceVertexBufferCachePc;
+
     extern GAMEOBJECT *PodPacemakerPc;
     extern void *PodRacePc;
+
+    i32 __cdecl DebrisSingleCollisionCheckScaleYFlag(i32, NUVEC *, f32, f32, u8);
+    i32 __cdecl DebrisSingleTorusCollisionCheckScaleYFlag(i32, NUVEC *, f32, f32, u8);
+    i32 __cdecl DebrisCollisionCheckScaleYFlag(NUVEC *, f32, f32, u8);
+    i32 __cdecl DebrisTorusCollisionCheckScaleYFlag(NUVEC *, f32, f32, u8);
+    i32 __cdecl DebrisPreCheckCollisions(NUVEC *, f32);
+    i32 __cdecl DebrisTorusCollisionCheckScaleY(NUVEC *, f32, f32);
+    i32 __cdecl DebrisCollisionCheckScaleY(NUVEC *, f32, f32);
+    i32 __cdecl DebrisCollisionCheckFlag(NUVEC *, f32, u8);
+    i32 __cdecl DebrisCollisionCheck(NUVEC *, f32);
+    i32 __cdecl DebrisAllCollisionCheckScaleYFlag(NUVEC *, f32, f32, u8);
+    void __cdecl SortDebrisRenderStack(void);
+    void __cdecl UpdateDebrisRenderStackPriority(void);
+    void __cdecl DebrisCleanUpDmaDebTypeTables(void);
+    void __cdecl Debris(i32);
+    void __cdecl DebrisShift(NUMTX *);
+    i32 __cdecl DebrisFindAllOfType(i32, NUVEC *, i32 *, i32, i32, i32);
+    i32 __cdecl DebrisGetRingProperties(i32, NUVEC *, NUVEC *, f32 *);
+    i32 __cdecl DebrisGetConeProperties(i32, NUVEC *, NUVEC *, f32 *, f32 *, NUVEC *, f32 *, f32 *);
+    void __cdecl edppDetermineNearest(f32);
+    void __cdecl edppDeleteEffect(i32);
+    NUMTL *__cdecl CreateCopyMat(NUMTL *, i32, i32, i32, i32);
+    NUMTL *__cdecl CreateAlphaBlendTexture(VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);
+    i32 __cdecl NuTexReadPc(char *, VARIPTR *, VARIPTR);
+    void __cdecl NuApiSetEndFrameCallbackPc(void(__cdecl *)(void));
+    void __cdecl DebrisSetup2(VARIPTR *, VARIPTR, VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);
+
+    extern DEBRIS_COLLISION_ENTRY_PC *spherecolldata;
+    extern DEBRIS_COLLISION_ENTRY_PC *toruscolldata;
+    extern i32 numspherecolldata;
+    extern i32 numtoruscolldata;
+    extern NUVEC debris_collide_pt;
+    extern i32 DebrisArenaInitializedPc;
+    extern DEBRIS_INFO_PC DebrisNullEffectPc;
+    extern i32 DebrisProcessingEnabledPc;
+    extern i32 globalframes;
+    extern i32 debris_sort_delay;
+    extern i32 debris_sort_this_stack;
+    extern i32 debris_update_delay;
+    extern i32 debris_update_this_stack;
+    extern i32 DebrisDmaCleanupDelayPc;
+    extern i32 DebrisDmaCleanupIndexPc;
+    extern i32 edpp_nearest;
+    extern NUVEC edpp_cam_pos;
+    extern void(__cdecl *NuApiEndFrameCallbackPc)(void);
+    extern const char NuTextureDdsExtensionPc[4];
+    /* New public original-source routines; original private colour helper remains local. */
+    void __cdecl NuDisplayListCreate(NUDISPLAY_LIST_PC *, VARIPTR *, VARIPTR, i32, i32, i32, i32, i32, i32, i32);
+    void __cdecl NuDisplayListCreateDynMtlList_candidate(VARIPTR *, VARIPTR);
+    void __cdecl NuDisplayListExecute(NUDISPLAYLISTITEM *, void(__cdecl **)(void *));
+    void __cdecl DisplayListCreatePS(NUDISPLAY_LIST_PC *, VARIPTR *, VARIPTR);
+    extern const char PCDynamicDisplaySceneNameText[31];
+    extern const char *PCDynamicDisplaySceneNamePointer;
 
 #ifdef __cplusplus
 }
@@ -12752,7 +12842,7 @@ class NuMusic {
         i32 entry_count;
         i32 entry_index;
         f32 start_offset;
-        f32 pitch;
+        i32 pitch;
         f32 duck_volume;
         f32 duck_fade;
         f32 attenuation;
@@ -12788,7 +12878,16 @@ class NuMusic {
     i32 album_count;
     Track *extra_tracks;
     i32 extra_track_count;
-    u8 unknown_0010[0x120];
+    f32 *indexes;
+    i32 index_count;
+    i32 pitch_default;
+    Album *current_album;
+    Track *current_track;
+    char current_path[256];
+    u8 strict_mode;
+    u8 unknown_125[3];
+    char *string_pool_start;
+    char *string_pool_end;
     Voice voices[2];
     f32 master_volume;
     f32 fader_current;
@@ -12800,10 +12899,61 @@ class NuMusic {
     f32 class_volumes[6];
     f32 global_attenuation;
     i32 track_index;
-    u8 unknown_01d4[4];
+    char *language;
     Album *album;
     nusound_filename_info_s *fileinfo;
     i32 file_count;
+
+    void InitVoiceManager(void);
+    char *RemovePath(char *);
+    char *FindString(const char *);
+    char *AllocString(const char *);
+    void SubstituteString(char *src, char *dst, char *find, char *subst);
+    i32 FindOrCreateSoundFile(nusound_filename_info_s *, i32 *, const char *, i32, i32);
+    void BuildSoundTable(VARIPTR *, VARIPTR);
+    void InitData(const char *, VARIPTR *, VARIPTR);
+    i32 Initialise(const char *, char *, VARIPTR *, VARIPTR);
+    void ParseTrack(u32, NUFPAR_PC *);
+    void xAlbum(NUFPAR_PC *);
+    static void xsAlbum(NUFPAR_PC *, void *);
+    void xAction(NUFPAR_PC *);
+    static void xsAction(NUFPAR_PC *, void *);
+    void xQuiet(NUFPAR_PC *);
+    static void xsQuiet(NUFPAR_PC *, void *);
+    void xOverlay(NUFPAR_PC *);
+    static void xsOverlay(NUFPAR_PC *, void *);
+    void xSignature(NUFPAR_PC *);
+    static void xsSignature(NUFPAR_PC *, void *);
+    void xCutscene(NUFPAR_PC *);
+    static void xsCutscene(NUFPAR_PC *, void *);
+    void xNoMusicC(NUFPAR_PC *);
+    static void xsNoMusicC(NUFPAR_PC *, void *);
+    void xGlobalAttenuation(NUFPAR_PC *);
+    static void xsGlobalAttenuation(NUFPAR_PC *, void *);
+    void xPath(NUFPAR_PC *);
+    static void xsPath(NUFPAR_PC *, void *);
+    void xStrict(NUFPAR_PC *);
+    static void xsStrict(NUFPAR_PC *, void *);
+    void xIdent(NUFPAR_PC *);
+    static void xsIdent(NUFPAR_PC *, void *);
+    void xIndex(NUFPAR_PC *);
+    static void xsIndex(NUFPAR_PC *, void *);
+    void xNoMusic(NUFPAR_PC *);
+    static void xsNoMusic(NUFPAR_PC *, void *);
+    void xNoDuck(NUFPAR_PC *);
+    static void xsNoDuck(NUFPAR_PC *, void *);
+    void xDuck(NUFPAR_PC *);
+    static void xsDuck(NUFPAR_PC *, void *);
+    void xLooping(NUFPAR_PC *);
+    static void xsLooping(NUFPAR_PC *, void *);
+    void xNonLooping(NUFPAR_PC *);
+    static void xsNonLooping(NUFPAR_PC *, void *);
+    void xAttenuation(NUFPAR_PC *);
+    static void xsAttenuation(NUFPAR_PC *, void *);
+    static void GlobalParseErrorFn(NUFPAR_PC *);
+    static void TrackParseErrorFn(NUFPAR_PC *);
+    static NUFPCOMJMPCTX top_jmp_tab[11];
+    static NUFPCOMJMPCTX track_jmp_tab[15];
 
     void SetFader(f32 target, f32 fade_seconds);
     void SetMasterVolume(f32 volume);
@@ -12869,6 +13019,33 @@ STATIC_ASSERT(offsetof(NuMusic, track_index) == 0x1d0);
 STATIC_ASSERT(offsetof(NuMusic, album) == 0x1d8);
 STATIC_ASSERT(offsetof(NuMusic, fileinfo) == 0x1dc);
 STATIC_ASSERT(offsetof(NuMusic, file_count) == 0x1e0);
+struct nusound_filename_info_s {
+    char *filename;
+    i32 pitch;
+    i32 static_sample;
+    i32 index;
+    i32 unknown_10;
+    i32 unknown_14;
+    i32 unknown_18;
+};
+STATIC_ASSERT(sizeof(nusound_filename_info_s) == 0x1c);
+STATIC_ASSERT(offsetof(nusound_filename_info_s, filename) == 0);
+STATIC_ASSERT(offsetof(nusound_filename_info_s, pitch) == 4);
+STATIC_ASSERT(offsetof(nusound_filename_info_s, static_sample) == 8);
+STATIC_ASSERT(offsetof(nusound_filename_info_s, index) == 0xc);
+STATIC_ASSERT(offsetof(NuMusic, indexes) == 0x10);
+STATIC_ASSERT(offsetof(NuMusic, index_count) == 0x14);
+STATIC_ASSERT(offsetof(NuMusic, pitch_default) == 0x18);
+STATIC_ASSERT(offsetof(NuMusic, current_album) == 0x1c);
+STATIC_ASSERT(offsetof(NuMusic, current_track) == 0x20);
+STATIC_ASSERT(offsetof(NuMusic, current_path) == 0x24);
+STATIC_ASSERT(offsetof(NuMusic, strict_mode) == 0x124);
+STATIC_ASSERT(offsetof(NuMusic, string_pool_start) == 0x128);
+STATIC_ASSERT(offsetof(NuMusic, string_pool_end) == 0x12c);
+STATIC_ASSERT(offsetof(NuMusic, language) == 0x1d4);
+STATIC_ASSERT(offsetof(NuMusic::Track, pitch) == 0x28);
+STATIC_ASSERT(offsetof(nusound_filename_info_s, unknown_10) == 0x10);
+
 extern NuMusic music_man;
 extern NuMusic *the_music_player;
 void SetAudioFadeLevel(f32 level);

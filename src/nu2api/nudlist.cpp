@@ -1230,3 +1230,157 @@ extern "C" i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *handle, NUMTX *matr
     }
     return NuDisplayListRndrSpecial(handle, matrix, 0, NULL, NULL);
 }
+
+typedef struct display_list_allocation_pc_s {
+    NUDISPLAYLIST base;
+    u8 unknown_0038[0xc];
+} DISPLAY_LIST_ALLOCATION_PC;
+STATIC_ASSERT(sizeof(DISPLAY_LIST_ALLOCATION_PC) == 0x44);
+STATIC_ASSERT(offsetof(DISPLAY_LIST_ALLOCATION_PC, base.first) == 0x10);
+typedef struct display_material_allocation_pc_s {
+    NUMTL base;
+    u8 unknown_tail[0x2c4 - sizeof(NUMTL)];
+} DISPLAY_MATERIAL_ALLOCATION_PC;
+STATIC_ASSERT(sizeof(DISPLAY_MATERIAL_ALLOCATION_PC) == 0x2c4);
+extern "C" void __cdecl NuDisplayListCreate(NUDISPLAY_LIST_PC *scene, VARIPTR *buffer, VARIPTR end, i32 item_count,
+                                            i32 material_count, i32 unused5, i32 unused6, i32 sort_count, i32 unused8,
+                                            i32 allocate_materials) {
+    DISPLAY_LIST_ALLOCATION_PC *lists;
+    NUDISPLAYLISTITEM *first;
+    i32 i, used_size;
+    (void)unused5;
+    (void)unused6;
+    (void)unused8;
+    buffer->addr = (buffer->addr + 15) & ~15u;
+    scene->item_count = item_count;
+    scene->items = buffer->void_ptr;
+    buffer->addr += item_count * sizeof(NUDISPLAYLISTITEM);
+    scene->material_count = material_count;
+    buffer->addr = (buffer->addr + 15) & ~15u;
+    scene->display_materials = (NUMTL **)buffer->void_ptr;
+    buffer->addr += material_count * sizeof(NUMTL *);
+    buffer->addr = (buffer->addr + 15) & ~15u;
+    scene->material_lists = (NUDISPLAYLIST **)buffer->void_ptr;
+    buffer->addr += material_count * sizeof(NUDISPLAYLIST *);
+    memset(scene->display_materials, 0, material_count * sizeof(NUMTL *));
+    memset(scene->material_lists, 0, material_count * sizeof(NUDISPLAYLIST *));
+    if (allocate_materials != 0) {
+        DISPLAY_MATERIAL_ALLOCATION_PC *materials;
+        buffer->addr = (buffer->addr + 15) & ~15u;
+        materials = (DISPLAY_MATERIAL_ALLOCATION_PC *)buffer->void_ptr;
+        buffer->addr += material_count * sizeof(*materials);
+        for (i = 0; i < material_count; ++i)
+            scene->display_materials[i] = &materials[i].base;
+    }
+    buffer->addr = (buffer->addr + 15) & ~15u;
+    lists = (DISPLAY_LIST_ALLOCATION_PC *)buffer->void_ptr;
+    buffer->addr += material_count * sizeof(*lists);
+    memset(lists, 0, material_count * sizeof(*lists));
+    buffer->addr = (buffer->addr + 15) & ~15u;
+    first = (NUDISPLAYLISTITEM *)buffer->void_ptr;
+    buffer->addr += material_count * sizeof(*first);
+    memset(first, 0, material_count * sizeof(*first));
+    for (i = 0; i < material_count; ++i) {
+        scene->material_lists[i] = &lists[i].base;
+        buffer->addr = (buffer->addr + 3) & ~3u;
+        lists[i].base.state = (NURNDRLIBSTATE *)buffer->void_ptr;
+        buffer->addr += sizeof(NURNDRLIBSTATE);
+        lists[i].base.first = &first[i];
+        NuDisplayListResetStateCache(lists[i].base.state);
+    }
+    scene->local_state = NULL;
+    for (i = 0; (u32)i < scene->material_count; ++i) {
+        scene->material_lists[i]->first->type = 0x8d;
+        scene->material_lists[i]->first->id = 1;
+        scene->material_lists[i]->first->next = NULL;
+    }
+    used_size = (((material_count + 7) / 8) / 16 + 1) * 16;
+    buffer->addr = (buffer->addr + 15) & ~15u;
+    scene->material_used[0] = (u8 *)buffer->void_ptr;
+    buffer->addr += used_size;
+    buffer->addr = (buffer->addr + 15) & ~15u;
+    scene->material_used[1] = (u8 *)buffer->void_ptr;
+    buffer->addr += used_size;
+    scene->sort_count = sort_count;
+    scene->sort_pris = (NUSORTPRI *)buffer->void_ptr;
+    buffer->addr += sort_count * sizeof(NUSORTPRI);
+    memset(scene->sort_pris, 0, sort_count * sizeof(NUSORTPRI));
+    for (i = 0; i < sort_count; ++i) {
+        scene->sort_pris[i].display_scene = scene;
+        scene->sort_pris[i].nmtls = 0;
+        scene->sort_pris[i].mtl_first = 0;
+    }
+    DisplayListCreatePS(scene, buffer, end);
+    ResetSceneBeforeFramePC(scene, 1);
+}
+
+typedef struct display_scene_name_pc_s {
+    const char *name;
+} DISPLAY_SCENE_NAME_PC;
+STATIC_ASSERT(offsetof(DISPLAY_SCENE_NAME_PC, name) == 0);
+extern "C" void __cdecl NuDisplayListCreateDynMtlList_candidate(VARIPTR *buffer, VARIPTR end) {
+    i32 i;
+    NUDISPLAYLISTITEM *material_item;
+    NuDisplayListCreate(&PCDynamicDisplayScene, buffer, end, PCMaterialBlockItemCount * 600, 600, 0, 0, 600, 0, 0);
+    PCDynamicDisplayScene.sort_count = 0;
+    ((DISPLAY_SCENE_NAME_PC *)&PCDynamicDisplayScene)->name = PCDynamicDisplaySceneNamePointer;
+    material_item = (NUDISPLAYLISTITEM *)PCDynamicDisplayScene.items;
+    for (i = 0; i < 600; ++i) {
+        NUDISPLAYLIST *list = PCDynamicDisplayScene.material_lists[i];
+        list->mtl_item = material_item;
+        list->dynamic_geometry = material_item + PCMaterialGeometryItemIndex;
+        list->scene = &PCDynamicDisplayScene;
+        list->material_id = i;
+        material_item += PCMaterialBlockItemCount;
+    }
+    buffer->addr = (buffer->addr + 15) & ~15u;
+    PCDisplayMaterialAddCount = 0;
+    PCDisplayMaterialAddQueue = (NUMTL **)buffer->void_ptr;
+    buffer->addr += 600 * sizeof(NUMTL *);
+    PCDisplayMaterialDeleteCount = 0;
+    PCDisplayMaterialDeleteQueue = (NUMTL **)buffer->void_ptr;
+    buffer->addr += 600 * sizeof(NUMTL *);
+    PCDisplayMaterialReferenceCounts = (u8 *)buffer->void_ptr;
+    buffer->addr += 600;
+    PCDisplayMaterialStreamUsed = (u8 *)buffer->void_ptr;
+    buffer->addr += 600;
+    memset(PCDisplayMaterialReferenceCounts, 0, 600);
+    memset(PCDisplayMaterialStreamUsed, 0, 600);
+    buffer->addr = (buffer->addr + 15) & ~15u;
+    PCDisplayMaterialStreamStart = *buffer;
+    buffer->addr += 0x12c00;
+    PCDisplayMaterialStreamEnd = *buffer;
+    displaylist_2d_first->type = 0x8d;
+    displaylist_2d_first->id = 1;
+    displaylist_2d_first->next = NULL;
+    displaylist_2d_mtl_last = displaylist_2d_first;
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    displaylist_2d_state = (NURNDRLIBSTATE *)buffer->void_ptr;
+    buffer->addr += sizeof(NURNDRLIBSTATE);
+    NuDisplayListResetStateCache((NURNDRLIBSTATE *)displaylist_2d_state);
+    PCDynamicDisplayScene.render_flags |= 0x10;
+    displaylist_2d_mtl_last = displaylist_2d_first;
+}
+
+extern "C" void __cdecl NuDisplayListExecute(NUDISPLAYLISTITEM *item, void(__cdecl **handlers)(void *)) {
+    for (;;) {
+        switch (item->id) {
+            case 0:
+                ++item;
+                break;
+            case 1:
+                item = (NUDISPLAYLISTITEM *)item->next;
+                break;
+            case 3:
+                if (handlers[item->type - 0x80] != NULL)
+                    handlers[item->type - 0x80](item->next);
+                ++item;
+                break;
+            case 4:
+                return;
+            default:
+                for (;;) {
+                }
+        }
+    }
+}

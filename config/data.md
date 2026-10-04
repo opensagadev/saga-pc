@@ -1494,3 +1494,31 @@ Two known WORDs in resource966 and three known scalars in the graphics fallback
 still require honest physical field ownership before aggregation. No exact-data
 credit is retired, no aliases/backing are fabricated, and no scratch member-view
 prototype has changed production matching rules.
+
+
+### Effects/graphics and private music initializer release (2026-10-04)
+
+Twenty-four genuine shared views add1,199 complete initializer bytes, all with
+blank original owning extents and zero allocation credit. Scope1,564 retains
+all1,540 prior proofs:559 known owners/137,619 unique original bytes and1,005
+unknown views/103,325 source bytes. All3,229 earlier complete named regions retain
+identical extents, bytes and relocations; all3,253 current normal regions equal
+the isolated object. New definitions precede the unchanged baseline because a
+rejected file-end placement expanded an older empty-key literal's complete COFF
+padding from1 to4. No old source definitions are reordered or truncated.
+
+The real null effect contains1,064 bytes (0x428), including typed FloatKey cohorts,
+40000f and signed rotation limits. Initializer-only field recovery does not claim
+an accepted PC file-stream reader. Scene-name storage is31 bytes including NUL;
+its pointer is symbolic. Three device caches/counter views remain zero-initialized
+with unknown allocation extents. The texture path reuses existing const55 owner.
+Private music tables, keywords/token and NuExp10 state remain in actual original
+TUs; all31 requested mappings and all emitted copies are independently checked.
+Effects16B and graphics4B compiler literals retain separate real-owner proofs.
+
+Every3,301 prior exact data owner/4,286 actual copies preserves full size, bytes
+and symbolic relocations. The protected three fallback scalars12B and two resource
+WORDs4B remain exact. Their canonical aggregate/member-view contract is research
+only. Embedded fallback DDS8,320B remains an ignored asset research input, with
+existing NuUnresolvedTextureIDPC=-1 and canonical55-byte filename reused; no
+extracted asset payload or fabricated fallback is committed.

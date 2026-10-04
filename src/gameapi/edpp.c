@@ -121,3 +121,72 @@ void __cdecl edppStartPage(i32 page) {
     }
     edpp_page_on[(i8)page] = 1;
 }
+extern i32 DebrisProcessingEnabledPc, globalframes;
+extern i32 debris_sort_delay, debris_sort_this_stack, debris_update_delay, debris_update_this_stack;
+extern i32 DebrisDmaCleanupDelayPc, DebrisDmaCleanupIndexPc;
+void __cdecl edppDeleteEffect(i32);
+extern i32 edpp_nearest;
+extern NUVEC edpp_cam_pos;
+void __cdecl edppDetermineNearest(f32);
+void __cdecl edppDetermineNearest(f32 max_distance_squared) {
+    NUVEC delta;
+    i32 i;
+    f32 distance;
+    if (edpp_nearest != -1) {
+        EDPP_PARTICLE_PC *particle = &edpp_ptls[edpp_nearest];
+        if (particle->instance_id != 99999 && particle->instance_id != -1) {
+            NuVecSub(&delta, &edpp_cam_pos, &particle->position);
+            distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+            if (distance == 0.0f)
+                return;
+        }
+    }
+    edpp_nearest = -1;
+    for (i = 0; i < 512; ++i) {
+        if (edpp_ptls[i].instance_id == -1 || edpp_ptls[i].instance_id == 99999)
+            continue;
+        NuVecSub(&delta, &edpp_cam_pos, &edpp_ptls[i].position);
+        distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+        if (max_distance_squared < 0.0f || max_distance_squared > distance) {
+            max_distance_squared = distance;
+            edpp_nearest = i;
+        }
+    }
+}
+void __cdecl edppDeleteEffect(i32 index) {
+    i32 replacement, i;
+    if (edpp_ptls[edpp_nearest].effect_index == index)
+        edpp_nearest = -1;
+    DebFreeOrphansInstantly(debtab[index]);
+    replacement = LookupDebrisEffectPageIgnore(debtab[index]->name, 1, index);
+    for (i = 0; i < 512; ++i) {
+        EDPP_PARTICLE_PC *particle = &edpp_ptls[i];
+        if (particle->effect_index != index)
+            continue;
+        if (replacement == -1) {
+            if (particle->instance_id == -1)
+                continue;
+            if (particle->instance_id != 99999)
+                DebFreeInstantly(&particle->instance_id);
+            --edpp_instances_used;
+            particle->instance_id = -1;
+        } else {
+            i32 handle = particle->instance_id;
+            if (handle != 99999 && handle != -1)
+                EDPP_DEBRIS_KEYS_PC[handle].effect_index = (i16)replacement;
+            particle->effect_index = replacement;
+        }
+    }
+    for (i = 0; i < maxdebkeys; ++i) {
+        if (EDPP_DEBRIS_KEYS_PC[i].effect_index == index) {
+            if (replacement == -1) {
+                i32 handle = i;
+                DebFreeInstantly(&handle);
+            } else
+                EDPP_DEBRIS_KEYS_PC[i].effect_index = (i16)replacement;
+        }
+    }
+    debtab[index] = NULL;
+    --edpp_types_used;
+    edppDetermineNearest(1.0f);
+}

@@ -170,6 +170,39 @@ void __cdecl NuQFntSetMtxRS(void *stream, VUFNT *font, NUMTX *matrix) {
     font->platform_data->matrix = *matrix;
 }
 
+extern i32 NuPrimCoordSystemStack[];
+typedef struct qfont_prim_vertex_pc_s {
+    f32 x, y, z;
+    u32 colour;
+    f32 u, v;
+} QFONT_PRIM_VERTEX_PC;
+STATIC_ASSERT(sizeof(QFONT_PRIM_VERTEX_PC) == 0x18);
+STATIC_ASSERT(offsetof(QFONT_PRIM_VERTEX_PC, colour) == 0xc);
+STATIC_ASSERT(offsetof(QFONT_PRIM_VERTEX_PC, u) == 0x10);
+STATIC_ASSERT(offsetof(QFONT_PRIM_VERTEX_PC, v) == 0x14);
+static void NuRndrPrimSetColourPrivate(i32 colour) {
+    u32 converted;
+    if (NuPrimNeedsOverbrightening != 0)
+        converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
+    else
+        converted =
+            ((colour & 0xfe) << 15) + ((colour >> 1) & 0x7f00) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
+    ((QFONT_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+}
+#define QFONT_VERTEX(X, Y, Z, U, V)                                                                                    \
+    do {                                                                                                               \
+        QFONT_PRIM_VERTEX_PC *vertex;                                                                                  \
+        NuRndrPrimSetColourPrivate((i32)colour);                                                                       \
+        vertex = (QFONT_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;                                          \
+        vertex->u = (U);                                                                                               \
+        vertex->v = (V);                                                                                               \
+        vertex->x = (X);                                                                                               \
+        vertex->y = (Y);                                                                                               \
+        vertex->z = (Z);                                                                                               \
+        NuPrimStreamBufferPointer->addr += sizeof(*vertex);                                                            \
+        ++NuPrimVertexCount;                                                                                           \
+    } while (0)
+
 void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags) {
     NUQFNT_RENDER_DATA_PC *render_data = font->platform_data;
     f32 x = render_data->x;
@@ -199,13 +232,12 @@ void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags) {
     }
     is_3d = (flags & 4) != 0;
 
-    /* PC coordinate-stack increment and coordinate-system selection. */
-    STUBBED_NAMED(0x02854d3c);
-    STUBBED_NAMED(0x00600b20);
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(0);
     if (is_3d) {
-        STUBBED_NAMED(0x00607ec0);
+        NuPrim3DBegin(12, 7, font->material, &render_data->matrix);
     } else {
-        STUBBED_NAMED(0x00607d70);
+        NuPrim2DBegin(16, 7, font->material);
     }
 
     colour = render_data->colour;
@@ -213,7 +245,10 @@ void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags) {
         u16 character = *text++;
         VUFNTCHAR *glyph = &font->glyphs[character];
         f32 advance;
-        f32 left = x;
+        f32 glyph_width;
+        f64 precise_left = x;
+        f32 left;
+        f32 right;
 
         if (character == 0x20) {
             advance = space_width;
@@ -221,16 +256,19 @@ void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags) {
             advance = glyph->width * *font->x_scale;
         }
 
+        glyph_width = advance;
         if ((flags & 1) != 0 && character >= 0x30 && character < 0x3a) {
             u16 zero_index = NuQFntEncodeUnicodeChar(font, 0x30);
-            VUFNTCHAR *zero = &font->glyphs[zero_index];
+            VUFNTCHAR *zero = &font->glyphs[(i16)zero_index];
             f32 digit_width = zero->width * *font->x_scale;
-            left += digit_width - advance;
+            f32 adjustment = digit_width - glyph_width;
+            precise_left = (f64)adjustment + x;
             advance = digit_width;
         }
 
+        left = (f32)precise_left;
+        right = (f32)(precise_left + glyph_width);
         if (character != 0x20) {
-            f32 right = left + glyph->width * *font->x_scale;
             f32 u0 = glyph->x * inverse_texture_width;
             f32 v0 = glyph->y * inverse_texture_height;
             f32 u1 = (glyph->x + glyph->width) * inverse_texture_width;
@@ -238,32 +276,40 @@ void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags) {
 
             if (is_3d) {
                 f32 top = y - height;
-                /* Each marker is one PC NuPrim vertex submission (0x005c1f70). */
-                STUBBED_NAMED(0x005c1f70);
-                STUBBED_NAMED(0x005c1f70);
-                STUBBED_NAMED(0x005c1f70);
-                STUBBED_NAMED(0x005c1f70);
-                STUBBED_NAMED(0x005c1f70);
-                STUBBED_NAMED(0x005c1f70);
+                QFONT_VERTEX(left, top, z, u0, v1);
+                QFONT_VERTEX(right, top, z, u1, v1);
+                QFONT_VERTEX(right, y, z, u1, v0);
+                QFONT_VERTEX(right, y, z, u1, v0);
+                QFONT_VERTEX(left, y, z, u0, v0);
+                QFONT_VERTEX(left, top, z, u0, v1);
             } else {
-                /* PC 2D path submits two corner vertices through 0x006009e0. */
-                STUBBED_NAMED(0x006009e0);
-                STUBBED_NAMED(0x006009e0);
+                QFONT_PRIM_VERTEX_PC *vertex;
+                f32 bottom = y + height;
+                NuRndrPrimSetColourPrivate((i32)colour);
+                vertex = (QFONT_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+                vertex->u = u0;
+                vertex->v = v0;
+                NuPrim2DAddXYZ(left, y, 0.0f);
+                NuRndrPrimSetColourPrivate((i32)colour);
+                vertex = (QFONT_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+                vertex->u = u1;
+                vertex->v = v1;
+                NuPrim2DAddXYZ(right, bottom, 0.0f);
             }
         }
-        x += advance + font->ic_gap * *font->x_scale;
+        x = (f32)((f64)font->ic_gap * *font->x_scale + advance + x);
     }
 
     if (is_3d) {
-        STUBBED_NAMED(0x006009c0);
+        NuPrim3DEnd();
     } else {
-        STUBBED_NAMED(0x006009a0);
+        NuPrim2DEnd();
     }
-    /* PC decrements the coordinate stack and restores the saved mode here. */
-    STUBBED_NAMED(0x02854d3c);
-    STUBBED_NAMED(0x00981c6c);
-    STUBBED_NAMED(0x00600b20);
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
+
+#undef QFONT_VERTEX
 
 void __cdecl NuQFntPrintU(VUFNT *font, char *text) {
     u16 encoded[1024];

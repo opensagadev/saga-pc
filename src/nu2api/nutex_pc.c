@@ -21,3 +21,31 @@ void __cdecl NuTexCreatePS(NUTEXDIM_PC *texture) {
         texture->image_size = 0;
     }
 }
+
+#include <string.h>
+extern const char NuTextureSourcePathPC[];
+extern const char NuTextureDdsExtensionPc[];
+i32 __cdecl NuTexReadPc(char *name, VARIPTR *buffer, VARIPTR end) {
+    char filename[1024];
+    NUFILE file;
+    i32 size, id;
+    void *data;
+    NUTEXDIM_PC *texture;
+    (void)end;
+    NuStrFixExt(filename, name, (char *)NuTextureDdsExtensionPc, sizeof(filename));
+    file = NuFileOpen(filename, 0);
+    if (file == 0)
+        return 0;
+    size = (i32)NuFileOpenSize(file);
+    data = NuAlloc(size, NuTextureSourcePathPC, 0x2f);
+    NuFileRead(file, data, size);
+    NuFileClose(file);
+    texture = (NUTEXDIM_PC *)buffer->addr;
+    buffer->addr += sizeof(NUTEXDIM_PC);
+    memset(texture, 0, sizeof(*texture));
+    texture->image_data = data;
+    texture->image_size = size;
+    id = NuTexCreateNative(texture);
+    NuFree(data, NuTextureSourcePathPC, 0x4d);
+    return id;
+}

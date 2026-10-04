@@ -1,5 +1,7 @@
 #include "saga.h"
 
+#include <string.h>
+
 void NuMusic::SetFader(f32 target, f32 fade_seconds) {
     if (this == NULL || the_music_player == NULL) {
         return;
@@ -542,7 +544,7 @@ STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, start_offset) == 32);
 extern "C" void PCStereoStartPacket(PC_STEREO_PLAY_PACKET *packet);
 extern "C" f32 PCMusicDuckOverride;
 
-extern "C" __declspec(noinline) void PCStereoUnknownToken(void) {
+extern "C" __declspec(noinline) void PCStereoUnknownToken(...) {
 }
 
 extern "C" i32 NuSound3PlayStereoV(i32 token, ...) {
@@ -782,3 +784,408 @@ void NuMusic::Process(f32 delta) {
     if (PCMusicDuckOverride != 1.0f)
         duck_current = PCMusicDuckOverride;
 }
+
+static char NuMusicLanguageTokenPc[6] = "$lang";
+
+void NuMusic::InitVoiceManager(void) {
+    for (i32 i = 0; i < 2; ++i) {
+        Voice *voice = &voices[i];
+        memset(voice, 0, sizeof(*voice));
+        voice->stream_index = i;
+        voice->status = 1;
+        voice->gain = 1.0f;
+        voice->last_volume = -1.0f;
+        voice->fade_rate = 0.0f;
+        voice->play_time = 0.0f;
+        voice->flags &= ~1u;
+    }
+}
+
+i32 NuMusic::Initialise(const char *file, char *language_, VARIPTR *cursor, VARIPTR end) {
+    if (the_music_player != NULL)
+        PCStereoUnknownToken();
+    language = language_;
+    the_music_player = this;
+    pitch_default = 0x1000;
+    current_path[0] = 0;
+    strict_mode = 0;
+    InitVoiceManager();
+    InitData(file, cursor, end);
+    master_volume = 1.0f;
+    fader_current = 1.0f;
+    fader_target = 1.0f;
+    album = albums;
+    fader_rate = 0.0f;
+    duck_gain = 1.0f;
+    duck_current = 1.0f;
+    duck_rate = 0.5f;
+    global_attenuation = 1.0f;
+    return 1;
+}
+
+char *NuMusic::RemovePath(char *str) {
+    char *last = NULL;
+    for (char *p = str; *p != 0; ++p)
+        if (*p == '/' || *p == '\\')
+            last = p;
+    return last == NULL ? str : last + 1;
+}
+char *NuMusic::FindString(const char *str) {
+    for (char *p = string_pool_start; p < string_pool_end; p += NuStrLen(p) + 1)
+        if (NuStrICmp(p, str) == 0)
+            return p;
+    return NULL;
+}
+char *NuMusic::AllocString(const char *str) {
+    char *p = FindString(str);
+    if (p == NULL) {
+        p = string_pool_end;
+        string_pool_end += NuStrLen(str) + 1;
+        NuStrCpy(p, str);
+    }
+    return p;
+}
+void NuMusic::SubstituteString(char *src, char *dst, char *find, char *subst) {
+    char *hit = NuStrIStr(src, find);
+    while (hit != NULL) {
+        i32 offset = (i32)(hit - src);
+        NuStrNCpy(dst, src, offset + 1);
+        NuStrCpy(dst + offset, subst);
+        src = hit + NuStrLen(find);
+        dst += offset + NuStrLen(subst);
+        hit = NuStrIStr(src, find);
+    }
+    NuStrCpy(dst, src);
+}
+
+i32 NuMusic::FindOrCreateSoundFile(nusound_filename_info_s *files, i32 *count, const char *name, i32 streaming,
+                                   i32 pitch_) {
+    if (name == NULL)
+        return -1;
+    i32 index = 0;
+    for (; index < *count; ++index)
+        if (NuStrICmp(files[index].filename, name) == 0)
+            return index;
+    files[index].filename = (char *)name;
+    files[index].pitch = pitch_;
+    files[index].static_sample = streaming == 0;
+    files[index].index = index;
+    files[index].unknown_10 = 0;
+    ++*count;
+    return index;
+}
+void NuMusic::BuildSoundTable(VARIPTR *cursor, VARIPTR end) {
+    (void)end;
+    fileinfo = (nusound_filename_info_s *)cursor->void_ptr;
+    i32 count = 0;
+    for (i32 i = 0; i < extra_track_count; ++i) {
+        Track *t = &extra_tracks[i];
+        i32 streaming = -((t->flags >> 1) & 1);
+        t->file_indexes[0] = FindOrCreateSoundFile(fileinfo, &count, t->filenames[0], streaming, t->pitch);
+        t->file_indexes[1] = FindOrCreateSoundFile(fileinfo, &count, t->filenames[1], streaming, t->pitch);
+    }
+    fileinfo[count].filename = NULL;
+    fileinfo[count].pitch = 0;
+    fileinfo[count].static_sample = 0;
+    fileinfo[count].index = -1;
+    cursor->void_ptr = &fileinfo[count + 1];
+}
+void NuMusic::InitData(const char *file, VARIPTR *cursor, VARIPTR end) {
+    VARIPTR original = *cursor;
+    string_pool_start = string_pool_end = (char *)cursor->void_ptr;
+    cursor->addr += 0x10000;
+    albums = (Album *)((cursor->addr + 3) & ~3u);
+    cursor->addr = (cursor->addr + 3) & ~3u;
+    cursor->addr += 0x4800;
+    extra_tracks = (Track *)((cursor->addr + 3) & ~3u);
+    cursor->addr = (cursor->addr + 3) & ~3u;
+    cursor->addr += 0x1e000;
+    indexes = (f32 *)((cursor->addr + 3) & ~3u);
+    cursor->addr = (cursor->addr + 3) & ~3u;
+    cursor->addr += 0x2000;
+    album_count = extra_track_count = index_count = 0;
+    NuFParSetInterpreterErrorHandler(NULL);
+    NUFPAR_PC *parser = NuFParCreate((char *)file);
+    if (parser != NULL) {
+        NuFParPushComCTX(parser, top_jmp_tab);
+        NuFParGetLine(parser);
+        while (*parser->line_buffer_ptr != 0) {
+            NuFParGetWord(parser);
+            NuFParInterpretWordCTX(parser, this);
+            NuFParGetLine(parser);
+        }
+        NuFParDestroy(parser);
+    }
+    NuFParSetInterpreterErrorHandler(NULL);
+    if (album_count == 0 || extra_track_count == 0) {
+        *cursor = original;
+        albums = NULL;
+        album_count = 0;
+        extra_tracks = NULL;
+        extra_track_count = 0;
+        return;
+    }
+    Album *new_albums = (Album *)(((u32)string_pool_end + 3) & ~3u);
+    if (new_albums != albums) {
+        PCByteCopy_candidate(new_albums, albums, album_count * sizeof(Album));
+        albums = new_albums;
+    }
+    Track *old_tracks = extra_tracks;
+    Track *new_tracks = (Track *)(((u32)(albums + album_count) + 3) & ~3u);
+    if (new_tracks != old_tracks) {
+        if (extra_track_count != 0)
+            PCByteCopy_candidate(new_tracks, old_tracks, extra_track_count * sizeof(Track));
+        extra_tracks = new_tracks;
+        i32 delta = (i32)((char *)new_tracks - (char *)old_tracks);
+        for (i32 i = 0; i < album_count; ++i)
+            if (albums[i].tracks_source != NULL)
+                albums[i].tracks_source = (Track *)((char *)albums[i].tracks_source + delta);
+    }
+    f32 *old_indexes = indexes;
+    f32 *new_indexes = (f32 *)(((u32)(extra_tracks + extra_track_count) + 3) & ~3u);
+    if (new_indexes != old_indexes) {
+        if (index_count != 0)
+            PCByteCopy_candidate(new_indexes, old_indexes, index_count * sizeof(f32));
+        indexes = new_indexes;
+        i32 delta = (i32)((char *)new_indexes - (char *)old_indexes);
+        for (i32 i = 0; i < extra_track_count; ++i)
+            if (extra_tracks[i].entry_times != NULL)
+                extra_tracks[i].entry_times = (f32 *)((char *)extra_tracks[i].entry_times + delta);
+    }
+    cursor->void_ptr = indexes + index_count;
+    for (i32 i = 0; i < album_count; ++i)
+        albums[i].Initialise();
+    BuildSoundTable(cursor, end);
+}
+
+void NuMusic::GlobalParseErrorFn(NUFPAR_PC *parser) {
+    PCStereoUnknownToken(parser->word_buffer_ptr, parser->line_number, parser->file_name);
+}
+void NuMusic::TrackParseErrorFn(NUFPAR_PC *parser) {
+    PCStereoUnknownToken(parser->word_buffer_ptr, parser->line_number, parser->file_name);
+}
+void NuMusic::ParseTrack(u32 category, NUFPAR_PC *parser) {
+    if (extra_track_count >= 2048)
+        PCStereoUnknownToken();
+    Track *track = &extra_tracks[extra_track_count++];
+    current_track = track;
+    if (current_album != NULL)
+        ++current_album->tracks_count;
+    memset(track, 0, sizeof(*track));
+    track->entry_times = indexes + index_count;
+    track->clazz = category;
+    track->pitch = pitch_default;
+    track->duck_volume = track->duck_fade = track->attenuation = 1.0f;
+    if (category != 4 && category != 8 && category != 16)
+        track->flags |= 2;
+    else
+        track->flags &= ~2u;
+    char path[256];
+    char substituted[264];
+    NuFParGetWord(parser);
+    NuStrCpy(path, current_path);
+    NuStrCat(path, parser->word_buffer_ptr);
+    SubstituteString(path, substituted, NuMusicLanguageTokenPc, language);
+    track->filenames[0] = AllocString(substituted);
+    track->ident = RemovePath(track->filenames[0]);
+    NUFPCOMFN old_handler = NULL;
+    if (strict_mode != 0)
+        old_handler = NuFParSetInterpreterErrorHandler(TrackParseErrorFn);
+    NuFParPushComCTX(parser, track_jmp_tab);
+    if (*parser->word_buffer_ptr != 0 && *parser->word_buffer_ptr != ';') {
+        do {
+            NuFParGetWord(parser);
+            NuFParInterpretWordCTX(parser, this);
+        } while (*parser->word_buffer_ptr != 0);
+    }
+    NuFParPopCom(parser);
+    if (strict_mode != 0)
+        NuFParSetInterpreterErrorHandler(old_handler);
+}
+void NuMusic::xAlbum(NUFPAR_PC *parser) {
+    if (album_count > 512)
+        PCStereoUnknownToken();
+    current_album = &albums[album_count++];
+    current_album->tracks_source = &extra_tracks[extra_track_count];
+    current_album->tracks_count = 0;
+    NuFParGetWord(parser);
+    current_album->name = AllocString(parser->word_buffer_ptr);
+}
+void NuMusic::xIdent(NUFPAR_PC *parser) {
+    NuFParGetWord(parser);
+    current_track->ident = AllocString(parser->word_buffer_ptr);
+}
+void NuMusic::xIndex(NUFPAR_PC *parser) {
+    if (index_count >= 2048)
+        PCStereoUnknownToken();
+    indexes[index_count++] = NuFParGetFloatRDP(parser);
+    ++current_track->entry_count;
+}
+void NuMusic::xNoMusic(NUFPAR_PC *parser) {
+    char substituted[256];
+    NuFParGetWord(parser);
+    SubstituteString(parser->word_buffer_ptr, substituted, NuMusicLanguageTokenPc, language);
+    current_track->filenames[1] = AllocString(substituted);
+}
+void NuMusic::xNoDuck(NUFPAR_PC *parser) {
+    current_track->flags |= 1;
+}
+void NuMusic::xLooping(NUFPAR_PC *parser) {
+    current_track->flags |= 2;
+}
+void NuMusic::xNonLooping(NUFPAR_PC *parser) {
+    current_track->flags &= ~2u;
+}
+void NuMusic::xPath(NUFPAR_PC *parser) {
+    NuFParGetWord(parser);
+    NuStrCpy(current_path, parser->word_buffer_ptr);
+}
+void NuMusic::xStrict(NUFPAR_PC *parser) {
+    strict_mode = 1;
+    NuFParSetInterpreterErrorHandler(GlobalParseErrorFn);
+}
+void NuMusic::xAction(NUFPAR_PC *parser) {
+    ParseTrack(2, parser);
+}
+void NuMusic::xQuiet(NUFPAR_PC *parser) {
+    ParseTrack(1, parser);
+}
+void NuMusic::xOverlay(NUFPAR_PC *parser) {
+    ParseTrack(8, parser);
+}
+void NuMusic::xSignature(NUFPAR_PC *parser) {
+    ParseTrack(4, parser);
+}
+void NuMusic::xCutscene(NUFPAR_PC *parser) {
+    ParseTrack(16, parser);
+}
+void NuMusic::xNoMusicC(NUFPAR_PC *parser) {
+    ParseTrack(32, parser);
+}
+void NuMusic::xDuck(NUFPAR_PC *parser) {
+    current_track->duck_volume = NuFParGetFloatRDP(parser);
+    if (current_track->duck_volume < 0.0f) {
+        if (current_track->duck_volume < -100.0)
+            current_track->duck_volume = 0.0f;
+        else
+            current_track->duck_volume = NuExp10((f32)(current_track->duck_volume / 20.0));
+    }
+    current_track->duck_fade = NuFParGetFloatRDP(parser);
+}
+void NuMusic::xAttenuation(NUFPAR_PC *parser) {
+    current_track->attenuation = NuFParGetFloatRDP(parser);
+    if (current_track->attenuation < 0.0f) {
+        if (current_track->attenuation < -100.0)
+            current_track->attenuation = 0.0f;
+        else
+            current_track->attenuation = NuExp10((f32)(current_track->attenuation / 20.0));
+    }
+}
+void NuMusic::xGlobalAttenuation(NUFPAR_PC *parser) {
+    global_attenuation = NuFParGetFloatRDP(parser);
+    if (global_attenuation < 0.0f) {
+        if (global_attenuation < -100.0)
+            global_attenuation = 0.0f;
+        else
+            global_attenuation = NuExp10((f32)(global_attenuation / 20.0));
+    }
+}
+
+void NuMusic::xsAlbum(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xAlbum(p);
+}
+
+void NuMusic::xsAction(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xAction(p);
+}
+
+void NuMusic::xsQuiet(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xQuiet(p);
+}
+
+void NuMusic::xsOverlay(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xOverlay(p);
+}
+
+void NuMusic::xsSignature(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xSignature(p);
+}
+
+void NuMusic::xsCutscene(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xCutscene(p);
+}
+
+void NuMusic::xsNoMusicC(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xNoMusicC(p);
+}
+
+void NuMusic::xsGlobalAttenuation(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xGlobalAttenuation(p);
+}
+
+void NuMusic::xsPath(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xPath(p);
+}
+
+void NuMusic::xsStrict(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xStrict(p);
+}
+
+void NuMusic::xsIdent(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xIdent(p);
+}
+
+void NuMusic::xsIndex(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xIndex(p);
+}
+
+void NuMusic::xsNoMusic(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xNoMusic(p);
+}
+
+void NuMusic::xsNoDuck(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xNoDuck(p);
+}
+
+void NuMusic::xsDuck(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xDuck(p);
+}
+
+void NuMusic::xsLooping(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xLooping(p);
+}
+
+void NuMusic::xsNonLooping(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xNonLooping(p);
+}
+
+void NuMusic::xsAttenuation(NUFPAR_PC *p, void *ctx) {
+    ((NuMusic *)ctx)->xAttenuation(p);
+}
+
+NUFPCOMJMPCTX NuMusic::top_jmp_tab[11] = {{"ALBUM", xsAlbum},
+                                          {"ACTION", xsAction},
+                                          {"QUIET", xsQuiet},
+                                          {"OVERLAY", xsOverlay},
+                                          {"SIGNATURE", xsSignature},
+                                          {"CUTSCENE", xsCutscene},
+                                          {"NOMUSIC", xsNoMusicC},
+                                          {"GLOBALATTENUATION", xsGlobalAttenuation},
+                                          {"PATH", xsPath},
+                                          {"STRICT", xsStrict},
+                                          {NULL, NULL}};
+NUFPCOMJMPCTX NuMusic::track_jmp_tab[15] = {{"IDENT", xsIdent},
+                                            {"ID", xsIdent},
+                                            {"IDENT", xsIdent},
+                                            {"INDEX", xsIndex},
+                                            {"IX", xsIndex},
+                                            {"NOMUSIC", xsNoMusic},
+                                            {"STARTPOINT", xsIndex},
+                                            {"NODUCK", xsNoDuck},
+                                            {"DUCK", xsDuck},
+                                            {"LOOPING", xsLooping},
+                                            {"LOOP", xsLooping},
+                                            {"NONLOOPING", xsNonLooping},
+                                            {"NOLOOP", xsNonLooping},
+                                            {"ATTENUATION", xsAttenuation},
+                                            {NULL, NULL}};

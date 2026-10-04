@@ -1264,7 +1264,7 @@ cutscene callback installation and drawing, locator transforms/reflections/VFX,
 scaled effect cache creation/reuse and real generator/axis publication. Private
 helper groups stay in their actual source owners with natural VC8 private ABIs.
 No fabricated providers, retaining calls, ABI wrappers or compiler controls were
-added. Named shared fields include light records, particles and the native428B
+added. Named shared fields include light records, particles and the native1,064-byte (0x428)
 debris effect stride; minimum views do not prove original allocation capacities.
 
 Pinned build/link and all2,798 function/5,368 data definitions across231 actual
@@ -1348,3 +1348,71 @@ startup spine. They remain candidates pending independent source/data gates.
 Resource966 and graphics fallback40 aggregation remain held for preservation of
 prior exact physical WORD/scalar bytes; a typed data-member contract is only a
 scratch proposal and has not weakened current checks or entered production.
+
+
+### Effects, graphics submission and music configuration checkpoint (2026-10-04)
+
+Eighty-one new complete functions add14,300 unique original PC bytes over9b1c3ad:
+effects25/8,022, graphics creators/dispatch7/2,052 and music/configuration/math
+49/4,226. Whole-PC fuzzy coverage rises14.540193% to14.871450% of3,471,246B.
+Unique compared code reaches804,266B; native objdiff compares804,486B and reports
+64.193184% separately. Fifty newly exact functions add2,513B and the previously
+compared PrintU becomes exact108B, yielding+2,621B/51 functions:80,979B
+(2.332851%). No previous exact function or data match is lost.
+
+All2,841 previous complete function copies remain;2,836 are identical. Exactly
+five accepted nonexact copies change: PrintCharW and both primitive begins repair
+missing native operations; PrintU and JustifiedRSW change naturally with the real
+font helper context. The complete1,860 previously compared repair bytes receive
+no new transfer credit. One genuine additional108-byte font helper copy increases
+the native denominator by108 while unique coverage counts it once. An independent
+normal-object audit confirms every81 new body and all4,302 earlier complete
+initializer copies, including effects142 and audio31 unchanged prior bodies.
+
+Effects include native sphere/torus queries, sorting/priorities, clocks/cleanup,
+shifts, geometry, editor deletion, actual material/texture children and Setup.
+AllCollision executes torus side effects but returns-1 after a sphere miss. Setup
+copies0x10a DWORDs (1,064 bytes/0x428), clears4 cache bytes per slot and uses texture
+ID1. Cone uses promoted2.8f, preserving a discriminating one-ULP result. The new
+frame callback setter is its actual4f4040/91ef24 owner, distinct from the existing
+5c9ff0/9738a4 callback. Null-template fields have native initializer/layout evidence;
+the field-stream witness is Android source, with no new PC reader identity claim.
+
+Graphics adds real allocation/600-slot dynamic creator, full executor and complete
+2D primitive/shader/COM draw wrappers. Dynamic creator extent1012 includes its
+previously clipped finalRET and retains two physical arguments. Point dispatch
+reloads count after SetRenderState. Font now emits real colors, positions, UVs and
+quad/triangle command streams; nonfallback primitive linking/transforms are real.
+Fallback40 and global hardware dispatch population remain held. Music now uses
+real file/parser/arena callbacks, string rebasing, sound tables and i32 fixed-point
+pitch4096. Positive DUCK/ATTENUATION above1 remain unchanged, as in native PC.
+NuExp10 uses its actual lazy10000-float table, NuAlloc, CRTpow and OOM retry; no
+replacement provider, new retention control, public private-ABI adapter or tuning
+flag is introduced.
+
+Pinned build/link and all2,923 function/5,518 data definitions across236 actual
+objects pass. LLVM18 checks238 files/236 units;665 tests pass with three skips.
+Final normal fixtures pass204 checks: effects94, visuals48 and music/math62.
+Every fixture uses all current normal objects and genuine normal data, without
+replacements or supplements. Wrong collision return fails1, wrong music clamp
+and threshold fail2 each, and the earlier partial font fails10 discriminating
+checks. An effects fixture initially omitted the actual active editor page and
+free-key pool; supplying legitimate typed caller inputs fixes the pagefault while
+retaining all94 assertions. Production remains frozen throughout. Setup/material/
+device success, GPU drawing, music playback/full startup/assets and full gameplay
+remain untested; inherited partials and allocation preconditions stay explicit.
+
+Twenty-four shared physical views add1,199 initializer bytes, all unknown original
+extents and zero allocation credit. Scope1,564 preserves1,540 old proofs;
+all3,253 complete normal named data regions equal the isolated object. All3,301
+prior exact data owners/4,286 actual copies preserve complete widths, bytes and
+relocations, including fallback12B and resource4B. Private music tables/keywords
+and NuExp10 state stay in genuine original TUs; compiler literals retain separate
+actual-owner proofs. User journal edits remain unchanged and excluded from commits.
+
+Next connected work covers retained resource/model/scene/area-load drafts, native
+audio SDK initialization/shutdown and remaining visual providers. The embedded
+fallback DDS8,320B is a game asset, retained only in ignored research; its getter
+closure remains held with canonical existing cache/path, rather than fabricated
+storage. Physical resource966/fallback40 aggregation also remains held without
+weakening exact-data preservation.
