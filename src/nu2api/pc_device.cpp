@@ -408,3 +408,38 @@ extern "C" i32 __cdecl PCDeviceIsAbsent() {
 extern "C" PC_D3D9_DEVICE_PC *__cdecl PCDeviceGetDevice() {
     return PCDeviceBackend.device;
 }
+
+extern "C" {
+    static u32 PCGraphicsMultisampleTypes[5] = {0, 2, 4, 8, 16};
+}
+u32 __thiscall PC_DEVICE_BACKEND_PC::GetMultisampleType() {
+    return PCGraphicsMultisampleTypes[multisample_index];
+}
+struct PC_TEXTURE_CREATE_DEVICE_PC;
+struct PC_TEXTURE_CREATE_METHODS_PC {
+    void *reserved_00[23];
+    HRESULT(__stdcall *create_texture)
+    (PC_TEXTURE_CREATE_DEVICE_PC *, u32, u32, u32, u32, i32, i32, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
+    void *reserved_60[5];
+    HRESULT(__stdcall *create_depth_surface)
+    (PC_TEXTURE_CREATE_DEVICE_PC *, u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
+};
+struct PC_TEXTURE_CREATE_DEVICE_PC {
+    const PC_TEXTURE_CREATE_METHODS_PC *methods;
+};
+STATIC_ASSERT(offsetof(PC_TEXTURE_CREATE_METHODS_PC, create_texture) == 0x5c);
+STATIC_ASSERT(offsetof(PC_TEXTURE_CREATE_METHODS_PC, create_depth_surface) == 0x74);
+STATIC_ASSERT(offsetof(PC_TEXTURE_CREATE_DEVICE_PC, methods) == 0);
+extern "C" void __cdecl PCDeviceCreateDepthSurface(u32 width, u32 height, i32 format, i32 multisample, u32 quality,
+                                                   BOOL discard, PC_TEXTURE_RESOURCE_PC **surface,
+                                                   HANDLE *shared_handle) {
+    PC_TEXTURE_CREATE_DEVICE_PC *device = reinterpret_cast<PC_TEXTURE_CREATE_DEVICE_PC *>(PCDeviceBackend.device);
+    PCDeviceLastResult = device->methods->create_depth_surface(device, width, height, format, multisample, quality,
+                                                               discard, surface, shared_handle);
+}
+extern "C" void __cdecl PCDeviceCreateTexture(u32 width, u32 height, u32 levels, u32 usage, i32 format, i32 pool,
+                                              PC_TEXTURE_RESOURCE_PC **texture) {
+    PC_TEXTURE_CREATE_DEVICE_PC *device = reinterpret_cast<PC_TEXTURE_CREATE_DEVICE_PC *>(PCDeviceBackend.device);
+    PCDeviceLastResult =
+        device->methods->create_texture(device, width, height, levels, usage, format, pool, texture, NULL);
+}

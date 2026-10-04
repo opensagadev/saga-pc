@@ -92,8 +92,11 @@ the hash-string self-copy is preserved. Synthetic Windows archive checks cover
 buffered and unbuffered reads, encoded metadata offsets, size reporting, lookup
 ordering, and cleanup. A separate local read-only smoke parsed all seven installed
 GOG DAT archives in both buffering modes and compared one complete stored payload
-per archive against independent Win32 reads. Compressed members have not been
-decompressed or validated. The parser is structural and nonmatching. It adds
+per archive against independent Win32 reads. The compressed-member reader now
+uses the genuine implode decoder, with native-sized working buffers and checks
+against independent LH5 output for selected installed payloads, including
+multiple-block and boundary-spanning reads. This does not establish scene or
+world loading through the source entry. The parser is structural and nonmatching. It adds
 short-read, bounds and null-arena rejection absent from retail so the incomplete
 source entry fails safely. Source startup still exits before indexing absent
 level and area tables. The `GAME.DAT`/NuFPar parser closure and remaining frame loop are the next

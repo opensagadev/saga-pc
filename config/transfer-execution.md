@@ -2853,3 +2853,55 @@ recurring frame loop. The original constructor boundary correction (949 cutting
 a store versus full 1,040 bytes including its table) must be integrated explicitly,
 without invented new transfer credit. Storage remains bounded; no asset payloads
 are retained. The user's three journal edits remain outside the commit.
+
+## Connected transfer O — source integration, 2026-10-04
+
+The current source batch adds 43 complete PC functions spanning 8,993 native
+bytes: 30 scene/bolt/debris configuration and level initializer functions
+(2,601 bytes), nine graphics texture and device allocation functions (994 bytes),
+and four debug lifecycle/geometry methods (5,398 bytes). The texture and debug
+owners are converted once from C to C++ to use genuine thiscall methods; prior
+C exports and complete prior bodies are preserved. The five-entry multisample
+table remains private to the original device owner.
+
+Authoritative retail comparison adds 8,992 unique compared PC bytes; the remaining
+one-byte allocation-error RET aliases two already-compared genuine RET functions
+and earns no additional coverage. Whole-PC fuzzy coverage rises from
+22.6362759038% to 22.7904883539% (+0.1542124501 percentage points). Exact code
+increases by 1,118 unique bytes, reaching 193,147/3,471,246 bytes (5.5641979854%).
+The unique compared union becomes 1,138,561 bytes; the objdiff denominator is
+1,139,079 including aliases. These are machine-code comparison measurements.
+
+Independent native tracing caught a real debug error: all 54 vertex depths are
+0.5, whereas the rejected source and its original test expected zero. The
+corrected source passes the independent 37-check oracle; the rejected version
+fails 27 of those checks. The actual combined production build passes the same
+37 checks and 76 resource checks using all 285 normal objects, without replacement
+providers or supplemental storage. The full repository suite passes 710 tests
+with three platform skips; LLVM18 formatting and analysis pass. The source EXE
+links with 3,987 functions and 7,883 data definitions. These observations establish
+selected CPU behavior and build integrity; they do not establish a working window,
+loaded level, graphics presentation or gameplay.
+An actual launch from the installed asset directory exits with code zero after
+6.37 seconds; no new runnable milestone is established by this checkpoint.
+
+The single data writer adds the input constructor's native configuration names,
+language tables and shared state, grows the existing debug backing to its proven
+0x508-byte access view, and supplies four genuine resource globals. The debug and
+other minimum working views retain unknown owning extents and zero allocation
+credit. Three scene-pointer sizes previously entered as inventory-only
+sizeof(pointer) guesses are withdrawn; none had a compiled or exact copy. All
+4,865 previous exact initializer contracts, six member contracts and 12 known
+exact member bytes are protected. Full retail comparison and its exact/fuzzy
+results are recorded in matching.json and the bounded checkpoint-O receipts.
+
+The next connected release is the independently accepted input constructor/device
+bank. Its native default configuration is a 15-record array, not a pointer global;
+DirectInput formats refer to real 256-, 164- and 11-record object tables and GUID
+pointees. Startup's hardware dispatcher has three fixed arguments plus 55
+variadic words; its caller's larger stack cleanup also includes two earlier
+calls. Remaining platform timing/shutdown, canonical options ownership, device
+creation and scene/world producers remain explicit. The input guard is retained
+until its actual initialization and frame dependencies are connected. Runtime
+milestones are reported separately from machine-code similarity. The user's
+three journal edits remain outside the source checkpoint.

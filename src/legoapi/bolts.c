@@ -441,3 +441,303 @@ PART_PC *__cdecl Bolt_HitParts(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUV
     }
     return NULL;
 }
+
+typedef struct BOLT_CONFIG_PC {
+    char name[16];
+    f32 field_10, field_14, field_18, field_1c, field_20, field_24;
+    i16 object_ids[3];
+    i16 debris_id;
+    i16 moving_debris[2];
+    i16 moving_debris_counts[2];
+    i16 field_38, field_3a;
+    u8 field_3c, field_3d;
+    u16 field_3e;
+    u32 field_40;
+    void *callbacks[7];
+    u32 flags_60;
+    i16 shoot_sfx_id, hit_sfx_id;
+    struct {
+        NUSPECIALHANDLE object_special, glow_special, reference_object_special;
+        NUSPECIALHANDLE reference_glow_special, shadow_special;
+    } specials;
+} BOLT_CONFIG_PC;
+STATIC_ASSERT(sizeof(BOLT_CONFIG_PC) == 0xa4);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, object_ids) == 0x28);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, debris_id) == 0x2e);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, moving_debris) == 0x30);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, moving_debris_counts) == 0x34);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, flags_60) == 0x60);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, shoot_sfx_id) == 0x64);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, specials) == 0x68);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, name) == 0x0);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, field_10) == 0x10);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, field_14) == 0x14);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, field_1c) == 0x1c);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, field_20) == 0x20);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, field_38) == 0x38);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, field_3c) == 0x3c);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, field_40) == 0x40);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, hit_sfx_id) == 0x66);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, specials.object_special) == 0x68);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, specials.glow_special) == 0x74);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, specials.reference_object_special) == 0x80);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, specials.reference_glow_special) == 0x8c);
+STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, specials.shadow_special) == 0x98);
+static BOLT_CONFIG_PC *BT_bolttype;
+static WORLDINFO *BT_worldinfo;
+static NUGSCN *BT_scene;
+static i32 BT_gdeb_moving_count;
+extern NUGSCN *area_scene, *vehicle_scene;
+i32 __cdecl FindPartDebris(PARTDEBRISSYS *, char *);
+void __cdecl BoltTypes_Configure(WORLDINFO *, char *);
+void __cdecl BoltTypes_Init(WORLDINFO *);
+
+static void BT_canonlyhitplayers(NUFPAR_PC *parser) {
+    BT_bolttype->flags_60 |= 0x80;
+}
+static void BT_converge(NUFPAR_PC *parser) {
+    BT_bolttype->flags_60 |= 0x400;
+}
+static void BT_damage(NUFPAR_PC *parser) {
+    BOLT_CONFIG_PC *bolt_type = BT_bolttype;
+    bolt_type->field_3c = (u8)(NuFParGetInt(parser));
+}
+static void BT_debris(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        BOLT_CONFIG_PC *bolt_type = BT_bolttype;
+        bolt_type->debris_id = (i16)(FindGameDebris(BT_worldinfo->game_debris_sys, parser->word_buffer_ptr));
+    }
+}
+static void BT_debris_moving(NUFPAR_PC *parser) {
+    i32 count;
+    i32 index;
+    if (BT_gdeb_moving_count > 1 || NuFParGetWord(parser) == 0) {
+        return;
+    }
+
+    BT_bolttype->moving_debris[BT_gdeb_moving_count] =
+        (i16)(FindGameDebris(BT_worldinfo->game_debris_sys, parser->word_buffer_ptr));
+    count = (i32)(NuFParGetFloat(parser));
+    index = BT_gdeb_moving_count++;
+    if (count < 0) {
+        count = -count;
+    }
+    BT_bolttype->moving_debris_counts[index] = (i16)(count);
+}
+static void BT_duration(NUFPAR_PC *parser) {
+    BOLT_CONFIG_PC *bolt_type = BT_bolttype;
+    bolt_type->field_14 = NuFParGetFloat(parser);
+}
+static void BT_glow_obj(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser) != 0 && BT_scene != NULL) {
+        if (NuSpecialFind(BT_scene, &BT_bolttype->specials.glow_special, parser->word_buffer_ptr, 1) != 0) {
+            BT_bolttype->specials.reference_glow_special = BT_bolttype->specials.glow_special;
+        }
+    }
+}
+static void BT_name(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < 15) {
+        NuStrCpy(BT_bolttype->name, parser->word_buffer_ptr);
+    }
+}
+static void BT_no_collide(NUFPAR_PC *parser) {
+    BT_bolttype->flags_60 |= 0x10000;
+}
+static void BT_nodeflect(NUFPAR_PC *parser) {
+    BT_bolttype->flags_60 |= 0x100;
+}
+static void BT_no_terrain(NUFPAR_PC *parser) {
+    BT_bolttype->flags_60 |= 4;
+}
+static void BT_obj(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser) != 0 && BT_scene != NULL) {
+        if (NuSpecialFind(BT_scene, &BT_bolttype->specials.object_special, parser->word_buffer_ptr, 1) != 0) {
+            BT_bolttype->specials.reference_object_special = BT_bolttype->specials.object_special;
+        }
+    }
+}
+static void BT_part_hit(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        BOLT_CONFIG_PC *bolt_type = BT_bolttype;
+        bolt_type->field_38 = (i16)(FindPartDebris(BT_worldinfo->part_debris_sys, parser->word_buffer_ptr));
+    }
+}
+static void BT_radius(NUFPAR_PC *parser) {
+    BOLT_CONFIG_PC *bolt_type = BT_bolttype;
+    bolt_type->field_1c = NuFParGetFloat(parser);
+}
+static void BT_rand_angle(NUFPAR_PC *parser) {
+    BOLT_CONFIG_PC *bolt_type = BT_bolttype;
+    bolt_type->field_40 = (i32)((f64)NuFParGetFloat(parser) * (f64)(65536.0f / 360.0f));
+}
+static void BT_ref_glow_obj(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser) != 0 && BT_scene != NULL) {
+        NuSpecialFind(BT_scene, &BT_bolttype->specials.reference_glow_special, parser->word_buffer_ptr, 1);
+    }
+}
+static void BT_ref_obj(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser) != 0 && BT_scene != NULL) {
+        NuSpecialFind(BT_scene, &BT_bolttype->specials.reference_object_special, parser->word_buffer_ptr, 1);
+    }
+}
+static void BT_scale(NUFPAR_PC *parser) {
+    BOLT_CONFIG_PC *bolt_type = BT_bolttype;
+    bolt_type->field_20 = NuFParGetFloat(parser);
+}
+static void BT_sceneconfig(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser) == 0) {
+        return;
+    }
+    if (NuStrICmp(parser->word_buffer_ptr, "level") == 0) {
+        BT_scene = BT_worldinfo->current_gscn;
+    } else if (NuStrICmp(parser->word_buffer_ptr, "area") == 0) {
+        BT_scene = area_scene;
+    } else if (NuStrICmp(parser->word_buffer_ptr, "vehicle") == 0) {
+        BT_scene = vehicle_scene;
+    } else {
+        BT_scene = things_scene;
+    }
+}
+static void BT_sfx_hit(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        BOLT_CONFIG_PC *bolt_type = BT_bolttype;
+        bolt_type->hit_sfx_id = (i16)(GetSfxId(parser->word_buffer_ptr));
+    }
+}
+static void BT_sfx_shoot(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        BOLT_CONFIG_PC *bolt_type = BT_bolttype;
+        bolt_type->shoot_sfx_id = (i16)(GetSfxId(parser->word_buffer_ptr));
+    }
+}
+static void BT_shadow_obj(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser) != 0 && BT_scene != NULL) {
+        NuSpecialFind(BT_scene, &BT_bolttype->specials.shadow_special, parser->word_buffer_ptr, 1);
+    }
+}
+static void BT_single_debris(NUFPAR_PC *parser) {
+    BT_bolttype->flags_60 |= 0x40000000;
+}
+static void BT_speed(NUFPAR_PC *parser) {
+    BOLT_CONFIG_PC *bolt_type = BT_bolttype;
+    bolt_type->field_10 = NuFParGetFloat(parser);
+}
+static void BT_trooper_bolt(NUFPAR_PC *parser) {
+    BT_bolttype->flags_60 |= 0x80000;
+}
+
+static NUFPCOMJMP BoltType_ConfigKeywords[] = {
+    {("name"), BT_name},
+    {("speed"), BT_speed},
+    {("duration"), BT_duration},
+    {("radius"), BT_radius},
+    {("scale"), BT_scale},
+    {("rand_angle"), BT_rand_angle},
+    {("scene"), BT_sceneconfig},
+    {("obj"), BT_obj},
+    {("ref_obj"), BT_ref_obj},
+    {("glow_obj"), BT_glow_obj},
+    {("ref_glow_obj"), BT_ref_glow_obj},
+    {("shadow_obj"), BT_shadow_obj},
+    {("debris"), BT_debris},
+    {("debris_moving"), BT_debris_moving},
+    {("part_hit"), BT_part_hit},
+    {("sfx"), BT_sfx_shoot},
+    {("sfx_shoot"), BT_sfx_shoot},
+    {("sfx_hit"), BT_sfx_hit},
+    {("damage"), BT_damage},
+    {("nodeflect"), BT_nodeflect},
+    {("converge"), BT_converge},
+    {("canonlyhitplayers"), BT_canonlyhitplayers},
+    {("no_terrain"), BT_no_terrain},
+    {("no_collide"), BT_no_collide},
+    {("trooper_bolt"), BT_trooper_bolt},
+    {("single_debris"), BT_single_debris},
+    {NULL, NULL},
+};
+
+static void BoltTypeStoreConfigPrivatePc(BOLT_CONFIG_PC *type, WORLDINFO *world) {
+    i32 index;
+    if (type == NULL)
+        return;
+    for (index = 0; index < 8; ++index) {
+        if (NuStrLen(world->bolt_types[index].name) == 0) {
+            memcpy(&world->bolt_types[index], type, sizeof(*type));
+            return;
+        }
+    }
+}
+
+void __cdecl BoltTypes_Configure(WORLDINFO *world, char *config) {
+    NUFPAR_PC *parser;
+    BOLT_CONFIG_PC type;
+    i32 reading_type = 0;
+    memset(world->bolt_types, 0, sizeof(world->bolt_types));
+    parser = NuFParCreateMem("bolttypes", config, 0xffff);
+    if (parser == NULL) {
+        return;
+    }
+
+    NuFParPushCom(parser, BoltType_ConfigKeywords);
+    while (NuFParGetLine(parser) != 0) {
+        if (NuFParGetWord(parser) == 0) {
+            continue;
+        }
+
+        if (reading_type != 0) {
+            if (NuStrICmp(parser->word_buffer_ptr, ("bolttype_end")) == 0) {
+                if (type.name[0] != '\0') {
+                    BoltTypeStoreConfigPrivatePc(&type, world);
+                }
+                reading_type = 0;
+            } else {
+                NuFParInterpretWord(parser);
+            }
+            continue;
+        }
+
+        if (NuStrICmp(parser->word_buffer_ptr, ("bolttype_start")) == 0) {
+            BT_worldinfo = world;
+            BT_bolttype = &type;
+            BT_gdeb_moving_count = 0;
+            BT_scene = things_scene;
+            memset(&type, 0, sizeof(type));
+            memcpy(&type, &GlobalBoltType_Default, sizeof(type));
+            type.name[0] = '\0';
+            type.moving_debris[0] = -1;
+            type.moving_debris[1] = -1;
+            reading_type = 1;
+        }
+    }
+    NuFParDestroy(parser);
+}
+
+void __cdecl BoltTypes_Init(WORLDINFO *world) {
+    BOLT_CONFIG_PC *type = (BOLT_CONFIG_PC *)BoltSys->types;
+    i32 index;
+    for (index = 0; index < BoltSys->count; ++index, ++type) {
+        i32 reflected;
+        memset(&type->specials.object_special, 0, 4 * sizeof(NUSPECIALHANDLE));
+        if (type->object_ids[0] != -1) {
+            type->specials.object_special = world->level_objects[type->object_ids[0]].special;
+            if (type->object_ids[1] != -1)
+                type->specials.glow_special = world->level_objects[type->object_ids[1]].special;
+            reflected = LevelObject_GetReflection(type->object_ids[0]);
+            if (reflected == -1) {
+                type->specials.reference_object_special = type->specials.object_special;
+                type->specials.reference_glow_special = type->specials.glow_special;
+            } else {
+                type->specials.reference_object_special = world->level_objects[reflected].special;
+                if (type->object_ids[1] != -1) {
+                    reflected = LevelObject_GetReflection(type->object_ids[1]);
+                    if (reflected != -1)
+                        type->specials.reference_glow_special = world->level_objects[reflected].special;
+                }
+            }
+        }
+        if (type->object_ids[2] != -1)
+            type->specials.shadow_special = world->level_objects[type->object_ids[2]].special;
+        else
+            memset(&type->specials.shadow_special, 0, sizeof(NUSPECIALHANDLE));
+    }
+}

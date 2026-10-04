@@ -1,5 +1,5256 @@
 #include "saga.h"
 extern "C" {
+    i32 KNOBS = -1;
+    NUGSCN *area_scene = NULL;
+    NUGSCN *vehicle_scene = NULL;
+    NUGSCN *big_icon_scene = NULL;
+}
+
+#include "saga.h"
+
+extern "C" char TextInputKeyNameTextPc7516c0[];
+extern "C" char TextInputKeyNameTextPc753370[];
+extern "C" char TextInputKeyNameTextPc753374[];
+extern "C" const char Text_UnknownText[];
+extern "C" char TextInputKeyNameTextPc759770[];
+extern "C" const char WorldPathSeparator[];
+extern "C" char TextInputKeyNameTextPc75ac34[];
+extern "C" const char PermLegalSeparator[];
+extern "C" char UiBackPromptLiteralPc[];
+extern "C" char TextInputKeyNameTextPc76fde8[];
+extern "C" char TextInputKeyNameTextPc7719bc[];
+extern "C" char TextInputKeyNameTextPc7719c8[];
+extern "C" char TextInputKeyNameTextPc7719d0[];
+extern "C" char TextInputKeyNameTextPc7719dc[];
+extern "C" char TextInputKeyNameTextPc7719e4[];
+extern "C" char TextInputKeyNameTextPc7719f0[];
+extern "C" char TextInputKeyNameTextPc7719f8[];
+extern "C" char TextInputKeyNameTextPc771a04[];
+extern "C" char TextInputKeyNameTextPc771a14[];
+extern "C" char TextInputKeyNameTextPc771a20[];
+extern "C" char TextInputKeyNameTextPc771a28[];
+extern "C" char TextInputKeyNameTextPc771a30[];
+extern "C" char TextInputKeyNameTextPc771a38[];
+extern "C" char TextInputKeyNameTextPc771a40[];
+extern "C" char TextInputKeyNameTextPc771a48[];
+extern "C" char TextInputKeyNameTextPc771a50[];
+extern "C" char TextInputKeyNameTextPc771a58[];
+extern "C" char TextInputKeyNameTextPc771a64[];
+extern "C" char TextInputKeyNameTextPc771a68[];
+extern "C" char TextInputKeyNameTextPc771a70[];
+extern "C" char TextInputKeyNameTextPc771a78[];
+extern "C" char TextInputKeyNameTextPc771a80[];
+extern "C" char TextInputKeyNameTextPc771a84[];
+extern "C" char TextInputKeyNameTextPc771a8c[];
+extern "C" char TextInputKeyNameTextPc771a94[];
+extern "C" char TextInputKeyNameTextPc771a9c[];
+extern "C" char TextInputKeyNameTextPc771aa4[];
+extern "C" char TextInputKeyNameTextPc771ab8[];
+extern "C" char TextInputKeyNameTextPc771ac0[];
+extern "C" char TextInputKeyNameTextPc771ac8[];
+extern "C" char TextInputKeyNameTextPc771ad0[];
+extern "C" char TextInputKeyNameTextPc771adc[];
+extern "C" char TextInputKeyNameTextPc771ae4[];
+extern "C" char TextInputKeyNameTextPc771aec[];
+extern "C" char TextInputKeyNameTextPc771af4[];
+extern "C" char TextInputKeyNameTextPc771afc[];
+extern "C" char TextInputKeyNameTextPc771b08[];
+extern "C" char TextInputKeyNameTextPc771b14[];
+extern "C" char TextInputKeyNameTextPc771b20[];
+extern "C" char TextInputKeyNameTextPc771b24[];
+extern "C" char TextInputKeyNameTextPc771b2c[];
+extern "C" char TextInputKeyNameTextPc771b34[];
+extern "C" char TextInputKeyNameTextPc771b40[];
+extern "C" char TextInputKeyNameTextPc771b48[];
+extern "C" char TextInputKeyNameTextPc771b4c[];
+extern "C" char TextInputKeyNameTextPc771b58[];
+extern "C" char TextInputKeyNameTextPc771b60[];
+extern "C" char TextInputKeyNameTextPc771b68[];
+extern "C" char TextInputKeyNameTextPc771b6c[];
+extern "C" char TextInputKeyNameTextPc771b78[];
+extern "C" char TextInputKeyNameTextPc771b80[];
+extern "C" char TextInputKeyNameTextPc771b88[];
+extern "C" char TextInputKeyNameTextPc771b90[];
+extern "C" char TextInputKeyNameTextPc771b94[];
+extern "C" char TextInputKeyNameTextPc771b98[];
+extern "C" char TextInputKeyNameTextPc771b9c[];
+extern "C" char TextInputKeyNameTextPc771ba0[];
+extern "C" char TextInputKeyNameTextPc771bb0[];
+extern "C" char TextInputKeyNameTextPc771bb8[];
+extern "C" char TextInputKeyNameTextPc771bc0[];
+extern "C" char TextInputKeyNameTextPc771bc8[];
+extern "C" char TextInputKeyNameTextPc771bd0[];
+extern "C" char TextInputKeyNameTextPc771bd8[];
+extern "C" char TextInputKeyNameTextPc771be0[];
+extern "C" char TextInputKeyNameTextPc771be8[];
+extern "C" char TextInputKeyNameTextPc771bf0[];
+extern "C" char TextInputKeyNameTextPc771bf8[];
+extern "C" char TextInputKeyNameTextPc771c00[];
+extern "C" char TextInputKeyNameTextPc771c08[];
+extern "C" char TextInputKeyNameTextPc771c10[];
+extern "C" char TextInputKeyNameTextPc771c1c[];
+extern "C" char TextInputKeyNameTextPc771c28[];
+extern "C" char TextInputKeyNameTextPc771c2c[];
+extern "C" char TextInputKeyNameTextPc771c30[];
+extern "C" char TextInputKeyNameTextPc771c34[];
+extern "C" char TextInputKeyNameTextPc771c38[];
+extern "C" char TextInputKeyNameTextPc771c3c[];
+extern "C" char TextInputKeyNameTextPc771c40[];
+extern "C" char TextInputKeyNameTextPc771c44[];
+extern "C" char TextInputKeyNameTextPc771c48[];
+extern "C" char TextInputKeyNameTextPc771c4c[];
+extern "C" char TextInputKeyNameTextPc771c50[];
+extern "C" char TextInputKeyNameTextPc771c5c[];
+extern "C" char TextInputKeyNameTextPc771c64[];
+extern "C" char TextInputKeyNameTextPc771c6c[];
+extern "C" char TextInputKeyNameTextPc771c74[];
+extern "C" char TextInputKeyNameTextPc771c80[];
+extern "C" char TextInputKeyNameTextPc771c8c[];
+extern "C" char TextInputKeyNameTextPc771c94[];
+extern "C" char TextInputKeyNameTextPc771c9c[];
+extern "C" char TextInputKeyNameTextPc771ca0[];
+extern "C" char TextInputKeyNameTextPc771ca4[];
+extern "C" char TextInputKeyNameTextPc771ca8[];
+extern "C" char TextInputKeyNameTextPc771cac[];
+extern "C" char TextInputKeyNameTextPc771cb0[];
+extern "C" char TextInputKeyNameTextPc771cb4[];
+extern "C" char TextInputKeyNameTextPc771cc0[];
+extern "C" char TextInputKeyNameTextPc771cc8[];
+extern "C" char TextInputKeyNameTextPc771cd4[];
+extern "C" char TextInputKeyNameTextPc771ce0[];
+extern "C" char TextInputKeyNameTextPc771ce4[];
+extern "C" char TextInputKeyNameTextPc771ce8[];
+extern "C" char TextInputKeyNameTextPc771cec[];
+extern "C" char TextInputKeyNameTextPc771cf0[];
+extern "C" char TextInputKeyNameTextPc771cf4[];
+extern "C" char TextInputKeyNameTextPc771cf8[];
+extern "C" char TextInputKeyNameTextPc771cfc[];
+extern "C" char TextInputKeyNameTextPc771d00[];
+extern "C" char TextInputKeyNameTextPc771d04[];
+extern "C" char TextInputKeyNameTextPc771d0c[];
+extern "C" char TextInputKeyNameTextPc771d14[];
+extern "C" char TextInputKeyNameTextPc771d18[];
+extern "C" char TextInputKeyNameTextPc771d1c[];
+extern "C" char TextInputKeyNameTextPc771d20[];
+extern "C" char TextInputKeyNameTextPc771d24[];
+extern "C" char TextInputKeyNameTextPc771d28[];
+extern "C" char TextInputKeyNameTextPc771d2c[];
+extern "C" char TextInputKeyNameTextPc771d30[];
+extern "C" char TextInputKeyNameTextPc771d34[];
+extern "C" char TextInputKeyNameTextPc771d38[];
+extern "C" char TextInputKeyNameTextPc771d3c[];
+extern "C" char TextInputKeyNameTextPc771d48[];
+extern "C" char TextInputKeyNameTextPc771d50[];
+extern "C" char TextInputKeyNameTextPc771d58[];
+extern "C" char TextInputKeyNameTextPc771d5c[];
+extern "C" char TextInputKeyNameTextPc771d60[];
+extern "C" char TextInputKeyNameTextPc771d64[];
+extern "C" char TextInputKeyNameTextPc771d68[];
+extern "C" char TextInputKeyNameTextPc771d6c[];
+extern "C" char TextInputKeyNameTextPc771d70[];
+extern "C" char TextInputKeyNameTextPc771d74[];
+extern "C" char TextInputKeyNameTextPc771d78[];
+extern "C" char TextInputKeyNameTextPc771d7c[];
+extern "C" char TextInputKeyNameTextPc771d80[];
+extern "C" char TextInputKeyNameTextPc774180[];
+extern "C" char TextInputKeyNameTextPc774184[];
+static char PcInputText7517a8[3] = "\302\247";
+static char PcInputText755d70[2] = ")";
+static char PcInputText75c044[2] = ":";
+static char PcInputText75eba8[2] = ".";
+static char PcInputText76afa8[2] = "/";
+static char PcInputText76fe70[6] = "START";
+static char PcInputText770634[7] = "O. Win";
+static char PcInputText77063c[5] = "Alas";
+static char PcInputText770644[6] = "Oikea";
+static char PcInputText77064c[6] = "Vasen";
+static char PcInputText770654[6] = "Yl\303\266s";
+static char PcInputText77065c[7] = "O. Alt";
+static char PcInputText770664[8] = "O. Ctrl";
+static char PcInputText77066c[11] = "Num. Piste";
+static char PcInputText770678[6] = "V\303\244li";
+static char PcInputText770680[9] = "O.Vaihto";
+static char PcInputText77068c[7] = "Miinus";
+static char PcInputText770694[6] = "Piste";
+static char PcInputText77069c[7] = "Pilkku";
+static char PcInputText7706a4[8] = "Sarkain";
+static char PcInputText7706ac[14] = "Askelpalautin";
+static char PcInputText7706bc[7] = "H\303\266ger";
+static char PcInputText7706c4[9] = "V\303\244nster";
+static char PcInputText7706d0[4] = "Upp";
+static char PcInputText7706d4[11] = "Print Scrn";
+static char PcInputText7706e0[17] = "Num. Kommatecken";
+static char PcInputText7706f4[11] = "Num. Punkt";
+static char PcInputText770700[10] = "Blanksteg";
+static char PcInputText77070c[6] = "Punkt";
+static char PcInputText770714[12] = "Kommatecken";
+static char PcInputText770720[7] = "H. Win";
+static char PcInputText770728[7] = "V. Win";
+static char PcInputText770730[4] = "Ned";
+static char PcInputText770734[7] = "H\303\270yre";
+static char PcInputText77073c[8] = "Venstre";
+static char PcInputText770744[3] = "UP";
+static char PcInputText770748[8] = "NUM DIV";
+static char PcInputText770750[10] = "NUM COMMA";
+static char PcInputText77075c[9] = "Win Dto.";
+static char PcInputText770768[9] = "Win Esq.";
+static char PcInputText770774[16] = "Seta Para Baixo";
+static char PcInputText770784[18] = "Seta Para Direita";
+static char PcInputText770798[19] = "Seta Para Esquerda";
+static char PcInputText7707ac[15] = "Seta Para Cima";
+static char PcInputText7707bc[9] = "Alt Dto.";
+static char PcInputText7707c8[9] = "Ctr Dto.";
+static char PcInputText7707d4[11] = "Num. Ponto";
+static char PcInputText7707e0[18] = "Barra De Espa\303\247os";
+static char PcInputText7707f4[9] = "Alt Esq.";
+static char PcInputText770800[11] = "Shift Dto.";
+static char PcInputText77080c[21] = "Barra Para A Direita";
+static char PcInputText770824[6] = "Ponto";
+static char PcInputText77082c[9] = "V\303\255rgula";
+static char PcInputText770838[17] = "Par\303\252nteses Dto.";
+static char PcInputText77084c[11] = "Shift Esq.";
+static char PcInputText770858[13] = "Acento Grave";
+static char PcInputText770868[2] = "~";
+static char PcInputText77086c[10] = "Ctrl Esq.";
+static char PcInputText770878[17] = "Par\303\252nteses Esq.";
+static char PcInputText77088c[11] = "Ap\303\263strofo";
+static char PcInputText770898[11] = "Retroceder";
+static char PcInputText7708a4[8] = "Igual A";
+static char PcInputText7708ac[13] = "\320\237\321\200\320\260\320\262.Win";
+static char PcInputText7708bc[11] = "\320\233\320\265\320\262.Win";
+static char PcInputText7708c8[13] = "\320\237\321\200\320\260\320\262.Alt";
+static char PcInputText7708d8[17] = "/ (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText7708ec[17] = ", (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText770900[14] = "\320\237\321\200\320\260\320\262.Ctrl";
+static char PcInputText770910[21] = "Enter (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText770928[17] = "= (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText77093c[17] = ". (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText770950[17] = "0 (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText770964[17] = "3 (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText770978[17] = "2 (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText77098c[17] = "1 (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText7709a0[17] = "+ (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText7709b4[17] = "6 (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText7709c8[17] = "5 (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText7709dc[17] = "4 (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText7709f0[17] = "- (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText770a04[17] = "9 (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText770a18[17] = "8 (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText770a2c[17] = "7 (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText770a40[13] = "\320\237\321\200\320\276\320\261\320\265\320\273";
+static char PcInputText770a50[11] = "\320\233\320\265\320\262.Alt";
+static char PcInputText770a5c[17] = "* (\321\206\320\270\321\204.\320\272\320\273.)";
+static char PcInputText770a70[15] = "\320\237\321\200\320\260\320\262.shift";
+static char PcInputText770a80[3] = "\320\256";
+static char PcInputText770a84[3] = "\320\221";
+static char PcInputText770a88[3] = "\320\254";
+static char PcInputText770a8c[3] = "\320\242";
+static char PcInputText770a90[3] = "\320\230";
+static char PcInputText770a94[3] = "\320\234";
+static char PcInputText770a98[3] = "\320\241";
+static char PcInputText770a9c[3] = "\320\247";
+static char PcInputText770aa0[3] = "\320\257";
+static char PcInputText770aa4[13] = "\320\233\320\265\320\262.Shift";
+static char PcInputText770ab4[3] = "\320\255";
+static char PcInputText770ab8[3] = "\320\226";
+static char PcInputText770abc[3] = "\320\224";
+static char PcInputText770ac0[3] = "\320\233";
+static char PcInputText770ac4[3] = "\320\236";
+static char PcInputText770ac8[3] = "\320\240";
+static char PcInputText770acc[3] = "\320\237";
+static char PcInputText770ad0[3] = "\320\220";
+static char PcInputText770ad4[3] = "\320\222";
+static char PcInputText770ad8[3] = "\320\253";
+static char PcInputText770adc[3] = "\320\244";
+static char PcInputText770ae0[12] = "\320\233\320\265\320\262.Ctrl";
+static char PcInputText770aec[3] = "\320\252";
+static char PcInputText770af0[3] = "\320\245";
+static char PcInputText770af4[3] = "\320\227";
+static char PcInputText770af8[3] = "\320\251";
+static char PcInputText770afc[3] = "\320\250";
+static char PcInputText770b00[3] = "\320\223";
+static char PcInputText770b04[3] = "\320\235";
+static char PcInputText770b08[3] = "\320\225";
+static char PcInputText770b0c[3] = "\320\232";
+static char PcInputText770b10[3] = "\320\243";
+static char PcInputText770b14[3] = "\320\246";
+static char PcInputText770b18[3] = "\320\231";
+static char PcInputText770b1c[4] = "ESC";
+static char PcInputText770b20[7] = "P. Win";
+static char PcInputText770b28[6] = "D\303\263\305\200";
+static char PcInputText770b30[6] = "Prawo";
+static char PcInputText770b38[5] = "Lewo";
+static char PcInputText770b40[6] = "G\303\263ra";
+static char PcInputText770b48[7] = "P. Alt";
+static char PcInputText770b50[8] = "P. Ctrl";
+static char PcInputText770b58[7] = "Num. .";
+static char PcInputText770b60[7] = "Spacja";
+static char PcInputText770b68[9] = "P. Shift";
+static char PcInputText770b74[6] = "GRAVE";
+static char PcInputText770b7c[2] = ";";
+static char PcInputText770b80[6] = "R.Win";
+static char PcInputText770b88[7] = "Omlaag";
+static char PcInputText770b90[7] = "Rechts";
+static char PcInputText770b98[6] = "Links";
+static char PcInputText770ba0[7] = "Omhoog";
+static char PcInputText770ba8[10] = "Num. Punt";
+static char PcInputText770bb4[7] = "Spatie";
+static char PcInputText770bbc[5] = "Punt";
+static char PcInputText770bc4[2] = "@";
+static char PcInputText770bc8[3] = "\302\260";
+static char PcInputText770bcc[15] = "H. Windowsknap";
+static char PcInputText770bdc[15] = "V. Windowsknap";
+static char PcInputText770bec[8] = "Pil Ned";
+static char PcInputText770bf4[11] = "Pil H\303\270jre";
+static char PcInputText770c00[12] = "Pil Venstre";
+static char PcInputText770c0c[7] = "Pil Op";
+static char PcInputText770c14[7] = "H. Alt";
+static char PcInputText770c1c[13] = "Print Screen";
+static char PcInputText770c2c[11] = "Num. Komma";
+static char PcInputText770c38[6] = "VOLOP";
+static char PcInputText770c40[7] = "VOLNED";
+static char PcInputText770c48[5] = "REGN";
+static char PcInputText770c50[8] = "H. Ctrl";
+static char PcInputText770c58[11] = "N\303\206STESPOR";
+static char PcInputText770c64[15] = "UDEN ANGIVELSE";
+static char PcInputText770c74[17] = "SP\303\230RGSM\303\205LSTEGN";
+static char PcInputText770c88[9] = "STORT \303\206";
+static char PcInputText770c94[15] = "ANF\303\230RSELSTEGN";
+static char PcInputText770ca4[13] = "Num. Lig Med";
+static char PcInputText770cb4[13] = "Num. Punktum";
+static char PcInputText770cc4[15] = "Mellemrumstast";
+static char PcInputText770cd4[7] = "V. Alt";
+static char PcInputText770cdc[9] = "H. Shift";
+static char PcInputText770ce8[8] = "Punktum";
+static char PcInputText770cf0[6] = "Komma";
+static char PcInputText770cf8[9] = "V. Shift";
+static char PcInputText770d04[3] = "\302\275";
+static char PcInputText770d08[3] = "\303\230";
+static char PcInputText770d0c[3] = "\303\206";
+static char PcInputText770d10[8] = "V. Ctrl";
+static char PcInputText770d18[3] = "\302\250";
+static char PcInputText770d1c[3] = "\303\205";
+static char PcInputText770d20[7] = "Accent";
+static char PcInputText770d28[6] = "(TOM)";
+static char PcInputText770d30[9] = "Win Der.";
+static char PcInputText770d3c[9] = "Win Izq.";
+static char PcInputText770d48[5] = "Supr";
+static char PcInputText770d50[8] = "Av P\303\241g";
+static char PcInputText770d58[13] = "Flecha Abajo";
+static char PcInputText770d68[12] = "Flecha Der.";
+static char PcInputText770d74[12] = "Flecha Izq.";
+static char PcInputText770d80[8] = "Re P\303\241g";
+static char PcInputText770d88[11] = "Flecha Arr";
+static char PcInputText770d94[7] = "Inicio";
+static char PcInputText770d9c[9] = "Alt Der.";
+static char PcInputText770da8[7] = "PETSIS";
+static char PcInputText770db0[7] = "N\303\232M /";
+static char PcInputText770db8[10] = "N\303\232M Coma";
+static char PcInputText770dc4[10] = "INICIOWEB";
+static char PcInputText770dd0[9] = "VOL ARRI";
+static char PcInputText770ddc[9] = "VOL ABAJ";
+static char PcInputText770de8[7] = "REPROD";
+static char PcInputText770df0[9] = "SILENCIO";
+static char PcInputText770dfc[10] = "Ctrl Der.";
+static char PcInputText770e08[11] = "N\303\232M Intro";
+static char PcInputText770e14[10] = "PISTA SIG";
+static char PcInputText770e20[8] = "DETENER";
+static char PcInputText770e28[9] = "SUBRAYAR";
+static char PcInputText770e34[11] = "DOS PUNTOS";
+static char PcInputText770e40[7] = "ARROBA";
+static char PcInputText770e48[10] = "PISTA ANT";
+static char PcInputText770e54[11] = "N\303\232M Igual";
+static char PcInputText770e60[11] = "N\303\232M Punto";
+static char PcInputText770e6c[7] = "N\303\232M 0";
+static char PcInputText770e74[7] = "N\303\232M 3";
+static char PcInputText770e7c[7] = "N\303\232M 2";
+static char PcInputText770e84[7] = "N\303\232M 1";
+static char PcInputText770e8c[7] = "N\303\232M +";
+static char PcInputText770e94[7] = "N\303\232M 6";
+static char PcInputText770e9c[7] = "N\303\232M 5";
+static char PcInputText770ea4[7] = "N\303\232M 4";
+static char PcInputText770eac[7] = "N\303\232M -";
+static char PcInputText770eb4[7] = "N\303\232M 9";
+static char PcInputText770ebc[7] = "N\303\232M 8";
+static char PcInputText770ec4[7] = "N\303\232M 7";
+static char PcInputText770ecc[11] = "Bloq Despl";
+static char PcInputText770ed8[10] = "Bloq N\303\232M";
+static char PcInputText770ee4[12] = "Bloq May\303\272s";
+static char PcInputText770ef0[8] = "Espacio";
+static char PcInputText770ef8[9] = "Alt Izq.";
+static char PcInputText770f04[7] = "N\303\232M *";
+static char PcInputText770f0c[11] = "Mayus Der.";
+static char PcInputText770f18[6] = "Menos";
+static char PcInputText770f20[5] = "Coma";
+static char PcInputText770f28[3] = "\303\207";
+static char PcInputText770f2c[12] = "May\303\272s Izq.";
+static char PcInputText770f38[3] = "\302\272";
+static char PcInputText770f3c[3] = "\303\221";
+static char PcInputText770f40[10] = "Ctrl Izq.";
+static char PcInputText770f4c[6] = "Intro";
+static char PcInputText770f54[2] = "`";
+static char PcInputText770f58[10] = "Retroceso";
+static char PcInputText770f64[3] = "\302\241";
+static char PcInputText770f68[2] = "'";
+static char PcInputText770f6c[9] = "(VAC\303\215O)";
+static char PcInputText770f78[13] = "Win-Taste R.";
+static char PcInputText770f88[13] = "Win-Taste L.";
+static char PcInputText770f98[5] = "Entf";
+static char PcInputText770fa0[6] = "Einfg";
+static char PcInputText770fa8[8] = "Bild Ab";
+static char PcInputText770fb0[12] = "Pfeil unten";
+static char PcInputText770fbc[5] = "Ende";
+static char PcInputText770fc4[13] = "Pfeil rechts";
+static char PcInputText770fd4[12] = "Pfeil links";
+static char PcInputText770fe0[9] = "Bild Auf";
+static char PcInputText770fec[11] = "Pfeil oben";
+static char PcInputText770ff8[5] = "Pos1";
+static char PcInputText771000[6] = "lt R.";
+static char PcInputText771008[6] = "S-Abf";
+static char PcInputText771010[7] = "Num. ,";
+static char PcInputText771018[8] = "Strg R.";
+static char PcInputText771020[13] = "Num. Eingabe";
+static char PcInputText771030[10] = "UNBENANNT";
+static char PcInputText77103c[2] = "\366";
+static char PcInputText771040[2] = "\344";
+static char PcInputText771044[7] = "Rollen";
+static char PcInputText77104c[10] = "Num-Taste";
+static char PcInputText771058[15] = "Feststelltaste";
+static char PcInputText771068[10] = "Leertaste";
+static char PcInputText771074[7] = "Alt L.";
+static char PcInputText77107c[10] = "Umsch. R.";
+static char PcInputText771088[2] = ",";
+static char PcInputText77108c[10] = "Umsch. L.";
+static char PcInputText771098[3] = "\303\204";
+static char PcInputText77109c[3] = "\303\226";
+static char PcInputText7710a0[8] = "Strg L.";
+static char PcInputText7710a8[8] = "Eingabe";
+static char PcInputText7710b0[3] = "\303\234";
+static char PcInputText7710b4[11] = "R\303\274cktaste";
+static char PcInputText7710c0[3] = "\302\264";
+static char PcInputText7710c4[3] = "\303\237";
+static char PcInputText7710c8[7] = "(LEER)";
+static char PcInputText7710d0[9] = "Win Des.";
+static char PcInputText7710dc[9] = "Win Sin.";
+static char PcInputText7710e8[6] = "Canc.";
+static char PcInputText7710f0[10] = "Inserisci";
+static char PcInputText7710fc[10] = "Pag. Gi\303\231";
+static char PcInputText771108[13] = "Freccia Gi\303\271";
+static char PcInputText771118[5] = "Fine";
+static char PcInputText771120[13] = "Freccia Des.";
+static char PcInputText771130[13] = "Freccia Sin.";
+static char PcInputText771140[8] = "Pag. Su";
+static char PcInputText771148[12] = "Freccia S\303\271";
+static char PcInputText771154[6] = "Pausa";
+static char PcInputText77115c[9] = "Alt Des.";
+static char PcInputText771168[6] = "RSIST";
+static char PcInputText771170[10] = "Tastnum /";
+static char PcInputText77117c[10] = "Tastnum ,";
+static char PcInputText771188[7] = "Vol Su";
+static char PcInputText771190[9] = "Vol Gi\303\271";
+static char PcInputText77119c[10] = "Ctrl Des.";
+static char PcInputText7711a8[14] = "Tastnum Invio";
+static char PcInputText7711b8[10] = "Tastnum =";
+static char PcInputText7711c4[10] = "Tastnum .";
+static char PcInputText7711d0[10] = "Tastnum 0";
+static char PcInputText7711dc[10] = "Tastnum 3";
+static char PcInputText7711e8[10] = "Tastnum 2";
+static char PcInputText7711f4[10] = "Tastnum 1";
+static char PcInputText771200[10] = "Tastnum +";
+static char PcInputText77120c[10] = "Tastnum 6";
+static char PcInputText771218[10] = "Tastnum 5";
+static char PcInputText771224[10] = "Tastnum 4";
+static char PcInputText771230[10] = "Tastnum -";
+static char PcInputText77123c[10] = "Tastnum 9";
+static char PcInputText771248[10] = "Tastnum 8";
+static char PcInputText771254[10] = "Tastnum 7";
+static char PcInputText771260[13] = "Blocca Scorr";
+static char PcInputText771270[9] = "Bloc Num";
+static char PcInputText77127c[12] = "BLOC MAIUSC";
+static char PcInputText771288[7] = "Spazio";
+static char PcInputText771290[9] = "Alt Sin.";
+static char PcInputText77129c[10] = "Tastnum *";
+static char PcInputText7712a8[11] = "Shift Des.";
+static char PcInputText7712b4[2] = "-";
+static char PcInputText7712b8[6] = "Punto";
+static char PcInputText7712c0[8] = "Virgola";
+static char PcInputText7712c8[3] = "\303\271";
+static char PcInputText7712cc[11] = "Shift Sin.";
+static char PcInputText7712d8[3] = "\303\240";
+static char PcInputText7712dc[3] = "\303\262";
+static char PcInputText7712e0[10] = "Ctrl Sin.";
+static char PcInputText7712ec[6] = "Invio";
+static char PcInputText7712f4[2] = "+";
+static char PcInputText7712f8[3] = "\303\250";
+static char PcInputText7712fc[3] = "\303\254";
+static char PcInputText771300[10] = "APOSTROFO";
+static char PcInputText77130c[10] = "Windows D";
+static char PcInputText771318[10] = "Windows G";
+static char PcInputText771324[6] = "Suppr";
+static char PcInputText77132c[6] = "Inser";
+static char PcInputText771334[11] = "Page Suiv.";
+static char PcInputText771340[4] = "Bas";
+static char PcInputText771344[4] = "Fin";
+static char PcInputText771348[7] = "Droite";
+static char PcInputText771350[7] = "Gauche";
+static char PcInputText771358[12] = "Page Pr\303\250c.";
+static char PcInputText771364[5] = "Haut";
+static char PcInputText77136c[8] = "Origine";
+static char PcInputText771374[6] = "Alt D";
+static char PcInputText77137c[17] = "Impr \303\211cran Syst";
+static char PcInputText771390[12] = "Pav. Num. /";
+static char PcInputText77139c[18] = "Pav. Num. Virgule";
+static char PcInputText7713b0[4] = "www";
+static char PcInputText7713b4[7] = "Ctrl D";
+static char PcInputText7713bc[18] = "Pav. Num. Entr\303\251e";
+static char PcInputText7713d0[2] = "\260";
+static char PcInputText7713d4[2] = "%";
+static char PcInputText7713d8[12] = "Pav. Num. =";
+static char PcInputText7713e4[2] = "{";
+static char PcInputText7713e8[16] = "Pav. Num. Point";
+static char PcInputText7713f8[12] = "Pav. Num. 0";
+static char PcInputText771404[12] = "Pav. Num. 3";
+static char PcInputText771410[12] = "Pav. Num. 2";
+static char PcInputText77141c[12] = "Pav. Num. 1";
+static char PcInputText771428[12] = "Pav. Num. +";
+static char PcInputText771434[12] = "Pav. Num. 6";
+static char PcInputText771440[12] = "Pav. Num. 5";
+static char PcInputText77144c[12] = "Pav. Num. 4";
+static char PcInputText771458[12] = "Pav. Num. -";
+static char PcInputText771464[12] = "Pav. Num. 9";
+static char PcInputText771470[12] = "Pav. Num. 8";
+static char PcInputText77147c[12] = "Pav. Num. 7";
+static char PcInputText771488[14] = "Arr\303\252t D\303\251fil";
+static char PcInputText771498[9] = "Verr Num";
+static char PcInputText7714a4[9] = "Verr Maj";
+static char PcInputText7714b0[7] = "Espace";
+static char PcInputText7714b8[6] = "Alt G";
+static char PcInputText7714c0[12] = "Pav. Num. *";
+static char PcInputText7714cc[6] = "Maj D";
+static char PcInputText7714d4[20] = "Point D'Exclamation";
+static char PcInputText7714e8[12] = "Deux Points";
+static char PcInputText7714f4[14] = "Point Virgule";
+static char PcInputText771504[8] = "Virgule";
+static char PcInputText77150c[2] = "*";
+static char PcInputText771510[6] = "Maj G";
+static char PcInputText771518[3] = "\302\262";
+static char PcInputText77151c[3] = "\303\231";
+static char PcInputText771520[7] = "Ctrl G";
+static char PcInputText771528[8] = "Entr\303\251e";
+static char PcInputText771530[2] = "|";
+static char PcInputText771534[2] = "^";
+static char PcInputText771538[11] = "Tabulation";
+static char PcInputText771544[5] = "Egal";
+static char PcInputText77154c[6] = "Echap";
+static char PcInputText771554[6] = "P.Win";
+static char PcInputText77155c[6] = "L.Win";
+static char PcInputText771564[8] = "Pg Down";
+static char PcInputText77156c[6] = "Dol\305\257";
+static char PcInputText771574[7] = "Vpravo";
+static char PcInputText77157c[6] = "Vlevo";
+static char PcInputText771584[6] = "Pg Up";
+static char PcInputText77158c[7] = "Nahoru";
+static char PcInputText771594[6] = "P.Alt";
+static char PcInputText77159c[6] = "Num./";
+static char PcInputText7715a4[7] = "P.Ctrl";
+static char PcInputText7715ac[10] = "Num.Enter";
+static char PcInputText7715b8[14] = "Num.Rovn\303\241 Se";
+static char PcInputText7715c8[6] = "Num .";
+static char PcInputText7715d0[6] = "Num.0";
+static char PcInputText7715d8[6] = "Num.3";
+static char PcInputText7715e0[6] = "Num.2";
+static char PcInputText7715e8[6] = "Num.1";
+static char PcInputText7715f0[6] = "Num.+";
+static char PcInputText7715f8[6] = "Num.6";
+static char PcInputText771600[6] = "Num.5";
+static char PcInputText771608[6] = "Num.4";
+static char PcInputText771610[6] = "Num.-";
+static char PcInputText771618[6] = "Num.9";
+static char PcInputText771620[6] = "Num.8";
+static char PcInputText771628[6] = "Num.7";
+static char PcInputText771630[10] = "Mezern\303\255k";
+static char PcInputText77163c[6] = "L.Alt";
+static char PcInputText771644[6] = "Kr\303\241t";
+static char PcInputText77164c[8] = "P.Shift";
+static char PcInputText771654[9] = "Lom\303\255tko";
+static char PcInputText771660[7] = "Te\304\215ka";
+static char PcInputText771668[8] = "\304\214\303\241rka";
+static char PcInputText771670[9] = "Uvozovky";
+static char PcInputText77167c[8] = "L.Shift";
+static char PcInputText771684[8] = "Vlnovka";
+static char PcInputText77168c[9] = "Apostrof";
+static char PcInputText771698[3] = "\305\256";
+static char PcInputText77169c[7] = "L.Ctrl";
+static char PcInputText7716a4[11] = "P.Z\303\241vorka";
+static char PcInputText7716b0[3] = "\303\232";
+static char PcInputText7716b4[11] = "Tabul\303\241tor";
+static char PcInputText7716c0[10] = "Rovn\303\241 Se";
+static char PcInputText7716cc[7] = "M\303\255nus";
+static char PcInputText7716d4[8] = "(EMPTY)";
+static char PcInputText7716dc[25] =
+    "\343\202\242\343\203\227\343\203\252\343\202\261\343\203\274\343\202\267\343\203\247\343\203\263";
+static char PcInputText7716f8[23] =
+    "\345\217\263 \343\202\246\343\202\243\343\203\263\343\203\211\343\202\246\343\202\272";
+static char PcInputText771710[23] =
+    "\345\267\246 \343\202\246\343\202\243\343\203\263\343\203\211\343\202\246\343\202\272";
+static char PcInputText771728[10] = "Page Down";
+static char PcInputText771734[10] = "\344\270\213\347\237\242\345\215\260";
+static char PcInputText771740[10] = "\345\217\263\347\237\242\345\215\260";
+static char PcInputText77174c[10] = "\345\267\246\347\237\242\345\215\260";
+static char PcInputText771758[8] = "Page Up";
+static char PcInputText771760[10] = "\344\270\212\347\237\242\345\215\260";
+static char PcInputText77176c[8] = "\345\217\263 Alt";
+static char PcInputText771774[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 /";
+static char PcInputText771788[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 ,";
+static char PcInputText77179c[9] = "\345\217\263 Ctrl";
+static char PcInputText7717a8[22] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 Enter";
+static char PcInputText7717c0[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 .";
+static char PcInputText7717d4[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 0";
+static char PcInputText7717e8[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 3";
+static char PcInputText7717fc[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 2";
+static char PcInputText771810[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 1";
+static char PcInputText771824[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 +";
+static char PcInputText771838[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 6";
+static char PcInputText77184c[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 5";
+static char PcInputText771860[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 4";
+static char PcInputText771874[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 -";
+static char PcInputText771888[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 9";
+static char PcInputText77189c[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 8";
+static char PcInputText7718b0[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 7";
+static char PcInputText7718c4[13] = "\343\202\271\343\203\232\343\203\274\343\202\271";
+static char PcInputText7718d4[8] = "\345\267\246 Alt";
+static char PcInputText7718dc[18] = "\343\203\206\343\203\263\343\202\255\343\203\274\343\201\256 *";
+static char PcInputText7718f0[10] = "\345\217\263 Shift";
+static char PcInputText7718fc[34] = "\343\203\225\343\202\251\343\203\257\343\203\274\343\203\211\343\202\271\343\203"
+                                    "\251\343\203\203\343\202\267\343\203\245(/)";
+static char PcInputText771920[16] = "\343\203\224\343\203\252\343\202\252\343\203\211(.)";
+static char PcInputText771930[13] = "\343\202\253\343\203\263\343\203\236(,)";
+static char PcInputText771940[10] = "\345\267\246 Shift";
+static char PcInputText77194c[16] = "\343\202\260\343\203\254\343\202\244\343\203\264(`)";
+static char PcInputText77195c[25] =
+    "\343\202\242\343\203\235\343\202\271\343\203\210\343\203\255\343\203\225\343\202\243(')";
+static char PcInputText771978[21] = "\343\202\273\343\203\237\343\202\263\343\203\255\343\203\263(\357\274\233)";
+static char PcInputText771990[9] = "\345\267\246 Ctrl";
+static char PcInputText77199c[11] = "Num. Comma";
+static char PcInputText7719a8[8] = "Oem_102";
+static char PcInputText7719b0[10] = "Num. Stop";
+static char PcInputText771e38[15] = "\305\275\303\241dn\303\275 vstup";
+static char PcInputText771e48[19] = "Tla\304\215\303\255tko my\305\241i A";
+static char PcInputText771e5c[27] = "St\305\231edn\303\255 tla\304\215\303\255tko my\305\241i";
+static char PcInputText771e78[24] = "Prav\303\251 tla\304\215\303\255tko my\305\241i";
+static char PcInputText771e90[23] = "Lev\303\251 tla\304\215\303\255tko my\305\241i";
+static char PcInputText771ea8[22] = "Kole\304\215ko my\305\241i nahoru";
+static char PcInputText771ec0[19] = "Pohyb my\305\241\303\255 dol\305\257";
+static char PcInputText771ed4[20] = "Pohyb my\305\241\303\255 vpravo";
+static char PcInputText771ee8[21] = "Kole\304\215ko my\305\241i dol\305\257";
+static char PcInputText771f00[20] = "Pohyb my\305\241\303\255 nahoru";
+static char PcInputText771f14[19] = "Pohyb my\305\241\303\255 vlevo";
+static char PcInputText771f28[6] = "Ose X";
+static char PcInputText771f30[6] = "Zp\304\233t";
+static char PcInputText771f38[15] = "Prav\303\241 p\303\241\304\215ka";
+static char PcInputText771f48[14] = "Lev\303\241 p\303\241\304\215ka";
+static char PcInputText771f58[16] = "Prav\303\241 spou\305\241\305\245";
+static char PcInputText771f68[15] = "Lev\303\241 spou\305\241\305\245";
+static char PcInputText771f78[26] = "Prav\303\251 bo\304\215n\303\255 tla\304\215\303\255tko";
+static char PcInputText771f94[25] = "Lev\303\251 bo\304\215n\303\255 tla\304\215\303\255tko";
+static char PcInputText771fb0[13] = "Tla\304\215\303\255tko X";
+static char PcInputText771fc0[13] = "Tla\304\215\303\255tko A";
+static char PcInputText771fd0[13] = "Tla\304\215\303\255tko B";
+static char PcInputText771fe0[13] = "Tla\304\215\303\255tko Y";
+static char PcInputText771ff0[21] = "Prav\303\241 p\303\241\304\215ka dol\305\257";
+static char PcInputText772008[22] = "Prav\303\241 p\303\241\304\215ka nahoru";
+static char PcInputText772020[22] = "Prav\303\241 p\303\241\304\215ka vpravo";
+static char PcInputText772038[21] = "Prav\303\241 p\303\241\304\215ka vlevo";
+static char PcInputText772050[20] = "Lev\303\241 p\303\241\304\215ka dol\305\257";
+static char PcInputText772064[21] = "Lev\303\241 p\303\241\304\215ka nahoru";
+static char PcInputText77207c[21] = "Lev\303\241 p\303\241\304\215ka vpravo";
+static char PcInputText772094[20] = "Lev\303\241 p\303\241\304\215ka vlevo";
+static char PcInputText7720a8[9] = "Rotace Z";
+static char PcInputText7720b4[9] = "Rotace Y";
+static char PcInputText7720c0[9] = "Rotace X";
+static char PcInputText7720cc[6] = "Osa Z";
+static char PcInputText7720d4[6] = "Osa Y";
+static char PcInputText7720dc[6] = "Osa X";
+static char PcInputText7720e4[9] = "Vy\305\241\305\241\303\255";
+static char PcInputText7720f0[9] = "Ni\305\276\305\241\303\255";
+static char PcInputText7720fc[11] = "Tla\304\215\303\255tko";
+static char PcInputText772108[21] = "Sm\304\233r. k\305\231\303\255\305\276 vlevo";
+static char PcInputText772120[21] = "Sm\304\233r. k\305\231\303\255\305\276 dol\305\257";
+static char PcInputText772138[22] = "Sm\304\233r. k\305\231\303\255\305\276 vpravo";
+static char PcInputText772150[22] = "Sm\304\233r. k\305\231\303\255\305\276 nahoru";
+static char PcInputText77229c[39] =
+    "\320\235\320\265\321\202 \321\203\321\201\321\202\321\200\320\276\320\271\321\201\321\202\320\262\320\260 "
+    "\320\262\320\262\320\276\320\264\320\260";
+static char PcInputText7722c4[24] =
+    "\320\232\320\275\320\276\320\277\320\272\320\260 \320\274\321\213\321\210\320\270 N";
+static char PcInputText7722dc[37] = "\320\241\321\200\320\265\320\264\320\275\321\217\321\217 "
+                                    "\320\272\320\275\320\276\320\277\320\272\320\260 \320\274\321\213\321\210\320\270";
+static char PcInputText772304[35] = "\320\237\321\200\320\260\320\262\320\260\321\217 "
+                                    "\320\272\320\275\320\276\320\277\320\272\320\260 \320\274\321\213\321\210\320\270";
+static char PcInputText772328[33] = "\320\233\320\265\320\262\320\260\321\217 "
+                                    "\320\272\320\275\320\276\320\277\320\272\320\260 \320\274\321\213\321\210\320\270";
+static char PcInputText77234c[33] = "\320\232\320\276\320\273\320\265\321\201\320\276 \320\274\321\213\321\210\320\270 "
+                                    "\320\262\320\262\320\265\321\200\321\205";
+static char PcInputText772370[18] = "\320\234\321\213\321\210\321\214 \320\262\320\275\320\270\320\267";
+static char PcInputText772384[22] = "\320\234\321\213\321\210\321\214 \320\262\320\277\321\200\320\260\320\262\320\276";
+static char PcInputText77239c[31] = "\320\232\320\276\320\273\320\265\321\201\320\276 \320\274\321\213\321\210\320\270 "
+                                    "\320\262\320\275\320\270\320\267";
+static char PcInputText7723bc[20] = "\320\234\321\213\321\210\321\214 \320\262\320\262\320\265\321\200\321\205";
+static char PcInputText7723d0[20] = "\320\234\321\213\321\210\321\214 \320\262\320\273\320\265\320\262\320\276";
+static char PcInputText7723e4[20] = "\320\234\321\213\321\210\321\214 (\320\276\321\201\321\214 Z)";
+static char PcInputText7723f8[20] = "\320\234\321\213\321\210\321\214 (\320\276\321\201\321\214 Y)";
+static char PcInputText77240c[20] = "\320\234\321\213\321\210\321\214 (\320\276\321\201\321\214 X)";
+static char PcInputText772420[11] = "\320\235\320\260\320\267\320\260\320\264";
+static char PcInputText77242c[11] = "\320\241\321\202\320\260\321\200\321\202";
+static char PcInputText772438[30] =
+    "\320\237\321\200\320\260\320\262\321\213\320\271 \320\264\320\266\320\276\320\271\321\201\321\202\320\270\320\272";
+static char PcInputText772458[28] =
+    "\320\233\320\265\320\262\321\213\320\271 \320\264\320\266\320\276\320\271\321\201\321\202\320\270\320\272";
+static char PcInputText772474[24] =
+    "\320\237\321\200\320\260\320\262\321\213\320\271 \320\272\321\203\321\200\320\276\320\272";
+static char PcInputText77248c[22] = "\320\233\320\265\320\262\321\213\320\271 \320\272\321\203\321\200\320\276\320\272";
+static char PcInputText7724a4[28] =
+    "\320\237\321\200\320\260\320\262\321\213\320\271 \321\202\321\200\320\270\320\263\320\263\320\265\321\200";
+static char PcInputText7724c0[26] =
+    "\320\233\320\265\320\262\321\213\320\271 \321\202\321\200\320\270\320\263\320\263\320\265\321\200";
+static char PcInputText7724dc[15] = "\320\232\320\275\320\276\320\277\320\272\320\260 X";
+static char PcInputText7724ec[15] = "\320\232\320\275\320\276\320\277\320\272\320\260 A";
+static char PcInputText7724fc[15] = "\320\232\320\275\320\276\320\277\320\272\320\260 B";
+static char PcInputText77250c[15] = "\320\232\320\275\320\276\320\277\320\272\320\260 Y";
+static char PcInputText77251c[41] =
+    "\320\222\320\275\320\270\320\267 (\320\277\321\200\320\260\320\262\321\213\320\271 "
+    "\320\264\320\266\320\276\320\271\321\201\321\202\320\270\320\272)";
+static char PcInputText772548[43] =
+    "\320\222\320\262\320\265\321\200\321\205 (\320\277\321\200\320\260\320\262\321\213\320\271 "
+    "\320\264\320\266\320\276\320\271\321\201\321\202\320\270\320\272)";
+static char PcInputText772574[45] =
+    "\320\222\320\277\321\200\320\260\320\262\320\276 (\320\277\321\200\320\260\320\262\321\213\320\271 "
+    "\320\264\320\266\320\276\320\271\321\201\321\202\320\270\320\272)";
+static char PcInputText7725a4[43] =
+    "\320\222\320\273\320\265\320\262\320\276 (\320\277\321\200\320\260\320\262\321\213\320\271 "
+    "\320\264\320\266\320\276\320\271\321\201\321\202\320\270\320\272)";
+static char PcInputText7725d0[39] = "\320\222\320\275\320\270\320\267 (\320\273\320\265\320\262\321\213\320\271 "
+                                    "\320\264\320\266\320\276\320\271\321\201\321\202\320\270\320\272)";
+static char PcInputText7725f8[41] =
+    "\320\222\320\262\320\265\321\200\321\205 (\320\273\320\265\320\262\321\213\320\271 "
+    "\320\264\320\266\320\276\320\271\321\201\321\202\320\270\320\272)";
+static char PcInputText772624[43] =
+    "\320\222\320\277\321\200\320\260\320\262\320\276 (\320\273\320\265\320\262\321\213\320\271 "
+    "\320\264\320\266\320\276\320\271\321\201\321\202\320\270\320\272)";
+static char PcInputText772650[41] =
+    "\320\222\320\273\320\265\320\262\320\276 (\320\273\320\265\320\262\321\213\320\271 "
+    "\320\264\320\266\320\276\320\271\321\201\321\202\320\270\320\272)";
+static char PcInputText77267c[24] =
+    "\320\222\321\200\320\260\321\211\320\265\320\275\320\270\320\265 \320\277\320\276 Z";
+static char PcInputText772694[24] =
+    "\320\222\321\200\320\260\321\211\320\265\320\275\320\270\320\265 \320\277\320\276 Y";
+static char PcInputText7726ac[24] =
+    "\320\222\321\200\320\260\321\211\320\265\320\275\320\270\320\265 \320\277\320\276 X";
+static char PcInputText7726c4[9] = "\320\236\321\201\321\214 Z";
+static char PcInputText7726d0[9] = "\320\236\321\201\321\214 Y";
+static char PcInputText7726dc[9] = "\320\236\321\201\321\214 X";
+static char PcInputText7726e8[29] =
+    "\320\220\320\275\320\260\320\273\320\276\320\263\320\276\320\262\321\213\320\271 %d (%s)";
+static char PcInputText772708[15] = "\320\222\321\213\321\201\320\276\320\272\320\276\320\265";
+static char PcInputText772718[13] = "\320\235\320\270\320\267\320\272\320\276\320\265";
+static char PcInputText772728[13] = "\320\232\320\275\320\276\320\277\320\272\320\260";
+static char PcInputText772738[11] = "\320\222\320\273\320\265\320\262\320\276";
+static char PcInputText772744[9] = "\320\222\320\275\320\270\320\267";
+static char PcInputText772750[13] = "\320\222\320\277\321\200\320\260\320\262\320\276";
+static char PcInputText772760[11] = "\320\222\320\262\320\265\321\200\321\205";
+static char PcInputText772830[14] = "Brak wej\305\233cia";
+static char PcInputText772840[20] = "Myszka - przycisk N";
+static char PcInputText772854[26] = "\305\232rodkowy przycisk myszki";
+static char PcInputText772870[22] = "Prawy przycisk myszki";
+static char PcInputText772888[21] = "Lewy przycisk myszki";
+static char PcInputText7728a0[24] = "K\303\263\305\202ko myszki w g\303\263r\304\231";
+static char PcInputText7728b8[15] = "Myszka w d\303\263\305\202";
+static char PcInputText7728c8[23] = "K\303\263\305\202ko myszki w d\303\263\305\202";
+static char PcInputText7728e0[16] = "Myszka w g\303\263r\304\231";
+static char PcInputText7728f0[14] = "Myszka w lewo";
+static char PcInputText772900[9] = "Myszka Z";
+static char PcInputText77290c[9] = "Myszka Y";
+static char PcInputText772918[9] = "Myszka X";
+static char PcInputText772924[7] = "Wr\303\263\304\207";
+static char PcInputText77292c[15] = "Prawy dr\304\205\305\274ek";
+static char PcInputText77293c[14] = "Lewy dr\304\205\305\274ek";
+static char PcInputText77294c[12] = "Prawy spust";
+static char PcInputText772958[11] = "Lewy spust";
+static char PcInputText772964[23] = "Prawy przycisk przedni";
+static char PcInputText77297c[22] = "Lewy przycisk przedni";
+static char PcInputText772994[11] = "Przycisk X";
+static char PcInputText7729a0[11] = "Przycisk A";
+static char PcInputText7729ac[11] = "Przycisk B";
+static char PcInputText7729b8[11] = "Przycisk Y";
+static char PcInputText7729c4[23] = "Prawy dr\304\205\305\274ek w d\303\263\305\202";
+static char PcInputText7729dc[24] = "Prawy dr\304\205\305\274ek w g\303\263r\304\231";
+static char PcInputText7729f4[23] = "Prawy dr\304\205\305\274ek w prawo";
+static char PcInputText772a0c[22] = "Prawy dr\304\205\305\274ek w lewo";
+static char PcInputText772a24[22] = "Lewy dr\304\205\305\274ek w d\303\263\305\202";
+static char PcInputText772a3c[23] = "Lewy dr\304\205\305\274ek w g\303\263r\304\231";
+static char PcInputText772a54[22] = "Lewy dr\304\205\305\274ek w prawo";
+static char PcInputText772a6c[21] = "Lewy dr\304\205\305\274ek w lewo";
+static char PcInputText772a84[15] = "Obr\303\263t w osi Z";
+static char PcInputText772a94[15] = "Obr\303\263t w osi Y";
+static char PcInputText772aa4[15] = "Obr\303\263t w osi X";
+static char PcInputText772ab4[6] = "O\305\233 Z";
+static char PcInputText772abc[6] = "O\305\233 Y";
+static char PcInputText772ac4[6] = "O\305\233 X";
+static char PcInputText772acc[18] = "Analogowy (%s) %d";
+static char PcInputText772ae0[7] = "Wysoka";
+static char PcInputText772ae8[6] = "Niska";
+static char PcInputText772af0[9] = "Przycisk";
+static char PcInputText772afc[16] = "Kapturek w lewo";
+static char PcInputText772b0c[17] = "Kapturek w d\303\263\305\202";
+static char PcInputText772b20[17] = "Kapturek w prawo";
+static char PcInputText772b34[18] = "Kapturek w g\303\263r\304\231";
+static char PcInputText772bd8[11] = "Museknap N";
+static char PcInputText772be4[19] = "Midterste museknap";
+static char PcInputText772bf8[16] = "H\303\270jre museknap";
+static char PcInputText772c08[17] = "Venstre museknap";
+static char PcInputText772c1c[11] = "Mushjul op";
+static char PcInputText772c28[11] = "Mus h\303\270jre";
+static char PcInputText772c34[7] = "Mus op";
+static char PcInputText772c3c[7] = "\011Mus X";
+static char PcInputText772c44[8] = "Tilbage";
+static char PcInputText772c4c[17] = "H\303\270jre styrepind";
+static char PcInputText772c60[18] = "Venstre styrepind";
+static char PcInputText772c74[17] = "Venstre udl\303\270ser";
+static char PcInputText772c88[19] = "H\303\270jre skulderknap";
+static char PcInputText772c9c[20] = "Venstre skulderknap";
+static char PcInputText772cb0[7] = "Knap X";
+static char PcInputText772cb8[7] = "Knap A";
+static char PcInputText772cc0[7] = "Knap B";
+static char PcInputText772cc8[7] = "Knap Y";
+static char PcInputText772cd0[21] = "H\303\270jre Styrepind Ned";
+static char PcInputText772ce8[20] = "H\303\270jre Styrepind Op";
+static char PcInputText772cfc[24] = "H\303\270jre Styrepind H\303\270jre";
+static char PcInputText772d14[25] = "H\303\270jre Styrepind Venstre";
+static char PcInputText772d30[22] = "Venstre Styrepind Ned";
+static char PcInputText772d48[21] = "Venstre Styrepind Op";
+static char PcInputText772d60[25] = "Venstre Styrepind H\303\270jre";
+static char PcInputText772d7c[26] = "Venstre Styrepind Venstre";
+static char PcInputText772d98[9] = "Rot\303\251r Z";
+static char PcInputText772da4[9] = "Rot\303\251r Y";
+static char PcInputText772db0[10] = "Rot\303\251r X ";
+static char PcInputText772dbc[8] = "Z-aksen";
+static char PcInputText772dc4[8] = "Y-aksen";
+static char PcInputText772dcc[8] = "X-aksen";
+static char PcInputText772dd4[5] = "H\303\270j";
+static char PcInputText772ddc[5] = "knap";
+static char PcInputText772de4[19] = "Hat-switch venstre";
+static char PcInputText772df8[15] = "Hat-switch ned";
+static char PcInputText772e08[18] = "Hat-switch h\303\270jre";
+static char PcInputText772e1c[14] = "Hat-switch Op";
+static char PcInputText772eec[7] = "Vac\303\255o";
+static char PcInputText772ef4[16] = "Bot\303\263n rat\303\263n N";
+static char PcInputText772f04[26] = "Bot\303\263n central del rat\303\263n";
+static char PcInputText772f20[26] = "Bot\303\263n derecho del rat\303\263n";
+static char PcInputText772f3c[28] = "Bot\303\263n izquierdo del rat\303\263n";
+static char PcInputText772f58[30] = "Rueda del rat\303\263n hacia arriba";
+static char PcInputText772f78[19] = "Rat\303\263n hacia abajo";
+static char PcInputText772f8c[20] = "Rat\303\263n a la derecha";
+static char PcInputText772fa0[29] = "Rueda del rat\303\263n hacia abajo";
+static char PcInputText772fc0[20] = "Rat\303\263n hacia arriba";
+static char PcInputText772fd4[22] = "Rat\303\263n a la izquierda";
+static char PcInputText772fec[9] = "Rat\303\263n Z";
+static char PcInputText772ff8[9] = "Rat\303\263n Y";
+static char PcInputText773004[9] = "Rat\303\263n X";
+static char PcInputText773010[7] = "Volver";
+static char PcInputText773018[13] = "Bot\303\263n START";
+static char PcInputText773028[14] = "Stick derecho";
+static char PcInputText773038[16] = "Stick izquierdo";
+static char PcInputText773048[25] = "Gatillo inferior derecho";
+static char PcInputText773064[27] = "Gatillo inferior izquierdo";
+static char PcInputText773080[25] = "Gatillo superior derecho";
+static char PcInputText77309c[27] = "Gatillo superior izquierdo";
+static char PcInputText7730b8[9] = "Bot\303\263n X";
+static char PcInputText7730c4[9] = "Bot\303\263n A";
+static char PcInputText7730d0[9] = "Bot\303\263n B";
+static char PcInputText7730dc[9] = "Bot\303\263n Y";
+static char PcInputText7730e8[20] = "Stick derecho abajo";
+static char PcInputText7730fc[21] = "Stick derecho arriba";
+static char PcInputText773114[27] = "Stick derecho a la derecha";
+static char PcInputText773130[29] = "Stick derecho a la izquierda";
+static char PcInputText773150[22] = "Stick izquierdo abajo";
+static char PcInputText773168[23] = "Stick izquierdo arriba";
+static char PcInputText773180[29] = "Stick izquierdo a la derecha";
+static char PcInputText7731a0[31] = "Stick izquierdo a la izquierda";
+static char PcInputText7731c0[12] = "Rotaci\303\263n Z";
+static char PcInputText7731cc[12] = "Rotaci\303\263n Y";
+static char PcInputText7731d8[12] = "Rotaci\303\263n X";
+static char PcInputText7731e4[6] = "Eje Z";
+static char PcInputText7731ec[6] = "Eje Y";
+static char PcInputText7731f4[6] = "Eje X";
+static char PcInputText7731fc[19] = "%d (%s) anal\303\263gico";
+static char PcInputText773210[5] = "Baja";
+static char PcInputText773218[7] = "Bot\303\263n";
+static char PcInputText773220[30] = "Mando de direcci\303\263n izquierda";
+static char PcInputText773240[26] = "Mando de direcci\303\263n abajo";
+static char PcInputText77325c[28] = "Mando de direcci\303\263n derecha";
+static char PcInputText773278[27] = "Mando de direcci\303\263n arriba";
+static char PcInputText773334[14] = "Keine Eingabe";
+static char PcInputText773344[12] = "Maustaste N";
+static char PcInputText773350[19] = "Mittlere Maustaste";
+static char PcInputText773364[17] = "Rechte Maustaste";
+static char PcInputText773378[16] = "Linke Maustaste";
+static char PcInputText773388[13] = "Mausrad Oben";
+static char PcInputText773398[11] = "Maus Unten";
+static char PcInputText7733a4[12] = "Maus Rechts";
+static char PcInputText7733b0[14] = "Mausrad Unten";
+static char PcInputText7733c0[10] = "Maus Oben";
+static char PcInputText7733cc[11] = "Maus Links";
+static char PcInputText7733d8[7] = "Maus Z";
+static char PcInputText7733e0[7] = "Maus Y";
+static char PcInputText7733e8[7] = "Maus X";
+static char PcInputText7733f0[8] = "Zur\303\274ck";
+static char PcInputText7733f8[14] = "Rechter Stick";
+static char PcInputText773408[13] = "Linker Stick";
+static char PcInputText773418[17] = "Rechter Schalter";
+static char PcInputText77342c[16] = "Linker Schalter";
+static char PcInputText77343c[21] = "Rechte Schultertaste";
+static char PcInputText773454[20] = "Linke Schultertaste";
+static char PcInputText773468[8] = "X-Taste";
+static char PcInputText773470[8] = "A-Taste";
+static char PcInputText773478[8] = "B-Taste";
+static char PcInputText773480[8] = "Y-Taste";
+static char PcInputText773488[20] = "Rechter Stick unten";
+static char PcInputText77349c[19] = "Rechter Stick oben";
+static char PcInputText7734b0[21] = "Rechter Stick rechts";
+static char PcInputText7734c8[20] = "Rechter Stick links";
+static char PcInputText7734dc[19] = "Linker Stick unten";
+static char PcInputText7734f0[18] = "Linker Stick oben";
+static char PcInputText773504[20] = "Linker Stick rechts";
+static char PcInputText773518[19] = "Linker Stick links";
+static char PcInputText77352c[11] = "Z-Rotation";
+static char PcInputText773538[11] = "Y-Rotation";
+static char PcInputText773544[11] = "X-Rotation";
+static char PcInputText773550[8] = "Z-Achse";
+static char PcInputText773558[8] = "Y-Achse";
+static char PcInputText773560[8] = "X-Achse";
+static char PcInputText773568[5] = "Hoch";
+static char PcInputText773570[8] = "Niedrig";
+static char PcInputText773578[6] = "Taste";
+static char PcInputText773580[18] = "Steuerkreuz links";
+static char PcInputText773594[18] = "Steuerkreuz unten";
+static char PcInputText7735a8[19] = "Steuerkreuz rechts";
+static char PcInputText7735bc[17] = "Steuerkreuz oben";
+static char PcInputText77367c[13] = "Nessun Input";
+static char PcInputText77368c[18] = "Tasto N del mouse";
+static char PcInputText7736a0[25] = "Tasto centrale del mouse";
+static char PcInputText7736bc[23] = "Tasto destro del mouse";
+static char PcInputText7736d4[25] = "Tasto sinistro del mouse";
+static char PcInputText7736f0[21] = "Rotella del mouse su";
+static char PcInputText773708[11] = "Mouse gi\303\271";
+static char PcInputText773714[15] = "Mouse a destra";
+static char PcInputText773724[23] = "Rotella del mouse gi\303\271";
+static char PcInputText77373c[9] = "Mouse su";
+static char PcInputText773748[17] = "Mouse a sinistra";
+static char PcInputText77375c[9] = "Indietro";
+static char PcInputText773768[24] = "Pulsante levetta destro";
+static char PcInputText773780[26] = "Pulsante levetta sinistro";
+static char PcInputText77379c[17] = "Grilletto destro";
+static char PcInputText7737b0[19] = "Grilletto sinistro";
+static char PcInputText7737c4[24] = "Pulsante dorsale destro";
+static char PcInputText7737dc[26] = "Pulsante dorsale sinistro";
+static char PcInputText7737f8[11] = "Pulsante X";
+static char PcInputText773804[11] = "Pulsante A";
+static char PcInputText773810[11] = "Pulsante B";
+static char PcInputText77381c[11] = "Pulsante Y";
+static char PcInputText773828[23] = "Levetta destra in gi\303\271";
+static char PcInputText773840[21] = "Levetta destra in su";
+static char PcInputText773858[24] = "Levetta destra a destra";
+static char PcInputText773870[26] = "Levetta destra a sinistra";
+static char PcInputText77388c[25] = "Levetta sinistra in gi\303\271";
+static char PcInputText7738a8[23] = "Levetta sinistra in su";
+static char PcInputText7738c0[26] = "Levetta sinistra a destra";
+static char PcInputText7738dc[28] = "Levetta sinistra a sinistra";
+static char PcInputText7738f8[12] = "Rotazione Z";
+static char PcInputText773904[12] = "Rotazione Y";
+static char PcInputText773910[12] = "Rotazione X";
+static char PcInputText77391c[7] = "Asse Z";
+static char PcInputText773924[7] = "Asse Y";
+static char PcInputText77392c[7] = "Asse X";
+static char PcInputText773934[5] = "Alta";
+static char PcInputText77393c[6] = "Bassa";
+static char PcInputText773944[9] = "Pulsante";
+static char PcInputText773950[27] = "Tasto direzionale sinistra";
+static char PcInputText77396c[23] = "Tasto direzionale gi\303\271";
+static char PcInputText773984[25] = "Tasto direzionale destra";
+static char PcInputText7739a0[21] = "Tasto direzionale su";
+static char PcInputText773a78[21] = "Aucune touche saisie";
+static char PcInputText773a90[16] = "Souris bouton N";
+static char PcInputText773aa0[21] = "Bouton souris milieu";
+static char PcInputText773ab8[20] = "Bouton souris droit";
+static char PcInputText773acc[21] = "Bouton souris gauche";
+static char PcInputText773ae4[28] = "Molette souris vers le haut";
+static char PcInputText773b00[19] = "Souris vers le bas";
+static char PcInputText773b14[22] = "Souris vers la droite";
+static char PcInputText773b2c[27] = "Molette souris vers le bas";
+static char PcInputText773b48[20] = "Souris vers le haut";
+static char PcInputText773b5c[22] = "Souris vers la gauche";
+static char PcInputText773b74[9] = "Souris Z";
+static char PcInputText773b80[9] = "Souris Y";
+static char PcInputText773b8c[9] = "Souris X";
+static char PcInputText773b98[7] = "Retour";
+static char PcInputText773ba0[13] = "Touche START";
+static char PcInputText773bb0[23] = "Stick analogique droit";
+static char PcInputText773bc8[24] = "Stick analogique gauche";
+static char PcInputText773be0[17] = "G\303\242chette droite";
+static char PcInputText773bf4[17] = "G\303\242chette gauche";
+static char PcInputText773c08[23] = "G\303\242chette haute droite";
+static char PcInputText773c20[23] = "G\303\242chette haute gauche";
+static char PcInputText773c38[9] = "Touche X";
+static char PcInputText773c44[9] = "Touche A";
+static char PcInputText773c50[9] = "Touche B";
+static char PcInputText773c5c[9] = "Touche Y";
+static char PcInputText773c68[29] = "Stick analogique droit - Bas";
+static char PcInputText773c88[30] = "Stick analogique droit - Haut";
+static char PcInputText773ca8[32] = "Stick analogique droit - Droite";
+static char PcInputText773cc8[32] = "Stick analogique droit - Gauche";
+static char PcInputText773ce8[30] = "Stick analogique gauche - Bas";
+static char PcInputText773d08[31] = "Stick analogique gauche - Haut";
+static char PcInputText773d28[33] = "Stick analogique gauche - Droite";
+static char PcInputText773d4c[33] = "Stick analogique gauche - Gauche";
+static char PcInputText773d70[11] = "Rotation Z";
+static char PcInputText773d7c[11] = "Rotation Y";
+static char PcInputText773d88[11] = "Rotation X";
+static char PcInputText773d94[6] = "Axe Z";
+static char PcInputText773d9c[6] = "Axe Y";
+static char PcInputText773da4[6] = "Axe X";
+static char PcInputText773dac[19] = "%d (%s) analogique";
+static char PcInputText773dc0[6] = "Haute";
+static char PcInputText773dc8[6] = "Basse";
+static char PcInputText773dd0[7] = "Touche";
+static char PcInputText773dd8[11] = "BMD Gauche";
+static char PcInputText773de4[8] = "BMD Bas";
+static char PcInputText773dec[11] = "BMD Droite";
+static char PcInputText773df8[9] = "BMD Haut";
+static char PcInputText773f08[12] = "Sem entrada";
+static char PcInputText773f14[15] = "Mouse bot\303\243o N";
+static char PcInputText773f24[21] = "Mouse bot\303\243o do meio";
+static char PcInputText773f3c[21] = "Mouse bot\303\243o direito";
+static char PcInputText773f54[22] = "Mouse bot\303\243o esquerdo";
+static char PcInputText773f6c[21] = "Mouse roda para cima";
+static char PcInputText773f84[17] = "Mouse para baixo";
+static char PcInputText773f98[21] = "Mouse para a direita";
+static char PcInputText773fb0[22] = "Mouse roda para baixo";
+static char PcInputText773fc8[16] = "Mouse para cima";
+static char PcInputText773fd8[22] = "Mouse para a esquerda";
+static char PcInputText773ff0[8] = "Z Mouse";
+static char PcInputText773ff8[8] = "Y Mouse";
+static char PcInputText774000[8] = "X Mouse";
+static char PcInputText774008[7] = "Voltar";
+static char PcInputText774010[8] = "Iniciar";
+static char PcInputText774018[19] = "Direcional direito";
+static char PcInputText77402c[20] = "Direcional esquerdo";
+static char PcInputText774040[16] = "Gatilho direito";
+static char PcInputText774050[18] = "Gatilho Inf. Dir.";
+static char PcInputText774064[18] = "Gatilho Inf. Esq.";
+static char PcInputText774078[9] = "Bot\303\243o X";
+static char PcInputText774084[9] = "Bot\303\243o A";
+static char PcInputText774090[9] = "Bot\303\243o B";
+static char PcInputText77409c[9] = "Bot\303\243o Y";
+static char PcInputText7740a8[21] = "Direc. dir. p/ baixo";
+static char PcInputText7740c0[20] = "Direc. dir. p/ cima";
+static char PcInputText7740d4[20] = "Direc. dir. p/ dir.";
+static char PcInputText7740e8[19] = "Direc. dir. p/ esq";
+static char PcInputText7740fc[24] = "Deixe o direc. p/ baixo";
+static char PcInputText774114[23] = "Deixe o direc. p/ cima";
+static char PcInputText77412c[23] = "Deixe o direc. p/ dir.";
+static char PcInputText774144[23] = "Deixe o direc. p/ esq.";
+static char PcInputText77415c[12] = "Rota\303\247\303\243o Z";
+static char PcInputText774168[12] = "Rota\303\247\303\243o Y";
+static char PcInputText774174[12] = "Rota\303\247\303\243o X";
+static char PcInputText774188[19] = "Anal\303\263gico %d (%s)";
+static char PcInputText77419c[5] = "Alto";
+static char PcInputText7741a4[6] = "Baixa";
+static char PcInputText7741ac[7] = "Bot\303\243o";
+static char PcInputText7741b4[15] = "Direc. p/ esq.";
+static char PcInputText7741c4[16] = "Direc. p/ baixo";
+static char PcInputText7741d4[18] = "Direc. p/ direita";
+static char PcInputText7741e8[15] = "Direc. p/ cima";
+static char PcInputText7742a8[14] = "Ei sy\303\266tett\303\244";
+static char PcInputText7742b8[17] = "Hiiren painike N";
+static char PcInputText7742cc[20] = "Hiiren rullapainike";
+static char PcInputText7742e0[21] = "Hiiren oikea painike";
+static char PcInputText7742f8[21] = "Hiiren vasen painike";
+static char PcInputText774310[19] = "Hiiren rulla yl\303\266s";
+static char PcInputText774324[11] = "Hiiri alas";
+static char PcInputText774330[15] = "Hiiri oikealle";
+static char PcInputText774340[18] = "Hiiren rulla alas";
+static char PcInputText774354[12] = "Hiiri yl\303\266s";
+static char PcInputText774360[17] = "Hiiri vasemmalle";
+static char PcInputText774374[16] = "Hiiren Z-akseli";
+static char PcInputText774384[16] = "Hiiren Y-akseli";
+static char PcInputText774394[16] = "Hiiren X-akseli";
+static char PcInputText7743a4[9] = "Takaisin";
+static char PcInputText7743b0[7] = "Aloita";
+static char PcInputText7743b8[19] = "Oikea peukalosauva";
+static char PcInputText7743cc[19] = "Vasen peukalosauva";
+static char PcInputText7743e0[12] = "Oikea sauva";
+static char PcInputText7743ec[16] = "Vasen liipaisin";
+static char PcInputText7743fc[20] = "Oikea olkan\303\244pp\303\244in";
+static char PcInputText774410[20] = "Vasen olkan\303\244pp\303\244in";
+static char PcInputText774424[12] = "N\303\244pp\303\244in X";
+static char PcInputText774430[12] = "N\303\244pp\303\244in A";
+static char PcInputText77443c[12] = "N\303\244pp\303\244in B";
+static char PcInputText774448[12] = "N\303\244pp\303\244in Y";
+static char PcInputText774454[17] = "Oikea sauva alas";
+static char PcInputText774468[18] = "Oikea sauva yl\303\266s";
+static char PcInputText77447c[18] = "Oikea sauva oikea";
+static char PcInputText774490[18] = "Oikea sauva vasen";
+static char PcInputText7744a4[17] = "Vasen sauva alas";
+static char PcInputText7744b8[18] = "Vasen sauva yl\303\266s";
+static char PcInputText7744cc[18] = "Vasen sauva oikea";
+static char PcInputText7744e0[18] = "Vasen sauva vasen";
+static char PcInputText7744f4[11] = "Z-rotaatio";
+static char PcInputText774500[11] = "Y-rotaatio";
+static char PcInputText77450c[11] = "X-rotaatio";
+static char PcInputText774518[9] = "Z-akseli";
+static char PcInputText774524[9] = "Y-akseli";
+static char PcInputText774530[9] = "X-akseli";
+static char PcInputText77453c[19] = "Analoginen %d (%s)";
+static char PcInputText774550[7] = "Korkea";
+static char PcInputText774558[7] = "Matala";
+static char PcInputText774560[10] = "N\303\244pp\303\244in";
+static char PcInputText77456c[12] = "Hattu vasen";
+static char PcInputText774578[11] = "Hattu alas";
+static char PcInputText774584[12] = "Hattu oikea";
+static char PcInputText774590[12] = "Hattu yl\303\266s";
+static char PcInputText774664[16] = "Ingen inmatning";
+static char PcInputText774674[11] = "Musknapp N";
+static char PcInputText774680[21] = "Mittersta musknappen";
+static char PcInputText774698[16] = "H\303\266ger musknapp";
+static char PcInputText7746a8[18] = "V\303\244nster musknapp";
+static char PcInputText7746bc[12] = "Mushjul upp";
+static char PcInputText7746c8[11] = "Mus h\303\266ger";
+static char PcInputText7746d4[12] = "Mushjul ned";
+static char PcInputText7746e0[8] = "Mus upp";
+static char PcInputText7746e8[13] = "Mus v\303\244nster";
+static char PcInputText7746f8[9] = "Tillbaka";
+static char PcInputText774704[16] = "H\303\266ger styrspak";
+static char PcInputText774714[18] = "V\303\244nster styrspak";
+static char PcInputText774728[18] = "H\303\266ger avtryckare";
+static char PcInputText77473c[3] = "LT";
+static char PcInputText774740[8] = "R-knapp";
+static char PcInputText774748[8] = "L-knapp";
+static char PcInputText774750[8] = "Knapp X";
+static char PcInputText774758[8] = "Knapp A";
+static char PcInputText774760[8] = "Knapp B";
+static char PcInputText774768[8] = "Knapp Y";
+static char PcInputText774770[16] = "H\303\266ger Spak Ner";
+static char PcInputText774780[16] = "H\303\266ger Spak Upp";
+static char PcInputText774790[19] = "H\303\266ger Spak H\303\266ger";
+static char PcInputText7747a4[21] = "H\303\266ger Spak V\303\244nster";
+static char PcInputText7747bc[18] = "V\303\244nster Spak Ner";
+static char PcInputText7747d0[18] = "V\303\244nster Spak Upp";
+static char PcInputText7747e4[21] = "V\303\244nster Spak H\303\266ger";
+static char PcInputText7747fc[23] = "V\303\244nster Spak V\303\244nster";
+static char PcInputText774814[11] = "Z-rotation";
+static char PcInputText774820[11] = "Y-rotation";
+static char PcInputText77482c[11] = "X-rotation";
+static char PcInputText774838[7] = "Z-axel";
+static char PcInputText774840[7] = "Y-axel";
+static char PcInputText774848[7] = "X-axel";
+static char PcInputText774850[5] = "H\303\266g";
+static char PcInputText774858[5] = "L\303\245g";
+static char PcInputText774860[24] = "Riktningsknapp V\303\244nster";
+static char PcInputText774878[19] = "Riktningsknapp Ner";
+static char PcInputText77488c[22] = "Riktningsknapp H\303\266ger";
+static char PcInputText7748a4[19] = "Riktningsknapp Upp";
+static char PcInputText774948[12] = "Ingen input";
+static char PcInputText774954[12] = "Museknapp N";
+static char PcInputText774960[17] = "Midtre museknapp";
+static char PcInputText774974[17] = "H\303\270yre museknapp";
+static char PcInputText774988[18] = "Venstre museknapp";
+static char PcInputText77499c[13] = "Musehjul opp";
+static char PcInputText7749ac[8] = "Mus ned";
+static char PcInputText7749b4[11] = "Mus h\303\270yre";
+static char PcInputText7749c0[13] = "Musehjul ned";
+static char PcInputText7749d0[8] = "Mus opp";
+static char PcInputText7749d8[12] = "Mus venstre";
+static char PcInputText7749e4[6] = "Mus Z";
+static char PcInputText7749ec[6] = "Mus Y";
+static char PcInputText7749f4[6] = "Mus X";
+static char PcInputText7749fc[8] = "Tilbake";
+static char PcInputText774a04[12] = "H\303\270yre spak";
+static char PcInputText774a10[13] = "Venstre spak";
+static char PcInputText774a20[17] = "H\303\270yre avtrekker";
+static char PcInputText774a34[18] = "Venstre avtrekker";
+static char PcInputText774a48[20] = "H\303\270yre skulderknapp";
+static char PcInputText774a5c[21] = "Venstre skulderknapp";
+static char PcInputText774a74[8] = "X-knapp";
+static char PcInputText774a7c[8] = "A-knapp";
+static char PcInputText774a84[8] = "B-knapp";
+static char PcInputText774a8c[8] = "Y-knapp";
+static char PcInputText774a94[21] = "H\303\270yre styrespak ned";
+static char PcInputText774aac[21] = "H\303\270yre styrespak opp";
+static char PcInputText774ac4[24] = "H\303\270yre styrespak h\303\270yre";
+static char PcInputText774adc[25] = "H\303\270yre styrespak venstre";
+static char PcInputText774af8[22] = "Venstre styrespak ned";
+static char PcInputText774b10[22] = "Venstre styrespak opp";
+static char PcInputText774b28[25] = "Venstre styrespak h\303\270yre";
+static char PcInputText774b44[26] = "Venstre styrespak venstre";
+static char PcInputText774b60[11] = "Z-rotasjon";
+static char PcInputText774b6c[11] = "Y-rotasjon";
+static char PcInputText774b78[11] = "X-rotasjon";
+static char PcInputText774b84[7] = "Z-akse";
+static char PcInputText774b8c[7] = "Y-akse";
+static char PcInputText774b94[7] = "X-akse";
+static char PcInputText774b9c[15] = "Analog %d (%s)";
+static char PcInputText774bac[5] = "H\303\270y";
+static char PcInputText774bb4[4] = "Lav";
+static char PcInputText774bb8[6] = "Knapp";
+static char PcInputText774bc0[19] = "Hatteknapp venstre";
+static char PcInputText774bd4[15] = "Hatteknapp ned";
+static char PcInputText774be4[18] = "Hatteknapp h\303\270yre";
+static char PcInputText774bf8[15] = "Hatteknapp opp";
+static char PcInputText774cd8[12] = "Geen invoer";
+static char PcInputText774ce4[11] = "Muisknop N";
+static char PcInputText774cf0[19] = "Middelste muisknop";
+static char PcInputText774d04[16] = "Rechtermuisknop";
+static char PcInputText774d14[15] = "Linkermuisknop";
+static char PcInputText774d24[16] = "Muiswiel omhoog";
+static char PcInputText774d34[12] = "Muis omlaag";
+static char PcInputText774d40[12] = "Muis rechts";
+static char PcInputText774d4c[16] = "Muiswiel omlaag";
+static char PcInputText774d5c[12] = "Muis omhoog";
+static char PcInputText774d68[10] = "Muis Left";
+static char PcInputText774d74[7] = "Muis Z";
+static char PcInputText774d7c[7] = "Muis Y";
+static char PcInputText774d84[7] = "Muis X";
+static char PcInputText774d8c[6] = "Terug";
+static char PcInputText774d94[17] = "Rechter joystick";
+static char PcInputText774da8[16] = "Linker joystick";
+static char PcInputText774db8[16] = "Rechter trekker";
+static char PcInputText774dc8[15] = "Linker Trekker";
+static char PcInputText774dd8[17] = "Rechter Schouder";
+static char PcInputText774dec[16] = "Linker Schouder";
+static char PcInputText774dfc[7] = "Knop X";
+static char PcInputText774e04[7] = "Knop A";
+static char PcInputText774e0c[7] = "Knop B";
+static char PcInputText774e14[7] = "Knop Y";
+static char PcInputText774e1c[21] = "Rechter Stick Omlaag";
+static char PcInputText774e34[21] = "Rechter Stick Omhoog";
+static char PcInputText774e4c[21] = "Rechter Stick Rechts";
+static char PcInputText774e64[20] = "Rechter Stick Links";
+static char PcInputText774e78[20] = "Linker Stick Omlaag";
+static char PcInputText774e8c[20] = "Linker Stick Omhoog";
+static char PcInputText774ea0[20] = "Linker Stick Rechts";
+static char PcInputText774eb4[19] = "Linker Stick Links";
+static char PcInputText774ec8[10] = "Z Rotatie";
+static char PcInputText774ed4[10] = "Y Rotatie";
+static char PcInputText774ee0[10] = "X Rotatie";
+static char PcInputText774eec[5] = "Z As";
+static char PcInputText774ef4[5] = "Y As";
+static char PcInputText774efc[5] = "X As";
+static char PcInputText774f04[16] = "Analoog %d (%s)";
+static char PcInputText774f14[5] = "Hoog";
+static char PcInputText774f1c[5] = "Laag";
+static char PcInputText774f24[5] = "Knop";
+static char PcInputText774f2c[19] = "Navigatiepad Links";
+static char PcInputText774f40[20] = "Navigatiepad Omlaag";
+static char PcInputText774f54[20] = "Navigatiepad Rechts";
+static char PcInputText774f68[20] = "Navigatiepad Omhoog";
+static char PcInputText775064[13] = "\345\205\245\345\212\233\343\201\252\343\201\227";
+static char PcInputText775074[23] = "\343\203\236\343\202\246\343\202\271 \343\203\234\343\202\277\343\203\263 %d";
+static char PcInputText77508c[26] =
+    "\343\203\236\343\202\246\343\202\271 \344\270\255\345\244\256\343\203\234\343\202\277\343\203\263";
+static char PcInputText7750a8[23] =
+    "\343\203\236\343\202\246\343\202\271 \345\217\263\343\203\234\343\202\277\343\203\263";
+static char PcInputText7750c0[23] =
+    "\343\203\236\343\202\246\343\202\271 \345\267\246\343\203\234\343\202\277\343\203\263";
+static char PcInputText7750d8[26] =
+    "\343\203\236\343\202\246\343\202\271 \343\203\233\343\202\244\343\203\274\343\203\253\344\270\212";
+static char PcInputText7750f4[14] = "\343\203\236\343\202\246\343\202\271 \344\270\213";
+static char PcInputText775104[14] = "\343\203\236\343\202\246\343\202\271 \345\217\263";
+static char PcInputText775114[26] =
+    "\343\203\236\343\202\246\343\202\271 \343\203\233\343\202\244\343\203\274\343\203\253\344\270\213";
+static char PcInputText775130[14] = "\343\203\236\343\202\246\343\202\271 \344\270\212";
+static char PcInputText775140[14] = "\343\203\236\343\202\246\343\202\271 \345\267\246";
+static char PcInputText775150[12] = "\343\203\236\343\202\246\343\202\271 Z";
+static char PcInputText77515c[12] = "\343\203\236\343\202\246\343\202\271 Y";
+static char PcInputText775168[12] = "\343\203\236\343\202\246\343\202\271 X";
+static char PcInputText775174[5] = "BACK";
+static char PcInputText77517c[26] =
+    "\345\217\263 \350\246\252\346\214\207\343\202\271\343\203\206\343\202\243\343\203\203\343\202\257";
+static char PcInputText775198[26] =
+    "\345\267\246 \350\246\252\346\214\207\343\202\271\343\203\206\343\202\243\343\203\203\343\202\257";
+static char PcInputText7751b4[17] = "\345\217\263 \343\203\210\343\203\252\343\202\254\343\203\274";
+static char PcInputText7751c8[17] = "\345\267\246 \343\203\210\343\203\252\343\202\254\343\203\274";
+static char PcInputText7751dc[3] = "RB";
+static char PcInputText7751e0[3] = "LB";
+static char PcInputText7751e4[12] = "X \343\203\234\343\202\277\343\203\263";
+static char PcInputText7751f0[12] = "A \343\203\234\343\202\277\343\203\263";
+static char PcInputText7751fc[12] = "B \343\203\234\343\202\277\343\203\263";
+static char PcInputText775208[12] = "Y \343\203\234\343\202\277\343\203\263";
+static char PcInputText775214[23] =
+    "\345\217\263\343\202\271\343\203\206\343\202\243\343\203\203\343\202\257 \344\270\213";
+static char PcInputText77522c[23] =
+    "\345\217\263\343\202\271\343\203\206\343\202\243\343\203\203\343\202\257 \344\270\212";
+static char PcInputText775244[23] =
+    "\345\217\263\343\202\271\343\203\206\343\202\243\343\203\203\343\202\257 \345\217\263";
+static char PcInputText77525c[23] =
+    "\345\217\263\343\202\271\343\203\206\343\202\243\343\203\203\343\202\257 \345\267\246";
+static char PcInputText775274[23] =
+    "\345\267\246\343\202\271\343\203\206\343\202\243\343\203\203\343\202\257 \344\270\213";
+static char PcInputText77528c[23] =
+    "\345\267\246\343\202\271\343\203\206\343\202\243\343\203\203\343\202\257 \344\270\212";
+static char PcInputText7752a4[23] =
+    "\345\267\246\343\202\271\343\203\206\343\202\243\343\203\203\343\202\257 \345\217\263";
+static char PcInputText7752bc[23] =
+    "\345\267\246\343\202\271\343\203\206\343\202\243\343\203\203\343\202\257 \345\267\246";
+static char PcInputText7752d4[9] = "Z \345\233\236\350\273\242";
+static char PcInputText7752e0[9] = "Y \345\233\236\350\273\242";
+static char PcInputText7752ec[9] = "X \345\233\236\350\273\242";
+static char PcInputText7752f8[6] = "Z \350\273\270";
+static char PcInputText775300[6] = "Y \350\273\270";
+static char PcInputText775308[6] = "X \350\273\270";
+static char PcInputText775310[21] = "\343\202\242\343\203\212\343\203\255\343\202\260 %d (%s)";
+static char PcInputText775328[4] = "\351\253\230";
+static char PcInputText77532c[4] = "\344\275\216";
+static char PcInputText775330[10] = "\343\203\234\343\202\277\343\203\263";
+static char PcInputText77533c[14] = "\343\203\217\343\203\203\343\203\210 \345\267\246";
+static char PcInputText77534c[14] = "\343\203\217\343\203\203\343\203\210 \344\270\213";
+static char PcInputText77535c[14] = "\343\203\217\343\203\203\343\203\210 \345\217\263";
+static char PcInputText77536c[14] = "\343\203\217\343\203\203\343\203\210 \344\270\212";
+static char PcInputText775418[9] = "No Input";
+static char PcInputText775424[16] = "Mouse Button %d";
+static char PcInputText775434[20] = "Mouse Middle Button";
+static char PcInputText775448[19] = "Mouse Right Button";
+static char PcInputText77545c[18] = "Mouse Left Button";
+static char PcInputText775470[15] = "Mouse Wheel Up";
+static char PcInputText775480[11] = "Mouse Down";
+static char PcInputText77548c[12] = "Mouse Right";
+static char PcInputText775498[17] = "Mouse Wheel Down";
+static char PcInputText7754ac[9] = "Mouse Up";
+static char PcInputText7754b8[11] = "Mouse Left";
+static char PcInputText7754c4[8] = "Mouse Z";
+static char PcInputText7754cc[8] = "Mouse Y";
+static char PcInputText7754d4[8] = "Mouse X";
+static char PcInputText7754dc[6] = "Start";
+static char PcInputText7754e4[18] = "Right Thumb Stick";
+static char PcInputText7754f8[17] = "Left Thumb Stick";
+static char PcInputText77550c[14] = "Right Trigger";
+static char PcInputText77551c[13] = "Left Trigger";
+static char PcInputText77552c[15] = "Right Shoulder";
+static char PcInputText77553c[14] = "Left Shoulder";
+static char PcInputText77554c[9] = "Button X";
+static char PcInputText775558[9] = "Button A";
+static char PcInputText775564[9] = "Button B";
+static char PcInputText775570[9] = "Button Y";
+static char PcInputText77557c[17] = "Right Stick Down";
+static char PcInputText775590[15] = "Right Stick Up";
+static char PcInputText7755a0[18] = "Right Stick Right";
+static char PcInputText7755b4[17] = "Right Stick Left";
+static char PcInputText7755c8[16] = "Left Stick Down";
+static char PcInputText7755d8[14] = "Left Stick Up";
+static char PcInputText7755e8[17] = "Left Stick Right";
+static char PcInputText7755fc[16] = "Left Stick Left";
+static char PcInputText77560c[11] = "Z Rotation";
+static char PcInputText775618[11] = "Y Rotation";
+static char PcInputText775624[11] = "X Rotation";
+static char PcInputText775630[7] = "Z Axis";
+static char PcInputText775638[7] = "Y Axis";
+static char PcInputText775640[7] = "X Axis";
+static char PcInputText775648[17] = "Analogue %d (%s)";
+static char PcInputText77565c[5] = "High";
+static char PcInputText775664[4] = "Low";
+static char PcInputText775668[7] = "Button";
+static char PcInputText775670[9] = "Hat Left";
+static char PcInputText77567c[9] = "Hat Down";
+static char PcInputText775688[10] = "Hat Right";
+static char PcInputText775694[7] = "Hat Up";
+static char PcInputText775eb4[10] = "GameTitle";
+static char PcInputText775ec0[7] = "TTales";
+
+const char *PcCompanyName = PcInputText775ec0;
+const char *PcProductName = PcInputText775eb4;
+i32 PcUsePersonalFolder = 1;
+void(__cdecl *PcInputStateInitializedCallback)(PC_INPUT_RUNTIME_PC *) = NULL;
+char PcUserFolder[260] = {};
+char PcFileDirectory[128] = {};
+char PcFilePath[128] = {};
+TEXT_INPUT_LABELS_PC PcInputLabels820560 = {
+    {{PcInputText77536c, PcInputText77535c, PcInputText77534c, PcInputText77533c, PcInputText775330, PcInputText77532c,
+      PcInputText775328, PcInputText775310, PcInputText775308, PcInputText775300, PcInputText7752f8, PcInputText7752ec,
+      PcInputText7752e0, PcInputText7752d4, PcInputText7752bc, PcInputText7752a4, PcInputText77528c, PcInputText775274,
+      PcInputText77525c, PcInputText775244, PcInputText77522c, PcInputText775214, PcInputText775208, PcInputText7751fc,
+      PcInputText7751f0, PcInputText7751e4, PcInputText7751e0, PcInputText7751dc, PcInputText7751c8, PcInputText7751b4,
+      PcInputText775198, PcInputText77517c, PcInputText76fe70, PcInputText775174, PcInputText775168, PcInputText77515c,
+      PcInputText775150}},
+    {PcInputText775140, PcInputText775130, PcInputText775114},
+    {PcInputText775104, PcInputText7750f4, PcInputText7750d8},
+    {PcInputText7750c0, PcInputText7750a8, PcInputText77508c},
+    PcInputText775074,
+    PcInputText775064};
+TEXT_INPUT_LABELS_PC PcInputLabels820480 = {
+    {{PcInputText775694, PcInputText775688, PcInputText77567c, PcInputText775670,     PcInputText775668,
+      PcInputText775664, PcInputText77565c, PcInputText775648, PcInputText775640,     PcInputText775638,
+      PcInputText775630, PcInputText775624, PcInputText775618, PcInputText77560c,     PcInputText7755fc,
+      PcInputText7755e8, PcInputText7755d8, PcInputText7755c8, PcInputText7755b4,     PcInputText7755a0,
+      PcInputText775590, PcInputText77557c, PcInputText775570, PcInputText775564,     PcInputText775558,
+      PcInputText77554c, PcInputText77553c, PcInputText77552c, PcInputText77551c,     PcInputText77550c,
+      PcInputText7754f8, PcInputText7754e4, PcInputText7754dc, UiBackPromptLiteralPc, PcInputText7754d4,
+      PcInputText7754cc, PcInputText7754c4}},
+    {PcInputText7754b8, PcInputText7754ac, PcInputText775498},
+    {PcInputText77548c, PcInputText775480, PcInputText775470},
+    {PcInputText77545c, PcInputText775448, PcInputText775434},
+    PcInputText775424,
+    PcInputText775418};
+TEXT_INPUT_LABELS_PC PcInputLabels820aa0 = {
+    {{PcInputText773df8, PcInputText773dec, PcInputText773de4, PcInputText773dd8, PcInputText773dd0, PcInputText773dc8,
+      PcInputText773dc0, PcInputText773dac, PcInputText773da4, PcInputText773d9c, PcInputText773d94, PcInputText773d88,
+      PcInputText773d7c, PcInputText773d70, PcInputText773d4c, PcInputText773d28, PcInputText773d08, PcInputText773ce8,
+      PcInputText773cc8, PcInputText773ca8, PcInputText773c88, PcInputText773c68, PcInputText773c5c, PcInputText773c50,
+      PcInputText773c44, PcInputText773c38, PcInputText773c20, PcInputText773c08, PcInputText773bf4, PcInputText773be0,
+      PcInputText773bc8, PcInputText773bb0, PcInputText773ba0, PcInputText773b98, PcInputText773b8c, PcInputText773b80,
+      PcInputText773b74}},
+    {PcInputText773b5c, PcInputText773b48, PcInputText773b2c},
+    {PcInputText773b14, PcInputText773b00, PcInputText773ae4},
+    {PcInputText773acc, PcInputText773ab8, PcInputText773aa0},
+    PcInputText773a90,
+    PcInputText773a78};
+TEXT_INPUT_LABELS_PC PcInputLabels820d40 = {
+    {{PcInputText773278, PcInputText77325c, PcInputText773240, PcInputText773220, PcInputText773218, PcInputText773210,
+      PcInputText77419c, PcInputText7731fc, PcInputText7731f4, PcInputText7731ec, PcInputText7731e4, PcInputText7731d8,
+      PcInputText7731cc, PcInputText7731c0, PcInputText7731a0, PcInputText773180, PcInputText773168, PcInputText773150,
+      PcInputText773130, PcInputText773114, PcInputText7730fc, PcInputText7730e8, PcInputText7730dc, PcInputText7730d0,
+      PcInputText7730c4, PcInputText7730b8, PcInputText77309c, PcInputText773080, PcInputText773064, PcInputText773048,
+      PcInputText773038, PcInputText773028, PcInputText773018, PcInputText773010, PcInputText773004, PcInputText772ff8,
+      PcInputText772fec}},
+    {PcInputText772fd4, PcInputText772fc0, PcInputText772fa0},
+    {PcInputText772f8c, PcInputText772f78, PcInputText772f58},
+    {PcInputText772f3c, PcInputText772f20, PcInputText772f04},
+    PcInputText772ef4,
+    PcInputText772eec};
+TEXT_INPUT_LABELS_PC PcInputLabels820c60 = {
+    {{PcInputText7735bc, PcInputText7735a8, PcInputText773594, PcInputText773580, PcInputText773578, PcInputText773570,
+      PcInputText773568, PcInputText774b9c, PcInputText773560, PcInputText773558, PcInputText773550, PcInputText773544,
+      PcInputText773538, PcInputText77352c, PcInputText773518, PcInputText773504, PcInputText7734f0, PcInputText7734dc,
+      PcInputText7734c8, PcInputText7734b0, PcInputText77349c, PcInputText773488, PcInputText773480, PcInputText773478,
+      PcInputText773470, PcInputText773468, PcInputText773454, PcInputText77343c, PcInputText77342c, PcInputText773418,
+      PcInputText773408, PcInputText7733f8, PcInputText7754dc, PcInputText7733f0, PcInputText7733e8, PcInputText7733e0,
+      PcInputText7733d8}},
+    {PcInputText7733cc, PcInputText7733c0, PcInputText7733b0},
+    {PcInputText7733a4, PcInputText773398, PcInputText773388},
+    {PcInputText773378, PcInputText773364, PcInputText773350},
+    PcInputText773344,
+    PcInputText773334};
+TEXT_INPUT_LABELS_PC PcInputLabels820b80 = {
+    {{PcInputText7739a0, PcInputText773984, PcInputText77396c, PcInputText773950, PcInputText773944, PcInputText77393c,
+      PcInputText773934, PcInputText775648, PcInputText77392c, PcInputText773924, PcInputText77391c, PcInputText773910,
+      PcInputText773904, PcInputText7738f8, PcInputText7738dc, PcInputText7738c0, PcInputText7738a8, PcInputText77388c,
+      PcInputText773870, PcInputText773858, PcInputText773840, PcInputText773828, PcInputText77381c, PcInputText773810,
+      PcInputText773804, PcInputText7737f8, PcInputText7737dc, PcInputText7737c4, PcInputText7737b0, PcInputText77379c,
+      PcInputText773780, PcInputText773768, PcInputText7754dc, PcInputText77375c, PcInputText7754d4, PcInputText7754cc,
+      PcInputText7754c4}},
+    {PcInputText773748, PcInputText77373c, PcInputText773724},
+    {PcInputText773714, PcInputText773708, PcInputText7736f0},
+    {PcInputText7736d4, PcInputText7736bc, PcInputText7736a0},
+    PcInputText77368c,
+    PcInputText77367c};
+TEXT_INPUT_LABELS_PC PcInputLabels820640 = {
+    {{PcInputText774f68, PcInputText774f54, PcInputText774f40, PcInputText774f2c, PcInputText774f24, PcInputText774f1c,
+      PcInputText774f14, PcInputText774f04, PcInputText774efc, PcInputText774ef4, PcInputText774eec, PcInputText774ee0,
+      PcInputText774ed4, PcInputText774ec8, PcInputText774eb4, PcInputText774ea0, PcInputText774e8c, PcInputText774e78,
+      PcInputText774e64, PcInputText774e4c, PcInputText774e34, PcInputText774e1c, PcInputText774e14, PcInputText774e0c,
+      PcInputText774e04, PcInputText774dfc, PcInputText774dec, PcInputText774dd8, PcInputText774dc8, PcInputText774db8,
+      PcInputText774da8, PcInputText774d94, PcInputText7754dc, PcInputText774d8c, PcInputText774d84, PcInputText774d7c,
+      PcInputText774d74}},
+    {PcInputText774d68, PcInputText774d5c, PcInputText774d4c},
+    {PcInputText774d40, PcInputText774d34, PcInputText774d24},
+    {PcInputText774d14, PcInputText774d04, PcInputText774cf0},
+    PcInputText774ce4,
+    PcInputText774cd8};
+TEXT_INPUT_LABELS_PC PcInputLabels8209c0 = {{{PcInputText7741e8,
+                                              PcInputText7741d4,
+                                              PcInputText7741c4,
+                                              PcInputText7741b4,
+                                              PcInputText7741ac,
+                                              PcInputText7741a4,
+                                              PcInputText77419c,
+                                              PcInputText774188,
+                                              TextInputKeyNameTextPc759770,
+                                              TextInputKeyNameTextPc774184,
+                                              TextInputKeyNameTextPc774180,
+                                              PcInputText774174,
+                                              PcInputText774168,
+                                              PcInputText77415c,
+                                              PcInputText774144,
+                                              PcInputText77412c,
+                                              PcInputText774114,
+                                              PcInputText7740fc,
+                                              PcInputText7740e8,
+                                              PcInputText7740d4,
+                                              PcInputText7740c0,
+                                              PcInputText7740a8,
+                                              PcInputText77409c,
+                                              PcInputText774090,
+                                              PcInputText774084,
+                                              PcInputText774078,
+                                              PcInputText774064,
+                                              PcInputText774050,
+                                              PcInputText774064,
+                                              PcInputText774040,
+                                              PcInputText77402c,
+                                              PcInputText774018,
+                                              PcInputText774010,
+                                              PcInputText774008,
+                                              PcInputText774000,
+                                              PcInputText773ff8,
+                                              PcInputText773ff0}},
+                                            {PcInputText773fd8, PcInputText773fc8, PcInputText773fb0},
+                                            {PcInputText773f98, PcInputText773f84, PcInputText773f6c},
+                                            {PcInputText773f54, PcInputText773f3c, PcInputText773f24},
+                                            PcInputText773f14,
+                                            PcInputText773f08};
+TEXT_INPUT_LABELS_PC PcInputLabels820e20 = {
+    {{PcInputText772e1c, PcInputText772e08, PcInputText772df8, PcInputText772de4, PcInputText772ddc, PcInputText774bb4,
+      PcInputText772dd4, PcInputText774b9c, PcInputText772dcc, PcInputText772dc4, PcInputText772dbc, PcInputText772db0,
+      PcInputText772da4, PcInputText772d98, PcInputText772d7c, PcInputText772d60, PcInputText772d48, PcInputText772d30,
+      PcInputText772d14, PcInputText772cfc, PcInputText772ce8, PcInputText772cd0, PcInputText772cc8, PcInputText772cc0,
+      PcInputText772cb8, PcInputText772cb0, PcInputText772c9c, PcInputText772c88, PcInputText772c74, PcInputText772c88,
+      PcInputText772c60, PcInputText772c4c, PcInputText7754dc, PcInputText772c44, PcInputText772c3c, PcInputText7749ec,
+      PcInputText7749e4}},
+    {PcInputText7749d8, PcInputText772c34, PcInputText7746d4},
+    {PcInputText772c28, PcInputText7749ac, PcInputText772c1c},
+    {PcInputText772c08, PcInputText772bf8, PcInputText772be4},
+    PcInputText772bd8,
+    PcInputText774948};
+TEXT_INPUT_LABELS_PC PcInputLabels8210c0 = {
+    {{PcInputText772150, PcInputText772138, PcInputText772120, PcInputText772108, PcInputText7720fc, PcInputText7720f0,
+      PcInputText7720e4, PcInputText774b9c, PcInputText7720dc, PcInputText7720d4, PcInputText7720cc, PcInputText7720c0,
+      PcInputText7720b4, PcInputText7720a8, PcInputText772094, PcInputText77207c, PcInputText772064, PcInputText772050,
+      PcInputText772038, PcInputText772020, PcInputText772008, PcInputText771ff0, PcInputText771fe0, PcInputText771fd0,
+      PcInputText771fc0, PcInputText771fb0, PcInputText771f94, PcInputText771f78, PcInputText771f68, PcInputText771f58,
+      PcInputText771f48, PcInputText771f38, PcInputText7754dc, PcInputText771f30, PcInputText771f28, PcInputText7720d4,
+      PcInputText7720cc}},
+    {PcInputText771f14, PcInputText771f00, PcInputText771ee8},
+    {PcInputText771ed4, PcInputText771ec0, PcInputText771ea8},
+    {PcInputText771e90, PcInputText771e78, PcInputText771e5c},
+    PcInputText771e48,
+    PcInputText771e38};
+TEXT_INPUT_LABELS_PC PcInputLabels820f00 = {
+    {{PcInputText772b34, PcInputText772b20, PcInputText772b0c, PcInputText772afc, PcInputText772af0, PcInputText772ae8,
+      PcInputText772ae0, PcInputText772acc, PcInputText772ac4, PcInputText772abc, PcInputText772ab4, PcInputText772aa4,
+      PcInputText772a94, PcInputText772a84, PcInputText772a6c, PcInputText772a54, PcInputText772a3c, PcInputText772a24,
+      PcInputText772a0c, PcInputText7729f4, PcInputText7729dc, PcInputText7729c4, PcInputText7729b8, PcInputText7729ac,
+      PcInputText7729a0, PcInputText772994, PcInputText77297c, PcInputText772964, PcInputText772958, PcInputText77294c,
+      PcInputText77293c, PcInputText77292c, PcInputText7754dc, PcInputText772924, PcInputText772918, PcInputText77290c,
+      PcInputText772900}},
+    {PcInputText7728f0, PcInputText7728e0, PcInputText7728c8},
+    {PcInputText7728e0, PcInputText7728b8, PcInputText7728a0},
+    {PcInputText772888, PcInputText772870, PcInputText772854},
+    PcInputText772840,
+    PcInputText772830};
+TEXT_INPUT_LABELS_PC PcInputLabels820fe0 = {
+    {{PcInputText772760, PcInputText772750, PcInputText772744, PcInputText772738, PcInputText772728, PcInputText772718,
+      PcInputText772708, PcInputText7726e8, PcInputText7726dc, PcInputText7726d0, PcInputText7726c4, PcInputText7726ac,
+      PcInputText772694, PcInputText77267c, PcInputText772650, PcInputText772624, PcInputText7725f8, PcInputText7725d0,
+      PcInputText7725a4, PcInputText772574, PcInputText772548, PcInputText77251c, PcInputText77250c, PcInputText7724fc,
+      PcInputText7724ec, PcInputText7724dc, PcInputText7724c0, PcInputText7724a4, PcInputText77248c, PcInputText772474,
+      PcInputText772458, PcInputText772438, PcInputText77242c, PcInputText772420, PcInputText77240c, PcInputText7723f8,
+      PcInputText7723e4}},
+    {PcInputText7723d0, PcInputText7723bc, PcInputText77239c},
+    {PcInputText772384, PcInputText772370, PcInputText77234c},
+    {PcInputText772328, PcInputText772304, PcInputText7722dc},
+    PcInputText7722c4,
+    PcInputText77229c};
+TEXT_INPUT_LABELS_PC PcInputLabels820800 = {
+    {{PcInputText7748a4, PcInputText77488c, PcInputText774878, PcInputText774860, PcInputText774bb8, PcInputText774858,
+      PcInputText774850, PcInputText774b9c, PcInputText774848, PcInputText774840, PcInputText774838, PcInputText77482c,
+      PcInputText774820, PcInputText774814, PcInputText7747fc, PcInputText7747e4, PcInputText7747d0, PcInputText7747bc,
+      PcInputText7747a4, PcInputText774790, PcInputText774780, PcInputText774770, PcInputText774768, PcInputText774760,
+      PcInputText774758, PcInputText774750, PcInputText774748, PcInputText774740, PcInputText77473c, PcInputText774728,
+      PcInputText774714, PcInputText774704, PcInputText7754dc, PcInputText7746f8, PcInputText7749f4, PcInputText7749ec,
+      PcInputText7749e4}},
+    {PcInputText7746e8, PcInputText7746e0, PcInputText7746d4},
+    {PcInputText7746c8, PcInputText7749ac, PcInputText7746bc},
+    {PcInputText7746a8, PcInputText774698, PcInputText774680},
+    PcInputText774674,
+    PcInputText774664};
+TEXT_INPUT_LABELS_PC PcInputLabels820720 = {
+    {{PcInputText774bf8, PcInputText774be4, PcInputText774bd4, PcInputText774bc0, PcInputText774bb8, PcInputText774bb4,
+      PcInputText774bac, PcInputText774b9c, PcInputText774b94, PcInputText774b8c, PcInputText774b84, PcInputText774b78,
+      PcInputText774b6c, PcInputText774b60, PcInputText774b44, PcInputText774b28, PcInputText774b10, PcInputText774af8,
+      PcInputText774adc, PcInputText774ac4, PcInputText774aac, PcInputText774a94, PcInputText774a8c, PcInputText774a84,
+      PcInputText774a7c, PcInputText774a74, PcInputText774a5c, PcInputText774a48, PcInputText774a34, PcInputText774a20,
+      PcInputText774a10, PcInputText774a04, PcInputText7754dc, PcInputText7749fc, PcInputText7749f4, PcInputText7749ec,
+      PcInputText7749e4}},
+    {PcInputText7749d8, PcInputText7749d0, PcInputText7749c0},
+    {PcInputText7749b4, PcInputText7749ac, PcInputText77499c},
+    {PcInputText774988, PcInputText774974, PcInputText774960},
+    PcInputText774954,
+    PcInputText774948};
+TEXT_INPUT_LABELS_PC PcInputLabels8208e0 = {
+    {{PcInputText774590, PcInputText774584, PcInputText774578, PcInputText77456c, PcInputText774560, PcInputText774558,
+      PcInputText774550, PcInputText77453c, PcInputText774530, PcInputText774524, PcInputText774518, PcInputText77450c,
+      PcInputText774500, PcInputText7744f4, PcInputText7744e0, PcInputText7744cc, PcInputText7744b8, PcInputText7744a4,
+      PcInputText774490, PcInputText77447c, PcInputText774468, PcInputText774454, PcInputText774448, PcInputText77443c,
+      PcInputText774430, PcInputText774424, PcInputText774410, PcInputText7743fc, PcInputText7743ec, PcInputText7743e0,
+      PcInputText7743cc, PcInputText7743b8, PcInputText7743b0, PcInputText7743a4, PcInputText774394, PcInputText774384,
+      PcInputText774374}},
+    {PcInputText774360, PcInputText774354, PcInputText774340},
+    {PcInputText774330, PcInputText774324, PcInputText774310},
+    {PcInputText7742f8, PcInputText7742e0, PcInputText7742cc},
+    PcInputText7742b8,
+    PcInputText7742a8};
+char *PcInputKeyNames821910[238] = {TextInputKeyNameTextPc771d80,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    TextInputKeyNameTextPc771d50,
+                                    TextInputKeyNameTextPc771d48,
+                                    TextInputKeyNameTextPc771d3c,
+                                    TextInputKeyNameTextPc771d38,
+                                    TextInputKeyNameTextPc771d34,
+                                    TextInputKeyNameTextPc771d30,
+                                    TextInputKeyNameTextPc771d2c,
+                                    TextInputKeyNameTextPc771d28,
+                                    TextInputKeyNameTextPc771d24,
+                                    TextInputKeyNameTextPc774184,
+                                    TextInputKeyNameTextPc771d20,
+                                    TextInputKeyNameTextPc771d1c,
+                                    TextInputKeyNameTextPc771d18,
+                                    TextInputKeyNameTextPc771d14,
+                                    TextInputKeyNameTextPc753374,
+                                    TextInputKeyNameTextPc753370,
+                                    TextInputKeyNameTextPc771d0c,
+                                    PcInputText771990,
+                                    TextInputKeyNameTextPc771d00,
+                                    TextInputKeyNameTextPc771cfc,
+                                    TextInputKeyNameTextPc771cf8,
+                                    TextInputKeyNameTextPc771cf4,
+                                    TextInputKeyNameTextPc771cf0,
+                                    TextInputKeyNameTextPc771cec,
+                                    TextInputKeyNameTextPc771ce8,
+                                    TextInputKeyNameTextPc771ce4,
+                                    TextInputKeyNameTextPc771ce0,
+                                    PcInputText771978,
+                                    PcInputText77195c,
+                                    PcInputText77194c,
+                                    PcInputText771940,
+                                    (char *)WorldPathSeparator,
+                                    TextInputKeyNameTextPc774180,
+                                    TextInputKeyNameTextPc759770,
+                                    TextInputKeyNameTextPc771cac,
+                                    TextInputKeyNameTextPc771ca8,
+                                    TextInputKeyNameTextPc771ca4,
+                                    TextInputKeyNameTextPc771ca0,
+                                    TextInputKeyNameTextPc771c9c,
+                                    PcInputText771930,
+                                    PcInputText771920,
+                                    PcInputText7718fc,
+                                    PcInputText7718f0,
+                                    PcInputText7718dc,
+                                    PcInputText7718d4,
+                                    PcInputText7718c4,
+                                    TextInputKeyNameTextPc771c50,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    TextInputKeyNameTextPc771c1c,
+                                    TextInputKeyNameTextPc771c10,
+                                    PcInputText7718b0,
+                                    PcInputText77189c,
+                                    PcInputText771888,
+                                    PcInputText771874,
+                                    PcInputText771860,
+                                    PcInputText77184c,
+                                    PcInputText771838,
+                                    PcInputText771824,
+                                    PcInputText771810,
+                                    PcInputText7717fc,
+                                    PcInputText7717e8,
+                                    PcInputText7717d4,
+                                    PcInputText7717c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7719a8,
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b58,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b4c,
+                                    TextInputKeyNameTextPc771b48,
+                                    TextInputKeyNameTextPc771b40,
+                                    TextInputKeyNameTextPc771b34,
+                                    TextInputKeyNameTextPc771b2c,
+                                    TextInputKeyNameTextPc771b24,
+                                    TextInputKeyNameTextPc771b20,
+                                    TextInputKeyNameTextPc771b14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b08,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7717a8,
+                                    PcInputText77179c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aec,
+                                    TextInputKeyNameTextPc771ae4,
+                                    TextInputKeyNameTextPc771adc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ad0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ab8,
+                                    PcInputText771788,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771774,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a9c,
+                                    PcInputText77176c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a8c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a84,
+                                    PcInputText771760,
+                                    PcInputText771758,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText77174c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771740,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a64,
+                                    PcInputText771734,
+                                    PcInputText771728,
+                                    TextInputKeyNameTextPc771a50,
+                                    TextInputKeyNameTextPc76fde8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771710,
+                                    PcInputText7716f8,
+                                    PcInputText7716dc,
+                                    TextInputKeyNameTextPc771a30,
+                                    TextInputKeyNameTextPc771a28,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a20,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a14,
+                                    TextInputKeyNameTextPc771a04,
+                                    TextInputKeyNameTextPc7719f8,
+                                    TextInputKeyNameTextPc7719f0,
+                                    TextInputKeyNameTextPc7719e4,
+                                    TextInputKeyNameTextPc7719dc,
+                                    TextInputKeyNameTextPc7719d0,
+                                    TextInputKeyNameTextPc7719c8,
+                                    TextInputKeyNameTextPc7719bc};
+char *PcInputKeyNames822080[238] = {TextInputKeyNameTextPc771d80,
+                                    PcInputText77154c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText755d70,
+                                    PcInputText771544,
+                                    PcInputText773b98,
+                                    PcInputText771538,
+                                    TextInputKeyNameTextPc771d00,
+                                    TextInputKeyNameTextPc774180,
+                                    TextInputKeyNameTextPc771d2c,
+                                    TextInputKeyNameTextPc771d28,
+                                    TextInputKeyNameTextPc771d24,
+                                    TextInputKeyNameTextPc774184,
+                                    TextInputKeyNameTextPc771d20,
+                                    TextInputKeyNameTextPc771d1c,
+                                    TextInputKeyNameTextPc771d18,
+                                    TextInputKeyNameTextPc771d14,
+                                    PcInputText771534,
+                                    PcInputText771530,
+                                    PcInputText771528,
+                                    PcInputText771520,
+                                    TextInputKeyNameTextPc771d34,
+                                    TextInputKeyNameTextPc771cfc,
+                                    TextInputKeyNameTextPc771cf8,
+                                    TextInputKeyNameTextPc771cf4,
+                                    TextInputKeyNameTextPc771cf0,
+                                    TextInputKeyNameTextPc771cec,
+                                    TextInputKeyNameTextPc771ce8,
+                                    TextInputKeyNameTextPc771ce4,
+                                    TextInputKeyNameTextPc771ce0,
+                                    TextInputKeyNameTextPc771c9c,
+                                    PcInputText77151c,
+                                    PcInputText771518,
+                                    PcInputText771510,
+                                    PcInputText77150c,
+                                    TextInputKeyNameTextPc771d30,
+                                    TextInputKeyNameTextPc759770,
+                                    TextInputKeyNameTextPc771cac,
+                                    TextInputKeyNameTextPc771ca8,
+                                    TextInputKeyNameTextPc771ca4,
+                                    TextInputKeyNameTextPc771ca0,
+                                    PcInputText771504,
+                                    PcInputText7714f4,
+                                    PcInputText7714e8,
+                                    PcInputText7714d4,
+                                    PcInputText7714cc,
+                                    PcInputText7714c0,
+                                    PcInputText7714b8,
+                                    PcInputText7714b0,
+                                    PcInputText7714a4,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    PcInputText771498,
+                                    PcInputText771488,
+                                    PcInputText77147c,
+                                    PcInputText771470,
+                                    PcInputText771464,
+                                    PcInputText771458,
+                                    PcInputText77144c,
+                                    PcInputText771440,
+                                    PcInputText771434,
+                                    PcInputText771428,
+                                    PcInputText77141c,
+                                    PcInputText771410,
+                                    PcInputText771404,
+                                    PcInputText7713f8,
+                                    PcInputText7713e8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7713e4,
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7713d8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b4c,
+                                    PcInputText7713d4,
+                                    TextInputKeyNameTextPc771c9c,
+                                    PcInputText7713d0,
+                                    TextInputKeyNameTextPc771b2c,
+                                    TextInputKeyNameTextPc771b24,
+                                    TextInputKeyNameTextPc771b20,
+                                    TextInputKeyNameTextPc771b14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b08,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7713bc,
+                                    PcInputText7713b4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aec,
+                                    TextInputKeyNameTextPc771ae4,
+                                    TextInputKeyNameTextPc771adc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ad0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7713b0,
+                                    PcInputText77139c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771390,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText77137c,
+                                    PcInputText771374,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a8c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText77136c,
+                                    PcInputText771364,
+                                    PcInputText771358,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771350,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771348,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771344,
+                                    PcInputText771340,
+                                    PcInputText771334,
+                                    PcInputText77132c,
+                                    PcInputText771324,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771318,
+                                    PcInputText77130c,
+                                    TextInputKeyNameTextPc771a38,
+                                    PcInputText7716d4,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText771300,
+                                    PcInputText7712fc,
+                                    PcInputText77375c,
+                                    TextInputKeyNameTextPc771d38};
+char *PcInputKeyNames822ae8[238] = {PcInputText770f6c,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText770f68,
+                                    PcInputText770f64,
+                                    PcInputText770f58,
+                                    TextInputKeyNameTextPc771d38,
+                                    TextInputKeyNameTextPc771d34,
+                                    TextInputKeyNameTextPc771d30,
+                                    TextInputKeyNameTextPc771d2c,
+                                    TextInputKeyNameTextPc771d28,
+                                    TextInputKeyNameTextPc771d24,
+                                    TextInputKeyNameTextPc774184,
+                                    TextInputKeyNameTextPc771d20,
+                                    TextInputKeyNameTextPc771d1c,
+                                    TextInputKeyNameTextPc771d18,
+                                    TextInputKeyNameTextPc771d14,
+                                    PcInputText770f54,
+                                    PcInputText7712f4,
+                                    PcInputText770f4c,
+                                    PcInputText770f40,
+                                    TextInputKeyNameTextPc771d00,
+                                    TextInputKeyNameTextPc771cfc,
+                                    TextInputKeyNameTextPc771cf8,
+                                    TextInputKeyNameTextPc771cf4,
+                                    TextInputKeyNameTextPc771cf0,
+                                    TextInputKeyNameTextPc771cec,
+                                    TextInputKeyNameTextPc771ce8,
+                                    TextInputKeyNameTextPc771ce4,
+                                    TextInputKeyNameTextPc771ce0,
+                                    PcInputText770f3c,
+                                    PcInputText7710c0,
+                                    PcInputText770f38,
+                                    PcInputText770f2c,
+                                    PcInputText770f28,
+                                    TextInputKeyNameTextPc774180,
+                                    TextInputKeyNameTextPc759770,
+                                    TextInputKeyNameTextPc771cac,
+                                    TextInputKeyNameTextPc771ca8,
+                                    TextInputKeyNameTextPc771ca4,
+                                    TextInputKeyNameTextPc771ca0,
+                                    TextInputKeyNameTextPc771c9c,
+                                    PcInputText770f20,
+                                    PcInputText7712b8,
+                                    PcInputText770f18,
+                                    PcInputText770f0c,
+                                    PcInputText770f04,
+                                    PcInputText770ef8,
+                                    PcInputText770ef0,
+                                    PcInputText770ee4,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    PcInputText770ed8,
+                                    PcInputText770ecc,
+                                    PcInputText770ec4,
+                                    PcInputText770ebc,
+                                    PcInputText770eb4,
+                                    PcInputText770eac,
+                                    PcInputText770ea4,
+                                    PcInputText770e9c,
+                                    PcInputText770e94,
+                                    PcInputText770e8c,
+                                    PcInputText770e84,
+                                    PcInputText770e7c,
+                                    PcInputText770e74,
+                                    PcInputText770e6c,
+                                    PcInputText770e60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7713e4,
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770e54,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770e48,
+                                    PcInputText770e40,
+                                    PcInputText770e34,
+                                    PcInputText770e28,
+                                    TextInputKeyNameTextPc771b2c,
+                                    PcInputText770e20,
+                                    TextInputKeyNameTextPc771b20,
+                                    TextInputKeyNameTextPc771b14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770e14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770e08,
+                                    PcInputText770dfc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770df0,
+                                    TextInputKeyNameTextPc771ae4,
+                                    PcInputText770de8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770e20,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770ddc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770dd0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770dc4,
+                                    PcInputText770db8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770db0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770da8,
+                                    PcInputText770d9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771154,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770d94,
+                                    PcInputText770d88,
+                                    PcInputText770d80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770d74,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770d68,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771344,
+                                    PcInputText770d58,
+                                    PcInputText770d50,
+                                    TextInputKeyNameTextPc771a50,
+                                    PcInputText770d48,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770d3c,
+                                    PcInputText770d30,
+                                    TextInputKeyNameTextPc771a38,
+                                    PcInputText770d28,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText7712f4,
+                                    PcInputText770d20,
+                                    PcInputText772c44,
+                                    TextInputKeyNameTextPc771d38};
+char *PcInputKeyNames822770[238] = {PcInputText7710c8,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText7710c4,
+                                    PcInputText7710c0,
+                                    PcInputText7710b4,
+                                    TextInputKeyNameTextPc771d38,
+                                    TextInputKeyNameTextPc771d34,
+                                    TextInputKeyNameTextPc771d30,
+                                    TextInputKeyNameTextPc771d2c,
+                                    TextInputKeyNameTextPc771d28,
+                                    TextInputKeyNameTextPc771d24,
+                                    TextInputKeyNameTextPc774180,
+                                    TextInputKeyNameTextPc771d20,
+                                    TextInputKeyNameTextPc771d1c,
+                                    TextInputKeyNameTextPc771d18,
+                                    TextInputKeyNameTextPc771d14,
+                                    PcInputText7710b0,
+                                    PcInputText7712f4,
+                                    PcInputText7710a8,
+                                    PcInputText7710a0,
+                                    TextInputKeyNameTextPc771d00,
+                                    TextInputKeyNameTextPc771cfc,
+                                    TextInputKeyNameTextPc771cf8,
+                                    TextInputKeyNameTextPc771cf4,
+                                    TextInputKeyNameTextPc771cf0,
+                                    TextInputKeyNameTextPc771cec,
+                                    TextInputKeyNameTextPc771ce8,
+                                    TextInputKeyNameTextPc771ce4,
+                                    TextInputKeyNameTextPc771ce0,
+                                    PcInputText77109c,
+                                    PcInputText771098,
+                                    PcInputText771534,
+                                    PcInputText77108c,
+                                    TextInputKeyNameTextPc771cb0,
+                                    TextInputKeyNameTextPc774184,
+                                    TextInputKeyNameTextPc759770,
+                                    TextInputKeyNameTextPc771cac,
+                                    TextInputKeyNameTextPc771ca8,
+                                    TextInputKeyNameTextPc771ca4,
+                                    TextInputKeyNameTextPc771ca0,
+                                    TextInputKeyNameTextPc771c9c,
+                                    PcInputText771088,
+                                    PcInputText75eba8,
+                                    PcInputText7712b4,
+                                    PcInputText77107c,
+                                    TextInputKeyNameTextPc771c6c,
+                                    PcInputText771074,
+                                    PcInputText771068,
+                                    PcInputText771058,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    PcInputText77104c,
+                                    PcInputText771044,
+                                    TextInputKeyNameTextPc771c08,
+                                    TextInputKeyNameTextPc771c00,
+                                    TextInputKeyNameTextPc771bf8,
+                                    TextInputKeyNameTextPc771bf0,
+                                    TextInputKeyNameTextPc771be8,
+                                    TextInputKeyNameTextPc771be0,
+                                    TextInputKeyNameTextPc771bd8,
+                                    TextInputKeyNameTextPc771bd0,
+                                    TextInputKeyNameTextPc771bc8,
+                                    TextInputKeyNameTextPc771bc0,
+                                    TextInputKeyNameTextPc771bb8,
+                                    TextInputKeyNameTextPc771bb0,
+                                    PcInputText7715c8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7713e4,
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b58,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b4c,
+                                    PcInputText771040,
+                                    PcInputText77103c,
+                                    (char *)Text_UnknownText,
+                                    TextInputKeyNameTextPc771b2c,
+                                    TextInputKeyNameTextPc771b24,
+                                    TextInputKeyNameTextPc771b20,
+                                    PcInputText771030,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b08,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771020,
+                                    PcInputText771018,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aec,
+                                    TextInputKeyNameTextPc771ae4,
+                                    TextInputKeyNameTextPc771adc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ad0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ab8,
+                                    PcInputText771010,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aa4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771008,
+                                    PcInputText771000,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a8c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770ff8,
+                                    PcInputText770fec,
+                                    PcInputText770fe0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770fd4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770fc4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770fbc,
+                                    PcInputText770fb0,
+                                    PcInputText770fa8,
+                                    PcInputText770fa0,
+                                    PcInputText770f98,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770f88,
+                                    PcInputText770f78,
+                                    TextInputKeyNameTextPc771a38,
+                                    PcInputText770f6c,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText770f68,
+                                    PcInputText770f64,
+                                    PcInputText770f58,
+                                    TextInputKeyNameTextPc771d38};
+char *PcInputKeyNames8223f8[238] = {PcInputText7716d4,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText771300,
+                                    PcInputText7712fc,
+                                    PcInputText77375c,
+                                    TextInputKeyNameTextPc771d38,
+                                    TextInputKeyNameTextPc771d34,
+                                    TextInputKeyNameTextPc771d30,
+                                    TextInputKeyNameTextPc771d2c,
+                                    TextInputKeyNameTextPc771d28,
+                                    TextInputKeyNameTextPc771d24,
+                                    TextInputKeyNameTextPc774184,
+                                    TextInputKeyNameTextPc771d20,
+                                    TextInputKeyNameTextPc771d1c,
+                                    TextInputKeyNameTextPc771d18,
+                                    TextInputKeyNameTextPc771d14,
+                                    PcInputText7712f8,
+                                    PcInputText7712f4,
+                                    PcInputText7712ec,
+                                    PcInputText7712e0,
+                                    TextInputKeyNameTextPc771d00,
+                                    TextInputKeyNameTextPc771cfc,
+                                    TextInputKeyNameTextPc771cf8,
+                                    TextInputKeyNameTextPc771cf4,
+                                    TextInputKeyNameTextPc771cf0,
+                                    TextInputKeyNameTextPc771cec,
+                                    TextInputKeyNameTextPc771ce8,
+                                    TextInputKeyNameTextPc771ce4,
+                                    TextInputKeyNameTextPc771ce0,
+                                    PcInputText7712dc,
+                                    PcInputText7712d8,
+                                    (char *)WorldPathSeparator,
+                                    PcInputText7712cc,
+                                    PcInputText7712c8,
+                                    TextInputKeyNameTextPc774180,
+                                    TextInputKeyNameTextPc759770,
+                                    TextInputKeyNameTextPc771cac,
+                                    TextInputKeyNameTextPc771ca8,
+                                    TextInputKeyNameTextPc771ca4,
+                                    TextInputKeyNameTextPc771ca0,
+                                    TextInputKeyNameTextPc771c9c,
+                                    PcInputText7712c0,
+                                    PcInputText7712b8,
+                                    PcInputText7712b4,
+                                    PcInputText7712a8,
+                                    PcInputText77129c,
+                                    PcInputText771290,
+                                    PcInputText771288,
+                                    PcInputText77127c,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    PcInputText771270,
+                                    PcInputText771260,
+                                    PcInputText771254,
+                                    PcInputText771248,
+                                    PcInputText77123c,
+                                    PcInputText771230,
+                                    PcInputText771224,
+                                    PcInputText771218,
+                                    PcInputText77120c,
+                                    PcInputText771200,
+                                    PcInputText7711f4,
+                                    PcInputText7711e8,
+                                    PcInputText7711dc,
+                                    PcInputText7711d0,
+                                    PcInputText7711c4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7713e4,
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7711b8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b4c,
+                                    TextInputKeyNameTextPc771b48,
+                                    PcInputText75c044,
+                                    (char *)PermLegalSeparator,
+                                    TextInputKeyNameTextPc771b2c,
+                                    TextInputKeyNameTextPc771b24,
+                                    TextInputKeyNameTextPc771b20,
+                                    TextInputKeyNameTextPc771b14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b08,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7711a8,
+                                    PcInputText77119c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aec,
+                                    TextInputKeyNameTextPc771ae4,
+                                    TextInputKeyNameTextPc771adc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ad0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771190,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771188,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ab8,
+                                    PcInputText77117c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771170,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771168,
+                                    PcInputText77115c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771154,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a84,
+                                    PcInputText771148,
+                                    PcInputText771140,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771130,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771120,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771118,
+                                    PcInputText771108,
+                                    PcInputText7710fc,
+                                    PcInputText7710f0,
+                                    PcInputText7710e8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7710dc,
+                                    PcInputText7710d0,
+                                    TextInputKeyNameTextPc771a38,
+                                    PcInputText7710c8,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText7710c4,
+                                    PcInputText7710c0,
+                                    PcInputText7710b4,
+                                    TextInputKeyNameTextPc771d38};
+char *PcInputKeyNames8231d8[238] = {TextInputKeyNameTextPc771d80,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText76afa8,
+                                    PcInputText770bc8,
+                                    TextInputKeyNameTextPc771d3c,
+                                    TextInputKeyNameTextPc771d38,
+                                    TextInputKeyNameTextPc771d34,
+                                    TextInputKeyNameTextPc771d30,
+                                    TextInputKeyNameTextPc771d2c,
+                                    TextInputKeyNameTextPc771d28,
+                                    TextInputKeyNameTextPc771d24,
+                                    TextInputKeyNameTextPc774184,
+                                    TextInputKeyNameTextPc771d20,
+                                    TextInputKeyNameTextPc771d1c,
+                                    TextInputKeyNameTextPc771d18,
+                                    TextInputKeyNameTextPc771d14,
+                                    PcInputText770d18,
+                                    PcInputText77150c,
+                                    TextInputKeyNameTextPc771d0c,
+                                    TextInputKeyNameTextPc771d04,
+                                    TextInputKeyNameTextPc771d00,
+                                    TextInputKeyNameTextPc771cfc,
+                                    TextInputKeyNameTextPc771cf8,
+                                    TextInputKeyNameTextPc771cf4,
+                                    TextInputKeyNameTextPc771cf0,
+                                    TextInputKeyNameTextPc771cec,
+                                    TextInputKeyNameTextPc771ce8,
+                                    TextInputKeyNameTextPc771ce4,
+                                    TextInputKeyNameTextPc771ce0,
+                                    PcInputText7712f4,
+                                    PcInputText77168c,
+                                    PcInputText770bc4,
+                                    TextInputKeyNameTextPc771cb4,
+                                    TextInputKeyNameTextPc771cb0,
+                                    TextInputKeyNameTextPc774180,
+                                    TextInputKeyNameTextPc759770,
+                                    TextInputKeyNameTextPc771cac,
+                                    TextInputKeyNameTextPc771ca8,
+                                    TextInputKeyNameTextPc771ca4,
+                                    TextInputKeyNameTextPc771ca0,
+                                    TextInputKeyNameTextPc771c9c,
+                                    PcInputText770cf0,
+                                    PcInputText770bbc,
+                                    TextInputKeyNameTextPc771d50,
+                                    TextInputKeyNameTextPc771c74,
+                                    TextInputKeyNameTextPc771c6c,
+                                    TextInputKeyNameTextPc771c64,
+                                    PcInputText770bb4,
+                                    TextInputKeyNameTextPc771c50,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    TextInputKeyNameTextPc771c1c,
+                                    TextInputKeyNameTextPc771c10,
+                                    TextInputKeyNameTextPc771c08,
+                                    TextInputKeyNameTextPc771c00,
+                                    TextInputKeyNameTextPc771bf8,
+                                    TextInputKeyNameTextPc771bf0,
+                                    TextInputKeyNameTextPc771be8,
+                                    TextInputKeyNameTextPc771be0,
+                                    TextInputKeyNameTextPc771bd8,
+                                    TextInputKeyNameTextPc771bd0,
+                                    TextInputKeyNameTextPc771bc8,
+                                    TextInputKeyNameTextPc771bc0,
+                                    TextInputKeyNameTextPc771bb8,
+                                    TextInputKeyNameTextPc771bb0,
+                                    PcInputText770ba8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc753374,
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b58,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b4c,
+                                    TextInputKeyNameTextPc771b48,
+                                    TextInputKeyNameTextPc771b40,
+                                    TextInputKeyNameTextPc771b34,
+                                    TextInputKeyNameTextPc771b2c,
+                                    TextInputKeyNameTextPc771b24,
+                                    TextInputKeyNameTextPc771b20,
+                                    TextInputKeyNameTextPc771b14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b08,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771afc,
+                                    TextInputKeyNameTextPc771af4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aec,
+                                    TextInputKeyNameTextPc771ae4,
+                                    TextInputKeyNameTextPc771adc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ad0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ab8,
+                                    PcInputText770c2c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aa4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a9c,
+                                    TextInputKeyNameTextPc771a94,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a8c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a84,
+                                    PcInputText770ba0,
+                                    PcInputText771584,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770b98,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a64,
+                                    PcInputText770b88,
+                                    PcInputText771564,
+                                    TextInputKeyNameTextPc771a50,
+                                    TextInputKeyNameTextPc76fde8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText77155c,
+                                    PcInputText770b80,
+                                    TextInputKeyNameTextPc771a38,
+                                    TextInputKeyNameTextPc771a30,
+                                    TextInputKeyNameTextPc771a28,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a20,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a14,
+                                    TextInputKeyNameTextPc771a04,
+                                    TextInputKeyNameTextPc7719f8,
+                                    TextInputKeyNameTextPc7719f0,
+                                    TextInputKeyNameTextPc7719e4,
+                                    TextInputKeyNameTextPc7719dc,
+                                    TextInputKeyNameTextPc7719d0,
+                                    TextInputKeyNameTextPc7719c8,
+                                    TextInputKeyNameTextPc7719bc};
+char *PcInputKeyNames8240b8[238] = {TextInputKeyNameTextPc771d80,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText770f18,
+                                    PcInputText7708a4,
+                                    PcInputText770898,
+                                    TextInputKeyNameTextPc771d38,
+                                    TextInputKeyNameTextPc771d34,
+                                    TextInputKeyNameTextPc771d30,
+                                    TextInputKeyNameTextPc771d2c,
+                                    TextInputKeyNameTextPc771d28,
+                                    TextInputKeyNameTextPc771d24,
+                                    TextInputKeyNameTextPc774184,
+                                    TextInputKeyNameTextPc771d20,
+                                    TextInputKeyNameTextPc771d1c,
+                                    TextInputKeyNameTextPc771d18,
+                                    TextInputKeyNameTextPc771d14,
+                                    PcInputText77088c,
+                                    PcInputText770878,
+                                    TextInputKeyNameTextPc771d0c,
+                                    PcInputText77086c,
+                                    TextInputKeyNameTextPc771d00,
+                                    TextInputKeyNameTextPc771cfc,
+                                    TextInputKeyNameTextPc771cf8,
+                                    TextInputKeyNameTextPc771cf4,
+                                    TextInputKeyNameTextPc771cf0,
+                                    TextInputKeyNameTextPc771cec,
+                                    TextInputKeyNameTextPc771ce8,
+                                    TextInputKeyNameTextPc771ce4,
+                                    TextInputKeyNameTextPc771ce0,
+                                    PcInputText770f28,
+                                    PcInputText770868,
+                                    PcInputText770858,
+                                    PcInputText77084c,
+                                    PcInputText770838,
+                                    TextInputKeyNameTextPc774180,
+                                    TextInputKeyNameTextPc759770,
+                                    TextInputKeyNameTextPc771cac,
+                                    TextInputKeyNameTextPc771ca8,
+                                    TextInputKeyNameTextPc771ca4,
+                                    TextInputKeyNameTextPc771ca0,
+                                    TextInputKeyNameTextPc771c9c,
+                                    PcInputText77082c,
+                                    PcInputText770824,
+                                    PcInputText77080c,
+                                    PcInputText770800,
+                                    TextInputKeyNameTextPc771c6c,
+                                    PcInputText7707f4,
+                                    PcInputText7707e0,
+                                    TextInputKeyNameTextPc771c50,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    TextInputKeyNameTextPc771c1c,
+                                    TextInputKeyNameTextPc771c10,
+                                    TextInputKeyNameTextPc771c08,
+                                    TextInputKeyNameTextPc771c00,
+                                    TextInputKeyNameTextPc771bf8,
+                                    TextInputKeyNameTextPc771bf0,
+                                    TextInputKeyNameTextPc771be8,
+                                    TextInputKeyNameTextPc771be0,
+                                    TextInputKeyNameTextPc771bd8,
+                                    TextInputKeyNameTextPc771bd0,
+                                    TextInputKeyNameTextPc771bc8,
+                                    TextInputKeyNameTextPc771bc0,
+                                    TextInputKeyNameTextPc771bb8,
+                                    TextInputKeyNameTextPc771bb0,
+                                    PcInputText7707d4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    (char *)WorldPathSeparator,
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b58,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b4c,
+                                    TextInputKeyNameTextPc771b48,
+                                    TextInputKeyNameTextPc771b40,
+                                    TextInputKeyNameTextPc771b34,
+                                    TextInputKeyNameTextPc771b2c,
+                                    TextInputKeyNameTextPc771b24,
+                                    TextInputKeyNameTextPc771b20,
+                                    TextInputKeyNameTextPc771b14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b08,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771afc,
+                                    PcInputText7707c8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aec,
+                                    TextInputKeyNameTextPc771ae4,
+                                    TextInputKeyNameTextPc771adc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ad0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ab8,
+                                    PcInputText770750,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770748,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a9c,
+                                    PcInputText7707bc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771154,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a84,
+                                    PcInputText7707ac,
+                                    PcInputText771584,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770798,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770784,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a64,
+                                    PcInputText770774,
+                                    PcInputText771564,
+                                    TextInputKeyNameTextPc771a50,
+                                    TextInputKeyNameTextPc76fde8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770768,
+                                    PcInputText77075c,
+                                    TextInputKeyNameTextPc771a38,
+                                    TextInputKeyNameTextPc771a30,
+                                    TextInputKeyNameTextPc771a28,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a20,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a14,
+                                    TextInputKeyNameTextPc771a04,
+                                    TextInputKeyNameTextPc7719f8,
+                                    TextInputKeyNameTextPc7719f0,
+                                    TextInputKeyNameTextPc7719e4,
+                                    TextInputKeyNameTextPc7719dc,
+                                    TextInputKeyNameTextPc7719d0,
+                                    TextInputKeyNameTextPc7719c8,
+                                    TextInputKeyNameTextPc7719bc};
+char *PcInputKeyNames822e60[238] = {PcInputText770d28,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText7712f4,
+                                    PcInputText770d20,
+                                    PcInputText772c44,
+                                    TextInputKeyNameTextPc771d38,
+                                    TextInputKeyNameTextPc771d34,
+                                    TextInputKeyNameTextPc771d30,
+                                    TextInputKeyNameTextPc771d2c,
+                                    TextInputKeyNameTextPc771d28,
+                                    TextInputKeyNameTextPc771d24,
+                                    TextInputKeyNameTextPc774184,
+                                    TextInputKeyNameTextPc771d20,
+                                    TextInputKeyNameTextPc771d1c,
+                                    TextInputKeyNameTextPc771d18,
+                                    TextInputKeyNameTextPc771d14,
+                                    PcInputText770d1c,
+                                    PcInputText770d18,
+                                    TextInputKeyNameTextPc771d0c,
+                                    PcInputText770d10,
+                                    TextInputKeyNameTextPc771d00,
+                                    TextInputKeyNameTextPc771cfc,
+                                    TextInputKeyNameTextPc771cf8,
+                                    TextInputKeyNameTextPc771cf4,
+                                    TextInputKeyNameTextPc771cf0,
+                                    TextInputKeyNameTextPc771cec,
+                                    TextInputKeyNameTextPc771ce8,
+                                    TextInputKeyNameTextPc771ce4,
+                                    TextInputKeyNameTextPc771ce0,
+                                    PcInputText770d0c,
+                                    PcInputText770d08,
+                                    PcInputText770d04,
+                                    PcInputText770cf8,
+                                    PcInputText77168c,
+                                    TextInputKeyNameTextPc774180,
+                                    TextInputKeyNameTextPc759770,
+                                    TextInputKeyNameTextPc771cac,
+                                    TextInputKeyNameTextPc771ca8,
+                                    TextInputKeyNameTextPc771ca4,
+                                    TextInputKeyNameTextPc771ca0,
+                                    TextInputKeyNameTextPc771c9c,
+                                    PcInputText770cf0,
+                                    PcInputText770ce8,
+                                    TextInputKeyNameTextPc771d50,
+                                    PcInputText770cdc,
+                                    TextInputKeyNameTextPc771c6c,
+                                    PcInputText770cd4,
+                                    PcInputText770cc4,
+                                    TextInputKeyNameTextPc771c50,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    TextInputKeyNameTextPc771c1c,
+                                    TextInputKeyNameTextPc771c10,
+                                    TextInputKeyNameTextPc771c08,
+                                    TextInputKeyNameTextPc771c00,
+                                    TextInputKeyNameTextPc771bf8,
+                                    TextInputKeyNameTextPc771bf0,
+                                    TextInputKeyNameTextPc771be8,
+                                    TextInputKeyNameTextPc771be0,
+                                    TextInputKeyNameTextPc771bd8,
+                                    TextInputKeyNameTextPc771bd0,
+                                    TextInputKeyNameTextPc771bc8,
+                                    TextInputKeyNameTextPc771bc0,
+                                    TextInputKeyNameTextPc771bb8,
+                                    TextInputKeyNameTextPc771bb0,
+                                    PcInputText770cb4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7713e4,
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770ca4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b4c,
+                                    PcInputText770c94,
+                                    PcInputText770c88,
+                                    PcInputText770c74,
+                                    TextInputKeyNameTextPc771b2c,
+                                    TextInputKeyNameTextPc771b24,
+                                    TextInputKeyNameTextPc771b20,
+                                    PcInputText770c64,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770c58,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771afc,
+                                    PcInputText770c50,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aec,
+                                    PcInputText770c48,
+                                    TextInputKeyNameTextPc771adc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ad0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770c40,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770c38,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ab8,
+                                    PcInputText770c2c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aa4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770c1c,
+                                    PcInputText770c14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a8c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a84,
+                                    PcInputText770c0c,
+                                    PcInputText771758,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770c00,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770bf4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a64,
+                                    PcInputText770bec,
+                                    PcInputText771728,
+                                    TextInputKeyNameTextPc771a50,
+                                    TextInputKeyNameTextPc76fde8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770bdc,
+                                    PcInputText770bcc,
+                                    TextInputKeyNameTextPc771a38,
+                                    TextInputKeyNameTextPc771d80,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText76afa8,
+                                    PcInputText770bc8,
+                                    TextInputKeyNameTextPc771d3c,
+                                    TextInputKeyNameTextPc771d38};
+char *PcInputKeyNames821cc8[238] = {PcInputText7716d4,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText7716cc,
+                                    PcInputText7716c0,
+                                    TextInputKeyNameTextPc771d3c,
+                                    PcInputText7716b4,
+                                    TextInputKeyNameTextPc771d34,
+                                    TextInputKeyNameTextPc771d30,
+                                    TextInputKeyNameTextPc771d2c,
+                                    TextInputKeyNameTextPc771d28,
+                                    TextInputKeyNameTextPc771d24,
+                                    TextInputKeyNameTextPc774180,
+                                    TextInputKeyNameTextPc771d20,
+                                    TextInputKeyNameTextPc771d1c,
+                                    TextInputKeyNameTextPc771d18,
+                                    TextInputKeyNameTextPc771d14,
+                                    PcInputText7716b0,
+                                    PcInputText7716a4,
+                                    TextInputKeyNameTextPc771d0c,
+                                    PcInputText77169c,
+                                    TextInputKeyNameTextPc771d00,
+                                    TextInputKeyNameTextPc771cfc,
+                                    TextInputKeyNameTextPc771cf8,
+                                    TextInputKeyNameTextPc771cf4,
+                                    TextInputKeyNameTextPc771cf0,
+                                    TextInputKeyNameTextPc771cec,
+                                    TextInputKeyNameTextPc771ce8,
+                                    TextInputKeyNameTextPc771ce4,
+                                    TextInputKeyNameTextPc771ce0,
+                                    PcInputText771698,
+                                    PcInputText77168c,
+                                    PcInputText771684,
+                                    PcInputText77167c,
+                                    PcInputText771670,
+                                    TextInputKeyNameTextPc774184,
+                                    TextInputKeyNameTextPc759770,
+                                    TextInputKeyNameTextPc771cac,
+                                    TextInputKeyNameTextPc771ca8,
+                                    TextInputKeyNameTextPc771ca4,
+                                    TextInputKeyNameTextPc771ca0,
+                                    TextInputKeyNameTextPc771c9c,
+                                    PcInputText771668,
+                                    PcInputText771660,
+                                    PcInputText771654,
+                                    PcInputText77164c,
+                                    PcInputText771644,
+                                    PcInputText77163c,
+                                    PcInputText771630,
+                                    TextInputKeyNameTextPc771c50,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    TextInputKeyNameTextPc771c1c,
+                                    TextInputKeyNameTextPc771c10,
+                                    PcInputText771628,
+                                    PcInputText771620,
+                                    PcInputText771618,
+                                    PcInputText771610,
+                                    PcInputText771608,
+                                    PcInputText771600,
+                                    PcInputText7715f8,
+                                    PcInputText7715f0,
+                                    PcInputText7715e8,
+                                    PcInputText7715e0,
+                                    PcInputText7715d8,
+                                    PcInputText7715d0,
+                                    PcInputText7715c8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    (char *)WorldPathSeparator,
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7715b8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b4c,
+                                    TextInputKeyNameTextPc771b48,
+                                    TextInputKeyNameTextPc771b40,
+                                    TextInputKeyNameTextPc771b34,
+                                    TextInputKeyNameTextPc771b2c,
+                                    TextInputKeyNameTextPc771b24,
+                                    TextInputKeyNameTextPc771b20,
+                                    TextInputKeyNameTextPc771b14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b08,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7715ac,
+                                    PcInputText7715a4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aec,
+                                    TextInputKeyNameTextPc771ae4,
+                                    TextInputKeyNameTextPc771adc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ad0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ab8,
+                                    PcInputText77199c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText77159c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a9c,
+                                    PcInputText771594,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a8c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a84,
+                                    PcInputText77158c,
+                                    PcInputText771584,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText77157c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771574,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a64,
+                                    PcInputText77156c,
+                                    PcInputText771564,
+                                    TextInputKeyNameTextPc771a50,
+                                    TextInputKeyNameTextPc76fde8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText77155c,
+                                    PcInputText771554,
+                                    TextInputKeyNameTextPc771a38,
+                                    TextInputKeyNameTextPc771a30,
+                                    TextInputKeyNameTextPc771a28,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a20,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a14,
+                                    TextInputKeyNameTextPc771a04,
+                                    TextInputKeyNameTextPc7719f8,
+                                    TextInputKeyNameTextPc7719f0,
+                                    TextInputKeyNameTextPc7719e4,
+                                    TextInputKeyNameTextPc7719dc,
+                                    TextInputKeyNameTextPc7719d0,
+                                    TextInputKeyNameTextPc7719c8,
+                                    TextInputKeyNameTextPc7719bc};
+char *PcInputKeyNames823590[238] = {TextInputKeyNameTextPc771d80,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText7712b4,
+                                    "=",
+                                    TextInputKeyNameTextPc771d3c,
+                                    TextInputKeyNameTextPc771d38,
+                                    TextInputKeyNameTextPc771d34,
+                                    TextInputKeyNameTextPc771d30,
+                                    TextInputKeyNameTextPc771d2c,
+                                    TextInputKeyNameTextPc771d28,
+                                    TextInputKeyNameTextPc771d24,
+                                    TextInputKeyNameTextPc774184,
+                                    TextInputKeyNameTextPc771d20,
+                                    TextInputKeyNameTextPc771d1c,
+                                    TextInputKeyNameTextPc771d18,
+                                    TextInputKeyNameTextPc771d14,
+                                    TextInputKeyNameTextPc753374,
+                                    TextInputKeyNameTextPc753370,
+                                    TextInputKeyNameTextPc771d0c,
+                                    TextInputKeyNameTextPc771d04,
+                                    TextInputKeyNameTextPc771d00,
+                                    TextInputKeyNameTextPc771cfc,
+                                    TextInputKeyNameTextPc771cf8,
+                                    TextInputKeyNameTextPc771cf4,
+                                    TextInputKeyNameTextPc771cf0,
+                                    TextInputKeyNameTextPc771cec,
+                                    TextInputKeyNameTextPc771ce8,
+                                    TextInputKeyNameTextPc771ce4,
+                                    TextInputKeyNameTextPc771ce0,
+                                    PcInputText770b7c,
+                                    PcInputText770f68,
+                                    PcInputText770b74,
+                                    TextInputKeyNameTextPc771cb4,
+                                    TextInputKeyNameTextPc771cb0,
+                                    TextInputKeyNameTextPc774180,
+                                    TextInputKeyNameTextPc759770,
+                                    TextInputKeyNameTextPc771cac,
+                                    TextInputKeyNameTextPc771ca8,
+                                    TextInputKeyNameTextPc771ca4,
+                                    TextInputKeyNameTextPc771ca0,
+                                    TextInputKeyNameTextPc771c9c,
+                                    PcInputText771088,
+                                    PcInputText75eba8,
+                                    PcInputText76afa8,
+                                    PcInputText770b68,
+                                    TextInputKeyNameTextPc771c6c,
+                                    TextInputKeyNameTextPc771c64,
+                                    PcInputText770b60,
+                                    TextInputKeyNameTextPc771c50,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    TextInputKeyNameTextPc771c1c,
+                                    TextInputKeyNameTextPc771c10,
+                                    TextInputKeyNameTextPc771c08,
+                                    TextInputKeyNameTextPc771c00,
+                                    TextInputKeyNameTextPc771bf8,
+                                    TextInputKeyNameTextPc771bf0,
+                                    TextInputKeyNameTextPc771be8,
+                                    TextInputKeyNameTextPc771be0,
+                                    TextInputKeyNameTextPc771bd8,
+                                    TextInputKeyNameTextPc771bd0,
+                                    TextInputKeyNameTextPc771bc8,
+                                    TextInputKeyNameTextPc771bc0,
+                                    TextInputKeyNameTextPc771bb8,
+                                    TextInputKeyNameTextPc771bb0,
+                                    PcInputText770b58,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    (char *)WorldPathSeparator,
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b58,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b4c,
+                                    TextInputKeyNameTextPc771b48,
+                                    TextInputKeyNameTextPc771b40,
+                                    TextInputKeyNameTextPc771b34,
+                                    TextInputKeyNameTextPc771b2c,
+                                    TextInputKeyNameTextPc771b24,
+                                    TextInputKeyNameTextPc771b20,
+                                    TextInputKeyNameTextPc771b14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b08,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771afc,
+                                    PcInputText770b50,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aec,
+                                    TextInputKeyNameTextPc771ae4,
+                                    TextInputKeyNameTextPc771adc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ad0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ab8,
+                                    PcInputText77199c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aa4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a9c,
+                                    PcInputText770b48,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a8c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a84,
+                                    PcInputText770b40,
+                                    PcInputText771758,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770b38,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770b30,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a64,
+                                    PcInputText770b28,
+                                    PcInputText771728,
+                                    TextInputKeyNameTextPc771a50,
+                                    TextInputKeyNameTextPc76fde8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a48,
+                                    PcInputText770b20,
+                                    TextInputKeyNameTextPc771a38,
+                                    TextInputKeyNameTextPc771a30,
+                                    TextInputKeyNameTextPc771a28,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a20,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a14,
+                                    TextInputKeyNameTextPc771a04,
+                                    TextInputKeyNameTextPc7719f8,
+                                    TextInputKeyNameTextPc7719f0,
+                                    TextInputKeyNameTextPc7719e4,
+                                    TextInputKeyNameTextPc7719dc,
+                                    TextInputKeyNameTextPc7719d0,
+                                    TextInputKeyNameTextPc7719c8,
+                                    TextInputKeyNameTextPc7719bc};
+char *PcInputKeyNames823948[238] = {TextInputKeyNameTextPc771d80,
+                                    PcInputText770b1c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText7712b4,
+                                    "=",
+                                    TextInputKeyNameTextPc771d3c,
+                                    TextInputKeyNameTextPc771d38,
+                                    PcInputText770b18,
+                                    PcInputText770b14,
+                                    PcInputText770b10,
+                                    PcInputText770b0c,
+                                    PcInputText770b08,
+                                    PcInputText770b04,
+                                    PcInputText770b00,
+                                    PcInputText770afc,
+                                    PcInputText770af8,
+                                    PcInputText770af4,
+                                    PcInputText770af0,
+                                    PcInputText770aec,
+                                    TextInputKeyNameTextPc771d0c,
+                                    PcInputText770ae0,
+                                    PcInputText770adc,
+                                    PcInputText770ad8,
+                                    PcInputText770ad4,
+                                    PcInputText770ad0,
+                                    PcInputText770acc,
+                                    PcInputText770ac8,
+                                    PcInputText770ac4,
+                                    PcInputText770ac0,
+                                    PcInputText770abc,
+                                    PcInputText770ab8,
+                                    PcInputText770ab4,
+                                    PcInputText770f54,
+                                    PcInputText770aa4,
+                                    (char *)WorldPathSeparator,
+                                    PcInputText770aa0,
+                                    PcInputText770a9c,
+                                    PcInputText770a98,
+                                    PcInputText770a94,
+                                    PcInputText770a90,
+                                    PcInputText770a8c,
+                                    PcInputText770a88,
+                                    PcInputText770a84,
+                                    PcInputText770a80,
+                                    PcInputText75eba8,
+                                    PcInputText770a70,
+                                    PcInputText770a5c,
+                                    PcInputText770a50,
+                                    PcInputText770a40,
+                                    TextInputKeyNameTextPc771c50,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    TextInputKeyNameTextPc771c1c,
+                                    TextInputKeyNameTextPc771c10,
+                                    PcInputText770a2c,
+                                    PcInputText770a18,
+                                    PcInputText770a04,
+                                    PcInputText7709f0,
+                                    PcInputText7709dc,
+                                    PcInputText7709c8,
+                                    PcInputText7709b4,
+                                    PcInputText7709a0,
+                                    PcInputText77098c,
+                                    PcInputText770978,
+                                    PcInputText770964,
+                                    PcInputText770950,
+                                    PcInputText77093c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771530,
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770928,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b4c,
+                                    TextInputKeyNameTextPc771b48,
+                                    TextInputKeyNameTextPc771b40,
+                                    TextInputKeyNameTextPc771b34,
+                                    TextInputKeyNameTextPc771b2c,
+                                    TextInputKeyNameTextPc771b24,
+                                    TextInputKeyNameTextPc771b20,
+                                    TextInputKeyNameTextPc771b14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b08,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770910,
+                                    PcInputText770900,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aec,
+                                    TextInputKeyNameTextPc771ae4,
+                                    TextInputKeyNameTextPc771adc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ad0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ab8,
+                                    PcInputText7708ec,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7708d8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a9c,
+                                    PcInputText7708c8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a8c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a84,
+                                    PcInputText772760,
+                                    PcInputText771758,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText772738,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText772750,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a64,
+                                    PcInputText772744,
+                                    PcInputText771728,
+                                    TextInputKeyNameTextPc771a50,
+                                    TextInputKeyNameTextPc76fde8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7708bc,
+                                    PcInputText7708ac,
+                                    TextInputKeyNameTextPc771a38,
+                                    TextInputKeyNameTextPc771a30,
+                                    TextInputKeyNameTextPc771a28,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a20,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a14,
+                                    TextInputKeyNameTextPc771a04,
+                                    TextInputKeyNameTextPc7719f8,
+                                    TextInputKeyNameTextPc7719f0,
+                                    TextInputKeyNameTextPc7719e4,
+                                    TextInputKeyNameTextPc7719dc,
+                                    TextInputKeyNameTextPc7719d0,
+                                    TextInputKeyNameTextPc7719c8,
+                                    TextInputKeyNameTextPc7719bc};
+char *PcInputKeyNames824828[238] = {TextInputKeyNameTextPc771d80,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText7712f4,
+                                    PcInputText7710c0,
+                                    TextInputKeyNameTextPc771d3c,
+                                    TextInputKeyNameTextPc771d38,
+                                    TextInputKeyNameTextPc771d34,
+                                    TextInputKeyNameTextPc771d30,
+                                    TextInputKeyNameTextPc771d2c,
+                                    TextInputKeyNameTextPc771d28,
+                                    TextInputKeyNameTextPc771d24,
+                                    TextInputKeyNameTextPc774184,
+                                    TextInputKeyNameTextPc771d20,
+                                    TextInputKeyNameTextPc771d1c,
+                                    TextInputKeyNameTextPc771d18,
+                                    TextInputKeyNameTextPc771d14,
+                                    PcInputText770d1c,
+                                    PcInputText770d18,
+                                    TextInputKeyNameTextPc771d0c,
+                                    PcInputText770d10,
+                                    TextInputKeyNameTextPc771d00,
+                                    TextInputKeyNameTextPc771cfc,
+                                    TextInputKeyNameTextPc771cf8,
+                                    TextInputKeyNameTextPc771cf4,
+                                    TextInputKeyNameTextPc771cf0,
+                                    TextInputKeyNameTextPc771cec,
+                                    TextInputKeyNameTextPc771ce8,
+                                    TextInputKeyNameTextPc771ce4,
+                                    TextInputKeyNameTextPc771ce0,
+                                    PcInputText77109c,
+                                    PcInputText771098,
+                                    PcInputText7517a8,
+                                    PcInputText770cf8,
+                                    PcInputText770f68,
+                                    TextInputKeyNameTextPc774180,
+                                    TextInputKeyNameTextPc759770,
+                                    TextInputKeyNameTextPc771cac,
+                                    TextInputKeyNameTextPc771ca8,
+                                    TextInputKeyNameTextPc771ca4,
+                                    TextInputKeyNameTextPc771ca0,
+                                    TextInputKeyNameTextPc771c9c,
+                                    PcInputText770714,
+                                    PcInputText77070c,
+                                    TextInputKeyNameTextPc771d50,
+                                    PcInputText770cdc,
+                                    TextInputKeyNameTextPc771c6c,
+                                    PcInputText770cd4,
+                                    PcInputText770700,
+                                    TextInputKeyNameTextPc771c50,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    TextInputKeyNameTextPc771c1c,
+                                    TextInputKeyNameTextPc771c10,
+                                    TextInputKeyNameTextPc771c08,
+                                    TextInputKeyNameTextPc771c00,
+                                    TextInputKeyNameTextPc771bf8,
+                                    TextInputKeyNameTextPc771bf0,
+                                    TextInputKeyNameTextPc771be8,
+                                    TextInputKeyNameTextPc771be0,
+                                    TextInputKeyNameTextPc771bd8,
+                                    TextInputKeyNameTextPc771bd0,
+                                    TextInputKeyNameTextPc771bc8,
+                                    TextInputKeyNameTextPc771bc0,
+                                    TextInputKeyNameTextPc771bb8,
+                                    TextInputKeyNameTextPc771bb0,
+                                    PcInputText7706f4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    "<",
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b58,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b4c,
+                                    TextInputKeyNameTextPc771b48,
+                                    TextInputKeyNameTextPc771b40,
+                                    TextInputKeyNameTextPc771b34,
+                                    TextInputKeyNameTextPc771b2c,
+                                    TextInputKeyNameTextPc771b24,
+                                    TextInputKeyNameTextPc771b20,
+                                    TextInputKeyNameTextPc771b14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b08,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771afc,
+                                    PcInputText770c50,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aec,
+                                    TextInputKeyNameTextPc771ae4,
+                                    TextInputKeyNameTextPc771adc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ad0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ab8,
+                                    PcInputText7706e0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aa4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7706d4,
+                                    PcInputText770c14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a8c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a84,
+                                    PcInputText7706d0,
+                                    PcInputText771584,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7706c4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7706bc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a64,
+                                    PcInputText770730,
+                                    PcInputText771564,
+                                    TextInputKeyNameTextPc771a50,
+                                    TextInputKeyNameTextPc76fde8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770728,
+                                    PcInputText770720,
+                                    TextInputKeyNameTextPc771a38,
+                                    TextInputKeyNameTextPc771a30,
+                                    TextInputKeyNameTextPc771a28,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a20,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a14,
+                                    TextInputKeyNameTextPc771a04,
+                                    TextInputKeyNameTextPc7719f8,
+                                    TextInputKeyNameTextPc7719f0,
+                                    TextInputKeyNameTextPc7719e4,
+                                    TextInputKeyNameTextPc7719dc,
+                                    TextInputKeyNameTextPc7719d0,
+                                    TextInputKeyNameTextPc7719c8,
+                                    TextInputKeyNameTextPc7719bc};
+char *PcInputKeyNames824470[238] = {TextInputKeyNameTextPc771d80,
+                                    PcInputText770b1c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText7712f4,
+                                    (char *)WorldPathSeparator,
+                                    TextInputKeyNameTextPc771d3c,
+                                    TextInputKeyNameTextPc771d38,
+                                    TextInputKeyNameTextPc771d34,
+                                    TextInputKeyNameTextPc771d30,
+                                    TextInputKeyNameTextPc771d2c,
+                                    TextInputKeyNameTextPc771d28,
+                                    TextInputKeyNameTextPc771d24,
+                                    TextInputKeyNameTextPc774184,
+                                    TextInputKeyNameTextPc771d20,
+                                    TextInputKeyNameTextPc771d1c,
+                                    TextInputKeyNameTextPc771d18,
+                                    TextInputKeyNameTextPc771d14,
+                                    PcInputText770d1c,
+                                    PcInputText770d18,
+                                    TextInputKeyNameTextPc771d0c,
+                                    PcInputText770d10,
+                                    TextInputKeyNameTextPc771d00,
+                                    TextInputKeyNameTextPc771cfc,
+                                    TextInputKeyNameTextPc771cf8,
+                                    TextInputKeyNameTextPc771cf4,
+                                    TextInputKeyNameTextPc771cf0,
+                                    TextInputKeyNameTextPc771cec,
+                                    TextInputKeyNameTextPc771ce8,
+                                    TextInputKeyNameTextPc771ce4,
+                                    TextInputKeyNameTextPc771ce0,
+                                    PcInputText770d08,
+                                    PcInputText770d0c,
+                                    PcInputText771530,
+                                    PcInputText770cf8,
+                                    PcInputText770f68,
+                                    TextInputKeyNameTextPc774180,
+                                    TextInputKeyNameTextPc759770,
+                                    TextInputKeyNameTextPc771cac,
+                                    TextInputKeyNameTextPc771ca8,
+                                    TextInputKeyNameTextPc771ca4,
+                                    TextInputKeyNameTextPc771ca0,
+                                    TextInputKeyNameTextPc771c9c,
+                                    PcInputText770cf0,
+                                    PcInputText770ce8,
+                                    PcInputText7712b4,
+                                    PcInputText770cdc,
+                                    TextInputKeyNameTextPc771c6c,
+                                    PcInputText770cd4,
+                                    TextInputKeyNameTextPc771c5c,
+                                    TextInputKeyNameTextPc771c50,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    TextInputKeyNameTextPc771c1c,
+                                    TextInputKeyNameTextPc771c10,
+                                    TextInputKeyNameTextPc771c08,
+                                    TextInputKeyNameTextPc771c00,
+                                    TextInputKeyNameTextPc771bf8,
+                                    TextInputKeyNameTextPc771bf0,
+                                    TextInputKeyNameTextPc771be8,
+                                    TextInputKeyNameTextPc771be0,
+                                    TextInputKeyNameTextPc771bd8,
+                                    TextInputKeyNameTextPc771bd0,
+                                    TextInputKeyNameTextPc771bc8,
+                                    TextInputKeyNameTextPc771bc0,
+                                    TextInputKeyNameTextPc771bb8,
+                                    TextInputKeyNameTextPc771bb0,
+                                    PcInputText770cb4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    "<",
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b58,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b4c,
+                                    TextInputKeyNameTextPc771b48,
+                                    TextInputKeyNameTextPc771b40,
+                                    TextInputKeyNameTextPc771b34,
+                                    TextInputKeyNameTextPc771b2c,
+                                    TextInputKeyNameTextPc771b24,
+                                    TextInputKeyNameTextPc771b20,
+                                    TextInputKeyNameTextPc771b14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b08,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771afc,
+                                    PcInputText770c50,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aec,
+                                    TextInputKeyNameTextPc771ae4,
+                                    TextInputKeyNameTextPc771adc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ad0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ab8,
+                                    PcInputText77199c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aa4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a9c,
+                                    PcInputText770c14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a8c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a84,
+                                    PcInputText770744,
+                                    PcInputText771584,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText77073c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770734,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a64,
+                                    PcInputText770730,
+                                    PcInputText771564,
+                                    TextInputKeyNameTextPc771a50,
+                                    TextInputKeyNameTextPc76fde8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770728,
+                                    PcInputText770720,
+                                    TextInputKeyNameTextPc771a38,
+                                    TextInputKeyNameTextPc771a30,
+                                    TextInputKeyNameTextPc771a28,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a20,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a14,
+                                    TextInputKeyNameTextPc771a04,
+                                    TextInputKeyNameTextPc7719f8,
+                                    TextInputKeyNameTextPc7719f0,
+                                    TextInputKeyNameTextPc7719e4,
+                                    TextInputKeyNameTextPc7719dc,
+                                    TextInputKeyNameTextPc7719d0,
+                                    TextInputKeyNameTextPc7719c8,
+                                    TextInputKeyNameTextPc7719bc};
+char *PcInputKeyNames823d00[238] = {TextInputKeyNameTextPc771d80,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText770f18,
+                                    PcInputText7708a4,
+                                    PcInputText770898,
+                                    TextInputKeyNameTextPc771d38,
+                                    TextInputKeyNameTextPc771d34,
+                                    TextInputKeyNameTextPc771d30,
+                                    TextInputKeyNameTextPc771d2c,
+                                    TextInputKeyNameTextPc771d28,
+                                    TextInputKeyNameTextPc771d24,
+                                    TextInputKeyNameTextPc774184,
+                                    TextInputKeyNameTextPc771d20,
+                                    TextInputKeyNameTextPc771d1c,
+                                    TextInputKeyNameTextPc771d18,
+                                    TextInputKeyNameTextPc771d14,
+                                    PcInputText77088c,
+                                    PcInputText770878,
+                                    TextInputKeyNameTextPc771d0c,
+                                    PcInputText77086c,
+                                    TextInputKeyNameTextPc771d00,
+                                    TextInputKeyNameTextPc771cfc,
+                                    TextInputKeyNameTextPc771cf8,
+                                    TextInputKeyNameTextPc771cf4,
+                                    TextInputKeyNameTextPc771cf0,
+                                    TextInputKeyNameTextPc771cec,
+                                    TextInputKeyNameTextPc771ce8,
+                                    TextInputKeyNameTextPc771ce4,
+                                    TextInputKeyNameTextPc771ce0,
+                                    PcInputText770f28,
+                                    PcInputText770868,
+                                    PcInputText770858,
+                                    PcInputText77084c,
+                                    PcInputText770838,
+                                    TextInputKeyNameTextPc774180,
+                                    TextInputKeyNameTextPc759770,
+                                    TextInputKeyNameTextPc771cac,
+                                    TextInputKeyNameTextPc771ca8,
+                                    TextInputKeyNameTextPc771ca4,
+                                    TextInputKeyNameTextPc771ca0,
+                                    TextInputKeyNameTextPc771c9c,
+                                    PcInputText77082c,
+                                    PcInputText770824,
+                                    PcInputText77080c,
+                                    PcInputText770800,
+                                    TextInputKeyNameTextPc771c6c,
+                                    PcInputText7707f4,
+                                    PcInputText7707e0,
+                                    TextInputKeyNameTextPc771c50,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    TextInputKeyNameTextPc771c1c,
+                                    TextInputKeyNameTextPc771c10,
+                                    TextInputKeyNameTextPc771c08,
+                                    TextInputKeyNameTextPc771c00,
+                                    TextInputKeyNameTextPc771bf8,
+                                    TextInputKeyNameTextPc771bf0,
+                                    TextInputKeyNameTextPc771be8,
+                                    TextInputKeyNameTextPc771be0,
+                                    TextInputKeyNameTextPc771bd8,
+                                    TextInputKeyNameTextPc771bd0,
+                                    TextInputKeyNameTextPc771bc8,
+                                    TextInputKeyNameTextPc771bc0,
+                                    TextInputKeyNameTextPc771bb8,
+                                    TextInputKeyNameTextPc771bb0,
+                                    PcInputText7707d4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    (char *)WorldPathSeparator,
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b58,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b4c,
+                                    TextInputKeyNameTextPc771b48,
+                                    TextInputKeyNameTextPc771b40,
+                                    TextInputKeyNameTextPc771b34,
+                                    TextInputKeyNameTextPc771b2c,
+                                    TextInputKeyNameTextPc771b24,
+                                    TextInputKeyNameTextPc771b20,
+                                    TextInputKeyNameTextPc771b14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b08,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771afc,
+                                    PcInputText7707c8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aec,
+                                    TextInputKeyNameTextPc771ae4,
+                                    TextInputKeyNameTextPc771adc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ad0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ab8,
+                                    PcInputText77199c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aa4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a9c,
+                                    PcInputText7707bc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText771154,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a84,
+                                    PcInputText7707ac,
+                                    PcInputText771584,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770798,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770784,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a64,
+                                    PcInputText770774,
+                                    PcInputText771564,
+                                    TextInputKeyNameTextPc771a50,
+                                    TextInputKeyNameTextPc76fde8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770768,
+                                    PcInputText77075c,
+                                    TextInputKeyNameTextPc771a38,
+                                    TextInputKeyNameTextPc771a30,
+                                    TextInputKeyNameTextPc771a28,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a20,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a14,
+                                    TextInputKeyNameTextPc771a04,
+                                    TextInputKeyNameTextPc7719f8,
+                                    TextInputKeyNameTextPc7719f0,
+                                    TextInputKeyNameTextPc7719e4,
+                                    TextInputKeyNameTextPc7719dc,
+                                    TextInputKeyNameTextPc7719d0,
+                                    TextInputKeyNameTextPc7719c8,
+                                    TextInputKeyNameTextPc7719bc};
+char *PcInputKeyNames824be0[238] = {TextInputKeyNameTextPc771d80,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    PcInputText7712f4,
+                                    PcInputText7710c0,
+                                    PcInputText7706ac,
+                                    PcInputText7706a4,
+                                    TextInputKeyNameTextPc771d34,
+                                    TextInputKeyNameTextPc771d30,
+                                    TextInputKeyNameTextPc771d2c,
+                                    TextInputKeyNameTextPc771d28,
+                                    TextInputKeyNameTextPc771d24,
+                                    TextInputKeyNameTextPc774184,
+                                    TextInputKeyNameTextPc771d20,
+                                    TextInputKeyNameTextPc771d1c,
+                                    TextInputKeyNameTextPc771d18,
+                                    TextInputKeyNameTextPc771d14,
+                                    PcInputText770d1c,
+                                    PcInputText770d18,
+                                    TextInputKeyNameTextPc771d0c,
+                                    PcInputText770d10,
+                                    TextInputKeyNameTextPc771d00,
+                                    TextInputKeyNameTextPc771cfc,
+                                    TextInputKeyNameTextPc771cf8,
+                                    TextInputKeyNameTextPc771cf4,
+                                    TextInputKeyNameTextPc771cf0,
+                                    TextInputKeyNameTextPc771cec,
+                                    TextInputKeyNameTextPc771ce8,
+                                    TextInputKeyNameTextPc771ce4,
+                                    TextInputKeyNameTextPc771ce0,
+                                    PcInputText77109c,
+                                    PcInputText771098,
+                                    PcInputText7517a8,
+                                    PcInputText770cf8,
+                                    PcInputText770f68,
+                                    TextInputKeyNameTextPc774180,
+                                    TextInputKeyNameTextPc759770,
+                                    TextInputKeyNameTextPc771cac,
+                                    TextInputKeyNameTextPc771ca8,
+                                    TextInputKeyNameTextPc771ca4,
+                                    TextInputKeyNameTextPc771ca0,
+                                    TextInputKeyNameTextPc771c9c,
+                                    PcInputText77069c,
+                                    PcInputText770694,
+                                    PcInputText77068c,
+                                    PcInputText770680,
+                                    TextInputKeyNameTextPc771c6c,
+                                    PcInputText770cd4,
+                                    PcInputText770678,
+                                    TextInputKeyNameTextPc771c50,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    TextInputKeyNameTextPc771c1c,
+                                    TextInputKeyNameTextPc771c10,
+                                    TextInputKeyNameTextPc771c08,
+                                    TextInputKeyNameTextPc771c00,
+                                    TextInputKeyNameTextPc771bf8,
+                                    TextInputKeyNameTextPc771bf0,
+                                    TextInputKeyNameTextPc771be8,
+                                    TextInputKeyNameTextPc771be0,
+                                    TextInputKeyNameTextPc771bd8,
+                                    TextInputKeyNameTextPc771bd0,
+                                    TextInputKeyNameTextPc771bc8,
+                                    TextInputKeyNameTextPc771bc0,
+                                    TextInputKeyNameTextPc771bb8,
+                                    TextInputKeyNameTextPc771bb0,
+                                    PcInputText77066c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    "<",
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b58,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b4c,
+                                    TextInputKeyNameTextPc771b48,
+                                    TextInputKeyNameTextPc771b40,
+                                    TextInputKeyNameTextPc771b34,
+                                    TextInputKeyNameTextPc771b2c,
+                                    TextInputKeyNameTextPc771b24,
+                                    TextInputKeyNameTextPc771b20,
+                                    TextInputKeyNameTextPc771b14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b08,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771afc,
+                                    PcInputText770664,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aec,
+                                    TextInputKeyNameTextPc771ae4,
+                                    TextInputKeyNameTextPc771adc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ad0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ab8,
+                                    PcInputText7706e0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aa4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7706d4,
+                                    PcInputText77065c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a8c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a84,
+                                    PcInputText770654,
+                                    PcInputText771584,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText77064c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770644,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a64,
+                                    PcInputText77063c,
+                                    PcInputText771564,
+                                    TextInputKeyNameTextPc771a50,
+                                    TextInputKeyNameTextPc76fde8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText770728,
+                                    PcInputText770634,
+                                    TextInputKeyNameTextPc771a38,
+                                    TextInputKeyNameTextPc771a30,
+                                    TextInputKeyNameTextPc771a28,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a20,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a14,
+                                    TextInputKeyNameTextPc771a04,
+                                    TextInputKeyNameTextPc7719f8,
+                                    TextInputKeyNameTextPc7719f0,
+                                    TextInputKeyNameTextPc7719e4,
+                                    TextInputKeyNameTextPc7719dc,
+                                    TextInputKeyNameTextPc7719d0,
+                                    TextInputKeyNameTextPc7719c8,
+                                    TextInputKeyNameTextPc7719bc};
+char *PcInputKeyNames821558[238] = {
+    TextInputKeyNameTextPc771d80, TextInputKeyNameTextPc771d7c, "1",
+    TextInputKeyNameTextPc771d78, TextInputKeyNameTextPc771d74, TextInputKeyNameTextPc771d70,
+    TextInputKeyNameTextPc771d6c, TextInputKeyNameTextPc771d68, TextInputKeyNameTextPc771d64,
+    TextInputKeyNameTextPc771d60, TextInputKeyNameTextPc771d5c, TextInputKeyNameTextPc771d58,
+    TextInputKeyNameTextPc771d50, TextInputKeyNameTextPc771d48, TextInputKeyNameTextPc771d3c,
+    TextInputKeyNameTextPc771d38, TextInputKeyNameTextPc771d34, TextInputKeyNameTextPc771d30,
+    TextInputKeyNameTextPc771d2c, TextInputKeyNameTextPc771d28, TextInputKeyNameTextPc771d24,
+    TextInputKeyNameTextPc774184, TextInputKeyNameTextPc771d20, TextInputKeyNameTextPc771d1c,
+    TextInputKeyNameTextPc771d18, TextInputKeyNameTextPc771d14, TextInputKeyNameTextPc753374,
+    TextInputKeyNameTextPc753370, TextInputKeyNameTextPc771d0c, TextInputKeyNameTextPc771d04,
+    TextInputKeyNameTextPc771d00, TextInputKeyNameTextPc771cfc, TextInputKeyNameTextPc771cf8,
+    TextInputKeyNameTextPc771cf4, TextInputKeyNameTextPc771cf0, TextInputKeyNameTextPc771cec,
+    TextInputKeyNameTextPc771ce8, TextInputKeyNameTextPc771ce4, TextInputKeyNameTextPc771ce0,
+    TextInputKeyNameTextPc771cd4, TextInputKeyNameTextPc771cc8, TextInputKeyNameTextPc771cc0,
+    TextInputKeyNameTextPc771cb4, (char *)WorldPathSeparator,   TextInputKeyNameTextPc774180,
+    TextInputKeyNameTextPc759770, TextInputKeyNameTextPc771cac, TextInputKeyNameTextPc771ca8,
+    TextInputKeyNameTextPc771ca4, TextInputKeyNameTextPc771ca0, TextInputKeyNameTextPc771c9c,
+    TextInputKeyNameTextPc771c94, TextInputKeyNameTextPc771c8c, TextInputKeyNameTextPc771c80,
+    TextInputKeyNameTextPc771c74, TextInputKeyNameTextPc771c6c, TextInputKeyNameTextPc771c64,
+    TextInputKeyNameTextPc771c5c, TextInputKeyNameTextPc771c50, TextInputKeyNameTextPc771c4c,
+    TextInputKeyNameTextPc771c48, TextInputKeyNameTextPc771c44, TextInputKeyNameTextPc771c40,
+    TextInputKeyNameTextPc771c3c, TextInputKeyNameTextPc771c38, TextInputKeyNameTextPc771c34,
+    TextInputKeyNameTextPc771c30, TextInputKeyNameTextPc771c2c, TextInputKeyNameTextPc771c28,
+    TextInputKeyNameTextPc771c1c, TextInputKeyNameTextPc771c10, TextInputKeyNameTextPc771c08,
+    TextInputKeyNameTextPc771c00, TextInputKeyNameTextPc771bf8, TextInputKeyNameTextPc771bf0,
+    TextInputKeyNameTextPc771be8, TextInputKeyNameTextPc771be0, TextInputKeyNameTextPc771bd8,
+    TextInputKeyNameTextPc771bd0, TextInputKeyNameTextPc771bc8, TextInputKeyNameTextPc771bc0,
+    TextInputKeyNameTextPc771bb8, TextInputKeyNameTextPc771bb0, PcInputText7719b0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, PcInputText7719a8,
+    TextInputKeyNameTextPc771ba0, TextInputKeyNameTextPc771b9c, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771b98, TextInputKeyNameTextPc771b94,
+    TextInputKeyNameTextPc771b90, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771b88, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771b80, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771b78, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc771b6c, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771b68,
+    TextInputKeyNameTextPc771b60, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc771b58, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc771b4c, TextInputKeyNameTextPc771b48, TextInputKeyNameTextPc771b40,
+    TextInputKeyNameTextPc771b34, TextInputKeyNameTextPc771b2c, TextInputKeyNameTextPc771b24,
+    TextInputKeyNameTextPc771b20, TextInputKeyNameTextPc771b14, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc771b08, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc771afc, TextInputKeyNameTextPc771af4, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771aec, TextInputKeyNameTextPc771ae4,
+    TextInputKeyNameTextPc771adc, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771ad0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc771ac8, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771ac0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771ab8, PcInputText77199c,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771aa4, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc771a9c, TextInputKeyNameTextPc771a94, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a8c,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a84, TextInputKeyNameTextPc771a80,
+    TextInputKeyNameTextPc771a78, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a70,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a68, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc771a64, TextInputKeyNameTextPc75ac34, TextInputKeyNameTextPc771a58,
+    TextInputKeyNameTextPc771a50, TextInputKeyNameTextPc76fde8, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc771a48, TextInputKeyNameTextPc771a40, TextInputKeyNameTextPc771a38,
+    TextInputKeyNameTextPc771a30, TextInputKeyNameTextPc771a28, TextInputKeyNameTextPc7516c0,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a20,
+    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a14, TextInputKeyNameTextPc771a04,
+    TextInputKeyNameTextPc7719f8, TextInputKeyNameTextPc7719f0, TextInputKeyNameTextPc7719e4,
+    TextInputKeyNameTextPc7719dc, TextInputKeyNameTextPc7719d0, TextInputKeyNameTextPc7719c8,
+    TextInputKeyNameTextPc7719bc};
+
+#include "saga.h"
+extern "C" {
 #pragma data_seg(".data$PlayerStartSplineIndexPc")
     i32 PlayerStartSplineIndexPc = -1;
 #pragma data_seg()

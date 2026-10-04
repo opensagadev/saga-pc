@@ -23,33 +23,6 @@ STATIC_ASSERT(sizeof(TEXT_INPUT_DEVICE_PC) == 0x17c);
 STATIC_ASSERT(offsetof(TEXT_INPUT_DEVICE_PC, bindings) == 0x6e);
 STATIC_ASSERT(sizeof(TEXT_INPUT_DEVICE_KIND_PC) == 6);
 
-struct TEXT_INPUT_LABELS_PC {
-    union {
-        char *indexed_names[34];
-        struct {
-            char *fixed_names[4];
-            char *button_prefix;
-            char *axis_negative;
-            char *axis_positive;
-            char *axis_format;
-            char *axis_names[6];
-            u8 unknown_0038[0x5c];
-        };
-    };
-    char *direction_positive[3];
-    char *direction_negative[3];
-    char *hat_names[3];
-    char *hat_format;
-    char *unknown;
-};
-STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, button_prefix) == 0x10);
-STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, axis_names) == 0x20);
-STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, direction_positive) == 0x94);
-STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, direction_negative) == 0xa0);
-STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, hat_names) == 0xac);
-STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, unknown) == 0xbc);
-STATIC_ASSERT(sizeof(TEXT_INPUT_LABELS_PC) == 0xc0);
-
 class TEXT_INPUT_MANAGER_PC {
   public:
     u8 unknown_0000[0x4e34];

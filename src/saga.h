@@ -6873,6 +6873,7 @@ typedef struct PC_DEVICE_BACKEND_PC {
     void __thiscall InitializeFactory();
     i32 __thiscall FindAspect(u32 width, u32 height);
     u32 __thiscall FindMode(u32 width, u32 height, u32 refresh);
+    u32 __thiscall GetMultisampleType();
 #endif
 } PC_DEVICE_BACKEND_PC;
 
@@ -7016,7 +7017,15 @@ struct GRAPHICS_RENDER_TEXTURE_PC {
     PC_TEXTURE_RESOURCE_PC *resource;
     u16 width, height;
     u16 unknown_08, mip_count;
-    u8 unknown_0c[0x1c];
+    union {
+        u8 unknown_0c[0x1c];
+        struct {
+            u16 original_mip_count, reserved_0e;
+            u32 field_10;
+            i32 format, usage, pool;
+            u32 flags, field_24;
+        };
+    };
     PC_TEXTURE_RESOURCE_PC *surface;
     i32 external_id;
 };
@@ -7027,14 +7036,71 @@ STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, height) == 6);
 STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, mip_count) == 0xa);
 STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, surface) == 0x28);
 STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, external_id) == 0x2c);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, original_mip_count) == 0xc);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, field_10) == 0x10);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, format) == 0x14);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, usage) == 0x18);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, pool) == 0x1c);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, flags) == 0x20);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, field_24) == 0x24);
 
 struct nusound_filename_info_s;
 
+typedef struct PC_NATIVE_DEBUG_HEADER_PC {
+    i32 first, second, third, font_size;
+    char label[128];
+    u32 unknown_colour, face_colour, high_colour, low_colour, inner_colour;
+} PC_NATIVE_DEBUG_HEADER_PC;
+typedef struct PC_NATIVE_DEBUG_VERTEX_PC {
+    f32 x, y, z, w;
+    u32 colour;
+} PC_NATIVE_DEBUG_VERTEX_PC;
 typedef struct PC_NATIVE_DEBUG_STATE_PC {
-    u8 unknown_0;
-    u8 enabled;
+    u8 unknown_0, enabled;
+    u8 unknown_002[14];
+    PC_NATIVE_DEBUG_HEADER_PC header;
+    PC_NATIVE_DEBUG_HEADER_PC *current_header;
+    f32 top, left, right, bottom;
+    PC_NATIVE_DEBUG_VERTEX_PC vertices[54];
+    i32 log_file;
+    u8 write_log;
+    u8 unknown_505[3];
+#ifdef __cplusplus
+    void __thiscall InitializeHeader();
+    void __thiscall UpdateGeometry();
+    void __thiscall Initialize();
+    void __thiscall Shutdown();
+#endif
 } PC_NATIVE_DEBUG_STATE_PC;
+STATIC_ASSERT(sizeof(PC_NATIVE_DEBUG_HEADER_PC) == 0xa4);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, first) == 0);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, second) == 4);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, third) == 8);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, font_size) == 0xc);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, label) == 0x10);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, unknown_colour) == 0x90);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, face_colour) == 0x94);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, high_colour) == 0x98);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, low_colour) == 0x9c);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, inner_colour) == 0xa0);
+STATIC_ASSERT(sizeof(PC_NATIVE_DEBUG_VERTEX_PC) == 20);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_VERTEX_PC, x) == 0);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_VERTEX_PC, y) == 4);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_VERTEX_PC, z) == 8);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_VERTEX_PC, w) == 12);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_VERTEX_PC, colour) == 16);
+STATIC_ASSERT(sizeof(PC_NATIVE_DEBUG_STATE_PC) == 0x508);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_STATE_PC, unknown_0) == 0);
 STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_STATE_PC, enabled) == 1);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_STATE_PC, header) == 0x10);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_STATE_PC, current_header) == 0xb4);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_STATE_PC, top) == 0xb8);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_STATE_PC, left) == 0xbc);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_STATE_PC, right) == 0xc0);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_STATE_PC, bottom) == 0xc4);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_STATE_PC, vertices) == 0xc8);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_STATE_PC, log_file) == 0x500);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_STATE_PC, write_log) == 0x504);
 
 typedef struct pc_frustum_group_pc_s {
     u8 unknown_0000[0x1a0];
@@ -7487,6 +7553,36 @@ typedef struct cut_load_character_instance_s CUT_LOAD_CHARACTER_INSTANCE;
 typedef struct cut_locator_function_entry_pc_s CUT_LOCATOR_FUNCTION_ENTRY_PC;
 
 typedef struct TEXT_INPUT_LABELS_PC TEXT_INPUT_LABELS_PC;
+struct TEXT_INPUT_LABELS_PC {
+    union {
+        char *initializer_names[37];
+        char *indexed_names[34];
+        struct {
+            char *fixed_names[4];
+            char *button_prefix;
+            char *axis_negative;
+            char *axis_positive;
+            char *axis_format;
+            char *axis_names[6];
+            u8 unknown_0038[0x5c];
+        };
+    };
+    char *direction_positive[3];
+    char *direction_negative[3];
+    char *hat_names[3];
+    char *hat_format;
+    char *unknown;
+};
+STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, button_prefix) == 0x10);
+STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, axis_names) == 0x20);
+STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, direction_positive) == 0x94);
+STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, direction_negative) == 0xa0);
+STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, hat_names) == 0xac);
+STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, unknown) == 0xbc);
+STATIC_ASSERT(sizeof(TEXT_INPUT_LABELS_PC) == 0xc0);
+
+STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, initializer_names) == 0);
+
 typedef struct TEXT_INPUT_DEVICE_LINK_PC {
     i32 unknown_0000;
     i32 device;
@@ -15509,5 +15605,65 @@ extern "C" {
     void __cdecl PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...);
 #ifdef __cplusplus
 }
+#endif
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl BoltTypes_Configure(WORLDINFO *, char *);
+    void __cdecl BoltTypes_Init(WORLDINFO *);
+    void __cdecl LevelObjects_InitForLevel(WORLDINFO *);
+    i32 __cdecl FindPartDebris(PARTDEBRISSYS *, char *);
+    extern NUGSCN *area_scene, *vehicle_scene, *big_icon_scene;
+    extern i32 KNOBS;
+
+    void __cdecl PCGraphicsRenderTextureAllocationError(void);
+    void __cdecl PCGraphicsInitRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32, i32, i32, i32);
+    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateColourTarget(i32, i32);
+    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateColourTargetFormat(i32, i32, i32);
+    void __cdecl PCDeviceCreateDepthSurface(u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
+    void __cdecl PCDeviceCreateTexture(u32, u32, u32, u32, i32, i32, PC_TEXTURE_RESOURCE_PC **);
+#ifdef __cplusplus
+}
+#endif
+#ifdef __cplusplus
+struct PC_INPUT_RUNTIME_PC;
+extern const char *PcCompanyName;
+extern const char *PcProductName;
+extern i32 PcUsePersonalFolder;
+extern void(__cdecl *PcInputStateInitializedCallback)(PC_INPUT_RUNTIME_PC *);
+extern char PcUserFolder[260];
+extern char PcFileDirectory[128];
+extern char PcFilePath[128];
+extern TEXT_INPUT_LABELS_PC PcInputLabels820560;
+extern TEXT_INPUT_LABELS_PC PcInputLabels820480;
+extern TEXT_INPUT_LABELS_PC PcInputLabels820aa0;
+extern TEXT_INPUT_LABELS_PC PcInputLabels820d40;
+extern TEXT_INPUT_LABELS_PC PcInputLabels820c60;
+extern TEXT_INPUT_LABELS_PC PcInputLabels820b80;
+extern TEXT_INPUT_LABELS_PC PcInputLabels820640;
+extern TEXT_INPUT_LABELS_PC PcInputLabels8209c0;
+extern TEXT_INPUT_LABELS_PC PcInputLabels820e20;
+extern TEXT_INPUT_LABELS_PC PcInputLabels8210c0;
+extern TEXT_INPUT_LABELS_PC PcInputLabels820f00;
+extern TEXT_INPUT_LABELS_PC PcInputLabels820fe0;
+extern TEXT_INPUT_LABELS_PC PcInputLabels820800;
+extern TEXT_INPUT_LABELS_PC PcInputLabels820720;
+extern TEXT_INPUT_LABELS_PC PcInputLabels8208e0;
+extern char *PcInputKeyNames821910[238];
+extern char *PcInputKeyNames822080[238];
+extern char *PcInputKeyNames822ae8[238];
+extern char *PcInputKeyNames822770[238];
+extern char *PcInputKeyNames8223f8[238];
+extern char *PcInputKeyNames8231d8[238];
+extern char *PcInputKeyNames8240b8[238];
+extern char *PcInputKeyNames822e60[238];
+extern char *PcInputKeyNames821cc8[238];
+extern char *PcInputKeyNames823590[238];
+extern char *PcInputKeyNames823948[238];
+extern char *PcInputKeyNames824828[238];
+extern char *PcInputKeyNames824470[238];
+extern char *PcInputKeyNames823d00[238];
+extern char *PcInputKeyNames824be0[238];
+extern char *PcInputKeyNames821558[238];
 #endif
 #endif

@@ -3901,3 +3901,14 @@ void __cdecl edpartSetParticlePage(i32 page) {
 i32 __cdecl edpartLoadPage(char *path, i8 mode, NUGSCN *scene) {
     return edpartLoadPageEx(path, mode, &scene, 1);
 }
+
+i32 __cdecl FindPartDebris(PARTDEBRISSYS *system, char *name) {
+    i32 index;
+    if (system != NULL) {
+        for (index = system->named_count; index < system->capacity; ++index) {
+            if (NuStrICmp(name, system->entries[index].name) == 0)
+                return system->entries[index].id;
+        }
+    }
+    return -1;
+}
