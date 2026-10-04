@@ -4323,3 +4323,28 @@ comparisons and 357 normal native checks pass; two prior nonexact compiler
 scheduling variants have separate finite proofs. All previous exact matches
 survive. Remaining loaded-terrain, asset, rendering-device and full-game
 behavior is qualified in config/transfer-execution.md.
+
+
+### Resource, gameplay and texture animation release (2026-10-04)
+
+72 complete newly compared functions/21,628 PC bytes connect resource-page
+loading, real RTL/effects, Trigger/attacker/GameAI and texture/material animation.
+Full native extents and relocated current normal bytes agree with independent
+accepted packets. Ingestion7/4,698 includes real private ESI UpdateTotalPtls;
+RTL3/195 is exact. Trigger includes complete cold cleanup; GameAI6,245/private
+Wall790 retain original context and named field offsets. Graphics52/6,114
+includes the genuine21-command private dispatch table and real parser/SDK
+providers.18 command literals were added through a separate immutable data-only
+proposal after the original proposal omitted their CSV bindings; no body or
+extent changed. All compiled definitions remain covered and real source EXE links.
+
+Independent endpoint: build/analysis/transfer-execution-20261003/platform/
+resource-trigger-graphics-final-review/endpoint-acceptance.json.340 selected
+normal native checks and authoritative retail matching pass.38 new exact
+functions/2,445 bytes are proven whole-byte equality. Every previous exact
+match survives; the four intended/natural Parts variants and finite particle
+715->717 variant have separate qualified full-copy proofs. Compiler-private
+register differences remain honest nonexact outcomes, never ABI wrappers.
+NuMtlInitEx5e4840 is rejected as a different light loop; true5f1dd0/375 and
+asset-dependent PS60ddc0/265 remain unreleased candidates. Next GizFlow39 and
+RTL/list12 retain independent review and production verification gates.

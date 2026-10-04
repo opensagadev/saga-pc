@@ -116,3 +116,12 @@ extern "C" void __cdecl NuMtlCreatePS(NUMTL *material, i32 is_3d) {
     if (is_3d == 0)
         mtl->shader.vertex_format |= 0x40000;
 }
+
+#include <string.h>
+extern "C" void __cdecl NuMtlSetShaderDescPS(NUMTL *material, const PC_MATERIAL_SHADER_DESC_VIEW *description) {
+    PC_MATERIAL_UPDATE_VIEW *mtl = reinterpret_cast<PC_MATERIAL_UPDATE_VIEW *>(material);
+    mtl->shader = *description;
+    mtl->diffuse.x = (mtl->shader.packed_diffuse_colour & 0xff) / 255.0;
+    mtl->diffuse.y = ((mtl->shader.packed_diffuse_colour >> 8) & 0xff) / 255.0;
+    mtl->diffuse.z = ((mtl->shader.packed_diffuse_colour >> 16) & 0xff) / 255.0;
+}

@@ -208,6 +208,55 @@ class SymbolLookupTests(unittest.TestCase):
         self.assertEqual(covered_bytes([]), 0)
 
 
+class DefinitionIndexTests(unittest.TestCase):
+    def test_sorted_owners_exact_names_and_code_data_kinds(self):
+        first = SimpleNamespace(defined_symbols=lambda: [
+            {"name": "_same", "type": 0x20}, {"name": "?private@@3HA", "type": 0}])
+        second = SimpleNamespace(defined_symbols=lambda: [{"name": "_same", "type": 0}])
+        objects = {"src/b.c": second, "src/a.c": first}
+        index = lib.DefinitionIndex(objects)
+        for name in ("_same", "?private@@3HA", "same", "_missing"):
+            self.assertEqual(index.definitions_for(name), definitions_for(objects, name))
+        self.assertEqual(index.kinds_for("_same"), {False, True})
+        self.assertEqual(index.kinds_for("?private@@3HA"), {False})
+        self.assertEqual(index.kinds_for("_missing"), set())
+
+    def test_duplicates_are_lazy_and_report_first_sorted_owner(self):
+        duplicate = coff(("_bad", 1), ("_bad", 2))
+        good = coff(("_good", 1))
+        objects = {"src/z.c": duplicate, "src/g.c": good, "src/a.c": duplicate}
+        index = lib.DefinitionIndex(objects)
+        self.assertEqual(index.definitions_for("_good"), [("src/g.c", good)])
+        for lookup in (index.definitions_for, index.kinds_for,
+                       lambda name: definitions_for(objects, name)):
+            with self.assertRaisesRegex(ValueError, "Ambiguous linker name '_bad' in src/a.c"):
+                lookup("_bad")
+
+    def test_fixed_object_lifetime_requires_rebuild_after_mutation(self):
+        definitions = [{"name": "_first", "type": 0x20}]
+        obj = SimpleNamespace(defined_symbols=lambda: definitions)
+        objects = {"src/a.c": obj}
+        old = lib.DefinitionIndex(objects)
+        definitions.append({"name": "_second", "type": 0})
+        objects["src/b.c"] = coff(("_second", 1))
+        rebuilt = lib.DefinitionIndex(objects)
+        self.assertEqual(old.definitions_for("_second"), [])
+        self.assertEqual(rebuilt.definitions_for("_second"), definitions_for(objects, "_second"))
+
+    def test_each_owner_is_enumerated_once_for_many_queries(self):
+        calls = []
+
+        def definitions():
+            calls.append(1)
+            return [{"name": "_value", "type": 0x20}]
+        index = lib.DefinitionIndex({"src/a.c": SimpleNamespace(defined_symbols=definitions)})
+        for _ in range(10):
+            self.assertTrue(index.definitions_for("_value"))
+            self.assertEqual(index.kinds_for("_value"), {True})
+            self.assertFalse(index.definitions_for("_absent"))
+        self.assertEqual(len(calls), 1)
+
+
 class ProjectInputTests(unittest.TestCase):
     def test_mapping_covers_code_and_data_without_requiring_implementations(self):
         target = {"image_base": "0x400000", "image_size": "0x10000",
@@ -298,6 +347,23 @@ class ExternalInventoryTests(unittest.TestCase):
             with self.subTest(address=address), self.assertRaisesRegex(ValueError, "declaration-only"):
                 lib.external_symbols(self.pe, [self.row(address, size)],
                                      {"src/accidental.c": coff(("_external", 1))})
+
+    def test_indexed_external_classification_and_fatal_checks_equal_legacy(self):
+        cases = [
+            ([self.row(BASE, 6), self.row(BASE + 0x140, 4, "_slot")], {}),
+            ([self.row(BASE, 5)], {}),
+            ([self.row(BASE, 6)], {"src/accidental.c": coff(("_external", 1))}),
+            ([self.row(BASE, 6)], {"src/duplicate.c": coff(("_external", 1), ("_external", 2))}),
+        ]
+        for rows, objects in cases:
+            with self.subTest(rows=rows, objects=objects):
+                outcomes = []
+                for index in (None, lib.DefinitionIndex(objects)):
+                    try:
+                        outcomes.append(lib.external_symbols(self.pe, rows, objects, index))
+                    except ValueError as error:
+                        outcomes.append((type(error), str(error)))
+                self.assertEqual(outcomes[0], outcomes[1])
 
 
 if __name__ == "__main__":

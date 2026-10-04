@@ -541,3 +541,39 @@ i32 __cdecl rtlDynamicSetPos(i32 id, NUVEC *position) {
     light->position = *position;
     return 1;
 }
+
+i32 __cdecl rtlFindByUserId(RTL_SET_PC *set, i32 user_id) {
+    i32 index;
+    if (set != NULL) {
+        for (index = 0; index < 128; ++index) {
+            if (set->lights[index].type != 0 && set->lights[index].field_68 == user_id)
+                return index;
+        }
+    }
+    return -1;
+}
+void __cdecl rtlDynamicFree(i32 id) {
+    NULNKHDR *light;
+    if (rtl_dynamic_pool != NULL && id >= 0 && id < rtl_dynamic_max) {
+        light = NuLstGetByIdx(rtl_dynamic_pool, id);
+        if (light != NULL) {
+            NuLstFree(light);
+            --rtl_dynamic_cnt;
+        }
+    }
+}
+i32 __cdecl rtlDynamicAllocTemplate(RTL_SET_PC *set, i32 user_id) {
+    i32 template_id;
+    i32 id;
+    RTL_LIGHT_PC *light;
+    template_id = rtlFindByUserId(set, user_id);
+    if (template_id >= 0) {
+        id = rtlDynamicAlloc();
+        if (id >= 0) {
+            light = (RTL_LIGHT_PC *)NuLstGetByIdx(rtl_dynamic_pool, id);
+            *light = set->lights[template_id];
+            return id;
+        }
+    }
+    return -1;
+}

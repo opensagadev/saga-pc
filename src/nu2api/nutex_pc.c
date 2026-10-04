@@ -49,3 +49,15 @@ i32 __cdecl NuTexReadPc(char *name, VARIPTR *buffer, VARIPTR end) {
     NuFree(data, NuTextureSourcePathPC, 0x4d);
     return id;
 }
+
+#include <string.h>
+extern const char NuTextureEnvironmentCubePathPc[];
+extern const char NuTexturePhongCubePathPc[];
+extern PC_TEXTURE_RESOURCE_PC *NuTextureEnvironmentCubePc, *NuTexturePhongCubePc;
+void __cdecl PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE_RESOURCE_PC **resource);
+
+void __cdecl NuTexInitExPS(VARIPTR *buffer) {
+    (void)buffer;
+    PCDeviceCreateCubeTextureFromFile((char *)NuTextureEnvironmentCubePathPc, &NuTextureEnvironmentCubePc);
+    PCDeviceCreateCubeTextureFromFile((char *)NuTexturePhongCubePathPc, &NuTexturePhongCubePc);
+}

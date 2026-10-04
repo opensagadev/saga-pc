@@ -198,3 +198,18 @@ extern "C" void __cdecl PCDeviceDrawPrimitiveUPPc(i32 type, u32 count, const voi
     PRIMITIVE_D3D_DEVICE_VIEW *device = reinterpret_cast<PRIMITIVE_D3D_DEVICE_VIEW *>(PCDeviceBackend.device);
     PCDeviceLastResult = device->methods->draw_primitive_up(device, type, count, vertices, stride);
 }
+
+extern "C" const char PCDeviceTextureCubeSourcePathPc[];
+
+extern "C" void __cdecl PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE_RESOURCE_PC **resource) {
+    u32 size = static_cast<u32>(NuFileSize(path));
+    if (size != 0) {
+        void *data = NuFileLoad(path);
+        if (data != NULL) {
+            PCDeviceLastResult =
+                D3DXCreateCubeTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device),
+                                                      data, size, reinterpret_cast<IDirect3DCubeTexture9 **>(resource));
+            NuFree(data, PCDeviceTextureCubeSourcePathPc, 1116);
+        }
+    }
+}

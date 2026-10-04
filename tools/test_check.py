@@ -1,11 +1,13 @@
 """Offline object checks cover private data, literals and relocation mappings."""
 from pathlib import Path
-from contextlib import ExitStack, redirect_stdout
+from contextlib import ExitStack, redirect_stderr, redirect_stdout
 import io
 import json
 import os
 import struct
+import subprocess
 import tempfile
+import threading
 import unittest
 from unittest.mock import patch
 
@@ -450,8 +452,8 @@ class ClangChecksTests(unittest.TestCase):
         with patch.object(check_module, "clang_tool", return_value="clang-tidy-18"), \
                 patch.object(check_module.subprocess, "run") as run, \
                 patch.dict(os.environ, {"CPATH": "/untrusted/include", "CPLUS_INCLUDE_PATH": "/host/c++"}):
-            run.return_value.returncode = 0
-            check_module.check_tidy()
+            run.return_value = subprocess.CompletedProcess([], 0, "", "")
+            check_module.check_tidy(jobs=1)
         self.assertEqual(run.call_count, 2)
         for call, standard in zip(run.call_args_list, ("-std=c89", "-std=c++98")):
             command = call.args[0]
@@ -483,10 +485,105 @@ class ClangChecksTests(unittest.TestCase):
     def test_tidy_failure_propagates_after_checking_all_units(self):
         with patch.object(check_module, "clang_tool", return_value="clang-tidy-18"), \
                 patch.object(check_module.subprocess, "run") as run:
-            run.return_value.returncode = 1
+            run.return_value = subprocess.CompletedProcess([], 1, "", "")
             with self.assertRaisesRegex(ValueError, "clang-tidy failed for: src/a.c, src/b.cpp"):
                 check_module.check_tidy()
         self.assertEqual(run.call_count, 2)
+
+    def test_tidy_reports_diagnostics_and_failures_in_source_order(self):
+        second_finished = threading.Event()
+        completion_order = []
+
+        def analyze(command, **kwargs):
+            source = command[4]
+            if source == "src/a.c":
+                self.assertTrue(second_finished.wait(2))
+            completion_order.append(source)
+            if source == "src/b.cpp":
+                second_finished.set()
+            return subprocess.CompletedProcess(command, 1, source + " out\n", source + " err\n")
+
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with patch.object(check_module, "clang_tool", return_value="clang-tidy-18"), \
+                patch.object(check_module.subprocess, "run", side_effect=analyze), \
+                patch.object(check_module.os, "cpu_count", return_value=8), \
+                redirect_stdout(stdout), redirect_stderr(stderr):
+            with self.assertRaisesRegex(ValueError, "clang-tidy failed for: src/a.c, src/b.cpp"):
+                check_module.check_tidy(jobs=2)
+        self.assertEqual(completion_order, ["src/b.cpp", "src/a.c"])
+        self.assertEqual(stdout.getvalue(), "src/a.c out\nsrc/b.cpp out\n")
+        self.assertEqual(stderr.getvalue(), "src/a.c err\nsrc/b.cpp err\n")
+
+    def test_tidy_preserves_mixed_timeout_and_exit_failures(self):
+        called = []
+        timeout = subprocess.TimeoutExpired(["clang-tidy-18", "src/a.c"], 120,
+                                            output=b"partial out\n", stderr=b"partial err\n")
+
+        def analyze(command, **kwargs):
+            source = command[4]
+            called.append(source)
+            self.assertEqual(kwargs["timeout"], 120)
+            if source == "src/a.c":
+                raise timeout
+            return subprocess.CompletedProcess(command, 1, "complete out\n", "complete err\n")
+
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with patch.object(check_module, "clang_tool", return_value="clang-tidy-18"), \
+                patch.object(check_module.subprocess, "run", side_effect=analyze), \
+                redirect_stdout(stdout), redirect_stderr(stderr):
+            with self.assertRaises(subprocess.TimeoutExpired) as raised:
+                check_module.check_tidy(jobs=2)
+        self.assertIs(raised.exception, timeout)
+        self.assertCountEqual(called, ["src/a.c", "src/b.cpp"])
+        self.assertEqual(stdout.getvalue(), "partial out\ncomplete out\n")
+        self.assertTrue(stderr.getvalue().startswith("partial err\nclang-tidy error for src/a.c:"))
+        self.assertIn("complete err\n", stderr.getvalue())
+        self.assertTrue(stderr.getvalue().endswith("clang-tidy failed for: src/a.c, src/b.cpp\n"))
+
+    def test_tidy_prepares_overlay_once_and_bounds_workers(self):
+        barrier = threading.Barrier(8)
+        guard = threading.Lock()
+        active = peak = 0
+        files = [f"src/unit{index}.c" for index in range(24)]
+
+        def analyze(command, **kwargs):
+            nonlocal active, peak
+            with guard:
+                active += 1
+                peak = max(peak, active)
+            barrier.wait(timeout=5)
+            with guard:
+                active -= 1
+            return subprocess.CompletedProcess(command, 0, "", "")
+
+        with patch.object(check_module, "clang_tool", return_value="clang-tidy-18"), \
+                patch.object(check_module, "source_files", return_value=files), \
+                patch.object(check_module, "analysis_configuration", wraps=check_module.analysis_configuration) as config, \
+                patch.object(check_module.os, "cpu_count", return_value=16), \
+                patch.object(check_module.subprocess, "run", side_effect=analyze) as run:
+            check_module.check_tidy()
+        config.assert_called_once_with()
+        self.assertEqual(run.call_count, 24)
+        self.assertEqual(peak, 8)
+
+    def test_tidy_jobs_respects_cpu_and_unit_limits(self):
+        executor = check_module.ThreadPoolExecutor
+        for jobs, cpus, expected in ((8, 1, 1), (32, 16, 2), (1, 16, 1)):
+            with self.subTest(jobs=jobs, cpus=cpus), \
+                    patch.object(check_module, "clang_tool", return_value="clang-tidy-18"), \
+                    patch.object(check_module.os, "cpu_count", return_value=cpus), \
+                    patch.object(check_module, "ThreadPoolExecutor", wraps=executor) as pool, \
+                    patch.object(check_module.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, "", "")):
+                check_module.check_tidy(jobs=jobs)
+                pool.assert_called_once_with(max_workers=expected)
+
+    def test_tidy_rejects_invalid_jobs_before_preparing_overlay(self):
+        with patch.object(check_module, "analysis_configuration") as config, \
+                patch.object(check_module.subprocess, "run") as run:
+            with self.assertRaisesRegex(ValueError, "jobs must be at least 1"):
+                check_module.check_tidy(jobs=0)
+        config.assert_not_called()
+        run.assert_not_called()
 
 
 if __name__ == "__main__":

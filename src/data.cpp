@@ -11498,3 +11498,123 @@ extern "C" {
     i32 nbaddies_can_see_players = 0;
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$EdppUseMemcardPc")
+    i32 EdppUseMemcardPc = 0;
+#pragma data_seg()
+#pragma data_seg(".data$EdppTypesErrorPc")
+    i32 EdppTypesErrorPc = 0;
+#pragma data_seg()
+#pragma data_seg(".data$EdppUnresolvedInstancesPc")
+    i32 EdppUnresolvedInstancesPc = 0;
+#pragma data_seg()
+#pragma data_seg(".data$PartDebrisNameListPc")
+    char **PartDebrisNameListPc = NULL;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$spinner_gizmotype_id")
+    i32 spinner_gizmotype_id = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGOCONTEXT_GRAPPLE")
+    i32 LEGOCONTEXT_GRAPPLE = -1;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$lever_gizmotype_id")
+    i32 lever_gizmotype_id = -1;
+#pragma data_seg()
+#pragma data_seg(".data$grapple_gizmotype_id")
+    i32 grapple_gizmotype_id = -1;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$draw_attention_distance")
+    f32 draw_attention_distance = 2.0f;
+#pragma data_seg()
+#pragma data_seg(".data$GAMEPAD_START")
+    u32 GAMEPAD_START = 2048;
+#pragma data_seg()
+#pragma data_seg(".data$active_neutral_count")
+    i32 active_neutral_count = 0;
+#pragma data_seg()
+#pragma data_seg(".data$GameAiPartyFollowSpacingPc")
+    f32 GameAiPartyFollowSpacingPc = 0.20000000298023224f;
+#pragma data_seg()
+#pragma data_seg(".data$JEDI_B_LDATA")
+    LEVELDATA_PC *JEDI_B_LDATA = NULL;
+#pragma data_seg()
+#pragma data_seg(".data$id_JANGOFETT")
+    i16 id_JANGOFETT = -1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGO_AIPATHCNX_R2D2GLIDE")
+    i32 LEGO_AIPATHCNX_R2D2GLIDE = 0;
+#pragma data_seg()
+#pragma data_seg(".data$jump_stuck_time")
+    f32 jump_stuck_time = 0.10000000149011612f;
+#pragma data_seg()
+#pragma data_seg(".data$LEGO_AIPATHCNX_JUMP")
+    i32 LEGO_AIPATHCNX_JUMP = 0;
+#pragma data_seg()
+#pragma data_seg(".data$drop_in_teleport")
+    i32 drop_in_teleport = 3;
+#pragma data_seg()
+#pragma data_seg(".data$teleport_all_freeplay_modes")
+    i32 teleport_all_freeplay_modes = 1;
+#pragma data_seg()
+#pragma data_seg(".data$LEGO_AIPATHCNX_DONTTOGGLE")
+    i32 LEGO_AIPATHCNX_DONTTOGGLE = 0;
+#pragma data_seg()
+#pragma data_seg(".data$DEFENDTIME")
+    f32 DEFENDTIME = 4.0f;
+#pragma data_seg()
+#pragma data_seg(".data$debug_ignore_players")
+    i32 debug_ignore_players = 0;
+#pragma data_seg()
+#pragma data_seg(".data$WALKSTEALTH")
+    i32 WALKSTEALTH = 0;
+#pragma data_seg()
+#pragma data_seg(".data$active_goody_count")
+    i32 active_goody_count = 0;
+#pragma data_seg()
+#pragma data_seg(".data$active_baddy_count")
+    i32 active_baddy_count = 0;
+#pragma data_seg()
+#pragma data_seg(".data$GameAiLosDivisorPc")
+    i32 GameAiLosDivisorPc = 2;
+#pragma data_seg()
+#pragma data_seg(".data$timetogetlos")
+    f32 timetogetlos = 0.0f;
+#pragma data_seg()
+#pragma data_seg(".data$test_new_interaction")
+    i32 test_new_interaction = 0;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$TextureAnimationRandomPc")
+    NURAND TextureAnimationRandomPc = {0};
+#pragma data_seg()
+#pragma data_seg(".data$TextureAnimationScriptMaskPc")
+    u16 TextureAnimationScriptMaskPc = 0xffff;
+#pragma data_seg()
+#pragma data_seg(".data$NuTextureEnvironmentCubePc")
+    PC_TEXTURE_RESOURCE_PC *NuTextureEnvironmentCubePc = NULL;
+#pragma data_seg()
+#pragma data_seg(".data$NuTexturePhongCubePc")
+    PC_TEXTURE_RESOURCE_PC *NuTexturePhongCubePc = NULL;
+#pragma data_seg()
+#pragma const_seg(".rdata$NuTextureEnvironmentCubePathPc")
+    const char NuTextureEnvironmentCubePathPc[28] = "pc\\stuff\\LegoCubeMap_PC.dds";
+#pragma const_seg()
+#pragma const_seg(".rdata$NuTexturePhongCubePathPc")
+    const char NuTexturePhongCubePathPc[25] = "pc\\stuff\\PhongMap_PC.dds";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCDeviceTextureCubeSourcePathPc")
+    const char PCDeviceTextureCubeSourcePathPc[15] = ".\\d3dCalls.cpp";
+#pragma const_seg()
+}

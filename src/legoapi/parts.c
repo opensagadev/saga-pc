@@ -96,17 +96,19 @@ void __cdecl KillPart(PART_PC *part, i32 reason) {
     }
     part->active &= ~1u;
     if ((part->flags & 0x20000) != 0 && part->debris_handle != NULL) {
-        STUBBED_NAMED("KillPart: DebFreeInstantly");
+        DebFreeInstantly(part->debris_handle);
     }
     if (part->lighting_handle != NULL) {
-        STUBBED_NAMED("KillPart: rtlDynamicFree");
+        rtlDynamicFree(*part->lighting_handle);
         *part->lighting_handle = -1;
     }
     if (part->kill_fn != NULL) {
         part->kill_fn(part, reason);
     }
     if (reason != 6 && part->effect_id_1f4 != -1) {
-        STUBBED_NAMED("KillPart: AddScaledFiniteShotDebrisEffect");
+        i32 handle = -1;
+        AddScaledFiniteShotDebrisEffect(&handle, part->effect_id_1f4, &part->position, NULL, NULL, 1,
+                                        part->effect_scale);
     }
 }
 
@@ -248,9 +250,13 @@ PART_PC *__cdecl AddPart(ADDPART_PC *parameters) {
         NewPartOrderedRotation(part);
     }
     if (parameters->effect_id_58 != -1) {
+        i32 effect = parameters->effect_id_58;
         part->inline_debris_handle = -1;
         part->debris_handle = &part->inline_debris_handle;
-        STUBBED_NAMED("AddPart: scaled debris creation and instance population");
+        if (parameters->effect_scale != 1.0f)
+            effect = CreateScaledEffect(effect, parameters->effect_scale);
+        AddDebrisEffect(part->debris_handle, effect, part->position.x, part->position.y, part->position.z);
+        DebrisPopulateInstance(*part->debris_handle, 0.0f);
     } else {
         part->debris_handle = parameters->debris_handle;
     }
@@ -271,8 +277,10 @@ PART_PC *__cdecl AddPart(ADDPART_PC *parameters) {
     part->hostility_group = (u8)parameters->hostility_group;
     part->field_204 = 1;
     if ((part->flags & 0x2000) != 0 && parameters->lighting_handle != NULL && PartRTL != NULL) {
+        i32 light_id;
         part->lighting_handle = parameters->lighting_handle;
-        STUBBED_NAMED("AddPart: dynamic lighting template allocation and handle assignment");
+        light_id = rtlDynamicAllocTemplate((RTL_SET_PC *)PartRTL, parameters->lighting_id);
+        *parameters->lighting_handle = light_id;
     }
     if (++part_slot_cursor == MAXPARTS) {
         part_slot_cursor = 0;
@@ -3886,3 +3894,10 @@ STATIC_ASSERT(offsetof(PART_PC, effect_id_1f0) == 0x1f0);
 STATIC_ASSERT(offsetof(PART_PC, effect_id_1f8) == 0x1f8);
 STATIC_ASSERT(offsetof(PART_PC, field_208) == 0x208);
 STATIC_ASSERT(offsetof(PART_PC, field_214) == 0x214);
+
+void __cdecl edpartSetParticlePage(i32 page) {
+    PartLoadParticlePagePc = page;
+}
+i32 __cdecl edpartLoadPage(char *path, i8 mode, NUGSCN *scene) {
+    return edpartLoadPageEx(path, mode, &scene, 1);
+}

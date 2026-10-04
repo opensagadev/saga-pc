@@ -68,3 +68,18 @@ i32 __cdecl NuTexResolveReference(NUGSCN *scene, i32 tid) {
     }
     return resolved;
 }
+
+#include <string.h>
+void __cdecl NuTexInitExPS(VARIPTR *buffer);
+
+void __cdecl NuTexInitEx(VARIPTR *buffer, i32 count) {
+    NuTextureCapacityPC = count;
+    NuTextureDimensions = (NUTEXDIM_PC **)((buffer->addr + 3) & ~3u);
+    buffer->addr = (u32)NuTextureDimensions + count * sizeof(*NuTextureDimensions);
+    memset(NuTextureDimensions, 0, count * sizeof(*NuTextureDimensions));
+    NuTextureLoadOrderPC = (i32 *)((buffer->addr + 3) & ~3u);
+    buffer->addr = (u32)NuTextureLoadOrderPC + count * sizeof(*NuTextureLoadOrderPC);
+    memset(NuTextureLoadOrderPC, 0, count * sizeof(*NuTextureLoadOrderPC));
+    NuTextureLoadCountPC = 0;
+    NuTexInitExPS(buffer);
+}

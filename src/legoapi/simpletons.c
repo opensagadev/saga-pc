@@ -103,3 +103,75 @@ i32 __cdecl objInNetWaitContext(GAMEOBJECT *object, i32 context) {
         return object->field_7aa == context;
     return 0;
 }
+
+static i32 AtOnce_maxAttackers = 1;
+
+void __cdecl oneAtOnce_SetNumAttackers(i32 attackers) {
+    if (attackers < 0)
+        attackers = 0;
+    if (attackers > 4)
+        attackers = 4;
+    AtOnce_maxAttackers = attackers;
+}
+
+void __cdecl oneAtOnce_MaintainArray(void) {
+    GAMEOBJECT *previous_attackers[8][4];
+    i32 previous_count[8] = {0};
+    i32 attacker_count[8] = {0};
+    GAMEOBJECT *object, *opponent;
+    APIOBJECT_PC *opponent_api;
+    AIONCEATTACKER_PC *attackers;
+    i32 index, player_index, slot, previous, remaining, sort_slot;
+    u8 old_player;
+    f32 distance;
+
+    for (index = 0; index < HIGHGAMEOBJECT; ++index) {
+        object = &Obj[index];
+        if (object == NULL || (object->flags_1fc_word & 0x1001) != 0x1001 || object->ai_packet.opponent == NULL ||
+            (object->flags_ef4 & 0x2000) == 0)
+            continue;
+        old_player = object->one_at_once_player;
+        if (old_player != 0xff)
+            previous_attackers[old_player][previous_count[old_player]++] = object;
+        object->one_at_once_player = 0xff;
+        opponent_api = (APIOBJECT_PC *)object->ai_packet.opponent;
+        opponent = (GAMEOBJECT *)opponent_api->owner;
+        for (player_index = 0; player_index < 8; ++player_index)
+            if (Player[player_index] == opponent)
+                break;
+        if (player_index == 8)
+            continue;
+        slot = attacker_count[player_index];
+        AtOnce_attackingPlayer[player_index][slot].object = object;
+        AtOnce_attackingPlayer[player_index][slot].distance =
+            NuVecDistSqr(&((GAMEOBJECT *)Player[player_index])->collision_position, &object->collision_position, NULL);
+        ++attacker_count[player_index];
+    }
+    for (player_index = 0; player_index < 8; ++player_index) {
+        slot = attacker_count[player_index];
+        AtOnce_attackingPlayer[player_index][slot].object = NULL;
+        AtOnce_attackingPlayer[player_index][slot].distance = 1.0e9f;
+    }
+    for (player_index = 0; player_index < 8; ++player_index) {
+        if (Player[player_index] == NULL)
+            continue;
+        attackers = AtOnce_attackingPlayer[player_index];
+        remaining = attacker_count[player_index];
+        for (slot = 0; attackers[slot].object != NULL; ++slot, --remaining) {
+            for (previous = 0; previous < 4; ++previous)
+                if (attackers[slot].object == previous_attackers[player_index][previous])
+                    attackers[slot].distance = (f32)((f64)attackers[slot].distance * 0.75);
+            for (sort_slot = 0; sort_slot < remaining; ++sort_slot) {
+                if (attackers[sort_slot + 1].distance < attackers[sort_slot].distance) {
+                    object = attackers[sort_slot].object;
+                    distance = attackers[sort_slot].distance;
+                    attackers[sort_slot] = attackers[sort_slot + 1];
+                    attackers[sort_slot + 1].object = object;
+                    attackers[sort_slot + 1].distance = distance;
+                }
+            }
+        }
+        for (slot = 0; slot < AtOnce_maxAttackers && attackers[slot].object != NULL; ++slot)
+            attackers[slot].object->one_at_once_player = (u8)player_index;
+    }
+}

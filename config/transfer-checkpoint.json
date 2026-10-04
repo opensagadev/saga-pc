@@ -20,18 +20,18 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1128879,
-    "matched_code_bytes": 184602,
-    "matching_percent": 5.318032775550912,
-    "fuzzy_coverage_percent": 21.23885965608572,
-    "mapped_functions": 3925,
-    "matched_functions": 1783,
-    "objdiff_fuzzy_percent": 69.26148,
-    "objdiff_total_code": 1065168,
+    "mapped_code_bytes": 1150083,
+    "matched_code_bytes": 187047,
+    "matching_percent": 5.388468578717844,
+    "fuzzy_coverage_percent": 21.6321543797855,
+    "mapped_functions": 3994,
+    "matched_functions": 1821,
+    "objdiff_fuzzy_percent": 69.1393,
+    "objdiff_total_code": 1086796,
     "image_bytes": 40067072,
-    "mapped_bytes": 1771952,
-    "mapping_percent": 4.422464411674504,
-    "matched_data_region_bytes": 632384
+    "mapped_bytes": 1793300,
+    "mapping_percent": 4.475745070665508,
+    "matched_data_region_bytes": 632532
   },
   "newly_compared": [
     {
@@ -2063,6 +2063,726 @@
       ],
       "exact": true,
       "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TriggerGizmoAvailablePc",
+      "pc": "0x00401d60",
+      "original_bytes": 169,
+      "units": [
+        "src/legoapi/aitrigger.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 71.15686
+    },
+    {
+      "symbol": "_GameObjectUsingLever",
+      "pc": "0x00401e10",
+      "original_bytes": 34,
+      "units": [
+        "src/legoapi/aitrigger.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_AITriggerSetSysProcess",
+      "pc": "0x00401e40",
+      "original_bytes": 2392,
+      "units": [
+        "src/legoapi/aitrigger.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 18.333895
+    },
+    {
+      "symbol": "_GameAIWallShufflePc",
+      "pc": "0x0043b410",
+      "original_bytes": 790,
+      "units": [
+        "src/legoapi/gameobjects.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 81.82591
+    },
+    {
+      "symbol": "_oneAtOnce_SetNumAttackers",
+      "pc": "0x0043d500",
+      "original_bytes": 32,
+      "units": [
+        "src/legoapi/simpletons.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_oneAtOnce_MaintainArray",
+      "pc": "0x0043d590",
+      "original_bytes": 760,
+      "units": [
+        "src/legoapi/simpletons.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 38.014217
+    },
+    {
+      "symbol": "_GameAIProcess",
+      "pc": "0x0043e530",
+      "original_bytes": 6245,
+      "units": [
+        "src/legoapi/gameobjects.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 68.315025
+    },
+    {
+      "symbol": "_GizForce_GameObjUsingForce",
+      "pc": "0x004678f0",
+      "original_bytes": 42,
+      "units": [
+        "src/legoapi/gizforce.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Lever_BeingPulled",
+      "pc": "0x00490b70",
+      "original_bytes": 17,
+      "units": [
+        "src/legoapi/lever.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Grapple_Occupied",
+      "pc": "0x0054d410",
+      "original_bytes": 140,
+      "units": [
+        "src/legoapi/grapples.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 89.041664
+    },
+    {
+      "symbol": "_LoadPartFile",
+      "pc": "0x00571a50",
+      "original_bytes": 204,
+      "units": [
+        "src/legoapi/parts_load.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Particles_Load",
+      "pc": "0x005a8090",
+      "original_bytes": 188,
+      "units": [
+        "src/legoapi/particles.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 87.24
+    },
+    {
+      "symbol": "_NuTexAnimProgRelease",
+      "pc": "0x005d18c0",
+      "original_bytes": 11,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuTexAnimProgFind",
+      "pc": "0x005d18d0",
+      "original_bytes": 48,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 83.91304
+    },
+    {
+      "symbol": "_NuTexAnimProgDestroy",
+      "pc": "0x005d1900",
+      "original_bytes": 66,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuTexAnimProgInit",
+      "pc": "0x005d1950",
+      "original_bytes": 103,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 99.791664
+    },
+    {
+      "symbol": "_NuTexAnimProgCreate",
+      "pc": "0x005d19c0",
+      "original_bytes": 109,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuTexAnimProgWrite",
+      "pc": "0x005d1a30",
+      "original_bytes": 59,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuTexAnimProgRead",
+      "pc": "0x005d1a70",
+      "original_bytes": 166,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 71.666664
+    },
+    {
+      "symbol": "_NuTexAnimProgAssembleEnd",
+      "pc": "0x005d1b20",
+      "original_bytes": 200,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 35.2
+    },
+    {
+      "symbol": "_NuTexAnimEnvReset",
+      "pc": "0x005d1cc0",
+      "original_bytes": 50,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TextureAnimationConditionPrivatePc",
+      "pc": "0x005d1d00",
+      "original_bytes": 100,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 55.10811
+    },
+    {
+      "symbol": "_TextureAnimationReadComparisonPrivatePc",
+      "pc": "0x005d1d70",
+      "original_bytes": 158,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 73.181816
+    },
+    {
+      "symbol": "_TextureAnimationLabelIndexPrivatePc",
+      "pc": "0x005d1e10",
+      "original_bytes": 139,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 76.203705
+    },
+    {
+      "symbol": "_TextureAnimationExternalLabelIndexPrivatePc",
+      "pc": "0x005d1ea0",
+      "original_bytes": 142,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 76.203705
+    },
+    {
+      "symbol": "_TextureAnimationScriptMaskPrivatePc",
+      "pc": "0x005d1f30",
+      "original_bytes": 27,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TextureAnimationTexPrivatePc",
+      "pc": "0x005d1f50",
+      "original_bytes": 71,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TextureAnimationTexRandomPrivatePc",
+      "pc": "0x005d1fa0",
+      "original_bytes": 71,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TextureAnimationTexAdjustPrivatePc",
+      "pc": "0x005d1ff0",
+      "original_bytes": 146,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TextureAnimationTexAdjustRandomPrivatePc",
+      "pc": "0x005d2090",
+      "original_bytes": 181,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TextureAnimationWaitPrivatePc",
+      "pc": "0x005d2150",
+      "original_bytes": 159,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TextureAnimationRatePrivatePc",
+      "pc": "0x005d21f0",
+      "original_bytes": 159,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TextureAnimationOnPrivatePc",
+      "pc": "0x005d2290",
+      "original_bytes": 48,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TextureAnimationOffPrivatePc",
+      "pc": "0x005d22c0",
+      "original_bytes": 51,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TextureAnimationLabelPrivatePc",
+      "pc": "0x005d2300",
+      "original_bytes": 48,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 39.46154
+    },
+    {
+      "symbol": "_TextureAnimationExternalDefinitionPrivatePc",
+      "pc": "0x005d2330",
+      "original_bytes": 76,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 70.117645
+    },
+    {
+      "symbol": "_TextureAnimationGotoPrivatePc",
+      "pc": "0x005d2380",
+      "original_bytes": 88,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 80.47369
+    },
+    {
+      "symbol": "_TextureAnimationExternalReferencePrivatePc",
+      "pc": "0x005d23e0",
+      "original_bytes": 88,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 80.47369
+    },
+    {
+      "symbol": "_TextureAnimationBranchPrivatePc",
+      "pc": "0x005d2440",
+      "original_bytes": 157,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 89.27778
+    },
+    {
+      "symbol": "_TextureAnimationGosubPrivatePc",
+      "pc": "0x005d24e0",
+      "original_bytes": 88,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 80.47369
+    },
+    {
+      "symbol": "_TextureAnimationReturnPrivatePc",
+      "pc": "0x005d2540",
+      "original_bytes": 31,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TextureAnimationRepeatPrivatePc",
+      "pc": "0x005d2560",
+      "original_bytes": 123,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 75.44827
+    },
+    {
+      "symbol": "_TextureAnimationRepeatEndPrivatePc",
+      "pc": "0x005d25e0",
+      "original_bytes": 31,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TextureAnimationUntilPrivatePc",
+      "pc": "0x005d2600",
+      "original_bytes": 110,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TextureAnimationEndPrivatePc",
+      "pc": "0x005d2670",
+      "original_bytes": 31,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TextureAnimationScriptNamePrivatePc",
+      "pc": "0x005d2690",
+      "original_bytes": 55,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 38.555557
+    },
+    {
+      "symbol": "_NuTexAnimProgParseFile",
+      "pc": "0x005d26d0",
+      "original_bytes": 360,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 70.34513
+    },
+    {
+      "symbol": "_NuTexAnimProgReadScript",
+      "pc": "0x005d2840",
+      "original_bytes": 61,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 61.37037
+    },
+    {
+      "symbol": "_TextureAnimationCrossReferencePrivatePc",
+      "pc": "0x005d2c70",
+      "original_bytes": 148,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 98.72727
+    },
+    {
+      "symbol": "_NuTexAnimEnvProc",
+      "pc": "0x005d2d10",
+      "original_bytes": 1448,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 52.080555
+    },
+    {
+      "symbol": "_NuTexAnimSetSignals",
+      "pc": "0x005d32c0",
+      "original_bytes": 40,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuTexAnimProcessList",
+      "pc": "0x005d32f0",
+      "original_bytes": 40,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuTexAnimResetList",
+      "pc": "0x005d3320",
+      "original_bytes": 69,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuTexAnimInitMutex",
+      "pc": "0x005d3370",
+      "original_bytes": 11,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuTexAnimSetMask",
+      "pc": "0x005d3490",
+      "original_bytes": 12,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuTexAnimProcess",
+      "pc": "0x005d34a0",
+      "original_bytes": 116,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuTexAnimRestart",
+      "pc": "0x005d3520",
+      "original_bytes": 36,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuTexAnimFind",
+      "pc": "0x005d3550",
+      "original_bytes": 49,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuTexAnimDestroy",
+      "pc": "0x005d3590",
+      "original_bytes": 67,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuTexAnimCreate",
+      "pc": "0x005d35e0",
+      "original_bytes": 138,
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 82.28
+    },
+    {
+      "symbol": "_NuTexInitEx",
+      "pc": "0x005e51a0",
+      "original_bytes": 109,
+      "units": [
+        "src/nu2api/nutex.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 57.51351
+    },
+    {
+      "symbol": "_NuTexInitExPS",
+      "pc": "0x005f8f80",
+      "original_bytes": 34,
+      "units": [
+        "src/nu2api/nutex_pc.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuMtlSetShaderDescPS",
+      "pc": "0x00601230",
+      "original_bytes": 104,
+      "units": [
+        "src/nu2api/numtl_pc.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 66.741936
+    },
+    {
+      "symbol": "_rtlFindByUserId",
+      "pc": "0x006355f0",
+      "original_bytes": 52,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_rtlDynamicFree",
+      "pc": "0x00635750",
+      "original_bytes": 57,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_rtlDynamicAllocTemplate",
+      "pc": "0x00635790",
+      "original_bytes": 86,
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_edpartSetParticlePage",
+      "pc": "0x006489c0",
+      "original_bytes": 10,
+      "units": [
+        "src/legoapi/parts.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_edpartLoadPage",
+      "pc": "0x0064c6c0",
+      "original_bytes": 26,
+      "units": [
+        "src/legoapi/parts.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_FileLoadSingleEffectType",
+      "pc": "0x0066a190",
+      "original_bytes": 2460,
+      "units": [
+        "src/legoapi/specialsfx.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 57.132587
+    },
+    {
+      "symbol": "_UpdateTotalPtls",
+      "pc": "0x0068cfd0",
+      "original_bytes": 325,
+      "units": [
+        "src/gameapi/edpp_load.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 84.50505
+    },
+    {
+      "symbol": "_edppLoadPage",
+      "pc": "0x0068df20",
+      "original_bytes": 1485,
+      "units": [
+        "src/gameapi/edpp_load.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 16.660526
+    },
+    {
+      "symbol": "_PCDeviceCreateCubeTextureFromFile",
+      "pc": "0x006e5ab0",
+      "original_bytes": 82,
+      "units": [
+        "src/nu2api/pc_device.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 96.129036
     }
   ],
   "previous_exact_functions_lost": [],
@@ -17718,6 +18438,191 @@
         "RTL3/195 is a compiled exact candidate for later completion of existing KillPart175/AddPart1884; existing bytes receive no new transfer credit."
       ],
       "next_connected_wave": "Release connected resource-page ingestion, Trigger and RTL suppliers; complete real KillPart/AddPart actions, then close genuine GameAI and texture/material animation families. Continue whole-project engine/resource work.",
+      "ongoing_goal": "Continue whole-project Android-to-PC transfer until user stops or pauses; validated direct-main pushes authorized."
+    },
+    {
+      "reviewed_physical_member_migrations": [],
+      "physical_exact_rows_retired_with_same_complete_member": [],
+      "baseline_commit": "50209836304bedc5ecd70e47f07df86121c026c3",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1128879,
+        "matched_code_bytes": 184602,
+        "matching_percent": 5.318032775550912,
+        "fuzzy_coverage_percent": 21.23885965608572,
+        "mapped_functions": 3925,
+        "matched_functions": 1783,
+        "objdiff_fuzzy_percent": 69.26148,
+        "objdiff_total_code": 1065168,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1771952,
+        "mapping_percent": 4.422464411674504,
+        "matched_data_region_bytes": 632384
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1150083,
+        "matched_code_bytes": 187047,
+        "matching_percent": 5.388468578717844,
+        "fuzzy_coverage_percent": 21.6321543797855,
+        "mapped_functions": 3994,
+        "matched_functions": 1821,
+        "objdiff_fuzzy_percent": 69.1393,
+        "objdiff_total_code": 1086796,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1793300,
+        "mapping_percent": 4.475745070665508,
+        "matched_data_region_bytes": 632532
+      },
+      "newly_compared_functions": 72,
+      "new_original_code_bytes": 21628,
+      "new_compared_row_original_bytes_including_aliases": 21628,
+      "new_alias_rows": [],
+      "compared_code_delta": 21628,
+      "baseline_unique_compared_pc_bytes": 1064651,
+      "unique_compared_pc_bytes": 1086279,
+      "exact_code_added": 2445,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 3719,
+      "prior_compiled_function_copies_identical": 3714,
+      "reviewed_Bolt_original_C_to_CPP_owner_supersessions": [],
+      "renamed_owner_copies_with_identical_complete_bodies": [],
+      "user_journal_unchanged": true,
+      "checkpoint": "Resources, gameplay and texture animation checkpoint (2026-10-04)",
+      "new_source_functions": 72,
+      "new_unique_compared_PC_bytes": 21628,
+      "new_exact_PC_bytes": 2445,
+      "new_exact_functions": 38,
+      "family_bytes": {
+        "resource_pages": 4698,
+        "RTL": 195,
+        "gameplay_AI": 10621,
+        "texture_material_animation": 6114
+      },
+      "already_compared_behavior_completions": {
+        "KillPart": 175,
+        "AddPart": 1884
+      },
+      "verified_checks": {
+        "all_required_check_components_passed": true,
+        "normal_objects": 278,
+        "source_function_definitions": 3791,
+        "source_data_definitions": 6422,
+        "format_files": 305,
+        "LLVM18_units": 278,
+        "tests": 710,
+        "existing_skips": 3,
+        "strict_native_checks": 340,
+        "strict_native_failures": 0,
+        "old_exact_physical_copies_preserved": 4733,
+        "current_exact_physical_copies": 4775,
+        "source_endpoint": "/home/fabian/git/saga-pc/build/analysis/transfer-execution-20261003/platform/resource-trigger-graphics-final-review/endpoint-acceptance.json",
+        "source_endpoint_sha256": "f4fe03e2381af8abe70a88a2f83d92291e1827416ffdba3f4be04e5f8512e0fb",
+        "checks": {
+          "actual_build_link_object_check": "PASS 278 units /3791 function definitions /6422 data definitions; source EXE linked",
+          "format": "PASS305 actual source/header files",
+          "LLVM18": "PASS278 actual Windows x86 SDK units",
+          "static_map_layout": "PASS9714 mappings",
+          "complete_unit_suite": "PASS710 tests,3 existing skips",
+          "initial_make_check_exit": "Initial make check had the reproduced parent address-space contention-test ENOMEM failure. Its passing format/tidy/static stages are combined with the independently reviewed fresh-process test isolation repair and complete710-test rerun; no false initial exit0 claim.",
+          "validation_only_test_repair_receipt": "build/analysis/transfer-execution-20261003/platform/resource-trigger-graphics-final-review/test-isolation-acceptance.json",
+          "production_limits_unchanged": true
+        },
+        "runtime_breakdown": {
+          "ResourceReader": 120,
+          "ResourcePage": 13,
+          "RTL": 37,
+          "Trigger": 33,
+          "GameAIParent": 16,
+          "GraphicsCPU": 121
+        },
+        "qualifications": [
+          "All comparisons retain complete native extents and candidate bytes with official relocation; no masks, retail code in fixture EXEs, source tuning, synthetic engine providers or alias storage.",
+          "Resource selected versions/counts/arena/progress domains, real loader/reader CPU behavior; no arbitrary malformed files or loaded effects/GPU/audio claim.",
+          "Trigger checked route>=64 rejection preserves actual native __allshl result; previous-attacker original four-pointer initialization domain remains explicit. GameAI original both-ray-miss uninitialized direction is not claimed equivalent for invalid paths.",
+          "Graphics valid bounded initialized script state and selected material/math behavior only; external cube assets and positive D3D/hardware paths untested.",
+          "Four Parts variants retain the reviewed genuine Add/Kill completion and natural Update/Draw compiler changes. The extra particle715-to717 permutation is separately proven for finite readable f32 memory and occupied x87 stack, excluding invalid-memory trap ordering/unmasked signaling NaN timing.",
+          "All90 new initializer regions retail-equal;48 unknown original extents remain blank and add no allocation/exact coverage credit."
+        ]
+      },
+      "prior_function_copies": 3719,
+      "identical_prior_copies": 3714,
+      "qualified_changed_prior_copies": [
+        {
+          "unit": "src/nu2api/nuparticle_runtime.c",
+          "symbol": "_NuRndrParticleGroup",
+          "old_bytes": 715,
+          "new_bytes": 717,
+          "independent_acceptance": "/home/fabian/git/saga-pc/build/analysis/transfer-execution-20261003/platform/resource-trigger-graphics-final-review/particle-current-acceptance.json"
+        },
+        {
+          "unit": "src/legoapi/parts.c",
+          "symbol": "_KillPart",
+          "old_bytes": 56,
+          "new_bytes": 199,
+          "independent_acceptance": "/home/fabian/git/saga-pc/build/analysis/transfer-execution-20261003/mapping/rtl-completion195-review/accepted-packet.json"
+        },
+        {
+          "unit": "src/legoapi/parts.c",
+          "symbol": "_AddPart",
+          "old_bytes": 1717,
+          "new_bytes": 1847,
+          "independent_acceptance": "/home/fabian/git/saga-pc/build/analysis/transfer-execution-20261003/mapping/rtl-completion195-review/accepted-packet.json"
+        },
+        {
+          "unit": "src/legoapi/parts.c",
+          "symbol": "_UpdateParts",
+          "old_bytes": 2544,
+          "new_bytes": 2552,
+          "independent_acceptance": "/home/fabian/git/saga-pc/build/analysis/transfer-execution-20261003/mapping/rtl-completion195-review/accepted-packet.json"
+        },
+        {
+          "unit": "src/legoapi/parts.c",
+          "symbol": "_DrawParts",
+          "old_bytes": 477,
+          "new_bytes": 435,
+          "independent_acceptance": "/home/fabian/git/saga-pc/build/analysis/transfer-execution-20261003/mapping/rtl-completion195-review/accepted-packet.json"
+        }
+      ],
+      "shared_unknown_views_added": 34,
+      "shared_unknown_working_bytes_added": 188,
+      "shared_views_added": 35,
+      "shared_working_bytes_added": 192,
+      "original_allocation_credit": 0,
+      "baseline_exact_initializer_copies": 4733,
+      "current_exact_initializer_copies": 4775,
+      "new_complete_initializer_copies": 90,
+      "new_known_initializer_copies": 42,
+      "new_unknown_initializer_copies": 48,
+      "new_unknown_working_copy_bytes": 7380,
+      "new_exact_data_union_bytes": 148,
+      "previous_pushed_CI": {
+        "revision": "50209836304bedc5ecd70e47f07df86121c026c3",
+        "all_exact_revision_runs_success": true,
+        "runs": [
+          {
+            "revision": "50209836304bedc5ecd70e47f07df86121c026c3",
+            "run_id": 37206299111,
+            "name": "Build",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/opensagadev/saga-pc/actions/runs/37206299111"
+          }
+        ]
+      },
+      "checkpoint_delay": {
+        "scheduled_UTC": "2026-10-04 14:04",
+        "reason": "Complete source/data endpoint, required LLVM18/static checks and retail matching; reproduce and repair existing128MiB process-lock test isolation failure, preserving production caps and assertions, then pass complete710-test suite."
+      },
+      "remaining_contracts": [
+        "Selected resource versions5..41/sounds0..4 and adequate arenas; malformed files, loaded-world/GPU/audio/full-game execution unclaimed.",
+        "Attacker native four-pointer history requires allfour initialized slots; GameAI both-ray-miss native uninitialized direction remains qualified.",
+        "Graphics selected bounded valid CPU scripts/materials pass; external cube assets and positive D3D hardware paths untested.",
+        "Unknown global/private working views add no owning extent/allocation/exact credit.",
+        "GizFlow39/4515 and RTL/list12/3268 remain scratch candidates awaiting independent gates and new baseline production verification."
+      ],
+      "next_connected_wave": "Close GizFlow parser/constructor ingestion and real RTL/list processing, then UpdateGameObjects lighting/collision/world suppliers and scene/resource service families; continue whole-project transfer.",
       "ongoing_goal": "Continue whole-project Android-to-PC transfer until user stops or pauses; validated direct-main pushes authorized."
     }
   ]

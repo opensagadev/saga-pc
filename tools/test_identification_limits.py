@@ -81,11 +81,29 @@ except ValueError as error:
 else:
     raise AssertionError('competing identification entered work')
 """
-        with patch.object(limits.lib, "ROOT", self.root):
-            with limits.identification_budget(128):
-                self.child(body)
-            with limits.identification_budget(128):
-                pass
+        # Apply the cap in a fresh process: earlier thread tests can leave the
+        # unittest runner with reserved address space above 128 MiB.
+        result = self.child(f"""
+import subprocess
+competing = {body!r}
+prefix = '''import sys
+from pathlib import Path
+from tools import identification_limits as limits
+limits.lib.ROOT = Path(sys.argv[1])
+'''
+previous = resource.getrlimit(resource.RLIMIT_AS)
+with limits.identification_budget(128):
+    assert resource.getrlimit(resource.RLIMIT_AS)[0] <= 128 * 1024 * 1024
+    subprocess.run([sys.executable, '-c', prefix + competing, sys.argv[1]],
+                   capture_output=True, text=True, timeout=10, check=True)
+assert resource.getrlimit(resource.RLIMIT_AS) == previous
+with limits.identification_budget(128):
+    pass
+assert resource.getrlimit(resource.RLIMIT_AS) == previous
+assert not (limits.lib.ROOT / 'entered-work').exists()
+print(json.dumps({{'rejected': True, 'released': True}}))
+""")
+        self.assertEqual(json.loads(result.stdout), {"rejected": True, "released": True})
         self.assertFalse((self.root / "entered-work").exists())
 
     def test_invalid_limits_are_rejected_before_creating_job_state(self):

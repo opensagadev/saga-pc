@@ -144,6 +144,39 @@ def bindings_for(records):
             if len(addresses) == 1}
 
 
+class DefinitionIndex:
+    """Index one fixed set of loaded objects for a single analysis.
+
+    Definitions retain their original dictionaries. Rebuild the index after any
+    object or symbol mutation, or when starting a new compile/map analysis.
+    Ambiguous definitions remain errors only when their exact name is queried.
+    """
+
+    def __init__(self, objects):
+        self.entries = {}
+        for unit, obj in sorted(objects.items()):
+            local = {}
+            for definition in obj.defined_symbols():
+                local.setdefault(definition['name'], []).append(definition)
+            for name, definitions in local.items():
+                self.entries.setdefault(name, []).append((unit, obj, tuple(definitions)))
+
+    def definitions_for(self, symbol):
+        found = []
+        for unit, obj, definitions in self.entries.get(symbol, ()):
+            if len(definitions) > 1:
+                raise ValueError(f"Ambiguous linker name {symbol!r} in {unit}")
+            found.append((unit, obj))
+        return found
+
+    def kinds_for(self, symbol):
+        # Use exactly the same duplicate validation before code/data grouping.
+        self.definitions_for(symbol)
+        return {bool(definition['type'] & 0x20)
+                for _, _, definitions in self.entries.get(symbol, ())
+                for definition in definitions}
+
+
 def definitions_for(objects, symbol):
     """Find every defining object; one object's duplicate definitions are ambiguous."""
     found = []
@@ -156,7 +189,7 @@ def definitions_for(objects, symbol):
     return found
 
 
-def external_symbols(pe, records, objects):
+def external_symbols(pe, records, objects, definition_index=None):
     """Identify mapped IAT slots/import thunks from retail metadata, excluding code reconstruction.
 
     The CSV names remain reconstruction aliases; PE import identities are retained
@@ -174,7 +207,8 @@ def external_symbols(pe, records, objects):
         kind, size = ("import slot", 4) if va in imports else ("import thunk", 6)
         if record["size"] != size:
             raise ValueError(f"External {kind} {name!r} at {va:#x} must have size {size}")
-        definitions = definitions_for(objects, name)
+        definitions = (definition_index.definitions_for(name) if definition_index is not None
+                       else definitions_for(objects, name))
         if definitions:
             units = ", ".join(unit for unit, _ in definitions)
             raise ValueError(f"External {kind} {name!r} has a compiled definition in {units}; "

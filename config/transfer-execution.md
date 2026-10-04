@@ -2402,3 +2402,77 @@ includes source-accepted resource page7/4,698, compiled Trigger6/2,794,
 RTL3/195 and true GameAI6,245/private790, plus texture/material animation.
 Candidate bytes remain separate from production credit. World/resource,
 rendering, gameplay and PC services continue under the whole-project mandate.
+
+
+### Resources, gameplay and texture animation checkpoint (2026-10-04)
+
+72 complete functions add 21,628 unique compared PC bytes over5020983:
+resource pages7/4,698, RTL3/195, gameplay AI10/10,621 and texture/material
+animation52/6,114. Unique compared code reaches1,086,279 bytes; native
+objdiff compares1,086,796 including existing aliases. Whole-PC fuzzy
+coverage rises21.238860% to21.632154%;38 exact functions add2,445 bytes,
+reaching187,047/3,471,246 .text bytes (5.388469%). Data union grows148 bytes
+to632,532. KillPart175/AddPart1,884 regain actual omitted effects/RTL actions
+but were already compared, so add zero new transfer bytes.
+
+Resource loaders preserve serialized offsets, private ESI reader context,
+real world buffer-end pointer contract, native extended emission timing and
+its f32 ratio boundary. PC behavior excludes the Android STARDESTROYER
+exception. Actual named fields have width/offset assertions; two genuine
+cross-unit loader contexts are parts_load.c and edpp_load.c. Selected versions
+and counts/adequate arenas are qualified; full WorldLoad remains incomplete.
+RTL uses full signed template-ID comparison, native bounds/free ordering,
+real effect providers, callback pointer reload and post-callback -1 store.
+
+GameAI retains native startup/context branches, context17 skip policy,
+extended mover/radius calculations and genuine private wall helper. Trigger
+includes its cold cleanup and route>=64 native zero-shift outcome. Original
+previous-attacker history requires four initialized slots; both-ray-miss
+wall direction has native uninitialized behavior. Neither domain is concealed
+with fabricated initializers. Genuine Trigger and Lever source owners remain
+separate; private helpers stay with their real original caller groups.
+
+Texture animation includes the genuine21-command parser/private table,
+script callbacks, comparison/ENV helpers and real RNG/material/shader fields.
+External cube loading uses real file/SDK/free providers and source filename;
+no DDS asset bytes enter source. The false5e4840 NuMtlInitEx mapping remains
+rejected; true5f1dd0 and embedded-asset shader providers are held separately.
+All full native extents, cold tails, private register ABIs and canonical
+source data references were reviewed without clipping or synthetic providers.
+
+The source-only EXE links3,791 function and6,422 data definitions across278
+actual normal objects. LLVM18 format305/tidy278 and static9,714 mappings pass.
+All710 tests pass with three existing skips. The first full check reproduced
+an existing128MiB lock-test failure after thread tests retained virtual
+address arenas. Its exercise now runs in a fresh process with unchanged128MiB
+cap, real contending process, sentinel, reacquisition and restoration assertions.
+Production limits remain unchanged. Passing lint/static stages plus independently
+reviewed repair and full suite establish all required check components; the
+initial failed make check is not represented as exit0.
+
+All340 strict native checks use all278 actual normal providers with zero
+replacements/supplements: Resource120+13, RTL37, Trigger33, GameAI16 and
+Graphics121. All320 frozen production inputs and278 object hashes survive.
+Of3,719 prior full copies,3,714 are identical. Four qualified Parts changes
+complete Kill/Add and natural Update/Draw inlining. Particle715->717 is separately
+proved for finite valid memory/x87 state: reordered loads plus FXCH yield the
+same dispatch stack and186 remaining instructions/CFG/named relocations.
+Unmasked trapping order is unclaimed. Every old exact code/data/member survives.
+
+Actual shared-data3,535 regions/1,849 scopes equal isolated proof. All4,733
+old exact physical copies and four members survive;42 new known copies give
+4,775. All90 new complete initializer copies equal retail;48 unknown copies/
+7,380 working bytes add zero owning-extent/allocation/exact credit.35 shared
+views add192 working bytes: one existing-known Grapple4 view plus34 unknown/
+188. Private command/table/label storage stays in original contexts. Two exact
+WORD members remain4 bytes. Known scope604/138,165 and unknown1,245/130,388
+working bytes are distinct from original allocation claims. CRC initializer
+and complete member parents remain unchanged.
+
+The14:04 UTC checkpoint was delayed for full validation and the reproduced
+existing test isolation repair rather than committing broken checks.5020983
+CI37206299111 passed on its exact revision. The user's three journal edits
+remain untouched. Next are RTL/list12/3,268 and GizFlow39/4,515 source candidates,
+then real UpdateGameObjects collision/lighting/world suppliers and scene/resource
+services. Scratch candidate bytes do not count as transfer. Whole-project
+engine, gameplay, resources and platform work continues.

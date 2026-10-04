@@ -10,12 +10,12 @@ import sys
 if __package__:
     from .identification_coverage import reviewed_identification_file
     from .binary import compare_data, relocate_function, write_function
-    from .lib import (ROOT, bindings_for, compiled_objects, covered_bytes, definitions_for,
+    from .lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, covered_bytes,
                       digest, external_symbols, load_json, load_symbols, mapping_progress, number, object_path, project, retail, sha256)
 else:
     from identification_coverage import reviewed_identification_file
     from binary import compare_data, relocate_function, write_function
-    from lib import (ROOT, bindings_for, compiled_objects, covered_bytes, definitions_for,
+    from lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, covered_bytes,
                      digest, external_symbols, load_json, load_symbols, mapping_progress, number, object_path, project, retail, sha256)
 
 OUT = ROOT / "build/objdiff"
@@ -174,6 +174,7 @@ def main():
     cli, cli_pin = objdiff()
     OUT.mkdir(parents=True, exist_ok=True)
     objects = compiled_objects()
+    definition_index = DefinitionIndex(objects)
     members, member_proof, migrations = [], None, []
     if "data_members" in config and not args.function:
         if __package__:
@@ -191,13 +192,13 @@ def main():
                 else:
                     from data_members import reviewed_migrations
                 migrations = reviewed_migrations(previous_report, members)
-    externals = external_symbols(pe, records, objects)
+    externals = external_symbols(pe, records, objects, definition_index=definition_index)
     bindings = bindings_for(records)
     units, functions, data, inlined = [], [], [], []
     for record in selected:
         symbol, va = record["symbol"], record["address"]
         if va is None:
-            if symbol not in bindings and definitions_for(objects, symbol):
+            if symbol not in bindings and definition_index.definitions_for(symbol):
                 raise ValueError(f"{symbol!r}: compiled standalone definition has only an inlined mapping; "
                                  "no standalone original address is established. Keep the code in its "
                                  "caller, or recover a standalone address and size in config/symbols.csv")
@@ -209,9 +210,8 @@ def main():
                 raise ValueError(f"{symbol!r} is an external {externals[(va, symbol)]['kind']}; "
                                  "external declarations are excluded from reconstruction matching")
             continue
-        definitions = definitions_for(objects, symbol)
-        kinds = {bool(s["type"] & 0x20) for _, obj in definitions for s in obj.defined_symbols()
-                 if s["name"] == symbol}
+        definitions = definition_index.definitions_for(symbol)
+        kinds = definition_index.kinds_for(symbol)
         if len(kinds) > 1:
             raise ValueError(f"Linker name {symbol!r} identifies both code and data")
         # For unknown symbols, the original code range identifies inventory

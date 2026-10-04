@@ -430,3 +430,13 @@ void __cdecl GizForceSFX_Configure(WORLDINFO *world_ptr, char *config) {
     NuFParPopCom(parser);
     NuFParDestroy(parser);
 }
+
+typedef struct trigger_force_object_pc_s {
+    u8 unknown000[0x10cc];
+    GIZFORCE_PC *force;
+} TRIGGER_FORCE_OBJECT_PC;
+STATIC_ASSERT(offsetof(TRIGGER_FORCE_OBJECT_PC, force) == 0x10cc);
+i32 __cdecl GizForce_GameObjUsingForce(GAMEOBJECT *object, GIZFORCE_PC *force) {
+    return force != NULL && object != NULL && object->character_context == 8 &&
+           ((TRIGGER_FORCE_OBJECT_PC *)object)->force == force;
+}

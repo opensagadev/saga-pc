@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check project inputs and compiled symbol coverage without the retail EXE."""
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import json
 import os
 from pathlib import Path
@@ -280,7 +281,9 @@ def prepare_editor():
     print(f"Prepared editor header aliases and {len(commands)} analysis commands in build/editor/.")
 
 
-def check_tidy():
+def check_tidy(jobs=8):
+    if jobs < 1:
+        raise ValueError("clang-tidy jobs must be at least 1")
     tool = clang_tool("clang-tidy")
     if not (ROOT / ".clang-tidy").is_file():
         raise ValueError("Missing .clang-tidy policy")
@@ -290,12 +293,41 @@ def check_tidy():
                  "INCLUDE", "CL", "_CL_"):
         env.pop(name, None)
     files, failures = source_files(), []
-    for source in files:
-        result = subprocess.run([tool, "--quiet", "--config-file=" + str(ROOT / ".clang-tidy"),
-                                 "--vfsoverlay=" + str(overlay), source, "--", *flags, *analysis_language(source)],
-                                cwd=ROOT, env=env, timeout=120)
+    workers = min(jobs, os.cpu_count() or 1, max(1, len(files)))
+
+    def analyze(source):
+        command = [tool, "--quiet", "--config-file=" + str(ROOT / ".clang-tidy"),
+                   "--vfsoverlay=" + str(overlay), source, "--", *flags, *analysis_language(source)]
+        try:
+            result = subprocess.run(command, cwd=ROOT, env=env, timeout=120,
+                                    capture_output=True, text=True)
+            return result, None
+        except (OSError, subprocess.SubprocessError) as error:
+            return None, error
+
+    # Workers only read the one prepared SDK overlay. Capture every result before
+    # reporting diagnostics in source order, regardless of completion order.
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        results = list(executor.map(analyze, files))
+    errors = []
+    for source, (result, error) in zip(files, results):
+        if error is not None:
+            # TimeoutExpired retains partial output as bytes even with text=True.
+            for stream, text in ((sys.stdout, getattr(error, "stdout", None)),
+                                 (sys.stderr, getattr(error, "stderr", None))):
+                if text:
+                    stream.write(text.decode(errors="replace") if isinstance(text, bytes) else text)
+            print(f"clang-tidy error for {source}: {error}", file=sys.stderr)
+            failures.append(source)
+            errors.append(error)
+            continue
+        sys.stdout.write(result.stdout)
+        sys.stderr.write(result.stderr)
         if result.returncode:
             failures.append(source)
+    if errors:
+        print("clang-tidy failed for: " + ", ".join(failures), file=sys.stderr)
+        raise errors[0]
     if failures:
         raise ValueError("clang-tidy failed for: " + ", ".join(failures))
     print(f"Clang-tidy checked {len(files)} units with the Windows x86 SDK and project policy.")
@@ -331,7 +363,7 @@ def main():
     parser.add_argument("--refresh-features", action="store_true", help="With --identify, regenerate ELF/PE data references before scoring")
     parser.add_argument("--android-root", type=Path, default=ROOT.parent / "saga", help="Read-only Android reference for --refresh-features")
     parser.add_argument("--ndk-root", type=Path, help="Existing Android NDK r8e extraction for --extract-source-graph")
-    parser.add_argument("--jobs", type=int, default=8, help="Bounded AST extraction workers (default: 8)")
+    parser.add_argument("--jobs", type=int, default=8, help="Bounded AST extraction or clang-tidy workers (default: 8)")
     parser.add_argument("--input", type=Path, action="append", help="Limit AST extraction to these translation units")
     args = parser.parse_args()
     if args.extract_source_graph:
@@ -378,7 +410,7 @@ def main():
         check_format()
         return
     if args.tidy:
-        check_tidy()
+        check_tidy(jobs=args.jobs)
         return
     if args.editor:
         prepare_editor()

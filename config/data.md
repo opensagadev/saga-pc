@@ -1750,3 +1750,25 @@ from physical-copy counts and original owning allocation claims. The final
 receipt is build/analysis/transfer-execution-20261003/data/
 ray-image-world7-production-release.json, tied to the frozen314 inputs and
 274 actual normal objects. Future resource globals remain scratch evidence.
+
+
+### Resource, gameplay and graphics storage release (2026-10-04)
+
+35 real shared views add192 verified working bytes: resource4/16, Trigger4/16,
+GameAI20/78 and graphics7/82. Grapple4 has an existing established extent;
+34 other shared views/188 bytes keep unknown owning extents blank. Real lever,
+spinner/context and particle/editor slots are source backed; private RNG,
+script mask/state,21-command table and label/offset views stay with original
+owners. The18 command-table strings are source literals, not asset bytes.
+All90 new complete physical initializer copies equal retail.42 known copies
+raise exact physical copies4,733->4,775;48 unknown copies/7,380 working bytes
+receive zero extent/allocation/exact credit. Data matched union632,532 adds148
+bytes across proven owning extents, distinct from shared working-view sizes.
+
+Final normal proof: build/analysis/transfer-execution-20261003/data/
+resources-trigger-gameai-graphics35-final-normal-release.json. Normal3,535
+full regions/1,849 scopes equal isolated output and preserve all prior shared
+regions, old exact copies, four complete typed members/parents and CRC initializer.
+Two exact WORD members remain4 bytes. Known scope604/138,165 and unknown
+scope1,245/130,388 are factual working views, not invented original heap capacities.
+No backing aliases, fake data providers or game asset bytes are introduced.
