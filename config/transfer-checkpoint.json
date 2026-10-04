@@ -20,18 +20,18 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 943443,
-    "matched_code_bytes": 110465,
-    "matching_percent": 3.1822867062720417,
-    "fuzzy_coverage_percent": 16.403315865893987,
-    "mapped_functions": 3347,
-    "matched_functions": 1416,
-    "objdiff_fuzzy_percent": 65.87397,
-    "objdiff_total_code": 865035,
+    "mapped_code_bytes": 1036280,
+    "matched_code_bytes": 175872,
+    "matching_percent": 5.0665380673107006,
+    "fuzzy_coverage_percent": 19.02114524935341,
+    "mapped_functions": 3652,
+    "matched_functions": 1668,
+    "objdiff_fuzzy_percent": 68.97624,
+    "objdiff_total_code": 957872,
     "image_bytes": 40067072,
-    "mapped_bytes": 1585020,
-    "mapping_percent": 3.9559167188458395,
-    "matched_data_region_bytes": 630832
+    "mapped_bytes": 1677914,
+    "mapping_percent": 4.187762959070231,
+    "matched_data_region_bytes": 630889
   },
   "newly_compared": [
     {
@@ -16594,7 +16594,7 @@
         "compiler_settings_changed": false,
         "retail_assets_or_transcribed_assembly": false
       },
-      "header_type_qualification": "Narrow google-runtime-int exception only for verified original Ogg long/short declarations, preserving actual Win32 C type identities and all43 offset assertions; project checks stay unchanged.",
+      "header_type_qualification": "Narrow google-runtime-int exception only for verified original Ogg long/short declarations, preserving actual Win32 C type identities and 45 layout assertions (5 sizes and 40 field offsets); project checks stay unchanged.",
       "remaining_contracts": [
         "Legal generated LZ2K constant-table literal/overlapping-copy streams, multiple 8KB chunks, pending-copy continuation, guards and canonical two-leaf Huffman table. All real providers/state are actual normal objects. No candidate supplements/replacements, fake globals/providers or method/asset copies. Old archive compressed branches remain unreconstructed and are not exercised; no general malformed-data bounds, hardware/assets or whole-game claim.",
         "Caller-generated Ogg page input and typed live container states; all actual normal source/provider/data objects and genuine pinned CRT. Bit packing/end/truncation, page encode/decode/CRC, packet peek/consume/reset tested. No original assets, fake providers, decoded audio, GPU or hardware claim.",
@@ -16608,6 +16608,175 @@
         "scheduled_utc": "2026-10-04 05:59 UTC",
         "reason": "The complete100-function batch passed source/link/general/native/retail/independent gates; final documentation report-input fingerprint refresh is required before the coherent validated commit."
       }
+    },
+    {
+      "reviewed_physical_member_migrations": [],
+      "physical_exact_rows_retired_with_same_complete_member": [],
+      "baseline_commit": "909b644c0d65bd56acd59e4238697115771dee79",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 943443,
+        "matched_code_bytes": 110465,
+        "matching_percent": 3.1822867062720417,
+        "fuzzy_coverage_percent": 16.403315865893987,
+        "mapped_functions": 3347,
+        "matched_functions": 1416,
+        "objdiff_fuzzy_percent": 65.87397,
+        "objdiff_total_code": 865035,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1585020,
+        "mapping_percent": 3.9559167188458395,
+        "matched_data_region_bytes": 630832
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1036280,
+        "matched_code_bytes": 175872,
+        "matching_percent": 5.0665380673107006,
+        "fuzzy_coverage_percent": 19.02114524935341,
+        "mapped_functions": 3652,
+        "matched_functions": 1668,
+        "objdiff_fuzzy_percent": 68.97624,
+        "objdiff_total_code": 957872,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1677914,
+        "mapping_percent": 4.187762959070231,
+        "matched_data_region_bytes": 630889
+      },
+      "newly_compared_functions": 286,
+      "new_original_code_bytes": 92837,
+      "new_compared_row_original_bytes_including_aliases": 92837,
+      "new_alias_rows": [],
+      "compared_code_delta": 92837,
+      "baseline_unique_compared_pc_bytes": 864582,
+      "unique_compared_pc_bytes": 957419,
+      "exact_code_added": 65407,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 3143,
+      "prior_compiled_function_copies_identical": 3142,
+      "renamed_owner_copies_with_identical_complete_bodies": [],
+      "user_journal_unchanged": true,
+      "checkpoint": "Vorbis core, gameplay loaders and transport checkpoint (2026-10-04)",
+      "new_source_functions": 286,
+      "new_unique_compared_PC_bytes": 92837,
+      "new_exact_PC_bytes": 65407,
+      "new_exact_functions": 252,
+      "family_bytes": {
+        "remaining_Vorbis_core": 72309,
+        "Vorbis_reader": 14513,
+        "blowup_animation_allocation_loader_and_antiNode": 5639,
+        "ZipUp_selection": 311,
+        "EdFile_unsigned_readers": 65
+      },
+      "new_source_owners": 20,
+      "shared_physical_definitions_added": 1,
+      "shared_source_view_bytes_added": 12,
+      "data_scope": {
+        "physical_proofs": 1654,
+        "known_extents": 562,
+        "known_unique_bytes": 137693,
+        "unknown_extents": 1092,
+        "unknown_working_bytes": 126564,
+        "separate_known_typed_members": 2,
+        "known_member_bytes_preserved": 4
+      },
+      "previous_exact_initializer_copies_preserved": 4352,
+      "current_exact_physical_initializer_copies": 4435,
+      "new_known_exact_physical_initializer_copies": 83,
+      "new_complete_native_equal_initializer_copies": 192,
+      "new_unknown_extent_initializer_copies_with_no_exact_credit": 109,
+      "verified_initializer_copy_union": 4544,
+      "initializer_union_is_not_exact_credit": true,
+      "new_exact_data_union_bytes": 57,
+      "previous_shared_complete_regions_identical": 3339,
+      "current_shared_complete_regions": 3340,
+      "verified_checks": {
+        "all_required_checks_passed": true,
+        "tests": 700,
+        "skipped": 3,
+        "llvm": 18,
+        "format_files": 291,
+        "tidy_units": 264,
+        "objects": 264,
+        "function_definitions": 3429,
+        "data_definitions": 5863,
+        "source_only_link": true,
+        "native_game_checks": 279,
+        "native_codec_checks": 80,
+        "native_zip_checks": 23,
+        "native_reader_checks": 14,
+        "native_total_checks": 396,
+        "native_failures": 0,
+        "new_unique_compared_PC_bytes": 92837,
+        "new_exact_PC_bytes": 65407,
+        "accepted_complete_function_hashes_verified": 286,
+        "prior_function_copies_checked": 3143,
+        "prior_function_copies_identical": 3142,
+        "prior_nonexact_particle_pair_independently_accepted": true,
+        "particle_recurrence_receipt_sha256": "cbfe12b32063fdb70a713c09e1e1aa4a7d7f9c6ba19580597e8419024dd607e8",
+        "prior_exact_code_and_data_preserved": true,
+        "normal_data_regions": 3340,
+        "scoped_physical_initializer_proofs": 1654,
+        "previous_exact_initializer_copies_preserved": 4352,
+        "current_exact_physical_initializer_copies": 4435,
+        "new_known_exact_physical_initializer_copies": 83,
+        "new_complete_native_equal_initializer_copies": 192,
+        "new_unknown_extent_initializer_copies_with_no_exact_credit": 109,
+        "verified_initializer_copy_union": 4544,
+        "unchanged_exact_typed_members": 2,
+        "unchanged_exact_member_bytes": 4,
+        "data_release_receipt_sha256": "0b6d7b7c9e09030fd3d08ae3b7f78c7b698c771ac215b7be684e80e1c583e747",
+        "endpoint_receipt_sha256": "7ef13d72a1475326c1ccaa49a7a76938fd652bc7bc7c5afbc3b382da342060bd",
+        "limits": [
+          "Finite valid-input software decode, gameplay callbacks, arena allocation, transport selection and eight serialized loader versions; no hardware audio/GPU/destructive effects, instance animation Eval success, malformed-input capacity or whole-game execution.",
+          "Native preextrapolate encoder-only source accepted independently; general encoder execution remains untested.",
+          "DAT decoded buffer capacity, original decoder facade and device/stream contracts remain connected frontiers."
+        ]
+      },
+      "prior_nonexact_particle_change": {
+        "unchanged_source": true,
+        "before_bytes": 713,
+        "after_bytes": 717,
+        "previously_accepted_whole_pair_in_reverse_direction": true,
+        "before_advisory_score": 88.419685,
+        "after_advisory_score": 89.98446,
+        "named_relocations": 34,
+        "independent_receipt": "cbfe12b32063fdb70a713c09e1e1aa4a7d7f9c6ba19580597e8419024dd607e8"
+      },
+      "vendor_provenance": {
+        "version": "Original libvorbis1.2.0 BSD source; nineteen remaining genuine owners with existing Ogg/FFT reused once",
+        "private_headers": "Fixed reviewed24-header catalog local to library; unknown project/vendor headers still rejected; original lookup.inc is textual inclusion only",
+        "format_qualification": "74 individual diagnosed upstream identifier naming comments; original types and algorithms unchanged, all271 function/179 initializer outputs preserved",
+        "compiler_settings_changed": false,
+        "retail_assets_or_transcribed_assembly": false,
+        "unused_unbound_seq_omitted": {
+          "source_bytes": 4,
+          "original_extent": null,
+          "new_PC_credit": 0
+        },
+        "CRT_inventory_bindings": {
+          "count": 19,
+          "sizes_unknown": true,
+          "new_source_credit": 0
+        }
+      },
+      "prior_Ogg_layout_count_correction": {
+        "size_assertions": 5,
+        "field_offset_assertions": 40,
+        "total_assertions": 45
+      },
+      "checkpoint_delay": {
+        "scheduled_UTC": "2026-10-04 06:32",
+        "reason": "Required complete native bank/CRT/local-header packaging acceptance, strict264normal runtime, fullretail comparison and finalindependent endpoint; no broken-code checkpoint"
+      },
+      "remaining_contracts": [
+        "Finite valid-input software decode, gameplay callbacks, arena allocation, transport selection and eight serialized loader versions; no hardware audio/GPU/destructive effects, instance animation Eval success, malformed-input capacity or whole-game execution.",
+        "Native preextrapolate encoder-only source accepted independently; general encoder execution remains untested.",
+        "DAT decoded buffer capacity, original decoder facade and device/stream contracts remain connected frontiers."
+      ],
+      "next_connected_wave": "Native Ogg decoder facade15/2411 plus genuine clock/deletion52 byte providers now has real Vorbis suppliers; actual class/cache ownership still gated. ZIPUP460 loader/public reset167/outlined helper303 plus movement/transport bank and blowup/terrain lifecycle waves remain scratch candidates until fullPC/ABI/extent review. Native terrain delete and nearest helper identities corrected in research, not yet granted.",
+      "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct main pushes authorized."
     }
   ]
 }

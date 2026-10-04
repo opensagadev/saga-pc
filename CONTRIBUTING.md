@@ -120,8 +120,13 @@ Identify the original function or global, record its boundary and references in
 shared declarations to [src/saga.h](src/saga.h). Keep shared game types, calling
 conventions, and `STATIC_ASSERT(...)` layout checks there. Source units may be
 grouped into subsystem directories; keep `saga.h` and `externals.h` directly in
-`src/`. Use `.c` for C routines and `.cpp` where C++ linkage or features are
-needed. APIs absent from the bundled Microsoft
+`src/`. The independently reviewed original libvorbis 1.2.0 header catalog
+stays local in `src/audio/vorbis/`; its private macros do not enter shared game
+declarations. The original textual lookup table is `lookup.inc`, included by
+its genuine owner and checked by formatting and that owner's static analysis.
+The build tracks those private headers and table as dependencies of the library
+owners. Other project or vendor headers remain rejected. Use `.c` for C routines
+and `.cpp` where C++ linkage or features are needed. APIs absent from the bundled Microsoft
 headers have declarations in `src/externals.h`, included by `saga.h`; do not copy
 SDK declarations into it. The PC retail executable is authoritative: never
 transfer Android-specific behavior, constants or layouts. Check every transferred
@@ -340,6 +345,7 @@ src/nuang.c        Angle routines
 src/qrand.cpp      C++ random-number routine and state
 src/nu2api/        Command-line, archive and Windows platform routines
 src/legoapi/       Game helpers and world initialization
+src/audio/vorbis/  Original libvorbis 1.2.0 owners, local headers and BSD license
 src/legogame/      Startup buffer setup
 src/gameapi/       Terrain editor hooks
 src/gamelib/       Wind random-number routine

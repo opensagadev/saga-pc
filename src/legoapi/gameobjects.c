@@ -3660,3 +3660,73 @@ GAMEOBJECT *__cdecl AddDynamicCreature(i32 model, NUVEC *position, i32 angle, ch
     }
     return object;
 }
+
+typedef struct GAME_ANTI_NODE_DATA_PC {
+    NUVEC position;
+    f32 radius, min_y, max_y, extent_x, extent_z;
+    u16 angle;
+    u8 shape, mode;
+} GAME_ANTI_NODE_DATA_PC;
+STATIC_ASSERT(sizeof(GAME_ANTI_NODE_DATA_PC) == 0x24);
+STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, position) == 0);
+STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, radius) == 0xc);
+STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, min_y) == 0x10);
+STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, max_y) == 0x14);
+STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, extent_x) == 0x18);
+STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, extent_z) == 0x1c);
+STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, angle) == 0x20);
+STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, shape) == 0x22);
+STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, mode) == 0x23);
+
+void __cdecl GameAntiNodeData_Init(void *opaque_data, NUSPECIALHANDLE *special) {
+    GAME_ANTI_NODE_DATA_PC *data = (GAME_ANTI_NODE_DATA_PC *)opaque_data;
+    NUVEC minimum, maximum;
+    NUMTX *matrix;
+    union {
+        f32 value;
+        u32 bits;
+    } x, z, difference, y;
+    if (data != NULL) {
+        memset(data, 0, sizeof(*data));
+        if (special != NULL && NuSpecialExistsFn(special)) {
+            NuSpecialGetBounds(special, &minimum, &maximum);
+            matrix = NuSpecialGetMtx(special);
+            NuVecMtxTransform(&minimum, &minimum, matrix);
+            NuVecMtxTransform(&maximum, &maximum, matrix);
+            x.value = (maximum.x - minimum.x) * 0.5;
+            x.bits &= 0x7fffffff;
+            z.value = (maximum.z - minimum.z) * 0.5;
+            z.bits &= 0x7fffffff;
+            difference.value = x.value - z.value;
+            difference.bits &= 0x7fffffff;
+            if (difference.value < 0.01f) {
+                data->radius = x.value;
+                data->shape = 0;
+            } else {
+                data->radius = x.value > z.value ? x.value : z.value;
+                data->shape = 1;
+            }
+            data->extent_x = x.value;
+            data->extent_z = z.value;
+            y.value = (maximum.y - minimum.y) * 0.5;
+            y.bits &= 0x7fffffff;
+            data->max_y = y.value;
+            data->min_y = -data->max_y;
+        }
+    }
+}
+
+void __cdecl GameAntiNodeData_Read(void *opaque_data) {
+    GAME_ANTI_NODE_DATA_PC *data = (GAME_ANTI_NODE_DATA_PC *)opaque_data;
+    if ((u8)EdFileReadChar() == 0)
+        return;
+    EdFileReadNuVec(&data->position);
+    data->radius = EdFileReadFloat();
+    data->min_y = EdFileReadFloat();
+    data->max_y = EdFileReadFloat();
+    data->extent_x = EdFileReadFloat();
+    data->extent_z = EdFileReadFloat();
+    data->angle = (u16)EdFileReadShort();
+    data->shape = (u8)EdFileReadChar();
+    data->mode = (u8)EdFileReadChar();
+}

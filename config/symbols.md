@@ -4179,3 +4179,18 @@ verified. Existing compiler-helper binding aliases receive no invented source
 credit or owning extents. Two uncompiled unsupported data extents totaling 8 bytes
 retire without losing source/exact data. Player and LZ2K complete source contracts
 remain separate from held DAT capacity and unreviewed full Vorbis core candidates.
+
+
+### Complete Vorbis and connected gameplay source release (2026-10-04)
+
+Accepted 286 complete source functions/92,837 unique PC bytes, without new aliases.
+252 exact functions add 65,407 bytes. Genuine remaining core208/72,309 and
+reader63/14,513 exclude the already released FFT. All242 full exact native
+Vorbis extents include real switch-table tails;29 full nonexact functions retain
+reviewed source, CFG and precision. Nineteen genuine absent CRT reference bindings
+have blank sizes/no source credit; five private ST0/EAX helper signatures remain
+blank rather than invented C stack contracts. Loader3213 follows actual PC
+versions, ZipUp311 has six ordinary arguments, and reader65 uses AX/AL unsigned
+returns. All prior exact code/data/members survive; the only old nonexact change
+is the independently reaccepted particle scheduling pair. Unbound _seq and
+unknown private working views get no original allocation credit.

@@ -310,3 +310,7 @@ void __cdecl DebrisStartOffsetEx(DEBRISKEY_PC *key, f32 offset) {
 }
 
 #undef DEBRIS_KEYS_PC
+
+i32 __cdecl LookupDebrisEffect(char *name) {
+    return LookupDebrisEffectPage(name, 0);
+}

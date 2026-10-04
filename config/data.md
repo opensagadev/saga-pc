@@ -1620,3 +1620,17 @@ two unchanged exact resource members totaling 4 bytes. Unsupported uncompiled
 _gExplodeInitialised and _GAMEPAD_TOGGLERIGHT 4-byte inventory extents become blank;
 actual DWORD state views remain genuine. Private decoder, Ogg and FFT initializers
 stay in their original owners. No DAT decode-buffer storage or capacity is guessed.
+
+
+### Vorbis and gameplay initializer preservation (2026-10-04)
+
+One genuine shared NUVEC unit scale adds twelve unknown-extent source bytes.
+All 3,339 old complete shared regions/1,653 scopes survive; current 3,340 regions
+equal isolated compilation. Scope 1,654 retains 562 known/137,693 unique bytes
+and 1,092 unknown/126,564 working bytes. All 4,352 old actual exact physical copies
+survive; 83 new known exact copies yield 4,435, plus two exact members/four bytes.
+192 new complete initializer copies match retail: codec179, vector1, gameobjects1,
+blowups10 and ZipUp1. 109 unknown-extent copies receive no allocation/exact credit;
+4,544 is the verified-copy union, not the exact-copy count. Five complete loader
+NUL literals add 57 exact union bytes. Private codec storage stays in original
+owners. Unbound unused _seq receives no invented PC identity or source credit.

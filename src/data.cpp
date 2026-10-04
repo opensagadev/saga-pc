@@ -10966,3 +10966,9 @@ extern "C" {
     u32 implode_origsize;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$GizmoBlowupUnitScalePc")
+    NUVEC GizmoBlowupUnitScalePc = {1.0f, 1.0f, 1.0f};
+#pragma data_seg()
+}

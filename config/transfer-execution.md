@@ -1697,7 +1697,7 @@ remain in the sources. Algorithms, native types, natural private helper groups
 and original initializer ownership remain intact. No transcribed retail assembly,
 asset bytes, fabricated providers, retention changes or compiler tuning is used.
 Only the verified original Ogg long/short declaration block has a narrow naming
-policy exception, preserving its actual Win32 C types and 43 asserted offsets.
+policy exception, preserving its actual Win32 C types and 45 layout assertions (5 sizes and 40 field offsets).
 
 Player reset restores the PC angle WORD at 0x27a, unsigned model/difficulty WORD
 comparisons and low-CL disabled-mask semantics. Move_DEFAULT is the genuine exact
@@ -1747,5 +1747,83 @@ Connected blowup animation/loader/zipup research proceeds in parallel, with a
 20–30 KB candidate wave and finite genuine parser/registration frontiers.
 The user's three journal edits remain untouched; whole-project work continues.
 
-The 05:59 UTC commit checkpoint awaits the final documentation/input-fingerprint
-refresh after the complete batch passed all source, native and independent gates.
+The 05:59 UTC scheduled checkpoint completed at 06:02 after the final
+documentation/input-fingerprint refresh; exact revision 909b644 passed CI.
+
+
+### Vorbis core, gameplay loaders and transport checkpoint (2026-10-04)
+
+286 complete new functions add 92,837 unique PC bytes over 909b644: original
+remaining Vorbis core 208/72,309 and reader 63/14,513; blowup callbacks, allocation,
+versioned loader and anti-node helpers 12/5,639; ZipUp selection 1/311 and unsigned
+EdFile readers 2/65. The existing FFT is excluded from new credit. Whole-PC fuzzy
+coverage rises from 16.403316% to 19.021145%. Unique compared code reaches 957,419;
+native objdiff compares 957,872 including older aliases at 68.976240%. 252 new
+exact functions add 65,407 bytes, reaching 175,872/5.066538% of 3,471,246 bytes.
+No old exact function, initializer or member is lost. Of 3,143 old full copies,
+3,142 remain identical; unchanged particle source recompiles to the reviewed
+713/717-byte scheduling pair in reverse direction. All 34 relocations, complete
+CFG and qualified x87 stack behavior remain equivalent; the current 717-byte
+body remains nonexact at its honest 89.984460% advisory score.
+
+The genuine libvorbis1.2.0 source bank preserves nineteen original owners and
+all 271 complete functions/179 initializer regions. 242 functions/64,453 bytes
+are exact; the other 29 retain independently reviewed full CFG, precision and
+cold tails, including compiler-owned switch tables. Native preextrapolate source
+is accepted despite a low alignment-sensitive score; its encoder-only runtime
+is untested. All 42 required CRT suppliers are actual pinned static-library
+providers. Nineteen absent reference bindings enter the map with blank owning
+extents and no source credit. A genuinely unused, unbound four-byte _seq is
+omitted without invented identity or allocation credit.
+
+Original local headers, algorithms, types and BSD license remain with the library.
+A fixed 24-header catalog is allowed only there; unrelated project and vendor
+headers remain rejected. Genuine lookup.c is named lookup.inc and included by
+its original owner, rather than compiled twice. Relative include names preserve
+the general existing /Isrc compiler context. Private header/table dependencies
+are tracked for the library owners. All formatting and static analysis remain
+required; 74 individual diagnosed upstream naming exceptions preserve original
+identifiers. Complete normal code/data output remains equal to the accepted
+upstream recipe. The earlier Ogg declaration count is corrected to 45 layout
+assertions: five sizes and 40 field offsets. Compiler/retention settings stay pinned.
+
+Gameplay preserves typed 0x100-byte types and 0x114-byte instances, status DWORD
+at 0x94, drawing DWORD at 0x98 and type animation BYTE at 0xfc. Early update uses
+the native unordered/equal radius choice; a single-choice wrong variant fails
+one fixture assertion. Arena wrappers use the actual unsigned WORD capacities,
+16/128-byte alignment and real GameBufferAlloc. The blowup loader follows the PC
+version protocol, including legacy flag migration and distinct vector offsets;
+all five complete NUL literals match. ZipUp selection uses the actual six-argument
+cdecl ABI and three endpoints, with no Android touch argument. Unsigned EdFile
+returns occupy AX/AL; upper EAX is unspecified and native callers handle those
+widths. No new backing capacity or device/provider definition is fabricated.
+
+The source-only EXE links with 3,429 function/5,863 data definitions across 264
+actual objects. LLVM18 validates 291 source/header files and 264 units; all 700
+tests pass with three skips. Strict fixtures use all 264 normal objects and no
+replacements, supplemental providers or fake globals: gameplay callbacks and
+allocation 55, versioned loader 224, decoder 80, ZipUp 23 and unsigned readers 14;
+all 396 pass. Generated legal mono/stereo streams decode to 4,096/8,192/6,144 frames
+against an independent installed libvorbis1.3.7 decoder, maximum float error
+1.79e-7. Loader fixtures cover versions 2/11/19/26/27/28/30/31 with actual stream,
+arena and scene services. These selected domains do not establish audio devices,
+GPU/destructive effects, instance animation evaluation success, malformed-input
+capacity, general encoding or full-game execution.
+
+One genuine shared unit-scale vector adds twelve unknown-extent source bytes.
+All 3,339 old shared regions and 1,653 scoped proofs survive; 3,340 normal regions
+match isolated compilation. Scope 1,654 has 562 known regions/137,693 unique bytes
+and 1,092 unknown views/126,564 source bytes. All 4,352 previous exact physical
+initializer copies remain intact. 83 new known exact copies yield 4,435, plus two
+unchanged exact members/four bytes. All 192 new complete initializer copies are
+retail-equal; 109 have unknown original extents and receive no exact or allocation
+credit. The 4,544 verified-copy union must not be called exact coverage. Five known
+NUL literals add 57 exact data union bytes. Genuine private codec owners retain
+their own initializers.
+
+The 06:32 UTC checkpoint waited for complete native/CRT packaging acceptance,
+normal runtime, full retail matching and independent endpoint validation. The
+user's three journal edits remain untouched. Next are the now-connected native
+Ogg facade and ZIPUP loader/reset/transport bank, alongside blowup/terrain
+lifecycle work. These source/ABI hypotheses remain scratch research until
+accepted; whole-project transfer and direct-main checkpoints continue.

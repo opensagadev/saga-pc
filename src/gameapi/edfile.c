@@ -214,3 +214,27 @@ char __cdecl EdFileReadChar(void) {
     EdFileRead(&character, sizeof(character));
     return character;
 }
+
+u16 __cdecl EdFileReadUnsignedShort(void) {
+    union {
+        u16 value;
+        struct {
+            u8 first;
+            u8 second;
+        } bytes;
+    } data;
+    u8 temporary;
+    EdFileRead(&data.value, sizeof(data.value));
+    if (edfile_readwrongendianess != 0) {
+        temporary = data.bytes.first;
+        data.bytes.first = data.bytes.second;
+        data.bytes.second = temporary;
+    }
+    return data.value;
+}
+
+u8 __cdecl EdFileReadUnsignedChar(void) {
+    u8 character;
+    EdFileRead(&character, sizeof(character));
+    return character;
+}

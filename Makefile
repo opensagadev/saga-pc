@@ -7,6 +7,11 @@ SOURCES := $(shell find src -type f \( -name '*.cpp' -o -name '*.c' \) | LC_ALL=
 SOURCE_DIRS := $(shell find src -type d)
 OBJECTS := $(patsubst src/%,build/obj/%,$(SOURCES:.cpp=.obj))
 OBJECTS := $(OBJECTS:.c=.obj)
+# Original Vorbis private headers/textual tables belong to these owners only.
+VORBIS_HEADERS := $(shell find src/audio/vorbis -type f \( -name '*.h' -o -name '*.inc' \) 2>/dev/null)
+ifneq ($(filter build/obj/audio/vorbis/%,$(OBJECTS)),)
+$(filter build/obj/audio/vorbis/%,$(OBJECTS)): $(VORBIS_HEADERS)
+endif
 EXE := build/LEGOStarWarsSaga.exe
 D3DX_LIB := build/d3dx9_35.lib
 CPPFLAGS := /Isrc /Ibuild/tools/msvc8/include /Ibuild/tools/msvc8/PlatformSDK/Include

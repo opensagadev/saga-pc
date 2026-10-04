@@ -618,6 +618,7 @@ address    , symbol                                                         , si
 0x4d4380,_Traffic_FindVehiclePc,205,i32 __cdecl (char *)
 0x4d4450,_Traffic_vehicle,77,void __cdecl (NUFPAR_PC *)
 0x004d44a0 , _TrafficAnimSys_Configure                                      , 650   , "void __cdecl (WORLDINFO *, char *)"
+0x004d5f00,_ZipUp_FindNearest,311,"ZIPUP_PC *__cdecl(WORLDINFO *,NUVEC *,f32,f32 *,i32 *,GAMEOBJECT *)"
 0x004d6060 , _ZipUp_MoveCode                                                , 3774  , "void __cdecl (GAMEOBJECT *, i32)"
 0x4d8280,_PodMatrixCopyPrivatePc,95,
 0x4d94b0,_RacePodAllocatePrivatePc,52,
@@ -1510,12 +1511,21 @@ address    , symbol                                                         , si
 0x005661f0 , _NoRender                                                      , 159   , void __cdecl (void)
 0x00566290 , _FinishLoop                                                    , 271   , void __cdecl (i32)
 0x00566630 , _SetLevelExBlowupFlags                                         , 10    , void __cdecl (u32)
+0x5666d0,_InitGizmoBlowupTypes,93,i32 __cdecl (WORLDINFO *)
+0x566730,_InitGizmoBlowups,112,i32 __cdecl (WORLDINFO *)
+0x5667a0,_InitGizmoBlowupsMtxBuffer,73,i32 __cdecl (WORLDINFO *)
 0x566ba0,_GizmoBlowupRestoreInitialStatePc,119,void(GIZMOBLOWUP_PC *)
 0x566c20,_GizBlowup_Respawn,379,void __cdecl(GIZMOBLOWUP_PC *)
 0x5672d0,_GizmoBlowUp_AddEffects,1322,"void __cdecl (NUVEC *, GIZMOBLOWUP_PC *, i32, i32, GAMEOBJECT *)"
 0x00567800 , _GizmoBlowupBlowup                                             , 1385  , "i32 __cdecl (GIZMOBLOWUP_PC *, i32, i32, i32, GAMEOBJECT *, i32)"
 0x567da0,_UpdateMidPos,616,void __cdecl(GIZMOBLOWUP_PC*)
+0x568010,_GizmoBlowupEarlyUpdate,1122,"void __cdecl (void *, void *, f32)"
+0x5684f0,_GizmoBlowupLateUpdate,98,"void __cdecl (void *, void *, f32)"
+0x5687f0,_GizmoBlowupUpdateMatrix,154,void __cdecl (GIZMOBLOWUP_PC *)
+0x568890,_GizmoBlowupGenDecalMatrix,191,"void __cdecl (GIZMOBLOWUP_PC *, NUMTX *, i32)"
+0x568950,_GizmoBlowupGenShadowMatrix,150,"void __cdecl (GIZMOBLOWUP_PC *, NUMTX *)"
 0x5689f0,_GizmoBlowup_FindType,131,"GIZMOBLOWUPTYPE_PC * __cdecl (char *, WORLDINFO *)"
+0x568a80,_gizmoblowup_Load,3213,"i32 __cdecl (void *, void *)"
 0x569980,_GizmoBlowUpOpponent,724,"GIZMOBLOWUP_PC *__cdecl(GAMEOBJECT *,f32,f32,f32,i32,u32,u32,u32)"
 0x00569c60 , _GetLevelExBlowupFlags                                         , 6      ,
 0x56a240,_GizmoBlowUp_Target,878,"GIZMOBLOWUP_PC* __cdecl(GAMEOBJECT*,NUVEC*,NUVEC*,f32,f32,i32,i32,i32)"
@@ -2020,6 +2030,8 @@ address    , symbol                                                         , si
 0x59a420,_MiniKit_GameMsg_Update,156,void __cdecl (GAME_MESSAGE_PC *)
 0x59a4c0,_MiniKit_GameMsg_End,213,void __cdecl (GAME_MESSAGE_PC *)
 0x59a720,_GameAntinode_FindGridPosition,550,"void __cdecl(WORLDINFO *, NUVEC *, f32, f32, u8 *, u8 *, u8 *, u8 *)"
+0x59ae10,_GameAntiNodeData_Init,325,"void __cdecl (void *, NUSPECIALHANDLE *)"
+0x59af60,_GameAntiNodeData_Read,90,void __cdecl (void *)
 0x59afc0,_GameAntinode_RegisterAntiNode,284,"void* __cdecl(void*,NUVEC*,f32,f32,f32,u16,i32,f32)"
 0x59b0e0,_GameAntinode_RegisterAntiNodeUsingData,211,"void* __cdecl(void*,NUVEC*,u16,void*,f32,i32)"
 0x0059b360 , _Episodes_ConfigureList                                        , 702   , "EPISODEDATA_PC * __cdecl (char *, VARIPTR *, VARIPTR *, i32, i32 *)"
@@ -2654,7 +2666,9 @@ address    , symbol                                                         , si
 0x006217a0,_EdFileReadFloat,59,f32 __cdecl(void)
 0x6217e0   , _EdFileReadInt                                                 , 59    , i32 __cdecl (void)
 0x00621860,_EdFileReadShort,44,i16 __cdecl(void)
+0x00621890,_EdFileReadUnsignedShort,44,u16 __cdecl(void)
 0x6218c0   , _EdFileReadChar                                                , 21    , char __cdecl (void)
+0x006218e0,_EdFileReadUnsignedChar,21,u8 __cdecl(void)
 0x00621900,_EdFileReadNuVec,193,void __cdecl(NUVEC *)
 0x0062a5e0,_PCCharacterSystemExistingNoOp,1,void __cdecl(void)
 0x62a5f0,_PCCharacterModelDiagnosticNoOp,1,void __cdecl(void)
@@ -2836,6 +2850,7 @@ address    , symbol                                                         , si
 0x00658330,_LookupDebrisEffectPageIgnore,307,"i32 __cdecl (char *, i8, i32)"
 0x00658470,_LookupDebrisEffectPage,21,"i32 __cdecl (char *, i8)"
 0x00658490 , _LookupDebrisEffectPageOnly                                    , 212   , "i32 __cdecl (char *, i8)"
+0x658570,_LookupDebrisEffect,18,i32 __cdecl (char *)
 0x00658590 , _DebrisRegisterCutoffCameraVec                                 , 10    , void __cdecl (void *)
 0x6585a0,_CameraEmitterDistance,29,f32 __cdecl (NUVEC *)
 0x6585c0,_DebrisFindAllOfType,238,"i32 __cdecl(i32,NUVEC *,i32 *,i32,i32,i32)"
@@ -3150,6 +3165,69 @@ address    , symbol                                                         , si
 0x69a680,?Read@WavReader@@UAEJPAXIPAI@Z,291,"HRESULT __thiscall(WavReader *,void *,u32,u32 *)"
 0x69a7b0,??_EWavReader@@UAEPAXI@Z,,Natural weak vector-delete alias to emitted scalar deleting destructor; no separate sourcecredit
 0x69a7b0,??_GWavReader@@UAEPAXI@Z,52,"void *__thiscall(WavReader *,u32)"
+0x69b220,__ov_header_fseek_wrap,32,
+0x69b240,_VorbisVorbisfileVorbisFtoiPc,13,
+0x69b250,_VorbisVorbisfileVorbisFpuSetroundPc,1,
+0x69b260,_VorbisVorbisfileVorbisFpuRestorePc,1,
+0x69b270,__get_data,109,
+0x69b2e0,__seek_helper,84,
+0x69b340,__get_next_page,167,
+0x69b3f0,__get_prev_page,340,
+0x69b550,__add_serialno,74,
+0x69b5a0,__lookup_serialno,50,
+0x69b5e0,__get_serialnos,278,
+0x69b700,__bisect_forward_serialno,695,
+0x69b9c0,__fetch_headers,552,
+0x69bbf0,__prefetch_all_headers,1018,
+0x69bff0,__make_decode_ready,103,
+0x69c060,__decode_clear,35,
+0x69c090,__fetch_and_process_packet,776,
+0x69c3a0,__fseek64_wrap,32,
+0x69c3c0,_ov_clear,261,int ov_clear(OggVorbis_File *vf);
+0x69c4d0,_ov_halfrate,138,"int ov_halfrate(OggVorbis_File *vf,int flag);"
+0x69c560,_ov_halfrate_p,26,int ov_halfrate_p(OggVorbis_File *vf);
+0x69c580,_ov_streams,8,long ov_streams(OggVorbis_File *vf);
+0x69c590,_ov_seekable,8,long ov_seekable(OggVorbis_File *vf);
+0x69c5a0,_ov_bitrate_instant,87,long ov_bitrate_instant(OggVorbis_File *vf);
+0x69c600,_ov_serialnumber,55,"long ov_serialnumber(OggVorbis_File *vf,int i);"
+0x69c640,_ov_raw_total,109,"ogg_int64_t ov_raw_total(OggVorbis_File *vf,int i);"
+0x69c6b0,_ov_pcm_total,107,"ogg_int64_t ov_pcm_total(OggVorbis_File *vf,int i);"
+0x69c720,_ov_time_total,126,"double ov_time_total(OggVorbis_File *vf,int i);"
+0x69c7a0,_ov_raw_seek,870,"int ov_raw_seek(OggVorbis_File *vf,ogg_int64_t pos);"
+0x69cb10,_ov_pcm_seek_page,1884,"int ov_pcm_seek_page(OggVorbis_File *vf,ogg_int64_t pos);"
+0x69d270,_ov_pcm_seek,744,"int ov_pcm_seek(OggVorbis_File *vf,ogg_int64_t pos);"
+0x69d560,_ov_time_seek,237,"int ov_time_seek(OggVorbis_File *vf,double pos);"
+0x69d650,_ov_time_seek_page,237,"int ov_time_seek_page(OggVorbis_File *vf,double pos);"
+0x69d740,_ov_raw_tell,26,ogg_int64_t ov_raw_tell(OggVorbis_File *vf);
+0x69d760,_ov_pcm_tell,26,ogg_int64_t ov_pcm_tell(OggVorbis_File *vf);
+0x69d780,_ov_time_tell,214,double ov_time_tell(OggVorbis_File *vf);
+0x69d860,_ov_info,46,"vorbis_info *ov_info(OggVorbis_File *vf,int link);"
+0x69d890,_ov_comment,46,"vorbis_comment *ov_comment(OggVorbis_File *vf,int link);"
+0x69d8c0,_host_is_big_endian,3,
+0x69d8d0,_ov_read,853,"long ov_read(OggVorbis_File *vf,char *buffer,int length, int bigendianp,int word,int sgned,int *bitstream);"
+0x69dc30,_ov_read_float,151,"long ov_read_float(OggVorbis_File *vf,float ***pcm_channels,int samples, int *bitstream);"
+0x69dcd0,__ov_splice,662,
+0x69df70,__ov_initset,40,
+0x69dfa0,__ov_initprime,59,
+0x69dfe0,__ov_getlap,364,
+0x69e150,_ov_crosslap,491,"int ov_crosslap(OggVorbis_File *vf1,OggVorbis_File *vf2);"
+0x69e340,__ov_64_seek_lap,389,
+0x69e4d0,_ov_raw_seek_lap,28,"int ov_raw_seek_lap(OggVorbis_File *vf,ogg_int64_t pos);"
+0x69e4f0,_ov_pcm_seek_lap,28,"int ov_pcm_seek_lap(OggVorbis_File *vf,ogg_int64_t pos);"
+0x69e510,_ov_pcm_seek_page_lap,28,"int ov_pcm_seek_page_lap(OggVorbis_File *vf,ogg_int64_t pos);"
+0x69e530,__ov_d_seek_lap,390,
+0x69e6c0,_ov_time_seek_lap,28,"int ov_time_seek_lap(OggVorbis_File *vf,double pos);"
+0x69e6e0,_ov_time_seek_page_lap,28,"int ov_time_seek_page_lap(OggVorbis_File *vf,double pos);"
+0x69e700,__open_seekable2,300,
+0x69e830,__ov_open1,257,
+0x69e940,__ov_open2,72,
+0x69e990,_ov_open_callbacks,73,"int ov_open_callbacks(void *datasource, OggVorbis_File *vf, char *initial, long ibytes, ov_callbacks callbacks);"
+0x69e9e0,_ov_open,80,"int ov_open(FILE *f,OggVorbis_File *vf,char *initial,long ibytes);"
+0x69ea30,_ov_fopen,69,"int ov_fopen(char *path,OggVorbis_File *vf);"
+0x69ea80,_ov_test_callbacks,61,"int ov_test_callbacks(void *datasource, OggVorbis_File *vf, char *initial, long ibytes, ov_callbacks callbacks);"
+0x69eac0,_ov_test,67,"int ov_test(FILE *f,OggVorbis_File *vf,char *initial,long ibytes);"
+0x69eb10,_ov_test_open,21,int ov_test_open(OggVorbis_File *vf);
+0x69eb30,_ov_bitrate,356,"long ov_bitrate(OggVorbis_File *vf,int i);"
 0x69eca0,_ogg_page_version,11,int __cdecl (ogg_page *og)
 0x69ecb0,_ogg_page_continued,14,int __cdecl (ogg_page *og)
 0x69ecc0,_ogg_page_bos,14,int __cdecl (ogg_page *og)
@@ -3183,6 +3261,58 @@ address    , symbol                                                         , si
 0x69fcc0,_ogg_stream_packetout,21,"int __cdecl (ogg_stream_state *os, ogg_packet *op)"
 0x69fce0,_ogg_stream_packetpeek,21,"int __cdecl (ogg_stream_state *os, ogg_packet *op)"
 0x69fd00,_ogg_packet_clear,43,void __cdecl (ogg_packet *op)
+0x69fd30,_VorbisInfoIlog2Pc,24,
+0x69fd50,__v_writestring,44,
+0x69fd80,__v_readstring,42,
+0x69fdb0,_vorbis_comment_init,18,void vorbis_comment_init(vorbis_comment *vc);
+0x69fdd0,_vorbis_comment_add,154,"void vorbis_comment_add(vorbis_comment *vc, char *comment);"
+0x69fe70,_vorbis_comment_add_tag,175,"void vorbis_comment_add_tag(vorbis_comment *vc, char *tag, char *contents);"
+0x69ff20,_tagcompare,79,
+0x69ff70,_vorbis_comment_query,167,"char *vorbis_comment_query(vorbis_comment *vc, char *tag, int count);"
+0x6a0020,_vorbis_comment_query_count,143,"int vorbis_comment_query_count(vorbis_comment *vc, char *tag);"
+0x6a00b0,_vorbis_comment_clear,110,void vorbis_comment_clear(vorbis_comment *vc);
+0x6a0120,_vorbis_info_blocksize,23,"int vorbis_info_blocksize(vorbis_info *vi,int zo);"
+0x6a0140,_vorbis_info_init,50,void vorbis_info_init(vorbis_info *vi);
+0x6a0180,_vorbis_info_clear,389,void vorbis_info_clear(vorbis_info *vi);
+0x6a0310,__vorbis_unpack_info,203,
+0x6a03e0,__vorbis_unpack_comment,246,
+0x6a04e0,__vorbis_unpack_books,636,
+0x6a0760,_vorbis_synthesis_idheader,298,int vorbis_synthesis_idheader(ogg_packet *op);
+0x6a0890,_vorbis_synthesis_headerin,413,"int vorbis_synthesis_headerin(vorbis_info *vi,vorbis_comment *vc, ogg_packet *op);"
+0x6a0a30,__vorbis_pack_info,232,
+0x6a0b20,__vorbis_pack_comment,296,
+0x6a0c50,__vorbis_pack_books,543,
+0x6a0e70,_vorbis_commentheader_out,135,"int vorbis_commentheader_out(vorbis_comment *vc, ogg_packet *op);"
+0x6a0f00,_vorbis_analysis_headerout,668,"int vorbis_analysis_headerout(vorbis_dsp_state *v, vorbis_comment *vc, ogg_packet *op, ogg_packet *op_comm, ogg_packet *op_code);"
+0x6a11a0,_vorbis_granule_time,38,"double vorbis_granule_time(vorbis_dsp_state *v, ogg_int64_t granulepos);"
+0x6a11d0,_vorbis_synthesis,327,"int vorbis_synthesis(vorbis_block *vb,ogg_packet *op);"
+0x6a1320,_vorbis_synthesis_trackonly,203,"int vorbis_synthesis_trackonly(vorbis_block *vb,ogg_packet *op);"
+0x6a13f0,_vorbis_packet_blocksize,124,"long vorbis_packet_blocksize(vorbis_info *vi,ogg_packet *op);"
+0x6a1470,_vorbis_synthesis_halfrate,40,"int vorbis_synthesis_halfrate(vorbis_info *v,int flag);"
+0x6a14a0,_vorbis_synthesis_halfrate_p,14,int vorbis_synthesis_halfrate_p(vorbis_info *v);
+0x6a14b0,_VorbisBlockIlog2Pc,24,
+0x6a14d0,_vorbis_block_init,120,"int vorbis_block_init(vorbis_dsp_state *v, vorbis_block *vb);"
+0x6a1550,__vorbis_block_alloc,100,"void *_vorbis_block_alloc(vorbis_block *vb,long bytes);"
+0x6a15c0,__vorbis_block_ripcord,98,void _vorbis_block_ripcord(vorbis_block *vb);
+0x6a1630,_vorbis_block_clear,115,int vorbis_block_clear(vorbis_block *vb);
+0x6a16b0,__vds_shared_init,946,
+0x6a1a70,_vorbis_analysis_init,101,"int vorbis_analysis_init(vorbis_dsp_state *v,vorbis_info *vi);"
+0x6a1ae0,_vorbis_dsp_clear,587,void vorbis_dsp_clear(vorbis_dsp_state *v);
+0x6a1d30,_vorbis_analysis_buffer,193,"float **vorbis_analysis_buffer(vorbis_dsp_state *v,int vals);"
+0x6a1e00,__preextrapolate_helper,235,
+0x6a1ef0,_vorbis_analysis_wrote,297,"int vorbis_analysis_wrote(vorbis_dsp_state *v,int vals);"
+0x6a2020,_vorbis_analysis_blockout,738,"int vorbis_analysis_blockout(vorbis_dsp_state *v,vorbis_block *vb);"
+0x6a2310,_vorbis_synthesis_restart,98,int vorbis_synthesis_restart(vorbis_dsp_state *v);
+0x6a2380,_vorbis_synthesis_init,45,"int vorbis_synthesis_init(vorbis_dsp_state *v,vorbis_info *vi);"
+0x6a23b0,_vorbis_synthesis_blockin,2557,"int vorbis_synthesis_blockin(vorbis_dsp_state *v,vorbis_block *vb);"
+0x6a2db0,_vorbis_synthesis_pcmout,82,"int vorbis_synthesis_pcmout(vorbis_dsp_state *v,float ***pcm);"
+0x6a2e10,_vorbis_synthesis_read,34,"int vorbis_synthesis_read(vorbis_dsp_state *v,int samples);"
+0x6a2e40,_vorbis_synthesis_lapout,848,"int vorbis_synthesis_lapout(vorbis_dsp_state *v,float ***pcm);"
+0x6a3190,_vorbis_window,49,"float *vorbis_window(vorbis_dsp_state *v,int W);"
+0x6a31d0,_VorbisAnalysisTodbPc,51,
+0x6a3210,_vorbis_analysis,165,"int vorbis_analysis(vorbis_block *vb,ogg_packet *op);"
+0x6a32c0,__analysis_output_always,396,"void _analysis_output_always(char *base,int i,float *v,int n,int bark,int dB,ogg_int64_t off);"
+0x6a3450,__analysis_output,58,"void _analysis_output(char *base,int i,float *v,int n,int bark,int dB, ogg_int64_t off);"
 0x6a3490,_oggpack_writeinit,52,void __cdecl (oggpack_buffer *b)
 0x6a34d0,_oggpackB_writeinit,52,void __cdecl (oggpack_buffer *b)
 0x6a3510,_oggpack_writetrunc,45,"void __cdecl (oggpack_buffer *b, long bits)"
@@ -3218,6 +3348,67 @@ address    , symbol                                                         , si
 0x6a3e00,_oggpackB_bits,13,long __cdecl (oggpack_buffer *b)
 0x6a3e10,_oggpack_get_buffer,8,unsigned char * __cdecl (oggpack_buffer *b)
 0x6a3e20,_oggpackB_get_buffer,8,unsigned char * __cdecl (oggpack_buffer *b)
+0x6a3e30,_unitnorm,31,
+0x6a3e50,__vp_global_look,47,vorbis_look_psy_global *_vp_global_look(vorbis_info *vi);
+0x6a3e80,__vp_global_free,46,void _vp_global_free(vorbis_look_psy_global *look);
+0x6a3eb0,__vi_gpsy_free,33,void _vi_gpsy_free(vorbis_info_psy_global *i);
+0x6a3ee0,__vi_psy_free,33,void _vi_psy_free(vorbis_info_psy *i);
+0x6a3f10,_min_curve,113,
+0x6a3f90,_max_curve,113,
+0x6a4010,_attenuate_curve,87,
+0x6a4070,_setup_tone_curves,3060,
+0x6a4c70,__vp_psy_init,1858,"void _vp_psy_init(vorbis_look_psy *p,vorbis_info_psy *vi, vorbis_info_psy_global *gi,int n,long rate);"
+0x6a53c0,__vp_psy_clear,201,void _vp_psy_clear(vorbis_look_psy *p);
+0x6a5490,_seed_curve,424,
+0x6a5640,_seed_loop,242,
+0x6a5740,_seed_chase,405,
+0x6a58e0,_max_seeds,307,
+0x6a5a20,_bark_noise_hybridmp,2880,
+0x6a6560,__vp_remove_floor,260,"void _vp_remove_floor(vorbis_look_psy *p, float *mdct, int *icodedflr, float *residue, int sliding_lowpass);"
+0x6a6670,__vp_noisemask,489,"void _vp_noisemask(vorbis_look_psy *p, float *logmdct, float *logmask);"
+0x6a6860,__vp_tonemask,322,"void _vp_tonemask(vorbis_look_psy *p, float *logfft, float *logmask, float global_specmax, float local_specmax);"
+0x6a69b0,__vp_offset_and_mix,1380,"void _vp_offset_and_mix(vorbis_look_psy *p, float *noise, float *tone, int offset_select, float *logmask, float *mdct, float *logmdct);"
+0x6a6f20,__vp_ampmax_decay,89,"float _vp_ampmax_decay(float amp,vorbis_dsp_state *vd);"
+0x6a6f80,_couple_lossless,193,
+0x6a7050,_precomputed_couple_point,105,
+0x6a70c0,_dipole_hypot,199,
+0x6a7190,_round_hypot,183,
+0x6a7250,__vp_quantize_couple_memo,386,"float **_vp_quantize_couple_memo(vorbis_block *vb, vorbis_info_psy_global *g, vorbis_look_psy *p, vorbis_info_mapping0 *vi, float **mdct);"
+0x6a73e0,_apsort,80,
+0x6a7430,__vp_quantize_couple_sort,311,"int **_vp_quantize_couple_sort(vorbis_block *vb, vorbis_look_psy *p, vorbis_info_mapping0 *vi, float **mags);"
+0x6a7570,__vp_noise_normalize_sort,167,"void _vp_noise_normalize_sort(vorbis_look_psy *p, float *magnitudes,int *sortedindex);"
+0x6a7620,__vp_noise_normalize,748,"void _vp_noise_normalize(vorbis_look_psy *p, float *in,float *out,int *sortedindex);"
+0x6a7910,__vp_couple,1097,"void _vp_couple(int blobno, vorbis_info_psy_global *g, vorbis_look_psy *p, vorbis_info_mapping0 *vi, float **res, float **mag_memo, int **mag_sort, int **ifloor, int *nonzero, int sliding_lowpass);"
+0x6a7d60,_hf_reduction,353,"void hf_reduction(vorbis_info_psy_global *g, vorbis_look_psy *p, vorbis_info_mapping0 *vi, float **mdct);"
+0x6a7ed0,__ilog,24,int _ilog(unsigned int v);
+0x6a7ef0,__float32_pack,151,long _float32_pack(float val);
+0x6a7f90,__float32_unpack,64,float _float32_unpack(long val);
+0x6a7fd0,__make_words,374,"ogg_uint32_t *_make_words(long *l,long n,long sparsecount);"
+0x6a8150,__book_maptype1_quantvals,121,long _book_maptype1_quantvals(const static_codebook *b);
+0x6a81d0,__book_unquantize,1306,"float *_book_unquantize(const static_codebook *b,int n,int *map);"
+0x6a86f0,_vorbis_staticbook_clear,202,void vorbis_staticbook_clear(static_codebook *b);
+0x6a87c0,_vorbis_staticbook_destroy,28,void vorbis_staticbook_destroy(static_codebook *b);
+0x6a87e0,_vorbis_book_clear,100,void vorbis_book_clear(codebook *b);
+0x6a8850,_vorbis_book_init_encode,80,"int vorbis_book_init_encode(codebook *dest,const static_codebook *source);"
+0x6a88a0,_VorbisSharedbookBitreversePc,93,
+0x6a8900,_sort32a,31,
+0x6a8920,_vorbis_book_init_decode,1283,"int vorbis_book_init_decode(codebook *dest,const static_codebook *source);"
+0x6a8e30,__dist,289,
+0x6a8f60,__best,587,"int _best(codebook *book, float *a, int step);"
+0x6a91b0,_vorbis_book_codeword,25,"long vorbis_book_codeword(codebook *book,int entry);"
+0x6a91d0,_vorbis_book_codelen,26,"long vorbis_book_codelen(codebook *book,int entry);"
+0x6a91f0,_vorbis_staticbook_pack,599,"int vorbis_staticbook_pack(const static_codebook *c,oggpack_buffer *b);"
+0x6a9450,_vorbis_staticbook_unpack,588,"int vorbis_staticbook_unpack(oggpack_buffer *b,static_codebook *c);"
+0x6a96a0,_vorbis_book_encode,66,"int vorbis_book_encode(codebook *book, int a, oggpack_buffer *b);"
+0x6a96f0,_vorbis_book_errorv,169,"int vorbis_book_errorv(codebook *book, float *a);"
+0x6a97a0,_vorbis_book_encodev,208,"int vorbis_book_encodev(codebook *book, int best,float *a, oggpack_buffer *b);"
+0x6a9870,_VorbisCodebookBitreversePc,93,
+0x6a98d0,_decode_packed_entry_number,270,
+0x6a99e0,_vorbis_book_decode,42,"long vorbis_book_decode(codebook *book, oggpack_buffer *b);"
+0x6a9a10,_vorbis_book_decodevs_add,354,"long vorbis_book_decodevs_add(codebook *book, float *a, oggpack_buffer *b,int n);"
+0x6a9b80,_vorbis_book_decodev_add,368,"long vorbis_book_decodev_add(codebook *book, float *a, oggpack_buffer *b,int n);"
+0x6a9cf0,_vorbis_book_decodev_set,150,"long vorbis_book_decodev_set(codebook *book, float *a, oggpack_buffer *b,int n);"
+0x6a9d90,_vorbis_book_decodevv_add,157,"long vorbis_book_decodevv_add(codebook *book, float **a, long off,int ch, oggpack_buffer *b,int n);"
 0x6a9e30,_drfti1,420,
 0x6a9fe0,_fdrffti,20,
 0x6aa000,_dradf2,803,
@@ -3233,6 +3424,101 @@ address    , symbol                                                         , si
 0x6af1e0,_drft_backward,39,"void __cdecl (drft_lookup *, float *)"
 0x6af210,_drft_init,66,"void __cdecl (drft_lookup *, int)"
 0x6af260,_drft_clear,53,void __cdecl (drft_lookup *)
+0x6af2a0,_mdct_init,556,"void mdct_init(mdct_lookup *lookup,int n);"
+0x6af4d0,_mdct_butterfly_8,174,
+0x6af580,_mdct_butterfly_16,251,
+0x6af680,_mdct_butterfly_32,547,
+0x6af8b0,_mdct_butterfly_first,343,
+0x6afa10,_mdct_butterfly_generic,367,
+0x6afb80,_mdct_butterflies,201,
+0x6afc50,_mdct_clear,59,void mdct_clear(mdct_lookup *l);
+0x6afc90,_mdct_bitreverse,356,
+0x6afe00,_mdct_backward,617,"void mdct_backward(mdct_lookup *init, DATA_TYPE *in, DATA_TYPE *out);"
+0x6b0070,_mdct_forward,727,"void mdct_forward(mdct_lookup *init, DATA_TYPE *in, DATA_TYPE *out);"
+0x6b0350,_vorbis_bitrate_init,242,"void vorbis_bitrate_init(vorbis_info *vi,bitrate_manager_state *bs);"
+0x6b0450,_vorbis_bitrate_clear,18,void vorbis_bitrate_clear(bitrate_manager_state *bs);
+0x6b0470,_vorbis_bitrate_managed,29,int vorbis_bitrate_managed(vorbis_block *vb);
+0x6b0490,_vorbis_bitrate_addblock,1144,int vorbis_bitrate_addblock(vorbis_block *vb);
+0x6b0910,_vorbis_bitrate_flushpacket,152,"int vorbis_bitrate_flushpacket(vorbis_dsp_state *vd, ogg_packet *op);"
+0x6b09b0,_VorbisEnvelopeTodbPc,51,
+0x6b09f0,__ve_envelope_init,446,"void _ve_envelope_init(envelope_lookup *e,vorbis_info *vi);"
+0x6b0bb0,__ve_envelope_clear,104,void _ve_envelope_clear(envelope_lookup *e);
+0x6b0c20,__ve_amp,1556,
+0x6b1240,__ve_envelope_search,533,long _ve_envelope_search(vorbis_dsp_state *v);
+0x6b1460,__ve_envelope_mark,182,int _ve_envelope_mark(vorbis_dsp_state *v);
+0x6b1520,__ve_envelope_shift,96,"void _ve_envelope_shift(envelope_lookup *e,long shift);"
+0x6b1580,_vorbis_lpc_from_data,771,"float vorbis_lpc_from_data(float *data,float *lpc,int n,int m);"
+0x6b1890,_vorbis_lpc_predict,291,"void vorbis_lpc_predict(float *coeff,float *prime,int m, float *data,long n);"
+0x6b19c0,__vorbis_window_get,12,float *_vorbis_window_get(int n);
+0x6b19d0,__vorbis_apply_window,513,"void _vorbis_apply_window(float *d,int *winno,long *blocksizes, int lW,int W,int nW);"
+0x6b1be0,_mapping0_free_info,33,
+0x6b1c10,_VorbisMapping0IlogPc,24,
+0x6b1c30,_mapping0_pack,372,
+0x6b1db0,_mapping0_unpack,518,
+0x6b1fc0,_VorbisMapping0TodbPc,51,
+0x6b2000,_mapping0_forward,2883,
+0x6b2b50,_mapping0_inverse,1204,
+0x6b3010,_res0_free_info,33,void res0_free_info(vorbis_info_residue *i);
+0x6b3040,_res0_free_look,121,void res0_free_look(vorbis_look_residue *i);
+0x6b30c0,_VorbisRes0IlogPc,14,
+0x6b30d0,_icount,18,
+0x6b30f0,_res0_pack,252,"void res0_pack(vorbis_info_residue *vr,oggpack_buffer *opb);"
+0x6b31f0,_res0_unpack,329,"vorbis_info_residue *res0_unpack(vorbis_info *vi,oggpack_buffer *opb);"
+0x6b3340,_res0_look,482,"vorbis_look_residue *res0_look(vorbis_dsp_state *vd, vorbis_info_residue *vr);"
+0x6b3530,_local_book_besterror,953,
+0x6b38f0,__encodepart,97,
+0x6b3960,__01class,492,
+0x6b3b50,__2class,728,
+0x6b3e30,__01forward,590,
+0x6b4080,__01inverse,490,
+0x6b4270,_res0_inverse,86,"int res0_inverse(vorbis_block *vb,vorbis_look_residue *vl, float **in,int *nonzero,int ch);"
+0x6b42d0,_res1_forward,540,"int res1_forward(oggpack_buffer *opb,vorbis_block *vb,vorbis_look_residue *vl, float **in,float **out,int *nonzero,int ch, long **partword);"
+0x6b44f0,_res1_class,85,"long **res1_class(vorbis_block *vb,vorbis_look_residue *vl, float **in,int *nonzero,int ch);"
+0x6b4550,_res1_inverse,86,"int res1_inverse(vorbis_block *vb,vorbis_look_residue *vl, float **in,int *nonzero,int ch);"
+0x6b45b0,_res2_class,65,"long **res2_class(vorbis_block *vb,vorbis_look_residue *vl, float **in,int *nonzero,int ch);"
+0x6b4600,_res2_forward,612,"int res2_forward(oggpack_buffer *opb, vorbis_block *vb,vorbis_look_residue *vl, float **in,float **out,int *nonzero,int ch, long **partword);"
+0x6b4870,_res2_inverse,437,"int res2_inverse(vorbis_block *vb,vorbis_look_residue *vl, float **in,int *nonzero,int ch);"
+0x6b4a30,_floor1_free_info,33,
+0x6b4a60,_floor1_free_look,33,
+0x6b4a90,_VorbisFloor1IlogPc,14,
+0x6b4aa0,_VorbisFloor1Ilog2Pc,24,
+0x6b4ac0,_floor1_pack,490,
+0x6b4cb0,_floor1_unpack,573,
+0x6b4ef0,_icomp,19,
+0x6b4f10,_floor1_look,556,
+0x6b5140,_render_point,67,
+0x6b5190,_vorbis_dBquant,45,
+0x6b51c0,_render_line,385,
+0x6b5350,_render_line0,134,
+0x6b53e0,_accumulate_fit,413,
+0x6b5580,_fit_line,478,
+0x6b5760,_inspect_error,647,
+0x6b59f0,_post_Y,23,
+0x6b5a10,_floor1_fit,1215,"int *floor1_fit(vorbis_block *vb,vorbis_look_floor1 *look, const float *logmdct, const float *logmask);"
+0x6b5ed0,_floor1_interpolate_fit,163,"int *floor1_interpolate_fit(vorbis_block *vb,vorbis_look_floor1 *look, int *A,int *B, int del);"
+0x6b5f80,_floor1_encode,1444,"int floor1_encode(oggpack_buffer *opb,vorbis_block *vb, vorbis_look_floor1 *look, int *post,int *ilogmask);"
+0x6b6530,_floor1_inverse1,757,
+0x6b6830,_floor1_inverse2,371,
+0x6b69b0,_floor0_free_info,30,
+0x6b69d0,_floor0_free_look,101,
+0x6b6a40,_floor0_unpack,201,
+0x6b6b10,_floor0_map_lazy_init,395,
+0x6b6ca0,_floor0_look,48,
+0x6b6cd0,_floor0_inverse1,304,
+0x6b6e00,_floor0_inverse2,127,
+0x6b6e80,_VorbisLspVorbisFtoiPc,13,
+0x6b6e90,_VorbisLspVorbisFpuSetroundPc,1,
+0x6b6ea0,_VorbisLspVorbisFpuRestorePc,1,
+0x6b6eb0,_vorbis_coslook,77,float vorbis_coslook(float a);
+0x6b6f00,_vorbis_invsqlook,83,float vorbis_invsqlook(float a);
+0x6b6f60,_vorbis_invsq2explook,12,float vorbis_invsq2explook(int a);
+0x6b6f70,_vorbis_fromdBlook,106,float vorbis_fromdBlook(float a);
+0x6b6fe0,_vorbis_lsp_to_curve,640,"void vorbis_lsp_to_curve(float *curve,int *map,int n,int ln, float *lsp,int m, float amp,float ampoffset);"
+0x6b7260,_cheby,206,
+0x6b7330,_comp,63,
+0x6b7370,_Laguerre_With_Deflation,727,
+0x6b7650,_Newton_Raphson,452,
+0x6b7820,_vorbis_lpc_to_lsp,1044,"int vorbis_lpc_to_lsp(float *lpc,float *lsp,int m);"
 0x006d33d0 , _NuKeyboardPlatformStartup_candidate                           , 59    , i32 __cdecl (void)
 0x006d3430 , _StartupParseArgument                                          , 3     , "i32 __cdecl (i32, char **)"
 0x006d3440 , _StartupOpenDats                                               , 116   , "void __cdecl (const char **, i32, VARIPTR *)"
@@ -3302,6 +3588,7 @@ address    , symbol                                                         , si
 0x006e69ef , _sprintf                                                       , 123   , "i32 __cdecl (char *, const char *, ...)"
 0x006e6b90 , __ftol2_sse                                                    , 28    ,
 0x6e6bc6,__ftol2,117,
+0x6e6c40,_ceil,,double __cdecl ceil(double value)
 0x006e6d60 , __chkstk                                                       , 43    , MSVC x86 stack probe (EAX frame size; adjusts ESP)
 0x006e6d90 , _memcpy                                                        ,       , "void *__cdecl (void *, const void *, size_t)"
 0x006e7570 , _malloc                                                        ,       , void *__cdecl (size_t)
@@ -3314,17 +3601,35 @@ address    , symbol                                                         , si
 0x006e8380,__alldiv,170,"i64 compiler helper (i64, i64); callee stack cleanup 16; supplied pinned CRT"
 0x006e8430 , __allmul                                                       , 52    , "i64 __cdecl (i64, i64)"
 0x6e85b0,??3@YAXPAX@Z,,Genuine pinned CRT operator delete(void*) selector; no newsourcebytecredit
+0x6e8680,_fclose,,int __cdecl fclose(FILE *stream)
+0x6e89b3,_fread,,"size_t __cdecl fread(void *buffer, size_t size, size_t count, FILE *stream)"
+0x6e8a55,_fseek,,"int __cdecl fseek(FILE *stream, long offset, int origin)"
+0x6e8b9e,_fopen,,"FILE *__cdecl fopen(const char *filename, const char *mode)"
 0x006e8e11 , _srand                                                         , 13    , void __cdecl (unsigned int)
 0x006e8e1e,_rand,34,i32 __cdecl (void)
 0x006e8e80 , __CIsin                                                        , 79    , f64 (x87 ST0 -> ST0)
+0x6e8fac,__CIexp,,
+0x6e9040,__CIlog,,
 0x6e92e0,__CIpow,,CRT x87 double exponent/base inputs
 0x006e9530 , __CIsqrt                                                       , 20    , f32 __cdecl (f64)
 0x6e96b0,_qsort,679,"void __cdecl (void *, size_t, size_t, int (__cdecl *)(const void *, const void *))"
+0x6eacb6,_ftell,,long __cdecl ftell(FILE *stream)
+0x6ead5f,__errno,,int *__cdecl _errno(void)
+0x6eae30,__alloca_probe_16,,
 0x6eaf7a,_calloc,,"void *__cdecl (size_t, size_t); supplied pinned static CRT"
+0x6eafc0,_floor,,double __cdecl floor(double value)
 0x6eb0f0,_memmove,,"void *__cdecl (void *, const void *, size_t); supplied pinned static CRT"
 0x6eb460,__allshr,,"i64 compiler helper (i64 EDX:EAX, i8 shift CL); supplied pinned static CRT"
 0x6eb490,_memchr,,"void *__cdecl (const void *, i32, size_t); supplied pinned static CRT"
+0x6eb6f0,_toupper,,int __cdecl toupper(int value)
+0x6eb717,_fprintf,,"int __cdecl fprintf(FILE *stream, const char *format, ...)"
+0x6eb907,_perror,,void __cdecl perror(const char *message)
+0x6eb9e0,__CIatan,,
+0x6ebaba,_ldexp,,"double __cdecl ldexp(double value, int exponent)"
 0x6ebcb0,__CIcos,,f64 compiler helper (f64 ST0); supplied pinned static CRT
+0x6ec14b,_exit,,void __cdecl exit(int status)
+0x6ec1d7,_frexp,,"double __cdecl frexp(double value, int *exponent)"
+0x6ec300,__CIacos,,
 0x006f05ae , _saga_thunk_KERNEL32_dll_GetCurrentThreadId_006f05ae@0         , 6     , DWORD __stdcall (void)
 0x006f05b4 , _saga_thunk_KERNEL32_dll_GetCurrentThread_006f05b4@0           , 6     , HANDLE __stdcall (void)
 0x007157c8 , _D3DXMatrixMultiply@12                                         , 6     , "D3DXMATRIX * __stdcall (D3DXMATRIX *, const D3DXMATRIX *, const D3DXMATRIX *)"
@@ -4299,6 +4604,7 @@ address    , symbol                                                         , si
 0x7583f0,_AITransferLiteral7583f0,8,const char[8]
 0x7583f8,_AITransferLiteral7583f8,8,const char[8]
 0x758430,_AITransferLiteral758430,5,const char[5]
+0x758460,??_C@_01NEMOKFLO@?$DN?$AA@,,
 0x00758464 , _AIScriptParamPrefix                                           , 6     , const char[6]
 0x75848c,??_C@_0BB@PGCHANHM@ForceLightningLp?$AA@,17,const char[17]
 0x007584a8 , _AIExpressionMaxName                                           , 4     , const char [4]
@@ -4326,6 +4632,7 @@ address    , symbol                                                         , si
 0x758774   , _PCContextName_Jump                                            , 5     , const char [5]
 0x75877c,??_C@_0O@JLLKHNHH@Char_Icon_App?$AA@,14,const char[14]
 0x75878c,??_C@_0M@HBOGFPCF@StatusAward?$AA@,12,const char[12]
+0x7587a8,__real@bfe0000000000000,,
 0x7587b8,__real@409c700000000000,8,const f64
 0x7587c0,??_C@_0L@FMEHDMAG@PickupCoin?$AA@,11,const char[11]
 0x7587c0,_PickupCoinSfx_PC,11,const char[11]
@@ -4423,10 +4730,13 @@ address    , symbol                                                         , si
 0x759770,??_C@_01MMEEDKFM@X?$AA@,2,const char[2]
 0x759770,_TextInputKeyNameTextPc759770,,char[2]
 0x7597a4,__real@3ba3d70a,4,const f32
+0x7598d0,__real@c479c000,,
+0x7598d4,__real@4479c000,,
 0x7598d8   , _PCContextName_Ledge                                           , 6     , const char [6]
 0x007598e0 , __real@47c35000                                                , 4     , const f32
 0x007598e8 , __real@c000000000000000                                        , 8     , const f64
 0x7598f0,__real@44480000,4,compiler f32 literal
+0x759920,__real@4001eb8520000000,,
 0x75992c,__real@3ea66666,4,const f32
 0x00759950 , __real@3efae147                                                , 4     , f32
 0x00759954 , __real@3fb851ec                                                , 4     , f32
@@ -4537,6 +4847,7 @@ address    , symbol                                                         , si
 0x75a204   , ??_C@_01KICIPPFI@?2?$AA@                                       , 2     , const char[2]
 0x0075a204,_WorldPathSeparator,2,const char[2]
 0x0075a208 , _AreaResidentsDirectory                                        , 8     , const char[8]
+0x75a210,__real@4040000000000000,,
 0x0075a2b0 , __real@45000000                                                , 4     , const f32
 0x0075ac2c , __real@44000000                                                , 4     , const f32
 0x0075ac30,__real@3f91eb85,4,const f32
@@ -5180,6 +5491,7 @@ address    , symbol                                                         , si
 0x0075e9e8 , _NuTime_LowScale                                               , 8     , const f64
 0x0075e9f0 , _NuTime_MicroScale                                             , 8     , const f64
 0x0075e9f8 , _NuTime_ScanlineScale                                          , 8     , const f64
+0x75ea00,__real@405fc00000000000,,
 0x75ea44,??_C@_09KKLHMBCK@Bad?5table?$AA@,10,const char[10]
 0x75ea54,_NuFileExt_at3_PC,5,const char[5]
 0x75ea5c,_NuFileExt_psc_PC,5,const char[5]
@@ -5306,6 +5618,7 @@ address    , symbol                                                         , si
 0x00760070 , _AIActionIncrementName                                         , 5     , const char[5]
 0x00760078 , _AIActionStateName                                             , 6     , const char[6]
 0x760084,__real@3727c5ac,4,const f32
+0x760098,__real@38d1b717,,
 0x007603f8 , ??_C@_07DKPOBDJL@OnMacro?$AA@                                  , 8     , const char[8]
 0x00760410 , ??_C@_02NJNGHICB@IF?$AA@                                       , 3     , const char[3]
 0x00760414 , ??_C@_07MBODAEHJ@DoMacro?$AA@                                  , 8     , const char[8]
@@ -5404,6 +5717,7 @@ address    , symbol                                                         , si
 0x7614f4   , ??_C@_08PEBNBIBF@sock_end?$AA@                                 , 9     , const char[]
 0x761500   , ??_C@_0L@PAPOBEAE@sock_start?$AA@                              , 11    , const char[]
 0x76150c   , ??_C@_05LBOKJHLG@socks?$AA@                                    , 6     , const char[]
+0x761548,??_C@_02JDPG@rb?$AA@,,
 0x761584,__real@cb189680,4,const f32
 0x761588,__real@4b189680,4,const f32
 0x76158c,__real@2d2febff,4,const f32
@@ -5445,6 +5759,11 @@ address    , symbol                                                         , si
 0x007618a4,_WorldObjectAnimFormat,7,const char[7]
 0x7618e8,_WorldGrassFormat,7,const char[7]
 0x7618f0,_WorldBridgeFormat,7,const char[7]
+0x761a04,??_C@_0L@GBHGOCDB@BlowUpSwap?$AA@,11,const char [11]
+0x761a10,??_C@_0N@IGFHPGDK@BlowUpShadow?$AA@,13,const char [13]
+0x761a20,??_C@_0O@IHBIMBCI@BlowUpEmitObj?$AA@,14,const char [14]
+0x761a30,??_C@_0M@CLOJKFHO@BlowUpDecal?$AA@,12,const char [12]
+0x761a3c,??_C@_06GGPDGGOE@BlowUp?$AA@,7,const char [7]
 0x761a90   , ??_C@_09CKCBMNI@orientate?$AA@                                 , 10    , const char[10]
 0x761b20,__real@3f789374c0000000,8,const f64
 0x00761b28 , _AreaConfigKeyword_area_start                                  , 11    , const char[11]
@@ -5996,6 +6315,7 @@ address    , symbol                                                         , si
 0x76e0f0,_TerrainBoundsMaximumPc,4,const f32
 0x76e0f4,_TerrainSourcePathPc,53,const char[53]
 0x0076e130 , _TerrainSkinSampleIndexScalePc                                ,       ,
+0x76e130,__real@c020000000000000,,
 0x0076e138 , _TerrainSkinBoundsMinPc                                       ,       ,
 0x0076e13c , _TerrainSkinBoundsMaxPc                                       ,       ,
 0x0076e148 , _TerrainCastLowerSentinel                                      ,       ,
@@ -6075,10 +6395,59 @@ address    , symbol                                                         , si
 0x76ef84,??_7WavReader@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x76efa8,??_C@_04PJOLNDGD@data?$AA@,5,const char[5]
 0x76efb0,??_C@_04CAJPEBPP@fmt?5?$AA@,5,const char[5]
+0x76eff8,__real@c060600000000000,,
+0x76f000,??_C@_04CBBONHGF@pcmR?$AA@,,
+0x76f008,??_C@_04PFFPOILK@pcmL?$AA@,,
 0x76f010,_crc_lookup,,const ogg_uint32_t[256]
 0x76f410,??_C@_04JJIBNLPC@OggS?$AA@,5,const char[5]
+0x76f418,??_C@_06EFKACOKC@vorbis?$AA@,,
+0x76f420,??_C@_0BO@DBKHJHOI@Xiph?4Org?5libVorbis?5I?520070622?$AA@,,
+0x76f440,__real@c61c3c00,,
+0x76f448,__real@4087e4ee00000000,,
+0x76f450,__real@3ea8151820000000,,
+0x76f458,??_C@_03PPOCCAPH@?$CFf?6?$AA@,,
+0x76f45c,__real@c30c0000,,
+0x76f460,??_C@_03JAIJOMNP@?$CFf?5?$AA@,,
+0x76f468,__real@40bf400000000000,,
+0x76f470,__real@402a333340000000,,
+0x76f478,__real@3f483f91e0000000,,
+0x76f480,__real@3e53dd3dc0000000,,
+0x76f488,__real@40af400000000000,,
+0x76f490,??_C@_0BO@HBOMAJHO@failed?5to?5open?5data?5dump?5file?$AA@,,
+0x76f4b0,??_C@_01NOFIACDB@w?$AA@,,
+0x76f4b4,??_C@_07FEPGICBA@?$CFs_?$CFd?4m?$AA@,,
 0x76f4c0,_mask,,const unsigned long[33]
 0x76f544,_mask8B,,const unsigned int[9]
+0x76f568,__real@c069000000000000,,
+0x76f570,__real@3fff000000000000,,
+0x76f578,__real@4000800000000000,,
+0x76f580,__real@3ff7154760000000,,
+0x76f588,__real@3fe62e42a0000000,,
+0x76f590,__real@4017dcf680000000,,
+0x76f598,__real@408f380000000000,,
+0x76f5a0,__real@3fa33333,,
+0x76f5a4,__real@3f70a3d7,,
+0x76f5a8,__real@430c0000,,
+0x76f5b0,__real@3f33a92a30553261,,
+0x76f5b8,__real@3f747ae147ae147b,,
+0x76f5c0,__real@c031333340000000,,
+0x76f5c8,__real@3fffff9720000000,,
+0x76f5d0,__real@3fd3333333333333,,
+0x76f5d8,__real@3fd87de2a0000000,,
+0x76f5e0,__real@3fed906bc0000000,,
+0x76f5e8,__real@47c34f80,,
+0x76f5ec,__real@c7c34f80,,
+0x76f5f0,__real@3fc999999999999a,,
+0x76f5f8,__real@3fe6666666666666,,
+0x76f600,__real@3fd6147ae147ae14,,
+0x76f608,__real@408ffc0000000000,,
+0x76f610,__real@401d41d420000000,,
+0x76f618,__real@40445f3071e2c65e,,
+0x76f620,__real@3f3504f3,,
+0x76f628,__real@3da5fd7fe1796495,,
+0x76f630,__real@beb0c6f7a0b5ed8d,,
+0x76f638,__real@3eb0c6f7a0b5ed8d,,
+0x76f640,__real@3bc79ca10c924223,,
 0x76fde8,_TextInputKeyNameTextPc76fde8,,char[7]
 0x7719bc,_TextInputKeyNameTextPc7719bc,,char[12]
 0x7719c8,_TextInputKeyNameTextPc7719c8,,char[5]
@@ -6694,6 +7063,7 @@ address    , symbol                                                         , si
 0x008024f4 , _v100                                                          , 12    , NUVEC
 0x00802500 , _v010                                                          , 12    , NUVEC
 0x0080250c , _v001                                                          , 12    , NUVEC
+0x802518,_GizmoBlowupUnitScalePc,,NUVEC
 0x00802524 , _LAYER_HOVERIGNORE                                             , 4     , u32
 0x00802538 , _GAMERAND                                                      , 4     , i32
 0x0080253c , _qseed                                                         , 4     , i32
@@ -7060,6 +7430,20 @@ address    , symbol                                                         , si
 0x00810dd4 , _PCSoundVolumeMultiplier                                       , 4     , i32
 0x810ee0,??_R0?AVWavReader@@@8,24,MSVC RTTI type descriptor for WavReader
 0x00811000 , ??_R0?AVOggReader@@@8                                          , 24    ,
+0x811018,_OV_CALLBACKS_DEFAULT,,
+0x811028,_OV_CALLBACKS_NOCLOSE,,
+0x811038,_OV_CALLBACKS_STREAMONLY,,
+0x811048,_OV_CALLBACKS_STREAMONLY_NOCLOSE,,
+0x811058,_analysis_noisy,,
+0x811060,_ATH,,
+0x8111c0,_tonemasks,,
+0x816b00,_stereo_threshholds,,
+0x816b48,_stereo_threshholds_limited,,
+0x816b90,_FLOOR1_fromdB_INV_LOOKUP,,
+0x816f90,_hypot_lookup,,
+0x817010,__floor_P,,
+0x817018,__residue_P,,
+0x817024,__mapping_P,,
 0x817028,?ntryh@?1??drfti1@@9@9,,int[4]
 0x817038,?tpi@?1??drfti1@@9@9,,float
 0x81703c,?hsqt2@?1??dradf4@@9@9,,float
@@ -7068,6 +7452,27 @@ address    , symbol                                                         , si
 0x817048,?taui@?1??dradb3@@9@9,,float
 0x81704c,?sqrt2@?1??dradb4@@9@9,,float
 0x817050,?tpi@?1??dradbg@@9@9,,float
+0x817058,_vwin64,,
+0x8170d8,_vwin128,,
+0x8171d8,_vwin256,,
+0x8173d8,_vwin512,,
+0x8177d8,_vwin1024,,
+0x817fd8,_vwin2048,,
+0x818fd8,_vwin4096,,
+0x81afd8,_vwin8192,,
+0x81efd8,_vwin,,
+0x81eff8,_mapping0_exportbundle,,
+0x81f00c,_residue0_exportbundle,,
+0x81f02c,_residue1_exportbundle,,
+0x81f04c,_residue2_exportbundle,,
+0x81f070,_FLOOR1_fromdB_LOOKUP,,
+0x81f470,_floor1_exportbundle,,
+0x81f48c,_floor0_exportbundle,,
+0x81f4a8,_COS_LOOKUP,,
+0x81f6b0,_INVSQ_LOOKUP,,
+0x81f738,_INVSQ2EXP_LOOKUP,,
+0x81f840,_FROMdB_LOOKUP,,
+0x81f8d0,_FROMdB2_LOOKUP,,
 0x0081fe6c , ??_R0?AVEdTool@@@8                                             , 21    ,
 0x0081fe84 , ??_R0?AV?$CSListLink@VEdTool@@@@@8                             , 37    ,
 0x0081feac , ??_R0?AVBaseEditor@@@8                                         , 25    ,
@@ -8524,6 +8929,7 @@ address    , symbol                                                         , si
 0x0297397c , _NuSound3Reverb                                                , 1     , u8
 0x2973a14,_PCSoundDrainStartPc,,i32
 0x2973a18,_PCSoundDrainRemainingPc,,i32
+0x2973a28,?seq@?1??floor1_encode@@9@9,,
 0x2974cfc,_PCDevicePrimitiveUPCallCountPc,,u32
 0x02974d14 , _StartupDatList                                                ,       , NUDATHDR *[7]
 0x2974d3c,_PCDeviceHardwareVertexProcessingPC,,i32

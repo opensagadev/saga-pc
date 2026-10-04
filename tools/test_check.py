@@ -332,6 +332,22 @@ class HeaderLayoutTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "optional src/externals.h"):
                 check_module.check_headers()
 
+    def test_reviewed_vorbis_header_catalog_is_scoped(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(check_module, "ROOT", Path(temp)):
+            src = Path(temp) / "src"
+            vendor = src / "audio/vorbis"
+            vendor.mkdir(parents=True)
+            (src / "saga.h").write_text("// shared contract\n")
+            (vendor / "os.h").write_text("// original library-local header\n")
+            check_module.check_headers()
+            (vendor / "unreviewed.h").write_text("// forbidden even within library\n")
+            with self.assertRaisesRegex(ValueError, "reviewed original Vorbis"):
+                check_module.check_headers()
+            (vendor / "unreviewed.h").unlink()
+            (vendor / "lookup.inc").write_text("// original textual table owner\n")
+            self.assertIn("src/audio/vorbis/lookup.inc", check_module.source_files(headers=True))
+            self.assertNotIn("src/audio/vorbis/lookup.inc", check_module.source_files())
+
 
 class ClangChecksTests(unittest.TestCase):
     def setUp(self):
