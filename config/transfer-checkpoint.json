@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 897917,
-    "matched_code_bytes": 81593,
-    "matching_percent": 2.350539258813694,
-    "fuzzy_coverage_percent": 15.065449931074042,
-    "mapped_functions": 3163,
-    "matched_functions": 1301,
-    "objdiff_fuzzy_percent": 64.28082,
-    "objdiff_total_code": 814013,
+    "mapped_code_bytes": 902378,
+    "matched_code_bytes": 81990,
+    "matching_percent": 2.3619760742972407,
+    "fuzzy_coverage_percent": 15.168865105774998,
+    "mapped_functions": 3185,
+    "matched_functions": 1305,
+    "objdiff_fuzzy_percent": 64.360176,
+    "objdiff_total_code": 818587,
     "image_bytes": 40067072,
-    "mapped_bytes": 1539447,
-    "mapping_percent": 3.8421749410588326
+    "mapped_bytes": 1543919,
+    "mapping_percent": 3.853336225816551
   },
   "newly_compared": [
     {
@@ -15730,6 +15730,171 @@
       ],
       "next_connected_wave": "Accepted connected environment loader12/2101 and bridge487, ActionFromQuiet82 and remaining genuine WorldInfo_Init1029 providers; optional typed physical-member tools, then canonical resource/fallback/reverb storage, real Wav/Ogg reader/backend families and retained area loaders.",
       "ongoing_goal": "Continue whole-project source transfer until user stops or pauses; validated direct main pushes authorized."
+    },
+    {
+      "baseline_commit": "86d0cd42a82637d03ee82b0b323cdbed79e14b8f",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 897917,
+        "matched_code_bytes": 81593,
+        "matching_percent": 2.350539258813694,
+        "fuzzy_coverage_percent": 15.065449931074042,
+        "mapped_functions": 3163,
+        "matched_functions": 1301,
+        "objdiff_fuzzy_percent": 64.28082,
+        "objdiff_total_code": 814013,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1539447,
+        "mapping_percent": 3.8421749410588326
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 902378,
+        "matched_code_bytes": 81990,
+        "matching_percent": 2.3619760742972407,
+        "fuzzy_coverage_percent": 15.168865105774998,
+        "mapped_functions": 3185,
+        "matched_functions": 1305,
+        "objdiff_fuzzy_percent": 64.360176,
+        "objdiff_total_code": 818587,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1543919,
+        "mapping_percent": 3.853336225816551
+      },
+      "newly_compared_functions": 24,
+      "new_original_code_bytes": 4574,
+      "new_compared_row_original_bytes_including_aliases": 4574,
+      "new_alias_rows": [],
+      "compared_code_delta": 4574,
+      "baseline_unique_compared_pc_bytes": 813698,
+      "unique_compared_pc_bytes": 818272,
+      "exact_code_added": 397,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "prior_compiled_function_copies_checked": 2961,
+      "prior_compiled_function_copies_identical": 2959,
+      "renamed_owner_copies_with_identical_complete_bodies": [],
+      "user_journal_unchanged": true,
+      "checkpoint": "Environment loaders, world setup and music lookup checkpoint (2026-10-04)",
+      "new_source_functions": 24,
+      "family_bytes": {
+        "environment_serialized_loaders": 2101,
+        "obstacle_reset_and_sfx": 670,
+        "bridge_editor": 487,
+        "world_initialization_providers": 1234,
+        "music_action_lookup": 82
+      },
+      "newly_exact_unique_functions": 4,
+      "newly_exact_unique_function_bytes": 397,
+      "shared_data_definitions_added": 8,
+      "shared_initializer_view_bytes_added": 1057,
+      "data_scope": {
+        "proofs": 1595,
+        "known_extents": 561,
+        "known_unique_bytes": 137634,
+        "unknown_extents": 1034,
+        "unknown_view_bytes": 121779,
+        "previous_proofs_preserved": 1587
+      },
+      "previous_shared_complete_regions_unchanged": 3275,
+      "current_shared_complete_regions": 3283,
+      "prior_exact_data_copies_unchanged": 4318,
+      "additional_complete_exact_copies": 8,
+      "qualified_previous_codegen_changes": [
+        {
+          "symbol": "_NuRndrParticleGroup",
+          "unit": "src/nu2api/nuparticle_runtime.c",
+          "old_bytes": 713,
+          "new_bytes": 717,
+          "old_advisory_percent": 88.419685,
+          "new_advisory_percent": 89.98446,
+          "reason": "Pinned unchanged source and exact baseline headers reproduce baseline; independent full instruction/CFG/x87/named-relocation review accepts current scheduling in initialized finite domains.",
+          "new_source_credit": 0
+        },
+        {
+          "symbol": "_DebReAlloc2",
+          "unit": "src/legoapi/debris_engine.c",
+          "old_bytes": 1458,
+          "new_bytes": 1458,
+          "old_advisory_percent": 36.482307,
+          "new_advisory_percent": 36.482307,
+          "reason": "Pinned unchanged source and exact baseline headers reproduce baseline; independent full instruction/CFG/x87/named-relocation review accepts current scheduling in initialized finite domains.",
+          "new_source_credit": 0
+        }
+      ],
+      "retired_uncompiled_inventory_extent": {
+        "symbol": "_ActionPairTab",
+        "old_unsupported_bytes": 4,
+        "new_owning_extent": null,
+        "source_pointer_view_bytes": 4,
+        "prior_compiled_or_exact_loss": false
+      },
+      "semantic_corrections": [
+        "PC animation serialization stores and clears DWORD flags at20; alias union preserves existing BYTE readers and all shared field offsets. Reverting only two new loader accesses causes10 targeted failures.",
+        "Obstacle loading and postload use the native cached cursor while reloading the mutable count.",
+        "Action table uses signed WORD ids/results,1c stride and sentinel; no fabricated table capacity."
+      ],
+      "verified_checks": {
+        "all_required_checks_passed": true,
+        "tests": 699,
+        "skipped": 3,
+        "test_seconds": 40.874,
+        "llvm": 18,
+        "format_files": 238,
+        "tidy_units": 236,
+        "objects": 236,
+        "function_definitions": 2985,
+        "data_definitions": 5562,
+        "source_only_link": true,
+        "native_bridge_checks": 35,
+        "native_loader_reset_checks": 151,
+        "native_support_checks": 39,
+        "native_action_checks": 11,
+        "native_total_checks": 236,
+        "native_failures": 0,
+        "native_manifests_verified": 4,
+        "accepted_new_complete_bodies_verified": 24,
+        "previous_function_copies_checked": 2961,
+        "previous_function_copies_identical": 2959,
+        "prior_exact_code_and_data_preserved": true,
+        "optional_member_tools_enabled": false,
+        "workspace_test_temp": "Required general suite first failed only temporary storage quota; rerun full unchanged699 suite with workspace TMPDIR.",
+        "limitations": [
+          "Selected valid memoryfile/pool/name/obstacle/bridge/door/light/list/platform/music-sentinel domains; full startup, assets, hardware rendering/playback, registry modes and animated scene success remain unverified.",
+          "Unknown original data allocation extents receive zero allocation credit.",
+          "Canonical physical resource migration and genuine Wav/Ogg reader families remain next-wave research."
+        ],
+        "normal_data_regions": 3283,
+        "scoped_initializer_proofs": 1595,
+        "previous_data_regions_unchanged": 3275,
+        "previous_exact_initializer_copies_unchanged": 4318,
+        "current_exact_initializer_copies": 4326,
+        "new_exact_initializer_copies": 8,
+        "qualified_old_codegen_changes": 2,
+        "old_codegen_qualification": "Valid initialized source memory and occupied x87 stack; finite representable f32 values. Particle FLD order and FXCH differ, but no arithmetic/additional rounding; same four values/tag positions/depth reach dispatch and outgoing arguments. Unmasked signalingNaN, fault/trap order, or full hardware/provider readiness are not asserted.",
+        "data_release_receipt_sha256": "07a758213d40d12249d0175b0f0c7abd9a0f8eb9efbd84a7b225b8b747c6d9a6",
+        "old_codegen_review_sha256": "85f771f9859e19a827918198ad1f33c6ba02770a9bb4853367261feeee028705"
+      },
+      "optional_data_member_tools": {
+        "implemented": true,
+        "enabled": false,
+        "tests_added": 34,
+        "policy": "Named members describe an actual physical COFF parent, never separate link bindings/definitions. Exact member history cannot be silently retired or disabled. Full parent is relocated once using existing official tools.",
+        "resource_activation": "Fresh current168 consumer/1595 initializer proof accepted; production migration held for next wave."
+      },
+      "checkpoint_delay": {
+        "scheduled_utc": "2026-10-04 03:26 UTC",
+        "reason": "Complete independent flags semantics, aggregate normal runtime, quota recovery/full699 rerun and two old scheduling reviews required before safe commit."
+      },
+      "remaining_contracts": [
+        "Selected valid memoryfile/pool/name/obstacle/bridge/door/light/list/platform/music-sentinel domains; full startup, assets, hardware rendering/playback, registry modes and animated scene success remain unverified.",
+        "Unknown original data allocation extents receive zero allocation credit.",
+        "Canonical physical resource migration and genuine Wav/Ogg reader families remain next-wave research.",
+        "Embedded fallback DDS asset-dependent reader closure remains held without copying game assets or fabricating data.",
+        "Global manager/reverb retail alias and physical resource owners await canonical typed member integration."
+      ],
+      "next_connected_wave": "Fresh canonical resource48 physical-member migration plus connected resource966, accepted natural WavReader15/1408, and accepted Players/Door/Episode/shadow6/1728 after real data and native fixtures; broader obstacle/animation CPU families and genuine static Vorbis/Ogg source bank.",
+      "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct main pushes authorized."
     }
   ]
 }

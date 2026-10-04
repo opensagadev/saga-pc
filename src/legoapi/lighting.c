@@ -31,3 +31,32 @@ void __cdecl ResetLights(NUVEC *position, RTL_DATA_PC *packet, void *set) {
     if (position != NULL)
         rtlApplySetScale(set, packet, position, NULL, -1, 1.0f);
 }
+
+typedef struct startup_object_light_pc_s {
+    u8 unknown_000[0x1fc];
+    u32 flags;
+    u8 unknown_200[0xc04];
+    i32 dynamic_light_id;
+    u8 unknown_e08[0x2d0];
+} STARTUP_OBJECT_LIGHT_PC;
+STATIC_ASSERT(sizeof(STARTUP_OBJECT_LIGHT_PC) == sizeof(GAMEOBJECT));
+STATIC_ASSERT(offsetof(STARTUP_OBJECT_LIGHT_PC, flags) == 0x1fc);
+STATIC_ASSERT(offsetof(STARTUP_OBJECT_LIGHT_PC, dynamic_light_id) == 0xe04);
+STATIC_ASSERT(offsetof(NULNKHDR, id) == 0xc);
+i32 __cdecl rtlDynamicAlloc(void);
+i32 __cdecl rtlDynamicSetType(i32 id, i32 type);
+void __cdecl InitGameObjectLights(void) {
+    STARTUP_OBJECT_LIGHT_PC *objects = (STARTUP_OBJECT_LIGHT_PC *)Obj;
+    i32 index;
+    for (index = 0; index < 64; ++index)
+        objects[index].dynamic_light_id = -1;
+    for (index = 0; index < HIGHGAMEOBJECT; ++index) {
+        if ((objects[index].flags & 0x1001) == 0x1001) {
+            objects[index].dynamic_light_id = rtlDynamicAlloc();
+            if (objects[index].dynamic_light_id != -1) {
+                rtlDynamicSetType(objects[index].dynamic_light_id, 2);
+                rtlDynamicEnable(objects[index].dynamic_light_id, 0);
+            }
+        }
+    }
+}

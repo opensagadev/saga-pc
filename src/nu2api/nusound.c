@@ -608,3 +608,22 @@ void __cdecl SetSoundBitsById(const i32 *ids, void(__cdecl *set_bit)(i32)) {
             set_bit(NuSound3GroupSampleIds[NuSound3Groups[group].first_sample + i]);
     }
 }
+
+struct PC_MUSIC_ACTION_PAIR_PC {
+    i16 quiet_id;
+    i16 action_id;
+    u8 unknown_004[0x18];
+};
+STATIC_ASSERT(offsetof(PC_MUSIC_ACTION_PAIR_PC, quiet_id) == 0);
+STATIC_ASSERT(offsetof(PC_MUSIC_ACTION_PAIR_PC, action_id) == 2);
+STATIC_ASSERT(sizeof(PC_MUSIC_ACTION_PAIR_PC) == 0x1c);
+i32 __cdecl ActionFromQuiet(i32 quiet_index) {
+    i32 index;
+    if (quiet_index == -1)
+        return -1;
+    for (index = 0; ActionPairTab[index].quiet_id != -1; ++index) {
+        if (ActionPairTab[index].quiet_id == quiet_index)
+            return ActionPairTab[index].action_id;
+    }
+    return -1;
+}

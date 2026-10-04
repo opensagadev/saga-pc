@@ -1548,3 +1548,25 @@ retail. Current3,330 prior exact-owner rows/4,318 copies are all preserved/exact
 Protected resource WORD4B/fallback scalar12B stay unchanged. Shared queue types
 have no constructor or implicit global initialization. Embedded DDS8320 and
 optional member migration remain ignored research, without fabricated providers.
+
+
+### Environment / startup support / action initializer release (2026-10-04)
+
+Eight physical definitions add1,057 source-view bytes: special error tab3 and
+type-name literal12 with known full extents; name counter4/name table1,024,
+door pointer4/UID counter2, obstacle trigger counter4 and music action pointer4
+with unknown owning extents. Genuine compiler1.75f and promoted1.01f64 literals
+stay in their real source owners. ActionPairTab's prior unsupported inventory4B
+is withdrawn to blank, while its real NULL pointer initializer4B remains. No
+pointee count or allocation credit is invented.
+
+All3,275 prior complete shared regions/raw bytes/symbolic relocations and1,587
+scope proofs remain unchanged. All3,283 current normal regions equal isolated
+VC8 compilation. Scope1,595 contains known561/137,634 unique initializer bytes
+and unknown1,034/121,779 source bytes with zero owning-allocation credit. Every
+4,318 prior actual exact copy is unchanged; eight additional literal copies are
+fully retail-exact. Protected fallback12B and resource WORD4B remain exact.
+Optional member tools are present but disabled. The fresh proposed48B resource
+parent preserves all4 exact member bytes and retires two physical definitions
+honestly; actual source migration remains next-wave work, with parent extent
+blank and no48B credit. User journal edits are excluded from staging.

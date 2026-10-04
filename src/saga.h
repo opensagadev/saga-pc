@@ -2863,6 +2863,9 @@ typedef struct GIZMOBLOWUPTYPE_PC {
     u8 unknown_80[8];
     f32 animation_start_frame;
     f32 animation_end_frame;
+    u8 unknown_90[0x48];
+    char name[32];
+    u8 unknown_f8[8];
 } GIZMOBLOWUPTYPE_PC;
 STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animated_special) == 0x30);
 
@@ -2920,6 +2923,8 @@ STATIC_ASSERT(offsetof(TECHNO_PC, target_mode) == 0x37);
 STATIC_ASSERT(offsetof(TECHNO_PC, controlled_object) == 0x6c);
 STATIC_ASSERT(sizeof(TECHNO_PC) == 0x70);
 typedef struct cutsys_pc_s CUTSYS_PC;
+typedef struct gameanimsys_s GAMEANIMSYS;
+
 // Access prefix only; the original allocation extent remains unknown.
 typedef struct area_globals_pc_s {
     i32 field_00;
@@ -2963,7 +2968,8 @@ typedef struct WORLDINFO_s {
     u8 unknown_0144[0x18];
     SCENEPROGRESS scene_progress;
     void *terrain;
-    u32 unknown_2960[0xa];
+    GAMEANIMSYS *game_anim_sys;
+    u32 unknown_2964[9];
     SOCKSYS_PC *sock_sys;
     APIOBJECTSYS_PC *object_sys;
     u8 room_visibility_flag;
@@ -2989,7 +2995,9 @@ typedef struct WORLDINFO_s {
     u8 unknown_2aec[0x1ba4];
     TUBE_PC *tubes;
     i32 tube_count;
-    u8 unknown_4698[0x78];
+    u8 unknown_4698[0xc];
+    void *giz_obstacle_sys;
+    u8 unknown_46a8[0x68];
     LEVELSFXENTRY_PC level_sfx[64];
     i32 level_sfx_count;
     BOLTTYPE_PC bolt_types[8];
@@ -2998,9 +3006,9 @@ typedef struct WORLDINFO_s {
     i32 techno_count;
     u8 unknown_5080[0x38];
     struct PICKUP_RUNTIME_SYS_PC *pickup_runtime_sys;
-    u8 unknown_50bc[4];
+    i32 gizmo_blowup_type_count;
     i32 gizmo_blowup_count;
-    u8 unknown_50c4[4];
+    GIZMOBLOWUPTYPE_PC *gizmo_blowup_types;
     GIZMOBLOWUP_PC *gizmo_blowups;
     i32 blowup_target_candidate_count;
     GIZMOBLOWUP_PC **blowup_target_candidates;
@@ -5768,7 +5776,6 @@ STATIC_ASSERT(offsetof(NUBRIDGE_PC, field_b08) == 0xb08);
 typedef struct gameanimobj_s GAMEANIMOBJ;
 typedef struct gameanimobjpool_s GAMEANIMOBJPOOL;
 typedef struct gameanimset_s GAMEANIMSET;
-typedef struct gameanimsys_s GAMEANIMSYS;
 
 /* This is a verified field view, not a declaration of full retail owner extent. */
 typedef struct nuinstanim_time_view_s {
@@ -5797,8 +5804,13 @@ struct gameanimobj_s {
     void *animation;
     f32 start_frame;
     f32 end_frame;
-    u8 flags;
-    u8 reserved_21[3];
+    union {
+        struct {
+            u8 flags;
+            u8 reserved_21[3];
+        };
+        u32 serialized_flags;
+    };
     void *object_data;
 };
 STATIC_ASSERT(sizeof(GAMEANIMOBJ) == 0x28);
@@ -5809,6 +5821,8 @@ STATIC_ASSERT(offsetof(GAMEANIMOBJ, animation) == 0x14);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, start_frame) == 0x18);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, end_frame) == 0x1c);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, flags) == 0x20);
+STATIC_ASSERT(offsetof(GAMEANIMOBJ, serialized_flags) == 0x20);
+STATIC_ASSERT(offsetof(GAMEANIMOBJ, reserved_21) == 0x21);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, object_data) == 0x24);
 
 struct gameanimobjpool_s {
@@ -6159,19 +6173,30 @@ extern FADEINFO_PC FadeSys;
 typedef struct gizobstacle_s {
     char name[16];
     NUVEC position;
-    u8 opaque_1c_34[0x18];
+    NUVEC secondary_position;
+    NUVEC evaluated_position;
     GAMEANIMSET *anim_set;
-    u8 opaque_38_44[0xc];
+    u8 opaque_38[4];
+    f32 auto_return_delay;
+    u8 opaque_40[4];
     f32 trigger_radius;
     f32 animation_speed;
     f32 forward_speed_factor;
     f32 backward_speed_factor;
-    u8 opaque_54_8c[0x38];
+    f32 reflection_alpha;
+    f32 evaluated_radius;
+    NUVEC trigger_box_half_extents;
+    u32 config_flags, exclude_flags;
+    NUVEC pickup_offset;
+    f32 pickup_scatter_height;
+    i16 pickup_direction_x, pickup_direction_y, trigger_box_yaw;
+    i16 room_id;
+    i16 blowup_type, pickup_count;
     i16 start_sfx_id;
     i16 stop_sfx_id;
     u8 playback_state;
     u8 mode;
-    u8 unknown_092[2];
+    u8 trigger_mode, unknown_093;
     u32 progress_flags;
     i32 proximity_output;
     u32 runtime_flags;
@@ -6180,6 +6205,23 @@ STATIC_ASSERT(sizeof(GIZOBSTACLE) == 0xa0);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, name) == 0);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, position) == 0x10);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, stop_sfx_id) == 0x8e);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, secondary_position) == 0x1c);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, auto_return_delay) == 0x3c);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, reflection_alpha) == 0x54);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, trigger_box_half_extents) == 0x5c);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, config_flags) == 0x68);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, exclude_flags) == 0x6c);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, pickup_offset) == 0x70);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, pickup_scatter_height) == 0x7c);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, pickup_direction_x) == 0x80);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, pickup_direction_y) == 0x82);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, trigger_box_yaw) == 0x84);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, blowup_type) == 0x88);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, pickup_count) == 0x8a);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, trigger_mode) == 0x92);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, evaluated_position) == 0x28);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, evaluated_radius) == 0x58);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, room_id) == 0x86);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, progress_flags) == 0x94);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, proximity_output) == 0x98);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, anim_set) == 0x34);
@@ -12885,6 +12927,59 @@ void __cdecl PCStereoUnknownToken(void);
     void __cdecl edppDeleteEffect(i32);
     NUMTL *__cdecl CreateCopyMat(NUMTL *, i32, i32, i32, i32);
     NUMTL *__cdecl CreateAlphaBlendTexture(VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);
+    /* Original gizmo.c private error caller group; existing local CONFIG_SYSTEM view retained. */
+    extern const char GizmoSpecialErrorTabPc[3];
+    i32 __cdecl Gizmo_FindNuSpecial(NUGSCN *, NUSPECIALHANDLE *, char *, i32, void *, char *, char *);
+    i32 __cdecl GizmoFileReadName(char *);
+    GAMEANIMOBJ *__cdecl GameAnimSet_AddObjectByName(GAMEANIMSET *, NUGSCN *, char *, f32, f32, i32, void *, char *,
+                                                     char *);
+    i32 __cdecl GizmoFileReadGameAnimSet(GAMEANIMSET *, void *, void(__cdecl *)(GAMEANIMOBJ *, u8), u8, char *, char *);
+
+    /* WORLDINFO existing unknown_2960 first DWORD -> GAMEANIMSYS *game_anim_sys @2960; retain next9 unknown DWORDs.
+     * Existing unknown_4698 split at46a4 -> void *giz_obstacle_sys; retain preceding0xc/following0x68 opaque.
+     * Existing unknown_50bc -> i32 gizmo_blowup_type_count; unknown_50c4 -> GIZMOBLOWUPTYPE_PC *gizmo_blowup_types.
+     * Existing GIZMOBLOWUPTYPE_PC tail90..d8 opaque, char name[32]@d8, tailf8..100 opaque, sizeof100.
+     * Preserve all previously asserted offsets. Authoritative actual reader/store spans in full ASM. */
+    STATIC_ASSERT(offsetof(WORLDINFO, game_anim_sys) == 0x2960);
+    STATIC_ASSERT(offsetof(WORLDINFO, giz_obstacle_sys) == 0x46a4);
+    STATIC_ASSERT(offsetof(WORLDINFO, gizmo_blowup_type_count) == 0x50bc);
+    STATIC_ASSERT(offsetof(WORLDINFO, gizmo_blowup_types) == 0x50c4);
+    STATIC_ASSERT(sizeof(GIZMOBLOWUPTYPE_PC) == 0x100);
+    STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, name) == 0xd8);
+    /* Selected obstacle field promotion: secondary_position1c, auto_return_delay3c,
+     * reflection_alpha54, trigger_box_half_extents5c, config_flags68, exclude_flags6c,
+     * pickup_offset70, pickup_scatter_height7c, pickup_direction_x80/y82,
+     * trigger_box_yaw84, blowup_type88, pickup_count8a, trigger_mode92.
+     * Others remain opaque; production-local SYSTEM14/PROGRESS70 retained.
+     * Exact full local source cohort is obstacle-load-local.hfrag, typed GIZOBSTACLE_RUNTIME_PC used only in scratch.
+     */
+    extern const char GizObstacleTypeNamePc[12];
+    extern i32 GizmoBlowupNameCountPc;
+    extern char GizmoBlowupNameTablePc[32][32];
+    void *__cdecl GizObstacles_ReserveBufferSpace(void *);
+    i32 __cdecl GizObstacles_Load(void *, void *);
+    void __cdecl GizObstacles_PostLoad(void *, void *);
+    void __cdecl GizObstacles_Reset(void *, void *, void *);
+    i32 __cdecl IsSfxLooping(i32);
+    extern i32 GizObstacleTriggerCountPc;
+    typedef struct PC_MUSIC_ACTION_PAIR_PC PC_MUSIC_ACTION_PAIR_PC;
+    extern PC_MUSIC_ACTION_PAIR_PC *ActionPairTab;
+    i32 __cdecl ActionFromQuiet(i32);
+    void __cdecl GizmoBlowupResetNameTable(void);
+    i32 __cdecl GizmoBlowupGetNameTableId(char *);
+    i32 __cdecl GizmoBlowupGetTypeFromNameTableId(WORLDINFO *, i32);
+
+    void __cdecl edbriBridgeUpdate(i32 index, NUGSCN *scene);
+    void __cdecl edbriStartPage(i32 page);
+    void __cdecl Doors_Init(WORLDINFO *);
+    void __cdecl LevObj_FixUpPlatIDs(WORLDINFO *);
+    void __cdecl InitGameObjectLights(void);
+    i32 __cdecl rtlDynamicAlloc(void);
+    i32 __cdecl rtlDynamicSetType(i32, i32);
+    i32 __cdecl FindPlatInst(i32);
+    extern void *LastDoorPointerPc;
+    extern u16 RtlUidCounterPc;
+
     void __cdecl GizObstacles_AddLevelSfx(void *, void *, i32 *, i32 *, i32);
     void __cdecl GizmoObstacle_Activate(void *, i32);
     void __cdecl GizmoObstacle_SetVisibility(void *, i32);

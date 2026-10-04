@@ -232,3 +232,176 @@ void __cdecl GizObstacles_AddLevelSfx(void *world, void *ptr, i32 *ids, i32 *cou
             AddLevelSfxFromId(obstacle->stop_sfx_id, ids, count, maximum);
     }
 }
+
+static void __cdecl Gizobstacle_ReadAnimSetData(GAMEANIMOBJ *object, u8 version) {
+    u16 fallback_data = 0;
+    u16 *data;
+    if (!object)
+        return;
+    data = (u16 *)object->object_data;
+    if (!data)
+        data = &fallback_data;
+    if (version > 7)
+        *data = (u16)EdFileReadShort();
+    else if (object->flags & 2)
+        *data |= 1;
+}
+void *__cdecl GizObstacles_ReserveBufferSpace(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    GIZOBSTACLE_SYSTEM_PC *system;
+    i32 i;
+    system = (GIZOBSTACLE_SYSTEM_PC *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
+    system->capacity = world->current_level->max_obstacles;
+    system->obstacles = (GIZOBSTACLE *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * 0xa0);
+    system->active_gizmos = (GIZMO_PC **)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
+                                                         system->capacity * sizeof(*system->active_gizmos));
+    system->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 4,
+                                                     (u16)world->current_level->max_obstacle_objects);
+    for (i = 0; i < system->capacity; ++i)
+        system->obstacles[i].anim_set =
+            GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, system->anim_pool, world->game_anim_sys);
+    world->giz_obstacle_sys = system;
+    return system;
+}
+i32 __cdecl GizObstacles_Load(void *world_ptr, void *data) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
+    u8 version = (u8)EdFileReadChar();
+    i32 index;
+    GIZOBSTACLE *obstacle;
+    system->count = (u16)EdFileReadShort();
+    obstacle = (GIZOBSTACLE *)system->obstacles;
+    for (index = 0; index < system->count; ++index, ++obstacle) {
+        EdFileRead(obstacle->name, sizeof(obstacle->name));
+        EdFileReadNuVec(&obstacle->position);
+        if (version > 1)
+            EdFileReadNuVec(&obstacle->secondary_position);
+        else
+            obstacle->secondary_position = obstacle->position;
+        obstacle->auto_return_delay = EdFileReadFloat();
+        obstacle->trigger_radius = EdFileReadFloat();
+        if (version > 2) {
+            EdFileReadNuVec(&obstacle->trigger_box_half_extents);
+            obstacle->trigger_box_yaw = EdFileReadShort();
+        } else
+            obstacle->trigger_box_half_extents.x = obstacle->trigger_box_half_extents.y =
+                obstacle->trigger_box_half_extents.z = .25f;
+        obstacle->config_flags = EdFileReadInt();
+        if (version >= 12)
+            obstacle->exclude_flags = EdFileReadInt();
+        if (version == 6) {
+            EdFileReadShort();
+            EdFileReadChar();
+        }
+        obstacle->playback_state = EdFileReadChar();
+        obstacle->mode = EdFileReadChar();
+        obstacle->trigger_mode = version >= 7 ? (u8)EdFileReadChar() : 0xff;
+        GizmoFileReadGameAnimSet(obstacle->anim_set, world, Gizobstacle_ReadAnimSetData, version,
+                                 (char *)GizObstacleTypeNamePc, obstacle->name);
+        obstacle->forward_speed_factor = version >= 4 ? EdFileReadFloat() : 1.f;
+        obstacle->backward_speed_factor = version >= 5 ? EdFileReadFloat() : obstacle->forward_speed_factor;
+        if (version >= 8)
+            obstacle->reflection_alpha = EdFileReadFloat();
+        obstacle->blowup_type = -1;
+        if (version >= 9) {
+            if (version >= 10) {
+                char name[32];
+                i32 length = (i8)EdFileReadChar();
+                if (length) {
+                    EdFileRead(name, length);
+                    obstacle->blowup_type = (i16)GizmoBlowupGetNameTableId(name);
+                    if (obstacle->blowup_type != -1)
+                        obstacle->runtime_flags |= 2;
+                }
+            } else
+                obstacle->blowup_type = EdFileReadShort();
+            obstacle->pickup_count = EdFileReadShort();
+            obstacle->pickup_direction_x = EdFileReadShort();
+            obstacle->pickup_direction_y = EdFileReadShort();
+            EdFileReadNuVec(&obstacle->pickup_offset);
+        }
+        obstacle->pickup_scatter_height =
+            version >= 11 ? EdFileReadFloat() : (world->area && (world->area->flags & 1) ? 12.f : 1.75f);
+        obstacle->start_sfx_id = obstacle->stop_sfx_id = -1;
+        if (version >= 13) {
+            char name[32];
+            if (GizmoFileReadName(name))
+                obstacle->start_sfx_id = (i16)GetSfxId(name);
+        } else if (GizObstacle_SetDefaultSFXFn)
+            GizObstacle_SetDefaultSFXFn(world, (GIZOBSTACLE *)obstacle);
+        if (version >= 14) {
+            char name[32];
+            if (GizmoFileReadName(name))
+                obstacle->stop_sfx_id = (i16)GetSfxId(name);
+        }
+    }
+    return 1;
+}
+void __cdecl GizObstacles_PostLoad(void *world, void *data) {
+    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
+    i32 i;
+    GIZOBSTACLE *obstacle;
+    if (!system)
+        return;
+    obstacle = (GIZOBSTACLE *)system->obstacles;
+    for (i = 0; i < system->count; ++i, ++obstacle) {
+        if (obstacle->runtime_flags & 2) {
+            obstacle->blowup_type = (i16)GizmoBlowupGetTypeFromNameTableId((WORLDINFO *)world, obstacle->blowup_type);
+            obstacle->runtime_flags &= ~2u;
+        }
+    }
+}
+
+static void GizObstacle_ResetOnePrivate(WORLDINFO *world, GIZOBSTACLE *obstacle) {
+    GAMEANIMSET *set;
+    GAMEANIMOBJ *object;
+    obstacle->progress_flags = (obstacle->progress_flags & ~0xcu) | 3;
+    obstacle->runtime_flags &= 0xffffff03u;
+    obstacle->animation_speed = 1.f;
+    set = obstacle->anim_set;
+    if (!set)
+        return;
+    for (object = set->objects; object; object = object->next) {
+        i16 *object_data = (i16 *)object->object_data;
+        object_data[1] = -1;
+        if (world->terrain && !(object_data[0] & 1) && NuSpecialExistsFn(&object->special)) {
+            object_data[1] = (i16)FindPlatInst(NuSpecialGetInstanceix(&object->special));
+            if (object_data[1] != -1)
+                obstacle->runtime_flags |= 0x10;
+        }
+        if (object_data[0] & 2)
+            obstacle->runtime_flags |= 0x20;
+    }
+    obstacle->room_id = world->current_gscn ? (i16)NuPortalWhichRoom(world->current_gscn, &obstacle->position) : -1;
+    if (obstacle->config_flags & 2)
+        GameAnimSet_GetAveragePos(obstacle->anim_set, &obstacle->secondary_position, 0, 1, 1);
+    GameAnimSet_EvaluateState(obstacle->anim_set);
+    obstacle->evaluated_radius = 1.f;
+    obstacle->evaluated_position = obstacle->position;
+    GameAnimSet_GetCentreAndRadius(obstacle->anim_set, &obstacle->evaluated_position, &obstacle->evaluated_radius, 2, 1,
+                                   1);
+}
+void __cdecl GizObstacles_Reset(void *world_ptr, void *data, void *progress_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
+    GIZOBSTACLE_PROGRESS_PC *progress = (GIZOBSTACLE_PROGRESS_PC *)progress_ptr;
+    i32 i;
+    GIZOBSTACLE *obstacle = (GIZOBSTACLE *)system->obstacles;
+    for (i = 0; i < system->count; ++i, ++obstacle) {
+        GizObstacle_ResetOnePrivate(world, obstacle);
+        if (progress && i < 128) {
+            i32 word = i >> 5;
+            u32 bit = 1u << (i & 31);
+            obstacle->progress_flags = (obstacle->progress_flags & ~2u) | ((progress->visible[word] & bit) != 0) * 2;
+            obstacle->progress_flags = (obstacle->progress_flags & ~1u) | ((progress->enabled[word] & bit) != 0);
+            obstacle->runtime_flags = (obstacle->runtime_flags & ~1u) | ((progress->pickups_spawned[word] & bit) != 0);
+            obstacle->runtime_flags = (obstacle->runtime_flags & ~4u) | ((progress->ai_active[word] & bit) != 0) * 4;
+            obstacle->runtime_flags = (obstacle->runtime_flags & ~8u) | ((progress->blocked[word] & bit) != 0) * 8;
+            obstacle->runtime_flags =
+                (obstacle->runtime_flags & ~0x40u) | ((progress->trigger_latched[word] & bit) != 0) * 0x40;
+            obstacle->runtime_flags =
+                (obstacle->runtime_flags & ~0x80u) | ((progress->destroyed[word] & bit) != 0) * 0x80;
+        }
+    }
+    GizObstacleTriggerCountPc = 0;
+}

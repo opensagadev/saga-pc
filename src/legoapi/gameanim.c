@@ -1048,3 +1048,49 @@ void __cdecl AnimatePlayer(GAMEOBJECT *object) {
     AutoWeaponOnOff(object);
     AddFootSteps(object);
 }
+
+GAMEANIMOBJ *__cdecl GameAnimSet_AddObjectByName(GAMEANIMSET *set, NUGSCN *scene, char *name, f32 start_frame,
+                                                 f32 end_frame, i32 append, void *gizmo_sys, char *prefix,
+                                                 char *suffix) {
+    NUSPECIALHANDLE special;
+    if (!set)
+        return NULL;
+    if (!Gizmo_FindNuSpecial(scene, &special, name, 1, gizmo_sys, prefix, suffix))
+        return NULL;
+    return GameAnimSet_AddObject(set, &special, start_frame, end_frame, append);
+}
+i32 __cdecl GizmoFileReadGameAnimSet(GAMEANIMSET *set, void *world_ptr, void(__cdecl *read_data)(GAMEANIMOBJ *, u8),
+                                     u8 version, char *prefix, char *suffix) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    u8 file_version = EdFileReadChar();
+    u8 count = EdFileReadChar();
+    i32 success = 1, i;
+    for (i = 0; i < count; ++i) {
+        char name[64];
+        i32 length = (i8)EdFileReadChar();
+        f32 start_frame, end_frame;
+        u32 flags;
+        GAMEANIMOBJ *object, missing;
+        if (length)
+            EdFileRead(name, length);
+        start_frame = EdFileReadFloat();
+        end_frame = EdFileReadFloat();
+        flags = file_version > 1 ? EdFileReadInt() : 0;
+        if (!length)
+            continue;
+        if (!set->object_pool || !set->object_pool->free_objects)
+            success = 0;
+        object = GameAnimSet_AddObjectByName(set, world->current_gscn, name, start_frame, end_frame, 0,
+                                             world->gizmo_sys, prefix, suffix);
+        if (!object) {
+            memset(&missing, 0, sizeof(missing));
+            object = &missing;
+        }
+        object->serialized_flags = flags;
+        if (read_data)
+            read_data(object, version);
+        if (file_version < 3)
+            object->serialized_flags &= ~2u;
+    }
+    return success;
+}

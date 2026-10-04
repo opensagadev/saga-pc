@@ -174,6 +174,23 @@ def main():
     cli, cli_pin = objdiff()
     OUT.mkdir(parents=True, exist_ok=True)
     objects = compiled_objects()
+    members, member_proof, migrations = [], None, []
+    if "data_members" in config and not args.function:
+        if __package__:
+            from .data_members import evaluate_members, reviewed_migrations
+        else:
+            from data_members import evaluate_members, reviewed_migrations
+        members, member_proof = evaluate_members(config, objects, records, target, pe)
+    if not args.function:
+        previous = ROOT / "matching.json"
+        if previous.is_file():
+            previous_report = json.loads(previous.read_text())
+            if "data_members" in config or previous_report.get("data_members"):
+                if __package__:
+                    from .data_members import reviewed_migrations
+                else:
+                    from data_members import reviewed_migrations
+                migrations = reviewed_migrations(previous_report, members)
     externals = external_symbols(pe, records, objects)
     bindings = bindings_for(records)
     units, functions, data, inlined = [], [], [], []
@@ -274,7 +291,16 @@ def main():
     if not args.function:
         result["progress"] = progress(functions, target)
         result["progress"].update(objdiff_progress(report, functions))
-        result["progress"].update(mapping_progress(records, target))
+        member_ranges = [(number(r["address"]), r["target_size"]) for r in members
+                         if r["target_size"] is not None]
+        result["progress"].update(mapping_progress(records, target, member_ranges))
+        if "data_members" in config:
+            result["data_members"] = members
+            result["data_member_proof"] = member_proof
+            result["data_member_migrations"] = migrations
+            result["progress"]["matched_data_region_bytes"] = covered_bytes(
+                [(number(r["address"]), r["target_size"]) for r in data + members
+                 if r["exact_match"] and r["target_size"] is not None])
         coverage = reviewed_identification_file(
             ROOT / "config/identification-decisions.jsonl", target, inventory_functions=functions)
         if coverage.get("journal_status") == "present" and (

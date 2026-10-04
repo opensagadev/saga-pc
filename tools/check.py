@@ -404,7 +404,16 @@ def main():
     print(f"Mapped {mapping['mapped_bytes']}/{mapping['image_bytes']} virtual image bytes "
           f"({mapping['mapping_percent']:.3f}%).")
     if args.objects:
-        result = check_objects(compiled_objects(), records, config["target"])
+        objects = compiled_objects()
+        result = check_objects(objects, records, config["target"])
+        if "data_members" in config:
+            if __package__:
+                from .data_members import evaluate_members
+            else:
+                from data_members import evaluate_members
+            members, _ = evaluate_members(config, objects, records, config["target"])
+            print(f"Checked {len(members)} typed named data members; "
+                  "these are not additional COFF definitions or relocation bindings.")
         print(f"Checked {result['functions']} function and {result['data']} data definitions "
               f"across {result['objects']} objects; all mappings and relocations resolve.")
         if result["size_differences"]:

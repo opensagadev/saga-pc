@@ -4115,3 +4115,24 @@ Thirty-eight new comparison rows include overlap-only matrix95; source transfer
 is37/9,432, native denominator delta9,527. Fifteen new unique exact bodies614B
 are separate from the additional existing95B exact alias. No earlier exact code
 or data is lost. Optional physical member contracts remain scratch/inactive.
+
+
+### Environment loader / world provider source release (2026-10-04)
+
+Twenty-four complete functions add4,574 unique PC bytes. The twelve environment
+loaders2,101 include full GizObstacles_Load732 and GameAnimSet reader413; cached
+obstacle iteration and DWORD serialized flags20 agree with PC. The loader's old
+BYTE-width draft is explicitly superseded. Three reset/SFX bodies670 preserve
+the natural private ESI/stack helper ABI. BridgeUpdate408 and StartPage79 retain
+the page/plank caller domains. Doors_Init590, dynamic allocation240/type70,
+FindPlatInst71, platform fixup139 and light init124 preserve signed counts,
+WORD UID wrap, native promoted1.01f constant and mandatory64 light-ID reset.
+Music ActionFromQuiet5489b0/82 uses signed WORDs0/2 in1c records and FFFF sentinel.
+No table capacity or fake owner is inferred from its pointer view.
+
+New exact source397B is Reserve207 + PostLoad80 + ResetName31 + StartPage79.
+All previous exact code/data remains. Two old nonexact full bodies have accepted
+header-only scheduling differences, with complete native scores retained;
+they receive no new-source credit. Optional member tools stay disabled; no member
+enters symbols.csv as a linker symbol. Resource/Wav/startup proposals remain
+research until their corresponding production closure and validation.

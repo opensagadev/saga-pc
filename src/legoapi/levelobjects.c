@@ -86,3 +86,25 @@ i32 __cdecl LevelObject_GetReflection(i32 index) {
         return LEVOBJREF_FIRSTREFOBJ - LEVOBJREF_FIRSTOBJ + index;
     return index;
 }
+
+typedef struct startup_level_object_pc_s {
+    NUSPECIALHANDLE special;
+    i16 platform_id;
+    u8 active;
+    u8 unknown_f;
+} STARTUP_LEVEL_OBJECT_PC;
+STATIC_ASSERT(sizeof(STARTUP_LEVEL_OBJECT_PC) == 0x10);
+STATIC_ASSERT(offsetof(STARTUP_LEVEL_OBJECT_PC, special) == 0);
+STATIC_ASSERT(offsetof(STARTUP_LEVEL_OBJECT_PC, platform_id) == 0xc);
+i32 __cdecl FindPlatInst(i32 instance);
+void __cdecl LevObj_FixUpPlatIDs(WORLDINFO *world) {
+    i32 index;
+    if (ObjTabList == NULL)
+        return;
+    for (index = 0; index < LEVELOBJECTCOUNT; ++index) {
+        STARTUP_LEVEL_OBJECT_PC *objects = (STARTUP_LEVEL_OBJECT_PC *)world->level_objects;
+        objects[index].platform_id = -1;
+        if (world->terrain != NULL && NuSpecialExistsFn(&objects[index].special) && ObjTabList[index].kind == 1)
+            objects[index].platform_id = (i16)FindPlatInst(NuSpecialGetInstanceix(&objects[index].special));
+    }
+}

@@ -1,5 +1,41 @@
 #include "saga.h"
 extern "C" {
+#pragma bss_seg(".bss$ActionPairTab")
+    PC_MUSIC_ACTION_PAIR_PC *ActionPairTab;
+#pragma bss_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$GizObstacleTriggerCountPc")
+    i32 GizObstacleTriggerCountPc;
+#pragma bss_seg()
+}
+extern "C" {
+#pragma bss_seg(".bss$LastDoorPointerPc")
+    void *LastDoorPointerPc;
+#pragma bss_seg()
+
+#pragma data_seg(".data$RtlUidCounterPc")
+    u16 RtlUidCounterPc = 1;
+#pragma data_seg()
+}
+extern "C" {
+#pragma const_seg(".rdata$GizmoSpecialErrorTabPc")
+    extern const char GizmoSpecialErrorTabPc[3] = "\t\t";
+#pragma const_seg()
+
+#pragma const_seg(".rdata$GizObstacleTypeNamePc")
+    extern const char GizObstacleTypeNamePc[12] = "GizObstacle";
+#pragma const_seg()
+
+#pragma bss_seg(".bss$GizmoBlowupNameCountPc")
+    i32 GizmoBlowupNameCountPc;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$GizmoBlowupNameTablePc")
+    char GizmoBlowupNameTablePc[32][32];
+#pragma bss_seg()
+}
+extern "C" {
 #pragma const_seg(".rdata$PCSoundBuffer8IIDPc")
     extern const IID PCSoundBuffer8IIDPc = {
         0x6825a449, 0x7524, 0x4d82, {0x92, 0xf, 0x50, 0xe3, 0x6a, 0xb3, 0xab, 0x1e}};

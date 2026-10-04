@@ -2330,3 +2330,16 @@ void __cdecl TerrainPlatformNewUpdate(void) {
             terrain->active_platform_groups[terrain->active_platform_count++] = *group_index;
     }
 }
+
+i32 __cdecl FindPlatInst(i32 instance) {
+    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    i32 index;
+    if (instance != -1) {
+        for (index = 0; index < terrain->max_platforms; ++index) {
+            TERRAIN_PLATFORM_PC *platform = &terrain->platforms[index];
+            if (platform->scene_object != NULL && platform->scene_object_index == instance)
+                return index;
+        }
+    }
+    return -1;
+}

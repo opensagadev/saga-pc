@@ -223,12 +223,20 @@ def map_errors(records, target):
 
 
 
-def mapping_progress(records, target):
+def mapping_progress(records, target, member_ranges=()):
     """Coverage of the full preferred image VA range, including unimplemented symbols."""
     errors = map_errors(records, target)
     if errors:
         raise ValueError("Invalid mapping coverage: " + "; ".join(errors))
+    member_ranges = list(member_ranges)
+    image, text = number(target["image_base"]), number(target["text_va"])
+    for start, size in member_ranges:
+        if (type(start) is not int or type(size) is not int or size <= 0
+                or not image <= start < start + size <= image + number(target["image_size"])
+                or start < text + number(target["text_size"]) and start + size > text):
+            raise ValueError("Invalid named-member coverage range")
     total = number(target["image_size"])
-    mapped = covered_bytes((row["address"], row["size"]) for row in records
-                           if row["address"] is not None and row["size"])
+    mapped = covered_bytes([*( (row["address"], row["size"]) for row in records
+                               if row["address"] is not None and row["size"]),
+                            *member_ranges])
     return {"image_bytes": total, "mapped_bytes": mapped, "mapping_percent": 100 * mapped / total}

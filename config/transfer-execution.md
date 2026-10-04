@@ -1485,3 +1485,67 @@ world startup providers, native Wav/Ogg families and reviewed optional physical
 member tools. This checkpoint waited past the half-hour deadline for actual
 source/data integration, independent semantic fixes and final validation. The
 user's three journal edits remain untouched and excluded from commits.
+
+
+### Environment loaders, world setup and music lookup checkpoint (2026-10-04)
+
+Twenty-four complete source functions add 4,574 unique PC bytes over 86d0cd4:
+environment loaders 12/2,101; obstacle reset and SFX 3/670; bridge editor 2/487;
+world initialization providers 6/1,234; and music action lookup 1/82. FindPlatInst
+is counted once. Whole-PC fuzzy coverage rises from 15.065450% to 15.168865% of
+3,471,246 bytes; unique compared code reaches 818,272 bytes. Native objdiff
+compares 818,587 bytes including existing aliases and reports 64.360176%.
+Four new exact functions add 397 unique bytes, reaching 81,990 / 2.361976%.
+
+Real connected source now reads gizmo names and specials, animation sets and
+obstacle records, reserves and postloads obstacle pools, resets obstacle state,
+resolves blowup types, creates bridge editor pages, initializes doors and dynamic
+lights, fixes level platform IDs and scans the music action table. Reviewed
+private helper ABIs remain natural original-owner compiler output. PC animation
+serialization requires a DWORD at offset20; the named alias union preserves
+existing BYTE readers and object size28. Reverting only the two new DWORD
+accesses causes 10 targeted failures, including real obstacle callback cases.
+
+All 2,961 previous complete function copies survive; 2,959 are identical. Two
+old nonexact functions change only compiler scheduling under the expanded header.
+Exact baseline headers reproduce both old endpoints: NuRndrParticleGroup rebuilt
+713 becomes717; DebReAlloc2 remains1458. Independent full CFG, instruction, x87
+and 34/30 relocation review qualifies initialized finite values. Fault ordering
+and unmasked signaling NaNs are outside that proof. Actual current advisory
+scores remain in the report; these functions gain no new transfer credit.
+No previous exact code or data is lost.
+
+Pinned source EXE build/link and 2,985 function / 5,562 data definitions across
+236 actual objects pass. LLVM18 checks 238 files and 236 units; 699 tests pass
+with 3 skips. The first general run failed temporary-storage quota, then the
+unchanged full suite passed using workspace TMPDIR. Four strict all-normal
+fixture groups pass 236 selected checks: loaders/reset151, bridge35, world
+support39 and action lookup11. Root verifies every current source/object pin;
+zero replacements or supplementary providers are linked. The support fixture
+initially omitted genuine NuTrigInit; adding required input initialization
+preserves all 39 assertions and frozen production source. Successful whole-game
+startup, assets, registry modes, animated scene backends and hardware output
+remain outside these tested domains.
+
+Eight shared physical views add 1,057 initializer bytes: two known literals15B
+and six unknown views1,042B with zero owning-allocation credit. All 3,275 old
+complete shared regions and 1,587 scoped proofs remain unchanged. Current 3,283
+normal regions equal isolated compilation; scope1,595 has known561/137,634 unique
+bytes and unknown1,034/121,779 source bytes. All 4,318 previous actual exact
+initializer copies preserve full widths, raw bytes and named relocations; eight
+additional copies are retail-exact. ActionPairTab's unsupported uncompiled4B
+inventory extent becomes blank; its genuine NULL pointer view implies no table
+capacity and loses no prior source or exact match.
+
+Optional typed physical-member tools are implemented and independently reviewed,
+with 34 additional tests; the project registry remains disabled. CSV retains
+four actual-COFF columns. Members never become physical definitions or address
+bindings, complete parent relocation uses existing tools, and previous exact
+member history cannot be silently removed or disabled. Fresh resource48 proof
+preserves two exact WORDs4B and all 3,280 other data regions, with165/168 consumer
+bodies unchanged and three qualified old nonexact getters. That migration stays
+inactive until the next source wave. Unknown parent48 receives no allocation
+credit. Next are connected resource966, natural WavReader1,408, accepted startup
+providers1,728 and larger environment/Vorbis families. No retail asset bytes are
+committed. This checkpoint waits for completed quota recovery, full validation
+and scheduling review; the user's three journal edits remain untouched.

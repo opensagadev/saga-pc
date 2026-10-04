@@ -648,3 +648,31 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUpOpponent(GAMEOBJECT *object, f32 range, f32 e
     GizmoBlowUpOpponent_Range2 = nearest_distance;
     return (GIZMOBLOWUP_PC *)nearest;
 }
+
+void __cdecl GizmoBlowupResetNameTable(void) {
+    memset(GizmoBlowupNameTablePc, 0, sizeof(GizmoBlowupNameTablePc));
+    GizmoBlowupNameCountPc = 0;
+}
+i32 __cdecl GizmoBlowupGetNameTableId(char *name) {
+    i32 i;
+    for (i = 0; i < GizmoBlowupNameCountPc; ++i)
+        if (!NuStrICmp(GizmoBlowupNameTablePc[i], name))
+            return i;
+    if (GizmoBlowupNameCountPc >= 32)
+        return -1;
+    NuStrNCpy(GizmoBlowupNameTablePc[GizmoBlowupNameCountPc], name, 32);
+    return GizmoBlowupNameCountPc++;
+}
+i32 __cdecl GizmoBlowupGetTypeFromNameTableId(WORLDINFO *world, i32 id) {
+    char *name;
+    i32 i;
+    if (id < 0 || id >= GizmoBlowupNameCountPc)
+        return -1;
+    name = GizmoBlowupNameTablePc[id];
+    if (!name)
+        return -1;
+    for (i = 0; i < world->gizmo_blowup_type_count; ++i)
+        if (!NuStrICmp(world->gizmo_blowup_types[i].name, name))
+            return i;
+    return -1;
+}

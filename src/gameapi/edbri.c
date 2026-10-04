@@ -127,3 +127,54 @@ i32 __cdecl edbriLoadPage(char *path, void *scene) {
     edbri_page_scene[page] = (NUGSCN *)scene;
     return page;
 }
+
+STATIC_ASSERT(offsetof(PC_EDBRIDGE, instance_id) == 0);
+STATIC_ASSERT(offsetof(PC_EDBRIDGE, position) == 4);
+STATIC_ASSERT(offsetof(PC_EDBRIDGE, field_1d) == 0x1d);
+STATIC_ASSERT(offsetof(PC_EDBRIDGE, field_1e) == 0x1e);
+STATIC_ASSERT(offsetof(PC_EDBRIDGE, red) == 0x40);
+STATIC_ASSERT(offsetof(PC_EDBRIDGE, green) == 0x41);
+STATIC_ASSERT(offsetof(PC_EDBRIDGE, blue) == 0x42);
+
+void __cdecl edbriBridgeUpdate(i32 index, NUGSCN *scene) {
+    NUVEC end, delta;
+    NUSPECIALHANDLE first, second;
+    u32 colour;
+    if (edBridges[index].instance_id != -1) {
+        NuBridgeRemove(edBridges[index].instance_id);
+        edBridges[index].instance_id = -1;
+    }
+    delta.x = edBridges[index].length;
+    delta.y = 0.0f;
+    delta.z = 0.0f;
+    NuVecRotateZ(&delta, &delta, edBridges[index].rotation_z);
+    NuVecRotateY(&delta, &delta, edBridges[index].rotation_y);
+    NuVecAdd(&end, &edBridges[index].position, &delta);
+    first.scene = NULL;
+    first.special = NULL;
+    first.display_special = NULL;
+    colour = edBridges[index].red + ((edBridges[index].green << 8) + (edBridges[index].blue << 16) + 0x80000000u);
+    if (edBridges[index].special_20 != -1)
+        NuGScnGetSpecial(&first, edbits_base_scene, edBridges[index].special_20);
+    second.scene = NULL;
+    second.special = NULL;
+    second.display_special = NULL;
+    if (edBridges[index].special_24 != -1)
+        NuGScnGetSpecial(&second, edbits_base_scene, edBridges[index].special_24);
+    edBridges[index].instance_id =
+        NuBridgeCreate(scene, &first, &second, &edBridges[index].position, &end, edBridges[index].field_3c,
+                       edBridges[index].rotation_y, edBridges[index].field_28, edBridges[index].field_2c,
+                       edBridges[index].field_30, edBridges[index].field_34, edBridges[index].field_1d,
+                       edBridges[index].field_14, edBridges[index].field_38, edBridges[index].field_1e, colour);
+}
+
+void __cdecl edbriStartPage(i32 page_number) {
+    i8 page = (i8)page_number;
+    i32 index;
+    if (edbri_page_used[page] && edbri_page_scene[page]) {
+        for (index = 0; index < 64; ++index) {
+            if (edBridges[index].connection_index == (u8)page)
+                edbriBridgeUpdate(index, edbri_page_scene[page]);
+        }
+    }
+}

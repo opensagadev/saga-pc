@@ -394,3 +394,7 @@ extern "C" {
             PlayFootStepSfx(object);
     }
 }
+
+extern "C" i32 __cdecl IsSfxLooping(i32 id) {
+    return id == -1 ? -1 : (SfxInfo[id].sample_id_flags >> 15) & 1;
+}

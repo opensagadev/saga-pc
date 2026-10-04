@@ -599,3 +599,39 @@ i32 __cdecl GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJEC
     }
     return 0;
 }
+
+static void GizmoAppendSpecialErrorPrivate(void *ptr, const char *text) {
+    GIZMO_CONFIG_SYSTEM_PC *system = (GIZMO_CONFIG_SYSTEM_PC *)ptr;
+    if (!system || !system->error_log || !text)
+        return;
+    if (NuStrLen(system->error_log) + NuStrLen(text) <= gizmoerrorlogsize)
+        NuStrNCat(system->error_log, text, gizmoerrorlogsize);
+    else
+        system->flags |= 1;
+}
+i32 __cdecl Gizmo_FindNuSpecial(NUGSCN *scene, NUSPECIALHANDLE *special, char *name, i32 flags, void *ptr, char *prefix,
+                                char *suffix) {
+    GIZMO_CONFIG_SYSTEM_PC *system = (GIZMO_CONFIG_SYSTEM_PC *)ptr;
+    if (NuSpecialFind(scene, special, name, flags))
+        return 1;
+    if (!system || !system->error_log || !(system->flags & 4))
+        return 0;
+    GizmoAppendSpecialErrorPrivate(system, name);
+    if (prefix) {
+        GizmoAppendSpecialErrorPrivate(system, GizmoSpecialErrorTabPc);
+        GizmoAppendSpecialErrorPrivate(system, prefix);
+    }
+    if (suffix) {
+        GizmoAppendSpecialErrorPrivate(system, GizmoSpecialErrorTabPc);
+        GizmoAppendSpecialErrorPrivate(system, suffix);
+    }
+    GizmoAppendSpecialErrorPrivate(system, PCWarningSuffix);
+    return 0;
+}
+i32 __cdecl GizmoFileReadName(char *name) {
+    i32 length = EdFileReadChar();
+    if (!length)
+        return 0;
+    EdFileRead(name, length);
+    return 1;
+}
