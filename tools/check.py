@@ -132,13 +132,17 @@ def check_objects(objects, records, target):
                                        "no standalone original address is established. Compare it as "
                                        "part of its caller, or recover a standalone mapping")
                     elif (ref_name not in bindings and
-                          ref["section"] not in (symbol["section"], -1)):
+                          ref["section"] not in (symbol["section"], -1) and
+                          not (ref["storage_class"] == 6 and ref["type"] == 0
+                               and ref_name.startswith("$LN") and ref["section"] > 0)):
                         missing.append(f"{where}: missing relocation mapping for {ref_name!r}; "
                                        "add its original address to config/symbols.csv")
                 if missing:
                     errors.extend(missing)
                     continue
                 relocate = relocate_function if kind == "function" else relocate_data
+                # Cross-section compiler labels are resolved here by binary.py,
+                # which requires one mapped complete owner and an in-extent label.
                 rebuilt, _ = relocate(obj, name, row["address"], bindings)
             except ValueError as error:
                 errors.append(f"{context}: {error}")

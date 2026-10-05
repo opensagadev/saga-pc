@@ -443,6 +443,24 @@ class COFF:
                             "next data symbol or section end (includes padding)")
 
 
+def _mapped_code_label(obj, ref, bindings):
+    """Resolve a compiler label by its COFF section and mapped function owner."""
+    if (ref["storage_class"] != 6 or ref["type"] != 0
+            or not ref["name"].startswith("$LN") or ref["section"] <= 0):
+        raise BinaryError(f"Missing binding for relocation symbol {ref['name']!r}")
+    owners = [symbol for symbol in obj.defined_symbols()
+              if symbol["section"] == ref["section"] and symbol["type"] & 0x20
+              and symbol["name"] in bindings]
+    if len(owners) != 1:
+        raise BinaryError(f"Compiler label {ref['name']!r} requires one mapped function owner")
+    owner = owners[0]
+    function = obj.extract_function(owner["name"])
+    offset = ref["value"] - function["offset"]
+    if not 0 <= offset < function["size"]:
+        raise BinaryError(f"Compiler label {ref['name']!r} is outside its mapped function")
+    return _address(bindings[owner["name"]] + offset)
+
+
 def _relocate(obj, region, va, bindings):
     """Apply i386 DIR32/REL32 fields once to a complete extracted region."""
     va, _ = _extent(va, region["size"])
@@ -467,7 +485,8 @@ def _relocate(obj, region, va, bindings):
         elif ref["section"] == -1:
             address, source = _address(ref["value"]), "COFF absolute symbol"
         else:
-            raise BinaryError(f"Missing binding for relocation symbol {name!r}")
+            address = _mapped_code_label(obj, ref, bindings)
+            source = "derived compiler label in mapped function"
         addend = struct.unpack_from("<I", data, offset)[0]
         value = address + addend - (va + offset + 4 if typ == 20 else 0)
         struct.pack_into("<I", data, offset, value & 0xffffffff)

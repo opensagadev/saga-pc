@@ -215,3 +215,43 @@ extern "C" GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateColourTargetForma
     texture->flags = (texture->flags & 0xffffdbffu) | 0x1b00;
     return texture;
 }
+
+extern "C" void __cdecl PCGraphicsResetRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    i32 memory_delta;
+    f32 multiplier;
+    multiplier = texture->mip_count == 1 ? 1.0f : 1.5f;
+    memory_delta = (i32)((0u - (u32)texture->width * (u32)texture->height) * 4u);
+    PCGraphicsRenderTextureBytes += (i32)(i64)((f64)memory_delta * (f64)multiplier);
+    if (texture->external_id == -1 && texture->resource != NULL) {
+        texture->resource->methods->release(texture->resource);
+        texture->resource = NULL;
+    }
+    texture->width = 0;
+    texture->height = 0;
+    texture->unknown_08 = 0;
+    texture->mip_count = 0;
+    texture->original_mip_count = 0;
+    texture->field_10 = 1;
+    texture->format = 0;
+    texture->usage = 0;
+    texture->pool = 0;
+    texture->resource = NULL;
+    texture->external_id = -1;
+    texture->field_24 = 0;
+    texture->flags = 0x012449d0;
+    if (texture->surface != NULL) {
+        texture->surface->methods->release(texture->surface);
+        texture->surface = NULL;
+    }
+}
+
+extern "C" void __cdecl PCGraphicsInitRenderTexturePool(VARIPTR *buffer, VARIPTR end) {
+    i32 index;
+    (void)buffer;
+    (void)end;
+    memset(PCGraphicsRenderTextures, 0, sizeof(PCGraphicsRenderTextures));
+    for (index = 0; index != 32; ++index) {
+        PCGraphicsRenderTextureActive[index] = 0;
+        PCGraphicsResetRenderTexture(&PCGraphicsRenderTextures[index]);
+    }
+}

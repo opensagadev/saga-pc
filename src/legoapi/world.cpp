@@ -710,3 +710,138 @@ void __cdecl WorldInfo_Init(WORLDINFO *world) {
     if (NOSOUND == 0)
         NuSound3Update();
 }
+
+typedef struct world_resource_icons_reader_pc_s {
+    u8 unknown_0000[0x2964];
+    NUGSCN *icons_scene;
+} WORLD_RESOURCE_ICONS_READER_PC;
+STATIC_ASSERT(offsetof(WORLD_RESOURCE_ICONS_READER_PC, icons_scene) == 0x2964);
+
+void __cdecl WorldInfo_Dump(WORLDINFO *world) {
+    i32 index;
+    WORLD_RESOURCE_ICONS_READER_PC *resource = (WORLD_RESOURCE_ICONS_READER_PC *)world;
+    STUBBED_NAMED(Customiser_DumpAll); /* Native 55f6cd: (Game_Customiser, world). */
+    if (world->cutscene_sys != NULL) {
+        for (index = 0; index < world->cutscene_sys->count; ++index)
+            ClearLinkedCutSceneMusic(world->cutscene_sys->records[index]->instance);
+    }
+    STUBBED_NAMED(CharacterMiniKits_Dump); /* Native 55f716: (world). */
+    STUBBED_NAMED(CharScenes_LevelDump);   /* Native 55f71c: (world). */
+    CutScenes_Destroy(world->cutscene_sys);
+    if (resource->icons_scene != NULL) {
+        STUBBED_NAMED(NuGScnRemove); /* Native 55f73b: (icons_scene). */
+        resource->icons_scene = NULL;
+    }
+    if (world->page_pp != -1) {
+        edppStopPage((i8)(u8)world->page_pp);
+        edppClearPage((i8)(u8)world->page_pp);
+    }
+    if (world->page_part != -1) {
+        edpartStopPage((u8)world->page_part);
+        edpartClearPage((i8)(u8)world->page_part);
+    }
+    if (world->page_grass != -1) {
+        edgraStopPage((i8)(u8)world->page_grass);
+        edgraClearPage((i8)(u8)world->page_grass);
+    }
+    if (world->page_bridge != -1)
+        edbriClearPage((i8)(u8)world->page_bridge);
+    if (world->page_anim != -1) {
+        edanimStopPage(world->page_anim);
+        edanimClearPage(world->page_anim);
+    }
+    if (BGLOAD == 0) {
+        for (index = 2; index < 8; ++index) {
+            if (edpp_page_on[index] != 0) {
+                edppStopPage((i8)index);
+                edppClearPage((i8)index);
+            }
+        }
+        for (index = 1; index < 8; ++index) {
+            if (part_page_on[index] != 0) {
+                edpartStopPage((u8)index);
+                edpartClearPage((i8)index);
+            }
+        }
+    }
+    DestroyRippleMtls(world);
+    if (world->current_gscn != NULL) {
+        STUBBED_NAMED(NuGScnRemove); /* Native 55f865: (current_gscn). */
+        world->current_gscn = NULL;
+    }
+    if (world->secondary_gscn != NULL) {
+        STUBBED_NAMED(NuGScnRemove); /* Native 55f882: (secondary_gscn). */
+        world->secondary_gscn = NULL;
+    }
+}
+
+i32 __cdecl WorldInfo_Reset(WORLDINFO *world, i32 level_index) {
+    void *start;
+    VARIPTR end;
+    i32 buffer_size;
+    i32 progress_index;
+    STUBBED_NAMED(SetLevelExBlowupFlags); /* Native 55ffc6: flags0. */
+    if (world->loaded != 0) {
+        if (world->level_idx == level_index && (u8)LDataList[level_index].area_index != 0xff &&
+            new_level_from_menu == 0)
+            return 0;
+        WorldInfo_Dump(world);
+    }
+    if (new_level_from_menu != 0) {
+        WORLDINFO *other = world == &WorldInfo[0] ? &WorldInfo[1] : &WorldInfo[0];
+        if (other->loaded != 0 && other->level_idx == level_index)
+            WorldInfo_Dump(other);
+    }
+    start = world->buffer_start;
+    end = world->buffer_end;
+    memset(world, 0, sizeof(*world));
+    world->buffer_start = start;
+    world->buffer_end = end;
+    world->giz_buffer.void_ptr = start;
+    buffer_size = (i32)(end.addr - (u32)start);
+    if (buffer_size > 0)
+        memset(start, 0, buffer_size);
+    world->level_idx = level_index;
+    world->area_index = -1;
+    world->episode_index = -1;
+    if (level_index != -1) {
+        world->current_level = &LDataList[level_index];
+        world->area_index = (i8)world->current_level->area_index;
+        if (world->area_index != -1) {
+            world->area = &ADataList[world->area_index];
+            world->episode_index = (i8)world->area->episode_index;
+        }
+        world->page_pp = -1;
+        world->page_anim = -1;
+        world->page_grass = -1;
+        world->page_bridge = -1;
+        world->page_part = -1;
+        progress_index = (i8)world->current_level->area_level_index;
+        if (progress_index != -1 && progress_index < 12)
+            world->level_progress = &LevelProgressData[progress_index];
+        else
+            world->level_progress = NULL;
+        NuStrCpy(world->name, "levels\\");
+        NuStrCat(world->name, world->current_level->dir);
+        NuStrCpy(world->config_file, world->name);
+        NuStrCat(world->config_file, "\\");
+        NuStrCat(world->config_file, world->current_level->name);
+        ResetLevSfx(world);
+    }
+    return 1;
+}
+
+extern "C" void __cdecl WorldInfo_StreamLevel(BGPROCINFO *);
+void __cdecl WorldInfo_StreamLevel(BGPROCINFO *bg_info) {
+    (void)bg_info;
+    PCDeviceResetState();
+    if (LWORLD == WORLD && (Area == -1 || (ADataList[Area].flags & 8) == 0))
+        LWORLD = WORLD == &WorldInfo[0] ? &WorldInfo[1] : &WorldInfo[0];
+    if (WorldInfo_Reset(LWORLD, next_level) != 0) {
+        waiting_for_level = next_level;
+        STUBBED_NAMED(WorldInfo_Load); /* Native 56069c: (LWORLD). */
+    }
+    waiting_for_level = -1;
+    if (LWORLD->loaded != 0)
+        level_already_loaded = next_level;
+}

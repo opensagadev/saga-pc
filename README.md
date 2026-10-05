@@ -1,13 +1,13 @@
 # saga-pc
 
-**Runtime status: not playable.** The current executable exits before loading a
-level. PC window/input/device initialization, resource loading and the recurring
-update/render loop still need integration. The badges below measure code
-comparison and mapping; runnable milestones are tracked separately in
-[the execution plan](SOL_IMPLEMENTATION_PLAN.md).
+**Runtime status: not playable.** Native startup now publishes the window and
+input state. An actual Wine run crashes during renderer setup before a level is
+loaded; device rendering and the recurring update/render loop remain unverified.
+The badges measure code comparison and mapping; runnable milestones are tracked
+separately in [the execution plan](SOL_IMPLEMENTATION_PLAN.md).
 
 <!-- matching-badge -->
-![fuzzy code](https://img.shields.io/badge/fuzzy%20code-23.133%25-red)<!-- /matching-badge --> <!-- mapping-badge -->![mapping](https://img.shields.io/badge/mapping-4.685%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
+![fuzzy code](https://img.shields.io/badge/fuzzy%20code-23.386%25-red)<!-- /matching-badge --> <!-- mapping-badge -->![mapping](https://img.shields.io/badge/mapping-4.719%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 **saga-pc** is a matching decompilation of the GOG PC release of
 *LEGO Star Wars: The Complete Saga*.

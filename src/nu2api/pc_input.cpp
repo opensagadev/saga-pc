@@ -321,3 +321,50 @@ void NuKeyboardOwner_PC::Setup(HWND window, HINSTANCE instance) {
     PcInputSelectedPort = -1;
     nu_keyboard_owner.unknown_0004 = 3;
 }
+
+void NuKeyboardOwner_PC::Shutdown() {
+    if (nu_input_state == NULL)
+        return;
+    PC_INPUT_DEVICE_PC *devices = ((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices;
+    if (device != NULL) {
+        device->methods->unacquire(device);
+        if (device != NULL) {
+            device->methods->release(device);
+            device = NULL;
+        }
+    }
+    for (i32 index = 10; index < 14; ++index)
+        devices[index].device = NULL;
+    for (i32 index = 4; index < 14; ++index) {
+        if (devices[index].device != NULL) {
+            devices[index].device->methods->unacquire(devices[index].device);
+            if (devices[index].device != NULL) {
+                devices[index].device->methods->release(devices[index].device);
+                devices[index].device = NULL;
+            }
+        }
+        devices[index].kind = 0;
+        devices[index].capabilities_valid = 0;
+    }
+    if (mouse != NULL) {
+        mouse->methods->unacquire(mouse);
+        mouse->methods->release(mouse);
+        mouse = NULL;
+    }
+    if (factory != NULL) {
+        factory->methods->release(factory);
+        factory = NULL;
+    }
+    PC_INPUT_RUNTIME_PC *released = (PC_INPUT_RUNTIME_PC *)nu_input_state;
+    if (released != NULL) {
+        released->shutdown_state = 0;
+        ::operator delete(released);
+    }
+}
+
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, kind) == 0);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, device) == 4);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, capabilities_valid) == 0x2d);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, devices) == 0x4e34);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, shutdown_state) == 0x67e4);
+STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS_PC, release) == 8);

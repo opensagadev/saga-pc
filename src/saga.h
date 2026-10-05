@@ -1719,6 +1719,7 @@ typedef struct NuKeyboardOwner_PC {
 #ifdef __cplusplus
     void Setup(HWND window, HINSTANCE instance);
     void ScheduleRescan(f32 interval, i32 repetitions);
+    void Shutdown();
 #endif
 } NuKeyboardOwner_PC;
 STATIC_ASSERT(sizeof(NuKeyboardOwner_PC) == 0x3c);
@@ -6773,7 +6774,9 @@ typedef struct GRAPHICS_CAPS_PC {
     u32 device_caps;
     u8 unknown_020[0xa4];
     u32 vertex_shader_version;
-    u8 unknown_0c8[0x28];
+    u8 unknown_0c8[4];
+    u32 pixel_shader_version;
+    u8 unknown_0d0[0x20];
     u32 simultaneous_render_targets;
     u8 unknown_0f4[0x3c];
 } GRAPHICS_CAPS_PC;
@@ -15801,7 +15804,8 @@ struct NuKeyboardDevice_PC {
     PC_DI_DEVICE_METHODS_PC *methods;
 };
 struct PC_DI_FACTORY_METHODS_PC {
-    void *unknown_00, *unknown_04, *unknown_08;
+    void *unknown_00, *unknown_04;
+    ULONG(__stdcall *release)(PC_DI_FACTORY_PC *);
     HRESULT(__stdcall *create_device)(PC_DI_FACTORY_PC *, REFGUID, NuKeyboardDevice_PC **, IUnknown *);
     HRESULT(__stdcall *enum_devices)
     (PC_DI_FACTORY_PC *, DWORD, BOOL(__stdcall *)(const PC_DI_INSTANCE_PC *, void *), void *, DWORD);
@@ -15919,7 +15923,9 @@ struct PC_INPUT_RUNTIME_PC {
     i32 auxiliary_ports[4];
     u8 unknown_6568[0x9c];
     i32 preferred_key;
-    u8 unknown_6608[0x1e8];
+    u8 unknown_6608[0x1dc];
+    i32 shutdown_state;
+    u8 unknown_67e8[8];
     PC_INPUT_COMMAND_PC commands[32];
     u8 *keyboard_state;
     PC_INPUT_RUNTIME_PC();
@@ -16045,4 +16051,222 @@ extern char *PcInputKeyNames823d00[238];
 extern char *PcInputKeyNames824be0[238];
 extern char *PcInputKeyNames821558[238];
 #endif
+
+typedef void(__cdecl *PC_WINDOW_CALLBACK_PC)(HWND, UINT, WPARAM, LPARAM, i32 *);
+#ifdef __cplusplus
+
+extern "C" void __cdecl PcShutdown(void);
+extern "C" void __cdecl PcKeyDown(i32 scan_code);
+extern "C" void __cdecl PcKeyUp(i32 scan_code);
+extern "C" void __cdecl PcPrepareTiming(void);
+extern "C" u8 __cdecl PcPlatformPolicy(u8 enabled);
+extern "C" LRESULT __stdcall WindowProcPc(HWND, UINT, WPARAM, LPARAM);
+
+STATIC_ASSERT(sizeof(WNDCLASSEXA) == 48);
+STATIC_ASSERT(offsetof(WNDCLASSEXA, cbSize) == 0);
+STATIC_ASSERT(offsetof(WNDCLASSEXA, style) == 4);
+STATIC_ASSERT(offsetof(WNDCLASSEXA, lpfnWndProc) == 8);
+STATIC_ASSERT(offsetof(WNDCLASSEXA, cbClsExtra) == 12);
+STATIC_ASSERT(offsetof(WNDCLASSEXA, cbWndExtra) == 16);
+STATIC_ASSERT(offsetof(WNDCLASSEXA, hInstance) == 20);
+STATIC_ASSERT(offsetof(WNDCLASSEXA, hIcon) == 24);
+STATIC_ASSERT(offsetof(WNDCLASSEXA, hCursor) == 28);
+STATIC_ASSERT(offsetof(WNDCLASSEXA, hbrBackground) == 32);
+STATIC_ASSERT(offsetof(WNDCLASSEXA, lpszMenuName) == 36);
+STATIC_ASSERT(offsetof(WNDCLASSEXA, lpszClassName) == 40);
+STATIC_ASSERT(offsetof(WNDCLASSEXA, hIconSm) == 44);
+STATIC_ASSERT(sizeof(STICKYKEYS) == 8);
+STATIC_ASSERT(sizeof(TOGGLEKEYS) == 8);
+STATIC_ASSERT(sizeof(FILTERKEYS) == 24);
+#endif
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl SetPadDescriptorPc(i32, const u16 *);
+    void __cdecl InitPadDescriptorsPc(const u16 *, const u16 *, const u16 *, const u16 *, const i8 *);
+    i32 __cdecl QueueKeyPressPc(i32, i32);
+    i32 __cdecl CreateWindowPc(HINSTANCE, i32, u16);
+    i32 __cdecl PublishWindowPc(HWND, i32);
+    void __cdecl RegisterWindowCallbackPc(PC_WINDOW_CALLBACK_PC);
+    void __cdecl SetAccessibilityPc(u8);
+    void __cdecl ParsePlatformArgumentsPc(char *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+    void __cdecl PcFreeApiCallBuffer(void);
+    void __cdecl PcRendererCleanup(void);
+    void __cdecl PcRendererShutdown(i32);
+    void __cdecl PcDestroyPlatform(void);
+    void __cdecl PcRelaunchMediaCenter(void);
+    i32 __cdecl PCDeviceIsAbsent(void);
+}
+STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS_PC, release) == 8);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, shutdown_state) == 0x67e4);
+STATIC_ASSERT(sizeof(((PC_INPUT_RUNTIME_PC *)0)->shutdown_state) == 4);
+#endif
+typedef struct CPU_VENDOR_WORDS_PC {
+    u32 word0, word1, word2;
+    u8 terminator[4];
+} CPU_VENDOR_WORDS_PC;
+STATIC_ASSERT(sizeof(CPU_VENDOR_WORDS_PC) == 16);
+STATIC_ASSERT(offsetof(CPU_VENDOR_WORDS_PC, word1) == 4);
+STATIC_ASSERT(offsetof(CPU_VENDOR_WORDS_PC, word2) == 8);
+typedef struct customiser_completion_reader_pc_s {
+    u8 unknown_00[3];
+    u8 flags;
+} CUSTOMISER_COMPLETION_READER_PC;
+STATIC_ASSERT(sizeof(CUSTOMISER_COMPLETION_READER_PC) == 4);
+STATIC_ASSERT(offsetof(CUSTOMISER_COMPLETION_READER_PC, flags) == 3);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern const char InitOnceCompanyPc[10];
+    extern const char InitOnceProductPc[35];
+    extern const char InitOnceEmptyConfigPc[27];
+    extern const char NuHwAllocSourcePc[12];
+    extern const char NuHwDefaultConfigNamePc[10];
+    extern const char NuHwDefaultTitlePc[12];
+    extern const GUID PcPlatformPolicyClassId;
+    extern const GUID PcPlatformPolicyInterfaceId;
+    extern i32 InitOnceFileModePc;
+    extern const char *NuHwSoundDfsNamePc;
+    extern const char *NuHwDfsNamePc;
+    extern const char *NuHwDefaultParameterPc;
+    extern u32 PcClientWidth;
+    extern u32 PcClientHeight;
+    extern STICKYKEYS PcStickyKeys;
+    extern TOGGLEKEYS PcToggleKeys;
+    extern FILTERKEYS PcFilterKeys;
+    extern i32 PcArgc;
+    extern const CPU_VENDOR_WORDS_PC CpuVendorAmdPc;
+    extern const CPU_VENDOR_WORDS_PC CpuVendorCyrixPc;
+    extern CPU_VENDOR_WORDS_PC CpuVendorNamePc;
+    extern const CPU_VENDOR_WORDS_PC CpuVendorNoCpuidPc;
+    extern const CPU_VENDOR_WORDS_PC CpuVendorIntelPc;
+    extern i32 InitOnceSelector34Pc;
+    extern i32 InitOnceDvdPc;
+    extern i32 InitOnceHostFsPc;
+    extern i32 InitOnceEjectPc;
+    extern i32 PcWindowQuit;
+    extern i32 NuHwShowCommandPc;
+    extern CUSTOMISER_COMPLETION_READER_PC *CustomiserCompletionSavePc;
+    extern i32 PcIntelShaderFallback;
+    extern u8 PcCapsConfigured;
+    extern u8 PcKeyQueueHead;
+    extern u8 PcKeyQueueTail;
+    extern u8 PcKeyQueueScanCodes[256];
+    extern u8 PcKeyQueueModifiers[256];
+    extern u8 PcPressedScanCodes[256];
+    extern u32 NuHwParameter19Pc;
+    extern WNDCLASSEXA PcWindowClass;
+    extern i32 PcNoFocusPolicy;
+    extern i32 PcRelaunchMce;
+    extern f32 PcMouseX;
+    extern f32 PcMouseY;
+    extern u32 NuHwParameter4fPc;
+    extern i32 PcWindowCallbackCount;
+    extern BOOL PcScreenSaverEnabled;
+    extern char PcModuleFilename[260];
+    extern void *PcApiCallBuffer;
+    extern i32 PcApiCallBufferCount;
+    extern u32 CpuVendorPc;
+    extern u32 CpuHas3dnowPc;
+    extern u32 CpuHasSse2Pc;
+    extern u32 CpuExtendedLeafMaxPc;
+    extern u32 CpuExtendedFeaturesPc;
+    extern u32 CpuHasCpuidPc;
+    extern u32 CpuBasicLeafMaxPc;
+    extern u32 CpuProcessorTypePc;
+    extern u32 CpuFamilyPc;
+    extern u32 CpuModelPc;
+    extern u32 CpuSteppingPc;
+    extern u8 CpuBrandIndexPc;
+    extern u32 CpuHasFpuPc;
+    extern u32 CpuHasVmePc;
+    extern u32 CpuHasDePc;
+    extern u32 CpuHasPsePc;
+    extern u32 CpuHasTscPc;
+    extern u32 CpuHasMsrPc;
+    extern u32 CpuHasPaePc;
+    extern u32 CpuHasMcePc;
+    extern u32 CpuHasCmpxchg8bPc;
+    extern u32 CpuHasApicPc;
+    extern u32 CpuHasPgePc;
+    extern u32 CpuHasMcaPc;
+    extern u32 CpuHasCmovPc;
+    extern u32 CpuHasPatPc;
+    extern u32 CpuHasMmxPc;
+    extern u32 CpuInitializedPc;
+    extern char PcExecutableFilename[260];
+#ifdef __cplusplus
+}
+#endif
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, parameters) + offsetof(GRAPHICS_PRESENT_PARAMETERS_PC, windowed) == 0x158);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, desktop_mode) + offsetof(GRAPHICS_DISPLAY_MODE_PC, width) == 0x608);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, desktop_mode) + offsetof(GRAPHICS_DISPLAY_MODE_PC, height) == 0x60c);
+STATIC_ASSERT(offsetof(NUAPI, video_aspect) == 0x10);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+    void __cdecl InitPadDescriptorsPc(const u16 *, const u16 *, const u16 *, const u16 *, const i8 *);
+    i32 __cdecl CreateWindowPc(HINSTANCE, i32, u16);
+    i32 __cdecl PublishWindowPc(HWND, i32);
+    i32 __cdecl PCDeviceIsAbsent(void);
+    i32 __cdecl NuInitHardwarePc(VARIPTR *, VARIPTR *, i32, ...);
+
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl NuPrimInit(VARIPTR *buffer, VARIPTR end);
+    void __cdecl PCGraphicsResetRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture);
+    void __cdecl PCGraphicsInitRenderTexturePool(VARIPTR *buffer, VARIPTR end);
+#ifdef __cplusplus
+}
+#endif
+
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, unknown_08) == 8);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern const char InitOnceWindowTitle[36];
+    extern i8 PcInputActionOrder[20];
+    extern char *PcArgv[];
+    extern PC_WINDOW_CALLBACK_PC PcWindowCallbacks[];
+    void __cdecl CpuDetectFeaturesPc(void);
+    void __cdecl WorldInfo_StreamLevel(BGPROCINFO *);
+    i32 __cdecl PcConfigureInputGraphicsCaps(void);
+#ifdef __cplusplus
+}
+#endif
+STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, pixel_shader_version) == 0xcc);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    CUSTOMISER_LAYERS_PC *__cdecl Customiser_Configure(char *, VARIPTR *, VARIPTR *, i32, i32,
+                                                       i32(__cdecl *)(CUSTOMPIECE_LAYERS_PC *),
+                                                       void(__cdecl *)(CUSTOMPIECE_LAYERS_PC *, NUFPAR_PC *),
+                                                       i32(__cdecl *)(char *), void *, i16 *);
+    void __cdecl Customiser_Dump(void);
+    void __cdecl Customiser_CopyDefaultPiecesToSave(CUSTOMISER_LAYERS_PC *, void *);
+    i32 __cdecl CharVariant_Find(char *);
+    void __cdecl CharVariants_Init(char **, i32);
+    i32 __cdecl Game_100PercentComplete(void);
+    void __cdecl PermanentCustomPieceConfigPc(CUSTOMPIECE_LAYERS_PC *, NUFPAR_PC *);
+    i32 __cdecl PermanentCustomPieceAvailablePc(CUSTOMPIECE_LAYERS_PC *);
+    i32 __cdecl Collection_GotAnyOfType(i32, u32);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

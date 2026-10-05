@@ -91,3 +91,31 @@ void __cdecl UpdateCoinPacket(PLAYER_COIN_PACKET_PC *packet, i32 active, i32 pla
             packet->active = 1;
     }
 }
+
+typedef struct collection_variant_reader_pc_s {
+    u8 unknown_00[0x116];
+    i8 variant_type;
+    u8 unknown_117[9];
+} COLLECTION_VARIANT_READER_PC;
+STATIC_ASSERT(sizeof(COLLECTION_VARIANT_READER_PC) == 0x120);
+STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
+STATIC_ASSERT(offsetof(COLLECTION_VARIANT_READER_PC, variant_type) == 0x116);
+STATIC_ASSERT(offsetof(CHARACTERDATA_PC, model_flags) == 4);
+STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
+STATIC_ASSERT(sizeof(COLLECTID_PC) == 0x1c);
+STATIC_ASSERT(offsetof(COLLECTID_PC, id) == 0);
+i32 __cdecl Collection_GotAnyOfType(i32 type, u32 flags) {
+    i32 index;
+    if (CollectList == NULL)
+        return 0;
+    for (index = 0; index < CollectCount; ++index) {
+        i32 id = CollectList[index].id;
+        if (type != -1 && ((COLLECTION_VARIANT_READER_PC *)GCDataList)[id].variant_type != type)
+            continue;
+        if (flags != 0 && (CDataList[id].model_flags & flags) != flags)
+            continue;
+        if (Collection_Got(id) != 0)
+            return 1;
+    }
+    return 0;
+}

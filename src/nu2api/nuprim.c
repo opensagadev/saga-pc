@@ -614,3 +614,8 @@ i32 __cdecl NuRndrSetDirectionalLightsPS(const NUVEC *d0, const NUVEC *c0, const
     render_state.light_packet_cache = NULL;
     return 1;
 }
+
+void __cdecl NuPrimInit(VARIPTR *buffer, VARIPTR end) {
+    (void)buffer;
+    (void)end;
+}

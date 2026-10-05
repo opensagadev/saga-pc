@@ -1,4 +1,97 @@
 #include "saga.h"
+
+extern "C" {
+    extern char TextInputKeyNameTextPc7516c0[];
+    extern const char InitOnceCompanyPc[10] = "LucasArts";
+    extern const char InitOnceProductPc[35] = "LEGO Star Wars - The Complete Saga";
+    extern const char InitOnceEmptyConfigPc[27] = "LUCASARTS\\LEGOSTARWARSSAGA";
+    extern const char NuHwAllocSourcePc[12] = ".\\pcapi.cpp";
+    extern const char NuHwDefaultConfigNamePc[10] = "TTalesKey";
+    extern const char NuHwDefaultTitlePc[12] = "TitleNotSet";
+    extern const GUID PcPlatformPolicyClassId = {
+        0x9a5ea990, 0x3034, 0x4d6f, {0x91, 0x28, 0x1, 0xf3, 0xc6, 0x10, 0x22, 0xbc}};
+    extern const GUID PcPlatformPolicyInterfaceId = {
+        0xe7b2fb72, 0xd728, 0x49b3, {0xa5, 0xf2, 0x18, 0xeb, 0xf5, 0xf1, 0x34, 0x9e}};
+    i32 InitOnceFileModePc = 1;
+    const char *NuHwSoundDfsNamePc = TextInputKeyNameTextPc7516c0;
+    const char *NuHwDfsNamePc = TextInputKeyNameTextPc7516c0;
+    const char *NuHwDefaultParameterPc = NuHwDefaultTitlePc;
+    u32 PcClientWidth = 800;
+    u32 PcClientHeight = 600;
+    STICKYKEYS PcStickyKeys = {8, 0};
+    TOGGLEKEYS PcToggleKeys = {8, 0};
+    FILTERKEYS PcFilterKeys = {24, 0, 0, 0, 0, 0};
+    i32 PcArgc = 1;
+    extern const CPU_VENDOR_WORDS_PC CpuVendorAmdPc = {0x68747541u, 0x69746e65u, 0x444d4163u, {0}};
+    extern const CPU_VENDOR_WORDS_PC CpuVendorCyrixPc = {0x69727943u, 0x736e4978u, 0x64616574u, {0}};
+    CPU_VENDOR_WORDS_PC CpuVendorNamePc = {0x3f3f3f3fu, 0x3f3f3f3fu, 0x3f3f3f3fu, {0}};
+    extern const CPU_VENDOR_WORDS_PC CpuVendorNoCpuidPc = {0x6f4e5f5fu, 0x5550435fu, 0x5f5f4449u, {0}};
+    extern const CPU_VENDOR_WORDS_PC CpuVendorIntelPc = {0x756e6547u, 0x49656e69u, 0x6c65746eu, {0}};
+    i32 InitOnceSelector34Pc = 0;
+    i32 InitOnceDvdPc = 0;
+    i32 InitOnceHostFsPc = 0;
+    i32 InitOnceEjectPc = 0;
+    i32 PcWindowQuit = 0;
+    i32 NuHwShowCommandPc = 0;
+    CUSTOMISER_COMPLETION_READER_PC *CustomiserCompletionSavePc = NULL;
+    i32 PcIntelShaderFallback = 0;
+    u8 PcCapsConfigured = 0;
+    u8 PcKeyQueueHead = 0;
+    u8 PcKeyQueueTail = 0;
+    u8 PcKeyQueueScanCodes[256] = {0};
+    u8 PcKeyQueueModifiers[256] = {0};
+    u8 PcPressedScanCodes[256] = {0};
+    u32 NuHwParameter19Pc = 0;
+    WNDCLASSEXA PcWindowClass = {0};
+    i32 PcNoFocusPolicy = 0;
+    i32 PcRelaunchMce = 0;
+    f32 PcMouseX = 0.0f;
+    f32 PcMouseY = 0.0f;
+    u32 NuHwParameter4fPc = 0;
+    i32 PcWindowCallbackCount = 0;
+    BOOL PcScreenSaverEnabled = 0;
+    char PcModuleFilename[260] = {0};
+    void *PcApiCallBuffer = NULL;
+    i32 PcApiCallBufferCount = 0;
+    u32 CpuVendorPc = 0;
+    u32 CpuHas3dnowPc = 0;
+    u32 CpuHasSse2Pc = 0;
+    u32 CpuExtendedLeafMaxPc = 0;
+    u32 CpuExtendedFeaturesPc = 0;
+    u32 CpuHasCpuidPc = 0;
+    u32 CpuBasicLeafMaxPc = 0;
+    u32 CpuProcessorTypePc = 0;
+    u32 CpuFamilyPc = 0;
+    u32 CpuModelPc = 0;
+    u32 CpuSteppingPc = 0;
+    u8 CpuBrandIndexPc = 0;
+    u32 CpuHasFpuPc = 0;
+    u32 CpuHasVmePc = 0;
+    u32 CpuHasDePc = 0;
+    u32 CpuHasPsePc = 0;
+    u32 CpuHasTscPc = 0;
+    u32 CpuHasMsrPc = 0;
+    u32 CpuHasPaePc = 0;
+    u32 CpuHasMcePc = 0;
+    u32 CpuHasCmpxchg8bPc = 0;
+    u32 CpuHasApicPc = 0;
+    u32 CpuHasPgePc = 0;
+    u32 CpuHasMcaPc = 0;
+    u32 CpuHasCmovPc = 0;
+    u32 CpuHasPatPc = 0;
+    u32 CpuHasMmxPc = 0;
+    u32 CpuInitializedPc = 0;
+    char PcExecutableFilename[260] = {0};
+    i8 PcInputActionOrder[20] = {0};
+}
+
+extern "C" {
+    /* Selected native domain only: callback count remains zero. Native capacity unknown. */
+    PC_WINDOW_CALLBACK_PC PcWindowCallbacks[1] = {NULL};
+    /* Selected empty/recognized-only command line: module slot0 and scratch slot1. */
+    char *PcArgv[2] = {NULL, NULL};
+}
+
 extern "C" {
     i32 PCGraphicsFrameState = 1;
     i32 PCGraphicsBoundShader = 0;

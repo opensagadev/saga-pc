@@ -114,12 +114,6 @@ i32 NuKeyToAscii(u32 key, i32 shifted) {
 extern HINSTANCE PCInputWindow_candidate;
 extern HWND PCInputInstance_candidate;
 
-void __cdecl NuKeyboardCreateWindowState_candidate(HWND window, HINSTANCE instance) {
-    PCFrameCriticalSectionIndex_candidate = PCThreadCriticalSectionCreate_candidate();
-    STUBBED_NAMED(0x006e42d0); /* PC graphics adapter and capability initialization */
-    STUBBED_NAMED(0x006dacb0); /* DirectInput device setup and state allocation */
-}
-
 i32 __cdecl NuKeyboardPlatformStartup_candidate(void) {
     STUBBED_NAMED(0x006d3150); /* PC input subsystem pre-configuration */
     NuKeyboardCreateWindowState_candidate(PCInputInstance_candidate, PCInputWindow_candidate);

@@ -364,6 +364,81 @@ def object_common(size=4, name="_data", typ=0):
     return result
 
 
+def object_code_labels(label_value=7, label_type=0, storage=6, second_section=3,
+                       label_name=b"$LN20", relocation_type=6):
+    """Two independent functions with duplicate labels referenced from data."""
+    rawptr = 140
+    relptr = rawptr + 40
+    symptr = relptr + 20
+    result = bytearray(struct.pack("<HHIIIHH", 0x14c, 3, 0, symptr, 7, 0, 0))
+    for name, size, pointer, flags, count in (
+            (b".data", 8, rawptr, 0xc0000040, 2),
+            (b".text$f", 16, rawptr + 8, 0x60000020, 0),
+            (b".text$g", 16, rawptr + 24, 0x60000020, 0)):
+        result += struct.pack("<8sIIIIIIHHI", name, 0, 0, size, pointer,
+                              relptr if count else 0, 0, count, 0, flags)
+    result += struct.pack("<II", 3, 0xfffffffd) + b"\x90" * 32
+    result += struct.pack("<IIH", 0, 3, relocation_type)
+    result += struct.pack("<IIH", 4, 6, relocation_type)
+    result += struct.pack("<8sIhHBB", b"_data", 0, 1, 0, 3, 0)
+    for name, section in ((b"_f", 2), (b"_g", second_section)):
+        result += struct.pack("<8sIhHBB", name, 2, section, 0x20, 2, 1)
+        result += struct.pack("<IIIIH", 0, 12, 0, 0, 0)
+        result += struct.pack("<8sIhHBB", label_name, label_value, section,
+                              label_type, storage, 0)
+    result += struct.pack("<I", 4)
+    return result
+
+
+class CompilerLabelRelocationTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.path = Path(self.temp.name) / "scope.obj"
+
+    def object(self, **kwargs):
+        self.path.write_bytes(object_code_labels(**kwargs))
+        return COFF(self.path)
+
+    def test_dir32_duplicate_labels_use_coff_index_and_function_start(self):
+        data, applied = relocate_data(self.object(), "_data", BASE,
+                                      {"_f": BASE + 0x100, "_g": BASE + 0x200})
+        self.assertEqual(data, struct.pack("<II", BASE + 0x108, BASE + 0x202))
+        self.assertEqual([row["symbol_va"] for row in applied],
+                         [f"0x{BASE + 0x105:08x}", f"0x{BASE + 0x205:08x}"])
+        self.assertTrue(all(row["resolution"] == "derived compiler label in mapped function"
+                            for row in applied))
+
+    def test_rel32_uses_actual_site_and_signed_addend(self):
+        data, _ = relocate_data(self.object(relocation_type=20), "_data", BASE,
+                                {"_f": BASE - 0x100, "_g": BASE - 0x200})
+        self.assertEqual(data, struct.pack("<ii", -0xfc, -0x206))
+
+    def test_explicit_binding_retains_priority(self):
+        data, applied = relocate_data(self.object(), "_data", BASE, {"$LN20": BASE})
+        self.assertEqual(data, struct.pack("<II", BASE + 3, BASE - 3))
+        self.assertTrue(all(row["resolution"] == "explicit binding" for row in applied))
+
+    def test_unmapped_and_ambiguous_owners_are_rejected(self):
+        with self.assertRaisesRegex(BinaryError, "one mapped function owner"):
+            relocate_data(self.object(), "_data", BASE, {})
+        with self.assertRaisesRegex(BinaryError, "one mapped function owner"):
+            relocate_data(self.object(second_section=2), "_data", BASE,
+                          {"_f": BASE, "_g": BASE + 100})
+
+    def test_noncompiler_symbols_are_not_derived(self):
+        for kwargs in ({"storage": 3}, {"label_type": 0x20}, {"label_name": b"local"}):
+            with self.subTest(kwargs=kwargs), self.assertRaisesRegex(BinaryError, "Missing binding"):
+                relocate_data(self.object(**kwargs), "_data", BASE,
+                              {"_f": BASE, "_g": BASE + 100})
+
+    def test_labels_before_start_at_end_and_past_end_are_rejected(self):
+        for value in (1, 14, 16):
+            with self.subTest(value=value), self.assertRaisesRegex(BinaryError, "outside"):
+                relocate_data(self.object(label_value=value), "_data", BASE,
+                              {"_f": BASE, "_g": BASE + 100})
+
+
 class DataMatchTests(unittest.TestCase):
     def setUp(self):
         temporary = tempfile.TemporaryDirectory()

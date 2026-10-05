@@ -111,8 +111,3 @@ int __cdecl NuMain(int argc, char **argv) {
     STUBBED_NAMED("NuMain: Game_Exit and restart decision at 0x00493c12");
     return 0;
 }
-
-int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, int show) {
-    // TODO: Reconstruct the original command-line setup and application startup.
-    return NuMain(0, NULL);
-}

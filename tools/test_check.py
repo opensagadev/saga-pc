@@ -15,7 +15,7 @@ from tools import check as check_module, match as match_module
 from tools.binary import COFF, PE
 from tools.check import check_objects, map_errors
 from tools.lib import tree_digest
-from tools.test_binary import coff_bytes, image, object_common, object_data
+from tools.test_binary import coff_bytes, image, object_code_labels, object_common, object_data
 
 
 TEXT = 0x401000
@@ -201,6 +201,26 @@ class ObjectChecksTests(unittest.TestCase):
         result = self.check({"src/data.cpp": obj},
                             [row("_data", DATA, 4), row("_ref", DATA + 8, 4)])
         self.assertEqual(result["data"], 1)
+
+    def test_scope_labels_resolve_through_complete_mapped_code_owners(self):
+        obj = self.obj(object_code_labels())
+        result = self.check({"src/cpu.cpp": obj},
+                            [row("_data", DATA, 8), row("_f", TEXT, 12), row("_g", TEXT + 32, 12)])
+        self.assertEqual((result["functions"], result["data"]), (2, 1))
+
+    def test_scope_labels_with_unmapped_or_ambiguous_owners_fail(self):
+        for kwargs, records in (
+                ({}, [row("_data", DATA, 8), row("_f", TEXT, 12)]),
+                ({"second_section": 2},
+                 [row("_data", DATA, 8), row("_f", TEXT, 12), row("_g", TEXT + 32, 12)])):
+            with self.subTest(kwargs=kwargs), self.assertRaisesRegex(ValueError, "one mapped function owner"):
+                self.check({"src/cpu.cpp": self.obj(object_code_labels(**kwargs))}, records)
+
+    def test_scope_label_at_complete_function_end_fails(self):
+        obj = self.obj(object_code_labels(label_value=14))
+        with self.assertRaisesRegex(ValueError, "outside its mapped function"):
+            self.check({"src/cpu.cpp": obj},
+                       [row("_data", DATA, 8), row("_f", TEXT, 12), row("_g", TEXT + 32, 12)])
 
     def test_ambiguous_original_mapping_reports_every_candidate_address(self):
         obj = self.obj(coff_bytes(b"\xc3"))

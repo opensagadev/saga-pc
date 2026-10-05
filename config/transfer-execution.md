@@ -3046,3 +3046,92 @@ permanent/area/customiser loader supplier bank. Four lost-device Reset/Recreate
 omissions remain explicit; source/retail progress does not establish boot or
 full lifecycle equivalence. Generated storage is approximately1.3GB; the user's
 three journal edits remain unchanged and outside the commit.
+
+### Native startup and connected loaders checkpoint R (2026-10-05 UTC)
+
+Matching remains primary. Q1105878 passed CI on that exact revision
+(run37241331121). R transfers39 genuine new functions/12,488 complete PC bytes:
+native main/graphics3,198, window/input/shutdown/caps4,278, CPU873,
+customiser3,018 and WORLD1,121. Five existing bodies are included in the coherent
+source group; the already-exact59-byte argument parser earns no new credit.
+Actual297 normal objects link the source executable and contain4,108 function
+and8,309 data definitions. No whole-owner substitutes or supplemental objects
+are used for acceptance.
+
+Hardware/window/keyboard callsites now use their genuine PC owners and state.
+Named offsets bind windowed mode to device parameters+0x158, desktop dimensions
+to+0x608/+0x60c and aspect to existing nuapi+0x10. VARIPTR is4 bytes, confirmed
+by its assertion and native/candidate two-DWORD graphics call arguments; the
+suspected wider union argument was disproved without source changes. Genuine
+RET-only primitive startup,65-byte render-texture pool and202-byte reset helper
+are transferred as observed, without inventing a graphics backend. CPU keeps
+its explicit native EFLAGS.ID omission. Its real AMD probe uses compiler SEH;
+the28-byte scope initializer remains nonexact at its frame offset and two cold
+code pointers. The pinned CRT's genuine406-byte __except_handler4 is a verified
+link/comparison dependency, with no new engine-source credit.
+
+Relocation handling derives section-local compiler labels only from a unique
+complete mapped function and the actual symbol-index/offset. Repeated labels
+in different sections resolve independently. Unmapped, ambiguous, out-of-body
+and ordinary missing references remain fatal. Nine synthetic/integration checks
+exercise these contracts; checks are not weakened to accept unbound labels.
+LLVM18 formatting324 and analysis297 pass. The final core suite passes719 tests
+with three existing skips. All99 customiser cases also pass on actual297 normal
+objects, with genuine parser/arena/category/save/callback dependencies. These
+selected subsystem tests do not establish game boot.
+
+The sole shared-data writer adds81 retail-equal views:1,838 typed working bytes
+and1,847 complete COFF bytes. Two inherited nonexact/unknown COFF zero-padding
+intervals change naturally; their declared WORDffff and NUL initializers are
+unchanged. Across all owners150 new initializer copies include149 full retail
+equalities and the honest CPU scope mismatch. Sixty-three known copies earn
+credit;87 unknown extents earn zero allocation/exact credit. All5,241 old exact
+physical initializers and13 named members/28 known bytes remain. Callback
+storage is qualified only for the native zero-registration launch domain;
+argument storage only for empty/recognized-only arguments, not arbitrary
+unrecognized tokens or an asserted complete capacity. Native algorithms receive
+no artificial limits or success values.
+
+Two previously incorrect native boundaries are independently corrected:
+NuDisplayListInit147 to127 excludes a separate following20-byte function after
+a terminal tail jump; StreamAlloc139 to140 includes its actual final RET.
+Their complete87/135-byte candidates are unchanged and nonexact. Thus newly
+transferred12,488 bytes yield net12,469 compared bytes:1,153,830 to1,166,299.
+Whole-PC fuzzy coverage23.1325189901% to23.3864326593% gains0.2539136692
+percentage points. Exact code196,591 to197,811 adds1,220 unique bytes,
+reaching5.6985589612% of3,471,246 retail text bytes. Fourteen new exact bodies
+contribute1,020 bytes and the repaired existing WinMain adds200. All1,976 old
+exact function copies remain. The unchanged nonexact allocator repeats its
+already-qualified historical scheduling variant; no fresh runtime equivalence
+claim is made. Known exact data union637,870 to639,477 adds1,607 bytes.
+
+Actual source EXEabba01c6 exits5 on Wine with the real assets/display after
+3.337 seconds, preserving its null-write crash at source-image004f4b39 inside
+NuDisplayListAddRenderScene. Debugger reads confirm nonzero real input, HWND
+and D3D factory publication; the device pointer itself was not read. No
+persistent TTalesWindow, Present, repeated frame or loaded scene is accepted.
+The real renderer stream initializer remains missing. BeginFrame is not its
+producer and is not blindly substituted. Native cleanup/world/CPU omissions
+remain explicit rather than bypassed for boot.
+
+For every automated Wine launch, set and query HKCU\Software\Wine\WineDbg
+ShowCrashDialog as REG_DWORD0 in the **test's own WINEPREFIX** before running.
+Retain stderr/crash text, the natural nonzero exit and timeout results. Launch
+with a private process group and clean only that group's surviving processes
+in a finally block, bounded SIGTERM then SIGKILL if necessary; never globally
+kill Wine or wineserver. A real rerun verified no crash dialog and no owned
+leftover game/debugger process. Synthetic cleanup checks covered descendants,
+exception cleanup and an unrelated process remaining alive. This changes the
+debugger UI only, with no game-source/compiler/graphics/guard workaround.
+The retained launcher and qualification are in ignored local runtime research;
+repeat this prefix configuration after prefix recreation.
+
+The checkpoint was delayed for real provider closure, full validation,
+independent old-copy preservation and complete native boundary review. The
+next connected wave is the genuine PC renderer stream initializer/reset/swap
+and state family431 bytes, reconnecting Init's real calls, alongside collection
+constructors518 and the original charconfig variant callback910. Larger
+world/permanent/area loaders remain held at real scene/model value producers,
+not released with fabricated providers. Storage remains about1.3GB. The user's
+journal remains unchanged and outside this commit; the indefinite direct-main
+matching transfer continues.

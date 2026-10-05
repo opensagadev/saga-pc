@@ -303,3 +303,119 @@ PC_INPUT_RUNTIME_PC::PC_INPUT_RUNTIME_PC() {
             break;
     }
 }
+
+STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, pixel_shader_version) == 0xcc);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) + offsetof(GRAPHICS_CAPS_PC, vertex_shader_version) == 0xcc);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) + offsetof(GRAPHICS_CAPS_PC, pixel_shader_version) == 0xd4);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, identifier) + offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, vendor) == 0x5cc);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, identifier) + offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, device_id) ==
+              0x5d0);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, force_software) == 0x5f8);
+extern "C" i32 __cdecl PcConfigureInputGraphicsCaps() {
+    if (PcCapsConfigured)
+        return 1;
+    u32 vertex = PCDeviceBackend.caps.vertex_shader_version;
+    u32 pixel = PCDeviceBackend.caps.pixel_shader_version;
+    PcCapsConfigured = 1;
+    if (vertex >= 0xfffe0101 && pixel >= 0xffff0101)
+        PCDeviceHardwareVertexProcessingPC = 1;
+    if (vertex >= 0xfffe0200) {
+        if (pixel >= 0xffff0200)
+            PCDeviceHardwareVertexProcessingPC = 2;
+        if (vertex > 0xfffe0200 && pixel > 0xffff0200)
+            PCDeviceHardwareVertexProcessingPC = 3;
+    }
+    if (vertex >= 0xfffe0300 && pixel >= 0xffff0300)
+        PCDeviceHardwareVertexProcessingPC = 4;
+    u32 device = PCDeviceBackend.identifier.device_id;
+    u32 vendor = PCDeviceBackend.identifier.vendor;
+    i32 original_class = PCDeviceHardwareVertexProcessingPC;
+    if (!original_class) {
+        if (pixel >= 0xffff0100) {
+            PCDeviceBackend.force_software = 1;
+            PCDeviceHardwareVertexProcessingPC = 1;
+        } else if (vendor == 0x8086) {
+            PCDeviceBackend.force_software = 1;
+            PCDeviceHardwareVertexProcessingPC = 1;
+            if (device == 0x2572 || device == 0x3582 || device == 0x2562 || device == 0x3577)
+                PcIntelShaderFallback = 1;
+        }
+    }
+    if (vendor == 0x10de) {
+        switch (PCDeviceBackend.identifier.device_id) {
+            case 0x311:
+            case 0x312:
+            case 0x314:
+            case 0x321:
+            case 0x322:
+            case 0x323:
+            case 0x326:
+            case 0x341:
+            case 0x342:
+            case 0x343:
+            case 0x344:
+                if (original_class > 1)
+                    PCDeviceHardwareVertexProcessingPC = 1;
+                break;
+        }
+    } else if (vendor == 0x8086) {
+        if (device == 0x2582 || device == 0x2772 || device == 0x29b2)
+            PCDeviceHardwareVertexProcessingPC = 1;
+    }
+    switch (PcWindowOptions.forceshadermodel) {
+        case 1:
+            PCDeviceHardwareVertexProcessingPC = 1;
+            break;
+        case 2:
+            PCDeviceHardwareVertexProcessingPC = 2;
+            break;
+        case 3:
+            PCDeviceHardwareVertexProcessingPC = 4;
+            break;
+    }
+    if (!original_class) {
+        switch (NuLanguageGet()) {
+            case 2:
+                PCGraphicsFatalDiagnostic(
+                    &PCNativeWarningDebugState,
+                    "Impossible de lancer ce jeu sur votre ordinateur.\nUne carte graphique compatible avec Pixel "
+                    "Shaders v.1.1 est n\351cessaire.\nLe jeu va maintenant \352tre ferm\351.");
+                break;
+            case 3:
+                PCGraphicsFatalDiagnostic(
+                    &PCNativeWarningDebugState,
+                    "Lo sentimos, pero tu ordenador no puede ejecutar este juego.\nSe necesita una tarjeta gr\341fica "
+                    "compatible con Pixel Shaders v1.1.\nEl juego finalizar\341 ahora.");
+                break;
+            case 4:
+                PCGraphicsFatalDiagnostic(
+                    &PCNativeWarningDebugState,
+                    "Das Spiel kann auf diesem System leider nicht ausgef\374hrt werden.\nDu brauchst eine Pixel "
+                    "Shader v1.1-kompatible Grafikkarte.\nDas Spiel wird nun beendet.");
+                break;
+            case 5:
+                PCGraphicsFatalDiagnostic(
+                    &PCNativeWarningDebugState,
+                    "Purtroppo, il tuo sistema non \350 in grado di eseguire il gioco.\n\310 necessaria una scheda "
+                    "video che supporti Pixel Shaders v1.1.\nIl gioco verr\340 chiuso.");
+                break;
+            case 6:
+                PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
+                                          "Helaas is je pc niet geschikt voor dit spel.\nJe hebt een grafische kaart "
+                                          "met Pixel Shaders v1.1-ondersteuning nodig.\nHet spel wordt nu afgesloten.");
+                break;
+            case 8:
+                PCGraphicsFatalDiagnostic(
+                    &PCNativeWarningDebugState,
+                    "Beklager, men din maskine kan ikke k\370re dette spil.\nDen skal have et grafikkort der "
+                    "underst\370tter Pixel Shaders v1.1.\nSpillet vil nu blive lukket.");
+                break;
+            default:
+                PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
+                                          "Sorry, but your machine is unable to run this game.\nIt requires a graphics "
+                                          "card which supports Pixel Shaders v1.1.\nThe game will now exit.");
+                break;
+        }
+    }
+    return 1;
+}

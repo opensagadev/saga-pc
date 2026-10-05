@@ -2400,3 +2400,23 @@ i32 __cdecl CharCategory_IsCategory(GAMEOBJECT *object, i32 index) {
         return 0;
     return 1;
 }
+
+static char **CustomiserVariantNamesPc;
+static i32 CustomiserVariantCountPc;
+i32 __cdecl CharVariant_Find(char *name) {
+    i32 index;
+    if (CustomiserVariantNamesPc != NULL && CustomiserVariantCountPc > 0) {
+        for (index = 0; index < CustomiserVariantCountPc; ++index) {
+            if (NuStrICmp(CustomiserVariantNamesPc[index], name) == 0)
+                return index;
+        }
+    }
+    return -1;
+}
+
+void __cdecl CharVariants_Init(char **variants, i32 count) {
+    if (variants != NULL && count > 0) {
+        CustomiserVariantNamesPc = variants;
+        CustomiserVariantCountPc = count;
+    }
+}
