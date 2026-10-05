@@ -3355,3 +3355,68 @@ a separate level caller unit rather than forced inlining controls or WORLD
 ownership. Permanent835 and larger area loaders follow genuine input/model/list
 domains. Storage remains about1.5GB; the user's journal is unchanged and excluded.
 Matching remains primary; authorized whole-project direct-main work continues.
+
+### Connected level fixup, WORLD and shader checkpoint V (2026-10-05 UTC)
+
+U13a382f passed exact-revision CI37259762737. V adds17 compiled functions and
+7,412 newly compared PC bytes: partial FixUpLevels6,860 and shader children552.
+The two existing WORLD callers now call real WorldInfo_Load and CharScenes_LevelLoad;
+these reconnections earn zero new-byte credit. All19 full outputs equal reviewed
+candidates. The actual source executable links304 normal objects,4,170 function
+and8,949 data definitions. LLVM18 formatting331/analysis304 and all719 required
+checks pass with three existing skips. A shader CPU replay uses all304 actual
+normal objects, no replacements/supplements, and passes31 checks. No scene,
+asset, GPU, presentation or gameplay success follows from this selected test.
+
+FixUpLevels preserves167 real cross-unit lookups and168 pointer stores. Its
+full6,860-byte PC extent compares with the complete3,210-byte partial candidate;
+four actual callbacks exist and263 native callback-address actions remain
+explicitly absent. A separate caller unit retains genuine calls while the
+existing level_lifecycle.c stays unchanged; forced inlining controls and fictitious
+callback providers are absent. Original PC filename/private visibility remain
+unproved. Twenty-five ordinary qualified source-local pointer slots retain every
+store naturally;36 foreign-reader slots have shared definitions. All61 zero
+DWORD views match native initializers, with no owning-extent or capacity claim.
+
+The shader children use the original C object owners, original Android
+VirtualStackAllocator lineage, and a native coherent four-member buffer cohort.
+Named16-byte layouts and object fields have checked PC offsets. The buffer
+destructor clears data only when it owns and frees nonnull memory; a borrowed
+pointer is preserved, correcting the earlier candidate. No new vtable, fake
+manager, fabricated return value or raw retail provider is introduced. The
+buffer's original class and filename remain unknown and qualified.
+
+All4,153 old functions and8,725 data definitions were audited. All2,007 prior
+exact code copies and5,418 exact physical initializers survive. All old data
+raw/named regions remain unchanged, including13 named member parents/28 bytes,
+CRC and HANDLE. The only old official code changes are the two WORLD callers
+and the unchanged-source debris allocator's exact retained reverse1,458-byte
+scheduling pair. Its historical equivalence qualification applies; no new
+allocator runtime proof is claimed. Four compiler-label serial differences
+preserve full raw/relocated bytes and owner offsets.
+
+All224 new complete initializer copies/2,375 COFF bytes match retail:163 literal
+copies,25 private pointers/100 bytes and36 shared pointers/144 bytes. All original
+extents remain unknown, so allocation and exact-extent credit are zero. Known
+exact data union640,794 and5,418 physical exact copies remain unchanged.
+Unique compared PC bytes1,186,296 to1,193,708 gain7,412; native objdiff denominator
+1,194,226 retains518 overlap bytes. Whole-PC fuzzy23.8273790410% to23.9176821533%
+gains0.0903031123 percentage points. Fourteen new exact bodies add491 unique
+bytes:200,675 to201,166,5.7952101349% of3,471,246 retail text bytes. Full native
+and candidate extents remain unmasked and untruncated.
+
+The genuine EXEceb7c52d exits5 after2.486 seconds at the same NULL manager
+receiver, source004FD0E0/current Retrieve start004FD0D0/offset16/full208. Its
+own-prefix ShowCrashDialog0 setting suppresses the modal window; real stderr
+and exit remain, and no test-owned process or debugger remains. All304 normal
+objects/416 frozen inputs survive unchanged. Device/Present/repeated frames,
+installed scene and gameplay remain unverified. The real7412e0/7460d0 shader
+publisher remains held on actual parser/dictionary/backend values and HLSL text.
+
+The04:01 checkpoint waited for complete validation. Next release repaired
+Area8,815, getters78 and connected menus2,922 after genuine initialized-reader
+and storage contracts. Permanent835 remains held because natural new shared
+storage can lose old exact data through padding; no padding/placement tuning.
+Continue actual manager/parser children and WORLD minikit/resource families.
+The user's journal stays unchanged and excluded; matching remains primary and
+authorized whole-project direct-main work continues.

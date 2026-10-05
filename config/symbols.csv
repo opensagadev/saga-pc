@@ -487,7 +487,7 @@ address    , symbol                                                         , si
 0x0048cdc0 , _LC_BL_wind_speed                                              , 26    , void __cdecl (NUFPAR_PC *)
 0x0048cde0 , _LC_BL_wind_size                                               , 26    , void __cdecl (NUFPAR_PC *)
 0x0048ce00 , _WorldInfo_Load                                                , 2222  , void __cdecl (WORLDINFO *)
-0x0048da50 , _FixUpLevels                                                   , 6860   ,
+0x48da50,_FixUpLevels,6860,void __cdecl(struct level_fixup_pc_s *)
 0x0048f520 , _Level_SetDefaults                                             , 329   , void __cdecl (LEVELDATA_PC *)
 0x0048f670 , _FixUpAreas                                                    , 73    , void __cdecl (void)
 0x0048f6c0 , _Game_WorldInfo_InitMenu                                       , 48    , "void __cdecl (WORLDINFO *, i32 *, i32 *)"
@@ -4521,6 +4521,12 @@ address    , symbol                                                         , si
 0x00740ec8 , _CoInitializeEx@8                                              , 6     , "HRESULT __stdcall (void *, DWORD)"
 0x00740ece , _SysFreeString@4                                               , 6     , void __stdcall (BSTR)
 0x00740ed4 , _SysAllocString@4                                              , 6     , BSTR __stdcall (const OLECHAR *)
+0x740f00,??0VirtualStackAllocator@@QAE@XZ,16,
+0x740f10,??0VirtualStackAllocator@@QAE@H@Z,38,
+0x740f40,??1VirtualStackAllocator@@QAE@XZ,20,
+0x740f60,?setExternalMemoryPool@VirtualStackAllocator@@QAEXPAXI@Z,50,
+0x740fe0,??0VirtualStackAllocator@@QAE@PAXI@Z,27,
+0x741000,??0VirtualStackAllocator@@QAE@AAU0@I@Z,87,
 0x741570,?AllocateSlot@PC_SHADER_MANAGER_VIEW@@QAEPAUPC_SHADER_OBJECT_FULL_VIEW@@PAH@Z,128,PC_SHADER_OBJECT_FULL_VIEW* __thiscall PC_SHADER_MANAGER_VIEW::AllocateSlot(i32*)
 0x741660,_NuShaderManagerReleaseShader,9,void __cdecl(PC_SHADER_RECORD_VIEW*)
 0x7416c0,_PCShaderCurrentObjectPc,12,void *__cdecl(void)
@@ -4530,8 +4536,14 @@ address    , symbol                                                         , si
 0x741840,_NuShaderManagerRetrieveShaderVariant,31,"PC_SHADER_OBJECT_FULL_VIEW* __cdecl(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*,i32)"
 0x741910,_PCVertexDeclarationFindSlot,82,"PC_VERTEX_DECL_ENTRY_PC* __cdecl(const PC_VERTEX_DECL_ENTRY_PC*,PC_VERTEX_DECL_ENTRY_PC*,i32,u8*)"
 0x741970,_NuGetVertexDeclaration,1684,PC_TEXTURE_RESOURCE_PC* __cdecl(u32)
+0x742330,_NuShaderObjectCreate,24,void __cdecl NuShaderObjectCreate(PC_SHADER_OBJECT_FULL_VIEW *)
 0x742380,_NuShaderObjectUnInit,5,void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*)
+0x742700,_NuShaderObjectDestroy,22,void __cdecl NuShaderObjectDestroy(PC_SHADER_OBJECT_FULL_VIEW *)
+0x743990,_NuShaderObjectBaseCreate,22,void __cdecl NuShaderObjectBaseCreate(PC_SHADER_OBJECT_FULL_VIEW *)
+0x7439b0,_NuShaderObjectBaseDestroy,12,void __cdecl NuShaderObjectBaseDestroy(PC_SHADER_OBJECT_FULL_VIEW *)
 0x7439e0,_NuShaderObjectBaseUnInit,11,void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*)
+0x743d00,_PCShaderObjectCreateHLSLPc,46,void __cdecl PCShaderObjectCreateHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *)
+0x743d30,_PCShaderObjectDestroyHLSLPc,5,void __cdecl PCShaderObjectDestroyHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *)
 0x7440c0,_PCShaderNativeUnInit,72,void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*)
 0x7443d0,?Initialize@PC_SHADER_MATERIAL_FILTER_VIEW@@QAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH@Z,272,"void __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*,i32,i32)"
 0x7444e0,?UnfilteredHasLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,128,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::UnfilteredHasLayer(i32) const
@@ -4542,6 +4554,10 @@ address    , symbol                                                         , si
 0x746260,??0CRC16@@QAE@XZ,255,__thiscall CRC16::CRC16(void)
 0x746360,?hash@CRC16@@SAIPBEH@Z,61,"u32 __cdecl CRC16::hash(const u8*,i32)"
 0x7463a0,?hashInverse@CRC16@@SAIPBEH@Z,64,"u32 __cdecl CRC16::hashInverse(const u8*,i32)"
+0x7484e0,??0ShaderCompilerBufferAllocatorPc@@QAE@H_N@Z,43,
+0x748510,??0ShaderCompilerBufferAllocatorPc@@QAE@AAUVirtualStackAllocator@@H@Z,39,
+0x748540,??1ShaderCompilerBufferAllocatorPc@@QAE@XZ,32,
+0x748590,?Resize@ShaderCompilerBufferAllocatorPc@@QAEXH@Z,69,
 0x0074fbdc , _D3DXCompileShader@40                                          , 6     , "HRESULT __stdcall (const char *, UINT, const D3DXMACRO *, ID3DXInclude *, const char *, const char *, DWORD, ID3DXBuffer **, ID3DXBuffer **, ID3DXConstantTable **)"
 0x0074fbe2 , _D3DXCreateEffectCompiler@28                                   , 6     , "HRESULT __stdcall (const char *, UINT, const D3DXMACRO *, ID3DXInclude *, DWORD, ID3DXEffectCompiler **, ID3DXBuffer **)"
 0x0074fbe8 , _D3DXCreateBuffer@8                                            , 6     , "HRESULT __stdcall (DWORD, ID3DXBuffer **)"
@@ -4850,6 +4866,7 @@ address    , symbol                                                         , si
 0x00751958 , __real@40e0000000000000                                        , 8     , const f64
 0x751960,__real@3fecccccc0000000,8,const f64
 0x751968,__real@4cbebc20,4,const f32
+0x751994,??_C@_0BC@MENOPIIH@deathstarbattle_d?$AA@,,const char[18]
 0x7519a8,__real@3faaaaab,4,const f32
 0x007519b8 , _NuTimeBarColumnStep                                           , 8     , const f64
 0x007519b8 , __real@4008000000000000                                        , 8     , const f64
@@ -5748,7 +5765,9 @@ address    , symbol                                                         , si
 0x00759c04 , _AreaFixUpName_Maul                                            , 8     , char[8]
 0x00759c0c , _AreaFixUpName_Retakepalace                                    , 16    , char[16]
 0x00759c1c , _AreaFixUpName_Palacerescue                                    , 16    , char[16]
+0x759c2c,??_C@_03HBNNNHNM@map?$AA@,,const char[4]
 0x00759c2c , _AreaFixUpName_Map                                             , 4     , char[4]
+0x759c30,??_C@_0N@LGLOIMH@losttemple_c?$AA@,,const char[13]
 0x00759ca0 , _LevelConfigGameKeyword_windsize                               , 9     , const char[9]
 0x00759cac , _LevelConfigGameKeyword_windspeed                              , 10    , const char[10]
 0x00759cb8 , _LevelConfigGameKeyword_max_bombgens                           , 13    , const char[13]
@@ -5793,6 +5812,8 @@ address    , symbol                                                         , si
 0x00759f34 , _LevelConfigGameKeyword_max_levers                             , 11    , const char[11]
 0x00759f40 , _LevelConfigGameKeyword_max_signals                            , 12    , const char[12]
 0x00759f4c , _LevelConfigGameKeyword_max_tightropes                         , 15    , const char[15]
+0x759f5c,??_C@_08EJMNCJJ@new_town?$AA@,,const char[9]
+0x759f68,??_C@_09KOOLCPDH@lego_city?$AA@,,const char[10]
 0x759fb0,??_C@_06GCODKHGB@titles?$AA@,,const char[7]
 0x759fb8,??_C@_09NGANDPLK@titles_uk?$AA@,,const char[10]
 0x759fc4,??_C@_09FEBGKHOD@titles_us?$AA@,,const char[10]
@@ -5827,6 +5848,163 @@ address    , symbol                                                         , si
 0x75a2c8,??_C@_0BL@DLGJKKDO@levels?2titles?2pictures?4gsc?$AA@,,const char[27]
 0x75a2e4,??_C@_0P@OIKLEBLL@levels?2titles?2?$AA@,,const char[15]
 0x75a2f4,??_C@_0BF@CIHFAKLD@levels?2titles?2titles?$AA@,,const char[21]
+0x75a318,??_C@_0BA@OOJKLJFK@fairgroundbad_a?$AA@,,const char[16]
+0x75a328,??_C@_0L@PNFPIIPE@rooftops_a?$AA@,,const char[11]
+0x75a334,??_C@_09LCPPOCPL@batcave_a?$AA@,,const char[10]
+0x75a340,??_C@_0N@PFMOPGOF@SarlaccPit_C?$AA@,,const char[13]
+0x75a350,??_C@_0N@OMNFMHKE@SarlaccPit_B?$AA@,,const char[13]
+0x75a360,??_C@_0N@MHPIJEGH@SarlaccPit_A?$AA@,,const char[13]
+0x75a370,??_C@_0P@JPDFBPKM@EmperorFight_A?$AA@,,const char[15]
+0x75a380,??_C@_0BI@NJHKIHEE@DeathStar2Battle_Midtro?$AA@,,const char[24]
+0x75a398,??_C@_0BD@EEMOOICH@DeathStar2Battle_G?$AA@,,const char[19]
+0x75a3ac,??_C@_0BD@FNNFNJGG@DeathStar2Battle_F?$AA@,,const char[19]
+0x75a3c0,??_C@_0BD@HGPIIKKF@DeathStar2Battle_E?$AA@,,const char[19]
+0x75a3d4,??_C@_0BD@GPODLLOE@DeathStar2Battle_D?$AA@,,const char[19]
+0x75a3e8,??_C@_0BD@DJLJBMGC@DeathStar2Battle_B?$AA@,,const char[19]
+0x75a3fc,??_C@_0BD@BCJEEPKB@DeathStar2Battle_A?$AA@,,const char[19]
+0x75a410,??_C@_0O@BIOADJAF@endorbattle_d?$AA@,,const char[14]
+0x75a420,??_C@_0O@FHKBKPMC@endorbattle_c?$AA@,,const char[14]
+0x75a430,??_C@_0O@EOLKJOID@endorbattle_b?$AA@,,const char[14]
+0x75a440,??_C@_0O@GFJHMNEA@endorbattle_a?$AA@,,const char[14]
+0x75a450,??_C@_0BD@JEOFDIPI@jabbaspalace_Outro?$AA@,,const char[19]
+0x75a464,??_C@_0P@PEHBCFAO@jabbaspalace_e?$AA@,,const char[15]
+0x75a474,??_C@_0P@ONGKBEEP@jabbaspalace_d?$AA@,,const char[15]
+0x75a484,??_C@_0P@LLDALDMJ@jabbaspalace_b?$AA@,,const char[15]
+0x75a494,??_C@_0P@JABNOAAK@jabbaspalace_a?$AA@,,const char[15]
+0x75a4a4,??_C@_0BC@LHPHJFFF@cloudcityescape_c?$AA@,,const char[18]
+0x75a4b8,??_C@_0BC@KOOMKEBE@cloudcityescape_b?$AA@,,const char[18]
+0x75a4cc,??_C@_0BC@IFMBPHNH@cloudcityescape_a?$AA@,,const char[18]
+0x75a4e0,??_C@_0BE@CBDMANJJ@CloudCityTrap_Outro?$AA@,,const char[20]
+0x75a4f4,??_C@_0BA@NLFOBLOI@CloudCityTrap_C?$AA@,,const char[16]
+0x75a504,??_C@_0BA@MCEFCKKJ@CloudCityTrap_B?$AA@,,const char[16]
+0x75a514,??_C@_0BA@OJGIHJGK@CloudCityTrap_A?$AA@,,const char[16]
+0x75a524,??_C@_09BOHNENGD@dagobah_c?$AA@,,const char[10]
+0x75a530,??_C@_09HGGHMCC@dagobah_b?$AA@,,const char[10]
+0x75a53c,??_C@_09EICHOKOF@dagobah_e?$AA@,,const char[10]
+0x75a548,??_C@_09FBDMNLKE@dagobah_d?$AA@,,const char[10]
+0x75a554,??_C@_09CMELCPOB@dagobah_a?$AA@,,const char[10]
+0x75a560,??_C@_0BF@IODFNDHH@AsteroidChase_Midtro?$AA@,,const char[21]
+0x75a578,??_C@_0BA@NONANBFB@AsteroidChase_D?$AA@,,const char[16]
+0x75a588,??_C@_0BA@JBJBEHJG@AsteroidChase_C?$AA@,,const char[16]
+0x75a598,??_C@_0BA@IIIKHGNH@AsteroidChase_B?$AA@,,const char[16]
+0x75a5a8,??_C@_0BA@KDKHCFBE@AsteroidChase_A?$AA@,,const char[16]
+0x75a5b8,??_C@_0N@KMPANOAN@hothescape_d?$AA@,,const char[13]
+0x75a5c8,??_C@_0N@ODLBEIMK@hothescape_c?$AA@,,const char[13]
+0x75a5d8,??_C@_0N@PKKKHJIL@hothescape_b?$AA@,,const char[13]
+0x75a5e8,??_C@_0N@NBIHCKEI@hothescape_a?$AA@,,const char[13]
+0x75a5f8,??_C@_0BB@LPIGIOPL@HothBattle_Outro?$AA@,,const char[17]
+0x75a60c,??_C@_0N@LLGGPPDI@hothbattle_e?$AA@,,const char[13]
+0x75a61c,??_C@_0N@KCHNMOHJ@hothbattle_d?$AA@,,const char[13]
+0x75a62c,??_C@_0N@ONDMFILO@hothbattle_c?$AA@,,const char[13]
+0x75a63c,??_C@_0N@PECHGJPP@hothbattle_b?$AA@,,const char[13]
+0x75a64c,??_C@_0N@NPAKDKDM@hothbattle_a?$AA@,,const char[13]
+0x75a65c,??_C@_0BC@ILJPGOEA@deathstarbattle_c?$AA@,,const char[18]
+0x75a670,??_C@_0BC@JCIEFPAB@deathstarbattle_b?$AA@,,const char[18]
+0x75a684,??_C@_0BC@LJKJAMMC@deathstarbattle_a?$AA@,,const char[18]
+0x75a698,??_C@_0BC@MKFDOIPD@deathstarescape_d?$AA@,,const char[18]
+0x75a6ac,??_C@_0BC@IFBCHODE@deathstarescape_c?$AA@,,const char[18]
+0x75a6c0,??_C@_0BC@JMAJEPHF@deathstarescape_b?$AA@,,const char[18]
+0x75a6d4,??_C@_0BC@LHCEBMLG@deathstarescape_a?$AA@,,const char[18]
+0x75a6e8,??_C@_0BC@EDMLHMBD@deathstarrescue_e?$AA@,,const char[18]
+0x75a6fc,??_C@_0BC@FKNAENFC@deathstarrescue_d?$AA@,,const char[18]
+0x75a710,??_C@_0BC@BFJBNLJF@deathstarrescue_c?$AA@,,const char[18]
+0x75a724,??_C@_0BC@MIKOKNE@deathstarrescue_b?$AA@,,const char[18]
+0x75a738,??_C@_0BC@CHKHLJBH@deathstarrescue_a?$AA@,,const char[18]
+0x75a74c,??_C@_0L@EHLHHKAO@tatooine_e?$AA@,,const char[11]
+0x75a758,??_C@_0L@FOKMELEP@tatooine_d?$AA@,,const char[11]
+0x75a764,??_C@_0L@IPGOMMJ@tatooine_b?$AA@,,const char[11]
+0x75a770,??_C@_0L@CDNLLPAK@tatooine_a?$AA@,,const char[11]
+0x75a77c,??_C@_0M@KPOMJDLL@moseisley_e?$AA@,,const char[12]
+0x75a788,??_C@_0M@LGPHKCPK@moseisley_d?$AA@,,const char[12]
+0x75a794,??_C@_0M@PJLGDEDN@moseisley_c?$AA@,,const char[12]
+0x75a7a0,??_C@_0M@OAKNAFHM@moseisley_b?$AA@,,const char[12]
+0x75a7ac,??_C@_0M@MLIAFGLP@moseisley_a?$AA@,,const char[12]
+0x75a7b8,??_C@_0BB@HIHPDKJG@BlockadeRunner_D?$AA@,,const char[17]
+0x75a7cc,??_C@_0BB@DHDOKMFB@BlockadeRunner_C?$AA@,,const char[17]
+0x75a7e0,??_C@_0BB@COCFJNBA@BlockadeRunner_B?$AA@,,const char[17]
+0x75a7f4,??_C@_07PHJCHDFP@vader_c?$AA@,,const char[8]
+0x75a7fc,??_C@_07OOIJECBO@vader_b?$AA@,,const char[8]
+0x75a804,??_C@_07MFKEBBNN@vader_a?$AA@,,const char[8]
+0x75a80c,??_C@_0L@CLNJCDCJ@Kashyyyk_D?$AA@,,const char[11]
+0x75a818,??_C@_0L@GEJILFOO@Kashyyyk_C?$AA@,,const char[11]
+0x75a824,??_C@_0L@HNIDIEKP@Kashyyyk_B?$AA@,,const char[11]
+0x75a830,??_C@_0L@FGKONHGM@Kashyyyk_A?$AA@,,const char[11]
+0x75a83c,??_C@_0O@IMLJEBJI@temple_status?$AA@,,const char[14]
+0x75a84c,??_C@_08LEPLDLCH@temple_c?$AA@,,const char[9]
+0x75a858,??_C@_08KNOAAKGG@temple_b?$AA@,,const char[9]
+0x75a864,??_C@_0L@EBFMKBGA@Grievous_A?$AA@,,const char[11]
+0x75a870,??_C@_09FCGACOMD@cruiser_g?$AA@,,const char[10]
+0x75a87c,??_C@_09LKIPGLDD@Cruiser_E?$AA@,,const char[10]
+0x75a888,??_C@_09KDJEFKHC@Cruiser_D?$AA@,,const char[10]
+0x75a894,??_C@_09OMNFMMLF@Cruiser_C?$AA@,,const char[10]
+0x75a8a0,??_C@_09NOODKODH@Cruiser_A?$AA@,,const char[10]
+0x75a8ac,??_C@_0L@DEMBBEII@Dogfight_A?$AA@,,const char[11]
+0x75a8b8,??_C@_08DDEDFJKN@Kamino_E?$AA@,,const char[9]
+0x75a8c4,??_C@_0O@PCICLCN@Kamino_Outro1?$AA@,,const char[14]
+0x75a8d4,??_C@_08GFBJPOCL@Kamino_C?$AA@,,const char[9]
+0x75a8e0,??_C@_08FHCPJMKJ@Kamino_A?$AA@,,const char[9]
+0x75a8ec,??_C@_0M@CFOFLKFE@Dooku_Outro?$AA@,,const char[12]
+0x75a8f8,??_C@_07LNOBAOLL@Dooku_C?$AA@,,const char[8]
+0x75a900,??_C@_09DGNFHHJA@Factory_G?$AA@,,const char[10]
+0x75a90c,??_C@_09CPMOEGNB@Factory_F?$AA@,,const char[10]
+0x75a918,??_C@_09BNPICEFD@Factory_D?$AA@,,const char[10]
+0x75a924,??_C@_09ELKCIDNF@Factory_B?$AA@,,const char[10]
+0x75a930,??_C@_0L@CHNJLPPN@dogfight_a?$AA@,,const char[11]
+0x75a93c,??_C@_09DHAHIADK@pursuit_e?$AA@,,const char[10]
+0x75a948,??_C@_09COBMLBHL@pursuit_d?$AA@,,const char[10]
+0x75a954,??_C@_09GBFNCHLM@pursuit_c?$AA@,,const char[10]
+0x75a960,??_C@_09HIEGBGPN@pursuit_b?$AA@,,const char[10]
+0x75a96c,??_C@_09FDGLEFDO@pursuit_a?$AA@,,const char[10]
+0x75a978,??_C@_0BA@FJGDEMHL@bonus_gunship_b?$AA@,,const char[16]
+0x75a988,??_C@_0BA@HCEOBPLI@bonus_gunship_a?$AA@,,const char[16]
+0x75a998,??_C@_09KGAKCOBK@gunship_b?$AA@,,const char[10]
+0x75a9a4,??_C@_09INCHHNNJ@gunship_a?$AA@,,const char[10]
+0x75a9b0,??_C@_0L@BCJGBJLB@Jedi_Outro?$AA@,,const char[11]
+0x75a9bc,??_C@_06FFOCLJFB@Jedi_B?$AA@,,const char[7]
+0x75a9c4,??_C@_06FOGEOMN@Maul_F?$AA@,,const char[7]
+0x75a9cc,??_C@_06COMLBNAO@Maul_E?$AA@,,const char[7]
+0x75a9d4,??_C@_06DHNACMEP@Maul_D?$AA@,,const char[7]
+0x75a9dc,??_C@_06GBIKILMJ@Maul_B?$AA@,,const char[7]
+0x75a9e4,??_C@_06EKKHNIAK@Maul_A?$AA@,,const char[7]
+0x75a9ec,??_C@_08CLGBFDJK@retake_g?$AA@,,const char[9]
+0x75a9f8,??_C@_08BJFHDBBI@retake_e?$AA@,,const char[9]
+0x75aa04,??_C@_08EMAAFJ@retake_d?$AA@,,const char[9]
+0x75aa10,??_C@_08FGBGKHNP@retake_b?$AA@,,const char[9]
+0x75aa1c,??_C@_0BA@KHHDOGCJ@AnakinsFlight_B?$AA@,,const char[16]
+0x75aa2c,??_C@_0M@FMCPDPPF@PodSprint_A?$AA@,,const char[12]
+0x75aa38,??_C@_0P@JIGOANBL@podrace_status?$AA@,,const char[15]
+0x75aa48,??_C@_09HOECLEJN@podrace_c?$AA@,,const char[10]
+0x75aa54,??_C@_09EMHENGBP@podrace_a?$AA@,,const char[10]
+0x75aa60,??_C@_09GHFJIFNM@podrace_b?$AA@,,const char[10]
+0x75aa6c,??_C@_0BA@HGHCHNPN@ANewHope_Status?$AA@,,const char[16]
+0x75aa7c,??_C@_0L@GNGPMGCI@ANewHope_B?$AA@,,const char[11]
+0x75aa88,??_C@_0L@EGECJFOL@ANewHope_A?$AA@,,const char[11]
+0x75aa94,??_C@_0P@DMEKMCNM@ANewHope_Intro?$AA@,,const char[15]
+0x75aaa4,??_C@_0P@MHCHNBOB@PodRace_Status?$AA@,,const char[15]
+0x75aab4,??_C@_0P@NJLNOLDC@PodRace_Outro2?$AA@,,const char[15]
+0x75aac4,??_C@_0P@PCJALIPB@PodRace_Outro1?$AA@,,const char[15]
+0x75aad4,??_C@_09FJBAMIPB@PodRace_A?$AA@,,const char[10]
+0x75aae0,??_C@_09GLCGKKHD@PodRace_C?$AA@,,const char[10]
+0x75aaec,??_C@_09HCDNJLDC@PodRace_B?$AA@,,const char[10]
+0x75aaf8,??_C@_0O@GCAPPKOH@PodRace_Intro?$AA@,,const char[14]
+0x75ab08,??_C@_0BB@FMMBDHNJ@PodRace_Arrival4?$AA@,,const char[17]
+0x75ab1c,??_C@_0BB@BDIAKBBO@PodRace_Arrival3?$AA@,,const char[17]
+0x75ab30,??_C@_0BB@KJLJAFP@PodRace_Arrival2?$AA@,,const char[17]
+0x75ab44,??_C@_0BB@CBLGMDJM@PodRace_Arrival1?$AA@,,const char[17]
+0x75ab58,??_C@_08BILCCAPI@rescue_c?$AA@,,const char[9]
+0x75ab64,??_C@_08GPJBHNDE@gungan_a?$AA@,,const char[9]
+0x75ab70,??_C@_0P@DHGGEIPN@negotiations_c?$AA@,,const char[15]
+0x75ab80,??_C@_0P@COHNHJLM@negotiations_b?$AA@,,const char[15]
+0x75ab90,??_C@_0P@FFACKHP@negotiations_a?$AA@,,const char[15]
+0x75aba0,??_C@_0P@PDMAJLGA@speederchase_a?$AA@,,const char[15]
+0x75abb0,??_C@_0BF@CODCNJNH@losttemple_outrolose?$AA@,,const char[21]
+0x75abc8,??_C@_0BE@MHPFADJK@losttemple_outrowin?$AA@,,const char[20]
+0x75abdc,??_C@_0N@HGBMBMIC@losttemple_f?$AA@,,const char[13]
+0x75abec,??_C@_0N@FNDBEPEB@losttemple_e?$AA@,,const char[13]
+0x75abfc,??_C@_0N@EECKHOAA@losttemple_d?$AA@,,const char[13]
+0x75ac0c,??_C@_0N@DJFNIKEF@losttemple_a?$AA@,,const char[13]
+0x75ac1c,??_C@_07JKABFLJI@credits?$AA@,,const char[8]
+0x75ac24,??_C@_06DJIHEMFI@status?$AA@,,const char[7]
 0x0075ac2c , __real@44000000                                                , 4     , const f32
 0x0075ac30,__real@3f91eb85,4,const f32
 0x75ac34,_TextInputKeyNameTextPc75ac34,,char[5]
@@ -10610,6 +10788,9 @@ address    , symbol                                                         , si
 0x0087aaf8 , _LevHSpecial                                                   , 1056  , NUSPECIALHANDLE [88]
 0x0087ad50 , _LevHSpecial_50                                                , 12    , NUSPECIALHANDLE
 0x0087ad5c , _LevHSpecial_51                                                , 12    , NUSPECIALHANDLE
+0x0087af58,_LevelFixupSlotPc0087af58,,LEVELDATA_PC *
+0x0087af5c,_LevelFixupSlotPc0087af5c,,LEVELDATA_PC *
+0x0087af60,_LevelFixupSlotPc0087af60,,LEVELDATA_PC *
 0x0087af64 , _GOTHAMSTREETS_ADATA                                           , 4     , AREA_DATA_PC *
 0x0087af68 , _ROOFTOPS_ADATA                                                , 4     , AREA_DATA_PC *
 0x0087af6c , _FAIRGROUND_ADATA                                              , 4     , AREA_DATA_PC *
@@ -10684,44 +10865,75 @@ address    , symbol                                                         , si
 0x87b080,_WorldArchiveOneLevelsPc,,LEVELDATA_PC *[11]
 0x0087b0ac , _PODRACEA_LDATA                                                , 4     , LEVELDATA_PC *
 0x0087b0b0 , _PODRACEB_LDATA                                                , 4     , LEVELDATA_PC *
+0x0087b0b4,_LevelFixupSlotPc0087b0b4,,LEVELDATA_PC *
+0x0087b0b8,_LevelFixupSlotPc0087b0b8,,LEVELDATA_PC *
+0x0087b0bc,_LevelFixupSlotPc0087b0bc,,LEVELDATA_PC *
 0x0087b0c0 , _PODSPRINTA_LDATA                                              , 4     , LEVELDATA_PC *
 0x87b0c4,_RETAKEB_LDATA,,LEVELDATA_PC *
 0x87b0c8,_RETAKED_LDATA,,LEVELDATA_PC *
 0x87b0cc,_RETAKEE_LDATA,,LEVELDATA_PC *
+0x0087b0d0,_LevelFixupSlotPc0087b0d0,,LEVELDATA_PC *
+0x0087b0d4,_LevelFixupSlotPc0087b0d4,,LEVELDATA_PC *
 0x87b0d8,_MAULA_LDATA,,LEVELDATA_PC *
+0x0087b0dc,_LevelFixupSlotPc0087b0dc,,LEVELDATA_PC *
 0x87b0e0,_MAULD_LDATA,,LEVELDATA_PC *
+0x0087b0e4,_LevelFixupSlotPc0087b0e4,,LEVELDATA_PC *
 0x87b0e8,_MAULF_LDATA,,LEVELDATA_PC *
 0x87b0ec,_JEDI_B_LDATA,,LEVELDATA_PC *
+0x0087b0f0,_LevelFixupSlotPc0087b0f0,,LEVELDATA_PC *
 0x0087b0f4 , _GUNSHIPA_LDATA                                                , 4     , LEVELDATA_PC *
 0x87b0f8,_GUNSHIPB_LDATA,,LEVELDATA_PC *
 0x0087b0fc , _BONUS_GUNSHIPA_LDATA                                          , 4     , LEVELDATA_PC *
 0x0087b100 , _BONUS_GUNSHIPB_LDATA                                          , 4     , LEVELDATA_PC *
 0x87b104,_CollisionVehicleExcludedLevelPc,,LEVELDATA_PC *
+0x0087b108,_LevelFixupSlotPc0087b108,,LEVELDATA_PC *
+0x0087b10c,_LevelFixupSlotPc0087b10c,,LEVELDATA_PC *
+0x0087b110,_LevelFixupSlotPc0087b110,,LEVELDATA_PC *
 0x87b114,_BOUNTYHUNTERPURSUITE_LDATA,,LEVELDATA_PC *
 0x0087b118 , _DOGFIGHTA_LDATA                                               , 4     , LEVELDATA_PC *
 0x87b11c,_FACTORYB_LDATA,,LEVELDATA_PC *
 0x87b120,_FACTORYD_LDATA,,LEVELDATA_PC *
 0x87b124,_FACTORYF_LDATA,,LEVELDATA_PC *
 0x87b128,_FACTORYG_LDATA,,LEVELDATA_PC *
+0x0087b12c,_LevelFixupSlotPc0087b12c,,LEVELDATA_PC *
 0x87b130,_KAMINOC_LDATA,,LEVELDATA_PC *
 0x0087b134 , _KAMINOE_LDATA                                                 , 4     , LEVELDATA_PC *
+0x0087b138,_LevelFixupSlotPc0087b138,,LEVELDATA_PC *
 0x87b13c,_DOOKUC_LDATA,,LEVELDATA_PC *
+0x0087b140,_LevelFixupSlotPc0087b140,,LEVELDATA_PC *
+0x0087b144,_LevelFixupSlotPc0087b144,,LEVELDATA_PC *
+0x0087b148,_LevelFixupSlotPc0087b148,,LEVELDATA_PC *
+0x0087b14c,_LevelFixupSlotPc0087b14c,,LEVELDATA_PC *
+0x0087b150,_LevelFixupSlotPc0087b150,,LEVELDATA_PC *
+0x0087b154,_LevelFixupSlotPc0087b154,,LEVELDATA_PC *
+0x0087b158,_LevelFixupSlotPc0087b158,,LEVELDATA_PC *
+0x0087b15c,_LevelFixupSlotPc0087b15c,,LEVELDATA_PC *
 0x87b160,_KASHYYYKD_LDATA,,LEVELDATA_PC *
+0x0087b164,_LevelFixupSlotPc0087b164,,LEVELDATA_PC *
 0x87b168,_CRUISERC_LDATA,,LEVELDATA_PC*
 0x0087b16c , _CRUISERD_LDATA                                                 , 4      , LEVELDATA_PC *
+0x0087b170,_LevelFixupSlotPc0087b170,,LEVELDATA_PC *
 0x87b174,_CRUISERG_LDATA,,LEVELDATA_PC *
 0x87b178,_VADERA_LDATA,,LEVELDATA_PC *
+0x0087b17c,_LevelFixupSlotPc0087b17c,,LEVELDATA_PC *
 0x0087b180 , _VADERC_LDATA                                                  , 4     , LEVELDATA_PC *
 0x87b184,_WorldArchiveThreeLevelsPc,,LEVELDATA_PC *[4]
+0x0087b194,_LevelFixupSlotPc0087b194,,LEVELDATA_PC *
 0x87b198,_ObstacleReturnLevelPc,,LEVELDATA_PC *
+0x0087b19c,_LevelFixupSlotPc0087b19c,,LEVELDATA_PC *
 0x87b1a0,_TATOOINEA_LDATA,,LEVELDATA_PC *
 0x87b1a4,_TATOOINEB_LDATA,,LEVELDATA_PC *
+0x0087b1a8,_LevelFixupSlotPc0087b1a8,,LEVELDATA_PC *
+0x0087b1ac,_LevelFixupSlotPc0087b1ac,,LEVELDATA_PC *
 0x87b1b0,_MOSEISLEYA_LDATA,,LEVELDATA_PC *
 0x0087b1b4 , _MOSEISLEYB_LDATA                                              , 4     , LEVELDATA_PC *
 0x87b1b8,_MOSEISLEYC_LDATA,,LEVELDATA_PC *
+0x0087b1bc,_LevelFixupSlotPc0087b1bc,,LEVELDATA_PC *
+0x0087b1c0,_LevelFixupSlotPc0087b1c0,,LEVELDATA_PC *
 0x87b1c4   , _DEATHSTARRESCUEA_LDATA                                        , 4     , LEVELDATA_PC *
 0x87b1c8,_DEATHSTARRESCUEB_LDATA,,LEVELDATA_PC *
 0x87b1cc,_DEATHSTARRESCUEC_LDATA,,LEVELDATA_PC *
+0x0087b1d0,_LevelFixupSlotPc0087b1d0,,LEVELDATA_PC *
 0x87b1d4,_DEATHSTARRESCUEE_LDATA,,LEVELDATA_PC *
 0x87b1d8,_DEATHSTARESCAPEA_LDATA,,LEVELDATA_PC *
 0x87b1dc,_DEATHSTARESCAPEB_LDATA,,LEVELDATA_PC *
@@ -10732,35 +10944,62 @@ address    , symbol                                                         , si
 0x87b1f0,_DEATHSTARBATTLEC_LDATA,,LEVELDATA_PC *
 0x0087b1f4 , _DEATHSTARBATTLED_LDATA                                        , 4     , LEVELDATA_PC *
 0x0087b1fc , _HOTHBATTLEA_LDATA                                             , 4     , LEVELDATA_PC *
+0x0087b200,_LevelFixupSlotPc0087b200,,LEVELDATA_PC *
+0x0087b204,_LevelFixupSlotPc0087b204,,LEVELDATA_PC *
+0x0087b208,_LevelFixupSlotPc0087b208,,LEVELDATA_PC *
+0x0087b20c,_LevelFixupSlotPc0087b20c,,LEVELDATA_PC *
+0x0087b210,_LevelFixupSlotPc0087b210,,LEVELDATA_PC *
 0x87b214,_HOTHESCAPEA_LDATA,,LEVELDATA_PC *
+0x0087b218,_LevelFixupSlotPc0087b218,,LEVELDATA_PC *
 0x87b21c,_HOTHESCAPEC_LDATA,,LEVELDATA_PC *
+0x0087b220,_LevelFixupSlotPc0087b220,,LEVELDATA_PC *
+0x0087b224,_LevelFixupSlotPc0087b224,,LEVELDATA_PC *
+0x0087b228,_LevelFixupSlotPc0087b228,,LEVELDATA_PC *
 0x87b22c,_ASTEROIDCHASEC_LDATA,,LEVELDATA_PC *
 0x87b230   , _ASTEROIDCHASED_LDATA                                          , 4     , LEVELDATA_PC *
+0x0087b234,_LevelFixupSlotPc0087b234,,LEVELDATA_PC *
 0x87b238,_CLOUDCITYESCAPEA_LDATA,,LEVELDATA_PC *
+0x0087b23c,_LevelFixupSlotPc0087b23c,,LEVELDATA_PC *
 0x87b240,_CLOUDCITYESCAPEC_LDATA,,LEVELDATA_PC *
 0x87b244,_CLOUDCITYTRAPA_LDATA,,LEVELDATA_PC *
 0x87b248,_CLOUDCITYTRAPB_LDATA,4,LEVELDATA_PC *
+0x0087b24c,_LevelFixupSlotPc0087b24c,,LEVELDATA_PC *
+0x0087b250,_LevelFixupSlotPc0087b250,,LEVELDATA_PC *
 0x0087b254 , _SPEEDERCHASEA_LDATA                                           , 4     , LEVELDATA_PC *
+0x0087b258,_LevelFixupSlotPc0087b258,,LEVELDATA_PC *
+0x0087b25c,_LevelFixupSlotPc0087b25c,,LEVELDATA_PC *
 0x87b260,_DAGOBAHC_LDATA,,LEVELDATA_PC *
+0x0087b264,_LevelFixupSlotPc0087b264,,LEVELDATA_PC *
+0x0087b268,_LevelFixupSlotPc0087b268,,LEVELDATA_PC *
 0x87b26c   , _DEATHSTAR2BATTLEA_LDATA                                       , 4     , LEVELDATA_PC *
 0x87b270,_DEATHSTAR2BATTLEB_LDATA,,LEVELDATA_PC *
 0x87b274,_DEATHSTAR2BATTLED_LDATA,,LEVELDATA_PC *
 0x0087b278 , _DEATHSTAR2BATTLEE_LDATA                                       , 4     , LEVELDATA_PC *
 0x0087b27c , _DEATHSTAR2BATTLEF_LDATA                                       , 4     , LEVELDATA_PC *
 0x0087b280 , _DEATHSTAR2BATTLEG_LDATA                                       , 4     , LEVELDATA_PC *
+0x0087b284,_LevelFixupSlotPc0087b284,,LEVELDATA_PC *
 0x87b288,_EMPERORFIGHTA_LDATA,,LEVELDATA_PC *
 0x87b28c,_SARLACCPITA_LDATA,,LEVELDATA_PC *
 0x87b290,_SARLACCPITB_LDATA,,LEVELDATA_PC *
 0x87b294,_SARLACCPITC_LDATA,,LEVELDATA_PC *
+0x0087b298,_LevelFixupSlotPc0087b298,,LEVELDATA_PC *
+0x0087b29c,_LevelFixupSlotPc0087b29c,,LEVELDATA_PC *
 0x87b2a0,_JABBASPALACEA_LDATA,,LEVELDATA_PC *
 0x87b2a4,_JABBASPALACEB_LDATA,,LEVELDATA_PC *
 0x87b2a8,_JABBASPALACED_LDATA,,LEVELDATA_PC *
 0x87b2ac,_JABBASPALACEE_LDATA,,LEVELDATA_PC *
+0x0087b2b0,_LevelFixupSlotPc0087b2b0,,LEVELDATA_PC *
 0x87b2b4,_ENDORBATTLEA_LDATA,,LEVELDATA_PC *
 0x87b2b8,_ENDORBATTLEB_LDATA,,LEVELDATA_PC *
 0x87b2bc,_ENDORBATTLEC_LDATA,,LEVELDATA_PC *
 0x87b2c0,_ENDORBATTLED_LDATA,,LEVELDATA_PC *
+0x0087b2c4,_LevelFixupSlotPc0087b2c4,,LEVELDATA_PC *
 0x0087b2c8 , _UpdateSockets_LDATA                                           , 4     , LEVELDATA_PC *
+0x0087b2cc,_LevelFixupSlotPc0087b2cc,,LEVELDATA_PC *
+0x0087b2d0,_LevelFixupSlotPc0087b2d0,,LEVELDATA_PC *
+0x0087b2d4,_LevelFixupSlotPc0087b2d4,,LEVELDATA_PC *
+0x0087b2d8,_LevelFixupSlotPc0087b2d8,,LEVELDATA_PC *
+0x0087b2dc,_LevelFixupSlotPc0087b2dc,,LEVELDATA_PC *
 0x0087b2ec , _LevelProgressData                                             , 4     , LEVEL_PROGRESS *
 0x0087b2f0,_LevDeaths,,i32
 0x0087b2f4 , _LevelChangesInArea                                            , 4     , i32

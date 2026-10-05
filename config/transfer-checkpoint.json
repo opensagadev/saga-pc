@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1240191,
-    "matched_code_bytes": 200675,
-    "matching_percent": 5.781065358087557,
-    "fuzzy_coverage_percent": 23.82737904099036,
-    "mapped_functions": 4347,
-    "matched_functions": 2004,
-    "objdiff_fuzzy_percent": 69.73339,
-    "objdiff_total_code": 1186814,
+    "mapped_code_bytes": 1240743,
+    "matched_code_bytes": 201166,
+    "matching_percent": 5.795210134919853,
+    "fuzzy_coverage_percent": 23.917682153336752,
+    "mapped_functions": 4363,
+    "matched_functions": 2018,
+    "objdiff_fuzzy_percent": 69.563065,
+    "objdiff_total_code": 1194226,
     "image_bytes": 40067072,
-    "mapped_bytes": 1903302,
-    "mapping_percent": 4.750289714207217,
+    "mapped_bytes": 1903854,
+    "mapping_percent": 4.7516674040968105,
     "matched_data_region_bytes": 640794
   },
   "newly_compared": [
@@ -4183,6 +4183,176 @@
       ],
       "exact": false,
       "objdiff_percent": 54.516666
+    },
+    {
+      "symbol": "_NuShaderObjectBaseCreate",
+      "pc": "0x00743990",
+      "original_bytes": 22,
+      "units": [
+        "src/nu2api/nushaderobjectbase.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 99.71429
+    },
+    {
+      "symbol": "_NuShaderObjectBaseDestroy",
+      "pc": "0x007439b0",
+      "original_bytes": 12,
+      "units": [
+        "src/nu2api/nushaderobjectbase.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuShaderObjectCreate",
+      "pc": "0x00742330",
+      "original_bytes": 24,
+      "units": [
+        "src/nu2api/nushaderobject.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuShaderObjectDestroy",
+      "pc": "0x00742700",
+      "original_bytes": 22,
+      "units": [
+        "src/nu2api/nushaderobject.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_PCShaderObjectCreateHLSLPc",
+      "pc": "0x00743d00",
+      "original_bytes": 46,
+      "units": [
+        "src/nu2api/nushaderobject_pc.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_PCShaderObjectDestroyHLSLPc",
+      "pc": "0x00743d30",
+      "original_bytes": 5,
+      "units": [
+        "src/nu2api/nushaderobject_pc.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "??0VirtualStackAllocator@@QAE@XZ",
+      "pc": "0x00740f00",
+      "original_bytes": 16,
+      "units": [
+        "src/gamelib/util/VirtualStackAllocator.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "??0VirtualStackAllocator@@QAE@H@Z",
+      "pc": "0x00740f10",
+      "original_bytes": 38,
+      "units": [
+        "src/gamelib/util/VirtualStackAllocator.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "??1VirtualStackAllocator@@QAE@XZ",
+      "pc": "0x00740f40",
+      "original_bytes": 20,
+      "units": [
+        "src/gamelib/util/VirtualStackAllocator.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?setExternalMemoryPool@VirtualStackAllocator@@QAEXPAXI@Z",
+      "pc": "0x00740f60",
+      "original_bytes": 50,
+      "units": [
+        "src/gamelib/util/VirtualStackAllocator.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "??0VirtualStackAllocator@@QAE@PAXI@Z",
+      "pc": "0x00740fe0",
+      "original_bytes": 27,
+      "units": [
+        "src/gamelib/util/VirtualStackAllocator.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "??0VirtualStackAllocator@@QAE@AAU0@I@Z",
+      "pc": "0x00741000",
+      "original_bytes": 87,
+      "units": [
+        "src/gamelib/util/VirtualStackAllocator.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "??0ShaderCompilerBufferAllocatorPc@@QAE@H_N@Z",
+      "pc": "0x007484e0",
+      "original_bytes": 43,
+      "units": [
+        "src/nu2api/shader_buffer_allocator.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "??0ShaderCompilerBufferAllocatorPc@@QAE@AAUVirtualStackAllocator@@H@Z",
+      "pc": "0x00748510",
+      "original_bytes": 39,
+      "units": [
+        "src/nu2api/shader_buffer_allocator.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 39.875
+    },
+    {
+      "symbol": "??1ShaderCompilerBufferAllocatorPc@@QAE@XZ",
+      "pc": "0x00748540",
+      "original_bytes": 32,
+      "units": [
+        "src/nu2api/shader_buffer_allocator.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?Resize@ShaderCompilerBufferAllocatorPc@@QAEXH@Z",
+      "pc": "0x00748590",
+      "original_bytes": 69,
+      "units": [
+        "src/nu2api/shader_buffer_allocator.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_FixUpLevels",
+      "pc": "0x0048da50",
+      "original_bytes": 6860,
+      "units": [
+        "src/legoapi/level_fixup.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 37.39116
     }
   ],
   "previous_exact_functions_lost": [],
@@ -21329,6 +21499,137 @@
       "user_journal_preserved": true,
       "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
       "generated_storage_bytes_approx": 1510000000,
+      "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct-main pushes authorized."
+    },
+    {
+      "checkpoint": "Connected level fixup, WORLD and shader children checkpoint V (2026-10-05 UTC)",
+      "baseline_commit": "13a382fa989e3a0a4705109b57653a3af24e95c3",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1240191,
+        "matched_code_bytes": 200675,
+        "matching_percent": 5.781065358087557,
+        "fuzzy_coverage_percent": 23.82737904099036,
+        "mapped_functions": 4347,
+        "matched_functions": 2004,
+        "objdiff_fuzzy_percent": 69.73339,
+        "objdiff_total_code": 1186814,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1903302,
+        "mapping_percent": 4.750289714207217,
+        "matched_data_region_bytes": 640794
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1240743,
+        "matched_code_bytes": 201166,
+        "matching_percent": 5.795210134919853,
+        "fuzzy_coverage_percent": 23.917682153336752,
+        "mapped_functions": 4363,
+        "matched_functions": 2018,
+        "objdiff_fuzzy_percent": 69.563065,
+        "objdiff_total_code": 1194226,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1903854,
+        "mapping_percent": 4.7516674040968105,
+        "matched_data_region_bytes": 640794
+      },
+      "new_source_functions": 17,
+      "actual_new_transfer_PC_bytes": 7412,
+      "new_unique_compared_PC_bytes": 7412,
+      "unique_compared_code_bytes": 1193708,
+      "native_objdiff_denominator": 1194226,
+      "new_native_family_bytes": {
+        "partial_level_fixup": 6860,
+        "shader_children": 552
+      },
+      "whole_PC_fuzzy_delta_pp": 0.09030311234639399,
+      "new_exact_PC_bytes": 491,
+      "new_exact_source_functions": 14,
+      "accepted_complete_bodies": 19,
+      "old_full_function_copies": 4153,
+      "old_exact_code_copies_preserved": 2007,
+      "current_exact_code_copies": 2021,
+      "old_full_data_definitions": 8725,
+      "old_report_data_copies": 6362,
+      "old_exact_physical_data_copies_preserved": 5418,
+      "current_exact_physical_data_copies": 5418,
+      "current_full_function_definitions": 4170,
+      "current_full_data_definitions": 8949,
+      "existing_real_caller_reconnections": [
+        "WorldInfo_StreamLevel -> WorldInfo_Load",
+        "WorldInfo_Load -> CharScenes_LevelLoad"
+      ],
+      "existing_caller_new_byte_credit": 0,
+      "level_fixup_qualification": "Full native6860 and candidate3210;167 real lookup calls and168 actual pointer stores. Four real callbacks and263 missing callback-address actions remain explicit. Separate genuine cross-unit caller preserves native lookup calls; existing level_lifecycle.c unchanged. Original PC caller filename/private visibility unproved;25 ordinary qualified source-local slots retain all stores naturally.",
+      "prior_official_function_changes": [
+        "Two reviewed WORLD callers reconnect actual cdecl1 services.",
+        "Unchanged-source DebReAlloc2 reproduces exact retained historical reverse1458 scheduling pair; no fresh runtime equivalence claim."
+      ],
+      "local_label_qualifications": 4,
+      "old_raw_named_data_changes": 0,
+      "new_complete_initializer_copies": 224,
+      "new_complete_initializer_COFF_bytes": 2375,
+      "new_unknown_initializer_copies": 224,
+      "all_new_complete_initializer_copies_retail_equal": true,
+      "new_unique_known_exact_data_bytes": 0,
+      "known_exact_data_union": 640794,
+      "shared_new_pointer_slots": 36,
+      "shared_typed_and_full_initializer_bytes": 144,
+      "qualified_private_pointer_slots": 25,
+      "private_typed_and_full_initializer_bytes": 100,
+      "new_full_literal_copies": 163,
+      "new_known_original_extents": 0,
+      "unknown_extent_allocation_and_exact_credit": 0,
+      "shader_qualification": "Six original C object Create/Destroy children plus6 actual VirtualStackAllocator members and4 native coherent buffer allocator members. No new storage/vtable/helpers. Buffer destructor preserves borrowed data; former unconditional clear repaired. Historical buffer class/filename not claimed.",
+      "verified_checks": {
+        "make_build_check_objects_exit_code": 0,
+        "make_check_exit_code": 0,
+        "make_match_exit_code": 0,
+        "tests": 719,
+        "existing_skips": 3,
+        "format_source_headers": 331,
+        "tidy_normal_units": 304,
+        "actual_normal_objects": 304,
+        "function_definitions": 4170,
+        "data_definitions": 8949,
+        "whole_owner_replacements": 0,
+        "supplemental_objects": 0,
+        "selected_actual_normal_shader_checks": 31,
+        "selected_actual_normal_shader_failures": 0
+      },
+      "accepted_full_bodies_sha256": "d56d1ed6126f198d27ee3e97cbe9a82c7de6407350f8d481165116a66181327e",
+      "required_checks_receipt_sha256": "9dc3556f2a011feab6bcbc01e8ea20cbd581f045a7f5b735a042b205f4f32e76",
+      "independent_actual_output_receipt_sha256": "0983e04783a1692a5fe8bdaeedd74e00affb3314dbd9c9e0bc707e8d78567bf2",
+      "sole_writer_normal_report_release_sha256": "535a4ca17a7678d1fdfaa3bcb2a8acabdbe97c96b77d22fdeb293e819f6a26fa",
+      "selected_actual_normal31_receipt_sha256": "9b2cd641157c715af3a308c1e536aa9bbbbb28f045a416810931b9b37a24c439",
+      "runtime_receipt_sha256": "ba9041ba62af48cadbd62b05794b55b31015d371c911baaf22d8170f87f01732",
+      "runtime_summary": {
+        "source_exit_code": 5,
+        "seconds": 2.485976,
+        "source_exe_sha256": "ceb7c52d1fc2af289d12fd375414d22de7ec424db894fa0e6d436a52a37f886c",
+        "failure": "Same NULL shader-manager receiver, actual source004FD0E0/current Retrieve start004FD0D0/full208/offset16.",
+        "ShowCrashDialog": 0,
+        "crash_dialog_observed": false,
+        "owned_processes_leftover": false,
+        "window_input_device_Present_scene_gameplay": "Unverified"
+      },
+      "previous_pushed_CI": {
+        "headSha": "13a382fa989e3a0a4705109b57653a3af24e95c3",
+        "conclusion": "success",
+        "url": "https://github.com/opensagadev/saga-pc/actions/runs/37259762737"
+      },
+      "remaining_contracts": [
+        "WORLD six true actions: Hub_LoadAndFixUpMiniKits, MiniKit_Load/InitPieces, CharacterMiniKits_Load, RippleEffects_Configure and SetAreaPickupGravity; scene texture-ID fixup stays explicit.",
+        "FixUpLevels263 native callback-address actions remain absent; partial source is not level-setup success.",
+        "Real shader manager7412e0/7460d0 publication still requires actual parser/dictionary/backend values and HLSL source adaptation.",
+        "Area8815 guards/bindings now corrected and independently accepted; initialized freeplay/extra-model tables and sole-writer storage remain separate release gates. Getter3/78 and menu3/2922 form next connected wave.",
+        "Perm835 source qualified;15 new shared initializers remain held because natural whole-owner padding changes would lose existing known exact data. No placement tuning or fake providers."
+      ],
+      "next_connected_wave": "Area8815/getters78/menu2922 connected families and true manager dictionary/parser children; replenish WORLD minikit/resource families across whole project.",
+      "checkpoint_delay": "04:01UTC checkpoint delayed for actual normal build,719 required checks, complete retail comparison and independent preservation; larger Area/Perm state remains held rather than weakening checks.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
       "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct-main pushes authorized."
     }
   ]

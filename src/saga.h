@@ -16417,6 +16417,41 @@ extern "C" {
 }
 #endif
 
+#ifdef __cplusplus
+struct VirtualStackAllocator {
+    u8 owns_memory;
+    u8 *cursor;
+    u8 *end;
+    u8 *base;
+    VirtualStackAllocator();
+    VirtualStackAllocator(i32);
+    VirtualStackAllocator(void *, u32);
+    VirtualStackAllocator(VirtualStackAllocator &, u32);
+    ~VirtualStackAllocator();
+    void setExternalMemoryPool(void *, u32);
+};
+STATIC_ASSERT(sizeof(VirtualStackAllocator) == 0x10);
+STATIC_ASSERT(offsetof(VirtualStackAllocator, owns_memory) == 0);
+STATIC_ASSERT(offsetof(VirtualStackAllocator, cursor) == 4);
+STATIC_ASSERT(offsetof(VirtualStackAllocator, end) == 8);
+STATIC_ASSERT(offsetof(VirtualStackAllocator, base) == 12);
+struct ShaderCompilerBufferAllocatorPc {
+    u8 *data;
+    i32 length;
+    i32 capacity;
+    u8 owns_memory;
+    ShaderCompilerBufferAllocatorPc(i32, bool);
+    ShaderCompilerBufferAllocatorPc(VirtualStackAllocator &, i32);
+    ~ShaderCompilerBufferAllocatorPc();
+    void Resize(i32);
+};
+STATIC_ASSERT(sizeof(ShaderCompilerBufferAllocatorPc) == 16);
+STATIC_ASSERT(offsetof(ShaderCompilerBufferAllocatorPc, data) == 0);
+STATIC_ASSERT(offsetof(ShaderCompilerBufferAllocatorPc, length) == 4);
+STATIC_ASSERT(offsetof(ShaderCompilerBufferAllocatorPc, capacity) == 8);
+STATIC_ASSERT(offsetof(ShaderCompilerBufferAllocatorPc, owns_memory) == 12);
+#endif
+
 struct CUT_PLAYER_ACTIVE_PC;
 #ifdef __cplusplus
 extern "C" {
@@ -16498,6 +16533,71 @@ extern "C" {
     APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i8);
     void __cdecl CharScenes_LevelLoad(WORLDINFO *);
     void __cdecl CharScenes_AreaLoad(APICHARACTERMODELLIST *, VARIPTR *, VARIPTR);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl NuShaderObjectBaseCreate(PC_SHADER_OBJECT_FULL_VIEW *);
+    void __cdecl NuShaderObjectBaseDestroy(PC_SHADER_OBJECT_FULL_VIEW *);
+    void __cdecl NuShaderObjectCreate(PC_SHADER_OBJECT_FULL_VIEW *);
+    void __cdecl NuShaderObjectDestroy(PC_SHADER_OBJECT_FULL_VIEW *);
+    void __cdecl PCShaderObjectCreateHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *);
+    void __cdecl PCShaderObjectDestroyHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b0b4;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b0b8;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b0bc;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b0f0;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b12c;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b138;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b140;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b148;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b150;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b154;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b164;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b170;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b17c;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b194;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b1a8;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b1ac;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b1bc;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b1c0;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b1d0;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b200;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b204;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b208;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b210;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b218;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b220;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b224;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b228;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b234;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b250;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b258;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b264;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b268;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b284;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b2b0;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b2c4;
+    extern LEVELDATA_PC *LevelFixupSlotPc0087b2dc;
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup);
+
 #ifdef __cplusplus
 }
 #endif

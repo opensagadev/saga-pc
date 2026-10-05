@@ -839,7 +839,7 @@ void __cdecl WorldInfo_StreamLevel(BGPROCINFO *bg_info) {
         LWORLD = WORLD == &WorldInfo[0] ? &WorldInfo[1] : &WorldInfo[0];
     if (WorldInfo_Reset(LWORLD, next_level) != 0) {
         waiting_for_level = next_level;
-        STUBBED_NAMED(WorldInfo_Load); /* Native 56069c: (LWORLD). */
+        WorldInfo_Load(LWORLD); /* Native 56069c: actual ordinary cdecl1. */
     }
     waiting_for_level = -1;
     if (LWORLD->loaded != 0)
@@ -1036,7 +1036,7 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
     world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
     resource->character_scenes = world->giz_buffer.void_ptr;
     world->giz_buffer.addr += CHARCOUNT * 0x10;
-    STUBBED_NAMED(CharScenes_LevelLoad); /* Native 48d282: (world). */
+    CharScenes_LevelLoad(world); /* Native 48d282: actual ordinary cdecl1. */
     if ((world->current_level->flags & 2) != 0 && (world->current_level->flags & 0xe0) == 0)
         world->sock_sys = SockSysInit(&world->giz_buffer, world->buffer_end, world->current_gscn);
     LevelSplines_InitForLevel(world);

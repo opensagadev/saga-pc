@@ -1,6 +1,45 @@
 #include "saga.h"
 
 extern "C" {
+    LEVELDATA_PC *LevelFixupSlotPc0087b0b4 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b0b8 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b0bc = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b0f0 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b12c = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b138 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b140 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b148 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b150 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b154 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b164 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b170 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b17c = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b194 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b1a8 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b1ac = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b1bc = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b1c0 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b1d0 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b200 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b204 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b208 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b210 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b218 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b220 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b224 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b228 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b234 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b250 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b258 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b264 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b268 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b284 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b2b0 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b2c4 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b2dc = NULL;
+}
+
+extern "C" {
     extern const char MenuTechnicalDefaultTextPc75f310[5] = "Game";
     char *apiGameName = (char *)MenuTechnicalDefaultTextPc75f310;
     char *apiGameTitle = (char *)MenuTechnicalDefaultTextPc75f310;
