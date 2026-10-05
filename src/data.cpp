@@ -1,6 +1,121 @@
 #include "saga.h"
 
 extern "C" {
+    extern const char MenuTechnicalDefaultTextPc75f310[5] = "Game";
+    char *apiGameName = (char *)MenuTechnicalDefaultTextPc75f310;
+    char *apiGameTitle = (char *)MenuTechnicalDefaultTextPc75f310;
+    extern char TextInputKeyNameTextPc7516c0[];
+    char *apiGameSubTitle = TextInputKeyNameTextPc7516c0;
+    extern const char MenuTechnicalDefaultTextPc75f2c4[4] = "Yes";
+    char *apitxt_YES = (char *)MenuTechnicalDefaultTextPc75f2c4;
+    extern const char MenuTechnicalDefaultTextPc75f2c0[3] = "No";
+    char *apitxt_NO = (char *)MenuTechnicalDefaultTextPc75f2c0;
+    extern const char MenuTechnicalDefaultTextPc75f2bc[3] = "OK";
+    char *apitxt_OK = (char *)MenuTechnicalDefaultTextPc75f2bc;
+    extern const char MenuTechnicalDefaultTextPc75f2b4[7] = "Cancel";
+    char *apitxt_CANCEL = (char *)MenuTechnicalDefaultTextPc75f2b4;
+    extern const char MenuTechnicalDefaultTextPc75f2ac[6] = "Retry";
+    char *apitxt_RETRY = (char *)MenuTechnicalDefaultTextPc75f2ac;
+    extern const char MenuTechnicalDefaultTextPc75f2a4[8] = "Profile";
+    char *apitxt_SLOT = (char *)MenuTechnicalDefaultTextPc75f2a4;
+    extern const char MenuTechnicalDefaultTextPc75f29c[8] = "Present";
+    char *apitxt_PRESENT = (char *)MenuTechnicalDefaultTextPc75f29c;
+    extern const char MenuTechnicalDefaultTextPc75f294[6] = "Empty";
+    char *apitxt_EMPTY = (char *)MenuTechnicalDefaultTextPc75f294;
+    extern const char MenuTechnicalDefaultTextPc75f288[9] = "No Space";
+    char *apitxt_NOSPACE = (char *)MenuTechnicalDefaultTextPc75f288;
+    extern const char MenuTechnicalDefaultTextPc75f27c[9] = "Continue";
+    char *apitxt_CONTINUE = (char *)MenuTechnicalDefaultTextPc75f27c;
+    extern const char MenuTechnicalDefaultTextPc75f270[10] = "Save Game";
+    char *apitxt_SAVEGAME = (char *)MenuTechnicalDefaultTextPc75f270;
+    extern const char MenuTechnicalDefaultTextPc75f264[10] = "Load Game";
+    char *apitxt_LOADGAME = (char *)MenuTechnicalDefaultTextPc75f264;
+    extern const char MenuTechnicalDefaultTextPc75f258[12] = "Delete Game";
+    char *apitxt_DELETEGAME = (char *)MenuTechnicalDefaultTextPc75f258;
+    extern const char MenuTechnicalDefaultTextPc75f248[16] = "Save Successful";
+    char *apitxt_GAMESAVED = (char *)MenuTechnicalDefaultTextPc75f248;
+    extern const char MenuTechnicalDefaultTextPc75f230[21] = "Overwrite Successful";
+    char *apitxt_GAMEOVERWRITTEN = (char *)MenuTechnicalDefaultTextPc75f230;
+    extern const char MenuTechnicalDefaultTextPc75f224[12] = "Game Loaded";
+    char *apitxt_GAMELOADED = (char *)MenuTechnicalDefaultTextPc75f224;
+    extern const char MenuTechnicalDefaultTextPc75f214[15] = "Deleting data.";
+    char *apitxt_DELETING = (char *)MenuTechnicalDefaultTextPc75f214;
+    extern const char MenuTechnicalDefaultTextPc75f208[12] = "Formatting.";
+    char *apitxt_FORMATTING = (char *)MenuTechnicalDefaultTextPc75f208;
+    extern const char MenuTechnicalDefaultTextPc75f1e4[15] = "Load Corrupted";
+    char *apitxt_CORRUPTLOAD = (char *)MenuTechnicalDefaultTextPc75f1e4;
+    extern const char MenuTechnicalDefaultTextPc75f1d4[14] = "Confirm Load?";
+    char *apitxt_CONFIRMLOAD = (char *)MenuTechnicalDefaultTextPc75f1d4;
+    extern const char MenuTechnicalDefaultTextPc75f1c4[14] = "Confirm Save?";
+    char *apitxt_CONFIRMSAVE = (char *)MenuTechnicalDefaultTextPc75f1c4;
+    extern const char MenuTechnicalDefaultTextPc75f190[51] = "Are you sure you wish to overwrite this save file?";
+    char *apitxt_CONFIRMOVERWRITE = (char *)MenuTechnicalDefaultTextPc75f190;
+    extern const char MenuTechnicalDefaultTextPc75f170[31] = "Do you want to start the game?";
+    char *apitxt_DOYOUWANTTOSTART = (char *)MenuTechnicalDefaultTextPc75f170;
+    extern const char MenuTechnicalDefaultTextPc75f150[32] = "Do you want to cancel the Save?";
+    char *apitxt_DOYOUWANTTOABORT = (char *)MenuTechnicalDefaultTextPc75f150;
+    extern const char MenuTechnicalDefaultTextPc75f130[32] = "Do you want to cancel the Load?";
+    char *apitxt_DOYOUWANTTOABORTLOAD = (char *)MenuTechnicalDefaultTextPc75f130;
+    extern const char MenuTechnicalDefaultTextPc75f10c[34] = "Do you want to cancel the Format?";
+    char *apitxt_DOYOUWANTTOABORTFORMAT = (char *)MenuTechnicalDefaultTextPc75f10c;
+    extern const char MenuTechnicalDefaultTextPc75f0f4[24] = "Continue without Saving";
+    char *apitxt_CONTINUEWITHOUTSAVING = (char *)MenuTechnicalDefaultTextPc75f0f4;
+    extern const char MenuTechnicalDefaultTextPc75f1f4[18] = "Overwriting data.";
+    char *apitxt_GAMEOVERWRITING = (char *)MenuTechnicalDefaultTextPc75f1f4;
+    extern const char MenuTechnicalDefaultTextPc75f0e8[9] = "New Save";
+    char *apitxt_NEWSAVE = (char *)MenuTechnicalDefaultTextPc75f0e8;
+    extern const char MenuTechnicalDefaultTextPc75f0cc[25] = "Continue without loading";
+    char *apitxt_CONTINUEWITHOUTLOADING = (char *)MenuTechnicalDefaultTextPc75f0cc;
+    extern const char MenuTechnicalDefaultTextPc75f0c0[10] = "Completed";
+    char *apitxt_COMPLETED = (char *)MenuTechnicalDefaultTextPc75f0c0;
+    char *apitxt_VIBRATION = "Vibration";
+    extern const char MenuTechnicalDefaultTextPc75f074[48] = "Are you sure you wish to delete this save file?";
+    char *apitxt_CONFIRMDELETE = (char *)MenuTechnicalDefaultTextPc75f074;
+    extern const char MenuTechnicalDefaultTextPc75f060[17] = "Progress: %.1f%%";
+    char *apitxt_PROGRESS = (char *)MenuTechnicalDefaultTextPc75f060;
+    extern const char MenuTechnicalDefaultTextPc75f050[16] = "Time Played: %s";
+    char *apitxt_TIMEPLAYED = (char *)MenuTechnicalDefaultTextPc75f050;
+    extern const char MenuTechnicalDefaultTextPc75efac[10] = "FE Start?";
+    char *apitxt_PCPRESSSTARTFE = (char *)MenuTechnicalDefaultTextPc75efac;
+    extern const char MenuTechnicalDefaultTextPc75efa4[5] = "P1 ?";
+    char *apitxt_PCPRESSSTARTP1 = (char *)MenuTechnicalDefaultTextPc75efa4;
+    extern const char MenuTechnicalDefaultTextPc75ef9c[5] = "P2 ?";
+    char *apitxt_PCPRESSSTARTP2 = (char *)MenuTechnicalDefaultTextPc75ef9c;
+    extern const char MenuTechnicalDefaultTextPc75ef8c[15] = "Saving game...";
+    char *apitxt_GAMESAVING = (char *)MenuTechnicalDefaultTextPc75ef8c;
+    extern const char MenuTechnicalDefaultTextPc75ef7c[16] = "Loading game...";
+    char *apitxt_GAMELOADING = (char *)MenuTechnicalDefaultTextPc75ef7c;
+    extern const char MenuTechnicalDefaultTextPc75ef6c[15] = "Failed to Load";
+    char *apitxt_FAILEDTOLOAD = (char *)MenuTechnicalDefaultTextPc75ef6c;
+    extern const char MenuTechnicalDefaultTextPc75ef5c[15] = "Failed to Save";
+    char *apitxt_FAILEDTOSAVE = (char *)MenuTechnicalDefaultTextPc75ef5c;
+    extern const char MenuTechnicalDefaultTextPc75ef48[20] = "Failed to Overwrite";
+    char *apitxt_FAILEDTOOVERWRITE = (char *)MenuTechnicalDefaultTextPc75ef48;
+    extern const char MenuTechnicalDefaultTextPc75ef34[19] = "No %s data present";
+    char *apitxt_NODATAAVAILABLE = (char *)MenuTechnicalDefaultTextPc75ef34;
+    extern const char MenuTechnicalDefaultTextPc75ef14[30] = "Autosave will now use Game %i";
+    char *apitxt_AUTOSAVE_ENABLED = (char *)MenuTechnicalDefaultTextPc75ef14;
+    extern const char MenuTechnicalDefaultTextPc75ef00[20] = "Formatting complete";
+    char *apitxt_FORMATTINGCOMPLETE = (char *)MenuTechnicalDefaultTextPc75ef00;
+    extern const char MenuTechnicalDefaultTextPc75eef0[16] = "Delete complete";
+    char *apitxt_DELETECOMPLETE = (char *)MenuTechnicalDefaultTextPc75eef0;
+    extern const char MenuTechnicalDefaultTextPc75eec8[40] = "Insufficient drive space to save games.";
+    char *apitxt_NOTENOUGHSPACE = (char *)MenuTechnicalDefaultTextPc75eec8;
+    extern const char MenuTechnicalDefaultTextPc75efc8[133] =
+        "The controller in controller port %i has been removed. Please insert a controller into controller port %i to "
+        "continue with the game.";
+    char *apitxt_CONTROLLERREMOVED = (char *)MenuTechnicalDefaultTextPc75efc8;
+}
+
+extern "C" {
+    LEVELDATA_PC *WorldArchiveOneLevelsPc[11] = {NULL};
+    LEVELDATA_PC *WorldArchiveThreeLevelsPc[4] = {NULL};
+    NUFPCOMJMP WorldLoadAfterKeywordsPc[1] = {{NULL, NULL}};
+    i32 WorldLightUserIdPc = 1;
+    i32 numtl_force_mipmode = 0;
+}
+
+extern "C" {
     extern char TextInputKeyNameTextPc7516c0[];
     char *AiLevelPathName = TextInputKeyNameTextPc7516c0;
     i32 ai_usepackfile = 1;
@@ -18572,4 +18687,8 @@ extern "C" {
 
 extern "C" {
     u8 AiLoadActivationDifficultyPc = 1;
+}
+
+extern "C" {
+    CUT_PLAYER_ACTIVE_PC *CutScenePlayerPc = NULL;
 }

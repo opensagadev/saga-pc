@@ -153,8 +153,8 @@ STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, vertex_shader) == 0x4cc);
 STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, pixel_shader) == 0x4d0);
 struct PC_SHADER_MANAGER_VTABLE_VIEW {
     void *unknown_0;
-    bool(__thiscall *create_shader)(PC_SHADER_MANAGER_VIEW *, const PC_SHADER_MATERIAL_FILTER_VIEW *,
-                                    const PC_SHADER_FILTER_DESC_VIEW *, PC_SHADER_OBJECT_FULL_VIEW *, i32);
+    bool(__thiscall *create_shader)(PC_SHADER_MANAGER_VIEW *, const PC_SHADER_MATERIAL_FILTER_VIEW *, bool,
+                                    PC_SHADER_OBJECT_FULL_VIEW *, i32);
     void(__thiscall *adapt_descriptor)(PC_SHADER_MANAGER_VIEW *, const PC_SHADER_FILTER_DESC_VIEW *,
                                        const PC_SHADER_FILTER_MATERIAL_VIEW *);
 };
@@ -213,7 +213,7 @@ PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::Retrieve(const PC
         }
     }
     shader = AllocateSlot(&index);
-    if (vtable->create_shader(this, &filter, desc, shader, index)) {
+    if (vtable->create_shader(this, &filter, pixel_stage, shader, index)) {
         ++shader->ref_count;
         return shader;
     }

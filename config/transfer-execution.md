@@ -3283,3 +3283,75 @@ and original C++ context. The cache's179 generated STL helpers remain a research
 bank until each original binding/exception contract is established. Generated
 storage is about1.5GB; the user's journal is unchanged and outside this commit.
 Matching remains primary and whole-project direct-main continuation stays active.
+
+### Connected WORLD, character scene and menu checkpoint U (2026-10-05 UTC)
+
+Tc6306f7 passed exact-revision CI37255490539. U transfers nine new source
+functions/3,957 complete PC bytes: WORLD reader/titles2,406, original character
+scene helper/callers504, area value suppliers180 and menu technical strings867.
+Two identities already existed as empty inventory entries. All ten reviewed
+complete outputs agree with301 actual normal objects;4,153 functions and8,725
+data definitions resolve and the source executable links. LLVM18 formatting328
+and analysis301 pass; all719 required tests pass with three existing skips.
+
+The WORLD reader uses genuine scene/model/parser providers, native archive
+lists and shadow mode via canonical PcWindowOptions.shadowmethod. Seven native
+actions remain omitted in this accepted snapshot. Its character-scene dependency
+and actual streaming caller are now ready to reconnect in the next batch. Six
+other WORLD actions still require providers. Character scenes use real
+NuGScnRead/NuSpecialFind/InModelList and native caller-initialized buffers/flags;
+the inherited texture-ID fixup stays explicit. No asset-load success is claimed.
+Original characters.cpp context replaces the sole C owner and preserves all14
+prior full outputs through genuine C linkage; no duplicate owner or adapter.
+The private helper naturally uses ECX/EDX/EBX+stack versus native ECX/EDX+two
+stack arguments; both actual callers generate the coherent private contract.
+CutScenePlayer_Active returns a real pointer from offset4, not a guessed bool.
+
+MenuLoadTechnicalStrings is full867-byte exact:54 native assignments, four
+actual StringTable providers, separate PC FE/P1/P2 press-start labels. Its52
+pointers retain genuine NONNULL defaults;49 new NUL views and existing empty/
+Vibration targets supply them. Existing canonical prompts are reused.
+Retrieve's native virtual Create second argument is bool pixel_stage, replacing
+the wrong descriptor pointer. This repairs existing208 bytes without new credit;
+it does not fabricate or publish the still-missing shader manager.
+
+All4,144 prior functions and8,544 data definitions are audited; all2,003 old
+exact code copies and5,359 exact physical initializers survive. The unchanged
+debris allocator emits its previously reviewed1458-byte scheduling arm, exactly
+matching the retained full raw/named/relocated pair; only historical72-case/376-
+check qualification applies, with no fresh runtime equivalence claim. Four local
+label serial changes preserve complete raw/relocated bytes and owner offsets.
+Two natural data tails preserve values: known i16=-1 COFF4 to8 was already
+nonexact; unknown i32 debris delay zero COFF8 to4 receives no extent credit.
+
+All181 new complete initializers/2,376 COFF bytes match retail:59 known/889B
+and122 unknown/1,487B. Shared107 named definitions total1,213 typed/1,276 COFF
+bytes;106 unknown views/1,209 typed bytes receive zero allocation/exact credit.
+Actual combined menu40-byte first view equals retail; historical isolated44-
+byte padded mismatch remains retained, without source/padding controls. Current
+exact physical data copies5,418 gain59; known exact data union640,794 gains874
+unique bytes. All13 named member parents/28 known bytes, CRC and HANDLE survive.
+
+Unique compared PC bytes1,182,339 to1,186,296 gain exactly3,957; native objdiff
+1,186,814 retains518 overlap bytes. Whole-PC fuzzy23.7341637642% to23.8273790410%
+gains0.0932152768 percentage points. Exact code199,628 to200,675 adds1,047
+unique bytes,5.7810653581% of3,471,246 retail text bytes. Four new exact bodies
+contribute all1,047. Complete native spans remain unmasked/untruncated.
+
+Actual source EXEa442909d exits5 after2.028 seconds from the same NULL shader-
+manager receiver, now at source004FC310. The test queries ShowCrashDialog
+DWORD0 in its own prefix, retains genuine crash output/exit, and leaves no popup
+or owned process. All301 objects/413 frozen inputs remain unchanged. Fresh
+window/input/device/Present/repeated-frame/scene/gameplay milestones stay
+unverified. Native7412e0/7460d0 is the real early manager publisher;5f22a0
+is a separate shader initializer and cannot close this failure.
+
+The02:58 checkpoint waited for genuine contracts and complete validation. Next
+reconnect WORLD and scene calls, then release shader children16/552 and partial
+FixUpLevels6,860 after61 state contracts. FixUpLevels has four actual callbacks
+and263 missing native callback-address actions; one duplicate annotation is
+being corrected without changing compiled output. Native167 lookup calls support
+a separate level caller unit rather than forced inlining controls or WORLD
+ownership. Permanent835 and larger area loaders follow genuine input/model/list
+domains. Storage remains about1.5GB; the user's journal is unchanged and excluded.
+Matching remains primary; authorized whole-project direct-main work continues.

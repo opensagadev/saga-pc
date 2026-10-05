@@ -426,6 +426,7 @@ address    , symbol                                                         , si
 0x489770,_KillBoss,118,"i32 __cdecl(i32,i32,f32)"
 0x4897f0,_KillBossCompleteLevel,44,"void __cdecl(i32,i32,f32)"
 0x489850,_KillBossPlayCutScene,68,"i32 __cdecl(i32,i32,f32,char*)"
+0x489aa0,?WorldGetTitlesNamePrivatePc@@YAXPAD@Z,184,
 0x0048a060 , _EffectOffProgress_Update                                      , 262   , "i32 __cdecl (LEVEL_PROGRESS *, char *, i32)"
 0x0048a170 , _EffectOffProgress_Reset                                       , 48    , void __cdecl (LEVEL_PROGRESS *)
 0x0048a1a0 , _LevelProgress_ReserveBufferSpace                              , 26    , "void __cdecl (VARIPTR *, VARIPTR)"
@@ -1565,6 +1566,9 @@ address    , symbol                                                         , si
 0x55af20   , _GizmoSysAddGizmos                                              , 169   , "void __cdecl (void *, GIZFLOW_PC *, void *)"
 0x0055b0e0 , _GizmoActivateReverse                                          , 146   , "void __cdecl(void *system, void *gizmo, i32 reverse, i32 visibility, i32 mode)"
 0x0055b1c0 , _CharIDFromName                                                , 69    , i32 __cdecl (char *)
+0x55b300,?CharacterSceneLoadPrivatePc@@YAXPAUKILLPARTS_CHARSCENE_PC@@HPATvariptr_u@@T2@@Z,145,
+0x55b3a0,_CharScenes_LevelLoad,179,void __cdecl(WORLDINFO *)
+0x55b460,_CharScenes_AreaLoad,180,"void __cdecl(APICHARACTERMODELLIST *,VARIPTR *,VARIPTR)"
 0x55b520,_CharScene_FindHSpecial,80,"NUSPECIALHANDLE * __cdecl(WORLDINFO *, i32)"
 0x55b570,_CharScene_Draw,63,"void __cdecl(WORLDINFO *,i32,NUMTX *,NUMTX *)"
 0x0055b5b0 , _CharScenes_LevelDump                                          , 85    , void __cdecl (WORLDINFO *)
@@ -1573,6 +1577,7 @@ address    , symbol                                                         , si
 0x0055bac0 , _LayerFromName                                                 , 98    , i32 __cdecl (PLAYERCHARACTERCONFIG_PC *; const char *)
 0x0055bb30 , _MakeLayerList_Name                                            , 187   , i32 __cdecl (CHARACTER_MODEL_LAYERS_PC *; i16 *; u32)
 0x55bc80,_CharCategory_IsCategory,115,"i32 __cdecl(GAMEOBJECT *, i32)"
+0x55bdc0,_GameLoadCharacterModels,82,"void __cdecl(APICHARACTERMODELLIST *,i32,VARIPTR *,VARIPTR *,i32,i32)"
 0x55c080,_CharVariants_Init,28,"void __cdecl(char **,i32)"
 0x55c0a0,_CharVariant_Find,76,i32 __cdecl(char *)
 0x0055c5e0 , ?ClearPause@@YAXXZ                                             , 13    , void __cdecl (void)
@@ -1921,6 +1926,7 @@ address    , symbol                                                         , si
 0x57d270,_CutScene_RigidPostRender,299,
 0x0057d3a0,_CutScene_DrawCharacter,3767,
 0x57e260,_CutScenes_InitSystem,85,void __cdecl(CUT_DRAW_SETTINGS_PC *)
+0x57e710,_CutScenePlayer_Active,16,void * __cdecl(void)
 0x0057eec0 , _CutScenes_End                                                 , 135   , void __cdecl (void)
 0x57f9a0,?Bolt_RayCastPrivate@@YAHPAUbolt_s@@PAUnuvec_s@@1@Z,260,
 0x57fab0,?Bolt_GeneratePointsPrivate@@YAXPAUbolt_s@@PAUnuvec_s@@@Z,117,
@@ -3197,6 +3203,7 @@ address    , symbol                                                         , si
 0x0062f970 , _APITransparentInit                                            , 325   , void __cdecl (void)
 0x62fac0,_APITransparentCharDraw,291,"void __cdecl(NUHGOBJ_EVAL_PC *,NUMTX *,i32,i16 *,NUMTX *,DWA_WEIGHT_BLOCK_PC **,i32)"
 0x62fbf0,_APIDrawCharacterModel,2690,"i32 __cdecl(CHARACTER_MODEL_LAYERS_PC *,APICHARACTERDATA *,ANIMPACKET_PC *,NUMTX *,NUMTX *,NUMTX *,NUVEC *,NUMTX *,GAMEOBJECT *,u32,NUHGOBJ_JOINT_OVERRIDE_PC *,i32,i32,f32,NUMTX *,void(__cdecl *)(void *,GAMEOBJECT *,i32,i32),APIDEBRISSYS_PC *)"
+0x630680,_InModelList,82,"i32 __cdecl(APICHARACTERMODELLIST *,i32,i32 *)"
 0x00630740 , _ActionFromName                                                , 127   , i32 __cdecl (const char *)
 0x00630b40,_APICharacterSysInit,541,"void __cdecl (VARIPTR *, VARIPTR, i32, i32, i32, i32, APICHARACTERDATA *, void (__cdecl *)(APIOBJECT_PC *))"
 0x633df0,_rtlSwapSetEndianess,1,void __cdecl rtlSwapSetEndianess(void *)
@@ -5786,6 +5793,14 @@ address    , symbol                                                         , si
 0x00759f34 , _LevelConfigGameKeyword_max_levers                             , 11    , const char[11]
 0x00759f40 , _LevelConfigGameKeyword_max_signals                            , 12    , const char[12]
 0x00759f4c , _LevelConfigGameKeyword_max_tightropes                         , 15    , const char[15]
+0x759fb0,??_C@_06GCODKHGB@titles?$AA@,,const char[7]
+0x759fb8,??_C@_09NGANDPLK@titles_uk?$AA@,,const char[10]
+0x759fc4,??_C@_09FEBGKHOD@titles_us?$AA@,,const char[10]
+0x759fd0,??_C@_0O@HMGLPHOA@titles_danish?$AA@,,const char[14]
+0x759fe0,??_C@_0P@NGCEFCMH@titles_spanish?$AA@,,const char[15]
+0x759ff0,??_C@_0P@PMCINIMP@titles_italian?$AA@,,const char[15]
+0x75a000,??_C@_0O@LFJIJCCH@titles_german?$AA@,,const char[14]
+0x75a010,??_C@_0O@JIJHDMCE@titles_french?$AA@,,const char[14]
 0x75a038,??_C@_0BC@NHKBPPPN@stuff?2general?4par?$AA@,18,const char[18]
 0x75a060,??_C@_0N@FEFEJMAO@stuff?2things?$AA@,13,const char[13]
 0x75a070,??_C@_0BB@GGGAILKI@stuff?2things?4gsc?$AA@,17,const char[17]
@@ -5797,6 +5812,8 @@ address    , symbol                                                         , si
 0x0075a0dc , _DebrisGlassMaterialOpacity                                    , 4     , const f32
 0x75a0dc,__real@3f7fbe77,4,const f32
 0x0075a180,??_C@_03HFJGAJFE@All?$AA@,,
+0x75a1bc,??_C@_0CD@LGPIPCNC@stuff?2icons?2starwars_icons_all?4g@,,const char[35]
+0x75a1fc,??_C@_04PJLKLIFA@?4gsc?$AA@,,const char[5]
 0x0075a1fc,_SceneFileExtensionPc,5,const char[5]
 0x75a204,??_C@_01KICIPPFI@?2?$AA@,2,const char[2]
 0x0075a204,_WorldPathSeparator,2,const char[2]
@@ -5804,6 +5821,12 @@ address    , symbol                                                         , si
 0x0075a208 , _AreaResidentsDirectory                                        , 8     , const char[8]
 0x75a210,__real@4040000000000000,,
 0x0075a2b0 , __real@45000000                                                , 4     , const f32
+0x75a2b4,??_C@_04ONIIBKGA@?4git?$AA@,,const char[5]
+0x75a2bc,??_C@_02PNJEFHBE@ai?$AA@,,const char[3]
+0x75a2c0,??_C@_04KDBPNKAO@?4spl?$AA@,,const char[5]
+0x75a2c8,??_C@_0BL@DLGJKKDO@levels?2titles?2pictures?4gsc?$AA@,,const char[27]
+0x75a2e4,??_C@_0P@OIKLEBLL@levels?2titles?2?$AA@,,const char[15]
+0x75a2f4,??_C@_0BF@CIHFAKLD@levels?2titles?2titles?$AA@,,const char[21]
 0x0075ac2c , __real@44000000                                                , 4     , const f32
 0x0075ac30,__real@3f91eb85,4,const f32
 0x75ac34,_TextInputKeyNameTextPc75ac34,,char[5]
@@ -6516,6 +6539,7 @@ address    , symbol                                                         , si
 0x0075ebb0,__real@4062c00000000000,8,
 0x75ebb8,__real@43fa0000,4,const f32
 0x0075ebd0 , _nufile_disc_suffix                                            , 3     , const char[3]
+0x75ec30,??_C@_05EILEDKCG@LABEL?$AA@,6,const char[6]
 0x75ec48,_PCWarningSuffix,2,const char[2]
 0x0075ec90 , _bgproc_resume_event_name                                      , 9     , const char[9]
 0x0075ec9c , _bgproc_work_event_name                                        , 11    , const char[11]
@@ -6526,16 +6550,119 @@ address    , symbol                                                         , si
 0x75ee68,__real@bfceb851e0000000,8,const f64
 0x75ee70,__real@3e75c28f,4,const f32
 0x75ee78,__real@3fceb851e0000000,8,const f64
+0x75eec8,_MenuTechnicalDefaultTextPc75eec8,,const char[40]
+0x75eef0,_MenuTechnicalDefaultTextPc75eef0,,const char[16]
+0x75ef00,_MenuTechnicalDefaultTextPc75ef00,,const char[20]
+0x75ef14,_MenuTechnicalDefaultTextPc75ef14,,const char[30]
+0x75ef34,_MenuTechnicalDefaultTextPc75ef34,,const char[19]
+0x75ef48,_MenuTechnicalDefaultTextPc75ef48,,const char[20]
+0x75ef5c,_MenuTechnicalDefaultTextPc75ef5c,,const char[15]
+0x75ef6c,_MenuTechnicalDefaultTextPc75ef6c,,const char[15]
+0x75ef7c,_MenuTechnicalDefaultTextPc75ef7c,,const char[16]
+0x75ef8c,_MenuTechnicalDefaultTextPc75ef8c,,const char[15]
+0x75ef9c,_MenuTechnicalDefaultTextPc75ef9c,,const char[5]
+0x75efa4,_MenuTechnicalDefaultTextPc75efa4,,const char[5]
+0x75efac,_MenuTechnicalDefaultTextPc75efac,,const char[10]
+0x75efc8,_MenuTechnicalDefaultTextPc75efc8,,const char[133]
+0x75f050,_MenuTechnicalDefaultTextPc75f050,,const char[16]
+0x75f060,_MenuTechnicalDefaultTextPc75f060,,const char[17]
+0x75f074,_MenuTechnicalDefaultTextPc75f074,,const char[48]
 0x75f0a4,??_C@_09IAKHNIPA@Vibration?$AA@,10,const char[10]
 0x75f0b0,_UiBackPromptLiteralPc,,char[5]
 0x75f0b8,_UiSelectPromptLiteralPc,,char[7]
+0x75f0c0,_MenuTechnicalDefaultTextPc75f0c0,,const char[10]
+0x75f0cc,_MenuTechnicalDefaultTextPc75f0cc,,const char[25]
+0x75f0e8,_MenuTechnicalDefaultTextPc75f0e8,,const char[9]
+0x75f0f4,_MenuTechnicalDefaultTextPc75f0f4,,const char[24]
+0x75f10c,_MenuTechnicalDefaultTextPc75f10c,,const char[34]
+0x75f130,_MenuTechnicalDefaultTextPc75f130,,const char[32]
+0x75f150,_MenuTechnicalDefaultTextPc75f150,,const char[32]
+0x75f170,_MenuTechnicalDefaultTextPc75f170,,const char[31]
+0x75f190,_MenuTechnicalDefaultTextPc75f190,,const char[51]
+0x75f1c4,_MenuTechnicalDefaultTextPc75f1c4,,const char[14]
+0x75f1d4,_MenuTechnicalDefaultTextPc75f1d4,,const char[14]
+0x75f1e4,_MenuTechnicalDefaultTextPc75f1e4,,const char[15]
+0x75f1f4,_MenuTechnicalDefaultTextPc75f1f4,,const char[18]
+0x75f208,_MenuTechnicalDefaultTextPc75f208,,const char[12]
+0x75f214,_MenuTechnicalDefaultTextPc75f214,,const char[15]
+0x75f224,_MenuTechnicalDefaultTextPc75f224,,const char[12]
+0x75f230,_MenuTechnicalDefaultTextPc75f230,,const char[21]
+0x75f248,_MenuTechnicalDefaultTextPc75f248,,const char[16]
+0x75f258,_MenuTechnicalDefaultTextPc75f258,,const char[12]
+0x75f264,_MenuTechnicalDefaultTextPc75f264,,const char[10]
+0x75f270,_MenuTechnicalDefaultTextPc75f270,,const char[10]
+0x75f27c,_MenuTechnicalDefaultTextPc75f27c,,const char[9]
+0x75f288,_MenuTechnicalDefaultTextPc75f288,,const char[9]
+0x75f294,_MenuTechnicalDefaultTextPc75f294,,const char[6]
+0x75f29c,_MenuTechnicalDefaultTextPc75f29c,,const char[8]
+0x75f2a4,_MenuTechnicalDefaultTextPc75f2a4,,const char[8]
+0x75f2ac,_MenuTechnicalDefaultTextPc75f2ac,,const char[6]
+0x75f2b4,_MenuTechnicalDefaultTextPc75f2b4,,const char[7]
+0x75f2bc,_MenuTechnicalDefaultTextPc75f2bc,,const char[3]
+0x75f2c0,_MenuTechnicalDefaultTextPc75f2c0,,const char[3]
+0x75f2c4,_MenuTechnicalDefaultTextPc75f2c4,,const char[4]
 0x0075f2d4 , _Text_DanishName                                               , 6     , const char[6]
 0x0075f2dc , _Text_SpanishName                                              , 9     , const char[9]
 0x0075f2e8 , _Text_ItalianName                                              , 9     , const char[9]
 0x0075f2f4 , _Text_GermanName                                               , 8     , const char[8]
 0x0075f2fc , _Text_FrenchName                                               , 10    , const char[10]
 0x0075f308 , _Text_EnglishName                                              , 8     , const char[8]
+0x75f310,_MenuTechnicalDefaultTextPc75f310,,const char[5]
 0x0075f31c , _Menu_UsedFormat                                               , 15    , const char[15]
+0x75f32c,??_C@_0BF@LCEPMBIC@PC_CONTROLLERREMOVED?$AA@,21,const char[21]
+0x75f344,??_C@_0BC@PMHGKIOI@PC_NOTENOUGHSPACE?$AA@,18,const char[18]
+0x75f358,??_C@_0BC@BHLJFDDC@PC_DELETECOMPLETE?$AA@,18,const char[18]
+0x75f36c,??_C@_0BG@PIMLBEE@PC_FORMATTINGCOMPLETE?$AA@,22,const char[22]
+0x75f384,??_C@_0BE@CIDODDKF@PC_AUTOSAVE_ENABLED?$AA@,20,const char[20]
+0x75f398,??_C@_0BD@LLBHOOMC@PC_NODATAAVAILABLE?$AA@,19,const char[19]
+0x75f3ac,??_C@_0BF@LOLCLBPE@PC_FAILEDTOOVERWRITE?$AA@,21,const char[21]
+0x75f3c4,??_C@_0BA@EHELPLEP@PC_FAILEDTOSAVE?$AA@,16,const char[16]
+0x75f3d4,??_C@_0BA@EFFGAIJL@PC_FAILEDTOLOAD?$AA@,16,const char[16]
+0x75f3e4,??_C@_0P@JPMNOBIB@PC_GAMELOADING?$AA@,15,const char[15]
+0x75f3f4,??_C@_0O@MFAGEDKB@PC_GAMESAVING?$AA@,14,const char[14]
+0x75f404,??_C@_0BD@LNEINMDA@GEN_PCPRESSSTARTP2?$AA@,19,const char[19]
+0x75f418,??_C@_0BD@JGGFIPPD@GEN_PCPRESSSTARTP1?$AA@,19,const char[19]
+0x75f42c,??_C@_0BD@MFJNOMMD@GEN_PCPRESSSTARTFE?$AA@,19,const char[19]
+0x75f440,??_C@_0P@DLLNDEML@GEN_TIMEPLAYED?$AA@,15,const char[15]
+0x75f450,??_C@_0N@IAKOCBBB@GEN_PROGRESS?$AA@,13,const char[13]
+0x75f460,??_C@_0BC@EKPILNLO@GEN_CONFIRMDELETE?$AA@,18,const char[18]
+0x75f474,??_C@_0O@HLPIMFOD@GEN_VIBRATION?$AA@,14,const char[14]
+0x75f484,??_C@_08ELFOGMDG@GEN_BACK?$AA@,9,const char[9]
+0x75f490,??_C@_0L@FJKEGJBP@GEN_SELECT?$AA@,11,const char[11]
+0x75f49c,??_C@_0O@DDMPLKLC@GEN_COMPLETED?$AA@,14,const char[14]
+0x75f4ac,??_C@_0BL@GPLCDLKK@GEN_CONTINUEWITHOUTLOADING?$AA@,27,const char[27]
+0x75f4c8,??_C@_0M@MINNLKLJ@GEN_NEWSAVE?$AA@,12,const char[12]
+0x75f4d4,??_C@_0BE@FFMBGBHL@GEN_GAMEOVERWRITING?$AA@,20,const char[20]
+0x75f4e8,??_C@_0BK@LFEPCMDB@GEN_CONTINUEWITHOUTSAVING?$AA@,26,const char[26]
+0x75f504,??_C@_0BL@HOPICAJH@GEN_DOYOUWANTTOABORTFORMAT?$AA@,27,const char[27]
+0x75f520,??_C@_0BJ@LBKEIPHF@GEN_DOYOUWANTTOABORTLOAD?$AA@,25,const char[25]
+0x75f53c,??_C@_0BF@PEHKEGNF@GEN_DOYOUWANTTOABORT?$AA@,21,const char[21]
+0x75f554,??_C@_0BF@LFBLPAFE@GEN_DOYOUWANTTOSTART?$AA@,21,const char[21]
+0x75f56c,??_C@_0BF@KJKFFGAE@GEN_CONFIRMOVERWRITE?$AA@,21,const char[21]
+0x75f584,??_C@_0BA@DKKLKBLK@GEN_CONFIRMSAVE?$AA@,16,const char[16]
+0x75f594,??_C@_0BA@DILGFCGO@GEN_CONFIRMLOAD?$AA@,16,const char[16]
+0x75f5a4,??_C@_0BA@GMFKEGGL@GEN_CORRUPTLOAD?$AA@,16,const char[16]
+0x75f5b4,??_C@_0P@JBOIELFA@GEN_FORMATTING?$AA@,15,const char[15]
+0x75f5c4,??_C@_0N@IEBKBMKG@GEN_DELETING?$AA@,13,const char[13]
+0x75f5d4,??_C@_0P@JLOHNNKD@GEN_GAMELOADED?$AA@,15,const char[15]
+0x75f5e4,??_C@_0BE@CKCFLKJB@GEN_GAMEOVERWRITTEN?$AA@,20,const char[20]
+0x75f5f8,??_C@_0O@GKAJKMDG@GEN_GAMESAVED?$AA@,14,const char[14]
+0x75f608,??_C@_0P@EGKJJLDP@GEN_DELETEGAME?$AA@,15,const char[15]
+0x75f618,??_C@_0N@NGANAJHF@GEN_LOADGAME?$AA@,13,const char[13]
+0x75f628,??_C@_0N@NJNLOHAC@GEN_SAVEGAME?$AA@,13,const char[13]
+0x75f638,??_C@_0N@JEMOICJ@GEN_CONTINUE?$AA@,13,const char[13]
+0x75f648,??_C@_0M@KKHBLMKK@GEN_NOSPACE?$AA@,12,const char[12]
+0x75f654,??_C@_09CJKLOMGN@GEN_EMPTY?$AA@,10,const char[10]
+0x75f660,??_C@_0M@IDAFNOPP@GEN_PRESENT?$AA@,12,const char[12]
+0x75f66c,??_C@_08CAPEPNCD@GEN_SLOT?$AA@,9,const char[9]
+0x75f678,??_C@_09IMOHHOGK@GEN_RETRY?$AA@,10,const char[10]
+0x75f684,??_C@_0L@HMNGFPJA@GEN_CANCEL?$AA@,11,const char[11]
+0x75f690,??_C@_06KAEMFFEG@GEN_OK?$AA@,7,const char[7]
+0x75f698,??_C@_06MFOCPKHF@GEN_NO?$AA@,7,const char[7]
+0x75f6a0,??_C@_07HBGFIDCO@GEN_YES?$AA@,8,const char[8]
+0x75f6a8,??_C@_0N@JGMIOJE@GAMESUBTITLE?$AA@,13,const char[13]
+0x75f6b8,??_C@_09HPEMDGDO@GAMETITLE?$AA@,10,const char[10]
+0x75f6c4,??_C@_08NFMLECJ@GAMENAME?$AA@,9,const char[9]
 0x75f70c,??_C@_03OMEPOALK@?b?$JG?$KB?$AA@,4,char[4]
 0x75f710,??_C@_06LGNCCACI@select?$AA@,7,char[7]
 0x75f718,??_C@_02KDKAPPOD@r3?$AA@,3,char[3]
@@ -6746,6 +6873,7 @@ address    , symbol                                                         , si
 0x76181c,_GizObstacleTriggerLimitMessagePc,59,const char[59]
 0x761868,_GizmoSpecialErrorTabPc,3,const char[3]
 0x0076186c , _GizmoConfigPathFormat                                         , 7     , const char [7]
+0x761874,??_C@_0BA@NGPHLHCH@chars?2?$CFs?2?$CFs?4gsc?$AA@,16,const char[16]
 0x761884,_PlayerArcadeStartDoorPc,,char[16]
 0x761894,_PlayerMissionStartDoorPc,,char[13]
 0x007618a4,_WorldObjectAnimFormat,7,const char[7]
@@ -9461,6 +9589,7 @@ address    , symbol                                                         , si
 0x007fa7d8 , _AreaFixUpLSW                                                  , 520   , AREAFIXUP_PC[65]
 0x007fa9e0 , _AreaFixUpLostTemple                                           , 16    , AREAFIXUP_PC[2]
 0x007fa9f0 , _AreaFixUpGotham                                               , 40    , AREAFIXUP_PC[5]
+0x7faa98,_WorldLightUserIdPc,,i32
 0x7faaa4,_lever_gizmotype_id,,i32
 0x007fac04 , _BGLOAD                                                        , 4     , i32
 0x007fac20 , _PlayTrailer                                                   , 4     , i32
@@ -9617,6 +9746,9 @@ address    , symbol                                                         , si
 0x00800968 , _drawslotsfn                                                   , 4     , "void (*)(MENU *, f32)"
 0x80096c,_headerdrawfn,,void (__cdecl *)(void)
 0x800970,_MenuTopYPc,,f32
+0x800980,_apiGameName,,char *
+0x800984,_apiGameTitle,,char *
+0x800988,_apiGameSubTitle,,char *
 0x80098c,_MenuTextScalePc,,f32
 0x800994,_MENUDY,,f32
 0x800998,_MENUNORMALR,,u8
@@ -9630,8 +9762,57 @@ address    , symbol                                                         , si
 0x008009bc , _apitxt_ITALIAN                                                , 4     , char *
 0x008009c0 , _apitxt_SPANISH                                                , 4     , char *
 0x008009c4 , _apitxt_DANISH                                                 , 4     , char *
+0x8009cc,_apitxt_YES,,char *
+0x8009d0,_apitxt_NO,,char *
+0x8009d4,_apitxt_OK,,char *
+0x8009d8,_apitxt_CANCEL,,char *
+0x8009dc,_apitxt_RETRY,,char *
+0x8009e0,_apitxt_SLOT,,char *
+0x8009e4,_apitxt_PRESENT,,char *
+0x8009e8,_apitxt_EMPTY,,char *
+0x8009ec,_apitxt_NOSPACE,,char *
+0x8009f0,_apitxt_CONTINUE,,char *
+0x8009f4,_apitxt_SAVEGAME,,char *
+0x8009f8,_apitxt_LOADGAME,,char *
+0x8009fc,_apitxt_DELETEGAME,,char *
+0x800a00,_apitxt_GAMESAVED,,char *
+0x800a04,_apitxt_GAMEOVERWRITTEN,,char *
+0x800a08,_apitxt_GAMELOADED,,char *
+0x800a0c,_apitxt_DELETING,,char *
+0x800a10,_apitxt_FORMATTING,,char *
+0x800a14,_apitxt_GAMEOVERWRITING,,char *
+0x800a18,_apitxt_CORRUPTLOAD,,char *
+0x800a1c,_apitxt_CONFIRMLOAD,,char *
+0x800a20,_apitxt_CONFIRMSAVE,,char *
+0x800a24,_apitxt_CONFIRMOVERWRITE,,char *
+0x800a28,_apitxt_DOYOUWANTTOSTART,,char *
+0x800a2c,_apitxt_DOYOUWANTTOABORT,,char *
+0x800a30,_apitxt_DOYOUWANTTOABORTLOAD,,char *
+0x800a34,_apitxt_DOYOUWANTTOABORTFORMAT,,char *
+0x800a38,_apitxt_CONTINUEWITHOUTSAVING,,char *
+0x800a3c,_apitxt_NEWSAVE,,char *
+0x800a40,_apitxt_CONTINUEWITHOUTLOADING,,char *
+0x800a44,_apitxt_COMPLETED,,char *
 0x800a48,_MenuAcceptPromptTextPc,,char *
 0x800a4c,_MenuCancelPromptTextPc,,char *
+0x800a50,_apitxt_VIBRATION,,char *
+0x800a54,_apitxt_CONFIRMDELETE,,char *
+0x800a58,_apitxt_PROGRESS,,char *
+0x800a5c,_apitxt_TIMEPLAYED,,char *
+0x800a60,_apitxt_CONTROLLERREMOVED,,char *
+0x800a68,_apitxt_PCPRESSSTARTFE,,char *
+0x800a6c,_apitxt_PCPRESSSTARTP1,,char *
+0x800a70,_apitxt_PCPRESSSTARTP2,,char *
+0x800a74,_apitxt_GAMESAVING,,char *
+0x800a78,_apitxt_GAMELOADING,,char *
+0x800a7c,_apitxt_FAILEDTOLOAD,,char *
+0x800a80,_apitxt_FAILEDTOSAVE,,char *
+0x800a84,_apitxt_FAILEDTOOVERWRITE,,char *
+0x800a88,_apitxt_NODATAAVAILABLE,,char *
+0x800a8c,_apitxt_AUTOSAVE_ENABLED,,char *
+0x800a90,_apitxt_FORMATTINGCOMPLETE,,char *
+0x800a94,_apitxt_DELETECOMPLETE,,char *
+0x800a98,_apitxt_NOTENOUGHSPACE,,char *
 0x00800aa8 , _MenuInfo                                                      , 2800  , MENUFNINFO[100]
 0x008015ac , _TextScaleX_candidate                                          , 4     , f32
 0x008015b0 , _TextScaleY_candidate                                          , 4     , f32
@@ -10500,6 +10681,7 @@ address    , symbol                                                         , si
 0x0087b074 , _NEGOTIATIONSC_LDATA                                           , 4     , LEVELDATA_PC *
 0x87b078,_GUNGAN_A_LDATA,,LEVELDATA_PC *
 0x87b07c,_RESCUEC_LDATA,,LEVELDATA_PC *
+0x87b080,_WorldArchiveOneLevelsPc,,LEVELDATA_PC *[11]
 0x0087b0ac , _PODRACEA_LDATA                                                , 4     , LEVELDATA_PC *
 0x0087b0b0 , _PODRACEB_LDATA                                                , 4     , LEVELDATA_PC *
 0x0087b0c0 , _PODSPRINTA_LDATA                                              , 4     , LEVELDATA_PC *
@@ -10530,6 +10712,7 @@ address    , symbol                                                         , si
 0x87b174,_CRUISERG_LDATA,,LEVELDATA_PC *
 0x87b178,_VADERA_LDATA,,LEVELDATA_PC *
 0x0087b180 , _VADERC_LDATA                                                  , 4     , LEVELDATA_PC *
+0x87b184,_WorldArchiveThreeLevelsPc,,LEVELDATA_PC *[4]
 0x87b198,_ObstacleReturnLevelPc,,LEVELDATA_PC *
 0x87b1a0,_TATOOINEA_LDATA,,LEVELDATA_PC *
 0x87b1a4,_TATOOINEB_LDATA,,LEVELDATA_PC *
@@ -10583,6 +10766,7 @@ address    , symbol                                                         , si
 0x0087b2f4 , _LevelChangesInArea                                            , 4     , i32
 0x87b2f8,_PermanentEffectsMaterialPc,,NUMTL *
 0x0087b2fc , _loadareacharacters_loadedlevel                                , 4     , i32
+0x87b308,_WorldLoadAfterKeywordsPc,,NUFPCOMJMP[1]
 0x0087b4f0 , _pFadeInfo                                                      ,        ,
 0x0087b4fc , _peak_poly_count                                               , 4     , i32
 0x0087b500 , _poly_count                                                    , 4     , i32
@@ -11232,6 +11416,7 @@ address    , symbol                                                         , si
 0x951cc0,_CutScene_OverrideConfigFileNameFn,,"void (__cdecl *)(char *, i32, i32)"
 0x951cc4,_CutList,,CUT_LOAD_LIST_ENTRY_PC *
 0x951cc8,_CUTCOUNT,,i32
+0x951cd0,_CutScenePlayerPc,,CUT_PLAYER_ACTIVE_PC *
 0x951cd8,_BT_scene,,NUGSCN *
 0x00951cdc , _BoltShootIdScratch                                            , 4     , i32
 0x951ce0,_BT_bolttype,,BOLT_CONFIG_PC *

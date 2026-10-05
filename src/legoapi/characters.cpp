@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include "saga.h"
+extern "C" APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i8);
 #include "saga.h"
 i32 __cdecl TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, NUVEC *offset) {
     if ((object->flags_ef4 & 2) == 0 || dagobah_training == 0 || object->rider != NULL || luke == NULL ||
@@ -144,4 +147,51 @@ void __cdecl LoadPerm1(void) {
         PARTPAGE_GENERAL = edpartLoadPage(path, 0, things_scene);
     STUBBED_NAMED(NuMtlSetCurrentRenderPlane); /* Native 48abb4: zero. */
     STUBBED_NAMED(AIScriptLoadAll);            /* Native 48abca: scripts,&ptr,&end,NULL. */
+}
+
+typedef struct CHARACTER_SCENE_WORLD_PC {
+    u8 unknown_0000[0x2980];
+    KILLPARTS_CHARSCENE_PC *character_scenes;
+} CHARACTER_SCENE_WORLD_PC;
+STATIC_ASSERT(offsetof(CHARACTER_SCENE_WORLD_PC, character_scenes) == 0x2980);
+typedef struct CHARACTER_SCENE_CUTSYS_PC {
+    CUTINFO **records;
+    i32 count;
+    u32 *character_flags;
+} CHARACTER_SCENE_CUTSYS_PC;
+STATIC_ASSERT(offsetof(CHARACTER_SCENE_CUTSYS_PC, character_flags) == 8);
+STATIC_ASSERT(offsetof(WORLDINFO, buffer_end) == 0x108);
+STATIC_ASSERT(offsetof(CHARACTERDATA_PC, flags) == 0x40);
+extern "C" i32 __cdecl InModelList(APICHARACTERMODELLIST *, i32, i32 *);
+static void CharacterSceneLoadPrivatePc(KILLPARTS_CHARSCENE_PC *entry, i32 model_id, VARIPTR *buffer, VARIPTR end) {
+    char path[128];
+    sprintf(path, "chars\\%s\\%s.gsc", CDataList[model_id].dir, CDataList[model_id].name);
+    entry->scene = NuGScnRead(buffer, end, path);
+    if (entry->scene != NULL)
+        NuSpecialFind(entry->scene, &entry->special_scene, CDataList[model_id].name, 1);
+}
+extern "C" {
+    void __cdecl CharScenes_LevelLoad(WORLDINFO *world) {
+        for (i32 i = 0; i < CHARCOUNT; ++i) {
+            KILLPARTS_CHARSCENE_PC *entry = &((CHARACTER_SCENE_WORLD_PC *)world)->character_scenes[i];
+            entry->scene = NULL;
+            if ((KillPartsCharSceneAreaPc == NULL || KillPartsCharSceneAreaPc[i].scene == NULL) &&
+                (CDataList[i].flags & 1) != 0 && world->cutscene_sys != NULL &&
+                ((((CHARACTER_SCENE_CUTSYS_PC *)world->cutscene_sys)->character_flags[i >> 5] & (1u << (i & 31))) != 0))
+                CharacterSceneLoadPrivatePc(entry, i, &world->giz_buffer, world->buffer_end);
+        }
+    }
+    void __cdecl CharScenes_AreaLoad(APICHARACTERMODELLIST *list, VARIPTR *buffer, VARIPTR end) {
+        if (KillPartsCharSceneAreaPc == NULL)
+            return;
+        for (i32 i = 0; i < apicharsys->loaded_model_count; ++i) {
+            const i32 model_id = apicharsys->models[i].model_id;
+            KILLPARTS_CHARSCENE_PC *entry = &KillPartsCharSceneAreaPc[model_id];
+            if (entry->scene == NULL && (CDataList[model_id].flags & 1) != 0) {
+                i32 index;
+                if (InModelList(list, model_id, &index) != 0 && list[index].count != 0)
+                    CharacterSceneLoadPrivatePc(entry, model_id, buffer, end);
+            }
+        }
+    }
 }

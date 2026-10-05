@@ -2483,3 +2483,19 @@ void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animat
         ++list;
     }
 }
+
+i32 __cdecl InModelList(APICHARACTERMODELLIST *list, i32 id, i32 *out_index) {
+    if (list != NULL) {
+        i32 i = 0;
+        for (; list->model_id != -1; ++list, ++i) {
+            if ((i32)list->model_id == id) {
+                if (out_index != NULL)
+                    *out_index = i;
+                return 1;
+            }
+        }
+    }
+    if (out_index != NULL)
+        *out_index = -1;
+    return 0;
+}

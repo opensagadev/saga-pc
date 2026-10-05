@@ -5,7 +5,7 @@ resulting x86 COFF objects against the original. The default build also links
 our current sources into a Windows executable using the original MSVC linker
 and libraries. The entry path now connects native hardware/window/input startup. The real renderer
 stream initializer is now connected. An unattended Wine run still crashes at a
-null display-list item before a level is loaded; device presentation and
+null shader-manager receiver before a level is loaded; device presentation and
 recurring gameplay remain unverified.
 Configuration parsers exist, but their presence does not complete resource/world
 loading. The executable is not playable.

@@ -38,3 +38,13 @@ void __cdecl instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *owner) {
         CutSceneCameraCTRL = 0;
     }
 }
+
+typedef struct CUT_PLAYER_ACTIVE_PC {
+    void *clips;
+    void *active;
+} CUT_PLAYER_ACTIVE_PC;
+STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, active) == 4);
+extern CUT_PLAYER_ACTIVE_PC *CutScenePlayerPc;
+void *__cdecl CutScenePlayer_Active(void) {
+    return CutScenePlayerPc != NULL ? CutScenePlayerPc->active : NULL;
+}

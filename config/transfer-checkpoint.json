@@ -20,18 +20,18 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1239323,
-    "matched_code_bytes": 199628,
-    "matching_percent": 5.750903277958405,
-    "fuzzy_coverage_percent": 23.734163764225187,
-    "mapped_functions": 4340,
-    "matched_functions": 2000,
-    "objdiff_fuzzy_percent": 69.69311,
-    "objdiff_total_code": 1182857,
+    "mapped_code_bytes": 1240191,
+    "matched_code_bytes": 200675,
+    "matching_percent": 5.781065358087557,
+    "fuzzy_coverage_percent": 23.82737904099036,
+    "mapped_functions": 4347,
+    "matched_functions": 2004,
+    "objdiff_fuzzy_percent": 69.73339,
+    "objdiff_total_code": 1186814,
     "image_bytes": 40067072,
-    "mapped_bytes": 1901564,
-    "mapping_percent": 4.745951987707013,
-    "matched_data_region_bytes": 639920
+    "mapped_bytes": 1903302,
+    "mapping_percent": 4.750289714207217,
+    "matched_data_region_bytes": 640794
   },
   "newly_compared": [
     {
@@ -4093,6 +4093,96 @@
       ],
       "exact": false,
       "objdiff_percent": 84.27619
+    },
+    {
+      "symbol": "_WorldInfo_Load",
+      "pc": "0x0048ce00",
+      "original_bytes": 2222,
+      "units": [
+        "src/legoapi/world.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 75.1541
+    },
+    {
+      "symbol": "?WorldGetTitlesNamePrivatePc@@YAXPAD@Z",
+      "pc": "0x00489aa0",
+      "original_bytes": 184,
+      "units": [
+        "src/legoapi/world.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 77.09836
+    },
+    {
+      "symbol": "_InModelList",
+      "pc": "0x00630680",
+      "original_bytes": 82,
+      "units": [
+        "src/gameapi/apiobject.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_GameLoadCharacterModels",
+      "pc": "0x0055bdc0",
+      "original_bytes": 82,
+      "units": [
+        "src/legoapi/gameobjects.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_CutScenePlayer_Active",
+      "pc": "0x0057e710",
+      "original_bytes": 16,
+      "units": [
+        "src/legoapi/gcutscn.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuLoadTechnicalStrings",
+      "pc": "0x0050b4e0",
+      "original_bytes": 867,
+      "units": [
+        "src/legoapi/menu.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?CharacterSceneLoadPrivatePc@@YAXPAUKILLPARTS_CHARSCENE_PC@@HPATvariptr_u@@T2@@Z",
+      "pc": "0x0055b300",
+      "original_bytes": 145,
+      "units": [
+        "src/legoapi/characters.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 92.14893
+    },
+    {
+      "symbol": "_CharScenes_LevelLoad",
+      "pc": "0x0055b3a0",
+      "original_bytes": 179,
+      "units": [
+        "src/legoapi/characters.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 80.06896
+    },
+    {
+      "symbol": "_CharScenes_AreaLoad",
+      "pc": "0x0055b460",
+      "original_bytes": 180,
+      "units": [
+        "src/legoapi/characters.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 54.516666
     }
   ],
   "previous_exact_functions_lost": [],
@@ -21110,6 +21200,135 @@
       "user_journal_preserved": true,
       "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
       "generated_storage_bytes_approx": 1502000000,
+      "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct-main pushes authorized."
+    },
+    {
+      "checkpoint": "Connected WORLD, character scene and menu checkpoint U (2026-10-05 UTC)",
+      "baseline_commit": "c6306f75f70bd5ab9f224dd8ff20a3f5e4112e7a",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1239323,
+        "matched_code_bytes": 199628,
+        "matching_percent": 5.750903277958405,
+        "fuzzy_coverage_percent": 23.734163764225187,
+        "mapped_functions": 4340,
+        "matched_functions": 2000,
+        "objdiff_fuzzy_percent": 69.69311,
+        "objdiff_total_code": 1182857,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1901564,
+        "mapping_percent": 4.745951987707013,
+        "matched_data_region_bytes": 639920
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1240191,
+        "matched_code_bytes": 200675,
+        "matching_percent": 5.781065358087557,
+        "fuzzy_coverage_percent": 23.82737904099036,
+        "mapped_functions": 4347,
+        "matched_functions": 2004,
+        "objdiff_fuzzy_percent": 69.73339,
+        "objdiff_total_code": 1186814,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1903302,
+        "mapping_percent": 4.750289714207217,
+        "matched_data_region_bytes": 640794
+      },
+      "new_source_functions": 9,
+      "actual_new_transfer_PC_bytes": 3957,
+      "new_unique_compared_PC_bytes": 3957,
+      "unique_compared_code_bytes": 1186296,
+      "native_objdiff_denominator": 1186814,
+      "new_native_family_bytes": {
+        "WORLD_reader_titles": 2406,
+        "area_value_suppliers": 180,
+        "character_scene_helper_callers": 504,
+        "menu_technical_strings": 867
+      },
+      "whole_PC_fuzzy_delta_pp": 0.0932152767651715,
+      "new_exact_PC_bytes": 1047,
+      "new_exact_source_functions": 4,
+      "new_exact_source_PC_bytes": 1047,
+      "accepted_complete_bodies": 10,
+      "old_full_function_copies": 4144,
+      "old_exact_code_copies_preserved": 2003,
+      "old_full_data_copies": 8544,
+      "old_exact_physical_copies_preserved": 5359,
+      "current_exact_physical_data_copies": 5418,
+      "prior_official_function_changes": [
+        "Retrieve208: native Create second argument is true bool pixel_stage; wrong desc-pointer argument repaired without new-byte credit.",
+        "DebReAlloc2: unchanged source, complete historical1458-byte scheduling pair reproduced exactly; retained72-case/376-check qualification only, no fresh semantic equivalence claim."
+      ],
+      "characters_owner_migration": "Original characters.c becomes sole characters.cpp; all14 prior complete raw/named/relocated outputs preserved through actual C linkage declarations, no wrappers or duplicate owner.",
+      "local_label_qualifications": 4,
+      "natural_old_data_tails": [
+        "Known ID_DEFAULTCHARACTER_LSW_B i16=-1: natural COFF4 to8, typedffff unchanged; already nonexact, no old exact loss.",
+        "DebrisDmaCleanupDelayPc actual i32=0: natural unknown COFF8 to4, typedzero4 unchanged; no allocation/control tuning."
+      ],
+      "new_complete_initializer_copies": 181,
+      "new_complete_initializer_COFF_bytes": 2376,
+      "new_known_initializer_copies": 59,
+      "new_known_initializer_COFF_bytes": 889,
+      "new_unknown_initializer_copies": 122,
+      "new_unknown_initializer_COFF_bytes": 1487,
+      "all_new_complete_initializer_copies_retail_equal": true,
+      "new_unique_known_exact_data_bytes": 874,
+      "known_exact_data_union": 640794,
+      "shared_named_definitions_added": 107,
+      "shared_typed_working_bytes": 1213,
+      "shared_full_initializer_COFF_bytes": 1276,
+      "shared_unknown_views": 106,
+      "shared_unknown_typed_bytes": 1209,
+      "unknown_extent_allocation_and_exact_credit": 0,
+      "menu_defaults": "52 native NONNULL pointer views208B refer to49 genuine NUL views925B and existing empty/Vibration targets; existing prompts reused. Actual combined40-byte first view equals retail; historical isolated44-byte padded mismatch remains retained, no source/padding tuning or extent credit.",
+      "verified_checks": {
+        "make_build_check_objects_exit_code": 0,
+        "make_check_exit_code": 0,
+        "make_match_exit_code": 0,
+        "tests": 719,
+        "existing_skips": 3,
+        "format_source_headers": 328,
+        "tidy_normal_units": 301,
+        "actual_normal_objects": 301,
+        "function_definitions": 4153,
+        "data_definitions": 8725,
+        "whole_owner_replacements": 0,
+        "supplemental_objects": 0
+      },
+      "test_qualification": "Required719 checks, full retail outputs and actual unattended launch verified. No fresh selected CPU/asset/world-loading equivalence run claimed.",
+      "accepted_full_bodies_sha256": "ef90bbc6431259898a2cd602a2dc4fc21ea1b7192797c2c10d7bae5bb5c57644",
+      "independent_first_gate_sha256": "2a66034991d8b26a214e462cbfb5cf40485325ce1949b333bf157367fa4645de",
+      "sole_writer_normal_report_release_sha256": "5055f2d40fae431326c89192a6bcadfe862a658f8855d18d268d2d74d82c1b60",
+      "required_checks_receipt_sha256": "3780779c2fc430f8879f491635d02a4ca788e8338805e474e06ee4d9fef01987",
+      "runtime_receipt_sha256": "835fbad5b2dd9531e7316108f49bd7778ee0a83a9a448a56d1013435e27fa18d",
+      "runtime_summary": {
+        "source_exit_code": 5,
+        "seconds": 2.027749,
+        "source_exe_sha256": "a442909dd342977d40aedbf35b7ac89d656833b6f20c1e3fa7516cb521fb6021",
+        "failure": "NULL this at source004FC310, initial vtable read in actual ShaderManager::Retrieve; same first cause as T.",
+        "ShowCrashDialog": 0,
+        "crash_dialog_observed": false,
+        "owned_processes_leftover": false,
+        "window_input_device_Present_scene_gameplay": "Unverified"
+      },
+      "previous_pushed_CI": {
+        "headSha": "c6306f75f70bd5ab9f224dd8ff20a3f5e4112e7a",
+        "conclusion": "success",
+        "url": "https://github.com/opensagadev/saga-pc/actions/runs/37255490539"
+      },
+      "remaining_contracts": [
+        "Reconnect actual WorldInfo_StreamLevel -> WorldInfo_Load and WorldInfo_Load -> now-accepted CharScenes_LevelLoad in next coherent caller batch. Seven WORLD actions still omitted in this accepted snapshot; six require further providers.",
+        "Six WORLD native actions: Hub_LoadAndFixUpMiniKits, MiniKit_Load/InitPieces, CharacterMiniKits_Load, RippleEffects_Configure, SetAreaPickupGravity. Existing scene texture-ID fixup remains missing.",
+        "Real shader manager7412e0/7460d0 publishes297cc8c; parser/dictionary/backend values and actual HLSL source adaptation still hold activation. Native5f22a0 is a separate initializer.",
+        "FixUpLevels6860 partial source/native accepted: four actual callbacks,263 missing callback-address actions; one duplicated annotation is being corrected without code change.61 genuine pointer views await writer gate.",
+        "Permanent/area connected loaders, initialized model/list/mission domains and true keyboard/sound suppliers remain under native review."
+      ],
+      "next_connected_wave": "Reconnect WORLD and character-scene calls; release reviewed shader children16/552, FixUpLevels6860 after61 state contracts, permanent835 and original area parents with genuine getter/storage closure. Continue whole-project families.",
+      "checkpoint_delay": "02:58 UTC checkpoint delayed for actual source/data closure, complete native/private ABI review, full required checks, retail comparison and independent old-copy preservation; no unsafe commit.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "generated_storage_bytes_approx": 1510000000,
       "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct-main pushes authorized."
     }
   ]

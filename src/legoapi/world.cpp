@@ -845,3 +845,297 @@ void __cdecl WorldInfo_StreamLevel(BGPROCINFO *bg_info) {
     if (LWORLD->loaded != 0)
         level_already_loaded = next_level;
 }
+
+typedef struct world_minikit_load_pc_s {
+    NUGSCN *scene;
+    u8 unknown_04[0x14];
+} WORLD_MINIKIT_LOAD_PC;
+STATIC_ASSERT(sizeof(WORLD_MINIKIT_LOAD_PC) == 0x18);
+typedef struct world_load_reader_pc_s {
+    u8 unknown_0000[0x2964];
+    NUGSCN *icons_scene;
+    WORLD_MINIKIT_LOAD_PC minikit;
+    void *character_scenes;
+    u8 unknown_2984[0x2ab8 - 0x2984];
+    i32 light_index;
+    NUVEC *light_direction;
+    u8 unknown_2ac0[0xc];
+    GIZFLOW_PC *giz_flow;
+    u8 unknown_2ad0[0x14];
+    i32 ai_loaded;
+    u8 unknown_2ae8[0x4670 - 0x2ae8];
+    void *ai_connection_control;
+    void *ai_connection_helper;
+    void *ai_trigger_set;
+    void *climb_object_system;
+} WORLD_LOAD_READER_PC;
+STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, icons_scene) == 0x2964);
+STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, minikit) == 0x2968);
+STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, character_scenes) == 0x2980);
+STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, light_index) == 0x2ab8);
+STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, light_direction) == 0x2abc);
+STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, giz_flow) == 0x2acc);
+STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, ai_loaded) == 0x2ae4);
+STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, ai_connection_control) == 0x4670);
+STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, ai_connection_helper) == 0x4674);
+STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, ai_trigger_set) == 0x4678);
+STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, climb_object_system) == 0x467c);
+
+extern "C" {
+    extern LEVELDATA_PC *WorldArchiveOneLevelsPc[11];
+    extern LEVELDATA_PC *WorldArchiveThreeLevelsPc[4];
+    extern i32 WorldLightUserIdPc;
+    extern NUFPCOMJMP WorldLoadAfterKeywordsPc[];
+    extern i32 numtl_force_mipmode;
+    extern char *debris_name[147];
+    i32 __cdecl rtlGetDirection(RTL_SET_PC *, i32, NUVEC **);
+    void __cdecl Level_LoadConfigFile(WORLDINFO *);
+    NUGSCN *__cdecl NuGScnRead(VARIPTR *, VARIPTR, char *);
+    NUGSCN *__cdecl PCGraphicsSceneReadClones(VARIPTR *, VARIPTR, char *, i32);
+    void __cdecl LevelConfig_BeforeLoad(LEVELDATA_PC *, char *, NUFPCOMJMP *);
+    void __cdecl LevelConfig_AfterLoad(LEVELDATA_PC *, char *, NUFPCOMJMP *);
+    void *__cdecl CreateGizmoSys(WORLDINFO *, VARIPTR *, VARIPTR *);
+    AISYS_PC *__cdecl AISysLoad(VARIPTR *, VARIPTR *, i32, NUGSCN *, char *, char *, char *);
+    void *__cdecl AIPathCnxControlSysCreate(VARIPTR *, VARIPTR *, i32);
+    void *__cdecl AIPathCnxHelperSysCreate(VARIPTR *, VARIPTR *, i32);
+    void *__cdecl AITriggerSetSysCreate(VARIPTR *, VARIPTR *);
+    void *__cdecl CreateClimbObjectSys(VARIPTR *, VARIPTR *, i32);
+    APIOBJECTSYS_PC *__cdecl APIObjectSysInit(i32, VARIPTR *, VARIPTR *);
+}
+
+/* Native 489aa0..489b58, original world private EAX output-buffer helper. */
+static void WorldGetTitlesNamePrivatePc(char *titles) {
+    switch (Text_Language) {
+        case 2:
+            NuStrCpy(titles, "titles_french");
+            break;
+        case 3:
+            NuStrCpy(titles, "titles_spanish");
+            break;
+        case 4:
+            NuStrCpy(titles, "titles_german");
+            break;
+        case 5:
+            NuStrCpy(titles, "titles_italian");
+            break;
+        case 8:
+            NuStrCpy(titles, "titles_danish");
+            break;
+        default:
+            if (StartupGameFlag1 != 0)
+                NuStrCpy(titles, Text_Language == 18 ? "titles_us" : "titles_uk");
+            else
+                NuStrCpy(titles, "titles");
+            break;
+    }
+}
+
+void __cdecl WorldInfo_Load(WORLDINFO *world) {
+    char path[268];
+    char titles[64];
+    char ai_name[32];
+    char title_light_path[] = "levels\\titles\\titles";
+    NUGSCN *cutscene_scene;
+    WORLD_LOAD_READER_PC *resource = (WORLD_LOAD_READER_PC *)world;
+    i32 index;
+    i32 selected_archive;
+    Level_LoadConfigFile(world);
+    if (abort_load != 0)
+        goto abort;
+    if (world->config_count > 0) {
+        LevelConfig_BeforeLoad(world->current_level, ConfigBuffer.bytes, Level_ConfigBeforeLoad_GameKeywords);
+        if (abort_load != 0)
+            goto abort;
+    }
+    if ((world->current_level->flags & 4) != 0) {
+        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+        if (world->current_level == TITLES_LDATA) {
+            NuStrCpy(path, "levels\\titles\\");
+            WorldGetTitlesNamePrivatePc(titles);
+            NuStrCat(path, titles);
+        } else {
+            NuStrCpy(path, world->config_file);
+        }
+        NuStrCat(path, ".gsc");
+        numtl_force_mipmode = (i32)(u8)world->current_level->mipmap_mode + 1;
+        selected_archive = (i32)(i8)world->current_level->unknown_00a2 + 1;
+        for (index = 0; index < 11; ++index) {
+            if (world->current_level == WorldArchiveOneLevelsPc[index]) {
+                selected_archive = 1;
+                break;
+            }
+        }
+        if (index == 11) {
+            for (index = 0; index < 4; ++index) {
+                if (world->current_level == WorldArchiveThreeLevelsPc[index]) {
+                    selected_archive = 3;
+                    break;
+                }
+            }
+        }
+        StartupDatsSelectPc(selected_archive);
+        if (PcWindowOptions.shadowmethod == 2)
+            world->current_gscn = PCGraphicsSceneReadClones(&world->giz_buffer, world->buffer_end, path, 2);
+        else
+            world->current_gscn = NuGScnRead(&world->giz_buffer, world->buffer_end, path);
+        StartupDatsSelectPc(0);
+        numtl_force_mipmode = 0;
+        StoreSceneProgress(world->current_gscn, &world->scene_progress, 1);
+        SaveSceneObjectAnimTFactors(world->current_gscn);
+        if (world->current_gscn != NULL)
+            CalculateWorldSize(world);
+        if (abort_load != 0)
+            goto abort;
+    }
+    if (world->current_level == TITLES_LDATA || world->current_level == CREDITS_LDATA) {
+        numtl_force_mipmode = (i32)(u8)world->current_level->mipmap_mode + 1;
+        world->secondary_gscn = NuGScnRead(&world->giz_buffer, world->buffer_end, "levels\\titles\\pictures.gsc");
+        if (abort_load != 0)
+            goto abort;
+    }
+    world->game_anim_sys = GameAnimSys_Create(&world->giz_buffer, &world->buffer_end);
+    Particles_Load(world, debris_name, 400, 0x93);
+    if (abort_load != 0)
+        goto abort;
+    LoadPartFile(world);
+    if (abort_load != 0)
+        goto abort;
+    if (world->config_count > 0)
+        BoltTypes_Configure(world, ConfigBuffer.bytes);
+    world->game_antinode_sys = GameAntnode_CreateSys(world, &world->giz_buffer, &world->buffer_end,
+                                                     (i32)(u16)world->current_level->max_gameantinodes);
+    world->gizmo_sys = CreateGizmoSys(world, &world->giz_buffer, &world->buffer_end);
+    sprintf(path, "%s%s", world->config_file, ".spl");
+    LoadEditorSplines(path, &world->giz_buffer, &world->buffer_end);
+    GizmoBlowupResetNameTable();
+    LoadGizmoSys(world->gizmo_sys, world, world->config_file);
+    if (abort_load != 0)
+        goto abort;
+    if (world->area != NULL && world->area == HUB_ADATA && GAMEDEMO == 0) {
+        STUBBED_NAMED(Hub_LoadAndFixUpMiniKits); /* Native 48d160: (world,buffer,end). */
+        if (abort_load != 0)
+            goto abort;
+    } else if ((world->current_level->flags & 0x400) != 0 && world->area != NULL && world->area->minikit_id != -1) {
+        STUBBED_NAMED(MiniKit_Load); /* Native 48d1a5: (&minikit,(i16)id,buffer,end,NULL). */
+        if (resource->minikit.scene != NULL)
+            STUBBED_NAMED(MiniKit_InitPieces); /* Native 48d1b7: (&minikit,10,buffer,end). */
+        if (abort_load != 0)
+            goto abort;
+    }
+    if ((world->current_level == HUB_LDATA || (world->current_level->flags & 0x400) != 0) && big_icon_scene == NULL)
+        resource->icons_scene =
+            NuGScnRead(&world->giz_buffer, world->buffer_end, "stuff\\icons\\starwars_icons_all.gsc");
+    cutscene_scene = area_scene;
+    if (cutscene_scene == NULL || world->area == NULL || (world->area->flags & 0x400) == 0)
+        cutscene_scene = things_scene;
+    world->cutscene_sys =
+        (CUTSYS_PC *)CutScenes_Load(ConfigBuffer.bytes, world->current_gscn, cutscene_scene, world->page_pp,
+                                    &world->giz_buffer, &world->buffer_end, world->area_index, world->level_idx, world);
+    if (abort_load != 0)
+        goto abort;
+    world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+    resource->character_scenes = world->giz_buffer.void_ptr;
+    world->giz_buffer.addr += CHARCOUNT * 0x10;
+    STUBBED_NAMED(CharScenes_LevelLoad); /* Native 48d282: (world). */
+    if ((world->current_level->flags & 2) != 0 && (world->current_level->flags & 0xe0) == 0)
+        world->sock_sys = SockSysInit(&world->giz_buffer, world->buffer_end, world->current_gscn);
+    LevelSplines_InitForLevel(world);
+    LevelObjects_InitForLevel(world);
+    BoltTypes_Init(world);
+    if (world->config_count > 0) {
+        LevelConfig_AfterLoad(world->current_level, ConfigBuffer.bytes, WorldLoadAfterKeywordsPc);
+        EquivalentObjects_Configure(world, ConfigBuffer.bytes);
+        Teleports_Configure(world, ConfigBuffer.bytes);
+        Doors_Configure(world, ConfigBuffer.bytes);
+        Faders_Configure(world, ConfigBuffer.bytes);
+        CharPlatforms_Configure(world, ConfigBuffer.bytes);
+        Grabber_Configure(world, ConfigBuffer.bytes);
+        Pulses_Configure(world, ConfigBuffer.bytes);
+        TrafficAnimSys_Configure(world, ConfigBuffer.bytes);
+        SpecialMiniKits_Configure(world, ConfigBuffer.bytes);
+        GizForceSFX_Configure(world, ConfigBuffer.bytes);
+    }
+    if (world->sock_sys != NULL) {
+        if (world->config_count > 0)
+            SockSys_Configure(world->sock_sys, ConfigBuffer.bytes, 0, &world->giz_buffer, &world->buffer_end,
+                              world->current_gscn);
+        SockSys_GenerateData(world->sock_sys, &world->giz_buffer, world->buffer_end);
+        if (abort_load != 0)
+            goto abort;
+    }
+    if (world->area != NULL && (world->area->flags & 5) == 5 && (world->current_level->flags & 0x4e0) == 0) {
+        STUBBED_NAMED(CharacterMiniKits_Load); /* Native 48d3d6: (collection,world,buffer,end). */
+        if (abort_load != 0)
+            goto abort;
+    }
+    /* Native always performs these calls after the optional character-minikit branch. */
+    LoadTerrainFile(world);
+    if (abort_load != 0)
+        goto abort;
+    LoadGrassFile(world);
+    if (abort_load != 0)
+        goto abort;
+    LoadBridgeFile(world);
+    if (abort_load != 0)
+        goto abort;
+    resource->ai_loaded = (world->current_level->flags & 2) == 0 || (world->current_level->flags & 0xe0) != 0;
+    if (resource->ai_loaded == 0) {
+        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+        sprintf(ai_name, "ai");
+        world->ai_sys = AISysLoad(&world->giz_buffer, &world->buffer_end, 0x1cc00, world->current_gscn,
+                                  world->current_level->dir, world->current_level->name, ai_name);
+        resource->ai_connection_control = AIPathCnxControlSysCreate(&world->giz_buffer, &world->buffer_end, 32);
+        resource->ai_connection_helper = AIPathCnxHelperSysCreate(&world->giz_buffer, &world->buffer_end, 32);
+        resource->ai_trigger_set = AITriggerSetSysCreate(&world->giz_buffer, &world->buffer_end);
+        GameAIScriptAddLevelSfx(world, &global_aiscripts);
+        GameAIScriptAddLevelSfx(world, &world->ai_sys->scripts);
+        resource->climb_object_system = CreateClimbObjectSys(&world->giz_buffer, &world->buffer_end,
+                                                             (i32)(u8)world->current_level->max_climb_objects);
+    }
+    if (abort_load != 0)
+        goto abort;
+    world->object_sys = APIObjectSysInit(0x10d8, &world->giz_buffer, &world->buffer_end);
+    if (abort_load != 0)
+        goto abort;
+    if ((world->current_level->flags & 4) != 0) {
+        LoadLights(world, world->current_level == TITLES_LDATA ? title_light_path : world->config_file);
+        resource->light_index = rtlFindByUserId((RTL_SET_PC *)world->rtl_set, WorldLightUserIdPc);
+        if (resource->light_index == -1)
+            resource->light_direction = NULL;
+        else
+            rtlGetDirection((RTL_SET_PC *)world->rtl_set, resource->light_index, &resource->light_direction);
+    } else {
+        resource->light_index = -1;
+        resource->light_direction = NULL;
+    }
+    if (abort_load != 0)
+        goto abort;
+    if (world->config_count > 0) {
+        STUBBED_NAMED(RippleEffects_Configure); /* Native48d5b7: (world,config). */
+        PortalDoors_Configure(world, ConfigBuffer.bytes);
+        if (abort_load != 0)
+            goto abort;
+    }
+    GizmoSysAddGizmos(world->gizmo_sys, resource->giz_flow, world);
+    if (abort_load != 0)
+        goto abort;
+    NuStrCpy(path, world->config_file);
+    NuStrCat(path, ".git");
+    resource->giz_flow =
+        (GIZFLOW_PC *)LoadGizFlow(world, world->gizmo_sys, path, &world->giz_buffer, &world->buffer_end);
+    if (abort_load != 0)
+        goto abort;
+    InitSpecialSfx(world);
+    LoadSpecialSfxFile(world);
+    if (abort_load != 0)
+        goto abort;
+    if (world->current_level->callbacks[0] != NULL)
+        ((void(__cdecl *)(WORLDINFO *, VARIPTR *, VARIPTR *))world->current_level->callbacks[0])(
+            world, &world->giz_buffer, &world->buffer_end);
+    STUBBED_NAMED(SetAreaPickupGravity); /* Native48d683: (level_idx,area_index). */
+    world->loaded = 1;
+    return;
+abort:
+    WorldInfo_Dump(world);
+    WorldInfo_Reset(world, -1);
+}

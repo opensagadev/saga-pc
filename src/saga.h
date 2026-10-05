@@ -16405,4 +16405,99 @@ extern "C" {
 }
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern LEVELDATA_PC *WorldArchiveOneLevelsPc[11];
+    extern LEVELDATA_PC *WorldArchiveThreeLevelsPc[4];
+    extern NUFPCOMJMP WorldLoadAfterKeywordsPc[1];
+    extern i32 WorldLightUserIdPc;
+    extern i32 numtl_force_mipmode;
+#ifdef __cplusplus
+}
+#endif
+
+struct CUT_PLAYER_ACTIVE_PC;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 __cdecl InModelList(APICHARACTERMODELLIST *, i32, i32 *);
+    void __cdecl GameLoadCharacterModels(APICHARACTERMODELLIST *, i32, VARIPTR *, VARIPTR *, i32, i32);
+    void *__cdecl CutScenePlayer_Active(void);
+    extern struct CUT_PLAYER_ACTIVE_PC *CutScenePlayerPc;
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl MenuLoadTechnicalStrings(char *, char *, VARIPTR *, VARIPTR);
+    extern char *apiGameName;
+    extern char *apiGameTitle;
+    extern char *apiGameSubTitle;
+    extern char *apitxt_YES;
+    extern char *apitxt_NO;
+    extern char *apitxt_OK;
+    extern char *apitxt_CANCEL;
+    extern char *apitxt_RETRY;
+    extern char *apitxt_SLOT;
+    extern char *apitxt_PRESENT;
+    extern char *apitxt_EMPTY;
+    extern char *apitxt_NOSPACE;
+    extern char *apitxt_CONTINUE;
+    extern char *apitxt_SAVEGAME;
+    extern char *apitxt_LOADGAME;
+    extern char *apitxt_DELETEGAME;
+    extern char *apitxt_GAMESAVED;
+    extern char *apitxt_GAMEOVERWRITTEN;
+    extern char *apitxt_GAMELOADED;
+    extern char *apitxt_DELETING;
+    extern char *apitxt_FORMATTING;
+    extern char *apitxt_CORRUPTLOAD;
+    extern char *apitxt_CONFIRMLOAD;
+    extern char *apitxt_CONFIRMSAVE;
+    extern char *apitxt_CONFIRMOVERWRITE;
+    extern char *apitxt_DOYOUWANTTOSTART;
+    extern char *apitxt_DOYOUWANTTOABORT;
+    extern char *apitxt_DOYOUWANTTOABORTLOAD;
+    extern char *apitxt_DOYOUWANTTOABORTFORMAT;
+    extern char *apitxt_CONTINUEWITHOUTSAVING;
+    extern char *apitxt_GAMEOVERWRITING;
+    extern char *apitxt_NEWSAVE;
+    extern char *apitxt_CONTINUEWITHOUTLOADING;
+    extern char *apitxt_COMPLETED;
+    extern char *apitxt_VIBRATION;
+    extern char *apitxt_CONFIRMDELETE;
+    extern char *apitxt_PROGRESS;
+    extern char *apitxt_TIMEPLAYED;
+    extern char *apitxt_PCPRESSSTARTFE;
+    extern char *apitxt_PCPRESSSTARTP1;
+    extern char *apitxt_PCPRESSSTARTP2;
+    extern char *apitxt_GAMESAVING;
+    extern char *apitxt_GAMELOADING;
+    extern char *apitxt_FAILEDTOLOAD;
+    extern char *apitxt_FAILEDTOSAVE;
+    extern char *apitxt_FAILEDTOOVERWRITE;
+    extern char *apitxt_NODATAAVAILABLE;
+    extern char *apitxt_AUTOSAVE_ENABLED;
+    extern char *apitxt_FORMATTINGCOMPLETE;
+    extern char *apitxt_DELETECOMPLETE;
+    extern char *apitxt_NOTENOUGHSPACE;
+    extern char *apitxt_CONTROLLERREMOVED;
+
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i8);
+    void __cdecl CharScenes_LevelLoad(WORLDINFO *);
+    void __cdecl CharScenes_AreaLoad(APICHARACTERMODELLIST *, VARIPTR *, VARIPTR);
+#ifdef __cplusplus
+}
 #endif
