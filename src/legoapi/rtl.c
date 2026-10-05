@@ -1305,3 +1305,16 @@ void edrtlCalculateBurnoutEx(BURN_SET_PC *set, BURN_PARAMETERS_PC *parameters, N
     edrtlCalculateBurnout(set, &parameters->field_24, &parameters->field_14, &parameters->field_1c, camera_position,
                           frame_time);
 }
+
+typedef struct rtl_direction_lookup_pc_s {
+    u32 header;
+    RTL_LIGHT_PC lights[129];
+} RTL_DIRECTION_LOOKUP_PC;
+STATIC_ASSERT(offsetof(RTL_DIRECTION_LOOKUP_PC, lights) == 4);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, direction) == 0xc);
+i32 __cdecl rtlGetDirection(RTL_SET_PC *set, i32 index, NUVEC **out) {
+    if (set == NULL || out == NULL || (u32)index > 128u)
+        return 0;
+    *out = &((RTL_DIRECTION_LOOKUP_PC *)set)->lights[index].direction;
+    return 1;
+}

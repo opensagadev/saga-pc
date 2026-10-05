@@ -1,6 +1,18 @@
 #include "saga.h"
 
 extern "C" {
+    extern char TextInputKeyNameTextPc7516c0[];
+    char *AiLevelPathName = TextInputKeyNameTextPc7516c0;
+    i32 ai_usepackfile = 1;
+    i8 AiLoadMinimumRespawnCountPc = 0;
+    i8 AiLoadMaximumRespawnCountPc = 0;
+    f32 AiLoadMinimumRespawnTimePc = 0.0f;
+    f32 AiLoadMaximumRespawnTimePc = 0.0f;
+    i32(__cdecl *GlobalCharacterTypeIDFn)(char *) = NULL;
+    void(__cdecl *GameAILoadFn)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *) = NULL;
+}
+
+extern "C" {
     extern const char PermanentDebrisNamePc755ac4[13] = "BULLET_SPARK";
     extern const char PermanentDebrisNamePc755ab8[10] = "SABER_RED";
     extern const char PermanentDebrisNamePc755aac[12] = "SABER_GREEN";
@@ -18556,4 +18568,8 @@ extern "C" {
 #pragma data_seg(".data$GizmoPickups_Collide2DFn")
     f32(__cdecl *GizmoPickups_Collide2DFn)(GAMEOBJECT *) = NULL;
 #pragma data_seg()
+}
+
+extern "C" {
+    u8 AiLoadActivationDifficultyPc = 1;
 }

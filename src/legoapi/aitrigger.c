@@ -268,3 +268,21 @@ void __cdecl AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
         set->flags &= ~2;
     }
 }
+
+void __cdecl AITriggerSetSysReset(TRIGGER_SYSTEM_PC *system) {
+    i32 index;
+    if (system == NULL)
+        return;
+    memset(system, 0, sizeof(*system));
+    for (index = 0; index < 64; ++index) {
+        system->assigned_set[index] = -1;
+        system->assigned_trigger[index] = -1;
+    }
+    for (index = 0; index < 32; ++index)
+        memset(system->sets[index].trigger_indices, 0xff, sizeof(system->sets[index].trigger_indices));
+}
+void *__cdecl AITriggerSetSysCreate(VARIPTR *buffer, VARIPTR *end) {
+    TRIGGER_SYSTEM_PC *system = (TRIGGER_SYSTEM_PC *)AISysBufferAlloc(buffer, end, sizeof(*system));
+    AITriggerSetSysReset(system);
+    return system;
+}

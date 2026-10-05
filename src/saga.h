@@ -16339,4 +16339,70 @@ extern "C" {
 }
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl AIPathCalcExtents(AIPATH_PC *path);
+    AISYS_PC *__cdecl AISysLoadEx(VARIPTR *, VARIPTR *, i32, NUGSCN *, char *, char *, char *, char *);
+    AISYS_PC *__cdecl AISysLoad(VARIPTR *, VARIPTR *, i32, NUGSCN *, char *, char *, char *);
+
+    extern char *AiLevelPathName;
+    extern i32 ai_usepackfile;
+    extern u8 AiLoadActivationDifficultyPc;
+    extern i8 AiLoadMinimumRespawnCountPc, AiLoadMaximumRespawnCountPc;
+    extern f32 AiLoadMinimumRespawnTimePc, AiLoadMaximumRespawnTimePc;
+    extern i32(__cdecl *GlobalCharacterTypeIDFn)(char *);
+    extern void(__cdecl *GameAILoadFn)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef struct ai_control_system_pc_s AI_CONTROL_SYSTEM_PC;
+typedef struct trigger_system_pc_s TRIGGER_SYSTEM_PC;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void *__cdecl AIPathCnxControlSysCreate(VARIPTR *, VARIPTR *, i32);
+    void *__cdecl AIPathCnxHelperSysCreate(VARIPTR *, VARIPTR *, i32);
+    void *__cdecl AITriggerSetSysCreate(VARIPTR *, VARIPTR *);
+    void *__cdecl CreateClimbObjectSys(VARIPTR *, VARIPTR *, i32);
+    APIOBJECTSYS_PC *__cdecl APIObjectSysInit(i32, VARIPTR *, VARIPTR *);
+    i32 __cdecl rtlGetDirection(RTL_SET_PC *, i32, NUVEC **);
+    void __cdecl AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *);
+    void __cdecl AITriggerSetSysReset(TRIGGER_SYSTEM_PC *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl NuRndrArenaInitPc(VARIPTR *, VARIPTR);
+    void __cdecl NuRndrQuadBufferInitPc(void);
+    void __cdecl NuRndrGeometryBuffersInitPc(void);
+    void __cdecl NuRndrBufferDescriptorsInitPc(VARIPTR *, VARIPTR);
+    void __cdecl NuRndrInitConfigPc(VARIPTR *, VARIPTR);
+    void __cdecl NuRndrInitGeneric(void);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl NuMtlInitEx(VARIPTR *buffer, i32 material_count);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *, i32, VARIPTR *, VARIPTR, i32);
+    NUHGOBJ_EVAL_PC *__cdecl NuGHGRead(char *, VARIPTR *, VARIPTR);
+#ifdef __cplusplus
+}
+#endif
+
 #endif

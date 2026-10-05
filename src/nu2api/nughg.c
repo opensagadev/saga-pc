@@ -186,3 +186,21 @@ NUGSCN *__cdecl PCGraphicsSceneReadClones(VARIPTR *buffer, VARIPTR buffer_end, c
     }
     return scene;
 }
+
+typedef struct CHARACTER_GHG_API_STATE_PC {
+    u8 unknown_00[0x80];
+    i32 loading_hgobj;
+} CHARACTER_GHG_API_STATE_PC;
+STATIC_ASSERT(offsetof(CHARACTER_GHG_API_STATE_PC, loading_hgobj) == 0x80);
+NUHGOBJ_EVAL_PC *__cdecl NuGHGRead(char *path, VARIPTR *buffer, VARIPTR end) {
+    NUGSCN *scene;
+    i32 i;
+    ((CHARACTER_GHG_API_STATE_PC *)&nuapi)->loading_hgobj = 1;
+    scene = NuReadGraphicsData(buffer, &end, path, NULL);
+    if (scene != NULL && nuapi.force_shadows_on_characters != 0) {
+        for (i = 0; i != scene->display_list->special_count; ++i)
+            scene->display_list->visibility_flags[i] |= 0x20;
+    }
+    ((CHARACTER_GHG_API_STATE_PC *)&nuapi)->loading_hgobj = 0;
+    return (NUHGOBJ_EVAL_PC *)scene;
+}

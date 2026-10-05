@@ -3000,7 +3000,7 @@ frame-state initializer is1; bound-shader/frame-count/callback initializers are0
 All4,942 actual-normal shared regions equal isolated output. CRC, HANDLE, old
 members and known exact initializer contracts are retained. A natural unknown
 DebrisDmaCleanupDelayPc COFF interval grows4 to8 with a zero tail and its entire
-old f32 initializer unchanged; this is explicitly qualified without credit.
+old i32 initializer unchanged; this is explicitly qualified without credit.
 The existing known WORD's original eight-byte COFF interval is restored. There
 are no padding controls, synthetic constructors or fake suppliers.
 
@@ -3197,3 +3197,89 @@ and area suppliers close. Texture fallback provenance, device reset/recreate and
 remaining startup effects stay explicit. Generated storage is about1.36GB; the
 user's journal remains unchanged and outside the commit. Direct-main transfer
 continues under the active indefinite goal.
+
+### Connected ingestion, world supplier and renderer checkpoint T (2026-10-05 UTC)
+
+S58ed942 passed exact-revision CI37250452776. T transfers22 new functions and
+11,508 complete PC bytes: AI ingress/paths/bounds6,656, WORLD suppliers613,
+renderer configuration1,144, partial material initializer375 and character
+models2,720. Two existing callers regain their actual configuration/material
+calls, with zero new-byte credit. All24 reviewed complete outputs agree with
+the actual301 normal objects; every mapping and relocation resolves and the
+source executable links. No owner replacement or supplementary game object is
+used. Required LLVM18 checks cover328 source/header files and301 units; all719
+core tests pass with three existing skips.
+
+The AI reader consumes genuine file/path/allocator providers and reuses the
+canonical path-height tolerance. Its same-TU helpers retain their natural
+private register ABIs. Script607's missing per-file/include actions remain
+explicit. WORLD's eight value suppliers are real allocator/list/math bodies;
+six are exact. The native rtl direction reader permits index128 and its working
+view reaches an existing neighboring field; no added backing or capacity guard
+is claimed. Renderer configuration uses real VB/IB/declaration/material values.
+Clear records use base981cc0, WORD20 and stride28hex, with the native32-record
+working domain. Private visibility changes naturally inline the arena helper;
+the earlier extern research's224 exact bytes are not claimed. Exact original
+PC filenames/static declarations are not independently established for these
+natural private cohorts. AI StartStagger's original creator/declaration TU is
+also unproved; its qualified local candidate has no allocation credit.
+
+NuMtlInitEx restores its pool/descriptors/default materials and true cdecl2
+hardware call. Shader initialization60ded0 remains a native void marker; its
+factory, STL helper metadata and pool lifetime are genuine pending providers.
+The model loader reuses canonical character records and actual model/animation
+values. Review corrected the fallback pack's actual pathname pointer. Existing
+append/nopakfile state is reused directly rather than duplicated; three
+relocation-name changes preserve the complete relocated bodies. The legacy
+known4 nopakfile inventory extent is reconciled with its same physical owner.
+The scene texture-ID void fixup remains missing. No successful asset load or
+complete initialization is claimed.
+
+All4,122 old function bodies and8,506 data definitions are checked. Only the
+two authorized caller bodies change officially; all1,995 old exact code copies
+and5,342 exact physical initializers survive. The debris allocator and camera
+are unchanged, so T needs no recurring scheduling qualification. Four local
+compiler-label serial changes preserve raw bytes, owner/offset and complete
+relocated output. Three natural old data tails preserve their declared values:
+CpuBrandIndexPc is u8, DebrisDmaCleanupDelayPc is i32, and existing known
+PcInputText7517a8 char[3] now emits3 instead of4 bytes. Earlier prose calling
+the debris delay f32 was incorrect; its actual source type remains i32.
+
+All38 new complete initializer copies match retail:15 known and23 unknown,
+1,535 complete COFF bytes. Nine shared AI definitions total27 bytes; renderer's
+13 private states total1,388 and private StartStagger4. These23 unknown owning
+extents receive zero allocation/exact credit. All5,181 shared physical regions,
+13 member parents/28 known bytes, CRC and HANDLE contracts are preserved.
+Current exact physical initializers total5,359:15 new known copies and two old
+owner qualifications. Known exact data union gains77 bytes:70 genuinely new
+unique bytes plus3 char-array bytes and4 existing canonical nopakfile bytes.
+
+Unique compared PC bytes increase1,170,831 to1,182,339, exactly11,508. Native
+objdiff's1,182,857-byte denominator retains518 overlapping bytes. Whole-PC fuzzy
+coverage23.4891391375% to23.7341637642% gains0.2450246267 percentage points.
+Exact code199,081 to199,628 adds547 bytes, reaching5.7509032780% of3,471,246
+retail text bytes. Seven new exact bodies contribute515 and the existing
+renderer entry32. Complete spans are compared without masking/truncation.
+
+The actual source EXE12fcb8a9 exits5 after3.428 seconds. The failure moves from
+S's null 2D-list pointer to a null ShaderManager receiver at source004FB3A0,
+the initial vtable read in Retrieve. The actual early manager initializer at native7412e0 and its constructor
+7460d0 are the next provider frontier. Native5f22a0 is a separate shader
+initializer; its nominal manager child is a genuine RET and does not publish
+the missing pointer. The unattended launch queries
+ShowCrashDialog DWORD0 in its own prefix, retains the genuine failure, and
+leaves no crash dialog or owned game/debugger process. All301 objects and413
+frozen inputs stay unchanged. Fresh window/input/device/Present/scene/gameplay
+milestones remain unverified. Historical family checks apply only to proven
+unchanged bodies; T does not claim a fresh88-check family run.
+
+The half-hour checkpoint was delayed for connected source/storage contracts,
+canonical owner reuse, mandatory full checks, retail matching and independent
+old-copy preservation. Next release WORLD reader/titles2,406 after five genuine
+state views76B; seven native void actions remain explicit and shadow mode reuses
+PcWindowOptions.shadowmethod. Recover real shader-manager creation/publishing,
+then permanent/area parents with the genuine model/animation/music providers
+and original C++ context. The cache's179 generated STL helpers remain a research
+bank until each original binding/exception contract is established. Generated
+storage is about1.5GB; the user's journal is unchanged and outside this commit.
+Matching remains primary and whole-project direct-main continuation stays active.

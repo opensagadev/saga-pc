@@ -127,9 +127,9 @@ Startup code may use `STUBBED()` or `STUBBED_NAMED(...)` to mark a verified PC
 call or state transition whose dependency is still missing. These markers emit
 no code in matching builds and do not imply a byte match. Keep the original call
 order, document the skipped work, and replace markers down the dependency tree.
-The source-only executable connects real window/input and renderer stream
-producers, but an actual run still fails at a null display-list item before
-world loading. Automated Wine tests suppress the debugger dialog in their own
+The source-only executable connects real window/input, renderer configuration
+and material setup, but an actual run still fails at a null shader-manager
+receiver before world loading. Automated Wine tests suppress the debugger dialog in their own
 prefix, preserve the genuine crash output and exit, and clean only their own
 process group; see [the execution policy](config/transfer-execution.md).
 Remaining device actions, resource fixups and the recurring update/render loop

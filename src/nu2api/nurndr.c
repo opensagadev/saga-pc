@@ -959,7 +959,174 @@ STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_count) == 0x4);
 STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_indices) == 0x8);
 
 void __cdecl NuRndrStreamInit(i32 size, VARIPTR *buffer);
+void __cdecl NuRndrInitConfigPc(VARIPTR *buffer, VARIPTR end);
 void __cdecl NuRndrInitEx(i32 size, VARIPTR *buffer, VARIPTR end) {
     NuRndrStreamInit(size, buffer);
-    STUBBED_NAMED("NuRndrInitEx: native renderer configuration (0x607a90), buffer/end");
+    NuRndrInitConfigPc(buffer, end);
+}
+
+static i32 RendererConfigEnabledPc, RendererConfigSecondEnabledPc;
+static NUMTX RendererConfigMatrixPc;
+static PC_TEXTURE_RESOURCE_PC *RendererVertexDeclarationPc;
+static PC_BUFFER_RESOURCE_PC *RendererQuadVertexBufferPc;
+static PC_BUFFER_RESOURCE_PC *RendererGeometryVertexBufferPc;
+static PC_BUFFER_RESOURCE_PC *RendererGeometryIndexBufferPc;
+static u8 *RendererArenaDataPc;
+static u32 *RendererArenaOffsetsPc;
+static i32 *RendererArenaTypesPc;
+
+typedef struct RENDERER_CLEAR_RECORD_PC {
+    u8 unknown_00[0x20];
+    u16 active;
+    u8 unknown_22[6];
+} RENDERER_CLEAR_RECORD_PC;
+STATIC_ASSERT(sizeof(RENDERER_CLEAR_RECORD_PC) == 0x28);
+STATIC_ASSERT(offsetof(RENDERER_CLEAR_RECORD_PC, active) == 0x20);
+static RENDERER_CLEAR_RECORD_PC RendererClearRecordsPc[32];
+
+typedef struct RENDERER_SHADOW_DEFAULTS_PC {
+    f32 state0, state1, state2;
+    u32 packed_colour;
+} RENDERER_SHADOW_DEFAULTS_PC;
+STATIC_ASSERT(sizeof(RENDERER_SHADOW_DEFAULTS_PC) == 16);
+STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, state0) == 0);
+STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, state1) == 4);
+STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, state2) == 8);
+STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, packed_colour) == 12);
+
+typedef struct RENDERER_SCREEN_VERTEX_PC {
+    f32 x, y, z, w;
+    u32 attribute_bits;
+    u8 unknown_14[8];
+} RENDERER_SCREEN_VERTEX_PC;
+STATIC_ASSERT(sizeof(RENDERER_SCREEN_VERTEX_PC) == 0x1c);
+STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, x) == 0);
+STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, y) == 4);
+STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, z) == 8);
+STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, w) == 12);
+STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, attribute_bits) == 16);
+STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, unknown_14) == 20);
+
+void __cdecl NuRndrInitGeneric(void);
+
+void __cdecl NuRndrArenaInitPc(VARIPTR *buffer, VARIPTR end) {
+    RendererArenaDataPc = (u8 *)((buffer->addr + 3) & ~3u);
+    buffer->addr = ((buffer->addr + 3) & ~3u) + 0x36b00;
+    RendererArenaOffsetsPc = (u32 *)((buffer->addr + 3) & ~3u);
+    buffer->addr = ((buffer->addr + 3) & ~3u) + 0x7d0;
+    RendererArenaTypesPc = (i32 *)((buffer->addr + 3) & ~3u);
+    buffer->addr = ((buffer->addr + 3) & ~3u) + 0x7d0;
+}
+
+void __cdecl NuRndrQuadBufferInitPc(void) {
+    void *data;
+    RENDERER_SCREEN_VERTEX_PC *vertices;
+    if (RendererQuadVertexBufferPc != NULL) {
+        RendererQuadVertexBufferPc->methods->release(RendererQuadVertexBufferPc);
+        RendererQuadVertexBufferPc = NULL;
+    }
+    PCDeviceCreateVertexBuffer(0x70, 0, 0, 1, &RendererQuadVertexBufferPc);
+    if (RendererQuadVertexBufferPc->methods->lock(RendererQuadVertexBufferPc, 0, 0, &data, 0) < 0)
+        return;
+    vertices = (RENDERER_SCREEN_VERTEX_PC *)data;
+    vertices[0].x = 0.0f;
+    vertices[0].y = 0.0f;
+    vertices[0].z = 1.0f;
+    vertices[1].x = (f32)(u32)DebrisGlassTextureWidth;
+    vertices[1].y = 0.0f;
+    vertices[1].z = 1.0f;
+    vertices[2].x = (f32)(u32)DebrisGlassTextureWidth;
+    vertices[2].y = (f32)(u32)DebrisGlassTextureHeight;
+    vertices[2].z = 1.0f;
+    vertices[3].x = 0.0f;
+    vertices[3].y = (f32)(u32)DebrisGlassTextureHeight;
+    vertices[3].z = 1.0f;
+    vertices[3].attribute_bits = 0x4b000000;
+    vertices[2].attribute_bits = 0x4b000000;
+    vertices[1].attribute_bits = 0x4b000000;
+    vertices[0].attribute_bits = 0x4b000000;
+    vertices[3].w = 1.0f;
+    vertices[2].w = 1.0f;
+    vertices[1].w = 1.0f;
+    vertices[0].w = 1.0f;
+    RendererQuadVertexBufferPc->methods->unlock(RendererQuadVertexBufferPc);
+}
+
+void __cdecl NuRndrGeometryBuffersInitPc(void) {
+    void *data;
+    u16 *indices;
+    i32 remaining;
+    u32 base;
+    if (RendererGeometryVertexBufferPc != NULL) {
+        RendererGeometryVertexBufferPc->methods->release(RendererGeometryVertexBufferPc);
+        RendererGeometryVertexBufferPc = NULL;
+    }
+    if (RendererGeometryIndexBufferPc != NULL) {
+        RendererGeometryIndexBufferPc->methods->release(RendererGeometryIndexBufferPc);
+        RendererGeometryIndexBufferPc = NULL;
+    }
+    PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)&RendererGeometryVertexBufferPc);
+    PCDeviceCreateVertexBuffer(0x40000, 0x208, 0, 0, &RendererGeometryVertexBufferPc);
+    NuRndrQuadBufferInitPc();
+    PCDeviceCreateIndexBuffer(0xc000, 0, 0x65, 1, &RendererGeometryIndexBufferPc, NULL);
+    if (RendererGeometryIndexBufferPc->methods->lock(RendererGeometryIndexBufferPc, 0, 0, &data, 0) < 0)
+        return;
+    indices = (u16 *)data;
+    remaining = 0x1000;
+    base = 0;
+    do {
+        *indices++ = (u16)base;
+        *indices++ = (u16)(base + 1);
+        *indices++ = (u16)(base + 2);
+        *indices++ = (u16)base;
+        *indices++ = (u16)(base + 2);
+        *indices++ = (u16)(base + 3);
+        base += 4;
+    } while (--remaining != 0);
+    RendererGeometryIndexBufferPc->methods->unlock(RendererGeometryIndexBufferPc);
+}
+
+void __cdecl NuRndrBufferDescriptorsInitPc(VARIPTR *buffer, VARIPTR end) {
+    PC_VERTEX_ELEMENT_PC elements[3];
+    elements[0].stream = 0;
+    elements[0].offset = 0;
+    elements[0].type = 2;
+    elements[0].method = 0;
+    elements[0].usage = 0;
+    elements[0].usage_index = 0;
+    elements[1].stream = 0;
+    elements[1].offset = 12;
+    elements[1].type = 4;
+    elements[1].method = 0;
+    elements[1].usage = 10;
+    elements[1].usage_index = 0;
+    elements[2].stream = 0xff;
+    elements[2].offset = 0;
+    elements[2].type = 17;
+    elements[2].method = 0;
+    elements[2].usage = 0;
+    elements[2].usage_index = 0;
+    PCDeviceCreateVertexDeclaration(elements, &RendererVertexDeclarationPc);
+    NuRndrArenaInitPc(buffer, end);
+    NuRndrQuadBufferInitPc();
+    NuRndrGeometryBuffersInitPc();
+}
+
+void __cdecl NuRndrInitConfigPc(VARIPTR *buffer, VARIPTR end) {
+    RENDERER_SHADOW_DEFAULTS_PC *shadow = (RENDERER_SHADOW_DEFAULTS_PC *)&PCShadowState;
+    RENDERER_CLEAR_RECORD_PC *record;
+    RendererConfigEnabledPc = 1;
+    RendererConfigSecondEnabledPc = 1;
+    NuMtxSetIdentity(&RendererConfigMatrixPc);
+    NuRndrBufferDescriptorsInitPc(buffer, end);
+    shadow->state0 = 0.0f;
+    shadow->state1 = -0.75f;
+    shadow->state2 = -0.75f;
+    PCShadowNearValue = 4.0f;
+    PCShadowFarValue = 6.0f;
+    shadow->packed_colour = 0x00101010;
+    NuRndrShadowCnt = 0;
+    for (record = RendererClearRecordsPc; record < RendererClearRecordsPc + 32; ++record)
+        record->active = 0;
+    NuRndrInitGeneric();
 }

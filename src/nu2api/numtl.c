@@ -272,3 +272,70 @@ STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, v_frequency) == 0x10);
 STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, scene) == 0x0);
 STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_count) == 0x4);
 STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_indices) == 0x8);
+
+static NUMTL *RendererZClearMaterialPc;
+static NUMTL *RendererAlphaMaskMaterialPc;
+STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, version) == 0x2c0);
+
+void __cdecl NuRndrInitGeneric(void) {
+    i32 saved_plane = (i32)numtl_renderplane;
+    numtl_renderplane = 22;
+    if (RendererZClearMaterialPc == NULL) {
+        PC_MATERIAL_CREATE_VIEW *material;
+        RendererZClearMaterialPc = NuMtlCreatePoolPC(numtl_renderplane, 1, 0);
+        material = (PC_MATERIAL_CREATE_VIEW *)RendererZClearMaterialPc;
+        material->attributes = (material->attributes & 0xff9fbff2u) | 0x00108002;
+        NuMtlUpdatePS(RendererZClearMaterialPc);
+        ++material->version;
+    }
+    if (RendererAlphaMaskMaterialPc == NULL) {
+        PC_MATERIAL_CREATE_VIEW *material;
+        RendererAlphaMaskMaterialPc = NuMtlCreatePoolPC(numtl_renderplane, 1, 0);
+        material = (PC_MATERIAL_CREATE_VIEW *)RendererAlphaMaskMaterialPc;
+        material->attributes_high &= ~3u;
+        material->attributes = (material->attributes & 0x806fbff2u) | 0x00608002;
+    }
+    if (saved_plane >= 24 || saved_plane < 0)
+        AnimationDiagnosticNoOpPc();
+    numtl_renderplane = saved_plane;
+    RenderPostViewportResetPc();
+}
+
+STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, flags) == 0);
+STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, diffuse_map_id) == 4);
+STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, default_scale) == 0x24);
+/* Native void platform initializer60ded0 tails60ddc0. Its shader-cache
+   value-producing closure is genuinely absent; no replacement result exists. */
+void __cdecl NuMtlInitEx(VARIPTR *buffer, i32 material_count) {
+    PC_MATERIAL_CREATE_SHADER desc2d, desc3d;
+    PC_MATERIAL_CREATE_VIEW *material;
+    STUBBED_NAMED(0x0060ded0); /* NuMtlInitExPS(buffer): nativevoid; shader-factory closure held. */
+    PCMaterialPoolCountPc = material_count;
+    PCMaterialPoolPc = (NUMTL *)((buffer->addr + 15u) & ~15u);
+    buffer->addr = (u32)PCMaterialPoolPc + material_count * sizeof(PC_MATERIAL_CREATE_VIEW);
+    memset(PCMaterialPoolPc, 0, material_count * sizeof(PC_MATERIAL_CREATE_VIEW));
+    numtl_defaultmtl3d = NuMtlCreatePoolPC(numtl_renderplane, 1, 1);
+    numtl_defaultmtl2d = NuMtlCreatePoolPC(numtl_renderplane, 1, 0);
+    memset(&desc2d, 0, sizeof(desc2d));
+    desc2d.default_scale = 1.0f;
+    desc2d.vertex_format |= 0x40101;
+    desc2d.material_flags |= 0x1000;
+    desc2d.flags = 0x1000;
+    desc2d.diffuse_map_id = 0;
+    desc2d.packed_diffuse_colour = 0xffffffff;
+    memset(&desc3d, 0, sizeof(desc3d));
+    desc3d.material_flags |= 0x1000;
+    desc3d.default_scale = 1.0f;
+    desc3d.vertex_format |= 0x101;
+    desc3d.flags = 0x1000;
+    desc3d.diffuse_map_id = 0;
+    desc3d.packed_diffuse_colour = 0xffffffff;
+    NuMtlSetShaderDescPS(numtl_defaultmtl2d, (const struct PC_MATERIAL_SHADER_DESC_VIEW *)&desc2d);
+    NuMtlSetShaderDescPS(numtl_defaultmtl3d, (const struct PC_MATERIAL_SHADER_DESC_VIEW *)&desc3d);
+    material = (PC_MATERIAL_CREATE_VIEW *)numtl_defaultmtl2d;
+    NuMtlUpdatePS(numtl_defaultmtl2d);
+    ++material->version;
+    material = (PC_MATERIAL_CREATE_VIEW *)numtl_defaultmtl3d;
+    NuMtlUpdatePS(numtl_defaultmtl3d);
+    ++material->version;
+}
