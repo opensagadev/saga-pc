@@ -17,6 +17,7 @@ address    , symbol                                                         , si
 0x40e690   , _GoingForwardsAlongNarrowSock                                  , 106   , i32 __cdecl (GAMEOBJECT *)
 0x40eff0,_CalcSplinePoint,1119,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
 0x40f450,_CalcSplinePointFromDist,190,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
+0x413b70,_CC_variant,910,
 0x4148a0,_ResetPlayerPacket,523,"void __cdecl(void *,CHARACTERDATA_PC *)"
 0x00414ab0,_SetFlicker,25,"void __cdecl(GAMEOBJECT *, f32)"
 0x414ad0,_ResetPlayerAI,216,void __cdecl(GAMEOBJECT *)
@@ -429,7 +430,7 @@ address    , symbol                                                         , si
 0x0048a3f0,_WorldStoreScriptsProgressPC,54,"void private_register (WORLDINFO *, LEVEL_PROGRESS *)"
 0x0048a430,_NewArea_ResetGlobalsPC,126,void __cdecl(void)
 0x0048a4b0,_ClearLevData,482,void __cdecl(void)
-0x0048a6a0 , _LoadPerm1                                                     , 1351  , void __cdecl (void)
+0x48a6a0,_LoadPerm1,1351,void __cdecl(void)
 0x0048abf0 , _LoadPerm2                                                     , 835   , void __cdecl (void)
 0x0048afe0 , _LoadAreaData                                                  , 1095  , void __cdecl (BGPROCINFO *)
 0x0048b430 , _ClearUpAreaData                                               , 260   , void __cdecl (void)
@@ -2236,7 +2237,8 @@ address    , symbol                                                         , si
 0x593810,_Customiser_CopyDefaultPiecesToSave,131,"void __cdecl(CUSTOMISER_LAYERS_PC *,void *)"
 0x5939a0,_Customiser_Configure,2155,"CUSTOMISER_LAYERS_PC * __cdecl(char *,VARIPTR *,VARIPTR *,i32,i32,i32 (__cdecl *)(CUSTOMPIECE_LAYERS_PC *),void (__cdecl *)(CUSTOMPIECE_LAYERS_PC *,NUFPAR_PC *),i32 (__cdecl *)(char *),void *,i16 *)"
 0x00594250 , _InCollectList_Index                                           , 82    , "i32 __cdecl (i32, COLLECTID_PC *, i32)"
-0x00594640 , _Collection_CreateCustom                                       , 464    ,
+0x594600,_Collection_CreateMaster,54,"void __cdecl(char*,i16*,COLLECTION_BUILD_PC*,i32,f32)"
+0x594640,_Collection_CreateCustom,464,"void __cdecl(char*,i16*,COLLECTION_BUILD_PC*,u32,u32,u32,i32,i32,VARIPTR*,VARIPTR*,i32,f32)"
 0x594960,_Collection_Got,151,i32 __cdecl(i32)
 0x594a00,_Collection_GotAnyOfType,143,"i32 __cdecl(i32,u32)"
 0x595110,_ZeroLightSetupPrivatePc,183,
@@ -2851,7 +2853,7 @@ address    , symbol                                                         , si
 0x005de2d0 , _NuDisplayListLinkMtl                                          , 186   , "void __cdecl (NUDISPLAYLIST *, NUMTL *)"
 0x5de390,_NuDisplayListRecalculateMaterialStartsPC,170,void __cdecl(NUDISPLAY_LIST_PC *)
 0x5de440,_DisplayListLinkDynamicMtls,1757,void __cdecl(void)
-0x005deb20,_NuDisplayListStreamAlloc,140,"void __cdecl (VARIPTR *, i32, i32, i32, VARIPTR *)"
+0x5deb20,_NuDisplayListStreamAlloc,140,"void __cdecl(VARIPTR *, i32, i32)"
 0x005dece0 , _NuDisplayListPurge_candidate                                  , 92    , void __cdecl (void)
 0x5ded80,_NuDisplaySceneAdd,182,void __cdecl(NUDISPLAY_LIST_PC *)
 0x5dee40,_NuDisplaySceneDestroy,293,void __cdecl(NUDISPLAY_LIST_PC *)
@@ -2932,7 +2934,7 @@ address    , symbol                                                         , si
 0x5eef80,_NuGScnRestoreTID,193,"i32 __cdecl(NUGSCN *,i32)"
 0x5ef050,_NuGScnRestoreTIDs,371,void __cdecl(NUGSCN *)
 0x5ef1d0,_NuReadGraphicsData,699,"GHG_GRAPHICS_SCENE_PC* private(VARIPTR*,VARIPTR*,char*,char*,void*)"
-0x5ef7f0,_NuGScnRead,26,"NUGSCN* __cdecl(VARIPTR*,VARIPTR,char*)"
+0x5ef7f0,_NuGScnRead,26,"NUGSCN *__cdecl(VARIPTR *,VARIPTR,char *)"
 0x5ef810,_NuGHGRead,101,"NUHGOBJ_EVAL_PC* __cdecl(char*,VARIPTR*,VARIPTR)"
 0x5ef880,_NuGScnRemove,200,void __cdecl(NUGSCN *)
 0x5ef960,_NuGScnReadFromMemory,19,void __cdecl(NUGSCN*)
@@ -2965,7 +2967,7 @@ address    , symbol                                                         , si
 0x005f3d60 , _NuTimeBarSetRender                                            , 2130  , void __cdecl (i32)
 0x005f45c0 , _NuTimeBarSetRenderHorizontal                                  , 1475  , void __cdecl (i32)
 0x5f4b90,_NuGScnUpdate,874,"void __cdecl NuGScnUpdate(NUGSCN *scene, f32 delta)"
-0x5f4f00,_PCGraphicsSceneReadClones,229,"NUGSCN* __cdecl(VARIPTR*,VARIPTR,char*,i32)"
+0x5f4f00,_PCGraphicsSceneReadClones,229,"NUGSCN *__cdecl(VARIPTR *,VARIPTR,char *,i32)"
 0x5f4ff0,_NuHGobjRndrMtxDwa,910,"i32 __cdecl(NUHGOBJ_EVAL_PC *,NUMTX *,i32,i16 *,NUMTX *,DWA_WEIGHT_BLOCK_PC **,i32)"
 0x5f5380,?DisplayClipFallbackPC@@YAXPAUnudisplay_list_pc_s@@PAUvisibility_result_reader_pc_s@@@Z,841,
 0x5f5830,_NuDisplaySceneRndr,454,void __cdecl(NUDISPLAY_LIST_PC*)
@@ -3007,8 +3009,14 @@ address    , symbol                                                         , si
 0x005fd0d0 , _RndrStateCopyGlobalState                                      , 46    , void __cdecl (NUGLOBALRNDRSTATE_PC *)
 0x005fd100 , _RndrStateResetGlobalState                                     , 89    , void __cdecl (NUGLOBALRNDRSTATE_PC *)
 0x005fd160 , _RndrStateResetSharedGlobalState                               , 80    , void __cdecl (void)
+0x5fd1c0,_NuRndrStateInit,91,void __cdecl(void)
 0x005fd220 , _RndrStateSetConstAlphaTint                                    , 58    , "void __cdecl (i32, i32, f32, const NUVEC *, NUMTL *)"
+0x5fd260,_NuRndrStateGetTransformPc,194,"void __cdecl(NUMTX *, const NUMTL *)"
+0x5fd330,_NuRndrStateSetTransformPc,142,void __cdecl(const NUMTX *)
 0x005fd3c0 , _RndrStateSetReflection                                        , 38    , void __cdecl (i32)
+0x5fd3f0,_NuRndrResetStreamBufferPc,89,
+0x5fd450,_NuRndrSwapStreamBuffers,118,void __cdecl(void)
+0x5fd4d0,_NuRndrStreamInit,133,"void __cdecl(i32, VARIPTR *)"
 0x5fd560,_NuDisplayListDrawPrimitive2DPc,272,void __cdecl(void *)
 0x005fe5a0,_NuRndrCreateBlendShapeDeformerWeightsArray,63,
 0x005fe5e0,_NuRndrCreateBlendShapeDWAPointers,39,
@@ -3054,7 +3062,7 @@ address    , symbol                                                         , si
 0x602480,_NuGScnRestoreTIDsPS,205,void __cdecl(NUGSCN *)
 0x602550,_NuGScnFixupPS,329,void __cdecl(NUGSCN*)
 0x6026a0,_NuGScnDestroyPS,350,void __cdecl(NUGSCN *)
-0x00603350,_NuDisplayListInit,127,"void __cdecl (VARIPTR *, i32)"
+0x603350,_NuDisplayListInit,127,"void __cdecl(VARIPTR *, i32)"
 0x603440,_NuDisplayListAddClut,16,"void __cdecl(NUDISPLAYLISTITEM *,i32)"
 0x603450,_NuDisplayListAddTexture,16,"void __cdecl(NUDISPLAYLISTITEM *,i32)"
 0x603460,_NuDisplayListAddMaterialState,19,"void __cdecl(NUDISPLAYLISTITEM *,NUMTL *)"
@@ -3085,6 +3093,7 @@ address    , symbol                                                         , si
 0x605890,_PCGraphicsCreateColourTargetFormat,123,"GRAPHICS_RENDER_TEXTURE_PC* __cdecl(i32,i32,i32)"
 0x00607590 , _DisplayListUpdateRenderState                                  , 649   , "void __cdecl (NUDISPLAYLIST_PC *, NUGLOBALRNDRSTATE_PC *)"
 0x607820,_DisplayListUpdateRenderStateShadow,86,"void __cdecl(NUDISPLAYLIST_PC *,NUGLOBALRNDRSTATE_PC *)"
+0x00607ba0,_NuRndrInitEx,32,"void __cdecl(i32, VARIPTR *, VARIPTR)"
 0x607cb0,_AddParticleGroupToDisplayList,178,void __cdecl (NATIVE_PARTICLE_PACKET_PC *)
 0x00607d70 , _NuPrim2DBegin                                                 , 331   , "void __cdecl (u32, u32, NUMTL *)"
 0x00607ec0 , _NuPrim3DBegin                                                 , 319   , "void __cdecl (u32, u32, NUMTL *, NUMTX *)"
@@ -4715,7 +4724,7 @@ address    , symbol                                                         , si
 0x007514d0 , _InitOnceWindowTitle                                           , 36    , const char[36]
 0x7514f4,_InitOnceCompanyPc,,const char[10]
 0x751500,_InitOnceProductPc,,const char[35]
-0x00751524 , __real@3f800000                                                , 4     , const f32
+0x751524,__real@3f800000,4,const f32
 0x00751528 , _InitOnceHalf                                                  , 4     , const f32
 0x00751528 , __real@3f000000                                                , 4     , const f32
 0x75152c,_InitOnceEmptyConfigPc,,const char[27]
@@ -4873,6 +4882,30 @@ address    , symbol                                                         , si
 0x00751d84 , __real@49f42400                                                , 4     , const f32
 0x00751d90 , __real@42480000                                                , 4     , const f32
 0x00751d94 , __real@c0a00000                                                , 4     , const f32
+0x751da0,??_C@_07IFGLIMJI@variant?$AA@,8,const char[8]
+0x751da8,??_C@_08OBMKNIBC@henchman?$AA@,9,const char[9]
+0x751db4,??_C@_0BA@NPGNDFHH@republicgunship?$AA@,16,const char[16]
+0x751dc4,??_C@_03PHJOKCMB@pod?$AA@,4,const char[4]
+0x751dc8,??_C@_0BB@HEIEANHC@naboostarfighter?$AA@,17,const char[17]
+0x751ddc,??_C@_07CLKPHLCF@critter?$AA@,8,const char[8]
+0x751de4,??_C@_05NIMKKKF@padme?$AA@,6,const char[6]
+0x751dec,??_C@_07PIHDIKIF@hansolo?$AA@,8,const char[8]
+0x751df4,??_C@_04GFPGHJCD@luke?$AA@,5,const char[5]
+0x751dfc,??_C@_06OLMKDJHC@weirdo?$AA@,7,const char[7]
+0x751e04,??_C@_05ODBLFLCE@lando?$AA@,6,const char[6]
+0x751e0c,??_C@_03GFGKHIGF@tie?$AA@,4,const char[4]
+0x751e10,??_C@_05EPHOBIED@rebel?$AA@,6,const char[6]
+0x751e18,??_C@_05KFBJCHHJ@clone?$AA@,6,const char[6]
+0x751e20,??_C@_04FCAHDPNG@leia?$AA@,5,const char[5]
+0x751e28,??_C@_0N@MHLHDCJM@obiwankenobi?$AA@,13,const char[13]
+0x751e38,??_C@_07EGEOFBGA@wookiee?$AA@,8,const char[8]
+0x751e40,??_C@_0M@DFOIKDBP@walker4legs?$AA@,12,const char[12]
+0x751e4c,??_C@_0M@ODLBEAAC@walker2legs?$AA@,12,const char[12]
+0x751e58,??_C@_0L@LGDPEKL@hoverdroid?$AA@,11,const char[11]
+0x751e64,??_C@_0M@OIJLKEMI@battledroid?$AA@,12,const char[12]
+0x751e70,??_C@_09LAPEAPIO@macewindu?$AA@,10,const char[10]
+0x751e7c,??_C@_04DLPMPBEA@fett?$AA@,5,const char[5]
+0x751e84,??_C@_0N@MFECPDEM@stormtrooper?$AA@,13,const char[13]
 0x751e94   , _PCContextName_ZipUp                                           , 6     , const char [6]
 0x751ec0   , _PCContextName_Teleport                                        , 9     , const char [9]
 0x00751ee8 , _AreaFixUpName_Jedi                                            , 8     , char[8]
@@ -5024,8 +5057,152 @@ address    , symbol                                                         , si
 0x755304,__real@40600000,4,compiler literal
 0x755348,??_C@_08BIMHHCLM@MK?9Panel?$AA@,9,const char[9]
 0x755348,_ScorePanelName,9,char[9]
+0x755424,_PermanentDebrisNamePc755424,,const char[10]
+0x755430,_PermanentDebrisNamePc755430,,const char[11]
+0x75543c,_PermanentDebrisNamePc75543c,,const char[8]
+0x755444,_PermanentDebrisNamePc755444,,const char[8]
+0x75544c,_PermanentDebrisNamePc75544c,,const char[10]
+0x755458,_PermanentDebrisNamePc755458,,const char[11]
+0x755464,_PermanentDebrisNamePc755464,,const char[11]
 0x00755470 , _AIGamePunch2Name                                              , 8     , const char[8]
 0x00755478 , _AIGamePunch1Name                                              , 8     , const char[8]
+0x755480,_PermanentDebrisNamePc755480,,const char[12]
+0x75548c,_PermanentDebrisNamePc75548c,,const char[15]
+0x75549c,_PermanentDebrisNamePc75549c,,const char[11]
+0x7554a8,_PermanentDebrisNamePc7554a8,,const char[12]
+0x7554b4,_PermanentDebrisNamePc7554b4,,const char[11]
+0x7554c0,_PermanentDebrisNamePc7554c0,,const char[11]
+0x7554cc,_PermanentDebrisNamePc7554cc,,const char[11]
+0x7554d8,_PermanentDebrisNamePc7554d8,,const char[11]
+0x7554e4,_PermanentDebrisNamePc7554e4,,const char[7]
+0x7554ec,_PermanentDebrisNamePc7554ec,,const char[7]
+0x7554f4,_PermanentDebrisNamePc7554f4,,const char[10]
+0x755500,_PermanentDebrisNamePc755500,,const char[8]
+0x755508,_PermanentDebrisNamePc755508,,const char[8]
+0x755510,_PermanentDebrisNamePc755510,,const char[11]
+0x75551c,_PermanentDebrisNamePc75551c,,const char[12]
+0x755528,_PermanentDebrisNamePc755528,,const char[7]
+0x755530,_PermanentDebrisNamePc755530,,const char[7]
+0x755538,_PermanentDebrisNamePc755538,,const char[11]
+0x755544,_PermanentDebrisNamePc755544,,const char[11]
+0x755550,_PermanentDebrisNamePc755550,,const char[11]
+0x75555c,_PermanentDebrisNamePc75555c,,const char[9]
+0x755568,_PermanentDebrisNamePc755568,,const char[10]
+0x755574,_PermanentDebrisNamePc755574,,const char[12]
+0x755580,_PermanentDebrisNamePc755580,,const char[12]
+0x75558c,_PermanentDebrisNamePc75558c,,const char[8]
+0x755594,_PermanentDebrisNamePc755594,,const char[9]
+0x7555a0,_PermanentDebrisNamePc7555a0,,const char[6]
+0x7555a8,_PermanentDebrisNamePc7555a8,,const char[10]
+0x7555b4,_PermanentDebrisNamePc7555b4,,const char[11]
+0x7555c0,_PermanentDebrisNamePc7555c0,,const char[8]
+0x7555c8,_PermanentDebrisNamePc7555c8,,const char[10]
+0x7555d4,_PermanentDebrisNamePc7555d4,,const char[12]
+0x7555e0,_PermanentDebrisNamePc7555e0,,const char[14]
+0x7555f0,_PermanentDebrisNamePc7555f0,,const char[13]
+0x755600,_PermanentDebrisNamePc755600,,const char[13]
+0x755610,_PermanentDebrisNamePc755610,,const char[8]
+0x755618,_PermanentDebrisNamePc755618,,const char[8]
+0x755620,_PermanentDebrisNamePc755620,,const char[9]
+0x75562c,_PermanentDebrisNamePc75562c,,const char[9]
+0x755638,_PermanentDebrisNamePc755638,,const char[9]
+0x755644,_PermanentDebrisNamePc755644,,const char[9]
+0x755650,_PermanentDebrisNamePc755650,,const char[10]
+0x75565c,_PermanentDebrisNamePc75565c,,const char[10]
+0x755668,_PermanentDebrisNamePc755668,,const char[10]
+0x755674,_PermanentDebrisNamePc755674,,const char[12]
+0x755680,_PermanentDebrisNamePc755680,,const char[12]
+0x75568c,_PermanentDebrisNamePc75568c,,const char[13]
+0x75569c,_PermanentDebrisNamePc75569c,,const char[11]
+0x7556a8,_PermanentDebrisNamePc7556a8,,const char[9]
+0x7556b4,_PermanentDebrisNamePc7556b4,,const char[12]
+0x7556c0,_PermanentDebrisNamePc7556c0,,const char[14]
+0x7556d0,_PermanentDebrisNamePc7556d0,,const char[8]
+0x7556d8,_PermanentDebrisNamePc7556d8,,const char[11]
+0x7556e4,_PermanentDebrisNamePc7556e4,,const char[11]
+0x7556f0,_PermanentDebrisNamePc7556f0,,const char[11]
+0x7556fc,_PermanentDebrisNamePc7556fc,,const char[10]
+0x755708,_PermanentDebrisNamePc755708,,const char[10]
+0x755714,_PermanentDebrisNamePc755714,,const char[10]
+0x755720,_PermanentDebrisNamePc755720,,const char[10]
+0x75572c,_PermanentDebrisNamePc75572c,,const char[10]
+0x755738,_PermanentDebrisNamePc755738,,const char[10]
+0x755744,_PermanentDebrisNamePc755744,,const char[14]
+0x755754,_PermanentDebrisNamePc755754,,const char[14]
+0x755764,_PermanentDebrisNamePc755764,,const char[14]
+0x755774,_PermanentDebrisNamePc755774,,const char[15]
+0x755784,_PermanentDebrisNamePc755784,,const char[13]
+0x755794,_PermanentDebrisNamePc755794,,const char[7]
+0x75579c,_PermanentDebrisNamePc75579c,,const char[10]
+0x7557a8,_PermanentDebrisNamePc7557a8,,const char[8]
+0x7557b0,_PermanentDebrisNamePc7557b0,,const char[14]
+0x7557c0,_PermanentDebrisNamePc7557c0,,const char[12]
+0x7557cc,_PermanentDebrisNamePc7557cc,,const char[13]
+0x7557dc,_PermanentDebrisNamePc7557dc,,const char[11]
+0x7557e8,_PermanentDebrisNamePc7557e8,,const char[7]
+0x7557f0,_PermanentDebrisNamePc7557f0,,const char[12]
+0x7557fc,_PermanentDebrisNamePc7557fc,,const char[10]
+0x755808,_PermanentDebrisNamePc755808,,const char[11]
+0x755814,_PermanentDebrisNamePc755814,,const char[9]
+0x755820,_PermanentDebrisNamePc755820,,const char[8]
+0x755828,_PermanentDebrisNamePc755828,,const char[12]
+0x755834,_PermanentDebrisNamePc755834,,const char[10]
+0x755840,_PermanentDebrisNamePc755840,,const char[10]
+0x75584c,_PermanentDebrisNamePc75584c,,const char[10]
+0x755858,_PermanentDebrisNamePc755858,,const char[8]
+0x755860,_PermanentDebrisNamePc755860,,const char[7]
+0x755868,_PermanentDebrisNamePc755868,,const char[7]
+0x755870,_PermanentDebrisNamePc755870,,const char[14]
+0x755880,_PermanentDebrisNamePc755880,,const char[9]
+0x75588c,_PermanentDebrisNamePc75588c,,const char[9]
+0x755898,_PermanentDebrisNamePc755898,,const char[10]
+0x7558a4,_PermanentDebrisNamePc7558a4,,const char[10]
+0x7558b0,_PermanentDebrisNamePc7558b0,,const char[9]
+0x7558bc,_PermanentDebrisNamePc7558bc,,const char[10]
+0x7558c8,_PermanentDebrisNamePc7558c8,,const char[10]
+0x7558d4,_PermanentDebrisNamePc7558d4,,const char[11]
+0x7558e0,_PermanentDebrisNamePc7558e0,,const char[11]
+0x7558ec,_PermanentDebrisNamePc7558ec,,const char[10]
+0x7558f8,_PermanentDebrisNamePc7558f8,,const char[9]
+0x755904,_PermanentDebrisNamePc755904,,const char[12]
+0x755910,_PermanentDebrisNamePc755910,,const char[10]
+0x75591c,_PermanentDebrisNamePc75591c,,const char[9]
+0x755928,_PermanentDebrisNamePc755928,,const char[9]
+0x755934,_PermanentDebrisNamePc755934,,const char[9]
+0x755940,_PermanentDebrisNamePc755940,,const char[9]
+0x75594c,_PermanentDebrisNamePc75594c,,const char[10]
+0x755958,_PermanentDebrisNamePc755958,,const char[10]
+0x755964,_PermanentDebrisNamePc755964,,const char[10]
+0x755970,_PermanentDebrisNamePc755970,,const char[10]
+0x75597c,_PermanentDebrisNamePc75597c,,const char[12]
+0x755988,_PermanentDebrisNamePc755988,,const char[14]
+0x755998,_PermanentDebrisNamePc755998,,const char[10]
+0x7559a4,_PermanentDebrisNamePc7559a4,,const char[9]
+0x7559b0,_PermanentDebrisNamePc7559b0,,const char[12]
+0x7559bc,_PermanentDebrisNamePc7559bc,,const char[9]
+0x7559c8,_PermanentDebrisNamePc7559c8,,const char[11]
+0x7559d4,_PermanentDebrisNamePc7559d4,,const char[10]
+0x7559e0,_PermanentDebrisNamePc7559e0,,const char[8]
+0x7559e8,_PermanentDebrisNamePc7559e8,,const char[8]
+0x7559f0,_PermanentDebrisNamePc7559f0,,const char[8]
+0x7559f8,_PermanentDebrisNamePc7559f8,,const char[10]
+0x755a04,_PermanentDebrisNamePc755a04,,const char[10]
+0x755a10,_PermanentDebrisNamePc755a10,,const char[6]
+0x755a18,_PermanentDebrisNamePc755a18,,const char[7]
+0x755a20,_PermanentDebrisNamePc755a20,,const char[7]
+0x755a28,_PermanentDebrisNamePc755a28,,const char[13]
+0x755a38,_PermanentDebrisNamePc755a38,,const char[13]
+0x755a48,_PermanentDebrisNamePc755a48,,const char[12]
+0x755a54,_PermanentDebrisNamePc755a54,,const char[10]
+0x755a60,_PermanentDebrisNamePc755a60,,const char[10]
+0x755a6c,_PermanentDebrisNamePc755a6c,,const char[10]
+0x755a78,_PermanentDebrisNamePc755a78,,const char[10]
+0x755a84,_PermanentDebrisNamePc755a84,,const char[9]
+0x755a90,_PermanentDebrisNamePc755a90,,const char[13]
+0x755aa0,_PermanentDebrisNamePc755aa0,,const char[11]
+0x755aac,_PermanentDebrisNamePc755aac,,const char[12]
+0x755ab8,_PermanentDebrisNamePc755ab8,,const char[10]
+0x755ac4,_PermanentDebrisNamePc755ac4,,const char[13]
 0x755ad4,_TerrainWaterJumpSoundNamePc,13,const char [13]
 0x755aec,??_C@_06FKILMHEK@stuff?2?$AA@,7,compiler literal
 0x755af4,_RippleForceFieldSoundNamePc,10,const char[10]
@@ -5588,6 +5765,13 @@ address    , symbol                                                         , si
 0x00759f34 , _LevelConfigGameKeyword_max_levers                             , 11    , const char[11]
 0x00759f40 , _LevelConfigGameKeyword_max_signals                            , 12    , const char[12]
 0x00759f4c , _LevelConfigGameKeyword_max_tightropes                         , 15    , const char[15]
+0x75a038,??_C@_0BC@NHKBPPPN@stuff?2general?4par?$AA@,18,const char[18]
+0x75a060,??_C@_0N@FEFEJMAO@stuff?2things?$AA@,13,const char[13]
+0x75a070,??_C@_0BB@GGGAILKI@stuff?2things?4gsc?$AA@,17,const char[17]
+0x75a084,??_C@_0P@EOCAHEBJ@stuff?2gradient?$AA@,15,const char[15]
+0x75a094,??_C@_04JFPBKLKK@rope?$AA@,5,const char[5]
+0x75a0b0,??_C@_0P@DFIGHEHL@stuff?2char?4ptl?$AA@,15,const char[15]
+0x75a0c0,??_C@_0BC@BJANKBLJ@stuff?2general?4ptl?$AA@,18,const char[18]
 0x75a0d8,__real@3f100000,4,const f32
 0x0075a0dc , _DebrisGlassMaterialOpacity                                    , 4     , const f32
 0x75a0dc,__real@3f7fbe77,4,const f32
@@ -7206,7 +7390,9 @@ address    , symbol                                                         , si
 0x7654b8,__real@4002666660000000,8,const f64
 0x7654c0,__real@400922d0e0000000,8,const f64
 0x7654f0,_GHGSceneFormatWarningPC,87,const char[87]
+0x7654f0,_SceneIngestSceneVersionWarningPc,87,const char[87]
 0x765548,_GHGJointFormatWarningPC,95,const char[95]
+0x765548,_SceneIngestCharacterVersionWarningPc,96,const char[96]
 0x7655a8,_PCDynamicDisplaySceneNameText,,const char[31]
 0x00765670 , _NuTimeBarNegativeSlotWidth                                    , 8     , const f64
 0x00765678 , _NuTimeBarRight                                                , 8     , const f64
@@ -7217,6 +7403,7 @@ address    , symbol                                                         , si
 0x76a6d4,_NuTexturePhongCubePathPc,,const char[25]
 0x76a6f0,_NuTextureEnvironmentCubePathPc,,const char[28]
 0x76a788,__real@3f70101020000000,8,const f64
+0x76a790,??_C@_0DF@OLOGNDAF@d?3?2projects?2game_saga?2nu2api?4sag@,53,const char[53]
 0x76a7c8, _NuVpDepthRangePc, ,
 0x76a7d0,__real@00800000,4,const f32
 0x76a7d8,__real@3fee3d70a0000000,8,const f64
@@ -8997,6 +9184,7 @@ address    , symbol                                                         , si
 0x007f1054 , _tow_length                                                    , 4     , f32
 0x007f1114 , _ViewCam                                                       ,       , VIEWCAM_PC
 0x7f15e0,_PodRaceSplineIncrementPc,,f32
+0x7f1724,_ConfigChar_GameKeywords,,NUFPCOMJMP[2]
 0x7f17b0,_TerrainPlayerOtherMovementScalePc,,f32
 0x7f17b4,_TerrainPlayerBikeMovementScalePc,,f32
 0x007f17b8 , _ID_DEFAULTCHARACTER_A                                         , 2     , i16
@@ -9179,7 +9367,7 @@ address    , symbol                                                         , si
 0x007f5d40 , _GunshipBDiePos                                                , 12    , NUVEC
 0x7f5dc4   , _FalconDebKey                                                   , 8     , i32[2]
 0x7f5dcc,_GunshipDustEmissionRatePc,,f32
-0x007f5dd0 , _debris_name                                                   ,       ,
+0x7f5dd0,_debris_name,,char *[147]
 0x7f6570,_RippleRandomRadiusPc,,f32
 0x7f6574,_RipplePerturbationPc,,f32
 0x7f6578,_RippleSfxCooldownPc,,f32
@@ -9570,6 +9758,7 @@ address    , symbol                                                         , si
 0x8033a8,_COINMSGTIME,,f32
 0x8033ac,_COINMAGNETSCALE,,f32
 0x8033b0,_GizmoPickupSys,4,PICKUP_TYPE_SYSTEM_PC*
+0x803444,_PARTPAGE_GENERAL,,i32
 0x8034b0,_PartVectorSpreadDegrees_PC,,i32
 0x008034c4,_GetSurfaceInfoDefaultMaskPc,,PC_SURFACE_MASK_PC
 0x008034c8 , _TerSurface                                                    , 384   , TERRAIN_SURFACE_PC[32]
@@ -9780,6 +9969,7 @@ address    , symbol                                                         , si
 0x80c0e4,?first@?1??DrawAlphaImage@@9@9,,i32
 0x0080c0e8 , _NuTimeBarRenderPeakReset                                      , 4     , i32
 0x0080c0ec , _NuTimeBarHorizontalPeakReset                                  , 4     , i32
+0x80e190,_RndrStateTransformScalePc,,f32
 0x80e194,_PCGraphicsFrameState,,i32
 0x0080e1a8,_DwaWeightCursorPc,,
 0x0080e1ac,_DwaPointerCursorPc,,
@@ -10105,6 +10295,7 @@ address    , symbol                                                         , si
 0x855e04,_KEEPONSCREEN_SIDESONLY,,i32
 0x855ea4,_PlayerSuit,,SUIT_LAYERS_PC *[8]
 0x00855eec , _WaitingForCharacterTime                                       , 4     , f32
+0x855f40,_PermanentShadowMaterialPc,,NUMTL *
 0x00855f44 , _MiniKitCollection                                             ,       ,
 0x855f58,_CoinPacket,,PLAYER_COIN_PACKET_PC[2]
 0x00855f94 , _DEFAULT_MOVE_RANGE                                            , 4     , f32
@@ -10360,6 +10551,7 @@ address    , symbol                                                         , si
 0x0087b2ec , _LevelProgressData                                             , 4     , LEVEL_PROGRESS *
 0x0087b2f0,_LevDeaths,,i32
 0x0087b2f4 , _LevelChangesInArea                                            , 4     , i32
+0x87b2f8,_PermanentEffectsMaterialPc,,NUMTL *
 0x0087b2fc , _loadareacharacters_loadedlevel                                , 4     , i32
 0x0087b4f0 , _pFadeInfo                                                      ,        ,
 0x0087b4fc , _peak_poly_count                                               , 4     , i32
@@ -10699,6 +10891,7 @@ address    , symbol                                                         , si
 0x00924898 , _permbuffer_ptr                                                , 4     , VARIPTR
 0x0092489c , _permbuffer_end                                                , 4     , VARIPTR
 0x009248a0,_things_scene,,NUGSCN *
+0x9248a4,_things_scene_terrain,,void *
 0x009248a8 , _save_icon_scene                                               , 4     , NUGSCN *
 0x009248ac , _characterbuffer_base                                          , 4     , VARIPTR
 0x009248b0 , _characterbuffer_ptr                                           , 4     , VARIPTR
@@ -11309,6 +11502,7 @@ address    , symbol                                                         , si
 0x97bafc,?camFov@?1??DrawAlphaImage@@9@9,,f32
 0x97bb00,?pixelOffsetY@?1??DrawAlphaImage@@9@9,,f32
 0x97bb04,?pixelOffsetX@?1??DrawAlphaImage@@9@9,,f32
+0x97bb10,_RndrStateScaledTransformPc,,NUMTX
 0x0097bb54 , _nurndr_tritot_this_frame                                      , 4     , i32
 0x0097c1cc , _nudlist_stream_cursor                                         , 8     , VARIPTR
 0x0097c1d0 , _clip_outcode_workspace_prefix                                 ,       , u32[8] (minimum source prefix; full extent unknown)
@@ -11327,17 +11521,22 @@ address    , symbol                                                         , si
 0x986f1c,_NuLgtLaserCnt,4,i32
 0x986f20,_PCGraphicsRenderTextures,,GRAPHICS_RENDER_TEXTURE_PC[32] workingview
 0x987520,_NuRndr_DebrisPlane,,NUVEC4
+0x9922b0,_RndrStreamFirstPc,,VARIPTR
 0x9922b4, _NuCameraProjectionGlobalOffsetX, ,
 0x009922b8,_DwaWeightPoolPc,,
 0x280a2b8,_NuLgtArcMtl,80,NULGTARCMATERIAL_PC[4]
+0x280a30c,_RndrStreamUsedPc,,u32
 0x280a310,_NuPortalVisibilityBitsPc,,u8[625]
 0x0280c4a0 , _clip_test_mtx                                                 , 64    , NUMTX
 0x280c760,_NuRndrShadPolDat,,PC_SHADOW_QUEUE_RECORD[128]
+0x280d360,_RndrStateTransformPc,,NUMTX
 0x280d3a4,_PCGraphicsFrameScratchCount,,i32
 0x280d3ec,_NuDebrisVertexBuffers,,PC_BUFFER_RESOURCE_PC *[4]
 0x280d800,_PCGraphicsRenderTextureActive,,u8[32] workingview
 0x28358c4,_NuLgtArcLaserCnt,4,i32
 0x2835ad0,_NuLgtLaserData,3584,NULGTLASER_PC[64]
+0x28490fc,_RndrStreamMaxUsedPc,,u32
+0x284910c,_RndrStreamSecondPc,,VARIPTR
 0x2849318, _NuCameraProjectionGlobalScaleX, ,
 0x2854b64,_NuLgtArcLaserFrame,4,i32
 0x02854ba8 , _nuprim_field_ba8                                              , 4     , u32
@@ -11349,6 +11548,8 @@ address    , symbol                                                         , si
 0x02854c00 , _nu_water_reset_status                                         , 4     , i32
 0x2854c14,_PCShadowState,,PC_HG_SHADOW_STATE_VIEW
 0x02854c51 , _NuPrimNeedsOverbrightening                                    , 1     , u8
+0x2854c54,_RndrStreamSizePc,,i32
+0x2854c58,_RndrStreamIndexPc,,i32
 0x2854ca4,_NuRndrShadowCnt,,i32
 0x2854d08,_NuRndr_DebrisRotMtxPtr,,NUMTX *
 0x2854d0c,_NuDebrisUseSystemMemory,,i32

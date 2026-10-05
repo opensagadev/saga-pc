@@ -209,7 +209,7 @@ void __cdecl NuRndrEndScene(void) {
     sceneParametersCount += 1;
 }
 
-void __cdecl NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count, i32 arg4, VARIPTR *arg5) {
+void __cdecl NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count) {
     u32 aligned;
     i32 index;
     u32 offset;
@@ -232,22 +232,28 @@ void __cdecl NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count, i32 
     }
 }
 
+void __cdecl NuRndrStateInit(void);
+
 void __cdecl NuDisplayListInit(VARIPTR *cursor, i32 arg2) {
-    STUBBED_NAMED("NuDisplayListInit: 0x5fd1c0 setup");
+    NuRndrStateInit();
     nudlist_field_9d8 = 0;
     nudlist_field_e80 = 0;
     sort_list = NULL;
     nudlist_field_fc8 = 0;
     displaylist_2d_first = &nudlist_2d_static;
-    STUBBED_NAMED("NuDisplayListInit: NuDisplayListCreateDynMtlList (0x5efbf0)");
+    {
+        VARIPTR end;
+        end.addr = (u32)arg2;
+        NuDisplayListCreateDynMtlList_candidate(cursor, end);
+    }
     nudlist_flags |= 0x10;
     nudlist_field_e58 = 0;
-    NuDisplayListStreamAlloc(cursor, arg2, 0x40, arg2, cursor);
+    NuDisplayListStreamAlloc(cursor, arg2, 0x40);
     NuDisplayListStreamCursor = &nudlist_stream_cursor;
     nudlist_field_1598 = nuprim_field_ba8;
-    STUBBED_NAMED("NuDisplayListInit: 0x4ffa60 setup");
-    STUBBED_NAMED("NuDisplayListInit: 0x5f0d70 first-frame draw");
-    STUBBED_NAMED("NuDisplayListInit: NuDisplayListBeginFrame (0x5dfab0)");
+    nudlist_field_fc4 = PCThreadCriticalSectionCreate_candidate();
+    NuDisplayListSwapBuffersEndFrame();
+    NuDisplayListBeginFrame();
 }
 
 DWA_WEIGHT_BLOCK_PC *__cdecl NuRndrCreateBlendShapeDeformerWeightsArray(i32 count) {
@@ -951,3 +957,9 @@ STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, v_frequency) == 0x10);
 STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, scene) == 0x0);
 STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_count) == 0x4);
 STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_indices) == 0x8);
+
+void __cdecl NuRndrStreamInit(i32 size, VARIPTR *buffer);
+void __cdecl NuRndrInitEx(i32 size, VARIPTR *buffer, VARIPTR end) {
+    NuRndrStreamInit(size, buffer);
+    STUBBED_NAMED("NuRndrInitEx: native renderer configuration (0x607a90), buffer/end");
+}

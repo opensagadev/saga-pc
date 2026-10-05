@@ -392,7 +392,7 @@ void __cdecl LoadPermData(void *process) {
         STUBBED_NAMED("LoadPermData: BackDrop_Init(stuff\\starfield.gsc)");
     }
 
-    STUBBED_NAMED("LoadPermData: LoadPerm1");
+    LoadPerm1();
     STUBBED_NAMED("LoadPermData: LoadPerm2");
     STUBBED_NAMED("LoadPermData: GameThingManager::AddOnceOnlyThings(0x95e438)");
     STUBBED_NAMED("LoadPermData: RegisterHelpers");

@@ -3,9 +3,10 @@
 This project reconstructs the GOG PC executable with MSVC 2005 and compares the
 resulting x86 COFF objects against the original. The default build also links
 our current sources into a Windows executable using the original MSVC linker
-and libraries. The entry path now connects native hardware/window/input startup. An actual Wine
-run publishes window/input state, then crashes during renderer setup before a
-level is loaded. Device rendering and recurring gameplay remain unverified.
+and libraries. The entry path now connects native hardware/window/input startup. The real renderer
+stream initializer is now connected. An unattended Wine run still crashes at a
+null display-list item before a level is loaded; device presentation and
+recurring gameplay remain unverified.
 Configuration parsers exist, but their presence does not complete resource/world
 loading. The executable is not playable.
 There are no host or WebAssembly game targets.
@@ -126,8 +127,11 @@ Startup code may use `STUBBED()` or `STUBBED_NAMED(...)` to mark a verified PC
 call or state transition whose dependency is still missing. These markers emit
 no code in matching builds and do not imply a byte match. Keep the original call
 order, document the skipped work, and replace markers down the dependency tree.
-The source-only executable now connects real window/input producers, but an
-actual run fails at an uninitialized renderer stream before world loading.
+The source-only executable connects real window/input and renderer stream
+producers, but an actual run still fails at a null display-list item before
+world loading. Automated Wine tests suppress the debugger dialog in their own
+prefix, preserve the genuine crash output and exit, and clean only their own
+process group; see [the execution policy](config/transfer-execution.md).
 Remaining device actions, resource fixups and the recurring update/render loop
 remain incomplete. Its DAT metadata parser is
 structural and has additional short-read and null-arena guards; those are

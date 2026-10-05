@@ -772,3 +772,41 @@ identities are separately reviewed; original types and full data-owner extents
 remain held. The next connected source batch is the 2,076-byte snap action
 family. Its socket/parser/actor/party-array evidence must close before release;
 no marker or inventory-only mapping counts as implementation progress.
+
+
+### Current startup frontier after checkpoint S (2026-10-05)
+
+Checkpoint R connected the native hardware/window/input/CPU/shutdown owners;
+its debugger observed nonzero input, HWND and D3D factory, without a device
+pointer read. S restores the real NuRndrInitEx stream call and all real
+NuDisplayListInit calls, including the private state initializer and BeginFrame
+tail. Init's complete127 bytes now match exactly. StreamAlloc uses the verified
+three physical arguments and complete140-byte extent; its full candidate stays
+nonexact. Nine renderer states stay in their original private PC owners.
+
+Actual S Wine execution passes the earlier stream-backed descriptor write and
+fails later in NuDisplayListAddRenderScene: displaylist_2d_first is NULL at the
+item copy. The genuine renderer configuration167 remains an explicit omission,
+so its real initializer/provider chain is the next connected source work.
+The run exits5 without watchdog, debugger dialog or owned leftover process.
+S does not provide new device/input memory observations, Present, repeated
+frames or a loaded scene. No forced cursor, guard, entry or fake value provider
+is used to obtain a runtime milestone.
+
+NuReadGraphicsData, NuGScnRead and scene clones now retain their real18 provider
+contracts, with the native void texture-ID fixup explicitly missing. LoadPerm1
+and its existing LoadPermData caller are connected but partial:17 native actions
+remain marked, and missing earlier material setup can leave gradient state
+invalid. Gradient storage uses canonical DebMat[5]; native end arguments carry
+the address of the real permbuffer_end word, without second backing.
+Collection constructors and the original charconfig variant callback are
+transferred; selected88 actual-normal checks establish only their tested arena
+and parser domains. They do not establish full resource or world loading.
+
+Next suppliers are the real AI ingress/paths/bounds five-function6,656-byte
+family and renderer configuration/descriptors/arena/quad/VBIB/material six-function
+1,144-byte family. Existing partial script607 and renderer InitEx32 receive no
+new transfer credit. WORLD/permanent/area parents still need genuine character
+model and area configuration providers. Texture fallback requires provenance;
+retail DDS assets cannot be copied into source to fabricate a provider. Device
+reset/recreate, CPU and shutdown omissions remain explicit.

@@ -1871,3 +1871,44 @@ its+630 member. Four existing member comparisons and CRC storage are preserved.
 Three render-texture views and three pickup views use proven native initializers
 with unknown allocation extents. TempOptions remains OPTIONSSAVE13; its only
 change is zero COFF tail padding20→16, not typed bytes or matching credit.
+
+
+### Native startup and customiser data at checkpoint R (2026-10-05)
+
+The sole shared writer adds81 real views with1,838 typed working bytes and1,847
+complete COFF bytes. Their original owning extents remain unknown and receive
+zero allocation/exact credit. Two inherited padding intervals change naturally:
+known WORDffff keeps its2 typed bytes, and the unknown empty string keeps its
+one NUL. All previous5,241 exact physical copies and13 members/28 known bytes
+survive. Across all owners,149 of150 new complete initializer copies match
+retail; the real CPU SEH scope28 remains nonexact. Sixty-three known new copies
+increase the exact data union1,607 bytes to639,477;87 unknown copies get no credit.
+
+The callback4-byte working prefix is qualified for the verified native
+zero-registration launch domain only. The argv8-byte prefix covers empty or
+recognized-only arguments only, not arbitrary unknown tokens. Native algorithms
+are retained without artificial capacity guards. Windowed mode uses the existing
+device parameters+0x158, dimensions the existing desktop mode+0x608/+0x60c, and
+aspect existing nuapi+0x10; no duplicate scalar backing is introduced.
+
+### Connected renderer and resource data at checkpoint S (2026-10-05)
+
+All nine renderer states stay private in their original PC stream/state owners:
+156 minimum working bytes, original complete reader ranges and native initializers.
+There is no parallel shared backing or retention control. The sole shared writer
+adds149 genuine views: five resource views604 typed bytes and144 named NUL-string
+pointees1,479 bytes. debris_name has the native147 entries, reusing the two existing
+PUNCH names; Android's400-entry capacity is not imported. All2,300 complete COFF
+bytes match retail. Owning extents stay unknown, with zero allocation/exact credit.
+The gradient material uses the existing DebMat[5] slot.
+
+All5,304 old exact physical initializer contracts and13 named members/28 known
+bytes survive. Across all owners197 new complete initializer copies are retail
+equal:38 known copies add366 unique exact data bytes to639,843;159 unknown copies
+receive no credit. Shared storage grows5,023 to5,172 physical regions. Only the
+inherited unknown DebrisDmaCleanupDelayPc zero tail changes naturally8 to4; its
+f32 value is unchanged. CRC, HANDLE and full member parents remain preserved.
+
+Next AI and renderer state proposals require original-owner and complete-reference
+qualification before release. Minimum accessed views do not prove original
+allocations, general capacities or game boot; the sole writer retains ownership.

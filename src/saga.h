@@ -9598,7 +9598,7 @@ void __cdecl PCStereoUnknownToken(void);
     extern NUSORTPRI *sort_list;
     extern i32 render_scene_index;
     void __cdecl NuDisplayListResetStateCache(NURNDRLIBSTATE *state);
-    void __cdecl NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count, i32 arg4, VARIPTR *arg5);
+    void __cdecl NuDisplayListStreamAlloc(VARIPTR *cursor, i32 end_unused, i32 count);
     void __cdecl NuDisplayListInit(VARIPTR *cursor, i32 arg2);
     void __cdecl NuDisplayListBeginFrame(void);
     extern u32 nuprim_field_ba8;
@@ -16265,6 +16265,76 @@ extern "C" {
     i32 __cdecl PermanentCustomPieceAvailablePc(CUSTOMPIECE_LAYERS_PC *);
     i32 __cdecl Collection_GotAnyOfType(i32, u32);
 
+#ifdef __cplusplus
+}
+#endif
+
+/* Native constructor reader/writer minimum; no full allocation claim. */
+typedef struct collection_build_pc_s {
+    COLLECTID_PC *list;
+    u16 columns;
+    u16 count;
+    i16 *title_id;
+    char *name;
+    f32 scale;
+} COLLECTION_BUILD_PC;
+STATIC_ASSERT(sizeof(COLLECTION_BUILD_PC) == 0x14);
+STATIC_ASSERT(offsetof(COLLECTION_BUILD_PC, list) == 0);
+STATIC_ASSERT(offsetof(COLLECTION_BUILD_PC, columns) == 4);
+STATIC_ASSERT(offsetof(COLLECTION_BUILD_PC, count) == 6);
+STATIC_ASSERT(offsetof(COLLECTION_BUILD_PC, title_id) == 8);
+STATIC_ASSERT(offsetof(COLLECTION_BUILD_PC, name) == 0xc);
+STATIC_ASSERT(offsetof(COLLECTION_BUILD_PC, scale) == 0x10);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl Collection_CreateMaster(char *, i16 *, COLLECTION_BUILD_PC *, i32, f32);
+    void __cdecl Collection_CreateCustom(char *, i16 *, COLLECTION_BUILD_PC *, u32, u32, u32, i32, i32, VARIPTR *,
+                                         VARIPTR *, i32, f32);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl NuRndrStateInit(void);
+    void __cdecl NuRndrStateGetTransformPc(NUMTX *, const NUMTL *);
+    void __cdecl NuRndrStateSetTransformPc(const NUMTX *);
+    void __cdecl NuRndrStreamInit(i32 size, VARIPTR *buffer);
+    void __cdecl NuRndrSwapStreamBuffers(void);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    NUGSCN *__cdecl NuGScnRead(VARIPTR *, VARIPTR, char *);
+    NUGSCN *__cdecl PCGraphicsSceneReadClones(VARIPTR *, VARIPTR, char *, i32);
+/* Private helper remains in its genuine caller TU, with local scene ingestion views. */
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl NuRndrInitEx(i32 stream_size, VARIPTR *buffer, VARIPTR end);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern char *debris_name[147];
+    extern NUMTL *PermanentEffectsMaterialPc;
+    extern NUMTL *PermanentShadowMaterialPc;
+    extern void *things_scene_terrain;
+    extern i32 PARTPAGE_GENERAL;
+    void __cdecl LoadPerm1(void);
 #ifdef __cplusplus
 }
 #endif

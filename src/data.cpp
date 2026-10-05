@@ -1,6 +1,304 @@
 #include "saga.h"
 
 extern "C" {
+    extern const char PermanentDebrisNamePc755ac4[13] = "BULLET_SPARK";
+    extern const char PermanentDebrisNamePc755ab8[10] = "SABER_RED";
+    extern const char PermanentDebrisNamePc755aac[12] = "SABER_GREEN";
+    extern const char PermanentDebrisNamePc755aa0[11] = "SABER_BLUE";
+    extern const char PermanentDebrisNamePc755a90[13] = "SABER_PURPLE";
+    extern const char PermanentDebrisNamePc755a84[9] = "EXPLD_1A";
+    extern const char PermanentDebrisNamePc755a78[10] = "JS_THRUST";
+    extern const char PermanentDebrisNamePc755a6c[10] = "S1_THRUST";
+    extern const char PermanentDebrisNamePc755a60[10] = "COIN_BLUE";
+    extern const char PermanentDebrisNamePc755a54[10] = "COIN_GOLD";
+    extern const char PermanentDebrisNamePc755a48[12] = "COIN_SILVER";
+    extern const char PermanentDebrisNamePc755a38[13] = "R2D2THRUSTER";
+    extern const char PermanentDebrisNamePc755a28[13] = "R2Q5THRUSTER";
+    extern const char PermanentDebrisNamePc755a20[7] = "SPLASH";
+    extern const char PermanentDebrisNamePc755a18[7] = "RIPPLE";
+    extern const char PermanentDebrisNamePc755a10[6] = "HEART";
+    extern const char PermanentDebrisNamePc755a04[10] = "HEART_BIG";
+    extern const char PermanentDebrisNamePc7559f8[10] = "EXPLOSION";
+    extern const char PermanentDebrisNamePc7559f0[8] = "MINI_01";
+    extern const char PermanentDebrisNamePc7559e8[8] = "MINI_02";
+    extern const char PermanentDebrisNamePc7559e0[8] = "MINI_03";
+    extern const char PermanentDebrisNamePc7559d4[10] = "TER_SPARK";
+    extern const char PermanentDebrisNamePc7559c8[11] = "TER_SPARK2";
+    extern const char PermanentDebrisNamePc7559bc[9] = "EXPOL_02";
+    extern const char PermanentDebrisNamePc7559b0[12] = "SPEEDERDUST";
+    extern const char PermanentDebrisNamePc7559a4[9] = "POD_DUST";
+    extern const char PermanentDebrisNamePc755998[10] = "CAVE_DUST";
+    extern const char PermanentDebrisNamePc755988[14] = "JANGOTHRUSTER";
+    extern const char PermanentDebrisNamePc75597c[12] = "EXPLO_DROID";
+    extern const char PermanentDebrisNamePc755970[10] = "EXPLO_NAB";
+    extern const char PermanentDebrisNamePc755964[10] = "NAB_SMOKE";
+    extern const char PermanentDebrisNamePc755958[10] = "NAB_BOOST";
+    extern const char PermanentDebrisNamePc75594c[10] = "MIKESMOKE";
+    extern const char PermanentDebrisNamePc755940[9] = "EXPLO_05";
+    extern const char PermanentDebrisNamePc755934[9] = "EXPLO_06";
+    extern const char PermanentDebrisNamePc755928[9] = "EXPLO_07";
+    extern const char PermanentDebrisNamePc75591c[9] = "EXPLO_11";
+    extern const char PermanentDebrisNamePc755910[10] = "MIKESTALL";
+    extern const char PermanentDebrisNamePc755904[12] = "TRAINING_01";
+    extern const char PermanentDebrisNamePc7558f8[9] = "TAG_BLUE";
+    extern const char PermanentDebrisNamePc7558ec[10] = "TAG_GREEN";
+    extern const char PermanentDebrisNamePc7558e0[11] = "ZIP_TARGET";
+    extern const char PermanentDebrisNamePc7558d4[11] = "DOOKU_BALL";
+    extern const char PermanentDebrisNamePc7558c8[10] = "WALKER_01";
+    extern const char PermanentDebrisNamePc7558bc[10] = "WALKER_02";
+    extern const char PermanentDebrisNamePc7558b0[9] = "ENG_BLOW";
+    extern const char PermanentDebrisNamePc7558a4[10] = "DogImpact";
+    extern const char PermanentDebrisNamePc755898[10] = "DogEngine";
+    extern const char PermanentDebrisNamePc75588c[9] = "DogSmoke";
+    extern const char PermanentDebrisNamePc755880[9] = "DogTrail";
+    extern const char PermanentDebrisNamePc755870[14] = "YODA_HOVER_01";
+    extern const char PermanentDebrisNamePc755868[7] = "K_Bolt";
+    extern const char PermanentDebrisNamePc755860[7] = "DUK_P2";
+    extern const char PermanentDebrisNamePc755858[8] = "PodHaze";
+    extern const char PermanentDebrisNamePc75584c[10] = "PodDust10";
+    extern const char PermanentDebrisNamePc755840[10] = "rock_pop1";
+    extern const char PermanentDebrisNamePc755834[10] = "BlueTrail";
+    extern const char PermanentDebrisNamePc755828[12] = "PurpleTrail";
+    extern const char PermanentDebrisNamePc755820[8] = "LavaDie";
+    extern const char PermanentDebrisNamePc755814[9] = "ComboRed";
+    extern const char PermanentDebrisNamePc755808[11] = "ComboGreen";
+    extern const char PermanentDebrisNamePc7557fc[10] = "ComboBlue";
+    extern const char PermanentDebrisNamePc7557f0[12] = "ComboPurple";
+    extern const char PermanentDebrisNamePc7557e8[7] = "REPAIR";
+    extern const char PermanentDebrisNamePc7557dc[11] = "SABER_RED1";
+    extern const char PermanentDebrisNamePc7557cc[13] = "SABER_GREEN1";
+    extern const char PermanentDebrisNamePc7557c0[12] = "SABER_BLUE1";
+    extern const char PermanentDebrisNamePc7557b0[14] = "SABER_PURPLE1";
+    extern const char PermanentDebrisNamePc7557a8[8] = "XWING_1";
+    extern const char PermanentDebrisNamePc75579c[10] = "MOUSE_POP";
+    extern const char PermanentDebrisNamePc755794[7] = "PHOTON";
+    extern const char PermanentDebrisNamePc755784[13] = "PHOTON_EXPLO";
+    extern const char PermanentDebrisNamePc755774[15] = "PHOTON_EXPLO_S";
+    extern const char PermanentDebrisNamePc755764[14] = "EXPLO_ORAN_2A";
+    extern const char PermanentDebrisNamePc755754[14] = "EXPLO_ORAN_2B";
+    extern const char PermanentDebrisNamePc755744[14] = "EXPLO_ORAN_2C";
+    extern const char PermanentDebrisNamePc755738[10] = "BUILD_IT1";
+    extern const char PermanentDebrisNamePc75572c[10] = "BUILD_IT2";
+    extern const char PermanentDebrisNamePc755720[10] = "BUILD_IT3";
+    extern const char PermanentDebrisNamePc755714[10] = "BUILD_IT4";
+    extern const char PermanentDebrisNamePc755708[10] = "BUILD_IT5";
+    extern const char PermanentDebrisNamePc7556fc[10] = "BUILD_IT6";
+    extern const char PermanentDebrisNamePc7556f0[11] = "DRAG_POP_1";
+    extern const char PermanentDebrisNamePc7556e4[11] = "DRAG_POP_2";
+    extern const char PermanentDebrisNamePc7556d8[11] = "DRAG_POP_4";
+    extern const char PermanentDebrisNamePc7556d0[8] = "GenoGun";
+    extern const char PermanentDebrisNamePc7556c0[14] = "SNOW_SPEEDER1";
+    extern const char PermanentDebrisNamePc7556b4[12] = "LEVER_SPARK";
+    extern const char PermanentDebrisNamePc7556a8[9] = "ZAPPER_1";
+    extern const char PermanentDebrisNamePc75569c[11] = "V_BOLT_RED";
+    extern const char PermanentDebrisNamePc75568c[13] = "V_BOLT_GREEN";
+    extern const char PermanentDebrisNamePc755680[12] = "CHAR_SMOKE1";
+    extern const char PermanentDebrisNamePc755674[12] = "CHAR_SMOKE2";
+    extern const char PermanentDebrisNamePc755668[10] = "POWER_P_1";
+    extern const char PermanentDebrisNamePc75565c[10] = "POWER_P_2";
+    extern const char PermanentDebrisNamePc755650[10] = "POWER_P_3";
+    extern const char PermanentDebrisNamePc755644[9] = "TIE_HIT1";
+    extern const char PermanentDebrisNamePc755638[9] = "BRICK_01";
+    extern const char PermanentDebrisNamePc75562c[9] = "BRICK_02";
+    extern const char PermanentDebrisNamePc755620[9] = "BRICK_03";
+    extern const char PermanentDebrisNamePc755618[8] = "BUMP_01";
+    extern const char PermanentDebrisNamePc755610[8] = "BUMP_02";
+    extern const char PermanentDebrisNamePc755600[13] = "LAND_S_DUST1";
+    extern const char PermanentDebrisNamePc7555f0[13] = "LAND_S_DUST2";
+    extern const char PermanentDebrisNamePc7555e0[14] = "LAND_S_THRUST";
+    extern const char PermanentDebrisNamePc7555d4[12] = "LAND_S_HAZE";
+    extern const char PermanentDebrisNamePc7555c8[10] = "EXPLO_06b";
+    extern const char PermanentDebrisNamePc7555c0[8] = "BUMP_03";
+    extern const char PermanentDebrisNamePc7555b4[11] = "FORCE_BLUE";
+    extern const char PermanentDebrisNamePc7555a8[10] = "FORCE_RED";
+    extern const char PermanentDebrisNamePc7555a0[6] = "SCAN3";
+    extern const char PermanentDebrisNamePc755594[9] = "REPULSOR";
+    extern const char PermanentDebrisNamePc75558c[8] = "WEE_POP";
+    extern const char PermanentDebrisNamePc755580[12] = "EXIT_FIRE_1";
+    extern const char PermanentDebrisNamePc755574[12] = "EXIT_FIRE_2";
+    extern const char PermanentDebrisNamePc755568[10] = "EWOK_POP1";
+    extern const char PermanentDebrisNamePc75555c[9] = "EXPLO_02";
+    extern const char PermanentDebrisNamePc755550[11] = "ATAT_POP_1";
+    extern const char PermanentDebrisNamePc755544[11] = "ATAT_POP_2";
+    extern const char PermanentDebrisNamePc755538[11] = "ATAT_POP_3";
+    extern const char PermanentDebrisNamePc755530[7] = "FIRE_1";
+    extern const char PermanentDebrisNamePc755528[7] = "RAIN_1";
+    extern const char PermanentDebrisNamePc75551c[12] = "CHAR_BUBBLE";
+    extern const char PermanentDebrisNamePc755510[11] = "CHAR_GHOST";
+    extern const char PermanentDebrisNamePc755508[8] = "DEATH_1";
+    extern const char PermanentDebrisNamePc755500[8] = "DEATH_2";
+    extern const char PermanentDebrisNamePc7554f4[10] = "BOULDER_2";
+    extern const char PermanentDebrisNamePc7554ec[7] = "DISH_1";
+    extern const char PermanentDebrisNamePc7554e4[7] = "DISH_2";
+    extern const char PermanentDebrisNamePc7554d8[11] = "SNOW_POP_1";
+    extern const char PermanentDebrisNamePc7554cc[11] = "SNOW_POP_2";
+    extern const char PermanentDebrisNamePc7554c0[11] = "TREE_POP_1";
+    extern const char PermanentDebrisNamePc7554b4[11] = "TREE_POP_4";
+    extern const char PermanentDebrisNamePc7554a8[12] = "SPEEDER_HIT";
+    extern const char PermanentDebrisNamePc75549c[11] = "FALCONGLOW";
+    extern const char PermanentDebrisNamePc75548c[15] = "FALCONTHRUSTER";
+    extern const char PermanentDebrisNamePc755480[12] = "SPEED_SPARK";
+    extern const char PermanentDebrisNamePc755464[11] = "GUNSHIP_01";
+    extern const char PermanentDebrisNamePc755458[11] = "GUNSHIP_02";
+    extern const char PermanentDebrisNamePc75544c[10] = "SandBlast";
+    extern const char PermanentDebrisNamePc755444[8] = "BULLET1";
+    extern const char PermanentDebrisNamePc75543c[8] = "BULLET2";
+    extern const char PermanentDebrisNamePc755430[11] = "BULLET_HIT";
+    extern const char PermanentDebrisNamePc755424[10] = "POD_SPARK";
+    char *debris_name[147] = {(char *)PermanentDebrisNamePc755ac4,
+                              (char *)PermanentDebrisNamePc755ab8,
+                              (char *)PermanentDebrisNamePc755aac,
+                              (char *)PermanentDebrisNamePc755aa0,
+                              (char *)PermanentDebrisNamePc755a90,
+                              (char *)PermanentDebrisNamePc755a84,
+                              (char *)PermanentDebrisNamePc755a78,
+                              (char *)PermanentDebrisNamePc755a6c,
+                              (char *)PermanentDebrisNamePc755a60,
+                              (char *)PermanentDebrisNamePc755a54,
+                              (char *)PermanentDebrisNamePc755a48,
+                              (char *)PermanentDebrisNamePc755a38,
+                              (char *)PermanentDebrisNamePc755a28,
+                              (char *)PermanentDebrisNamePc755a20,
+                              (char *)PermanentDebrisNamePc755a18,
+                              (char *)PermanentDebrisNamePc755a10,
+                              (char *)PermanentDebrisNamePc755a04,
+                              (char *)PermanentDebrisNamePc7559f8,
+                              (char *)PermanentDebrisNamePc7559f0,
+                              (char *)PermanentDebrisNamePc7559e8,
+                              (char *)PermanentDebrisNamePc7559e0,
+                              (char *)PermanentDebrisNamePc7559d4,
+                              (char *)PermanentDebrisNamePc7559c8,
+                              (char *)PermanentDebrisNamePc7559bc,
+                              (char *)PermanentDebrisNamePc7559b0,
+                              (char *)PermanentDebrisNamePc7559a4,
+                              (char *)PermanentDebrisNamePc755998,
+                              (char *)PermanentDebrisNamePc755988,
+                              (char *)PermanentDebrisNamePc75597c,
+                              (char *)PermanentDebrisNamePc755970,
+                              (char *)PermanentDebrisNamePc755964,
+                              (char *)PermanentDebrisNamePc755958,
+                              (char *)PermanentDebrisNamePc75594c,
+                              (char *)PermanentDebrisNamePc755940,
+                              (char *)PermanentDebrisNamePc755934,
+                              (char *)PermanentDebrisNamePc755928,
+                              (char *)PermanentDebrisNamePc75591c,
+                              (char *)PermanentDebrisNamePc755910,
+                              (char *)PermanentDebrisNamePc755904,
+                              (char *)PermanentDebrisNamePc7558f8,
+                              (char *)PermanentDebrisNamePc7558ec,
+                              (char *)PermanentDebrisNamePc7558e0,
+                              (char *)PermanentDebrisNamePc7558d4,
+                              (char *)PermanentDebrisNamePc7558c8,
+                              (char *)PermanentDebrisNamePc7558bc,
+                              (char *)PermanentDebrisNamePc7558b0,
+                              (char *)PermanentDebrisNamePc7558a4,
+                              (char *)PermanentDebrisNamePc755898,
+                              (char *)PermanentDebrisNamePc75588c,
+                              (char *)PermanentDebrisNamePc755880,
+                              (char *)PermanentDebrisNamePc755870,
+                              (char *)PermanentDebrisNamePc755868,
+                              (char *)PermanentDebrisNamePc755860,
+                              (char *)PermanentDebrisNamePc755858,
+                              (char *)PermanentDebrisNamePc75584c,
+                              (char *)PermanentDebrisNamePc755840,
+                              (char *)PermanentDebrisNamePc755834,
+                              (char *)PermanentDebrisNamePc755828,
+                              (char *)PermanentDebrisNamePc755820,
+                              (char *)PermanentDebrisNamePc755814,
+                              (char *)PermanentDebrisNamePc755808,
+                              (char *)PermanentDebrisNamePc7557fc,
+                              (char *)PermanentDebrisNamePc7557f0,
+                              (char *)PermanentDebrisNamePc7557e8,
+                              (char *)PermanentDebrisNamePc7557dc,
+                              (char *)PermanentDebrisNamePc7557cc,
+                              (char *)PermanentDebrisNamePc7557c0,
+                              (char *)PermanentDebrisNamePc7557b0,
+                              (char *)PermanentDebrisNamePc7557a8,
+                              (char *)PermanentDebrisNamePc75579c,
+                              (char *)PermanentDebrisNamePc755794,
+                              (char *)PermanentDebrisNamePc755784,
+                              (char *)PermanentDebrisNamePc755774,
+                              (char *)PermanentDebrisNamePc755764,
+                              (char *)PermanentDebrisNamePc755754,
+                              (char *)PermanentDebrisNamePc755744,
+                              (char *)PermanentDebrisNamePc755738,
+                              (char *)PermanentDebrisNamePc75572c,
+                              (char *)PermanentDebrisNamePc755720,
+                              (char *)PermanentDebrisNamePc755714,
+                              (char *)PermanentDebrisNamePc755708,
+                              (char *)PermanentDebrisNamePc7556fc,
+                              (char *)PermanentDebrisNamePc7556f0,
+                              (char *)PermanentDebrisNamePc7556e4,
+                              (char *)PermanentDebrisNamePc7556d8,
+                              (char *)PermanentDebrisNamePc7556d0,
+                              (char *)PermanentDebrisNamePc7556c0,
+                              (char *)PermanentDebrisNamePc7556b4,
+                              (char *)PermanentDebrisNamePc7556a8,
+                              (char *)PermanentDebrisNamePc75569c,
+                              (char *)PermanentDebrisNamePc75568c,
+                              (char *)PermanentDebrisNamePc755680,
+                              (char *)PermanentDebrisNamePc755674,
+                              (char *)PermanentDebrisNamePc755668,
+                              (char *)PermanentDebrisNamePc75565c,
+                              (char *)PermanentDebrisNamePc755650,
+                              (char *)PermanentDebrisNamePc755644,
+                              (char *)PermanentDebrisNamePc755638,
+                              (char *)PermanentDebrisNamePc75562c,
+                              (char *)PermanentDebrisNamePc755620,
+                              (char *)PermanentDebrisNamePc755618,
+                              (char *)PermanentDebrisNamePc755610,
+                              (char *)PermanentDebrisNamePc755600,
+                              (char *)PermanentDebrisNamePc7555f0,
+                              (char *)PermanentDebrisNamePc7555e0,
+                              (char *)PermanentDebrisNamePc7555d4,
+                              (char *)PermanentDebrisNamePc755934,
+                              (char *)PermanentDebrisNamePc7555c8,
+                              (char *)PermanentDebrisNamePc7555c0,
+                              (char *)PermanentDebrisNamePc7555b4,
+                              (char *)PermanentDebrisNamePc7555a8,
+                              (char *)PermanentDebrisNamePc7555a0,
+                              (char *)PermanentDebrisNamePc755594,
+                              (char *)PermanentDebrisNamePc75558c,
+                              (char *)PermanentDebrisNamePc755580,
+                              (char *)PermanentDebrisNamePc755574,
+                              (char *)PermanentDebrisNamePc755568,
+                              (char *)PermanentDebrisNamePc75555c,
+                              (char *)PermanentDebrisNamePc755550,
+                              (char *)PermanentDebrisNamePc755544,
+                              (char *)PermanentDebrisNamePc755538,
+                              (char *)PermanentDebrisNamePc755530,
+                              (char *)PermanentDebrisNamePc755528,
+                              (char *)PermanentDebrisNamePc75551c,
+                              (char *)PermanentDebrisNamePc755510,
+                              (char *)PermanentDebrisNamePc755508,
+                              (char *)PermanentDebrisNamePc755500,
+                              (char *)PermanentDebrisNamePc7554f4,
+                              (char *)PermanentDebrisNamePc7554ec,
+                              (char *)PermanentDebrisNamePc7554e4,
+                              (char *)PermanentDebrisNamePc7554d8,
+                              (char *)PermanentDebrisNamePc7554cc,
+                              (char *)PermanentDebrisNamePc7554c0,
+                              (char *)PermanentDebrisNamePc7554b4,
+                              (char *)PermanentDebrisNamePc7554a8,
+                              (char *)PermanentDebrisNamePc75549c,
+                              (char *)PermanentDebrisNamePc75548c,
+                              (char *)PermanentDebrisNamePc755480,
+                              (char *)AIGamePunch1Name,
+                              (char *)AIGamePunch2Name,
+                              (char *)PermanentDebrisNamePc755464,
+                              (char *)PermanentDebrisNamePc755458,
+                              (char *)PermanentDebrisNamePc75544c,
+                              (char *)PermanentDebrisNamePc755444,
+                              (char *)PermanentDebrisNamePc75543c,
+                              (char *)PermanentDebrisNamePc755430,
+                              (char *)PermanentDebrisNamePc755424};
+    NUMTL *PermanentEffectsMaterialPc = NULL;
+    NUMTL *PermanentShadowMaterialPc = NULL;
+    void *things_scene_terrain = NULL;
+    i32 PARTPAGE_GENERAL = -1;
+}
+
+extern "C" {
     extern char TextInputKeyNameTextPc7516c0[];
     extern const char InitOnceCompanyPc[10] = "LucasArts";
     extern const char InitOnceProductPc[35] = "LEGO Star Wars - The Complete Saga";

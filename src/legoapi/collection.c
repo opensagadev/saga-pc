@@ -119,3 +119,73 @@ i32 __cdecl Collection_GotAnyOfType(i32 type, u32 flags) {
     }
     return 0;
 }
+
+typedef struct collection_buyable_reader_pc_s {
+    i16 id;
+    u8 unknown_02[6];
+    u8 can_buy;
+    u8 unknown_09[0x13];
+} COLLECTION_BUYABLE_READER_PC;
+STATIC_ASSERT(sizeof(COLLECTION_BUYABLE_READER_PC) == sizeof(COLLECTID_PC));
+STATIC_ASSERT(offsetof(COLLECTION_BUYABLE_READER_PC, can_buy) == 8);
+STATIC_ASSERT(offsetof(APICHARSYS, char_data) == 0x20);
+STATIC_ASSERT(sizeof(APICHARACTERDATA) == 0x4c);
+STATIC_ASSERT(offsetof(APICHARACTERDATA, model_flags) == 4);
+STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
+STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
+STATIC_ASSERT(offsetof(CHARACTERDATA_PC, model_flags) == 4);
+
+void __cdecl Collection_CreateMaster(char *name, i16 *title_id, COLLECTION_BUILD_PC *collection, i32 columns,
+                                     f32 scale) {
+    collection->list = CollectList;
+    collection->columns = (u16)columns;
+    collection->count = (u16)CollectCount;
+    collection->title_id = title_id;
+    collection->name = name;
+    collection->scale = scale;
+}
+
+void __cdecl Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD_PC *collection,
+                                     u32 required_model_flags, u32 excluded_model_flags, u32 required_game_flags,
+                                     i32 require_buyable, i32 columns, VARIPTR *buffer, VARIPTR *buffer_end,
+                                     i32 use_all_characters, f32 scale) {
+    i32 index;
+    (void)buffer_end;
+    collection->columns = (u16)columns;
+    collection->count = 0;
+    collection->title_id = title_id;
+    collection->name = name;
+    collection->scale = scale;
+    collection->list = (COLLECTID_PC *)((buffer->addr + 3) & ~3u);
+    if (use_all_characters == 0) {
+        for (index = 0; index < CollectCount; ++index) {
+            COLLECTID_PC *source = &CollectList[index];
+            i32 id = source->id;
+            if (excluded_model_flags != 0 && (apicharsys->char_data[id].model_flags & excluded_model_flags) != 0)
+                continue;
+            if (require_buyable != 0 && ((COLLECTION_BUYABLE_READER_PC *)source)->can_buy == 0)
+                continue;
+            if (required_game_flags != 0 && (GCDataList[id].flags_090 & required_game_flags) != required_game_flags)
+                continue;
+            if (required_model_flags != 0 && (CDataList[id].model_flags & required_model_flags) != required_model_flags)
+                continue;
+            collection->list[collection->count++] = *source;
+        }
+    } else {
+        for (index = 0; index < CHARCOUNT; ++index) {
+            COLLECTID_PC *entry;
+            if (excluded_model_flags != 0 && (apicharsys->char_data[index].model_flags & excluded_model_flags) != 0)
+                continue;
+            if (required_game_flags != 0 && (GCDataList[index].flags_090 & required_game_flags) != required_game_flags)
+                continue;
+            if (required_model_flags != 0 &&
+                (CDataList[index].model_flags & required_model_flags) != required_model_flags)
+                continue;
+            entry = &collection->list[collection->count++];
+            memset(entry, 0, sizeof(*entry));
+            entry->id = (i16)index;
+        }
+    }
+    buffer->addr = (u32)(collection->list + collection->count);
+}

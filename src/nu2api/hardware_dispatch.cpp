@@ -325,7 +325,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     StartupOpenDats(dat_names, dat_count, buffer);
     NuTexInitEx(buffer, texture_count);
     STUBBED_NAMED(0x005f1dd0); /* (buffer, material_count) */
-    STUBBED_NAMED(0x00607ba0); /* (stream_size, buffer, *end) */
+    NuRndrInitEx(stream_size, buffer, *end);
     STUBBED_NAMED(0x00601a30);
     STUBBED_NAMED(0x0060cb00);
     STUBBED_NAMED(0x005d16a0); /* (buffer, *end) */

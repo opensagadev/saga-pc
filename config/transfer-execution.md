@@ -3135,3 +3135,65 @@ world/permanent/area loaders remain held at real scene/model value producers,
 not released with fabricated providers. Storage remains about1.3GB. The user's
 journal remains unchanged and outside this commit; the indefinite direct-main
 matching transfer continues.
+
+### Connected renderer and resource checkpoint S (2026-10-05 UTC)
+
+Rdfa1286 passed exact-revision CI37246161272. S transfers14 genuine new source
+functions/4,532 complete PC bytes: collection/variant1,428, private renderer
+stream/state767, scene ingestion954, partial renderer entry32 and partial
+LoadPerm1 1,351. Five had already-established inventory entries but no compiled
+bodies. Four existing source bodies are repaired/reconnected without new byte
+credit. All18 accepted complete bodies agree with the actual299 normal objects;
+no whole-owner replacements or supplements are used. The source executable
+links with4,122 function and8,506 data definitions.
+
+The real stream producer closes NuRndrInitEx's first call; its configuration167
+remains marked. NuDisplayListInit restores all genuine calls and its BeginFrame
+tail, giving full127-byte equality. StreamAlloc's native three-argument ABI is
+restored while its entire135-byte candidate remains unchanged/nonexact against
+140 PC bytes. The scene reader consumes18 genuine providers and marks its native
+void texture-ID fixup. LoadPerm1 restores real scene/terrain/particle/material
+operations but keeps17 missing native actions explicit. Review removed duplicate
+gradient backing in favor of DebMat[5] and restored address-valued end arguments.
+Full native callee reads establish those physical unused four-byte end slots;
+no ABI adapter or fake provider is introduced.
+
+Required build/object checks, LLVM18 formatting326 and analysis299 pass. Core
+checks pass719 tests with three existing skips. All88 selected collection/variant
+checks pass using all299 actual normal objects, zero replacements/supplements.
+These checks cover their recorded arena/parser domains, not asset loading or boot.
+
+All197 new complete data copies match retail. Shared149 views contain2,083 typed
+working bytes/2,300 complete COFF bytes; nine real renderer states remain private.
+Original allocation extents remain unknown. Thirty-eight known new copies add366
+unique exact data bytes, reaching639,843. All5,304 old exact physical copies and
+13 named members/28 known bytes survive;159 new unknown copies receive no extent
+or exact credit. Only an inherited unknown zero COFF tail changes8 to4 naturally.
+
+New unique compared bytes increase1,166,299 to1,170,831, exactly4,532. Whole-PC
+fuzzy coverage23.3864326593% to23.4891391375% gains0.1027064782 percentage points.
+Exact code197,811 to199,081 adds1,270 unique bytes, reaching5.7351452476% of
+3,471,246 retail text bytes. Three new exact bodies contribute1,143 and the
+existing Init contributes127. All1,991 previous exact function copies remain.
+The unchanged allocator repeats the already-qualified historical1458-byte
+scheduling arm; retained72-case/376-check evidence applies, with no new runtime
+claim. Four local compiler-label serial changes have independent owner/offset
+proof and unchanged full relocated output; ordinary missing references remain fatal.
+
+Actual source EXE642d6961 exits5 after3.427 seconds on Wine from real assets and
+display. It reaches stream-backed descriptor writes, then reads NULL through
+displaylist_2d_first in NuDisplayListAddRenderScene at source-image004f57e4.
+The earlier null stream write is superseded. S does not establish fresh input,
+device or Present observations, repeated frames or a loaded level. The test
+queries ShowCrashDialog DWORD0 in its own prefix, retains crash output and exit,
+and leaves no crash window or owned process. Matching stays primary; no runtime
+bypass is used.
+
+Validation delayed the half-hour checkpoint: genuine provider/storage closure,
+full checks and independent old-copy/report preservation had to finish first.
+Next: accepted scratch AI ingress/paths/bounds five/6,656 and renderer configuration
+provider six/1,144 families, then broader WORLD/permanent/area parents as real model
+and area suppliers close. Texture fallback provenance, device reset/recreate and
+remaining startup effects stay explicit. Generated storage is about1.36GB; the
+user's journal remains unchanged and outside the commit. Direct-main transfer
+continues under the active indefinite goal.
