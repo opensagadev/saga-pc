@@ -1014,3 +1014,181 @@ void __cdecl IconScenes_Load(APICHARACTERMODELLIST *list, i32 mode, VARIPTR *buf
             IconScenePc[id]->display_list->render_flags |= 0x10;
     }
 }
+
+extern i32 MENUSFX_MENUBACK;
+
+void __cdecl MenuRememberCursor(MENU *menu) {
+    if (menu->menu == -1)
+        return;
+    if (MenuInfo[menu->menu].memory_x != -1)
+        MenuInfo[menu->menu].memory_x = menu->selected_column;
+    if (MenuInfo[menu->menu].memory_y != -1)
+        MenuInfo[menu->menu].memory_y = menu->selected_row;
+}
+
+void __cdecl BackupMenu(void) {
+    i32 level = GameMenuLevel;
+    if (level != 0) {
+        MENU *menu = &GameMenu[level];
+        PC_MENU_SERVICE_VIEW *view = (PC_MENU_SERVICE_VIEW *)menu;
+        PC_MENU_SERVICE_VIEW *parent;
+        if (MenuInfo[menu->menu].exit_fn != NULL) {
+            MenuInfo[menu->menu].exit_fn(menu);
+            level = GameMenuLevel;
+        }
+        MenuRememberCursor(menu);
+        view->menu = -1;
+        view->state_b4 = 0;
+        view->state_b8 = 1;
+        view->state_bc = 0;
+        --level;
+        parent = (PC_MENU_SERVICE_VIEW *)&GameMenu[level];
+        parent->state_b8 = 1;
+        parent->menu_time = 0.0f;
+        parent->state_b4 = 1;
+        GameMenuLevel = level;
+        parent->state_b0 = 0;
+        parent->state_c0 = 0;
+        if (parent->menu != -1 && MenuInfo[parent->menu].enter_fn != NULL) {
+            MenuInfo[parent->menu].enter_fn((MENU *)parent);
+            level = GameMenuLevel;
+        }
+        if (MenuSFX == -1)
+            MenuSFX = MENUSFX_MENUBACK;
+        MenuAlpha = 0.0f;
+        MenuA = 0;
+        MenuValidated = 0;
+        if (level == 0)
+            MenuSetPlatformState(-1);
+    }
+}
+
+void __cdecl BackupMenuNoFn(void) {
+    i32 level = GameMenuLevel;
+    if (level != 0) {
+        MENU *menu = &GameMenu[level];
+        PC_MENU_SERVICE_VIEW *view = (PC_MENU_SERVICE_VIEW *)menu;
+        PC_MENU_SERVICE_VIEW *parent;
+        if (MenuInfo[menu->menu].exit_fn != NULL) {
+            MenuInfo[menu->menu].exit_fn(menu);
+            level = GameMenuLevel;
+        }
+        MenuRememberCursor(menu);
+        view->state_b4 = 0;
+        view->state_b8 = 1;
+        view->state_bc = 0;
+        --level;
+        parent = (PC_MENU_SERVICE_VIEW *)&GameMenu[level];
+        view->menu = -1;
+        parent->menu_time = 0.0f;
+        GameMenuLevel = level;
+        parent->state_b8 = 1;
+        parent->state_b4 = 1;
+        parent->state_b0 = 0;
+        parent->state_c0 = 0;
+        if (MenuSFX == -1)
+            MenuSFX = MENUSFX_MENUBACK;
+        if (level == 0)
+            MenuSetPlatformState(-1);
+        MenuA = 0;
+        MenuAlpha = 0.0f;
+        MenuValidated = 0;
+    }
+}
+
+typedef struct MENU_DRAW_VIEW_PC {
+    u8 unknown_00[0xe];
+    i16 first_row;
+    u8 unknown_10[2];
+    i16 last_row;
+    u8 unknown_14[0x78];
+    i32 draw_item;
+    f32 item_scale;
+    f32 draw_x, draw_y, draw_z;
+    u8 unknown_a0[0x24];
+    f32 *item_offsets;
+    f32 item_offset_scale;
+    u8 unknown_cc[4];
+    f32 item_scale_x;
+    f32 item_spacing;
+    u8 unknown_d8[8];
+} MENU_DRAW_VIEW_PC;
+STATIC_ASSERT(sizeof(MENU_DRAW_VIEW_PC) == sizeof(MENU));
+STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, first_row) == 0xe);
+STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, last_row) == 0x12);
+STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, draw_item) == 0x8c);
+STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, item_scale) == 0x90);
+STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, draw_x) == 0x94);
+STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, draw_y) == 0x98);
+STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, draw_z) == 0x9c);
+STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, item_offsets) == 0xc4);
+STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, item_offset_scale) == 0xc8);
+STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, item_scale_x) == 0xd0);
+STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, item_spacing) == 0xd4);
+extern f32 dme_sx;
+extern i32 dme_rgb, dme_align;
+extern u8 dme_r, dme_g, dme_b;
+extern f32 MENUENTRYEXWIDTH;
+extern u8 MENUENTRYR, MENUENTRYG, MENUENTRYB;
+extern u8 MENUFLASH0R, MENUFLASH0G, MENUFLASH0B;
+extern u8 MENUFLASH1R, MENUFLASH1G, MENUFLASH1B;
+
+void __cdecl DrawMenuEntryEx(MENU *menu, char *text, i32 alpha) {
+    MENU_DRAW_VIEW_PC *view = (MENU_DRAW_VIEW_PC *)menu;
+    f32 scale = view->item_scale_x;
+    f32 spacing = view->item_spacing;
+    u8 red, green, blue;
+    u32 alpha_bits = (u32)alpha;
+    if ((u8)alpha_bits > 128)
+        alpha_bits = (alpha_bits & 0xffffff00u) | 128;
+    if (scale == 0.0f)
+        scale = MenuTextScalePc;
+    scale *= dme_sy;
+    if (spacing == 0.0f)
+        spacing = MENUDY;
+    spacing *= dme_sy;
+    if (view->item_offsets != NULL) {
+        Text3DEx2(text, (f32)(view->draw_x + (f64)view->item_offsets[0] * view->item_offset_scale),
+                  (f32)(view->draw_y + (f64)view->item_offsets[1] * view->item_offset_scale), view->draw_z,
+                  (f32)((f64)scale * dme_sx), scale, scale, dme_align, 0, 0, 0, (u8)alpha_bits >> 2);
+    }
+    if (view->draw_item >= view->first_row && view->draw_item <= view->last_row) {
+        if (view->draw_item == menu->selected_row) {
+            if (menu_flash != 0) {
+                red = MENUFLASH0R;
+                green = MENUFLASH0G;
+                blue = MENUFLASH0B;
+            } else {
+                red = MENUFLASH1R;
+                green = MENUFLASH1G;
+                blue = MENUFLASH1B;
+            }
+            if (menu_pulsate > 0.0f) {
+                red = (u8)(MENUFLASH0R * (f64)menu_pulsate + MENUFLASH1R * (1.0 - menu_pulsate));
+                green = (u8)(MENUFLASH0G * (f64)menu_pulsate + MENUFLASH1G * (1.0 - menu_pulsate));
+                blue = (u8)(MENUFLASH0B * (f64)menu_pulsate + MENUFLASH1B * (1.0 - menu_pulsate));
+            }
+        } else if (dme_rgb != 0) {
+            red = dme_r;
+            green = dme_g;
+            blue = dme_b;
+        } else {
+            red = MENUENTRYR;
+            green = MENUENTRYG;
+            blue = MENUENTRYB;
+        }
+        if (view->item_offsets != NULL) {
+            Text3DEx(text, view->draw_x, view->draw_y, view->draw_z, (f32)((f64)scale * dme_sx), scale, scale,
+                     dme_align, red, green, blue, (i32)alpha_bits);
+        } else {
+            MenuSmartTextEx(text, view->draw_x, view->draw_y, view->draw_z, (f32)((f64)scale * dme_sx), scale, scale,
+                            dme_align, red, green, blue, MENUENTRYEXWIDTH, 1, NULL, 0, (u8)alpha_bits);
+        }
+    }
+    ++view->draw_item;
+    view->draw_y += spacing;
+    dme_rgb = 0;
+    dme_align = 0;
+    dme_sx = 1.0f;
+    dme_sy = 1.0f;
+}

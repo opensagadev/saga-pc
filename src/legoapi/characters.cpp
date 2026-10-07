@@ -266,3 +266,200 @@ extern "C" {
         }
     }
 }
+
+typedef struct CHARACTER_IDLE_STATE_PC {
+    u8 unknown_000[0x2b8];
+    f32 idle_total_time;
+    f32 idle_animation_time;
+    f32 idle_animation_limit;
+    i16 idle_animation;
+    i16 previous_idle_animation;
+} CHARACTER_IDLE_STATE_PC;
+typedef struct CHARACTER_IDLE_POLICY_PC {
+    u8 unknown_000[0x116];
+    u8 use_standard_idle;
+} CHARACTER_IDLE_POLICY_PC;
+STATIC_ASSERT(offsetof(CHARACTER_IDLE_STATE_PC, idle_total_time) == 0x2b8);
+STATIC_ASSERT(offsetof(CHARACTER_IDLE_STATE_PC, idle_animation_time) == 0x2bc);
+STATIC_ASSERT(offsetof(CHARACTER_IDLE_STATE_PC, idle_animation_limit) == 0x2c0);
+STATIC_ASSERT(offsetof(CHARACTER_IDLE_STATE_PC, idle_animation) == 0x2c4);
+STATIC_ASSERT(offsetof(CHARACTER_IDLE_STATE_PC, previous_idle_animation) == 0x2c6);
+STATIC_ASSERT(offsetof(CHARACTER_IDLE_POLICY_PC, use_standard_idle) == 0x116);
+STATIC_ASSERT(offsetof(ANIMPACKET_PC, previous_animation) == 0x38);
+STATIC_ASSERT(offsetof(ANIMPACKET_PC, requested_animation) == 0x3a);
+extern "C" f32 animduration_blendouttime;
+extern "C" i16 id_R2Q5;
+typedef struct CHARACTER_COMMUNICATE_READER_PC {
+    u8 unknown_000[0xd38];
+    f32 communicate_blend;
+} CHARACTER_COMMUNICATE_READER_PC;
+STATIC_ASSERT(offsetof(CHARACTER_COMMUNICATE_READER_PC, communicate_blend) == 0xd38);
+STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
+STATIC_ASSERT(offsetof(GAMEOBJECT, model_draw_result) == 0x288);
+STATIC_ASSERT(offsetof(GAMEOBJECT, origin_joint_ready) == 0x28c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
+STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) == 0x804);
+STATIC_ASSERT(offsetof(NUMTX, translation) == 0x30);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, thingy_locator) == 0x110);
+STATIC_ASSERT(offsetof(GAMEDEBRISENTRY_PC, effect) == 0);
+
+static void NewCharacterIdle(GAMEOBJECT *object, i32 default_idle) {
+    CHARACTER_IDLE_STATE_PC *state = (CHARACTER_IDLE_STATE_PC *)object;
+    CHARACTERDATA_PC *character = object->character_data;
+    i32 alternate = ((CHARACTER_IDLE_POLICY_PC *)character->game_character)->use_standard_idle == 0 &&
+                            (character->model_flags & 0x80) != 0
+                        ? 118
+                        : 25;
+    CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
+    i32 candidates[233];
+    i32 count = 0;
+    i32 animation, repetitions, minimum, maximum;
+    CHARACTERANIM_CONFIG_PC *info;
+    for (animation = 0; animation < 233; ++animation) {
+        if (model->action_animations[animation] == NULL)
+            continue;
+        info = model->animation_configs[animation];
+        if ((info->flags & 0x10) != 0 && ((info->flags & 0x800) != 0) == (default_idle == alternate))
+            candidates[count++] = animation;
+    }
+    if (count <= 0) {
+        ResetCharacterIdle(object, 0, default_idle);
+        return;
+    }
+    do {
+        animation = candidates[count > 1 ? qrand() / (65535 / count + 1) : 0];
+        state->idle_animation = (i16)animation;
+    } while (count > 1 && state->idle_animation == state->previous_idle_animation);
+    info = model->animation_configs[state->idle_animation];
+    minimum = info->minimum_repetitions;
+    maximum = info->maximum_repetitions;
+    repetitions = minimum > 0 ? minimum : 1;
+    if (minimum > 0 && maximum > minimum)
+        repetitions += qrand() / (65535 / (maximum - minimum) + 1);
+    state->previous_idle_animation = state->idle_animation;
+    if (repetitions > 1 && (model->animation_configs[state->idle_animation]->flags & 2) == 0)
+        repetitions = 1;
+    state->idle_animation_time = 0.0f;
+    state->idle_animation_limit =
+        (f32)((f64)AnimDuration((i16)object->id, state->idle_animation, 0.0f, 0.0f, 0) * (f64)repetitions -
+              (f64)animduration_blendouttime);
+}
+
+extern "C" void __cdecl UpdateCharacterIdle(GAMEOBJECT *object) {
+    CHARACTER_IDLE_STATE_PC *state = (CHARACTER_IDLE_STATE_PC *)object;
+    CHARACTERDATA_PC *character;
+    i32 alternate, default_idle;
+    i16 requested;
+    f32 next_time;
+    if (object->character_model == NULL)
+        return;
+    character = object->character_data;
+    alternate = ((CHARACTER_IDLE_POLICY_PC *)character->game_character)->use_standard_idle == 0 &&
+                        (character->model_flags & 0x80) != 0
+                    ? 118
+                    : 25;
+    requested = object->anim_packet.requested_animation;
+    if (requested != 1 && requested != alternate) {
+        default_idle = GetDefaultIdle(object);
+        if (default_idle != -1) {
+            ResetCharacterIdle(object, 1, default_idle);
+            return;
+        }
+    } else if ((requested == 1 && object->anim_packet.previous_animation == alternate) ||
+               (requested == alternate && object->anim_packet.previous_animation == 1)) {
+        ResetCharacterIdle(object, 1, requested);
+        return;
+    }
+    if (requested == 1 || requested == alternate) {
+        state->idle_total_time += FRAMETIME;
+        next_time = state->idle_animation_time + FRAMETIME;
+        state->idle_animation_time = next_time;
+        if (next_time >= state->idle_animation_limit) {
+            if (state->idle_animation == requested)
+                NewCharacterIdle(object, requested);
+            else
+                ResetCharacterIdle(object, 1, requested);
+        }
+        object->anim_packet.requested_animation = state->idle_animation;
+        return;
+    }
+    ResetCharacterIdle(object, 1, GetDefaultIdle(object));
+}
+
+extern "C" void __cdecl PostAnimate_FETT(GAMEOBJECT *object) {
+    i8 context = object->character_context;
+    i32 count, first_joint;
+    if (object->dead != 0)
+        return;
+    if (context != -1 && !((context == 21 && object->field_7aa == 62) || (context == 20 && object->field_7aa == 77) ||
+                           (context == 46 && object->field_7aa == 111) || (context == 10 && object->field_7aa == 60)))
+        return;
+    if (object->jump_variant_state != 1 || object->origin_joint_ready == 0)
+        return;
+    count = ParticlesPerSecond(100.0f, FRAMETIME);
+    first_joint = object->id == (u16)id_BOBAFETT ? 10 : 7;
+    if (object->character_model->points_of_interest[first_joint] != NULL)
+        AddGameDebrisRot(WORLD->game_debris_sys, 27, &object->locator_matrices[first_joint].translation, count, 0,
+                         object->facing_angle);
+    if (object->character_model->points_of_interest[8] != NULL)
+        AddGameDebrisRot(WORLD->game_debris_sys, 27, &object->locator_matrices[8].translation, count, 0,
+                         object->facing_angle);
+    PlaySfx((char *)"JgThrust", &object->collision_position);
+}
+
+extern "C" void __cdecl PostAnimate_ASTROMECH(GAMEOBJECT *object) {
+    CHARACTER_COMMUNICATE_READER_PC *state = (CHARACTER_COMMUNICATE_READER_PC *)object;
+    i8 context = object->character_context;
+    i32 count, effect, locator;
+    NUVEC position;
+    if (object->dead == 0 && context == 0 && object->model_draw_result != 0 && object->origin_joint_ready != 0 &&
+        (object->jump_variant_state != 3 || (object->pad->buttons_held & GAMEPAD_JUMP) != 0)) {
+        count = ParticlesPerFrame(object->jump_variant_state == 3 ? 0.25f : 1.0f, FRAMETIME);
+        if (count > 0) {
+            effect = object->id == (u16)id_R2Q5 ? 12 : 11;
+            if (object->character_model->points_of_interest[2] != NULL)
+                AddGameDebrisRot(WORLD->game_debris_sys, effect, &object->locator_matrices[2].translation, count,
+                                 0x71c7, object->facing_angle);
+            if (object->character_model->points_of_interest[3] != NULL)
+                AddGameDebrisRot(WORLD->game_debris_sys, effect, &object->locator_matrices[3].translation, count,
+                                 0x8e38, object->facing_angle);
+        }
+        PlaySfxAndSetVolume((char *)"R2Thrust", &object->collision_position,
+                            object->jump_variant_state == 3 ? 0.5f : 1.0f);
+    } else if (context == -1 && object->pad->input_magnitude > 0.0f) {
+        if (state->communicate_blend > 0.0f)
+            PlaySfx((char *)"drd_r2_mvt_water_lp", &object->upper_position);
+        else if (object->field_281 != 0)
+            PlaySfx((char *)"R2Move", &object->collision_position);
+    }
+    if (state->communicate_blend > 0.0f && state->communicate_blend < 1.0f) {
+        effect = WORLD->game_debris_sys->entries[object->id == (u16)id_R2Q5 ? 1 : 3].effect;
+        if (effect != -1) {
+            count = ParticlesPerSecond(100.0f, FRAMETIME);
+            if (count > 0) {
+                locator = object->character_data->game_character->thingy_locator;
+                if (locator != -1) {
+                    position = object->locator_matrices[locator].translation;
+                    if (object->field_283 == 9 && object->water_height > position.y)
+                        position.y = object->water_height;
+                    AddVariableShotDebrisEffect(effect, &position, count, 0, 0);
+                }
+            }
+        }
+    }
+}
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, saved_hitpoints) == 0xe39);
+
+extern "C" i32 __cdecl SetProtocolDroidFallAnim(GAMEOBJECT *object) {
+    switch (object->saved_hitpoints) {
+        case 1:
+            return 76;
+        case 2:
+            return 75;
+        case 3:
+            return 40;
+        default:
+            return 5;
+    }
+}

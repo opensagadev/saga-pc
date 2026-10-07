@@ -269,3 +269,14 @@ extra:
     if (Punch_HitExtraCodeFn != NULL)
         Punch_HitExtraCodeFn(attacker, hit_position);
 }
+
+void __cdecl BlockSfx(GAMEOBJECT *);
+
+void __cdecl ComboHitFrame(GAMEOBJECT *object, i32 damage) {
+    object->context_variant_flags |= 0x40;
+    object->sabre_flags |= 5;
+    object->sabre_damage = (u8)damage;
+    if ((object->flags_1fc & 0x80) != 0 && Player_HasDoubleWeaponDamage(object))
+        object->sabre_damage = (u8)(object->sabre_damage + object->sabre_damage);
+    BlockSfx(object);
+}

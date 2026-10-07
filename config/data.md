@@ -2086,3 +2086,32 @@ symbol linkage and SHA 35e5094c1387d087543073af7c92e184affc1f354be19a64f04788956
 are preserved with exactly one definition. Original PC filename/private visibility
 remain unproved. This genuine owner correction adds no coverage; it is not an
 extent retirement, alignment/order control or added translation unit.
+
+### Character callbacks, full Jump and save/menu checkpoint HH (2026-10-08)
+
+The125 shared definitions add429 typed working bytes and476 full compiled bytes.
+All125 logical initializers are native-equal;124 complete central intervals match.
+The new MENUWARNR full2ff00 versus nativeffff remains explicitly nonexact/unknown;
+its real native writer5096c3 and reader510375 access one BYTE, and5096e9 writes the
+separate following MENUFLASH0G BYTE. Neither logical equality nor minimum width
+establishes original allocation extent. Total new complete intervals172/817B include
+33 known201B and139 unknown616B; only138 unknown full intervals equal retail.
+Known physical exact union637,608 remains unchanged, including ang[513]/1,026 bytes
+in the unchanged existing math owner, all named member parents, CRC and HANDLE.
+
+Eight existing unknown WORDs retain their declarations, initial values and native
+WORD producers/readers; natural COFF intervals4 become2. They are AreaExtraTargetId7f17ccPc,
+AreaExtraSourceId7f17c8Pc, AreaExtraTargetId7f17bcPc, FreePlayId007f199cPc,
+TextCrawlRotateZPc, PermanentAllTitleIdPc, PermanentJediTitleIdPc and
+PermanentBlasterTitleIdPc. Their full old/new evidence is retained separately;
+no known size, old exact match or typed value is retired. True CharFixUp and
+Text_InitTable producers, direct accesses and all retained compiled base/addends
+are independently audited. No positive-ID assumption or storage variant is used.
+
+Menu save/load flags reuse MenuKeyboardAlwaysPc921d68 and SecondaryPc921d6c.
+The six-DWORD saveload_slotused working view is producer-bounded, not an original
+array-capacity claim. Jump's24 registered action/context values have true native
+initialization sites; the chain timer9505e8 and Slam speed802da0 have real f32
+readers/initial values with no writer in the retained audited prefix, explicitly
+qualified. Final solewriter source and complete data proof are pinned in
+checkpoint-HH/data-integration.json and HH-storage-independent-next.

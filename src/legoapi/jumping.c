@@ -286,3 +286,21 @@ void __cdecl SetBallooningHeight(GAMEOBJECT *object, f32 height) {
     if (object->character_context == 0x5d)
         ((BALLOON_HEIGHT_VIEW_PC *)object)->height = height;
 }
+
+i32 __cdecl UseFallAnim(GAMEOBJECT *object) {
+    if ((CInfo[object->character_context].flags & 8) != 0 && LEGOACT_FALL != -1 &&
+        object->character_model->model_data_b[LEGOACT_FALL] != NULL)
+        return 1;
+    return 0;
+}
+
+void __cdecl MakeJumpReachHeight(GAMEOBJECT *object, f32 height, i32 force) {
+    f32 remaining_height = height - ((f64)object->collision_min.y - object->jump_start_height);
+    if (remaining_height > 0.0f) {
+        f32 radicand = (f64)object->character_data->game_character->gravity * -2.0 * remaining_height;
+        f32 speed = NuFsqrt(radicand);
+        if (force != 0 || speed > object->velocity.y)
+            object->velocity.y = speed;
+    } else if (force != 0)
+        object->velocity.y = 0.0f;
+}

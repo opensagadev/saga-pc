@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1341318,
-    "matched_code_bytes": 209737,
-    "matching_percent": 6.042124355346754,
-    "fuzzy_coverage_percent": 26.089989511740058,
-    "mapped_functions": 4645,
-    "matched_functions": 2120,
-    "objdiff_fuzzy_percent": 69.25188,
-    "objdiff_total_code": 1308556,
+    "mapped_code_bytes": 1370297,
+    "matched_code_bytes": 214712,
+    "matching_percent": 6.185444650134275,
+    "fuzzy_coverage_percent": 26.718760583433916,
+    "mapped_functions": 4744,
+    "matched_functions": 2162,
+    "objdiff_fuzzy_percent": 69.383286,
+    "objdiff_total_code": 1337535,
     "image_bytes": 40067072,
-    "mapped_bytes": 1989514,
-    "mapping_percent": 4.965458918485483,
+    "mapped_bytes": 2018493,
+    "mapping_percent": 5.037785141874106,
     "matched_data_region_bytes": 637608
   },
   "newly_compared": [
@@ -7433,6 +7433,996 @@
       ],
       "exact": false,
       "objdiff_percent": 98.93104
+    },
+    {
+      "symbol": "?NewCharacterIdle@@YAXPAUgameobject_s@@H@Z",
+      "pc": "0x004151c0",
+      "original_bytes": 418,
+      "units": [
+        "src/legoapi/characters.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 55.323307
+    },
+    {
+      "symbol": "_UpdateCharacterIdle",
+      "pc": "0x00415370",
+      "original_bytes": 409,
+      "units": [
+        "src/legoapi/characters.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 53.0
+    },
+    {
+      "symbol": "_PostAnimate_FETT",
+      "pc": "0x004a9320",
+      "original_bytes": 297,
+      "units": [
+        "src/legoapi/characters.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 90.12346
+    },
+    {
+      "symbol": "_PostAnimate_ASTROMECH",
+      "pc": "0x004a9f60",
+      "original_bytes": 660,
+      "units": [
+        "src/legoapi/characters.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 96.53552
+    },
+    {
+      "symbol": "_SetProtocolDroidFallAnim",
+      "pc": "0x004aa280",
+      "original_bytes": 50,
+      "units": [
+        "src/legoapi/characters.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Move_BARMAN",
+      "pc": "0x004b3b50",
+      "original_bytes": 41,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Move_DRAGBOMB",
+      "pc": "0x004b3240",
+      "original_bytes": 269,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 99.7381
+    },
+    {
+      "symbol": "_Move_SPEEDERBIKE",
+      "pc": "0x004b2cb0",
+      "original_bytes": 843,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 91.10043
+    },
+    {
+      "symbol": "_Move_HOVERDROID",
+      "pc": "0x004b38e0",
+      "original_bytes": 257,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 87.60256
+    },
+    {
+      "symbol": "_Move_REPUBLICGUNSHIP",
+      "pc": "0x004b5d30",
+      "original_bytes": 218,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 99.984375
+    },
+    {
+      "symbol": "_Move_DROIDEKA",
+      "pc": "0x004b6520",
+      "original_bytes": 208,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 87.47143
+    },
+    {
+      "symbol": "_Move_SUPERBATTLEDROID",
+      "pc": "0x004b5e10",
+      "original_bytes": 209,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 74.43939
+    },
+    {
+      "symbol": "_Move_WALKER",
+      "pc": "0x004b62f0",
+      "original_bytes": 308,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 96.83158
+    },
+    {
+      "symbol": "_Move_ATAT",
+      "pc": "0x004b6430",
+      "original_bytes": 231,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 97.35526
+    },
+    {
+      "symbol": "_Animate_DEFAULT",
+      "pc": "0x004a9b70",
+      "original_bytes": 11,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Animate_CANNON",
+      "pc": "0x004a9900",
+      "original_bytes": 52,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 56.07143
+    },
+    {
+      "symbol": "_Animate_SPEEDERBIKE",
+      "pc": "0x004a97c0",
+      "original_bytes": 52,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 56.07143
+    },
+    {
+      "symbol": "_Animate_WALKER",
+      "pc": "0x004aaac0",
+      "original_bytes": 83,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 58.846153
+    },
+    {
+      "symbol": "_Animate_HOVERDROID",
+      "pc": "0x004aab20",
+      "original_bytes": 82,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 55.555557
+    },
+    {
+      "symbol": "_Animate_VEHICLE",
+      "pc": "0x004a9730",
+      "original_bytes": 144,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 82.051285
+    },
+    {
+      "symbol": "_Animate_ATAT",
+      "pc": "0x004aac50",
+      "original_bytes": 197,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 82.789474
+    },
+    {
+      "symbol": "_Animate_REPUBLICGUNSHIP",
+      "pc": "0x004aa630",
+      "original_bytes": 56,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Animate_BARMAN",
+      "pc": "0x004aac10",
+      "original_bytes": 49,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_SetDefaultCharacterAnimPc",
+      "pc": "0x004a7c00",
+      "original_bytes": 172,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_JumpAnimCode",
+      "pc": "0x004a7360",
+      "original_bytes": 289,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 88.25288
+    },
+    {
+      "symbol": "_MoveAnim_Manage",
+      "pc": "0x004a54b0",
+      "original_bytes": 475,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 87.07483
+    },
+    {
+      "symbol": "_MoveAnim_Check",
+      "pc": "0x004a85e0",
+      "original_bytes": 96,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 48.25714
+    },
+    {
+      "symbol": "_Animate_ASTROMECH",
+      "pc": "0x004a9e40",
+      "original_bytes": 283,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 60.17073
+    },
+    {
+      "symbol": "_Animate_DROIDEKA",
+      "pc": "0x004ab010",
+      "original_bytes": 225,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 85.95522
+    },
+    {
+      "symbol": "_Animate_GEONOSIAN",
+      "pc": "0x004ab100",
+      "original_bytes": 238,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 87.71429
+    },
+    {
+      "symbol": "_Animate_BATTLEDROID",
+      "pc": "0x004aa490",
+      "original_bytes": 258,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 89.61539
+    },
+    {
+      "symbol": "_Animate_SUPERBATTLEDROID",
+      "pc": "0x004aa670",
+      "original_bytes": 399,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 80.17857
+    },
+    {
+      "symbol": "_Animate_BEAST",
+      "pc": "0x004a9800",
+      "original_bytes": 243,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 93.42466
+    },
+    {
+      "symbol": "_Animate_CRITTER",
+      "pc": "0x004aab80",
+      "original_bytes": 131,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 74.30232
+    },
+    {
+      "symbol": "_Animate_PROTOCOL",
+      "pc": "0x004aa2c0",
+      "original_bytes": 459,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 85.172935
+    },
+    {
+      "symbol": "_AnimationWeaponEffectPc",
+      "pc": "0x004a8980",
+      "original_bytes": 107,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 86.0625
+    },
+    {
+      "symbol": "_Animate_WEIRDO",
+      "pc": "0x004a9940",
+      "original_bytes": 549,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 83.94839
+    },
+    {
+      "symbol": "_Animate_JEDI",
+      "pc": "0x004a9b80",
+      "original_bytes": 700,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 84.47938
+    },
+    {
+      "symbol": "_Animate_CHARACTER",
+      "pc": "0x004a8f20",
+      "original_bytes": 1024,
+      "units": [
+        "src/legoapi/character_animation.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 69.03571
+    },
+    {
+      "symbol": "_UseFallAnim",
+      "pc": "0x00562150",
+      "original_bytes": 69,
+      "units": [
+        "src/legoapi/jumping.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 81.90476
+    },
+    {
+      "symbol": "_StartLunge",
+      "pc": "0x0049d9f0",
+      "original_bytes": 542,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 96.26708
+    },
+    {
+      "symbol": "_Slam_Start",
+      "pc": "0x005624d0",
+      "original_bytes": 146,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 76.111115
+    },
+    {
+      "symbol": "_Glide_Start",
+      "pc": "0x0049d6d0",
+      "original_bytes": 72,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 71.25
+    },
+    {
+      "symbol": "_StartBackFlip",
+      "pc": "0x00562310",
+      "original_bytes": 215,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 95.666664
+    },
+    {
+      "symbol": "_MakeJumpReachHeight",
+      "pc": "0x00561ca0",
+      "original_bytes": 126,
+      "units": [
+        "src/legoapi/jumping.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_BlockSfx",
+      "pc": "0x0058e040",
+      "original_bytes": 119,
+      "units": [
+        "src/legoapi/sfx.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 51.236843
+    },
+    {
+      "symbol": "_ComboHitFrame",
+      "pc": "0x0058e360",
+      "original_bytes": 76,
+      "units": [
+        "src/legoapi/fighting.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_JumpCode",
+      "pc": "0x00562570",
+      "original_bytes": 6473,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 36.581318
+    },
+    {
+      "symbol": "_SaveSystemInitialise",
+      "pc": "0x0050b850",
+      "original_bytes": 96,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_SaveSystemInitialiseEx",
+      "pc": "0x0050b8b0",
+      "original_bytes": 167,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 98.51163
+    },
+    {
+      "symbol": "_SetSaveSuccessFn",
+      "pc": "0x0050b960",
+      "original_bytes": 10,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_ChecksumSaveData",
+      "pc": "0x0050b970",
+      "original_bytes": 46,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 68.42105
+    },
+    {
+      "symbol": "_UpdateSaveSlots",
+      "pc": "0x0050b9a0",
+      "original_bytes": 1617,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 74.02968
+    },
+    {
+      "symbol": "_loadsaveCallEachFrame",
+      "pc": "0x005114a0",
+      "original_bytes": 91,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 80.22727
+    },
+    {
+      "symbol": "_MenuEnterSaveConfirm",
+      "pc": "0x0050a5e0",
+      "original_bytes": 38,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuEnterAutoSaveWarning",
+      "pc": "0x0050a610",
+      "original_bytes": 21,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuEnterAutoSaveCancel",
+      "pc": "0x0050a630",
+      "original_bytes": 29,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuEnterCardWarning",
+      "pc": "0x0050a710",
+      "original_bytes": 13,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuEnterHeaderSave",
+      "pc": "0x0050a720",
+      "original_bytes": 33,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuEnterStartNewGame",
+      "pc": "0x0050a750",
+      "original_bytes": 25,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuExitSave",
+      "pc": "0x0050a770",
+      "original_bytes": 11,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuExitLoad",
+      "pc": "0x0050a780",
+      "original_bytes": 11,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuExitCardWarning",
+      "pc": "0x0050a790",
+      "original_bytes": 11,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuUpdateSave",
+      "pc": "0x0050a810",
+      "original_bytes": 246,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 82.21429
+    },
+    {
+      "symbol": "_MenuUpdateInsertCard",
+      "pc": "0x0050a940",
+      "original_bytes": 95,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuUpdateNoMemoryCard",
+      "pc": "0x0050a9a0",
+      "original_bytes": 99,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuUpdateNotEnoughSpace",
+      "pc": "0x0050aa10",
+      "original_bytes": 45,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuUpdateNoData",
+      "pc": "0x0050aa40",
+      "original_bytes": 61,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuUpdateFormatConfirm",
+      "pc": "0x0050aa80",
+      "original_bytes": 104,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 93.2
+    },
+    {
+      "symbol": "_MenuUpdateFormatting",
+      "pc": "0x0050abd0",
+      "original_bytes": 110,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 55.0
+    },
+    {
+      "symbol": "_MenuUpdateDeleteConfirm",
+      "pc": "0x0050ac40",
+      "original_bytes": 115,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuUpdateDeleting",
+      "pc": "0x0050acc0",
+      "original_bytes": 91,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 53.913044
+    },
+    {
+      "symbol": "_MenuUpdateSaveConfirm",
+      "pc": "0x0050ad20",
+      "original_bytes": 111,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuUpdateSaving",
+      "pc": "0x0050ad90",
+      "original_bytes": 184,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 50.54348
+    },
+    {
+      "symbol": "_MenuUpdateAutoSaveWarning",
+      "pc": "0x0050ae50",
+      "original_bytes": 42,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuUpdateLoad",
+      "pc": "0x0050af30",
+      "original_bytes": 176,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuUpdateLoadConfirm",
+      "pc": "0x0050afe0",
+      "original_bytes": 126,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuUpdateLoading",
+      "pc": "0x0050b060",
+      "original_bytes": 188,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 51.595745
+    },
+    {
+      "symbol": "_MenuUpdateSaveCancel",
+      "pc": "0x0050b120",
+      "original_bytes": 80,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.25
+    },
+    {
+      "symbol": "_MenuUpdateLoadCancel",
+      "pc": "0x0050b170",
+      "original_bytes": 80,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.25
+    },
+    {
+      "symbol": "_MenuUpdateFormatCancel",
+      "pc": "0x0050b1c0",
+      "original_bytes": 168,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 94.18604
+    },
+    {
+      "symbol": "_MenuEnterSave",
+      "pc": "0x0050a450",
+      "original_bytes": 364,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 94.297874
+    },
+    {
+      "symbol": "_MenuEnterLoad",
+      "pc": "0x0050a650",
+      "original_bytes": 186,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 99.95556
+    },
+    {
+      "symbol": "_APIMenuDrawMemCardSlots",
+      "pc": "0x005103e0",
+      "original_bytes": 1235,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 84.38012
+    },
+    {
+      "symbol": "_MenuRememberCursor",
+      "pc": "0x005097d0",
+      "original_bytes": 90,
+      "units": [
+        "src/legoapi/menu.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_BackupMenu",
+      "pc": "0x00509ab0",
+      "original_bytes": 262,
+      "units": [
+        "src/legoapi/menu.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_BackupMenuNoFn",
+      "pc": "0x00509bc0",
+      "original_bytes": 216,
+      "units": [
+        "src/legoapi/menu.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_DrawMenuEntryEx",
+      "pc": "0x0050f740",
+      "original_bytes": 998,
+      "units": [
+        "src/legoapi/menu.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 90.01515
+    },
+    {
+      "symbol": "_MenuDrawSave",
+      "pc": "0x005116c0",
+      "original_bytes": 170,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuDrawLoad",
+      "pc": "0x00511a60",
+      "original_bytes": 161,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuDrawNoMemoryCard",
+      "pc": "0x00511770",
+      "original_bytes": 69,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuDrawDeleteConfirm",
+      "pc": "0x005117f0",
+      "original_bytes": 168,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuDrawSaveConfirm",
+      "pc": "0x005118a0",
+      "original_bytes": 334,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuDrawLoadConfirm",
+      "pc": "0x00511b10",
+      "original_bytes": 214,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuDrawSaveCancel",
+      "pc": "0x00511bf0",
+      "original_bytes": 232,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuDrawLoadCancel",
+      "pc": "0x00511ce0",
+      "original_bytes": 232,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuDrawFormatCancel",
+      "pc": "0x00511dd0",
+      "original_bytes": 174,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MenuDrawFileCorrupt",
+      "pc": "0x00511220",
+      "original_bytes": 158,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_APIMenuDrawGameState",
+      "pc": "0x005100f0",
+      "original_bytes": 746,
+      "units": [
+        "src/gameapi/apisave.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
     }
   ],
   "previous_exact_functions_lost": [],
@@ -26848,6 +27838,492 @@
         "build/analysis/endpoint-GG-review/actual-output-and-report-proof.json": "da27e09f1eeaa0d96e1434aecbf29ed2781fe77c982b3a5942e09957b09cdb7b",
         "build/analysis/endpoint-GG-review/accepted-first-endpoint.json": "22060106c356c4be178c1559dea99806f9c798d508d74fafe1dadd178c51f49e",
         "build/analysis/model-loading-flag-independent-next/accepted-corrective-addendum.json": "a8f22340803ab2c4e0dfad92bf1d659c61abb7110afc8f9a357f4c7ba60310ab"
+      }
+    },
+    {
+      "checkpoint": "Character callbacks, full Jump and save/menu HH (2026-10-08)",
+      "baseline_commit": "b0a4d48958061a205eebeda43606ff83a0f4c4ac",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1341318,
+        "matched_code_bytes": 209737,
+        "matching_percent": 6.042124355346754,
+        "fuzzy_coverage_percent": 26.089989511740058,
+        "mapped_functions": 4645,
+        "matched_functions": 2120,
+        "objdiff_fuzzy_percent": 69.25188,
+        "objdiff_total_code": 1308556,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1989514,
+        "mapping_percent": 4.965458918485483,
+        "matched_data_region_bytes": 637608
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1370297,
+        "matched_code_bytes": 214712,
+        "matching_percent": 6.185444650134275,
+        "fuzzy_coverage_percent": 26.718760583433916,
+        "mapped_functions": 4744,
+        "matched_functions": 2162,
+        "objdiff_fuzzy_percent": 69.383286,
+        "objdiff_total_code": 1337535,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2018493,
+        "mapping_percent": 5.037785141874106,
+        "matched_data_region_bytes": 637608
+      },
+      "new_source_functions": 99,
+      "actual_new_transfer_PC_bytes": 28979,
+      "new_unique_compared_PC_bytes": 28979,
+      "unique_compared_code_bytes": 1336964,
+      "native_objdiff_denominator": 1337535,
+      "overlap_bytes": 571,
+      "new_exact_PC_bytes": 4975,
+      "new_exact_function_copies": 42,
+      "whole_PC_fuzzy_delta_pp": 0.6287710716938584,
+      "old_full_function_copies": 4478,
+      "old_full_data_regions": 10134,
+      "old_exact_code_copies_preserved": 2123,
+      "old_known_extent_exact_data_compiled_copies_preserved": 5310,
+      "current_full_function_definitions": 4577,
+      "current_full_data_definitions": 10306,
+      "normal_objects": 316,
+      "frozen_inputs": 434,
+      "members_preserved": 13,
+      "known_member_bytes": 28,
+      "new_complete_initializer_copies": 172,
+      "new_complete_initializer_COFF_bytes": 817,
+      "new_full_native_equal_initializer_copies": 171,
+      "new_known_extent_exact_initializer_compiled_copies": 33,
+      "new_known_extent_exact_initializer_COFF_bytes": 201,
+      "new_unknown_extent_initializer_copies": 139,
+      "new_unknown_extent_full_native_equal_initializer_copies": 138,
+      "new_unknown_extent_full_nonexact_initializer_copies": [
+        {
+          "unit": "src/data.cpp",
+          "symbol": "_MENUWARNR",
+          "address": "0x80099e",
+          "target_size": null,
+          "source_cohort_new_definitions": 125,
+          "typed_width": 1,
+          "candidate_complete_bytes": 2,
+          "native_complete_bytes": 2,
+          "candidate_complete_sha256": "ea5dbf9596d187e9500f23e9a680109475341cf4e81f7e043f7d97152c10772f",
+          "native_complete_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
+          "typed_native_equal": true,
+          "exact_credit": 0,
+          "allocation_credit": 0,
+          "owning_extent_credit": 0,
+          "receipt": "/home/fabian/git/saga-pc/build/analysis/HH-storage-independent-next/accepted-storage-packet.json",
+          "receipt_sha256": "11c74b49b54f6538561b0fb7f414fe47187a88d4f6d8bc8823b76b1b014214d7",
+          "source_cohort_proof": "/home/fabian/git/saga-pc/build/analysis/HH125-data-next/compiled-preservation-proof.json",
+          "source_cohort_proof_sha256": "d35b6d77fa90ab95424a00e9bc7dc4bd1ef3850438ac7d6c683aaa07dd032152",
+          "full_native_equal": false,
+          "candidate_complete_hex": "ff00",
+          "native_complete_hex": "ffff",
+          "following_native_byte_is_separate_MENUFLASH0G": true
+        }
+      ],
+      "unknown_extent_exact_and_allocation_credit": 0,
+      "new_central_working_definitions": 125,
+      "new_central_typed_bytes": 429,
+      "new_central_full_bytes": 476,
+      "known_exact_data_union_before_transfer": 637608,
+      "known_exact_data_union_after_transfer": 637608,
+      "qualified_previous_nonexact_function_changes": [
+        {
+          "unit": "src/legoapi/move.c",
+          "symbol": "_Move_CHARACTER",
+          "old_bytes": 839,
+          "new_bytes": 960,
+          "old_official_sha256": "c45ad47159eea855f3a1bc1289a37fa1eae914b8a0b11332fc89c0aacadf5c74",
+          "new_official_sha256": "ed578a43d6b94a3e770199ad0feab2302d8085a1e03df4afef056c1bd7fd0372",
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/HH-jump-caller-independent-next/accepted-caller-packet.json",
+            "receipt_sha256": "133ac074c83c0ae8df78b8dff14064650b4f3da7977b7d6bb71d440e1b05c8fc",
+            "old_official_sha256": "c45ad47159eea855f3a1bc1289a37fa1eae914b8a0b11332fc89c0aacadf5c74",
+            "new_official_sha256": "ed578a43d6b94a3e770199ad0feab2302d8085a1e03df4afef056c1bd7fd0372",
+            "old_exact": false,
+            "old_bytes": 839,
+            "new_bytes": 960,
+            "native_extent": 1622,
+            "qualification": "One reviewed genuine native JumpCode caller reconnection; no added unique-byte credit."
+          }
+        }
+      ],
+      "qualified_unknown_extent_data_changes": [
+        {
+          "unit": "src/data.cpp",
+          "symbol": "_AreaExtraTargetId7f17ccPc",
+          "old_bytes": 4,
+          "new_bytes": 2,
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/HH-storage-independent-next/accepted-storage-packet.json",
+            "receipt_sha256": "11c74b49b54f6538561b0fb7f414fe47187a88d4f6d8bc8823b76b1b014214d7",
+            "old_official_sha256": "08efea1c0957a5a1fe019e6edb21fdc9fbe5de2213487eab7a05e06eca1c9784",
+            "new_official_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
+            "old_exact": false,
+            "old_bytes": 4,
+            "new_bytes": 2,
+            "typed_width": 2,
+            "old_target_size": null,
+            "new_target_size": null,
+            "qualification": "Enumerated unchanged typed WORD and named/native consumer contracts; complete old4/new2 differ by zero COFF interval tail. Unknown original extent retained, zero credit, no generic exception."
+          }
+        },
+        {
+          "unit": "src/data.cpp",
+          "symbol": "_AreaExtraSourceId7f17c8Pc",
+          "old_bytes": 4,
+          "new_bytes": 2,
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/HH-storage-independent-next/accepted-storage-packet.json",
+            "receipt_sha256": "11c74b49b54f6538561b0fb7f414fe47187a88d4f6d8bc8823b76b1b014214d7",
+            "old_official_sha256": "08efea1c0957a5a1fe019e6edb21fdc9fbe5de2213487eab7a05e06eca1c9784",
+            "new_official_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
+            "old_exact": false,
+            "old_bytes": 4,
+            "new_bytes": 2,
+            "typed_width": 2,
+            "old_target_size": null,
+            "new_target_size": null,
+            "qualification": "Enumerated unchanged typed WORD and named/native consumer contracts; complete old4/new2 differ by zero COFF interval tail. Unknown original extent retained, zero credit, no generic exception."
+          }
+        },
+        {
+          "unit": "src/data.cpp",
+          "symbol": "_AreaExtraTargetId7f17bcPc",
+          "old_bytes": 4,
+          "new_bytes": 2,
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/HH-storage-independent-next/accepted-storage-packet.json",
+            "receipt_sha256": "11c74b49b54f6538561b0fb7f414fe47187a88d4f6d8bc8823b76b1b014214d7",
+            "old_official_sha256": "08efea1c0957a5a1fe019e6edb21fdc9fbe5de2213487eab7a05e06eca1c9784",
+            "new_official_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
+            "old_exact": false,
+            "old_bytes": 4,
+            "new_bytes": 2,
+            "typed_width": 2,
+            "old_target_size": null,
+            "new_target_size": null,
+            "qualification": "Enumerated unchanged typed WORD and named/native consumer contracts; complete old4/new2 differ by zero COFF interval tail. Unknown original extent retained, zero credit, no generic exception."
+          }
+        },
+        {
+          "unit": "src/data.cpp",
+          "symbol": "_FreePlayId007f199cPc",
+          "old_bytes": 4,
+          "new_bytes": 2,
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/HH-storage-independent-next/accepted-storage-packet.json",
+            "receipt_sha256": "11c74b49b54f6538561b0fb7f414fe47187a88d4f6d8bc8823b76b1b014214d7",
+            "old_official_sha256": "08efea1c0957a5a1fe019e6edb21fdc9fbe5de2213487eab7a05e06eca1c9784",
+            "new_official_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
+            "old_exact": false,
+            "old_bytes": 4,
+            "new_bytes": 2,
+            "typed_width": 2,
+            "old_target_size": null,
+            "new_target_size": null,
+            "qualification": "Enumerated unchanged typed WORD and named/native consumer contracts; complete old4/new2 differ by zero COFF interval tail. Unknown original extent retained, zero credit, no generic exception."
+          }
+        },
+        {
+          "unit": "src/data.cpp",
+          "symbol": "_TextCrawlRotateZPc",
+          "old_bytes": 4,
+          "new_bytes": 2,
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/HH-storage-independent-next/accepted-storage-packet.json",
+            "receipt_sha256": "11c74b49b54f6538561b0fb7f414fe47187a88d4f6d8bc8823b76b1b014214d7",
+            "old_official_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+            "new_official_sha256": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "old_exact": false,
+            "old_bytes": 4,
+            "new_bytes": 2,
+            "typed_width": 2,
+            "old_target_size": null,
+            "new_target_size": null,
+            "qualification": "Enumerated unchanged typed WORD and named/native consumer contracts; complete old4/new2 differ by zero COFF interval tail. Unknown original extent retained, zero credit, no generic exception."
+          }
+        },
+        {
+          "unit": "src/data.cpp",
+          "symbol": "_PermanentAllTitleIdPc",
+          "old_bytes": 4,
+          "new_bytes": 2,
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/HH-storage-independent-next/accepted-storage-packet.json",
+            "receipt_sha256": "11c74b49b54f6538561b0fb7f414fe47187a88d4f6d8bc8823b76b1b014214d7",
+            "old_official_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+            "new_official_sha256": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "old_exact": false,
+            "old_bytes": 4,
+            "new_bytes": 2,
+            "typed_width": 2,
+            "old_target_size": null,
+            "new_target_size": null,
+            "qualification": "Enumerated unchanged typed WORD and named/native consumer contracts; complete old4/new2 differ by zero COFF interval tail. Unknown original extent retained, zero credit, no generic exception."
+          }
+        },
+        {
+          "unit": "src/data.cpp",
+          "symbol": "_PermanentJediTitleIdPc",
+          "old_bytes": 4,
+          "new_bytes": 2,
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/HH-storage-independent-next/accepted-storage-packet.json",
+            "receipt_sha256": "11c74b49b54f6538561b0fb7f414fe47187a88d4f6d8bc8823b76b1b014214d7",
+            "old_official_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+            "new_official_sha256": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "old_exact": false,
+            "old_bytes": 4,
+            "new_bytes": 2,
+            "typed_width": 2,
+            "old_target_size": null,
+            "new_target_size": null,
+            "qualification": "Enumerated unchanged typed WORD and named/native consumer contracts; complete old4/new2 differ by zero COFF interval tail. Unknown original extent retained, zero credit, no generic exception."
+          }
+        },
+        {
+          "unit": "src/data.cpp",
+          "symbol": "_PermanentBlasterTitleIdPc",
+          "old_bytes": 4,
+          "new_bytes": 2,
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/HH-storage-independent-next/accepted-storage-packet.json",
+            "receipt_sha256": "11c74b49b54f6538561b0fb7f414fe47187a88d4f6d8bc8823b76b1b014214d7",
+            "old_official_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+            "new_official_sha256": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "old_exact": false,
+            "old_bytes": 4,
+            "new_bytes": 2,
+            "typed_width": 2,
+            "old_target_size": null,
+            "new_target_size": null,
+            "qualification": "Enumerated unchanged typed WORD and named/native consumer contracts; complete old4/new2 differ by zero COFF interval tail. Unknown original extent retained, zero credit, no generic exception."
+          }
+        }
+      ],
+      "qualified_compiler_local_class6_type0_serial_changes": 9,
+      "explicit_per_definition_owner_migration": [],
+      "required_checks": {
+        "status": "PASS_REQUIRED_ACTUAL_NORMAL_HH_CHECKS",
+        "build": {
+          "command": "make -j8 build check-objects",
+          "observed_exit_code": 0,
+          "log": "/home/fabian/git/saga-pc/build/analysis/checkpoint-HH/build-normal.log",
+          "log_sha256": "a733727bbc2c51a7f6f7edc6c47d4f677e4b1742be49972e14b8279ccb271263",
+          "normal_objects": 316,
+          "function_definitions": 4577,
+          "data_definitions": 10306,
+          "source_executable_linked": true
+        },
+        "checks": {
+          "command": "LLVM18 CLANG_FORMAT/CLANG_TIDY make check",
+          "observed_exit_code": 0,
+          "log": "/home/fabian/git/saga-pc/build/analysis/checkpoint-HH/check-LLVM18.log",
+          "log_sha256": "81a28f0941bd3ab807e97d2b67bd2129c58137f1d411dc8e688e0d16269af6ad",
+          "format_files": 343,
+          "tidy_units": 316,
+          "tests": 728,
+          "skipped_existing": 3,
+          "failures": 0
+        },
+        "match": {
+          "command": "make -j8 match",
+          "observed_exit_code": 0,
+          "log": "/home/fabian/git/saga-pc/build/analysis/checkpoint-HH/match-normal.log",
+          "log_sha256": "66c235c275897f9bfd0ba6c15440fbee94c1c22f94aa53fd68e857489b53ceca",
+          "first_report": "/home/fabian/git/saga-pc/build/analysis/checkpoint-HH/matching-first.json",
+          "first_report_sha256": "fa1586678158db704a711e2fd94fe9e1460631f8547533731a9d8263927948e1"
+        },
+        "compiler": "VC8 14.00.50727.42",
+        "compiler_flags": [
+          "/O2",
+          "/Gy",
+          "/GS",
+          "/MT"
+        ],
+        "linker_preservation_flags": [
+          "/OPT:NOREF",
+          "/OPT:NOICF"
+        ],
+        "normal_manifest_sha256": "2cbd553fa4bb869ecc641c5cd26a691bafb94b70553d30d021cf3e995363d084",
+        "frozen_first_inputs_sha256": "096847a735276562628b538d8edc05e92a76c02a2198a60bc36a320aab3f8de1",
+        "frozen_inputs": 434,
+        "generated_artifacts_sha256": "32de9874cb4638a44157390d165fd08659c14d1f03ae865b5c1b3a6d52cea22d"
+      },
+      "runtime": {
+        "status": "ACTUAL_NORMAL_399_SELECTED_CPU_PASS_AUTHENTIC_SOURCE_STARTUP_FAIL",
+        "selected_checks": 399,
+        "selected_failures": 0,
+        "selected_CPU_checks": 399,
+        "selected_CPU_failures": 0,
+        "normal_objects": 316,
+        "frozen_inputs": 434,
+        "frozen_artifacts": 6,
+        "replacements": 0,
+        "supplements": 0,
+        "additional_engine_providers": 0,
+        "all_actual_objects_inputs_and_artifacts_unchanged": true,
+        "selected_runtime": [
+          {
+            "receipt": "build/analysis/checkpoint-HH/runtime-validation/runtime-ui/receipt.json",
+            "sha256": "ff391f02fc6391724313c5de15b0936828103690b1e6084060fb9926ff3b422e",
+            "checks": 399,
+            "failures": 0,
+            "exit_code": 0,
+            "qualifications": [
+              "scheduler/eachframe have real file omissions; state/error tests do not prove asynchronous file services",
+              "MenuSetPlatformState is existing partial provider; pop-state assertions do not prove OS/platform action",
+              "no NewMenu activation, rendering, save assets, disk persistence or D3D tested",
+              "existing NuVideoSetBrightnessPS is stored by SetSaveSuccessFn then cleared; never invoked, no test callback defined",
+              "initializer negative slots demonstrate native signed upper cap only; no negative-size allocation or invalid indexed access",
+              "none of these selected CPU checks is evidence of playable startup or complete game runtime",
+              "entry tests verify local CPU state, text copying and dimensions only; private slide reset fields remain inaccessible/no invented public getters"
+            ],
+            "output_pins": {
+              "build/analysis/checkpoint-HH/runtime-validation/runtime-ui/input-manifest.json": "2cbd553fa4bb869ecc641c5cd26a691bafb94b70553d30d021cf3e995363d084",
+              "build/analysis/checkpoint-HH/runtime-validation/runtime-ui/compile.log": "15d502e97bb6929f0118886e13883d4def40dc527a0c8d720512232aab63a4ed",
+              "build/analysis/checkpoint-HH/runtime-validation/runtime-ui/fixture.obj": "c872f4d8e03a031e720ad1d58c613f0bcc78bc8576377b5eadabab18be7fadc1",
+              "build/analysis/checkpoint-HH/runtime-validation/runtime-ui/crash-dialog-query.log": "f2d9df985b320772b281dbae426b96cd04e464589f248666e577245e9298cedc",
+              "build/analysis/checkpoint-HH/runtime-validation/runtime-ui/fixture.exe": "8444230663f28bfa7b2561229f4ad5e7f5ebcf8333c7b2cb5ee12546f1376251",
+              "build/analysis/checkpoint-HH/runtime-validation/runtime-ui/owned-process-check.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+              "build/analysis/checkpoint-HH/runtime-validation/runtime-ui/runtime.log": "8b0fa4a2629a61de70ad45d35f65e113d88842b5a95bbb52905094d77ce2c498",
+              "build/analysis/checkpoint-HH/runtime-validation/runtime-ui/fixture.map": "6be5e46f8997dbf2fbb5590248e4bfeeb1fea9219fbfbf1bb2f0598b28244cdb",
+              "build/analysis/checkpoint-HH/runtime-validation/runtime-ui/receipt.json": "ff391f02fc6391724313c5de15b0936828103690b1e6084060fb9926ff3b422e",
+              "build/analysis/checkpoint-HH/runtime-validation/runtime-ui/link.log": "f57e1fe208ef051c3ba71f1a1b0b9080afc26fca6620388d6d85facf272a2508"
+            }
+          }
+        ],
+        "source_EXE": {
+          "receipt": "build/analysis/checkpoint-HH/runtime-validation/HH-observation/receipt.json",
+          "sha256": "8e3e405f21313da107db03991737956fe67231ded17a6d616689b1e654d62cd8",
+          "exe_sha256": "c53a691c414b72595d245a21386e35475f533bba00699dba3a1ee76b747c8683",
+          "exit": 5,
+          "elapsed_seconds": 3.765298180980608,
+          "fault": "0x513280",
+          "actual_method_entry": "0x513270",
+          "native_method": "0x741750",
+          "method_size": 208,
+          "fault_offset": 16,
+          "fault_offset_hex": "0x10",
+          "fault_instruction": "mov eax, dword ptr [esi]",
+          "corresponding_native_fault_address": "0x741760",
+          "full_current_body_matches_actual_source_EXE": true,
+          "full_current_body_exact_to_retail": false,
+          "attribution": {
+            "receipt": "build/analysis/checkpoint-HH/runtime-validation/source-fault-attribution.json",
+            "sha256": "f24b62e4dff32fa1acc5aa6f6f85d01b303584ba3c6b1a5634fa8247a37e73a7"
+          },
+          "visible_window_samples": 1,
+          "sampled_windows": [
+            {
+              "elapsed_seconds": 3.2258614839520305,
+              "visible_game_windows": [
+                "100663301"
+              ],
+              "visible_native_class_windows": [],
+              "visible_crash_windows": []
+            }
+          ],
+          "sampled_window_qualification": "One transient broad game-class window ID100663301 at3.225861s; identity/title/PID not retained. No persistent native window, device, Present, repeated frame, scene or gameplay inference.",
+          "after_cleanup_game_native_and_crash_windows_empty": true,
+          "cleanup": {
+            "receipt": "build/analysis/checkpoint-HH/runtime-validation/HH-observation/owned-cleanup.json",
+            "sha256": "7df4fe9baf9695b8c426d64a7b122fe013e9452e43d0af09af1003d059dd6d54"
+          },
+          "owned_game_debugger_processes_after": [],
+          "output_pins": {
+            "build/analysis/checkpoint-HH/runtime-validation/HH-observation/before-window-inventory.json": "f9acaf4df0e7bc5d733840d8faaf7202d8896a3b3e802e7cec17d0f56061ae9b",
+            "build/analysis/checkpoint-HH/runtime-validation/HH-observation/after-window-inventory.json": "f9acaf4df0e7bc5d733840d8faaf7202d8896a3b3e802e7cec17d0f56061ae9b",
+            "build/analysis/checkpoint-HH/runtime-validation/HH-observation/source-exe.log": "9d46595839fd71a7a3839bf71666f3f6332e2e6a0a3fbecc574e7b671e901ddb",
+            "build/analysis/checkpoint-HH/runtime-validation/HH-observation/before-process-inventory.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+            "build/analysis/checkpoint-HH/runtime-validation/HH-observation/owned-cleanup.json": "7df4fe9baf9695b8c426d64a7b122fe013e9452e43d0af09af1003d059dd6d54",
+            "build/analysis/checkpoint-HH/runtime-validation/HH-observation/after-process-inventory.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+            "build/analysis/checkpoint-HH/runtime-validation/HH-observation/crash-dialog-setting.json": "7ba3280110feb641b8322afdf851b8bd663ebc8ec45a0c91a77696c2ec625038",
+            "build/analysis/checkpoint-HH/runtime-validation/HH-observation/receipt.json": "8e3e405f21313da107db03991737956fe67231ded17a6d616689b1e654d62cd8"
+          },
+          "milestones": {
+            "persistent_native_window": "UNVERIFIED",
+            "actual_input_state": "NOT_INDEPENDENTLY_OBSERVED",
+            "D3D9_device": "UNVERIFIED",
+            "Present": "UNVERIFIED",
+            "recurring_frames": "UNVERIFIED",
+            "loaded_scene": "UNVERIFIED",
+            "gameplay": "UNVERIFIED"
+          }
+        },
+        "fixture_derivation": {
+          "receipt": "build/analysis/checkpoint-HH/runtime-validation/fixture-canonical-derivation.json",
+          "sha256": "146f9c28fbade9bbf6b7d7d2090f43dbb2fbf6045de2734a4b0350e519b31252"
+        },
+        "original_prepared_packet_immutable": {
+          "receipt": "build/analysis/runtime-ui-menu-next/prepared-v2-canonical/prepared-packet.json",
+          "sha256": "c278846b230ca938e0e94a508b53b9d1bcd54922a97a245b777b5f47c567cb60"
+        },
+        "fixture_failures_this_checkpoint": [],
+        "scope_qualifications": [
+          "scheduler/eachframe have real file omissions; state/error tests do not prove asynchronous file services",
+          "MenuSetPlatformState is existing partial provider; pop-state assertions do not prove OS/platform action",
+          "no NewMenu activation, rendering, save assets, disk persistence or D3D tested",
+          "existing NuVideoSetBrightnessPS is stored by SetSaveSuccessFn then cleared; never invoked, no test callback defined",
+          "initializer negative slots demonstrate native signed upper cap only; no negative-size allocation or invalid indexed access",
+          "none of these selected CPU checks is evidence of playable startup or complete game runtime",
+          "entry tests verify local CPU state, text copying and dimensions only; private slide reset fields remain inaccessible/no invented public getters"
+        ],
+        "public_state_contracts": "canonical SAVE_HASH_FN_PC/i32, SAVE_VOID_FN_PC/voidcdecl0, MENU0xe0 and MENUFNINFO0x1c; existing canonical slotused six DWORDs and nuapi.frame_time; actual root data owner only",
+        "full51_UI_function_bodies_verified": true,
+        "normal_manifest": {
+          "receipt": "build/analysis/checkpoint-HH/normal-object-manifest.json",
+          "sha256": "2cbd553fa4bb869ecc641c5cd26a691bafb94b70553d30d021cf3e995363d084"
+        },
+        "freeze": {
+          "receipt": "build/analysis/checkpoint-HH/frozen-first-source-inputs.json",
+          "sha256": "096847a735276562628b538d8edc05e92a76c02a2198a60bc36a320aab3f8de1"
+        },
+        "artifact_manifest": {
+          "receipt": "build/analysis/checkpoint-HH/normal-artifact-manifest.json",
+          "sha256": "32de9874cb4638a44157390d165fd08659c14d1f03ae865b5c1b3a6d52cea22d"
+        },
+        "six_artifact_hashes": {
+          "build/LEGOStarWarsSaga.exe": "c53a691c414b72595d245a21386e35475f533bba00699dba3a1ee76b747c8683",
+          "build/d3d9.lib": "7f64bad4731c761f26e2f118850d3a64f9588187526bf1372d95c27dd417d744",
+          "build/d3dx9_35.lib": "be55a1527c40a861c3a9d4bbcb8132385575c90d455753a083932dfae528372d",
+          "build/dinput8.lib": "11aad7b2ba8069708790c409051afb8de756736b4bde12c3a6cd2fb98ca1ff7c",
+          "build/dsound.lib": "d82054a46d45fb7feafb35380b5e18d592584d7c205be69e5f6c5adf6960b954",
+          "build/xinput1_3.lib": "51b4653ae35e3762d85a5e32e43779cd5b16793d737b2aff09a204a206c22f8d"
+        },
+        "normalfinal_grant": {
+          "receipt": "build/analysis/checkpoint-HH/normalfinal-grant.json",
+          "sha256": "f1bfa28b2aad3c1e4d8cdf8487b29a738043b22437c88806ed0e4a48b7f83bbf"
+        },
+        "crash_dialog": "Existing prefix ShowCrashDialog REG_DWORD0 queried; zero sampled crash dialogs, finally private-group cleanup and no owned game/debugger leftovers. No global Wine kill/reset.",
+        "matching_primary": true,
+        "matching_report": "Concurrent root report refresh excluded from runtime fingerprint; physical source/normal/artifacts independently pinned.",
+        "no_playable_game_claim": true,
+        "seal_script_sha256": "209e2dee24935a529b563c5f0fc34b09541c72c99203a6ccd9bc0311b12f6149"
+      },
+      "selected_CPU_checks": 399,
+      "selected_CPU_failures": 0,
+      "remaining_contracts": "40 default movement VOID actions, five special motion parents and partial default animation; LoadPerm2 callback fixup; five real save/file actions; four path capacities; shader publication/parser helper identity; positive device/scene/gameplay runtime.",
+      "next_wave": "Connected motion21KB early bank and broad hardware lifecycle/framebuffer15\u201330KB candidates; genuine native save/file providers. Candidates receive no credit.",
+      "checkpoint_delay": "Corrected SmartText alpha BYTE width and header linkage inventory before integration; proved exact125 canonical storage with eight finite unknown interval changes and explicit new BYTE-tail nonmatch. Restored real Jump caller, then complete normal build/link/LLVM18/retail preservation/399CPU/private EXE checks.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "Active perpetual whole-project matching-priority transfer, direct-main push authorized; exact pushed CI verified separately.",
+      "evidence_pins": {
+        "build/analysis/checkpoint-HH/normal-object-manifest.json": "2cbd553fa4bb869ecc641c5cd26a691bafb94b70553d30d021cf3e995363d084",
+        "build/analysis/checkpoint-HH/frozen-first-source-inputs.json": "096847a735276562628b538d8edc05e92a76c02a2198a60bc36a320aab3f8de1",
+        "build/analysis/checkpoint-HH/normal-artifact-manifest.json": "32de9874cb4638a44157390d165fd08659c14d1f03ae865b5c1b3a6d52cea22d",
+        "build/analysis/checkpoint-HH/runtime-acceptance.json": "b94a604804ee2e54e4d04d62df7c4f22c2e1f8e3020defda7dfcddb674136232",
+        "build/analysis/checkpoint-HH/required-checks-receipt.json": "5dc95d50da2e829f8ba3ce3a3cc1591442989b02b71bc0970c160191a29cf1f8",
+        "build/analysis/endpoint-HH-review/actual-output-and-report-proof.json": "9bd3ebdaaebfa408c0598e8b945b8cb52782ebd10b0bd78ae18b91c38440b985",
+        "build/analysis/endpoint-HH-review/accepted-first-endpoint.json": "b4ea25f5a963cfcdfda0b7eff98d9f5bf328061265cfd05b761c3ebc5617fb78",
+        "build/analysis/HH-storage-independent-next/accepted-storage-packet.json": "11c74b49b54f6538561b0fb7f414fe47187a88d4f6d8bc8823b76b1b014214d7",
+        "build/analysis/HH-jump-caller-independent-next/accepted-caller-packet.json": "133ac074c83c0ae8df78b8dff14064650b4f3da7977b7d6bb71d440e1b05c8fc"
       }
     }
   ]

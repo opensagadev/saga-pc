@@ -424,3 +424,14 @@ extern "C" void __cdecl LoadSpecialSfxFile(void *world_ptr) {
     if (NuFileExists(path))
         SpecialSfxLoad(path, world);
 }
+
+extern "C" void __cdecl BlockSfx(GAMEOBJECT *object) {
+    GAMEOBJECT *target = object->force_target;
+    if (target != NULL) {
+        u32 flags = CInfo[target->character_context].flags;
+        if ((flags & 0x4000000) != 0 || ((flags & 0x8000000) != 0 && (target->context_variant_flags & 0x20000) != 0)) {
+            i32 bits = GameAudio_GetPlrSfxBits(target);
+            GameAudio_PlaySfx(0x3f, &object->collision_position, bits, 0);
+        }
+    }
+}

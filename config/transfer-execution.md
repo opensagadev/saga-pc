@@ -3939,3 +3939,56 @@ Next connected wave: animation/callback and jump suppliers, menu stack, save-slo
 coordinator and native file services. Shader publication/parser generated-helper
 identity and positive device/scene/gameplay runtime remain explicit holds.
 Human journal preserved/excluded; whole-project matching-priority goal active.
+
+### Character callbacks, full Jump and save/menu checkpoint HH (2026-10-08)
+
+Transferred 99 full functions /28,979 newly compared unique PC bytes:
+character animation and motion suppliers18,630, save/menu coordinator and UI10,349.
+The full6,473-byte JumpCode is linked through its real seven-argument call in
+Move_CHARACTER; that already-compared caller restoration earns zero new byte credit.
+Unique compared code is1,336,964 bytes; objdiff denominator1,337,535 retains571
+overlapping bytes. Whole-PC fuzzy coverage26.718760583433916%, +0.628771071693858
+percentage points. Exact214,712/3,471,246 bytes is6.185444650134275%, +4,975 bytes
+from42 newly exact function copies. These metrics measure code comparison.
+
+All4,478 old complete function copies are checked: only the previously nonexact
+Move_CHARACTER gains the reviewed native Jump call. All2,123 old exact code copies,
+5,310 known-exact physical data copies and13 member contracts/28 bytes survive.
+All10,134 old full data intervals are checked;10,126 remain identical and eight
+unknown WORD intervals naturally shrink4 to2 while their declared values and real
+native WORD accesses remain unchanged. These are explicit per-symbol qualifications,
+with both full old/new intervals retained; no original two-byte allocation is inferred.
+Five strict contained class6/type0 local-label serial changes preserve raw and
+official bytes. Existing map rows, known extents and pinned VC8 flags are unchanged.
+
+The 172 new full initializer regions total817 bytes:33 known copies/201 bytes
+and139 unknown copies/616 bytes. All known copies and138 unknown copies equal
+retail. MENUWARNR preserves the true BYTEff but its full conservative two-byte
+outputff00 differs from retailffff; the adjacent native BYTE is independently
+MENUFLASH0G. Its full mismatch stays explicit, nonexact and unknown, with zero
+coverage/allocation credit. There is no masking, truncation or padding/placement
+variant. Known exact data union remains637,608. Solewriter adds125 genuine shared
+views/429 typed bytes/476 compiled bytes, reusing all existing canonical owners.
+
+Normal VC8 build/link/check-objects pass for316 owners/4,577 functions/10,306 data
+regions. LLVM18 passes343 format files/316 analysis units and728 tests with three
+existing skips. Actual-normal menu/save CPU checks399/0 use all316 real providers,
+zero replacements or supplements;434 source inputs and six artifacts remain stable.
+Five real file actions in two partial coordinator parents remain omitted explicitly;
+disk persistence/rendered UI and the new motion family's gameplay are untested.
+
+Authentic source EXE still exits5 after3.765298 seconds at NULL Retrieve+16,
+source0x513280/full208-byte entry0x513270. The whole normal body equals the physical
+EXE at its source layout, but remains nonexact to retail. One transient broad-class
+window100663301 at3.225861 seconds is unclassified. No persistent native window,
+device/Present/frames/loaded scene/gameplay milestone is established. Own-prefix
+crash dialogs stay disabled; private cleanup leaves no owned game/debugger/crash
+window. No guard bypass, fabricated provider or global Wine reset is used.
+
+Next: connected BackFlip/Glide/JetPack/ledge/climb/grapple motion, actual lost-device
+resource/framebuffer lifecycle, and native save-file/path suppliers. Four file-path
+capacities and shader-publication/parser-generated-helper identities remain held.
+Candidate bytes receive no transfer credit. The checkpoint was delayed for coherent
+source/data/caller review and required actual-normal checks rather than committing
+broken dependencies. Whole-project matching-priority goal/direct-main continuation
+remains active; exact pushed CI is verified separately and human journal excluded.

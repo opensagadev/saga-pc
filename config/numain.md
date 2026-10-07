@@ -1007,3 +1007,22 @@ model-loading provider or duplicate storage. This does not bypass the current
 NULL shader-manager publication failure. Authentic source startup/owned cleanup
 results are retained in checkpoint-GG/runtime-acceptance.json; persistent window,
 device/Present/frame/scene/gameplay success remains unverified.
+
+### Character callbacks, full Jump and save/menu checkpoint HH (2026-10-08)
+
+The complete JumpCode6473 and related real animation, lunge and combat providers
+are now source-linked, with the genuine guarded seven-argument call restored in
+Move_CHARACTER at native4b4e69. Default movement still omits40 true void actions;
+five special motion parents and default animation retain their documented void
+omissions. Full Jump has32 actual providers and no fabricated return values.
+Callback source identification does not complete LoadPerm2's separate installer.
+Save/menu state and drawing families add51 real functions; two coordinator parents
+retain five missing file operations. Runtime checks cover CPU state only.
+
+Startup is still blocked by NULL shader-manager publication. The current actual
+Retrieve208 equals physical EXE source bytes at513270; fault513280 is+16, whereas
+native741750/208 remains nonexact. A transient unclassified window is insufficient
+to prove device/Present/frame/scene/gameplay success. Own-prefix crash suppression
+and private cleanup work unattended. Dedicated next hardware work follows actual
+lost-device/resource/framebuffer providers; unused generated shader-helper identity
+holds are preserved without alternate setup, fake publication or guard removal.
