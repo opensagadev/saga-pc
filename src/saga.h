@@ -16935,12 +16935,54 @@ extern "C" {
     f32 __cdecl NuCameraDistSqr(NUVEC *);
     void __cdecl CutSceneStreamDiagnosticPc(char *);
 
+    void __cdecl NuGCutSceneSysUpdate(i32 paused, i32 skip, f32 elapsed);
+    extern NUMTX CutSceneCameraMatrixPc;
+    extern NUVEC CutSceneFocusLocationPc;
+    extern u8 CutSceneCameraMatrixSetPc;
+    extern u8 CutSceneUseFocusLocationPc;
+    extern f32 CutSceneFocusDistancePc;
+    extern f32 CutSceneFStopPc;
+    extern i32 CutSceneCameraChangedPc;
+    extern i32 CutSceneCameraDofModePc;
+    extern INSTNUGCUTSCENE *CutSceneLoadingInstancePc;
+    extern void(__cdecl *NuCutSceneCharacterProcess)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
+    extern i32 CutSceneUpdateCamerasPc;
+    extern void(__cdecl *CutSceneInstanceSfxRequestPc)(INSTNUGCUTSCENE *);
+
     void __cdecl NewScanInit(void);
     i16 *__cdecl NewScanHandel(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_type, i16 *subset);
 
     i32 __cdecl NewRayCastMask(NUVEC *, NUVEC *, f32, i32, i32);
     i32 __cdecl NewRayCastSet(NUVEC *, NUVEC *, f32, f32, f32, i32, i32);
     i32 __cdecl NewRayCastSetMask(NUVEC *, NUVEC *, f32, f32, f32, i32, i32, i32);
+
+    i32 __cdecl NewRayCastSetHandel(NUVEC *, NUVEC *, f32, f32, f32, i16 *, i32);
+    f32 __cdecl NewShadowHandelEx(NUVEC *, f32, f32, f32, i32, i16 *);
+    i32 __cdecl TerrainTrackBack(NUVEC *, NUVEC *, f32, f32, NUVEC *);
+    i32 __cdecl NewRayCastPlatForm(NUVEC *, NUVEC *, f32, f32, i32, i32);
+    void __cdecl TerrDrawPc(TERRAIN_POLYGON_INFO_PC *, i16);
+    void __cdecl TerrDrawSituPc(TERRAIN_POLYGON_INFO_PC *, NUVEC *);
+    void __cdecl TerrDrawPlatPc(TERRAIN_POLYGON_INFO_PC *, i16);
+    void __cdecl TerrDrawPlatColPc(TERRAIN_POLYGON_INFO_PC *, i16, i32);
+    void __cdecl TerrDrawImpactPolPc(void);
+    void __cdecl DrawMPlatPc(i32);
+    void __cdecl DrawMSituPc(i32);
+    void __cdecl SphereDrawExPc(NUVEC *, f32, f32, i32);
+    void __cdecl SphereDrawPc(NUVEC *, f32, f32);
+    void __cdecl DrawWallSplinePc(f32);
+
+    struct TERRAIN_SKIN_STREAM_VIEW_PC;
+    struct TERRAIN_SKIN_INFO_VIEW_PC;
+    struct TERRAIN_SKIN_BLEND_VIEW_PC;
+    struct TERRAIN_SET_PC;
+    void __cdecl TerrainSkinPrepareGroupPc(i32 group_index, struct TERRAIN_SKIN_STREAM_VIEW_PC *output,
+                                           const struct TERRAIN_SKIN_INFO_VIEW_PC *info);
+    i32 __cdecl TerrainSkinCreateInfoPc(NUMTX *matrix, const struct TERRAIN_SKIN_BLEND_VIEW_PC *blend,
+                                        const NUVEC4 *sample_rows, f32 scale, i32 source_scene_index, i16 mode,
+                                        struct TERRAIN_SET_PC *source_terrain);
+    void __cdecl TerrainSkinInitArenaPc(struct TERRAIN_SKIN_INFO_VIEW_PC *base, u8 *end, i32 capacity);
+    void __cdecl TerrainSkinResetArenaPc(void);
+    u8 *__cdecl TerrainSkinRebuildIndexPc(i32 pool_slots);
 
     void __cdecl terrainpickupinit(char *, void **);
     void __cdecl AddPickupTerr(i32, NUVEC *);

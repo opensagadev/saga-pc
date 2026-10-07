@@ -2645,3 +2645,758 @@ void ReassignPickupInst(i32 index, i32 type) {
     group->bounds_max = source->bounds_max;
     group->radius = source->radius;
 }
+
+/* Native debug geometry uses the canonical 100-byte polygon view. */
+STATIC_ASSERT(sizeof(TERRAIN_POLYGON_INFO_PC) == 0x64);
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, vertices) == 0x18);
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, normals) == 0x48);
+STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, flags) == 0x62);
+STATIC_ASSERT(offsetof(TERRAIN_SCENE_STATE_VIEW_PC, flags) == 0);
+STATIC_ASSERT(offsetof(TERRAIN_SCENE_STATE_VIEW_PC, low_flags) == 0);
+
+void TerrDrawPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
+    TERRAIN_POLYGON_INFO_PC *record;
+    NUVEC *origin;
+    i32 colour, i;
+    f32 t;
+    f64 x, y, z;
+
+    record = terrain;
+    colour = (index & 0x80) + ((u8)(index * 64) << 8);
+    if (!(record->normals[1].y > 65535.0)) {
+        for (i = 0; i < 2; ++i) {
+            t = (f32)(i);
+            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+            NuRndrLine3dDbg(origin->x + record->vertices[0].x + (record->vertices[1].x - record->vertices[0].x) * t,
+                            origin->y + record->vertices[0].y + (record->vertices[1].y - record->vertices[0].y) * t,
+                            origin->z + record->vertices[0].z + (record->vertices[1].z - record->vertices[0].z) * t,
+                            origin->x + record->vertices[2].x + (record->vertices[3].x - record->vertices[2].x) * t,
+                            origin->y + record->vertices[2].y + (record->vertices[3].y - record->vertices[2].y) * t,
+                            origin->z + record->vertices[2].z + (record->vertices[3].z - record->vertices[2].z) * t,
+                            colour);
+        }
+        for (i = 0; i < 2; ++i) {
+            t = (f32)(i);
+            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+            NuRndrLine3dDbg(origin->x + record->vertices[0].x + (record->vertices[2].x - record->vertices[0].x) * t,
+                            origin->y + record->vertices[0].y + (record->vertices[2].y - record->vertices[0].y) * t,
+                            origin->z + record->vertices[0].z + (record->vertices[2].z - record->vertices[0].z) * t,
+                            origin->x + record->vertices[1].x + (record->vertices[3].x - record->vertices[1].x) * t,
+                            origin->y + record->vertices[1].y + (record->vertices[3].y - record->vertices[1].y) * t,
+                            origin->z + record->vertices[1].z + (record->vertices[3].z - record->vertices[1].z) * t,
+                            colour);
+        }
+    }
+    origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+    z = (f64)origin->z + record->vertices[0].z;
+    y = (f64)origin->y + record->vertices[0].y;
+    x = (f64)origin->x + record->vertices[0].x;
+    NuRndrLine3dDbg(x, y, z, x + record->normals[0].x * (f64)0.4f, y + record->normals[0].y * (f64)0.4f,
+                    z + record->normals[0].z * (f64)0.4f, colour);
+    if (record->normals[1].y < 65536.0) {
+        origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+        z = (f64)origin->z + record->vertices[3].z;
+        y = (f64)origin->y + record->vertices[3].y;
+        x = (f64)origin->x + record->vertices[3].x;
+        NuRndrLine3dDbg(x, y, z, x + record->normals[1].x * (f64)0.4f, y + record->normals[1].y * (f64)0.4f,
+                        z + record->normals[1].z * (f64)0.4f, colour);
+    }
+}
+
+void TerrDrawSituPc(TERRAIN_POLYGON_INFO_PC *terrain, NUVEC *situation) {
+    TERRAIN_POLYGON_INFO_PC *record;
+    NUVEC *origin;
+    i32 i;
+    f32 t;
+
+    record = terrain;
+    origin = situation;
+    if (record->normals[1].y > 65535.0) {
+        for (i = 0; i < 2; ++i) {
+            t = (f32)(i);
+            NuRndrLine3dDbg(
+                origin->x + record->vertices[0].x, origin->y + record->vertices[0].y, origin->z + record->vertices[0].z,
+                origin->x + record->vertices[1].x + (record->vertices[2].x - record->vertices[1].x) * t,
+                origin->y + record->vertices[1].y + (record->vertices[2].y - record->vertices[1].y) * t,
+                origin->z + record->vertices[1].z + (record->vertices[2].z - record->vertices[1].z) * t, 0x003f7f80);
+        }
+        for (i = 0; i < 2; ++i) {
+            t = (f32)(i);
+            NuRndrLine3dDbg(
+                origin->x + record->vertices[1].x, origin->y + record->vertices[1].y, origin->z + record->vertices[1].z,
+                origin->x + record->vertices[0].x + (record->vertices[2].x - record->vertices[0].x) * t,
+                origin->y + record->vertices[0].y + (record->vertices[2].y - record->vertices[0].y) * t,
+                origin->z + record->vertices[0].z + (record->vertices[2].z - record->vertices[0].z) * t, 0x003f7f80);
+        }
+    } else {
+        for (i = 0; i < 2; ++i) {
+            t = (f32)(i);
+            NuRndrLine3dDbg(origin->x + record->vertices[0].x + (record->vertices[1].x - record->vertices[0].x) * t,
+                            origin->y + record->vertices[0].y + (record->vertices[1].y - record->vertices[0].y) * t,
+                            origin->z + record->vertices[0].z + (record->vertices[1].z - record->vertices[0].z) * t,
+                            origin->x + record->vertices[2].x + (record->vertices[3].x - record->vertices[2].x) * t,
+                            origin->y + record->vertices[2].y + (record->vertices[3].y - record->vertices[2].y) * t,
+                            origin->z + record->vertices[2].z + (record->vertices[3].z - record->vertices[2].z) * t,
+                            0xffff7f80);
+        }
+        for (i = 0; i < 2; ++i) {
+            t = (f32)(i);
+            NuRndrLine3dDbg(origin->x + record->vertices[0].x + (record->vertices[2].x - record->vertices[0].x) * t,
+                            origin->y + record->vertices[0].y + (record->vertices[2].y - record->vertices[0].y) * t,
+                            origin->z + record->vertices[0].z + (record->vertices[2].z - record->vertices[0].z) * t,
+                            origin->x + record->vertices[1].x + (record->vertices[3].x - record->vertices[1].x) * t,
+                            origin->y + record->vertices[1].y + (record->vertices[3].y - record->vertices[1].y) * t,
+                            origin->z + record->vertices[1].z + (record->vertices[3].z - record->vertices[1].z) * t,
+                            0xffff7f80);
+        }
+    }
+}
+
+void TerrDrawPlatPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
+    TERRAIN_POLYGON_INFO_PC *record;
+    TERRAIN_PLATFORM_PC *platform;
+    NUVEC4 points[5], *normal;
+    NUVEC *origin;
+    i32 i, colour;
+    f32 t;
+    f64 x, y, z;
+
+    record = terrain;
+    platform =
+        &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index];
+    if (platform->scene_transform != NULL) {
+        if (platform->flags & 4) {
+            if (!(((TERRAIN_SCENE_STATE_VIEW_PC *)platform->scene_transform)->flags & 2))
+                return;
+        } else if (!(((TERRAIN_SCENE_STATE_VIEW_PC *)platform->scene_transform)->low_flags & 1))
+            return;
+    }
+
+    points[3].x = record->vertices[3].x;
+    points[3].y = record->vertices[3].y;
+    points[3].z = record->vertices[3].z;
+    points[3].w = 0.0f;
+    for (i = 0; i < 3; ++i) {
+        points[i].x = record->vertices[i].x;
+        points[i].y = record->vertices[i].y;
+        points[i].z = record->vertices[i].z;
+        points[i].w = 0.0f;
+    }
+    normal = &points[4];
+    normal->x = record->normals[0].x * (f64)0.4f;
+    normal->y = record->normals[0].y * (f64)0.4f;
+    normal->z = record->normals[0].z * (f64)0.4f;
+    normal->w = 0.0f;
+    colour = (i8)(record->flags) < 0 ? 0x0000ffff : 0x00ff0000;
+    if (platform->flags & 1) {
+        NuVec4MtxTransformVU0(&points[0], &points[0], (NUMTX *)(platform->scene_object));
+        NuVec4MtxTransformVU0(&points[1], &points[1],
+                              (NUMTX *)(((TERRAIN_SET_PC *)CurrentTerrain)
+                                            ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
+                                            .scene_object));
+        NuVec4MtxTransformVU0(&points[2], &points[2],
+                              (NUMTX *)(((TERRAIN_SET_PC *)CurrentTerrain)
+                                            ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
+                                            .scene_object));
+        NuVec4MtxTransformVU0(&points[3], &points[3],
+                              (NUMTX *)(((TERRAIN_SET_PC *)CurrentTerrain)
+                                            ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
+                                            .scene_object));
+        NuVec4MtxTransformVU0(normal, normal,
+                              (NUMTX *)(((TERRAIN_SET_PC *)CurrentTerrain)
+                                            ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
+                                            .scene_object));
+    }
+
+    if (record->normals[1].y > 65535.0) {
+        for (i = 0; i < 2; ++i) {
+            t = (f32)(i);
+            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+            NuRndrLine3dDbg(origin->x + points[0].x, origin->y + points[0].y, origin->z + points[0].z,
+                            origin->x + points[1].x + (points[2].x - points[1].x) * t,
+                            origin->y + points[1].y + (points[2].y - points[1].y) * t,
+                            origin->z + points[1].z + (points[2].z - points[1].z) * t, colour);
+        }
+        for (i = 0; i < 2; ++i) {
+            t = (f32)(i);
+            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+            NuRndrLine3dDbg(origin->x + points[1].x, origin->y + points[1].y, origin->z + points[1].z,
+                            origin->x + points[0].x + (points[2].x - points[0].x) * t,
+                            origin->y + points[0].y + (points[2].y - points[0].y) * t,
+                            origin->z + points[0].z + (points[2].z - points[0].z) * t, colour);
+        }
+    } else {
+        for (i = 0; i < 2; ++i) {
+            t = (f32)(i);
+            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+            NuRndrLine3dDbg(origin->x + points[0].x + (points[1].x - points[0].x) * t,
+                            origin->y + points[0].y + (points[1].y - points[0].y) * t,
+                            origin->z + points[0].z + (points[1].z - points[0].z) * t,
+                            origin->x + points[2].x + (points[3].x - points[2].x) * t,
+                            origin->y + points[2].y + (points[3].y - points[2].y) * t,
+                            origin->z + points[2].z + (points[3].z - points[2].z) * t, colour);
+        }
+        for (i = 0; i < 2; ++i) {
+            t = (f32)(i);
+            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+            NuRndrLine3dDbg(origin->x + points[0].x + (points[2].x - points[0].x) * t,
+                            origin->y + points[0].y + (points[2].y - points[0].y) * t,
+                            origin->z + points[0].z + (points[2].z - points[0].z) * t,
+                            origin->x + points[1].x + (points[3].x - points[1].x) * t,
+                            origin->y + points[1].y + (points[3].y - points[1].y) * t,
+                            origin->z + points[1].z + (points[3].z - points[1].z) * t, colour);
+        }
+    }
+    origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+    z = (f64)origin->z + points[0].z;
+    y = (f64)origin->y + points[0].y;
+    x = (f64)origin->x + points[0].x;
+    colour = (i8)(index & 0xf0) + (i8)(index * 16) * 256;
+    NuRndrLine3dDbg(x, y, z, x + normal->x, y + normal->y, z + normal->z, colour);
+}
+
+void TerrDrawPlatColPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index, i32 colour) {
+    TERRAIN_POLYGON_INFO_PC *record;
+    TERRAIN_GROUP_PC *group;
+    TERRAIN_PLATFORM_PC *platform;
+    NUVEC4 points[4], normals[2];
+    const NUVEC *origin;
+    NUMTX *matrix;
+    i32 i, quad;
+    f32 t;
+
+    record = terrain;
+    group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index];
+    platform = &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[group->scene_index];
+    if (platform->scene_transform != NULL) {
+        if (platform->flags & 4) {
+            if ((((TERRAIN_SCENE_STATE_VIEW_PC *)platform->scene_transform)->flags & 2) == 0)
+                return;
+        } else if ((((TERRAIN_SCENE_STATE_VIEW_PC *)platform->scene_transform)->low_flags & 1) == 0)
+            return;
+    }
+
+    for (i = 0; i < 4; ++i) {
+        points[i].x = record->vertices[i].x;
+        points[i].y = record->vertices[i].y;
+        points[i].z = record->vertices[i].z;
+        points[i].w = 0.0f;
+    }
+
+    for (i = 0; i < 1; ++i) {
+        normals[i].x = record->normals[i].x * (f64)0.4f;
+        normals[i].y = record->normals[i].y * (f64)0.4f;
+        normals[i].z = record->normals[i].z * (f64)0.4f;
+        normals[i].w = 0.0f;
+    }
+
+    quad = !(record->normals[1].y > 65535.0);
+    if ((platform->flags & 1) != 0) {
+        matrix = (NUMTX *)(platform->scene_object);
+        matrix = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)
+                     ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
+                     .scene_object;
+        NuVec4MtxTransformVU0(&points[0], &points[0], matrix);
+        matrix = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)
+                     ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
+                     .scene_object;
+        NuVec4MtxTransformVU0(&points[1], &points[1], matrix);
+        matrix = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)
+                     ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
+                     .scene_object;
+        NuVec4MtxTransformVU0(&points[2], &points[2], matrix);
+        matrix = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)
+                     ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
+                     .scene_object;
+        NuVec4MtxTransformVU0(&normals[0], &normals[0], matrix);
+    }
+    if (quad) {
+        normals[1].x = record->normals[1].x * (f64)0.4f;
+        normals[1].y = record->normals[1].y * (f64)0.4f;
+        normals[1].z = record->normals[1].z * (f64)0.4f;
+        normals[1].w = 0.0f;
+        matrix = (NUMTX *)(platform->scene_object);
+        matrix = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)
+                     ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
+                     .scene_object;
+        NuVec4MtxTransformVU0(&points[3], &points[3], matrix);
+        matrix = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)
+                     ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
+                     .scene_object;
+        NuVec4MtxTransformVU0(&normals[0], &normals[0], matrix);
+    }
+
+    origin = &group->origin;
+    if (!quad) {
+        for (i = 0; i < 2; ++i) {
+            t = (f32)(i);
+            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+            NuRndrLine3dDbg(origin->x + points[0].x, origin->y + points[0].y, origin->z + points[0].z,
+                            origin->x + points[1].x + (points[2].x - points[1].x) * t,
+                            origin->y + points[1].y + (points[2].y - points[1].y) * t,
+                            origin->z + points[1].z + (points[2].z - points[1].z) * t, colour);
+        }
+        for (i = 0; i < 2; ++i) {
+            t = (f32)(i);
+            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+            NuRndrLine3dDbg(origin->x + points[1].x, origin->y + points[1].y, origin->z + points[1].z,
+                            origin->x + points[0].x + (points[2].x - points[0].x) * t,
+                            origin->y + points[0].y + (points[2].y - points[0].y) * t,
+                            origin->z + points[0].z + (points[2].z - points[0].z) * t, colour);
+        }
+    } else {
+        for (i = 0; i < 2; ++i) {
+            t = (f32)(i);
+            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+            NuRndrLine3dDbg(origin->x + points[0].x + (points[1].x - points[0].x) * t,
+                            origin->y + points[0].y + (points[1].y - points[0].y) * t,
+                            origin->z + points[0].z + (points[1].z - points[0].z) * t,
+                            origin->x + points[2].x + (points[3].x - points[2].x) * t,
+                            origin->y + points[2].y + (points[3].y - points[2].y) * t,
+                            origin->z + points[2].z + (points[3].z - points[2].z) * t, colour);
+        }
+        for (i = 0; i < 2; ++i) {
+            t = (f32)(i);
+            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+            NuRndrLine3dDbg(origin->x + points[0].x + (points[2].x - points[0].x) * t,
+                            origin->y + points[0].y + (points[2].y - points[0].y) * t,
+                            origin->z + points[0].z + (points[2].z - points[0].z) * t,
+                            origin->x + points[1].x + (points[3].x - points[1].x) * t,
+                            origin->y + points[1].y + (points[3].y - points[1].y) * t,
+                            origin->z + points[1].z + (points[3].z - points[1].z) * t, colour);
+        }
+        origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+        NuRndrLine3dDbg(origin->x + points[3].x, origin->y + points[3].y, origin->z + points[3].z,
+                        origin->x + points[3].x + normals[1].x, origin->y + points[3].y + normals[1].y,
+                        origin->z + points[3].z + normals[1].z, 0xff);
+    }
+    origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
+    NuRndrLine3dDbg(origin->x + points[0].x, origin->y + points[0].y, origin->z + points[0].z,
+                    origin->x + points[0].x + normals[0].x, origin->y + points[0].y + normals[0].y,
+                    origin->z + points[0].z + normals[0].z, 0xff);
+}
+
+/* Original query packet field cohort used by the debug consumers. */
+typedef struct TERRAIN_DEBUG_QUERY_PC {
+    u8 unknown_00[0x6c];
+    i16 terrain_group_index;
+    u8 unknown_6e[0x22];
+    TERRAIN_POLYGON_INFO_PC *surface;
+    u8 unknown_94[0xb4];
+    TERRAIN_SCAN_WORD_PC scan_words[512];
+} TERRAIN_DEBUG_QUERY_PC;
+STATIC_ASSERT(offsetof(TERRAIN_DEBUG_QUERY_PC, terrain_group_index) == 0x6c);
+STATIC_ASSERT(offsetof(TERRAIN_DEBUG_QUERY_PC, surface) == 0x90);
+STATIC_ASSERT(offsetof(TERRAIN_DEBUG_QUERY_PC, scan_words) == 0x148);
+STATIC_ASSERT(sizeof(TERRAIN_DEBUG_QUERY_PC) == 0x948);
+
+typedef struct terrain_debug_source_link_pc_s {
+    TERRAIN_POLYGON_INFO_PC *source_polygon;
+} TERRAIN_DEBUG_SOURCE_LINK_PC;
+STATIC_ASSERT(offsetof(TERRAIN_DEBUG_SOURCE_LINK_PC, source_polygon) == 0);
+STATIC_ASSERT(sizeof(TERRAIN_DEBUG_SOURCE_LINK_PC) == 4);
+
+void TerrDrawImpactPolPc(void) {
+    TERRAIN_DEBUG_QUERY_PC *query = (TERRAIN_DEBUG_QUERY_PC *)TerI;
+    TERRAIN_POLYGON_INFO_PC *surface;
+    if (query == NULL || query->surface == NULL)
+        return;
+    surface = query->surface;
+    if ((u32)surface >= (u32)TerrainScaledShapeCursorPc && (u32)surface < (u32)TerrainScaledShapeCursorPc + 0xc800)
+        surface = ((TERRAIN_DEBUG_SOURCE_LINK_PC *)surface)->source_polygon;
+    TerrDrawPc(surface, query->terrain_group_index);
+}
+
+void DrawMPlatPc(i32 index) {
+    TERRAIN_GROUP_PC *group;
+    TERRAIN_SHAPE_BATCH *batch;
+    TERRAIN_POLYGON_INFO_PC *shape;
+    i32 remaining;
+    if (CurrentTerrain == NULL || index < 0)
+        return;
+    group = &((TERRAIN_SET_PC *)CurrentTerrain)
+                 ->groups[((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].terrain_group_index];
+    if (group->chunk_type != 0 && group->chunk_type != 1)
+        return;
+    batch = (TERRAIN_SHAPE_BATCH *)group->data;
+    while (batch->marker >= 0) {
+        shape = (TERRAIN_POLYGON_INFO_PC *)(batch + 1);
+        for (remaining = batch->shape_count; remaining > 0; --remaining, ++shape)
+            TerrDrawPlatPc(shape, ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].terrain_group_index);
+        batch = (TERRAIN_SHAPE_BATCH *)shape;
+    }
+}
+
+void DrawMSituPc(i32 index) {
+    TERRAIN_GROUP_PC *group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index];
+    TERRAIN_SHAPE_BATCH *batch;
+    TERRAIN_POLYGON_INFO_PC *shape;
+    i32 remaining;
+    if ((group->chunk_type != 0 && group->chunk_type != 1) || group->data == NULL)
+        return;
+    batch = (TERRAIN_SHAPE_BATCH *)group->data;
+    while (batch->marker >= 0) {
+        shape = (TERRAIN_POLYGON_INFO_PC *)(batch + 1);
+        for (remaining = batch->shape_count; remaining > 0; --remaining, ++shape)
+            TerrDrawPc(shape, (i16)index);
+        batch = (TERRAIN_SHAPE_BATCH *)shape;
+    }
+}
+
+void SphereDrawExPc(NUVEC *centre, f32 radius, f32 vertical_scale, i32 colour) {
+    f64 radius_squared = (f64)radius * radius;
+    f64 scaled_radius = (f64)radius * vertical_scale;
+    f32 lower_radius, upper_radius, lower_y, upper_y;
+    i32 band, angle;
+    for (band = 0; band < 8; ++band) {
+        lower_radius = radius * NuTrigTable[(((band < 4 ? band : 8 - band) * 4096) >> 1) & 0x7fff];
+        upper_radius = radius * NuTrigTable[(((band < 3 ? band + 1 : 7 - band) * 4096) >> 1) & 0x7fff];
+        lower_y = NuFsqrt(radius_squared - (f64)lower_radius * lower_radius) * vertical_scale;
+        upper_y = NuFsqrt(radius_squared - (f64)upper_radius * upper_radius) * vertical_scale;
+        if (band > 4)
+            lower_y = -lower_y;
+        if (band > 3)
+            upper_y = -upper_y;
+        lower_y += scaled_radius + centre->y;
+        upper_y += scaled_radius + centre->y;
+        for (angle = 0; angle < 65536; angle += 2048) {
+            NuRndrLine3dDbg(centre->x + lower_radius * NuTrigTable[((angle + 16384) >> 1) & 0x7fff], lower_y,
+                            centre->z + lower_radius * NuTrigTable[(angle >> 1) & 0x7fff],
+                            centre->x + upper_radius * NuTrigTable[((angle + 16384) >> 1) & 0x7fff], upper_y,
+                            centre->z + upper_radius * NuTrigTable[(angle >> 1) & 0x7fff], colour);
+            NuRndrLine3dDbg(centre->x + lower_radius * NuTrigTable[((angle + 16384) >> 1) & 0x7fff], lower_y,
+                            centre->z + lower_radius * NuTrigTable[(angle >> 1) & 0x7fff],
+                            centre->x + lower_radius * NuTrigTable[((angle + 2048 + 16384) >> 1) & 0x7fff], lower_y,
+                            centre->z + lower_radius * NuTrigTable[((angle + 2048) >> 1) & 0x7fff], colour);
+        }
+    }
+}
+
+void SphereDrawPc(NUVEC *centre, f32 radius, f32 vertical_scale) {
+    SphereDrawExPc(centre, radius, vertical_scale, 0x00400000);
+}
+
+void DrawWallSplinePc(f32 height) {
+    i32 i;
+    TERRAIN_WALL_POINT *walls;
+    for (i = 0; i < WallSplCount; i += 2) {
+        walls = (TERRAIN_WALL_POINT *)WallSplList;
+        NuRndrLine3dDbg(walls[i].position.x, height, walls[i].position.z, walls[i + 1].position.x, height,
+                        walls[i + 1].position.z, (i32)0x80808080);
+    }
+}
+
+static i32 TerrainSkinInfoCapacityPc;
+static u8 *TerrainSkinArenaEndPc;
+static i32 TerrainSkinOriginalGroupCountPc = -1;
+STATIC_ASSERT(offsetof(TERRAIN_SET_PC, max_groups) == 0xa488);
+STATIC_ASSERT(offsetof(TERRAIN_SET_PC, max_platforms) == 0xa48c);
+STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, origin) == 0);
+STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, scene_index) == 0x30);
+STATIC_ASSERT(offsetof(TERRAIN_XZ_BOUNDS_VIEW_PC, y) == 4);
+/* Native 680e90: this preparation updates group bounds/radius, leaving
+ * the copied polygon and batch bounds intact. */
+void TerrainSkinPrepareGroupPc(i32 group_index, TERRAIN_SKIN_STREAM_VIEW_PC *output,
+                               const TERRAIN_SKIN_INFO_VIEW_PC *info) {
+    TERRAIN_GROUP_PC *group;
+    TERRAIN_SKIN_STREAM_VIEW_PC *input;
+    f32 min_x = TerrainSkinBoundsMaxPc, min_y = TerrainSkinBoundsMaxPc, min_z = TerrainSkinBoundsMaxPc;
+    f32 max_x = TerrainSkinBoundsMinPc, max_y = TerrainSkinBoundsMinPc, max_z = TerrainSkinBoundsMinPc;
+    f32 radius_squared = 0.0f;
+    i32 bytes = 0;
+    if (CurrentTerrain == NULL || group_index < 0)
+        return;
+    group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[group_index];
+    if (group->chunk_type == 0 || group->chunk_type == 1) {
+        input = group->data;
+        while (input->header.kind >= 0) {
+            TERRAIN_SKIN_POLYGON_VIEW_PC *destination = output->polygons;
+            TERRAIN_SKIN_POLYGON_VIEW_PC *source = input->polygons;
+            i32 count = input->header.count;
+            output->header.kind = input->header.kind;
+            output->header.count = input->header.count;
+            while (count > 0) {
+                i32 vertex = source->normals[1].y > BoltTargetRandomDenominator ? 2 : 3;
+                NUVEC a, b;
+                f32 length_squared, inverse;
+                *destination = *source;
+                for (; vertex >= 0; --vertex) {
+                    NUVEC transformed;
+                    NUVEC *position = &destination->vertices[vertex];
+                    i32 selected = SkinFlipTab[vertex + info->vertex_order * 4];
+                    TerrainSkin(&transformed, info, &source->vertices[selected], -1.0f, info->mode);
+                    position->x = transformed.x;
+                    position->y = transformed.y;
+                    position->z = transformed.z;
+                    position->x = (f32)(position->x - info->matrix->m30);
+                    position->y = (f32)(position->y - info->matrix->m31);
+                    position->z = (f32)(position->z - info->matrix->m32);
+#define PREPARE_SKIN_BOUNDS(V, LO, HI)                                                                                 \
+    if ((V) < (LO))                                                                                                    \
+        (LO) = (V);                                                                                                    \
+    if ((V) > (HI))                                                                                                    \
+    (HI) = (V)
+                    PREPARE_SKIN_BOUNDS(position->x, min_x, max_x);
+                    PREPARE_SKIN_BOUNDS(position->y, min_y, max_y);
+                    PREPARE_SKIN_BOUNDS(position->z, min_z, max_z);
+#undef PREPARE_SKIN_BOUNDS
+                    length_squared = (f32)((f64)position->x * position->x + (f64)position->y * position->y +
+                                           (f64)position->z * position->z);
+                    if (length_squared > radius_squared)
+                        radius_squared = length_squared;
+                }
+#define PREPARE_SKIN_NORMAL(N, A, B)                                                                                   \
+    do {                                                                                                               \
+        (N)->x = (f32)((f64)(A)->y * (B)->z - (f64)(A)->z * (B)->y);                                                   \
+        (N)->y = (f32)((f64)(A)->z * (B)->x - (f64)(A)->x * (B)->z);                                                   \
+        (N)->z = (f32)((f64)(A)->x * (B)->y - (f64)(A)->y * (B)->x);                                                   \
+        length_squared = (f32)((f64)(N)->x * (N)->x + (f64)(N)->y * (N)->y + (f64)(N)->z * (N)->z);                    \
+        inverse = length_squared != 0.0f ? (f32)(1.0 / NuFsqrt(length_squared)) : 0.0f;                                \
+        (N)->x = (f32)((f64)(N)->x * inverse);                                                                         \
+        (N)->y = (f32)((f64)(N)->y * inverse);                                                                         \
+        (N)->z = (f32)((f64)(N)->z * inverse);                                                                         \
+    } while (0)
+                if (source->normals[1].y < BoltTargetRandomDenominator) {
+                    a.x = destination->vertices[1].x - destination->vertices[3].x;
+                    a.y = destination->vertices[1].y - destination->vertices[3].y;
+                    a.z = destination->vertices[1].z - destination->vertices[3].z;
+                    b.x = destination->vertices[2].x - destination->vertices[3].x;
+                    b.y = destination->vertices[2].y - destination->vertices[3].y;
+                    b.z = destination->vertices[2].z - destination->vertices[3].z;
+                    PREPARE_SKIN_NORMAL(&destination->normals[1], &a, &b);
+                }
+                a.x = destination->vertices[2].x - destination->vertices[0].x;
+                a.y = destination->vertices[2].y - destination->vertices[0].y;
+                a.z = destination->vertices[2].z - destination->vertices[0].z;
+                b.x = destination->vertices[1].x - destination->vertices[0].x;
+                b.y = destination->vertices[1].y - destination->vertices[0].y;
+                b.z = destination->vertices[1].z - destination->vertices[0].z;
+                PREPARE_SKIN_NORMAL(&destination->normals[0], &a, &b);
+#undef PREPARE_SKIN_NORMAL
+                ++source;
+                ++destination;
+                --count;
+            }
+            input = (TERRAIN_SKIN_STREAM_VIEW_PC *)source;
+            output = (TERRAIN_SKIN_STREAM_VIEW_PC *)destination;
+        }
+        output->header.kind = -1;
+        output->header.count = -1;
+        bytes = (i32)((u8 *)input - (u8 *)group->data) + 4;
+    }
+    group->origin.x = info->matrix->m30;
+    group->origin.y = info->matrix->m31;
+    group->origin.z = info->matrix->m32;
+    group->bounds_min.x = (f32)((f64)min_x - TerrainScanMargin10Pc + group->origin.x);
+    group->bounds_min.y = (f32)((f64)min_y - TerrainScanMargin10Pc + group->origin.y);
+    group->bounds_min.z = (f32)((f64)min_z - TerrainScanMargin10Pc + group->origin.z);
+    group->bounds_max.x = (f32)((f64)max_x + TerrainScanMargin10Pc + group->origin.x);
+    group->bounds_max.y = (f32)((f64)max_y + TerrainScanMargin10Pc + group->origin.y);
+    group->bounds_max.z = (f32)((f64)max_z + TerrainScanMargin10Pc + group->origin.z);
+    group->radius = NuFsqrt(radius_squared);
+    if (bytes > TerrainSkinPoolSlotBytesPc)
+        TerrainSkinPoolSlotBytesPc = bytes;
+}
+
+/* Native 681470: preserve the native ordered error checks and live group
+ * count reloads across the genuine skin preparation call. */
+i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND_VIEW_PC *blend, const NUVEC4 *sample_rows,
+                            f32 scale, i32 source_scene_index, i16 mode, TERRAIN_SET_PC *source_terrain) {
+    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    TERRAIN_SKIN_INFO_VIEW_PC *info;
+    i32 selected, skin_index;
+    if (terrain == NULL || source_terrain == NULL)
+        return -1;
+    if (terrain->group_count >= terrain->max_groups)
+        return -3;
+    if (matrix == NULL || blend == NULL)
+        return -4;
+    skin_index = TerrainSkinInfoCountPc;
+    if (skin_index >= TerrainSkinInfoCapacityPc)
+        return -5;
+    for (selected = 0; selected < source_terrain->max_platforms; ++selected)
+        if (source_terrain->platforms[selected].scene_object != NULL &&
+            source_terrain->platforms[selected].scene_object_index == source_scene_index)
+            break;
+    if (selected >= source_terrain->max_platforms || selected == -1)
+        return -6;
+    terrain->groups[terrain->group_count] =
+        source_terrain->groups[source_terrain->platforms[selected].terrain_group_index];
+    ((TERRAIN_SET_PC *)CurrentTerrain)->groups[((TERRAIN_SET_PC *)CurrentTerrain)->group_count].chunk_type = 0;
+    info = &TerrainSkinInfosPc[skin_index];
+    info->matrix = matrix;
+    info->blend = blend;
+    info->sample_rows = sample_rows;
+    info->scale = scale;
+    info->mode = mode;
+    info->vertex_order = (f64)matrix->m00 * matrix->m22 - (f64)matrix->m02 * matrix->m20 < 0.0 ? 1 : 0;
+    TerrainSkinPrepareGroupPc(((TERRAIN_SET_PC *)CurrentTerrain)->group_count,
+                              (TERRAIN_SKIN_STREAM_VIEW_PC *)TerrainSkinPoolBasePc, info);
+    skin_index = TerrainSkinInfoCountPc;
+    info = &TerrainSkinInfosPc[skin_index];
+    info->group_index = ((TERRAIN_SET_PC *)CurrentTerrain)->group_count;
+    info->original_shape =
+        ((TERRAIN_SET_PC *)CurrentTerrain)->groups[((TERRAIN_SET_PC *)CurrentTerrain)->group_count].data;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->groups[((TERRAIN_SET_PC *)CurrentTerrain)->group_count].scene_index =
+        (i16)(-1 - skin_index);
+    ((TERRAIN_SET_PC *)CurrentTerrain)->groups[((TERRAIN_SET_PC *)CurrentTerrain)->group_count].data = NULL;
+    ++((TERRAIN_SET_PC *)CurrentTerrain)->group_count;
+    TerrainSkinInfoCountPc = skin_index + 1;
+    return ((TERRAIN_SET_PC *)CurrentTerrain)->group_count - 1;
+}
+
+/* Native 6813e0: caller-owned arena start/end and explicit record capacity.
+ * This partitions an existing arena; it does not establish its allocation. */
+void TerrainSkinInitArenaPc(TERRAIN_SKIN_INFO_VIEW_PC *base, u8 *end, i32 capacity) {
+    TerrainSkinInfosPc = base;
+    TerrainSkinPoolBasePc = (u8 *)(base + capacity);
+    TerrainSkinInfoCapacityPc = capacity;
+    TerrainSkinPoolSlotBytesPc = 0;
+    TerrainSkinInfoCountPc = 0;
+    TerrainSkinArenaEndPc = end;
+    TerrainSkinOriginalGroupCountPc = ((TERRAIN_SET_PC *)CurrentTerrain)->group_count;
+}
+
+void TerrainSkinResetArenaPc(void) {
+    i32 i;
+    if (TerrainSkinOriginalGroupCountPc < 0)
+        return;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->group_count = (i16)TerrainSkinOriginalGroupCountPc;
+    for (i = 0; i < 16; ++i)
+        ((TERRAIN_SET_PC *)CurrentTerrain)->index_levels[i].cache_age = 0;
+}
+
+/* Native 6816d0: temporary bounds and cell selectors are carved backwards
+ * from the supplied end. Enough readable/writable arena is the native domain. */
+u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
+    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    TERRAIN_GROUP_PC *group;
+    TERRAIN_SKIN_USE_RECORD_PC *use;
+    i16 *selectors;
+    f32 *min_x, *max_x, *min_z, *max_z;
+    f32 world_min_x = TerrainBoundsMaximumPc, world_min_y = TerrainBoundsMaximumPc;
+    f32 world_min_z = TerrainBoundsMaximumPc;
+    f32 world_max_x = TerrainBoundsMinimumPc, world_max_y = TerrainBoundsMinimumPc;
+    f32 world_max_z = TerrainBoundsMinimumPc;
+    i32 capacity = terrain->max_groups, i, cell_index;
+    selectors = (i16 *)(((u32)TerrainSkinArenaEndPc & ~1u) - (u32)capacity * 2u);
+    min_x = (f32 *)(((u32)selectors & ~3u) - (u32)capacity * 4u);
+    max_x = min_x - capacity;
+    min_z = max_x - capacity;
+    max_z = min_z - capacity;
+    for (i = 0; i < terrain->group_count; ++i) {
+        group = &terrain->groups[i];
+        if (group->chunk_type == 0) {
+            if (group->bounds_min.x < world_min_x)
+                world_min_x = group->bounds_min.x;
+            /* Each native comparison uses the matching minimum or maximum. */
+            if (group->bounds_min.y < world_min_y)
+                world_min_y = group->bounds_min.y;
+            if (group->bounds_min.z < world_min_z)
+                world_min_z = group->bounds_min.z;
+            if (group->bounds_max.x > world_max_x)
+                world_max_x = group->bounds_max.x;
+            if (group->bounds_max.y > world_max_y)
+                world_max_y = group->bounds_max.y;
+            if (group->bounds_max.z > world_max_z)
+                world_max_z = group->bounds_max.z;
+        }
+        if (group->chunk_type == 1) {
+            if (group->bounds_min.x < world_min_x)
+                world_min_x = group->bounds_min.x + group->origin.x;
+            if (group->bounds_min.y < world_min_y)
+                world_min_y = group->bounds_min.y + group->origin.y;
+            if (group->bounds_min.z < world_min_z)
+                world_min_z = group->bounds_min.z + group->origin.z;
+            if (group->bounds_max.x > world_max_x)
+                world_max_x = group->bounds_max.x + group->origin.x;
+            if (group->bounds_max.y > world_max_y)
+                world_max_y = group->bounds_max.y + group->origin.y;
+            if (group->bounds_max.z > world_max_z)
+                world_max_z = group->bounds_max.z + group->origin.z;
+        }
+    }
+    terrain->group_index_count = 0;
+    for (i = 0; i < terrain->group_count; ++i) {
+        group = &terrain->groups[i];
+        if (group->chunk_type == 0) {
+            i32 x, z;
+            min_x[i] = min_z[i] = TerrainBoundsMaximumPc;
+            max_x[i] = max_z[i] = TerrainBoundsMinimumPc;
+            if (group->bounds_min.x < min_x[i])
+                min_x[i] = group->bounds_min.x;
+            if (group->bounds_min.z < min_z[i])
+                min_z[i] = group->bounds_min.z;
+            if (group->bounds_max.x > max_x[i])
+                max_x[i] = group->bounds_max.x;
+            if (group->bounds_max.z > max_z[i])
+                max_z[i] = group->bounds_max.z;
+            x = (i32)((f64)(i32)((u32)(i32)(((f64)max_x[i] + min_x[i]) * 0.5 - world_min_x) * 7u) /
+                      ((f64)world_max_x - world_min_x));
+            if (x < 0)
+                x = 0;
+            else if (x > 6)
+                x = 6;
+            z = (i32)((f64)(i32)((u32)(i32)(((f64)max_z[i] + min_z[i]) * 0.5 - world_min_z) * 7u) /
+                      ((f64)world_max_z - world_min_z));
+            if (z < 0)
+                z = 0;
+            else if (z > 6)
+                z = 6;
+            selectors[i] = (i16)(z * 7 + x);
+        }
+    }
+    for (i = 0; i < 256; ++i)
+        terrain->cells[i].group_count = 0;
+    terrain->platform_cell.group_count = 0;
+    terrain->used_cell_count = 0;
+    for (cell_index = 0; cell_index < 49; ++cell_index) {
+        TERRAIN_CELL_PC *cell = &terrain->cells[terrain->used_cell_count];
+        f32 cell_min_x = TerrainBoundsMaximumPc, cell_min_z = TerrainBoundsMaximumPc;
+        f32 cell_max_x = TerrainBoundsMinimumPc, cell_max_z = TerrainBoundsMinimumPc;
+        cell->first_group = (i16)terrain->group_index_count;
+        for (i = 0; i < terrain->group_count; ++i) {
+            if (selectors[i] == cell_index && terrain->groups[i].chunk_type == 0) {
+                if (min_x[i] < cell_min_x)
+                    cell_min_x = min_x[i];
+                if (min_z[i] < cell_min_z)
+                    cell_min_z = min_z[i];
+                if (max_x[i] > cell_max_x)
+                    cell_max_x = max_x[i];
+                if (max_z[i] > cell_max_z)
+                    cell_max_z = max_z[i];
+                ++cell->group_count;
+                terrain->group_indices[terrain->group_index_count++] = (i16)i;
+            }
+        }
+        if (cell->group_count != 0) {
+            cell->min_x = cell_min_x;
+            cell->min_z = cell_min_z;
+            cell->max_x = cell_max_x;
+            cell->max_z = cell_max_z;
+            ++terrain->used_cell_count;
+        }
+    }
+    terrain->platform_cell.first_group = (i16)terrain->group_index_count;
+    group = terrain->groups;
+    for (i = 0; i < terrain->group_count; ++i) {
+        if (group->chunk_type == 1) {
+            terrain->group_indices[terrain->group_index_count++] = (i16)i;
+            ++terrain->platform_cell.group_count;
+            terrain->platforms[group->scene_index].terrain_group_index = (i16)i;
+            ++group; /* Native cursor advances only on the platform branch. */
+        }
+    }
+    use = (TERRAIN_SKIN_USE_RECORD_PC *)(TerrainSkinPoolBasePc + TerrainSkinPoolSlotBytesPc * pool_slots);
+    TerrainSkinUseRecordsPc = use;
+    for (i = 0; i < pool_slots; ++i) {
+        use[i].last_use = 0;
+        use[i].skin_index = -1;
+    }
+    TerrainSkinPoolSlotCountPc = pool_slots;
+    return (u8 *)(use + pool_slots);
+}

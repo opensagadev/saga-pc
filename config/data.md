@@ -1969,3 +1969,24 @@ in data.cpp. No angle-table migration, padding, segment, alignment, ordering or
 comparison rule was changed. Full _ang extent1026 and native equality are restored.
 The terrain private stack pointer has its proved zero initializer; backing
 capacity and native unchecked arena domains are not inferred from it.
+
+### Terrain skin and cutscene initializer ownership CC (2026-10-07)
+
+Thirty-one new complete initializer copies / 210 COFF bytes equal native bytes:
+10 known-extent copies / 64 bytes and 21 unknown-extent copies / 146 bytes.
+Known copies reuse existing physical ranges; unknown extents receive no exact
+coverage or allocation-capacity credit. All 5,281 previous known-exact physical
+data copies, 13 members / 28 bytes and CRC/HANDLE parents survive. Physical exact
+data union stays 637,545 bytes. Of 9,962 previous complete regions, 9,961 are
+unchanged. The unknown-extent TextCrawlRotateYPc keeps its u16 type and native
+zero two-byte initializer; natural compiled BSS tail changes four to two bytes
+after the genuine shared append. No known extent or exact match is retired.
+
+The sole data writer appended 11 genuine shared cutscene definitions / 106 bytes.
+The DWORD1 camera-update control belongs with its proved cutscene InstanceUpdate
+consumer cohort, retaining external C reconstruction linkage; historic filename
+and visibility remain unknown. Five original cutscene statics / 20 bytes stay
+private. Three original terrain skin statics / 12 bytes have native zero, NULL
+and minus-one initializers, with owning extents and capacity unknown. Full known
+_ang extent 1,026 remains exact. No padding, ordering, segment, alignment or
+comparison changes were used to repair an extent.

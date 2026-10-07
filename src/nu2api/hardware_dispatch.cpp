@@ -200,7 +200,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     PcWindowOptions.InitializePath();
     PcWindowOptions.Load();
     STUBBED_NAMED(0x006dc890); /* (config_name), 6dbf44 */
-    STUBBED_NAMED(0x006d3150); /* 6dbf4c */
+    PcConfigureInputGraphicsCaps();
     if (parameter_32) {
         STUBBED_NAMED(0x006ddd90);
     }
@@ -332,7 +332,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     STUBBED_NAMED(0x00607c60); /* (buffer, *end) */
     STUBBED_NAMED(0x0060a5f0); /* (PCDeviceBackend.render_target_flags, 0, buffer, *end) */
     STUBBED_NAMED(0x005f22a0); /* (PCDeviceBackend.shader_flags, buffer, *end) */
-    STUBBED_NAMED(0x00605e60); /* (buffer, *end) */
+    NuRndrBufferDescriptorsInitPc(buffer, *end);
     STUBBED_NAMED(0x005fa240);
     STUBBED_NAMED(0x005eaa80); /* (buffer, *end) */
     STUBBED_NAMED(0x004ffbb0);
@@ -375,5 +375,5 @@ extern "C" void __cdecl NuKeyboardCreateWindowState_candidate(HWND window, HINST
     PCDeviceBackend.InitializeAdapter();
     nu_keyboard_owner.Setup(window, instance);
     STUBBED_NAMED(0x00600bc0); /* native call6df0a8, actual separate RET leaf */
-    STUBBED_NAMED(0x006e1750); /* native tailcall6df0b2, this2976098 */
+    PCNativeWarningDebugState.Initialize();
 }

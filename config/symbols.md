@@ -4631,3 +4631,23 @@ remaining bytes and extents are unchanged; no invalid-pointer fault-order
 equivalence is claimed. All 2,068 prior exact code copies survive. Five local
 class6/type0 compiler serial changes preserve owner offsets/raw/official bytes.
 Current normal build: 313 owners, 4,347 functions and 9,962 complete data regions.
+
+### Terrain draw/skin, cutscene scheduling and hardware transfer CC (2026-10-07)
+
+Transferred 30 complete functions / 17,704 unique PC bytes: terrain consumers
+and draw 8,171, skin and arena producers 3,549, cutscene scheduling 5,984. Named
+fields and complete native extents are verified. Cutscene camera reversal retains
+unordered equality behavior; instance duration-minus-one retains unrounded x87
+precision and live state reload after callbacks. Terrain draw retains native
+unchecked matrix/normal policies, and skin keeps native truncation-before-scale,
+wrapped arithmetic, cursor policy and selected arena assumptions.
+
+All 4,347 prior functions were checked: 4,345 full official bodies unchanged,
+plus two previously nonexact hardware callers with exactly three genuine calls
+restored. Native input/graphics capability configuration, render-buffer descriptor
+initialization and warning/debug state initialization use already compiled real
+providers; this reconnection adds zero new unique PC bytes. Native caller extents
+2,930 and 55 and their ABI remain unchanged. All 2,078 prior exact code copies
+survive. Five class6/type0 local serial qualifications preserve owner offsets,
+raw and official bytes. Current normal build has 313 owners, 4,377 functions
+and 9,993 full data regions.

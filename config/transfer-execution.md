@@ -3731,3 +3731,46 @@ helper closure, embedded-source activation, DDS value, Perm angle source and
 Hub FP holds remain explicit. Whole-project matching-priority goal and authorized
 direct-main continuation remain active. The human identification journal is
 preserved and excluded from this commit.
+
+### Connected terrain draw/skin, cutscene and hardware checkpoint CC (2026-10-07 UTC)
+
+Transferred 30 functions / 17,704 new unique PC bytes: terrain consumers/draw
+8,171, skin/arena 3,549 and cutscene scheduling 5,984. Unique compared code is
+1,281,662; native objdiff denominator 1,282,180 with unchanged 518-byte overlap.
+Whole-PC fuzzy coverage is 25.53444916810696%, +0.33509588309185 percentage
+points. Exact code is 207,365 / 3,471,246 bytes, 5.973791543440021%, a gain of
+475 bytes from six new exact functions. These measure code comparison; the
+source game still does not run successfully.
+
+All 4,347 prior full functions were checked: 4,345 unchanged and two previously
+nonexact hardware callers with three genuine already-compiled providers restored.
+Hardware reconnection receives zero new unique byte credit. All 2,078 prior
+exact code copies and 5,281 known-exact physical data copies are preserved.
+9,961 old full data regions are identical; unknown TextCrawlRotateYPc keeps
+type u16/native zero2 with natural compiled tail4 to2. No known extent or exact
+match is retired. All13 member parents/28 bytes and CRC/HANDLE remain intact.
+31 new full native-equal initializers total210 bytes:10 known64 and21 unknown146.
+The physical exact data union remains637,545; unknown extents receive no credit.
+The genuine camera control belongs with its proved cutscene caller, keeping
+external linkage and known _ang1026 intact. Native NaN and x87 duration semantics
+were corrected before acceptance. No flags, masks, truncation, alignment, padding
+or invented source ownership were used to raise a score.
+
+Required build/link/check-objects, LLVM18 full726 tests/3 existing skips and
+authoritative retail matching pass. Selected actual-normal terrain160/0 uses
+313 providers and426 frozen inputs with zero replacements/supplements. These
+are109 consumer and51 skin/arena checks; cutscene runtime is untested. The real
+source EXE exits5 after3.314s at NULL Retrieve+16/full208, source0x507a60.
+Own-prefix crash dialogs remain disabled; private cleanup leaves no owned
+game/debugger process or crash window. Window/device/Present/repeated frames/
+loaded scene/gameplay remain unverified. Baseline25c3aa79 exactCI37659173906
+passed all steps. The checkpoint was held for complete source, initializer,
+normal-runtime and prior-match preservation gates; no broken batch was committed.
+
+Continue compiler lifetime/setters412 plus genuine HLSL backend1,310 with real
+D3DXCompileShader export and connected font resource/load/lifetime work. Parser
+generated helper closure, shader publisher, inactive nonexact embedded HLSL,
+system embedded font provenance, DDS value, Perm source angle extent and Hub
+FP conversion remain explicit holds. Whole-project matching-priority goal and
+authorized direct-main continuation remain active. The human journal stays
+unchanged and excluded.

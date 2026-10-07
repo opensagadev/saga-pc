@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1303909,
-    "matched_code_bytes": 206890,
-    "matching_percent": 5.960107696199001,
-    "fuzzy_coverage_percent": 25.19935328501511,
-    "mapped_functions": 4534,
-    "matched_functions": 2075,
-    "objdiff_fuzzy_percent": 69.216866,
-    "objdiff_total_code": 1264476,
+    "mapped_code_bytes": 1321613,
+    "matched_code_bytes": 207365,
+    "matching_percent": 5.973791543440021,
+    "fuzzy_coverage_percent": 25.53444916810696,
+    "mapped_functions": 4564,
+    "matched_functions": 2081,
+    "objdiff_fuzzy_percent": 69.16833,
+    "objdiff_total_code": 1282180,
     "image_bytes": 40067072,
-    "mapped_bytes": 1952105,
-    "mapping_percent": 4.872092974500358,
+    "mapped_bytes": 1969809,
+    "mapping_percent": 4.916278883568033,
     "matched_data_region_bytes": 637545
   },
   "newly_compared": [
@@ -6123,6 +6123,306 @@
       ],
       "exact": true,
       "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NewRayCastSetHandel",
+      "pc": "0x0067f830",
+      "original_bytes": 419,
+      "units": [
+        "src/nu2api/terrain_query.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 67.75
+    },
+    {
+      "symbol": "_NewShadowHandelEx",
+      "pc": "0x0067f9e0",
+      "original_bytes": 349,
+      "units": [
+        "src/nu2api/terrain_query.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 97.041664
+    },
+    {
+      "symbol": "_TerrainTrackBack",
+      "pc": "0x0067fb90",
+      "original_bytes": 421,
+      "units": [
+        "src/nu2api/terrain_query.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 74.76119
+    },
+    {
+      "symbol": "_NewRayCastPlatForm",
+      "pc": "0x00680b40",
+      "original_bytes": 401,
+      "units": [
+        "src/nu2api/terrain_query.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 90.90678
+    },
+    {
+      "symbol": "_TerrDrawPc",
+      "pc": "0x0066d3a0",
+      "original_bytes": 890,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 86.49645
+    },
+    {
+      "symbol": "_TerrDrawSituPc",
+      "pc": "0x0066d720",
+      "original_bytes": 873,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 96.434784
+    },
+    {
+      "symbol": "_TerrDrawPlatPc",
+      "pc": "0x0066da90",
+      "original_bytes": 1645,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 50.033466
+    },
+    {
+      "symbol": "_TerrDrawPlatColPc",
+      "pc": "0x0066e100",
+      "original_bytes": 2023,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 3.080357
+    },
+    {
+      "symbol": "_TerrDrawImpactPolPc",
+      "pc": "0x0066e8f0",
+      "original_bytes": 57,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 97.63158
+    },
+    {
+      "symbol": "_DrawMPlatPc",
+      "pc": "0x0066e930",
+      "original_bytes": 126,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_DrawMSituPc",
+      "pc": "0x0066e9b0",
+      "original_bytes": 96,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_SphereDrawExPc",
+      "pc": "0x0066ea10",
+      "original_bytes": 668,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 96.783066
+    },
+    {
+      "symbol": "_SphereDrawPc",
+      "pc": "0x0066ecb0",
+      "original_bytes": 37,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_DrawWallSplinePc",
+      "pc": "0x0066ece0",
+      "original_bytes": 166,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 49.568626
+    },
+    {
+      "symbol": "_TerrainSkinPrepareGroupPc",
+      "pc": "0x00680e90",
+      "original_bytes": 1348,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 66.457016
+    },
+    {
+      "symbol": "_TerrainSkinCreateInfoPc",
+      "pc": "0x00681470",
+      "original_bytes": 553,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 70.48734
+    },
+    {
+      "symbol": "_TerrainSkinInitArenaPc",
+      "pc": "0x006813e0",
+      "original_bytes": 80,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 62.64706
+    },
+    {
+      "symbol": "_TerrainSkinResetArenaPc",
+      "pc": "0x00681430",
+      "original_bytes": 59,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TerrainSkinRebuildIndexPc",
+      "pc": "0x006816d0",
+      "original_bytes": 1509,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 70.42762
+    },
+    {
+      "symbol": "_CutSceneCameraSysUpdatePc",
+      "pc": "0x00506880",
+      "original_bytes": 1463,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 72.36256
+    },
+    {
+      "symbol": "_CutSceneRigidSysUpdatePc",
+      "pc": "0x00507d80",
+      "original_bytes": 404,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 87.20438
+    },
+    {
+      "symbol": "_CutSceneTriggerSysUpdatePc",
+      "pc": "0x00503770",
+      "original_bytes": 127,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 61.94
+    },
+    {
+      "symbol": "_CutSceneCopyStreamAnimationsPc",
+      "pc": "0x00500830",
+      "original_bytes": 359,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 50.381294
+    },
+    {
+      "symbol": "_CutSceneSwapStreamAssetPc",
+      "pc": "0x00500600",
+      "original_bytes": 549,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 52.794594
+    },
+    {
+      "symbol": "_CutSceneClipTestPc",
+      "pc": "0x00500570",
+      "original_bytes": 142,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 67.53191
+    },
+    {
+      "symbol": "_CutSceneStreamSkipPc",
+      "pc": "0x00506710",
+      "original_bytes": 362,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 67.78494
+    },
+    {
+      "symbol": "_CutSceneCharacterSysUpdatePc",
+      "pc": "0x00502bb0",
+      "original_bytes": 128,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_CutSceneStreamHoldFramePc",
+      "pc": "0x00500a70",
+      "original_bytes": 29,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_CutSceneInstanceUpdatePc",
+      "pc": "0x00508340",
+      "original_bytes": 2275,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 75.80322
+    },
+    {
+      "symbol": "_NuGCutSceneSysUpdate",
+      "pc": "0x00508cb0",
+      "original_bytes": 146,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.145836
     }
   ],
   "previous_exact_functions_lost": [],
@@ -24491,6 +24791,171 @@
       "checkpoint_delay": "Checkpoint held after first normal matching detected _ang extent1026 to1028 and lost exact data. Three real render controls were moved to their proved cutscene caller cohort, preserving external linkage; full normal checks/matching/runtime and prior preservation rerun. No weakened extent/mask/order/alignment/flag change or broken commit.",
       "next_wave": "Independently accepted terrain consumers/draw14/8171 with no shared storage; broader cutscene11 additional5984; genuine HLSL backend7/1310 requires real D3DX import export and current-owner integration. Continue real shader publication/lifetime and parser generated-helper closure.",
       "holds": "Parser unbound SDK/lifecycle outlines; shader publisher/manager natural vtables/RTTI and runtime; DDS value, Perm angle source hold, Hub FP conversion pair. Embedded HLSL source semantics accepted but full text NONEXACT and not activated.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "Whole-project matching-priority transfer until human stop/pause; validated direct-main pushes authorized; exact pushed CI verified separately."
+    },
+    {
+      "checkpoint": "Connected terrain draw/skin, cutscene scheduling and hardware reconnection checkpoint CC (2026-10-07 UTC)",
+      "baseline_commit": "25c3aa79cbf16daa6b6d3e9502147efcd5efa411",
+      "baseline_CI": {
+        "run": 37659173906,
+        "conclusion": "success",
+        "exact_head_sha": "25c3aa79cbf16daa6b6d3e9502147efcd5efa411"
+      },
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1303909,
+        "matched_code_bytes": 206890,
+        "matching_percent": 5.960107696199001,
+        "fuzzy_coverage_percent": 25.19935328501511,
+        "mapped_functions": 4534,
+        "matched_functions": 2075,
+        "objdiff_fuzzy_percent": 69.216866,
+        "objdiff_total_code": 1264476,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1952105,
+        "mapping_percent": 4.872092974500358,
+        "matched_data_region_bytes": 637545
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1321613,
+        "matched_code_bytes": 207365,
+        "matching_percent": 5.973791543440021,
+        "fuzzy_coverage_percent": 25.53444916810696,
+        "mapped_functions": 4564,
+        "matched_functions": 2081,
+        "objdiff_fuzzy_percent": 69.16833,
+        "objdiff_total_code": 1282180,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1969809,
+        "mapping_percent": 4.916278883568033,
+        "matched_data_region_bytes": 637545
+      },
+      "new_source_functions": 30,
+      "actual_new_transfer_PC_bytes": 17704,
+      "new_unique_compared_PC_bytes": 17704,
+      "unique_compared_code_bytes": 1281662,
+      "native_objdiff_denominator": 1282180,
+      "overlap_bytes": 518,
+      "new_native_family_bytes": {
+        "terrain_consumers_draw": 8171,
+        "terrain_skin_arena": 3549,
+        "cutscene_scheduling": 5984
+      },
+      "hardware_reconnected_native_actions": 3,
+      "hardware_new_unique_byte_credit": 0,
+      "whole_PC_fuzzy_delta_pp": 0.33509588309184934,
+      "new_exact_PC_bytes": 475,
+      "new_exact_source_functions": 6,
+      "old_official_function_copies_identical": 4345,
+      "old_full_function_copies": 4347,
+      "old_exact_code_copies_preserved": 2078,
+      "old_full_data_regions_identical": 9961,
+      "old_full_data_regions": 9962,
+      "old_known_extent_exact_data_compiled_copies_preserved": 5281,
+      "current_full_function_definitions": 4377,
+      "current_full_data_definitions": 9993,
+      "qualified_compiler_local_class6_type0_serial_changes": 5,
+      "qualified_previous_nonexact_function_changes": [
+        {
+          "unit": "src/nu2api/hardware_dispatch.cpp",
+          "symbol": "_NuInitHardwarePc",
+          "old_bytes": 1938,
+          "new_bytes": 1950,
+          "old_official_sha256": "d7297027129c953df725635a58b760dce04d7bc0e7659c6bad4f712753c081a8",
+          "new_official_sha256": "69b5dafbee2c87083134278088d043b1130bcbfae6f1992fa9ec503ac4957507",
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/startup-provider-next/restoration-body-proof.json",
+            "receipt_sha256": "cb0be5c509f908ac27d76f38b839fda29e75fd5b179d49c9ecaf685e87b58feb",
+            "old_official_sha256": "d7297027129c953df725635a58b760dce04d7bc0e7659c6bad4f712753c081a8",
+            "new_official_sha256": "69b5dafbee2c87083134278088d043b1130bcbfae6f1992fa9ec503ac4957507",
+            "qualification": "Three reviewed genuine already-compiled PC actions restored; native extent and ABI unchanged; nonexact partial remaining native actions retained, no unique-byte credit.",
+            "old_exact": false
+          }
+        },
+        {
+          "unit": "src/nu2api/hardware_dispatch.cpp",
+          "symbol": "_NuKeyboardCreateWindowState_candidate",
+          "old_bytes": 41,
+          "new_bytes": 50,
+          "old_official_sha256": "635d18b908237b7803e80dc961e046571b3c9716aba0e5320c0246f14edfd654",
+          "new_official_sha256": "92271d341351305da89c6ca8e5664869f63adc0d6cf689e01c1e962694856332",
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/startup-provider-next/restoration-body-proof.json",
+            "receipt_sha256": "cb0be5c509f908ac27d76f38b839fda29e75fd5b179d49c9ecaf685e87b58feb",
+            "old_official_sha256": "635d18b908237b7803e80dc961e046571b3c9716aba0e5320c0246f14edfd654",
+            "new_official_sha256": "92271d341351305da89c6ca8e5664869f63adc0d6cf689e01c1e962694856332",
+            "qualification": "Three reviewed genuine already-compiled PC actions restored; native extent and ABI unchanged; nonexact partial remaining native actions retained, no unique-byte credit.",
+            "old_exact": false
+          }
+        }
+      ],
+      "qualified_unknown_extent_data_tail_changes": [
+        {
+          "unit": "src/data.cpp",
+          "symbol": "_TextCrawlRotateYPc",
+          "old_bytes": 4,
+          "new_bytes": 2,
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/cutscene-scheduling5984-independent-review/accepted-owner-data.json",
+            "receipt_sha256": "8a7dfbb6e5245fff45878ec1983fea8873d4e16bb90b7bb7de25976c14010a88",
+            "old_official_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+            "new_official_sha256": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "old_exact": false,
+            "qualification": "Unchanged u16 and nativezero2 at926c68; unknown originalextent remains unknown; natural compiled tail4->2, no owning/coverage retirement or byte tuning."
+          }
+        }
+      ],
+      "new_complete_initializer_copies": 31,
+      "new_complete_initializer_COFF_bytes": 210,
+      "new_full_native_equal_copies": 31,
+      "new_known_extent_exact_initializer_compiled_copies": 10,
+      "new_known_extent_exact_initializer_COFF_bytes": 64,
+      "new_unknown_extent_full_native_equal_initializer_copies": 21,
+      "new_unknown_extent_initializer_COFF_bytes": 146,
+      "unknown_extent_exact_and_allocation_credit": 0,
+      "known_exact_data_union_before_transfer": 637545,
+      "known_exact_data_union_after_transfer": 637545,
+      "new_shared_working_view_bytes": 106,
+      "new_camera_control_working_view_bytes": 4,
+      "new_private_terrain_skin_working_view_bytes": 12,
+      "original_owning_extents_and_historic_control_visibility": "UNKNOWN; external C reconstruction linkage retained. Original five cutscene statics20B remain private. No allocation-capacity claim.",
+      "normal_objects": 313,
+      "frozen_inputs": 426,
+      "required_checks": {
+        "build_link_check_objects": "PASS",
+        "make_check": "PASS726/3 existing skips; pinned LLVM18",
+        "authoritative_retail_match": "PASS"
+      },
+      "selected_CPU_checks": 160,
+      "selected_CPU_failures": 0,
+      "source_EXE": {
+        "receipt": "/tmp/saga-pc-next-runtime/runtime-startup-acceptance/final-CC-unattended-acceptance.json",
+        "sha256": "6bd2966662f7c9dda3b7cac27c063f0761a5cbf958eb58cbcc473a5bbddb3edb",
+        "exit": 5,
+        "elapsed_seconds": 3.3135535269975662,
+        "fault": "0x507a60",
+        "native_method": "0x741750",
+        "method_size": 208,
+        "fault_offset": 16,
+        "visible_window_samples": 0
+      },
+      "milestones": "Authentic EXE still NULL Retrieve receiver +16/full208, exit5; window/device/Present/scene/gameplay unverified. Crash dialogs disabled and private cleanup verified.",
+      "evidence_pins": {
+        "build/analysis/checkpoint-CC/normal-object-manifest.json": "19efb766d5cca4a0b518b4ab8b2fc9560c01d6f92b1540de8449146f0bbca8f8",
+        "build/analysis/checkpoint-CC/frozen-first-source-inputs.json": "dc65119a8a6cdbedab54d7b0a0f206cb1d1dd1fa8eebf241f98af6479a8c93e7",
+        "build/analysis/checkpoint-CC/accepted-complete-functions.json": "22cd4e5d4674061c1b03ce204101fc03aa59cf8bc6cfc6459e9a5c33ed94087e",
+        "build/analysis/checkpoint-CC/required-checks-receipt.json": "e29bab00894f57366c27b43fc7792db5481cfd08f8635d26c874e4526e186af5",
+        "build/analysis/checkpoint-CC/runtime-acceptance.json": "d92d6fd2942f5f79da4b933889068d3f1cfdd3c45659b8db91658507f006dea5",
+        "build/analysis/checkpoint-CC/hardware-source-integration.json": "73cfc767c5c552c0c893a3b738a01a1b1a1f5a9670cbfa909a84ac693491a7aa",
+        "build/analysis/endpoint-CC-review/actual-output-and-report-proof.json": "ac77b9489c8234a0e66de96dc5f01edf2e29ac64de2bf9751c5d7d48c561eabd",
+        "build/analysis/endpoint-CC-review/accepted-first-endpoint.json": "530d080c060696ff78f1e6c3655bdcc69251f8ddd685c7ae8f842ec2fd84a5f7"
+      },
+      "checkpoint_delay": "Coherent batch held for full extent/source-owner and normal runtime/preservation validation. Cutscene NaN and x87 duration defects corrected before acceptance. Genuine camera control retained with its proved consumer cohort, preserving known angle extent. No weakened comparison or broken commit.",
+      "next_wave": "Closed compiler lifetime/setters412 plus independently accepted genuine HLSL backend1310 and real D3DXCompileShader export; connected font resource/load/lifetime family about3.6KB. Continue real shader publication with generated helper closure, no fake providers.",
+      "holds": "Parser unbound SDK/lifecycle outlines; manager publisher/runtime; embedded HLSL full text NONEXACT and inactive; system embedded font provenance; DDS value, Perm source angle extent hold, Hub FP pair.",
       "user_journal_preserved": true,
       "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
       "ongoing_goal": "Whole-project matching-priority transfer until human stop/pause; validated direct-main pushes authorized; exact pushed CI verified separately."

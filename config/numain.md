@@ -897,3 +897,28 @@ embedded HLSL preserves tokens/directives but full text is nonexact and inactive
 Parser EH full335/581 groups and portable support are reviewed research; unbound
 natural generated helpers still prevent producer activation. No fake tables,
 providers or alternate startup are introduced.
+
+### Source/runtime frontier after CC (2026-10-07)
+
+Terrain floor/radius/separation, ray backoff and shadow consumers, connected draw
+and skin/arena producers, and cutscene scheduling are compiled and compared.
+Selected CPU fixtures pass 160 checks / zero failures: 109 terrain consumer and
+51 skin/arena checks, using all 313 actual normal providers and 426 frozen inputs
+with zero replacement or supplement providers. This tests their explicit valid
+input domains; it does not prove native capacity, loaded scenes or cutscene
+runtime. Native unchecked hazards are retained.
+
+Three previously skipped authentic hardware calls are restored: input/graphics
+capability configuration, render-buffer descriptors and warning/debug state
+initialization. The actual source EXE still exits 5 after 3.314 seconds at NULL
+Retrieve receiver +16/full208 (source fault 0x507a60, native method 0x741750).
+Own-prefix ShowCrashDialog DWORD0 and launch-private cleanup leave no owned
+game/debugger process or visible crash dialog. Window, input/device, Present,
+repeated frames, scene loading and gameplay remain unverified.
+
+Next transfer closed compiler lifetime/setters 412 and genuine HLSL backend
+1,310 with the actual D3DXCompileShader export, plus the connected font resource
+load/lifetime family. These close real dependencies but do not independently
+fix NULL manager publication. Parser generated helpers, publisher lifetime and
+embedded-source provenance remain separate gates. No invented providers or
+forced startup state is introduced.

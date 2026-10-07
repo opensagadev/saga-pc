@@ -19133,3 +19133,17 @@ extern "C" {
 extern "C" {
     void(__cdecl *CutSceneRigidRenderCallbackPc)(struct cut_load_rigid_s *, NUMTX *) = NULL;
 }
+
+extern "C" {
+    NUMTX CutSceneCameraMatrixPc = {0};
+    NUVEC CutSceneFocusLocationPc = {0};
+    u8 CutSceneCameraMatrixSetPc = 0;
+    u8 CutSceneUseFocusLocationPc = 0;
+    f32 CutSceneFocusDistancePc = 0.0f;
+    f32 CutSceneFStopPc = 0.0f;
+    i32 CutSceneCameraChangedPc = 0;
+    i32 CutSceneCameraDofModePc = 0;
+    INSTNUGCUTSCENE *CutSceneLoadingInstancePc = NULL;
+    void(__cdecl *NuCutSceneCharacterProcess)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32) = NULL;
+    void(__cdecl *CutSceneInstanceSfxRequestPc)(INSTNUGCUTSCENE *) = NULL;
+}
