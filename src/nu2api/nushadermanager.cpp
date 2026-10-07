@@ -88,41 +88,6 @@ u32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags() const {
     return result;
 }
 
-struct PC_SHADER_MANAGER_VIEW;
-struct PC_SHADER_OBJECT_FULL_VIEW {
-    i32 marker;
-    i32 ref_count;
-    u32 key;
-    u8 unknown_c[0x4c0];
-    PC_TEXTURE_RESOURCE_PC *vertex_shader;
-    PC_TEXTURE_RESOURCE_PC *pixel_shader;
-    u32 unknown_4d4;
-};
-STATIC_ASSERT(sizeof(PC_SHADER_OBJECT_FULL_VIEW) == 0x4d8);
-STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, vertex_shader) == 0x4cc);
-STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, pixel_shader) == 0x4d0);
-struct PC_SHADER_MANAGER_VTABLE_VIEW {
-    void *unknown_0;
-    bool(__thiscall *create_shader)(PC_SHADER_MANAGER_VIEW *, const PC_SHADER_MATERIAL_FILTER_VIEW *, bool,
-                                    PC_SHADER_OBJECT_FULL_VIEW *, i32);
-    void(__thiscall *adapt_descriptor)(PC_SHADER_MANAGER_VIEW *, const PC_SHADER_FILTER_DESC_VIEW *,
-                                       const PC_SHADER_FILTER_MATERIAL_VIEW *);
-};
-STATIC_ASSERT(offsetof(PC_SHADER_MANAGER_VTABLE_VIEW, create_shader) == 4);
-STATIC_ASSERT(offsetof(PC_SHADER_MANAGER_VTABLE_VIEW, adapt_descriptor) == 8);
-struct PC_SHADER_MANAGER_VIEW {
-    PC_SHADER_MANAGER_VTABLE_VIEW *vtable;
-    PC_SHADER_OBJECT_FULL_VIEW slots[400];
-    i32 last_allocated;
-    PC_SHADER_OBJECT_FULL_VIEW *bound_slot;
-    PC_SHADER_OBJECT_FULL_VIEW *__thiscall AllocateSlot(i32 *index);
-    PC_SHADER_OBJECT_FULL_VIEW *__thiscall Retrieve(const PC_SHADER_FILTER_DESC_VIEW *,
-                                                    const PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32, bool);
-};
-STATIC_ASSERT(offsetof(PC_SHADER_MANAGER_VIEW, slots) == 4);
-STATIC_ASSERT(offsetof(PC_SHADER_MANAGER_VIEW, last_allocated) == 0x79184);
-STATIC_ASSERT(offsetof(PC_SHADER_MANAGER_VIEW, bound_slot) == 0x79188);
-
 PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::AllocateSlot(i32 *index) {
     i32 i;
     for (i = last_allocated + 1; i < 400; ++i) {
@@ -149,7 +114,7 @@ PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::Retrieve(const PC
     u32 key = 0;
     PC_SHADER_OBJECT_FULL_VIEW *shader;
     i32 index;
-    vtable->adapt_descriptor(this, desc, material);
+    AdaptDescriptor(desc, material);
     filter.Initialize(desc, material, variant, flags);
     NuShaderObjectKeyGenerate3(&key, &filter, pixel_stage != 0);
     for (i32 i = 0; i < 400; ++i) {
@@ -163,7 +128,7 @@ PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::Retrieve(const PC
         }
     }
     shader = AllocateSlot(&index);
-    if (vtable->create_shader(this, &filter, pixel_stage, shader, index)) {
+    if (CreateShader(&filter, pixel_stage, shader, index)) {
         ++shader->ref_count;
         return shader;
     }
@@ -193,4 +158,122 @@ bool PC_SHADER_MATERIAL_FILTER_VIEW::HasAnisoFlip() const {
 }
 bool PC_SHADER_MATERIAL_FILTER_VIEW::HasPhongLighting() const {
     return variant == 0 && (descriptor->layer_flags & 8) != 0;
+}
+
+void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *input,
+                                          const PC_SHADER_FILTER_MATERIAL_VIEW *input_material) {
+    PC_SHADER_FILTER_DESC_VIEW *desc = const_cast<PC_SHADER_FILTER_DESC_VIEW *>(input);
+    PC_SHADER_FILTER_MATERIAL_VIEW *material = const_cast<PC_SHADER_FILTER_MATERIAL_VIEW *>(input_material);
+    if ((desc->vertex_format & 0x4000000) != 0) {
+        desc->layer_flags |= 0x80000000;
+        desc->flags |= 0x200000;
+    }
+    i32 version = PcWindowOptions.usehires != 0 ? compiler->dictionary.profile : 1;
+    switch (version) {
+        case 3:
+            desc->flags &= 0xff77dffb;
+            desc->layer_flags &= 0xe7fadffb;
+            break;
+        case 2:
+            desc->flags &= 0xff7efffb;
+            desc->layer_flags &= 0xbffbfffb;
+            if ((desc->flags & 0x20) != 0) {
+                desc->flags &= ~8U;
+                desc->layer_flags &= ~8U;
+            }
+            if ((desc->flags & 0x20) != 0) {
+                desc->flags &= ~0x20000U;
+                desc->layer_flags &= ~0x8000U;
+            }
+            if ((desc->flags & 0x20) != 0) {
+                desc->flags &= ~3U;
+                desc->layer_flags &= ~3U;
+            }
+            if ((desc->flags & 0x20000) != 0 || (desc->layer_flags & 0x8000) != 0) {
+                desc->flags &= ~8U;
+                desc->layer_flags &= ~8U;
+            }
+            if ((desc->flags & 3) != 0) {
+                desc->flags &= 0xbfffffef;
+                desc->layer_flags &= 0xfdffffef;
+            }
+            if ((desc->flags & 2) != 0) {
+                desc->flags = (desc->flags & ~2U) | 1;
+                desc->layer_flags = (desc->layer_flags & ~2U) | 1;
+            }
+            if ((desc->flags & 0x60) == 0x60) {
+                desc->flags &= ~1U;
+                desc->layer_flags &= ~1U;
+            }
+            if ((desc->flags & 0x80) != 0) {
+                desc->flags &= ~1U;
+                desc->layer_flags &= ~1U;
+            }
+            if ((desc->flags & 0x25) == 0x25) {
+                desc->flags &= ~1U;
+                desc->layer_flags &= ~1U;
+            }
+            if ((desc->flags & 1) != 0 && desc->normal_threshold != 0) {
+                desc->flags &= ~1U;
+                desc->layer_flags &= ~1U;
+            }
+            desc->flags &= 0xffff9bff;
+            desc->layer_flags &= 0xffff9bff;
+            if ((desc->layer_flags & 0x4000000) != 0 && (desc->layer_flags & 8) != 0 &&
+                (desc->layer_flags & 0x80000000) != 0 && (desc->layer_flags & 1) != 0) {
+                desc->flags &= ~8U;
+                desc->layer_flags &= ~8U;
+            }
+            desc->flags &= 0xfdffffef;
+            desc->layer_flags &= 0xffefffef;
+            if ((desc->flags & 0x49) == 0x49) {
+                desc->flags &= ~1U;
+                desc->layer_flags &= ~1U;
+            }
+            if ((desc->flags & 0x100) != 0 && (desc->flags & 8) != 0) {
+                desc->flags &= ~8U;
+                desc->layer_flags &= ~8U;
+            }
+            if ((desc->flags & 0x80201000) == 0x80201000) {
+                desc->flags &= ~9U;
+                desc->layer_flags &= ~9U;
+            }
+            desc->flags &= 0xfff7ffff;
+            desc->layer_flags &= 0xe7feffff;
+            break;
+        case 1: {
+            bool layer = (desc->layer_flags & 0x400) != 0;
+            if ((desc->flags & 0x40200) == 0)
+                desc->flags &= ~0x400U;
+            desc->layer_flags &= ~0x400U;
+            if (layer && (desc->layer_flags & 0x400) == 0 && (material->blend_flags & 0x700000) != 0x100000)
+                material->blend_flags &= 0x807fffff;
+            if ((desc->flags & 0x4000) != 0)
+                desc->shininess = (f32)(desc->shininess * (f64)0.4f);
+            desc->flags &= 0xffff9ffc;
+            desc->layer_flags &= 0xffff9ffc;
+            if ((desc->flags & 0x10000) != 0) {
+                desc->flags &= ~0x20U;
+                desc->layer_flags &= ~0x20U;
+            } else if ((desc->flags & 0x20) != 0) {
+                desc->flags &= ~8U;
+                desc->layer_flags &= ~8U;
+            }
+            if ((desc->flags & 3) != 0) {
+                desc->flags &= ~8U;
+                desc->layer_flags &= ~8U;
+            }
+            desc->flags &= 0xf916fffb;
+            desc->layer_flags &= 0x27c8fffb;
+            if ((desc->layer_flags & 0x4000000) != 0) {
+                desc->flags &= ~0x28U;
+                desc->layer_flags &= ~0x28U;
+            }
+            break;
+        }
+    }
+    if (compiler->dictionary.force_mode) {
+        desc->flags &= 0xfffffbd7;
+        desc->layer_flags &= 0xfffffbd7;
+    }
 }

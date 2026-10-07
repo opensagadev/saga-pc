@@ -27,3 +27,7 @@ void __cdecl CutSceneMissingObjectDiagnosticPc(char *unused) {
 void __cdecl CutSceneConfigMissingPc(char *unused) {
     (void)unused;
 }
+
+void __cdecl CutSceneStreamDiagnosticPc(char *unused) {
+    (void)unused;
+}

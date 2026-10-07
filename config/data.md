@@ -1950,3 +1950,22 @@ No new shared data.cpp storage was added. Ordinary static PickupTerrainPc stays
 in its genuine nuterrain.c owner: nativezero4/provedpublication, owning extent
 unknown. Parser/compiler literals use complete text and canonical bindings;
 source initializer equality does not establish original allocation capacity.
+
+### Terrain and cutscene initializer ownership BB (2026-10-07)
+
+Twelve new full initializer copies total 97 COFF bytes and equal native bytes:
+three known-extent copies/20 bytes and nine unknown-extent copies/77 bytes.
+Known copies reuse existing physical ranges; unknown extents receive no exact
+data or allocation-capacity credit. All 9,950 old full regions and 5,278 old
+known-exact compiled copies survive; the physical union remains 637,545 bytes.
+All 13 named members/28 bytes and CRC/HANDLE parents are preserved.
+
+First matching correctly rejected a changed _ang candidate extent after three
+DWORD1 render controls were appended to central data. The controls now belong
+to the existing cutscene source with their proved InstanceRender caller. External
+C reconstruction linkage is unchanged; original historic filename/visibility
+and owning extents remain unknown. The genuinely shared NULL callback remains
+in data.cpp. No angle-table migration, padding, segment, alignment, ordering or
+comparison rule was changed. Full _ang extent1026 and native equality are restored.
+The terrain private stack pointer has its proved zero initializer; backing
+capacity and native unchecked arena domains are not inferred from it.

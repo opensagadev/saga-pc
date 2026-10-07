@@ -19129,3 +19129,7 @@ extern "C" {
 extern "C" {
     CUT_PLAYER_ACTIVE_PC *CutScenePlayerPc = NULL;
 }
+
+extern "C" {
+    void(__cdecl *CutSceneRigidRenderCallbackPc)(struct cut_load_rigid_s *, NUMTX *) = NULL;
+}

@@ -876,3 +876,24 @@ groups have independently reviewed identities; their four internal catch points
 receive no separate guessed extents/credit. Tool support remains a reviewed
 proposal, and actual embedded shader source/backend publication stays unready.
 No dummy vtable, borrowed HLSL, fake provider or successful fallback is introduced.
+
+### Source/runtime frontier after BB (2026-10-07)
+
+Real terrain Reset/Subset/Full/dispatch, HLSL methods and cutscene scheduling
+providers are compiled and compared. Ninety selected terrain checks pass using
+all 313 actual normal providers, zero replacement/supplement objects and frozen
+426 inputs. The fixture supplies four explicit native caller prestates; it does
+not establish real loaded scenes or safe arena capacity. Native wall cursor and
+rotating NULL-matrix hazards remain in source.
+
+The authentic source EXE still exits5 at NULL Retrieve receiver, +16/full208.
+ShowCrashDialog DWORD0 and launch-private cleanup leave no owned game/debugger
+process or crash dialog. Persistent window, input/device setup, Present, repeated
+frames, loaded world and gameplay remain unverified. Matching retains priority.
+Next are accepted terrain consumers/draw14/8,171, cutscene11 additional5,984 and
+backend7/1,310 with the genuine D3DXCompileShader import export. Manager publication
+and natural class lifetime/vtable/RTTI closure remain separate work. Authored
+embedded HLSL preserves tokens/directives but full text is nonexact and inactive.
+Parser EH full335/581 groups and portable support are reviewed research; unbound
+natural generated helpers still prevent producer activation. No fake tables,
+providers or alternate startup are introduced.

@@ -899,3 +899,7 @@ i32 __cdecl NuCameraSaveState(void) {
 void __cdecl NuCameraClearStateBuffer(void) {
     CameraSavedStateCountPc = 0;
 }
+
+f32 __cdecl NuCameraDistSqr(NUVEC *point) {
+    return NuVecDistSqr(point, (NUVEC *)&global_camera.mtx.m30, NULL);
+}

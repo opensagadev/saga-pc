@@ -16776,7 +16776,9 @@ struct PC_SHADER_FILTER_DESC_VIEW {
     u8 unknown_03c[8];
     u8 blend_ops[3], unknown_047;
     i32 specular_threshold;
-    u8 unknown_04c[0x5c];
+    u8 unknown_04c[0x3c];
+    f32 shininess;
+    u8 unknown_08c[0x1c];
     u8 texture_units, sampler_indices[6], unknown_0af[0x8d];
     u32 vertex_format;
     u8 unknown_140[0x74];
@@ -16792,6 +16794,7 @@ STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, surface_threshold) == 0x34);
 STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, normal_threshold) == 0x38);
 STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, blend_ops) == 0x44);
 STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, specular_threshold) == 0x48);
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, shininess) == 0x88);
 STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, texture_units) == 0xa8);
 STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, vertex_format) == 0x13c);
 STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, override_mode) == 0x1b4);
@@ -16862,6 +16865,56 @@ STATIC_ASSERT(offsetof(ShaderCompilerBasePc, dictionary) == 0x20c);
 STATIC_ASSERT(offsetof(ShaderCompilerBasePc, source_buffer) == 0xbb0);
 STATIC_ASSERT(offsetof(ShaderCompilerBasePc, parser_memory) == 0xbc0);
 
+struct PC_SHADER_MANAGER_VIEW;
+struct PC_SHADER_OBJECT_FULL_VIEW {
+    i32 marker;
+    i32 ref_count;
+    u32 key;
+    u8 unknown_c[0x4c0];
+    PC_TEXTURE_RESOURCE_PC *vertex_shader;
+    PC_TEXTURE_RESOURCE_PC *pixel_shader;
+    u32 unknown_4d4;
+};
+STATIC_ASSERT(sizeof(PC_SHADER_OBJECT_FULL_VIEW) == 0x4d8);
+STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, vertex_shader) == 0x4cc);
+STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, pixel_shader) == 0x4d0);
+struct PC_SHADER_MANAGER_VIEW {
+    virtual ~PC_SHADER_MANAGER_VIEW();
+    virtual bool CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *, i32);
+    virtual void AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);
+    PC_SHADER_OBJECT_FULL_VIEW slots[400];
+    i32 last_allocated;
+    PC_SHADER_OBJECT_FULL_VIEW *bound_slot;
+    PC_SHADER_OBJECT_FULL_VIEW *__thiscall AllocateSlot(i32 *index);
+    PC_SHADER_OBJECT_FULL_VIEW *__thiscall Retrieve(const PC_SHADER_FILTER_DESC_VIEW *,
+                                                    const PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32, bool);
+};
+STATIC_ASSERT(offsetof(PC_SHADER_MANAGER_VIEW, slots) == 4);
+STATIC_ASSERT(offsetof(PC_SHADER_MANAGER_VIEW, last_allocated) == 0x79184);
+STATIC_ASSERT(offsetof(PC_SHADER_MANAGER_VIEW, bound_slot) == 0x79188);
+
+struct ShaderCompilerHLSLPc : ShaderCompilerBasePc {
+    virtual ~ShaderCompilerHLSLPc();
+    virtual void Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *);
+    virtual void Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *);
+};
+STATIC_ASSERT(sizeof(ShaderCompilerHLSLPc) == 0xbd0);
+
+struct ShaderManagerHLSLPc : PC_SHADER_MANAGER_VIEW {
+    ShaderCompilerBasePc *compiler;
+    ShaderCompilerBufferAllocatorPc vertex_source;
+    ShaderCompilerBufferAllocatorPc pixel_source;
+    ShaderManagerHLSLPc(VirtualStackAllocator &);
+    virtual ~ShaderManagerHLSLPc();
+    virtual bool CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *, i32);
+    virtual void AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);
+};
+STATIC_ASSERT(sizeof(PC_SHADER_MANAGER_VIEW) == 0x7918c);
+STATIC_ASSERT(offsetof(ShaderManagerHLSLPc, compiler) == 0x7918c);
+STATIC_ASSERT(offsetof(ShaderManagerHLSLPc, vertex_source) == 0x79190);
+STATIC_ASSERT(offsetof(ShaderManagerHLSLPc, pixel_source) == 0x791a0);
+STATIC_ASSERT(sizeof(ShaderManagerHLSLPc) == 0x791b0);
+
 extern "C" u32 __cdecl ShaderDeclarationFlagsPc(u8, u8, u8);
 extern "C" i32 __cdecl ShaderDeclarationSemanticPc(ShaderLexicalSlicePc *);
 
@@ -16870,6 +16923,21 @@ extern "C" i32 __cdecl ShaderDeclarationSemanticPc(ShaderLexicalSlicePc *);
 #ifdef __cplusplus
 extern "C" {
 #endif
+    void __cdecl instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *);
+    void __cdecl instNuGCutSceneStart(INSTNUGCUTSCENE *);
+    void __cdecl instNuGCutSceneReset(INSTNUGCUTSCENE *);
+    void __cdecl NuGCutSceneSysRender(i32);
+    struct cut_load_rigid_s;
+    extern void(__cdecl *CutSceneRigidRenderCallbackPc)(struct cut_load_rigid_s *, NUMTX *);
+    extern i32 CutSceneRenderRigidsPc;
+    extern i32 CutSceneRenderCharactersPc;
+    extern i32 CutSceneRenderLocatorsPc;
+    f32 __cdecl NuCameraDistSqr(NUVEC *);
+    void __cdecl CutSceneStreamDiagnosticPc(char *);
+
+    void __cdecl NewScanInit(void);
+    i16 *__cdecl NewScanHandel(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_type, i16 *subset);
+
     i32 __cdecl NewRayCastMask(NUVEC *, NUVEC *, f32, i32, i32);
     i32 __cdecl NewRayCastSet(NUVEC *, NUVEC *, f32, f32, f32, i32, i32);
     i32 __cdecl NewRayCastSetMask(NUVEC *, NUVEC *, f32, f32, f32, i32, i32, i32);

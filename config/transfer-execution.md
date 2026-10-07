@@ -3692,3 +3692,42 @@ is proved; no invented initialized pointer, bound or guard. Embedded-source and
 backend provenance, DDS value, Perm angle extent loss and Hub FP pair remain
 explicit holds. Whole-project matching-priority goal/direct-main continuation
 remains active, human identification journal intact and excluded.
+
+### Connected terrain, HLSL and cutscene checkpoint BB (2026-10-07 UTC)
+
+Transferred 22 functions and 11,455 newly compared unique PC bytes: terrain
+handles8,039, HLSL974, cutscene scheduling/render2,420 and real camera/debug
+suppliers22. Unique compared code is1,263,958, native objdiff1,264,476 with
+unchanged518 alias overlap. Whole-PC fuzzy25.19935328501511%, a gain of
+0.12231456583486677 percentage points. Exact206,890/3,471,246 bytes is
+5.960107696199001%, +1,203 bytes/10 new exact functions. These are source
+comparison measurements; the game still does not run successfully.
+
+All4,325 prior bodies were checked, with4,324 identical and the reviewed
+previously nonexact Retrieve13-byte setup reorder. All2,068 old exact code copies,
+9,950 complete data regions,5,278 exact data copies and13 members/28bytes survive.
+Twelve full new native-equal initializers total97bytes:3known20B,9unknown77B.
+Physical exact data remains637,545; unknown extents receive no credit. The first
+normal match exposed _ang1026 to1028 after central control definitions. Commit
+was held. The three render controls were placed with their real cutscene caller,
+preserving external linkage and leaving the shared callback in data.cpp. Complete
+normal checks and matching then passed without altered extents, alignment,
+segments, source ordering tricks or weakened comparison.
+
+Required build/link/check-objects, LLVM18 full726 tests/3 existing skips and
+authoritative retail matching pass. Actual-normal terrain90/0 uses313 providers
+and426 frozen inputs, no replacements/supplements. The authentic EXE still
+exits5 at NULL Retrieve+16/full208. Crash dialogs stay disabled; launch-private
+cleanup leaves no owned game/debugger or visible crash window. Window/device/
+Present/repeated frames/scene/gameplay remain unverified. Baseline037dbbd
+exactCI37652193179 passed all steps. The half-hour checkpoint was delayed to
+repair genuine source ownership and complete validation instead of committing
+a failed batch. SharedUID /tmp quota required scoped execution fallback; no
+unrelated storage cleanup, tool redownload or broad Wine reset was performed.
+
+Continue accepted terrain14/8,171 with no new shared storage, cutscene11 new5,984,
+backend7/1,310 and genuine shader manager/lifetime publication. Parser generated
+helper closure, embedded-source activation, DDS value, Perm angle source and
+Hub FP holds remain explicit. Whole-project matching-priority goal and authorized
+direct-main continuation remain active. The human identification journal is
+preserved and excluded from this commit.

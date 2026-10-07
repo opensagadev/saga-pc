@@ -298,3 +298,17 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     definitions->AddDefinition("PACKED_VECTOR", NULL, 0);
     definitions->AddDefinition("SKIN_WORLD", NULL, 0);
 }
+
+void ShaderCompilerHLSLPc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor,
+                                   ShaderCompilerDictionaryPc *dictionary) {
+    PC_SHADER_MATERIAL_FILTER_VIEW filter;
+    filter.Initialize(descriptor, NULL, 0, 0);
+    Configure(&filter, dictionary);
+}
+void ShaderCompilerHLSLPc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerDictionaryPc *dictionary) {
+    ShaderCompilerBasePc::Configure(filter, dictionary);
+    dictionary->AddDefinition("BUILD_VERTEX_SHADER", NULL, 0);
+    dictionary->AddDefinition("BUILD_PIXEL_SHADER", NULL, 0);
+    dictionary->AddDefinition("HLSL_LANGUAGE", NULL, 0);
+    dictionary->AddDefinition("COLOR_FACTOR", "2.0", 1);
+}

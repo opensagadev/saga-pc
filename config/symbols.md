@@ -4614,3 +4614,20 @@ All4,303 old full official function bodies and9,733 old full initializers remain
 identical. Five class6/type0 serial changes preserve raw bytes/owner offsets/full
 relocated output. New exact five bodies add770 bytes; full native extents stay
 complete. Current normal build is313owners/4,325functions/9,950data regions.
+
+### Terrain handles, HLSL and cutscene transfer BB (2026-10-07)
+
+Transferred 22 complete functions and 11,455 new PC bytes: terrain handles
+8,039, HLSL methods 974, cutscene scheduling/render 2,420 and two genuine
+camera/debug suppliers 22. Native terrain dispatch and complete selector tails
+remain intact; named layout assertions preserve the PC handle and platform
+fields. The cutscene scheduling cohort uses its real stream, animation, rigid,
+character and camera providers. CharacterSysRender retains native NULL behavior.
+
+All 4,325 prior full functions were checked: 4,324 official bodies are unchanged;
+Retrieve's previously nonexact 208-byte body has the reviewed 13-byte dispatch
+setup reorder following genuine virtual slot+8 integration. Its key, arguments,
+remaining bytes and extents are unchanged; no invalid-pointer fault-order
+equivalence is claimed. All 2,068 prior exact code copies survive. Five local
+class6/type0 compiler serial changes preserve owner offsets/raw/official bytes.
+Current normal build: 313 owners, 4,347 functions and 9,962 complete data regions.
