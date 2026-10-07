@@ -1129,6 +1129,8 @@ address    , symbol                                                         , si
 0x0050e520 , _SmartTextSetFont                                              , 10    , void __cdecl (VUFNT *)
 0x0050e530 , _SetGameFont                                                   , 10    , void __cdecl (VUFNT *)
 0x0050e540 , _Set3DGameFont                                                 , 10    , void __cdecl (VUFNT *)
+0x50e550,_LoadGameFont,194,"VUFNT *__cdecl(char *,char *,VARIPTR *,VARIPTR *,i32)"
+0x50e620,_UnloadGameFont,114,void __cdecl(void)
 0x50e6a0,_SetQFont2D,47,void __cdecl (void)
 0x0050e6d0 , _SmartTextSetWidescreen                                        , 21    , "void __cdecl (f32, f32)"
 0x0050e6f0 , _SmartTextGetWidescreen                                        , 33    , "void __cdecl (f32 *, f32 *)"
@@ -1140,6 +1142,7 @@ address    , symbol                                                         , si
 0x50fb30,_DrawMenuButtonPromptsEx,876,"void __cdecl(i32,i32,i32,i32,u8,u8,u8,u8)"
 0x50fea0,_DrawMenuButtonPrompts,46,"void __cdecl(i32,i32,i32,u8,u8,u8,u8)"
 0x50fed0,_DrawMenu,543,void __cdecl(i32)
+0x5115d0,_LoadButtonFont,98,"VUFNT *__cdecl(char *,char *,VARIPTR *,VARIPTR *,i32)"
 0x512850   , _AIScriptMissingStateDiagnostic                                , 1     , "void __cdecl (char *, char *, char *)"
 0x512860   , _AIScriptMissingStateDiagnosticAlternate                       , 1     , "void __cdecl (char *, char *, char *)"
 0x005128a0 , _AIPathSafeDivide                                              , 54    , "f32 __cdecl (f32, f32)"
@@ -1481,6 +1484,7 @@ address    , symbol                                                         , si
 0x0054b540 , _Text_InitLanguageList                                         , 49    , void __cdecl (LANGUAGEDATA *)
 0x0054b580 , _Text_SetLanguage                                              , 27    , void __cdecl (i32)
 0x0054b5a0 , _Text_GetLanguagePath                                          , 96    , char *__cdecl (i32)
+0x54b600,_Text_LoadFont,62,"void __cdecl(char *,VARIPTR *,VARIPTR *)"
 0x0054b640 , _Text_IsFontLoaded                                             , 6     , void *__cdecl (void)
 0x0054b650 , _Text_InitStringTable                                          , 111   , "void __cdecl (i32, VARIPTR *, VARIPTR *)"
 0x0054b6c0 , _Text_GetMaxOverallStrings                                     , 6     , i32 __cdecl (void)
@@ -2796,6 +2800,8 @@ address    , symbol                                                         , si
 0x5d1030,_NuQFntSetMtx,39,"void __cdecl (VUFNT *,NUMTX *)"
 0x5d1060,_NuQFntSetColour,27,"void __cdecl(VUFNT *, u32)"
 0x005d10e0 , _NuQFntMoveRS                                                  , 94    , "void __cdecl (void *, VUFNT *, f32, f32, f32)"
+0x5d1150,_NuQFntWrite,637,"void __cdecl(char *,VUFNT *)"
+0x5d13d0,_NuQFntWriteUniversalFont,228,"void __cdecl(char *,VUFNT *,char *)"
 0x5d1530,_NuQFntSetUVSizePc,144,"void __cdecl(VUFNT *, f32, f32)"
 0x5d18c0,_NuTexAnimProgRelease,11,void __cdecl NuTexAnimProgRelease(void)
 0x5d18d0,_NuTexAnimProgFind,48,TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgFind(const char *name)
@@ -3013,8 +3019,15 @@ address    , symbol                                                         , si
 0x5ea570,_NuSpecialSetDrawMtx,89,"void __cdecl(NUSPECIALHANDLE *, NUMTX *)"
 0x005ea660 , _NuSpecialUpdate                                               , 59    , void __cdecl (NUSPECIALHANDLE *)
 0x005ea6a0,_NuSpecialClipTestShadowLights,293,"i32 __cdecl(NUVEC *,NUVEC *,i32)"
+0x5ea7d0,_NuQFntDestroy,44,void __cdecl(VUFNT *)
+0x5ea800,_NuQFntReadPS,378,"i32 __cdecl(VUFNT *,i32,i32,i32,VARIPTR *,VARIPTR)"
+0x5ea980,_NuQFntReadBuffer,76,"VUFNT *__cdecl(VARIPTR *,VARIPTR *,VARIPTR)"
+0x5ea9d0,_NuQFntRead,167,"VUFNT *__cdecl(char *,VARIPTR *,VARIPTR)"
 0x5eaad0,_NuQFntSetPointSize,220,"void __cdecl(VUFNT *, f32, f32)"
 0x5eabb0,_NuQFntMove,74,"void __cdecl(VUFNT*,f32,f32,f32)"
+0x5eac00,_NuQFntCreate,868,"VUFNT *__cdecl(FONT_LEGACY_READER_PC *,i32,i32,VARIPTR *,VARIPTR *)"
+0x5eaf70,_NuQFntDuplicate,288,"VUFNT *__cdecl(VUFNT *,i32,i32,VARIPTR *,VARIPTR *)"
+0x5eb090,_NuQFntLoadPtr,434,"VUFNT *__cdecl(char *,char *,i32,i32,VARIPTR *,VARIPTR *)"
 0x005eb250 , _NuQFntPrintCharW                                              , 1210  , "void __cdecl (VUFNT *, u16 *, u32)"
 0x005eb790,_NuHGobjEvalAnim2Root_3,230,
 0x005eb880,_NuHGobjEvalAnim2Root,777,
@@ -3169,6 +3182,7 @@ address    , symbol                                                         , si
 0x601230,_NuMtlSetShaderDescPS,104,"void __cdecl NuMtlSetShaderDescPS(NUMTL *material, const struct PC_MATERIAL_SHADER_DESC_VIEW *description)"
 0x6012a0,_NuMtlAnimateShaderMtlTextures,129,void __cdecl(f32)
 0x601330,_NuMtlAnimate,44,void __cdecl(f32)
+0x6017c0,_NuMtlSetRenderPlanePc,1,"void __cdecl(NUMTL *,i32)"
 0x006018c0,_NuLgtLaser,283,"void __cdecl(i32, f32, f32, f32, NUVEC *, NUVEC *, u32, f32, f32)"
 0x00601c10,_NuLgtSetArcMatEx,67,"void __cdecl(i32, NUMTL *, f32, f32, f32, f32)"
 0x00601c60,_NuLgtArcLaserEx,382,"void __cdecl(i32, NUVEC *, NUVEC *, NUVEC *, f32, f32, f32, f32, i32, i32)"
@@ -4376,9 +4390,11 @@ address    , symbol                                                         , si
 0x6e45e0,_PCDeviceClear,55,"void __cdecl(u32,const RECT*,u32,u32,f32,u32)"
 0x6e46b0,_PCDeviceCreateDepthSurface,59,"void __cdecl(u32,u32,i32,i32,u32,BOOL,PC_TEXTURE_RESOURCE_PC**,HANDLE*)"
 0x6e46f0,_PCDeviceCreateIndexBuffer,63,"void __cdecl (u32, u32, i32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *)"
+0x6e4770,_PCDeviceCreatePixelShader,32,"HRESULT __cdecl(const DWORD*,PC_TEXTURE_RESOURCE_PC**)"
 0x6e47d0,_PCDeviceCreateTexture,56,"void __cdecl(u32,u32,u32,u32,i32,i32,PC_TEXTURE_RESOURCE_PC**)"
 0x6e4810,_PCDeviceCreateVertexBuffer,60,"void __cdecl (u32, u32, u32, i32, PC_BUFFER_RESOURCE_PC **)"
 0x6e4850,_PCDeviceCreateVertexDeclaration,32,"void __cdecl(const PC_VERTEX_ELEMENT_PC*,PC_TEXTURE_RESOURCE_PC**)"
+0x6e4870,_PCDeviceCreateVertexShader,32,"HRESULT __cdecl(const DWORD*,PC_TEXTURE_RESOURCE_PC**)"
 0x6e49b0,_PCDeviceDrawPrimitiveUPPc,61,"void __cdecl(i32,u32,const void *,u32)"
 0x6e4a40,_PCDeviceEvictManagedResources,19,void __cdecl(void)
 0x6e5340,_PCDeviceSetRenderState,414,"void __cdecl (i32, u32)"
@@ -4663,23 +4679,28 @@ address    , symbol                                                         , si
 0x740f60,?setExternalMemoryPool@VirtualStackAllocator@@QAEXPAXI@Z,50,
 0x740fe0,??0VirtualStackAllocator@@QAE@PAXI@Z,27,
 0x741000,??0VirtualStackAllocator@@QAE@AAU0@I@Z,87,
-0x741570,?AllocateSlot@PC_SHADER_MANAGER_VIEW@@QAEPAUPC_SHADER_OBJECT_FULL_VIEW@@PAH@Z,128,PC_SHADER_OBJECT_FULL_VIEW* __thiscall PC_SHADER_MANAGER_VIEW::AllocateSlot(i32*)
+0x741570,?AllocateSlot@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEPAVNuShaderObject@@PAH@Z,128,PC_SHADER_OBJECT_FULL_VIEW* __thiscall ShaderManagerTemplate<NuShaderObject>::AllocateSlot(i32*)
 0x741660,_NuShaderManagerReleaseShader,9,void __cdecl(PC_SHADER_RECORD_VIEW*)
 0x7416c0,_PCShaderCurrentObjectPc,12,void *__cdecl(void)
 0x7416d0,_PCShaderRecordFromHandle,31,PC_SHADER_RECORD_VIEW *__cdecl(u32)
-0x741750,?Retrieve@PC_SHADER_MANAGER_VIEW@@QAEPAUPC_SHADER_OBJECT_FULL_VIEW@@PBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH_N@Z,208,"PC_SHADER_OBJECT_FULL_VIEW* __thiscall PC_SHADER_MANAGER_VIEW::Retrieve(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*,i32,i32,bool)"
+0x741750,?Retrieve@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEPAVNuShaderObject@@PBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH_N@Z,208,"PC_SHADER_OBJECT_FULL_VIEW* __thiscall ShaderManagerTemplate<NuShaderObject>::Retrieve(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*,i32,i32,bool)"
 0x741820,_NuShaderManagerRetrieveShader,28,"PC_SHADER_OBJECT_FULL_VIEW* __cdecl(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*)"
 0x741840,_NuShaderManagerRetrieveShaderVariant,31,"PC_SHADER_OBJECT_FULL_VIEW* __cdecl(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*,i32)"
 0x741910,_PCVertexDeclarationFindSlot,82,"PC_VERTEX_DECL_ENTRY_PC* __cdecl(const PC_VERTEX_DECL_ENTRY_PC*,PC_VERTEX_DECL_ENTRY_PC*,i32,u8*)"
 0x741970,_NuGetVertexDeclaration,1684,PC_TEXTURE_RESOURCE_PC* __cdecl(u32)
 0x742330,_NuShaderObjectCreate,24,void __cdecl NuShaderObjectCreate(PC_SHADER_OBJECT_FULL_VIEW *)
+0x742350,_NuShaderObjectInit,33,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,const u32*,i32,const char*,i32,const char*,i32,i32)"
 0x742380,_NuShaderObjectUnInit,5,void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*)
+0x7424c0,_PCShaderProbeHLSLConstants,565,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,ID3DXConstantTable*,ID3DXConstantTable*)"
 0x742700,_NuShaderObjectDestroy,22,void __cdecl NuShaderObjectDestroy(PC_SHADER_OBJECT_FULL_VIEW *)
 0x743990,_NuShaderObjectBaseCreate,22,void __cdecl NuShaderObjectBaseCreate(PC_SHADER_OBJECT_FULL_VIEW *)
 0x7439b0,_NuShaderObjectBaseDestroy,12,void __cdecl NuShaderObjectBaseDestroy(PC_SHADER_OBJECT_FULL_VIEW *)
+0x7439c0,_NuShaderObjectBaseInit,20,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,const u32*,i32)"
 0x7439e0,_NuShaderObjectBaseUnInit,11,void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*)
 0x743d00,_PCShaderObjectCreateHLSLPc,46,void __cdecl PCShaderObjectCreateHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *)
 0x743d30,_PCShaderObjectDestroyHLSLPc,5,void __cdecl PCShaderObjectDestroyHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *)
+0x743d40,_PCShaderAllocateParameter,16,"PC_SHADER_PARAMETER_LOCAL_PC* __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,i32)"
+0x743e50,_PCShaderObjectInitHLSLPc,612,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,const u32*,i32,const char*,i32,const char*,i32,i32)"
 0x7440c0,_PCShaderNativeUnInit,72,void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*)
 0x744210,_NuShaderUniformGetByString,154,ShaderUniformRecordPc *__cdecl NuShaderUniformGetByString(const char *name)
 0x7442e0,?HasVertexSkin@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,31,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasVertexSkin() const
@@ -4690,8 +4711,19 @@ address    , symbol                                                         , si
 0x744660,?HasLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,75,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasLayer(i32) const
 0x7446b0,?GetVertexFlags@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEIXZ,292,u32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags(void) const
 0x744c20,_NuShaderObjectKeyGenerate3,1093,"void __cdecl(u32*,const PC_SHADER_MATERIAL_FILTER_VIEW*,i32)"
-0x7452b0,?Prepare@ShaderCompilerBasePc@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,52,"void __thiscall ShaderCompilerBasePc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *)"
-0x7454c0,?AdaptDescriptor@ShaderManagerHLSLPc@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@@Z,835,"void __thiscall ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *)"
+0x7451d0,??_EShaderBuilderGen@@UAEPAXI@Z,,COFF weak alias to same scalar deleting destructor; zero new byte credit
+0x7451d0,??_GShaderBuilderGen@@UAEPAXI@Z,74,
+0x745220,?SetIncludeDirectories@ShaderBuilderGen@@UAEXPBD@Z,32,void __thiscall ShaderBuilderGen::SetIncludeDirectories(const char*)
+0x745240,?SetSaveDirectory@ShaderBuilderGen@@UAEXPBD@Z,32,void __thiscall ShaderBuilderGen::SetSaveDirectory(const char*)
+0x745260,?SetProfile@ShaderBuilderGen@@UAEXHHH@Z,11,"void __thiscall ShaderBuilderGen::SetProfile(i32,i32,i32)"
+0x745280,?SetForceMode@ShaderBuilderGen@@UAEX_N@Z,13,void __thiscall ShaderBuilderGen::SetForceMode(bool)
+0x7452b0,?Prepare@ShaderBuilderGen@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,52,"void __thiscall ShaderBuilderGen::Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *)"
+0x7452f0,??0HLSLShaderBuilder@@QAE@AAUVirtualStackAllocator@@@Z,27,
+0x745310,??1HLSLShaderBuilder@@UAE@XZ,53,
+0x745310,??1ShaderBuilderGen@@UAE@XZ,53,
+0x7454c0,?AdaptDescriptor@ShaderManagerHLSL@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@@Z,835,"void __thiscall ShaderManagerHLSL::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *)"
+0x745950,??_EHLSLShaderBuilder@@UAEPAXI@Z,,COFF weak alias to same scalar deleting destructor; zero new byte credit
+0x745950,??_GHLSLShaderBuilder@@UAEPAXI@Z,74,
 0x746260,??0CRC16@@QAE@XZ,255,__thiscall CRC16::CRC16(void)
 0x746360,?hash@CRC16@@SAIPBEH@Z,61,"u32 __cdecl CRC16::hash(const u8*,i32)"
 0x7463a0,?hashInverse@CRC16@@SAIPBEH@Z,64,"u32 __cdecl CRC16::hashInverse(const u8*,i32)"
@@ -4731,9 +4763,10 @@ address    , symbol                                                         , si
 0x748790,?AppendInt@ShaderCompilerBufferAllocatorPc@@QAEXH@Z,90,
 0x748890,?HasAnisoFlip@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,24,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasAnisoFlip() const
 0x748980,?HasPhongLighting@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,24,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasPhongLighting() const
-0x749620,?Configure@ShaderCompilerBasePc@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,4642,"void __thiscall ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *)"
-0x74a930,?Prepare@ShaderCompilerHLSLPc@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,52,"void __thiscall ShaderCompilerHLSLPc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *)"
-0x74a970,?Configure@ShaderCompilerHLSLPc@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,87,"void __thiscall ShaderCompilerHLSLPc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *)"
+0x748c40,??0ShaderBuilderGen@@QAE@AAUVirtualStackAllocator@@H@Z,96,
+0x749620,?Configure@ShaderBuilderGen@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,4642,"void __thiscall ShaderBuilderGen::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *)"
+0x74a930,?Prepare@HLSLShaderBuilder@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,52,"void __thiscall HLSLShaderBuilder::Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *)"
+0x74a970,?Configure@HLSLShaderBuilder@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,87,"void __thiscall HLSLShaderBuilder::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *)"
 0x74aa50,?Equals@ShaderLexicalSlicePc@@QAE_NPBD@Z,55,bool __thiscall ShaderLexicalSlicePc::Equals(const char *text)
 0x74aa90,?StartsWith@ShaderLexicalSlicePc@@QAE_NPBD@Z,46,bool __thiscall ShaderLexicalSlicePc::StartsWith(const char *text)
 0x74aac0,?HeapCopy@ShaderLexicalSlicePc@@QAEPADXZ,46,char * __thiscall ShaderLexicalSlicePc::HeapCopy()
@@ -6967,6 +7000,10 @@ address    , symbol                                                         , si
 0x0075d004 , _PermLegalFrench                                               , 10    , const char[10]
 0x0075d010 , _PermLegalUS                                                   , 4     , const char[4]
 0x75d014,_NuFileExt_dds_PC,5,const char[5]
+0x75d034,??_C@_0BH@IGCMLKCB@stuff?2text?2batman_font?$AA@,,const char[]
+0x75d04c,??_C@_0BJ@EEJPJHNF@stuff?2text?2starwars_font?$AA@,,const char[]
+0x75d068,??_C@_0BL@GKNGJJIC@stuff?2text?2starwars_font_j?$AA@,,const char[]
+0x75d084,??_C@_0BD@NJDNDEOK@stuff?2text?2pc_font?$AA@,,const char[]
 0x0075d0c0 , _LoadPermEpisodesPath                                          , 20    , const char[20]
 0x0075d0d4 , _LoadPermAreasPath                                             , 17    , const char[17]
 0x0075d0e8 , _LoadPermLevelsPath                                            , 18    , const char[18]
@@ -7457,7 +7494,9 @@ address    , symbol                                                         , si
 0x00761648 , _Text_PathFrenchText                                           , 7     , const char[7]
 0x00761650 , _Text_PathEnglishText                                          , 8     , const char[8]
 0x00761658 , _Text_ErrorText                                                , 7     , const char[7]
+0x761660,??_C@_0BD@CCNBGOMO@stuff?2text?2Buttons?$AA@,,const char[]
 0x00761674 , _TextPlatformXbox                                              , 5     , const char[5]
+0x76167c,??_C@_02BKJPHGNJ@pc?$AA@,,const char[]
 0x0076167c , _TextPlatformPC                                                , 3     , const char[3]
 0x00761680 , _TextPlatformPSP                                               , 4     , const char[4]
 0x00761684 , _TextPlatformPS3                                               , 4     , const char[4]
@@ -8190,6 +8229,15 @@ address    , symbol                                                         , si
 0x00764540 , __real@42e00000                                                , 4     , const f32
 0x00764544 , __real@c2e00000                                                , 4     , const f32
 0x00764548 , __real@43a00000                                                , 4     , const f32
+0x76454c,??_C@_0BC@LAKGPHPA@?$DMP?$DO?$DM?1BODY?$DO?$DM?1HTML?$DO?$AA@,,const char[]
+0x764560,??_C@_0BM@EKBNGPJI@?$CF?44d?5?$CI?8?$CFc?8?$CJ?3?5char?$DN?$CF?43d?$DMBR?$DO?6?$AA@,,const char[]
+0x76457c,??_C@_0BG@FOMPFKNG@?$DMP?$DOLookup?5table?3?6?$DMP?$DO?6?$AA@,,const char[]
+0x764594,??_C@_0CH@PIBIABGN@?$CF?43d?5?$CI?8?$CFc?8?$CJ?3?5u?$DN?$CF?43d?5v?$DN?$CF?43d?5w?$DN?$CF?43@,,const char[]
+0x7645bc,??_C@_0CJ@HHLEOMFF@?$DMP?$DOInternal?5char?5list?3?5?$CI?$CFd?5entri@,,const char[]
+0x7645e8,??_C@_0DJ@GEFAACJE@?$DMHTML?$DO?$DMBODY?$DO?$DMfont?5face?5?$DN?5courier@,,const char[]
+0x764624,??_C@_06HBGINCDK@?$CFs?4htm?$AA@,,const char[]
+0x76462c,??_C@_06GIPGOOPC@?$CFs?4qfn?$AA@,,const char[]
+0x764634,??_C@_06OHJEHJKF@?$CFs?4ufn?$AA@,,const char[]
 0x76463c,_NuTextureAnimationSourcePathPC,50,const char[50]
 0x764680,_NuTextureAnimationSlotsWarning,31,const char[31]
 0x7646a0,__real@43340000,,
@@ -8198,6 +8246,7 @@ address    , symbol                                                         , si
 0x00765058 , _NuTimeBarScanlineMicroseconds                                 , 8     , const f64
 0x00765060 , _NuTimeBarLinesPerSecond                                       , 8     , const f64
 0x00765068 , _NuTimeBarScanlinesPerFrame                                    , 8     , const f64
+0x7654a4,??_C@_03MJOMNCOE@fnt?$AA@,,const char[]
 0x7654a8,__real@4010ccccc0000000,8,const f64
 0x7654b0,__real@40119999a0000000,8,const f64
 0x7654b8,__real@4002666660000000,8,const f64
@@ -9992,6 +10041,16 @@ address    , symbol                                                         , si
 0x7e7d1c,?PcJoystickDataFormat@@3UPC_DI_DATA_FORMAT_PC@@B,,PC_DI_DATA_FORMAT_PC
 0x7e7f24,?PcMouseDataFormat@@3UPC_DI_DATA_FORMAT_PC@@B,,PC_DI_DATA_FORMAT_PC
 0x7e8abc,_PCSampleBufferAlgorithmPc,,const GUID
+0x7e8af0,??_C@_0BA@OEBCIANH@fragmentProgram?$AA@,,const char[]
+0x7e8b00,??_C@_0O@HBBLHPJJ@vertexProgram?$AA@,,const char[]
+0x7e8b10,??_C@_06FACECGCE@ps_1_1?$AA@,,const char[]
+0x7e8b18,??_C@_06DDPEBDBO@vs_1_1?$AA@,,const char[]
+0x7e8b20,??_C@_06FLIKLIIL@ps_2_0?$AA@,,const char[]
+0x7e8b28,??_C@_06DIFKINLB@vs_2_0?$AA@,,const char[]
+0x7e8b30,??_C@_06PICKNEJO@ps_2_a?$AA@,,const char[]
+0x7e8b38,??_C@_06JLPKOBKE@vs_2_a?$AA@,,const char[]
+0x7e8b40,??_C@_06ODDGNPOO@ps_3_0?$AA@,,const char[]
+0x7e8b48,??_C@_06IAOGOKNE@vs_3_0?$AA@,,const char[]
 0x7e8b50,_ShaderUniformTextPc007e8b50,,const char[20]
 0x7e8b64,_ShaderUniformTextPc007e8b64,,const char[22]
 0x7e8b7c,_ShaderUniformTextPc007e8b7c,,const char[19]
@@ -10104,6 +10163,8 @@ address    , symbol                                                         , si
 0x7e9264,_ShaderUniformTextPc007e9264,,const char[18]
 0x7e9278,_ShaderUniformTextPc007e9278,,const char[21]
 0x7e9290,_ShaderUniformTextPc007e9290,,const char[13]
+0x7e92d0,??_7ShaderBuilderGen@@6B@,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7e92f0,??_7HLSLShaderBuilder@@6B@,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
 0x7e9380,??_C@_04DGFIONEK@hook?$AA@,,
 0x7e9388,??_C@_0M@JHKOCKOC@samplerCUBE?$AA@,,
 0x7e9394,??_C@_09LAHPNHHH@sampler3D?$AA@,,
@@ -10384,6 +10445,14 @@ address    , symbol                                                         , si
 0x7eb6c0,??_R3OggReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb6d0,??_R2OggReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb6dc,??_R1A@?0A@EA@OggReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
+0x7ec898,??_R4ShaderBuilderGen@@6B@,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec8ac,??_R3ShaderBuilderGen@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec8bc,??_R2ShaderBuilderGen@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec8c4,??_R1A@?0A@EA@ShaderBuilderGen@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec8e0,??_R4HLSLShaderBuilder@@6B@,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec8f4,??_R3HLSLShaderBuilder@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec904,??_R2HLSLShaderBuilder@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec910,??_R1A@?0A@EA@HLSLShaderBuilder@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
 0x7ecdc8,__sehtable$_CpuDetectFeaturesPc,,
 0x7ef00c,_InitOnceFileModePc,,i32
 0x007ef01c , _SUPERBUFFERSIZE                                               , 4     , i32
@@ -12304,9 +12373,15 @@ address    , symbol                                                         , si
 0x921e94,_memcard_drawasiconfn,,void (__cdecl *)(void)
 0x00921eac , _QFont2D                                                       , 4     , VUFNT *
 0x921eb0,_QFont2DLower,,VUFNT *
+0x921eb4,_QFont2DZ,,VUFNT *
+0x921eb8,_QFont3D,,VUFNT *
 0x00921ebc , _QFont3DZ                                                      , 4     , VUFNT *
 0x00921ec0 , _SmartTextFont                                                 , 4     , VUFNT *
 0x00921ec4 , _QFont2DButtons                                                , 4     , VUFNT *
+0x921ec8,_create_qfont2dlower,,i32
+0x921ecc,_create_qfont2dz,,i32
+0x921ed0,_create_qfont3d,,i32
+0x921ed4,_create_qfont3dz,,i32
 0x921ed8,_TextCrawlTimePc,,f32
 0x921edc,_followon_line,,i32
 0x921ee0,_TextPrintModePc,,i32

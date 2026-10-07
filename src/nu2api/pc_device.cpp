@@ -1164,3 +1164,14 @@ extern "C" i32 __cdecl PCGraphicsPrepareVendor() {
     PCGraphicsSelectedGpuRecord = selected;
     return 0;
 }
+
+extern "C" HRESULT __cdecl PCDeviceCreateVertexShader(const DWORD *tokens, PC_TEXTURE_RESOURCE_PC **shader) {
+    HRESULT result = PCDeviceBackend.device->methods->create_vertex_shader(PCDeviceBackend.device, tokens, shader);
+    PCDeviceLastResult = result;
+    return result;
+}
+extern "C" HRESULT __cdecl PCDeviceCreatePixelShader(const DWORD *tokens, PC_TEXTURE_RESOURCE_PC **shader) {
+    HRESULT result = PCDeviceBackend.device->methods->create_pixel_shader(PCDeviceBackend.device, tokens, shader);
+    PCDeviceLastResult = result;
+    return result;
+}

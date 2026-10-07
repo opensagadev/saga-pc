@@ -312,3 +312,28 @@ void ShaderCompilerHLSLPc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     dictionary->AddDefinition("HLSL_LANGUAGE", NULL, 0);
     dictionary->AddDefinition("COLOR_FACTOR", "2.0", 1);
 }
+
+ShaderBuilderGen::ShaderBuilderGen(VirtualStackAllocator &parent, i32 mode)
+    : unknown_204(0), parsed_source(NULL), dictionary(parent, mode), source_buffer(parent, 0x2d000),
+      parser_memory(parent, 0x32000) {
+    save_directory[0] = 0;
+}
+ShaderBuilderGen::~ShaderBuilderGen() {
+    parsed_source = NULL;
+}
+
+HLSLShaderBuilder::HLSLShaderBuilder(VirtualStackAllocator &allocator) : ShaderCompilerBasePc(allocator, 0) {
+}
+
+void ShaderCompilerBasePc::SetIncludeDirectories(const char *paths) {
+    strcpy(include_directories, paths);
+}
+void ShaderCompilerBasePc::SetSaveDirectory(const char *path) {
+    strcpy(save_directory, path);
+}
+void ShaderCompilerBasePc::SetProfile(i32 profile, i32 first, i32 second) {
+    dictionary.SetProfile(profile, first, second);
+}
+void ShaderCompilerBasePc::SetForceMode(bool force) {
+    dictionary.force_mode = force;
+}

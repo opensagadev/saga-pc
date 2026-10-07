@@ -922,3 +922,25 @@ load/lifetime family. These close real dependencies but do not independently
 fix NULL manager publication. Parser generated helpers, publisher lifetime and
 embedded-source provenance remain separate gates. No invented providers or
 forced startup state is introduced.
+
+### Connected font loading and authentic runtime DD (2026-10-07)
+
+LoadPermData now calls genuine LoadPermLoadFonts93 before its language spin.
+Four native game-font paths use the real permanent-buffer cursors and Text_LoadFont.
+The existing partial parent1532 receives zero new byte credit. Resource QFN
+read/create/duplicate/lifetime/write and game/button font loading suppliers are
+compiled; system embedded font and shader-dependent successful loading remain
+unverified. Native uninitialized draw/arena lanes, unchecked cursor assumptions
+and nonrecovering diagnostic/failure policies remain visible.
+
+Selected actual-normal CPU fixture passes64 meaningful checks/zero failures:
+QFN/universal serialization, actual file/cursor failure policies and material/
+texture lifetime. All313 real source providers plus only fixture addition,
+zero replacements/supplements,431 inputs and six artifacts remain unchanged.
+Compiler/backend source review does not establish positive D3DX/GPU output.
+Authentic source EXE still exits5 after3.489 seconds at NULL Retrieve+16/full208,
+source0x5087e0/native0x741750. Own-prefix ShowCrashDialog DWORD0 and private
+cleanup leave no owned game/debugger process or crash window. Window/device/
+Present/repeated frames/loaded scenes/gameplay remain unverified. Shader manager
+publication, parser helper/lifetime closure and embedded-source provenance
+remain the genuine startup frontier.

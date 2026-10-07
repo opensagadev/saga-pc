@@ -3774,3 +3774,46 @@ system embedded font provenance, DDS value, Perm source angle extent and Hub
 FP conversion remain explicit holds. Whole-project matching-priority goal and
 authorized direct-main continuation remain active. The human journal stays
 unchanged and excluded.
+
+### Connected shader/compiler and font checkpoint DD (2026-10-07 UTC)
+
+Transferred31 unique functions/5,404 new unique PC bytes: compiler412, genuine
+HLSL backend1,310, font resource/load/lifetime3,589 and startup font parent93.
+There are32 physical complete copies/5,457 native bytes; the natural53-byte
+destructor alias adds zero unique credit. Unique compared code1,287,066, objdiff
+denominator1,287,637, overlap571. Whole-PC fuzzy coverage25.66150946441958%,
++0.12706029631262 percentage points. Exact208,240/3,471,246 bytes is
+5.998998630462952%, +875 bytes. These measure comparison, not running gameplay.
+
+All4,377 old full functions/9,993 full data regions were checked. All2,084 prior
+exact code and5,291 known-exact physical data copies,13 members/28 bytes survive.
+Seven explicit same-VA/native-extent/ABI linker-name migrations preserve raw and
+official output. Two old nonexact changes: genuine LoadPermData CALL5 and
+unchanged-source particle719 to717 x87 scheduling. The checkpoint was held for
+independent exact-current-pair review; equivalence is qualified to stable valid
+finite readable inputs/masked exceptions/four available x87 slots. Fault-order,
+unmasked signaling NaNs and debug FPU metadata are excluded. Retained failures
+and53-byte alias arithmetic correction remain in evidence. No comparison masks,
+truncation, source tuning, alignment, order/placement or flag changes were used.
+
+46 new full native-equal initializer copies total724 bytes:4 known70 and
+42 unknown654. Physical exact data rises63 to637,608; unknown extents receive
+zero coverage/capacity credit. Solewriter appended six true shared font views24B;
+known angle1026 stays exact. Real D3DXCompileShader@40 import and five actual
+.def fingerprints use existing Make dependency regeneration; no DLL replacement.
+
+Required normal build/link/check-objects313/4,409/10,039, full LLVM18
+728 tests/3 existing skips and authoritative retail matching pass. Actual-normal
+font64/0 uses313 source providers and431 frozen inputs/six artifacts, no engine
+replacement/supplement. Authentic EXE exits5/3.489s at NULL Retrieve+16/full208,
+source0x5087e0; no owned crash dialog/debugger/game remains after private cleanup.
+Positive loaded font/shader/GPU/window/device/Present/scene/gameplay unverified.
+Baseline2f9d0e2 exactCI37666255070 passed all steps.
+
+Next: accepted terrain geometry10/3,459; real music7 closure1,173 then cutscene
+controller4,390; broader AISYS object-interaction candidates10,588 need real
+TagCharacter/RegisterTakeOver/data contracts. These next-wave candidate bytes
+receive no coverage credit. Shader publisher/parser helper and embedded HLSL,
+system embedded font provenance, DDS value, Perm angle and Hub FP holds remain.
+Whole-project matching-priority goal and direct-main continuation remain active.
+Human identification journal remains intact and excluded.

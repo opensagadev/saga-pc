@@ -19147,3 +19147,12 @@ extern "C" {
     void(__cdecl *NuCutSceneCharacterProcess)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32) = NULL;
     void(__cdecl *CutSceneInstanceSfxRequestPc)(INSTNUGCUTSCENE *) = NULL;
 }
+
+extern "C" {
+    i32 create_qfont2dlower = 0;
+    i32 create_qfont2dz = 0;
+    i32 create_qfont3d = 0;
+    i32 create_qfont3dz = 0;
+    VUFNT *QFont2DZ = NULL;
+    VUFNT *QFont3D = NULL;
+}

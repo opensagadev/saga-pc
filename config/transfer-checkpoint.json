@@ -20,18 +20,18 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1321613,
-    "matched_code_bytes": 207365,
-    "matching_percent": 5.973791543440021,
-    "fuzzy_coverage_percent": 25.53444916810696,
-    "mapped_functions": 4564,
-    "matched_functions": 2081,
-    "objdiff_fuzzy_percent": 69.16833,
-    "objdiff_total_code": 1282180,
+    "mapped_code_bytes": 1326924,
+    "matched_code_bytes": 208240,
+    "matching_percent": 5.998998630462952,
+    "fuzzy_coverage_percent": 25.66150946441958,
+    "mapped_functions": 4597,
+    "matched_functions": 2099,
+    "objdiff_fuzzy_percent": 69.221825,
+    "objdiff_total_code": 1287637,
     "image_bytes": 40067072,
-    "mapped_bytes": 1969809,
-    "mapping_percent": 4.916278883568033,
-    "matched_data_region_bytes": 637545
+    "mapped_bytes": 1975120,
+    "mapping_percent": 4.929534157125333,
+    "matched_data_region_bytes": 637608
   },
   "newly_compared": [
     {
@@ -6423,6 +6423,326 @@
       ],
       "exact": false,
       "objdiff_percent": 79.145836
+    },
+    {
+      "symbol": "??0ShaderBuilderGen@@QAE@AAUVirtualStackAllocator@@H@Z",
+      "pc": "0x00748c40",
+      "original_bytes": 96,
+      "units": [
+        "src/nu2api/shader_compiler.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "??1ShaderBuilderGen@@UAE@XZ",
+      "pc": "0x00745310",
+      "original_bytes": 53,
+      "units": [
+        "src/nu2api/shader_compiler.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "??0HLSLShaderBuilder@@QAE@AAUVirtualStackAllocator@@@Z",
+      "pc": "0x007452f0",
+      "original_bytes": 27,
+      "units": [
+        "src/nu2api/shader_compiler.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "??_GShaderBuilderGen@@UAEPAXI@Z",
+      "pc": "0x007451d0",
+      "original_bytes": 74,
+      "units": [
+        "src/nu2api/shader_compiler.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "??_GHLSLShaderBuilder@@UAEPAXI@Z",
+      "pc": "0x00745950",
+      "original_bytes": 74,
+      "units": [
+        "src/nu2api/shader_compiler.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "??1HLSLShaderBuilder@@UAE@XZ",
+      "pc": "0x00745310",
+      "original_bytes": 53,
+      "units": [
+        "src/nu2api/shader_compiler.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?SetIncludeDirectories@ShaderBuilderGen@@UAEXPBD@Z",
+      "pc": "0x00745220",
+      "original_bytes": 32,
+      "units": [
+        "src/nu2api/shader_compiler.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 90.90909
+    },
+    {
+      "symbol": "?SetSaveDirectory@ShaderBuilderGen@@UAEXPBD@Z",
+      "pc": "0x00745240",
+      "original_bytes": 32,
+      "units": [
+        "src/nu2api/shader_compiler.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 90.90909
+    },
+    {
+      "symbol": "?SetProfile@ShaderBuilderGen@@UAEXHHH@Z",
+      "pc": "0x00745260",
+      "original_bytes": 11,
+      "units": [
+        "src/nu2api/shader_compiler.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?SetForceMode@ShaderBuilderGen@@UAEX_N@Z",
+      "pc": "0x00745280",
+      "original_bytes": 13,
+      "units": [
+        "src/nu2api/shader_compiler.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuShaderObjectBaseInit",
+      "pc": "0x007439c0",
+      "original_bytes": 20,
+      "units": [
+        "src/nu2api/nushaderobjectbase.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuShaderObjectInit",
+      "pc": "0x00742350",
+      "original_bytes": 33,
+      "units": [
+        "src/nu2api/nushaderobject.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_PCShaderProbeHLSLConstants",
+      "pc": "0x007424c0",
+      "original_bytes": 565,
+      "units": [
+        "src/nu2api/nushaderobject.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 75.4385
+    },
+    {
+      "symbol": "_PCShaderAllocateParameter",
+      "pc": "0x00743d40",
+      "original_bytes": 16,
+      "units": [
+        "src/nu2api/nushaderobject_pc.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_PCShaderObjectInitHLSLPc",
+      "pc": "0x00743e50",
+      "original_bytes": 612,
+      "units": [
+        "src/nu2api/nushaderobject_pc.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 81.42667
+    },
+    {
+      "symbol": "_PCDeviceCreateVertexShader",
+      "pc": "0x006e4870",
+      "original_bytes": 32,
+      "units": [
+        "src/nu2api/pc_device.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_PCDeviceCreatePixelShader",
+      "pc": "0x006e4770",
+      "original_bytes": 32,
+      "units": [
+        "src/nu2api/pc_device.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuQFntDestroy",
+      "pc": "0x005ea7d0",
+      "original_bytes": 44,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuQFntReadPS",
+      "pc": "0x005ea800",
+      "original_bytes": 378,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 60.44
+    },
+    {
+      "symbol": "_NuQFntReadBuffer",
+      "pc": "0x005ea980",
+      "original_bytes": 76,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 87.34375
+    },
+    {
+      "symbol": "_NuQFntRead",
+      "pc": "0x005ea9d0",
+      "original_bytes": 167,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 97.44681
+    },
+    {
+      "symbol": "_NuQFntCreate",
+      "pc": "0x005eac00",
+      "original_bytes": 868,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 71.30822
+    },
+    {
+      "symbol": "_NuQFntDuplicate",
+      "pc": "0x005eaf70",
+      "original_bytes": 288,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 68.041664
+    },
+    {
+      "symbol": "_NuQFntLoadPtr",
+      "pc": "0x005eb090",
+      "original_bytes": 434,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 75.5942
+    },
+    {
+      "symbol": "_NuQFntWrite",
+      "pc": "0x005d1150",
+      "original_bytes": 637,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 87.295456
+    },
+    {
+      "symbol": "_NuQFntWriteUniversalFont",
+      "pc": "0x005d13d0",
+      "original_bytes": 228,
+      "units": [
+        "src/nu2api/nuqfnt.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 92.64935
+    },
+    {
+      "symbol": "_LoadGameFont",
+      "pc": "0x0050e550",
+      "original_bytes": 194,
+      "units": [
+        "src/legoapi/text.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_UnloadGameFont",
+      "pc": "0x0050e620",
+      "original_bytes": 114,
+      "units": [
+        "src/legoapi/text.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 86.47059
+    },
+    {
+      "symbol": "_LoadButtonFont",
+      "pc": "0x005115d0",
+      "original_bytes": 98,
+      "units": [
+        "src/legoapi/text.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 91.21875
+    },
+    {
+      "symbol": "_Text_LoadFont",
+      "pc": "0x0054b600",
+      "original_bytes": 62,
+      "units": [
+        "src/legoapi/text.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuMtlSetRenderPlanePc",
+      "pc": "0x006017c0",
+      "original_bytes": 1,
+      "units": [
+        "src/nu2api/numtl_pc.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_LoadPermLoadFonts",
+      "pc": "0x004c9db0",
+      "original_bytes": 93,
+      "units": [
+        "src/legogame/startup.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
     }
   ],
   "previous_exact_functions_lost": [],
@@ -24956,6 +25276,259 @@
       "checkpoint_delay": "Coherent batch held for full extent/source-owner and normal runtime/preservation validation. Cutscene NaN and x87 duration defects corrected before acceptance. Genuine camera control retained with its proved consumer cohort, preserving known angle extent. No weakened comparison or broken commit.",
       "next_wave": "Closed compiler lifetime/setters412 plus independently accepted genuine HLSL backend1310 and real D3DXCompileShader export; connected font resource/load/lifetime family about3.6KB. Continue real shader publication with generated helper closure, no fake providers.",
       "holds": "Parser unbound SDK/lifecycle outlines; manager publisher/runtime; embedded HLSL full text NONEXACT and inactive; system embedded font provenance; DDS value, Perm source angle extent hold, Hub FP pair.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "Whole-project matching-priority transfer until human stop/pause; validated direct-main pushes authorized; exact pushed CI verified separately."
+    },
+    {
+      "checkpoint": "Connected shader compiler/backend and font resource/loading checkpoint DD (2026-10-07 UTC)",
+      "baseline_commit": "2f9d0e2d092e7fd78bc9aa8cddba1dc5901fdbbe",
+      "baseline_CI": {
+        "run": 37666255070,
+        "conclusion": "success",
+        "exact_head_sha": "2f9d0e2d092e7fd78bc9aa8cddba1dc5901fdbbe"
+      },
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1321613,
+        "matched_code_bytes": 207365,
+        "matching_percent": 5.973791543440021,
+        "fuzzy_coverage_percent": 25.53444916810696,
+        "mapped_functions": 4564,
+        "matched_functions": 2081,
+        "objdiff_fuzzy_percent": 69.16833,
+        "objdiff_total_code": 1282180,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1969809,
+        "mapping_percent": 4.916278883568033,
+        "matched_data_region_bytes": 637545
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1326924,
+        "matched_code_bytes": 208240,
+        "matching_percent": 5.998998630462952,
+        "fuzzy_coverage_percent": 25.66150946441958,
+        "mapped_functions": 4597,
+        "matched_functions": 2099,
+        "objdiff_fuzzy_percent": 69.221825,
+        "objdiff_total_code": 1287637,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1975120,
+        "mapping_percent": 4.929534157125333,
+        "matched_data_region_bytes": 637608
+      },
+      "new_source_functions": 31,
+      "new_complete_compiled_function_copies": 32,
+      "actual_new_transfer_PC_bytes": 5404,
+      "new_unique_compared_PC_bytes": 5404,
+      "new_physical_native_extent_sum": 5457,
+      "same_span_destructor_alias_bytes": 53,
+      "same_span_alias_extra_unique_credit": 0,
+      "unique_compared_code_bytes": 1287066,
+      "native_objdiff_denominator": 1287637,
+      "overlap_bytes": 571,
+      "new_native_family_bytes": {
+        "compiler_lifetime_setters": 412,
+        "genuine_HLSL_backend": 1310,
+        "font_resource_load_lifetime": 3589,
+        "font_startup_parent": 93
+      },
+      "existing_LoadPermData_parent_new_unique_credit": 0,
+      "whole_PC_fuzzy_delta_pp": 0.12706029631262084,
+      "new_exact_PC_bytes": 875,
+      "old_full_function_copies": 4377,
+      "old_official_function_copies_identical": 4375,
+      "old_exact_code_copies_preserved": 2084,
+      "old_full_data_regions": 9993,
+      "old_full_data_regions_identical": 9993,
+      "old_known_extent_exact_data_compiled_copies_preserved": 5291,
+      "current_full_function_definitions": 4409,
+      "current_full_data_definitions": 10039,
+      "explicit_same_VA_native_extent_signature_symbol_migrations": [
+        {
+          "owner": "src/nu2api/shader_compiler.cpp",
+          "old_symbol": "?Prepare@ShaderCompilerBasePc@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionaryPc@@@Z",
+          "new_symbol": "?Prepare@ShaderBuilderGen@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionaryPc@@@Z",
+          "size": 52,
+          "raw_sha256": "45856ad04aa222d4e0dd0d19549bdb5230cc4c023def812914d19b8023909415",
+          "official_sha256": "9da1b150c84c4d395e553bfe7495fd2c25d43ae957ee09754c8755c07f4f25c4",
+          "strict_named_relocation_migration_only": true,
+          "address": "0x7452b0",
+          "native_size": 52,
+          "old_ctype": "void __thiscall ShaderCompilerBasePc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *)",
+          "new_ctype": "void __thiscall ShaderBuilderGen::Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *)",
+          "old_exact": true
+        },
+        {
+          "owner": "src/nu2api/shader_compiler.cpp",
+          "old_symbol": "?Configure@ShaderCompilerBasePc@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z",
+          "new_symbol": "?Configure@ShaderBuilderGen@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z",
+          "size": 4072,
+          "raw_sha256": "73d3ff4c5196c7623903878cc78e2fa4d1f414657d15105a4403fb9240df94c5",
+          "official_sha256": "eaaa1653cd112789a4a3999bbf564d6f0047e132df45e1c43fbfc4779b33d7ce",
+          "strict_named_relocation_migration_only": true,
+          "address": "0x749620",
+          "native_size": 4642,
+          "old_ctype": "void __thiscall ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *)",
+          "new_ctype": "void __thiscall ShaderBuilderGen::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *)",
+          "old_exact": false
+        },
+        {
+          "owner": "src/nu2api/shader_compiler.cpp",
+          "old_symbol": "?Prepare@ShaderCompilerHLSLPc@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionaryPc@@@Z",
+          "new_symbol": "?Prepare@HLSLShaderBuilder@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionaryPc@@@Z",
+          "size": 52,
+          "raw_sha256": "45856ad04aa222d4e0dd0d19549bdb5230cc4c023def812914d19b8023909415",
+          "official_sha256": "e6cf3ad39eaa33299d10ae7d11e3fb3b8df26a9078f328aac06eb8cb21a1f613",
+          "strict_named_relocation_migration_only": true,
+          "address": "0x74a930",
+          "native_size": 52,
+          "old_ctype": "void __thiscall ShaderCompilerHLSLPc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *)",
+          "new_ctype": "void __thiscall HLSLShaderBuilder::Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *)",
+          "old_exact": true
+        },
+        {
+          "owner": "src/nu2api/shader_compiler.cpp",
+          "old_symbol": "?Configure@ShaderCompilerHLSLPc@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z",
+          "new_symbol": "?Configure@HLSLShaderBuilder@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z",
+          "size": 87,
+          "raw_sha256": "7bc0107653b640548853ada5e45ae689914ac117fd1628a5114e7ae5c06bb0f3",
+          "official_sha256": "dc7d6924915f725b28e1a878cff58a244294941932f49b99c845cd2b2c247c5d",
+          "strict_named_relocation_migration_only": true,
+          "address": "0x74a970",
+          "native_size": 87,
+          "old_ctype": "void __thiscall ShaderCompilerHLSLPc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *)",
+          "new_ctype": "void __thiscall HLSLShaderBuilder::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *)",
+          "old_exact": true
+        },
+        {
+          "owner": "src/nu2api/nushadermanager.cpp",
+          "old_symbol": "?AllocateSlot@PC_SHADER_MANAGER_VIEW@@QAEPAUPC_SHADER_OBJECT_FULL_VIEW@@PAH@Z",
+          "new_symbol": "?AllocateSlot@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEPAVNuShaderObject@@PAH@Z",
+          "size": 140,
+          "raw_sha256": "8f6938f37f3c8420f6d1a1f331a993546dcd69dc987ead0f2fb75cea0c91cd6a",
+          "official_sha256": "5c4fcff494175f9e0b7bf50644bd673fbb85a463a820313c20e3899b146e7088",
+          "strict_named_relocation_migration_only": true,
+          "address": "0x741570",
+          "native_size": 128,
+          "old_ctype": "PC_SHADER_OBJECT_FULL_VIEW* __thiscall PC_SHADER_MANAGER_VIEW::AllocateSlot(i32*)",
+          "new_ctype": "PC_SHADER_OBJECT_FULL_VIEW* __thiscall ShaderManagerTemplate<NuShaderObject>::AllocateSlot(i32*)",
+          "old_exact": false
+        },
+        {
+          "owner": "src/nu2api/nushadermanager.cpp",
+          "old_symbol": "?Retrieve@PC_SHADER_MANAGER_VIEW@@QAEPAUPC_SHADER_OBJECT_FULL_VIEW@@PBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH_N@Z",
+          "new_symbol": "?Retrieve@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEPAVNuShaderObject@@PBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH_N@Z",
+          "size": 208,
+          "raw_sha256": "9fbbc616fcfcbfe35fc516fd023df32bb5eee70b8aaa71fc17fe7427da9003a9",
+          "official_sha256": "3f64a01b04f5cd23b77369bd3203ee916ec4a3feb45b35a8a974ad76c2fc68d7",
+          "strict_named_relocation_migration_only": true,
+          "address": "0x741750",
+          "native_size": 208,
+          "old_ctype": "PC_SHADER_OBJECT_FULL_VIEW* __thiscall PC_SHADER_MANAGER_VIEW::Retrieve(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*,i32,i32,bool)",
+          "new_ctype": "PC_SHADER_OBJECT_FULL_VIEW* __thiscall ShaderManagerTemplate<NuShaderObject>::Retrieve(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*,i32,i32,bool)",
+          "old_exact": false
+        },
+        {
+          "owner": "src/nu2api/nushadermanager.cpp",
+          "old_symbol": "?AdaptDescriptor@ShaderManagerHLSLPc@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@@Z",
+          "new_symbol": "?AdaptDescriptor@ShaderManagerHLSL@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@@Z",
+          "size": 837,
+          "raw_sha256": "cfdd107416d2176a3cb633a7ed620706853a3b138827de80750764350e4d3216",
+          "official_sha256": "663afb114fe45993590ef87f2737a7f1e3e6a8704c41edf3f807afa13f6e2257",
+          "strict_named_relocation_migration_only": true,
+          "address": "0x7454c0",
+          "native_size": 835,
+          "old_ctype": "void __thiscall ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *)",
+          "new_ctype": "void __thiscall ShaderManagerHLSL::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *)",
+          "old_exact": false
+        }
+      ],
+      "qualified_compiler_local_class6_type0_serial_changes": 5,
+      "qualified_previous_nonexact_function_changes": [
+        {
+          "unit": "src/legogame/startup.c",
+          "symbol": "_LoadPermData",
+          "old_bytes": 742,
+          "new_bytes": 747,
+          "old_official_sha256": "0dbabb9aaf814b5d82d72497641414ecd290340854bb2b65f06a0bd5a3bedcef",
+          "new_official_sha256": "a3ab88dd02acf82da4e5eb7a64bee82ce4a5fbd6f8d7353a358e9283ed3521da",
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/font-parent93-independent-review/accepted-packet.json",
+            "receipt_sha256": "0e2b4c6d9e8e769dc15bc7e2de5b774bdf971b0a0b95c9cdc081f6247acd1b2b",
+            "old_official_sha256": "0dbabb9aaf814b5d82d72497641414ecd290340854bb2b65f06a0bd5a3bedcef",
+            "new_official_sha256": "a3ab88dd02acf82da4e5eb7a64bee82ce4a5fbd6f8d7353a358e9283ed3521da",
+            "old_exact": false,
+            "qualification": "Only initial genuine CALL5 to accepted LoadPermLoadFonts; every old742 rawbyte/reference preserved shifted5; native1532 unchanged; zero new credit for existing parent."
+          }
+        },
+        {
+          "unit": "src/nu2api/nuparticle_runtime.c",
+          "symbol": "_NuRndrParticleGroup",
+          "old_bytes": 719,
+          "new_bytes": 717,
+          "old_official_sha256": "57c916b2869025a1feba4fbd6b629b230b7d1772d86020a46f76f018f93030cf",
+          "new_official_sha256": "8e4cfb2614f860e8911b830282ca6165ce1a173ed9ec0cc1a4e175d532f99a25",
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/particle-DD719-717-independent-review/accepted-packet.json",
+            "receipt_sha256": "1f43c74cae0e2c88eb683f606c6382a9c89e73faef4422a77ca975b369377673",
+            "old_official_sha256": "57c916b2869025a1feba4fbd6b629b230b7d1772d86020a46f76f018f93030cf",
+            "new_official_sha256": "8e4cfb2614f860e8911b830282ca6165ce1a173ed9ec0cc1a4e175d532f99a25",
+            "old_exact": false,
+            "qualification": "Independently accepted specific719->717 ordinary x87 reload permutation:186 other instructions/CFG,34 strictnamedcontracts,11 otherowner regions equal; first/reload ST=[AC,B0,B4,B8]. Only initialized stable readable finiteDWORD/validmemory/four availablex87slots/maskedexceptions. Excludes unmasked signalingNaN/loadfault/async/debugFPUmetadata order; no new credit/runtime claim."
+          }
+        }
+      ],
+      "qualified_unknown_extent_data_tail_changes": [],
+      "new_complete_initializer_copies": 46,
+      "new_complete_initializer_COFF_bytes": 724,
+      "new_full_native_equal_copies": 46,
+      "new_known_extent_exact_initializer_compiled_copies": 4,
+      "new_known_extent_exact_initializer_COFF_bytes": 70,
+      "new_unknown_extent_full_native_equal_initializer_copies": 42,
+      "new_unknown_extent_initializer_COFF_bytes": 654,
+      "unknown_extent_exact_and_allocation_credit": 0,
+      "known_exact_data_union_before_transfer": 637545,
+      "known_exact_data_union_after_transfer": 637608,
+      "new_shared_font_working_view_bytes": 24,
+      "normal_objects": 313,
+      "frozen_inputs": 431,
+      "actual_import_definition_inputs": 5,
+      "actual_generated_import_library_and_EXE_artifacts": 6,
+      "required_checks": {
+        "build_link_check_objects": "PASS313/4409/10039",
+        "make_check": "PASS728/3 existing skips; pinned LLVM18",
+        "authoritative_retail_match": "PASS"
+      },
+      "selected_CPU_checks": 64,
+      "selected_CPU_failures": 0,
+      "source_EXE": {
+        "receipt": "/tmp/saga-pc-next-runtime/runtime-startup-acceptance/final-DD-unattended-acceptance.json",
+        "sha256": "357eefe1df320d6420f433ed458d035dae89201fecafd2dafb6819af335f6de4",
+        "exe_sha256": "dfb9ca3d34bd36897803fe20bcd5e7b186797aa5ef9dddf4818e5d26e9fff8ec",
+        "exit": 5,
+        "elapsed_seconds": 3.488681696006097,
+        "fault": "0x5087e0",
+        "native_method": "0x741750",
+        "method_size": 208,
+        "fault_offset": 16,
+        "visible_window_samples": 0
+      },
+      "milestones": "Authentic EXE still NULL Retrieve receiver +16/full208, exit5; window/device/Present/scene/gameplay unverified. Crash dialogs disabled and private cleanup verified.",
+      "evidence_pins": {
+        "build/analysis/checkpoint-DD/normal-object-manifest.json": "a0c0a4f76190e402c5497acf69e44e450c72815653d031d3d068997a70f8bf97",
+        "build/analysis/checkpoint-DD/normal-artifact-manifest.json": "07c5e8faded59e6f81f8a43e2849735f91c9db008c9a51b0ac567467d54a9108",
+        "build/analysis/checkpoint-DD/frozen-first-source-inputs.json": "4c3faac1376cbf44bff9e3fde2f2cfb51ee6f0e7755d8cebbc8da2a9bcd799e4",
+        "build/analysis/checkpoint-DD/accepted-complete-functions.json": "1c7eb8aea9dc5732cb61d3f2ace419ee9d8ba3e05bf5af1f7bc75a22859fc07f",
+        "build/analysis/checkpoint-DD/required-checks-receipt.json": "801a8015168bcd0f53dd4031af0c036c73bc31f97180bf4ea21b24a54d0c496e",
+        "build/analysis/checkpoint-DD/runtime-acceptance.json": "611295ae81962f9e541dfa07205d233926dfe456e1afa10f22450def1e6e4e11",
+        "build/analysis/endpoint-DD-review/actual-output-and-report-proof.json": "c39814bd7c0c8720fde9fb981f9c7e7641b9af624ae4508d5eadb5d7c720637b",
+        "build/analysis/endpoint-DD-review/accepted-first-endpoint.json": "09376402a918d74ce1410478bca4f58cecaa4820c3c35b84bfdb3a500302d636"
+      },
+      "checkpoint_delay": "Held on unchanged-source prior nonexact particle719->717 x87 scheduling difference; independently reviewed exact current pair, initialized stable finite readable memory/masked exceptions/four stack slots domain only. Load-fault ordering/unmasked signaling NaNs/debug FPU metadata excluded. Retained failed discovery and corrected unique-vs-physical53-byte alias bookkeeping. No masks, source tuning, flags, alignment, placements or weakened exact gates.",
+      "next_wave": "Accepted terrain geometry10/3459; real music7 closure1173 then cutscene controller4390; broad AISYS callback family prospective10588 with real TagCharacter/RegisterTakeOver and data contracts. Candidate bytes receive no coverage.",
+      "holds": "Shader manager publisher/lifetime and generated parser helpers; inactive nonexact embedded HLSL; system embedded font provenance; positive shader-dependent font/GPU startup; DDS value, Perm source angle extent, Hub FP conversion.",
       "user_journal_preserved": true,
       "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
       "ongoing_goal": "Whole-project matching-priority transfer until human stop/pause; validated direct-main pushes authorized; exact pushed CI verified separately."

@@ -1,5 +1,12 @@
 #include "saga.h"
 
+template <>
+bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *,
+                                          i32);
+template <>
+void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *,
+                                             const PC_SHADER_FILTER_MATERIAL_VIEW *);
+
 void __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const PC_SHADER_FILTER_DESC_VIEW *desc,
                                                            const PC_SHADER_FILTER_MATERIAL_VIEW *mtl, i32 input_flags,
                                                            i32 input_parameter) {
@@ -88,7 +95,7 @@ u32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags() const {
     return result;
 }
 
-PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::AllocateSlot(i32 *index) {
+template <> PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::AllocateSlot(i32 *index) {
     i32 i;
     for (i = last_allocated + 1; i < 400; ++i) {
         if (slots[i].ref_count <= 0)
@@ -107,6 +114,7 @@ PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::AllocateSlot(i32 
     *index = i;
     return &slots[i];
 }
+template <>
 PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::Retrieve(const PC_SHADER_FILTER_DESC_VIEW *desc,
                                                                         const PC_SHADER_FILTER_MATERIAL_VIEW *material,
                                                                         i32 variant, i32 flags, bool pixel_stage) {

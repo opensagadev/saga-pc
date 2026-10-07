@@ -1229,3 +1229,62 @@ void __cdecl TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
     }
     NuQFntPopPrintMode();
 }
+
+extern i32 create_qfont2dlower, create_qfont2dz, create_qfont3d, create_qfont3dz;
+extern VUFNT *QFont2DZ, *QFont3D;
+void __cdecl NuQFntDestroy(VUFNT *);
+VUFNT *__cdecl NuQFntLoadPtr(char *, char *, i32, i32, VARIPTR *, VARIPTR *);
+VUFNT *__cdecl NuQFntDuplicate(VUFNT *, i32, i32, VARIPTR *, VARIPTR *);
+VUFNT *__cdecl LoadGameFont(char *, char *, VARIPTR *, VARIPTR *, i32);
+VUFNT *__cdecl LoadButtonFont(char *, char *, VARIPTR *, VARIPTR *, i32);
+VUFNT *__cdecl LoadGameFont(char *path, char *texture_path, VARIPTR *buffer, VARIPTR *end, i32 plane) {
+    QFont2D = NuQFntLoadPtr(path, texture_path, 4, plane, buffer, end);
+    if (QFont2D != NULL) {
+        if (create_qfont2dlower != 0)
+            QFont2DLower = NuQFntDuplicate(QFont2D, 4, plane - 1, buffer, end);
+        if (create_qfont2dz != 0)
+            QFont2DZ = NuQFntDuplicate(QFont2D, 4, 0x40000, buffer, end);
+        if (create_qfont3d != 0)
+            QFont3D = NuQFntDuplicate(QFont2D, 0x18, plane, buffer, end);
+        if (create_qfont3dz != 0)
+            QFont3DZ = NuQFntDuplicate(QFont2D, 0x4c, plane, buffer, end);
+    }
+    return QFont2D;
+}
+
+void __cdecl UnloadGameFont(void) {
+    if (QFont2DLower != NULL) {
+        NuQFntDestroy(QFont2DLower);
+        QFont2DLower = NULL;
+    }
+    if (QFont2DZ != NULL) {
+        NuQFntDestroy(QFont2DZ);
+        QFont2DZ = NULL;
+    }
+    if (QFont3D != NULL) {
+        NuQFntDestroy(QFont3D);
+        QFont3D = NULL;
+    }
+    if (QFont3DZ != NULL) {
+        NuQFntDestroy(QFont3DZ);
+        QFont3DZ = NULL;
+    }
+    NuQFntDestroy(QFont2D);
+}
+
+VUFNT *__cdecl LoadButtonFont(char *path, char *texture_path, VARIPTR *buffer, VARIPTR *end, i32 plane) {
+    if (QFont2DButtons == NULL) {
+        QFont2DButtons = NuQFntLoadPtr(path, texture_path, 4, plane, buffer, end);
+        if (QFont2DButtons != NULL) {
+            FixUpButtonsInFont(QFont2D, QFont2DButtons);
+            QFont2DButtons->baseline = QFont2DButtons->height / QFont2D->height * QFont2D->baseline;
+        }
+    }
+    return QFont2DButtons;
+}
+
+void __cdecl Text_LoadFont(char *path, VARIPTR *buffer, VARIPTR *end) {
+    create_qfont3dz = 1;
+    Text_AppFont = LoadGameFont(path, path, buffer, end, 1);
+    LoadButtonFont("stuff\\text\\Buttons", NULL, buffer, end, 0);
+}

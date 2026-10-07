@@ -1,5 +1,8 @@
 #include "saga.h"
 
+void __cdecl LoadPermLoadFonts(void);
+void __cdecl Text_LoadFont(char *, VARIPTR *, VARIPTR *);
+
 extern LEVELDATA_PC *__cdecl Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
                                                   i32 *count_out, void *set_defaults_fn);
 extern AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
@@ -267,7 +270,7 @@ void __cdecl LoadPermData(void *process) {
     i16 default_id_b;
     u32 aligned;
 
-    STUBBED_NAMED("LoadPermData: LoadPermLoadFonts");
+    LoadPermLoadFonts();
     while (LoadPerm_LanguageSelect != 3) {
     }
 
@@ -542,4 +545,17 @@ void __cdecl EndPerm(void) {
     WorldInfo[1].buffer_start = (void *)world_mid;
     WorldInfo[1].buffer_end.addr = superbuffer_end.addr;
     editbuffer_end.addr = superbuffer_end.addr - (u32)EDITBUFFERENDSIZE;
+}
+
+void __cdecl LoadPermLoadFonts(void) {
+    if (StartupGameFlag0 != 0) {
+        Text_LoadFont("stuff\\text\\pc_font", &permbuffer_ptr, &permbuffer_end);
+    } else if (StartupGameFlag1 != 0) {
+        if (Text_Language == 0)
+            Text_LoadFont("stuff\\text\\starwars_font_j", &permbuffer_ptr, &permbuffer_end);
+        else
+            Text_LoadFont("stuff\\text\\starwars_font", &permbuffer_ptr, &permbuffer_end);
+    } else {
+        Text_LoadFont("stuff\\text\\batman_font", &permbuffer_ptr, &permbuffer_end);
+    }
 }

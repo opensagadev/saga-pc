@@ -6746,6 +6746,10 @@ typedef struct PC_D3D9_METHODS_PC {
     void *unknown_0118[16];
     HRESULT(__stdcall *create_vertex_declaration)
     (PC_D3D9_DEVICE_PC *, const PC_VERTEX_ELEMENT_PC *, PC_TEXTURE_RESOURCE_PC **);
+    void *unknown_015c[4];
+    HRESULT(__stdcall *create_vertex_shader)(PC_D3D9_DEVICE_PC *, const DWORD *, PC_TEXTURE_RESOURCE_PC **);
+    void *unknown_0170[14];
+    HRESULT(__stdcall *create_pixel_shader)(PC_D3D9_DEVICE_PC *, const DWORD *, PC_TEXTURE_RESOURCE_PC **);
 } PC_D3D9_METHODS_PC;
 struct PC_D3D9_DEVICE_PC {
     const PC_D3D9_METHODS_PC *methods;
@@ -7155,6 +7159,8 @@ STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, device) == 4);
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, requested_viewport) == 0x170);
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, shader_caps) == 0x654);
 STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, create_vertex_declaration) == 0x158);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, create_vertex_shader) == 0x16c);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, create_pixel_shader) == 0x1a8);
 
 struct GRAPHICS_RENDER_TEXTURE_PC {
     PC_TEXTURE_RESOURCE_PC *resource;
@@ -8259,6 +8265,46 @@ extern "C" {
     NUGSCN *__cdecl IconScene_FindById(i32);
     void __cdecl IntroText_Draw(f32);
     void __cdecl SetQFont2D(void);
+    typedef struct FONT_LEGACY_GLYPH_PC {
+        f32 u0, v0, u1, v1;
+        u32 unknown10;
+    } FONT_LEGACY_GLYPH_PC;
+    STATIC_ASSERT(sizeof(FONT_LEGACY_GLYPH_PC) == 0x14);
+    typedef struct FONT_LEGACY_READER_PC {
+        u8 unknown00[12];
+        i16 height;
+        u8 unknown0e[6];
+        i16 baseline, ic_gap;
+        NUMTL *material;
+        i32 glyph_count;
+        u8 character_map[256];
+        FONT_LEGACY_GLYPH_PC glyphs[256];
+    } FONT_LEGACY_READER_PC;
+    STATIC_ASSERT(offsetof(FONT_LEGACY_READER_PC, height) == 0xc);
+    STATIC_ASSERT(offsetof(FONT_LEGACY_READER_PC, baseline) == 0x14);
+    STATIC_ASSERT(offsetof(FONT_LEGACY_READER_PC, ic_gap) == 0x16);
+    STATIC_ASSERT(offsetof(FONT_LEGACY_READER_PC, material) == 0x18);
+    STATIC_ASSERT(offsetof(FONT_LEGACY_READER_PC, glyph_count) == 0x1c);
+    STATIC_ASSERT(offsetof(FONT_LEGACY_READER_PC, character_map) == 0x20);
+    STATIC_ASSERT(offsetof(FONT_LEGACY_READER_PC, glyphs) == 0x120);
+
+    void __cdecl NuMtlSetRenderPlanePc(NUMTL *, i32);
+    extern i32 create_qfont2dlower, create_qfont2dz, create_qfont3d, create_qfont3dz;
+    extern VUFNT *QFont2DZ, *QFont3D;
+    void __cdecl NuQFntDestroy(VUFNT *);
+    i32 __cdecl NuQFntReadPS(VUFNT *, i32, i32, i32, VARIPTR *, VARIPTR);
+    VUFNT *__cdecl NuQFntReadBuffer(VARIPTR *, VARIPTR *, VARIPTR);
+    VUFNT *__cdecl NuQFntRead(char *, VARIPTR *, VARIPTR);
+    VUFNT *__cdecl NuQFntDuplicate(VUFNT *, i32, i32, VARIPTR *, VARIPTR *);
+    VUFNT *__cdecl NuQFntLoadPtr(char *, char *, i32, i32, VARIPTR *, VARIPTR *);
+    VUFNT *__cdecl NuQFntCreate(FONT_LEGACY_READER_PC *, i32, i32, VARIPTR *, VARIPTR *);
+    void __cdecl NuQFntWrite(char *, VUFNT *);
+    void __cdecl NuQFntWriteUniversalFont(char *, VUFNT *, char *);
+    VUFNT *__cdecl LoadGameFont(char *, char *, VARIPTR *, VARIPTR *, i32);
+    VUFNT *__cdecl LoadButtonFont(char *, char *, VARIPTR *, VARIPTR *, i32);
+    void __cdecl UnloadGameFont(void);
+    void __cdecl Text_LoadFont(char *, VARIPTR *, VARIPTR *);
+
     void __cdecl NuQFntSetSpaceWidth(VUFNT *, f32);
     f32 __cdecl NuQFntPrintJustifiedW(VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, NUMTX *);
     f32 __cdecl NuQFntPrintJustifiedRSW(void *, VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, NUMTX *);
@@ -9765,7 +9811,12 @@ void __cdecl PCStereoUnknownToken(void);
     typedef struct PC_SHADER_FILTER_DESC_VIEW PC_SHADER_FILTER_DESC_VIEW;
     typedef struct PC_SHADER_FILTER_MATERIAL_VIEW PC_SHADER_FILTER_MATERIAL_VIEW;
     typedef struct PC_SHADER_MATERIAL_FILTER_VIEW PC_SHADER_MATERIAL_FILTER_VIEW;
-    typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
+#ifdef __cplusplus
+    class NuShaderObject;
+    typedef NuShaderObject PC_SHADER_OBJECT_FULL_VIEW;
+#else
+typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
+#endif
     PC_SHADER_OBJECT_FULL_VIEW *__cdecl NuShaderManagerRetrieveShader(const PC_SHADER_FILTER_DESC_VIEW *,
                                                                       const PC_SHADER_FILTER_MATERIAL_VIEW *);
     PC_SHADER_OBJECT_FULL_VIEW *__cdecl NuShaderManagerRetrieveShaderVariant(const PC_SHADER_FILTER_DESC_VIEW *,
@@ -9776,6 +9827,106 @@ void __cdecl PCStereoUnknownToken(void);
     void __cdecl NuShaderObjectBaseUnInit(PC_SHADER_OBJECT_FULL_VIEW *);
     void __cdecl NuShaderObjectUnInit(PC_SHADER_OBJECT_FULL_VIEW *);
     NUTEXDIM_PC *__cdecl NuTextureGetDimensions(i32);
+
+    typedef struct PC_SHADER_PARAMETER_LOCAL_PC PC_SHADER_PARAMETER_LOCAL_PC;
+    struct PC_SHADER_PARAMETER_LOCAL_PC {
+        i16 register_index;
+        u16 unknown_02;
+        union {
+            u32 metadata;
+            struct {
+                u8 register_count;
+                u8 array_count;
+                u8 semantic;
+                u8 type_stage;
+            };
+        };
+        PC_SHADER_PARAMETER_LOCAL_PC *next;
+    };
+    STATIC_ASSERT(sizeof(PC_SHADER_PARAMETER_LOCAL_PC) == 12);
+    STATIC_ASSERT(offsetof(PC_SHADER_PARAMETER_LOCAL_PC, register_index) == 0);
+    STATIC_ASSERT(offsetof(PC_SHADER_PARAMETER_LOCAL_PC, metadata) == 4);
+    STATIC_ASSERT(offsetof(PC_SHADER_PARAMETER_LOCAL_PC, register_count) == 4);
+    STATIC_ASSERT(offsetof(PC_SHADER_PARAMETER_LOCAL_PC, array_count) == 5);
+    STATIC_ASSERT(offsetof(PC_SHADER_PARAMETER_LOCAL_PC, semantic) == 6);
+    STATIC_ASSERT(offsetof(PC_SHADER_PARAMETER_LOCAL_PC, type_stage) == 7);
+    STATIC_ASSERT(offsetof(PC_SHADER_PARAMETER_LOCAL_PC, next) == 8);
+#ifndef __cplusplus
+    struct PC_SHADER_OBJECT_FULL_VIEW {
+        i32 marker, ref_count;
+        u32 key, unknown_c;
+        PC_SHADER_PARAMETER_LOCAL_PC *active_parameters;
+        i32 version;
+        u32 field_18;
+        PC_SHADER_PARAMETER_LOCAL_PC parameters[100];
+        PC_TEXTURE_RESOURCE_PC *vertex_shader, *pixel_shader;
+        u32 stage_flags;
+    };
+    STATIC_ASSERT(sizeof(PC_SHADER_OBJECT_FULL_VIEW) == 0x4d8);
+    STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, marker) == 0);
+    STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, key) == 8);
+    STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, stage_flags) == 0x4d4);
+    STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, active_parameters) == 0x10);
+    STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, version) == 0x14);
+    STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, parameters) == 0x1c);
+    STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, vertex_shader) == 0x4cc);
+    STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, pixel_shader) == 0x4d0);
+#endif
+
+    /* External COM protocols only; no objects or method tables defined here. */
+    typedef struct D3DX_BUFFER_METHODS_PC {
+        HRESULT(__stdcall *query_interface)(ID3DXBuffer *, const IID *, void **);
+        ULONG(__stdcall *add_ref)(ID3DXBuffer *);
+        ULONG(__stdcall *release)(ID3DXBuffer *);
+        void *(__stdcall *get_buffer_pointer)(ID3DXBuffer *);
+        DWORD(__stdcall *get_buffer_size)(ID3DXBuffer *);
+    } D3DX_BUFFER_METHODS_PC;
+    struct ID3DXBuffer {
+        const D3DX_BUFFER_METHODS_PC *methods;
+    };
+    typedef struct D3DX_CONSTANT_DESCRIPTION_PC {
+        const char *name;
+        i32 register_set;
+        UINT register_index, register_count;
+        i32 class_kind, type_kind;
+        UINT rows, columns, elements, struct_members, bytes;
+        const void *default_value;
+    } D3DX_CONSTANT_DESCRIPTION_PC;
+    STATIC_ASSERT(sizeof(D3DX_CONSTANT_DESCRIPTION_PC) == 48);
+    STATIC_ASSERT(offsetof(D3DX_CONSTANT_DESCRIPTION_PC, register_index) == 8);
+    STATIC_ASSERT(offsetof(D3DX_CONSTANT_DESCRIPTION_PC, register_count) == 12);
+    STATIC_ASSERT(offsetof(D3DX_CONSTANT_DESCRIPTION_PC, class_kind) == 16);
+    STATIC_ASSERT(offsetof(D3DX_CONSTANT_DESCRIPTION_PC, type_kind) == 20);
+    STATIC_ASSERT(offsetof(D3DX_CONSTANT_DESCRIPTION_PC, elements) == 32);
+    typedef struct D3DX_CONSTANT_TABLE_METHODS_PC {
+        HRESULT(__stdcall *query_interface)(ID3DXConstantTable *, const IID *, void **);
+        ULONG(__stdcall *add_ref)(ID3DXConstantTable *);
+        ULONG(__stdcall *release)(ID3DXConstantTable *);
+        void *(__stdcall *get_buffer_pointer)(ID3DXConstantTable *);
+        DWORD(__stdcall *get_buffer_size)(ID3DXConstantTable *);
+        HRESULT(__stdcall *get_description)(ID3DXConstantTable *, void *);
+        HRESULT(__stdcall *get_constant_description)
+        (ID3DXConstantTable *, const char *, D3DX_CONSTANT_DESCRIPTION_PC *, UINT *);
+        UINT(__stdcall *get_sampler_index)(ID3DXConstantTable *, const char *);
+        const char *(__stdcall *get_constant)(ID3DXConstantTable *, const char *, UINT);
+        const char *(__stdcall *get_constant_by_name)(ID3DXConstantTable *, const char *, const char *);
+    } D3DX_CONSTANT_TABLE_METHODS_PC;
+    struct ID3DXConstantTable {
+        const D3DX_CONSTANT_TABLE_METHODS_PC *methods;
+    };
+    STATIC_ASSERT(offsetof(D3DX_BUFFER_METHODS_PC, release) == 8);
+    STATIC_ASSERT(offsetof(D3DX_BUFFER_METHODS_PC, get_buffer_pointer) == 12);
+    STATIC_ASSERT(offsetof(D3DX_CONSTANT_TABLE_METHODS_PC, get_constant_description) == 24);
+    STATIC_ASSERT(offsetof(D3DX_CONSTANT_TABLE_METHODS_PC, get_constant_by_name) == 36);
+    void __cdecl NuShaderObjectBaseInit(PC_SHADER_OBJECT_FULL_VIEW *, const u32 *, i32);
+    void __cdecl NuShaderObjectInit(PC_SHADER_OBJECT_FULL_VIEW *, const u32 *, i32, const char *, i32, const char *,
+                                    i32, i32);
+    PC_SHADER_PARAMETER_LOCAL_PC *__cdecl PCShaderAllocateParameter(PC_SHADER_OBJECT_FULL_VIEW *, i32);
+    void __cdecl PCShaderProbeHLSLConstants(PC_SHADER_OBJECT_FULL_VIEW *, ID3DXConstantTable *, ID3DXConstantTable *);
+    void __cdecl PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *, const u32 *, i32, const char *, i32,
+                                          const char *, i32, i32);
+    HRESULT __cdecl PCDeviceCreateVertexShader(const DWORD *, PC_TEXTURE_RESOURCE_PC **);
+    HRESULT __cdecl PCDeviceCreatePixelShader(const DWORD *, PC_TEXTURE_RESOURCE_PC **);
 
     void __cdecl NewRumble(void *, f32, i32);
     void __cdecl NewBuzz(void *, f32, i32);
@@ -16836,7 +16987,8 @@ STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, layer_count) == 0x1c);
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, identifier) + offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, vendor) == 0x5cc);
 STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, usehires) == 0x457);
 
-struct ShaderCompilerBasePc {
+class ShaderBuilderGen {
+  public:
     char save_directory[0x100];
     char include_directories[0x100];
     u32 unknown_204;
@@ -16844,8 +16996,8 @@ struct ShaderCompilerBasePc {
     ShaderCompilerDictionaryPc dictionary;
     ShaderCompilerBufferAllocatorPc source_buffer;
     VirtualStackAllocator parser_memory;
-    ShaderCompilerBasePc(VirtualStackAllocator &, i32);
-    virtual ~ShaderCompilerBasePc();
+    ShaderBuilderGen(VirtualStackAllocator &, i32);
+    virtual ~ShaderBuilderGen();
     virtual void SetIncludeDirectories(const char *);
     virtual void SetSaveDirectory(const char *);
     virtual void SetProfile(i32, i32, i32);
@@ -16857,16 +17009,18 @@ struct ShaderCompilerBasePc {
     void Generate(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerBufferAllocatorPc *,
                   ShaderCompilerBufferAllocatorPc *);
 };
+typedef ShaderBuilderGen ShaderCompilerBasePc;
 STATIC_ASSERT(sizeof(ShaderCompilerBasePc) == 0xbd0);
 STATIC_ASSERT(offsetof(ShaderCompilerBasePc, save_directory) == 4);
 STATIC_ASSERT(offsetof(ShaderCompilerBasePc, include_directories) == 0x104);
+STATIC_ASSERT(offsetof(ShaderCompilerBasePc, unknown_204) == 0x204);
 STATIC_ASSERT(offsetof(ShaderCompilerBasePc, parsed_source) == 0x208);
 STATIC_ASSERT(offsetof(ShaderCompilerBasePc, dictionary) == 0x20c);
 STATIC_ASSERT(offsetof(ShaderCompilerBasePc, source_buffer) == 0xbb0);
 STATIC_ASSERT(offsetof(ShaderCompilerBasePc, parser_memory) == 0xbc0);
 
-struct PC_SHADER_MANAGER_VIEW;
-struct PC_SHADER_OBJECT_FULL_VIEW {
+class NuShaderObject {
+  public:
     i32 marker;
     i32 ref_count;
     u32 key;
@@ -16878,37 +17032,46 @@ struct PC_SHADER_OBJECT_FULL_VIEW {
 STATIC_ASSERT(sizeof(PC_SHADER_OBJECT_FULL_VIEW) == 0x4d8);
 STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, vertex_shader) == 0x4cc);
 STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, pixel_shader) == 0x4d0);
-struct PC_SHADER_MANAGER_VIEW {
-    virtual ~PC_SHADER_MANAGER_VIEW();
+template <class T> class ShaderManagerTemplate {
+  public:
+    ShaderManagerTemplate();
+    virtual ~ShaderManagerTemplate();
     virtual bool CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *, i32);
     virtual void AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);
-    PC_SHADER_OBJECT_FULL_VIEW slots[400];
+    T slots[400];
     i32 last_allocated;
     PC_SHADER_OBJECT_FULL_VIEW *bound_slot;
     PC_SHADER_OBJECT_FULL_VIEW *__thiscall AllocateSlot(i32 *index);
     PC_SHADER_OBJECT_FULL_VIEW *__thiscall Retrieve(const PC_SHADER_FILTER_DESC_VIEW *,
                                                     const PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32, bool);
 };
+typedef ShaderManagerTemplate<NuShaderObject> PC_SHADER_MANAGER_VIEW;
 STATIC_ASSERT(offsetof(PC_SHADER_MANAGER_VIEW, slots) == 4);
 STATIC_ASSERT(offsetof(PC_SHADER_MANAGER_VIEW, last_allocated) == 0x79184);
 STATIC_ASSERT(offsetof(PC_SHADER_MANAGER_VIEW, bound_slot) == 0x79188);
 
-struct ShaderCompilerHLSLPc : ShaderCompilerBasePc {
-    virtual ~ShaderCompilerHLSLPc();
+class HLSLShaderBuilder : public ShaderBuilderGen {
+  public:
+    HLSLShaderBuilder(VirtualStackAllocator &);
+    virtual ~HLSLShaderBuilder() {
+    }
     virtual void Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *);
     virtual void Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *);
 };
+typedef HLSLShaderBuilder ShaderCompilerHLSLPc;
 STATIC_ASSERT(sizeof(ShaderCompilerHLSLPc) == 0xbd0);
 
-struct ShaderManagerHLSLPc : PC_SHADER_MANAGER_VIEW {
+class ShaderManagerHLSL : public PC_SHADER_MANAGER_VIEW {
+  public:
     ShaderCompilerBasePc *compiler;
     ShaderCompilerBufferAllocatorPc vertex_source;
     ShaderCompilerBufferAllocatorPc pixel_source;
-    ShaderManagerHLSLPc(VirtualStackAllocator &);
-    virtual ~ShaderManagerHLSLPc();
+    ShaderManagerHLSL(VirtualStackAllocator &);
+    virtual ~ShaderManagerHLSL();
     virtual bool CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *, i32);
     virtual void AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);
 };
+typedef ShaderManagerHLSL ShaderManagerHLSLPc;
 STATIC_ASSERT(sizeof(PC_SHADER_MANAGER_VIEW) == 0x7918c);
 STATIC_ASSERT(offsetof(ShaderManagerHLSLPc, compiler) == 0x7918c);
 STATIC_ASSERT(offsetof(ShaderManagerHLSLPc, vertex_source) == 0x79190);

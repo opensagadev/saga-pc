@@ -125,3 +125,6 @@ extern "C" void __cdecl NuMtlSetShaderDescPS(NUMTL *material, const PC_MATERIAL_
     mtl->diffuse.y = ((mtl->shader.packed_diffuse_colour >> 8) & 0xff) / 255.0;
     mtl->diffuse.z = ((mtl->shader.packed_diffuse_colour >> 16) & 0xff) / 255.0;
 }
+
+extern "C" void __cdecl NuMtlSetRenderPlanePc(NUMTL *material, i32 plane) {
+}

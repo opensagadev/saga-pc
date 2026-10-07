@@ -5,3 +5,4 @@ EXPORTS
     D3DXCreateCubeTextureFromFileInMemory@16
     D3DXCreateTextureFromFileInMemory@16
     D3DXMatrixMultiply@12
+    D3DXCompileShader@40

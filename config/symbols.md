@@ -4651,3 +4651,26 @@ providers; this reconnection adds zero new unique PC bytes. Native caller extent
 survive. Five class6/type0 local serial qualifications preserve owner offsets,
 raw and official bytes. Current normal build has 313 owners, 4,377 functions
 and 9,993 full data regions.
+
+### Shader/compiler and font transfer DD (2026-10-07)
+
+Transferred 31 unique native functions / 5,404 PC bytes: compiler lifetime and
+setters412, genuine HLSL backend1,310, font resource/load/lifetime3,589 and
+LoadPermLoadFonts93. Natural base/derived destructor alias adds one physical
+53-byte copy, zero extra unique credit. Full32 compiled copies span5,457 bytes.
+Native RTTI supports ShaderBuilderGen/HLSLShaderBuilder and
+ShaderManagerTemplate<NuShaderObject>/ShaderManagerHLSL class names. Seven
+explicit existing linker-name migrations preserve VA, extent, ABI, raw and
+official bytes; all other reference contracts remain strict. Real COM buffer
+and reflection protocols, D3D shader creation slots and native failure policy
+are retained. D3DXCompileShader uses the real import, not a replacement provider.
+
+All4,377 prior functions and9,993 prior data definitions were checked.
+All2,084 old exact code copies and5,291 known-exact physical data copies survive.
+Two previously nonexact bodies differ: LoadPermData gains the genuine initial
+CALL5; unchanged-source particle renderer changes719 to717 bytes by x87 load
+scheduling. Independent current-pair review qualifies stable initialized finite
+readable inputs, masked exceptions and four available x87 slots only; unmasked
+signaling NaNs, load-fault order and debugger FPU metadata are excluded. No source
+tuning or universal equivalence claim. Five class6/type0 local serial changes
+preserve complete raw/official bytes and strict owner offsets.

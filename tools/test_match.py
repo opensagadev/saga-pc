@@ -235,7 +235,7 @@ class InlinedInventoryTests(unittest.TestCase):
     target = {"image_base": "0x400000", "image_size": "0x10000", "sha256": "a" * 64,
               "text_va": "0x401000", "text_size": "0x1000"}
 
-    def run_match(self, records, args=(), objects=None):
+    def run_match(self, records, args=(), objects=None, import_definitions=None):
         with tempfile.TemporaryDirectory() as temp, ExitStack() as stack:
             root = Path(temp)
             (root / "config").mkdir()
@@ -244,6 +244,9 @@ class InlinedInventoryTests(unittest.TestCase):
             (root / "src/externals.h").write_text("// API declarations\n")
             (root / "Makefile").write_text("# fixture\n")
             (root / "config/toolchain.json").write_text('{"version": "fixture"}')
+            (root / "tools").mkdir()
+            for name, text in (import_definitions or {}).items():
+                (root / "tools" / name).write_text(text)
             pe = SimpleNamespace(imports=lambda: [], import_thunk=lambda _: None)
             for name, value in (("ROOT", root), ("OUT", root / "build/objdiff")):
                 stack.enter_context(patch.object(match, name, value))
@@ -256,6 +259,26 @@ class InlinedInventoryTests(unittest.TestCase):
             self.assertEqual(match.main(), 0)
             report = json.loads((root / "build/objdiff/summary.json").read_text())
             return report, output.getvalue()
+
+    def test_import_definitions_are_hashed_as_report_inputs(self):
+        definitions = {name + ".def": "LIBRARY " + name + ".dll\nEXPORTS\n"
+                       for name in ("d3dx9_35", "d3d9", "dsound", "dinput8", "xinput1_3")}
+        result, _ = self.run_match([], import_definitions=definitions)
+        for name, text in definitions.items():
+            self.assertEqual(result["inputs"]["tools/" + name], match.digest(text.encode()))
+        self.assertIn("src/externals.h", result["inputs"])
+
+    def test_import_export_change_updates_fingerprint_without_changing_match_results(self):
+        original = "LIBRARY d3dx9_35.dll\nEXPORTS\n"
+        revised = original + "    D3DXCompileShader@40\n"
+        before, _ = self.run_match([], import_definitions={"d3dx9_35.def": original})
+        after, _ = self.run_match([], import_definitions={"d3dx9_35.def": revised})
+        self.assertEqual(set(before["inputs"]), set(after["inputs"]))
+        changed = {name for name in before["inputs"]
+                   if before["inputs"][name] != after["inputs"][name]}
+        self.assertEqual(changed, {"tools/d3dx9_35.def"})
+        self.assertEqual({k: v for k, v in before.items() if k != "inputs"},
+                         {k: v for k, v in after.items() if k != "inputs"})
 
     def test_inlined_symbols_report_separately_without_increasing_coverage_or_function_counts(self):
         records = [{"symbol": "_code", "address": 0x401000, "size": 16, "ctype": ""},

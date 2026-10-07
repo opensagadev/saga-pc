@@ -1990,3 +1990,21 @@ private. Three original terrain skin statics / 12 bytes have native zero, NULL
 and minus-one initializers, with owning extents and capacity unknown. Full known
 _ang extent 1,026 remains exact. No padding, ordering, segment, alignment or
 comparison changes were used to repair an extent.
+
+### Shader/font initializer ownership DD (2026-10-07)
+
+All46 new complete initializer copies /724 COFF bytes equal native initializers:
+4 known-extent copies70 bytes,42 unknown-extent copies654 bytes. Physical exact
+data union increases63 bytes to637,608; overlaps count once. Unknown extents
+receive no exact coverage or capacity credit. All9,993 previous complete regions,
+5,291 previous known-exact physical copies and13 member parents/28 bytes survive.
+Natural RTTI/vtables, font literals and real private initializers retain their
+source ownership. Solewriter appended six shared font working views24 bytes:
+four i32 controls and two genuine font pointers with native zero initializers.
+Their owning extents remain unknown; known _ang1026 remains exact.
+
+Five actual tools/*.def inputs are now included in source fingerprints. The
+real D3DXCompileShader@40 export regenerates its import library through existing
+Make dependencies. Final431 captured inputs and six actual artifacts (source
+EXE plus five generated import libraries) are pinned. Historical426-input
+baselines remain historical; no import DLL implementation is fabricated.

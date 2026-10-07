@@ -278,7 +278,8 @@ def main():
               "no standalone address or byte coverage is assigned.")
     inputs = [ROOT / "Makefile", *sorted((ROOT / "src").rglob("*.h")),
               *sorted((ROOT / "config").glob("*")),
-              *sorted((ROOT / "tools").glob("*.py")), *sorted((ROOT / "src").rglob("*.cpp")),
+              *sorted((ROOT / "tools").glob("*.py")), *sorted((ROOT / "tools").glob("*.def")),
+              *sorted((ROOT / "src").rglob("*.cpp")),
               *sorted((ROOT / "src").rglob("*.c"))]
     result = {"format_version": 2, "target_sha256": target["sha256"],
               "compiler": load_json(ROOT / "config/toolchain.json")["version"],
