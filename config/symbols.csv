@@ -432,6 +432,7 @@ address    , symbol                                                         , si
 0x004873d0 , _TakeOverYoda                                                  , 273   , i32 __cdecl (GAMEOBJECT *; GAMEOBJECT *; i32; i32)
 0x004874f0 , _TakeOver2GetIn                                                , 419   , void __cdecl (GAMEOBJECT *; GAMEOBJECT *)
 0x004876a0 , _TagCode                                                       , 1530  , i32 __cdecl (GAMEOBJECT *; GAMEOBJECT *; i32; i32; i32)
+0x487ca0,_TagCharacter,278,"i32 __cdecl (GAMEOBJECT *, GAMEOBJECT *, i32)"
 0x00487dc0 , _Tag_Check                                                     , 1283  , void __cdecl (GAMEOBJECT *)
 0x004882d0 , _ReleaseTakeOver                                               , 864   , void __cdecl (GAMEOBJECT *; i32)
 0x00488630 , _ReleaseAllTakeOvers                                           , 36    , void __cdecl (void)
@@ -812,6 +813,7 @@ address    , symbol                                                         , si
 0x004f1ff0 , _NuStrLen                                                      , 28    , i32 __cdecl (const char *)
 0x004f2010 , _NuStrLenU                                                     , 57    , i32 __cdecl (u8 *)
 0x4f2050,_NuStrFindPosU,78,"i32 __cdecl(u8*,i32)"
+0x4f20a0,_NuStrStr,77,"char *__cdecl (char *, const char *)"
 0x004f20f0 , _NuStrCmp                                                      , 60    , "i32 __cdecl (const char *, const char *)"
 0x004f2130 , _NuStrNCmp                                                     , 103   , "i32 __cdecl (const char *, const char *, i32)"
 0x004f26e0 , _NuStrLwrW                                                     , 76    , "void __cdecl (u16 *, const u16 *)"
@@ -1027,10 +1029,13 @@ address    , symbol                                                         , si
 0x5000d0,_NuGCutSceneSysInit,22,void __cdecl(CUT_LOCATOR_FUNCTION_ENTRY_PC *)
 0x500140,_CutSceneRemapFocusPc,121,
 0x005001c0 , _NuGCutSceneSysPostBackgroundLoad                              , 55    , void __cdecl (void)
+0x500210,_instNuGCutSceneIsFinished,17,i32 __cdecl (INSTNUGCUTSCENE *)
+0x500390,_instNuGCutScenePause,31,"void __cdecl (INSTNUGCUTSCENE *, i32)"
 0x5003b0,_instNuGCutSceneEndButNotSystems,77,void __cdecl(INSTNUGCUTSCENE *)
 0x500570,_CutSceneClipTestPc,142,
 0x500600,_CutSceneSwapStreamAssetPc,549,
 0x500830,_CutSceneCopyStreamAnimationsPc,359,
+0x5009d0,_instNuGCutSceneSwapBuffers,133,"i32 __cdecl (INSTNUGCUTSCENE *, i32)"
 0x500a70,_CutSceneStreamHoldFramePc,29,
 0x500b00,_CutCameraFixPtrsPc,132,
 0x00500b90 , _NuGCutSceneUpdateMtx                                          , 86    , void (NUMTX *)
@@ -1067,6 +1072,7 @@ address    , symbol                                                         , si
 0x502bb0,_CutSceneCharacterSysUpdatePc,128,
 0x502c30,_CutSceneCharacterSysRenderPc,128,
 0x502cb0,_CutSceneEndCharactersPC,170,"void __cdecl(INSTNUGCUTSCENE *, f32)"
+0x502d60,_CutSceneReleaseInstanceCharactersPc,96,
 0x00502dc0,_PCCutAni3CurveInteger,67,"i32 __cdecl (ANI3_HEADER_PC *, f32 *, i32)"
 0x00502e10,_PCCutCharacterAni3,564,"void __cdecl (CUT_CHARACTER_ANIMATION_PC *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *)"
 0x00503050,_NuGCutCharAnimProcess,1263,"void __cdecl (CUT_CHARACTER_GENERIC_PC *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *)"
@@ -1088,12 +1094,13 @@ address    , symbol                                                         , si
 0x505bb0,_NuGCutSceneFixUpExtra,26,"void __cdecl(void *,NUGSCN *)"
 0x505bd0,_CutSceneCreateContentsPc,273,
 0x505cf0,_instNuGCutSceneCreate,284,"INSTNUGCUTSCENE *__cdecl(void *,NUGSCN *,void *,char *,VARIPTR *,i32)"
-0x00505e10 , _instNuGCutSceneStop                                           , 56    , void __cdecl (instNUGCUTSCENE *)
+0x505e10,_instNuGCutSceneStop,56,void __cdecl (INSTNUGCUTSCENE *)
 0x505e50,_instNuGCutSceneReset,208,void __cdecl instNuGCutSceneReset(INSTNUGCUTSCENE *)
 0x505f20,_instNuGCutSceneStart,270,void __cdecl instNuGCutSceneStart(INSTNUGCUTSCENE *)
 0x5060e0,_instNuGCutSceneEnd,251,void __cdecl(INSTNUGCUTSCENE *)
 0x5061e0,_instNuGCutSceneEndFirstFrame,221,void __cdecl instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *)
 0x00506430 , _instNuGCutSceneSetMtx                                         , 41    , "void __cdecl (INSTNUGCUTSCENE *, NUMTX *)"
+0x506490,_instNuGCutSceneServiceLoad,627,void __cdecl (void)
 0x506710,_CutSceneStreamSkipPc,362,
 0x506880,_CutSceneCameraSysUpdatePc,1463,
 0x506e40,_CutSceneLocatorLookAtUpdatePc,1266,
@@ -1979,14 +1986,20 @@ address    , symbol                                                         , si
 0x57c110,_CutScenesLoadListedPc,720,
 0x57c3e0,_CutScenes_Load,1333,"CUT_LOAD_SYS_PC *__cdecl(char *, NUGSCN *, NUGSCN *, i32, VARIPTR *, VARIPTR *, i32, i32, WORLDINFO *)"
 0x0057c970 , _CutScene_Find                                                 , 77    ,
+0x57c9c0,_CutSceneRebindPlayerCharactersPrivatePc,216,
+0x57caa0,_CutSceneResetTextureAnimationsPrivatePc,105,
+0x57cb10,_CutSceneUpdateTextureAnimationsPrivatePc,225,
 0x57cc00,_CutScene_EvalCharacter,143,
 0x57cc90,_CutScene_CreateCharacterInstance,20,
+0x57ccb0,_CutScenePlayOncePrivatePc,113,
 0x0057cd30 , _NewCutScene                                                   , 69    ,
 0x0057cd80 , _CutScene_PlayingOrRequested                                   , 78    , i32 __cdecl (CUTINFO *)
-0x0057cec0 , _CutScenes_Stop                                                , 49    , void __cdecl (CUTSYS *)
+0x57ce40,_CutSceneSetStopFlagsPrivatePc,77,
+0x57cec0,_CutScenes_Stop,49,void __cdecl (CUTSYS_PC *)
 0x57cf00,_CutScenes_Destroy,108,void __cdecl(CUTSYS_PC *)
 0x57cf90,_LocatorFunction_Blaster,189,
 0x57d050,_CutScene_ResetCharacters,65,
+0x57d0a0,_CutScenes_Draw,343,void __cdecl (WORLDINFO *)
 0x0057d200 , _bgAckStreamCutScene                                           , 11    , void __cdecl (BGPROCINFO *)
 0x0057d210 , _bgLoadStreamCutScene                                          , 29    , void __cdecl (BGPROCINFO *)
 0x0057d230 , _CutScenes_BGLoadManager                                       , 53    , void __cdecl (void)
@@ -1994,7 +2007,12 @@ address    , symbol                                                         , si
 0x0057d3a0,_CutScene_DrawCharacter,3767,
 0x57e260,_CutScenes_InitSystem,85,void __cdecl(CUT_DRAW_SETTINGS_PC *)
 0x57e710,_CutScenePlayer_Active,16,void * __cdecl(void)
+0x57ea60,_CutScenePlayer_SetObjects,156,void __cdecl (CUTINFO *)
+0x57eb00,_CutSceneStartPrivatePc,616,
+0x57ed70,_CutScenes_Start,66,void __cdecl (WORLDINFO *)
+0x57edc0,_CutScenes_Reset,254,void __cdecl (WORLDINFO *)
 0x0057eec0 , _CutScenes_End                                                 , 135   , void __cdecl (void)
+0x57ef50,_CutScenes_Update,1783,"void __cdecl (WORLDINFO *, i32)"
 0x57f9a0,?Bolt_RayCastPrivate@@YAHPAUbolt_s@@PAUnuvec_s@@1@Z,260,
 0x57fab0,?Bolt_GeneratePointsPrivate@@YAXPAUbolt_s@@PAUnuvec_s@@@Z,117,
 0x57fb30,?Bolt_OrientationPrivate@@YAXPAUbolt_s@@@Z,97,
@@ -2434,6 +2452,7 @@ address    , symbol                                                         , si
 0x0059f800 , _ProcessGizmoFlowBox                                           , 193   , "i32 __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, u8)"
 0x0059f8d0 , _ProcessActionFlowBox                                          , 114   , "i32 __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, u8)"
 0x0059f970 , _ClearTakeOverObjectSys                                        , 31    , void __cdecl (void)
+0x59f990,_RegisterTakeOverObject,225,void __cdecl (GAMEOBJECT *)
 0x0059fa80 , _StoreStatusTakeOverObjectSys                                  , 342   , void __cdecl (void)
 0x005a01f0,_Buck_StartRiderJump,294,"void __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
 0x005a0320,_Buck_Start,168,"void __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
@@ -4338,6 +4357,7 @@ address    , symbol                                                         , si
 0x6dbb30,_NuInitHardwarePc,2930,"i32 __cdecl(VARIPTR*,VARIPTR*,i32,...)"
 0x6dc760,_RegisterWindowCallbackPc,25,void __cdecl(PC_WINDOW_CALLBACK_PC)
 0x6dc7a0,_SetAccessibilityPc,230,void __cdecl(u8)
+0x6dc890,_PcNativeSelectLanguage,1578,i32 __cdecl (const char *)
 0x6dcf30,_ParsePlatformArgumentsPc,418,void __cdecl(char*)
 0x6dd160,_PcPlatformPolicy,321,u8 __cdecl(u8)
 0x6dd2b0,_PublishWindowPc,37,"i32 __cdecl(HWND,i32)"
@@ -4366,6 +4386,7 @@ address    , symbol                                                         , si
 0x6df0e0,_PcRendererShutdown,181,void __cdecl(i32)
 0x006df300 , _PCFrameCriticalSectionEnter_candidate                         , 13    , void __cdecl (void)
 0x006df310 , _PCFrameCriticalSectionLeave_candidate                         , 13    , void __cdecl (void)
+0x6df320,_PCFrameSetLoadingYieldEnabled,14,void __cdecl (i32)
 0x6df330,_PCFrameLoadingYieldEnabled,9,i32 __cdecl (void)
 0x6df940,_PCDeviceResetState,220,void __cdecl (void)
 0x6dfdc0,_PcFreeApiCallBuffer,45,void __cdecl(void)
@@ -4380,6 +4401,12 @@ address    , symbol                                                         , si
 0x6e1b10,?PCGraphicsModeCompare@@YAHPBX0@Z,87,
 0x6e1b70,?FindMode@PC_DEVICE_BACKEND_PC@@QAEIIII@Z,390,"u32 __thiscall PC_DEVICE_BACKEND_PC::FindMode(u32,u32,u32)"
 0x6e1d00,?FindAspect@PC_DEVICE_BACKEND_PC@@QAEHII@Z,206,"i32 __thiscall PC_DEVICE_BACKEND_PC::FindAspect(u32,u32)"
+0x6e1dd0,?RequestMode@PC_DEVICE_BACKEND_PC@@QAEXI@Z,27,void __thiscall PC_DEVICE_BACKEND_PC::RequestMode(u32)
+0x6e1df0,?NextResolution@PC_DEVICE_BACKEND_PC@@QAEXXZ,261,void __thiscall PC_DEVICE_BACKEND_PC::NextResolution(void)
+0x6e1f00,?PreviousResolution@PC_DEVICE_BACKEND_PC@@QAEXXZ,262,void __thiscall PC_DEVICE_BACKEND_PC::PreviousResolution(void)
+0x6e2010,?NextRefresh@PC_DEVICE_BACKEND_PC@@QAEXXZ,103,void __thiscall PC_DEVICE_BACKEND_PC::NextRefresh(void)
+0x6e2080,?PreviousRefresh@PC_DEVICE_BACKEND_PC@@QAEXXZ,104,void __thiscall PC_DEVICE_BACKEND_PC::PreviousRefresh(void)
+0x6e20f0,?ResetRequestedMode@PC_DEVICE_BACKEND_PC@@QAEXXZ,53,void __thiscall PC_DEVICE_BACKEND_PC::ResetRequestedMode(void)
 0x6e2130,?GetMultisampleType@PC_DEVICE_BACKEND_PC@@QAEIXZ,14,u32 __thiscall PC_DEVICE_BACKEND_PC::GetMultisampleType(void)
 0x6e2170,?ReleaseDefaultPoolResources@PC_DEVICE_BACKEND_PC@@QAEXXZ,208,void __thiscall PC_DEVICE_BACKEND_PC::ReleaseDefaultPoolResources(void)
 0x6e2240,?EndScene@PC_DEVICE_BACKEND_PC@@QAEJXZ,15,HRESULT __thiscall PC_DEVICE_BACKEND_PC::EndScene(void)
@@ -5276,12 +5303,13 @@ address    , symbol                                                         , si
 0x00753200 , _TerrainScanTriangleSentinel                                   ,       ,
 0x753200,__real@47800000,4,const f32
 0x00753220 , __real@bdcccccd                                                , 4     , const f32
-0x753224,__real@42c60000,4,const f32
+0x753224,__real@42c60000,4,f32
 0x753228,__real@401e000000000000,8,const f64
 0x753230,__real@c0f0000000000000,8,const f64
 0x753250,__real@428c0000,4,const f32
 0x753268,_PlayerStepInnerActionPc,8,const f64
 0x753268,__real@3ffc000000000000,8,const f64
+0x753270,??_C@_04NGEJNKEG@Base?$AA@,,const char[5]
 0x00753270 , _AIScriptKeywordBase                                           , 5     , const char[5]
 0x753278,__real@3f4ccccd,4,const f32
 0x0075327c , __real@3f666666                                                ,       ,
@@ -5600,6 +5628,8 @@ address    , symbol                                                         , si
 0x756ac8   , _PCContextName_Activate                                        , 9     , const char [9]
 0x756da4   , _PCContextName_BeenTakenOver                                   , 14    , const char [14]
 0x007575d8 , __real@3fc0000000000000                                        , 8     , const f64
+0x757648,??_C@_07OCKDJMPO@inrange?$AA@,,const char[8]
+0x757650,??_C@_09ONPKMKJM@throwable?$AA@,,const char[10]
 0x00757680 , _AIGameOpponentName                                            , 9     , const char[9]
 0x75768c,_AITransferLiteral75768c,13,const char[13]
 0x75769c,_AITransferLiteral75769c,11,const char[11]
@@ -5613,7 +5643,9 @@ address    , symbol                                                         , si
 0x7576e0,_AITransferLiteral7576e0,10,const char[10]
 0x007576ec , _AICombatOpponentName                                          , 10    , const char[10]
 0x7576f8,_AITransferLiteral7576f8,6,const char[6]
+0x757700,??_C@_04LCEHBNPO@set?$DN?$AA@,,const char[5]
 0x00757700 , _AIGameSetName                                                 , 5     , const char[5]
+0x757708,??_C@_0L@KEIFHGLP@character?$DN?$AA@,,const char[11]
 0x00757708 , _AIGameCharacterName                                           , 11    , const char[11]
 0x757714,??_C@_05LAPONLG@false?$AA@,,const char []
 0x00757714 , _AIScriptFalse                                                 , 6     , const char[6]
@@ -5626,11 +5658,18 @@ address    , symbol                                                         , si
 0x75773c   , ??_C@_07JAOEMGIL@neutral?$AA@                                  , 8     , const char[8]
 0x75773c,_AITransferLiteral75773c,8,const char[8]
 0x757744,_AITransferLiteral757744,7,const char[7]
+0x75774c,??_C@_08ILLJEJKL@parts_on?$AA@,,const char[9]
 0x757758,??_C@_06CEIDEADO@debris?$AA@,7,const char[7]
+0x757760,??_C@_0O@IFPHBOJN@check_if_dead?$AA@,,const char[14]
+0x757770,??_C@_06COCFMLA@all_ai?$AA@,,const char[7]
+0x757778,??_C@_0O@NMBFAIJC@all_ai_except?$AA@,,const char[14]
+0x757788,??_C@_0BC@HFECMLPA@respawn_at_origin?$AA@,,const char[18]
 0x75779c   , ??_C@_07PABIOCAD@respawn?$AA@                                  , 8     , const char[8]
+0x7577a4,??_C@_08FGMNNF@opponent?$AA@,,const char[9]
 0x7577b0   , ??_C@_09MNKJOHH@character?$AA@                                 , 10    , const char[10]
 0x007577b0 , _AreaConfigKeyword_character                                   , 10    , const char[10]
 0x007577bc , _AIGameStateName                                               , 7     , const char[7]
+0x7577c4,??_C@_05MAJJAKPI@FALSE?$AA@,,const char[6]
 0x007577c4 , _AIActionFalseName                                             , 6     , const char[6]
 0x007577cc , _AILocatorPersonalFormat                                       , 6     , const char[6]
 0x007577d4 , _AILocatorIndexedFormat                                        , 6     , const char[6]
@@ -5638,6 +5677,7 @@ address    , symbol                                                         , si
 0x007577e4 , _AIGameNearestName                                             , 8     , const char[8]
 0x007577ec , _AIActionIndexedName                                           , 8     , const char[8]
 0x007577f4 , _AIActionPersonalName                                          , 9     , const char[9]
+0x757800,??_C@_05DFCJAACA@name?$DN?$AA@,,const char[6]
 0x00757800 , _AIScriptActionNameArgPrefix                                   , 6     , const char[6]
 0x757808   , _ActionSnapDontCheckTerrainName                                 ,        ,
 0x75781c,_AITransferLiteral75781c,8,const char[8]
@@ -5739,13 +5779,20 @@ address    , symbol                                                         , si
 0x757e68,_AITransferLiteral757e68,5,const char[5]
 0x757e70,_AITransferLiteral757e70,15,const char[15]
 0x00757e80 , _AIPathFaceName                                                , 5     , const char[5]
+0x757e88,??_C@_04PGEGCIFE@SNAP?$AA@,,const char[5]
 0x00757e88,_GizmoSnapOptionNamePc,5,const char[5]
+0x757e90,??_C@_08KAKHMDMJ@stayshut?$AA@,,const char[9]
+0x757e9c,??_C@_08DMBBJPJB@stayopen?$AA@,,const char[9]
+0x757ea8,??_C@_09GNCFCLDO@backwards?$AA@,,const char[10]
 0x757ea8,_AITransferLiteral757ea8,10,const char[10]
 0x757eb4,_AITransferLiteral757eb4,8,const char[8]
 0x757ebc,_AITransferLiteral757ebc,5,const char[5]
 0x757ec4,_AITransferLiteral757ec4,10,const char[10]
 0x00757ed0 , _AIAnimSpeedMultiplyByName                                     ,       ,
 0x757ee0,_AITransferLiteral757ee0,8,const char[8]
+0x757ee8,??_C@_07HBIAAFDA@damage?$DN?$AA@,,const char[8]
+0x757ef0,??_C@_07CKHJGIMH@hitter?$DN?$AA@,,const char[8]
+0x757ef8,??_C@_0BB@DMOBOFF@triggered_by_hit?$AA@,,const char[17]
 0x757f28,_AITransferLiteral757f28,8,const char[8]
 0x757f40,??_C@_04HNEBHLOP@from?$AA@,5,const char[5]
 0x00757f40 , _AIActionFromName                                              , 5     , const char[5]
@@ -5811,6 +5858,9 @@ address    , symbol                                                         , si
 0x00758254 , _AIGameMaximumTurnName                                         , 9     , const char[9]
 0x00758260 , _AIGameMinimumTurnName                                         , 9     , const char[9]
 0x758280   , ??_C@_07PAIKCKMF@locator?$AA@                                  , 8     , const char[8]
+0x758380,??_C@_0BB@GOEGIECJ@fireinterval?51?45?$AA@,,const char[17]
+0x758394,??_C@_0N@PCJHFP@firerange?515?$AA@,,const char[13]
+0x7583a4,??_C@_0N@IECPJGHP@goalrange?510?$AA@,,const char[13]
 0x7583b4,_AITransferLiteral7583b4,16,const char[16]
 0x7583c4,_AITransferLiteral7583c4,10,const char[10]
 0x7583d0,_AITransferLiteral7583d0,18,const char[18]
@@ -7186,6 +7236,7 @@ address    , symbol                                                         , si
 0x75eb8c,_NuFileExt_360_ghg_PC,9,const char[9]
 0x75eb98,_NuFileExt_cbs_PC,5,const char[5]
 0x75eba0,_NuFileExt_ca3_PC,5,const char[5]
+0x75eba8,??_C@_01LFCBOECM@?4?$AA@,,const char[2]
 0x75eba8,_PcInputText75eba8, ,char[2]
 0x0075ebb0,__real@4062c00000000000,8,
 0x75ebb8,__real@43fa0000,4,const f32
@@ -7770,6 +7821,7 @@ address    , symbol                                                         , si
 0x7625b0,??_C@_04POFIIHAF@cut?2?$AA@,5,const char[5]
 0x7625b8,??_C@_04HHNGNHCD@?4cut?$AA@,5,const char[5]
 0x7625c0,??_C@_09CHEONNLL@cutscenes?$AA@,10,const char[10]
+0x7625f4,__real@41b80000,,const f32
 0x7625f8,??_C@_0O@JOJJFNHN@single_debris?$AA@,14,const char[14]
 0x762608,??_C@_0N@MFNJNGOD@trooper_bolt?$AA@,13,const char[13]
 0x762618,??_C@_0L@KMJKINJ@no_collide?$AA@,11,const char[11]
@@ -9850,6 +9902,8 @@ address    , symbol                                                         , si
 0x775eb4,_PcInputText775eb4,  ,char[10]
 0x775ec0,_PcInputText775ec0, ,char[7]
 0x775ec8,_NuHwDefaultTitlePc,,const char[12]
+0x775ed4,??_C@_0M@DEFMJIAP@LanguageVal?$AA@,,const char[]
+0x775ee0,??_C@_09CFGLDDG@SOFTWARE?2?$AA@,,const char[]
 0x775eec,??_C@_0BA@NBJDNLEF@?9AllowCrashDump?$AA@,16,
 0x775efc,??_C@_0BB@LFCPCDAH@?9NoFocus_Process?$AA@,17,
 0x775f10,??_C@_0P@COJCBEPF@?9NoFocus_Pause?$AA@,15,
@@ -11213,6 +11267,7 @@ address    , symbol                                                         , si
 0x803e10,_CUTSUBTITLEDEFAULT_SCALEY,,f32
 0x803e14,_CUTSUBTITLEDEFAULT_FITWIDTH,,f32
 0x803e18,_CutScene_ConfigKeywords,,NUFPCOMJMP[44]
+0x803f78,_CutSceneMusicStartFramePc,,i32
 0x803f7c,_cutscene_locatorfns,40,CUT_DRAW_LOCATOR_ENTRY_PC[2]
 0x00804014 , _BoltShootParameter                                            , 4     , f32
 0x00804018 , _GlobalBoltType_Default                                        , 164   , BOLTTYPE_PC
@@ -12347,6 +12402,7 @@ address    , symbol                                                         , si
 0x9213d8,_NuCutSceneSFXUpdate,,"void (__cdecl *)(CUT_LOAD_LOCATOR_SYSTEM *,CUT_LOAD_LOCATOR_INSTANCE *,CUT_LOAD_LOCATOR *,f32,NUMTX *,i32)"
 0x9213dc,_CutSceneInstanceSfxRequestPc,,void (__cdecl *)(INSTNUGCUTSCENE *)
 0x9213e0,_CutSceneLocatorFunctionsPc,,CUT_LOCATOR_FUNCTION_ENTRY_PC *
+0x9213e8,_CutSceneStreamLoadGuardPc,,i32
 0x9213ec,_CutSceneDebrisAxisSizePc,,f32
 0x9213f0,_CutSceneDebrisProcessModePc,,i32
 0x00921404 , _menu_flash                                                    , 4     , i32
@@ -12508,9 +12564,11 @@ address    , symbol                                                         , si
 0x00925058 , _MainFrameCounters                                             , 5     , MAINFRAMECOUNTERS
 0x925060,_DoubleScoreTime,,f32
 0x00925074 , _MAXFRAMETIME                                                  , 4     , f32
+0x925078,_LevelNameMul,,f32
 0x92507c   , _GameTimer                                                     , 16    , TIMER
 0x92509c,_AreaTimer,16,TIMER
 0x009250bc,_LevelTimer,,TIMER
+0x9250cc,_LevelNameTime,,f32
 0x009250d0 , _PAL                                                           , 4     , i32
 0x009250e8 , _do_multiframe_update                                          , 4     , i32
 0x9250f0,_PlayPlanePc,,KEEP_SCREEN_PLANE_PC[6]
@@ -12548,6 +12606,7 @@ address    , symbol                                                         , si
 0x0093b0f8 , _Game_OptionsSave                                              , 4     , OPTIONSSAVE *
 0x0093b0fc , _perm_debrissys                                                , 4     , APIDEBRISSYS_PC *
 0x93b100,_MatrixReflection_CanOverrideFn,,i32 (__cdecl *)(void)
+0x93b104,_texanimbits,,u32
 0x93b108,_dco_gcdata,,PLAYERCHARACTERCONFIG_PC *
 0x93b10c,_dco_cmodel,,CHARACTER_MODEL_LAYERS_PC *
 0x93b110,_dco_wearinghat,,i32
@@ -12782,19 +12841,30 @@ address    , symbol                                                         , si
 0x951c0c,_CS_area,,i32
 0x951c10,_CutBlobShadowAlpha,,u8
 0x951c14,_CS_fadefogcount,,i32
+0x951c18,_CUTNOFOG,,i32
+0x951c1c,_CutInstEndStop,,i32
 0x951c20,_CutReflectRange2,,f32
+0x951c24,_CutReflectRange,,f32
 0x951c28,_CS_texanimcount,,i32
 0x00951c2c , _NewCutInfo                                                    ,       ,
+0x951c4c,_cutaudiopaused,,i32
+0x951c50,_CUTCAMONLY,,i32
 0x951c54,_CUTCAM,,void *
 0x951c58,_CS_buffptr,,VARIPTR *
+0x951c5c,_CutInstEnd,,INSTNUGCUTSCENE *[4]
 0x951c6c,_CS_CutInfo,,CUT_LOAD_RECORD_PC *
 0x951c70,_CutBlobShadowFadeNear,,f32
+0x951c74,_CutFramePc,,i32
 0x951c78,_CutSceneWaiting,,i32
 0x00951c7c , _CUTSKIPLOCK                                                   , 4     , i32
 0x951c80,_CS_worldinfo,,WORLDINFO *
 0x951c84,_CS_cutsys,,CUT_LOAD_SYS_PC *
+0x951c88,_CUTDRAWWORLD,,i32
 0x951c8c,_CutBlobShadowFadeFar,,f32
+0x951c90,_cut_waiting_for_new_level,,i32
+0x951c98,_ACTIVECUTCOUNT,,i32
 0x00951c9c , _NewCutInfoCount                                               , 4     , i32
+0x951ca0,_CutInstEndCount,,i32
 0x951ca4,_CUTSUBTITLEDEFAULT_ALIGN,,u8
 0x951ca8,_CUTSUBTITLEDEFAULT_X,,f32
 0x00951cac , _CutScene_StartFn                                              , 4     , i32 (__cdecl *)(void *)
@@ -12911,7 +12981,7 @@ address    , symbol                                                         , si
 0x0095644c,_load_nparents,,
 0x00956450,_load_nchildren,,
 0x00956454 , _gizflow_loop_checksum                                         , 1     , u8
-0x956458   , _takeoverobjects                                                , 352   ,
+0x956458,_takeoverobjects,352,TAKEOVEROBJECT_PC[8]
 0x956628   , _num_takeoverobjects                                            , 4     , i32
 0x0095662c , _BuckStartExtraFn                                              , 4     , TAG_DRAW_ICON_PC
 0x00956634 , _gameanimsysprogress                                           , 12    , GAMEANIMPROGRESS
@@ -13553,6 +13623,7 @@ address    , symbol                                                         , si
 0x2975c60,_PcMouseX,,f32
 0x2975c64,_PcMouseY,,f32
 0x2975c74,_NuHwParameter4fPc,,u32
+0x2975c78,_PcUseUserGeoRegionPc,,u32
 0x2975c7c,_PcWindowCallbackCount,,i32
 0x2975c80,_PcScreenSaverEnabled,,BOOL
 0x2975c88,_PcModuleFilename,,char[260]

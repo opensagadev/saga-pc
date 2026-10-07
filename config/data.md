@@ -2019,3 +2019,53 @@ regions and5,295 known-exact physical copies,13 members/28 bytes survive.
 No new shared storage. Voice DWORDflags30 shares existing BYTEalias/size34.
 
 Terrain inherited COMMON mismatch remains unchanged; eight new initializers are native-equal. Full known angle1026 remains exact. No allocation or new data capacity is inferred from a compiled view.
+
+### Connected AISYS, tagging, hardware locale and cutscene checkpoint FF (2026-10-07)
+
+Transferred 45 full functions and 13,221 new unique PC bytes: AISYS 4,370,
+tag/takeover suppliers and callbacks 1,219, device modes/locale 2,388,
+streaming 1,092 and cutscene controller 4,152. Unique compared code is
+1,304,919 bytes; objdiff denominator 1,305,490 includes 571 overlapping bytes.
+Whole-PC fuzzy coverage is 26.029687144670714%, +0.297057341703816 percentage
+points. Exact code is 209,128/3,471,246 bytes (6.024580222778795%), +844 bytes.
+These measurements do not establish running gameplay.
+
+All 4,426 prior complete function copies and 10,047 complete data regions were
+checked. All 2,105 exact code copies, 5,303 known-exact physical data copies,
+13 named members/28 bytes survive. The unchanged-source camera body reproduces
+the previously accepted scheduling pair exactly reversed, with the same limited
+finite initialized masked-FP domain; only the genuine locale call changes the
+other previously nonexact hardware parent. No old data exception or comparison
+mask, truncation, extent retirement, flag/order/alignment control was used.
+
+Required build/link/object checks pass for 314 owners/4,471 functions/10,096
+data definitions. LLVM18 checks pass: 728 tests, three existing skips. Retail
+matching and actual-normal CPU checks pass: AISYS 69, tag/takeover 50, device
+modes 162 and cutscene 114 (395 total), with no replacement/supplement providers.
+All 432 captured inputs and six generated import-library/EXE artifacts remain
+unchanged. Authentic source EXE still exits 5 after 3.642s at NULL Retrieve+16,
+full 208-byte body, source 0x50b960. Own-prefix crash dialogs are disabled;
+private cleanup leaves no owned game/debugger/crash window. Persistent window,
+device/Present/frames/scene/gameplay remain unverified. Controller families
+retain explicit real missing audio/fog/panel/scene actions.
+
+The new Mac executable has 30,815 dyld exports and 22,127 combined named code
+addresses, including real game functions, shader constructors and parser methods.
+It has no embedded DWARF/STABS. Runtime type/name evidence corroborates selected
+PC hypotheses, not PC addresses, general layouts or MSVC generated helpers.
+Full retained audit: build/analysis/mac2-evidence/README.md. Next connected work
+uses these names for shader publication/parser closure and LoadPerm2/character
+fixups. Whole-project goal remains active; direct-main pushes are authorized,
+with CI verified on each exact pushed revision. Human journal remains excluded.
+
+Forty-nine new complete initializer copies total 372 retail-equal bytes: five
+known-extent and 44 unknown-extent copies. Physical exact data union remains
+637,608 bytes; unknown extents receive zero coverage/capacity credit. Canonical
+TakeOverObject remains the same 352-byte allocation, now typed as eight asserted
+44-byte records. Eleven genuine central zero states add 44 working bytes; music
+frame sentinel -1 is an ordinary external-C four-byte definition in the existing
+controller, qualified by its native producer/consumer lifecycle (original PC
+filename/visibility/extent unproved). Native readonly registry names stay real
+immutable source literals. All prior angle1026/ripple10/member/CRC/HANDLE proofs
+survive. The failed central ten-state and readonly-string variants are retained;
+no storage placement or alignment variant was selected to manufacture equality.

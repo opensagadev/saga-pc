@@ -7020,6 +7020,12 @@ typedef struct PC_DEVICE_BACKEND_PC {
     void __thiscall ResetViewport();
     void __thiscall ConfigureCurrentTargets();
     void __thiscall BeginDefaultTargets();
+    void __thiscall RequestMode(u32 mode);
+    void __thiscall NextResolution();
+    void __thiscall PreviousResolution();
+    void __thiscall NextRefresh();
+    void __thiscall PreviousRefresh();
+    void __thiscall ResetRequestedMode();
 
 #endif
 } PC_DEVICE_BACKEND_PC;
@@ -13346,7 +13352,30 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern const char AITransferLiteral757a38[12];
     extern const char AITransferLiteral757a70[11];
     extern i32 BeenAttacked;
-    extern u8 takeoverobjects[352];
+    typedef struct TAKEOVEROBJECT_PC {
+        GAMEOBJECT *object;
+        u8 unknown_04[16];
+        char script_name[16];
+        i16 character_id;
+        u8 source_creature;
+        u8 registered_level;
+        u8 current_level;
+        u8 unknown_29[3];
+    } TAKEOVEROBJECT_PC;
+    STATIC_ASSERT(sizeof(TAKEOVEROBJECT_PC) == 0x2c);
+    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, object) == 0);
+    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, script_name) == 0x14);
+    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, character_id) == 0x24);
+    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, source_creature) == 0x26);
+    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, registered_level) == 0x27);
+    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, current_level) == 0x28);
+    extern TAKEOVEROBJECT_PC takeoverobjects[8];
+    i32 __cdecl TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
+    void __cdecl RegisterTakeOverObject(GAMEOBJECT *);
+    i32 __cdecl Action_SetTaggable(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_TagCharacter(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_RegisterTakeOverObject(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+
     extern i32 num_takeoverobjects;
     extern char DoorExitNamePc[64];
     extern i32 Door_Start;
@@ -17689,6 +17718,62 @@ extern "C" {
     void __cdecl rtlSetSpecularLight(RTL_DATA_PC *);
     i32 __cdecl NuRndrSetAmbientLightSpecular(const NUVEC4 *);
     void __cdecl SetCreatureLights(APIOBJECT_PC *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 __cdecl Action_Kill(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_ResetContext(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_TakeDamage(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_CanBeCarried(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_Activate(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_RemoveThrownForceObjects(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32,
+                                                f32);
+    i32 __cdecl Action_AnimTimeRandom(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_PlayGizObstacle(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_UseForce(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_ProbeDroid(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_AlertCreatures(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    void __cdecl GizObstacle_JumpToStart(GIZOBSTACLE *);
+    void __cdecl GizObstacle_JumpToEnd(GIZOBSTACLE *);
+    void __cdecl GizObstacle_PlayForwards(GIZOBSTACLE *);
+    void __cdecl GizObstacle_PlayBackwards(GIZOBSTACLE *);
+    i32 __cdecl Action_EngageOpponent(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+
+    char *__cdecl NuStrStr(char *text, const char *needle);
+    i32 __cdecl instNuGCutSceneIsFinished(INSTNUGCUTSCENE *);
+    void __cdecl instNuGCutScenePause(INSTNUGCUTSCENE *, i32 paused);
+    void __cdecl instNuGCutSceneStop(INSTNUGCUTSCENE *);
+    void __cdecl NuGCutSceneSysPostBackgroundLoad(void);
+    i32 __cdecl instNuGCutSceneSwapBuffers(INSTNUGCUTSCENE *, i32 force);
+    void __cdecl instNuGCutSceneServiceLoad(void);
+    extern i32 CutSceneStreamLoadGuardPc;
+
+    void __cdecl CutScenes_Start(WORLDINFO *world);
+    void __cdecl CutScenes_Reset(WORLDINFO *world);
+    void __cdecl CutScenes_Stop(CUTSYS_PC *system);
+    void __cdecl CutScenes_End(void);
+    void __cdecl CutScenes_Update(WORLDINFO *world, i32 paused);
+    void __cdecl CutScenes_Draw(WORLDINFO *world);
+    void __cdecl CutScenePlayer_SetObjects(CUTINFO *cut);
+    void __cdecl PCFrameSetLoadingYieldEnabled(i32 enabled);
+    extern i32 CutSceneMusicStartFramePc;
+    extern f32 LevelNameMul, LevelNameTime;
+    extern u32 texanimbits;
+    extern i32 CUTNOFOG, CUTDRAWWORLD, CUTCAMONLY, ACTIVECUTCOUNT;
+    extern i32 CutInstEndCount, cut_waiting_for_new_level;
+
+#ifdef __cplusplus
+}
+#endif
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 __cdecl PcNativeSelectLanguage(const char *);
+    extern u32 PcUseUserGeoRegionPc;
 #ifdef __cplusplus
 }
 #endif

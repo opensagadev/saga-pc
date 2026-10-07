@@ -1572,3 +1572,535 @@ extern "C" {
         NuSetCutSceneRigidPostRenderFn(reinterpret_cast<CUT_DRAW_RIGID_CALLBACK_PC>(CutScene_RigidPostRender));
     }
 }
+
+typedef struct CUT_CONTROLLER_INSTANCE_PC {
+    u8 unknown_00[0x88];
+    u32 flags_88, flags_8c;
+    f32 current_frame, render_frame, rate;
+} CUT_CONTROLLER_INSTANCE_PC;
+STATIC_ASSERT(offsetof(CUT_CONTROLLER_INSTANCE_PC, flags_88) == 0x88);
+STATIC_ASSERT(offsetof(CUT_CONTROLLER_INSTANCE_PC, current_frame) == 0x90);
+STATIC_ASSERT(offsetof(CUT_CONTROLLER_INSTANCE_PC, rate) == 0x98);
+STATIC_ASSERT(offsetof(CUT_LOAD_RECORD_PC, instance) == 4);
+STATIC_ASSERT(offsetof(CUT_LOAD_RECORD_PC, unknown_58) == 0x58);
+STATIC_ASSERT(offsetof(CUT_LOAD_TEXANIM_PC, frame) == 0);
+STATIC_ASSERT(offsetof(CUT_LOAD_TEXANIM_PC, index) == 4);
+STATIC_ASSERT(sizeof(CUT_LOAD_TEXANIM_PC) == 8);
+STATIC_ASSERT(offsetof(CUT_DRAW_CHARACTER_SYSTEM_PC, count) == 4);
+STATIC_ASSERT(offsetof(CUT_DRAW_CHARACTER_PC, character_model) == 0x50);
+STATIC_ASSERT(offsetof(CUT_DRAW_CHAR_INSTANCE_PC, character_model) == 0);
+STATIC_ASSERT(offsetof(WORLDINFO, cutscene_sys) == 0x2ab0);
+STATIC_ASSERT(offsetof(WORLDINFO, level_progress) == 0x130);
+typedef struct CUT_CONTROLLER_PLAYER_PC {
+    void *clips;
+    void *active;
+} CUT_CONTROLLER_PLAYER_PC;
+STATIC_ASSERT(offsetof(CUT_CONTROLLER_PLAYER_PC, active) == 4);
+typedef struct CUT_CONTROLLER_CLIP_PC {
+    u32 unknown_00;
+    char name[1];
+} CUT_CONTROLLER_CLIP_PC;
+STATIC_ASSERT(offsetof(CUT_CONTROLLER_CLIP_PC, name) == 4);
+typedef struct CUT_CONTROLLER_PROGRESS_PC {
+    u8 unknown_00[0x2800];
+    u8 scene_flags;
+} CUT_CONTROLLER_PROGRESS_PC;
+STATIC_ASSERT(offsetof(CUT_CONTROLLER_PROGRESS_PC, scene_flags) == 0x2800);
+extern "C" {
+    extern i32 CutSceneMusicStartFramePc;
+    extern f32 LevelNameMul, LevelNameTime;
+    extern u32 texanimbits;
+    extern i32 CUTNOFOG, CUTDRAWWORLD, ACTIVECUTCOUNT, cut_waiting_for_new_level, CutInstEndCount;
+    static INSTNUGCUTSCENE *CutInstEnd[4];
+    static i32 CutInstEndStop;
+    static i32 cutaudiopaused;
+    static i32 CutFramePc;
+    void __cdecl instNuGCutScenePause(INSTNUGCUTSCENE *, i32);
+    void __cdecl instNuGCutSceneStop(INSTNUGCUTSCENE *);
+    void __cdecl CutScenePlayer_SetObjects(CUTINFO *);
+    void __cdecl PCFrameSetLoadingYieldEnabled(i32);
+
+    static void CutSceneRebindPlayerCharactersPrivatePc(CUTSYS_PC *system) {
+        if (system == NULL)
+            return;
+        for (i32 i = 0; i < system->count; ++i) {
+            CUT_LOAD_RECORD_PC *cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(system->records[i]);
+            if (cut->instance != NULL) {
+                CUT_DRAW_CHARACTER_SYSTEM_PC *definitions =
+                    reinterpret_cast<CUT_DRAW_REGISTRATION_SCENE_PC *>(cut->scene)->characters;
+                CUT_DRAW_CHAR_INSTANCE_SYSTEM_PC *states =
+                    reinterpret_cast<CUT_DRAW_REGISTRATION_INSTANCE_PC *>(cut->instance)->characters;
+                if (definitions != NULL && states != NULL) {
+                    for (i32 j = 0; j < definitions->count; ++j) {
+                        CUT_DRAW_CHAR_INSTANCE_PC *state = &states->characters[j];
+                        CUT_DRAW_CHARACTER_PC *definition = &definitions->characters[j];
+                        if (state->character_model == reinterpret_cast<void *>(1)) {
+                            if ((state->flags & 2) != 0)
+                                state->character_model = NULL;
+                            else
+                                state->character_model = CutSceneFindModelPc(definition->name, 0, NULL);
+                            definition->character_model = state->character_model;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    static void CutSceneResetTextureAnimationsPrivatePc(CUT_LOAD_RECORD_PC *cut) {
+        for (i32 i = 0; i < 4; ++i) {
+            i32 index = cut->texture_animations[i].index;
+            if (index != -1)
+                texanimbits &= ~(1U << (index & 31));
+        }
+    }
+    static i32 CutScenePlayOncePrivatePc(WORLDINFO *world, CUT_LOAD_RECORD_PC *cut) {
+        CUTSYS_PC *system = world->cutscene_sys;
+        i32 index = -1;
+        if (system != NULL) {
+            for (i32 i = 0; i < system->count; ++i) {
+                if (system->records[i] == reinterpret_cast<CUTINFO *>(cut))
+                    index = static_cast<u16>(i);
+            }
+            if (world->level_progress != NULL) {
+                u32 bit = 1U << (index & 31);
+                if (static_cast<i16>(index) != -1 && (cut->end_flags & 1) != 0 &&
+                    (world->level_progress->progress_state & bit) != 0)
+                    return 1;
+                world->level_progress->progress_state |= bit;
+            }
+        }
+        return 0;
+    }
+    static void CutSceneSetStopFlagsPrivatePc(CUT_LOAD_RECORD_PC *cut) {
+        CUTSTOPGAME = 1;
+        CutStopInfo = cut;
+        CUTDRAWWORLD = cut->flags & 2;
+        CUTNOFOG = cut->flags & 4;
+        DebrisSetRenderGroup(cut->debris_render_group);
+        LevelNameMul = 0.0f;
+        LevelNameTime = 0.0f;
+        PCFrameSetLoadingYieldEnabled(1);
+    }
+    static i32 CutSceneStartPrivatePc(WORLDINFO *world, CUT_LOAD_RECORD_PC *cut) {
+        if (cut == NULL || cut->instance == NULL)
+            return 0;
+        if (CutScenePlayOncePrivatePc(world, cut) != 0)
+            return 0;
+        instNuGCutSceneReset(cut->instance);
+        if (CutScene_StartFn != NULL)
+            CutScene_StartFn(reinterpret_cast<CUTINFO *>(cut));
+        if (CutScenePlayerPc != NULL && reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active != NULL)
+            CutScenePlayer_SetObjects(reinterpret_cast<CUTINFO *>(cut));
+        f32 rate = cut->frames_per_second * FRAMETIME;
+        reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = rate;
+        instNuGCutSceneStart(cut->instance);
+        if ((cut->flags & 0x200) != 0)
+            reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->flags_88 |= 8;
+        else
+            reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->flags_88 &= ~8U;
+        cut->unknown_58 = 0.0f;
+        if (cut->music_handle != -1) {
+            if (!music_man.SelectTrackByHandle(16, cut->music_handle))
+                CutSceneConfigMissingPc(reinterpret_cast<char *>(cut->music_handle));
+            i32 status = music_man.PlayTrack(16, 1);
+            CutSceneMusicStartFramePc = nuapi.frame_count;
+            if (status != 1)
+                CutSceneConfigMissingPc(reinterpret_cast<char *>(status));
+            reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = 0.0f;
+            if ((cut->flags & 1) != 0 && status == 1) {
+                CutSceneWaiting = 1;
+                STUBBED_NAMED(0x00652400); /* Native PauseGameAudio(0). */
+                cutaudiopaused = 1;
+            } else
+                cutaudiopaused = 0;
+        } else {
+            STUBBED_NAMED(0x00652400); /* Native PauseGameAudio(0). */
+            STUBBED_NAMED(0x00652b60); /* Native SetLinkedCutSceneMusic(instance, linked_audio ? 13 : 11). */
+            rate = cut->frames_per_second * FRAMETIME;
+            reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = rate;
+            if ((cut->flags & 1) == 0)
+                return 1;
+            CutSceneWaiting = 0;
+            cutaudiopaused = 0;
+        }
+        if ((cut->flags & 1) == 0)
+            return 1;
+        STUBBED_NAMED(0x004ba190); /* Native Panel_Clear(). */
+        CutFramePc = 0;
+        for (i32 i = 0; i < world->cutscene_sys->count; ++i) {
+            CUT_LOAD_RECORD_PC *other = reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i]);
+            if ((reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(other->instance)->flags_88 & 2) != 0) {
+                if (other != cut && other->instance != NULL && (other->flags & 1) != 0) {
+                    reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(
+                        reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i])->instance)
+                        ->rate = 0.0f;
+                    instNuGCutSceneStop(
+                        reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i])->instance);
+                } else {
+                    reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(
+                        reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i])->instance)
+                        ->rate = 0.0f;
+                    instNuGCutScenePause(
+                        reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i])->instance, 1);
+                }
+            }
+        }
+        CutSceneSetStopFlagsPrivatePc(cut);
+        CutBorderScale = 1.0f;
+        ACTIVECUTCOUNT = 1;
+        cut_waiting_for_new_level = 0;
+        STUBBED_NAMED(0x00564ca0); /* Native GameFog_Reset(). */
+        CutSceneResetTextureAnimationsPrivatePc(cut);
+        return 1;
+    }
+    void __cdecl CutScenes_Start(WORLDINFO *world) {
+        for (i32 i = 0; i < NewCutInfoCount; ++i)
+            CutSceneStartPrivatePc(world, reinterpret_cast<CUT_LOAD_RECORD_PC *>(NewCutInfo[i]));
+        NewCutInfoCount = 0;
+    }
+    void __cdecl CutScenes_Reset(WORLDINFO *world) {
+        CutSceneRebindPlayerCharactersPrivatePc(world->cutscene_sys);
+        CutBorderScale = 0.0f;
+        CutStopInfo = NULL;
+        CutSceneWaiting = 0;
+        cutaudiopaused = 0;
+        if (world->cutscene_sys != NULL && reset_restart != 0 &&
+            ((world->current_level->flags & 0xe0) != 0 || world->level_progress == NULL ||
+             (reinterpret_cast<CUT_CONTROLLER_PROGRESS_PC *>(world->level_progress)->scene_flags & 2) == 0)) {
+            CUTINFO *cut = NULL;
+            CUTSYS_PC *system = world->cutscene_sys;
+            if (CutScenePlayerPc != NULL &&
+                reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active != NULL && system->count > 0) {
+                char *name = reinterpret_cast<CUT_CONTROLLER_CLIP_PC *>(
+                                 reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active)
+                                 ->name;
+                if (name[0] != 0)
+                    cut = CutScene_Find(system, name);
+                if (cut == NULL) {
+                    system = world->cutscene_sys;
+                    cut = system->records[0];
+                }
+            }
+            if (cut == NULL) {
+                for (i32 i = 0; i < system->count && cut == NULL; ++i) {
+                    CUT_LOAD_RECORD_PC *record = reinterpret_cast<CUT_LOAD_RECORD_PC *>(system->records[i]);
+                    if ((record->flags & 0x1000) != 0)
+                        cut = reinterpret_cast<CUTINFO *>(record);
+                }
+            }
+            if (cut != NULL && CutSceneStartPrivatePc(world, reinterpret_cast<CUT_LOAD_RECORD_PC *>(cut)) != 0)
+                CutBorderScale = 1.0f;
+        }
+        NewCutInfoCount = 0;
+        cut_waiting_for_new_level = 0;
+    }
+    void __cdecl CutScenes_Stop(CUTSYS_PC *system) {
+        if (system == NULL)
+            return;
+        for (i32 i = 0; i < system->count; ++i) {
+            INSTNUGCUTSCENE *instance = reinterpret_cast<CUT_LOAD_RECORD_PC *>(system->records[i])->instance;
+            if (instance != NULL)
+                instNuGCutSceneStop(instance);
+        }
+    }
+    void __cdecl CutScenes_End(void) {
+        if (CutScenePlayerPc != NULL &&
+            reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active != NULL && NewLData != NULL &&
+            NewLData == HUB_LDATA) {
+            PCFrameSetLoadingYieldEnabled(0);
+            return;
+        }
+        for (i32 i = 0; i < CutInstEndCount; ++i) {
+            instNuGCutSceneEnd(CutInstEnd[i]);
+            if (i == CutInstEndStop) {
+                CUTSTOPGAME = 0;
+                CutStopInfo = NULL;
+                STUBBED_NAMED(0x0054a2f0); /* Native GameCam_Reset(GameCam). */
+                PCFrameSetLoadingYieldEnabled(0);
+            }
+        }
+    }
+}
+
+STATIC_ASSERT(offsetof(CUT_LOAD_RECORD_PC, previous_frame) == 0x54);
+STATIC_ASSERT(offsetof(CUT_LOAD_SFX_PC, id) == 0);
+STATIC_ASSERT(offsetof(CUT_LOAD_SFX_PC, flags) == 2);
+STATIC_ASSERT(offsetof(CUT_LOAD_SFX_PC, frame) == 4);
+STATIC_ASSERT(offsetof(CUT_LOAD_SFX_PC, position) == 8);
+STATIC_ASSERT(offsetof(CUT_LOAD_RECORD_PC, blob_shadow_fade_near) == 0xf0);
+STATIC_ASSERT(offsetof(CUT_LOAD_RECORD_PC, blob_shadow_fade_far) == 0xf1);
+STATIC_ASSERT(offsetof(CUT_LOAD_RECORD_PC, reflection_range) == 0xf2);
+STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
+STATIC_ASSERT(sizeof(LEVELDATA_PC) == 0x130);
+enum FADETYPE_VALUE {
+    FADE_TYPE_NONE = -1,
+    FADE_TYPE_SCREEN = 0,
+    FADE_TYPE_WIPE = 1,
+    FADE_TYPE_STILL_WIPE = 2,
+    FADE_TYPE_STILL = 3
+};
+struct FADEINFO_s;
+struct FadeBase {
+    virtual ~FadeBase();
+    virtual void Init(FADEINFO_s *info) = 0;
+    virtual void InitFade() = 0;
+    virtual void UpdateFade() = 0;
+    virtual void DrawFade() = 0;
+    virtual FADETYPE_VALUE GetFadeType() const = 0;
+};
+struct FADEINFO_s {
+    u32 direction;
+    f32 fade, rate;
+    i32 busy, stage;
+    FadeBase *fades[4];
+    FADETYPE_VALUE pending_type;
+    i32 field_28;
+};
+struct FADETYPE {
+    FADETYPE_VALUE type;
+};
+class FadeSystem : public FADEINFO_s {
+  public:
+    void Init();
+    void Update();
+    void Draw();
+    void SetStage(char stage);
+    i32 SetFade(FADETYPE const &type, u32 frames);
+};
+STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
+STATIC_ASSERT(sizeof(FADETYPE) == 4);
+extern "C" {
+    extern i32 CUTCAMONLY;
+    static f32 CutReflectRange;
+    i32 __cdecl instNuGCutSceneIsFinished(INSTNUGCUTSCENE *);
+    void __cdecl GizmoSysDraw(void *, WORLDINFO *, f32);
+    static void CutSceneUpdateTextureAnimationsPrivatePc(CUT_LOAD_RECORD_PC *cut) {
+        u32 bits = texanimbits;
+        for (i32 i = 0; i < 4; ++i) {
+            i32 index = cut->texture_animations[i].index;
+            if (index != -1) {
+                u32 bit = 1U << (index & 31);
+                if ((bits & bit) == 0 &&
+                    cut->texture_animations[i].frame <=
+                        reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->current_frame) {
+                    bits |= bit;
+                    texanimbits = bits;
+                }
+            }
+        }
+    }
+    void __cdecl CutScenes_Update(WORLDINFO *world, i32 paused) {
+        i32 active_before[32];
+        if (CutScenePlayerPc != NULL &&
+            reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active != NULL && CutStopInfo != NULL)
+            CutScenePlayer_SetObjects(reinterpret_cast<CUTINFO *>(CutStopInfo));
+        CutInstEnd[0] = NULL;
+        CutInstEndCount = 0;
+        CutInstEndStop = -1;
+        CUTSTOPGAME = 0;
+        CUTCAMONLY = 0;
+        CutStopInfo = NULL;
+        CUTDRAWWORLD = 0;
+        CUTCAM = NULL;
+        CUTNOFOG = 0;
+        CUTSKIPLOCK = 0;
+        PCFrameSetLoadingYieldEnabled(0);
+        if (world->cutscene_sys == NULL)
+            return;
+        i32 stop_index = -1;
+        for (i32 i = 0; i < world->cutscene_sys->count; ++i) {
+            CUT_LOAD_RECORD_PC *cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i]);
+            CUT_CONTROLLER_INSTANCE_PC *instance = reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance);
+            if (instance != NULL && (instance->flags_88 & 2) != 0) {
+                if ((cut->flags & 1) != 0) {
+                    stop_index = i;
+                    CutSceneSetStopFlagsPrivatePc(cut);
+                    CutFramePc = static_cast<i32>(static_cast<u32>(CutFramePc) + 1U);
+                    break;
+                }
+                if ((cut->flags & 0x20) != 0)
+                    CUTCAMONLY = 1;
+            }
+        }
+        if (stop_index == -1)
+            DebrisSetRenderGroup(1);
+        ACTIVECUTCOUNT = 0;
+        for (i32 i = 0; i < world->cutscene_sys->count; ++i) {
+            CUT_LOAD_RECORD_PC *cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i]);
+            CUT_CONTROLLER_INSTANCE_PC *instance = reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance);
+            if (instance == NULL)
+                continue;
+            if ((instance->flags_88 & 2) == 0) {
+                active_before[i] = 0;
+                continue;
+            }
+            cut->previous_frame = instance->current_frame;
+            active_before[i] = 1;
+            f32 elapsed = cut->unknown_58 + FRAMETIME;
+            cut->unknown_58 = elapsed;
+            if (cutaudiopaused != 0 && elapsed >= 23.0f)
+                cutaudiopaused = 0;
+            if (stop_index != -1 && i != stop_index) {
+                instance->rate = 0.0f;
+                instNuGCutScenePause(cut->instance, 1);
+                ++ACTIVECUTCOUNT;
+                continue;
+            }
+            bool wait = false;
+            if (NOSOUND == 0 && NOMUSIC == 0 && i == stop_index && cut->music_handle != -1 && instance->rate == 0.0f &&
+                cutaudiopaused != 0 && music_man.GetStatus(16, NULL) != 4) {
+                reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = 0.0f;
+                CutSceneWaiting = 1;
+                wait = true;
+            }
+            if (!wait) {
+                if (CutSceneMusicStartFramePc != -1) {
+                    if (static_cast<i32>(nuapi.frame_count) <
+                        static_cast<i32>(static_cast<u32>(CutSceneMusicStartFramePc) + 5U)) {
+                        reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = 0.0f;
+                        CutSceneWaiting = 1;
+                        wait = true;
+                    } else {
+                        CutSceneMusicStartFramePc = -1;
+                        music_man.PlayTrack(16, 0);
+                    }
+                }
+                if (!wait) {
+                    f32 rate = cut->frames_per_second * FRAMETIME;
+                    reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = rate;
+                    if (i == stop_index && CutSceneWaiting != 0) {
+                        CutSceneWaiting = 0;
+                        cutaudiopaused = 0;
+                    }
+                }
+            }
+            instNuGCutScenePause(cut->instance, 0);
+            if (CutScene_PreUpdateFn != NULL)
+                CutScene_PreUpdateFn(reinterpret_cast<CUTINFO *>(cut));
+            CutSceneUpdateTextureAnimationsPrivatePc(cut);
+            ++ACTIVECUTCOUNT;
+        }
+        NuGCutSceneSysUpdate(paused, 0, 1.0f);
+        if (CutScene_PostUpdateFn != NULL)
+            CutScene_PostUpdateFn();
+        if (paused == 0) {
+            for (i32 i = 0; i < world->cutscene_sys->count; ++i) {
+                CUT_LOAD_RECORD_PC *cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i]);
+                if (cut->instance == NULL)
+                    continue;
+                if (active_before[i] != 0 &&
+                    reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate > 0.0f) {
+                    for (i32 j = 0; j < 6; ++j) {
+                        CUT_LOAD_SFX_PC *sfx = &cut->sfx[j];
+                        if (sfx->id != -1 && cut->previous_frame < sfx->frame &&
+                            sfx->frame <= reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->current_frame)
+                            PlaySfxById(sfx->id, (sfx->flags & 1) != 0 ? &sfx->position : NULL);
+                    }
+                }
+                if ((stop_index == -1 || i != stop_index) && active_before[i] != 0 &&
+                    instNuGCutSceneIsFinished(cut->instance) != 0) {
+                    if (CutScene_StoppedFn != NULL)
+                        CutScene_StoppedFn(reinterpret_cast<CUTINFO *>(cut));
+                    if (CutInstEndCount < 4) {
+                        CutInstEnd[CutInstEndCount] = cut->instance;
+                        reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->flags_88 |= 2;
+                        ++CutInstEndCount;
+                    }
+                }
+            }
+        }
+        if (stop_index == -1)
+            return;
+        CUT_LOAD_RECORD_PC *stop_cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[stop_index]);
+        STUBBED_NAMED(0x00564ca0); /* Native GameFog_Reset(). */
+        if (instNuGCutSceneIsFinished(stop_cut->instance) == 0)
+            return;
+        if (NewLData == NULL || NewLData == WORLD->current_level || NewLData != HUB_LDATA) {
+            FADETYPE type = {FADE_TYPE_STILL_WIPE};
+            FadeSys.SetFade(type, 0);
+        }
+        if (CutScene_StoppedFn != NULL)
+            CutScene_StoppedFn(reinterpret_cast<CUTINFO *>(stop_cut));
+        CutSceneResetTextureAnimationsPrivatePc(stop_cut);
+        if (stop_cut->skip_level != -1) {
+            NewLData = &LDataList[stop_cut->skip_level];
+            if (HUB_LDATA != NULL && NewLData == HUB_LDATA) {
+                if (CutScenePlayerPc != NULL &&
+                    reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active != NULL) {
+                    NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
+                    RenderHubFromCutscenePlayerPc = 1;
+                } else if (WORLD->area != NULL && (WORLD->area->flags & 2) != 0)
+                    NewLData = SuperStory != 0 ? STATUS_LDATA : CREDITS_LDATA;
+            } else if (CutScenePlayerPc != NULL &&
+                       reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active != NULL &&
+                       (NewLData->flags & 0xe0) == 0 && (stop_cut->end_flags & 2) == 0) {
+                NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
+                RenderHubFromCutscenePlayerPc = 1;
+            }
+            if (waiting_for_level != -1) {
+                cut_waiting_for_new_level = 1;
+                STUBBED_NAMED(0x00652fb0); /* Native PauseGameCut(). */
+                music_man.PauseTrack(16);
+                NuSound3Update();
+                newlevel_resumecutaudio = 1;
+            }
+        } else {
+            CUTINFO *next = NewCutScene(NULL, world->cutscene_sys, stop_cut->next_cutscene, 0);
+            if (CutScenePlayerPc != NULL &&
+                reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active != NULL && next == NULL) {
+                NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
+                RenderHubFromCutscenePlayerPc = 1;
+            } else if ((stop_cut->flags & 0x400) != 0)
+                NewMode = 1;
+            else if (stop_cut->door_name[0] != 0) {
+                void *door = Door_FindByName(world, stop_cut->door_name);
+                if (door != NULL)
+                    STUBBED_NAMED(0x00575c20); /* Native Door_GoThrough(world,door,1). */
+            } else if ((stop_cut->flags & 0x100) != 0) {
+                FADETYPE type = {FADE_TYPE_STILL_WIPE};
+                FadeSys.SetFade(type, 0);
+                STUBBED_NAMED(0x00565be0); /* Native NeedScreenGrab(1). */
+                FadeSys.SetStage(1);
+                GameAudio_PlaySfx(0x2d, NULL, 0, 0);
+            }
+        }
+        CUTNOFOG = 0;
+        if (CutInstEndCount < 4) {
+            CutInstEnd[CutInstEndCount] = stop_cut->instance;
+            reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(stop_cut->instance)->flags_88 |= 2;
+            CutInstEndStop = CutInstEndCount;
+            ++CutInstEndCount;
+        }
+    }
+    void __cdecl CutScenes_Draw(WORLDINFO *world) {
+        if (world->cutscene_sys == NULL || ACTIVECUTCOUNT <= 0)
+            return;
+        SetLevelLights(world->rtl_set, 1.0f);
+        CUT_LOAD_RECORD_PC *cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(CutStopInfo);
+        if (cut != NULL) {
+            CutBlobShadowAlpha = cut->blob_shadow_alpha;
+            CutBlobShadowFadeNear = static_cast<f32>(cut->blob_shadow_fade_near);
+            CutBlobShadowFadeFar = static_cast<f32>(cut->blob_shadow_fade_far);
+            CutReflectRange = static_cast<f32>(cut->reflection_range);
+        } else {
+            CutBlobShadowAlpha = world->current_level->blob_shadow_alpha;
+            CutBlobShadowFadeNear = static_cast<f32>(world->current_level->blob_shadow_fade_near);
+            CutBlobShadowFadeFar = static_cast<f32>(world->current_level->blob_shadow_fade_far);
+            CutReflectRange = static_cast<f32>(world->current_level->reflection_range);
+        }
+        CutReflectRange2 = CutReflectRange * CutReflectRange;
+        NuGCutSceneSysRender(Paused);
+        if (CUTDRAWWORLD != 0 && world->current_gscn != NULL) {
+            SetLevelLights(world->rtl_set, 1.0f);
+            STUBBED_NAMED(0x00601df0); /* Native NuGScnRndr3(world->current_gscn). */
+            if (world->gizmo_sys != NULL && CutStopInfo != NULL &&
+                (reinterpret_cast<CUT_LOAD_RECORD_PC *>(CutStopInfo)->flags & 0x8000) != 0)
+                GizmoSysDraw(world->gizmo_sys, world, FRAMETIME);
+        }
+    }
+}
+
+extern "C" {
+    i32 CutSceneMusicStartFramePc = -1;
+}

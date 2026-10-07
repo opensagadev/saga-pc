@@ -13081,7 +13081,7 @@ extern "C" {
     i32 BeenAttacked;
 #pragma bss_seg()
 #pragma bss_seg(".bss$takeoverobjects")
-    u8 takeoverobjects[352];
+    TAKEOVEROBJECT_PC takeoverobjects[8];
 #pragma bss_seg()
 #pragma bss_seg(".bss$num_takeoverobjects")
     i32 num_takeoverobjects;
@@ -19155,4 +19155,21 @@ extern "C" {
     i32 create_qfont3dz = 0;
     VUFNT *QFont2DZ = NULL;
     VUFNT *QFont3D = NULL;
+}
+
+extern "C" {
+    i32 CutSceneStreamLoadGuardPc = 0;
+    u32 PcUseUserGeoRegionPc = 0;
+}
+
+extern "C" {
+    f32 LevelNameMul = 0.0f;
+    f32 LevelNameTime = 0.0f;
+    u32 texanimbits = 0;
+    i32 CUTNOFOG = 0;
+    i32 CUTDRAWWORLD = 0;
+    i32 CUTCAMONLY = 0;
+    i32 ACTIVECUTCOUNT = 0;
+    i32 CutInstEndCount = 0;
+    i32 cut_waiting_for_new_level = 0;
 }

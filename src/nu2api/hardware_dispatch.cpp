@@ -199,7 +199,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     PCDeviceBackend.InitializeFactory();
     PcWindowOptions.InitializePath();
     PcWindowOptions.Load();
-    STUBBED_NAMED(0x006dc890); /* (config_name), 6dbf44 */
+    PcNativeSelectLanguage(config_name);
     PcConfigureInputGraphicsCaps();
     if (parameter_32) {
         STUBBED_NAMED(0x006ddd90);
@@ -376,4 +376,174 @@ extern "C" void __cdecl NuKeyboardCreateWindowState_candidate(HWND window, HINST
     nu_keyboard_owner.Setup(window, instance);
     STUBBED_NAMED(0x00600bc0); /* native call6df0a8, actual separate RET leaf */
     PCNativeWarningDebugState.Initialize();
+}
+
+extern "C" {
+    extern u32 PcUseUserGeoRegionPc;
+}
+
+extern "C" i32 __cdecl PcNativeSelectLanguage(const char *configuration_name) {
+    char path[256];
+    DWORD language;
+    DWORD bytes = 4;
+    HKEY key;
+
+    NuStrCpy(path, "SOFTWARE\\");
+    NuStrCat(path, configuration_name);
+    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, path, 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS) {
+        RegQueryValueExA(key, "LanguageVal", NULL, NULL, (LPBYTE)&language, &bytes);
+        RegCloseKey(key);
+    } else {
+        language = GetUserDefaultLangID();
+    }
+    if (NuHwParameter4fPc == 0 && language == 0x409)
+        language = 0x809;
+    NuRegionSet(3);
+    switch (language) {
+        case 0x405:
+            NuLanguageSet(10);
+            break;
+        case 0x406:
+            NuLanguageSet(8);
+            break;
+        case 0x407:
+        case 0x807:
+        case 0xc07:
+        case 0x1007:
+        case 0x1407:
+            NuLanguageSet(4);
+            break;
+        case 0x408:
+            NuLanguageSet(9);
+            break;
+        case 0x409:
+            NuLanguageSet(18);
+            NuRegionSet(2);
+            break;
+        case 0x40a:
+        case 0xc0a:
+        case 0x100a:
+        case 0x140a:
+        case 0x180a:
+        case 0x200a:
+        case 0x240a:
+        case 0x280a:
+        case 0x2c0a:
+        case 0x300a:
+        case 0x340a:
+        case 0x380a:
+        case 0x3c0a:
+        case 0x400a:
+        case 0x440a:
+        case 0x480a:
+        case 0x4c0a:
+        case 0x500a:
+            NuLanguageSet(3);
+            break;
+        case 0x40b:
+            NuLanguageSet(17);
+            break;
+        case 0x40c:
+        case 0x80c:
+        case 0x100c:
+        case 0x140c:
+        case 0x180c:
+            NuLanguageSet(2);
+            break;
+        case 0x40e:
+            NuLanguageSet(20);
+            break;
+        case 0x410:
+        case 0x810:
+            NuLanguageSet(5);
+            break;
+        case 0x411:
+            NuLanguageSet(0);
+            NuRegionSet(1);
+            break;
+        case 0x412:
+            NuLanguageSet(13);
+            break;
+        case 0x413:
+        case 0x813:
+            NuLanguageSet(6);
+            break;
+        case 0x414:
+            NuLanguageSet(15);
+            break;
+        case 0x415:
+            NuLanguageSet(11);
+            break;
+        case 0x416:
+            NuLanguageSet(16);
+            break;
+        case 0x419:
+            NuLanguageSet(12);
+            break;
+        case 0x41d:
+            NuLanguageSet(14);
+            break;
+        case 0x809:
+        case 0xc09:
+        case 0x1009:
+        case 0x1409:
+        case 0x1809:
+        case 0x1c09:
+        case 0x2009:
+        case 0x2409:
+        case 0x2809:
+        case 0x2c09:
+        case 0x3009:
+        case 0x3409:
+            NuLanguageSet(1);
+            break;
+        case 0x80a:
+            NuLanguageSet(3);
+            NuRegionSet(2);
+            break;
+        case 0x816:
+            NuLanguageSet(7);
+            break;
+        case 0xc0c:
+            NuLanguageSet(2);
+            NuRegionSet(2);
+            break;
+        default:
+            switch (language & 0x3ff) {
+                case 6:
+                    return 8;
+                case 7:
+                    return 4;
+                case 9:
+                    return 1;
+                case 10:
+                    return 3;
+                case 12:
+                    return 2;
+                case 16:
+                    return 5;
+                case 21:
+                    return 11;
+                case 25:
+                    return 12;
+                default:
+                    return 1;
+            }
+    }
+    if (PcUseUserGeoRegionPc != 0) {
+        switch (GetUserGeoID((GEOCLASS)16)) {
+            case 0x27:
+            case 0xa6:
+            case 0xf4:
+                NuRegionSet(2);
+                break;
+            case 0x7a:
+                NuRegionSet(1);
+                break;
+            default:
+                NuRegionSet(3);
+                break;
+        }
+    }
+    return NuLanguageGet();
 }

@@ -2144,3 +2144,128 @@ void __cdecl NuGCutSceneSysUpdate(i32 paused, i32 skip, f32 elapsed) {
             CutSceneInstanceUpdatePc(owner, paused, skip, elapsed);
     }
 }
+
+STATIC_ASSERT(offsetof(CUT_SCENE_LOAD_PC, filename) == 0x2c);
+STATIC_ASSERT(offsetof(CUT_SCENE_LOAD_PC, stream_buffer_1) == 0x34);
+STATIC_ASSERT(offsetof(CUT_SCENE_LOAD_PC, stream_buffer_size) == 0x3c);
+STATIC_ASSERT(offsetof(CUT_INSTANCE_LOAD_PC, stream_buffer_1) == 0xc0);
+STATIC_ASSERT(offsetof(CUT_CHARACTER_SYSTEM_LIFECYCLE_PC, characters) == 0);
+STATIC_ASSERT(offsetof(CUT_CHARACTER_INSTANCE_SYSTEM_PC, characters) == 0);
+STATIC_ASSERT(offsetof(CUT_CHARACTER_INSTANCE_PC, model) == 0);
+
+char *__cdecl NuStrStr(char *text, const char *needle);
+extern i32 CutSceneStreamLoadGuardPc;
+
+static void CutSceneReleaseInstanceCharactersPc(CUT_INSTANCE_LIFECYCLE_PC *instance) {
+    CUT_CHARACTER_SYSTEM_LIFECYCLE_PC *system = instance->scene->character_system;
+    CUT_CHARACTER_INSTANCE_SYSTEM_PC *states = instance->character_instance;
+    i32 i;
+    for (i = 0; i < system->count; ++i) {
+        CUT_CHARACTER_INSTANCE_PC *state = &states->characters[i];
+        if (state->model != NULL && NuCutSceneCharacterRelease != NULL)
+            NuCutSceneCharacterRelease(state, &system->characters[i]);
+    }
+}
+
+void __cdecl instNuGCutSceneStop(INSTNUGCUTSCENE *owner) {
+    CUT_INSTANCE_LIFECYCLE_PC *instance = (CUT_INSTANCE_LIFECYCLE_PC *)owner;
+    instance->flags_88 &= ~0x1006U;
+    if (instance->character_instance != NULL)
+        CutSceneReleaseInstanceCharactersPc(instance);
+    if (instance->camera_instance != NULL && instance->camera_instance->camera_index >= 0)
+        CutSceneCameraCTRL = 0;
+}
+
+i32 __cdecl instNuGCutSceneIsFinished(INSTNUGCUTSCENE *owner) {
+    return ((CUT_INSTANCE_LIFECYCLE_PC *)owner)->flags_88 & 0x1000 ? -1 : 0;
+}
+
+void __cdecl instNuGCutScenePause(INSTNUGCUTSCENE *owner, i32 paused) {
+    CUT_INSTANCE_LIFECYCLE_PC *instance = (CUT_INSTANCE_LIFECYCLE_PC *)owner;
+    instance->flags_88 ^= ((u32)paused * 4U ^ instance->flags_88) & 4U;
+}
+
+void __cdecl NuGCutSceneSysPostBackgroundLoad(void) {
+    INSTNUGCUTSCENE *owner = CutSceneBackgroundInstancesPc;
+    INSTNUGCUTSCENE *active = active_cutscene_instances;
+    if (owner == NULL)
+        return;
+    do {
+        CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
+        INSTNUGCUTSCENE *next = instance->next;
+        instance->next = active;
+        if (active != NULL)
+            ((CUT_INSTANCE_LOAD_PC *)active)->previous = owner;
+        instance->previous = NULL;
+        active = owner;
+        owner = next;
+    } while (owner != NULL);
+    active_cutscene_instances = active;
+    CutSceneBackgroundInstancesPc = NULL;
+}
+
+i32 __cdecl instNuGCutSceneSwapBuffers(INSTNUGCUTSCENE *owner, i32 force) {
+    CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
+    if (((instance->flags_8c & 0x80) != 0 && force == 0) || instance->pending_stream != NULL) {
+        CutSceneStreamDiagnosticPc(instance->scene->filename);
+        return 0;
+    }
+    if ((instance->flags_88 & 0x10000000) != 0) {
+        instance->flags_88 &= ~0x10000000U;
+        instance->pending_stream = instance->stream_buffer_1;
+    } else {
+        instance->flags_88 |= 0x10000000;
+        instance->pending_stream = instance->stream_buffer_0;
+    }
+    CutSceneStreamDiagnosticPc(instance->scene->filename);
+    return 1;
+}
+
+void __cdecl instNuGCutSceneServiceLoad(void) {
+    char path[256];
+    char extension[8];
+    char *dot;
+    i32 tens, units;
+    VARIPTR buffer, buffer_end;
+    CUT_INSTANCE_LOAD_PC *instance;
+    if (CutSceneLoadingInstancePc == NULL || CutSceneStreamLoadGuardPc != 0 ||
+        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene == NULL)
+        return;
+    NuStrCpy(path, ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->filename);
+    dot = NuStrStr(path, ".");
+    NuStrCpy(extension, dot);
+    tens = (((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->stream_index + 1) / 10;
+    units = (((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->stream_index + 1) % 10;
+    if (tens != 0)
+        *dot++ = (char)('0' + tens);
+    *dot++ = (char)('0' + units);
+    NuStrCpy(dot, extension);
+    instance = (CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc;
+    buffer.void_ptr = instance->pending_stream;
+    instance->pending_stream = NULL;
+    if (buffer.void_ptr == NULL)
+        return;
+    ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_8c |= 0x80;
+    buffer_end.addr = buffer.addr + ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->stream_buffer_size;
+    ((void(__cdecl *)(char *, ...))CutSceneMissingObjectDiagnosticPc)(path, buffer.void_ptr);
+    CutSceneStreamDiagnosticPc(path);
+    NuGCutSceneLoad(path, &buffer, &buffer_end, 1);
+    CutSceneStreamDiagnosticPc(path);
+    ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 |= 0x08000000;
+    instance = (CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc;
+    if (instance->stream_index == 0 && (instance->scene->flags & 8) != 0) {
+        instNuGCutSceneSwapBuffers(CutSceneLoadingInstancePc, 1);
+        instance = (CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc;
+        if (CutSceneSingleStreamBufferPc < 2) {
+            CutSceneCopyStreamAnimationsPc(instance->scene, (CUT_SCENE_LOAD_PC *)instance->scene->stream_buffer_1);
+        } else {
+            ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 |= 0x10000000;
+            CutSceneSwapStreamAssetPc((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc);
+        }
+        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->flags &= ~8U;
+        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 &= ~0x08000000U;
+        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->stream_index = 1;
+    }
+    ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_8c &= ~0x80U;
+    CutSceneLoadingInstancePc = NULL;
+}

@@ -84,3 +84,7 @@ extern void(__cdecl *NuApiEndFrameCallbackPc)(void);
 void __cdecl NuApiSetEndFrameCallbackPc(void(__cdecl *callback)(void)) {
     NuApiEndFrameCallbackPc = callback;
 }
+
+void __cdecl PCFrameSetLoadingYieldEnabled(i32 enabled) {
+    PCFrameLoadingYieldEnabledPC = enabled != 0;
+}

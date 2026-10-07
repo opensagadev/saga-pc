@@ -1175,3 +1175,106 @@ extern "C" HRESULT __cdecl PCDeviceCreatePixelShader(const DWORD *tokens, PC_TEX
     PCDeviceLastResult = result;
     return result;
 }
+
+void __thiscall PC_DEVICE_BACKEND_PC::RequestMode(u32 mode) {
+    requested_mode = mode < mode_count ? mode : active_mode;
+}
+
+void __thiscall PC_DEVICE_BACKEND_PC::NextResolution() {
+    u32 original = requested_mode;
+    u32 index = original;
+    u32 visited = 0;
+    while (visited != mode_count && modes[index].width == modes[original].width &&
+           modes[index].height == modes[original].height) {
+        ++index;
+        if (index == mode_count)
+            index = 0;
+        ++visited;
+    }
+    u32 selected = index;
+    u32 reference = index;
+    i32 closest = 1000;
+    while (index < mode_count && modes[index].width == modes[reference].width &&
+           modes[index].height == modes[reference].height) {
+        if (modes[index].refresh_rate == modes[original].refresh_rate) {
+            requested_mode = index;
+            return;
+        }
+        i32 difference = abs((i32)(modes[index].refresh_rate - modes[reference].refresh_rate));
+        if (difference < closest) {
+            closest = difference;
+            selected = index;
+            reference = index;
+        }
+        ++index;
+    }
+    requested_mode = selected;
+}
+
+void __thiscall PC_DEVICE_BACKEND_PC::PreviousResolution() {
+    u32 original = requested_mode;
+    i32 index = (i32)original;
+    u32 visited = 0;
+    while (visited < mode_count && modes[index].width == modes[original].width &&
+           modes[index].height == modes[original].height) {
+        --index;
+        if (index < 0)
+            index = (i32)mode_count - 1;
+        ++visited;
+    }
+    i32 selected = index;
+    i32 reference = index;
+    i32 closest = 1000;
+    while (index >= 0 && modes[index].width == modes[reference].width &&
+           modes[index].height == modes[reference].height) {
+        if (modes[index].refresh_rate == modes[original].refresh_rate) {
+            requested_mode = (u32)index;
+            return;
+        }
+        i32 difference = abs((i32)(modes[index].refresh_rate - modes[reference].refresh_rate));
+        if (difference < closest) {
+            closest = difference;
+            selected = index;
+            reference = index;
+        }
+        --index;
+    }
+    requested_mode = (u32)selected;
+}
+
+void __thiscall PC_DEVICE_BACKEND_PC::NextRefresh() {
+    u32 original = requested_mode;
+    u32 index = original;
+    for (u32 visited = 0; visited < mode_count; ++visited) {
+        if (modes[index].width == modes[original].width && modes[index].height == modes[original].height &&
+            modes[index].refresh_rate != modes[original].refresh_rate) {
+            requested_mode = index;
+            return;
+        }
+        ++index;
+        if (index >= mode_count)
+            index = 0;
+    }
+}
+
+void __thiscall PC_DEVICE_BACKEND_PC::PreviousRefresh() {
+    u32 original = requested_mode;
+    i32 index = (i32)original;
+    for (u32 visited = 0; visited < mode_count; ++visited) {
+        if (modes[index].width == modes[original].width && modes[index].height == modes[original].height &&
+            modes[index].refresh_rate != modes[original].refresh_rate) {
+            requested_mode = (u32)index;
+            return;
+        }
+        --index;
+        if (index < 0)
+            index = (i32)mode_count - 1;
+    }
+}
+
+void __thiscall PC_DEVICE_BACKEND_PC::ResetRequestedMode() {
+    requested_windowed = parameters.windowed == 1;
+    requested_mode = active_mode;
+    requested_feature = feature634;
+    requested_multisample = multisample_index;
+}

@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1331247,
-    "matched_code_bytes": 208284,
-    "matching_percent": 6.000266186838962,
-    "fuzzy_coverage_percent": 25.732629802966898,
-    "mapped_functions": 4612,
-    "matched_functions": 2102,
-    "objdiff_fuzzy_percent": 69.16475,
-    "objdiff_total_code": 1292269,
+    "mapped_code_bytes": 1339087,
+    "matched_code_bytes": 209128,
+    "matching_percent": 6.024580222778795,
+    "fuzzy_coverage_percent": 26.029687144670714,
+    "mapped_functions": 4639,
+    "matched_functions": 2115,
+    "objdiff_fuzzy_percent": 69.254196,
+    "objdiff_total_code": 1305490,
     "image_bytes": 40067072,
-    "mapped_bytes": 1979443,
-    "mapping_percent": 4.940323565445461,
+    "mapped_bytes": 1987283,
+    "mapping_percent": 4.9598907551817115,
     "matched_data_region_bytes": 637608
   },
   "newly_compared": [
@@ -6910,6 +6910,456 @@
       "original_bytes": 15,
       "units": [
         "src/nu2api/nusound_music.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Action_Activate",
+      "pc": "0x004442f0",
+      "original_bytes": 412,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 89.143936
+    },
+    {
+      "symbol": "_Action_Kill",
+      "pc": "0x00445230",
+      "original_bytes": 1236,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 82.204185
+    },
+    {
+      "symbol": "_Action_RemoveThrownForceObjects",
+      "pc": "0x00449e10",
+      "original_bytes": 75,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Action_AnimTimeRandom",
+      "pc": "0x0044e8c0",
+      "original_bytes": 47,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Action_PlayGizObstacle",
+      "pc": "0x0044ea70",
+      "original_bytes": 362,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 99.304344
+    },
+    {
+      "symbol": "_Action_ResetContext",
+      "pc": "0x0044f100",
+      "original_bytes": 161,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 81.04918
+    },
+    {
+      "symbol": "_Action_SetTaggable",
+      "pc": "0x0044f930",
+      "original_bytes": 342,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 86.32478
+    },
+    {
+      "symbol": "_Action_TakeDamage",
+      "pc": "0x0044fd10",
+      "original_bytes": 549,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 89.16216
+    },
+    {
+      "symbol": "_Action_TagCharacter",
+      "pc": "0x0044ff40",
+      "original_bytes": 239,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 90.31035
+    },
+    {
+      "symbol": "_Action_UseForce",
+      "pc": "0x00450030",
+      "original_bytes": 627,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 89.43434
+    },
+    {
+      "symbol": "_Action_ProbeDroid",
+      "pc": "0x00453f30",
+      "original_bytes": 538,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 56.601265
+    },
+    {
+      "symbol": "_Action_AlertCreatures",
+      "pc": "0x00454150",
+      "original_bytes": 142,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 81.91228
+    },
+    {
+      "symbol": "_Action_RegisterTakeOverObject",
+      "pc": "0x00454670",
+      "original_bytes": 135,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 82.34545
+    },
+    {
+      "symbol": "_Action_CanBeCarried",
+      "pc": "0x004549f0",
+      "original_bytes": 221,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 88.46835
+    },
+    {
+      "symbol": "_TagCharacter",
+      "pc": "0x00487ca0",
+      "original_bytes": 278,
+      "units": [
+        "src/legoapi/tagging.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 14.554348
+    },
+    {
+      "symbol": "_NuStrStr",
+      "pc": "0x004f20a0",
+      "original_bytes": 77,
+      "units": [
+        "src/nu2api/nustring.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuGCutSceneSysPostBackgroundLoad",
+      "pc": "0x005001c0",
+      "original_bytes": 55,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 74.70588
+    },
+    {
+      "symbol": "_instNuGCutSceneIsFinished",
+      "pc": "0x00500210",
+      "original_bytes": 17,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 56.0
+    },
+    {
+      "symbol": "_instNuGCutScenePause",
+      "pc": "0x00500390",
+      "original_bytes": 31,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 15.714286
+    },
+    {
+      "symbol": "_instNuGCutSceneSwapBuffers",
+      "pc": "0x005009d0",
+      "original_bytes": 133,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 82.911766
+    },
+    {
+      "symbol": "_CutSceneReleaseInstanceCharactersPc",
+      "pc": "0x00502d60",
+      "original_bytes": 96,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_instNuGCutSceneStop",
+      "pc": "0x00505e10",
+      "original_bytes": 56,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_instNuGCutSceneServiceLoad",
+      "pc": "0x00506490",
+      "original_bytes": 627,
+      "units": [
+        "src/legoapi/cutscene_lifecycle.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 62.050632
+    },
+    {
+      "symbol": "_CutSceneRebindPlayerCharactersPrivatePc",
+      "pc": "0x0057c9c0",
+      "original_bytes": 216,
+      "units": [
+        "src/legoapi/cutscene_runtime.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 56.783783
+    },
+    {
+      "symbol": "_CutSceneResetTextureAnimationsPrivatePc",
+      "pc": "0x0057caa0",
+      "original_bytes": 105,
+      "units": [
+        "src/legoapi/cutscene_runtime.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 86.206894
+    },
+    {
+      "symbol": "_CutSceneUpdateTextureAnimationsPrivatePc",
+      "pc": "0x0057cb10",
+      "original_bytes": 225,
+      "units": [
+        "src/legoapi/cutscene_runtime.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 83.89706
+    },
+    {
+      "symbol": "_CutScenePlayOncePrivatePc",
+      "pc": "0x0057ccb0",
+      "original_bytes": 113,
+      "units": [
+        "src/legoapi/cutscene_runtime.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 80.88636
+    },
+    {
+      "symbol": "_CutSceneSetStopFlagsPrivatePc",
+      "pc": "0x0057ce40",
+      "original_bytes": 77,
+      "units": [
+        "src/legoapi/cutscene_runtime.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_CutScenes_Stop",
+      "pc": "0x0057cec0",
+      "original_bytes": 49,
+      "units": [
+        "src/legoapi/cutscene_runtime.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_CutScenes_Draw",
+      "pc": "0x0057d0a0",
+      "original_bytes": 343,
+      "units": [
+        "src/legoapi/cutscene_runtime.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 74.06024
+    },
+    {
+      "symbol": "_CutScenePlayer_SetObjects",
+      "pc": "0x0057ea60",
+      "original_bytes": 156,
+      "units": [
+        "src/legoapi/gcutscn.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 90.9661
+    },
+    {
+      "symbol": "_CutSceneStartPrivatePc",
+      "pc": "0x0057eb00",
+      "original_bytes": 616,
+      "units": [
+        "src/legoapi/cutscene_runtime.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 30.092896
+    },
+    {
+      "symbol": "_CutScenes_Start",
+      "pc": "0x0057ed70",
+      "original_bytes": 66,
+      "units": [
+        "src/legoapi/cutscene_runtime.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_CutScenes_Reset",
+      "pc": "0x0057edc0",
+      "original_bytes": 254,
+      "units": [
+        "src/legoapi/cutscene_runtime.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 85.8642
+    },
+    {
+      "symbol": "_CutScenes_End",
+      "pc": "0x0057eec0",
+      "original_bytes": 135,
+      "units": [
+        "src/legoapi/cutscene_runtime.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 83.977776
+    },
+    {
+      "symbol": "_CutScenes_Update",
+      "pc": "0x0057ef50",
+      "original_bytes": 1783,
+      "units": [
+        "src/legoapi/cutscene_runtime.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 73.98802
+    },
+    {
+      "symbol": "_RegisterTakeOverObject",
+      "pc": "0x0059f990",
+      "original_bytes": 225,
+      "units": [
+        "src/legoapi/takeoverobjects.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 95.42373
+    },
+    {
+      "symbol": "_PcNativeSelectLanguage",
+      "pc": "0x006dc890",
+      "original_bytes": 1578,
+      "units": [
+        "src/nu2api/hardware_dispatch.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 83.09901
+    },
+    {
+      "symbol": "_PCFrameSetLoadingYieldEnabled",
+      "pc": "0x006df320",
+      "original_bytes": 14,
+      "units": [
+        "src/nu2api/nuframe.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?RequestMode@PC_DEVICE_BACKEND_PC@@QAEXI@Z",
+      "pc": "0x006e1dd0",
+      "original_bytes": 27,
+      "units": [
+        "src/nu2api/pc_device.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?NextResolution@PC_DEVICE_BACKEND_PC@@QAEXXZ",
+      "pc": "0x006e1df0",
+      "original_bytes": 261,
+      "units": [
+        "src/nu2api/pc_device.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 91.88764
+    },
+    {
+      "symbol": "?PreviousResolution@PC_DEVICE_BACKEND_PC@@QAEXXZ",
+      "pc": "0x006e1f00",
+      "original_bytes": 262,
+      "units": [
+        "src/nu2api/pc_device.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 90.2967
+    },
+    {
+      "symbol": "?NextRefresh@PC_DEVICE_BACKEND_PC@@QAEXXZ",
+      "pc": "0x006e2010",
+      "original_bytes": 103,
+      "units": [
+        "src/nu2api/pc_device.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?PreviousRefresh@PC_DEVICE_BACKEND_PC@@QAEXXZ",
+      "pc": "0x006e2080",
+      "original_bytes": 104,
+      "units": [
+        "src/nu2api/pc_device.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?ResetRequestedMode@PC_DEVICE_BACKEND_PC@@QAEXXZ",
+      "pc": "0x006e20f0",
+      "original_bytes": 53,
+      "units": [
+        "src/nu2api/pc_device.cpp"
       ],
       "exact": true,
       "objdiff_percent": 100.0
@@ -25856,6 +26306,175 @@
       "user_journal_preserved": true,
       "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
       "ongoing_goal": "Whole-project matching-priority reconstruction active; validated direct-main pushes authorized and exact pushed CI verified separately."
+    },
+    {
+      "checkpoint": "Connected AISYS, tagging, hardware locale and cutscene checkpoint FF (2026-10-07 UTC)",
+      "baseline_commit": "6929bc6e8a7dc216e402c2c96b3a0b09be04c785",
+      "baseline_CI": {
+        "status": "ALL_JOBS_AND_STEPS_SUCCESS_EXACT_PUSHED_SHA",
+        "commit": "6929bc6e8a7dc216e402c2c96b3a0b09be04c785",
+        "run": 37677349542,
+        "url": "https://github.com/opensagadev/saga-pc/actions/runs/37677349542",
+        "query_sha256": "4cb897559d56fc3e32bc62904573bef63401201a18b02aa7d81408ef6a7407e7",
+        "watch_exit": 0
+      },
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1331247,
+        "matched_code_bytes": 208284,
+        "matching_percent": 6.000266186838962,
+        "fuzzy_coverage_percent": 25.732629802966898,
+        "mapped_functions": 4612,
+        "matched_functions": 2102,
+        "objdiff_fuzzy_percent": 69.16475,
+        "objdiff_total_code": 1292269,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1979443,
+        "mapping_percent": 4.940323565445461,
+        "matched_data_region_bytes": 637608
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1339087,
+        "matched_code_bytes": 209128,
+        "matching_percent": 6.024580222778795,
+        "fuzzy_coverage_percent": 26.029687144670714,
+        "mapped_functions": 4639,
+        "matched_functions": 2115,
+        "objdiff_fuzzy_percent": 69.254196,
+        "objdiff_total_code": 1305490,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1987283,
+        "mapping_percent": 4.9598907551817115,
+        "matched_data_region_bytes": 637608
+      },
+      "new_source_functions": 45,
+      "actual_new_transfer_PC_bytes": 13221,
+      "new_unique_compared_PC_bytes": 13221,
+      "unique_compared_code_bytes": 1304919,
+      "native_objdiff_denominator": 1305490,
+      "overlap_bytes": 571,
+      "new_native_family_bytes": {
+        "AISYS": 4370,
+        "tag_takeover_suppliers": 503,
+        "tag_callbacks": 716,
+        "device_modes_and_locale": 2388,
+        "cutscene_streaming": 1092,
+        "cutscene_controller": 4152
+      },
+      "new_exact_PC_bytes": 844,
+      "whole_PC_fuzzy_delta_pp": 0.29705734170381604,
+      "old_full_function_copies": 4426,
+      "old_full_data_regions": 10047,
+      "old_exact_code_copies_preserved": 2105,
+      "old_known_extent_exact_data_compiled_copies_preserved": 5303,
+      "current_full_function_definitions": 4471,
+      "current_full_data_definitions": 10096,
+      "members_preserved": 13,
+      "known_member_bytes": 28,
+      "qualified_previous_nonexact_function_changes": [
+        {
+          "unit": "src/legoapi/camera.c",
+          "symbol": "_GameCameraMakeMiniCut3",
+          "old_bytes": 1789,
+          "new_bytes": 1709,
+          "old_official_sha256": "4382fb31517118bb3ecc2395e3613371dbcf77baa069534c76ff89bd7be28a0f",
+          "new_official_sha256": "c4a2ffcc805ea325522e28caeac1d6b1b35d4a295403f310d9498f0ce7dab19c",
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/endpoint-FF-review/accepted-camera-EE-FF-recurrence.json",
+            "receipt_sha256": "53ad91419a163cd51a8354b96e1b28dccdc67626f9b5eb6fe460b64322059b13",
+            "old_official_sha256": "4382fb31517118bb3ecc2395e3613371dbcf77baa069534c76ff89bd7be28a0f",
+            "new_official_sha256": "c4a2ffcc805ea325522e28caeac1d6b1b35d4a295403f310d9498f0ce7dab19c",
+            "old_exact": false,
+            "qualification": "Actual complete raw bytes, strict named relocations and official outputs match the previously independently accepted1709/1789 pair exactly, reversed. Same limited initialized stable nonalias finite masked-FP domain; no fresh runtime, exceptional/fault/async/native-arbitrary-domain equivalence."
+          }
+        },
+        {
+          "unit": "src/nu2api/hardware_dispatch.cpp",
+          "symbol": "_NuInitHardwarePc",
+          "old_bytes": 1950,
+          "new_bytes": 1982,
+          "old_official_sha256": "69b5dafbee2c87083134278088d043b1130bcbfae6f1992fa9ec503ac4957507",
+          "new_official_sha256": "2a505ed2f01e93b4142de05ca97c76c957813cc1534df3e629e8db2d8d31917d",
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/endpoint-FF-review/accepted-policy-caller.json",
+            "receipt_sha256": "ee5e172b00e422b71bb61adc5d2ff25d4e6f30f0d377487b7c66162e73dd5a31",
+            "old_official_sha256": "69b5dafbee2c87083134278088d043b1130bcbfae6f1992fa9ec503ac4957507",
+            "new_official_sha256": "2a505ed2f01e93b4142de05ca97c76c957813cc1534df3e629e8db2d8d31917d",
+            "old_exact": false,
+            "qualification": "Only the genuine omitted language-policy call is restored. Existing hardware partial actions remain. Valid ordinary config_name, registry/configuration domains from accepted policy source; no successful hardware, window, device, GPU, boot, or runtime claim."
+          }
+        }
+      ],
+      "qualified_unknown_extent_data_changes": [],
+      "qualified_compiler_local_class6_type0_serial_changes": 5,
+      "new_complete_initializer_copies": 49,
+      "new_complete_initializer_COFF_bytes": 372,
+      "new_known_extent_exact_initializer_compiled_copies": 5,
+      "new_known_extent_exact_initializer_COFF_bytes": 33,
+      "new_unknown_extent_full_native_equal_initializer_copies": 44,
+      "unknown_extent_exact_and_allocation_credit": 0,
+      "known_exact_data_union_before_transfer": 637608,
+      "known_exact_data_union_after_transfer": 637608,
+      "normal_objects": 314,
+      "frozen_inputs": 432,
+      "required_checks": {
+        "status": "PASS_FINAL_REQUIRED_BUILD_LINK_OBJECTS_AND_LLVM18_CHECKS",
+        "build_check_objects_exit": 0,
+        "make_check_exit": 0,
+        "full_tests": 728,
+        "existing_skips": 3,
+        "objects": 314,
+        "complete_functions": 4471,
+        "complete_data_regions": 10096,
+        "actual_inputs": 432,
+        "pins": {
+          "build/analysis/checkpoint-FF/build-check-objects-final.log": "db12d66d484981d6d52ceb9acc43007912d9a0f62f06471ca77e3f0de225d31f",
+          "build/analysis/checkpoint-FF/make-check-final.log": "f19adb1c66dbd50b58aee3d300ef9382e5a630e267b2b75be04aeb09417fd12b",
+          "build/analysis/checkpoint-FF/normal-object-manifest.json": "c7e3c3c9190429daef6bbb2f7d25bb56e5aca9140103eee82901a0866d2d9900",
+          "build/analysis/checkpoint-FF/frozen-first-source-inputs.json": "ee8c89d95a348c01f913afbc28ebe527d4b3736b11e4c6c396c6cc672074edf8",
+          "build/analysis/checkpoint-FF/normal-artifact-manifest.json": "ecf3fc6c8ae664cc2556f978e1abb32179b2e5510937a9294c413b73737a9aa2"
+        }
+      },
+      "selected_CPU_checks": 395,
+      "selected_CPU_failures": 0,
+      "source_EXE": {
+        "receipt": "build/analysis/checkpoint-FF/runtime-source-EXE/accepted-runtime.json",
+        "sha256": "ff3ca590c8de975a23149603e0a414b63cab55f8313f8673ae25e4cbe0419c17",
+        "exe_sha256": "07198438c67b08f149bd4bacff90af8c2887d4dc15e010ae8c184cff0b55ed63",
+        "exit": 5,
+        "elapsed_seconds": 3.641698641004041,
+        "fault": "0x50b960",
+        "native_method": "0x741750",
+        "method_size": 208,
+        "fault_offset": 16,
+        "visible_window_samples": 0
+      },
+      "remaining_contracts": "Real shader manager publication/parser generated helpers; true character callbacks and initialized formation state; remaining partial controller/audio/fog/panel actions; device/asset positive runtime.",
+      "next_wave": "Use named Mac shader/parser and character/world-loading bodies to advance real shader publisher and LoadPerm2/character fixups. Candidate names/bytes receive no matching credit.",
+      "checkpoint_delay": "Initial link lacked ten genuine controller states and SDK AdvAPI32; actual ownership/initializer and complete preservation proofs required. Central ten-state failure retained. Only reviewed native -1 music state has qualified existing controller ownership. Fixture identifier and caller-setup failures retained; no engine repairs or relaxed tests.",
+      "second_Mac_reference": {
+        "path": "res/LEGO_Star_Wars_Saga",
+        "sha256": "ff8f07b73c9671d0cacc1dd1a4251d488c6aeb4794112a69450ab7757f774ae6",
+        "dyld_export_names": 30815,
+        "combined_named_text_addresses": 22127,
+        "embedded_DWARF_sections": 0,
+        "STABS": 0,
+        "automatic_PC_bindings_or_credit": 0,
+        "audit": "build/analysis/mac2-evidence/README.md"
+      },
+      "evidence_pins": {
+        "build/analysis/checkpoint-FF/normal-object-manifest.json": "c7e3c3c9190429daef6bbb2f7d25bb56e5aca9140103eee82901a0866d2d9900",
+        "build/analysis/checkpoint-FF/frozen-first-source-inputs.json": "ee8c89d95a348c01f913afbc28ebe527d4b3736b11e4c6c396c6cc672074edf8",
+        "build/analysis/checkpoint-FF/normal-artifact-manifest.json": "ecf3fc6c8ae664cc2556f978e1abb32179b2e5510937a9294c413b73737a9aa2",
+        "build/analysis/checkpoint-FF/runtime-acceptance.json": "0414615f74eddf3cfb3d87ee5a7aac911dd454de8b118d946691101a924da74d",
+        "build/analysis/endpoint-FF-review/actual-output-and-report-proof.json": "83d77ffce4721c94aa7c89718002769e9c3a1945b221b334a43ec567460db4bf",
+        "build/analysis/endpoint-FF-review/accepted-first-endpoint.json": "cac3a5c79f04dac5ad3db0f114da68bbbf92956cc079be060f5532304dadaf28",
+        "build/analysis/mac2-evidence/audit-receipt.json": "88e292a4b012e7f5cc77bf4eceb841a6537b267e8a7fd72c70c59ca9d264d0bb"
+      },
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "Active whole-project matching-priority transfer with authorized validated direct-main pushes and exact-revision CI checks."
     }
   ]
 }

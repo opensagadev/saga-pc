@@ -1113,3 +1113,18 @@ u8 __cdecl NuToUpper(u8 character) {
         character = (u8)(character - 0x20);
     return character;
 }
+
+char *__cdecl NuStrStr(char *text, const char *needle) {
+    while (*text != '\0') {
+        const char *part = needle;
+        char *scan = text;
+        while (*part != '\0' && *scan != '\0' && *scan == *part) {
+            ++scan;
+            ++part;
+        }
+        if (*part == '\0')
+            return text;
+        ++text;
+    }
+    return NULL;
+}
