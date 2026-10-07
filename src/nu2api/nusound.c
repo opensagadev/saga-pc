@@ -637,3 +637,8 @@ i32 __cdecl GetSfxIdN(char *name, i32 length) {
     TerrainDiagnosticNoOpPC(name);
     return -1;
 }
+
+extern i32 NuSound3LoadingSfxPc;
+i32 __cdecl NuSound3LoadingSfx(void) {
+    return NuSound3LoadingSfxPc != 0;
+}

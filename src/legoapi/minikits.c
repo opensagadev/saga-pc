@@ -72,3 +72,70 @@ void __cdecl CollectMinikit(NUVEC *position, char *name, i32 flags) {
     AddGameDebris(WORLD->game_debris_sys, 0x13, position);
     GameAudio_PlaySfxById(GetSfxId(PickupTypeLiteral758c14), position, 3, 0);
 }
+
+typedef struct world_minikit_reader_pc_s {
+    u8 unknown_0000[0x2968];
+    MINIKIT_PC minikit;
+    u8 unknown_2980[4];
+    MINIKIT_PC **pieces_by_id;
+    u8 unknown_2988[0x158];
+    u8 *hub_minikits;
+} WORLD_MINIKIT_READER_PC;
+STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, minikit) == 0x2968);
+STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, pieces_by_id) == 0x2984);
+STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, hub_minikits) == 0x2ae0);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, minikit_id) == 0x8a);
+STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name) == 0xc);
+STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl MiniKit_Load(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *, void *);
+    void __cdecl MiniKit_InitPieces(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *);
+    void __cdecl Hub_LoadAndFixUpMiniKits(WORLDINFO *, VARIPTR *, VARIPTR *);
+    void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *, WORLDINFO *, VARIPTR *, VARIPTR *);
+#ifdef __cplusplus
+}
+#endif
+
+void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
+    WORLD_MINIKIT_READER_PC *view = (WORLD_MINIKIT_READER_PC *)world;
+    i32 i, character_id;
+    MINIKIT_PC *minikit;
+    char path[256];
+    if (Char_MiniKit == NULL)
+        return;
+    minikits_savecharacterbufferptr = characterbuffer_ptr;
+    for (i = 0; i < CHARCOUNT; ++i)
+        Char_MiniKit[i] = 0;
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    view->pieces_by_id = (MINIKIT_PC **)buffer->void_ptr;
+    memset(view->pieces_by_id, 0, CHARCOUNT * 4);
+    buffer->addr += CHARCOUNT * 4;
+    for (i = 0; i < collection->count; ++i) {
+        character_id = collection->list[i].id;
+        if ((GCDataList[character_id].flags_094 & 0x400) != 0 || APICharacterLoaded(character_id) == NULL)
+            continue;
+        view->pieces_by_id[character_id] = (MINIKIT_PC *)buffer->void_ptr;
+        buffer->addr += 0x18;
+        NuStrCpy(path, "chars\\minikits\\");
+        NuStrCat(path, CDataList[character_id].name);
+        NuStrCat(path, "\\");
+        NuStrCat(path, CDataList[character_id].name);
+        NuStrCat(path, ".gsc");
+        buffer->addr = (buffer->addr + 3) & ~3u;
+        if (i < 18)
+            view->pieces_by_id[character_id]->scene = NuGScnRead(buffer, *end, path);
+        else
+            view->pieces_by_id[character_id]->scene = NuGScnRead(&characterbuffer_ptr, characterbuffer_end, path);
+        minikit = view->pieces_by_id[character_id];
+        minikit->model_id = (i16)character_id;
+        if (minikit->scene == NULL) {
+            view->pieces_by_id[character_id] = NULL;
+            buffer->addr -= 0x18;
+        } else {
+            MiniKit_InitPieces(minikit, 10, buffer, end);
+            ((MINIKIT_PC **)Char_MiniKit)[character_id] = view->pieces_by_id[character_id];
+        }
+    }
+}

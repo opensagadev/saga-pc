@@ -896,3 +896,107 @@ void __cdecl GizmoSysAddGizmos(void *system_ptr, GIZFLOW_PC *flow, void *world) 
     if (flow != NULL && flow->pointers_need_reset != 0)
         ResetGizFlowPointers(flow);
 }
+
+typedef struct world_minikit_reader_pc_s {
+    u8 unknown_0000[0x2968];
+    MINIKIT_PC minikit;
+    u8 unknown_2980[4];
+    MINIKIT_PC **pieces_by_id;
+    u8 unknown_2988[0x158];
+    u8 *hub_minikits;
+} WORLD_MINIKIT_READER_PC;
+STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, minikit) == 0x2968);
+STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, pieces_by_id) == 0x2984);
+STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, hub_minikits) == 0x2ae0);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, minikit_id) == 0x8a);
+STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name) == 0xc);
+STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl MiniKit_Load(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *, void *);
+    void __cdecl MiniKit_InitPieces(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *);
+    void __cdecl Hub_LoadAndFixUpMiniKits(WORLDINFO *, VARIPTR *, VARIPTR *);
+    void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *, WORLDINFO *, VARIPTR *, VARIPTR *);
+#ifdef __cplusplus
+}
+#endif
+
+void __cdecl Hub_LoadAndFixUpMiniKits(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
+    WORLD_MINIKIT_READER_PC *view = (WORLD_MINIKIT_READER_PC *)world;
+    i32 i;
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    view->hub_minikits = buffer->void_ptr;
+    buffer->addr = (buffer->addr + AREACOUNT * 0x7c + 3) & ~3u;
+    view->pieces_by_id = (MINIKIT_PC **)buffer->void_ptr;
+    memset(view->pieces_by_id, 0, AREACOUNT * 4);
+    buffer->addr += AREACOUNT * 4;
+    for (i = 0; i < AREACOUNT; ++i) {
+        MINIKIT_PC *minikit;
+        view->pieces_by_id[i] = NULL;
+        if ((ADataList[i].flags & 0x10) == 0 || ADataList[i].minikit_id == -1)
+            continue;
+        view->pieces_by_id[i] = (MINIKIT_PC *)buffer->void_ptr;
+        buffer->addr += 0x18;
+        MiniKit_Load(view->pieces_by_id[i], ADataList[i].minikit_id, buffer, end, NULL);
+        minikit = view->pieces_by_id[i];
+        if (minikit->scene == NULL) {
+            view->pieces_by_id[i] = NULL;
+            buffer->addr -= 0x18;
+        } else {
+            MiniKit_InitPieces(minikit, 10, buffer, end);
+            view->pieces_by_id[i]->area_index = (i8)i;
+        }
+    }
+}
+void __cdecl MiniKit_Load(MINIKIT_PC *minikit, i32 id, VARIPTR *buffer, VARIPTR *end, void *unused) {
+    char path[256];
+    (void)unused;
+    minikit->scene = NULL;
+    minikit->pieces = NULL;
+    minikit->piece_count = 0;
+    minikit->area_index = -1;
+    minikit->model_id = (i16)id;
+    if (id == -1)
+        return;
+    NuStrCpy(path, "chars\\minikits\\");
+    NuStrCat(path, CDataList[id].name);
+    NuStrCat(path, "\\");
+    NuStrCat(path, CDataList[id].name);
+    NuStrCat(path, ".gsc");
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    minikit->scene = NuGScnRead(buffer, *end, path);
+}
+static const char *MiniKitDirectionNamesPc[6] = {"NegX", "PosX", "NegY", "PosY", "NegZ", "PosZ"};
+void __cdecl MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer, VARIPTR *end) {
+    i32 direction_counts[6] = {0};
+    i32 index, direction;
+    char name[76];
+    (void)end;
+    if (minikit->scene == NULL) {
+        minikit->area_index = -1;
+        return;
+    }
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    minikit->pieces = (MINIKIT_PIECE_PC *)buffer->void_ptr;
+    minikit->piece_count = 0;
+    for (index = 0; index < count; ++index) {
+        for (direction = 0; direction < 6; ++direction) {
+            MINIKIT_PIECE_PC *piece;
+            sprintf(name, "%s_%s_%i", CDataList[minikit->model_id].name, MiniKitDirectionNamesPc[direction], index);
+            piece = &minikit->pieces[minikit->piece_count];
+            if (NuSpecialFind(minikit->scene, &piece->special, name, 1) == 0)
+                continue;
+            piece->matrix = *NuSpecialGetInstanceMtx(&piece->special);
+            piece->direction = (u8)direction;
+            piece->direction_index = (u8)direction_counts[direction]++;
+            ++minikit->piece_count;
+        }
+    }
+    sprintf(name, "%s_shadow", CDataList[minikit->model_id].name);
+    NuSpecialFind(minikit->scene, &minikit->shadow, name, 1);
+    if (minikit->piece_count == 0)
+        minikit->pieces = NULL;
+    else
+        buffer->addr += minikit->piece_count * sizeof(MINIKIT_PIECE_PC);
+}

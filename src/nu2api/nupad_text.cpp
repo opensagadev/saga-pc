@@ -244,3 +244,7 @@ extern "C" {
         return (u32)device <= 3u;
     }
 }
+
+extern "C" i32 __cdecl AreaGetKeyboardOverridePc(void) {
+    return (i8)((TEXT_INPUT_MANAGER_PC *)nu_input_state)->use_keyboard_override;
+}

@@ -28,3 +28,14 @@ void ShaderCompilerBufferAllocatorPc::Resize(i32 size) {
     if (length > size)
         length = size;
 }
+
+void ShaderCompilerBufferAllocatorPc::AppendBytes(const char *source, i32 count) {
+    i32 required = length + count;
+    if (required > capacity)
+        Resize((3 * required) / 2);
+    strncpy(reinterpret_cast<char *>(data + length), source, count);
+    length += count;
+}
+void ShaderCompilerBufferAllocatorPc::AppendText(const char *source) {
+    AppendBytes(source, (i32)strlen(source));
+}

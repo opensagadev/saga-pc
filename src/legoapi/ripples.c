@@ -240,3 +240,139 @@ void __cdecl AddSurfaceRipples(GAMEOBJECT *object) {
     if (contact_timer->timer > 0)
         contact_timer->timer -= FRAMETIME;
 }
+
+typedef struct ripple_material_reader_pc_s {
+    u8 unknown_0000[0x70];
+    f32 opacity;
+} RIPPLE_MATERIAL_READER_PC;
+STATIC_ASSERT(offsetof(RIPPLE_MATERIAL_READER_PC, opacity) == 0x70);
+void __cdecl InitRippleMtl(char *name, NUMTL **result, VARIPTR *buffer, VARIPTR *end) {
+    char filename[64] = "stuff\\";
+    i32 texture;
+    if (name != NULL) {
+        NuStrCat(filename, name);
+        buffer->addr = (buffer->addr + 15) & ~15u;
+        NuStrCat(filename, ".tex");
+        texture = NuTexReadPc(filename, buffer, *end);
+        if (texture != 0) {
+            *result = NuMtlCreateEx3D(1, 1);
+            (*result)->attribs.unknown_1_1_2 = 0;
+            (*result)->attribs.unknown_1_4_8 = 0;
+            ((RIPPLE_MATERIAL_READER_PC *)*result)->opacity = 1.0f;
+            (*result)->attribs.z_mode = 1;
+            (*result)->attribs.alpha_mode = 2;
+            (*result)->attribs.filter_mode = 1;
+            (*result)->attribs.unknown_2_1_2 = 2;
+            (*result)->texture_id = (i16)texture;
+            NuMtlUpdate(*result);
+            return;
+        }
+    }
+    *result = NULL;
+}
+static WORLDINFO *RippleEffectsWorldInfoPc;
+static RIPPLE_EFFECT_PC *RippleEffectsCurrentPc;
+static const char *RippleEffectNamesPc[2] = {"water", "forcefield"};
+i32 __cdecl LookupRippleEffectIndex(char *name) {
+    i32 i;
+    for (i = 0; i < 2; ++i)
+        if (NuStrICmp(RippleEffectNamesPc[i], name) == 0)
+            return i;
+    return -1;
+}
+static void RippleEndRadiusPc(NUFPAR_PC *parser) {
+    RippleEffectsCurrentPc->end_size = NuFParGetFloat(parser);
+}
+static void RippleStartRadiusPc(NUFPAR_PC *parser) {
+    RippleEffectsCurrentPc->initial_size = NuFParGetFloat(parser);
+}
+static void RippleLifePc(NUFPAR_PC *parser) {
+    RippleEffectsCurrentPc->lifetime = NuFParGetFloat(parser);
+}
+static void RippleStartColourPc(NUFPAR_PC *parser) {
+    u8 *colour = (u8 *)&RippleEffectsCurrentPc->start_color;
+    colour[0] = (u8)NuFParGetInt(parser);
+    colour[1] = (u8)NuFParGetInt(parser);
+    colour[2] = (u8)NuFParGetInt(parser);
+    colour[3] = (u8)NuFParGetInt(parser);
+}
+static void RippleEndColourPc(NUFPAR_PC *parser) {
+    u8 *colour = (u8 *)&RippleEffectsCurrentPc->end_color;
+    colour[0] = (u8)NuFParGetInt(parser);
+    colour[1] = (u8)NuFParGetInt(parser);
+    colour[2] = (u8)NuFParGetInt(parser);
+    colour[3] = (u8)NuFParGetInt(parser);
+}
+static void RippleTextureNamePc(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser) && NuStrLen(parser->word_buffer_ptr) < 16)
+        NuStrCpy(RippleEffectsCurrentPc->texture_name, parser->word_buffer_ptr);
+}
+static void RippleEffectTypePc(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser)) {
+        i32 index = LookupRippleEffectIndex(parser->word_buffer_ptr);
+        if (index != -1) {
+            WORLD_RIPPLE_VIEW_PC *world = (WORLD_RIPPLE_VIEW_PC *)RippleEffectsWorldInfoPc;
+            if (index == 0)
+                world->water_effect = world->count;
+            else
+                world->sabre_effect = world->count;
+        }
+    }
+}
+static NUFPCOMJMP RippleEffectConfigKeywordsPc[8] = {{"texture_name", RippleTextureNamePc},
+                                                     {"effect_type", RippleEffectTypePc},
+                                                     {"start_colour", RippleStartColourPc},
+                                                     {"end_colour", RippleEndColourPc},
+                                                     {"life", RippleLifePc},
+                                                     {"start_radius", RippleStartRadiusPc},
+                                                     {"end_radius", RippleEndRadiusPc},
+                                                     {NULL, NULL}};
+void __cdecl RippleEffects_Configure(WORLDINFO *world, char *config) {
+    WORLD_RIPPLE_VIEW_PC *view = (WORLD_RIPPLE_VIEW_PC *)world;
+    NUFPAR_PC *parser;
+    RIPPLE_EFFECT_PC *effect;
+    i32 active = 0, i;
+    view->effects = NULL;
+    view->count = 0;
+    parser = NuFParCreateMem("rippleeffects", config, 0xffff);
+    if (parser == NULL)
+        return;
+    world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+    effect = view->effects = (RIPPLE_EFFECT_PC *)world->giz_buffer.void_ptr;
+    NuFParPushCom(parser, RippleEffectConfigKeywordsPc);
+    while (NuFParGetLine(parser)) {
+        NuFParGetWord(parser);
+        if (parser->word_buffer_ptr[0] == 0)
+            continue;
+        if (active) {
+            if (NuStrICmp(parser->word_buffer_ptr, "rippleeffects_end") == 0) {
+                active = 0;
+                if (effect->texture_name[0] != 0) {
+                    ++effect;
+                    ++view->count;
+                }
+            } else
+                NuFParInterpretWord(parser);
+        } else if (view->count < 2 && NuStrICmp(parser->word_buffer_ptr, "rippleeffects_start") == 0) {
+            RippleEffectsWorldInfoPc = world;
+            effect->lifetime = 2.0f;
+            effect->initial_size = 0;
+            effect->end_size = 1.0f;
+            effect->texture_name[0] = 0;
+            effect->start_color = 0xff404040u;
+            effect->end_color = 0;
+            effect->material = NULL;
+            RippleEffectsCurrentPc = effect;
+            active = 1;
+        }
+    }
+    NuFParDestroy(parser);
+    if (view->count <= 0) {
+        view->effects = NULL;
+        return;
+    }
+    world->giz_buffer.addr = ((u32)(view->effects + view->count) + 15) & ~15u;
+    for (i = 0; i < view->count; ++i)
+        InitRippleMtl(view->effects[i].texture_name, &view->effects[i].material, &world->giz_buffer,
+                      &world->buffer_end);
+}

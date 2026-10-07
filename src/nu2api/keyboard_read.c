@@ -122,3 +122,11 @@ i32 __cdecl NuKeyboardPlatformStartup_candidate(void) {
     STUBBED_NAMED(0x006e5340);
     return 1;
 }
+
+i32 __cdecl NuKeyboard_db(i32 key) {
+    i32 page = (i8)nu_keyboard_page_index;
+    u8 current = nu_keyboard_pages[(page << 8) + key];
+    if (current != 0 && (current ^ nu_keyboard_pages[((page ^ 1) << 8) + key]) != 0)
+        return 1;
+    return 0;
+}

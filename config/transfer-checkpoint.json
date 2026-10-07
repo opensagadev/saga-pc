@@ -20,18 +20,18 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1240743,
-    "matched_code_bytes": 201166,
-    "matching_percent": 5.795210134919853,
-    "fuzzy_coverage_percent": 23.917682153336752,
-    "mapped_functions": 4363,
-    "matched_functions": 2018,
-    "objdiff_fuzzy_percent": 69.563065,
-    "objdiff_total_code": 1194226,
+    "mapped_code_bytes": 1246770,
+    "matched_code_bytes": 202426,
+    "matching_percent": 5.831508340232873,
+    "fuzzy_coverage_percent": 24.057306208654634,
+    "mapped_functions": 4397,
+    "matched_functions": 2036,
+    "objdiff_fuzzy_percent": 69.53059,
+    "objdiff_total_code": 1201754,
     "image_bytes": 40067072,
-    "mapped_bytes": 1903854,
-    "mapping_percent": 4.7516674040968105,
-    "matched_data_region_bytes": 640794
+    "mapped_bytes": 1909933,
+    "mapping_percent": 4.7668394635874565,
+    "matched_data_region_bytes": 640846
   },
   "newly_compared": [
     {
@@ -4353,6 +4353,356 @@
       ],
       "exact": false,
       "objdiff_percent": 37.39116
+    },
+    {
+      "symbol": "_MenuRepeat",
+      "pc": "0x00509ca0",
+      "original_bytes": 96,
+      "units": [
+        "src/legoapi/menu.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 51.60606
+    },
+    {
+      "symbol": "_UpdateMenu",
+      "pc": "0x00509d00",
+      "original_bytes": 1756,
+      "units": [
+        "src/legoapi/menu.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 34.118813
+    },
+    {
+      "symbol": "_UpdateGameMenu",
+      "pc": "0x00495310",
+      "original_bytes": 1070,
+      "units": [
+        "src/legoapi/menus.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 54.44371
+    },
+    {
+      "symbol": "_AreaGetKeyboardOverridePc",
+      "pc": "0x006d61a0",
+      "original_bytes": 13,
+      "units": [
+        "src/nu2api/nupad_text.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuKeyboard_db",
+      "pc": "0x006d6c40",
+      "original_bytes": 53,
+      "units": [
+        "src/nu2api/keyboard_read.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuSound3LoadingSfx",
+      "pc": "0x00698990",
+      "original_bytes": 12,
+      "units": [
+        "src/nu2api/nusound.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MiniKit_Load",
+      "pc": "0x00599a40",
+      "original_bytes": 220,
+      "units": [
+        "src/legoapi/gizmo.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MiniKit_InitPieces",
+      "pc": "0x00599b20",
+      "original_bytes": 442,
+      "units": [
+        "src/legoapi/gizmo.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 53.19149
+    },
+    {
+      "symbol": "_Hub_LoadAndFixUpMiniKits",
+      "pc": "0x004778f0",
+      "original_bytes": 269,
+      "units": [
+        "src/legoapi/gizmo.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 39.255814
+    },
+    {
+      "symbol": "_CharacterMiniKits_Load",
+      "pc": "0x00599e00",
+      "original_bytes": 546,
+      "units": [
+        "src/legoapi/minikits.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 71.289474
+    },
+    {
+      "symbol": "_InitRippleMtl",
+      "pc": "0x0042fa70",
+      "original_bytes": 317,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_LookupRippleEffectIndex",
+      "pc": "0x005a2210",
+      "original_bytes": 56,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_RippleEndRadiusPc",
+      "pc": "0x005a2040",
+      "original_bytes": 23,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_RippleStartRadiusPc",
+      "pc": "0x005a2020",
+      "original_bytes": 23,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_RippleLifePc",
+      "pc": "0x005a2000",
+      "original_bytes": 23,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_RippleStartColourPc",
+      "pc": "0x005a1f60",
+      "original_bytes": 69,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 59.04762
+    },
+    {
+      "symbol": "_RippleEndColourPc",
+      "pc": "0x005a1fb0",
+      "original_bytes": 70,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 54.38095
+    },
+    {
+      "symbol": "_RippleTextureNamePc",
+      "pc": "0x005a1f10",
+      "original_bytes": 65,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_RippleEffectTypePc",
+      "pc": "0x005a2a20",
+      "original_bytes": 59,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 59.11111
+    },
+    {
+      "symbol": "_RippleEffects_Configure",
+      "pc": "0x005a2060",
+      "original_bytes": 431,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 75.55725
+    },
+    {
+      "symbol": "_SetAreaPickupGravity",
+      "pc": "0x0056f9f0",
+      "original_bytes": 104,
+      "units": [
+        "src/legoapi/world.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "??0ShaderCompilerDictionaryPc@@QAE@AAUVirtualStackAllocator@@H@Z",
+      "pc": "0x00746e60",
+      "original_bytes": 350,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 97.8
+    },
+    {
+      "symbol": "??1ShaderCompilerDictionaryPc@@QAE@XZ",
+      "pc": "0x00746790",
+      "original_bytes": 37,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?SetProfile@ShaderCompilerDictionaryPc@@QAEXHHH@Z",
+      "pc": "0x007467c0",
+      "original_bytes": 80,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 77.111115
+    },
+    {
+      "symbol": "?AddRegisterBlock@ShaderCompilerDictionaryPc@@QAEXPBDH@Z",
+      "pc": "0x00746810",
+      "original_bytes": 63,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?FindRegisterBlock@ShaderCompilerDictionaryPc@@QAEHPBD@Z",
+      "pc": "0x00746850",
+      "original_bytes": 102,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 49.023254
+    },
+    {
+      "symbol": "_ShaderLexicalClassesInitPc",
+      "pc": "0x0074ade0",
+      "original_bytes": 409,
+      "units": [
+        "src/nu2api/shader_lexical.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 38.870586
+    },
+    {
+      "symbol": "?IsSpecialToken@ShaderLexicalTokenPredicatePc@@QAEHPBD@Z",
+      "pc": "0x0074b020",
+      "original_bytes": 50,
+      "units": [
+        "src/nu2api/shader_lexical.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "??0ShaderRegisterBlockPc@@QAE@XZ",
+      "pc": "0x00746750",
+      "original_bytes": 13,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "??_H@YGXPAXIHP6EPAX0@Z@Z",
+      "pc": "0x00401080",
+      "original_bytes": 50,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?FindDefinition@ShaderCompilerDictionaryPc@@QAEPAUShaderMacroDefinitionPc@@PBD@Z",
+      "pc": "0x00746c60",
+      "original_bytes": 99,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?AddDefinition@ShaderCompilerDictionaryPc@@QAEXPBD0H@Z",
+      "pc": "0x007473d0",
+      "original_bytes": 279,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 73.85294
+    },
+    {
+      "symbol": "?BindOutputBuffer@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z",
+      "pc": "0x007468c0",
+      "original_bytes": 126,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 95.652176
+    },
+    {
+      "symbol": "?AppendBytes@ShaderCompilerBufferAllocatorPc@@QAEXPBDH@Z",
+      "pc": "0x007485e0",
+      "original_bytes": 114,
+      "units": [
+        "src/nu2api/shader_buffer_allocator.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 95.196075
+    },
+    {
+      "symbol": "?AppendText@ShaderCompilerBufferAllocatorPc@@QAEXPBD@Z",
+      "pc": "0x00748760",
+      "original_bytes": 39,
+      "units": [
+        "src/nu2api/shader_buffer_allocator.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
     }
   ],
   "previous_exact_functions_lost": [],
@@ -21628,6 +21978,210 @@
       ],
       "next_connected_wave": "Area8815/getters78/menu2922 connected families and true manager dictionary/parser children; replenish WORLD minikit/resource families across whole project.",
       "checkpoint_delay": "04:01UTC checkpoint delayed for actual normal build,719 required checks, complete retail comparison and independent preservation; larger Area/Perm state remains held rather than weakening checks.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct-main pushes authorized."
+    },
+    {
+      "checkpoint": "Connected menu, minikit, WORLD and shader dictionary checkpoint W (2026-10-07 UTC)",
+      "baseline_commit": "1837c036231f3c940ff534b00205f976c480997c",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1240743,
+        "matched_code_bytes": 201166,
+        "matching_percent": 5.795210134919853,
+        "fuzzy_coverage_percent": 23.917682153336752,
+        "mapped_functions": 4363,
+        "matched_functions": 2018,
+        "objdiff_fuzzy_percent": 69.563065,
+        "objdiff_total_code": 1194226,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1903854,
+        "mapping_percent": 4.7516674040968105,
+        "matched_data_region_bytes": 640794
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1246770,
+        "matched_code_bytes": 202426,
+        "matching_percent": 5.831508340232873,
+        "fuzzy_coverage_percent": 24.057306208654634,
+        "mapped_functions": 4397,
+        "matched_functions": 2036,
+        "objdiff_fuzzy_percent": 69.53059,
+        "objdiff_total_code": 1201754,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1909933,
+        "mapping_percent": 4.7668394635874565,
+        "matched_data_region_bytes": 640846
+      },
+      "new_source_functions": 35,
+      "actual_new_transfer_PC_bytes": 7528,
+      "new_unique_compared_PC_bytes": 7528,
+      "unique_compared_code_bytes": 1201236,
+      "native_objdiff_denominator": 1201754,
+      "new_native_family_bytes": {
+        "WORLD_six_call_reconnections": 0,
+        "input_sound_getters": 78,
+        "menu": 2922,
+        "minikit_ripple_gravity": 2717,
+        "shader_dictionary_buffers": 1811
+      },
+      "whole_PC_fuzzy_delta_pp": 0.13962405531788136,
+      "new_exact_PC_bytes": 1260,
+      "new_exact_source_functions": 18,
+      "accepted_complete_bodies": 36,
+      "old_full_function_copies": 4170,
+      "old_exact_code_copies_preserved": 2021,
+      "current_exact_code_copies": 2039,
+      "old_full_data_definitions": 8949,
+      "old_exact_physical_data_copies_preserved": 5418,
+      "current_exact_physical_data_copies": 5437,
+      "current_full_function_definitions": 4205,
+      "current_full_data_definitions": 9021,
+      "existing_real_caller_reconnections": [
+        "WorldInfo_Load -> Hub_LoadAndFixUpMiniKits",
+        "WorldInfo_Load -> MiniKit_Load",
+        "WorldInfo_Load -> MiniKit_InitPieces",
+        "WorldInfo_Load -> CharacterMiniKits_Load",
+        "WorldInfo_Load -> RippleEffects_Configure",
+        "WorldInfo_Load -> SetAreaPickupGravity(area,level)"
+      ],
+      "existing_caller_new_byte_credit": 0,
+      "prior_official_function_changes": [
+        "WorldInfo_Load alone: six reviewed real caller reconnections; full native2222/candidate2324. All other old official function outputs equal V."
+      ],
+      "local_label_qualifications": 4,
+      "old_raw_named_data_changes": [
+        {
+          "symbol": "_CpuBrandIndexPc",
+          "typed_value": "BYTE0 unchanged",
+          "old_full_bytes": 6,
+          "new_full_bytes": 1,
+          "extent": "unknown, zero allocation/exact credit"
+        },
+        {
+          "symbol": "_ID_DEFAULTCHARACTER_LSW_B",
+          "typed_value": "i16 minus1 unchanged",
+          "old_full_bytes": 8,
+          "new_full_bytes": 4,
+          "extent": "known2; both full copies NONEXACT"
+        }
+      ],
+      "new_complete_initializer_copies": 72,
+      "new_complete_initializer_COFF_bytes": 824,
+      "all_new_complete_initializer_copies_retail_equal": true,
+      "new_known_initializer_copies": 19,
+      "new_known_complete_initializer_bytes": 116,
+      "new_unknown_initializer_copies": 53,
+      "new_unknown_complete_initializer_bytes": 708,
+      "unknown_extent_allocation_and_exact_credit": 0,
+      "known_exact_data_union": 640846,
+      "new_unique_known_exact_data_bytes": 52,
+      "shared_new_views": 21,
+      "shared_typed_and_full_initializer_bytes": 97,
+      "shared_view_unknown_original_extent_allocation_exact_credit": 0,
+      "full_data_initializer_proof": {
+        "path": "/tmp/saga-pc-next-runtime/W-menu-sound-minikit21-data/final-W-normal-data-release.json",
+        "sha256": "3804bbafb378aa13d011c6681bac5e71589ffe00e28a0415d28a79853ec020cf"
+      },
+      "menu_qualification": "Real UpdateMenu9 stack arguments/consumedEAX, real keyboard and pause/input routing. Three native VOID actions remain explicit in UpdateGameMenu. MenuRepeat ordered <=0 preserves native NaN behavior; 14 cases/56 assertions exercise finite/NaN/infinity/signedzero/count-wrap domains, not the whole menu coordinator.",
+      "minikit_qualification": "Original helper/caller ownership retained. Genuine initialized parser-domain cached colour pointer is non-reentrant. True MiniKitCollection working minimum20 bytes is not an allocation/capacity or boot claim. Inherited NuSpecialFind partial provider and native scene texture-ID fixup omission remain explicit; selected67 CPU checks do not establish scene/GPU/WORLD positive paths.",
+      "dictionary_qualification": "Real macro/register/output dictionary and lexical classification plus native buffer methods. Distinct12-byte name/value/BYTEemit record has asserted fields. Genuine CRT strncpy padding retained. Original lexical private visibility/filename and owning initializer extent remain qualified. No shader manager publication, Parse/Expand/backend activation or retail HLSL asset copied.",
+      "verified_checks": {
+        "make_build_check_objects_exit_code": 0,
+        "make_check_exit_code": 0,
+        "make_first_match_exit_code": 0,
+        "tests": 719,
+        "existing_skips": 3,
+        "format_source_headers": 334,
+        "tidy_normal_units": 307,
+        "actual_normal_objects": 307,
+        "function_definitions": 4205,
+        "data_definitions": 9021,
+        "whole_owner_replacements": 0,
+        "supplemental_objects": 0,
+        "selected_actual_normal_menu_cases": 14,
+        "selected_actual_normal_menu_assertions": 56,
+        "selected_actual_normal_minikit_checks": 67,
+        "selected_actual_normal_dictionary_checks": 49,
+        "selected_failures": 0
+      },
+      "receipts": {
+        "required_checks": {
+          "path": "/tmp/saga-pc-next-runtime/checkpoint-W/required-checks-receipt.json",
+          "sha256": "ba73ef6ae827247055b6abbc408226b6a36eafcf5c9f5da43ae2af7329b7f56f"
+        },
+        "accepted_complete_functions": {
+          "path": "/tmp/saga-pc-next-runtime/checkpoint-W/accepted-complete-functions.json",
+          "sha256": "d3b6dee964aa5a75979abc76db9d457848df295aace3c2c93e16900166d45e3c"
+        },
+        "independent_actual_normal_endpoint": {
+          "path": "/tmp/saga-pc-next-runtime/endpoint-W-independent-review/accepted-first-endpoint.json",
+          "sha256": "129c8935be0eb13464d16a916367255be6888715a161f9a9db4c31e7f1417df7"
+        },
+        "sole_writer_actual_normal_data": {
+          "path": "/tmp/saga-pc-next-runtime/W-menu-sound-minikit21-data/final-W-normal-data-release.json",
+          "sha256": "3804bbafb378aa13d011c6681bac5e71589ffe00e28a0415d28a79853ec020cf"
+        },
+        "actual_normal_menu14": {
+          "path": "/tmp/saga-pc-next-runtime/menu2922-independent-review/runtime/final-W-normal56/receipt.json",
+          "sha256": "b514bef37663bb511fe7e82e651e1d6ddee3a32f353ed834c01c8399d447ffd9"
+        },
+        "actual_normal_minikit67": {
+          "path": "/tmp/saga-pc-next-runtime/world-minikit-next/normal-W67/receipt.json",
+          "sha256": "8ef218fb47af0478f08bf8dc8d40d1f8f2321a8d110165d2e5e1c4116d688ceb"
+        },
+        "actual_normal_dictionary49": {
+          "path": "/tmp/saga-pc-next-runtime/main/shader-manager-next/dictionary-next/W-v2/production/normal-W49/receipt.json",
+          "sha256": "fc4f5eec36ccf61d5f4e7da1bce58e5431747f070b6a26afbfe1f9a15984735c"
+        },
+        "actual_source_executable_smoke": {
+          "path": "/tmp/saga-pc-next-runtime/runtime-startup-acceptance/final-W-unattended-acceptance.json",
+          "sha256": "32bc2880965d7138b01ae5a8e27598729c64f9c70fef14a69c357a0651f2ca60"
+        }
+      },
+      "runtime_summary": {
+        "source_exit_code": 5,
+        "seconds": 3.4315789910033345,
+        "source_exe_sha256": "33fcf9bf7c6c424dd70395b2faae688dbe513a5e705af20a114cce1a70a08a8c",
+        "failure": {
+          "access": "readNULL",
+          "actual_source_exe_address": "0x004fe840",
+          "actual_function_start": "0x004fe830",
+          "symbol": "PC_SHADER_MANAGER_VIEW::Retrieve",
+          "complete_emitted_size": 208,
+          "function_offset": 16,
+          "identity": "Unique49-byte contiguous relocation-free normalCOFF/sourceEXE anchor, with unchanged compiler instruction shape.",
+          "instruction": "MOV ESI,ECX then MOV EAX,[ESI]; NULL receiver at first vtable read.",
+          "source_operation": "vtable->adapt_descriptor(this,desc,material).",
+          "genuine_publisher_frontier": "Native early7412e0/full124 at hardware6dc192, constructorHLSL7460d0/full252, publication297cc8c at741321; source recovery/closure remains separate. Legacy5f22a0 does not publish that pointer.",
+          "native_entry": "0x00741750",
+          "native_complete_size": 208,
+          "native_exclusive_end": "0x00741820",
+          "native_full_sha256": "2f45c1d582c79370c8bfce41fd9f4814c89105a1eb5f215773c33d559f120781",
+          "native_corresponding_fault_offset": 16,
+          "native_fault_instruction": "741760 MOV EAX,[ESI], after74175e MOV ESI,ECX. Native208 includes bothRET20 epilogues; next independententry741820."
+        },
+        "ShowCrashDialog": 0,
+        "crash_dialog_observed": false,
+        "owned_processes_leftover": false,
+        "device_Present_scene_gameplay": "Unverified"
+      },
+      "previous_pushed_CI": {
+        "headSha": "1837c036231f3c940ff534b00205f976c480997c",
+        "conclusion": "success",
+        "url": "https://github.com/opensagadev/saga-pc/actions/runs/37262649457"
+      },
+      "remaining_contracts": [
+        "UpdateGameMenu native button-history/cheat update493de0, loadsaveCallEachFrame5114a0 and ResumeGame55c560 remain explicit omitted VOID actions.",
+        "Scene texture-ID repair and selected NuSpecialFind remain partial. FixUpLevels263 native callback-address actions remain absent.",
+        "Genuine shader manager7412e0/7460d0 publication requires real parser/dictionary/backend values and HLSL source adaptation; CPU child tests do not establish runtime initialization.",
+        "Area8815 and Perm835 remain held on real initialized domains and old exact data preservation. No padding/placement controls. Whole native readonly keyboard-string qualifier cohort under independent semantic research; not yet activated.",
+        "Next FreePlay8/3032 producer, ripple/minikit lifecycle9/1977 and condition3/1132 scratch proposals remain zero progress credit pending release gates."
+      ],
+      "next_connected_wave": "Broader WORLD/freeplay/area and MiniKit lifecycle/resource families, shader condition/AST emitters and scene texture-ID fixers; recover legitimate readonly string contracts to unblock Area storage.",
+      "checkpoint_delay": "October5 usage-limit interruption resumed October7. W checkpoint held for complete actual normal validation, retail comparison and preservation; first matching approval deadline timeout retried once successfully. Larger Area/Perm data holds retain all old exact results.",
       "user_journal_preserved": true,
       "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
       "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct-main pushes authorized."

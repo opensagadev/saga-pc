@@ -610,3 +610,370 @@ void __cdecl MenuLoadTechnicalStrings(char *filepath, char *language, VARIPTR *b
     apitxt_NOTENOUGHSPACE = (char *)NuStringTableGetByName("PC_NOTENOUGHSPACE");
     apitxt_CONTROLLERREMOVED = (char *)NuStringTableGetByName("PC_CONTROLLERREMOVED");
 }
+
+typedef struct PC_MENU_UPDATE_VIEW {
+    f32 menu_time;
+    f32 unk;
+    i16 selected_column;
+    i16 selected_row;
+    i16 first_column;
+    i16 first_row;
+    i16 last_column;
+    i16 last_row;
+    i16 menu;
+    i8 previous_menu;
+    i8 flags_17;
+    f32 transition_time;
+    f32 transition_duration;
+    f32 repeat_up_time;
+    f32 repeat_down_time;
+    f32 repeat_left_time;
+    f32 repeat_right_time;
+    u8 repeat_up_count;
+    u8 repeat_down_count;
+    u8 repeat_left_count;
+    u8 repeat_right_count;
+    i32 selected_item;
+    i32 selected_item_column;
+    i32 previous_item;
+    u32 buttons_held;
+    u32 buttons_pressed;
+    i32 column_count;
+    i32 row_count;
+    i32 unknown50;
+    i32 up_pressed;
+    i32 down_pressed;
+    i32 left_pressed;
+    i32 right_pressed;
+    i32 confirm_pressed;
+    i32 cancel_pressed;
+    i32 up_held;
+    i32 down_held;
+    i32 left_held;
+    i32 right_held;
+    u32 start_pressed;
+    u32 select_pressed;
+    u32 action_04_pressed;
+    u32 action_08_pressed;
+    u8 unknown8c[0x4c];
+    i32 input_disabled;
+    i32 state;
+} PC_MENU_UPDATE_VIEW;
+STATIC_ASSERT(sizeof(PC_MENU_UPDATE_VIEW) == sizeof(MENU));
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, menu_time) == 0x0);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, unk) == 0x4);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, selected_column) == 0x8);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, selected_row) == 0xa);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, first_column) == 0xc);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, first_row) == 0xe);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, last_column) == 0x10);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, last_row) == 0x12);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, menu) == 0x14);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, previous_menu) == 0x16);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, flags_17) == 0x17);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, transition_time) == 0x18);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, transition_duration) == 0x1c);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_up_time) == 0x20);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_down_time) == 0x24);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_left_time) == 0x28);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_right_time) == 0x2c);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_up_count) == 0x30);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_down_count) == 0x31);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_left_count) == 0x32);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_right_count) == 0x33);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, selected_item) == 0x34);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, selected_item_column) == 0x38);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, previous_item) == 0x3c);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, buttons_held) == 0x40);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, buttons_pressed) == 0x44);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, column_count) == 0x48);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, row_count) == 0x4c);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, up_pressed) == 0x54);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, down_pressed) == 0x58);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, left_pressed) == 0x5c);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, right_pressed) == 0x60);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, confirm_pressed) == 0x64);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, cancel_pressed) == 0x68);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, up_held) == 0x6c);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, down_held) == 0x70);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, left_held) == 0x74);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, right_held) == 0x78);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, start_pressed) == 0x7c);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, select_pressed) == 0x80);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, action_04_pressed) == 0x84);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, action_08_pressed) == 0x88);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, input_disabled) == 0xd8);
+STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, state) == 0xdc);
+
+extern i32 MenuResult, menu_pulsate_angle;
+extern f32 menu_pulsate_speed, menu_pulsate, sfx_wait;
+extern i32 MenuSuppressUpHeldPc, MenuSuppressDownHeldPc, MenuSuppressLeftHeldPc, MenuSuppressRightHeldPc;
+extern i32 MENUSFX_MENUMOVE;
+
+void MenuRepeat(i32 *held, i32 *repeat, f32 *repeat_time, u8 *repeat_count, f32 interval, f32 elapsed) {
+    if (*held == 0) {
+        *repeat_time = 0.5f;
+        *repeat_count = 0;
+        return;
+    }
+
+    if (*repeat_time > 0.0f) {
+        *repeat_time -= elapsed;
+        if (*repeat_time <= 0.0f) {
+            *repeat = 1;
+            *repeat_time = interval;
+            ++*repeat_count;
+        }
+    }
+}
+
+i32 UpdateMenu(u32 primary_held, u32 primary_pressed, u32 alternate_held, u32 alternate_pressed, f32 elapsed,
+               u32 confirm_mask, u32 cancel_mask, u32 start_mask, u32 select_mask) {
+    i32 column_navigation;
+    PC_MENU_UPDATE_VIEW *menu;
+    i32 alpha_angle;
+    u32 directions;
+    u32 held;
+    u32 pressed;
+    i32 up_pressed;
+    i32 down_pressed;
+    i32 left_pressed;
+    i32 right_pressed;
+    i32 up_held;
+    i32 down_held;
+    i32 left_held;
+    i32 right_held;
+    i32 confirm_pressed;
+    i32 cancel_pressed;
+    u32 start_pressed;
+    u32 select_pressed;
+    u32 action_04_pressed;
+    u32 action_08_pressed;
+    i32 output_up_pressed;
+    i32 output_down_pressed;
+    i16 first_column;
+    i16 last_column;
+    i16 first_row;
+    i16 last_row;
+    i32 column_count;
+    i32 row_count;
+    i32 previous_item;
+    f32 item_time;
+    i16 old_row;
+    const MENUFNINFO *info;
+    i32 wrap;
+    i32 row_clamped;
+    i16 old_column;
+
+    MenuResult = 0;
+    if (MenuValidated == 0)
+        return 0;
+
+    menu = (PC_MENU_UPDATE_VIEW *)&GameMenu[GameMenuLevel];
+    if (MenuFadeEnabled == 0) {
+        MenuAlpha = 1.0f;
+    } else if (MenuAlpha < 1.0f) {
+        MenuAlpha += elapsed + elapsed;
+        if (MenuAlpha > 1.0f)
+            MenuAlpha = 1.0f;
+    }
+
+    alpha_angle = (i32)((f64)MenuAlpha * 16384.0);
+    MenuA = (i32)((f64)NuTrigTable[(alpha_angle >> 1) & 0x7fff] * 128.0);
+
+    if (menu_pulsate_speed > 0.0f) {
+        menu_pulsate_angle += (i32)((f64)elapsed * 65536.0 * menu_pulsate_speed);
+        menu_pulsate = ((f64)NuTrigTable[(menu_pulsate_angle >> 1) & 0x7fff] + 1.0) * 0.5;
+    } else {
+        menu_pulsate = 0.0f;
+    }
+    MenuSFX = -1;
+    if (sfx_wait > 0.0f)
+        sfx_wait -= elapsed;
+    if (menu->menu == -1)
+        return 0;
+
+    directions = 0xf000;
+    held = primary_held | alternate_held;
+    if ((primary_held & directions) != 0)
+        held = primary_held;
+    pressed = primary_pressed | alternate_pressed;
+    if ((primary_pressed & directions) != 0)
+        pressed = primary_pressed;
+
+    if (MenuAlpha < 0.5f) {
+        held = 0;
+        pressed = 0;
+    }
+
+    up_pressed = pressed & 0x1000;
+    down_pressed = pressed & 0x4000;
+    left_pressed = pressed & 0x8000;
+    right_pressed = pressed & 0x2000;
+    up_held = held & 0x1000;
+    down_held = held & 0x4000;
+    left_held = held & 0x8000;
+    right_held = held & 0x2000;
+    if (MenuSuppressUpHeldPc != 0) {
+        if (up_held != 0)
+            up_held = 0;
+        else
+            MenuSuppressUpHeldPc = 0;
+    }
+    if (MenuSuppressDownHeldPc != 0) {
+        if (down_held != 0)
+            down_held = 0;
+        else
+            MenuSuppressDownHeldPc = 0;
+    }
+    if (MenuSuppressLeftHeldPc != 0) {
+        if (left_held != 0)
+            left_held = 0;
+        else
+            MenuSuppressLeftHeldPc = 0;
+    }
+    if (MenuSuppressRightHeldPc != 0) {
+        if (right_held != 0)
+            right_held = 0;
+        else
+            MenuSuppressRightHeldPc = 0;
+    }
+
+    if (up_pressed != 0 && down_pressed != 0)
+        up_pressed = down_pressed = 0;
+    if (left_pressed != 0 && right_pressed != 0)
+        left_pressed = right_pressed = 0;
+    if (up_held != 0 && down_held != 0)
+        up_held = down_held = 0;
+    if (left_held != 0 && right_held != 0)
+        left_held = right_held = 0;
+
+    confirm_pressed = pressed & confirm_mask;
+    cancel_pressed = pressed & cancel_mask;
+    start_pressed = pressed & start_mask;
+    select_pressed = pressed & select_mask;
+    action_04_pressed = pressed & 4;
+    action_08_pressed = pressed & 8;
+    if (action_04_pressed != 0 && action_08_pressed != 0)
+        action_04_pressed = action_08_pressed = 0;
+    if (menu->unk == 0.0f)
+        confirm_pressed = cancel_pressed = 0;
+
+    output_up_pressed = up_pressed;
+    output_down_pressed = down_pressed;
+
+    if (menu->input_disabled != 0) {
+        up_pressed = down_pressed = 0;
+        confirm_pressed = cancel_pressed = 0;
+        start_pressed = 0;
+    }
+
+    MenuRepeat(&up_held, &up_pressed, &menu->repeat_up_time, &menu->repeat_up_count, 0.1f, elapsed);
+    MenuRepeat(&down_held, &down_pressed, &menu->repeat_down_time, &menu->repeat_down_count, 0.1f, elapsed);
+    MenuRepeat(&left_held, &left_pressed, &menu->repeat_left_time, &menu->repeat_left_count, 0.1f, elapsed);
+    MenuRepeat(&right_held, &right_pressed, &menu->repeat_right_time, &menu->repeat_right_count, 0.1f, elapsed);
+
+    first_column = menu->first_column;
+    last_column = menu->last_column;
+    first_row = menu->first_row;
+    last_row = menu->last_row;
+    column_count = last_column - first_column + 1;
+    row_count = last_row - first_row + 1;
+    previous_item = 0;
+    item_time = 0.0f;
+    if (menu->transition_duration > menu->transition_time) {
+        menu->transition_time += elapsed;
+        if (menu->transition_time >= menu->transition_duration) {
+            menu->transition_time = menu->transition_duration;
+            if (menu->flags_17 != -1)
+                NewMenu(menu->flags_17, -1, -1);
+        }
+        confirm_pressed = cancel_pressed = 0;
+        item_time = menu->unk;
+    } else {
+        old_row = menu->selected_row;
+        info = &MenuInfo[menu->menu];
+        wrap = info->wrap != 0;
+        row_clamped = 0;
+        if (menu->selected_row < first_row) {
+            menu->selected_row = first_row;
+            row_clamped = 1;
+        } else if (menu->selected_row > last_row) {
+            menu->selected_row = last_row;
+            row_clamped = 1;
+        } else if (down_pressed != 0 && (wrap || menu->selected_row < last_row)) {
+            if (wrap) {
+                ++menu->selected_row;
+                if (menu->selected_row > last_row)
+                    menu->selected_row = first_row;
+            } else {
+                ++menu->selected_row;
+            }
+        } else if (up_pressed != 0 && (wrap || menu->selected_row > first_row)) {
+            if (wrap) {
+                --menu->selected_row;
+                if (menu->selected_row < first_row)
+                    menu->selected_row = last_row;
+            } else {
+                --menu->selected_row;
+            }
+        }
+        if (menu->selected_row != old_row) {
+            menu->unk = 0.0f;
+            if (!row_clamped)
+                MenuSFX = MENUSFX_MENUMOVE;
+        }
+        previous_item = old_row;
+        column_navigation = menu->state == 1 || (menu->state == 2 && menu->selected_row == 0) ||
+                            (menu->state == 3 && menu->selected_row != last_row);
+        if (column_navigation) {
+            old_column = menu->selected_column;
+            previous_item = old_column;
+            if (menu->selected_column < first_column)
+                menu->selected_column = first_column;
+            else if (menu->selected_column > last_column)
+                menu->selected_column = last_column;
+            if (right_pressed != 0 && menu->selected_column < last_column)
+                ++menu->selected_column;
+            else if (left_pressed != 0 && menu->selected_column > first_column)
+                --menu->selected_column;
+            if (menu->selected_column != old_column)
+                MenuSFX = MENUSFX_MENUMOVE;
+            else
+                item_time = menu->unk;
+        } else {
+            item_time = menu->unk;
+        }
+    }
+    menu->selected_item = menu->selected_row;
+    menu->selected_item_column = menu->selected_column;
+    menu->previous_item = previous_item;
+    menu->buttons_held = held;
+    menu->buttons_pressed = pressed;
+    menu->column_count = column_count;
+    menu->row_count = row_count;
+    menu->up_pressed = output_up_pressed;
+    menu->down_pressed = output_down_pressed;
+    menu->left_pressed = left_pressed;
+    menu->right_pressed = right_pressed;
+    menu->confirm_pressed = confirm_pressed;
+    menu->cancel_pressed = cancel_pressed;
+    menu->up_held = up_held;
+    menu->down_held = down_held;
+    menu->left_held = left_held;
+    menu->right_held = right_held;
+    menu->start_pressed = start_pressed;
+    menu->select_pressed = select_pressed;
+    menu->action_04_pressed = action_04_pressed;
+    menu->action_08_pressed = action_08_pressed;
+    menu->menu_time += elapsed;
+    menu->unk = item_time + elapsed;
+
+    if (MenuInfo[menu->menu].update_fn != NULL)
+        MenuInfo[menu->menu].update_fn((MENU *)menu);
+    if (MenuSFX != -1 && menu->input_disabled == 0) {
+        PlaySfxById(MenuSFX, 0);
+        MenuSFX = -1;
+    }
+    return MenuResult;
+}

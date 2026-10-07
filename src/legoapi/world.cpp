@@ -1,4 +1,36 @@
 #include "saga.h"
+
+typedef struct world_minikit_reader_pc_s {
+    u8 unknown_0000[0x2968];
+    MINIKIT_PC minikit;
+    u8 unknown_2980[4];
+    MINIKIT_PC **pieces_by_id;
+    u8 unknown_2988[0x158];
+    u8 *hub_minikits;
+} WORLD_MINIKIT_READER_PC;
+STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, minikit) == 0x2968);
+STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, pieces_by_id) == 0x2984);
+STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, hub_minikits) == 0x2ae0);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, minikit_id) == 0x8a);
+STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name) == 0xc);
+STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl MiniKit_Load(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *, void *);
+    void __cdecl MiniKit_InitPieces(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *);
+    void __cdecl Hub_LoadAndFixUpMiniKits(WORLDINFO *, VARIPTR *, VARIPTR *);
+    void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *, WORLDINFO *, VARIPTR *, VARIPTR *);
+#ifdef __cplusplus
+}
+#endif
+
+extern "C" {
+    extern COLLECTION_BUILD_PC MiniKitCollection;
+    void __cdecl RippleEffects_Configure(WORLDINFO *, char *);
+    void __cdecl SetAreaPickupGravity(i32, i32);
+}
+
 extern "C" {
 #include <string.h>
 #include <stdio.h>
@@ -1012,13 +1044,15 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
     if (abort_load != 0)
         goto abort;
     if (world->area != NULL && world->area == HUB_ADATA && GAMEDEMO == 0) {
-        STUBBED_NAMED(Hub_LoadAndFixUpMiniKits); /* Native 48d160: (world,buffer,end). */
+        Hub_LoadAndFixUpMiniKits(world, &world->giz_buffer, &world->buffer_end); /* Native 48d160. */
         if (abort_load != 0)
             goto abort;
     } else if ((world->current_level->flags & 0x400) != 0 && world->area != NULL && world->area->minikit_id != -1) {
-        STUBBED_NAMED(MiniKit_Load); /* Native 48d1a5: (&minikit,(i16)id,buffer,end,NULL). */
+        MiniKit_Load((MINIKIT_PC *)&resource->minikit, world->area->minikit_id, &world->giz_buffer, &world->buffer_end,
+                     NULL); /* Native 48d1a5. */
         if (resource->minikit.scene != NULL)
-            STUBBED_NAMED(MiniKit_InitPieces); /* Native 48d1b7: (&minikit,10,buffer,end). */
+            MiniKit_InitPieces((MINIKIT_PC *)&resource->minikit, 10, &world->giz_buffer,
+                               &world->buffer_end); /* Native 48d1b7. */
         if (abort_load != 0)
             goto abort;
     }
@@ -1064,7 +1098,7 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
             goto abort;
     }
     if (world->area != NULL && (world->area->flags & 5) == 5 && (world->current_level->flags & 0x4e0) == 0) {
-        STUBBED_NAMED(CharacterMiniKits_Load); /* Native 48d3d6: (collection,world,buffer,end). */
+        CharacterMiniKits_Load(&MiniKitCollection, world, &world->giz_buffer, &world->buffer_end); /* Native 48d3d6. */
         if (abort_load != 0)
             goto abort;
     }
@@ -1111,7 +1145,7 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
     if (abort_load != 0)
         goto abort;
     if (world->config_count > 0) {
-        STUBBED_NAMED(RippleEffects_Configure); /* Native48d5b7: (world,config). */
+        RippleEffects_Configure(world, ConfigBuffer.bytes); /* Native 48d5b7. */
         PortalDoors_Configure(world, ConfigBuffer.bytes);
         if (abort_load != 0)
             goto abort;
@@ -1132,10 +1166,24 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
     if (world->current_level->callbacks[0] != NULL)
         ((void(__cdecl *)(WORLDINFO *, VARIPTR *, VARIPTR *))world->current_level->callbacks[0])(
             world, &world->giz_buffer, &world->buffer_end);
-    STUBBED_NAMED(SetAreaPickupGravity); /* Native48d683: (level_idx,area_index). */
+    SetAreaPickupGravity(world->area_index, world->level_idx); /* Native 48d683: cdecl(area,level). */
     world->loaded = 1;
     return;
 abort:
     WorldInfo_Dump(world);
     WorldInfo_Reset(world, -1);
+}
+
+extern "C" void __cdecl SetAreaPickupGravity(i32 area, i32 level) {
+    u16 flags;
+    AreaPickupGravity = -6.0f;
+    if (area < 0 || area >= AREACOUNT)
+        return;
+    flags = ADataList[area].flags;
+    if ((flags & 0x200) != 0 && (LDataList[level].flags & 0x400000) == 0) {
+        AreaPickupGravity = 0;
+        return;
+    }
+    if ((flags & 1) != 0)
+        AreaPickupGravity = -20.0f;
 }

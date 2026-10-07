@@ -1,6 +1,30 @@
 #include "saga.h"
 
 extern "C" {
+    i32 MenuResult = 0;
+    i32 menu_pulsate_angle = 0;
+    f32 menu_pulsate_speed = 0.0f;
+    f32 menu_pulsate = 0.0f;
+    f32 sfx_wait = 0.0f;
+    i32 MenuSuppressUpHeldPc = 0;
+    i32 MenuSuppressDownHeldPc = 0;
+    i32 MenuSuppressLeftHeldPc = 0;
+    i32 MenuSuppressRightHeldPc = 0;
+    i32 MENUSFX_MENUMOVE = -1;
+    i32 MenuKeyboardAlwaysPc = 0;
+    i32 MenuKeyboardSecondaryPc = 0;
+    u8 MenuKeyboardOverrideActivePc = 0;
+    i32 MenuKeyboardPendingPc = 0;
+    i32 pause_i_pad = -1;
+    i32 editor_active = 0;
+    u32 GAMEPAD_MENUSELECT = 0x40;
+    u32 GAMEPAD_MENUCANCEL = 0x10;
+    u32 GAMEPAD_SELECT = 0x100;
+    i32 NuSound3LoadingSfxPc = 0;
+    COLLECTION_BUILD_PC MiniKitCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
+}
+
+extern "C" {
     LEVELDATA_PC *LevelFixupSlotPc0087b0b4 = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b0b8 = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b0bc = NULL;

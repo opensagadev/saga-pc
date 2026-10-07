@@ -16444,12 +16444,201 @@ struct ShaderCompilerBufferAllocatorPc {
     ShaderCompilerBufferAllocatorPc(VirtualStackAllocator &, i32);
     ~ShaderCompilerBufferAllocatorPc();
     void Resize(i32);
+    void AppendBytes(const char *, i32);
+    void AppendText(const char *);
 };
 STATIC_ASSERT(sizeof(ShaderCompilerBufferAllocatorPc) == 16);
 STATIC_ASSERT(offsetof(ShaderCompilerBufferAllocatorPc, data) == 0);
 STATIC_ASSERT(offsetof(ShaderCompilerBufferAllocatorPc, length) == 4);
 STATIC_ASSERT(offsetof(ShaderCompilerBufferAllocatorPc, capacity) == 8);
 STATIC_ASSERT(offsetof(ShaderCompilerBufferAllocatorPc, owns_memory) == 12);
+#endif
+
+#ifdef __cplusplus
+struct ShaderSourceNodePc {
+    u8 unknown_000[0x20];
+    i32 expansion_state;
+};
+STATIC_ASSERT(offsetof(ShaderSourceNodePc, expansion_state) == 0x20);
+struct ShaderRegisterBlockPc {
+    char name[16];
+    i32 register_count;
+    ShaderRegisterBlockPc() {
+        name[0] = 0;
+        register_count = 0;
+    }
+};
+STATIC_ASSERT(sizeof(ShaderRegisterBlockPc) == 20);
+STATIC_ASSERT(offsetof(ShaderRegisterBlockPc, register_count) == 16);
+struct ShaderMacroDefinitionPc {
+    const char *name;
+    const char *value;
+    u8 emit;
+    u8 unknown_9[3];
+};
+STATIC_ASSERT(sizeof(ShaderMacroDefinitionPc) == 12);
+STATIC_ASSERT(offsetof(ShaderMacroDefinitionPc, name) == 0);
+STATIC_ASSERT(offsetof(ShaderMacroDefinitionPc, value) == 4);
+STATIC_ASSERT(offsetof(ShaderMacroDefinitionPc, emit) == 8);
+struct ShaderCompilerDictionaryPc {
+    ShaderMacroDefinitionPc *programs[300];
+    i32 program_count;
+    ShaderSourceNodePc *definitions[250];
+    i32 definition_count;
+    ShaderRegisterBlockPc register_blocks[8];
+    i32 register_block_count;
+    VirtualStackAllocator scratch;
+    VirtualStackAllocator output_memory;
+    u8 emit_definitions;
+    u8 unknown_965;
+    u8 unknown_966;
+    u8 emit_semantics;
+    u8 emit_registers;
+    u8 emit_centroid;
+    u8 unknown_96a[2];
+    const char *register_format;
+    bool force_mode;
+    u8 unknown_971[3];
+    i32 profile;
+    i32 mode;
+    i32 output_stage;
+    i32 first_version;
+    i32 second_version;
+    const char *profile_name;
+    ShaderCompilerBufferAllocatorPc register_buffer;
+    i32 unknown_99c;
+    u32 unknown_9a0;
+    ShaderCompilerDictionaryPc(VirtualStackAllocator &, i32);
+    ~ShaderCompilerDictionaryPc();
+    void SetProfile(i32, i32, i32);
+    void AddRegisterBlock(const char *, i32);
+    i32 FindRegisterBlock(const char *);
+    ShaderMacroDefinitionPc *FindDefinition(const char *);
+    void Expand(void *, ShaderCompilerBufferAllocatorPc *);
+    void AddDefinition(const char *, const char *, i32);
+    void BindOutputBuffer(ShaderCompilerBufferAllocatorPc *);
+};
+STATIC_ASSERT(sizeof(ShaderCompilerDictionaryPc) == 0x9a4);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, program_count) == 0x4b0);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, definitions) == 0x4b4);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, definition_count) == 0x89c);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, register_blocks) == 0x8a0);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, register_block_count) == 0x940);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, scratch) == 0x944);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, output_memory) == 0x954);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, force_mode) == 0x970);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, profile) == 0x974);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, output_stage) == 0x97c);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, first_version) == 0x980);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, second_version) == 0x984);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, profile_name) == 0x988);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, register_buffer) == 0x98c);
+
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, emit_definitions) == 0x964);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, emit_semantics) == 0x967);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, emit_registers) == 0x968);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, emit_centroid) == 0x969);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, register_format) == 0x96c);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, mode) == 0x978);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, unknown_99c) == 0x99c);
+
+STATIC_ASSERT(offsetof(ShaderRegisterBlockPc, name) == 0);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, programs) == 0);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, unknown_965) == 0x965);
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, unknown_966) == 0x966);
+extern "C" void __cdecl ShaderLexicalClassesInitPc(void);
+
+#endif
+
+typedef struct minikit_piece_pc_s {
+    NUSPECIALHANDLE special;
+    NUMTX matrix;
+    u8 unknown_4c[0x18];
+    u8 direction;
+    u8 unknown_65[2];
+    u8 direction_index;
+} MINIKIT_PIECE_PC;
+STATIC_ASSERT(sizeof(MINIKIT_PIECE_PC) == 0x68);
+STATIC_ASSERT(offsetof(MINIKIT_PIECE_PC, special) == 0);
+STATIC_ASSERT(offsetof(MINIKIT_PIECE_PC, matrix) == 0xc);
+STATIC_ASSERT(offsetof(MINIKIT_PIECE_PC, direction) == 0x64);
+STATIC_ASSERT(offsetof(MINIKIT_PIECE_PC, direction_index) == 0x67);
+typedef struct minikit_pc_s {
+    NUGSCN *scene;
+    MINIKIT_PIECE_PC *pieces;
+    u8 piece_count;
+    i8 area_index;
+    i16 model_id;
+    NUSPECIALHANDLE shadow;
+} MINIKIT_PC;
+STATIC_ASSERT(sizeof(MINIKIT_PC) == 0x18);
+STATIC_ASSERT(offsetof(MINIKIT_PC, scene) == 0);
+STATIC_ASSERT(offsetof(MINIKIT_PC, pieces) == 4);
+STATIC_ASSERT(offsetof(MINIKIT_PC, piece_count) == 8);
+STATIC_ASSERT(offsetof(MINIKIT_PC, area_index) == 9);
+STATIC_ASSERT(offsetof(MINIKIT_PC, model_id) == 0xa);
+STATIC_ASSERT(offsetof(MINIKIT_PC, shadow) == 0xc);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl MiniKit_Load(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *, void *);
+    void __cdecl MiniKit_InitPieces(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *);
+    void __cdecl Hub_LoadAndFixUpMiniKits(WORLDINFO *, VARIPTR *, VARIPTR *);
+    void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *, WORLDINFO *, VARIPTR *, VARIPTR *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl SetAreaPickupGravity(i32 area, i32 level);
+    void __cdecl InitRippleMtl(char *, NUMTL **, VARIPTR *, VARIPTR *);
+    i32 __cdecl LookupRippleEffectIndex(char *);
+    void __cdecl RippleEffects_Configure(WORLDINFO *, char *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i32 MenuResult;
+    extern i32 menu_pulsate_angle;
+    extern f32 menu_pulsate_speed;
+    extern f32 menu_pulsate;
+    extern f32 sfx_wait;
+    extern i32 MenuSuppressUpHeldPc;
+    extern i32 MenuSuppressDownHeldPc;
+    extern i32 MenuSuppressLeftHeldPc;
+    extern i32 MenuSuppressRightHeldPc;
+    extern i32 MENUSFX_MENUMOVE;
+    extern i32 MenuKeyboardAlwaysPc;
+    extern i32 MenuKeyboardSecondaryPc;
+    extern u8 MenuKeyboardOverrideActivePc;
+    extern i32 MenuKeyboardPendingPc;
+    extern i32 pause_i_pad;
+    extern i32 editor_active;
+    extern u32 GAMEPAD_MENUSELECT;
+    extern u32 GAMEPAD_MENUCANCEL;
+    extern u32 GAMEPAD_SELECT;
+    extern i32 NuSound3LoadingSfxPc;
+    extern COLLECTION_BUILD_PC MiniKitCollection;
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl MenuRepeat(i32 *, i32 *, f32 *, u8 *, f32, f32);
+    i32 __cdecl UpdateMenu(u32, u32, u32, u32, f32, u32, u32, u32, u32);
+    void __cdecl UpdateGameMenu(GAMEPAD_PC *, i32);
+    i32 __cdecl AreaGetKeyboardOverridePc(void);
+    i32 __cdecl NuKeyboard_db(i32);
+    i32 __cdecl NuSound3LoadingSfx(void);
+#ifdef __cplusplus
+}
 #endif
 
 struct CUT_PLAYER_ACTIVE_PC;

@@ -3420,3 +3420,69 @@ storage can lose old exact data through padding; no padding/placement tuning.
 Continue actual manager/parser children and WORLD minikit/resource families.
 The user's journal stays unchanged and excluded; matching remains primary and
 authorized whole-project direct-main work continues.
+
+### Connected menu, minikit, WORLD and shader dictionary checkpoint W (2026-10-07 UTC)
+
+V1837c03 passed exact-revision CI37262649457. W adds35 functions and7,528
+newly compared PC bytes: menus2,922, input/sound getters78, minikit/ripple/gravity
+2,717 and shader dictionary/buffer/lexical children1,811. Existing WorldInfo_Load
+now calls six real providers; these reconnections earn zero new-byte credit.
+All36 full accepted outputs equal reviewed candidates. Build/check-objects links
+307 actual normal objects/4,205 functions/9,021 data definitions. LLVM18 checks
+334 source/header files and307 normal units;719 tests pass with3 existing skips.
+Actual-normal selected replays, with no replacements/supplements, pass menu14
+cases/56 assertions, minikit67 and dictionary49. These tests establish their
+selected CPU domains only, not complete menus, scene/GPU or WORLD loading.
+
+MenuRepeat retains native ordered <=0 after elapsed subtraction, including NaN,
+infinities, signed zero and BYTE wrapping. Real UpdateMenu consumes nine stack
+arguments and returns the value used by the coordinator. Keyboard and sound
+getters read genuine state. UpdateGameMenu retains three explicit omitted VOID
+actions: button-history/cheat update493de0, loadsaveCallEachFrame5114a0 and
+ResumeGame55c560. No fabricated return providers close these gaps.
+
+WORLD reconnects Hub_LoadAndFixUpMiniKits, MiniKit_Load/InitPieces,
+CharacterMiniKits_Load, RippleEffects_Configure and SetAreaPickupGravity(area,
+level). Original source helper/caller grouping is retained. MiniKitCollection
+has a verified20-byte initialized working view, with unknown allocation extent.
+The parser cached-colour domain is non-reentrant; inherited NuSpecialFind and
+scene texture-ID fixup remain partial. Dictionary macros use a separate12-byte
+name/value/BYTEemit record and named native field offsets. Genuine CRT strncpy
+padding and output buffer semantics survive. No manager/Parse/Expand/backend
+activation or copied retail HLSL text is introduced.
+
+All4,170 old complete function copies and8,949 data definitions were audited.
+All2,021 prior exact code copies and5,418 physical exact initializers survive.
+WorldInfo_Load alone changes official old code, full native2,222/candidate2,324;
+four compiler-label serial changes preserve full raw/official bytes. Two old
+NONEXACT data tails change naturally: unknown CpuBrand BYTE0 COFF6 to1 and known
+WORDffff COFF8 to4. Typed values remain unchanged; neither earns exact credit.
+All13 named member parents/28 known bytes, CRC and HANDLE remain intact. All72
+new complete initializer copies/824 COFF bytes match retail:19 known/116 bytes
+and53 unknown/708 bytes. The21 shared views total97
+native-equal bytes, all unknown original extents with zero allocation/exact credit.
+Known exact data union grows52 bytes to640,846;19 new exact physical copies
+raise the total to5,437.
+
+Unique compared PC bytes1,193,708 to1,201,236 gain7,528; native objdiff total
+1,201,754 retains518 overlap bytes. Whole-PC fuzzy23.9176821533% to24.0573062087%
+gains0.1396240553 percentage points. Eighteen new exact bodies add1,260 unique
+code bytes:201,166 to202,426,5.8315083402% of3,471,246 retail text bytes. Complete
+native/candidate extents remain unmasked and untruncated.
+
+The actual EXE33fcf9bf exits5 after3.432 seconds at the same NULL shader-manager
+receiver, source004FE840/current Retrieve start004FE830/offset16/full208. Its
+own-prefix ShowCrashDialog DWORD0 suppresses the modal window, retains real
+fault output/exit and cleans only the owned process group; no popup or test-owned
+process remains. All307 objects/419 frozen inputs survive unchanged. Window,
+device, Present, repeated frames, installed scene and gameplay remain unverified.
+
+The October5 usage-limit interruption resumed October7. This release waited
+for real contracts, complete normal-output validation and retail matching; one
+approval deadline timeout was retried successfully. Larger Area8,815/Perm835
+storage remains held on old exact initializer preservation, without placement
+or padding controls. Next expand FreePlay/WORLD and MiniKit lifecycle/resource
+families, shader condition/AST emitters and real texture-ID repair; investigate
+the native readonly keyboard-string cohort as a genuine type contract. Scratch
+candidate bytes receive zero credit until released. The user's journal stays
+unchanged and excluded; authorized whole-project direct-main work continues.
