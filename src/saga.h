@@ -17553,6 +17553,61 @@ extern "C" {
 }
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 __cdecl NuAtani(i32, i32);
+    f32 __cdecl NuAtanf(i32, i32);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl SetMoveAndAnimateFunctions(u32, u32, u32, u32, i32, void(__cdecl *)(GAMEOBJECT *),
+                                            void(__cdecl *)(GAMEOBJECT *), void(__cdecl *)(GAMEOBJECT *));
+    /* Existing provider declaration absent from the current header. */
+    void __cdecl Buck_MoveCode(GAMEOBJECT *, i32);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl LoadPerm2(void);
+    extern APICHARACTERMODELLIST PermModelListPc[1];
+    extern COLLECTION_BUILD_PC MasterCollectionPc, CharacterCollectionPc, VehicleCollectionPc;
+    extern COLLECTION_BUILD_PC ShopCollectionPc, JediCollectionPc, BlasterCollectionPc, BountyHunterCollectionPc;
+    extern i16 PermanentAllTitleIdPc, PermanentJediTitleIdPc, PermanentBlasterTitleIdPc, PermanentBountyTitleIdPc;
+    extern i16 PermanentWeirdo1IdPc, PermanentWeirdo2IdPc;
+    extern i16 PermanentCustomiserActionsPc[5];
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i16 DefaultMotionSkeletonIdPc;
+    extern i16 DefaultMotionIndySnakeIdPc;
+    extern f32 DefaultMotionSpiderFarSpeedPc;
+    extern f32 DefaultMotionSpiderNearSpeedPc;
+    extern f32 DefaultMotionSpiderRangePc;
+    extern i32 DefaultMotionLedgeTerrainEnabledPc;
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl Move_CHARACTER(GAMEOBJECT *);
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 
 #ifdef __cplusplus

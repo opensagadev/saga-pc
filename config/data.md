@@ -2069,3 +2069,20 @@ filename/visibility/extent unproved). Native readonly registry names stay real
 immutable source literals. All prior angle1026/ripple10/member/CRC/HANDLE proofs
 survive. The failed central ten-state and readonly-string variants are retained;
 no storage placement or alignment variant was selected to manufacture equality.
+
+### Character loading, default movement and angle checkpoint GG (2026-10-08)
+
+All 38 new complete initializer copies equal retail: two known copies/12 bytes
+and 36 unknown-extent copies/348 bytes. Exact physical data union stays 637,608;
+unknown extents receive zero allocation/exact credit. The single data writer adds
+21 genuine central working definitions/186 typed bytes/204 compiled bytes,
+reusing existing IDs and the canonical nopakfile owner. Mac named mutable spider
+controls corroborate -2/-0.4/1 initializers; PC consumers independently establish
+their identities. Mac exports do not establish PC addresses or allocation sizes.
+
+The complete unchanged external-C mutable u16 ang[513] table moves from data.cpp
+to the existing nuang.c math owner. Known native 1,026-byte extent, all 513 values,
+symbol linkage and SHA 35e5094c1387d087543073af7c92e184affc1f354be19a64f04788956d371d60
+are preserved with exactly one definition. Original PC filename/private visibility
+remain unproved. This genuine owner correction adds no coverage; it is not an
+extent retirement, alignment/order control or added translation unit.

@@ -3902,3 +3902,40 @@ Full retained audit: build/analysis/mac2-evidence/README.md. Next connected work
 uses these names for shader publication/parser closure and LoadPerm2/character
 fixups. Whole-project goal remains active; direct-main pushes are authorized,
 with CI verified on each exact pushed revision. Human journal remains excluded.
+
+### Character loading, default movement and angle checkpoint GG (2026-10-08)
+
+Seven full PC functions add 3,066 unique compared bytes: angle conversion 422,
+callback installation 187, permanent character loading 835 and default movement 1,622.
+Unique compared code is 1,307,985 bytes; objdiff includes 571 overlapping bytes
+in its 1,308,556-byte denominator. Whole-PC fuzzy coverage is
+26.089989511740058%, +0.060302367069344 percentage points. Exact code is
+209,737/3,471,246 bytes (6.042124355346754%), +609 bytes. These metrics do not
+establish playable completion. LoadPerm2 remains partial on the actual callback
+fixup; Move_CHARACTER retains 21 real provider calls and 41 explicit omitted
+void actions. Return-value dependencies are real providers.
+
+All 4,471 prior full function copies and 10,096 full data regions survive, including
+2,118 exact code copies, 5,308 exact physical data copies and 13 members/28 bytes.
+There are no old behavior/data exceptions; five contained compiler-label serial
+changes retain the same function offsets and complete outputs. Pinned VC8 flags,
+retail extents and comparison kernel are unchanged. Build/link/object checks pass
+for 314 owners/4,478 functions/10,134 data regions. LLVM18 passes 728 tests with
+three existing skips. CPU checks using actual normal objects total 408 with no replacement or
+supplement providers. The initial angle oracle's branch-cut defect is retained
+and corrected using circular distance with unchanged tolerances and exact goldens.
+
+The initial loader link failure was an inventory alias: nopakfile already has
+the real native four-byte backing at 0x291310c. LoadPerm2 now references that canonical
+owner, sharing state with APIObject/areas; no extra definition was added. All 32
+current character regions retain identical complete raw and relocated bytes.
+Authentic source EXE still exits 5 at NULL Retrieve+16 (source 0x50c0c0) after
+3.687 seconds. One transient broad game-class window sample is unclassified;
+it proves no persistent native window/device/Present/frame/scene/gameplay milestone.
+Own-prefix crash dialogs remain disabled. Private cleanup leaves no owned game,
+debugger or crash window. Full current 208-byte method attribution is a source
+layout observation; the method remains nonexact to the 208-byte retail body.
+Next connected wave: animation/callback and jump suppliers, menu stack, save-slot
+coordinator and native file services. Shader publication/parser generated-helper
+identity and positive device/scene/gameplay runtime remain explicit holds.
+Human journal preserved/excluded; whole-project matching-priority goal active.

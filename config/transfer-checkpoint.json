@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1339087,
-    "matched_code_bytes": 209128,
-    "matching_percent": 6.024580222778795,
-    "fuzzy_coverage_percent": 26.029687144670714,
-    "mapped_functions": 4639,
-    "matched_functions": 2115,
-    "objdiff_fuzzy_percent": 69.254196,
-    "objdiff_total_code": 1305490,
+    "mapped_code_bytes": 1341318,
+    "matched_code_bytes": 209737,
+    "matching_percent": 6.042124355346754,
+    "fuzzy_coverage_percent": 26.089989511740058,
+    "mapped_functions": 4645,
+    "matched_functions": 2120,
+    "objdiff_fuzzy_percent": 69.25188,
+    "objdiff_total_code": 1308556,
     "image_bytes": 40067072,
-    "mapped_bytes": 1987283,
-    "mapping_percent": 4.9598907551817115,
+    "mapped_bytes": 1989514,
+    "mapping_percent": 4.965458918485483,
     "matched_data_region_bytes": 637608
   },
   "newly_compared": [
@@ -7363,6 +7363,76 @@
       ],
       "exact": true,
       "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuAngAtanQuadrantI",
+      "pc": "0x005bde60",
+      "original_bytes": 45,
+      "units": [
+        "src/nuang.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuAtani",
+      "pc": "0x005bde90",
+      "original_bytes": 130,
+      "units": [
+        "src/nuang.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuAngAtanQuadrantRadI",
+      "pc": "0x005bdf20",
+      "original_bytes": 84,
+      "units": [
+        "src/nuang.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuAtanf",
+      "pc": "0x005bdf80",
+      "original_bytes": 163,
+      "units": [
+        "src/nuang.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_SetMoveAndAnimateFunctions",
+      "pc": "0x0055bd00",
+      "original_bytes": 187,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Move_CHARACTER",
+      "pc": "0x004b4ac0",
+      "original_bytes": 1622,
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 40.57764
+    },
+    {
+      "symbol": "_LoadPerm2",
+      "pc": "0x0048abf0",
+      "original_bytes": 835,
+      "units": [
+        "src/legoapi/characters.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 98.93104
     }
   ],
   "previous_exact_functions_lost": [],
@@ -26475,6 +26545,310 @@
       "user_journal_preserved": true,
       "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
       "ongoing_goal": "Active whole-project matching-priority transfer with authorized validated direct-main pushes and exact-revision CI checks."
+    },
+    {
+      "checkpoint": "Character loading, default movement and angle GG (2026-10-08)",
+      "baseline_commit": "9c1d442ab013983706225324edf3342c1fe86151",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1339087,
+        "matched_code_bytes": 209128,
+        "matching_percent": 6.024580222778795,
+        "fuzzy_coverage_percent": 26.029687144670714,
+        "mapped_functions": 4639,
+        "matched_functions": 2115,
+        "objdiff_fuzzy_percent": 69.254196,
+        "objdiff_total_code": 1305490,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1987283,
+        "mapping_percent": 4.9598907551817115,
+        "matched_data_region_bytes": 637608
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1341318,
+        "matched_code_bytes": 209737,
+        "matching_percent": 6.042124355346754,
+        "fuzzy_coverage_percent": 26.089989511740058,
+        "mapped_functions": 4645,
+        "matched_functions": 2120,
+        "objdiff_fuzzy_percent": 69.25188,
+        "objdiff_total_code": 1308556,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1989514,
+        "mapping_percent": 4.965458918485483,
+        "matched_data_region_bytes": 637608
+      },
+      "new_source_functions": 7,
+      "actual_new_transfer_PC_bytes": 3066,
+      "new_unique_compared_PC_bytes": 3066,
+      "unique_compared_code_bytes": 1307985,
+      "native_objdiff_denominator": 1308556,
+      "overlap_bytes": 571,
+      "new_exact_PC_bytes": 609,
+      "whole_PC_fuzzy_delta_pp": 0.06030236706934389,
+      "old_full_function_copies": 4471,
+      "old_full_data_regions": 10096,
+      "old_exact_code_copies_preserved": 2118,
+      "old_known_extent_exact_data_compiled_copies_preserved": 5308,
+      "current_full_function_definitions": 4478,
+      "current_full_data_definitions": 10134,
+      "normal_objects": 314,
+      "frozen_inputs": 432,
+      "members_preserved": 13,
+      "known_member_bytes": 28,
+      "new_complete_initializer_copies": 38,
+      "new_complete_initializer_COFF_bytes": 360,
+      "new_known_extent_exact_initializer_compiled_copies": 2,
+      "new_known_extent_exact_initializer_COFF_bytes": 12,
+      "new_unknown_extent_full_native_equal_initializer_copies": 36,
+      "unknown_extent_exact_and_allocation_credit": 0,
+      "known_exact_data_union_before_transfer": 637608,
+      "known_exact_data_union_after_transfer": 637608,
+      "qualified_previous_nonexact_function_changes": [],
+      "qualified_unknown_extent_data_changes": [],
+      "qualified_compiler_local_class6_type0_serial_changes": 5,
+      "explicit_per_definition_owner_migration": [
+        {
+          "old_unit": "src/data.cpp",
+          "symbol": "_ang",
+          "new_unit": "src/nuang.c",
+          "address": "0x8066c8",
+          "native_size": 1026,
+          "full_initializer_sha256": "35e5094c1387d087543073af7c92e184affc1f354be19a64f04788956d371d60",
+          "new_code_or_data_credit": 0,
+          "contract": "Exactly one prior physical copy moved; external C mutable u16[513] class2 and known extent retained; all other old definitions keep their owners"
+        }
+      ],
+      "required_checks": {
+        "status": "PASS_REQUIRED_CHECKS_AND_CANONICAL_FINAL_BUILD_LINK",
+        "make_check_exit": 0,
+        "build_check_objects_exit": 0,
+        "final_tidy_exit": 0,
+        "full_tests": 728,
+        "existing_skips": 3,
+        "normal_objects": 314,
+        "complete_functions": 4478,
+        "complete_data_regions": 10134,
+        "default_sandbox_socket_failures_retained_not_regressions": true,
+        "initial_inventory_alias_link_failure_retained_and_corrected": true,
+        "pins": {
+          "build/analysis/checkpoint-GG/check-LLVM18-escalated.log": "0b39a5b1ce718951cb32252e849eacd32d6ff118e704e71d4a2668fbd3a5ed22",
+          "build/analysis/checkpoint-GG/build-canonical-final.log": "d38df0cc4b1afb395744f534cee4b85229256ddd5cd0e834dfedc7aa699765df",
+          "build/analysis/checkpoint-GG/characters-canonical-tidy.log": "746b47011353af045ac9a4f21db06814d2067aa50ed2beb5aeee22153003c29b",
+          "build/analysis/checkpoint-GG/normal-object-manifest.json": "28c36a29b7efd568bac60d554b78704b1d17a524b76690c244a4bbede10a549c",
+          "build/analysis/checkpoint-GG/frozen-first-source-inputs.json": "75819d03eb9c229107c90ab4b6d1530af6ccdc35279f916e10dcee7c86875f9f",
+          "build/analysis/checkpoint-GG/normal-artifact-manifest.json": "94cb707752fde79101d5cf4fc0e894e98c535e43d079c92679f4250c30a42cb8",
+          "build/analysis/checkpoint-GG/canonical-flag-actual-integration.json": "7a389fdec9dbb8eeea58b86d6485475e5b31a18ae31bd3b81780fee744d3f920"
+        }
+      },
+      "runtime": {
+        "status": "ACTUAL_NORMAL_408_SELECTED_CPU_PASS_AUTHENTIC_SOURCE_STARTUP_FAIL",
+        "selected_checks": 408,
+        "selected_failures": 0,
+        "selected_CPU_checks": 408,
+        "selected_CPU_failures": 0,
+        "normal_objects": 314,
+        "frozen_inputs": 432,
+        "frozen_artifacts": 6,
+        "replacements": 0,
+        "supplements": 0,
+        "additional_engine_providers": 0,
+        "all_actual_objects_inputs_and_artifacts_unchanged": true,
+        "selected_runtime": [
+          {
+            "receipt": "build/analysis/checkpoint-GG/runtime-validation/runtime-ang-v2/receipt.json",
+            "sha256": "43f87c798afbb6b7222cab4c600180fa220e17162f9a9d3f8da4f931d1f91231",
+            "checks": 288,
+            "failures": 0,
+            "exit_code": 0,
+            "qualifications": [
+              "Selected CPU public API domain only; no game/window/render/scene/asset/gameplay claim.",
+              "No private helper entry shim or zero-divisor call.",
+              "Exact native SHL9 wrapping/INT_MIN and negative-zero bit policy preserved; extreme input goldens are not ideal atan2.",
+              "Independent CRT atan2 error bound applies only to nonwrapping magnitude<=8388607.",
+              "Default CRT round-to-nearest floating control domain.",
+              "Existing initialized Wine prefix only; no reset/deletion/global kill.",
+              "No actual-normal pass is claimed before final table-owner and normal integration."
+            ],
+            "output_pins": {
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-ang-v2/input-manifest.json": "28c36a29b7efd568bac60d554b78704b1d17a524b76690c244a4bbede10a549c",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-ang-v2/compile.log": "86210188130fb311d5a40dbdd6b2284e52163f2f700faed2397b1e72e70014d5",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-ang-v2/fixture.obj": "939a7476ad47844553dfdea5d00514d5cb51623858a87cda24aac4a6733143d0",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-ang-v2/crash-dialog-query.log": "f2d9df985b320772b281dbae426b96cd04e464589f248666e577245e9298cedc",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-ang-v2/fixture.exe": "0e05fd121872fb193d27eeeb49a2cff51b26e7574dec97accf5dd6b5dfccc66a",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-ang-v2/owned-process-check.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-ang-v2/runtime.log": "c0e9ae4c4a4a3ea39be95ff9f483725701ac5755558d492da3f3ed7f673be1e8",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-ang-v2/fixture.map": "29d168528a1db1bdd234ab535283f2fd42a4b653cdaa5ff4c473018511859ff7",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-ang-v2/receipt.json": "43f87c798afbb6b7222cab4c600180fa220e17162f9a9d3f8da4f931d1f91231",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-ang-v2/link.log": "f57e1fe208ef051c3ba71f1a1b0b9080afc26fca6620388d6d85facf272a2508"
+            }
+          },
+          {
+            "receipt": "build/analysis/checkpoint-GG/runtime-validation/runtime-callbacks/receipt.json",
+            "sha256": "d86c4be817a1c831be554636c79a1939949a52ff2e56e37040e29e59c1dacb9e",
+            "checks": 120,
+            "failures": 0,
+            "exit_code": 0,
+            "qualifications": [
+              "Selected canonical typed-row CPU callback installation only; no asset/GPU/gameplay claim.",
+              "Positive count0..5 has matching readable initialized character/configuration rows; count0 legitimately accepts NULL pointers.",
+              "Native signed BYTE movement filter and -1 sentinel retained; no guards/caps added.",
+              "NULL supplied callback preserves old slot; three ordinary static fixture callbacks are caller input values, not engine provider definitions.",
+              "The installer never invokes callbacks, and no callback gameplay/action result is simulated.",
+              "All actual normal owners required after root NORMALFINAL grant; zero replacement/supplemental engine/data providers.",
+              "Existing initialized Wine prefix only, ShowCrashDialog DWORD0 and private-group cleanup; no boot/reset/global kill."
+            ],
+            "output_pins": {
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-callbacks/input-manifest.json": "28c36a29b7efd568bac60d554b78704b1d17a524b76690c244a4bbede10a549c",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-callbacks/compile.log": "86210188130fb311d5a40dbdd6b2284e52163f2f700faed2397b1e72e70014d5",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-callbacks/fixture.obj": "70b5aff8a89dc53a831028fe73cc37333f8952318c729bb3d845b0ec098c6e3a",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-callbacks/crash-dialog-query.log": "f2d9df985b320772b281dbae426b96cd04e464589f248666e577245e9298cedc",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-callbacks/fixture.exe": "396e008728de4de187cafe0ad0472cdcabec549a17540f48e450272f8c6f2c9f",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-callbacks/owned-process-check.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-callbacks/runtime.log": "be2c8474b4e4a20170556afd14bdea4bdeff70acf51afd05a061c0b59d32ba5b",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-callbacks/fixture.map": "5c3d411fa5926d8935989ec3e44f9fcf8f9ebb731269ba634bb15297beeedb96",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-callbacks/receipt.json": "d86c4be817a1c831be554636c79a1939949a52ff2e56e37040e29e59c1dacb9e",
+              "build/analysis/checkpoint-GG/runtime-validation/runtime-callbacks/link.log": "f57e1fe208ef051c3ba71f1a1b0b9080afc26fca6620388d6d85facf272a2508"
+            }
+          }
+        ],
+        "source_EXE": {
+          "receipt": "build/analysis/checkpoint-GG/runtime-validation/GG-observation/receipt.json",
+          "sha256": "f1dfd689f06b6631cd131b4275d252f371f0f8a1b71bdc978a1abb2726b78ab6",
+          "exe_sha256": "16338c1e7b31ac040c82569dda7caa44a83916db784d8d986997cb184949ed49",
+          "exit": 5,
+          "elapsed_seconds": 3.6870531069580466,
+          "fault": "0x50c0c0",
+          "actual_method_entry": "0x50c0b0",
+          "native_method": "0x741750",
+          "method_size": 208,
+          "fault_offset": 16,
+          "fault_offset_hex": "0x10",
+          "fault_instruction": "mov eax, dword ptr [esi]",
+          "corresponding_native_fault_address": "0x741760",
+          "full_current_body_matches_actual_source_EXE": true,
+          "full_current_body_exact_to_retail": false,
+          "attribution": {
+            "receipt": "build/analysis/checkpoint-GG/runtime-validation/source-fault-attribution.json",
+            "sha256": "df8daa1d129570d9f5fbb6536d5c204fa5164d1d1559dd24451b171f6cc8b9f6"
+          },
+          "visible_window_samples": 1,
+          "sampled_windows": [
+            {
+              "elapsed_seconds": 3.082167762913741,
+              "visible_game_windows": [
+                "113246213"
+              ],
+              "visible_native_class_windows": [],
+              "visible_crash_windows": []
+            }
+          ],
+          "sampled_window_qualification": "One transient broad game-class window ID113246213 at3.082s; identity/title/PID not retained. No persistent native window, device, Present, repeated frame, scene or gameplay inference.",
+          "after_cleanup_game_native_and_crash_windows_empty": true,
+          "cleanup": {
+            "receipt": "build/analysis/checkpoint-GG/runtime-validation/GG-observation/owned-cleanup.json",
+            "sha256": "bfad6a219dbc8a2aeb5aea364cc0a1b0704f4917590e21f1dd1d1a46204439f1"
+          },
+          "owned_game_debugger_processes_after": [],
+          "output_pins": {
+            "build/analysis/checkpoint-GG/runtime-validation/GG-observation/before-window-inventory.json": "f9acaf4df0e7bc5d733840d8faaf7202d8896a3b3e802e7cec17d0f56061ae9b",
+            "build/analysis/checkpoint-GG/runtime-validation/GG-observation/after-window-inventory.json": "f9acaf4df0e7bc5d733840d8faaf7202d8896a3b3e802e7cec17d0f56061ae9b",
+            "build/analysis/checkpoint-GG/runtime-validation/GG-observation/source-exe.log": "cb51798e5c6aa8456367f9e9525748fbd0f82b4e469738154dfade1c81edfcd5",
+            "build/analysis/checkpoint-GG/runtime-validation/GG-observation/before-process-inventory.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+            "build/analysis/checkpoint-GG/runtime-validation/GG-observation/owned-cleanup.json": "bfad6a219dbc8a2aeb5aea364cc0a1b0704f4917590e21f1dd1d1a46204439f1",
+            "build/analysis/checkpoint-GG/runtime-validation/GG-observation/after-process-inventory.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+            "build/analysis/checkpoint-GG/runtime-validation/GG-observation/crash-dialog-setting.json": "7ba3280110feb641b8322afdf851b8bd663ebc8ec45a0c91a77696c2ec625038",
+            "build/analysis/checkpoint-GG/runtime-validation/GG-observation/receipt.json": "f1dfd689f06b6631cd131b4275d252f371f0f8a1b71bdc978a1abb2726b78ab6"
+          },
+          "milestones": {
+            "persistent_native_window": "UNVERIFIED",
+            "actual_input_state": "NOT_INDEPENDENTLY_OBSERVED",
+            "D3D9_device": "UNVERIFIED",
+            "Present": "UNVERIFIED",
+            "recurring_frames": "UNVERIFIED",
+            "loaded_scene": "UNVERIFIED",
+            "gameplay": "UNVERIFIED"
+          }
+        },
+        "oracle_correction": {
+          "historical_failed_actual_normal_receipt": {
+            "receipt": "build/analysis/checkpoint-GG/runtime-validation/runtime-ang/receipt.json",
+            "sha256": "56d12f2358b621819cc5e04fa2fa6e363ceb69792bf7b90a678b77c20a2d7c78"
+          },
+          "failure_checks": 288,
+          "failures": 2,
+          "exact216_goldens_passed_in_initial_run": true,
+          "successor_proof": {
+            "receipt": "build/analysis/checkpoint-GG/runtime-validation/angle-oracle-v2/oracle-repair-proof.json",
+            "sha256": "698ae0fd980d8c048d36e70f461f758cfe69ec86d939de9fb1e8f40349d7df6f"
+          },
+          "reason": "Independent angular accuracy distance crossed the +/-pi representation boundary; corrected only to circular distance.",
+          "check_count_unchanged": 288,
+          "bounds_unchanged": {
+            "integer_turn_units": 21.0,
+            "radians": 0.00201
+          },
+          "exact_signed_and_f32_bit_goldens_unchanged": true,
+          "no_engine_source_provider_or_normal_change": true
+        },
+        "original_prepared_packets_immutable": [
+          {
+            "receipt": "build/analysis/runtime-ang-next/prepared-packet.json",
+            "sha256": "0f1f19be21bc7be1cc843931ac56343dd3c799dc478feab9ad8498a19320b588"
+          },
+          {
+            "receipt": "build/analysis/runtime-character-callbacks-next/prepared-packet.json",
+            "sha256": "562b1a718ff4064f978d35e86a84516bf3ce3e2d2018de30fde4bf892d99b74b"
+          }
+        ],
+        "normal_manifest": {
+          "receipt": "build/analysis/checkpoint-GG/normal-object-manifest.json",
+          "sha256": "28c36a29b7efd568bac60d554b78704b1d17a524b76690c244a4bbede10a549c"
+        },
+        "freeze": {
+          "receipt": "build/analysis/checkpoint-GG/frozen-first-source-inputs.json",
+          "sha256": "75819d03eb9c229107c90ab4b6d1530af6ccdc35279f916e10dcee7c86875f9f"
+        },
+        "artifact_manifest": {
+          "receipt": "build/analysis/checkpoint-GG/normal-artifact-manifest.json",
+          "sha256": "94cb707752fde79101d5cf4fc0e894e98c535e43d079c92679f4250c30a42cb8"
+        },
+        "six_artifact_hashes": {
+          "build/LEGOStarWarsSaga.exe": "16338c1e7b31ac040c82569dda7caa44a83916db784d8d986997cb184949ed49",
+          "build/d3d9.lib": "7f64bad4731c761f26e2f118850d3a64f9588187526bf1372d95c27dd417d744",
+          "build/d3dx9_35.lib": "be55a1527c40a861c3a9d4bbcb8132385575c90d455753a083932dfae528372d",
+          "build/dinput8.lib": "11aad7b2ba8069708790c409051afb8de756736b4bde12c3a6cd2fb98ca1ff7c",
+          "build/dsound.lib": "d82054a46d45fb7feafb35380b5e18d592584d7c205be69e5f6c5adf6960b954",
+          "build/xinput1_3.lib": "51b4653ae35e3762d85a5e32e43779cd5b16793d737b2aff09a204a206c22f8d"
+        },
+        "normalfinal_grant": {
+          "receipt": "build/analysis/checkpoint-GG/normalfinal-grant.json",
+          "sha256": "209aa399d914dd1775252e7adf481531b700226092a311bab35b4d636ba140af"
+        },
+        "crash_dialog": "Existing prefix ShowCrashDialog REG_DWORD0 queried; zero sampled crash dialogs, finally private-group cleanup and no owned game/debugger leftovers. No global Wine kill/reset.",
+        "matching_primary": true,
+        "matching_report": "Concurrent root report refresh excluded from runtime fingerprint; physical source/normal/artifacts independently pinned.",
+        "no_playable_game_claim": true,
+        "seal_script_sha256": "d3d46d68c110a29104674e6e9021de6a9b0c48731f08dff70bafa0a78c3451da"
+      },
+      "selected_CPU_checks": 408,
+      "selected_CPU_failures": 0,
+      "remaining_contracts": "LoadPerm2 callback fixups;41 true void movement actions, realJump/animation suppliers; native shader publication/parser helper identity; device/scene/gameplay positive runtime.",
+      "next_wave": "Connected animation/callback, Jump action/value suppliers, save/menu coordinator and native file services; no speculative candidate credit.",
+      "checkpoint_delay": "Initial missing linker flag was an uncompiled inventory alias, fixed by canonical nopakfile reuse with no extra storage. Retained initial angle accuracy fixture branch-cut failure; circular oracle successor keeps bounds/checkcount/exactgoldens and actualproviders.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "Active perpetual whole-project matching-priority source transfer; validated direct-main pushes authorized; exact pushed CI verified separately.",
+      "evidence_pins": {
+        "build/analysis/checkpoint-GG/normal-object-manifest.json": "28c36a29b7efd568bac60d554b78704b1d17a524b76690c244a4bbede10a549c",
+        "build/analysis/checkpoint-GG/frozen-first-source-inputs.json": "75819d03eb9c229107c90ab4b6d1530af6ccdc35279f916e10dcee7c86875f9f",
+        "build/analysis/checkpoint-GG/normal-artifact-manifest.json": "94cb707752fde79101d5cf4fc0e894e98c535e43d079c92679f4250c30a42cb8",
+        "build/analysis/checkpoint-GG/runtime-acceptance.json": "c2997b4d523e1318b48fd76fe759272dcb15b3cd527b4e7a1adab21aa193b6ce",
+        "build/analysis/endpoint-GG-review/actual-output-and-report-proof.json": "da27e09f1eeaa0d96e1434aecbf29ed2781fe77c982b3a5942e09957b09cdb7b",
+        "build/analysis/endpoint-GG-review/accepted-first-endpoint.json": "22060106c356c4be178c1559dea99806f9c798d508d74fafe1dadd178c51f49e",
+        "build/analysis/model-loading-flag-independent-next/accepted-corrective-addendum.json": "a8f22340803ab2c4e0dfad92bf1d659c61abb7110afc8f9a357f4c7ba60310ab"
+      }
     }
   ]
 }

@@ -48,7 +48,6 @@ extern char *debris_name[147];
 APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i8);
 NUGSCN *__cdecl NuGScnRead(VARIPTR *, VARIPTR, char *);
 
-extern i32 apiloadcharactermodels_nopakfile;
 void __cdecl LoadPerm1(void) {
     char path[256];
     u8 shadow_random[0x800];
@@ -191,6 +190,78 @@ extern "C" {
                 i32 index;
                 if (InModelList(list, model_id, &index) != 0 && list[index].count != 0)
                     CharacterSceneLoadPrivatePc(entry, model_id, buffer, end);
+            }
+        }
+    }
+}
+
+typedef struct permanent_customiser_save_pc_s {
+    u16 pieces[9];
+    u8 unknown_12[0x26];
+    u16 secondary_pieces[9];
+    u8 unknown_4a[0x26];
+} PERMANENT_CUSTOMISER_SAVE_PC;
+STATIC_ASSERT(offsetof(PERMANENT_CUSTOMISER_SAVE_PC, pieces) == 0);
+STATIC_ASSERT(offsetof(PERMANENT_CUSTOMISER_SAVE_PC, secondary_pieces) == 0x38);
+STATIC_ASSERT(sizeof(PERMANENT_CUSTOMISER_SAVE_PC) == 0x70);
+typedef struct permanent_customiser_game_pc_s {
+    u8 unknown_0000[0x7c24];
+    PERMANENT_CUSTOMISER_SAVE_PC customiser;
+} PERMANENT_CUSTOMISER_GAME_PC;
+STATIC_ASSERT(offsetof(PERMANENT_CUSTOMISER_GAME_PC, customiser) == 0x7c24);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, music_index) == 0x94);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);
+STATIC_ASSERT(sizeof(LEVELDATA_PC) == 0x130);
+extern "C" {
+    extern NUFPCOMJMP ConfigChar_GameKeywords[2];
+    void __cdecl LoadPerm2(void);
+    extern APICHARACTERMODELLIST PermModelListPc[1];
+    extern COLLECTION_BUILD_PC MasterCollectionPc, CharacterCollectionPc, VehicleCollectionPc;
+    extern COLLECTION_BUILD_PC ShopCollectionPc, JediCollectionPc, BlasterCollectionPc, BountyHunterCollectionPc;
+    extern i16 PermanentAllTitleIdPc, PermanentJediTitleIdPc, PermanentBlasterTitleIdPc, PermanentBountyTitleIdPc;
+    extern i16 PermanentWeirdo1IdPc, PermanentWeirdo2IdPc;
+    extern i16 PermanentCustomiserActionsPc[5];
+
+    void __cdecl LoadPerm2(void) {
+        CharConfig_ConfigureAll(1, ConfigChar_GameKeywords);
+        STUBBED_NAMED(0x00414400); /* Actual 48abfd: ExtraCharacterFixUpAfterConfig; held real callback values. */
+        nopakfile = CHARPAK == 0;
+        APILoadCharacterModels(PermModelListPc, 1, &permbuffer_ptr, permbuffer_end, 1);
+        Collection_CreateMaster("All", NULL, &MasterCollectionPc, 15, 0.6f);
+        Collection_CreateCustom("Characters", &PermanentAllTitleIdPc, &CharacterCollectionPc, 0, 0x04002000, 0, 0, 22,
+                                &permbuffer_ptr, &permbuffer_end, 0, 0.515f);
+        Collection_CreateCustom("Vehicles", NULL, &VehicleCollectionPc, 0x2000, 0x04000000, 0, 0, 7, &permbuffer_ptr,
+                                &permbuffer_end, 0, 0.6f);
+        Collection_CreateCustom("Minikits", NULL, &MiniKitCollection, 0x04000000, 0, 0, 0, 12, &permbuffer_ptr,
+                                &permbuffer_end, 0, 0.6f);
+        Collection_CreateCustom("Shop", NULL, &ShopCollectionPc, 0, 0, 0, 1, 10, &permbuffer_ptr, &permbuffer_end, 0,
+                                0.6f);
+        Collection_CreateCustom("Jedi", &PermanentJediTitleIdPc, &JediCollectionPc, 8, 0, 0, 0, 7, &permbuffer_ptr,
+                                &permbuffer_end, 0, 0.6f);
+        Collection_CreateCustom("BlasterZipUps", &PermanentBlasterTitleIdPc, &BlasterCollectionPc, 0x100080, 0x01000000,
+                                0, 0, 11, &permbuffer_ptr, &permbuffer_end, 0, 0.6f);
+        Collection_CreateCustom("BountyHunters", &PermanentBountyTitleIdPc, &BountyHunterCollectionPc, 0x01000000, 0, 0,
+                                0, 4, &permbuffer_ptr, &permbuffer_end, 0, 0.6f);
+        Areas_ConfigureResidents(&permbuffer_ptr, &permbuffer_end);
+        CharacterCustomiser =
+            Customiser_Configure("chars\\customiser.txt", &permbuffer_ptr, &permbuffer_end, (i32)PermanentWeirdo1IdPc,
+                                 (i32)PermanentWeirdo2IdPc, PermanentCustomPieceAvailablePc,
+                                 PermanentCustomPieceConfigPc, LevelObject_FindIndexFromName,
+                                 &((PERMANENT_CUSTOMISER_GAME_PC *)&Game)->customiser, PermanentCustomiserActionsPc);
+        SpecialMoves_Configure("chars\\specialmoves.txt", &permbuffer_ptr, &permbuffer_end);
+        for (i32 index = 0; index < LEVELCOUNT; ++index) {
+            if ((LDataList[index].flags & 0x400) != 0) {
+                LDataList[index].music_index = (i16)GetMusicIndex("statusscreen", MusicInfo, -1);
+                i32 handle = music_man.GetTrackHandle(1, "statusscreen");
+                LDataList[index].music_tracks[1] = handle;
+                LDataList[index].music_tracks[0] = LDataList[index].music_tracks[1];
+                handle = music_man.GetTrackHandle(2, "statusscreen");
+                LDataList[index].music_tracks[3] = handle;
+                LDataList[index].music_tracks[2] = LDataList[index].music_tracks[3];
+                handle = music_man.GetTrackHandle(0x20, "statusscreen");
+                LDataList[index].music_tracks[5] = handle;
+                LDataList[index].music_tracks[4] = LDataList[index].music_tracks[5];
             }
         }
     }

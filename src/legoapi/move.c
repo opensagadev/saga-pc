@@ -1,5 +1,8 @@
 #include "saga.h"
 
+void __cdecl Buck_MoveCode(GAMEOBJECT *, i32);
+void __cdecl TakeOverCode(GAMEOBJECT *, i32);
+
 typedef struct movement_suit_pc_s {
     u8 unknown_00[0xc];
     u8 store_flag;
@@ -6176,4 +6179,202 @@ i32 __cdecl ForcePushed_SuperPush_Occurring(GAMEOBJECT *first, GAMEOBJECT *secon
         first->id == (u16)id_GONKDROID)
         return 0;
     return ForcePushEligible(first, second, source) != 0;
+}
+
+typedef void(__cdecl *CHARACTER_UPDATE_CALLBACK_PC)(GAMEOBJECT *);
+typedef struct character_callback_writer_pc_s {
+    i32 name_id;
+    u32 model_flags;
+    u8 unknown_08[0x10];
+    CHARACTER_UPDATE_CALLBACK_PC move;
+    CHARACTER_UPDATE_CALLBACK_PC animate;
+    CHARACTER_UPDATE_CALLBACK_PC post_animate;
+} CHARACTER_CALLBACK_WRITER_PC;
+STATIC_ASSERT(offsetof(CHARACTER_CALLBACK_WRITER_PC, model_flags) == 4);
+STATIC_ASSERT(offsetof(CHARACTER_CALLBACK_WRITER_PC, move) == 0x18);
+STATIC_ASSERT(offsetof(CHARACTER_CALLBACK_WRITER_PC, animate) == 0x1c);
+STATIC_ASSERT(offsetof(CHARACTER_CALLBACK_WRITER_PC, post_animate) == 0x20);
+STATIC_ASSERT(sizeof(CHARACTER_CALLBACK_WRITER_PC) == 0x24);
+STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
+STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_action) == 0x116);
+void __cdecl SetMoveAndAnimateFunctions(u32 model_mask, u32 model_value, u32 game_mask, u32 game_value,
+                                        i32 movement_type, CHARACTER_UPDATE_CALLBACK_PC move,
+                                        CHARACTER_UPDATE_CALLBACK_PC animate,
+                                        CHARACTER_UPDATE_CALLBACK_PC post_animate) {
+    i32 index;
+    for (index = 0; index < CHARCOUNT; ++index) {
+        if (model_mask != 0 && (CDataList[index].model_flags & model_mask) != model_value)
+            continue;
+        if (game_mask != 0 && (GCDataList[index].flags_090 & game_mask) != game_value)
+            continue;
+        if (movement_type != -1 && (i32)(i8)GCDataList[index].weapon_action != movement_type)
+            continue;
+        if (move != NULL)
+            ((CHARACTER_CALLBACK_WRITER_PC *)&CDataList[index])->move = move;
+        if (animate != NULL)
+            ((CHARACTER_CALLBACK_WRITER_PC *)&CDataList[index])->animate = animate;
+        if (post_animate != NULL)
+            ((CHARACTER_CALLBACK_WRITER_PC *)&CDataList[index])->post_animate = post_animate;
+    }
+}
+typedef struct default_motion_batarang_pointer_pc_s {
+    u8 unknown_0000[0xcc0];
+    void *batarang;
+} DEFAULT_MOTION_BATARANG_POINTER_PC;
+STATIC_ASSERT(offsetof(DEFAULT_MOTION_BATARANG_POINTER_PC, batarang) == 0xcc0);
+STATIC_ASSERT(sizeof(DEFAULT_MOTION_BATARANG_POINTER_PC) == 0xcc4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, lower_position) == 0x19c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, horizontal_velocity_magnitude) == 0x22c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_timer) == 0xd64);
+STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
+STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
+STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, count) == 0);
+extern i16 DefaultMotionSkeletonIdPc, DefaultMotionIndySnakeIdPc;
+extern f32 DefaultMotionSpiderFarSpeedPc, DefaultMotionSpiderNearSpeedPc, DefaultMotionSpiderRangePc;
+extern i32 DefaultMotionLedgeTerrainEnabledPc;
+
+void __cdecl Move_CHARACTER(GAMEOBJECT *object) {
+    u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
+    u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
+    u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
+    u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
+    u32 special_pressed = object->pad->buttons_pressed & GAMEPAD_SPECIAL;
+    u32 tag_pressed = object->pad->buttons_pressed & GAMEPAD_TAG;
+    PLAYERCHARACTERCONFIG_PC *runtime;
+    if (object->id == (u16)id_GAMORREANGUARD || object->id == (u16)VehicleBoltId7f1924Pc ||
+        object->id == (u16)VehicleBoltId7f1928Pc || object->id == (u16)id_CAPTAINTARPALS)
+        KeepWeaponOut(object);
+    DropInOutCode(object);
+    if (BonusArea && VehicleArea && (object->character_data->model_flags & 0x4000000) != 0 && object->torpedo != NULL)
+        object->torpedo->count = 0;
+    if ((object->flags_e20 & 0x20) != 0)
+        return;
+    if ((object->flags_1fc & 0x80) != 0 && object->character_data->game_character->weapon_action == 2 &&
+        object->character_context != 0x2b && object->jump_variant_state == 1) {
+        f32 timer =
+            object->horizontal_velocity_magnitude / object->character_data->game_character->run_speed * FRAMETIME +
+            object->jump_variant_timer;
+        object->jump_variant_timer = timer;
+        if (object->field_281 != 0) {
+            object->jump_variant_state = 0;
+            object->character_context = -1;
+        } else if (timer >= object->character_data->game_character->jump_hold_duration ||
+                   object->jump_animation_state == 0x1a) {
+            STUBBED_NAMED(0x0049dc60); /* Native4b4c16 StartJetPackFall(object,0); state-changing void action. */
+        } else {
+            object->velocity.y = 0.0f;
+            goto after_gravity;
+        }
+    }
+    runtime = object->character_data->game_character;
+    if (runtime->weapon_action == 2 && object->jump_variant_state == 1)
+        ApplyGravity(object, NULL, runtime->field_028, 8.0f, NULL);
+    else
+        ApplyGravity(object, NULL, 0.0f, 8.0f, NULL);
+after_gravity:
+    if (object->id == (u16)ZipUpLineCharacterIdPc && object->character_context == 0x35) {
+        f32 speed = DefaultMotionSpiderFarSpeedPc;
+        if (object->floor_height != 2000000.0f) {
+            f32 height = object->lower_position.y - object->floor_height;
+            f32 fraction;
+            if (height > DefaultMotionSpiderRangePc)
+                height = DefaultMotionSpiderRangePc;
+            fraction = height / DefaultMotionSpiderRangePc;
+            speed = speed * fraction + (1.0 - (f64)fraction) * DefaultMotionSpiderNearSpeedPc;
+        }
+        if (object->velocity.y < speed)
+            object->velocity.y = speed;
+    }
+    STUBBED_NAMED(0x004cdab0); /* Native4b4d17: WORLD,object; actual void action. */
+    if (object->suit != NULL)
+        STUBBED_NAMED(0x004c85e0); /* Native4b4d30: WORLD,object; actual void action. */
+    TakeHitCode(object);
+    FloatCode(object);
+    SlideCode(object);
+    FlattenCode(object);
+    STUBBED_NAMED(0x0056c7a0); /* Native4b4d51: object; Hang_MoveCode. */
+    STUBBED_NAMED(0x004827a0); /* Native4b4d5d: WORLD,object; Ledge_MoveCode. */
+    if (DefaultMotionLedgeTerrainEnabledPc != 0)
+        STUBBED_NAMED(0x0056b8f0); /* Native4b4d6f: object; LedgeTerrain_MoveCode. */
+    STUBBED_NAMED(0x0056c0e0);     /* Native4b4d78: object; Climb_MoveCode. */
+    STUBBED_NAMED(0x004d18a0);     /* Native4b4d7f: object,jump_pressed; TightRope_MoveCode. */
+    ForcePushed_MoveCode(object);
+    ForcedBackCode(object);
+    STUBBED_NAMED(0x0056d8c0); /* Native4b4d99: object,WORLD; Tube_MoveCode. */
+    DeactivatedCode(object);
+    STUBBED_NAMED(0x0059bd40); /* Native4b4dc5: object,!StartupGameFlag1&&StartupGameFlag0; PushCode. */
+    STUBBED_NAMED(0x005623f0); /* Native4b4dcb: object; BackFlipCode. */
+    if (object->id != (u16)DefaultMotionSkeletonIdPc)
+        TakeOverCode(object, tag_pressed);
+    STUBBED_NAMED(0x0049d720); /* Native4b4df2: object; Glide_MoveCode. */
+    runtime = object->character_data->game_character;
+    if (runtime->weapon_action == 2 && object->jump_variant_state == 1) {
+        STUBBED_NAMED(0x0049dd10); /* Native4b4e1c: object,jump_pressed,0,0; JetPackCode. */
+    } else if ((runtime->flags_094 & 4) == 0) {
+        u32 animations = object->id == (u16)id_GAMORREANGUARD ? 0x20 : 8;
+        if ((runtime->flags_090 & 0x400000) != 0)
+            animations |= 0x101;
+        STUBBED_NAMED(
+            0x00562570); /* Native4b4e69: object,jump_pressed,jump_held,animations,action_pressed,action_held,-1. */
+    }
+    STUBBED_NAMED(0x0046eda0); /* Native4b4e7e: WORLD,object,special_pressed; GizPanel_MoveCode. */
+    STUBBED_NAMED(0x00474070); /* Native4b4e8b: WORLD,object,special_pressed; HatMachine_MoveCode. */
+    ZipUp_MoveCode(object, special_pressed);
+    if ((object->character_data->model_flags & 0x100000) != 0)
+        STUBBED_NAMED(0x0054ea40); /* Native4b4ea7: object; Grapple_MoveCode. */
+    STUBBED_NAMED(0x00592280);     /* Native4b4eb0: object; BuildIt_MoveCode. */
+    STUBBED_NAMED(0x00490d10);     /* Native4b4ebd: WORLD,object; Lever_MoveCode. */
+    STUBBED_NAMED(0x004d0290);     /* Native4b4ec3: object; ThermalDetonator_MoveCode. */
+    if ((object->character_data->model_flags & 0x40000) != 0)
+        STUBBED_NAMED(0x004ce830); /* Native4b4ed9: object,special_pressed; Teleport_MoveCode. */
+    if (!StartupGameFlag1 && !StartupGameFlag0) {
+        if (object->suit != NULL && (object->suit->flags & 4) != 0)
+            STUBBED_NAMED(0x004271b0); /* Native4b4f04: object; actual void action. */
+        if (object->suit != NULL && (object->suit->flags & 8) != 0)
+            STUBBED_NAMED(0x004c88c0); /* Native4b4f25: WORLD,object; actual void action. */
+        if ((object->character_data->model_flags & 8) == 0)
+            STUBBED_NAMED(0x004d4dc0); /* Native4b4f3c: WORLD,object; actual void action. */
+    }
+    STUBBED_NAMED(0x00598880); /* Native4b4f50: WORLD,object; actual void action. */
+    GizmoBlowupCheckProximity(WORLD, object);
+    if (object->id == (u16)DefaultMotionIndySnakeIdPc) {
+        if ((object->portal_flags & 0x10) != 0) {
+            if (object->weapon_scale == 0.0f && object->character_context != 0x26)
+                SlowWeaponOut(object);
+        } else if (object->weapon_scale == 1.0f) {
+            SlowWeaponIn(object);
+        }
+    }
+    STUBBED_NAMED(0x0058d6a0); /* Native4b4fb7: object; WeaponOutCode. */
+    STUBBED_NAMED(0x0058db50); /* Native4b4fbd: object; WeaponInCode. */
+    STUBBED_NAMED(0x0058dec0); /* Native4b4fc3: object; WeaponScalingCode. */
+    STUBBED_NAMED(0x0058b210); /* Native4b4fc9: object; SpecialMove_VictimCode. */
+    STUBBED_NAMED(0x0058e420); /* Native4b4fcf: object; HoldCode. */
+    STUBBED_NAMED(0x0049e450); /* Native4b4fe9: object EAX +action_pressed,action_held,0,!model_flags80; BlockCode. */
+    PunchCode(object, action_pressed, action_held, object->character_data->model_flags & 0x80, 0, 0.0f);
+    if ((object->character_data->game_character->flags_094 & 0x20000000) != 0 &&
+        object->id == (u16)VehicleBoltId7f17d0Pc && StartupGameFlag0 != 0)
+        STUBBED_NAMED(0x005b26b0); /* Native4b5040: object; actual void action. */
+    STUBBED_NAMED(0x004b13e0);     /* Native4b504e: object ECX/action_pressed EAX+jump_pressed stack; DodgeCode. */
+    STUBBED_NAMED(0x004036a0);     /* Native4b505a: WORLD,object; Attracto_MoveCode. */
+    STUBBED_NAMED(0x004bdaf0);     /* Native4b5067: WORLD,object; SecurityDoor_MoveCode. */
+    if ((object->character_data->model_flags & 0x80) != 0)
+        ShootCode(object, action_pressed, special_pressed, 1, 1, 0);
+    else if (((DEFAULT_MOTION_BATARANG_POINTER_PC *)object)->batarang != NULL)
+        STUBBED_NAMED(0x004050c0); /* Native4b5095: object; Batarang_MoveCode. */
+    if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
+        STUBBED_NAMED(0x004b29f0); /* Native4b50c0: object EAX+current SPECIAL pressed,0; CommunicateCode. */
+    STUBBED_NAMED(0x004a69e0);     /* Native4b50c8: object ESI; actual void source action. */
+    BeastStartFallCodePc(object);
+    BeastCrushCodePc(object);
+    GrabCode(object);
+    if (object->id == (u16)id_RANCOR)
+        AwkwardShapeCode(object, 0);
+    STUBBED_NAMED(0x0058cef0); /* Native4b50fa: object; HeadMovement. */
+    STUBBED_NAMED(0x0058cf50); /* Native4b5100: object; CloakMovement. */
+    STUBBED_NAMED(0x0058d150); /* Native4b5106: object; HairMovement. */
+    (void)jump_held;
 }

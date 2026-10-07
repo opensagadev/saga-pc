@@ -641,6 +641,7 @@ address    , symbol                                                         , si
 0x4b30e0,_Move_CANNON,350,void __cdecl(GAMEOBJECT*)
 0x4b3350,_Move_DEFAULT,50,void __cdecl(GAMEOBJECT *)
 0x4b3d40,_ShootCode,3449,"i32 __cdecl(GAMEOBJECT*,i32,i32,i32,i32,i32)"
+0x4b4ac0,_Move_CHARACTER,1622,void __cdecl (GAMEOBJECT *)
 0x4b5120,_Move_VEHICLE,1789,void __cdecl(GAMEOBJECT*)
 0x4b6800,_Move_POD,883,void __cdecl(GAMEOBJECT*)
 0x4b6b80,_PostResetCode,111,void __cdecl(GAMEOBJECT*)
@@ -1639,6 +1640,7 @@ address    , symbol                                                         , si
 0x0055bac0 , _LayerFromName                                                 , 98    , i32 __cdecl (PLAYERCHARACTERCONFIG_PC *; const char *)
 0x0055bb30 , _MakeLayerList_Name                                            , 187   , i32 __cdecl (CHARACTER_MODEL_LAYERS_PC *; i16 *; u32)
 0x55bc80,_CharCategory_IsCategory,115,"i32 __cdecl(GAMEOBJECT *, i32)"
+0x55bd00,_SetMoveAndAnimateFunctions,187,"void __cdecl SetMoveAndAnimateFunctions(u32, u32, u32, u32, i32, CHARACTER_UPDATE_CALLBACK_PC, CHARACTER_UPDATE_CALLBACK_PC, CHARACTER_UPDATE_CALLBACK_PC)"
 0x55bdc0,_GameLoadCharacterModels,82,"void __cdecl(APICHARACTERMODELLIST *,i32,VARIPTR *,VARIPTR *,i32,i32)"
 0x55be20,_InModelListDataFlags,193,"i32 __cdecl(APICHARACTERMODELLIST*,u32,u32,i32,i32)"
 0x55bef0,_RandomIDFromFlags,396,"i32 __cdecl(u32,u32,i32,APICHARACTERMODELLIST*,i32)"
@@ -2681,6 +2683,10 @@ address    , symbol                                                         , si
 0x005b9e90 , _NuRand                                                        , 90    , i32 __cdecl (NURAND *)
 0x005b9ef0 , _NuFloatRand                                                   , 37    , f32 __cdecl (NURAND *)
 0x005bdd50 , _NuTrigInit                                                    , 56    , void __cdecl (void)
+0x5bde60,_NuAngAtanQuadrantI,45,
+0x5bde90,_NuAtani,130,"i32 __cdecl (i32, i32)"
+0x5bdf20,_NuAngAtanQuadrantRadI,84,
+0x5bdf80,_NuAtanf,163,"f32 __cdecl (i32, i32)"
 0x005be030 , _NuAngAtanQuadrant                                             , 73    , "u16 __cdecl (f32, f32)"
 0x005be080 , _NuAngAtanQuadrantInterp                                       , 319   , "u16 __cdecl (f32, f32)"
 0x005be1c0 , _NuAngAtanQuadrantInterpF                                      , 270   , "f32 __cdecl (f32, f32)"
@@ -5228,6 +5234,7 @@ address    , symbol                                                         , si
 0x751e84,??_C@_0N@MFECPDEM@stormtrooper?$AA@,13,const char[13]
 0x751e94   , _PCContextName_ZipUp                                           , 6     , const char [6]
 0x751ec0   , _PCContextName_Teleport                                        , 9     , const char [9]
+0x751ee8,??_C@_04NMIHPMCJ@Jedi?$AA@,,const char[]
 0x00751ee8 , _AreaFixUpName_Jedi                                            , 8     , char[8]
 0x751f40   , _SpecialLayerName_lowres_limbs_blue                            , 18    , const char [18]
 0x751f54   , _SpecialLayerName_hires_limbs_blue                             , 17    , const char [17]
@@ -6337,6 +6344,16 @@ address    , symbol                                                         , si
 0x75a0d8,__real@3f100000,4,const f32
 0x0075a0dc , _DebrisGlassMaterialOpacity                                    , 4     , const f32
 0x75a0dc,__real@3f7fbe77,4,const f32
+0x75a0f0,??_C@_0N@EPICCDHB@statusscreen?$AA@,,const char[]
+0x75a100,??_C@_0BH@LGHMDBKF@chars?2specialmoves?4txt?$AA@,,const char[]
+0x75a118,??_C@_0BF@DKGFBI@chars?2customiser?4txt?$AA@,,const char[]
+0x75a130,??_C@_0O@JPOCDOHC@BountyHunters?$AA@,,const char[]
+0x75a140,??_C@_0O@DEHCAAOB@BlasterZipUps?$AA@,,const char[]
+0x75a150,??_C@_04NEEIJHPO@Shop?$AA@,,const char[]
+0x75a158,??_C@_08PCNLMJNH@Minikits?$AA@,,const char[]
+0x75a164,??_C@_08PCHLEHLK@Vehicles?$AA@,,const char[]
+0x75a170,??_C@_0L@EMODJLOD@Characters?$AA@,,const char[]
+0x75a17c,__real@3f03d70a,,const f32
 0x0075a180,??_C@_03HFJGAJFE@All?$AA@,,
 0x75a1bc,??_C@_0CD@LGPIPCNC@stuff?2icons?2starwars_icons_all?4g@,,const char[35]
 0x75a1e0,??_C@_0BJ@FPOGABF@stuff?2vehicle_things?4gsc?$AA@,,const char[25]
@@ -8258,6 +8275,9 @@ address    , symbol                                                         , si
 0x00763ff8 , __real@3f7eb852                                                , 4     , const f32
 0x00764000 , __real@3e00000000000000                                        , 8     , f64
 0x00764090 , __real@3f2921fb60000000                                        , 8     , const f64
+0x7640b8,__real@3fc90fdb,,const f32
+0x7640bc,__real@4096cbe4,,const f32
+0x7640c0,__real@40490fdb,,const f32
 0x007640c8 , __real@4080000000000000                                        , 8     , const f64
 0x007640d0 , __real@46800000                                                , 4     , const f32
 0x007640d4 , __real@c6800000                                                , 4     , const f32
@@ -10580,6 +10600,8 @@ address    , symbol                                                         , si
 0x7f18d4,_id_CANTINAALIEN,,i16
 0x7f18d8,_id_CLOUDCITYCITIZEN,,i16
 0x007f18dc , _id_GEONOSIAN                                                  , 2     , i16
+007f18e4,_PermanentWeirdo1IdPc,,i16
+007f18e8,_PermanentWeirdo2IdPc,,i16
 0x007f18ec , _id_CHEWBACCA                                                  , 2     , i16
 0x7f18f0,_id_WOOKIEE,,i16
 0x007f18f4 , _GameObjectRotationAtstId                                      , 2     , u16
@@ -10658,12 +10680,14 @@ address    , symbol                                                         , si
 0x7f1a9c,_VehicleBoltId7f1a9cPc,,i16
 0x7f1aa0,_VehicleBoltId7f1aa0Pc,,i16
 0x007f1aa4 , _id_FLASHSPEEDER                                               , 2     , i16
+007f1aa8,_DefaultMotionSkeletonIdPc,,i16
 0x7f1aac,_VehicleBoltId7f1aacPc,,i16
 0x7f1ab0,_FreePlayId007f1ab0Pc,,i16
 0x7f1ab4,_FreePlayId007f1ab4Pc,,i16
 0x7f1ab8,_VehicleSpecialShooterIdPc,,i16
 0x7f1abc,_FreePlayId007f1abcPc,,i16
 0x7f1ac4,_ZipUpLineCharacterIdPc,,i16
+007f1ac8,_DefaultMotionIndySnakeIdPc,,i16
 0x7f1acc,_id_MINIDROIDEKA,,i16
 0x007f1ad4 , _id_MINIYWING                                                  , 2     , i16
 0x7f1ad8,_VehicleBoltId7f1ad8Pc,,i16
@@ -10688,6 +10712,7 @@ address    , symbol                                                         , si
 0x7f1b3c,_id_ZAMSSPEEDER,,i16
 0x7f1b40,_FreePlayId007f1b40Pc,,i16
 0x7f1b44,_FreePlayId007f1b44Pc,,i16
+007f1b4c,_PermModelListPc,,APICHARACTERMODELLIST[1]
 0x7f2374,_default_mover_extra,,f32
 0x7f2380,_TerrainPlayerPlatConnectTolerancePc,,f32
 0x007f2384 , _spline_seek_pos                                               , 4     , f32
@@ -10710,6 +10735,7 @@ address    , symbol                                                         , si
 0x7f2700,_CreatureCloudLegsPc,,const u8[3]
 0x7f2704,_CreatureCloudBodyPc,,const u8[3]
 0x7f2708,_CreatureCloudHeadPc,,const u8[3]
+007f37e0,_PermanentCustomiserActionsPc,,i16[5]
 0x7f3820,_CustomiserGameSettingsPrivatePc,,CUSTOMISER_GAME_SETTING_PC[7]
 0x7f3964,_drop_in_teleport,,i32
 0x7f3968,_teleport_all_freeplay_modes,,i32
@@ -10887,6 +10913,9 @@ address    , symbol                                                         , si
 0x7fc090,_CableTargetScalePc,,f32
 0x7fc098,_AwkwardShapeSpherePc,,AWKWARD_SHAPE_SPHERE_PC[]
 0x7fc140,_DisorientAxisPc,,u8
+007fc144,_DefaultMotionSpiderFarSpeedPc,,f32
+007fc148,_DefaultMotionSpiderNearSpeedPc,,f32
+007fc14c,_DefaultMotionSpiderRangePc,,f32
 0x7fc150,_VehicleZamSmokeRatePc,,f32
 0x7fc164,_VehicleGunshipHoverBasePc,,f32
 0x7fc168,_VehicleGunshipHoverOtherPc,,f32
@@ -11775,10 +11804,17 @@ address    , symbol                                                         , si
 0x00855e00 , _MiniCutCam                                                    , 4     , i32
 0x855e04,_KEEPONSCREEN_SIDESONLY,,i32
 0x855ea4,_PlayerSuit,,SUIT_LAYERS_PC *[8]
+00855ec4,_CharacterCollectionPc,,COLLECTION_BUILD_PC
+00855ed8,_BountyHunterCollectionPc,,COLLECTION_BUILD_PC
 0x00855eec , _WaitingForCharacterTime                                       , 4     , f32
+00855ef0,_VehicleCollectionPc,,COLLECTION_BUILD_PC
+00855f04,_JediCollectionPc,,COLLECTION_BUILD_PC
+00855f18,_ShopCollectionPc,,COLLECTION_BUILD_PC
+00855f2c,_MasterCollectionPc,,COLLECTION_BUILD_PC
 0x855f40,_PermanentShadowMaterialPc,,NUMTL *
 0x855f44,_MiniKitCollection,,COLLECTION_BUILD_PC
 0x855f58,_CoinPacket,,PLAYER_COIN_PACKET_PC[2]
+00855f78,_BlasterCollectionPc,,COLLECTION_BUILD_PC
 0x00855f94 , _DEFAULT_MOVE_RANGE                                            , 4     , f32
 0x855fa0,_addcreature_override_id_check,,i32
 0x008569a0 , _CharacterCustomiser                                           , 4     , CUSTOMISER_LAYERS_PC *
@@ -12214,9 +12250,12 @@ address    , symbol                                                         , si
 0x008806d0 , _tITALIAN                                                      , 2     , i16
 0x008806d4 , _tSPANISH                                                      , 2     , i16
 0x008806d8 , _tDANISH                                                       , 2     , i16
+008807a8,_PermanentBountyTitleIdPc,,i16
 0x008807ac , _PCArcadeModeText0                                             , 2     , i16
 0x008807b0 , _PCArcadeModeText1                                             , 2     , i16
 0x008807b4 , _PCArcadeModeText2                                             , 2     , i16
+008807d8,_PermanentAllTitleIdPc,,i16
+008807dc,_PermanentBlasterTitleIdPc,,i16
 0x008807e0 , _PCArcadeModeText                                              , 2     , i16
 0x008807f8 , _PCArcadePlayText                                              , 2     , i16
 0x00880878 , _tON                                                           , 2     , i16
@@ -12238,6 +12277,7 @@ address    , symbol                                                         , si
 0x880988,_tATTRACTSUIT,,i16
 0x880c88,_tTOUCHTOSTART,,i16
 0x00880f90 , _tALONGTIMEAGO                                                 , 2     , i16
+00881150,_PermanentJediTitleIdPc,,i16
 0x881278,_PlayerTorpedoCount,,u8[8]
 0x881280,_TorpedoPackets,,TORPEDO_PACKET_ALLOC_PC[16]
 0x881b00,_TorpedoFillEnabledPc,,u8
@@ -12723,6 +12763,7 @@ address    , symbol                                                         , si
 0x950bdc,_BlowupExFunc,,"i32(__cdecl *)(GIZMOBLOWUP_PC *,i32)"
 0x00950be4,_GizmoBlowUp_SfxFn,,"void (__cdecl *)(GIZMOBLOWUP_PC *, NUVEC *)"
 0x950be8,_GizmoBlowUp_NoTargetFn,,"i32(__cdecl*)(WORLDINFO*,GAMEOBJECT*)"
+00950c68,_DefaultMotionLedgeTerrainEnabledPc,,i32
 0x950c6c,_CanMagnetClimbFn,,i32 (__cdecl *)(GAMEOBJECT *)
 0x00950c70 , _MAGNETOFFSET                                                  , 4     , f32
 0x950d70,_LEGO_AIPATHCNX_BLOCKAGE,,i32

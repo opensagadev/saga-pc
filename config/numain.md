@@ -995,3 +995,15 @@ Full retained audit: build/analysis/mac2-evidence/README.md. Next connected work
 uses these names for shader publication/parser closure and LoadPerm2/character
 fixups. Whole-project goal remains active; direct-main pushes are authorized,
 with CI verified on each exact pushed revision. Human journal remains excluded.
+
+### Character loading, default movement and angle checkpoint GG (2026-10-08)
+
+LoadPerm2 now brings real character configuration, model-loading, collection,
+resident, customiser/special-move and status-screen music calls into the source.
+The actual ExtraCharacterFixUpAfterConfig callback installer remains explicit;
+default animation/movement suppliers are the next connected source wave.
+The canonical nopakfile reference resolves the true shared state without a fake
+model-loading provider or duplicate storage. This does not bypass the current
+NULL shader-manager publication failure. Authentic source startup/owned cleanup
+results are retained in checkpoint-GG/runtime-acceptance.json; persistent window,
+device/Present/frame/scene/gameplay success remains unverified.
