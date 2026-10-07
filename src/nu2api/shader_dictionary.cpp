@@ -591,3 +591,163 @@ void ShaderCompilerDictionaryPc::AddASTDefinition(ShaderSourceNodePc *node) {
     definitions[insertion] = node;
     ++definition_count;
 }
+
+void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *output) {
+    for (i32 i = 0; i < definition_count; ++i) {
+        ShaderSourceNodePc *node = definitions[i];
+        u32 flags = node->flags;
+        if (!(emit_centroid != 0 && (flags & 0x4020) == 0x4020)) {
+            if ((flags & 0x20) == 0 || node->expansion_state <= 0 || FindDefinition(node->name) != NULL)
+                continue;
+        }
+        bool unavailable = output_stage == 0 ? (flags & 0x2000) == 0 : (flags & 0x1000) == 0;
+        const char *alias = RenderASTName(node);
+        output->AppendText("#define ");
+        output->AppendText(alias);
+        output->AppendText("\r\n");
+        AddDefinition(alias, NULL, 0);
+        if (node->type == 21)
+            continue;
+        const char *shared = !unavailable && emit_semantics != 0 && (flags & 0x4020) == 0x4020 ? "shared " : "";
+        char array_suffix[64];
+        if (node->array_count >= 0)
+            sprintf(array_suffix, "[%d] ", node->array_count);
+        else if (node->array_count == -2)
+            sprintf(array_suffix, "[%d] ", FindRegisterBlock(node->name));
+        else
+            array_suffix[0] = 0;
+        const char *semantic_separator;
+        const char *semantic_name;
+        if (emit_registers != 0) {
+            semantic_separator = ": ";
+            semantic_name = node->SemanticName();
+        } else {
+            semantic_separator = "";
+            semantic_name = "";
+        }
+        char register_suffix[64];
+        if (!unavailable && (flags & 0x20) != 0) {
+            i32 index = output_stage == 0 ? node->vertex_register : node->pixel_register;
+            ShaderUniformRecordPc *record = NuShaderUniformGetByString(node->name);
+            if (record != NULL)
+                index = record->register_index;
+            if (index >= 0 && (profile == 4 || profile == 5))
+                sprintf(register_suffix, register_format, index);
+            else
+                register_suffix[0] = 0;
+        } else {
+            register_suffix[0] = 0;
+        }
+        output->AppendText(shared);
+        output->AppendText("uniform ");
+        output->AppendText(ShaderCompilerTypeNamesPc[node->type]);
+        output->AppendText(NuBlankStringValue);
+        output->AppendText(node->name);
+        output->AppendText(array_suffix);
+        output->AppendText(semantic_separator);
+        output->AppendText(semantic_name);
+        output->AppendText(register_suffix);
+        output->AppendText(";\r\n");
+    }
+}
+
+static char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena) {
+    i32 bytes = (i32)strlen(source) + 1;
+    char *result = reinterpret_cast<char *>(arena->cursor);
+    arena->cursor += bytes;
+    memcpy(result, source, bytes);
+    return result;
+}
+void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocatorPc *output) {
+    ShaderCompilerBufferAllocatorPc *saved_output = active_output;
+    active_output = output;
+    ShaderExpansionNodePc *node = static_cast<ShaderExpansionNodePc *>(input);
+    while (node != NULL) {
+        switch (node->kind) {
+            case 0: {
+                i32 value;
+                if (EvaluateCondition(node->data.branch.condition, &value) && value != 0)
+                    Expand(node->data.branch.if_true, output);
+                else if (node->data.branch.if_false != NULL)
+                    Expand(node->data.branch.if_false, output);
+                break;
+            }
+            case 1:
+                AddDefinition(node->data.definition.name, node->data.definition.value, 0);
+                if (unknown_965 == 0 && output != NULL) {
+                    const char *value = node->data.definition.value != NULL ? node->data.definition.value : "";
+                    output->AppendText("#define ");
+                    output->AppendText(node->data.definition.name);
+                    output->AppendText(NuBlankStringValue);
+                    output->AppendText(value);
+                    output->AppendText("\r\n");
+                }
+                break;
+            case 2:
+                if (output != NULL) {
+                    output->AppendText("#undef ");
+                    output->AppendText(node->data.definition.name);
+                    output->AppendText("\r\n");
+                }
+                break;
+            case 3:
+                if (FindASTExact(node->data.declaration.name, node->data.declaration.flags) == NULL) {
+                    const char *name = ShaderCloneArenaStringPc(node->data.declaration.name, &output_memory);
+                    const char *custom =
+                        node->data.declaration.custom_semantic != NULL
+                            ? ShaderCloneArenaStringPc(node->data.declaration.custom_semantic, &output_memory)
+                            : NULL;
+                    ShaderSourceNodePc *storage = reinterpret_cast<ShaderSourceNodePc *>(output_memory.cursor);
+                    output_memory.cursor += sizeof(ShaderSourceNodePc);
+                    ShaderSourceNodePc *definition = NULL;
+                    if (storage != NULL) {
+                        ShaderSourceNodePc initialized(
+                            node->data.declaration.flags, node->data.declaration.type,
+                            node->data.declaration.array_count, name, node->data.declaration.semantic, custom,
+                            node->data.declaration.vertex_register, node->data.declaration.pixel_register);
+                        *storage = initialized;
+                        definition = storage;
+                    }
+                    AddASTDefinition(definition);
+                }
+                break;
+            case 4: {
+                const char *name = node->data.reference.name;
+                for (i32 i = 0; i < node->data.reference.alias_depth; ++i)
+                    name = FindDefinition(name)->value;
+                ShaderSourceNodePc *definition = FindASTExact(name, node->data.reference.flags);
+                if (definition == NULL && (node->data.reference.flags & 0x20) != 0)
+                    definition = FindASTUniform(name);
+                if (definition != NULL) {
+                    ++definition->expansion_state;
+                    AddDefinition(RenderASTName(definition), NULL, 0);
+                }
+                break;
+            }
+            case 5:
+                unknown_965 = node->data.toggle.enabled == 0;
+                break;
+            case 6:
+                if (output != NULL) {
+                    u32 flags = node->data.emit.flags;
+                    if ((flags & 0x20) != 0)
+                        EmitProgram(output);
+                    else if (flags == 0x2010)
+                        EmitVertexInput(output);
+                    else if (flags == 0x3008)
+                        EmitAttribute(output);
+                    else if (flags == 0x2002)
+                        EmitType(output);
+                    else if (flags == 0x1004)
+                        EmitRegister(output);
+                }
+                break;
+            case 7:
+                if (output != NULL)
+                    output->AppendBytes(node->data.text.bytes, node->data.text.count);
+                break;
+        }
+        node = node->next;
+    }
+    active_output = saved_output;
+}

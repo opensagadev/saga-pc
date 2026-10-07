@@ -3547,3 +3547,65 @@ are prepared with preserved old exacts and canonical light84 to120 growth, bytes
 families follow. Area/Perm/FreePlay storage stays held without placement/padding
 controls. The human journal is unchanged and excluded; authorized whole-project
 direct-main continuation remains active, with matching primary.
+
+### Connected Hub, lighting, resource, text and shader checkpoint Y (2026-10-07 UTC)
+
+Verified 53 new source functions and 17,372 new unique compared PC bytes across
+Hub/Episode/BuildIt6,401, lighting2,964, resource/backdrop2,214, text crawl2,238,
+uniform/program expansion1,740 and parser/token1,815. Whole-PC fuzzy coverage is
+24.588679196413775%, up0.386080637848476 percentage points. Exact code is
+204,628/3,471,246 bytes (5.894943775232294%), up1,399 bytes/14 functions.
+Actual311 normal objects contain4,286 complete functions and9,621 full data
+initializers; native objdiff compares1,226,777 bytes, unique union1,226,259 with
+518 overlap bytes. Candidate inventory alone receives no transfer credit.
+
+All2,047 old exact code copies survived;4,232/4,233 prior whole functions remain
+official-byte identical. The unchanged particle source naturally changed its
+nonexact output713->719 solely through a proved x87 argument-load permutation
+and three FXCH instructions; the symbolic stack and remaining instructions,
+branch targets, real references, FP arithmetic and rounding stages are unchanged.
+Its complete native705-byte comparison remains nonexact and contributes a
+separate -0.000019993894123320176 fuzzy percentage-point delta; no source byte
+credit or codegen controls were added. Five compiler-local serial changes retain
+class6/type0 and identical owner/function offsets/raw/official outputs.
+
+The exact af1f551 first-NUL recipe cohort of1,158 strings had unsupported original
+allocation extents. Only their sizes were qualified to unknown, preserving names,
+VAs,char[N] types and text bytes. The isolated retail recomparison withdrew3,319
+exact-data union bytes and14,983 mapped-union bytes, with code progress unchanged.
+Three preintegration canonical substitutions and146 existing pointee reuses are
+outside the correction. All5,199 old known-extent exact compiled initializer
+copies outside that cohort survived. These are per-unit copies, not unique
+physical ranges. New59 known copies add395 complete bytes but only16 unique
+known exact data bytes; final known exact data/member union637,543. New429
+unknown-extent copies give no allocation/exact credit.
+
+There are488 new complete initializer copies/18,128 COFF bytes:487 full copies
+match retail (15,064 bytes). The sole exception is the Hub area table:3,060 typed
+bytes match, natural3,064-byte compiler region has4 nonnative tail bytes. Its
+original extent remains unknown and it is not counted as a full match. All9,133
+old complete initializers retain raw/named bytes except two explicit same-owner
+refinements: light84->120 preserves old84/fullnativezero and opaque64..73;
+glyph typed3 is unchanged while naturalfull3->4 is retail-equal, with the entire
+legacy first-NUL cohort consistently unknown. All13 member parents/28 known
+member bytes, CRC and HANDLE remain valid.
+
+Required build/link/check-objects and LLVM18 make check passed (719 tests,
+3 existing skips,338 format files/311 tidy units). Actual-normal CPU fixtures
+passed241/0 (125uniform,29scene,28ripple,59Hub/Episode/BuildIt), with every311
+provider object and423 frozen inputs unchanged, zero replacements/supplements.
+The source EXE still exits5 after3.176seconds at NULL Retrieve receiver
+(source502c20,start502c10,+16/full208); the complete native741750 body remains
+pinned. ShowCrashDialog0, no debugger popup or owned leftovers were observed.
+Window/Present/repeated frames/loaded scene/gameplay remain unverified. Only
+owned temporary Y fixture Wine storage was removed after verified clean release,
+reclaiming727,994,368 allocated bytes; logs/exes/receipts remain retained.
+
+The13:50 half-hour checkpoint was delayed to complete these gates, rather than
+commit broken output. Baseline3be6aff exact CI37627602260 passed. The validated
+checkpoint is authorized for direct main push; its exact pushed CI will be
+verified separately. Next: Area/FreePlay with current canonical storage and
+ready real resource-call reconnections, expression/accessories and strict COFF
+index/binding-validation performance work. Real value/backend/asset dependencies
+and the genuine Perm angle extent loss remain explicit holds. Perpetual goal
+continues; the human identification journal remains untouched and excluded.

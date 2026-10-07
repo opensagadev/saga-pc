@@ -977,3 +977,40 @@ i32 UpdateMenu(u32 primary_held, u32 primary_pressed, u32 alternate_held, u32 al
     }
     return MenuResult;
 }
+
+static char AreaIconPathPrivate[0x40] = "stuff\\icons\\";
+STATIC_ASSERT(sizeof(AreaIconPathPrivate) == 0x40);
+STATIC_ASSERT(offsetof(NUGSCN, display_list) == 0x110);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, render_flags) == 0x74);
+STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, model_id) == 0);
+STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, count) == 2);
+STATIC_ASSERT(offsetof(CHARACTERDATA_PC, icon_model) == 0x42);
+char *__cdecl LevelObject_FindNameFromIndex(i32);
+void __cdecl IconScenes_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
+    u32 table_size = (u32)CHARCOUNT * sizeof(*IconScenePc);
+    IconScenePc = (NUGSCN **)((buffer->addr + 3) & ~3u);
+    buffer->addr = (u32)IconScenePc + table_size;
+    memset(IconScenePc, 0, table_size);
+    if (path != NULL && NuStrLen(path) < 0x40)
+        NuStrCpy(AreaIconPathPrivate, path);
+}
+void __cdecl IconScenes_Load(APICHARACTERMODELLIST *list, i32 mode, VARIPTR *buffer, VARIPTR *end) {
+    if (list == NULL || IconScenePc == NULL)
+        return;
+    for (; list->model_id != -1; ++list) {
+        i32 id = list->model_id;
+        i32 object_index;
+        char path[0x100];
+        if (IconScenePc[id] != NULL || list->count == 0)
+            continue;
+        object_index = CDataList[id].icon_model;
+        if (object_index == -1)
+            continue;
+        NuStrCpy(path, AreaIconPathPrivate);
+        NuStrCat(path, LevelObject_FindNameFromIndex(object_index));
+        NuStrCat(path, ".gsc");
+        IconScenePc[id] = NuGScnRead(buffer, *end, path);
+        if (IconScenePc[id] != NULL && IconScenePc[id]->display_list != NULL)
+            IconScenePc[id]->display_list->render_flags |= 0x10;
+    }
+}

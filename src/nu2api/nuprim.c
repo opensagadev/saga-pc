@@ -619,3 +619,18 @@ void __cdecl NuPrimInit(VARIPTR *buffer, VARIPTR end) {
     (void)buffer;
     (void)end;
 }
+
+typedef struct AMBIENT_SPECULAR_RENDER_VIEW_PC {
+    u8 unknown_00[0x8c];
+    f32 global_specular;
+} AMBIENT_SPECULAR_RENDER_VIEW_PC;
+STATIC_ASSERT(offsetof(AMBIENT_SPECULAR_RENDER_VIEW_PC, global_specular) == 0x8c);
+i32 __cdecl NuRndrSetAmbientLightSpecular(const NUVEC4 *colour) {
+    AMBIENT_SPECULAR_RENDER_VIEW_PC *state = (AMBIENT_SPECULAR_RENDER_VIEW_PC *)&render_state;
+    state->global_specular = colour->w;
+    PCGlobalLightingState.ambient.x = colour->x;
+    PCGlobalLightingState.ambient.y = colour->y;
+    PCGlobalLightingState.ambient.z = colour->z;
+    NuRndrSetAmbientLightPS((const NUVEC *)colour);
+    return 0;
+}

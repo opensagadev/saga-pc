@@ -1045,3 +1045,187 @@ void __cdecl MenuSmartTextEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f3
     }
     SmartTextEx(text, x, y, z, sx, sy, sz, alignment, red, green, blue, max_width, max_lines, box, suppress, alpha);
 }
+
+typedef struct text_crawl_view_pc_s {
+    i16 *heading_text;
+    i16 *vehicle_bonus_text;
+    i16 *character_bonus_text;
+    u8 paragraph_count;
+    i8 area;
+    u8 unknown_0e[2];
+} TEXT_CRAWL_VIEW_PC;
+typedef struct text_crawl_mission_view_pc_s {
+    u8 unknown_00[4];
+    i16 name_id;
+    i16 text_id;
+} TEXT_CRAWL_MISSION_VIEW_PC;
+STATIC_ASSERT(sizeof(TEXT_CRAWL_VIEW_PC) == 0x10);
+STATIC_ASSERT(offsetof(TEXT_CRAWL_VIEW_PC, heading_text) == 0);
+STATIC_ASSERT(offsetof(TEXT_CRAWL_VIEW_PC, vehicle_bonus_text) == 4);
+STATIC_ASSERT(offsetof(TEXT_CRAWL_VIEW_PC, character_bonus_text) == 8);
+STATIC_ASSERT(offsetof(TEXT_CRAWL_VIEW_PC, paragraph_count) == 0xc);
+STATIC_ASSERT(offsetof(TEXT_CRAWL_VIEW_PC, area) == 0xd);
+STATIC_ASSERT(offsetof(TEXT_CRAWL_MISSION_VIEW_PC, name_id) == 4);
+STATIC_ASSERT(offsetof(TEXT_CRAWL_MISSION_VIEW_PC, text_id) == 6);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, name_id) == 0x78);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, episode_index) == 0x86);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, area_index) == 0x87);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, text_id_value) == 0x96);
+STATIC_ASSERT(offsetof(EPISODEDATA_PC, name_id) == 0);
+STATIC_ASSERT(offsetof(EPISODEDATA_PC, text_id) == 2);
+static TEXT_CRAWL_VIEW_PC *TextCrawlCurrentPc;
+static NUMTX TextCrawlMatrixPc;
+static NUVEC TextCrawlOffsetPc = {0.0f, -1.0f, 10.0f};
+extern u16 TextCrawlRotateXPc, TextCrawlRotateYPc, TextCrawlRotateZPc;
+extern f32 TextCrawlTimePc, TextCrawlScaleXPc, TextCrawlScaleYPc, TextCrawlLineWidthPc, TextCrawlLineSpacingPc;
+extern u32 TextCrawlRedPc, TextCrawlGreenPc;
+extern u8 TextCrawlBluePc;
+extern i32 Arcade_TextCrawlID, Arcade_TextCrawlParagraphs;
+void __cdecl TextCrawl_Init(TEXT_CRAWL_VIEW_PC *crawl, i32 id, i32 reset) {
+    if (crawl == NULL || QFont3DZ == NULL)
+        return;
+    TextCrawlCurrentPc = crawl;
+    crawl->area = id >= 0 && id < AREACOUNT ? (i8)id : -1;
+    NuMtxSetRotationX(&TextCrawlMatrixPc, TextCrawlRotateXPc);
+    NuMtxRotateY(&TextCrawlMatrixPc, TextCrawlRotateYPc);
+    NuMtxRotateZ(&TextCrawlMatrixPc, TextCrawlRotateZPc);
+    NuMtxTranslate(&TextCrawlMatrixPc, &TextCrawlOffsetPc);
+    if (reset != 0)
+        TextCrawlTimePc = 0.0f;
+}
+void __cdecl TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
+    AREA_DATA_PC *area = NULL;
+    TEXT_CRAWL_MISSION_VIEW_PC *mission;
+    i32 body_text_id = -1, episode_index = -1, area_index = -1, paragraph_count = 0;
+    i8 crawl_area;
+    char *episode_name = NULL, *episode_text = NULL, *chapter_text = NULL, *area_name = NULL;
+    char chapter_buffer[0x40];
+    i16 *bonus_text;
+    NUMTX matrix;
+    f32 colour_scale = 1.0f, alpha_scale = 128.0f, x_scale, y_scale, y;
+    u32 red, green, colour;
+    u16 encoded[1024];
+    i32 i;
+    if (TextCrawlCurrentPc == NULL || QFont3DZ == NULL)
+        return;
+    NuQFntSetJustifiedTolerances(1.2f, 1.2f);
+    if (paragraphs == 0 && TextCrawlTimePc >= 60.0)
+        return;
+    crawl_area = TextCrawlCurrentPc->area;
+    if (crawl_area != -1) {
+        area = &ADataList[crawl_area];
+        body_text_id = area->text_id;
+        episode_index = area->episode_index;
+        area_index = area->area_index;
+    }
+    if (text != NULL) {
+        episode_name = text;
+        body_text_id = -1;
+    } else {
+        mission = (TEXT_CRAWL_MISSION_VIEW_PC *)Mission_Active(NULL);
+        if (mission != NULL) {
+            if (mission->name_id != -1 && TTab[mission->name_id] != NULL)
+                area_name = TTab[mission->name_id];
+            body_text_id = mission->text_id;
+            paragraph_count = 3;
+        } else if (Arcade != 0) {
+            if (area != NULL && area->name_id != -1)
+                area_name = TTab[area->name_id];
+            body_text_id = Arcade_TextCrawlID;
+            paragraph_count = Arcade_TextCrawlParagraphs;
+        } else if (episode_index == -1) {
+            if (area != NULL && area->name_id != -1)
+                area_name = TTab[area->name_id];
+        } else {
+            if (EDataList[episode_index].name_id != -1)
+                episode_name = TTab[EDataList[episode_index].name_id];
+            if (EDataList[episode_index].text_id != -1)
+                episode_text = TTab[EDataList[episode_index].text_id];
+            if (area_index != -1) {
+                if (!(area->flags & 4)) {
+                    if (TextCrawlCurrentPc->heading_text != NULL) {
+                        sprintf(chapter_buffer, "%s %i", TTab[*TextCrawlCurrentPc->heading_text], area_index + 1);
+                        chapter_text = chapter_buffer;
+                    }
+                } else {
+                    bonus_text = area->flags & 1 ? TextCrawlCurrentPc->vehicle_bonus_text
+                                                 : TextCrawlCurrentPc->character_bonus_text;
+                    if (bonus_text != NULL)
+                        chapter_text = TTab[*bonus_text];
+                }
+                if (area->name_id != -1)
+                    area_name = TTab[area->name_id];
+            }
+        }
+    }
+    TextCrawlTimePc += dt;
+    if (TextCrawlTimePc >= 60.0) {
+        if (paragraphs == 0)
+            return;
+        TextCrawlTimePc = 0.0f;
+    }
+    NuMtxMul(&matrix, &TextCrawlMatrixPc, NuCameraGetMtx());
+    NuQFntSet(QFont3DZ);
+    NuQFntSetMtx(QFont3DZ, &matrix);
+    NuQFntPushPrintMode(4);
+    NuQFntSetCoordinateSystem(4);
+    red = TextCrawlRedPc;
+    green = TextCrawlGreenPc;
+    if (paragraphs == 0 && TextCrawlTimePc >= 55.0) {
+        colour_scale = (f32)(1.0 - ((f64)TextCrawlTimePc - 55.0) / 5.0);
+        alpha_scale = (f32)(colour_scale * 128.0);
+        green = (u32)((f64)TextCrawlGreenPc * colour_scale);
+        red = (u32)((f64)TextCrawlRedPc * colour_scale);
+    }
+    colour = ((u32)(alpha_scale * alpha) << 24) | ((red & 0xff) << 16) | ((green & 0xff) << 8) | TextCrawlBluePc;
+    NuQFntSetColour(QFont3DZ, colour);
+    y = (f32)(TextCrawlTimePc * (f64)0.4f - 4.5);
+    x_scale = TextScaleX_candidate * TextCrawlScaleXPc;
+    y_scale = TextScaleY_candidate * TextCrawlScaleYPc;
+    if (episode_name != NULL) {
+        if (text != NULL && NuStrCmp(text, "?") == 0)
+            NuQFntSetScale(QFont3DZ, (f32)(x_scale * 2.0), (f32)(y_scale * 3.0));
+        else
+            NuQFntSetScale(QFont3DZ, x_scale, y_scale);
+        Text3DStringEncode(episode_name, encoded);
+        NuQFntMove(QFont3DZ, (f32)(-NuQFntPrintLenW(QFont3DZ, encoded) * 0.5), y, 0.0f);
+        NuQFntPrintW(QFont3DZ, encoded);
+        y = (f32)(y + NuQFntHeight(QFont3DZ) * 1.5);
+    }
+    if (episode_text != NULL) {
+        NuQFntSetScale(QFont3DZ, x_scale, (f32)(y_scale * 2.0));
+        Text3DStringEncode(episode_text, encoded);
+        NuQFntMove(QFont3DZ, (f32)(-NuQFntPrintLenW(QFont3DZ, encoded) * 0.5), y, 0.0f);
+        NuQFntPrintW(QFont3DZ, encoded);
+        y = (f32)(y + NuQFntHeight(QFont3DZ) * 1.5);
+    }
+    if (chapter_text != NULL) {
+        NuQFntSetScale(QFont3DZ, x_scale, y_scale);
+        Text3DStringEncode(chapter_text, encoded);
+        NuQFntMove(QFont3DZ, (f32)(-NuQFntPrintLenW(QFont3DZ, encoded) * 0.5), y, 0.0f);
+        NuQFntPrintW(QFont3DZ, encoded);
+        y = (f32)(y + NuQFntHeight(QFont3DZ) * 1.5);
+    }
+    if (area_name != NULL) {
+        NuQFntSetScale(QFont3DZ, x_scale, (f32)(y_scale * 2.0));
+        Text3DStringEncode(area_name, encoded);
+        NuQFntMove(QFont3DZ, (f32)(-NuQFntPrintLenW(QFont3DZ, encoded) * 0.5), y, 0.0f);
+        NuQFntPrintW(QFont3DZ, encoded);
+        y = (f32)(y + NuQFntHeight(QFont3DZ) * 1.5);
+    }
+    if (body_text_id != -1) {
+        NuQFntSetScale(QFont3DZ, x_scale, y_scale);
+        if (paragraph_count == 0)
+            paragraph_count = area == NULL ? TextCrawlCurrentPc->paragraph_count : area->text_id_value;
+        for (i = 0; i < paragraph_count; ++i) {
+            char *paragraph = TTab[body_text_id + i];
+            if (paragraph == NULL || *paragraph == '\0')
+                break;
+            Text3DStringEncode(paragraph, encoded);
+            y += NuQFntPrintJustifiedW(QFont3DZ, encoded, (f32)(-TextCrawlLineWidthPc * 0.5), y, 0.0f, x_scale, y_scale,
+                                       TextCrawlLineWidthPc, TextCrawlLineSpacingPc, colour, &matrix);
+            y += NuQFntHeight(QFont3DZ);
+        }
+    }
+    NuQFntPopPrintMode();
+}

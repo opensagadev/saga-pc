@@ -1318,3 +1318,23 @@ i32 __cdecl rtlGetDirection(RTL_SET_PC *set, i32 index, NUVEC **out) {
     *out = &((RTL_DIRECTION_LOOKUP_PC *)set)->lights[index].direction;
     return 1;
 }
+
+f32 __cdecl rtlSpecularValue(RTL_DATA_PC *data) {
+    return data != NULL ? data->specular_value : 0.0f;
+}
+void __cdecl rtlSetSpecularValue(RTL_DATA_PC *data, f32 value) {
+    if (data != NULL)
+        data->specular_value = value;
+}
+void __cdecl rtlSetSpecularLight(RTL_DATA_PC *data) {
+    if (data->specular_value > 0.0f) {
+        const NUVEC *direction = &data->field_134;
+        if (direction != NULL) {
+            PCGlobalLightingState.specular_direction = *direction;
+            PCGlobalLightingState.specular_direction_missing = 0;
+        } else
+            PCGlobalLightingState.specular_direction_missing = 1;
+        PCGlobalLightingState.specular_intensity_present = 0;
+        NuRndrSetSpecularLightPS(direction, NULL);
+    }
+}

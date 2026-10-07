@@ -402,3 +402,97 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) 
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 #undef ALPHA_GRID_VERTEX
+
+static f32 RenderBackdropTargetTopRPc = 0.0f;
+static f32 RenderBackdropTargetTopGPc = 0.0f;
+static f32 RenderBackdropTargetTopBPc = 0.0f;
+static f32 RenderBackdropTargetBottomRPc = 0.0f;
+static f32 RenderBackdropTargetBottomGPc = 0.0f;
+static f32 RenderBackdropTargetBottomBPc = 24.0f;
+extern f32 RenderBackdropTopRPc;
+extern f32 RenderBackdropTopGPc;
+extern f32 RenderBackdropTopBPc;
+extern f32 RenderBackdropBottomRPc;
+extern f32 RenderBackdropBottomGPc;
+extern f32 RenderBackdropBottomBPc;
+static f32 RenderBackdropWaitPc = 0.0f;
+extern i32 RenderBackdropBlackPc;
+void __cdecl BackDrop_ClearColourTargets(void) {
+    RenderBackdropTargetTopRPc = 0.0f;
+    RenderBackdropTargetTopGPc = 0.0f;
+    RenderBackdropTargetTopBPc = 0.0f;
+    RenderBackdropTargetBottomRPc = 0.0f;
+    RenderBackdropTargetBottomGPc = 0.0f;
+    RenderBackdropTargetBottomBPc = 0.0f;
+}
+void __cdecl BackDrop_ResetColours(void) {
+    RenderBackdropTopRPc = 0.0f;
+    RenderBackdropTopGPc = 0.0f;
+    RenderBackdropTopBPc = 0.0f;
+    RenderBackdropBottomRPc = 0.0f;
+    RenderBackdropBottomGPc = 0.0f;
+    RenderBackdropBottomBPc = 0.0f;
+    RenderBackdropWaitPc = 0.0001f;
+    BackDrop_ClearColourTargets();
+}
+void __cdecl BackDrop_UpdateColours(i32 instant) {
+    if (RenderBackdropBlackPc) {
+        RenderBackdropTopRPc = 0.0f;
+        RenderBackdropTopGPc = 0.0f;
+        RenderBackdropTopBPc = 0.0f;
+        RenderBackdropBottomRPc = 0.0f;
+        RenderBackdropBottomGPc = 0.0f;
+        RenderBackdropBottomBPc = 0.0f;
+        return;
+    }
+    if (RenderBackdropWaitPc > 0.0f) {
+        RenderBackdropWaitPc -= FRAMETIME;
+        if (!(0.0f >= RenderBackdropWaitPc))
+            return;
+        if (instant) {
+            RenderBackdropTargetTopBPc = 0.0f;
+            RenderBackdropTargetTopGPc = 0.0f;
+            RenderBackdropTargetTopRPc = 0.0f;
+            RenderBackdropTargetBottomBPc = 0.0f;
+            RenderBackdropTargetBottomGPc = 0.0f;
+            RenderBackdropTargetBottomRPc = 0.0f;
+        } else
+            BackDrop_ClearColourTargets();
+        return;
+    }
+    if (RenderBackdropTopRPc == RenderBackdropTargetTopRPc && RenderBackdropTopGPc == RenderBackdropTargetTopGPc &&
+        RenderBackdropTopBPc == RenderBackdropTargetTopBPc &&
+        RenderBackdropBottomRPc == RenderBackdropTargetBottomRPc &&
+        RenderBackdropBottomGPc == RenderBackdropTargetBottomGPc &&
+        RenderBackdropBottomBPc == RenderBackdropTargetBottomBPc) {
+        RenderBackdropWaitPc = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.5 + 2.5);
+        return;
+    }
+    {
+        f32 step = (f32)(FRAMETIME * 10.0);
+        RenderBackdropTopRPc = SeekLinearF(RenderBackdropTopRPc, RenderBackdropTargetTopRPc, step);
+        RenderBackdropTopGPc = SeekLinearF(RenderBackdropTopGPc, RenderBackdropTargetTopGPc, step);
+        RenderBackdropTopBPc = SeekLinearF(RenderBackdropTopBPc, RenderBackdropTargetTopBPc, step);
+        RenderBackdropBottomRPc = SeekLinearF(RenderBackdropBottomRPc, RenderBackdropTargetBottomRPc, step);
+        RenderBackdropBottomGPc = SeekLinearF(RenderBackdropBottomGPc, RenderBackdropTargetBottomGPc, step);
+        RenderBackdropBottomBPc = SeekLinearF(RenderBackdropBottomBPc, RenderBackdropTargetBottomBPc, step);
+    }
+}
+void __cdecl BackDrop_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
+    NUGSCN *scene = RenderBackdropScenePc;
+    if (scene == NULL) {
+        scene = NuGScnRead(buffer, *end, path);
+        RenderBackdropScenePc = scene;
+    }
+    memset(RenderBackdropSpecialsPc, 0, sizeof(RenderBackdropSpecialsPc));
+    if (scene == NULL)
+        return;
+    NuSpecialFind(RenderBackdropScenePc, &RenderBackdropSpecialsPc[0], "ball1", 1);
+    NuSpecialFind(RenderBackdropScenePc, &RenderBackdropSpecialsPc[1], "ball2", 1);
+    NuSpecialFind(RenderBackdropScenePc, &RenderBackdropSpecialsPc[2], "ball3", 1);
+    NuSpecialFind(RenderBackdropScenePc, &RenderBackdropSpecialsPc[3], "ball4", 1);
+}
+void __cdecl BackDrop_Update(f32 dt) {
+    if (RenderBackdropScenePc != NULL)
+        NuGScnUpdate(RenderBackdropScenePc, (f32)(dt * 60.0));
+}

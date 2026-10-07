@@ -4510,3 +4510,59 @@ Draw's native UVs are(1,0),(0,0),(1,1),(1,0); twelve opaque vertex lanes remain
 unwritten. The signed arena clamp and native zero/one-node hazards are retained;
 selected CPU tests use initialized rings of2..64 nodes. No GPU or complete
 scene-loading claim follows from these source contracts.
+
+### Constructor input-text extent qualification (2026-10-07)
+
+The constructor-data recipe introduced in af1f551 assigned known sizes to 1,158 PcInputText rows by reading each native string through its first NUL (prepare.py lines 23–35 and 62–63). This establishes 14,983 initialized text bytes, but the retained evidence does not establish the original owning extents or private visibility. We therefore qualify only these rows to unknown size, preserving their addresses, char[N] working types, source values and complete compiler-region comparisons. The three names replaced by existing canonical compiler literals before integration and 146 prior canonical pointee reuses are excluded; all unrelated known-size contracts remain intact. This explicitly withdraws 3,319 bytes from the exact-data physical union and 14,983 bytes from the mapped union, with no change to compared code, fuzzy/exact code progress or transferred source credit. Historical proofs and reports remain retained. The enumerated recipe receipt is 43d4f9528799b2ef42eac5a137d114f789198237a6a314bccbd985089587f6a0; accounting against immutable X report f2d38a8fa9b982b5409133c497a7f5d96092b2dbfa34d4f5ca4e2784e032e98f is pinned by receipt 9615b77a95fd0be262e096c199d34b9b24bc8b247d88b1024899388cf47ac88b.
+
+### Connected Hub, lighting, resource, text and shader transfer Y (2026-10-07)
+
+The accepted source cohort contains 53 complete PC functions and 17,372 native
+bytes: Hub/Episode/BuildIt 14/6,401, lighting 10/2,964, resource/backdrop
+10/2,214, text crawl 2/2,238, uniform/program expansion 4/1,740 and parser/token
+13/1,815. These are source-family spans; actual newly compared union and exact
+and fuzzy deltas are recorded only after the normal-object retail comparison.
+Private helper/caller groups remain in their original Android-derived owners;
+those reference filenames and reconstructed names do not establish historical
+PC filenames or stripped private visibility.
+
+Hub v6 corrected four concrete PC behavior differences: the two distinct x87
+rounding stages in viewer movement/lift, native 64-bit shifts producing zero for
+counts at least 64, and colour-state reloads after real text/font calls. The final
+private-owner derivative keeps tables, strings, viewer state and the public panel
+pointer with its private pointee in hub.cpp. Its sole changed Init instruction
+window matches the native window; eleven other Hub bodies remain identical to
+the accepted source. Episode uses its genuine DWORD force-open field, and BuildIt
+uses the real node lookup/stride. Native omitted void actions remain marked.
+UpdateMiniKits and its Bounds helper remain held together; no negative-literal
+binding or placement control was added. Source/private derivative acceptance is
+pinned by ae662018c22ebebf08648e6d291762dadac10e21c7c7e0c90699276197fae077
+and 5d5909d11d5aeb0509b19e3f710beda646856931d0e349a2db9b2aab26057259.
+
+Lighting retains the canonical PCGlobalLightingState and grows its minimum
+working view from 84 to 120 bytes, preserving the old zero prefix. Verified
+specular direction/presence fields are asserted; the unaccessed bytes 0x64..0x73
+remain opaque. Native NaN/timer/BYTE/angle behavior and genuine CRT providers
+were reviewed. Resource helpers retain render.c's private target/wait state and
+menu.c's private path; no private helper ABI wrapper was introduced. Text crawl
+retains its private view/matrix/offset and the native rounding of the combined
+PrintJustifiedW return plus y before the separate Height addition. Asset/font,
+loaded-level and GPU execution are not established by source comparison.
+
+Uniform expansion uses the native 100-entry, 92-byte-stride working table and
+canonical existing time string. The nine-DWORD source node is genuinely
+constructed and trivially assigned; the obsolete placement-new fragment was
+not integrated. Native null-arena advancement/AddAST hazards are retained, not
+claimed safe. Parser/token transfers cover the finite node and slice operations,
+with named field offsets and real memcpy/new suppliers. Full parser/include,
+manager publication and HLSL producers remain unresolved; none was substituted
+with a fabricated value provider.
+
+The sole shared-storage writer's combined proposal adds 191 complete initializer
+copies, 11,795 COFF bytes, all retail-equal, with one known eight-byte coefficient
+and 190 unknown original owning extents. Complete private Hub table/string
+initializers are separately checked: all 179 typed initializers equal retail,
+but the area table's natural 3,064-byte compiler region extends its 3,060-byte
+working table by four nonnative padding bytes. Its original extent stays unknown
+and this is explicitly not a complete byte match or allocation-credit claim.
+Unproved NUL lengths and minimum working views remain unknown extents.

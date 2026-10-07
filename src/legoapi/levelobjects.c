@@ -180,3 +180,12 @@ void __cdecl LevelObjects_InitForLevel(WORLDINFO *world) {
             NuSpecialSetVisibility(&object->special, 0);
     }
 }
+
+STATIC_ASSERT(sizeof(LEVEL_OBJECT_CONFIG_PC) == 8);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_CONFIG_PC, name) == 4);
+char *__cdecl LevelObject_FindNameFromIndex(i32 index) {
+    char *name = "";
+    if (ObjTabList != NULL && index >= 0 && index < LEVELOBJECTCOUNT)
+        name = ObjTabList[index].name;
+    return name;
+}

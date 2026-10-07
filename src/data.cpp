@@ -1,6 +1,309 @@
 #include "saga.h"
 
 extern "C" {
+    static const char ShaderUniformTextPc007e8b50[20] = "shadowCastingObject";
+    static const char ShaderUniformTextPc007e8b64[22] = "texAnimCurves_sampler";
+    static const char ShaderUniformTextPc007e8b7c[19] = "texAnimMap_sampler";
+    static const char ShaderUniformTextPc007e8b90[15] = "lightmapOffset";
+    static const char ShaderUniformTextPc007e8ba0[18] = "specularDirection";
+    static const char ShaderUniformTextPc007e8bb4[17] = "permgrad_sampler";
+    static const char ShaderUniformTextPc007e8bc8[13] = "perm_sampler";
+    static const char ShaderUniformTextPc007e8bd8[15] = "fractal_params";
+    static const char ShaderUniformTextPc007e8be8[15] = "edgelit_params";
+    static const char ShaderUniformTextPc007e8bf8[12] = "worldCamPos";
+    static const char ShaderUniformTextPc007e8c04[24] = "fs_viewInverseTranspose";
+    static const char ShaderUniformTextPc007e8c1c[24] = "vs_viewInverseTranspose";
+    static const char ShaderUniformTextPc007e8c34[26] = "worldViewInverseTranspose";
+    static const char ShaderUniformTextPc007e8c50[12] = "wind_params";
+    static const char ShaderUniformTextPc007e8c5c[13] = "wind_sampler";
+    static const char ShaderUniformTextPc007e8c6c[12] = "worldParams";
+    static const char ShaderUniformTextPc007e8c78[15] = "carpaint_tints";
+    static const char ShaderUniformTextPc007e8c88[16] = "carpaint_params";
+    static const char ShaderUniformTextPc007e8c98[23] = "diffenvmap_samplerCube";
+    static const char ShaderUniformTextPc007e8cb0[12] = "dappleLimit";
+    static const char ShaderUniformTextPc007e8cbc[13] = "fxAttributes";
+    static const char ShaderUniformTextPc007e8ccc[18] = "vertexGroupStates";
+    static const char ShaderUniformTextPc007e8ce0[12] = "offsetTable";
+    static const char ShaderUniformTextPc007e8cec[17] = "lightRotationMtx";
+    static const char ShaderUniformTextPc007e8d00[16] = "averageLightDir";
+    static const char ShaderUniformTextPc007e8d10[18] = "averageLightColor";
+    static const char ShaderUniformTextPc007e8d24[13] = "noiseTexSize";
+    static const char ShaderUniformTextPc007e8d34[12] = "ps2ShineMtx";
+    static const char ShaderUniformTextPc007e8d40[12] = "lego_params";
+    static const char ShaderUniformTextPc007e8d4c[18] = "fs_frustum_params";
+    static const char ShaderUniformTextPc007e8d60[18] = "vs_frustum_params";
+    static const char ShaderUniformTextPc007e8d74[21] = "fs_projection_params";
+    static const char ShaderUniformTextPc007e8d8c[21] = "vs_projection_params";
+    static const char ShaderUniformTextPc007e8da4[11] = "fog_params";
+    static const char ShaderUniformTextPc007e8db0[10] = "fog_color";
+    static const char ShaderUniformTextPc007e8dbc[10] = "uvOffset3";
+    static const char ShaderUniformTextPc007e8dc8[10] = "uvOffset2";
+    static const char ShaderUniformTextPc007e8dd4[10] = "uvOffset1";
+    static const char ShaderUniformTextPc007e8de0[10] = "uvOffset0";
+    static const char ShaderUniformTextPc007e8dec[14] = "fs_screenSize";
+    static const char ShaderUniformTextPc007e8dfc[14] = "vs_screenSize";
+    static const char ShaderUniformTextPc007e8e0c[19] = "backBuffer_sampler";
+    static const char ShaderUniformTextPc007e8e20[18] = "refraction_kIndex";
+    static const char ShaderUniformTextPc007e8e34[17] = "refraction_color";
+    static const char ShaderUniformTextPc007e8e48[19] = "specular2_specular";
+    static const char ShaderUniformTextPc007e8e5c[18] = "specular_specular";
+    static const char ShaderUniformTextPc007e8e70[6] = "kTint";
+    static const char ShaderUniformTextPc007e8e78[17] = "layer_kOpacities";
+    static const char ShaderUniformTextPc007e8e8c[15] = "layer3_diffuse";
+    static const char ShaderUniformTextPc007e8e9c[15] = "layer2_diffuse";
+    static const char ShaderUniformTextPc007e8eac[15] = "layer1_diffuse";
+    static const char ShaderUniformTextPc007e8ebc[15] = "layer0_diffuse";
+    static const char ShaderUniformTextPc007e8ecc[25] = "fragmentUniforms_sampler";
+    static const char ShaderUniformTextPc007e8ee8[18] = "vtfNormal_sampler";
+    static const char ShaderUniformTextPc007e8efc[21] = "ps2_shinemap_sampler";
+    static const char ShaderUniformTextPc007e8f14[21] = "envmap_samplerSphere";
+    static const char ShaderUniformTextPc007e8f2c[19] = "envmap_samplerCube";
+    static const char ShaderUniformTextPc007e8f40[20] = "vertexFetch_sampler";
+    static const char ShaderUniformTextPc007e8f54[22] = "detailSurface_sampler";
+    static const char ShaderUniformTextPc007e8f6c[17] = "surface2_sampler";
+    static const char ShaderUniformTextPc007e8f80[16] = "surface_sampler";
+    static const char ShaderUniformTextPc007e8f90[18] = "specular2_sampler";
+    static const char ShaderUniformTextPc007e8fa4[17] = "specular_sampler";
+    static const char ShaderUniformTextPc007e8fb8[15] = "layer3_sampler";
+    static const char ShaderUniformTextPc007e8fc8[15] = "layer2_sampler";
+    static const char ShaderUniformTextPc007e8fd8[15] = "layer1_sampler";
+    static const char ShaderUniformTextPc007e8fe8[15] = "layer0_sampler";
+    static const char ShaderUniformTextPc007e8ff8[15] = "fs_lightParams";
+    static const char ShaderUniformTextPc007e9008[15] = "vs_lightParams";
+    static const char ShaderUniformTextPc007e9018[15] = "blendShapes[7]";
+    static const char ShaderUniformTextPc007e9028[15] = "blendShapes[6]";
+    static const char ShaderUniformTextPc007e9038[15] = "blendShapes[5]";
+    static const char ShaderUniformTextPc007e9048[15] = "blendShapes[4]";
+    static const char ShaderUniformTextPc007e9058[15] = "blendShapes[3]";
+    static const char ShaderUniformTextPc007e9068[15] = "blendShapes[2]";
+    static const char ShaderUniformTextPc007e9078[15] = "blendShapes[1]";
+    static const char ShaderUniformTextPc007e9088[15] = "blendShapes[0]";
+    static const char ShaderUniformTextPc007e9098[12] = "blendShapes";
+    static const char ShaderUniformTextPc007e90a4[17] = "blendShapesCount";
+    static const char ShaderUniformTextPc007e90b8[11] = "skinMatrix";
+    static const char ShaderUniformTextPc007e90c4[11] = "waterTable";
+    static const char ShaderUniformTextPc007e90d0[7] = "motion";
+    static const char ShaderUniformTextPc007e90d8[10] = "worldView";
+    static const char ShaderUniformTextPc007e90e4[14] = "worldViewProj";
+    static const char ShaderUniformTextPc007e90f4[9] = "viewProj";
+    static const char ShaderUniformTextPc007e9100[5] = "view";
+    static const char ShaderUniformTextPc007e9108[8] = "vs_view";
+    static const char ShaderUniformTextPc007e9110[6] = "world";
+    static const char ShaderUniformTextPc007e9118[13] = "gooch_params";
+    static const char ShaderUniformTextPc007e9128[12] = "vtf_kNormal";
+    static const char ShaderUniformTextPc007e9134[12] = "vtf_kHeight";
+    static const char ShaderUniformTextPc007e9140[14] = "envmap_params";
+    static const char ShaderUniformTextPc007e9150[16] = "specular_params";
+    static const char ShaderUniformTextPc007e9160[16] = "surface_params2";
+    static const char ShaderUniformTextPc007e9170[15] = "surface_params";
+    static const char ShaderUniformTextPc007e9180[14] = "bitangentFlip";
+    static const char ShaderUniformTextPc007e9190[15] = "lightPosition2";
+    static const char ShaderUniformTextPc007e91a0[18] = "vs_lightPosition2";
+    static const char ShaderUniformTextPc007e91b4[15] = "lightPosition1";
+    static const char ShaderUniformTextPc007e91c4[18] = "vs_lightPosition1";
+    static const char ShaderUniformTextPc007e91d8[15] = "lightPosition0";
+    static const char ShaderUniformTextPc007e91e8[18] = "vs_lightPosition0";
+    static const char ShaderUniformTextPc007e91fc[12] = "lightColor2";
+    static const char ShaderUniformTextPc007e9208[15] = "vs_lightColor2";
+    static const char ShaderUniformTextPc007e9218[12] = "lightColor1";
+    static const char ShaderUniformTextPc007e9224[15] = "vs_lightColor1";
+    static const char ShaderUniformTextPc007e9234[12] = "lightColor0";
+    static const char ShaderUniformTextPc007e9240[15] = "vs_lightColor0";
+    static const char ShaderUniformTextPc007e9250[17] = "incandescentGlow";
+    static const char ShaderUniformTextPc007e9264[18] = "sceneAmbientColor";
+    static const char ShaderUniformTextPc007e9278[21] = "vs_sceneAmbientColor";
+    static const char ShaderUniformTextPc007e9290[13] = "ambientColor";
+
+    ShaderUniformRecordPc ShaderUniformRecordsPc[100] = {
+        {ShaderUniformTextPc007e9290, ShaderUniformTextPc007e9290, 1, 1, 7, -1, 0, {0}},
+        {ShaderUniformTextPc007e9278, ShaderUniformTextPc007e9264, 1, 1, 3, 28, 2, {0}},
+        {ShaderUniformTextPc007e9250, ShaderUniformTextPc007e9250, 1, 1, 7, -1, 0, {0}},
+        {ShaderUniformTextPc007e9240, ShaderUniformTextPc007e9234, 1, 1, 3, 29, 2, {0}},
+        {ShaderUniformTextPc007e9224, ShaderUniformTextPc007e9218, 1, 1, 3, 30, 2, {0}},
+        {ShaderUniformTextPc007e9208, ShaderUniformTextPc007e91fc, 1, 1, 3, 31, 2, {0}},
+        {ShaderUniformTextPc007e91e8, ShaderUniformTextPc007e91d8, 1, 1, 3, 32, 2, {0}},
+        {ShaderUniformTextPc007e91c4, ShaderUniformTextPc007e91b4, 1, 1, 3, 33, 2, {0}},
+        {ShaderUniformTextPc007e91a0, ShaderUniformTextPc007e9190, 1, 1, 3, 34, 2, {0}},
+        {ShaderUniformTextPc007e9180, NULL, 1, 1, 1, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e9170, 1, 1, 6, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e9160, 1, 1, 6, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e9150, 1, 1, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e9140, 1, 1, 6, -1, 0, {0}},
+        {ShaderUniformTextPc007e9134, NULL, 1, 1, 5, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e9128, 1, 1, 6, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e9118, 1, 1, 2, -1, 0, {0}},
+        {ShaderUniformTextPc007e9110, NULL, 4, 4, 1, 16, 0, {0}},
+        {ShaderUniformTextPc007e9108, ShaderUniformTextPc007e9100, 4, 4, 3, 12, 1, {0}},
+        {ShaderUniformTextPc007e90f4, NULL, 4, 4, 1, 0, 2, {0}},
+        {ShaderUniformTextPc007e90e4, NULL, 4, 4, 1, 20, 0, {0}},
+        {ShaderUniformTextPc007e90d8, NULL, 4, 4, 1, 24, 0, {0}},
+        {ShaderUniformTextPc007e90d0, NULL, 4, 4, 1, 41, 0, {0}},
+        {ShaderUniformTextPc007e90c4, NULL, 32, 1, 1, -1, 0, {0}},
+        {ShaderUniformTextPc007e90b8, NULL, 32, 4, 1, -1, 0, {0}},
+        {ShaderUniformTextPc007e90a4, NULL, 1, 1, 1, 55, 0, {0}},
+        {ShaderUniformTextPc007e9098, NULL, 16, 1, 1, -1, 0, {0}},
+        {ShaderUniformTextPc007e9088, NULL, 1, 1, 1, 56, 0, {0}},
+        {ShaderUniformTextPc007e9078, NULL, 1, 1, 1, 57, 0, {0}},
+        {ShaderUniformTextPc007e9068, NULL, 1, 1, 1, 58, 0, {0}},
+        {ShaderUniformTextPc007e9058, NULL, 1, 1, 1, 69, 0, {0}},
+        {ShaderUniformTextPc007e9048, NULL, 1, 1, 1, 60, 0, {0}},
+        {ShaderUniformTextPc007e9038, NULL, 1, 1, 1, 61, 0, {0}},
+        {ShaderUniformTextPc007e9028, NULL, 1, 1, 1, 62, 0, {0}},
+        {ShaderUniformTextPc007e9018, NULL, 1, 1, 1, 63, 0, {0}},
+        {ShaderUniformTextPc007e9008, ShaderUniformTextPc007e8ff8, 11, 1, 3, 28, 1, {0}},
+        {NULL, ShaderUniformTextPc007e8fe8, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8fd8, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8fc8, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8fb8, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8fa4, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8f90, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8f80, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8f6c, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8f54, 0, 0, 2, -1, 0, {0}},
+        {ShaderUniformTextPc007e8f40, NULL, 0, 0, 1, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8f2c, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8f14, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8efc, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8ee8, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8ecc, 0, 0, 2, -1, 0, {0}},
+        {ShaderUniformTextPc007e8ebc, ShaderUniformTextPc007e8ebc, 1, 1, 6, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8eac, 1, 1, 6, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8e9c, 1, 1, 6, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8e8c, 1, 1, 6, -1, 0, {0}},
+        {ShaderUniformTextPc007e8e78, ShaderUniformTextPc007e8e78, 1, 1, 6, -1, 0, {0}},
+        {ShaderUniformTextPc007e8e70, NULL, 1, 1, 1, 40, 2, {0}},
+        {NULL, ShaderUniformTextPc007e8e5c, 1, 1, 6, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8e48, 1, 1, 6, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8e34, 1, 1, 6, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8e20, 1, 1, 6, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8e0c, 0, 0, 2, -1, 0, {0}},
+        {ShaderUniformTextPc007e8dfc, ShaderUniformTextPc007e8dec, 1, 1, 3, 45, 1, {0}},
+        {NULL, AIActionTimeName, 1, 1, 2, 46, 1, {0}},
+        {ShaderUniformTextPc007e8de0, NULL, 1, 1, 1, -1, 0, {0}},
+        {ShaderUniformTextPc007e8dd4, NULL, 1, 1, 1, -1, 0, {0}},
+        {ShaderUniformTextPc007e8dc8, NULL, 1, 1, 1, -1, 0, {0}},
+        {ShaderUniformTextPc007e8dbc, NULL, 1, 1, 1, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8db0, 1, 1, 2, 47, 1, {0}},
+        {ShaderUniformTextPc007e8da4, NULL, 1, 1, 1, 48, 1, {0}},
+        {ShaderUniformTextPc007e8d8c, ShaderUniformTextPc007e8d74, 1, 1, 3, 49, 1, {0}},
+        {ShaderUniformTextPc007e8d60, ShaderUniformTextPc007e8d4c, 1, 1, 3, 50, 1, {0}},
+        {NULL, ShaderUniformTextPc007e8d40, 1, 1, 2, -1, 0, {0}},
+        {ShaderUniformTextPc007e8d34, NULL, 4, 4, 1, 35, 1, {0}},
+        {NULL, ShaderUniformTextPc007e8d24, 1, 1, 2, 64, 1, {0}},
+        {NULL, ShaderUniformTextPc007e8d10, 1, 1, 2, 0, 2, {0}},
+        {NULL, ShaderUniformTextPc007e8d00, 1, 1, 2, 1, 2, {0}},
+        {ShaderUniformTextPc007e8cec, NULL, 4, 4, 1, 67, 1, {0}},
+        {ShaderUniformTextPc007e8ce0, NULL, 8, 1, 1, 71, 0, {0}},
+        {ShaderUniformTextPc007e8ccc, NULL, 32, 1, 1, 79, 0, {0}},
+        {ShaderUniformTextPc007e8cbc, NULL, 1, 1, 1, -1, 0, {0}},
+        {ShaderUniformTextPc007e8cb0, NULL, 1, 1, 1, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8c98, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8c88, 1, 1, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8c78, 4, 1, 2, -1, 0, {0}},
+        {ShaderUniformTextPc007e8c6c, NULL, 12, 4, 1, 16, 0, {0}},
+        {ShaderUniformTextPc007e8c5c, NULL, 0, 0, 1, -1, 0, {0}},
+        {ShaderUniformTextPc007e8c50, NULL, 1, 1, 1, -1, 0, {0}},
+        {ShaderUniformTextPc007e8c34, NULL, 4, 4, 1, 24, 1, {0}},
+        {ShaderUniformTextPc007e8c1c, ShaderUniformTextPc007e8c04, 4, 4, 3, 12, 1, {0}},
+        {ShaderUniformTextPc007e8bf8, NULL, 1, 1, 1, 39, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8be8, 1, 1, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8bd8, 1, 1, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8bc8, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8bb4, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8ba0, 1, 1, 2, 51, 2, {0}},
+        {ShaderUniformTextPc007e8b90, NULL, 1, 1, 1, 52, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8b7c, 0, 0, 2, -1, 0, {0}},
+        {NULL, ShaderUniformTextPc007e8b64, 0, 0, 2, -1, 0, {0}},
+        {ShaderUniformTextPc007e8b50, NULL, 1, 1, 1, 111, 0, {0}},
+    };
+}
+
+extern "C" {
+    RTL_DATA_PC LevelLightingDataPc = {0};
+    NUVEC PanelLightingColoursPc[3] = {{1.0f, 0.5f, 0.5f}, {0.5f, 1.0f, 0.5f}, {0.5f, 0.5f, 1.0f}};
+    NUVEC PanelLightingDirectionsPc[3] = {{-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 1.0f}, {0.0f, 0.0f, -1.0f}};
+    NUVEC PanelLightingAmbientPc = {1.0f, 1.0f, 1.0f};
+    extern const f64 LightingSurfaceFadeSlopePc = -0.33399999141693115;
+    f32 Lighting_RedFlashRedPc = 2.0f;
+    f32 Lighting_BlueFlickerGreenPc = 2.0f;
+    f32 Lighting_BlueFlickerBluePc = 2.0f;
+    i32 Lighting_FlashRedOnLastHeart = 0;
+    i32 Lighting_HighlightFlash = 0;
+    f32 Lighting_RedFlashGreenPc = 0.0f;
+    f32 Lighting_RedFlashBluePc = 0.0f;
+    f32 Lighting_BlueFlickerRedPc = 0.0f;
+    i32(__cdecl *Lighting_BlueFlickerFn)(GAMEOBJECT *) = NULL;
+}
+
+extern "C" {
+    f32 RenderBackdropTopRPc = 0.0f;
+    f32 RenderBackdropTopGPc = 0.0f;
+    f32 RenderBackdropTopBPc = 0.0f;
+    f32 RenderBackdropBottomRPc = 0.0f;
+    f32 RenderBackdropBottomGPc = 0.0f;
+    f32 RenderBackdropBottomBPc = 24.0f;
+    i32 RenderBackdropBlackPc = 0;
+    f32 HubMiniKitViewerMoveWaitPc = 0.0f;
+    f32 HubMiniKitViewerMovePc = 0.0f;
+    f32 HubMiniKitViewerReflectYPc = 0.09000000357627869f;
+    f32 HubHologramAlphaPc = 0.0f;
+    i32 HubCompletionPointsPc = 0;
+    i32 HubBothTrueJediGoldBricksPc = 0;
+    f32 HubAreaPanelOnePc[6] = {-0.15000000596046448f, -0.45000001788139343f, 0.75f, -0.75f,
+                                0.45000001788139343f,  0.15000000596046448f};
+    NUGSPLINE *HubMiniKitViewerSplinePc = NULL;
+    f32 HubAreaTimePc = 0.0f;
+    f32 HubEpisodeTimePc = 0.0f;
+    f32 HubStatsTimePc = 0.0f;
+    i32 HubAreaPc = 0;
+    i32 HubLastAreaPc = 0;
+    i32 HubEpisodePc = 0;
+    i32 HubMiniKitAreaPc = 0;
+    void(__cdecl *HubInitAIFnPc)(WORLDINFO *) = NULL;
+    f32 HubSecondLevelTimePc = 0.0f;
+    f32 HubHologramTargetAlphaPc = 0.0f;
+    void *HubBuildItPc = NULL;
+    void(__cdecl *HubResetAIFnPc)(WORLDINFO *) = NULL;
+    u64 LevHSpecialExists = 0ui64;
+    f32 HubJabbaAwakePc = 0.0f;
+    i32 HubBuildItsResetPc = 0;
+    f32 HubPreventDropOutTimePc = 0.0f;
+    i32 EpCompleteCount = 0;
+    i32 EpCompleteTotal = 0;
+    i32 EpMiniKitCount = 0;
+    i32 EpMiniKitTotal = 0;
+    i32 EpCharKitCount = 0;
+    i32 EpCharKitTotal = 0;
+    i32 EpBuildUpCount = 0;
+    i32 EpBuildUpTotal = 0;
+    i32 EpStoryBuildUpCount = 0;
+    i32 EpStoryBuildUpTotal = 0;
+    i32 EpFreePlayBuildUpCount = 0;
+    i32 EpFreePlayBuildUpTotal = 0;
+    i32 EpRedBrickCount = 0;
+    i32 EpRedBrickTotal = 0;
+    i32 EpGoldBrickCount = 0;
+    i32 EpGoldBrickTotal = 0;
+    i32 EpisodeGoldBrickForSuperStoryPc = 0;
+    EPISODE_SAVE_READER_PC *EpisodeSavePc = NULL;
+    i32 EpisodeGoldBrickForSuperBonusPc = 0;
+    i32 EpisodeGoldBrickForChallengePc = 0;
+    u16 TextCrawlRotateXPc = 13107;
+    u16 TextCrawlRotateYPc = 0;
+    u16 TextCrawlRotateZPc = 0;
+    f32 TextCrawlTimePc = 0.0f;
+    f32 TextCrawlScaleXPc = 0.009999999776482582f;
+    f32 TextCrawlScaleYPc = 0.009999999776482582f;
+    f32 TextCrawlLineWidthPc = 7.0f;
+    f32 TextCrawlLineSpacingPc = 1.2999999523162842f;
+    u32 TextCrawlRedPc = 0;
+    u32 TextCrawlGreenPc = 111;
+    u8 TextCrawlBluePc = 255;
+    i32 Arcade_TextCrawlID = -1;
+    i32 Arcade_TextCrawlParagraphs = 1;
+}
+
+extern "C" {
     i32 MenuResult = 0;
     i32 menu_pulsate_angle = 0;
     f32 menu_pulsate_speed = 0.0f;

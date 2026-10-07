@@ -8299,8 +8299,16 @@ extern "C" {
         NUVEC ambient;
         NUVEC direction[3];
         NUVEC intensity[3];
+        NUVEC specular_direction;
+        i32 specular_direction_missing;
+        u8 unknown_64[0x10];
+        i32 specular_intensity_present;
     } PC_GLOBAL_LIGHTING_STATE;
-    STATIC_ASSERT(sizeof(PC_GLOBAL_LIGHTING_STATE) == 84);
+    STATIC_ASSERT(sizeof(PC_GLOBAL_LIGHTING_STATE) == 0x78);
+    STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, specular_direction) == 0x54);
+    STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, specular_direction_missing) == 0x60);
+    STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, unknown_64) == 0x64);
+    STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, specular_intensity_present) == 0x74);
     STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, direction) == 0xc);
     STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, intensity) == 0x30);
     extern PC_GLOBAL_LIGHTING_STATE PCGlobalLightingState;
@@ -16525,7 +16533,10 @@ struct ShaderCompilerDictionaryPc {
     i32 second_version;
     const char *profile_name;
     ShaderCompilerBufferAllocatorPc register_buffer;
-    i32 unknown_99c;
+    union {
+        i32 unknown_99c;
+        ShaderCompilerBufferAllocatorPc *active_output;
+    };
     u32 unknown_9a0;
     ShaderCompilerDictionaryPc(VirtualStackAllocator &, i32);
     ~ShaderCompilerDictionaryPc();
@@ -16546,6 +16557,7 @@ struct ShaderCompilerDictionaryPc {
     void EmitRegister(ShaderCompilerBufferAllocatorPc *);
     void EmitVertexInput(ShaderCompilerBufferAllocatorPc *);
     void EmitAttribute(ShaderCompilerBufferAllocatorPc *);
+    void EmitProgram(ShaderCompilerBufferAllocatorPc *);
     void AddASTDefinition(ShaderSourceNodePc *);
 };
 STATIC_ASSERT(sizeof(ShaderConditionNodePc) == 12);
@@ -16592,6 +16604,157 @@ STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, programs) == 0);
 STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, unknown_965) == 0x965);
 STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, unknown_966) == 0x966);
 extern "C" void __cdecl ShaderLexicalClassesInitPc(void);
+
+STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, active_output) == 0x99c);
+
+struct ShaderExpansionNodePc {
+    i32 kind;
+    ShaderExpansionNodePc *next;
+    union {
+        struct {
+            ShaderExpansionNodePc *if_true;
+            ShaderExpansionNodePc *if_false;
+            ShaderConditionNodePc *condition;
+        } branch;
+        struct {
+            const char *name;
+            const char *value;
+        } definition;
+        struct {
+            u32 flags;
+            i32 type;
+            i32 array_count;
+            const char *name;
+            i32 semantic;
+            const char *custom_semantic;
+            i32 vertex_register;
+            i32 pixel_register;
+        } declaration;
+        struct {
+            u32 flags;
+            i32 alias_depth;
+            const char *name;
+        } reference;
+        struct {
+            u8 enabled;
+        } toggle;
+        struct {
+            u32 flags;
+        } emit;
+        struct {
+            const char *bytes;
+            i32 count;
+        } text;
+    } data;
+};
+STATIC_ASSERT(sizeof(ShaderExpansionNodePc) == 0x28);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, kind) == 0);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, next) == 4);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.branch.if_true) == 8);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.branch.if_false) == 12);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.branch.condition) == 16);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.definition.name) == 8);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.definition.value) == 12);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.declaration.flags) == 8);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.declaration.type) == 12);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.declaration.array_count) == 16);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.declaration.name) == 20);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.declaration.semantic) == 24);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.declaration.custom_semantic) == 28);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.declaration.vertex_register) == 32);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.declaration.pixel_register) == 36);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.reference.flags) == 8);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.reference.alias_depth) == 12);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.reference.name) == 16);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.toggle.enabled) == 8);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.emit.flags) == 8);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.text.bytes) == 8);
+STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.text.count) == 12);
+
+struct ShaderParserNodePc {
+    i32 kind;
+    ShaderParserNodePc *next;
+};
+struct ShaderParserTextNodePc : ShaderParserNodePc {
+    char *bytes;
+    i32 count;
+};
+struct ShaderParserMacroNodePc : ShaderParserNodePc {
+    char *name;
+    char *value;
+};
+struct ShaderParserUndefNodePc : ShaderParserNodePc {
+    char *name;
+};
+struct ShaderParserBranchNodePc : ShaderParserNodePc {
+    ShaderParserNodePc *if_true;
+    ShaderParserNodePc *if_false;
+    ShaderConditionNodePc *condition;
+};
+class ShaderCompilerParserPc {
+  public:
+    u8 unknown_0[0x110];
+    u8 lexical_state;
+    u8 reserved_111[3];
+    ShaderParserNodePc *head;
+    ShaderParserNodePc **tail;
+    VirtualStackAllocator *arena;
+    u8 emit_text;
+    u8 reserved_121[3];
+    ShaderCompilerBufferAllocatorPc text;
+    ShaderParserBranchNodePc *branches[100];
+    i32 branch_count;
+    ShaderParserBranchNodePc *scopes[100];
+    i32 scope_count;
+    void FlushText();
+    void DefineMacro(const char *name, const char *value);
+    void UndefineMacro(const char *name);
+    void BeginIf(ShaderConditionNodePc *condition);
+    void BeginElse();
+    void BeginElseIf(ShaderConditionNodePc *condition);
+    void EndIf();
+};
+STATIC_ASSERT(sizeof(ShaderParserNodePc) == 8);
+STATIC_ASSERT(offsetof(ShaderParserNodePc, kind) == 0);
+STATIC_ASSERT(offsetof(ShaderParserNodePc, next) == 4);
+STATIC_ASSERT(sizeof(ShaderParserTextNodePc) == 16);
+STATIC_ASSERT(offsetof(ShaderParserTextNodePc, bytes) == 8);
+STATIC_ASSERT(offsetof(ShaderParserTextNodePc, count) == 12);
+STATIC_ASSERT(sizeof(ShaderParserMacroNodePc) == 16);
+STATIC_ASSERT(offsetof(ShaderParserMacroNodePc, name) == 8);
+STATIC_ASSERT(offsetof(ShaderParserMacroNodePc, value) == 12);
+STATIC_ASSERT(sizeof(ShaderParserUndefNodePc) == 12);
+STATIC_ASSERT(offsetof(ShaderParserUndefNodePc, name) == 8);
+STATIC_ASSERT(sizeof(ShaderParserBranchNodePc) == 20);
+STATIC_ASSERT(offsetof(ShaderParserBranchNodePc, if_true) == 8);
+STATIC_ASSERT(offsetof(ShaderParserBranchNodePc, if_false) == 12);
+STATIC_ASSERT(offsetof(ShaderParserBranchNodePc, condition) == 16);
+STATIC_ASSERT(offsetof(ShaderCompilerParserPc, lexical_state) == 0x110);
+STATIC_ASSERT(offsetof(ShaderCompilerParserPc, head) == 0x114);
+STATIC_ASSERT(offsetof(ShaderCompilerParserPc, tail) == 0x118);
+STATIC_ASSERT(offsetof(ShaderCompilerParserPc, arena) == 0x11c);
+STATIC_ASSERT(offsetof(ShaderCompilerParserPc, emit_text) == 0x120);
+STATIC_ASSERT(offsetof(ShaderCompilerParserPc, text) == 0x124);
+STATIC_ASSERT(offsetof(ShaderCompilerParserPc, branches) == 0x134);
+STATIC_ASSERT(offsetof(ShaderCompilerParserPc, branch_count) == 0x2c4);
+STATIC_ASSERT(offsetof(ShaderCompilerParserPc, scopes) == 0x2c8);
+STATIC_ASSERT(offsetof(ShaderCompilerParserPc, scope_count) == 0x458);
+
+struct ShaderLexicalSlicePc {
+    const char *begin;
+    i32 length;
+    bool Equals(const char *text);
+    bool StartsWith(const char *text);
+    char *HeapCopy();
+    char *ArenaCopy(VirtualStackAllocator *arena);
+    i32 AsInteger(i32 skipped_prefix);
+};
+struct ShaderLexicalReaderPc {
+    bool Next(ShaderCompilerBufferAllocatorPc *input, i32 *cursor, ShaderLexicalSlicePc *slice);
+};
+STATIC_ASSERT(sizeof(ShaderLexicalSlicePc) == 8);
+STATIC_ASSERT(offsetof(ShaderLexicalSlicePc, begin) == 0);
+STATIC_ASSERT(offsetof(ShaderLexicalSlicePc, length) == 4);
 
 #endif
 
@@ -16701,6 +16864,141 @@ extern "C" {
     extern struct CUT_PLAYER_ACTIVE_PC *CutScenePlayerPc;
 #ifdef __cplusplus
 }
+#endif
+
+typedef struct shader_uniform_record_pc_s {
+    const char *vertex_name;
+    const char *fragment_name;
+    i32 value_count;
+    i32 field_c;
+    i32 stage_mask;
+    i32 register_index;
+    i32 field_18;
+    f32 values[16];
+} ShaderUniformRecordPc;
+STATIC_ASSERT(sizeof(ShaderUniformRecordPc) == 0x5c);
+STATIC_ASSERT(offsetof(ShaderUniformRecordPc, vertex_name) == 0);
+STATIC_ASSERT(offsetof(ShaderUniformRecordPc, fragment_name) == 4);
+STATIC_ASSERT(offsetof(ShaderUniformRecordPc, value_count) == 8);
+STATIC_ASSERT(offsetof(ShaderUniformRecordPc, field_c) == 12);
+STATIC_ASSERT(offsetof(ShaderUniformRecordPc, stage_mask) == 16);
+STATIC_ASSERT(offsetof(ShaderUniformRecordPc, register_index) == 20);
+STATIC_ASSERT(offsetof(ShaderUniformRecordPc, field_18) == 24);
+STATIC_ASSERT(offsetof(ShaderUniformRecordPc, values) == 28);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern ShaderUniformRecordPc ShaderUniformRecordsPc[100];
+    ShaderUniformRecordPc *__cdecl NuShaderUniformGetByString(const char *name);
+#ifdef __cplusplus
+}
+#endif
+
+typedef struct episode_save_reader_pc_s EPISODE_SAVE_READER_PC;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern f32 RenderBackdropTopRPc;
+    extern f32 RenderBackdropTopGPc;
+    extern f32 RenderBackdropTopBPc;
+    extern f32 RenderBackdropBottomRPc;
+    extern f32 RenderBackdropBottomGPc;
+    extern f32 RenderBackdropBottomBPc;
+    extern i32 RenderBackdropBlackPc;
+    extern f32 HubMiniKitViewerMoveWaitPc;
+    extern f32 HubMiniKitViewerMovePc;
+    extern f32 HubMiniKitViewerReflectYPc;
+    extern f32 HubHologramAlphaPc;
+    extern i32 HubCompletionPointsPc;
+    extern i32 HubBothTrueJediGoldBricksPc;
+    extern f32 HubAreaPanelOnePc[6];
+    extern NUGSPLINE *HubMiniKitViewerSplinePc;
+    extern f32 HubAreaTimePc;
+    extern f32 HubEpisodeTimePc;
+    extern f32 HubStatsTimePc;
+    extern i32 HubAreaPc;
+    extern i32 HubLastAreaPc;
+    extern i32 HubEpisodePc;
+    extern i32 HubMiniKitAreaPc;
+    extern void(__cdecl *HubInitAIFnPc)(WORLDINFO *);
+    extern f32 HubSecondLevelTimePc;
+    extern f32 HubHologramTargetAlphaPc;
+    extern void *HubBuildItPc;
+    extern void(__cdecl *HubResetAIFnPc)(WORLDINFO *);
+    extern u64 LevHSpecialExists;
+    extern f32 HubJabbaAwakePc;
+    extern i32 HubBuildItsResetPc;
+    extern f32 HubPreventDropOutTimePc;
+    extern i32 EpCompleteCount;
+    extern i32 EpCompleteTotal;
+    extern i32 EpMiniKitCount;
+    extern i32 EpMiniKitTotal;
+    extern i32 EpCharKitCount;
+    extern i32 EpCharKitTotal;
+    extern i32 EpBuildUpCount;
+    extern i32 EpBuildUpTotal;
+    extern i32 EpStoryBuildUpCount;
+    extern i32 EpStoryBuildUpTotal;
+    extern i32 EpFreePlayBuildUpCount;
+    extern i32 EpFreePlayBuildUpTotal;
+    extern i32 EpRedBrickCount;
+    extern i32 EpRedBrickTotal;
+    extern i32 EpGoldBrickCount;
+    extern i32 EpGoldBrickTotal;
+    extern i32 EpisodeGoldBrickForSuperStoryPc;
+    extern EPISODE_SAVE_READER_PC *EpisodeSavePc;
+    extern i32 EpisodeGoldBrickForSuperBonusPc;
+    extern i32 EpisodeGoldBrickForChallengePc;
+    extern u16 TextCrawlRotateXPc;
+    extern u16 TextCrawlRotateYPc;
+    extern u16 TextCrawlRotateZPc;
+    extern f32 TextCrawlTimePc;
+    extern f32 TextCrawlScaleXPc;
+    extern f32 TextCrawlScaleYPc;
+    extern f32 TextCrawlLineWidthPc;
+    extern f32 TextCrawlLineSpacingPc;
+    extern u32 TextCrawlRedPc;
+    extern u32 TextCrawlGreenPc;
+    extern u8 TextCrawlBluePc;
+    extern i32 Arcade_TextCrawlID;
+    extern i32 Arcade_TextCrawlParagraphs;
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl SpecialMoves_Configure(char *, VARIPTR *, VARIPTR *);
+    void __cdecl BackDrop_ClearColourTargets(void);
+    void __cdecl BackDrop_ResetColours(void);
+    void __cdecl BackDrop_UpdateColours(i32);
+    void __cdecl BackDrop_Init(char *, VARIPTR *, VARIPTR *);
+    void __cdecl BackDrop_Update(f32);
+    void __cdecl IconScenes_Init(char *, VARIPTR *, VARIPTR *);
+    void __cdecl IconScenes_Load(APICHARACTERMODELLIST *, i32, VARIPTR *, VARIPTR *);
+    char *__cdecl LevelObject_FindNameFromIndex(i32);
+    struct text_crawl_view_pc_s;
+    void __cdecl TextCrawl_Init(struct text_crawl_view_pc_s *, i32, i32);
+    void __cdecl TextCrawl_Draw(f32, i32, f32, char *);
+#ifdef __cplusplus
+}
+#endif
+
+/* Shared declarations only. Hub/Episode minimum local readers remain original
+ * owners. Table and state declarations await the sole-writer canonical gate. */
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl Hub_Init(WORLDINFO *);
+    void __cdecl Hub_Reset(WORLDINFO *);
+    void __cdecl Hub_InitMiniKits(WORLDINFO *);
+    void __cdecl Hub_DrawMiniKits(WORLDINFO *);
+    void __cdecl Hub_Draw3D(WORLDINFO *);
+    void *__cdecl GizBuildIt_Find(WORLDINFO *, char *);
+#ifdef __cplusplus
+}
+i32 __cdecl Episode_CountOpenAreas(i32, i32, COLLECTION_AREA_SAVE_PC *);
 #endif
 
 #endif
@@ -16837,6 +17135,37 @@ extern "C" {
 #endif
     void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup);
 
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern RTL_DATA_PC LevelLightingDataPc;
+    extern NUVEC PanelLightingColoursPc[3];
+    extern NUVEC PanelLightingDirectionsPc[3];
+    extern NUVEC PanelLightingAmbientPc;
+    extern const f64 LightingSurfaceFadeSlopePc;
+    extern f32 Lighting_RedFlashRedPc;
+    extern f32 Lighting_BlueFlickerGreenPc;
+    extern f32 Lighting_BlueFlickerBluePc;
+    extern i32 Lighting_FlashRedOnLastHeart;
+    extern i32 Lighting_HighlightFlash;
+    extern f32 Lighting_RedFlashGreenPc;
+    extern f32 Lighting_RedFlashBluePc;
+    extern f32 Lighting_BlueFlickerRedPc;
+    extern i32(__cdecl *Lighting_BlueFlickerFn)(GAMEOBJECT *);
+    void __cdecl SetLights(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *);
+    void __cdecl SetLights_RTLDATA(RTL_DATA_PC *, f32);
+    void __cdecl SetLevelLights(void *, f32);
+    void __cdecl SetPanelLights(f32);
+    void __cdecl FreeGameObjectLights(void);
+    f32 __cdecl rtlSpecularValue(RTL_DATA_PC *);
+    void __cdecl rtlSetSpecularValue(RTL_DATA_PC *, f32);
+    void __cdecl rtlSetSpecularLight(RTL_DATA_PC *);
+    i32 __cdecl NuRndrSetAmbientLightSpecular(const NUVEC4 *);
+    void __cdecl SetCreatureLights(APIOBJECT_PC *);
 #ifdef __cplusplus
 }
 #endif

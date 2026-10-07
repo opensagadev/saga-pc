@@ -110,3 +110,94 @@ void __cdecl SpecialMove_Cancel(GAMEOBJECT *object) {
             other->character_context = -1;
     }
 }
+
+STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, distance) == 0xc);
+static void SpecialMove_ConfigParticipant(NUFPAR_PC *parser, i16 *character, i8 *variant, i16 *animation) {
+    while (NuFParGetWord(parser)) {
+        if (NuStrICmp(parser->word_buffer_ptr, "character") == 0) {
+            if (NuFParGetWord(parser))
+                *character = CharIDFromName(parser->word_buffer_ptr);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "variant") == 0) {
+            if (NuFParGetWord(parser))
+                *variant = CharVariant_Find(parser->word_buffer_ptr);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "action") == 0) {
+            if (NuFParGetWord(parser))
+                *animation = ActionFromName(parser->word_buffer_ptr);
+        }
+    }
+}
+
+void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
+    NUFPAR_PC *parser;
+    PlayerSpecialMoveDataPc = NULL;
+    PlayerSpecialMoveCountPc = 0;
+    parser = NuFParCreate(filename);
+    if (parser == NULL) {
+        /* Native 58ac18 calls genuine empty RET 58aae0; no source action. */
+        return;
+    }
+
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    PlayerSpecialMoveDataPc = (SPECIALMOVE_TABLE_VIEW_PC *)buffer->addr;
+    {
+        SPECIALMOVE_TABLE_VIEW_PC *move;
+    outer_line:
+        if (!NuFParGetLine(parser))
+            goto done;
+    outer_word:
+        if (!NuFParGetWord(parser))
+            goto outer_line;
+        if (NuStrICmp(parser->word_buffer_ptr, "specialmove_start") != 0)
+            goto outer_line;
+
+        move = &((SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc)[PlayerSpecialMoveCountPc];
+        move->distance = 0.0f;
+        move->attacker_action_type = -1;
+        move->attacker_animation = -1;
+        move->attacker_id = -1;
+        move->victim_action_type = -1;
+        move->victim_animation = -1;
+        move->victim_id = -1;
+        move->flags = 0;
+
+    inner_line:
+        if (!NuFParGetLine(parser))
+            goto outer_line;
+        if (!NuFParGetWord(parser))
+            goto outer_line;
+        if (NuStrICmp(parser->word_buffer_ptr, "specialmove_end") == 0) {
+            if ((move->attacker_action_type != -1 || move->attacker_id != -1) && move->attacker_animation != -1 &&
+                (move->victim_action_type != -1 || move->victim_id != -1) && move->victim_animation != -1) {
+                ++PlayerSpecialMoveCountPc;
+                if (!NuFParGetLine(parser))
+                    goto done;
+                goto outer_word;
+            }
+            goto outer_line;
+        }
+        if (NuStrICmp(parser->word_buffer_ptr, "attacker") == 0)
+            SpecialMove_ConfigParticipant(parser, &move->attacker_id, &move->attacker_action_type,
+                                          &move->attacker_animation);
+        else if (NuStrICmp(parser->word_buffer_ptr, "victim") == 0)
+            SpecialMove_ConfigParticipant(parser, &move->victim_id, &move->victim_action_type, &move->victim_animation);
+        else if (NuStrICmp(parser->word_buffer_ptr, "distance_apart") == 0)
+            move->distance = NuFParGetFloat(parser);
+        else if (NuStrICmp(parser->word_buffer_ptr, "kill_victim_at_end") == 0)
+            move->flags |= 2;
+        else if (NuStrICmp(parser->word_buffer_ptr, "kill_victim_at_release") == 0)
+            move->flags |= 4;
+        else if (NuStrICmp(parser->word_buffer_ptr, "flash_victim_at_attack_end") == 0)
+            move->flags |= 8;
+        else if (NuStrICmp(parser->word_buffer_ptr, "throw_kill_parts_up") == 0)
+            move->flags |= 0x10;
+        else if (NuStrICmp(parser->word_buffer_ptr, "can_always_do") == 0)
+            move->flags |= 1;
+        goto inner_line;
+    }
+done:
+    NuFParDestroy(parser);
+    if (PlayerSpecialMoveCountPc > 0)
+        buffer->addr = (u32)((SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc + PlayerSpecialMoveCountPc);
+    else
+        PlayerSpecialMoveDataPc = NULL;
+}

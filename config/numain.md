@@ -829,3 +829,16 @@ the separate5f22a0 initializer cannot publish a substitute manager. Uniform
 lookup/program expansion and lighting are reviewed candidates awaiting their
 separate storage/release gates. Area/FreePlay/permanent source remains held on
 initializer preservation and real producer domains, without padding controls.
+
+### Connected source transfer Y (2026-10-07)
+
+Hub/Episode/BuildIt, lighting, backdrop/resource, text crawl, shader uniform/program
+expansion and finite parser/token source are now connected for normal-object
+verification. This does not complete the startup shader-manager producer. The
+real Retrieve receiver is still expected to be null until genuine parser/backend
+and HLSL publication are reconstructed. Native missing void actions in Hub,
+scene restoration/fallback and startup remain explicit. No replacement manager,
+borrowed executable code, fallback asset or fabricated ID was installed.
+Unattended smoke preserves the fault/exit, suppresses the Wine debugger dialog
+in its own prefix and cleans only its own processes. Device Present, recurring
+frames, loaded scenes and playable completion remain unverified.
