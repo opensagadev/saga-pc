@@ -3655,3 +3655,40 @@ shader declarations3997,compilerConfigure4642+truepredicates and terrain
 handle8039/ray1176 cohorts. Full parser STL/EH outlines, shader publication,
 DDS value fallback,Perm angle loss and Hub FP pair remain explicit holds.
 Perpetual whole-project direct-main continuation is active; human journal intact.
+
+### Connected shader and terrain checkpoint AA (2026-10-07 UTC)
+
+Transferred22 functions/12,760 new unique PC bytes: shader declarations3,997,
+compiler configuration4,804 and terrain pickup/ray3,959. Unique compared code
+1,252,503; native objdiff1,253,021 with unchanged518alias overlap. Whole-PC
+fuzzy25.077038719180244%, +0.26073356917544643pp; exact205,687/3,471,246
+=5.925451552554904%, +770bytes/fivefunctions. These metrics measure source
+comparison, not running-game completion. All4,303 prior whole function copies
+and2,063 old exact code copies survive; all9,733 old data regions and5,275
+old known-exact data copies remain identical. Five strict class6/type0 local
+serial changes retain raw/owner/official bytes. All13 member parents/28bytes
+andCRC/HANDLE survive. New217 full initializer copies/2,797bytes match native,
+3known12B and214unknown2,785B; unknownextents receive no credit. Existing
+physical data union637,545 is unchanged. No shared storage/capacity growth.
+
+Required build/link/check-objects, LLVM18 fullchecks726tests/3existing skips,
+340formatfiles/313tidy and authoritative retail matching pass. Initial Wine
+compiler sandbox socket binding failure is retained; unchanged authorized retry
+outside that socket restriction passes. All313 actual normal providers/frozen
+426inputs support selected terrain46/0 with no replacements/supplements.
+Authentic EXE exit5/3.406s still faults NULL Retrieve at source5058e0,+16/full208;
+ShowCrashDialog0 and launch-private cleanup leave no owned game/debugger/window.
+Window/device/Present/repeated frames/loadedworld/gameplay remain unverified.
+
+Baseline eac1e15 exactCI37644681634 passed all steps. The16:02 half-hour
+checkpoint was delayed to finish coherent header integration, complete checks
+and actual-normal runtime/preservation gates; no broken checkpoint committed.
+Next: accepted terrain Subset/Reset3,311; genuine HLSL3/974 pending migration
+review; broad cutscene scheduling/streaming; reviewed complete EH group support
+and real parser/include/record closure toward shader publication. Subset static
+reject cursor and HLSL selector/shininess defects were fixed in scratch before
+release. Full terrain preserves native wall-pointer hazards if its complete body
+is proved; no invented initialized pointer, bound or guard. Embedded-source and
+backend provenance, DDS value, Perm angle extent loss and Hub FP pair remain
+explicit holds. Whole-project matching-priority goal/direct-main continuation
+remains active, human identification journal intact and excluded.

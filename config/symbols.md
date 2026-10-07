@@ -4595,3 +4595,22 @@ owner/function offsets and complete relocated bytes. One retained acceptance
 manifest raw hash was stale: acceptedv7/normal Configure raw/named bytes are
 identical a07ec2a7, official291e9c. Only that metadata field was corrected, with
 original02796 manifest retained; no comparison byte/extent/binding was altered.
+
+### Shader declarations/configuration and terrain transfer AA (2026-10-07)
+
+Transferred22 complete functions/12,760 new PC bytes: declaration7/3,997,
+compiler configuration6/4,804 and terrain pickup/ray9/3,959. Parser private node
+records and native declaration switch tail remain in their genuine owner; prior
+Expression3 is preserved. Shader filter/base named fields and assertions now
+share the guarded header, removing duplicate declarations from manager/key
+owners without changing their prior output. Profile1 positive lightmap selectors
+use the native direct UV index; no instruction tuning or compiler flag changes.
+BasePrepare's native NULL-material hazard is retained, without a runtime claim.
+
+Terrain publishes the real original-private pickup pointer through its actual
+reader/initializer and uses real matrix, scratch, skin and scan services. Native
+type/index/arena domains are qualified; no fabricated query or enlarged storage.
+All4,303 old full official function bodies and9,733 old full initializers remain
+identical. Five class6/type0 serial changes preserve raw bytes/owner offsets/full
+relocated output. New exact five bodies add770 bytes; full native extents stay
+complete. Current normal build is313owners/4,325functions/9,950data regions.

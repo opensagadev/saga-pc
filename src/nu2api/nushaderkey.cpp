@@ -1,55 +1,5 @@
 #include "saga.h"
 
-struct PC_SHADER_FILTER_DESC_VIEW {
-    u32 flags;
-    i32 diffuse_maps[4];
-    u8 unknown_014[0x20];
-    i32 surface_threshold, normal_threshold;
-    u8 unknown_03c[8];
-    u8 blend_ops[3], unknown_047;
-    i32 specular_threshold;
-    u8 unknown_04c[0x5c];
-    u8 texture_units, sampler_indices[6], unknown_0af[0x8d];
-    u32 vertex_format;
-    u8 unknown_140[0x74];
-    u8 override_mode, unknown_1b5[3];
-    u32 layer_flags, selectors;
-    u8 unknown_1c0[0x24];
-    i32 extra_texture, environment_texture;
-};
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, diffuse_maps) == 4);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, surface_threshold) == 0x34);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, normal_threshold) == 0x38);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, blend_ops) == 0x44);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, specular_threshold) == 0x48);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, texture_units) == 0xa8);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, vertex_format) == 0x13c);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, override_mode) == 0x1b4);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, layer_flags) == 0x1b8);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, selectors) == 0x1bc);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, extra_texture) == 0x1e4);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, environment_texture) == 0x1e8);
-struct PC_SHADER_FILTER_MATERIAL_VIEW {
-    u8 unknown_000[0x40];
-    u32 blend_flags;
-    u8 unknown_044[0xbc];
-    i32 texture_id;
-};
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_MATERIAL_VIEW, blend_flags) == 0x40);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_MATERIAL_VIEW, texture_id) == 0x100);
-struct PC_SHADER_MATERIAL_FILTER_VIEW {
-    const PC_SHADER_FILTER_DESC_VIEW *descriptor;
-    const PC_SHADER_FILTER_MATERIAL_VIEW *material;
-    i32 flags, variant, first_path, deferred_path, second_path, layer_count, parameter;
-    void __thiscall Initialize(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32);
-    bool __thiscall UnfilteredHasLayer(i32) const;
-    bool __thiscall HasDiffuse(i32) const;
-    bool __thiscall HasLayer(i32) const;
-    u32 __thiscall GetVertexFlags() const;
-};
-STATIC_ASSERT(sizeof(PC_SHADER_MATERIAL_FILTER_VIEW) == 0x24);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, parameter) == 0x20);
-
 extern "C" void __cdecl NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FILTER_VIEW *filter,
                                                    i32 pixel_stage) {
     u8 block[104];

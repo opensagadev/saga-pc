@@ -16715,6 +16715,11 @@ class ShaderCompilerParserPc {
     void BeginElse();
     void BeginElseIf(ShaderConditionNodePc *condition);
     void EndIf();
+    void ParseDeclaration(ShaderCompilerBufferAllocatorPc *, i32 *);
+    void SetShowDefinitions(u8);
+    void UseDeclaration(u32, i32, const char *);
+    void AddDeclaration(u32, i32, i32, const char *, i32, const char *, i32, i32);
+    void EmitDeclarations(u32);
     ShaderConditionNodePc *ParseExpression(ShaderCompilerBufferAllocatorPc *input, i32 *cursor);
 };
 STATIC_ASSERT(sizeof(ShaderParserNodePc) == 8);
@@ -16759,6 +16764,124 @@ STATIC_ASSERT(sizeof(ShaderLexicalSlicePc) == 8);
 STATIC_ASSERT(offsetof(ShaderLexicalSlicePc, begin) == 0);
 STATIC_ASSERT(offsetof(ShaderLexicalSlicePc, length) == 4);
 
+#endif
+
+#ifdef __cplusplus
+
+struct PC_SHADER_FILTER_DESC_VIEW {
+    u32 flags;
+    i32 diffuse_maps[4];
+    u8 unknown_014[0x20];
+    i32 surface_threshold, normal_threshold;
+    u8 unknown_03c[8];
+    u8 blend_ops[3], unknown_047;
+    i32 specular_threshold;
+    u8 unknown_04c[0x5c];
+    u8 texture_units, sampler_indices[6], unknown_0af[0x8d];
+    u32 vertex_format;
+    u8 unknown_140[0x74];
+    u8 override_mode, unknown_1b5[3];
+    u32 layer_flags, selectors;
+    u8 unknown_1c0[0x24];
+    i32 extra_texture, environment_texture;
+};
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, diffuse_maps) == 4);
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, flags) == 0);
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, sampler_indices) == 0xa9);
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, surface_threshold) == 0x34);
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, normal_threshold) == 0x38);
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, blend_ops) == 0x44);
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, specular_threshold) == 0x48);
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, texture_units) == 0xa8);
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, vertex_format) == 0x13c);
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, override_mode) == 0x1b4);
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, layer_flags) == 0x1b8);
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, selectors) == 0x1bc);
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, extra_texture) == 0x1e4);
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, environment_texture) == 0x1e8);
+struct PC_SHADER_FILTER_MATERIAL_VIEW {
+    u8 unknown_000[0x40];
+    u32 blend_flags;
+    u8 unknown_044[0xbc];
+    i32 texture_id;
+};
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_MATERIAL_VIEW, blend_flags) == 0x40);
+STATIC_ASSERT(offsetof(PC_SHADER_FILTER_MATERIAL_VIEW, texture_id) == 0x100);
+struct PC_SHADER_MATERIAL_FILTER_VIEW {
+    const PC_SHADER_FILTER_DESC_VIEW *descriptor;
+    const PC_SHADER_FILTER_MATERIAL_VIEW *material;
+    i32 flags, variant, first_path, deferred_path, second_path, layer_count, parameter;
+    void __thiscall Initialize(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32);
+    bool __thiscall UnfilteredHasLayer(i32) const;
+    bool __thiscall HasDiffuse(i32) const;
+    bool __thiscall HasLayer(i32) const;
+    u32 __thiscall GetVertexFlags() const;
+    bool HasVertexSkin() const;
+    bool HasVertexSkinAlt() const;
+    bool HasAnisoFlip() const;
+    bool HasPhongLighting() const;
+};
+STATIC_ASSERT(sizeof(PC_SHADER_MATERIAL_FILTER_VIEW) == 0x24);
+STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, parameter) == 0x20);
+STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, descriptor) == 0);
+STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, material) == 4);
+STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, variant) == 0xc);
+STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, first_path) == 0x10);
+STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, deferred_path) == 0x14);
+STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, second_path) == 0x18);
+STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, layer_count) == 0x1c);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, identifier) + offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, vendor) == 0x5cc);
+STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, usehires) == 0x457);
+
+struct ShaderCompilerBasePc {
+    char save_directory[0x100];
+    char include_directories[0x100];
+    u32 unknown_204;
+    void *parsed_source;
+    ShaderCompilerDictionaryPc dictionary;
+    ShaderCompilerBufferAllocatorPc source_buffer;
+    VirtualStackAllocator parser_memory;
+    ShaderCompilerBasePc(VirtualStackAllocator &, i32);
+    virtual ~ShaderCompilerBasePc();
+    virtual void SetIncludeDirectories(const char *);
+    virtual void SetSaveDirectory(const char *);
+    virtual void SetProfile(i32, i32, i32);
+    virtual void SetForceMode(bool);
+    virtual void Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *);
+    virtual void Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *);
+    bool LoadSource(const char *, i32);
+    void *ParseSource(const char *, i32, ShaderCompilerBufferAllocatorPc *, i32, VirtualStackAllocator *);
+    void Generate(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerBufferAllocatorPc *,
+                  ShaderCompilerBufferAllocatorPc *);
+};
+STATIC_ASSERT(sizeof(ShaderCompilerBasePc) == 0xbd0);
+STATIC_ASSERT(offsetof(ShaderCompilerBasePc, save_directory) == 4);
+STATIC_ASSERT(offsetof(ShaderCompilerBasePc, include_directories) == 0x104);
+STATIC_ASSERT(offsetof(ShaderCompilerBasePc, parsed_source) == 0x208);
+STATIC_ASSERT(offsetof(ShaderCompilerBasePc, dictionary) == 0x20c);
+STATIC_ASSERT(offsetof(ShaderCompilerBasePc, source_buffer) == 0xbb0);
+STATIC_ASSERT(offsetof(ShaderCompilerBasePc, parser_memory) == 0xbc0);
+
+extern "C" u32 __cdecl ShaderDeclarationFlagsPc(u8, u8, u8);
+extern "C" i32 __cdecl ShaderDeclarationSemanticPc(ShaderLexicalSlicePc *);
+
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 __cdecl NewRayCastMask(NUVEC *, NUVEC *, f32, i32, i32);
+    i32 __cdecl NewRayCastSet(NUVEC *, NUVEC *, f32, f32, f32, i32, i32);
+    i32 __cdecl NewRayCastSetMask(NUVEC *, NUVEC *, f32, f32, f32, i32, i32, i32);
+
+    void __cdecl terrainpickupinit(char *, void **);
+    void __cdecl AddPickupTerr(i32, NUVEC *);
+    i32 __cdecl AddPickupTerrRot(i32, NUMTX *, NUMTX *, i32);
+    i16 __cdecl NewPlatPickupInst(void *, i32);
+    void __cdecl ReassignPickupInst(i32, i32);
+
+#ifdef __cplusplus
+}
 #endif
 
 typedef struct minikit_piece_pc_s {

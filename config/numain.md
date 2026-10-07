@@ -858,3 +858,21 @@ providers, followed by source/include/cache/Generate publication. Full include
 vector outlines remain a real COFF/native helper contract; no dummy vtable,
 borrowed HLSL or fabricated success. Terrain handle/ray families progress in
 parallel. DDS/value fallback, Perm angle extent loss and Hub FP pair stay held.
+
+### Current shader and terrain frontier after AA (2026-10-07)
+
+Shader declaration/semantic and base configuration/filter providers, terrain
+pickup/platform mutation and three ray variants are now real compared source.
+Actual313-normal-provider selected terrain checks pass46/0, with zero replacements
+or supplements and all426inputs unchanged. The unmodified source EXE still
+exits5 after3.406s at NULL Retrieve receiver, source5058e0,+16/full208.
+ShowCrashDialog0 and cleanup leave no owned debugger/crash window or game child.
+Persistent window/input/device/Present/loaded scene/gameplay remain unverified.
+
+Continue terrain Subset/Reset3311, HLSL methods974 and genuine cutscene
+scheduling/streaming. Parser/include9/1977 and compiler controls7/728 remain
+source research on real STL/record helper closure. Complete335/581-byte EH
+groups have independently reviewed identities; their four internal catch points
+receive no separate guessed extents/credit. Tool support remains a reviewed
+proposal, and actual embedded shader source/backend publication stays unready.
+No dummy vtable, borrowed HLSL, fake provider or successful fallback is introduced.

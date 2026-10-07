@@ -1935,3 +1935,18 @@ unchanged. Only the previously nonexact known2-byte default WORD now adds2
 unique exact data bytes; union637,543->637,545. No source transfer credit arises
 from that old tail or from the raw-manifest correction. No angle placement,
 padding or further legacy-extent qualification is used; Perm remains held.
+
+### Shader and terrain initializer copies AA (2026-10-07)
+
+All217 newly emitted complete initializer copies/2,797 COFF bytes are native
+equal:3 known-extent copies/12bytes and214 unknown-extent copies/2,785bytes.
+Unknown owning extents receive no allocation or exact-data credit. All9,733
+old full regions and5,275 old known-exact compiled copies survive unchanged.
+Known exact physical data/member union remains637,545; the new known copies
+reuse existing physical ranges. All13 named member parents/28known bytes,
+CRC/HANDLE and the consistently unknown legacy string cohort remain preserved.
+
+No new shared data.cpp storage was added. Ordinary static PickupTerrainPc stays
+in its genuine nuterrain.c owner: nativezero4/provedpublication, owning extent
+unknown. Parser/compiler literals use complete text and canonical bindings;
+source initializer equality does not establish original allocation capacity.

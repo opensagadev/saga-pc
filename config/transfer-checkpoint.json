@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1279694,
-    "matched_code_bytes": 204917,
-    "matching_percent": 5.9032693159747245,
-    "fuzzy_coverage_percent": 24.816305150004798,
-    "mapped_functions": 4490,
-    "matched_functions": 2060,
-    "objdiff_fuzzy_percent": 69.49616,
-    "objdiff_total_code": 1240261,
+    "mapped_code_bytes": 1292454,
+    "matched_code_bytes": 205687,
+    "matching_percent": 5.925451552554904,
+    "fuzzy_coverage_percent": 25.077038719180244,
+    "mapped_functions": 4512,
+    "matched_functions": 2065,
+    "objdiff_fuzzy_percent": 69.510796,
+    "objdiff_total_code": 1253021,
     "image_bytes": 40067072,
-    "mapped_bytes": 1927890,
-    "mapping_percent": 4.811656813854529,
+    "mapped_bytes": 1940650,
+    "mapping_percent": 4.843503413476283,
     "matched_data_region_bytes": 637545
   },
   "newly_compared": [
@@ -5683,6 +5683,226 @@
       ],
       "exact": false,
       "objdiff_percent": 41.872147
+    },
+    {
+      "symbol": "?SetShowDefinitions@ShaderCompilerParserPc@@QAEXE@Z",
+      "pc": "0x0074c360",
+      "original_bytes": 95,
+      "units": [
+        "src/nu2api/shader_parser.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 92.67857
+    },
+    {
+      "symbol": "?UseDeclaration@ShaderCompilerParserPc@@QAEXIHPBD@Z",
+      "pc": "0x0074c3c0",
+      "original_bytes": 168,
+      "units": [
+        "src/nu2api/shader_parser.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 77.89286
+    },
+    {
+      "symbol": "?AddDeclaration@ShaderCompilerParserPc@@QAEXIHHPBDH0HH@Z",
+      "pc": "0x0074c470",
+      "original_bytes": 259,
+      "units": [
+        "src/nu2api/shader_parser.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 61.247192
+    },
+    {
+      "symbol": "?EmitDeclarations@ShaderCompilerParserPc@@QAEXI@Z",
+      "pc": "0x0074c580",
+      "original_bytes": 95,
+      "units": [
+        "src/nu2api/shader_parser.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 92.67857
+    },
+    {
+      "symbol": "?ParseDeclaration@ShaderCompilerParserPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@PAH@Z",
+      "pc": "0x0074ca70",
+      "original_bytes": 2724,
+      "units": [
+        "src/nu2api/shader_parser.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 89.379555
+    },
+    {
+      "symbol": "_ShaderDeclarationFlagsPc",
+      "pc": "0x0074afe0",
+      "original_bytes": 49,
+      "units": [
+        "src/nu2api/shader_lexical.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_ShaderDeclarationSemanticPc",
+      "pc": "0x0074b450",
+      "original_bytes": 607,
+      "units": [
+        "src/nu2api/shader_lexical.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?Configure@ShaderCompilerBasePc@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z",
+      "pc": "0x00749620",
+      "original_bytes": 4642,
+      "units": [
+        "src/nu2api/shader_compiler.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 70.71589
+    },
+    {
+      "symbol": "?Prepare@ShaderCompilerBasePc@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionaryPc@@@Z",
+      "pc": "0x007452b0",
+      "original_bytes": 52,
+      "units": [
+        "src/nu2api/shader_compiler.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?HasVertexSkin@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ",
+      "pc": "0x007442e0",
+      "original_bytes": 31,
+      "units": [
+        "src/nu2api/nushadermanager.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?HasVertexSkinAlt@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ",
+      "pc": "0x00744300",
+      "original_bytes": 31,
+      "units": [
+        "src/nu2api/nushadermanager.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?HasAnisoFlip@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ",
+      "pc": "0x00748890",
+      "original_bytes": 24,
+      "units": [
+        "src/nu2api/nushadermanager.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 0.0
+    },
+    {
+      "symbol": "?HasPhongLighting@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ",
+      "pc": "0x00748980",
+      "original_bytes": 24,
+      "units": [
+        "src/nu2api/nushadermanager.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 0.0
+    },
+    {
+      "symbol": "_NewRayCastMask",
+      "pc": "0x0067b9b0",
+      "original_bytes": 394,
+      "units": [
+        "src/nu2api/terrain_query.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.913795
+    },
+    {
+      "symbol": "_NewRayCastSet",
+      "pc": "0x0067bb40",
+      "original_bytes": 389,
+      "units": [
+        "src/nu2api/terrain_query.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 81.63793
+    },
+    {
+      "symbol": "_NewRayCastSetMask",
+      "pc": "0x0067bcd0",
+      "original_bytes": 393,
+      "units": [
+        "src/nu2api/terrain_query.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 87.58929
+    },
+    {
+      "symbol": "_ReadTerrainPickup",
+      "pc": "0x0066c670",
+      "original_bytes": 408,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 36.031006
+    },
+    {
+      "symbol": "_terrainpickupinit",
+      "pc": "0x0066c810",
+      "original_bytes": 864,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 0.0
+    },
+    {
+      "symbol": "_AddPickupTerr",
+      "pc": "0x0067a790",
+      "original_bytes": 157,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 64.95556
+    },
+    {
+      "symbol": "_AddPickupTerrRot",
+      "pc": "0x0067a830",
+      "original_bytes": 749,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 66.22857
+    },
+    {
+      "symbol": "_NewPlatPickupInst",
+      "pc": "0x0067c4f0",
+      "original_bytes": 470,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 57.433567
+    },
+    {
+      "symbol": "_ReassignPickupInst",
+      "pc": "0x0067c6d0",
+      "original_bytes": 135,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 78.63636
     }
   ],
   "previous_exact_functions_lost": [],
@@ -23816,6 +24036,114 @@
       "user_journal_preserved": true,
       "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
       "ongoing_goal": "Continue whole-project transfer until human stops/pauses; validated direct-main pushes authorized."
+    },
+    {
+      "checkpoint": "Connected shader declaration/configuration and terrain pickup/ray checkpoint AA (2026-10-07 UTC)",
+      "baseline_commit": "eac1e15c3cb482b092a6e6c18bcdf0e6c43422a6",
+      "baseline_CI": {
+        "run": 37644681634,
+        "conclusion": "success",
+        "exact_head_sha": "eac1e15c3cb482b092a6e6c18bcdf0e6c43422a6"
+      },
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1279694,
+        "matched_code_bytes": 204917,
+        "matching_percent": 5.9032693159747245,
+        "fuzzy_coverage_percent": 24.816305150004798,
+        "mapped_functions": 4490,
+        "matched_functions": 2060,
+        "objdiff_fuzzy_percent": 69.49616,
+        "objdiff_total_code": 1240261,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1927890,
+        "mapping_percent": 4.811656813854529,
+        "matched_data_region_bytes": 637545
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1292454,
+        "matched_code_bytes": 205687,
+        "matching_percent": 5.925451552554904,
+        "fuzzy_coverage_percent": 25.077038719180244,
+        "mapped_functions": 4512,
+        "matched_functions": 2065,
+        "objdiff_fuzzy_percent": 69.510796,
+        "objdiff_total_code": 1253021,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1940650,
+        "mapping_percent": 4.843503413476283,
+        "matched_data_region_bytes": 637545
+      },
+      "new_source_functions": 22,
+      "actual_new_transfer_PC_bytes": 12760,
+      "new_unique_compared_PC_bytes": 12760,
+      "unique_compared_code_bytes": 1252503,
+      "native_objdiff_denominator": 1253021,
+      "overlap_bytes": 518,
+      "new_native_family_bytes": {
+        "shader_declarations": 3997,
+        "compiler_configuration": 4804,
+        "terrain_pickup_ray": 3959
+      },
+      "whole_PC_fuzzy_delta_pp": 0.26073356917544643,
+      "new_exact_PC_bytes": 770,
+      "new_exact_source_functions": 5,
+      "old_official_function_copies_identical": 4303,
+      "old_exact_code_copies_preserved": 2063,
+      "old_full_data_definitions": 9733,
+      "old_full_data_regions_identical": 9733,
+      "old_known_extent_exact_data_compiled_copies_preserved": 5275,
+      "current_full_function_definitions": 4325,
+      "current_full_data_definitions": 9950,
+      "qualified_compiler_local_class6_type0_serial_changes": 5,
+      "new_complete_initializer_copies": 217,
+      "new_complete_initializer_COFF_bytes": 2797,
+      "new_full_native_equal_copies": 217,
+      "new_known_extent_exact_initializer_compiled_copies": 3,
+      "new_known_extent_exact_initializer_COFF_bytes": 12,
+      "new_unknown_extent_full_native_equal_initializer_copies": 214,
+      "new_unknown_extent_initializer_COFF_bytes": 2785,
+      "unknown_extent_exact_and_allocation_credit": 0,
+      "known_exact_data_union_before_transfer": 637545,
+      "known_exact_data_union_after_transfer": 637545,
+      "new_shared_storage": 0,
+      "normal_objects": 313,
+      "frozen_inputs": 426,
+      "required_checks": {
+        "build_link_check_objects": "PASS",
+        "make_check": "PASS726/3 existing skips;LLVM18 340formatfiles/313tidy",
+        "authoritative_retail_match": "PASS",
+        "first_build_failure": "Sandbox Wine socket bind denied; unchanged authorized build outside socket restriction passed."
+      },
+      "selected_CPU_checks": 46,
+      "selected_CPU_failures": 0,
+      "source_EXE": {
+        "receipt": "/tmp/saga-pc-next-runtime/runtime-startup-acceptance/final-AA-unattended-acceptance.json",
+        "sha256": "997a6d0941123abb7cdf3e06152aae9c48bbd026365fae2df2e8e9517c98f0fb",
+        "exit": 5,
+        "elapsed_seconds": 3.4056491299998015,
+        "fault": "0x5058e0",
+        "native_method": "0x741750",
+        "method_size": 208,
+        "fault_offset": 16,
+        "visible_window_samples": 0
+      },
+      "milestones": "Unattended source EXE still NULL Retrieve receiver +16/full208, exit5; window/device/Present/scene/gameplay unverified. ShowCrashDialog0 and owned cleanup verified.",
+      "evidence_pins": {
+        "build/analysis/checkpoint-AA/normal-object-manifest.json": "4edcb2cbb0d16e9e5ac49c5bffea29944476b0eb81119cee9e1d7d87e92f238c",
+        "build/analysis/checkpoint-AA/frozen-first-source-inputs.json": "ecf2bf031d460774e0502b7d05c1f926a327bb01e5522d6f022f4881ca1d6370",
+        "build/analysis/checkpoint-AA/accepted-complete-functions.json": "c48c6c70a22e360781471e529286b9cac3ee62cf32839bdf994875624998d124",
+        "build/analysis/checkpoint-AA/required-checks-receipt.json": "96fedceaf8dec7a3a7945fad75962bea0365db48ffcab5927b48dc329a324b93",
+        "build/analysis/checkpoint-AA/runtime-acceptance.json": "585bfb8fd7b42da51e18178d0f447e9c60c1f2611ab44e024214f0274da7daa9",
+        "build/analysis/endpoint-AA-independent-review/actual-output-and-report-proof.json": "ce3d2d2366234098bbd54aeaa4cea8f30c6bb97babba1a78bfd5d2127ea65c9f"
+      },
+      "checkpoint_delay": "Half-hour delayed to complete coherent shared-header integration, full726 tests, authoritative matching, all-prior preservation and actual-normal runtime gate; no broken source committed.",
+      "next_wave": "Accepted terrain Subset/Reset3311; genuine HLSL methods974 pending independent migration review; cutscene scheduling/streaming and parser/STL complete-group provider closure.",
+      "holds": "Full terrain wall native hazard/domain qualification; real parser/include generated-helper identity and reviewed whole EH group tooling; shader publisher/embedded-source/backend provenance; DDS value producer, Perm angle loss and Hub FP pair.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "Whole-project matching-priority transfer continues until human stops/pauses; validated direct-main pushes authorized, verify exact pushed CI separately."
     }
   ]
 }

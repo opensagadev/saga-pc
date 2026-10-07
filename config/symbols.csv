@@ -3497,6 +3497,8 @@ address    , symbol                                                         , si
 0x66b320,_TerrainSetWallDeflectYScale,11,void __cdecl TerrainSetWallDeflectYScale(f32 scale)
 0x0066b330,_ReadTerrain,1248,"i32 __cdecl (u8 *, i32, i16 **, TERRAIN_SET_PC *)"
 0x0066b8c0,_TerrainInitEx,3491,"void *__cdecl (i32, void *, void *, i32, char *, void *, i32, u32, u32, u32)"
+0x66c670,_ReadTerrainPickup,408,"i32 __cdecl(unsigned char*,i16**,TERRAIN_PICKUP_SET_PC*)"
+0x66c810,_terrainpickupinit,864,"void __cdecl(char*,void**)"
 0x66cb70,_noterraininit,64,void __cdecl noterraininit(void)
 0x0066cbb0 , _TerrainSetCur                                                 , 10    , void __cdecl (void *)
 0x0066cbc0 , _TerrainGetCur                                                 , 6     , void *__cdecl (void)
@@ -3547,6 +3549,8 @@ address    , symbol                                                         , si
 0x0067a6d0 , _NewTerrPlatformsOff                                            , 10    ,
 0x0067a6e0 , _NewShadowOnPlatform                                           , 55    ,
 0x67a740,_AddCollisionSphere,68,"void __cdecl(NUVEC *,f32)"
+0x67a790,_AddPickupTerr,157,"void __cdecl(i32,NUVEC*)"
+0x67a830,_AddPickupTerrRot,749,"i32 __cdecl(i32,NUMTX*,NUMTX*,i32)"
 0x67ab20,_NewTerrHitInfo,44,void __cdecl(u8 *)
 0x67ab50,_TerrainSideClamp,239,"void __cdecl(NUVEC *,NUVEC *)"
 0x67ac40,_TerrShapeSideStep,701,"i32 __cdecl(NUVEC *,NUVEC *,u8 *)"
@@ -3557,7 +3561,12 @@ address    , symbol                                                         , si
 0x67b270,_NewRayCastHitWallSpline,10,i32 __cdecl NewRayCastHitWallSpline(void)
 0x67b280,_NewRayCast,389,"i32 __cdecl NewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags)"
 0x67b430,_NewRayCastScaleYMask,473,"i32 __cdecl(NUVEC*,NUVEC*,f32,f32,i32,u32)"
+0x67b9b0,_NewRayCastMask,394,"i32 __cdecl(NUVEC *,NUVEC *,f32,i32,i32)"
+0x67bb40,_NewRayCastSet,389,"i32 __cdecl(NUVEC *,NUVEC *,f32,f32,f32,i32,i32)"
+0x67bcd0,_NewRayCastSetMask,393,"i32 __cdecl(NUVEC *,NUVEC *,f32,f32,f32,i32,i32,i32)"
 0x0067bf50 , _NewPlatInst                                                   , 528   , "i32 __cdecl (void *, i32)"
+0x67c4f0,_NewPlatPickupInst,470,"i16 __cdecl(void*,i32)"
+0x67c6d0,_ReassignPickupInst,135,"void __cdecl(i32,i32)"
 0x67c760,_FindPlatInst,71,i32 __cdecl(i32)
 0x67c7b0,_PlatInstRotate,46,"void __cdecl (i32, i32)"
 0x0067c860 , _PlatInstGetHit                                                , 45    , i32 __cdecl (i32)
@@ -4624,12 +4633,15 @@ address    , symbol                                                         , si
 0x743d30,_PCShaderObjectDestroyHLSLPc,5,void __cdecl PCShaderObjectDestroyHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *)
 0x7440c0,_PCShaderNativeUnInit,72,void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*)
 0x744210,_NuShaderUniformGetByString,154,ShaderUniformRecordPc *__cdecl NuShaderUniformGetByString(const char *name)
+0x7442e0,?HasVertexSkin@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,31,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasVertexSkin() const
+0x744300,?HasVertexSkinAlt@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,31,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasVertexSkinAlt() const
 0x7443d0,?Initialize@PC_SHADER_MATERIAL_FILTER_VIEW@@QAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH@Z,272,"void __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*,i32,i32)"
 0x7444e0,?UnfilteredHasLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,128,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::UnfilteredHasLayer(i32) const
 0x744560,?HasDiffuse@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,120,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasDiffuse(i32) const
 0x744660,?HasLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,75,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasLayer(i32) const
 0x7446b0,?GetVertexFlags@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEIXZ,292,u32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags(void) const
 0x744c20,_NuShaderObjectKeyGenerate3,1093,"void __cdecl(u32*,const PC_SHADER_MATERIAL_FILTER_VIEW*,i32)"
+0x7452b0,?Prepare@ShaderCompilerBasePc@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,52,"void __thiscall ShaderCompilerBasePc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *)"
 0x746260,??0CRC16@@QAE@XZ,255,__thiscall CRC16::CRC16(void)
 0x746360,?hash@CRC16@@SAIPBEH@Z,61,"u32 __cdecl CRC16::hash(const u8*,i32)"
 0x7463a0,?hashInverse@CRC16@@SAIPBEH@Z,64,"u32 __cdecl CRC16::hashInverse(const u8*,i32)"
@@ -4667,6 +4679,9 @@ address    , symbol                                                         , si
 0x7485e0,?AppendBytes@ShaderCompilerBufferAllocatorPc@@QAEXPBDH@Z,114,
 0x748760,?AppendText@ShaderCompilerBufferAllocatorPc@@QAEXPBD@Z,39,
 0x748790,?AppendInt@ShaderCompilerBufferAllocatorPc@@QAEXH@Z,90,
+0x748890,?HasAnisoFlip@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,24,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasAnisoFlip() const
+0x748980,?HasPhongLighting@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,24,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasPhongLighting() const
+0x749620,?Configure@ShaderCompilerBasePc@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,4642,"void __thiscall ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *)"
 0x74aa50,?Equals@ShaderLexicalSlicePc@@QAE_NPBD@Z,55,bool __thiscall ShaderLexicalSlicePc::Equals(const char *text)
 0x74aa90,?StartsWith@ShaderLexicalSlicePc@@QAE_NPBD@Z,46,bool __thiscall ShaderLexicalSlicePc::StartsWith(const char *text)
 0x74aac0,?HeapCopy@ShaderLexicalSlicePc@@QAEPADXZ,46,char * __thiscall ShaderLexicalSlicePc::HeapCopy()
@@ -4674,9 +4689,11 @@ address    , symbol                                                         , si
 0x74ab30,?AsInteger@ShaderLexicalSlicePc@@QAEHH@Z,61,i32 __thiscall ShaderLexicalSlicePc::AsInteger(i32 skipped_prefix)
 0x74ab70,?Next@ShaderLexicalReaderPc@@QAE_NPAUShaderCompilerBufferAllocatorPc@@PAHPAUShaderLexicalSlicePc@@@Z,614,"bool __thiscall ShaderLexicalReaderPc::Next(ShaderCompilerBufferAllocatorPc *input, i32 *cursor, ShaderLexicalSlicePc *slice)"
 0x74ade0,_ShaderLexicalClassesInitPc,409,
+0x74afe0,_ShaderDeclarationFlagsPc,49,
 0x74b020,?IsSpecialToken@ShaderLexicalTokenPredicatePc@@QAEHPBD@Z,50,
 0x74b0c0,?AppendOperand@ShaderConditionNodePc@@QAEPAU1@PAU1@@Z,35,ShaderConditionNodePc *__thiscall ShaderConditionNodePc::AppendOperand(ShaderConditionNodePc *)
 0x74b350,?ShaderConditionPrecedencePc@@YAHPBD@Z,249,
+0x74b450,_ShaderDeclarationSemanticPc,607,
 0x74bc70,?FlushText@ShaderCompilerParserPc@@QAEXXZ,132,void __thiscall ShaderCompilerParserPc::FlushText()
 0x74c010,?DefineMacro@ShaderCompilerParserPc@@QAEXPBD0@Z,217,"void __thiscall ShaderCompilerParserPc::DefineMacro(const char *name, const char *value)"
 0x74c0f0,?UndefineMacro@ShaderCompilerParserPc@@QAEXPBD@Z,154,void __thiscall ShaderCompilerParserPc::UndefineMacro(const char *name)
@@ -4684,7 +4701,12 @@ address    , symbol                                                         , si
 0x74c230,?BeginElse@ShaderCompilerParserPc@@QAEXXZ,32,void __thiscall ShaderCompilerParserPc::BeginElse()
 0x74c250,?BeginElseIf@ShaderCompilerParserPc@@QAEXPAUShaderConditionNodePc@@@Z,144,void __thiscall ShaderCompilerParserPc::BeginElseIf(ShaderConditionNodePc *condition)
 0x74c2e0,?EndIf@ShaderCompilerParserPc@@QAEXXZ,118,void __thiscall ShaderCompilerParserPc::EndIf()
+0x74c360,?SetShowDefinitions@ShaderCompilerParserPc@@QAEXE@Z,95,
+0x74c3c0,?UseDeclaration@ShaderCompilerParserPc@@QAEXIHPBD@Z,168,
+0x74c470,?AddDeclaration@ShaderCompilerParserPc@@QAEXIHHPBDH0HH@Z,259,
+0x74c580,?EmitDeclarations@ShaderCompilerParserPc@@QAEXI@Z,95,
 0x74c5e0,?ParseExpression@ShaderCompilerParserPc@@QAEPAUShaderConditionNodePc@@PAUShaderCompilerBufferAllocatorPc@@PAH@Z,705,"ShaderConditionNodePc *__thiscall ShaderCompilerParserPc::ParseExpression(ShaderCompilerBufferAllocatorPc *, i32 *)"
+0x74ca70,?ParseDeclaration@ShaderCompilerParserPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@PAH@Z,2724,
 0x0074fbdc , _D3DXCompileShader@40                                          , 6     , "HRESULT __stdcall (const char *, UINT, const D3DXMACRO *, ID3DXInclude *, const char *, const char *, DWORD, ID3DXBuffer **, ID3DXBuffer **, ID3DXConstantTable **)"
 0x0074fbe2 , _D3DXCreateEffectCompiler@28                                   , 6     , "HRESULT __stdcall (const char *, UINT, const D3DXMACRO *, ID3DXInclude *, DWORD, ID3DXEffectCompiler **, ID3DXBuffer **)"
 0x0074fbe8 , _D3DXCreateBuffer@8                                            , 6     , "HRESULT __stdcall (DWORD, ID3DXBuffer **)"
@@ -5184,7 +5206,9 @@ address    , symbol                                                         , si
 0x753334,??_C@_05INKFKLBN@?$CFs?5?$CFi?$AA@,,const char[6]
 0x753340,__real@40c5550000000000,8,const f64
 0x753348,__real@408c700000000000,8,const f64
+0x753370,??_C@_01LBDDMOBJ@?$FN?$AA@,,const char []
 0x753370,_TextInputKeyNameTextPc753370,,char[2]
+0x753374,??_C@_01OHGJGJJP@?$FL?$AA@,,const char []
 0x753374,_TextInputKeyNameTextPc753374,,char[2]
 0x7533c4,??_C@_01PPODPGHN@?$DO?$AA@,2,char[2]
 0x7533c8,??_C@_01MNNFJEPP@?$DM?$AA@,2,char[2]
@@ -5428,6 +5452,7 @@ address    , symbol                                                         , si
 0x00755d54 , _GameAIPlayer2Name                                             , 9     , const char[9]
 0x755d60,??_C@_06BALNJMNP@player?$AA@,,const char[7]
 0x00755d60 , _GameAIPlayerName                                              , 7     , const char[7]
+0x755d68,??_C@_04KCANNCK@LEGO?$AA@,,const char []
 0x755d70,??_C@_01PKGAHCOL@?$CJ?$AA@,,
 0x755d70,_PcInputText755d70, ,char[2]
 0x755d74,??_C@_01ODHLEDKK@?$CI?$AA@,,
@@ -5489,6 +5514,7 @@ address    , symbol                                                         , si
 0x7576f8,_AITransferLiteral7576f8,6,const char[6]
 0x00757700 , _AIGameSetName                                                 , 5     , const char[5]
 0x00757708 , _AIGameCharacterName                                           , 11    , const char[11]
+0x757714,??_C@_05LAPONLG@false?$AA@,,const char []
 0x00757714 , _AIScriptFalse                                                 , 6     , const char[6]
 0x0075771c , _AIPathOriginName                                              , 7     , const char[7]
 0x757724,_AITransferLiteral757724,7,const char[7]
@@ -7235,6 +7261,7 @@ address    , symbol                                                         , si
 0x0075ffd8 , _AIScriptKeywordSource                                         , 7     , const char[7]
 0x0075ffe0 , ??_C@_06CEFAHBNL@Script?$AA@                                   , 7     , const char[7]
 0x0075ffe0 , _AIScriptKeywordScript                                         , 7     , const char[7]
+0x75ffe8,??_C@_04LOAJBDKD@true?$AA@,,const char []
 0x0075ffe8 , _AIExpressionTrueName                                          , 5     , const char [5]
 0x0075fff0 , _AIExpressionRandName                                          , 5     , const char [5]
 0x0075fff8 , _NuAnimDataFloatMax                                            , 8     , const f64
@@ -8584,6 +8611,7 @@ address    , symbol                                                         , si
 0x771068,_PcInputText771068,  ,char[10]
 0x771074,_PcInputText771074, ,char[7]
 0x77107c,_PcInputText77107c,  ,char[10]
+0x771088,??_C@_01IHBHIGKO@?0?$AA@,,const char []
 0x771088,_PcInputText771088, ,char[2]
 0x77108c,_PcInputText77108c,  ,char[10]
 0x771098,_PcInputText771098, ,char[3]
@@ -8696,6 +8724,7 @@ address    , symbol                                                         , si
 0x7714e8,_PcInputText7714e8,  ,char[12]
 0x7714f4,_PcInputText7714f4,  ,char[14]
 0x771504,_PcInputText771504, ,char[8]
+0x77150c,??_C@_01NBENCBCI@?$CK?$AA@,,const char []
 0x77150c,_PcInputText77150c, ,char[2]
 0x771510,_PcInputText771510, ,char[6]
 0x771518,_PcInputText771518, ,char[3]
@@ -8919,14 +8948,23 @@ address    , symbol                                                         , si
 0x771d3c,_TextInputKeyNameTextPc771d3c,,char[10]
 0x771d48,_TextInputKeyNameTextPc771d48,,char[7]
 0x771d50,_TextInputKeyNameTextPc771d50,,char[6]
+0x771d58,??_C@_01GBGANLPD@0?$AA@,,const char []
 0x771d58,_TextInputKeyNameTextPc771d58,,char[2]
+0x771d5c,??_C@_01LAKCGALK@9?$AA@,,const char []
 0x771d5c,_TextInputKeyNameTextPc771d5c,,char[2]
+0x771d60,??_C@_01KJLJFBPL@8?$AA@,,const char []
 0x771d60,_TextInputKeyNameTextPc771d60,,char[2]
+0x771d64,??_C@_01COCBENDE@7?$AA@,,const char []
 0x771d64,_TextInputKeyNameTextPc771d64,,char[2]
+0x771d68,??_C@_01DHDKHMHF@6?$AA@,,const char []
 0x771d68,_TextInputKeyNameTextPc771d68,,char[2]
+0x771d6c,??_C@_01BMBHCPLG@5?$AA@,,const char []
 0x771d6c,_TextInputKeyNameTextPc771d6c,,char[2]
+0x771d70,??_C@_01FAMBOPH@4?$AA@,,const char []
 0x771d70,_TextInputKeyNameTextPc771d70,,char[2]
+0x771d74,??_C@_01EKENIIDA@3?$AA@,,const char []
 0x771d74,_TextInputKeyNameTextPc771d74,,char[2]
+0x771d78,??_C@_01FDFGLJHB@2?$AA@,,const char []
 0x771d78,_TextInputKeyNameTextPc771d78,,char[2]
 0x771d7c,_TextInputKeyNameTextPc771d7c,,char[4]
 0x771d80,_TextInputKeyNameTextPc771d80,,char[8]
@@ -10109,6 +10147,178 @@ address    , symbol                                                         , si
 0x7e977c,??_C@_09IDKGMKNG@texcoord0?$AA@,,
 0x7e9788,??_C@_0BJ@IOJPCHFB@struct?5VertexOutput?5?$HL?5?$AN?6?$AA@,,
 0x7e97a4,??_C@_07NIBOJBAJ@?$CDundef?5?$AA@,,
+0x7e97fc,??_C@_0L@MPHMDLOH@SKIN_WORLD?$AA@,,const char []
+0x7e9808,??_C@_0O@BLMMIJLA@PACKED_VECTOR?$AA@,,const char []
+0x7e9818,??_C@_0BA@OIDCJLOC@PACKED_TANGENT2?$AA@,,const char []
+0x7e9828,??_C@_0P@ECJIIAMH@PACKED_TANGENT?$AA@,,const char []
+0x7e9838,??_C@_0O@EACIMMIN@PACKED_NORMAL?$AA@,,const char []
+0x7e9848,??_C@_0BG@LPKPPAAN@SWIZZLE_PARALLAX_MAPS?$AA@,,const char []
+0x7e9860,??_C@_0BE@BHADDBIP@SWIZZLE_NORMAL_MAPS?$AA@,,const char []
+0x7e9874,??_C@_06DPEFKGNA@_WINPC?$AA@,,const char []
+0x7e987c,??_C@_0O@LPPBDPBJ@EDGE_LIGHTING?$AA@,,const char []
+0x7e988c,??_C@_07HDMJJHDJ@FRACTAL?$AA@,,const char []
+0x7e9894,??_C@_06BBEDKHKP@DAPPLE?$AA@,,const char []
+0x7e989c,??_C@_09OEMFHCBN@FOG_STAGE?$AA@,,const char []
+0x7e98a8,??_C@_0BO@JCKOJNNN@FOG_VERTEX_CLAMP_EXPONENTIAL2?$AA@,,const char []
+0x7e98c8,??_C@_0N@JKNCOFML@COLOR_FACTOR?$AA@,,const char []
+0x7e98d8,??_C@_03HLLJOCDO@1?40?$AA@,,const char []
+0x7e98dc,??_C@_0BI@KJLFFJBJ@HACK_MOTION_VECTOR_NULL?$AA@,,const char []
+0x7e98f4,??_C@_0BE@LHMLNFJH@RENDER_TARGET_COUNT?$AA@,,const char []
+0x7e9908,??_C@_0BC@IDKPPNGI@RENDER_FOR_SHADOW?$AA@,,const char []
+0x7e991c,??_C@_0P@LFKKPMCB@DEPTHRT_OUTPUT?$AA@,,const char []
+0x7e992c,??_C@_0O@HJFLOILB@MOTION_OUTPUT?$AA@,,const char []
+0x7e993c,??_C@_0M@LFDJPDEJ@GLOW_OUTPUT?$AA@,,const char []
+0x7e9948,??_C@_0BH@OHKFGOHL@NORMAL_OUTPUT_NOT_NULL?$AA@,,const char []
+0x7e9960,??_C@_0O@GKOBADDN@NORMAL_OUTPUT?$AA@,,const char []
+0x7e9970,??_C@_06LICGKKEA@NUMTCs?$AA@,,const char []
+0x7e9978,??_C@_0M@HJEBGMNK@UVSET_COUNT?$AA@,,const char []
+0x7e9984,??_C@_0BB@CLANMPOF@REFRACTION_STAGE?$AA@,,const char []
+0x7e9998,??_C@_0BD@PKAOCCLO@REFRACTION_DEFAULT?$AA@,,const char []
+0x7e99ac,??_C@_0BB@OEGNONFA@REFRACTION_GLASS?$AA@,,const char []
+0x7e99c0,??_C@_0BB@HJFMGCFE@REFRACTION_WATER?$AA@,,const char []
+0x7e99d4,??_C@_0O@JEFGPACI@FRESNEL_STAGE?$AA@,,const char []
+0x7e99e4,??_C@_0BJ@IBHALAEL@SPECULAR_SPECULARENABLE2?$AA@,,const char []
+0x7e9a00,??_C@_0BE@IKPBAHCN@REFLECTIVITY_STAGE2?$AA@,,const char []
+0x7e9a14,??_C@_0BI@GHBNHFE@SPECULAR_SPECULARENABLE?$AA@,,const char []
+0x7e9a2c,??_C@_0P@GLKKMGIH@SPECULAR_UVSET?$AA@,,const char []
+0x7e9a3c,??_C@_0BD@FMBJJAJL@REFLECTIVITY_STAGE?$AA@,,const char []
+0x7e9a50,??_C@_0P@GNHOBOJA@SPECULAR_STAGE?$AA@,,const char []
+0x7e9a60,??_C@_0P@JDMCDIID@SPECULAR_PHONG?$AA@,,const char []
+0x7e9a70,??_C@_0M@BFKJHHMH@ENVMAP_CUBE?$AA@,,const char []
+0x7e9a8c,??_C@_0N@KHJMBFIP@ENVMAP_STAGE?$AA@,,const char []
+0x7e9a9c,??_C@_0N@ONBFDLMP@PS2_SHINEMAP?$AA@,,const char []
+0x7e9aac,??_C@_0P@MINHCDKI@LIGHTMAP_STAGE?$AA@,,const char []
+0x7e9abc,??_C@_0BF@BNMCIHLC@LIGHTMAP_DIRECTIONAL?$AA@,,const char []
+0x7e9ad4,??_C@_0BA@KDNMDFGO@LIGHTMAP_SMOOTH?$AA@,,const char []
+0x7e9ae4,??_C@_0P@MOADPLLP@LIGHTMAP_UVSET?$AA@,,const char []
+0x7e9af4,??_C@_0BG@PJEPBKLL@LIGHTING_LIGHTS_COUNT?$AA@,,const char []
+0x7e9b0c,??_C@_09EJFNAHKI@CAR_PAINT?$AA@,,const char []
+0x7e9b18,??_C@_0BK@KNLNIINL@PRELIGHT_FX_LIVE_SPECULAR?$AA@,,const char []
+0x7e9b34,??_C@_0M@NEELHBGP@PRELIGHT_FX?$AA@,,const char []
+0x7e9b40,??_C@_0BB@PIFGHAH@LIGHTING_LAMBERT?$AA@,,const char []
+0x7e9b54,??_C@_0P@JGEHFCCC@LIGHTING_PHONG?$AA@,,const char []
+0x7e9b64,??_C@_0L@CGEPOAJD@ANISO_FLIP?$AA@,,const char []
+0x7e9b70,??_C@_0P@GIPLHEDB@LIGHTING_STAGE?$AA@,,const char []
+0x7e9b80,??_C@_0P@CIMBJDEL@LIGHTING_ANISO?$AA@,,const char []
+0x7e9b90,??_C@_0BA@PHDKCNDJ@LIGHTING_ENVMAP?$AA@,,const char []
+0x7e9ba0,??_C@_0P@LFPEDDIN@LIGHTING_GOOCH?$AA@,,const char []
+0x7e9bb0,??_C@_0BF@BKEKMBNK@LAYER3_DIFFUSEENABLE?$AA@,,const char []
+0x7e9bc8,??_C@_0N@BPEPDFNP@LAYER3_UVSET?$AA@,,const char []
+0x7e9bd8,??_C@_0N@IAIACANI@LAYER3_ALPHA?$AA@,,const char []
+0x7e9be8,??_C@_0N@BCEAKGBE@COMBINE_OP_3?$AA@,,const char []
+0x7e9bf8,??_C@_0BF@LECCFAEL@LAYER2_DIFFUSEENABLE?$AA@,,const char []
+0x7e9c10,??_C@_0N@NDOFDFEB@LAYER2_UVSET?$AA@,,const char []
+0x7e9c20,??_C@_0N@EMCKCAEG@LAYER2_ALPHA?$AA@,,const char []
+0x7e9c30,??_C@_0N@LFLJHFF@COMBINE_OP_2?$AA@,,const char []
+0x7e9c40,??_C@_0BF@JNOKOELJ@LAYER1_DIFFUSEENABLE?$AA@,,const char []
+0x7e9c58,??_C@_0BA@OILGAJEJ@LAYER1_COLORSET?$AA@,,const char []
+0x7e9c68,??_C@_0BC@BPNHEEJ@varying_colorSet1?$AA@,,const char []
+0x7e9c7c,??_C@_0N@MCKFCHKF@LAYER1_ALPHA?$AA@,,const char []
+0x7e9c8c,??_C@_0N@CAHGMEJG@COMBINE_OP_1?$AA@,,const char []
+0x7e9c9c,??_C@_0BF@DDICHFCI@LAYER0_DIFFUSEENABLE?$AA@,,const char []
+0x7e9cb4,??_C@_0BG@FCBCKPHM@TEXTURE_ANIMATION_MAP?$AA@,,const char []
+0x7e9ccc,??_C@_0N@JBMADCDM@LAYER0_UVSET?$AA@,,const char []
+0x7e9cdc,??_C@_0N@DJGNPFNH@COMBINE_OP_0?$AA@,,const char []
+0x7e9cec,??_C@_0N@HCAKHFEL@COMBINE_BASE?$AA@,,const char []
+0x7e9cfc,??_C@_0BA@CJDINGIJ@LAYER0_COLORSET?$AA@,,const char []
+0x7e9d0c,??_C@_0N@FNGKDCKC@LAYER1_UVSET?$AA@,,const char []
+0x7e9d1c,??_C@_0O@FPIBAOAL@SURFACE_TYPE2?$AA@,,const char []
+0x7e9d2c,??_C@_0N@EMFBFCLJ@SURFACE_TYPE?$AA@,,const char []
+0x7e9d3c,??_C@_0P@DDJKLECN@SURFACE_SMOOTH?$AA@,,const char []
+0x7e9d4c,??_C@_0BD@GMOFEKCF@SURFACE_NORMAL_MAP?$AA@,,const char []
+0x7e9d60,??_C@_0BF@OAODACJI@SURFACE_PARALLAX_MAP?$AA@,,const char []
+0x7e9d78,??_C@_0O@DHJPCJLA@SURFACE_UVSET?$AA@,,const char []
+0x7e9d88,??_C@_0P@JADLGOKP@FUNC_WATERCOEF?$AA@,,const char []
+0x7e9d98,??_C@_0BE@BEJOEGIM@WATERCOEF_AMPLITUDE?$AA@,,const char []
+0x7e9dac,??_C@_0N@OFGHLLJI@VERTEX_GROUP?$AA@,,const char []
+0x7e9dbc,??_C@_0BE@KIOBOCDE@FUNC_computeTangent?$AA@,,const char []
+0x7e9dd0,??_C@_0BD@NHGDCGMB@FUNC_computeNormal?$AA@,,const char []
+0x7e9de4,??_C@_0BK@GIIBHOF@VERTEX_TRANSFORM_SKINNING?$AA@,,const char []
+0x7e9e00,??_C@_0L@FICDGCEP@VERTEX_RAW?$AA@,,const char []
+0x7e9e0c,??_C@_0BH@BHJJKLIH@VERTEX_TRANSFORM_WATER?$AA@,,const char []
+0x7e9e24,??_C@_0CB@HFBFLIIO@VERTEX_TRANSFORM_REFRACTED_GLASS@,,const char []
+0x7e9e48,??_C@_0CK@JCJIJEDI@VERTEX_TRANSFORM_REFRACTED_GLASS@,,const char []
+0x7e9e74,??_C@_0BK@MBGLEJFJ@VERTEX_FETCH_DISPLACEMENT?$AA@,,const char []
+0x7e9e90,??_C@_0BD@GDOLMLMB@VERTEX_FETCH_UVSET?$AA@,,const char []
+0x7e9ea4,??_C@_04LLODCGEF@WIND?$AA@,,const char []
+0x7e9eac,??_C@_0BC@ILMBGGEB@FUNC_pipePosition?$AA@,,const char []
+0x7e9ec0,??_C@_0BH@MPMELAEE@VERTEX_TRANSFORM_PLANT?$AA@,,const char []
+0x7e9ed8,??_C@_0BI@JMAOBFEI@VERTEX_TRANSFORM_PLANT2?$AA@,,const char []
+0x7e9ef0,??_C@_0BJ@LMGPGGMC@FUNC_fs_computeVTFNormal?$AA@,,const char []
+0x7e9f0c,??_C@_0BH@LJFKIDKL@VTF_SURFACE_NORMAL_MAP?$AA@,,const char []
+0x7e9f24,??_C@_0BB@OIKHMBAL@VTF_NORMAL_UVSET?$AA@,,const char []
+0x7e9f38,??_C@_0BA@KMEFGDAA@UVSET_ANIMATION?$AA@,,const char []
+0x7e9f48,??_C@_0N@LHDJNOCE@BUILD_EFFECT?$AA@,,const char []
+0x7e9f58,??_C@_0BF@KALJMLL@PIXEL_SHADER_VERSION?$AA@,,const char []
+0x7e9f70,??_C@_02PIBHCBOA@20?$AA@,,const char []
+0x7e9f74,??_C@_02OBAMBAKB@21?$AA@,,const char []
+0x7e9f78,??_C@_0BG@GCINNAJH@VERTEX_SHADER_VERSION?$AA@,,const char []
+0x7e9f90,??_C@_02PJNFELNH@30?$AA@,,const char []
+0x7e9f94,??_C@_02KMALDIDP@16?$AA@,,const char []
+0x7e9f98,??_C@_02IHCGGLPM@15?$AA@,,const char []
+0x7e9f9c,??_C@_02JODNFKLN@14?$AA@,,const char []
+0x7e9fa0,??_C@_02NBHMMMHK@13?$AA@,,const char []
+0x7e9fa4,??_C@_02MIGHPNDL@12?$AA@,,const char []
+0x7e9fa8,??_C@_02ODEKKOPI@11?$AA@,,const char []
+0x7e9fac,??_C@_02PKFBJPLJ@10?$AA@,,const char []
+0x7e9fb0,??_C@_0BB@KIIIOHCH@COMBINE_MULTIPLY?$AA@,,const char []
+0x7e9fc4,??_C@_0BB@NNNCKKIA@COMBINE_SUBTRACT?$AA@,,const char []
+0x7e9fd8,??_C@_0M@BKFJJCEK@COMBINE_ADD?$AA@,,const char []
+0x7e9fe4,??_C@_0N@FKHMIFII@COMBINE_OVER?$AA@,,const char []
+0x7e9ff4,??_C@_07MMIDIINJ@DISABLE?$AA@,,const char []
+0x7e9ffc,??_C@_09BFPJHKOK@vs_uvSet3?$AA@,,const char []
+0x7ea008,??_C@_09MOCELKL@vs_uvSet2?$AA@,,const char []
+0x7ea014,??_C@_09CHMPBIGI@vs_uvSet1?$AA@,,const char []
+0x7ea020,??_C@_09DONECJCJ@vs_uvSet0?$AA@,,const char []
+0x7ea02c,??_C@_0P@JJFDHJAM@varying_uvSet3?$AA@,,const char []
+0x7ea03c,??_C@_0P@IAEIEIEN@varying_uvSet2?$AA@,,const char []
+0x7ea04c,??_C@_0P@KLGFBLIO@varying_uvSet1?$AA@,,const char []
+0x7ea05c,??_C@_0P@LCHOCKMP@varying_uvSet0?$AA@,,const char []
+0x7ea06c,??_C@_0N@IFENMCPN@FUNC_UVSET_3?$AA@,,const char []
+0x7ea07c,??_C@_0N@JMFGPDLM@FUNC_UVSET_2?$AA@,,const char []
+0x7ea08c,??_C@_0N@LHHLKAHP@FUNC_UVSET_1?$AA@,,const char []
+0x7ea09c,??_C@_0N@KOGAJBDO@FUNC_UVSET_0?$AA@,,const char []
+0x7ea0e8,??_C@_0P@FPCFKLDE@semantic_index?$AA@,,const char []
+0x7ea0f8,??_C@_0BG@DNHICOED@semantic_blendWeight0?$AA@,,const char []
+0x7ea110,??_C@_0BH@LPLCOJIA@semantic_blendIndices0?$AA@,,const char []
+0x7ea128,??_C@_0BD@LKNMLNEO@semantic_texcoord7?$AA@,,const char []
+0x7ea13c,??_C@_0BD@KDMHIMAP@semantic_texcoord6?$AA@,,const char []
+0x7ea150,??_C@_0BD@IIOKNPMM@semantic_texcoord5?$AA@,,const char []
+0x7ea164,??_C@_0BD@JBPBOOIN@semantic_texcoord4?$AA@,,const char []
+0x7ea178,??_C@_0BD@NOLAHIEK@semantic_texcoord3?$AA@,,const char []
+0x7ea18c,??_C@_0BD@MHKLEJAL@semantic_texcoord2?$AA@,,const char []
+0x7ea1a0,??_C@_0BD@OMIGBKMI@semantic_texcoord1?$AA@,,const char []
+0x7ea1b4,??_C@_0BD@PFJNCLIJ@semantic_texcoord0?$AA@,,const char []
+0x7ea1c8,??_C@_0BD@MNDNOOIE@semantic_texcoordx?$AA@,,const char []
+0x7ea1dc,??_C@_0N@DONDGHI@semantic_fog?$AA@,,const char []
+0x7ea1ec,??_C@_0BA@NKMAHEDE@semantic_color1?$AA@,,const char []
+0x7ea1fc,??_C@_0BA@MDNLEFHF@semantic_color0?$AA@,,const char []
+0x7ea20c,??_C@_0BA@PLHLIAHI@semantic_colorx?$AA@,,const char []
+0x7ea21c,??_C@_0BC@JOKOKBIE@semantic_tangent1?$AA@,,const char []
+0x7ea230,??_C@_0BD@FGEJNFMB@semantic_bitangent?$AA@,,const char []
+0x7ea244,??_C@_0BC@KLEPKFFJ@semantic_binormal?$AA@,,const char []
+0x7ea258,??_C@_0BB@JLOKCHDN@semantic_tangent?$AA@,,const char []
+0x7ea26c,??_C@_0BA@NPLLMKKM@semantic_normal?$AA@,,const char []
+0x7ea27c,??_C@_0O@DMEGLPPO@semantic_vpos?$AA@,,const char []
+0x7ea28c,??_C@_0BD@MAOMHOFI@semantic_position1?$AA@,,const char []
+0x7ea2a0,??_C@_0BC@HMMPFEF@semantic_position?$AA@,,const char []
+0x7ea2b4,??_C@_0BB@CDJAMGDJ@semantic_default?$AA@,,const char []
+0x7ea2c8,??_C@_06OLFOGHEN@strict?$AA@,,const char []
+0x7ea2d0,??_C@_09FAAEDFKM@nu2_debug?$AA@,,const char []
+0x7ea2dc,??_C@_07PKJOFHPL@sampler?$AA@,,const char []
+0x7ea2e4,??_C@_05PFDPHFAN@half1?$AA@,,const char []
+0x7ea2ec,??_C@_04IKDJBGLD@freg?$AA@,,const char []
+0x7ea2f4,??_C@_04OKNJIBDB@vreg?$AA@,,const char []
+0x7ea2fc,??_C@_06HBFNPGIC@shared?$AA@,,const char []
+0x7ea304,??_C@_07HIAOBKCE@uniform?$AA@,,const char []
+0x7ea30c,??_C@_09HGIEBAJ@attribute?$AA@,,const char []
+0x7ea318,??_C@_07EBNAHCGH@varying?$AA@,,const char []
+0x7ea320,??_C@_08MFHOOLO@fs_local?$AA@,,const char []
+0x7ea32c,??_C@_08KAJHKMMP@vs_local?$AA@,,const char []
+0x7ea338,??_C@_0P@KCDKMLBK@nu2_showDefine?$AA@,,const char []
+0x7ea348,??_C@_0BA@BNMELBEF@nu2_anchorPoint?$AA@,,const char []
+0x7ea358,??_C@_0M@JIDJDNJE@nu2_declare?$AA@,,const char []
+0x7ea364,??_C@_07MBIKGK@nu2_use?$AA@,,const char []
 0x7eb664,??_R4WavReader@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb678,??_R3WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb688,??_R2WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
@@ -12944,6 +13154,7 @@ address    , symbol                                                         , si
 0x29231cc,_TerrWallNorm,,NUVEC
 0x2924ad8,_WallSplCount,,i32
 0x2924adc,_edbri_cam_pos,,NUVEC
+0x2924b14,_PickupTerrainPc,,TERRAIN_PICKUP_SET_PC *
 0x02924b28 , _TerrainShadowHeightPc                                         ,       ,
 0x02924b2c , _TerrainRoofValidPc                                            ,       ,
 0x02924b30 , _edpp_page_used                                                , 32    , i32[8]

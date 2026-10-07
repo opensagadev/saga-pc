@@ -208,3 +208,65 @@ ShaderConditionNodePc *ShaderCompilerParserPc::ParseExpression(ShaderCompilerBuf
     }
     return stack[0];
 }
+
+extern "C" u32 __cdecl ShaderDeclarationFlagsPc(u8 shared, u8 vertex, u8 pixel) {
+    return (shared ? 0x4000u : 0u) | (vertex ? 0x2000u : 0u) | (pixel ? 0x1000u : 0u) | 0x20u;
+}
+
+extern "C" i32 __cdecl ShaderDeclarationSemanticPc(ShaderLexicalSlicePc *slice) {
+    if (slice->Equals("default"))
+        return 1;
+    if (slice->Equals("strict"))
+        return 13;
+    if (slice->Equals("semantic_default"))
+        return 1;
+    if (slice->Equals("semantic_position"))
+        return 2;
+    if (slice->Equals("semantic_position1"))
+        return 3;
+    if (slice->Equals("semantic_vpos"))
+        return 4;
+    if (slice->Equals("semantic_normal"))
+        return 5;
+    if (slice->Equals("semantic_tangent"))
+        return 6;
+    if (slice->Equals("semantic_binormal"))
+        return 7;
+    if (slice->Equals("semantic_bitangent"))
+        return 7;
+    if (slice->Equals("semantic_tangent1"))
+        return 8;
+    if (slice->Equals("semantic_colorx"))
+        return 9;
+    if (slice->Equals("semantic_color0"))
+        return 10;
+    if (slice->Equals("semantic_color1"))
+        return 11;
+    if (slice->Equals("semantic_fog"))
+        return 12;
+    if (slice->Equals("semantic_texcoordx"))
+        return 13;
+    if (slice->Equals("semantic_texcoord0"))
+        return 14;
+    if (slice->Equals("semantic_texcoord1"))
+        return 15;
+    if (slice->Equals("semantic_texcoord2"))
+        return 16;
+    if (slice->Equals("semantic_texcoord3"))
+        return 17;
+    if (slice->Equals("semantic_texcoord4"))
+        return 18;
+    if (slice->Equals("semantic_texcoord5"))
+        return 19;
+    if (slice->Equals("semantic_texcoord6"))
+        return 20;
+    if (slice->Equals("semantic_texcoord7"))
+        return 21;
+    if (slice->Equals("semantic_blendIndices0"))
+        return 22;
+    if (slice->Equals("semantic_blendWeight0"))
+        return 23;
+    if (slice->Equals("semantic_index"))
+        return 24;
+    return 0;
+}

@@ -55,7 +55,7 @@ typedef struct TERRAIN_GROUP_PC {
 typedef struct TERRAIN_PREVIOUS_MATRIX_VIEW_PC {
     u8 unknown_00[0x30];
     f32 m30;
-    u8 unknown_34[4];
+    f32 m31;
     f32 m32;
     u8 unknown_3c[4];
 } TERRAIN_PREVIOUS_MATRIX_VIEW_PC;
@@ -2351,4 +2351,297 @@ void __cdecl PlatInstRotate(i32 platform_index, i32 enabled) {
         if (platform_index < terrain->max_platforms)
             terrain->platforms[platform_index].flags = (terrain->platforms[platform_index].flags & ~1u) | (enabled & 1);
     }
+}
+
+typedef struct TERRAIN_PICKUP_SET_PC {
+    TERRAIN_GROUP_PC *groups;
+    void *shape_data;
+    i32 group_count;
+    i16 group_for_type[128];
+    TERRAIN_PLATFORM_PC platforms[32];
+    TERRAIN_SPATIAL_NODE *spatial_nodes;
+    u8 unknown_e90[0xa490 - 0xe90];
+} TERRAIN_PICKUP_SET_PC;
+STATIC_ASSERT(offsetof(TERRAIN_PICKUP_SET_PC, groups) == 0);
+STATIC_ASSERT(offsetof(TERRAIN_PICKUP_SET_PC, shape_data) == 4);
+STATIC_ASSERT(offsetof(TERRAIN_PICKUP_SET_PC, group_count) == 8);
+STATIC_ASSERT(offsetof(TERRAIN_PICKUP_SET_PC, group_for_type) == 0xc);
+STATIC_ASSERT(offsetof(TERRAIN_PICKUP_SET_PC, platforms) == 0x10c);
+STATIC_ASSERT(offsetof(TERRAIN_PICKUP_SET_PC, spatial_nodes) == 0xe8c);
+STATIC_ASSERT(sizeof(TERRAIN_PICKUP_SET_PC) == 0xa490);
+STATIC_ASSERT(offsetof(TERRAIN_PREVIOUS_MATRIX_VIEW_PC, m31) == 0x34);
+STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_58) == 0x58);
+STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_5c) == 0x5c);
+STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_60) == 0x60);
+STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_64) == 0x64);
+STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platforms) == 0x158);
+static TERRAIN_PICKUP_SET_PC *PickupTerrainPc;
+
+i32 ReadTerrainPickup(unsigned char *base_path, i16 **buffer, TERRAIN_PICKUP_SET_PC *terrain) {
+    char path[100];
+    u8 *file_start;
+    TERRAIN_FILE_CHUNK *chunk;
+    i32 i, count, group_count = 0;
+    strcpy(path, (char *)base_path);
+    strcat(path, ".ter");
+    NuFileLoadBuffer(path, *buffer, INT_MAX);
+    file_start = (u8 *)*buffer;
+    chunk = (TERRAIN_FILE_CHUNK *)(file_start + 2 * *(u32 *)file_start);
+    count = chunk->chunk_count;
+    *buffer = (i16 *)(file_start + 4);
+    TerrainCrashDataPc = NULL;
+    for (i = 0; i < count; ++i, ++chunk) {
+        u8 *chunk_data = (u8 *)*buffer;
+        if (chunk->chunk_type == TERRAIN_CHUNK_SPATIAL_INDEX) {
+            TERRAIN_SPATIAL_NODE **link = (TERRAIN_SPATIAL_NODE **)chunk_data;
+            if (*(u32 *)link == 0x12345678) {
+                *link = terrain->spatial_nodes;
+                terrain->spatial_nodes = (TERRAIN_SPATIAL_NODE *)(link + 1);
+                --terrain->spatial_nodes->point_count;
+            }
+        } else if ((u32)chunk->chunk_type <= TERRAIN_CHUNK_GROUP_SECONDARY) {
+            TERRAIN_GROUP_PC *group = &terrain->groups[group_count];
+            group->group_info = chunk->group_info;
+            if (group->group_info >= 0 && group->group_info < 128)
+                terrain->group_for_type[group->group_info] = (i16)group_count;
+            group->chunk_type = chunk->chunk_type;
+            group->scene_index = (i16)chunk->field_16;
+            group->origin = chunk->origin;
+            group->data = (TERRAIN_SKIN_STREAM_VIEW_PC *)chunk_data;
+            group->platform_flags = chunk->platform_flags;
+            ++group_count;
+        } else if (chunk->chunk_type == TERRAIN_CHUNK_CRASH_DATA) {
+            TerrainCrashDataPc = chunk_data;
+        }
+        *buffer = (i16 *)(chunk_data + 2 * chunk->data_word_count);
+    }
+    return group_count;
+}
+
+void terrainpickupinit(char *path, void **buffer) {
+    TERRAIN_PICKUP_SET_PC *terrain = (TERRAIN_PICKUP_SET_PC *)*buffer;
+    i32 i;
+    *buffer = (u8 *)*buffer + sizeof(TERRAIN_PICKUP_SET_PC);
+    terrain->groups = (TERRAIN_GROUP_PC *)*buffer;
+    *buffer = (u8 *)*buffer + 32 * sizeof(TERRAIN_GROUP_PC);
+    terrain->shape_data = *buffer;
+    *buffer = (u8 *)*buffer + 0x1c00;
+    memset(terrain->groups, 0, 32 * sizeof(TERRAIN_GROUP_PC));
+    for (i = 0; i < 32; ++i)
+        terrain->groups[i].chunk_type = -1;
+    for (i = 0; i < 32; ++i) {
+        TERRAIN_PLATFORM_PC *platform = &terrain->platforms[i];
+        platform->scene_object = NULL;
+        platform->bounce_54 = 0;
+        platform->bounce_58 = 0;
+        platform->bounce_5c = 0;
+        platform->bounce_60 = 0;
+        platform->bounce_64 = 0;
+    }
+    memset(terrain->group_for_type, 0xff, sizeof(terrain->group_for_type));
+    curPickInst = 0;
+    terraincnt = 0;
+    curSphereter = 0;
+    platinrange = 0;
+    ShadPoly = NULL;
+    TerrPoly = NULL;
+    TerrWallInfo = 0;
+    PlatImpactId = -1;
+    terrain->group_count = ReadTerrainPickup((unsigned char *)path, (i16 **)buffer, terrain);
+    for (i = 0; i < 32; ++i) {
+        TERRAIN_GROUP_PC *group = &terrain->groups[i];
+        TERRAIN_SHAPE_BATCH *batch;
+        f32 min_x, min_y, min_z, max_x, max_y, max_z, radius_squared;
+        if ((u32)group->chunk_type > TERRAIN_CHUNK_GROUP_SECONDARY)
+            continue;
+        min_x = min_y = min_z = TerrainBoundsMaximumPc;
+        max_x = max_y = max_z = TerrainBoundsMinimumPc;
+        radius_squared = 0;
+        batch = (TERRAIN_SHAPE_BATCH *)group->data;
+        while (batch->marker >= 0) {
+            TERRAIN_SHAPE *shape = (TERRAIN_SHAPE *)(batch + 1);
+            i32 j;
+            for (j = 0; j < batch->shape_count; ++j, ++shape) {
+                i32 k;
+                if (shape->material[0] == 0xff) {
+                    shape->material[0] = shape->material[1];
+                    shape->material[1] = 0;
+                    shape->flags |= 0x80;
+                }
+                if (shape->min_x < min_x)
+                    min_x = shape->min_x;
+                if (shape->min_y < min_y)
+                    min_y = shape->min_y;
+                if (shape->min_z < min_z)
+                    min_z = shape->min_z;
+                if (shape->max_x > max_x)
+                    max_x = shape->max_x;
+                if (shape->max_y > max_y)
+                    max_y = shape->max_y;
+                if (shape->max_z > max_z)
+                    max_z = shape->max_z;
+                for (k = 0; k < 4; ++k) {
+                    NUVEC *v = &shape->vertices[k];
+                    f32 length_squared = v->x * v->x + v->y * v->y + v->z * v->z;
+                    if (length_squared > radius_squared)
+                        radius_squared = length_squared;
+                }
+            }
+            batch = (TERRAIN_SHAPE_BATCH *)shape;
+        }
+        group->radius = NuFsqrt(radius_squared);
+        group->chunk_type = 0;
+        ++terraincnt;
+        group->bounds_min.x = min_x;
+        group->bounds_min.y = min_y;
+        group->bounds_min.z = min_z;
+        group->bounds_max.x = max_x;
+        group->bounds_max.y = max_y;
+        group->bounds_max.z = max_z;
+    }
+    for (i = 0; i < 32; ++i) {
+        terrain->groups[i].scene_index = (i16)i;
+        terrain->platforms[i].scene_object = NULL;
+    }
+    PickupTerrainPc = terrain;
+}
+
+void AddPickupTerr(i32 type, NUVEC *position) {
+    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    i16 source;
+    TERRAIN_GROUP_PC *group;
+    if (terrain == NULL)
+        return;
+    source = PickupTerrainPc->group_for_type[type];
+    if (source == -1 || curPickInst >= 128)
+        return;
+    group = &terrain->groups[terrain->max_groups + curPickInst];
+    *group = PickupTerrainPc->groups[source];
+    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    terrain->groups[terrain->max_groups + curPickInst].origin = *position;
+    ++curPickInst;
+}
+
+/* The real original caller expands the platform installer; no source-only helper is emitted. */
+i32 AddPickupTerrRot(i32 type, NUMTX *matrix, NUMTX *previous, i32 rotating) {
+    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    TERRAIN_GROUP_PC *group;
+    i16 source;
+    i32 index;
+    if (terrain == NULL)
+        return -1;
+    if (previous == NULL && rotating == 0) {
+        AddPickupTerr(type, &matrix->translation);
+        return -1;
+    }
+    if (terrain->group_index_count >= terrain->max_group_indices || terrain->group_count >= terrain->max_groups ||
+        matrix == NULL || (previous == NULL && rotating != 0))
+        return -1;
+    source = PickupTerrainPc->group_for_type[type];
+    if (source == -1 || terrain->removed_platform_count >= 32 || terrain->max_platforms <= 0)
+        return -1;
+    for (index = 0; index < terrain->max_platforms; ++index)
+        if (terrain->platforms[index].scene_object == NULL)
+            break;
+    if (index >= terrain->max_platforms || index == -1)
+        return -1;
+    group = &terrain->groups[terrain->group_count];
+    *group = PickupTerrainPc->groups[source];
+    group->scene_index = (i16)index;
+    group->chunk_type = 1;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_object = matrix;
+    if (rotating != 0) {
+        memcpy(&((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].previous_matrix, previous, sizeof(NUMTX));
+        ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].flags |= 1;
+    } else {
+        NUMTX *old = previous != NULL ? previous : matrix;
+        ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].previous_matrix.m30 = old->m30;
+        ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].previous_matrix.m31 = old->m31;
+        ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].previous_matrix.m32 = old->m32;
+        ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].flags &= ~1u;
+    }
+    group->origin.x = matrix->m30;
+    group->origin.y = matrix->m31;
+    group->origin.z = matrix->m32;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].terrain_group_index =
+        ((TERRAIN_SET_PC *)CurrentTerrain)->group_count;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_object_index = 0;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_transform = NULL;
+    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    terrain->group_indices[terrain->group_index_count++] = terrain->group_count;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_54 = 0;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_58 = 0;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_5c = 0;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_64 = 0;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_60 = 0;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].flags &= ~2u;
+    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    if (terrain->active_platform_count < 96) {
+        terrain->active_platform_groups[terrain->active_platform_count++] = terrain->group_count;
+    }
+    ++((TERRAIN_SET_PC *)CurrentTerrain)->group_count;
+    ++((TERRAIN_SET_PC *)CurrentTerrain)->platform_cell.group_count;
+    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    terrain->removed_platforms[terrain->removed_platform_count++] = (i16)index;
+    return index;
+}
+
+i16 NewPlatPickupInst(void *object, i32 type) {
+    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    TERRAIN_GROUP_PC *group;
+    NUMTX *matrix = (NUMTX *)object;
+    i16 source;
+    i32 index;
+    if (terrain == NULL || terrain->group_index_count >= terrain->max_group_indices ||
+        terrain->group_count >= terrain->max_groups || object == NULL)
+        return -1;
+    source = PickupTerrainPc->group_for_type[type];
+    if (source == -1 || terrain->max_platforms <= 0)
+        return -1;
+    for (index = 0; index < terrain->max_platforms; ++index)
+        if (terrain->platforms[index].scene_object == NULL)
+            break;
+    if (index >= terrain->max_platforms || index == -1)
+        return -1;
+    group = &terrain->groups[terrain->group_count];
+    *group = PickupTerrainPc->groups[source];
+    group->scene_index = (i16)index;
+    group->chunk_type = 1;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_object = object;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].flags &= ~1u;
+    group->origin.x = matrix->m30;
+    group->origin.y = matrix->m31;
+    group->origin.z = matrix->m32;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].terrain_group_index =
+        ((TERRAIN_SET_PC *)CurrentTerrain)->group_count;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_object_index = 0;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_transform = NULL;
+    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    terrain->group_indices[terrain->group_index_count++] = terrain->group_count;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_54 = 0;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_58 = 0;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_5c = 0;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_64 = 0;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_60 = 0;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].flags &= ~2u;
+    ++((TERRAIN_SET_PC *)CurrentTerrain)->group_count;
+    ++((TERRAIN_SET_PC *)CurrentTerrain)->platform_cell.group_count;
+    return (i16)index;
+}
+
+void ReassignPickupInst(i32 index, i32 type) {
+    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    TERRAIN_GROUP_PC *source, *group;
+    i16 source_index;
+    if (terrain == NULL || index == -1)
+        return;
+    source_index = PickupTerrainPc->group_for_type[type];
+    if (source_index == -1)
+        return;
+    source = &PickupTerrainPc->groups[source_index];
+    group = &terrain->groups[terrain->platforms[index].terrain_group_index];
+    group->data = source->data;
+    group->bounds_min = source->bounds_min;
+    group->bounds_max = source->bounds_max;
+    group->radius = source->radius;
 }
