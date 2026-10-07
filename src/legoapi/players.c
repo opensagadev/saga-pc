@@ -2089,8 +2089,9 @@ void __cdecl Players_Init(void) {
         else
             list = PlayerList;
         if (LevelChangesInArea == 0 && UsePlayerList != 0 && progress[0].active == 0 && progress[1].active != 0 &&
-            FreePlay == 0 && (WORLD->area->flags & 5) == 1 && list[0] != -1 && list[0] == Area_StoryModelListPc[0] &&
-            list[1] != -1 && list[1] == Area_StoryModelListPc[2] && list[0] != list[1]) {
+            FreePlay == 0 && (WORLD->area->flags & 5) == 1 && list[0] != -1 &&
+            list[0] == Area_StoryModelListPc[0].model_id && list[1] != -1 &&
+            list[1] == Area_StoryModelListPc[1].model_id && list[0] != list[1]) {
             i16 first = list[0];
             list[0] = list[1];
             list[1] = first;

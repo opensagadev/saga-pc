@@ -32,8 +32,8 @@ extern "C" {
 }
 
 extern "C" {
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
     typedef struct world_bounds_view_pc_s {
         u8 unknown_0000[0x144];
@@ -1102,7 +1102,8 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
         if (abort_load != 0)
             goto abort;
     }
-    /* Native always performs these calls after the optional character-minikit branch. */
+    /* Native always performs these calls after the optional character-minikit
+     * branch. */
     LoadTerrainFile(world);
     if (abort_load != 0)
         goto abort;
@@ -1186,4 +1187,269 @@ extern "C" void __cdecl SetAreaPickupGravity(i32 area, i32 level) {
     }
     if ((flags & 1) != 0)
         AreaPickupGravity = -20.0f;
+}
+
+STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, model_id) == 0);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
+STATIC_ASSERT(offsetof(ARCADE_MODE_PC, flags) == 8);
+STATIC_ASSERT(offsetof(ARCADE_ITEM_PC, mode) == 0xc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094) == 0x94);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_action) == 0x116);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern APICHARACTERMODELLIST FreePlayModelList[49];
+    extern AREA_EXTRA_MODEL_PC ExtraModelList[6];
+    extern COLLECTION_BUILD_PC MiniKitCollection;
+    extern i32 bonusmodearcade;
+    extern i32 FreePlayModelCount, FreePlayResidentCount, FreePlayBonusCount;
+    i32 __cdecl CanWearHatsInFreePlay(i32);
+    i32 __cdecl RandomIDFromFlags(u32, u32, i32, APICHARACTERMODELLIST *, i32);
+    i32 __cdecl InModelListDataFlags(APICHARACTERMODELLIST *, u32, u32, i32, i32);
+    i32 __cdecl Collection_GetIDList(COLLECTION_BUILD_PC *, u32, u32, i16 *, i32 *, i32 *, i32);
+    void __cdecl MakeFreePlayModelList(i32, i32, i32, i32, i32);
+    void __cdecl Move_DEFAULT(GAMEOBJECT *);
+    extern i16 FreePlayId007f199cPc;
+    extern i16 id_THEEMPEROR;
+    extern i16 FreePlayId007f1a4cPc;
+    extern i16 FreePlayId007f1a48Pc;
+    extern i16 FreePlayId007f1a44Pc;
+    extern i16 VehicleBoltId7f17d0Pc;
+    extern i16 VehicleBoltId7f1aacPc;
+    extern i16 FreePlayId007f1ab0Pc;
+    extern i16 FreePlayId007f1ab4Pc;
+    extern i16 VehicleSpecialShooterIdPc;
+    extern i16 FreePlayId007f1abcPc;
+    extern i16 id_XWING;
+    extern i16 id_YWING;
+    extern i16 VehicleBoltId7f1a24Pc;
+    extern i16 VehicleBoltId7f19a4Pc;
+    extern i16 id_TIEFIGHTER;
+    extern i16 VehicleBoltId7f1a28Pc;
+    extern i16 VehicleBoltId7f196cPc;
+    extern i16 id_TIEBOMBER;
+    extern i16 VehicleBoltId7f1a2cPc;
+    extern i16 VehicleBoltId7f195cPc;
+    extern i16 id_ANAKINSNEWPOD;
+    extern i16 VehicleBoltId7f1a9cPc;
+    extern i16 VehicleBoltId7f1b34Pc;
+    extern i16 id_NEW_REPUBLIC_GUNSHIP;
+    extern i16 id_JEDISTARFIGHTERYELLOWEP3;
+    extern i16 id_ZAMSSPEEDER;
+    extern i16 VehicleBoltId7f19e8Pc;
+    extern i16 id_SEBULBASPOD;
+    extern i16 FreePlayId007f1b44Pc;
+    extern i16 FreePlayId007f1b40Pc;
+    extern i16 FreePlayId007f1a98Pc;
+#ifdef __cplusplus
+}
+#endif
+
+static i32 World_HasImperialPrivate(APICHARACTERMODELLIST *list) {
+    if (list == NULL)
+        return 0;
+    for (; list->model_id != -1; ++list) {
+        if (Collection_Got(list->model_id) != 0) {
+            i32 id = list->model_id;
+            i8 action = GCDataList[id].weapon_action;
+            if (action == 1 || action == 8 || id == FreePlayId007f199cPc || id == id_THEEMPEROR ||
+                id == FreePlayId007f1a4cPc || id == FreePlayId007f1a48Pc || id == FreePlayId007f1a44Pc)
+                return 1;
+        }
+    }
+    return 0;
+}
+
+static i32 World_RandomImperialPrivate(APICHARACTERMODELLIST *excluded) {
+    i16 candidates[500];
+    i32 count = 0;
+    i32 id;
+    for (id = 0; id < CHARCOUNT; ++id) {
+        i8 action;
+        if (excluded != NULL && InModelList(excluded, id, NULL) != 0)
+            continue;
+        if (Game_Customiser != NULL && (((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[0] == id ||
+                                        ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[1] == id))
+            continue;
+        if (CDataList[id].move_fn == Move_DEFAULT || Collection_Got(id) == 0)
+            continue;
+        action = GCDataList[id].weapon_action;
+        if ((action == 1 || action == 8 || id == FreePlayId007f199cPc || id == id_THEEMPEROR ||
+             id == FreePlayId007f1a4cPc || id == FreePlayId007f1a48Pc || id == FreePlayId007f1a44Pc) &&
+            count < 500)
+            candidates[count++] = (i16)id;
+    }
+    if (count == 0)
+        return -1;
+    if (count == 1)
+        return candidates[0];
+    return candidates[qrand() / (0xffff / count + 1)];
+}
+
+static i32 World_AppendFreePlayPrivate(i32 model) {
+    i32 index;
+    if (model == -1 || FreePlayModelCount >= 48)
+        return 0;
+    if (FreePlayModelCount < 2)
+        PlayerList[FreePlayModelCount] = (i16)model;
+    for (index = 0; index < FreePlayModelCount; ++index) {
+        if (FreePlayModelList[index].model_id == model)
+            return 0;
+    }
+    FreePlayModelList[FreePlayModelCount].model_id = (i16)model;
+    FreePlayModelList[FreePlayModelCount].count = 1;
+    ++FreePlayModelCount;
+    FreePlayModelList[FreePlayModelCount].model_id = -1;
+    return 1;
+}
+
+void __cdecl MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 param5) {
+    i16 ids[340];
+    i32 models[2];
+    i32 index;
+    u32 flags = 0;
+    AREA_DATA_PC *lost_temple;
+    if (WORLD != NULL && WORLD->area != NULL && WORLD->area == HUB_ADATA && bonusmodearcade != 0)
+        flags = Arcade_Mode[ArcadeItem.mode].flags;
+    FreePlayModelCount = 0;
+    FreePlayResidentCount = 0;
+    FreePlayBonusCount = 0;
+    if (model1 == -1)
+        model2 = -1;
+    models[0] = model1;
+    models[1] = model2;
+    lost_temple = LOSTTEMPLE_ADATA;
+    if (StartupGameFlag1 != 0 && lost_temple != NULL && area == lost_temple->index) {
+        World_AppendFreePlayPrivate(VehicleBoltId7f17d0Pc);
+        World_AppendFreePlayPrivate(VehicleBoltId7f1aacPc);
+        World_AppendFreePlayPrivate(FreePlayId007f1ab0Pc);
+        World_AppendFreePlayPrivate(FreePlayId007f1ab4Pc);
+        World_AppendFreePlayPrivate(VehicleSpecialShooterIdPc);
+        World_AppendFreePlayPrivate(FreePlayId007f1abcPc);
+    } else if ((ADataList[area].flags & 5) == 5) {
+        for (index = 0; index < 2; ++index) {
+            if (models[index] != -1)
+                World_AppendFreePlayPrivate(models[index]);
+        }
+        Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, ids, NULL, NULL, makefreeplaymodellist != 0);
+        for (i16 *id = ids; *id != -1; ++id)
+            World_AppendFreePlayPrivate(*id);
+        if (FreePlayModelCount == 1)
+            PlayerList[1] = PlayerList[0];
+        lost_temple = LOSTTEMPLE_ADATA;
+        PlayerList[2] = -1;
+    } else {
+        for (index = 0; index < 2; ++index) {
+            i32 model = models[index];
+            if (model == -1 && Player[index] != NULL)
+                model = ((GAMEOBJECT *)Player[index])->id;
+            if (model != -1)
+                World_AppendFreePlayPrivate(model);
+        }
+        if (FreePlayModelCount == 1) {
+            PlayerList[1] = PlayerList[0];
+            PlayerList[2] = -1;
+        } else {
+            PlayerList[FreePlayModelCount] = -1;
+        }
+    }
+    if (area != -1 && (flags & 8) == 0 && ADataList[area].hub_player_ids != NULL) {
+        for (i16 *id = ADataList[area].hub_player_ids; *id != -1; ++id) {
+            World_AppendFreePlayPrivate(*id);
+            ++FreePlayResidentCount;
+        }
+    }
+    if (StartupGameFlag1 != 0 && lost_temple != NULL && area == lost_temple->index)
+        goto extras;
+    if ((ADataList[area].flags & 1) != 0) {
+        i32 second = PlayerList[1];
+        if ((ADataList[area].flags & 4) != 0) {
+            if (second == -1 || (CDataList[second].model_flags & 0x4000000) == 0 || Collection_Got(second) == 0)
+                PlayerList[1] = PlayerList[0];
+        } else {
+            if (second == -1 || (CDataList[second].model_flags & 0x2000) == 0 || Collection_Got(second) == 0)
+                PlayerList[1] = PlayerList[0];
+            index = 0;
+            if (StartupGameFlag1 != 0) {
+                ids[0] = id_XWING;
+                ids[1] = id_YWING;
+                ids[2] = VehicleBoltId7f1a24Pc;
+                ids[3] = VehicleBoltId7f19a4Pc;
+                ids[4] = id_TIEFIGHTER;
+                ids[5] = VehicleBoltId7f1a28Pc;
+                ids[6] = VehicleBoltId7f196cPc;
+                ids[7] = id_TIEBOMBER;
+                ids[8] = VehicleBoltId7f1a2cPc;
+                ids[9] = VehicleBoltId7f195cPc;
+                ids[10] = id_ANAKINSNEWPOD;
+                ids[11] = VehicleBoltId7f1a9cPc;
+                ids[12] = VehicleBoltId7f1b34Pc;
+                ids[13] = id_NEW_REPUBLIC_GUNSHIP;
+                ids[14] = id_JEDISTARFIGHTERYELLOWEP3;
+                ids[15] = id_ZAMSSPEEDER;
+                ids[16] = VehicleBoltId7f19e8Pc;
+                ids[17] = id_SEBULBASPOD;
+                ids[18] = FreePlayId007f1b44Pc;
+                ids[19] = FreePlayId007f1b40Pc;
+                ids[20] = FreePlayId007f1a98Pc;
+                index = 21;
+            }
+            ids[index] = -1;
+            for (i16 *id = ids; *id != -1; ++id) {
+                if (World_AppendFreePlayPrivate(*id) != 0)
+                    ++FreePlayBonusCount;
+            }
+        }
+    } else {
+        i32 hats = InModelListDataFlags(FreePlayModelList, 0, 0, 1, 0);
+        if (StartupGameFlag1 == 0 && StartupGameFlag0 == 0) {
+            if (World_AppendFreePlayPrivate(ID_DEFAULTCHARACTER_A) != 0)
+                ++FreePlayBonusCount;
+            if (World_AppendFreePlayPrivate(ID_DEFAULTCHARACTER_B) != 0)
+                ++FreePlayBonusCount;
+        }
+        if (CharCategory != NULL) {
+            for (index = 0; index < CHARCATEGORYCOUNT; ++index) {
+                i32 model;
+                if (InModelListDataFlags(FreePlayModelList, CharCategory[index].model_flags,
+                                         CharCategory[index].game_flags, 0, 1) != 0)
+                    continue;
+                if (hats == 0 || (StartupGameFlag1 != 0 && (CharCategory[index].model_flags & 0x80) != 0)) {
+                    model =
+                        RandomIDFromFlags(CharCategory[index].model_flags, CharCategory[index].game_flags, 1, NULL, 1);
+                    if (model != -1) {
+                        hats = 1;
+                    } else {
+                        model = RandomIDFromFlags(CharCategory[index].model_flags, CharCategory[index].game_flags, 0,
+                                                  NULL, 1);
+                    }
+                } else {
+                    model =
+                        RandomIDFromFlags(CharCategory[index].model_flags, CharCategory[index].game_flags, 0, NULL, 1);
+                }
+                if (model != -1 && World_AppendFreePlayPrivate(model) != 0)
+                    ++FreePlayBonusCount;
+            }
+            if (World_HasImperialPrivate(FreePlayModelList) == 0) {
+                i32 model = World_RandomImperialPrivate(FreePlayModelList);
+                if (model != -1 && World_AppendFreePlayPrivate(model) != 0)
+                    ++FreePlayBonusCount;
+            }
+        }
+    }
+extras:
+    for (AREA_EXTRA_MODEL_PC *extra = ExtraModelList; extra->model_list != NULL; ++extra) {
+        i32 source = *extra->model_list;
+        if (source != -1) {
+            for (index = 0; index < FreePlayModelCount; ++index) {
+                if (FreePlayModelList[index].model_id == source) {
+                    if (extra->extra_id != NULL && *extra->extra_id != -1)
+                        World_AppendFreePlayPrivate(*extra->extra_id);
+                    break;
+                }
+            }
+        }
+    }
 }

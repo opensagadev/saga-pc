@@ -11,10 +11,10 @@ import subprocess
 import sys
 
 if __package__:
-    from .binary import relocate_data, relocate_function
+    from .binary import _COFFAnalysis, _PreparedBindings, relocate_data, relocate_function
     from .lib import ROOT, bindings_for, changed_trees, compiled_objects, load_json, load_symbols, map_errors, mapping_progress, number, project, retail
 else:
-    from binary import relocate_data, relocate_function
+    from binary import _COFFAnalysis, _PreparedBindings, relocate_data, relocate_function
     from lib import ROOT, bindings_for, changed_trees, compiled_objects, load_json, load_symbols, map_errors, mapping_progress, number, project, retail
 
 
@@ -54,6 +54,7 @@ def check_objects(objects, records, target):
             continue
         rows_by_name.setdefault(row["symbol"], []).append(row)
     bindings = bindings_for(records)
+    prepared_bindings = _PreparedBindings(bindings)
     text_start = number(target["text_va"])
     text_end = text_start + number(target["text_size"])
     kinds = {}
@@ -61,6 +62,7 @@ def check_objects(objects, records, target):
     for unit, obj in sorted(objects.items()):
         definitions = {}
         try:
+            obj = _COFFAnalysis(obj)
             for symbol in obj.defined_symbols():
                 definitions.setdefault(symbol["name"], []).append(symbol)
         except ValueError as error:
@@ -143,7 +145,7 @@ def check_objects(objects, records, target):
                 relocate = relocate_function if kind == "function" else relocate_data
                 # Cross-section compiler labels are resolved here by binary.py,
                 # which requires one mapped complete owner and an in-extent label.
-                rebuilt, _ = relocate(obj, name, row["address"], bindings)
+                rebuilt, _ = relocate(obj, name, row["address"], prepared_bindings)
             except ValueError as error:
                 errors.append(f"{context}: {error}")
                 continue

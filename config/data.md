@@ -1916,3 +1916,22 @@ allocations, general capacities or game boot; the sole writer retains ownership.
 ### Constructor input-text extent qualification (2026-10-07)
 
 The constructor-data recipe introduced in af1f551 assigned known sizes to 1,158 PcInputText rows by reading each native string through its first NUL (prepare.py lines 23–35 and 62–63). This establishes 14,983 initialized text bytes, but the retained evidence does not establish the original owning extents or private visibility. We therefore qualify only these rows to unknown size, preserving their addresses, char[N] working types, source values and complete compiler-region comparisons. The three names replaced by existing canonical compiler literals before integration and 146 prior canonical pointee reuses are excluded; all unrelated known-size contracts remain intact. This explicitly withdraws 3,319 bytes from the exact-data physical union and 14,983 bytes from the mapped union, with no change to compared code, fuzzy/exact code progress or transferred source credit. Historical proofs and reports remain retained. The enumerated recipe receipt is 43d4f9528799b2ef42eac5a137d114f789198237a6a314bccbd985089587f6a0; accounting against immutable X report f2d38a8fa9b982b5409133c497a7f5d96092b2dbfa34d4f5ca4e2784e032e98f is pinned by receipt 9615b77a95fd0be262e096c199d34b9b24bc8b247d88b1024899388cf47ac88b.
+
+### Canonical Area/FreePlay/accessory storage Z (2026-10-07)
+
+The sole writer added48 shared definitions (914 typed/940 complete COFF bytes),
+reusing8 canonical definitions including the existing default-character pair.
+PlayerIDs16->18 and Story6->196 are same-owner minimum reader refinements
+(9IDs/49 model records), not proven original allocation capacities. Two player
+consumers now read named model_id fields at the same native offsets0/4.
+
+All112 newly emitted complete initializer copies match retail:16 known-extent
+exact copies and96 unknown-extent copies. Unknown extents receive no exact or
+allocation credit. All9,621 old full initializers were checked;5,258 old known
+exact compiled copies and13 complete member parents/28known bytes survive.
+Preciselyfive old WORD tails change naturally, in addition to the two growths:
+ID_DEFAULTCHARACTER_A4->2,LSW_B4->8,TextCrawlRotateXYZ2->4, with typed values
+unchanged. Only the previously nonexact known2-byte default WORD now adds2
+unique exact data bytes; union637,543->637,545. No source transfer credit arises
+from that old tail or from the raw-manifest correction. No angle placement,
+padding or further legacy-extent qualification is used; Perm remains held.

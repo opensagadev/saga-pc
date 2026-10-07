@@ -1,5 +1,76 @@
 #include "saga.h"
 
+struct text_crawl_view_pc_s {
+    i16 *heading_text;
+    i16 *vehicle_bonus_text;
+    i16 *character_bonus_text;
+    u8 paragraph_count;
+    i8 area;
+    u8 unknown_0e[2];
+};
+STATIC_ASSERT(sizeof(struct text_crawl_view_pc_s) == 0x10);
+STATIC_ASSERT(offsetof(struct text_crawl_view_pc_s, heading_text) == 0);
+STATIC_ASSERT(offsetof(struct text_crawl_view_pc_s, vehicle_bonus_text) == 4);
+STATIC_ASSERT(offsetof(struct text_crawl_view_pc_s, character_bonus_text) == 8);
+STATIC_ASSERT(offsetof(struct text_crawl_view_pc_s, paragraph_count) == 0xc);
+STATIC_ASSERT(offsetof(struct text_crawl_view_pc_s, area) == 0xd);
+
+extern "C" {
+    AREA_EXTRA_MODEL_PC ExtraModelList[6] = {
+        {&ID_DEFAULTCHARACTER_A, &AreaExtraTargetId7f17bcPc},     {&PunchRangeUnitIdPc, &PunchRangeCompanionIdPc},
+        {&AreaExtraSourceId7f17c8Pc, &AreaExtraTargetId7f17ccPc}, {&VehicleBoltId7f17d0Pc, &PunchRangeCompanionIdPc},
+        {&VehicleBoltId7f17d4Pc, &PunchRangeCompanionIdPc},       {NULL, NULL}};
+    i32 AreaDataLoaded = 1;
+    f32 AreaCrawlSoundWaitTimePc = 20.0f;
+    f32 AreaCrawlMaximumTimePc = 45.0f;
+    i32 AreaCrawlMusicEnabledPc = 1;
+    f32 AreaCrawlPromptYPc = 0.745000005f;
+    f32 AreaCrawlPromptScalePc = 0.400000006f;
+    APICHARACTERMODELLIST FreePlayModelList[49] = {0};
+    i32 CharacterDataLoad = 0;
+    i32 loadareacharacters_no_backdrop_reset = 0;
+    i32 loadareadata_loadlevel = 0;
+    i32 textcrawlactive = 0;
+    i16 tTOUCHTOSTART = 0;
+    i32 AreaMusic = 0;
+    AREA_LEVEL_LOAD_PC LevelLoad[12] = {0};
+    i32 Area_PlayerModelCount = 0;
+    APICHARACTERMODELLIST Area_FreePlayModelList[49] = {0};
+    i32 Area_FreePlayModelCount = 0;
+    APICHARACTERMODELLIST AreaPlayerModelsPc[9] = {0};
+    i32 LevelLoadCount = 0;
+    i32 Area_MissionModelCount = 0;
+    i32 Area_StoryModelCount = 0;
+    APICHARACTERMODELLIST Area_MissionModelList[49] = {0};
+    APICHARACTERMODELLIST *CurrentCList = NULL;
+    APICHARACTERMODELLIST *CurrentStoryCList = NULL;
+    i32 netnewgame = 0;
+    i16 AreaExtraTargetId7f17bcPc = -1;
+    i16 AreaExtraSourceId7f17c8Pc = -1;
+    i16 AreaExtraTargetId7f17ccPc = -1;
+
+    i16 FreePlayId007f199cPc = -1;
+    i16 FreePlayId007f1a4cPc = -1;
+    i16 FreePlayId007f1a48Pc = -1;
+    i16 FreePlayId007f1a44Pc = -1;
+    i16 FreePlayId007f1ab0Pc = -1;
+    i16 FreePlayId007f1ab4Pc = -1;
+    i16 FreePlayId007f1abcPc = -1;
+    i16 FreePlayId007f1b44Pc = -1;
+    i16 FreePlayId007f1b40Pc = -1;
+    i16 FreePlayId007f1a98Pc = -1;
+    i32 FreePlayModelCount = 0;
+    i32 FreePlayResidentCount = 0;
+    i32 FreePlayBonusCount = 0;
+    i32 bonusmodearcade = 0;
+    i16 TextCrawlChapterIdPc = 0;
+    i16 TextCrawlVehicleBonusIdPc = 0;
+    i16 TextCrawlCharacterBonusIdPc = 0;
+    struct text_crawl_view_pc_s TextCrawlLswPc = {
+        &TextCrawlChapterIdPc, &TextCrawlVehicleBonusIdPc, &TextCrawlCharacterBonusIdPc, 3, 0, {0, 0}};
+    i32 Customiser_AccessoriesLoaded = 0;
+}
+
 extern "C" {
     static const char ShaderUniformTextPc007e8b50[20] = "shadowCastingObject";
     static const char ShaderUniformTextPc007e8b64[22] = "texAnimCurves_sampler";
@@ -7575,11 +7646,11 @@ extern "C" {
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$Area_PlayerIDList")
-    i16 Area_PlayerIDList[8];
+    i16 Area_PlayerIDList[9];
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$Area_StoryModelListPc")
-    i16 Area_StoryModelListPc[3];
+    APICHARACTERMODELLIST Area_StoryModelListPc[49];
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$Game_AreaSave")

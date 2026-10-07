@@ -9,6 +9,9 @@ Objdiff's instruction score is advisory; only complete byte equality is exact.
 import datetime
 import hashlib
 import struct
+from bisect import bisect_right
+from copy import deepcopy
+from types import MappingProxyType
 import uuid
 from pathlib import Path
 
@@ -390,6 +393,16 @@ class COFF:
                 "offset": start, "section": section, "symbol": symbol,
                 "relocations": self._relocations(section, start, size, kind)}
 
+    def _function_starts(self, section):
+        return {s["value"] for s in self.defined_symbols()
+                if s["section"] == section and s["type"] & 0x20}
+
+    def _data_end(self, section, start):
+        offsets = [s["value"] for s in self.defined_symbols()
+                   if s["section"] == section and not s["type"] & 0x20]
+        return min([offset for offset in offsets if offset > start] +
+                   [self.sections[section - 1]["raw_size"]])
+
     def extract_function(self, name):
         symbol, section = self._definition(name)
         if section is None or not section["characteristics"] & 0x20 or not symbol["type"] & 0x20:
@@ -399,8 +412,7 @@ class COFF:
         if size:
             size_source = "function auxiliary TotalSize"
         else:
-            functions = {s["value"] for s in self.defined_symbols()
-                         if s["section"] == symbol["section"] and s["type"] & 0x20}
+            functions = self._function_starts(symbol["section"])
             if functions != {start}:
                 raise BinaryError("Shared code section without function TotalSize; rebuild with /Gy")
             size = section["raw_size"] - start
@@ -425,9 +437,7 @@ class COFF:
         if flags & 0xc0 == 0xc0:
             raise BinaryError("Mixed initialized/uninitialized COFF data is unsupported")
         start = symbol["value"]
-        offsets = [s["value"] for s in self.defined_symbols()
-                   if s["section"] == symbol["section"] and not s["type"] & 0x20]
-        end = min([offset for offset in offsets if offset > start] + [section["raw_size"]])
+        end = self._data_end(symbol["section"], start)
         size = end - start
         if size <= 0:
             raise BinaryError("Invalid data extent in COFF section")
@@ -441,6 +451,76 @@ class COFF:
             data = _slice(self.data, section["raw_offset"] + start, size)
         return self._region(symbol, section, start, size, data, "data symbol",
                             "next data symbol or section end (includes padding)")
+
+
+class _COFFAnalysis(COFF):
+    """One private per-owner snapshot; ordinary mutable COFF remains uncached."""
+
+    def __init__(self, source):
+        self.__dict__.update(deepcopy(source.__dict__))
+        self._definitions = tuple(COFF.defined_symbols(self))
+        self._names, self._functions, self._data_starts = {}, {}, {}
+        for symbol in self._definitions:
+            self._names.setdefault(symbol["name"], []).append(symbol)
+            if symbol["type"] & 0x20:
+                self._functions.setdefault(symbol["section"], set()).add(symbol["value"])
+            elif symbol["section"] > 0:
+                self._data_starts.setdefault(symbol["section"], set()).add(symbol["value"])
+        self._data_starts = {section: sorted(values)
+                             for section, values in self._data_starts.items()}
+        self._regions = {}
+
+    def defined_symbols(self):
+        return deepcopy(list(self._definitions))
+
+    def _definition(self, name):
+        matches = self._names.get(name, ())
+        if len(matches) != 1:
+            raise BinaryError(f"Expected one defined symbol {name!r}, found {len(matches)}")
+        symbol = matches[0]
+        section = self.sections[symbol["section"] - 1] if symbol["section"] else None
+        return symbol, section
+
+    def _function_starts(self, section):
+        return self._functions.get(section, set())
+
+    def _data_end(self, section, start):
+        offsets = self._data_starts[section]
+        position = bisect_right(offsets, start)
+        return (offsets[position] if position < len(offsets)
+                else self.sections[section - 1]["raw_size"])
+
+    def _cached_extract(self, kind, name):
+        key = kind, name
+        if key not in self._regions:
+            extract = COFF.extract_function if kind == "function" else COFF.extract_data
+            self._regions[key] = extract(self, name)
+        return deepcopy(self._regions[key])
+
+    def extract_function(self, name):
+        return self._cached_extract("function", name)
+
+    def extract_data(self, name):
+        return self._cached_extract("data", name)
+
+
+class _PreparedBindings:
+    """Invocation-local binding snapshot; validation stays inside _relocate."""
+
+    def __init__(self, bindings):
+        # check_objects supplies its ordinary freshly-built binding dictionary.
+        object.__setattr__(self, "_raw", MappingProxyType(deepcopy(bindings)))
+        object.__setattr__(self, "_normalized", None)
+
+    def __setattr__(self, name, value):
+        raise TypeError("Prepared bindings are immutable")
+
+    def normalized(self):
+        if self._normalized is None:
+            # Do not cache errors: every eligible relocation keeps its context.
+            values = {name: _address(address) for name, address in self._raw.items()}
+            object.__setattr__(self, "_normalized", MappingProxyType(values))
+        return self._normalized
 
 
 def _mapped_code_label(obj, ref, bindings):
@@ -465,9 +545,12 @@ def _relocate(obj, region, va, bindings):
     """Apply i386 DIR32/REL32 fields once to a complete extracted region."""
     va, _ = _extent(va, region["size"])
     bindings = {} if bindings is None else bindings
-    if not isinstance(bindings, dict):
-        raise BinaryError("Bindings must map exact COFF symbols to addresses")
-    bindings = {name: _address(address) for name, address in bindings.items()}
+    if type(bindings) is _PreparedBindings:
+        bindings = bindings.normalized()
+    else:
+        if not isinstance(bindings, dict):
+            raise BinaryError("Bindings must map exact COFF symbols to addresses")
+        bindings = {name: _address(address) for name, address in bindings.items()}
     data = bytearray(region["bytes"])
     applied, touched = [], set()
     for relocation in region["relocations"]:

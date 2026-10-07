@@ -3609,3 +3609,49 @@ ready real resource-call reconnections, expression/accessories and strict COFF
 index/binding-validation performance work. Real value/backend/asset dependencies
 and the genuine Perm angle extent loss remain explicit holds. Perpetual goal
 continues; the human identification journal remains untouched and excluded.
+
+### Connected Area, FreePlay, Customiser, expression and validation checkpoint Z (2026-10-07 UTC)
+
+Transferred17 functions/13,484 new unique PC bytes across Area8,815,FreePlay3,032,
+Customiser648 and expression989. Unique compared code1,239,743; native objdiff
+1,240,261 with518 overlap bytes. Whole-PC fuzzy24.816305150004798%,
++0.227625953591023pp. Exact204,917/3,471,246=5.9032693159747245%,
++289bytes/twofunctions. All4,286 old complete function copies are official-byte
+identical; all2,061 prior exact code copies remain, current2,063. Five strict
+compiler-local serial changes preserve raw/owner/relocated context.
+
+Actual312 normal owners/4,303functions/9,733data definitions and425inputs were
+frozen for build/link/check-objects, retail comparison and87selected CPU checks.
+All112 new full initializers are native-equal:16 known exact copies and96
+unknown copies, with no allocation credit for unknown extents. All9,621 priors
+were checked with precisely2 minimum owner growths and5 ordinary WORD tails;
+all5,258 old known-exact compiled data copies/13 member parents/28bytes remain.
+Known data union gains only2 old default-WORD bytes,637,543->637,545.
+
+The reviewed COFF index/binding optimization preserves one official kernel,
+strict complete extents/relocations/error order and uncached mutable public APIs.
+ImmutableY311 validation produced identical13,907 ordered raw/symbol/relocated/
+applied/results records in102.654->3.989seconds (25.73x for that measured bank;
+no claimed overall build/matching speedup). Seven production regression tests
+join the existing suite. FullLLVM18 checks pass726tests/3skips,339format files
+and312tidy units. First fullcheck/newWine setup failed on/tmp usrquota despite
+free physical space; failures are retained. Unchanged fullchecks recovered with
+workspaceTMPDIR; only61MBfailedownedprefix was removed, existing repoWineprefix
+reused sequentially without boot/reset/deletion. No check was weakened.
+
+Selected CPU87/0 uses every312 real normal providers, zero replacements or
+supplements. An initial fixture missing its genuine input-state producer was
+retained; fixturev2 adds only the actualPC_INPUT_RUNTIME_PC constructor and
+canonical typed input pointer, all36 assertions unchanged. ActualEXE still
+exits5/3.319s at NULLRetrieve,+16/full208; ShowCrashDialog0 and no owned popup/
+process leftovers. Area file/new-area/async/UI,accessory assets,device/Present/
+loaded scene/gameplay remain unverified. One stale acceptance raw hash was
+corrected in metadata only, preserving original manifest and all comparison bytes.
+
+Baseline841d925 exactCI37635942943 passed. The half-hour checkpoint was delayed
+to finish coherent native/shared-header/data checks and recover full validation
+from quota, rather than commit broken output. Next genuine connected wave is
+shader declarations3997,compilerConfigure4642+truepredicates and terrain
+handle8039/ray1176 cohorts. Full parser STL/EH outlines, shader publication,
+DDS value fallback,Perm angle loss and Hub FP pair remain explicit holds.
+Perpetual whole-project direct-main continuation is active; human journal intact.

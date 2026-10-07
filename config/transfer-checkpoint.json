@@ -20,18 +20,18 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1271323,
-    "matched_code_bytes": 204628,
-    "matching_percent": 5.894943775232294,
-    "fuzzy_coverage_percent": 24.588679196413775,
-    "mapped_functions": 4476,
-    "matched_functions": 2058,
-    "objdiff_fuzzy_percent": 69.61594,
-    "objdiff_total_code": 1226777,
+    "mapped_code_bytes": 1279694,
+    "matched_code_bytes": 204917,
+    "matching_percent": 5.9032693159747245,
+    "fuzzy_coverage_percent": 24.816305150004798,
+    "mapped_functions": 4490,
+    "matched_functions": 2060,
+    "objdiff_fuzzy_percent": 69.49616,
+    "objdiff_total_code": 1240261,
     "image_bytes": 40067072,
-    "mapped_bytes": 1919519,
-    "mapping_percent": 4.790764346344051,
-    "matched_data_region_bytes": 637543
+    "mapped_bytes": 1927890,
+    "mapping_percent": 4.811656813854529,
+    "matched_data_region_bytes": 637545
   },
   "newly_compared": [
     {
@@ -5513,6 +5513,176 @@
       ],
       "exact": false,
       "objdiff_percent": 94.5946
+    },
+    {
+      "symbol": "?AreaAddModelListPrivatePc@@YAXPAUapicharactermodellist_s@@PAHHHHPAUAREA_EXTRA_MODEL_PC@@@Z",
+      "pc": "0x00573be0",
+      "original_bytes": 185,
+      "units": [
+        "src/legoapi/areas.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 94.5
+    },
+    {
+      "symbol": "_Area_Configure",
+      "pc": "0x00573ca0",
+      "original_bytes": 4017,
+      "units": [
+        "src/legoapi/areas.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 44.795776
+    },
+    {
+      "symbol": "_AreaSelectModelListsPrivatePc",
+      "pc": "0x0048af40",
+      "original_bytes": 148,
+      "units": [
+        "src/legoapi/areas.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 89.13043
+    },
+    {
+      "symbol": "_LoadAreaData",
+      "pc": "0x0048afe0",
+      "original_bytes": 1095,
+      "units": [
+        "src/legoapi/areas.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 51.899666
+    },
+    {
+      "symbol": "_LoadAreaCharacters",
+      "pc": "0x0048b540",
+      "original_bytes": 3370,
+      "units": [
+        "src/legoapi/areas.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 55.391018
+    },
+    {
+      "symbol": "?World_HasImperialPrivate@@YAHPAUapicharactermodellist_s@@@Z",
+      "pc": "0x00488ed0",
+      "original_bytes": 133,
+      "units": [
+        "src/legoapi/world.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 78.48837
+    },
+    {
+      "symbol": "?World_RandomImperialPrivate@@YAHPAUapicharactermodellist_s@@@Z",
+      "pc": "0x00488f60",
+      "original_bytes": 383,
+      "units": [
+        "src/legoapi/world.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 45.347828
+    },
+    {
+      "symbol": "?World_AppendFreePlayPrivate@@YAHH@Z",
+      "pc": "0x004890e0",
+      "original_bytes": 104,
+      "units": [
+        "src/legoapi/world.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_MakeFreePlayModelList",
+      "pc": "0x00489150",
+      "original_bytes": 1567,
+      "units": [
+        "src/legoapi/world.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 89.198494
+    },
+    {
+      "symbol": "_InModelListDataFlags",
+      "pc": "0x0055be20",
+      "original_bytes": 193,
+      "units": [
+        "src/editor/edtoolsall.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 86.83077
+    },
+    {
+      "symbol": "_RandomIDFromFlags",
+      "pc": "0x0055bef0",
+      "original_bytes": 396,
+      "units": [
+        "src/legoapi/charconfig.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 46.28205
+    },
+    {
+      "symbol": "_CanWearHatsInFreePlay",
+      "pc": "0x0055f360",
+      "original_bytes": 71,
+      "units": [
+        "src/legoapi/charconfig.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 75.26316
+    },
+    {
+      "symbol": "_Collection_GetIDList",
+      "pc": "0x00594b70",
+      "original_bytes": 185,
+      "units": [
+        "src/legoapi/collection.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_Customiser_LoadAccessories",
+      "pc": "0x00592a70",
+      "original_bytes": 648,
+      "units": [
+        "src/legoapi/customise.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 77.99462
+    },
+    {
+      "symbol": "?AppendOperand@ShaderConditionNodePc@@QAEPAU1@PAU1@@Z",
+      "pc": "0x0074b0c0",
+      "original_bytes": 35,
+      "units": [
+        "src/nu2api/shader_lexical.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 0.0
+    },
+    {
+      "symbol": "?ShaderConditionPrecedencePc@@YAHPBD@Z",
+      "pc": "0x0074b350",
+      "original_bytes": 249,
+      "units": [
+        "src/nu2api/shader_lexical.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 76.53846
+    },
+    {
+      "symbol": "?ParseExpression@ShaderCompilerParserPc@@QAEPAUShaderConditionNodePc@@PAUShaderCompilerBufferAllocatorPc@@PAH@Z",
+      "pc": "0x0074c5e0",
+      "original_bytes": 705,
+      "units": [
+        "src/nu2api/shader_lexical.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 41.872147
     }
   ],
   "previous_exact_functions_lost": [],
@@ -23447,6 +23617,205 @@
       "user_journal_preserved": true,
       "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
       "ongoing_goal": "Continue whole-project transfer until human stops or pauses; validated direct-main pushes authorized."
+    },
+    {
+      "checkpoint": "Connected Area, FreePlay, Customiser, expression and validation checkpoint Z (2026-10-07 UTC)",
+      "baseline_commit": "841d9259cba7629152d3eae0ef104f709030d417",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1271323,
+        "matched_code_bytes": 204628,
+        "matching_percent": 5.894943775232294,
+        "fuzzy_coverage_percent": 24.588679196413775,
+        "mapped_functions": 4476,
+        "matched_functions": 2058,
+        "objdiff_fuzzy_percent": 69.61594,
+        "objdiff_total_code": 1226777,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1919519,
+        "mapping_percent": 4.790764346344051,
+        "matched_data_region_bytes": 637543
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1279694,
+        "matched_code_bytes": 204917,
+        "matching_percent": 5.9032693159747245,
+        "fuzzy_coverage_percent": 24.816305150004798,
+        "mapped_functions": 4490,
+        "matched_functions": 2060,
+        "objdiff_fuzzy_percent": 69.49616,
+        "objdiff_total_code": 1240261,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1927890,
+        "mapping_percent": 4.811656813854529,
+        "matched_data_region_bytes": 637545
+      },
+      "new_source_functions": 17,
+      "actual_new_transfer_PC_bytes": 13484,
+      "new_unique_compared_PC_bytes": 13484,
+      "unique_compared_code_bytes": 1239743,
+      "native_objdiff_denominator": 1240261,
+      "overlap_bytes": 518,
+      "new_native_family_bytes": {
+        "Area": 8815,
+        "FreePlay": 3032,
+        "Customiser": 648,
+        "expression": 989
+      },
+      "whole_PC_fuzzy_delta_pp": 0.22762595359102278,
+      "new_exact_PC_bytes": 289,
+      "new_exact_source_functions": 2,
+      "old_full_function_copies": 4286,
+      "old_official_function_copies_identical": 4286,
+      "old_exact_code_copies_preserved": 2061,
+      "current_exact_code_copies": 2063,
+      "old_full_data_definitions": 9621,
+      "current_full_function_definitions": 4303,
+      "current_full_data_definitions": 9733,
+      "qualified_compiler_local_class6_type0_serial_changes": 5,
+      "old_known_extent_exact_data_compiled_copies_preserved": 5258,
+      "new_complete_initializer_copies": 112,
+      "new_complete_initializer_COFF_bytes": 1503,
+      "new_full_native_equal_copies": 112,
+      "new_known_extent_exact_initializer_compiled_copies": 16,
+      "new_unknown_extent_full_native_equal_initializer_copies": 96,
+      "unknown_extent_exact_and_allocation_credit": 0,
+      "known_exact_data_union_before_transfer": 637543,
+      "known_exact_data_union_after_transfer": 637545,
+      "known_exact_data_union_gain_from_prior_nonexact_WORD_tail": 2,
+      "new_source_transfer_credit_from_prior_tail_or_manifest_correction": 0,
+      "old_data_refinements": [
+        "Area_PlayerIDList16->18 and Area_StoryModelListPc6->196: same canonical owners, old prefixes preserved and full native equality; working minima9 IDs/49 records, original allocation extents remain unknown.",
+        "Exactlyfive existing WORD intervals: ID_DEFAULTCHARACTER_A4->2;LSW_B4->8;TextCrawlRotateXYZ2->4. Typed WORD values unchanged; no exact copy lost. Previously nonexact known2-byte ID_DEFAULTCHARACTER_A now completes exactly, producing the2-byte union gain."
+      ],
+      "member_contracts": "All13 complete named parents/28 known member bytes, CRC/HANDLE preserved.",
+      "accepted_manifest_metadata_correction": "Corrected only stale raw_sha256 for Area_Configure: both independently acceptedv7 and normal full3593 raw/named identical a07ec2a7; full official291e9c/refs unchanged. Original17manifest02796 retained, successor2d12. No code bytes, sizes, bindings or comparison rules changed.",
+      "verified_checks": {
+        "status": "REQUIRED_FULL_LOCAL_CHECKS_PASS_AFTER_TMPFS_QUOTA_RECOVERY",
+        "make_build_check_objects_exit_code": 0,
+        "make_check_retry_exit_code": 0,
+        "first_make_check_exit_code": 2,
+        "first_failure": "Errno122 quota; /tmp has usrquota despite free physical space; full checks rerun unchanged with workspace TMPDIR, no code/check policy changed",
+        "tests": 726,
+        "skips": 3,
+        "normal_objects": 312,
+        "function_definitions": 4303,
+        "data_definitions": 9733,
+        "format_files": 339,
+        "tidy_units": 312,
+        "logs": {
+          "/tmp/saga-pc-next-runtime/checkpoint-Z/build-check-objects.log": "2e30fcbca3da15b318368b977c38f1b5aa857a3dc7cf11fdb3a47df43cbcadf9",
+          "/tmp/saga-pc-next-runtime/checkpoint-Z/make-check.log": "4a89d137d8c738f3d4e2b64a9c337d6d0d0ff487849b149166c64e46f44ff2a7",
+          "/tmp/saga-pc-next-runtime/checkpoint-Z/make-check-retry.log": "2fd4fa8d1e7d5d5bc77378c3a9eb6830a8206a93b029b2c7f4943d0cd31b37b3",
+          "/tmp/saga-pc-next-runtime/checkpoint-Z/match-first.log": "c6ad1862c3fa5f6233f2298a306b0cfeb0d2a1ec03a5a00c8264be8683183fa1"
+        },
+        "manifest_sha256": "2e1600c963afa01eed9c64c09d3f9e2e6b5fd65910205a962605dfb96e79152e",
+        "first_freeze_sha256": "4316b91e5301fce07d1d5fd6f129bdd5ed23c6af228aed3f9ac9ac554d1b9f3f",
+        "temporary_test_storage_remaining_bytes": 4096
+      },
+      "selected_actual_normal_CPU_checks": 87,
+      "selected_failures": 0,
+      "actual_normal_objects": 312,
+      "frozen_inputs": 425,
+      "whole_owner_replacements": 0,
+      "supplemental_objects": 0,
+      "validation_performance": {
+        "scope": "ImmutableY311 fullcheck_objects13907 ordered complete records",
+        "old_seconds": 102.65412855695467,
+        "new_seconds": 3.989396560937166,
+        "observed_speedup": 25.7317433824728,
+        "exact_raw_symbol_relocated_applied_results_equal": true,
+        "portable_new_regression_tests": 7,
+        "overall_matching_or_build_speedup_claim": false,
+        "same_official_extraction_relocation_kernel": true,
+        "cache_scope": "Private per-owner source snapshot and per-invocation lazily validated immutable bindings; mutable publicCOFF/dict APIs remain uncached."
+      },
+      "receipts": {
+        "first_endpoint": {
+          "path": "/tmp/saga-pc-next-runtime/endpoint-Z-independent-review/accepted-first-endpoint.json",
+          "sha256": "f5705dd1f6c64d659ddfecc85dda5eeb98638a27c8813741ccc2f71a199e9938"
+        },
+        "full_outputs": {
+          "path": "/tmp/saga-pc-next-runtime/endpoint-Z-independent-review/actual-output-and-prior-qualification.json",
+          "sha256": "baa1a0f11f971a1d4214de0697018e1c3ed84ab37370f570cf07c965b3b9661b"
+        },
+        "report_reconciliation": {
+          "path": "/tmp/saga-pc-next-runtime/endpoint-Z-independent-review/report-reconciliation.json",
+          "sha256": "0277141b33970c1495b7443f63136e4962e099c7cd721fd5b4c5fccb3e6be217"
+        },
+        "accepted_body_successor": {
+          "path": "/tmp/saga-pc-next-runtime/checkpoint-Z/accepted-complete-functions.json",
+          "sha256": "2d12fdcfb81d8c87d22d139799f46e4531e1c330b8ff3d9834ca95a4e34dc4e2"
+        },
+        "accepted_original": {
+          "path": "/tmp/saga-pc-next-runtime/checkpoint-Z/accepted-complete-functions-original.json",
+          "sha256": "02796defde5b1dd3bb5e9e71d5393aac32b47b3bac392b7bf1330629dbf204be"
+        },
+        "raw_metadata_correction": {
+          "path": "/tmp/saga-pc-next-runtime/endpoint-Z-independent-review/accepted-raw-metadata-correction.json",
+          "sha256": "91d7ae01243199434f246a71d54f3107164feeb1f7d55c8d24e9ac0ee0cda642"
+        },
+        "required_checks": {
+          "path": "/tmp/saga-pc-next-runtime/checkpoint-Z/required-checks-receipt.json",
+          "sha256": "1727b70e1e5b09ecd41249bbcecd4dd7982ab677d79fd127d2775ef755c1b86e"
+        },
+        "actual_normal_CPU_and_source_smoke": {
+          "path": "/tmp/saga-pc-next-runtime/checkpoint-Z/runtime-acceptance.json",
+          "sha256": "fabcbbe42823ee4c5122ca110c0d35fc0789392298b2f09fef19cfdf98f82555"
+        },
+        "tool_equivalence": {
+          "path": "/tmp/saga-pc-next-runtime/checkpoint-Z/tool-equivalence.json",
+          "sha256": "1f899af484e0117b17a381303fbfc9b523f8060c8828852bb16d2f7291e4f672"
+        },
+        "data_source_activation": {
+          "path": "/tmp/saga-pc-next-runtime/Z-area-freeplay-customiser-data/production/source-activation-receipt.json",
+          "sha256": "238100069aad09ac013b0313866d379a6769ef55b33ee445b28fe7b40d650a26"
+        },
+        "baseline_exact_CI": {
+          "path": "/tmp/saga-pc-next-runtime/checkpoint-Y/ci-verified.json",
+          "sha256": "236da74bb49ed8711dcf5f09978cb4ad852efa4a8b53942575886a7aeb85010e"
+        },
+        "initializer_accounting": {
+          "path": "/tmp/saga-pc-next-runtime/checkpoint-Z/new-initializer-accounting.json",
+          "sha256": "6ad340f03459e5ecf57c5aa7c1aa308343afad7a3768b7e8cd49f21ce7c81ca8"
+        }
+      },
+      "runtime_summary": {
+        "receipt": "/tmp/saga-pc-next-runtime/runtime-startup-acceptance/final-Z-unattended-acceptance.json",
+        "sha256": "b31d5013ac19cc1ab9f866e9f9651c6f6947f65136d7d7fd82e82abb5d3c5df7",
+        "exit": 5,
+        "elapsed_seconds": 3.3192198540782556,
+        "observed_fault": "0x5058e0",
+        "method_full_size": 208,
+        "method_offset": 16,
+        "visible_window_samples": 0
+      },
+      "runtime_qualifications": [
+        "Matching/source reconstruction primary. Selected CPU87 and linkedEXE do not mean a running game.",
+        "Area same-area direct status path only; no Area_Configure file/parser, new-area/async/UI/GPU claim. Customiser empty-category clearing, no asset/material path.",
+        "Expression balanced assigned-root finite cases only; malformed/unassigned-root hazards retained.",
+        "Actual source EXE genuine native entry/real installed assets, NULL Retrieve receiver +16 remains observed; input/device/Present/loadedscene/gameplay unverified."
+      ],
+      "environment_recovery": "Initial fullmakecheck and newownedWineprefix bootstrap failed on/tmp usrquota despite3.3GB physicalfree. Original failure retained; unchanged completechecks rerun with ignored workspaceTMPDIR. Only failedownedprefix61,058,427bytes removed; existing repoWineprefix reused sequentially without boot/reset/deletion. Initial CPU fixture missing inputproducer retained, v2 adds only genuine1040-byte PC_INPUT_RUNTIME_PC constructor and canonical typed caller pointer; all36 assertions unchanged. No game crash bypass.",
+      "previous_pushed_CI": {
+        "headSha": "841d9259cba7629152d3eae0ef104f709030d417",
+        "conclusion": "success",
+        "url": "https://github.com/opensagadev/saga-pc/actions/runs/37635942943"
+      },
+      "remaining_contracts": [
+        "Shader manager publication still needs genuine source parser/include/backend/HLSL producers; actualNULLRetrieve before world/scene remains.",
+        "Area particle/music/draw/input void actions stay marked; Area file/new-area/async/UI/GPU paths and accessory assets remain unverified.",
+        "Perm835 knownangle full1026->1028 loss remains held; no padding/placement/extent retirement.",
+        "HubUpdateMiniKits1773+Bounds453 remains held on true FP conversion/literal evidence.",
+        "Full parser include/cache group emits STL/EH outline sections needing genuine native helper/COFF coverage; no flags or forced wrappers.",
+        "Terrain handle builders need complete native packed payload/unchecked arena domain proof; no backing enlargement or invented guards."
+      ],
+      "next_connected_wave": "Genuine shader declaration/node/semantic3997, real compilerConfigure4642+finite predicates, terrain handle8039 and ray1176 connected subsets; continuously release closed native families.",
+      "checkpoint_delay": "Half-hour delayed until finite actual-headerConfigure review, all-prior/data gates, full checks recovered from quota,87 actualnormal assertions and authentic sourceEXE crash acceptance. No broken checkpoint committed.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "Continue whole-project transfer until human stops/pauses; validated direct-main pushes authorized."
     }
   ]
 }

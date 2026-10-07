@@ -479,3 +479,101 @@ i32 __cdecl PermanentCustomPieceAvailablePc(CUSTOMPIECE_LAYERS_PC *input) {
     }
     return 1;
 }
+
+typedef struct custom_accessory_resource_pc_s {
+    NUGSCN *scene;
+    NUSPECIALHANDLE special;
+    i32 original_texture_id;
+    i32 texture_id;
+    i32 material_index;
+    CHARACTER_MODEL_LAYERS_PC *character_model;
+} CUSTOM_ACCESSORY_RESOURCE_PC;
+STATIC_ASSERT(sizeof(CUSTOM_ACCESSORY_RESOURCE_PC) == 0x20);
+STATIC_ASSERT(offsetof(CUSTOM_ACCESSORY_RESOURCE_PC, scene) == 0);
+STATIC_ASSERT(offsetof(CUSTOM_ACCESSORY_RESOURCE_PC, special) == 4);
+STATIC_ASSERT(offsetof(CUSTOM_ACCESSORY_RESOURCE_PC, original_texture_id) == 0x10);
+STATIC_ASSERT(offsetof(CUSTOM_ACCESSORY_RESOURCE_PC, texture_id) == 0x14);
+STATIC_ASSERT(offsetof(CUSTOM_ACCESSORY_RESOURCE_PC, material_index) == 0x18);
+STATIC_ASSERT(offsetof(CUSTOM_ACCESSORY_RESOURCE_PC, character_model) == 0x1c);
+typedef struct custom_accessory_hierarchy_pc_s {
+    u8 unknown_00[0xc];
+    NUMTL **materials;
+    i32 material_count;
+} CUSTOM_ACCESSORY_HIERARCHY_PC;
+STATIC_ASSERT(offsetof(CUSTOM_ACCESSORY_HIERARCHY_PC, materials) == 0xc);
+STATIC_ASSERT(offsetof(CUSTOM_ACCESSORY_HIERARCHY_PC, material_count) == 0x10);
+typedef struct custom_accessory_material_pc_s {
+    u8 unknown_00[0x74];
+    i16 texture_id;
+    u8 unknown_76[0x24];
+    u8 material_tag;
+} CUSTOM_ACCESSORY_MATERIAL_PC;
+STATIC_ASSERT(offsetof(CUSTOM_ACCESSORY_MATERIAL_PC, texture_id) == 0x74);
+STATIC_ASSERT(offsetof(CUSTOM_ACCESSORY_MATERIAL_PC, material_tag) == 0x9a);
+STATIC_ASSERT(offsetof(APICHARSYS, models) == 0x18);
+STATIC_ASSERT(offsetof(APICHARSYS, playermodelids) == 0x1c);
+STATIC_ASSERT(sizeof(CHARACTER_MODEL_LAYERS_PC) == 0x54);
+extern i32 Customiser_AccessoriesLoaded;
+void __cdecl Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *input, APICHARACTERMODELLIST *models) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    i32 side, category, material_index;
+    CHARACTER_MODEL_LAYERS_PC *model;
+    CUSTOM_ACCESSORY_RESOURCE_PC *resource;
+    char piece_name[0x80], path[0x80];
+    if (customiser == NULL)
+        return;
+    Customiser_AccessoriesLoaded = 1;
+    for (; models->model_id != -1; ++models) {
+        side = 0;
+        if (models->model_id != customiser->character_ids[0]) {
+            if (models->model_id != customiser->character_ids[1])
+                continue;
+            side = 1;
+        }
+        model = &apicharsys->models[apicharsys->playermodelids[models->model_id]];
+        for (category = 0; category < 9; ++category) {
+            u16 piece_index;
+            resource = (CUSTOM_ACCESSORY_RESOURCE_PC *)&KillPartsAccessoriesPc[side][category];
+            memset(resource, 0, sizeof(*resource));
+            if (customiser->categories[category]->name == NULL || customiser->piece_counts[category] <= 0)
+                continue;
+            resource->character_model = model;
+            piece_index = side == 0 ? customiser->save->pieces[category] : customiser->save->secondary_pieces[category];
+            NuStrCpy(piece_name, customiser->piece_sets[category][piece_index].name);
+            NuStrCpy(path, "chars\\weirdo\\");
+            NuStrCat(path, customiser->categories[category]->name);
+            NuStrCat(path, "\\");
+            NuStrCat(path, piece_name);
+            if (customiser->categories[category]->uses_special != 0) {
+                NuStrCat(path, ".gsc");
+                resource->scene = NuGScnRead(&characterbuffer_ptr, characterbuffer_end, path);
+                if (resource->scene != NULL)
+                    NuSpecialFind(resource->scene, &resource->special, piece_name, 1);
+            } else {
+                if (customiser->categories[category]->material_tag == -1)
+                    continue;
+                NuStrCat(path, ".pnt");
+                resource->texture_id = NuTexReadPc(path, &characterbuffer_ptr, characterbuffer_end);
+                if (resource->texture_id == 0)
+                    continue;
+                for (material_index = 0;
+                     material_index < ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->material_count;
+                     ++material_index) {
+                    NUMTL *material = ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->materials[material_index];
+                    if (((CUSTOM_ACCESSORY_MATERIAL_PC *)material)->material_tag !=
+                        customiser->categories[category]->material_tag)
+                        continue;
+                    resource->material_index = material_index;
+                    resource->original_texture_id =
+                        ((CUSTOM_ACCESSORY_MATERIAL_PC *)((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)
+                             ->materials[material_index])
+                            ->texture_id;
+                    ((CUSTOM_ACCESSORY_MATERIAL_PC *)((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)
+                         ->materials[material_index])
+                        ->texture_id = (i16)resource->texture_id;
+                    NuMtlUpdate(((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->materials[material_index]);
+                }
+            }
+        }
+    }
+}

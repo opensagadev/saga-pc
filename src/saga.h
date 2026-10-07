@@ -8213,7 +8213,8 @@ extern "C" {
     STATIC_ASSERT(sizeof(COLLECTION_AREA_SAVE_PC) == 0xc);
     STATIC_ASSERT(offsetof(COLLECTION_AREA_SAVE_PC, minikit_complete) == 4);
     extern i32 Hub_UsePlayerList;
-    extern i16 Area_PlayerIDList[8], Area_StoryModelListPc[3];
+    extern i16 Area_PlayerIDList[9];
+    extern APICHARACTERMODELLIST Area_StoryModelListPc[49];
     extern SOCKPOSITION_PC OldPlrSPos[8];
     extern PLAYER_BATARANG_SLOT_PC BatarangPacketsPc[8];
     extern SUIT_LAYERS_PC *PlayerSuit[8];
@@ -16471,6 +16472,7 @@ struct ShaderConditionNodePc {
     ShaderConditionNodePc *left;
     ShaderConditionNodePc *right;
     const char *token;
+    ShaderConditionNodePc *AppendOperand(ShaderConditionNodePc *operand);
 };
 
 struct ShaderSourceNodePc {
@@ -16713,6 +16715,7 @@ class ShaderCompilerParserPc {
     void BeginElse();
     void BeginElseIf(ShaderConditionNodePc *condition);
     void EndIf();
+    ShaderConditionNodePc *ParseExpression(ShaderCompilerBufferAllocatorPc *input, i32 *cursor);
 };
 STATIC_ASSERT(sizeof(ShaderParserNodePc) == 8);
 STATIC_ASSERT(offsetof(ShaderParserNodePc, kind) == 0);
@@ -16999,6 +17002,104 @@ extern "C" {
 #ifdef __cplusplus
 }
 i32 __cdecl Episode_CountOpenAreas(i32, i32, COLLECTION_AREA_SAVE_PC *);
+#endif
+
+typedef struct AREA_EXTRA_MODEL_PC {
+    i16 *model_list;
+    i16 *extra_id;
+} AREA_EXTRA_MODEL_PC;
+STATIC_ASSERT(sizeof(AREA_EXTRA_MODEL_PC) == 8);
+STATIC_ASSERT(offsetof(AREA_EXTRA_MODEL_PC, model_list) == 0);
+STATIC_ASSERT(offsetof(AREA_EXTRA_MODEL_PC, extra_id) == 4);
+typedef struct AREA_LEVEL_LOAD_PC {
+    i16 level;
+    i16 first_level;
+    i16 second_level;
+    u8 flags;
+    u8 unknown_07;
+} AREA_LEVEL_LOAD_PC;
+STATIC_ASSERT(sizeof(AREA_LEVEL_LOAD_PC) == 8);
+STATIC_ASSERT(offsetof(AREA_LEVEL_LOAD_PC, level) == 0);
+STATIC_ASSERT(offsetof(AREA_LEVEL_LOAD_PC, first_level) == 2);
+STATIC_ASSERT(offsetof(AREA_LEVEL_LOAD_PC, second_level) == 4);
+STATIC_ASSERT(offsetof(AREA_LEVEL_LOAD_PC, flags) == 6);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl Area_Configure(i32, i32, AREA_EXTRA_MODEL_PC *, i16 *);
+    void __cdecl LoadAreaCharacters(void);
+
+    extern AREA_EXTRA_MODEL_PC ExtraModelList[6];
+    extern i32 AreaDataLoaded;
+    extern f32 AreaCrawlSoundWaitTimePc;
+    extern f32 AreaCrawlMaximumTimePc;
+    extern i32 AreaCrawlMusicEnabledPc;
+    extern f32 AreaCrawlPromptYPc;
+    extern f32 AreaCrawlPromptScalePc;
+    extern APICHARACTERMODELLIST FreePlayModelList[49];
+    extern i32 CharacterDataLoad;
+    extern i32 loadareacharacters_no_backdrop_reset;
+    extern i32 loadareadata_loadlevel;
+    extern i32 textcrawlactive;
+    extern i16 tTOUCHTOSTART;
+    extern i32 AreaMusic;
+    extern AREA_LEVEL_LOAD_PC LevelLoad[12];
+    extern i32 Area_PlayerModelCount;
+    extern APICHARACTERMODELLIST Area_FreePlayModelList[49];
+    extern i32 Area_FreePlayModelCount;
+    extern APICHARACTERMODELLIST AreaPlayerModelsPc[9];
+    extern i32 LevelLoadCount;
+    extern i32 Area_MissionModelCount;
+    extern i32 Area_StoryModelCount;
+    extern APICHARACTERMODELLIST Area_MissionModelList[49];
+    extern APICHARACTERMODELLIST *CurrentCList;
+    extern APICHARACTERMODELLIST *CurrentStoryCList;
+    extern i32 netnewgame;
+    extern i16 AreaExtraTargetId7f17bcPc;
+    extern i16 AreaExtraSourceId7f17c8Pc;
+    extern i16 AreaExtraTargetId7f17ccPc;
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl MakeFreePlayModelList(i32, i32, i32, i32, i32);
+    i32 __cdecl InModelListDataFlags(APICHARACTERMODELLIST *, u32, u32, i32, i32);
+    i32 __cdecl RandomIDFromFlags(u32, u32, i32, APICHARACTERMODELLIST *, i32);
+    i32 __cdecl CanWearHatsInFreePlay(i32);
+    i32 __cdecl Collection_GetIDList(COLLECTION_BUILD_PC *, u32, u32, i16 *, i32 *, i32 *, i32);
+    extern i16 FreePlayId007f199cPc;
+    extern i16 FreePlayId007f1a4cPc;
+    extern i16 FreePlayId007f1a48Pc;
+    extern i16 FreePlayId007f1a44Pc;
+    extern i16 FreePlayId007f1ab0Pc;
+    extern i16 FreePlayId007f1ab4Pc;
+    extern i16 FreePlayId007f1abcPc;
+    extern i16 FreePlayId007f1b44Pc;
+    extern i16 FreePlayId007f1b40Pc;
+    extern i16 FreePlayId007f1a98Pc;
+    extern i32 FreePlayModelCount;
+    extern i32 FreePlayResidentCount;
+    extern i32 FreePlayBonusCount;
+    extern i32 bonusmodearcade;
+#ifdef __cplusplus
+}
+#endif
+STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern struct text_crawl_view_pc_s TextCrawlLswPc;
+    extern i16 TextCrawlChapterIdPc;
+    extern i16 TextCrawlVehicleBonusIdPc;
+    extern i16 TextCrawlCharacterBonusIdPc;
+    void __cdecl Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *, APICHARACTERMODELLIST *);
+    extern i32 Customiser_AccessoriesLoaded;
+#ifdef __cplusplus
+}
 #endif
 
 #endif

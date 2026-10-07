@@ -4566,3 +4566,32 @@ but the area table's natural 3,064-byte compiler region extends its 3,060-byte
 working table by four nonnative padding bytes. Its original extent stays unknown
 and this is explicitly not a complete byte match or allocation-credit claim.
 Unproved NUL lengths and minimum working views remain unknown extents.
+
+### Area, FreePlay, accessory and expression source wave Z (2026-10-07)
+
+Transferred17 complete functions/13,484 PC bytes: original Area5/8,815,
+FreePlay8/3,032, Customiser648 and expression3/989. Area retains the original
+private helper/caller group; its sole C-to-C++ owner conversion supplies the
+real music ABI. Shared named fields/asserts preserve all24 prior Area outputs.
+Actual canonical colours, SFX and default-character pair are reused. LoadAreaData
+and LoadAreaCharacters reconnect real FreePlay, icon, accessory, crawl and
+backdrop suppliers in native order; missing particle/music/draw/input actions
+remain marked. Extended backdrop division/multiply has only the native final
+f32 store. Configure's current shared declarations naturally yield3,593 bytes
+versus accepted earlier3,609, native full4,017; identical implementation/control,
+88calls/103global accesses and stack joins were independently reviewed.
+
+FreePlay retains the native340-WORD stack, bounded valid339IDs plus sentinel,
+original private helpers and true ordinary empty vehicle-list path. Collection
+ID185 and private append104 become whole-byte exact. Accessory648 reuses the
+canonical576-byte accessory array and real suppliers. Expression preserves
+same-TU lexical table/precedence and the original balanced assigned-root domain,
+100-node stack and native malformed-close/unassigned-root hazards; no fake parser
+constructor or shader publication. Three full spans705/249/35 are compared.
+
+All4,286 prior official function copies and2,061 old exact compiled copies
+survive. Five class6/type0 compiler-local serial changes retain raw bytes,
+owner/function offsets and complete relocated bytes. One retained acceptance
+manifest raw hash was stale: acceptedv7/normal Configure raw/named bytes are
+identical a07ec2a7, official291e9c. Only that metadata field was corrected, with
+original02796 manifest retained; no comparison byte/extent/binding was altered.

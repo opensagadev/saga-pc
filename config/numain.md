@@ -842,3 +842,19 @@ borrowed executable code, fallback asset or fabricated ID was installed.
 Unattended smoke preserves the fault/exit, suppresses the Wine debugger dialog
 in its own prefix and cleans only its own processes. Device Present, recurring
 frames, loaded scenes and playable completion remain unverified.
+
+### Current connected entry/resource frontier after Z (2026-10-07)
+
+Area/FreePlay, accessory and expression families are now real compared source.
+Area's already-ready resource suppliers are connected; unready particle/music/
+draw/input actions remain explicit markers. Source-only entry still reaches a
+NULL shader-manager Retrieve receiver before world/scene loading. ActualEXE
+exit5/3.319s at source5058e0,+16/full208 is retained, with ShowCrashDialog0 and
+no owned game/fixture/debugger/dialog leftovers. No window/Present/repeated
+frames/scene/gameplay milestone is inferred from matching or CPU tests.
+
+Next close genuine shader declaration/node/semantic and compiler Configure
+providers, followed by source/include/cache/Generate publication. Full include
+vector outlines remain a real COFF/native helper contract; no dummy vtable,
+borrowed HLSL or fabricated success. Terrain handle/ray families progress in
+parallel. DDS/value fallback, Perm angle extent loss and Hub FP pair stay held.
