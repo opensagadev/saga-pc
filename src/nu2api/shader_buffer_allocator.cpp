@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 ShaderCompilerBufferAllocatorPc::ShaderCompilerBufferAllocatorPc(i32 size, bool owns) {
     data = new u8[size];
     length = 0;
@@ -38,4 +39,14 @@ void ShaderCompilerBufferAllocatorPc::AppendBytes(const char *source, i32 count)
 }
 void ShaderCompilerBufferAllocatorPc::AppendText(const char *source) {
     AppendBytes(source, (i32)strlen(source));
+}
+
+ShaderCompilerBufferAllocatorPc &ShaderCompilerBufferAllocatorPc::operator<<(const char *source) {
+    AppendText(source);
+    return *this;
+}
+void ShaderCompilerBufferAllocatorPc::AppendInt(i32 value) {
+    char text[64];
+    sprintf(text, "%d", value);
+    AppendBytes(text, (i32)strlen(text));
 }

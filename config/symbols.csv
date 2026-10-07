@@ -2287,8 +2287,9 @@ address    , symbol                                                         , si
 0x5999a0,_SuperCarry_Release,64,void __cdecl(GAMEOBJECT *)
 0x599a40,_MiniKit_Load,220,"void __cdecl(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *, void *)"
 0x599b20,_MiniKit_InitPieces,442,"void __cdecl(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *)"
+0x599ce0,_CharMiniKit_Draw,287,"void __cdecl CharMiniKit_Draw(i32, NUMTX *, i32, f32, f32)"
 0x599e00,_CharacterMiniKits_Load,546,"void __cdecl(COLLECTION_BUILD_PC *, WORLDINFO *, VARIPTR *, VARIPTR *)"
-0x0059a030 , _CharacterMiniKits_Dump                                        , 270   , void __cdecl (WORLDINFO *)
+0x59a030,_CharacterMiniKits_Dump,270,void __cdecl CharacterMiniKits_Dump(WORLDINFO *)
 0x59a420,_MiniKit_GameMsg_Update,156,void __cdecl (GAME_MESSAGE_PC *)
 0x59a4c0,_MiniKit_GameMsg_End,213,void __cdecl (GAME_MESSAGE_PC *)
 0x59a620,_GameAntnode_CreateSys,137,"void *__cdecl (WORLDINFO *, VARIPTR *, VARIPTR *, i32)"
@@ -2411,8 +2412,15 @@ address    , symbol                                                         , si
 0x5a2040,_RippleEndRadiusPc,23,
 0x005a2060 , _RippleEffects_Configure                                       , 431   , "void __cdecl (WORLDINFO *, char *)"
 0x5a2210,_LookupRippleEffectIndex,56,i32 __cdecl(char *)
+0x5a2250,_RippleLinkNodesPc,96,
+0x5a22b0,_ResetRippleSet,72,void __cdecl ResetRippleSet(RIPPLE_SET_PC *)
+0x5a2360,_InitRipples,145,"void __cdecl InitRipples(RIPPLE_SET_PC **, VARIPTR *, VARIPTR *, i32)"
 0x5a2400,_RippleAllocPc,107,
+0x5a2470,_RippleFreeNodePc,116,
 0x5a24f0,_AddRipple,203,"void __cdecl(RIPPLE_SET_PC *, NUMTX *, f32, f32, f32, f32, u32, u32, i32, NUMTL *, NUVEC *)"
+0x5a25e0,_UpdateRippleSet,587,void __cdecl UpdateRippleSet(RIPPLE_SET_PC *)
+0x5a2830,_DrawRipplePc,351,
+0x5a2990,_DrawRippleSet,53,void __cdecl DrawRippleSet(RIPPLE_SET_PC *)
 0x005a29d0 , _DestroyRippleMtls                                             , 80    , void __cdecl (WORLDINFO *)
 0x5a2a20,_RippleEffectTypePc,59,
 0x5a2aa0,_Pulses_Configure,1327,"void __cdecl(WORLDINFO *,char *)"
@@ -2967,6 +2975,7 @@ address    , symbol                                                         , si
 0x5ee750,_clipPartialPortal,484,
 0x5ee940,_roomRecursive,483,
 0x5eeb30,_NuPortalVisibility,506,i32 __cdecl NuPortalVisibility(NUGSCN *)
+0x5eedf0,_NuGScnFixupTIDs,397,void __cdecl(NUGSCN *)
 0x5eef80,_NuGScnRestoreTID,193,"i32 __cdecl(NUGSCN *,i32)"
 0x5ef050,_NuGScnRestoreTIDs,371,void __cdecl(NUGSCN *)
 0x5ef1d0,_NuReadGraphicsData,699,"GHG_GRAPHICS_SCENE_PC* private(VARIPTR*,VARIPTR*,char*,char*,void*)"
@@ -3097,6 +3106,7 @@ address    , symbol                                                         , si
 0x601df0,_NuGScnRndr3,19,void __cdecl(NUGSCN *)
 0x601e20,_NuGScnUploadGfxDataFromFilePS,1347,"i32 __cdecl(VARIPTR *, VARIPTR, NUFILE)"
 0x602370,_NuGScnCreatePS,63,"void __cdecl (NUGSCN *, VARIPTR *, VARIPTR *)"
+0x6023b0,_NuGScnFixupTIDsPS,205,void __cdecl(NUGSCN *)
 0x602480,_NuGScnRestoreTIDsPS,205,void __cdecl(NUGSCN *)
 0x602550,_NuGScnFixupPS,329,void __cdecl(NUGSCN*)
 0x6026a0,_NuGScnDestroyPS,350,void __cdecl(NUGSCN *)
@@ -4575,21 +4585,37 @@ address    , symbol                                                         , si
 0x746260,??0CRC16@@QAE@XZ,255,__thiscall CRC16::CRC16(void)
 0x746360,?hash@CRC16@@SAIPBEH@Z,61,"u32 __cdecl CRC16::hash(const u8*,i32)"
 0x7463a0,?hashInverse@CRC16@@SAIPBEH@Z,64,"u32 __cdecl CRC16::hashInverse(const u8*,i32)"
+0x7464e0,??6ShaderCompilerBufferAllocatorPc@@QAEAAU0@PBD@Z,19,
+0x7465d0,??0ShaderSourceNodePc@@QAE@IHHPBDH0HH@Z,67,
+0x746640,?SemanticName@ShaderSourceNodePc@@QAEPBDXZ,264,
 0x746750,??0ShaderRegisterBlockPc@@QAE@XZ,13,
 0x746790,??1ShaderCompilerDictionaryPc@@QAE@XZ,37,
 0x7467c0,?SetProfile@ShaderCompilerDictionaryPc@@QAEXHHH@Z,80,
 0x746810,?AddRegisterBlock@ShaderCompilerDictionaryPc@@QAEXPBDH@Z,63,
 0x746850,?FindRegisterBlock@ShaderCompilerDictionaryPc@@QAEHPBD@Z,102,
 0x7468c0,?BindOutputBuffer@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z,126,
+0x7469b0,?IsNumericToken@ShaderCompilerDictionaryPc@@QAE_NPBD@Z,68,
+0x746a00,?ShaderRegisterComponentsPc@@YAPBDHH@Z,172,
+0x746ab0,?RenderASTName@ShaderCompilerDictionaryPc@@QAEPBDPAUShaderSourceNodePc@@@Z,307,
 0x746c60,?FindDefinition@ShaderCompilerDictionaryPc@@QAEPAUShaderMacroDefinitionPc@@PBD@Z,99,
+0x746cd0,?AddASTDefinition@ShaderCompilerDictionaryPc@@QAEXPAUShaderSourceNodePc@@@Z,130,
+0x746d60,?FindASTExact@ShaderCompilerDictionaryPc@@QAEPAUShaderSourceNodePc@@PBDI@Z,99,
+0x746dd0,?FindASTUniform@ShaderCompilerDictionaryPc@@QAEPAUShaderSourceNodePc@@PBD@Z,108,
 0x746e60,??0ShaderCompilerDictionaryPc@@QAE@AAUVirtualStackAllocator@@H@Z,350,
+0x746fc0,?EvaluateCondition@ShaderCompilerDictionaryPc@@QAE_NPAUShaderConditionNodePc@@PAH@Z,1038,
 0x7473d0,?AddDefinition@ShaderCompilerDictionaryPc@@QAEXPBD0H@Z,279,
+0x747810,?EmitVertexInput@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z,347,
+0x747970,?EmitAttribute@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z,1670,
+0x748000,?EmitType@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z,213,
+0x7480e0,?EmitRegister@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z,254,
+0x7481e0,?EvaluateValue@ShaderCompilerDictionaryPc@@QAEHPAUShaderConditionNodePc@@@Z,26,
 0x7484e0,??0ShaderCompilerBufferAllocatorPc@@QAE@H_N@Z,43,
 0x748510,??0ShaderCompilerBufferAllocatorPc@@QAE@AAUVirtualStackAllocator@@H@Z,39,
 0x748540,??1ShaderCompilerBufferAllocatorPc@@QAE@XZ,32,
 0x748590,?Resize@ShaderCompilerBufferAllocatorPc@@QAEXH@Z,69,
 0x7485e0,?AppendBytes@ShaderCompilerBufferAllocatorPc@@QAEXPBDH@Z,114,
 0x748760,?AppendText@ShaderCompilerBufferAllocatorPc@@QAEXPBD@Z,39,
+0x748790,?AppendInt@ShaderCompilerBufferAllocatorPc@@QAEXH@Z,90,
 0x74ade0,_ShaderLexicalClassesInitPc,409,
 0x74b020,?IsSpecialToken@ShaderLexicalTokenPredicatePc@@QAEHPBD@Z,50,
 0x0074fbdc , _D3DXCompileShader@40                                          , 6     , "HRESULT __stdcall (const char *, UINT, const D3DXMACRO *, ID3DXInclude *, const char *, const char *, DWORD, ID3DXBuffer **, ID3DXBuffer **, ID3DXConstantTable **)"
@@ -5072,6 +5098,7 @@ address    , symbol                                                         , si
 0x00753288 , _NuTimeBarUnsignedBias                                         , 4     , const f32
 0x00753288 , __real@4f800000                                                , 4     , f32
 0x753290,__real@4058000000000000,8,const f64
+0x7532a0,??_C@_04MFANEHND@?$DP?$DP?$DP?$DP?$AA@,,
 0x007532a8 , __real@42c80000                                                , 4     , const f32
 0x7532b4,__real@3f333333,4,const f32
 0x7532b8   , __real@3ecccccd                                                , 4     , const f32
@@ -5722,12 +5749,14 @@ address    , symbol                                                         , si
 0x00759674 , _AreaFixUpName_Podsprint                                       , 12    , char[12]
 0x007596d4 , _AreaFixUpName_Negotiations                                    , 16    , char[16]
 0x007596f8 , _NuBlankStringValue                                            , 2     , const char[2]
+0x759700,??_C@_02LMMGGCAJ@?3?5?$AA@,,
 0x00759700 , _Menu_ColonSeparator                                           , 3     , const char[3]
 0x759710,__real@3f0e147b,4,const f32
 0x759714,__real@bf19999a,4,const f32
 0x759718,??_C@_0BA@NECHOIAM@env_padLight_on?$AA@,16,const char[16]
 0x00759718,_ArcadeAiKilledSoundNamePc,16,const char[16]
 0x759740,__real@3f647ae140000000,8,const f64
+0x759748,__real@80000000,,const f32
 0x759758,__real@3f00000000000000,8,const f64
 0x00759760 , __real@47000000                                                , 4     , const f32
 0x759764,??_C@_0M@BMDKLHLG@ui_hover_lp?$AA@,12,const char[12]
@@ -6139,6 +6168,7 @@ address    , symbol                                                         , si
 0x75b3dc,_PlayerActionNamePc_147,10,const char[10]
 0x75b3e8,_PlayerActionNamePc_146,10,const char[10]
 0x75b3f4,_PlayerActionNamePc_144,16,const char[16]
+0x75b404,??_C@_05KNFBNCOH@float?$AA@,,
 0x75b404,_PlayerActionNamePc_143,6,const char[6]
 0x75b40c,_PlayerActionNamePc_142,8,const char[8]
 0x75b414,_PlayerActionNamePc_141,18,const char[18]
@@ -6430,6 +6460,7 @@ address    , symbol                                                         , si
 0x75c008,__real@3ccccccd,4,const f32
 0x75c00c,??_C@_08GHPILJDM@?$FL?$FLback?$FN?$FN?$AA@,,char[9]
 0x75c024,??_C@_0L@PPGNKBM@?$FL?$FLaccept?$FN?$FN?$AA@,,char[11]
+0x75c044,??_C@_01JLIPDDHJ@?3?$AA@,,
 0x75c044,_PcInputText75c044,2,char[2]
 0x75c050,__real@3ff028f5c0000000,8,const f64
 0x75c058,??_C@_02DPKJAMEF@?$CFd?$AA@,3,
@@ -6948,6 +6979,10 @@ address    , symbol                                                         , si
 0x760084,__real@3727c5ac,4,const f32
 0x760098,__real@38d1b717,,
 0x007603f8 , ??_C@_07DKPOBDJL@OnMacro?$AA@                                  , 8     , const char[8]
+0x760400,??_C@_02FDNJECIE@?$CB?$DN?$AA@,,
+0x760404,??_C@_02EEKDKGMJ@?$DO?$DN?$AA@,,
+0x760408,??_C@_02EHCHHCKH@?$DM?$DN?$AA@,,
+0x76040c,??_C@_02EGOFBIJA@?$DN?$DN?$AA@,,
 0x00760410 , ??_C@_02NJNGHICB@IF?$AA@                                       , 3     , const char[3]
 0x00760414 , ??_C@_07MBODAEHJ@DoMacro?$AA@                                  , 8     , const char[8]
 0x0076041c , ??_C@_0M@ELCDDGAK@ReturnState?$AA@                             , 12    , const char[12]
@@ -7816,6 +7851,7 @@ address    , symbol                                                         , si
 0x76b780,__real@3f13b646,,
 0x76b784,__real@33d6bf95,4,const f32
 0x76b788,_RtlSearchTimebarNamePc,,const char[9]
+0x76bc20,??_C@_07DNODLGKM@INVALID?$AA@,,
 0x76bc20,_NuMusicDebugClassInvalid,8,const char[8]
 0x76c5bc,__real@bd4ccccd,4,const f32
 0x76c5d8,??_C@_06KMBGOEGK@?$CFs?$CF03d?$AA@,7,const char[7]
@@ -9271,6 +9307,7 @@ address    , symbol                                                         , si
 0x775694,_PcInputText775694,7,char[7]
 0x77569c,??_C@_0N@IPEDNLAC@Mappings?4dat?$AA@,13,const char[13]
 0x7756ac,??_C@_09EECDJGEH@?$CFs?2?$CFs?2?$CFs?2?$AA@,10,const char[10]
+0x775768,??_C@_01GPOEFGEJ@?7?$AA@,,
 0x7758bc,??_C@_1BA@GPEMCLPB@?$AAP?$AAI?$AAD?$AA_?$AA?$CF?$AA4?$AAX?$AA?$AA@,16,const wchar_t[8]
 0x7758cc,??_C@_19JEBEJPIJ@?$AAP?$AAI?$AAD?$AA_?$AA?$AA@,10,const wchar_t[5]
 0x7758d8,??_C@_1BA@DMNNECBF@?$AAV?$AAI?$AAD?$AA_?$AA?$CF?$AA4?$AAX?$AA?$AA@,16,const wchar_t[8]
@@ -9532,6 +9569,11 @@ address    , symbol                                                         , si
 0x777b98,_PCGraphicsGpuName00777b98,,const char[19]
 0x777bac,_PCGraphicsGpuName00777bac,,const char[9]
 0x777d1c,??_7type_info@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
+0x780c40,??_C@_02NONPIBCD@?$HM?$HM?$AA@,,
+0x780c44,??_C@_02PPKAJPJL@?$CG?$CG?$AA@,,
+0x780c6c,??_C@_01DCLJPIOD@?$CB?$AA@,,
+0x78118c,??_C@_04DDKJGDCM@bool?$AA@,,
+0x7811d8,??_C@_03JBIPMCLC@int?$AA@,,
 0x0078490c , _SoundVoice3DBufferIID                                         , 16    , const GUID
 0x78491c,_PCSoundListenerIIDPc,,const IID
 0x78493c,_PCSoundBuffer8IIDPc,,const IID
@@ -9551,11 +9593,99 @@ address    , symbol                                                         , si
 0x7e7d1c,?PcJoystickDataFormat@@3UPC_DI_DATA_FORMAT_PC@@B,,PC_DI_DATA_FORMAT_PC
 0x7e7f24,?PcMouseDataFormat@@3UPC_DI_DATA_FORMAT_PC@@B,,PC_DI_DATA_FORMAT_PC
 0x7e8abc,_PCSampleBufferAlgorithmPc,,const GUID
+0x7e9380,??_C@_04DGFIONEK@hook?$AA@,,
+0x7e9388,??_C@_0M@JHKOCKOC@samplerCUBE?$AA@,,
+0x7e9394,??_C@_09LAHPNHHH@sampler3D?$AA@,,
+0x7e93a0,??_C@_09LBLNLNEA@sampler2D?$AA@,,
+0x7e93ac,??_C@_09LDPLADBJ@sampler1D?$AA@,,
+0x7e93b8,??_C@_07EDNHDEOM@half4x4?$AA@,,
+0x7e93c0,??_C@_07JBEBJKJC@half3x3?$AA@,,
+0x7e93c8,??_C@_05IIEIIBEI@half4?$AA@,,
+0x7e93d0,??_C@_05MHAJBHIP@half3?$AA@,,
+0x7e93d8,??_C@_05NOBCCGMO@half2?$AA@,,
+0x7e93e0,??_C@_04GBGPFKGN@half?$AA@,,
+0x7e93e8,??_C@_08JNEOKFJO@float4x4?$AA@,,
+0x7e93f4,??_C@_08EPNIALOA@float3x3?$AA@,,
+0x7e9400,??_C@_06IFOJNFPO@float4?$AA@,,
+0x7e9408,??_C@_06MKKIEDDJ@float3?$AA@,,
+0x7e9410,??_C@_06NDLDHCHI@float2?$AA@,,
+0x7e9418,??_C@_09MLGAJAED@undefined?$AA@,,
+0x7e9428,_ShaderCompilerTypeComponentsPc,,
+0x7e9480,??_C@_0N@NNCGAIOI@BLENDWEIGHT0?$AA@,,
+0x7e9490,??_C@_0O@MGBLILCG@BLENDINDICES0?$AA@,,
+0x7e94a0,??_C@_09GJJCEFEE@TEXCOORD7?$AA@,,
+0x7e94ac,??_C@_09HAIJHEAF@TEXCOORD6?$AA@,,
+0x7e94b8,??_C@_09NPOIAEA@TEXCOORD3?$AA@,,
+0x7e94c4,??_C@_09BEOFLBAB@TEXCOORD2?$AA@,,
+0x7e94d0,??_C@_09DPMIOCMC@TEXCOORD1?$AA@,,
+0x7e94dc,??_C@_09CGNDNDID@TEXCOORD0?$AA@,,
+0x7e94e8,??_C@_09ILPHDCCM@TEXCOORDX?$AA@,,
+0x7e94f4,??_C@_03KEDKDEDN@FOG?$AA@,,
+0x7e94f8,??_C@_06BOGPPHJD@COLOR1?$AA@,,
+0x7e9500,??_C@_06HHEMGNC@COLOR0?$AA@,,
+0x7e9508,??_C@_06KKFACHHN@COLORX?$AA@,,
+0x7e9510,??_C@_08JDCGHEEB@TANGENT1?$AA@,,
+0x7e951c,??_C@_08DDEDFEDO@BINORMAL?$AA@,,
+0x7e9528,??_C@_07HOFFNMLH@TANGENT?$AA@,,
+0x7e9530,??_C@_06IOJAGNKJ@NORMAL?$AA@,,
+0x7e9538,??_C@_04KPNDPJEB@VPOS?$AA@,,
+0x7e9540,??_C@_09BDKCIGFC@POSITION1?$AA@,,
+0x7e954c,??_C@_08JPMAAECC@POSITION?$AA@,,
+0x7e9558,??_C@_07MGCPDNLD@DEFAULT?$AA@,,
 0x7e9560,??_C@_09EEHFCLGL@_centroid?$AA@,10,
 0x7e956c,??_C@_08GFELMMBG@?$CDdefine?5?$AA@,9,
+0x7e9578,??_C@_06DFEEAPHD@?$DP?$DP?$DP?$DP?$DP?$DP?$AA@,,
+0x7e9580,??_C@_02FCBDKCDG@?4w?$AA@,,
+0x7e9584,??_C@_03KHEOPKFJ@?4zw?$AA@,,
+0x7e9588,??_C@_02OHLNNMHL@?4z?$AA@,,
+0x7e958c,??_C@_04GIADHECG@?4yzw?$AA@,,
+0x7e9594,??_C@_03BAKGDKEN@?4yz?$AA@,,
+0x7e9598,??_C@_02MMJAIPLI@?4y?$AA@,,
+0x7e959c,??_C@_05JFBGHMLF@?4xyzw?$AA@,,
+0x7e95a4,??_C@_04GHFHNDFH@?4xyz?$AA@,,
+0x7e95ac,??_C@_03DKEJADLJ@?4xy?$AA@,,
+0x7e95b0,??_C@_02NFILLOPJ@?4x?$AA@,,
+0x7e95b4,??_C@_0N@FIGFJNIK@USE_uniform_?$AA@,,
+0x7e95c4,??_C@_0P@PAJFHAEP@USE_attribute_?$AA@,,
+0x7e95d4,??_C@_04FLOEOGKF@USE_?$AA@,,
 0x7e95dc,??_C@_05DMJJCHNG@?3?5c?$CFd?$AA@,6,
 0x7e95e4,??_C@_0BA@LHAKMCG@?3?5register?$CIc?$CFd?$CJ?$AA@,16,
+0x7e95f4,??_C@_01IFKFHFEL@?$IA?$AA@,,
 0x7e95f8,??_C@_07MJAJDDLG@defined?$AA@,8,
+0x7e9600,??_C@_03LKGCEJK@?$DL?$AN?6?$AA@,,
+0x7e9610,??_C@_05GEPBPPAJ@?$FL?$CFd?$FN?5?$AA@,,
+0x7e9620,??_C@_04ONICCIOF@?$HN?$DL?$AN?6?$AA@,,
+0x7e9628,??_C@_09JMNNJLAE@?7?$CDdefine?5?$AA@,,
+0x7e9634,??_C@_0BI@POJJNKOP@struct?5VertexInput?5?$HL?5?$AN?6?$AA@,,
+0x7e964c,??_C@_0L@CECMKKJG@?3?5TEXCOORD?$AA@,,
+0x7e9658,??_C@_09BJEIFOLD@?5texcoord?$AA@,,
+0x7e9664,??_C@_06PIJOCBLL@float1?$AA@,,
+0x7e966c,??_C@_09FGJBNPG@?3?5VPOS?$DL?$AN?6?$AA@,,
+0x7e9678,??_C@_0O@HBCNPLKO@?3?5POSITION?$DL?$AN?6?$AA@,,
+0x7e9688,??_C@_09IAHODPOI@?7float4?5_?$AA@,,
+0x7e9694,??_C@_06GPCJIOFD@?5vout?4?$AA@,,
+0x7e969c,??_C@_07DAILPDEL@?3?5COLOR?$AA@,,
+0x7e96a4,??_C@_02FNACBJG@?5_?$AA@,,
+0x7e96a8,??_C@_08LNIELLJB@?3?5FOG?$DL?$AN?6?$AA@,,
+0x7e96b4,??_C@_08FDAEABGF@?7float?5_?$AA@,,
+0x7e96c0,??_C@_07MPCOGIFL@?5vout?4_?$AA@,,
+0x7e96c8,??_C@_0L@MMMAHJKK@texcoord15?$AA@,,
+0x7e96d4,??_C@_0L@NFNLEIOL@texcoord14?$AA@,,
+0x7e96e0,??_C@_0L@JKJKNOCM@texcoord13?$AA@,,
+0x7e96ec,??_C@_0L@IDIBOPGN@texcoord12?$AA@,,
+0x7e96f8,??_C@_0L@KIKMLMKO@texcoord11?$AA@,,
+0x7e9704,??_C@_0L@LBLHINOP@texcoord10?$AA@,,
+0x7e9710,??_C@_09FCGEHBJP@texcoord9?$AA@,,
+0x7e971c,??_C@_09ELHPEANO@texcoord8?$AA@,,
+0x7e9728,??_C@_09MMOHFMBB@texcoord7?$AA@,,
+0x7e9734,??_C@_09NFPMGNFA@texcoord6?$AA@,,
+0x7e9740,??_C@_09PONBDOJD@texcoord5?$AA@,,
+0x7e974c,??_C@_09OHMKAPNC@texcoord4?$AA@,,
+0x7e9758,??_C@_09KIILJJBF@texcoord3?$AA@,,
+0x7e9764,??_C@_09LBJAKIFE@texcoord2?$AA@,,
+0x7e9770,??_C@_09JKLNPLJH@texcoord1?$AA@,,
+0x7e977c,??_C@_09IDKGMKNG@texcoord0?$AA@,,
+0x7e9788,??_C@_0BJ@IOJPCHFB@struct?5VertexOutput?5?$HL?5?$AN?6?$AA@,,
 0x7eb664,??_R4WavReader@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb678,??_R3WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb688,??_R2WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
@@ -10744,6 +10874,7 @@ address    , symbol                                                         , si
 0x00854300 , ??_R0?AVHLSLShaderBuilder@@@8                                  , 32    ,
 0x00854320 , ??_R0?AV?$ShaderManagerTemplate@VNuShaderObject@@@@@8          , 56    ,
 0x00854358 , ??_R0?AVShaderManagerHLSL@@@8                                  , 32    ,
+0x8543e0,_ShaderCompilerTypeNamesPc,,
 0x854724,_InitOnceSelector34Pc,,i32
 0x00854728 , _InitOnceCurrentDirectory                                      ,       , char[]
 0x85482c,_InitOnceDvdPc,,i32
@@ -11828,6 +11959,8 @@ address    , symbol                                                         , si
 0x00956634 , _gameanimsysprogress                                           , 12    , GAMEANIMPROGRESS
 0x00956640 , _RippleEffectsWorldInfoPc                                      ,       ,
 0x956644,_RippleEffectsCurrentPc,,
+0x956648,_RippleEraseListPc,,RIPPLE_NODE_PC **
+0x95664c,_RippleEraseCountPc,,i32
 0x95de68,_RenderHubFromCutscenePlayerPc,,i32
 0x0095deb4 , _RunOutOfPosTabSpacePc                                         ,       ,
 0x0095df40 , _CharPivot                                                     , 4     , struct CHARPIVOT_PC *

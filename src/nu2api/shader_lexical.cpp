@@ -32,3 +32,12 @@ struct ShaderLexicalTokenPredicatePc {
 i32 ShaderLexicalTokenPredicatePc::IsSpecialToken(const char *token) {
     return (ShaderLexicalClassesPc[(u8)token[0]] & 4) != 0 || strcmp(token, "defined") == 0;
 }
+
+bool ShaderCompilerDictionaryPc::IsNumericToken(const char *text) {
+    if ((ShaderLexicalClassesPc[(u8)*text] & 2) == 0)
+        return false;
+    while (*++text != 0)
+        if ((ShaderLexicalClassesPc[(u8)*text] & 2) == 0)
+            return false;
+    return true;
+}

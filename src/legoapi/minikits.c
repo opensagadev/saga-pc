@@ -139,3 +139,62 @@ void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *
         }
     }
 }
+
+void __cdecl CharMiniKit_Draw(i32 id, NUMTX *matrix, i32 reflection_axis, f32 reflection_plane, f32 reflection_height) {
+    MINIKIT_PC *kit;
+    i32 i;
+    if (Char_MiniKit == NULL)
+        return;
+    kit = (MINIKIT_PC *)Char_MiniKit[id];
+    if (kit == NULL)
+        return;
+    for (i = 0; i < kit->piece_count; ++i) {
+        MINIKIT_PIECE_PC *piece = &kit->pieces[i];
+        NUMTX draw_matrix, reflected;
+        if (NuSpecialExistsFn(&piece->special) == 0)
+            continue;
+        draw_matrix = piece->matrix;
+        NuMtxMul(&draw_matrix, &draw_matrix, matrix);
+        NuSpecialDrawAt(&piece->special, &draw_matrix);
+        if (reflection_axis != 0 && reflection_plane != 0.0f &&
+            MatrixReflection(&draw_matrix, reflection_axis, reflection_plane, reflection_height, &reflected) != 0) {
+            NuRndrStartReflectionRender(0);
+            NuSpecialDrawAt(&piece->special, &reflected);
+            NuRndrEndReflectionRender();
+        }
+    }
+}
+
+void __cdecl CharacterMiniKits_Dump(WORLDINFO *world) {
+    WORLD_MINIKIT_READER_PC *view = (WORLD_MINIKIT_READER_PC *)world;
+    i32 i;
+    if (view->minikit.scene != NULL) {
+        NuGScnRemove(view->minikit.scene);
+        view->minikit.scene = NULL;
+        view->minikit.pieces = NULL;
+        view->minikit.piece_count = 0;
+    }
+    if (view->pieces_by_id == NULL)
+        return;
+    if (world->area != NULL && (world->area->flags & 5) == 5) {
+        if (Char_MiniKit == NULL)
+            return;
+        for (i = 0; i < CHARCOUNT; ++i) {
+            MINIKIT_PC *kit = view->pieces_by_id[i];
+            if (kit != NULL && kit->scene != NULL) {
+                NuGScnRemove(kit->scene);
+                view->pieces_by_id[i]->scene = NULL;
+            }
+            Char_MiniKit[i] = 0;
+        }
+        characterbuffer_ptr = minikits_savecharacterbufferptr;
+        return;
+    }
+    for (i = 0; i < AREACOUNT; ++i) {
+        MINIKIT_PC *kit = view->pieces_by_id[i];
+        if (kit != NULL && kit->scene != NULL) {
+            NuGScnRemove(kit->scene);
+            view->pieces_by_id[i]->scene = NULL;
+        }
+    }
+}

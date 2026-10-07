@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <string.h>
 
 typedef struct ripple_effect_cleanup_pc_s {
     u8 unknown_00[0x24];
@@ -52,6 +53,7 @@ struct ripple_node_pc_s {
     RIPPLE_NODE_PC *next, *previous;
 };
 STATIC_ASSERT(sizeof(RIPPLE_SET_PC) == 0x14);
+STATIC_ASSERT(offsetof(RIPPLE_SET_PC, nodes) == 4);
 STATIC_ASSERT(offsetof(RIPPLE_SET_PC, free_head) == 8);
 STATIC_ASSERT(offsetof(RIPPLE_SET_PC, oldest) == 0x10);
 STATIC_ASSERT(sizeof(RIPPLE_NODE_PC) == 0x80);
@@ -375,4 +377,190 @@ void __cdecl RippleEffects_Configure(WORLDINFO *world, char *config) {
     for (i = 0; i < view->count; ++i)
         InitRippleMtl(view->effects[i].texture_name, &view->effects[i].material, &world->giz_buffer,
                       &world->buffer_end);
+}
+
+/* Original ripples.cpp private erase worklist. Native allocation derives its
+ * pointer-array working view from the serialized caller count, clamped to64. */
+static RIPPLE_NODE_PC **RippleEraseListPc;
+static i32 RippleEraseCountPc;
+
+static void RippleLinkNodesPc(RIPPLE_NODE_PC *nodes, i32 count) {
+    i32 i;
+    if (nodes != NULL) {
+        for (i = 1; i < count - 1; ++i) {
+            nodes[i].next = &nodes[i + 1];
+            nodes[i].previous = &nodes[i - 1];
+        }
+        nodes[0].next = &nodes[1];
+        nodes[0].previous = &nodes[count - 1];
+        nodes[count - 1].next = &nodes[0];
+        nodes[count - 1].previous = &nodes[count - 2];
+    }
+}
+
+void __cdecl InitRipples(RIPPLE_SET_PC **result, VARIPTR *buffer, VARIPTR *unused_end, i32 count) {
+    RIPPLE_SET_PC *set;
+    RIPPLE_NODE_PC *nodes;
+    i32 node_count;
+    (void)unused_end;
+    set = (RIPPLE_SET_PC *)((buffer->addr + 3) & ~3u);
+    buffer->addr = (u32)(set + 1);
+    *result = set;
+    node_count = count <= 0 ? 0 : count;
+    if (node_count >= 64)
+        node_count = 64;
+    set->capacity = (u16)node_count;
+    set->active_count = 0;
+    node_count = set->capacity;
+    nodes = (RIPPLE_NODE_PC *)((buffer->addr + 127) & ~127u);
+    buffer->addr = (u32)nodes + node_count * sizeof(*nodes);
+    RippleLinkNodesPc(nodes, node_count);
+    RippleEraseListPc = (RIPPLE_NODE_PC **)((buffer->addr + 3) & ~3u);
+    buffer->addr = (u32)RippleEraseListPc + node_count * sizeof(*RippleEraseListPc);
+    (*result)->nodes = nodes;
+    (*result)->free_head = (*result)->nodes;
+    (*result)->newest = NULL;
+    (*result)->oldest = NULL;
+}
+
+void __cdecl ResetRippleSet(RIPPLE_SET_PC *set) {
+    u16 count = set->capacity;
+    RIPPLE_NODE_PC *nodes = set->nodes;
+    memset(nodes, 0, count * sizeof(*nodes));
+    set->capacity = 0;
+    set->active_count = 0;
+    set->free_head = NULL;
+    set->newest = NULL;
+    set->oldest = NULL;
+    set->nodes = nodes;
+    set->capacity = count;
+    RippleLinkNodesPc(nodes, count);
+    set->free_head = set->nodes;
+}
+
+static void RippleFreeNodePc(RIPPLE_SET_PC *set, RIPPLE_NODE_PC *node) {
+    RIPPLE_NODE_PC *free_head = set->free_head, *newest = set->newest;
+    if (set->active_count != 0) {
+        if (node->previous != NULL)
+            node->previous->next = node->next;
+        else
+            newest = node->next;
+        if (node->next != NULL)
+            node->next->previous = node->previous;
+        if (free_head == NULL) {
+            node->previous = node;
+            node->next = node;
+        } else {
+            node->next = free_head->next;
+            free_head->next = node;
+            node->previous = free_head;
+            node->next->previous = node;
+        }
+        --set->active_count;
+        set->free_head = node;
+        set->newest = newest;
+        if (set->active_count == 0) {
+            set->newest = NULL;
+            set->oldest = NULL;
+        }
+    }
+}
+
+void __cdecl UpdateRippleSet(RIPPLE_SET_PC *set) {
+    RIPPLE_NODE_PC *node, *next;
+    i32 i, erase_count;
+    RIPPLE_NODE_PC **erase_list;
+    if (set == NULL)
+        return;
+    node = set->newest;
+    erase_list = RippleEraseListPc;
+    erase_count = RippleEraseCountPc;
+    for (i = 0; i < set->active_count; ++i) {
+        if (node == NULL)
+            continue;
+        next = node->next;
+        if (node->lifetime >= node->age) {
+            if (!(node->delay > 0.0f)) {
+                f32 ratio = node->age / node->lifetime;
+                /* Existing original reader labels: +50 is animated size,
+                 * +54 base size, +5c current colour, +60 initial colour. */
+                if ((node->flags & 1) != 0)
+                    node->initial_size = (f32)((f64)node->size + ((f64)node->growth - node->size) * ratio);
+                if ((node->flags & 2) != 0) {
+                    u8 *current = (u8 *)&node->start_color;
+                    const u8 *initial = (const u8 *)&node->color, *end = (const u8 *)&node->end_color;
+                    current[3] = (u8)(i32)((f64)initial[3] + (f64)((i32)end[3] - initial[3]) * ratio);
+                }
+                if ((node->flags & 4) != 0) {
+                    u8 *current = (u8 *)&node->start_color;
+                    const u8 *initial = (const u8 *)&node->color, *end = (const u8 *)&node->end_color;
+                    current[0] = (u8)(i32)((f64)initial[0] + (f64)((i32)end[0] - initial[0]) * ratio);
+                    current[1] = (u8)(i32)((f64)initial[1] + (f64)((i32)end[1] - initial[1]) * ratio);
+                    current[2] = (u8)(i32)((f64)initial[2] + (f64)((i32)end[2] - initial[2]) * ratio);
+                }
+                if ((node->flags & 8) != 0) {
+                    node->matrix.m30 += node->velocity.x;
+                    node->matrix.m31 += node->velocity.y;
+                    node->matrix.m32 += node->velocity.z;
+                }
+            } else {
+                node->delay -= FRAMETIME;
+            }
+            node->age += FRAMETIME;
+        } else {
+            erase_list[erase_count++] = node;
+        }
+        node = next;
+    }
+    for (i = 0; i < erase_count; ++i) {
+        node = erase_list[i];
+        if (node != NULL) {
+            if (node == set->oldest)
+                set->oldest = node->next;
+            RippleFreeNodePc(set, node);
+        }
+        erase_list[i] = NULL;
+    }
+    RippleEraseCountPc = 0;
+}
+
+static void DrawRipplePc(RIPPLE_NODE_PC *node) {
+    NURND_VERTEX3D_PC vertices[4];
+    NUMTX matrix;
+    f32 size = node->initial_size;
+    /* Native writes only the named position/colour/UV fields; the existing
+     * record's opaque twelve-byte lane is not initialized here. */
+    vertices[0].position.x = 0;
+    vertices[0].position.y = size;
+    vertices[0].position.z = 0;
+    vertices[1].position.x = -size;
+    vertices[1].position.y = 0;
+    vertices[1].position.z = 0;
+    vertices[2].position.x = size;
+    vertices[2].position.y = -0.0f;
+    vertices[2].position.z = 0;
+    vertices[3].position.x = -0.0f;
+    vertices[3].position.y = -size;
+    vertices[3].position.z = 0;
+    vertices[0].u = vertices[2].u = vertices[3].u = 1;
+    vertices[1].u = 0;
+    vertices[0].v = vertices[1].v = vertices[3].v = 0;
+    vertices[2].v = 1;
+    vertices[0].colour = vertices[1].colour = vertices[2].colour = vertices[3].colour = node->start_color;
+    matrix = node->matrix;
+    NuRndrTriStrip3dClip(vertices, 4, &matrix, node->material);
+}
+
+void __cdecl DrawRippleSet(RIPPLE_SET_PC *set) {
+    RIPPLE_NODE_PC *node;
+    i32 i;
+    if (set == NULL)
+        return;
+    node = set->newest;
+    for (i = 0; i < set->active_count; ++i) {
+        if (node != NULL) {
+            DrawRipplePc(node);
+            node = node->next;
+        }
+    }
 }

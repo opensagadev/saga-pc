@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1246770,
-    "matched_code_bytes": 202426,
-    "matching_percent": 5.831508340232873,
-    "fuzzy_coverage_percent": 24.057306208654634,
-    "mapped_functions": 4397,
-    "matched_functions": 2036,
-    "objdiff_fuzzy_percent": 69.53059,
-    "objdiff_total_code": 1201754,
+    "mapped_code_bytes": 1253951,
+    "matched_code_bytes": 203229,
+    "matching_percent": 5.85464124409506,
+    "fuzzy_coverage_percent": 24.2025985585653,
+    "mapped_functions": 4423,
+    "matched_functions": 2044,
+    "objdiff_fuzzy_percent": 69.50777,
+    "objdiff_total_code": 1209405,
     "image_bytes": 40067072,
-    "mapped_bytes": 1909933,
-    "mapping_percent": 4.7668394635874565,
+    "mapped_bytes": 1917114,
+    "mapping_percent": 4.784761911227254,
     "matched_data_region_bytes": 640846
   },
   "newly_compared": [
@@ -4703,6 +4703,286 @@
       ],
       "exact": true,
       "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?EvaluateCondition@ShaderCompilerDictionaryPc@@QAE_NPAUShaderConditionNodePc@@PAH@Z",
+      "pc": "0x00746fc0",
+      "original_bytes": 1038,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 40.5258
+    },
+    {
+      "symbol": "?EvaluateValue@ShaderCompilerDictionaryPc@@QAEHPAUShaderConditionNodePc@@@Z",
+      "pc": "0x007481e0",
+      "original_bytes": 26,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?IsNumericToken@ShaderCompilerDictionaryPc@@QAE_NPBD@Z",
+      "pc": "0x007469b0",
+      "original_bytes": 68,
+      "units": [
+        "src/nu2api/shader_lexical.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 79.13043
+    },
+    {
+      "symbol": "??0ShaderSourceNodePc@@QAE@IHHPBDH0HH@Z",
+      "pc": "0x007465d0",
+      "original_bytes": 67,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?RenderASTName@ShaderCompilerDictionaryPc@@QAEPBDPAUShaderSourceNodePc@@@Z",
+      "pc": "0x00746ab0",
+      "original_bytes": 307,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 78.0
+    },
+    {
+      "symbol": "?FindASTExact@ShaderCompilerDictionaryPc@@QAEPAUShaderSourceNodePc@@PBDI@Z",
+      "pc": "0x00746d60",
+      "original_bytes": 99,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?FindASTUniform@ShaderCompilerDictionaryPc@@QAEPAUShaderSourceNodePc@@PBD@Z",
+      "pc": "0x00746dd0",
+      "original_bytes": 108,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?SemanticName@ShaderSourceNodePc@@QAEPBDXZ",
+      "pc": "0x00746640",
+      "original_bytes": 264,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?EmitType@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z",
+      "pc": "0x00748000",
+      "original_bytes": 213,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 38.859375
+    },
+    {
+      "symbol": "?EmitRegister@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z",
+      "pc": "0x007480e0",
+      "original_bytes": 254,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 52.527027
+    },
+    {
+      "symbol": "?EmitVertexInput@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z",
+      "pc": "0x00747810",
+      "original_bytes": 347,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 63.366337
+    },
+    {
+      "symbol": "?EmitAttribute@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z",
+      "pc": "0x00747970",
+      "original_bytes": 1670,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 85.516266
+    },
+    {
+      "symbol": "?ShaderRegisterComponentsPc@@YAPBDHH@Z",
+      "pc": "0x00746a00",
+      "original_bytes": 172,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 41.372883
+    },
+    {
+      "symbol": "?AddASTDefinition@ShaderCompilerDictionaryPc@@QAEXPAUShaderSourceNodePc@@@Z",
+      "pc": "0x00746cd0",
+      "original_bytes": 130,
+      "units": [
+        "src/nu2api/shader_dictionary.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 46.31818
+    },
+    {
+      "symbol": "??6ShaderCompilerBufferAllocatorPc@@QAEAAU0@PBD@Z",
+      "pc": "0x007464e0",
+      "original_bytes": 19,
+      "units": [
+        "src/nu2api/shader_buffer_allocator.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 0.0
+    },
+    {
+      "symbol": "?AppendInt@ShaderCompilerBufferAllocatorPc@@QAEXH@Z",
+      "pc": "0x00748790",
+      "original_bytes": 90,
+      "units": [
+        "src/nu2api/shader_buffer_allocator.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_NuGScnFixupTIDs",
+      "pc": "0x005eedf0",
+      "original_bytes": 397,
+      "units": [
+        "src/nu2api/nughg.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 0.0
+    },
+    {
+      "symbol": "_NuGScnRemove",
+      "pc": "0x005ef880",
+      "original_bytes": 200,
+      "units": [
+        "src/nu2api/nughg.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 63.805557
+    },
+    {
+      "symbol": "_NuGScnFixupTIDsPS",
+      "pc": "0x006023b0",
+      "original_bytes": 205,
+      "units": [
+        "src/nu2api/nugscn_pc.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 39.260273
+    },
+    {
+      "symbol": "_RippleLinkNodesPc",
+      "pc": "0x005a2250",
+      "original_bytes": 96,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_InitRipples",
+      "pc": "0x005a2360",
+      "original_bytes": 145,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 81.0
+    },
+    {
+      "symbol": "_ResetRippleSet",
+      "pc": "0x005a22b0",
+      "original_bytes": 72,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 53.9
+    },
+    {
+      "symbol": "_RippleFreeNodePc",
+      "pc": "0x005a2470",
+      "original_bytes": 116,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 98.57143
+    },
+    {
+      "symbol": "_UpdateRippleSet",
+      "pc": "0x005a25e0",
+      "original_bytes": 587,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 78.67647
+    },
+    {
+      "symbol": "_DrawRipplePc",
+      "pc": "0x005a2830",
+      "original_bytes": 351,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 38.08046
+    },
+    {
+      "symbol": "_DrawRippleSet",
+      "pc": "0x005a2990",
+      "original_bytes": 53,
+      "units": [
+        "src/legoapi/ripples.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_CharMiniKit_Draw",
+      "pc": "0x00599ce0",
+      "original_bytes": 287,
+      "units": [
+        "src/legoapi/minikits.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 78.5618
+    },
+    {
+      "symbol": "_CharacterMiniKits_Dump",
+      "pc": "0x0059a030",
+      "original_bytes": 270,
+      "units": [
+        "src/legoapi/minikits.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 88.22369
     }
   ],
   "previous_exact_functions_lost": [],
@@ -22182,6 +22462,214 @@
       ],
       "next_connected_wave": "Broader WORLD/freeplay/area and MiniKit lifecycle/resource families, shader condition/AST emitters and scene texture-ID fixers; recover legitimate readonly string contracts to unblock Area storage.",
       "checkpoint_delay": "October5 usage-limit interruption resumed October7. W checkpoint held for complete actual normal validation, retail comparison and preservation; first matching approval deadline timeout retried once successfully. Larger Area/Perm data holds retain all old exact results.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct-main pushes authorized."
+    },
+    {
+      "checkpoint": "Connected shader AST, scene remapping and ripple lifecycle checkpoint X (2026-10-07 UTC)",
+      "baseline_commit": "393adc82a8d969815e78911cb24f69eb7505c7f8",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1246770,
+        "matched_code_bytes": 202426,
+        "matching_percent": 5.831508340232873,
+        "fuzzy_coverage_percent": 24.057306208654634,
+        "mapped_functions": 4397,
+        "matched_functions": 2036,
+        "objdiff_fuzzy_percent": 69.53059,
+        "objdiff_total_code": 1201754,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1909933,
+        "mapping_percent": 4.7668394635874565,
+        "matched_data_region_bytes": 640846
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1253951,
+        "matched_code_bytes": 203229,
+        "matching_percent": 5.85464124409506,
+        "fuzzy_coverage_percent": 24.2025985585653,
+        "mapped_functions": 4423,
+        "matched_functions": 2044,
+        "objdiff_fuzzy_percent": 69.50777,
+        "objdiff_total_code": 1209405,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1917114,
+        "mapping_percent": 4.784761911227254,
+        "matched_data_region_bytes": 640846
+      },
+      "new_source_functions": 28,
+      "actual_new_transfer_PC_bytes": 7651,
+      "new_unique_compared_PC_bytes": 7651,
+      "unique_compared_code_bytes": 1208887,
+      "native_objdiff_denominator": 1209405,
+      "new_native_family_bytes": {
+        "shader AST and conditions": 4872,
+        "scene texture remap and cleanup": 802,
+        "ripple and minikit lifecycle": 1977
+      },
+      "whole_PC_fuzzy_delta_pp": 0.1452923499106653,
+      "new_exact_PC_bytes": 803,
+      "new_exact_source_functions": 8,
+      "accepted_complete_bodies": 29,
+      "old_full_function_copies": 4205,
+      "old_exact_code_copies_preserved": 2039,
+      "current_exact_code_copies": 2047,
+      "old_full_data_definitions": 9021,
+      "old_exact_physical_data_copies_preserved": 5437,
+      "current_exact_physical_data_copies": 5442,
+      "current_full_function_definitions": 4233,
+      "current_full_data_definitions": 9133,
+      "existing_real_caller_reconnections": [
+        "NuReadGraphicsData -> NuGScnFixupTIDs(&scene->scene), native call5ef31d"
+      ],
+      "existing_caller_new_byte_credit": 0,
+      "prior_official_function_changes": [
+        "NuReadGraphicsData alone: native699; old649/39690957 to665/556a69f7, one genuine scene-fixer call."
+      ],
+      "local_label_qualifications": 4,
+      "old_raw_named_data_changes": [],
+      "new_complete_initializer_copies": 112,
+      "new_complete_initializer_COFF_bytes": 1014,
+      "all_new_complete_initializer_copies_retail_equal": true,
+      "new_known_initializer_copies": 5,
+      "new_known_complete_initializer_bytes": 21,
+      "new_unknown_initializer_copies": 107,
+      "new_unknown_complete_initializer_bytes": 993,
+      "unknown_extent_allocation_and_exact_credit": 0,
+      "known_exact_data_union": 640846,
+      "new_unique_known_exact_data_bytes": 0,
+      "shared_new_views": 0,
+      "shared_storage_source_unchanged": true,
+      "member_contracts": "All13 full named parents/28known bytes, CRC and HANDLE preserved.",
+      "shader_qualification": "True condition12/node36/all9DWORD fields and original helper/caller owners. Private22-entry type-name/component tables retain native initializers but unknown owning extents/filename/visibility. Compiler NUL lengths alone give no extent. Selected102 CPU checks only; no parser/program/Expand/manager/HLSL activation.",
+      "scene_qualification": "True void fixers397/205 preserve successful ID assignments and real resolver. Resolver0 fallback assignment remains explicitly omitted; direct material update increments version once. Remove200 supplies real cleanup but RestoreTIDs remains omitted. Selected29 covers CPU metadata/PS repair and generic material_count0, not populated-material shader execution/full teardown/GPU/assets.",
+      "ripple_qualification": "Original private ABI group, corrected native UVs, twelve unwritten vertex lanes, native arena clamp and zero/one-node hazards retained. Selected initialized rings2..64;28 checks do not establish Draw GPU or MiniKitDump full scene teardown.",
+      "verified_checks": {
+        "make_build_check_objects_exit_code": 0,
+        "make_check_exit_code": 0,
+        "make_first_match_exit_code": 0,
+        "tests": 719,
+        "existing_skips": 3,
+        "format_source_headers": 334,
+        "tidy_normal_units": 307,
+        "actual_normal_objects": 307,
+        "function_definitions": 4233,
+        "data_definitions": 9133,
+        "whole_owner_replacements": 0,
+        "supplemental_objects": 0,
+        "selected_actual_normal_AST_checks": 102,
+        "selected_actual_normal_scene_checks": 29,
+        "selected_actual_normal_ripple_checks": 28,
+        "selected_failures": 0
+      },
+      "receipts": {
+        "required_checks": {
+          "path": "/tmp/saga-pc-next-runtime/checkpoint-X/required-checks-receipt.json",
+          "sha256": "312e1be0f71062ace00a714ae55d34a2dd7b50e613df6c21a372872dc79e83b2"
+        },
+        "complete_accepted_bodies": {
+          "path": "/tmp/saga-pc-next-runtime/checkpoint-X/accepted-complete-functions.json",
+          "sha256": "6aa6dec1e5e78cb4d3f1f5f3e0ecf3690e36e601f93775d776d7ffaa8a73fc1e"
+        },
+        "independent_first_endpoint": {
+          "path": "/tmp/saga-pc-next-runtime/endpoint-X-independent-review/accepted-first-endpoint.json",
+          "sha256": "81bb733220ce5b331a15185adef9dd4d5db113a93ef72f4a613f11b3e906437f"
+        },
+        "independent_old_and_new_full_regions": {
+          "path": "/tmp/saga-pc-next-runtime/endpoint-X-independent-review/actual-output-and-prior-qualification.json",
+          "sha256": "81d93fc715a3922fe1565a704c69aedd1ef115bd97e5168afe3060d9190baa6f"
+        },
+        "authoritative_report_reconciliation": {
+          "path": "/tmp/saga-pc-next-runtime/endpoint-X-independent-review/report-reconciliation.json",
+          "sha256": "134c7e036f424ea7da08b0e42e433e084889f6243248d9474b7fbc525646398b"
+        },
+        "actual_normal_selected_159": {
+          "path": "/tmp/saga-pc-next-runtime/checkpoint-X/selected-runtime-index.json",
+          "sha256": "b80c5e4621c1923a732ec24ba0cde7845b139364cc227750b216b128e2de5ed3"
+        },
+        "actual_source_executable_smoke": {
+          "path": "/tmp/saga-pc-next-runtime/runtime-startup-acceptance/final-X-unattended-acceptance.json",
+          "sha256": "4dcce51538c48ef78d3828be1f3cda5a9f6ef44562e408686859c256006eb6c7"
+        }
+      },
+      "runtime_summary": {
+        "source_exit_code": 5,
+        "seconds": 3.442361196037382,
+        "source_exe_sha256": "de2c04d431b8a6be8092aac36b49a00f670edaa9edd6c2b6b4821de13a3f2374",
+        "failure": {
+          "unit": "src/nu2api/nushadermanager.cpp",
+          "normal_object_sha256": "3076d4b523a1e9b2e55999f0bc0d1cad2ab9e9a05fc91bb55e09a7ae8b1c50ba",
+          "symbol": "?Retrieve@PC_SHADER_MANAGER_VIEW@@QAEPAUPC_SHADER_OBJECT_FULL_VIEW@@PBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH_N@Z",
+          "function_start": "0x4ff5b0",
+          "fault_address": "0x4ff5c0",
+          "fault_offset": 16,
+          "access": "read",
+          "access_address": "0x0",
+          "complete_emitted_size": 208,
+          "full_raw_sha256": "a9723f3bfa46397fee8053bfaa9f884bbd58ed553e9c6ef81c5084d0168cf61b",
+          "full_official_relocated_sha256": "0ed2fe7a57c949a7e9819a76fd5a34a6a22d28ab5992ffa04ca89b635a94a56f",
+          "full_named_relocations": [
+            {
+              "offset": 50,
+              "type": "REL32",
+              "symbol": "?Initialize@PC_SHADER_MATERIAL_FILTER_VIEW@@QAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH@Z",
+              "symbol_va": "0x007443d0",
+              "resolution": "explicit binding",
+              "addend": "0x00000000",
+              "written_value": "0x00002c4a"
+            },
+            {
+              "offset": 75,
+              "type": "REL32",
+              "symbol": "_NuShaderObjectKeyGenerate3",
+              "symbol_va": "0x00744c20",
+              "resolution": "explicit binding",
+              "addend": "0x00000000",
+              "written_value": "0x00003481"
+            },
+            {
+              "offset": 124,
+              "type": "REL32",
+              "symbol": "?AllocateSlot@PC_SHADER_MANAGER_VIEW@@QAEPAUPC_SHADER_OBJECT_FULL_VIEW@@PAH@Z",
+              "symbol_va": "0x00741570",
+              "resolution": "explicit binding",
+              "addend": "0x00000000",
+              "written_value": "0xfffffda0"
+            }
+          ],
+          "anchor_length": 49,
+          "anchor_offset": 0,
+          "anchor_sha256": "4fa68077eb41647982be3414c62e576f39eefc470de2af619ceb66ffab321040",
+          "anchor_unique_in_actual_exe": true,
+          "instruction": "MOV ESI,ECX followed by MOV EAX,[ESI] at+16; observed NULL read establishes NULL receiver at vtable read.",
+          "native_va": "0x741750",
+          "native_complete_size": 208,
+          "native_exclusive_end": "0x741820",
+          "native_full_sha256": "2f45c1d582c79370c8bfce41fd9f4814c89105a1eb5f215773c33d559f120781",
+          "native_fault_correspondence": "74175e MOV ESI,ECX /741760 MOV EAX,[ESI]; both RET20 tails in full208 body; next741820 independent entry.",
+          "qualification": "Fault and body identity observed. Publisher/global state is separate source frontier; no debugger memory snapshot or D3D/Present observation inferred."
+        },
+        "ShowCrashDialog": 0,
+        "crash_dialog_observed": false,
+        "owned_processes_leftover": false,
+        "device_Present_scene_gameplay": "Unverified"
+      },
+      "previous_pushed_CI": {
+        "headSha": "393adc82a8d969815e78911cb24f69eb7505c7f8",
+        "conclusion": "success",
+        "url": "https://github.com/opensagadev/saga-pc/actions/runs/37619290749"
+      },
+      "remaining_contracts": [
+        "Native fallback texture value/DDS provenance and RestoreTIDs; no copied retail asset, fabricated ID or changed true i32 helper ABI.",
+        "Shader manager7412e0/7460d0 publication still needs genuine parser/backend/HLSL values; separate5f22a0 cannot publish a substitute.",
+        "Next Uniform4/1740 and lighting10/2964 source gates accepted; combined127 genuine definitions await next actual release. Canonical light84->120 has opaque64..73, not guessed vector semantics.",
+        "Broad WORLD/Hub/resource callbacks retain actual value-provider and storage gates. Area8815/Perm835/FreePlay3032 remain held on real producer domains and prior initializer preservation, without placement/padding alternatives.",
+        "Earlier UpdateGameMenu3 native void actions, FixUpLevels263 callback-address actions and other startup/game-loop gaps remain explicit."
+      ],
+      "next_connected_wave": "Uniform lookup/program/Expand4 and lighting10 with canonical storage; broader Hub/minikit/resource and actual shader parser/directive families.",
+      "checkpoint_delay": "Coherent release waited for complete source/native/ABI reviews, genuine Remove provider, whole normal build/link, retail matching, independent old-copy preservation and selected actual-normal replays. Larger uniform/light storage is a separate following release. Initial ripple win32-prefix bootstrap was unsupported by installed Wine; final genuine replay uses default wow64 without game/test policy changes.",
       "user_journal_preserved": true,
       "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
       "ongoing_goal": "Whole-project transfer continues until user stops or pauses; validated direct-main pushes authorized."

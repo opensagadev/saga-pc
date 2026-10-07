@@ -810,3 +810,22 @@ new transfer credit. WORLD/permanent/area parents still need genuine character
 model and area configuration providers. Texture fallback requires provenance;
 retail DDS assets cannot be copied into source to fabricate a provider. Device
 reset/recreate, CPU and shutdown omissions remain explicit.
+
+### Current startup and resource frontier (2026-10-07)
+
+Checkpoint W connects six real WORLD/minikit/resource calls and the shader
+dictionary's macro, register and output-buffer children. Its actual executable
+still exits5 at a NULL ShaderManager receiver before world loading. Hardware,
+window and input startup remain connected; whole-code matching percentages do
+not establish playable completion. Unattended tests suppress the crash dialog
+in their own prefix and preserve the genuine fault/exit.
+
+The next source batch adds real condition/AST emission, ripple lifecycle and
+partial texture-ID repair. Ingestion now calls the genuine void fixer, and
+minikit cleanup calls real scene removal. The fallback texture value, Restore
+actions and populated-material shader path remain incomplete. The shader manager
+publisher7412e0/constructor7460d0 still needs genuine parser/backend values;
+the separate5f22a0 initializer cannot publish a substitute manager. Uniform
+lookup/program expansion and lighting are reviewed candidates awaiting their
+separate storage/release gates. Area/FreePlay/permanent source remains held on
+initializer preservation and real producer domains, without padding controls.

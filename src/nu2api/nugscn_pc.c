@@ -288,3 +288,86 @@ void __cdecl NuGScnUpdate(NUGSCN *gscn, f32 delta) {
         }
     }
 }
+typedef struct SCENE_TEXTURE_PACKET_B0_PC {
+    i32 kind;
+    i32 texture_id;
+    i32 extra_texture_ids[3];
+} SCENE_TEXTURE_PACKET_B0_PC;
+typedef struct SCENE_TEXTURE_PACKET_AE_PC {
+    i32 texture_ids[3];
+} SCENE_TEXTURE_PACKET_AE_PC;
+STATIC_ASSERT(sizeof(SCENE_TEXTURE_PACKET_B0_PC) == 20);
+STATIC_ASSERT(offsetof(SCENE_TEXTURE_PACKET_B0_PC, kind) == 0);
+STATIC_ASSERT(offsetof(SCENE_TEXTURE_PACKET_B0_PC, texture_id) == 4);
+STATIC_ASSERT(offsetof(SCENE_TEXTURE_PACKET_B0_PC, extra_texture_ids) == 8);
+STATIC_ASSERT(sizeof(SCENE_TEXTURE_PACKET_AE_PC) == 12);
+STATIC_ASSERT(offsetof(SCENE_TEXTURE_PACKET_AE_PC, texture_ids) == 0);
+STATIC_ASSERT(offsetof(NUDISPLAYLISTITEM, type) == 0);
+STATIC_ASSERT(offsetof(NUDISPLAYLISTITEM, next) == 4);
+STATIC_ASSERT(sizeof(NUDISPLAYLISTITEM) == 16);
+
+void __cdecl NuGScnFixupTIDsPS(NUGSCN *scene) {
+    i32 i, j;
+    if (scene->display_list == NULL)
+        return;
+    for (i = 0; i < scene->display_list->item_count; ++i) {
+        NUDISPLAYLISTITEM *item = &((NUDISPLAYLISTITEM *)scene->display_list->items)[i];
+        if (item->type == 0xb0) {
+            SCENE_TEXTURE_PACKET_B0_PC *packet = (SCENE_TEXTURE_PACKET_B0_PC *)item->next;
+            if (packet->kind == 2) {
+                for (j = 0; j < 3; ++j) {
+                    i32 tid = packet->extra_texture_ids[j];
+                    if (tid == -1) {
+                        packet->extra_texture_ids[j] = 0;
+                    } else if ((tid & 0x4000) == 0) {
+                        packet->extra_texture_ids[j] = scene->texture_ids[tid];
+                    } else {
+                        i32 resolved = NuTexResolveReference(scene, tid);
+                        if (resolved != 0) {
+                            packet->extra_texture_ids[j] = resolved;
+                        } else {
+                            STUBBED_NAMED("Unresolved fallback and assignment held at native PS B0 extra-ID call "
+                                          "0x602405: no source-owned DDS value");
+                        }
+                    }
+                }
+            }
+            {
+                i32 tid = packet->texture_id;
+                if (tid == -1) {
+                    packet->texture_id = 0;
+                } else if ((tid & 0x4000) == 0) {
+                    packet->texture_id = scene->texture_ids[tid];
+                } else {
+                    i32 resolved = NuTexResolveReference(scene, tid);
+                    if (resolved != 0) {
+                        packet->texture_id = resolved;
+                    } else {
+                        STUBBED_NAMED("Unresolved fallback and assignment held at native PS B0 main-ID call 0x60241c: "
+                                      "no source-owned DDS value");
+                    }
+                }
+            }
+        } else if (item->type == 0xae || item->type == 0xaf) {
+            SCENE_TEXTURE_PACKET_AE_PC *packet = (SCENE_TEXTURE_PACKET_AE_PC *)item->next;
+            if (packet != NULL) {
+                for (j = 0; j < 3; ++j) {
+                    i32 tid = packet->texture_ids[j];
+                    if (tid == -1) {
+                        packet->texture_ids[j] = 0;
+                    } else if ((tid & 0x4000) == 0) {
+                        packet->texture_ids[j] = scene->texture_ids[tid];
+                    } else {
+                        i32 resolved = NuTexResolveReference(scene, tid);
+                        if (resolved != 0) {
+                            packet->texture_ids[j] = resolved;
+                        } else {
+                            STUBBED_NAMED("Unresolved fallback and assignment held at native PS AE/AF ID call "
+                                          "0x602445: no source-owned DDS value");
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

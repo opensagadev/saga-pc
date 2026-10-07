@@ -3486,3 +3486,64 @@ families, shader condition/AST emitters and real texture-ID repair; investigate
 the native readonly keyboard-string cohort as a genuine type contract. Scratch
 candidate bytes receive zero credit until released. The user's journal stays
 unchanged and excluded; authorized whole-project direct-main work continues.
+
+### Connected shader AST, scene remapping and ripple lifecycle checkpoint X (2026-10-07 UTC)
+
+W393adc8 passed exact-revision CI37619290749. X transfers28 new functions and
+7,651 complete PC bytes: shader condition/AST4,872, partial scene repair/removal
+802 and ripple/minikit lifecycle1,977. Existing NuReadGraphicsData now calls
+the real scene fixer; its699 native bytes receive zero new credit. All29 full
+accepted outputs reproduce reviewed candidates. The source EXE links307 normal
+objects/4,233 functions/9,133 data definitions. LLVM18 format334/tidy307 and all
+719 required checks pass with3 existing skips. Strict selected CPU replays use
+all307 actual normal objects, zero replacements/supplements: AST102, scene29,
+ripple28, total159/0. They do not prove GPU/scene/whole-game behavior.
+
+ShaderConditionNodePc12 and ShaderSourceNodePc36 have named/asserted fields;
+the latter covers all9DWORDs. Macro records remain distinct12 bytes. Original
+private component-helper/caller ownership stays intact. Two private22-entry
+type tables match native initializers, with unproved original filename/visibility
+and owning extents. NUL-string lengths alone establish no allocation extent.
+No parser/Expand/manager/backend activation or retail HLSL asset is supplied.
+
+The genuine void fixers preserve minus1/direct-ID/successful resolver branches;
+only missing fallback assignments stay explicit. Native material pointer reloads,
+WORD plus15DWORD order and direct PS update/version increment survive. Remove200
+performs real animation/texture/display cleanup but omits RestoreTIDs. Selected
+scene29 tests CPU metadata/PS repair and generic material_count0, not populated
+shader updates or full teardown. This real provider closes MiniKitDump's link.
+Ripple retains native clamp/hazards, initialized ring2..64 selected domain and
+corrected UVs(1,0),(0,0),(1,1),(1,0);12 opaque vertex lanes remain unwritten.
+
+All4,205 prior full functions and9,021 full initializer regions are checked.
+All2,039 old exact code copies and5,437 physical exact data copies survive.
+Only the approved699-byte ingestion parent changes officially649 to665; four
+local class6/type0 compiler-label names retain owning section/target offsets and
+full official bytes. Every old initializer's complete raw bytes/named relocations
+is unchanged. All13 full named parents/28 known bytes, CRC and HANDLE survive.
+The112 new full initializer copies/1,014 COFF bytes all equal retail:5 known/21B
+and107 unknown/993B. Unknown owning extents earn zero allocation/exact credit.
+Shared data source is unchanged; current physical exact copies5,442 gain5,
+while the known exact data union remains640,846 because no unique bytes are new.
+
+Unique compared PC bytes1,201,236 to1,208,887 gain7,651. Native objdiff's1,209,405
+denominator retains518 overlap bytes. Whole-PC fuzzy24.0573062087% to
+24.2025985586% gains0.1452923499 percentage points. Eight new exact bodies add
+803 unique bytes:202,426 to203,229,5.8546412441% of3,471,246 retail text bytes.
+All native/candidate spans remain complete, unmasked and untruncated.
+
+Actual EXEde2c04d4 naturally exits5 after3.442 seconds at the same NULL manager
+receiver, source004ff5c0/Retrieve004ff5b0/+16/full208; native741750/full208
+correspondence is verified. Own-prefix ShowCrashDialogDWORD0 suppresses the popup,
+retains real fault/exit and cleans only owned processes; no dialog/owned leftover
+remains. All307 objects/419 inputs remain unchanged. Device/Present/repeated
+frames/loaded scene/gameplay are unverified. Ripple's first new-prefix bootstrap
+was unsupported win32; the successful genuine replay uses installed wow64.
+
+The checkpoint waited for coherent contracts and full validation. Next source
+gates accept Uniform4/1,740 and lighting10/2,964;127 genuine shared definitions
+are prepared with preserved old exacts and canonical light84 to120 growth, bytes
+64..73 opaque. Broader Hub/resource/minikit and actual shader parser/directive
+families follow. Area/Perm/FreePlay storage stays held without placement/padding
+controls. The human journal is unchanged and excluded; authorized whole-project
+direct-main continuation remains active, with matching primary.

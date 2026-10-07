@@ -4479,3 +4479,34 @@ initializers800824/800820. They do not provide synchronization. Windows global
 identities are retained:924880 is HINSTANCE and924884 is HWND, despite their
 historical candidate names. Startup6d33d0/59 now passes HWND first/HINSTANCE
 second to the genuine cdecl55-byte wrapper; that wrapper remains partial.
+
+### Shader AST, scene remapping and ripple lifecycle contracts (2026-10-07)
+
+The original shader dictionary, buffer and lexical owners now contain the
+sixteen reviewed condition/AST methods, covering4,872 complete PC bytes.
+ShaderConditionNodePc is12 bytes; ShaderSourceNodePc is36 bytes with all nine
+DWORD fields asserted. Macro definitions remain a distinct12-byte record.
+The component helper's private register ABI stays in its genuine caller group.
+The two private22-entry type tables match native initializers; their original
+filename, visibility and owning extents remain qualified. Compiler-string NUL
+length alone does not establish an owning extent. Manager publication, parser,
+uniform/program expansion and the HLSL backend are separate unreleased contracts.
+
+NuGScnFixupTIDs5eedf0/397 and its PS child6023b0/205 retain their true void
+cdecl interfaces. Successful native ID assignments are expanded in place:
+minus1 becomes0, direct ordinals use scene IDs, and reference resolution calls
+the real cache provider. Resolver0 leaves only the missing fallback assignment
+explicitly omitted. The signed WORD plus fifteen DWORD material slots retain
+native order and pointer reloads; direct NuMtlUpdatePS increments the version
+once. Native5ef31d in the existing699-byte ingestion parent now calls this
+partial pipeline, with no new-byte credit. Populated-material shader execution
+and missing-texture allocation remain unverified.
+
+NuGScnRemove5ef880/200 supplies real animation, texture and display cleanup;
+the original RestoreTIDs call alone remains explicit. This genuine dependency
+closes CharacterMiniKits_Dump's link contract, without proving full teardown.
+The corrected nine-function ripple/minikit family covers1,977 PC bytes.
+Draw's native UVs are(1,0),(0,0),(1,1),(1,0); twelve opaque vertex lanes remain
+unwritten. The signed arena clamp and native zero/one-node hazards are retained;
+selected CPU tests use initialized rings of2..64 nodes. No GPU or complete
+scene-loading claim follows from these source contracts.

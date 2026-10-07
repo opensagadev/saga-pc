@@ -13626,6 +13626,8 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern i32 NuUnresolvedTextureIDPC;
     extern const u8 NuUnresolvedTextureDDS[8320];
     void __cdecl NuGScnRemove(NUGSCN *);
+    void __cdecl NuGScnFixupTIDs(NUGSCN *);
+    void __cdecl NuGScnFixupTIDsPS(NUGSCN *);
     i32 __cdecl NuGScnRestoreTID(NUGSCN *, i32);
     void __cdecl NuGScnRestoreTIDs(NUGSCN *);
     void __cdecl NuGScnRestoreTIDsPS(NUGSCN *);
@@ -16446,6 +16448,8 @@ struct ShaderCompilerBufferAllocatorPc {
     void Resize(i32);
     void AppendBytes(const char *, i32);
     void AppendText(const char *);
+    ShaderCompilerBufferAllocatorPc &operator<<(const char *);
+    void AppendInt(i32);
 };
 STATIC_ASSERT(sizeof(ShaderCompilerBufferAllocatorPc) == 16);
 STATIC_ASSERT(offsetof(ShaderCompilerBufferAllocatorPc, data) == 0);
@@ -16455,9 +16459,24 @@ STATIC_ASSERT(offsetof(ShaderCompilerBufferAllocatorPc, owns_memory) == 12);
 #endif
 
 #ifdef __cplusplus
+struct ShaderConditionNodePc {
+    ShaderConditionNodePc *left;
+    ShaderConditionNodePc *right;
+    const char *token;
+};
+
 struct ShaderSourceNodePc {
-    u8 unknown_000[0x20];
+    u32 flags;
+    i32 type;
+    i32 array_count;
+    const char *name;
+    i32 semantic;
+    const char *custom_semantic;
+    i32 vertex_register;
+    i32 pixel_register;
     i32 expansion_state;
+    ShaderSourceNodePc(u32, i32, i32, const char *, i32, const char *, i32, i32);
+    const char *SemanticName();
 };
 STATIC_ASSERT(offsetof(ShaderSourceNodePc, expansion_state) == 0x20);
 struct ShaderRegisterBlockPc {
@@ -16517,7 +16536,33 @@ struct ShaderCompilerDictionaryPc {
     void Expand(void *, ShaderCompilerBufferAllocatorPc *);
     void AddDefinition(const char *, const char *, i32);
     void BindOutputBuffer(ShaderCompilerBufferAllocatorPc *);
+    bool IsNumericToken(const char *);
+    bool EvaluateCondition(ShaderConditionNodePc *, i32 *);
+    i32 EvaluateValue(ShaderConditionNodePc *);
+    const char *RenderASTName(ShaderSourceNodePc *);
+    ShaderSourceNodePc *FindASTExact(const char *, u32);
+    ShaderSourceNodePc *FindASTUniform(const char *);
+    void EmitType(ShaderCompilerBufferAllocatorPc *);
+    void EmitRegister(ShaderCompilerBufferAllocatorPc *);
+    void EmitVertexInput(ShaderCompilerBufferAllocatorPc *);
+    void EmitAttribute(ShaderCompilerBufferAllocatorPc *);
+    void AddASTDefinition(ShaderSourceNodePc *);
 };
+STATIC_ASSERT(sizeof(ShaderConditionNodePc) == 12);
+STATIC_ASSERT(offsetof(ShaderConditionNodePc, left) == 0);
+STATIC_ASSERT(offsetof(ShaderConditionNodePc, right) == 4);
+STATIC_ASSERT(offsetof(ShaderConditionNodePc, token) == 8);
+STATIC_ASSERT(sizeof(ShaderSourceNodePc) == 36);
+STATIC_ASSERT(offsetof(ShaderSourceNodePc, flags) == 0);
+STATIC_ASSERT(offsetof(ShaderSourceNodePc, type) == 4);
+STATIC_ASSERT(offsetof(ShaderSourceNodePc, array_count) == 8);
+STATIC_ASSERT(offsetof(ShaderSourceNodePc, name) == 12);
+STATIC_ASSERT(offsetof(ShaderSourceNodePc, semantic) == 16);
+STATIC_ASSERT(offsetof(ShaderSourceNodePc, custom_semantic) == 20);
+STATIC_ASSERT(offsetof(ShaderSourceNodePc, vertex_register) == 24);
+STATIC_ASSERT(offsetof(ShaderSourceNodePc, pixel_register) == 28);
+STATIC_ASSERT(offsetof(ShaderSourceNodePc, expansion_state) == 32);
+
 STATIC_ASSERT(sizeof(ShaderCompilerDictionaryPc) == 0x9a4);
 STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, program_count) == 0x4b0);
 STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, definitions) == 0x4b4);
@@ -16596,6 +16641,11 @@ extern "C" {
     void __cdecl InitRippleMtl(char *, NUMTL **, VARIPTR *, VARIPTR *);
     i32 __cdecl LookupRippleEffectIndex(char *);
     void __cdecl RippleEffects_Configure(WORLDINFO *, char *);
+    void __cdecl InitRipples(RIPPLE_SET_PC **, VARIPTR *, VARIPTR *, i32);
+    void __cdecl ResetRippleSet(RIPPLE_SET_PC *);
+    void __cdecl UpdateRippleSet(RIPPLE_SET_PC *);
+    void __cdecl DrawRippleSet(RIPPLE_SET_PC *);
+    void __cdecl CharMiniKit_Draw(i32, NUMTX *, i32, f32, f32);
 #ifdef __cplusplus
 }
 #endif
