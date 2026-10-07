@@ -1189,3 +1189,159 @@ NUFPCOMJMPCTX NuMusic::track_jmp_tab[15] = {{"IDENT", xsIdent},
                                             {"NOLOOP", xsNonLooping},
                                             {"ATTENUATION", xsAttenuation},
                                             {NULL, NULL}};
+
+i32 NuMusic::Voice::Load(Track *track, i32 subtrack) {
+    if (tracks[track_index] == track)
+        return 0;
+    track_index = track->clazz == 8;
+    NuSound3StopStereoStream(stream_index * 2);
+    tracks[track_index] = track;
+    track_sub[track_index] = subtrack;
+    flags_word &= ~2U;
+    if (status != 1) {
+        play_time = 0.0f;
+        status = 1;
+    }
+    return 1;
+}
+
+i32 NuMusic::Voice::Cue(void) {
+    Track *track = tracks[track_index];
+    if (track == NULL || track->file_indexes[track_sub[track_index]] == -1)
+        return -4;
+    if ((u32)status - 4U <= 3U)
+        return -5;
+    i32 result = NuSound3PlayStereoV(2, stream_index, 3, track->file_indexes[track_sub[track_index]], 9, 0, 6, 0, 10,
+                                     (f64)track->start_offset, 1);
+    last_volume = 0.0f;
+    tracks[track_index]->ManageEntryTime();
+    if (result == 0)
+        return -6;
+    if (status != 4) {
+        play_time = 0.0f;
+        status = 4;
+    }
+    return 1;
+}
+
+i32 NuMusic::Voice::Play(void) {
+    Track *track = tracks[track_index];
+    if (track == NULL || track->file_indexes[track_sub[track_index]] == -1)
+        return -4;
+    Voice *other = &the_music_player->voices[1 - stream_index];
+    Track *other_track = other->tracks[other->track_index];
+    f32 target_gain = 1.0f;
+    fade_rate = 0.0f;
+    flags_word &= ~1U;
+    if (track->clazz != 8 && (other_track == NULL || other_track->clazz != 8)) {
+        if (other->status == 7) {
+            other->fade_rate = -1.0f;
+            fade_rate = 1.0f;
+            other->flags_word &= ~1U;
+            target_gain = gain;
+        } else if (track->start_offset != 0.0f) {
+            if (status == 6 || status == 7) {
+                fade_rate = 0.0f;
+                target_gain = gain;
+            } else {
+                fade_rate = 1.0f;
+                target_gain = 0.0f;
+            }
+        }
+    }
+    gain = target_gain;
+    if (NuSound3GetStereoStreamStatus(stream_index * 2) == 0 && status == 3)
+        status = 1;
+    if (status == 3) {
+        NuSound3PauseStereoStream(stream_index * 2);
+        if (status != 6) {
+            play_time = 0.0f;
+            status = 6;
+        }
+        return 1;
+    }
+    if (status == 6 || status == 7)
+        return 1;
+    track = tracks[track_index];
+    i32 result = NuSound3PlayStereoV(2, stream_index, 3, track->file_indexes[track_sub[track_index]], 9, track->pitch,
+                                     6, 0, 10, (f64)track->start_offset, 1);
+    last_volume = 0.0f;
+    tracks[track_index]->ManageEntryTime();
+    if (result == 0)
+        return -6;
+    if (status != 6) {
+        play_time = 0.0f;
+        status = 6;
+    }
+    return 1;
+}
+
+i32 NuMusic::CueTrack(u32 class_mask) {
+    if (this == NULL || the_music_player == NULL)
+        return -1;
+    if (album == NULL)
+        return -2;
+    Track *track = album->GetTrack(class_mask);
+    if (track == NULL)
+        return -3;
+    i32 selected_subtrack = track_index;
+    if (track->file_indexes[selected_subtrack] == -1)
+        return -3;
+    if (FindVoiceByTrack(track) != NULL)
+        return 1;
+    Voice *voice;
+    if (track->clazz == 8) {
+        voice = FindVoiceByClass(8);
+        if (voice != NULL) {
+            if (voice->status == 6 || voice->status == 7)
+                return -5;
+            if (voice->Load(track, selected_subtrack) != 0)
+                return voice->Cue();
+        }
+    }
+    voice = FindIdleVoice();
+    if (voice == NULL || voice->Load(track, track_index) == 0)
+        return -5;
+    return voice->Cue();
+}
+
+i32 NuMusic::PlayTrackI(u32 class_mask, u32 prepare_only) {
+    if (this == NULL || the_music_player == NULL)
+        return -1;
+    if (album == NULL)
+        return -2;
+    Track *track = album->GetTrack(class_mask);
+    if (track == NULL || track->file_indexes[track_index] == -1)
+        return -3;
+    u32 track_class = track->clazz;
+    if (track_class != 0x10 &&
+        (FindVoiceByClassAndStatus(0x10, 6) != NULL || FindVoiceByClassAndStatus(0x10, 7) != NULL))
+        return CueTrack(class_mask);
+    Voice *voice = FindVoiceByTrack(track);
+    if (voice != NULL)
+        return voice->Play();
+    if (track_class == 8) {
+        voice = FindVoiceByClass(8);
+        if (voice != NULL) {
+            if (voice->status != 1 && voice->status != 3)
+                return -5;
+            if (voice->Load(track, track_index) == 0)
+                return -5;
+            return voice->Play();
+        }
+    }
+    if (track_class == 0x10)
+        StopAll(0);
+    voice = FindIdleVoice();
+    if (voice == NULL || voice->Load(track, track_index) == 0 || prepare_only != 0)
+        return -5;
+    return voice->Play();
+}
+
+i32 NuMusic::PlayTrack(u32 class_mask, u32 prepare_only) {
+    return PlayTrackI(class_mask, prepare_only);
+}
+
+i32 NuMusic::PlayTrack(u32 class_mask) {
+    return PlayTrack(class_mask, 0);
+}

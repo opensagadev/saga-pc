@@ -2298,3 +2298,209 @@ extern "C" i32 TerrainTrackBack(NUVEC *position, NUVEC *direction, f32 radius, f
     NuScratchRelease();
     return static_cast<TerrainQuery_s *>(TerI)->hit_type;
 }
+
+STATIC_ASSERT(offsetof(TerrainQuery_s, movement_pitch) == 0x44);
+STATIC_ASSERT(offsetof(TerrainQuery_s, movement_yaw) == 0x48);
+STATIC_ASSERT(offsetof(TerrainQuery_s, transformed_vertices) == 0xfc);
+STATIC_ASSERT(offsetof(TerrainQuery_s, hit_type) == 0x88);
+STATIC_ASSERT(offsetof(TerrainQuery_s, hit_edge) == 0x89);
+STATIC_ASSERT(offsetof(TerrainQuery_s, terrain_group_index) == 0x6c);
+STATIC_ASSERT(offsetof(TerrainQuery_s, surface) == 0x90);
+STATIC_ASSERT(offsetof(TERRAIN_TRACK_SLOT_PC, id) == 0);
+STATIC_ASSERT(offsetof(TERRAIN_TRACK_SLOT_PC, wall_contact_state) == 0xa);
+STATIC_ASSERT(offsetof(TERRAIN_TRACK_SLOT_PC, impact_normal) == 0xc);
+STATIC_ASSERT(offsetof(TERRAIN_SET_PC, track_slots) == 0x198);
+STATIC_ASSERT(offsetof(TERRAIN_AXIS_FREEDOM_SHAPE_PC, angle) == 0xc);
+STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
+STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
+STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
+
+extern "C" void RotateTerrainPc(TERRAIN_SHAPE *surface) {
+    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    const f32 pitch = query->movement_pitch;
+    const f32 sin_pitch = NuTrigTable[(static_cast<i32>(pitch) >> 1) & (NUTRIGTABLE_COUNT - 1)];
+    const f32 cos_pitch =
+        NuTrigTable[(static_cast<i32>(static_cast<f64>(pitch) + 16384.0) >> 1) & (NUTRIGTABLE_COUNT - 1)];
+    const f32 yaw = query->movement_yaw;
+    const f32 sin_yaw = NuTrigTable[(static_cast<i32>(yaw) >> 1) & (NUTRIGTABLE_COUNT - 1)];
+    const f32 cos_yaw = NuTrigTable[(static_cast<i32>(static_cast<f64>(yaw) + 16384.0) >> 1) & (NUTRIGTABLE_COUNT - 1)];
+
+    for (i32 vertex_index = 0; vertex_index < 3; ++vertex_index) {
+        const NUVEC &source = surface->vertices[vertex_index];
+        NUVEC &destination = query->transformed_vertices[vertex_index];
+        const f32 rotated_z = source.y * sin_pitch + source.z * cos_pitch;
+        destination.y = source.y * cos_pitch - source.z * sin_pitch;
+        destination.z = rotated_z * cos_yaw - source.x * sin_yaw;
+        destination.x = rotated_z * sin_yaw + source.x * cos_yaw;
+    }
+    if (65536.0f > surface->normals[1].y) {
+        const NUVEC &source = surface->vertices[3];
+        NUVEC &destination = query->transformed_vertices[3];
+        const f32 rotated_z = source.y * sin_pitch + source.z * cos_pitch;
+        destination.y = source.y * cos_pitch - source.z * sin_pitch;
+        destination.z = rotated_z * cos_yaw - source.x * sin_yaw;
+        destination.x = rotated_z * sin_yaw + source.x * cos_yaw;
+    }
+}
+
+extern "C" void FullDeflectSizePc(NUVEC *normal, NUVEC *movement, NUVEC *result) {
+    f32 deflection = (-movement->y * normal->y - movement->x * normal->x) - movement->z * normal->z;
+    f32 original_length = NuFsqrt(movement->x * movement->x + movement->y * movement->y + movement->z * movement->z);
+    result->x = (normal->x * deflection) + movement->x;
+    result->y = (normal->y * deflection) + movement->y;
+    result->z = (normal->z * deflection) + movement->z;
+    f32 deflected_length = NuFsqrt(result->x * result->x + result->y * result->y + result->z * result->z);
+    if (deflected_length != 0.0f) {
+        f32 scale = (original_length * 0.75) / deflected_length + 0.25;
+        result->x *= scale;
+        result->y *= scale;
+        result->z *= scale;
+    }
+}
+
+extern "C" void FullReflectTestPc(NUVEC *normal, NUVEC *movement, NUVEC *result) {
+    f32 deflection = (-movement->y * normal->y - movement->x * normal->x) - movement->z * normal->z;
+    f32 original_length = NuFsqrt(movement->x * movement->x + movement->y * movement->y + movement->z * movement->z);
+    result->x = (normal->x * deflection) * 2.0 + movement->x;
+    result->y = (normal->y * deflection) * 2.0 + movement->y;
+    result->z = (normal->z * deflection) * 2.0 + movement->z;
+    f32 deflected_length = NuFsqrt(result->x * result->x + result->y * result->y + result->z * result->z);
+    if (deflected_length != 0.0f) {
+        f32 scale = original_length / deflected_length;
+        result->x *= scale;
+        result->y *= scale;
+        result->z *= scale;
+    }
+}
+
+extern "C" void CubeImpactPc(NUMTX *current, NUMTX *previous, NUVEC *normal, f32 scale, NUVEC *impact) {
+    NUVEC corners[8] = {
+        {-1.0f, -1.0f, -1.0f}, {1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, -1.0f}, {-1.0f, 1.0f, -1.0f},
+        {-1.0f, -1.0f, 1.0f},  {1.0f, -1.0f, 1.0f},  {1.0f, 1.0f, 1.0f},  {-1.0f, 1.0f, 1.0f},
+    };
+    NUVEC4 transformed[8], old_position;
+    f32 closest = 10000.0f;
+    i32 selected = 0;
+    for (i32 index = 0; index < 8; ++index) {
+        transformed[index].x = corners[index].x;
+        transformed[index].y = corners[index].y;
+        transformed[index].z = corners[index].z;
+        transformed[index].w = 0.0f;
+        NuVec4MtxTransformVU0(&old_position, &transformed[index], previous);
+        NuVec4MtxTransformVU0(&transformed[index], &transformed[index], current);
+        const f32 current_distance =
+            normal->x * transformed[index].x + normal->y * transformed[index].y + normal->z * transformed[index].z;
+        const f32 old_distance = normal->x * old_position.x + normal->y * old_position.y + normal->z * old_position.z;
+        if (current_distance > old_distance && current_distance < closest) {
+            closest = current_distance;
+            selected = index;
+        }
+    }
+    impact->x = scale * transformed[selected].x + current->m30;
+    impact->y = scale * transformed[selected].y + current->m31;
+    impact->z = scale * transformed[selected].z + current->m32;
+}
+
+extern "C" void TerrainWallSideSlidePc(NUVEC *movement, void *id, f32 speed, f32 upward_scale, NUANG angle) {
+    if (static_cast<TERRAIN_SET_PC *>(CurrentTerrain) == NULL)
+        return;
+    TERRAIN_SET_PC *terrain = static_cast<TERRAIN_SET_PC *>(CurrentTerrain);
+    TERRAIN_TRACK_SLOT_PC *track = NULL;
+    for (i32 index = 0; index < 64; ++index) {
+        if (terrain->track_slots[index].id == id) {
+            track = &terrain->track_slots[index];
+            break;
+        }
+    }
+    CurTrackInfo = track;
+    if (CurTrackInfo == NULL || CurTrackInfo->wall_contact_state == 0)
+        return;
+    if (speed != 0.0f) {
+        NUVEC slide = {0.0f, 0.0f, speed};
+        NuVecRotateY(&slide, &slide, angle);
+        FullDeflect(&CurTrackInfo->impact_normal, &slide, &slide);
+        slide.x += (speed * CurTrackInfo->impact_normal.x) * static_cast<f64>(0.4f);
+        slide.z += (speed * CurTrackInfo->impact_normal.z) * static_cast<f64>(0.4f);
+        movement->z += slide.z;
+        movement->x += slide.x;
+    }
+    if (movement->y > 0.0f)
+        movement->y *= upward_scale;
+}
+
+extern "C" void TerrainPolyEdgePc(NUVEC *first, NUVEC *second) {
+    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    if ((query->hit_type & 0xf) != TERRAIN_HIT_TYPE_CYLINDER)
+        return;
+    switch (query->hit_edge) {
+        case 1: {
+            NUVEC *origin = &static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[query->terrain_group_index].origin;
+            TERRAIN_SHAPE *surface = query->surface;
+            first->x = origin->x + surface->vertices[0].x;
+            first->y = origin->y + surface->vertices[0].y;
+            first->z = origin->z + surface->vertices[0].z;
+            second->x = origin->x + surface->vertices[1].x;
+            second->y = origin->y + surface->vertices[1].y;
+            second->z = origin->z + surface->vertices[1].z;
+            break;
+        }
+        case 2: {
+            NUVEC *origin = &static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[query->terrain_group_index].origin;
+            TERRAIN_SHAPE *surface = query->surface;
+            first->x = origin->x + surface->vertices[1].x;
+            first->y = origin->y + surface->vertices[1].y;
+            first->z = origin->z + surface->vertices[1].z;
+            second->x = origin->x + surface->vertices[2].x;
+            second->y = origin->y + surface->vertices[2].y;
+            second->z = origin->z + surface->vertices[2].z;
+            break;
+        }
+        case 3: {
+            NUVEC *origin = &static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[query->terrain_group_index].origin;
+            TERRAIN_SHAPE *surface = query->surface;
+            first->x = origin->x + surface->vertices[2].x;
+            first->y = origin->y + surface->vertices[2].y;
+            first->z = origin->z + surface->vertices[2].z;
+            second->x = origin->x + surface->vertices[0].x;
+            second->y = origin->y + surface->vertices[0].y;
+            second->z = origin->z + surface->vertices[0].z;
+            break;
+        }
+        case 4: {
+            NUVEC *origin = &static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[query->terrain_group_index].origin;
+            TERRAIN_SHAPE *surface = query->surface;
+            first->x = origin->x + surface->vertices[1].x;
+            first->y = origin->y + surface->vertices[1].y;
+            first->z = origin->z + surface->vertices[1].z;
+            second->x = origin->x + surface->vertices[3].x;
+            second->y = origin->y + surface->vertices[3].y;
+            second->z = origin->z + surface->vertices[3].z;
+            break;
+        }
+        case 5: {
+            NUVEC *origin = &static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[query->terrain_group_index].origin;
+            TERRAIN_SHAPE *surface = query->surface;
+            first->x = origin->x + surface->vertices[3].x;
+            first->y = origin->y + surface->vertices[3].y;
+            first->z = origin->z + surface->vertices[3].z;
+            second->x = origin->x + surface->vertices[2].x;
+            second->y = origin->y + surface->vertices[2].y;
+            second->z = origin->z + surface->vertices[2].z;
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+extern "C" void NewTerrAxisFreedomPc(TERRAIN_AXIS_FREEDOM_SHAPE_PC *shape, NUVEC *position) {
+    TerrShape = shape;
+    const f32 shape_angle = shape->angle;
+    TerrShapeAdjCnt = 2;
+
+    NUVEC axis;
+    axis.x = NuTrigTable[static_cast<i32>(static_cast<f64>(shape_angle) + 16384.0) >> 1 & 0x7fff];
+    axis.y = 0.0f;
+    axis.z = -NuTrigTable[static_cast<i32>(shape_angle) >> 1 & 0x7fff];
+    TerrainSideClamp(&axis, position);
+}

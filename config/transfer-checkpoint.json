@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1326924,
-    "matched_code_bytes": 208240,
-    "matching_percent": 5.998998630462952,
-    "fuzzy_coverage_percent": 25.66150946441958,
-    "mapped_functions": 4597,
-    "matched_functions": 2099,
-    "objdiff_fuzzy_percent": 69.221825,
-    "objdiff_total_code": 1287637,
+    "mapped_code_bytes": 1331247,
+    "matched_code_bytes": 208284,
+    "matching_percent": 6.000266186838962,
+    "fuzzy_coverage_percent": 25.732629802966898,
+    "mapped_functions": 4612,
+    "matched_functions": 2102,
+    "objdiff_fuzzy_percent": 69.16475,
+    "objdiff_total_code": 1292269,
     "image_bytes": 40067072,
-    "mapped_bytes": 1975120,
-    "mapping_percent": 4.929534157125333,
+    "mapped_bytes": 1979443,
+    "mapping_percent": 4.940323565445461,
     "matched_data_region_bytes": 637608
   },
   "newly_compared": [
@@ -6740,6 +6740,176 @@
       "original_bytes": 93,
       "units": [
         "src/legogame/startup.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_RotateTerrainPc",
+      "pc": "0x0066fa90",
+      "original_bytes": 480,
+      "units": [
+        "src/nu2api/terrain_query.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 60.872612
+    },
+    {
+      "symbol": "_FullDeflectSizePc",
+      "pc": "0x006780e0",
+      "original_bytes": 255,
+      "units": [
+        "src/nu2api/terrain_query.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 90.28283
+    },
+    {
+      "symbol": "_FullReflectTestPc",
+      "pc": "0x00678240",
+      "original_bytes": 253,
+      "units": [
+        "src/nu2api/terrain_query.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 89.18
+    },
+    {
+      "symbol": "_CubeImpactPc",
+      "pc": "0x0067af00",
+      "original_bytes": 405,
+      "units": [
+        "src/nu2api/terrain_query.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 99.86777
+    },
+    {
+      "symbol": "_TerrainWallSideSlidePc",
+      "pc": "0x0067b0a0",
+      "original_bytes": 270,
+      "units": [
+        "src/nu2api/terrain_query.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 65.611115
+    },
+    {
+      "symbol": "_TerrainPolyEdgePc",
+      "pc": "0x0067b610",
+      "original_bytes": 928,
+      "units": [
+        "src/nu2api/terrain_query.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 36.398342
+    },
+    {
+      "symbol": "_NewTerrAxisFreedomPc",
+      "pc": "0x0067be60",
+      "original_bytes": 113,
+      "units": [
+        "src/nu2api/terrain_query.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 63.466667
+    },
+    {
+      "symbol": "_TerrainScanWallSplinePc",
+      "pc": "0x00677ca0",
+      "original_bytes": 674,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 34.052402
+    },
+    {
+      "symbol": "_TerrainAddWallSplinePc",
+      "pc": "0x00677f50",
+      "original_bytes": 24,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "_TerrainRemoveWallSplinePc",
+      "pc": "0x00677f70",
+      "original_bytes": 57,
+      "units": [
+        "src/nu2api/nuterrain.c"
+      ],
+      "exact": false,
+      "objdiff_percent": 46.68182
+    },
+    {
+      "symbol": "?Load@Voice@NuMusic@@QAEHPAVTrack@2@H@Z",
+      "pc": "0x006955e0",
+      "original_bytes": 94,
+      "units": [
+        "src/nu2api/nusound_music.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 99.08572
+    },
+    {
+      "symbol": "?Cue@Voice@NuMusic@@QAEHXZ",
+      "pc": "0x00695720",
+      "original_bytes": 172,
+      "units": [
+        "src/nu2api/nusound_music.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 0.0
+    },
+    {
+      "symbol": "?Play@Voice@NuMusic@@QAEHXZ",
+      "pc": "0x006957d0",
+      "original_bytes": 370,
+      "units": [
+        "src/nu2api/nusound_music.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 88.30657
+    },
+    {
+      "symbol": "?CueTrack@NuMusic@@QAEHI@Z",
+      "pc": "0x00695f60",
+      "original_bytes": 223,
+      "units": [
+        "src/nu2api/nusound_music.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 0.0
+    },
+    {
+      "symbol": "?PlayTrackI@NuMusic@@QAEHII@Z",
+      "pc": "0x00696040",
+      "original_bytes": 294,
+      "units": [
+        "src/nu2api/nusound_music.cpp"
+      ],
+      "exact": false,
+      "objdiff_percent": 0.0
+    },
+    {
+      "symbol": "?PlayTrack@NuMusic@@QAEHII@Z",
+      "pc": "0x00696900",
+      "original_bytes": 5,
+      "units": [
+        "src/nu2api/nusound_music.cpp"
+      ],
+      "exact": true,
+      "objdiff_percent": 100.0
+    },
+    {
+      "symbol": "?PlayTrack@NuMusic@@QAEHI@Z",
+      "pc": "0x00696a30",
+      "original_bytes": 15,
+      "units": [
+        "src/nu2api/nusound_music.cpp"
       ],
       "exact": true,
       "objdiff_percent": 100.0
@@ -25532,6 +25702,160 @@
       "user_journal_preserved": true,
       "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
       "ongoing_goal": "Whole-project matching-priority transfer until human stop/pause; validated direct-main pushes authorized; exact pushed CI verified separately."
+    },
+    {
+      "checkpoint": "Connected terrain geometry and genuine music status checkpoint EE (2026-10-07 UTC)",
+      "baseline_commit": "238ebd8c471029b40fadba6e8678a6f07f39b4c4",
+      "baseline_CI": {
+        "run": 37672220165,
+        "conclusion": "success",
+        "exact_head_sha": "238ebd8c471029b40fadba6e8678a6f07f39b4c4"
+      },
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1326924,
+        "matched_code_bytes": 208240,
+        "matching_percent": 5.998998630462952,
+        "fuzzy_coverage_percent": 25.66150946441958,
+        "mapped_functions": 4597,
+        "matched_functions": 2099,
+        "objdiff_fuzzy_percent": 69.221825,
+        "objdiff_total_code": 1287637,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1975120,
+        "mapping_percent": 4.929534157125333,
+        "matched_data_region_bytes": 637608
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1331247,
+        "matched_code_bytes": 208284,
+        "matching_percent": 6.000266186838962,
+        "fuzzy_coverage_percent": 25.732629802966898,
+        "mapped_functions": 4612,
+        "matched_functions": 2102,
+        "objdiff_fuzzy_percent": 69.16475,
+        "objdiff_total_code": 1292269,
+        "image_bytes": 40067072,
+        "mapped_bytes": 1979443,
+        "mapping_percent": 4.940323565445461,
+        "matched_data_region_bytes": 637608
+      },
+      "new_source_functions": 17,
+      "new_complete_compiled_function_copies": 17,
+      "actual_new_transfer_PC_bytes": 4632,
+      "new_unique_compared_PC_bytes": 4632,
+      "unique_compared_code_bytes": 1291698,
+      "native_objdiff_denominator": 1292269,
+      "overlap_bytes": 571,
+      "new_native_family_bytes": {
+        "terrain_geometry": 3459,
+        "genuine_music_status_suppliers": 1173
+      },
+      "new_exact_PC_bytes": 44,
+      "whole_PC_fuzzy_delta_pp": 0.07112033854731692,
+      "old_full_function_copies": 4409,
+      "old_exact_code_copies_preserved": 2102,
+      "old_full_data_regions": 10039,
+      "old_known_extent_exact_data_compiled_copies_preserved": 5295,
+      "current_full_function_definitions": 4426,
+      "current_full_data_definitions": 10047,
+      "qualified_previous_nonexact_function_changes": [
+        {
+          "unit": "src/legoapi/camera.c",
+          "symbol": "_GameCameraMakeMiniCut3",
+          "old_bytes": 1709,
+          "new_bytes": 1789,
+          "old_official_sha256": "c4a2ffcc805ea325522e28caeac1d6b1b35d4a295403f310d9498f0ce7dab19c",
+          "new_official_sha256": "4382fb31517118bb3ecc2395e3613371dbcf77baa069534c76ff89bd7be28a0f",
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/camera-minicut3-DD-EE-independent-review/accepted-packet.json",
+            "receipt_sha256": "4a457b643d3ef4485d2d6a72e4d193d3d0a3b7f1cd83642517a3f2e219cf806b",
+            "old_official_sha256": "c4a2ffcc805ea325522e28caeac1d6b1b35d4a295403f310d9498f0ce7dab19c",
+            "new_official_sha256": "4382fb31517118bb3ecc2395e3613371dbcf77baa069534c76ff89bd7be28a0f",
+            "old_exact": false,
+            "qualification": "Exact independently accepted1709->1789 unchanged-source MiniCut3 pair only: prefix1277 exact, full tail4 flag paths/f32 duration/reload slots/command3/clamp/borders preserve logical behavior. Finite valid initialized stable nonalias masked-FP domain. Excludes exceptional/trap/status/fault/debug/async/reentrant/invalidalias and NaN/infinity/signedzero payload claims; no fullnative/arbitraryinput/runtime equivalence."
+          }
+        },
+        {
+          "unit": "src/legoapi/debris_engine.c",
+          "symbol": "_DebReAlloc2",
+          "old_bytes": 1458,
+          "new_bytes": 1458,
+          "old_official_sha256": "edf80808af3e18df2e1fa30a0a586a786f18ea7c037e3abe4930e3f2f70cb72c",
+          "new_official_sha256": "7a9dd072b10096065a1148d37ec82121b269a8655d0d5e8980b79cdc63fb6a77",
+          "qualification": {
+            "receipt": "/home/fabian/git/saga-pc/build/analysis/debrealloc2-DD-EE-independent-review/accepted-packet.json",
+            "receipt_sha256": "a4780cc00e83335df7fe64273d8fa35264788516231ff693129276f502ced174",
+            "old_official_sha256": "edf80808af3e18df2e1fa30a0a586a786f18ea7c037e3abe4930e3f2f70cb72c",
+            "new_official_sha256": "7a9dd072b10096065a1148d37ec82121b269a8655d0d5e8980b79cdc63fb6a77",
+            "old_exact": false,
+            "qualification": "Exact independently reviewed1458 edf80808->7a9dd072 unchanged-source DebReAlloc2 pair: two MOVrestores+201/+207 commute around sameFSTP; every other byte/CFG/call/write and strictnamed/applied references identical; all73 otherowner regions preserved. Initialized disjoint count/index/storage and definedFPU domain; excludes trap/status/fault/debug/async, no arbitrary-input/fullnative/runtime equivalence."
+          }
+        }
+      ],
+      "qualified_unknown_extent_data_changes": [],
+      "qualified_compiler_local_class6_type0_serial_changes": 5,
+      "new_complete_initializer_copies": 8,
+      "new_complete_initializer_COFF_bytes": 52,
+      "new_known_extent_exact_initializer_compiled_copies": 8,
+      "new_known_extent_exact_initializer_COFF_bytes": 52,
+      "new_unknown_extent_full_native_equal_initializer_copies": 0,
+      "new_unknown_extent_initializer_COFF_bytes": 0,
+      "unknown_extent_exact_and_allocation_credit": 0,
+      "known_exact_data_union_before_transfer": 637608,
+      "known_exact_data_union_after_transfer": 637608,
+      "new_shared_storage": 0,
+      "music_inventory_correction": "Previously uncompiled twoarg PlayTrack294@696040 corrected to true PlayTrackI294; genuine twoarg tail PlayTrack5@696900 and onearg15@696a30 preserved. No compiled binding retired.",
+      "normal_objects": 313,
+      "frozen_inputs": 431,
+      "actual_import_definition_inputs": 5,
+      "actual_generated_import_library_and_EXE_artifacts": 6,
+      "required_checks": {
+        "build_link_check_objects": "PASS313/4426/10047",
+        "make_check": "PASS728/3 existing skips; pinned LLVM18",
+        "authoritative_retail_match": "PASS"
+      },
+      "selected_CPU_checks": 187,
+      "selected_CPU_failures": 0,
+      "source_EXE": {
+        "receipt": "/home/fabian/git/saga-pc/build/analysis/runtime-source-workspace/EE-workspace-recheck-acceptance.json",
+        "sha256": "7c456087b92053087abfc9fdfabbfe81b92e61412e047dcb21efcc91e808ebbe",
+        "exe_sha256": "f9a1c49cbce528f91e904f038991a75dd3ad3352e15efdee841c733a616bef02",
+        "exit": 5,
+        "elapsed_seconds": 4.230247272062115,
+        "fault": "0x508830",
+        "native_method": "0x741750",
+        "method_size": 208,
+        "fault_offset": 16,
+        "visible_window_samples": 0
+      },
+      "runtime_evidence_recovery": {
+        "historical_aggregate": "/home/fabian/git/saga-pc/build/analysis/checkpoint-EE/runtime-acceptance-before-temp-removal.json",
+        "historical_aggregate_sha256": "9bb09ae5f28d8bb0b18b87ccf047152c75e921c4af8d1254df094aaa953d9b01",
+        "historical_authentic_receipt_unavailable": true,
+        "new_authentic_observation_not_reconstruction": true,
+        "recovery_addendum": "/home/fabian/git/saga-pc/build/analysis/runtime-source-workspace/recovery-addendum.json",
+        "recovery_addendum_sha256": "8a86c00600c22fbcc80b08f9dc81a32e213485f06fbc971e1d5092fad802f475",
+        "new_logs_stored_in_workspace_no_asset_copies": true
+      },
+      "milestones": "Authentic source EXE still NULL Retrieve receiver +16/full208 exit5; window/device/Present/scene/gameplay unverified; no owned crash dialog/debugger/game remains.",
+      "evidence_pins": {
+        "build/analysis/checkpoint-EE/normal-object-manifest.json": "a42636d8a1b2eda65c74071ad2be90c6ec7aaa706b8d02734111a9360673f053",
+        "build/analysis/checkpoint-EE/normal-artifact-manifest.json": "0627abe85ded8d52727bf3f735fe9728283975dbacf47d8b6b17b261171b81c6",
+        "build/analysis/checkpoint-EE/frozen-first-source-inputs.json": "c5272b3cb430c13084a678e319956cf86ea23c080ad1700ff81ea6f72172a6ca",
+        "build/analysis/checkpoint-EE/accepted-complete-functions.json": "3832b904a62c81e0b41f87ae78cdcee11c8f1d85857bf8a0f0033b5f3d463519",
+        "build/analysis/checkpoint-EE/required-checks-receipt.json": "fbbed98f3d944a4d77b773c4103ff314615164fb20c063b26f949f1edcbdd09d",
+        "build/analysis/checkpoint-EE/runtime-acceptance.json": "a13406e03ad8eabbddc3e47cdcf57e8c856c8cdc1e4f161a4bc37cd11da9b8e7",
+        "build/analysis/endpoint-EE-review/actual-output-and-report-proof.json": "12118bbba2f9337e3e9dab128f780f8031b64dc4a3f16700c01774f6aaea8e83",
+        "build/analysis/endpoint-EE-review/accepted-first-endpoint.json": "198cb3afbc7113199eecb2aba8286be742689816b1bfa7d046cb4ca7bf26d84d"
+      },
+      "checkpoint_delay": "Held on unchanged-source previous nonexact camera block/x87 scheduling and debris allocator local-load order changes; exact current-pair independent reviews required. Qualifications and retained discovery remain explicit; no source tuning, masks, extent retirement or compiler/alignment controls.",
+      "next_wave": "AISYS12/4652 accepted-source review and six true signedWORD formationID views; real streaming8/1092 then connected cutscene controller4390; sizable actual PC device command/query/display-mode cohort. Candidate bytes do not count as progress.",
+      "holds": "Real shader publisher and parser generated-helper/lifetime closure; inactive nonexact embedded HLSL and system embedded font provenance; device/asset positive runtime, DDS value, Perm angle source and Hub FP conversion.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "Whole-project matching-priority reconstruction active; validated direct-main pushes authorized and exact pushed CI verified separately."
     }
   ]
 }

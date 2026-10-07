@@ -3559,6 +3559,7 @@ address    , symbol                                                         , si
 0x0066f790 , _TerrainSkinAllocate                                           , 345   ,
 0x66f8f0,_DerotateMovementVector,171,void __cdecl(void)
 0x66f9a0,_RotateVec,230,"void __cdecl(NUVEC *,NUVEC *)"
+0x66fa90,_RotateTerrainPc,480,void __cdecl(TERRAIN_POLYGON_INFO_PC *)
 0x66fc70,_DeRotateTerrain,554,void __cdecl(TERRAIN_SHAPE *)
 0x66fea0,_DeRotatePoint,254,void __cdecl(NUVEC *)
 0x66ffa0,_InsideLineF,68,"i16 __cdecl(f32,f32,f32,f32,f32,f32)"
@@ -3579,10 +3580,15 @@ address    , symbol                                                         , si
 0x675610,_HitTerrPoly,553,"i32 __cdecl (TERRAIN_SHAPE *, i32)"
 0x675840,_ScanWallSplineTerrain,1818,"void __cdecl(i32,i32,i32)"
 0x675f60,_ScanTerrain,7479,"void __cdecl(i32,i32,i32)"
+0x677ca0,_TerrainScanWallSplinePc,674,void __cdecl(struct TERRAIN_SPATIAL_NODE *)
+0x677f50,_TerrainAddWallSplinePc,24,"void __cdecl(struct TERRAIN_SPATIAL_NODE *,struct TERRAIN_SET_PC *)"
+0x677f70,_TerrainRemoveWallSplinePc,57,"void __cdecl(struct TERRAIN_SPATIAL_NODE *,struct TERRAIN_SET_PC *)"
 0x677fb0,_FullDeflect,87,"void __cdecl(NUVEC *,NUVEC *,NUVEC *)"
 0x678010,_FullDeflectSmallY,93,"void __cdecl(NUVEC *,NUVEC *,NUVEC *)"
 0x678070,_FullDeflectTest,108,"i32 __cdecl(NUVEC *,NUVEC *,NUVEC *)"
+0x6780e0,_FullDeflectSizePc,255,"void __cdecl(NUVEC *,NUVEC *,NUVEC *)"
 0x6781e0,_FullReflect,93,"void __cdecl FullReflect(NUVEC *normal, NUVEC *movement, NUVEC *result)"
+0x678240,_FullReflectTestPc,253,"void __cdecl(NUVEC *,NUVEC *,NUVEC *)"
 0x678340,_NewTerrStoreAnyInfo,92,void __cdecl(void)
 0x6783a0,_TerrainMoveImpactData,100,void __cdecl(void)
 0x678410,_TerrainImpactNorm,364,void __cdecl(void)
@@ -3604,6 +3610,8 @@ address    , symbol                                                         , si
 0x67ab20,_NewTerrHitInfo,44,void __cdecl(u8 *)
 0x67ab50,_TerrainSideClamp,239,"void __cdecl(NUVEC *,NUVEC *)"
 0x67ac40,_TerrShapeSideStep,701,"i32 __cdecl(NUVEC *,NUVEC *,u8 *)"
+0x67af00,_CubeImpactPc,405,"void __cdecl(NUMTX *,NUMTX *,NUVEC *,f32,NUVEC *)"
+0x67b0a0,_TerrainWallSideSlidePc,270,"void __cdecl(NUVEC *,void *,f32,f32,NUANG)"
 0x67b200,_NewRayCastGetTOFI,12,f32 __cdecl (void)
 0x67b210,_NewRayCastGetImpactTerrainType,23,i32 __cdecl (void)
 0x67b230,_NewRayCastGetImpactNormal,40,void __cdecl(NUVEC *)
@@ -3611,9 +3619,11 @@ address    , symbol                                                         , si
 0x67b270,_NewRayCastHitWallSpline,10,i32 __cdecl NewRayCastHitWallSpline(void)
 0x67b280,_NewRayCast,389,"i32 __cdecl NewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags)"
 0x67b430,_NewRayCastScaleYMask,473,"i32 __cdecl(NUVEC*,NUVEC*,f32,f32,i32,u32)"
+0x67b610,_TerrainPolyEdgePc,928,"void __cdecl(NUVEC *,NUVEC *)"
 0x67b9b0,_NewRayCastMask,394,"i32 __cdecl(NUVEC *,NUVEC *,f32,i32,i32)"
 0x67bb40,_NewRayCastSet,389,"i32 __cdecl(NUVEC *,NUVEC *,f32,f32,f32,i32,i32)"
 0x67bcd0,_NewRayCastSetMask,393,"i32 __cdecl(NUVEC *,NUVEC *,f32,f32,f32,i32,i32,i32)"
+0x67be60,_NewTerrAxisFreedomPc,113,"void __cdecl(TERRAIN_AXIS_FREEDOM_SHAPE_PC *,NUVEC *)"
 0x0067bf50 , _NewPlatInst                                                   , 528   , "i32 __cdecl (void *, i32)"
 0x67c4f0,_NewPlatPickupInst,470,"i16 __cdecl(void*,i32)"
 0x67c6d0,_ReassignPickupInst,135,"void __cdecl(i32,i32)"
@@ -3742,10 +3752,14 @@ address    , symbol                                                         , si
 0x00695170 , ?GetSoundFiles@NuMusic@@QAEXPAPAUnusound_filename_info_s@@PAH@Z, 66    , "void __thiscall (NuMusic *, nusound_filename_info_s **, i32 *)"
 0x006951c0 , _numusicGetDuckVolume                                          , 34    , f32 __cdecl (void)
 0x6953b0,_NuSound3PlayStereoV,396,"i32 __cdecl(i32, ...)"
+0x6955e0,?Load@Voice@NuMusic@@QAEHPAVTrack@2@H@Z,94,"i32 __thiscall (NuMusic::Voice *, NuMusic::Track *, i32)"
 0x695640,?Unload@Voice@NuMusic@@QAEHXZ,209,i32 __thiscall NuMusic::Voice::Unload(void)
+0x695720,?Cue@Voice@NuMusic@@QAEHXZ,172,i32 __thiscall (NuMusic::Voice *)
+0x6957d0,?Play@Voice@NuMusic@@QAEHXZ,370,i32 __thiscall (NuMusic::Voice *)
 0x695950,?Process@NuMusic@@QAEXM@Z,1432,void __thiscall NuMusic::Process(f32)
 0x00695ef0 , ?SetTrackEntryTimeByClass@NuMusic@@QAEHIM@Z                    , 100   , "i32 __thiscall (NuMusic *, u32, f32)"
-0x00696040 , ?PlayTrack@NuMusic@@QAEHII@Z                                   , 294   , "i32 __thiscall (NuMusic *, u32, u32)"
+0x695f60,?CueTrack@NuMusic@@QAEHI@Z,223,"i32 __thiscall (NuMusic *, u32)"
+0x00696040,?PlayTrackI@NuMusic@@QAEHII@Z,294,"i32 __thiscall (NuMusic *, u32, u32)"
 0x00696170 , ?SelectTrack@NuMusic@@QAE_NIPBD@Z                              , 52    , "bool __thiscall (NuMusic *, u32, const char *)"
 0x6961b0,?xsIndex@NuMusic@@SAXPAUnufpar_pc_s@@PAX@Z,57,"static void  __cdecl NuMusic::xsIndex(NUFPAR_PC *,void *)"
 0x6961f0,?xsNoDuck@NuMusic@@SAXPAUnufpar_pc_s@@PAX@Z,12,"static void  __cdecl NuMusic::xsNoDuck(NUFPAR_PC *,void *)"
@@ -3766,6 +3780,7 @@ address    , symbol                                                         , si
 0x696810,?xCutscene@NuMusic@@QAEXPAUnufpar_pc_s@@@Z,15,void  __thiscall NuMusic::xCutscene(NUFPAR_PC *)
 0x696820,?xNoMusicC@NuMusic@@QAEXPAUnufpar_pc_s@@@Z,15,void  __thiscall NuMusic::xNoMusicC(NUFPAR_PC *)
 0x696830,?xGlobalAttenuation@NuMusic@@QAEXPAUnufpar_pc_s@@@Z,138,void  __thiscall NuMusic::xGlobalAttenuation(NUFPAR_PC *)
+0x696900,?PlayTrack@NuMusic@@QAEHII@Z,5,"i32 __thiscall (NuMusic *, u32, u32)"
 0x696910,?xsIdent@NuMusic@@SAXPAUnufpar_pc_s@@PAX@Z,15,"static void  __cdecl NuMusic::xsIdent(NUFPAR_PC *,void *)"
 0x696920,?xsNoMusic@NuMusic@@SAXPAUnufpar_pc_s@@PAX@Z,15,"static void  __cdecl NuMusic::xsNoMusic(NUFPAR_PC *,void *)"
 0x696930,?xsDuck@NuMusic@@SAXPAUnufpar_pc_s@@PAX@Z,15,"static void  __cdecl NuMusic::xsDuck(NUFPAR_PC *,void *)"

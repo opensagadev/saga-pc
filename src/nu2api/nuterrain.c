@@ -3400,3 +3400,64 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
     TerrainSkinPoolSlotCountPc = pool_slots;
     return (u8 *)(use + pool_slots);
 }
+
+STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, point_count) == 0);
+STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, points) == 4);
+STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_CHUNK, previous) == 0);
+STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_CHUNK, node) == 4);
+
+void TerrainScanWallSplinePc(TERRAIN_SPATIAL_NODE *node) {
+    while (node->point_count >= 3) {
+        i32 count = node->point_count + 1;
+        i32 i;
+        f32 min_x = node->points[0].x, max_x = min_x;
+        f32 min_z = node->points[0].z, max_z = min_z;
+        if (count > 16)
+            count = 16;
+        for (i = 1; i < count; ++i) {
+            f32 x = node->points[i].x, z = node->points[i].z;
+            if (x < min_x)
+                min_x = x;
+            if (z < min_z)
+                min_z = z;
+            if (x > max_x)
+                max_x = x;
+            if (z > max_z)
+                max_z = z;
+        }
+        node->points[0].y = min_x;
+        node->points[1].y = max_x;
+        node->points[2].y = min_z;
+        node->points[3].y = max_z;
+    }
+    node->points[0].y = 2147483648.0f;
+}
+
+void TerrainAddWallSplinePc(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain) {
+    TERRAIN_SPATIAL_CHUNK *chunk = (TERRAIN_SPATIAL_CHUNK *)((u8 *)node - offsetof(TERRAIN_SPATIAL_CHUNK, node));
+    chunk->previous = terrain->spatial_nodes;
+    terrain->spatial_nodes = node;
+}
+
+void TerrainRemoveWallSplinePc(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain) {
+    TERRAIN_SPATIAL_NODE *previous, *next;
+    TERRAIN_SPATIAL_CHUNK *chunk;
+    if (terrain == NULL || terrain->spatial_nodes == NULL)
+        return;
+    previous = terrain->spatial_nodes;
+    chunk = (TERRAIN_SPATIAL_CHUNK *)((u8 *)previous - offsetof(TERRAIN_SPATIAL_CHUNK, node));
+    if (previous == node) {
+        terrain->spatial_nodes = chunk->previous;
+        return;
+    }
+    next = chunk->previous;
+    while (next != NULL && next != node) {
+        previous = next;
+        chunk = (TERRAIN_SPATIAL_CHUNK *)((u8 *)previous - offsetof(TERRAIN_SPATIAL_CHUNK, node));
+        next = chunk->previous;
+    }
+    if (next == node) {
+        TERRAIN_SPATIAL_CHUNK *removed = (TERRAIN_SPATIAL_CHUNK *)((u8 *)node - offsetof(TERRAIN_SPATIAL_CHUNK, node));
+        chunk->previous = removed->previous;
+    }
+}

@@ -4674,3 +4674,15 @@ readable inputs, masked exceptions and four available x87 slots only; unmasked
 signaling NaNs, load-fault order and debugger FPU metadata are excluded. No source
 tuning or universal equivalence claim. Five class6/type0 local serial changes
 preserve complete raw/official bytes and strict owner offsets.
+
+### Geometry and music identity/ABI EE (2026-10-07)
+
+Transferred17 full functions/4,632 unique PC bytes; all2,102 old exact code
+copies survive. Seven real music methods preserve status propagation and
+16 genuine direct-call suppliers; no fabricated definitions. Existing uncompiled
+294-byte twoarg identity becomes PlayTrackI@696040; real PlayTrack tail5@696900
+and onearg15@696a30 are retained. Native -1f and unordered start_offset!=0
+are checked in source and actual emitted code. See transfer-execution.md and
+transfer-checkpoint.json for current full-output qualifications.
+
+Complete geometry extents include the five-way polygon edge table and native tails. No incoming direct calls were observed for the newly transferred geometry APIs, so no live-caller claim. Music methods retain real ECX thiscall RET8/4/0 and actual status propagation.

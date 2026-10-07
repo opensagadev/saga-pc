@@ -10023,6 +10023,18 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     void __cdecl DerotateMovementVector(void);
     void __cdecl RotateVec(NUVEC *, NUVEC *);
     void __cdecl DeRotateTerrain(TERRAIN_POLYGON_INFO_PC *);
+    struct TERRAIN_SPATIAL_NODE;
+    struct TERRAIN_SET_PC;
+    void __cdecl RotateTerrainPc(TERRAIN_POLYGON_INFO_PC *);
+    void __cdecl TerrainScanWallSplinePc(struct TERRAIN_SPATIAL_NODE *);
+    void __cdecl TerrainAddWallSplinePc(struct TERRAIN_SPATIAL_NODE *, struct TERRAIN_SET_PC *);
+    void __cdecl TerrainRemoveWallSplinePc(struct TERRAIN_SPATIAL_NODE *, struct TERRAIN_SET_PC *);
+    void __cdecl FullDeflectSizePc(NUVEC *, NUVEC *, NUVEC *);
+    void __cdecl FullReflectTestPc(NUVEC *, NUVEC *, NUVEC *);
+    void __cdecl CubeImpactPc(NUMTX *, NUMTX *, NUVEC *, f32, NUVEC *);
+    void __cdecl TerrainWallSideSlidePc(NUVEC *, void *, f32, f32, NUANG);
+    void __cdecl TerrainPolyEdgePc(NUVEC *, NUVEC *);
+    void __cdecl NewTerrAxisFreedomPc(TERRAIN_AXIS_FREEDOM_SHAPE_PC *, NUVEC *);
     void __cdecl DeRotatePoint(NUVEC *);
     i16 __cdecl InsideLineF(f32, f32, f32, f32, f32, f32);
     i16 __cdecl InsidePolLines(f32, f32, f32, f32, f32, f32, f32, f32, f32, NUVEC *);
@@ -15054,8 +15066,16 @@ class NuMusic {
         f32 last_volume;
         f32 fade_rate;
         f32 play_time;
-        u8 flags;
-        u8 unknown_0031[3];
+        union {
+            struct {
+                u8 flags;
+                u8 unknown_0031[3];
+            };
+            u32 flags_word;
+        };
+        i32 Load(Track *track, i32 subtrack);
+        i32 Cue(void);
+        i32 Play(void);
         i32 Unload(void);
     };
     struct Album {
@@ -15168,6 +15188,8 @@ class NuMusic {
     i32 StopAll(i32 mode);
     i32 PlayTrack(u32 class_mask);
     i32 PlayTrack(u32 class_mask, u32 unused);
+    i32 PlayTrackI(u32 class_mask, u32 prepare_only);
+    i32 CueTrack(u32 class_mask);
     void Process(f32 delta);
 };
 STATIC_ASSERT(sizeof(NuMusic::Track) == 0x3c);
@@ -15186,6 +15208,10 @@ STATIC_ASSERT(offsetof(NuMusic::Track, entry_times) == 0x18);
 STATIC_ASSERT(offsetof(NuMusic::Track, entry_count) == 0x1c);
 STATIC_ASSERT(offsetof(NuMusic::Track, entry_index) == 0x20);
 STATIC_ASSERT(offsetof(NuMusic::Track, flags) == 0x38);
+STATIC_ASSERT(offsetof(NuMusic::Voice, flags_word) == 0x30);
+STATIC_ASSERT(offsetof(NuMusic::Voice, stream_index) == 0);
+STATIC_ASSERT(offsetof(NuMusic::Voice, last_volume) == 0x24);
+STATIC_ASSERT(offsetof(NuMusic::Voice, fade_rate) == 0x28);
 STATIC_ASSERT(sizeof(NuMusic::Voice) == 0x34);
 STATIC_ASSERT(offsetof(NuMusic::Voice, tracks) == 0x04);
 STATIC_ASSERT(offsetof(NuMusic::Voice, track_index) == 0x14);

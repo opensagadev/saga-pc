@@ -944,3 +944,16 @@ cleanup leave no owned game/debugger process or crash window. Window/device/
 Present/repeated frames/loaded scenes/gameplay remain unverified. Shader manager
 publication, parser helper/lifetime closure and embedded-source provenance
 remain the genuine startup frontier.
+
+### Authentic runtime and connected music frontier EE (2026-10-07)
+
+Selected actual-normal geometry145/0 plus music42/0 use all313 providers,
+431 frozen inputs/six artifacts and zero replacement/supplement engine definitions.
+Geometry valid finite domains exclude native wall count>=3 nontermination and
+NULL-node/nonempty removal. Music status/error/prepare_only/subtrack1/-1f/NaN
+checks use genuine suppliers but establish no audio/asset success. Authentic
+source EXE still exits5/4.230s at NULL Retrieve+16/full208, source0x508830.
+ShowCrashDialog DWORD0 and private cleanup leave no owned crash dialog/debugger
+or game. Window/device/Present/frames/scene/gameplay remain unverified.
+
+Music value suppliers unlock the true cutscene staging statuses; controller activation remains separately gated. No alternate startup entry, fake device/COM provider, forced publisher or runtime guard was introduced.

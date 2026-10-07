@@ -3817,3 +3817,50 @@ receive no coverage credit. Shader publisher/parser helper and embedded HLSL,
 system embedded font provenance, DDS value, Perm angle and Hub FP holds remain.
 Whole-project matching-priority goal and direct-main continuation remain active.
 Human identification journal remains intact and excluded.
+
+### Terrain geometry and genuine music checkpoint EE (2026-10-07 UTC)
+
+Transferred17 complete functions/4,632 new unique PC bytes: terrain geometry
+3,459 and music real status suppliers1,173. Unique compared code1,291,698;
+objdiff denominator1,292,269/overlap571. Whole-PC fuzzy25.732629802966898%,
++0.071120338547318 percentage points; exact208,284/3,471,246 bytes
+(6.000266186838962%), +44 bytes. These are comparison measurements.
+All2,102 previous exact code copies and5,295 known-exact physical data copies,
+13 members/28 bytes remain intact. All4,409 old full functions/10,039 data
+regions were checked; finite old nonexact changes are qualified in the
+checkpoint receipt. Changed previous camera and debris allocator bodies held the commit for
+independent exact-current-pair review; no masks, byte truncation or source/
+compiler/alignment tuning.
+
+Eight new complete native-equal initializer copies52 bytes: 8 known
+52 bytes and 0 unknown
+0 bytes. Physical exact data remains
+637,608. Unknown extents receive zero exact/capacity credit. No shared storage
+added. Existing uncompiled PlayTrack294@696040 is corrected to PlayTrackI;
+genuine tail PlayTrack5@696900 and onearg15@696a30 preserve actual return status.
+Voice DWORD flags share30 with existing BYTE alias, preserving size34.
+Native -1f fade, unordered start_offset!=0 and true48-byte f64 token cleanup
+are verified; real streaming providers remain linked.
+
+Normal build/link/check-objects313/4,426/10,047, LLVM18 full728 tests/3 existing
+skips and authoritative retail matching pass. Actual-normal geometry145/0 and
+music42/0 tests use all313 real providers/431 inputs/six artifacts with zero
+replacement/supplement engine definitions. Fixtures preserve105/59 complete
+outputs when recompiled against actual shared declarations. Terrain wall
+count>=3 nontermination and NULL-node/nonempty-list hazards remain excluded
+from valid fixture domains and unchanged in source. Music CPU error/status,
+prepare_only, subtrack1 and NaN fade tests do not establish audio/asset success.
+Authentic EXE exit5/4.230s remains NULL Retrieve+16/full208 at source0x508830;
+private cleanup leaves no owned crash dialog/debugger/game. Window/device/
+Present/frames/scene/gameplay remain unverified. Temporary runtime/LLVM18 paths disappeared; LLVM18 recovered from existing
+local cached wheels without downloads, and authentic runtime was freshly
+observed with all logs under workspace. Deleted receipt was not reconstructed.
+Baseline238ebd8 exactCI
+37672220165 passed.
+
+Next AISYS12/4,652 with true six signedWORD state views, real streaming8/1,092
+then cutscene controller4,390 and actual PC device command/query/display-mode
+work. Candidate bytes receive no credit. Shader manager publisher/parser helpers,
+embedded HLSL and system-font provenance, DDS value, Perm angle and Hub FP
+remain explicit holds. Whole-project goal/direct-main continuation remains
+active; human journal intact and excluded.

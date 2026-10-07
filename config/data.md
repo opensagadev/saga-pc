@@ -2008,3 +2008,14 @@ real D3DXCompileShader@40 export regenerates its import library through existing
 Make dependencies. Final431 captured inputs and six actual artifacts (source
 EXE plus five generated import libraries) are pinned. Historical426-input
 baselines remain historical; no import DLL implementation is fabricated.
+
+### Geometry/music initializer ownership EE (2026-10-07)
+
+Eight new full native-equal copies52 bytes: 8 known
+52 bytes and 0 unknown
+0 bytes. Physical exact union remains637,608;
+unknown extents receive zero coverage/capacity credit. All10,039 old full data
+regions and5,295 known-exact physical copies,13 members/28 bytes survive.
+No new shared storage. Voice DWORDflags30 shares existing BYTEalias/size34.
+
+Terrain inherited COMMON mismatch remains unchanged; eight new initializers are native-equal. Full known angle1026 remains exact. No allocation or new data capacity is inferred from a compiled view.
