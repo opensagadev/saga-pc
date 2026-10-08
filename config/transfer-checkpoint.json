@@ -31513,6 +31513,212 @@
         "build/analysis/game-startup-OO/parent3-independent-review/v1/accepted-packet.json": "63a9270320d4ced84d82e9c16491a4989bb002bb86feb2bedb82bc5e73becb00",
         "build/analysis/runtime-game-startup-OO/runtime-acceptance-OO.json": "0a6e2821ff65898d502897e1e2a24bdf9c75742919a6569bd8245e425e8c1e17"
       }
+    },
+    {
+      "checkpoint": "PP",
+      "publication_status": "LOCAL_GATES_ACCEPTED_PENDING_FINAL_METADATA_REFRESH_AND_EXACT_PUSHED_REVISION_CI",
+      "baseline_commit": "3380341716ae629ca668e1ecef529f642d4c03ff",
+      "baseline_CI_exact_revision_success": {
+        "run": 37833980118,
+        "url": "https://github.com/opensagadev/saga-pc/actions/runs/37833980118",
+        "all_steps_success": 13
+      },
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1466500,
+        "matched_code_bytes": 225849,
+        "matching_percent": 6.506280453762136,
+        "fuzzy_coverage_percent": 28.619259438917258,
+        "mapped_functions": 5099,
+        "matched_functions": 2305,
+        "objdiff_fuzzy_percent": 69.305595,
+        "objdiff_total_code": 1434295,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2114704,
+        "mapping_percent": 5.277910000511143,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1467694
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30186
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9410,
+        "mapping_unknown_size_symbols": 5222,
+        "mapping_code_bytes": 1467694,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 42.28147472118081,
+        "mapping_data_bytes": 647010,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7963036473617815,
+        "mapping_code_data_bytes": 2114704,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.3550079700762305,
+        "matched_data_region_bytes": 637616
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1467649,
+        "matched_code_bytes": 226026,
+        "matching_percent": 6.511379487365632,
+        "fuzzy_coverage_percent": 28.65174930091609,
+        "mapped_functions": 5104,
+        "matched_functions": 2308,
+        "objdiff_fuzzy_percent": 69.328674,
+        "objdiff_total_code": 1435444,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2115853,
+        "mapping_percent": 5.280777691966112,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1468843
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30186
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9415,
+        "mapping_unknown_size_symbols": 5238,
+        "mapping_code_bytes": 1468843,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 42.31457522745435,
+        "mapping_data_bytes": 647010,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7963036473617815,
+        "mapping_code_data_bytes": 2115853,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.357917551822715,
+        "matched_data_region_bytes": 637616
+      },
+      "new_source_functions": 5,
+      "actual_new_transfer_PC_bytes": 1149,
+      "new_unique_compared_PC_bytes": 1149,
+      "unique_compared_code_bytes": 1434823,
+      "native_objdiff_denominator": 1435444,
+      "overlap_bytes": 621,
+      "new_exact_PC_bytes": 177,
+      "new_exact_functions": 3,
+      "whole_PC_fuzzy_delta_pp": 0.03248986199883319,
+      "source_families": [
+        {
+          "owner": "gcutscn.c",
+          "functions": 3,
+          "native_bytes": 707,
+          "exact_PC_bytes": 23
+        },
+        {
+          "owner": "batarang.cpp/camera.c",
+          "functions": 2,
+          "native_bytes": 442,
+          "exact_PC_bytes": 154
+        }
+      ],
+      "normal_objects": 335,
+      "frozen_inputs": 450,
+      "old_full_function_copies": 4937,
+      "old_full_data_regions": 10869,
+      "old_exact_code_copies_preserved": 2309,
+      "old_known_extent_exact_data_compiled_copies_preserved": 5619,
+      "current_full_function_definitions": 4942,
+      "current_full_data_definitions": 10893,
+      "members_preserved": 13,
+      "known_member_bytes": 28,
+      "new_complete_initializer_copies": 24,
+      "new_complete_initializer_COFF_bytes": 119,
+      "new_known_extent_initializer_copies": 6,
+      "new_known_extent_initializer_COFF_bytes": 33,
+      "new_unknown_extent_initializer_copies": 18,
+      "new_unknown_extent_initializer_COFF_bytes": 86,
+      "new_central_working_definitions": 11,
+      "new_central_typed_bytes": 28,
+      "new_central_complete_initializer_bytes": 42,
+      "unknown_extent_exact_and_allocation_credit": 0,
+      "known_exact_data_union_before_transfer": 637616,
+      "known_exact_data_union_after_transfer": 637616,
+      "required_checks": {
+        "make_check": "PASS; 732 tests, three existing skips, LLVM18 format362/tidy335",
+        "normal_source_build_link_and_objects": "PASS",
+        "authoritative_full_retail_matching": "PASS"
+      },
+      "selected_CPU_checks": 208,
+      "selected_CPU_failures": 0,
+      "runtime": {
+        "actual_normal_objects": 335,
+        "frozen_inputs": 450,
+        "clamp_boundaries_alias_IEEE_checks": 128,
+        "targetting_state_and_canary_checks": 62,
+        "cutscene_available_reset_checks": 18,
+        "natural_exit": 0,
+        "seconds": 5.083682,
+        "timeout": false,
+        "owned_leftovers": 0,
+        "ShowCrashDialog": "set and queried REG_DWORD 0 in private prefix",
+        "source_game_launched": false,
+        "Configure_assets_device_gameplay": "HELD; no fake parser callback or Level producer"
+      },
+      "source_qualifications": [
+        "CutScene Available6 and Reset17 are exact; Configure684 is nonexact, true cdecl8. All three old gcutscn regions survive the canonical descriptor32 promotion; clip stride68 and named fields are asserted. Native unused end formal, count wrap, unwritten guest/return-door bytes and stale pointer on failed/empty configuration remain. No fabricated callback publication or arena capacity.",
+        "Batarang288 remains nonexact; KeepPoint154 is exact. Actual canonical eight-record Batarang working buffer1440 and alignment8 are reused unchanged, no new allocation capacity. Object/packet fields and true16-bit ID comparison are verified.",
+        "Eight existing callback owners are reused. Only CanSuperCarryFn, CanPushBlocksFn and CutScenePlayer_AcceptFn NULL slots plus eight genuine signed WORD IDs are appended:28 typed/42 complete initializer bytes. Owning extents remain unknown and zero-credit; full startup CharFixUp218 remains separately held.",
+        "All24 complete new initializer copies119 bytes are native-equal; canonical known accounting is six33 bytes and18unknown86. The existing known name5 literal and unknown __real@3f59999a distinction is preserved. Known data union remains637616.",
+        "Sole old camera pair1789->1709 is the specifically proven reverse historical variant, native1496 remains nonexact. Finite initialized nonaliasing count0..32/ordinary representable f32/masked x87 domain only; exceptional FP/fault/status/asynchronous/reentrant domains are unproven.",
+        "The fresh old particle713->717 pair1910716d differs from NN717 and has its own complete proof. All34 named/applied references,186 outside-block instructions and nine typed cohorts survive. Reload ordering merges the same values; native705 remains nonexact. Stable valid args/initialized renderer/four free x87 lanes/masked exceptions; fault timing, observed FP status and asynchronous mutation excluded.",
+        "All old exact code/data and13 member28-byte contracts survive. BARMAN full4 and BATTLEDROID full8 are strict, no inherited tail waivers. CPU208 passed first attempt using actual335 objects and450 inputs; no engine/provider/ID/backend substitution. No source game/device/assets/gameplay milestone."
+      ],
+      "remaining_contracts": [
+        "Genuine shader-manager/compiler publication and device/frame presentation",
+        "InitGameAfterConfig4659 genuine consumed providers and65 callback publications:13 existing private source contracts,52 distinct missing targets dispatched in four connected source lanes",
+        "Collection Configure833 and true RET1 diagnostic source contracts; one genuine completion DWORD preflight, no PC Store_FindPack dependency",
+        "Full startup CharFixUp218/Commander state and complete resource/world/asset lifetime"
+      ],
+      "next_wave": "Connected Collection source834, callback combat12/player9/render9/remaining22 groups and private publisher13/1913. All17 former tail/unknown spans now have complete native contracts2686; source/provider/ABI/layout/storage closure remains separate, with zero transfer credit. Shared data remains one writer.",
+      "checkpoint_delay": "Complete independent proof required for the fresh particle output pair and camera reverse variant. Initial replay manifest-schema adapter failure retained; no compiler/source/check weakening.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "active; source checkpoint does not finish whole-project reconstruction",
+      "evidence_pins": {
+        "build/analysis/provider-wave-PP/actual-source-integration.json": "3934e05f7015ad26b8f243e2d5a2b278e633b72b8c6501a5965fe37ca94a9c0f",
+        "build/analysis/provider-wave-PP/actual-data-integration.json": "fe1c2cba3732ffb929defde8f4af2adff1b9333a279cd049a8a86b6c10807200",
+        "build/analysis/provider-wave-PP/first-normal-validation-receipt.json": "488b89cca6126a6d4e5097e71ff6c34375dd4102a25693ad6f4050c9405d1380",
+        "build/analysis/normal-PP-independent-review/accepted-first-endpoint.json": "9dfbec37a2b918aaa9cb1022fc520fc8985d8266acb8ca0f6dcbf9caf7e73073",
+        "build/analysis/camera-minicut3-OO-PP-independent-review/accepted-pair-receipt.json": "a2bc60d6a6c4dd49d557d8e48568e9222c617c02591a3f32df96fdcdf39975fa",
+        "build/analysis/endpoint-PP-particle-pair-review/accepted-pair-receipt.json": "f9c223aeff76579f2d512740faa7cd1c56e397fe9d9c2c2428f3ca73f1fe945e",
+        "build/analysis/runtime-provider-PP/runtime-acceptance-PP.json": "17c49b128279e2f382cebbe330c11ad0b56d0b9d07512edd1b5fdd3cd6d5a193",
+        "build/analysis/publication17-extent-abi-next/v1/accepted-extent-abi-packet.json": "aaf105865f8b8c1eec8b768ddf11635a37411792306392aae9250a7b6a588d6d"
+      }
     }
   ]
 }

@@ -2269,3 +2269,19 @@ The next callback/ID preflight reuses eight existing callback owners and request
 only three new slots plus eight WORD IDs, 28 typed bytes. Full CharFixUp 218 and
 Commander storage remain separate. See transfer-checkpoint.json for complete
 source, CPU and publication qualifications.
+
+
+### Cutscene and callback working storage PP (2026-10-08)
+
+Three genuine NULL callback slots and eight signed WORD IDs add 28 typed bytes.
+Their 42 complete initializer bytes match native; owning extents remain unknown
+and receive zero credit. Eight prior callback owners and the canonical Batarang
+working buffer are reused. All 10,869 prior full data copies and known exact/member
+contracts survive. BARMAN's full 4 and BATTLEDROID's full 8 remain strict;
+CharFixUp218 and Commander storage remain held.
+
+The 24 new complete initializer copies total 119 bytes: six known (33 bytes),
+18 unknown (86 bytes). Existing known name5 and unknown positive 0.85 float
+bindings retain their status. Known data stays 637,616 bytes. Collection's genuine
+completion DWORD at 9558a0 has a read-only preflight for the next wave; it is not
+activated here. See transfer-checkpoint.json for complete output and CPU domains.

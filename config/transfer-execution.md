@@ -9,8 +9,8 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Verified source baseline: NN, [`7ed0d813d068fa61b8552cc622559f2edb09f571`](https://github.com/opensagadev/saga-pc/commit/7ed0d813d068fa61b8552cc622559f2edb09f571); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37827194083) passed on that exact revision.
-NN has 333 normal owners; the current OO snapshot has 334 owners.
+Verified source baseline: OO, [`3380341716ae629ca668e1ecef529f642d4c03ff`](https://github.com/opensagadev/saga-pc/commit/3380341716ae629ca668e1ecef529f642d4c03ff); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37833980118) passed all 13 steps.
+OO has 334 normal owners; the current PP snapshot has 335 owners.
 II remains the last actual full-game
 Wine observation: its source EXE exits 5 at NULL shader Retrieve+16 before a level
 loads. A transient window establishes no persistent window, device/Present,
@@ -239,6 +239,17 @@ Required checks and 125 actual-normal CPU checks pass; all prior exact contracts
 survive. Specific particle reload and unknown BARMAN tail qualifications are
 recorded in transfer-checkpoint.json, together with the retained fixture failures.
 Fuzzy code is 28.619259%; exact code is 6.506280%. This establishes no complete
-startup, assets, device or gameplay milestone. OO exact pushed-revision CI is
-pending. Next work connects genuine cutscene and Batarang/camera providers to the
+startup, assets, device or gameplay milestone. OO passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37833980118). Next work connects genuine cutscene and Batarang/camera providers to the
 larger startup callback cohort.
+
+
+### Connected cutscene and targetting source checkpoint PP (2026-10-08)
+
+Five complete functions add 1,149 unique PC bytes. Required checks and 208 CPU
+checks pass; all prior exact contracts survive. Fuzzy code is 28.651749%; exact
+code is 6.511379% (226,026/3,471,246 bytes). Specific complete camera and fresh
+particle qualifications are retained. Configure's parser/callback runtime,
+assets, device and gameplay remain held. PP exact-revision CI is pending.
+Next work closes Collection and the 65 genuine startup callback publications.
+All 17 former span holds are recovered; source/provider/storage contracts remain.
+Candidate bodies and pointer inventories receive no transfer credit.

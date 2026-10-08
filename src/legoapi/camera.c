@@ -471,3 +471,24 @@ void __cdecl KeepOnScreen(GAMEOBJECT *object) {
         SpecialMove_Cancel(object);
     }
 }
+
+void __cdecl KeepPointOnScreen(NUVEC *position, NUVEC *velocity) {
+    if ((f64)position->x < (f64)-0.85f) {
+        position->x = -0.85f;
+        if (velocity != NULL)
+            velocity->x = 0.0f;
+    } else if ((f64)position->x > (f64)0.85f) {
+        position->x = 0.85f;
+        if (velocity != NULL)
+            velocity->x = 0.0f;
+    }
+    if ((f64)position->y < (f64)-0.85f) {
+        position->y = -0.85f;
+        if (velocity != NULL)
+            velocity->y = 0.0f;
+    } else if ((f64)position->y > (f64)0.85f) {
+        position->y = 0.85f;
+        if (velocity != NULL)
+            velocity->y = 0.0f;
+    }
+}

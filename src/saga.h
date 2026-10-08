@@ -4682,7 +4682,10 @@ typedef struct gameobject_s {
     u8 combo_branch;
     u8 unknown_07af;
     u8 combo_input_latched;
-    u8 unknown_07b1;
+    union {
+        u8 unknown_07b1;
+        u8 landing_followup;
+    };
     u8 combo_stage;
     u8 field_7b3;
     u8 big_jump_animation;
@@ -4720,7 +4723,14 @@ typedef struct gameobject_s {
     f32 current_speed_mul;
     f32 current_speed_bias;
     f32 socket_current_speed_pc;
-    u8 unknown_0c50[0x24];
+    union {
+        u8 unknown_0c50[0x24];
+        struct {
+            u8 targeting_reserved_c50[12];
+            NUVEC camera_screen_position;
+            u8 targeting_reserved_c68[12];
+        };
+    };
     NUVEC camera_saved_position;
     union {
         struct {
@@ -4741,7 +4751,10 @@ typedef struct gameobject_s {
     struct PART_PC *blocked_part;
     struct PART_PC *force_part;
     SUIT_LAYERS_PC *suit;
-    u8 unknown_0cc0[4];
+    union {
+        u8 unknown_0cc0[4];
+        struct player_batarang_slot_pc_s *batarang;
+    };
     struct TORPEDOPACKET_PC *torpedo;
     struct gameobject_s *collision_target;
     u8 unknown_0ccc[4];
@@ -8303,9 +8316,31 @@ extern "C" {
 
     void __cdecl Shadow_SetMode(void);
 
+    /* Refine the existing PLAYER_BATARANG_SLOT_PC declaration, retaining the whole
+     * previous unknown view through an explicit alias. Working fields only; this
+     * does not establish original allocation beyond existing reviewed b4 stride. */
     typedef struct player_batarang_slot_pc_s {
-        u8 unknown_00[0xb4];
+        union {
+            u8 unknown_00[0xb4];
+            struct {
+                u8 targeting_reserved_00[0x7c];
+                u8 active;
+                u8 targeting_reserved_7d[7];
+                GAMEOBJECT *owner;
+                NUVEC sight_position, sight_velocity;
+                u8 targeting_reserved_a0[12];
+                i16 cooldown;
+                u8 targeting_reserved_ae[6];
+            };
+        };
     } PLAYER_BATARANG_SLOT_PC;
+    STATIC_ASSERT(sizeof(PLAYER_BATARANG_SLOT_PC) == 0xb4);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, active) == 0x7c);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, owner) == 0x84);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, sight_position) == 0x88);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, sight_velocity) == 0x94);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, cooldown) == 0xac);
+
     typedef struct player_force_los_slot_pc_s {
         u8 unknown_00[0x630];
     } PLAYER_FORCE_LOS_SLOT_PC;
@@ -17421,7 +17456,36 @@ extern "C" {
 }
 #endif
 
-struct CUT_PLAYER_ACTIVE_PC;
+typedef struct cut_player_clip_config_pc_s {
+    i16 level_id;
+    u8 type;
+    i8 guest_episode;
+    char name[64];
+} CUT_PLAYER_CLIP_CONFIG_PC;
+STATIC_ASSERT(sizeof(CUT_PLAYER_CLIP_CONFIG_PC) == 0x44);
+STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, level_id) == 0);
+STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, type) == 2);
+STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, guest_episode) == 3);
+STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, name) == 4);
+
+typedef struct CUT_PLAYER_ACTIVE_PC {
+    void *clips;
+    void *active;
+    u16 clip_count;
+    i16 return_door;
+    i16 *clip_text, *intro_text, *midtro_text, *outro_text, *ending_text;
+} CUT_PLAYER_ACTIVE_PC;
+STATIC_ASSERT(sizeof(CUT_PLAYER_ACTIVE_PC) == 0x20);
+STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, clips) == 0);
+STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, active) == 4);
+STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, clip_count) == 8);
+STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, return_door) == 0xa);
+STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, clip_text) == 0xc);
+STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, intro_text) == 0x10);
+STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, midtro_text) == 0x14);
+STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, outro_text) == 0x18);
+STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, ending_text) == 0x1c);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -17429,6 +17493,12 @@ extern "C" {
     void __cdecl GameLoadCharacterModels(APICHARACTERMODELLIST *, i32, VARIPTR *, VARIPTR *, i32, i32);
     void *__cdecl CutScenePlayer_Active(void);
     extern struct CUT_PLAYER_ACTIVE_PC *CutScenePlayerPc;
+    struct CUT_PLAYER_ACTIVE_PC *__cdecl CutScenePlayer_Available(void);
+    void __cdecl CutScenePlayer_Reset(void);
+    void __cdecl CutScenePlayer_Configure(char *, VARIPTR *, VARIPTR *, i16 *, i16 *, i16 *, i16 *, i16 *);
+    i32 __cdecl Batarang_StartTargetting(GAMEOBJECT *);
+    void __cdecl KeepPointOnScreen(NUVEC *, NUVEC *);
+
 #ifdef __cplusplus
 }
 #endif
@@ -18882,4 +18952,44 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+STATIC_ASSERT(offsetof(GAMEOBJECT, landing_followup) == 0x7b1);
+STATIC_ASSERT(offsetof(GAMEOBJECT, camera_screen_position) == 0xc5c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, batarang) == 0xcc0);
+STATIC_ASSERT(sizeof(((GAMEOBJECT *)0)->landing_followup) == 1);
+STATIC_ASSERT(sizeof(((GAMEOBJECT *)0)->batarang) == 4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
+STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
+STATIC_ASSERT(offsetof(APICHARACTERDATA, game_character) == 0x24);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
+STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
+STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 16);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 14);
+
+#ifndef SAGA_GAME_CALLBACK_DISGUISE_REQUESTS
+#define SAGA_GAME_CALLBACK_DISGUISE_REQUESTS
+struct cut_player_clip_config_pc_s;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern u32(__cdecl *CanSuperCarryFn)(GAMEOBJECT *);
+    extern u32(__cdecl *CanPushBlocksFn)(GAMEOBJECT *);
+    extern i32(__cdecl *CutScenePlayer_AcceptFn)(struct cut_player_clip_config_pc_s *);
+    extern i16 id_SNOWTROOPER;
+    extern i16 id_DEATHSTARTROOPER;
+    extern i16 id_MOONCAR;
+    extern i16 id_MAPCAR;
+    extern i16 id_IMPERIALSPY;
+    extern i16 id_GREEDO;
+    extern i16 id_BOSSK;
+    extern i16 id_CANTINABAND;
+#ifdef __cplusplus
+}
+#endif
+#endif
+
 #endif

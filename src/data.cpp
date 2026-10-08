@@ -19544,3 +19544,17 @@ extern "C" {
     i32 Tag_DoneFirst = 0;
     u32 GAMEPAD_SKIP = 0x850;
 }
+
+extern "C" {
+    u32(__cdecl *CanSuperCarryFn)(GAMEOBJECT *) = NULL;
+    u32(__cdecl *CanPushBlocksFn)(GAMEOBJECT *) = NULL;
+    i32(__cdecl *CutScenePlayer_AcceptFn)(struct cut_player_clip_config_pc_s *) = NULL;
+    i16 id_SNOWTROOPER = -1;
+    i16 id_DEATHSTARTROOPER = -1;
+    i16 id_MOONCAR = -1;
+    i16 id_MAPCAR = -1;
+    i16 id_IMPERIALSPY = -1;
+    i16 id_GREEDO = -1;
+    i16 id_BOSSK = -1;
+    i16 id_CANTINABAND = -1;
+}

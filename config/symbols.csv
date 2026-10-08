@@ -10,6 +10,7 @@ address    , symbol                                                         , si
 0x402890,_AITriggerSetSysCreate,36,"void * __cdecl (VARIPTR *, VARIPTR *)"
 0x00403cb0 , _NuFdiv                                                        , 54    , "f32 __cdecl (f32, f32)"
 0x00404990 , _Batarangs_Reset                                               , 184    ,
+0x404fa0,_Batarang_StartTargetting,288,i32 __cdecl(GAMEOBJECT *)
 0x407b60,_PlayerInitCapabilitiesDefaultPc,403,void __cdecl(GAMEOBJECT *)
 0x00407e40,_BoltType_FindIDByCreature,1317,"i32 __cdecl(GAMEOBJECT*,i32)"
 0x00408800 , _InitCables                                                    , 127   , void __cdecl (WORLDINFO *)
@@ -1970,6 +1971,7 @@ address    , symbol                                                         , si
 0x564ac0,_BackDrop_Update,43,void __cdecl(f32)
 0x564af0,_BackDrop_Draw,285,"void __cdecl (f32,i32)"
 0x00565470 , _WidescreenCode                                                , 339   , void __cdecl (i32)
+0x5655d0,_KeepPointOnScreen,154,"void __cdecl(NUVEC *,NUVEC *)"
 0x00565700 , _DrawCutBorders                                                , 279   , void __cdecl (i32)
 0x00565ba0 , _GrabStillScreen                                               , 51    , void __cdecl (void)
 0x00565d90 , _HandleStillRender                                             , 617   , void __cdecl (void)
@@ -2283,6 +2285,9 @@ address    , symbol                                                         , si
 0x57d270,_CutScene_RigidPostRender,299,
 0x0057d3a0,_CutScene_DrawCharacter,3767,
 0x57e260,_CutScenes_InitSystem,85,void __cdecl(CUT_DRAW_SETTINGS_PC *)
+0x57e430,_CutScenePlayer_Configure,684,"void __cdecl (char *, VARIPTR *, VARIPTR *, i16 *, i16 *, i16 *, i16 *, i16 *)"
+0x57e6e0,_CutScenePlayer_Reset,17,void __cdecl (void)
+0x57e700,_CutScenePlayer_Available,6,struct CUT_PLAYER_ACTIVE_PC * __cdecl (void)
 0x57e710,_CutScenePlayer_Active,16,void * __cdecl(void)
 0x57ea60,_CutScenePlayer_SetObjects,156,void __cdecl (CUTINFO *)
 0x57eb00,_CutSceneStartPrivatePc,616,
@@ -5835,6 +5840,7 @@ address    , symbol                                                         , si
 0x0075503c , __real@40100000                                                , 4     , const f32
 0x00755044 , __real@40733333                                                , 4     , const f32
 0x0075504c , _PermLegalScale                                                , 4     , const f32
+0x755078,??_C@_05BGIJDFHP@intro?$AA@,,const char[]
 0x7550ec,??_C@_0BB@JEBIMDEB@PodX_PurpCrysHit?$AA@,17,const char[17]
 0x75510c,__real@be4ccccd,4,const f32
 0x755114,__real@45610000,4,const f32
@@ -8363,6 +8369,10 @@ address    , symbol                                                         , si
 0x7625b0,??_C@_04POFIIHAF@cut?2?$AA@,5,const char[5]
 0x7625b8,??_C@_04HHNGNHCD@?4cut?$AA@,5,const char[5]
 0x7625c0,??_C@_09CHEONNLL@cutscenes?$AA@,10,const char[10]
+0x7625cc,??_C@_06MLIKFPKH@ending?$AA@,,const char[]
+0x7625d4,??_C@_05NHOAHAPB@outro?$AA@,,const char[]
+0x7625dc,??_C@_06JKPGHOCG@midtro?$AA@,,const char[]
+0x7625e4,??_C@_04POIGMEJN@clip?$AA@,,const char[]
 0x7625f4,__real@41b80000,,const f32
 0x7625f8,??_C@_0O@JOJJFNHN@single_debris?$AA@,14,const char[14]
 0x762608,??_C@_0N@MFNJNGOD@trooper_bolt?$AA@,13,const char[13]
@@ -11216,6 +11226,8 @@ address    , symbol                                                         , si
 0x7f1988,_RobotBaseIdPc,,i16
 0x007f198c , _id_LUKESKYWALKERDAGOBAH                                       , 2     , i16
 0x7f1990,_id_SNOWMOB,,i16
+0x7f1994,_id_SNOWTROOPER,,i16
+0x7f1998,_id_DEATHSTARTROOPER,,i16
 0x7f199c,_FreePlayId007f199cPc,,i16
 0x007f19a0 , _id_THEEMPEROR                                                 , 2     , i16
 0x7f19a4,_VehicleBoltId7f19a4Pc,,i16
@@ -11251,7 +11263,13 @@ address    , symbol                                                         , si
 0x7f1a50   , _id_GONKDROID                                                  , 2     , u16
 0x7f1a54,_id_C3PO,,i16
 0x7f1a58,_id_TC14,,i16
+0x7f1a5c,_id_MOONCAR,,i16
+0x7f1a60,_id_MAPCAR,,i16
 0x007f1a64 , _id_WOOKIEFLYER                                                , 2     , i16
+0x7f1a68,_id_IMPERIALSPY,,i16
+0x7f1a6c,_id_GREEDO,,i16
+0x7f1a70,_id_BOSSK,,i16
+0x7f1a74,_id_CANTINABAND,,i16
 0x7f1a80,_id_TRACTOR,,i16
 0x7f1a84,_id_FIRETRUCK,,i16
 0x7f1a8c,_DefaultAnimationLamaSuIdPc,,i16
@@ -13739,6 +13757,7 @@ address    , symbol                                                         , si
 0x951cc4,_CutList,,CUT_LOAD_LIST_ENTRY_PC *
 0x951cc8,_CUTCOUNT,,i32
 0x951cd0,_CutScenePlayerPc,,CUT_PLAYER_ACTIVE_PC *
+0x951cd4,_CutScenePlayer_AcceptFn,,i32 (__cdecl *)(struct cut_player_clip_config_pc_s *)
 0x951cd8,_BT_scene,,NUGSCN *
 0x00951cdc , _BoltShootIdScratch                                            , 4     , i32
 0x951ce0,_BT_bolttype,,BOLT_CONFIG_PC *
@@ -13795,6 +13814,7 @@ address    , symbol                                                         , si
 0x955b58,_PCShadowCurrentLight,,struct PC_SPECIAL_SHADOW_LIGHT *
 0x00955b68 , _snake_hspecials                                               , 36    , NUSPECIALHANDLE[3]
 0x00955b90 , _snakebodies                                                   , 1088  , u8[1088]
+0x955fd0,_CanSuperCarryFn,,u32 (__cdecl *)(GAMEOBJECT *)
 0x955fe0,_MiniKitScale,,f32
 0x955fe4,_minikits_savecharacterbufferptr,,VARIPTR
 0x955ff0,_NewMiniPiece,,NEW_MINI_PIECE_PC[10]
@@ -13863,6 +13883,7 @@ address    , symbol                                                         , si
 0x95de68,_RenderHubFromCutscenePlayerPc,,i32
 0x95de8c,?pushblock_gizmotype_id@@3HA,,
 0x0095deb4 , _RunOutOfPosTabSpacePc                                         ,       ,
+0x95dec0,_CanPushBlocksFn,,u32 (__cdecl *)(GAMEOBJECT *)
 0x95dec4,_PushBlockOverlapShrinkPc,,f32
 0x95dec8,?addtype@?1??Push_RegisterGizmo@@YAPAUadd_gizmo_config_type_pc_s@@H@Z@4U2@A,,
 0x0095df40 , _CharPivot                                                     , 4     , struct CHARPIVOT_PC *

@@ -5102,3 +5102,34 @@ NN passed exact-revision CI 37827194083 on 7ed0d813d068fa61b8552cc622559f2edb09f
 OO exact pushed-revision CI is pending. Next source contracts are genuine cutscene
 707 and Batarang/camera442 providers, followed by the private callback/Init4659
 cohort. Full qualifications and retained evidence are in transfer-checkpoint.json.
+
+
+### Connected cutscene and targetting snapshot PP (2026-10-08)
+
+Five complete functions add 1,149 unique PC bytes: CutScenePlayer Available (6),
+Reset (17), Configure (684), Batarang_StartTargetting (288) and KeepPointOnScreen
+(154). The getter, reset and clamp are exact, adding 177 exact bytes. Whole-PC
+fuzzy code is 28.651749%; exact code is 226,026/3,471,246 = 6.511379%. Required
+checks and 208 actual-normal CPU checks pass.
+
+Canonical descriptor (32 bytes), clip (68 bytes) and object/packet offsets are
+asserted. All old gcutscn bodies and the existing 1,440-byte Batarang working owner
+survive. Five new emitted string bindings have unknown extents and zero coverage
+credit. Eight callback owners are reused; only three NULL slots and eight WORD
+IDs are new. All 24 new complete initializers (119 bytes) are native-equal: six
+known copies (33 bytes), 18 unknown copies (86 bytes). Known data stays 637,616.
+
+All old exact code/data and 13 member contracts survive. The camera 1,789-to-1,709
+variant is a specifically reviewed historical reverse. The fresh particle
+713-to-717 pair has its own proof; it does not inherit NN's 717-byte variant.
+Both remain nonexact on full native extents of 1,496 and 705 bytes. Their finite
+initialized/masked-x87 domains and exceptional exclusions are recorded in
+transfer-checkpoint.json. BARMAN's full 4 and BATTLEDROID's full 8 remain strict.
+
+Configure runtime is held for real parser/Level/callback publication. CPU208 uses
+all 335 actual objects and 450 frozen inputs, with no replacements or forced IDs.
+No full source-game, device, asset or gameplay milestone is claimed. PP CI is
+pending. Next Init (4,659 bytes) has 65 publications: 13 private source contracts
+and 52 distinct missing targets assigned across four source lanes. All 17 former
+boundary holds now have complete native span contracts (2,686 bytes); source,
+provider, layout and storage closure still require review. These are not transfers.

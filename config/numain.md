@@ -1129,5 +1129,24 @@ The next consumed providers are real CutScenePlayer_Available/Reset/Configure
 the true provider called by CanStartHold, rather than a fabricated success value.
 Private callbacks and InitGameAfterConfig remain uncompiled contracts. II is
 still the last full-game observation, exiting at a NULL shader receiver before
-level loading. NN passed exact-revision CI; OO CI is pending. Full finite particle
+level loading. OO passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37833980118). Full finite particle
 and BARMAN qualifications and evidence are in transfer-checkpoint.json.
+
+
+### Genuine consumed startup providers PP (2026-10-08)
+
+Available/Reset/Configure (707 bytes) and Batarang_StartTargetting/KeepPointOnScreen
+(442) are compiled and linked from real source. Five functions add 1,149 compared
+PC bytes; three are exact (177 bytes). Required checks and 208 actual-normal CPU
+checks pass, with all prior exact contracts preserved. Configure runtime remains
+held for real parser/Level/callback initialization; publication is not fabricated.
+
+InitGameAfterConfig (4,659 bytes) still requires 65 genuine callback publications:
+13 private source contracts and 52 distinct missing targets. Combat (12), player
+(9), render (9) and world/message/build (22) groups are assigned. Complete native
+spans for all 17 former boundary holds are now recovered; source/provider/storage
+closure remains separate. Collection Configure (833 bytes) has true PC cdecl3
+and no Android in_pack/Store_FindPack dependency. Its source/precompile contract
+and completion-state preflight are next-wave evidence, not transferred code.
+CharFixUp218 and shader publication remain held. II is the last full-game Wine
+observation. PP CI is pending.

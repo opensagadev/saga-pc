@@ -1,19 +1,18 @@
 # Current work plan
 
 The [whole-project mandate](../SOL_IMPLEMENTATION_PLAN.md) remains active.
-Verified baseline NN is [7ed0d813](https://github.com/opensagadev/saga-pc/commit/7ed0d813d068fa61b8552cc622559f2edb09f571), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37827194083) passing.
-Current OO adds nine complete functions/1,779 PC bytes across NewGame and its
-real cheat/input/hint/name/episode/suit providers. Required checks and 125 CPU
-checks pass; all prior exact contracts survive. The specific particle reload and
-unknown BARMAN tail qualifications are in transfer-checkpoint.json. OO exact
-pushed-revision CI is pending; matching does not establish full startup.
+Verified baseline OO is [3380341](https://github.com/opensagadev/saga-pc/commit/3380341716ae629ca668e1ecef529f642d4c03ff), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37833980118) passing.
+Current PP adds five complete functions/1,149 PC bytes across cutscene configuration
+and real Batarang/camera providers. Required checks and 208 CPU checks pass; all
+prior exact contracts survive. The specific camera and fresh particle qualifications
+are in transfer-checkpoint.json. PP exact pushed-revision CI is pending.
 
-Next connected work transfers genuine cutscene (707 bytes) and Batarang/camera (442 bytes)
-providers, then the larger InitGameAfterConfig (4,659 bytes) and its private callback
-cohort. The current owner audit reuses eight callback slots; only three new
-slots (12 bytes) and eight ID WORDs (16 bytes) need backing. Complete CharFixUp 218/Commander
-storage and ordered registration remain separate. Uncompiled source and envelope
-sizes are hypotheses with zero transfer credit.
+Next work connects Collection Configure833 and the genuine startup callback cohort.
+InitGameAfterConfig has 65 callback publications; 13 private source contracts exist
+and 52 missing targets are assigned across combat, player/movement, render/audio
+and world/message/build groups. The 17 former span holds are recovered; source/provider/storage closure remains.
+Only actual compiled comparisons receive transfer credit. Full CharFixUp218,
+Commander storage, shader publication and resource/device lifetime remain separate.
 
 1. Close genuine shader-manager publication, parser/compiler lifetime and device
    dependencies at the observed startup frontier. Preserve true constructors,
