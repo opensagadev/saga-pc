@@ -1471,3 +1471,7 @@ extern "C" void __cdecl Hub_ResetPanel(void) {
     HubMiniKitPanelTimePc = 0.0f;
     HubMiniKitAreaPc = -1;
 }
+
+extern "C" i32 __cdecl Hub_PanelBusy(void) {
+    return HubAreaPc != -1 || HubLastAreaPc != -1 || HubMiniKitAreaPc != -1 || HubEpisodePc != -1;
+}

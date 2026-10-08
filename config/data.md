@@ -2304,3 +2304,26 @@ storage pairs are qualified; all other old regions stay strict, including BARMAN
 and BATTLEDROID. All 13 typed member contracts survive. The next publisher's
 configuration, ASCII and completion-state preflights remain scratch proposals.
 See transfer-checkpoint.json for full native/output evidence.
+
+### Startup publisher storage RR (2026-10-09)
+
+The actual source adds 102 minimum state views (465 typed bytes), genuine callback
+slots, ASCII pointers and original-owner configuration templates. Exact PC field
+widths and offsets are asserted. The first three GlobalBolt records begin at
+7ef388 and have stride 164; this working prefix does not fabricate the remaining
+41 records or establish full owning capacity. Shop hint input is fifteen WORDs
+with its native sentinel, distinct from the larger runtime output capacity.
+
+All 210 new complete initializer copies (2,360 bytes) equal native: 44 have known
+original extents, and 166 retain unknown extents with zero allocation/exact-data
+credit. Existing aliases cover the known storage; exact-data union remains
+637,616 bytes. All prior exact regions and 13 named member contracts survive.
+The existing unknown-sized Tag pointer changes naturally from eight to four
+COFF bytes; its specific complete pair and the independent left-arrow pointer
+are proved without a fabricated tail provider. Other old data regions remain
+strict. Matching code generation emits the genuine promoted-f32 qword constant.
+
+The separate Mac linked-symbol estimate in symbols.md supplies 32,230 named
+code/data definitions and estimated spans. It changes no PC extent, initializer,
+capacity or coverage. Full native/source/output qualifications, runtime domains
+and evidence pins are in transfer-checkpoint.json.

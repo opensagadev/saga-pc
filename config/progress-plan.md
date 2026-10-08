@@ -1,18 +1,19 @@
 # Current work plan
 
 The [whole-project mandate](../SOL_IMPLEMENTATION_PLAN.md) remains active.
-Verified baseline PP is [91dc03f](https://github.com/opensagadev/saga-pc/commit/91dc03f2ae626a0683eaf969536aae9eea51b8d6), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37838400254) passing all 13 steps.
-Current QQ adds 20 complete functions/2,684 PC bytes across Collection, Attracto,
-customization, targeting, vehicle/suit, music, Hub and audio providers. Required
-checks and 152 selected behavior assertions pass; all prior exact contracts survive.
-The repaired position bit-copy is exact. Full output/data qualifications and the
-retained incorrect Suit test oracle are in transfer-checkpoint.json. QQ CI is pending.
+Verified baseline QQ is [5f419786](https://github.com/opensagadev/saga-pc/commit/5f4197868473c2ce32ddaca5a932c1afb5ed3b43), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37848679469) passing all 13 steps.
+Current RR integrates the startup publisher, original-owner configuration and
+callbacks: 66 complete function extents/13,504 new compared PC bytes. Required
+checks and 90 selected CPU assertions pass; prior exact contracts survive. Full
+qualifications, repaired source defects and retained failed attempts are in
+transfer-checkpoint.json. RR CI is pending.
 
-Next work integrates the genuine InitGameAfterConfig publisher and remaining
-original-owner callbacks. Its 65 publications have retained source/extent contracts;
-shared state, templates, escaped ABI and ordinary compiler output remain separate.
-Already-compared callback bytes receive no duplicate transfer credit. Full CharFixUp (218 bytes),
-Commander storage, shader publication and resource/device lifetime remain separate.
+Next work reconnects real terrain registration, GameAudio/Menu IDs, FancyMessage,
+narrow-socket, surface-mask, colour and PodRace providers. The first source wave
+contains 12 functions/1,510 candidate native bytes; the connected backlog is
+9,608 candidate bytes. These receive no transfer credit. Ten actions in Init and
+19 distinct family providers remain explicit void omissions. Full Bolt backing,
+CharFixUp, shader publication and resource/device lifetime remain separate.
 
 1. Close genuine shader-manager publication, parser/compiler lifetime and device
    dependencies at the observed startup frontier. Preserve true constructors,

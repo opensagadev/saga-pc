@@ -1168,4 +1168,40 @@ state/types/configuration and ordinary escaped ABI/full output remain separate.
 Native access to the first three Bolt records does not justify 44 invented records.
 Full CharFixUp, Commander storage, shader-manager publication and resource
 lifetimes remain held. II remains the last actual source-game Wine observation.
-QQ CI is pending; exact domains, failures and hashes are in transfer-checkpoint.json.
+QQ passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37848679469); exact domains, failures and hashes are in transfer-checkpoint.json.
+
+### Startup publisher and original callback source RR (2026-10-09)
+
+The current source integrates InitGameAfterConfig and its genuine original-owner
+callbacks: 66 newly compiled complete function extents add 13,504 unique PC bytes.
+This comprises 64 previously uncompared callback targets (8,766 bytes), the
+4,659-byte parent and its naturally emitted 79-byte private helper. An already
+compared Batarang callback receives no duplicate credit. All 65 actual native
+callback publications are represented; ten parent actions and 19 distinct missing
+providers across the connected callback family remain explicit void omissions.
+
+Required checks pass for 338 owners: LLVM18 format/tidy, 732 tests (three existing
+skips), source EXE link, complete symbol/relocation coverage and retail comparison.
+Fuzzy coverage is 29.034284%, +0.317876 percentage points; exact code is
+228,700/3,471,246 bytes (6.588412%), +2,222. All prior exact code/data and 13 named
+member contracts survive. All 210 new complete initializer copies (2,360 bytes)
+match native, with unknown owning extents receiving zero allocation or exact-data
+credit. Known exact data remains 637,616 bytes. Mapping is 42.777464% code,
+1.796304% data and 5.398606% combined code/data section storage.
+
+Actual-normal CPU tests pass 90/90 on 13 genuine private callbacks, with complete
+COFF-to-linked-test-body equality and original provider/object order. Crash-dialog
+suppression was set and queried; all owned process groups were empty afterward.
+No source-game launch, successful Init/configuration, loaded assets, device, GPU
+or gameplay milestone is claimed. The earlier parent report remains rejected for
+its signed-byte cheat sentinel error; the corrected source and report are used.
+Specific complete Tag pointer-tail and particle reload pairs retain their bounded
+proofs. No code-generation flags, native extents or comparison checks were weakened.
+
+RR exact pushed-revision CI is pending. The complete checkpoint is recorded in
+transfer-checkpoint.json. Next work reconnects real terrain registration,
+GameAudio/Menu sound IDs, FancyMessage, narrow-socket, surface-mask, colour and
+PodRace providers. The retained connected frontier has 9,608 candidate native
+bytes, with 12 functions/1,510 bytes ready for source authoring; these estimates
+receive no transfer credit. Full Bolt 44-record backing, CharFixUp, shader
+publication and resource/device lifetime remain separate contracts.

@@ -2348,21 +2348,13 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
     }
 }
 
-struct player_item_type_reset_pc_s {
-    i16 id;
-    u8 unknown_02[2];
-    char *bolt_name;
-    u8 unknown_08;
-    i8 bolt_id;
-    u8 unknown_0a[2];
-};
 STATIC_ASSERT(sizeof(PLAYER_ITEM_TYPE_RESET_PC) == 12);
 STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, id) == 0);
 STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, bolt_name) == 4);
 STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, bolt_id) == 9);
 static PLAYER_ITEM_TYPE_RESET_PC *PlayerItemTypePc;
 static i32 PlayerItemTypeCountPc;
-i8 __cdecl BoltType_FindIDByName(char *, WORLDINFO *);
+i8 __cdecl BoltType_FindIDByName(const char *, WORLDINFO *);
 void __cdecl PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *types) {
     i32 count = 0;
     PlayerItemTypePc = NULL;

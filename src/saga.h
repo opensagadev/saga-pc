@@ -1527,7 +1527,13 @@ typedef struct gamesave_s {
     AREA_SAVE_PICKUP_PC area_save[72];
     union {
         struct {
-            u8 unknown_7b8c[0x8f];
+            union {
+                u8 unknown_7b8c[0x8f];
+                struct {
+                    u8 unknown_gold_brick_prefix[0x8e];
+                    u8 gold_bricks;
+                };
+            };
             u8 customizer_weirdo_flags;
             u8 unknown_7c1c[0x12];
             u16 customizer_cape_piece;
@@ -1552,6 +1558,7 @@ typedef struct gamesave_s {
     };
 } GAMESAVE;
 STATIC_ASSERT(sizeof(GAMESAVE) == 0x7e4c);
+STATIC_ASSERT(offsetof(GAMESAVE, gold_bricks) == 0x7c1a);
 STATIC_ASSERT(offsetof(GAMESAVE, difficulty) == 1);
 STATIC_ASSERT(offsetof(GAMESAVE, save_version) == 1);
 STATIC_ASSERT(offsetof(GAMESAVE, options_save) == 4);
@@ -2435,7 +2442,13 @@ STATIC_ASSERT(offsetof(NUGSCN, display_list) == 0x110);
 typedef struct terrain_surface_pc_s {
     f32 movement_scale;
     u32 flags;
-    u32 field_08;
+    union {
+        u32 field_08;
+        struct {
+            u16 object_id;
+            u16 unknown_object_high_word;
+        };
+    };
 } TERRAIN_SURFACE_PC;
 STATIC_ASSERT(sizeof(TERRAIN_SURFACE_PC) == 0x0c);
 STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, flags) == 4);
@@ -4210,7 +4223,10 @@ STATIC_ASSERT(offsetof(LEVEL_DISPLAY_PC, bg_blue_bottom) == 0x0f);
 typedef struct level_data_pc_s {
     char dir[0x40];
     char name[0x20];
-    i16 unknown_0060;
+    union {
+        i16 unknown_0060;
+        u16 title_text_id;
+    };
     i16 index;
     u32 flags;
     void *callbacks[7];
@@ -4223,7 +4239,10 @@ typedef struct level_data_pc_s {
     i16 unknown_009e;
     u8 mipmap_mode;
     u8 blob_shadow_alpha;
-    u8 unknown_00a2;
+    union {
+        u8 unknown_00a2;
+        u8 episode;
+    };
     i8 area_index;
     f32 cam_tilt;
     f32 hover_height;
@@ -7676,9 +7695,18 @@ typedef struct NEW_MINI_PIECE_PC {
 STATIC_ASSERT(sizeof(NEW_MINI_PIECE_PC) == 0xc);
 STATIC_ASSERT(offsetof(NEW_MINI_PIECE_PC, level) == 8);
 typedef struct HINT_PC {
-    i16 id;
-    u8 flags;
-    u8 unknown3[9];
+    union {
+        struct {
+            i16 id;
+            u8 flags;
+            u8 unknown3[9];
+        };
+        struct {
+            u8 unknown_price_prefix[4];
+            u32 price;
+            u8 unknown_price_suffix[4];
+        };
+    };
     f32 repeat_delay;
     u8 unknown10[4];
     u8 completed;
@@ -10674,7 +10702,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern const char AIUseCurrentSpeedSnapName[12];
     extern const char AIAnimSpeedValueName[7];
     extern const char AIAnimSpeedMultiplyByName[13];
-    i32 __cdecl CharIDFromName(char *name);
+    i32 __cdecl CharIDFromName(const char *name);
     i32 __cdecl Cheat_FindByName(char *name);
     void __cdecl Cheat_SetArea(i32 cheat, i32 area_index);
     extern AREA_DATA_PC *LastAData;
@@ -10924,8 +10952,20 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern i32 ShadowMode;
     extern CHECK_LOST_DATA_PC CheckLostDataFn;
     typedef struct COLLECTID_PC {
-        i16 id;
-        u8 unknown_02[0x1a];
+        union {
+            struct {
+                i16 id;
+                u8 unknown_02[0x1a];
+            };
+            struct {
+                u8 unknown_price_prefix[2];
+                u8 selection_type;
+                u8 unknown_price_03;
+                u32 price;
+                u8 shop_enabled;
+                u8 unknown_price_tail[0x13];
+            };
+        };
     } COLLECTID_PC;
     STATIC_ASSERT(sizeof(COLLECTID_PC) == 0x1c);
     STATIC_ASSERT(offsetof(COLLECTID_PC, id) == 0);
@@ -11313,7 +11353,13 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     typedef struct mission_sys_pc_s {
         u8 unknown_00[4];
         MISSIONDATA_PC *active_mission;
-        u8 unknown_08[0x15];
+        union {
+            u8 unknown_08[0x15];
+            struct {
+                u8 unknown_count_prefix[0x14];
+                u8 count;
+            };
+        };
         u8 state;
     } MISSIONSYS_PC;
     STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
@@ -14895,7 +14941,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
        declaration needed for natural WorldInfo_Init member caller later. No adapter. */
 
     typedef struct player_item_type_reset_pc_s PLAYER_ITEM_TYPE_RESET_PC;
-    i8 __cdecl BoltType_FindIDByName(char *, WORLDINFO *);
+    i8 __cdecl BoltType_FindIDByName(const char *, WORLDINFO *);
     void __cdecl Bolt_PlayHitSfx(BOLT_PC *);
     i32 __cdecl Bolt_HitPartMode(BOLT_PC *);
     PART_PC *__cdecl Bolt_HitParts(BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, i32);
@@ -19133,6 +19179,243 @@ extern "C" {
     void __cdecl Hub_ResetPanel(void);
     i32 __cdecl GameAudio_GetSfxId(i32);
     extern AREA_DATA_PC *KAMINO_ADATA;
+#ifdef __cplusplus
+}
+#endif
+
+/* Genuine publisher minimum configuration declarations. */
+/* Declaration inventory only. Keep owning data definitions in their genuine
+ * source groups; shared placement remains root/sole-writer work. */
+typedef struct init_bolt_config_pc_s {
+    char name[16];
+    f32 speed, duration, extra_speed, collision_radius, radius, scale;
+    i16 object_ids[3];
+    i16 debris_id;
+    i16 moving_debris[2];
+    i16 moving_debris_counts[2];
+    i16 field_38, field_3a;
+    u8 field_3c, field_3d;
+    u16 field_3e;
+    u32 field_40;
+    void *callbacks[5];
+    const char *shoot_sound;
+    const char *hit_sound;
+    u32 flags;
+    i16 shoot_sound_id, hit_sound_id;
+    NUSPECIALHANDLE specials[5];
+} INIT_BOLT_CONFIG_PC;
+STATIC_ASSERT(sizeof(INIT_BOLT_CONFIG_PC) == 0xa4);
+STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, name) == 0);
+STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, speed) == 0x10);
+STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, object_ids) == 0x28);
+STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, debris_id) == 0x2e);
+STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, moving_debris) == 0x30);
+STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, moving_debris_counts) == 0x34);
+STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, callbacks) == 0x44);
+STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, shoot_sound) == 0x58);
+STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, hit_sound) == 0x5c);
+STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, flags) == 0x60);
+STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, specials) == 0x68);
+
+/* Existing incomplete player_item_type_reset_pc_s completed identically,
+ * apart from readonly pointee qualification required by the source literals. */
+struct player_item_type_reset_pc_s {
+    i16 id;
+    u8 unknown_02[2];
+    const char *bolt_name;
+    u8 unknown_08;
+    i8 bolt_id;
+    u8 unknown_0a[2];
+};
+STATIC_ASSERT(sizeof(struct player_item_type_reset_pc_s) == 12);
+STATIC_ASSERT(offsetof(struct player_item_type_reset_pc_s, id) == 0);
+STATIC_ASSERT(offsetof(struct player_item_type_reset_pc_s, bolt_name) == 4);
+STATIC_ASSERT(offsetof(struct player_item_type_reset_pc_s, bolt_id) == 9);
+
+struct CHARPIVOT_PC {
+    const char *name;
+    i16 animation;
+    i16 point_of_interest;
+    f32 start_frame;
+    f32 end_frame;
+    u16 character_id;
+    u8 unknown_12[2];
+};
+STATIC_ASSERT(sizeof(struct CHARPIVOT_PC) == 20);
+STATIC_ASSERT(offsetof(struct CHARPIVOT_PC, name) == 0);
+STATIC_ASSERT(offsetof(struct CHARPIVOT_PC, animation) == 4);
+STATIC_ASSERT(offsetof(struct CHARPIVOT_PC, point_of_interest) == 6);
+STATIC_ASSERT(offsetof(struct CHARPIVOT_PC, start_frame) == 8);
+STATIC_ASSERT(offsetof(struct CHARPIVOT_PC, end_frame) == 0xc);
+STATIC_ASSERT(offsetof(struct CHARPIVOT_PC, character_id) == 0x10);
+
+typedef struct CHARPIVOT_PC CHARPIVOT_PC;
+STATIC_ASSERT(sizeof(COLLECTID_PC) == 0x1c);
+STATIC_ASSERT(offsetof(COLLECTID_PC, id) == 0);
+STATIC_ASSERT(offsetof(COLLECTID_PC, unknown_02) == 2);
+STATIC_ASSERT(offsetof(COLLECTID_PC, selection_type) == 2);
+STATIC_ASSERT(offsetof(COLLECTID_PC, price) == 4);
+STATIC_ASSERT(offsetof(COLLECTID_PC, shop_enabled) == 8);
+STATIC_ASSERT(sizeof(MISSIONSYS_PC) == 0x20);
+STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
+STATIC_ASSERT(offsetof(MISSIONSYS_PC, unknown_08) == 8);
+STATIC_ASSERT(offsetof(MISSIONSYS_PC, count) == 0x1c);
+STATIC_ASSERT(offsetof(MISSIONSYS_PC, state) == 0x1d);
+STATIC_ASSERT(sizeof(TERRAIN_SURFACE_PC) == 0x0c);
+STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, flags) == 4);
+STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, field_08) == 8);
+STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, object_id) == 8);
+STATIC_ASSERT(offsetof(HINT_PC, price) == 4);
+STATIC_ASSERT(sizeof(((HINT_PC *)0)->price) == 4);
+STATIC_ASSERT(offsetof(HINT_PC, unknown3) == 3);
+STATIC_ASSERT(sizeof(((HINT_PC *)0)->unknown3) == 9);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, title_text_id) == 0x60);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, episode) == 0xa2);
+STATIC_ASSERT(sizeof(((LEVELDATA_PC *)0)->episode) == 1);
+
+struct game_door_callback_pc_s;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i32(__cdecl *SetSoundFadeDistCallBackFn)(WORLDINFO *);
+    extern i32(__cdecl *AlternateGameCallbackPc)(GAMEOBJECT *object);
+    extern i32(__cdecl *GamePads_IgnoreInputFn)(void);
+    extern void(__cdecl *Door_GoThrough_ExtraCodeFn)(WORLDINFO *world, struct game_door_callback_pc_s *door);
+    extern void(__cdecl *GizmoBlowup_TransformDrawFn)(GIZMOBLOWUP_PC *target);
+    extern i32(__cdecl *GizBuildit_AutoBuildPosFn)(void *context, NUVEC *position, NUVEC *result, u16 *angle);
+    extern void(__cdecl *PauseGame_ExtraCodeFn)(void);
+    extern i32(__cdecl *Hub_PanelBusyFn)(void);
+    extern i32(__cdecl *GizBuildIt_CanStartBuildingFn)(struct GIZBUILDIT_PC *input, GAMEOBJECT *object);
+    extern void(__cdecl *GizBuildIt_FinishFn)(struct GIZBUILDIT_PC *input);
+    extern void(__cdecl *Game_100PercentFn)(void);
+    extern void(__cdecl *Game_AllGoldBricksFn)(void);
+    extern f32(__cdecl *Hint_AlphaTargetFn)(void);
+    extern void(__cdecl *Collection_GetSelectingPlayerIDsFn)(i16 *ids);
+    extern NUSPECIALHANDLE *(__cdecl *GameMsg_GetExtraObjFn)(GAME_MESSAGE_PC *message);
+    extern INIT_BOLT_CONFIG_PC GlobalBoltType[3];
+    extern struct CHARPIVOT_PC CharPivot_LSW[32];
+    extern struct CHARPIVOT_PC CharPivot_Batman;
+    extern i32 CompletionPointInfoPc[7];
+    i32 __cdecl Hub_PanelBusy(void);
+    i32 __cdecl ObjZappedBlue(GAMEOBJECT *);
+    void __cdecl ResetShadowMapRenderingFn(void);
+    void __cdecl EnableShadowMapRenderingFn(void);
+    void __cdecl InitGameAfterConfig(void);
+#ifdef __cplusplus
+}
+#endif
+
+/* Selected native state declaration inventory, not storage definitions.
+ * Place inside canonical guarded C scope; sole-writer overlap/initializer gate applies. */
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i16 LEGOACT_BUILD;
+    extern i16 LEGOACT_CLIMB_UP;
+    extern i16 LEGOACT_CLIMB_DOWN;
+    extern i16 LEGOACT_CLIMB_LEFT;
+    extern i16 LEGOACT_CLIMB_RIGHT;
+    extern i16 LEGOACT_WALLSHUFFLE_IDLE;
+    extern i16 LEGOACT_WALLSHUFFLE_LEFT;
+    extern i16 LEGOACT_WALLSHUFFLE_RIGHT;
+    extern i16 LEGOACT_SUPERCARRY_PICKUP;
+    extern i16 LEGOACT_SUPERCARRY_IDLE;
+    extern i16 LEGOACT_SUPERCARRY_THROW;
+    extern i16 LEGOACT_SUPERCARRY_PUTDOWN;
+    extern i16 LEGOACT_SUPERCARRY_BASH;
+    extern i16 LEGOACT_SUPERCARRY_JUMP;
+    extern i16 LEGOACT_SUPERCARRY_LAND;
+    extern i16 LEGOACT_SUPERCARRY_FALLLAND;
+    extern i16 LEGOACT_MAGNET_WALK_METAL;
+    extern i16 LEGOACT_MAGNET_TIPTOE;
+    extern i16 LEGOACT_MAGNET_WALK;
+    extern i16 LEGOACT_MAGNET_RUN;
+    extern i16 LEGOACT_MAGNET_LAND;
+    extern i16 LEGOACT_WHIP_CRACK;
+    extern i16 LEGOACT_WHIP_GRAB;
+    extern i16 LEGOACT_WHIP_BREAK;
+    extern i16 LEGOACT_TEETER;
+    extern i16 LEGOACT_WHIP_START;
+    extern i32 LEGOCONTEXT_DROPIN;
+    extern i32 LEGOCONTEXT_LAND_SPECIAL;
+    extern i32 LEGOMENU_TITLES;
+    extern i32 LEGOMENU_NEWGAME;
+    extern i32 LEGOMENU_PAUSEMAIN;
+    extern i32 LEGOMENU_CREDITS;
+    extern i32 LEGOCAMMODE_DOORCUT;
+    extern i32 LEGOCAMMODE_OBSTACLE;
+    extern i32 LEGOOBJ_ICON_FRAME_NEUTRAL;
+    extern i32 LEGOOBJ_ICON_FRAME_GREEN;
+    extern i32 LEGOOBJ_ICON_FRAME_BLUE;
+    extern i32 LegoGameDebrisSplashPc;
+    extern i32 POINTS_PER_CHARACTER;
+    extern i32 POINTS_PER_SUPERSTORY;
+    extern i32 POINTS_PER_SUPERBONUSCOMPLETE;
+    extern i32 POINTS_PER_TIMETRIAL;
+    extern i32 POINTS_PER_STORY;
+    extern i32 POINTS_PER_CHALLENGE;
+    extern i32 POINTS_PER_MINIKIT;
+    extern i32 POINTS_PER_TRUEJEDI;
+    extern i32 POINTS_PER_REDBRICK;
+    extern i32 POINTS_PER_MISSION;
+    extern i32 POINTS_PER_CHEAT;
+    extern i32 POINTS_PER_HINT;
+    extern i32 POINTS_PER_GOLDBRICK;
+    extern i32 GOLDBRICKPOINTS;
+    extern i32 SHOPGOLDBRICKS;
+    extern i32 SHOPHINTCOUNT;
+    extern i16 ShopHintIdsPc[24];
+    extern i16 ShopHintTextIdsPc[];
+    extern f32 KITPOS2X;
+    extern i32 PlayerHitPointsTwoHeartsPc;
+    extern i32 ConvertOldPickupsPc;
+    extern i32 GrabScreenWhenFadingPc;
+    extern i32 TrooperGameDebrisPc[4];
+    extern i32 LEGOHINT_SHOOTCAMERAS;
+    extern i32 LEGOHINT_BUILD;
+    extern f32 REDBRICKPOS2X;
+    extern f32 REDBRICKPOS2Y;
+    extern u8 AlternateHudColourBytesPc[8];
+    extern u8 AlternateHudRgbPc[3];
+    extern i32 LEGOTHINGSSCENE_TER_SPINBASE;
+    extern i32 LEGOTHINGSSCENE_TER_SPINARM;
+    extern i32 LEGOOBJ_FLOORTARGET;
+    extern i32 LEGOOBJ_GRAPPLE_HOOK;
+    extern i32 SuperCarryEnablePc;
+    extern i32 CombatRollEnablePc;
+    extern i16 TechnoDefaultObjectPc;
+    extern i32 LEGOHINT_PUNCH;
+    extern i32 CutScenePlayCountPc;
+    extern const char *InitAsciiUpPc;
+    extern const char *InitAsciiLeftPc;
+    extern const char *InitAsciiRightPc;
+    extern const char *InitAsciiBigArrowPc;
+    extern const char *LEGOASCII_UP;
+    extern const char *LEGOASCII_DOWN;
+    extern const char *LEGOASCII_LEFT;
+    extern const char *LEGOASCII_RIGHT;
+    extern const char *LEGOASCII_BIGARROW;
+    extern AREA_DATA_PC *DEATHSTARESCAPE_ADATA;
+    extern AREA_DATA_PC *ASTEROIDCHASE_ADATA;
+    extern AREA_DATA_PC *DEATHSTARBATTLE2_ADATA;
+    extern AREA_DATA_PC *E1CHARACTER_ADATA;
+    extern AREA_DATA_PC *E2CHARACTER_ADATA;
+    extern AREA_DATA_PC *E3CHARACTER_ADATA;
+    extern i16 id_SERVICECAR;
+    extern i32 SuperCarry_UseActionButton;
+    extern i32 ForcePush_Waft;
+    extern i16 tCLIPi;
+    extern i16 tINTRO;
+    extern i16 tMIDTRO;
+    extern i16 tOUTRO;
+    extern i16 tENDING;
+    extern i16 tPOWERUP;
+    void __cdecl ReleaseTakeOver(GAMEOBJECT *, i32);
+    void __cdecl AddPartDebris(PARTDEBRISSYS *, i32, NUVEC *);
+    void __cdecl Level_RegisterGameConfigKeywords(NUFPCOMJMP *, NUFPCOMJMP *);
+    void __cdecl APIObjectRegisterAnimRedirect(i32(__cdecl *)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *),
+                                               void *, char *);
+
 #ifdef __cplusplus
 }
 #endif

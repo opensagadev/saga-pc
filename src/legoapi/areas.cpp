@@ -173,7 +173,7 @@ void __cdecl Cheats_Init(CHEAT_PC *cheats) {
     } while ((++cheats)->name != NULL);
 }
 
-i32 __cdecl CharIDFromName(char *name) {
+i32 __cdecl CharIDFromName(const char *name) {
     i32 index;
 
     for (index = 0; index < CHARCOUNT; ++index) {
@@ -751,7 +751,7 @@ extern "C" {
         LevelLoadCount, AreaMusic;
     extern APICHARACTERMODELLIST AreaPlayerModelsPc[], Area_FreePlayModelList[], Area_MissionModelList[];
     extern AREA_LEVEL_LOAD_PC LevelLoad[];
-    i32 __cdecl CharIDFromName(char *);
+    i32 __cdecl CharIDFromName(const char *);
 }
 #define AREA_STORY_MODELS_PC Area_StoryModelListPc
 static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i32 capacity, i32 character_id,

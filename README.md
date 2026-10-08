@@ -6,7 +6,7 @@ startup before a level loads. Device presentation and recurring gameplay remain
 unverified; see the [current roadmap](docs/roadmap.md).
 
 <!-- matching-badge -->
-![fuzzy code](https://img.shields.io/badge/fuzzy%20code-28.716%25-yellow)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-42.392%25-yellow) ![mapped data](https://img.shields.io/badge/mapped%20data-1.796%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-5.365%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
+![fuzzy code](https://img.shields.io/badge/fuzzy%20code-29.034%25-yellow)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-42.777%25-yellow) ![mapped data](https://img.shields.io/badge/mapped%20data-1.796%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-5.399%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 **saga-pc** is a matching decompilation of the GOG PC release of
 *LEGO Star Wars: The Complete Saga*.
@@ -38,6 +38,9 @@ These denominators measure section storage, rather than the unknown sum of all
 original symbol sizes. They exclude resources, image headers and section gaps,
 but retain padding within code/data sections. The large zero-initialized data
 area contributes to data coverage even though it occupies little space on disk.
+The [Mac linked-symbol estimate](config/symbols.md#mac-linked-symbol-span-estimate-2026-10-08)
+also reports named code/data counts, estimated spans and PC name overlap. It is
+separate from verified PC coverage because Mac symbols do not supply PC sizes.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the symbol map, and the build
 and matching workflow, and the [documentation index](docs/README.md) for technical

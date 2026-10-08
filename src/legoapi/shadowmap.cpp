@@ -68,3 +68,11 @@ void PC_SPECIAL_SHADOW_LIGHT::SetEnabledPc(i32 enabled) {
     }
     state->enabled = enabled;
 }
+
+// Append to the current shadowmap.cpp owner; real existing definitions above.
+void __cdecl ResetShadowMapRenderingFn(void) {
+    ResetShadowMapRendering();
+}
+void __cdecl EnableShadowMapRenderingFn(void) {
+    EnableShadowMapRendering(0);
+}

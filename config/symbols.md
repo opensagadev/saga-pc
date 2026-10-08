@@ -4994,6 +4994,30 @@ metric retains separate code/data section denominators. Reproducible retained
 analysis: build/analysis/mac2-evidence/symbol-size-estimates/analyze.py and
 receipt.json, SHA d9eaa89e07a904f122ca6f65e81252e0bdc21a0c28f47ad98ba65544a1ca1ff0.
 
+The current RR all-category name crosswalk uses the same retained Mac intervals,
+with current PC inventory and corrected source comparison inputs:
+
+| Mac category | Named linked definitions | Estimated span bytes | PC map name matches | Matched estimated Mac bytes |
+| --- | ---: | ---: | ---: | ---: |
+| Code | 22,127 | 7,526,418 | 2,364 | 1,339,841 |
+| Initialized data and metadata | 6,273 | 864,736 | 624 | 83,876 |
+| Zero-filled data | 3,830 | 33,943,916 | 1,084 | 611,075 |
+| Combined | 32,230 | 42,335,070 | 4,072 | 2,034,792 |
+
+This estimates 12.63% overlap by named definitions and 4.81% by their Mac spans;
+code alone is 17.80% of estimated named-code spans. These are lexical estimates,
+with possible name collisions and missed aliases, not verified PC symbol-size
+coverage. The 31,948,800-byte blend-weight gap alone accounts for about 75% of
+the combined Mac span denominator; its full owning capacity remains unproved.
+This file has no DWARF/STABS declaration or type inventory. The merged names
+come from exports and nlist, whose 5,438 records alone are not the complete list.
+Only linked definitions are counted: inlined, eliminated and never-linked source
+declarations are absent. The separate successor receipt is
+build/analysis/mac2-evidence/symbol-size-estimates/current-all-category-overlap-v1/receipt.json,
+SHA a97861cf6c488a0b968aaf2b37342f1a9f87e1ccc55b13aa21da2af6fec460f2.
+Original estimates remain retained; no PC binding, extent or coverage credit
+changes from this research.
+
 ### Connected lever, streaming, menu, push and hat snapshot LL (2026-10-08)
 
 The actual normal source adds 74 complete functions/25,502 unique PC bytes across
@@ -5160,3 +5184,39 @@ and BATTLEDROID's eight bytes stay strict. Required checks and 152 selected beha
 assertions pass. The retained failed Suit oracle was corrected against native zero
 initialization without changing IDs. Source game, assets and device remain held.
 QQ CI is pending; complete evidence is in transfer-checkpoint.json.
+
+### Startup publisher and callback comparison RR (2026-10-09)
+
+The current source integrates InitGameAfterConfig and its genuine original-owner
+callbacks: 66 newly compiled complete function extents add 13,504 unique PC bytes.
+This comprises 64 previously uncompared callback targets (8,766 bytes), the
+4,659-byte parent and its naturally emitted 79-byte private helper. An already
+compared Batarang callback receives no duplicate credit. All 65 actual native
+callback publications are represented; ten parent actions and 19 distinct missing
+providers across the connected callback family remain explicit void omissions.
+
+Required checks pass for 338 owners: LLVM18 format/tidy, 732 tests (three existing
+skips), source EXE link, complete symbol/relocation coverage and retail comparison.
+Fuzzy coverage is 29.034284%, +0.317876 percentage points; exact code is
+228,700/3,471,246 bytes (6.588412%), +2,222. All prior exact code/data and 13 named
+member contracts survive. All 210 new complete initializer copies (2,360 bytes)
+match native, with unknown owning extents receiving zero allocation or exact-data
+credit. Known exact data remains 637,616 bytes. Mapping is 42.777464% code,
+1.796304% data and 5.398606% combined code/data section storage.
+
+Actual-normal CPU tests pass 90/90 on 13 genuine private callbacks, with complete
+COFF-to-linked-test-body equality and original provider/object order. Crash-dialog
+suppression was set and queried; all owned process groups were empty afterward.
+No source-game launch, successful Init/configuration, loaded assets, device, GPU
+or gameplay milestone is claimed. The earlier parent report remains rejected for
+its signed-byte cheat sentinel error; the corrected source and report are used.
+Specific complete Tag pointer-tail and particle reload pairs retain their bounded
+proofs. No code-generation flags, native extents or comparison checks were weakened.
+
+RR exact pushed-revision CI is pending. The complete checkpoint is recorded in
+transfer-checkpoint.json. Next work reconnects real terrain registration,
+GameAudio/Menu sound IDs, FancyMessage, narrow-socket, surface-mask, colour and
+PodRace providers. The retained connected frontier has 9,608 candidate native
+bytes, with 12 functions/1,510 bytes ready for source authoring; these estimates
+receive no transfer credit. Full Bolt 44-record backing, CharFixUp, shader
+publication and resource/device lifetime remain separate contracts.

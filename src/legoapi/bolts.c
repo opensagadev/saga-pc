@@ -369,7 +369,7 @@ BOLT_PC *__cdecl Bolt_Find(i32 type_id, NUVEC *position, GAMEOBJECT *owner) {
     return nearest;
 }
 
-i8 __cdecl BoltType_FindIDByName(char *name, WORLDINFO *world) {
+i8 __cdecl BoltType_FindIDByName(const char *name, WORLDINFO *world) {
     i32 index;
     if (NuStrLen(name) == 0)
         return -1;
@@ -741,3 +741,42 @@ void __cdecl BoltTypes_Init(WORLDINFO *world) {
             memset(&type->specials.shadow_special, 0, sizeof(NUSPECIALHANDLE));
     }
 }
+
+/* Sole-writer proposal only. Genuine selected prefix, not a 44-record array
+ * claim; original native BoltSys config44 remains an omitted VOID action. */
+INIT_BOLT_CONFIG_PC GlobalBoltType[3] = {{"red",     4.0f,
+                                          2.0f,      0.0f,
+                                          0.125f,    1.0f,
+                                          0.1f,      {52, -1, -1},
+                                          1,         {-1, -1},
+                                          {0, 0},    -1,
+                                          0,         1,
+                                          255,       0,
+                                          0,         {NULL, NULL, NULL, NULL, NULL},
+                                          "Blaster", "Blast_Hit",
+                                          0,         0,
+                                          0,         {0}},
+                                         {"green",   4.0f,
+                                          2.0f,      0.0f,
+                                          0.125f,    1.0f,
+                                          0.1f,      {52, -1, -1},
+                                          2,         {-1, -1},
+                                          {0, 0},    -1,
+                                          0,         1,
+                                          255,       0,
+                                          0,         {NULL, NULL, NULL, NULL, NULL},
+                                          "Blaster", "Blast_Hit",
+                                          0,         0,
+                                          0,         {0}},
+                                         {"blue",    4.0f,
+                                          2.0f,      0.0f,
+                                          0.125f,    1.0f,
+                                          0.1f,      {52, -1, -1},
+                                          3,         {-1, -1},
+                                          {0, 0},    -1,
+                                          0,         1,
+                                          255,       0,
+                                          0,         {NULL, NULL, NULL, NULL, NULL},
+                                          "Blaster", "Blast_Hit",
+                                          0,         0,
+                                          0,         {0}}};

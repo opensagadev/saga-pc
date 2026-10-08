@@ -280,3 +280,18 @@ void __cdecl ComboHitFrame(GAMEOBJECT *object, i32 damage) {
         object->sabre_damage = (u8)(object->sabre_damage + object->sabre_damage);
     BlockSfx(object);
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
+
+i32 __cdecl ObjZappedBlue(GAMEOBJECT *object) {
+    if (object->character_context == 0x42)
+        return 1;
+    if (object->character_context == 0x1c) {
+        GAMEOBJECT *holder = object->force_target;
+        if (holder != NULL && (holder->flags_e20 & 0x100) != 0)
+            return 1;
+    }
+    return 0;
+}

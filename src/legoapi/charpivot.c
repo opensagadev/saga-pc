@@ -1,14 +1,5 @@
 #include "saga.h"
 
-typedef struct CHARPIVOT_PC {
-    char *name;
-    i16 animation;
-    i16 point_of_interest;
-    f32 start_frame;
-    f32 end_frame;
-    u16 character_id;
-    u8 unknown_12[2];
-} CHARPIVOT_PC;
 STATIC_ASSERT(sizeof(CHARPIVOT_PC) == 0x14);
 STATIC_ASSERT(offsetof(CHARPIVOT_PC, animation) == 4);
 STATIC_ASSERT(offsetof(CHARPIVOT_PC, point_of_interest) == 6);
@@ -70,3 +61,24 @@ void __cdecl CharPivot_Check(GAMEOBJECT *object, NUVEC *velocity) {
         return;
     }
 }
+
+// Proposed original CharPivot owner definitions; true selected sentinel domain.
+struct CHARPIVOT_PC CharPivot_LSW[32] = {
+    {"atst", 0, -1, 7.0f, 11.0f, 0, {0, 0}},         {"atst", 0, -1, 21.0f, 25.0f, 0, {0, 0}},
+    {"atst", 0, 2, 8.0f, 25.0f, 0, {0, 0}},          {"atst", 0, 3, 0.0f, 11.0f, 0, {0, 0}},
+    {"atst", 0, 3, 22.0f, 999.0f, 0, {0, 0}},        {"atst_lowres", 0, -1, 7.0f, 11.0f, 0, {0, 0}},
+    {"atst_lowres", 0, -1, 21.0f, 25.0f, 0, {0, 0}}, {"atst_lowres", 0, 2, 8.0f, 25.0f, 0, {0, 0}},
+    {"atst_lowres", 0, 3, 0.0f, 11.0f, 0, {0, 0}},   {"atst_lowres", 0, 3, 22.0f, 999.0f, 0, {0, 0}},
+    {"mini_atst", 0, 2, 15.0f, 999.0f, 0, {0, 0}},   {"mini_atst", 0, 3, 0.0f, 15.0f, 0, {0, 0}},
+    {"rancor", 0, -1, 0.0f, 3.0f, 0, {0, 0}},        {"rancor", 0, -1, 19.0f, 24.0f, 0, {0, 0}},
+    {"rancor", 0, -1, 40.0f, 999.0f, 0, {0, 0}},     {"rancor", 64, -1, 0.0f, 3.0f, 0, {0, 0}},
+    {"rancor", 64, -1, 19.0f, 24.0f, 0, {0, 0}},     {"rancor", 64, -1, 40.0f, 999.0f, 0, {0, 0}},
+    {"rancor", 0, 0, 0.0f, 3.0f, 0, {0, 0}},         {"rancor", 0, 0, 20.0f, 999.0f, 0, {0, 0}},
+    {"rancor", 0, 1, 0.0f, 24.0f, 0, {0, 0}},        {"rancor", 0, 1, 0.0f, 999.0f, 0, {0, 0}},
+    {"rancor", 64, 0, 0.0f, 3.0f, 0, {0, 0}},        {"rancor", 64, 0, 20.0f, 999.0f, 0, {0, 0}},
+    {"rancor", 64, 1, 0.0f, 24.0f, 0, {0, 0}},       {"rancor", 64, 1, 41.0f, 999.0f, 0, {0, 0}},
+    {"clonewalker", 0, -1, 1.0f, 4.0f, 0, {0, 0}},   {"clonewalker", 0, -1, 15.0f, 18.0f, 0, {0, 0}},
+    {"clonewalker", 0, 0, 2.0f, 18.0f, 0, {0, 0}},   {"clonewalker", 0, 1, 16.0f, 999.0f, 0, {0, 0}},
+    {"clonewalker", 0, 1, 0.0f, 4.0f, 0, {0, 0}},    {NULL, 0, 0, 0.0f, 0.0f, 0, {0, 0}},
+};
+struct CHARPIVOT_PC CharPivot_Batman = {NULL, 0, 0, 0.0f, 0.0f, 0, {0, 0}};
