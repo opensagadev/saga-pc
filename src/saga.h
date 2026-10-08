@@ -6749,8 +6749,12 @@ typedef struct PC_D3D9_METHODS_PC {
     (PC_D3D9_DEVICE_PC *, const PC_VERTEX_ELEMENT_PC *, PC_TEXTURE_RESOURCE_PC **);
     void *unknown_015c[4];
     HRESULT(__stdcall *create_vertex_shader)(PC_D3D9_DEVICE_PC *, const DWORD *, PC_TEXTURE_RESOURCE_PC **);
-    void *unknown_0170[14];
+    void *unknown_0170[2];
+    HRESULT(__stdcall *set_vertex_shader_constant_f)(PC_D3D9_DEVICE_PC *, UINT, const f32 *, UINT);
+    void *unknown_017c[11];
     HRESULT(__stdcall *create_pixel_shader)(PC_D3D9_DEVICE_PC *, const DWORD *, PC_TEXTURE_RESOURCE_PC **);
+    void *unknown_01ac[2];
+    HRESULT(__stdcall *set_pixel_shader_constant_f)(PC_D3D9_DEVICE_PC *, UINT, const f32 *, UINT);
 } PC_D3D9_METHODS_PC;
 struct PC_D3D9_DEVICE_PC {
     const PC_D3D9_METHODS_PC *methods;
@@ -9857,6 +9861,11 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
             };
         };
         PC_SHADER_PARAMETER_LOCAL_PC *next;
+#ifdef __cplusplus
+        void SetScalarValues(i32 first_element, i32 count, const f32 *values);
+        void SetVectorValues(i32 first_element, i32 count, const f32 *values);
+        void SetMatrixValues(i32 first_element, i32 count, const f32 *values);
+#endif
     };
     STATIC_ASSERT(sizeof(PC_SHADER_PARAMETER_LOCAL_PC) == 12);
     STATIC_ASSERT(offsetof(PC_SHADER_PARAMETER_LOCAL_PC, register_index) == 0);
@@ -13324,7 +13333,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern i32 PCDeviceCacheStateKey;
     extern void *PCDeviceTextureCache[5];
     extern i32 PCDeviceSamplerStateCache[8][14];
-    extern i32 PCDeviceSamplerInvalidation[8][2];
+    extern i32 PCDeviceSamplerInvalidation[16][2];
     void __cdecl Customiser_DumpAll(void *, WORLDINFO *);
     void __cdecl ClearAreaProgress(i32, i32);
     i32 __cdecl MovingBackwards(GAMEOBJECT *);
@@ -17088,7 +17097,11 @@ class NuShaderObject {
     i32 marker;
     i32 ref_count;
     u32 key;
-    u8 unknown_c[0x4c0];
+    u32 unknown_c;
+    PC_SHADER_PARAMETER_LOCAL_PC *active_parameters;
+    i32 version;
+    u32 field_18;
+    PC_SHADER_PARAMETER_LOCAL_PC parameters[100];
     PC_TEXTURE_RESOURCE_PC *vertex_shader;
     PC_TEXTURE_RESOURCE_PC *pixel_shader;
     u32 unknown_4d4;
@@ -17131,6 +17144,7 @@ class ShaderManagerHLSL : public PC_SHADER_MANAGER_VIEW {
     ShaderCompilerBufferAllocatorPc vertex_source;
     ShaderCompilerBufferAllocatorPc pixel_source;
     ShaderManagerHLSL(VirtualStackAllocator &);
+    void SetUniformValues(i32 semantic, const f32 *values);
     virtual ~ShaderManagerHLSL();
     virtual bool CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *, i32);
     virtual void AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);
@@ -18034,6 +18048,23 @@ extern "C" {
 }
 #endif
 
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_vertex_shader_constant_f) == 0x178);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_pixel_shader_constant_f) == 0x1b4);
+#ifdef __cplusplus
+STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, active_parameters) == 0x10);
+STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, version) == 0x14);
+STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, field_18) == 0x18);
+STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, parameters) == 0x1c);
+extern "C" {
+#endif
+    void __cdecl PCDeviceSetVertexShaderConstantsF(UINT start, const f32 *values, UINT count);
+    void __cdecl PCDeviceSetPixelShaderConstantsF(UINT start, const f32 *values, UINT count);
+    void __cdecl NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *, i32, i32, i32, const f32 *);
+    void __cdecl NuShaderManagerSetfv(i32 semantic, const f32 *values);
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 
 #ifdef __cplusplus
@@ -18332,6 +18363,94 @@ extern "C" {
     i32 __cdecl PcInitializeDynamicGeometryBuffersPc(struct PC_DYNAMIC_GEOMETRY_PC *, i32);
     i32 __cdecl PcUpdateGeometryDistancesPc(struct PC_GEOMETRY_OUTPUT_PC *, struct PC_GEOMETRY_SORT_ITEM_PC *, i32);
     u8 __cdecl PcTransformDynamicGeometryPc(struct PC_GEOMETRY_SKIN_PC *, struct PC_GEOMETRY_MESH_PC *, u32 *);
+#ifdef __cplusplus
+}
+#endif
+
+typedef struct PC_GEOMETRY_PUBLISH_FORMAT_PC PC_GEOMETRY_PUBLISH_FORMAT_PC;
+typedef struct PC_GEOMETRY_PUBLISH_RECORD_PC PC_GEOMETRY_PUBLISH_RECORD_PC;
+typedef struct PC_GEOMETRY_BASIS_SOURCE_PC PC_GEOMETRY_BASIS_SOURCE_PC;
+typedef struct PC_GEOMETRY_MORPH_WEIGHTS_PC PC_GEOMETRY_MORPH_WEIGHTS_PC;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 __cdecl PcGeometryBackendAvailablePc(void);
+    i32 __cdecl PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *);
+    u8 __cdecl PcInitializeGeometryBasisPc(PC_GEOMETRY_BASIS_SOURCE_PC *, NUMTX *, PC_GEOMETRY_MORPH_WEIGHTS_PC *);
+    void __cdecl PcResetGeometryOriginStatePc(void);
+    void __cdecl PcUpdateGeometryCameraOriginPc(NUMTX *, NUMTX *);
+    void __cdecl PcGetGeometryPerspectivePc(NUMTX *, f32 *, f32 *, f32 *, f32 *);
+    extern i32 PcGeometryRegistryCountPc;
+    extern PC_GEOMETRY_PUBLISH_RECORD_PC *PcGeometryRegistryPc;
+    extern i32 PcGeometryMatrixCapacityPc;
+    extern i32 PcGeometryOutputCapacityPc;
+    extern NUVEC4 PcGeometryDefaultOriginPc;
+    extern NUMTX PcGeometryViewMatrixPc;
+    extern NUMTX PcGeometryViewProjectionMatrixPc;
+    extern NUMTX PcGeometryProjectionMatrixPc;
+    extern NUMTX PcGeometryInverseViewProjectionMatrixPc;
+    extern NUMTX PcGeometryResetMatrixPc;
+    extern NUMTX PcGeometryAdjustedProjectionMatrixPc;
+    extern NUMTX PcGeometryTranslationMatrixPc;
+    extern NUMTX PcGeometryScaleMatrixPc;
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl Tube_MoveCode(GAMEOBJECT *, WORLDINFO *);
+    void __cdecl HoldCode(GAMEOBJECT *);
+    void __cdecl SpecialMove_VictimCode(GAMEOBJECT *);
+#ifdef __cplusplus
+}
+#endif
+
+typedef struct HATMACHINE_PC HATMACHINE_PC;
+typedef struct GIZMO_LEVER_PC GIZMO_LEVER_PC;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl Hat_GetAbsTargetPos(HATMACHINE_PC *, NUVEC *);
+    void __cdecl HatMachines_InitTerrain(WORLDINFO *);
+    HATMACHINE_PC *__cdecl HatMachine_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
+    i32 __cdecl HatMachine_BeingUsed(HATMACHINE_PC *);
+    void __cdecl Levers_InitTerrain(WORLDINFO *);
+    void __cdecl ReleaseLever(GAMEOBJECT *);
+    void __cdecl Lever_GetAbsTargetPos(GIZMO_LEVER_PC *, NUVEC *);
+    GIZMO_LEVER_PC *__cdecl Lever_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
+    i32 __cdecl Lever_FullyPulledDown(GIZMO_LEVER_PC *);
+    void __cdecl Lever_MoveCode(WORLDINFO *, GAMEOBJECT *);
+    void __cdecl Teleports_Reset(WORLDINFO *);
+    void __cdecl Teleports_UpdateBeforeGameObjects(WORLDINFO *);
+    void __cdecl Teleports_UpdateAfterGameObjects(WORLDINFO *);
+    void __cdecl Teleport_NetMoveCode(GAMEOBJECT *);
+#ifdef __cplusplus
+}
+#endif
+
+struct MISSION_SAVE_READER_PC;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    MISSIONSYS_PC *__cdecl Missions_Configure(char *, VARIPTR *, VARIPTR *, struct MISSION_SAVE_READER_PC *);
+    i32 __cdecl Mission_CurrentState(MISSIONSYS_PC *);
+    i32 __cdecl Missions_PartyAvailable(MISSIONSYS_PC *);
+    i32 __cdecl Missions_NumCompleted(MISSIONSYS_PC *, struct MISSION_SAVE_READER_PC *, i32);
+    GAMEOBJECT *__cdecl Mission_FindTarget(MISSIONSYS_PC *, u64 *);
+    i32 __cdecl Missions_PickupsOff(MISSIONSYS_PC *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl PushSeekComplete(PUSH_BLOCK_PC *, i32);
+    i32 __cdecl OtherBlockInRange(WORLDINFO *, PUSH_BLOCK_PC *, NUVEC *, i32);
+    i32 __cdecl SnapPosTaken(WORLDINFO *, PUSH_BLOCK_PC *, NUVEC *, i32);
+    i32 __cdecl TerrainBlockOnBlock(WORLDINFO *, PUSH_BLOCK_PC *, NUVEC *, f32 *);
 #ifdef __cplusplus
 }
 #endif

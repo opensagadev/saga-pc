@@ -905,3 +905,61 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
     entry_pad->operator_data = NULL;
     NuVecRotateYValZ(&object->facing_direction, 1.0f, object->field_0x276);
 }
+
+typedef struct PUSH_SUPPORT_BLOCK_VIEW_PC {
+    u8 unknown_000[0x24];
+    NUSPECIALHANDLE special;
+    GAMEOBJECT *pushing_object;
+    u8 unknown_034[0x58 - 0x34];
+    NUVEC *position;
+    u8 unknown_05c[0xb0 - 0x5c];
+    NUVEC bounds_min, bounds_max;
+    u32 packed_state_flags;
+    u8 unknown_0cc[4];
+    u8 completed_snap_positions;
+    u8 end_position_count;
+    u8 output_count;
+    u8 unknown_0d3;
+} PUSH_SUPPORT_BLOCK_VIEW_PC;
+typedef struct PUSH_SUPPORT_WORLD_VIEW_PC {
+    u8 unknown_000[0x46bc];
+    PUSH_SUPPORT_BLOCK_VIEW_PC *blocks;
+    i32 count;
+} PUSH_SUPPORT_WORLD_VIEW_PC;
+STATIC_ASSERT(sizeof(PUSH_SUPPORT_BLOCK_VIEW_PC) == 0xd4);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, special) == 0x24);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, pushing_object) == 0x30);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, position) == 0x58);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, bounds_min) == 0xb0);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, bounds_max) == 0xbc);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, packed_state_flags) == 0xc8);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, completed_snap_positions) == 0xd0);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, end_position_count) == 0xd1);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, output_count) == 0xd2);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, blocks) == 0x46bc);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, count) == 0x46c0);
+
+i32 __cdecl TerrainBlockOnBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *block, NUVEC *points, f32 *heights) {
+    PUSH_SUPPORT_WORLD_VIEW_PC *world = (PUSH_SUPPORT_WORLD_VIEW_PC *)opaque_world;
+    i32 i;
+    if (points == NULL || heights == NULL)
+        return 0;
+    heights[0] = heights[1] = heights[2] = heights[3] = -10000.0f;
+    for (i = 0; i < world->count; ++i) {
+        PUSH_SUPPORT_BLOCK_VIEW_PC *other = &world->blocks[i];
+        f32 xmin, xmax, zmin, zmax, height;
+        i32 j;
+        if ((PUSH_BLOCK_PC *)other == block)
+            continue;
+        xmin = other->position->x - (f32)fabs((f64)other->bounds_min.x);
+        zmin = other->position->z - (f32)fabs((f64)other->bounds_min.z);
+        xmax = other->position->x + (f32)fabs((f64)other->bounds_max.x);
+        height = other->position->y + (f32)fabs((f64)other->bounds_max.y);
+        zmax = other->position->z + (f32)fabs((f64)other->bounds_max.z);
+        for (j = 0; j < 4; ++j) {
+            if (points[j].x > xmin && points[j].x < xmax && points[j].z > zmin && points[j].z < zmax)
+                heights[j] = height;
+        }
+    }
+    return 1;
+}

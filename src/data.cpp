@@ -12758,7 +12758,7 @@ extern "C" {
     i32 PCDeviceSamplerStateCache[8][14];
 #pragma bss_seg()
 #pragma bss_seg(".bss$PCDeviceSamplerInvalidation")
-    i32 PCDeviceSamplerInvalidation[8][2];
+    i32 PCDeviceSamplerInvalidation[16][2];
 #pragma bss_seg()
 #pragma data_seg(".data$nufile_lsn_allowed")
     i32 nufile_lsn_allowed = 1;
@@ -19346,4 +19346,21 @@ extern "C" {
     NUVEC4 PcGeometryDistanceOriginPc = {0};
     struct PC_GEOMETRY_BASIS_PC *PcGeometryTransformsPc = NULL;
     struct PC_GEOMETRY_OUTPUT_PC *PcGeometryOutputPc = NULL;
+}
+
+struct PC_GEOMETRY_PUBLISH_RECORD_PC;
+extern "C" {
+    i32 PcGeometryRegistryCountPc = 0;
+    struct PC_GEOMETRY_PUBLISH_RECORD_PC *PcGeometryRegistryPc = NULL;
+    i32 PcGeometryMatrixCapacityPc = 0;
+    i32 PcGeometryOutputCapacityPc = 0;
+    NUVEC4 PcGeometryDefaultOriginPc = {0};
+    NUMTX PcGeometryViewMatrixPc = {0};
+    NUMTX PcGeometryViewProjectionMatrixPc = {0};
+    NUMTX PcGeometryProjectionMatrixPc = {0};
+    NUMTX PcGeometryInverseViewProjectionMatrixPc = {0};
+    NUMTX PcGeometryResetMatrixPc = {0};
+    NUMTX PcGeometryAdjustedProjectionMatrixPc = {0};
+    NUMTX PcGeometryTranslationMatrixPc = {0};
+    NUMTX PcGeometryScaleMatrixPc = {0};
 }

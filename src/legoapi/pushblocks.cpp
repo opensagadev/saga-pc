@@ -209,3 +209,78 @@ extern "C" i32 __cdecl PushBlock(GAMEOBJECT *object) {
     object->character_context = -1;
     return 0;
 }
+
+typedef struct PUSH_SUPPORT_BLOCK_VIEW_PC {
+    u8 unknown_000[0x24];
+    NUSPECIALHANDLE special;
+    GAMEOBJECT *pushing_object;
+    u8 unknown_034[0x58 - 0x34];
+    NUVEC *position;
+    u8 unknown_05c[0xb0 - 0x5c];
+    NUVEC bounds_min, bounds_max;
+    u32 packed_state_flags;
+    u8 unknown_0cc[4];
+    u8 completed_snap_positions;
+    u8 end_position_count;
+    u8 output_count;
+    u8 unknown_0d3;
+} PUSH_SUPPORT_BLOCK_VIEW_PC;
+typedef struct PUSH_SUPPORT_WORLD_VIEW_PC {
+    u8 unknown_000[0x46bc];
+    PUSH_SUPPORT_BLOCK_VIEW_PC *blocks;
+    i32 count;
+} PUSH_SUPPORT_WORLD_VIEW_PC;
+STATIC_ASSERT(sizeof(PUSH_SUPPORT_BLOCK_VIEW_PC) == 0xd4);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, special) == 0x24);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, pushing_object) == 0x30);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, position) == 0x58);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, bounds_min) == 0xb0);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, bounds_max) == 0xbc);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, packed_state_flags) == 0xc8);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, completed_snap_positions) == 0xd0);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, end_position_count) == 0xd1);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, output_count) == 0xd2);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, blocks) == 0x46bc);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, count) == 0x46c0);
+
+extern "C" void __cdecl PushSeekComplete(PUSH_BLOCK_PC *opaque_block, i32 index) {
+    PUSH_SUPPORT_BLOCK_VIEW_PC *block = (PUSH_SUPPORT_BLOCK_VIEW_PC *)opaque_block;
+    block->packed_state_flags &= ~0x200u;
+    block->completed_snap_positions |= (u8)(1u << (index & 31));
+    if ((block->packed_state_flags & 0x20000000u) == 0)
+        block->packed_state_flags |= 0x02000100u;
+    if (block->pushing_object != NULL)
+        NewBuzz(block->pushing_object->pad->bound_pad, 0.1f, 0);
+}
+
+extern "C" i32 __cdecl OtherBlockInRange(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, NUVEC *position,
+                                         i32 excluded) {
+    PUSH_SUPPORT_WORLD_VIEW_PC *world = (PUSH_SUPPORT_WORLD_VIEW_PC *)opaque_world;
+    PUSH_SUPPORT_BLOCK_VIEW_PC *block = (PUSH_SUPPORT_BLOCK_VIEW_PC *)opaque_block;
+    NUVEC centre;
+    f32 radius;
+    NuSpecialGetRadius(&block->special, &centre, &radius);
+    radius *= radius;
+    for (i32 i = 0; i < world->count; ++i) {
+        PUSH_SUPPORT_BLOCK_VIEW_PC *other;
+        NUVEC minimum, maximum;
+        f32 other_radius, x, z, sum, distance;
+        if (i == excluded)
+            continue;
+        other = &world->blocks[i];
+        if ((other->packed_state_flags & 0x01040000u) != 0x01040000u || (other->packed_state_flags & 0x04000000u) != 0)
+            continue;
+        if (NuSpecialGetVisibilityFn(&other->special) == 0)
+            continue;
+        NuSpecialGetBounds(&other->special, &minimum, &maximum);
+        NuSpecialGetRadius(&other->special, &centre, &other_radius);
+        centre = *other->position;
+        x = centre.x - position->x;
+        z = centre.z - position->z;
+        sum = x * x + z * z;
+        distance = sum - other_radius * other_radius;
+        if (radius >= distance || 0.0f >= distance)
+            return 1;
+    }
+    return 0;
+}

@@ -4928,3 +4928,37 @@ eight initial direction-bit oracle errors were corrected only after independent
 native `RotDiff`/spinner argument-order verification. No full source EXE launch,
 asset/device success, persistent frame or playable-level milestone is claimed.
 Full machine evidence and remaining contracts are in `transfer-checkpoint.json`.
+
+## Geometry, uniform upload and gameplay providers KK (2026-10-08)
+
+The 329-owner source build adds 41 complete functions/10,024 unique PC bytes,
+with 64 new map rows. Every prior raw map row and extent is retained except the
+reviewed unknown-cache working type refinement described in `data.md`. The
+shader-object C-to-C++ owner conversion preserves its earlier full functions.
+Three real movement calls retain their native guards/order at `4b4d99`,
+`4b4fc9` and `4b4fcf`. Camera publications use semantic selectors decimal 18/19
+and hex `5a/46/47`; no additional parent range credit is assigned.
+
+Geometry producers use genuine allocator, vector/matrix and buffer providers.
+The native `(raw+127)&~255` address operation is retained without an invented
+alignment or arbitrary allocation-capacity guarantee. Weighted basis records
+prove initialized XYZ (36 bytes); their uninitialized W lanes receive no defined
+value or equality claim. The fast path copies all 48 matrix bytes. Public working
+views and owner-local field cohorts retain explicit i386 offset/width assertions.
+
+The uniform path retains the genuine manager/compiler profile, 100 parameter
+slots and 12-byte parameter records. D3D9 float uploads call the actual vertex
+and pixel methods at vtable offsets `178` and `1b4`. The working method-table
+view establishes these accessed offsets, not a full original vtable extent.
+No replacement singleton, compiler, successful device or shader profile is
+provided; positive camera/device execution remains held until real publication.
+
+Every prior exact code/data contract and complete member extent is preserved.
+The unchanged nonexact particle-rendering source has a separately bounded
+717-to-713-byte compiler-output qualification; its complete native extent is
+705 bytes and remains fully compared. Both reload sequences merge the same values before subsequent FP stages. The
+qualification requires stable readable arguments, available x87 stack space and
+masked exceptions; unmasked or asynchronous fault observations are unproven.
+This adds no exact or transfer credit.
+Current complete measurements, domains and evidence pins are in
+`transfer-checkpoint.json`.

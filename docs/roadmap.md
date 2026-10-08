@@ -10,10 +10,13 @@ window/device presentation nor recurring gameplay. Code similarity and mapping
 are separate from runnable milestones; current measurements live in
 [matching.json](../matching.json).
 
-The current source wave also includes connected pushing, ledge and teleport
-motion, title/credits callbacks and geometry readers. Its 156 passing CPU checks
-exercise bounded real providers; they establish no asset/device or gameplay
-success. The next geometry wave supplies the genuine arena/basis/origin producers.
+The verified JJ source checkpoint [`f82fa3b1a06991a621811f893bf6f7864badea9c`](https://github.com/opensagadev/saga-pc/commit/f82fa3b1a06991a621811f893bf6f7864badea9c) has [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37716326923) passing. The current KK
+snapshot adds real geometry arena/basis/origin producers, eight shader uniform
+upload functions, movement/gizmo and mission services. Five camera publications
+call their genuine shader setter; that setter still requires the missing real
+manager/compiler publication. Its 227 passing CPU checks cover reset,
+perspective, initialized geometry basis and conservative guards. Positive camera
+checks remain held. II remains the last full-game observation above.
 
 Work proceeds through connected source families and verified PC contracts:
 

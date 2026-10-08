@@ -89,3 +89,59 @@ void __cdecl TractorBeamCode(GAMEOBJECT *object) {
     }
     PlaySfx("env_tractorbeam_lp", &object->collision_position);
 }
+
+typedef struct TUBE_COOLDOWN_VIEW_PC {
+    u8 unknown_00[0x30];
+    f32 audio_cooldown;
+} TUBE_COOLDOWN_VIEW_PC;
+typedef struct TUBE_ENTRY_VIEW_PC {
+    u8 unknown_000[0x79c];
+    i32 entry_state;
+    void *entry_data;
+} TUBE_ENTRY_VIEW_PC;
+STATIC_ASSERT(offsetof(TUBE_COOLDOWN_VIEW_PC, audio_cooldown) == 0x30);
+STATIC_ASSERT(offsetof(TUBE_ENTRY_VIEW_PC, entry_state) == 0x79c);
+STATIC_ASSERT(offsetof(TUBE_ENTRY_VIEW_PC, entry_data) == 0x7a0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, techno) == 0x798);
+STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
+
+void __cdecl Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
+    TUBE_PC *tube;
+    i32 index;
+    if (LEGOCONTEXT_GLIDE != -1 && object->character_context == LEGOCONTEXT_GLIDE && object->techno != NULL) {
+        if (Tube_InCylinder(object, (TUBE_PC *)object->techno, NULL, 0) == 0)
+            object->techno = NULL;
+        return;
+    }
+    if (LEGOCONTEXT_TUBE == -1)
+        return;
+    if (object->character_context == LEGOCONTEXT_TUBE) {
+        if (Tube_InCylinder(object, (TUBE_PC *)object->techno, NULL, 0) == 0)
+            object->character_context = -1;
+        return;
+    }
+    if ((CInfo[object->character_context].flags & 0x400000) != 0 || world->tubes == NULL)
+        return;
+    tube = world->tubes;
+    for (index = 0; index < world->tube_count; ++index, ++tube) {
+        TUBE_COOLDOWN_VIEW_PC *cooldown;
+        if ((tube->flags & 7) != 3)
+            continue;
+        if (Tube_InCylinder(object, tube, NULL, 0) == 0 &&
+            (((TUBE_ENTRY_VIEW_PC *)object)->entry_state != 5 || ((TUBE_ENTRY_VIEW_PC *)object)->entry_data == NULL))
+            continue;
+        if (LEGOCONTEXT_GLIDE != -1 && object->character_context == LEGOCONTEXT_GLIDE) {
+            object->techno = (TECHNO_PC *)tube;
+            return;
+        }
+        object->techno = (TECHNO_PC *)tube;
+        object->character_context = (i8)LEGOCONTEXT_TUBE;
+        object->jump_variant_state = 0;
+        cooldown = (TUBE_COOLDOWN_VIEW_PC *)tube;
+        if ((object->flags_1fc & 0x80) != 0 && cooldown->audio_cooldown == 0.0f) {
+            cooldown->audio_cooldown = 4.0f;
+            GameAudio_PlaySfx(6, &object->collision_position, 0, 0);
+        }
+        return;
+    }
+}

@@ -2167,3 +2167,22 @@ and origin update publishers are the next connected dependencies.
 Across the wave, all 117 new complete initializer copies are native equal:
 63 already-known extent copies/386 bytes and 54 unknown extent copies/641 bytes.
 Aliases are counted once; the known exact data union remains 637,612 bytes.
+
+## Geometry producer working states KK (2026-10-08)
+
+Thirteen central views add 544 typed/548 complete COFF bytes, all native-equal.
+The default 16-byte origin naturally emits 20 bytes including four native zero
+tail bytes. Each original owning extent remains unknown; full initializer proof
+does not add allocation, capacity or exact-data credit.
+
+The existing canonical `PCDeviceSamplerInvalidation` at `0x0097f9d8` is refined
+from `i32[8][2]` to `i32[16][2]`. The genuine reset loops through 16 pairs to
+`0x0097fa58`; the device stage readers continue using their original eight pairs.
+The full 128 zero bytes equal native storage and retain the original 64-byte
+prefix, symbol, segment and linkage. This remains an unknown-extent working view,
+with no duplicate cache provider. All other 5,805 prior central-owner regions
+stay identical; all 2,150 prior known exact central data copies remain preserved.
+Whole-build coverage includes all 13 member contracts/28 bytes and all earlier
+known exact data. The 45 new complete initializer copies total 797 bytes, all
+native-equal: 21 known/119 bytes and 24 unknown/678 bytes. Their known ranges are
+already covered aliases, so the exact-data union remains 637,612 bytes.

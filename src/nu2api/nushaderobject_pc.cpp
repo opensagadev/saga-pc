@@ -119,3 +119,46 @@ void __cdecl PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const 
     if (pixel_constants != NULL)
         pixel_constants->methods->release(pixel_constants);
 }
+
+void PC_SHADER_PARAMETER_LOCAL_PC::SetScalarValues(i32 first_element, i32 count, const f32 *values) {
+    if ((metadata & 0xf0000000U) == 0x10000000U)
+        PCDeviceSetVertexShaderConstantsF(register_index + first_element, values, count);
+    else
+        PCDeviceSetPixelShaderConstantsF(register_index + first_element, values, count);
+}
+void PC_SHADER_PARAMETER_LOCAL_PC::SetVectorValues(i32 first_element, i32 count, const f32 *values) {
+    if ((metadata & 0xf0000000U) == 0x10000000U)
+        PCDeviceSetVertexShaderConstantsF(register_index + first_element, values, count);
+    else
+        PCDeviceSetPixelShaderConstantsF(register_index + first_element, values, count);
+}
+void PC_SHADER_PARAMETER_LOCAL_PC::SetMatrixValues(i32 first_element, i32 count, const f32 *values) {
+    NUMTX transposed[32];
+    for (i32 i = 0; i < count; ++i)
+        NuMtxTranspose(&transposed[i], (NUMTX *)(values + i * 16));
+    i32 vector_count = count * 4;
+    i32 remaining = (i8)register_count - first_element * 4;
+    if (vector_count > remaining)
+        vector_count = remaining;
+    if ((metadata & 0xf0000000U) == 0x10000000U)
+        PCDeviceSetVertexShaderConstantsF(register_index + first_element * 4, (const f32 *)transposed, vector_count);
+    else
+        PCDeviceSetPixelShaderConstantsF(register_index + first_element * 4, (const f32 *)transposed, vector_count);
+}
+extern "C" void __cdecl NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic, i32 first_element,
+                                                    i32 count, const f32 *values) {
+    PC_SHADER_PARAMETER_LOCAL_PC *parameter = &shader->parameters[semantic];
+    if (parameter->register_index < 0)
+        return;
+    switch (parameter->type_stage & 15) {
+        case 1:
+            parameter->SetScalarValues(first_element, count, values);
+            break;
+        case 2:
+            parameter->SetVectorValues(first_element, count, values);
+            break;
+        case 3:
+            parameter->SetMatrixValues(first_element, count, values);
+            break;
+    }
+}

@@ -318,3 +318,72 @@ extern "C" void __cdecl Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediat
     object->position = object->start_position;
     GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
 }
+
+extern "C" void __cdecl Teleports_Reset(WORLDINFO *world) {
+    TELEPORT_MOTION_PC *teleport = ((TELEPORT_WORLD_PC *)world)->teleports;
+    if (teleport == NULL)
+        return;
+    for (i32 index = 0; index < ((TELEPORT_WORLD_PC *)WORLD)->teleport_count; ++index, ++teleport) {
+        teleport->active = 0;
+        teleport->enabled = 1;
+        for (i32 flap = 0; flap < 2; ++flap) {
+            (&teleport->flap1_target)[flap] = 0;
+            (&teleport->flap1_angle)[flap] = 0;
+        }
+    }
+}
+extern "C" void __cdecl Teleports_UpdateBeforeGameObjects(WORLDINFO *world) {
+    TELEPORT_MOTION_PC *teleport = ((TELEPORT_WORLD_PC *)world)->teleports;
+    if (teleport == NULL)
+        return;
+    for (i32 index = 0; index < ((TELEPORT_WORLD_PC *)WORLD)->teleport_count; ++index, ++teleport) {
+        teleport->flap1_target = teleport->flap2_target = 0;
+    }
+}
+extern "C" void __cdecl Teleports_UpdateAfterGameObjects(WORLDINFO *world) {
+    TELEPORT_MOTION_PC *teleport = ((TELEPORT_WORLD_PC *)world)->teleports;
+    if (teleport == NULL)
+        return;
+    for (i32 index = 0; index < ((TELEPORT_WORLD_PC *)WORLD)->teleport_count; ++index, ++teleport) {
+        for (i32 flap = 0; flap < 2; ++flap) {
+            u16 *angle = &teleport->flap1_angle + flap;
+            *angle = SeekRot(*angle, (&teleport->flap1_target)[flap], 5.0f);
+            NUSPECIALHANDLE *special = &teleport->flap1_special + flap;
+            if (NuSpecialExistsFn(special)) {
+                NUMTX matrix = (&teleport->flap1_matrix)[flap];
+                i32 rotation = *angle;
+                if ((teleport->flags & 8) != 0)
+                    rotation = -rotation;
+                NuMtxPreRotateX(&matrix, rotation);
+                NuSpecialSetDrawMtx(special, &matrix);
+                NuSpecialUpdate(special);
+            }
+        }
+    }
+}
+extern "C" void __cdecl Teleport_NetMoveCode(GAMEOBJECT *object) {
+    if (object->character_context != 15 || object->field_7b3 != 0)
+        return;
+    const u16 rotation = (object->context_variant_flags & 0x400) != 0 ? 0x4000 : 0xc000;
+    for (i32 flap = 0; flap < 2; ++flap) {
+        TELEPORT_MOTION_PC *teleport = (TELEPORT_MOTION_PC *)object->grapple;
+        NUSPECIALHANDLE *special = &teleport->flap1_special + flap;
+        if (NuSpecialExistsFn(special)) {
+            teleport = (TELEPORT_MOTION_PC *)object->grapple;
+            special = &teleport->flap1_special + flap;
+            if (!(NuVecDistSqr(&object->collision_position, NuSpecialGetDrawPos(special), NULL) < 0.36f))
+                continue;
+            teleport = (TELEPORT_MOTION_PC *)object->grapple;
+            (&teleport->flap1_target)[flap] = flap == 0 ? rotation : (u16)-rotation;
+            if ((object->field_7a4 & (1 << flap)) == 0) {
+                object->field_7a4 |= (u16)(1 << flap);
+                PlaySfx("env_door_flap", &object->collision_position);
+            }
+        }
+    }
+}
+
+STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap1_angle) == 0x74);
+STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap2_angle) == 0x76);
+STATIC_ASSERT(sizeof(((TELEPORT_MOTION_PC *)0)->flap1_angle) == 2);
+STATIC_ASSERT(sizeof(((TELEPORT_MOTION_PC *)0)->flap2_angle) == 2);

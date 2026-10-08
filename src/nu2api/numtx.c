@@ -1074,3 +1074,15 @@ void __cdecl NuMtxLookAtZ(NUMTX *m, NUVEC *point) {
     NuVecNorm(&v, &v);
     NuMtxAlignZ(m, &v);
 }
+
+void __cdecl PcGetGeometryPerspectivePc(NUMTX *matrix, f32 *fovy, f32 *aspect, f32 *z_near, f32 *z_far) {
+    f32 q = matrix->m22;
+    f32 near_value = (f32)(-(f64)matrix->m32 / q);
+    f32 reciprocal_y, radians;
+    *z_near = near_value;
+    *z_far = (f32)(((f64)near_value * q) / ((f64)q - 1.0));
+    *aspect = matrix->m11 / matrix->m00;
+    reciprocal_y = 1.0f / matrix->m11;
+    radians = (f32)((f64)(i32)NuAtan2D(reciprocal_y, 1.0f) * PCAtan2RadianScale);
+    *fovy = (f32)((f64)radians * 360.0 / (f64)3.1415927410125732);
+}

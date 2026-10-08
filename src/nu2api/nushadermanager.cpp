@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <string.h>
 
 template <>
 bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *,
@@ -284,4 +285,44 @@ void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *inpu
         desc->flags &= 0xfffffbd7;
         desc->layer_flags &= 0xfffffbd7;
     }
+}
+
+void ShaderManagerHLSL::SetUniformValues(i32 semantic, const f32 *values) {
+    ShaderUniformRecordPc *uniform = &ShaderUniformRecordsPc[semantic];
+    if (compiler->dictionary.profile != 4) {
+        if (uniform->field_18 != 0 || PCShaderCurrentObjectPc() == NULL) {
+            if (uniform->value_count <= 4)
+                memcpy(uniform->values, values, uniform->value_count * 16);
+            else
+                PCShaderCurrentObjectPc();
+        }
+        if ((uniform->field_18 == 0 || uniform->field_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
+            PC_SHADER_OBJECT_FULL_VIEW *bound = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
+            if (bound->parameters[semantic].register_index >= 0)
+                NuShaderObjectSetElementsfv((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc(), semantic, 0, 1,
+                                            values);
+        }
+        return;
+    }
+    NUMTX transposed;
+    const f32 *submitted = values;
+    if (uniform->field_c == 4) {
+        NuMtxTranspose(&transposed, (NUMTX *)values);
+        submitted = (const f32 *)&transposed;
+    }
+    switch (uniform->stage_mask & 3) {
+        case 3:
+            PCDeviceSetVertexShaderConstantsF(uniform->register_index, submitted, uniform->value_count);
+            PCDeviceSetPixelShaderConstantsF(uniform->register_index, submitted, uniform->value_count);
+            break;
+        case 2:
+            PCDeviceSetPixelShaderConstantsF(uniform->register_index, submitted, uniform->value_count);
+            break;
+        case 1:
+            PCDeviceSetVertexShaderConstantsF(uniform->register_index, submitted, uniform->value_count);
+            break;
+    }
+}
+extern "C" void __cdecl NuShaderManagerSetfv(i32 semantic, const f32 *values) {
+    ((ShaderManagerHLSL *)PCShaderSlots)->SetUniformValues(semantic, values);
 }

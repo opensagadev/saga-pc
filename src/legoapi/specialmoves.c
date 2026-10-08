@@ -221,3 +221,19 @@ void __cdecl BackFlipCode(GAMEOBJECT *object) {
         object->velocity.z = 0.0f;
     }
 }
+
+void __cdecl SpecialMove_VictimCode(GAMEOBJECT *object) {
+    if (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM) {
+        if (object->force_target == NULL) {
+            object->character_context = -1;
+            return;
+        }
+        object->context_timer -= FRAMETIME;
+        if (object->context_timer <= 0.0f) {
+            object->character_context = -1;
+            if (object->special_move_pc != -1 &&
+                (((SPECIAL_MOVE_FLAGS_PC *)PlayerSpecialMoveDataPc)[object->special_move_pc].flags & 2) != 0)
+                SpecialMoveApplyDamagePc(object);
+        }
+    }
+}

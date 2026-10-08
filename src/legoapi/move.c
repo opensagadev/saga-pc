@@ -6303,7 +6303,7 @@ after_gravity:
     TightRope_MoveCode(object, jump_pressed); /* Native4b4d7f: object,jump_pressed; TightRope_MoveCode. */
     ForcePushed_MoveCode(object);
     ForcedBackCode(object);
-    STUBBED_NAMED(0x0056d8c0); /* Native4b4d99: object,WORLD; Tube_MoveCode. */
+    Tube_MoveCode(object, WORLD); /* Native4b4d99: true cdecl object,WORLD. */
     DeactivatedCode(object);
     PushCode(object, !StartupGameFlag1 && StartupGameFlag0);
     BackFlipCode(object); /* Native4b4dcb: object; BackFlipCode. */
@@ -6347,11 +6347,11 @@ after_gravity:
             SlowWeaponIn(object);
         }
     }
-    WeaponOutCode(object);     /* Native4b4fb7: object; WeaponOutCode. */
-    WeaponInCode(object);      /* Native4b4fbd: object; WeaponInCode. */
-    WeaponScalingCode(object); /* Native4b4fc3: object; WeaponScalingCode. */
-    STUBBED_NAMED(0x0058b210); /* Native4b4fc9: object; SpecialMove_VictimCode. */
-    STUBBED_NAMED(0x0058e420); /* Native4b4fcf: object; HoldCode. */
+    WeaponOutCode(object);          /* Native4b4fb7: object; WeaponOutCode. */
+    WeaponInCode(object);           /* Native4b4fbd: object; WeaponInCode. */
+    WeaponScalingCode(object);      /* Native4b4fc3: object; WeaponScalingCode. */
+    SpecialMove_VictimCode(object); /* Native4b4fc9: true cdecl object. */
+    HoldCode(object);               /* Native4b4fcf: true cdecl object. */
     STUBBED_NAMED(0x0049e450); /* Native4b4fe9: object EAX +action_pressed,action_held,0,!model_flags80; BlockCode. */
     PunchCode(object, action_pressed, action_held, object->character_data->model_flags & 0x80, 0, 0.0f);
     if ((object->character_data->game_character->flags_094 & 0x20000000) != 0 &&
@@ -7856,4 +7856,67 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
     object->movement_facing_angle = wall_angle + 0x8000;
     object->launch_origin = position;
     object->context_duration = 0.25f;
+}
+
+void __cdecl HoldCode(GAMEOBJECT *object) {
+    if (LEGOCONTEXT_HOLD != -1 && object->character_context == LEGOCONTEXT_HOLD) {
+        if (object->context_timer > 0.0f)
+            object->context_timer -= FRAMETIME;
+        else if ((object->pad->buttons_held & GAMEPAD_ACTION) == 0)
+            object->character_context = -1;
+    }
+}
+
+typedef struct PUSH_SUPPORT_BLOCK_VIEW_PC {
+    u8 unknown_000[0x24];
+    NUSPECIALHANDLE special;
+    GAMEOBJECT *pushing_object;
+    u8 unknown_034[0x58 - 0x34];
+    NUVEC *position;
+    u8 unknown_05c[0xb0 - 0x5c];
+    NUVEC bounds_min, bounds_max;
+    u32 packed_state_flags;
+    u8 unknown_0cc[4];
+    u8 completed_snap_positions;
+    u8 end_position_count;
+    u8 output_count;
+    u8 unknown_0d3;
+} PUSH_SUPPORT_BLOCK_VIEW_PC;
+typedef struct PUSH_SUPPORT_WORLD_VIEW_PC {
+    u8 unknown_000[0x46bc];
+    PUSH_SUPPORT_BLOCK_VIEW_PC *blocks;
+    i32 count;
+} PUSH_SUPPORT_WORLD_VIEW_PC;
+STATIC_ASSERT(sizeof(PUSH_SUPPORT_BLOCK_VIEW_PC) == 0xd4);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, special) == 0x24);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, pushing_object) == 0x30);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, position) == 0x58);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, bounds_min) == 0xb0);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, bounds_max) == 0xbc);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, packed_state_flags) == 0xc8);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, completed_snap_positions) == 0xd0);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, end_position_count) == 0xd1);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, output_count) == 0xd2);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, blocks) == 0x46bc);
+STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, count) == 0x46c0);
+
+i32 __cdecl SnapPosTaken(WORLDINFO *opaque_world, PUSH_BLOCK_PC *block, NUVEC *position, i32 excluded) {
+    PUSH_SUPPORT_WORLD_VIEW_PC *world = (PUSH_SUPPORT_WORLD_VIEW_PC *)opaque_world;
+    i32 count = world->count;
+    i32 i;
+    for (i = 0; i < count; ++i) {
+        PUSH_SUPPORT_BLOCK_VIEW_PC *other;
+        f32 x, y, z;
+        if (i == excluded)
+            continue;
+        other = &world->blocks[i];
+        if ((other->packed_state_flags & 0x02000300u) == 0)
+            continue;
+        x = other->position->x - position->x;
+        y = other->position->y - position->y;
+        z = other->position->z - position->z;
+        if (x * x + y * y + z * z <= (f64)0.002500000176951289f)
+            return 1;
+    }
+    return 0;
 }

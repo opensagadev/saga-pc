@@ -1344,3 +1344,12 @@ void PC_DEVICE_BACKEND_PC::CopyCurrentSurface(GRAPHICS_RENDER_TEXTURE_PC *textur
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     view->methods->stretch_rect(view, current_surface, NULL, target.surface, NULL, resize ? 2 : 1);
 }
+
+extern "C" void __cdecl PCDeviceSetVertexShaderConstantsF(UINT start, const f32 *values, UINT count) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->set_vertex_shader_constant_f(PCDeviceBackend.device, start, values, count);
+}
+extern "C" void __cdecl PCDeviceSetPixelShaderConstantsF(UINT start, const f32 *values, UINT count) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->set_pixel_shader_constant_f(PCDeviceBackend.device, start, values, count);
+}

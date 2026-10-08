@@ -9,14 +9,13 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Latest published source: checkpoint II,
-[`9c78272c5847aef790e82320b0a2401c20906c52`](https://github.com/opensagadev/saga-pc/commit/9c78272c5847aef790e82320b0a2401c20906c52).
-[CI 37710401246](https://github.com/opensagadev/saga-pc/actions/runs/37710401246)
-passed on that exact revision. II has 319 normal source owners; its verified
-source EXE exits 5 at NULL shader Retrieve+16 before a level loads. The observed
-transient window establishes no persistent window, device/Present, recurring
-frames, scene or gameplay milestone. Actual-normal 646 CPU checks cover their
-stated domains, not those milestones. Later scratch proposals are not this release.
+Verified source baseline: JJ, [`f82fa3b1a06991a621811f893bf6f7864badea9c`](https://github.com/opensagadev/saga-pc/commit/f82fa3b1a06991a621811f893bf6f7864badea9c); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37716326923) passed on that exact revision.
+JJ has 324 normal owners. The current KK snapshot has 329 owners and the
+source/checkpoint qualifications below. II remains the last actual full-game
+Wine observation: its source EXE exits 5 at NULL shader Retrieve+16 before a level
+loads. A transient window establishes no persistent window, device/Present,
+recurring frames, scene or gameplay milestone. CPU fixtures exercise their stated
+domains; they do not establish those milestones.
 
 ## Ownership and continuous work
 
@@ -110,6 +109,31 @@ rerun; checkpoint II remains the last full-game runtime observation above.
 
 The separate mapping/documentation cleanup `1c2a569eed9ef6a74ecb7e3bfe316491fd39c457`
 has [all-job exact-revision CI success](https://github.com/opensagadev/saga-pc/actions/runs/37713793616).
-CI for this source checkpoint is verified against its exact pushed SHA separately.
-Next work closes the genuine geometry arena/basis/origin producers and continues
-remaining motion/world providers alongside the unresolved native startup frontier.
+JJ passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37716326923) on the exact pushed revision.
+The next-wave geometry producers are recorded in KK below; remaining motion/world
+providers continue alongside the unresolved native startup frontier.
+
+## Current source checkpoint KK (2026-10-08)
+
+This snapshot adds 41 full PC functions/10,024 unique bytes: geometry producers
+6/3,401, motion 3/847, CPU gizmos 14/2,432, mission readers 6/1,314, uniform upload
+8/808 and push/terrain supports 4/1,222. Three existing movement actions and five
+camera uniform publications now call real providers. Caller reconnections add no
+extra transferred range. The shader-object owner retains its previous bodies
+through its reviewed C-to-C++ conversion.
+
+Required checks pass: 732 tests (three existing skips), LLVM18 format for 356
+files and tidy for 329 units, source build/link, object coverage and full retail
+matching. All prior exact contracts remain preserved. Whole-PC fuzzy code is
+27.558930%; exact code is 219,137 bytes (6.312920%), a 953-byte gain. Known exact
+data stays 637,612 bytes. Mapping is 40.896785% code, 1.796293% data and 5.233282%
+combined code/data section storage.
+
+The actual-normal CPU fixture passes 227/227: reset 120, perspective 16, basis 76
+and conservative guards 15. Its 24 positive camera checks remain held because
+the genuine shader manager/compiler is unpublished. The retained VC8 test-macro
+parse failure was corrected solely by renaming its formal parameter; assertions,
+goldens and engine code stayed fixed. ShowCrashDialog DWORD 0 was set and queried;
+the owned test process group was empty afterward. No source EXE launch, GPU,
+asset or playable-game claim is made. Complete qualification and evidence pins
+remain in [transfer-checkpoint.json](transfer-checkpoint.json).

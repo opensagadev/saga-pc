@@ -1,14 +1,14 @@
 # Current work plan
 
 The [whole-project mandate](../SOL_IMPLEMENTATION_PLAN.md) remains active.
-The latest published source checkpoint is II,
-[`9c78272c5847aef790e82320b0a2401c20906c52`](https://github.com/opensagadev/saga-pc/commit/9c78272c5847aef790e82320b0a2401c20906c52),
-with [exact-revision CI passing](https://github.com/opensagadev/saga-pc/actions/runs/37710401246).
-The current JJ source wave integrates pushing, ledges, teleport, title/credits
-callbacks and geometry readers: 23 functions/16,291 PC bytes, with required local
-checks and 156 bounded CPU checks passing. Its complete qualifications are in
-[transfer-checkpoint.json](transfer-checkpoint.json). II remains the last full-game
-runtime observation. Later shadow proposals remain candidates. Use [matching.json](../matching.json) for current comparisons.
+The verified baseline is JJ, [`f82fa3b1a06991a621811f893bf6f7864badea9c`](https://github.com/opensagadev/saga-pc/commit/f82fa3b1a06991a621811f893bf6f7864badea9c), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37716326923) passing.
+The current KK source snapshot adds 41 functions/10,024 PC bytes across genuine
+geometry producers, shader uniform uploads, movement, gizmos and mission loading.
+Required local checks and 227 bounded CPU checks pass; complete release
+qualifications are in [transfer-checkpoint.json](transfer-checkpoint.json).
+II remains the last full-game runtime observation. Genuine shader-manager
+publication is still missing. Use [matching.json](../matching.json) for current
+comparisons; later scratch packets remain candidates.
 
 1. Close genuine shader-manager publication, parser/compiler lifetime and device
    dependencies at the observed startup frontier. Preserve true constructors,
