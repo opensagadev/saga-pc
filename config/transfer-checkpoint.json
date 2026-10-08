@@ -30270,6 +30270,321 @@
         "build/analysis/runtime-geometry-producer-next/runtime-acceptance-v3.json": "10eff5ab55957c1f07371f812e68ad42831bc17035bed8c1102a809a5db47fe7",
         "build/analysis/geometry-producer-integration/normalfinal-grant.json": "79bc672c346aa8a55f71eb079f17fa4fd5504b5a6d3336880d46b8ab1fca7696"
       }
+    },
+    {
+      "checkpoint": "Lever, streaming, mission menus, push and hat families LL (2026-10-08)",
+      "publication_status": "All local source, storage, whole-output and runtime gates passed; exact pushed-revision CI pending",
+      "baseline_commit": "46553c7b0b578ee4499876abc63aecd7df0be442",
+      "baseline_CI_exact_revision_success": {
+        "run": 37722186370,
+        "url": "https://github.com/opensagadev/saga-pc/actions/runs/37722186370"
+      },
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1418434,
+        "matched_code_bytes": 219137,
+        "matching_percent": 6.312920490221667,
+        "fuzzy_coverage_percent": 27.55893042941406,
+        "mapped_functions": 4886,
+        "matched_functions": 2207,
+        "objdiff_fuzzy_percent": 69.07882,
+        "objdiff_total_code": 1385722,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2066634,
+        "mapping_percent": 5.1579361726257416,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1419628
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30182
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9196,
+        "mapping_unknown_size_symbols": 5081,
+        "mapping_code_bytes": 1419628,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 40.89678461278746,
+        "mapping_data_bytes": 647006,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7962925421012919,
+        "mapping_code_data_bytes": 2066634,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.233281604059254,
+        "matched_data_region_bytes": 637612
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1443936,
+        "matched_code_bytes": 221357,
+        "matching_percent": 6.3768744710112735,
+        "fuzzy_coverage_percent": 28.075228176566213,
+        "mapped_functions": 4960,
+        "matched_functions": 2233,
+        "objdiff_fuzzy_percent": 69.100464,
+        "objdiff_total_code": 1411224,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2092136,
+        "mapping_percent": 5.2215844471989366,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1445130
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30182
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9270,
+        "mapping_unknown_size_symbols": 5148,
+        "mapping_code_bytes": 1445130,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 41.6314487650832,
+        "mapping_data_bytes": 647006,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7962925421012919,
+        "mapping_code_data_bytes": 2092136,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.297859631647458,
+        "matched_data_region_bytes": 637612
+      },
+      "new_source_functions": 74,
+      "actual_new_transfer_PC_bytes": 25502,
+      "new_unique_compared_PC_bytes": 25502,
+      "unique_compared_code_bytes": 1410603,
+      "native_objdiff_denominator": 1411224,
+      "overlap_bytes": 621,
+      "new_exact_PC_bytes": 2220,
+      "new_exact_functions": 26,
+      "whole_PC_fuzzy_delta_pp": 0.516297747152155,
+      "source_families": {
+        "lever": {
+          "functions": 21,
+          "native_bytes": 4472
+        },
+        "streaming": {
+          "functions": 5,
+          "native_bytes": 1453
+        },
+        "mission_menu": {
+          "functions": 5,
+          "native_bytes": 2425
+        },
+        "push": {
+          "functions": 23,
+          "native_bytes": 9546
+        },
+        "hat": {
+          "functions": 20,
+          "native_bytes": 7606
+        }
+      },
+      "old_full_function_copies": 4720,
+      "old_full_data_regions": 10580,
+      "old_exact_code_copies_preserved": 2211,
+      "old_known_extent_exact_data_compiled_copies_preserved": 5480,
+      "current_full_function_definitions": 4794,
+      "current_full_data_definitions": 10746,
+      "normal_objects": 331,
+      "frozen_inputs": 369,
+      "members_preserved": 13,
+      "known_member_bytes": 28,
+      "new_complete_initializer_copies": 166,
+      "new_complete_initializer_COFF_bytes": 1645,
+      "new_known_extent_initializer_copies": 95,
+      "new_known_extent_initializer_COFF_bytes": 606,
+      "new_unknown_extent_initializer_copies": 71,
+      "new_unknown_extent_initializer_COFF_bytes": 1039,
+      "unknown_extent_exact_and_allocation_credit": 0,
+      "new_central_working_definitions": 31,
+      "new_central_typed_bytes": 138,
+      "new_central_full_bytes_including_two_natural_literals": 161,
+      "known_exact_data_union_before_transfer": 637612,
+      "known_exact_data_union_after_transfer": 637612,
+      "old_caller_connections": 2,
+      "old_caller_new_unique_credit": 0,
+      "caller_connections": [
+        "Move_CHARACTER native4b4e8b to real HatMachine_MoveCode",
+        "Move_CHARACTER native4b4ebd to real Lever_MoveCode"
+      ],
+      "qualified_previous_nonexact_function_changes": [
+        {
+          "unit": "src/legoapi/camera.c",
+          "symbol": "_GameCameraMakeMiniCut3",
+          "old_bytes": 1709,
+          "new_bytes": 1789,
+          "old_official_sha256": "c4a2ffcc805ea325522e28caeac1d6b1b35d4a295403f310d9498f0ce7dab19c",
+          "new_official_sha256": "4382fb31517118bb3ecc2395e3613371dbcf77baa069534c76ff89bd7be28a0f"
+        },
+        {
+          "unit": "src/legoapi/debris_engine.c",
+          "symbol": "_DebReAlloc2",
+          "old_bytes": 1458,
+          "new_bytes": 1458,
+          "old_official_sha256": "edf80808af3e18df2e1fa30a0a586a786f18ea7c037e3abe4930e3f2f70cb72c",
+          "new_official_sha256": "7a9dd072b10096065a1148d37ec82121b269a8655d0d5e8980b79cdc63fb6a77"
+        },
+        {
+          "unit": "src/legoapi/move.c",
+          "symbol": "_Move_CHARACTER",
+          "old_bytes": 1179,
+          "new_bytes": 1208,
+          "old_official_sha256": "0ebb975c279d87c19e56319ffc76645a57601e79c4fa0117fcdccfb4d5df9711",
+          "new_official_sha256": "39a3c57b746c1f85ba991064928a1272c9abbf3c82a4819b50f26d9e25f4ed37"
+        },
+        {
+          "unit": "src/nu2api/nuparticle_runtime.c",
+          "symbol": "_NuRndrParticleGroup",
+          "old_bytes": 713,
+          "new_bytes": 717,
+          "old_official_sha256": "4aec3d49d650a845629f9b7c72ccf7e63cd616033532557f6605fcfa8b54b7e9",
+          "new_official_sha256": "8e4cfb2614f860e8911b830282ca6165ce1a173ed9ec0cc1a4e175d532f99a25"
+        }
+      ],
+      "qualified_unknown_extent_data_changes": [
+        {
+          "unit": "src/data.cpp",
+          "symbol": "_PushBlockFacingTolerancePc",
+          "old_bytes": 2,
+          "new_bytes": 4,
+          "original_extent": null,
+          "exact_and_allocation_credit": 0
+        },
+        {
+          "unit": "src/data.cpp",
+          "symbol": "_PcGeometryDefaultOriginPc",
+          "old_bytes": 20,
+          "new_bytes": 16,
+          "original_extent": null,
+          "exact_and_allocation_credit": 0
+        }
+      ],
+      "qualified_compiler_local_class6_type0_serial_changes": [
+        {
+          "unit": "src/legoapi/move.c",
+          "symbol": "_MovePlayer_DIRECTIONAL"
+        },
+        {
+          "unit": "src/legoapi/move.c",
+          "symbol": "_PunchCode"
+        },
+        {
+          "unit": "src/nu2api/nufpar.c",
+          "symbol": "_GetLineW"
+        },
+        {
+          "unit": "src/nu2api/pc_device.cpp",
+          "symbol": "_PCDeviceSetRenderState"
+        },
+        {
+          "unit": "src/nu2api/shader_dictionary.cpp",
+          "symbol": "?EmitAttribute@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z"
+        }
+      ],
+      "required_checks": {
+        "tests": 732,
+        "skipped": 3,
+        "LLVM18_format_files": 358,
+        "LLVM18_tidy_units": 331,
+        "source_build": 0,
+        "objects": 0,
+        "retail_match": 0
+      },
+      "selected_CPU_checks": 264,
+      "selected_CPU_failures": 0,
+      "runtime": {
+        "sections": {
+          "lever": 86,
+          "player_readers": 23,
+          "streaming": 32,
+          "menu": 19,
+          "push": 104
+        },
+        "replacements": 0,
+        "supplements": 0,
+        "additional_engine_providers": 0,
+        "source_EXE_repeated": false,
+        "device_asset_gameplay_or_Hat_claim": false,
+        "ShowCrashDialog": 0,
+        "owned_test_processes_remaining": 0,
+        "elapsed_seconds": 6.332,
+        "exit_code": 0,
+        "timed_out": false,
+        "retained_execution_preflight_failures": true,
+        "initial_link_failure": "Win32 command length34919 exceeded CreateProcess limit; exact same argument sequence packaged in ordinary VC8 response file.",
+        "parser_correction": "Anchored section-name regex on immutable stdout; no fixture, assertions, engine change or rerun."
+      },
+      "source_qualifications": [
+        "Hat WORD equality uses native unsigned16 bit comparison, includingFFFF/8000; rejected signed version retained.",
+        "Hat Draw complete3748 native extent includes four tables; candidate has three natural tables; source phase49152 retained.",
+        "Push uses native f32 spills/bit absolute stages and FMUL thenFCHS; two genuine missing VOID reset actions remain explicit.",
+        "Menu retains three genuine missing VOID actions; no private icon/alpha numeric or drawing/runtime claim.",
+        "Streaming CPU selection does not establish queued asset/world loading.",
+        "Full28+NULL gizmo registration parents remain held; three supplied registrars do not replace complete parent tables.",
+        "Unknown storage owning extents stay blank; the two specific natural data-tail pairs receive zero extent credit."
+      ],
+      "remaining_contracts": [
+        "Genuine shader-manager/compiler publication, parser helpers and device presentation",
+        "Complete ordered gizmo registration parents and real terrain/animation/resource lifetime",
+        "Character fixup callbacks and true default record initializer",
+        "Actual world/asset streaming, save/menu action providers and recurring gameplay"
+      ],
+      "next_wave": "Reviewed GizObstacles6/1377, character list892 and movement970; Tubes/Plugs signed-WORD correction and genuine MiniCut group53/5281 await combined source/interface/storage gate. Rebase current prefixes and close canonical pointer storage before activation.",
+      "checkpoint_delay": "Coherent74 function integration, exact actual331 validation, two finite data-tail reviews and three explicit unchanged-source nonexact output pair reviews; no flags/matcher/body tuning.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "active; checkpoint does not finish whole-project reconstruction",
+      "evidence_pins": {
+        "build/analysis/endpoint-LL-review/holding-output-and-report-proof.json": "cfc462ef6b8b503173bee71465277aedf97a964385cc2d14626d2b6429aeec9b",
+        "build/analysis/endpoint-LL-review/accepted-complete-functions.json": "aaf6f0c31d4f835e3a6daef95ae00d629409c4cf280ddac854f5c2c94c7efa19",
+        "build/analysis/connected-wave-LL/first-normal-validation-receipt.json": "91b50866dece50ba193c6ce514f210aff2c7a1b9afd9770cb5f2c721234055b7",
+        "build/analysis/connected-wave-LL/first-normal-input-manifest.json": "29ec602d128794c0871102d377df0921bf54da5d63b024375a590c2a8b3a6742",
+        "build/analysis/connected-wave-LL/first-normal-object-manifest.json": "dbc738d409c8aa3c6a5741a5f7ea9a4efa2fb6d8aa91915e80be1dc0192c5e9f",
+        "build/analysis/connected-wave-LL-independent-review/accepted-final74-v2-integration.json": "c486c1ed30e349b1fb9ac11d8959b6b4c3c28270febc3aa5a70e73c4222a263f",
+        "build/analysis/combined31-storage-independent-review/accepted-packet.json": "01a96ab7a0dba5b0d80ee7da96fa5ff9b2c4216f3a06a7e48142b0b3734f8240",
+        "build/analysis/checkpoint-LL/data-integration.json": "4d0959d20005d7a7954821f8de40907d3ed444cd6994d525627446337d55a69d",
+        "build/analysis/runtime-lever-stream-menu-push-next/runtime-acceptance-LL.json": "fddedd2312751ad38bf7687307d0840737c52bd6131e60309e12a3a58ab557eb",
+        "build/analysis/endpoint-LL-camera-deb-recurrence-review/accepted-recurrence-packet.json": "95027731cfd0e12ce5860f001523af3e8cdde2233efcd88080857c6f6352a9ba",
+        "build/analysis/mac2-evidence/symbol-size-estimates/receipt.json": "d9eaa89e07a904f122ca6f65e81252e0bdc21a0c28f47ad98ba65544a1ca1ff0",
+        "build/analysis/endpoint-LL-review/accepted-first-endpoint.json": "a5f798e3fac199beb8dc7af9abc85bdb9703470ae87f55e86ca05a760cb48a98",
+        "build/analysis/endpoint-LL-particle-pair-review/accepted-pair-receipt.json": "017a5c2bacc21bf4642a5bd686680abf77c6886541577c3f463c268eb94f4a15"
+      },
+      "prior_nonexact_pair_domains": [
+        "Camera exact DD-to-EE recurrence: initialized accessible nonaliasing camera records, commandcount0..32, genuine callees, finite ordinary f32 duration/masked x87 with no FP environment observation; original excluded invalid/unmasked domains remain unclaimed.",
+        "DebReAlloc2 exact DD-to-EE recurrence: initialized key/effect/free/render/control counts without overflow, disjoint accessible allocations and saved slots, two0/32768 x87 initialization lanes and synchronous execution; invalid/aliasing/overflow domains remain unclaimed.",
+        "Particle exact KK713-to-LL717: stable readable valid arguments, four free x87 entries at reload, masked exceptions, no observation of undefined FXCH condition bits/intermediate stack or asynchronous mutation; sequences merge [a,b,c,near_clip], same186 outside instructions/branches and34 named-applied bindings. Unmasked load-order faults/invalid stack remain excluded; both nonexact against fullnative705. LL717 is II-old/HH variant, not geometry717."
+      ]
     }
   ]
 }

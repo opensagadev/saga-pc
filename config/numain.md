@@ -849,7 +849,7 @@ Area/FreePlay, accessory and expression families are now real compared source.
 Area's already-ready resource suppliers are connected; unready particle/music/
 draw/input actions remain explicit markers. Source-only entry still reaches a
 NULL shader-manager Retrieve receiver before world/scene loading. ActualEXE
-exit5/3.319s at source5058e0,+16/full208 is retained, with ShowCrashDialog0 and
+exit 5/3.319s at source5058e0,+16/full208 is retained, with ShowCrashDialog0 and
 no owned game/fixture/debugger/dialog leftovers. No window/Present/repeated
 frames/scene/gameplay milestone is inferred from matching or CPU tests.
 
@@ -887,7 +887,7 @@ not establish real loaded scenes or safe arena capacity. Native wall cursor and
 rotating NULL-matrix hazards remain in source.
 
 The authentic source EXE still exits5 at NULL Retrieve receiver, +16/full208.
-ShowCrashDialog DWORD0 and launch-private cleanup leave no owned game/debugger
+ShowCrashDialog DWORD 0 and launch-private cleanup leave no owned game/debugger
 process or crash dialog. Persistent window, input/device setup, Present, repeated
 frames, loaded world and gameplay remain unverified. Matching retains priority.
 Next are accepted terrain consumers/draw14/8,171, cutscene11 additional5,984 and
@@ -912,7 +912,7 @@ Three previously skipped authentic hardware calls are restored: input/graphics
 capability configuration, render-buffer descriptors and warning/debug state
 initialization. The actual source EXE still exits 5 after 3.314 seconds at NULL
 Retrieve receiver +16/full208 (source fault 0x507a60, native method 0x741750).
-Own-prefix ShowCrashDialog DWORD0 and launch-private cleanup leave no owned
+Own-prefix ShowCrashDialog DWORD 0 and launch-private cleanup leave no owned
 game/debugger process or visible crash dialog. Window, input/device, Present,
 repeated frames, scene loading and gameplay remain unverified.
 
@@ -939,7 +939,7 @@ texture lifetime. All313 real source providers plus only fixture addition,
 zero replacements/supplements,431 inputs and six artifacts remain unchanged.
 Compiler/backend source review does not establish positive D3DX/GPU output.
 Authentic source EXE still exits5 after3.489 seconds at NULL Retrieve+16/full208,
-source0x5087e0/native0x741750. Own-prefix ShowCrashDialog DWORD0 and private
+source0x5087e0/native0x741750. Own-prefix ShowCrashDialog DWORD 0 and private
 cleanup leave no owned game/debugger process or crash window. Window/device/
 Present/repeated frames/loaded scenes/gameplay remain unverified. Shader manager
 publication, parser helper/lifetime closure and embedded-source provenance
@@ -953,7 +953,7 @@ Geometry valid finite domains exclude native wall count>=3 nontermination and
 NULL-node/nonempty removal. Music status/error/prepare_only/subtrack1/-1f/NaN
 checks use genuine suppliers but establish no audio/asset success. Authentic
 source EXE still exits5/4.230s at NULL Retrieve+16/full208, source0x508830.
-ShowCrashDialog DWORD0 and private cleanup leave no owned crash dialog/debugger
+ShowCrashDialog DWORD 0 and private cleanup leave no owned crash dialog/debugger
 or game. Window/device/Present/frames/scene/gameplay remain unverified.
 
 Music value suppliers unlock the true cutscene staging statuses; controller activation remains separately gated. No alternate startup entry, fake device/COM provider, forced publisher or runtime guard was introduced.
@@ -1044,3 +1044,21 @@ are disabled and final owned-window/process inventories are empty. Keep closing
 genuine shader publisher/parser and device/reset/provider gaps; never substitute
 a pointer/guard bypass. Source script callbacks still have real action/condition
 definition omissions; the15 connected caller actions add zero new unique coverage.
+
+### Connected source snapshot LL (2026-10-08)
+
+Move_CHARACTER now invokes genuine HatMachine_MoveCode and Lever_MoveCode at
+native action sites 4b4e8b/4b4ebd. The new lifecycle/Draw, push, mission-menu and
+streaming families add 25,502 compared PC bytes; the parent reconnects receive no
+additional transferred credit. All required local checks pass for 331 owners;
+actual-normal bounded CPU fixtures pass 264 assertions with no replacement providers.
+They do not establish real worker asset loading, positive Hat drawing, device
+presentation or recurring gameplay. Native registration parents still require
+all 28 ordered callback values plus NULL before activation.
+
+No new source-game EXE launch was made. II remains the last observed full-game
+frontier: exit 5 at NULL shader Retrieve+16 before level loading. Genuine manager/
+compiler publication and its real constructors/returned values remain required.
+Automated fixture launch set and queried ShowCrashDialog DWORD 0 and left no owned
+processes. Specific old nonexact compiler outputs retain finite reviewed qualifications;
+exact pushed-revision CI is pending. This does not alter the startup frontier.

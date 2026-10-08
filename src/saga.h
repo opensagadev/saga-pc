@@ -1458,6 +1458,26 @@ STATIC_ASSERT(sizeof(AREA_SAVE_PICKUP_PC) == 0xc);
 STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, minikit_count) == 9);
 STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, red_brick_collected) == 0xa);
 
+typedef struct MISSION_MENU_PACKET_PC {
+    i16 player_model[2];
+    u8 active_player[2];
+    u8 reserved[2];
+    u8 selected[2];
+} MISSION_MENU_PACKET_PC;
+STATIC_ASSERT(sizeof(MISSION_MENU_PACKET_PC) == 0xa);
+STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, player_model) == 0);
+STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, active_player) == 4);
+STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, reserved) == 6);
+STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, selected) == 8);
+
+typedef struct MISSION_SAVE_READER_PC {
+    f32 best_times[20];
+    u8 completed[20];
+} MISSION_SAVE_READER_PC;
+STATIC_ASSERT(sizeof(MISSION_SAVE_READER_PC) == 0x64);
+STATIC_ASSERT(offsetof(MISSION_SAVE_READER_PC, best_times) == 0);
+STATIC_ASSERT(offsetof(MISSION_SAVE_READER_PC, completed) == 0x50);
+
 typedef struct gamesave_s {
     union {
         u32 unknown_0000;
@@ -1476,7 +1496,9 @@ typedef struct gamesave_s {
     u16 customizer_cape_piece;
     u8 unknown_7c30[0x36];
     u16 customizer_secondary_cape_piece;
-    u8 unknown_7c68[0x1e4];
+    u8 unknown_7c68[0x2c];
+    MISSION_SAVE_READER_PC mission_save;
+    u8 unknown_7cf8[0x154];
 } GAMESAVE;
 STATIC_ASSERT(offsetof(GAMESAVE, difficulty) == 0x1);
 STATIC_ASSERT(sizeof(GAMESAVE) == 0x7e4c);
@@ -1484,6 +1506,8 @@ STATIC_ASSERT(offsetof(GAMESAVE, options_save) == 4);
 STATIC_ASSERT(offsetof(GAMESAVE, customizer_weirdo_flags) == 0x7c1b);
 STATIC_ASSERT(offsetof(GAMESAVE, customizer_cape_piece) == 0x7c2e);
 STATIC_ASSERT(offsetof(GAMESAVE, customizer_secondary_cape_piece) == 0x7c66);
+STATIC_ASSERT(offsetof(GAMESAVE, mission_save) == 0x7c94);
+STATIC_ASSERT(offsetof(GAMESAVE, mission_save) + offsetof(MISSION_SAVE_READER_PC, completed) == 0x7ce4);
 
 typedef struct playerprogress_s {
     u32 coins;
@@ -18451,6 +18475,122 @@ extern "C" {
     i32 __cdecl OtherBlockInRange(WORLDINFO *, PUSH_BLOCK_PC *, NUVEC *, i32);
     i32 __cdecl SnapPosTaken(WORLDINFO *, PUSH_BLOCK_PC *, NUVEC *, i32);
     i32 __cdecl TerrainBlockOnBlock(WORLDINFO *, PUSH_BLOCK_PC *, NUVEC *, f32 *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    struct add_gizmo_config_type_pc_s;
+    struct add_gizmo_config_type_pc_s *__cdecl Levers_RegisterGizmo(i32 type_id);
+    extern char *LeverTypeNamePtrPc;
+    extern char *LeverOutputDownNamePtrPc;
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    u8 __cdecl FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, f32 *distance_squared,
+                                      u8 require_character_flags, u32 character_flags);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 __cdecl Players_AveragePos(NUVEC *, SOCKPOSITION_PC *);
+    i16 __cdecl StreamingInsideLineXZPc(f32, f32, f32, f32, f32, f32);
+    BGPROCINFO *__cdecl bgGetProcActive(void);
+    void __cdecl LevelStreaming_Update(WORLDINFO *);
+    extern i32 LEGOSPL_SPLIT, other_level_override;
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl EndMissionsMenu(void);
+    void __cdecl MenuInitMissions(MENU *);
+    void __cdecl MenuUpdateMissions(MENU *);
+    void __cdecl MenuDrawMissions(MENU *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    PUSH_BLOCK_PC *__cdecl BlockInBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, PUSH_BLOCK_PC **);
+    void __cdecl MoveBlocksOverBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
+    void __cdecl MoveBlocks(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
+    void __cdecl UpdatePushBlocks(void *, void *, f32);
+    extern f32 PushVelocitySeekRatePc;
+    extern f32 PushFallingSpeedPc;
+    extern f32 PushCornerInsetPc;
+    extern f32 PushGroundOffsetPc;
+    extern f32 PushRumblePeriodPc;
+    extern f32 PushRumbleWindowPc;
+    extern f32 PushBlockOverlapShrinkPc;
+    extern i32 PushBlockHintIdPc;
+    void __cdecl KnockPushBlock(PUSH_BLOCK_PC *, NUVEC *);
+    PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *, NUVEC *, f32);
+    char *__cdecl NuIToA(i32, char *, i32);
+    extern char *PushBlocksNamePc;
+
+    void *__cdecl GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i32 LEGOSPL_SPLIT;
+    extern i32 other_level_override;
+    extern char *LeverTypeNamePtrPc;
+    extern char *LeverOutputDownNamePtrPc;
+    extern MISSION_MENU_PACKET_PC MissionMenuPacketPc;
+    extern f32 MissionMenuReturnDelayPc;
+    extern TIMER JoinInTimer;
+    extern f32 MissionIconGapPc;
+    extern f32 MissionIconStepPc;
+    extern i16 MissionMenuInstructionTextPc;
+    extern f32 MissionIconBaseSizePc;
+    extern f32 MissionIconSelectedSizePc;
+    extern f32 MissionIconYPc;
+    extern f32 MissionNameYPc;
+    extern f32 MissionNameScalePc;
+    extern f32 MissionBestTimeXPc;
+    extern f32 MissionBestTimeYPc;
+    extern f32 MissionBestTimeScalePc;
+    extern f32 MissionDropInAlphaPc;
+    extern f32 MissionPlayerIconSizePc;
+    extern i16 id_PRINCESSLEIABOUSHH;
+    extern i32 hatmachine_gizmotype_id;
+    extern f32 PushRumbleWindowPc;
+    extern f32 PushRumblePeriodPc;
+    extern f32 PushFallingSpeedPc;
+    extern f32 PushVelocitySeekRatePc;
+    extern f32 PushGroundOffsetPc;
+    extern f32 PushCornerInsetPc;
+    extern i32 PushBlockHintIdPc;
+    extern f32 PushBlockOverlapShrinkPc;
+    extern char *PushBlocksNamePc;
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    /* Within the existing extern C declaration block; current HATMACHINE_PC is already forward-declared. */
+    void __cdecl HatMachine_MoveCode(WORLDINFO *, GAMEOBJECT *, i32);
+    struct add_gizmo_config_type_pc_s *__cdecl HatMachine_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif

@@ -167,3 +167,547 @@ void __cdecl Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         ((GIZMO_LEVER_PC *)object->grapple)->auto_reset_timer = 0.0f;
     }
 }
+
+typedef struct gizmo_config_functions_pc_s {
+    i16 options;
+    u16 padding;
+    i32(__cdecl *get_max_gizmos)(void *world);
+    void *add_gizmos;
+    void(__cdecl *early_update)(void *world, void *data, f32 delta_time);
+    void(__cdecl *late_update)(void *world, void *data, f32 delta_time);
+    void(__cdecl *draw)(void *world, void *data, f32 delta_time);
+    void(__cdecl *panel_draw)(void *world, void *data, f32 delta_time);
+    void *get_gizmo_name;
+    void *get_output;
+    void *get_output_name;
+    void *get_num_outputs;
+    void *activate;
+    void *activate_reverse;
+    void *set_visibility;
+    void *get_visibility;
+    void *get_pos;
+    void *using_special;
+    void *bolt_hit_plat;
+    void *get_best_bolt_target;
+    void *bolt_hit;
+    void *(__cdecl *allocate_progress_data)(VARIPTR *buffer, VARIPTR *end);
+    void(__cdecl *clear_progress)(void *world, void *progress);
+    void(__cdecl *store_progress)(void *world, void *data, void *progress);
+    void(__cdecl *reset)(void *world, void *data, void *progress);
+    void *(__cdecl *reserve_buffer_space)(void *world);
+    i32(__cdecl *load)(void *world, void *data);
+    void(__cdecl *post_load)(void *world, void *data);
+    void *add_level_sfx;
+} GIZMO_CONFIG_FUNCTIONS_PC;
+STATIC_ASSERT(sizeof(GIZMO_CONFIG_FUNCTIONS_PC) == 0x70);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 4);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
+
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, options) == 0x0);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 0x4);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_gizmos) == 0x8);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_gizmo_name) == 0x1c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output) == 0x20);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output_name) == 0x24);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_num_outputs) == 0x28);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_visibility) == 0x38);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_pos) == 0x3c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, using_special) == 0x40);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit_plat) == 0x44);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_best_bolt_target) == 0x48);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit) == 0x4c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, clear_progress) == 0x54);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_level_sfx) == 0x6c);
+
+typedef struct add_gizmo_config_type_pc_s {
+    char *name;
+    char *prefix;
+    GIZMO_CONFIG_FUNCTIONS_PC functions;
+} ADD_GIZMO_CONFIG_TYPE_PC;
+STATIC_ASSERT(sizeof(ADD_GIZMO_CONFIG_TYPE_PC) == 0x78);
+STATIC_ASSERT(offsetof(ADD_GIZMO_CONFIG_TYPE_PC, functions) == 8);
+
+typedef struct LEVER_PROGRESS_PC {
+    u32 pulled_down, enabled, visible;
+} LEVER_PROGRESS_PC;
+STATIC_ASSERT(sizeof(LEVER_PROGRESS_PC) == 12);
+STATIC_ASSERT(offsetof(LEVER_PROGRESS_PC, enabled) == 4);
+STATIC_ASSERT(offsetof(LEVER_PROGRESS_PC, visible) == 8);
+STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, name) == 0x58);
+STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, idle_animation_timer) == 0x74);
+STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, auto_reset_delay) == 0x80);
+STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, model_special_index) == 0x8a);
+STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, animation_frame) == 0x8e);
+STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, terrain_pitch) == 0x90);
+STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, terrain_roll) == 0x92);
+STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, model_variant) == 0x96);
+extern ADD_GIZMO_CONFIG_TYPE_PC Default_ADDGIZMOTYPE;
+extern i32 lever_gizmotype_id;
+extern char *LeverTypeNamePtrPc;
+extern char *LeverOutputDownNamePtrPc;
+void *__cdecl GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
+static void __cdecl Levers_Draw(void *, void *, f32);
+static void Lever_SelectModel(GIZMO_LEVER_PC *lever) {
+    if (lever->model_variant == 'r')
+        lever->model_special_index = 0x22;
+    else if (lever->model_variant == 'o')
+        lever->model_special_index = 0x21;
+    else if (lever->model_variant == 'y')
+        lever->model_special_index = 0x20;
+    else if (lever->model_variant == 'b')
+        lever->model_special_index = 0x23;
+    else if (lever->model_variant == 'g')
+        lever->model_special_index = 0x24;
+    else if (lever->model_variant == 'p')
+        lever->model_special_index = 0x25;
+    else if (lever->model_variant == 'w')
+        lever->model_special_index = 0x26;
+    else if (lever->model_variant == 'u')
+        lever->model_special_index = 0x27;
+    else if (lever->model_variant == 'l')
+        lever->model_special_index = 0x28;
+}
+static void Lever_Reset(GIZMO_LEVER_PC *lever) {
+    NUVEC target;
+    f32 height;
+    Lever_SelectModel(lever);
+    lever->floor_position.y = 0.0f;
+    lever->floor_position.x = 0.0f;
+    lever->floor_position.z = 0.1441f;
+    NuVecRotateY(&lever->floor_position, &lever->floor_position, lever->yaw + 0x8000);
+    NuVecAdd(&lever->floor_position, &lever->floor_position, &lever->position);
+    Lever_GetAbsTargetPos(lever, &target);
+    target.y = lever->position.y;
+    lever->floor_position.y = GameShadow(NULL, &lever->floor_position, 0.2f, -1);
+    height = GameShadow(NULL, &target, 0.2f, -1);
+    lever->target_offset.y = height;
+    if (height != 2000000.0f) {
+        lever->target_offset.y = (f64)height + (f64)0.005f;
+        FindAnglesZX(&ShadNorm, &lever->terrain_pitch, &lever->terrain_roll);
+    }
+    lever->flags |= 0x90;
+    lever->animation_frame = 0;
+    if ((lever->flags & 2) == 0 || (lever->flags & 0x20) == 0) {
+        lever->pull_progress = 0.0f;
+        lever->auto_reset_timer = 0.0f;
+        lever->flags &= 0xefb0;
+    }
+    NuMtxSetRotationY(&lever->matrix, lever->yaw);
+    NuMtxTranslate(&lever->matrix, &lever->position);
+}
+static i32 Levers_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    return world == NULL ? 0 : world->current_level->max_levers;
+}
+static char *Lever_GetGizmoName(GIZMO_PC *gizmo) {
+    return gizmo == NULL ? NULL : ((GIZMO_LEVER_PC *)gizmo->object)->name;
+}
+static i32 Lever_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    GIZMO_LEVER_PC *lever;
+    (void)mode;
+    lever = (GIZMO_LEVER_PC *)gizmo->object;
+    if ((lever->flags & 0x80) == 0)
+        return 0;
+    if (output == 0)
+        return Lever_FullyPulledDown(lever);
+    if (output == 1)
+        return (lever->flags & 4) != 0 && Lever_FullyPulledDown(lever);
+    if (output == 2)
+        return (lever->flags & 8) != 0 && Lever_FullyPulledDown(lever);
+    return 0;
+}
+static char *Lever_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    (void)gizmo;
+    if (output == 1)
+        return "Down(Goodie)";
+    if (output == 2)
+        return "Down(Baddie)";
+    return output == 0 ? LeverOutputDownNamePtrPc : NULL;
+}
+static i32 Lever_GetNumOutputs(GIZMO_PC *gizmo) {
+    (void)gizmo;
+    return 3;
+}
+static void Lever_Activate(GIZMO_PC *gizmo, i32 enabled) {
+    GIZMO_LEVER_PC *lever;
+    if (gizmo == NULL || gizmo->object == NULL)
+        return;
+    lever = (GIZMO_LEVER_PC *)gizmo->object;
+    lever->flags = (lever->flags & ~0x80) | ((enabled != 0) << 7);
+    if (enabled != 0)
+        Lever_Reset(lever);
+}
+static i32 Lever_ActivateRev(GIZMO_PC *gizmo, i32 value, i32 query) {
+    GIZMO_LEVER_PC *lever;
+    if (gizmo == NULL || gizmo->object == NULL)
+        return 1;
+    lever = (GIZMO_LEVER_PC *)gizmo->object;
+    if ((query & 1) != 0)
+        return (lever->flags & 0x80) == 0 ? value == 0 : value;
+    lever->flags = (lever->flags & ~0x80) | ((value == 0) << 7);
+    return 1;
+}
+static void Lever_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    GIZMO_LEVER_PC *lever;
+    i32 was_visible;
+    if (gizmo == NULL || gizmo->object == NULL)
+        return;
+    lever = (GIZMO_LEVER_PC *)gizmo->object;
+    was_visible = (lever->flags & 0x10) != 0;
+    lever->flags = (lever->flags & ~0x10) | ((visible != 0) << 4);
+    if ((lever->flags & 0x10) != 0 && was_visible == 0) {
+        lever->platform_id = NewPlatPickupInst(lever, 3);
+        PlatInstRotate(lever->platform_id, 1);
+    } else if ((lever->flags & 0x10) == 0 && was_visible != 0)
+        DeletePlatinst(lever->platform_id);
+}
+static void *Levers_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+    return GizmoBufferAlloc(buffer, end, sizeof(LEVER_PROGRESS_PC));
+}
+static void Levers_ClearProgress(void *world, void *progress_ptr) {
+    LEVER_PROGRESS_PC *progress = (LEVER_PROGRESS_PC *)progress_ptr;
+    (void)world;
+    if (progress == NULL)
+        return;
+    progress->pulled_down = 0;
+    progress->enabled = ~0u;
+    progress->visible = ~0u;
+}
+static void Levers_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    LEVER_PROGRESS_PC *progress = (LEVER_PROGRESS_PC *)progress_ptr;
+    i32 index;
+    (void)data;
+    if (progress == NULL)
+        return;
+    Levers_ClearProgress(NULL, progress);
+    if (world == NULL || ((LEVER_WORLD_PC *)world)->levers == NULL)
+        return;
+    for (index = 0; index < ((LEVER_WORLD_PC *)world)->lever_count && index < 32; ++index) {
+        GIZMO_LEVER_PC *lever = &((LEVER_WORLD_PC *)world)->levers[index];
+        u32 bit = 1u << index;
+        if ((lever->flags & 2) != 0 && lever->pull_progress >= 1.0f)
+            progress->pulled_down |= bit;
+        if ((lever->flags & 0x80) == 0)
+            progress->enabled &= ~bit;
+        if ((lever->flags & 0x10) == 0)
+            progress->visible &= ~bit;
+    }
+}
+static void Levers_Reset(void *world_ptr, void *data, void *progress_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    LEVER_PROGRESS_PC *progress = (LEVER_PROGRESS_PC *)progress_ptr;
+    i32 index;
+    (void)data;
+    if (world == NULL || ((LEVER_WORLD_PC *)world)->levers == NULL)
+        return;
+    for (index = 0; index < ((LEVER_WORLD_PC *)world)->lever_count; ++index) {
+        GIZMO_LEVER_PC *lever = &((LEVER_WORLD_PC *)world)->levers[index];
+        Lever_Reset(lever);
+        if (progress != NULL && index < 32) {
+            u32 bit = 1u << index;
+            if ((progress->pulled_down & bit) != 0) {
+                lever->pull_progress = 1.0f;
+                lever->flags |= 2;
+                lever->animation_frame = 0x8000;
+            }
+            lever->flags = (lever->flags & ~0x80) | (((progress->enabled & bit) != 0) << 7);
+            lever->flags = (lever->flags & ~0x10) | (((progress->visible & bit) != 0) << 4);
+        }
+    }
+}
+static void *Levers_ReserveBufferSpace(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    ((LEVER_WORLD_PC *)world)->levers = NULL;
+    ((LEVER_WORLD_PC *)world)->lever_count = 0;
+    if (world->current_level->max_levers != 0) {
+        world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
+        ((LEVER_WORLD_PC *)world)->levers = (GIZMO_LEVER_PC *)world->giz_buffer.void_ptr;
+        world->giz_buffer.addr += world->current_level->max_levers * sizeof(GIZMO_LEVER_PC);
+    }
+    return ((LEVER_WORLD_PC *)world)->levers;
+}
+static i32 Levers_Load(void *world_ptr, void *data) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    i32 version, index;
+    (void)data;
+    if (((LEVER_WORLD_PC *)world)->lever_count != 0)
+        return 0;
+    version = EdFileReadInt();
+    ((LEVER_WORLD_PC *)world)->lever_count = EdFileReadInt();
+    for (index = 0; index < ((LEVER_WORLD_PC *)world)->lever_count; ++index) {
+        EdFileRead(((LEVER_WORLD_PC *)world)->levers[index].name, 16);
+        EdFileReadNuVec(&((LEVER_WORLD_PC *)world)->levers[index].position);
+        ((LEVER_WORLD_PC *)world)->levers[index].yaw = EdFileReadShort();
+        ((LEVER_WORLD_PC *)world)->levers[index].model_variant = EdFileReadChar();
+        if (version >= 2) {
+            u16 automatic = EdFileReadChar() & 1;
+            ((LEVER_WORLD_PC *)world)->levers[index].flags =
+                (((LEVER_WORLD_PC *)world)->levers[index].flags & ~0x20) | (automatic << 5);
+        }
+        ((LEVER_WORLD_PC *)world)->levers[index].auto_reset_delay = version >= 3 ? EdFileReadFloat() : 2.0f;
+        if (version >= 4) {
+            u16 hidden = EdFileReadChar() & 1;
+            ((LEVER_WORLD_PC *)world)->levers[index].flags =
+                (((LEVER_WORLD_PC *)world)->levers[index].flags & ~0x100) | (hidden << 8);
+        } else
+            ((LEVER_WORLD_PC *)world)->levers[index].flags &= ~0x100;
+        if (version >= 5) {
+            EdFileReadNuVec(&((LEVER_WORLD_PC *)world)->levers[index].target_offset);
+            ((LEVER_WORLD_PC *)world)->levers[index].target_indicator_scale = EdFileReadFloat();
+        } else {
+            ((LEVER_WORLD_PC *)world)->levers[index].target_offset.y = 0.0f;
+            ((LEVER_WORLD_PC *)world)->levers[index].target_offset.x = 0.0f;
+            ((LEVER_WORLD_PC *)world)->levers[index].target_offset.z = -0.1441f;
+            ((LEVER_WORLD_PC *)world)->levers[index].target_indicator_scale = 1.0f;
+        }
+        if (version >= 6) {
+            u16 hidden = EdFileReadChar() & 1;
+            ((LEVER_WORLD_PC *)world)->levers[index].flags =
+                (((LEVER_WORLD_PC *)world)->levers[index].flags & ~0x200) | (hidden << 9);
+        }
+        ((LEVER_WORLD_PC *)world)->levers[index].platform_id = -1;
+    }
+    return 1;
+}
+static void Levers_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    i32 index;
+    (void)data;
+    if (world == NULL || ((LEVER_WORLD_PC *)world)->levers == NULL)
+        return;
+    for (index = 0; index < ((LEVER_WORLD_PC *)world)->lever_count; ++index) {
+        GIZMO_LEVER_PC *lever = &((LEVER_WORLD_PC *)world)->levers[index];
+        if (NuStrLen(lever->name) != 0)
+            AddGizmo(system, type_id, NULL, lever);
+    }
+}
+static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    GIZMO_LEVER_PC *lever = ((LEVER_WORLD_PC *)world)->levers;
+    i32 index;
+    (void)data;
+    (void)elapsed;
+    if (lever == NULL)
+        return;
+    for (index = 0; index < ((LEVER_WORLD_PC *)world)->lever_count; ++index, ++lever) {
+        if ((lever->flags & 2) == 0 && (lever->flags & 0x1800) == 0) {
+            lever->animation_frame = 0;
+            continue;
+        }
+        lever->flags |= 2;
+        if (lever->auto_reset_timer > 0.0f) {
+            lever->auto_reset_timer -= FRAMETIME;
+            if (lever->auto_reset_timer <= 0.0f) {
+                lever->auto_reset_timer = 0.0f;
+                lever->flags = (lever->flags & ~0x800) | 0x1040;
+                lever->pull_progress = 0.6f;
+            }
+        } else if ((lever->flags & 0x1040) == 0) {
+            if (lever->pull_progress < 1.0f) {
+                lever->pull_progress += FRAMETIME;
+                if (lever->pull_progress > 1.0f) {
+                    lever->pull_progress = 1.0f;
+                    PlaySfx("SwLever", &lever->position);
+                    if ((lever->flags & 0x20) != 0)
+                        lever->auto_reset_timer = lever->auto_reset_delay;
+                }
+            }
+        } else {
+            lever->flags |= 0x40;
+            lever->pull_progress -= FRAMETIME;
+            if (lever->pull_progress <= 0.0f) {
+                lever->flags &= 0xefb0;
+                lever->pull_progress = 0.0f;
+                lever->auto_reset_timer = 0.0f;
+                lever->idle_animation_timer = 0.0f;
+            }
+        }
+        lever->animation_frame = (u16)(lever->pull_progress * -32768.0);
+    }
+}
+ADD_GIZMO_CONFIG_TYPE_PC *Levers_RegisterGizmo(i32 type_id) {
+    static ADD_GIZMO_CONFIG_TYPE_PC LeversAddTypePc;
+    LeversAddTypePc = Default_ADDGIZMOTYPE;
+    LeversAddTypePc.name = LeverTypeNamePtrPc;
+    LeversAddTypePc.prefix = "";
+    LeversAddTypePc.functions.options = 12;
+    LeversAddTypePc.functions.get_max_gizmos = Levers_GetMaxGizmos;
+    LeversAddTypePc.functions.add_gizmos = (void *)Levers_AddGizmos;
+    LeversAddTypePc.functions.early_update = NULL;
+    LeversAddTypePc.functions.late_update = Levers_Update;
+    LeversAddTypePc.functions.draw = Levers_Draw;
+    LeversAddTypePc.functions.panel_draw = NULL;
+    LeversAddTypePc.functions.get_gizmo_name = (void *)Lever_GetGizmoName;
+    LeversAddTypePc.functions.get_output = (void *)Lever_GetOutput;
+    LeversAddTypePc.functions.get_output_name = (void *)Lever_GetOutputName;
+    LeversAddTypePc.functions.get_num_outputs = (void *)Lever_GetNumOutputs;
+    LeversAddTypePc.functions.activate = (void *)Lever_Activate;
+    LeversAddTypePc.functions.activate_reverse = (void *)Lever_ActivateRev;
+    LeversAddTypePc.functions.set_visibility = (void *)Lever_SetVisibility;
+    LeversAddTypePc.functions.get_visibility = NULL;
+    LeversAddTypePc.functions.get_pos = NULL;
+    LeversAddTypePc.functions.using_special = NULL;
+    LeversAddTypePc.functions.bolt_hit_plat = NULL;
+    LeversAddTypePc.functions.get_best_bolt_target = NULL;
+    LeversAddTypePc.functions.bolt_hit = NULL;
+    LeversAddTypePc.functions.allocate_progress_data = Levers_AllocateProgressData;
+    LeversAddTypePc.functions.clear_progress = Levers_ClearProgress;
+    LeversAddTypePc.functions.store_progress = Levers_StoreProgress;
+    LeversAddTypePc.functions.reset = Levers_Reset;
+    LeversAddTypePc.functions.reserve_buffer_space = Levers_ReserveBufferSpace;
+    LeversAddTypePc.functions.load = Levers_Load;
+    LeversAddTypePc.functions.post_load = NULL;
+    LeversAddTypePc.functions.add_level_sfx = NULL;
+    lever_gizmotype_id = type_id;
+    return &LeversAddTypePc;
+}
+
+u8 __cdecl FindNearestPlayerToVec(NUVEC *, GAMEOBJECT **, f32 *, u8, u32);
+STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
+STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
+STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
+STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, special) == 0);
+
+static void __cdecl Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    LEVER_WORLD_PC *lever_world = (LEVER_WORLD_PC *)world;
+    NUSPECIALHANDLE *animated_special = NULL;
+    GIZMO_LEVER_PC *lever;
+    u16 target_spin_angle;
+    f32 target_pulse, ready_alpha;
+    i32 index;
+    if (world->level_objects[30].active == 0 || lever_world->levers == NULL)
+        return;
+    lever = lever_world->levers;
+    target_spin_angle = (u16)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
+    target_pulse =
+        (f32)((f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) &
+                               0x7fff] *
+                  (f64)0.2f +
+              (f64)0.8f);
+    ready_alpha =
+        (f32)((f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) &
+                               0x7fff] *
+                  (f64)0.15f +
+              (f64)0.85f);
+    EnableShadowMapRendering(0);
+    if (StartupGameFlag1 != 0 && world->level_objects[30].active != 0) {
+        NUINSTANIM_TIME_VIEW *animation;
+        animated_special = &world->level_objects[30].special;
+        animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(animated_special);
+        if (animation != NULL)
+            NuAnimEndFrameOld(((NUGSCN *)animated_special->scene)->instance_animation_data[animation->animation_index]);
+    }
+    for (index = 0; index < lever_world->lever_count; ++index, ++lever) {
+        NUMTX animated_matrix, base_matrix, target_matrix;
+        i32 status_special;
+        if ((lever->flags & 0x10) == 0)
+            continue;
+        if (StartupGameFlag1 != 0 && animated_special != NULL) {
+            f32 animation_frame = 0.0f;
+            if (lever->pull_progress > 0.0f) {
+                if (lever->auto_reset_timer > 0.0f)
+                    animation_frame = 32.0f;
+                else if ((lever->flags & 0x40) == 0)
+                    animation_frame = (f32)((f64)lever->pull_progress * 31.0 + 1.0);
+                else
+                    animation_frame = (f32)(((f64)0.6f - (f64)lever->pull_progress) * 32.0 / (f64)0.6f + 32.0);
+            } else if ((lever->flags & 0x83) == 0x80) {
+                if (lever->idle_animation_timer > 0.0f) {
+                    lever->idle_animation_timer = (f32)(lever->idle_animation_timer - FRAMETIME);
+                    if (lever->idle_animation_timer < 0.0f)
+                        lever->idle_animation_timer = 0.0f;
+                    else {
+                        f32 sine = NuTrigTable
+                            [((i32)((f64)lever->idle_animation_timer / (f64)0.15f * 32768.0 + 16384.0) >> 1) & 0x7fff];
+                        animation_frame = (f32)((1.0 - fabs((f64)sine)) * 1.5 + 16.0);
+                    }
+                } else if (qrand() < 0x800)
+                    lever->idle_animation_timer = 0.15f;
+            }
+            EvalAnim(animated_special, animation_frame, &animated_matrix, 0);
+            NuMtxMulVU0(&animated_matrix, &animated_matrix, &lever->matrix);
+            NuSpecialDrawAt(animated_special, &animated_matrix);
+        } else {
+            NuMtxSetRotationX(&animated_matrix, 0);
+            NuMtxRotateY(&animated_matrix, lever->yaw);
+            NuMtxTranslate(&animated_matrix, &lever->position);
+            NuSpecialDrawAt(&world->level_objects[30].special, &animated_matrix);
+        }
+        target_matrix = animated_matrix;
+        NuMtxSetRotationY(&base_matrix, lever->yaw);
+        NuMtxTranslate(&base_matrix, &lever->position);
+        if (world->level_objects[lever->model_special_index].active != 0)
+            NuSpecialDrawAt(&world->level_objects[lever->model_special_index].special, &animated_matrix);
+        if (world->level_objects[31].active != 0 && (lever->flags & 0x100) == 0)
+            NuSpecialDrawAt(&world->level_objects[31].special, &lever->matrix);
+        status_special = 43;
+        if ((lever->flags & 0x80) != 0) {
+            i32 draw_target;
+            i32 draw_ready;
+            if (lever->pull_progress >= 1.0f)
+                status_special = 42;
+            draw_target = (lever->flags & 0x200) == 0 && lever->target_offset.y != 2000000.0f &&
+                          world->level_objects[85].active != 0;
+            draw_ready = (lever->flags & 3) == 0 && world->level_objects[41].active != 0;
+            if (draw_ready)
+                NuSpecialDrawAtAlpha(&world->level_objects[41].special, &target_matrix, ready_alpha);
+            if (draw_target || draw_ready) {
+                GAMEOBJECT *nearest_player;
+                f32 distance_squared;
+                if (FindNearestPlayerToVec(&lever->position, &nearest_player, &distance_squared, 0, 0) != 0) {
+                    i32 angle =
+                        (i32)(((f64)distance_squared / 6.0 < 1.0 ? (f64)distance_squared / 6.0 : 1.0) * 16384.0 +
+                              49152.0 + 16384.0);
+                    f32 alpha = (f32)((1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff]) * (f64)target_pulse);
+                    if (alpha > 0.0f && draw_target) {
+                        NUVEC target_position;
+                        f32 draw_alpha;
+                        Lever_GetAbsTargetPos(lever, &target_position);
+                        NuMtxSetRotationY(&animated_matrix, target_spin_angle);
+                        if (lever->terrain_roll != 0)
+                            NuMtxRotateZ(&animated_matrix, lever->terrain_roll);
+                        if (lever->terrain_pitch != 0)
+                            NuMtxRotateX(&animated_matrix, lever->terrain_pitch);
+                        NuMtxScaleU(&animated_matrix, 0.8f);
+                        NuMtxTranslate(&animated_matrix, &target_position);
+                        NuMtxPreScaleU(&animated_matrix, lever->target_indicator_scale);
+                        draw_alpha = (f32)((1.0 - (f64)lever->pull_progress) * (f64)alpha);
+                        NuSpecialDrawAtAlpha(&world->level_objects[85].special, &animated_matrix, draw_alpha);
+                    }
+                }
+            }
+        } else if (lever->pull_progress == 0.0f && ParticlesPerSecond(0.5f, FRAMETIME) > 0)
+            AddGameDebris(WORLD->game_debris_sys, 0x57, &lever->position);
+        if (world->level_objects[status_special].active != 0 && (lever->flags & 0x100) == 0)
+            NuSpecialDrawAt(&world->level_objects[status_special].special, &base_matrix);
+    }
+    ResetShadowMapRendering();
+}

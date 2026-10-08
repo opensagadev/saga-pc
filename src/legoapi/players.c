@@ -2591,3 +2591,47 @@ void __cdecl SetPlayer(void) {
     }
     player2 = NULL;
 }
+
+u8 __cdecl FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, f32 *distance_squared,
+                                  u8 require_character_flags, u32 character_flags) {
+    i32 index;
+    *nearest_player = NULL;
+    *distance_squared = 0.0f;
+    for (index = 0; index < 8; ++index) {
+        GAMEOBJECT *candidate = (GAMEOBJECT *)Player[index];
+        if (candidate != NULL && (candidate->flags_1fc & 0x80) != 0) {
+            f32 candidate_distance = NuVecDistSqr(&candidate->position, position, NULL);
+            if (*distance_squared > candidate_distance || *nearest_player == NULL) {
+                if (require_character_flags == 0 ||
+                    (((GAMEOBJECT *)Player[index])->character_data->game_character->flags_090 & character_flags) != 0) {
+                    *distance_squared = candidate_distance;
+                    *nearest_player = (GAMEOBJECT *)Player[index];
+                }
+            }
+        }
+    }
+    return *nearest_player != NULL;
+}
+
+i32 __cdecl Players_AveragePos(NUVEC *position, SOCKPOSITION_PC *socket_position) {
+    NUVEC total = {0.0f, 0.0f, 0.0f};
+    f32 count = 0.0f;
+    i32 i;
+    for (i = 0; i < 2; ++i) {
+        GAMEOBJECT *player = (GAMEOBJECT *)Player[i];
+        if (player != NULL && (player->flags_1fc_word & 0x80)) {
+            NuVecAdd(&total, &total, &player->position);
+            count += 1.0f;
+        }
+    }
+    if (count > 0.0f) {
+        f32 scale = 1.0f / count;
+        NuVecScale(position, &total, scale);
+        if (socket_position != NULL)
+            ComplexSockPosition(WORLD->sock_sys, position, -1, -1, socket_position);
+        return 1;
+    }
+    if (socket_position != NULL)
+        socket_position->sock_index = -1;
+    return 0;
+}

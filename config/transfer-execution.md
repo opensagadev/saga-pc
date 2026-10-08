@@ -9,8 +9,8 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Verified source baseline: JJ, [`f82fa3b1a06991a621811f893bf6f7864badea9c`](https://github.com/opensagadev/saga-pc/commit/f82fa3b1a06991a621811f893bf6f7864badea9c); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37716326923) passed on that exact revision.
-JJ has 324 normal owners. The current KK snapshot has 329 owners and the
+Verified source baseline: KK, [`46553c7b0b578ee4499876abc63aecd7df0be442`](https://github.com/opensagadev/saga-pc/commit/46553c7b0b578ee4499876abc63aecd7df0be442); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37722186370) passed on that exact revision.
+KK has 329 normal owners. The current LL snapshot has 331 owners and the
 source/checkpoint qualifications below. II remains the last actual full-game
 Wine observation: its source EXE exits 5 at NULL shader Retrieve+16 before a level
 loads. A transient window establishes no persistent window, device/Present,
@@ -137,3 +137,37 @@ goldens and engine code stayed fixed. ShowCrashDialog DWORD 0 was set and querie
 the owned test process group was empty afterward. No source EXE launch, GPU,
 asset or playable-game claim is made. Complete qualification and evidence pins
 remain in [transfer-checkpoint.json](transfer-checkpoint.json).
+
+## Current source checkpoint LL (2026-10-08)
+
+This local snapshot adds 74 complete functions/25,502 unique PC bytes: lever
+21/4,472, streaming 5/1,453, mission menu 5/2,425, push 23/9,546 and hat 20/7,606.
+Two existing Move_CHARACTER actions now call real hat and lever providers, adding
+no extra transferred range. Canonical mission-save fields and the menu packet use
+asserted PC offsets; private registration descriptors retain their original owners.
+
+Required checks pass for 331 owners: 732 tests (three existing skips), LLVM18
+format for 358 files and tidy for 331 units, source build/link, object coverage
+and retail matching. Whole-PC fuzzy code is 28.075228%, +0.516298 percentage
+points; exact code is 221,357 bytes (6.376874%), +2,220. All prior exact copies
+and 13 named members/28 bytes survive. Known exact data stays 637,612 bytes.
+The 166 new complete initializer copies/1,645 bytes are retail-equal; unknown
+owning extents receive no allocation or exact-data credit. Mapping is 41.631449%
+code, 1.796293% data and 5.297860% combined code/data section storage.
+
+Actual-normal CPU checks pass 264/264 through genuine providers and registration
+callbacks. The unchanged fixture required ordinary VC8 response-file packaging
+because the original command exceeded Win32's process-creation length limit.
+A parser-only correction on retained stdout fixed an unanchored section-name
+match; the fixture and engine were not rerun or changed. Crash dialogs were
+suppressed and the owned process group was empty afterward. No source game EXE,
+Hat drawing, positive asset streaming, device or gameplay milestone is claimed.
+
+Final local review accepts three specific prior nonexact compiler-output pairs
+within their stated finite domains. Camera and DebReAlloc reproduce previously
+reviewed pairs; the particle reload permutation has its own complete instruction
+and binding proof. Exact pushed-revision CI remains pending. Full pair and data-tail
+qualifications remain in the checkpoint evidence. Next connected source includes
+obstacle registration and character loading. Corrected transport source passed
+independent review; genuine shared storage and current-header integration remain
+conditional. The rejected signed-index version and earlier history are retained.

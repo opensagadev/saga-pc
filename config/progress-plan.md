@@ -1,14 +1,21 @@
 # Current work plan
 
 The [whole-project mandate](../SOL_IMPLEMENTATION_PLAN.md) remains active.
-The verified baseline is JJ, [`f82fa3b1a06991a621811f893bf6f7864badea9c`](https://github.com/opensagadev/saga-pc/commit/f82fa3b1a06991a621811f893bf6f7864badea9c), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37716326923) passing.
-The current KK source snapshot adds 41 functions/10,024 PC bytes across genuine
-geometry producers, shader uniform uploads, movement, gizmos and mission loading.
-Required local checks and 227 bounded CPU checks pass; complete release
+The verified baseline is KK, [`46553c7b0b578ee4499876abc63aecd7df0be442`](https://github.com/opensagadev/saga-pc/commit/46553c7b0b578ee4499876abc63aecd7df0be442), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37722186370) passing.
+The current LL source snapshot adds 74 functions/25,502 PC bytes across lever,
+streaming, mission menus, push and hat families, with two real caller reconnections.
+Required local checks and 264 bounded CPU checks pass; specific prior nonexact output pairs have finite reviewed qualifications.
+Exact pushed-revision CI is pending. Complete release
 qualifications are in [transfer-checkpoint.json](transfer-checkpoint.json).
 II remains the last full-game runtime observation. Genuine shader-manager
 publication is still missing. Use [matching.json](../matching.json) for current
 comparisons; later scratch packets remain candidates.
+
+Next connected work covers obstacle registration, character-list loading and
+movement callbacks. Corrected Tubes/Plugs source has passed independent review;
+its shared storage and current-header integration remain conditional. Complete
+ordered registration parents and genuine storage
+contracts remain required before activating those parents.
 
 1. Close genuine shader-manager publication, parser/compiler lifetime and device
    dependencies at the observed startup frontier. Preserve true constructors,

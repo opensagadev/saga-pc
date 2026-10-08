@@ -2186,3 +2186,23 @@ Whole-build coverage includes all 13 member contracts/28 bytes and all earlier
 known exact data. The 45 new complete initializer copies total 797 bytes, all
 native-equal: 21 known/119 bytes and 24 unknown/678 bytes. Their known ranges are
 already covered aliases, so the exact-data union remains 637,612 bytes.
+
+### Connected-family central storage snapshot LL (2026-10-08)
+
+The sole writer added 31 genuine central working definitions/138 typed bytes,
+with two natural read-only literals making 33 complete regions/161 bytes. These
+supply lever/streaming, mission-menu, hat ID and push state. Existing Game storage
+contains the canonical mission-save fields; there is no duplicate save backing.
+Function-local registration descriptors remain private to their source owners.
+The previous data source prefix and existing known-exact initializers survive.
+
+Two unknown-extent full COFF regions changed naturally: PushBlockFacingTolerancePc
+WORD910 retains its typed two bytes while a new following DWORD gives a two-byte
+zero tail (2 to4 complete bytes); PcGeometryDefaultOriginPc retains all16 typed
+zero bytes while the next genuine object removes four prior zero tail bytes
+(20 to16). Specific full-byte/relocation/source/native-reader proofs accept these
+pairs. Neither original owning extent is inferred and neither gains exact credit.
+All 166 new complete initializer copies/1,645 bytes across the wave are retail-equal;
+95 known copies/606 bytes and 71 unknown copies/1039 bytes are recorded separately.
+Known exact-data range union stays637612 bytes. Full preserved failure and acceptance
+pins remain in transfer-checkpoint.json; no generic unknown-tail exception applies.

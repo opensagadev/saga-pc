@@ -284,3 +284,136 @@ extern "C" i32 __cdecl OtherBlockInRange(WORLDINFO *opaque_world, PUSH_BLOCK_PC 
     }
     return 0;
 }
+
+extern "C" {
+    PUSH_BLOCK_PC *__cdecl BlockInBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, PUSH_BLOCK_PC **);
+    void __cdecl MoveBlocksOverBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
+    void __cdecl MoveBlocks(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
+    void __cdecl UpdatePushBlocks(void *, void *, f32);
+    extern f32 PushVelocitySeekRatePc;
+    extern f32 PushFallingSpeedPc;
+    extern f32 PushCornerInsetPc;
+    extern f32 PushGroundOffsetPc;
+    extern f32 PushRumblePeriodPc;
+    extern f32 PushRumbleWindowPc;
+    extern f32 PushBlockOverlapShrinkPc;
+    extern i32 PushBlockHintIdPc;
+    void __cdecl KnockPushBlock(PUSH_BLOCK_PC *, NUVEC *);
+    PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *, NUVEC *, f32);
+    char *__cdecl NuIToA(i32, char *, i32);
+    extern char *PushBlocksNamePc;
+}
+
+typedef struct PUSH_RUNTIME_BLOCK_VIEW_PC {
+    f32 ground_offset, ground_height, snap_timer, settled_height;
+    i8 terrain_info[4];
+    union {
+        i8 bytes[4];
+        i32 word;
+    } extra_terrain_info;
+    i32 previous_extra_terrain_info;
+    PUSH_BLOCK_PC *supporting_block, *previous_supporting_block;
+    NUSPECIALHANDLE special;
+    GAMEOBJECT *pushing_object;
+    i32 platform_id;
+    u8 unknown_038[8];
+    f32 snap_distance;
+    char name[16];
+    NUVEC *snap_positions, *position;
+    NUSPECIALHANDLE end_position_specials[2];
+    NUVEC end_position_origins[2];
+    NUVEC velocity, target_velocity, snap_origin, bounds_min, bounds_max;
+    u32 packed_state_flags;
+    u8 unknown_0cc[4];
+    u8 completed_snap_positions, end_position_count, output_count, unknown_0d3;
+} PUSH_RUNTIME_BLOCK_VIEW_PC;
+typedef struct PUSH_RUNTIME_LEVEL_VIEW_PC {
+    u8 unknown_000[0xff];
+    u8 max_push_blocks;
+} PUSH_RUNTIME_LEVEL_VIEW_PC;
+typedef struct PUSH_RUNTIME_WORLD_VIEW_PC {
+    u8 unknown_000[0x104];
+    VARIPTR giz_buffer;
+    u8 unknown_108[0x128 - 0x108];
+    PUSH_RUNTIME_LEVEL_VIEW_PC *current_level;
+    u8 unknown_12c[0x13c - 0x12c];
+    NUGSCN *current_gscn;
+    u8 unknown_140[0x2ac8 - 0x140];
+    void *gizmo_sys;
+    u8 unknown_2acc[0x46bc - 0x2acc];
+    PUSH_RUNTIME_BLOCK_VIEW_PC *blocks;
+    i32 count;
+} PUSH_RUNTIME_WORLD_VIEW_PC;
+STATIC_ASSERT(sizeof(PUSH_RUNTIME_BLOCK_VIEW_PC) == 0xd4);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_LEVEL_VIEW_PC, max_push_blocks) == 0xff);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, giz_buffer) == 0x104);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, current_level) == 0x128);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, current_gscn) == 0x13c);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, gizmo_sys) == 0x2ac8);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, blocks) == 0x46bc);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, count) == 0x46c0);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, ground_offset) == 0x0);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, ground_height) == 0x4);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_timer) == 0x8);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, settled_height) == 0xc);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, terrain_info) == 0x10);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, extra_terrain_info) == 0x14);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, previous_extra_terrain_info) == 0x18);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, supporting_block) == 0x1c);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, previous_supporting_block) == 0x20);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, special) == 0x24);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, pushing_object) == 0x30);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, platform_id) == 0x34);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_distance) == 0x40);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, name) == 0x44);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_positions) == 0x54);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, position) == 0x58);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, end_position_specials) == 0x5c);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, end_position_origins) == 0x74);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, velocity) == 0x8c);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, target_velocity) == 0x98);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_origin) == 0xa4);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, bounds_min) == 0xb0);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, bounds_max) == 0xbc);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, packed_state_flags) == 0xc8);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, completed_snap_positions) == 0xd0);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, end_position_count) == 0xd1);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, output_count) == 0xd2);
+STATIC_ASSERT(offsetof(GAMEOBJECT, target_velocity) == 0xf18);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
+
+extern "C" void __cdecl KnockPushBlock(PUSH_BLOCK_PC *opaque_block, NUVEC *direction) {
+    PUSH_RUNTIME_BLOCK_VIEW_PC *block = reinterpret_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(opaque_block);
+    if (block != NULL) {
+        block->velocity.x = -direction->x;
+        block->velocity.y = -direction->y;
+        block->velocity.z = -direction->z;
+        NuVecScale(&block->velocity, &block->velocity, 0.005f);
+        block->packed_state_flags |= 0x80u;
+    }
+}
+
+extern "C" PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *opaque_world, NUVEC *position, f32 range) {
+    PUSH_RUNTIME_WORLD_VIEW_PC *world = reinterpret_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(opaque_world);
+    if (world == NULL || position == NULL)
+        return NULL;
+    NUVEC minimum = {position->x - range, position->y - range, position->z - range};
+    NUVEC maximum = {position->x + range, position->y + range, position->z + range};
+    PUSH_RUNTIME_BLOCK_VIEW_PC *nearest = NULL;
+    f32 nearest_distance = 1000000000.0f;
+    PUSH_RUNTIME_BLOCK_VIEW_PC *block = world->blocks;
+    for (i32 index = 0; index < world->count; ++index, ++block) {
+        if ((block->packed_state_flags & 0x01040100u) != 0x01040000u)
+            continue;
+        NUVEC *candidate = block->position;
+        if (candidate->x < minimum.x || candidate->x > maximum.x || candidate->z < minimum.z ||
+            candidate->z > maximum.z || candidate->y < minimum.y || candidate->y > maximum.y)
+            continue;
+        f32 distance = NuVecDistSqr(position, candidate, NULL);
+        if (distance < nearest_distance) {
+            nearest_distance = distance;
+            nearest = block;
+        }
+    }
+    return reinterpret_cast<PUSH_BLOCK_PC *>(nearest);
+}

@@ -4962,3 +4962,56 @@ masked exceptions; unmasked or asynchronous fault observations are unproven.
 This adds no exact or transfer credit.
 Current complete measurements, domains and evidence pins are in
 `transfer-checkpoint.json`.
+
+### Mac linked-symbol span estimate (2026-10-08)
+
+The second Mac input, SHA ff8f07b73c9671d0cacc1dd1a4251d488c6aeb4794112a69450ab7757f774ae6,
+has 32,230 unique section-defined named addresses after removing imports and the
+executable header: 22,127 code, 6,273 initialized data/metadata and 3,830 BSS.
+Its actual LC_FUNCTION_STARTS records 30,459 starts, including all named code
+addresses plus 8,332 unnamed starts. Using every recorded start avoids assigning
+unnamed functions to the preceding named symbol.
+
+Named code intervals estimate 7,526,418 bytes; unnamed code intervals add
+1,703,631, together covering the 9,230,049-byte text section. Same-section named
+data gaps estimate 864,736 initialized bytes and 33,943,916 zero-filled bytes.
+The combined named interval estimate is 42,335,070 bytes. Code starts establish
+beginnings, not instruction ends; data gaps can include padding, unnamed objects
+or interior labels. Neither nlist32 nor exports supplies per-symbol lengths;
+inlined, undefined or eliminated source declarations are not enumerated.
+
+The largest Mac BSS gap is 31,948,800 after rndr_blend_shape_deformer_wts. Matching
+PC neighbor spacing and allocator stride support an identity lead, but do not
+prove original owning capacity. The existing PC working view and unknown extent
+remain unchanged. No inventory byte is promoted to a PC extent or badge gain.
+
+The frozen KK lexical crosswalk covers 1,290,193 estimated Mac code bytes by name
+in the PC map, 13.978% of all Mac text. Within only the 2,095,568-byte subset whose
+names also occur in Android game/engine source, mapped-name presence is 58.365%
+and compiled-name presence 56.959%. These subset/name estimates are not verified
+cross-platform body coverage or PC completion percentages. The public PC mapping
+metric retains separate code/data section denominators. Reproducible retained
+analysis: build/analysis/mac2-evidence/symbol-size-estimates/analyze.py and
+receipt.json, SHA d9eaa89e07a904f122ca6f65e81252e0bdc21a0c28f47ad98ba65544a1ca1ff0.
+
+### Connected lever, streaming, menu, push and hat snapshot LL (2026-10-08)
+
+The actual normal source adds 74 complete functions/25,502 unique PC bytes across
+five connected families. New owners are levelstreaming.c and gizpushblocks.cpp;
+private lifecycle/Draw callbacks and descriptor data remain in genuine subsystem
+owners. Move_CHARACTER reconnects the native hat and lever actions without extra
+parent-byte credit. All 4,720 prior complete function copies and 10,580 data
+regions were inspected; all 2,211 prior exact code copies, 5,480 known-exact data
+copies and 13 members/28 bytes survive. There are 166 new complete retail-equal
+initializer copies/1,645 bytes; known extents already covered by aliases add no
+new exact-data union. Unknown extents remain zero-credit.
+
+The source EXE links from 331 objects, resolving 4,794 function and 10,746 data
+definitions. Required checks and retail matching pass. Whole-PC fuzzy code rises
+to 28.075228%, exact code to 221,357 bytes; unique compared code is 1,410,603
+with 621 overlapping bytes in objdiff's 1,411,224 denominator. CPU fixtures pass
+264 checks through actual normal providers, with no replacement/supplement.
+Three specific old nonexact output pairs are accepted within explicit finite
+domains, with complete bytes and bindings retained; no generic scheduling or
+padding waiver applies. Exact pushed-revision CI is pending. The full record is appended to
+transfer-checkpoint.json. Source game/device/asset/gameplay success remains unproved.

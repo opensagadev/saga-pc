@@ -11,10 +11,6 @@ struct mission_data_pc_s {
     u8 index;
     u8 unknown_13[5];
 };
-typedef struct MISSION_SAVE_READER_PC {
-    f32 best_times[20];
-    u8 completed[20];
-} MISSION_SAVE_READER_PC;
 typedef struct MISSION_SYSTEM_READER_PC {
     MISSIONDATA_PC *missions;
     MISSIONDATA_PC *active_mission;

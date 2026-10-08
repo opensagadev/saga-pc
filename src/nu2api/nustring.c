@@ -1128,3 +1128,38 @@ char *__cdecl NuStrStr(char *text, const char *needle) {
     }
     return NULL;
 }
+
+PUSH_BLOCK_PC *__cdecl BlockInBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, PUSH_BLOCK_PC **);
+void __cdecl MoveBlocksOverBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
+void __cdecl MoveBlocks(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
+void __cdecl UpdatePushBlocks(void *, void *, f32);
+extern f32 PushVelocitySeekRatePc;
+extern f32 PushFallingSpeedPc;
+extern f32 PushCornerInsetPc;
+extern f32 PushGroundOffsetPc;
+extern f32 PushRumblePeriodPc;
+extern f32 PushRumbleWindowPc;
+extern f32 PushBlockOverlapShrinkPc;
+extern i32 PushBlockHintIdPc;
+void __cdecl KnockPushBlock(PUSH_BLOCK_PC *, NUVEC *);
+PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *, NUVEC *, f32);
+char *__cdecl NuIToA(i32, char *, i32);
+extern char *PushBlocksNamePc;
+
+char *__cdecl NuIToA(i32 value, char *buffer, i32 radix) {
+    char reversed[33];
+    char *digit = reversed;
+    char *out = buffer;
+    if (value < 0) {
+        value = (i32)(0u - (u32)value);
+        *out++ = '-';
+    }
+    do {
+        *digit++ = (char)(value % radix + '0');
+        value /= radix;
+    } while (value != 0);
+    while (digit != reversed)
+        *out++ = *--digit;
+    *out = '\0';
+    return buffer;
+}

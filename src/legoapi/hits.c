@@ -880,3 +880,7 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
     }
     APIObjectCollisions(collision_count, collision_objects, collision_minimums, collision_maximums, Collide2Objects);
 }
+
+i16 __cdecl StreamingInsideLineXZPc(f32 x, f32 z, f32 x0, f32 z0, f32 x1, f32 z1) {
+    return (x - x0) * (z1 - z0) + (z - z0) * (x0 - x1) >= 0.0f;
+}

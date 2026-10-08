@@ -117,3 +117,9 @@ i32 __cdecl bgprocIsFreezing(void) {
 i32 __cdecl bgProcIsBgThread(void) {
     return GetCurrentThreadId() == bgproc_thread_id;
 }
+
+BGPROCINFO *__cdecl bgGetProcActive(void) {
+    if (bgproc_active != NULL)
+        return bgproc_active;
+    return (BGPROCINFO *)NuLstGetNext(bgproc_procinfo_pool, NULL);
+}

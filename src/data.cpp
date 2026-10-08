@@ -19364,3 +19364,37 @@ extern "C" {
     NUMTX PcGeometryTranslationMatrixPc = {0};
     NUMTX PcGeometryScaleMatrixPc = {0};
 }
+
+extern "C" {
+    i32 LEGOSPL_SPLIT = -1;
+    i32 other_level_override = -1;
+    char *LeverTypeNamePtrPc = "Lever";
+    char *LeverOutputDownNamePtrPc = TextInputKeyNameTextPc75ac34;
+    MISSION_MENU_PACKET_PC MissionMenuPacketPc = {0};
+    f32 MissionMenuReturnDelayPc = 0.0f;
+    TIMER JoinInTimer = {0};
+    f32 MissionIconGapPc = 0.035000000149011612f;
+    f32 MissionIconStepPc = 0.11999999731779099f;
+    i16 MissionMenuInstructionTextPc = 0;
+    f32 MissionIconBaseSizePc = 0.125f;
+    f32 MissionIconSelectedSizePc = 0.20000000298023224f;
+    f32 MissionIconYPc = -0.72500002384185791f;
+    f32 MissionNameYPc = -0.52499997615814209f;
+    f32 MissionNameScalePc = 0.625f;
+    f32 MissionBestTimeXPc = 0.15000000596046448f;
+    f32 MissionBestTimeYPc = -0.36500000953674316f;
+    f32 MissionBestTimeScalePc = 0.5f;
+    f32 MissionDropInAlphaPc = 0.75f;
+    f32 MissionPlayerIconSizePc = 0.15999999642372131f;
+    i16 id_PRINCESSLEIABOUSHH = -1;
+    i32 hatmachine_gizmotype_id = -1;
+    f32 PushRumbleWindowPc = 0.10000000149011612f;
+    f32 PushRumblePeriodPc = 0.25f;
+    f32 PushFallingSpeedPc = 10.0f;
+    f32 PushVelocitySeekRatePc = 1.0f;
+    f32 PushGroundOffsetPc = -0.0010000000474974513f;
+    f32 PushCornerInsetPc = -0.0060000000521540642f;
+    i32 PushBlockHintIdPc = -1;
+    f32 PushBlockOverlapShrinkPc = 0.0f;
+    char *PushBlocksNamePc = "PushBlocks";
+}

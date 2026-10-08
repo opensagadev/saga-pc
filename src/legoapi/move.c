@@ -6320,13 +6320,13 @@ after_gravity:
         JumpCode(object, jump_pressed, jump_held, animations, action_pressed, action_held, -1);
     }
     STUBBED_NAMED(0x0046eda0); /* Native4b4e7e: WORLD,object,special_pressed; GizPanel_MoveCode. */
-    STUBBED_NAMED(0x00474070); /* Native4b4e8b: WORLD,object,special_pressed; HatMachine_MoveCode. */
+    HatMachine_MoveCode(WORLD, object, special_pressed);
     ZipUp_MoveCode(object, special_pressed);
     if ((object->character_data->model_flags & 0x100000) != 0)
         Grapple_MoveCode(object); /* Native4b4ea7: object; Grapple_MoveCode. */
     STUBBED_NAMED(0x00592280);    /* Native4b4eb0: object; BuildIt_MoveCode. */
-    STUBBED_NAMED(0x00490d10);    /* Native4b4ebd: WORLD,object; Lever_MoveCode. */
-    STUBBED_NAMED(0x004d0290);    /* Native4b4ec3: object; ThermalDetonator_MoveCode. */
+    Lever_MoveCode(WORLD, object);
+    STUBBED_NAMED(0x004d0290); /* Native4b4ec3: object; ThermalDetonator_MoveCode. */
     if ((object->character_data->model_flags & 0x40000) != 0)
         Teleport_MoveCode(object, special_pressed);
     if (!StartupGameFlag1 && !StartupGameFlag0) {
@@ -7919,4 +7919,202 @@ i32 __cdecl SnapPosTaken(WORLDINFO *opaque_world, PUSH_BLOCK_PC *block, NUVEC *p
             return 1;
     }
     return 0;
+}
+
+PUSH_BLOCK_PC *__cdecl BlockInBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, PUSH_BLOCK_PC **);
+void __cdecl MoveBlocksOverBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
+void __cdecl MoveBlocks(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
+void __cdecl UpdatePushBlocks(void *, void *, f32);
+extern f32 PushVelocitySeekRatePc;
+extern f32 PushFallingSpeedPc;
+extern f32 PushCornerInsetPc;
+extern f32 PushGroundOffsetPc;
+extern f32 PushRumblePeriodPc;
+extern f32 PushRumbleWindowPc;
+extern f32 PushBlockOverlapShrinkPc;
+extern i32 PushBlockHintIdPc;
+void __cdecl KnockPushBlock(PUSH_BLOCK_PC *, NUVEC *);
+PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *, NUVEC *, f32);
+char *__cdecl NuIToA(i32, char *, i32);
+extern char *PushBlocksNamePc;
+
+typedef struct PUSH_RUNTIME_BLOCK_VIEW_PC {
+    f32 ground_offset, ground_height, snap_timer, settled_height;
+    i8 terrain_info[4];
+    union {
+        i8 bytes[4];
+        i32 word;
+    } extra_terrain_info;
+    i32 previous_extra_terrain_info;
+    PUSH_BLOCK_PC *supporting_block, *previous_supporting_block;
+    NUSPECIALHANDLE special;
+    GAMEOBJECT *pushing_object;
+    i32 platform_id;
+    u8 unknown_038[8];
+    f32 snap_distance;
+    char name[16];
+    NUVEC *snap_positions, *position;
+    NUSPECIALHANDLE end_position_specials[2];
+    NUVEC end_position_origins[2];
+    NUVEC velocity, target_velocity, snap_origin, bounds_min, bounds_max;
+    u32 packed_state_flags;
+    u8 unknown_0cc[4];
+    u8 completed_snap_positions, end_position_count, output_count, unknown_0d3;
+} PUSH_RUNTIME_BLOCK_VIEW_PC;
+typedef struct PUSH_RUNTIME_LEVEL_VIEW_PC {
+    u8 unknown_000[0xff];
+    u8 max_push_blocks;
+} PUSH_RUNTIME_LEVEL_VIEW_PC;
+typedef struct PUSH_RUNTIME_WORLD_VIEW_PC {
+    u8 unknown_000[0x104];
+    VARIPTR giz_buffer;
+    u8 unknown_108[0x128 - 0x108];
+    PUSH_RUNTIME_LEVEL_VIEW_PC *current_level;
+    u8 unknown_12c[0x13c - 0x12c];
+    NUGSCN *current_gscn;
+    u8 unknown_140[0x2ac8 - 0x140];
+    void *gizmo_sys;
+    u8 unknown_2acc[0x46bc - 0x2acc];
+    PUSH_RUNTIME_BLOCK_VIEW_PC *blocks;
+    i32 count;
+} PUSH_RUNTIME_WORLD_VIEW_PC;
+STATIC_ASSERT(sizeof(PUSH_RUNTIME_BLOCK_VIEW_PC) == 0xd4);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_LEVEL_VIEW_PC, max_push_blocks) == 0xff);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, giz_buffer) == 0x104);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, current_level) == 0x128);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, current_gscn) == 0x13c);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, gizmo_sys) == 0x2ac8);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, blocks) == 0x46bc);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, count) == 0x46c0);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, ground_offset) == 0x0);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, ground_height) == 0x4);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_timer) == 0x8);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, settled_height) == 0xc);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, terrain_info) == 0x10);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, extra_terrain_info) == 0x14);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, previous_extra_terrain_info) == 0x18);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, supporting_block) == 0x1c);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, previous_supporting_block) == 0x20);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, special) == 0x24);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, pushing_object) == 0x30);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, platform_id) == 0x34);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_distance) == 0x40);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, name) == 0x44);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_positions) == 0x54);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, position) == 0x58);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, end_position_specials) == 0x5c);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, end_position_origins) == 0x74);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, velocity) == 0x8c);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, target_velocity) == 0x98);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_origin) == 0xa4);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, bounds_min) == 0xb0);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, bounds_max) == 0xbc);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, packed_state_flags) == 0xc8);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, completed_snap_positions) == 0xd0);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, end_position_count) == 0xd1);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, output_count) == 0xd2);
+STATIC_ASSERT(offsetof(GAMEOBJECT, target_velocity) == 0xf18);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
+
+void __cdecl MoveBlocksOverBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, i32 excluded, NUVEC *delta) {
+    PUSH_RUNTIME_WORLD_VIEW_PC *world = (PUSH_RUNTIME_WORLD_VIEW_PC *)opaque_world;
+    PUSH_RUNTIME_BLOCK_VIEW_PC *block = (PUSH_RUNTIME_BLOCK_VIEW_PC *)opaque_block;
+    NUVEC *position;
+    NUVEC minimum, maximum;
+    f32 epsilon;
+    i32 index;
+    if ((block->packed_state_flags & 0x400u) != 0)
+        return;
+    position = block->position;
+    minimum.x = position->x + block->bounds_min.x;
+    minimum.y = position->y + block->bounds_min.y;
+    minimum.z = position->z + block->bounds_min.z;
+    maximum.x = position->x + block->bounds_max.x;
+    maximum.y = position->y + block->bounds_max.y;
+    maximum.z = position->z + block->bounds_max.z;
+    epsilon = PushBlockGapEpsilonPc;
+    for (index = 0; index < world->count; ++index) {
+        PUSH_RUNTIME_BLOCK_VIEW_PC *other;
+        NUVEC *other_position;
+        f32 minimum_x, minimum_z, maximum_x, maximum_z;
+        if (index == excluded)
+            continue;
+        other = &world->blocks[index];
+        if ((other->packed_state_flags & 0x04000000u) != 0 || (other->packed_state_flags & 0x00040000u) == 0)
+            continue;
+        other_position = other->position;
+        if (position->y >= other_position->y)
+            continue;
+        minimum_x = minimum.x - other->bounds_max.x;
+        minimum_z = minimum.z - other->bounds_max.z;
+        maximum_x = maximum.x - other->bounds_min.x;
+        maximum_z = maximum.z - other->bounds_min.z;
+        if (epsilon > 0.0f) {
+            minimum_x += epsilon;
+            minimum_z += epsilon;
+            maximum_x -= epsilon;
+            maximum_z -= epsilon;
+        }
+        if (!(minimum_x <= other_position->x && maximum_x >= other_position->x && minimum_z <= other_position->z &&
+              maximum_z >= other_position->z))
+            continue;
+        other->snap_origin = *other_position;
+        other_position->x += delta->x;
+        other_position->y -= delta->y;
+        other->ground_offset -= delta->y;
+        other_position->z += delta->z;
+        other->packed_state_flags |= 4u;
+        if (BlockInBlock(opaque_world, (PUSH_BLOCK_PC *)other, index, &other->supporting_block) != NULL)
+            other->packed_state_flags |= 0x400u;
+        NuSpecialUpdate(&other->special);
+        epsilon = PushBlockGapEpsilonPc;
+    }
+}
+
+void __cdecl MoveBlocks(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, i32 index, NUVEC *velocity) {
+    PUSH_RUNTIME_BLOCK_VIEW_PC *block = (PUSH_RUNTIME_BLOCK_VIEW_PC *)opaque_block;
+    NUVEC delta;
+    PUSH_BLOCK_PC *hit;
+    i32 j;
+    delta.x = velocity->x;
+    delta.y = 0.0f;
+    delta.z = velocity->z;
+    block->position->x += delta.x;
+    block->position->z += delta.z;
+    NuSpecialUpdate(&block->special);
+    for (j = 0; j < block->end_position_count; ++j) {
+        NUMTX *matrix = NuSpecialGetInstanceMtx(&block->end_position_specials[j]);
+        NUVEC position = *block->position;
+        matrix->m30 = position.x;
+        matrix->m32 = position.z;
+        NuSpecialUpdate(&block->end_position_specials[j]);
+    }
+    if (BlockInBlock(opaque_world, opaque_block, index, &block->supporting_block) != NULL) {
+        block->packed_state_flags |= 0x400u;
+    } else {
+        MoveBlocksOverBlock(opaque_world, opaque_block, index, &delta);
+        if (block->pushing_object != NULL && (fabs(delta.x) > 0.001f || fabs(delta.z) > 0.001f) &&
+            NuFmod(GameTimer.time_elapsed, PushRumblePeriodPc) < PushRumbleWindowPc) {
+            i32 random = qrand();
+            f32 strength = (f64)random * 0.000015259021893143654 * (f64)0.05f;
+            NewRumble(block->pushing_object->pad->bound_pad, strength, 0);
+        }
+    }
+    if ((block->packed_state_flags & 8u) != 0) {
+        delta.x = 0.0f;
+        delta.y = velocity->y;
+        delta.z = 0.0f;
+        block->position->y -= delta.y;
+        block->ground_offset -= delta.y;
+        hit = BlockInBlock(opaque_world, opaque_block, index, &block->supporting_block);
+        if (hit != NULL) {
+            PUSH_RUNTIME_BLOCK_VIEW_PC *other = (PUSH_RUNTIME_BLOCK_VIEW_PC *)hit;
+            block->settled_height = other->position->y + other->bounds_max.y;
+            block->packed_state_flags |= 0x800u;
+            NuSpecialUpdate(&block->special);
+            return;
+        }
+        MoveBlocksOverBlock(opaque_world, opaque_block, index, &delta);
+        NuSpecialUpdate(&block->special);
+    }
 }
