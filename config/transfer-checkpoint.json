@@ -30914,6 +30914,353 @@
         "build/analysis/normal-MM-independent-review/accepted-first-output-endpoint.json": "e0308d9ee45a65464c70aec14d170b032e142280160765c9e99400a62b06e69f",
         "build/analysis/runtime-registration-character-MM/runtime-acceptance-MM.json": "6ec15147be33dc3dd6cdbfa36258a7c59d35c46d481c843c09a98917dcdf2a09"
       }
+    },
+    {
+      "checkpoint": "Techno, Portal, Shadow and character installer families NN (2026-10-08)",
+      "publication_status": "All local source/storage/complete-output/CPU gates passed; exact pushed-revision CI pending",
+      "baseline_commit": "999ac6b1470a3f851ba87d46b4b6018ce2982954",
+      "baseline_CI_exact_revision_success": {
+        "run": 37819227040,
+        "url": "https://github.com/opensagadev/saga-pc/actions/runs/37819227040"
+      },
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1458905,
+        "matched_code_bytes": 223832,
+        "matching_percent": 6.448174517161849,
+        "fuzzy_coverage_percent": 28.423950142736576,
+        "mapped_functions": 5043,
+        "matched_functions": 2271,
+        "objdiff_fuzzy_percent": 69.19935,
+        "objdiff_total_code": 1426700,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2107105,
+        "mapping_percent": 5.258944302194081,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1460099
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30182
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9353,
+        "mapping_unknown_size_symbols": 5193,
+        "mapping_code_bytes": 1460099,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 42.06267720582177,
+        "mapping_data_bytes": 647006,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7962925421012919,
+        "mapping_code_data_bytes": 2107105,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.33576522708969,
+        "matched_data_region_bytes": 637612
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1464721,
+        "matched_code_bytes": 225541,
+        "matching_percent": 6.497407559130065,
+        "fuzzy_coverage_percent": 28.574010006245246,
+        "mapped_functions": 5090,
+        "matched_functions": 2300,
+        "objdiff_fuzzy_percent": 69.28201,
+        "objdiff_total_code": 1432516,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2112921,
+        "mapping_percent": 5.273459962335156,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1465915
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30182
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9400,
+        "mapping_unknown_size_symbols": 5219,
+        "mapping_code_bytes": 1465915,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 42.23022511225076,
+        "mapping_data_bytes": 647006,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7962925421012919,
+        "mapping_code_data_bytes": 2112921,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.350492927209405,
+        "matched_data_region_bytes": 637612
+      },
+      "new_source_functions": 47,
+      "actual_new_transfer_PC_bytes": 5816,
+      "new_unique_compared_PC_bytes": 5816,
+      "unique_compared_code_bytes": 1431895,
+      "native_objdiff_denominator": 1432516,
+      "overlap_bytes": 621,
+      "new_exact_PC_bytes": 1709,
+      "new_exact_functions": 29,
+      "whole_PC_fuzzy_delta_pp": 0.15005986350866962,
+      "source_families": {
+        "techno": {
+          "functions": 20,
+          "native_bytes": 2467
+        },
+        "portal": {
+          "functions": 15,
+          "native_bytes": 978
+        },
+        "shadow": {
+          "functions": 10,
+          "native_bytes": 1019
+        },
+        "character_installers": {
+          "functions": 2,
+          "native_bytes": 1352
+        }
+      },
+      "old_full_function_copies": 4881,
+      "old_full_data_regions": 10807,
+      "old_exact_code_copies_preserved": 2275,
+      "old_known_extent_exact_data_compiled_copies_preserved": 5588,
+      "current_full_function_definitions": 4928,
+      "current_full_data_definitions": 10863,
+      "normal_objects": 333,
+      "frozen_inputs": 448,
+      "members_preserved": 13,
+      "known_member_bytes": 28,
+      "new_complete_initializer_copies": 56,
+      "new_complete_initializer_COFF_bytes": 1089,
+      "new_known_extent_initializer_copies": 28,
+      "new_known_extent_initializer_COFF_bytes": 150,
+      "new_unknown_extent_initializer_copies": 28,
+      "new_unknown_extent_initializer_COFF_bytes": 939,
+      "unknown_extent_exact_and_allocation_credit": 0,
+      "new_central_working_definitions": 9,
+      "new_central_typed_bytes": 390,
+      "new_central_natural_readonly_literals": 3,
+      "new_central_literal_typed_bytes": 37,
+      "new_central_complete_regions": 12,
+      "new_central_full_bytes": 427,
+      "known_exact_data_union_before_transfer": 637612,
+      "known_exact_data_union_after_transfer": 637612,
+      "old_caller_connections": 0,
+      "old_caller_new_unique_credit": 0,
+      "qualified_previous_nonexact_function_changes": [],
+      "qualified_unknown_extent_data_changes": [
+        {
+          "unit": "src/data.cpp",
+          "symbol": "_id_BATTLEDROID",
+          "old_bytes": 2,
+          "new_bytes": 8,
+          "qualification": {
+            "receipt": "build/analysis/gcdata-battledroid-independent-review/accepted-packet.json",
+            "receipt_sha256": "5a53c38b506e5c6d3fd8b55d1353bea23e34ec700e3eb9df720c04c50d609228",
+            "old_official_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
+            "new_official_sha256": "3d73c71ad63f39a8a47bee131c1705f2b8c446a26c36ce5a9b6e6e4162fc9f86",
+            "old_raw_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
+            "new_raw_sha256": "3d73c71ad63f39a8a47bee131c1705f2b8c446a26c36ce5a9b6e6e4162fc9f86",
+            "old_complete_bytes": 2,
+            "new_complete_bytes": 8,
+            "old_exact": false,
+            "original_extent": null,
+            "new_complete_native_equal": false,
+            "domain": "Only accepted5a53 initialized declared-WORD consumers; no tail observation/commander backing/whole table activation",
+            "current_combined_receipt": "build/analysis/registration-character9-independent-review/accepted-packet.json",
+            "current_combined_receipt_sha256": "834499999928ea6e9b87a8bc1f300f1fc256a4e2a637e2e87bfb3d76f43584e7",
+            "old_section_ordinal": 211,
+            "new_section_ordinal": 214,
+            "same_named_section": ".data",
+            "same_section_characteristics": 3225419840,
+            "same_symbol_value": 63360
+          }
+        }
+      ],
+      "qualified_compiler_local_class6_type0_serial_changes": [
+        {
+          "unit": "src/legoapi/move.c",
+          "symbol": "_MovePlayer_DIRECTIONAL",
+          "sites": [
+            {
+              "before": "$directional_common_heading$139575",
+              "after": "$directional_common_heading$139649",
+              "function_offset": 1565,
+              "relocation_offset": 10440
+            },
+            {
+              "before": "$directional_common_heading$139575",
+              "after": "$directional_common_heading$139649",
+              "function_offset": 1565,
+              "relocation_offset": 10516
+            },
+            {
+              "before": "$directional_action_momentum$139849",
+              "after": "$directional_action_momentum$139923",
+              "function_offset": 6600,
+              "relocation_offset": 10616
+            },
+            {
+              "before": "$directional_walking$139819",
+              "after": "$directional_walking$139893",
+              "function_offset": 6824,
+              "relocation_offset": 10672
+            }
+          ]
+        },
+        {
+          "unit": "src/legoapi/move.c",
+          "symbol": "_PunchCode",
+          "sites": [
+            {
+              "before": "$behind_attack$141339",
+              "after": "$behind_attack$141413",
+              "function_offset": 2038,
+              "relocation_offset": 2952
+            }
+          ]
+        },
+        {
+          "unit": "src/nu2api/nufpar.c",
+          "symbol": "_GetLineW",
+          "sites": [
+            {
+              "before": "$line_complete$138841",
+              "after": "$line_complete$138915",
+              "function_offset": 256,
+              "relocation_offset": 272
+            },
+            {
+              "before": "$append_character$138845",
+              "after": "$append_character$138919",
+              "function_offset": 93,
+              "relocation_offset": 296
+            }
+          ]
+        },
+        {
+          "unit": "src/nu2api/pc_device.cpp",
+          "symbol": "_PCDeviceSetRenderState",
+          "sites": [
+            {
+              "before": "$submit$112084",
+              "after": "$submit$112167",
+              "function_offset": 139,
+              "relocation_offset": 224
+            }
+          ]
+        },
+        {
+          "unit": "src/nu2api/shader_dictionary.cpp",
+          "symbol": "?EmitAttribute@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z",
+          "sites": [
+            {
+              "before": "$allocate_first$113526",
+              "after": "$allocate_first$113609",
+              "function_offset": 741,
+              "relocation_offset": 1752
+            }
+          ]
+        }
+      ],
+      "required_checks": {
+        "tests": 732,
+        "skipped": 3,
+        "LLVM18_format_files": 360,
+        "LLVM18_tidy_units": 333,
+        "source_build": 0,
+        "objects": 0,
+        "retail_match": 0
+      },
+      "selected_CPU_checks": 183,
+      "selected_CPU_failures": 0,
+      "runtime": {
+        "sections": {
+          "registration": 30,
+          "techno": 36,
+          "portal": 39,
+          "shadow": 16,
+          "characters": 22,
+          "extra": 40
+        },
+        "replacements": 0,
+        "supplements": 0,
+        "additional_engine_providers": 0,
+        "source_EXE_repeated": false,
+        "device_asset_gameplay_claim": false,
+        "ShowCrashDialog": 0,
+        "owned_test_processes_remaining": 0,
+        "elapsed_seconds": 6.490135554922745,
+        "exit_code": 0,
+        "timed_out": false,
+        "fixture_compile_link_run_attempts": 1,
+        "fixture_or_engine_corrections": 0,
+        "genuine_signed_WORD_sentinel_preconditions": 13,
+        "ID_assignments": 0
+      },
+      "source_qualifications": [
+        "GCDATA_DEFAULT is a minimum288-byte named working record with91 native initializer fields and genuine existing PCBuildModelLayerList71 provider. Original owning extent remains unknown; flags098 is native0 rather than Android80.",
+        "The old id_BATTLEDROID declared WORD remains -1; its ordinary full COFF region grows from2 to8 bytes and remains NONEXACT. The native eight-byte interval includes a distinct Commander WORD. Original extent is unknown, with zero credit; acceptance covers current verified WORD consumers, without tail observation or Commander backing.",
+        "Techno_ResetFields EAX and Shadow_ApplyPreset EAX/ECX retain genuine same-original-owner private ABI; Techno_GetOutput includes its whole native owned table.",
+        "FixUpCharacters178 is exact; ExtraCharacterFixUpAfterConfig1174 remains nonexact (candidate1171) because flags094 bit28 uses a byte load. Accepted domain is stable initialized complete readable records; no concurrent/MMIO/access-fault equivalence is claimed. All16 real callback setter calls remain native.",
+        "All nine central owning extents and three new literal owning extents remain unknown, with0allocation/exact-data credit. Existing known Techno context string reused.",
+        "CPU183 exercises finite real registration/progress/flags/character domains with genuine sentinel prestate and providers. Terrain reset, Shadow versioned I/O, positive special IDs, startup218 table, models/render/assets/GPU remain held.",
+        "True startup CharFixUp218 ordered table, distinct Commander ID and complete ordered LSW registrar parent remain separate; no startup caller reconnected or fabricated publication.",
+        "One appended newline formatting correction preserves exact old MM prefix and every initializer token/order; first compiled input retained. Full actual-normal output confirms preservation."
+      ],
+      "remaining_contracts": [
+        "Genuine shader manager/compiler publication and rendering/device presentation",
+        "Complete startup CharFixUp218 producer/table and Commander state",
+        "Complete ordered gizmo parent and real resource/world/asset lifetime",
+        "NewGame and InitGameAfterConfig source, consumed cutscene mode/episode values and callback publication cohorts"
+      ],
+      "next_wave": "Connected game startup: retained NewGame1156, Episode_ContainsArea114, Suits_Init51, SoundFade629 and six genuine NewGame suppliers458; uncompiled candidates. InitGameAfterConfig4659 and connected provider envelopes remain gated on actual returned values and callback bodies.",
+      "checkpoint_delay": "Current-header source derivatives, sole-writer genuine storage including explicit NONEXACT unknown tail, required normal333 build/full retail matching, complete old-output audit and183 actual-normal CPU checks completed before publication.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "active; checkpoint does not finish whole-project reconstruction",
+      "evidence_pins": {
+        "build/analysis/connected-wave-NN/actual-source-integration.json": "5d2c3b5b32bf46874cce5174b1e932fe443b6a4dbc2642dce72c6acb4720ba6a",
+        "build/analysis/connected-wave-NN/actual-data-integration.json": "1c02910301915bd739eee7fb5fac85b34652a0185ed22e0633520fa63badd955",
+        "build/analysis/connected-wave-NN/first-normal-validation-receipt.json": "2a6599e3f08c58ccd1857ccfaaab5c294c29b783190e1d814df73f595ed143c5",
+        "build/analysis/connected-wave-NN/first-normal-object-manifest.json": "c3dd20370f64f5f4f200f85a2dfcc54cc794611eff0801e856a7fefb158f69a9",
+        "build/analysis/connected-wave-NN/first-normal-input-manifest.json": "5c0994520aed78e1f23557d14d703108a1ab8f78e440edfd88d848c2466bc720",
+        "build/analysis/registration-character-NN-independent-review/accepted-final-composition-packet.json": "c289b0d916a98b21657869c375bac92c721adeff3a3a09104f5030c86c4d1811",
+        "build/analysis/registration-character9-independent-review/accepted-packet.json": "834499999928ea6e9b87a8bc1f300f1fc256a4e2a637e2e87bfb3d76f43584e7",
+        "build/analysis/normal-NN-independent-review/actual-output-and-report-proof.json": "90018144db3b2bdf23b9d3b8a735ade554ea57fbd919c5f9bb7ceb646e455603",
+        "build/analysis/normal-NN-independent-review/accepted-first-output-endpoint.json": "96fdeeb99c960efe4c0097510c2a8b32b3a301546bcd2473d2f3929836eff7fa",
+        "build/analysis/runtime-registration-character-NN/runtime-acceptance-NN.json": "3b924e626968a641ade0f72b807a0e87bb5edf1e891defc00a713afaa414483b"
+      }
     }
   ]
 }

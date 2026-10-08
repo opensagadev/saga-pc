@@ -5038,5 +5038,33 @@ links 4,881 functions and 10,807 data definitions. Whole-PC fuzzy code is
 compared code is 1,426,079 bytes; objdiff's denominator is 1,426,700 with 621
 overlapping bytes. CPU fixtures pass 241/241 using real normal providers and
 caller-owned initialized valid records. Partial character actions and unsafe
-parser domains remain explicit. Exact pushed-revision CI is pending. No camera
+parser domains remain explicit. MM passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37819227040). No camera
 playback, source game, asset, device or gameplay milestone is established.
+
+### Techno, Portal, Shadow and character installer source NN (2026-10-08)
+
+The current source adds 47 complete functions/5,816 unique PC bytes: Techno
+20/2,467, Portal 15/978, Shadow 10/1,019 and character installer parents 2/1,352.
+Five existing owners retain their exact prior prefixes; edgizshadowmachine.c is
+one new owner. Every prior complete function output and exact contract survives.
+The one changed prior data region is the explicitly reviewed unknown-sized
+BATTLEDROID WORD tail: full COFF 2→8 remains nonexact and zero-credit; no tail
+is used as the distinct native Commander state.
+
+Required checks pass: 732 tests (three existing skips), LLVM18 format for 360 files and tidy for 333 units,
+source build/link/object coverage and full retail matching. CPU 183/183 passes
+against the actual normal objects, with genuine sentinel preconditions and no
+ID assignments, provider replacements or fixture corrections. Crash dialogs
+were disabled and queried; no owned process remained. Whole-PC fuzzy code is
+28.574010%, +0.150060 percentage points; exact code is 225,541 bytes (6.497408%),
++1,709. Known exact data remains 637,612 bytes. All 56 new complete initializer
+copies/1,089 bytes equal native; unknown owning extents receive zero credit.
+
+GCDATA_DEFAULT supplies its genuine minimum 288-byte record/91 initialized fields
+and real model-layer callback. Techno/Portal/Shadow canonical state and private
+registration owners retain verified offsets and defaults. FixUpCharacters (178 bytes)
+is exact; ExtraCharacterFixUpAfterConfig (1,174 bytes) remains nonexact with its finite
+stable initialized record flag-width qualification. Startup CharFixUp 218 and
+Commander storage remain held. No source game EXE, assets, GPU or gameplay
+milestone is claimed. Exact pushed-revision CI is pending. Full qualifications,
+remaining contracts and evidence pins are in transfer-checkpoint.json.

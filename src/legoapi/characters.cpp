@@ -463,3 +463,36 @@ extern "C" i32 __cdecl SetProtocolDroidFallAnim(GAMEOBJECT *object) {
             return 5;
     }
 }
+
+struct charfixup_pc_s {
+    char *name;
+    i16 *id;
+};
+STATIC_ASSERT(sizeof(CHARFIXUP_PC) == 8);
+STATIC_ASSERT(offsetof(CHARFIXUP_PC, name) == 0);
+STATIC_ASSERT(offsetof(CHARFIXUP_PC, id) == 4);
+STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
+STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
+STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name_id) == 0);
+STATIC_ASSERT(offsetof(CHARACTERDATA_PC, move_fn) == 0x18);
+STATIC_ASSERT(offsetof(CHARACTERDATA_PC, animate_fn) == 0x1c);
+
+void __cdecl FixUpCharacters(CHARFIXUP_PC *fixup) {
+    i32 i;
+    for (i = 0; i < CHARCOUNT; ++i) {
+        GCDataList[i] = GCDATA_DEFAULT;
+        if (CDataList[i].name_id == -1)
+            CDataList[i].name_id = tUNKNOWN;
+        if (CDataList[i].move_fn == NULL)
+            CDataList[i].move_fn = Move_CHARACTER;
+        if (CDataList[i].animate_fn == NULL)
+            CDataList[i].animate_fn = Animate_CHARACTER;
+    }
+    if (fixup != NULL) {
+        while (fixup->name != NULL) {
+            if (fixup->id != NULL)
+                *fixup->id = (i16)CharIDFromName(fixup->name);
+            ++fixup;
+        }
+    }
+}

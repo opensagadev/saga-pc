@@ -847,3 +847,12 @@ static void drawSceneSphere(NUGSCN *scene, i32 sphere_index) {
         NuRndrSphere(&sphere->center, sphere->radius, 0x400000, 1.0f);
     }
 }
+
+void __cdecl NuPortalSetActiveDirect(NUPORTAL *portal, i32 active) {
+    if (portal != NULL) {
+        if (active != 0)
+            portal->flags |= 1;
+        else
+            portal->flags = 0;
+    }
+}

@@ -9,9 +9,9 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Verified source baseline: KK, [`46553c7b0b578ee4499876abc63aecd7df0be442`](https://github.com/opensagadev/saga-pc/commit/46553c7b0b578ee4499876abc63aecd7df0be442); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37722186370) passed on that exact revision.
-KK has 329 normal owners. The current LL snapshot has 331 owners and the
-source/checkpoint qualifications below. II remains the last actual full-game
+Verified source baseline: MM, [`999ac6b1470a3f851ba87d46b4b6018ce2982954`](https://github.com/opensagadev/saga-pc/commit/999ac6b1470a3f851ba87d46b4b6018ce2982954); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37819227040) passed on that exact revision.
+MM has 332 normal owners; the current NN snapshot has 333 owners.
+II remains the last actual full-game
 Wine observation: its source EXE exits 5 at NULL shader Retrieve+16 before a level
 loads. A transient window establishes no persistent window, device/Present,
 recurring frames, scene or gameplay milestone. CPU fixtures exercise their stated
@@ -199,7 +199,35 @@ process remained. No camera playback, installed asset, active movement, source
 EXE or device/gameplay milestone is claimed. Partial native actions and bounded
 valid-input domains remain explicit.
 
-Exact pushed-revision CI is pending. Next source closes the genuine GCDATA_DEFAULT
+MM passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37819227040). Next source closes the genuine GCDATA_DEFAULT
 minimum record and FixUpCharacters/Extra parents, alongside Techno/Portal/Shadow.
 Their hypotheses receive no transfer credit. Full ordered registration tables,
 real startup CharFixUp storage and shader publication remain separate contracts.
+
+### Techno, Portal, Shadow and character installer source NN (2026-10-08)
+
+The current source adds 47 complete functions/5,816 unique PC bytes: Techno
+20/2,467, Portal 15/978, Shadow 10/1,019 and character installer parents 2/1,352.
+Five existing owners retain their exact prior prefixes; edgizshadowmachine.c is
+one new owner. Every prior complete function output and exact contract survives.
+The one changed prior data region is the explicitly reviewed unknown-sized
+BATTLEDROID WORD tail: full COFF 2→8 remains nonexact and zero-credit; no tail
+is used as the distinct native Commander state.
+
+Required checks pass: 732 tests (three existing skips), LLVM18 format for 360 files and tidy for 333 units,
+source build/link/object coverage and full retail matching. CPU 183/183 passes
+against the actual normal objects, with genuine sentinel preconditions and no
+ID assignments, provider replacements or fixture corrections. Crash dialogs
+were disabled and queried; no owned process remained. Whole-PC fuzzy code is
+28.574010%, +0.150060 percentage points; exact code is 225,541 bytes (6.497408%),
++1,709. Known exact data remains 637,612 bytes. All 56 new complete initializer
+copies/1,089 bytes equal native; unknown owning extents receive zero credit.
+
+GCDATA_DEFAULT supplies its genuine minimum 288-byte record/91 initialized fields
+and real model-layer callback. Techno/Portal/Shadow canonical state and private
+registration owners retain verified offsets and defaults. FixUpCharacters (178 bytes)
+is exact; ExtraCharacterFixUpAfterConfig (1,174 bytes) remains nonexact with its finite
+stable initialized record flag-width qualification. Startup CharFixUp 218 and
+Commander storage remain held. No source game EXE, assets, GPU or gameplay
+milestone is claimed. Exact pushed-revision CI is pending. Full qualifications,
+remaining contracts and evidence pins are in transfer-checkpoint.json.

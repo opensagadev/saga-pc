@@ -19422,3 +19422,119 @@ extern "C" {
     f32 podanimendframe = 1.0f;
     i16 id_BATTLEDROID = -1;
 }
+
+// Sole-writer proposal only. Native working record 288; original owning extent remains unknown.
+extern "C" {
+    PLAYERCHARACTERCONFIG_PC GCDATA_DEFAULT = {
+        PCBuildModelLayerList,                    /* 0x0 make_layer_list */
+        NULL,                                     /* 0x4 layers */
+        NULL,                                     /* 0x8 layer_lookup */
+        0.10000000149011612f,                     /* 0xc stop_speed */
+        0.0f,                                     /* 0x10 idle_speed */
+        1.0f,                                     /* 0x14 tiptoe_speed */
+        2.0f,                                     /* 0x18 walk_speed */
+        3.0f,                                     /* 0x1c run_speed */
+        0.75f,                                    /* 0x20 backwards_factor */
+        -5.0f,                                    /* 0x24 gravity */
+        0.0f,                                     /* 0x28 field_028 */
+        2.0f,                                     /* 0x2c jump_speed */
+        1.0f,                                     /* 0x30 jump_duration */
+        1.0f,                                     /* 0x34 jump_height */
+        2.0f,                                     /* 0x38 second_jump_speed */
+        1.0f,                                     /* 0x3c second_jump_duration */
+        1.0f,                                     /* 0x40 second_jump_height */
+        {5.0f},                                   /* 0x44 velocity_seek_rate */
+        0.0f,                                     /* 0x48 jump_hold_duration */
+        0.3375000059604645f,                      /* 0x4c collision_origin_radius */
+        1.0471975803375244f,                      /* 0x50 field_050 */
+        0.3490658700466156f,                      /* 0x54 field_054 */
+        10.0f,                                    /* 0x58 field_058 */
+        -1.8325958251953125f,                     /* 0x5c field_05c */
+        0.0f,                                     /* 0x60 field_060 */
+        6.0f,                                     /* 0x64 viewdistance */
+        3.0f,                                     /* 0x68 heardistance */
+        0.5f,                                     /* 0x6c maxviewheight */
+        -0.5f,                                    /* 0x70 minviewheight */
+        1.0f,                                     /* 0x74 turn_rate */
+        {1.0f},                                   /* 0x78 high_speed_turn_rate */
+        {1.0f},                                   /* 0x7c vehicle_acceleration_time */
+        {1.0f},                                   /* 0x80 vehicle_deceleration_time */
+        1.0f,                                     /* 0x84 jump_move_speed_scale */
+        0.0f,                                     /* 0x88 field_088 */
+        99.0f,                                    /* 0x8c field_08c */
+        0x0u,                                     /* 0x90 flags_090 */
+        {0x0u},                                   /* 0x94 flags_094 */
+        {0, 0, 0, 0},                             /* 0x98 flags_098 */
+        0x1u,                                     /* 0x9c layer_mask_special */
+        0x1u,                                     /* 0xa0 layer_mask */
+        0x1u,                                     /* 0xa4 layer_mask_medium */
+        0x1u,                                     /* 0xa8 layer_mask_low */
+        0x1u,                                     /* 0xac layer_mask_dead */
+        0x0u,                                     /* 0xb0 ride_layers_off */
+        2.75f,                                    /* 0xb4 layer_distance_medium */
+        5.5f,                                     /* 0xb8 layer_distance_low */
+        {10.0f, 5.0f, 0.0f, 0.0f},                /* 0xbc ai_update_distances */
+        {4, 2, 0, 0},                             /* 0xcc ai_update_intervals */
+        {-1, -1, -1, -1, -1, -1},                 /* 0xd0 sfx_misc */
+        -1,                                       /* 0xdc sfx_die */
+        -1,                                       /* 0xde sfx_hurt */
+        -1,                                       /* 0xe0 sfx_grunt */
+        -1,                                       /* 0xe2 sfx_engine */
+        {-1},                                     /* 0xe4 sfx_shoot */
+        -1,                                       /* 0xe6 sfx_footstep */
+        -1,                                       /* 0xe8 sfx_chatter */
+        -1,                                       /* 0xea sfx_sabre */
+        -1,                                       /* 0xec weapon_model */
+        1110,                                     /* 0xee coin_value */
+        0,                                        /* 0xf0 shadow_locators */
+        0,                                        /* 0xf2 thrust_locators */
+        1,                                        /* 0xf4 hitpoints */
+        0,                                        /* 0xf5 shield_hitpoints */
+        255,                                      /* 0xf6 blob_shadow_alpha */
+        0,                                        /* 0xf7 unknown_0f7 */
+        {-1, -1, -1, -1},                         /* 0xf8 weapon_joints */
+        {{-1, -1, -1, -1}},                       /* 0xfc weapon_shoot_joints */
+        {{-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}}, /* 0x100 streak_joints */
+        {-1, -1},                                 /* 0x108 hand_locators */
+        {-1, -1},                                 /* 0x10a grapple_locators */
+        {-1},                                     /* 0x10c rocket_locator */
+        {-1},                                     /* 0x10d shield_locator */
+        {-1},                                     /* 0x10e head_locator */
+        {-1},                                     /* 0x10f collision_locator */
+        -1,                                       /* 0x110 thingy_locator */
+        -1,                                       /* 0x111 helmet_locator */
+        -1,                                       /* 0x112 throw_locator */
+        -1,                                       /* 0x113 ride_locator */
+        -1,                                       /* 0x114 poo_locator */
+        -1,                                       /* 0x115 hair_layer */
+        {255},                                    /* 0x116 hover_fall_mode */
+        {255},                                    /* 0x117 streak_color */
+        -1,                                       /* 0x118 head_joint */
+        -1,                                       /* 0x119 cloak_joint */
+        -1,                                       /* 0x11a cloak_joint_2 */
+        -1,                                       /* 0x11b place_locator */
+        -1,                                       /* 0x11c cape_layer */
+        -1,                                       /* 0x11d extra_character_locator */
+        0,                                        /* 0x11e flags_11e */
+        0,                                        /* 0x11f layer_count */
+    };
+}
+
+extern "C" {
+    const char *TechnoRegistrationNamePc = PCContextName_Techno;
+    TECHNO_CONFIG_PC TechnoSysPc = {
+        0.20000000298023224f,
+        {85, 44, -1, -1},
+        {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},
+        {45, 46},
+        {{0.09910000115633011f, 0.0f, 0.07620000094175339f}, {-0.09910000115633011f, 0.0f, 0.07620000094175339f}}};
+    const char *PortalRegistrationPrefixPc = "portal_";
+    const char *ShadowGizmoNamePc = "ShadowDirection";
+    const char *ShadowOutputNamePc = "Dont Use Me!";
+    i32 techno_gizmotype_id = -1;
+    i32 portal_gizmotype_id = 0;
+}
+
+extern "C" {
+    i16 id_BARMAN = -1;
+}

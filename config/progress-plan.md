@@ -1,18 +1,18 @@
 # Current work plan
 
 The [whole-project mandate](../SOL_IMPLEMENTATION_PLAN.md) remains active.
-The verified baseline is LL, [`41c5de9350ead0fe454f6761710f04829b6608f1`](https://github.com/opensagadev/saga-pc/commit/41c5de9350ead0fe454f6761710f04829b6608f1), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37811078781) passing.
-The current MM source snapshot adds 87 complete compared functions/15,476 PC bytes:
-obstacles, tubes/plugs, MiniCut, character loading/callbacks and special gizmos.
-All required local checks and 241 bounded CPU checks pass; all prior exact
-contracts and complete outputs survive. Exact pushed-revision CI is pending.
-Complete release qualifications are in [transfer-checkpoint.json](transfer-checkpoint.json).
+The verified baseline is MM, [`999ac6b1470a3f851ba87d46b4b6018ce2982954`](https://github.com/opensagadev/saga-pc/commit/999ac6b1470a3f851ba87d46b4b6018ce2982954), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37819227040) passing.
+The current NN source adds 47 complete compared functions/5,816 PC bytes across
+Techno, Portal, Shadow and character installers. All required checks and 183 CPU
+checks pass; prior exact contracts survive. The explicitly qualified unknown
+BATTLEDROID tail remains nonexact and zero-credit. Exact pushed-revision CI is
+pending. Full release qualifications are in [transfer-checkpoint.json](transfer-checkpoint.json).
 
-Next connected work closes the genuine GCDATA_DEFAULT record and character
-installer parents, then Techno/Portal/Shadow providers. Their retained contracts
-remain candidates until actual compilation, independent review and PC comparison.
-The genuine startup CharFixUp table and all ordered registration values remain
-separate contracts; prototypes or partial callback lists cannot replace them.
+Next connected work transfers new-game setup and genuine input/hint/cheat/name
+providers, then the larger post-config initializer and its real returned values
+and callback publications. Shared Game refinements preserve every existing offset.
+Startup CharFixUp 218/Commander storage and ordered registration parent remain
+separate contracts. Candidate source and envelopes receive no transfer credit.
 
 1. Close genuine shader-manager publication, parser/compiler lifetime and device
    dependencies at the observed startup frontier. Preserve true constructors,

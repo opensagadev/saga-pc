@@ -18701,3 +18701,92 @@ extern "C" {
 #endif
 
 #endif
+
+#ifndef SAGA_REGISTRATION_CHARACTER_NN_DECLARATIONS
+#define SAGA_REGISTRATION_CHARACTER_NN_DECLARATIONS
+
+#ifndef SAGA_TECHNO_CONFIG_PC_DECLARATIONS
+#define SAGA_TECHNO_CONFIG_PC_DECLARATIONS
+typedef struct techno_config_pc_s {
+    f32 interaction_time;
+    i16 idle_object_ids[4];
+    NUVEC idle_offsets[3];
+    i16 hand_object_ids[2];
+    NUVEC hand_offsets[2];
+} TECHNO_CONFIG_PC;
+STATIC_ASSERT(sizeof(TECHNO_CONFIG_PC) == 0x4c);
+STATIC_ASSERT(offsetof(TECHNO_CONFIG_PC, interaction_time) == 0);
+STATIC_ASSERT(offsetof(TECHNO_CONFIG_PC, idle_object_ids) == 4);
+STATIC_ASSERT(offsetof(TECHNO_CONFIG_PC, idle_offsets) == 0xc);
+STATIC_ASSERT(offsetof(TECHNO_CONFIG_PC, hand_object_ids) == 0x30);
+STATIC_ASSERT(offsetof(TECHNO_CONFIG_PC, hand_offsets) == 0x34);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern const char PCContextName_Techno[7];
+    extern const char *TechnoRegistrationNamePc;
+    extern TECHNO_CONFIG_PC TechnoSysPc;
+    extern const char *PortalRegistrationPrefixPc;
+    extern const char *ShadowGizmoNamePc;
+    extern const char *ShadowOutputNamePc;
+    extern i32 techno_gizmotype_id;
+    extern i32 portal_gizmotype_id;
+#ifdef __cplusplus
+}
+#endif
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    typedef struct add_gizmo_config_type_pc_s TECHNO_REGISTRATION_PC;
+    typedef struct add_gizmo_config_type_pc_s PORTAL_REGISTRATION_PC;
+    typedef struct add_gizmo_config_type_pc_s SHADOW_REGISTRATION_PC;
+    TECHNO_REGISTRATION_PC *__cdecl Technos_RegisterGizmo(i32 type_id);
+    PORTAL_REGISTRATION_PC *__cdecl Portal_RegisterGizmo(i32 type_id);
+    SHADOW_REGISTRATION_PC *__cdecl EdGizShadowMachine_RegisterGizmo(i32 type_id);
+    void __cdecl PortalDoors_Reset(WORLDINFO *world);
+    void __cdecl NuPortalSetActiveDirect(NUPORTAL *portal, i32 active);
+    extern TECHNO_CONFIG_PC TechnoSysPc;
+    extern const char *TechnoRegistrationNamePc;
+    extern i32 techno_gizmotype_id;
+    extern const char *PortalRegistrationPrefixPc;
+    extern i32 portal_gizmotype_id;
+    extern const char *ShadowGizmoNamePc;
+    extern const char *ShadowOutputNamePc;
+#ifdef __cplusplus
+}
+#endif
+
+typedef struct charfixup_pc_s CHARFIXUP_PC;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl FixUpCharacters(CHARFIXUP_PC *);
+    void __cdecl ExtraCharacterFixUpAfterConfig(void);
+#ifdef __cplusplus
+}
+#endif
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern PLAYERCHARACTERCONFIG_PC GCDATA_DEFAULT;
+#ifdef __cplusplus
+}
+#endif
+STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, make_layer_list) == 0);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layers) == 4);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_lookup) == 8);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094_bytes) == 0x94);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i16 id_BARMAN;
+#ifdef __cplusplus
+}
+#endif
+
+#endif

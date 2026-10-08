@@ -21,6 +21,8 @@ address    , symbol                                                         , si
 0x40eff0,_CalcSplinePoint,1119,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
 0x40f450,_CalcSplinePointFromDist,190,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
 0x413b70,_CC_variant,910,
+0x414340,_FixUpCharacters,178,void __cdecl(CHARFIXUP_PC *)
+0x414400,_ExtraCharacterFixUpAfterConfig,1174,void __cdecl(void)
 0x4148a0,_ResetPlayerPacket,523,"void __cdecl(void *,CHARACTERDATA_PC *)"
 0x00414ab0,_SetFlicker,25,"void __cdecl(GAMEOBJECT *, f32)"
 0x414ad0,_ResetPlayerAI,216,void __cdecl(GAMEOBJECT *)
@@ -787,6 +789,26 @@ address    , symbol                                                         , si
 0x4cc920,_Suit_GetIndex,42,i32 __cdecl(SUIT_LAYERS_PC *)
 0x4cca00,_Suit_GetDefault,52,SUIT_LAYERS_PC *__cdecl (i32)
 0x004cca90 , _Technos_FindControllingTechno                                 , 57    , TECHNO_PC *__cdecl (GAMEOBJECT *)
+0x4cce10,_Technos_Load,304,
+0x4ccf40,_Technos_ReserveBufferSpace,77,
+0x4ccf90,_Techno_ResetFields,174,
+0x4cd040,_Techno_SetVisibility,30,
+0x4cd060,_Techno_Activate,28,
+0x4cd080,_Technos_Reset,132,
+0x4cd1e0,_Technos_EarlyUpdate,50,
+0x4cd220,_Technos_LateUpdate,120,
+0x4cd2a0,_Technos_Draw,785,
+0x4cd5c0,_Technos_GetMaxGizmos,25,
+0x4cd5e0,_Technos_AddGizmos,97,
+0x4cd650,_Techno_GetGizmoName,14,
+0x4cd660,_Techno_GetOutput,136,
+0x4cd6f0,_Techno_GetOutputName,6,
+0x4cd700,_Techno_GetNumOutputs,6,
+0x4cd710,_Technos_AllocateProgressData,21,
+0x4cd730,_Technos_ClearProgress,22,
+0x4cd750,_Technos_StoreProgress,126,
+0x4cd7d0,_Techno_GetPos,21,
+0x4cd7f0,_Technos_RegisterGizmo,293,TECHNO_REGISTRATION_PC * __cdecl (i32)
 0x004cd9a0 , _Techno_FindOperator                                           , 148   , "i32 __cdecl (void *, GAMEPAD_PC **, GAMEOBJECT **)"
 0x4cdd60,_Tel_spline,200,
 0x4cde30,_Tel_duration,23,
@@ -1907,6 +1929,7 @@ address    , symbol                                                         , si
 0x55f8a0,_LevelStreamingChooseSplitPc,186,
 0x55f960,_PortalDoors_Configure,338,"void __cdecl(WORLDINFO *, char *)"
 0x0055fac0 , _PortalDoors_Update                                            , 229   , void __cdecl (WORLD *)
+0x55fbb0,_PortalDoors_Reset,52,void __cdecl (WORLDINFO *)
 0x55fbf0,_EquivalentObjects_Configure,321,"void __cdecl(WORLDINFO *, char *)"
 0x0055fe10 , _LoadTerrainFile                                               , 113   , void __cdecl (WORLDINFO *)
 0x0055fe90 , _LoadGrassFile                                                 , 155   , void __cdecl (WORLDINFO *)
@@ -2854,6 +2877,29 @@ address    , symbol                                                         , si
 0x5ae7d0,_GizSpecial_ReserveBuffer,261,
 0x5ae8e0,_GizSpecial_RegisterGizmo,279,
 0x5aef10,_GizmoFileReadGameAnimSet,413,"i32 __cdecl (GAMEANIMSET *, void *, void (__cdecl *)(GAMEANIMOBJ *, u8), u8, char *, char *)"
+0x5af0e0,_Portal_GetMaxGizmos,25,
+0x5af100,_Portal_AddGizmos,85,
+0x5af160,_Portal_GetGizmoName,53,
+0x5af1a0,_Portal_GetOutput,29,
+0x5af1c0,_Portal_GetNumOutputs,6,
+0x5af1d0,_Portal_GetOutputName,6,
+0x5af1e0,_Portal_Activate,24,
+0x5af200,_Portal_ActivateRev,74,
+0x5af250,_Portals_Reset,170,
+0x5af300,_Portals_AllocateProgressData,21,
+0x5af320,_Portals_ClearProgress,15,
+0x5af330,_Portals_StoreProgress,130,
+0x5af3c0,_Portal_RegisterGizmo,260,PORTAL_REGISTRATION_PC * __cdecl (i32)
+0x5af4f0,_Shadow_GetMaxGizmos,6,
+0x5af500,_Shadow_AddGizmos,26,
+0x5af520,_Shadow_GetGizmoName,6,
+0x5af530,_Shadow_GetOutput,3,
+0x5af540,_Shadow_GetOutputName,6,
+0x5af550,_Shadow_GetNumOutputs,6,
+0x5af560,_Shadow_ReserveBufferSpace,238,
+0x5af650,_Shadow_ApplyPreset,195,
+0x5af720,_Shadow_Load,304,
+0x5af850,_EdGizShadowMachine_RegisterGizmo,229,SHADOW_REGISTRATION_PC * __cdecl (i32)
 0x5af970,_Plugs_Load,179,
 0x5afa30,_Plugs_ReserveBufferSpace,109,
 0x5afaa0,_Plug_Activate,28,
@@ -3295,6 +3341,7 @@ address    , symbol                                                         , si
 0x5d8e20,_VisibilityTreeWalkPc,390,
 0x5d8fb0,_NuVisiInstTree,107,"void __cdecl(VISIBILITY_RESULT_READER_PC*,NUGSCN*)"
 0x005d9030 , _NuPortalInit                                                  , 34    , void __cdecl (void)
+0x5d90c0,_NuPortalSetActiveDirect,28,"void __cdecl (NUPORTAL *, i32)"
 0x5d9130,_NuPortalMaxDepth,15,"void __cdecl(NUGSCN *,i32)"
 0x5d9140,_allocateFrustrum,104,
 0x5d91b0,_copyFrustrum,109,
@@ -7554,6 +7601,8 @@ address    , symbol                                                         , si
 0x75d25c,_SuitMetadataName0075d25cPc,,char[18]
 0x75d270,_SuitMetadataName0075d270Pc,,char[13]
 0x75d280,_SuitMetadataName0075d280Pc,,char[14]
+0x75d290,??_C@_0M@DEOPKPEH@GIZOBSTACLE?$AA@,,
+0x75d2a0,__real@40dc71c000000000,,
 0x75d2a8,??_C@_05PGEJIEBA@flap2?$AA@,6,
 0x75d2b0,??_C@_05NNGENHND@flap1?$AA@,6,
 0x75d2b8,??_C@_03GJLPFLNF@obj?$AA@,4,
@@ -8748,6 +8797,15 @@ address    , symbol                                                         , si
 0x763db8,??_C@_06PNNOJMAL@?$CFs?4ptl?$AA@,7,
 0x763de0,__real@461c3c00,4,const f32
 0x763e18,??_C@_09FBCLKMEP@NuSpecial?$AA@,,
+0x763e2c,??_C@_07POLPIEHG@portal_?$AA@,,const char[8]
+0x763e34,??_C@_04HGGBINEM@?$CFs?$CFd?$AA@,,
+0x763e3c,??_C@_06FPPGHFGB@Portal?$AA@,,
+0x763e44,??_C@_0BA@BKGAHAK@ShadowDirection?$AA@,,const char[16]
+0x763e54,??_C@_0N@FKMLLBHH@Dont?5Use?5Me?$CB?$AA@,,const char[13]
+0x763e64,__real@41b00000,,
+0x763e68,__real@3a03126f,,
+0x763e6c,__real@c1700000,,
+0x763e70,??_C@_0N@KNCHGBDG@ShadowEditor?$AA@,,
 0x763e80,??_C@_07BKGMKKDM@Plugged?$AA@,,const char[8]
 0x763e88,??_C@_04ILINIEJ@Plug?$AA@,,const char[5]
 0x763ec8,??_C@_06MDJIBAJE@Played?$AA@,,
@@ -11111,6 +11169,7 @@ address    , symbol                                                         , si
 0x7f18f0,_id_WOOKIEE,,i16
 0x007f18f4 , _GameObjectRotationAtstId                                      , 2     , u16
 0x7f18f8,_id_ATST_LOWRES,,i16
+0x7f18fc,_id_BARMAN,,i16
 0x7f1900,_id_DROIDEKA,,i16
 0x7f1904,_id_SUPERBATTLEDROID,,i16
 0x7f1908,_id_BOBAFETT,,i16
@@ -11496,6 +11555,9 @@ address    , symbol                                                         , si
 0x007fc3c8 , _PanelWideHeight                                               , 4     , f32
 0x007fce84 , _PermDataLoaded                                                , 4     , i32
 0x7fcfb8,_SuitRecordInitPc,,SUIT_INITIALIZER_RECORD_PC[10]
+0x7fd118,_TechnoSysPc,,TECHNO_CONFIG_PC
+0x7fd164,_techno_gizmotype_id,,i32
+0x7fd1d0,_TechnoRegistrationNamePc,,const char *
 0x7fd1e4,_TeleportConfigDataPc,,
 0x7fd2b4,_TextCrawlLswPc,,struct text_crawl_view_pc_s
 0x007ff950 , _Game_LanguageList                                             , 56    , LANGUAGEDATA[7]
@@ -11796,6 +11858,7 @@ address    , symbol                                                         , si
 0x8028b0,_LegoContextNetWaitPc,,i32
 0x802924,_DrawCharIconPanelPc,,i32
 0x802928,_AreaIconPathPrivate,,char[64]
+0x802968,_GCDATA_DEFAULT,,PLAYERCHARACTERCONFIG_PC
 0x802af4,_SuperStoryEpisode,,i32
 0x802af8,_pause_i_pad,,i32
 0x802b64,_grapple_attach_frames,,u8
@@ -12027,6 +12090,10 @@ address    , symbol                                                         , si
 0x805e24,_turret_gizmotype_id,4,i32
 0x00805eb4,_gizspecial_prefix_pc,,
 0x00805ebc,_gizspecial_gizmotype_id,4,i32
+0x805f94,_PortalRegistrationPrefixPc,,const char *
+0x806000,_portal_output_name_pc,,
+0x8060b0,_ShadowGizmoNamePc,,const char *
+0x8060b4,_ShadowOutputNamePc,,const char *
 0x8060c4,_plug_gizmotype_id,,i32
 0x8060c8,_PlugOutputNamePc,,const char *
 0x806130,_PlugGizmoNamePc,,const char *
@@ -12892,6 +12959,7 @@ address    , symbol                                                         , si
 0x00880594 , _loadlegal_done                                                , 4     , i32
 0x00880598 , _LoadPerm_LanguageSelect                                       , 4     , volatile i32
 0x0088059c , _LoadPerm_StringsLoaded                                        , 4     , i32
+0x8805b0,?addtype@?1??Technos_RegisterGizmo@@9@9,,
 0x880628,_Tel_teleport,,
 0x88062c,_FindTeleport_Direction,,i32
 0x880630,_Tel_worldinfo,,
@@ -13789,6 +13857,11 @@ address    , symbol                                                         , si
 0x95df48,_PlayerItemTypeCountPc,,i32
 0x0095df6c , _gizaimessagesys                                               , 4     , GIZAIMESSAGESYS *
 0x95e090,?addtype@?1??GizSpecial_RegisterGizmo@@9@9,,
+0x95e108,_portal_gizmotype_id,,i32
+0x95e10c,_portal_gizmo_name_pc,,
+0x95e120,?addtype@?1??Portal_RegisterGizmo@@9@9,,
+0x95e1d0,_edGizShadow_gizmotype_id,,
+0x95e1d8,?addtype@?1??EdGizShadowMachine_RegisterGizmo@@9@9,,
 0x95e250,?PlugsAddTypePc@?1??Plugs_RegisterGizmo@@9@9,,
 0x95e3b8,?MiniCutAddTypePc@?1??MiniCut_RegisterGizmo@@9@9,,
 0x0095e434 , ?fade_draw_suppressed@@3HA                                     , 4     , i32

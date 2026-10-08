@@ -2582,3 +2582,85 @@ i32 __cdecl RandomIDFromFlags(u32 model_flags, u32 game_flags, i32 require_hat, 
         return candidates[0];
     return candidates[qrand() / (0xffff / count + 1)];
 }
+
+extern i16 id_SUPERBATTLEDROID, id_BARMAN;
+void __cdecl Move_GEONOSIAN(GAMEOBJECT *);
+void __cdecl Move_JAWA(GAMEOBJECT *);
+STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
+STATIC_ASSERT(offsetof(CHARACTERDATA_PC, move_fn) == 0x18);
+STATIC_ASSERT(offsetof(CHARACTERDATA_PC, animate_fn) == 0x1c);
+STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094_bytes) == 0x94);
+void __cdecl ExtraCharacterFixUpAfterConfig(void) {
+    i32 i;
+    SetMoveAndAnimateFunctions(8, 8, 0, 0, -1, Move_JEDI, Animate_JEDI, NULL);
+    SetMoveAndAnimateFunctions(0x1000010, 0x10, 0, 0, -1, Move_DROIDGENERIC, NULL, NULL);
+    SetMoveAndAnimateFunctions(0x30, 0x30, 0, 0, -1, Move_DROIDGENERIC, Animate_PROTOCOL, NULL);
+    SetMoveAndAnimateFunctions(0x50, 0x50, 0, 0, -1, Move_DROIDGENERIC, Animate_ASTROMECH, PostAnimate_ASTROMECH);
+    SetMoveAndAnimateFunctions(0, 0, 0x800, 0x800, -1, Move_CANNON, Animate_CANNON, NULL);
+    SetMoveAndAnimateFunctions(0x2000, 0x2000, 0, 0, -1, Move_VEHICLE, Animate_VEHICLE, NULL);
+    SetMoveAndAnimateFunctions(0x40000000, 0x40000000, 0, 0, -1, Move_BEAST, Animate_BEAST, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, 4, Move_DROIDGENERIC, Animate_BATTLEDROID, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, 17, Move_HOVERDROID, Animate_HOVERDROID, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, 15, Move_WALKER, Animate_WALKER, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, 16, Move_ATAT, Animate_ATAT, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, 18, Move_CRITTER, Animate_CRITTER, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, 18, Move_CRITTER, Animate_CRITTER, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, 20, Move_POD, Animate_POD, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, 2, NULL, NULL, PostAnimate_FETT);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, 0, Move_WEIRDO, Animate_WEIRDO, NULL);
+    for (i = 0; i < CHARCOUNT; ++i) {
+        if ((GCDataList[i].flags_094_bytes[3] & 0x10) != 0) {
+            CDataList[i].move_fn = Move_GEONOSIAN;
+            CDataList[i].animate_fn = Animate_GEONOSIAN;
+        }
+    }
+    if (id_DROIDEKA != -1) {
+        CDataList[id_DROIDEKA].move_fn = Move_DROIDEKA;
+        CDataList[id_DROIDEKA].animate_fn = Animate_DROIDEKA;
+    }
+    if (id_MINIDROIDEKA != -1) {
+        CDataList[id_MINIDROIDEKA].move_fn = Move_DROIDEKA;
+        CDataList[id_MINIDROIDEKA].animate_fn = Animate_DROIDEKA;
+    }
+    if (id_SUPERBATTLEDROID != -1) {
+        CDataList[id_SUPERBATTLEDROID].move_fn = Move_SUPERBATTLEDROID;
+        CDataList[id_SUPERBATTLEDROID].animate_fn = Animate_SUPERBATTLEDROID;
+    }
+    if (id_BARMAN != -1) {
+        CDataList[id_BARMAN].move_fn = Move_BARMAN;
+        CDataList[id_BARMAN].animate_fn = Animate_BARMAN;
+    }
+    if (id_JAWA != -1) {
+        CDataList[id_JAWA].move_fn = Move_JAWA;
+    }
+    if (id_UGNAUGHT != -1) {
+        CDataList[id_UGNAUGHT].move_fn = Move_JAWA;
+    }
+    if ((i16)id_DRAGBOMB != -1) {
+        CDataList[(i16)id_DRAGBOMB].move_fn = Move_DRAGBOMB;
+    }
+    if (id_REPUBLICGUNSHIP != -1) {
+        CDataList[id_REPUBLICGUNSHIP].move_fn = Move_REPUBLICGUNSHIP;
+        CDataList[id_REPUBLICGUNSHIP].animate_fn = Animate_REPUBLICGUNSHIP;
+    }
+    if (id_REPUBLICGUNSHIP_GREEN != -1) {
+        CDataList[id_REPUBLICGUNSHIP_GREEN].move_fn = Move_REPUBLICGUNSHIP;
+        CDataList[id_REPUBLICGUNSHIP_GREEN].animate_fn = Animate_REPUBLICGUNSHIP;
+    }
+    if (id_SPEEDERBIKE != -1) {
+        CDataList[id_SPEEDERBIKE].move_fn = Move_SPEEDERBIKE;
+        CDataList[id_SPEEDERBIKE].animate_fn = Animate_SPEEDERBIKE;
+    }
+    if (VehicleBoltId7f18b4Pc != -1) {
+        CDataList[VehicleBoltId7f18b4Pc].animate_fn = Animate_DEFAULT;
+    }
+    if (id_BODYGUARD != -1) {
+        CDataList[id_BODYGUARD].move_fn = Move_JEDI;
+        CDataList[id_BODYGUARD].animate_fn = Animate_JEDI;
+    }
+    if (id_IMPERIALGUARD != -1) {
+        CDataList[id_IMPERIALGUARD].move_fn = Move_JEDI;
+        CDataList[id_IMPERIALGUARD].animate_fn = Animate_JEDI;
+    }
+}
