@@ -274,3 +274,62 @@ def mapping_progress(records, target, member_ranges=()):
                                if row["address"] is not None and row["size"]),
                             *member_ranges])
     return {"image_bytes": total, "mapped_bytes": mapped, "mapping_percent": 100 * mapped / total}
+
+
+def section_mapping_progress(records, target, sections, member_ranges=()):
+    """Known symbol bytes against code/data section storage, not unknown symbol sizes.
+
+    Virtual sizes include genuine zero-initialized data. Resource/relocation
+    metadata, headers and inter-section gaps are outside this denominator.
+    Keep the legacy image metric separate so old reports remain comparable.
+    """
+    records, member_ranges = list(records), list(member_ranges)
+    mapping_progress(records, target, member_ranges)
+    image = number(target["image_base"])
+    image_end = image + number(target["image_size"])
+    ranges = [(r["address"], r["size"]) for r in records
+              if r["address"] is not None and r["size"]]
+    ranges.extend(member_ranges)
+    selected, occupied = [], []
+    for section in sections:
+        flags = section["characteristics"]
+        size, rva = section["virtual_size"], section["virtual_address"]
+        if any(type(v) is not int or v < 0 for v in (flags, size, rva)):
+            raise ValueError("Invalid original section coverage extent")
+        if not size:
+            continue
+        start, end = image + rva, image + rva + size
+        if not image <= start < end <= image_end:
+            raise ValueError("Original section coverage is outside the image")
+        if any(start < b and end > a for a, b in occupied):
+            raise ValueError("Original section coverage ranges overlap")
+        occupied.append((start, end))
+        if section["name"] in (".rsrc", ".reloc"):
+            continue
+        kind = "code" if flags & 0x20 else "data" if flags & 0xc0 else None
+        if kind is None:
+            continue
+        clipped = [(max(start, a), min(end, a + n) - max(start, a))
+                   for a, n in ranges if a < end and a + n > start]
+        selected.append(dict(name=section["name"], kind=kind, address=hex(start),
+                             size=size, mapped_bytes=covered_bytes(clipped)))
+    totals = {kind: sum(s["size"] for s in selected if s["kind"] == kind)
+              for kind in ("code", "data")}
+    mapped = {kind: sum(s["mapped_bytes"] for s in selected if s["kind"] == kind)
+              for kind in ("code", "data")}
+    code_sections = [s for s in selected if s["kind"] == "code"]
+    if (len(code_sections) != 1 or
+            number(code_sections[0]["address"]) != number(target["text_va"]) or
+            totals["code"] != number(target["text_size"]) or not totals["data"]):
+        raise ValueError("Section coverage requires the configured .text and data storage")
+    result = dict(mapping_denominator="code_and_data_section_virtual_sizes",
+                  mapping_sections=selected,
+                  mapping_known_size_symbols=sum(r["address"] is not None and bool(r["size"]) for r in records),
+                  mapping_unknown_size_symbols=sum(r["address"] is not None and r["size"] is None for r in records))
+    totals["code_data"] = totals["code"] + totals["data"]
+    mapped["code_data"] = mapped["code"] + mapped["data"]
+    for kind in ("code", "data", "code_data"):
+        result[f"mapping_{kind}_bytes"] = mapped[kind]
+        result[f"mapping_{kind}_total_bytes"] = totals[kind]
+        result[f"mapping_{kind}_percent"] = 100 * mapped[kind] / totals[kind]
+    return result

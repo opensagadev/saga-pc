@@ -57,6 +57,29 @@ jobs:
                 mapping = {image_bytes: p.image_bytes, mapped_bytes: p.mapped_bytes,
                            mapping_percent: p.mapping_percent};
               }
+              let sectionMapping = null;
+              const sectionFields = ["mapping_code_bytes", "mapping_code_total_bytes", "mapping_code_percent",
+                                     "mapping_data_bytes", "mapping_data_total_bytes", "mapping_data_percent",
+                                     "mapping_code_data_bytes", "mapping_code_data_total_bytes", "mapping_code_data_percent"];
+              const sectionMetadata = ["mapping_denominator", "mapping_known_size_symbols", "mapping_unknown_size_symbols"];
+              if ([...sectionFields, ...sectionMetadata].some((field) => field in p)) {
+                const ratio = (bytes, total, percent) => integer(bytes) && integer(total) &&
+                  total <= 0x100000000 && bytes <= total && Number.isFinite(percent) &&
+                  percent >= 0 && percent <= 100 &&
+                  Math.abs(percent - (total === 0 ? 0 : 100 * bytes / total)) <= 0.000001;
+                if (![...sectionFields, ...sectionMetadata].every((field) => field in p) ||
+                    p.mapping_denominator !== "code_and_data_section_virtual_sizes" ||
+                    !integer(p.mapping_known_size_symbols) || !integer(p.mapping_unknown_size_symbols) ||
+                    !["code", "data", "code_data"].every((kind) => ratio(
+                      p[`mapping_${kind}_bytes`], p[`mapping_${kind}_total_bytes`], p[`mapping_${kind}_percent`])) ||
+                    p.mapping_code_total_bytes !== p.text_bytes || p.mapping_data_total_bytes <= 0 ||
+                    p.mapping_code_data_total_bytes !== p.mapping_code_total_bytes + p.mapping_data_total_bytes ||
+                    p.mapping_code_data_bytes !== p.mapping_code_bytes + p.mapping_data_bytes) {
+                  throw new Error("Invalid section mapping summary");
+                }
+                sectionMapping = Object.fromEntries([...sectionFields, ...sectionMetadata]
+                  .filter((field) => field !== "mapping_denominator").map((field) => [field, p[field]]));
+              }
               let objdiff = null;
               if (["objdiff_fuzzy_percent", "objdiff_total_code"].some((field) => field in p)) {
                 if (!integer(p.objdiff_total_code) ||
@@ -79,7 +102,7 @@ jobs:
               // Only validated hashes and numeric fields can reach Markdown.
               return {target: report.target_sha256.toLowerCase(),
                       ...Object.fromEntries(fields.map((field) => [field, p[field]])),
-                      matching_percent: p.matching_percent, fuzzyCoverage, mapping, objdiff};
+                      matching_percent: p.matching_percent, fuzzyCoverage, mapping, sectionMapping, objdiff};
             }
 
             async function readReport(repository, ref) {
@@ -121,7 +144,9 @@ jobs:
             const a = base.value;
             const b = head.value;
             const comparable = a && b && a.target === b.target && a.text_bytes === b.text_bytes &&
-              (!a.mapping || !b.mapping || a.mapping.image_bytes === b.mapping.image_bytes);
+              (!a.mapping || !b.mapping || a.mapping.image_bytes === b.mapping.image_bytes) &&
+              (!a.sectionMapping || !b.sectionMapping ||
+                a.sectionMapping.mapping_code_data_total_bytes === b.sectionMapping.mapping_code_data_total_bytes);
             const number = (value, percent = false) => value == null ? "Unavailable" :
               percent ? `${value.toFixed(6)}%` : value.toLocaleString("en-US");
             const revision = (sha) => /^[0-9a-f]{40}$/i.test(sha) ? sha.slice(0, 7) : "unavailable";
@@ -141,14 +166,25 @@ jobs:
             metric("Fuzzy code coverage", a?.fuzzyCoverage, b?.fuzzyCoverage, true);
             metric("Exact code matching", a?.matching_percent, b?.matching_percent, true);
             metric("Compared code bytes", a?.objdiff?.total_code, b?.objdiff?.total_code);
-            metric("Known-size mapping", a?.mapping?.mapping_percent, b?.mapping?.mapping_percent, true);
+            metric("Mapped code (sections)", a?.sectionMapping?.mapping_code_percent, b?.sectionMapping?.mapping_code_percent, true);
+            metric("Mapped data (sections)", a?.sectionMapping?.mapping_data_percent, b?.sectionMapping?.mapping_data_percent, true);
+            metric("Mapped code + data (sections)", a?.sectionMapping?.mapping_code_data_percent, b?.sectionMapping?.mapping_code_data_percent, true);
+            metric("Legacy image mapping", a?.mapping?.mapping_percent, b?.mapping?.mapping_percent, true);
             metric("Exact code bytes", a?.matched_code_bytes, b?.matched_code_bytes);
-            metric("Known mapped bytes", a?.mapping?.mapped_bytes, b?.mapping?.mapped_bytes);
+            metric("Legacy known mapped bytes", a?.mapping?.mapped_bytes, b?.mapping?.mapped_bytes);
             metric("Mapped code bytes", a?.mapped_code_bytes, b?.mapped_code_bytes);
             metric("Exact functions", a?.matched_functions, b?.matched_functions);
             metric("Mapped functions", a?.mapped_functions, b?.mapped_functions);
             metric("Original .text bytes", a?.text_bytes, b?.text_bytes);
-            metric("Original image bytes", a?.mapping?.image_bytes, b?.mapping?.image_bytes);
+            metric("Legacy virtual image bytes", a?.mapping?.image_bytes, b?.mapping?.image_bytes);
+            metric("Mapped code bytes (sections)", a?.sectionMapping?.mapping_code_bytes, b?.sectionMapping?.mapping_code_bytes);
+            metric("Mapped data bytes (sections)", a?.sectionMapping?.mapping_data_bytes, b?.sectionMapping?.mapping_data_bytes);
+            metric("Mapped code + data bytes (sections)", a?.sectionMapping?.mapping_code_data_bytes, b?.sectionMapping?.mapping_code_data_bytes);
+            metric("Code section virtual bytes", a?.sectionMapping?.mapping_code_total_bytes, b?.sectionMapping?.mapping_code_total_bytes);
+            metric("Data section virtual bytes", a?.sectionMapping?.mapping_data_total_bytes, b?.sectionMapping?.mapping_data_total_bytes);
+            metric("Code + data section virtual bytes", a?.sectionMapping?.mapping_code_data_total_bytes, b?.sectionMapping?.mapping_code_data_total_bytes);
+            metric("Known-size symbols", a?.sectionMapping?.mapping_known_size_symbols, b?.sectionMapping?.mapping_known_size_symbols);
+            metric("Unknown-size symbols", a?.sectionMapping?.mapping_unknown_size_symbols, b?.sectionMapping?.mapping_unknown_size_symbols);
             lines.push("");
             if (!a) lines.push(`Base report: ${base.reason}. No baseline delta is available.`);
             if (!b) lines.push(`PR report: ${head.reason}. Run local matching and commit the report.`);
@@ -161,6 +197,10 @@ jobs:
             if ((a && !a.objdiff) || (b && !b.objdiff)) {
               lines.push("An older report has no objdiff fuzzy summary; those values and deltas are unavailable.");
             }
+            if ((a && !a.sectionMapping) || (b && !b.sectionMapping)) {
+              lines.push("An older report has no section mapping summary; those values and deltas are unavailable.");
+            }
+            lines.push("Section mapping counts known symbol and named-member ranges once within code/data section virtual sizes, including BSS and imports; resources, relocations, headers and gaps are excluded. Unknown-size rows contribute no bytes. These section denominators do not represent a known total size of original symbols. Legacy image mapping retains the separate complete virtual-image denominator.");
             lines.push("Fuzzy code coverage weights objdiff scores by original function size against the complete `.text`; unmapped code is zero. Native objdiff fuzzy match describes only compared functions. Exact code matching credits byte-identical functions only.");
             lines.push("", 'Refresh the report with `make -j"$(nproc)" match` using your local retail executable after relevant source or map changes.');
             const body = lines.join("\n");

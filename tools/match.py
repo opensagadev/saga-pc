@@ -11,12 +11,12 @@ if __package__:
     from .identification_coverage import reviewed_identification_file
     from .binary import compare_data, relocate_function, write_function
     from .lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, covered_bytes,
-                      digest, external_symbols, load_json, load_symbols, mapping_progress, number, object_path, project, retail, sha256)
+                      digest, external_symbols, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
 else:
     from identification_coverage import reviewed_identification_file
     from binary import compare_data, relocate_function, write_function
     from lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, covered_bytes,
-                     digest, external_symbols, load_json, load_symbols, mapping_progress, number, object_path, project, retail, sha256)
+                     digest, external_symbols, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
 
 OUT = ROOT / "build/objdiff"
 
@@ -113,16 +113,24 @@ def objdiff_progress(report, functions):
 def update_badge(stats):
     path = ROOT / "README.md"
     content = path.read_text()
-    for metric, label, field, alt in (
-            ("matching", "fuzzy%20code", "fuzzy_coverage_percent", "fuzzy code"),
-            ("mapping", "mapping", "mapping_percent", "mapping")):
-        value = stats[field]
-        color = "red" if value < 25 else "yellow" if value < 75 else "green"
+    metrics = [("matching", [("fuzzy%20code", "fuzzy_coverage_percent", "fuzzy code")])]
+    if "mapping_code_data_percent" in stats:
+        metrics.append(("mapping", [("mapped%20code", "mapping_code_percent", "mapped code"),
+                                    ("mapped%20data", "mapping_data_percent", "mapped data"),
+                                    ("mapped%20code%2Bdata", "mapping_code_data_percent", "mapped code+data")]))
+    else:
+        metrics.append(("mapping", [("mapping", "mapping_percent", "mapping")]))
+    for metric, badges in metrics:
+        images = []
+        for label, field, alt in badges:
+            value = stats[field]
+            color = "red" if value < 25 else "yellow" if value < 75 else "green"
+            images.append(f"![{alt}](https://img.shields.io/badge/{label}-{value:.3f}%25-{color})")
         # Start the Markdown row with an image, then keep both closing markers
         # and the mapping marker inline so HTML blocks do not split the badges.
         newline = "\n" if metric == "matching" else ""
         badge = (f"<!-- {metric}-badge -->{newline}"
-                 f"![{alt}](https://img.shields.io/badge/{label}-{value:.3f}%25-{color})"
+                 + " ".join(images) +
                  f"<!-- /{metric}-badge -->")
         content, count = re.subn(f"<!-- {metric}-badge -->.*?<!-- /{metric}-badge -->",
                                 lambda _: badge, content, flags=re.S)
@@ -295,6 +303,7 @@ def main():
         member_ranges = [(number(r["address"]), r["target_size"]) for r in members
                          if r["target_size"] is not None]
         result["progress"].update(mapping_progress(records, target, member_ranges))
+        result["progress"].update(section_mapping_progress(records, target, pe.sections, member_ranges))
         if "data_members" in config:
             result["data_members"] = members
             result["data_member_proof"] = member_proof
@@ -320,6 +329,10 @@ def main():
               f"({stats['matching_percent']:.3f}% of original .text)")
         print(f"Mapped image: {stats['mapped_bytes']}/{stats['image_bytes']} bytes "
               f"({stats['mapping_percent']:.3f}% of original virtual image)")
+        for kind in ("code", "data", "code_data"):
+            print(f"Mapped {kind.replace('_', '+')}: {stats[f'mapping_{kind}_bytes']}/"
+                  f"{stats[f'mapping_{kind}_total_bytes']} bytes "
+                  f"({stats[f'mapping_{kind}_percent']:.3f}% of original section storage)")
     if args.update:
         reviewed = result["reviewed_identification"]
         print(f"Identified/inventory code union: {reviewed['combined_identified_code_bytes']} bytes "

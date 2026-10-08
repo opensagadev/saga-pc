@@ -276,6 +276,83 @@ class ProjectInputTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "blank size"):
             lib.mapping_progress([dict(rows[-1], size=16)], target)
 
+    def section_mapping_fixture(self):
+        target = {"image_base": "0x400000", "image_size": "0x10000",
+                  "text_va": "0x401000", "text_size": "0x1000"}
+        sections = [
+            {"name": name, "virtual_address": address, "virtual_size": size,
+             "raw_size": raw, "characteristics": flags}
+            for name, address, size, raw, flags in (
+                (".text", 0x1000, 0x1000, 0x1800, 0x20),
+                (".rdata", 0x3000, 0x100, 0x200, 0x40),
+                (".bss", 0x4000, 0x1000, 0, 0x80),
+                (".idata", 0x6000, 0x100, 0x200, 0x40),
+                (".rsrc", 0x7000, 0x100, 0x200, 0x40),
+                (".reloc", 0x8000, 0x100, 0x200, 0x40))]
+        return target, sections
+
+    def test_section_mapping_deduplicates_and_clips_known_ranges(self):
+        target, sections = self.section_mapping_fixture()
+        rows = [{"symbol": name, "address": address, "size": size}
+                for name, address, size in (
+                    ("_code", 0x401000, 16), ("_code_alias", 0x401008, 16),
+                    ("_data", 0x403008, 16), ("_data_alias", 0x403010, 16),
+                    ("_cross_gap", 0x4030f0, 0x30), ("_bss", 0x404ff8, 16),
+                    ("_import", 0x406010, 8), ("_resource", 0x407000, 16),
+                    ("_relocations", 0x408000, 16), ("_header", 0x400040, 4),
+                    ("_gap", 0x405040, 4), ("_unknown", 0x404008, None))]
+        members = [(0x403018, 16), (0x404ff0, 16), (0x407000, 4)]
+        result = lib.section_mapping_progress(rows, target, sections, members)
+        self.assertEqual(result["mapping_code_bytes"], 24)
+        self.assertEqual(result["mapping_data_bytes"], 72)
+        self.assertEqual(result["mapping_code_data_bytes"], 96)
+        self.assertEqual(result["mapping_code_total_bytes"], 4096)
+        self.assertEqual(result["mapping_data_total_bytes"], 4608)
+        self.assertEqual(result["mapping_code_data_total_bytes"], 8704)
+        for kind in ("code", "data", "code_data"):
+            self.assertAlmostEqual(result[f"mapping_{kind}_percent"],
+                                   100 * result[f"mapping_{kind}_bytes"] / result[f"mapping_{kind}_total_bytes"])
+        self.assertEqual(result["mapping_known_size_symbols"], 11)
+        self.assertEqual(result["mapping_unknown_size_symbols"], 1)
+        self.assertEqual(result["mapping_denominator"], "code_and_data_section_virtual_sizes")
+        self.assertEqual({section["name"] for section in result["mapping_sections"]},
+                         {".text", ".rdata", ".bss", ".idata"})
+        legacy = lib.mapping_progress(rows, target, members)
+        self.assertEqual(legacy["image_bytes"], 65536)
+        self.assertGreater(legacy["mapped_bytes"], result["mapping_code_data_bytes"])
+
+    def test_section_mapping_uses_virtual_bss_and_ignores_raw_size(self):
+        target, sections = self.section_mapping_fixture()
+        rows = [{"symbol": "_uninitialized", "address": 0x404000, "size": 0x1000}]
+        original = lib.section_mapping_progress(rows, target, sections)
+        self.assertEqual(original["mapping_data_bytes"], 4096)
+        altered = [dict(section, raw_size=0x7000) for section in sections]
+        result = lib.section_mapping_progress(rows, target, altered)
+        for field, value in original.items():
+            if field != "mapping_sections":
+                self.assertEqual(result[field], value)
+        unknown = lib.section_mapping_progress(
+            [{"symbol": "_unknown", "address": 0x404000, "size": None}], target, sections)
+        self.assertEqual(unknown["mapping_code_data_bytes"], 0)
+        self.assertEqual(unknown["mapping_unknown_size_symbols"], 1)
+
+    def test_section_mapping_rejects_invalid_extents_and_overlap(self):
+        target, sections = self.section_mapping_fixture()
+        variants = [
+            [dict(sections[0], virtual_address=-1), *sections[1:]],
+            [dict(sections[0], virtual_size=0x10000), *sections[1:]],
+            [dict(sections[0], virtual_size=True), *sections[1:]],
+            [*sections, dict(sections[1], name=".other", virtual_address=0x3080)],
+            [sections[0]],
+            [dict(sections[0], virtual_size=0x800), *sections[1:]],
+            [dict(sections[0], characteristics=0x40), *sections[1:]],
+        ]
+        for invalid in variants:
+            with self.subTest(sections=invalid), self.assertRaises(ValueError):
+                lib.section_mapping_progress([], target, invalid)
+        with self.assertRaises(ValueError):
+            lib.section_mapping_progress([], target, sections, [(0x403000, -1)])
+
     def test_retail_hash_and_pinned_image_boundaries_are_verified(self):
         with tempfile.TemporaryDirectory() as temp, patch.object(lib, "ROOT", Path(temp)):
             data = bytearray(pe_bytes(b"\x31\xc0\xc3"))

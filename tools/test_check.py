@@ -288,7 +288,19 @@ class CommonMatchTests(unittest.TestCase):
             (root / "Makefile").write_text("# fixture\n")
             (root / "config/toolchain.json").write_text('{"version": "fixture"}')
             original = root / "original.exe"
-            original.write_bytes(image(bytes(16)))
+            # Exercise the full section-summary path with a coherent PE layout.
+            # Common COFF data still binds inside .text below, so its definition
+            # metadata must override code classification even in a code section.
+            native = image(bytes(16), virtual_size=0x1000)
+            struct.pack_into("<H", native, 0x86, 2)
+            struct.pack_into("<I", native, 0x98 + 56, 0x10000)
+            section = 0x98 + 224
+            struct.pack_into("<8s", native, section, b".text")
+            struct.pack_into("<I", native, section + 36, 0x60000020)
+            native.extend(bytes(16))
+            struct.pack_into("<8sIIIIIIHHI", native, section + 40,
+                             b".data", 16, 0x3000, 16, 0x210, 0, 0, 0, 0, 0xc0000040)
+            original.write_bytes(native)
             objects = {}
             for index, raw in enumerate(candidates):
                 path = root / f"{index}.obj"

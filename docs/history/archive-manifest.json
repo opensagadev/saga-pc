@@ -1,0 +1,107 @@
+{
+  "archived_on": "2026-10-08",
+  "archives": [
+    {
+      "original_path": "ANDROID_PC_TRANSFER.md",
+      "original_sha256": "a1dd2b8f159be370439357fd5cea7c8267a357a1cf161d2afb11042a2e7b95ae",
+      "original_bytes": 28364,
+      "archive_path": "docs/history/android-pc-transfer-audit-2026-10-03.md",
+      "archive_sha256": "a728477287d1c15020891d50f53991a06ce962f6c32c099fc0e18edef8a5539b",
+      "mechanical_link_rebasings": {
+        "SOL_IMPLEMENTATION_PLAN.md": "../development/implementation-plan.md"
+      },
+      "substantive_text_preservation": "Exact original bytes recovered after removal of archive notice and reversal of listed link-target substitutions."
+    },
+    {
+      "original_path": "SOL_IMPLEMENTATION_PLAN.md",
+      "original_sha256": "a6e44f1156de850a6af58fee1e10d7a1b6fe045ef44c9a40bde04175f25ef725",
+      "original_bytes": 32455,
+      "archive_path": "docs/development/implementation-plan.md",
+      "archive_sha256": "67f268219c650575b94ed42828bb307d49a140dfbcdbdf9d35c98fb655641b76",
+      "mechanical_link_rebasings": {
+        "ANDROID_PC_TRANSFER.md": "../history/android-pc-transfer-audit-2026-10-03.md"
+      },
+      "substantive_text_preservation": "Exact original bytes recovered after removal of archive notice and reversal of listed link-target substitutions."
+    },
+    {
+      "original_path": "config/strategy.md",
+      "original_sha256": "794bd4c39ef328b300aecf35cc745c0fdae14b58e56f3bfc5ee14268011cb9ea",
+      "original_bytes": 53118,
+      "archive_path": "docs/history/strategy-review-2026-09-30.md",
+      "archive_sha256": "8952f87f653229a933f51812f1ee7b473d5c85bf0f777e55941c4dddaffeeb5d",
+      "mechanical_link_rebasings": {},
+      "substantive_text_preservation": "Exact original bytes recovered after removal of archive notice and reversal of listed link-target substitutions."
+    },
+    {
+      "original_path": "config/identification-plan.md",
+      "original_sha256": "3a8ad4e97301af03f73172909599f219a656266e92d3743737321ff8cb5f2580",
+      "original_bytes": 23252,
+      "archive_path": "docs/history/identification-plan-2026-09-30.md",
+      "archive_sha256": "64be9ee5e8cb81001381a0623f2c0037e0a9d07959629e31b5964ef99c3eabff",
+      "mechanical_link_rebasings": {
+        "progress-plan.md": "progress-plan-through-2026-10-03.md",
+        "symbols.csv": "../../config/symbols.csv",
+        "identification.md": "../../config/identification.md",
+        "identification-tools.md": "../../config/identification-tools.md",
+        "identification-decisions.jsonl": "../../config/identification-decisions.jsonl"
+      },
+      "substantive_text_preservation": "Exact original bytes recovered after removal of archive notice and reversal of listed link-target substitutions."
+    },
+    {
+      "original_path": "config/progress-plan.md",
+      "original_sha256": "9c7cdbcb66ab8fc4cd1dcdabb756322f0952c78a5c68da302fe0958cb2b5efc2",
+      "original_bytes": 51210,
+      "archive_path": "docs/history/progress-plan-through-2026-10-03.md",
+      "archive_sha256": "66aab39d49ebef96e1ee14abb31909c2c67fe3812db0d245a2f7ac21e9d8c4cc",
+      "mechanical_link_rebasings": {
+        "../SOL_IMPLEMENTATION_PLAN.md": "../development/implementation-plan.md",
+        "transfer-execution.md": "transfer-execution-through-II-2026-10-08.md",
+        "strategy.md": "strategy-review-2026-09-30.md"
+      },
+      "substantive_text_preservation": "Exact original bytes recovered after removal of archive notice and reversal of listed link-target substitutions."
+    },
+    {
+      "original_path": "config/transfer-execution.md",
+      "original_sha256": "b4f4732f749f237cd0b5745238490dc939d48d86abe6d40709d0e81d217ec282",
+      "original_bytes": 270544,
+      "archive_path": "docs/history/transfer-execution-through-II-2026-10-08.md",
+      "archive_sha256": "6ee0f3d6182526857b3bda3d82f577b1d8cb2f30db46d3ec903bab9d0fec353d",
+      "mechanical_link_rebasings": {
+        "../SOL_IMPLEMENTATION_PLAN.md": "../development/implementation-plan.md",
+        "../src/gameapi/aisys.c": "../../src/gameapi/aisys.c",
+        "../src/gameapi/apiobject.c": "../../src/gameapi/apiobject.c",
+        "../src/legoapi/areas.c": "../../src/legoapi/areas.cpp",
+        "../src/legoapi/camera.c": "../../src/legoapi/camera.c",
+        "../src/legoapi/creature.c": "../../src/legoapi/creature.c",
+        "../src/legoapi/doors.c": "../../src/legoapi/doors.c",
+        "../src/legoapi/game_deb.c": "../../src/legoapi/game_deb.c",
+        "../src/legoapi/gameaudio.c": "../../src/legoapi/gameaudio.c",
+        "../src/legoapi/gizobstacle.c": "../../src/legoapi/gizobstacle.c",
+        "../src/legoapi/grabber.c": "../../src/legoapi/grabber.c",
+        "../src/legoapi/level_area_load.c": "../../src/legoapi/level_area_load.c",
+        "../src/legoapi/minikits.c": "../../src/legoapi/minikits.c",
+        "../src/legoapi/move.c": "../../src/legoapi/move.c",
+        "../src/legoapi/parts.c": "../../src/legoapi/parts.c",
+        "../src/legoapi/takeoverobjects.c": "../../src/legoapi/takeoverobjects.c",
+        "../src/legoapi/world.c": "../../src/legoapi/world.cpp",
+        "../src/nu2api/nuanim.c": "../../src/nu2api/nuanim.c",
+        "../src/nu2api/nudatlookup.c": "../../src/nu2api/nudatlookup.c",
+        "../src/nu2api/nudebug.c": "../../src/nu2api/nudebug.c",
+        "../src/nu2api/nufile.c": "../../src/nu2api/nufile.c",
+        "../src/nu2api/nufile_pc.c": "../../src/nu2api/nufile_pc.c",
+        "../src/nu2api/nufont.c": "../../src/nu2api/nufont.c",
+        "../src/nu2api/nulgtlaser.c": "../../src/nu2api/nulgtlaser.c",
+        "../src/nu2api/nuqfnt.c": "../../src/nu2api/nuqfnt.c",
+        "../src/nu2api/nusound_music.cpp": "../../src/nu2api/nusound_music.cpp",
+        "../src/nu2api/nusound_pc.cpp": "../../src/nu2api/nusound_pc.cpp",
+        "../src/nu2api/nuspline.c": "../../src/nu2api/nuspline.c",
+        "../src/nu2api/nustream.cpp": "../../src/nu2api/nustream.cpp",
+        "../src/nu2api/nutex.c": "../../src/nu2api/nutex.c",
+        "../src/nu2api/nutex_pc.c": "../../src/nu2api/nutex_pc.cpp",
+        "../src/nu2api/nuvideo.c": "../../src/nu2api/nuvideo.c",
+        "../src/nu2api/pc_device.cpp": "../../src/nu2api/pc_device.cpp"
+      },
+      "substantive_text_preservation": "Exact original bytes recovered after removal of archive notice and reversal of listed link-target substitutions."
+    }
+  ]
+}

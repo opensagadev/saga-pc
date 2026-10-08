@@ -295,7 +295,14 @@ class FullMatchMemberRegressionTests(unittest.TestCase):
             for name,value in (("ROOT",root),("OUT",root/"build/objdiff")):
                 stack.enter_context(patch.object(match,name,value))
             for name,value in (("project",config),("load_symbols",[]),
-                                ("retail",SimpleNamespace(imports=lambda:[], import_thunk=lambda _:None)),
+                                ("retail",SimpleNamespace(
+                                    imports=lambda:[], import_thunk=lambda _:None,
+                                    sections=[
+                                        dict(name=".text", virtual_address=0x8000,
+                                             virtual_size=0x1000, characteristics=0x60000020),
+                                        dict(name=".data", virtual_address=0x1000,
+                                             virtual_size=0x1000, characteristics=0xc0000040),
+                                    ])),
                                 ("objdiff",("unused",dict(version="fixture"))),
                                 ("compiled_objects",{})):
                 stack.enter_context(patch.object(match,name,return_value=value))

@@ -308,15 +308,26 @@ matched function bytes divided by the full original `.text` virtual size
 (**3,471,246 bytes**). It includes unmapped code in the denominator, counts
 aliases once, and excludes data. Imported slots and jump thunks are inventoried
 separately and are never credited as reconstructed matches. The original `.text`
-denominator remains unchanged. The **mapping** badge counts the union of all known
-symbol extents, including data and symbols without implementations, against the
-full `SizeOfImage` VA range (**40,067,072 bytes**). Unknown sizes contribute no
-bytes and overlaps count once. This can be computed without the retail file;
-`make check` prints current coverage. The full image is the 100% reference and
-includes headers, section gaps, alignment and padding, so mapping is raw address
-coverage rather than a claim that every function is identified. See the README
-badges and `matching.json` for the current totals. Entries marked `inlined` have
-no independent extent and add no bytes to either metric.
+denominator remains unchanged. The **mapped code**, **mapped data** and
+**mapped code+data** badges count the union of known symbol extents, including
+symbols without implementations and import mappings. Known typed members can
+contribute verified bytes inside unknown-sized data owners; aliases and overlaps
+count once. Unknown symbol sizes and `inlined` entries contribute no bytes.
+
+The denominators are original section virtual sizes: **3,471,246 code bytes**
+and **36,018,966 data bytes**, or **39,490,212 combined bytes**. Data includes
+zero-initialized storage; resource/relocation sections, headers and section gaps
+are excluded. Padding within code/data sections remains included. These are
+section-storage percentages, not the unavailable exact sum of all original
+symbol sizes in the stripped executable. `mapping_code_*`, `mapping_data_*`
+and `mapping_code_data_*` record numerators, denominators and percentages in
+`matching.json`, alongside known/unknown-size inventory counts and the section
+breakdown. Generate them through `make match` using the supported retail input.
+
+The original `image_bytes`, `mapped_bytes` and `mapping_percent` fields remain
+as a separate legacy virtual-image measure for comparing old reports. Its
+**40,067,072-byte** denominator includes resources, headers and gaps. Original-free
+`make check` can still calculate this measure without guessing section bounds.
 
 [matching.json](matching.json) records local results and input hashes, with no
 original bytes. `make clean` removes the generated executable, object and
@@ -359,17 +370,16 @@ C or C++ linkage as appropriate, including mangled `qrand`.
 config/            Target/tool pins, symbol inventory and identification notes
 src/saga.h         All shared declarations and layout checks
 src/externals.h    Declarations for APIs absent from the bundled SDK
-src/externals.c    Declaration-only external dependency unit
 src/batman.c       Windows entry point and partial application initialization
 src/data.cpp       Verified shared PC data and constants
 src/nurand.c       Random-number routines
 src/nuang.c        Angle routines
-src/qrand.cpp      C++ random-number routine and state
-src/nu2api/        Command-line, archive and Windows platform routines
-src/legoapi/       Game helpers and world initialization
+src/qrand.c        Random-number routine with explicit verified C++ linker names
+src/nu2api/        Engine, resources, rendering and Windows platform services
+src/legoapi/       Characters, movement, world loading, menus and gameplay
 src/audio/vorbis/  Original libvorbis 1.2.0 owners, local headers and BSD license
 src/legogame/      Startup buffer setup
-src/gameapi/       Terrain editor hooks
+src/gameapi/       Objects, AI, scripts, collision and game services
 src/gamelib/       Wind random-number routine
 res/               Your original executable (ignored)
 tools/             Helpers, shared libraries, and test_*.py checks

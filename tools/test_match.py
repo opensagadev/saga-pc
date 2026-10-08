@@ -96,6 +96,27 @@ class ProgressTests(unittest.TestCase):
                     match.update_badge(stats)
                 self.assertEqual(path.read_text(), content)
 
+    def test_section_badges_replace_only_mapping_marker(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(match, "ROOT", Path(temp)):
+            path = Path(temp) / "README.md"
+            path.write_text("prefix\n<!-- matching-badge -->old<!-- /matching-badge --> "
+                            "<!-- mapping-badge -->old<!-- /mapping-badge --> suffix\n")
+            stats = {"fuzzy_coverage_percent": 10, "mapping_percent": 2,
+                     "mapping_code_percent": 24.9999, "mapping_data_percent": 25,
+                     "mapping_code_data_percent": 75}
+            match.update_badge(stats)
+            updated = path.read_text()
+            self.assertIn("mapped%20code-25.000%25-red", updated)
+            self.assertIn("mapped%20data-25.000%25-yellow", updated)
+            self.assertIn("mapped%20code%2Bdata-75.000%25-green", updated)
+            self.assertNotIn("/badge/mapping-", updated)
+            self.assertTrue(updated.startswith("prefix\n"))
+            self.assertTrue(updated.endswith(" suffix\n"))
+            self.assertEqual(sum("![" in line for line in updated.splitlines()), 1)
+            self.assertEqual(updated.count("https://img.shields.io/badge/"), 4)
+            match.update_badge(stats)
+            self.assertEqual(path.read_text(), updated)
+
     def test_fuzzy_badge_color_thresholds(self):
         with tempfile.TemporaryDirectory() as temp, patch.object(match, "ROOT", Path(temp)):
             path = Path(temp) / "README.md"
@@ -247,7 +268,11 @@ class InlinedInventoryTests(unittest.TestCase):
             (root / "tools").mkdir()
             for name, text in (import_definitions or {}).items():
                 (root / "tools" / name).write_text(text)
-            pe = SimpleNamespace(imports=lambda: [], import_thunk=lambda _: None)
+            pe = SimpleNamespace(imports=lambda: [], import_thunk=lambda _: None, sections=[
+                {"name": ".text", "virtual_address": 0x1000, "virtual_size": 0x1000,
+                 "raw_size": 0x1000, "characteristics": 0x20},
+                {"name": ".data", "virtual_address": 0x3000, "virtual_size": 0x1000,
+                 "raw_size": 0x200, "characteristics": 0x40}])
             for name, value in (("ROOT", root), ("OUT", root / "build/objdiff")):
                 stack.enter_context(patch.object(match, name, value))
             for name, value in (("project", {"target": self.target}), ("load_symbols", records),
@@ -341,7 +366,21 @@ function report(code = 442, mapped = 1496) {
     matching_percent: 100 * code / 3471246, mapped_functions: 13, matched_functions: 13,
     fuzzy_coverage_percent: 100 * code * 0.625 / 3471246,
     objdiff_fuzzy_percent: 60 + (code - 442) / 10, objdiff_total_code: 1000 + code - 442,
-    image_bytes: 40067072, mapped_bytes: mapped, mapping_percent: 100 * mapped / 40067072}};
+    image_bytes: 40067072, mapped_bytes: mapped, mapping_percent: 100 * mapped / 40067072,
+    mapping_code_bytes: code, mapping_code_total_bytes: 3471246, mapping_code_percent: 100 * code / 3471246,
+    mapping_data_bytes: mapped - code, mapping_data_total_bytes: 10000, mapping_data_percent: 100 * (mapped - code) / 10000,
+    mapping_code_data_bytes: mapped, mapping_code_data_total_bytes: 3481246, mapping_code_data_percent: 100 * mapped / 3481246,
+    mapping_known_size_symbols: 20, mapping_unknown_size_symbols: 4,
+    mapping_denominator: 'code_and_data_section_virtual_sizes'}};
+}
+const sectionFields = ['mapping_code_bytes', 'mapping_code_total_bytes', 'mapping_code_percent',
+  'mapping_data_bytes', 'mapping_data_total_bytes', 'mapping_data_percent',
+  'mapping_code_data_bytes', 'mapping_code_data_total_bytes', 'mapping_code_data_percent',
+  'mapping_known_size_symbols', 'mapping_unknown_size_symbols', 'mapping_denominator'];
+function withoutSectionMapping(r) {
+  for (const field of sectionFields) delete r.progress[field];
+  return r;
+
 }
 async function exercise(options = {}) {
   const base = options.base === undefined ? report() : options.base;
@@ -380,9 +419,18 @@ async function exercise(options = {}) {
   assert(first.body.includes('| Objdiff fuzzy match | 60.000000% | 62.500000% | +2.500000 pp |'));
   assert(first.body.includes('| Fuzzy code coverage | '));
   assert(first.body.includes('| Compared code bytes | 1,000 | 1,025 | +25 |'));
-  assert(first.body.includes('| Known mapped bytes | 1,496 | 1,596 | +100 |'));
+  assert(first.body.includes('| Legacy known mapped bytes | 1,496 | 1,596 | +100 |'));
   assert(first.body.includes('CI has no retail executable and does not verify these matches.'));
   assert(first.body.includes('Fuzzy code coverage weights objdiff scores'));
+  assert(first.body.includes('| Mapped code (sections) | '));
+  assert(first.body.includes('| Mapped data (sections) | 10.540000% | 11.290000% | +0.750000 pp |'));
+  assert(first.body.includes('| Mapped code + data (sections) | '));
+  assert(first.body.includes('| Code section virtual bytes | 3,471,246 | 3,471,246 | 0 |'));
+  assert(first.body.includes('| Data section virtual bytes | 10,000 | 10,000 | 0 |'));
+  assert(first.body.includes('| Code + data section virtual bytes | 3,481,246 | 3,481,246 | 0 |'));
+  assert(first.body.includes('| Legacy image mapping | '));
+  assert(first.body.includes('including BSS and imports'));
+  assert(first.body.includes('do not represent a known total size of original symbols'));
   assert.equal(first.reads[1].owner, 'fork'); assert.equal(first.reads[1].ref, headSHA);
   const oldBot = {id: 9, user: {login: 'github-actions[bot]'}, body: marker + '\nold'};
   const updated = await exercise({comments: [oldBot]});
@@ -402,7 +450,9 @@ async function exercise(options = {}) {
   assert(!(await exercise({head: noisy})).body.includes('untrusted'));
   for (const change of [
     (r) => {r.target_sha256 = 'f'.repeat(64);},
-    (r) => {r.progress.text_bytes++; r.progress.matching_percent = 100 * r.progress.matched_code_bytes / r.progress.text_bytes;},
+    (r) => {r.progress.text_bytes++; r.progress.matching_percent = 100 * r.progress.matched_code_bytes / r.progress.text_bytes;
+      r.progress.mapping_code_total_bytes++; r.progress.mapping_code_percent = 100 * r.progress.mapping_code_bytes / r.progress.mapping_code_total_bytes;
+      r.progress.mapping_code_data_total_bytes++; r.progress.mapping_code_data_percent = 100 * r.progress.mapping_code_data_bytes / r.progress.mapping_code_data_total_bytes;},
     (r) => {r.progress.image_bytes++; r.progress.mapping_percent = 100 * r.progress.mapped_bytes / r.progress.image_bytes;},
   ]) {
     const r = report(); change(r); const result = await exercise({head: r});
@@ -412,7 +462,7 @@ async function exercise(options = {}) {
   const older = report();
   for (const field of ['image_bytes', 'mapped_bytes', 'mapping_percent']) delete older.progress[field];
   const old = await exercise({base: older});
-  assert(old.body.includes('| Known mapped bytes | Unavailable | 1,596 | — |'));
+  assert(old.body.includes('| Legacy known mapped bytes | Unavailable | 1,596 | — |'));
   assert(old.body.includes('| Exact code bytes | 442 | 467 | +25 |'));
   const noFuzzy = report();
   for (const field of ['objdiff_fuzzy_percent', 'objdiff_total_code']) delete noFuzzy.progress[field];
@@ -438,6 +488,53 @@ async function exercise(options = {}) {
     const r = report(); r.progress[field] = value;
     assert((await exercise({head: r})).body.includes('PR report: matching.json has invalid'), field);
   }
+  const oldSections = await exercise({base: withoutSectionMapping(report())});
+  assert(oldSections.body.includes('| Mapped data (sections) | Unavailable | 11.290000% | — |'));
+  assert(oldSections.body.includes('An older report has no section mapping summary'));
+  assert(oldSections.body.includes('| Exact code bytes | 442 | 467 | +25 |'));
+  const allLegacy = await exercise({base: withoutSectionMapping(report()), head: withoutSectionMapping(report(467, 1596))});
+  assert(allLegacy.body.includes('| Mapped code (sections) | Unavailable | Unavailable | — |'));
+  assert(allLegacy.body.includes('| Legacy known mapped bytes | 1,496 | 1,596 | +100 |'));
+  for (const field of sectionFields) {
+    const partial = report(); delete partial.progress[field];
+    assert((await exercise({head: partial})).body.includes('PR report: matching.json has invalid'), field);
+  }
+  for (const field of sectionFields.filter((field) => field !== 'mapping_denominator')) {
+    for (const value of [true, '1', -1, Number.MAX_SAFE_INTEGER + 1]) {
+      const malformed = report(); malformed.progress[field] = value;
+      assert((await exercise({head: malformed})).body.includes('PR report: matching.json has invalid'), `${field}=${value}`);
+    }
+  }
+  for (const [field, value] of [['mapping_denominator', '<img src=x onerror=attack()>'],
+      ['mapping_code_percent', 90], ['mapping_data_percent', 101], ['mapping_code_data_percent', 0],
+      ['mapping_known_size_symbols', 1.5], ['mapping_unknown_size_symbols', 1.5],
+      ['mapping_code_data_bytes', 1497], ['mapping_data_total_bytes', 0],
+      ['mapping_code_data_total_bytes', 3481247]]) {
+    const malformed = report(); malformed.progress[field] = value;
+    const result = await exercise({head: malformed});
+    assert(result.body.includes('PR report: matching.json has invalid'), field);
+    assert(!result.body.includes('<img'));
+  }
+  const wrongText = report();
+  wrongText.progress.mapping_code_total_bytes++;
+  wrongText.progress.mapping_code_percent = 100 * wrongText.progress.mapping_code_bytes / wrongText.progress.mapping_code_total_bytes;
+  wrongText.progress.mapping_code_data_total_bytes++;
+  wrongText.progress.mapping_code_data_percent = 100 * wrongText.progress.mapping_code_data_bytes / wrongText.progress.mapping_code_data_total_bytes;
+  assert((await exercise({head: wrongText})).body.includes('PR report: matching.json has invalid'));
+  const changedSections = report();
+  changedSections.progress.mapping_data_total_bytes++;
+  changedSections.progress.mapping_data_percent = 100 * changedSections.progress.mapping_data_bytes / changedSections.progress.mapping_data_total_bytes;
+  changedSections.progress.mapping_code_data_total_bytes++;
+  changedSections.progress.mapping_code_data_percent = 100 * changedSections.progress.mapping_code_data_bytes / changedSections.progress.mapping_code_data_total_bytes;
+  assert((await exercise({head: changedSections})).body.includes('Reports are not comparable'));
+  const zeroData = report();
+  Object.assign(zeroData.progress, {mapping_data_bytes: 0, mapping_data_total_bytes: 0, mapping_data_percent: 0,
+    mapping_code_data_bytes: zeroData.progress.mapping_code_bytes,
+    mapping_code_data_total_bytes: zeroData.progress.mapping_code_total_bytes,
+    mapping_code_data_percent: zeroData.progress.mapping_code_percent});
+  assert((await exercise({head: zeroData})).body.includes('PR report: matching.json has invalid'));
+  const ignoredSectionNames = report(); ignoredSectionNames.progress.mapping_sections = [{name: '<img unsafe>'}];
+  assert(!(await exercise({head: ignoredSectionNames})).body.includes('<img'));
   assert((await exercise({tooBig: true})).body.includes('maximum 16 MiB'));
   assert((await exercise({blob: true})).body.includes('| Exact code bytes | 442 | 467 | +25 |'));
   assert.equal((await exercise({stale: true})).writes.length, 0);

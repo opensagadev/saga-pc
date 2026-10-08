@@ -1,3 +1,10 @@
+> Historical record, archived on 2026-10-08 from `ANDROID_PC_TRANSFER.md`.
+> Its dated measurements, runtime observations and session instructions are
+> preserved as history. Use the [current roadmap](../roadmap.md) and
+> [execution guide](../../config/transfer-execution.md) for current work.
+> Relative links have been rebased; links labelled with former C owner names
+> point to their current C++ successors without changing the dated claims.
+
 # Android → PC transfer audit and execution plan
 
 2026-10-03. PC checkpoint: `680ca578092fafa147d5887da14104b1cc85f8da`.
@@ -8,7 +15,7 @@ preserved. Detailed experiments and reproducible scripts are under
 `build/analysis/transfer-audit-20261003/`.
 
 The whole-project implementation handoff is
-[SOL_IMPLEMENTATION_PLAN.md](SOL_IMPLEMENTATION_PLAN.md). Its scope extends from
+[SOL_IMPLEMENTATION_PLAN.md](../development/implementation-plan.md). Its scope extends from
 systematic correspondence and bulk source transfer through PC services, the full
 game lifecycle and exact matching; the experiments below are starting examples.
 

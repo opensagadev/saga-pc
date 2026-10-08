@@ -1,14 +1,12 @@
 # saga-pc
 
-**Runtime status: not playable.** Native window/input startup and the real
-renderer stream initializer are connected. An unattended Wine run still crashes
-before a level is loaded, at a null display-list item; device presentation and
-the recurring update/render loop remain unverified. The badges measure code
-comparison and mapping; runnable milestones are tracked separately in
-[the execution plan](SOL_IMPLEMENTATION_PLAN.md).
+**Runtime status: not playable.** Reconstructed startup includes native window,
+input and renderer setup. The source executable still crashes during renderer
+startup before a level loads. Device presentation and recurring gameplay remain
+unverified; see the [current roadmap](docs/roadmap.md).
 
 <!-- matching-badge -->
-![fuzzy code](https://img.shields.io/badge/fuzzy%20code-27.117%25-yellow)<!-- /matching-badge --> <!-- mapping-badge -->![mapping](https://img.shields.io/badge/mapping-5.092%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
+![fuzzy code](https://img.shields.io/badge/fuzzy%20code-27.117%25-yellow)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-40.139%25-yellow) ![mapped data](https://img.shields.io/badge/mapped%20data-1.796%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-5.167%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 **saga-pc** is a matching decompilation of the GOG PC release of
 *LEGO Star Wars: The Complete Saga*.
@@ -21,16 +19,29 @@ reconstructed functions are compared with the original; the game is still incomp
 The first badge tracks objdiff-weighted coverage of the original code: compared
 functions contribute their fuzzy similarity, and unimplemented code contributes
 zero. It is an estimate of code similarity, not a percentage of working game
-features or an exact byte match. The second tracks mapped symbol
-extents across the original virtual image. Native objdiff similarity among compared
+features or an exact byte match. The mapping badges count known symbol extents,
+including unimplemented symbols, against the original code/data section sizes.
+Aliases count once; unknown sizes contribute zero. Native objdiff similarity among compared
 functions and exact code coverage are recorded in [matching.json](matching.json).
 The report also records identified code as the union of known inventory extents
 and complete reviewed function ranges. It shows reviewed bytes outside the
 inventory separately; those identities can still lack a usable signature or
 source implementation. This code measure uses the retail `.text` denominator.
 
+| Mapping denominator | Original bytes |
+| --- | ---: |
+| Code (`.text`) | 3,471,246 |
+| Data (`.rdata` + `.data`, including zero-initialized storage) | 36,018,966 |
+| Combined code and data | 39,490,212 |
+
+These denominators measure section storage, rather than the unknown sum of all
+original symbol sizes. They exclude resources, image headers and section gaps,
+but retain padding within code/data sections. The large zero-initialized data
+area contributes to data coverage even though it occupies little space on disk.
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the symbol map, and the build
-and matching workflow.
+and matching workflow, and the [documentation index](docs/README.md) for technical
+guides and historical investigations.
 
 ## License
 
