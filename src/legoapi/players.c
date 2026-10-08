@@ -2177,7 +2177,7 @@ void __cdecl Players_Init(void) {
             PLAYER_COIN_PACKET_PC *coins;
             players[index]->coin_packet = &CoinPacket[index];
             coins = (PLAYER_COIN_PACKET_PC *)players[index]->coin_packet;
-            coins->last_coin = LEGOOBJ_DEFAULTLASTCOIN;
+            coins->last_coin = LEGOOBJ_DEFAULTLASTCOIN.low_word;
             coins->coins = Area == last_area ? progress[index].coins : 0;
             players[index]->gizforce_los_info = &GizForceLOSInfo[index];
             memcpy(&BackUpPlayers[index], players[index], 0x10d8);

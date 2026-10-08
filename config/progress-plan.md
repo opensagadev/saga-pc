@@ -1,17 +1,17 @@
 # Current work plan
 
 The [whole-project mandate](../SOL_IMPLEMENTATION_PLAN.md) remains active.
-Verified baseline OO is [3380341](https://github.com/opensagadev/saga-pc/commit/3380341716ae629ca668e1ecef529f642d4c03ff), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37833980118) passing.
-Current PP adds five complete functions/1,149 PC bytes across cutscene configuration
-and real Batarang/camera providers. Required checks and 208 CPU checks pass; all
-prior exact contracts survive. The specific camera and fresh particle qualifications
-are in transfer-checkpoint.json. PP exact pushed-revision CI is pending.
+Verified baseline PP is [91dc03f](https://github.com/opensagadev/saga-pc/commit/91dc03f2ae626a0683eaf969536aae9eea51b8d6), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37838400254) passing all 13 steps.
+Current QQ adds 20 complete functions/2,684 PC bytes across Collection, Attracto,
+customization, targeting, vehicle/suit, music, Hub and audio providers. Required
+checks and 152 selected behavior assertions pass; all prior exact contracts survive.
+The repaired position bit-copy is exact. Full output/data qualifications and the
+retained incorrect Suit test oracle are in transfer-checkpoint.json. QQ CI is pending.
 
-Next work connects Collection Configure833 and the genuine startup callback cohort.
-InitGameAfterConfig has 65 callback publications; 13 private source contracts exist
-and 52 missing targets are assigned across combat, player/movement, render/audio
-and world/message/build groups. The 17 former span holds are recovered; source/provider/storage closure remains.
-Only actual compiled comparisons receive transfer credit. Full CharFixUp218,
+Next work integrates the genuine InitGameAfterConfig publisher and remaining
+original-owner callbacks. Its 65 publications have retained source/extent contracts;
+shared state, templates, escaped ABI and ordinary compiler output remain separate.
+Already-compared callback bytes receive no duplicate transfer credit. Full CharFixUp (218 bytes),
 Commander storage, shader publication and resource/device lifetime remain separate.
 
 1. Close genuine shader-manager publication, parser/compiler lifetime and device

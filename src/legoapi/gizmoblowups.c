@@ -1360,7 +1360,7 @@ void __cdecl GizmoBlowupsFinalSetup(WORLDINFO *world) {
             blowup->bounds_max = v000;
         }
         GizmoBlowupUpdateMatrix(blowup);
-        blowup->initial_health = (u8)(blowup->initial_health * GizmoBlowupHitMultiplierPc);
+        blowup->initial_health = (u8)(blowup->initial_health * GizmoBlowupHitMultiplierPc.low_byte);
     }
     GizBlowup_DeleteTerrain();
     GizBlowup_InitTerrain();

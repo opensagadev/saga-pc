@@ -10,13 +10,13 @@ window/device presentation nor recurring gameplay. Code similarity and mapping
 are separate from runnable milestones; current measurements live in
 [matching.json](../matching.json).
 
-The verified LL checkpoint [`41c5de9350ead0fe454f6761710f04829b6608f1`](https://github.com/opensagadev/saga-pc/commit/41c5de9350ead0fe454f6761710f04829b6608f1) passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37811078781).
-The current MM snapshot adds 87 compared functions across registration, transport,
-MiniCut and character loading/callbacks. Its 241 passing CPU checks exercise real
-providers and caller-owned records. These checks do not establish camera playback,
-installed characters or assets. Genuine shader-manager/compiler publication and
-full ordered callback/storage contracts remain missing. II remains the last
-full-game observation above; exact pushed-revision CI for MM is pending.
+The verified PP checkpoint [91dc03f](https://github.com/opensagadev/saga-pc/commit/91dc03f2ae626a0683eaf969536aae9eea51b8d6) passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37838400254).
+The current QQ source adds 20 complete suppliers/2,684 compared PC bytes. Required
+checks and 152 selected CPU behavior assertions pass on real normal providers;
+full qualifications and retained failures are in transfer-checkpoint.json. These
+checks do not establish loaded assets, device presentation or gameplay. Genuine
+shader-manager publication and the remaining startup state/callback activation
+remain missing. II is still the last full-game observation; QQ CI is pending.
 
 Work proceeds through connected source families and verified PC contracts:
 

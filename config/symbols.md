@@ -5128,8 +5128,35 @@ transfer-checkpoint.json. BARMAN's full 4 and BATTLEDROID's full 8 remain strict
 
 Configure runtime is held for real parser/Level/callback publication. CPU208 uses
 all 335 actual objects and 450 frozen inputs, with no replacements or forced IDs.
-No full source-game, device, asset or gameplay milestone is claimed. PP CI is
-pending. Next Init (4,659 bytes) has 65 publications: 13 private source contracts
+No full source-game, device, asset or gameplay milestone is claimed. PP passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37838400254). Next Init (4,659 bytes) has 65 publications: 13 private source contracts
 and 52 distinct missing targets assigned across four source lanes. All 17 former
 boundary holds now have complete native span contracts (2,686 bytes); source,
 provider, layout and storage closure still require review. These are not transfers.
+
+
+### Connected startup supplier snapshot QQ (2026-10-08)
+
+Twenty complete functions add 2,684 unique PC bytes; nine exact bodies add 452.
+Whole-PC fuzzy code is 28.716408%; exact code is 226,478/3,471,246 (6.524401%).
+The 338 normal objects link real source and resolve 4,962 function and 10,977 data
+definitions. All 4,942 old function copies, 10,893 old physical data regions,
+2,312 old exact code copies, 5,625 known-exact data copies and 13 member contracts
+covering 28 bytes retain their specific verified contracts.
+
+Attracto Top's 46 bytes are exact after restoring the genuine whole-vector copy.
+The initial scalar x87 reconstruction incorrectly quieted signaling NaNs; the
+rejected source/report and complete repair proof are retained. Batarang lost-data
+remains nonexact across all 220 native bytes (0% objdiff advisory); native complete
+20-byte shifts and the adjacent shifted-target skip are tested. Collection,
+customization, targeting, vehicle/suit, music, Redirect, Hub and audio suppliers
+use genuine PC sources, fields and providers.
+
+Of 84 new full initializer copies, 83 (3,109 bytes) match native. Tag's full eight
+bytes remain nonexact; its typed pointer and UTF-8 £ literal match independently
+without cropping the tail. Unknown extents receive zero credit. Four specific old
+unknown storage pairs and two nonexact scheduling pairs retain complete proofs;
+five contained-label serial changes preserve official whole bytes. BARMAN's four
+and BATTLEDROID's eight bytes stay strict. Required checks and 152 selected behavior
+assertions pass. The retained failed Suit oracle was corrected against native zero
+initialization without changing IDs. Source game, assets and device remain held.
+QQ CI is pending; complete evidence is in transfer-checkpoint.json.

@@ -298,3 +298,29 @@ void __cdecl PodDust(WORLDINFO *world, GAMEOBJECT *object) {
         }
     }
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_dc8) == 0xdc8);
+
+f32 __cdecl GetVehicleAreaRememberSpeed(void) {
+    f32 speed = 0.0f;
+    f32 count = 0.0f;
+    GAMEOBJECT *first, *second;
+    if (VehicleArea == 0)
+        return speed;
+    first = (GAMEOBJECT *)Player[0];
+    if (first != NULL && (first->flags_1fc & 0x80) != 0) {
+        speed += first->field_dc8;
+        count += 1.0f;
+    }
+    second = (GAMEOBJECT *)Player[1];
+    if (second != NULL && (second->flags_1fc & 0x80) != 0) {
+        speed += second->field_dc8;
+        count += 1.0f;
+    }
+    if (count > 1.0f)
+        speed /= count;
+    if (speed < 0.25f)
+        speed = 0.25f;
+    return speed;
+}

@@ -7602,7 +7602,7 @@ extern "C" {
 #pragma const_seg()
 
 #pragma data_seg(".data$LEGOOBJ_DEFAULTLASTCOIN")
-    i16 LEGOOBJ_DEFAULTLASTCOIN = -1;
+    LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC LEGOOBJ_DEFAULTLASTCOIN = {0xffffffffu};
 #pragma data_seg()
 
 #pragma data_seg(".data$TerrPlatScanDist")
@@ -18332,7 +18332,7 @@ extern "C" {
         0x00000000, 0x0000, 0x0000, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}};
 #pragma const_seg()
 #pragma data_seg(".data$GizmoBlowupHitMultiplierPc")
-    u8 GizmoBlowupHitMultiplierPc = 1;
+    GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC GizmoBlowupHitMultiplierPc = {1};
 #pragma data_seg()
 #pragma data_seg(".data$PCSampleLoadEnabledPc")
     i32 PCSampleLoadEnabledPc = 1;
@@ -19557,4 +19557,92 @@ extern "C" {
     i16 id_GREEDO = -1;
     i16 id_BOSSK = -1;
     i16 id_CANTINABAND = -1;
+}
+
+extern "C" {
+    i32 COLLECTION_COMPLETIONCOUNT = 0;
+    HUB_AI_MUSIC_VIEW_PC HubAiMusicStatePc = {0};
+    KAMINO_DISCO_MUSIC_VIEW_PC KaminoDiscoMusicStatePc = {0};
+    SARLACC_BATTLE_MUSIC_VIEW_PC *sarlaccb_netpacket = NULL;
+}
+
+extern "C" {
+    f32 BuckSnowmobRadiusPc = 0.2f;
+    f32 BuckSnowmobMaxYPc = 0.1f;
+    f32 BuckSnowmobMinYPc = -0.01f;
+    NUVEC BuckSnowmobForwardPc = {0.0f, 0.0f, 1.0f};
+    f32 BuckSnowmobJumpHeightPc = 1.0f;
+    f32 BuckSnowmobJumpDurationPc = 1.0f;
+    u8 CheatC3poBitsEnabledPc = 0;
+    i32 deathstar_hold_count = 0;
+    GAME_STATUS_RENDER_VIEW_PC PcGameStatusRenderState = {0};
+    i32 selectmodemode = 0;
+    f32 selectmodetime = 0.0f;
+    i32 CruiserD_LiftChase = 0;
+    i32(__cdecl *CheckMusicOtherFn)(void) = NULL;
+    i32(__cdecl *GameAudio_ActionMusicFn)(void) = NULL;
+    i32(__cdecl *PauseRenderOffFn)(void) = NULL;
+    f32 minikittime = 0.0f;
+    i32 freeplaymode = 0;
+    i32 freeplay_selected[2] = {0, 0};
+    i32(__cdecl *Tag_NoHiddenIconFn)(GAMEOBJECT *) = NULL;
+    f32 game_pulse = 0.0f;
+}
+
+extern "C" {
+    /* Sole-writer proposal only; ordinary compiler-owned language literal. */
+    const char *TagAsciiDownPc = "\xC2\xA3";
+}
+
+extern "C" {
+    ANIM_REDIRECT_VIEW_PC AnimRedirectList_LSW[41] = {
+        {"ride_bantha_new_blasterchar", 112, {0, 0}},
+        {"ride_bantha_new_jedichar", 112, {0, 0}},
+        {"ride_bantha_old_blasterchar", 112, {0, 0}},
+        {"ride_bantha_old_jedichar", 112, {0, 0}},
+        {"ride_dewback_new_blasterchar", 131, {0, 0}},
+        {"ride_dewback_new_jedichar", 131, {0, 0}},
+        {"ride_dewback_old_blasterchar", 131, {0, 0}},
+        {"ride_dewback_old_jedichar", 131, {0, 0}},
+        {"ride_landspeeder_new_blasterchar", 132, {0, 0}},
+        {"ride_landspeeder_new_jedichar", 132, {0, 0}},
+        {"ride_landspeeder_old_blasterchar", 132, {0, 0}},
+        {"ride_landspeeder_old_jedichar", 132, {0, 0}},
+        {"ride_tauntaun_new_blasterchar", 134, {0, 0}},
+        {"ride_tauntaun_new_jedichar", 134, {0, 0}},
+        {"ride_tauntaun_old_blasterchar", 134, {0, 0}},
+        {"ride_tauntaun_old_jedichar", 134, {0, 0}},
+        {"ride_speederbike_new_blasterchar", 192, {0, 0}},
+        {"ride_speederbike_new_jedichar", 192, {0, 0}},
+        {"ride_speederbike_old_blasterchar", 192, {0, 0}},
+        {"ride_speederbike_old_jedichar", 192, {0, 0}},
+        {"ride_hrc_new_blasterchar", 193, {0, 0}},
+        {"ride_hrc_new_jedichar", 193, {0, 0}},
+        {"ride_hrc_old_blasterchar", 193, {0, 0}},
+        {"ride_hrc_old_jedichar", 193, {0, 0}},
+        {"throw_new_blasterchar", 101, {0, 0}},
+        {"throw_new_jedichar", 101, {0, 0}},
+        {"throw_old_blasterchar", 101, {0, 0}},
+        {"throw_old_jedichar", 101, {0, 0}},
+        {"ride_generic_new_blasterchar", 108, {0, 0}},
+        {"ride_generic_new_jedichar", 108, {0, 0}},
+        {"ride_generic_old_blasterchar", 108, {0, 0}},
+        {"ride_generic_old_jedichar", 108, {0, 0}},
+        {"splat_new_blasterchar", 133, {0, 0}},
+        {"splat_new_jedichar", 133, {0, 0}},
+        {"splat_old_blasterchar", 133, {0, 0}},
+        {"splat_old_jedichar", 133, {0, 0}},
+        {"ride_tcannon_new_blasterchar", 194, {0, 0}},
+        {"ride_tcannon_new_jedichar", 194, {0, 0}},
+        {"ride_tcannon_old_blasterchar", 194, {0, 0}},
+        {"ride_tcannon_old_jedichar", 194, {0, 0}},
+        {NULL, 0, {0, 0}},
+    };
+    ANIM_REDIRECT_VIEW_PC AnimRedirectList_Batman[1] = {
+        {NULL, 0, {0, 0}},
+    };
+}
+
+extern "C" {
+    f32 HubMiniKitPanelTimePc = 0.0f;
 }

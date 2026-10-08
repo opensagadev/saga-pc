@@ -27,3 +27,63 @@ i32 __cdecl Batarang_StartTargetting(GAMEOBJECT *object) {
     KeepPointOnScreen(&packet->sight_position, &packet->sight_velocity);
     return 1;
 }
+
+typedef struct BATARANG_LOST_TARGET_PC {
+    void *object;
+    u8 type;
+    u8 lost;
+    u8 opaque_06[14];
+} BATARANG_LOST_TARGET_PC;
+STATIC_ASSERT(sizeof(BATARANG_LOST_TARGET_PC) == 0x14);
+STATIC_ASSERT(offsetof(BATARANG_LOST_TARGET_PC, object) == 0);
+STATIC_ASSERT(offsetof(BATARANG_LOST_TARGET_PC, lost) == 5);
+
+typedef struct BATARANG_LOST_READER_PC {
+    BATARANG_LOST_TARGET_PC targets[5];
+    u8 opaque_64[0x18];
+    u8 active;
+    u8 in_flight;
+    u8 opaque_7e[6];
+    GAMEOBJECT *owner;
+    u8 opaque_88[0x24];
+    i16 cooldown;
+    u8 opaque_ae[6];
+} BATARANG_LOST_READER_PC;
+STATIC_ASSERT(sizeof(BATARANG_LOST_READER_PC) == 0xb4);
+STATIC_ASSERT(offsetof(BATARANG_LOST_READER_PC, active) == 0x7c);
+STATIC_ASSERT(offsetof(BATARANG_LOST_READER_PC, in_flight) == 0x7d);
+STATIC_ASSERT(offsetof(BATARANG_LOST_READER_PC, owner) == 0x84);
+STATIC_ASSERT(offsetof(BATARANG_LOST_READER_PC, cooldown) == 0xac);
+STATIC_ASSERT(sizeof(PLAYER_BATARANG_SLOT_PC) == 0xb4);
+
+void __cdecl Batarangs_CheckLostData(void *data) {
+    BATARANG_LOST_READER_PC *batarang = (BATARANG_LOST_READER_PC *)BatarangPacketsPc;
+    BATARANG_LOST_READER_PC *end = batarang + 8;
+    do {
+        if (batarang->owner == data) {
+        reset:
+            batarang->in_flight = 0;
+            batarang->active = 0;
+            batarang->owner = NULL;
+            batarang->cooldown = 0x32;
+        } else {
+            BATARANG_LOST_TARGET_PC *target_data = batarang->targets;
+            i32 target;
+            for (target = 0; target < batarang->active; ++target, ++target_data) {
+                i32 move;
+                if (target_data->object != data)
+                    continue;
+                if (batarang->owner == data)
+                    goto reset;
+                if (batarang->in_flight != 0) {
+                    target_data->lost = 1;
+                    continue;
+                }
+                for (move = target + 1; move < batarang->active; ++move)
+                    batarang->targets[move - 1] = batarang->targets[move];
+                --batarang->active;
+            }
+        }
+        ++batarang;
+    } while (batarang != end);
+}

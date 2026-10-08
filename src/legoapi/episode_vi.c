@@ -222,3 +222,13 @@ void __cdecl SarlaccPitC_Reset(WORLDINFO *world) {
         NuSpecialSetVisibility(&LevHSpecial[i + 8], SarlaccPowerPc > i);
     }
 }
+
+struct SARLACC_BATTLE_MUSIC_VIEW_PC {
+    u8 unknown_00[0x10];
+    u8 disco_active;
+};
+STATIC_ASSERT(offsetof(SARLACC_BATTLE_MUSIC_VIEW_PC, disco_active) == 0x10);
+
+i32 __cdecl SarlaccPitDiscoActive(WORLDINFO *world) {
+    return world->current_level == SARLACCPITB_LDATA && sarlaccb_netpacket->disco_active != 0;
+}

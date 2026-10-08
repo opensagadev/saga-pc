@@ -31719,6 +31719,414 @@
         "build/analysis/runtime-provider-PP/runtime-acceptance-PP.json": "17c49b128279e2f382cebbe330c11ad0b56d0b9d07512edd1b5fdd3cd6d5a193",
         "build/analysis/publication17-extent-abi-next/v1/accepted-extent-abi-packet.json": "aaf105865f8b8c1eec8b768ddf11635a37411792306392aae9250a7b6a588d6d"
       }
+    },
+    {
+      "checkpoint": "QQ",
+      "publication_status": "LOCAL_GATES_ACCEPTED_PENDING_FINAL_METADATA_REPORT_REFRESH_AND_EXACT_PUSHED_REVISION_CI",
+      "baseline_commit": "91dc03f2ae626a0683eaf969536aae9eea51b8d6",
+      "baseline_CI_exact_revision_success": {
+        "run": 37838400254,
+        "url": "https://github.com/opensagadev/saga-pc/actions/runs/37838400254",
+        "all_steps_success": 13
+      },
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1467649,
+        "matched_code_bytes": 226026,
+        "matching_percent": 6.511379487365632,
+        "fuzzy_coverage_percent": 28.65174930091609,
+        "mapped_functions": 5104,
+        "matched_functions": 2308,
+        "objdiff_fuzzy_percent": 69.328674,
+        "objdiff_total_code": 1435444,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2115853,
+        "mapping_percent": 5.280777691966112,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1468843
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30186
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9415,
+        "mapping_unknown_size_symbols": 5238,
+        "mapping_code_bytes": 1468843,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 42.31457522745435,
+        "mapping_data_bytes": 647010,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7963036473617815,
+        "mapping_code_data_bytes": 2115853,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.357917551822715,
+        "matched_data_region_bytes": 637616
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1470333,
+        "matched_code_bytes": 226478,
+        "matching_percent": 6.5244007483191915,
+        "fuzzy_coverage_percent": 28.716408142502083,
+        "mapped_functions": 5124,
+        "matched_functions": 2317,
+        "objdiff_fuzzy_percent": 69.355354,
+        "objdiff_total_code": 1438128,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2118537,
+        "mapping_percent": 5.287476459472756,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1471527
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30186
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9435,
+        "mapping_unknown_size_symbols": 5316,
+        "mapping_code_bytes": 1471527,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 42.39189616639097,
+        "mapping_data_bytes": 647010,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7963036473617815,
+        "mapping_code_data_bytes": 2118537,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.364714172717027,
+        "matched_data_region_bytes": 637616
+      },
+      "new_source_functions": 20,
+      "actual_new_transfer_PC_bytes": 2684,
+      "new_unique_compared_PC_bytes": 2684,
+      "unique_compared_code_bytes": 1437507,
+      "native_objdiff_denominator": 1438128,
+      "overlap_bytes": 621,
+      "new_exact_PC_bytes": 452,
+      "new_exact_functions": 9,
+      "whole_PC_fuzzy_delta_pp": 0.06465884158599167,
+      "new_functions": [
+        {
+          "symbol": "_Attracto_FindNearest",
+          "pc": "0x00402e00",
+          "original_bytes": 168,
+          "units": [
+            "src/legoapi/attracto.c"
+          ],
+          "exact": false,
+          "objdiff_percent": 93.01588
+        },
+        {
+          "symbol": "_Attracto_GetPos_Top",
+          "pc": "0x00403300",
+          "original_bytes": 46,
+          "units": [
+            "src/legoapi/attracto.c"
+          ],
+          "exact": true,
+          "objdiff_percent": 100.0
+        },
+        {
+          "symbol": "_Batarangs_CheckLostData",
+          "pc": "0x00404e30",
+          "original_bytes": 220,
+          "units": [
+            "src/legoapi/batarang.cpp"
+          ],
+          "exact": false,
+          "objdiff_percent": 0.0
+        },
+        {
+          "symbol": "_Hub_BonusBuildIt",
+          "pc": "0x00474d50",
+          "original_bytes": 46,
+          "units": [
+            "src/legoapi/hub.cpp"
+          ],
+          "exact": false,
+          "objdiff_percent": 76.25
+        },
+        {
+          "symbol": "_Hub_ResetPanel",
+          "pc": "0x0047a910",
+          "original_bytes": 50,
+          "units": [
+            "src/legoapi/hub.cpp"
+          ],
+          "exact": true,
+          "objdiff_percent": 100.0
+        },
+        {
+          "symbol": "_Hub_Outside",
+          "pc": "0x004915c0",
+          "original_bytes": 40,
+          "units": [
+            "src/legoapi/lsw_hub_ai.c"
+          ],
+          "exact": false,
+          "objdiff_percent": 85.454544
+        },
+        {
+          "symbol": "_GetVehicleAreaRememberSpeed",
+          "pc": "0x00499920",
+          "original_bytes": 180,
+          "units": [
+            "src/legoapi/speederchase.c"
+          ],
+          "exact": false,
+          "objdiff_percent": 87.11475
+        },
+        {
+          "symbol": "_ReleaseEat",
+          "pc": "0x0049c4e0",
+          "original_bytes": 87,
+          "units": [
+            "src/legoapi/collection.c"
+          ],
+          "exact": true,
+          "objdiff_percent": 100.0
+        },
+        {
+          "symbol": "_Suit_GetLast",
+          "pc": "0x004cc9a0",
+          "original_bytes": 87,
+          "units": [
+            "src/legoapi/suit.c"
+          ],
+          "exact": true,
+          "objdiff_percent": 100.0
+        },
+        {
+          "symbol": "_Transform_TargettedByObj",
+          "pc": "0x004d54c0",
+          "original_bytes": 131,
+          "units": [
+            "src/legoapi/transform.c"
+          ],
+          "exact": false,
+          "objdiff_percent": 93.63636
+        },
+        {
+          "symbol": "_KaminoInside",
+          "pc": "0x004e2300",
+          "original_bytes": 101,
+          "units": [
+            "src/legoapi/episodeII.c"
+          ],
+          "exact": true,
+          "objdiff_percent": 100.0
+        },
+        {
+          "symbol": "_KaminoDiscoOn",
+          "pc": "0x004e23a0",
+          "original_bytes": 13,
+          "units": [
+            "src/legoapi/episodeII.c"
+          ],
+          "exact": true,
+          "objdiff_percent": 100.0
+        },
+        {
+          "symbol": "_DeathStarShieldDown",
+          "pc": "0x004e5660",
+          "original_bytes": 264,
+          "units": [
+            "src/legoapi/episodeIV.c"
+          ],
+          "exact": false,
+          "objdiff_percent": 98.4
+        },
+        {
+          "symbol": "_SarlaccPitDiscoActive",
+          "pc": "0x004ec7b0",
+          "original_bytes": 39,
+          "units": [
+            "src/legoapi/episode_vi.c"
+          ],
+          "exact": true,
+          "objdiff_percent": 100.0
+        },
+        {
+          "symbol": "_GameAudio_GetSfxId",
+          "pc": "0x00547990",
+          "original_bytes": 28,
+          "units": [
+            "src/nu2api/nusound.c"
+          ],
+          "exact": true,
+          "objdiff_percent": 100.0
+        },
+        {
+          "symbol": "_RedirectAnim",
+          "pc": "0x0055b260",
+          "original_bytes": 112,
+          "units": [
+            "src/legoapi/characters.cpp"
+          ],
+          "exact": false,
+          "objdiff_percent": 90.21277
+        },
+        {
+          "symbol": "_Customiser_Set100PercentPieces",
+          "pc": "0x00593790",
+          "original_bytes": 115,
+          "units": [
+            "src/legoapi/customise.c"
+          ],
+          "exact": false,
+          "objdiff_percent": 87.72727
+        },
+        {
+          "symbol": "_Customiser_FindPieceByName",
+          "pc": "0x005938a0",
+          "original_bytes": 123,
+          "units": [
+            "src/legoapi/customise.c"
+          ],
+          "exact": false,
+          "objdiff_percent": 83.31579
+        },
+        {
+          "symbol": "_CollectionConfigDiagnosticPc",
+          "pc": "0x00594220",
+          "original_bytes": 1,
+          "units": [
+            "src/legoapi/collection.c"
+          ],
+          "exact": true,
+          "objdiff_percent": 100.0
+        },
+        {
+          "symbol": "_Collection_Configure",
+          "pc": "0x005942b0",
+          "original_bytes": 833,
+          "units": [
+            "src/legoapi/collection.c"
+          ],
+          "exact": false,
+          "objdiff_percent": 88.6938
+        }
+      ],
+      "normal_objects": 338,
+      "frozen_inputs": 457,
+      "old_full_function_copies": 4942,
+      "old_full_data_regions": 10893,
+      "old_exact_code_copies_preserved": 2312,
+      "old_known_extent_exact_data_compiled_copies_preserved": 5625,
+      "current_full_function_definitions": 4962,
+      "current_full_data_definitions": 10977,
+      "members_preserved": 13,
+      "known_member_bytes": 28,
+      "new_complete_initializer_copies": 84,
+      "new_complete_initializer_COFF_bytes": 3117,
+      "new_native_equal_complete_initializer_copies": 83,
+      "new_native_equal_complete_initializer_COFF_bytes": 3109,
+      "new_unknown_nonexact_initializer": "TagAsciiDownPc full8; typed pointer4 and \u00a33 separately native-equal",
+      "new_known_extent_initializer_copies": 6,
+      "new_known_extent_initializer_COFF_bytes": 40,
+      "unknown_extent_exact_and_allocation_credit": 0,
+      "known_exact_data_union_before_transfer": 637616,
+      "known_exact_data_union_after_transfer": 637616,
+      "required_checks": {
+        "make_check": "PASS; 732 tests, three existing skips, LLVM18 format365/tidy338",
+        "normal_source_build_link_and_objects": "PASS",
+        "authoritative_full_retail_matching": "PASS"
+      },
+      "selected_CPU_passed_assertions": 152,
+      "selected_CPU_execution_count_including_retained_wrong_oracle": 153,
+      "historical_wrong_oracle_failures": 1,
+      "selected_current_behavior_failures": 0,
+      "runtime": {
+        "actual_normal_objects": 338,
+        "frozen_inputs": 457,
+        "first_attempt_executed": 91,
+        "first_attempt_passed": 90,
+        "first_attempt_failed_wrong_oracle": 1,
+        "first_attempt_reason": "Fixture guessed Suit IDs -1; genuine native/compiled initializer is zero. Engine and IDs unchanged.",
+        "delta_checks": 62,
+        "delta_sections": {
+          "suit": 18,
+          "batarang": 29,
+          "redirect": 15
+        },
+        "delta_natural_exit": 0,
+        "delta_seconds": 5.078,
+        "owned_leftovers": 0,
+        "ShowCrashDialog": "set and queried REG_DWORD0 for both private owned launches",
+        "source_game_launched": false,
+        "held_domains": [
+          "Collection parser/asset configuration",
+          "positive KillGameObject sideeffect chain",
+          "loaded music levels and positive audio bank",
+          "shader/device/frame/gameplay"
+        ]
+      },
+      "source_qualifications": [
+        "Collection Configure833/diagnosticRET1 and ReleaseEat87 use real source providers; true original cold helper emitted naturally. PC has no Android Store_FindPack dependency. Configure/positive Kill runtime remain held.",
+        "Attracto GetPos46 is exact after replacing incorrect scalar x87 copies with genuine whole NUVEC copy, preserving arbitrary X/Z bits. Original Android operation and native DWORD moves agree; initial source/report c7ad and defect are retained. FindNearest168 remains nonexact; native comparisons and rounded distance semantics retained.",
+        "Customiser2/238, Transform131, Vehicle180, Suit87 use asserted native fields and genuine selected inputs. Suit positive runtime uses read-only authentic zero IDs, not the failed fixture guess or forced ID assignment.",
+        "Five music getters457, Redirect112, Batarang lost220, Hub Bonus46/Reset50 and audio28 have real source and native ABI. Batarang0 advisory score remains honest; native shifted-entry skip and complete20-byte copies tested. Loaded music/audio/asset domains remain held.",
+        "83/84 new complete initializer copies3109B are native-equal. Tag full8 remains NONEXACT due its natural tail; only typed pointer4/\u00a33 match. All unknown owners/literals remain zero coverage/allocation/exact-data credit. Two native DWORD storage unions preserve existing BYTE/WORD readers without duplicate providers.",
+        "Exactly four old unknown physical data pairs are qualified: multiplier1->4, defaultlastcoin2->4, Bountytitle4->2, Cantinaband2->4. Complete native pair bytes and typed observers verified; no generic padding waiver. Old BARMAN4/BATTLEDROID8 remain strict.",
+        "Fresh DebReAlloc2 integer-load swap and particle717->713 have complete specific native/instruction/relocation proofs and finite initialized stack/masked-x87 domains. Neither becomes exact or claims asynchronous/fault/unmasked equivalence. Five contained local-label serial changes preserve full official bytes.",
+        "All old exact code/data and13member28B contracts survive. First90 passed behavior checks plus62 corrected/targeted delta assertions pass on unchanged actual338objects/457inputs, real CRT and providers. Historical91/1 test assumption retained. No source game, GPU, assets or gameplay milestone."
+      ],
+      "remaining_contracts": [
+        "Genuine shader-manager/compiler publication and device/frame presentation",
+        "InitGameAfterConfig4659 and remaining original-owner callback groups:65 genuine publications, source ready but shared state/types/templates and ordinary emitted ABI/output remain separate gates",
+        "Full startup CharFixUp218/Commander state and complete resource/world/asset lifetime",
+        "Collection real parser configuration and positive gameplay/audio/resource runtime"
+      ],
+      "next_wave": "Integrate original Init publisher and remaining callbacks with genuine owner/private visibility, seven completion counters, exact15 callback slots/ASCII and configuration templates. First3 GlobalBolt working prefix at7ef388 does not establish44 capacity; no fabricated records or copied retail bytes. Existing compared callbacks/ranges receive no repeated transfer credit.",
+      "checkpoint_delay": "Root shared-declaration C guard and existing Kamino extern repairs; missing emitted literal bindings; specific complete prior-output/data pair gates; genuine Attracto bit-copy defect corrected; retained Suit fixture wrong-prestate assumption resolved against native zero IDs. No flags, source checks or matching extents weakened.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "active; source checkpoint does not finish whole-project reconstruction",
+      "evidence_pins": {
+        "build/analysis/normal-QQ-independent-review/accepted-source-output-endpoint-v2.json": "f165f45901e9cd6003c5fde3cfdc9425f1e45afe040d2715a8f5005ab4ceb75c",
+        "build/analysis/startup-suppliers-normal20-review/v2/accepted-readonly-source20-gate.json": "b0d925465d808e19a76a37b76f2c39a2e7da42cac65109c89d02b2d36880c21d",
+        "build/analysis/provider-wave-QQ/repaired-required-validation.json": "c8ab3344c2d86527f0051b364b30fbc6a622d11d44041dfe98acc3ff96905511",
+        "build/analysis/runtime-supplier-QQ/delta-normal-QQ-v1/receipt.json": "6320642b8ea1b66fc0b48849da73ecca1618d58722f56f604a01a5b144b46b77",
+        "build/analysis/runtime-supplier-QQ/runtime-HOLD-QQ-v1.json": "3cde10f4333f4aa19dbbae4fdff17f96326fc776f108f889384f03534a1e0d8c",
+        "build/analysis/normal-QQ-independent-review/debrealloc2-fresh-semantic/accepted-fresh-pair.json": "5181f4a63846195e04ebc708478def8911b28aca003544a37162f4a46675a13b",
+        "build/analysis/endpoint-QQ-particle-pair-review/accepted-report-bound-pair-receipt.json": "d2e0111a89c57ee9755d8905843513a2bb39d09922f06bb69607e5d0cad4720d",
+        "build/analysis/normal-QQ-independent-review/accepted-three-storage-regions-v2.json": "7a35d09f1ad43e7c4ecab3733a8672ea7a7aa00e3263261ce4ccb22b21426036",
+        "build/analysis/QQ-emitted-literals-independent/v1/accepted-emission-packet.json": "fbf36318945911fbdf0ccf8de0043cf900d74ca14c78502b2837ba9e95c56297",
+        "build/analysis/runtime-supplier-QQ/runtime-acceptance-QQ.json": "ce92550d9cd479928f62d93d7bcb8c280f7b5dda889948e58d8ab7ed090526c6"
+      }
     }
   ]
 }

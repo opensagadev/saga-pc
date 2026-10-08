@@ -2285,3 +2285,22 @@ The 24 new complete initializer copies total 119 bytes: six known (33 bytes),
 bindings retain their status. Known data stays 637,616 bytes. Collection's genuine
 completion DWORD at 9558a0 has a read-only preflight for the next wave; it is not
 activated here. See transfer-checkpoint.json for complete output and CPU domains.
+
+
+### Startup supplier storage QQ (2026-10-08)
+
+The genuine Collection completion DWORD, Hub/Kamino minimum views, Sarlacc packet
+pointer and Redirect tables/pointees are now actual source data. Proved fields and
+initializers are represented; unknown owning capacities remain unknown. Two native
+DWORD unions give existing BYTE/WORD readers their proper low views, without
+introducing duplicate backing.
+
+The 84 new complete initializer copies total 3,117 bytes: 83 (3,109 bytes) match
+native; TagDown's eight remain nonexact. Its four-byte pointer and three-byte £
+literal match separately; the natural tail is retained without a fake neighbor
+provider or padding repair. Six known-extent copies (40 bytes) reuse covered
+extents; known exact union remains 637,616 bytes. Four precise old unknown physical
+storage pairs are qualified; all other old regions stay strict, including BARMAN
+and BATTLEDROID. All 13 typed member contracts survive. The next publisher's
+configuration, ASCII and completion-state preflights remain scratch proposals.
+See transfer-checkpoint.json for full native/output evidence.

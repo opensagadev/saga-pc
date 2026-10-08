@@ -642,3 +642,12 @@ extern i32 NuSound3LoadingSfxPc;
 i32 __cdecl NuSound3LoadingSfx(void) {
     return NuSound3LoadingSfxPc != 0;
 }
+
+STATIC_ASSERT(offsetof(GAMEAUDIO_PC, sfx_ids) == 0x158);
+STATIC_ASSERT(sizeof(((GAMEAUDIO_PC *)0)->sfx_ids[0]) == 2);
+
+i32 __cdecl GameAudio_GetSfxId(i32 sfx) {
+    if ((u32)sfx <= 0x53)
+        return GameAudio->sfx_ids[sfx];
+    return -1;
+}

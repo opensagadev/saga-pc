@@ -274,3 +274,134 @@ i32 __cdecl Collection_GetIDList(COLLECTION_BUILD_PC *collection, u32 mask, u32 
         out[count] = -1;
     return count;
 }
+
+typedef struct collection_config_entry_pc_s {
+    i16 id;
+    u8 type;
+    u8 area_index;
+    i32 buy_price;
+    u8 can_buy;
+    u8 counts_towards_completion;
+    u16 gold_bricks;
+    char cheat_code[16];
+} COLLECTION_CONFIG_ENTRY_PC;
+STATIC_ASSERT(sizeof(COLLECTION_CONFIG_ENTRY_PC) == 0x1c);
+STATIC_ASSERT(sizeof(COLLECTION_CONFIG_ENTRY_PC) == sizeof(COLLECTID_PC));
+STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, id) == 0);
+STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, type) == 2);
+STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, area_index) == 3);
+STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, buy_price) == 4);
+STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, can_buy) == 8);
+STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, counts_towards_completion) == 9);
+STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, gold_bricks) == 0xa);
+STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, cheat_code) == 0xc);
+STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer_ptr) == 0x510);
+
+/* Native 594220 is an actual RET with no argument reads. */
+static void __cdecl CollectionConfigDiagnosticPc(char *file, ...) {
+    (void)file;
+}
+
+void __cdecl Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
+    NUFPAR_PC *parser = NuFParCreate(file);
+    COLLECTION_CONFIG_ENTRY_PC *entry;
+    (void)end;
+    if (parser == NULL) {
+        CollectionConfigDiagnosticPc(file);
+        return;
+    }
+
+    entry = (COLLECTION_CONFIG_ENTRY_PC *)((buffer->addr + 3) & ~3u);
+    buffer->void_ptr = entry;
+    CollectList = (COLLECTID_PC *)entry;
+    CollectCount = 0;
+    COLLECTION_COMPLETIONCOUNT = 0;
+
+    while (NuFParGetLine(parser) != 0) {
+        i16 id;
+        if (NuFParGetWord(parser) == 0 || NuStrICmp(parser->word_buffer_ptr, "collect") != 0 ||
+            NuFParGetWord(parser) == 0)
+            continue;
+        id = (i16)CharIDFromName(parser->word_buffer_ptr);
+        entry->id = id;
+        if (id == -1)
+            continue;
+        if (InCollectList_Index(id, CollectList, CollectCount) != -1) {
+            CollectionConfigDiagnosticPc(file, parser->word_buffer_ptr);
+            continue;
+        }
+
+        entry->type = 0;
+        entry->area_index = 0xff;
+        entry->can_buy = 0;
+        entry->buy_price = 0;
+        entry->gold_bricks = 0;
+        entry->counts_towards_completion = 0;
+        entry->cheat_code[0] = '\0';
+
+        while (NuFParGetWord(parser) != 0) {
+            if (NuStrICmp(parser->word_buffer_ptr, "story") == 0) {
+                entry->type = 1;
+            } else if (NuStrICmp(parser->word_buffer_ptr, "area_complete") == 0) {
+                i32 area;
+                if (NuFParGetWord(parser) != 0 && Area_FindByName(parser->word_buffer_ptr, &area) != NULL) {
+                    entry->type = 2;
+                    entry->area_index = (u8)area;
+                }
+            } else if (NuStrICmp(parser->word_buffer_ptr, "all_episodes_complete") == 0) {
+                entry->type = 3;
+            } else if (NuStrICmp(parser->word_buffer_ptr, "100_percent") == 0) {
+                entry->type = 7;
+            } else if (NuStrICmp(parser->word_buffer_ptr, "gold_bricks") == 0) {
+                i32 value;
+                u32 sign;
+                entry->type = 6;
+                value = NuFParGetInt(parser);
+                sign = (u32)(value >> 31);
+                entry->gold_bricks = (u16)(((u32)value ^ sign) - sign);
+            } else if (NuStrICmp(parser->word_buffer_ptr, "all_minikits_complete") == 0) {
+                entry->type = 4;
+            } else if (NuStrICmp(parser->word_buffer_ptr, "minikit") == 0) {
+                entry->type = 5;
+            } else if (NuStrICmp(parser->word_buffer_ptr, "buy_in_shop") == 0) {
+                entry->can_buy = 1;
+                entry->buy_price = NuFParGetInt(parser);
+            } else if (NuStrICmp(parser->word_buffer_ptr, "cheat_code") == 0 && NuFParGetWord(parser) != 0 &&
+                       NuStrLen(parser->word_buffer_ptr) == 6) {
+                NuStrCpy(entry->cheat_code, parser->word_buffer_ptr);
+                NuStrUpr(entry->cheat_code, entry->cheat_code);
+            }
+        }
+        if ((entry->type != 0 || entry->can_buy != 0) && entry->type != 7) {
+            entry->counts_towards_completion = 1;
+            ++COLLECTION_COMPLETIONCOUNT;
+        }
+        ++entry;
+        ++CollectCount;
+    }
+    NuFParDestroy(parser);
+    if (CollectCount > 0) {
+        buffer->void_ptr = entry;
+    } else {
+        CollectList = NULL;
+        CollectionConfigDiagnosticPc(file);
+    }
+}
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
+STATIC_ASSERT(sizeof(((GAMEOBJECT *)0)->flags_e24) == 4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+
+void __cdecl ReleaseEat(GAMEOBJECT *object) {
+    GAMEOBJECT *eaten = object->force_target;
+    if (eaten != NULL && (object->flags_e24 & 1) != 0) {
+        KillGameObject(eaten, 2, 0);
+        object->force_target = NULL;
+    }
+    if (object->character_context == 0x39 || object->character_context == 0x38) {
+        object->force_target = NULL;
+        object->character_context = -1;
+    }
+    object->flags_e24 &= ~1u;
+}

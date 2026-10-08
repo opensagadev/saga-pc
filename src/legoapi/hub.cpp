@@ -1444,3 +1444,30 @@ extern "C" void __cdecl Hub_Reset(WORLDINFO *world) {
     HubBuildItsResetPc = 0;
     HubPreventDropOutTimePc = 0;
 }
+
+// Add only to the genuine Hub owner, after its existing private table definition.
+struct GIZBUILDIT_PC;
+STATIC_ASSERT(sizeof(HUB_AREA_INFO_PC) == 0x3c);
+STATIC_ASSERT(offsetof(HUB_AREA_INFO_PC, area_name) == 0);
+STATIC_ASSERT(offsetof(HUB_AREA_INFO_PC, bonus_gizmo) == 0x34);
+STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
+
+extern "C" i32 __cdecl Hub_BonusBuildIt(GIZBUILDIT_PC *buildit) {
+    for (HUB_AREA_INFO_PC *info = HubAreaInfoPc; info->area_name != NULL; ++info) {
+        GIZMO_PC *gizmo = (GIZMO_PC *)info->bonus_gizmo;
+        if (gizmo != NULL && gizmo->object == buildit)
+            return 1;
+    }
+    return 0;
+}
+
+extern "C" void __cdecl Hub_ResetPanel(void) {
+    HubAreaTimePc = 0.0f;
+    HubAreaPc = -1;
+    HubEpisodeTimePc = 0.0f;
+    HubLastAreaPc = -1;
+    HubStatsTimePc = 0.0f;
+    HubEpisodePc = -1;
+    HubMiniKitPanelTimePc = 0.0f;
+    HubMiniKitAreaPc = -1;
+}

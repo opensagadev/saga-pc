@@ -4769,7 +4769,14 @@ typedef struct gameobject_s {
     u8 unknown_0d00[4];
     BOLT *incoming_bolt;
     BOLT *blocked_bolt;
-    u8 unknown_0d0c[0x10];
+    union {
+        u8 unknown_0d0c[0x10];
+        struct {
+            u8 transform_reserved_d0c[8];
+            void *transform_target;
+            u8 transform_reserved_d18[4];
+        };
+    };
     struct gameobject_s *airborne_collision_target;
     u32 field_d20;
     u8 unknown_0d24[8];
@@ -4792,7 +4799,15 @@ typedef struct gameobject_s {
     u8 unknown_0d70[8];
     f32 directional_seek_multiplier;
     f32 terrain_origin_floor_offset;
-    u8 unknown_0d80[0x18];
+    union {
+        u8 unknown_0d80[0x18];
+        struct {
+            f32 transform_alpha;
+            u8 transform_reserved_d84[8];
+            f32 transform_target_scale;
+            u8 transform_reserved_d90[8];
+        };
+    };
     f32 turn_braking;
     f32 fall_recovery_timer;
     u8 unknown_0da0[4];
@@ -7417,7 +7432,7 @@ struct level_fixup_pc_s;
 typedef struct game_message_pc_s GAME_MESSAGE_PC;
 typedef void(__cdecl *GAME_MESSAGE_CALLBACK_PC)(GAME_MESSAGE_PC *);
 typedef struct add_game_message_pc_s {
-    char *text;
+    const char *text;
     NUVEC *position;
     NUVEC *target_position;
     f32 scale, target_scale;
@@ -7437,7 +7452,7 @@ typedef struct add_game_message_pc_s {
 } ADD_GAME_MESSAGE_PC;
 
 struct game_message_pc_s {
-    char *text;
+    const char *text;
     char text_buffer[0x78];
     NUVEC position_a, target_position, position, start_position;
     f32 scale_start, target_scale, scale_initial, scale_current;
@@ -8372,7 +8387,21 @@ extern "C" {
     extern PLAYER_COIN_PACKET_PC CoinPacket[2];
     extern PLAYER_FORCE_LOS_SLOT_PC GizForceLOSInfo[2];
     extern GAMEOBJECT BackUpPlayers[2];
-    extern i16 LEGOOBJ_DEFAULTLASTCOIN;
+    typedef union GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC {
+        i32 value;
+        u8 low_byte;
+    } GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC;
+    typedef union LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC {
+        u32 value;
+        i16 low_word;
+    } LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC;
+    STATIC_ASSERT(sizeof(GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC) == 4);
+    STATIC_ASSERT(offsetof(GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC, value) == 0);
+    STATIC_ASSERT(offsetof(GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC, low_byte) == 0);
+    STATIC_ASSERT(sizeof(LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC) == 4);
+    STATIC_ASSERT(offsetof(LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC, value) == 0);
+    STATIC_ASSERT(offsetof(LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC, low_word) == 0);
+    extern LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC LEGOOBJ_DEFAULTLASTCOIN;
     void __cdecl RememberPlayerIDs(i32, i32, i32);
     TORPEDOPACKET_PC *__cdecl GetTorpedoPacket(void);
     i32 __cdecl Collection_Got(i32);
@@ -13158,7 +13187,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     void __cdecl GizmoSwapBlowups(GIZMOBLOWUP_PC *, GIZMOBLOWUP_PC *);
     void __cdecl GizmoSortBlowups(WORLDINFO *);
     void __cdecl PlatInstRotate(i32, i32);
-    extern u8 GizmoBlowupHitMultiplierPc;
+    extern GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC GizmoBlowupHitMultiplierPc;
     STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, platform_id) == 0x102);
     STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, burst_platform_id) == 0x104);
     STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, initial_health) == 0x111);
@@ -18990,6 +19019,122 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+#endif
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, transform_target) == 0xd14);
+STATIC_ASSERT(offsetof(GAMEOBJECT, transform_alpha) == 0xd80);
+STATIC_ASSERT(offsetof(GAMEOBJECT, transform_target_scale) == 0xd8c);
+typedef struct attracto_pc_s ATTRACTO_PC;
+typedef struct HUB_AI_MUSIC_VIEW_PC {
+    u8 unknown_00[0xf0];
+    i16 area;
+    u8 unknown_f2[0x5e];
+} HUB_AI_MUSIC_VIEW_PC;
+STATIC_ASSERT(sizeof(HUB_AI_MUSIC_VIEW_PC) == 0x150);
+STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, area) == 0xf0);
+typedef struct KAMINO_DISCO_MUSIC_VIEW_PC {
+    u8 unknown_00[0x3d5];
+    u8 mode;
+    u8 unknown_3d6[0x12];
+} KAMINO_DISCO_MUSIC_VIEW_PC;
+STATIC_ASSERT(sizeof(KAMINO_DISCO_MUSIC_VIEW_PC) == 0x3e8);
+STATIC_ASSERT(offsetof(KAMINO_DISCO_MUSIC_VIEW_PC, mode) == 0x3d5);
+typedef struct SARLACC_BATTLE_MUSIC_VIEW_PC SARLACC_BATTLE_MUSIC_VIEW_PC;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i32 COLLECTION_COMPLETIONCOUNT;
+    extern HUB_AI_MUSIC_VIEW_PC HubAiMusicStatePc;
+    extern KAMINO_DISCO_MUSIC_VIEW_PC KaminoDiscoMusicStatePc;
+    extern SARLACC_BATTLE_MUSIC_VIEW_PC *sarlaccb_netpacket;
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl Collection_Configure(char *, VARIPTR *, VARIPTR *);
+    f32 __cdecl GetVehicleAreaRememberSpeed(void);
+    SUIT_LAYERS_PC *__cdecl Suit_GetLast(i32, i32);
+    void __cdecl ReleaseEat(GAMEOBJECT *);
+    GAMEOBJECT *__cdecl Transform_TargettedByObj(void *);
+    ATTRACTO_PC *__cdecl Attracto_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
+    void __cdecl Attracto_GetPos_Top(ATTRACTO_PC *, NUVEC *);
+    void __cdecl Customiser_Set100PercentPieces(CUSTOMISER_LAYERS_PC *);
+    CUSTOMPIECE_LAYERS_PC *__cdecl Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *, char *, i32 *, i32 *);
+    i32 __cdecl Hub_Outside(void);
+    i32 __cdecl KaminoInside(void);
+    i32 __cdecl KaminoDiscoOn(void);
+    i32 __cdecl DeathStarShieldDown(void);
+    i32 __cdecl SarlaccPitDiscoActive(WORLDINFO *);
+#ifdef __cplusplus
+}
+#endif
+
+typedef struct GAME_STATUS_STAGE_RENDER_VIEW_PC GAME_STATUS_STAGE_RENDER_VIEW_PC;
+typedef struct GAME_STATUS_RENDER_VIEW_PC {
+    u32 mode_flags;
+    u8 active;
+    u8 unknown_05[0x6f];
+    GAME_STATUS_STAGE_RENDER_VIEW_PC *stage;
+} GAME_STATUS_RENDER_VIEW_PC;
+STATIC_ASSERT(sizeof(GAME_STATUS_RENDER_VIEW_PC) == 0x78);
+STATIC_ASSERT(offsetof(GAME_STATUS_RENDER_VIEW_PC, mode_flags) == 0);
+STATIC_ASSERT(offsetof(GAME_STATUS_RENDER_VIEW_PC, active) == 4);
+STATIC_ASSERT(offsetof(GAME_STATUS_RENDER_VIEW_PC, stage) == 0x74);
+typedef struct ANIM_REDIRECT_VIEW_PC {
+    const char *name;
+    i16 animation_id;
+    u8 unknown_06[2];
+} ANIM_REDIRECT_VIEW_PC;
+STATIC_ASSERT(sizeof(ANIM_REDIRECT_VIEW_PC) == 8);
+STATIC_ASSERT(offsetof(ANIM_REDIRECT_VIEW_PC, name) == 0);
+STATIC_ASSERT(offsetof(ANIM_REDIRECT_VIEW_PC, animation_id) == 4);
+STATIC_ASSERT(offsetof(ANIM_REDIRECT_VIEW_PC, unknown_06) == 6);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern ANIM_REDIRECT_VIEW_PC AnimRedirectList_LSW[41];
+    extern ANIM_REDIRECT_VIEW_PC AnimRedirectList_Batman[1];
+#ifdef __cplusplus
+}
+#endif
+
+struct GIZBUILDIT_PC;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern f32 BuckSnowmobRadiusPc;
+    extern f32 BuckSnowmobMaxYPc;
+    extern f32 BuckSnowmobMinYPc;
+    extern NUVEC BuckSnowmobForwardPc;
+    extern f32 BuckSnowmobJumpHeightPc;
+    extern f32 BuckSnowmobJumpDurationPc;
+    extern u8 CheatC3poBitsEnabledPc;
+    extern i32 deathstar_hold_count;
+    extern GAME_STATUS_RENDER_VIEW_PC PcGameStatusRenderState;
+    extern i32 selectmodemode;
+    extern f32 selectmodetime;
+    extern i32 CruiserD_LiftChase;
+    extern i32(__cdecl *CheckMusicOtherFn)(void);
+    extern i32(__cdecl *GameAudio_ActionMusicFn)(void);
+    extern i32(__cdecl *PauseRenderOffFn)(void);
+    extern f32 minikittime;
+    extern i32 freeplaymode;
+    extern i32 freeplay_selected[2];
+    extern i32(__cdecl *Tag_NoHiddenIconFn)(GAMEOBJECT *);
+    extern f32 game_pulse;
+    extern const char *TagAsciiDownPc;
+    i32 __cdecl RedirectAnim(char *, void *, CHARACTERANIM_CONFIG_PC *, char *);
+    i32 __cdecl Hub_BonusBuildIt(struct GIZBUILDIT_PC *);
+    void __cdecl Batarangs_CheckLostData(void *);
+    extern f32 HubMiniKitPanelTimePc;
+    void __cdecl Hub_ResetPanel(void);
+    i32 __cdecl GameAudio_GetSfxId(i32);
+    extern AREA_DATA_PC *KAMINO_ADATA;
+#ifdef __cplusplus
+}
 #endif
 
 #endif

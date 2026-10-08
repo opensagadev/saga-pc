@@ -9,8 +9,8 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Verified source baseline: OO, [`3380341716ae629ca668e1ecef529f642d4c03ff`](https://github.com/opensagadev/saga-pc/commit/3380341716ae629ca668e1ecef529f642d4c03ff); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37833980118) passed all 13 steps.
-OO has 334 normal owners; the current PP snapshot has 335 owners.
+Verified source baseline: PP, [`91dc03f2ae626a0683eaf969536aae9eea51b8d6`](https://github.com/opensagadev/saga-pc/commit/91dc03f2ae626a0683eaf969536aae9eea51b8d6); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37838400254) passed all 13 steps.
+PP has 335 normal owners; the current QQ snapshot has 338 owners.
 II remains the last actual full-game
 Wine observation: its source EXE exits 5 at NULL shader Retrieve+16 before a level
 loads. A transient window establishes no persistent window, device/Present,
@@ -249,7 +249,28 @@ Five complete functions add 1,149 unique PC bytes. Required checks and 208 CPU
 checks pass; all prior exact contracts survive. Fuzzy code is 28.651749%; exact
 code is 6.511379% (226,026/3,471,246 bytes). Specific complete camera and fresh
 particle qualifications are retained. Configure's parser/callback runtime,
-assets, device and gameplay remain held. PP exact-revision CI is pending.
+assets, device and gameplay remain held. PP passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37838400254).
 Next work closes Collection and the 65 genuine startup callback publications.
 All 17 former span holds are recovered; source/provider/storage contracts remain.
 Candidate bodies and pointer inventories receive no transfer credit.
+
+
+### Connected startup suppliers QQ (2026-10-08)
+
+Twenty complete functions add 2,684 unique PC bytes across Collection, Attracto,
+customization, targeting, vehicle/suit, music, Hub and audio. Nine are exact,
+adding 452 bytes; the corrected position getter preserves coordinate bits exactly.
+Required checks pass for 338 owners: 732 tests (three existing skips), LLVM18
+format/tidy, source link/object coverage and complete retail comparison.
+Whole-PC fuzzy is 28.716408%, exact 226,478/3,471,246=6.524401%.
+All prior exact and 13 member/28-byte contracts survive.
+
+Selected runtime assertions pass 152: 90 from the first launch and 62 from a
+separate corrected/targeted delta. The first fixture's one failed assumption
+(Suit IDs -1 instead of native zero) remains retained; no engine ID was assigned.
+Crash dialogs were disabled and queried; owned process groups were empty afterward.
+Tag's complete eight-byte initializer remains nonexact and zero-credit. Specific
+prior physical data/code pairs retain complete bytes and finite qualifications.
+No source-game, loaded assets, device or gameplay milestone is claimed. QQ CI is
+pending. Next work integrates the genuine 65-callback publisher with original-owner
+configuration and shared states; candidate/source-ready bytes receive no credit.

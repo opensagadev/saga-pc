@@ -577,3 +577,49 @@ void __cdecl Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *input, APICHARACTE
         }
     }
 }
+
+STATIC_ASSERT(offsetof(CUSTOMISER_CONFIG_PC, piece_sets) == 0x24);
+STATIC_ASSERT(offsetof(CUSTOMISER_CONFIG_PC, piece_counts) == 0x48);
+STATIC_ASSERT(offsetof(CUSTOMISER_CONFIG_PC, save) == 0x174);
+STATIC_ASSERT(sizeof(CUSTOM_PIECE_CONFIG_PC) == 0x28);
+STATIC_ASSERT(offsetof(CUSTOM_PIECE_CONFIG_PC, name) == 0);
+STATIC_ASSERT(offsetof(CUSTOM_PIECE_CONFIG_PC, availability_flags) == 0x12);
+STATIC_ASSERT(sizeof(((CUSTOM_PIECE_CONFIG_PC *)0)->availability_flags) == 2);
+STATIC_ASSERT(offsetof(CUSTOM_SAVE_CONFIG_PC, pieces) == 0);
+STATIC_ASSERT(offsetof(CUSTOM_SAVE_CONFIG_PC, secondary_pieces) == 0x38);
+STATIC_ASSERT(sizeof(((CUSTOM_SAVE_CONFIG_PC *)0)->pieces[0]) == 2);
+
+void __cdecl Customiser_Set100PercentPieces(CUSTOMISER_LAYERS_PC *input) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    i32 category, index;
+    if (customiser == NULL || customiser->save == NULL)
+        return;
+    for (category = 0; category < 9; ++category) {
+        for (index = 0; index < customiser->piece_counts[category]; ++index) {
+            if ((customiser->piece_sets[category][index].availability_flags & 0x80) != 0)
+                customiser->save->pieces[category] = (u16)index;
+            if ((customiser->piece_sets[category][index].availability_flags & 0x100) != 0)
+                customiser->save->secondary_pieces[category] = (u16)index;
+        }
+    }
+}
+
+CUSTOMPIECE_LAYERS_PC *__cdecl Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *input, char *name, i32 *category,
+                                                          i32 *index) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    i32 category_index, piece_index;
+    if (customiser != NULL) {
+        for (category_index = 0; category_index < 9; ++category_index) {
+            for (piece_index = 0; piece_index < customiser->piece_counts[category_index]; ++piece_index) {
+                if (NuStrICmp(name, customiser->piece_sets[category_index][piece_index].name) == 0) {
+                    if (category != NULL)
+                        *category = category_index;
+                    if (index != NULL)
+                        *index = piece_index;
+                    return (CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category_index][piece_index];
+                }
+            }
+        }
+    }
+    return NULL;
+}

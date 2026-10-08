@@ -1149,4 +1149,23 @@ closure remains separate. Collection Configure (833 bytes) has true PC cdecl3
 and no Android in_pack/Store_FindPack dependency. Its source/precompile contract
 and completion-state preflight are next-wave evidence, not transferred code.
 CharFixUp218 and shader publication remain held. II is the last full-game Wine
-observation. PP CI is pending.
+observation. PP passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37838400254).
+
+
+### Connected startup suppliers QQ (2026-10-08)
+
+Collection configuration and nineteen connected suppliers are compiled and linked:
+20 complete functions add 2,684 newly compared PC bytes, including 452 exact bytes.
+Required checks and 152 selected behavior assertions pass using the real 338 normal
+objects and providers. The Attracto bit-copy defect is repaired; prior exact/member
+contracts survive. Collection parser configuration, positive Kill, loaded music,
+audio and assets remain held. The first Suit fixture's incorrect −1 precondition
+is retained; the corrected delta tests genuine native zero IDs read-only.
+
+InitGameAfterConfig (4,659 bytes) and its 65 original callback publications remain
+the next source wave. Complete extents and source compositions exist; canonical
+state/types/configuration and ordinary escaped ABI/full output remain separate.
+Native access to the first three Bolt records does not justify 44 invented records.
+Full CharFixUp, Commander storage, shader-manager publication and resource
+lifetimes remain held. II remains the last actual source-game Wine observation.
+QQ CI is pending; exact domains, failures and hashes are in transfer-checkpoint.json.

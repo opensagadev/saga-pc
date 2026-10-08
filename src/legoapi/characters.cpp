@@ -522,3 +522,23 @@ void __cdecl FinishWeirdoNames(i32 which) {
         memset(name + length, ' ', 15 - length);
     name[15] = '\0';
 }
+
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, name) == 0);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, flags) == 4);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, action_id) == 8);
+
+// Genuine character subsystem callback; arg1 prefix, arg4 output are PC order.
+i32 __cdecl RedirectAnim(char *directory, void *list, CHARACTERANIM_CONFIG_PC *animation, char *output_path) {
+    const ANIM_REDIRECT_VIEW_PC *redirect;
+    if (list == NULL)
+        return 0;
+    for (redirect = (const ANIM_REDIRECT_VIEW_PC *)list; redirect->name != NULL; ++redirect) {
+        if (redirect->animation_id == animation->action_id && NuStrICmp(redirect->name, animation->name) == 0) {
+            NuStrCpy(output_path, directory);
+            NuStrCat(output_path, animation->name);
+            animation->flags &= ~8u;
+            return 1;
+        }
+    }
+    return 0;
+}
