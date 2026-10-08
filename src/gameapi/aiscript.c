@@ -40,6 +40,47 @@ void __cdecl xConditionMacro(NUFPAR_PC *parser);
 void __cdecl xActionMacro(NUFPAR_PC *parser);
 void __cdecl xRefScript(NUFPAR_PC *parser);
 
+typedef struct aiscript_const_record_pc_s {
+    char name[32];
+    f32 default_val;
+} AISCRIPT_CONST_RECORD_PC;
+STATIC_ASSERT(sizeof(AISCRIPT_CONST_RECORD_PC) == 36);
+STATIC_ASSERT(offsetof(AISCRIPT_CONST_RECORD_PC, name) == 0);
+STATIC_ASSERT(offsetof(AISCRIPT_CONST_RECORD_PC, default_val) == 32);
+STATIC_ASSERT(offsetof(AICONDITION_PC, next_state_name) == 0x20);
+STATIC_ASSERT(offsetof(NUFPCOMJMP, keyword) == 0);
+
+static void *AIScriptLoadPakPc;
+static char *AIScriptLoadPathPc;
+static AISCRIPT_CONST_RECORD_PC AIScriptConstantRecordsPc[8];
+static i32 AIScriptConstCursorPc;
+extern i32 ai_onlyusepackfile;
+
+static char *AIScriptCopyStringPc(char *text, VARIPTR *buffer, VARIPTR *end);
+static AISCRIPT_PC *AIScriptLoadPakFilePc(void *pak, char *filename, char *path, VARIPTR *buffer, VARIPTR *end);
+void __cdecl AIScriptOpenPakFileParse(AISCRIPT_PC **script_ref, void *pak, char *filename, char *path, VARIPTR *buffer,
+                                      VARIPTR *end);
+void __cdecl xConst(NUFPAR_PC *parser);
+void __cdecl xState(NUFPAR_PC *parser);
+void __cdecl xParam(NUFPAR_PC *parser);
+void __cdecl xDeriveFromScript(NUFPAR_PC *parser);
+void __cdecl xInclude(NUFPAR_PC *parser);
+
+static NUFPCOMJMP AIScriptCommandsPc[9] = {
+    {(char *)AIScriptKeywordState, xState},
+    {(char *)AIScriptKeywordParam, xParam},
+    {(char *)AIScriptKeywordConst, xConst},
+    {(char *)AIScriptKeywordConditionMacro, xConditionMacro},
+    {(char *)AIScriptKeywordActionMacro, xActionMacro},
+    {(char *)AIScriptKeywordReferenceScript, xRefScript},
+    {(char *)AIScriptKeywordDeriveFromScript, xDeriveFromScript},
+    {(char *)AIScriptKeywordInclude, xInclude},
+    {NULL, NULL},
+};
+
+static const char AIScriptSourcePathFormatPc[] = "%s\\%s";
+static const char AIScriptPakPathFormatPc[] = "%s\\ai.pak";
+
 f32 __cdecl AIParamToFloat(AISCRIPTPROCESS_PC *processor, char *param) {
     char *cursor;
     u32 index;
@@ -378,12 +419,17 @@ void __cdecl xDeriveFromScript(NUFPAR_PC *parser) {
 }
 
 void __cdecl xInclude(NUFPAR_PC *parser) {
-    if (NuFParGetWord(parser) == 0) {
-        return;
-    }
+    VARIPTR *saved_buffer = aiscript_load_buffer;
+    VARIPTR *saved_end = aiscript_load_end_buffer;
+    AISCRIPT_PC *saved_script = aiscript_load_script;
+    NuFParGetWord(parser);
     NuFParSuspend(parser);
-    STUBBED_NAMED("xInclude: recursive AIScriptOpenPakFileParse (0x52bcb0)");
+    AIScriptOpenPakFileParse(&aiscript_load_script, AIScriptLoadPakPc, parser->word_buffer_ptr, AIScriptLoadPathPc,
+                             aiscript_load_buffer, aiscript_load_end_buffer);
     NuFParResume(parser);
+    aiscript_load_buffer = saved_buffer;
+    aiscript_load_script = saved_script;
+    aiscript_load_end_buffer = saved_end;
 }
 
 void __cdecl AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARIPTR *end_buffer, AISYS_PC *sys) {
@@ -428,20 +474,25 @@ void __cdecl AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARI
         if (parser != NULL) {
             while (NuFParGetLine(parser) != 0) {
                 NuFParGetWord(parser);
-                if (NuStrLen(parser->word_buffer) > 0x0f) {
+                if (NuStrLen(parser->word_buffer_ptr) > 0x0f) {
                     STUBBED_NAMED("AIScriptLoadAllPakFile: overlong script filename diagnostic");
                 }
-                NuStrCpy(script_files[file_count], parser->word_buffer);
+                NuStrCpy(script_files[file_count], parser->word_buffer_ptr);
                 NuStrCat(script_files[file_count], AIScriptFileExtension);
                 file_count++;
             }
-            NuFParDestroy(parser);
+            NuFreeFPar(parser);
         }
         NuFileClose(file);
 
         for (i = 0; i < file_count; i++) {
-            /* PC delegates parsing, state linking, and construction to 0x52c320. */
-            STUBBED_NAMED("AIScriptLoadAllPakFile: per-file AIScriptLoadPakFile (0x52c320)");
+            AISCRIPT_PC *script = AIScriptLoadPakFilePc(pak, script_files[i], path, buffer, end_buffer);
+            if (script != NULL) {
+                NuLinkedListAppend(scripts, &script->link);
+                if (sys != NULL) {
+                    script->flags_3c |= 1u;
+                }
+            }
         }
     }
 
@@ -1438,4 +1489,170 @@ i32 __cdecl Action_SnapToSockPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
             break;
     }
     return 1;
+}
+
+static char *AIScriptCopyStringPc(char *text, VARIPTR *buffer, VARIPTR *end) {
+    char *copy = NULL;
+    u32 length;
+    if (text != NULL) {
+        length = NuStrLen(text);
+        if (length != 0) {
+            if (buffer != NULL && end != NULL && buffer->addr + length + 1 < end->addr) {
+                copy = (char *)((buffer->addr + 15) & ~15u);
+                buffer->addr = (u32)copy + length + 1;
+                memset(copy, 0, length + 1);
+            }
+            /* Native copies even after failed allocation; the NULL destination hazard is retained. */
+            NuStrCpy(copy, text);
+        }
+    }
+    return copy;
+}
+
+void __cdecl xConst(NUFPAR_PC *parser) {
+    if (NuStrLen(parser->word_buffer_ptr) >= 31) {
+        STUBBED_NAMED("xConst: native RET-only diagnostic 0x512850");
+    }
+    NuFParGetWord(parser);
+    NuStrNCpy(AIScriptConstantRecordsPc[AIScriptConstCursorPc].name, parser->word_buffer_ptr, 32);
+    AIScriptConstantRecordsPc[AIScriptConstCursorPc].default_val = NuFParGetFloat(parser);
+    AIScriptConstCursorPc++;
+}
+
+static NUFPAR_PC *AIScriptOpenParserPc(void *pak, char *filename, char *path) {
+    char script_name[64];
+    char filepath[128];
+    char *extension;
+    i32 item;
+    i32 size;
+    void *data;
+    NUFILE file;
+    NuStrCpy(script_name, filename);
+    extension = NuStrIStr(script_name, (char *)AIScriptFileExtension);
+    if (extension == NULL) {
+        return NULL;
+    }
+    *extension = '\0';
+    sprintf(filepath, AIScriptSourcePathFormatPc, path, filename);
+    if (pak != NULL) {
+        item = NuFilePakGetItem(pak, filename);
+        if (item != 0) {
+            NuFilePakGetItemInfo(pak, item, &data, &size);
+            file = NuMemFileOpen(data, size, 0);
+            if (file != 0) {
+                return NuFParOpen(file);
+            }
+            STUBBED_NAMED("AIScriptOpenParser: native RET-only package diagnostic 0x512870");
+        } else {
+            STUBBED_NAMED("AIScriptOpenParser: native RET-only missing item diagnostic 0x512850/0x512870");
+        }
+        if (ai_onlyusepackfile != 0) {
+            STUBBED_NAMED("AIScriptOpenParser: native RET-only package-only diagnostic 0x512850/0x512860");
+        }
+    }
+    return NuFParCreate(filepath);
+}
+
+static void AIScriptParseCommandsPc(NUFPAR_PC *parser, VARIPTR *buffer, VARIPTR *end, AISCRIPT_PC *script) {
+    if (script == NULL) {
+        return;
+    }
+    aiscript_load_buffer = buffer;
+    aiscript_load_end_buffer = end;
+    aiscript_load_script = script;
+    AIScriptConstCursorPc = 0;
+    NuFParPushCom(parser, AIScriptCommandsPc);
+    while (NuFParGetLine(parser) != 0) {
+        NuFParGetWord(parser);
+        aiscript_load_refs = &script->reference_scripts;
+        NuFParInterpretWord(parser);
+    }
+    aiscript_load_buffer = NULL;
+    aiscript_load_end_buffer = NULL;
+    aiscript_load_script = NULL;
+    aiscript_load_refs = NULL;
+}
+
+void __cdecl AIScriptOpenPakFileParse(AISCRIPT_PC **script_ref, void *pak, char *filename, char *path, VARIPTR *buffer,
+                                      VARIPTR *end) {
+    NUFPAR_PC *parser = AIScriptOpenParserPc(pak, filename, path);
+    char script_name[64];
+    char *extension;
+    AISCRIPT_PC *script;
+    if (parser == NULL) {
+        STUBBED_NAMED("AIScriptOpenPakFileParse: native RET-only parser-open diagnostic 0x512850/0x512860");
+        return;
+    }
+    if (*script_ref == NULL) {
+        script = NULL;
+        if (buffer != NULL && end != NULL && buffer->addr + sizeof(AISCRIPT_PC) < end->addr) {
+            script = (AISCRIPT_PC *)((buffer->addr + 15) & ~15u);
+            buffer->addr = (u32)script + sizeof(AISCRIPT_PC);
+            memset(script, 0, sizeof(AISCRIPT_PC));
+        } else {
+            STUBBED_NAMED("AIScriptOpenPakFileParse: native RET-only allocation diagnostic 0x512850");
+        }
+        *script_ref = script;
+        if (script != NULL) {
+            memset(script, 0, sizeof(AISCRIPT_PC));
+            NuStrCpy(script_name, filename);
+            extension = NuStrIStr(script_name, (char *)AIScriptFileExtension);
+            if (extension != NULL) {
+                *extension = '\0';
+            }
+            (*script_ref)->name = AIScriptCopyStringPc(script_name, buffer, end);
+        }
+    }
+    AIScriptParseCommandsPc(parser, buffer, end, *script_ref);
+    NuFParDestroy(parser);
+}
+
+static AISCRIPT_PC *AIScriptLoadPakFilePc(void *pak, char *filename, char *path, VARIPTR *buffer, VARIPTR *end) {
+    AISCRIPT_PC *script = NULL;
+    AISTATE_PC *state;
+    AISTATE_PC *later;
+    AICONDITION_PC *condition;
+    AIScriptLoadPathPc = path;
+    AIScriptLoadPakPc = pak;
+    AIScriptOpenPakFileParse(&script, pak, filename, path, buffer, end);
+    AIScriptLoadPathPc = NULL;
+    AIScriptLoadPakPc = NULL;
+    if (script != NULL) {
+        state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
+        while (state != NULL) {
+            condition = (AICONDITION_PC *)NuLinkedListGetHead(&state->conditions);
+            while (condition != NULL) {
+                condition->next_state = AIStateFind(condition->next_state_name, script);
+                if (condition->next_state_name != NULL && condition->next_state == NULL) {
+                    STUBBED_NAMED("AIScriptLoadPakFile: native RET-only missing state diagnostic 0x512850/0x512860");
+                }
+                condition = (AICONDITION_PC *)NuLinkedListGetNext(&state->conditions, &condition->link);
+            }
+            later = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
+            while (later != NULL) {
+                if (NuStrICmp(state->name, later->name) == 0) {
+                    STUBBED_NAMED("AIScriptLoadPakFile: native RET-only duplicate state diagnostic 0x512850/0x512860");
+                }
+                later = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &later->link);
+            }
+            state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
+        }
+    }
+    return script;
+}
+
+void __cdecl AIScriptLoadAll(char *path, VARIPTR *buffer, VARIPTR *end, AISYS_PC *sys) {
+    VARIPTR pak_start = *end;
+    void *pak = NULL;
+    i32 pak_size;
+    char filepath[128];
+    if (ai_usepackfile != 0) {
+        sprintf(filepath, AIScriptPakPathFormatPc, path);
+        pak_size = NuFileSize(filepath);
+        if (pak_size > 0) {
+            pak_start.addr = end->addr - ((pak_size + 16) & ~15u);
+            pak = NuFilePakLoad(filepath, &pak_start, *end, 16);
+        }
+    }
+    AIScriptLoadAllPakFile(pak, path, buffer, &pak_start, sys);
 }

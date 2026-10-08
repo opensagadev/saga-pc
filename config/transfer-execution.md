@@ -3992,3 +3992,74 @@ Candidate bytes receive no transfer credit. The checkpoint was delayed for coher
 source/data/caller review and required actual-normal checks rather than committing
 broken dependencies. Whole-project matching-priority goal/direct-main continuation
 remains active; exact pushed CI is verified separately and human journal excluded.
+
+### Connected motion, graphics lifetime, credits and script loading II (2026-10-08)
+
+Transferred78 complete functions /21,822 newly compared unique PC bytes:
+motion27/14,363, PC texture/surface/framebuffer lifecycle36/3,804,
+credits8/2,195 and genuine script loading7/1,460. One extra physical copy of the
+existing50-byte constructor iterator adds no unique coverage. Actual normal objects
+contain79 new physical function copies. Real movement providers reconnect11 default
+actions and three super-battle-droid weapon actions; LoadPerm1 reconnects the genuine
+four-argument script loader. These15 old caller restorations add no new unique bytes.
+Script loading also fixes the inherited double file close: retail frees the parser
+with NuFreeFPar, then closes its file once. Include now restores exactly the three
+native globals and calls the genuine recursive supplier; its full114 bytes become exact.
+
+Unique compared code is1,358,786 bytes; objdiff denominator1,359,407 includes621
+overlapping bytes. Whole-PC fuzzy coverage27.116743992539753%, +0.397983409105837
+percentage points. Exact217,589/3,471,246 bytes is6.2683255522656705%, +2,877 bytes:
+2,763 newly transferred exact bytes plus114 from the restored existing Include.
+The known exact-data union grows4 to637,612 through the true CRT initializer pointer.
+These are comparison metrics, not proof of a working game.
+
+All4,577 old complete functions and10,306 old complete data intervals are reviewed.
+Five previously nonexact parents change through their real native suppliers. Two
+unchanged-source, previously nonexact camera/particle outputs have precisely reviewed
+full old/new pairs: camera command-block duplication/x87 scheduling reuses the exact
+historical accepted pair; particle changes only five x87 operand bytes with the same
+stack result, arithmetic, stores and branches. Their finite synchronous masked-FP
+domains stay qualified; optimizer-cause, exceptional/asynchronous and universal
+equivalence claims are absent. All2,165 old exact code copies,5,343 known-exact physical
+data copies and13 members/28 bytes survive. No old data interval changes. Five strict
+contained class6/type0 label-serial changes preserve full raw/relocated regions.
+All14,003 prior CSV rows remain byte-for-byte;137 genuine new rows are added.
+
+New112 complete initializer copies total7,386 bytes:53 known copies/321 bytes and
+59 unknown copies/7,065 bytes. All known copies and58 unknown copies equal retail.
+CreditsDurationPc preserves DWORD120.0f, but its natural full8-byte interval includes
+a zero tail where native holds the next distinct style pointer; the full mismatch
+remains nonexact, unknown and without extent/allocation/exact-data credit. No padding,
+placement, flag, truncation or comparison-mask variant is used. Central data adds26
+genuine views/76 typed bytes/102 full native-equal bytes. Nine6325-byte working states
+stay in the owning surface/framebuffer C++ cohort, with genuine automatic32-by-five
+member construction and atexit reverse destruction; no manual constructor substitute.
+Private credits and script data also remain in their original subsystem owners.
+
+Normal VC8 build/link/object checks pass for319 owners/4,656 functions/10,418 data
+regions. LLVM18 passes346 format files/319 analysis units and728 tests with three
+existing skips; final map core replay also passes. Actual-normal CPU tests646/0
+(399 retained UI,179 lifecycle,33 transport,35 scaling/credits) use every319 real
+provider object, zero replacements/supplements. The437 source inputs and six artifacts
+remain frozen across those checks. The real C++ registry and pool lifetime run;
+loaded assets, arbitrary script parsing, disk persistence and GPU submission do not.
+
+Authentic source EXE still exits5 after3.801405 seconds at NULL Retrieve+16,
+source0x518440/full208-byte entry0x518430. Its full normal body equals the physical
+source EXE but remains nonexact to retail. One unclassified transient broad window
+106954757 is retained at2.786131 seconds; no persistent native window, device,
+Present, recurring frames, loaded scene or gameplay milestone is established.
+Own-prefix crash dialogs remain disabled; private cleanup leaves no owned game,
+debugger or crash window/process. There is no guard bypass or fabricated publisher.
+
+Next connected wave: Push6/5,723 source bank; Titles/Pictures/credits-game7/2,665;
+geometry3/2,709 with pointer/origin producer contracts still held; genuine ledge
+gizmo suppliers2,394 under review. Their candidate bytes receive no coverage.
+Default movement retains29 actual void omissions and the special/default animation
+parents remain partial. Action/condition script-definition parsers, callback-table
+activation, four save-path capacities and shader publisher/parser helper identities
+remain unresolved. Matching remains the priority while real startup providers advance.
+The half-hour checkpoint was delayed for coherent storage/caller integration, the
+true parser-cleanup fix, required normal checks and two finite old-output reviews.
+User journal edits are preserved and excluded from commits. Direct-main continuation
+stays active; exact pushed-revision CI is verified separately.

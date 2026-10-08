@@ -2115,3 +2115,31 @@ initialization sites; the chain timer9505e8 and Slam speed802da0 have real f32
 readers/initial values with no writer in the retained audited prefix, explicitly
 qualified. Final solewriter source and complete data proof are pinned in
 checkpoint-HH/data-integration.json and HH-storage-independent-next.
+
+### Connected motion, graphics lifetime, credits and script loading II (2026-10-08)
+
+The26 central views add76 typed/102 full compiled bytes, all full native-equal.
+Every old10,306 complete data interval remains identical, including old exact
+copies, ANG, CRC, HANDLE, ripple and13 member contracts/28 bytes. New owning C++
+surface/framebuffer9 states retain6325 typed working bytes, unknown original extents;
+their ten complete state/CRT records6332 bytes are native-equal. Real generated
+constructor58, teardown37 and original constructor iterator50 provide automatic
+32-by-five member lifetime. Only the genuine CRT initializer pointer has a known
+four-byte extent and adds4 exact-data union bytes. No original pool capacity claim
+is inferred from the remaining unknown mapped working shapes.
+
+All112 new initializer copies7386 bytes remain accounted:53 known321 and59 unknown7065.
+Only CreditsDurationPc is full nonexact: typed DWORD120 is exact, emitted natural
+eight bytes differ in the next native style-pointer region. Five native readers use
+DWORD and the compiled references use addend0. Its size stays blank and its full
+nonmatch remains visible, with zero allocation/exact-data credit; no layout control.
+The scripts8 literal is proved at true LoadPerm1 native75a030 argument and matches in
+full, but its original owning extent remains unknown and adds no exact-data credit.
+Private credit record/table/counters and seven script load/constants/command objects
+remain their actual source owners. All existing CSV rows/known extents survive.
+
+Next combined writer preflight is Push and level callbacks. Geometry pointer/origin
+storage still needs genuine producer/capacity contracts. Four save-path arrays remain
+held: a191-byte proposal fails a valid native shell-root135 case, so no artificial
+shell-root cap or guessed allocation is activated. Solewriter must receive a new
+bounded compile/write grant before further actual definitions.

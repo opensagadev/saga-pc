@@ -386,7 +386,10 @@ struct GRAPHICS_DEVICE_METHODS_PC {
     HRESULT(__stdcall *reset)(GRAPHICS_DEVICE_PC *, GRAPHICS_PRESENT_PARAMETERS_PC *);
     HRESULT(__stdcall *present)(GRAPHICS_DEVICE_PC *, const RECT *, const RECT *, HWND, const RGNDATA *);
     HRESULT(__stdcall *get_back_buffer)(GRAPHICS_DEVICE_PC *, u32, u32, i32, PC_TEXTURE_RESOURCE_PC **);
-    void *unknown_004c[18];
+    void *unknown_004c[15];
+    HRESULT(__stdcall *stretch_rect)
+    (GRAPHICS_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const RECT *, i32);
+    void *unknown_008c[2];
     HRESULT(__stdcall *set_render_target)(GRAPHICS_DEVICE_PC *, u32, PC_TEXTURE_RESOURCE_PC *);
     void *get_render_target;
     HRESULT(__stdcall *set_depth_stencil_surface)(GRAPHICS_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *);
@@ -1277,4 +1280,67 @@ void __thiscall PC_DEVICE_BACKEND_PC::ResetRequestedMode() {
     requested_mode = active_mode;
     requested_feature = feature634;
     requested_multisample = multisample_index;
+}
+
+STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, stretch_rect) == 0x88);
+
+void PC_DEVICE_BACKEND_PC::SetDepthStencilSurface(PC_EFFECT_SURFACE_PC *target) {
+    GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
+    if (target != NULL && target->surface != NULL)
+        view->methods->set_depth_stencil_surface(view, target->surface);
+    else
+        view->methods->set_depth_stencil_surface(view, depth_surface);
+}
+void PC_DEVICE_BACKEND_PC::ClearDepthStencilSurface() {
+    GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
+    view->methods->set_depth_stencil_surface(view, NULL);
+}
+void PC_DEVICE_BACKEND_PC::RestoreDefaultPoolResources() {
+    BuildDefaultPoolResources();
+}
+void PC_DEVICE_BACKEND_PC::SetSurfaceRenderTarget(PC_EFFECT_SURFACE_PC *target, u32 index) {
+    GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
+    if (target != NULL && target->surface != NULL) {
+        SetRenderTarget((i32)index, target->surface);
+        if (index == 0) {
+            PS2_REZ_W = target->width;
+            PS2_REZ_H = target->height;
+            PS2_VCNTR_X = PS2_REZ_W / 2;
+            PS2_VCNTR_Y = PS2_REZ_H / 2;
+            ResetViewport();
+        }
+    } else if (index == 0) {
+        if (multisample_index != 0) {
+            SetRenderTarget(0, back_buffer);
+            PCDeviceSetRenderState(168, 0);
+            current_surface = back_buffer;
+        } else {
+            SetRenderTarget(0, target_surfaces[0]);
+            current_surface = target_surfaces[0];
+        }
+        PS2_REZ_W = parameters.width;
+        PS2_REZ_H = parameters.height;
+        PS2_VCNTR_X = PS2_REZ_W / 2;
+        PS2_VCNTR_Y = PS2_REZ_H / 2;
+        ResetViewport();
+    } else
+        SetRenderTarget((i32)index, NULL);
+}
+void PC_DEVICE_BACKEND_PC::CopyBackBuffer(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    PC_EFFECT_SURFACE_PC target;
+    target.Attach(texture, 0, false);
+    bool resize =
+        PCGraphicsEffectTextureWidth(texture) != PS2_REZ_W || PCGraphicsEffectTextureHeight(texture) != PS2_REZ_H;
+    PC_TEXTURE_RESOURCE_PC *source =
+        multisample_index != 0 || target_surfaces[0] == NULL ? back_buffer : target_surfaces[0];
+    GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
+    view->methods->stretch_rect(view, source, NULL, target.surface, NULL, resize ? 2 : 1);
+}
+void PC_DEVICE_BACKEND_PC::CopyCurrentSurface(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    PC_EFFECT_SURFACE_PC target;
+    target.Attach(texture, 0, false);
+    bool resize =
+        PCGraphicsEffectTextureWidth(texture) != PS2_REZ_W || PCGraphicsEffectTextureHeight(texture) != PS2_REZ_H;
+    GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
+    view->methods->stretch_rect(view, current_surface, NULL, target.surface, NULL, resize ? 2 : 1);
 }

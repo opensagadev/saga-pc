@@ -145,7 +145,7 @@ void __cdecl LoadPerm1(void) {
     if (NuFileExists(path) != 0)
         PARTPAGE_GENERAL = edpartLoadPage(path, 0, things_scene);
     STUBBED_NAMED(NuMtlSetCurrentRenderPlane); /* Native 48abb4: zero. */
-    STUBBED_NAMED(AIScriptLoadAll);            /* Native 48abca: scripts,&ptr,&end,NULL. */
+    AIScriptLoadAll("scripts", &permbuffer_ptr, &permbuffer_end, NULL);
 }
 
 typedef struct CHARACTER_SCENE_WORLD_PC {

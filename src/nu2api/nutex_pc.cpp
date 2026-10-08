@@ -255,3 +255,91 @@ extern "C" void __cdecl PCGraphicsInitRenderTexturePool(VARIPTR *buffer, VARIPTR
         PCGraphicsResetRenderTexture(&PCGraphicsRenderTextures[index]);
     }
 }
+
+extern "C" GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateEffectTexture(i32 width, i32 height, i32 levels,
+                                                                             i32 usage, i32 format) {
+    GRAPHICS_RENDER_TEXTURE_PC *texture;
+    i32 index;
+    for (index = 0; index != 32; ++index)
+        if (PCGraphicsRenderTextureActive[index] == 0)
+            break;
+    if (index == 32) {
+        PCGraphicsRenderTextureAllocationError();
+        texture = NULL;
+    } else {
+        PCGraphicsRenderTextureActive[index] = 1;
+        texture = &PCGraphicsRenderTextures[index];
+    }
+    usage &= ~0x10;
+    if (usage != 0 && usage != 1) {
+        PCGraphicsRenderTextureAllocationError();
+        return NULL;
+    }
+    PCGraphicsInitRenderTexture(texture, width, height, levels, usage, 0, format);
+    return texture;
+}
+extern "C" void __cdecl PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width, i32 height,
+                                                      i32 levels) {
+    if (texture == NULL)
+        return;
+    f32 multiplier = texture->mip_count == 1 ? 1.0f : 1.5f;
+    i32 memory_delta = (i32)((0u - (u32)texture->width * texture->height) * 4u);
+    PCGraphicsRenderTextureBytes += (i32)(i64)((f64)memory_delta * (f64)multiplier);
+    if (texture->external_id == -1 && texture->resource != NULL) {
+        texture->resource->methods->release(texture->resource);
+        texture->resource = NULL;
+    }
+    if (texture->surface != NULL) {
+        texture->surface->methods->release(texture->surface);
+        texture->surface = NULL;
+    }
+    if (width <= 0)
+        width = texture->width;
+    if (height <= 0)
+        height = texture->height;
+    if (levels <= 0)
+        levels = texture->original_mip_count;
+    PCGraphicsInitRenderTexture(texture, width, height, levels, texture->usage, texture->pool, texture->format);
+}
+extern "C" void __cdecl PCGraphicsReleaseEffectTextures(void) {
+    for (i32 index = 0; index != 32; ++index) {
+        GRAPHICS_RENDER_TEXTURE_PC *texture = &PCGraphicsRenderTextures[index];
+        if (PCGraphicsRenderTextureActive[index] && texture->external_id == -1) {
+            if (texture->resource != NULL) {
+                texture->resource->methods->release(texture->resource);
+                texture->resource = NULL;
+            }
+            if (texture->surface != NULL) {
+                texture->surface->methods->release(texture->surface);
+                texture->surface = NULL;
+            }
+            f32 multiplier = texture->mip_count == 1 ? 1.0f : 1.5f;
+            i32 memory_delta = (i32)((0u - (u32)texture->width * texture->height) * 4u);
+            PCGraphicsRenderTextureBytes += (i32)(i64)((f64)memory_delta * (f64)multiplier);
+        }
+    }
+}
+extern "C" void __cdecl PCGraphicsRestoreEffectTextures(i32 unused) {
+    (void)unused;
+    for (i32 index = 0; index != 32; ++index) {
+        GRAPHICS_RENDER_TEXTURE_PC *texture = &PCGraphicsRenderTextures[index];
+        if (PCGraphicsRenderTextureActive[index] && texture->usage == 1 && texture->external_id == -1 &&
+            texture->resource == NULL && texture->surface == NULL)
+            PCGraphicsInitRenderTexture(texture, texture->width, texture->height, texture->mip_count, texture->usage,
+                                        texture->pool, texture->format);
+    }
+}
+extern "C" void __cdecl PCGraphicsBindEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, u32 stage) {
+    PCDeviceSetTexture(stage, texture != NULL ? texture->resource : NULL);
+}
+extern "C" i32 __cdecl PCGraphicsEffectTextureWidth(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    return texture->width;
+}
+extern "C" i32 __cdecl PCGraphicsEffectTextureHeight(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    return texture->height;
+}
+extern "C" void __cdecl PCGraphicsEffectTextureDimensions(GRAPHICS_RENDER_TEXTURE_PC *texture, u16 level, i32 *width,
+                                                          i32 *height) {
+    *width = (texture->width >> (u8)level) & ~1;
+    *height = (texture->height >> (u8)level) & ~1;
+}

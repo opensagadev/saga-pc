@@ -19290,3 +19290,32 @@ extern "C" {
     u8 MENUWARNG = 0;
     u8 MENUWARNB = 0;
 }
+
+extern "C" {
+    i32 LEGOCONTEXT_CLIMB = -1;
+    i32 LEGOCONTEXT_HANG = -1;
+    i16 LEGOACT_IDLE = -1;
+    i16 LEGOACT_WALK = -1;
+    i16 LEGOACT_HANG_IDLE = -1;
+    i16 LEGOACT_CLIMB_IDLE = -1;
+    i32 LEGOCONTEXT_LEDGETERRAIN = -1;
+    i32 LedgeTerrain_CheckAnims = 1;
+    i16 LEGOACT_LEDGE_GRAB = -1;
+    i16 LEGOACT_LEDGE_IDLE = -1;
+    i16 LEGOACT_LEDGE_LEFT = -1;
+    i16 LEGOACT_LEDGE_RIGHT = -1;
+    CREDIT_RECORD_PC *CreditList = NULL;
+    f32 CreditsTime = 0.0f;
+    f32 CreditsFinishedTime = 0.0f;
+    i32 CreditsFlag = 0;
+    f32 CreditsAlpha = 0.0f;
+    i32 Grapples_Available = 1;
+    i32 Grapple_RopeSwingsAvailable = 0;
+    i16 Grapple_RopeSwingRotate = 21845;
+    i32 LEGOHINT_GRAPPLE = -1;
+    i16 LEGOACT_GRAPPLE_IDLE = -1;
+    i16 LEGOACT_GRAPPLE_UP = -1;
+    i16 LEGOACT_GRAPPLE_DOWN = -1;
+    i16 LEGOACT_GRAPPLE_HANG = -1;
+    i16 LEGOACT_GLIDE = -1;
+}

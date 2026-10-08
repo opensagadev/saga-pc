@@ -1026,3 +1026,21 @@ to prove device/Present/frame/scene/gameplay success. Own-prefix crash suppressi
 and private cleanup work unattended. Dedicated next hardware work follows actual
 lost-device/resource/framebuffer providers; unused generated shader-helper identity
 holds are preserved without alternate setup, fake publication or guard removal.
+
+### Connected motion, graphics lifetime, credits and script loading II (2026-10-08)
+
+The source EXE now contains genuine automatic surface/framebuffer C++ lifetime and
+the permanent loader's real four-argument script-load call. All319 source owners
+link through real dependencies. These facts do not establish graphics setup or a
+working game: the authentic entry still reaches NULL shader Retrieve+16 and exits5
+after3.801405 seconds. Current whole208-byte normal code equals its physical source
+EXE, while differing from retail. No persistent native window/device/Present/frame/
+scene/gameplay success is inferred from the one unclassified transient window.
+
+Actual-normal646 CPU checks pass, including real automatic CRT registration and
+pool allocation/reuse, while all437 inputs/six artifacts remain stable. They use no
+replacement engine provider or fake COM/asset callback. Own-prefix crash dialogs
+are disabled and final owned-window/process inventories are empty. Keep closing
+genuine shader publisher/parser and device/reset/provider gaps; never substitute
+a pointer/guard bypass. Source script callbacks still have real action/condition
+definition omissions; the15 connected caller actions add zero new unique coverage.

@@ -239,3 +239,110 @@ void __cdecl RegenerateHearts(GAMEOBJECT *object) {
         GameAudio_PlaySfx(0x27, &object->collision_position, 0, 0);
     }
 }
+
+void __cdecl WeaponOutCode(GAMEOBJECT *object) {
+    ANIMPACKET_PC *packet;
+    i16 animation;
+    f32 start, end, time;
+    if (LEGOCONTEXT_WEAPONOUT == -1 || object->character_context != LEGOCONTEXT_WEAPONOUT)
+        return;
+    if (object->pad->input_magnitude > 0.0f && (object->character_data->game_character->flags_094 & 0x1000) == 0) {
+        if (object->weapon_scale == 0.0f && object->field_e33 != 1)
+            FastWeaponOut(object, 0);
+        object->character_context = -1;
+        return;
+    }
+    packet = &object->anim_packet;
+    animation = packet->blending ? packet->blend_target_animation : packet->animation_index;
+    if (animation != object->field_7aa) {
+        object->weapon_scale = 0.0f;
+        return;
+    }
+    start = AnimListFrame(object->character_model, object->field_7aa, 0);
+    object->context_timer -= FRAMETIME;
+    if (object->context_timer <= 0.0f) {
+        object->character_context = -1;
+        if (object->weapon_scale != 0.0f)
+            return;
+    } else {
+        if (object->weapon_scale != 0.0f || object->field_e33 == 1 || packet->requested_animation != object->field_7aa)
+            return;
+        time = packet->blending ? packet->blend_target_time : packet->current_time;
+        if (!(time >= start))
+            return;
+    }
+    end = AnimListFrame(object->character_model, object->field_7aa, 1);
+    object->field_e33 = 1;
+    ((WEAPON_RATE_PC *)object)->weapon_scale_rate =
+        1.0f / AnimDuration((i16)object->id, object->field_7aa, start, end, 0);
+    if ((object->character_data->model_flags & 8) != 0) {
+        if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0)
+            GameAudio_PlaySfx(0x3e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
+    } else
+        GameAudio_PlaySfx(0x43, &object->collision_position, 0, 1);
+    ResetCharacterIdle(object, 1, GetDefaultIdle(object));
+}
+
+void __cdecl WeaponInCode(GAMEOBJECT *object) {
+    ANIMPACKET_PC *packet;
+    i16 animation;
+    f32 start, end, time;
+    if (LEGOCONTEXT_WEAPONIN == -1 || object->character_context != LEGOCONTEXT_WEAPONIN)
+        return;
+    if (object->pad->input_magnitude > 0.0f && (object->character_data->game_character->flags_094 & 0x1000) == 0) {
+        if (object->weapon_scale == 1.0f && object->field_e33 != 2)
+            FastWeaponIn(object, 0);
+        object->character_context = -1;
+        return;
+    }
+    packet = &object->anim_packet;
+    animation = packet->blending ? packet->blend_target_animation : packet->animation_index;
+    if (animation != object->field_7aa) {
+        object->weapon_scale = 1.0f;
+        return;
+    }
+    start = AnimListFrame(object->character_model, object->field_7aa, 0);
+    object->context_timer -= FRAMETIME;
+    if (object->context_timer <= 0.0f) {
+        object->character_context = -1;
+        if (object->weapon_scale != 1.0f)
+            return;
+    } else {
+        if (object->weapon_scale != 1.0f || object->field_e33 == 2 || packet->requested_animation != object->field_7aa)
+            return;
+        time = packet->blending ? packet->blend_target_time : packet->current_time;
+        if (!(time >= start))
+            return;
+    }
+    end = AnimListFrame(object->character_model, object->field_7aa, 1);
+    object->field_e33 = 2;
+    ((WEAPON_RATE_PC *)object)->weapon_scale_rate =
+        1.0f / AnimDuration((i16)object->id, object->field_7aa, start, end, 0);
+    if ((object->character_data->model_flags & 8) != 0) {
+        if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0)
+            GameAudio_PlaySfx(0x3d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
+    } else
+        GameAudio_PlaySfx(0x42, &object->collision_position, 0, 1);
+    ResetCharacterIdle(object, 1, GetDefaultIdle(object));
+}
+
+void __cdecl WeaponScalingCode(GAMEOBJECT *object) {
+    switch (object->field_e33) {
+        case 1:
+            object->weapon_scale =
+                SeekLinearF(object->weapon_scale, 1.0f, ((WEAPON_RATE_PC *)object)->weapon_scale_rate * FRAMETIME);
+            if (object->weapon_scale >= 1.0f) {
+                object->field_e33 = 0;
+                object->flags_e20 |= 0x10000;
+            }
+            break;
+        case 2:
+            object->weapon_scale =
+                SeekLinearF(object->weapon_scale, 0.0f, ((WEAPON_RATE_PC *)object)->weapon_scale_rate * FRAMETIME);
+            if (object->weapon_scale <= 0.0f) {
+                object->field_e33 = 0;
+                object->flags_e20 &= ~0x10000;
+            }
+            break;
+    }
+}

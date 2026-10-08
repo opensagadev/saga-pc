@@ -6295,24 +6295,24 @@ after_gravity:
     FloatCode(object);
     SlideCode(object);
     FlattenCode(object);
-    STUBBED_NAMED(0x0056c7a0); /* Native4b4d51: object; Hang_MoveCode. */
+    Hang_MoveCode(object);     /* Native4b4d51: object; Hang_MoveCode. */
     STUBBED_NAMED(0x004827a0); /* Native4b4d5d: WORLD,object; Ledge_MoveCode. */
     if (DefaultMotionLedgeTerrainEnabledPc != 0)
-        STUBBED_NAMED(0x0056b8f0); /* Native4b4d6f: object; LedgeTerrain_MoveCode. */
-    STUBBED_NAMED(0x0056c0e0);     /* Native4b4d78: object; Climb_MoveCode. */
-    STUBBED_NAMED(0x004d18a0);     /* Native4b4d7f: object,jump_pressed; TightRope_MoveCode. */
+        LedgeTerrain_MoveCode(object);        /* Native4b4d6f: object; LedgeTerrain_MoveCode. */
+    Climb_MoveCode(object);                   /* Native4b4d78: object; Climb_MoveCode. */
+    TightRope_MoveCode(object, jump_pressed); /* Native4b4d7f: object,jump_pressed; TightRope_MoveCode. */
     ForcePushed_MoveCode(object);
     ForcedBackCode(object);
     STUBBED_NAMED(0x0056d8c0); /* Native4b4d99: object,WORLD; Tube_MoveCode. */
     DeactivatedCode(object);
     STUBBED_NAMED(0x0059bd40); /* Native4b4dc5: object,!StartupGameFlag1&&StartupGameFlag0; PushCode. */
-    STUBBED_NAMED(0x005623f0); /* Native4b4dcb: object; BackFlipCode. */
+    BackFlipCode(object);      /* Native4b4dcb: object; BackFlipCode. */
     if (object->id != (u16)DefaultMotionSkeletonIdPc)
         TakeOverCode(object, tag_pressed);
-    STUBBED_NAMED(0x0049d720); /* Native4b4df2: object; Glide_MoveCode. */
+    Glide_MoveCode(object); /* Native4b4df2: object; Glide_MoveCode. */
     runtime = object->character_data->game_character;
     if (runtime->weapon_action == 2 && object->jump_variant_state == 1) {
-        STUBBED_NAMED(0x0049dd10); /* Native4b4e1c: object,jump_pressed,0,0; JetPackCode. */
+        JetPackCode(object, jump_pressed, 0, 0); /* Native4b4e1c: object,jump_pressed,0,0; JetPackCode. */
     } else if ((runtime->flags_094 & 4) == 0) {
         u32 animations = object->id == (u16)id_GAMORREANGUARD ? 0x20 : 8;
         if ((runtime->flags_090 & 0x400000) != 0)
@@ -6323,10 +6323,10 @@ after_gravity:
     STUBBED_NAMED(0x00474070); /* Native4b4e8b: WORLD,object,special_pressed; HatMachine_MoveCode. */
     ZipUp_MoveCode(object, special_pressed);
     if ((object->character_data->model_flags & 0x100000) != 0)
-        STUBBED_NAMED(0x0054ea40); /* Native4b4ea7: object; Grapple_MoveCode. */
-    STUBBED_NAMED(0x00592280);     /* Native4b4eb0: object; BuildIt_MoveCode. */
-    STUBBED_NAMED(0x00490d10);     /* Native4b4ebd: WORLD,object; Lever_MoveCode. */
-    STUBBED_NAMED(0x004d0290);     /* Native4b4ec3: object; ThermalDetonator_MoveCode. */
+        Grapple_MoveCode(object); /* Native4b4ea7: object; Grapple_MoveCode. */
+    STUBBED_NAMED(0x00592280);    /* Native4b4eb0: object; BuildIt_MoveCode. */
+    STUBBED_NAMED(0x00490d10);    /* Native4b4ebd: WORLD,object; Lever_MoveCode. */
+    STUBBED_NAMED(0x004d0290);    /* Native4b4ec3: object; ThermalDetonator_MoveCode. */
     if ((object->character_data->model_flags & 0x40000) != 0)
         STUBBED_NAMED(0x004ce830); /* Native4b4ed9: object,special_pressed; Teleport_MoveCode. */
     if (!StartupGameFlag1 && !StartupGameFlag0) {
@@ -6347,9 +6347,9 @@ after_gravity:
             SlowWeaponIn(object);
         }
     }
-    STUBBED_NAMED(0x0058d6a0); /* Native4b4fb7: object; WeaponOutCode. */
-    STUBBED_NAMED(0x0058db50); /* Native4b4fbd: object; WeaponInCode. */
-    STUBBED_NAMED(0x0058dec0); /* Native4b4fc3: object; WeaponScalingCode. */
+    WeaponOutCode(object);     /* Native4b4fb7: object; WeaponOutCode. */
+    WeaponInCode(object);      /* Native4b4fbd: object; WeaponInCode. */
+    WeaponScalingCode(object); /* Native4b4fc3: object; WeaponScalingCode. */
     STUBBED_NAMED(0x0058b210); /* Native4b4fc9: object; SpecialMove_VictimCode. */
     STUBBED_NAMED(0x0058e420); /* Native4b4fcf: object; HoldCode. */
     STUBBED_NAMED(0x0049e450); /* Native4b4fe9: object EAX +action_pressed,action_held,0,!model_flags80; BlockCode. */
@@ -6579,9 +6579,9 @@ void __cdecl Move_SUPERBATTLEDROID(GAMEOBJECT *object) {
     ForcedBackCode(object);
     STUBBED_NAMED(0x0056d8c0); /* Native 4b5e6e: Tube_MoveCode(object, WORLD), ignored void action. */
     DeactivatedCode(object);
-    STUBBED_NAMED(0x0058d6a0); /* Native 4b5e7b: WeaponOutCode(object). */
-    STUBBED_NAMED(0x0058db50); /* Native 4b5e81: WeaponInCode(object). */
-    STUBBED_NAMED(0x0058dec0); /* Native 4b5e87: WeaponScalingCode(object). */
+    WeaponOutCode(object);     /* Native 4b5e7b: WeaponOutCode(object). */
+    WeaponInCode(object);      /* Native 4b5e81: WeaponInCode(object). */
+    WeaponScalingCode(object); /* Native 4b5e87: WeaponScalingCode(object). */
     ShootCode(object, object->pad->buttons_pressed & GAMEPAD_ACTION, object->pad->buttons_pressed & GAMEPAD_SPECIAL, 1,
               0, 0);
     BeastStartFallCodePc(object);
@@ -7385,4 +7385,475 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
         }
         return;
     }
+}
+
+void __cdecl StartJetPackFall(GAMEOBJECT *, i32);
+
+void __cdecl Glide_MoveCode(GAMEOBJECT *object) {
+    if (object->character_context != 0x4f) {
+        i32 can_glide = (object->character_data->game_character->flags_094 >> 6) & 1;
+        if ((object->character_data->model_flags & 0x40) != 0)
+            return;
+        if (!can_glide && (object->suit == NULL || (object->suit->flags & 2) == 0))
+            return;
+        if ((object->pad->buttons_pressed & GAMEPAD_JUMP) == 0 || object->field_281 != 0)
+            return;
+        if (!can_glide && AnimPlaying(&object->anim_packet, 5, 1, 0) == NULL)
+            return;
+        if (object->character_context != -1 && object->character_context != 0x11 &&
+            (object->character_context != 0 || (!can_glide && (object->context_variant_flags & 0x8000) == 0)))
+            return;
+        Glide_Start(object);
+        return;
+    }
+    if (object->field_281 == 0 && object->floor_height != 2000000.0 &&
+        object->collision_min.y - object->floor_height > object->bounds_half_height &&
+        (object->pad->buttons_held & GAMEPAD_ACTION) != 0 && object->character_model->model_data_b[0x21] != NULL &&
+        Slam_Start(object, SLAMJUMPSPEED)) {
+        JUMP_AUXILIARY_FIELDS_PC *aux = (JUMP_AUXILIARY_FIELDS_PC *)object;
+        ResetAnimPacket(&object->anim_packet, -1);
+        ResetMiniAnimPacket(&aux->mini_animation, -1);
+        return;
+    }
+    object->flags_e24 |= 0x1000;
+    if (object->character_model->model_data_b[object->field_7aa] == NULL ||
+        AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL) {
+        object->context_timer += FRAMETIME;
+        if (object->field_281 != 0)
+            object->character_context = -1;
+        else if ((object->pad->buttons_held & GAMEPAD_JUMP) == 0) {
+            object->context_duration -= FRAMETIME;
+            if (object->context_duration <= 0.0f)
+                StartEndOfJump(object);
+        } else if (object->context_duration < (f64)0.1f)
+            object->context_duration = 0.1f;
+    }
+}
+
+static void JetPackBeginFlightPc(GAMEOBJECT *object) {
+    object->jump_variant_state = 1;
+    PlayJumpSfx(object, 0);
+    object->velocity.y = object->character_data->game_character->jump_speed;
+    if (object->character_data->game_character->hover_fall_mode == 2 && object->character_context != 7)
+        FastWeaponOut(object, 1);
+    object->jump_variant_timer = 0.0f;
+}
+
+void __cdecl JetPackCode(GAMEOBJECT *object, i32 jump_pressed, i32 fall, i32 unused) {
+    i8 context = object->character_context;
+    if (context == 2 || context == 0x19 ||
+        (object->character_data->game_character->hover_fall_mode == 2 && context == 1)) {
+        object->context_timer -= FRAMETIME;
+        if (object->context_timer <= 0.0f)
+            object->character_context = -1;
+        return;
+    }
+    if (context == 0) {
+        if (object->field_281 == 0)
+            return;
+        object->context_timer = 0.0f;
+        if (object->field_7aa == 0x49 && object->character_model->model_data_b[0x4a] != NULL) {
+            object->field_7aa = 0x4a;
+            object->context_timer = AnimDuration((i16)object->id, 0x4a, 0.0f, 0.0f, 1);
+            if (object->context_timer > 0.0f)
+                object->character_context = 0x19;
+        } else {
+            object->field_7aa = 0x0a;
+            object->context_timer = AnimDuration((i16)object->id, 0x0a, 0.0f, 0.0f, 1);
+            if (object->context_timer > 0.0f)
+                object->character_context = 2;
+        }
+        if (object->context_timer > 0.0f)
+            ResetAnimPacket(&object->anim_packet, -1);
+        else
+            object->character_context = -1;
+        PlayLandSfx(object, 0, 0);
+        return;
+    }
+    if (object->jump_variant_state == 1) {
+        if ((jump_pressed != 0 || fall != 0) && context == -1)
+            StartJetPackFall(object, fall);
+        return;
+    }
+    if (context == 0x13) {
+        if (AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL)
+            return;
+        object->context_timer -= FRAMETIME;
+        if (!(object->context_timer <= 0.0f))
+            return;
+        JetPackBeginFlightPc(object);
+        object->character_context = -1;
+        return;
+    }
+    if (jump_pressed == 0 ||
+        (object->field_281 == 0 && !(((JUMP_AUXILIARY_FIELDS_PC *)object)->ground_grace_timer > 0.0f)) ||
+        ObjLandReady(object) == 0)
+        return;
+    if (object->character_context == 6)
+        FastWeaponIn(object, 0);
+    else if (object->character_context == 7)
+        FastWeaponOut(object, 0);
+    object->field_7aa = 0x48;
+    object->context_timer = AnimDuration((i16)object->id, 0x48, 0.0f, 0.0f, 1);
+    if (object->context_timer <= 0.0f)
+        JetPackBeginFlightPc(object);
+    else
+        object->character_context = 0x13;
+    object->fall_hover_height = 2000000.0f;
+}
+
+extern i32 LEGOCONTEXT_CLIMB;
+extern i32 LEGOCONTEXT_HANG;
+extern i16 LEGOACT_IDLE;
+extern i16 LEGOACT_WALK;
+extern i16 LEGOACT_HANG_IDLE;
+extern i16 LEGOACT_CLIMB_IDLE;
+extern i16 LEGOACT_CLIMB_UP;
+extern i16 LEGOACT_CLIMB_DOWN;
+extern i16 LEGOACT_MAGNET_WALK_METAL;
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, jump_animation_state) == 0x285);
+
+void __cdecl Hang_MoveCode(GAMEOBJECT *object) {
+    i16 animation;
+    if (LEGOCONTEXT_HANG == -1)
+        return;
+    if (object->character_context == LEGOCONTEXT_HANG) {
+        if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0 && object->context_variant != 5) {
+            object->velocity.y = 0.0f;
+            object->character_context = -1;
+            return;
+        }
+        if (object->field_281 != 0) {
+            object->character_context = -1;
+            return;
+        }
+        if (object->roof_surface_id_pc != object->context_variant) {
+            object->velocity.y = 0.0f;
+            object->character_context = -1;
+            return;
+        }
+        animation = LEGOACT_HANG_IDLE;
+        if (object->pad->input_magnitude > 0.0f && LEGOACT_HANG_MOVE != -1)
+            animation = LEGOACT_HANG_MOVE;
+        object->field_7aa = animation;
+        if (object->contact_count != 0 && object->roof_surface_id_pc == object->contact_material[0]) {
+            object->context_duration = 0.25f;
+            object->external_force = object->contact_normal;
+        } else {
+            object->context_duration -= FRAMETIME;
+            if (object->context_duration <= 0.0f)
+                object->character_context = -1;
+        }
+        return;
+    }
+    if (object->field_281 != 0 || object->contact_count == 0 ||
+        CanClimbSurface(object, (i8)object->contact_material[0]) == 0 ||
+        !(object->contact_normal.y < -NuTrigTable[0x3000]))
+        return;
+    if (object->character_context != -1 &&
+        !(LEGOCONTEXT_CLIMB != -1 && object->character_context == LEGOCONTEXT_CLIMB) &&
+        !(LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP &&
+          object->context_timer >= (f64)0.1f))
+        return;
+    object->context_duration = 0.25f;
+    object->character_context = (i8)LEGOCONTEXT_HANG;
+    object->field_7aa = LEGOACT_HANG_IDLE;
+    object->context_variant = object->contact_material[0];
+    object->external_force = object->contact_normal;
+}
+
+void __cdecl Climb_SetMagnetAction(GAMEOBJECT *object) {
+    object->field_7aa = LEGOACT_IDLE;
+    if (object->pad->input_magnitude > 0.0f) {
+        if (LEGOACT_MAGNET_WALK_METAL != -1)
+            object->field_7aa = LEGOACT_MAGNET_WALK_METAL;
+        else if (LEGOACT_WALK != -1)
+            object->field_7aa = LEGOACT_WALK;
+    }
+}
+
+void __cdecl Climb_SetMagnetDrawOffsetTarget(GAMEOBJECT *object, NUVEC *offset) {
+    NuVecScale(offset, &object->external_force, MAGNETOFFSET);
+    NuVecAdd(offset, offset, &object->launch_origin);
+    NuVecSub(offset, offset, &object->position);
+}
+
+void __cdecl Climb_MoveCode(GAMEOBJECT *object) {
+    u16 input_angle;
+    if (LEGOCONTEXT_CLIMB == -1)
+        return;
+    if (object->character_context != LEGOCONTEXT_CLIMB) {
+        i32 can_enter = object->character_context == -1 ||
+                        (ZipUpWallShuffleContextPc != -1 && object->character_context == ZipUpWallShuffleContextPc);
+        if (!can_enter && LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP)
+            can_enter =
+                object->context_timer >= 1.0f || (object->context_timer >= (f64)0.1f && object->velocity.y <= 0.0f);
+        if (!can_enter && LEGOCONTEXT_GLIDE != -1 && object->character_context == LEGOCONTEXT_GLIDE)
+            can_enter = object->grapple == NULL;
+        if (!can_enter || !(object->pad->input_magnitude > 0.0f) || object->contact_count == 0 ||
+            !(fabs(object->contact_normal.y) < NuTrigTable[0x3000]) ||
+            CanClimbSurface(object, (i8)object->contact_material[0]) == 0)
+            return;
+        {
+            NUVEC normal = object->contact_normal;
+            i8 surface = (i8)object->contact_material[0];
+            NUVEC forward;
+            f32 x, z;
+            NuVecRotateY(&forward, &v001, object->movement_facing_angle);
+            x = object->contact_position.x - object->position.x;
+            z = object->contact_position.z - object->position.z;
+            if (!(forward.x * x + forward.z * z > 0.0))
+                return;
+            object->movement_facing_angle = NuAtan2D(x, z);
+            object->velocity.y = 0.0f;
+            object->character_context = (i8)LEGOCONTEXT_CLIMB;
+            object->context_variant = (u8)surface;
+            object->context_duration = 0.25f;
+            if (surface == 5) {
+                Climb_SetMagnetAction(object);
+                Climb_SetMagnetDrawOffsetTarget(object, &object->context_position_offset);
+            } else
+                object->field_7aa = LEGOACT_CLIMB_IDLE;
+            object->launch_origin = object->contact_position;
+            object->external_force = normal;
+            FindAnglesXY(&object->external_force, &object->field_7a4, NULL);
+            object->velocity.z = 0.0f;
+            object->velocity.x = 0.0f;
+        }
+        return;
+    }
+    if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0 && object->context_variant != 5) {
+        u16 angle;
+        StartJump(object, 0);
+        object->flags_e24 |= 0x1000;
+        angle = object->movement_facing_angle;
+        object->velocity.x = -NuTrigTable[angle >> 1] * object->character_data->game_character->run_speed;
+        object->velocity.z =
+            -NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * object->character_data->game_character->run_speed;
+        return;
+    }
+    input_angle = GamePad_InputAngle(object, object->pad);
+    if ((object->field_281 & 2) != 0 && (object->jump_animation_state == object->context_variant ||
+                                         (object->pad->input_magnitude > 0.0f &&
+                                          PushingTowardsAngle(input_angle, object->movement_facing_angle) < 0.0f)))
+        object->character_context = -1;
+    else if (object->contact_count != 0 && object->contact_material[0] == object->context_variant) {
+        f32 x, z;
+        object->context_duration = 0.25f;
+        x = object->contact_position.x - object->position.x;
+        z = object->contact_position.z - object->position.z;
+        object->movement_facing_angle = NuAtan2D(x, z);
+        object->external_force = object->contact_normal;
+        object->launch_origin = object->contact_position;
+        FindAnglesXY(&object->external_force, &object->field_7a4, NULL);
+    } else {
+        object->context_duration -= FRAMETIME;
+        if (object->context_duration <= 0.0f)
+            object->character_context = -1;
+    }
+    if (object->character_context != LEGOCONTEXT_CLIMB)
+        return;
+    if (object->context_variant == 5) {
+        Climb_SetMagnetAction(object);
+        Climb_SetMagnetDrawOffsetTarget(object, &object->context_position_offset);
+        object->flags_e24 |= 0x2000;
+        if (object->pad->input_magnitude > 0.0f)
+            object->tertiary_lean_angle =
+                SeekRot(object->tertiary_lean_angle, (u16)RotDiff(object->movement_facing_angle, input_angle), 9.0f);
+    } else {
+        if (object->pad->input_magnitude > 0.0f) {
+            i32 difference = RotDiff(object->movement_facing_angle, GamePad_InputAngle(object, object->pad));
+            if (difference < 0)
+                difference = -difference;
+            object->field_7aa = difference > 0x4000 ? LEGOACT_CLIMB_DOWN : LEGOACT_CLIMB_UP;
+            if (object->character_model->model_data_b[object->field_7aa] != NULL)
+                return;
+        }
+        object->field_7aa = LEGOACT_CLIMB_IDLE;
+    }
+}
+
+extern i32 LEGOCONTEXT_LEDGETERRAIN;
+extern i32 LEGOCONTEXT_CLIMB;
+extern i32 LedgeTerrain_CheckAnims;
+extern i16 LEGOACT_LEDGE_GRAB;
+extern i16 LEGOACT_LEDGE_IDLE;
+extern i16 LEGOACT_LEDGE_LEFT;
+extern i16 LEGOACT_LEDGE_RIGHT;
+STATIC_ASSERT(offsetof(GAMEOBJECT, roof_height_pc) == 0x224);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_hover_target_y) == 0x778);
+
+static i32 LedgeTerrain_AttachPc(GAMEOBJECT *object, u16 facing, NUVEC *position, u16 *wall_angle) {
+    i8 surface;
+    i32 difference;
+    u16 inward_angle;
+    f32 distance, height, height_difference;
+    if (object->contact_count == 0)
+        return 0;
+    surface = (i8)object->contact_material[0];
+    if (surface >= 0 && surface < 32 && (TerSurface[surface].flags & 0x581) != 0)
+        return 0;
+    if (object->collision_position.y - (f64)0.05f >= object->contact_position.y ||
+        fabs(object->contact_normal.y) > NuTrigTable[0x3000])
+        return 0;
+    *wall_angle = NuAtan2D(object->contact_normal.x, object->contact_normal.z);
+    difference = RotDiff(facing, *wall_angle);
+    if (difference < 0)
+        difference = -difference;
+    if (difference < 0x4000)
+        return 0;
+    inward_angle = *wall_angle + 0x8000;
+    distance = object->bounds_radius + LEDGETERRAINLOOKAHEAD;
+    position->x = NuTrigTable[inward_angle >> 1] * distance + object->position.x;
+    position->y = object->upper_position.y;
+    position->z = NuTrigTable[((inward_angle + 0x4000) >> 1) & 0x7fff] * distance + object->position.z;
+    height = GameShadow(NULL, position, 5.0f, -1);
+    if (height == 2000000.0f || NuTrigTable[0x2555] > ShadNorm.y)
+        return 0;
+    height_difference = position->y - height;
+    if (height_difference > (f64)0.025f || height_difference < (f64)-0.1f)
+        return 0;
+    if (object->roof_height_pc != 2000000.0f && height > object->roof_height_pc)
+        return 0;
+    position->y = height;
+    return 1;
+}
+
+void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
+    NUVEC position;
+    u16 wall_angle;
+    if (LEGOCONTEXT_LEDGETERRAIN == -1)
+        return;
+    if (object->character_context == LEGOCONTEXT_LEDGETERRAIN) {
+        f32 travelled = 0.0f;
+        u16 input, sideways;
+        f32 push, speed;
+        if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0) {
+            f32 height;
+            StartJump(object, 0);
+            object->flags_e24 |= 0x1000;
+            height = (f64)0.1f + object->external_force.y - object->jump_start_height;
+            if (height > 0.0f) {
+                f32 square = -2.0 * object->character_data->game_character->gravity * height;
+                object->velocity.y = NuFsqrt(square);
+            }
+            return;
+        }
+        if ((object->field_281 & 2) != 0) {
+            object->character_context = -1;
+            return;
+        }
+        if (object->field_7b3 != 0 || object->field_7aa != LEGOACT_LEDGE_GRAB ||
+            AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL)
+            object->context_timer += FRAMETIME;
+        if (object->field_7b3 == 0 && object->context_timer >= object->context_hover_target_y)
+            object->field_7b3 = 1;
+        if (LedgeTerrain_AttachPc(object, object->movement_facing_angle, &position, &wall_angle) != 0) {
+            f32 x = object->external_force.x;
+            f32 z = object->external_force.z;
+            f32 square;
+            object->movement_facing_angle = wall_angle + 0x8000;
+            object->launch_origin = position;
+            object->external_force.x = object->position.x;
+            object->external_force.y = position.y;
+            object->external_force.z = object->position.z;
+            object->context_duration = 0.25f;
+            x = object->position.x - x;
+            z = object->position.z - z;
+            square = x * x + z * z;
+            travelled = NuFsqrt(square);
+        } else {
+            object->context_duration -= FRAMETIME;
+            if (object->context_duration <= 0.0f) {
+                object->character_context = -1;
+                return;
+            }
+        }
+        if (object->field_7b3 == 0)
+            return;
+        if (!(object->pad->input_magnitude > 0.0f)) {
+            object->field_7aa = LEGOACT_LEDGE_IDLE;
+            return;
+        }
+        input = GamePad_InputAngle(object, object->pad);
+        sideways = object->movement_facing_angle + 0x4000;
+        push = PushingTowardsAngle(input, sideways);
+        if (push > NuTrigTable[0x3555]) {
+            if (LEGOACT_LEDGE_RIGHT != -1 && object->character_model->model_data_b[LEGOACT_LEDGE_RIGHT] != NULL) {
+                object->field_7aa = LEGOACT_LEDGE_RIGHT;
+                speed = (f32)fabs(AnimSpeed(object->character_model, LEGOACT_LEDGE_RIGHT));
+            } else {
+                if (LedgeTerrain_CheckAnims != 0)
+                    return;
+                speed = 0.5f;
+                goto move;
+            }
+        } else if (push < -NuTrigTable[0x3555]) {
+            if (LEGOACT_LEDGE_LEFT != -1 && object->character_model->model_data_b[LEGOACT_LEDGE_LEFT] != NULL) {
+                object->field_7aa = LEGOACT_LEDGE_LEFT;
+                speed = -(f32)fabs(AnimSpeed(object->character_model, LEGOACT_LEDGE_LEFT));
+            } else {
+                if (LedgeTerrain_CheckAnims != 0)
+                    return;
+                speed = -0.5f;
+                goto move;
+            }
+        } else {
+            object->field_7aa = LEGOACT_LEDGE_IDLE;
+            return;
+        }
+        if (speed == 0.0f)
+            return;
+        if (LedgeTerrain_CheckAnims != 0 && AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL)
+            return;
+    move: {
+        f64 distance;
+        NUVEC offset;
+        if (speed < 0.0f)
+            travelled = -travelled;
+        distance = speed * (f64)FRAMETIME + travelled;
+        offset.x = NuTrigTable[sideways >> 1] * distance;
+        offset.y = 0.0f;
+        offset.z = NuTrigTable[((sideways + 0x4000) >> 1) & 0x7fff] * distance;
+        NuVecAdd(&object->external_force, &object->external_force, &offset);
+        NuVecAdd(&object->launch_origin, &object->launch_origin, &offset);
+    }
+        return;
+    }
+    if (object->field_281 != 0 || !(object->velocity.y <= 0.0f))
+        return;
+    if (LedgeTerrain_CheckAnims != 0 &&
+        (LEGOACT_LEDGE_IDLE == -1 || object->character_model->model_data_b[LEGOACT_LEDGE_IDLE] == NULL))
+        return;
+    if (object->character_context != -1 &&
+        !(LEGOCONTEXT_CLIMB != -1 && object->character_context == LEGOCONTEXT_CLIMB) &&
+        !(LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP &&
+          object->context_timer >= (f64)0.1f))
+        return;
+    if ((object->flags_1fc & 0x80) == 0 && (object->flags_ef4 & 0x8000) == 0)
+        return;
+    if (!(object->pad->input_magnitude > 0.0f))
+        return;
+    if (LedgeTerrain_AttachPc(object, GamePad_InputAngle(object, object->pad), &position, &wall_angle) == 0)
+        return;
+    object->character_context = (i8)LEGOCONTEXT_LEDGETERRAIN;
+    object->velocity = v000;
+    object->context_timer = 0.0f;
+    object->field_7b3 = 0;
+    if (LEGOACT_LEDGE_GRAB != -1 && object->character_model->model_data_b[LEGOACT_LEDGE_GRAB] != NULL) {
+        object->field_7aa = LEGOACT_LEDGE_GRAB;
+        object->context_hover_target_y = AnimDuration((i16)object->id, LEGOACT_LEDGE_GRAB, 0.0f, 0.0f, 1);
+    } else {
+        object->context_hover_target_y = 0.1f;
+        object->field_7aa = LEGOACT_LEDGE_IDLE;
+        ResetAnimPacket(&object->anim_packet, LEGOACT_LEDGE_IDLE);
+    }
+    object->external_force.x = object->position.x;
+    object->external_force.y = position.y;
+    object->external_force.z = object->position.z;
+    object->movement_facing_angle = wall_angle + 0x8000;
+    object->launch_origin = position;
+    object->context_duration = 0.25f;
 }

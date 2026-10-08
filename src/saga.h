@@ -1571,6 +1571,7 @@ typedef struct PC_TEXTURE_RESOURCE_METHODS_PC {
     ULONG(__stdcall *release)(PC_TEXTURE_RESOURCE_PC *);
     void *unknown_000c[14];
     HRESULT(__stdcall *get_level_desc)(PC_TEXTURE_RESOURCE_PC *, u32, PC_TEXTURE_LEVEL_DESC_PC *);
+    HRESULT(__stdcall *get_surface_level)(PC_TEXTURE_RESOURCE_PC *, u32, PC_TEXTURE_RESOURCE_PC **);
 } PC_TEXTURE_RESOURCE_METHODS_PC;
 struct PC_TEXTURE_RESOURCE_PC {
     const PC_TEXTURE_RESOURCE_METHODS_PC *methods;
@@ -6943,6 +6944,8 @@ extern "C" {
 }
 #endif
 
+typedef struct PC_EFFECT_SURFACE_PC PC_EFFECT_SURFACE_PC;
+typedef struct PC_FRAMEBUFFER_PC PC_FRAMEBUFFER_PC;
 typedef struct PC_DEVICE_BACKEND_PC {
     GRAPHICS_FACTORY_PC *factory;
     PC_D3D9_DEVICE_PC *device;
@@ -7026,6 +7029,12 @@ typedef struct PC_DEVICE_BACKEND_PC {
     void __thiscall NextRefresh();
     void __thiscall PreviousRefresh();
     void __thiscall ResetRequestedMode();
+    void SetSurfaceRenderTarget(PC_EFFECT_SURFACE_PC *, u32);
+    void SetDepthStencilSurface(PC_EFFECT_SURFACE_PC *);
+    void ClearDepthStencilSurface();
+    void RestoreDefaultPoolResources();
+    void CopyBackBuffer(GRAPHICS_RENDER_TEXTURE_PC *);
+    void CopyCurrentSurface(GRAPHICS_RENDER_TEXTURE_PC *);
 
 #endif
 } PC_DEVICE_BACKEND_PC;
@@ -17854,6 +17863,173 @@ extern "C" {
     extern f32 speeder_smoke_rate;
     extern f32 speeder_offset_speed;
     extern i32 saveload_slotused[6];
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl BackFlipCode(GAMEOBJECT *);
+    void __cdecl Glide_MoveCode(GAMEOBJECT *);
+    void __cdecl StartJetPackFall(GAMEOBJECT *, i32);
+    void __cdecl JetPackCode(GAMEOBJECT *, i32, i32, i32);
+    void __cdecl Hang_MoveCode(GAMEOBJECT *);
+    void __cdecl Climb_MoveCode(GAMEOBJECT *);
+    void __cdecl WeaponOutCode(GAMEOBJECT *);
+    void __cdecl WeaponInCode(GAMEOBJECT *);
+    void __cdecl WeaponScalingCode(GAMEOBJECT *);
+    void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *);
+#ifdef __cplusplus
+}
+#endif
+typedef struct credit_record_pc_s CREDIT_RECORD_PC;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i32 LEGOCONTEXT_CLIMB;
+    extern i32 LEGOCONTEXT_HANG;
+    extern i16 LEGOACT_IDLE;
+    extern i16 LEGOACT_WALK;
+    extern i16 LEGOACT_HANG_IDLE;
+    extern i16 LEGOACT_CLIMB_IDLE;
+    extern i32 LEGOCONTEXT_LEDGETERRAIN;
+    extern i32 LedgeTerrain_CheckAnims;
+    extern i16 LEGOACT_LEDGE_GRAB;
+    extern i16 LEGOACT_LEDGE_IDLE;
+    extern i16 LEGOACT_LEDGE_LEFT;
+    extern i16 LEGOACT_LEDGE_RIGHT;
+    extern CREDIT_RECORD_PC *CreditList;
+    extern f32 CreditsTime;
+    extern f32 CreditsFinishedTime;
+    extern i32 CreditsFlag;
+    extern f32 CreditsAlpha;
+    extern i32 Grapples_Available;
+    extern i32 Grapple_RopeSwingsAvailable;
+    extern i16 Grapple_RopeSwingRotate;
+    extern i32 LEGOHINT_GRAPPLE;
+    extern i16 LEGOACT_GRAPPLE_IDLE;
+    extern i16 LEGOACT_GRAPPLE_UP;
+    extern i16 LEGOACT_GRAPPLE_DOWN;
+    extern i16 LEGOACT_GRAPPLE_HANG;
+    extern i16 LEGOACT_GLIDE;
+#ifdef __cplusplus
+}
+#endif
+
+/* Public declarations only; private original grapple views/helpers remain in their owner. */
+typedef struct GRAPPLE_MOTION_PC GRAPPLE_MOTION_PC;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    GRAPPLE_MOTION_PC *__cdecl Grapple_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
+    void __cdecl Grapple_MoveCode(GAMEOBJECT *);
+    i32 __cdecl AnimBlendingFromTo(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, i32, i32);
+/* Nine held scalar declarations are in the separately pinned state proposal. */
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    /* Inside the existing C public declaration section; definition remains owner-local. */
+    typedef struct TIGHTROPE_MOTION_PC TIGHTROPE_MOTION_PC;
+    TIGHTROPE_MOTION_PC *__cdecl TightRope_InRange(GAMEOBJECT *, WORLDINFO *, NUVEC *);
+    void __cdecl TightRope_MoveCode(GAMEOBJECT *, i32);
+
+#ifdef __cplusplus
+}
+#endif
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl Credits_Load(WORLDINFO *, VARIPTR *, VARIPTR *);
+    void __cdecl Credits_Init(WORLDINFO *);
+    void __cdecl Credits_GetInfo(f32 *, i32 *, f32 *);
+    void __cdecl Credits_DrawPanel(WORLDINFO *);
+#ifdef __cplusplus
+}
+#endif
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl AIScriptOpenPakFileParse(AISCRIPT_PC **, void *, char *, char *, VARIPTR *, VARIPTR *);
+    void __cdecl AIScriptLoadAll(char *, VARIPTR *, VARIPTR *, AISYS_PC *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifndef SAGA_HARDWARE_LIFECYCLE_PROPOSAL
+#define SAGA_HARDWARE_LIFECYCLE_PROPOSAL
+/* Proposed working fields only. Original PC class name/TU visibility stays qualified.
+   Keep the pool and its real static constructor/destructor in one C++ owner. */
+struct PC_EFFECT_SURFACE_PC {
+    GRAPHICS_RENDER_TEXTURE_PC *texture;
+    u8 owns_texture, unknown_05[3];
+    PC_TEXTURE_RESOURCE_PC *surface;
+    u16 level, unknown_0e;
+    u32 field_10;
+    u16 width, height;
+    i16 registry_index;
+    u8 unknown_1a[2];
+#ifdef __cplusplus
+    PC_EFFECT_SURFACE_PC();
+    ~PC_EFFECT_SURFACE_PC();
+    void Reset();
+    void Attach(GRAPHICS_RENDER_TEXTURE_PC *, i32, bool);
+    static void ReleaseResources();
+    static void RestoreResources();
+#endif
+};
+STATIC_ASSERT(sizeof(PC_EFFECT_SURFACE_PC) == 0x1c);
+STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, texture) == 0);
+STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, owns_texture) == 4);
+STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, surface) == 8);
+STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, level) == 0xc);
+STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, field_10) == 0x10);
+STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, width) == 0x14);
+STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, height) == 0x16);
+STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, registry_index) == 0x18);
+struct PC_FRAMEBUFFER_PC {
+    PC_EFFECT_SURFACE_PC targets[5];
+    u32 clear_colour[5];
+    i32 changed;
+#ifdef __cplusplus
+    PC_FRAMEBUFFER_PC();
+    ~PC_FRAMEBUFFER_PC();
+#endif
+};
+STATIC_ASSERT(sizeof(PC_FRAMEBUFFER_PC) == 0xa4);
+STATIC_ASSERT(offsetof(PC_FRAMEBUFFER_PC, targets) == 0);
+STATIC_ASSERT(offsetof(PC_FRAMEBUFFER_PC, clear_colour) == 0x8c);
+STATIC_ASSERT(offsetof(PC_FRAMEBUFFER_PC, changed) == 0xa0);
+
+STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, get_surface_level) == 0x48);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 __cdecl PCGraphicsEffectTextureWidth(GRAPHICS_RENDER_TEXTURE_PC *);
+    i32 __cdecl PCGraphicsEffectTextureHeight(GRAPHICS_RENDER_TEXTURE_PC *);
+    void __cdecl PCDeviceClear(u32, const RECT *, u32, u32, f32, u32);
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateEffectTexture(i32, i32, i32, i32, i32);
+    void __cdecl PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32);
+    void __cdecl PCGraphicsReleaseEffectTextures(void);
+    void __cdecl PCGraphicsRestoreEffectTextures(i32);
+    void __cdecl PCGraphicsBindEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *, u32);
+    i32 __cdecl PCGraphicsEffectTextureWidth(GRAPHICS_RENDER_TEXTURE_PC *);
+    i32 __cdecl PCGraphicsEffectTextureHeight(GRAPHICS_RENDER_TEXTURE_PC *);
+    void __cdecl PCGraphicsEffectTextureDimensions(GRAPHICS_RENDER_TEXTURE_PC *, u16, i32 *, i32 *);
 #ifdef __cplusplus
 }
 #endif

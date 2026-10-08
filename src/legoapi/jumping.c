@@ -304,3 +304,23 @@ void __cdecl MakeJumpReachHeight(GAMEOBJECT *object, f32 height, i32 force) {
     } else if (force != 0)
         object->velocity.y = 0.0f;
 }
+
+void __cdecl StartJetPackFall(GAMEOBJECT *object, i32 fall) {
+    object->context_timer = 0.0f;
+    object->context_variant_flags &= 0xfffeafff;
+    object->jump_variant_state = 0;
+    object->character_context = 0;
+    object->action_movement_state = 0;
+    object->field_7aa = 6;
+    object->jump_sequence = 2;
+    object->airborne_collision_target = NULL;
+    if (fall == 0 && object->character_model->model_data_b[0x49] != NULL) {
+        object->context_variant_flags &= ~0x8000;
+        object->velocity.y = object->character_data->game_character->jump_speed;
+        object->field_7aa = 0x49;
+        PlayJumpSfx(object, 0);
+    } else
+        object->character_context = -1;
+    if (object->character_data->game_character->hover_fall_mode == 2)
+        PlayJumpSfx(object, 1);
+}

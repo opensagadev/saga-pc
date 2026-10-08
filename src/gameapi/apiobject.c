@@ -2499,3 +2499,15 @@ i32 __cdecl InModelList(APICHARACTERMODELLIST *list, i32 id, i32 *out_index) {
         *out_index = -1;
     return 0;
 }
+
+i32 __cdecl AnimBlendingFromTo(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet, i32 source_animation,
+                               i32 target_animation) {
+    if (packet->blending != 0 && source_animation != -1 && packet->blend_source_animation == source_animation &&
+        target_animation != -1 && packet->blend_target_animation == target_animation) {
+        if (model != NULL &&
+            (model->model_data_b[source_animation] == NULL || model->model_data_b[target_animation] == NULL))
+            return 0;
+        return 1;
+    }
+    return 0;
+}
