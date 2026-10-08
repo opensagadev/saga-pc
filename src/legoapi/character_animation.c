@@ -736,3 +736,49 @@ void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
         STUBBED_NAMED(0x0062f0a0); /* Native4a930e same five-argument void update. */
     }
 }
+
+extern i16 id_ANAKINSPOD, id_ANAKINSPODGREEN;
+extern f32 pod_animtime[2], podanimendframe;
+void __cdecl SetPodMergeAnims(ANIMPACKET_PC *, i32);
+i32 __cdecl PodRace_InStartCountdown(WORLDINFO *);
+extern AREA_DATA_PC *PODSPRINT_ADATA;
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
+typedef struct pod_camera_reader_pc_s {
+    u8 unknown_0[0x1038];
+    f32 camera_shake_strength;
+} POD_CAMERA_READER_PC;
+STATIC_ASSERT(offsetof(POD_CAMERA_READER_PC, camera_shake_strength) == 0x1038);
+STATIC_ASSERT(offsetof(GAMEOBJECT, previous_block_animation) == 0xe10);
+STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, playback_rate) == 0x18);
+
+void __cdecl Animate_POD(GAMEOBJECT *object) {
+    i32 index = (i8)object->field_280;
+    f32 delta, time;
+    object->anim_packet.requested_animation = 1;
+    if ((object->flags_1fc & 0x80) != 0 && index != -1 &&
+        (object->id == (u16)id_ANAKINSPOD || object->id == (u16)id_ANAKINSPODGREEN)) {
+        delta = (f32)((f64)FRAMETIME * 30.0);
+        object->anim_packet.requested_animation = 1;
+        if (object->character_model->action_animations[1] != NULL)
+            delta = (f32)((f64)object->character_model->animation_configs[1]->playback_rate / 30.0 * delta);
+        time = pod_animtime[index] + delta;
+        pod_animtime[index] = time;
+        if (time >= podanimendframe)
+            pod_animtime[index] = (f32)((f64)time - ((f64)podanimendframe - 1.0));
+        SetPodMergeAnims(&object->anim_packet, index);
+        return;
+    }
+    if (PodSprint_InStartCountdown(WORLD) > 0.0f || PodRace_InStartCountdown(WORLD))
+        object->anim_packet.requested_animation = 1;
+    else if (((POD_CAMERA_READER_PC *)object)->camera_shake_strength > 0.0f)
+        object->anim_packet.requested_animation = 0x17;
+    else if ((object->flags_1fc & 0x80) == 0)
+        object->anim_packet.requested_animation = 3;
+    else if (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA) {
+        if (object->previous_block_animation != -1)
+            object->anim_packet.requested_animation = object->previous_block_animation;
+    } else
+        object->anim_packet.requested_animation = 0;
+    if (object->character_model->action_animations[object->anim_packet.requested_animation] == NULL)
+        object->anim_packet.requested_animation = 1;
+}

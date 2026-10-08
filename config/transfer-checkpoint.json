@@ -30585,6 +30585,335 @@
         "DebReAlloc2 exact DD-to-EE recurrence: initialized key/effect/free/render/control counts without overflow, disjoint accessible allocations and saved slots, two0/32768 x87 initialization lanes and synchronous execution; invalid/aliasing/overflow domains remain unclaimed.",
         "Particle exact KK713-to-LL717: stable readable valid arguments, four free x87 entries at reload, masked exceptions, no observation of undefined FXCH condition bits/intermediate stack or asynchronous mutation; sequences merge [a,b,c,near_clip], same186 outside instructions/branches and34 named-applied bindings. Unmasked load-order faults/invalid stack remain excluded; both nonexact against fullnative705. LL717 is II-old/HH variant, not geometry717."
       ]
+    },
+    {
+      "checkpoint": "Obstacle, transport, MiniCut, character and special families MM (2026-10-08)",
+      "publication_status": "All local source, storage, whole-output and CPU gates passed; exact pushed-revision CI pending",
+      "baseline_commit": "41c5de9350ead0fe454f6761710f04829b6608f1",
+      "baseline_CI_exact_revision_success": {
+        "run": 37811078781,
+        "url": "https://github.com/opensagadev/saga-pc/actions/runs/37811078781"
+      },
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1443936,
+        "matched_code_bytes": 221357,
+        "matching_percent": 6.3768744710112735,
+        "fuzzy_coverage_percent": 28.075228176566213,
+        "mapped_functions": 4960,
+        "matched_functions": 2233,
+        "objdiff_fuzzy_percent": 69.100464,
+        "objdiff_total_code": 1411224,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2092136,
+        "mapping_percent": 5.2215844471989366,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1445130
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30182
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9270,
+        "mapping_unknown_size_symbols": 5148,
+        "mapping_code_bytes": 1445130,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 41.6314487650832,
+        "mapping_data_bytes": 647006,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7962925421012919,
+        "mapping_code_data_bytes": 2092136,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.297859631647458,
+        "matched_data_region_bytes": 637612
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1458905,
+        "matched_code_bytes": 223832,
+        "matching_percent": 6.448174517161849,
+        "fuzzy_coverage_percent": 28.423950142736576,
+        "mapped_functions": 5043,
+        "matched_functions": 2271,
+        "objdiff_fuzzy_percent": 69.19935,
+        "objdiff_total_code": 1426700,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2107105,
+        "mapping_percent": 5.258944302194081,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1460099
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30182
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9353,
+        "mapping_unknown_size_symbols": 5193,
+        "mapping_code_bytes": 1460099,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 42.06267720582177,
+        "mapping_data_bytes": 647006,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7962925421012919,
+        "mapping_code_data_bytes": 2107105,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.33576522708969,
+        "matched_data_region_bytes": 637612
+      },
+      "new_source_functions": 87,
+      "actual_new_transfer_PC_bytes": 15476,
+      "new_unique_compared_PC_bytes": 15476,
+      "unique_compared_code_bytes": 1426079,
+      "native_objdiff_denominator": 1426700,
+      "overlap_bytes": 621,
+      "new_exact_PC_bytes": 2475,
+      "new_exact_functions": 38,
+      "whole_PC_fuzzy_delta_pp": 0.34872196617036266,
+      "source_families": {
+        "obstacles": {
+          "functions": 6,
+          "native_bytes": 1377
+        },
+        "tubes_and_plugs": {
+          "functions": 39,
+          "native_bytes": 3284
+        },
+        "minicut": {
+          "functions": 14,
+          "native_bytes": 1997
+        },
+        "character_list": {
+          "functions": 1,
+          "native_bytes": 892
+        },
+        "character_callbacks_and_suppliers": {
+          "functions": 10,
+          "native_bytes": 6260
+        },
+        "special_gizmos": {
+          "functions": 17,
+          "native_bytes": 1666
+        }
+      },
+      "old_full_function_copies": 4794,
+      "old_full_data_regions": 10746,
+      "old_exact_code_copies_preserved": 2237,
+      "old_known_extent_exact_data_compiled_copies_preserved": 5575,
+      "current_full_function_definitions": 4881,
+      "current_full_data_definitions": 10807,
+      "normal_objects": 332,
+      "frozen_inputs": 447,
+      "members_preserved": 13,
+      "known_member_bytes": 28,
+      "new_complete_initializer_copies": 61,
+      "new_complete_initializer_COFF_bytes": 950,
+      "new_known_extent_initializer_copies": 13,
+      "new_known_extent_initializer_COFF_bytes": 48,
+      "new_unknown_extent_initializer_copies": 48,
+      "new_unknown_extent_initializer_COFF_bytes": 902,
+      "unknown_extent_exact_and_allocation_credit": 0,
+      "new_central_working_definitions": 18,
+      "new_central_typed_bytes": 60,
+      "new_central_natural_readonly_literals": 3,
+      "new_central_literal_typed_bytes": 20,
+      "new_central_complete_regions": 21,
+      "new_central_full_bytes": 94,
+      "natural_new_WORD_zero_tail_bytes": 14,
+      "known_exact_data_union_before_transfer": 637612,
+      "known_exact_data_union_after_transfer": 637612,
+      "old_caller_connections": 0,
+      "old_caller_new_unique_credit": 0,
+      "qualified_previous_nonexact_function_changes": [],
+      "qualified_unknown_extent_data_changes": [],
+      "qualified_compiler_local_class6_type0_serial_changes": [
+        {
+          "unit": "src/legoapi/move.c",
+          "symbol": "_MovePlayer_DIRECTIONAL",
+          "sites": [
+            {
+              "before": "$directional_common_heading$139515",
+              "after": "$directional_common_heading$139575",
+              "function_offset": 1565,
+              "relocation_offset": 10440
+            },
+            {
+              "before": "$directional_common_heading$139515",
+              "after": "$directional_common_heading$139575",
+              "function_offset": 1565,
+              "relocation_offset": 10516
+            },
+            {
+              "before": "$directional_action_momentum$139789",
+              "after": "$directional_action_momentum$139849",
+              "function_offset": 6600,
+              "relocation_offset": 10616
+            },
+            {
+              "before": "$directional_walking$139759",
+              "after": "$directional_walking$139819",
+              "function_offset": 6824,
+              "relocation_offset": 10672
+            }
+          ]
+        },
+        {
+          "unit": "src/legoapi/move.c",
+          "symbol": "_PunchCode",
+          "sites": [
+            {
+              "before": "$behind_attack$141279",
+              "after": "$behind_attack$141339",
+              "function_offset": 2038,
+              "relocation_offset": 2952
+            }
+          ]
+        },
+        {
+          "unit": "src/nu2api/nufpar.c",
+          "symbol": "_GetLineW",
+          "sites": [
+            {
+              "before": "$line_complete$138781",
+              "after": "$line_complete$138841",
+              "function_offset": 256,
+              "relocation_offset": 272
+            },
+            {
+              "before": "$append_character$138785",
+              "after": "$append_character$138845",
+              "function_offset": 93,
+              "relocation_offset": 296
+            }
+          ]
+        },
+        {
+          "unit": "src/nu2api/pc_device.cpp",
+          "symbol": "_PCDeviceSetRenderState",
+          "sites": [
+            {
+              "before": "$submit$112026",
+              "after": "$submit$112084",
+              "function_offset": 139,
+              "relocation_offset": 224
+            }
+          ]
+        },
+        {
+          "unit": "src/nu2api/shader_dictionary.cpp",
+          "symbol": "?EmitAttribute@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z",
+          "sites": [
+            {
+              "before": "$allocate_first$113468",
+              "after": "$allocate_first$113526",
+              "function_offset": 741,
+              "relocation_offset": 1752
+            }
+          ]
+        }
+      ],
+      "required_checks": {
+        "tests": 732,
+        "skipped": 3,
+        "LLVM18_format_files": 359,
+        "LLVM18_tidy_units": 332,
+        "source_build": 0,
+        "objects": 0,
+        "retail_match": 0
+      },
+      "selected_CPU_checks": 241,
+      "selected_CPU_failures": 0,
+      "runtime": {
+        "sections": {
+          "registration_tests": 53,
+          "tube_tests": 38,
+          "plug_tests": 24,
+          "minicut_tests": 24,
+          "special_tests": 36,
+          "pod_tests": 37,
+          "character_list_tests": 29
+        },
+        "replacements": 0,
+        "supplements": 0,
+        "additional_engine_providers": 0,
+        "source_EXE_repeated": false,
+        "device_asset_gameplay_or_camera_playback_claim": false,
+        "ShowCrashDialog": 0,
+        "owned_test_processes_remaining": 0,
+        "elapsed_seconds": 1.8694745069369674,
+        "exit_code": 0,
+        "timed_out": false,
+        "retained_execution_preflight_failures": true,
+        "initial_compile_failure": "Fixture referred to nonexistent public max_specials; one initialization changed to its asserted actual local reader cohort. No assertion, value, provider, engine or flag changed."
+      },
+      "source_qualifications": [
+        "Transport39 retains native signed WORD indexing; rejected unsigned-index version retained. The earlier reviewer x87 inversion assertion was a parity-decoding mistake, not three source bugs.",
+        "MiniCut keeps the genuine private helper/register ABI and existing camera provider; empty-stage CPU tests do not prove camera playback or loaded assets.",
+        "Character callbacks retain genuine unresolved VOID actions and diagnostic omissions at explicit native sites; actual value-returning suppliers are linked. No active movement or installed-character milestone is claimed.",
+        "ConfigureCharacterList uses the genuine seven-argument permanent parser and caller-owned arenas; native ignored end-bound and unsafe-input qualifications remain explicit.",
+        "GizSpecial preserves native write-before-capacity-check behavior and uninitialized system count. CPU checks initialize only caller-owned receiver data; no engine count guard or capacity is fabricated.",
+        "All 18 central owning extents remain unknown; POD working view covers valid signed player indices0/1, not an inferred reservation capacity.",
+        "All 28 ordered LSW registration callbacks plus NULL remain required before full parent activation. Five compiled registrars do not replace the full table.",
+        "Five exact contained compiler-local serial qualifications preserve identical raw and applied bytes. No changed old function/data pair or generic scheduling/padding waiver was used."
+      ],
+      "remaining_contracts": [
+        "Genuine shader-manager/compiler publication, parser helpers and device presentation",
+        "Complete ordered gizmo parents and genuine resource lifetime",
+        "GCDATA_DEFAULT minimum288 initializer and character installer parents; genuine startup CharFixUp table remains separate",
+        "Actual world/asset loading, active movement and recurring gameplay"
+      ],
+      "next_wave": "GCDATA_DEFAULT 91-field minimum288 proposal plus FixUpCharacters178/Extra1174 parents (1352 hypothesized bytes, no transfer credit until compiled and compared). Techno/Portal/Shadow connected registrar providers continue independently.",
+      "checkpoint_delay": "Complete87 source/storage composition, current-header normal332 build, whole-prior output review and genuine CPU241 validation; no flag or matcher changes.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "active; checkpoint does not finish whole-project reconstruction",
+      "evidence_pins": {
+        "build/analysis/registration-character-MM-independent-review/expanded87/accepted-packet.json": "a5185597f8e3a989fe5e9887761d62cc9495d088e1360520afa6f011b5b2b151",
+        "build/analysis/registration-character18-independent-review/accepted-packet.json": "3f2ce118d00ddf7060df9bfe278a14f05e71617ff4b23a4e19d36056547b11f2",
+        "build/analysis/connected-wave-MM/actual-source-integration.json": "b8d7dde2d17664cea611a45ccb0083f5f4403a20845afd9175d91dad6769f09f",
+        "build/analysis/connected-wave-MM/actual-data-integration.json": "5a21c01be300149741aee758d2482a89e8b03bbe48ca4079b4222d44bf50342e",
+        "build/analysis/connected-wave-MM/actual-source-prefix-map-proof.json": "29fe502ebf7cc76b12c5ad808c1c0d9d5a29838d9c018c5aaba57a03670153ef",
+        "build/analysis/connected-wave-MM/first-normal-validation-receipt.json": "9d5ccbb09ec36a202b0af6c5bd6a3acc9bdf3c03395db9c1737db4e5748619cc",
+        "build/analysis/connected-wave-MM/first-normal-input-manifest.json": "3947509eaed356ed25014ff4f0ae72f23e247d33f3edbe582bc439a57eb0eab0",
+        "build/analysis/connected-wave-MM/first-normal-object-manifest.json": "1f15db2d6af0d26df52ba074758dbb6110e91747b0d6fa3b3e6db009d65783f0",
+        "build/analysis/connected-wave-MM/first-member-probe-manifest.json": "8f0885ddb3ce3b90af5758598c84a369f54c4a8e816da73747ca34f05bb51d53",
+        "build/analysis/normal-MM-independent-review/actual-output-and-report-proof.json": "bc50f82d61a7ae2279c7216efab6e528a7a5544964eff1311a2adf231fd68ec5",
+        "build/analysis/normal-MM-independent-review/accepted-first-output-endpoint.json": "e0308d9ee45a65464c70aec14d170b032e142280160765c9e99400a62b06e69f",
+        "build/analysis/runtime-registration-character-MM/runtime-acceptance-MM.json": "6ec15147be33dc3dd6cdbfa36258a7c59d35c46d481c843c09a98917dcdf2a09"
+      }
     }
   ]
 }

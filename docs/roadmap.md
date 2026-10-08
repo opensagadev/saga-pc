@@ -10,13 +10,13 @@ window/device presentation nor recurring gameplay. Code similarity and mapping
 are separate from runnable milestones; current measurements live in
 [matching.json](../matching.json).
 
-The verified JJ source checkpoint [`f82fa3b1a06991a621811f893bf6f7864badea9c`](https://github.com/opensagadev/saga-pc/commit/f82fa3b1a06991a621811f893bf6f7864badea9c) has [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37716326923) passing. The current KK
-snapshot adds real geometry arena/basis/origin producers, eight shader uniform
-upload functions, movement/gizmo and mission services. Five camera publications
-call their genuine shader setter; that setter still requires the missing real
-manager/compiler publication. Its 227 passing CPU checks cover reset,
-perspective, initialized geometry basis and conservative guards. Positive camera
-checks remain held. II remains the last full-game observation above.
+The verified LL checkpoint [`41c5de9350ead0fe454f6761710f04829b6608f1`](https://github.com/opensagadev/saga-pc/commit/41c5de9350ead0fe454f6761710f04829b6608f1) passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37811078781).
+The current MM snapshot adds 87 compared functions across registration, transport,
+MiniCut and character loading/callbacks. Its 241 passing CPU checks exercise real
+providers and caller-owned records. These checks do not establish camera playback,
+installed characters or assets. Genuine shader-manager/compiler publication and
+full ordered callback/storage contracts remain missing. II remains the last
+full-game observation above; exact pushed-revision CI for MM is pending.
 
 Work proceeds through connected source families and verified PC contracts:
 

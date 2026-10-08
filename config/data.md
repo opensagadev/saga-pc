@@ -2206,3 +2206,21 @@ All 166 new complete initializer copies/1,645 bytes across the wave are retail-e
 95 known copies/606 bytes and 71 unknown copies/1039 bytes are recorded separately.
 Known exact-data range union stays637612 bytes. Full preserved failure and acceptance
 pins remain in transfer-checkpoint.json; no generic unknown-tail exception applies.
+
+### Registration and character working states MM (2026-10-08)
+
+Eighteen genuine central views add 60 typed bytes. Three natural read-only
+literals add 20 bytes; seven new WORD definitions each carry two native zero
+tail bytes, giving 21 complete retail-equal regions/94 bytes. Existing canonical
+obstacle and Tube strings are reused by mutable pointer slots with const
+pointees. WORD character IDs, hover values and POD timing defaults reproduce
+native initializers; valid POD indices are only 0/1. All owning extents remain
+unknown and receive zero allocation or exact-data credit. No old data region
+changed, including LL's specifically reviewed natural tails.
+
+Across the normal build, 61 new complete initializer copies/950 bytes equal
+retail: 13 known copies/48 bytes and 48 unknown copies/902 bytes. The known ranges
+were already covered, so the exact-data union remains 637,612 bytes. All 5,575
+prior known-exact copies and 13 named members/28 bytes survive. Private 120-byte
+registration descriptors stay with their genuine source owners. GCDATA_DEFAULT
+and the true startup CharFixUp table remain separate future contracts.

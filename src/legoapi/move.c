@@ -8118,3 +8118,473 @@ void __cdecl MoveBlocks(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, i3
         NuSpecialUpdate(&block->special);
     }
 }
+
+extern i16 id_WATTO;
+STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
+STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
+STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
+STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_028) == 0x28);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094_bytes) == 0x94);
+
+void __cdecl Move_GEONOSIAN(GAMEOBJECT *object) {
+    u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
+    u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
+    u32 special_pressed = object->pad->buttons_pressed & GAMEPAD_SPECIAL;
+    KeepWeaponOut(object);
+    DropInOutCode(object);
+    if ((object->flags_e20 & 0x20) != 0)
+        return;
+    ApplyGravity(object, NULL,
+                 object->jump_variant_state == 1 ? object->character_data->game_character->field_028 : 0.0f, 8.0f,
+                 NULL);
+    TakeHitCode(object);
+    FloatCode(object);
+    SlideCode(object);
+    FlattenCode(object);
+    ForcePushed_MoveCode(object);
+    ForcedBackCode(object);
+    Tube_MoveCode(object, WORLD);
+    DeactivatedCode(object);
+    PushCode(object, StartupGameFlag1 != 0 && StartupGameFlag0 == 0);
+    TakeOverCode(object, object->pad->buttons_pressed & GAMEPAD_TAG);
+    JetPackCode(object, jump_pressed, 0, 0);
+    JumpCode(object, 0, 0, 0x80, 0, 0, -1);
+    STUBBED_NAMED(0x0046eda0); /* Native4b670f: GizPanel_MoveCode(WORLD,object,special_pressed), ignored action. */
+    HatMachine_MoveCode(WORLD, object, special_pressed);
+    Lever_MoveCode(WORLD, object);
+    if ((object->character_data->model_flags & 0x40000) != 0)
+        Teleport_MoveCode(object, special_pressed);
+    GizmoBlowupCheckProximity(WORLD, object);
+    SpecialMove_VictimCode(object);
+    if ((object->character_data->model_flags & 0x80) != 0 &&
+        (object->character_data->game_character->flags_094_bytes[0] & 8) == 0)
+        ShootCode(object, action_pressed, special_pressed, 0, 1, 0);
+    else if (object->id == (u16)id_WATTO)
+        STUBBED_NAMED(0x004a6160); /* Native4b67a3: ZapCode(object,action_pressed,0), ignored action. */
+    if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
+        STUBBED_NAMED(0x004b29f0); /* Native4b67be: CommunicateCode(object,special_pressed,0), ignored action. */
+    BeastStartFallCodePc(object);
+    STUBBED_NAMED(0x0058cef0); /* Native4b67cc: HeadMovement(object), ignored action. */
+    STUBBED_NAMED(0x0058cf50); /* Native4b67d2: CloakMovement(object), ignored action. */
+    STUBBED_NAMED(0x0058d150); /* Native4b67d8: HairMovement(object), ignored action. */
+    if (object->jump_variant_state == 1)
+        PlaySfx("GeonWingsLp", &object->collision_position);
+}
+
+void __cdecl Move_JAWA(GAMEOBJECT *object) {
+    u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
+    u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
+    u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
+    u32 tag_pressed = object->pad->buttons_pressed & GAMEPAD_TAG;
+    u32 special_pressed = object->pad->buttons_pressed & GAMEPAD_SPECIAL;
+    DropInOutCode(object);
+    if ((object->flags_e20 & 0x20) != 0)
+        return;
+    ApplyGravity(object, NULL, 0.0f, 8.0f, NULL);
+    TakeHitCode(object);
+    FlattenCode(object);
+    SlideCode(object);
+    ForcePushed_MoveCode(object);
+    ForcedBackCode(object);
+    Tube_MoveCode(object, WORLD);
+    DeactivatedCode(object);
+    PushCode(object, StartupGameFlag1 != 0 && StartupGameFlag0 == 0);
+    TakeOverCode(object, tag_pressed);
+    if ((object->flags_1fc & 0x80) != 0)
+        ForceCode(object, 0, 0, 0);
+    JumpCode(object, jump_pressed, jump_held, 0, 0, 0, -1);
+    STUBBED_NAMED(0x00592280); /* Native4b3c84: BuildIt_MoveCode(object), ignored action. */
+    if ((object->character_data->model_flags & 0x40000) != 0)
+        Teleport_MoveCode(object, special_pressed);
+    ZipUp_MoveCode(object, special_pressed);
+    if ((object->character_data->model_flags & 0x100000) != 0)
+        Grapple_MoveCode(object);
+    Lever_MoveCode(WORLD, object);
+    STUBBED_NAMED(0x004d0290); /* Native4b3cd3: ThermalDetonator_MoveCode(object), ignored action. */
+    HatMachine_MoveCode(WORLD, object, special_pressed);
+    STUBBED_NAMED(0x0046eda0); /* Native4b3cee: GizPanel_MoveCode(WORLD,object,special_pressed), ignored action. */
+    WeaponOutCode(object);
+    WeaponInCode(object);
+    WeaponScalingCode(object);
+    STUBBED_NAMED(0x004a6160); /* Native4b3d0b: ZapCode(object,action_pressed,special_pressed), ignored action. */
+    (void)action_pressed;
+    BeastStartFallCodePc(object);
+    STUBBED_NAMED(0x0058cef0); /* Native4b3d16: HeadMovement(object), ignored action. */
+    STUBBED_NAMED(0x0058cf50); /* Native4b3d1c: CloakMovement(object), ignored action. */
+    ChatterSfx(object, 0, 0.0f);
+}
+
+extern i16 id_BAT, id_BATTLEDROID, id_SUPERBATTLEDROID, id_NAFFDROID1, id_NAFFDROID2, id_NAFFDROID4, id_MOUSEDROID,
+    id_BUZZDROID;
+extern f32 CritterSnakeExtraHoverPc, CritterBatExtraHoverPc;
+extern u8 DroidCheat32EnabledPc;
+
+typedef struct critter_object_reader_pc_s {
+    u8 unknown_0000[0x10ac];
+    void *snake_body;
+} CRITTER_OBJECT_READER_PC;
+STATIC_ASSERT(offsetof(CRITTER_OBJECT_READER_PC, snake_body) == 0x10ac);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_283) == 0x283);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
+STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_action) == 0x116);
+STATIC_ASSERT(offsetof(BLADE_PC, glow_model) == 2);
+STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
+STATIC_ASSERT(offsetof(APIDEBRISSYS_PC, entries) == 8);
+STATIC_ASSERT(sizeof(GAMEDEBRISENTRY_PC) == 0x14);
+STATIC_ASSERT(offsetof(GAMEDEBRISENTRY_PC, effect) == 0);
+
+void __cdecl Move_CRITTER(GAMEOBJECT *object) {
+    CRITTER_OBJECT_READER_PC *reader = (CRITTER_OBJECT_READER_PC *)object;
+    f32 hover;
+    if ((object->flags_e20 & 0x20) != 0)
+        return;
+    if (object->character_context == 23) {
+        hover = 0.0f;
+    } else if (object->id == (u16)id_SNAKE && object->field_283 == 9) {
+        applygravity_extrahoveroffset = CritterSnakeExtraHoverPc;
+        hover = 0.01f;
+    } else {
+        if (object->id == (u16)id_BAT && object->field_283 == 3)
+            applygravity_extrahoveroffset = CritterBatExtraHoverPc;
+        hover = object->character_data->game_character->field_028;
+    }
+    ApplyGravity(object, NULL, hover, 8.0f, NULL);
+    FlattenCode(object);
+    if (object->id != (u16)id_BAT)
+        SlideCode(object);
+    ForcePushed_MoveCode(object);
+    ForcedBackCode(object);
+    Tube_MoveCode(object, WORLD);
+    DeactivatedCode(object);
+    BeastStartFallCodePc(object);
+    if (object->id == (u16)id_SNAKE) {
+        if (reader->snake_body == NULL)
+            STUBBED_NAMED(
+                0x005972c0); /* Native4b3b24: CreateSnakeBody(object,11); genuine allocation/field action absent. */
+        if (reader->snake_body != NULL)
+            STUBBED_NAMED(0x00597380); /* Native4b3b36: UpdateSnakeBody(object); genuine body update absent. */
+    }
+    GizmoBlowupCheckProximity(WORLD, object);
+}
+
+void __cdecl Move_DROIDGENERIC(GAMEOBJECT *object) {
+    u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
+    u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
+    u32 zap_pressed = object->pad->buttons_pressed & (GAMEPAD_SPECIAL | GAMEPAD_ACTION);
+    if ((object->character_data->model_flags & 0x40) != 0) {
+        if (DroidCheat32EnabledPc != 0)
+            zap_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
+        STUBBED_NAMED(0x0058dd60); /* Native4b5f43: KeepWeaponIn(object), ignored action. */
+    } else if (object->character_data->game_character->weapon_action == 4 || object->id == (u16)VehicleBoltId7f18b4Pc) {
+        KeepWeaponOut(object);
+    }
+    DropInOutCode(object);
+    ApplyGravity(object, NULL, 0.0f, object->id == (u16)id_BATTLEDROID ? 0.0f : 8.0f, NULL);
+    if ((object->character_data->model_flags & 0x10) != 0 || VehicleArea == 0) {
+        TakeHitCode(object);
+        if ((object->character_data->model_flags & 0x40) != 0)
+            FloatCode(object);
+        SlideCode(object);
+        FlattenCode(object);
+        ForcePushed_MoveCode(object);
+        ForcedBackCode(object);
+        Tube_MoveCode(object, WORLD);
+    }
+    if ((object->character_data->model_flags & 0x40) != 0) {
+        JumpCode(object, jump_pressed, jump_held, 4, 0, 0, -1);
+        STUBBED_NAMED(0x0046eda0); /* Native4b6045: GizPanel_MoveCode(WORLD,object,(ACTION|SPECIAL)&pressed). */
+    } else {
+        Glide_MoveCode(object);
+        if (object->id == (u16)id_SUPERBATTLEDROID) {
+            WeaponOutCode(object);
+            WeaponInCode(object);
+            WeaponScalingCode(object);
+            ShootCode(object, object->pad->buttons_pressed & GAMEPAD_ACTION,
+                      object->pad->buttons_pressed & GAMEPAD_SPECIAL, 1, 0, 0);
+        } else if (object->id == (u16)id_GONKDROID) {
+            if (Cheat_IsOn(8)) {
+                JumpCode(object, jump_pressed, jump_held, 0x40, 0, 0, -1);
+                goto zap;
+            }
+        } else if ((object->character_data->model_flags & 0x20) == 0 &&
+                   (object->character_data->game_character->flags_094_bytes[0] & 8) == 0) {
+            ShootCode(object, object->pad->buttons_pressed & GAMEPAD_ACTION, 0, 0, 0, 0);
+        }
+        JumpCode(object, 0, 0, 0x80, 0, 0, -1);
+    }
+zap:
+    if (object->id == (u16)id_BUZZDROID)
+        PunchCode(object, object->pad->buttons_pressed & GAMEPAD_ACTION, 0, 0, 1, 0.0f);
+    STUBBED_NAMED(0x004a6160); /* Native4b6150: private ZapCode(object ESI,zap_pressed,0). */
+    (void)zap_pressed;
+    DeactivatedCode(object);
+    BeastStartFallCodePc(object);
+    if ((object->character_data->model_flags & 0x10) != 0) {
+        if ((object->character_data->model_flags & 0x40) != 0) {
+            STUBBED_NAMED(0x004aa800); /* Native4b6177: PeriscodeCode(object), ignored action. */
+        } else {
+            if (VehicleArea == 0)
+                BeastStartFallCodePc(object);
+            if (object->id == (u16)id_NAFFDROID1 || object->id == (u16)id_NAFFDROID2 ||
+                object->id == (u16)id_NAFFDROID4 || object->id == (u16)id_MOUSEDROID) {
+                if (object->field_281 != 0 && object->character_context == -1 && object->pad->input_magnitude > 0.0f)
+                    PlaySfx(object->id == (u16)id_MOUSEDROID ? "drd_mousebot_lp" : "R2Move",
+                            &object->collision_position);
+            } else if (object->id == (u16)VehicleBoltId7f18b4Pc) {
+                PlaySfx("Probot_EngLp", &object->collision_position);
+                FireCode(object, object->pad->buttons_pressed & GAMEPAD_ACTION,
+                         object->pad->buttons_pressed & GAMEPAD_ACTION, 0.5f, 1);
+            }
+        }
+    }
+    if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
+        STUBBED_NAMED(0x004b29f0); /* Native4b6270: CommunicateCode(object EAX,SPECIAL&pressed,0). */
+    if ((object->character_data->model_flags & 0x20) != 0) {
+        STUBBED_NAMED(0x0046eda0); /* Native4b629e: GizPanel_MoveCode(WORLD,object,(ACTION|SPECIAL)&pressed). */
+        if (WORLD->current_level == LevelFixupSlotPc0087b218)
+            BigJumpCode(object);
+    }
+    STUBBED_NAMED(
+        0x004a8640); /* Native4b62d3: private self-destruct action, unconditional; object ESI,SPECIAL&pressed. */
+    GizmoBlowupCheckProximity(WORLD, object);
+}
+
+void __cdecl Move_JEDI(GAMEOBJECT *object) {
+    u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
+    u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
+    u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
+    u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
+    u32 special_pressed = object->pad->buttons_pressed & GAMEPAD_SPECIAL;
+    u32 special_held = object->pad->buttons_held & GAMEPAD_SPECIAL;
+    i32 glow_model, hit_effect;
+    u32 jump_animations;
+    f32 force_volume;
+    i32 effect;
+    BEAST_POO_VOLUME_VIEW_PC *volume = (BEAST_POO_VOLUME_VIEW_PC *)object;
+    if (object->id == (u16)id_BODYGUARD)
+        KeepWeaponOut(object);
+    DropInOutCode(object);
+    if ((object->flags_e20 & 0x20) != 0)
+        return;
+    ApplyGravity(object, NULL, 0.0f, 8.0f, NULL);
+    if (object->id == (u16)id_BOB) {
+        if ((object->flags_ef0 & 0x200) != 0) {
+            glow_model = 0xdd;
+            hit_effect = 2;
+        } else {
+            glow_model = 0xe1;
+            hit_effect = 3;
+        }
+    } else if (AnakinGreenSabre(object)) {
+        glow_model = 0xdd;
+        hit_effect = 2;
+    } else {
+        hit_effect = object->blade_index == -1 ? -1 : BladeTab[object->blade_index].hit_effect;
+        glow_model = SuperWeirdo(object) && (object->character_data->model_flags & 8) == 0 ? 0xdf
+                     : object->blade_index == -1                                           ? -1
+                                                 : BladeTab[object->blade_index].glow_model;
+    }
+    STUBBED_NAMED(0x004cdab0); /* Native4b3504: WORLD,object; ignored returned value/native action missing. */
+    if (object->suit != NULL)
+        STUBBED_NAMED(0x004c85e0); /* Native4b351d: Signal_MoveCode(WORLD,object), ignored action. */
+    TakeHitCode(object);
+    FloatCode(object);
+    SlideCode(object);
+    FlattenCode(object);
+    Hang_MoveCode(object);
+    Ledge_MoveCode(WORLD, object);
+    if (DefaultMotionLedgeTerrainEnabledPc != 0)
+        LedgeTerrain_MoveCode(object);
+    Climb_MoveCode(object);
+    TightRope_MoveCode(object, jump_pressed);
+    ForcePushed_MoveCode(object);
+    ForcedBackCode(object);
+    Tube_MoveCode(object, WORLD);
+    DeactivatedCode(object);
+    PushCode(object, StartupGameFlag1 != 0 && StartupGameFlag0 == 0);
+    BackFlipCode(object);
+    if (object->id != (u16)id_GRIEVOUS && object->id != (u16)id_BODYGUARD)
+        TakeOverCode(object, object->pad->buttons_pressed & GAMEPAD_TAG);
+    Glide_MoveCode(object);
+    jump_animations = object->id == (u16)id_IMPERIALGUARD || object->id == (u16)id_BODYGUARD ? 0x10 : 0x1b;
+    if ((object->character_data->game_character->flags_090 & 0x400000) != 0)
+        jump_animations |= 0x100;
+    JumpCode(object, jump_pressed, jump_held, jump_animations, action_pressed, action_held, hit_effect);
+    STUBBED_NAMED(0x0046eda0); /* Native4b365a: GizPanel_MoveCode(WORLD,object,special_pressed). */
+    HatMachine_MoveCode(WORLD, object, special_pressed);
+    ZipUp_MoveCode(object, special_pressed);
+    STUBBED_NAMED(0x00592280); /* Native4b3675: BuildIt_MoveCode(object), ignored action. */
+    Lever_MoveCode(WORLD, object);
+    if ((object->character_data->game_character->flags_094 & 0x8000) == 0) {
+        STUBBED_NAMED(0x004b15c0); /* Native4b36a6: ForceDeflectCode(object EAX,special_pressed,special_held). */
+        STUBBED_NAMED(0x004a28e0); /* Native4b36ae: ForcePushCode(object EDI,special_held). */
+        STUBBED_NAMED(0x004a3270); /* Native4b36b7: FindForcePushTarget(object,special_pressed,1). */
+        STUBBED_NAMED(0x004a4420); /* Native4b36bf: ForceThrowCode(object EAX,special_pressed). */
+        ForceCode(object, special_pressed, special_held, 0);
+        STUBBED_NAMED(0x004a3270); /* Native4b36d4: FindForcePushTarget(object,special_pressed,2). */
+        ForceGlowCode(object, glow_model);
+    }
+    if ((object->character_data->model_flags & 0x40000) != 0)
+        Teleport_MoveCode(object, special_pressed);
+    STUBBED_NAMED(0x004d0290); /* Native4b3703: ThermalDetonator_MoveCode(object), return genuinely ignored here. */
+    if (object->suit != NULL && (((MOVEMENT_SUIT_PC *)object->suit)->store_flag & 4) != 0)
+        STUBBED_NAMED(0x004271b0); /* Native4b371c: Detonator_MoveCode(object), ignored action. */
+    STUBBED_NAMED(0x0049dfd0);     /* Native4b3726: ComboRotateCode(object,action_held). */
+    WeaponOutCode(object);
+    WeaponInCode(object);
+    WeaponScalingCode(object);
+    HoldCode(object);
+    STUBBED_NAMED(0x0049e450); /* Native4b374e: BlockCode(object EAX,action_pressed,action_held,jump_pressed,0). */
+    STUBBED_NAMED(0x004a1c70); /* Native4b3757: SwipeCode(object EAX,action_pressed,action_held). */
+    STUBBED_NAMED(0x004a10c0); /* Native4b3766: LightSabreComboCode(object
+                                  EAX,action_pressed,action_held,jump_pressed,special_pressed). */
+    STUBBED_NAMED(0x004a0bc0); /* Native4b376e: JediLightCode(object ESI), ignored action. */
+    if ((object->character_data->game_character->flags_090 & 0x8000) != 0) {
+        effect = WORLD->game_debris_sys->entries[124].effect;
+        if (effect != -1)
+            AddVariableShotDebrisEffectTimed1(effect, &object->collision_position, 6, FRAMETIME, 0, 0, NULL);
+    }
+    BeastStartFallCodePc(object);
+    STUBBED_NAMED(0x0058cef0); /* Native4b37c6: HeadMovement(object). */
+    STUBBED_NAMED(0x0058cf50); /* Native4b37cc: CloakMovement(object). */
+    STUBBED_NAMED(0x0058d150); /* Native4b37d2: HairMovement(object). */
+    force_volume = (object->character_context == 0x1b && object->field_7b3 == 1) || object->character_context == 0x1d ||
+                           object->character_context == 8
+                       ? 1.0f
+                       : 0.0f;
+    volume->force_use_volume = SeekLinearF(volume->force_use_volume, force_volume, FRAMETIME);
+    if (volume->force_use_volume > 0.0f)
+        PlaySfxAndSetVolume("JForceUse", &object->collision_position, volume->force_use_volume);
+    if ((object->flags_1fc & 0x80) != 0 && force_volume == 1.0f && !Cheat_PowerUpActive((i8)object->field_280)) {
+        /* Native computes and pushes hostility_group*.3f before qrand; true qrand reads no arguments. */
+        ConstantRumble(object, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.5f),
+                       (f32)((f64)object->hostility_group * (f64)0.3f));
+    }
+}
+
+i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *);
+typedef struct weirdo_batarang_reader_pc_s {
+    u8 unknown_000[0xcc0];
+    void *batarang;
+} WEIRDO_BATARANG_READER_PC;
+STATIC_ASSERT(offsetof(WEIRDO_BATARANG_READER_PC, batarang) == 0xcc0);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_model) == 0xec);
+
+void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
+    u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
+    u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
+    u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
+    u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
+    u32 special_held = object->pad->buttons_held & GAMEPAD_SPECIAL;
+    u32 special_pressed = object->pad->buttons_pressed & GAMEPAD_SPECIAL;
+    u32 tag_pressed = object->pad->buttons_pressed & GAMEPAD_TAG;
+    i32 hit_effect = object->blade_index == -1 ? -1 : BladeTab[object->blade_index].hit_effect;
+    i32 glow_model, weapon, has_sabre, detonator_used;
+    u32 jump_animations;
+    glow_model = SuperWeirdo(object) && (object->character_data->model_flags & 8) == 0 ? 0xdf
+                 : object->blade_index == -1                                           ? -1
+                                             : BladeTab[object->blade_index].glow_model;
+    DropInOutCode(object);
+    ApplyGravity(object, NULL, 0.0f, 8.0f, NULL);
+    weapon = object->character_data->game_character->weapon_model;
+    has_sabre = weapon == 0x65 || weapon == 0x67 || weapon == 0x69 || weapon == 0x6b;
+    STUBBED_NAMED(0x004cdab0); /* Native4b5944: WORLD,object; ignored native action/result. */
+    if (object->suit != NULL)
+        STUBBED_NAMED(0x004c85e0); /* Native4b595d: Signal_MoveCode(WORLD,object). */
+    TakeHitCode(object);
+    FloatCode(object);
+    SlideCode(object);
+    FlattenCode(object);
+    Hang_MoveCode(object);
+    Ledge_MoveCode(WORLD, object);
+    if (DefaultMotionLedgeTerrainEnabledPc != 0)
+        LedgeTerrain_MoveCode(object);
+    Climb_MoveCode(object);
+    TightRope_MoveCode(object, jump_pressed);
+    ForcePushed_MoveCode(object);
+    ForcedBackCode(object);
+    Tube_MoveCode(object, WORLD);
+    DeactivatedCode(object);
+    PushCode(object, StartupGameFlag1 != 0 && StartupGameFlag0 == 0);
+    BackFlipCode(object);
+    TakeOverCode(object, tag_pressed);
+    Glide_MoveCode(object);
+    jump_animations = has_sabre ? 0x1b : 8;
+    if (!has_sabre)
+        hit_effect = -1;
+    if (SuperWeirdo(object))
+        jump_animations |= 0x101;
+    else if (!has_sabre)
+        jump_animations |= 0x200;
+    JumpCode(object, jump_pressed, jump_held, jump_animations, action_pressed, action_held, hit_effect);
+    STUBBED_NAMED(0x0046eda0); /* Native4b5a7b: GizPanel_MoveCode(WORLD,object,special_pressed). */
+    HatMachine_MoveCode(WORLD, object, special_pressed);
+    ZipUp_MoveCode(object, special_pressed);
+    if ((object->character_data->model_flags & 0x100000) != 0)
+        Grapple_MoveCode(object);
+    STUBBED_NAMED(0x00592280); /* Native4b5aad: BuildIt_MoveCode(object). */
+    if (has_sabre || SuperWeirdo(object)) {
+        STUBBED_NAMED(0x004b15c0); /* Native4b5ad1: ForceDeflectCode(object EAX,special_pressed,special_held). */
+        STUBBED_NAMED(0x004a28e0); /* Native4b5ad9: ForcePushCode(object EDI,special_held). */
+        STUBBED_NAMED(0x004a3270); /* Native4b5ae2: FindForcePushTarget(object,special_pressed,1). */
+        STUBBED_NAMED(0x004a4420); /* Native4b5aea: ForceThrowCode(object EAX,special_pressed). */
+        ForceCode(object, special_pressed, special_held, 0);
+        STUBBED_NAMED(0x004a3270); /* Native4b5aff: FindForcePushTarget(object,special_pressed,2). */
+        ForceGlowCode(object, glow_model);
+    }
+    ForcePushed_MoveCode(object);
+    Lever_MoveCode(WORLD, object);
+    if ((object->character_data->model_flags & 0x40000) != 0 || SuperWeirdo(object))
+        Teleport_MoveCode(object, special_pressed);
+    detonator_used = ThermalDetonator_MoveCode(object);
+    if (StartupGameFlag1 == 0 && StartupGameFlag0 == 0) {
+        if (object->suit != NULL && (((MOVEMENT_SUIT_PC *)object->suit)->store_flag & 4) != 0)
+            STUBBED_NAMED(0x004271b0); /* Native4b5b7a: Detonator_MoveCode(object). */
+        if (object->suit != NULL && (((MOVEMENT_SUIT_PC *)object->suit)->store_flag & 8) != 0)
+            STUBBED_NAMED(0x004c88c0); /* Native4b5b9a: WORLD,object; suit action. */
+        if ((object->character_data->model_flags & 8) == 0)
+            STUBBED_NAMED(0x004d4dc0); /* Native4b5bb3: WORLD,object; native action. */
+    }
+    STUBBED_NAMED(0x00598880); /* Native4b5bc3: SuperCarry_MoveCode(WORLD,object). */
+    GizmoBlowupCheckProximity(WORLD, object);
+    STUBBED_NAMED(0x0049dfd0); /* Native4b5bda: ComboRotateCode(object,action_held). */
+    WeaponOutCode(object);
+    WeaponInCode(object);
+    WeaponScalingCode(object);
+    SpecialMove_VictimCode(object);
+    HoldCode(object);
+    STUBBED_NAMED(0x004036a0); /* Native4b5c05: Attracto_MoveCode(WORLD,object). */
+    STUBBED_NAMED(0x004bdaf0); /* Native4b5c11: SecurityDoor_MoveCode(WORLD,object). */
+    if (has_sabre) {
+        STUBBED_NAMED(0x0049e450); /* Native4b5c2f: BlockCode(object EAX,action_pressed,action_held,jump_pressed,0). */
+        STUBBED_NAMED(0x004a1c70); /* Native4b5c3c: SwipeCode(object EAX,action_pressed,action_held). */
+        if (detonator_used == 1)
+            special_pressed = 0;
+        STUBBED_NAMED(0x004a10c0); /* Native4b5c58: LightSabreComboCode(object
+                                      EAX,action_pressed,action_held,jump_pressed,special_pressed). */
+        STUBBED_NAMED(0x004a0bc0); /* Native4b5c60: JediLightCode(object ESI). */
+    } else {
+        STUBBED_NAMED(0x0049e450); /* Native4b5c71: BlockCode(object EAX,action_pressed,action_held,0,0). */
+        PunchCode(object, action_pressed, action_held, 1, 0, 0.0f);
+        STUBBED_NAMED(0x004b13e0); /* Native4b5c98: DodgeCode(object ECX,action_pressed EAX,jump_pressed). */
+        if ((object->character_data->model_flags & 0x80) != 0) {
+            if (detonator_used == 1)
+                special_pressed = 0;
+            ShootCode(object, action_pressed, special_pressed, 1, 1, 0);
+        } else if (((WEIRDO_BATARANG_READER_PC *)object)->batarang != NULL) {
+            STUBBED_NAMED(0x004050c0); /* Native4b5ccf: Batarang_MoveCode(object). */
+        }
+    }
+    if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
+        STUBBED_NAMED(0x004b29f0); /* Native4b5cfa: CommunicateCode(object EAX,SPECIAL&pressed,0). */
+    STUBBED_NAMED(0x004a69e0);     /* Native4b5d02: private rocket context action with original object ESI. */
+    BeastStartFallCodePc(object);
+    STUBBED_NAMED(0x0058cef0); /* Native4b5d0d: HeadMovement(object). */
+    STUBBED_NAMED(0x0058cf50); /* Native4b5d13: CloakMovement(object). */
+    STUBBED_NAMED(0x0058d150); /* Native4b5d19: HairMovement(object). */
+}

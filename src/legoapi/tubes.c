@@ -145,3 +145,366 @@ void __cdecl Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
         return;
     }
 }
+typedef struct gizmo_config_functions_pc_s {
+    i16 options;
+    u16 padding;
+    i32(__cdecl *get_max_gizmos)(void *world);
+    void *add_gizmos;
+    void(__cdecl *early_update)(void *world, void *data, f32 delta_time);
+    void(__cdecl *late_update)(void *world, void *data, f32 delta_time);
+    void(__cdecl *draw)(void *world, void *data, f32 delta_time);
+    void(__cdecl *panel_draw)(void *world, void *data, f32 delta_time);
+    void *get_gizmo_name;
+    void *get_output;
+    void *get_output_name;
+    void *get_num_outputs;
+    void *activate;
+    void *activate_reverse;
+    void *set_visibility;
+    void *get_visibility;
+    void *get_pos;
+    void *using_special;
+    void *bolt_hit_plat;
+    void *get_best_bolt_target;
+    void *bolt_hit;
+    void *(__cdecl *allocate_progress_data)(VARIPTR *buffer, VARIPTR *end);
+    void(__cdecl *clear_progress)(void *world, void *progress);
+    void(__cdecl *store_progress)(void *world, void *data, void *progress);
+    void(__cdecl *reset)(void *world, void *data, void *progress);
+    void *(__cdecl *reserve_buffer_space)(void *world);
+    i32(__cdecl *load)(void *world, void *data);
+    void(__cdecl *post_load)(void *world, void *data);
+    void *add_level_sfx;
+} GIZMO_CONFIG_FUNCTIONS_PC;
+STATIC_ASSERT(sizeof(GIZMO_CONFIG_FUNCTIONS_PC) == 0x70);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 4);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
+
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, options) == 0x0);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 0x4);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_gizmos) == 0x8);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_gizmo_name) == 0x1c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output) == 0x20);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output_name) == 0x24);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_num_outputs) == 0x28);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_visibility) == 0x38);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_pos) == 0x3c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, using_special) == 0x40);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit_plat) == 0x44);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_best_bolt_target) == 0x48);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit) == 0x4c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, clear_progress) == 0x54);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_level_sfx) == 0x6c);
+
+typedef struct add_gizmo_config_type_pc_s {
+    const char *name;
+    char *prefix;
+    GIZMO_CONFIG_FUNCTIONS_PC functions;
+} ADD_GIZMO_CONFIG_TYPE_PC;
+STATIC_ASSERT(sizeof(ADD_GIZMO_CONFIG_TYPE_PC) == 0x78);
+STATIC_ASSERT(offsetof(ADD_GIZMO_CONFIG_TYPE_PC, functions) == 8);
+
+extern ADD_GIZMO_CONFIG_TYPE_PC Default_ADDGIZMOTYPE;
+
+typedef struct tube_callbacks_pc_s {
+    char name[16];
+    NUVEC position;
+    f32 height, radius, directional_speed, top, radius_squared, audio_cooldown;
+    u8 flags, padding[3];
+    u32 occupied_object_masks[2];
+} TUBE_CALLBACKS_PC;
+STATIC_ASSERT(sizeof(TUBE_CALLBACKS_PC) == 0x40);
+STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, name) == 0);
+STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, position) == 0x10);
+STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, height) == 0x1c);
+STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, radius) == 0x20);
+STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, directional_speed) == 0x24);
+STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, top) == 0x28);
+STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, radius_squared) == 0x2c);
+STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, audio_cooldown) == 0x30);
+STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, flags) == 0x34);
+STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, occupied_object_masks) == 0x38);
+typedef struct tube_progress_pc_s {
+    u32 visible_mask, active_mask;
+} TUBE_PROGRESS_PC;
+STATIC_ASSERT(sizeof(TUBE_PROGRESS_PC) == 8);
+STATIC_ASSERT(offsetof(TUBE_PROGRESS_PC, visible_mask) == 0);
+STATIC_ASSERT(offsetof(TUBE_PROGRESS_PC, active_mask) == 4);
+extern const char *TubeGizmoNamePc;
+extern const char *TubeOutputNamePc;
+static void *__cdecl Tubes_ReserveBufferSpace(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    world->tubes = NULL;
+    world->tube_count = 0;
+    if (world->current_level->max_tubes != 0) {
+        world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
+        world->tubes = (TUBE_PC *)world->giz_buffer.addr;
+        world->giz_buffer.addr += world->current_level->max_tubes * sizeof(TUBE_CALLBACKS_PC);
+    }
+    return world->tubes;
+}
+static void __cdecl Tube_Activate(GIZMO_PC *gizmo, i32 active) {
+    if (gizmo != NULL) {
+        TUBE_CALLBACKS_PC *tube = (TUBE_CALLBACKS_PC *)gizmo->object;
+        tube->flags = (u8)((tube->flags & ~1) | (active != 0));
+    }
+}
+static i32 __cdecl Tube_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 check_only) {
+    TUBE_CALLBACKS_PC *tube;
+    if (gizmo == NULL || gizmo->object == NULL)
+        return 0;
+    tube = (TUBE_CALLBACKS_PC *)gizmo->object;
+    if (check_only & 1)
+        return ((tube->flags >> 3) & 1) != reverse;
+    if (reverse)
+        tube->flags = (u8)((tube->flags & ~1) | 8);
+    else
+        tube->flags = (u8)((tube->flags & ~8) | 1);
+    return 1;
+}
+static void __cdecl Tube_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    if (gizmo != NULL) {
+        TUBE_CALLBACKS_PC *tube = (TUBE_CALLBACKS_PC *)gizmo->object;
+        tube->flags = (u8)((tube->flags & ~2) | ((visible != 0) << 1));
+    }
+}
+static void __cdecl Tubes_Reset(void *world_ptr, void *data, void *progress_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    TUBE_PROGRESS_PC *progress = (TUBE_PROGRESS_PC *)progress_ptr;
+    TUBE_CALLBACKS_PC *tube;
+    i32 i;
+    (void)data;
+    if (world == NULL || world->tubes == NULL || world->tube_count <= 0)
+        return;
+    tube = (TUBE_CALLBACKS_PC *)world->tubes;
+    for (i = 0; i < world->tube_count; ++i, ++tube) {
+        tube->top = tube->position.y + tube->height;
+        tube->radius_squared = tube->radius * tube->radius;
+        tube->flags |= 3;
+        if (progress != NULL && i < 32) {
+            u32 bit = 1u << i;
+            tube->flags = (u8)((tube->flags & ~2) | ((progress->visible_mask & bit) != 0) * 2);
+            tube->flags = (u8)((tube->flags & ~1) | ((progress->active_mask & bit) != 0));
+        }
+    }
+}
+static void __cdecl Tubes_Draw(void *world, void *data, f32 delta_time) {
+    (void)world;
+    (void)data;
+    (void)delta_time;
+}
+static i32 __cdecl Tubes_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    return world != NULL ? world->current_level->max_tubes : 0;
+}
+static char *__cdecl Tube_GetGizmoName(GIZMO_PC *gizmo) {
+    return gizmo != NULL ? ((TUBE_CALLBACKS_PC *)gizmo->object)->name : NULL;
+}
+static i32 __cdecl Tube_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    (void)output;
+    (void)mode;
+    return (((TUBE_CALLBACKS_PC *)gizmo->object)->flags & 3) == 3;
+}
+static const char *__cdecl Tube_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    (void)gizmo;
+    (void)output;
+    return TubeOutputNamePc;
+}
+static i32 __cdecl Tube_GetNumOutputs(GIZMO_PC *gizmo) {
+    (void)gizmo;
+    return 1;
+}
+static NUVEC *__cdecl Tube_GetPos(GIZMO_PC *gizmo) {
+    return gizmo != NULL ? &((TUBE_CALLBACKS_PC *)gizmo->object)->position : NULL;
+}
+static void *__cdecl Tubes_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+    return GizmoBufferAlloc(buffer, end, 8);
+}
+static void __cdecl Tubes_ClearProgress(void *world, void *progress_ptr) {
+    TUBE_PROGRESS_PC *progress = (TUBE_PROGRESS_PC *)progress_ptr;
+    (void)world;
+    if (progress != NULL) {
+        progress->visible_mask = 0xffffffff;
+        progress->active_mask = 0xffffffff;
+    }
+}
+static void __cdecl Tubes_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    TUBE_PROGRESS_PC *progress = (TUBE_PROGRESS_PC *)progress_ptr;
+    TUBE_CALLBACKS_PC *tube;
+    i32 i;
+    (void)data;
+    if (progress == NULL)
+        return;
+    progress->visible_mask = 0xffffffff;
+    progress->active_mask = 0xffffffff;
+    if (world == NULL || world->tubes == NULL || world->tube_count <= 0)
+        return;
+    tube = (TUBE_CALLBACKS_PC *)world->tubes;
+    for (i = 0; i < world->tube_count && i < 32; ++i, ++tube) {
+        u32 bit = 1u << i;
+        if (!(tube->flags & 2))
+            progress->visible_mask &= ~bit;
+        if (!(tube->flags & 1))
+            progress->active_mask &= ~bit;
+    }
+}
+static void __cdecl Tubes_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    i32 i;
+    (void)data;
+    for (i = 0; i < world->tube_count; ++i)
+        if (NuStrLen(((TUBE_CALLBACKS_PC *)world->tubes)[i].name) != 0)
+            AddGizmo(system, type_id, NULL, &((TUBE_CALLBACKS_PC *)world->tubes)[i]);
+}
+static i32 __cdecl Tubes_Load(void *world_ptr, void *data) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    TUBE_CALLBACKS_PC *tube;
+    i32 version, i;
+    (void)data;
+    if (world->tube_count != 0)
+        return 0;
+    version = EdFileReadInt();
+    world->tube_count = EdFileReadInt();
+    tube = (TUBE_CALLBACKS_PC *)world->tubes;
+    for (i = 0; i < world->tube_count; ++i, ++tube) {
+        EdFileRead(tube->name, 16);
+        EdFileReadNuVec(&tube->position);
+        tube->height = EdFileReadFloat();
+        tube->radius = EdFileReadFloat();
+        if (version >= 2)
+            tube->flags = (u8)((tube->flags & ~4) | ((EdFileReadChar() != 0) << 2));
+        else
+            tube->flags &= ~4;
+        tube->directional_speed = 1.25f;
+    }
+    return 1;
+}
+void __cdecl Tube_SetObjBit(TUBE_CALLBACKS_PC *tube, i32 index) {
+    tube->occupied_object_masks[index / 32] |= 1u << (index & 31);
+}
+i32 __cdecl Tube_IsObjBitSet(TUBE_CALLBACKS_PC *tube, i32 index) {
+    return (tube->occupied_object_masks[index / 32] >> (index & 31)) & 1;
+}
+static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    TUBE_CALLBACKS_PC *tube;
+    i32 i, j;
+    (void)data;
+    if (world == NULL || world->tubes == NULL || world->tube_count <= 0)
+        return;
+    tube = (TUBE_CALLBACKS_PC *)world->tubes;
+    for (i = 0; i < world->tube_count; ++i, ++tube) {
+        if (tube->audio_cooldown > 0.0f)
+            tube->audio_cooldown -= frame_time;
+        if (tube->audio_cooldown < 0.0f)
+            tube->audio_cooldown = 0.0f;
+        if ((tube->flags & 7) == 7) {
+            GAMEOBJECT *object;
+            GameAudio_PlaySfx(0x2e, &tube->position, 0, 0);
+            object = Obj;
+            for (j = 0; j < HIGHGAMEOBJECT; ++j, ++object) {
+                f32 dx, dz, distance, tx, tz, inverse, nx, nz;
+                u16 angle;
+                union {
+                    f32 scalar;
+                    u32 bits;
+                } absolute;
+                if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0 ||
+                    !(object->character_data->model_flags & 0x10) || (GCDataList[(i16)object->id].flags_094 & 0x100))
+                    continue;
+                if (tube->position.y > object->collision_max.y || tube->top < object->collision_min.y)
+                    continue;
+                dx = object->collision_position.x - tube->position.x;
+                dz = object->collision_position.z - tube->position.z;
+                distance = dx * dx + dz * dz;
+                if (tube->radius_squared < distance)
+                    continue;
+                tx = tube->position.x - object->collision_position.x;
+                tz = tube->position.z - object->collision_position.z;
+                angle = (u16)NuAtan2D(tx, tz);
+                object->movement_direction_x = NuTrigTable[angle >> 1];
+                object->movement_direction_z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+                object->context_target_position = &tube->position;
+                if (Tube_IsObjBitSet(tube, object->hostility_group) != 0 || object->contact_count == 0 ||
+                    !(distance < 0.1224999949336052))
+                    continue;
+                absolute.scalar = object->contact_normal.y;
+                absolute.bits &= 0x7fffffff;
+                if (!(NuTrigTable[0x3c71] > absolute.scalar))
+                    continue;
+                inverse = 1.0f / NuFsqrt(distance);
+                nx = tx * inverse;
+                nz = tz * inverse;
+                if (-NuTrigTable[0x238e] > nx * object->contact_normal.x + nz * object->contact_normal.z) {
+                    GameAudio_PlaySfx(0x2e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 0);
+                    Tube_SetObjBit(tube, object->hostility_group);
+                }
+            }
+        }
+        tube->occupied_object_masks[0] = 0;
+        tube->occupied_object_masks[1] = 0;
+    }
+}
+
+ADD_GIZMO_CONFIG_TYPE_PC *__cdecl Tubes_RegisterGizmo(i32 type_id) {
+    static ADD_GIZMO_CONFIG_TYPE_PC TubesAddTypePc;
+    TubesAddTypePc = Default_ADDGIZMOTYPE;
+    TubesAddTypePc.name = TubeGizmoNamePc;
+    TubesAddTypePc.prefix = "";
+    TubesAddTypePc.functions.options = 8;
+    TubesAddTypePc.functions.get_max_gizmos = Tubes_GetMaxGizmos;
+    TubesAddTypePc.functions.add_gizmos = (void *)Tubes_AddGizmos;
+    TubesAddTypePc.functions.early_update = NULL;
+    TubesAddTypePc.functions.late_update = Tubes_Update;
+    TubesAddTypePc.functions.draw = Tubes_Draw;
+    TubesAddTypePc.functions.panel_draw = NULL;
+    TubesAddTypePc.functions.get_gizmo_name = (void *)Tube_GetGizmoName;
+    TubesAddTypePc.functions.get_output = (void *)Tube_GetOutput;
+    TubesAddTypePc.functions.get_output_name = (void *)Tube_GetOutputName;
+    TubesAddTypePc.functions.get_num_outputs = (void *)Tube_GetNumOutputs;
+    TubesAddTypePc.functions.activate = (void *)Tube_Activate;
+    TubesAddTypePc.functions.activate_reverse = (void *)Tube_ActivateRev;
+    TubesAddTypePc.functions.set_visibility = (void *)Tube_SetVisibility;
+    TubesAddTypePc.functions.get_visibility = NULL;
+    TubesAddTypePc.functions.get_pos = (void *)Tube_GetPos;
+    TubesAddTypePc.functions.using_special = NULL;
+    TubesAddTypePc.functions.bolt_hit_plat = NULL;
+    TubesAddTypePc.functions.get_best_bolt_target = NULL;
+    TubesAddTypePc.functions.bolt_hit = NULL;
+    TubesAddTypePc.functions.allocate_progress_data = Tubes_AllocateProgressData;
+    TubesAddTypePc.functions.clear_progress = Tubes_ClearProgress;
+    TubesAddTypePc.functions.store_progress = Tubes_StoreProgress;
+    TubesAddTypePc.functions.reset = Tubes_Reset;
+    TubesAddTypePc.functions.reserve_buffer_space = Tubes_ReserveBufferSpace;
+    TubesAddTypePc.functions.load = Tubes_Load;
+    TubesAddTypePc.functions.post_load = NULL;
+    TubesAddTypePc.functions.add_level_sfx = NULL;
+    (void)type_id;
+    return &TubesAddTypePc;
+}

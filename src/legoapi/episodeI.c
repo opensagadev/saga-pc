@@ -245,3 +245,42 @@ i32 __cdecl Action_SetLapTime(void *system, void *process, void *packet, char **
     }
     return 1;
 }
+
+#include <math.h>
+
+typedef struct pod_race_countdown_reader_pc_s {
+    u8 unknown_0000[0xb000];
+    f32 lap_countdown;
+} POD_RACE_COUNTDOWN_READER_PC;
+STATIC_ASSERT(offsetof(POD_RACE_COUNTDOWN_READER_PC, lap_countdown) == 0xb000);
+extern f32 pod_animtime[2];
+typedef struct pod_merge_packet_reader_pc_s {
+    u8 unknown_00[0x10];
+    f32 blend_source_time;
+    f32 blend_target_time;
+    u8 unknown_18[0x22];
+    i16 requested_animation;
+    u8 unknown_3c[6];
+    i16 overlay_animation;
+    f32 overlay_weight;
+} POD_MERGE_PACKET_READER_PC;
+STATIC_ASSERT(offsetof(POD_MERGE_PACKET_READER_PC, requested_animation) == 0x3a);
+STATIC_ASSERT(offsetof(POD_MERGE_PACKET_READER_PC, blend_source_time) == 0x10);
+STATIC_ASSERT(offsetof(POD_MERGE_PACKET_READER_PC, blend_target_time) == 0x14);
+STATIC_ASSERT(offsetof(POD_MERGE_PACKET_READER_PC, overlay_animation) == 0x42);
+STATIC_ASSERT(offsetof(POD_MERGE_PACKET_READER_PC, overlay_weight) == 0x44);
+
+i32 __cdecl PodRace_InStartCountdown(WORLDINFO *world) {
+    POD_RACE_COUNTDOWN_READER_PC *race = (POD_RACE_COUNTDOWN_READER_PC *)PodRacePc;
+    return world->area != NULL && world->area == PODRACE_ADATA && race != NULL && race->lap_countdown > 0.0f;
+}
+
+void __cdecl SetPodMergeAnims(ANIMPACKET_PC *packet, i32 index) {
+    POD_MERGE_PACKET_READER_PC *reader = (POD_MERGE_PACKET_READER_PC *)packet;
+    f32 roll = pod_roll[index];
+    reader->requested_animation = 1;
+    reader->overlay_animation = roll < 0.0f ? 0x26 : 0x4f;
+    reader->blend_source_time = pod_animtime[index];
+    reader->blend_target_time = pod_animtime[index];
+    reader->overlay_weight = (f32)fabs((f64)roll);
+}

@@ -18594,3 +18594,110 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#ifndef SAGA_REGISTRATION_SIX_STATE_DECLARATIONS
+#define SAGA_REGISTRATION_SIX_STATE_DECLARATIONS
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern const char PCContextName_Tube[5];
+    extern const char *GizObstacleRegistrationNamePtrPc;
+    extern const char *TubeGizmoNamePc;
+    extern const char *TubeOutputNamePc;
+    extern const char *PlugGizmoNamePc;
+    extern const char *PlugOutputNamePc;
+    extern i32 plug_gizmotype_id;
+#ifdef __cplusplus
+}
+#endif
+#endif
+
+#ifndef SAGA_REGISTRATION_CHARACTER_MM_DECLARATIONS
+#define SAGA_REGISTRATION_CHARACTER_MM_DECLARATIONS
+#ifdef __cplusplus
+extern "C" {
+#endif
+    struct add_gizmo_config_type_pc_s;
+    struct add_gizmo_config_type_pc_s *__cdecl GizObstacles_RegisterGizmo(i32 type_id);
+    struct add_gizmo_config_type_pc_s *__cdecl Tubes_RegisterGizmo(i32);
+    struct add_gizmo_config_type_pc_s *__cdecl Plugs_RegisterGizmo(i32);
+
+    struct add_gizmo_config_type_pc_s;
+    struct add_gizmo_config_type_pc_s *__cdecl MiniCut_RegisterGizmo(i32);
+
+#ifdef __cplusplus
+    extern "C" {
+#endif
+        void __cdecl Move_GEONOSIAN(GAMEOBJECT *);
+        void __cdecl Move_JAWA(GAMEOBJECT *);
+#ifdef __cplusplus
+    }
+#endif
+
+#ifdef __cplusplus
+    extern "C" {
+#endif
+        CHARACTERDATA_PC *__cdecl ConfigureCharacterList(char *, VARIPTR *, VARIPTR *, i32, i32 *, i32,
+                                                         PLAYERCHARACTERCONFIG_PC **);
+#ifdef __cplusplus
+    }
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+#endif
+
+#ifndef SAGA_CHARACTER_GIZSPECIAL_MM_DECLARATIONS
+#define SAGA_CHARACTER_GIZSPECIAL_MM_DECLARATIONS
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl Move_CRITTER(GAMEOBJECT *);
+    void __cdecl Move_DROIDGENERIC(GAMEOBJECT *);
+    void __cdecl Move_JEDI(GAMEOBJECT *);
+    void __cdecl Move_WEIRDO(GAMEOBJECT *);
+    void __cdecl Animate_POD(GAMEOBJECT *);
+    i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *);
+    i32 __cdecl PodRace_InStartCountdown(WORLDINFO *);
+    void __cdecl SetPodMergeAnims(ANIMPACKET_PC *, i32);
+    extern i16 id_BAT, id_NAFFDROID1, id_NAFFDROID2, id_NAFFDROID4, id_MOUSEDROID, id_BUZZDROID, id_SUPERBATTLEDROID;
+    extern f32 CritterSnakeExtraHoverPc, CritterBatExtraHoverPc;
+    extern f32 pod_animtime[2], podanimendframe;
+#ifdef __cplusplus
+}
+#endif
+
+#ifndef SAGA_REMAINING_CALLBACK_STATE_DECLARATIONS
+#define SAGA_REMAINING_CALLBACK_STATE_DECLARATIONS
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i16 id_BAT;
+    extern i16 id_NAFFDROID1;
+    extern i16 id_NAFFDROID2;
+    extern i16 id_NAFFDROID4;
+    extern i16 id_MOUSEDROID;
+    extern i16 id_BUZZDROID;
+    extern i16 id_SUPERBATTLEDROID;
+    extern f32 CritterSnakeExtraHoverPc;
+    extern f32 CritterBatExtraHoverPc;
+    extern f32 pod_animtime[2];
+    extern f32 podanimendframe;
+    extern i16 id_BATTLEDROID;
+#ifdef __cplusplus
+}
+#endif
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    struct add_gizmo_config_type_pc_s;
+    struct add_gizmo_config_type_pc_s *__cdecl GizSpecial_RegisterGizmo(i32 type_id);
+#ifdef __cplusplus
+}
+#endif
+
+#endif

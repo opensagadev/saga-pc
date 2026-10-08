@@ -166,8 +166,40 @@ Hat drawing, positive asset streaming, device or gameplay milestone is claimed.
 Final local review accepts three specific prior nonexact compiler-output pairs
 within their stated finite domains. Camera and DebReAlloc reproduce previously
 reviewed pairs; the particle reload permutation has its own complete instruction
-and binding proof. Exact pushed-revision CI remains pending. Full pair and data-tail
+and binding proof. LL passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37811078781). Full pair and data-tail
 qualifications remain in the checkpoint evidence. Next connected source includes
 obstacle registration and character loading. Corrected transport source passed
 independent review; genuine shared storage and current-header integration remain
 conditional. The rejected signed-index version and earlier history are retained.
+
+## Current source checkpoint MM (2026-10-08)
+
+This snapshot adds 87 functions/15,476 unique PC bytes across obstacles,
+tubes/plugs, MiniCut, character loading/callbacks and special gizmos. Ten original
+source owners retain all previous bodies; gizminicut.c is the one new owner.
+Private callbacks/descriptors and minimum named field cohorts retain asserted PC
+ABI/offsets. Eighteen central state views use real native initial values; their
+unknown owning extents receive zero allocation or exact-data credit.
+
+All required checks pass: 732 tests (three existing skips), LLVM18 format for
+359 files and tidy for 332 units, source build/link, complete object coverage
+and retail matching. Whole-PC fuzzy code reaches 28.423950%, +0.348722 percentage
+points; exact code reaches 223,832 bytes (6.448175%), +2,475. All prior complete
+outputs and exact contracts survive. Five finite contained compiler-local serial
+changes retain identical bytes; no old body/data pair changed. All 61 new complete
+initializer copies/950 bytes equal retail. Known exact data remains 637,612 bytes.
+Mapping is 42.062677% code, 1.796293% data and 5.335765% combined section storage.
+
+Actual-normal CPU checks pass 241/241 through real callbacks, character parser
+and POD suppliers. The initial fixture compile referred to a nonexistent public
+max_specials field; one initialization was corrected to the already-asserted
+local reader cohort. Assertions, values, providers, engine and flags stayed fixed.
+Crash dialogs were set and queried off, natural exit was zero and no owned
+process remained. No camera playback, installed asset, active movement, source
+EXE or device/gameplay milestone is claimed. Partial native actions and bounded
+valid-input domains remain explicit.
+
+Exact pushed-revision CI is pending. Next source closes the genuine GCDATA_DEFAULT
+minimum record and FixUpCharacters/Extra parents, alongside Techno/Portal/Shadow.
+Their hypotheses receive no transfer credit. Full ordered registration tables,
+real startup CharFixUp storage and shader publication remain separate contracts.

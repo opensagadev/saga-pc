@@ -5013,5 +5013,30 @@ with 621 overlapping bytes in objdiff's 1,411,224 denominator. CPU fixtures pass
 264 checks through actual normal providers, with no replacement/supplement.
 Three specific old nonexact output pairs are accepted within explicit finite
 domains, with complete bytes and bindings retained; no generic scheduling or
-padding waiver applies. Exact pushed-revision CI is pending. The full record is appended to
+padding waiver applies. LL passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37811078781). The full record is appended to
 transfer-checkpoint.json. Source game/device/asset/gameplay success remains unproved.
+
+### Obstacle, transport, MiniCut, character and special snapshot MM (2026-10-08)
+
+The actual normal source adds 87 functions/15,476 newly compared unique PC bytes:
+obstacles 6/1,377, tubes/plugs 39/3,284, MiniCut 14/1,997, character list 1/892,
+character callbacks/suppliers 10/6,260 and special gizmos 17/1,666. Geonosian/Jawa
+are counted once in the character bank. New gizminicut.c retains its genuine
+private helper/caller group; no wrapper or prototype-only provider replaces it.
+Every previous source prefix and all 14,419 prior raw map rows are preserved.
+
+All 4,794 old complete function copies and 10,746 old complete data regions
+retain their raw and applied bytes, with five precisely qualified contained
+compiler-local serial changes. All 2,237 old exact code copies, 5,575 known-exact
+data copies and 13 named members/28 bytes survive. No old nonexact output pair
+changed. All 87 new body outputs reproduce the accepted banks; all 61 new
+initializer copies/950 bytes equal retail, with unknown owning extents zero-credit.
+
+Required checks and retail matching pass for 332 normal owners; the source EXE
+links 4,881 functions and 10,807 data definitions. Whole-PC fuzzy code is
+28.423950%, exact code 223,832 bytes (6.448175%), a 2,475-byte gain. Unique
+compared code is 1,426,079 bytes; objdiff's denominator is 1,426,700 with 621
+overlapping bytes. CPU fixtures pass 241/241 using real normal providers and
+caller-owned initialized valid records. Partial character actions and unsafe
+parser domains remain explicit. Exact pushed-revision CI is pending. No camera
+playback, source game, asset, device or gameplay milestone is established.

@@ -2511,3 +2511,148 @@ i32 __cdecl AnimBlendingFromTo(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *
     }
     return 0;
 }
+
+typedef struct CHARACTER_LIST_ENTRY_PC {
+    i32 name_id;
+    u32 model_flags;
+    char *dir;
+    char *name;
+    CHARACTERANIM_CONFIG_PC *animations;
+    u16 animation_count;
+    u8 unknown_16[2];
+    void(__cdecl *move_fn)(GAMEOBJECT *);
+    void(__cdecl *animate_fn)(GAMEOBJECT *);
+    void(__cdecl *post_animate_fn)(GAMEOBJECT *);
+    PLAYERCHARACTERCONFIG_PC *game_character;
+    CHARACTER_EFFECT_CONFIG_PC *effects;
+    f32 scaled_radius;
+    f32 collision_radius;
+    f32 bottom;
+    f32 top;
+    f32 model_scale;
+    u8 flags;
+    u8 unknown_41;
+    i16 icon_model;
+    u32 unknown_44;
+    u32 unknown_48;
+} CHARACTER_LIST_ENTRY_PC;
+STATIC_ASSERT(sizeof(CHARACTER_LIST_ENTRY_PC) == 0x4c);
+STATIC_ASSERT(sizeof(CHARACTER_LIST_ENTRY_PC) == sizeof(CHARACTERDATA_PC));
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, name_id) == 0);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, model_flags) == 4);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, dir) == 8);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, name) == 0xc);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, animations) == 0x10);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, animation_count) == 0x14);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, move_fn) == 0x18);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, animate_fn) == 0x1c);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, post_animate_fn) == 0x20);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, game_character) == 0x24);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, effects) == 0x28);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, scaled_radius) == 0x2c);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, collision_radius) == 0x30);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, bottom) == 0x34);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, top) == 0x38);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, model_scale) == 0x3c);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, flags) == 0x40);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, icon_model) == 0x42);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, unknown_44) == 0x44);
+STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, unknown_48) == 0x48);
+
+CHARACTERDATA_PC *__cdecl ConfigureCharacterList(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, i32 maximum,
+                                                 i32 *count_out, i32 game_stride,
+                                                 PLAYERCHARACTERCONFIG_PC **game_data_out) {
+    NUFPAR_PC *parser;
+    CHARACTER_LIST_ENTRY_PC *first, *current;
+    i16 directory_offsets[500], filename_offsets[500];
+    char strings[10000];
+    i32 count = 0, offset = 0, inside = 0, index, next_offset;
+    (void)buffer_end; /* Genuine native formal is unused; no fabricated capacity. */
+    parser = NuFParCreate(file);
+    /* Native 630814 -> 62a5e0 is RET-only on a NULL parser; parsing still follows. */
+    if (maximum > 500)
+        maximum = 500;
+    buffer_start->addr = (buffer_start->addr + 3u) & ~3u;
+    first = current = (CHARACTER_LIST_ENTRY_PC *)buffer_start->void_ptr;
+    memset(strings, 0, sizeof(strings));
+    strings[0] = 0;
+    while (NuFParGetLine(parser) != 0) {
+        NuFParGetWord(parser);
+        if (*parser->word_buffer_ptr == 0)
+            continue;
+        if (inside != 0) {
+            if (NuStrICmp(parser->word_buffer_ptr, "char_end") == 0) {
+                inside = 0;
+                if (directory_offsets[count] != -1 && filename_offsets[count] != -1) {
+                    ++count;
+                    ++current;
+                }
+            } else if (NuStrICmp(parser->word_buffer_ptr, "dir") == 0) {
+                if (NuFParGetWord(parser) != 0) {
+                    next_offset = NuStrLen(parser->word_buffer_ptr) + offset + 1;
+                    if (next_offset < 10000) {
+                        NuStrCpy(strings + offset, parser->word_buffer_ptr);
+                        directory_offsets[count] = (i16)offset;
+                        offset = next_offset;
+                    }
+                }
+            } else if (NuStrICmp(parser->word_buffer_ptr, "file") == 0) {
+                if (NuFParGetWord(parser) != 0) {
+                    next_offset = NuStrLen(parser->word_buffer_ptr) + offset + 1;
+                    if (next_offset < 10000) {
+                        NuStrCpy(strings + offset, parser->word_buffer_ptr);
+                        filename_offsets[count] = (i16)offset;
+                        offset = next_offset;
+                    }
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "char_start") == 0 && count < maximum) {
+            inside = 1;
+            directory_offsets[count] = filename_offsets[count] = -1;
+            current->name_id = -1;
+            current->model_flags = 0;
+            current->dir = NULL;
+            current->name = NULL;
+            current->animations = NULL;
+            current->animation_count = 0;
+            current->move_fn = NULL;
+            current->animate_fn = NULL;
+            current->post_animate_fn = NULL;
+            current->game_character = NULL;
+            current->effects = NULL;
+            current->scaled_radius = 1.0f;
+            current->collision_radius = 0.5f;
+            current->bottom = -0.5f;
+            current->top = 0.5f;
+            current->model_scale = 1.0f;
+            current->flags &= 0xfe;
+            current->icon_model = -1;
+            current->unknown_44 = 0;
+            current->unknown_48 = 0;
+        }
+    }
+    NuFParDestroy(parser);
+    if (count < 1) {
+        /* Native 630b19 -> 62a5e0 is RET-only, then native returns NULL. */
+        return NULL;
+    }
+    buffer_start->void_ptr = current;
+    PCByteCopy_candidate(buffer_start->void_ptr, strings, (u32)offset);
+    for (index = 0; index < count; ++index) {
+        first[index].dir = (char *)buffer_start->void_ptr + directory_offsets[index];
+        first[index].name = (char *)buffer_start->void_ptr + filename_offsets[index];
+    }
+    buffer_start->addr = (buffer_start->addr + offset + 3u) & ~3u;
+    if (game_stride > 0) {
+        if (game_data_out != NULL)
+            *game_data_out = (PLAYERCHARACTERCONFIG_PC *)buffer_start->void_ptr;
+        for (index = 0; index < count; ++index) {
+            first[index].game_character = (PLAYERCHARACTERCONFIG_PC *)buffer_start->void_ptr;
+            buffer_start->addr += game_stride;
+        }
+    }
+    buffer_start->addr = (buffer_start->addr + 3u) & ~3u;
+    if (count_out != NULL)
+        *count_out = count;
+    return (CHARACTERDATA_PC *)first;
+}

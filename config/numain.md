@@ -1061,4 +1061,22 @@ frontier: exit 5 at NULL shader Retrieve+16 before level loading. Genuine manage
 compiler publication and its real constructors/returned values remain required.
 Automated fixture launch set and queried ShowCrashDialog DWORD 0 and left no owned
 processes. Specific old nonexact compiler outputs retain finite reviewed qualifications;
-exact pushed-revision CI is pending. This does not alter the startup frontier.
+LL passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37811078781). This does not alter the startup frontier.
+
+### Connected registration and character source MM (2026-10-08)
+
+The genuine obstacle, Tube, Plug, MiniCut and special registration families,
+character-list loader and ten character callbacks/suppliers now compile and link.
+Their complete PC extents add 15,476 unique compared code bytes. CPU tests cover
+241 bounded registration/progress/parser/POD cases through real normal objects;
+they do not activate installed characters or camera playback. Missing character
+VOID actions remain explicit. The full 28-way LSW registration parent and real
+startup CharFixUp table remain held until every consumed callback/storage value
+is supplied; no NULL table substitute is introduced.
+
+No source-game launch was repeated. The observed startup frontier remains II's
+NULL shader Retrieve+16 before a level. Real shader manager/compiler publication,
+resource ownership, device presentation and recurring frames remain required.
+The test's own Wine prefix suppressed crash dialogs and its process group was
+empty afterward. Full measurements and release qualifications remain in
+transfer-checkpoint.json; matching percentage is not runnable completion.

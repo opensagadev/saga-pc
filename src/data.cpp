@@ -19398,3 +19398,27 @@ extern "C" {
     f32 PushBlockOverlapShrinkPc = 0.0f;
     char *PushBlocksNamePc = "PushBlocks";
 }
+
+extern "C" {
+    const char *GizObstacleRegistrationNamePtrPc = GizObstacleTypeNamePc;
+    const char *TubeGizmoNamePc = PCContextName_Tube;
+    const char *TubeOutputNamePc = "Active";
+    const char *PlugGizmoNamePc = "Plug";
+    const char *PlugOutputNamePc = "Plugged";
+    i32 plug_gizmotype_id = -1;
+}
+
+extern "C" {
+    i16 id_BAT = -1;
+    i16 id_NAFFDROID1 = -1;
+    i16 id_NAFFDROID2 = -1;
+    i16 id_NAFFDROID4 = -1;
+    i16 id_MOUSEDROID = -1;
+    i16 id_BUZZDROID = -1;
+    i16 id_SUPERBATTLEDROID = -1;
+    f32 CritterSnakeExtraHoverPc = -0.15000000596046448f;
+    f32 CritterBatExtraHoverPc = 0.20000000298023224f;
+    f32 pod_animtime[2] = {1.0f, 1.0f};
+    f32 podanimendframe = 1.0f;
+    i16 id_BATTLEDROID = -1;
+}

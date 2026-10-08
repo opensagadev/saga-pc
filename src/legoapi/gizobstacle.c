@@ -858,3 +858,262 @@ void __cdecl GizObstacles_Draw(void *world_ptr, void *data, f32 time) {
             GameAnimSet_DrawReflection(obstacle->anim_set, 2, obstacle->reflection_alpha, NULL);
     }
 }
+
+typedef struct gizmo_config_functions_pc_s {
+    i16 options;
+    u16 padding;
+    i32(__cdecl *get_max_gizmos)(void *world);
+    void *add_gizmos;
+    void(__cdecl *early_update)(void *world, void *data, f32 delta_time);
+    void(__cdecl *late_update)(void *world, void *data, f32 delta_time);
+    void(__cdecl *draw)(void *world, void *data, f32 delta_time);
+    void(__cdecl *panel_draw)(void *world, void *data, f32 delta_time);
+    void *get_gizmo_name;
+    void *get_output;
+    void *get_output_name;
+    void *get_num_outputs;
+    void *activate;
+    void *activate_reverse;
+    void *set_visibility;
+    void *get_visibility;
+    void *get_pos;
+    void *using_special;
+    void *bolt_hit_plat;
+    void *get_best_bolt_target;
+    void *bolt_hit;
+    void *(__cdecl *allocate_progress_data)(VARIPTR *buffer, VARIPTR *end);
+    void(__cdecl *clear_progress)(void *world, void *progress);
+    void(__cdecl *store_progress)(void *world, void *data, void *progress);
+    void(__cdecl *reset)(void *world, void *data, void *progress);
+    void *(__cdecl *reserve_buffer_space)(void *world);
+    i32(__cdecl *load)(void *world, void *data);
+    void(__cdecl *post_load)(void *world, void *data);
+    void *add_level_sfx;
+} GIZMO_CONFIG_FUNCTIONS_PC;
+STATIC_ASSERT(sizeof(GIZMO_CONFIG_FUNCTIONS_PC) == 0x70);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 4);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
+
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, options) == 0x0);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 0x4);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_gizmos) == 0x8);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_gizmo_name) == 0x1c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output) == 0x20);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output_name) == 0x24);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_num_outputs) == 0x28);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_visibility) == 0x38);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_pos) == 0x3c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, using_special) == 0x40);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit_plat) == 0x44);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_best_bolt_target) == 0x48);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit) == 0x4c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, clear_progress) == 0x54);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
+STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_level_sfx) == 0x6c);
+
+typedef struct add_gizmo_config_type_pc_s {
+    const char *name;
+    char *prefix;
+    GIZMO_CONFIG_FUNCTIONS_PC functions;
+} ADD_GIZMO_CONFIG_TYPE_PC;
+STATIC_ASSERT(sizeof(ADD_GIZMO_CONFIG_TYPE_PC) == 0x78);
+STATIC_ASSERT(offsetof(ADD_GIZMO_CONFIG_TYPE_PC, functions) == 8);
+
+extern ADD_GIZMO_CONFIG_TYPE_PC Default_ADDGIZMOTYPE;
+extern const char *GizObstacleRegistrationNamePtrPc;
+
+STATIC_ASSERT(offsetof(GIZOBSTACLE_SYSTEM_PC, obstacles) == 0);
+STATIC_ASSERT(offsetof(GIZOBSTACLE_SYSTEM_PC, active_gizmos) == 4);
+STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
+STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
+STATIC_ASSERT(offsetof(BOLT_PC, direction) == 0xac);
+STATIC_ASSERT(offsetof(BOLT_PC, hit_platform) == 0xfa);
+STATIC_ASSERT(offsetof(BOLT_PC, type_id) == 0x101);
+
+static i32 __cdecl GizObstacles_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    return world ? world->current_level->max_obstacles : 0;
+}
+static void __cdecl GizObstacles_AddGizmos(void *gizmo_sys, i32 type_id, void *world, void *data) {
+    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
+    i32 i;
+    (void)world;
+    if (system)
+        for (i = 0; i < system->count; ++i)
+            if (NuStrLen(system->obstacles[i].name))
+                AddGizmo(gizmo_sys, type_id, NULL, &system->obstacles[i]);
+}
+static char *__cdecl GizmoObstacle_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    (void)gizmo;
+    switch (output) {
+        case 0:
+            return "AtEnd";
+        case 1:
+            return "NotAtStart";
+        case 2:
+            return "Proximity";
+        case 3:
+            return "AtStart";
+        case 4:
+            return "PlayingForward";
+        default:
+            return NULL;
+    }
+}
+static i32 __cdecl GizObstacles_BoltHitPlat(void *world, void *data, BOLT_PC *bolt, u8 *hit_flags) {
+    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
+    i32 i, count;
+    (void)hit_flags;
+    if (!system)
+        return 0;
+    count = system->active_gizmo_count;
+    for (i = 0; i < count; ++i) {
+        GIZOBSTACLE *obstacle = (GIZOBSTACLE *)system->active_gizmos[i]->object;
+        GAMEANIMOBJ *object;
+        if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || !(obstacle->runtime_flags & 0x10) ||
+            (obstacle->runtime_flags & 0x80))
+            continue;
+        for (object = obstacle->anim_set->objects; object; object = object->next) {
+            typedef struct obstacle_anim_object_data_pc_s {
+                u16 flags;
+                i16 platform;
+            } OBSTACLE_ANIM_OBJECT_DATA_PC;
+            OBSTACLE_ANIM_OBJECT_DATA_PC *object_data = (OBSTACLE_ANIM_OBJECT_DATA_PC *)object->object_data;
+            STATIC_ASSERT(sizeof(OBSTACLE_ANIM_OBJECT_DATA_PC) == 4);
+            STATIC_ASSERT(offsetof(OBSTACLE_ANIM_OBJECT_DATA_PC, platform) == 2);
+            if (object_data->platform == bolt->hit_platform) {
+                BOLTTYPE_PC *type = BoltType_FindByID(bolt->type_id, (WORLDINFO *)world);
+                GAMEOBJECT *owner = (GAMEOBJECT *)bolt->owner;
+                i32 player = owner ? (i8)owner->field_280 : -1;
+                GizObstacles_Hit(world, obstacle, &bolt->position, player, type->field_3c);
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+static i32 __cdecl GizObstacles_BoltHit(void *world, void *data, void *attacker_ptr, NUVEC *points, i32 point_count,
+                                        f32 radius, NUVEC *minimum, NUVEC *maximum, BOLT_PC *bolt, u32 hit_type,
+                                        u8 *hit_flags) {
+    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
+    GAMEOBJECT *attacker = (GAMEOBJECT *)attacker_ptr;
+    GIZOBSTACLE *nearest = NULL;
+    f32 nearest_distance = 1000000000.0f;
+    i32 i;
+    if (!system)
+        return 0;
+    for (i = 0; i < system->active_gizmo_count; ++i) {
+        GIZOBSTACLE *obstacle = (GIZOBSTACLE *)system->active_gizmos[i]->object;
+        i32 point_index;
+        if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80))
+            continue;
+        if (obstacle->evaluated_position.x - obstacle->evaluated_radius > maximum->x ||
+            minimum->x > (f64)obstacle->evaluated_position.x + obstacle->evaluated_radius ||
+            obstacle->evaluated_position.z - obstacle->evaluated_radius > maximum->z ||
+            minimum->z > (f64)obstacle->evaluated_position.z + obstacle->evaluated_radius ||
+            obstacle->evaluated_position.y - obstacle->evaluated_radius > maximum->y ||
+            minimum->y > (f64)obstacle->evaluated_position.y + obstacle->evaluated_radius)
+            continue;
+        for (point_index = point_count - 1; point_index >= 0; --point_index) {
+            NUVEC *point = &points[point_index];
+            f32 distance;
+            if (!SphereSphereOverlap(&obstacle->evaluated_position, obstacle->evaluated_radius, point, radius))
+                continue;
+            if (attacker)
+                point = &attacker->collision_position;
+            distance = NuVecDistSqr(point, &obstacle->evaluated_position, 0);
+            if (distance < nearest_distance) {
+                nearest_distance = distance;
+                nearest = obstacle;
+            }
+            break;
+        }
+    }
+    if (!nearest)
+        return 0;
+    if (hit_type != 2 && hit_type != 7 && bolt) {
+        BoltType_FindByID(bolt->type_id, WORLD);
+        Cheats_CheckFlags(2);
+    }
+    {
+        BOLTTYPE_PC *type = BoltType_FindByID(bolt->type_id, (WORLDINFO *)world);
+        GAMEOBJECT *owner = (GAMEOBJECT *)bolt->owner;
+        i32 player = owner ? (i8)owner->field_280 : -1;
+        if (GizObstacles_Hit(world, nearest, &bolt->position, player, type->field_3c)) {
+            if (attacker) {
+                NewRumble(attacker->pad->bound_pad, 0.4f, 0);
+                GameCam_HitJudder();
+            }
+        } else {
+            NUVEC normal;
+            NuVecSub(&normal, &nearest->evaluated_position, &bolt->position);
+            NuVecNorm(&normal, &normal);
+            Bolt_AddDeflectedBolt(bolt, &bolt->direction, &normal, hit_flags);
+        }
+    }
+    if (BoltSys->stop_targeting)
+        BoltSys->stop_targeting(attacker, points);
+    return 1;
+}
+
+ADD_GIZMO_CONFIG_TYPE_PC *__cdecl GizObstacles_RegisterGizmo(i32 type_id) {
+    static ADD_GIZMO_CONFIG_TYPE_PC GizObstaclesAddTypePc;
+    ADD_GIZMO_CONFIG_TYPE_PC *addtype = &GizObstaclesAddTypePc;
+    *addtype = Default_ADDGIZMOTYPE;
+    addtype->name = GizObstacleRegistrationNamePtrPc;
+    addtype->prefix = "";
+    addtype->functions.options = 0x70;
+    addtype->functions.early_update = NULL;
+    addtype->functions.panel_draw = NULL;
+    addtype->functions.get_visibility = NULL;
+    addtype->functions.using_special = NULL;
+    addtype->functions.get_max_gizmos = GizObstacles_GetMaxGizmos;
+    addtype->functions.add_gizmos = GizObstacles_AddGizmos;
+    addtype->functions.late_update = GizObstacles_Update;
+    addtype->functions.draw = GizObstacles_Draw;
+    addtype->functions.get_gizmo_name = GizmoObstacle_GetGizmoName;
+    addtype->functions.get_output = GizmoObstacle_GetOutput;
+    addtype->functions.get_output_name = GizmoObstacle_GetOutputName;
+    addtype->functions.get_num_outputs = GizmoObstacle_GetNumOutputs;
+    addtype->functions.activate = GizmoObstacle_Activate;
+    addtype->functions.activate_reverse = GizmoObstacle_ActivateRev;
+    addtype->functions.set_visibility = GizmoObstacle_SetVisibility;
+    addtype->functions.get_pos = GizmoObstacle_GetPos;
+    addtype->functions.bolt_hit_plat = GizObstacles_BoltHitPlat;
+    addtype->functions.get_best_bolt_target = GizObstacles_GetBestBoltTarget;
+    addtype->functions.bolt_hit = GizObstacles_BoltHit;
+    addtype->functions.allocate_progress_data = GizObstacles_AllocateProgressData;
+    addtype->functions.clear_progress = GizObstacles_ClearProgress;
+    addtype->functions.store_progress = GizObstacles_StoreProgress;
+    addtype->functions.reset = GizObstacles_Reset;
+    addtype->functions.reserve_buffer_space = GizObstacles_ReserveBufferSpace;
+    addtype->functions.load = GizObstacles_Load;
+    addtype->functions.post_load = GizObstacles_PostLoad;
+    addtype->functions.add_level_sfx = GizObstacles_AddLevelSfx;
+    obstacle_gizmotype_id = type_id;
+    return addtype;
+}
