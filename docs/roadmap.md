@@ -10,6 +10,11 @@ window/device presentation nor recurring gameplay. Code similarity and mapping
 are separate from runnable milestones; current measurements live in
 [matching.json](../matching.json).
 
+The current source wave also includes connected pushing, ledge and teleport
+motion, title/credits callbacks and geometry readers. Its 156 passing CPU checks
+exercise bounded real providers; they establish no asset/device or gameplay
+success. The next geometry wave supplies the genuine arena/basis/origin producers.
+
 Work proceeds through connected source families and verified PC contracts:
 
 1. Complete genuine shader-manager publication and its constructor, parser,

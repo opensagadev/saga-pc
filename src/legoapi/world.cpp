@@ -1453,3 +1453,240 @@ extras:
         }
     }
 }
+
+extern "C" {
+    extern NUMTX LevMtx;
+    extern f32 LevAlpha;
+    extern f32 TitlesAlpha;
+    extern f32 newgamealpha;
+    extern i32 newgamefade;
+    extern i32 newgame_menudrawoff;
+    f32 TitleScalePc = 0.825f;
+    f32 TitlePictureYPc = -0.15f;
+    void __cdecl Door_Reset(void);
+    void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *, i32);
+}
+static i32 PicturesNumLevelsPc;
+static NUVEC TitlesStartPositionPc;
+STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
+STATIC_ASSERT(offsetof(WORLDINFO, secondary_gscn) == 0x140);
+STATIC_ASSERT(offsetof(PLAYERPROGRESS, active) == 6);
+STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
+
+static void PicturesFixUpPc(WORLDINFO *world) {
+    if (world->secondary_gscn != NULL) {
+        PicturesNumLevelsPc = 0;
+        char name[64];
+        for (i32 episode = 0; episode < EPISODECOUNT; ++episode) {
+            sprintf(name, "EP_%i", episode + 1);
+            NuSpecialFind(world->secondary_gscn, &LevHSpecial[10 + episode], name, 1);
+            for (i32 chapter = 0; chapter < 8; ++chapter) {
+                sprintf(name, "EP_%i_CH_%i", episode + 1, chapter + 1);
+                NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevelsPc], name, 1);
+                ++PicturesNumLevelsPc;
+            }
+        }
+        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevelsPc], "pod_race", 1);
+        ++PicturesNumLevelsPc;
+        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevelsPc], "anakin_flight", 1);
+        ++PicturesNumLevelsPc;
+        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevelsPc], "gunship", 1);
+        ++PicturesNumLevelsPc;
+        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevelsPc], "new_hope", 1);
+        ++PicturesNumLevelsPc;
+        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevelsPc], "lego_city", 1);
+        ++PicturesNumLevelsPc;
+        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevelsPc], "new_town", 1);
+        ++PicturesNumLevelsPc;
+    }
+    HubSecondLevelTimePc = 0.0f;
+    BossKillDelayTimePc = 0.0f;
+}
+
+extern "C" void __cdecl Titles_Init(WORLDINFO *world) {
+    char title_name[64];
+    STUBBED_NAMED("Titles_Init: genuine NewGame 0x42abf0");
+    WorldGetTitlesNamePrivatePc(title_name);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[0], title_name, 1);
+    LevAlpha = 1.0f;
+    if (NuSpecialExistsFn(&LevHSpecial[0]) != 0) {
+        LevMtx = *NuSpecialGetDrawMtx(&LevHSpecial[0]);
+        NuSpecialSetVisibility(&LevHSpecial[0], 0);
+        TitlesStartPositionPc.x = LevMtx.m30;
+        TitlesStartPositionPc.y = 0.0f;
+        TitlesStartPositionPc.z = (f32)((f64)LevMtx.m32 - 0.5);
+    }
+    TitlesAlpha = 1.0f;
+    if (GAMEDEMO != 0) {
+        GAMEDEMO = 1;
+    }
+    NuPadResetState(0);
+    if (GAMEDEMO == 0) {
+        PlayerID[0] = id_DEFAULTCHARACTER[0];
+        PlayerID[1] = id_DEFAULTCHARACTER[1];
+    }
+    Door_Reset();
+    newgamealpha = 1.0f;
+    if (GAMEDEMO == 0) {
+        PlayerProgress[1].active = 0;
+        PlayerProgress[0].active = 0;
+        newgamefade = 0;
+        newgame_menudrawoff = 0;
+    }
+    BackDrop_ResetColours();
+    PicturesFixUpPc(world);
+}
+
+extern "C" void __cdecl Titles_Update(WORLDINFO *world) {
+    if (NuSpecialExistsFn(&LevHSpecial[0]) != 0) {
+        i32 menu = GetMenuID();
+        f32 target = (menu == -1 || menu == 0 || menu == 1) ? 1.0f : 0.0f;
+        f32 step = FRAMETIME + FRAMETIME;
+        LevAlpha = SeekLinearF(LevAlpha, target, step);
+    }
+    f32 step = FRAMETIME + FRAMETIME;
+    TitlesAlpha = SeekLinearF(TitlesAlpha, 1.0f, step);
+    HubSecondLevelTimePc = (GetMenuID() == 0 && GameTimer.time_elapsed >= 4.0f) ? 1.0f : 0.0f;
+    step = FRAMETIME + FRAMETIME;
+    BossKillDelayTimePc = SeekLinearF(BossKillDelayTimePc, HubSecondLevelTimePc, step);
+}
+
+extern "C" void __cdecl Titles_Draw(WORLDINFO *world) {
+    NUMTX matrix;
+    if (NuSpecialExistsFn(&LevHSpecial[0]) != 0 && LevAlpha > 0.0f) {
+        matrix = LevMtx;
+        if (GameTimer.time_elapsed < 4.0f) {
+            f32 t = NuTrigTable[((i32)((f64)GameTimer.time_elapsed * 0.25 * 16384.0) >> 1) & 0x7fff];
+            matrix.m30 = TitlesStartPositionPc.x + (LevMtx.m30 - TitlesStartPositionPc.x) * t;
+            matrix.m31 = TitlesStartPositionPc.y + (LevMtx.m31 - TitlesStartPositionPc.y) * t;
+            matrix.m32 = TitlesStartPositionPc.z + (LevMtx.m32 - TitlesStartPositionPc.z) * t;
+        }
+        NUVEC scale;
+        scale.x = scale.y = scale.z = TitleScalePc;
+        NuMtxPreScale(&matrix, &scale);
+        NuSpecialDrawAtAlpha(&LevHSpecial[0], &matrix,
+                             (f32)((f64)TitlesAlpha * newgamealpha *
+                                   (1.0 - NuTrigTable[((i32)((f64)LevAlpha * 16384.0 + 16384.0) >> 1) & 0x7fff])));
+    }
+    if (!(BossKillDelayTimePc > 0.0f) || !(newgamealpha > 0.0f)) {
+        return;
+    }
+    f32 time = GameTimer.time_elapsed;
+    matrix = LevMtx;
+    for (i32 index = 0; index < 8; ++index) {
+        f32 start = (f32)(4.0 + (f64)4.1666665f * index);
+        f32 hold_end = (f32)((f64)start + (f64)4.1666665f);
+        if (time > start) {
+            f32 alpha;
+            f32 fade_in_end = start + 1.0f;
+            if (time < fade_in_end) {
+                alpha = time - start;
+            } else if (time < hold_end) {
+                alpha = 1.0f;
+            } else {
+                f32 end = (f32)((f64)start + ((f64)4.1666665f + 1.0));
+                if (time < end) {
+                    alpha = 1.0f - (time - hold_end);
+                } else {
+                    alpha = 0.0f;
+                }
+            }
+            if (alpha > 0.0f && NuSpecialExistsFn(&LevHSpecial[10 + index]) != 0) {
+                matrix.m31 = TitlePictureYPc;
+                NuSpecialDrawAtAlpha(&LevHSpecial[10 + index], &matrix,
+                                     (f32)((f64)newgamealpha * 0.5 * alpha * BossKillDelayTimePc));
+            }
+        }
+    }
+}
+
+extern "C" {
+    extern f32 CreditsTime;
+    f32 CreditsPictureScalePc = 2.5f;
+    f32 CreditsPictureBaseYPc = 0.0f;
+    f32 CreditsPictureBaseZPc = 1.0f;
+    f32 CreditsPictureAlphaPc = 0.5f;
+    void __cdecl Credits_Init(WORLDINFO *);
+    void __cdecl Credits_GetInfo(f32 *, i32 *, f32 *);
+}
+static const char *const CreditsEpisodeMusicPc[6] = {"Ep1_EndCredits", "Ep2_EndCredits", "Ep3_EndCredits",
+                                                     "Ep4_EndCredits", "Ep5_EndCredits", "Ep6_EndCredits"};
+STATIC_ASSERT(offsetof(AREA_DATA_PC, episode_index) == 0x86);
+STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, music_index) == 0x94);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);
+
+extern "C" void __cdecl Credits_Init_Game(WORLDINFO *world) {
+    i32 episode = 0;
+    if (LastAData != NULL) {
+        i32 last_episode = (i8)LastAData->episode_index;
+        if (last_episode >= 0 && last_episode <= 5) {
+            episode = last_episode;
+        }
+    }
+    const char *music_name = CreditsEpisodeMusicPc[episode];
+    world->current_level->music_index = GetMusicIndex((char *)music_name, MusicInfo, -1);
+    world->current_level->music_tracks[1] = music_man.GetTrackHandle(1, music_name);
+    world->current_level->music_tracks[0] = world->current_level->music_tracks[1];
+    world->current_level->music_tracks[3] = music_man.GetTrackHandle(2, music_name);
+    world->current_level->music_tracks[2] = world->current_level->music_tracks[3];
+    world->current_level->music_tracks[5] = music_man.GetTrackHandle(32, music_name);
+    world->current_level->music_tracks[4] = world->current_level->music_tracks[5];
+    Credits_Init(world);
+    PicturesFixUpPc(world);
+    NUVEC scale;
+    scale.x = scale.y = scale.z = CreditsPictureScalePc;
+    NuMtxSetScale(&LevMtx, &scale);
+    LevMtx.m31 = CreditsPictureBaseYPc;
+    LevMtx.m32 = CreditsPictureBaseZPc;
+}
+
+extern "C" void __cdecl Credits_Update_Game(WORLDINFO *world) {
+    i32 finished;
+    Credits_GetInfo(NULL, &finished, NULL);
+    HubSecondLevelTimePc = finished == 0 ? 1.0f : 0.0f;
+    f32 step = FRAMETIME + FRAMETIME;
+    BossKillDelayTimePc = SeekLinearF(BossKillDelayTimePc, HubSecondLevelTimePc, step);
+}
+
+extern "C" void __cdecl Credits_Draw_Game(WORLDINFO *world) {
+    if (BossKillDelayTimePc > 0.0f) {
+        f32 time = CreditsTime;
+        f32 duration;
+        f32 alpha;
+        Credits_GetInfo(&duration, NULL, &alpha);
+        alpha = (f32)((f64)CreditsPictureAlphaPc * BossKillDelayTimePc * alpha);
+        duration -= 1.0f;
+        f32 interval = (f32)(((f64)duration - 1.0) / PicturesNumLevelsPc);
+        f32 picture_duration = interval + 1.0f;
+        f64 hold_duration = (f64)picture_duration - 1.0;
+        for (i32 index = 0; index < PicturesNumLevelsPc; ++index) {
+            f32 start = (f32)((f64)interval * index + 1.0);
+            f32 hold_end = (f32)((f64)start + hold_duration);
+            f32 end = start + picture_duration;
+            if (time > start) {
+                f32 fade;
+                f32 fade_in_end = start + 1.0f;
+                if (time < fade_in_end) {
+                    fade = time - start;
+                } else if (time < hold_end) {
+                    fade = 1.0f;
+                } else if (time < end) {
+                    fade = 1.0f - (time - hold_end);
+                } else {
+                    fade = 0.0f;
+                }
+                if (fade > 0.0f && NuSpecialExistsFn(&LevHSpecial[20 + index]) != 0) {
+                    f32 progress = (f32)(((f64)time - start) / ((f64)end - start));
+                    NUMTX matrix = LevMtx;
+                    NUVEC scale;
+                    scale.x = scale.y = scale.z = (f32)((f64)progress * (f64)0.2f + (f64)0.9f);
+                    NuMtxPreScale(&matrix, &scale);
+                    NuMtxPreRotateZ(&matrix, (i32)(546.0 - 1092.0 * progress));
+                    matrix.m31 = (f32)((f64)progress * (f64)0.15f - (f64)0.075f);
+                    NuSpecialDrawAtAlpha(&LevHSpecial[20 + index], &matrix, fade * alpha);
+                }
+            }
+        }
+    }
+}

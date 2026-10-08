@@ -20,17 +20,52 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1392119,
-    "matched_code_bytes": 217589,
-    "matching_percent": 6.2683255522656705,
-    "fuzzy_coverage_percent": 27.116743992539753,
-    "mapped_functions": 4822,
-    "matched_functions": 2191,
-    "objdiff_fuzzy_percent": 69.28689,
-    "objdiff_total_code": 1359407,
+    "mapped_code_bytes": 1408410,
+    "matched_code_bytes": 218184,
+    "matching_percent": 6.285466371441263,
+    "fuzzy_coverage_percent": 27.36628300365225,
+    "mapped_functions": 4845,
+    "matched_functions": 2193,
+    "objdiff_fuzzy_percent": 69.096054,
+    "objdiff_total_code": 1375698,
     "image_bytes": 40067072,
-    "mapped_bytes": 2040319,
-    "mapping_percent": 5.092258800443417,
+    "mapped_bytes": 2056610,
+    "mapping_percent": 5.132918122891535,
+    "mapping_denominator": "code_and_data_section_virtual_sizes",
+    "mapping_sections": [
+      {
+        "name": ".text",
+        "kind": "code",
+        "address": "0x401000",
+        "size": 3471246,
+        "mapped_bytes": 1409604
+      },
+      {
+        "name": ".rdata",
+        "kind": "data",
+        "address": "0x751000",
+        "size": 646766,
+        "mapped_bytes": 30182
+      },
+      {
+        "name": ".data",
+        "kind": "data",
+        "address": "0x7ef000",
+        "size": 35372200,
+        "mapped_bytes": 616824
+      }
+    ],
+    "mapping_known_size_symbols": 9155,
+    "mapping_unknown_size_symbols": 5058,
+    "mapping_code_bytes": 1409604,
+    "mapping_code_total_bytes": 3471246,
+    "mapping_code_percent": 40.60801222385276,
+    "mapping_data_bytes": 647006,
+    "mapping_data_total_bytes": 36018966,
+    "mapping_data_percent": 1.7962925421012919,
+    "mapping_code_data_bytes": 2056610,
+    "mapping_code_data_total_bytes": 39490212,
+    "mapping_code_data_percent": 5.207898098901064,
     "matched_data_region_bytes": 637612
   },
   "newly_compared": [
@@ -29689,6 +29724,256 @@
         "build/analysis/checkpoint-II/data-integration.json": "afb95b845773e532ae4840aba9cef8fff04cd409663c581deb7b74829fa82bf7",
         "build/analysis/checkpoint-II/source-integration.json": "d0707ac30dcb5b56b29c3a95f39ea5519acce53c5a189d24058a893890e444d7"
       }
+    },
+    {
+      "checkpoint": "Connected pushing, ledges, teleport, title callbacks and geometry JJ (2026-10-08)",
+      "baseline_commit": "1c2a569eed9ef6a74ecb7e3bfe316491fd39c457",
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1392119,
+        "matched_code_bytes": 217589,
+        "matching_percent": 6.2683255522656705,
+        "fuzzy_coverage_percent": 27.116743992539753,
+        "mapped_functions": 4822,
+        "matched_functions": 2191,
+        "objdiff_fuzzy_percent": 69.28689,
+        "objdiff_total_code": 1359407,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2040319,
+        "mapping_percent": 5.092258800443417,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1393313
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30182
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9132,
+        "mapping_unknown_size_symbols": 5007,
+        "mapping_code_bytes": 1393313,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 40.13869947563497,
+        "mapping_data_bytes": 647006,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7962925421012919,
+        "mapping_code_data_bytes": 2040319,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.166644838472886,
+        "matched_data_region_bytes": 637612
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1408410,
+        "matched_code_bytes": 218184,
+        "matching_percent": 6.285466371441263,
+        "fuzzy_coverage_percent": 27.36628300365225,
+        "mapped_functions": 4845,
+        "matched_functions": 2193,
+        "objdiff_fuzzy_percent": 69.096054,
+        "objdiff_total_code": 1375698,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2056610,
+        "mapping_percent": 5.132918122891535,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1409604
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30182
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9155,
+        "mapping_unknown_size_symbols": 5058,
+        "mapping_code_bytes": 1409604,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 40.60801222385276,
+        "mapping_data_bytes": 647006,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7962925421012919,
+        "mapping_code_data_bytes": 2056610,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.207898098901064,
+        "matched_data_region_bytes": 637612
+      },
+      "new_source_functions": 23,
+      "actual_new_transfer_PC_bytes": 16291,
+      "new_unique_compared_PC_bytes": 16291,
+      "unique_compared_code_bytes": 1375077,
+      "native_objdiff_denominator": 1375698,
+      "overlap_bytes": 621,
+      "new_exact_PC_bytes": 595,
+      "whole_PC_fuzzy_delta_pp": 0.2495390111124962,
+      "old_full_function_copies": 4656,
+      "old_full_data_regions": 10418,
+      "old_exact_code_copies_preserved": 2195,
+      "old_known_extent_exact_data_compiled_copies_preserved": 5396,
+      "current_full_function_definitions": 4679,
+      "current_full_data_definitions": 10535,
+      "normal_objects": 324,
+      "frozen_inputs": 439,
+      "members_preserved": 13,
+      "known_member_bytes": 28,
+      "new_complete_initializer_copies": 117,
+      "new_complete_initializer_COFF_bytes": 1027,
+      "new_known_extent_initializer_copies": 63,
+      "new_known_extent_initializer_COFF_bytes": 386,
+      "new_unknown_extent_initializer_copies": 54,
+      "new_unknown_extent_initializer_COFF_bytes": 641,
+      "unknown_extent_exact_and_allocation_credit": 0,
+      "new_central_working_definitions": 20,
+      "new_central_typed_bytes": 142,
+      "new_central_full_bytes": 154,
+      "known_exact_data_union_before_transfer": 637612,
+      "known_exact_data_union_after_transfer": 637612,
+      "old_caller_connections": 9,
+      "old_caller_new_unique_credit": 0,
+      "qualified_previous_nonexact_function_changes": [
+        {
+          "unit": "src/legoapi/camera.c",
+          "symbol": "_GameCameraMakeMiniCut3",
+          "old_bytes": 1789,
+          "new_bytes": 1709,
+          "old_official_sha256": "4382fb31517118bb3ecc2395e3613371dbcf77baa069534c76ff89bd7be28a0f",
+          "new_official_sha256": "c4a2ffcc805ea325522e28caeac1d6b1b35d4a295403f310d9498f0ce7dab19c"
+        },
+        {
+          "unit": "src/legoapi/debris_engine.c",
+          "symbol": "_DebReAlloc2",
+          "old_bytes": 1458,
+          "new_bytes": 1458,
+          "old_official_sha256": "7a9dd072b10096065a1148d37ec82121b269a8655d0d5e8980b79cdc63fb6a77",
+          "new_official_sha256": "edf80808af3e18df2e1fa30a0a586a786f18ea7c037e3abe4930e3f2f70cb72c"
+        },
+        {
+          "unit": "src/legoapi/level_fixup.cpp",
+          "symbol": "_FixUpLevels",
+          "old_bytes": 3210,
+          "new_bytes": 3257,
+          "old_official_sha256": "b09a8de0a4d0a106b97660d4e5b5de982b0c1c7134add592aba4a1a6a1da7716",
+          "new_official_sha256": "62288497620221357ae6f7148f160c21a8135afda8d6461a589a13aa78832244"
+        },
+        {
+          "unit": "src/legoapi/move.c",
+          "symbol": "_Move_CHARACTER",
+          "old_bytes": 1082,
+          "new_bytes": 1152,
+          "old_official_sha256": "8b338181b303ff72b7d67c67f3e29061122d09bdbdf1ba67985e3a3fbe4b73ca",
+          "new_official_sha256": "9ecd095ae9552912ca8141a0d8868f1f81e267fdd3970104ad7142723e07bfb4"
+        }
+      ],
+      "qualified_unknown_extent_data_changes": [
+        {
+          "unit": "src/data.cpp",
+          "symbol": "_LEGOACT_GLIDE",
+          "old_bytes": 2,
+          "new_bytes": 4
+        }
+      ],
+      "qualified_compiler_local_class6_type0_serial_changes": [
+        {
+          "unit": "src/legoapi/move.c",
+          "symbol": "_MovePlayer_DIRECTIONAL"
+        },
+        {
+          "unit": "src/legoapi/move.c",
+          "symbol": "_PunchCode"
+        },
+        {
+          "unit": "src/nu2api/nufpar.c",
+          "symbol": "_GetLineW"
+        },
+        {
+          "unit": "src/nu2api/pc_device.cpp",
+          "symbol": "_PCDeviceSetRenderState"
+        },
+        {
+          "unit": "src/nu2api/shader_dictionary.cpp",
+          "symbol": "?EmitAttribute@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z"
+        }
+      ],
+      "whole_owner_language_change": {
+        "src/legoapi/pushing.c": "src/legoapi/pushing.cpp"
+      },
+      "required_checks": {
+        "tests": 732,
+        "skipped": 3,
+        "LLVM18_format_files": 351,
+        "LLVM18_tidy_units": 324,
+        "source_build": 0,
+        "objects": 0,
+        "retail_match": 0
+      },
+      "selected_CPU_checks": 156,
+      "selected_CPU_failures": 0,
+      "runtime": {
+        "domain": "Bounded real normal providers: spinner selection/control, straight ledge paths, title/credits coordinators and conservative push guards",
+        "replacements": 0,
+        "supplements": 0,
+        "additional_engine_providers": 0,
+        "initial_failed_checks": 8,
+        "initial_failure": "Eight direction-bit oracle expectations had opposite RotDiff argument order; actual full native disassembly independently established previous-current; only eight expected bit0 values corrected.",
+        "all_initial_failures_retained": true,
+        "source_EXE_repeated": false,
+        "device_asset_gameplay_claim": false,
+        "ShowCrashDialog": 0,
+        "owned_test_processes_remaining": 0
+      },
+      "remaining_contracts": [
+        "Real geometry arena522 and basis2064 publishers; source origin setup/update and uniform publication",
+        "Positive PushBlock context publication and asset/music/input success",
+        "Native shader-manager publication/parser/compiler helper identities and device presentation",
+        "Remaining movement void actions, full world loaders, saves and frame/gameplay loop"
+      ],
+      "next_wave": "Connected genuine geometry arena/basis/origin producers, alongside remaining movement/world suppliers and real startup dependencies; matching remains priority.",
+      "checkpoint_delay": "Required checks and complete prior-output review; two exact recurring nonexact instruction pairs qualified under retained bounded domains; corrected test oracle against native bytes without engine mutation.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "active; checkpoint does not finish whole-project reconstruction",
+      "evidence_pins": {
+        "build/analysis/endpoint-push-world-geometry-review/accepted-source-output-review.json": "8062ef83a2d7355f9391139398ef286d9e3e8599047e684ac438be5ad8e570f5",
+        "build/analysis/endpoint-push-world-geometry-review/actual-output-and-report-proof.json": "f8bc1369c78e88f7687b517882061862af72d4d1d422689eb86de148b82b1c8d",
+        "build/analysis/runtime-push-ledge-world-next/runtime-acceptance-v3.json": "79aab5c3e253f9de0bebf5404a64a6d3272a3aa51557277cddced14418d6a907",
+        "build/analysis/push-world-geometry-integration/normalfinal-grant.json": "053cb830154cada646c92ea4965ef0dc5a81368e2838c0c7d35a8fb5d43e0281",
+        "build/analysis/push-world-geometry-integration/accepted23-complete-functions.json": "94a2e11026757b582c154bd95c399c802b34cf9414b553c69dcb025ec2510945",
+        "build/analysis/push-world-geometry-integration/reviewed-caller-deltas.json": "29b502889a1ea5a74afd6cbe0031d1c45621bbfc4ae5a3dd679aced15285c52f",
+        "build/analysis/push-world-geometry-integration/runtime-golden-native-review.json": "cbd96660e9222d93a916c9a3d089cfcf43f5dc228ddbae2aea98a0ec7b292836"
+      },
+      "qualified_previous_nonexact_function_changes_full_evidence": "build/analysis/endpoint-push-world-geometry-review/actual-output-and-report-proof.json; SHA f8bc1369c78e88f7687b517882061862af72d4d1d422689eb86de148b82b1c8d",
+      "qualified_unknown_extent_data_changes_full_evidence": "build/analysis/endpoint-push-world-geometry-review/actual-output-and-report-proof.json; SHA f8bc1369c78e88f7687b517882061862af72d4d1d422689eb86de148b82b1c8d",
+      "qualified_compiler_local_class6_type0_serial_changes_full_evidence": "build/analysis/endpoint-push-world-geometry-review/actual-output-and-report-proof.json; SHA f8bc1369c78e88f7687b517882061862af72d4d1d422689eb86de148b82b1c8d"
     }
   ]
 }

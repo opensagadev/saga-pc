@@ -2143,3 +2143,27 @@ storage still needs genuine producer/capacity contracts. Four save-path arrays r
 held: a191-byte proposal fails a valid native shell-root135 case, so no artificial
 shell-root cap or guessed allocation is activated. Solewriter must receive a new
 bounded compile/write grant before further actual definitions.
+
+
+## Connected motion/callback/geometry working views JJ (2026-10-08)
+
+The sole central writer appended 20 native initializer views: pushing 11/34
+typed bytes, world/title state 6/84 and geometry state 3/24. They emit 154
+complete COFF bytes from 142 typed bytes, all equal to the corresponding native
+storage. The original owning extents remain blank; this is no allocation,
+capacity or exact-data coverage claim. Earlier definitions and their exact
+contracts are preserved. The final unknown `LEGOACT_GLIDE` region naturally
+grows from its two-byte -1 word to `ffff0000` when the next four-byte-aligned
+view is emitted; both complete regions equal their native bytes, and the word
+and original unknown extent are unchanged.
+
+World's six ordinary mutable scalar defaults remain with their callback owner;
+its original private picture count, start position and music table remain local.
+Geometry provides the actual zero `NUVEC4` origin (16 bytes) and two null pointer
+slots (4 bytes each), without fake arrays, arena capacity or producer activation.
+The named field assertions stay in the geometry reader owner. Real arena/basis
+and origin update publishers are the next connected dependencies.
+
+Across the wave, all 117 new complete initializer copies are native equal:
+63 already-known extent copies/386 bytes and 54 unknown extent copies/641 bytes.
+Aliases are counted once; the known exact data union remains 637,612 bytes.

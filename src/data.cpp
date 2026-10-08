@@ -19319,3 +19319,31 @@ extern "C" {
     i16 LEGOACT_GRAPPLE_HANG = -1;
     i16 LEGOACT_GLIDE = -1;
 }
+
+extern "C" {
+    i32 LEGOCONTEXT_PUSH = -1;
+    i32 LEGOCONTEXT_WALLJUMPWAIT = -1;
+    i16 LEGOACT_PUSH = -1;
+    i16 LEGOACT_SUPERPUSH_IDLE = -1;
+    i16 LEGOACT_SUPERPUSH_PUSH = -1;
+    i16 LEGOACT_SUPERPUSH_PULL = -1;
+    i16 LEGOACT_WALLJUMP_WAIT = -1;
+    i16 GizSpinnerGDeb_Fail[3] = {-1, -1, -1};
+    u32(__cdecl *CanPushObstaclesFn)(GAMEOBJECT *) = NULL;
+    f32 PushBlockGapEpsilonPc = 0.00999999978f;
+    u16 PushBlockFacingTolerancePc = 910;
+    NUMTX LevMtx = {0};
+    f32 LevAlpha = 0.0f;
+    f32 TitlesAlpha = 0.0f;
+    f32 newgamealpha = 0.0f;
+    i32 newgamefade = 0;
+    i32 newgame_menudrawoff = 0;
+}
+
+struct PC_GEOMETRY_BASIS_PC;
+struct PC_GEOMETRY_OUTPUT_PC;
+extern "C" {
+    NUVEC4 PcGeometryDistanceOriginPc = {0};
+    struct PC_GEOMETRY_BASIS_PC *PcGeometryTransformsPc = NULL;
+    struct PC_GEOMETRY_OUTPUT_PC *PcGeometryOutputPc = NULL;
+}

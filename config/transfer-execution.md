@@ -94,3 +94,22 @@ Wine or wineserver globally or interfere with another worker's prefix/processes.
 Record owned window/process inventories and remaining runtime gaps. A successful
 CPU fixture or absence of a crash dialog does not prove device, asset or frame
 success.
+
+
+## Current source checkpoint JJ (2026-10-08)
+
+The connected push/ledge/teleport/title/geometry wave adds 23 complete functions
+and 16,291 unique PC bytes, with nine real existing-caller reconnections.
+Normal owners rise to 324. Required local checks pass: 732 tests (three existing
+skips), LLVM18 format/tidy, source build/link, object coverage and full retail
+matching. Actual-normal bounded CPU replay passes 156/156; initial oracle failures
+and their native-byte correction are retained. All prior exact contracts remain.
+The detailed current measurements and qualifications are in
+[transfer-checkpoint.json](transfer-checkpoint.json). The new source EXE was not
+rerun; checkpoint II remains the last full-game runtime observation above.
+
+The separate mapping/documentation cleanup `1c2a569eed9ef6a74ecb7e3bfe316491fd39c457`
+has [all-job exact-revision CI success](https://github.com/opensagadev/saga-pc/actions/runs/37713793616).
+CI for this source checkpoint is verified against its exact pushed SHA separately.
+Next work closes the genuine geometry arena/basis/origin producers and continues
+remaining motion/world providers alongside the unresolved native startup frontier.

@@ -4,8 +4,11 @@ The [whole-project mandate](../SOL_IMPLEMENTATION_PLAN.md) remains active.
 The latest published source checkpoint is II,
 [`9c78272c5847aef790e82320b0a2401c20906c52`](https://github.com/opensagadev/saga-pc/commit/9c78272c5847aef790e82320b0a2401c20906c52),
 with [exact-revision CI passing](https://github.com/opensagadev/saga-pc/actions/runs/37710401246).
-Later shadow proposals are candidates until their actual integration and checks
-are recorded. Use [matching.json](../matching.json) for current comparisons.
+The current JJ source wave integrates pushing, ledges, teleport, title/credits
+callbacks and geometry readers: 23 functions/16,291 PC bytes, with required local
+checks and 156 bounded CPU checks passing. Its complete qualifications are in
+[transfer-checkpoint.json](transfer-checkpoint.json). II remains the last full-game
+runtime observation. Later shadow proposals remain candidates. Use [matching.json](../matching.json) for current comparisons.
 
 1. Close genuine shader-manager publication, parser/compiler lifetime and device
    dependencies at the observed startup frontier. Preserve true constructors,

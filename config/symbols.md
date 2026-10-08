@@ -4886,3 +4886,45 @@ The half-hour checkpoint was delayed for coherent storage/caller integration, th
 true parser-cleanup fix, required normal checks and two finite old-output reviews.
 User journal edits are preserved and excluded from commits. Direct-main continuation
 stays active; exact pushed-revision CI is verified separately.
+
+
+## Connected motion, callbacks and geometry JJ (2026-10-08)
+
+The normal 324-owner build adds 23 complete PC functions, 16,291 unique native
+bytes: pushing/spinner/push-block selection 6/5,723; ledges 3/2,394; teleport
+motion 4/2,800; pictures/title/credits callbacks 7/2,665; geometry readers 3/2,709.
+Pushing retains its two earlier bodies in the original C++ owner. The real
+`Move_CHARACTER` now calls ledge, push and teleport actions at native
+`4b4d5d`, `4b4dc5` and `4b4ed9`; `FixUpLevels` publishes six real title/credits
+callbacks under the original lookup guards. Those nine caller repairs add no
+new transferred range. Every previous raw map row and native extent is preserved.
+
+Private spinner, ledge, transport and geometry fields retain asserted PC offsets
+in their owners. The ledge setter remains a qualified private compiler ABI:
+retail ECX position/DX angle plus stack object versus ordinary VC8's EAX object
+and ECX position/DX angle. It is not claimed exact. Teleport uses the actual
+PC two-argument find, radius/direction flags, context duration write and live
+receiver reloads. Geometry retains the complete 16-byte origin including W;
+its three readers do not supply the missing arena/basis producers or an
+allocation-alignment guarantee. Original names/visibility remain unknown where
+only a bounded PC reader identity is established.
+
+All 4,656 previous complete function copies and 10,418 complete data regions
+were checked. The 2,195 old exact code copies, 5,396 old exact physical data
+copies and 13 named member contracts (28 bytes) remain preserved. Two unchanged
+NONEXACT camera/debris bodies reproduced the complete reverse of independently
+reviewed historical instruction pairs; their ordinary execution qualifications
+and FP/fault-observation exclusions remain, with no full native equivalence or
+new byte credit. Five compiler-local label serial changes were verified at the
+same contained function offsets. The only prior data extent change is the
+unknown-size `LEGOACT_GLIDE` compiler region 2→4: the signed word stays -1 and
+ordinary alignment contributes two native zero bytes, with no new extent credit.
+
+Retail matching reaches 27.366283% whole-PC fuzzy code and 218,184 exact code
+bytes (6.285466%); the exact gain is 595 bytes. All 117 new complete initializer
+copies (1,027 bytes) equal retail. The data union remains 637,612 exact bytes.
+The 156 bounded CPU checks pass through actual normal providers with no replacements;
+eight initial direction-bit oracle errors were corrected only after independent
+native `RotDiff`/spinner argument-order verification. No full source EXE launch,
+asset/device success, persistent frame or playable-level milestone is claimed.
+Full machine evidence and remaining contracts are in `transfer-checkpoint.json`.

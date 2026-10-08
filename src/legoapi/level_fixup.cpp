@@ -164,9 +164,9 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
     level = Level_FindByName("titles", NULL); /* Native call 0x48da62. */
     TITLES_LDATA = level;                     /* Native store 0x48da6c. */
     if (level != NULL) {
-        STUBBED_NAMED(FixUpLevels_Callback_489b60); /* Native 0x48da7c: callbacks[1] = entry 0x489b60. */
-        STUBBED_NAMED(FixUpLevels_Callback_489ca0); /* Native 0x48da89: callbacks[3] = entry 0x489ca0. */
-        STUBBED_NAMED(FixUpLevels_Callback_489da0); /* Native 0x48da96: callbacks[5] = entry 0x489da0. */
+        level->callbacks[1] = (void *)Titles_Init;   /* Native 0x48da7c: callbacks[1] = entry 0x489b60. */
+        level->callbacks[3] = (void *)Titles_Update; /* Native 0x48da89: callbacks[3] = entry 0x489ca0. */
+        level->callbacks[5] = (void *)Titles_Draw;   /* Native 0x48da96: callbacks[5] = entry 0x489da0. */
         TITLES_LDATA->flags &= ~0xau;
         TITLES_LDATA->music_index = GetMusicIndex("titles", MusicInfo, -1);
         TITLES_LDATA->music_tracks[0] = TITLES_LDATA->music_tracks[1] = music_man.GetTrackHandle(1, "titles");
@@ -184,12 +184,12 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
     level = Level_FindByName("credits", NULL); /* Native call 0x48db9b. */
     CREDITS_LDATA = level;                     /* Native store 0x48dba5. */
     if (level != NULL) {
-        level->flags = 0;                           /* Native48dbac. */
-        STUBBED_NAMED(FixUpLevels_Callback_59cd50); /* Native 0x48dbb8: callbacks[0] = entry 0x59cd50. */
-        STUBBED_NAMED(FixUpLevels_Callback_48d6b0); /* Native 0x48dbc5: callbacks[1] = entry 0x48d6b0. */
-        STUBBED_NAMED(FixUpLevels_Callback_48d7d0); /* Native 0x48dbd2: callbacks[3] = entry 0x48d7d0. */
-        STUBBED_NAMED(FixUpLevels_Callback_48d830); /* Native 0x48dbde: callbacks[5] = entry 0x48d830. */
-        STUBBED_NAMED(FixUpLevels_Callback_59d450); /* Native 0x48dbeb: callbacks[6] = entry 0x59d450. */
+        level->flags = 0;                                  /* Native48dbac. */
+        STUBBED_NAMED(FixUpLevels_Callback_59cd50);        /* Native 0x48dbb8: callbacks[0] = entry 0x59cd50. */
+        level->callbacks[1] = (void *)Credits_Init_Game;   /* Native 0x48dbc5: callbacks[1] = entry 0x48d6b0. */
+        level->callbacks[3] = (void *)Credits_Update_Game; /* Native 0x48dbd2: callbacks[3] = entry 0x48d7d0. */
+        level->callbacks[5] = (void *)Credits_Draw_Game;   /* Native 0x48dbde: callbacks[5] = entry 0x48d830. */
+        STUBBED_NAMED(FixUpLevels_Callback_59d450);        /* Native 0x48dbeb: callbacks[6] = entry 0x59d450. */
     }
     if (StartupGameFlag0 == 0) {
         if (StartupGameFlag1 != 0) {

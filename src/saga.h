@@ -18258,3 +18258,80 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i32 LEGOCONTEXT_PUSH;
+    extern i32 LEGOCONTEXT_WALLJUMPWAIT;
+    extern i16 LEGOACT_PUSH;
+    extern i16 LEGOACT_SUPERPUSH_IDLE;
+    extern i16 LEGOACT_SUPERPUSH_PUSH;
+    extern i16 LEGOACT_SUPERPUSH_PULL;
+    extern i16 LEGOACT_WALLJUMP_WAIT;
+    extern i16 GizSpinnerGDeb_Fail[3];
+    extern u32(__cdecl *CanPushObstaclesFn)(GAMEOBJECT *);
+    extern f32 PushBlockGapEpsilonPc;
+    extern u16 PushBlockFacingTolerancePc;
+    extern NUMTX LevMtx;
+    extern f32 LevAlpha;
+    extern f32 TitlesAlpha;
+    extern f32 newgamealpha;
+    extern i32 newgamefade;
+    extern i32 newgame_menudrawoff;
+#ifdef __cplusplus
+}
+#endif
+
+struct PC_GEOMETRY_BASIS_PC;
+struct PC_GEOMETRY_OUTPUT_PC;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern NUVEC4 PcGeometryDistanceOriginPc;
+    extern struct PC_GEOMETRY_BASIS_PC *PcGeometryTransformsPc;
+    extern struct PC_GEOMETRY_OUTPUT_PC *PcGeometryOutputPc;
+#ifdef __cplusplus
+}
+#endif
+STATIC_ASSERT(sizeof(NUVEC4) == 0x10);
+STATIC_ASSERT(offsetof(NUVEC4, x) == 0);
+STATIC_ASSERT(offsetof(NUVEC4, y) == 4);
+STATIC_ASSERT(offsetof(NUVEC4, z) == 8);
+STATIC_ASSERT(offsetof(NUVEC4, w) == 0xc);
+
+/* Public interfaces for connected motion, title callbacks and geometry readers.
+ * Private PC field cohorts and their offset assertions remain in the owners. */
+struct PC_DYNAMIC_GEOMETRY_PC;
+struct PC_GEOMETRY_SORT_ITEM_PC;
+struct PC_GEOMETRY_SKIN_PC;
+struct PC_GEOMETRY_MESH_PC;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    typedef struct PUSH_SPINNER_PC PUSH_SPINNER_PC;
+    typedef struct PUSH_BLOCK_PC PUSH_BLOCK_PC;
+    typedef struct TELEPORT_MOTION_PC TELEPORT_MOTION_PC;
+    void __cdecl PushCode(GAMEOBJECT *, i32);
+    PUSH_SPINNER_PC *__cdecl GizSpinner_Find(WORLDINFO *, NUVEC *, i32);
+    i32 __cdecl GizSpinner_Push(PUSH_SPINNER_PC *, i32);
+    void __cdecl GizSpinner_PushFail(GAMEOBJECT *, PUSH_SPINNER_PC *);
+    PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *, GAMEOBJECT *, f32);
+    i32 __cdecl PushBlock(GAMEOBJECT *);
+    void __cdecl Ledge_MoveCode(WORLDINFO *, GAMEOBJECT *);
+    TELEPORT_MOTION_PC *__cdecl Teleport_Find(GAMEOBJECT *, f32);
+    void __cdecl Teleport_MoveCode(GAMEOBJECT *, i32);
+    void __cdecl Door_Reset(void);
+    void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *, i32);
+    void __cdecl Titles_Init(WORLDINFO *);
+    void __cdecl Titles_Update(WORLDINFO *);
+    void __cdecl Titles_Draw(WORLDINFO *);
+    void __cdecl Credits_Init_Game(WORLDINFO *);
+    void __cdecl Credits_Update_Game(WORLDINFO *);
+    void __cdecl Credits_Draw_Game(WORLDINFO *);
+    i32 __cdecl PcInitializeDynamicGeometryBuffersPc(struct PC_DYNAMIC_GEOMETRY_PC *, i32);
+    i32 __cdecl PcUpdateGeometryDistancesPc(struct PC_GEOMETRY_OUTPUT_PC *, struct PC_GEOMETRY_SORT_ITEM_PC *, i32);
+    u8 __cdecl PcTransformDynamicGeometryPc(struct PC_GEOMETRY_SKIN_PC *, struct PC_GEOMETRY_MESH_PC *, u32 *);
+#ifdef __cplusplus
+}
+#endif

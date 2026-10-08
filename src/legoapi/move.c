@@ -6295,8 +6295,8 @@ after_gravity:
     FloatCode(object);
     SlideCode(object);
     FlattenCode(object);
-    Hang_MoveCode(object);     /* Native4b4d51: object; Hang_MoveCode. */
-    STUBBED_NAMED(0x004827a0); /* Native4b4d5d: WORLD,object; Ledge_MoveCode. */
+    Hang_MoveCode(object); /* Native4b4d51: object; Hang_MoveCode. */
+    Ledge_MoveCode(WORLD, object);
     if (DefaultMotionLedgeTerrainEnabledPc != 0)
         LedgeTerrain_MoveCode(object);        /* Native4b4d6f: object; LedgeTerrain_MoveCode. */
     Climb_MoveCode(object);                   /* Native4b4d78: object; Climb_MoveCode. */
@@ -6305,8 +6305,8 @@ after_gravity:
     ForcedBackCode(object);
     STUBBED_NAMED(0x0056d8c0); /* Native4b4d99: object,WORLD; Tube_MoveCode. */
     DeactivatedCode(object);
-    STUBBED_NAMED(0x0059bd40); /* Native4b4dc5: object,!StartupGameFlag1&&StartupGameFlag0; PushCode. */
-    BackFlipCode(object);      /* Native4b4dcb: object; BackFlipCode. */
+    PushCode(object, !StartupGameFlag1 && StartupGameFlag0);
+    BackFlipCode(object); /* Native4b4dcb: object; BackFlipCode. */
     if (object->id != (u16)DefaultMotionSkeletonIdPc)
         TakeOverCode(object, tag_pressed);
     Glide_MoveCode(object); /* Native4b4df2: object; Glide_MoveCode. */
@@ -6328,7 +6328,7 @@ after_gravity:
     STUBBED_NAMED(0x00490d10);    /* Native4b4ebd: WORLD,object; Lever_MoveCode. */
     STUBBED_NAMED(0x004d0290);    /* Native4b4ec3: object; ThermalDetonator_MoveCode. */
     if ((object->character_data->model_flags & 0x40000) != 0)
-        STUBBED_NAMED(0x004ce830); /* Native4b4ed9: object,special_pressed; Teleport_MoveCode. */
+        Teleport_MoveCode(object, special_pressed);
     if (!StartupGameFlag1 && !StartupGameFlag0) {
         if (object->suit != NULL && (object->suit->flags & 4) != 0)
             STUBBED_NAMED(0x004271b0); /* Native4b4f04: object; actual void action. */
