@@ -1,18 +1,19 @@
 # Current work plan
 
 The [whole-project mandate](../SOL_IMPLEMENTATION_PLAN.md) remains active.
-The verified baseline is MM, [`999ac6b1470a3f851ba87d46b4b6018ce2982954`](https://github.com/opensagadev/saga-pc/commit/999ac6b1470a3f851ba87d46b4b6018ce2982954), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37819227040) passing.
-The current NN source adds 47 complete compared functions/5,816 PC bytes across
-Techno, Portal, Shadow and character installers. All required checks and 183 CPU
-checks pass; prior exact contracts survive. The explicitly qualified unknown
-BATTLEDROID tail remains nonexact and zero-credit. Exact pushed-revision CI is
-pending. Full release qualifications are in [transfer-checkpoint.json](transfer-checkpoint.json).
+Verified baseline NN is [7ed0d813](https://github.com/opensagadev/saga-pc/commit/7ed0d813d068fa61b8552cc622559f2edb09f571), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37827194083) passing.
+Current OO adds nine complete functions/1,779 PC bytes across NewGame and its
+real cheat/input/hint/name/episode/suit providers. Required checks and 125 CPU
+checks pass; all prior exact contracts survive. The specific particle reload and
+unknown BARMAN tail qualifications are in transfer-checkpoint.json. OO exact
+pushed-revision CI is pending; matching does not establish full startup.
 
-Next connected work transfers new-game setup and genuine input/hint/cheat/name
-providers, then the larger post-config initializer and its real returned values
-and callback publications. Shared Game refinements preserve every existing offset.
-Startup CharFixUp 218/Commander storage and ordered registration parent remain
-separate contracts. Candidate source and envelopes receive no transfer credit.
+Next connected work transfers genuine cutscene (707 bytes) and Batarang/camera (442 bytes)
+providers, then the larger InitGameAfterConfig (4,659 bytes) and its private callback
+cohort. The current owner audit reuses eight callback slots; only three new
+slots (12 bytes) and eight ID WORDs (16 bytes) need backing. Complete CharFixUp 218/Commander
+storage and ordered registration remain separate. Uncompiled source and envelope
+sizes are hypotheses with zero transfer credit.
 
 1. Close genuine shader-manager publication, parser/compiler lifetime and device
    dependencies at the observed startup frontier. Preserve true constructors,

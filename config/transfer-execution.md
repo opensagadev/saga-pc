@@ -9,8 +9,8 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Verified source baseline: MM, [`999ac6b1470a3f851ba87d46b4b6018ce2982954`](https://github.com/opensagadev/saga-pc/commit/999ac6b1470a3f851ba87d46b4b6018ce2982954); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37819227040) passed on that exact revision.
-MM has 332 normal owners; the current NN snapshot has 333 owners.
+Verified source baseline: NN, [`7ed0d813d068fa61b8552cc622559f2edb09f571`](https://github.com/opensagadev/saga-pc/commit/7ed0d813d068fa61b8552cc622559f2edb09f571); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37827194083) passed on that exact revision.
+NN has 333 normal owners; the current OO snapshot has 334 owners.
 II remains the last actual full-game
 Wine observation: its source EXE exits 5 at NULL shader Retrieve+16 before a level
 loads. A transient window establishes no persistent window, device/Present,
@@ -231,3 +231,14 @@ stable initialized record flag-width qualification. Startup CharFixUp 218 and
 Commander storage remain held. No source game EXE, assets, GPU or gameplay
 milestone is claimed. Exact pushed-revision CI is pending. Full qualifications,
 remaining contracts and evidence pins are in transfer-checkpoint.json.
+
+### Game reset source checkpoint OO (2026-10-08)
+
+The current batch adds nine complete functions/1,779 unique compared PC bytes.
+Required checks and 125 actual-normal CPU checks pass; all prior exact contracts
+survive. Specific particle reload and unknown BARMAN tail qualifications are
+recorded in transfer-checkpoint.json, together with the retained fixture failures.
+Fuzzy code is 28.619259%; exact code is 6.506280%. This establishes no complete
+startup, assets, device or gameplay milestone. OO exact pushed-revision CI is
+pending. Next work connects genuine cutscene and Batarang/camera providers to the
+larger startup callback cohort.

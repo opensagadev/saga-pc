@@ -14,3 +14,11 @@ i32 __cdecl Suit_GetIndex(SUIT_LAYERS_PC *suit) {
             return index;
     return -1;
 }
+
+void __cdecl Suits_Init(void) {
+    i32 i;
+    for (i = 0; i < 10; ++i) {
+        SuitRecordInitPc[i].index = (u8)i;
+        SuitRecordInitPc[i].character_id = (i16)CharIDFromName(SuitRecordInitPc[i].base_character_name);
+    }
+}

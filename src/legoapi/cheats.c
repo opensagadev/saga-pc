@@ -62,3 +62,41 @@ void __cdecl Cheat_StartPowerUp(NUVEC *position, GAMEOBJECT *object) {
         display->parameter_d4 = 0.75f;
     GameAudio_PlaySfx(0x50, NULL, 0, 0);
 }
+
+STATIC_ASSERT(offsetof(CHEATSYSTEM_PC, cheats) == 0);
+STATIC_ASSERT(offsetof(CHEATSYSTEM_PC, count) == 4);
+
+void __cdecl Cheats_SetFlags(void) {
+    CHEATSYSTEM_PC *system = CheatSystemPtr;
+    CHEAT_PC *cheat;
+    f32 powerup_time;
+    i32 index;
+    system->flags = 0;
+    if (system->count <= 0)
+        return;
+    cheat = system->cheats;
+    powerup_time = Cheat_PowerUpTime;
+    for (index = 0; index < system->count; ++index, ++cheat) {
+        if (cheat->enabled != 0 || (ONEPLAYERPOWERUPS == 0 && powerup_time > 0.0f &&
+                                    (cheat->flags & (VehicleArea != 0 ? 0x20000 : 0x10000)) != 0))
+            system->flags |= cheat->flags;
+    }
+}
+
+void __cdecl Cheat_SetOn(i32 cheat, i32 on, i32 update_save) {
+    (void)update_save;
+    if (cheat < 0 || cheat >= CheatSystemPtr->count)
+        return;
+    CheatSystemPtr->cheats[cheat].enabled = on != 0;
+    Cheats_SetFlags();
+}
+
+void __cdecl Cheats_TurnOff(i32 only_powerups) {
+    CHEATSYSTEM_PC *system = CheatSystemPtr;
+    i32 index;
+    for (index = 0; index < system->count; ++index) {
+        if (only_powerups == 0 || (system->cheats[index].flags & 0x200000) != 0)
+            system->cheats[index].enabled = 0;
+    }
+    Cheats_SetFlags();
+}

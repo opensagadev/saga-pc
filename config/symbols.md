@@ -5066,5 +5066,39 @@ registration owners retain verified offsets and defaults. FixUpCharacters (178 b
 is exact; ExtraCharacterFixUpAfterConfig (1,174 bytes) remains nonexact with its finite
 stable initialized record flag-width qualification. Startup CharFixUp 218 and
 Commander storage remain held. No source game EXE, assets, GPU or gameplay
-milestone is claimed. Exact pushed-revision CI is pending. Full qualifications,
+milestone is claimed. NN passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37827194083) on 7ed0d813d068fa61b8552cc622559f2edb09f571. Full qualifications,
 remaining contracts and evidence pins are in transfer-checkpoint.json.
+
+### Game reset and genuine providers OO (2026-10-08)
+
+Nine complete functions add 1,779 unique compared PC bytes: NewGame (1 function/1,156 bytes),
+episode/suits (2/165) and real cheat/input/hint/name suppliers (6/458). Six existing
+owners preserve their source prefixes; legogame/game.cpp is the new coherent
+startup owner. All five reviewed NewGame actions now use real providers.
+
+Required checks pass: 732 tests (three existing skips), LLVM18 format for 361 files and tidy for 334 units,
+source build/link/object coverage and full retail matching. All prior exact
+contracts survive. Five new exact functions add 308 bytes; fuzzy code is 28.619259%
+(+0.045249 percentage points), exact 225,849 bytes/6.506280%. Mapping is 42.281475%
+code, 1.796304% data and 5.355008% combined section storage. Three working states
+have unknown extents/zero credit; three natural float copies match native fully,
+with one new known 4-byte constant. Known exact data is 637,616 bytes.
+
+The specific old NONEXACT particle 717→713 reload pair is accepted only for its
+stable initialized, masked-x87 domain; native 705 remains nonexact. Unknown BARMAN
+WORD full 2→4 matches both native intervals, preserving true WORD observers with
+no owning extent or tail credit. NN BATTLEDROID full 8 is unchanged. Game named
+offsets/size and old views survive the reviewed startup refinements.
+
+Actual-normal CPU 125/125 passes, including whole NewGame in the genuine empty
+resource/sentinel domain and a real initialized cheat list. Two earlier fixture
+failures are retained: a literal newline and an incorrect zero precondition for
+ONEPLAYERPOWERUPS, whose real initializer is 1. All 125 behavior checks remain;
+no engine/provider/ID/backend replacement. Private temporary-powerup/vehicle-mask,
+positive asset/default-ID, GPU and full startup/gameplay paths remain held. Crash
+dialogs were disabled and queried; no owned process remained.
+
+NN passed exact-revision CI 37827194083 on 7ed0d813d068fa61b8552cc622559f2edb09f571.
+OO exact pushed-revision CI is pending. Next source contracts are genuine cutscene
+707 and Batarang/camera442 providers, followed by the private callback/Init4659
+cohort. Full qualifications and retained evidence are in transfer-checkpoint.json.

@@ -6,7 +6,7 @@ startup before a level loads. Device presentation and recurring gameplay remain
 unverified; see the [current roadmap](docs/roadmap.md).
 
 <!-- matching-badge -->
-![fuzzy code](https://img.shields.io/badge/fuzzy%20code-28.574%25-yellow)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-42.230%25-yellow) ![mapped data](https://img.shields.io/badge/mapped%20data-1.796%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-5.350%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
+![fuzzy code](https://img.shields.io/badge/fuzzy%20code-28.619%25-yellow)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-42.281%25-yellow) ![mapped data](https://img.shields.io/badge/mapped%20data-1.796%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-5.355%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 **saga-pc** is a matching decompilation of the GOG PC release of
 *LEGO Star Wars: The Complete Saga*.

@@ -1106,5 +1106,28 @@ registration owners retain verified offsets and defaults. FixUpCharacters (178 b
 is exact; ExtraCharacterFixUpAfterConfig (1,174 bytes) remains nonexact with its finite
 stable initialized record flag-width qualification. Startup CharFixUp 218 and
 Commander storage remain held. No source game EXE, assets, GPU or gameplay
-milestone is claimed. Exact pushed-revision CI is pending. Full qualifications,
+milestone is claimed. NN passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37827194083) on 7ed0d813d068fa61b8552cc622559f2edb09f571. Full qualifications,
 remaining contracts and evidence pins are in transfer-checkpoint.json.
+
+### NewGame and genuine providers OO (2026-10-08)
+
+NewGame (1,156 native bytes), Episode_ContainsArea (114), Suits_Init (51) and six
+real input/hint/cheat/name providers (458) are now compiled and linked. NewGame
+uses all five reviewed native calls. This does not complete InitGameAfterConfig
+or establish an installed startup callback/asset chain. Whole-PC fuzzy code is
+28.619259%; exact code is 225,849 bytes/6.506280%, with all prior exact contracts
+preserved. Required checks and 125 actual-normal CPU checks pass.
+
+The tested whole reset uses genuine empty resource/sentinel state and a real
+Cheats_Init list. Private temporary-powerup/vehicle-mask, positive default/model
+IDs, device and gameplay paths remain held. The fixture's incorrect zero
+ONEPLAYERPOWERUPS precondition was corrected to its genuine initializer 1;
+no engine/provider substitution. Two fixture failures remain recorded.
+
+The next consumed providers are real CutScenePlayer_Available/Reset/Configure
+(707 bytes) and Batarang_StartTargetting/KeepPointOnScreen (442). The latter is
+the true provider called by CanStartHold, rather than a fabricated success value.
+Private callbacks and InitGameAfterConfig remain uncompiled contracts. II is
+still the last full-game observation, exiting at a NULL shader receiver before
+level loading. NN passed exact-revision CI; OO CI is pending. Full finite particle
+and BARMAN qualifications and evidence are in transfer-checkpoint.json.

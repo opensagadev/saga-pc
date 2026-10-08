@@ -117,3 +117,13 @@ void __cdecl UpdateRumble(RUMBLE_PACKET_RESOURCE_PC *packet) {
     if (packet->active != 0)
         --packet->active;
 }
+
+void __cdecl GamePad_InitButtons(void) {
+    GAMEPAD_JUMP = 0x40;
+    GAMEPAD_ACTION = 0x80;
+    GAMEPAD_SPECIAL = 0x20;
+    GAMEPAD_TAG = 0x10;
+    GAMEPAD_SKIP = 0x840;
+    GAMEPAD_MENUSELECT = 0x40;
+    GAMEPAD_MENUCANCEL = 0x120;
+}

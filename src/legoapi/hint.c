@@ -97,3 +97,14 @@ void __cdecl Hint_CancelCurrent(void) {
         hint->cooldown = 0.0f;
     }
 }
+
+void __cdecl Hint_ClearHintsAndDoneFlags(void) {
+    HINT_PC *hint = hintsys.hints;
+    if (hint == NULL)
+        return;
+    while (hint->id != -1) {
+        hint->flags &= 0xfd;
+        hint->completed = 0;
+        ++hint;
+    }
+}

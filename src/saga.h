@@ -1451,8 +1451,17 @@ STATIC_ASSERT(offsetof(OPTIONSSAVE, master_volume) == 5);
 STATIC_ASSERT(offsetof(OPTIONSSAVE, widescreen) == 0x0b);
 
 typedef struct AREA_SAVE_PICKUP_PC {
-    u8 unknown0[9];
-    u8 minikit_count, red_brick_collected, unknownb;
+    union {
+        struct {
+            u8 unknown0[9];
+            u8 minikit_count, red_brick_collected, unknownb;
+        };
+        struct {
+            u8 complete;
+            u8 newgame_reserved_01[7];
+            f32 challenge_trial_time;
+        };
+    };
 } AREA_SAVE_PICKUP_PC;
 STATIC_ASSERT(sizeof(AREA_SAVE_PICKUP_PC) == 0xc);
 STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, minikit_count) == 9);
@@ -1478,28 +1487,85 @@ STATIC_ASSERT(sizeof(MISSION_SAVE_READER_PC) == 0x64);
 STATIC_ASSERT(offsetof(MISSION_SAVE_READER_PC, best_times) == 0);
 STATIC_ASSERT(offsetof(MISSION_SAVE_READER_PC, completed) == 0x50);
 
+typedef struct GAME_EPISODE_START_PC {
+    f32 superstory_time_limit;
+    i32 superstory_score_target;
+    u8 complete;
+    u8 reserved_09[3];
+} GAME_EPISODE_START_PC;
+STATIC_ASSERT(sizeof(GAME_EPISODE_START_PC) == 12);
+STATIC_ASSERT(offsetof(GAME_EPISODE_START_PC, superstory_time_limit) == 0);
+STATIC_ASSERT(offsetof(GAME_EPISODE_START_PC, superstory_score_target) == 4);
+STATIC_ASSERT(offsetof(GAME_EPISODE_START_PC, complete) == 8);
+
+typedef struct GAME_CUSTOMISER_START_PC {
+    u16 pieces[9];
+    u8 reserved_12[2];
+    char name[32];
+    u8 use_saved_name;
+    u8 reserved_35[3];
+} GAME_CUSTOMISER_START_PC;
+STATIC_ASSERT(sizeof(GAME_CUSTOMISER_START_PC) == 56);
+STATIC_ASSERT(offsetof(GAME_CUSTOMISER_START_PC, pieces) == 0);
+STATIC_ASSERT(offsetof(GAME_CUSTOMISER_START_PC, name) == 0x14);
+STATIC_ASSERT(offsetof(GAME_CUSTOMISER_START_PC, use_saved_name) == 0x34);
+
 typedef struct gamesave_s {
     union {
         u32 unknown_0000;
         struct {
             u8 unknown_game_00;
-            u8 difficulty;
+            union {
+                u8 difficulty;
+                u8 save_version;
+            };
             u8 unknown_game_02[2];
         };
     };
     OPTIONSSAVE options_save;
     u8 unknown_0011[0x781b];
     AREA_SAVE_PICKUP_PC area_save[72];
-    u8 unknown_7b8c[0x8f];
-    u8 customizer_weirdo_flags;
-    u8 unknown_7c1c[0x12];
-    u16 customizer_cape_piece;
-    u8 unknown_7c30[0x36];
-    u16 customizer_secondary_cape_piece;
-    u8 unknown_7c68[0x2c];
+    union {
+        struct {
+            u8 unknown_7b8c[0x8f];
+            u8 customizer_weirdo_flags;
+            u8 unknown_7c1c[0x12];
+            u16 customizer_cape_piece;
+            u8 unknown_7c30[0x36];
+            u16 customizer_secondary_cape_piece;
+            u8 unknown_7c68[0x2c];
+        };
+        struct {
+            GAME_EPISODE_START_PC episode_start[6];
+            u8 newgame_reserved_7bd4[0x28];
+            u32 initial_store_pack_flags;
+            u32 newgame_reserved_7c00;
+            u32 purchased_extra_bits_high;
+            u8 newgame_reserved_7c08[0x1c];
+            GAME_CUSTOMISER_START_PC customiser_start[2];
+        };
+    };
     MISSION_SAVE_READER_PC mission_save;
-    u8 unknown_7cf8[0x154];
+    union {
+        u8 unknown_7cf8[0x154];
+        u8 character_save[0x154];
+    };
 } GAMESAVE;
+STATIC_ASSERT(sizeof(GAMESAVE) == 0x7e4c);
+STATIC_ASSERT(offsetof(GAMESAVE, difficulty) == 1);
+STATIC_ASSERT(offsetof(GAMESAVE, save_version) == 1);
+STATIC_ASSERT(offsetof(GAMESAVE, options_save) == 4);
+STATIC_ASSERT(offsetof(GAMESAVE, area_save) == 0x782c);
+STATIC_ASSERT(offsetof(GAMESAVE, episode_start) == 0x7b8c);
+STATIC_ASSERT(offsetof(GAMESAVE, initial_store_pack_flags) == 0x7bfc);
+STATIC_ASSERT(offsetof(GAMESAVE, purchased_extra_bits_high) == 0x7c04);
+STATIC_ASSERT(offsetof(GAMESAVE, customizer_weirdo_flags) == 0x7c1b);
+STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) == 0x7c24);
+STATIC_ASSERT(offsetof(GAMESAVE, customizer_cape_piece) == 0x7c2e);
+STATIC_ASSERT(offsetof(GAMESAVE, customizer_secondary_cape_piece) == 0x7c66);
+STATIC_ASSERT(offsetof(GAMESAVE, mission_save) == 0x7c94);
+STATIC_ASSERT(offsetof(GAMESAVE, mission_save) + offsetof(MISSION_SAVE_READER_PC, completed) == 0x7ce4);
+STATIC_ASSERT(offsetof(GAMESAVE, character_save) == 0x7cf8);
 STATIC_ASSERT(offsetof(GAMESAVE, difficulty) == 0x1);
 STATIC_ASSERT(sizeof(GAMESAVE) == 0x7e4c);
 STATIC_ASSERT(offsetof(GAMESAVE, options_save) == 4);
@@ -18789,4 +18855,31 @@ extern "C" {
 }
 #endif
 
+#endif
+
+#ifndef SAGA_GAME_STARTUP_OO_DECLARATIONS
+#define SAGA_GAME_STARTUP_OO_DECLARATIONS
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern AREA_DATA_PC *SENATE_ADATA, *UTAPAU_ADATA, *HOTH_ADATA;
+    extern AREA_DATA_PC *BONUSDAGOBAH_ADATA, *BONUSKAMINO_ADATA, *BONUSKASHYYYK_ADATA;
+    extern i32 Tag_DoneFirst, Tag_DoneAny;
+    void __cdecl NewGame(void);
+    i32 __cdecl Episode_ContainsArea(i32, i32 *);
+    void __cdecl Suits_Init(void);
+
+    /* Add within the existing public C linkage cohort. Retain the game-save
+     * refinement from game-init-after-MM; it supplies the two existing name fields. */
+    extern u32 GAMEPAD_SKIP;
+    void __cdecl GamePad_InitButtons(void);
+    void __cdecl Hint_ClearHintsAndDoneFlags(void);
+    void __cdecl Cheats_SetFlags(void);
+    void __cdecl Cheat_SetOn(i32 cheat, i32 on, i32 update_save);
+    void __cdecl Cheats_TurnOff(i32 only_powerups);
+    void __cdecl FinishWeirdoNames(i32 which);
+
+#ifdef __cplusplus
+}
+#endif
 #endif

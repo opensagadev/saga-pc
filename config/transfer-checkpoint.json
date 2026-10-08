@@ -31261,6 +31261,258 @@
         "build/analysis/normal-NN-independent-review/accepted-first-output-endpoint.json": "96fdeeb99c960efe4c0097510c2a8b32b3a301546bcd2473d2f3929836eff7fa",
         "build/analysis/runtime-registration-character-NN/runtime-acceptance-NN.json": "3b924e626968a641ade0f72b807a0e87bb5edf1e891defc00a713afaa414483b"
       }
+    },
+    {
+      "checkpoint": "Game reset, episode/suit and genuine NewGame supplier families OO (2026-10-08)",
+      "publication_status": "All local source/storage/complete-output/CPU gates passed; exact pushed-revision CI pending",
+      "baseline_commit": "7ed0d813d068fa61b8552cc622559f2edb09f571",
+      "baseline_CI_exact_revision_success": {
+        "run": 37827194083,
+        "url": "https://github.com/opensagadev/saga-pc/actions/runs/37827194083"
+      },
+      "baseline_progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1464721,
+        "matched_code_bytes": 225541,
+        "matching_percent": 6.497407559130065,
+        "fuzzy_coverage_percent": 28.574010006245246,
+        "mapped_functions": 5090,
+        "matched_functions": 2300,
+        "objdiff_fuzzy_percent": 69.28201,
+        "objdiff_total_code": 1432516,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2112921,
+        "mapping_percent": 5.273459962335156,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1465915
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30182
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9400,
+        "mapping_unknown_size_symbols": 5219,
+        "mapping_code_bytes": 1465915,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 42.23022511225076,
+        "mapping_data_bytes": 647006,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7962925421012919,
+        "mapping_code_data_bytes": 2112921,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.350492927209405,
+        "matched_data_region_bytes": 637612
+      },
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1466500,
+        "matched_code_bytes": 225849,
+        "matching_percent": 6.506280453762136,
+        "fuzzy_coverage_percent": 28.619259438917258,
+        "mapped_functions": 5099,
+        "matched_functions": 2305,
+        "objdiff_fuzzy_percent": 69.305595,
+        "objdiff_total_code": 1434295,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2114704,
+        "mapping_percent": 5.277910000511143,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1467694
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30186
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9410,
+        "mapping_unknown_size_symbols": 5222,
+        "mapping_code_bytes": 1467694,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 42.28147472118081,
+        "mapping_data_bytes": 647010,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7963036473617815,
+        "mapping_code_data_bytes": 2114704,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.3550079700762305,
+        "matched_data_region_bytes": 637616
+      },
+      "new_source_functions": 9,
+      "actual_new_transfer_PC_bytes": 1779,
+      "new_unique_compared_PC_bytes": 1779,
+      "unique_compared_code_bytes": 1433674,
+      "native_objdiff_denominator": 1434295,
+      "overlap_bytes": 621,
+      "new_exact_PC_bytes": 308,
+      "new_exact_functions": 5,
+      "whole_PC_fuzzy_delta_pp": 0.04524943267201209,
+      "source_families": {
+        "newgame": {
+          "functions": 1,
+          "native_bytes": 1156
+        },
+        "episode_suits": {
+          "functions": 2,
+          "native_bytes": 165
+        },
+        "newgame_suppliers": {
+          "functions": 6,
+          "native_bytes": 458
+        }
+      },
+      "old_full_function_copies": 4928,
+      "old_full_data_regions": 10863,
+      "old_exact_code_copies_preserved": 2304,
+      "old_known_extent_exact_data_compiled_copies_preserved": 5616,
+      "current_full_function_definitions": 4937,
+      "current_full_data_definitions": 10869,
+      "normal_objects": 334,
+      "frozen_inputs": 449,
+      "members_preserved": 13,
+      "known_member_bytes": 28,
+      "new_complete_initializer_copies": 6,
+      "new_complete_initializer_COFF_bytes": 24,
+      "new_known_extent_initializer_copies": 3,
+      "new_known_extent_initializer_COFF_bytes": 12,
+      "new_unknown_extent_initializer_copies": 3,
+      "new_unknown_extent_initializer_COFF_bytes": 12,
+      "unknown_extent_exact_and_allocation_credit": 0,
+      "new_central_working_definitions": 3,
+      "new_central_typed_bytes": 12,
+      "known_exact_data_union_before_transfer": 637612,
+      "known_exact_data_union_after_transfer": 637616,
+      "qualified_previous_nonexact_function_changes": [
+        {
+          "unit": "src/nu2api/nuparticle_runtime.c",
+          "symbol": "_NuRndrParticleGroup",
+          "old_bytes": 717,
+          "new_bytes": 713,
+          "native_extent": 705,
+          "receipt": "build/analysis/endpoint-OO-particle-pair-review/accepted-pair-receipt.json",
+          "receipt_sha256": "fe088f628d0da2ae53f0588db6b6044005c68b413f361ac770ab2095610972c3",
+          "old_exact": false,
+          "new_exact": false
+        }
+      ],
+      "qualified_unknown_extent_data_changes": [
+        {
+          "unit": "src/data.cpp",
+          "symbol": "_id_BARMAN",
+          "old_bytes": 2,
+          "new_bytes": 4,
+          "original_extent": null,
+          "both_full_intervals_native_equal": true,
+          "receipt": "build/analysis/game-startup-three-state-output-independent-review/accepted-packet.json",
+          "receipt_sha256": "3d955d477701d53e1e920304445b3c8e7156b302ea3508b092ef37e566fedad8",
+          "extent_credit": 0
+        }
+      ],
+      "required_checks": {
+        "tests": 732,
+        "skipped": 3,
+        "LLVM18_format_files": 361,
+        "LLVM18_tidy_units": 334,
+        "source_build": 0,
+        "objects": 0,
+        "retail_match": 0
+      },
+      "selected_CPU_checks": 125,
+      "selected_CPU_failures": 0,
+      "runtime": {
+        "sections": {
+          "newgame": 36,
+          "cheats": 17,
+          "powerup_consumer": 6,
+          "hint_buttons": 15,
+          "names": 10,
+          "episode": 16,
+          "suits": 25
+        },
+        "replacements": 0,
+        "supplements": 0,
+        "additional_engine_providers": 0,
+        "source_EXE_repeated": false,
+        "device_asset_gameplay_claim": false,
+        "ShowCrashDialog": 0,
+        "owned_test_processes_remaining": 0,
+        "elapsed_seconds": 5.047017157077789,
+        "exit_code": 0,
+        "timed_out": false,
+        "fixture_compile_attempts": 3,
+        "fixture_run_attempts": 2,
+        "fixture_only_corrections": 2,
+        "engine_corrections": 0,
+        "original_failures_retained": true
+      },
+      "source_qualifications": [
+        "NewGame native1156/candidate1094 remains NONEXACT. Real option13-byte preservation/reset, save-version5, adaptive0/.5/0, area selection, unsigned challenge WORD conversion, six3600/100000 episodes, customiser copy/name finishing, signed-ID sentinel handling and ten suit-group transitions are retained. No invalid-pointer/bounds/positive asset initialization equivalence claim.",
+        "All five reviewed missing actions now call the real Cheats_TurnOff, Cheat_SetOn, Hint_ClearHintsAndDoneFlags, GamePad_InitButtons and FinishWeirdoNames in native order with native arguments. Episode114, Suits51, Buttons66, Setter42 and Hint35 are exact; other full functions remain WIP.",
+        "PC button cancel is0x120, runtime skip0x840 differs from its genuine0x850 initializer. Hint clears bit2 alone. Cheat_SetOn preserves the unread third formal argument; SetFlags preserves ordered-positive timer semantics and every nonzero vehicle mask. Its file-private temporary timer/vehicle route remains CPU-held pending real audio/message producer state.",
+        "AREA_SAVE_PICKUP_PC alignment1->4 is supported by its genuine aligned Game array and full current output gate. Every previous named field/offset and unknown view remains; challenge float8 overlaps existing pickup bytes9/a. Game size7e4c and all old offsets survive.",
+        "The sole prior nonexact function change is the precisely reviewed particle717->713 reload pair, reverse of the retained LL pair, against unchanged native705. All34 named/applied references and accessed layouts survive. Acceptance covers stable readable arguments, initialized renderer state, four free x87 entries and masked FP exceptions; excludes unmasked faults, async mutation and intermediate FPU observation. No GPU or new-byte credit.",
+        "Unknown owning-extent id_BARMAN full COFF2->4 is native-equal on both complete intervals; declared i16=-1 and both true WORD observers remain. No tail escape/observation or allocation credit. NN BATTLEDROID full8 remains strict and nonexact; its padding does not become Commander storage.",
+        "Three new states/12 typed bytes have unknown original extents and zero allocation/exact credit. Three natural f32 copies/12 bytes are native-equal; the genuinely new known4-byte3600 constant increases known data coverage/exact union by4.",
+        "CPU125 uses actual334 normal objects/449 frozen inputs and real providers. First fixture compile failed on an accidental literal newline; the second run held on the incorrect ONEPLAYERPOWERUPS=0 precondition. Genuine initializer1 was verified; the final fixture changed only that expectation plus failure diagnostics, preserving all125 behavior checks. No engine, ID or backend substitution; failures retained.",
+        "SoundFade and other original game.cpp callbacks remain private and uncompiled until their genuine publisher cohort; no forced static retention or public wrapper. No source game EXE, GPU/assets/full startup/gameplay milestone is claimed."
+      ],
+      "remaining_contracts": [
+        "Genuine shader manager/compiler publication and rendering/device presentation",
+        "Complete startup CharFixUp218 producer/table and Commander state",
+        "Complete ordered gizmo registration and real resource/world/asset lifetime",
+        "InitGameAfterConfig4659 consumed providers and genuine callback publications, including CutScene getter/configure and Batarang_StartTargetting/KeepPointOnScreen"
+      ],
+      "next_wave": "Connected cutscene707 and genuine Batarang/camera442 provider contracts; private game callbacks13/1913 and Init4659 remain uncompiled hypotheses. Current owner audit reuses eight callback slots; only three slots12B plus eight ID WORDs16B need genuine new backing. Full startup218 remains separately held.",
+      "checkpoint_delay": "Specific unexpected particle reload pair review and retained fixture compile/precondition failures resolved before committing; no compiler/engine settings or matching checks weakened.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "active; checkpoint does not finish whole-project reconstruction",
+      "evidence_pins": {
+        "build/analysis/game-startup-OO/actual-source-integration.json": "35d6109059deb078ec3139d8ebd76a13582d0f654f35052b28a50652623c0b41",
+        "build/analysis/game-startup-OO/actual-data-integration.json": "ca78b9557486270941f29f407e7f3f5fc4389e08d132f66526231225d73f4da8",
+        "build/analysis/game-startup-OO/first-normal-validation-receipt.json": "8965b271908b904bd03439149894025642c910ccee64aa0dd6afad17ca2c65fb",
+        "build/analysis/game-startup-OO/first-normal-object-manifest.json": "017b09818d7034b67f9265a9ac2090fd044d256c557bce4401e469c2211f830d",
+        "build/analysis/game-startup-OO/first-normal-input-manifest.json": "84c525d2c98a2faa10df09228bc1f2c4ecd7870a4dcbb3bad423256b658aac01",
+        "build/analysis/normal-OO-independent-review/accepted-first-endpoint.json": "dd7dc3095384cfb37ee1a5de62a19d95e75e256225ca135608bd5a75f53b3bd6",
+        "build/analysis/normal-OO-independent-review/accepted-first-output-and-report-proof.json": "5ee7bba5cc35606a0f9a6656705e2deeccd2deb3b819d00ef69449786b589b56",
+        "build/analysis/endpoint-OO-particle-pair-review/accepted-pair-receipt.json": "fe088f628d0da2ae53f0588db6b6044005c68b413f361ac770ab2095610972c3",
+        "build/analysis/game-startup-three-state-output-independent-review/accepted-packet.json": "3d955d477701d53e1e920304445b3c8e7156b302ea3508b092ef37e566fedad8",
+        "build/analysis/newgame-suppliers-independent-review/OO-v1/accepted-source-packet.json": "4ef7314809ef4f2dc7e415dd74323163fe4b5db9863dafe8ccf701f81cc50c0a",
+        "build/analysis/game-startup-OO/parent3-independent-review/v1/accepted-packet.json": "63a9270320d4ced84d82e9c16491a4989bb002bb86feb2bedb82bc5e73becb00",
+        "build/analysis/runtime-game-startup-OO/runtime-acceptance-OO.json": "0a6e2821ff65898d502897e1e2a24bdf9c75742919a6569bd8245e425e8c1e17"
+      }
     }
   ]
 }

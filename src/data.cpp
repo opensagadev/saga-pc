@@ -19538,3 +19538,9 @@ extern "C" {
 extern "C" {
     i16 id_BARMAN = -1;
 }
+
+extern "C" {
+    i32 Tag_DoneAny = 0;
+    i32 Tag_DoneFirst = 0;
+    u32 GAMEPAD_SKIP = 0x850;
+}

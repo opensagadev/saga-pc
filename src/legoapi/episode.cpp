@@ -127,3 +127,20 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
     }
     return open;
 }
+
+i32 __cdecl Episode_ContainsArea(i32 area_id, i32 *area_index) {
+    i32 i, j;
+    for (i = 0; i < EPISODECOUNT; ++i) {
+        EPISODEDATA_PC *episode = &EDataList[i];
+        for (j = 0; j < episode->area_count; ++j) {
+            if (episode->area_ids[j] == area_id) {
+                if (area_index != NULL)
+                    *area_index = j;
+                return i;
+            }
+        }
+    }
+    if (area_index != NULL)
+        *area_index = -1;
+    return -1;
+}

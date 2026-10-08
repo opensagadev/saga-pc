@@ -496,3 +496,29 @@ void __cdecl FixUpCharacters(CHARFIXUP_PC *fixup) {
         }
     }
 }
+
+STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) + offsetof(GAME_CUSTOMISER_START_PC, name) == 0x7c38);
+STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) + sizeof(GAME_CUSTOMISER_START_PC) +
+                  offsetof(GAME_CUSTOMISER_START_PC, name) ==
+              0x7c70);
+
+void __cdecl FinishWeirdoNames(i32 which) {
+    char *name;
+    i32 length;
+    if (which != 1) {
+        name = Game.customiser_start[0].name;
+        NuStrUpr(name, name);
+        length = NuStrLen(name);
+        if (length < 15)
+            memset(name + length, ' ', 15 - length);
+        name[15] = '\0';
+    }
+    if (which == 0)
+        return;
+    name = Game.customiser_start[1].name;
+    NuStrUpr(name, name);
+    length = NuStrLen(name);
+    if (length < 15)
+        memset(name + length, ' ', 15 - length);
+    name[15] = '\0';
+}

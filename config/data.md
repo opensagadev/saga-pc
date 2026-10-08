@@ -2250,5 +2250,22 @@ registration owners retain verified offsets and defaults. FixUpCharacters (178 b
 is exact; ExtraCharacterFixUpAfterConfig (1,174 bytes) remains nonexact with its finite
 stable initialized record flag-width qualification. Startup CharFixUp 218 and
 Commander storage remain held. No source game EXE, assets, GPU or gameplay
-milestone is claimed. Exact pushed-revision CI is pending. Full qualifications,
+milestone is claimed. NN passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37827194083) on 7ed0d813d068fa61b8552cc622559f2edb09f571. Full qualifications,
 remaining contracts and evidence pins are in transfer-checkpoint.json.
+
+### Game reset storage OO (2026-10-08)
+
+Three genuine working states add 12 typed bytes: Tag_DoneAny, Tag_DoneFirst
+and GAMEPAD_SKIP. Their owning extents remain unknown, with zero allocation or
+exact-data credit. The skip initializer is 0x850; its real reset writes 0x840.
+Three natural float copies match retail; the new known 4-byte 3600 constant raises
+known exact data to 637,616 bytes.
+
+The specific BARMAN full region grows from 2 to 4 bytes, matching both native
+intervals while preserving its signed WORD and two true WORD observers. Its
+owning extent remains unknown; no padding is reused. NN BATTLEDROID full 8 is
+unchanged. All prior exact data, 13 member contracts/28 bytes and ANG survive.
+The next callback/ID preflight reuses eight existing callback owners and requests
+only three new slots plus eight WORD IDs, 28 typed bytes. Full CharFixUp 218 and
+Commander storage remain separate. See transfer-checkpoint.json for complete
+source, CPU and publication qualifications.
