@@ -48,6 +48,8 @@ extern char *debris_name[147];
 APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i8);
 NUGSCN *__cdecl NuGScnRead(VARIPTR *, VARIPTR, char *);
 
+extern "C" void __cdecl DebrisSetup(VARIPTR *, VARIPTR, char *, i32, i32, i32);
+
 void __cdecl LoadPerm1(void) {
     char path[256];
     u8 shadow_random[0x800];
@@ -57,7 +59,7 @@ void __cdecl LoadPerm1(void) {
     VARIPTR native_end_address;
     rtlInitDynamic(&permbuffer_ptr, superbuffer_end, 0x40);
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
-    STUBBED_NAMED(DebrisSetup); /* Native 48a6f8: &ptr,end,stuff\\particle,100,200,200. */
+    DebrisSetup(&permbuffer_ptr, permbuffer_end, (char *)"stuff\\particle", 0x100, 0x200, 0x200);
     DebrisRegisterCutoffCameraVec(&global_camera.mtx.m30);
     if (Grass_Available != 0)
         edgraSetup(&permbuffer_ptr, permbuffer_end, 0x200, 0x20, 0x40);

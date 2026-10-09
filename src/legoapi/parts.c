@@ -3912,3 +3912,8 @@ i32 __cdecl FindPartDebris(PARTDEBRISSYS *system, char *name) {
     }
     return -1;
 }
+
+void __cdecl DebrisSetup(VARIPTR *buffer, VARIPTR buffer_end, char *texture_name, i32 chunk_count, i32 key_count,
+                         i32 effect_count) {
+    DebrisSetup2(buffer, buffer_end, buffer, buffer_end, texture_name, chunk_count, 0x20, key_count, effect_count);
+}

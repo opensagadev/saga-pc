@@ -1,26 +1,28 @@
 # Reconstruction roadmap
 
 The goal is a complete PC reconstruction from readable C/C++. The source build
-is **not playable**. Verified published baseline VV is [d5faf138](https://github.com/opensagadev/saga-pc/commit/d5faf1388f5e5570df2bbfceefa14761109da4aa), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37879148887) passing all 13 steps. WW exact-revision CI is pending publication.
+is **not playable**. Verified published baseline WW is [93b3548](https://github.com/opensagadev/saga-pc/commit/93b3548f5fee4ab8e4fcf58918aa915575e8875a), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37883640294) passing all 13 steps. XX exact-revision CI is pending publication.
 
-The latest ordinary source executable exits 5 in LoadPerm1 while reading
-DebMat[5]->texture_id through a NULL material pointer. The preceding genuine
-DebrisSetup call at native 48a6f8 is still omitted. Its native wrapper at 683530
-and the existing DebrisSetup2 material/resource producers are the next connected
-matching targets. No replacement material or direct DebMat assignment is added.
+The latest ordinary source executable exits 5 in the backward-copy read of
+PCByteCopy. Its complete 84-byte source body equals retail. Fault source5160a0,
+native4ef6a0, reads BYTE [ESI-1] at invalid address02def4bf. This run does not
+establish the caller or the copy arguments; archive/resource producers are the
+next investigation. The earlier NULL DebMat[5] failure did not recur after
+restoring genuine DebrisSetup. No guard, replacement material or invented
+successful result is added.
 
-The WW batch compares 27 new complete functions / 8,078 PC bytes, fourteen exact,
-and restores four genuine frame/render calls. All 20 observed draw callbacks and
-the material/shader-parameter chain have source. The parents remain partial;
-all previous exact contracts survive. One ordinary source-game run confirms the
-NULL material fault above, without establishing a successful frame or gameplay.
-Code similarity and mapping are separate from runnable milestones; current
-measurements live in [matching.json](../matching.json), with full qualifications
-in [transfer-checkpoint.json](../config/transfer-checkpoint.json).
+The XX batch restores genuine debris startup: one new complete function / 43 PC
+bytes, all exact, and the native call to existing resource/material providers.
+The earlier WW batch added 27 functions / 8,078 PC bytes and restored four genuine
+frame/render calls; it now has passing exact-revision CI. Existing parents remain
+partial and all prior exact contracts survive. Code similarity and mapping are
+separate from runnable milestones; current measurements live in
+[matching.json](../matching.json), with full qualifications in
+[transfer-checkpoint.json](../config/transfer-checkpoint.json).
 
 Work proceeds through connected source families and verified PC contracts:
 
-1. Close genuine debris/material startup and the remaining renderer providers, while
+1. Close genuine archive/resource loading and the remaining renderer providers, while
    preserving real shader publication and its constructor/parser/compiler. Verify real startup state and a persistent
    native window/input path without fabricated providers or initialization bypasses.
 2. Close device/reset/resource lifetimes and presentation. Verify repeated real

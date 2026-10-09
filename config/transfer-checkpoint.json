@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1505764,
-    "matched_code_bytes": 233469,
-    "matching_percent": 6.7257981716075435,
-    "fuzzy_coverage_percent": 29.474248631169438,
-    "mapped_functions": 5333,
-    "matched_functions": 2432,
-    "objdiff_fuzzy_percent": 69.45314,
-    "objdiff_total_code": 1473980,
+    "mapped_code_bytes": 1505807,
+    "matched_code_bytes": 233512,
+    "matching_percent": 6.7270369198841,
+    "fuzzy_coverage_percent": 29.4765689987844,
+    "mapped_functions": 5334,
+    "matched_functions": 2433,
+    "objdiff_fuzzy_percent": 69.45657,
+    "objdiff_total_code": 1474023,
     "image_bytes": 40067072,
-    "mapped_bytes": 2153968,
-    "mapping_percent": 5.375905681353506,
+    "mapped_bytes": 2154011,
+    "mapping_percent": 5.3760130013992535,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -38,7 +38,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 1506958
+        "mapped_bytes": 1507001
       },
       {
         "name": ".rdata",
@@ -55,17 +55,17 @@
         "mapped_bytes": 616824
       }
     ],
-    "mapping_known_size_symbols": 9625,
-    "mapping_unknown_size_symbols": 5630,
-    "mapping_code_bytes": 1506958,
+    "mapping_known_size_symbols": 9626,
+    "mapping_unknown_size_symbols": 5631,
+    "mapping_code_bytes": 1507001,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 43.41259593817321,
+    "mapping_code_percent": 43.41383468644977,
     "mapping_data_bytes": 647010,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 1.7963036473617815,
-    "mapping_code_data_bytes": 2153968,
+    "mapping_code_data_bytes": 2154011,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 5.4544351395226744,
+    "mapping_code_data_percent": 5.454544027264275,
     "matched_data_region_bytes": 637833
   },
   "newly_compared": [
@@ -35574,7 +35574,13 @@
         "CI_run": 37879148887,
         "exact_revision_all13_steps": "SUCCESS"
       },
-      "publication": "Exact pushed revision CI pending at commit",
+      "publication": {
+        "status": "EXACT_PUSHED_REVISION_CI_VERIFIED",
+        "commit": "93b3548f5fee4ab8e4fcf58918aa915575e8875a",
+        "CI_run": 37883640294,
+        "CI_url": "https://github.com/opensagadev/saga-pc/actions/runs/37883640294",
+        "all13_steps": "SUCCESS"
+      },
       "new_functions": 27,
       "new_unique_compared_PC_bytes": 8078,
       "new_exact_functions": 14,
@@ -35917,7 +35923,193 @@
       "next_connected_wave": "DebrisSetup43 and authentic LoadPerm1 call to existing DebrisSetup2/material/resource factories; renderer/posteffect providers prepared in parallel",
       "ongoing_goal": "active; checkpoint does not complete the game",
       "human_journal": "Preserved unrelated3 additions unstaged; SHA4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7"
+    },
+    {
+      "checkpoint": "XX",
+      "date": "2026-10-09",
+      "scope": "Genuine permanent-debris startup wrapper and native caller reconnection",
+      "baseline_commit": "93b3548f5fee4ab8e4fcf58918aa915575e8875a",
+      "previous_publication": {
+        "CI_run": 37883640294,
+        "exact_revision_all13_steps": "SUCCESS"
+      },
+      "publication": "Exact pushed revision CI pending at commit",
+      "new_functions": 1,
+      "new_unique_compared_PC_bytes": 43,
+      "new_exact_functions": 1,
+      "new_exact_code_bytes": 43,
+      "new_exact_data_bytes": 0,
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1505807,
+        "matched_code_bytes": 233512,
+        "matching_percent": 6.7270369198841,
+        "fuzzy_coverage_percent": 29.4765689987844,
+        "mapped_functions": 5334,
+        "matched_functions": 2433,
+        "objdiff_fuzzy_percent": 69.45657,
+        "objdiff_total_code": 1474023,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2154011,
+        "mapping_percent": 5.3760130013992535,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1507001
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30186
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9626,
+        "mapping_unknown_size_symbols": 5631,
+        "mapping_code_bytes": 1507001,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 43.41383468644977,
+        "mapping_data_bytes": 647010,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7963036473617815,
+        "mapping_code_data_bytes": 2154011,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.454544027264275,
+        "matched_data_region_bytes": 637833
+      },
+      "fuzzy_delta_pp": 0.002320367614963459,
+      "newly_compared": [
+        {
+          "symbol": "_DebrisSetup",
+          "address": "0x683530",
+          "target_size": 43,
+          "exact_match": true
+        }
+      ],
+      "old_exact_preservation": {
+        "function_rows": 2432,
+        "function_physical_copies": 2436,
+        "data_rows": 3803,
+        "data_physical_copies": 5709,
+        "named_members": 13,
+        "losses": 0
+      },
+      "prior_output_preservation": {
+        "baseline": "WW93b3548",
+        "counts": {
+          "functions": 5241,
+          "data": 11356,
+          "identical_full_relocated": 16596
+        },
+        "changes": [
+          {
+            "unit": "src/legoapi/characters.cpp",
+            "symbol": "_LoadPerm1",
+            "successor": "_LoadPerm1",
+            "old_size": 781,
+            "new_size": 813,
+            "old_raw_sha": "89a4bc6c1094e08c9a3813143c0ceefbdcc9c3e87ec0917618c6000cc9219959",
+            "new_raw_sha": "0edeeec449ec2346eddb854c1fdfc22dc780a1e2f831d910d2f61865783e1291"
+          }
+        ],
+        "qualified": [],
+        "map_sha256": "39c0ccb8eef0c715d1a25dd4439ca042d207c180e4be2c23d4a246584950f754",
+        "source_exe_sha256": "c98c3cf8052d6cbb4f843409f599a4ff5ef2295172add575c415b38672cdc99c"
+      },
+      "source_contracts": {
+        "LoadPerm1": "813/native1351; partial; one genuine call replacesmarker; no addedrangecredit",
+        "native_caller_window": "48a6c6..48a70a complete68bytes equalsnative",
+        "wrapper": "cdecl6 forwards9 words to real DebrisSetup2",
+        "real_provider_symbols": 15,
+        "new_shared_states": 0,
+        "header_data_unchanged": true,
+        "literal": "15nativeequal workingbytes; owningextentunknown/blank;zeroPCcredit"
+      },
+      "checks": {
+        "make_check": "PASS796tests/3 existing skips; LLVM18 formatting/tidy342units",
+        "make_build_check_objects": "PASS5157functions/11353data/342objects;4internalEHgrouped; allrefsresolve",
+        "make_match": "PASSfullnative extents; allprior exact and13memberrows preserved"
+      },
+      "runtime": {
+        "source_game_exe_launched": true,
+        "runs": 1,
+        "exit_code": 5,
+        "elapsed_seconds": 5.800218912074342,
+        "deadline_stopped": false,
+        "fault": "source5160a0/native4ef6a0 PCByteCopy+40 MOV DL,BYTE PTR[ESI-1] reads02def4bf",
+        "whole_fault_function": "complete84 raw/official/linkedEXE body exactnative4ef660",
+        "old_NULL_DebMat5_failure_recurred": false,
+        "caller_copy_arguments_and_producer_cause": "unproved; no stack/register evidence",
+        "normal_objects": 342,
+        "frozen_inputs": 455,
+        "inputs_unchanged": true,
+        "ShowCrashDialog_DWORD0_set_query": true,
+        "owned_processes_windows_empty": true,
+        "broad_class_windows": "unclassified; noidentity/playabilityproof",
+        "result": "Failedstartup; no passingframe/presentation/GPU/assets/gameplay"
+      },
+      "evidence": [
+        {
+          "path": "build/analysis/debris-startup-main-integration-v1/aggregate-prior-preservation.json",
+          "sha256": "05ec691b2a020ec0966850de7b2c9bc74e747d2d97b97ac5d1953f0ee54bc9cb"
+        },
+        {
+          "path": "build/analysis/debris-startup-main-integration-v1/exact-preservation-and-delta.json",
+          "sha256": "98014362dc9ed0ced3894b81037dab82d9d0c3f8c1b2c4366fdf896419b652e5"
+        },
+        {
+          "path": "build/analysis/debris-startup-main-integration-v1/frozen-normal-v1/normal-object-manifest.json",
+          "sha256": "d9e7b3840c5aa2d9d15aeaee4cff55e54ba8314323425e355141afbafb855c96"
+        },
+        {
+          "path": "build/analysis/debris-startup-main-integration-v1/frozen-normal-v1/matching.json",
+          "sha256": "5d5c210de03a07d1abc0b6b6e349a0f9024960aba093d8522f349dd967500ec8"
+        },
+        {
+          "path": "build/analysis/debris-startup-main-integration-v1/normal-build.log",
+          "sha256": "afec82a0ef7c7135ab85ab00225c1c46ddccbeedbb80f53b8b7932cf5de2317e"
+        },
+        {
+          "path": "build/analysis/debris-startup-main-integration-v1/check.log",
+          "sha256": "e50ee8880d5a12556c447c1314ba14a5175396c693448d41c9f7c55d4e552218"
+        },
+        {
+          "path": "build/analysis/debris-startup-main-integration-v1/normal-match.log",
+          "sha256": "d46b63e8a94e4d2394649979145f144eb705df12be00a20737e02d0a2c99e312"
+        },
+        {
+          "path": "build/analysis/debris-startup-independent-review/compiled-v1/accepted-actual-normal-debris43-packet.json",
+          "sha256": "d8164057cdaec1023e18668e61ae61eb73dd95ade97331c0f7cbd5eb59915f0b"
+        },
+        {
+          "path": "build/analysis/permanent-debris-setup-source-exe-next/launcher-v1/observation/receipt.json",
+          "sha256": "03bcd1db9c5c94e502dce5ebdf94943683db123016675fe2afce08c83d00d7bc"
+        },
+        {
+          "path": "build/analysis/permanent-debris-setup-source-exe-next/launcher-v1/observation/fault-attribution.json",
+          "sha256": "70beaeeca9214a5b00150d83390184f22692247ab50874b585982a82b68182e4"
+        },
+        {
+          "path": "build/analysis/material-display-main-integration-v1/exact-CI-final.json",
+          "sha256": "b14268ac50c7254f567857411b60505476476a8211e727387d8f34a17abadb4c"
+        }
+      ],
+      "next_connected_wave": "Prove actual faulty-copy caller and real archive/resource producer; correctedposteffect12/988 firstcompiled independentlyreviewing with7nativezero scalar/pointer proposalsheld",
+      "ongoing_goal": "active;checkpointdoesnotcompletegame",
+      "human_journal": "Preserved unrelated3 additions unstaged;SHA4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7"
     }
   ],
-  "latest_checkpoint": "WW"
+  "latest_checkpoint": "XX"
 }

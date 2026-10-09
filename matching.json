@@ -39,16 +39,16 @@
     "config/identification-plan.md": "afabe23a5f5f7e9638daa1d3fe05ef4e64debdbdebe59fad35c98191cb1c27f7",
     "config/identification-tools.md": "432018272c4e4f472c572596d78da3e7727f89cedcf3d63669ba60884719d190",
     "config/identification.md": "2f07af3ffb67afcdbe951c5b87f106f3456f582a333936664c8a6990a5b87b6b",
-    "config/numain.md": "6c175472824316157cee6fd943feeffd55978d4417ca20f7a01a06b16e5b8d5f",
-    "config/progress-plan.md": "cc2001b6ba5fa519ec452a62dbdd01c27b22c8d774902be34f66975fb2087742",
+    "config/numain.md": "3b274f51c82ba4b289a53a6e0880efa86394ce98907988e8e099c2a4cdf11fd8",
+    "config/progress-plan.md": "1228d3ecf7368c12b4f2c41da96a6cdc31b5288e97f15e9376dd8467e1f278fe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
     "config/strategy.md": "36b716717fd6019fb0d1a16e2104856e7357462963cf4d38a4c9c142eda50a19",
-    "config/symbols.csv": "0d3ae7567a547db0f205e0519dfdb55b5643c52a928419bdb7168685f8ae8fe1",
-    "config/symbols.md": "33d2f72466d7f4ffcd81dd7e03c5a8557352ed18f9f63a8349d9a70abc23edd4",
+    "config/symbols.csv": "39c0ccb8eef0c715d1a25dd4439ca042d207c180e4be2c23d4a246584950f754",
+    "config/symbols.md": "5abfe5dfe2782033394ed86488d2713afcda3e5e92ca701121f45410ef34fc58",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
-    "config/transfer-checkpoint.json": "73c4b5f69167ba1d00057f13e119d197a6e801488701e5dc2dace9baa15c2f4d",
-    "config/transfer-execution.md": "c066f045ea0ca335bc16c5c52c00484b8cf286a21a8d70b7f516e163110e1185",
+    "config/transfer-checkpoint.json": "40080c35db794614c36283a7483bb8767defb5dfd9a5e68d789d4c14142caee2",
+    "config/transfer-execution.md": "73073394fd2161d7c0ee34c0c079acd07dc8a3d04ba5033eb0131e13999acd4d",
     "tools/binary.py": "b519f367ceb15078b5c1f11f17bdc4736d916efd7f792831496f5d1b5e7d02fa",
     "tools/bindiff.py": "d597f3c2d662cce83582b358363895360cd6b9367d4dd4fd8c692f3de64da650",
     "tools/bsim.py": "33ce655cc292bf81f889d82ab647bb8ea1e71d8e05dbb20833e2c3964bf940bc",
@@ -137,7 +137,7 @@
     "src/legoapi/areas.cpp": "e8e2c3119ac8ad62bef169d75e8d43f8fd3401706b8b1ad0bd0e6f024fea26db",
     "src/legoapi/batarang.cpp": "d67b6de02125b678cae8eb8d85ec6c7524a74aa5070f1c36dfa345c26785c6e9",
     "src/legoapi/bolt_runtime.cpp": "c3211dd6919fc520ad15e88685c18a1d624cf6ede2a6210557c466cc0c6fb706",
-    "src/legoapi/characters.cpp": "4ed26372db8bae07a217fefa5efad0bae0a207add0c1d3c5e39625922ba352ad",
+    "src/legoapi/characters.cpp": "bf7b974df39d9409a48f4c42465e4c18884c16d7b6771a73488d4b0a15d49172",
     "src/legoapi/cutscene_runtime.cpp": "88cc88850fe34679623cc22049cc89bd39aba53a30e3131d3fc1befa993592ed",
     "src/legoapi/debris_generators.cpp": "f49b1f1d20263f99fbc80077116dcb7866305c8420b5240a8d950a0e4712f062",
     "src/legoapi/episode.cpp": "3de3b6cb91947b20781a56587c43c332f736985f677b4edd42f494bac2e631dd",
@@ -348,7 +348,7 @@
     "src/legoapi/objectsall.c": "43c73f2a5515dfe38b78962e5de8b39b2c2955810fc66ced6972c6e7efbf59ec",
     "src/legoapi/panel.c": "508f16ba82c3c8b357d703bb390016850108dcc9d0b32221ca95f40d696cbbac",
     "src/legoapi/particles.c": "d430beb8be8784c09830070c3b3d41a85a0034d2d8e0e18d037f40b6f70d3e2b",
-    "src/legoapi/parts.c": "13d0cc3af6f89916b071d5f9d8486af3bbd76f3b0d547ed09c4c49c3d7781a28",
+    "src/legoapi/parts.c": "13c52a78017da8b35319c492c16ccf6c9271a799864d90c812903caa803877a8",
     "src/legoapi/parts_load.c": "f9a984e556d4ede0eecc5b91818f61abb8fd2d8343b29226aa17cb0fdc5b2b00",
     "src/legoapi/perm.c": "ced576bf82f273c277b750f2f13b21d954c2a99b4504797f17581d791a3b223a",
     "src/legoapi/playeractions.c": "fe25167d6ffdcf22f2aad3d4dc5d4cbe55bb2e7222efc906195fa42637027ba5",
@@ -535,7 +535,7 @@
     "build/obj/legoapi/camera.obj": "6a9e8b23a06260e8d46b1c31364ec3f95c03203b0e45dd5a2c19e6cd965da296",
     "build/obj/legoapi/carrying.obj": "0d8444c02350a4f5f7307b6a76916cfeb265918cffa03214c5e464caae83edc0",
     "build/obj/legoapi/character_animation.obj": "da15cc0ad10cfbbd70d9fdcf6aba5b8fbcd507aa8e1b80568d1d7275beb6859a",
-    "build/obj/legoapi/characters.obj": "b08493e595e039522a06ad7d98d531c8e070d835d205e961ee486f2cbdfbcf14",
+    "build/obj/legoapi/characters.obj": "e844e896c708e8d6fb4bd47d5236ef48d71525927fa76bfd94546d754690f127",
     "build/obj/legoapi/charconfig.obj": "95671df3c184e50fe922cf1f49549876dc0b09e6bec24338dcd848b5c8025bb6",
     "build/obj/legoapi/charpivot.obj": "9d273d0c068b0d1ef3b02a59affba19a87a779fe6fe68d505e37a47f455431f2",
     "build/obj/legoapi/charplatforms_pc.obj": "7f73e58bc0189371203cfdb5bb104b068d8c8f06306181f026fe56c22d09bda5",
@@ -637,7 +637,7 @@
     "build/obj/legoapi/occlusion.obj": "8751b146687726f35fe4f48ec631d8e29b8c060f891970b31aeb65cc5dfc8cab",
     "build/obj/legoapi/panel.obj": "4de1faeccfeb0f6cda8bff41599f53e67a59583f4e8be8fd7f537e4b4c51897a",
     "build/obj/legoapi/particles.obj": "4a5196ae615f7669cd13b68c954b68c585f595ea8435e1a351c6606a1c20836b",
-    "build/obj/legoapi/parts.obj": "df31c63f68403e072dafc9005292887673a69349bbc664803b160ebb36d903f2",
+    "build/obj/legoapi/parts.obj": "fc75baaa8c38f7f3d7330becf7fb99812abc1fc881cdc280987c80d9c098e7a6",
     "build/obj/legoapi/parts_breakup.obj": "6d931bcfbd45c9e62f686db7550fd83bcf6bba0c4c46b35c9ea69403be4f7a76",
     "build/obj/legoapi/parts_load.obj": "9edb97a2a49634414a13c8b061c31d187c04d9263cae0baf24018b458b51336d",
     "build/obj/legoapi/perm.obj": "1347917f6c389b3a092620aea5cbeee7d0a7110a3ada2dfd293f10d196bb9bf6",
@@ -13601,17 +13601,17 @@
       "objects": [
         {
           "unit": "src/legoapi/characters.cpp",
-          "base_size": 781,
+          "base_size": 813,
           "exact_match": false,
           "target_sha256": "0aecd2a9c0421ae5550d9276526ac9449ad49e4c4e7322d347e0f52f1e32eab2",
-          "base_sha256": "89a4bc6c1094e08c9a3813143c0ceefbdcc9c3e87ec0917618c6000cc9219959",
-          "relocation_count": 82,
+          "base_sha256": "0edeeec449ec2346eddb854c1fdfc22dc780a1e2f831d910d2f61865783e1291",
+          "relocation_count": 86,
           "comparison_unit": "0048a6a0-09e553a46689",
-          "objdiff_percent": 52.089554
+          "objdiff_percent": 54.868656
         }
       ],
       "status": "different",
-      "objdiff_percent": 52.089554
+      "objdiff_percent": 54.868656
     },
     {
       "name": "LoadPerm2",
@@ -102058,6 +102058,30 @@
       "objdiff_percent": 60.282574
     },
     {
+      "name": "DebrisSetup",
+      "symbol": "_DebrisSetup",
+      "address": "0x00683530",
+      "units": [
+        "src/legoapi/parts.c"
+      ],
+      "target_size": 43,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/parts.c",
+          "base_size": 43,
+          "exact_match": true,
+          "target_sha256": "744d45195eddf97dd2aa65765147faa7a1da4fa3d7bc6947ae53a3c420a79695",
+          "base_sha256": "744d45195eddf97dd2aa65765147faa7a1da4fa3d7bc6947ae53a3c420a79695",
+          "relocation_count": 1,
+          "comparison_unit": "00683530-6bf0758f0d38",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "DebReAlloc2",
       "symbol": "_DebReAlloc2",
       "address": "0x00683560",
@@ -166917,6 +166941,18 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "??_C@_0P@FEGDEBAD@stuff?2particle?$AA@",
+      "symbol": "??_C@_0P@FEGDEBAD@stuff?2particle?$AA@",
+      "address": "0x0075a0e0",
+      "units": [
+        "src/legoapi/characters.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "??_C@_0N@EPICCDHB@statusscreen?$AA@",
@@ -299615,9 +299651,9 @@
     "archive_members": 4782,
     "selected_members": 434,
     "descriptor_sha256": "549921b0a1b7f84823cc666e6350e3d2af7b71cd13a1034f1b0fa6009e49cee1",
-    "normal_link_receipt_sha256": "a4025fb93106f759130dceca99cfbca5515742340180dcc0d1e711e9cc78859a",
-    "source_exe_sha256": "282462ecaa01c0b521a48de4c5ee82acd51d973b79735800202a8f2a04a9c1fc",
-    "local_complete_proof_sha256": "4e0091b2bbf22402c45e1e8828235496b83344fa4aafcff692539daa2d1cc88a",
+    "normal_link_receipt_sha256": "eb9ad5087881c55c086afd6d29b6846dc52b392d20f674a44b7e8c0421e4a270",
+    "source_exe_sha256": "c98c3cf8052d6cbb4f843409f599a4ff5ef2295172add575c415b38672cdc99c",
+    "local_complete_proof_sha256": "da4e5f7395ca565632433861989649acd53e16f92e40eda2fb89c2cc49a1c922",
     "original_binding": null,
     "original_extent": null,
     "PC_credit": 0
@@ -299686,17 +299722,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1505764,
-    "matched_code_bytes": 233469,
-    "matching_percent": 6.7257981716075435,
-    "fuzzy_coverage_percent": 29.474248631169438,
-    "mapped_functions": 5333,
-    "matched_functions": 2432,
-    "objdiff_fuzzy_percent": 69.45314,
-    "objdiff_total_code": 1473980,
+    "mapped_code_bytes": 1505807,
+    "matched_code_bytes": 233512,
+    "matching_percent": 6.7270369198841,
+    "fuzzy_coverage_percent": 29.4765689987844,
+    "mapped_functions": 5334,
+    "matched_functions": 2433,
+    "objdiff_fuzzy_percent": 69.45657,
+    "objdiff_total_code": 1474023,
     "image_bytes": 40067072,
-    "mapped_bytes": 2153968,
-    "mapping_percent": 5.375905681353506,
+    "mapped_bytes": 2154011,
+    "mapping_percent": 5.3760130013992535,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -299704,7 +299740,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 1506958
+        "mapped_bytes": 1507001
       },
       {
         "name": ".rdata",
@@ -299721,17 +299757,17 @@
         "mapped_bytes": 616824
       }
     ],
-    "mapping_known_size_symbols": 9625,
-    "mapping_unknown_size_symbols": 5630,
-    "mapping_code_bytes": 1506958,
+    "mapping_known_size_symbols": 9626,
+    "mapping_unknown_size_symbols": 5631,
+    "mapping_code_bytes": 1507001,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 43.41259593817321,
+    "mapping_code_percent": 43.41383468644977,
     "mapping_data_bytes": 647010,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 1.7963036473617815,
-    "mapping_code_data_bytes": 2153968,
+    "mapping_code_data_bytes": 2154011,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 5.4544351395226744,
+    "mapping_code_data_percent": 5.454544027264275,
     "matched_data_region_bytes": 637833
   },
   "data_members": [
@@ -300066,7 +300102,7 @@
       "metadata_sha256": "2e212f5258c2b9800df215413c9c605fe2caa1b2c7ec9824fdd0e89c84d713cb",
       "header_path": "/home/fabian/git/saga-pc/src/saga.h",
       "header_sha256": "46c00e1dc6ef088f7ce0b6829f2620d1c98d1542d6cc61ff5ad2222593273ddb",
-      "geometry_object_sha256": "4d1c7c1f0985dc88639bf397182f896a08e0a03bcfc31592a307bc76b33aa379",
+      "geometry_object_sha256": "a5f57145a44f8de248c8e4d1c2fe7adb0a98e13269788966caab7e8d6bbf08d2",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
@@ -300182,16 +300218,16 @@
   "data_member_migrations": [],
   "reviewed_identification": {
     "scope": "mapped-inventory-and-explicit-active-journal-function-identities",
-    "csv_inventory_functions": 5333,
-    "csv_inventory_physical_functions": 5317,
-    "csv_inventory_code_bytes": 1505764,
-    "csv_inventory_code_percent": 43.378199067424205,
+    "csv_inventory_functions": 5334,
+    "csv_inventory_physical_functions": 5318,
+    "csv_inventory_code_bytes": 1505807,
+    "csv_inventory_code_percent": 43.37943781570076,
     "journal_reviewed_identity_functions": 348,
     "journal_reviewed_extent_functions": 348,
     "journal_reviewed_code_bytes": 182447,
     "additional_reviewed_code_bytes_outside_inventory": 10139,
-    "combined_identified_code_bytes": 1515903,
-    "combined_identified_code_percent": 43.6702843877962,
+    "combined_identified_code_bytes": 1515946,
+    "combined_identified_code_percent": 43.67152313607275,
     "reviewed_identity_functions": 348,
     "reviewed_complete_extent_functions": 348,
     "reviewed_function_extent_bytes": 182447,

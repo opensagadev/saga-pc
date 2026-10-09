@@ -5341,3 +5341,14 @@ byte; the complete 210-byte body ends at 5f03b2, excluding following CC padding.
 Four existing frame/render caller repairs earn no additional range credit. Full
 source, output-preservation, runtime-fault and remaining-provider qualifications
 are in transfer-checkpoint.json.
+
+### Debris startup source checkpoint XX (2026-10-09)
+
+DebrisSetup at 683530 has a complete 43-byte exact body, including RET and
+excluding following CC. The six-argument cdecl wrapper forwards nine words to
+the existing real DebrisSetup2. The native 68-byte LoadPerm1 caller window
+48a6c6..48a70a is restored without changing the caller's full 1,351-byte native
+extent or crediting it again. The literal at 75a0e0 has 15 verified working bytes
+and unknown owning extent, so its size stays blank. Shared data/header are
+unchanged. The next observed source-game fault lies in the existing exact84
+PCByteCopy at 4ef660; its input/caller cause remains unproved.

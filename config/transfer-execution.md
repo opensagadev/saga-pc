@@ -9,52 +9,41 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Verified published baseline VV is [d5faf138](https://github.com/opensagadev/saga-pc/commit/d5faf1388f5e5570df2bbfceefa14761109da4aa), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37879148887) passing all 13 steps. WW exact-revision CI is pending publication.
+Verified published baseline WW is [93b3548](https://github.com/opensagadev/saga-pc/commit/93b3548f5fee4ab8e4fcf58918aa915575e8875a), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37883640294) passing all 13 steps. XX exact-revision CI is pending publication.
 
-The WW batch adds 27 complete functions / 8,078 unique compared PC bytes across
-material/shader parameters, display-list drawing, back-buffer/resource suppliers
-and native presentation. Fourteen are byte exact, adding 463 exact code bytes.
-Whole-PC fuzzy coverage is 29.474249%, up
-0.078212 percentage points from VV; exact code is
-233,469/3,471,246 bytes (6.725798%). Every previous exact code/data result
-and all 13 named member rows survive.
+Checkpoint XX restores the native LoadPerm1 call to DebrisSetup and its complete
+43-byte wrapper. The wrapper is byte exact and forwards the six verified inputs
+and native additional constants to existing DebrisSetup2 and its real providers.
+The existing LoadPerm1 body grows from 781 to 813/native 1,351 bytes and remains
+partial; restoring its caller earns zero additional compared range credit.
+The 15-byte particle path equals native, but its original owning extent stays
+unknown and receives zero coverage/exact-data credit. Header and shared data are
+unchanged.
 
-All 20 observed display callbacks now have compiled source. All 31 new complete
-initializers (840 typed bytes) equal native, including the 49-entry handler view
-and its pointer: 27 NULL entries and 22 pointers to 20 distinct real callbacks.
-Unknown owning extents remain blank and receive zero allocation or exact-data
-credit. The old unimplemented DrawScene extent is corrected from 209 to 210 bytes:
-209 cut off the final byte of its terminal jump. This is a boundary correction,
-not additional transferred source.
-
-Four genuine calls are restored: renderer DrawScene and native presentation,
-then frame-end TimeBar(-1) and SwapScreenEx with the current callback. These
-existing parents add zero new compared ranges; renderer 1,211/native 1,465 and
-frame end 365/native 987 remain partial and nonexact. No separate scene counter
-reset, enlarged array, forced focus/profiling or fabricated success is added.
-
+Whole-PC fuzzy coverage is 29.476569%, up
+0.002320 percentage points from WW. Exact code is
+233,512/3,471,246 bytes (6.727037%), up 43; exact data remains 637,833 bytes.
+Every previous exact code/data result and all 13 named member rows survive.
+Among 16,597 old complete physical outputs, 16,596 retain identical relocated
+bytes; only the reviewed LoadPerm1 call changes. All 237 other outputs in the two
+changed owners and all 340 unaffected object hashes are preserved.
 Required checks pass: 796 tests (three existing skips), LLVM18 formatting and
 342-unit analysis, normal source link/object checks and full retail matching.
-Among 16,514 old complete outputs, 16,509 retain identical relocated bytes; two
-parents change through the four reviewed calls, and three unchanged-source
-Camera/Deb/Init outputs retain specifically reviewed historical finite pairs.
-The 89 natural unused SDK outputs preserve their contracts and pass fresh
-normal-link/archive admission with zero PC credit.
 
-The latest ordinary source executable exits 5 in LoadPerm1 while reading
-DebMat[5]->texture_id through a NULL material pointer. The preceding genuine
-DebrisSetup call at native 48a6f8 is still omitted. Its native wrapper at 683530
-and the existing DebrisSetup2 material/resource producers are the next connected
-matching targets. No replacement material or direct DebMat assignment is added.
+The latest ordinary source executable exits 5 in the backward-copy read of
+PCByteCopy. Its complete 84-byte source body equals retail. Fault source5160a0,
+native4ef6a0, reads BYTE [ESI-1] at invalid address02def4bf. This run does not
+establish the caller or the copy arguments; archive/resource producers are the
+next investigation. The earlier NULL DebMat[5] failure did not recur after
+restoring genuine DebrisSetup. No guard, replacement material or invented
+successful result is added.
 
-One actual source-game run exited naturally after 2.546 seconds. Its complete
-781-byte LoadPerm1 body is verified against the linked source image; fault
-source453f85/native48a7e7 reads WORD [EDX+74] with NULL DebMat[5]. All 342 normal
-objects and 455 frozen inputs remained unchanged. Wine crash suppression was set
-and queried, and owned process/window cleanup was empty. This is a failed startup
-observation, not a passing frame, presentation, assets or gameplay test. The source
-game remains not playable. Earlier CPU fixture results retain their original
-bounded domains; they do not test the new material or live renderer paths.
+One ordinary source-game run exited naturally after 5.800 seconds. All 342
+objects, 455 frozen inputs and linked-image/report pins remained unchanged.
+Wine crash suppression was set and queried; no owned processes or windows
+remained after cleanup. Broad class-name window samples are unclassified.
+No successful frame, GPU presentation, loaded world or gameplay is established;
+the source build remains not playable.
 
 ## Ownership and continuous work
 

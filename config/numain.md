@@ -2,15 +2,17 @@
 
 Current whole-project transfer status is recorded in
 [transfer-execution.md](transfer-execution.md). The source reaches genuine
-hardware, window, input and shader initialization; the native frame/render calls
-are reconnected. The latest ordinary source executable exits 5 in LoadPerm1 while reading
-DebMat[5]->texture_id through a NULL material pointer. The preceding genuine
-DebrisSetup call at native 48a6f8 is still omitted. Its native wrapper at 683530
-and the existing DebrisSetup2 material/resource producers are the next connected
-matching targets. No replacement material or direct DebMat assignment is added.
+hardware, window, input and shader initialization; the native frame/render and
+debris setup calls are reconnected. The latest ordinary source executable exits 5 in the backward-copy read of
+PCByteCopy. Its complete 84-byte source body equals retail. Fault source5160a0,
+native4ef6a0, reads BYTE [ESI-1] at invalid address02def4bf. This run does not
+establish the caller or the copy arguments; archive/resource producers are the
+next investigation. The earlier NULL DebMat[5] failure did not recur after
+restoring genuine DebrisSetup. No guard, replacement material or invented
+successful result is added.
 Resource/world actions and device lifetimes remain incomplete. Original scene
 capacity is still unproved. The source executable is not playable. Dated notes
-below preserve historical states; use the current source and work plan for gaps.
+below preserve historical states; use current source and the work plan for gaps.
 
 The original PC `NuMain` is at `0x00492b40`, with a complete 4,332-byte extent.
 [Identification notes](identification.md) explain its entry chain and implemented

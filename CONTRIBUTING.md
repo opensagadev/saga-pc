@@ -4,12 +4,12 @@ This project reconstructs the GOG PC executable with MSVC 2005 and compares the
 resulting x86 COFF objects against the original. The default build also links
 our current sources into a Windows executable using the original MSVC linker
 and libraries. The entry path now connects native hardware/window/input startup. The real renderer
-stream initializer is now connected. The current source connects genuine shader publication and frame/render callers.
-Its latest ordinary startup run crashes in LoadPerm1, reading the texture ID of
-NULL DebMat[5]; the earlier native DebrisSetup call remains omitted. Real
-material/resource producers are the next connected matching targets. Original
-scene/declaration allocation capacities remain qualified. Device presentation,
-world loading and recurring gameplay are unverified; the source is not playable.
+stream initializer is now connected. The current source connects genuine shader publication, frame/render callers
+and debris setup. Its latest ordinary startup run crashes in an already
+byte-exact PCByteCopy. The caller and bad copy inputs remain unproved;
+archive/resource producers are the next investigation. Original scene/declaration
+allocation capacities remain qualified. Device presentation, world loading and
+recurring gameplay are unverified; the source is not playable.
 There are no host or WebAssembly game targets.
 
 ## Requirements and setup
@@ -128,11 +128,11 @@ Startup code may use `STUBBED()` or `STUBBED_NAMED(...)` to mark a verified PC
 call or state transition whose dependency is still missing. These markers emit
 no code in matching builds and do not imply a byte match. Keep the original call
 order, document the skipped work, and replace markers down the dependency tree.
-The source-only executable connects real window/input, shader publication and
-frame/render callers. Its latest startup failure is a NULL DebMat[5] texture-ID
-read in LoadPerm1 after the omitted native DebrisSetup call. The original
-scene capacity and full declaration-cache capacity remain unproved. See the
-current frontier in [the execution policy](config/transfer-execution.md).
+The source-only executable connects real window/input, shader publication,
+frame/render and debris callers. Its latest startup failure is a bad read inside
+the exact PCByteCopy routine; the caller and arguments remain unproved. The
+original scene capacity and full declaration-cache capacity remain unproved.
+See the current frontier in [the execution policy](config/transfer-execution.md).
 Automated Wine tests suppress the debugger dialog in their own prefix, retain
 the genuine crash output and exit, and clean only their own identity-bound
 process group; see [the execution policy](config/transfer-execution.md).

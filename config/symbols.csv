@@ -4276,6 +4276,7 @@ address    , symbol                                                         , si
 0x00682290,_GenDebIndexBounceY,1025,"DEBRISPARTICLE_PC *__cdecl (DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32)"
 0x006826a0,_GenDebIndexBounceXZ,1122,"DEBRISPARTICLE_PC *__cdecl (DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32)"
 0x682b10,_DebrisSetup2,2580,"void __cdecl(VARIPTR *,VARIPTR,VARIPTR *,VARIPTR,char *,i32,i32,i32,i32)"
+0x683530,_DebrisSetup,43,"void __cdecl(VARIPTR *,VARIPTR,char *,i32,i32,i32)"
 0x683560,_DebReAlloc2,2337,void __cdecl (DEBRISKEY_PC *)
 0x683e90,_DebReAlloc,181,"void __cdecl (DEBRISKEY_PC *, i32)"
 0x683f50,_DebFree,1197,void __cdecl (i32 *)
@@ -7173,6 +7174,7 @@ address    , symbol                                                         , si
 0x75a0d8,__real@3f100000,4,const f32
 0x0075a0dc , _DebrisGlassMaterialOpacity                                    , 4     , const f32
 0x75a0dc,__real@3f7fbe77,4,const f32
+0x75a0e0,??_C@_0P@FEGDEBAD@stuff?2particle?$AA@,,const char[15]
 0x75a0f0,??_C@_0N@EPICCDHB@statusscreen?$AA@,,const char[]
 0x75a100,??_C@_0BH@LGHMDBKF@chars?2specialmoves?4txt?$AA@,,const char[]
 0x75a118,??_C@_0BF@DKGFBI@chars?2customiser?4txt?$AA@,,const char[]
