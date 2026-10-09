@@ -1,29 +1,27 @@
 # Reconstruction roadmap
 
 The goal is a complete PC reconstruction from readable C/C++. The source build
-is **not playable**. Verified published baseline ZZ is [822c1c5](https://github.com/opensagadev/saga-pc/commit/822c1c5b13a24633b71bccf9209120d2f5c8b15f), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37889168457) passing all 13 steps. YY also passed all 13 steps. AAA exact-revision CI will be checked after publication.
+is **not playable**. Verified published baseline AAA is [2825bf6](https://github.com/opensagadev/saga-pc/commit/2825bf60e08aa25797794f2d71d091d3d57ebf97), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37890834273) passing all 13 steps. BBB exact-revision CI will be checked after publication.
 
-The genuine material-override initializer NuMtlInitOverride at 0x5e4eb0 now
-runs in the native hardware-startup order, with arguments (512, buffer, end).
-Its complete 35 bytes match native. The existing real list allocator retains
-its native arena-size check and failure behavior. No artificial list or backing
-provider is added. The earlier NULL-list fault no longer appears.
+The latest frozen source run remained active until its 60-second deadline.
+The launcher then terminated it; natural exit was not observed. No fault or
+exception was recorded, and no native game or crash window was attributed by
+the broad window samples. This does not prove recurring frames, a loaded world,
+playability, or that execution passed the earlier declaration failure.
 
-The latest ordinary source run exits 5 after 54.710 seconds in the byte-exact
-82-byte PCVertexDeclarationFindSlot. A separate headless capture proves that
-NuGetVertexDeclaration loads count 33,556,746 (0x0200090a) from the canonical
-counter, with descriptor 0x02000909. In our layout that counter occupies cache+32,
-the key position of a hypothetical fifth record. An insertion overwriting the
-counter is the leading explanation; the preceding write itself was not captured.
-The native counter precedes its cache by eight bytes. Full original cache
-capacity remains unproved. The four-record prefix is a verified minimum for the
-earlier finite producer domain, not sufficient storage for every startup input.
-Do not grow the array, move the counter, reset counts or add search/copy guards
-without recovering the actual storage contract.
+The last attributed failure, in AAA, was exact PCVertexDeclarationFindSlot
+receiving count 0x0200090a with descriptor 0x02000909. The source count occupied
+cache+32, the key position of a hypothetical fifth record; insertion overwrite
+was the leading explanation, with the preceding write unobserved. Native places
+its counter eight bytes before its cache. Full original capacity remains unknown;
+the earlier four-record view establishes only a minimum for a finite producer
+domain. BBB changes no cache storage, counter, search, copy or guard. Retained Mac
+catalogs contain no debug array declaration proving this PC allocation.
 
-AAA adds 35 compared PC bytes, all exact. Similarity and mapping measure source
-reconstruction, separately from runnable milestones. See [matching.json](../matching.json)
-and [checkpoint evidence](../config/transfer-checkpoint.json).
+BBB adds five functions / 436 compared PC bytes, three exact / 277 bytes.
+Similarity and mapping measure reconstruction, separately from runnable
+milestones. See [matching.json](../matching.json) and
+[checkpoint evidence](../config/transfer-checkpoint.json).
 
 Work proceeds through connected source families and verified PC contracts:
 

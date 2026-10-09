@@ -31,3 +31,18 @@ i32 __cdecl NuWindCurrent(NUWIND *wind) {
         return -1;
     return wind->texture_ids[wind->current];
 }
+
+/* Original source: gamelib/nuwind/nuwind.cpp. */
+void __cdecl NuWindInitialise(NUWIND *wind) {
+    if (wind != NULL) {
+        i32 index;
+        for (index = 0; index < 8; ++index)
+            wind->texture_ids[index] = -1;
+        wind->parameter_24 = 1.0f;
+        wind->phase_speed_scale = 1.0f;
+        wind->current = -1;
+        wind->phase = 0.0f;
+        wind->accumulated_time = 0.0f;
+        wind->scaled_accumulated_time = 0.0f;
+    }
+}

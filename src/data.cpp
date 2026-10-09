@@ -28196,3 +28196,9 @@ extern "C" {
 }
 #pragma bss_seg()
 #pragma data_seg()
+
+/* Verified DWORD working inputs; original owning extents remain unknown. */
+extern "C" {
+    u32 NuDebrisIdealDynamicVBSizePc = 262144u;
+    i32 MaxAnimJoints = 0;
+}

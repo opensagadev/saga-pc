@@ -1,54 +1,71 @@
 # Current work plan
 
 The [whole-project mandate](../SOL_IMPLEMENTATION_PLAN.md) remains active.
-Verified published baseline ZZ is [822c1c5](https://github.com/opensagadev/saga-pc/commit/822c1c5b13a24633b71bccf9209120d2f5c8b15f), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37889168457) passing all 13 steps. YY also passed all 13 steps. AAA exact-revision CI will be checked after publication.
+Verified published baseline AAA is [2825bf6](https://github.com/opensagadev/saga-pc/commit/2825bf60e08aa25797794f2d71d091d3d57ebf97), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37890834273) passing all 13 steps. BBB exact-revision CI will be checked after publication.
 
-Checkpoint AAA reconnects the genuine material-override list producer and its
-hardware caller. One complete function adds 35 newly compared PC bytes, all exact;
-no new data bytes or duplicated caller bytes receive credit. Of 16,624 old complete
-outputs, 16,623 remain byte identical; only the intended hardware caller changes.
-Independent review verifies all 87 caller CFG blocks, 31 switch destinations and
-the complete 482-byte switch tail, with the single added native call. All 2,447
-previous exact code copies, 5,709 data copies and 13 named members survive.
+Checkpoint BBB transfers five complete startup functions / 436 newly compared
+PC bytes. API initialization (112), wind initialization (57) and the real
+particle vertex-buffer helper (108) are byte exact, adding 277 exact bytes.
+Animation initialization (89) and particle arena initialization (70) retain
+complete nonexact comparisons and independently reviewed source contracts.
+The animation producer reserves the actual 16-byte header, 48-byte joints and
+per-joint flags; old reader names and offsets remain unchanged, and header bytes
+6/7 remain untouched. Native startup passes animation_count 160, not the video
+parameter suggested by the old omission comment.
 
-Whole-PC fuzzy coverage is 29.500221%, up
-0.001577 percentage points. Exact code is
-233,768/3,471,246 bytes (6.734412%), up 35; exact data remains
-637,833 bytes. Required checks pass: 796 tests (three existing skips), LLVM18
-formatting and 343-unit analysis, normal source linking/object coverage and full
-retail comparison. All 89 natural SDK-output descriptors retain their admitted
-contracts, with refreshed header recipe pins and complete link/reference proof.
+Seven real caller sites are restored: four hardware startup calls and three
+sampler/post-effect reset calls in SwapScreen. The existing real buffer creators,
+lockers, initial swap, callbacks and returned values are retained. No filter
+instances, vtables, allocator providers, capacity guesses or success values are
+fabricated. Both parents remain partial/nonexact; 16 SwapScreen omissions remain.
 
-The genuine material-override initializer NuMtlInitOverride at 0x5e4eb0 now
-runs in the native hardware-startup order, with arguments (512, buffer, end).
-Its complete 35 bytes match native. The existing real list allocator retains
-its native arena-size check and failure behavior. No artificial list or backing
-provider is added. The earlier NULL-list fault no longer appears.
+Whole-PC fuzzy coverage is 29.513112%, up 0.012891
+percentage points. Exact code is 234,045/3,471,246 bytes (6.742392%),
+up 277; exact data remains 637,833 bytes. All 2,448 previous exact code copies,
+5,709 data copies and 13 named members survive. Of 16,625 old complete outputs,
+16,619 are byte identical. The six changes are the two intended callers, two
+specific independently reviewed nonexact Init/Particle pairs, and two complete
+unknown-extent data-tail pairs. The declared shader array remains 157,210 bytes;
+its full compiled region now includes two alignment zeros, which differ from
+native bytes and remain explicitly nonexact with zero extent credit. No native
+body or data mismatch is cropped or masked.
 
-The latest ordinary source run exits 5 after 54.710 seconds in the byte-exact
-82-byte PCVertexDeclarationFindSlot. A separate headless capture proves that
-NuGetVertexDeclaration loads count 33,556,746 (0x0200090a) from the canonical
-counter, with descriptor 0x02000909. In our layout that counter occupies cache+32,
-the key position of a hypothetical fifth record. An insertion overwriting the
-counter is the leading explanation; the preceding write itself was not captured.
-The native counter precedes its cache by eight bytes. Full original cache
-capacity remains unproved. The four-record prefix is a verified minimum for the
-earlier finite producer domain, not sufficient storage for every startup input.
-Do not grow the array, move the counter, reset counts or add search/copy guards
-without recovering the actual storage contract.
+Two shared DWORDs are added in ordinary default sections; the private API default
+stays in its original source owner. All three owning extents remain blank, with
+zero new data credit. Required checks pass: LLVM18 format/tidy for 343 owners,
+796 tests (three existing skips), normal source link/object coverage and full
+retail matching. An initial system-LLVM22 formatting disagreement and two Wine
+compiler timeouts are retained; unchanged-source checks with installed LLVM18
+and the unchanged pinned build retry pass. All 89 natural SDK outputs retain
+their descriptors, with refreshed header recipe pins and complete link proof.
 
-Both observations preserve all 343 objects, 456 input pins and frozen image/report
-artifacts. Wine crash-dialog suppression was set and queried; cleanup left no
-owned processes, debuggers or windows. The headless debugger exits zero after
-53.568 seconds and explicitly terminates its debuggee after capture; natural game
-exit is unknown for that run. Resource/device lifetimes, recurring frames, GPU
-presentation, a loaded world and gameplay remain unverified. The source build
-is not playable.
+The latest frozen source run remained active until its 60-second deadline.
+The launcher then terminated it; natural exit was not observed. No fault or
+exception was recorded, and no native game or crash window was attributed by
+the broad window samples. This does not prove recurring frames, a loaded world,
+playability, or that execution passed the earlier declaration failure.
 
-1. Recover the vertex-declaration storage contract and preceding write. Reconnect the verified genuine initial screen-swap call, then close remaining hardware/resource providers in connected families.
-   Preserve native control, callbacks, returned values and named field offsets;
-   do not add a standalone counter reset, force focus or enlarge storage to hide
-   the crash.
+The last attributed failure, in AAA, was exact PCVertexDeclarationFindSlot
+receiving count 0x0200090a with descriptor 0x02000909. The source count occupied
+cache+32, the key position of a hypothetical fifth record; insertion overwrite
+was the leading explanation, with the preceding write unobserved. Native places
+its counter eight bytes before its cache. Full original capacity remains unknown;
+the earlier four-record view establishes only a minimum for a finite producer
+domain. BBB changes no cache storage, counter, search, copy or guard. Retained Mac
+catalogs contain no debug array declaration proving this PC allocation.
+
+All 343 objects, 456 input pins and frozen report/image artifacts remain unchanged
+during the observation. Crash-dialog suppression was set and queried; cleanup
+left no owned processes, debuggers or windows. The 60.434 seconds include cleanup;
+launcher exit -15 is deadline termination, not natural game exit. The source is
+not playable. Device/resource lifetimes, persistent frames and world/gameplay
+remain unresolved. Next is the connected occlusion720 and material/input965
+source proposal; its 1,685 candidate bytes receive no reconstruction credit yet.
+
+1. Transfer the connected occlusion720 and material/input965 families with real
+   data owners and providers, then compile and compare all 1,685 candidate bytes.
+   Recover original declaration-cache storage and the preceding write separately;
+   do not enlarge arrays, reset counters or add guards to bypass that failure.
 2. Transfer connected gameplay, movement, resource and loader families in parallel
    where their PC contracts are established. Reattach real providers to partial
    callers and record remaining void omissions.

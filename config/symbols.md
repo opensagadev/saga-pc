@@ -5383,3 +5383,15 @@ material-variant type, a buffer pointer, dereferenced end pointer and alignment
 following font/resource setup. Actual caller CFG and complete switch-tail review
 preserve all old actions and add only this call. The separate material shader
 initializer at 0x60ded0 does not publish g_overrideList. No new data is emitted.
+
+### Connected hardware suppliers checkpoint BBB (2026-10-09)
+
+Five full native extents add436 compared bytes: API4f3db0/112, wind5ddb90/57,
+animation5e9020/89, particle-helper5ffba0/108 and arena607c60/70. API/wind/helper
+are exact277; both remaining bodies retain full nonexact comparisons. Native
+6dc2e6 consumes selector68 animation_count160, not video_parameter3. Named
+ANI3GLOBAL16 fields preserve old reader offsets, with joints48 and flags+c.
+Seven actual native caller sites are independently verified, including complete
+selector/switch tables; parents remain partial/nonexact and receive no duplicate
+byte credit. Three new scalar views have blank owning extents. The latest bounded
+run has no recorded fault, but ends by deadline with no positive frame claim.

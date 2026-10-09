@@ -26,8 +26,8 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
         NuShaderManagerSetElementfv(0x4e, i, RenderFrameShaderArrayPc[i]);
     }
     NuShaderManagerSetfv(0x3f, &RenderFrameShaderTimePc);
-    STUBBED_NAMED(0x006dfa20); /* sampler defaults,60b0f1 */
-    STUBBED_NAMED(0x005c31f0); /* actual post-effect reset,60b0f6 */
+    PCDeviceResetSamplerDefaultsPc();
+    NuPostEffectReset();
     for (i32 i = 0; i < sceneParametersCount; ++i) {
         NURNDRLIBSCENE *scene = &sceneParameters[i];
         if (!PcWindowOptions.bloomenabled)
@@ -118,7 +118,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
             NuShaderManagerBindShaderPc(NULL);
             STUBBED_NAMED(0x005e6a80); /* Render(destination),60b3ea */
             NuShaderManagerBindShaderPc(NULL);
-            STUBBED_NAMED(0x006dfa20); /* sampler defaults,60b3f9 */
+            PCDeviceResetSamplerDefaultsPc();
         }
         if (scene->unknown_214 != 0) {
             FRAME_NATIVE_TEXTURE_PC *texture =

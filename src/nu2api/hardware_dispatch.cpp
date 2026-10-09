@@ -18,7 +18,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     u32 icon = 0;
     i32 selector;
     va_list args;
-    STUBBED_NAMED(0x004f3db0); /* native call 6dbbf3 */
+    NuAPIInit();
     if (allocate) {
         buffer->void_ptr = NuAlloc(0x4000000, NuHwAllocSourcePc, 0xb2);
         end->addr = buffer->addr + 0x4000000;
@@ -329,7 +329,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     STUBBED_NAMED(0x00601a30);
     STUBBED_NAMED(0x0060cb00);
     STUBBED_NAMED(0x005d16a0); /* (buffer, *end) */
-    STUBBED_NAMED(0x00607c60); /* (buffer, *end) */
+    NuInitDebrisRenderer(buffer, *end);
     PCGraphicsInitializeFramebuffers((u8)PCDeviceBackend.render_target_flags, 0, buffer, *end);
     STUBBED_NAMED(0x005f22a0); /* (PCDeviceBackend.shader_flags, buffer, *end) */
     NuRndrBufferDescriptorsInitPc(buffer, *end);
@@ -337,7 +337,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     STUBBED_NAMED(0x005eaa80); /* (buffer, *end) */
     STUBBED_NAMED(0x004ffbb0);
     NuTimeBarInit();
-    STUBBED_NAMED(0x005e9020); /* (video_parameter, buffer, *end) */
+    NuAnimInit(animation_count, buffer, *end);
     NuTexAnimInitMutex();
     if (audio_enabled) {
         STUBBED_NAMED(0x006951f0); /* (buffer,*end,video_parameter,1,audio_gate,2,
@@ -365,7 +365,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     NuRndrBeginScene(1);
     NuRndrClear(0xb00, 0, 1.0f);
     NuRndrEndScene();
-    STUBBED_NAMED(0x0060aff0); /* (0) */
+    NuRndrSwapScreen(0);
     bgProcInit();
     return 1;
 }

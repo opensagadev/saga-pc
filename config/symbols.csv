@@ -1082,6 +1082,7 @@ address    , symbol                                                         , si
 0x004f3ca0 , _NuTimeMicroSeconds                                            , 108   , f32 __cdecl (NuTime *)
 0x004f3d10 , _NuTimeMilliSeconds                                            , 108   , f32 __cdecl (NuTime *)
 0x004f3d80 , _NuTimeScanlines                                               , 35    , f32 __cdecl (NuTime *)
+0x004f3db0,_NuAPIInit,112,void __cdecl(void)
 0x004f3e20 , _NuFrameBegin                                                  , 32    , void __cdecl (void)
 0x4f4040,_NuApiSetEndFrameCallbackPc,10,void __cdecl(void (__cdecl *)(void))
 0x004f4060 , _NuCommandLine                                                 , 24    , "void __cdecl (i32 *, char ***)"
@@ -3496,6 +3497,7 @@ address    , symbol                                                         , si
 0x5dd230,_NuRndrAxisArrowsMtx,903,"void __cdecl(NUMTX *, f32, NUMTL *)"
 0x5dda30,_NuRndrStrip3d,160,"i32 __cdecl(NURND_VERTEX3D_PC *,NUMTL *,NUMTX *,i32)"
 0x5ddad0,_NuRndrTriStrip3dClip,29,"i32 __cdecl(NURND_VERTEX3D_PC *,i32,NUMTX *,NUMTL *)"
+0x005ddb90,_NuWindInitialise,57,void __cdecl(NUWIND *)
 0x005ddc60,_NuWindCurrent,23,i32 __cdecl(NUWIND *)
 0x005ddc80 , _NuWindAnimate                                                 , 112   , "void __cdecl (NUWIND *, f32)"
 0x5ddd10,_ResetSceneBeforeFramePC,238,"void __cdecl(NUDISPLAY_LIST_PC *,i32)"
@@ -3553,6 +3555,7 @@ address    , symbol                                                         , si
 0x005e8430 , _NuOcclusionManagerBeginFrame                                  , 59    , void __cdecl (void)
 0x5e8be0,?resetGeometry@NuDynamicLight@@QAEXXZ,122,void __thiscall NuDynamicLight::resetGeometry(void)
 0x5e8fe0,?resetAll@NuDeferredFilterGen@@UAEXXZ,50,void __thiscall NuDeferredFilterGen::resetAll(void)
+0x005e9020,_NuAnimInit,89,"void __cdecl(i32,VARIPTR *,VARIPTR)"
 0x005e91f0 , _NuAnimData2FixPtrs                                            , 269   , "void *__cdecl (void *, i32, i32, i32)"
 0x005e9300 , _NuAnimDataRead                                                , 688   , void* __cdecl (NUFILE)
 0x005e9650 , _NuSpecialGetAnimEndFrame                                      , 118   , f32 __cdecl (NUSPECIALHANDLE *special)
@@ -3742,6 +3745,7 @@ address    , symbol                                                         , si
 0x5ff660,_RenderPostViewportSetPc,227,"void __cdecl(f32,f32,f32,f32,f32,f32,f32,f32)"
 0x5ff7a0,_NuSpecialDrawAtAlpha,122,"i32 __cdecl (NUSPECIALHANDLE *,NUMTX *,f32)"
 0x5ff840,_NuRndrSetSpecularLightPS,861,"i32 __cdecl(const NUVEC *, const NUVEC4 *)"
+0x005ffba0,_NuDebrisCreateVertexBuffersPc,108,void __cdecl(void); original-TU private helper
 0x5ffc30,_NuDebrisRendererFlushBuffers,78,void __cdecl (void)
 0x5ffc80,_NuDebrisRendererNextBuffer,185,i32 __cdecl (void)
 0x5ffd40,_NuRndrSetParticleRotation,10,void __cdecl (NUMTX *)
@@ -3834,6 +3838,7 @@ address    , symbol                                                         , si
 0x607880,_NuDisplayListDrawGeometryPc,524,void __cdecl(void *)
 0x607a90,_NuRndrInitConfigPc,167,"void __cdecl NuRndrInitConfigPc(VARIPTR *, VARIPTR)"
 0x00607ba0,_NuRndrInitEx,32,"void __cdecl(i32, VARIPTR *, VARIPTR)"
+0x00607c60,_NuInitDebrisRenderer,70,"void __cdecl(VARIPTR *,VARIPTR)"
 0x607cb0,_AddParticleGroupToDisplayList,178,void __cdecl (NATIVE_PARTICLE_PACKET_PC *)
 0x00607d70 , _NuPrim2DBegin                                                 , 331   , "void __cdecl (u32, u32, NUMTL *)"
 0x00607ec0 , _NuPrim3DBegin                                                 , 319   , "void __cdecl (u32, u32, NUMTL *, NUMTX *)"
@@ -12081,6 +12086,7 @@ address    , symbol                                                         , si
 0x00800488 , _NuBlankString                                                 , 4     , char *
 0x0080048c , _bad_equiv                                                     , 32    , u16[8][2]
 0x008004ac , _bad_fluff                                                     , 52    , const u16[26]
+0x8004e0,_NUAPI_PADREC_DEFAULT_BUFFERSIZE,,i32
 0x8004ec,_FramePadRampRatePc,,f32
 0x8004f0,_FramePadRampValuesPc,,FRAME_PAD_RAMP_PC[5]
 0x800518,_FramePadProfilePortPc,,i32
@@ -12716,6 +12722,7 @@ address    , symbol                                                         , si
 0x0080e1ac,_DwaPointerCursorPc,,
 0x80e228,_RenderPostViewportPrefixPc,,RENDER_POST_VIEWPORT_PREFIX_PC
 0x80e258,_PCSpecialProjectionAdjust,,PC_SPECIAL_PROJECTION_ADJUST
+0x80e268,_NuDebrisIdealDynamicVBSizePc,,u32
 0x0080e26c , _NuPrimCurrentPrimitiveType                                    , 4     , i32
 0x0080e270 , _numtx_identity                                                , 64    , NUMTX
 0x0080e2b0 , _NuPrimXScale                                                  , 4     , f32
@@ -14607,6 +14614,7 @@ address    , symbol                                                         , si
 0x973880,_PcGeometryOutputPc,,PC_GEOMETRY_OUTPUT_PC *
 0x00973888 , _NuAnimDataBitCountInitialized                                 , 4     , i32
 0x0097388c , _nu2api_paused                                                 , 4     , f32
+0x973890,_MaxAnimJoints,,i32
 0x00973894 , _AnimBuffEvalCB                                                , 4     , ANI3_EVAL_CALLBACK_PC
 0x00973898 , _AnimBuffEvalData                                              , 4     , void **
 0x0097389c , _AnimBuffEvalJoint                                             , 4     , i32 *

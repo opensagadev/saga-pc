@@ -2547,3 +2547,23 @@ void __cdecl NuAnimCurveSetApplyBlendToJoint2(NUANIM_LEGACY_SET_PC *first, NUANI
     matrix->m23 = -matrix->m23;
     matrix->m32 = -matrix->m32;
 }
+
+/* NuAnimInit and its original inline buffer-initialization operations from
+ * nu2api/nucore/nuanim.cpp and nucore_plain.cpp. No separate helper outline
+ * or allocation provider is invented. */
+void __cdecl NuAnimInit(i32 max_joints, VARIPTR *buffer, VARIPTR end) {
+    ANI3_GLOBALBUFFER_PC *header;
+    (void)end;
+    buildBitCountTable();
+    MaxAnimJoints = max_joints;
+
+    header = (ANI3_GLOBALBUFFER_PC *)((buffer->addr + 15u) & ~15u);
+    buffer->addr = (u32)header + sizeof(ANI3_GLOBALBUFFER_PC);
+    header->joints = (ANI3_JOINT_PC *)((buffer->addr + 15u) & ~15u);
+    buffer->addr = ((buffer->addr + 15u) & ~15u) + (u32)max_joints * sizeof(ANI3_JOINT_PC);
+    header->joint_flags = (u8 *)buffer->void_ptr;
+    buffer->addr += (u32)max_joints;
+    header->scratch_joint_capacity = (i16)max_joints;
+    header->joint_count = 0;
+    globalbuffer = header;
+}

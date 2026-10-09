@@ -3,10 +3,11 @@
 This project reconstructs the GOG PC executable with MSVC 2005 and compares the
 resulting x86 COFF objects against the original. The default build also links
 our current sources into a Windows executable using the original MSVC linker
-and libraries. Genuine hardware/window/input, shader publication, frame/render,
-debris and material-override startup calls are connected. The latest source run
-faults in declaration search with a corrupted count. Full cache capacity and
-resource/device lifetimes remain unresolved; the source is not playable.
+and libraries. Genuine hardware/window/input, API, animation, particle, shader,
+frame/render and material-list startup calls are connected. The latest bounded
+run records no fault before its 60-second termination, without proving recurring
+frames or a loaded world. Full cache capacity and resource/device lifetimes
+remain unresolved; the source is not playable.
 There are no host or WebAssembly game targets.
 
 ## Requirements and setup
@@ -125,13 +126,13 @@ Startup code may use `STUBBED()` or `STUBBED_NAMED(...)` to mark a verified PC
 call or state transition whose dependency is still missing. These markers emit
 no code in matching builds and do not imply a byte match. Keep the original call
 order, document the skipped work, and replace markers down the dependency tree.
-The source-only executable connects real window/input, shader publication,
-frame/render, debris and material-list callers. Its latest startup failure is
-an invalid declaration-cache count; full capacity and the preceding write remain
-under investigation. See [the execution policy](config/transfer-execution.md).
+The source-only executable connects real startup providers and partial frame/render
+callers. Its latest bounded run has no recorded fault before the deadline; this
+does not establish playability or passage beyond the earlier invalid declaration
+count. See [the execution policy](config/transfer-execution.md).
 Automated Wine tests suppress the debugger dialog in their own prefix, retain
-genuine crash details and clean only their identity-bound process group.
-Headless debugger termination is recorded separately from natural game exit.
+genuine observations and clean only their identity-bound process group. Record
+deadline termination and debugger termination separately from natural game exit.
 Remaining device actions, resource fixups and the recurring update/render loop
 remain incomplete. Its DAT metadata parser is
 structural and has additional short-read and null-arena guards; those are

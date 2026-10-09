@@ -1,27 +1,25 @@
 # NuMain investigation queue
 
 Current whole-project transfer status is recorded in
-[transfer-execution.md](transfer-execution.md).
-The genuine material-override initializer NuMtlInitOverride at 0x5e4eb0 now
-runs in the native hardware-startup order, with arguments (512, buffer, end).
-Its complete 35 bytes match native. The existing real list allocator retains
-its native arena-size check and failure behavior. No artificial list or backing
-provider is added. The earlier NULL-list fault no longer appears.
+[transfer-execution.md](transfer-execution.md). BBB connects genuine API, wind,
+animation and particle initialization plus initial swap and sampler/reset calls.
+The latest frozen source run remained active until its 60-second deadline.
+The launcher then terminated it; natural exit was not observed. No fault or
+exception was recorded, and no native game or crash window was attributed by
+the broad window samples. This does not prove recurring frames, a loaded world,
+playability, or that execution passed the earlier declaration failure.
 
-The latest ordinary source run exits 5 after 54.710 seconds in the byte-exact
-82-byte PCVertexDeclarationFindSlot. A separate headless capture proves that
-NuGetVertexDeclaration loads count 33,556,746 (0x0200090a) from the canonical
-counter, with descriptor 0x02000909. In our layout that counter occupies cache+32,
-the key position of a hypothetical fifth record. An insertion overwriting the
-counter is the leading explanation; the preceding write itself was not captured.
-The native counter precedes its cache by eight bytes. Full original cache
-capacity remains unproved. The four-record prefix is a verified minimum for the
-earlier finite producer domain, not sufficient storage for every startup input.
-Do not grow the array, move the counter, reset counts or add search/copy guards
-without recovering the actual storage contract.
+The last attributed failure, in AAA, was exact PCVertexDeclarationFindSlot
+receiving count 0x0200090a with descriptor 0x02000909. The source count occupied
+cache+32, the key position of a hypothetical fifth record; insertion overwrite
+was the leading explanation, with the preceding write unobserved. Native places
+its counter eight bytes before its cache. Full original capacity remains unknown;
+the earlier four-record view establishes only a minimum for a finite producer
+domain. BBB changes no cache storage, counter, search, copy or guard. Retained Mac
+catalogs contain no debug array declaration proving this PC allocation.
 Resource/world actions and device lifetimes remain incomplete. Original scene
 capacity is also unproved. Dated notes below retain historical observations;
-use the current source and work plan for active gaps.
+use current source and the work plan for active gaps.
 
 The original PC `NuMain` is at `0x00492b40`, with a complete 4,332-byte extent.
 [Identification notes](identification.md) explain its entry chain and implemented

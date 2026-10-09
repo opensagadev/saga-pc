@@ -2438,3 +2438,18 @@ overwrite is a causal hypothesis, not a captured preceding write. Full owning
 capacity remains unknown. Do not treat the earlier finite four-descriptor domain
 as an all-startup upper bound, infer 256 entries from Android/Mac spacing, move
 globals, reset the counter or add guards to bypass the failure.
+
+### Startup scalar inputs and complete alignment tails checkpoint BBB (2026-10-09)
+
+Ordinary default-context shared u32 NuDebrisIdealDynamicVBSizePc at80e268=262144
+and i32 MaxAnimJoints at973890=0 are added. The private API default at8004e0=
+0x500000 stays in nuapi.c. All3 full DWORD initializers equal native; original
+owning extents stay blank and receive zero data/extent credit. No placement
+controls or cache storage changes are introduced.
+
+All6,136 other old central regions are strict raw/named/applied matches to AAA.
+Two complete unknown-extent tail pairs are retained explicitly: tPOWERUP2->4 is
+allnativezero, while shader157210->157212 gains0000 alignment before the newDWORD,
+which differs from native5f5f. The full shader region stays NONEXACT; its actual
+source declaration and payload remain157210 unchanged. No crop/extent inference
+or extra credit is made. All2,154 central known-extent exact copies survive.

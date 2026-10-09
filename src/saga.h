@@ -5738,14 +5738,25 @@ STATIC_ASSERT(offsetof(ANI3_BUFFER_PC, joint_flags) == 0x0c);
 STATIC_ASSERT(sizeof(ANI3_BUFFER_PC) == 0x10);
 
 typedef struct ANI3_GLOBALBUFFER_PC {
-    u8 unknown_00[4];
+    union {
+        u8 unknown_00[4];
+        i32 joint_count;
+    };
     i16 scratch_joint_capacity;
     u8 unknown_06[2];
-    f32 *animation_values;
+    union {
+        f32 *animation_values;
+        ANI3_JOINT_PC *joints;
+    };
+    u8 *joint_flags;
 } ANI3_GLOBALBUFFER_PC;
+STATIC_ASSERT(offsetof(ANI3_GLOBALBUFFER_PC, joint_count) == 0);
 STATIC_ASSERT(offsetof(ANI3_GLOBALBUFFER_PC, scratch_joint_capacity) == 4);
+STATIC_ASSERT(offsetof(ANI3_GLOBALBUFFER_PC, unknown_06) == 6);
 STATIC_ASSERT(offsetof(ANI3_GLOBALBUFFER_PC, animation_values) == 8);
-STATIC_ASSERT(sizeof(ANI3_GLOBALBUFFER_PC) == 12);
+STATIC_ASSERT(offsetof(ANI3_GLOBALBUFFER_PC, joints) == 8);
+STATIC_ASSERT(offsetof(ANI3_GLOBALBUFFER_PC, joint_flags) == 0xc);
+STATIC_ASSERT(sizeof(ANI3_GLOBALBUFFER_PC) == 0x10);
 
 typedef void(__cdecl *ANI3_ROOT_CALLBACK_PC)(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
 typedef void(__cdecl *ANI3_EVAL_CALLBACK_PC)(NUMTX *, void *, NUQUAT *);
@@ -15834,6 +15845,12 @@ extern "C" {
     extern i32 RtlFileVersionPc;
     NULSTHDR *__cdecl NuLstCreateBuff(i32, i32, VARIPTR *, VARIPTR, i32);
     void __cdecl NuMtlInitOverride(i32, VARIPTR *, VARIPTR *);
+    extern u32 NuDebrisIdealDynamicVBSizePc;
+    extern i32 MaxAnimJoints;
+    void __cdecl NuInitDebrisRenderer(VARIPTR *, VARIPTR);
+    void __cdecl NuAPIInit(void);
+    void __cdecl NuWindInitialise(NUWIND *);
+    void __cdecl NuAnimInit(i32, VARIPTR *, VARIPTR);
     i32 __cdecl rtlInitDynamic(VARIPTR *, VARIPTR, i32);
     void *__cdecl LoadGizFlow(void *, void *, char *, VARIPTR *, VARIPTR *);
     void __cdecl GizmoSysAddGizmos(void *, GIZFLOW_PC *, void *);
