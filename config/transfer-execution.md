@@ -9,39 +9,40 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Verified published baseline TT is [1bbe21d4](https://github.com/opensagadev/saga-pc/commit/1bbe21d43f3cc25b9b41b4b396a6ddb37bca5308), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37872016080) passing all 13 steps. UU exact-revision CI is pending publication.
+Verified published baseline UU is [ea790699](https://github.com/opensagadev/saga-pc/commit/ea790699cb68bc616345d52f874124aba5093cd6), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37876166258) passing all 13 steps. VV exact-revision CI is pending publication.
 
 The latest ordinary source EXE naturally exits 5 while packaging a display-list
 scene. Initialization sets the first-list pointer; exact NuRndrEndScene overwrites
 it at index 32 because our NuFrameEnd omits the native renderer call. Native
 NuRndrSwapScreen clears sceneParametersCount after its genuine scene loops. The
-array's original capacity remains unproved. CPU checks and matching are separate
-from frame/device/gameplay completion.
+array's original capacity remains unproved.
 
-The current UU batch adds 16 complete PC functions / 2,278 unique compared bytes:
-nine display-list callbacks, the vector helper and six shader providers. Five are
-exact, adding 194 code bytes; whole-PC fuzzy coverage is 29.306557%, up 0.054455
-percentage points. All prior exact code/data and 13 named members survive. Four
-canonical state views use 28 minimum bytes; unknown owning extents receive zero
-allocation or exact-data credit.
+The VV source batch adds 20 complete PC functions / 3,481 unique compared bytes:
+transform, geometry, indexed-draw and debris handlers, eight real device methods,
+the shader-binding provider and the private Z-mode helper. Twelve are byte exact,
+adding 755 exact code bytes. Whole-PC fuzzy coverage is 29.396037%, up 0.089480
+percentage points from UU. Every previous exact function/data copy and all 13
+named member rows remain intact. Nine canonical four-byte state views have native
+initializers; their unknown owning extents remain blank and earn no data credit.
 
-The actual-normal CPU run passes 43 checks through the real shader manager and
-compiler. The retained first run stopped at 16 checks with one width failure:
-PC semantic 0x49 is ps2ShineMtx, a four-vector matrix at packet +0x70. The reader
-now names NUMTX and requires an initialized minimum 0xb0-byte view; its producer
-and original owning extent remain unproved. No uniform metadata or guessed
-padding was changed. The genuine signed32 camera local now emits native's
-conversion helper; its complete body remains nonexact and positive camera/device
-calls are excluded from CPU tests. Wine crash dialogs were set and queried off;
-owned cleanup is empty. These checks establish no device or gameplay milestone.
+Seven native stream/shader calls are restored in the existing renderer. Its full
+1,465-byte native extent is compared against the 1,169-byte candidate; it remains
+partial and nonexact. This restoration adds no new compared range. Nineteen of
+the 20 observed draw callbacks now have compiled source. The remaining material
+handler needs the genuine 4,472-byte shader-parameter dispatcher and its providers.
+DrawScene, DrawItems, handler-table publication and frame/hardware caller activation
+remain held until that connected chain is available. No independent scene-count
+reset or guessed scene-array enlargement has been added.
 
-Ten of 20 observed callbacks still lack compiled source. The next source wave is
-BC transforms/indexed handlers, geometry/debris and their real device suppliers,
-followed by material handling and the complete 4,472-byte shader-parameter
-dispatcher. Preserve private helpers with their real caller cohort and keep the
-old C owner unchanged. The renderer/table/frame caller remains held until these
-consumed providers exist. Original array capacity is unproved; no standalone
-scene-count reset, forced focus, fake provider or enlarged storage is introduced.
+The frozen normal-object CPU fixture passes 86 checks with zero failures, using
+all 342 genuine engine objects and no replacements. It verifies complete matrix
+cache results/restoration, real shader/uniform helpers and selected cache-hit,
+unbound, NULL and zero-count paths. Final output preservation keeps those selected
+CPU results applicable after the seven renderer changes; the renderer itself was
+not exercised. Wine crash dialogs were disabled and queried, the process exited
+naturally, and owned cleanup was empty. Native vector-tail reads in other paths
+remain qualified and untested. There is no device, GPU, presentation, installed
+asset or gameplay claim. The source game remains not playable.
 
 ## Ownership and continuous work
 

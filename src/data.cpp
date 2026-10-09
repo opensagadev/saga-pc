@@ -28068,3 +28068,19 @@ extern "C" {
 }
 #pragma bss_seg()
 #pragma data_seg()
+
+#pragma data_seg(".data$DisplayHandlerBCDeviceStatePc")
+#pragma bss_seg(".bss$DisplayHandlerBCDeviceStatePc")
+extern "C" {
+    f32 NuDisplayHandlerOpacityPc = -1.0f;
+    i32 NuDisplayHandlerZModePc = -1;
+    f32 NuDisplayHandlerShadowPc = 0.0f;
+    u32 PCDevicePrimitiveCallCountPc = 0;
+    u32 PCDeviceIndexedPrimitiveCallCountPc = 0;
+    u32 PCDeviceStreamStrideCachePc = 0;
+    u32 PCDeviceStreamNumberCachePc = 0;
+    u32 PCDeviceStreamOffsetCachePc = 0;
+    PC_TEXTURE_RESOURCE_PC *PCDeviceVertexDeclarationCachePc = NULL;
+}
+#pragma bss_seg()
+#pragma data_seg()

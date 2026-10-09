@@ -1362,3 +1362,60 @@ HRESULT __thiscall PC_DEVICE_BACKEND_PC::CopySurfaceTargetPc(PC_EFFECT_SURFACE_P
 extern "C" HRESULT __cdecl PCDeviceEndScenePc(void) {
     return PCDeviceBackend.EndScene();
 }
+
+extern "C" void __cdecl PCDeviceSetStreamSourcePc(u32 stream, PC_BUFFER_RESOURCE_PC *buffer, u32 offset, u32 stride) {
+    if (PCDeviceStateCacheEnabled != 0) {
+        if (PCDeviceVertexBufferCachePc == buffer && PCDeviceStreamStrideCachePc == stride &&
+            PCDeviceStreamNumberCachePc == stream && PCDeviceStreamOffsetCachePc == offset)
+            return;
+        PCDeviceVertexBufferCachePc = buffer;
+        PCDeviceStreamNumberCachePc = stream;
+        PCDeviceStreamStrideCachePc = stride;
+        PCDeviceStreamOffsetCachePc = offset;
+    }
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->set_stream_source(PCDeviceBackend.device, stream, buffer, offset, stride);
+}
+
+extern "C" void __cdecl PCDeviceDrawPrimitivePc(i32 type, u32 start, u32 count) {
+    ++PCDevicePrimitiveCallCountPc;
+    PCDeviceLastResult = PCDeviceBackend.device->methods->draw_primitive(PCDeviceBackend.device, type, start, count);
+}
+
+extern "C" void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *buffer) {
+    if (PCDeviceStateCacheEnabled != 0) {
+        if (PCDeviceIndexBufferCachePc == buffer)
+            return;
+        PCDeviceIndexBufferCachePc = buffer;
+    }
+    PCDeviceLastResult = PCDeviceBackend.device->methods->set_indices(PCDeviceBackend.device, buffer);
+}
+
+extern "C" void __cdecl PCDeviceDrawIndexedPrimitivePc(i32 type, i32 base_vertex, u32 minimum_vertex, u32 vertex_count,
+                                                       u32 start_index, u32 primitive_count) {
+    ++PCDeviceIndexedPrimitiveCallCountPc;
+    PCDeviceLastResult = PCDeviceBackend.device->methods->draw_indexed_primitive(
+        PCDeviceBackend.device, type, base_vertex, minimum_vertex, vertex_count, start_index, primitive_count);
+}
+
+extern "C" void __cdecl PCDeviceSetStreamSourceFreqPc(u32 stream, u32 setting) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->set_stream_source_freq(PCDeviceBackend.device, stream, setting);
+}
+
+extern "C" void __cdecl PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC *declaration) {
+    if (PCDeviceStateCacheEnabled != 0) {
+        if (PCDeviceVertexDeclarationCachePc == declaration)
+            return;
+        PCDeviceVertexDeclarationCachePc = declaration;
+    }
+    PCDeviceLastResult = PCDeviceBackend.device->methods->set_vertex_declaration(PCDeviceBackend.device, declaration);
+}
+
+extern "C" void __cdecl PCDeviceSetVertexShaderPc(PC_TEXTURE_RESOURCE_PC *shader) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->set_vertex_shader(PCDeviceBackend.device, shader);
+}
+
+extern "C" void __cdecl PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE_PC *shader) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->set_pixel_shader(PCDeviceBackend.device, shader);
+}

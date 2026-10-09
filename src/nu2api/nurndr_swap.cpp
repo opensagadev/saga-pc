@@ -11,11 +11,11 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     PCFrameCriticalSectionEnter_candidate();
     for (i32 i = 0; i != 4; ++i)
         PCDeviceSetTexture((u32)i, NULL);
-    STUBBED_NAMED(0x006e5590); /* (0,0,0,0),60b055 */
-    STUBBED_NAMED(0x006e5590); /* (1,0,0,0),60b05f */
-    STUBBED_NAMED(0x006e5590); /* (2,0,0,0),60b06c */
-    STUBBED_NAMED(0x006e5590); /* (3,0,0,0),60b076 */
-    STUBBED_NAMED(0x007416f0); /* BindShader(NULL),60b07c */
+    PCDeviceSetStreamSourcePc(0, NULL, 0, 0);
+    PCDeviceSetStreamSourcePc(1, NULL, 0, 0);
+    PCDeviceSetStreamSourcePc(2, NULL, 0, 0);
+    PCDeviceSetStreamSourcePc(3, NULL, 0, 0);
+    NuShaderManagerBindShaderPc(NULL);
     NuDebrisRendererFlushBuffers();
     NuDisplayListSwapBuffersEndFrame();
     NuRndrSwapStreamBuffers();
@@ -115,9 +115,9 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
         }
         if (rendered_effect) {
             STUBBED_NAMED(0x006dfd90); /* native60b3d9 */
-            STUBBED_NAMED(0x007416f0); /* BindShader(NULL),60b3e0 */
+            NuShaderManagerBindShaderPc(NULL);
             STUBBED_NAMED(0x005e6a80); /* Render(destination),60b3ea */
-            STUBBED_NAMED(0x007416f0); /* BindShader(NULL),60b3f1 */
+            NuShaderManagerBindShaderPc(NULL);
             STUBBED_NAMED(0x006dfa20); /* sampler defaults,60b3f9 */
         }
         if (scene->unknown_214 != 0) {

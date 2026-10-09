@@ -1,24 +1,30 @@
 # Reconstruction roadmap
 
 The goal is a complete PC reconstruction from readable C/C++. The current source
-build is **not playable**. Published checkpoint SS
-[`2f3c7fdb`](https://github.com/opensagadev/saga-pc/commit/2f3c7fdb38717759ab47bf35e3fef6bde895f833)
-has [passing CI](https://github.com/opensagadev/saga-pc/actions/runs/37866549493).
-Genuine shader publication is present. The latest source-game observation exits
-at a display-list pointer overwritten by the scene copy at index 32. The native
-renderer resets the count after processing scenes; its caller connection remains
-held while missing draw handlers are reconstructed. A transient window and bounded CPU tests establish neither persistent
-window/device presentation nor recurring gameplay. Code similarity and mapping
-are separate from runnable milestones; current measurements live in
-[matching.json](../matching.json).
+build is **not playable**. Published baseline UU
+[`ea790699`](https://github.com/opensagadev/saga-pc/commit/ea790699cb68bc616345d52f874124aba5093cd6)
+has [passing exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37876166258).
+Genuine window/input/renderer startup and shader publication are present. The
+latest retained source-game run exits while packaging a scene: the exact native
+copy overwrites its initialized display-list pointer at index 32. The genuine
+renderer drains scenes and resets their count; its frame caller remains omitted
+while the material and shader-parameter chain is reconstructed. Original scene
+capacity remains unknown.
 
-The current frame/texture source batch compares 13 new full function extents /
-2,089 PC bytes, with nine exact functions. It preserves previous exact matches.
-Nineteen draw callbacks still lack compiled source; the first nine plus their
-vector helper and a connected shader-provider family are prepared for subsequent
-integration. Original scene capacity remains unknown. Matching and the retained
-208 shader CPU assertions do not establish loaded assets, device presentation or
-gameplay. Full release qualifications are recorded in transfer-checkpoint.json.
+The current VV batch compares 20 new full PC functions / 3,481 bytes; twelve are
+exact. It also restores seven verified calls in the partial renderer, with zero
+additional range credit. Nineteen of 20 observed callbacks have compiled source.
+The next connected family is the last material handler, the complete shader
+parameter dispatcher and real back-buffer/resource providers, followed by native
+scene/table/frame flow. All previous exact results are preserved.
+
+The actual-object CPU fixture passes 86 checks. Its selected matrix, shader and
+cache/guard domains remain qualified separately from graphics and gameplay.
+These checks establish neither a persistent window/device presentation nor
+recurring gameplay. Code similarity and mapping are separate from runnable
+milestones; current measurements live in [matching.json](../matching.json).
+Full release qualifications are recorded in
+[transfer-checkpoint.json](../config/transfer-checkpoint.json).
 
 Work proceeds through connected source families and verified PC contracts:
 

@@ -5309,3 +5309,21 @@ Complete native extents remain 1,361 bytes for the callback/vector family and
 covering 194 bytes. Native ps2ShineMtx row82cc1c has count4/field_c4; caller forwarding
 +0x70 establishes the 64-byte consumed matrix view. The old Android specular/0x80
 reader description is superseded. This proves no original packet allocation.
+
+### Transform, geometry and real device suppliers VV (2026-10-09)
+
+Twenty new full PC function ranges contribute 3,481 unique compared bytes.
+Twelve are exact, adding 755 code bytes: private Z-mode140, face-on draw46,
+debris106, eight device methods402 and shader binding61. The eight remaining
+bodies retain their full native extents and tables; different lengths, register
+allocation and loop/unroll structure remain visible in matching.json. Every
+previous exact function/data copy and all 13 named member rows are preserved.
+
+The Z-mode helper stays static with its real transform callers in the new C++
+owner. Ordinary VC8 compilation naturally reproduces its private register ABI
+and complete 140-byte body/table. Existing C-owner definitions remain intact.
+Eight COM slot signatures name asserted PC offsets without changing interface
+size. Nine state views have verified native initializers and unknown owning
+extents, so they earn no data extent or exact credit. The existing renderer gains
+seven verified calls and no newly compared range; complete comparison still
+reports it as nonexact. See [the checkpoint](transfer-checkpoint.json).

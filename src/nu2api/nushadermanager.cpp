@@ -479,3 +479,14 @@ extern "C" void __cdecl NuShaderManagerSetElementsfv_transpose(i32 semantic, i32
                                                                const f32 *values) {
     ((ShaderManagerHLSL *)PCShaderSlots)->setElementsfv_transpose(semantic, first_element, count, values);
 }
+
+extern "C" void __cdecl NuShaderManagerBindShaderPc(PC_SHADER_OBJECT_FULL_VIEW *shader) {
+    PC_SHADER_MANAGER_VIEW *manager = reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots);
+    if (manager->bound_slot != shader) {
+        manager->bound_slot = shader;
+        if (shader != NULL) {
+            PCDeviceSetVertexShaderPc(shader->vertex_shader);
+            PCDeviceSetPixelShaderPc(shader->pixel_shader);
+        }
+    }
+}

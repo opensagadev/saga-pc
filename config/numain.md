@@ -1318,3 +1318,19 @@ dispatcher. Preserve private helpers with their real caller cohort and keep the
 old C owner unchanged. The renderer/table/frame caller remains held until these
 consumed providers exist. Original array capacity is unproved; no standalone
 scene-count reset, forced focus, fake provider or enlarged storage is introduced.
+
+### Native frame-handler source checkpoint VV (2026-10-09)
+
+Nineteen of 20 observed handlers now have compiled source. The last material
+handler consumes the complete shader-parameter dispatcher and real back-buffer
+providers. Restore those dependencies before DrawScene/DrawItems, handler-table
+publication and the omitted NuFrameEnd renderer call. Native NuRndrSwapScreen
+resets sceneParametersCount after processing live scenes; an independent reset
+would conceal the incomplete frame path. Original scene-array capacity remains
+unproved.
+
+Seven genuine stream/shader calls are now restored in the partial renderer,
+including both conditional effect-path unbinds. Complete candidate/native lengths
+are 1,169/1,465; the parent remains nonexact. The 86-check CPU fixture did not
+exercise that renderer. See [current source contracts and validation](transfer-execution.md)
+and [the VV release evidence](transfer-checkpoint.json) for remaining gaps.

@@ -132,8 +132,8 @@ no code in matching builds and do not imply a byte match. Keep the original call
 order, document the skipped work, and replace markers down the dependency tree.
 The source-only executable connects real window/input, renderer configuration
 and material setup, but the current working source still fails while packaging a display-list
-scene before world loading. Its first-list pointer is null; the earlier writer
-remains unproved. The declaration cache has its verified two-row startup
+scene before world loading. The exact native scene-copy at index 32 overwrites its initialized first-list
+pointer while the genuine frame/renderer path remains omitted. The declaration cache has its verified two-row startup
 minimum, while its original full capacity remains unknown. See the current frontier in
 [the execution policy](config/transfer-execution.md). Automated Wine tests suppress the debugger dialog in their own
 prefix, preserve the genuine crash output and exit, and clean only their own

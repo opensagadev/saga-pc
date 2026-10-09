@@ -475,3 +475,335 @@ void __cdecl NuDisplayListCameraPc(void *arg) {
         NuVpSubmitPc(&viewport);
     }
 }
+
+typedef struct PC_DL_VERTEX_GROUPS_READER {
+    i32 count;
+    u32 flags;
+    NUVEC4 values[1];
+} PC_DL_VERTEX_GROUPS_READER;
+STATIC_ASSERT(offsetof(PC_DL_VERTEX_GROUPS_READER, count) == 0);
+STATIC_ASSERT(offsetof(PC_DL_VERTEX_GROUPS_READER, flags) == 4);
+STATIC_ASSERT(offsetof(PC_DL_VERTEX_GROUPS_READER, values) == 8);
+
+typedef struct PC_DL_VERTEX_OFFSETS_READER {
+    i32 count;
+    NUVEC4 values[1];
+} PC_DL_VERTEX_OFFSETS_READER;
+STATIC_ASSERT(offsetof(PC_DL_VERTEX_OFFSETS_READER, count) == 0);
+STATIC_ASSERT(offsetof(PC_DL_VERTEX_OFFSETS_READER, values) == 4);
+
+void __cdecl NuDisplayListVertexGroupsPc(void *arg) {
+    PC_DL_VERTEX_GROUPS_READER *packet = (PC_DL_VERTEX_GROUPS_READER *)arg;
+    i32 groups = (i32)((u32)packet->count + 3u) / 4;
+    i32 i;
+    for (i = 0; i < groups && i < 32; ++i)
+        NuShaderManagerSetElementfv(0x4f, i, &packet->values[i].x);
+}
+
+void __cdecl NuDisplayListVertexOffsetsPc(void *arg) {
+    PC_DL_VERTEX_OFFSETS_READER *packet = (PC_DL_VERTEX_OFFSETS_READER *)arg;
+    i32 count = packet->count;
+    i32 i;
+    for (i = 0; i < count && i < 8; ++i)
+        NuShaderManagerSetElementfv(0x4e, i, &packet->values[i].x);
+}
+
+/* PC-only table slot 0xad; no Android function identity is asserted. */
+typedef struct PC_DL_AD_COLOURS {
+    NUVEC colour[5];
+} PC_DL_AD_COLOURS;
+STATIC_ASSERT(sizeof(PC_DL_AD_COLOURS) == 0x3c);
+
+typedef struct PC_DL_AD_RECORD {
+    u8 unknown_0000[0x14];
+    u8 enabled;
+    u8 unknown_0015[3];
+    i32 segment_count;
+    f32 pixel_parameter, vertex_parameter_x, vertex_parameter_y, vertex_parameter_z;
+    f32 pixel_parameter_x, pixel_parameter_y, pixel_parameter_z, pixel_scalar;
+    PC_DL_AD_COLOURS colours;
+} PC_DL_AD_RECORD;
+STATIC_ASSERT(sizeof(PC_DL_AD_RECORD) == 0x78);
+STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, enabled) == 0x14);
+STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, segment_count) == 0x18);
+STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, pixel_parameter) == 0x1c);
+STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, vertex_parameter_x) == 0x20);
+STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, vertex_parameter_y) == 0x24);
+STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, vertex_parameter_z) == 0x28);
+STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, pixel_parameter_x) == 0x2c);
+STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, pixel_parameter_y) == 0x30);
+STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, pixel_parameter_z) == 0x34);
+STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, pixel_scalar) == 0x38);
+STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, colours) == 0x3c);
+
+typedef struct PC_DL_AD_RECORD_LIST {
+    u32 unknown_0000;
+    i32 count;
+    u32 unknown_0008;
+    PC_DL_AD_RECORD *records;
+} PC_DL_AD_RECORD_LIST;
+STATIC_ASSERT(offsetof(PC_DL_AD_RECORD_LIST, count) == 4);
+STATIC_ASSERT(offsetof(PC_DL_AD_RECORD_LIST, records) == 0xc);
+
+typedef struct PC_DL_AD_PACKET {
+    PC_DL_AD_RECORD_LIST *list;
+    u32 instances;
+    u8 unknown_0008[0xc];
+    PC_BUFFER_RESOURCE_PC *instance_buffer, *vertex_buffer, *index_buffer;
+} PC_DL_AD_PACKET;
+STATIC_ASSERT(sizeof(PC_DL_AD_PACKET) == 0x20);
+STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, list) == 0);
+STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, instances) == 4);
+STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, instance_buffer) == 0x14);
+STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, vertex_buffer) == 0x18);
+STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, index_buffer) == 0x1c);
+
+void __cdecl PCDeviceSetStreamSourceFreqPc(u32, u32);
+void __cdecl PCDeviceSetStreamSourcePc(u32, PC_BUFFER_RESOURCE_PC *, u32, u32);
+void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *);
+void __cdecl PCDeviceDrawIndexedPrimitivePc(i32, i32, u32, u32, u32, u32);
+
+void __cdecl NuDisplayListPacketAdPc(void *arg) {
+    PC_DL_AD_PACKET *packet = (PC_DL_AD_PACKET *)arg;
+    PC_DL_AD_RECORD *record;
+    PC_DL_AD_COLOURS colours;
+    NUVEC4 values;
+    i32 segments, i;
+    u32 instances = packet->instances;
+    if (packet->vertex_buffer == NULL || packet->instance_buffer == NULL || packet->list == NULL)
+        return;
+    record = &packet->list->records[packet->list->count - 1];
+    segments = record->segment_count;
+    values.x = (f32)segments;
+    values.y = record->enabled != 0 ? 1.0f : 0.0f;
+    values.z = record->vertex_parameter_x;
+    values.w = record->vertex_parameter_y;
+    PCDeviceSetVertexShaderConstantsF(0xc8, &values.x, 1);
+    values.x = record->vertex_parameter_z;
+    values.y = 0.0f;
+    values.z = 0.0f;
+    values.w = 0.0f;
+    PCDeviceSetVertexShaderConstantsF(0xc9, &values.x, 1);
+    colours = record->colours;
+    for (i = 0; i < 5; ++i) {
+        values.x = colours.colour[i].x;
+        values.y = colours.colour[i].y;
+        values.z = colours.colour[i].z;
+        values.w = 1.0f;
+        PCDeviceSetPixelShaderConstantsF(0xca + i, &values.x, 1);
+    }
+    values.x = record->pixel_parameter;
+    values.y = record->pixel_parameter_x;
+    values.z = record->pixel_parameter_y;
+    values.w = record->pixel_parameter_z;
+    PCDeviceSetPixelShaderConstantsF(0xd3, &values.x, 1);
+    values.x = record->pixel_scalar;
+    values.y = 0.0f;
+    values.z = 0.0f;
+    values.w = 0.0f;
+    PCDeviceSetPixelShaderConstantsF(0xd4, &values.x, 1);
+    PCDeviceSetStreamSourcePc(0, packet->vertex_buffer, 0, 0x10);
+    PCDeviceSetStreamSourceFreqPc(0, instances | 0x40000000u);
+    PCDeviceSetStreamSourcePc(1, packet->instance_buffer, 0, 0x50);
+    PCDeviceSetStreamSourceFreqPc(1, 0x80000001u);
+    PCDeviceSetIndicesPc(packet->index_buffer);
+    PCDeviceDrawIndexedPrimitivePc(5, 0, 0, (u32)segments * 2u + 2u, 0, (u32)segments * 2u);
+    PCDeviceSetStreamSourcePc(0, NULL, 0, 0);
+    PCDeviceSetStreamSourceFreqPc(0, 1);
+    PCDeviceSetStreamSourceFreqPc(1, 1);
+}
+
+typedef struct PC_DL_GEOMETRY_READER {
+    u32 kind, primitive_count;
+    u16 vertex_stride;
+    u8 unknown_000a[0xa];
+    i32 base_vertex;
+    u32 vertex_count, start_index;
+    PC_BUFFER_RESOURCE_PC *index_buffer, *vertex_buffer;
+    u32 dynamic_count;
+    void *morph_deltas;
+    PC_BUFFER_RESOURCE_PC *dynamic_buffer;
+    void *dynamic_vertices;
+} PC_DL_GEOMETRY_READER;
+STATIC_ASSERT(sizeof(PC_DL_GEOMETRY_READER) == 0x38);
+STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, kind) == 0);
+STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, primitive_count) == 4);
+STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, vertex_stride) == 8);
+STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, base_vertex) == 0x14);
+STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, vertex_count) == 0x18);
+STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, start_index) == 0x1c);
+STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, index_buffer) == 0x20);
+STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, vertex_buffer) == 0x24);
+STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, dynamic_count) == 0x28);
+STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, dynamic_buffer) == 0x30);
+STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, dynamic_vertices) == 0x34);
+
+typedef struct PC_DL_GEOMETRY_MATERIAL_READER {
+    u8 unknown_0000[0x26c];
+    u32 lightmap_flags;
+} PC_DL_GEOMETRY_MATERIAL_READER;
+STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_MATERIAL_READER, lightmap_flags) == 0x26c);
+
+typedef struct PC_DL_FACEON_DRAW_READER {
+    u32 unknown_0000, primitive_count;
+    PC_BUFFER_RESOURCE_PC *vertex_buffer;
+    u32 first_vertex;
+} PC_DL_FACEON_DRAW_READER;
+STATIC_ASSERT(sizeof(PC_DL_FACEON_DRAW_READER) == 0x10);
+STATIC_ASSERT(offsetof(PC_DL_FACEON_DRAW_READER, primitive_count) == 4);
+STATIC_ASSERT(offsetof(PC_DL_FACEON_DRAW_READER, vertex_buffer) == 8);
+STATIC_ASSERT(offsetof(PC_DL_FACEON_DRAW_READER, first_vertex) == 0xc);
+
+typedef struct PC_DL_DEBRIS_DRAW_READER {
+    u8 buffer_index;
+    u8 unknown_0001[3];
+    u32 use_system_buffer, first_vertex, vertex_count;
+} PC_DL_DEBRIS_DRAW_READER;
+STATIC_ASSERT(sizeof(PC_DL_DEBRIS_DRAW_READER) == 0x10);
+STATIC_ASSERT(offsetof(PC_DL_DEBRIS_DRAW_READER, buffer_index) == 0);
+STATIC_ASSERT(offsetof(PC_DL_DEBRIS_DRAW_READER, use_system_buffer) == 4);
+STATIC_ASSERT(offsetof(PC_DL_DEBRIS_DRAW_READER, first_vertex) == 8);
+STATIC_ASSERT(offsetof(PC_DL_DEBRIS_DRAW_READER, vertex_count) == 0xc);
+
+typedef struct PC_DL_LIGHTMAP_UPDATE_READER {
+    i32 mode, texture_id;
+    i32 texture_ids[3];
+    f32 x_offset, y_offset;
+} PC_DL_LIGHTMAP_UPDATE_READER;
+STATIC_ASSERT(sizeof(PC_DL_LIGHTMAP_UPDATE_READER) == 0x1c);
+STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, mode) == 0);
+STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, texture_id) == 4);
+STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, texture_ids) == 8);
+STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, x_offset) == 0x14);
+STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, y_offset) == 0x18);
+
+/* Existing canonical integer slot holds the native 32-bit packet identity. */
+extern i32 PCGraphicsBoundShader;
+void __cdecl PCDeviceSetStreamSourcePc(u32, PC_BUFFER_RESOURCE_PC *, u32, u32);
+void __cdecl PCDeviceDrawPrimitivePc(i32, u32, u32);
+void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *);
+void __cdecl PCDeviceDrawIndexedPrimitivePc(i32, i32, u32, u32, u32, u32);
+
+void __cdecl NuDisplayListUpdateLightmapPc(void) {
+    PC_DL_LIGHTMAP_UPDATE_READER *packet = (PC_DL_LIGHTMAP_UPDATE_READER *)PCGraphicsFrameScratchCount.lightmap_packet;
+    i32 mode, stage;
+    f32 offset[3];
+    if (packet == NULL || (u32)packet == (u32)PCGraphicsBoundShader)
+        return;
+    PCGraphicsBoundShader = (i32)(u32)packet;
+    mode = packet->mode;
+    if (mode == 2 && PcWindowOptions.usehires == 0) {
+        packet->mode = 1;
+        mode = 1;
+    }
+    if (mode == 1) {
+        NUTEXDIM_PC *texture;
+        stage = PCDeviceHardwareVertexProcessingPC == 1 ? 1 : 0;
+        texture = NuTextureGetDimensions(packet->texture_id == -1 ? 1 : packet->texture_id);
+        PCDeviceSetTexture(stage, texture->resource);
+        PCDeviceSetSamplerState(stage, 1, 1);
+        PCDeviceSetSamplerState(stage, 2, 1);
+        PCDeviceSetSamplerState(stage, 5, 2);
+        PCDeviceSetSamplerState(stage, 6, 2);
+        PCDeviceSetSamplerState(stage, 7, 0);
+        offset[0] = packet->x_offset;
+        offset[1] = -packet->y_offset;
+        offset[2] = 0.0f;
+        NuShaderManagerSetfv(0x60, offset);
+    } else if (mode == 2) {
+        for (stage = 0; stage < 3; ++stage) {
+            NUTEXDIM_PC *texture =
+                NuTextureGetDimensions(packet->texture_ids[stage] == -1 ? 1 : packet->texture_ids[stage]);
+            PCDeviceSetTexture(stage, texture->resource);
+            PCDeviceSetSamplerState(stage, 1, 1);
+            PCDeviceSetSamplerState(stage, 2, 1);
+            PCDeviceSetSamplerState(stage, 5, 2);
+            PCDeviceSetSamplerState(stage, 6, 2);
+            PCDeviceSetSamplerState(stage, 7, 0);
+        }
+        offset[0] = packet->x_offset;
+        offset[1] = -packet->y_offset;
+        offset[2] = 0.0f;
+        NuShaderManagerSetfv(0x60, offset);
+    }
+}
+
+void __cdecl NuDisplayListDrawGeometryPc(void *arg) {
+    PC_DL_GEOMETRY_READER *packet = (PC_DL_GEOMETRY_READER *)arg;
+    PC_DL_GEOMETRY_MATERIAL_READER *material = (PC_DL_GEOMETRY_MATERIAL_READER *)NuDisplayHandlerMaterialPc;
+    u32 primitive_count;
+    const void *vertices;
+    void *locked;
+    u32 point_size;
+    f32 point_size_float;
+    if (packet == NULL || PCShaderCurrentObjectPc() == NULL || packet->vertex_count == 0)
+        return;
+    primitive_count = packet->primitive_count;
+    if (material->lightmap_flags & 0x4000000)
+        NuDisplayListUpdateLightmapPc();
+    vertices = packet + 1;
+    switch (packet->kind) {
+        case 6:
+            if (packet->dynamic_count != 0 && packet->dynamic_vertices != NULL) {
+                PCDeviceLockVertexBuffer(0, 0, &locked, 0x2000, packet->dynamic_buffer);
+                PCByteCopy_candidate(locked, packet->dynamic_vertices, packet->vertex_stride * packet->vertex_count);
+                PCDeviceUnlockVertexBuffer(packet->dynamic_buffer);
+                PCDeviceSetStreamSourcePc(0, packet->dynamic_buffer, 0, packet->vertex_stride);
+                PCDeviceSetIndicesPc(packet->index_buffer);
+                PCDeviceDrawIndexedPrimitivePc(5, 0, 0, packet->vertex_count, packet->start_index, primitive_count);
+            } else {
+                PCDeviceSetStreamSourcePc(0, packet->vertex_buffer, 0, packet->vertex_stride);
+                PCDeviceSetIndicesPc(packet->index_buffer);
+                PCDeviceDrawIndexedPrimitivePc(5, packet->base_vertex, 0, packet->vertex_count, packet->start_index,
+                                               primitive_count);
+            }
+            break;
+        case 12:
+            PCDeviceDrawPrimitiveUPPc(4, packet->vertex_count / 3u, vertices, 24);
+            break;
+        case 13:
+            if (packet->vertex_count >= 3u)
+                PCDeviceDrawPrimitiveUPPc(5, packet->vertex_count - 2u, vertices, 24);
+            break;
+        case 14:
+            PCDeviceDrawPrimitiveUPPc(2, packet->vertex_count >> 1, vertices, 24);
+            break;
+        case 15:
+            PCDeviceDrawPrimitiveUPPc(3, packet->vertex_count - 1u, vertices, 24);
+            break;
+        case 17:
+            if (packet->vertex_count >= 3u)
+                PCDeviceDrawPrimitiveUPPc(6, packet->vertex_count - 2u, vertices, 24);
+            break;
+        case 18:
+            point_size_float = 32.0f;
+            memcpy(&point_size, &point_size_float, sizeof(point_size));
+            PCDeviceSetRenderState(0x9a, point_size);
+            PCDeviceDrawPrimitiveUPPc(1, packet->vertex_count, vertices, 24);
+            point_size_float = 1.0f;
+            memcpy(&point_size, &point_size_float, sizeof(point_size));
+            PCDeviceSetRenderState(0x9a, point_size);
+            break;
+    }
+}
+
+void __cdecl NuDisplayListDrawFaceOnPc(void *arg) {
+    PC_DL_FACEON_DRAW_READER *packet = (PC_DL_FACEON_DRAW_READER *)arg;
+    if (packet == NULL)
+        return;
+    PCDeviceSetStreamSourcePc(0, packet->vertex_buffer, 0, 32);
+    PCDeviceDrawPrimitivePc(4, packet->first_vertex, packet->primitive_count * 2u);
+}
+
+void __cdecl NuDisplayListDrawDebrisPc(void *arg) {
+    PC_DL_DEBRIS_DRAW_READER *packet = (PC_DL_DEBRIS_DRAW_READER *)arg;
+    if (packet->vertex_count == 0)
+        return;
+    if (packet->use_system_buffer != 0) {
+        const void *vertices = (const u8 *)NuDebrisSystemBuffers[packet->buffer_index] + packet->first_vertex * 24u;
+        PCDeviceDrawPrimitiveUPPc(4, packet->vertex_count / 3u, vertices, 24);
+    } else {
+        PCDeviceSetStreamSourcePc(0, NuDebrisVertexBuffers[packet->buffer_index], 0, 24);
+        PCDeviceDrawPrimitivePc(4, packet->first_vertex, packet->vertex_count / 3u);
+    }
+}

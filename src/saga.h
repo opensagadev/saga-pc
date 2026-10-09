@@ -6881,16 +6881,28 @@ typedef struct PC_D3D9_METHODS_PC {
     HRESULT(__stdcall *set_texture_stage_state)(PC_D3D9_DEVICE_PC *, u32, i32, u32);
     void *unknown_0110;
     HRESULT(__stdcall *set_sampler_state)(PC_D3D9_DEVICE_PC *, u32, i32, u32);
-    void *unknown_0118[16];
+    void *unknown_0118[11];
+    HRESULT(__stdcall *draw_primitive)(PC_D3D9_DEVICE_PC *, i32, u32, u32);
+    HRESULT(__stdcall *draw_indexed_primitive)(PC_D3D9_DEVICE_PC *, i32, i32, u32, u32, u32, u32);
+    void *unknown_014c[3];
     HRESULT(__stdcall *create_vertex_declaration)
     (PC_D3D9_DEVICE_PC *, const PC_VERTEX_ELEMENT_PC *, PC_TEXTURE_RESOURCE_PC **);
-    void *unknown_015c[4];
+    HRESULT(__stdcall *set_vertex_declaration)(PC_D3D9_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *);
+    void *unknown_0160[3];
     HRESULT(__stdcall *create_vertex_shader)(PC_D3D9_DEVICE_PC *, const DWORD *, PC_TEXTURE_RESOURCE_PC **);
-    void *unknown_0170[2];
+    HRESULT(__stdcall *set_vertex_shader)(PC_D3D9_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *);
+    void *unknown_0174;
     HRESULT(__stdcall *set_vertex_shader_constant_f)(PC_D3D9_DEVICE_PC *, UINT, const f32 *, UINT);
-    void *unknown_017c[11];
+    void *unknown_017c[5];
+    HRESULT(__stdcall *set_stream_source)(PC_D3D9_DEVICE_PC *, u32, PC_BUFFER_RESOURCE_PC *, u32, u32);
+    void *unknown_0194;
+    HRESULT(__stdcall *set_stream_source_freq)(PC_D3D9_DEVICE_PC *, u32, u32);
+    void *unknown_019c;
+    HRESULT(__stdcall *set_indices)(PC_D3D9_DEVICE_PC *, PC_BUFFER_RESOURCE_PC *);
+    void *unknown_01a4;
     HRESULT(__stdcall *create_pixel_shader)(PC_D3D9_DEVICE_PC *, const DWORD *, PC_TEXTURE_RESOURCE_PC **);
-    void *unknown_01ac[2];
+    HRESULT(__stdcall *set_pixel_shader)(PC_D3D9_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *);
+    void *unknown_01b0;
     HRESULT(__stdcall *set_pixel_shader_constant_f)(PC_D3D9_DEVICE_PC *, UINT, const f32 *, UINT);
 } PC_D3D9_METHODS_PC;
 struct PC_D3D9_DEVICE_PC {
@@ -19557,4 +19569,55 @@ extern "C" {
 }
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern f32 NuDisplayHandlerOpacityPc;
+    extern i32 NuDisplayHandlerZModePc;
+    extern f32 NuDisplayHandlerShadowPc;
+    extern u32 PCDevicePrimitiveCallCountPc;
+    extern u32 PCDeviceIndexedPrimitiveCallCountPc;
+    extern u32 PCDeviceStreamStrideCachePc;
+    extern u32 PCDeviceStreamNumberCachePc;
+    extern u32 PCDeviceStreamOffsetCachePc;
+    extern PC_TEXTURE_RESOURCE_PC *PCDeviceVertexDeclarationCachePc;
+#ifdef __cplusplus
+}
+#endif
+
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, draw_primitive) == 0x144);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, draw_indexed_primitive) == 0x148);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_stream_source) == 0x190);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_stream_source_freq) == 0x198);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_indices) == 0x1a0);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_vertex_declaration) == 0x15c);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_vertex_shader) == 0x170);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_pixel_shader) == 0x1ac);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i32 PCGraphicsFrameState;
+    extern i32 PCGraphicsBoundShader;
+    void __cdecl NuDisplayListVertexGroupsPc(void *);
+    void __cdecl NuDisplayListVertexOffsetsPc(void *);
+    void __cdecl NuDisplayListTransformPc(void *);
+    void __cdecl NuDisplayListTransformTransposePc(void *);
+    void __cdecl NuDisplayListFaceOnTransformPc(void *);
+    void __cdecl NuDisplayListPacketAdPc(void *);
+    void __cdecl NuDisplayListUpdateLightmapPc(void);
+    void __cdecl NuDisplayListDrawGeometryPc(void *);
+    void __cdecl NuDisplayListDrawFaceOnPc(void *);
+    void __cdecl NuDisplayListDrawDebrisPc(void *);
+    void __cdecl PCDeviceSetStreamSourcePc(u32, PC_BUFFER_RESOURCE_PC *, u32, u32);
+    void __cdecl PCDeviceDrawPrimitivePc(i32, u32, u32);
+    void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *);
+    void __cdecl PCDeviceDrawIndexedPrimitivePc(i32, i32, u32, u32, u32, u32);
+    void __cdecl PCDeviceSetStreamSourceFreqPc(u32, u32);
+    void __cdecl PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC *);
+    void __cdecl PCDeviceSetVertexShaderPc(PC_TEXTURE_RESOURCE_PC *);
+    void __cdecl PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE_PC *);
+    void __cdecl NuShaderManagerBindShaderPc(PC_SHADER_OBJECT_FULL_VIEW *);
+#ifdef __cplusplus
+}
+#endif
 #endif

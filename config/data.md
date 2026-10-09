@@ -2367,3 +2367,30 @@ PC lighting semantic49 is ps2ShineMtx, count4/field_c4. Its native consumer read
 old emitted code/data unchanged. This is an initialized caller-owned minimum
 reader, not an original producer or allocation-capacity proof. The runtime guard
 rejected the earlier one-vector specular field; no metadata or padding was forced.
+
+### Native handler/device state VV (2026-10-09)
+
+Nine native-initialized scalar/cache views supply 36 consumed bytes:
+
+- `_NuDisplayHandlerOpacityPc` at `0x80e198`: four-byte canonical `f32` view.
+- `_NuDisplayHandlerZModePc` at `0x80e690`: four-byte canonical `i32` view.
+- `_NuDisplayHandlerShadowPc` at `0x2857168`: four-byte canonical `f32` view.
+- `_PCDevicePrimitiveCallCountPc` at `0x2974cf4`: four-byte canonical `u32` view.
+- `_PCDeviceIndexedPrimitiveCallCountPc` at `0x2974cf8`: four-byte canonical `u32` view.
+- `_PCDeviceVertexDeclarationCachePc` at `0x297bec8`: four-byte canonical `PC_TEXTURE_RESOURCE_PC *` view.
+- `_PCDeviceStreamStrideCachePc` at `0x297bed4`: four-byte canonical `u32` view.
+- `_PCDeviceStreamNumberCachePc` at `0x297bed8`: four-byte canonical `u32` view.
+- `_PCDeviceStreamOffsetCachePc` at `0x297bedc`: four-byte canonical `u32` view.
+
+All nine complete compiled initializers equal native. Original owning extents
+remain blank, with zero allocation, mapping-extent or exact-data credit. A distinct
+data/BSS cohort after TT/UU resets preserves all previous complete data outputs,
+including unknown-sized tails. D3D9 slot refinements name verified existing PC
+offsets without changing aggregate size or introducing a substitute interface.
+The CPU fixture exercises initialized minimum views, real cache hits and genuine
+unbound/NULL/zero guards; it does not establish original full capacities.
+
+The native FaceOnTransform, lightmap-update and changed-shadow uniform calls have
+vector-width reads beyond their nominal tint/local/scalar objects. Those complete
+bodies are retained and nonexact; these paths were not exercised. No invented
+padding, uniform metadata override or zeroed adjacent storage claims equivalence.
