@@ -306,7 +306,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     NuTrigInit();
     STUBBED_NAMED(0x00607bc0);
     NuDisplayListInit(buffer, (i32)end->addr);
-    STUBBED_NAMED(0x007412e0);
+    NuShaderManagerInit(buffer, *end);
     if ((NuHwDfsNamePc && *NuHwDfsNamePc) || (NuHwSoundDfsNamePc && *NuHwSoundDfsNamePc)) {
         i32 count = dat_count;
         if (NuHwDfsNamePc && *NuHwDfsNamePc)
@@ -330,10 +330,10 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     STUBBED_NAMED(0x0060cb00);
     STUBBED_NAMED(0x005d16a0); /* (buffer, *end) */
     STUBBED_NAMED(0x00607c60); /* (buffer, *end) */
-    STUBBED_NAMED(0x0060a5f0); /* (PCDeviceBackend.render_target_flags, 0, buffer, *end) */
+    PCGraphicsInitializeFramebuffers((u8)PCDeviceBackend.render_target_flags, 0, buffer, *end);
     STUBBED_NAMED(0x005f22a0); /* (PCDeviceBackend.shader_flags, buffer, *end) */
     NuRndrBufferDescriptorsInitPc(buffer, *end);
-    STUBBED_NAMED(0x005fa240);
+    PcResetGeometryOriginStatePc();
     STUBBED_NAMED(0x005eaa80); /* (buffer, *end) */
     STUBBED_NAMED(0x004ffbb0);
     NuTimeBarInit();

@@ -1,3 +1,4 @@
+#define SAGA_SHADER_PARSER_TYPES
 #include "saga.h"
 static u8 ShaderLexicalClassesPc[256];
 extern "C" void __cdecl ShaderLexicalClassesInitPc(void) {

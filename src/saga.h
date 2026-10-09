@@ -10004,7 +10004,7 @@ void __cdecl PCStereoUnknownToken(void);
     extern const f64 TerrainSkinSampleCountPc;
     extern i32 obstacle_gizmotype_id;
     extern i32 PCVertexDeclarationCountPC;
-    extern PC_VERTEX_DECL_ENTRY_PC PCVertexDeclarationCachePC[1];
+    extern PC_VERTEX_DECL_ENTRY_PC PCVertexDeclarationCachePC[2];
     extern u32 CRC16TablePC[256];
     extern u32 ShaderProgramHashPC[2];
     PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32);
@@ -10018,6 +10018,7 @@ void __cdecl PCStereoUnknownToken(void);
 #else
 typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
 #endif
+    void __cdecl NuShaderManagerInit(VARIPTR *arena, VARIPTR arena_end);
     PC_SHADER_OBJECT_FULL_VIEW *__cdecl NuShaderManagerRetrieveShader(const PC_SHADER_FILTER_DESC_VIEW *,
                                                                       const PC_SHADER_FILTER_MATERIAL_VIEW *);
     PC_SHADER_OBJECT_FULL_VIEW *__cdecl NuShaderManagerRetrieveShaderVariant(const PC_SHADER_FILTER_DESC_VIEW *,
@@ -17117,9 +17118,14 @@ struct ShaderParserBranchNodePc : ShaderParserNodePc {
     ShaderParserNodePc *if_false;
     ShaderConditionNodePc *condition;
 };
+class ShaderCompilerParserPc;
+#ifdef SAGA_SHADER_PARSER_TYPES
+#include <vector>
+struct ShaderParserIncludePc;
 class ShaderCompilerParserPc {
   public:
-    u8 unknown_0[0x110];
+    char include_directories[0x100];
+    std::vector<ShaderParserIncludePc *> includes;
     u8 lexical_state;
     u8 reserved_111[3];
     ShaderParserNodePc *head;
@@ -17132,6 +17138,15 @@ class ShaderCompilerParserPc {
     i32 branch_count;
     ShaderParserBranchNodePc *scopes[100];
     i32 scope_count;
+    ShaderCompilerParserPc();
+    ~ShaderCompilerParserPc();
+    void SetIncludeDirectories(const char *);
+    bool NextIncludeDirectory(const char *, i32 *, char *);
+    void ClearIncludes();
+    ShaderCompilerBufferAllocatorPc *LoadInclude(const char *);
+    void ProcessDirective(ShaderCompilerBufferAllocatorPc *, i32 *);
+    void LoadSourceLines(ShaderCompilerBufferAllocatorPc *, i32);
+    ShaderParserNodePc *Parse(ShaderCompilerBufferAllocatorPc *, i32, u8, VirtualStackAllocator *);
     void FlushText();
     void DefineMacro(const char *name, const char *value);
     void UndefineMacro(const char *name);
@@ -17146,6 +17161,11 @@ class ShaderCompilerParserPc {
     void EmitDeclarations(u32);
     ShaderConditionNodePc *ParseExpression(ShaderCompilerBufferAllocatorPc *input, i32 *cursor);
 };
+STATIC_ASSERT(sizeof(ShaderCompilerParserPc) == 0x45c);
+STATIC_ASSERT(offsetof(ShaderCompilerParserPc, include_directories) == 0);
+STATIC_ASSERT(offsetof(ShaderCompilerParserPc, includes) == 0x100);
+STATIC_ASSERT(sizeof(std::vector<ShaderParserIncludePc *>) == 0x10);
+#endif
 STATIC_ASSERT(sizeof(ShaderParserNodePc) == 8);
 STATIC_ASSERT(offsetof(ShaderParserNodePc, kind) == 0);
 STATIC_ASSERT(offsetof(ShaderParserNodePc, next) == 4);
@@ -17161,6 +17181,7 @@ STATIC_ASSERT(sizeof(ShaderParserBranchNodePc) == 20);
 STATIC_ASSERT(offsetof(ShaderParserBranchNodePc, if_true) == 8);
 STATIC_ASSERT(offsetof(ShaderParserBranchNodePc, if_false) == 12);
 STATIC_ASSERT(offsetof(ShaderParserBranchNodePc, condition) == 16);
+#ifdef SAGA_SHADER_PARSER_TYPES
 STATIC_ASSERT(offsetof(ShaderCompilerParserPc, lexical_state) == 0x110);
 STATIC_ASSERT(offsetof(ShaderCompilerParserPc, head) == 0x114);
 STATIC_ASSERT(offsetof(ShaderCompilerParserPc, tail) == 0x118);
@@ -17171,6 +17192,7 @@ STATIC_ASSERT(offsetof(ShaderCompilerParserPc, branches) == 0x134);
 STATIC_ASSERT(offsetof(ShaderCompilerParserPc, branch_count) == 0x2c4);
 STATIC_ASSERT(offsetof(ShaderCompilerParserPc, scopes) == 0x2c8);
 STATIC_ASSERT(offsetof(ShaderCompilerParserPc, scope_count) == 0x458);
+#endif
 
 struct ShaderLexicalSlicePc {
     const char *begin;
@@ -18613,6 +18635,7 @@ extern "C" {
     i32 __cdecl PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *);
     u8 __cdecl PcInitializeGeometryBasisPc(PC_GEOMETRY_BASIS_SOURCE_PC *, NUMTX *, PC_GEOMETRY_MORPH_WEIGHTS_PC *);
     void __cdecl PcResetGeometryOriginStatePc(void);
+    void __cdecl PCGraphicsInitializeFramebuffers(u8, i32, VARIPTR *, VARIPTR);
     void __cdecl PcUpdateGeometryCameraOriginPc(NUMTX *, NUMTX *);
     void __cdecl PcGetGeometryPerspectivePc(NUMTX *, f32 *, f32 *, f32 *, f32 *);
     extern i32 PcGeometryRegistryCountPc;

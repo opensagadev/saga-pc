@@ -3650,6 +3650,9 @@ address    , symbol                                                         , si
 0x005f9e90 , _NuRndrShadowOnOff_candidate                                   , 10    , void __cdecl (i32)
 0x5f9ed0,_PCEnqueueHierarchyShadowGroup,208,"void __cdecl(NUMTX *,void *,i32,void *,i32,void *,i32)"
 0x5f9fa0,_NuHGobjSubmitShadowGroupsPc,187,"void __cdecl(NUHGOBJ_EVAL_PC *,NUMTX *,NUMTX *)"
+0x5fa1d0,??1bad_alloc@std@@UAE@XZ,11,
+0x5fa1e0,??_Ebad_alloc@std@@UAEPAXI@Z,,
+0x5fa1e0,??_Gbad_alloc@std@@UAEPAXI@Z,36,
 0x5fa240,_PcResetGeometryOriginStatePc,164,void __cdecl(void)
 0x5fa330,_PcUpdateGeometryCameraOriginPc,497,"void __cdecl(NUMTX*,NUMTX*)"
 0x5fb810,?Reset@PC_EFFECT_SURFACE_PC@@QAEXXZ,81,
@@ -3756,6 +3759,8 @@ address    , symbol                                                         , si
 0x006042e0 , _NuCameraClipTestExtents                                       , 1608  , "i32 __cdecl (NUVEC *, NUVEC *, NUMTX *, f32, i32)"
 0x00604a80,_NuCameraSetProjectionMtx,200,"void __cdecl (NUMTX *, f32, f32, f32, f32)"
 0x604c50,_NuHGobjGetPOI,49,"NUHGOBJ_POI_PC *__cdecl(NUHGOBJ_EVAL_PC *, u8)"
+0x605280,??$_Allocate@D@std@@YAPADIPAD@Z,84,"char *__cdecl(unsigned int, char *)"
+0x6052e0,??0bad_alloc@std@@QAE@ABV01@@Z,25,
 0x605660,_PCGraphicsInitRenderTexturePool,65,"void __cdecl(VARIPTR*,VARIPTR)"
 0x6056f0,_PCGraphicsCreateEffectTexture,112,
 0x605800,_PCGraphicsCreateColourTarget,138,"GRAPHICS_RENDER_TEXTURE_PC* __cdecl(i32,i32)"
@@ -3781,11 +3786,30 @@ address    , symbol                                                         , si
 0x00607ec0 , _NuPrim3DBegin                                                 , 319   , "void __cdecl (u32, u32, NUMTL *, NUMTX *)"
 0x00608590,_NuLgtLaserDraw,2766,void __cdecl(i32)
 0x006091c0,_NuLgtArcLaserDraw,2506,void __cdecl(i32)
+0x609ff0,?allocate@?$allocator@D@std@@QAEPADI@Z,18,
 0x60a550,??0PC_FRAMEBUFFER_PC@@QAE@XZ,37,
 0x60a580,??1PC_FRAMEBUFFER_PC@@QAE@XZ,112,
 0x60a5f0,_PCGraphicsInitializeFramebuffers,425,
 0x60b5d0,_BuildDebrisVerts,1360,"void __cdecl (DEBRIS_PART_HEADER_PC *, DEBRIS_PARTICLE_CHUNK_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32, f32, f32)"
+0x60bcc0,?erase@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@II@Z,131,
+0x60bdd0,?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z,335,
+0x60be53,__catch$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$0,,
+0x60beee,__catch$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$1,,
 0x60c410,_NuRndrParticleGroup,705,"void __cdecl (DEBRIS_PARTICLE_CHUNK_PC *, DEBRIS_PART_HEADER_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32, f32, f32)"
+0x60c760,??1?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@XZ,38,
+0x60ca50,??1logic_error@std@@UAE@XZ,50,
+0x60caa0,?what@logic_error@std@@UBEPBDXZ,14,
+0x60cab0,??_Elogic_error@std@@UAEPAXI@Z,,
+0x60cab0,??_Glogic_error@std@@UAEPAXI@Z,71,
+0x60cb30,?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@ABV12@II@Z,218,
+0x60ccb0,?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBDI@Z,193,
+0x60cf00,??0logic_error@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z,51,
+0x60cf80,??1length_error@std@@UAE@XZ,50,
+0x60cfc0,??_Elength_error@std@@UAEPAXI@Z,,
+0x60cfc0,??_Glength_error@std@@UAEPAXI@Z,71,
+0x60d070,??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@PBD@Z,59,
+0x60d120,??0logic_error@std@@QAE@ABV01@@Z,57,
+0x60d160,??0length_error@std@@QAE@ABV01@@Z,63,
 0x0061e6b0 , _NuKeyToAscii                                                  , 50    , "i32 __cdecl (u32, i32)"
 0x621180,_EdFileSwapEndianess16,15,void __cdecl (void *)
 0x621190,_EdFileSwapEndianess32,29,void __cdecl (void *)
@@ -4999,6 +5023,8 @@ address    , symbol                                                         , si
 0x6e5c00,_PCDeviceUnlockIndexBuffer,13,HRESULT __cdecl(PC_BUFFER_RESOURCE_PC*)
 0x6e5f60,_CpuDetectFeaturesPc,873,void __cdecl (void)
 0x6e66b0,_PCGraphicsPrepareVendor,100,i32 __cdecl(void)
+0x6e67be,?_Xlen@_String_base@std@@SAXXZ,,static CRT method selector; no engine source credit
+0x6e67fd,?_Xran@_String_base@std@@SAXXZ,,static CRT method selector; no engine source credit
 0x006e693a , @__security_check_cookie@4                                     , 15    , void __fastcall (u32)
 0x006e6950 , _memset                                                        ,       , "void *__cdecl (void *, int, size_t)"
 0x006e69d0 , __allshl                                                       , 31    , MSVC x86 compiler u64 left-shift helper (EDX:EAX; CL)
@@ -5033,7 +5059,17 @@ address    , symbol                                                         , si
 0x6e92e0,__CIpow,,CRT x87 double exponent/base inputs
 0x006e9530 , __CIsqrt                                                       , 20    , f32 __cdecl (f64)
 0x6e96b0,_qsort,679,"void __cdecl (void *, size_t, size_t, int (__cdecl *)(const void *, const void *))"
+0x6e9b31,_memcpy_s,,static CRT method selector; no engine source credit
+0x6e9bac,_memmove_s,,"errno_t __cdecl (void *, size_t, const void *, size_t)"
+0x6e9c07,??0exception@std@@QAE@XZ,,
+0x6e9c18,??0exception@std@@QAE@ABQBD@Z,,
+0x6e9c7e,??0exception@std@@QAE@ABV01@@Z,,static CRT method selector; no engine source credit
+0x6e9d2c,??1exception@std@@UAE@XZ,,static CRT method selector; no engine source credit
+0x6e9d42,?what@exception@std@@UBEPBDXZ,,
+0x6e9fe6,__invalid_parameter_noinfo,,void __cdecl ()
 0x6ea018,??2@YAPAXI@Z,,void *__cdecl operator new(size_t size)
+0x6ea082,__CxxThrowException@8,,
+0x6ea199,___CxxFrameHandler3,,
 0x6eaa47,__finite,21,i32 __cdecl _finite(f64)
 0x6eaa5c,__isnan,46,i32 __cdecl _isnan(f64)
 0x6eacb6,_ftell,,long __cdecl ftell(FILE *stream)
@@ -5060,6 +5096,7 @@ address    , symbol                                                         , si
 0x6edbe0,__except_handler4,406,"EXCEPTION_DISPOSITION __cdecl (EXCEPTION_RECORD *, void *, CONTEXT *, void *)"
 0x006f05ae , _saga_thunk_KERNEL32_dll_GetCurrentThreadId_006f05ae@0         , 6     , DWORD __stdcall (void)
 0x006f05b4 , _saga_thunk_KERNEL32_dll_GetCurrentThread_006f05b4@0           , 6     , HANDLE __stdcall (void)
+0x7156ab,__strdup,,char *__cdecl (const char *)
 0x007157c8 , _D3DXMatrixMultiply@12                                         , 6     , "D3DXMATRIX * __stdcall (D3DXMATRIX *, const D3DXMATRIX *, const D3DXMATRIX *)"
 0x007157ce , _D3DXMatrixLookAtLH@16                                         , 6     , "D3DXMATRIX * __stdcall (D3DXMATRIX *, const D3DXVECTOR3 *, const D3DXVECTOR3 *, const D3DXVECTOR3 *)"
 0x007157d4 , _D3DXMatrixOrthoLH@20                                          , 6     , "D3DXMATRIX * __stdcall (D3DXMATRIX *, FLOAT, FLOAT, FLOAT, FLOAT)"
@@ -5262,6 +5299,7 @@ address    , symbol                                                         , si
 0x740f60,?setExternalMemoryPool@VirtualStackAllocator@@QAEXPAXI@Z,50,
 0x740fe0,??0VirtualStackAllocator@@QAE@PAXI@Z,27,
 0x741000,??0VirtualStackAllocator@@QAE@AAU0@I@Z,87,
+0x7412e0,_NuShaderManagerInit,124,"void __cdecl(VARIPTR *,VARIPTR)"
 0x741390,_NuShaderManagerSetfv,22,"void __cdecl(i32,const f32*)"
 0x741570,?AllocateSlot@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEPAVNuShaderObject@@PAH@Z,128,PC_SHADER_OBJECT_FULL_VIEW* __thiscall ShaderManagerTemplate<NuShaderObject>::AllocateSlot(i32*)
 0x741660,_NuShaderManagerReleaseShader,9,void __cdecl(PC_SHADER_RECORD_VIEW*)
@@ -5310,9 +5348,20 @@ address    , symbol                                                         , si
 0x745310,??1HLSLShaderBuilder@@UAE@XZ,53,
 0x745310,??1ShaderBuilderGen@@UAE@XZ,53,
 0x7454c0,?AdaptDescriptor@ShaderManagerHLSL@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@@Z,835,"void __thiscall ShaderManagerHLSL::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *)"
+0x745810,?CreateShader@ShaderManagerHLSL@@UAE_NPBUPC_SHADER_MATERIAL_FILTER_VIEW@@_NPAVNuShaderObject@@H@Z,265,
 0x745950,??_EHLSLShaderBuilder@@UAEPAXI@Z,,COFF weak alias to same scalar deleting destructor; zero new byte credit
 0x745950,??_GHLSLShaderBuilder@@UAEPAXI@Z,74,
 0x745a50,?SetUniformValues@ShaderManagerHLSL@@QAEXHPBM@Z,297,"void __thiscall ShaderManagerHLSL::SetUniformValues(i32,const f32*)"
+0x745fe0,??0?$ShaderManagerTemplate@VNuShaderObject@@@@QAE@XZ,73,
+0x746030,?CreateShader@?$ShaderManagerTemplate@VNuShaderObject@@@@UAE_NPBUPC_SHADER_MATERIAL_FILTER_VIEW@@_NPAVNuShaderObject@@H@Z,5,
+0x746040,?AdaptDescriptor@?$ShaderManagerTemplate@VNuShaderObject@@@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@@Z,3,
+0x746050,??1?$ShaderManagerTemplate@VNuShaderObject@@@@UAE@XZ,42,
+0x746080,??_E?$ShaderManagerTemplate@VNuShaderObject@@@@UAEPAXI@Z,,COFF weak reference alias of ??_G?$ShaderManagerTemplate@VNuShaderObject@@@@UAEPAXI@Z
+0x746080,??_G?$ShaderManagerTemplate@VNuShaderObject@@@@UAEPAXI@Z,76,
+0x7460d0,??0ShaderManagerHLSL@@QAE@AAUVirtualStackAllocator@@@Z,252,
+0x7461d0,??1ShaderManagerHLSL@@UAE@XZ,107,
+0x746240,??_EShaderManagerHLSL@@UAEPAXI@Z,,COFF weak reference alias of ??_GShaderManagerHLSL@@UAEPAXI@Z
+0x746240,??_GShaderManagerHLSL@@UAEPAXI@Z,30,
 0x746260,??0CRC16@@QAE@XZ,255,__thiscall CRC16::CRC16(void)
 0x746360,?hash@CRC16@@SAIPBEH@Z,61,"u32 __cdecl CRC16::hash(const u8*,i32)"
 0x7463a0,?hashInverse@CRC16@@SAIPBEH@Z,64,"u32 __cdecl CRC16::hashInverse(const u8*,i32)"
@@ -5353,6 +5402,9 @@ address    , symbol                                                         , si
 0x748890,?HasAnisoFlip@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,24,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasAnisoFlip() const
 0x748980,?HasPhongLighting@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,24,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasPhongLighting() const
 0x748c40,??0ShaderBuilderGen@@QAE@AAUVirtualStackAllocator@@H@Z,96,
+0x748ca0,?ParseSource@ShaderBuilderGen@@QAEPAXPBDHPAUShaderCompilerBufferAllocatorPc@@HPAUVirtualStackAllocator@@@Z,260,"void * __thiscall (const char *,i32,ShaderCompilerBufferAllocatorPc *,i32,VirtualStackAllocator *)"
+0x748db0,?Generate@ShaderBuilderGen@@QAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerBufferAllocatorPc@@1@Z,324,"void __thiscall (PC_SHADER_MATERIAL_FILTER_VIEW *,ShaderCompilerBufferAllocatorPc *,ShaderCompilerBufferAllocatorPc *)"
+0x749440,?LoadSource@ShaderBuilderGen@@QAE_NPBDH@Z,58,"bool __thiscall (const char *,i32)"
 0x749620,?Configure@ShaderBuilderGen@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,4642,"void __thiscall ShaderBuilderGen::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *)"
 0x74a930,?Prepare@HLSLShaderBuilder@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,52,"void __thiscall HLSLShaderBuilder::Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *)"
 0x74a970,?Configure@HLSLShaderBuilder@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,87,"void __thiscall HLSLShaderBuilder::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *)"
@@ -5366,9 +5418,14 @@ address    , symbol                                                         , si
 0x74afe0,_ShaderDeclarationFlagsPc,49,
 0x74b020,?IsSpecialToken@ShaderLexicalTokenPredicatePc@@QAEHPBD@Z,50,
 0x74b0c0,?AppendOperand@ShaderConditionNodePc@@QAEPAU1@PAU1@@Z,35,ShaderConditionNodePc *__thiscall ShaderConditionNodePc::AppendOperand(ShaderConditionNodePc *)
+0x74b270,?SetIncludeDirectories@ShaderCompilerParserPc@@QAEXPBD@Z,23,void __thiscall (const char *)
 0x74b350,?ShaderConditionPrecedencePc@@YAHPBD@Z,249,
 0x74b450,_ShaderDeclarationSemanticPc,607,
+0x74b6f0,?NextIncludeDirectory@ShaderCompilerParserPc@@QAE_NPBDPAHPAD@Z,95,"bool __thiscall (const char *, i32 *, char *)"
+0x74b930,??$_Allocate@PAUShaderParserIncludePc@@@std@@YAPAPAUShaderParserIncludePc@@IPAPAU1@@Z,91,
+0x74bb40,?LoadSourceLines@ShaderCompilerParserPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@H@Z,299,"void __thiscall (ShaderCompilerBufferAllocatorPc *, i32)"
 0x74bc70,?FlushText@ShaderCompilerParserPc@@QAEXXZ,132,void __thiscall ShaderCompilerParserPc::FlushText()
+0x74bfa0,?Parse@ShaderCompilerParserPc@@QAEPAUShaderParserNodePc@@PAUShaderCompilerBufferAllocatorPc@@HEPAUVirtualStackAllocator@@@Z,97,"ShaderParserNodePc *__thiscall (ShaderCompilerBufferAllocatorPc *, i32, u8, VirtualStackAllocator *)"
 0x74c010,?DefineMacro@ShaderCompilerParserPc@@QAEXPBD0@Z,217,"void __thiscall ShaderCompilerParserPc::DefineMacro(const char *name, const char *value)"
 0x74c0f0,?UndefineMacro@ShaderCompilerParserPc@@QAEXPBD@Z,154,void __thiscall ShaderCompilerParserPc::UndefineMacro(const char *name)
 0x74c190,?BeginIf@ShaderCompilerParserPc@@QAEXPAUShaderConditionNodePc@@@Z,145,void __thiscall ShaderCompilerParserPc::BeginIf(ShaderConditionNodePc *condition)
@@ -5380,10 +5437,28 @@ address    , symbol                                                         , si
 0x74c470,?AddDeclaration@ShaderCompilerParserPc@@QAEXIHHPBDH0HH@Z,259,
 0x74c580,?EmitDeclarations@ShaderCompilerParserPc@@QAEXI@Z,95,
 0x74c5e0,?ParseExpression@ShaderCompilerParserPc@@QAEPAUShaderConditionNodePc@@PAUShaderCompilerBufferAllocatorPc@@PAH@Z,705,"ShaderConditionNodePc *__thiscall ShaderCompilerParserPc::ParseExpression(ShaderCompilerBufferAllocatorPc *, i32 *)"
+0x74c9c0,??$fill@PAPAUShaderParserIncludePc@@PAU1@@std@@YAXPAPAUShaderParserIncludePc@@0ABQAU1@@Z,30,
+0x74c9e0,??$_Unchecked_move_backward@PAPAUShaderParserIncludePc@@PAPAU1@@stdext@@YAPAPAUShaderParserIncludePc@@PAPAU1@00@Z,47,
 0x74ca70,?ParseDeclaration@ShaderCompilerParserPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@PAH@Z,2724,
+0x74d710,??$_Umove@PAPAUShaderParserIncludePc@@@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEPAPAUShaderParserIncludePc@@PAPAU2@00@Z,48,
+0x74d740,?ClearIncludes@ShaderCompilerParserPc@@QAEXXZ,200,void __thiscall ()
+0x74d810,?_Ufill@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEPAPAUShaderParserIncludePc@@PAPAU3@IABQAU3@@Z,46,
+0x74d840,??1ShaderCompilerParserPc@@QAE@XZ,70,__thiscall destructor()
+0x74d890,?_Xlen@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@KAXXZ,112,
+0x74d950,?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,581,
+0x74dab2,__catch$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z$0,,
+0x74dabe,__catch$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z$2,,
+0x74dbb0,?insert@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE?AV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@V32@ABQAUShaderParserIncludePc@@@Z,137,
+0x74dc40,??0ShaderCompilerParserPc@@QAE@XZ,129,__thiscall constructor()
+0x74dcd0,?push_back@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEXABQAUShaderParserIncludePc@@@Z,105,void __thiscall (ShaderParserIncludePc *const &)
+0x74dd40,?LoadInclude@ShaderCompilerParserPc@@QAEPAUShaderCompilerBufferAllocatorPc@@PBD@Z,432,ShaderCompilerBufferAllocatorPc *__thiscall (const char *)
+0x74def0,?ProcessDirective@ShaderCompilerParserPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@PAH@Z,632,"void __thiscall (ShaderCompilerBufferAllocatorPc *, i32 *)"
+0x74ee62,??_V@YAXPAX@Z,,void __cdecl (void *)
 0x0074fbdc , _D3DXCompileShader@40                                          , 6     , "HRESULT __stdcall (const char *, UINT, const D3DXMACRO *, ID3DXInclude *, const char *, const char *, DWORD, ID3DXBuffer **, ID3DXBuffer **, ID3DXConstantTable **)"
 0x0074fbe2 , _D3DXCreateEffectCompiler@28                                   , 6     , "HRESULT __stdcall (const char *, UINT, const D3DXMACRO *, ID3DXInclude *, DWORD, ID3DXEffectCompiler **, ID3DXBuffer **)"
 0x0074fbe8 , _D3DXCreateBuffer@8                                            , 6     , "HRESULT __stdcall (DWORD, ID3DXBuffer **)"
+0x74fc30,__ehhandler$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z,27,
+0x74fd50,__ehhandler$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,27,
 0x750010,??__EPcFramebufferPool@@YAXXZ,58,
 0x750280,??__EPCDeviceBackend@@YAXXZ,22,void __cdecl(void)
 0x7502f0,??__ECRC16InstancePC@@YAXXZ,10,void __cdecl(void)
@@ -5589,6 +5664,7 @@ address    , symbol                                                         , si
 0x7513b0,_PcFramebufferPool$initializer$,4,constructor initializer pointer
 0x7513fc,_PCDeviceBackend$initializer$,4,constructor initializer pointer
 0x75140c,_CRC16InstancePC$initializer$,4,void (__cdecl *)(void)
+0x751490,??_C@_0P@GHFPNOJB@bad?5allocation?$AA@,,
 0x007514c0 , _InitOnceAllocSource                                           , 15    , const char[15]
 0x007514d0 , _InitOnceWindowTitle                                           , 36    , const char[36]
 0x7514f4,_InitOnceCompanyPc,,const char[10]
@@ -8131,6 +8207,7 @@ address    , symbol                                                         , si
 0x0075ffa0 , ??_C@_03BOPJPIAM@and?$AA@                                      , 4     , const char[4]
 0x0075ffa4 , ??_C@_0BE@NEEIGBG@KeepBlockedMessages?$AA@                     , 20    , const char[20]
 0x0075ffb8 , ??_C@_04MABHPDAO@goto?$AA@                                     , 5     , const char[5]
+0x75ffc0,??_C@_05BMGBEOOC@?$CFs?2?$CFs?$AA@,,const char []
 0x75ffc0,_AIScriptSourcePathFormatPc,,const char[6]
 0x0075ffc8 , _AIScriptFileExtension                                         , 5     , const char[5]
 0x0075ffd0 , ??_C@_06JGBJPOPP@Global?$AA@                                   , 7     , const char[7]
@@ -9115,6 +9192,7 @@ address    , symbol                                                         , si
 0x76a6d0,_NuTextureDdsExtensionPc,,const char[4]
 0x76a6d4,_NuTexturePhongCubePathPc,,const char[25]
 0x76a6f0,_NuTextureEnvironmentCubePathPc,,const char[28]
+0x76a744,??_7bad_alloc@std@@6B@,,Natural owning C++ RTTI/throw metadata
 0x76a788,__real@3f70101020000000,8,const f64
 0x76a790,??_C@_0DF@OLOGNDAF@d?3?2projects?2game_saga?2nu2api?4sag@,53,const char[53]
 0x76a7c8, _NuVpDepthRangePc, ,
@@ -9126,6 +9204,9 @@ address    , symbol                                                         , si
 0x0076a85c,__real@442f0000,4,
 0x0076a860,__real@c049000000000000,8,
 0x0076a868,__real@406e000000000000,8,
+0x76a8b4,??_7logic_error@std@@6B@,,Natural owning C++ RTTI/throw metadata
+0x76a8c0,??_7length_error@std@@6B@,,Natural owning C++ RTTI/throw metadata
+0x76a8c8,??_C@_0BD@OLBABOEK@vector?$DMT?$DO?5too?5long?$AA@,,const char[19]
 0x76aa2c,??_C@_02PCIJFNDE@?$AN?6?$AA@,3,
 0x76ada0,??_C@_05DNIIFBMG@?$CFs?5?$CFs?$AA@,6,char[6]
 0x76ae78,__real@3ff0ccccc0000000,8,const f64
@@ -10983,8 +11064,10 @@ address    , symbol                                                         , si
 0x7e9068,_ShaderUniformTextPc007e9068,,const char[15]
 0x7e9078,_ShaderUniformTextPc007e9078,,const char[15]
 0x7e9088,_ShaderUniformTextPc007e9088,,const char[15]
+0x7e9098,??_C@_0M@JOLKFHDJ@blendShapes?$AA@,,
 0x7e9098,_ShaderUniformTextPc007e9098,,const char[12]
 0x7e90a4,_ShaderUniformTextPc007e90a4,,const char[17]
+0x7e90b8,??_C@_0L@GEOOOFBP@skinMatrix?$AA@,,
 0x7e90b8,_ShaderUniformTextPc007e90b8,,const char[11]
 0x7e90c4,_ShaderUniformTextPc007e90c4,,const char[11]
 0x7e90d0,_ShaderUniformTextPc007e90d0,,const char[7]
@@ -11020,6 +11103,10 @@ address    , symbol                                                         , si
 0x7e9290,_ShaderUniformTextPc007e9290,,const char[13]
 0x7e92d0,??_7ShaderBuilderGen@@6B@,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
 0x7e92f0,??_7HLSLShaderBuilder@@6B@,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7e9310,??_7?$ShaderManagerTemplate@VNuShaderObject@@@@6B@,,
+0x7e9320,??_C@_0ED@PDDPDEFD@?4?1shaders?$DL?4?4?1nu2api?1shaderBuilde@,,
+0x7e9364,??_C@_0M@PEKOFCEL@?2genShaders?$AA@,,
+0x7e9374,??_7ShaderManagerHLSL@@6B@,,
 0x7e9380,??_C@_04DGFIONEK@hook?$AA@,,
 0x7e9388,??_C@_0M@JHKOCKOC@samplerCUBE?$AA@,,
 0x7e9394,??_C@_09LAHPNHHH@sampler3D?$AA@,,
@@ -11116,6 +11203,7 @@ address    , symbol                                                         , si
 0x7e977c,??_C@_09IDKGMKNG@texcoord0?$AA@,,
 0x7e9788,??_C@_0BJ@IOJPCHFB@struct?5VertexOutput?5?$HL?5?$AN?6?$AA@,,
 0x7e97a4,??_C@_07NIBOJBAJ@?$CDundef?5?$AA@,,
+0x7e97dc,??_C@_0BF@JONEKAIK@_SHADERBUILDER_DEBUG?$AA@,,const char []
 0x7e97fc,??_C@_0L@MPHMDLOH@SKIN_WORLD?$AA@,,const char []
 0x7e9808,??_C@_0O@BLMMIJLA@PACKED_VECTOR?$AA@,,const char []
 0x7e9818,??_C@_0BA@OIDCJLOC@PACKED_TANGENT2?$AA@,,const char []
@@ -11292,6 +11380,31 @@ address    , symbol                                                         , si
 0x7ea348,??_C@_0BA@BNMELBEF@nu2_anchorPoint?$AA@,,const char []
 0x7ea358,??_C@_0M@JIDJDNJE@nu2_declare?$AA@,,const char []
 0x7ea364,??_C@_07MBIKGK@nu2_use?$AA@,,const char []
+0x7ea36c,??_C@_05PAODFFED@endif?$AA@,,const char []
+0x7ea374,??_C@_04GNFOIEOK@elif?$AA@,,const char []
+0x7ea37c,??_C@_04FHMCPBIP@else?$AA@,,const char []
+0x7ea384,??_C@_02HEBPBKGD@if?$AA@,,const char []
+0x7ea388,??_C@_06PGFLMPLC@pragma?$AA@,,const char []
+0x7ea390,??_C@_07FHOHOHLG@include?$AA@,,const char []
+0x7ea398,??_C@_05PKCPKOLM@undef?$AA@,,const char []
+0x7ea3a0,??_C@_06ENONKJGC@ifndef?$AA@,,const char []
+0x7ea3a8,??_C@_05LOELCHJN@ifdef?$AA@,,const char []
+0x7ea3b0,??_C@_06EPMMJFDC@define?$AA@,,const char []
+0x7eab14,??_R4bad_alloc@std@@6B@,,Natural owning C++ RTTI/throw metadata
+0x7eab28,??_R3bad_alloc@std@@8,,Natural owning C++ RTTI/throw metadata
+0x7eab38,??_R2bad_alloc@std@@8,,Natural owning C++ RTTI/throw metadata
+0x7eab44,??_R1A@?0A@EA@bad_alloc@std@@8,,Natural owning C++ RTTI/throw metadata
+0x7eab60,??_R1A@?0A@EA@exception@std@@8,,Natural owning C++ RTTI/throw metadata
+0x7eab7c,??_R3exception@std@@8,,Natural owning C++ RTTI/throw metadata
+0x7eab8c,??_R2exception@std@@8,,Natural owning C++ RTTI/throw metadata
+0x7eabe8,??_R4logic_error@std@@6B@,,Natural owning C++ RTTI/throw metadata
+0x7eabfc,??_R3logic_error@std@@8,,Natural owning C++ RTTI/throw metadata
+0x7eac0c,??_R2logic_error@std@@8,,Natural owning C++ RTTI/throw metadata
+0x7eac18,??_R1A@?0A@EA@logic_error@std@@8,,Natural owning C++ RTTI/throw metadata
+0x7eac34,??_R4length_error@std@@6B@,,Natural owning C++ RTTI/throw metadata
+0x7eac48,??_R3length_error@std@@8,,Natural owning C++ RTTI/throw metadata
+0x7eac58,??_R2length_error@std@@8,,Natural owning C++ RTTI/throw metadata
+0x7eac68,??_R1A@?0A@EA@length_error@std@@8,,Natural owning C++ RTTI/throw metadata
 0x7eb664,??_R4WavReader@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb678,??_R3WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb688,??_R2WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
@@ -11308,7 +11421,33 @@ address    , symbol                                                         , si
 0x7ec8f4,??_R3HLSLShaderBuilder@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
 0x7ec904,??_R2HLSLShaderBuilder@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
 0x7ec910,??_R1A@?0A@EA@HLSLShaderBuilder@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec92c,??_R4?$ShaderManagerTemplate@VNuShaderObject@@@@6B@,,
+0x7ec940,??_R3?$ShaderManagerTemplate@VNuShaderObject@@@@8,,
+0x7ec950,??_R2?$ShaderManagerTemplate@VNuShaderObject@@@@8,,
+0x7ec958,??_R1A@?0A@EA@?$ShaderManagerTemplate@VNuShaderObject@@@@8,,
+0x7ec974,??_R4ShaderManagerHLSL@@6B@,,
+0x7ec988,??_R3ShaderManagerHLSL@@8,,
+0x7ec998,??_R2ShaderManagerHLSL@@8,,
+0x7ec9a4,??_R1A@?0A@EA@ShaderManagerHLSL@@8,,
+0x7eca18,__TI2?AVbad_alloc@std@@,,Natural owning C++ RTTI/throw metadata
+0x7eca28,__CTA2?AVbad_alloc@std@@,,Natural owning C++ RTTI/throw metadata
+0x7eca34,__CT??_R0?AVbad_alloc@std@@@8??0bad_alloc@std@@QAE@ABV01@@Z12,,Natural owning C++ RTTI/throw metadata
+0x7eca50,__CT??_R0?AVexception@std@@@8??0exception@std@@QAE@ABV01@@Z12,,Natural owning C++ RTTI/throw metadata
+0x7ecb1c,__catchsym$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$5,,
+0x7ecb2c,__catchsym$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$4,,
+0x7ecb3c,__unwindtable$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z,,
+0x7ecb5c,__ehfuncinfo$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z,,
+0x7ecb80,__tryblocktable$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z,,
+0x7ecc58,__TI3?AVlength_error@std@@,,Natural owning C++ RTTI/throw metadata
+0x7ecc68,__CTA3?AVlength_error@std@@,,Natural owning C++ RTTI/throw metadata
+0x7ecc78,__CT??_R0?AVlength_error@std@@@8??0length_error@std@@QAE@ABV01@@Z40,,Natural owning C++ RTTI/throw metadata
+0x7ecc94,__CT??_R0?AVlogic_error@std@@@8??0logic_error@std@@QAE@ABV01@@Z40,,Natural owning C++ RTTI/throw metadata
 0x7ecdc8,__sehtable$_CpuDetectFeaturesPc,,
+0x7eda54,__catchsym$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z$5,,
+0x7eda64,__catchsym$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z$4,,
+0x7eda74,__unwindtable$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,,
+0x7eda94,__ehfuncinfo$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,,
+0x7edab8,__tryblocktable$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,,
 0x7ef00c,_InitOnceFileModePc,,i32
 0x007ef01c , _SUPERBUFFERSIZE                                               , 4     , i32
 0x007ef020 , _CHARACTERBUFFERSIZE                                           , 4     , i32
@@ -12776,6 +12915,7 @@ address    , symbol                                                         , si
 0x0082a7a0 , ??_R0?AVDNameStatusNode@@@8                                    , 30    ,
 0x0082a7c0 , ??_R0?AVpcharNode@@@8                                          , 24    ,
 0x82b1e0,_ShaderUniformRecordsPc,,ShaderUniformRecordPc[100]
+0x82d700,?uberShader2@@3PADA,,char []
 0x854270,_ShaderProgramHashPC,,u32[2]
 0x008542e0 , ??_R0?AVShaderBuilderGen@@@8                                   , 31    ,
 0x00854300 , ??_R0?AVHLSLShaderBuilder@@@8                                  , 32    ,
@@ -14937,7 +15077,7 @@ address    , symbol                                                         , si
 0x297c19c,_PCGraphicsSelectedGpuRecord,,PC_GRAPHICS_GPU_RECORD_PC*
 0x297cc8c,_PCShaderSlots,,PC_SHADER_SLOT_VIEW *
 0x297cc90,_PCVertexDeclarationCountPC,,i32
-0x297cc98,_PCVertexDeclarationCachePC,,PC_VERTEX_DECL_ENTRY_PC[1]
+0x297cc98,_PCVertexDeclarationCachePC,,PC_VERTEX_DECL_ENTRY_PC[2]
 0x297d6b8,_CRC16TablePC,,u32[256]
 0x297dab8,?CRC16InstancePC@@3VCRC16@@A,,CRC16
 0x297dac0,_ShaderLexicalClassesPc,,

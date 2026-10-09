@@ -1198,10 +1198,71 @@ its signed-byte cheat sentinel error; the corrected source and report are used.
 Specific complete Tag pointer-tail and particle reload pairs retain their bounded
 proofs. No code-generation flags, native extents or comparison checks were weakened.
 
-RR exact pushed-revision CI is pending. The complete checkpoint is recorded in
+RR passed all 13 exact pushed-revision CI steps in run 37855398941. The complete checkpoint is recorded in
 transfer-checkpoint.json. Next work reconnects real terrain registration,
 GameAudio/Menu sound IDs, FancyMessage, narrow-socket, surface-mask, colour and
 PodRace providers. The retained connected frontier has 9,608 candidate native
 bytes, with 12 functions/1,510 bytes ready for source authoring; these estimates
 receive no transfer credit. Full Bolt 44-record backing, CharFixUp, shader
 publication and resource/device lifetime remain separate contracts.
+
+### Shader publication and vertex-declaration startup frontier (2026-10-09)
+
+The current working source restores the real shader-manager publisher at
+`0x7412e0`, with its constructor, parser, compiler and genuine embedded source
+text. The first complete retail replay adds 50 full function extents / 6,334
+unique PC bytes and preserves all prior exact code/data matches. This replay
+is not a release checkpoint: complete natural compiler-output inventory remains
+under validation, and the public report still records RR.
+
+An unattended ordinary source-game run naturally exits 5 during a write in
+`PCByteCopy_candidate`. Its complete 84-byte body equals retail `0x4ef660`;
+the verified caller is `NuGetVertexDeclaration` (`0x741970`, 1,684 bytes including
+owned switch tables). Actual call arguments request 536,080 bytes. The source
+one-row cache places its count at row one's key address. Native count
+`0x297cc90` precedes cache `0x297cc98`; the original array capacity is unknown.
+The earlier corrupting write was not dynamically observed.
+
+Native `NuMtlInitEx` (`0x5f1dd0`, 375 bytes) creates two default descriptor keys,
+`0x40101` followed by `0x101`, and calls the real material updater for each.
+The second insertion must shift one eight-byte row into row one. This proves
+a minimum two-row startup view; it does not establish the full original array
+length or bound later material variants. The following renderer-default updater
+repeats `0x40101`. Minimum backing and the next real startup fault are the current
+priority; no bounds guard, fabricated COM result or guessed full capacity is used.
+
+The existing real framebuffer initializer (`0x60a5f0`, 425 bytes) and geometry
+reset (`0x5fa240`, 164 bytes) are now called in their native hardware-startup
+order. They receive no duplicate transferred-byte credit. Frame presentation,
+installed asset loading and recurring gameplay remain unverified. All automated
+observations query crash-dialog suppression and clean their own processes.
+
+### Shader startup checkpoint SS and observed frame-lifecycle gap (2026-10-09)
+
+The validated source wave adds 52 newly compared functions / 6,422 unique PC
+bytes, including 22 shader publisher/parser/compiler functions and genuine PC
+SDK helpers. Complete EH parents retain their cold entries and all bytes. The
+retail replay preserves every RR exact code and data contract: whole-PC fuzzy
+coverage rises from 29.034284% to 29.202954%, exact code from 228,700 to 231,692
+bytes. The source remains unplayable; these figures measure reconstruction.
+
+A bounded data watch proves that the first display-list pointer is initialized
+correctly. The full 139-byte `NuRndrEndScene` matches native exactly, but its copy
+at scene index 32 overwrites the source first-list pointer with zero. The actual
+caller is `LoadPerm`, which repeatedly calls `NuFrameEnd`. Original array capacity
+remains unknown; enlarging the working view would not reconstruct its lifecycle.
+
+Native `NuFrameEnd` calls `0x60b5b0` at `0x4fd18e`, after the time-bar renderer and
+before `0x5de1b0`. This 24-byte callback wrapper calls `0x60aff0` (1,465 bytes).
+The renderer processes the queued scenes and clears `sceneParametersCount` at
+`0x60b50d`. Our frame end omits this entire call. The next connected wave is this
+real renderer, wrapper and provider closure, followed by their authentic startup
+and per-frame connections. A direct counter reset would skip their actual work.
+
+Required checks pass with 796 tests (three existing skips), LLVM18 format/tidy
+and the normal source link/object checks. The retained shader CPU suite passes
+208 assertions in its bounded domain. A strict source/library reference census
+records 89 unused natural compiler outputs separately with zero PC credit.
+Wine crash dialogs are disabled and all owned diagnostic processes are cleaned.
+The full checkpoint and exact-revision CI status are recorded in
+`transfer-checkpoint.json` and `transfer-execution.md`.

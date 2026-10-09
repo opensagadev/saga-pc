@@ -12,10 +12,11 @@ import sys
 
 if __package__:
     from .binary import _COFFAnalysis, _PreparedBindings, relocate_data, relocate_function
-    from .lib import ROOT, bindings_for, changed_trees, compiled_objects, load_json, load_symbols, map_errors, mapping_progress, number, project, retail
+    from .lib import ROOT, bindings_for, changed_trees, compiled_objects, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, mapping_progress, number, project, retail
 else:
-    from binary import _COFFAnalysis, _PreparedBindings, relocate_data, relocate_function
-    from lib import ROOT, bindings_for, changed_trees, compiled_objects, load_json, load_symbols, map_errors, mapping_progress, number, project, retail
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from tools.binary import _COFFAnalysis, _PreparedBindings, relocate_data, relocate_function
+    from tools.lib import ROOT, bindings_for, changed_trees, compiled_objects, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, mapping_progress, number, project, retail
 
 
 def compiler_label_inside_mapped_function(obj, symbol, definitions, rows_by_name):
@@ -26,10 +27,9 @@ def compiler_label_inside_mapped_function(obj, symbol, definitions, rows_by_name
     section = obj.sections[symbol["section"] - 1]
     if not section["characteristics"] & 0x20:
         return False
-    for candidate in definitions.values():
-        if len(candidate) != 1:
+    for function in obj.complete_code_owners(symbol["section"]):
+        if len(definitions.get(function["name"], [])) != 1:
             continue
-        function = candidate[0]
         if (function["section"] != symbol["section"] or not function["type"] & 0x20
                 or function["name"] not in rows_by_name):
             continue
@@ -39,13 +39,16 @@ def compiler_label_inside_mapped_function(obj, symbol, definitions, rows_by_name
     return False
 
 
-def check_objects(objects, records, target):
+def check_objects(objects, records, target, code_groups=(), candidate_only=None):
     """Require every compiled function/data definition to have one usable map row.
 
     Unimplemented inventory entries and different rebuilt sizes are allowed.
     This proves mapping/relocation coverage only, never matching against retail.
     """
+    if candidate_only is not None:
+        candidate_only.check_fresh(objects, records)
     errors = map_errors(records, target)
+    objects = prepare_code_group_objects(objects, code_groups, records)
     rows_by_name = {}
     inlined_names = set()
     for row in records:
@@ -62,7 +65,7 @@ def check_objects(objects, records, target):
     for unit, obj in sorted(objects.items()):
         definitions = {}
         try:
-            obj = _COFFAnalysis(obj)
+            obj = obj if isinstance(obj, _COFFAnalysis) else _COFFAnalysis(obj)
             for symbol in obj.defined_symbols():
                 definitions.setdefault(symbol["name"], []).append(symbol)
         except ValueError as error:
@@ -91,6 +94,9 @@ def check_objects(objects, records, target):
                 errors.append(f"{context}: imported address slots must remain external declarations")
             kinds.setdefault(name, []).append((unit, kind))
             rows = rows_by_name.get(name, [])
+            if not rows and candidate_only is not None and candidate_only.contains(unit, symbol):
+                result.setdefault("candidate_only", []).append({"unit": unit, "symbol": name, "kind": kind})
+                continue
             if not rows:
                 if name in inlined_names:
                     errors.append(f"{context}: compiled standalone definition has only an inlined mapping; "
@@ -106,6 +112,14 @@ def check_objects(objects, records, target):
                               "use distinct reconstruction names")
                 continue
             row = rows[0]
+            component = obj.code_component(name)
+            if component is not None:
+                if row["size"] is not None or row["address"] != component["address"]:
+                    errors.append(f"{context}: invalid internal EH point mapping")
+                else:
+                    result.setdefault("code_components", []).append({"unit": unit, "symbol": name,
+                                                                     **component})
+                continue
             if row["size"] is None and kind == "function":
                 errors.append(f"{context}: compiled definition has unknown original size; "
                               "recover its complete extent in config/symbols.csv")
@@ -378,7 +392,7 @@ def main():
         if __package__:
             from .source_graph import extract
         else:
-            from source_graph import extract
+            from tools.source_graph import extract
         extract(args.android_root, args.ndk_root,
                 args.source_graph or ROOT / "build/analysis/source-graph/android-source-graph.json",
                 inputs=args.input or (), all_source=args.input is None, jobs=args.jobs)
@@ -400,7 +414,7 @@ def main():
         if __package__:
             from .identification import generate
         else:
-            from identification import generate
+            from tools.identification import generate
         generate(holdout=args.holdout, source_graph=args.source_graph,
                  refresh=args.refresh_features, android_root=args.android_root,
                  analysis_dir=args.analysis_dir, symbols=args.symbols, joint_graph=args.joint_graph,
@@ -455,17 +469,22 @@ def main():
           f"({mapping['mapping_percent']:.3f}%).")
     if args.objects:
         objects = compiled_objects()
-        result = check_objects(objects, records, config["target"])
+        from tools.candidate_only import load as load_candidate_only
+        candidate_only = load_candidate_only(config, objects, records)
+        result = check_objects(objects, records, config["target"], load_code_groups(config), candidate_only)
         if "data_members" in config:
             if __package__:
                 from .data_members import evaluate_members
             else:
-                from data_members import evaluate_members
+                from tools.data_members import evaluate_members
             members, _ = evaluate_members(config, objects, records, config["target"])
             print(f"Checked {len(members)} typed named data members; "
                   "these are not additional COFF definitions or relocation bindings.")
         print(f"Checked {result['functions']} function and {result['data']} data definitions "
               f"across {result['objects']} objects; all mappings and relocations resolve.")
+        if result.get("code_components"):
+            print(f"Checked {len(result['code_components'])} internal EH entry points as part "
+                  "of their complete parent groups; no independent extents or byte credit.")
         if result["size_differences"]:
             print(f"{len(result['size_differences'])} rebuilt sizes differ from original extents "
                   "(allowed for work in progress; run local matching to compare bytes).")

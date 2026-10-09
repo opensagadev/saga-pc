@@ -9,13 +9,29 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Verified source baseline: PP, [`91dc03f2ae626a0683eaf969536aae9eea51b8d6`](https://github.com/opensagadev/saga-pc/commit/91dc03f2ae626a0683eaf969536aae9eea51b8d6); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37838400254) passed all 13 steps.
-PP has 335 normal owners; the current QQ snapshot has 338 owners.
-II remains the last actual full-game
-Wine observation: its source EXE exits 5 at NULL shader Retrieve+16 before a level
-loads. A transient window establishes no persistent window, device/Present,
-recurring frames, scene or gameplay milestone. CPU fixtures exercise their stated
-domains; they do not establish those milestones.
+Verified source baseline: RR, [`7eecfae7589d5dd198a27b1bbc2175d4203a445d`](https://github.com/opensagadev/saga-pc/commit/7eecfae7589d5dd198a27b1bbc2175d4203a445d); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37855398941) passed all 13 steps. RR has 338 normal source owners.
+
+Current work reconnects the genuine shader-manager constructor/publisher, parser
+and compiler, plus the real framebuffer initializer and geometry reset. Native
+material startup proves two distinct declaration keys and a two-row minimum
+cache view. That backing is now present; the full original capacity remains
+unknown and receives no extent or exact-data credit. The previous 536,080-byte
+copy fault and one-row storage hazard remain retained as earlier evidence.
+
+The latest ordinary source EXE naturally exits 5 while packaging a display-list
+scene. A subsequent bounded data watch confirms that initialization sets the
+first-list pointer, then `NuRndrEndScene` overwrites it with the scene-parameter
+copy at index 32. The current source has no reset of `sceneParametersCount`.
+The original array capacity and native frame-reset provider remain under review.
+No pointer store, null guard, guessed enlargement or ordering workaround has
+been introduced.
+
+The current 208 shader CPU checks pass in their bounded domains. Automated
+launches disable and query Wine's crash dialog and leave no owned game/debugger
+process or dialog behind. A CLI debugger observation identifies the caller but
+is not a natural successful game exit. No device presentation, recurring frame,
+loaded scene or gameplay milestone is established. Current source changes remain
+unpublished until complete object coverage and all required release checks pass.
 
 ## Ownership and continuous work
 
@@ -54,6 +70,14 @@ vtable, publication or successful initialization. The linked EXE comes from our
 sources, compiler and libraries, without retail code bytes. Partial source and
 qualified runtime domains remain explicit. A field cohort can be released without
 first reconstructing unrelated types or the entire program.
+
+The explicit natural compiler-output inventory is separate from native identity.
+It admits only pinned source/SDK occurrences with no operative incoming reference,
+using fresh ordinary source-link evidence and a complete library payload census.
+Positive retained/discarded COMDAT evidence handles duplicate library bodies;
+new live references are fatal. All admitted outputs remain source-linked and
+receive zero original binding, extent, allocation or match credit. No generic
+unused-name waiver or fabricated provider replaces normal native verification.
 
 Before publication run `make check`, `make -j"$(nproc)" build check-objects` and
 `make -j"$(nproc)" match` against the supported retail executable. Use LLVM 18 to
@@ -302,10 +326,40 @@ its signed-byte cheat sentinel error; the corrected source and report are used.
 Specific complete Tag pointer-tail and particle reload pairs retain their bounded
 proofs. No code-generation flags, native extents or comparison checks were weakened.
 
-RR exact pushed-revision CI is pending. The complete checkpoint is recorded in
+RR passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37855398941). The complete checkpoint is recorded in
 transfer-checkpoint.json. Next work reconnects real terrain registration,
 GameAudio/Menu sound IDs, FancyMessage, narrow-socket, surface-mask, colour and
 PodRace providers. The retained connected frontier has 9,608 candidate native
 bytes, with 12 functions/1,510 bytes ready for source authoring; these estimates
 receive no transfer credit. Full Bolt 44-record backing, CharFixUp, shader
 publication and resource/device lifetime remain separate contracts.
+
+### Shader startup checkpoint SS and observed frame-lifecycle gap (2026-10-09)
+
+The validated source wave adds 52 newly compared functions / 6,422 unique PC
+bytes, including 22 shader publisher/parser/compiler functions and genuine PC
+SDK helpers. Complete EH parents retain their cold entries and all bytes. The
+retail replay preserves every RR exact code and data contract: whole-PC fuzzy
+coverage rises from 29.034284% to 29.202954%, exact code from 228,700 to 231,692
+bytes. The source remains unplayable; these figures measure reconstruction.
+
+A bounded data watch proves that the first display-list pointer is initialized
+correctly. The full 139-byte `NuRndrEndScene` matches native exactly, but its copy
+at scene index 32 overwrites the source first-list pointer with zero. The actual
+caller is `LoadPerm`, which repeatedly calls `NuFrameEnd`. Original array capacity
+remains unknown; enlarging the working view would not reconstruct its lifecycle.
+
+Native `NuFrameEnd` calls `0x60b5b0` at `0x4fd18e`, after the time-bar renderer and
+before `0x5de1b0`. This 24-byte callback wrapper calls `0x60aff0` (1,465 bytes).
+The renderer processes the queued scenes and clears `sceneParametersCount` at
+`0x60b50d`. Our frame end omits this entire call. The next connected wave is this
+real renderer, wrapper and provider closure, followed by their authentic startup
+and per-frame connections. A direct counter reset would skip their actual work.
+
+Required checks pass with 796 tests (three existing skips), LLVM18 format/tidy
+and the normal source link/object checks. The retained shader CPU suite passes
+208 assertions in its bounded domain. A strict source/library reference census
+records 89 unused natural compiler outputs separately with zero PC credit.
+Wine crash dialogs are disabled and all owned diagnostic processes are cleaned.
+The full checkpoint and exact-revision CI status are recorded in
+`transfer-checkpoint.json` and `transfer-execution.md`.

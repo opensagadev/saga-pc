@@ -5,9 +5,9 @@ import json
 from pathlib import Path
 
 if __package__:
-    from .binary import COFF, PE
+    from .binary import COFF, PE, _COFFAnalysis, validate_code_group_descriptor
 else:
-    from binary import COFF, PE
+    from binary import COFF, PE, _COFFAnalysis, validate_code_group_descriptor
 
 ROOT = Path(__file__).resolve().parents[1]
 FIELDS = ("address", "symbol", "size", "ctype")
@@ -142,6 +142,64 @@ def bindings_for(records):
         choices.setdefault(record["symbol"], set()).add(record["address"])
     return {symbol: next(iter(addresses)) for symbol, addresses in choices.items()
             if len(addresses) == 1}
+
+
+def load_code_groups(config=None):
+    """An optional reviewed descriptor is a real fingerprinted project input."""
+    config = project() if config is None else config
+    path = config.get("code_groups")
+    if path is None:
+        return []
+    if not isinstance(path, str) or not path:
+        raise ValueError("Complete code group configuration requires a descriptor path string")
+    payload = load_json(ROOT / path)
+    if (not isinstance(payload, dict) or set(payload) != {"version", "groups"}
+            or type(payload["version"]) is not int or payload["version"] != 1
+            or not isinstance(payload["groups"], list)):
+        raise ValueError("Unsupported complete code group descriptor")
+    for group in payload["groups"]:
+        validate_code_group_descriptor(group)
+    return payload["groups"]
+
+
+def prepare_code_group_objects(objects, groups, records):
+    """Bind explicit groups to one fixed owner/map analysis, never a global cache."""
+    # Group authorization belongs to this explicit owner/descriptor/map call.
+    # Never inherit it from an analysis snapshot prepared for another call.
+    groups = list(groups)
+    for group in groups:
+        validate_code_group_descriptor(group)
+    configured_units = {group["unit"] for group in groups}
+    for unit, obj in objects.items():
+        if isinstance(obj, _COFFAnalysis) and obj._groups and unit not in configured_units:
+            raise ValueError("Group-enabled analysis requires an explicit current source-owner descriptor")
+    if not groups:
+        return objects
+    rows = {}
+    for row in records:
+        rows.setdefault(row["symbol"], []).append(row)
+    by_unit, parents, members = {}, set(), set()
+    for group in groups:
+        validate_code_group_descriptor(group)
+        unit, parent = group["unit"], group["parent"]
+        if unit not in objects or (unit, parent) in parents:
+            raise ValueError("Code group has an absent or duplicate source owner")
+        parents.add((unit, parent))
+        candidates = rows.get(parent, [])
+        if (len(candidates) != 1 or candidates[0]["address"] != number(group["address"])
+                or candidates[0]["size"] != number(group["size"])):
+            raise ValueError("Code group parent requires its full unambiguous original map extent")
+        for member in group["components"]:
+            key = unit, member["symbol"]
+            candidates = rows.get(member["symbol"], [])
+            if (key in members or len(candidates) != 1 or candidates[0]["size"] is not None
+                    or candidates[0]["ctype"]
+                    or candidates[0]["address"] != number(member["address"])):
+                raise ValueError("Internal EH point requires one genuine blank-extent mapping")
+            members.add(key)
+        by_unit.setdefault(unit, []).append(group)
+    return {unit: _COFFAnalysis(obj, by_unit[unit], unit) if unit in by_unit else obj
+            for unit, obj in objects.items()}
 
 
 class DefinitionIndex:

@@ -8,6 +8,7 @@ Objdiff's instruction score is advisory; only complete byte equality is exact.
 
 import datetime
 import hashlib
+import json
 import struct
 from bisect import bisect_right
 from copy import deepcopy
@@ -18,6 +19,33 @@ from pathlib import Path
 
 class BinaryError(ValueError):
     pass
+
+
+def validate_code_group_descriptor(descriptor):
+    required = {"unit", "parent", "address", "size", "components", "handler",
+                "func_info", "unwind_table", "try_table"}
+    if (not isinstance(descriptor, dict) or set(descriptor) != required
+            or not isinstance(descriptor["components"], list)
+            or any(not isinstance(m, dict) or set(m) != {"symbol", "address", "catch_record"}
+                   for m in descriptor["components"])):
+        raise BinaryError("Invalid complete code group descriptor schema")
+
+    names = [descriptor[key] for key in
+             ("unit", "parent", "handler", "func_info", "unwind_table", "try_table")]
+    names.extend(member[key] for member in descriptor["components"]
+                 for key in ("symbol", "catch_record"))
+    if any(not isinstance(name, str) or not name for name in names):
+        raise BinaryError("Code group names and source owner must be nonempty strings")
+    values = [descriptor["address"], descriptor["size"]]
+    values.extend(member["address"] for member in descriptor["components"])
+    if any(isinstance(value, bool) or not isinstance(value, (int, str)) for value in values):
+        raise BinaryError("Code group addresses and size require integers or integer strings")
+    try:
+        _extent(descriptor["address"], descriptor["size"])
+        for member in descriptor["components"]:
+            _address(member["address"])
+    except (TypeError, ValueError) as error:
+        raise BinaryError(f"Invalid code group address or extent: {error}") from error
 
 
 def _slice(data, offset, size):
@@ -397,6 +425,17 @@ class COFF:
         return {s["value"] for s in self.defined_symbols()
                 if s["section"] == section and s["type"] & 0x20}
 
+    def complete_code_owners(self, section):
+        """Keep lexical components out only after explicit group validation."""
+        return [s for s in self.defined_symbols()
+                if s["section"] == section and s["type"] & 0x20]
+
+    def code_component(self, name):
+        return None
+
+    def code_group(self, name):
+        return None
+
     def _data_end(self, section, start):
         offsets = [s["value"] for s in self.defined_symbols()
                    if s["section"] == section and not s["type"] & 0x20]
@@ -456,7 +495,7 @@ class COFF:
 class _COFFAnalysis(COFF):
     """One private per-owner snapshot; ordinary mutable COFF remains uncached."""
 
-    def __init__(self, source):
+    def __init__(self, source, code_groups=(), unit=None):
         self.__dict__.update(deepcopy(source.__dict__))
         self._definitions = tuple(COFF.defined_symbols(self))
         self._names, self._functions, self._data_starts = {}, {}, {}
@@ -469,6 +508,124 @@ class _COFFAnalysis(COFF):
         self._data_starts = {section: sorted(values)
                              for section, values in self._data_starts.items()}
         self._regions = {}
+        self._groups, self._components = {}, {}
+        descriptors = deepcopy(list(code_groups))
+        self._group_fingerprint = hashlib.sha256(
+            json.dumps(descriptors, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+        for descriptor in descriptors:
+            self._validate_code_group(descriptor, unit)
+
+    def _validate_code_group(self, descriptor, unit):
+        """Validate one complete ANY COMDAT and its actual catch-all EH graph."""
+        validate_code_group_descriptor(descriptor)
+        parent = descriptor["parent"]
+        if not unit or descriptor["unit"] != unit:
+            raise BinaryError("Code group requires its exact source owner unit")
+        if parent in self._groups or parent in self._components:
+            raise BinaryError("Duplicate code group owner")
+        symbol, section = self._definition(parent)
+        if (section is None or symbol["value"] != 0 or symbol["type"] != 0x20
+                or symbol["storage_class"] != 2 or symbol["aux"]
+                or section["characteristics"] & 0x20001020 != 0x20001020):
+            raise BinaryError("Code group requires an offset-zero external executable COMDAT owner")
+        sections = [s for s in self.symbols if s["section"] == symbol["section"]
+                    and s["name"] == section["name"] and s["storage_class"] == 3 and s["aux"]]
+        if (len(sections) != 1 or len(sections[0]["aux"]) != 1
+                or _unpack("<I", sections[0]["aux"][0], 0)[0] != section["raw_size"]
+                or sections[0]["aux"][0][14] != 2 or not section["raw_offset"]):
+            raise BinaryError("Code group requires full section/aux length agreement and ANY COMDAT")
+        native, native_size = _extent(descriptor["address"], descriptor["size"])
+        members = descriptor["components"]
+        names = [m["symbol"] for m in members]
+        if not members or len(names) != len(set(names)) or parent in names:
+            raise BinaryError("Code group requires distinct explicit internal components")
+        functions = self.complete_code_owners(symbol["section"])
+        if sorted(s["name"] for s in functions) != sorted([parent, *names]):
+            raise BinaryError("Code group has missing or additional function definitions")
+        for member in members:
+            ref, _ = self._definition(member["symbol"])
+            if (ref["section"] != symbol["section"] or ref["storage_class"] != 3
+                    or ref["type"] != 0x20 or ref["aux"]
+                    or not 0 < ref["value"] < section["raw_size"]
+                    or not native <= _address(member["address"]) < native + native_size
+                    or member["symbol"] in self._components or member["symbol"] in self._groups):
+                raise BinaryError("Code group has an invalid internal EH point")
+        region = self._region(symbol, section, 0, section["raw_size"],
+                              _slice(self.data, section["raw_offset"], section["raw_size"]),
+                              "complete code group", "complete validated ANY COMDAT with internal EH entries")
+
+        def edge(source_region, offset, target):
+            refs = [r for r in source_region["relocations"] if r["offset"] == offset]
+            if (len(refs) != 1 or refs[0]["type"] != 6 or refs[0]["symbol"] != target
+                    or _unpack("<I", source_region["bytes"], offset)[0] != 0):
+                raise BinaryError("Code group EH graph has a missing or conflicting DIR32 edge")
+
+        handler = descriptor["handler"]
+        parent_edges = [r for r in region["relocations"] if r["symbol"] == handler]
+        if len(parent_edges) != 1:
+            raise BinaryError("Code group lacks its real parent-to-handler edge")
+        edge(region, parent_edges[0]["offset"], handler)
+        handler_region = COFF.extract_function(self, handler)
+        info = descriptor["func_info"]
+        info_edges = [r for r in handler_region["relocations"] if r["symbol"] == info]
+        if len(info_edges) != 1:
+            raise BinaryError("Code group lacks its real handler-to-FuncInfo edge")
+        edge(handler_region, info_edges[0]["offset"], info)
+        info_region = self.extract_data(info)
+        if info_region["size"] != 36:
+            raise BinaryError("Code group requires the supported full FuncInfo layout")
+        fields = _unpack("<9I", info_region["bytes"], 0)
+        if fields[0] != 0x19930522 or fields[1] <= 0 or fields[3] != len(members):
+            raise BinaryError("Code group has inconsistent FuncInfo counts")
+        edge(info_region, 8, descriptor["unwind_table"])
+        edge(info_region, 16, descriptor["try_table"])
+        if sorted(r["offset"] for r in info_region["relocations"]) != [8, 16]:
+            raise BinaryError("Code group FuncInfo has unsupported additional edges")
+        unwind = self.extract_data(descriptor["unwind_table"])
+        tries = self.extract_data(descriptor["try_table"])
+        if unwind["size"] != fields[1] * 8 or tries["size"] != fields[3] * 20:
+            raise BinaryError("Code group EH table extents differ from their producer counts")
+        if sorted(r["offset"] for r in tries["relocations"]) != [i * 20 + 16 for i in range(fields[3])]:
+            raise BinaryError("Code group try map has unsupported additional edges")
+        catch_records = []
+        expected_records = {m["catch_record"]: m for m in members}
+        if len(expected_records) != len(members):
+            raise BinaryError("Code group has duplicate catch records")
+        for index in range(fields[3]):
+            low, high, catch_high, count, _ = _unpack("<5I", tries["bytes"], index * 20)
+            if not low <= high <= catch_high < fields[1] or count != 1:
+                raise BinaryError("Code group has unsupported try/catch states")
+            offset = index * 20 + 16
+            refs = [r for r in tries["relocations"] if r["offset"] == offset]
+            if len(refs) != 1 or refs[0]["symbol"] not in expected_records:
+                raise BinaryError("Code group try map does not identify its explicit catch records")
+            record_name = refs[0]["symbol"]
+            edge(tries, offset, record_name)
+            record = self.extract_data(record_name)
+            if (record["size"] != 16 or _unpack("<3I", record["bytes"], 0) != (0, 0, 0)
+                    or len(record["relocations"]) != 1):
+                raise BinaryError("Code group requires the supported full catch-all record")
+            edge(record, 12, expected_records[record_name]["symbol"])
+            catch_records.append(record_name)
+        if sorted(catch_records) != sorted(expected_records):
+            raise BinaryError("Code group catch graph does not cover every component exactly once")
+        self._groups[parent] = deepcopy(descriptor)
+        self._regions[("code group", parent)] = region
+        for member in members:
+            ref, _ = self._definition(member["symbol"])
+            self._components[member["symbol"]] = {
+                "parent": parent, "address": _address(member["address"]),
+                "candidate_offset": ref["value"], "native_offset": _address(member["address"]) - native}
+
+    def complete_code_owners(self, section):
+        return [s for s in COFF.complete_code_owners(self, section)
+                if s["name"] not in self._components]
+
+    def code_component(self, name):
+        return deepcopy(self._components.get(name))
+
+    def code_group(self, name):
+        return deepcopy(self._groups.get(name))
 
     def defined_symbols(self):
         return deepcopy(list(self._definitions))
@@ -498,6 +655,10 @@ class _COFFAnalysis(COFF):
         return deepcopy(self._regions[key])
 
     def extract_function(self, name):
+        if name in self._components:
+            raise BinaryError(f"Internal EH entry {name!r} has no independent extent; compare its parent group")
+        if name in self._groups:
+            return deepcopy(self._regions[("code group", name)])
         return self._cached_extract("function", name)
 
     def extract_data(self, name):
@@ -528,9 +689,8 @@ def _mapped_code_label(obj, ref, bindings):
     if (ref["storage_class"] != 6 or ref["type"] != 0
             or not ref["name"].startswith("$LN") or ref["section"] <= 0):
         raise BinaryError(f"Missing binding for relocation symbol {ref['name']!r}")
-    owners = [symbol for symbol in obj.defined_symbols()
-              if symbol["section"] == ref["section"] and symbol["type"] & 0x20
-              and symbol["name"] in bindings]
+    owners = [symbol for symbol in obj.complete_code_owners(ref["section"])
+              if symbol["name"] in bindings]
     if len(owners) != 1:
         raise BinaryError(f"Compiler label {ref['name']!r} requires one mapped function owner")
     owner = owners[0]

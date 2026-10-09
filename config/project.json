@@ -8,5 +8,7 @@
     "image_size": "0x02636000"
   },
   "symbols": "config/symbols.csv",
-  "data_members": "config/data-members.json"
+  "data_members": "config/data-members.json",
+  "code_groups": "config/code-groups.json",
+  "candidate_only": "config/candidate-only.json"
 }

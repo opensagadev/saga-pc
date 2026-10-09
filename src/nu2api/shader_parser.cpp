@@ -1,3 +1,4 @@
+#define SAGA_SHADER_PARSER_TYPES
 #include "saga.h"
 #include <string.h>
 void ShaderCompilerParserPc::FlushText() {
@@ -509,4 +510,200 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 break;
         }
     }
+}
+
+#include <stdio.h>
+#include <stdlib.h>
+struct ShaderParserIncludePc {
+    char *name;
+    ShaderCompilerBufferAllocatorPc buffer;
+
+  private:
+    friend class ShaderCompilerParserPc;
+    ShaderParserIncludePc(const char *path, i32 size) : name(_strdup(path)), buffer(size, true) {
+    }
+    ~ShaderParserIncludePc() {
+        if (name != NULL) {
+            delete[] name;
+            name = NULL;
+        }
+    }
+};
+STATIC_ASSERT(sizeof(ShaderParserIncludePc) == 20);
+STATIC_ASSERT(offsetof(ShaderParserIncludePc, name) == 0);
+STATIC_ASSERT(offsetof(ShaderParserIncludePc, buffer) == 4);
+
+ShaderCompilerParserPc::ShaderCompilerParserPc() : text((ShaderLexicalClassesInitPc(), 0x1000), true) {
+    include_directories[0] = 0;
+    head = NULL;
+    tail = NULL;
+    arena = NULL;
+    emit_text = 0;
+    memset(branches, 0, sizeof(branches));
+    branch_count = 0;
+    memset(scopes, 0, sizeof(scopes));
+    scope_count = 0;
+}
+void ShaderCompilerParserPc::ClearIncludes() {
+    for (std::vector<ShaderParserIncludePc *>::iterator i = includes.begin(); i != includes.end(); ++i)
+        if (*i != NULL)
+            delete *i;
+    includes.erase(includes.begin(), includes.end());
+}
+ShaderCompilerParserPc::~ShaderCompilerParserPc() {
+    ClearIncludes();
+}
+void ShaderCompilerParserPc::SetIncludeDirectories(const char *paths) {
+    strcpy(include_directories, paths);
+}
+
+bool ShaderCompilerParserPc::NextIncludeDirectory(const char *paths, i32 *cursor, char *directory) {
+    if (*cursor >= (i32)strlen(paths))
+        return false;
+    const char *p = paths + *cursor;
+    while (*p != 0 && *p != ';') {
+        *directory++ = *p++;
+        ++*cursor;
+    }
+    *directory = 0;
+    if (*p == ';')
+        ++*cursor;
+    return true;
+}
+ShaderCompilerBufferAllocatorPc *ShaderCompilerParserPc::LoadInclude(const char *name) {
+    for (std::vector<ShaderParserIncludePc *>::iterator i = includes.begin(); i != includes.end(); ++i)
+        if (strcmp((*i)->name, name) == 0)
+            return &(*i)->buffer;
+    char directory[256], path[256];
+    i32 cursor = 0;
+    NUFILE file = 0;
+
+    bool more = NextIncludeDirectory(include_directories, &cursor, directory);
+    while (more) {
+        if (file != 0)
+            break;
+        sprintf(path, "%s\\%s", directory, name);
+        file = NuFileOpen(path, 0);
+        more = NextIncludeDirectory(include_directories, &cursor, directory);
+    }
+    i32 size = (i32)NuFileOpenSize(file);
+    if (size <= 0)
+        return NULL;
+    ShaderParserIncludePc *include = new ShaderParserIncludePc(name, size);
+    if (include->buffer.capacity < size)
+        include->buffer.Resize(size);
+    include->buffer.length = size;
+    includes.push_back(include);
+    NuFileRead(file, include->buffer.data, include->buffer.length);
+    NuFileClose(file);
+    return &include->buffer;
+}
+
+void ShaderCompilerParserPc::ProcessDirective(ShaderCompilerBufferAllocatorPc *input, i32 *cursor) {
+    char temporary[200];
+    VirtualStackAllocator memory(temporary, sizeof(temporary));
+    ShaderLexicalSlicePc token = {NULL, 0};
+    char *name = NULL;
+    i32 state = 0;
+    ShaderLexicalReaderPc *reader = reinterpret_cast<ShaderLexicalReaderPc *>(&lexical_state);
+    while (reader->Next(input, cursor, &token)) {
+        switch (state) {
+            case 0:
+                if (token.Equals("define"))
+                    state = 1;
+                else if (token.Equals("ifdef"))
+                    continue;
+                else if (token.Equals("ifndef"))
+                    continue;
+                else if (token.Equals("undef"))
+                    state = 3;
+                else if (token.Equals("include"))
+                    state = 4;
+                else if (token.Equals("pragma")) {
+                    ParseDeclaration(input, cursor);
+                    return;
+                } else if (token.Equals("if")) {
+                    BeginIf(ParseExpression(input, cursor));
+                    return;
+                } else if (token.Equals("else")) {
+                    BeginElse();
+                    return;
+                } else if (token.Equals("elif")) {
+                    BeginElseIf(ParseExpression(input, cursor));
+                    return;
+                } else if (token.Equals("endif")) {
+                    EndIf();
+                    return;
+                } else
+                    return;
+                break;
+            case 1:
+                name = token.ArenaCopy(&memory);
+                state = 2;
+                break;
+            case 2:
+                DefineMacro(name, token.ArenaCopy(&memory));
+                return;
+            case 3:
+                UndefineMacro(token.ArenaCopy(&memory));
+                return;
+            case 4: {
+                char *path = token.HeapCopy();
+                ShaderCompilerBufferAllocatorPc *included = LoadInclude(path + 1);
+                if (included != NULL)
+                    LoadSourceLines(included, 0);
+                free(path);
+                return;
+            }
+            default:
+                if (state == 5)
+                    break;
+                continue;
+        }
+    }
+    if (state == 2)
+        DefineMacro(name, NULL);
+}
+void ShaderCompilerParserPc::LoadSourceLines(ShaderCompilerBufferAllocatorPc *input, i32 offset) {
+    char line_memory[512];
+    VirtualStackAllocator memory(line_memory, sizeof(line_memory));
+    ShaderCompilerBufferAllocatorPc line(memory, sizeof(line_memory));
+    while (offset < input->length) {
+        const char *first = reinterpret_cast<const char *>(input->data) + offset;
+        const char *end = reinterpret_cast<const char *>(input->data) + input->length;
+        const char *p = first;
+        i32 count = 0;
+        while (p < end) {
+            ++count;
+            if (*p == '\n')
+                break;
+            ++p;
+        }
+        line.AppendBytes(first, count);
+        offset += count;
+        i32 cursor = 0;
+        while (cursor < line.length && (line.data[cursor] == ' ' || line.data[cursor] == '\t'))
+            ++cursor;
+        if (cursor < line.length && line.data[cursor] == '#') {
+            ++cursor;
+            ProcessDirective(&line, &cursor);
+        } else if (emit_text != 0)
+            text.AppendBytes(reinterpret_cast<const char *>(line.data), line.length);
+        line.length = 0;
+    }
+}
+ShaderParserNodePc *ShaderCompilerParserPc::Parse(ShaderCompilerBufferAllocatorPc *input, i32 offset, u8 emit,
+                                                  VirtualStackAllocator *memory) {
+    arena = memory;
+    emit_text = emit;
+    head = NULL;
+    tail = NULL;
+    branch_count = 0;
+    scope_count = 0;
+    LoadSourceLines(input, offset);
+    FlushText();
+    ShaderParserNodePc *result = head;
+    arena = NULL;
+    emit_text = 0;
+    return result;
 }

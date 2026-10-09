@@ -3,6 +3,7 @@
 import argparse
 import json
 import math
+from pathlib import Path
 import re
 import subprocess
 import sys
@@ -11,12 +12,13 @@ if __package__:
     from .identification_coverage import reviewed_identification_file
     from .binary import compare_data, relocate_function, write_function
     from .lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, covered_bytes,
-                      digest, external_symbols, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
+                      digest, external_symbols, load_code_groups, prepare_code_group_objects, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
 else:
-    from identification_coverage import reviewed_identification_file
-    from binary import compare_data, relocate_function, write_function
-    from lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, covered_bytes,
-                     digest, external_symbols, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from tools.identification_coverage import reviewed_identification_file
+    from tools.binary import compare_data, relocate_function, write_function
+    from tools.lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, covered_bytes,
+                     digest, external_symbols, load_code_groups, prepare_code_group_objects, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
 
 OUT = ROOT / "build/objdiff"
 
@@ -182,13 +184,16 @@ def main():
     cli, cli_pin = objdiff()
     OUT.mkdir(parents=True, exist_ok=True)
     objects = compiled_objects()
+    from tools.candidate_only import load as load_candidate_only
+    candidate_only = load_candidate_only(config, objects, records)
+    objects = prepare_code_group_objects(objects, load_code_groups(config), records)
     definition_index = DefinitionIndex(objects)
     members, member_proof, migrations = [], None, []
     if "data_members" in config and not args.function:
         if __package__:
             from .data_members import evaluate_members, reviewed_migrations
         else:
-            from data_members import evaluate_members, reviewed_migrations
+            from tools.data_members import evaluate_members, reviewed_migrations
         members, member_proof = evaluate_members(config, objects, records, target, pe)
     if not args.function:
         previous = ROOT / "matching.json"
@@ -198,11 +203,12 @@ def main():
                 if __package__:
                     from .data_members import reviewed_migrations
                 else:
-                    from data_members import reviewed_migrations
+                    from tools.data_members import reviewed_migrations
                 migrations = reviewed_migrations(previous_report, members)
     externals = external_symbols(pe, records, objects, definition_index=definition_index)
     bindings = bindings_for(records)
     units, functions, data, inlined = [], [], [], []
+    code_components = []
     for record in selected:
         symbol, va = record["symbol"], record["address"]
         if va is None:
@@ -228,6 +234,16 @@ def main():
             number(target["text_va"]) <= va < number(target["text_va"]) + number(target["text_size"]))
         if args.function and not is_function:
             raise ValueError(f"{symbol!r} is data, not a function")
+        components = [(unit, obj.code_component(symbol)) for unit, obj in definitions]
+        if components and any(component is not None for _, component in components):
+            if not all(component is not None for _, component in components):
+                raise ValueError(f"{symbol!r}: internal EH membership must be validated for every owner")
+            if args.function:
+                raise ValueError(f"{symbol!r}: internal EH point has no independent extent; compare its parent group")
+            code_components.append({"symbol": symbol, "address": f"0x{va:08x}",
+                                    "status": "compared in parent group", "target_size": None,
+                                    "owners": [{"unit": unit, **component} for unit, component in components]})
+            continue
         row = {"name": display_name(symbol), "symbol": symbol,
                "address": f"0x{record['address']:08x}",
                "units": [unit for unit, _ in definitions], "target_size": record["size"],
@@ -246,6 +262,8 @@ def main():
             else:
                 original = pe.read_va(va, record["size"])
                 base, relocations = relocate_function(obj, symbol, va, bindings)
+                if obj.code_group(symbol) is not None:
+                    row["region_kind"] = "complete_code_group"
                 stem = f"{va:08x}-" + digest((unit + symbol).encode())[:12]
                 original_path, base_path = OUT / (stem + ".target.obj"), OUT / (stem + ".base.obj")
                 write_function(original_path, symbol, va, original)
@@ -289,6 +307,8 @@ def main():
               *sorted((ROOT / "tools").glob("*.py")), *sorted((ROOT / "tools").glob("*.def")),
               *sorted((ROOT / "src").rglob("*.cpp")),
               *sorted((ROOT / "src").rglob("*.c"))]
+    if config.get("code_groups") and ROOT / config["code_groups"] not in inputs:
+        inputs.append(ROOT / config["code_groups"])
     result = {"format_version": 2, "target_sha256": target["sha256"],
               "compiler": load_json(ROOT / "config/toolchain.json")["version"],
               "objdiff_version": cli_pin["version"],
@@ -297,6 +317,11 @@ def main():
                           for unit, obj in sorted(objects.items())},
               "functions": functions, "data": data, "externals": list(externals.values()),
               "inlined": inlined}
+    if candidate_only is not None:
+        result["candidate_only"] = candidate_only.rows
+        result["candidate_only_proof"] = candidate_only.public_proof(OUT / "candidate-only-proof.json")
+    if code_components:
+        result["code_components"] = code_components
     if not args.function:
         result["progress"] = progress(functions, target)
         result["progress"].update(objdiff_progress(report, functions))

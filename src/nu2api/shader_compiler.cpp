@@ -1,3 +1,4 @@
+#define SAGA_SHADER_PARSER_TYPES
 #include "saga.h"
 #include <string.h>
 
@@ -336,4 +337,61 @@ void ShaderCompilerBasePc::SetProfile(i32 profile, i32 first, i32 second) {
 }
 void ShaderCompilerBasePc::SetForceMode(bool force) {
     dictionary.force_mode = force;
+}
+
+void *ShaderCompilerBasePc::ParseSource(const char *source, i32 length, ShaderCompilerBufferAllocatorPc *buffer,
+                                        i32 prefix, VirtualStackAllocator *memory) {
+    if (length < 0)
+        length = (i32)strlen(source);
+    i32 size = prefix + length;
+    buffer->length = 0;
+    if (buffer->capacity < size)
+        buffer->Resize(size);
+    buffer->length = size;
+    strncpy(reinterpret_cast<char *>(buffer->data + prefix), source, length);
+    memset(buffer->data, ' ', prefix);
+    for (i32 i = 0; i < prefix; i += 100)
+        buffer->data[i] = '\n';
+    ShaderCompilerParserPc parser;
+    parser.SetIncludeDirectories(include_directories);
+    return parser.Parse(buffer, prefix, 1, memory);
+}
+bool ShaderCompilerBasePc::LoadSource(const char *source, i32 length) {
+    parsed_source = ParseSource(source, length, &source_buffer, 0x5000, &parser_memory);
+    return parsed_source != NULL;
+}
+void ShaderCompilerBasePc::Generate(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerBufferAllocatorPc *vertex,
+                                    ShaderCompilerBufferAllocatorPc *pixel) {
+    for (i32 i = 0; i < dictionary.definition_count; ++i)
+        dictionary.definitions[i]->expansion_state = 0;
+    dictionary.scratch.cursor = dictionary.scratch.base;
+    dictionary.program_count = 0;
+    Configure(filter, &dictionary);
+    dictionary.Expand(parsed_source, NULL);
+    dictionary.Expand(parsed_source, NULL);
+    dictionary.AddDefinition("_SHADERBUILDER_DEBUG", NULL, 0);
+    if (vertex != NULL) {
+        vertex->length = 0;
+        dictionary.output_stage = 0;
+        dictionary.BindOutputBuffer(vertex);
+        dictionary.Expand(parsed_source, vertex);
+        if (vertex->length > 0 && vertex->data[vertex->length - 1] != 0) {
+            if (vertex->length + 1 > vertex->capacity)
+                vertex->Resize((3 * (vertex->length + 1)) / 2);
+            vertex->data[vertex->length] = 0;
+            ++vertex->length;
+        }
+    }
+    if (pixel != NULL) {
+        pixel->length = 0;
+        dictionary.output_stage = 1;
+        dictionary.BindOutputBuffer(pixel);
+        dictionary.Expand(parsed_source, pixel);
+        if (pixel->length > 0 && pixel->data[pixel->length - 1] != 0) {
+            if (pixel->length + 1 > pixel->capacity)
+                pixel->Resize((3 * (pixel->length + 1)) / 2);
+            pixel->data[pixel->length] = 0;
+            ++pixel->length;
+        }
+    }
 }

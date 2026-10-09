@@ -326,3 +326,80 @@ void ShaderManagerHLSL::SetUniformValues(i32 semantic, const f32 *values) {
 extern "C" void __cdecl NuShaderManagerSetfv(i32 semantic, const f32 *values) {
     ((ShaderManagerHLSL *)PCShaderSlots)->SetUniformValues(semantic, values);
 }
+
+#include <new>
+extern char uberShader2[157210];
+
+template <> PC_SHADER_MANAGER_VIEW::ShaderManagerTemplate() {
+    for (i32 i = 0; i < 400; ++i)
+        PCShaderObjectCreateHLSLPc(&slots[i]);
+    bound_slot = NULL;
+    last_allocated = -1;
+    ++slots[0].ref_count;
+}
+
+template <> PC_SHADER_MANAGER_VIEW::~ShaderManagerTemplate() {
+    for (i32 i = 399; i >= 0; --i)
+        PCShaderObjectDestroyHLSLPc(&slots[i]);
+}
+
+template <>
+bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *,
+                                          i32) {
+    return false;
+}
+
+template <>
+void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *,
+                                             const PC_SHADER_FILTER_MATERIAL_VIEW *) {
+}
+
+ShaderManagerHLSL::ShaderManagerHLSL(VirtualStackAllocator &allocator)
+    : vertex_source(0x10000, true), pixel_source(0x10000, true) {
+    void *memory = allocator.cursor;
+    allocator.cursor += sizeof(HLSLShaderBuilder);
+    compiler = new (memory) HLSLShaderBuilder(allocator);
+    compiler->SetSaveDirectory("\\genShaders");
+    compiler->SetIncludeDirectories("./shaders;../nu2api/shaderBuilder;C:\\projects\\nu2api\\shaderBuilder");
+    compiler->LoadSource(uberShader2, sizeof(uberShader2));
+    compiler->SetProfile(PCDeviceHardwareVertexProcessingPC, 8, 2);
+    compiler->dictionary.AddRegisterBlock("skinMatrix", 8);
+    compiler->dictionary.AddRegisterBlock("blendShapes", 8);
+    compiler->SetForceMode(PcIntelShaderFallback != 0);
+}
+
+ShaderManagerHLSL::~ShaderManagerHLSL() {
+    for (i32 i = 0; i < 400; ++i) {
+        if (slots[i].marker >= 0)
+            PCShaderNativeUnInit(&slots[i]);
+    }
+}
+
+bool ShaderManagerHLSL::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *filter, bool pixel_stage,
+                                     PC_SHADER_OBJECT_FULL_VIEW *shader, i32 index) {
+    u32 key = 0;
+    NuShaderObjectKeyGenerate3(&key, filter, pixel_stage != 0);
+    vertex_source.length = 0;
+    pixel_source.length = 0;
+    compiler->Generate(const_cast<PC_SHADER_MATERIAL_FILTER_VIEW *>(filter), &vertex_source, &pixel_source);
+    PCShaderObjectInitHLSLPc(shader, &key, index, reinterpret_cast<const char *>(vertex_source.data),
+                             vertex_source.length, reinterpret_cast<const char *>(pixel_source.data),
+                             pixel_source.length, compiler->dictionary.profile);
+    u32 flags = shader->unknown_4d4;
+    flags = (flags & ~1U) | (filter->variant == 0);
+    flags = (flags & ~2U) | ((filter->first_path != 0) << 1);
+    bool layer = filter->variant == 0 && (filter->descriptor->layer_flags & 0x10000) != 0;
+    flags = (flags & ~4U) | (layer << 2);
+    flags = (flags & ~8U) | ((filter->second_path != 0) << 3);
+    shader->unknown_4d4 = flags;
+    return true;
+}
+
+extern "C" void __cdecl NuShaderManagerInit(VARIPTR *arena, VARIPTR arena_end) {
+    VirtualStackAllocator allocator;
+    allocator.setExternalMemoryPool(arena->void_ptr, arena_end.addr - arena->addr);
+    void *memory = allocator.cursor;
+    allocator.cursor += sizeof(ShaderManagerHLSL);
+    PCShaderSlots = reinterpret_cast<PC_SHADER_SLOT_VIEW *>(new (memory) ShaderManagerHLSL(allocator));
+    arena->addr += allocator.cursor - allocator.base;
+}

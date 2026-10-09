@@ -11,11 +11,18 @@ import sys
 if __package__:
     from .lib import ROOT, changed_files, changed_trees, load_json
 else:
-    from lib import ROOT, changed_files, changed_trees, load_json
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from tools.lib import ROOT, changed_files, changed_trees, load_json
 
 
 def windows(path):
     return "Z:" + str(path.resolve()).replace("/", "\\")
+
+
+def candidate_link_enabled(config, output):
+    """Only the configured normal source EXE requires the inventory LINK receipt."""
+    configured = ROOT / config.get("source_executable", "build/LEGOStarWarsSaga.exe")
+    return bool(config.get("candidate_only")) and Path(output).resolve() == configured.resolve()
 
 
 def environment():
@@ -77,6 +84,17 @@ def main():
     for path in objects if args.link else [source]:
         if path == output or (path.exists() and output.exists() and path.samefile(output)):
             raise ValueError(f"Output aliases an input file; refusing to overwrite it: {output}")
+    candidate_link = None
+    candidate_before = None
+    if args.link:
+        config = load_json(ROOT / "config/project.json")
+        if candidate_link_enabled(config, output):
+            from tools.candidate_link import link_paths, pin, write_receipt
+            candidate_link = link_paths(output)
+            candidate_before = [pin(ROOT, path) for path in objects]
+            # Only diagnostics: ordinary compilation and LINK retention stay unchanged.
+            flags = [*flags, "/MAP:" + windows(candidate_link[0]), "/VERBOSE"]
+            candidate_link[2].unlink(missing_ok=True)
     success = False
     try:
         if args.implib:
@@ -118,10 +136,14 @@ def main():
         if result.returncode or rejected or not output.is_file():
             action = "Import library generation" if args.implib else "Linking" if args.link else "Compilation"
             raise RuntimeError(f"{action} failed (or MSVC ignored an option)")
+        if candidate_link is not None:
+            write_receipt(ROOT, output, objects, flags, command, log, candidate_before)
         success = True
     finally:
         if not success:
             output.unlink(missing_ok=True)
+            if candidate_link is not None:
+                candidate_link[2].unlink(missing_ok=True)
     return 0
 
 

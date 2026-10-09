@@ -2327,3 +2327,27 @@ The separate Mac linked-symbol estimate in symbols.md supplies 32,230 named
 code/data definitions and estimated spans. It changes no PC extent, initializer,
 capacity or coverage. Full native/source/output qualifications, runtime domains
 and evidence pins are in transfer-checkpoint.json.
+
+### Shader source and minimum declaration-cache backing (2026-10-09)
+
+The current shader publisher consumes genuine Android-derived shader source
+text, with the reviewed PC token/directive corrections. `uberShader2` is a
+157,210-byte source initializer, not copied compiled shader instructions. Its
+original PC owning extent remains unknown, and it is not byte exact to the
+retained native text. No allocation, mapping-size or exact-data credit is assigned.
+Complete shader output and device execution remain separate verification work.
+
+`PCVertexDeclarationCachePC` at `0x297cc98` now declares a minimum two-record
+view (16 zero-initialized bytes), with key at 0, resource pointer at 4 and stride 8.
+Native material startup creates keys `0x40101` then `0x101`; the second insertion
+moves the first record into row one. This establishes the minimum from actual
+producer/consumer behavior. Retail's section loader supplies sixteen mutable
+zero-filled bytes, and the reviewed complete mapped-data intervals have no
+foreign owner in that range. The count remains its genuine separate zero `i32`
+at `0x297cc90`; no reset, clamp or fabricated device result was added.
+
+The original array declaration and capacity remain unknown. The CSV size stays
+blank, so this working view receives no allocation/extent or exact-data credit.
+It bounds only the reviewed default-material startup cohort; later descriptors
+and the full lifecycle need further native evidence. Mac symbol spacing and the
+different Android pool are not capacity proofs.

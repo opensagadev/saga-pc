@@ -4,8 +4,11 @@ This project reconstructs the GOG PC executable with MSVC 2005 and compares the
 resulting x86 COFF objects against the original. The default build also links
 our current sources into a Windows executable using the original MSVC linker
 and libraries. The entry path now connects native hardware/window/input startup. The real renderer
-stream initializer is now connected. An unattended Wine run still crashes at a
-null shader-manager receiver before a level is loaded; device presentation and
+stream initializer is now connected. The current working source reconnects the genuine shader publisher and supplies
+the native minimum declaration-cache backing. It still crashes while packaging
+a display-list scene before a level is loaded: a scene-parameter copy at index 32
+overwrites the initialized first-list pointer. The original array capacity and
+missing frame-reset path require further verification. Device presentation and
 recurring gameplay remain unverified.
 Configuration parsers exist, but their presence does not complete resource/world
 loading. The executable is not playable.
@@ -128,8 +131,11 @@ call or state transition whose dependency is still missing. These markers emit
 no code in matching builds and do not imply a byte match. Keep the original call
 order, document the skipped work, and replace markers down the dependency tree.
 The source-only executable connects real window/input, renderer configuration
-and material setup, but an actual run still fails at a null shader-manager
-receiver before world loading. Automated Wine tests suppress the debugger dialog in their own
+and material setup, but the current working source still fails while packaging a display-list
+scene before world loading. Its first-list pointer is null; the earlier writer
+remains unproved. The declaration cache has its verified two-row startup
+minimum, while its original full capacity remains unknown. See the current frontier in
+[the execution policy](config/transfer-execution.md). Automated Wine tests suppress the debugger dialog in their own
 prefix, preserve the genuine crash output and exit, and clean only their own
 process group; see [the execution policy](config/transfer-execution.md).
 Remaining device actions, resource fixups and the recurring update/render loop
@@ -217,9 +223,24 @@ The PR-comment workflow is exercised against a mocked GitHub API using Node.js;
 install Node.js to run that check locally. It is required and available in CI.
 `check-objects` first builds all current sources, then validates their COFF
 objects without the retail executable. Every compiled function or data symbol
-must be represented in the map, including private globals and compiler literals.
+must have a usable native mapping or pass the explicit natural-output inventory
+contract below, including private globals and compiler literals.
 The checks cover ambiguous definitions, symbol bounds, supported relocation
-kinds, and resolvable relocation targets. They do not require candidate code or
+kinds, and resolvable relocation targets.
+
+`config/candidate-only.json` records specific naturally emitted SDK/template
+outputs with unknown original identity. Each occurrence pins its genuine source
+and SDK definition, complete candidate section, bytes and named relocations.
+Fresh normal-link evidence, complete archive payload checks and retained
+reference checks must establish that it has no operative incoming reference.
+Unused duplicate library COMDATs require positive source-link disposition proof;
+a name or an assumed dead library member is insufficient. Real live helpers
+still require native mappings. These outputs remain linked into the source EXE,
+are reported separately with zero PC credit, and never receive an invented
+original address, extent or exact match. New incoming calls invalidate admission.
+The inventory does not bypass ordinary mapped-function, data, relocation or
+retail comparison checks.
+ They do not require candidate code or
 data to have the same size or bytes as retail; unfinished implementations can
 pass these checks and still produce useful local diffs.
 

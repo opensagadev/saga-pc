@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "groups": [
+    {
+      "unit": "src/nu2api/shader_parser.cpp",
+      "parent": "?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z",
+      "address": "0x60bdd0",
+      "size": 335,
+      "handler": "__ehhandler$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z",
+      "func_info": "__ehfuncinfo$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z",
+      "unwind_table": "__unwindtable$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z",
+      "try_table": "__tryblocktable$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z",
+      "components": [
+        {
+          "symbol": "__catch$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$1",
+          "address": "0x60beee",
+          "catch_record": "__catchsym$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$4"
+        },
+        {
+          "symbol": "__catch$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$0",
+          "address": "0x60be53",
+          "catch_record": "__catchsym$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$5"
+        }
+      ]
+    },
+    {
+      "unit": "src/nu2api/shader_parser.cpp",
+      "parent": "?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z",
+      "address": "0x74d950",
+      "size": 581,
+      "handler": "__ehhandler$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z",
+      "func_info": "__ehfuncinfo$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z",
+      "unwind_table": "__unwindtable$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z",
+      "try_table": "__tryblocktable$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z",
+      "components": [
+        {
+          "symbol": "__catch$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z$2",
+          "address": "0x74dabe",
+          "catch_record": "__catchsym$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z$5"
+        },
+        {
+          "symbol": "__catch$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z$0",
+          "address": "0x74dab2",
+          "catch_record": "__catchsym$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z$4"
+        }
+      ]
+    }
+  ]
+}

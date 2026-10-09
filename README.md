@@ -1,12 +1,13 @@
 # saga-pc
 
 **Runtime status: not playable.** Reconstructed startup includes native window,
-input and renderer setup. The source executable still crashes during renderer
-startup before a level loads. Device presentation and recurring gameplay remain
+input and renderer setup. The latest observed source executable crashes while
+packaging a display-list scene: a scene-parameter copy overwrites its first-list
+pointer after 32 accumulated scenes. Device presentation and recurring gameplay remain
 unverified; see the [current roadmap](docs/roadmap.md).
 
 <!-- matching-badge -->
-![fuzzy code](https://img.shields.io/badge/fuzzy%20code-29.034%25-yellow)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-42.777%25-yellow) ![mapped data](https://img.shields.io/badge/mapped%20data-1.796%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-5.399%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
+![fuzzy code](https://img.shields.io/badge/fuzzy%20code-29.203%25-yellow)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-42.962%25-yellow) ![mapped data](https://img.shields.io/badge/mapped%20data-1.796%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-5.415%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 **saga-pc** is a matching decompilation of the GOG PC release of
 *LEGO Star Wars: The Complete Saga*.
