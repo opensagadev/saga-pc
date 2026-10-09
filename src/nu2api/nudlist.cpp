@@ -1663,3 +1663,45 @@ extern "C" void __cdecl NuDisplayListPurge_candidate(void) {
         STUBBED_NAMED(0x005d7230); /* native5ded34: NuHtmlWrite("<body bgcolor=#C0C0C0>"); ignored VOID debug output */
     }
 }
+
+/* The native debug-name projection reads one pointer at scene+0. Historical
+ * visibility/owning extent of this projection is not established. */
+typedef struct PC_DISPLAY_DEBUG_NAME_READER {
+    const char *name;
+} PC_DISPLAY_DEBUG_NAME_READER;
+STATIC_ASSERT(sizeof(PC_DISPLAY_DEBUG_NAME_READER) == 4);
+STATIC_ASSERT(offsetof(PC_DISPLAY_DEBUG_NAME_READER, name) == 0);
+STATIC_ASSERT(offsetof(NUDISPLAYLISTRENDERSCENE, nsort_pris) == 0);
+STATIC_ASSERT(offsetof(NUDISPLAYLISTRENDERSCENE, sort_pris) == 4);
+STATIC_ASSERT(offsetof(NUSORTPRI, sort_pri) == 0);
+
+extern "C" {
+    extern void(__cdecl **PCDisplayItemHandlersPc)(void *);
+}
+
+extern "C" void __cdecl NuDisplayListDrawItemsPc(NUDISPLAYLISTITEM *items) {
+    NuDisplayListExecute(items, PCDisplayItemHandlersPc);
+}
+
+extern "C" void __cdecl NuDisplayListDrawRenderScene_candidate(i32 scene_id) {
+    PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
+    i32 count = PCSafeRenderScenes[scene_id]->nsort_pris;
+    for (i32 index = 0; index < count; ++index) {
+        NUSORTPRI *sort = PCSafeRenderScenes[scene_id]->sort_pris[index];
+        if (nudlist_field_fe4 != 0) {
+            PC_DISPLAY_DEBUG_NAME_READER *debug_scene =
+                reinterpret_cast<PC_DISPLAY_DEBUG_NAME_READER *>(sort->display_scene);
+            if (debug_scene != NULL && debug_scene->name != NULL) {
+                STUBBED_NAMED(0x005d72b0); /* native5f033d: heading(name,sort_pri), ignored VOID */
+            } else {
+                STUBBED_NAMED(0x005d72b0); /* native5f034f: UNKNOWN heading(sort_pri), ignored VOID */
+            }
+            STUBBED_NAMED(0x005d7230); /* native5f035c: font HTML, ignored VOID */
+            STUBBED_NAMED(0x005e09a0); /* native5f0371: EAX=sort->items; stack(3,0,NULL,nudlist_field_958).
+                                       Genuine original private register ABI is held, no public wrapper. */
+        }
+        NuDisplayListDrawItemsPc(sort->items);
+    }
+    NuDisplayListDrawItemsPc(&PCSafeRenderScenes[scene_id]->render_2d_first);
+    PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+}

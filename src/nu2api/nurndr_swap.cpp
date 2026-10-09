@@ -110,7 +110,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
         }
         if (scene->scene_id != -1) {
             D3DPERF_BeginEvent((D3DCOLOR)-1, L"3D render");
-            STUBBED_NAMED(0x005f02e0); /* (scene->scene_id), actual nativeCALL60b3c8. */
+            NuDisplayListDrawRenderScene_candidate(scene->scene_id);
             D3DPERF_EndEvent();
         }
         if (rendered_effect) {
@@ -150,7 +150,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     NuRndrEndSceneEx(0);
     PCDeviceEndScenePc();      /* Genuine native10-byte wrapper6e4a10; result unused. */
     STUBBED_NAMED(0x006d9610); /* native60b56e */
-    STUBBED_NAMED(0x006dfd40); /* (mode,1),60b57a */
+    PCFramePresentNativePc(mode, 1);
     PCFrameCriticalSectionLeave_candidate();
     NuTimeBarSlotReset(-1, 0);
     _NuTimeBarSlotBegin(-1, 0, "CPU");
@@ -160,4 +160,17 @@ extern "C" i32 __cdecl NuRndrSwapScreenEx(i32 mode, void(__cdecl *callback)(void
     if (callback != NULL)
         callback();
     return NuRndrSwapScreen(mode);
+}
+
+extern "C" {
+    extern i32 PCFramePresentationStatePc;
+    void __cdecl PCPresentationPlatformLeafPc(void);
+}
+STATIC_ASSERT(sizeof(PCFramePresentationStatePc) == 4);
+
+extern "C" i32 __cdecl PCFramePresentNativePc(i32 mode_unused, i32 flag_unused) {
+    PCFramePresentationStatePc = 0;
+    PCDeviceBackend.Present(NULL, NULL, NULL, NULL);
+    PCPresentationPlatformLeafPc();
+    return 0;
 }

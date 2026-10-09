@@ -1419,3 +1419,23 @@ extern "C" void __cdecl PCDeviceSetVertexShaderPc(PC_TEXTURE_RESOURCE_PC *shader
 extern "C" void __cdecl PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE_PC *shader) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_pixel_shader(PCDeviceBackend.device, shader);
 }
+
+void __thiscall PC_DEVICE_BACKEND_PC::SetColorWriteMaskPc(u8 colour_enabled, u8 alpha_enabled, i32 target) {
+    u32 disabled;
+    if (target != 0 && target_count == 1)
+        return;
+    disabled = colour_enabled != 0 ? 0u : 7u;
+    if (alpha_enabled == 0)
+        disabled |= 8u;
+    switch (target) {
+        case 0:
+            PCDeviceSetRenderState(168, disabled);
+            break;
+        case 1:
+            PCDeviceSetRenderState(190, disabled);
+            break;
+        case 3:
+            PCDeviceSetRenderState(191, disabled);
+            break;
+    }
+}

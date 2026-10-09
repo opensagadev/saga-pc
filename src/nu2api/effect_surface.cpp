@@ -309,3 +309,30 @@ extern "C" {
     PC_FRAMEBUFFER_PC *PcBootDefaultFramebuffer = NULL;
     PC_FRAMEBUFFER_PC *PcBootSecondaryFramebuffer = NULL;
 }
+
+/* Two additional genuine original leaves, proposed in existing effect_surface.cpp.
+ * Complete native entries are6B and1B; neither replaces the held copy operation. */
+extern "C" PC_FRAMEBUFFER_PC *__cdecl PCGraphicsGetBoundFramebufferPc(void) {
+    return PcBoundFramebuffer;
+}
+extern "C" void __cdecl PCGraphicsEnableFramebufferGuardsPc(PC_FRAMEBUFFER_PC *frame, i32 enabled) {
+    (void)frame;
+    (void)enabled;
+}
+
+extern "C" void __cdecl PCGraphicsCopyFramebufferTex2DPc(i32 attachment, GRAPHICS_RENDER_TEXTURE_PC *texture, i32 level,
+                                                         i32 x, i32 y, i32 width, i32 height) {
+    (void)x;
+    (void)y;
+    if (attachment != 0) {
+        /* Native tail5f7490 is the existing genuine RET-only operation; no arg is read. */
+        PCGraphicsRenderTextureAllocationError();
+        return;
+    }
+    {
+        bool resize = width != PS2_REZ_W || height != PS2_REZ_H;
+        PC_EFFECT_SURFACE_PC target;
+        target.Attach(texture, level, false);
+        PCDeviceBackend.CopySurfaceTargetPc(&target, resize ? 2 : 1, 0);
+    }
+}

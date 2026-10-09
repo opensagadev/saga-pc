@@ -1,16 +1,16 @@
 # NuMain investigation queue
 
 Current whole-project transfer status is recorded in
-[transfer-execution.md](transfer-execution.md). Portable rendering, sound, resource
-I/O and gameplay additions do not close NuMain's full lifecycle. The current
-source reaches genuine hardware, window, input and shader initialization and
-permanent-data loading. It still omits essential frame rendering and resource/world
-actions. The latest observed crash is a scene copy overwriting the display-list
-pointer at index 32; the genuine renderer that resets the scene count is missing
-from the caller path. Original array capacity remains unproved. A linked source
-executable is not playable. The dated notes below preserve earlier investigation
-states; use the current source and work plan for active gaps.
-
+[transfer-execution.md](transfer-execution.md). The source reaches genuine
+hardware, window, input and shader initialization; the native frame/render calls
+are reconnected. The latest ordinary source executable exits 5 in LoadPerm1 while reading
+DebMat[5]->texture_id through a NULL material pointer. The preceding genuine
+DebrisSetup call at native 48a6f8 is still omitted. Its native wrapper at 683530
+and the existing DebrisSetup2 material/resource producers are the next connected
+matching targets. No replacement material or direct DebMat assignment is added.
+Resource/world actions and device lifetimes remain incomplete. Original scene
+capacity is still unproved. The source executable is not playable. Dated notes
+below preserve historical states; use the current source and work plan for gaps.
 
 The original PC `NuMain` is at `0x00492b40`, with a complete 4,332-byte extent.
 [Identification notes](identification.md) explain its entry chain and implemented

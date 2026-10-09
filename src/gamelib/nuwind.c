@@ -25,3 +25,9 @@ u32 NuWindRand(void) {
     NuWindQS = (NuWindQS * 0x24cd + 1) & 0xffff;
     return NuWindQS;
 }
+
+i32 __cdecl NuWindCurrent(NUWIND *wind) {
+    if (wind == NULL || wind->current < 0)
+        return -1;
+    return wind->texture_ids[wind->current];
+}

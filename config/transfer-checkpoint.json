@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1497895,
-    "matched_code_bytes": 233006,
-    "matching_percent": 6.7124600215599814,
-    "fuzzy_coverage_percent": 29.396036937288358,
-    "mapped_functions": 5307,
-    "matched_functions": 2418,
-    "objdiff_fuzzy_percent": 69.65067,
-    "objdiff_total_code": 1465902,
+    "mapped_code_bytes": 1505764,
+    "matched_code_bytes": 233469,
+    "matching_percent": 6.7257981716075435,
+    "fuzzy_coverage_percent": 29.474248631169438,
+    "mapped_functions": 5333,
+    "matched_functions": 2432,
+    "objdiff_fuzzy_percent": 69.45314,
+    "objdiff_total_code": 1473980,
     "image_bytes": 40067072,
-    "mapped_bytes": 2146099,
-    "mapping_percent": 5.356266112981753,
+    "mapped_bytes": 2153968,
+    "mapping_percent": 5.375905681353506,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -38,7 +38,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 1499089
+        "mapped_bytes": 1506958
       },
       {
         "name": ".rdata",
@@ -55,17 +55,17 @@
         "mapped_bytes": 616824
       }
     ],
-    "mapping_known_size_symbols": 9599,
-    "mapping_unknown_size_symbols": 5596,
-    "mapping_code_bytes": 1499089,
+    "mapping_known_size_symbols": 9625,
+    "mapping_unknown_size_symbols": 5630,
+    "mapping_code_bytes": 1506958,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 43.18590500356356,
+    "mapping_code_percent": 43.41259593817321,
     "mapping_data_bytes": 647010,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 1.7963036473617815,
-    "mapping_code_data_bytes": 2146099,
+    "mapping_code_data_bytes": 2153968,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 5.434508682809806,
+    "mapping_code_data_percent": 5.4544351395226744,
     "matched_data_region_bytes": 637833
   },
   "newly_compared": [
@@ -35034,7 +35034,13 @@
         "CI_run": 37876166258,
         "exact_revision_all13_steps": "SUCCESS"
       },
-      "publication": "Exact pushed revision CI pending at commit",
+      "publication": {
+        "status": "EXACT_PUSHED_REVISION_CI_VERIFIED",
+        "commit": "d5faf1388f5e5570df2bbfceefa14761109da4aa",
+        "CI_run": 37879148887,
+        "CI_url": "https://github.com/opensagadev/saga-pc/actions/runs/37879148887",
+        "all13_steps": "SUCCESS"
+      },
       "new_functions": 20,
       "new_unique_compared_PC_bytes": 3481,
       "new_exact_functions": 12,
@@ -35558,7 +35564,360 @@
         "build/analysis/frame-handler-BCDE-main-integration-v1/renderer-seven-call-actual-review-v1/accepted-actual-parent.json": "06ccc4cec90ae87d3a7c9a96afbeaa35cf2606132381893c4567a27af5a670e8",
         "build/analysis/frame-handler-runtime-feasibility-next/current-after-seven-call-preservation-v1/accepted-selected-domain-preservation.json": "4128b238ea193e544c750b41279cb8ea2461058817009d5e5828aed0d2639706"
       }
+    },
+    {
+      "checkpoint": "WW",
+      "date": "2026-10-09",
+      "scope": "Material/shader-parameter/display/resource/presentation source; four genuine frame/render caller reconnections",
+      "baseline_commit": "d5faf1388f5e5570df2bbfceefa14761109da4aa",
+      "previous_publication": {
+        "CI_run": 37879148887,
+        "exact_revision_all13_steps": "SUCCESS"
+      },
+      "publication": "Exact pushed revision CI pending at commit",
+      "new_functions": 27,
+      "new_unique_compared_PC_bytes": 8078,
+      "new_exact_functions": 14,
+      "new_exact_code_bytes": 463,
+      "new_exact_data_bytes": 0,
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1505764,
+        "matched_code_bytes": 233469,
+        "matching_percent": 6.7257981716075435,
+        "fuzzy_coverage_percent": 29.474248631169438,
+        "mapped_functions": 5333,
+        "matched_functions": 2432,
+        "objdiff_fuzzy_percent": 69.45314,
+        "objdiff_total_code": 1473980,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2153968,
+        "mapping_percent": 5.375905681353506,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1506958
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30186
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9625,
+        "mapping_unknown_size_symbols": 5630,
+        "mapping_code_bytes": 1506958,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 43.41259593817321,
+        "mapping_data_bytes": 647010,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7963036473617815,
+        "mapping_code_data_bytes": 2153968,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.4544351395226744,
+        "matched_data_region_bytes": 637833
+      },
+      "fuzzy_delta_pp": 0.07821169388108018,
+      "newly_compared": [
+        {
+          "symbol": "_NuPostEffectGetBackBuffer",
+          "address": "0x005c37f0",
+          "target_size": 135,
+          "exact_match": false
+        },
+        {
+          "symbol": "_NuWindCurrent",
+          "address": "0x005ddc60",
+          "target_size": 23,
+          "exact_match": true
+        },
+        {
+          "symbol": "_NuDisplayListDrawRenderScene_candidate",
+          "address": "0x005f02e0",
+          "target_size": 210,
+          "exact_match": false
+        },
+        {
+          "symbol": "_PCGraphicsGetBoundFramebufferPc",
+          "address": "0x005f8a50",
+          "target_size": 6,
+          "exact_match": true
+        },
+        {
+          "symbol": "_PCGraphicsEnableFramebufferGuardsPc",
+          "address": "0x005f8be0",
+          "target_size": 1,
+          "exact_match": true
+        },
+        {
+          "symbol": "_PCGraphicsBindTextureDimensionsPc",
+          "address": "0x005f8f50",
+          "target_size": 22,
+          "exact_match": true
+        },
+        {
+          "symbol": "?PCDisplayHandlerBindProgramsPc@@YAXPAUPC_DL_SHADER_PROGRAM_PAIR_PC@@@Z",
+          "address": "0x005fa0a0",
+          "target_size": 98,
+          "exact_match": true
+        },
+        {
+          "symbol": "_NuMtlSetRenderStatesPS",
+          "address": "0x00601360",
+          "target_size": 634,
+          "exact_match": false
+        },
+        {
+          "symbol": "_NuDisplayListDrawItemsPc",
+          "address": "0x006033d0",
+          "target_size": 20,
+          "exact_match": true
+        },
+        {
+          "symbol": "_NuDisplayListMaterialPc",
+          "address": "0x00608000",
+          "target_size": 961,
+          "exact_match": false
+        },
+        {
+          "symbol": "_PCGraphicsCopyFramebufferTex2DPc",
+          "address": "0x0060a7a0",
+          "target_size": 137,
+          "exact_match": false
+        },
+        {
+          "symbol": "_PCPresentationPlatformLeafPc",
+          "address": "0x006d6b40",
+          "target_size": 1,
+          "exact_match": true
+        },
+        {
+          "symbol": "_PCFramePresentNativePc",
+          "address": "0x006dfd40",
+          "target_size": 36,
+          "exact_match": true
+        },
+        {
+          "symbol": "?SetColorWriteMaskPc@PC_DEVICE_BACKEND_PC@@QAEXEEH@Z",
+          "address": "0x006e2810",
+          "target_size": 107,
+          "exact_match": false
+        },
+        {
+          "symbol": "_NuShaderManagerGetShininessFactor",
+          "address": "0x00741740",
+          "target_size": 7,
+          "exact_match": true
+        },
+        {
+          "symbol": "?PCShaderMaterialTextureNativePc@@YAPAXPAUPC_SHADER_MATERIAL_DISPATCH_VIEW@@E@Z",
+          "address": "0x00742020",
+          "target_size": 30,
+          "exact_match": false
+        },
+        {
+          "symbol": "?PCShaderUnpackColourPc@@YAPAMPAMI@Z",
+          "address": "0x007421d0",
+          "target_size": 91,
+          "exact_match": false
+        },
+        {
+          "symbol": "_PCShaderSamplerBiasBitsPc",
+          "address": "0x00742240",
+          "target_size": 62,
+          "exact_match": false
+        },
+        {
+          "symbol": "?PCShaderSamplerWrapPc@@YAXHIH@Z",
+          "address": "0x00742280",
+          "target_size": 115,
+          "exact_match": false
+        },
+        {
+          "symbol": "?SetScalar@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXM@Z",
+          "address": "0x007423c0",
+          "target_size": 48,
+          "exact_match": true
+        },
+        {
+          "symbol": "?SetValues@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHHPBM@Z",
+          "address": "0x007423f0",
+          "target_size": 60,
+          "exact_match": false
+        },
+        {
+          "symbol": "?SetVector@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXPBM@Z",
+          "address": "0x00742430",
+          "target_size": 48,
+          "exact_match": true
+        },
+        {
+          "symbol": "?SetVectorElement@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHPBM@Z",
+          "address": "0x00742460",
+          "target_size": 57,
+          "exact_match": true
+        },
+        {
+          "symbol": "?SetFloat2@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXPBM@Z",
+          "address": "0x00742780",
+          "target_size": 48,
+          "exact_match": true
+        },
+        {
+          "symbol": "?SetFloat3@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXPBM@Z",
+          "address": "0x007427b0",
+          "target_size": 48,
+          "exact_match": true
+        },
+        {
+          "symbol": "_PCShaderSetMaterialParametersPc",
+          "address": "0x007427e0",
+          "target_size": 4472,
+          "exact_match": false
+        },
+        {
+          "symbol": "_NuShaderObjectBaseUpdateWaterTable",
+          "address": "0x00743a30",
+          "target_size": 601,
+          "exact_match": false
+        }
+      ],
+      "old_exact_preservation": {
+        "function_rows": 2418,
+        "data_rows": 3803,
+        "named_members": 13,
+        "losses": 0
+      },
+      "prior_output_preservation": {
+        "functions": 5214,
+        "data": 11300,
+        "identical_full_relocated": 16509,
+        "intentional_changed_parents": [
+          "NuRndrSwapScreen1169->1211/native1465",
+          "NuFrameEnd344->365/native987"
+        ],
+        "specific_unchanged_source_pairs": [
+          "GameCameraMakeMiniCut3 reverse retained full1789->1709 pair",
+          "DebReAlloc2 reverse retained full1458 pair",
+          "InitGameAfterConfig4437 composed two reviewed disjoint scheduling/ref windows; finite qualifications retained"
+        ]
+      },
+      "source_contracts": {
+        "callbacks_compiled": 20,
+        "observed_callbacks": 20,
+        "new_state_definitions": 31,
+        "typed_working_bytes": 840,
+        "original_owning_extents": "unknown/blank; zero allocation and exact-data credit",
+        "handler_table": {
+          "working_words": 49,
+          "native_NULL_entries": 27,
+          "function_pointers": 22,
+          "distinct_real_callbacks": 20,
+          "address": "0x80e6d0",
+          "pointer_address": "0x80e794",
+          "all_complete_initializers_equal_native": true
+        },
+        "native_call_reconnections": 4,
+        "additional_compared_ranges_from_reconnections": 0,
+        "extent_correction": "DrawScene old unimplemented209 crops terminalE9 byte; complete210 through5f03b1, followingCCexcluded",
+        "native_presentation_return_zero": "Genuine native envelope calls real backend and RET-only leaf; no GPU success inference",
+        "held_domains": [
+          "Original complete allocation capacities",
+          "Material/parameter positive native vector-tail reads",
+          "Renderer post-effect/reset/debug VOID actions",
+          "Actual GPU/Present/resource lifetime/loadedworld/gameplay"
+        ]
+      },
+      "checks": {
+        "make_check": "PASS796tests/3 existing skips; LLVM18format369files/tidy342 units",
+        "make_build_check_objects": "PASS5156functions/11352data/342objects; allrefsresolve;4internalEHgrouped",
+        "make_match": "PASScomplete authoritative extents; no oldexact loss",
+        "candidate_only": "Same89 descriptors; fresh complete normal-link/archive/incoming-reference proof; zeroPCcredit"
+      },
+      "runtime": {
+        "source_game_exe_launched": true,
+        "runs": 1,
+        "exit_code": 5,
+        "elapsed_seconds": 2.546028875047341,
+        "deadline_stopped": false,
+        "fault": "LoadPerm1+0xa5 source453f85/native48a7e7 reads DebMat[5]->texture_id through NULL",
+        "omitted_native_producer": "48a6f8 calls genuine DebrisSetup683530, still marker",
+        "current_Source_LoadPerm1_full781_equals_actual_linked_body": true,
+        "normal_objects": 342,
+        "frozen_inputs": 455,
+        "inputs_unchanged": true,
+        "ShowCrashDialog_DWORD0_set_query": true,
+        "owned_cleanup_empty": true,
+        "result": "Failed startup observation; no passing frame/presentation/GPU/assets/gameplay claim"
+      },
+      "evidence": [
+        {
+          "path": "build/analysis/frame-native-caller-reconnections-next-v1/final-actual-review/accepted-actual-callers-packet.json",
+          "sha256": "e854e20527fd5cfec7b2b3cf8701cc7315414ec8efca7227eea353190c342df0"
+        },
+        {
+          "path": "build/analysis/material-display-main-integration-v1/aggregate-prior-preservation.json",
+          "sha256": "f5ab1f51a0612fe5545bd046986a6dc6198449ac2ac30ae008d35969b26c9189"
+        },
+        {
+          "path": "build/analysis/material-display-main-integration-v1/source27-first-verified-delta.json",
+          "sha256": "414f900efa7be0265e2f819d804c009622707f30236fe7872775ad860dd6ea67"
+        },
+        {
+          "path": "build/analysis/material-display-main-integration-v1/final-normal-v1/normal-object-manifest.json",
+          "sha256": "eac4112eae9cbea3cc56b63274100b97a7f9944168a52fd92a0f743d5af97298"
+        },
+        {
+          "path": "build/analysis/material-display-main-integration-v1/final-normal-v1/matching.json",
+          "sha256": "07629a75943f952091ff6e314a4fab46871c0045ff0ba4af531eeeb5429f8777"
+        },
+        {
+          "path": "build/analysis/material-display-main-integration-v1/callers-build.log",
+          "sha256": "a5fb9f481e1650471024d7d567453a0dff591c70479155157366a168f7d3d7cd"
+        },
+        {
+          "path": "build/analysis/material-display-main-integration-v1/callers-check.log",
+          "sha256": "aa8d76c6282c12d231fd9bdb26bdbcb760e8dc3546f558b9d74559e2fc27dad0"
+        },
+        {
+          "path": "build/analysis/material-display-main-integration-v1/callers-match.log",
+          "sha256": "0e3182e2b2128c506ecee92184dd51253ec1cc9a0bb7bc1585f99d52efaa69dd"
+        },
+        {
+          "path": "build/analysis/material-display-actual-normal-independent-review/normal-v1/accepted-actual-normal27-state31-packet.json",
+          "sha256": "18eed74e21f80c7f36bc3c795b3199f970f2aece4538a96e3d95a107c4f5de99"
+        },
+        {
+          "path": "build/analysis/material-display-prior-three-independent-v1/accepted-three-pair-packet.json",
+          "sha256": "e812e96d41569b2da952a24469ff4833d1842df196c29361fa739357b94c9a49"
+        },
+        {
+          "path": "build/analysis/frame-native-reconnection-source-exe-next/launcher-v1/observation/receipt.json",
+          "sha256": "3d4fd0df2868baa3c470703602ecc28cd157f9f308f194e00a115c4d76ca80ac"
+        },
+        {
+          "path": "build/analysis/frame-native-reconnection-source-exe-next/launcher-v1/observation/fault-attribution.json",
+          "sha256": "bcf09c338218d474fdb9815976c126dd86c0722a67ecc80d8198fdc366bc216d"
+        }
+      ],
+      "checkpoint_delay": "Finished genuine provider/backing and four-caller source closure, full normal/retail checks and exact source-game fault attribution before publication",
+      "next_connected_wave": "DebrisSetup43 and authentic LoadPerm1 call to existing DebrisSetup2/material/resource factories; renderer/posteffect providers prepared in parallel",
+      "ongoing_goal": "active; checkpoint does not complete the game",
+      "human_journal": "Preserved unrelated3 additions unstaged; SHA4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7"
     }
   ],
-  "latest_checkpoint": "VV"
+  "latest_checkpoint": "WW"
 }

@@ -490,3 +490,7 @@ extern "C" void __cdecl NuShaderManagerBindShaderPc(PC_SHADER_OBJECT_FULL_VIEW *
         }
     }
 }
+extern "C" f32 PCShaderShininessFactorStorage;
+extern "C" f32 __cdecl NuShaderManagerGetShininessFactor(void) {
+    return PCShaderShininessFactorStorage;
+}

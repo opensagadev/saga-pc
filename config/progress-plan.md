@@ -1,36 +1,54 @@
 # Current work plan
 
 The [whole-project mandate](../SOL_IMPLEMENTATION_PLAN.md) remains active.
-Verified published baseline UU is [ea790699](https://github.com/opensagadev/saga-pc/commit/ea790699cb68bc616345d52f874124aba5093cd6), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37876166258) passing all 13 steps. VV exact-revision CI is pending publication.
+Verified published baseline VV is [d5faf138](https://github.com/opensagadev/saga-pc/commit/d5faf1388f5e5570df2bbfceefa14761109da4aa), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37879148887) passing all 13 steps. WW exact-revision CI is pending publication.
 
-The VV source batch adds 20 complete PC functions / 3,481 unique compared bytes:
-transform, geometry, indexed-draw and debris handlers, eight real device methods,
-the shader-binding provider and the private Z-mode helper. Twelve are byte exact,
-adding 755 exact code bytes. Whole-PC fuzzy coverage is 29.396037%, up 0.089480
-percentage points from UU. Every previous exact function/data copy and all 13
-named member rows remain intact. Nine canonical four-byte state views have native
-initializers; their unknown owning extents remain blank and earn no data credit.
+The WW batch adds 27 complete functions / 8,078 unique compared PC bytes across
+material/shader parameters, display-list drawing, back-buffer/resource suppliers
+and native presentation. Fourteen are byte exact, adding 463 exact code bytes.
+Whole-PC fuzzy coverage is 29.474249%, up
+0.078212 percentage points from VV; exact code is
+233,469/3,471,246 bytes (6.725798%). Every previous exact code/data result
+and all 13 named member rows survive.
 
-Seven native stream/shader calls are restored in the existing renderer. Its full
-1,465-byte native extent is compared against the 1,169-byte candidate; it remains
-partial and nonexact. This restoration adds no new compared range. Nineteen of
-the 20 observed draw callbacks now have compiled source. The remaining material
-handler needs the genuine 4,472-byte shader-parameter dispatcher and its providers.
-DrawScene, DrawItems, handler-table publication and frame/hardware caller activation
-remain held until that connected chain is available. No independent scene-count
-reset or guessed scene-array enlargement has been added.
+All 20 observed display callbacks now have compiled source. All 31 new complete
+initializers (840 typed bytes) equal native, including the 49-entry handler view
+and its pointer: 27 NULL entries and 22 pointers to 20 distinct real callbacks.
+Unknown owning extents remain blank and receive zero allocation or exact-data
+credit. The old unimplemented DrawScene extent is corrected from 209 to 210 bytes:
+209 cut off the final byte of its terminal jump. This is a boundary correction,
+not additional transferred source.
 
-The frozen normal-object CPU fixture passes 86 checks with zero failures, using
-all 342 genuine engine objects and no replacements. It verifies complete matrix
-cache results/restoration, real shader/uniform helpers and selected cache-hit,
-unbound, NULL and zero-count paths. Final output preservation keeps those selected
-CPU results applicable after the seven renderer changes; the renderer itself was
-not exercised. Wine crash dialogs were disabled and queried, the process exited
-naturally, and owned cleanup was empty. Native vector-tail reads in other paths
-remain qualified and untested. There is no device, GPU, presentation, installed
-asset or gameplay claim. The source game remains not playable.
+Four genuine calls are restored: renderer DrawScene and native presentation,
+then frame-end TimeBar(-1) and SwapScreenEx with the current callback. These
+existing parents add zero new compared ranges; renderer 1,211/native 1,465 and
+frame end 365/native 987 remain partial and nonexact. No separate scene counter
+reset, enlarged array, forced focus/profiling or fabricated success is added.
 
-1. Reconnect the genuine render and message flow at the observed startup frontier.
+Required checks pass: 796 tests (three existing skips), LLVM18 formatting and
+342-unit analysis, normal source link/object checks and full retail matching.
+Among 16,514 old complete outputs, 16,509 retain identical relocated bytes; two
+parents change through the four reviewed calls, and three unchanged-source
+Camera/Deb/Init outputs retain specifically reviewed historical finite pairs.
+The 89 natural unused SDK outputs preserve their contracts and pass fresh
+normal-link/archive admission with zero PC credit.
+
+The latest ordinary source executable exits 5 in LoadPerm1 while reading
+DebMat[5]->texture_id through a NULL material pointer. The preceding genuine
+DebrisSetup call at native 48a6f8 is still omitted. Its native wrapper at 683530
+and the existing DebrisSetup2 material/resource producers are the next connected
+matching targets. No replacement material or direct DebMat assignment is added.
+
+One actual source-game run exited naturally after 2.546 seconds. Its complete
+781-byte LoadPerm1 body is verified against the linked source image; fault
+source453f85/native48a7e7 reads WORD [EDX+74] with NULL DebMat[5]. All 342 normal
+objects and 455 frozen inputs remained unchanged. Wine crash suppression was set
+and queried, and owned process/window cleanup was empty. This is a failed startup
+observation, not a passing frame, presentation, assets or gameplay test. The source
+game remains not playable. Earlier CPU fixture results retain their original
+bounded domains; they do not test the new material or live renderer paths.
+
+1. Reconnect genuine DebrisSetup and its material/resource producers at the observed startup frontier.
    Preserve native control, callbacks, returned values and named field offsets;
    do not add a standalone counter reset, force focus or enlarge storage to hide
    the crash.
@@ -42,14 +60,6 @@ asset or gameplay claim. The source game remains not playable.
 4. Verify actual source/object/report agreement, run required checks and meaningful
    bounded runtime tests, then publish a coherent checkpoint. Verify CI on its
    exact pushed revision before using it as the next baseline.
-
-The latest ordinary source run naturally exits 5 in display-list scene packaging.
-A bounded debugger watch proves that initialization sets the first-list pointer,
-then the exact NuRndrEndScene scene copy overwrites it at index 32. The omitted
-native renderer resets the scene count after processing its scene loops. Original
-array capacity is unproved; it must not be inferred from the fault. CPU checks and
-matching do not establish device presentation or gameplay. Use
-[matching.json](../matching.json) for comparisons.
 
 Use [strategy.md](strategy.md), [identification-plan.md](identification-plan.md)
 and [transfer-execution.md](transfer-execution.md) for selection and validation.

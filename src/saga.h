@@ -1972,7 +1972,9 @@ STATIC_ASSERT(offsetof(NUFPARPOS_PC, buffer_start) == 0x0c);
 STATIC_ASSERT(offsetof(NUFPARPOS_PC, buffer_end) == 0x10);
 
 typedef struct nuwind_s {
-    u8 unknown_0000[0x28];
+    i32 texture_ids[8];
+    i32 current;
+    f32 parameter_24;
     f32 phase_speed_scale;
     f32 phase;
     f32 accumulated_time;
@@ -7159,6 +7161,7 @@ typedef struct PC_DEVICE_BACKEND_PC {
     void __thiscall Shutdown();
     HRESULT __thiscall EndScene();
     HRESULT __thiscall CopySurfaceTargetPc(PC_EFFECT_SURFACE_PC *target, i32 filter, i32 unused);
+    void __thiscall SetColorWriteMaskPc(u8 colour_enabled, u8 alpha_enabled, i32 target);
     void __thiscall ReleaseDefaultPoolResources();
     void __thiscall ApplyViewport(const PC_VIEWPORT_PC *viewport);
     void __thiscall InitializeFactory();
@@ -10062,6 +10065,13 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
         void SetVectorValues(i32 first_element, i32 count, const f32 *values);
         void SetMatrixValues(i32 first_element, i32 count, const f32 *values);
         void SetTransposedMatrixValues(i32 first_element, i32 count, const f32 *values);
+        void SetScalar(f32 value);
+        void SetVector(const f32 *values);
+        void SetVectorElement(i32 index, const f32 *values);
+        void SetFloat2(const f32 *values);
+        void SetFloat3(const f32 *values);
+        void SetValues(i32 first_element, i32 count, const f32 *values);
+
 #endif
     };
     STATIC_ASSERT(sizeof(PC_SHADER_PARAMETER_LOCAL_PC) == 12);
@@ -19617,6 +19627,93 @@ extern "C" {
     void __cdecl PCDeviceSetVertexShaderPc(PC_TEXTURE_RESOURCE_PC *);
     void __cdecl PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE_PC *);
     void __cdecl NuShaderManagerBindShaderPc(PC_SHADER_OBJECT_FULL_VIEW *);
+#ifdef __cplusplus
+}
+#endif
+/* Opaque pointees only; complete reader types remain in their genuine CPP owners. */
+struct PC_SHADER_WATER_MATERIAL_VIEW;
+struct PC_DL_SHADER_PROGRAM_PAIR_PC;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern f32 PCShaderShininessFactorStorage;
+    extern const f32 PCSamplerBiasMinimum;
+    extern const f32 PCSamplerBiasMaximum;
+    extern const f64 PCSamplerBiasMaximumComparison;
+    extern f32 PCShaderWaterThetaStep;
+    extern f32 PCShaderWaterAmplitudeScale;
+    extern f32 PCShaderWaterTheta;
+    extern i32 PCShaderWaterLastFrame;
+    extern NUVEC4 PCShaderWaterTable[32];
+    extern struct PC_SHADER_WATER_MATERIAL_VIEW *PCShaderWaterPreviousMaterial;
+    extern u32 PCShaderWaterInitializationBits;
+    extern f32 PCShaderMaterialSamplerBiasOffsetPc;
+    extern void *NuDisplayMaterialLastPc;
+    extern PC_TEXTURE_RESOURCE_PC *NuDisplayHandlerVertexShaderCachePc;
+    extern PC_TEXTURE_RESOURCE_PC *NuDisplayHandlerPixelShaderCachePc;
+    extern struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialDebrisProgramsPc;
+    extern struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialGlassProgramsPc;
+    extern struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialFaceOnDecalProgramsPc;
+    extern struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialFaceOnProgramsPc;
+    extern struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialDefaultProgramsPc;
+    extern PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDebrisDeclarationPc;
+    extern PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialFaceOnDeclarationPc;
+    extern PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDefaultDeclarationPc;
+    extern i32 NuDisplayMaterialDistortTexturePc;
+    extern NUVEC4 NuDisplayHandlerDefaultTintPc;
+    extern i32 NuPostEffectBackBufferFramePc;
+    extern GRAPHICS_RENDER_TEXTURE_PC *NuPostEffectBackBufferTexturePc;
+    extern GRAPHICS_RENDER_TEXTURE_PC *NuPostEffectBackBufferCopyPc;
+#ifdef __cplusplus
+}
+#endif
+
+STATIC_ASSERT(offsetof(NUWIND, texture_ids) == 0);
+STATIC_ASSERT(offsetof(NUWIND, current) == 0x20);
+STATIC_ASSERT(offsetof(NUWIND, parameter_24) == 0x24);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *, NUMTL *);
+    i32 __cdecl NuWindCurrent(NUWIND *);
+    void __cdecl PCGraphicsBindTextureDimensionsPc(NUTEXDIM_PC *, u32);
+    f32 __cdecl NuShaderManagerGetShininessFactor(void);
+    GRAPHICS_RENDER_TEXTURE_PC *__cdecl NuPostEffectGetBackBuffer(i32);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl NuMtlSetRenderStatesPS(NUMTL *);
+    PC_FRAMEBUFFER_PC *__cdecl PCGraphicsGetBoundFramebufferPc(void);
+    void __cdecl PCGraphicsEnableFramebufferGuardsPc(PC_FRAMEBUFFER_PC *, i32);
+    void __cdecl PCGraphicsCopyFramebufferTex2DPc(i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32, i32, i32);
+    void __cdecl NuDisplayListDrawRenderScene_candidate(i32);
+    void __cdecl NuDisplayListDrawItemsPc(NUDISPLAYLISTITEM *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i32 PCFramePresentationStatePc;
+    i32 __cdecl PCFramePresentNativePc(i32, i32);
+    void __cdecl PCPresentationPlatformLeafPc(void);
+#ifdef __cplusplus
+}
+#endif
+
+typedef void(__cdecl *PC_DISPLAY_ITEM_HANDLER_PC)(void *);
+STATIC_ASSERT(sizeof(PC_DISPLAY_ITEM_HANDLER_PC) == 4);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl NuDisplayListMaterialPc(void *);
+    extern PC_DISPLAY_ITEM_HANDLER_PC PCDisplayItemHandlerPrefixPc[49];
+    extern PC_DISPLAY_ITEM_HANDLER_PC *PCDisplayItemHandlersPc;
 #ifdef __cplusplus
 }
 #endif

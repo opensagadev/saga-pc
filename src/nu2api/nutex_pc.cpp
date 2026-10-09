@@ -382,3 +382,6 @@ extern "C" i32 __cdecl NuTexRegisterRenderTargetPc(GRAPHICS_RENDER_TEXTURE_PC *t
     texture->dimensions.resource = target->resource;
     return texture->texture_id;
 }
+extern "C" void __cdecl PCGraphicsBindTextureDimensionsPc(NUTEXDIM_PC *texture, u32 stage) {
+    PCDeviceSetTexture(stage, texture->resource);
+}

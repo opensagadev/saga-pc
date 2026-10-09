@@ -48,9 +48,8 @@ f32 __cdecl NuFrameEnd(void) {
         STUBBED_NAMED(0x00696b00);
     }
     STUBBED_NAMED(0x004f4c80); /* PC helper immediately before the render boundary. */
-    STUBBED_NAMED(0x005f3d60); /* NuTimeBarSetRender(-1), native 4fd181. */
-    STUBBED_NAMED(0x0060b5b0); /* NuRndrSwapScreenEx(1, NuApiEndFrameCallbackPc), native 4fd18e.
-                                * Activation awaits the genuine display handlers. */
+    NuTimeBarSetRender(-1);
+    NuRndrSwapScreenEx(1, NuApiEndFrameCallbackPc);
     STUBBED_NAMED(0x005de1b0); /* PC post-render update helper. */
     PCFrameCriticalSectionLeave_candidate();
 

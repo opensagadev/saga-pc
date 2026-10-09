@@ -28084,3 +28084,101 @@ extern "C" {
 }
 #pragma bss_seg()
 #pragma data_seg()
+
+#pragma data_seg(".data$MaterialDispatcherEffectStatePc")
+#pragma bss_seg(".bss$MaterialDispatcherEffectStatePc")
+extern "C" {
+    f32 PCShaderShininessFactorStorage = 1.0f;
+    f32 PCShaderWaterThetaStep = 0.2666666805744171f;
+    f32 PCShaderWaterAmplitudeScale = 4.0f;
+    f32 PCShaderWaterTheta = 0.699999988079071f;
+    i32 PCShaderWaterLastFrame = -1;
+    NUVEC4 PCShaderWaterTable[32] = {0};
+    struct PC_SHADER_WATER_MATERIAL_VIEW *PCShaderWaterPreviousMaterial = NULL;
+    u32 PCShaderWaterInitializationBits = 0;
+    f32 PCShaderMaterialSamplerBiasOffsetPc = 0.0f;
+    void *NuDisplayMaterialLastPc = NULL;
+    PC_TEXTURE_RESOURCE_PC *NuDisplayHandlerVertexShaderCachePc = NULL;
+    PC_TEXTURE_RESOURCE_PC *NuDisplayHandlerPixelShaderCachePc = NULL;
+    struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialDebrisProgramsPc = NULL;
+    struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialGlassProgramsPc = NULL;
+    struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialFaceOnDecalProgramsPc = NULL;
+    struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialFaceOnProgramsPc = NULL;
+    struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialDefaultProgramsPc = NULL;
+    PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDebrisDeclarationPc = NULL;
+    PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialFaceOnDeclarationPc = NULL;
+    PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDefaultDeclarationPc = NULL;
+    i32 NuDisplayMaterialDistortTexturePc = 0;
+    NUVEC4 NuDisplayHandlerDefaultTintPc = {1.0f, 1.0f, 1.0f, 1.0f};
+    i32 NuPostEffectBackBufferFramePc = -1;
+    GRAPHICS_RENDER_TEXTURE_PC *NuPostEffectBackBufferTexturePc = NULL;
+    GRAPHICS_RENDER_TEXTURE_PC *NuPostEffectBackBufferCopyPc = NULL;
+    i32 PCFramePresentationStatePc = 0;
+}
+#pragma bss_seg()
+#pragma data_seg()
+
+#pragma const_seg(".rdata$MaterialSamplerConstantsPc")
+extern "C" {
+    extern const f32 PCSamplerBiasMinimum = -16.0f;
+    extern const f32 PCSamplerBiasMaximum = 15.96875f;
+    extern const f64 PCSamplerBiasMaximumComparison = 15.96875;
+}
+#pragma const_seg()
+
+#pragma data_seg(".data$DisplayHandlerTablePc")
+#pragma bss_seg(".bss$DisplayHandlerTablePc")
+extern "C" PC_DISPLAY_ITEM_HANDLER_PC PCDisplayItemHandlerPrefixPc[49] = {
+    NuDisplayListMaterialPc,             /* index0,itemtype0x80,native0x608000 */
+    NULL,                                /* index1,itemtype0x81,native0x0 */
+    NuDisplayListDrawGeometryPc,         /* index2,itemtype0x82,native0x607880 */
+    NuDisplayListTransformPc,            /* index3,itemtype0x83,native0x5fd6b0 */
+    NULL,                                /* index4,itemtype0x84,native0x0 */
+    NULL,                                /* index5,itemtype0x85,native0x0 */
+    NULL,                                /* index6,itemtype0x86,native0x0 */
+    NULL,                                /* index7,itemtype0x87,native0x0 */
+    NULL,                                /* index8,itemtype0x88,native0x0 */
+    NULL,                                /* index9,itemtype0x89,native0x0 */
+    NULL,                                /* index10,itemtype0x8a,native0x0 */
+    NuDisplayListDrawGeometryPc,         /* index11,itemtype0x8b,native0x607880 */
+    NuDisplayListTransformTransposePc,   /* index12,itemtype0x8c,native0x5fd7f0 */
+    NULL,                                /* index13,itemtype0x8d,native0x0 */
+    NULL,                                /* index14,itemtype0x8e,native0x0 */
+    NuDisplayListDrawFaceOnPc,           /* index15,itemtype0x8f,native0x5fd9f0 */
+    NuDisplayListFaceOnTransformPc,      /* index16,itemtype0x90,native0x5fda20 */
+    NULL,                                /* index17,itemtype0x91,native0x0 */
+    NULL,                                /* index18,itemtype0x92,native0x0 */
+    NuDisplayListDrawPrimitive2DPc,      /* index19,itemtype0x93,native0x5fd560 */
+    NuDisplayListLightsPc,               /* index20,itemtype0x94,native0x5fdb60 */
+    NULL,                                /* index21,itemtype0x95,native0x0 */
+    NULL,                                /* index22,itemtype0x96,native0x0 */
+    NULL,                                /* index23,itemtype0x97,native0x0 */
+    NuDisplayListDrawGeometryPc,         /* index24,itemtype0x98,native0x607880 */
+    NuDisplayListSkinPalettePc,          /* index25,itemtype0x99,native0x5fd9c0 */
+    NuDisplayListCameraPc,               /* index26,itemtype0x9a,native0x603b20 */
+    NULL,                                /* index27,itemtype0x9b,native0x0 */
+    NULL,                                /* index28,itemtype0x9c,native0x0 */
+    NULL,                                /* index29,itemtype0x9d,native0x0 */
+    NULL,                                /* index30,itemtype0x9e,native0x0 */
+    NULL,                                /* index31,itemtype0x9f,native0x0 */
+    NULL,                                /* index32,itemtype0xa0,native0x0 */
+    NULL,                                /* index33,itemtype0xa1,native0x0 */
+    NULL,                                /* index34,itemtype0xa2,native0x0 */
+    NULL,                                /* index35,itemtype0xa3,native0x0 */
+    NULL,                                /* index36,itemtype0xa4,native0x0 */
+    NuDisplayListTintPc,                 /* index37,itemtype0xa5,native0x5fdd20 */
+    NuDisplayListFogPc,                  /* index38,itemtype0xa6,native0x5fdd70 */
+    NuDisplayListDrawDebrisPc,           /* index39,itemtype0xa7,native0x5ffd50 */
+    NULL,                                /* index40,itemtype0xa8,native0x0 */
+    NuDisplayListVertexGroupsPc,         /* index41,itemtype0xa9,native0x603a20 */
+    NuDisplayListVertexOffsetsPc,        /* index42,itemtype0xaa,native0x603a60 */
+    NuDisplayListReflectionPc,           /* index43,itemtype0xab,native0x6015e0 */
+    NULL,                                /* index44,itemtype0xac,native0x0 */
+    NuDisplayListPacketAdPc,             /* index45,itemtype0xad,native0x5fe0d0 */
+    NuDisplayListLegacyLightmapPc,       /* index46,itemtype0xae,native0x5fdfd0 */
+    NuDisplayListLegacyLightmapOffsetPc, /* index47,itemtype0xaf,native0x5fe050 */
+    NuDisplayListLightmapPacketPc,       /* index48,itemtype0xb0,native0x5fde50 */
+};
+extern "C" PC_DISPLAY_ITEM_HANDLER_PC *PCDisplayItemHandlersPc = PCDisplayItemHandlerPrefixPc;
+#pragma bss_seg()
+#pragma data_seg()

@@ -5327,3 +5327,17 @@ size. Nine state views have verified native initializers and unknown owning
 extents, so they earn no data extent or exact credit. The existing renderer gains
 seven verified calls and no newly compared range; complete comparison still
 reports it as nonexact. See [the checkpoint](transfer-checkpoint.json).
+
+### Material/display source checkpoint WW (2026-10-09)
+
+27 full native functions add 8,078 newly compared PC bytes; 14/463 bytes are exact.
+The shader-parameter dispatcher includes its entire 4,472-byte native extent and
+owned tables. Private helper/caller ABIs, named field offsets and widened float
+constants are retained; ColorWrite takes two u8 formals and an i32. The native
+presentation wrapper returns zero after calling the real backend and RET-only
+platform leaf; that return is not evidence of successful GPU presentation.
+DrawScene's prior unimplemented 209-byte inventory extent cropped the final E9
+byte; the complete 210-byte body ends at 5f03b2, excluding following CC padding.
+Four existing frame/render caller repairs earn no additional range credit. Full
+source, output-preservation, runtime-fault and remaining-provider qualifications
+are in transfer-checkpoint.json.

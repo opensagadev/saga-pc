@@ -4,14 +4,12 @@ This project reconstructs the GOG PC executable with MSVC 2005 and compares the
 resulting x86 COFF objects against the original. The default build also links
 our current sources into a Windows executable using the original MSVC linker
 and libraries. The entry path now connects native hardware/window/input startup. The real renderer
-stream initializer is now connected. The current working source reconnects the genuine shader publisher and supplies
-the native minimum declaration-cache backing. It still crashes while packaging
-a display-list scene before a level is loaded: a scene-parameter copy at index 32
-overwrites the initialized first-list pointer. The original array capacity and
-missing frame-reset path require further verification. Device presentation and
-recurring gameplay remain unverified.
-Configuration parsers exist, but their presence does not complete resource/world
-loading. The executable is not playable.
+stream initializer is now connected. The current source connects genuine shader publication and frame/render callers.
+Its latest ordinary startup run crashes in LoadPerm1, reading the texture ID of
+NULL DebMat[5]; the earlier native DebrisSetup call remains omitted. Real
+material/resource producers are the next connected matching targets. Original
+scene/declaration allocation capacities remain qualified. Device presentation,
+world loading and recurring gameplay are unverified; the source is not playable.
 There are no host or WebAssembly game targets.
 
 ## Requirements and setup
@@ -130,13 +128,13 @@ Startup code may use `STUBBED()` or `STUBBED_NAMED(...)` to mark a verified PC
 call or state transition whose dependency is still missing. These markers emit
 no code in matching builds and do not imply a byte match. Keep the original call
 order, document the skipped work, and replace markers down the dependency tree.
-The source-only executable connects real window/input, renderer configuration
-and material setup, but the current working source still fails while packaging a display-list
-scene before world loading. The exact native scene-copy at index 32 overwrites its initialized first-list
-pointer while the genuine frame/renderer path remains omitted. The declaration cache has its verified two-row startup
-minimum, while its original full capacity remains unknown. See the current frontier in
-[the execution policy](config/transfer-execution.md). Automated Wine tests suppress the debugger dialog in their own
-prefix, preserve the genuine crash output and exit, and clean only their own
+The source-only executable connects real window/input, shader publication and
+frame/render callers. Its latest startup failure is a NULL DebMat[5] texture-ID
+read in LoadPerm1 after the omitted native DebrisSetup call. The original
+scene capacity and full declaration-cache capacity remain unproved. See the
+current frontier in [the execution policy](config/transfer-execution.md).
+Automated Wine tests suppress the debugger dialog in their own prefix, retain
+the genuine crash output and exit, and clean only their own identity-bound
 process group; see [the execution policy](config/transfer-execution.md).
 Remaining device actions, resource fixups and the recurring update/render loop
 remain incomplete. Its DAT metadata parser is

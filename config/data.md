@@ -2394,3 +2394,12 @@ The native FaceOnTransform, lightmap-update and changed-shadow uniform calls hav
 vector-width reads beyond their nominal tint/local/scalar objects. Those complete
 bodies are retained and nonexact; these paths were not exercised. No invented
 padding, uniform metadata override or zeroed adjacent storage claims equivalence.
+
+### Material/display state checkpoint WW (2026-10-09)
+
+31 typed definitions provide 840 working bytes with complete native-equal initializers.
+The handler table is the observed 49-word prefix at 80e6d0 (27 NULLs, 22 pointers
+to 20 real callbacks), with its canonical pointer at 80e794. Three sampler limits
+remain const; mutable water, material, back-buffer and presentation states retain
+separate native initializers. Every original owning extent remains unknown/blank:
+there is zero allocation or exact-data credit, and no inferred larger table.
