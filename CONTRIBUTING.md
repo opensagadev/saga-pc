@@ -3,13 +3,10 @@
 This project reconstructs the GOG PC executable with MSVC 2005 and compares the
 resulting x86 COFF objects against the original. The default build also links
 our current sources into a Windows executable using the original MSVC linker
-and libraries. The entry path now connects native hardware/window/input startup. The real renderer
-stream initializer is now connected. The current source connects genuine shader publication, frame/render callers
-and debris setup. A verified four-record cache minimum passes the earlier copy
-fault; full native capacity remains unknown. The latest observed failure is a
-NULL material-override list in NuMtlDestroy, whose genuine initialization call is
-still omitted. Resource/device lifetimes remain incomplete; the source is not
-playable.
+and libraries. Genuine hardware/window/input, shader publication, frame/render,
+debris and material-override startup calls are connected. The latest source run
+faults in declaration search with a corrupted count. Full cache capacity and
+resource/device lifetimes remain unresolved; the source is not playable.
 There are no host or WebAssembly game targets.
 
 ## Requirements and setup
@@ -129,10 +126,9 @@ call or state transition whose dependency is still missing. These markers emit
 no code in matching builds and do not imply a byte match. Keep the original call
 order, document the skipped work, and replace markers down the dependency tree.
 The source-only executable connects real window/input, shader publication,
-frame/render and debris callers. Its current startup failure is a NULL override
-list consumed by NuMtlDestroy; the missing genuine native list producer is the
-next transfer. Full cache capacity and resource lifetimes remain unproved.
-See the current frontier in [the execution policy](config/transfer-execution.md).
+frame/render, debris and material-list callers. Its latest startup failure is
+an invalid declaration-cache count; full capacity and the preceding write remain
+under investigation. See [the execution policy](config/transfer-execution.md).
 Automated Wine tests suppress the debugger dialog in their own prefix, retain
 genuine crash details and clean only their identity-bound process group.
 Headless debugger termination is recorded separately from natural game exit.

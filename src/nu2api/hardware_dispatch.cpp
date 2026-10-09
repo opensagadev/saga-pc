@@ -358,7 +358,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
         *pads[2] = NuPadOpen(2, 0);
     if (pads[3])
         *pads[3] = NuPadOpen(3, 0);
-    STUBBED_NAMED(0x005e4eb0); /* (512, buffer, end) */
+    NuMtlInitOverride(512, buffer, end);
     STUBBED_NAMED(0x006daea0); /* (1) */
     STUBBED_NAMED(0x005f2800); /* (parameter_4c, buffer, *end) */
     STUBBED_NAMED(0x006ddec0);

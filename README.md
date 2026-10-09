@@ -1,14 +1,13 @@
 # saga-pc
 
-**Runtime status: not playable.** Genuine hardware/window/input, shader publication,
-frame/render and debris startup calls are connected. A verified four-record cache
-minimum passed the earlier declaration-copy crash. Startup now faults because
-NuMtlDestroy receives a NULL material-override list; its genuine initializer is
-still omitted. Full cache capacity, resource/device lifetimes and recurring
-gameplay remain incomplete. See the [current roadmap](docs/roadmap.md).
+**Runtime status: not playable.** Genuine hardware/window/input, shader,
+frame/render, debris and material-list startup calls are connected. The latest
+run faults in vertex-declaration search with a corrupted count. Full original
+cache capacity and resource/device lifetimes remain unresolved. See the
+[current roadmap](docs/roadmap.md).
 
 <!-- matching-badge -->
-![fuzzy code](https://img.shields.io/badge/fuzzy%20code-29.499%25-yellow)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-43.449%25-yellow) ![mapped data](https://img.shields.io/badge/mapped%20data-1.796%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-5.458%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
+![fuzzy code](https://img.shields.io/badge/fuzzy%20code-29.500%25-yellow)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-43.450%25-yellow) ![mapped data](https://img.shields.io/badge/mapped%20data-1.796%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-5.458%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 **saga-pc** is a matching decompilation of the GOG PC release of
 *LEGO Star Wars: The Complete Saga*.

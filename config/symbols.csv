@@ -3534,6 +3534,7 @@ address    , symbol                                                         , si
 0x5e4d20,_NuMtlCreateEx,19,"NUMTL* __cdecl(i32,u32)"
 0x5e4d40,_NuMtlCreate3D,20,NUMTL* __cdecl(i32)
 0x5e4d60,_NuMtlCreateEx3D,19,"NUMTL* __cdecl(i32,u32)"
+0x5e4eb0,_NuMtlInitOverride,35,"void __cdecl(i32,VARIPTR*,VARIPTR*)"
 0x5e4ee0,_NuMtlLookupVariantPC,75,
 0x5e4f30,_NuMtlRegisterForOverride,231,"void __cdecl(NUMTL*,u32*,i32)"
 0x5e5020,_NuMtlFindVariantMtl,106,"NUMTL* __cdecl(NUMTL*,NUMTL*)"

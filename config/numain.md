@@ -1,27 +1,27 @@
 # NuMain investigation queue
 
 Current whole-project transfer status is recorded in
-[transfer-execution.md](transfer-execution.md). Genuine hardware, window, input,
-shader, frame/render and debris startup calls are connected.
-The latest ordinary source run passed the earlier vertex-cache copy failure and
-exited 5 after 7.879 seconds at a new NULL-list read. A separate headless capture
-proves NuMtlDestroy passes NULL g_overrideList to NuLstGetNext. That complete
-40-byte list function is byte exact; its NULSTHDR.head read at +8 faults. The
-canonical list pointer has no producer in current source. Hardware startup still
-omits native NuMtlInitOverride at 0x5e4eb0 with arguments (512, buffer, end).
-That genuine list initializer is the next connected transfer. The separate
-shader-cache initializer at 0x60ded0 does not produce this list.
+[transfer-execution.md](transfer-execution.md).
+The genuine material-override initializer NuMtlInitOverride at 0x5e4eb0 now
+runs in the native hardware-startup order, with arguments (512, buffer, end).
+Its complete 35 bytes match native. The existing real list allocator retains
+its native arena-size check and failure behavior. No artificial list or backing
+provider is added. The earlier NULL-list fault no longer appears.
 
-The vertex-declaration cache now supplies a reviewed four-record minimum view
-for four verified native descriptors. All 24 insertion orders fit this prefix;
-its complete 32-byte zero initializer matches native and preserves the old
-16 bytes. The counter, getter, search and copy bodies remain unchanged. This is
-a minimum accessed prefix, with original owning extent blank and zero data or
-allocation credit. Full native capacity and all-startup sufficiency remain
-unproved. Passing the earlier crash is an observation, not a full capacity proof.
+The latest ordinary source run exits 5 after 54.710 seconds in the byte-exact
+82-byte PCVertexDeclarationFindSlot. A separate headless capture proves that
+NuGetVertexDeclaration loads count 33,556,746 (0x0200090a) from the canonical
+counter, with descriptor 0x02000909. In our layout that counter occupies cache+32,
+the key position of a hypothetical fifth record. An insertion overwriting the
+counter is the leading explanation; the preceding write itself was not captured.
+The native counter precedes its cache by eight bytes. Full original cache
+capacity remains unproved. The four-record prefix is a verified minimum for the
+earlier finite producer domain, not sufficient storage for every startup input.
+Do not grow the array, move the counter, reset counts or add search/copy guards
+without recovering the actual storage contract.
 Resource/world actions and device lifetimes remain incomplete. Original scene
-capacity is still unproved. The source executable is not playable. Dated notes
-below preserve historical states; use current source and the work plan for gaps.
+capacity is also unproved. Dated notes below retain historical observations;
+use the current source and work plan for active gaps.
 
 The original PC `NuMain` is at `0x00492b40`, with a complete 4,332-byte extent.
 [Identification notes](identification.md) explain its entry chain and implemented

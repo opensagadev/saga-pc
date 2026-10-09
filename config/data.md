@@ -2426,3 +2426,15 @@ Original owning extent stays blank: zero allocation, mapping-extent or exact-dat
 credit. This is a minimum view, not an inferred original capacity or proof of all
 startup inputs. The ordinary run passed the earlier copy crash and reached a
 separate NULL material-override list; no artificial list publication is added.
+
+### Declaration-count frontier after AAA (2026-10-09)
+
+No central data changes are made in AAA. The restored real material-list producer
+clears the previous NULL-list fault. A separate debugger capture attributes the
+next fault to the exact declaration search, called with count 0x0200090a and
+descriptor 0x02000909. Our counter is cache+32, the key position of a hypothetical
+fifth record; native places the counter eight bytes before its cache. Insertion
+overwrite is a causal hypothesis, not a captured preceding write. Full owning
+capacity remains unknown. Do not treat the earlier finite four-descriptor domain
+as an all-startup upper bound, infer 256 entries from Android/Mac spacing, move
+globals, reset the counter or add guards to bypass the failure.

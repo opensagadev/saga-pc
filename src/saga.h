@@ -15833,6 +15833,7 @@ extern "C" {
     RTL_SET_PC *__cdecl rtlLoadSet(char *, VARIPTR *, i32);
     extern i32 RtlFileVersionPc;
     NULSTHDR *__cdecl NuLstCreateBuff(i32, i32, VARIPTR *, VARIPTR, i32);
+    void __cdecl NuMtlInitOverride(i32, VARIPTR *, VARIPTR *);
     i32 __cdecl rtlInitDynamic(VARIPTR *, VARIPTR, i32);
     void *__cdecl LoadGizFlow(void *, void *, char *, VARIPTR *, VARIPTR *);
     void __cdecl GizmoSysAddGizmos(void *, GIZFLOW_PC *, void *);

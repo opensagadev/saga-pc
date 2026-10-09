@@ -9,56 +9,49 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Verified published baseline XX is [d1695b6](https://github.com/opensagadev/saga-pc/commit/d1695b6f9004d105f4fbf500dc9bdc069a93aa4b), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37885753616) passing all 13 steps. YY exact-revision CI is still pending. ZZ exact-revision CI will be checked after publication.
+Verified published baseline ZZ is [822c1c5](https://github.com/opensagadev/saga-pc/commit/822c1c5b13a24633b71bccf9209120d2f5c8b15f), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37889168457) passing all 13 steps. YY also passed all 13 steps. AAA exact-revision CI will be checked after publication.
 
-Checkpoint ZZ adds six complete post-effect/light member methods / 219 newly
-compared PC bytes; four methods / 47 bytes are exact. The genuine generic
-post-filter cohort is consolidated in nupostfilter.cpp; related deferred/light
-methods share nucore.cpp. All 17 old functions and three old hardware initializers
-retain their complete outputs. The deferred light array/API now names the actual
-NuDynamicLight object type; its pointer ABI is unchanged. Named shadow-list fields
-preserve the existing 0x380 light-record layout. No class instances, constructors,
-vtables or higher renderer activation are fabricated.
+Checkpoint AAA reconnects the genuine material-override list producer and its
+hardware caller. One complete function adds 35 newly compared PC bytes, all exact;
+no new data bytes or duplicated caller bytes receive credit. Of 16,624 old complete
+outputs, 16,623 remain byte identical; only the intended hardware caller changes.
+Independent review verifies all 87 caller CFG blocks, 31 switch destinations and
+the complete 482-byte switch tail, with the single added native call. All 2,447
+previous exact code copies, 5,709 data copies and 13 named members survive.
 
-Whole-PC fuzzy coverage is 29.498644%, up
-0.003541 percentage points from YY. Exact code is
-233,733/3,471,246 bytes (6.733404%), up 47; exact data remains 637,833 bytes.
-All 2,443 previous exact code copies, 5,709 data copies and 13 named members
-survive. Of 16,618 prior complete outputs, 16,614 are byte identical; three
-unchanged-source Camera/Init/Particle outputs reproduce specific independently
-reviewed historical pairs. The remaining change is the explicit native-zero
-cache prefix extension. No general compiler-variation waiver is used.
+Whole-PC fuzzy coverage is 29.500221%, up
+0.001577 percentage points. Exact code is
+233,768/3,471,246 bytes (6.734412%), up 35; exact data remains
+637,833 bytes. Required checks pass: 796 tests (three existing skips), LLVM18
+formatting and 343-unit analysis, normal source linking/object coverage and full
+retail comparison. All 89 natural SDK-output descriptors retain their admitted
+contracts, with refreshed header recipe pins and complete link/reference proof.
 
-Required checks pass: 796 tests (three existing skips), LLVM18 formatting and
-343-unit analysis, normal source linking/object checks and full retail matching.
-The 89 natural SDK outputs retain identical admission descriptors; only header
-recipe pins change, with fresh complete link/archive/reference proof and zero
-PC credit. A sandbox Wine IPC denial was resolved by rerunning unchanged checks
-with the authorized build permissions.
+The genuine material-override initializer NuMtlInitOverride at 0x5e4eb0 now
+runs in the native hardware-startup order, with arguments (512, buffer, end).
+Its complete 35 bytes match native. The existing real list allocator retains
+its native arena-size check and failure behavior. No artificial list or backing
+provider is added. The earlier NULL-list fault no longer appears.
 
-The latest ordinary source run passed the earlier vertex-cache copy failure and
-exited 5 after 7.879 seconds at a new NULL-list read. A separate headless capture
-proves NuMtlDestroy passes NULL g_overrideList to NuLstGetNext. That complete
-40-byte list function is byte exact; its NULSTHDR.head read at +8 faults. The
-canonical list pointer has no producer in current source. Hardware startup still
-omits native NuMtlInitOverride at 0x5e4eb0 with arguments (512, buffer, end).
-That genuine list initializer is the next connected transfer. The separate
-shader-cache initializer at 0x60ded0 does not produce this list.
+The latest ordinary source run exits 5 after 54.710 seconds in the byte-exact
+82-byte PCVertexDeclarationFindSlot. A separate headless capture proves that
+NuGetVertexDeclaration loads count 33,556,746 (0x0200090a) from the canonical
+counter, with descriptor 0x02000909. In our layout that counter occupies cache+32,
+the key position of a hypothetical fifth record. An insertion overwriting the
+counter is the leading explanation; the preceding write itself was not captured.
+The native counter precedes its cache by eight bytes. Full original cache
+capacity remains unproved. The four-record prefix is a verified minimum for the
+earlier finite producer domain, not sufficient storage for every startup input.
+Do not grow the array, move the counter, reset counts or add search/copy guards
+without recovering the actual storage contract.
 
-The vertex-declaration cache now supplies a reviewed four-record minimum view
-for four verified native descriptors. All 24 insertion orders fit this prefix;
-its complete 32-byte zero initializer matches native and preserves the old
-16 bytes. The counter, getter, search and copy bodies remain unchanged. This is
-a minimum accessed prefix, with original owning extent blank and zero data or
-allocation credit. Full native capacity and all-startup sufficiency remain
-unproved. Passing the earlier crash is an observation, not a full capacity proof.
-
-Both runs preserve all 343 objects, 456 input pins and frozen image/report
-artifacts. Wine crash suppression was set and queried; cleanup left no owned
-processes, debuggers or windows. The headless debugger captured registers/stack
-and then killed only its debuggee: debugger exit zero is not natural game exit.
-Filter/resource lifetimes, full cache capacity, recurring frames, GPU presentation,
-loaded world and gameplay remain unverified. The source build is not playable.
+Both observations preserve all 343 objects, 456 input pins and frozen image/report
+artifacts. Wine crash-dialog suppression was set and queried; cleanup left no
+owned processes, debuggers or windows. The headless debugger exits zero after
+53.568 seconds and explicitly terminates its debuggee after capture; natural game
+exit is unknown for that run. Resource/device lifetimes, recurring frames, GPU
+presentation, a loaded world and gameplay remain unverified. The source build
+is not playable.
 
 ## Ownership and continuous work
 

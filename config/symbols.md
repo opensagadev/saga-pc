@@ -5373,3 +5373,13 @@ cache map ctype now describes four accessed records; its original size stays
 blank. Complete zero initializers establish no full capacity or allocation credit.
 The next runtime failure is in exact NuLstGetNext40 called by NuMtlDestroy with
 a NULL override list; the missing native initializer is reviewed separately.
+
+### Material-override startup checkpoint AAA (2026-10-09)
+
+NuMtlInitOverride at 0x5e4eb0 has a complete 35-byte extent and is byte exact.
+It calls genuine NuLstCreateBuff with 512 records of the verified 12-byte
+material-variant type, a buffer pointer, dereferenced end pointer and alignment
+16. The native hardware call at 0x6dc3c8 occurs after Pad3Open and before the
+following font/resource setup. Actual caller CFG and complete switch-tail review
+preserve all old actions and add only this call. The separate material shader
+initializer at 0x60ded0 does not publish g_overrideList. No new data is emitted.

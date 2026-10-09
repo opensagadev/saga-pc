@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1507014,
-    "matched_code_bytes": 233733,
-    "matching_percent": 6.733403509863606,
-    "fuzzy_coverage_percent": 29.498643890943875,
-    "mapped_functions": 5352,
-    "matched_functions": 2443,
-    "objdiff_fuzzy_percent": 69.4517,
-    "objdiff_total_code": 1475230,
+    "mapped_code_bytes": 1507049,
+    "matched_code_bytes": 233768,
+    "matching_percent": 6.734411793344522,
+    "fuzzy_coverage_percent": 29.5002205186908,
+    "mapped_functions": 5353,
+    "matched_functions": 2444,
+    "objdiff_fuzzy_percent": 69.45376,
+    "objdiff_total_code": 1475265,
     "image_bytes": 40067072,
-    "mapped_bytes": 2155218,
-    "mapping_percent": 5.37902545012523,
+    "mapped_bytes": 2155253,
+    "mapping_percent": 5.379112803650838,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -38,7 +38,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 1508208
+        "mapped_bytes": 1508243
       },
       {
         "name": ".rdata",
@@ -55,17 +55,17 @@
         "mapped_bytes": 616824
       }
     ],
-    "mapping_known_size_symbols": 9644,
+    "mapping_known_size_symbols": 9645,
     "mapping_unknown_size_symbols": 5638,
-    "mapping_code_bytes": 1508208,
+    "mapping_code_bytes": 1508243,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 43.448606062491685,
+    "mapping_code_percent": 43.4496143459726,
     "mapping_data_bytes": 647010,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 1.7963036473617815,
-    "mapping_code_data_bytes": 2155218,
+    "mapping_code_data_bytes": 2155253,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 5.457600480848267,
+    "mapping_code_data_percent": 5.457689110405384,
     "matched_data_region_bytes": 637833
   },
   "newly_compared": [
@@ -36126,10 +36126,11 @@
         "exact_revision_all13_steps": "SUCCESS"
       },
       "publication": {
-        "status": "PUSHED_EXACT_REVISION_CI_PENDING",
+        "status": "EXACT_REVISION_ALL13_CI_STEPS_SUCCESS",
         "commit": "4b5ed4cd43601ef844960122e5e52a2fd8fce67b",
         "CI_run": 37887891166,
-        "CI_url": "https://github.com/opensagadev/saga-pc/actions/runs/37887891166"
+        "CI_url": "https://github.com/opensagadev/saga-pc/actions/runs/37887891166",
+        "CI_verified_steps": 13
       },
       "new_functions": 12,
       "new_unique_compared_PC_bytes": 988,
@@ -36442,7 +36443,13 @@
       "date": "2026-10-09",
       "scope": "Genuine post-effect/light methods, canonical source cohorts and native-producer cache minimum; observed runtime frontier advanced",
       "baseline_commit": "4b5ed4cd43601ef844960122e5e52a2fd8fce67b",
-      "publication": "Exact pushed revision CI pending at commit",
+      "publication": {
+        "status": "EXACT_REVISION_ALL13_CI_STEPS_SUCCESS",
+        "commit": "822c1c5b13a24633b71bccf9209120d2f5c8b15f",
+        "CI_run": 37889168457,
+        "CI_url": "https://github.com/opensagadev/saga-pc/actions/runs/37889168457",
+        "CI_verified_steps": 13
+      },
       "new_functions": 6,
       "new_unique_compared_PC_bytes": 219,
       "new_exact_functions": 4,
@@ -36892,7 +36899,226 @@
       "next_connected_wave": "GenuineNuMtlInitOverride5e4eb0/35 plusnative512hardwarecall, actualproducerofNULLoverride list; shaderfactory/posteffectresourceclosure follows separately",
       "ongoing_goal": "active;checkpointdoesnotcompletegame",
       "human_journal": "Preserved3unrelated additions unstaged SHA4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7"
+    },
+    {
+      "checkpoint": "AAA",
+      "date": "2026-10-09",
+      "scope": "Genuine material-override initialization and native hardware caller; bounded crash diagnosis",
+      "baseline_commit": "822c1c5b13a24633b71bccf9209120d2f5c8b15f",
+      "publication": "Exact pushed revision CI pending at commit",
+      "new_functions": 1,
+      "new_unique_compared_PC_bytes": 35,
+      "new_exact_functions": 1,
+      "new_exact_code_bytes": 35,
+      "new_exact_data_bytes": 0,
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1507049,
+        "matched_code_bytes": 233768,
+        "matching_percent": 6.734411793344522,
+        "fuzzy_coverage_percent": 29.5002205186908,
+        "mapped_functions": 5353,
+        "matched_functions": 2444,
+        "objdiff_fuzzy_percent": 69.45376,
+        "objdiff_total_code": 1475265,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2155253,
+        "mapping_percent": 5.379112803650838,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1508243
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30186
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9645,
+        "mapping_unknown_size_symbols": 5638,
+        "mapping_code_bytes": 1508243,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 43.4496143459726,
+        "mapping_data_bytes": 647010,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7963036473617815,
+        "mapping_code_data_bytes": 2155253,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.457689110405384,
+        "matched_data_region_bytes": 637833
+      },
+      "fuzzy_delta_pp": 0.0015766277469246859,
+      "old_exact_preservation": {
+        "functions": {
+          "exact_rows_preserved": 2443,
+          "physical_copies_preserved": 2447
+        },
+        "data": {
+          "exact_rows_preserved": 3803,
+          "physical_copies_preserved": 5709
+        },
+        "named_members_preserved": 13,
+        "new_functions": [
+          {
+            "name": "NuMtlInitOverride",
+            "symbol": "_NuMtlInitOverride",
+            "address": "0x005e4eb0",
+            "units": [
+              "src/nu2api/numtl.c"
+            ],
+            "target_size": 35,
+            "exact_match": true,
+            "objects": [
+              {
+                "unit": "src/nu2api/numtl.c",
+                "base_size": 35,
+                "exact_match": true,
+                "target_sha256": "8be45fdd47272259a2a8a2abdd87a08b0eacddad895bc02821c7a072d469e852",
+                "base_sha256": "8be45fdd47272259a2a8a2abdd87a08b0eacddad895bc02821c7a072d469e852",
+                "relocation_count": 2,
+                "comparison_unit": "005e4eb0-25803e4ba0ca",
+                "objdiff_percent": 100.0
+              }
+            ],
+            "status": "exact",
+            "objdiff_percent": 100.0
+          }
+        ],
+        "new_unique_native_function_bytes": 35,
+        "exact_code_delta": 35,
+        "exact_data_delta": 0,
+        "fuzzy_delta_pp": 0.0015766277469246859,
+        "source_report_sha256": "c5ae1a1f03d8a10088eccc66615dc920343150c61c8aaebaff38a2ef3b68eec9",
+        "candidate_only_proof": {
+          "status": "validated natural compiler outputs; original disposition unproved",
+          "occurrences": 89,
+          "functions": 85,
+          "private_SDK_scalars": 4,
+          "archive_members": 4782,
+          "selected_members": 434,
+          "descriptor_sha256": "8c91610b4aee3f14258043d65427e1b5a28870a924ad41f0c6e8e56e641606ae",
+          "normal_link_receipt_sha256": "3d8e156e415a20fdf1ba9dcf4999740cad4f98b141254b03b7835ca9d8cc7afb",
+          "source_exe_sha256": "5f94fb8c8302775e24dbb1c615d223826fb7a3620400b7d7a462e39e9d51ef96",
+          "local_complete_proof_sha256": "dee4a759a1a5842c94069baabc382aa625fa1981ddc26b9cf00960c3433b155f",
+          "original_binding": null,
+          "original_extent": null,
+          "PC_credit": 0
+        }
+      },
+      "prior_output_preservation": {
+        "baseline": "ZZ822c1c5_FROZEN_NORMAL_RETAIL_SOURCE",
+        "counts": {
+          "functions": 5260,
+          "data": 11364,
+          "identical_full_relocated": 16623
+        },
+        "changes": [
+          {
+            "unit": "src/nu2api/hardware_dispatch.cpp",
+            "symbol": "_NuInitHardwarePc",
+            "successor": "_NuInitHardwarePc",
+            "old_size": 2018,
+            "new_size": 2034,
+            "old_raw_sha": "0aa089d7be9df47610f47151be39a098ca92137b7f92f40c137e500471751fd6",
+            "new_raw_sha": "7707f7040d90b8dae7bfcb2c00209959488074aef993d743126b1853384746be"
+          }
+        ],
+        "qualified": [],
+        "map_sha256": "525695fcc330fc7646939169f74829edb93473d01e10c97e7795b11f9405aaa9",
+        "source_exe_sha256": "5f94fb8c8302775e24dbb1c615d223826fb7a3620400b7d7a462e39e9d51ef96"
+      },
+      "checks": {
+        "make_check": "PASS796tests/3existing skips;LLVM18full343",
+        "normal_build_check_objects": "PASS5176functions/11360data/343objects;allrefsresolve",
+        "make_match": "PASScomplete extents/allprior exact code/data/13members"
+      },
+      "runtime": {
+        "ordinary_exit": 5,
+        "ordinary_elapsed_seconds": 54.71,
+        "previous_NULL_list_fault_observed": false,
+        "next_fault": "exactPCVertexDeclarationFindSlot82/native741910 invalidcount",
+        "headless_debugger_exit": 0,
+        "headless_elapsed_seconds": 53.568,
+        "headless_natural_game_exit": "UNKNOWN explicitdebuggeekillaftercapture",
+        "headless_count": 33556746,
+        "headless_descriptor": "0x02000909",
+        "preceding_write": "UNOBSERVED",
+        "original_cache_capacity": null,
+        "frozen_objects": 343,
+        "frozen_inputs": 456,
+        "all_actual_pins_unchanged": true,
+        "ShowCrashDialogDWORD0_set_query": true,
+        "owned_processes_debuggers_windows_empty": true,
+        "gameplay_frames_GPU_world": "unverified"
+      },
+      "evidence": [
+        {
+          "path": "build/analysis/material-override-startup-main-integration-v1/exact-preservation-and-delta.json",
+          "sha256": "8e72eb3231476599977ef866bae4eedf087c46b382c53a816e512f53c91626b2"
+        },
+        {
+          "path": "build/analysis/material-override-startup-main-integration-v1/aggregate-prior-preservation.json",
+          "sha256": "732abac6f85a710b84f3e5c48c45cbc5331a537c5dbdc167d617fdc1d2037b3c"
+        },
+        {
+          "path": "build/analysis/material-override-startup-main-integration-v1/frozen-normal-v1/normal-object-manifest.json",
+          "sha256": "6bb0a8cd3fb7e5a26728eb9593554d6ea3e372ff2ffece24be7e3284172d0555"
+        },
+        {
+          "path": "build/analysis/material-override-startup-main-integration-v1/frozen-normal-v1/matching.json",
+          "sha256": "c5ae1a1f03d8a10088eccc66615dc920343150c61c8aaebaff38a2ef3b68eec9"
+        },
+        {
+          "path": "build/analysis/material-override-startup-main-integration-v1/normal-build.log",
+          "sha256": "11d4d22dd78069ac15060846de8ed3b7ccedb26d7f98a2b45b74544f26a1c83c"
+        },
+        {
+          "path": "build/analysis/material-override-startup-main-integration-v1/check.log",
+          "sha256": "e6af95f39090e18be20208050946c312fe156d80008cc3924edaed837d6253ee"
+        },
+        {
+          "path": "build/analysis/material-override-startup-main-integration-v1/normal-match.log",
+          "sha256": "ccedeffa93771beea482ad1b04a68a35f6f269304278a16ec2f4ed803f38f986"
+        },
+        {
+          "path": "build/analysis/material-override-startup-main-integration-v1/source-game-launcher-v1/observation/receipt.json",
+          "sha256": "09898fad0d213340763319c880e86cddc77795e9caeac20853df92f9a64e4012"
+        },
+        {
+          "path": "build/analysis/material-override-startup-main-integration-v1/source-game-launcher-v1/observation/fault-attribution.json",
+          "sha256": "827756856f09b5345ba1bd213f0b1867993973dbe2751d9bf008a5f9f58e6eb5"
+        },
+        {
+          "path": "build/analysis/material-override-startup-main-integration-v1/headless-declaration-caller-v1/observation/receipt.json",
+          "sha256": "55d744221f9229f3c108c0dc144046ae16e7ff4a5839c28a36d31522ebb3f1f3"
+        },
+        {
+          "path": "build/analysis/material-override-startup-main-integration-v1/headless-declaration-caller-v1/observation/caller-attribution.json",
+          "sha256": "46c2425fc4c14c3672197714c700ac7b39287a55536ed0aa294bcbc5a09f8d9e"
+        },
+        {
+          "path": "build/analysis/material-override-actual-normal-independent-v1/accepted-actual-normal-initializer35-caller.json",
+          "sha256": "810c157713c402ca37346c11b1855391aaaf8a8a480b6c0bb5c0a984393772dc"
+        }
+      ],
+      "next_connected_wave": "Recover original declaration cache storage; independently reconnect verified initial NuRndrSwapScreen(0) and close genuine hardware resource providers",
+      "ongoing_goal": "active; checkpointdoesnotcompletegame",
+      "human_journal": "Unrelated3additionspreservedunstaged SHA4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7"
     }
   ],
-  "latest_checkpoint": "ZZ"
+  "latest_checkpoint": "AAA"
 }

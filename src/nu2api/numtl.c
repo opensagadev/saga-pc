@@ -339,3 +339,7 @@ void __cdecl NuMtlInitEx(VARIPTR *buffer, i32 material_count) {
     NuMtlUpdatePS(numtl_defaultmtl3d);
     ++material->version;
 }
+
+void __cdecl NuMtlInitOverride(i32 count, VARIPTR *buffer, VARIPTR *end) {
+    g_overrideList = NuLstCreateBuff(count, sizeof(PC_MATERIAL_VARIANT_RECORD), buffer, *end, 0x10);
+}
