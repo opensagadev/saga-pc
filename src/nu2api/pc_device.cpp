@@ -1353,3 +1353,12 @@ extern "C" void __cdecl PCDeviceSetPixelShaderConstantsF(UINT start, const f32 *
     PCDeviceLastResult =
         PCDeviceBackend.device->methods->set_pixel_shader_constant_f(PCDeviceBackend.device, start, values, count);
 }
+
+HRESULT __thiscall PC_DEVICE_BACKEND_PC::CopySurfaceTargetPc(PC_EFFECT_SURFACE_PC *target, i32 filter, i32 unused) {
+    (void)unused;
+    GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
+    return view->methods->stretch_rect(view, current_surface, NULL, target->surface, NULL, filter);
+}
+extern "C" HRESULT __cdecl PCDeviceEndScenePc(void) {
+    return PCDeviceBackend.EndScene();
+}

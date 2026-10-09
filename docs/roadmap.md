@@ -1,29 +1,29 @@
 # Reconstruction roadmap
 
 The goal is a complete PC reconstruction from readable C/C++. The current source
-build is **not playable**. Published checkpoint II
-[`9c78272c`](https://github.com/opensagadev/saga-pc/commit/9c78272c5847aef790e82320b0a2401c20906c52)
-has [passing CI](https://github.com/opensagadev/saga-pc/actions/runs/37710401246),
-but its actual Wine run exits at a null shader-manager receiver before loading a
-level. A transient window and bounded CPU tests establish neither persistent
+build is **not playable**. Published checkpoint SS
+[`2f3c7fdb`](https://github.com/opensagadev/saga-pc/commit/2f3c7fdb38717759ab47bf35e3fef6bde895f833)
+has [passing CI](https://github.com/opensagadev/saga-pc/actions/runs/37866549493).
+Genuine shader publication is present. The latest source-game observation exits
+at a display-list pointer overwritten by the scene copy at index 32. The native
+renderer resets the count after processing scenes; its caller connection remains
+held while missing draw handlers are reconstructed. A transient window and bounded CPU tests establish neither persistent
 window/device presentation nor recurring gameplay. Code similarity and mapping
 are separate from runnable milestones; current measurements live in
 [matching.json](../matching.json).
 
-The verified QQ checkpoint [5f419786](https://github.com/opensagadev/saga-pc/commit/5f4197868473c2ce32ddaca5a932c1afb5ed3b43) passed [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37848679469).
-The current RR source adds 66 complete function extents/13,504 compared PC bytes,
-including the startup publisher and original-owner callbacks. Required checks and
-90 selected CPU assertions pass using actual normal providers; full qualifications
-are in transfer-checkpoint.json. Ten publisher actions and 19 distinct missing
-family providers remain explicit. These checks do not establish successful
-initialization, loaded assets, device presentation or gameplay. Genuine shader
-publication and complete resource lifetimes remain missing. II is still the last
-full-game observation; RR CI is pending.
+The current frame/texture source batch compares 13 new full function extents /
+2,089 PC bytes, with nine exact functions. It preserves previous exact matches.
+Nineteen draw callbacks still lack compiled source; the first nine plus their
+vector helper and a connected shader-provider family are prepared for subsequent
+integration. Original scene capacity remains unknown. Matching and the retained
+208 shader CPU assertions do not establish loaded assets, device presentation or
+gameplay. Full release qualifications are recorded in transfer-checkpoint.json.
 
 Work proceeds through connected source families and verified PC contracts:
 
-1. Complete genuine shader-manager publication and its constructor, parser,
-   compiler and backend dependencies. Verify real startup state and a persistent
+1. Close the genuine renderer, display-list handlers and frame caller path, while
+   preserving real shader publication and its constructor/parser/compiler. Verify real startup state and a persistent
    native window/input path without fabricated providers or initialization bypasses.
 2. Close device/reset/resource lifetimes and presentation. Verify repeated real
    frames and nontrivial pixels from installed assets, keeping CPU and GPU evidence

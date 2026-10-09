@@ -2,12 +2,14 @@
 
 Current whole-project transfer status is recorded in
 [transfer-execution.md](transfer-execution.md). Portable rendering, sound, resource
-I/O and gameplay additions do not close NuMain's full lifecycle. The existing
-entry-path guard remains necessary while device/input initialization, fixups,
-resource creation and world lifecycle providers are incomplete. A linked source
-executable is not yet a playable reconstruction. The input guard also stops
-before `LoadPerm` calls `NuFrameBegin`; keyboard polling requires the missing
-input owner.
+I/O and gameplay additions do not close NuMain's full lifecycle. The current
+source reaches genuine hardware, window, input and shader initialization and
+permanent-data loading. It still omits essential frame rendering and resource/world
+actions. The latest observed crash is a scene copy overwriting the display-list
+pointer at index 32; the genuine renderer that resets the scene count is missing
+from the caller path. Original array capacity remains unproved. A linked source
+executable is not playable. The dated notes below preserve earlier investigation
+states; use the current source and work plan for active gaps.
 
 
 The original PC `NuMain` is at `0x00492b40`, with a complete 4,332-byte extent.
@@ -1266,3 +1268,26 @@ records 89 unused natural compiler outputs separately with zero PC credit.
 Wine crash dialogs are disabled and all owned diagnostic processes are cleaned.
 The full checkpoint and exact-revision CI status are recorded in
 `transfer-checkpoint.json` and `transfer-execution.md`.
+
+### Frame and texture source checkpoint TT (2026-10-09)
+
+The frame/texture batch adds 13 full comparisons / 2,089 unique PC bytes, nine
+exact functions / 365 code bytes and three exact DWORD states / 12 data bytes.
+Whole-PC fuzzy coverage is 29.252102%; all SS exact code/data survives. The linked
+source has 341 owners. Required checks pass, including 796 tests with three
+existing skips, LLVM18 formatting/tidy, complete object coverage and retail matching.
+
+NuFrameEnd now retains the native active/no-focus-policy/inactive message-pump
+branches and exact WM_QUIT use. The original renderer C cohort remains unchanged;
+the new C++ frame group has genuine consumed texture, device and light providers.
+The renderer remains partial, with core DrawScene and adjacent missing actions
+explicit at their native sites. Its startup and frame callers remain held.
+
+The actual handler table has 20 distinct observed callbacks; 19 still need source.
+The first nine callbacks and vector helper / 1,361 bytes have corrected native
+lighting selection, followed by a reviewed shader-provider family / 917 bytes
+and transform callbacks/private helper / 1,214 bytes. These proposals remain
+uncompiled. No guessed scene capacity, standalone reset, replacement provider or
+successful frame/gameplay result is introduced. The current shader CPU evidence
+remains confined to its prior 208 assertions; new callback runtime checks await
+frozen compiled source and real provider closure.

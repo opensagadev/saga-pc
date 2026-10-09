@@ -28035,3 +28035,25 @@ char uberShader2[157210] = {
     0x69, 0x66, 0x0d, 0x0a,
 };
 STATIC_ASSERT(sizeof(uberShader2) == 157210);
+
+#pragma data_seg(".data$FrameRenderCaptureStatePc")
+#pragma bss_seg(".bss$FrameRenderCaptureStatePc")
+/* Native pre-initialization state; original owning extents remain unknown. */
+extern "C" {
+    f32 RenderFrameShaderTimePc = 0.0f;
+    i32 RenderFrameShaderArrayCountPc = 0;
+    f32 (*RenderFrameShaderArrayPc)[4] = NULL;
+    u32 RenderFrameSceneFlagsPc = 0;
+    i32 RenderFramePausedPc = 0;
+    void(__cdecl *RenderFrameCallbackPc)(void) = NULL;
+    u32 NuPostEffectInitialisedFlagsPc = 0;
+    FRAME_NATIVE_TEXTURE_POOL_PC FrameNativeTexturePoolPc;
+    NUFILE nudlist_field_958 = 0;
+    NUFILE nudlist_field_988 = 0;
+    char *PCDisplayCaptureCursorPc = NULL;
+    char *nudlist_field_18b0 = NULL;
+    char PCDisplayCaptureBufferPc[1] = {0};
+    char PCDisplayCaptureFlushPointPc[1] = {0};
+}
+#pragma bss_seg()
+#pragma data_seg()

@@ -7146,6 +7146,7 @@ typedef struct PC_DEVICE_BACKEND_PC {
     ~PC_DEVICE_BACKEND_PC();
     void __thiscall Shutdown();
     HRESULT __thiscall EndScene();
+    HRESULT __thiscall CopySurfaceTargetPc(PC_EFFECT_SURFACE_PC *target, i32 filter, i32 unused);
     void __thiscall ReleaseDefaultPoolResources();
     void __thiscall ApplyViewport(const PC_VIEWPORT_PC *viewport);
     void __thiscall InitializeFactory();
@@ -19439,6 +19440,75 @@ extern "C" {
     void __cdecl APIObjectRegisterAnimRedirect(i32(__cdecl *)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *),
                                                void *, char *);
 
+#ifdef __cplusplus
+}
+#endif
+
+/* Minimum selected native producer/reader view; original allocation unknown. */
+typedef struct FRAME_NATIVE_TEXTURE_PC {
+    NUTEXDIM_PC dimensions;
+    GRAPHICS_RENDER_TEXTURE_PC *render_texture;
+    i32 texture_id;
+} FRAME_NATIVE_TEXTURE_PC;
+STATIC_ASSERT(offsetof(FRAME_NATIVE_TEXTURE_PC, dimensions) == 0);
+STATIC_ASSERT(offsetof(FRAME_NATIVE_TEXTURE_PC, render_texture) == 0x28);
+STATIC_ASSERT(offsetof(FRAME_NATIVE_TEXTURE_PC, texture_id) == 0x2c);
+STATIC_ASSERT(sizeof(FRAME_NATIVE_TEXTURE_PC) == 0x30);
+typedef struct FRAME_NATIVE_TEXTURE_POOL_PC {
+    FRAME_NATIVE_TEXTURE_PC records[16];
+    u8 occupied[2];
+    u8 unknown_302[2];
+    i32 cursor;
+#ifdef __cplusplus
+    FRAME_NATIVE_TEXTURE_PC *Allocate();
+#endif
+} FRAME_NATIVE_TEXTURE_POOL_PC;
+STATIC_ASSERT(offsetof(FRAME_NATIVE_TEXTURE_POOL_PC, records) == 0);
+STATIC_ASSERT(offsetof(FRAME_NATIVE_TEXTURE_POOL_PC, occupied) == 0x300);
+STATIC_ASSERT(offsetof(FRAME_NATIVE_TEXTURE_POOL_PC, unknown_302) == 0x302);
+STATIC_ASSERT(offsetof(FRAME_NATIVE_TEXTURE_POOL_PC, cursor) == 0x304);
+STATIC_ASSERT(sizeof(FRAME_NATIVE_TEXTURE_POOL_PC) == 0x308);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern f32 RenderFrameShaderTimePc;
+    extern i32 RenderFrameShaderArrayCountPc;
+    extern f32 (*RenderFrameShaderArrayPc)[4];
+    extern u32 RenderFrameSceneFlagsPc;
+    extern i32 RenderFramePausedPc;
+    extern void(__cdecl *RenderFrameCallbackPc)(void);
+    extern u32 NuPostEffectInitialisedFlagsPc;
+    extern FRAME_NATIVE_TEXTURE_POOL_PC FrameNativeTexturePoolPc;
+    extern NUFILE nudlist_field_958;
+    extern NUFILE nudlist_field_988;
+    extern char *PCDisplayCaptureCursorPc;
+    extern char *nudlist_field_18b0;
+    extern char PCDisplayCaptureBufferPc[1];
+    extern char PCDisplayCaptureFlushPointPc[1];
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 __cdecl NuRndrSwapScreen(i32 mode);
+    i32 __cdecl NuRndrSwapScreenEx(i32 mode, void(__cdecl *callback)(void));
+    i32 __cdecl NuPostEffectIsInitialised(u32 mask);
+    i32 __cdecl NuDynamicLightIsEnabled(NURNDRLIGHTRECORD *records);
+    void __cdecl NuDynamicLightAddRenderScene(NURNDRLIGHTRECORD *records, i32 index, i32 scene_id);
+    i32 __cdecl NuTexGetWidth(i32 id);
+    i32 __cdecl NuTexGetHeight(i32 id);
+    HRESULT __cdecl PCDeviceEndScenePc(void);
+    i32 __cdecl NuTexRegisterDimensionsPc(NUTEXDIM_PC *texture);
+    i32 __cdecl NuTexRegisterRenderTargetPc(GRAPHICS_RENDER_TEXTURE_PC *target);
+    void __cdecl NuDisplayListPurge_candidate(void);
+    void __cdecl NuRndrEndSceneEx(i32 flags);
+    void __cdecl NuTimeBarSetRender(i32 set);
+    void __cdecl PCGraphicsBindFramebuffer(PC_FRAMEBUFFER_PC *framebuffer);
+    extern PC_FRAMEBUFFER_PC *PcDefaultFramebuffer;
+    extern PC_FRAMEBUFFER_PC *PcBootDefaultFramebuffer;
+    extern PC_FRAMEBUFFER_PC *PcBootSecondaryFramebuffer;
 #ifdef __cplusplus
 }
 #endif

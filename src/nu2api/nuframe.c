@@ -19,19 +19,38 @@ f32 __cdecl NuFrameEnd(void) {
     i32 had_error = NuHasError();
     STUBBED_NAMED(0x008004e8); /* PC frame pacing gate and target interval. */
     STUBBED_NAMED(0x007510ac); /* PC Sleep calls inside the frame wait loop. */
-    STUBBED_NAMED(0x006dd390); /* PC Windows message-pump loop. */
     STUBBED_NAMED(0x00601330); /* PC frame-time update helper; identity unconfirmed. */
     STUBBED_NAMED(0x005d34a0); /* PC frame-time update helper; identity unconfirmed. */
     NuWindAnimate(nuapi.wind, nuapi.frame_time);
     STUBBED_NAMED(0x005c6100); /* One-byte PC leaf; identity unresolved. */
     STUBBED_NAMED(0x005de1a0); /* PC update helper with unresolved owner. */
     PCFrameCriticalSectionEnter_candidate();
-    STUBBED_NAMED(0x00698fa0); /* PC helper on two interface objects; identity unresolved. */
-    STUBBED_NAMED(0x006d3420); /* One-byte PC helper; identity unresolved. */
-
-    NuTimeGetTicksPS(&nuapi.time.low, &nuapi.time.high);
+    /* DispatchMessage may update the native focus and policy flags. */
+    if (SoundVoiceEnabledGate != 0) {
+        NuWindowsProcessMessages();
+        STUBBED_NAMED(0x006d3420);
+    } else if (PcNoFocusPolicy != 0) {
+        Sleep(1);
+        NuWindowsProcessMessages();
+    } else {
+        STUBBED_NAMED(0x00698fa0);
+        while (SoundVoiceEnabledGate == 0) {
+            Sleep(10);
+            if (NuWindowsProcessMessages() == 0) {
+                break;
+            }
+        }
+        STUBBED_NAMED(0x006d3420);
+        NuTimeGetTicksPS(&nuapi.time.low, &nuapi.time.high);
+        if ((i32)nuapi.time.high < 0) {
+            NuFileError();
+        }
+        STUBBED_NAMED(0x00696b00);
+    }
     STUBBED_NAMED(0x004f4c80); /* PC helper immediately before the render boundary. */
-    STUBBED_NAMED(0x005f3d60); /* One-argument PC render boundary candidate, mode -1. */
+    STUBBED_NAMED(0x005f3d60); /* NuTimeBarSetRender(-1), native 4fd181. */
+    STUBBED_NAMED(0x0060b5b0); /* NuRndrSwapScreenEx(1, NuApiEndFrameCallbackPc), native 4fd18e.
+                                * Activation awaits the genuine display handlers. */
     STUBBED_NAMED(0x005de1b0); /* PC post-render update helper. */
     PCFrameCriticalSectionLeave_candidate();
 

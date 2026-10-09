@@ -343,3 +343,42 @@ extern "C" void __cdecl PCGraphicsEffectTextureDimensions(GRAPHICS_RENDER_TEXTUR
     *width = (texture->width >> (u8)level) & ~1;
     *height = (texture->height >> (u8)level) & ~1;
 }
+
+FRAME_NATIVE_TEXTURE_PC *FRAME_NATIVE_TEXTURE_POOL_PC::Allocate() {
+    i32 index;
+    for (index = cursor; index < 16; ++index) {
+        if (((occupied[index >> 3] >> (index & 7)) & 1) == 0) {
+            occupied[index >> 3] |= (u8)(1u << (index & 7));
+            cursor = (index + 1) % 16;
+            return &records[index];
+        }
+    }
+    for (index = 0; index < cursor; ++index) {
+        if (((occupied[index >> 3] >> (index & 7)) & 1) == 0) {
+            occupied[index >> 3] |= (u8)(1u << (index & 7));
+            cursor = (index + 1) % 16;
+            return &records[index];
+        }
+    }
+    return NULL;
+}
+
+extern "C" i32 __cdecl NuTexRegisterRenderTargetPc(GRAPHICS_RENDER_TEXTURE_PC *target) {
+    FRAME_NATIVE_TEXTURE_PC *texture = FrameNativeTexturePoolPc.Allocate();
+    texture->render_texture = target;
+    texture->texture_id = NuTexRegisterDimensionsPc(&texture->dimensions);
+    if (texture->texture_id == 0) {
+        i32 index = (i32)((u32)texture - (u32)&FrameNativeTexturePoolPc.records[0]) / 0x30;
+        FrameNativeTexturePoolPc.occupied[index >> 3] &= (u8) ~(1u << (index & 7));
+        FrameNativeTexturePoolPc.cursor = index;
+        return 0;
+    }
+    texture->dimensions.width = target->width;
+    texture->dimensions.height = target->height;
+    texture->dimensions.ref_count = 1;
+    memset(texture->dimensions.checksum, 0, sizeof(texture->dimensions.checksum));
+    texture->dimensions.image_data = NULL;
+    texture->dimensions.image_size = 0;
+    texture->dimensions.resource = target->resource;
+    return texture->texture_id;
+}

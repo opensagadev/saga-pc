@@ -83,3 +83,21 @@ void __cdecl NuTexInitEx(VARIPTR *buffer, i32 count) {
     NuTextureLoadCountPC = 0;
     NuTexInitExPS(buffer);
 }
+
+i32 __cdecl NuTexGetWidth(i32 id) {
+    return NuTextureDimensions[id - 1]->width;
+}
+i32 __cdecl NuTexGetHeight(i32 id) {
+    return NuTextureDimensions[id - 1]->height;
+}
+
+i32 __cdecl NuTexRegisterDimensionsPc(NUTEXDIM_PC *texture) {
+    i32 index;
+    for (index = 0; index < NuTextureCapacityPC; ++index) {
+        if (NuTextureDimensions[index] == NULL) {
+            NuTextureDimensions[index] = texture;
+            return index + 1;
+        }
+    }
+    return 0;
+}

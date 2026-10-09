@@ -33933,7 +33933,7 @@
     },
     {
       "checkpoint": "SS",
-      "publication_status": "Local source validation complete; exact pushed-revision CI tracked separately",
+      "publication_status": "Published; all required local gates and exact pushed-revision CI passed",
       "baseline_commit": "7eecfae7589d5dd198a27b1bbc2175d4203a445d",
       "baseline_CI_exact_revision_success": {
         "run_id": 37855398941,
@@ -34428,9 +34428,146 @@
         "build/analysis/displaylist-startup-watch-next/v1/attempt-3/final-watch-writer-handoff.json": "2907b0639a4b936f9ddf1556063d9c25596b0aecf9459ec30885502e093f1ccc",
         "build/analysis/vertex-declaration-minimum-independent-review/accepted-packet.json": "834af2462692511ce0f40fc168eb54e83d157044e049d6ee42a7f1a627cf09ff",
         "build/analysis/shader-next-main-integration-v1/two-call-reconnection-independent/accepted-two-call-hardware-packet.json": "70fd603bc54143b7a7a70fdc487d637bbafd543ea50115a9ade493fed9356b1b",
-        "build/analysis/scene-parameter-reset-independent-review/accepted-native-contract.json": "a6841fa510e963ff2ead49da6010e96e7ced03cf678a53a911c7f4b8dbd0a5c6"
+        "build/analysis/scene-parameter-reset-independent-review/accepted-native-contract.json": "a6841fa510e963ff2ead49da6010e96e7ced03cf678a53a911c7f4b8dbd0a5c6",
+        "build/analysis/next-baseline-SS/ci-verified-promotion.json": "6bd2f3b3cee75662d7ed70087d3daaffbd4e11cce4a2a6803c1a1fcd4064bde2"
+      },
+      "published_commit": "2f3c7fdb38717759ab47bf35e3fef6bde895f833",
+      "published_CI_exact_revision_success": {
+        "run_id": 37866549493,
+        "url": "https://github.com/opensagadev/saga-pc/actions/runs/37866549493",
+        "head_sha": "2f3c7fdb38717759ab47bf35e3fef6bde895f833",
+        "steps": 13
+      }
+    },
+    {
+      "checkpoint": "TT",
+      "at_utc": "2026-10-09",
+      "status": "LOCAL_SOURCE_VALIDATED_MATCHING; exact pushed-revision CI pending",
+      "baseline_commit": "2f3c7fdb38717759ab47bf35e3fef6bde895f833",
+      "source_owners": 341,
+      "new_full_functions": 13,
+      "newly_compared_unique_PC_bytes": 2089,
+      "new_exact_functions": 9,
+      "new_exact_code_bytes": 365,
+      "new_exact_data_bytes": 12,
+      "whole_PC_fuzzy_delta_pp": 0.04914791762783821,
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1492136,
+        "matched_code_bytes": 232057,
+        "matching_percent": 6.685121135177398,
+        "fuzzy_coverage_percent": 29.252101977686248,
+        "mapped_functions": 5271,
+        "matched_functions": 2401,
+        "objdiff_fuzzy_percent": 69.5832,
+        "objdiff_total_code": 1460143,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2140340,
+        "mapping_percent": 5.341892714296668,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1493330
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30186
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9563,
+        "mapping_unknown_size_symbols": 5583,
+        "mapping_code_bytes": 1493330,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 43.01999915880349,
+        "mapping_data_bytes": 647010,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7963036473617815,
+        "mapping_code_data_bytes": 2140340,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.419925322254538,
+        "matched_data_region_bytes": 637833
+      },
+      "old_exact_preservation": {
+        "function_rows": 2392,
+        "data_rows": 3800,
+        "losses": 0
+      },
+      "prior_complete_output_preservation": {
+        "functions": 5165,
+        "data": 11265,
+        "identical_full_outputs": 16428,
+        "intentional_changed_function": "NuFrameEnd256\u2192344 adds native three-branch Windows message-pump policy",
+        "other_changed_function": "NuInitHardwarePc2018 same extent/source/named relocations; two independent stack-register reloads commute",
+        "C_renderer_cohort": "unchanged source and all full emitted functions/data; separate new C++ renderer group; historical TU unproved"
+      },
+      "source_family": {
+        "renderer": {
+          "address": "0x60aff0",
+          "native_bytes": 1465,
+          "partial": true,
+          "caller_activation": "held until genuine draw-handler chain"
+        },
+        "callback_wrapper": {
+          "address": "0x60b5b0",
+          "native_bytes": 24,
+          "exact": true
+        },
+        "purge": {
+          "address": "0x5dece0",
+          "native_bytes": 93,
+          "partial": true,
+          "extent_correction": "previous92 omitted finalRET"
+        },
+        "texture_providers_native_bytes": 383,
+        "light_and_posteffect_providers_native_bytes": 71,
+        "device_surface_and_end_wrappers_native_bytes": 53,
+        "new_mutable_views": 14,
+        "typed_minimum_storage_bytes": 822,
+        "unknown_extents": "blank; zero allocation/exact-data credit; three existing knownDWORD extents now compare exact"
+      },
+      "checks": {
+        "make_check": "PASS796tests3existing_skips; LLVM18format368/tidy341",
+        "make_build_check_objects": "PASS5093functions/11280data/341owners; four internalEH points zero independent credit",
+        "make_match": "PASS authoritative complete PC extents; all old exacts survive",
+        "candidate_only": "unchanged89SDK occurrence/definition/section/ordered-relocation contracts; only canonical shared-header recipe hash updated; fresh normalLINK/wholearchive/reference checks pass",
+        "runtime": "No new game/fixture launch, device presentation or gameplay claim; prior208shaderCPU checks retained; new43callback checks unexecuted"
+      },
+      "remaining_provider_contracts": [
+        "19 of20 observed draw callbacks lack compiled source",
+        "DrawScene210 and DrawItems20 plus real handler-table publication held",
+        "new partial renderer has explicit native missing ignored-output actions",
+        "posteffect flag initializer/full727 lifetime and texture release/reset remain incomplete",
+        "original scene/capture/fulltexture allocation extents unproved"
+      ],
+      "next_wave": "Integrate corrected nativeMAX WaveA9callbacks1315 +NuVec4Add46 and solewriter28B states/single existing integer-pointer union. Then reviewed shader6/917 and WaveBC6/1214 including original privateEAX helper; actualnormal43CPU checks after frozen owner proof. Close remaining geometry/material/backend handlers before renderer/table/caller activation.",
+      "checkpoint_delay": "Fixed genuine SDK import closure and preserved old C frontend/static-data outputs instead of accepting new padding or changing retention/comparison checks. Rejected MIN lighting proposal corrected before production integration.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "active; checkpoint does not complete the game",
+      "evidence_pins": {
+        "build/analysis/frame-next-main-integration-v1/aggregate-prior-preservation.json": "42ebed7f17e36808597bb2466006882c25175ea98bdce66ed6ff74dfc28bb7f8",
+        "build/analysis/frame-next-main-integration-v1/retail-verified-delta.json": "814ca71ed61cacab4a5046a735d26077c2988cb118dece3a2ae9e6b3ddc44848",
+        "build/analysis/frame-next-main-integration-v1/preserved-renderer-frontends.json": "832ff3fcfafd32cc65f91295a5dc3ab6867c7ae65f3c9ef52ff851f1b03b88bf",
+        "build/analysis/frame-next-main-integration-v1/release-normal-snapshot/normal-object-manifest.json": "949a23c2b8e81ed7d7d6d00230634d3707939aef4cbec204a395896acdd78b8d",
+        "build/analysis/frame-next-main-integration-v1/aggregate-build-objects-v4.log": "bcebcdeaf486c9f09289a9c39714503e1dc420552475b4fbf4f1be4ecad13f1c",
+        "build/analysis/frame-next-main-integration-v1/check-final.log": "6034a358e87c3a06637eb0f76d985616a1bd5072de74d4125443da3e230b2897",
+        "build/analysis/frame-next-main-integration-v1/SDK-descriptor-header-successor.json": "891e35a8fcfd1d8704e81ce5cce9470742edd1b062643758438c03fb56c8d379"
       }
     }
   ],
-  "latest_checkpoint": "SS"
+  "latest_checkpoint": "TT"
 }

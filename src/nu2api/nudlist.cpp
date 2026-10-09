@@ -1649,3 +1649,17 @@ STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, v_frequency) == 0x10);
 STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, scene) == 0x0);
 STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_count) == 0x4);
 STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_indices) == 0x8);
+
+extern "C" void __cdecl NuDisplayListPurge_candidate(void) {
+    if (nudlist_field_9d0 != 0) {
+        nudlist_frame_active = (i32)(nudlist_field_9d0 - 1U);
+        nudlist_field_9d0 = 0;
+        nudlist_field_fe4 = 1;
+        NUFILE file = NuFileOpen("dlist.htm", 1);
+        nudlist_field_958 = file;
+        nudlist_field_988 = file;
+        PCDisplayCaptureCursorPc = PCDisplayCaptureBufferPc;
+        nudlist_field_18b0 = PCDisplayCaptureFlushPointPc;
+        STUBBED_NAMED(0x005d7230); /* native5ded34: NuHtmlWrite("<body bgcolor=#C0C0C0>"); ignored VOID debug output */
+    }
+}

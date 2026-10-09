@@ -5220,3 +5220,59 @@ PodRace providers. The retained connected frontier has 9,608 candidate native
 bytes, with 12 functions/1,510 bytes ready for source authoring; these estimates
 receive no transfer credit. Full Bolt 44-record backing, CharFixUp, shader
 publication and resource/device lifetime remain separate contracts.
+
+### Genuine frame and texture source TT (2026-10-09)
+
+The observed source-game fault is a display-list pointer overwrite by the exact
+NuRndrEndScene scene copy at index 32. Native NuFrameEnd calls NuRndrSwapScreenEx
+at 4fd18e with mode 1 and callback 91ef24. Its real renderer resets
+sceneParametersCount only after processing both scene loops. The missing call
+explains the accumulating count; it does not establish the original array capacity.
+The reconstructed caller still records this omission at the exact site pending
+the real draw-handler chain. No capacity change or standalone reset is used.
+
+This source family introduces 13 complete function comparisons / 2,089 PC bytes:
+
+| Family | PC entries | Complete native bytes |
+| --- | --- | ---: |
+| Renderer and callback wrapper | 60aff0, 60b5b0 | 1,489 |
+| Display-list purge | 5dece0 | 93 |
+| Texture dimensions and target registration/pool allocation | 5e52d0, 5e52f0, 5e5470, 60a0b0, 60c1c0 | 383 |
+| Dynamic-light leaves and post-effect flag getter | 5c6bb0, 5c6d20, 5c32c0 | 71 |
+| Actual device surface-copy and scene-end wrappers | 6e2320, 6e4a10 | 53 |
+
+Purge's old 92-byte inventory entry omitted its final RET; the complete extent is
+93. The pool has 16 records of 0x30 bytes, two occupancy bytes at 0x300 and a
+signed cursor at 0x304, in one canonical 0x308-byte minimum view. The existing
+0x28-byte dimension prefix remains intact, with render texture at 0x28 and
+texture ID at 0x2c. These field proofs do not establish unrelated private texture
+layouts or the full original allocations. The allocator retains native signed
+remainder behavior. The copy method calls real StretchRect and forwards HRESULT.
+
+The new C++ renderer uses genuine effect-surface lifetime methods and consumed
+providers. Ignored-output actions without reconstructed providers remain explicit
+markers at their native sites, including core DrawScene at 60b3c8. The old C
+renderer helper/caller cohort is unchanged byte-for-byte; the C++ frame group is
+separate to preserve its C frontend output and private helpers. Historical PC
+translation-unit grouping remains unproved. No force-inline, padding, alignment,
+link-retention or comparison policy was changed. Direct3D event imports are the
+actual native d3d9.dll imports, with no replacement implementation.
+
+Fourteen shared mutable states have verified native initial bytes and typed
+minimum backing. Unknown owning extents stay blank and receive zero data credit.
+The two capture anchors are address publications only; no capture formatter may
+write through their one-byte views. A source data/BSS cohort keeps all 6,073 old
+data-owner regions unchanged; its name and placement do not assert historical PC
+section ownership. NuFrameEnd now retains the native three-branch Windows
+message-pump policy, existing focus producers, WM_QUIT return use and conditional
+tick refresh. Its inactive wait retains native behavior; no forced focus, timeout
+or fabricated quit is added.
+
+The next connected source wave is nine draw callbacks and NuVec4Add / 1,361
+bytes, followed by six shader providers / 917 bytes and the remaining callbacks.
+Nineteen of the 20 observed draw callbacks lack compiled source. The first lighting
+proposal was rejected for selecting MIN; native FCOMPP/TEST/JP control selects
+MAX with specific tie/unordered fallback. Its corrected source has a finite native
+branch proof but is not yet compiled or runtime-tested. Renderer/table/caller
+activation remains held. This checkpoint does not establish a recurring frame,
+device presentation, loaded scene or gameplay.

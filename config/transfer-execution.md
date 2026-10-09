@@ -9,10 +9,11 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Verified source baseline: RR, [`7eecfae7589d5dd198a27b1bbc2175d4203a445d`](https://github.com/opensagadev/saga-pc/commit/7eecfae7589d5dd198a27b1bbc2175d4203a445d); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37855398941) passed all 13 steps. RR has 338 normal source owners.
+Verified source baseline: SS, [`2f3c7fdb38717759ab47bf35e3fef6bde895f833`](https://github.com/opensagadev/saga-pc/commit/2f3c7fdb38717759ab47bf35e3fef6bde895f833); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37866549493) passed all 13 steps. SS has 338 normal source owners.
 
-Current work reconnects the genuine shader-manager constructor/publisher, parser
-and compiler, plus the real framebuffer initializer and geometry reset. Native
+Published SS, [`2f3c7fdb`](https://github.com/opensagadev/saga-pc/commit/2f3c7fdb38717759ab47bf35e3fef6bde895f833), restores the genuine shader-manager constructor/publisher, parser
+and compiler, plus the real framebuffer initializer and geometry reset. Its
+[exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37866549493) passed all 13 steps. Native
 material startup proves two distinct declaration keys and a two-row minimum
 cache view. That backing is now present; the full original capacity remains
 unknown and receives no extent or exact-data credit. The previous 536,080-byte
@@ -22,7 +23,18 @@ The latest ordinary source EXE naturally exits 5 while packaging a display-list
 scene. A subsequent bounded data watch confirms that initialization sets the
 first-list pointer, then `NuRndrEndScene` overwrites it with the scene-parameter
 copy at index 32. The current source has no reset of `sceneParametersCount`.
-The original array capacity and native frame-reset provider remain under review.
+The original array capacity remains unproved. Native NuFrameEnd calls the genuine
+24-byte callback wrapper and 1465-byte renderer, which resets the count after its
+scene loops; our frame end omits that call. The native message-pump gate is now
+present, using its already exact 97-byte provider. The TT source batch compares
+13 new functions / 2,089 PC bytes, including a partial genuine renderer, exact
+callback wrapper and real texture/device/light providers. Nine functions add
+365 exact code bytes; fuzzy coverage is 29.252102%. All SS exacts survive, and
+three established mutable-state extents add 12 exact data bytes. Renderer and
+table activation remain held until the 19 missing draw callbacks and their
+consumed providers have source. The first nine callbacks / 1,315 bytes plus the
+46-byte vector helper and six shader providers / 917 bytes are prepared; they
+have no compilation or runtime credit yet.
 No pointer store, null guard, guessed enlargement or ordering workaround has
 been introduced.
 
@@ -30,8 +42,9 @@ The current 208 shader CPU checks pass in their bounded domains. Automated
 launches disable and query Wine's crash dialog and leave no owned game/debugger
 process or dialog behind. A CLI debugger observation identifies the caller but
 is not a natural successful game exit. No device presentation, recurring frame,
-loaded scene or gameplay milestone is established. Current source changes remain
-unpublished until complete object coverage and all required release checks pass.
+loaded scene or gameplay milestone is established. SS source is published after
+complete object coverage and all required local release checks. Next-wave source
+callback proposals remain uncompiled and receive no additional transfer credit.
 
 ## Ownership and continuous work
 

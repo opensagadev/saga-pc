@@ -3222,11 +3222,14 @@ address    , symbol                                                         , si
 0x5c19d0,_SceneUpdateMtxCopyPrivatePc,95,
 0x5c1aa0,_VisibilityTransformFourPc,111,
 0x5c1f70,_NuRndrPrimSetColourPrivate,108,
+0x5c32c0,_NuPostEffectIsInitialised,16,i32 __cdecl(u32)
 0x5c3950,??_I@YGXPAXIHP6EX0@Z@Z,50,"void __stdcall(void*,u32,i32,void(__thiscall *)(void*))"
 0x5c5420,?SortByDepth@OccluderSet@@SAHPBX0@Z,75,"i32 __cdecl (const void *, const void *)"
 0x5c5750,?IsOccludedOBB@OccluderSet@@QAE_NPBUnuvec_s@@0PBUnumtx_s@@@Z,1247,"bool __thiscall (const NUVEC *, const NUVEC *, const NUMTX *)"
 0x5c60a0,_NuOcclusionManagerIsEnabled,45,i32 __cdecl (void)
 0x5c6150,_PcRegisterDynamicGeometryPc,522,i32 __cdecl(PC_GEOMETRY_PUBLISH_FORMAT_PC*)
+0x5c6bb0,_NuDynamicLightIsEnabled,16,i32 __cdecl(NURNDRLIGHTRECORD*)
+0x5c6d20,_NuDynamicLightAddRenderScene,39,"void __cdecl(NURNDRLIGHTRECORD*,i32,i32)"
 0x5c6dc0,?TestBox@PCFrustumClipSet@@QAE_NPBUnuvec_s@@0H@Z,642,"bool __thiscall PCFrustumClipSet::TestBox(const NUVEC *,const NUVEC *,i32)"
 0x005c7050,?TestBoxes@PCFrustumClipSet@@QAEHPBUnuvec_s@@0@Z,69,"i32 __thiscall PCFrustumClipSet::TestBoxes(const NUVEC *,const NUVEC *)"
 0x005c9130 , _NuPause                                                       , 11    , void __cdecl (i32)
@@ -3487,7 +3490,7 @@ address    , symbol                                                         , si
 0x5de390,_NuDisplayListRecalculateMaterialStartsPC,170,void __cdecl(NUDISPLAY_LIST_PC *)
 0x5de440,_DisplayListLinkDynamicMtls,1757,void __cdecl(void)
 0x5deb20,_NuDisplayListStreamAlloc,140,"void __cdecl(VARIPTR *, i32, i32)"
-0x005dece0 , _NuDisplayListPurge_candidate                                  , 92    , void __cdecl (void)
+0x005dece0,_NuDisplayListPurge_candidate,93,void __cdecl (void)
 0x5ded80,_NuDisplaySceneAdd,182,void __cdecl(NUDISPLAY_LIST_PC *)
 0x5dee40,_NuDisplaySceneDestroy,293,void __cdecl(NUDISPLAY_LIST_PC *)
 0x005df480 , _NuDisplayListUpdateSpecial                                    , 813   , void __cdecl (NUSPECIALHANDLE *)
@@ -3521,8 +3524,11 @@ address    , symbol                                                         , si
 0x5e5140,_NuShaderMtlDescInit,92,void __cdecl(PC_MATERIAL_CREATE_SHADER*)
 0x5e51a0,_NuTexInitEx,109,"void __cdecl NuTexInitEx(VARIPTR *buffer, i32 count)"
 0x005e5210,_NuTexCreateNative,93,i32 __cdecl (NUTEXDIM_PC *)
+0x5e52d0,_NuTexGetWidth,17,i32 __cdecl(i32)
+0x5e52f0,_NuTexGetHeight,18,i32 __cdecl(i32)
 0x5e5310,_NuTextureGetDimensions,22,NUTEXDIM_PC* __cdecl(i32)
 0x5e5390,_NuTexResolveReference,224,"i32 __cdecl(NUGSCN *,i32)"
+0x5e5470,_NuTexRegisterDimensionsPc,45,i32 __cdecl(NUTEXDIM_PC *)
 0x5e5630,_NuTexDestroy,66,void __cdecl(i32)
 0x5e8190,?PrepareForQueries@OccluderSet@@QAEXPBUnumtx_s@@0@Z,668,"void __thiscall (const NUMTX *, const NUMTX *)"
 0x005e8430 , _NuOcclusionManagerBeginFrame                                  , 59    , void __cdecl (void)
@@ -3787,14 +3793,18 @@ address    , symbol                                                         , si
 0x00608590,_NuLgtLaserDraw,2766,void __cdecl(i32)
 0x006091c0,_NuLgtArcLaserDraw,2506,void __cdecl(i32)
 0x609ff0,?allocate@?$allocator@D@std@@QAEPADI@Z,18,
+0x60a0b0,?Allocate@FRAME_NATIVE_TEXTURE_POOL_PC@@QAEPAUFRAME_NATIVE_TEXTURE_PC@@XZ,156,
 0x60a550,??0PC_FRAMEBUFFER_PC@@QAE@XZ,37,
 0x60a580,??1PC_FRAMEBUFFER_PC@@QAE@XZ,112,
 0x60a5f0,_PCGraphicsInitializeFramebuffers,425,
+0x60aff0,_NuRndrSwapScreen,1465,i32 __cdecl(i32)
+0x60b5b0,_NuRndrSwapScreenEx,24,"i32 __cdecl(i32,void (__cdecl*)(void))"
 0x60b5d0,_BuildDebrisVerts,1360,"void __cdecl (DEBRIS_PART_HEADER_PC *, DEBRIS_PARTICLE_CHUNK_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32, f32, f32)"
 0x60bcc0,?erase@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@II@Z,131,
 0x60bdd0,?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z,335,
 0x60be53,__catch$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$0,,
 0x60beee,__catch$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$1,,
+0x60c1c0,_NuTexRegisterRenderTargetPc,147,i32 __cdecl(GRAPHICS_RENDER_TEXTURE_PC *)
 0x60c410,_NuRndrParticleGroup,705,"void __cdecl (DEBRIS_PARTICLE_CHUNK_PC *, DEBRIS_PART_HEADER_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32, f32, f32)"
 0x60c760,??1?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@XZ,38,
 0x60ca50,??1logic_error@std@@UAE@XZ,50,
@@ -4969,6 +4979,7 @@ address    , symbol                                                         , si
 0x6e2240,?EndScene@PC_DEVICE_BACKEND_PC@@QAEJXZ,15,HRESULT __thiscall PC_DEVICE_BACKEND_PC::EndScene(void)
 0x6e2260,?SetDepthStencilSurface@PC_DEVICE_BACKEND_PC@@QAEXPAUPC_EFFECT_SURFACE_PC@@@Z,64,
 0x6e22a0,?ClearDepthStencilSurface@PC_DEVICE_BACKEND_PC@@QAEXXZ,17,
+0x6e2320,?CopySurfaceTargetPc@PC_DEVICE_BACKEND_PC@@QAEJPAUPC_EFFECT_SURFACE_PC@@HH@Z,43,"HRESULT __thiscall PC_DEVICE_BACKEND_PC::CopySurfaceTargetPc(PC_EFFECT_SURFACE_PC*,i32,i32)"
 0x006e2470, ?ApplyViewport@PC_DEVICE_BACKEND_PC@@QAEXPBUPC_VIEWPORT_PC@@@Z, 159,
 0x6e2510,?ResetViewport@PC_DEVICE_BACKEND_PC@@QAEXXZ,255,void __thiscall PC_DEVICE_BACKEND_PC::ResetViewport(void)
 0x6e2610,?ConfigureTargetKinds@PC_DEVICE_BACKEND_PC@@QAEXXZ,433,void __thiscall PC_DEVICE_BACKEND_PC::ConfigureTargetKinds(void)
@@ -5001,6 +5012,7 @@ address    , symbol                                                         , si
 0x6e4850,_PCDeviceCreateVertexDeclaration,32,"void __cdecl(const PC_VERTEX_ELEMENT_PC*,PC_TEXTURE_RESOURCE_PC**)"
 0x6e4870,_PCDeviceCreateVertexShader,32,"HRESULT __cdecl(const DWORD*,PC_TEXTURE_RESOURCE_PC**)"
 0x6e49b0,_PCDeviceDrawPrimitiveUPPc,61,"void __cdecl(i32,u32,const void *,u32)"
+0x6e4a10,_PCDeviceEndScenePc,10,HRESULT __cdecl(void)
 0x6e4a40,_PCDeviceEvictManagedResources,19,void __cdecl(void)
 0x6e52e0,_PCDeviceSetPixelShaderConstantsF,37,"void __cdecl(UINT,const f32*,UINT)"
 0x6e5340,_PCDeviceSetRenderState,414,"void __cdecl (i32, u32)"
@@ -9145,6 +9157,7 @@ address    , symbol                                                         , si
 0x7641f8,??_C@_03JDBMONBN@tex?$AA@,4,const char[4]
 0x7641fc,??_C@_0L@JGMEENFC@scriptmask?$AA@,11,const char[11]
 0x00764258 , _KeyStructSizes                                                , 16    , const u8[16]
+0x764344,??_C@_1BE@LKNDAOAB@?$AA3?$AAD?$AA?5?$AAr?$AAe?$AAn?$AAd?$AAe?$AAr?$AA?$AA@,,wchar_t[10]
 0x76447c,__real@c9742400,4,const f32
 0x764480,??_C@_0DO@EGHNHOFM@d?3?2projects?2game_saga?2nu2api?4sag@,,const char[62]
 0x007644ec , _NuAnimSourceFileName                                          , 48    , const char[48]
@@ -9174,6 +9187,7 @@ address    , symbol                                                         , si
 0x00765058 , _NuTimeBarScanlineMicroseconds                                 , 8     , const f64
 0x00765060 , _NuTimeBarLinesPerSecond                                       , 8     , const f64
 0x00765068 , _NuTimeBarScanlinesPerFrame                                    , 8     , const f64
+0x765090,??_C@_09PPHBOECN@dlist?4htm?$AA@,,char[10]
 0x7654a4,??_C@_03MJOMNCOE@fnt?$AA@,,const char[]
 0x7654a8,__real@4010ccccc0000000,8,const f64
 0x7654b0,__real@40119999a0000000,8,const f64
@@ -9204,6 +9218,8 @@ address    , symbol                                                         , si
 0x0076a85c,__real@442f0000,4,
 0x0076a860,__real@c049000000000000,8,
 0x0076a868,__real@406e000000000000,8,
+0x76a89c,??_C@_03PMGKFAJB@CPU?$AA@,,char[4]
+0x76a8a0,??_C@_0P@ECBLGGKE@CPU_QUEUE_DRAW?$AA@,,char[15]
 0x76a8b4,??_7logic_error@std@@6B@,,Natural owning C++ RTTI/throw metadata
 0x76a8c0,??_7length_error@std@@6B@,,Natural owning C++ RTTI/throw metadata
 0x76a8c8,??_C@_0BD@OLBABOEK@vector?$DMT?$DO?5too?5long?$AA@,,const char[19]
@@ -14418,7 +14434,7 @@ address    , symbol                                                         , si
 0x96d8d0,_VisibilityPrimaryPlaneMatrixPc,,NUMTX
 0x0096d910 , _numtl_defaultmtl2d                                            , 4     , NUMTL *
 0x96d914,_TextureAnimationSignalsOnPc,,u32
-0x0096d958 , _nudlist_field_958                                             , 4     , void *
+0x0096d958,_nudlist_field_958,4,NUFILE
 0x96d95c,_TextureAnimationLabelCountPrivatePc,,i32
 0x96d960,_VisibilityAlternateWorldMatrixPc,,NUMTX
 0x96d9a0,_VisibilityAlternatePlaneMatrixPc,,NUMTX
@@ -14437,12 +14453,14 @@ address    , symbol                                                         , si
 0x96e588,_RendererArenaTypesPc,,i32 *
 0x96e58c,_TextureAnimationRandomPc,,NURAND
 0x0096e590,_NuTextureCapacityPC,,i32
+0x0096e594,_PCDisplayCaptureCursorPc,,char *
 0x0096e598 , _fstackmem                                                     , 12288 , u8[0x3000]
 0x00971598 , _nudlist_field_1598                                            , 4     , u32
 0x0097159c , _NuTextureDimensions                                           , 4     , NUTEXDIM_PC **
 0x9715a0,_TextureAnimationParseProgramPrivatePc,,TEXTURE_ANIM_PROGRAM_PC *
 0x9715a4,_NuRndrDebRangeInv,,NUVEC
 0x9715b0,_PCMaterialPoolCountPc,,i32
+0x9715b8,_NuPostEffectInitialisedFlagsPc,,u32
 0x9715c0,_PCSpecialShadowClipResultsPresent,,i32
 0x9715c4,_NuRndrDebRange,,NUVEC
 0x971640, _NuCameraScalingTemplate, ,
@@ -14453,7 +14471,7 @@ address    , symbol                                                         , si
 0x00971780 , _NuAnimDataBitCount                                            , 256   , u8[256]
 0x971880,_NuPortalNearPlanePc,,NUPLANE
 0x9718a0,_VisibilityDepthPlanePc,,NUPLANE
-0x009718b0 , _nudlist_field_18b0                                            , 4     , void *
+0x009718b0,_nudlist_field_18b0,4,char *
 0x9718b4,_NuPortalWorldCameraPc,,NUVEC
 0x009718c0 , _currentScene                                                  , 536   , NURNDRLIBSCENE
 0x9718fc,_PCDisplayClipSet,,void *
@@ -14462,6 +14480,8 @@ address    , symbol                                                         , si
 0x971ae0,_VisibilityPrimaryAbsoluteMatrixPc,,NUMTX
 0x971b20,_NuPortalRestoreCameraPc,,NUCAMERA
 0x971b98,_TextureAnimationLabelsPrivatePc,,char[64][21]
+0x009720d8,_PCDisplayCaptureBufferPc,,char[1]
+0x00972cd8,_PCDisplayCaptureFlushPointPc,,char[1]
 0x9730dc, _NuCameraReflection, ,
 0x0097315c , _zy                                                            , 4     , f32
 0x00973700 , _NuDisplayListStreamCursor                                     , 4     , VARIPTR *
@@ -14488,6 +14508,8 @@ address    , symbol                                                         , si
 0x009738b0 , _nuspecial_const_alpha_enabled                                 , 4     , i32
 0x009738b4 , _nuspecial_const_tint_enabled                                  , 4     , i32
 0x009738b8 , _nuspecial_draw_state                                          , 4     , i32
+0x9738bc,_RenderFrameShaderArrayCountPc,,i32
+0x9738c0,_RenderFrameShaderArrayPc,,f32 (*)[4]
 0x009738c4 , _NuPrimVertexGroupSource                                       , 4     , NUPRIM_VERTEX_GROUP_SOURCE_PC *
 0x9738c8,_PCSpecialReflectionPass,,i32
 0x009738cc , _qfnt_offscale_x                                               , 4     , f32
@@ -14511,6 +14533,7 @@ address    , symbol                                                         , si
 0x00973924 , _DebrisGlassTextureHeight                                      , 4     , i32
 0x973924,_PS2_REZ_H,4,i32
 0x97392c,_PCWindFrameCount,,u32
+0x973930,_RenderFramePausedPc,,i32
 0x973944,_RendererZClearMaterialPc,,NUMTL *
 0x973948,_RendererAlphaMaskMaterialPc,,NUMTL *
 0x97395c,_VisibilityLoadedOcclusionPc,,i32
@@ -14522,7 +14545,7 @@ address    , symbol                                                         , si
 0x973974, _NuCameraPreviousClipScissorToViewport, ,
 0x973978, _NuCameraOrthographic, ,
 0x973980,_VisibilityUsingOcclusionPc,,i32
-0x00973988 , _nudlist_field_988                                             , 4     , void *
+0x00973988,_nudlist_field_988,4,NUFILE
 0x0097398c , _NuTimeBar_Initialised                                         , 4     , i32
 0x00973990 , _NuTimeBar_EngineEnabled                                       , 4     , i32
 0x00973994 , _NuTimeBar_GpuFrameOutEnabled                                  , 4     , i32
@@ -14642,6 +14665,7 @@ address    , symbol                                                         , si
 0x2854b68,_RendererConfigMatrixPc,,NUMTX
 0x02854ba8 , _nuprim_field_ba8                                              , 4     , u32
 0x2854bac,_NuDebrisSystemBuffers,,void *[8]
+0x2854bd0,_RenderFrameSceneFlagsPc,,u32
 0x2854be0,_PCGraphicsRenderTextureBytes,,i32 workingview
 0x2854be4,_PcBoundFramebuffer,,PC_FRAMEBUFFER_PC *
 0x2854be8,_PcDefaultFramebuffer,,PC_FRAMEBUFFER_PC *
@@ -14662,6 +14686,7 @@ address    , symbol                                                         , si
 0x2854c64,_RendererConfigEnabledPc,,i32
 0x2854c68,_RendererConfigSecondEnabledPc,,i32
 0x2854ca4,_NuRndrShadowCnt,,i32
+0x2854d04,_RenderFrameCallbackPc,,void (__cdecl*)(void)
 0x2854d08,_NuRndr_DebrisRotMtxPtr,,NUMTX *
 0x2854d0c,_NuDebrisUseSystemMemory,,i32
 0x2854d10,_NuDebrisCurrentBufferIndex,,u32
@@ -14685,6 +14710,7 @@ address    , symbol                                                         , si
 0x2854dc0,_PCRegisteredNativeScenes,,NUGSCN *[100]
 0x02854f70 , _ClipCornerBlocks                                              ,       , NUVEC4BLOCK_PC[2] (minimum source prefix; full extent unknown)
 0x02854ff0 , _ClipTransformedBlocks                                         ,       , NUVEC4BLOCK_PC[2] (minimum source prefix; full extent unknown)
+0x2855070,_FrameNativeTexturePoolPc,,FRAME_NATIVE_TEXTURE_POOL_PC
 0x2855378,_PcFramebufferPool,,PC_FRAMEBUFFER_PC[32]
 0x28570a8,_PcGeometryAdjustedProjectionMatrixPc,,NUMTX
 0x28570e8,_PcGeometryTranslationMatrixPc,,NUMTX
@@ -14692,6 +14718,7 @@ address    , symbol                                                         , si
 0x2857208,_FrameShaderMaterialAnimationTimePc,,f32
 0x2857210,_PCSpecialProjectionTranslate,,NUMTX
 0x2857250,_PCSpecialProjectionScale,,NUMTX
+0x2857294,_RenderFrameShaderTimePc,,f32
 0x02868400,?sm_poolMessageData@NETMESSAGE_PC@@2PAUMessageData@1@A,,NETMESSAGE_PC::MessageData[512]
 0x2900a7c  , _edfile_buffer_pointer                                         , 4     , i32
 0x2910cbc  , _edfile_lock                                                   , 8     , i32[2]
