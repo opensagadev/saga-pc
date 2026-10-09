@@ -1,28 +1,35 @@
 # Reconstruction roadmap
 
 The goal is a complete PC reconstruction from readable C/C++. The source build
-is **not playable**. Verified published baseline WW is [93b3548](https://github.com/opensagadev/saga-pc/commit/93b3548f5fee4ab8e4fcf58918aa915575e8875a), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37883640294) passing all 13 steps. XX exact-revision CI is pending publication.
+is **not playable**. Verified published baseline XX is [d1695b6](https://github.com/opensagadev/saga-pc/commit/d1695b6f9004d105f4fbf500dc9bdc069a93aa4b), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37885753616) passing all 13 steps. YY exact-revision CI is pending publication.
 
-The latest ordinary source executable exits 5 in the backward-copy read of
-PCByteCopy. Its complete 84-byte source body equals retail. Fault source5160a0,
-native4ef6a0, reads BYTE [ESI-1] at invalid address02def4bf. This run does not
-establish the caller or the copy arguments; archive/resource producers are the
-next investigation. The earlier NULL DebMat[5] failure did not recur after
-restoring genuine DebrisSetup. No guard, replacement material or invented
-successful result is added.
+The latest ordinary source-game run exits 5 inside the existing exact 84-byte
+PCByteCopy. A separate headless debugger run on the frozen XX source image
+identifies the caller as NuGetVertexDeclaration: it requested 6,863,024 bytes.
+The getter's full 1,660 compiled bytes equal that linked source image; its native
+comparison extent remains the complete 1,684 bytes. The reconstructed cache has
+two records, with its count at the third record's key address. Verified native
+material producers require at least three distinct records, conditionally four.
+The observed count matches a genuine glass descriptor, supporting the specific
+count-overwrite mechanism; the earlier write itself was not observed.
 
-The XX batch restores genuine debris startup: one new complete function / 43 PC
-bytes, all exact, and the native call to existing resource/material providers.
-The earlier WW batch added 27 functions / 8,078 PC bytes and restored four genuine
-frame/render calls; it now has passing exact-revision CI. Existing parents remain
-partial and all prior exact contracts survive. Code similarity and mapping are
-separate from runnable milestones; current measurements live in
-[matching.json](../matching.json), with full qualifications in
+Native cache stride and the accessed records are verified, but its original full
+capacity remains unproved. Retained PC/Mac/Android evidence does not establish
+that extent. Cache storage is unchanged in YY; no guessed capacity, count reset,
+relocation, copy guard or replacement producer is added. The earlier NULL
+DebMat[5] failure did not recur after genuine debris setup was restored.
+
+YY adds 12 functions / 988 compared PC bytes, six exact / 174 bytes. Post-effect
+setters and the real sampler provider have source; filter construction and
+resource lifetimes remain held. XX restores genuine debris startup and has
+passing exact-revision CI. Existing parents remain partial; all prior exact
+contracts survive. Similarity and mapping are separate from runnable milestones;
+measurements are in [matching.json](../matching.json), with full qualifications in
 [transfer-checkpoint.json](../config/transfer-checkpoint.json).
 
 Work proceeds through connected source families and verified PC contracts:
 
-1. Close genuine archive/resource loading and the remaining renderer providers, while
+1. Close genuine cache storage, resource loading and the remaining renderer providers, while
    preserving real shader publication and its constructor/parser/compiler. Verify real startup state and a persistent
    native window/input path without fabricated providers or initialization bypasses.
 2. Close device/reset/resource lifetimes and presentation. Verify repeated real

@@ -9,41 +9,56 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Verified published baseline WW is [93b3548](https://github.com/opensagadev/saga-pc/commit/93b3548f5fee4ab8e4fcf58918aa915575e8875a), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37883640294) passing all 13 steps. XX exact-revision CI is pending publication.
+Verified published baseline XX is [d1695b6](https://github.com/opensagadev/saga-pc/commit/d1695b6f9004d105f4fbf500dc9bdc069a93aa4b), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37885753616) passing all 13 steps. YY exact-revision CI is pending publication.
 
-Checkpoint XX restores the native LoadPerm1 call to DebrisSetup and its complete
-43-byte wrapper. The wrapper is byte exact and forwards the six verified inputs
-and native additional constants to existing DebrisSetup2 and its real providers.
-The existing LoadPerm1 body grows from 781 to 813/native 1,351 bytes and remains
-partial; restoring its caller earns zero additional compared range credit.
-The 15-byte particle path equals native, but its original owning extent stays
-unknown and receives zero coverage/exact-data credit. Header and shared data are
-unchanged.
+Checkpoint YY adds 12 complete post-effect and sampler functions / 988 newly
+compared PC bytes. Six are byte exact, adding 174 exact code bytes. The corrected
+deferred-parameter transfer preserves all four DWORD payloads, including signaling
+NaN bits; the earlier floating-point copy proposal remains rejected. The sampler
+routine belongs to the genuine platform cohort and calls the real device setter.
+Named fields and assertions preserve the graphics-caps size and previous offsets.
 
-Whole-PC fuzzy coverage is 29.476569%, up
-0.002320 percentage points from WW. Exact code is
-233,512/3,471,246 bytes (6.727037%), up 43; exact data remains 637,833 bytes.
-Every previous exact code/data result and all 13 named member rows survive.
-Among 16,597 old complete physical outputs, 16,596 retain identical relocated
-bytes; only the reviewed LoadPerm1 call changes. All 237 other outputs in the two
-changed owners and all 340 unaffected object hashes are preserved.
+Seven new scalar/pointer states supply 25 typed working bytes; their complete
+compiler regions occupy 28 bytes because the one-byte flag has natural tail
+padding. All complete initializers equal native zero storage. Original owning
+extents remain blank, with zero allocation or exact-data credit. No filter
+instances, constructors, synthetic vtables or higher caller activation is added.
+
+Whole-PC fuzzy coverage is 29.495103%, up
+0.018534 percentage points from XX. Exact code is
+233,686/3,471,246 bytes (6.732050%), up 174; exact data stays 637,833 bytes.
+All previous exact results and 13 named member rows survive. Of 16,599 old
+complete physical outputs, 16,596 retain identical relocated bytes. Three
+unchanged-source Camera/Deb/Init outputs exactly reverse their previously
+reviewed finite pairs across raw, named, official and applied comparisons.
 Required checks pass: 796 tests (three existing skips), LLVM18 formatting and
 342-unit analysis, normal source link/object checks and full retail matching.
+The same 89 natural SDK outputs pass fresh complete link/archive/reference
+admission; only source/header recipe pins change, with zero PC credit.
 
-The latest ordinary source executable exits 5 in the backward-copy read of
-PCByteCopy. Its complete 84-byte source body equals retail. Fault source5160a0,
-native4ef6a0, reads BYTE [ESI-1] at invalid address02def4bf. This run does not
-establish the caller or the copy arguments; archive/resource producers are the
-next investigation. The earlier NULL DebMat[5] failure did not recur after
-restoring genuine DebrisSetup. No guard, replacement material or invented
-successful result is added.
+The latest ordinary source-game run exits 5 inside the existing exact 84-byte
+PCByteCopy. A separate headless debugger run on the frozen XX source image
+identifies the caller as NuGetVertexDeclaration: it requested 6,863,024 bytes.
+The getter's full 1,660 compiled bytes equal that linked source image; its native
+comparison extent remains the complete 1,684 bytes. The reconstructed cache has
+two records, with its count at the third record's key address. Verified native
+material producers require at least three distinct records, conditionally four.
+The observed count matches a genuine glass descriptor, supporting the specific
+count-overwrite mechanism; the earlier write itself was not observed.
 
-One ordinary source-game run exited naturally after 5.800 seconds. All 342
-objects, 455 frozen inputs and linked-image/report pins remained unchanged.
-Wine crash suppression was set and queried; no owned processes or windows
-remained after cleanup. Broad class-name window samples are unclassified.
-No successful frame, GPU presentation, loaded world or gameplay is established;
-the source build remains not playable.
+Native cache stride and the accessed records are verified, but its original full
+capacity remains unproved. Retained PC/Mac/Android evidence does not establish
+that extent. Cache storage is unchanged in YY; no guessed capacity, count reset,
+relocation, copy guard or replacement producer is added. The earlier NULL
+DebMat[5] failure did not recur after genuine debris setup was restored.
+
+The headless debugger captured registers and stack, then terminated only its
+debuggee; debugger exit zero is not a natural game-exit result. All 342 objects,
+455 inputs and XX image/report pins remained unchanged. Wine crash suppression
+was set and queried, and no owned processes or windows remained after cleanup.
+YY has no source-game run. Filter/resource lifetimes, full cache capacity,
+frames, GPU presentation, loaded world and gameplay remain unverified; the
+source build is not playable.
 
 ## Ownership and continuous work
 

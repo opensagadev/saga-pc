@@ -5352,3 +5352,13 @@ extent or crediting it again. The literal at 75a0e0 has 15 verified working byte
 and unknown owning extent, so its size stays blank. Shared data/header are
 unchanged. The next observed source-game fault lies in the existing exact84
 PCByteCopy at 4ef660; its input/caller cause remains unproved.
+
+### Post-effect source checkpoint YY (2026-10-09)
+
+12 complete functions add 988 compared PC bytes; six / 174 bytes are exact.
+Enable273 and Disable265 retain full owned tables and native switch quirks.
+Deferred39 preserves four DWORD payloads; sampler72 is in its true platform
+cohort, with named caps+98 / backend+a0. Seven full zero initializers have
+unknown owning extents and zero allocation/exact-data credit. Native vertex
+declaration capacity remains unproved: stride8 and at least3/conditional4
+producer records do not supply a complete original allocation extent.

@@ -1,15 +1,23 @@
 # NuMain investigation queue
 
 Current whole-project transfer status is recorded in
-[transfer-execution.md](transfer-execution.md). The source reaches genuine
-hardware, window, input and shader initialization; the native frame/render and
-debris setup calls are reconnected. The latest ordinary source executable exits 5 in the backward-copy read of
-PCByteCopy. Its complete 84-byte source body equals retail. Fault source5160a0,
-native4ef6a0, reads BYTE [ESI-1] at invalid address02def4bf. This run does not
-establish the caller or the copy arguments; archive/resource producers are the
-next investigation. The earlier NULL DebMat[5] failure did not recur after
-restoring genuine DebrisSetup. No guard, replacement material or invented
-successful result is added.
+[transfer-execution.md](transfer-execution.md). Genuine hardware, window, input,
+shader, frame/render and debris startup calls are connected.
+The latest ordinary source-game run exits 5 inside the existing exact 84-byte
+PCByteCopy. A separate headless debugger run on the frozen XX source image
+identifies the caller as NuGetVertexDeclaration: it requested 6,863,024 bytes.
+The getter's full 1,660 compiled bytes equal that linked source image; its native
+comparison extent remains the complete 1,684 bytes. The reconstructed cache has
+two records, with its count at the third record's key address. Verified native
+material producers require at least three distinct records, conditionally four.
+The observed count matches a genuine glass descriptor, supporting the specific
+count-overwrite mechanism; the earlier write itself was not observed.
+
+Native cache stride and the accessed records are verified, but its original full
+capacity remains unproved. Retained PC/Mac/Android evidence does not establish
+that extent. Cache storage is unchanged in YY; no guessed capacity, count reset,
+relocation, copy guard or replacement producer is added. The earlier NULL
+DebMat[5] failure did not recur after genuine debris setup was restored.
 Resource/world actions and device lifetimes remain incomplete. Original scene
 capacity is still unproved. The source executable is not playable. Dated notes
 below preserve historical states; use current source and the work plan for gaps.

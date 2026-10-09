@@ -547,3 +547,16 @@ extern "C" i32 __cdecl PcNativeSelectLanguage(const char *configuration_name) {
     }
     return NuLanguageGet();
 }
+
+extern "C" void __cdecl PCDeviceResetSamplerDefaultsPc(void) {
+    u32 stage = 0;
+    if (PCDeviceBackend.caps.sampler_count_pc == 0)
+        return;
+    do {
+        PCDeviceSetSamplerState(stage, 5, 2);
+        PCDeviceSetSamplerState(stage, 6, 2);
+        PCDeviceSetSamplerState(stage, 7, 2);
+        PCDeviceSetSamplerState(stage, 9, 0);
+        ++stage;
+    } while (stage != PCDeviceBackend.caps.sampler_count_pc);
+}

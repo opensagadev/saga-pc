@@ -5,11 +5,11 @@ resulting x86 COFF objects against the original. The default build also links
 our current sources into a Windows executable using the original MSVC linker
 and libraries. The entry path now connects native hardware/window/input startup. The real renderer
 stream initializer is now connected. The current source connects genuine shader publication, frame/render callers
-and debris setup. Its latest ordinary startup run crashes in an already
-byte-exact PCByteCopy. The caller and bad copy inputs remain unproved;
-archive/resource producers are the next investigation. Original scene/declaration
-allocation capacities remain qualified. Device presentation, world loading and
-recurring gameplay are unverified; the source is not playable.
+and debris setup. The latest diagnostic identifies a bad vertex-declaration
+cache insertion copy. Its two-record working reservation is too small for the
+verified native producers, but original full capacity and the earlier corrupting
+write remain unproved. Cache storage and resource/device lifetimes remain
+incomplete; the source is not playable.
 There are no host or WebAssembly game targets.
 
 ## Requirements and setup
@@ -129,13 +129,13 @@ call or state transition whose dependency is still missing. These markers emit
 no code in matching builds and do not imply a byte match. Keep the original call
 order, document the skipped work, and replace markers down the dependency tree.
 The source-only executable connects real window/input, shader publication,
-frame/render and debris callers. Its latest startup failure is a bad read inside
-the exact PCByteCopy routine; the caller and arguments remain unproved. The
-original scene capacity and full declaration-cache capacity remain unproved.
+frame/render and debris callers. Its latest observed startup fault comes from
+vertex-declaration cache insertion calling the exact byte-copy routine with a
+bad large count. Cache capacity and full declaration storage remain unproved.
 See the current frontier in [the execution policy](config/transfer-execution.md).
 Automated Wine tests suppress the debugger dialog in their own prefix, retain
-the genuine crash output and exit, and clean only their own identity-bound
-process group; see [the execution policy](config/transfer-execution.md).
+genuine crash details and clean only their identity-bound process group.
+Headless debugger termination is recorded separately from natural game exit.
 Remaining device actions, resource fixups and the recurring update/render loop
 remain incomplete. Its DAT metadata parser is
 structural and has additional short-read and null-arena guards; those are

@@ -2403,3 +2403,14 @@ to 20 real callbacks), with its canonical pointer at 80e794. Three sampler limit
 remain const; mutable water, material, back-buffer and presentation states retain
 separate native initializers. Every original owning extent remains unknown/blank:
 there is zero allocation or exact-data credit, and no inferred larger table.
+
+### Post-effect state checkpoint YY (2026-10-09)
+
+Seven scalar/pointer definitions at 9737f8..973810 supply25 typed working bytes.
+All full compiler regions (28 bytes including the one-byte flag's natural tail
+padding) equal native zero storage. Every original owning extent stays blank;
+there is no exact-data or allocation credit and no synthetic filter object.
+The vertex-declaration cache still has its earlier two-record working reservation;
+the native producer cohort requires at least3/conditionally4, so the current
+reservation is inadequate. Full original capacity remains unresolved. No growth,
+counter relocation/reset or copy guard is introduced in this checkpoint.

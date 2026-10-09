@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1505807,
-    "matched_code_bytes": 233512,
-    "matching_percent": 6.7270369198841,
-    "fuzzy_coverage_percent": 29.4765689987844,
-    "mapped_functions": 5334,
-    "matched_functions": 2433,
-    "objdiff_fuzzy_percent": 69.45657,
-    "objdiff_total_code": 1474023,
+    "mapped_code_bytes": 1506795,
+    "matched_code_bytes": 233686,
+    "matching_percent": 6.732049529189231,
+    "fuzzy_coverage_percent": 29.495102991009098,
+    "mapped_functions": 5346,
+    "matched_functions": 2439,
+    "objdiff_fuzzy_percent": 69.453674,
+    "objdiff_total_code": 1475011,
     "image_bytes": 40067072,
-    "mapped_bytes": 2154011,
-    "mapping_percent": 5.3760130013992535,
+    "mapped_bytes": 2154999,
+    "mapping_percent": 5.378478866636424,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -38,7 +38,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 1507001
+        "mapped_bytes": 1507989
       },
       {
         "name": ".rdata",
@@ -55,17 +55,17 @@
         "mapped_bytes": 616824
       }
     ],
-    "mapping_known_size_symbols": 9626,
-    "mapping_unknown_size_symbols": 5631,
-    "mapping_code_bytes": 1507001,
+    "mapping_known_size_symbols": 9638,
+    "mapping_unknown_size_symbols": 5638,
+    "mapping_code_bytes": 1507989,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 43.41383468644977,
+    "mapping_code_percent": 43.442297088711086,
     "mapping_data_bytes": 647010,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 1.7963036473617815,
-    "mapping_code_data_bytes": 2154011,
+    "mapping_code_data_bytes": 2154999,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 5.454544027264275,
+    "mapping_code_data_percent": 5.457045913048023,
     "matched_data_region_bytes": 637833
   },
   "newly_compared": [
@@ -35933,7 +35933,13 @@
         "CI_run": 37883640294,
         "exact_revision_all13_steps": "SUCCESS"
       },
-      "publication": "Exact pushed revision CI pending at commit",
+      "publication": {
+        "status": "EXACT_PUSHED_REVISION_CI_VERIFIED",
+        "commit": "d1695b6f9004d105f4fbf500dc9bdc069a93aa4b",
+        "CI_run": 37885753616,
+        "CI_url": "https://github.com/opensagadev/saga-pc/actions/runs/37885753616",
+        "all13_steps": "SUCCESS"
+      },
       "new_functions": 1,
       "new_unique_compared_PC_bytes": 43,
       "new_exact_functions": 1,
@@ -36109,7 +36115,323 @@
       "next_connected_wave": "Prove actual faulty-copy caller and real archive/resource producer; correctedposteffect12/988 firstcompiled independentlyreviewing with7nativezero scalar/pointer proposalsheld",
       "ongoing_goal": "active;checkpointdoesnotcompletegame",
       "human_journal": "Preserved unrelated3 additions unstaged;SHA4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7"
+    },
+    {
+      "checkpoint": "YY",
+      "date": "2026-10-09",
+      "scope": "Complete post-effect setters and genuine sampler provider; observed startup cache failure attribution",
+      "baseline_commit": "d1695b6f9004d105f4fbf500dc9bdc069a93aa4b",
+      "previous_publication": {
+        "CI_run": 37885753616,
+        "exact_revision_all13_steps": "SUCCESS"
+      },
+      "publication": "Exact pushed revision CI pending at commit",
+      "new_functions": 12,
+      "new_unique_compared_PC_bytes": 988,
+      "new_exact_functions": 6,
+      "new_exact_code_bytes": 174,
+      "new_exact_data_bytes": 0,
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1506795,
+        "matched_code_bytes": 233686,
+        "matching_percent": 6.732049529189231,
+        "fuzzy_coverage_percent": 29.495102991009098,
+        "mapped_functions": 5346,
+        "matched_functions": 2439,
+        "objdiff_fuzzy_percent": 69.453674,
+        "objdiff_total_code": 1475011,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2154999,
+        "mapping_percent": 5.378478866636424,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1507989
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30186
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9638,
+        "mapping_unknown_size_symbols": 5638,
+        "mapping_code_bytes": 1507989,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 43.442297088711086,
+        "mapping_data_bytes": 647010,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7963036473617815,
+        "mapping_code_data_bytes": 2154999,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.457045913048023,
+        "matched_data_region_bytes": 637833
+      },
+      "fuzzy_delta_pp": 0.01853399222469676,
+      "newly_compared": [
+        {
+          "symbol": "_NuPostEffectReset",
+          "address": "0x005c31f0",
+          "target_size": 13,
+          "exact_match": true
+        },
+        {
+          "symbol": "_NuPostEffectEnable",
+          "address": "0x005c32d0",
+          "target_size": 273,
+          "exact_match": false
+        },
+        {
+          "symbol": "_NuPostEffectDisable",
+          "address": "0x005c33f0",
+          "target_size": 265,
+          "exact_match": false
+        },
+        {
+          "symbol": "_NuPostEffectAddDynamicLight",
+          "address": "0x005c3640",
+          "target_size": 30,
+          "exact_match": false
+        },
+        {
+          "symbol": "_NuPostEffectGetActiveDynamicLightCount",
+          "address": "0x005c3660",
+          "target_size": 16,
+          "exact_match": true
+        },
+        {
+          "symbol": "_NuPostEffectDepthOfField",
+          "address": "0x005c3670",
+          "target_size": 50,
+          "exact_match": false
+        },
+        {
+          "symbol": "_NuPostEffectDeferredShading",
+          "address": "0x005c36b0",
+          "target_size": 39,
+          "exact_match": true
+        },
+        {
+          "symbol": "_NuPostEffectBloom",
+          "address": "0x005c36e0",
+          "target_size": 17,
+          "exact_match": true
+        },
+        {
+          "symbol": "_NuPostEffectMotionBlur",
+          "address": "0x005c3700",
+          "target_size": 133,
+          "exact_match": false
+        },
+        {
+          "symbol": "_NuPostEffectAccumulationMotionBlur",
+          "address": "0x005c3790",
+          "target_size": 63,
+          "exact_match": false
+        },
+        {
+          "symbol": "_NuPostEffectSpeedBlur",
+          "address": "0x005c37d0",
+          "target_size": 17,
+          "exact_match": true
+        },
+        {
+          "symbol": "_PCDeviceResetSamplerDefaultsPc",
+          "address": "0x006dfa20",
+          "target_size": 72,
+          "exact_match": true
+        }
+      ],
+      "old_exact_preservation": {
+        "functions": {
+          "exact_rows_preserved": 2433,
+          "physical_copies_preserved": 2437
+        },
+        "data": {
+          "exact_rows_preserved": 3803,
+          "physical_copies_preserved": 5709
+        },
+        "named_members_preserved": 13,
+        "new_unique_native_function_bytes": 988,
+        "exact_code_delta": 174,
+        "exact_data_delta": 0,
+        "fuzzy_delta_pp": 0.01853399222469676,
+        "source_report_sha256": "0b33b55db48176a36c6703d87be13aebc807f3c9ea0196614a43728d4fb93e73",
+        "candidate_only_proof": {
+          "status": "validated natural compiler outputs; original disposition unproved",
+          "occurrences": 89,
+          "functions": 85,
+          "private_SDK_scalars": 4,
+          "archive_members": 4782,
+          "selected_members": 434,
+          "descriptor_sha256": "f699bdbbe355937e3c144ce9c44c488663db6e95e370a6b4ed69fd2af4af2de1",
+          "normal_link_receipt_sha256": "316649b222c7360edda9f9fbf269e303bdacc0343c88f4b9e2e2697ed5fe1bbb",
+          "source_exe_sha256": "06318b0998e9a5c563d493ab8646864a545a2c9a2b8fa4b4cf60d0d6f84513b4",
+          "local_complete_proof_sha256": "b21bac67cd8f798521ce638d4bc11a0795be58b57692879e1a4b4529ec9652f4",
+          "original_binding": null,
+          "original_extent": null,
+          "PC_credit": 0
+        }
+      },
+      "prior_output_preservation": {
+        "baseline": "LOCAL_XXd1695b6_SOURCE_CI_PENDING",
+        "counts": {
+          "functions": 5242,
+          "data": 11357,
+          "identical_full_relocated": 16596
+        },
+        "changes": [
+          {
+            "unit": "src/legoapi/camera.c",
+            "symbol": "_GameCameraMakeMiniCut3",
+            "successor": "_GameCameraMakeMiniCut3",
+            "old_size": 1709,
+            "new_size": 1789,
+            "old_raw_sha": "c4a2ffcc805ea325522e28caeac1d6b1b35d4a295403f310d9498f0ce7dab19c",
+            "new_raw_sha": "4382fb31517118bb3ecc2395e3613371dbcf77baa069534c76ff89bd7be28a0f"
+          },
+          {
+            "unit": "src/legoapi/debris_engine.c",
+            "symbol": "_DebReAlloc2",
+            "successor": "_DebReAlloc2",
+            "old_size": 1458,
+            "new_size": 1458,
+            "old_raw_sha": "edf80808af3e18df2e1fa30a0a586a786f18ea7c037e3abe4930e3f2f70cb72c",
+            "new_raw_sha": "7a9dd072b10096065a1148d37ec82121b269a8655d0d5e8980b79cdc63fb6a77"
+          },
+          {
+            "unit": "src/legogame/game.cpp",
+            "symbol": "_InitGameAfterConfig",
+            "successor": "_InitGameAfterConfig",
+            "old_size": 4437,
+            "new_size": 4437,
+            "old_raw_sha": "0aa67eb28d74135c45106431903ca1cfd688529cfcda855a220fe70ec375a5f5",
+            "new_raw_sha": "de353fdbbba2f3354d5c67216146ebee6d27be7d63d2415d4d7b0f50e331c97d"
+          }
+        ],
+        "qualified": [],
+        "map_sha256": "127f62a6938d3602b1fccc6c573f56862ad42871dfdfa61dcd08c83fe02810d6",
+        "source_exe_sha256": "06318b0998e9a5c563d493ab8646864a545a2c9a2b8fa4b4cf60d0d6f84513b4"
+      },
+      "specific_three_nonexact_pairs": "Exactly reverse retained e812 pair across all full raw/orderednamed/official/applied representations; unchanged3 sources;264siblings preserved; independently accepted10ffcb04",
+      "source_contracts": {
+        "new_states": 7,
+        "typed_working_bytes": 25,
+        "complete_compiler_initializer_bytes": 28,
+        "natural_BYTE_tail_padding_bytes": 3,
+        "full_initializers_native_equal": true,
+        "original_owning_extents": "unknown/blank;0allocation/exactdata credit",
+        "source_private_cohort": "samplerplatformexternalrealsetter",
+        "deferred_copy": "fourDWORD memcpy; rejectedfloatx87copyv1 retained",
+        "graphics_caps": "sampler_count+98/backend+a0;sizeof130/allprioroffsetspreserved",
+        "new_filter_instances_constructors_vtables": 0,
+        "higher_caller_activation": 0
+      },
+      "checks": {
+        "make_check": "PASS796tests/3existing skips;LLVM18full342",
+        "normal_build_check_objects": "PASS5169functions/11360data/342objects;4internalEHgrouped;allrefsresolve",
+        "make_match": "PASSfullnative extents/alloldexact13memberspreserved",
+        "SDK89": "Onlyrecipe/sourcepinsupdated; all89descriptors identical;freshfullnormalLINK/archive/incomingproofzeroPCcredit"
+      },
+      "runtime": {
+        "YY_source_game_runs": 0,
+        "earlier_XX_ordinary_exit": 5,
+        "XX_headless_debugger_run": 1,
+        "debugger_exit": 0,
+        "natural_game_exit_in_debugger_run": "UNKNOWN; explicitdebuggeekillaftercapture",
+        "caller": "source5486d8 CALL\u2192516060/return5486dd NuGetVertexDeclaration; native7419de\u21924ef660",
+        "copy_arguments": {
+          "destination": "02763c18",
+          "source": "02763c10",
+          "bytes": 6863024
+        },
+        "full_getter_source_body": "1660 COFF\u2192physicalEXEequal; native1684notcropped",
+        "cache_current_working_records": 2,
+        "cache_third_key_overlaps_count": true,
+        "native_counter_position": "cache\u22128",
+        "native_producer_minimum_records": 3,
+        "conditional_fourth_record": true,
+        "observed_prior_corrupting_write": false,
+        "original_capacity": "HOLD; native/Mac/Androidevidenceinsufficient",
+        "normal_objects": 342,
+        "frozen_inputs": 455,
+        "all_XX_inputs_unchanged": true,
+        "ShowCrashDialogDWORD0_set_query": true,
+        "owned_processes_debuggers_windows_empty": true,
+        "game_success": "No frame/GPU/presentation/world/gameplay claim"
+      },
+      "evidence": [
+        {
+          "path": "build/analysis/frame-render-posteffect-main-integration-v1/integration.json",
+          "sha256": "93b86b6bcd56881f0ab6353ead8d9f6ee1e26a08f52fcd3d07de2ca920627c00"
+        },
+        {
+          "path": "build/analysis/frame-render-posteffect-main-integration-v1/exact-preservation-and-delta.json",
+          "sha256": "7faf98f7c5b0494c1e56e32b247ed0ef2ffd840a1b2b95fe721d4dcdd5259e31"
+        },
+        {
+          "path": "build/analysis/frame-render-posteffect-main-integration-v1/aggregate-prior-preservation.json",
+          "sha256": "e04d9a320f34b03d2236a711e5addebe6b95cd50c0474abb5b03cd622508a6e0"
+        },
+        {
+          "path": "build/analysis/frame-render-posteffect-main-integration-v1/frozen-normal-v1/normal-object-manifest.json",
+          "sha256": "ae4f11800960f3714282bdd29135f839457353d286399ebf927896d8333d061a"
+        },
+        {
+          "path": "build/analysis/frame-render-posteffect-main-integration-v1/frozen-normal-v1/matching.json",
+          "sha256": "0b33b55db48176a36c6703d87be13aebc807f3c9ea0196614a43728d4fb93e73"
+        },
+        {
+          "path": "build/analysis/frame-render-posteffect-main-integration-v1/normal-build-after-recipe-pins.log",
+          "sha256": "ded2bba69c67e5549eab170834fa264375785ab259bfb3dadd6c322445df7c1e"
+        },
+        {
+          "path": "build/analysis/frame-render-posteffect-main-integration-v1/check.log",
+          "sha256": "65042d9b11a3da6e684120c048e4e1fb540616400a37b1287800757c6c8f4cce"
+        },
+        {
+          "path": "build/analysis/frame-render-posteffect-main-integration-v1/normal-match.log",
+          "sha256": "26f9c0cec1fa1fad8f7ce8c491fa6d517a1e850045bc84ac7c9c6981a25070c3"
+        },
+        {
+          "path": "build/analysis/posteffect-actual-normal-independent-review/v1/accepted-actual12-state7-report-bound-packet.json",
+          "sha256": "d7537f47981c698a497afb929297ecb486c873617a6ab504dfe46c27b2dbcb18"
+        },
+        {
+          "path": "build/analysis/posteffect-prior-three-independent-v1/accepted-three-pair-packet.json",
+          "sha256": "10ffcb042f95bd8df58541480c22edef46928895cfe3aa16c53d250c21695f0e"
+        },
+        {
+          "path": "build/analysis/source-game-headless-crash-detail-next/launcher-v1/observation/caller-attribution.json",
+          "sha256": "ed74c2254063e45718b52dd1f4d8e947f36dd100b4a522a5c3c6f4e3d4920f4f"
+        },
+        {
+          "path": "build/analysis/vertex-declaration-capacity-current-independent-v1/reviewed-native-capacity-and-current-producer-hold.json",
+          "sha256": "8c0f715b7c4a4e15fe27b261792e4f8eb91322e67f1e4e906c5324c2636d7002"
+        },
+        {
+          "path": "build/analysis/debris-startup-main-integration-v1/exact-CI-final.json",
+          "sha256": "402695afb173f7bf90d258ea94856b0111cd6feb678c4ed02e724d45ab3486e2"
+        }
+      ],
+      "next_connected_wave": "Resolve genuine cache storage contract without capacityguess; sixmemberchildren219/47exact independentlyreviewed and canonicalC++cohort scratchmerge ready (no actualintegrationyet); filterbootstrap/resource lifetimes held",
+      "ongoing_goal": "active;checkpointdoesnotcompletegame",
+      "human_journal": "Preserved3unrelated additions unstaged SHA4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7"
     }
   ],
-  "latest_checkpoint": "XX"
+  "latest_checkpoint": "YY"
 }

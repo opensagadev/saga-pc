@@ -28182,3 +28182,17 @@ extern "C" PC_DISPLAY_ITEM_HANDLER_PC PCDisplayItemHandlerPrefixPc[49] = {
 extern "C" PC_DISPLAY_ITEM_HANDLER_PC *PCDisplayItemHandlersPc = PCDisplayItemHandlerPrefixPc;
 #pragma bss_seg()
 #pragma data_seg()
+
+#pragma data_seg(".data$PostEffectFilterStatePc")
+#pragma bss_seg(".bss$PostEffectFilterStatePc")
+extern "C" {
+    i32 NuPostEffectsRanPc = 0;
+    u8 NuPostLastFrameEffectPc = 0;
+    NU_POST_MAIN_VIEW_PC *NuPostMainFilterPc = NULL;
+    NU_POST_DEFERRED_VIEW_PC *NuPostDeferredFilterPc = NULL;
+    NU_POST_MOTION_VIEW_PC *NuPostMotionFilterPc = NULL;
+    NU_POST_ACCUM_VIEW_PC *NuPostAccumFilterPc = NULL;
+    NU_POST_SPEED_VIEW_PC *NuPostSpeedFilterPc = NULL;
+}
+#pragma bss_seg()
+#pragma data_seg()

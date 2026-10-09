@@ -6932,7 +6932,9 @@ typedef struct GRAPHICS_CAPS_PC {
     u32 caps2;
     u8 unknown_018[4];
     u32 device_caps;
-    u8 unknown_020[0xa4];
+    u8 unknown_020[0x78];
+    u32 sampler_count_pc;
+    u8 unknown_09c[0x28];
     u32 vertex_shader_version;
     u8 unknown_0c8[4];
     u32 pixel_shader_version;
@@ -19714,6 +19716,116 @@ extern "C" {
     void __cdecl NuDisplayListMaterialPc(void *);
     extern PC_DISPLAY_ITEM_HANDLER_PC PCDisplayItemHandlerPrefixPc[49];
     extern PC_DISPLAY_ITEM_HANDLER_PC *PCDisplayItemHandlersPc;
+#ifdef __cplusplus
+}
+#endif
+/* Working accessed-field views only, not original allocation extents.
+ * Pointer-only parameter types remain opaque until an actual read is consumed. */
+typedef struct NU_POST_BLOOM_PARAMETERS_PC NU_POST_BLOOM_PARAMETERS_PC;
+typedef struct NU_POST_SPEED_PARAMETERS_PC NU_POST_SPEED_PARAMETERS_PC;
+typedef struct NU_POST_DOF_PARAMETERS_PC {
+    i32 enabled;
+    f32 strength, near_distance, far_distance;
+    i32 mode, bias;
+} NU_POST_DOF_PARAMETERS_PC;
+typedef struct NU_POST_MAIN_VIEW_PC {
+    void *vtable;
+    u8 enabled, unknown_005[0x63];
+    const NU_POST_BLOOM_PARAMETERS_PC *bloom;
+    u8 unknown_06c[4];
+    f32 dof_strength, dof_near, dof_far, dof_blur;
+    i32 dof_mode, dof_bias;
+    u8 dof_enabled, bloom_enabled, unknown_08a[2];
+    i32 active_filter_count;
+    NUMTX motion_previous, motion_current;
+    f32 motion_scale, motion_maximum, motion_falloff;
+    i32 accumulation_frames;
+    f32 accumulation_blend, accumulation_mode_pc;
+} NU_POST_MAIN_VIEW_PC;
+typedef struct NU_POST_DEFERRED_VIEW_PC {
+    void *vtable;
+    u8 enabled, unknown_005[0x3f];
+    f32 parameters[4];
+    i32 dynamic_light_count;
+    NURNDRLIGHTRECORD *dynamic_lights[32];
+    i32 deferred_geometry_count;
+} NU_POST_DEFERRED_VIEW_PC;
+/* 32 slots are the bounded pointer region58..d8; no native upper-bound
+ * guard is added and no full class allocation/capacity is credited. */
+typedef struct NU_POST_MOTION_VIEW_PC {
+    void *vtable;
+    u8 enabled, unknown_005[0xf];
+    NUMTX previous, current;
+    f32 scale, maximum, falloff;
+} NU_POST_MOTION_VIEW_PC;
+typedef struct NU_POST_ACCUM_VIEW_PC {
+    void *vtable;
+    u8 enabled, unknown_005[0x13];
+    i32 frames;
+    f32 blend, mode_pc;
+} NU_POST_ACCUM_VIEW_PC;
+typedef struct NU_POST_SPEED_VIEW_PC {
+    void *vtable;
+    u8 enabled, unknown_005[0x17];
+    const NU_POST_SPEED_PARAMETERS_PC *parameters;
+} NU_POST_SPEED_VIEW_PC;
+STATIC_ASSERT(offsetof(NU_POST_DOF_PARAMETERS_PC, strength) == 4);
+STATIC_ASSERT(offsetof(NU_POST_DOF_PARAMETERS_PC, bias) == 0x14);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, bloom) == 0x68);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, dof_strength) == 0x70);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, dof_near) == 0x74);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, dof_far) == 0x78);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, dof_mode) == 0x80);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, dof_bias) == 0x84);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, dof_enabled) == 0x88);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, bloom_enabled) == 0x89);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, active_filter_count) == 0x8c);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, motion_previous) == 0x90);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, motion_current) == 0xd0);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, motion_scale) == 0x110);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, motion_maximum) == 0x114);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, motion_falloff) == 0x118);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, accumulation_frames) == 0x11c);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, accumulation_blend) == 0x120);
+STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, accumulation_mode_pc) == 0x124);
+STATIC_ASSERT(offsetof(NU_POST_DEFERRED_VIEW_PC, parameters) == 0x44);
+STATIC_ASSERT(offsetof(NU_POST_DEFERRED_VIEW_PC, dynamic_light_count) == 0x54);
+STATIC_ASSERT(offsetof(NU_POST_DEFERRED_VIEW_PC, dynamic_lights) == 0x58);
+STATIC_ASSERT(offsetof(NU_POST_DEFERRED_VIEW_PC, deferred_geometry_count) == 0xd8);
+STATIC_ASSERT(offsetof(NU_POST_MOTION_VIEW_PC, previous) == 0x14);
+STATIC_ASSERT(offsetof(NU_POST_MOTION_VIEW_PC, current) == 0x54);
+STATIC_ASSERT(offsetof(NU_POST_MOTION_VIEW_PC, scale) == 0x94);
+STATIC_ASSERT(offsetof(NU_POST_MOTION_VIEW_PC, maximum) == 0x98);
+STATIC_ASSERT(offsetof(NU_POST_MOTION_VIEW_PC, falloff) == 0x9c);
+STATIC_ASSERT(offsetof(NU_POST_ACCUM_VIEW_PC, frames) == 0x18);
+STATIC_ASSERT(offsetof(NU_POST_ACCUM_VIEW_PC, blend) == 0x1c);
+STATIC_ASSERT(offsetof(NU_POST_ACCUM_VIEW_PC, mode_pc) == 0x20);
+STATIC_ASSERT(offsetof(NU_POST_SPEED_VIEW_PC, parameters) == 0x1c);
+STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, sampler_count_pc) == 0x98);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) + offsetof(GRAPHICS_CAPS_PC, sampler_count_pc) == 0xa0);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern NU_POST_MAIN_VIEW_PC *NuPostMainFilterPc;
+    extern NU_POST_DEFERRED_VIEW_PC *NuPostDeferredFilterPc;
+    extern NU_POST_MOTION_VIEW_PC *NuPostMotionFilterPc;
+    extern NU_POST_ACCUM_VIEW_PC *NuPostAccumFilterPc;
+    extern NU_POST_SPEED_VIEW_PC *NuPostSpeedFilterPc;
+    extern i32 NuPostEffectsRanPc;
+    extern u8 NuPostLastFrameEffectPc;
+    void __cdecl PCDeviceResetSamplerDefaultsPc(void);
+    void __cdecl NuPostEffectReset(void);
+    void __cdecl NuPostEffectEnable(i32);
+    void __cdecl NuPostEffectDisable(u32);
+    void __cdecl NuPostEffectAddDynamicLight(NURNDRLIGHTRECORD *);
+    i32 __cdecl NuPostEffectGetActiveDynamicLightCount(void);
+    void __cdecl NuPostEffectDepthOfField(const NU_POST_DOF_PARAMETERS_PC *);
+    void __cdecl NuPostEffectDeferredShading(const f32 *);
+    void __cdecl NuPostEffectBloom(const NU_POST_BLOOM_PARAMETERS_PC *);
+    void __cdecl NuPostEffectMotionBlur(const NUMTX *, const NUMTX *, f32, f32, f32);
+    void __cdecl NuPostEffectAccumulationMotionBlur(i32, f32, f32);
+    void __cdecl NuPostEffectSpeedBlur(const NU_POST_SPEED_PARAMETERS_PC *);
 #ifdef __cplusplus
 }
 #endif

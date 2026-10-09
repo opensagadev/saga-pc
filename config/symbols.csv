@@ -3223,7 +3223,18 @@ address    , symbol                                                         , si
 0x5c19d0,_SceneUpdateMtxCopyPrivatePc,95,
 0x5c1aa0,_VisibilityTransformFourPc,111,
 0x5c1f70,_NuRndrPrimSetColourPrivate,108,
+0x5c31f0,_NuPostEffectReset,13,void __cdecl(void)
 0x5c32c0,_NuPostEffectIsInitialised,16,i32 __cdecl(u32)
+0x5c32d0,_NuPostEffectEnable,273,void __cdecl(i32)
+0x5c33f0,_NuPostEffectDisable,265,void __cdecl(u32)
+0x5c3640,_NuPostEffectAddDynamicLight,30,void __cdecl(NURNDRLIGHTRECORD*)
+0x5c3660,_NuPostEffectGetActiveDynamicLightCount,16,i32 __cdecl(void)
+0x5c3670,_NuPostEffectDepthOfField,50,void __cdecl(const NU_POST_DOF_PARAMETERS_PC*)
+0x5c36b0,_NuPostEffectDeferredShading,39,void __cdecl(const f32*)
+0x5c36e0,_NuPostEffectBloom,17,void __cdecl(const NU_POST_BLOOM_PARAMETERS_PC*)
+0x5c3700,_NuPostEffectMotionBlur,133,"void __cdecl(const NUMTX*,const NUMTX*,f32,f32,f32)"
+0x5c3790,_NuPostEffectAccumulationMotionBlur,63,"void __cdecl(i32,f32,f32)"
+0x5c37d0,_NuPostEffectSpeedBlur,17,void __cdecl(const NU_POST_SPEED_PARAMETERS_PC*)
 0x005c37f0,_NuPostEffectGetBackBuffer,135,GRAPHICS_RENDER_TEXTURE_PC *__cdecl(i32)
 0x5c3950,??_I@YGXPAXIHP6EX0@Z@Z,50,"void __stdcall(void*,u32,i32,void(__thiscall *)(void*))"
 0x5c5420,?SortByDepth@OccluderSet@@SAHPBX0@Z,75,"i32 __cdecl (const void *, const void *)"
@@ -4989,6 +5000,7 @@ address    , symbol                                                         , si
 0x6df320,_PCFrameSetLoadingYieldEnabled,14,void __cdecl (i32)
 0x6df330,_PCFrameLoadingYieldEnabled,9,i32 __cdecl (void)
 0x6df940,_PCDeviceResetState,220,void __cdecl (void)
+0x6dfa20,_PCDeviceResetSamplerDefaultsPc,72,void __cdecl(void)
 0x006dfd40,_PCFramePresentNativePc,36,"i32 __cdecl(i32,i32)"
 0x6dfdc0,_PcFreeApiCallBuffer,45,void __cdecl(void)
 0x6dfdf0,_PcDestroyPlatform,40,void __cdecl(void)
@@ -14571,8 +14583,15 @@ address    , symbol                                                         , si
 0x973704,_TextureAnimationActiveMaskPc,,u16
 0x00973708 , _global_camera                                                 , 120   , NUCAMERA
 0x973780,_NuPortalDebugCameraPc,,NUCAMERA
+0x9737f8,_NuPostEffectsRanPc,,i32
+0x9737fc,_NuPostLastFrameEffectPc,,u8
 0x009737fd , _ForcePlayEndFrame                                             , 1     , u8
 0x009737fe , _ForceEulerToQuat                                              , 1     , u8
+0x973800,_NuPostMainFilterPc,,NU_POST_MAIN_VIEW_PC*
+0x973804,_NuPostDeferredFilterPc,,NU_POST_DEFERRED_VIEW_PC*
+0x973808,_NuPostMotionFilterPc,,NU_POST_MOTION_VIEW_PC*
+0x97380c,_NuPostAccumFilterPc,,NU_POST_ACCUM_VIEW_PC*
+0x973810,_NuPostSpeedFilterPc,,NU_POST_SPEED_VIEW_PC*
 0x97386c,_PcGeometryRegistryCountPc,,i32
 0x973870,_PcGeometryRegistryPc,,PC_GEOMETRY_PUBLISH_RECORD_PC *
 0x973874,_PcGeometryMatrixCapacityPc,,i32
