@@ -1291,3 +1291,30 @@ uncompiled. No guessed scene capacity, standalone reset, replacement provider or
 successful frame/gameplay result is introduced. The current shader CPU evidence
 remains confined to its prior 208 assertions; new callback runtime checks await
 frozen compiled source and real provider closure.
+
+### Native handler/source checkpoint UU (2026-10-09)
+
+The current UU batch adds 16 complete PC functions / 2,278 unique compared bytes:
+nine display-list callbacks, the vector helper and six shader providers. Five are
+exact, adding 194 code bytes; whole-PC fuzzy coverage is 29.306557%, up 0.054455
+percentage points. All prior exact code/data and 13 named members survive. Four
+canonical state views use 28 minimum bytes; unknown owning extents receive zero
+allocation or exact-data credit.
+
+The actual-normal CPU run passes 43 checks through the real shader manager and
+compiler. The retained first run stopped at 16 checks with one width failure:
+PC semantic 0x49 is ps2ShineMtx, a four-vector matrix at packet +0x70. The reader
+now names NUMTX and requires an initialized minimum 0xb0-byte view; its producer
+and original owning extent remain unproved. No uniform metadata or guessed
+padding was changed. The genuine signed32 camera local now emits native's
+conversion helper; its complete body remains nonexact and positive camera/device
+calls are excluded from CPU tests. Wine crash dialogs were set and queried off;
+owned cleanup is empty. These checks establish no device or gameplay milestone.
+
+Ten of 20 observed callbacks still lack compiled source. The next source wave is
+BC transforms/indexed handlers, geometry/debris and their real device suppliers,
+followed by material handling and the complete 4,472-byte shader-parameter
+dispatcher. Preserve private helpers with their real caller cohort and keep the
+old C owner unchanged. The renderer/table/frame caller remains held until these
+consumed providers exist. Original array capacity is unproved; no standalone
+scene-count reset, forced focus, fake provider or enlarged storage is introduced.

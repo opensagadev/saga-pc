@@ -13,3 +13,10 @@ void __cdecl NuVec4MtxTransformH(NUVEC4 *out, NUVEC4 *input, NUMTX *matrix) {
     out->z = z;
     out->w = w;
 }
+
+void __cdecl NuVec4Add(NUVEC4 *out, NUVEC4 *left, NUVEC4 *right) {
+    out->w = left->w + right->w;
+    out->x = left->x + right->x;
+    out->y = left->y + right->y;
+    out->z = left->z + right->z;
+}

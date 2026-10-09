@@ -474,7 +474,7 @@ extern "C" void __cdecl PCDeviceCreateTexture(u32 width, u32 height, u32 levels,
 
 #include <stdlib.h>
 extern "C" {
-    extern i32 PCGraphicsFrameScratchCount;
+    extern PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC PCGraphicsFrameScratchCount;
     extern i32 PCGraphicsBoundShader;
     extern i32 PCGraphicsFrameState;
     void __cdecl PCDeviceEvictManagedResources();
@@ -763,7 +763,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::Present(const RECT *source, const RECT *de
         target_cache[i] = reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(-1);
 }
 void __thiscall PC_DEVICE_BACKEND_PC::BeginScene() {
-    PCGraphicsFrameScratchCount = 0;
+    PCGraphicsFrameScratchCount.reset_word = 0;
     PCGraphicsBoundShader = -1;
     PCGraphicsFrameState = -1;
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);

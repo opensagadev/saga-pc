@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1418434,
-    "matched_code_bytes": 219137,
-    "matching_percent": 6.312920490221667,
-    "fuzzy_coverage_percent": 27.55893042941406,
-    "mapped_functions": 4886,
-    "matched_functions": 2207,
-    "objdiff_fuzzy_percent": 69.07882,
-    "objdiff_total_code": 1385722,
+    "mapped_code_bytes": 1494414,
+    "matched_code_bytes": 232251,
+    "matching_percent": 6.690709906471624,
+    "fuzzy_coverage_percent": 29.306557107612218,
+    "mapped_functions": 5287,
+    "matched_functions": 2406,
+    "objdiff_fuzzy_percent": 69.60406,
+    "objdiff_total_code": 1462421,
     "image_bytes": 40067072,
-    "mapped_bytes": 2066634,
-    "mapping_percent": 5.1579361726257416,
+    "mapped_bytes": 2142618,
+    "mapping_percent": 5.347578180906257,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -38,14 +38,14 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 1419628
+        "mapped_bytes": 1495608
       },
       {
         "name": ".rdata",
         "kind": "data",
         "address": "0x751000",
         "size": 646766,
-        "mapped_bytes": 30182
+        "mapped_bytes": 30186
       },
       {
         "name": ".data",
@@ -55,18 +55,18 @@
         "mapped_bytes": 616824
       }
     ],
-    "mapping_known_size_symbols": 9196,
-    "mapping_unknown_size_symbols": 5081,
-    "mapping_code_bytes": 1419628,
+    "mapping_known_size_symbols": 9579,
+    "mapping_unknown_size_symbols": 5587,
+    "mapping_code_bytes": 1495608,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 40.89678461278746,
-    "mapping_data_bytes": 647006,
+    "mapping_code_percent": 43.08562400936148,
+    "mapping_data_bytes": 647010,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 1.7962925421012919,
-    "mapping_code_data_bytes": 2066634,
+    "mapping_data_percent": 1.7963036473617815,
+    "mapping_code_data_bytes": 2142618,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 5.233281604059254,
-    "matched_data_region_bytes": 637612
+    "mapping_code_data_percent": 5.425693840286296,
+    "matched_data_region_bytes": 637833
   },
   "newly_compared": [
     {
@@ -34567,7 +34567,458 @@
         "build/analysis/frame-next-main-integration-v1/check-final.log": "6034a358e87c3a06637eb0f76d985616a1bd5072de74d4125443da3e230b2897",
         "build/analysis/frame-next-main-integration-v1/SDK-descriptor-header-successor.json": "891e35a8fcfd1d8704e81ce5cce9470742edd1b062643758438c03fb56c8d379"
       }
+    },
+    {
+      "checkpoint": "UU",
+      "date": "2026-10-09",
+      "scope": "Native display-list and shader-provider chain; caller/table activation remains held",
+      "baseline_commit": "1bbe21d43f3cc25b9b41b4b396a6ddb37bca5308",
+      "previous_publication": {
+        "CI_run": 37872016080,
+        "CI_url": "https://github.com/opensagadev/saga-pc/actions/runs/37872016080",
+        "exact_revision_all13_steps": "SUCCESS"
+      },
+      "publication": "Exact pushed revision CI pending at commit",
+      "new_functions": 16,
+      "new_unique_compared_PC_bytes": 2278,
+      "new_exact_functions": 5,
+      "new_exact_code_bytes": 194,
+      "new_exact_data_bytes": 0,
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1494414,
+        "matched_code_bytes": 232251,
+        "matching_percent": 6.690709906471624,
+        "fuzzy_coverage_percent": 29.306557107612218,
+        "mapped_functions": 5287,
+        "matched_functions": 2406,
+        "objdiff_fuzzy_percent": 69.60406,
+        "objdiff_total_code": 1462421,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2142618,
+        "mapping_percent": 5.347578180906257,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1495608
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30186
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9579,
+        "mapping_unknown_size_symbols": 5587,
+        "mapping_code_bytes": 1495608,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 43.08562400936148,
+        "mapping_data_bytes": 647010,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7963036473617815,
+        "mapping_code_data_bytes": 2142618,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.425693840286296,
+        "matched_data_region_bytes": 637833
+      },
+      "fuzzy_delta_pp": 0.05445512992596946,
+      "newly_compared": [
+        {
+          "symbol": "_NuVec4Add",
+          "address": "0x005b3dc0",
+          "target_size": 46,
+          "exact_match": true,
+          "objdiff_percent": 100.0,
+          "objects": [
+            {
+              "unit": "src/nu2api/nuvec4.c",
+              "base_size": 46,
+              "exact_match": true,
+              "target_sha256": "8fdf7c40c9166cdfda265f01718b400e7482906e9c025b96c875497e584132da",
+              "base_sha256": "8fdf7c40c9166cdfda265f01718b400e7482906e9c025b96c875497e584132da",
+              "relocation_count": 0,
+              "comparison_unit": "005b3dc0-1651170e52a2",
+              "objdiff_percent": 100.0
+            }
+          ]
+        },
+        {
+          "symbol": "_NuDisplayListSkinPalettePc",
+          "address": "0x005fd9c0",
+          "target_size": 48,
+          "exact_match": false,
+          "objdiff_percent": 68.57143,
+          "objects": [
+            {
+              "unit": "src/nu2api/nudlist_pc.c",
+              "base_size": 52,
+              "exact_match": false,
+              "target_sha256": "7759ada1a9efa16a3ffff80d133df37ad079fc519533c106f81aae1dafa021f0",
+              "base_sha256": "ca2323b8ffff7bb2e479104f0bd7e76f87824f17673c347bf7148b98ff9c5e0d",
+              "relocation_count": 3,
+              "comparison_unit": "005fd9c0-2d2ae48b43ca",
+              "objdiff_percent": 68.57143
+            }
+          ]
+        },
+        {
+          "symbol": "_NuDisplayListLightsPc",
+          "address": "0x005fdb60",
+          "target_size": 446,
+          "exact_match": false,
+          "objdiff_percent": 96.25926,
+          "objects": [
+            {
+              "unit": "src/nu2api/nudlist_pc.c",
+              "base_size": 446,
+              "exact_match": false,
+              "target_sha256": "7bf3eebf300a5e0ebc5ba576425925b0152d1ecc13cf4cb293afa06d77bc7f46",
+              "base_sha256": "da395065f93747db6ff6dcd727f32c7d14efdda64895f695227b16aa50fd552c",
+              "relocation_count": 16,
+              "comparison_unit": "005fdb60-ee83b70acfbb",
+              "objdiff_percent": 96.25926
+            }
+          ]
+        },
+        {
+          "symbol": "_NuDisplayListTintPc",
+          "address": "0x005fdd20",
+          "target_size": 79,
+          "exact_match": true,
+          "objdiff_percent": 100.0,
+          "objects": [
+            {
+              "unit": "src/nu2api/nudlist_pc.c",
+              "base_size": 79,
+              "exact_match": true,
+              "target_sha256": "c29d5ce3b9d31f366acb7db4771568b98f9c2212ff193c31d8ecb6f776448c56",
+              "base_sha256": "c29d5ce3b9d31f366acb7db4771568b98f9c2212ff193c31d8ecb6f776448c56",
+              "relocation_count": 5,
+              "comparison_unit": "005fdd20-37adf44e91a9",
+              "objdiff_percent": 100.0
+            }
+          ]
+        },
+        {
+          "symbol": "_NuDisplayListFogPc",
+          "address": "0x005fdd70",
+          "target_size": 216,
+          "exact_match": false,
+          "objdiff_percent": 90.859375,
+          "objects": [
+            {
+              "unit": "src/nu2api/nudlist_pc.c",
+              "base_size": 213,
+              "exact_match": false,
+              "target_sha256": "2feb9db1c908f819b9614c5ec72883b7ad075573bd6c25cb08efe2e107b379f1",
+              "base_sha256": "e494678f3377affd7efef694961e1c80a067805282cfc181ef22e21dc85367ac",
+              "relocation_count": 4,
+              "comparison_unit": "005fdd70-5ba56bf32c65",
+              "objdiff_percent": 90.859375
+            }
+          ]
+        },
+        {
+          "symbol": "_NuDisplayListLightmapPacketPc",
+          "address": "0x005fde50",
+          "target_size": 10,
+          "exact_match": true,
+          "objdiff_percent": 100.0,
+          "objects": [
+            {
+              "unit": "src/nu2api/nudlist_pc.c",
+              "base_size": 10,
+              "exact_match": true,
+              "target_sha256": "e6e470c114e6583613a1128c71246752b08950342e69e4bfdf9fd633d4fc900b",
+              "base_sha256": "e6e470c114e6583613a1128c71246752b08950342e69e4bfdf9fd633d4fc900b",
+              "relocation_count": 1,
+              "comparison_unit": "005fde50-8a2df532b0b6",
+              "objdiff_percent": 100.0
+            }
+          ]
+        },
+        {
+          "symbol": "_NuDisplayListLegacyLightmapPc",
+          "address": "0x005fdfd0",
+          "target_size": 115,
+          "exact_match": false,
+          "objdiff_percent": 92.51163,
+          "objects": [
+            {
+              "unit": "src/nu2api/nudlist_pc.c",
+              "base_size": 113,
+              "exact_match": false,
+              "target_sha256": "008a837a6df280b35ceb0c868159ea18fbd1480ce993e42525a12c7434aca8be",
+              "base_sha256": "dcbc57dc4c0d833ed858246caa067cfa8026c0203c5154dd1de70c422b41092f",
+              "relocation_count": 5,
+              "comparison_unit": "005fdfd0-f48bfd404fd8",
+              "objdiff_percent": 92.51163
+            }
+          ]
+        },
+        {
+          "symbol": "_NuDisplayListLegacyLightmapOffsetPc",
+          "address": "0x005fe050",
+          "target_size": 121,
+          "exact_match": false,
+          "objdiff_percent": 93.14893,
+          "objects": [
+            {
+              "unit": "src/nu2api/nudlist_pc.c",
+              "base_size": 119,
+              "exact_match": false,
+              "target_sha256": "351ed9b41d35b08dd2d8662be0b59d59e1b7b71f1f0dd1b90f53a3749c4bcb24",
+              "base_sha256": "1201055bf08ab7a0c6078df4f5b544209f7933b5e7170e457efc601303f83a11",
+              "relocation_count": 5,
+              "comparison_unit": "005fe050-57e013da7d4a",
+              "objdiff_percent": 93.14893
+            }
+          ]
+        },
+        {
+          "symbol": "_NuDisplayListReflectionPc",
+          "address": "0x006015e0",
+          "target_size": 74,
+          "exact_match": false,
+          "objdiff_percent": 54.703705,
+          "objects": [
+            {
+              "unit": "src/nu2api/nudlist_pc.c",
+              "base_size": 78,
+              "exact_match": false,
+              "target_sha256": "c7c0a43a6f3ef00e0b037ac2a376d9d7b14e6ba66c5458dfa4674b48bda89ef1",
+              "base_sha256": "6abcf4ae707e2467d85bbeeb9a248208bdb0859dd6ce9d1d486522110143fe78",
+              "relocation_count": 4,
+              "comparison_unit": "006015e0-84c0683eb459",
+              "objdiff_percent": 54.703705
+            }
+          ]
+        },
+        {
+          "symbol": "_NuDisplayListCameraPc",
+          "address": "0x00603b20",
+          "target_size": 206,
+          "exact_match": false,
+          "objdiff_percent": 31.482143,
+          "objects": [
+            {
+              "unit": "src/nu2api/nudlist_pc.c",
+              "base_size": 126,
+              "exact_match": false,
+              "target_sha256": "694a494c40d360eeef8037474abaa5afe1bc0c7506506b0be8be8ea1f72b091d",
+              "base_sha256": "12740eaaafd88c79e3126f7a4e1614273237427ae32dcf1d46e34744f5c9075c",
+              "relocation_count": 8,
+              "comparison_unit": "00603b20-184b7cf057a3",
+              "objdiff_percent": 31.482143
+            }
+          ]
+        },
+        {
+          "symbol": "_NuShaderManagerSetElementfv",
+          "address": "0x007413b0",
+          "target_size": 27,
+          "exact_match": true,
+          "objdiff_percent": 100.0,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushadermanager.cpp",
+              "base_size": 27,
+              "exact_match": true,
+              "target_sha256": "c3f94e7ef74b5098d7a3689fda5508398516ffb707ddefbd59db05be8070f284",
+              "base_sha256": "c3f94e7ef74b5098d7a3689fda5508398516ffb707ddefbd59db05be8070f284",
+              "relocation_count": 2,
+              "comparison_unit": "007413b0-43032939e937",
+              "objdiff_percent": 100.0
+            }
+          ]
+        },
+        {
+          "symbol": "_NuShaderManagerSetElementsfv_transpose",
+          "address": "0x007413f0",
+          "target_size": 32,
+          "exact_match": true,
+          "objdiff_percent": 100.0,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushadermanager.cpp",
+              "base_size": 32,
+              "exact_match": true,
+              "target_sha256": "73a92f5246ea3a09db19c4cb077a9e41c1d006c88dcdb991552798445873c1e7",
+              "base_sha256": "73a92f5246ea3a09db19c4cb077a9e41c1d006c88dcdb991552798445873c1e7",
+              "relocation_count": 2,
+              "comparison_unit": "007413f0-7a34da20c1b1",
+              "objdiff_percent": 100.0
+            }
+          ]
+        },
+        {
+          "symbol": "?SetTransposedMatrixValues@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHHPBM@Z",
+          "address": "0x00743ca0",
+          "target_size": 84,
+          "exact_match": false,
+          "objdiff_percent": 66.19355,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushaderobject_pc.cpp",
+              "base_size": 83,
+              "exact_match": false,
+              "target_sha256": "ad8ccc97354cb8dd16425b7b9fe1ccbc484dc26019bca27998ece7811c566e9e",
+              "base_sha256": "d88624999fd7e117098d7711da342f0121d4a79911ce74ffc652695a65eeb268",
+              "relocation_count": 2,
+              "comparison_unit": "00743ca0-edd5a288802d",
+              "objdiff_percent": 66.19355
+            }
+          ]
+        },
+        {
+          "symbol": "_NuShaderObjectSetElementsfv_transpose",
+          "address": "0x00744190",
+          "target_size": 128,
+          "exact_match": false,
+          "objdiff_percent": 49.75,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushaderobject_pc.cpp",
+              "base_size": 108,
+              "exact_match": false,
+              "target_sha256": "ac3b7e94670f291cc4d238d12a22c1c6043b5ce0944706b77ba27bc29fac6b98",
+              "base_sha256": "7a760cc0d8463ebfff36c582606fedc6210253705896576a28dfae9534a61617",
+              "relocation_count": 3,
+              "comparison_unit": "00744190-b95af695871a",
+              "objdiff_percent": 49.75
+            }
+          ]
+        },
+        {
+          "symbol": "?setElementfv@ShaderManagerHLSL@@QAEXHHPBM@Z",
+          "address": "0x00745b80",
+          "target_size": 323,
+          "exact_match": false,
+          "objdiff_percent": 88.98387,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushadermanager.cpp",
+              "base_size": 307,
+              "exact_match": false,
+              "target_sha256": "4174a2c38cdf73c3eda8fabf14739eacbd7733f2eacbe77985b574338a973f2a",
+              "base_sha256": "b52f47f4f6db07a851106bea2bf5eac61d886c3b9bf1d2b99037e958a0a9a0fa",
+              "relocation_count": 9,
+              "comparison_unit": "00745b80-1655e45d2ddf",
+              "objdiff_percent": 88.98387
+            }
+          ]
+        },
+        {
+          "symbol": "?setElementsfv_transpose@ShaderManagerHLSL@@QAEXHHHPBM@Z",
+          "address": "0x00745e90",
+          "target_size": 323,
+          "exact_match": false,
+          "objdiff_percent": 86.965515,
+          "objects": [
+            {
+              "unit": "src/nu2api/nushadermanager.cpp",
+              "base_size": 312,
+              "exact_match": false,
+              "target_sha256": "2a35f2b19cdb9abf5d1dc54017899408954b98bd87c4e320b7ae19fa8ad2b23e",
+              "base_sha256": "74e0d2ffcb5631026d48c95b230804f1d2730f7fdb8de40d361129ea5ba810b9",
+              "relocation_count": 8,
+              "comparison_unit": "00745e90-b02294c7aa1f",
+              "objdiff_percent": 86.965515
+            }
+          ]
+        }
+      ],
+      "old_exact_preservation": {
+        "function_rows": 2401,
+        "data_rows": 3803,
+        "named_members": 13,
+        "losses": 0
+      },
+      "prior_output_preservation": {
+        "functions": 5178,
+        "data": 11284,
+        "identical_full_outputs": 16459,
+        "changes": [
+          "Intentional real renderer indexed-uniform reconnection1040->1068",
+          "Specific historical MiniCut3 pair, unchanged source and retained finite proof",
+          "InitGameAfterConfig same fullraw bytes, two stable integer reads commute"
+        ]
+      },
+      "source_contracts": {
+        "callbacks": 9,
+        "callback_native_bytes": 1315,
+        "vector_native_bytes": 46,
+        "shader_functions": 6,
+        "shader_native_bytes": 917,
+        "canonical_new_views": 4,
+        "typed_minimum_bytes": 28,
+        "existing_integer_pointer_union_bytes": 4,
+        "unknown_original_extents": "blank; no allocation/extent/exact-data credit",
+        "renderer_reconnection": "real7413b0 indexed uniform provider at native60b0cc; zero additional transferred range",
+        "camera": "genuine signed32 local naturally emits native __ftol2_sse; whole126 candidate/native206 NONEXACT",
+        "lights": "NUMTX shine_matrix@70/minimum readerb0, semantic49 ps2ShineMtx count4/field_c4; no original producer/owning extent claim; all25 complete emitted owner outputs unchanged"
+      },
+      "checks": {
+        "make_check": "PASS796tests3existing_skips; LLVM18format368/tidy341",
+        "make_build_check_objects": "PASS5109functions/11285data/341owners; four internalEH points no independent credit",
+        "make_match": "PASS complete authoritative retail extents; all old exacts and named members preserved",
+        "candidate_only": "Exact89 unchanged SDK occurrence/full-definition/section/named-relocation contracts; source/header recipe successors plus fresh normalLINK/library reference census; zeroPCcredit"
+      },
+      "runtime": {
+        "status": "PASS43/0",
+        "natural_exit": 0,
+        "seconds": 6.525,
+        "normal_objects": 341,
+        "replacements": 0,
+        "supplements": 0,
+        "CPU_domain": "Initialized caller-owned minimum readers; real shader manager/compiler/unbound profile, full64shine cache, Vec4 aliases/NaN/Inf/signedzero, tint/fog, MAX/ties/NaN/unboundskin",
+        "retained_failed_attempt": "16checks/1failure exited1 before uniform calls: wrong Android one-vector tail was rejected by genuine native width guard; original failure retained",
+        "prelaunch_repairs": "Fixture destructor type spelling and proof-only private/EH/counter/runner bookkeeping corrections retained; no engine/provider/test-assertion weakening",
+        "ShowCrashDialog": "DWORD0 set and queried",
+        "owned_cleanup": "empty, pidfd-owned only, no global kill/prefix reset",
+        "source_game_launch": false,
+        "limits": "No GPU/device/asset/gameplay claim; positive Camera/reflection/bound skin/legacy texture calls excluded; original light-packet producer/owning allocation unproved"
+      },
+      "remaining_provider_contracts": [
+        "Ten of20 observed draw callbacks still lack actual source",
+        "DrawScene210/DrawItems20 and native table publication remain held",
+        "Partial renderer, nativeTimeBar render and frame/hardware caller activation remain held",
+        "Material parameter dispatcher7427e0 full4472 requires true child/field closure",
+        "Original scene and capture/fulltexture owning capacities remain unproved"
+      ],
+      "next_wave": "Prepared BC6/1214+D4/1042+device4/266, then material/device/parameter source closure; use new C++ private-helper caller cohort while preserving all actual old C outputs. Prepared11/1024 shader children include8 scratch exact/301B but no actual transfer credit.",
+      "checkpoint_delay": "Native shine-matrix consumed-width mismatch found by runtime guard; corrected genuine type/domain and verified43 tests instead of altering metadata or adding padding. Complete private-data proof bookkeeping corrected without weakening checks.",
+      "user_journal_preserved": true,
+      "user_journal_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "ongoing_goal": "active; checkpoint does not complete the game",
+      "evidence_pins": {
+        "build/analysis/frame-handler-next-main-integration-v1/aggregate-prior-preservation.json": "6ae9119a78c9c2251666d05b403780daa4c20d7a00582323c07f1908720c0a7d",
+        "build/analysis/frame-handler-next-main-integration-v1/retail-verified-delta-shine-source.json": "80dc3c77a5b864d539dcfcddb1459cf1b6ff7bc0973eb4e9a6a5ffadbf97ac15",
+        "build/analysis/frame-handler-next-main-integration-v1/shine-type-output-preservation.json": "acbcff5612a992d732216eff1461e9182a5df8eec0213877e894ce38a86c62f2",
+        "build/analysis/frame-handler-next-main-integration-v1/full-new-initializer-proof.json": "a4e6adf92505d68933260c470e8ecba6e9e58eee937dfbcdb617067edf580683",
+        "build/analysis/frame-handler-next-main-integration-v1/renderer-provider-reconnection-proof.json": "48db5c896da9c0508f14b4369dc0a86b8604d40a2b6e23a5f09964955f4a8cd0",
+        "build/analysis/frame-handler-next-main-integration-v1/check-shine-final.log": "1d70fa1ece291caca1c7bf7827d51acc8eff213c7c9d1cdc722369cc04763870",
+        "build/analysis/frame-handler-next-main-integration-v1/shine-type-build.log": "105cfe2133c251c6af7bef888371b27aa97c6683b818ccf1213f94e7428dbd74",
+        "build/analysis/frame-handler-next-main-integration-v1/frozen-normal-v4/normal-object-manifest.json": "a1e46b950d355a9fd48a0338c43559aa4f003a4c3bb9e6bcff8ca54bd7f4fe84",
+        "build/analysis/frame-handler-runtime-feasibility-next/runtime-handoff-waveA43.json": "fed277cde8af42de55bfbdc6ce71214be51b47e31b2786f8cc4479888f17d3d2",
+        "build/analysis/frame-render-lifecycle-independent-review/shine-matrix-minimum-reader-v1/accepted-native-minimum-reader-correction.json": "81cf62fb1f464a690b2811bb5f97e705c49799887294cee3581d3732c29ca573",
+        "build/analysis/frame-render-lifecycle-independent-review/camera-signed-local-v3/accepted-signed-local-camera-packet.json": "17dbde263e212296ee939e0823b2f7ba0a40aa8a5bebc647040faf2158070bcf",
+        "build/analysis/frame-render-lifecycle-independent-review/camera-repair-and-prior-pairs-v1/accepted-qualified-camera-and-prior-pairs.json": "4b08d5b79c0de372a88a2947600ae77748f1cb2d978a7234f6b737a86fd2ccfb"
+      }
     }
   ],
-  "latest_checkpoint": "TT"
+  "latest_checkpoint": "UU"
 }

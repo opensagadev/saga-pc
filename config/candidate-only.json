@@ -15,7 +15,7 @@
     },
     {
       "path": "src/saga.h",
-      "sha256": "eb79e356dce25482b605424b4087f900c9e9b168470fa20f5a76ca35f7fff0de"
+      "sha256": "1df77d7e443aeba09919711abf3e4f009794514730df78e6378dd9ca723c5f94"
     },
     {
       "path": "src/externals.h",
@@ -46,7 +46,7 @@
       ],
       "source": {
         "path": "src/nu2api/nushadermanager.cpp",
-        "sha256": "4373a256f91d1c013993b63f2c3e6da445525a83492ad1ecb9937cdd58a8efa8"
+        "sha256": "80b97b280b59d6e59948814bf34a01e64cdce861994b7cae86bb0f84dbfbe931"
       },
       "definitions": [
         {
@@ -88,7 +88,7 @@
       "ordered_named_relocations": [],
       "source": {
         "path": "src/nu2api/nushadermanager.cpp",
-        "sha256": "4373a256f91d1c013993b63f2c3e6da445525a83492ad1ecb9937cdd58a8efa8"
+        "sha256": "80b97b280b59d6e59948814bf34a01e64cdce861994b7cae86bb0f84dbfbe931"
       },
       "definitions": [
         {

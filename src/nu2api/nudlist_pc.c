@@ -261,3 +261,217 @@ void __cdecl NuDisplayListDrawPrimitive2DPc(void *data) {
 void __cdecl DisplayGenerateTransformsNoOpPc(NUDISPLAY_LIST_PC *scene) {
     (void)scene;
 }
+
+typedef struct PC_DL_SKIN_PALETTE_READER {
+    i32 count;
+    f32 elements[1];
+} PC_DL_SKIN_PALETTE_READER;
+STATIC_ASSERT(offsetof(PC_DL_SKIN_PALETTE_READER, count) == 0);
+STATIC_ASSERT(offsetof(PC_DL_SKIN_PALETTE_READER, elements) == 4);
+
+typedef struct PC_DL_LIGHTS_READER {
+    NUVEC4 ambient;
+    NUVEC4 intensity[3];
+    NUVEC4 direction[3];
+    NUMTX shine_matrix;
+} PC_DL_LIGHTS_READER;
+STATIC_ASSERT(sizeof(PC_DL_LIGHTS_READER) == 0xb0);
+STATIC_ASSERT(offsetof(PC_DL_LIGHTS_READER, intensity) == 0x10);
+STATIC_ASSERT(offsetof(PC_DL_LIGHTS_READER, direction) == 0x40);
+STATIC_ASSERT(offsetof(PC_DL_LIGHTS_READER, shine_matrix) == 0x70);
+
+typedef union PC_DL_NORMALIZED_DIRECTION {
+    NUVEC4 four;
+    struct {
+        NUVEC three;
+        f32 w;
+    } normalized;
+} PC_DL_NORMALIZED_DIRECTION;
+STATIC_ASSERT(sizeof(PC_DL_NORMALIZED_DIRECTION) == 16);
+STATIC_ASSERT(offsetof(PC_DL_NORMALIZED_DIRECTION, normalized.w) == 12);
+
+typedef struct PC_DL_FOG_READER {
+    i32 enabled;
+    u32 colour;
+    f32 near_distance, far_distance, density;
+} PC_DL_FOG_READER;
+STATIC_ASSERT(sizeof(PC_DL_FOG_READER) == 0x14);
+STATIC_ASSERT(offsetof(PC_DL_FOG_READER, colour) == 4);
+STATIC_ASSERT(offsetof(PC_DL_FOG_READER, near_distance) == 8);
+STATIC_ASSERT(offsetof(PC_DL_FOG_READER, far_distance) == 0xc);
+STATIC_ASSERT(offsetof(PC_DL_FOG_READER, density) == 0x10);
+
+typedef struct PC_DL_LEGACY_LIGHTMAP_READER {
+    i32 texture_id[3];
+    f32 x_offset, y_offset;
+} PC_DL_LEGACY_LIGHTMAP_READER;
+STATIC_ASSERT(offsetof(PC_DL_LEGACY_LIGHTMAP_READER, x_offset) == 0xc);
+STATIC_ASSERT(offsetof(PC_DL_LEGACY_LIGHTMAP_READER, y_offset) == 0x10);
+
+typedef struct PC_DL_CAMERA_READER {
+    i32 id;
+    NUMTX view, projection;
+    f32 viewport[4];
+} PC_DL_CAMERA_READER;
+STATIC_ASSERT(sizeof(PC_DL_CAMERA_READER) == 0x94);
+STATIC_ASSERT(offsetof(PC_DL_CAMERA_READER, view) == 4);
+STATIC_ASSERT(offsetof(PC_DL_CAMERA_READER, projection) == 0x44);
+STATIC_ASSERT(offsetof(PC_DL_CAMERA_READER, viewport) == 0x84);
+
+/* Source-local working declarations; backing and canonical union remain separate gates. */
+typedef struct PC_DL_MATERIAL_READER {
+    u8 unknown_0000[0x40];
+    u32 reflection_flags;
+} PC_DL_MATERIAL_READER;
+STATIC_ASSERT(offsetof(PC_DL_MATERIAL_READER, reflection_flags) == 0x40);
+extern NUVEC4 NuDisplayHandlerTintPc;
+extern void *NuDisplayHandlerMaterialPc;
+extern i32 NuDisplayHandlerReflectionPc;
+extern i32 NuDisplayHandlerCameraIdPc;
+extern PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC PCGraphicsFrameScratchCount;
+void __cdecl NuVec4Add(NUVEC4 *, NUVEC4 *, NUVEC4 *);
+
+void __cdecl NuDisplayListSkinPalettePc(void *arg) {
+    PC_DL_SKIN_PALETTE_READER *packet = (PC_DL_SKIN_PALETTE_READER *)arg;
+    i32 count = packet->count;
+    PC_SHADER_OBJECT_FULL_VIEW *shader = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
+    if (shader != NULL) {
+        if (count > 8)
+            NuPtlDmaSlotsExhaustedPc();
+        NuShaderObjectSetElementsfv(shader, 0x18, 0, count, packet->elements);
+    }
+}
+
+void __cdecl NuDisplayListLightsPc(void *arg) {
+    PC_DL_LIGHTS_READER *packet = (PC_DL_LIGHTS_READER *)arg;
+    if (PCDeviceHardwareVertexProcessingPC != 4) {
+        NuShaderManagerSetfv(1, &packet->ambient.x);
+        NuShaderManagerSetfv(6, &packet->direction[0].x);
+        NuShaderManagerSetfv(7, &packet->direction[1].x);
+        NuShaderManagerSetfv(8, &packet->direction[2].x);
+        NuShaderManagerSetfv(3, &packet->intensity[0].x);
+        NuShaderManagerSetfv(4, &packet->intensity[1].x);
+        NuShaderManagerSetfv(5, &packet->intensity[2].x);
+        NuShaderManagerSetfv(0x49, &packet->shine_matrix.m00);
+    } else {
+        NuShaderManagerSetfv(0x23, &packet->ambient.x);
+    }
+    if (PCDeviceHardwareVertexProcessingPC != 4) {
+        PC_DL_NORMALIZED_DIRECTION direction;
+        NUVEC4 colour;
+        NuVec4Add(&direction.four, &packet->direction[0], &packet->direction[1]);
+        NuVec4Add(&direction.four, &direction.four, &packet->direction[2]);
+        NuVecNorm(&direction.normalized.three, &direction.normalized.three);
+        NuShaderManagerSetfv(0x4c, &direction.four.x);
+        colour.x =
+            (packet->intensity[2].x < packet->intensity[1].x ? packet->intensity[1].x : packet->intensity[2].x) <
+                    packet->intensity[0].x
+                ? packet->intensity[0].x
+                : (packet->intensity[2].x < packet->intensity[1].x ? packet->intensity[1].x : packet->intensity[2].x);
+        colour.y =
+            (packet->intensity[2].y < packet->intensity[1].y ? packet->intensity[1].y : packet->intensity[2].y) <
+                    packet->intensity[0].y
+                ? packet->intensity[0].y
+                : (packet->intensity[2].y < packet->intensity[1].y ? packet->intensity[1].y : packet->intensity[2].y);
+        colour.z =
+            (packet->intensity[2].z < packet->intensity[1].z ? packet->intensity[1].z : packet->intensity[2].z) <
+                    packet->intensity[0].z
+                ? packet->intensity[0].z
+                : (packet->intensity[2].z < packet->intensity[1].z ? packet->intensity[1].z : packet->intensity[2].z);
+        colour.w = 1.0f;
+        NuShaderManagerSetfv(0x4b, &colour.x);
+    }
+}
+
+void __cdecl NuDisplayListTintPc(void *arg) {
+    NUVEC4 tint = {1.0f, 1.0f, 1.0f, *(f32 *)arg};
+    NuDisplayHandlerTintPc = tint;
+    NuShaderManagerSetfv(0x38, &tint.x);
+}
+
+void __cdecl NuDisplayListFogPc(void *arg) {
+    PC_DL_FOG_READER *packet = (PC_DL_FOG_READER *)arg;
+    if (packet->enabled != 0) {
+        u32 packed = packet->colour;
+        NUVEC4 colour;
+        NUVEC4 params;
+        colour.x = (f32)((i32)(packed & 255) / 255.0);
+        colour.y = (f32)((i32)((packed >> 8) & 255) / 255.0);
+        colour.z = (f32)((i32)((packed >> 16) & 255) / 255.0);
+        colour.w = (f32)((i32)((packed >> 24) & 255) / 255.0);
+        params.x = packet->near_distance;
+        params.y = packet->far_distance;
+        params.z = packet->far_distance - packet->near_distance;
+        params.w = packet->density;
+        NuShaderManagerSetfv(0x44, &colour.x);
+        NuShaderManagerSetfv(0x45, &params.x);
+    } else {
+        NUVEC4 params = {0.0f, 0.0f, 0.0f, 0.0f};
+        NuShaderManagerSetfv(0x45, &params.x);
+    }
+}
+
+void __cdecl NuDisplayListLightmapPacketPc(void *arg) {
+    PCGraphicsFrameScratchCount.lightmap_packet = arg;
+}
+
+void __cdecl NuDisplayListLegacyLightmapPc(void *arg) {
+    i32 *texture_ids = (i32 *)arg;
+    f32 offset[3] = {0.0f, 0.0f, 0.0f};
+    i32 i;
+    for (i = 0; i < 3; ++i) {
+        NUTEXDIM_PC *texture = NuTextureGetDimensions(texture_ids[i] == -1 ? 1 : texture_ids[i]);
+        PCDeviceSetTexture(i, texture->resource);
+        PCDeviceSetSamplerState(i, 1, 1);
+        PCDeviceSetSamplerState(i, 2, 1);
+    }
+    NuShaderManagerSetfv(0x60, offset);
+}
+
+void __cdecl NuDisplayListLegacyLightmapOffsetPc(void *arg) {
+    PC_DL_LEGACY_LIGHTMAP_READER *packet = (PC_DL_LEGACY_LIGHTMAP_READER *)arg;
+    f32 offset[3];
+    i32 i;
+    for (i = 0; i < 3; ++i) {
+        NUTEXDIM_PC *texture = NuTextureGetDimensions(packet->texture_id[i] == -1 ? 1 : packet->texture_id[i]);
+        PCDeviceSetTexture(i, texture->resource);
+        PCDeviceSetSamplerState(i, 1, 1);
+        PCDeviceSetSamplerState(i, 2, 1);
+    }
+    offset[0] = packet->x_offset;
+    offset[1] = -packet->y_offset;
+    offset[2] = 0.0f;
+    NuShaderManagerSetfv(0x60, offset);
+}
+
+void __cdecl NuDisplayListReflectionPc(void *arg) {
+    i32 reflection = *(i32 *)arg;
+    PC_DL_MATERIAL_READER *material;
+    NuDisplayHandlerReflectionPc = reflection;
+    material = (PC_DL_MATERIAL_READER *)NuDisplayHandlerMaterialPc;
+    if (material != NULL) {
+        u32 mode = (material->reflection_flags >> 12) & 3;
+        if (mode == 0)
+            PCDeviceSetRenderState(0x16, reflection != 0 ? 2 : 3);
+        else if (mode == 1)
+            PCDeviceSetRenderState(0x16, reflection != 0 ? 3 : 2);
+    }
+}
+
+void __cdecl NuDisplayListCameraPc(void *arg) {
+    PC_DL_CAMERA_READER *packet = (PC_DL_CAMERA_READER *)arg;
+    if (packet->id != NuDisplayHandlerCameraIdPc) {
+        PC_VIEWPORT_PC viewport;
+        i32 viewport_x;
+        NuDisplayHandlerCameraIdPc = packet->id;
+        PcUpdateGeometryCameraOriginPc(&packet->view, &packet->projection);
+        viewport_x = (i32)packet->viewport[0];
+        viewport.x = (u32)viewport_x;
+        viewport.y = (u32)(i64)packet->viewport[1];
+        viewport.width = (u32)(i64)packet->viewport[2];
+        viewport.height = (u32)(i64)packet->viewport[3];
+        viewport.min_z = 0.0f;
+        viewport.max_z = 1.0f;
+        NuVpSubmitPc(&viewport);
+    }
+}

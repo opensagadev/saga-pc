@@ -23,7 +23,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     NuDisplayListPurge_candidate();
     _NuTimeBarSlotBegin(-1, 4, "CPU_QUEUE_DRAW");
     for (i32 i = 0; i < RenderFrameShaderArrayCountPc && i * 16 < 0x80; ++i) {
-        STUBBED_NAMED(0x007413b0); /* (0x4e,i,RenderFrameShaderArrayPc[i]),60b0cc */
+        NuShaderManagerSetElementfv(0x4e, i, RenderFrameShaderArrayPc[i]);
     }
     NuShaderManagerSetfv(0x3f, &RenderFrameShaderTimePc);
     STUBBED_NAMED(0x006dfa20); /* sampler defaults,60b0f1 */

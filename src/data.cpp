@@ -957,7 +957,7 @@ extern "C" {
 extern "C" {
     i32 PCGraphicsFrameState = 1;
     i32 PCGraphicsBoundShader = 0;
-    i32 PCGraphicsFrameScratchCount = 0;
+    PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC PCGraphicsFrameScratchCount = {0};
     void(__cdecl *PCGraphicsDeviceLostCallback)(GRAPHICS_PRESENT_PARAMETERS_PC *) = NULL;
 }
 
@@ -28054,6 +28054,17 @@ extern "C" {
     char *nudlist_field_18b0 = NULL;
     char PCDisplayCaptureBufferPc[1] = {0};
     char PCDisplayCaptureFlushPointPc[1] = {0};
+}
+#pragma bss_seg()
+#pragma data_seg()
+
+#pragma data_seg(".data$DisplayHandlerStatePc")
+#pragma bss_seg(".bss$DisplayHandlerStatePc")
+extern "C" {
+    NUVEC4 NuDisplayHandlerTintPc = {0};
+    void *NuDisplayHandlerMaterialPc = NULL;
+    i32 NuDisplayHandlerReflectionPc = 0;
+    i32 NuDisplayHandlerCameraIdPc = -1;
 }
 #pragma bss_seg()
 #pragma data_seg()

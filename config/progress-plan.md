@@ -1,20 +1,32 @@
 # Current work plan
 
 The [whole-project mandate](../SOL_IMPLEMENTATION_PLAN.md) remains active.
-Verified baseline SS is [2f3c7fdb](https://github.com/opensagadev/saga-pc/commit/2f3c7fdb38717759ab47bf35e3fef6bde895f833), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37866549493) passing all 13 steps.
-Published SS is [2f3c7fdb](https://github.com/opensagadev/saga-pc/commit/2f3c7fdb38717759ab47bf35e3fef6bde895f833): 52 newly compared complete functions/6,422 unique PC bytes, including real shader publication and compiler/parser lifetime. Required local checks and 208 bounded shader CPU checks pass; every RR exact contract survives. Whole-PC fuzzy coverage is 29.202954%, with 231,692 exact code bytes. [SS exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37866549493) passed all 13 steps. Full qualifications and retained failures are in transfer-checkpoint.json.
+Verified published baseline TT is [1bbe21d4](https://github.com/opensagadev/saga-pc/commit/1bbe21d43f3cc25b9b41b4b396a6ddb37bca5308), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37872016080) passing all 13 steps. UU exact-revision CI is pending publication.
 
-The current TT frame/texture batch compares 13 new complete functions / 2,089
-PC bytes. Nine are exact (+365 code bytes); whole-PC fuzzy coverage is 29.252102%
-(+0.049148 percentage points). All SS exact code/data survives, with 12 new exact
-data bytes. The real renderer is partial and its callers/table remain held.
-NuFrameEnd now includes the native Windows message-pump gate. The next wave is
-nine real draw callbacks plus NuVec4Add / 1,361 bytes, six shader providers / 917
-bytes and the remaining draw callbacks. Nineteen callbacks lack compiled source.
-The corrected lighting proposal matches native MAX/tie/unordered control but is
-not yet compiled or tested. Original array capacity remains unknown. Terrain registration,
-GameAudio/Menu IDs and the reviewed gameplay backlog remain connected later work;
-full Bolt backing, CharFixUp and resource/device lifetime remain separate.
+The current UU batch adds 16 complete PC functions / 2,278 unique compared bytes:
+nine display-list callbacks, the vector helper and six shader providers. Five are
+exact, adding 194 code bytes; whole-PC fuzzy coverage is 29.306557%, up 0.054455
+percentage points. All prior exact code/data and 13 named members survive. Four
+canonical state views use 28 minimum bytes; unknown owning extents receive zero
+allocation or exact-data credit.
+
+The actual-normal CPU run passes 43 checks through the real shader manager and
+compiler. The retained first run stopped at 16 checks with one width failure:
+PC semantic 0x49 is ps2ShineMtx, a four-vector matrix at packet +0x70. The reader
+now names NUMTX and requires an initialized minimum 0xb0-byte view; its producer
+and original owning extent remain unproved. No uniform metadata or guessed
+padding was changed. The genuine signed32 camera local now emits native's
+conversion helper; its complete body remains nonexact and positive camera/device
+calls are excluded from CPU tests. Wine crash dialogs were set and queried off;
+owned cleanup is empty. These checks establish no device or gameplay milestone.
+
+Ten of 20 observed callbacks still lack compiled source. The next source wave is
+BC transforms/indexed handlers, geometry/debris and their real device suppliers,
+followed by material handling and the complete 4,472-byte shader-parameter
+dispatcher. Preserve private helpers with their real caller cohort and keep the
+old C owner unchanged. The renderer/table/frame caller remains held until these
+consumed providers exist. Original array capacity is unproved; no standalone
+scene-count reset, forced focus, fake provider or enlarged storage is introduced.
 
 1. Reconnect the genuine render and message flow at the observed startup frontier.
    Preserve native control, callbacks, returned values and named field offsets;

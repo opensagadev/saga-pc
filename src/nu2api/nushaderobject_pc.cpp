@@ -162,3 +162,31 @@ extern "C" void __cdecl NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *
             break;
     }
 }
+
+void PC_SHADER_PARAMETER_LOCAL_PC::SetTransposedMatrixValues(i32 first_element, i32 count, const f32 *values) {
+    i32 vector_count = count * 4;
+    i32 remaining = (i8)register_count - first_element * 4;
+    if (vector_count >= remaining)
+        vector_count = remaining;
+    if ((metadata & 0xf0000000u) == 0x10000000u)
+        PCDeviceSetVertexShaderConstantsF(register_index + first_element * 4, values, vector_count);
+    else
+        PCDeviceSetPixelShaderConstantsF(register_index + first_element * 4, values, vector_count);
+}
+extern "C" void __cdecl NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic,
+                                                              i32 first_element, i32 count, const f32 *values) {
+    PC_SHADER_PARAMETER_LOCAL_PC *parameter = &shader->parameters[semantic];
+    if (parameter->register_index < 0)
+        return;
+    switch (parameter->type_stage & 15) {
+        case 1:
+            parameter->SetScalarValues(first_element, count, values);
+            break;
+        case 2:
+            parameter->SetVectorValues(first_element, count, values);
+            break;
+        case 3:
+            parameter->SetTransposedMatrixValues(first_element, count, values);
+            break;
+    }
+}

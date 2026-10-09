@@ -2351,3 +2351,19 @@ blank, so this working view receives no allocation/extent or exact-data credit.
 It bounds only the reviewed default-material startup cohort; later descriptors
 and the full lifecycle need further native evidence. Mac symbol spacing and the
 different Android pool are not capacity proofs.
+
+### Handler state and consumed matrix minimum UU (2026-10-09)
+
+Four new canonical views are tint NUVEC4 at986ec0 (16 zero bytes), material pointer
+at2854c40 (four zero bytes), reflection DWORD at2854d70 (four zero bytes), and
+camera ID at80e9f8 (four FF bytes). Their complete compiled initializers equal
+native. Unknown owning extents remain blank and supply zero allocation/exact credit.
+A distinct data/BSS cohort after TT's resets preserves every old complete data
+output and unknown-sized tail. Existing280d3a4 is one canonical four-byte
+integer/pointer union: reset_word and lightmap_packet share offset0 without aliases.
+
+PC lighting semantic49 is ps2ShineMtx, count4/field_c4. Its native consumer reads
+64 bytes from packet+70. The corrected named NUMTX reader ends atb0, with all
+old emitted code/data unchanged. This is an initialized caller-owned minimum
+reader, not an original producer or allocation-capacity proof. The runtime guard
+rejected the earlier one-vector specular field; no metadata or padding was forced.

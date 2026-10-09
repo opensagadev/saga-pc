@@ -10049,6 +10049,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
         void SetScalarValues(i32 first_element, i32 count, const f32 *values);
         void SetVectorValues(i32 first_element, i32 count, const f32 *values);
         void SetMatrixValues(i32 first_element, i32 count, const f32 *values);
+        void SetTransposedMatrixValues(i32 first_element, i32 count, const f32 *values);
 #endif
     };
     STATIC_ASSERT(sizeof(PC_SHADER_PARAMETER_LOCAL_PC) == 12);
@@ -17368,6 +17369,8 @@ class ShaderManagerHLSL : public PC_SHADER_MANAGER_VIEW {
     ShaderCompilerBufferAllocatorPc pixel_source;
     ShaderManagerHLSL(VirtualStackAllocator &);
     void SetUniformValues(i32 semantic, const f32 *values);
+    void setElementfv(i32 semantic, i32 element, const f32 *values);
+    void setElementsfv_transpose(i32 semantic, i32 first_element, i32 count, const f32 *values);
     virtual ~ShaderManagerHLSL();
     virtual bool CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *, i32);
     virtual void AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);
@@ -19509,6 +19512,47 @@ extern "C" {
     extern PC_FRAMEBUFFER_PC *PcDefaultFramebuffer;
     extern PC_FRAMEBUFFER_PC *PcBootDefaultFramebuffer;
     extern PC_FRAMEBUFFER_PC *PcBootSecondaryFramebuffer;
+#ifdef __cplusplus
+}
+#endif
+
+/* Refine the existing single DWORD owner; do not create another address alias. */
+typedef union PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC {
+    i32 reset_word;
+    void *lightmap_packet;
+} PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC;
+STATIC_ASSERT(sizeof(PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC) == 4);
+STATIC_ASSERT(offsetof(PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC, reset_word) == 0);
+STATIC_ASSERT(offsetof(PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC, lightmap_packet) == 0);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC PCGraphicsFrameScratchCount;
+    extern NUVEC4 NuDisplayHandlerTintPc;
+    extern void *NuDisplayHandlerMaterialPc;
+    extern i32 NuDisplayHandlerReflectionPc;
+    extern i32 NuDisplayHandlerCameraIdPc;
+    void __cdecl NuVec4Add(NUVEC4 *, NUVEC4 *, NUVEC4 *);
+    void __cdecl NuDisplayListSkinPalettePc(void *);
+    void __cdecl NuDisplayListLightsPc(void *);
+    void __cdecl NuDisplayListTintPc(void *);
+    void __cdecl NuDisplayListFogPc(void *);
+    void __cdecl NuDisplayListLightmapPacketPc(void *);
+    void __cdecl NuDisplayListLegacyLightmapPc(void *);
+    void __cdecl NuDisplayListLegacyLightmapOffsetPc(void *);
+    void __cdecl NuDisplayListReflectionPc(void *);
+    void __cdecl NuDisplayListCameraPc(void *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl NuShaderManagerSetElementfv(i32 semantic, i32 element, const f32 *values);
+    void __cdecl NuShaderManagerSetElementsfv_transpose(i32 semantic, i32 first_element, i32 count, const f32 *values);
+    void __cdecl NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic,
+                                                       i32 first_element, i32 count, const f32 *values);
 #ifdef __cplusplus
 }
 #endif

@@ -9,42 +9,39 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Verified source baseline: SS, [`2f3c7fdb38717759ab47bf35e3fef6bde895f833`](https://github.com/opensagadev/saga-pc/commit/2f3c7fdb38717759ab47bf35e3fef6bde895f833); [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37866549493) passed all 13 steps. SS has 338 normal source owners.
-
-Published SS, [`2f3c7fdb`](https://github.com/opensagadev/saga-pc/commit/2f3c7fdb38717759ab47bf35e3fef6bde895f833), restores the genuine shader-manager constructor/publisher, parser
-and compiler, plus the real framebuffer initializer and geometry reset. Its
-[exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37866549493) passed all 13 steps. Native
-material startup proves two distinct declaration keys and a two-row minimum
-cache view. That backing is now present; the full original capacity remains
-unknown and receives no extent or exact-data credit. The previous 536,080-byte
-copy fault and one-row storage hazard remain retained as earlier evidence.
+Verified published baseline TT is [1bbe21d4](https://github.com/opensagadev/saga-pc/commit/1bbe21d43f3cc25b9b41b4b396a6ddb37bca5308), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37872016080) passing all 13 steps. UU exact-revision CI is pending publication.
 
 The latest ordinary source EXE naturally exits 5 while packaging a display-list
-scene. A subsequent bounded data watch confirms that initialization sets the
-first-list pointer, then `NuRndrEndScene` overwrites it with the scene-parameter
-copy at index 32. The current source has no reset of `sceneParametersCount`.
-The original array capacity remains unproved. Native NuFrameEnd calls the genuine
-24-byte callback wrapper and 1465-byte renderer, which resets the count after its
-scene loops; our frame end omits that call. The native message-pump gate is now
-present, using its already exact 97-byte provider. The TT source batch compares
-13 new functions / 2,089 PC bytes, including a partial genuine renderer, exact
-callback wrapper and real texture/device/light providers. Nine functions add
-365 exact code bytes; fuzzy coverage is 29.252102%. All SS exacts survive, and
-three established mutable-state extents add 12 exact data bytes. Renderer and
-table activation remain held until the 19 missing draw callbacks and their
-consumed providers have source. The first nine callbacks / 1,315 bytes plus the
-46-byte vector helper and six shader providers / 917 bytes are prepared; they
-have no compilation or runtime credit yet.
-No pointer store, null guard, guessed enlargement or ordering workaround has
-been introduced.
+scene. Initialization sets the first-list pointer; exact NuRndrEndScene overwrites
+it at index 32 because our NuFrameEnd omits the native renderer call. Native
+NuRndrSwapScreen clears sceneParametersCount after its genuine scene loops. The
+array's original capacity remains unproved. CPU checks and matching are separate
+from frame/device/gameplay completion.
 
-The current 208 shader CPU checks pass in their bounded domains. Automated
-launches disable and query Wine's crash dialog and leave no owned game/debugger
-process or dialog behind. A CLI debugger observation identifies the caller but
-is not a natural successful game exit. No device presentation, recurring frame,
-loaded scene or gameplay milestone is established. SS source is published after
-complete object coverage and all required local release checks. Next-wave source
-callback proposals remain uncompiled and receive no additional transfer credit.
+The current UU batch adds 16 complete PC functions / 2,278 unique compared bytes:
+nine display-list callbacks, the vector helper and six shader providers. Five are
+exact, adding 194 code bytes; whole-PC fuzzy coverage is 29.306557%, up 0.054455
+percentage points. All prior exact code/data and 13 named members survive. Four
+canonical state views use 28 minimum bytes; unknown owning extents receive zero
+allocation or exact-data credit.
+
+The actual-normal CPU run passes 43 checks through the real shader manager and
+compiler. The retained first run stopped at 16 checks with one width failure:
+PC semantic 0x49 is ps2ShineMtx, a four-vector matrix at packet +0x70. The reader
+now names NUMTX and requires an initialized minimum 0xb0-byte view; its producer
+and original owning extent remain unproved. No uniform metadata or guessed
+padding was changed. The genuine signed32 camera local now emits native's
+conversion helper; its complete body remains nonexact and positive camera/device
+calls are excluded from CPU tests. Wine crash dialogs were set and queried off;
+owned cleanup is empty. These checks establish no device or gameplay milestone.
+
+Ten of 20 observed callbacks still lack compiled source. The next source wave is
+BC transforms/indexed handlers, geometry/debris and their real device suppliers,
+followed by material handling and the complete 4,472-byte shader-parameter
+dispatcher. Preserve private helpers with their real caller cohort and keep the
+old C owner unchanged. The renderer/table/frame caller remains held until these
+consumed providers exist. Original array capacity is unproved; no standalone
+scene-count reset, forced focus, fake provider or enlarged storage is introduced.
 
 ## Ownership and continuous work
 
