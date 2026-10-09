@@ -5362,3 +5362,14 @@ cohort, with named caps+98 / backend+a0. Seven full zero initializers have
 unknown owning extents and zero allocation/exact-data credit. Native vertex
 declaration capacity remains unproved: stride8 and at least3/conditional4
 producer records do not supply a complete original allocation extent.
+
+### Post-effect members and cache minimum checkpoint ZZ (2026-10-09)
+
+Six complete methods add 219 compared PC bytes; four / 47 are exact. The actual
+C-to-C++ generic post-filter migration preserves all old complete outputs. Named
+light shadow-list fields keep all previous offsets and size; NuDynamicLight*
+corrects the previously opaque pointer contract without changing its ABI. The
+cache map ctype now describes four accessed records; its original size stays
+blank. Complete zero initializers establish no full capacity or allocation credit.
+The next runtime failure is in exact NuLstGetNext40 called by NuMtlDestroy with
+a NULL override list; the missing native initializer is reviewed separately.

@@ -92,7 +92,7 @@ void __cdecl NuPostEffectDisable(u32 mask) {
             break;
     }
 }
-void __cdecl NuPostEffectAddDynamicLight(NURNDRLIGHTRECORD *light) {
+void __cdecl NuPostEffectAddDynamicLight(NuDynamicLight *light) {
     i32 count;
     if (NuPostDeferredFilterPc == NULL)
         return;
@@ -150,4 +150,15 @@ void __cdecl NuPostEffectAccumulationMotionBlur(i32 frames, f32 blend, f32 mode_
 void __cdecl NuPostEffectSpeedBlur(const NU_POST_SPEED_PARAMETERS_PC *parameters) {
     if (NuPostSpeedFilterPc != NULL)
         NuPostSpeedFilterPc->parameters = parameters;
+}
+
+void NuPostFilterGen::resetAll() {
+}
+
+bool NuPostFilterGen::isEnabled() {
+    return enabled;
+}
+
+bool NuMainFilterGen::isEnabled() {
+    return active_filter_count != 0;
 }

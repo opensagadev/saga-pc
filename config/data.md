@@ -2414,3 +2414,15 @@ The vertex-declaration cache still has its earlier two-record working reservatio
 the native producer cohort requires at least3/conditionally4, so the current
 reservation is inadequate. Full original capacity remains unresolved. No growth,
 counter relocation/reset or copy guard is introduced in this checkpoint.
+
+### Vertex-declaration minimum working prefix checkpoint ZZ (2026-10-09)
+
+The existing cache at 0x297cc98 now reserves four 8-byte records, justified by
+the verified four-descriptor producer domain and all 24 insertion permutations.
+The actual source changes only [2] to [4]. Full 32-byte native-zero initialization
+and the old 16-byte prefix are verified. Counter position/initializer, sections,
+getter/search/copy bodies and all other central-data outputs remain unchanged.
+Original owning extent stays blank: zero allocation, mapping-extent or exact-data
+credit. This is a minimum view, not an inferred original capacity or proof of all
+startup inputs. The ordinary run passed the earlier copy crash and reached a
+separate NULL material-override list; no artificial list publication is added.

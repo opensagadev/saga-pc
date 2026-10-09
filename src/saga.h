@@ -6267,10 +6267,24 @@ typedef struct nudisplaylistrenderscene_s {
 STATIC_ASSERT(sizeof(NUDISPLAYLISTRENDERSCENE) == 0x18);
 STATIC_ASSERT(offsetof(NUDISPLAYLISTRENDERSCENE, render_2d_first) == 0x08);
 
+typedef struct NU_LIGHT_SHADOW_LIST_VIEW_PC {
+    NURNDRLIBSTATE *state;
+    u8 unknown_004[4];
+    NUDISPLAYLISTITEM *first;
+    NUDISPLAYLISTITEM *material_last;
+    u8 unknown_010[0x34];
+} NU_LIGHT_SHADOW_LIST_VIEW_PC;
+STATIC_ASSERT(sizeof(NU_LIGHT_SHADOW_LIST_VIEW_PC) == 0x44);
+STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, state) == 0);
+STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, first) == 8);
+STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, material_last) == 0xc);
+
 typedef struct nurndrlightrecord_s {
     u8 opaque_00_108[0x108];
     i32 enabled;
-    u8 opaque_10c_354[0x248];
+    u8 opaque_10c_2ac[0x1a0];
+    NU_LIGHT_SHADOW_LIST_VIEW_PC shadow_lists_pc[2];
+    u8 opaque_334_354[0x20];
     i32 pending[8];
     i32 count;
     u8 opaque_378_380[0x8];
@@ -10022,7 +10036,7 @@ void __cdecl PCStereoUnknownToken(void);
     extern const f64 TerrainSkinSampleCountPc;
     extern i32 obstacle_gizmotype_id;
     extern i32 PCVertexDeclarationCountPC;
-    extern PC_VERTEX_DECL_ENTRY_PC PCVertexDeclarationCachePC[2];
+    extern PC_VERTEX_DECL_ENTRY_PC PCVertexDeclarationCachePC[4];
     extern u32 CRC16TablePC[256];
     extern u32 ShaderProgramHashPC[2];
     PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32);
@@ -19742,12 +19756,13 @@ typedef struct NU_POST_MAIN_VIEW_PC {
     i32 accumulation_frames;
     f32 accumulation_blend, accumulation_mode_pc;
 } NU_POST_MAIN_VIEW_PC;
+typedef struct NuDynamicLight NuDynamicLight;
 typedef struct NU_POST_DEFERRED_VIEW_PC {
     void *vtable;
     u8 enabled, unknown_005[0x3f];
     f32 parameters[4];
     i32 dynamic_light_count;
-    NURNDRLIGHTRECORD *dynamic_lights[32];
+    NuDynamicLight *dynamic_lights[32];
     i32 deferred_geometry_count;
 } NU_POST_DEFERRED_VIEW_PC;
 /* 32 slots are the bounded pointer region58..d8; no native upper-bound
@@ -19818,7 +19833,7 @@ extern "C" {
     void __cdecl NuPostEffectReset(void);
     void __cdecl NuPostEffectEnable(i32);
     void __cdecl NuPostEffectDisable(u32);
-    void __cdecl NuPostEffectAddDynamicLight(NURNDRLIGHTRECORD *);
+    void __cdecl NuPostEffectAddDynamicLight(NuDynamicLight *);
     i32 __cdecl NuPostEffectGetActiveDynamicLightCount(void);
     void __cdecl NuPostEffectDepthOfField(const NU_POST_DOF_PARAMETERS_PC *);
     void __cdecl NuPostEffectDeferredShading(const f32 *);
@@ -19829,4 +19844,69 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists_pc) == 0x2ac);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists_pc) + sizeof(NU_LIGHT_SHADOW_LIST_VIEW_PC) == 0x2f0);
+#ifdef __cplusplus
+/* Original declaration order; methods without bodies here are genuine source
+ * declarations, not zero substitutes. No class instances may be constructed
+ * from these accessed-field views. No original class sizeof is asserted. */
+struct NuPostFilterGen {
+    NuPostFilterGen();
+    virtual ~NuPostFilterGen();
+    virtual void initResources();
+    virtual void destroyResources();
+    virtual void initTextureResources(i32, i32);
+    virtual void destroyTextureResources();
+    virtual void render();
+    virtual void reset();
+    virtual void resetAll();
+    virtual bool isEnabled();
+    virtual PC_FRAMEBUFFER_PC *getInputFbo();
+    bool enabled;
+    u8 unknown_005[3];
+    PC_FRAMEBUFFER_PC *input_fbo;
+};
+struct NU_POST_BLOOM_PARAMETERS_PC;
+struct NuMainFilterGen : NuPostFilterGen {
+    NuMainFilterGen();
+    u8 unknown_00c[0x5c];
+    const NU_POST_BLOOM_PARAMETERS_PC *bloom;
+    u8 unknown_06c[4];
+    f32 dof_strength, dof_near, dof_far, dof_blur;
+    i32 dof_mode, dof_bias;
+    bool dof_enabled, bloom_enabled, motion_blur_enabled;
+    u8 unknown_08b;
+    i32 active_filter_count;
+    virtual bool isEnabled();
+};
+struct NuDynamicLight {
+    void resetGeometry();
+    NURNDRLIGHTRECORD render_sets_pc[2];
+    u8 unknown_700[0xc];
+    i32 render_set_count_pc;
+};
+struct NuDeferredFilterGen : NuPostFilterGen {
+    NuDeferredFilterGen();
+    u8 unknown_00c[0x38];
+    f32 parameters[4];
+    i32 dynamic_light_count;
+    NuDynamicLight *dynamic_lights[32];
+    i32 deferred_geometry_count;
+    virtual void resetAll();
+    virtual bool isEnabled();
+};
+STATIC_ASSERT(offsetof(NuPostFilterGen, enabled) == 4);
+STATIC_ASSERT(offsetof(NuPostFilterGen, input_fbo) == 8);
+STATIC_ASSERT(offsetof(NuMainFilterGen, bloom) == 0x68);
+STATIC_ASSERT(offsetof(NuMainFilterGen, dof_enabled) == 0x88);
+STATIC_ASSERT(offsetof(NuMainFilterGen, bloom_enabled) == 0x89);
+STATIC_ASSERT(offsetof(NuMainFilterGen, active_filter_count) == 0x8c);
+STATIC_ASSERT(offsetof(NuDeferredFilterGen, parameters) == 0x44);
+STATIC_ASSERT(offsetof(NuDeferredFilterGen, dynamic_light_count) == 0x54);
+STATIC_ASSERT(offsetof(NuDeferredFilterGen, dynamic_lights) == 0x58);
+STATIC_ASSERT(offsetof(NuDeferredFilterGen, deferred_geometry_count) == 0xd8);
+STATIC_ASSERT(offsetof(NuDynamicLight, render_sets_pc) == 0);
+STATIC_ASSERT(offsetof(NuDynamicLight, render_set_count_pc) == 0x70c);
+#endif
+
 #endif

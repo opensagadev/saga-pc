@@ -3,21 +3,22 @@
 Current whole-project transfer status is recorded in
 [transfer-execution.md](transfer-execution.md). Genuine hardware, window, input,
 shader, frame/render and debris startup calls are connected.
-The latest ordinary source-game run exits 5 inside the existing exact 84-byte
-PCByteCopy. A separate headless debugger run on the frozen XX source image
-identifies the caller as NuGetVertexDeclaration: it requested 6,863,024 bytes.
-The getter's full 1,660 compiled bytes equal that linked source image; its native
-comparison extent remains the complete 1,684 bytes. The reconstructed cache has
-two records, with its count at the third record's key address. Verified native
-material producers require at least three distinct records, conditionally four.
-The observed count matches a genuine glass descriptor, supporting the specific
-count-overwrite mechanism; the earlier write itself was not observed.
+The latest ordinary source run passed the earlier vertex-cache copy failure and
+exited 5 after 7.879 seconds at a new NULL-list read. A separate headless capture
+proves NuMtlDestroy passes NULL g_overrideList to NuLstGetNext. That complete
+40-byte list function is byte exact; its NULSTHDR.head read at +8 faults. The
+canonical list pointer has no producer in current source. Hardware startup still
+omits native NuMtlInitOverride at 0x5e4eb0 with arguments (512, buffer, end).
+That genuine list initializer is the next connected transfer. The separate
+shader-cache initializer at 0x60ded0 does not produce this list.
 
-Native cache stride and the accessed records are verified, but its original full
-capacity remains unproved. Retained PC/Mac/Android evidence does not establish
-that extent. Cache storage is unchanged in YY; no guessed capacity, count reset,
-relocation, copy guard or replacement producer is added. The earlier NULL
-DebMat[5] failure did not recur after genuine debris setup was restored.
+The vertex-declaration cache now supplies a reviewed four-record minimum view
+for four verified native descriptors. All 24 insertion orders fit this prefix;
+its complete 32-byte zero initializer matches native and preserves the old
+16 bytes. The counter, getter, search and copy bodies remain unchanged. This is
+a minimum accessed prefix, with original owning extent blank and zero data or
+allocation credit. Full native capacity and all-startup sufficiency remain
+unproved. Passing the earlier crash is an observation, not a full capacity proof.
 Resource/world actions and device lifetimes remain incomplete. Original scene
 capacity is still unproved. The source executable is not playable. Dated notes
 below preserve historical states; use current source and the work plan for gaps.

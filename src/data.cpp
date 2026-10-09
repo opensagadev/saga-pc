@@ -14216,7 +14216,7 @@ extern "C" {
     i32 PCVertexDeclarationCountPC;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PCVertexDeclarationCachePC")
-    PC_VERTEX_DECL_ENTRY_PC PCVertexDeclarationCachePC[2];
+    PC_VERTEX_DECL_ENTRY_PC PCVertexDeclarationCachePC[4];
 #pragma bss_seg()
 }
 

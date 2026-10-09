@@ -3223,11 +3223,13 @@ address    , symbol                                                         , si
 0x5c19d0,_SceneUpdateMtxCopyPrivatePc,95,
 0x5c1aa0,_VisibilityTransformFourPc,111,
 0x5c1f70,_NuRndrPrimSetColourPrivate,108,
+0x5c22e0,?resetAll@NuPostFilterGen@@UAEXXZ,1,void __thiscall NuPostFilterGen::resetAll(void)
+0x5c22f0,?isEnabled@NuPostFilterGen@@UAE_NXZ,4,bool __thiscall NuPostFilterGen::isEnabled(void)
 0x5c31f0,_NuPostEffectReset,13,void __cdecl(void)
 0x5c32c0,_NuPostEffectIsInitialised,16,i32 __cdecl(u32)
 0x5c32d0,_NuPostEffectEnable,273,void __cdecl(i32)
 0x5c33f0,_NuPostEffectDisable,265,void __cdecl(u32)
-0x5c3640,_NuPostEffectAddDynamicLight,30,void __cdecl(NURNDRLIGHTRECORD*)
+0x5c3640,_NuPostEffectAddDynamicLight,30,void __cdecl(NuDynamicLight*)
 0x5c3660,_NuPostEffectGetActiveDynamicLightCount,16,i32 __cdecl(void)
 0x5c3670,_NuPostEffectDepthOfField,50,void __cdecl(const NU_POST_DOF_PARAMETERS_PC*)
 0x5c36b0,_NuPostEffectDeferredShading,39,void __cdecl(const f32*)
@@ -3245,6 +3247,7 @@ address    , symbol                                                         , si
 0x5c6d20,_NuDynamicLightAddRenderScene,39,"void __cdecl(NURNDRLIGHTRECORD*,i32,i32)"
 0x5c6dc0,?TestBox@PCFrustumClipSet@@QAE_NPBUnuvec_s@@0H@Z,642,"bool __thiscall PCFrustumClipSet::TestBox(const NUVEC *,const NUVEC *,i32)"
 0x005c7050,?TestBoxes@PCFrustumClipSet@@QAEHPBUnuvec_s@@0@Z,69,"i32 __thiscall PCFrustumClipSet::TestBoxes(const NUVEC *,const NUVEC *)"
+0x5c8ed0,?isEnabled@NuDeferredFilterGen@@UAE_NXZ,30,bool __thiscall NuDeferredFilterGen::isEnabled(void)
 0x005c9130 , _NuPause                                                       , 11    , void __cdecl (i32)
 0x005c9140 , _buildBitCountTable                                            , 118   , void __cdecl (void)
 0x5c91c0,_NuAnimCurveCalcVal2,364,"f32 __cdecl (NUANIM_LEGACY_CURVE_PC *, NUANIM_TIME2_PC *)"
@@ -3544,8 +3547,11 @@ address    , symbol                                                         , si
 0x5e5390,_NuTexResolveReference,224,"i32 __cdecl(NUGSCN *,i32)"
 0x5e5470,_NuTexRegisterDimensionsPc,45,i32 __cdecl(NUTEXDIM_PC *)
 0x5e5630,_NuTexDestroy,66,void __cdecl(i32)
+0x5e5ce0,?isEnabled@NuMainFilterGen@@UAE_NXZ,12,bool __thiscall NuMainFilterGen::isEnabled(void)
 0x5e8190,?PrepareForQueries@OccluderSet@@QAEXPBUnumtx_s@@0@Z,668,"void __thiscall (const NUMTX *, const NUMTX *)"
 0x005e8430 , _NuOcclusionManagerBeginFrame                                  , 59    , void __cdecl (void)
+0x5e8be0,?resetGeometry@NuDynamicLight@@QAEXXZ,122,void __thiscall NuDynamicLight::resetGeometry(void)
+0x5e8fe0,?resetAll@NuDeferredFilterGen@@UAEXXZ,50,void __thiscall NuDeferredFilterGen::resetAll(void)
 0x005e91f0 , _NuAnimData2FixPtrs                                            , 269   , "void *__cdecl (void *, i32, i32, i32)"
 0x005e9300 , _NuAnimDataRead                                                , 688   , void* __cdecl (NUFILE)
 0x005e9650 , _NuSpecialGetAnimEndFrame                                      , 118   , f32 __cdecl (NUSPECIALHANDLE *special)
@@ -15231,7 +15237,7 @@ address    , symbol                                                         , si
 0x297c19c,_PCGraphicsSelectedGpuRecord,,PC_GRAPHICS_GPU_RECORD_PC*
 0x297cc8c,_PCShaderSlots,,PC_SHADER_SLOT_VIEW *
 0x297cc90,_PCVertexDeclarationCountPC,,i32
-0x297cc98,_PCVertexDeclarationCachePC,,PC_VERTEX_DECL_ENTRY_PC[2]
+0x297cc98,_PCVertexDeclarationCachePC,,PC_VERTEX_DECL_ENTRY_PC[4]
 0x297d4a0,_PCShaderWaterTable,,NUVEC4[32]
 0x297d6a0,_PCShaderWaterPreviousMaterial,,struct PC_SHADER_WATER_MATERIAL_VIEW *
 0x297d6a4,_PCShaderWaterInitializationBits,,u32

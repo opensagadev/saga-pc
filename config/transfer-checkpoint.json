@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1506795,
-    "matched_code_bytes": 233686,
-    "matching_percent": 6.732049529189231,
-    "fuzzy_coverage_percent": 29.495102991009098,
-    "mapped_functions": 5346,
-    "matched_functions": 2439,
-    "objdiff_fuzzy_percent": 69.453674,
-    "objdiff_total_code": 1475011,
+    "mapped_code_bytes": 1507014,
+    "matched_code_bytes": 233733,
+    "matching_percent": 6.733403509863606,
+    "fuzzy_coverage_percent": 29.498643890943875,
+    "mapped_functions": 5352,
+    "matched_functions": 2443,
+    "objdiff_fuzzy_percent": 69.4517,
+    "objdiff_total_code": 1475230,
     "image_bytes": 40067072,
-    "mapped_bytes": 2154999,
-    "mapping_percent": 5.378478866636424,
+    "mapped_bytes": 2155218,
+    "mapping_percent": 5.37902545012523,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -38,7 +38,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 1507989
+        "mapped_bytes": 1508208
       },
       {
         "name": ".rdata",
@@ -55,17 +55,17 @@
         "mapped_bytes": 616824
       }
     ],
-    "mapping_known_size_symbols": 9638,
+    "mapping_known_size_symbols": 9644,
     "mapping_unknown_size_symbols": 5638,
-    "mapping_code_bytes": 1507989,
+    "mapping_code_bytes": 1508208,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 43.442297088711086,
+    "mapping_code_percent": 43.448606062491685,
     "mapping_data_bytes": 647010,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 1.7963036473617815,
-    "mapping_code_data_bytes": 2154999,
+    "mapping_code_data_bytes": 2155218,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 5.457045913048023,
+    "mapping_code_data_percent": 5.457600480848267,
     "matched_data_region_bytes": 637833
   },
   "newly_compared": [
@@ -36125,7 +36125,12 @@
         "CI_run": 37885753616,
         "exact_revision_all13_steps": "SUCCESS"
       },
-      "publication": "Exact pushed revision CI pending at commit",
+      "publication": {
+        "status": "PUSHED_EXACT_REVISION_CI_PENDING",
+        "commit": "4b5ed4cd43601ef844960122e5e52a2fd8fce67b",
+        "CI_run": 37887891166,
+        "CI_url": "https://github.com/opensagadev/saga-pc/actions/runs/37887891166"
+      },
       "new_functions": 12,
       "new_unique_compared_PC_bytes": 988,
       "new_exact_functions": 6,
@@ -36431,7 +36436,463 @@
       "next_connected_wave": "Resolve genuine cache storage contract without capacityguess; sixmemberchildren219/47exact independentlyreviewed and canonicalC++cohort scratchmerge ready (no actualintegrationyet); filterbootstrap/resource lifetimes held",
       "ongoing_goal": "active;checkpointdoesnotcompletegame",
       "human_journal": "Preserved3unrelated additions unstaged SHA4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7"
+    },
+    {
+      "checkpoint": "ZZ",
+      "date": "2026-10-09",
+      "scope": "Genuine post-effect/light methods, canonical source cohorts and native-producer cache minimum; observed runtime frontier advanced",
+      "baseline_commit": "4b5ed4cd43601ef844960122e5e52a2fd8fce67b",
+      "publication": "Exact pushed revision CI pending at commit",
+      "new_functions": 6,
+      "new_unique_compared_PC_bytes": 219,
+      "new_exact_functions": 4,
+      "new_exact_code_bytes": 47,
+      "new_exact_data_bytes": 0,
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1507014,
+        "matched_code_bytes": 233733,
+        "matching_percent": 6.733403509863606,
+        "fuzzy_coverage_percent": 29.498643890943875,
+        "mapped_functions": 5352,
+        "matched_functions": 2443,
+        "objdiff_fuzzy_percent": 69.4517,
+        "objdiff_total_code": 1475230,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2155218,
+        "mapping_percent": 5.37902545012523,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1508208
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30186
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9644,
+        "mapping_unknown_size_symbols": 5638,
+        "mapping_code_bytes": 1508208,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 43.448606062491685,
+        "mapping_data_bytes": 647010,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7963036473617815,
+        "mapping_code_data_bytes": 2155218,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.457600480848267,
+        "matched_data_region_bytes": 637833
+      },
+      "fuzzy_delta_pp": 0.0035408999347765757,
+      "newly_compared": [
+        {
+          "symbol": "?resetAll@NuPostFilterGen@@UAEXXZ",
+          "address": "0x005c22e0",
+          "target_size": 1,
+          "exact_match": true
+        },
+        {
+          "symbol": "?isEnabled@NuPostFilterGen@@UAE_NXZ",
+          "address": "0x005c22f0",
+          "target_size": 4,
+          "exact_match": true
+        },
+        {
+          "symbol": "?isEnabled@NuDeferredFilterGen@@UAE_NXZ",
+          "address": "0x005c8ed0",
+          "target_size": 30,
+          "exact_match": true
+        },
+        {
+          "symbol": "?isEnabled@NuMainFilterGen@@UAE_NXZ",
+          "address": "0x005e5ce0",
+          "target_size": 12,
+          "exact_match": true
+        },
+        {
+          "symbol": "?resetGeometry@NuDynamicLight@@QAEXXZ",
+          "address": "0x005e8be0",
+          "target_size": 122,
+          "exact_match": false
+        },
+        {
+          "symbol": "?resetAll@NuDeferredFilterGen@@UAEXXZ",
+          "address": "0x005e8fe0",
+          "target_size": 50,
+          "exact_match": false
+        }
+      ],
+      "old_exact_preservation": {
+        "functions": {
+          "exact_rows_preserved": 2439,
+          "physical_copies_preserved": 2443
+        },
+        "data": {
+          "exact_rows_preserved": 3803,
+          "physical_copies_preserved": 5709
+        },
+        "named_members_preserved": 13,
+        "new_functions": [
+          {
+            "name": "?resetAll@NuPostFilterGen@@UAEXXZ",
+            "symbol": "?resetAll@NuPostFilterGen@@UAEXXZ",
+            "address": "0x005c22e0",
+            "units": [
+              "src/nu2api/nupostfilter.cpp"
+            ],
+            "target_size": 1,
+            "exact_match": true,
+            "objects": [
+              {
+                "unit": "src/nu2api/nupostfilter.cpp",
+                "base_size": 1,
+                "exact_match": true,
+                "target_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
+                "base_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
+                "relocation_count": 0,
+                "comparison_unit": "005c22e0-5bb7de4654be",
+                "objdiff_percent": 100.0
+              }
+            ],
+            "status": "exact",
+            "objdiff_percent": 100.0
+          },
+          {
+            "name": "?isEnabled@NuPostFilterGen@@UAE_NXZ",
+            "symbol": "?isEnabled@NuPostFilterGen@@UAE_NXZ",
+            "address": "0x005c22f0",
+            "units": [
+              "src/nu2api/nupostfilter.cpp"
+            ],
+            "target_size": 4,
+            "exact_match": true,
+            "objects": [
+              {
+                "unit": "src/nu2api/nupostfilter.cpp",
+                "base_size": 4,
+                "exact_match": true,
+                "target_sha256": "e0eb8cffec07b89f095aa1e60d89eed1f3338b76216e649ad3aeb3ba92dc7d04",
+                "base_sha256": "e0eb8cffec07b89f095aa1e60d89eed1f3338b76216e649ad3aeb3ba92dc7d04",
+                "relocation_count": 0,
+                "comparison_unit": "005c22f0-72b73f82fd36",
+                "objdiff_percent": 100.0
+              }
+            ],
+            "status": "exact",
+            "objdiff_percent": 100.0
+          },
+          {
+            "name": "?isEnabled@NuDeferredFilterGen@@UAE_NXZ",
+            "symbol": "?isEnabled@NuDeferredFilterGen@@UAE_NXZ",
+            "address": "0x005c8ed0",
+            "units": [
+              "src/nu2api/nucore.cpp"
+            ],
+            "target_size": 30,
+            "exact_match": true,
+            "objects": [
+              {
+                "unit": "src/nu2api/nucore.cpp",
+                "base_size": 30,
+                "exact_match": true,
+                "target_sha256": "20b247cadc6889fb6654f6f170a998829be4ecaa7c9726d4edddeea362cfc49e",
+                "base_sha256": "20b247cadc6889fb6654f6f170a998829be4ecaa7c9726d4edddeea362cfc49e",
+                "relocation_count": 0,
+                "comparison_unit": "005c8ed0-7981c4d63aa3",
+                "objdiff_percent": 100.0
+              }
+            ],
+            "status": "exact",
+            "objdiff_percent": 100.0
+          },
+          {
+            "name": "?isEnabled@NuMainFilterGen@@UAE_NXZ",
+            "symbol": "?isEnabled@NuMainFilterGen@@UAE_NXZ",
+            "address": "0x005e5ce0",
+            "units": [
+              "src/nu2api/nupostfilter.cpp"
+            ],
+            "target_size": 12,
+            "exact_match": true,
+            "objects": [
+              {
+                "unit": "src/nu2api/nupostfilter.cpp",
+                "base_size": 12,
+                "exact_match": true,
+                "target_sha256": "92e505ddfa36f59b91c29d0e851db61a92bffbdc920863ed4e423bf253e8d0cd",
+                "base_sha256": "92e505ddfa36f59b91c29d0e851db61a92bffbdc920863ed4e423bf253e8d0cd",
+                "relocation_count": 0,
+                "comparison_unit": "005e5ce0-fda78373cd81",
+                "objdiff_percent": 100.0
+              }
+            ],
+            "status": "exact",
+            "objdiff_percent": 100.0
+          },
+          {
+            "name": "?resetGeometry@NuDynamicLight@@QAEXXZ",
+            "symbol": "?resetGeometry@NuDynamicLight@@QAEXXZ",
+            "address": "0x005e8be0",
+            "units": [
+              "src/nu2api/nucore.cpp"
+            ],
+            "target_size": 122,
+            "exact_match": false,
+            "objects": [
+              {
+                "unit": "src/nu2api/nucore.cpp",
+                "base_size": 122,
+                "exact_match": false,
+                "target_sha256": "8635eb7392019f75551fb7e7927f43449d613352cb57c57b70d58982af886ef1",
+                "base_sha256": "da54fec3b2f490b1603c326a3856c7d0df4cfbb7ecce5c059079157114b3a5e2",
+                "relocation_count": 2,
+                "comparison_unit": "005e8be0-e5b76363e6e7",
+                "objdiff_percent": 20.071428
+              }
+            ],
+            "status": "different",
+            "objdiff_percent": 20.071428
+          },
+          {
+            "name": "?resetAll@NuDeferredFilterGen@@UAEXXZ",
+            "symbol": "?resetAll@NuDeferredFilterGen@@UAEXXZ",
+            "address": "0x005e8fe0",
+            "units": [
+              "src/nu2api/nucore.cpp"
+            ],
+            "target_size": 50,
+            "exact_match": false,
+            "objects": [
+              {
+                "unit": "src/nu2api/nucore.cpp",
+                "base_size": 50,
+                "exact_match": false,
+                "target_sha256": "aa5e82bfd3bfe4d5b82d5a943df1bbefe7f9758230d0606f6a7b2a0ec35ffb05",
+                "base_sha256": "3f2a7faa4f688bd14b7f1248938327ceb78e13781e363714ca7a5726c998c6b4",
+                "relocation_count": 1,
+                "comparison_unit": "005e8fe0-4db289ff7510",
+                "objdiff_percent": 99.91304
+              }
+            ],
+            "status": "different",
+            "objdiff_percent": 99.91304
+          }
+        ],
+        "new_unique_native_function_bytes": 219,
+        "exact_code_delta": 47,
+        "exact_data_delta": 0,
+        "fuzzy_delta_pp": 0.0035408999347765757,
+        "source_report_sha256": "5991de909360cca900c139d88d2f831c7ebc67081c1650c5cc2e1794e47880fb",
+        "candidate_only_proof": {
+          "status": "validated natural compiler outputs; original disposition unproved",
+          "occurrences": 89,
+          "functions": 85,
+          "private_SDK_scalars": 4,
+          "archive_members": 4782,
+          "selected_members": 434,
+          "descriptor_sha256": "99d15dd9bcda2b0e437f468e26d9f61492f3e0b95a01562008fb16434d1aff91",
+          "normal_link_receipt_sha256": "17611f070611b761196a17926ebd3effc934bb69187530754f975495de16a95a",
+          "source_exe_sha256": "d2451cf2a360d87d6d5ba19b16eb3b45cf9210bbf8dee89c6fc0554d4aa97869",
+          "local_complete_proof_sha256": "bbd2d7503d713a99d03f93f0aabf95c7a5b04ac589006c7951b150752233a433",
+          "original_binding": null,
+          "original_extent": null,
+          "PC_credit": 0
+        }
+      },
+      "prior_output_preservation": {
+        "baseline": "YY4b5ed4c_FROZEN_NORMAL_RETAIL_SOURCE",
+        "counts": {
+          "functions": 5254,
+          "data": 11364,
+          "identical_full_relocated": 16614
+        },
+        "changes": [
+          {
+            "unit": "src/legoapi/camera.c",
+            "symbol": "_GameCameraMakeMiniCut3",
+            "successor": "_GameCameraMakeMiniCut3",
+            "old_size": 1789,
+            "new_size": 1709,
+            "old_raw_sha": "4382fb31517118bb3ecc2395e3613371dbcf77baa069534c76ff89bd7be28a0f",
+            "new_raw_sha": "c4a2ffcc805ea325522e28caeac1d6b1b35d4a295403f310d9498f0ce7dab19c"
+          },
+          {
+            "unit": "src/legogame/game.cpp",
+            "symbol": "_InitGameAfterConfig",
+            "successor": "_InitGameAfterConfig",
+            "old_size": 4437,
+            "new_size": 4437,
+            "old_raw_sha": "de353fdbbba2f3354d5c67216146ebee6d27be7d63d2415d4d7b0f50e331c97d",
+            "new_raw_sha": "aa4487b07482225f071885b9f4f2d88d8a59e2fae303efeefe22c9f35503cc53"
+          },
+          {
+            "unit": "src/nu2api/nuparticle_runtime.c",
+            "symbol": "_NuRndrParticleGroup",
+            "successor": "_NuRndrParticleGroup",
+            "old_size": 713,
+            "new_size": 717,
+            "old_raw_sha": "4aec3d49d650a845629f9b7c72ccf7e63cd616033532557f6605fcfa8b54b7e9",
+            "new_raw_sha": "8e4cfb2614f860e8911b830282ca6165ce1a173ed9ec0cc1a4e175d532f99a25"
+          }
+        ],
+        "qualified": [
+          {
+            "unit": "src/data.cpp",
+            "symbol": "_PCVertexDeclarationCachePC",
+            "qualification": "Reviewed minimum four-record working view; native32 zero, old16 prefix retained; original extent unknown and zero new allocation/data credit",
+            "old_working_bytes": 16,
+            "new_working_bytes": 32
+          }
+        ],
+        "map_sha256": "9592f8742149ae26205fda53d3c6807bf9e6b605bbeb0eb1989fa18f5a691faf",
+        "source_exe_sha256": "d2451cf2a360d87d6d5ba19b16eb3b45cf9210bbf8dee89c6fc0554d4aa97869"
+      },
+      "source_contracts": {
+        "status": "PASS_ACTUAL_NORMAL343_RETAIL_AND_REQUIRED_CHECKS_RUNTIME_FRONTIER_ADVANCED",
+        "new_functions": 6,
+        "new_complete_PC_bytes": 219,
+        "new_exact_functions": 4,
+        "new_exact_PC_bytes": 47,
+        "cache_working_prefix_records": 4,
+        "cache_compiled_bytes": 32,
+        "cache_original_extent": null,
+        "cache_original_capacity": null,
+        "cache_PC_allocation_credit": 0,
+        "source_cohorts": [
+          "src/nu2api/nupostfilter.cpp",
+          "src/nu2api/nucore.cpp"
+        ],
+        "canonical_existing_C_owner_migrated": true,
+        "semantic_pointer_refinement": "NuDynamicLight* in deferredarray/API/source/map; native4byte pointer ABI unchanged",
+        "new_filter_instances_vtables_constructors": 0,
+        "normal_objects": 343,
+        "frozen_inputs": 456,
+        "normal_checks": "PASS5175functions/11360data/allrelocations",
+        "required_checks": "PASS796tests/3existing skips;LLVM18full343",
+        "old_complete_outputs": 16618,
+        "strict_same_old_outputs": 16614,
+        "qualified_unknown_cache_prefix_extension": 1,
+        "historical_exact_pair_replays": 3,
+        "prior_output_independent_packet": "build/analysis/vertex-cache-child6-prior-three-independent-v1/accepted-three-pair-packet.json",
+        "normal_report_sha256": "5991de909360cca900c139d88d2f831c7ebc67081c1650c5cc2e1794e47880fb",
+        "normal_manifest_sha256": "69cc8f72cd0573bb8be0e8f35d26f47dfb260f132f1465d67387dc930aeb86b0",
+        "source_exe_sha256": "d2451cf2a360d87d6d5ba19b16eb3b45cf9210bbf8dee89c6fc0554d4aa97869",
+        "journal_preserved_sha256": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+        "actual_inputs": {
+          "src/saga.h": "3c3e0c30c54ba1d8c805a5e1e1c40974adabc7db727a14654f4871bb62484be5",
+          "src/data.cpp": "ccd41c8f2212abbdb64a7faa880cd649c213717fb453c8b134c1306f05d403b7",
+          "src/nu2api/nupostfilter.cpp": "ed3c6f71d9a8140c519dcc3052aaf2e8321e3e15925062f4b252fdaf53391dec",
+          "src/nu2api/nucore.cpp": "ea9dd68bc4541f8e925c32bc724415b0d9dd68760c894da4da83ff9e6e640522",
+          "config/symbols.csv": "9592f8742149ae26205fda53d3c6807bf9e6b605bbeb0eb1989fa18f5a691faf",
+          "config/candidate-only.json": "99d15dd9bcda2b0e437f468e26d9f61492f3e0b95a01562008fb16434d1aff91"
+        },
+        "ordinary_run": {
+          "exit": 5,
+          "elapsed_seconds": 7.878899333998561,
+          "previous_copy_fault_observed": false,
+          "new_fault": "NuLstGetNext exact40/native547580 NULLlist.head+8",
+          "owned_processes_windows_after": 0
+        },
+        "next_connected_wave": "Proven materialoverride listproducer5e4eb0/35 and genuine512 hardwarecall; shaderfactory/posteffect resourcefamilies follow independently"
+      },
+      "checks": {
+        "make_check": "PASS796tests/3existing skips;LLVM18full343",
+        "normal_build_check_objects": "PASS5175functions/11360data/343objects;4internalEHgrouped;allrefsresolve",
+        "make_match": "PASSfullnative extents/alloldexact13memberspreserved",
+        "SDK89": "Onlyheaderrecipepinupdated; all89descriptors identical;freshfullnormalLINK/archive/incomingproofzeroPCcredit"
+      },
+      "runtime": {
+        "ordinary_exit": 5,
+        "ordinary_elapsed_seconds": 7.878899333998561,
+        "previous_copy_fault_observed": false,
+        "next_fault": "exactNuLstGetNext40 NULLlist.head+8",
+        "headless_caller": "NuMtlDestroy CALL51f459/return51f45e; canonicalg_overrideListNULL",
+        "headless_debugger_exit": 0,
+        "headless_natural_game_exit": "UNKNOWN explicitdebuggeekillafterreadcapture",
+        "frozen_objects": 343,
+        "frozen_inputs": 456,
+        "all_actual_pins_unchanged": true,
+        "ShowCrashDialogDWORD0_set_query": true,
+        "owned_processes_debuggers_windows_empty": true,
+        "gameplay_frames_GPU_world": "unverified"
+      },
+      "evidence": [
+        {
+          "path": "build/analysis/vertex-cache-child6-main-integration-v1/integration.json",
+          "sha256": "33c1ffb8144cb96c79d657fbf376c655bc5b1ac9fcf0fb46db300e20a7bada76"
+        },
+        {
+          "path": "build/analysis/vertex-cache-child6-main-integration-v1/exact-preservation-and-delta.json",
+          "sha256": "0873b52ea972f83e54e83a1a4325ef27af76cac1f8be28a85f0aa68266b205db"
+        },
+        {
+          "path": "build/analysis/vertex-cache-child6-main-integration-v1/aggregate-prior-preservation.json",
+          "sha256": "fe9a98c44ec80baca562f4fe7b2d951e79ccc24805b40de6166896edc2417b82"
+        },
+        {
+          "path": "build/analysis/vertex-cache-child6-main-integration-v1/frozen-normal-v1/normal-object-manifest.json",
+          "sha256": "69cc8f72cd0573bb8be0e8f35d26f47dfb260f132f1465d67387dc930aeb86b0"
+        },
+        {
+          "path": "build/analysis/vertex-cache-child6-main-integration-v1/frozen-normal-v1/matching.json",
+          "sha256": "5991de909360cca900c139d88d2f831c7ebc67081c1650c5cc2e1794e47880fb"
+        },
+        {
+          "path": "build/analysis/vertex-cache-child6-main-integration-v1/normal-build.log",
+          "sha256": "0733c4fe46d4830f0103b48bf9025dbbe64a84efbec3108f135501fa1ca1abae"
+        },
+        {
+          "path": "build/analysis/vertex-cache-child6-main-integration-v1/check-authorized.log",
+          "sha256": "8e924b1d3a51b39bf4f01254929d7e73fadc1c2638ea89b782bf1c596ffeb0ff"
+        },
+        {
+          "path": "build/analysis/vertex-cache-child6-main-integration-v1/normal-match.log",
+          "sha256": "8d8ae69ce303e92e894e03eb5d87e9f5e3a497b72b4e71f0e521e962576016cf"
+        },
+        {
+          "path": "build/analysis/vertex-cache-child6-main-integration-v1/source-game-launcher-v1/observation/receipt.json",
+          "sha256": "6f760ab62ed79357ad0660a0bb437c9c4105330a3ecca80d665c1d796567b9d8"
+        },
+        {
+          "path": "build/analysis/vertex-cache-child6-main-integration-v1/source-game-launcher-v1/observation/fault-attribution.json",
+          "sha256": "9abdbc8e96fc3335eb2bda4b0320f3609295349ba00352a2801a899f27fe2db3"
+        },
+        {
+          "path": "build/analysis/vertex-cache-child6-main-integration-v1/headless-list-caller-v1/observation/caller-attribution.json",
+          "sha256": "4dc081221a01cd48c2f249a0e79e1d6c8fc8a8312e440caec2ddbce4a34e378e"
+        },
+        {
+          "path": "build/analysis/posteffect-child6-actual-normal-review-v1/accepted-actual-normal-child6-owner-types.json",
+          "sha256": "1d04ee4718074843562a6bd37bfffee323f3ac2ba2ae266ff471fc7e6cb922ae"
+        },
+        {
+          "path": "build/analysis/vertex-declaration-four-minimum-independent-review/actual-normal-v1/accepted-actual-normal-cache4-provenance-corrected-packet.json",
+          "sha256": "db09681416d442bf8613f3f749acfc34340f107a94cb24d2cc4de8f8caae1284"
+        },
+        {
+          "path": "build/analysis/vertex-cache-child6-prior-three-independent-v1/accepted-three-pair-packet.json",
+          "sha256": "a346ac9189628b7892ed3973e384230b6e03472d5509bea25b49ad606ad8994c"
+        }
+      ],
+      "next_connected_wave": "GenuineNuMtlInitOverride5e4eb0/35 plusnative512hardwarecall, actualproducerofNULLoverride list; shaderfactory/posteffectresourceclosure follows separately",
+      "ongoing_goal": "active;checkpointdoesnotcompletegame",
+      "human_journal": "Preserved3unrelated additions unstaged SHA4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7"
     }
   ],
-  "latest_checkpoint": "YY"
+  "latest_checkpoint": "ZZ"
 }

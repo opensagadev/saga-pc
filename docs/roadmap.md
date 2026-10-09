@@ -1,30 +1,29 @@
 # Reconstruction roadmap
 
 The goal is a complete PC reconstruction from readable C/C++. The source build
-is **not playable**. Verified published baseline XX is [d1695b6](https://github.com/opensagadev/saga-pc/commit/d1695b6f9004d105f4fbf500dc9bdc069a93aa4b), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37885753616) passing all 13 steps. YY exact-revision CI is pending publication.
+is **not playable**. Verified published baseline XX is [d1695b6](https://github.com/opensagadev/saga-pc/commit/d1695b6f9004d105f4fbf500dc9bdc069a93aa4b), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37885753616) passing all 13 steps. YY exact-revision CI is still pending. ZZ exact-revision CI will be checked after publication.
 
-The latest ordinary source-game run exits 5 inside the existing exact 84-byte
-PCByteCopy. A separate headless debugger run on the frozen XX source image
-identifies the caller as NuGetVertexDeclaration: it requested 6,863,024 bytes.
-The getter's full 1,660 compiled bytes equal that linked source image; its native
-comparison extent remains the complete 1,684 bytes. The reconstructed cache has
-two records, with its count at the third record's key address. Verified native
-material producers require at least three distinct records, conditionally four.
-The observed count matches a genuine glass descriptor, supporting the specific
-count-overwrite mechanism; the earlier write itself was not observed.
+The latest ordinary source run passed the earlier vertex-cache copy failure and
+exited 5 after 7.879 seconds at a new NULL-list read. A separate headless capture
+proves NuMtlDestroy passes NULL g_overrideList to NuLstGetNext. That complete
+40-byte list function is byte exact; its NULSTHDR.head read at +8 faults. The
+canonical list pointer has no producer in current source. Hardware startup still
+omits native NuMtlInitOverride at 0x5e4eb0 with arguments (512, buffer, end).
+That genuine list initializer is the next connected transfer. The separate
+shader-cache initializer at 0x60ded0 does not produce this list.
 
-Native cache stride and the accessed records are verified, but its original full
-capacity remains unproved. Retained PC/Mac/Android evidence does not establish
-that extent. Cache storage is unchanged in YY; no guessed capacity, count reset,
-relocation, copy guard or replacement producer is added. The earlier NULL
-DebMat[5] failure did not recur after genuine debris setup was restored.
+The vertex-declaration cache now supplies a reviewed four-record minimum view
+for four verified native descriptors. All 24 insertion orders fit this prefix;
+its complete 32-byte zero initializer matches native and preserves the old
+16 bytes. The counter, getter, search and copy bodies remain unchanged. This is
+a minimum accessed prefix, with original owning extent blank and zero data or
+allocation credit. Full native capacity and all-startup sufficiency remain
+unproved. Passing the earlier crash is an observation, not a full capacity proof.
 
-YY adds 12 functions / 988 compared PC bytes, six exact / 174 bytes. Post-effect
-setters and the real sampler provider have source; filter construction and
-resource lifetimes remain held. XX restores genuine debris startup and has
-passing exact-revision CI. Existing parents remain partial; all prior exact
-contracts survive. Similarity and mapping are separate from runnable milestones;
-measurements are in [matching.json](../matching.json), with full qualifications in
+ZZ adds six methods / 219 compared PC bytes, four exact / 47 bytes. All previous
+exact results survive, including the C-to-C++ post-filter owner migration.
+Similarity and mapping are separate from runnable milestones; measurements are
+in [matching.json](../matching.json), with complete qualifications in
 [transfer-checkpoint.json](../config/transfer-checkpoint.json).
 
 Work proceeds through connected source families and verified PC contracts:
