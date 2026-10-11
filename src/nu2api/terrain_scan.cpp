@@ -411,8 +411,8 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
             scan_bounds.max_x = scan_query.position.x + NuTimeBarTop + reach;
             scan_bounds.min_y = scan_query.position.y - NuTimeBarTop - vertical;
             scan_bounds.max_y = scan_query.position.y + NuTimeBarTop + vertical;
-            scan_bounds.min_z = scan_query.position.z - NuTimeBarTop - reach;
             scan_bounds.max_z = scan_query.position.z + NuTimeBarTop + reach;
+            scan_bounds.min_z = scan_query.position.z - NuTimeBarTop - reach;
             bounds_radius = reach;
         } else {
             const f32 radius = scan_query.collision_radius;
@@ -495,7 +495,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         if (candidate->material[1] != 0 && (candidate->material[1] & terrain_mask) == 0) {
                             continue;
                         }
-                        if ((candidate->flags & scan_flags) == 0x40) {
+                        if ((scan_flags & candidate->flags) == 0x40) {
                             continue;
                         }
 
@@ -622,7 +622,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                             TERRAIN_SHAPE *source = scale_candidate;
                             scale_candidate =
                                 &((TERRAIN_SHAPE *)TerrainScaledShapeCursorPc)[scale_writer->scaled_shape_count++];
-                            scale_candidate->material[0] = source->material[0];
+                            scale_candidate->material[0] = *source->material;
                             scale_candidate->material[1] = source->material[1];
                             scale_candidate->flags = source->flags;
                             scale_candidate->normal_flags = source->normal_flags;
@@ -713,15 +713,18 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 group.origin.z - group.radius > platform_bounds.max_z ||
                 group.origin.z + group.radius < platform_bounds.min_z)
                 continue;
-            if (group.chunk_type == -1)
+            if (-1 == group.chunk_type)
                 continue;
             const TERRAIN_PLATFORM &platform = ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[group.scene_index];
             if ((platform.flags & TERRAIN_PLATFORM_FLAG_ROTATING) != 0) {
                 const f32 x = (platform_bounds.min_x + platform_bounds.max_x) * 0.5f - group.origin.x;
-                const f32 y = (platform_bounds.min_y + platform_bounds.max_y) * 0.5f - group.origin.y;
+
                 const f32 z = (platform_bounds.min_z + platform_bounds.max_z) * 0.5f - group.origin.z;
 
-                if (!(x * x + y * y + z * z <
+                if (!(x * x +
+                          ((const f32)((platform_bounds.min_y + platform_bounds.max_y) * 0.5f - group.origin.y)) *
+                              ((const f32)((platform_bounds.min_y + platform_bounds.max_y) * 0.5f - group.origin.y)) +
+                          z * z <
                       ((const f32)(scan_radius + group.radius)) * ((const f32)(scan_radius + group.radius))) ||
                     platform.scene_object == NULL)
                     continue;
@@ -765,7 +768,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 if (!rotating &&
                     !(((local)).max_x >= ((group.bounds_min)).x && ((local)).max_y >= ((group.bounds_min)).y &&
                       ((local)).max_z >= ((group.bounds_min)).z && ((group.bounds_max)).x >= ((local)).min_x &&
-                      ((group.bounds_max)).y > ((local)).min_y && ((group.bounds_max)).z > ((local)).min_z))
+                      ((local)).min_y < ((group.bounds_max)).y && ((group.bounds_max)).z > ((local)).min_z))
                     continue;
                 TERRAIN_SHAPE_BATCH *batch = ((TERRAIN_SHAPE_BATCH *)(group.data));
                 while (batch->marker >= 0) {
@@ -775,7 +778,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         for (i32 i = 0; i < batch->shape_count; ++i) {
                             TERRAIN_SHAPE *shape = &shapes[i];
                             if (!rotating &&
-                                !(((local)).max_x >= ((*shape)).min_x && ((*shape)).max_x > ((local)).min_x &&
+                                !(((*shape)).min_x <= ((local)).max_x && ((*shape)).max_x > ((local)).min_x &&
                                   ((local)).max_y >= ((*shape)).min_y && ((*shape)).max_y > ((local)).min_y &&
                                   ((local)).max_z >= ((*shape)).min_z && ((*shape)).max_z > ((local)).min_z))
                                 continue;
@@ -784,8 +787,8 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                                 0x40 == ((shape->flags & (scan_flags))))
                                 continue;
                             if (rotating) {
-                                NUVEC4 vertices[4];
                                 const bool quad = shape->normals[1].y < 65535.0f;
+                                NUVEC4 vertices[4];
                                 for (i32 v = 0; v < 3; ++v) {
                                     vertices[v].x = shape->vertices[v].x;
                                     vertices[v].y = shape->vertices[v].y;
@@ -978,7 +981,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         if ((a.z < wall_bounds.min_z || b.z > wall_bounds.max_z) &&
                             (b.z < wall_bounds.min_z || a.z > wall_bounds.max_z))
                             continue;
-                        if (WallSplCount < 64) {
+                        if (64 > WallSplCount) {
                             ((TERRAIN_WALL_POINT *)WallSplList)[WallSplCount].position = a;
                             ((TERRAIN_WALL_POINT *)WallSplList)[WallSplCount + 1].position = b;
                             for (i32 p = 0; p < 2; ++p) {
