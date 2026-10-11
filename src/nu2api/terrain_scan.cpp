@@ -416,12 +416,12 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
             bounds_radius = reach;
         } else {
             const f32 radius = scan_query.collision_radius;
-            if (scan_query.movement.x <= 0.0f) {
-                scan_bounds.min_x = scan_query.position.x + scan_query.movement.x - TerrainScanMargin02Pc - radius;
-                scan_bounds.max_x = scan_query.position.x + TerrainScanMargin02Pc + radius;
-            } else {
+            if (!(scan_query.movement.x <= 0.0f)) {
                 scan_bounds.min_x = scan_query.position.x - TerrainScanMargin02Pc - radius;
                 scan_bounds.max_x = scan_query.position.x + scan_query.movement.x + TerrainScanMargin02Pc + radius;
+            } else {
+                scan_bounds.min_x = scan_query.position.x + scan_query.movement.x - TerrainScanMargin02Pc - radius;
+                scan_bounds.max_x = scan_query.position.x + TerrainScanMargin02Pc + radius;
             }
             if (scan_query.movement.y <= 0.0f) {
                 scan_bounds.min_y = scan_query.position.y + scan_query.movement.y - TerrainScanMargin02Pc - radius;
@@ -443,7 +443,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
             bounds_radius = NuFsqrt(dx * dx + dy * dy + dz * dz);
         }
         if (!((false)) && scan_query.object_scale > 1.0f)
-            bounds_radius += (scan_query.object_scale - 1.0f) * scan_query.collision_radius;
+            bounds_radius += scan_query.collision_radius * ((scan_query.object_scale - 1.0f));
     } while (0);
 
     for (i32 cell_index = 0; cell_index < ((TERRAIN_SET_PC *)CurrentTerrain)->used_cell_count; ++cell_index) {
@@ -636,7 +636,9 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                                 scale_candidate->vertices[vector_index].z = source->vertices[vector_index].z;
                             }
 
-                            if (source->normals[1].y < 65535.0f) {
+                            if (!(source->normals[1].y < 65535.0f)) {
+                                scale_candidate->normals[1].y = 65536.0f;
+                            } else {
                                 scale_candidate->vertices[3].x = source->vertices[3].x;
                                 scale_candidate->vertices[3].y = (source->vertices[3].y + scale_group.origin.y) *
                                                                      ((TerrainQuery_s *)TerI)->inverse_object_scale -
@@ -652,8 +654,6 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                                 scale_candidate->normals[1].y =
                                     source->normals[1].y * ((TerrainQuery_s *)TerI)->object_scale * inverse_length;
                                 scale_candidate->normals[1].z = source->normals[1].z * inverse_length;
-                            } else {
-                                scale_candidate->normals[1].y = 65536.0f;
                             }
 
                             const f32 length = NuFsqrt(source->normals[0].x * source->normals[0].x +
@@ -708,7 +708,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
         }
         for (i32 i = 0; i < count; ++i) {
             const TERRAIN_GROUP &group = ((TERRAIN_SET_PC *)CurrentTerrain)->groups[groups[i]];
-            if (group.origin.x - group.radius > platform_bounds.max_x ||
+            if (platform_bounds.max_x < group.origin.x - group.radius ||
                 group.origin.x + group.radius < platform_bounds.min_x ||
                 group.origin.z - group.radius > platform_bounds.max_z ||
                 group.origin.z + group.radius < platform_bounds.min_z)
@@ -768,7 +768,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 TERRAIN_SHAPE_BATCH *batch = ((TERRAIN_SHAPE_BATCH *)(group.data));
                 while (batch->marker >= 0) {
                     TERRAIN_SHAPE *shapes = ((TERRAIN_SHAPE *)(batch + 1));
-                    if (rotating || (local.max_x >= batch->min_x && batch->max_x > local.min_x &&
+                    if (rotating || (local.max_x >= batch->min_x && local.min_x < batch->max_x &&
                                      local.max_z >= batch->min_z && batch->max_z > local.min_z)) {
                         for (i32 i = 0; i < batch->shape_count; ++i) {
                             TERRAIN_SHAPE *shape = &shapes[i];
@@ -781,71 +781,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                                 (shape->material[1] != 0 && (shape->material[1] & (terrain_mask)) == 0) ||
                                 (shape->flags & (scan_flags)) == 0x40)
                                 continue;
-                            if (!rotating) {
-                                platinrange = 1;
-                                if (!(false)) {
-                                    do {
-                                        TERRAIN_SHAPE *&scale_candidate = ((shape));
-                                        const TERRAIN_GROUP &scale_group = ((group));
-                                        TerrainScanWriter *scale_writer = (((&writer)));
-                                        if (((TerrainQuery_s *)TerI)->object_scale != 1.0f) {
-                                            TERRAIN_SHAPE *source = scale_candidate;
-                                            scale_candidate =
-                                                &((TERRAIN_SHAPE *)
-                                                      TerrainScaledShapeCursorPc)[scale_writer->scaled_shape_count++];
-                                            scale_candidate->material[0] = source->material[0];
-                                            scale_candidate->material[1] = source->material[1];
-                                            scale_candidate->flags = source->flags;
-                                            scale_candidate->normal_flags = source->normal_flags;
-
-                                            for (i32 vector_index = 0; vector_index < 3; ++vector_index) {
-                                                scale_candidate->vertices[vector_index].x =
-                                                    source->vertices[vector_index].x;
-                                                scale_candidate->vertices[vector_index].y =
-                                                    (source->vertices[vector_index].y + scale_group.origin.y) *
-                                                        ((TerrainQuery_s *)TerI)->inverse_object_scale -
-                                                    scale_group.origin.y;
-                                                scale_candidate->vertices[vector_index].z =
-                                                    source->vertices[vector_index].z;
-                                            }
-
-                                            if (source->normals[1].y < 65535.0f) {
-                                                scale_candidate->vertices[3].x = source->vertices[3].x;
-                                                scale_candidate->vertices[3].y =
-                                                    (source->vertices[3].y + scale_group.origin.y) *
-                                                        ((TerrainQuery_s *)TerI)->inverse_object_scale -
-                                                    scale_group.origin.y;
-                                                scale_candidate->vertices[3].z = source->vertices[3].z;
-
-                                                const f32 length =
-                                                    NuFsqrt(source->normals[1].x * source->normals[1].x +
-                                                            source->normals[1].y * source->normals[1].y *
-                                                                ((TerrainQuery_s *)TerI)->object_scale_sq +
-                                                            source->normals[1].z * source->normals[1].z);
-                                                const f32 inverse_length = TerrainDivideNonzeroPC(1.0f, length);
-                                                scale_candidate->normals[1].x = source->normals[1].x * inverse_length;
-                                                scale_candidate->normals[1].y = source->normals[1].y *
-                                                                                ((TerrainQuery_s *)TerI)->object_scale *
-                                                                                inverse_length;
-                                                scale_candidate->normals[1].z = source->normals[1].z * inverse_length;
-                                            } else {
-                                                scale_candidate->normals[1].y = 65536.0f;
-                                            }
-
-                                            const f32 length = NuFsqrt(source->normals[0].x * source->normals[0].x +
-                                                                       source->normals[0].y * source->normals[0].y *
-                                                                           ((TerrainQuery_s *)TerI)->object_scale_sq +
-                                                                       source->normals[0].z * source->normals[0].z);
-                                            const f32 inverse_length = TerrainDivideNonzeroPC(1.0f, length);
-                                            scale_candidate->normals[0].x = source->normals[0].x * inverse_length;
-                                            scale_candidate->normals[0].y = source->normals[0].y *
-                                                                            ((TerrainQuery_s *)TerI)->object_scale *
-                                                                            inverse_length;
-                                            scale_candidate->normals[0].z = source->normals[0].z * inverse_length;
-                                        }
-                                    } while (0);
-                                }
-                            } else {
+                            if (rotating) {
                                 NUVEC4 vertices[4];
                                 const bool quad = shape->normals[1].y < 65535.0f;
                                 for (i32 v = 0; v < 3; ++v) {
@@ -913,6 +849,70 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                                     normal.z *= inverse;
                                 }
                                 shape = transformed;
+                            } else {
+                                platinrange = 1;
+                                if (!(false)) {
+                                    do {
+                                        TERRAIN_SHAPE *&scale_candidate = ((shape));
+                                        const TERRAIN_GROUP &scale_group = ((group));
+                                        TerrainScanWriter *scale_writer = (((&writer)));
+                                        if (1.0f != ((TerrainQuery_s *)TerI)->object_scale) {
+                                            TERRAIN_SHAPE *source = scale_candidate;
+                                            scale_candidate =
+                                                &((TERRAIN_SHAPE *)
+                                                      TerrainScaledShapeCursorPc)[scale_writer->scaled_shape_count++];
+                                            scale_candidate->material[0] = *source->material;
+                                            scale_candidate->material[1] = source->material[1];
+                                            scale_candidate->flags = source->flags;
+                                            scale_candidate->normal_flags = source->normal_flags;
+
+                                            for (i32 vector_index = 0; vector_index < 3; ++vector_index) {
+                                                scale_candidate->vertices[vector_index].x =
+                                                    source->vertices[vector_index].x;
+                                                scale_candidate->vertices[vector_index].y =
+                                                    (source->vertices[vector_index].y + scale_group.origin.y) *
+                                                        ((TerrainQuery_s *)TerI)->inverse_object_scale -
+                                                    scale_group.origin.y;
+                                                scale_candidate->vertices[vector_index].z =
+                                                    source->vertices[vector_index].z;
+                                            }
+
+                                            if (source->normals[1].y < 65535.0f) {
+                                                scale_candidate->vertices[3].x = source->vertices[3].x;
+                                                scale_candidate->vertices[3].y =
+                                                    (source->vertices[3].y + scale_group.origin.y) *
+                                                        ((TerrainQuery_s *)TerI)->inverse_object_scale -
+                                                    scale_group.origin.y;
+                                                scale_candidate->vertices[3].z = source->vertices[3].z;
+
+                                                const f32 length =
+                                                    NuFsqrt(source->normals[1].x * source->normals[1].x +
+                                                            source->normals[1].y * source->normals[1].y *
+                                                                ((TerrainQuery_s *)TerI)->object_scale_sq +
+                                                            source->normals[1].z * source->normals[1].z);
+                                                const f32 inverse_length = TerrainDivideNonzeroPC(1.0f, length);
+                                                scale_candidate->normals[1].x = source->normals[1].x * inverse_length;
+                                                scale_candidate->normals[1].y = source->normals[1].y *
+                                                                                ((TerrainQuery_s *)TerI)->object_scale *
+                                                                                inverse_length;
+                                                scale_candidate->normals[1].z = source->normals[1].z * inverse_length;
+                                            } else {
+                                                scale_candidate->normals[1].y = 65536.0f;
+                                            }
+
+                                            const f32 length = NuFsqrt(source->normals[0].x * source->normals[0].x +
+                                                                       source->normals[0].y * source->normals[0].y *
+                                                                           ((TerrainQuery_s *)TerI)->object_scale_sq +
+                                                                       source->normals[0].z * source->normals[0].z);
+                                            const f32 inverse_length = TerrainDivideNonzeroPC(1.0f, length);
+                                            scale_candidate->normals[0].x = source->normals[0].x * inverse_length;
+                                            scale_candidate->normals[0].y = source->normals[0].y *
+                                                                            ((TerrainQuery_s *)TerI)->object_scale *
+                                                                            inverse_length;
+                                            scale_candidate->normals[0].z = source->normals[0].z * inverse_length;
+                                        }
+                                    } while (0);
+                                }
                             }
                             *(&writer)->cursor++ = shape;
                             ++(&writer)->group_shape_count;
