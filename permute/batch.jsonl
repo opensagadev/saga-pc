@@ -25,3 +25,4 @@
 {"symbol": "_CutScene_DrawCharacter", "unit": "src/legoapi/cutscene_runtime.cpp", "size": 3767, "start": 56.142082, "best": 60.029865, "exact": false, "seconds": 424.2, "instructions": [44.37, 44.74], "applied": true}
 {"symbol": "_DebReAlloc2", "unit": "src/legoapi/debris_engine.c", "size": 2337, "start": 36.482307, "best": 38.21229, "exact": false, "seconds": 274.4, "instructions": [25.76, 25.9], "applied": true}
 {"symbol": "_ApplyGravity", "unit": "src/legoapi/move.c", "size": 2543, "start": 37.686356, "best": 56.475388, "exact": false, "seconds": 412.7, "instructions": [57.39, 57.24], "applied": true}
+{"symbol": "_UpdatePushBlocks", "unit": "src/legoapi/gizpushblocks.cpp", "size": 4366, "start": 63.5025, "best": 63.92, "exact": false, "seconds": 485.2, "instructions": [47.95, 47.88], "applied": true}
