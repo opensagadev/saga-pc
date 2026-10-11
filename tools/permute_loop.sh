@@ -52,15 +52,16 @@ publish() {
 
 sync
 [ -f permute/batch.jsonl ] && [ ! -s "$JOURNAL" ] && cp permute/batch.jsonl "$JOURNAL"
+touch "$JOURNAL"
 SEED=$(cat permute/seed 2>/dev/null || echo 1)
 
 while true; do
     sync
-    before=$(wc -l < "$JOURNAL" 2>/dev/null || echo 0)
+    before=$(wc -l < "$JOURNAL")
     python3 tools/permute.py --batch "$CHUNK" --iterations "$ITERATIONS" --jobs "$JOBS" \
         --max-size "$MAX_SIZE" --seed "$SEED" --apply 2>&1 | tee -a build/permute/loop.log
-    after=$(wc -l < "$JOURNAL" 2>/dev/null || echo 0)
-    summary=$(tail -n $((after - before)) "$JOURNAL" 2>/dev/null | python3 -c '
+    after=$(wc -l < "$JOURNAL")
+    summary=$(tail -n $((after - before)) "$JOURNAL" | python3 -c '
 import json, sys
 rows = [json.loads(l) for l in sys.stdin if l.strip()]
 gain = sum(r["size"] * (r["best"] - r["start"]) / 100 for r in rows if "best" in r)
