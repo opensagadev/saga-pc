@@ -10,3 +10,4 @@
 {"symbol": "_Grapple_MoveCode", "unit": "src/legoapi/grapples.cpp", "size": 3392, "start": 24.450783, "best": 58.895973, "exact": false, "seconds": 352.3, "instructions": [46.24, 61.39], "applied": true}
 {"symbol": "_NewScan", "unit": "src/nu2api/terrain_query.cpp", "size": 4361, "start": 33.944717, "best": 36.20644, "exact": false, "seconds": 410.5, "instructions": [15.57, 15.32], "applied": true}
 {"symbol": "_ObjHitObj", "unit": "src/legoapi/hits.c", "size": 5764, "start": 58.612286, "best": 62.635956, "exact": false, "seconds": 414.7, "instructions": [59.72, 64.68], "applied": true}
+{"symbol": "_TerrainPlatformEmbedded", "unit": "src/nu2api/terrain_collision.cpp", "size": 4252, "start": 44.720757, "best": 61.663395, "exact": false, "seconds": 450.8, "instructions": [28.39, 30.13], "applied": true}

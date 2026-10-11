@@ -2058,20 +2058,8 @@ extern "C" {
         i32 transformed_count = 0;
         TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
         if (query->object_scale == 1.0f) {
-            if (!(platform->flags & 1)) {
-                while (batch->marker >= 0) {
-                    i32 shape_count = batch->shape_count;
-                    TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
-                    for (i32 remaining = shape_count; remaining > 0; --remaining, ++source) {
-                        if (source->material[1] != 0)
-                            continue;
-                        *cursor++ = source;
-                        ++count;
-                    }
-                    batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(source);
-                }
-            } else {
-                while (batch->marker >= 0) {
+            if ((platform->flags & 1)) {
+                while (batch->marker > -1) {
                     i32 shape_count = batch->shape_count;
                     TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
                     for (i32 remaining = shape_count; remaining > 0; --remaining, ++source) {
@@ -2162,63 +2150,21 @@ extern "C" {
                     }
                     batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(source);
                 }
-            }
-        } else {
-            if (!(platform->flags & 1)) {
+            } else {
                 while (batch->marker >= 0) {
                     i32 shape_count = batch->shape_count;
                     TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
                     for (i32 remaining = shape_count; remaining > 0; --remaining, ++source) {
                         if (source->material[1] != 0)
                             continue;
-                        bool quad = source->normals[1].y < 65535.0f;
-                        TERRAIN_SHAPE *surface = &TerrainScaledShapeCursorPc[transformed_count];
-                        memcpy(surface->material, source->material, 4);
-                        surface->vertices[0].x = source->vertices[0].x;
-                        surface->vertices[0].y =
-                            (source->vertices[0].y + group->origin.y) * query->inverse_object_scale - group->origin.y;
-                        surface->vertices[0].z = source->vertices[0].z;
-                        surface->vertices[1].x = source->vertices[1].x;
-                        surface->vertices[1].y =
-                            (source->vertices[1].y + group->origin.y) * query->inverse_object_scale - group->origin.y;
-                        surface->vertices[1].z = source->vertices[1].z;
-                        surface->vertices[2].x = source->vertices[2].x;
-                        surface->vertices[2].y =
-                            (source->vertices[2].y + group->origin.y) * query->inverse_object_scale - group->origin.y;
-                        surface->vertices[2].z = source->vertices[2].z;
-                        if (quad) {
-                            surface->vertices[3].x = source->vertices[3].x;
-                            surface->vertices[3].y =
-                                (source->vertices[3].y + group->origin.y) * query->inverse_object_scale -
-                                group->origin.y;
-                            surface->vertices[3].z = source->vertices[3].z;
-                        }
-                        if (quad) {
-                            NUVEC *normal = &source->normals[1];
-                            f32 length =
-                                NuFsqrt(normal->x * normal->x + (normal->y * normal->y) * query->object_scale_sq +
-                                        normal->z * normal->z);
-                            f32 inverse = length == 0.0f ? 0.0f : 1.0f / length;
-                            surface->normals[1].x = normal->x * inverse;
-                            surface->normals[1].y = (normal->y * query->object_scale) * inverse;
-                            surface->normals[1].z = normal->z * inverse;
-                        } else {
-                            surface->normals[1].y = 65536.0f;
-                        }
-                        NUVEC *normal = &source->normals[0];
-                        f32 length = NuFsqrt(normal->x * normal->x + (normal->y * normal->y) * query->object_scale_sq +
-                                             normal->z * normal->z);
-                        f32 inverse = length == 0.0f ? 0.0f : 1.0f / length;
-                        surface->normals[0].x = normal->x * inverse;
-                        surface->normals[0].y = (normal->y * query->object_scale) * inverse;
-                        surface->normals[0].z = normal->z * inverse;
-                        *cursor++ = surface;
+                        *cursor++ = source;
                         ++count;
-                        ++transformed_count;
                     }
                     batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(source);
                 }
-            } else {
+            }
+        } else {
+            if ((platform->flags & 1)) {
                 while (batch->marker >= 0) {
                     i32 shape_count = batch->shape_count;
                     TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
@@ -2314,6 +2260,60 @@ extern "C" {
                     }
                     batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(source);
                 }
+            } else {
+                while (batch->marker >= 0) {
+                    i32 shape_count = batch->shape_count;
+                    TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                    for (i32 remaining = shape_count; 1 <= remaining; --remaining, ++source) {
+                        if (source->material[1] != 0)
+                            continue;
+                        bool quad = source->normals[1].y < 65535.0f;
+                        TERRAIN_SHAPE *surface = &TerrainScaledShapeCursorPc[transformed_count];
+                        memcpy(surface->material, source->material, 4);
+                        surface->vertices[0].x = source->vertices[0].x;
+                        surface->vertices[0].y =
+                            (source->vertices[0].y + group->origin.y) * query->inverse_object_scale - group->origin.y;
+                        surface->vertices[0].z = source->vertices[0].z;
+                        surface->vertices[1].x = source->vertices[1].x;
+                        surface->vertices[1].y =
+                            (source->vertices[1].y + group->origin.y) * query->inverse_object_scale - group->origin.y;
+                        surface->vertices[1].z = source->vertices[1].z;
+                        surface->vertices[2].x = source->vertices[2].x;
+                        surface->vertices[2].y =
+                            (source->vertices[2].y + group->origin.y) * query->inverse_object_scale - group->origin.y;
+                        surface->vertices[2].z = source->vertices[2].z;
+                        if (quad) {
+                            surface->vertices[3].x = source->vertices[3].x;
+                            surface->vertices[3].y =
+                                (source->vertices[3].y + group->origin.y) * query->inverse_object_scale -
+                                group->origin.y;
+                            surface->vertices[3].z = source->vertices[3].z;
+                        }
+                        if (quad) {
+                            NUVEC *normal = &source->normals[1];
+                            f32 length =
+                                NuFsqrt(((normal->y * normal->y) * query->object_scale_sq) + (normal->x * normal->x) +
+                                        normal->z * normal->z);
+                            f32 inverse = length == 0.0f ? 0.0f : 1.0f / length;
+                            surface->normals[1].x = normal->x * inverse;
+                            surface->normals[1].y = (normal->y * query->object_scale) * inverse;
+                            surface->normals[1].z = normal->z * inverse;
+                        } else {
+                            surface->normals[1].y = 65536.0f;
+                        }
+                        NUVEC *normal = &source->normals[0];
+                        f32 length = NuFsqrt(normal->x * normal->x + (normal->y * normal->y) * query->object_scale_sq +
+                                             normal->z * normal->z);
+                        f32 inverse = length == 0.0f ? 0.0f : 1.0f / length;
+                        surface->normals[0].x = inverse * normal->x;
+                        surface->normals[0].y = (normal->y * query->object_scale) * inverse;
+                        surface->normals[0].z = normal->z * inverse;
+                        *cursor++ = surface;
+                        ++count;
+                        ++transformed_count;
+                    }
+                    batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(source);
+                }
             }
         }
         i16 *header = reinterpret_cast<i16 *>(query->scan_list_storage);
@@ -2332,8 +2332,8 @@ extern "C" {
             NuScratchRelease();
             NuScratchRelease();
             TerrainScaledShapeCursorPc = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT1);
-            TerI = old_query;
             curSphereter = saved_sphere;
+TerI = old_query;
             return 1;
         }
         query->start_position = query->position;
@@ -2357,7 +2357,7 @@ extern "C" {
                 if (!(delta < -0.008f) &&
                     (delta < 0.01f || query->movement.x * query->movement.x + query->movement.z * query->movement.z >
                                           (delta - 0.0025f) * (delta - 0.0025f))) {
-                    query->position.y += delta;
+                    query->position.y = query->position.y + delta;
                     flags[0] = 1;
                 }
             } else {
