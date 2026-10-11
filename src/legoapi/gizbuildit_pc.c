@@ -220,6 +220,119 @@ void __cdecl ReleaseBuildIt(GAMEOBJECT *player, i32 completed) {
     GameCam_Blend(GameCam, 0.5f, completion_blend, 1);
 }
 
+void GizBuildit_Reset(GIZBUILDIT_s *buildit, void *world_ptr) {
+    buildit->field_0x83 &= (u8)(~GIZBUILDIT_RUNTIME_REWARD_RELEASED);
+    buildit->availability_flags |= GIZBUILDIT_AVAILABILITY_ACTIVE | GIZBUILDIT_AVAILABILITY_VISIBLE;
+
+    buildit->start_position = buildit->file_position;
+    buildit->position = buildit->file_position;
+    buildit->bounds_radius = NuTrigTable[0x3000];
+
+    if (buildit->anim_set != NULL && buildit->anim_set->objects != NULL) {
+        struct gameanimobj_s *object;
+        f32 span;
+        NUVEC start_max = {-1000000000.0f, -1000000000.0f, -1000000000.0f};
+        NUVEC start_min = {1000000000.0f, 1000000000.0f, 1000000000.0f};
+        NUVEC end_min = start_min;
+        NUVEC end_max = start_max;
+
+        for (object = buildit->anim_set->objects; object != NULL; object = object->next) {
+            NUMTX evaluated;
+            GIZBUILDITANIMDATA_s *data = (GIZBUILDITANIMDATA_s *)(object->object_data);
+            memset(data, 0, sizeof(*data));
+
+            evaluated = evaluated;
+            EvalAnim(&object->special, object->start_frame, &evaluated, 1);
+            data->start_mtx = evaluated;
+            if (buildit->linked_buildit != NULL) {
+                data->start_mtx.m30 -= buildit->linked_buildit->file_position.x;
+                data->start_mtx.m31 -= buildit->linked_buildit->file_position.y;
+                data->start_mtx.m32 -= buildit->linked_buildit->file_position.z;
+                NuMtxRotateY(&data->start_mtx, buildit->field_0x7c);
+                data->start_mtx.m30 += buildit->file_position.x;
+                data->start_mtx.m31 += buildit->file_position.y;
+                data->start_mtx.m32 += buildit->file_position.z;
+                data->draw_mtx = data->start_mtx;
+            }
+
+            EvalAnim(&object->special, object->end_frame, &evaluated, 1);
+            data->end_mtx = evaluated;
+            if (buildit->linked_buildit != NULL) {
+                data->end_mtx.m30 -= buildit->linked_buildit->file_position.x;
+                data->end_mtx.m31 -= buildit->linked_buildit->file_position.y;
+                data->end_mtx.m32 -= buildit->linked_buildit->file_position.z;
+                NuMtxRotateY(&data->end_mtx, buildit->field_0x7c);
+                data->end_mtx.m30 += buildit->file_position.x;
+                data->end_mtx.m31 += buildit->file_position.y;
+                data->end_mtx.m32 += buildit->file_position.z;
+            }
+
+            if (data->start_mtx.m30 < start_min.x)
+                start_min.x = data->start_mtx.m30;
+            if (data->start_mtx.m31 < start_min.y)
+                start_min.y = data->start_mtx.m31;
+            if (data->start_mtx.m32 < start_min.z)
+                start_min.z = data->start_mtx.m32;
+            if (data->start_mtx.m30 > start_max.x)
+                start_max.x = data->start_mtx.m30;
+            if (data->start_mtx.m31 > start_max.y)
+                start_max.y = data->start_mtx.m31;
+            if (data->start_mtx.m32 > start_max.z)
+                start_max.z = data->start_mtx.m32;
+
+            if (data->end_mtx.m30 < end_min.x)
+                end_min.x = data->end_mtx.m30;
+            if (data->end_mtx.m31 < end_min.y)
+                end_min.y = data->end_mtx.m31;
+            if (data->end_mtx.m32 < end_min.z)
+                end_min.z = data->end_mtx.m32;
+            if (data->end_mtx.m30 > end_max.x)
+                end_max.x = data->end_mtx.m30;
+            if (data->end_mtx.m31 > end_max.y)
+                end_max.y = data->end_mtx.m31;
+            if (data->end_mtx.m32 > end_max.z)
+                end_max.z = data->end_mtx.m32;
+
+            data->wobble_time = 0.2f;
+        }
+
+        buildit->start_position.x = (start_min.x + start_max.x) * 0.5f;
+        buildit->start_position.y = (start_min.y + start_max.y) * 0.5f;
+        buildit->start_position.z = (start_min.z + start_max.z) * 0.5f;
+        buildit->position.x = (end_min.x + end_max.x) * 0.5f;
+        buildit->position.z = (end_min.z + end_max.z) * 0.5f;
+        buildit->position.y = (end_min.y + end_max.y) * 0.5f;
+
+        span = start_max.x - start_min.x;
+        if (span < start_max.z - start_min.z) {
+            span = start_max.z - start_min.z;
+        }
+        buildit->bounds_radius = span * NuTrigTable[0x3000];
+    }
+
+    if (buildit->field_0x5c != 0) {
+        buildit->state_flags |= GIZBUILDIT_STATE_ROTATING_WOBBLE;
+    } else {
+        buildit->state_flags &= (u16)(~GIZBUILDIT_STATE_ROTATING_WOBBLE);
+    }
+    buildit->build_state = GIZBUILDIT_BUILD_IDLE;
+    buildit->built_object_count = 0;
+
+    if (world_ptr != NULL) {
+        WORLDINFO *world = (WORLDINFO *)(world_ptr);
+        buildit->room_index =
+            world->current_gscn != NULL ? (i16)(NuPortalWhichRoom(world->current_gscn, &buildit->file_position)) : -1;
+    }
+}
+
+void GizBuildIt_SetStepTime(GIZBUILDIT_s *buildit, GAMEOBJECT *player) {
+    buildit->step_duration = 0.3f;
+    if (player != NULL) {
+        buildit->step_duration /= GizBuildItMul(player);
+    }
+    buildit->step_timer = buildit->step_duration;
+}
+
 f32 __cdecl GizBuildItMul(GAMEOBJECT *player) {
     BUILDIT_MOVEMENT_PC *buildit;
     i32 amount, completed, total;

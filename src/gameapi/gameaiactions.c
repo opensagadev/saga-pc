@@ -1166,6 +1166,52 @@ i32 __cdecl Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
     return 0;
 }
 
+static void GizActions_CompleteLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
+    char *cutscene_name;
+    struct level_data_pc_s *level;
+    i32 index;
+    if (netclient != 0) {
+        return;
+    }
+    cutscene_name = NULL;
+    level = NULL;
+    for (index = 0; index < count; ++index) {
+        char *value = NuStrIStr(params[index], "cutscene=");
+        if (value != NULL) {
+            cutscene_name = value + NuStrLen("cutscene=");
+        } else if ((value = NuStrIStr(params[index], "newlevel=")) != NULL) {
+            level = Level_FindByName(value + NuStrLen("newlevel="), NULL);
+        }
+    }
+    if (FreePlay == 0 && cutscene_name != NULL && NewCutScene(NULL, WORLD->cutscene_sys, cutscene_name, 1) != NULL) {
+        return;
+    }
+    if (FreePlay == 0 && level != NULL) {
+        GoToNewLevel(level->index);
+    } else {
+        CompleteLevel(WORLD);
+    }
+}
+
+static void GizActions_GoThroughDoor(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int param_count) {
+    i32 param_index;
+    char *door_name = NULL;
+
+    for (param_index = 0; param_index < param_count; ++param_index) {
+        char *value = NuStrIStr(params[param_index], "Name");
+        if (value != NULL) {
+            door_name = value + NuStrLen("Name=");
+        }
+    }
+
+    if (door_name != NULL) {
+        DOOR_s *door = Door_FindByName(WORLD, door_name);
+        if (door != NULL) {
+            Door_GoThrough(WORLD, door, 1);
+        }
+    }
+}
+
 static void GizAction_ActivateEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
     char *name;
     i32 visible;

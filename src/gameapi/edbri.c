@@ -41,6 +41,32 @@ void __cdecl edbriClearPage(i8 page) {
     edbri_page_scene[page] = NULL;
 }
 
+static void edbricbPlankCountMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    edbri_plankcount_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelPlankCountMenu, "Plank Count");
+    if (!edbri_plankcount_menu)
+        return;
+    eduiMenuAddItem(edbri_plankcount_menu,
+                    eduiItemSliderCreateInt(0, edblack, 0, edbricbSetPlankCount, 1, 23, edbri_planks, "Plank Count"));
+    eduiMenuAddItem(edbri_plankcount_menu, eduiItemSliderCreateInt(0, edblack, 0, edbricbSetPostInterval, 1, 23,
+                                                                   edbri_post_interval, "Post Interval"));
+    eduiMenuAttach(parent, edbri_plankcount_menu);
+    edbri_plankcount_menu->x = parent->x + 10;
+    edbri_plankcount_menu->y = parent->y + 40;
+}
+
+static void edbricbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    edbri_dpadmode_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelDpadModeMenu, "Dpad Mode");
+    if (!edbri_dpadmode_menu)
+        return;
+    eduiMenuAddItem(edbri_dpadmode_menu,
+                    eduiItemCheckCreate(0, edblack, edbri_mode == 0, 1, edbricbSetDpadMode, "Bridge Orient"));
+    eduiMenuAddItem(edbri_dpadmode_menu,
+                    eduiItemCheckCreate(1, edblack, edbri_mode == 1, 1, edbricbSetDpadMode, "Bridge Size"));
+    eduiMenuAttach(parent, edbri_dpadmode_menu);
+    edbri_dpadmode_menu->x = parent->x + 10;
+    edbri_dpadmode_menu->y = parent->y + 40;
+}
+
 void __cdecl edbriDetermineNearest(f32 distance) {
     NUVEC delta;
     i32 index;
@@ -177,4 +203,35 @@ void __cdecl edbriStartPage(i32 page_number) {
                 edbriBridgeUpdate(index, edbri_page_scene[page]);
         }
     }
+}
+
+static void edbricbBridgePropertiesMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    if (edbri_nearest == -1)
+        return;
+    edbri_bridgeproperties_menu =
+        eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelBridgePropertiesMenu, "Bridge Properties");
+    if (!edbri_bridgeproperties_menu)
+        return;
+    eduiMenuAddItem(edbri_bridgeproperties_menu,
+                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeTension, 0.0f, 1.0f,
+                                         edBridges[edbri_nearest].field_28, "Tension"));
+    eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeDamp, 0.0f, 1.0f,
+                                                                      edBridges[edbri_nearest].field_2c, "Damp"));
+    eduiMenuAddItem(edbri_bridgeproperties_menu,
+                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeGravity, -0.1f, 0.2f,
+                                         edBridges[edbri_nearest].field_30, "Gravity"));
+    eduiMenuAddItem(edbri_bridgeproperties_menu,
+                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgePlrweight, 0.0f, 10.0f,
+                                         edBridges[edbri_nearest].field_34, "Plrweight"));
+    eduiMenuAddItem(edbri_bridgeproperties_menu,
+                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeRopeheight, 0.0f, 2.0f,
+                                         edBridges[edbri_nearest].field_38, "Rope Height"));
+    eduiMenuAddItem(edbri_bridgeproperties_menu,
+                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeStability, 0.0f, 10.0f,
+                                         edBridges[edbri_nearest].field_3c, "Stability"));
+    eduiMenuAddItem(edbri_bridgeproperties_menu,
+                    eduiItemSelCreate(1, edblack, 0, 0, edbricbRopeColourMenu, "Rope Colour..."));
+    eduiMenuAttach(parent, edbri_bridgeproperties_menu);
+    edbri_bridgeproperties_menu->x = parent->x + 10;
+    edbri_bridgeproperties_menu->y = parent->y + 40;
 }

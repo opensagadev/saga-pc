@@ -6,6 +6,15 @@ f32 __cdecl PodSprint_InStartCountdown(WORLDINFO *world) {
     return 0.0f;
 }
 
+void MaulA_Reset(WORLDINFO *world) {
+    nuhspecial_s *slots = LevHSpecial;
+    NuSpecialSetVisibility(&slots[4], 0);
+    NuSpecialSetVisibility(&slots[5], 0);
+    NuSpecialSetVisibility(&slots[6], 0);
+    NuSpecialSetVisibility(&slots[7], 0);
+    Maul_obj = FindGameObject(id_DARTHMAUL, 1, 1, 0, 0);
+}
+
 typedef struct racepod_resource_pc_s {
     NUMTX matrix;
     NUVEC4 previous_axis;
@@ -215,6 +224,14 @@ i32 __cdecl Action_CreatePod(void *system, void *process, void *packet, char **p
     if (damaged != 0)
         object->flags_ef4 |= 0x08000000;
     return 1;
+}
+
+void KaminoE_Init(WORLDINFO *world) {
+    void *g;
+    kaminoe_netpacket = SetLevelHack(0x14);
+    g = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "endblock_b08");
+    if (g != NULL)
+        LevForce = *(i32 *)g;
 }
 
 static i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCATOR_PC *locator, f32 radius) {

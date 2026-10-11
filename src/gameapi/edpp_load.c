@@ -122,6 +122,38 @@ static void UpdateTotalPtls(DEBRIS_INFO_PC *effect) {
         }
     }
 }
+
+static void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    edptl_quickdel_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelQuickDeleteMenu, "Quick Delete");
+    if (edptl_quickdel_menu) {
+        i32 type;
+        for (type = 1; type < EDPP_MAX_TYPES; ++type) {
+            i32 index;
+            DEBRIS_INFO_PC *effect = debtab[type];
+            if (!effect || effect->category != edpp_effect_list) {
+                continue;
+            }
+
+            for (index = 0; index < 512; ++index) {
+                if (edpp_ptls[index].instance_id != 99999 && edpp_ptls[index].instance_id != -1 &&
+                    edpp_ptls[index].effect_index == type) {
+                    break;
+                }
+            }
+            if (index < 512) {
+                eduiMenuAddItem(edptl_quickdel_menu,
+                                eduiItemSelCreate(type, edblack, 0, 1, cbPtlQuickDeleteType, effect->name));
+            } else {
+                eduiMenuAddItem(edptl_quickdel_menu,
+                                eduiItemSelCreate(type, eddarkred, 0, 1, cbPtlQuickDeleteType, effect->name));
+            }
+        }
+        eduiMenuAttach(menu, edptl_quickdel_menu);
+        edptl_quickdel_menu->x = menu->x + 10;
+        edptl_quickdel_menu->y = menu->y + 40;
+    }
+}
+
 i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
     i32 page, n, version, requested, skipped;
     i32 type_index = 1, instance_index = 0;

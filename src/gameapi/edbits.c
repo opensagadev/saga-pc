@@ -194,3 +194,64 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
         max_clumps = EDGRA_MAX_CLUMPS;
     }
 }
+
+static void edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    i32 selected_found;
+    i32 added;
+    i32 count;
+    char *name;
+    i32 i;
+    edgra_instance_menu =
+        eduiMenuCreate(70, 70, 220, 250, ed_fnt, edgracbCancelInstanceMenu,
+                       (char *)(edgra_filter ? "Base Instance Select (Filtered)" : "Base Instance Select"));
+    if (!edgra_instance_menu || !edbits_base_scene)
+        return;
+    selected_found = 0;
+    added = 1;
+    count = NuSpecialGetNumSpecials(edbits_base_scene);
+    name = NULL;
+    for (i = 0; i < count; ++i) {
+        i32 selected;
+        nuhspecial_s special;
+        NuGScnGetSpecial(&special, edbits_base_scene, i);
+        if (NuSpecialExistsFn(&special))
+            name = NuSpecialGetName(&special);
+        selected = i == edgra_instance_type;
+        if (edgra_filter && NuStrNCmp(edgra_filter_string, name, NuStrLen(edgra_filter_string))) {
+            if (!selected)
+                continue;
+            eduiMenuAddItem(edgra_instance_menu,
+                            eduiItemCheckCreate(i, edblack, selected, 1, edgracbSetInstanceType, name));
+            ++added;
+        } else {
+            eduiMenuAddItem(edgra_instance_menu,
+                            eduiItemCheckCreate(i, edblack, selected, 1, edgracbSetInstanceType, name));
+            ++added;
+        }
+        if (selected != 0) {
+            selected_found = 1;
+            edgra_instance_menu->selected = edui_last_item;
+        }
+    }
+    if (added == 1)
+        eduiMenuAddItem(edgra_instance_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "All Instances Filtered"));
+    eduiMenuAddItemFirst(edgra_instance_menu, eduiItemCheckCreate((size_t)(-1), edblack, edgra_instance_type == -1, 1,
+                                                                  edgracbSetInstanceType, "None"));
+    edgraAttachMenu(parent, edgra_instance_menu);
+    if (selected_found)
+        edgra_instance_menu->field_0c = edgra_instance_menu->selected;
+}
+
+static void edgracbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    edgra_dpadmode_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edgracbCancelDpadModeMenu, "Dpad Mode");
+    if (edgra_dpadmode_menu) {
+        eduiMenuAddItem(edgra_dpadmode_menu,
+                        eduiItemCheckCreate(0, colours, edgra_dpadmode == 0, 1, edgracbSetDpadMode, "Clump Size"));
+        eduiMenuAddItem(edgra_dpadmode_menu,
+                        eduiItemCheckCreate(1, colours, edgra_dpadmode == 1, 1, edgracbSetDpadMode, "Clump Tilt"));
+        eduiMenuAttach(parent, edgra_dpadmode_menu);
+        edgra_dpadmode_menu->x = parent->x + 10;
+        edgra_dpadmode_menu->y = parent->y + 40;
+    }
+}

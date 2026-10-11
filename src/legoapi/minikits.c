@@ -5,6 +5,13 @@ void __cdecl ResetMinikitCounter(void) {
     minikitCounter_A = 0;
 }
 
+void HothBattleB_Init(WORLDINFO *world) {
+    NuSpecialFind(world->current_gscn, &LevHSpecial[0], "snow_ball_1", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[1], "snow_ball_2", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[2], "snow_ball_3", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[3], "snow_ball_4", 1);
+}
+
 void __cdecl MiniKit_GameMsg_Update(GAME_MESSAGE_PC *message) {
     i32 angle = (i32)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
     message->parameter_e2 = (u16)angle;
@@ -197,4 +204,18 @@ void __cdecl CharacterMiniKits_Dump(WORLDINFO *world) {
             view->pieces_by_id[i]->scene = NULL;
         }
     }
+}
+
+i32 AllMiniKitsDone(AREASAVE_s *save) {
+    i32 i;
+    if (save == NULL) {
+        return 1;
+    }
+
+    for (i = 0; i < AREACOUNT; ++i, ++save) {
+        if ((ADataList[i].flags & AREAFLAG_MINIKIT) != 0 && save->minikit_complete == SAVE_INCOMPLETE) {
+            return 0;
+        }
+    }
+    return 1;
 }

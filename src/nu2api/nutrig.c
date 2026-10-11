@@ -44,6 +44,44 @@ i32 __cdecl PCPathArcSine(f32 value) {
     return (i32)(polynomial * (f64)10430.4f);
 }
 
+void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *unused1, NUMTX *matrix) {
+    NUVEC first = vertices[0].position;
+    NUVEC second = vertices[1].position;
+    NUMTX matrix_copy;
+    if (matrix != NULL) {
+        if (((size_t)(matrix) & 15) != 0) {
+            matrix_copy = *matrix;
+            matrix = &matrix_copy;
+        }
+        NuVecMtxTransform(&first, &first, matrix);
+        NuVecMtxTransform(&second, &second, matrix);
+    }
+    if (AiRndrCullDistance > 0.0f) {
+        f32 dx;
+        f32 dy;
+        f32 dz;
+        f32 limit;
+        f32 dx2;
+        f32 dy2;
+        f32 dz2;
+        NUVEC position;
+        if (aieditor && (aieditor->flags & 2))
+            position = aieditor->camera_position;
+        else
+            position = *(NUVEC *)&global_camera.mtx.m30;
+        dx = position.x - first.x;
+        dy = position.y - first.y;
+        dz = position.z - first.z;
+        limit = AiRndrCullDistance * AiRndrCullDistance;
+        dx2 = position.x - second.x;
+        dy2 = position.y - second.y;
+        dz2 = position.z - second.z;
+        if (dx * dx + dy * dy + dz * dz > limit && dx2 * dx2 + dy2 * dy2 + dz2 * dz2 > limit)
+            return;
+    }
+    NuRndrLine3dDbg(first.x, first.y, first.z, second.x, second.y, second.z, vertices[0].colour);
+}
+
 i32 __cdecl NuASin(f32 value) {
     union {
         f32 value;

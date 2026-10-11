@@ -31,3 +31,91 @@ void __cdecl Shards_HandleLostObj(WORLDINFO *opaque_world, GAMEOBJECT *object) {
         }
     }
 }
+
+static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_value, f32 ypush, u16 xrot, u16 yrot,
+                               u16 zrot) {
+    if (!(!NuSpecialExistsFn(&iconback))) {
+        i32 character_id;
+        u8 unlocked;
+        i32 unavailable;
+        f32 alpha;
+        NUVEC scale;
+        NUMTX matrix;
+        i32 icon_object_id;
+        i32 top_shelf_character = 0;
+        if (item == &TopShelf[1]) {
+            top_shelf_character = 1;
+            item = &CharItems[(i32)(NuFmod(GameTimer.time_elapsed, (f32)(SHOPCHARCOUNT) * 0.2f) / 0.2f)];
+        }
+
+        character_id = (u16)(item->item_id);
+        unlocked = CollectIDUnlocked(character_id) != NULL;
+        unavailable = !unlocked || item->unlocked != 1;
+        alpha = 1.0f;
+        if (!CollectIDUnlocked(character_id))
+            alpha = 0.5f;
+
+        scale = scale;
+        scale.x = scale.y = scale.z = scale_value;
+        matrix = matrix;
+        NuMtxSetScale(&matrix, &scale);
+        NuMtxRotateXInline(&matrix, xrot);
+        NuMtxRotateYInline(&matrix, yrot);
+        NuMtxRotateZInline(&matrix, zrot);
+        NuMtxTranslate(&matrix, position);
+        matrix.m31 += ypush;
+
+        NuSpecialDrawAtAlpha(&iconback, &matrix, top_shelf_character ? 1.0f : alpha);
+
+        icon_object_id = CDataList[character_id].icon_model;
+        if (icon_object_id != -1) {
+            struct WORLDINFO_s *world;
+            struct LEVEL_OBJECT_RUNTIME_s *icon;
+            if (unavailable != 0)
+                ++icon_object_id;
+            world = WORLD;
+            icon = &world->level_objects[icon_object_id];
+            if (icon->active != 0) {
+                NuSpecialDrawAtAlpha(&icon->special, &matrix, alpha);
+            }
+        }
+    }
+}
+
+void DrawItem(nuhspecial_s *special, NUVEC *position, float scale_value, float unused3, float y_push, u16 x_rot,
+              u16 y_rot, u16 z_rot) {
+    NUVEC scale;
+    NUANGVEC rotation;
+    NUMTX matrix;
+    if (position != NULL) {
+        if (NuSpecialExistsFn(special) != 0) {
+            rotation.y = y_rot;
+            rotation.x = x_rot;
+            rotation.z = z_rot;
+            NuMtxSetRotateXYZVU0(&matrix, &rotation);
+
+            scale.x = scale.y = scale.z = scale_value;
+            NuMtxScaleVU0(&matrix, &scale);
+            *(NUVEC *)(&matrix.m30) = *position;
+            matrix.m31 += y_push;
+            NuSpecialDrawAt(special, &matrix);
+        }
+    }
+}
+
+void DrawArrow(nuhspecial_s *special, float scale_value) {
+    if (NuSpecialExistsFn(special)) {
+        NUVEC scale = {scale_value, scale_value, scale_value};
+        NUMTX matrix = *NuSpecialGetDrawMtx(special);
+        NuMtxPreScale(&matrix, &scale);
+        NuSpecialDrawAt(special, &matrix);
+    }
+}
+
+i32 SpeederBlowupHack(GIZMOBLOWUP_PC *blowup, i32 unused1) {
+    if (blowup == NULL) {
+        return 1;
+    }
+    return NuStrCmp(blowup->name, "thermocrate_011") != 0 && NuStrCmp(blowup->name, "thermocrate_021") != 0 &&
+           NuStrCmp(blowup->name, "thermocrate_031") != 0 && NuStrCmp(blowup->name, "minikit101") != 0;
+}

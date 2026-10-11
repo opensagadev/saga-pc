@@ -754,6 +754,21 @@ void __cdecl EvalAnim2(NUSPECIALHANDLE *special, f32 frame) {
     NuSpecialUpdate(special);
 }
 
+f32 NuSpecialGetAnimPos(nuhspecial_s *special) {
+    f32 end_frame;
+    f32 position;
+    NUINSTANIM_TIME_VIEW *animation = NuSpecialGetInstAnim(special);
+    if (animation == NULL || special->scene->instance_animation_data[animation->animation_index] == NULL) {
+        return 0.0f;
+    }
+    end_frame = NuSpecialGetAnimEndFrame(special);
+    position = (animation->ltime - 1.0f) / (end_frame - 1.0f);
+    if (position < 0.0f) {
+        return 0.0f;
+    }
+    return position > 1.0f ? 1.0f : position;
+}
+
 void __cdecl GameAnimSet_EvalAnim(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
 
@@ -994,6 +1009,144 @@ void __cdecl edanimStartAllPages(void) {
         if (edanim_page_used[page] != 0 && edanim_page_scene[page] != NULL && edanim_page_on[page] == 0) {
             edanim_page_on[page] = page * 4 + 1;
         }
+    }
+}
+
+static void edanimcbParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    i32 index;
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    edanim_particletype_menu =
+        eduiMenuCreate(70, 70, 250, 250, ed_fnt, edanimcbCancelParticleTypeMenu, (char *)("Particle Type"));
+    if (!edanim_particletype_menu) {
+        return;
+    }
+
+    eduiMenuAddItem(edanim_particletype_menu, eduiItemCheckCreate(0, colours, edanim_particle_type == -1, 0,
+                                                                  edanimcbSetParticleType, (char *)("NONE")));
+    for (index = 1; index < EDPP_MAX_TYPES; ++index) {
+        if (!debtab[index]) {
+            continue;
+        }
+        if (edanim_particle_type != index) {
+            eduiMenuAddItem(edanim_particletype_menu,
+                            eduiItemCheckCreate(index, colours, 0, 1, edanimcbSetParticleType, debtab[index]->name));
+        } else {
+            eduiMenuAddItem(edanim_particletype_menu,
+                            eduiItemCheckCreate(index, colours, 1, 1, edanimcbSetParticleType, debtab[index]->name));
+            edanim_particletype_menu->selected = edui_last_item;
+        }
+    }
+
+    eduiMenuAttach(parent, edanim_particletype_menu);
+    edanim_particletype_menu->x = parent->x + 10;
+    edanim_particletype_menu->y = parent->y + 40;
+}
+
+static void edanimcbParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    struct eduimenu_s *menu;
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (edanim_nearest_param_id == -1) {
+        return;
+    }
+
+    menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelParticleMenu, (char *)("Attached Particles"));
+    edanim_particle_menu = menu;
+    if (!menu) {
+        return;
+    }
+
+    eduiMenuAddItem(menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbParticleTypeMenu, (char *)("Particle Type...")));
+    if (edanim_nearest_particle != -1) {
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbLocalParticleMenu,
+                                                (char *)("Highlighted Ptl Settings...")));
+    }
+
+    eduiMenuAttach(parent, menu);
+    menu->x = parent->x + 10;
+    menu->y = parent->y + 40;
+}
+
+static void edanimcbMCTBCardPresent(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (saveloadCheckCardPresent()) {
+        eduiCreateMessageMenu(menu, (char *)("Present"), 1);
+    } else {
+        eduiCreateMessageMenu(menu, (char *)("Not Present"), 0);
+    }
+}
+
+static void edanimcbMCTBCardType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (saveloadCheckCardType())
+        eduiCreateMessageMenu(menu, (char *)("PS2 Card"), 1);
+    else
+        eduiCreateMessageMenu(menu, (char *)("Not a PS2 Card"), 0);
+}
+
+static void edanimcbMCTBCardCheckFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (saveloadCheckCardFormatted()) {
+        eduiCreateMessageMenu(menu, (char *)("Formatted"), 1);
+    } else {
+        eduiCreateMessageMenu(menu, (char *)("Not Formatted"), 0);
+    }
+}
+
+static void edanimcbMCTBCardFreeSpace(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    char message[32];
+    sprintf(message, "Space = %05d", saveloadCheckCardFreeSpace(0));
+    eduiCreateMessageMenu(menu, message, 1);
+}
+
+static void edanimcbMCTBCardSlotsUsed(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    char message[32];
+    sprintf(message, "Slots Used = %02d", saveloadCheckSlotsUsed());
+    eduiCreateMessageMenu(menu, message, 1);
+}
+
+static void edanimcbMCTBCardSaveSlot(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    char data[32];
+    sprintf(data, "This is slot %d", item->data);
+    if (saveloadSaveSlot(item->data, data, sizeof(data)))
+        eduiCreateMessageMenu(menu, (char *)("Saved OK"), 1);
+    else
+        eduiCreateMessageMenu(menu, (char *)("Save Error"), 0);
+}
+
+static void edanimcbMCTBCardLoadSlot(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    char data[32];
+    if (saveloadLoadSlot(item->data, data, sizeof(data))) {
+        eduiCreateMessageMenu(menu, data, 1);
+    } else {
+        eduiCreateMessageMenu(menu, (char *)("Load Error"), 0);
+    }
+}
+
+static void edanimcbMCTBCardDeleteSlot(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    if (saveloadDeleteSlot(item->data))
+        eduiCreateMessageMenu(menu, (char *)("Delete OK"), 1);
+    else
+        eduiCreateMessageMenu(menu, (char *)("Delete Error"), 0);
+}
+
+static void edanimcbMCTBCardUnFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (saveloadUnFormatCard()) {
+        eduiCreateMessageMenu(menu, (char *)("Unformat OK"), 1);
+    } else {
+        eduiCreateMessageMenu(menu, (char *)("Unformat Fail"), 0);
+    }
+}
+
+static void edanimcbMCTBCardFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (saveloadFormatCard()) {
+        eduiCreateMessageMenu(menu, (char *)("Format OK"), 1);
+    } else {
+        eduiCreateMessageMenu(menu, (char *)("Format Fail"), 0);
+    }
+}
+
+static void edanimcbMCTBCardWriteKeyCard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (saveloadWriteKeyCode(id_test, code_test)) {
+        eduiCreateMessageMenu(menu, (char *)("KeyCard Write OK"), 1);
+    } else {
+        eduiCreateMessageMenu(menu, (char *)("KeyCard Write Fail"), 0);
     }
 }
 

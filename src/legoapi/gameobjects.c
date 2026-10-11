@@ -530,6 +530,11 @@ void __cdecl MakeBaddiesForgetAboutParty(i32 check_hostility) {
     }
 }
 
+i32 CanFightLikeAJedi(GAMEOBJECT *object) {
+    return CharCategory_IsCategory(object, 0) != 0 || object->id == id_GRIEVOUS || object->id == id_BODYGUARD ||
+           object->id == id_IMPERIALGUARD;
+}
+
 void __cdecl ScaleGameObject(GAMEOBJECT *object) {
     f32 scale = object->origin_scale;
     CHARACTERDATA_PC *character = object->character_data;
@@ -4521,6 +4526,37 @@ static i32 GameAIWallShufflePc(GAMEOBJECT *object) {
     object->ai_packet.movement_position.y = object->position.y;
     object->ai_packet.movement_position.z = object->position.z + movement.z;
     return 1;
+}
+
+i32 CheckPosAIArea(AIAREA_s *area, NUVEC *position, float tolerance) {
+    NUVEC local_position;
+    if (position == NULL || area == NULL) {
+        return 0;
+    }
+
+    local_position = local_position;
+    NuVecSub(&local_position, position, &area->position);
+    NuVecRotateY(&local_position, &local_position, -area->rotation);
+
+    return local_position.x + tolerance >= -area->half_width && local_position.y + tolerance >= -0.1f &&
+           local_position.z + tolerance >= -area->half_depth && local_position.x - tolerance <= area->half_width &&
+           local_position.y - tolerance <= area->height && local_position.z - tolerance <= area->half_depth;
+}
+
+static i32 GameAIActionParseSpeed(char *name, u8 *speed) {
+    if (NuStrICmp(name, "RUN") == 0) {
+        *speed = AI_ACTION_SPEED_RUN;
+        return 1;
+    }
+    if (NuStrICmp(name, "WALK") == 0) {
+        *speed = AI_ACTION_SPEED_WALK;
+        return 1;
+    }
+    if (NuStrICmp(name, "TIPTOE") == 0) {
+        *speed = AI_ACTION_SPEED_TIPTOE;
+        return 1;
+    }
+    return 0;
 }
 
 void __cdecl GameAIProcess(void) {

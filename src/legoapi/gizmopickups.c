@@ -240,6 +240,41 @@ void __cdecl AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVE
         }
 }
 
+void AddMiscPickups(NUVEC *position, i32 player_id, i32 coins, i32 torpedoes) {
+    if (torpedoes != 0) {
+        AddPickups(coins, 0, torpedoes, 0, position, &v010, 5.0f, player_id, 1.0f, 2000000.0f, NULL, 1, 0);
+    } else {
+        AddPickups(coins, ReleaseHearts(), 0, 0, position, &v010, 5.0f, player_id, 1.0f, 2000000.0f, NULL, 1, 0);
+    }
+}
+
+static void GizPanel_CreateTerrain(GIZPANEL_s *panel) {
+    if (panel == NULL) {
+        return;
+    }
+    if (panel->platform_id != -1) {
+        DeletePlatinst(panel->platform_id);
+    }
+
+    switch (panel->model_variant) {
+        case 0:
+            panel->platform_id = NewPlatPickupInst(panel, 4);
+            break;
+        case 1:
+            panel->platform_id = NewPlatPickupInst(panel, 7);
+            break;
+        case 2:
+            panel->platform_id = NewPlatPickupInst(panel, 5);
+            break;
+        case 3:
+            panel->platform_id = NewPlatPickupInst(panel, 6);
+            break;
+        default:
+            break;
+    }
+    PlatInstRotate(panel->platform_id, 1);
+}
+
 typedef struct SPECIAL_MINIKIT_PC {
     NUSPECIALHANDLE special;
     NUINSTANIM_TIME_VIEW *instance_animation;

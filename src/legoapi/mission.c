@@ -122,3 +122,15 @@ MISSIONSYS_PC *__cdecl Missions_Configure(char *file, VARIPTR *buffer_start, VAR
     buffer_start->addr = (buffer_start->addr + sizeof(temporary) + 3) & ~3u;
     return (MISSIONSYS_PC *)destination;
 }
+
+void Mission_Clear(MISSIONSYS_s *ms) {
+    if (ms == NULL) {
+        ms = MissionSys;
+        if (ms == NULL) {
+            return;
+        }
+    }
+    ms->mission = NULL;
+    ms->field8_0x1d = 0;
+    ResetTimer(&ms->timer, 0.0f);
+}

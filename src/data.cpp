@@ -28646,3 +28646,208 @@ extern "C" {}
 extern "C" {}
 
 extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$Grievous_obj")
+    struct gameobject_s *Grievous_obj;
+
+#pragma bss_seg(".bss$KashyyykA_msg_TotalWookies")
+    struct gizaimessage_s *KashyyykA_msg_TotalWookies;
+
+#pragma bss_seg(".bss$KashyyykA_msg_WookiesToRescue")
+    struct gizaimessage_s *KashyyykA_msg_WookiesToRescue;
+
+#pragma bss_seg(".bss$vader_b_complete_msg")
+    struct gizaimessage_s *vader_b_complete_msg;
+
+#pragma bss_seg(".bss$vader_b_playersDead")
+    u8 vader_b_playersDead;
+}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$FadeLoop_ObjHSpecial")
+    nuhspecial_s FadeLoop_ObjHSpecial;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$HintItems")
+    struct shopitem_s *HintItems;
+
+#pragma bss_seg(".bss$HintShelfIds")
+    i32 HintShelfIds[7];
+
+#pragma bss_seg(".bss$SubShelfPos")
+    NUVEC SubShelfPos[7];
+
+#pragma bss_seg(".bss$ShopNameAlpha")
+    f32 ShopNameAlpha;
+
+#pragma bss_seg(".bss$CutItems")
+    shopitem_s CutItems[128];
+
+#pragma bss_seg(".bss$troopercannons_beenReset")
+    u8 troopercannons_beenReset;
+
+#pragma data_seg(".data$players_going_forward")
+    i32 players_going_forward = 1;
+}
+
+extern "C" {
+#pragma data_seg(".data$g_lowEndLevelBehaviour")
+    i32 g_lowEndLevelBehaviour = 1;
+
+#pragma data_seg(".data$traffic_portalling")
+    i32 traffic_portalling = 1;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$PadFlyMode")
+    i32 PadFlyMode;
+
+#pragma bss_seg(".bss$ed_remap_mtx")
+    struct numtx_s *ed_remap_mtx;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$AiRndrCullDistance")
+    f32 AiRndrCullDistance;
+
+#pragma bss_seg(".bss$aieditor")
+    struct AIEDITOR_RENDER_STATE *aieditor;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edpp_facrotx")
+    i32 edpp_facrotx;
+
+#pragma bss_seg(".bss$edpp_copy_mode")
+    i32 edpp_copy_mode;
+
+#pragma bss_seg(".bss$edpp_copy_source_count")
+    i32 edpp_copy_source_count;
+
+#pragma bss_seg(".bss$edpp_offset")
+    f32 edpp_offset;
+
+#pragma data_seg(".data$edpp_create_type")
+    i32 edpp_create_type = -1;
+
+#pragma bss_seg(".bss$edpp_effect_list")
+    u8 edpp_effect_list;
+
+#pragma bss_seg(".bss$edpp_snap_enabled")
+    i32 edpp_snap_enabled;
+
+#pragma bss_seg(".bss$edpp_cam_ay")
+    i32 edpp_cam_ay;
+
+#pragma bss_seg(".bss$edpp_cam_ax")
+    i32 edpp_cam_ax;
+
+#pragma bss_seg(".bss$ptloptmenu")
+    struct eduimenu_s *ptloptmenu;
+
+#pragma bss_seg(".bss$edpp_active_menu")
+    struct eduimenu_s *edpp_active_menu;
+
+#pragma data_seg(".data$edpp_copy_size")
+    f32 edpp_copy_size = 0.20000000298023224f;
+
+#pragma bss_seg(".bss$edpp_dpad_mode")
+    i32 edpp_dpad_mode;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$iconalphaoverride")
+    f32 iconalphaoverride;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$Door_CutCamWaitTime")
+    f32 Door_CutCamWaitTime;
+
+#pragma bss_seg(".bss$Door_CutCamWait")
+    f32 Door_CutCamWait;
+
+#pragma bss_seg(".bss$Door_CutCamBlendTime")
+    f32 Door_CutCamBlendTime;
+
+#pragma bss_seg(".bss$Door_CutLookAtPlayers")
+    i32 Door_CutLookAtPlayers;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$AnakinC")
+    struct anakin_door_s *AnakinC;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$podsprint_netpacket")
+    struct PODSPRINTNETPACKET_s *podsprint_netpacket;
+
+#pragma bss_seg(".bss$Maul_obj")
+    struct gameobject_s *Maul_obj;
+
+#pragma bss_seg(".bss$MaulA_ai_message")
+    struct gizaimessage_s *MaulA_ai_message;
+
+#pragma bss_seg(".bss$kaminoe_netpacket")
+    void *kaminoe_netpacket;
+
+#pragma bss_seg(".bss$LevForce")
+    i32 LevForce;
+
+#pragma bss_seg(".bss$mushroom_collapse")
+    i32 mushroom_collapse;
+
+#pragma data_seg(".data$mushroom0_along")
+    f32 mushroom0_along = 65.0f;
+
+#pragma data_seg(".data$mushroom2_along")
+    f32 mushroom2_along = 85.0f;
+
+#pragma data_seg(".data$mushroom_time_increment")
+    f32 mushroom_time_increment = 1.0f;
+
+#pragma bss_seg(".bss$mushroom_nattempts_per_increment")
+    i32 mushroom_nattempts_per_increment;
+}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$SuperStoryTimer")
+    TIMER SuperStoryTimer;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$melee")
+    HOTHBATTLE_MELEE_s melee;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$StatusStages")
+    struct STATUS_STAGE_s *StatusStages;
+
+#pragma bss_seg(".bss$StatusPacket")
+    STATUSPACKET_s StatusPacket;
+
+#pragma bss_seg(".bss$status_prompt")
+    i32 status_prompt;
+}
+
+extern "C" {}
+
+extern "C" {}

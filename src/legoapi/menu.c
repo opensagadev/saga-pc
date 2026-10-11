@@ -180,6 +180,16 @@ void RestoreOptions(void) {
     }
 }
 
+void InitSuperStory(i32 episode) {
+    SuperStory = 1;
+    SuperStoryEpisode = episode;
+    ResetTimer(&SuperStoryTimer, 0.0f);
+    SuperStoryScore = 0;
+    FreePlay = 0;
+    NextArea_FreePlay = 0;
+    Cheats_TurnOff(0);
+}
+
 void MenuEnterTitles(MENU *menu) {
     i32 i;
     (void)menu;
@@ -188,6 +198,101 @@ void MenuEnterTitles(MENU *menu) {
         PlayerProgress[i].active = 0;
     }
     STUBBED_NAMED(0x004f4920); /* NuPadInit() */
+}
+
+static void MenuUpdatePauseRestart(MENU_s *menu) {
+    if (menu->confirm_pressed != 0 && menu->selected_item == 0) {
+        Door_Reset();
+        Players_InitPositions(WORLD);
+        NewGameMode();
+        ResetBits |= 0x21;
+        reset_restart = 1;
+        MenuSFX = GameAudio_GetSfxId(0x30);
+    } else if (menu->cancel_pressed != 0 || menu->confirm_pressed != 0) {
+        BackupMenu();
+        MenuSFX = GameAudio_GetSfxId(0x31);
+    }
+}
+
+static void MenuDrawPauseRestart(MENU_s *menu) {
+    if (MenuStopDraw == 0) {
+        SmartTextEx(TTab[tRESTARTLEVEL], PauseMenus_X, menu->draw_y - MENUDY * 0.25f, 1.0f, MENUTEXTSCALE,
+                    MENUTEXTSCALE, MENUTEXTSCALE, PauseMenus_Align, MENUEXITR, MENUEXITG, MENUEXITB, 1.7f, 1, NULL, 0,
+                    MenuA);
+    }
+    GameDrawMenuEntry(menu, TTab[tYES]);
+    GameDrawMenuEntry(menu, TTab[tNO]);
+}
+
+static void MenuDrawPauseExit(MENU_s *menu) {
+    LEVELDATA_PC *save_level = CanSaveAndExit(WORLD);
+    char *warning;
+    char *title;
+    f32 spacing;
+    if (save_level != NULL) {
+        title = TTab[tEXITTOMAP];
+        warning = TTab[tALLLEVELPROGRESSWILLBELOST];
+        spacing = 2.0f;
+    } else {
+        spacing = 1.5f;
+        if (GAMEDEMO == 0) {
+            if (WORLD->current_level == HUB_LDATA) {
+                title = TTab[tQUITGAME];
+                warning = TTab[tGAMEPROGRESSWILLBELOST];
+            } else {
+                title = TTab[tEXITTOMAP];
+                if (Arcade != 0) {
+                    warning = pause_i_pad != -1 ? TTab[tARCADE_NOWIN] : NULL;
+                } else {
+                    if (SuperStory != 0) {
+                        warning = TTab[tALLSUPERSTORYPROGRESSWILLBELOST];
+                    } else {
+                        warning = WORLD->area != NULL && WORLD->area == VEHICLES_ADATA
+                                      ? NULL
+                                      : TTab[tALLLEVELPROGRESSWILLBELOST];
+                    }
+                }
+            }
+        } else {
+            title = TTab[tRESTARTDEMO2];
+            warning = TTab[tALLLEVELPROGRESSWILLBELOST];
+        }
+    }
+    if (MenuStopDraw == 0) {
+        SmartTextEx(title, PauseMenus_X, menu->draw_y - spacing * MENUDY, 1.0f, MENUTEXTSCALE, MENUTEXTSCALE,
+                    MENUTEXTSCALE, PauseMenus_Align, MENUEXITR, MENUEXITG, MENUEXITB, 1.7f, 1, NULL, 0, MenuA);
+        if (warning != NULL) {
+            const u16 angle = (u16)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f * 65536.0f);
+            const f32 blend = NuTrigTable[angle >> 1] * 0.5f + 0.5f;
+            const u8 r = (u8)(MENULOSTR1 + (MENULOSTR2 - MENULOSTR1) * blend);
+            const u8 b = (u8)(MENULOSTB1 + (MENULOSTB2 - MENULOSTB1) * blend);
+            const u8 g = (u8)(MENULOSTG1 + (MENULOSTG2 - MENULOSTG1) * blend);
+            const i32 a = (i32)((i32)(MENULOSTA1 + (MENULOSTA2 - MENULOSTA1) * blend) * ((f32)(MenuA) * 0.0078125f));
+            SmartTextEx(warning, PauseMenus_X,
+                        menu->draw_y + (save_level != NULL ? 2.0f : 1.0f) * MENUDY + spacing * MENUDY, 1.0f,
+                        MENUTEXTSCALE, MENUTEXTSCALE, MENUTEXTSCALE, PauseMenus_Align, r, g, b, 1.7f, 1, NULL, 0, a);
+        }
+    }
+    if (save_level != NULL) {
+        GameDrawMenuEntry(menu, TTab[tEXITWITHOUTSAVING]);
+        GameDrawMenuEntry(menu, TTab[tSAVEANDEXIT]);
+        GameDrawMenuEntry(menu, TTab[tCANCEL]);
+    } else {
+        GameDrawMenuEntry(menu, TTab[tYES]);
+        GameDrawMenuEntry(menu, TTab[tNO]);
+    }
+}
+
+static void MenuDrawBonusWin(MENU_s *unused0) {
+    if (MenuStopDraw == 0) {
+        i32 green;
+        i32 red;
+        char text[256];
+        Text_MakeScore(1000000, text);
+        green = 143 + ((u32)(menu_flash) < 1u ? 48 : 0);
+        red = 191 + ((u32)(menu_flash) < 1u ? 64 : 0);
+        Text3D(text, 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0);
+    }
 }
 
 i32 GetParentMenuID(void) {

@@ -145,6 +145,59 @@ finalize:
     return result;
 }
 
+extern "C" i32 GizSpinner_Spin(GIZSPINNER_s *spinner, i32 context) {
+    if ((spinner->state_flags & 0x4000) != 0 && context != 0x1e) {
+        return 2;
+    }
+    if ((spinner->state_flags & 0x8000) != 0 && context != 0x1f) {
+        return 2;
+    }
+
+    if (spinner->rotation != spinner->target_rotation || spinner->field_0x090 > 0.0f || spinner->anim_set == NULL ||
+        spinner->room_index != -1) {
+        return 0;
+    }
+    if (GameAnimSet_GetVisibility(spinner->anim_set) != GAMEANIMSET_VISIBILITY_ALL) {
+        return 1;
+    }
+
+    f32 speed;
+    u32 flags = spinner->state_flags;
+    if ((context == 0x1e && (flags & 4) == 0) || (context != 0x1e && (flags & 4) != 0)) {
+        if (spinner->anim_set->state == GAMEANIMSET_STATE_AT_END) {
+            return 2;
+        }
+        speed = spinner->animation_speed;
+        if ((context == 0x1e && (flags & 2) != 0) || (context != 0x1e && (flags & 2) == 0)) {
+            flags |= 1;
+        } else {
+            flags &= ~1u;
+        }
+    } else {
+        if (GameAnimSet_IsAnimationReset(spinner->anim_set) != 0) {
+            return 2;
+        }
+        speed = -spinner->animation_speed;
+        if ((context == 0x1f && (flags & 2) == 0) || (context != 0x1f && (flags & 2) != 0)) {
+            flags |= 1;
+        } else {
+            flags &= ~1u;
+        }
+    }
+    spinner->state_flags = flags;
+
+    u16 step = static_cast<u16>(0x10000 / spinner->type);
+    if ((spinner->state_flags & 1) != 0) {
+        spinner->target_rotation = spinner->rotation + step;
+    } else {
+        spinner->target_rotation = spinner->rotation - step;
+    }
+    GameAnimSet_Play(spinner->anim_set, speed, 1);
+    spinner->previous_rotation = spinner->rotation;
+    spinner->field_0x090 = 0.25f;
+    return 3;
+}
+
 extern "C" PUSH_SPINNER_PC *__cdecl GizSpinner_Find(WORLDINFO *world, NUVEC *position, i32 alternate) {
     PUSH_SPINNER_PC *nearest = NULL;
     if (((PUSH_SPINNER_LEVEL_PC *)world->current_level)->count != 0) {

@@ -205,6 +205,16 @@ void __cdecl BigJumpCode(GAMEOBJECT *object) {
         object->ai_packet.flags |= 0x2000000;
 }
 
+void FadeLoop_DrawObj(float alpha) {
+    if (FadeLoop_ObjScene != NULL && NuSpecialExistsFn(&FadeLoop_ObjHSpecial)) {
+        NUVEC scale = {0.125f, 0.125f, 0.125f};
+        NUMTX matrix;
+        NuMtxSetScale(&matrix, &scale);
+        matrix.m32 = 1.0f;
+        NuSpecialDrawAtAlpha(&FadeLoop_ObjHSpecial, &matrix, alpha);
+    }
+}
+
 struct minianimpacket_pc_s {
     f32 current_time;
     f32 previous_time;

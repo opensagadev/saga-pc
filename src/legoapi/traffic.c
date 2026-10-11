@@ -167,3 +167,159 @@ void __cdecl TrafficAnimSys_Configure(WORLDINFO *world, char *config) {
     parse_trafficanimsys = NULL;
     parse_worldinfo = NULL;
 }
+
+void TrafficAnimSys_Reset(TRAFFICANIMSYS_s *system) {
+    i32 i;
+    struct TRAFFICANIM_s *animation;
+    i32 animation_index;
+    if (system == NULL) {
+        return;
+    }
+
+    system->free_instances.head = NULL;
+    system->free_instances.tail = NULL;
+    system->active_instances.head = NULL;
+    system->active_instances.tail = NULL;
+    memset(system->instances, 0, sizeof(system->instances));
+
+    for (i = 0; i < 500; ++i) {
+        NuLinkedListAppend(&system->free_instances, &system->instances[i].link);
+    }
+
+    if (g_lowEndLevelBehaviour != 0) {
+        return;
+    }
+
+    animation = system->animations;
+    for (animation_index = 0; animation_index < system->animation_count; ++animation_index, ++animation) {
+        f32 frame = 0.0f;
+        if (animation->end_frame > 0.0f && animation->vehicle_count != 0) {
+            while (frame < animation->end_frame && animation->vehicle_count != 0) {
+                i32 random;
+                TRAFFICANIMINSTANCE_s *instance =
+                    (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetHead(&system->free_instances));
+                if (instance == NULL) {
+                    break;
+                }
+
+                NuLinkedListRemove(&system->free_instances, &instance->link);
+                NuLinkedListAppend(&system->active_instances, &instance->link);
+                instance->frame = frame;
+                random = qrand();
+                instance->animation = animation;
+                instance->vehicle_index = random / (0xffff / (i32)(animation->vehicle_count) + 1);
+                frame += animation->frame_interval - animation->random_interval +
+                         animation->random_interval * 2.0f * NuRandFloat();
+            }
+        }
+
+        animation->next_spawn_time =
+            animation->frame_interval - animation->random_interval + animation->random_interval * 2.0f * NuRandFloat();
+    }
+}
+
+void TrafficAnimSys_Update(TRAFFICANIMSYS_s *system) {
+    struct TRAFFICANIMINSTANCE_s *instance;
+    struct TRAFFICANIM_s *animation;
+    i8 system_animation_count;
+    i32 animation_index;
+    if (g_lowEndLevelBehaviour != 0 || system == NULL) {
+        return;
+    }
+
+    instance = (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetHead(&system->active_instances));
+    while (instance != NULL) {
+        TRAFFICANIMINSTANCE_s *next =
+            (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetNext(&system->active_instances, &instance->link));
+        TRAFFICANIM_s *animation = instance->animation;
+        instance->frame += animation->tfactor * FRAMETIME * 60.0f;
+        if (instance->frame > animation->end_frame) {
+            NuLinkedListRemove(&system->active_instances, &instance->link);
+            instance->link.next = NULL;
+            NuLinkedListAppend(&system->free_instances, &instance->link);
+        }
+        instance = next;
+    }
+
+    animation = system->animations;
+    system_animation_count = system->animation_count;
+    for (animation_index = 0; animation_index < system_animation_count; ++animation_index, ++animation) {
+        animation->next_spawn_time -= animation->tfactor * FRAMETIME * 60.0f;
+        if (animation->next_spawn_time <= 0.0f) {
+            if (animation->vehicle_count != 0) {
+                instance = (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetHead(&system->free_instances));
+                if (instance != NULL) {
+                    i32 random;
+                    NuLinkedListRemove(&system->free_instances, &instance->link);
+                    NuLinkedListAppend(&system->active_instances, &instance->link);
+                    instance->frame = 0.0f;
+                    random = qrand();
+                    instance->animation = animation;
+                    instance->vehicle_index = random / (0xffff / (i32)(animation->vehicle_count) + 1);
+                }
+            }
+
+            animation->next_spawn_time = animation->frame_interval - animation->random_interval +
+                                         animation->random_interval * 2.0f * NuRandFloat();
+        }
+    }
+}
+
+void TrafficAnimSys_Draw(TRAFFICANIMSYS_s *system) {
+    i32 room;
+    if (g_lowEndLevelBehaviour != 0 || system == NULL) {
+        return;
+    }
+
+    if (traffic_portalling != 0) {
+        struct TRAFFICANIMINSTANCE_s *instance;
+        u32 visible_rooms = 0;
+        if (WORLD->current_gscn->num_rooms > 0) {
+            room = 0;
+            while (room < WORLD->current_gscn->num_rooms && room < 32) {
+                if (WORLD->rooms_visible_ptr[room] != 0) {
+                    visible_rooms |= 1U << room;
+                }
+                ++room;
+            }
+        }
+
+        instance = (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetHead(&system->active_instances));
+        while (instance != NULL) {
+            TRAFFICANIM_s *animation = instance->animation;
+            i32 frame_index = (i32)((instance->frame - 1.0f) / animation->room_frame_interval);
+            if (frame_index <= 255) {
+                u32 animation_rooms = 0xffffffff;
+                u8 room = animation->rooms[frame_index];
+                if (room != 0xff) {
+                    animation_rooms = 1U << room;
+                }
+                room = animation->rooms[frame_index + 1];
+                if (room != 0xff) {
+                    animation_rooms |= 1U << room;
+                }
+
+                if (animation_rooms == 0xffffffff || (visible_rooms & animation_rooms) != 0) {
+                    NUMTX matrix;
+                    EvalAnim(&animation->special, instance->frame, &matrix, 1);
+                    matrix.m31 += instance->animation->y_offset;
+                    NuSpecialDrawAt(&system->vehicles[instance->vehicle_index], &matrix);
+                }
+            }
+
+            instance = (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetNext(&system->active_instances, &instance->link));
+        }
+    } else {
+        TRAFFICANIMINSTANCE_s *instance = (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetHead(&system->active_instances));
+        while (instance != NULL) {
+            TRAFFICANIM_s *animation = instance->animation;
+            if (animation->disabled == 0) {
+                NUMTX matrix;
+                EvalAnim(&animation->special, instance->frame, &matrix, 1);
+                matrix.m31 += instance->animation->y_offset;
+                NuSpecialDrawAt(&system->vehicles[instance->vehicle_index], &matrix);
+            }
+            instance = (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetNext(&system->active_instances, &instance->link));
+        }
+    }
+}

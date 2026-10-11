@@ -98,6 +98,124 @@ void __cdecl edgraInitAllClumps(void) {
     }
 }
 
+static void edgracbClumpAreaMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (edgra_nearest == -1 || !GrassClumps[edgra_nearest].element_count)
+        return;
+    edgra_clumparea_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edgracbCancelClumpAreaMenu, "Clump Area Type");
+    if (!edgra_clumparea_menu)
+        return;
+    eduiMenuAddItem(edgra_clumparea_menu, eduiItemCheckCreate(1, colours, GrassClumps[edgra_nearest].unknown_25 == 1, 1,
+                                                              edgracbSetClumpArea, "Legacy"));
+    eduiMenuAddItem(edgra_clumparea_menu, eduiItemCheckCreate(2, colours, GrassClumps[edgra_nearest].unknown_25 == 2, 1,
+                                                              edgracbSetClumpArea, "Circle"));
+    eduiMenuAddItem(edgra_clumparea_menu, eduiItemCheckCreate(3, colours, GrassClumps[edgra_nearest].unknown_25 == 3, 1,
+                                                              edgracbSetClumpArea, "Square"));
+    eduiMenuAddItem(edgra_clumparea_menu, eduiItemCheckCreate(4, colours, GrassClumps[edgra_nearest].unknown_25 == 4, 1,
+                                                              edgracbSetClumpArea, "Grid"));
+    edgraAttachMenu(parent, edgra_clumparea_menu);
+}
+
+static void edgracbClumpFadeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    if (!(edgra_nearest == -1 || !GrassClumps[edgra_nearest].element_count)) {
+        edgra_clumpfade_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edgracbCancelClumpFadeMenu, "Clump Fading");
+        if (edgra_clumpfade_menu) {
+            eduiMenuAddItem(edgra_clumpfade_menu,
+                            eduiItemSliderCreate(0, edblack, 0, edgracbSetClumpFadeIn, 0.0f, edgra_superscale * 2.0f,
+                                                 GrassClumps[edgra_nearest].near_distance, "Start of Fade"));
+            fadeinitem = (edui_slider_s *)(edui_last_item);
+            eduiItemSliderSetFmt((edui_slider_s *)(edui_last_item), "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)(edui_last_item), 0.1f);
+            eduiMenuAddItem(edgra_clumpfade_menu,
+                            eduiItemSliderCreate(0, edblack, 0, edgracbSetClumpFadeOut, 0.0f, edgra_superscale * 2.0f,
+                                                 GrassClumps[edgra_nearest].far_distance, "End of Fade"));
+            fadeoutitem = (edui_slider_s *)(edui_last_item);
+            eduiItemSliderSetFmt((edui_slider_s *)(edui_last_item), "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)(edui_last_item), 0.1f);
+            edgraAttachMenu(parent, edgra_clumpfade_menu);
+        }
+    }
+}
+
+static void edgracbClumpPropertiesMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (!(edgra_nearest == -1 || !GrassClumps[edgra_nearest].element_count)) {
+        edgra_clumpproperties_menu =
+            eduiMenuCreate(70, 70, 220, 250, ed_fnt, edgracbCancelClumpPropertiesMenu, "Clump Properties");
+        if (!edgra_clumpproperties_menu)
+            return;
+        eduiMenuAddItem(edgra_clumpproperties_menu,
+                        eduiItemSelCreate(1, colours, 0, 0, edgracbClumpSizesMenu, "Clump Sizes..."));
+        if (GrassClumps[edgra_nearest].kind == 3) {
+            eduiMenuAddItem(edgra_clumpproperties_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Clump Area Type..."));
+            eduiMenuAddItem(edgra_clumpproperties_menu,
+                            eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Clump Distribution..."));
+        } else {
+            eduiMenuAddItem(edgra_clumpproperties_menu,
+                            eduiItemSelCreate(1, colours, 0, 0, edgracbClumpAreaMenu, "Clump Area Type..."));
+            eduiMenuAddItem(edgra_clumpproperties_menu,
+                            eduiItemSelCreate(1, colours, 0, 0, edgracbClumpDistMenu, "Clump Distribution..."));
+        }
+        eduiMenuAddItem(edgra_clumpproperties_menu,
+                        eduiItemSelCreate(1, colours, 0, 0, edgracbClumpFadeMenu, "Clump Fading..."));
+        eduiMenuAddItem(edgra_clumpproperties_menu,
+                        eduiItemSelCreate(1, colours, 0, 0, edgracbClumpTerrainMenu, "Clump Terraining..."));
+        if (GrassClumps[edgra_nearest].kind == 1)
+            eduiMenuAddItem(edgra_clumpproperties_menu,
+                            eduiItemSliderCreate(0, colours, 0, edgracbSetClumpWind, 0.01f, 1.99f,
+                                                 GrassClumps[edgra_nearest].field_18, "Wind"));
+        eduiMenuAddItem(edgra_clumpproperties_menu,
+                        eduiItemToggleCreate(0, colours, GrassClumps[edgra_nearest].flags, 1,
+                                             edgracbToggleClumpReactive, "Collide with Player"));
+        edgraAttachMenu(parent, edgra_clumpproperties_menu);
+    }
+}
+
+static void edgracbClumpModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    edgra_clumpmode_menu = eduiMenuCreate(70, 70, 200, 250, ed_fnt, edgracbCancelClumpModeMenu, "Clump Mode");
+    if (!edgra_clumpmode_menu)
+        return;
+    if (edgra_nearest != -1 && GrassClumps[edgra_nearest].kind == 3) {
+        eduiMenuAddItem(edgra_clumpmode_menu, eduiItemSelCreate(1, edgrey, edgra_mode == 1, 0, NULL, "Wind Mode"));
+        eduiMenuAddItem(edgra_clumpmode_menu,
+                        eduiItemSelCreate(2, edgrey, edgra_mode == 2, 0, NULL, "Faded Static Mode"));
+    } else {
+        eduiMenuAddItem(edgra_clumpmode_menu,
+                        eduiItemCheckCreate(1, edblack, edgra_mode == 1, 1, edgracbSetClumpMode, "Wind Mode"));
+        eduiMenuAddItem(edgra_clumpmode_menu,
+                        eduiItemCheckCreate(2, edblack, edgra_mode == 2, 1, edgracbSetClumpMode, "Faded Static Mode"));
+    }
+    if (edgra_nearest != -1 && GrassClumps[edgra_nearest].kind != 3)
+        eduiMenuAddItem(edgra_clumpmode_menu,
+                        eduiItemSelCreate(3, edgrey, edgra_mode == 3, 0, NULL, "Individual FS Mode"));
+    else
+        eduiMenuAddItem(edgra_clumpmode_menu,
+                        eduiItemCheckCreate(3, edblack, edgra_mode == 3, 1, edgracbSetClumpMode, "Individual FS Mode"));
+    edgraAttachMenu(parent, edgra_clumpmode_menu);
+}
+
+static void edgracbGlobalsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    edgra_globals_menu =
+        eduiMenuCreate(70, 70, 220, 300, ed_fnt, edgracbCancelGlobalsMenu, "Global Options (Take Care!)");
+    if (!edgra_globals_menu)
+        return;
+    eduiMenuAddItem(edgra_globals_menu,
+                    eduiItemSliderCreate(0, edblack, 0, edgracbSetGlobalFadeIn, 0.0f, edgra_superscale * 2.0f,
+                                         edgra_global_fadein, "Global Start of Fade"));
+    globalfadeinitem = (edui_slider_s *)(edui_last_item);
+    eduiItemSliderSetFmt((edui_slider_s *)(edui_last_item), "(%1.01f)");
+    eduiItemSliderSetGranularity((edui_slider_s *)(edui_last_item), 0.1f);
+    eduiMenuAddItem(edgra_globals_menu,
+                    eduiItemSliderCreate(0, edblack, 0, edgracbSetGlobalFadeOut, 0.0f, edgra_superscale * 2.0f,
+                                         edgra_global_fadeout, "Global End of Fade"));
+    globalfadeoutitem = (edui_slider_s *)(edui_last_item);
+    eduiItemSliderSetFmt((edui_slider_s *)(edui_last_item), "(%1.01f)");
+    eduiItemSliderSetGranularity((edui_slider_s *)(edui_last_item), 0.1f);
+    eduiMenuAddItem(edgra_globals_menu,
+                    eduiItemSelCreate(1, edblack, 0, 0, edgracbApplyGlobalFade, "Apply Globally (Careful!)"));
+    edgraAttachMenu(parent, edgra_globals_menu);
+}
+
 void __cdecl edgraStopPage(i8 page) {
     i32 i;
     if (edgra_page_on[page]) {
@@ -365,4 +483,42 @@ i32 __cdecl edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer,
         buffer->addr = vector_cursor;
     (void)buffer_end;
     return page;
+}
+
+static void edgracbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    char path[256];
+    char directory[256];
+    char name[256];
+    char extension[256];
+    if (edbits_level_save_directory[0] == 0)
+        strcpy(directory, ".");
+    else
+        strcpy(directory, edbits_level_save_directory);
+    if (edbits_level_save_name[0] == 0)
+        strcpy(name, "grass");
+    else
+        strcpy(name, edbits_level_save_name);
+    if (edbits_level_save_extension[0] == 0)
+        strcpy(extension, "gra");
+    else
+        strcpy(extension, edbits_level_save_extension);
+    sprintf(path, "%s\\%s.%s", directory, name, extension);
+    edgraClumpsReset();
+    if (NuFileExists(path))
+        edgraLoadPage(path, edbits_base_scene, (size_t)(edbits_base_terrain), NULL, NULL);
+    edgraInitAllClumps();
+    eduiCreateMessageMenu(menu, "Loaded OK", 1);
+}
+
+static i32 edgraProc(f32 delta_time, FRAME_PAD_PC *pad) {
+    if (edgra_active_menu) {
+        eduiMenuProcess(edgra_active_menu, delta_time, pad);
+        return 0;
+    }
+    edgraDoInput(pad);
+    if (edgra_editormode == 1)
+        edgraDetermineNearestInstance(1.0f);
+    else
+        edgraDetermineNearestClump(1.0f);
+    return (pad->digital_buttons_pressed >> 11) & 1;
 }

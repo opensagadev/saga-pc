@@ -1536,6 +1536,17 @@ void __cdecl Debris(i32 update_panel_time) {
         DebrisProcessControlChunks(0);
     }
 }
+
+static void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    char path[256];
+    edbriMakePath(path);
+    edbriBridgesReset();
+    if (NuFileExists(path))
+        edbriLoadPage(path, edbits_base_scene);
+    edbriStartAllPages();
+    edbriDetermineNearest(1.0f);
+    eduiCreateMessageMenu(menu, "Loaded OK", 1);
+}
 void __cdecl DebrisShift(NUMTX *transform) {
     i32 i;
     for (i = 0; i < maxdebkeys; ++i) {

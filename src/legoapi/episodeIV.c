@@ -6,6 +6,10 @@ i32 __cdecl MosEisleyC_PastBarrier(GAMEOBJECT *object) {
     return 0;
 }
 
+void DeathStarEscapeC_Reset(WORLDINFO *unused0) {
+    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "RescuedDroids", NULL);
+}
+
 typedef struct TORPEDO_MUSIC_FLAGS_VIEW_PC {
     u8 count, flags;
 } TORPEDO_MUSIC_FLAGS_VIEW_PC;
@@ -48,4 +52,60 @@ i32 __cdecl DeathStarShieldDown(void) {
             return 1;
     }
     return 0;
+}
+
+void Asteroid_PartKill(PART_PC *part, i32 reason) {
+    AddGameDebris(WORLD->game_debris_sys, 0x5d, &part->position);
+    AddGameDebris(WORLD->game_debris_sys, 0x5e, &part->position);
+    AddGameDebris(WORLD->game_debris_sys, 0x5f, &part->position);
+    AddPartDebris(WORLD->part_debris_sys, 4, &part->position);
+    if (part->field_206 == 1) {
+        i32 type;
+        switch (reason) {
+            case 4:
+                type = 0;
+                break;
+            case 5:
+                type = 1;
+                break;
+            default:
+                return;
+        }
+        AddMiscPickups(&part->position, type, 1000, 0);
+    } else {
+        AddMiscPickups(&part->position, -1, 0, 1);
+    }
+}
+
+static void DrawFalconSpotLights(GAMEOBJECT *object) {
+    NUMTX matrix;
+    if ((u8)(object->field_280) > 1 || object->id != id_MILLENNIUMFALCON || WORLD->level_objects[0x127].active == 0)
+        return;
+    matrix = matrix;
+    if (object->character_model->points_of_interest[4] != NULL) {
+        matrix = object->locator_matrices[4];
+        NuSpecialDrawAt(&WORLD->level_objects[0x127].special, &matrix);
+    }
+    spotLightA_yrot[object->field_280] += FRAMETIME / 5.0f;
+    if (spotLightA_yrot[object->field_280] > 1.0f)
+        spotLightA_yrot[object->field_280] -= 1.0f;
+    spotLightA_zrot[object->field_280] += FRAMETIME / 5.0f;
+    if (spotLightA_zrot[object->field_280] > 1.0f)
+        spotLightA_zrot[object->field_280] -= 1.0f;
+    if (object->character_model->points_of_interest[5] != NULL) {
+        matrix = object->locator_matrices[5];
+        NuSpecialDrawAt(&WORLD->level_objects[0x127].special, &matrix);
+    }
+    spotLightB_yrot[object->field_280] += FRAMETIME / 5.0f;
+    if (spotLightB_yrot[object->field_280] > 1.0f)
+        spotLightB_yrot[object->field_280] -= 1.0f;
+    spotLightB_zrot[object->field_280] += FRAMETIME / 5.0f;
+    if (spotLightB_zrot[object->field_280] > 1.0f)
+        spotLightB_zrot[object->field_280] -= 1.0f;
+}
+
+void CloudCityEscapeC_Init(WORLDINFO *world) {
+    NuSpecialFind(world->current_gscn, &LevHSpecial[0], "gas_1_animin", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[1], "gas_2_animin", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[2], "gas_3_animin", 1);
 }

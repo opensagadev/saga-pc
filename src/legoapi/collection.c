@@ -199,6 +199,20 @@ void __cdecl Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD
     buffer->addr = (u32)(collection->list + collection->count);
 }
 
+void Collection_GetPos(COLLECTION_s *collection, i32 id, float *x, float *y) {
+    i32 i;
+    COLLECTID *list = collection->list;
+
+    for (i = 0; i < collection->count_y; i++) {
+        if (list[i].id == id) {
+            float *f = (float *)&list[i].cheat_code[8];
+            *x = f[0];
+            *y = f[1];
+            return;
+        }
+    }
+}
+
 STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, model_id) == 0);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
 STATIC_ASSERT(offsetof(ARCADE_MODE_PC, flags) == 8);

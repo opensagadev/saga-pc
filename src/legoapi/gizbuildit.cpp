@@ -32,3 +32,13 @@ extern "C" void *__cdecl GizBuildIt_Find(WORLDINFO *world, char *name) {
     }
     return NULL;
 }
+
+extern "C" void GizBuildIt_SetHeadTarget(GIZBUILDIT_s *buildit, GAMEOBJECT *player) {
+    if (buildit->anim_object_count != 0) {
+        i32 index = buildit->built_object_count;
+        if (buildit->anim_object_count <= index)
+            index = buildit->anim_object_count - 1;
+        GIZBUILDITANIMDATA_s *data = static_cast<GIZBUILDITANIMDATA_s *>(buildit->anim_objects[index]->object_data);
+        SetHeadTarget(player, reinterpret_cast<NUVEC *>(&data->start_mtx.m30), 0, 2.0f, 1.0f, 2.0f);
+    }
+}

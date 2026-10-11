@@ -598,8 +598,104 @@ extern "C" {
     }
 }
 
+extern "C" {}
+
+extern "C" void edbitsDrawBasicCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_x,
+                                    i32 rotation_y, i32 rotation_z, i32 colour, numtl_s *material) {
+    NUVEC outlines[4][5] = {{{-1, -1, 1}, {1, -1, 1}, {1, 1, 1}, {-1, 1, 1}, {-1, -1, 1}},
+                            {{-1, -1, -1}, {1, -1, -1}, {1, 1, -1}, {-1, 1, -1}, {-1, -1, -1}},
+                            {{-1, -1, 1}, {-1, -1, -1}, {-1, 1, -1}, {-1, 1, 1}, {-1, -1, 1}},
+                            {{1, -1, 1}, {1, -1, -1}, {1, 1, -1}, {1, 1, 1}, {1, -1, 1}}};
+    NUVEC endpoints[2];
+    NURND_VERTEX3D_PC vertices[2];
+    for (i32 face = 0; face < 4; ++face) {
+        for (i32 edge = 0; edge < 4; ++edge) {
+            endpoints[0].x = half_x * outlines[face][edge].x;
+            endpoints[0].y = half_y * outlines[face][edge].y;
+            endpoints[0].z = half_z * outlines[face][edge].z;
+            endpoints[1].x = half_x * outlines[face][edge + 1].x;
+            endpoints[1].y = half_y * outlines[face][edge + 1].y;
+            endpoints[1].z = half_z * outlines[face][edge + 1].z;
+            NuVecRotateX(&endpoints[0], &endpoints[0], rotation_x);
+            NuVecRotateY(&endpoints[0], &endpoints[0], rotation_y);
+            NuVecRotateZ(&endpoints[0], &endpoints[0], rotation_z);
+            NuVecRotateX(&endpoints[1], &endpoints[1], rotation_x);
+            NuVecRotateY(&endpoints[1], &endpoints[1], rotation_y);
+            NuVecRotateZ(&endpoints[1], &endpoints[1], rotation_z);
+            vertices[0].colour = colour;
+            vertices[1].colour = colour;
+            vertices[0].position.x = x + endpoints[0].x;
+            vertices[0].position.y = y + endpoints[0].y;
+            vertices[0].position.z = z + endpoints[0].z;
+            vertices[1].position.x = x + endpoints[1].x;
+            vertices[1].position.y = y + endpoints[1].y;
+            vertices[1].position.z = z + endpoints[1].z;
+            NuRndrLine3d(vertices, material, NULL);
+        }
+    }
+}
+
+extern "C" void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
+                               i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, numtl_s *material) {
+    NUVEC outlines[4][5] = {{{-1, -1, 1}, {1, -1, 1}, {1, 1, 1}, {-1, 1, 1}, {-1, -1, 1}},
+                            {{-1, -1, -1}, {1, -1, -1}, {1, 1, -1}, {-1, 1, -1}, {-1, -1, -1}},
+                            {{-1, -1, 1}, {-1, -1, -1}, {-1, 1, -1}, {-1, 1, 1}, {-1, -1, 1}},
+                            {{1, -1, 1}, {1, -1, -1}, {1, 1, -1}, {1, 1, 1}, {1, -1, 1}}};
+    NUVEC endpoints[2];
+    NURND_VERTEX3D_PC vertices[2];
+    for (i32 face = 0; face < 4; ++face) {
+        for (i32 edge = 0; edge < 4; ++edge) {
+            endpoints[0].x = half_x * outlines[face][edge].x;
+            endpoints[0].y = half_y * outlines[face][edge].y;
+            endpoints[0].z = half_z * outlines[face][edge].z;
+            endpoints[1].x = half_x * outlines[face][edge + 1].x;
+            endpoints[1].y = half_y * outlines[face][edge + 1].y;
+            endpoints[1].z = half_z * outlines[face][edge + 1].z;
+            NuVecRotateZ(&endpoints[0], &endpoints[0], rotation_z);
+            NuVecRotateY(&endpoints[0], &endpoints[0], rotation_y);
+            NuVecRotateX(&endpoints[0], &endpoints[0], rotation_x);
+            NuVecRotateZ(&endpoints[0], &endpoints[0], outer_z);
+            NuVecRotateY(&endpoints[0], &endpoints[0], outer_y);
+            NuVecRotateZ(&endpoints[1], &endpoints[1], rotation_z);
+            NuVecRotateY(&endpoints[1], &endpoints[1], rotation_y);
+            NuVecRotateX(&endpoints[1], &endpoints[1], rotation_x);
+            NuVecRotateZ(&endpoints[1], &endpoints[1], outer_z);
+            NuVecRotateY(&endpoints[1], &endpoints[1], outer_y);
+            vertices[0].colour = colour;
+            vertices[1].colour = colour;
+            vertices[0].position.x = x + endpoints[0].x;
+            vertices[0].position.y = y + endpoints[0].y;
+            vertices[0].position.z = z + endpoints[0].z;
+            vertices[1].position.x = x + endpoints[1].x;
+            vertices[1].position.y = y + endpoints[1].y;
+            vertices[1].position.z = z + endpoints[1].z;
+            NuRndrLine3d(vertices, material, NULL);
+        }
+    }
+}
+
 extern "C" void SetTexAnimSignals() {
     NuTexAnimSetSignals(texanimbits);
+}
+
+extern "C" void Draw3DObject(WORLDINFO *world, i32 object_index, NUVEC *position, u16 x_rotation, u16 y_rotation,
+                             u16 z_rotation, float scale_x, float scale_y, float scale_z, i32 rotate_order) {
+    if (object_index == -1) {
+        return;
+    }
+    if (world == NULL) {
+        world = WorldInfo_CurrentlyActive();
+    }
+    if (world != NULL) {
+        if (world->level_objects[object_index].active != 0 && (scale_x != 0.0f || scale_y != 0.0f || scale_z != 0.0f)) {
+            NUVEC scale = {scale_x, scale_y, scale_z};
+            NUMTX matrix;
+            NuMtxSetScale(&matrix, &scale);
+            RotateGameMatrix(&matrix, rotate_order, x_rotation, y_rotation, z_rotation);
+            NuMtxTranslate(&matrix, position);
+            NuSpecialDrawAt(&world->level_objects[object_index].special, &matrix);
+        }
+    }
 }
 
 extern "C" void WorldInfo_DrawScene(WORLDINFO *world) {

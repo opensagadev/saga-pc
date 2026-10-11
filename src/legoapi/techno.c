@@ -39,6 +39,65 @@ TECHNO_PC *__cdecl Technos_FindControllingTechno(GAMEOBJECT *object) {
     return NULL;
 }
 
+void *Technos_FindTgt(TECHNO_s *techno) {
+    if (techno == NULL) {
+        return NULL;
+    }
+    if (techno->controlled_object != NULL) {
+        return techno->controlled_object;
+    }
+
+    switch (techno->target_mode) {
+        case 0: {
+            void *target = GetNamedGameObject(WORLD->ai_sys, techno->target_name);
+            if (target != NULL) {
+                techno->controlled_object = target;
+                techno->target_mode = 1;
+                break;
+            }
+            target = GizmoFindByName(WORLD->gizmo_sys, -1, techno->target_name);
+            if (target != NULL) {
+                techno->controlled_object = target;
+                techno->target_mode = 3;
+                break;
+            }
+            if (NuSpecialFind(WORLD->current_gscn, (nuhspecial_s *)(techno->target_special_storage),
+                              techno->target_name, 0) != 0) {
+                techno->target_mode = 2;
+                techno->controlled_object = techno->target_special_storage;
+                break;
+            }
+            techno->target_mode = 0;
+            techno->controlled_object = NULL;
+            break;
+        }
+        case 1:
+            techno->controlled_object = GetNamedGameObject(WORLD->ai_sys, techno->target_name);
+            if (techno->controlled_object == NULL) {
+                techno->target_mode = 0;
+            }
+            break;
+        case 2:
+            techno->controlled_object = techno->target_special_storage;
+            if (NuSpecialFind(WORLD->current_gscn, (nuhspecial_s *)(techno->target_special_storage),
+                              techno->target_name, 0) == 0) {
+                techno->target_mode = 0;
+                techno->controlled_object = NULL;
+            }
+            break;
+        case 3:
+            techno->controlled_object = GizmoFindByName(WORLD->gizmo_sys, -1, techno->target_name);
+            if (techno->controlled_object == NULL) {
+                techno->target_mode = 0;
+            }
+            break;
+        default:
+            techno->target_mode = 0;
+            break;
+    }
+    return techno->controlled_object;
+}
+
 typedef struct gizmo_config_functions_pc_s {
     i16 options;
     u16 padding;

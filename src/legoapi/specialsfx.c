@@ -657,6 +657,20 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
     effect->base_effect_index = 0;
 }
 
+static void cbPtlReadoutMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    ptlreadoutmenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelReadoutMenu, "Info Box Style");
+    if (ptlreadoutmenu != NULL) {
+        eduiMenuAddItem(ptlreadoutmenu,
+                        eduiItemCheckCreate(0, colours, edpp_readout == 0, 1, cbPtlSelReadout, "Normal"));
+        eduiMenuAddItem(ptlreadoutmenu,
+                        eduiItemCheckCreate(1, colours, edpp_readout == 1, 1, cbPtlSelReadout, "Co-ordinates"));
+    }
+    eduiMenuAttach(menu, ptlreadoutmenu);
+    ptlreadoutmenu->x = menu->x + 10;
+    ptlreadoutmenu->y = menu->y + 40;
+}
+
 void ParticleReset(void) {
     i32 i;
     for (i = 0; i < 512; ++i) {

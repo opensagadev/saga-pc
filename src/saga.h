@@ -20599,6 +20599,3402 @@ extern "C" {
 }
 #endif
 
+/* Types imported from the Android sources (tools/typeimport.py). */
+typedef struct ADDGIZMOTYPE_s ADDGIZMOTYPE_s;
+typedef struct AIAREA_s AIAREA_s;
+typedef struct AICONDITION_s AICONDITION_s;
+typedef struct AIEDITOR_RENDER_STATE AIEDITOR_RENDER_STATE;
+typedef struct AIPATHCNXCONTROLLER_s AIPATHCNXCONTROLLER_s;
+typedef struct AIPATHCNXCONTROLSYS_s AIPATHCNXCONTROLSYS_s;
+typedef struct AIPATHNODELINK_s AIPATHNODELINK_s;
+typedef struct AIPATHSPECIALROUTE_s AIPATHSPECIALROUTE_s;
+typedef struct AITRIGGERSETSYS_s AITRIGGERSETSYS_s;
+typedef struct AITRIGGERSET_TARGET AITRIGGERSET_TARGET;
+typedef struct AITRIGGERSET_s AITRIGGERSET_s;
+typedef struct APICHARACTERMODELLIST_s APICHARACTERMODELLIST_s;
+typedef struct AREASAVE_s AREASAVE_s;
+typedef struct AREA_GLOBAL_VALUES AREA_GLOBAL_VALUES;
+typedef struct ATTRACTO_s ATTRACTO_s;
+typedef struct BATARANG_TARGET_s BATARANG_TARGET_s;
+typedef struct CABLE_s CABLE_s;
+typedef struct CHARACTER_SHADOW_s CHARACTER_SHADOW_s;
+typedef struct CHARPLATFORMSYS_s CHARPLATFORMSYS_s;
+typedef struct CHARPLATFORM_s CHARPLATFORM_s;
+typedef struct CHARSCENE_s CHARSCENE_s;
+typedef struct CLIMBOBJECTSYS_s CLIMBOBJECTSYS_s;
+typedef struct CLIMBOBJECT_s CLIMBOBJECT_s;
+typedef struct COLLECTID COLLECTID;
+typedef struct COLLECTION_s COLLECTION_s;
+typedef struct CUSTOMPIECE CUSTOMPIECE;
+typedef struct CUSTOMPIECECATEGORY CUSTOMPIECECATEGORY;
+typedef struct CUSTOMPIECERESOURCE CUSTOMPIECERESOURCE;
+typedef struct CUTSYS CUTSYS;
+typedef struct DETONATOR_s DETONATOR_s;
+typedef struct DOOR_s DOOR_s;
+typedef struct EDAIPATHCHECK_s EDAIPATHCHECK_s;
+typedef struct EDAIPATHCNX_s EDAIPATHCNX_s;
+typedef struct EDAIPATHNODE_s EDAIPATHNODE_s;
+typedef struct EDAIPATHROUTE_s EDAIPATHROUTE_s;
+typedef struct EDAIPATHWALL_s EDAIPATHWALL_s;
+typedef struct EDAIPATH_s EDAIPATH_s;
+typedef struct EDAISHAREDPATHNODE_s EDAISHAREDPATHNODE_s;
+typedef struct EDANTINODE_s EDANTINODE_s;
+typedef struct EDLOCATORSET_s EDLOCATORSET_s;
+typedef struct EDLOCATOR_s EDLOCATOR_s;
+typedef struct EPISODESAVE_s EPISODESAVE_s;
+typedef struct EXPLOSION EXPLOSION;
+typedef struct FADER_s FADER_s;
+typedef struct GAMEANTINODE_s GAMEANTINODE_s;
+typedef struct GIZBOMBGENSYS_s GIZBOMBGENSYS_s;
+typedef struct GIZBOMBGEN_s GIZBOMBGEN_s;
+typedef struct GIZBUILDITANIMDATA_s GIZBUILDITANIMDATA_s;
+typedef struct GIZBUILDITSYS_s GIZBUILDITSYS_s;
+typedef struct GIZBUILDIT_s GIZBUILDIT_s;
+typedef struct GIZFORCEANIMDATA_s GIZFORCEANIMDATA_s;
+typedef struct GIZFORCEGROUP_s GIZFORCEGROUP_s;
+typedef struct GIZFORCESYS_s GIZFORCESYS_s;
+typedef struct GIZFORCE_s GIZFORCE_s;
+typedef struct GIZMOFNS_s GIZMOFNS_s;
+typedef struct GIZMOPICKUPRUNTIMESYS_s GIZMOPICKUPRUNTIMESYS_s;
+typedef struct GIZMOSYS_s GIZMOSYS_s;
+typedef struct GIZMO_s GIZMO_s;
+typedef struct GIZOBSTACLESYS_s GIZOBSTACLESYS_s;
+typedef struct GIZPANELSYS_s GIZPANELSYS_s;
+typedef struct GIZPANEL_s GIZPANEL_s;
+typedef struct GIZSPECIAL_s GIZSPECIAL_s;
+typedef struct GIZSPINNERARM_s GIZSPINNERARM_s;
+typedef struct GIZSPINNER_s GIZSPINNER_s;
+typedef struct GIZTORPMACHINESYS_s GIZTORPMACHINESYS_s;
+typedef struct GIZTORPMACHINE_s GIZTORPMACHINE_s;
+typedef struct GIZTURRETSYS_s GIZTURRETSYS_s;
+typedef struct GIZTURRET_s GIZTURRET_s;
+typedef struct HINT_s HINT_s;
+typedef struct HOTHBATTLE_MELEE_WAVE_s HOTHBATTLE_MELEE_WAVE_s;
+typedef struct HOTHBATTLE_MELEE_s HOTHBATTLE_MELEE_s;
+typedef struct HUBMINIKIT_s HUBMINIKIT_s;
+typedef struct LEDGE_s LEDGE_s;
+typedef struct LEVELSAVE_s LEVELSAVE_s;
+typedef struct LEVELSCRIPTPROCESS_s LEVELSCRIPTPROCESS_s;
+typedef struct LEVELSCRIPTPROGRESS_s LEVELSCRIPTPROGRESS_s;
+typedef struct LEVEL_OBJECT_RUNTIME_s LEVEL_OBJECT_RUNTIME_s;
+typedef struct LEVEL_PROGRESS_DATA_s LEVEL_PROGRESS_DATA_s;
+typedef struct LEVEL_PROGRESS_s LEVEL_PROGRESS_s;
+typedef struct LEVER_s LEVER_s;
+typedef struct LevelEditorScene LevelEditorScene;
+typedef struct MENU_s MENU_s;
+typedef struct MINEENTRY_s MINEENTRY_s;
+typedef struct MINESYS_s MINESYS_s;
+typedef struct MISSIONSYS_s MISSIONSYS_s;
+typedef struct NuLegacyInstanceLayout NuLegacyInstanceLayout;
+typedef struct NuPlatform NuPlatform;
+typedef struct NuSpecialBoundsDisplayLayout NuSpecialBoundsDisplayLayout;
+typedef struct NuSpecialLegacyInstanceBoundsLayout NuSpecialLegacyInstanceBoundsLayout;
+typedef struct NuSpecialLegacyLayout NuSpecialLegacyLayout;
+typedef struct NuSpecialLegacyObjectBoundsLayout NuSpecialLegacyObjectBoundsLayout;
+typedef struct NuSpecialLegacyRuntimeLayout NuSpecialLegacyRuntimeLayout;
+typedef struct NuSpecialLegacySceneLayout NuSpecialLegacySceneLayout;
+typedef struct PARTLIGHTSOURCE_s PARTLIGHTSOURCE_s;
+typedef struct PLAYERCHARACTERCONFIG_s PLAYERCHARACTERCONFIG_s;
+typedef struct PLAYERITEM_s PLAYERITEM_s;
+typedef struct PLAYERPACKET_s PLAYERPACKET_s;
+typedef struct PLAYERSUBOBJ2_s PLAYERSUBOBJ2_s;
+typedef struct PLAYERSUBOBJ_s PLAYERSUBOBJ_s;
+typedef struct PLUG_s PLUG_s;
+typedef struct PODSPRINTNETPACKET_s PODSPRINTNETPACKET_s;
+typedef struct PODSPRINT_AISPLINE_s PODSPRINT_AISPLINE_s;
+typedef struct PODSPRINT_s PODSPRINT_s;
+typedef struct PORTALDOOR_s PORTALDOOR_s;
+typedef struct PUSHPROGRESS PUSHPROGRESS;
+typedef struct RUMBLEPACKET RUMBLEPACKET;
+typedef struct SCENEPROGRESS_s SCENEPROGRESS_s;
+typedef struct SCENESPECIALPROGRESS_s SCENESPECIALPROGRESS_s;
+typedef struct SECURITYDOOR_s SECURITYDOOR_s;
+typedef struct SHARD_s SHARD_s;
+typedef struct SHOPINPUT SHOPINPUT;
+typedef struct SIGNALPROGRESS_s SIGNALPROGRESS_s;
+typedef struct SIGNAL_s SIGNAL_s;
+typedef struct SNIPER_s SNIPER_s;
+typedef struct SOCKSYS SOCKSYS;
+typedef struct SPECIALMINIKITSYS_s SPECIALMINIKITSYS_s;
+typedef struct SPECIALMINIKIT_s SPECIALMINIKIT_s;
+typedef struct SPEEDERCHASEVALUES SPEEDERCHASEVALUES;
+typedef struct STATUSCOLLECT_s STATUSCOLLECT_s;
+typedef struct STATUSPACKET_s STATUSPACKET_s;
+typedef struct STATUS_STAGE_s STATUS_STAGE_s;
+typedef struct TECHNO_s TECHNO_s;
+typedef struct TIGHTROPE_s TIGHTROPE_s;
+typedef struct TRAFFICANIMINSTANCE_s TRAFFICANIMINSTANCE_s;
+typedef struct TRAFFICANIMSYS_s TRAFFICANIMSYS_s;
+typedef struct TRAFFICANIM_s TRAFFICANIM_s;
+typedef struct TintStack TintStack;
+typedef struct VuMtx VuMtx;
+typedef struct VuVec VuVec;
+typedef struct ZIPUP_s ZIPUP_s;
+typedef struct _vuv_s _vuv_s;
+typedef struct anakin_door_s anakin_door_s;
+typedef struct anakin_door_setup_s anakin_door_setup_s;
+typedef struct debris_float_key_s debris_float_key_s;
+typedef struct ed_module_s ed_module_s;
+typedef struct edanim_param_s edanim_param_s;
+typedef struct edcam_s edcam_s;
+typedef struct edgra_individual_s edgra_individual_s;
+typedef struct edui_colour_pick_s edui_colour_pick_s;
+typedef struct edui_colour_slider_s edui_colour_slider_s;
+typedef struct edui_file_pick_s edui_file_pick_s;
+typedef struct edui_gradient_node_s edui_gradient_node_s;
+typedef struct edui_gradient_pick_s edui_gradient_pick_s;
+typedef struct edui_graph_s edui_graph_s;
+typedef struct edui_interact_s edui_interact_s;
+typedef struct edui_prop_s edui_prop_s;
+typedef struct edui_sel_s edui_sel_s;
+typedef struct edui_slider_s edui_slider_s;
+typedef struct edui_textpicker_s edui_textpicker_s;
+typedef struct edui_texture_pick_s edui_texture_pick_s;
+typedef struct eduiitem_s eduiitem_s;
+typedef struct eduimenu_s eduimenu_s;
+typedef struct gizmotype_s gizmotype_s;
+typedef struct instNUGCUTRIGID_s instNUGCUTRIGID_s;
+typedef struct instNUGCUTSCENE_s instNUGCUTSCENE_s;
+typedef struct minisnowtrooper_s minisnowtrooper_s;
+typedef struct minitrooperteam_s minitrooperteam_s;
+typedef struct nuclipbounds_s nuclipbounds_s;
+typedef struct nuclipobject_s nuclipobject_s;
+typedef struct nucolour3_s nucolour3_s;
+typedef struct nufile_info_s nufile_info_s;
+typedef struct nuhspecial_s nuhspecial_s;
+typedef struct nutex_s nutex_s;
+typedef struct pushblock_s pushblock_s;
+typedef struct rtldata_s rtldata_s;
+typedef struct shopitem_s shopitem_s;
+typedef struct spacelevel_cross_s spacelevel_cross_s;
+typedef struct spacelevel_flight_group_s spacelevel_flight_group_s;
+typedef struct starfighter_s starfighter_s;
+typedef struct storepack_s storepack_s;
+
+struct AITRIGGERSET_TARGET {
+    u8 reserved_00[16];
+    NUVEC position;
+    u8 reserved_1c[4];
+    AIPATHINFO_PC path;
+    u8 reserved_38[4];
+};
+STATIC_ASSERT(sizeof(struct AITRIGGERSET_TARGET) == 60);
+
+struct AITRIGGERSET_s {
+    union {
+        u8 pad_0x000[516];
+        struct {
+            union {
+                u32 reserved_000;
+                struct FLOWBOX_PC *flowbox;
+            };
+            union {
+                struct GIZMO_s *triggers[8];
+                struct GIZMO_s *gizmos[8];
+            };
+            union {
+                struct AITRIGGERSET_TARGET targets[8];
+                AILOCATOR_PC locators[8];
+            };
+        };
+    };
+    i8 trigger_indices[8];
+    union {
+        u8 pad_0x20c[8];
+        struct {
+            u8 trigger_count;
+            u8 field_20d;
+            u16 field_0x20e;
+            u8 flags;
+            u8 reserved_211[3];
+        };
+    };
+};
+STATIC_ASSERT(sizeof(struct AITRIGGERSET_s) == 532);
+
+struct nuhspecial_s {
+    struct NUGSCN_s *scene;
+    void *special;
+    struct nudisplay_special_pc_s *display_special;
+};
+STATIC_ASSERT(sizeof(struct nuhspecial_s) == 12);
+
+struct GIZFORCE_s {
+    char name[16];
+    NUVEC file_position;
+    NUVEC position;
+    struct gameanimset_s *anim_set;
+    struct nuhspecial_s along_socket;
+    struct gameobject_s *using_object;
+    union {
+        f32 field_0x3c;
+        u32 field_0x3c_bits;
+    };
+    struct GIZFORCEGROUP_s *group;
+    f32 force_strength;
+    f32 field_0x48;
+    f32 force_range;
+    f32 field_0x50;
+    f32 interaction_radius;
+    f32 animation_speed;
+    f32 start_frame;
+    f32 end_frame;
+    f32 effect_scale;
+    f32 radius;
+    f32 strength_0x6c;
+    f32 vertical_range;
+    f32 horizontal_range;
+    u32 config_flags;
+    u32 field_0x7c;
+    u8 group_index;
+    u8 collision_mask;
+    u8 activation_mode;
+    u8 field_0x83;
+    i16 room_id;
+    i16 start_sfx_id;
+    i16 loop_sfx_id;
+    i16 stop_sfx_id;
+    i16 blowup_type;
+    union {
+        i16 debris_type;
+        u16 pickup_count;
+        u16 completion_score;
+    };
+    union {
+        i16 hit_points;
+        u16 pickup_direction_x;
+        u16 pickup_rotation_x;
+    };
+    union {
+        i16 score;
+        u16 pickup_direction_y;
+        u16 pickup_rotation_y;
+    };
+    union {
+        NUVEC effect_position;
+        NUVEC pickup_offset;
+    };
+    union {
+        f32 activation_radius;
+        f32 pickup_scatter_height;
+    };
+    union {
+        u32 field_0xa4;
+        struct MechObjectInterface *mech_object_interface;
+    };
+    union {
+        struct {
+            union {
+                u8 progress_flags;
+                struct {
+                    u8 progress_enabled : 1;
+                    u8 progress_visible : 1;
+                    u8 : 2;
+                    u8 progress_reverse_active : 1;
+                    u8 progress_group_member : 1;
+                    u8 progress_animation_reversed : 1;
+                    u8 progress_draw_active : 1;
+                };
+            };
+            union {
+                u8 runtime_flags;
+                struct {
+                    u8 runtime_has_platform : 1;
+                    u8 runtime_reward_released : 1;
+                    u8 runtime_pending_blowup_type : 1;
+                    u8 runtime_along_socket_hidden : 1;
+                    u8 runtime_offset_applied : 1;
+                    u8 runtime_force_range_complete : 1;
+                    u8 runtime_completion_released : 1;
+                    u8 runtime_pending_completion : 1;
+                };
+            };
+            union {
+                u8 field_0xaa;
+                u8 state_flags;
+                struct {
+                    u8 state_destroyed_or_thrown : 1;
+                    u8 state_debris_active : 1;
+                    u8 : 3;
+                    u8 state_being_used : 1;
+                    u8 : 2;
+                };
+            };
+            u8 field_0xab;
+        };
+        u32 packed_state;
+    };
+};
+STATIC_ASSERT(sizeof(struct GIZFORCE_s) == 172);
+
+struct GIZMO_s {
+    void *object;
+    i16 unknown;
+    u8 type_id;
+};
+STATIC_ASSERT(sizeof(struct GIZMO_s) == 8);
+
+struct GIZSPINNERARM_s {
+    NUMTX matrix;
+    i16 platform_id;
+    u8 field_0x42[2];
+};
+STATIC_ASSERT(sizeof(struct GIZSPINNERARM_s) == 68);
+
+struct GIZSPINNER_s {
+    NUMTX matrix;
+    char name[16];
+    struct nuhspecial_s special;
+    NUVEC position;
+    struct gameanimset_s *anim_set;
+    struct gameanimobj_s *primary_anim_obj;
+    union {
+        u8 field_0x070[8];
+        struct {
+            f32 field_70;
+            u32 field_74;
+        };
+    };
+    f32 animation_speed;
+    u16 rotation;
+    u16 target_rotation;
+    u16 previous_rotation;
+    u16 initial_rotation;
+    u32 state_flags;
+    u8 field_0x088;
+    i8 room_index;
+    u8 state;
+    u8 type;
+    u16 field_0x08c;
+    u8 field_0x08e[2];
+    f32 field_0x090;
+    f32 field_0x094;
+    f32 field_0x098;
+    f32 field_0x09c;
+    f32 ground_height;
+    u8 output_count;
+    u8 field_0x0a5[7];
+    u8 flags;
+    u8 field_0x0ad;
+    i16 platform_id;
+    u8 field_0x0b0[4];
+    struct GIZSPINNERARM_s arms[8];
+    union {
+        u8 field_0x2d4[4];
+        f32 output_pause_time;
+    };
+    f32 field_0x2d8;
+    f32 animation_points[9];
+    struct GAMEANTINODE_s *anti_node;
+};
+STATIC_ASSERT(sizeof(struct GIZSPINNER_s) == 772);
+
+struct LEVER_s {
+    NUMTX transform;
+    struct MechObjectInterface *mech_object;
+    NUVEC floor_position;
+    NUVEC target_offset;
+    char name[16];
+    NUVEC position;
+    f32 idle_animation_timer;
+    f32 pull_progress;
+    f32 auto_reset_timer;
+    f32 flash_timer;
+    f32 auto_reset_delay;
+    f32 target_indicator_scale;
+    u16 y_rotation;
+    i16 model_special_index;
+    i16 platform_id;
+    u16 animation_frame;
+    u16 target_x_rotation;
+    u16 target_z_rotation;
+    union {
+        u16 flags;
+        struct {
+            u8 interacting : 1;
+            u8 being_pulled : 1;
+            u8 goodie : 1;
+            u8 baddie : 1;
+            u8 visible : 1;
+            u8 auto_reset : 1;
+            u8 returning : 1;
+            u8 enabled : 1;
+            u8 flags_high;
+        };
+    };
+    char model_variant;
+    u8 field_0x9f[9];
+};
+STATIC_ASSERT(sizeof(struct LEVER_s) == 168);
+
+struct AITRIGGERSETSYS_s {
+    struct AITRIGGERSET_s sets[32];
+    i8 field_0x4280[64];
+    i8 field_0x42c0[64];
+    i32 field_0x4300;
+};
+STATIC_ASSERT(sizeof(struct AITRIGGERSETSYS_s) == 17156);
+
+struct ATTRACTO_s {
+    char name[16];
+    union {
+        char reserved_10[100];
+        struct {
+            NUVEC position;
+            NUMTX transform;
+            u16 angle;
+            u8 capacity;
+            u8 collected_count;
+            i16 platform_id;
+            union {
+                u8 state_flags;
+                struct {
+                    u8 active : 1;
+                    u8 visible : 1;
+                    u8 filled : 1;
+                    u8 drawn : 1;
+                    u8 : 4;
+                };
+            };
+            u8 reserved_63;
+            NUVEC active_position;
+            u16 ground_angle_z;
+            u16 ground_angle_x;
+        };
+    };
+};
+STATIC_ASSERT(sizeof(struct ATTRACTO_s) == 116);
+
+struct SHARD_s {
+    char name[16];
+    union {
+        char reserved_10[68];
+        struct {
+            NUVEC position;
+            union {
+                u8 reserved_1c[12];
+                NUVEC current_position;
+            };
+            NUVEC screen_position;
+            union {
+                u8 reserved_34[2];
+                i16 model_index;
+            };
+            u16 angle_x;
+            u16 angle_z;
+            union {
+                u8 reserved_3a[2];
+                u16 spin_angle;
+            };
+            union {
+                u8 state_flags;
+                struct {
+                    u8 active : 1;
+                    u8 visible : 1;
+                    u8 collecting : 1;
+                    u8 collected : 1;
+                    u8 drawn : 1;
+                    u8 random_offset : 1;
+                    u8 tumble_x : 1;
+                    u8 reserved_state : 1;
+                };
+            };
+            u8 reserved_3d[3];
+            f32 collection_time;
+            struct gameobject_s *collector;
+            NUVEC collection_velocity;
+        };
+    };
+};
+STATIC_ASSERT(sizeof(struct SHARD_s) == 84);
+
+struct DETONATOR_s {
+    NUVEC position;
+    NUVEC field_0x0c;
+    NUVEC field_0x18;
+    struct gameobject_s *object;
+    u8 active;
+    u8 draw_result;
+    u16 rotation_x;
+    u16 rotation_y;
+    u16 rotation_z;
+    f32 timer;
+    void *field_0x34;
+};
+STATIC_ASSERT(sizeof(struct DETONATOR_s) == 56);
+
+struct BATARANG_TARGET_s {
+    void *object;
+    u8 type;
+    u8 lost;
+    u16 reserved_06_word;
+    union {
+        u8 reserved_08[12];
+        NUVEC fallback_position;
+    };
+};
+STATIC_ASSERT(sizeof(struct BATARANG_TARGET_s) == 20);
+
+struct EXPLOSION {
+    i32 field_0x00;
+    i32 field_0x04;
+    struct gameobject_s *object;
+    NUVEC position;
+    f32 field_0x18;
+    f32 field_0x1c;
+    f32 field_0x20;
+    i32 field_0x24;
+    u16 field_0x28;
+    u16 field_0x2a;
+    u16 field_0x2c;
+    u16 field_0x2e;
+    u16 field_0x30;
+    u8 field_0x32;
+    u8 field_0x33;
+};
+STATIC_ASSERT(sizeof(struct EXPLOSION) == 52);
+
+struct CABLE_s {
+    struct gameobject_s *source;
+    struct gameobject_s *target;
+    NUVEC points[16];
+    NUVEC velocities[16];
+    f32 segment_lengths[15];
+    f32 max_length;
+    f32 total_length;
+    u8 unknown_1cc[4];
+    f32 slack;
+    f32 pull_time;
+    u8 wrap_indices[15];
+    u8 point_count;
+    u8 wrap_count;
+    u8 flags_1e9;
+    u8 unknown_1ea[2];
+};
+STATIC_ASSERT(sizeof(struct CABLE_s) == 492);
+
+struct GIZBUILDIT_s {
+    char name[16];
+    struct gameanimset_s *anim_set;
+    struct gameanimobj_s **anim_objects;
+    struct GIZBUILDIT_s *linked_buildit;
+    struct MechObjectInterface *mech_object_interface;
+    NUVEC file_position;
+    NUVEC start_position;
+    NUVEC position;
+    f32 bounds_radius;
+    f32 step_timer;
+    f32 step_duration;
+    f32 interaction_radius;
+    f32 field_0x54;
+    f32 radius_scale;
+    i16 field_0x5c;
+    union {
+        i16 field_0x5e;
+        u16 completion_score;
+    };
+    i16 field_0x60;
+    i16 field_0x62;
+    NUVEC effect_position;
+    f32 activation_radius;
+    u8 anim_object_count;
+    u8 build_state;
+    u8 builders_active;
+    u8 built_object_count;
+    u8 field_0x78;
+    u8 progress;
+    u16 state_flags;
+    u16 field_0x7c;
+    i16 room_index;
+    i16 blowup_type;
+    u8 availability_flags;
+    u8 field_0x83;
+};
+STATIC_ASSERT(sizeof(struct GIZBUILDIT_s) == 132);
+
+struct TECHNO_s {
+    char name[16];
+    NUVEC position;
+    NUVEC ground_position;
+    f32 ground_offset;
+    f32 scale;
+    u16 y_rotation;
+    u16 ground_x_rotation;
+    u16 ground_z_rotation;
+    u8 enabled;
+    u8 target_mode;
+    i32 output;
+    union {
+        u8 flags;
+        struct {
+            u8 active : 1;
+            u8 visible : 1;
+            u8 used_this_frame : 1;
+            u8 complete : 1;
+            u8 reserved_flags : 4;
+        };
+    };
+    char target_name[16];
+    union {
+        char target_object_name[31];
+        struct {
+            u8 target_special_padding[19];
+            u8 target_special_storage[12];
+        };
+    };
+    void *controlled_object;
+};
+STATIC_ASSERT(sizeof(struct TECHNO_s) == 112);
+
+struct anakin_door_s {
+    NUMTX matrix;
+    NUMTX secondary_matrix;
+    NUMTX original_matrix;
+    NUMTX original_secondary_matrix;
+    NUVEC direction;
+    f32 unknown_10c;
+    struct nuhspecial_s special;
+    struct nuhspecial_s secondary_special;
+    f32 minimum_offset;
+    f32 offset;
+    f32 speed;
+    f32 unknown_134;
+    u8 active;
+    u8 flags;
+    i16 has_secondary;
+    i16 platform_id;
+    u8 unknown_13e[2];
+};
+STATIC_ASSERT(sizeof(struct anakin_door_s) == 320);
+
+struct spacelevel_cross_s {
+    u8 reserved_00[16];
+    NUVEC4 local_position;
+    u8 reserved_20[16];
+    NUVEC4 world_position;
+    u16 flags;
+    u16 enabled;
+    u8 reserved_44[4];
+    u32 colour;
+    f32 scale;
+};
+STATIC_ASSERT(sizeof(struct spacelevel_cross_s) == 80);
+
+struct starfighter_s {
+    NUMTX matrix;
+    NUVEC4 previous_axis;
+    NUVEC4 previous_position;
+    NUVEC4 velocity;
+    NUVEC4 parent_offset;
+    NUVEC4 target_position;
+    NUVEC4 movement;
+    NUVEC4 reserved_0a0;
+    NUVEC4 aim_direction;
+    i32 pitch;
+    i32 yaw;
+    i32 reserved_0c8;
+    f32 aim_bias;
+    struct spacelevel_flight_group_s *parent;
+    struct flight_spline_resource_pc_s *spline;
+    f32 spline_progress;
+    f32 initial_delay;
+    f32 shoot_timer;
+    f32 death_timer;
+    f32 death_rotate_x;
+    f32 death_rotate_z;
+    f32 scale;
+    f32 speed;
+    f32 spawn_time;
+    i16 draw_flags;
+    i16 model_id;
+    i16 target_id;
+    i16 target_ready;
+    struct starfighter_s *target;
+    i32 object_id;
+    i32 health;
+    i32 active;
+    i32 reserved_114;
+    i32 hit_count;
+    i32 fired;
+    i32 delete_when_done;
+    i32 missile_count;
+};
+STATIC_ASSERT(sizeof(struct starfighter_s) == 296);
+
+struct spacelevel_flight_group_s {
+    NUMTX matrix;
+    struct starfighter_s fighters[5];
+    NUVEC4 velocity;
+    NUVEC4 camera_position;
+    NUVEC4 target;
+    u8 reserved_638[8];
+    i32 active;
+    i32 state;
+    u32 reset_colour;
+    i32 draw_target;
+    f32 duration;
+    f32 speed;
+};
+STATIC_ASSERT(sizeof(struct spacelevel_flight_group_s) == 1624);
+
+struct _vuv_s {
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 w;
+};
+STATIC_ASSERT(sizeof(struct _vuv_s) == 16);
+
+struct anakin_door_setup_s {
+    char *name;
+    char *secondary_name;
+    f32 initial_offset;
+    f32 speed;
+    i16 flags;
+    u8 unknown_12[2];
+    NUVEC direction;
+    f32 unknown_20;
+    f32 minimum_offset;
+};
+STATIC_ASSERT(sizeof(struct anakin_door_setup_s) == 40);
+
+struct APICHARACTERMODELLIST_s {
+    i16 model_id;
+    i16 count;
+};
+STATIC_ASSERT(sizeof(struct APICHARACTERMODELLIST_s) == 4);
+
+struct LEVEL_OBJECT_RUNTIME_s {
+    struct nuhspecial_s special;
+    i16 platform_id;
+    u8 active;
+    u8 pad_0f;
+};
+STATIC_ASSERT(sizeof(struct LEVEL_OBJECT_RUNTIME_s) == 16);
+
+struct storepack_s {
+    char *name;
+    union {
+        char *product_id;
+        struct {
+            u8 field1_0x4;
+            u8 field2_0x5;
+            u8 field3_0x6;
+            u8 field4_0x7;
+        };
+    };
+    union {
+        i16 message_text_index;
+        struct {
+            u8 field5_0x8;
+            u8 field6_0x9;
+        };
+    };
+    u8 field7_0xa;
+    u8 field8_0xb;
+    void(__cdecl *unlock_fn)(void);
+    char *floor_target_door_name;
+    char *custodian_locator_set;
+    f32 offset_floor_target;
+    struct DOOR_s *floor_target_door;
+    i16 *id;
+    NUVEC custodian_position;
+    u16 custodian_angle;
+    u8 field44_0x32;
+    u8 field45_0x33;
+};
+STATIC_ASSERT(sizeof(struct storepack_s) == 52);
+
+struct PLAYERCHARACTERCONFIG_s {
+    u8 unknown_00[48];
+    f32 reset_scale;
+    u8 unknown_34[24];
+    f32 collision_origin_radius;
+    u8 unknown_50[60];
+    f32 shadow_radius;
+    u32 flags_090;
+    u32 flags_094;
+    u8 unknown_98[88];
+    u16 shadow_joint_mask;
+    u8 unknown_f2[4];
+    u8 blob_shadow_alpha;
+    u8 unknown_f7;
+    i8 weapon_joints[4];
+    i8 weapon_shoot_joints[4];
+    u8 unknown_100[8];
+    i8 hand_joints[2];
+    i8 grapple_joint_a;
+    i8 grapple_joint_b;
+    u8 unknown_10c;
+    i8 collision_origin_joint;
+    u8 unknown_10e;
+    i8 model_origin_joint;
+    u8 unknown_110;
+    i8 helmet_locator;
+    union {
+        u8 unknown_112[5];
+        struct {
+            i8 batarang_joint;
+            u8 unknown_113[4];
+        };
+    };
+    u8 variant;
+};
+STATIC_ASSERT(sizeof(struct PLAYERCHARACTERCONFIG_s) == 280);
+
+struct MENU_s {
+    f32 menu_time;
+    f32 unk;
+    i16 selected_column;
+    i16 selected_row;
+    i16 first_column;
+    i16 first_row;
+    i16 last_column;
+    i16 last_row;
+    i16 menu;
+    i8 previous_menu;
+    i8 flags_17;
+    f32 transition_time;
+    f32 transition_duration;
+    f32 repeat_up_time;
+    f32 repeat_down_time;
+    f32 repeat_left_time;
+    f32 repeat_right_time;
+    u8 repeat_up_count;
+    u8 repeat_down_count;
+    u8 repeat_left_count;
+    u8 repeat_right_count;
+    i32 selected_item;
+    i32 selected_item_column;
+    i32 previous_item;
+    u32 buttons_held;
+    u32 buttons_pressed;
+    i32 column_count;
+    i32 row_count;
+    i32 field_50;
+    i32 up_pressed;
+    i32 down_pressed;
+    i32 left_pressed;
+    i32 right_pressed;
+    i32 confirm_pressed;
+    i32 cancel_pressed;
+    i32 up_held;
+    i32 down_held;
+    i32 left_held;
+    i32 right_held;
+    u32 start_pressed;
+    u32 select_pressed;
+    u32 action_04_pressed;
+    u32 action_08_pressed;
+    i32 draw_item;
+    f32 item_scale;
+    f32 draw_x;
+    f32 draw_y;
+    f32 draw_z;
+    f32 field_a0;
+    f32 centre_offset;
+    u8 filler_a8[4];
+    i32 paused;
+    i32 field_b0;
+    i32 field_b4;
+    i32 field_b8;
+    i32 field_bc;
+    i32 field_c0;
+    f32 *item_offsets;
+    f32 item_offset_scale;
+    f32 field_cc;
+    f32 item_scale_x;
+    f32 item_spacing;
+    i32 input_disabled;
+    i32 state;
+    i32 queued_item;
+    i32 queued_column;
+    i32 queued_row;
+    u8 move_left;
+    u8 move_right;
+    u8 move_up;
+    u8 move_down;
+    u8 close_requested;
+    u8 input_activity;
+    u8 filler_f2[2];
+    f32 horizontal_scroll_distance;
+    f32 item_x[400];
+    f32 item_y[400];
+    f32 item_width[400];
+    f32 item_height[400];
+    i32 item_column[400];
+    i32 item_row[400];
+};
+STATIC_ASSERT(sizeof(struct MENU_s) == 9848);
+
+struct CUSTOMPIECE {
+    char *name;
+    i16 character_id;
+    i16 icon_character_id;
+    union {
+        u8 unknown_08[10];
+        struct {
+            i16 weapon_model;
+            i16 unknown_indices_0a[3];
+            i8 field_0x10;
+            i8 collection_type;
+        };
+    };
+    union {
+        struct {
+            u8 layer_flags;
+            u8 availability_flags_high;
+        };
+        u16 availability_flags;
+    };
+    u32 model_flags;
+    u32 gameplay_flags;
+    u8 unknown_1c[12];
+};
+STATIC_ASSERT(sizeof(struct CUSTOMPIECE) == 40);
+
+struct CUSTOMPIECECATEGORY {
+    char *name;
+    u8 uses_special;
+    i8 material_tag;
+    u8 pad_06[2];
+    char *shared_scene;
+};
+STATIC_ASSERT(sizeof(struct CUSTOMPIECECATEGORY) == 12);
+
+struct CUSTOMPIECERESOURCE {
+    struct NUGSCN_s *scene;
+    struct nuhspecial_s special;
+    i32 original_texture_id;
+    union {
+        i32 texture_id;
+        void *model;
+    };
+    i32 material_index;
+    struct CHARACTER_MODEL_LAYERS_PC *character_model;
+};
+STATIC_ASSERT(sizeof(struct CUSTOMPIECERESOURCE) == 32);
+
+struct rtldata_s {
+    RTL_DATA_PC base;
+};
+STATIC_ASSERT(sizeof(struct rtldata_s) == 324);
+
+struct GAMEANTINODE_s {
+    NUVEC position;
+    f32 radius;
+    f32 min_y;
+    f32 max_y;
+    f32 extent_x;
+    f32 extent_z;
+    f32 remaining_time;
+    u32 user_data[2];
+    u16 angle;
+    u8 shape;
+    u8 grid_min_x;
+    u8 grid_min_z;
+    u8 grid_max_x;
+    u8 grid_max_z;
+    u8 reserved_33;
+    struct GAMEANTINODE_s *next;
+};
+STATIC_ASSERT(sizeof(struct GAMEANTINODE_s) == 56);
+
+struct CHARACTER_SHADOW_s {
+    NUVEC position;
+    u16 x_rotation;
+    u16 z_rotation;
+    f32 opacity;
+};
+STATIC_ASSERT(sizeof(struct CHARACTER_SHADOW_s) == 20);
+
+struct PLAYERPACKET_s {
+    struct CHARACTER_SHADOW_s character_shadows[5];
+    u8 pad_064[132];
+    u16 context_animation;
+    u8 pad_0ea[4];
+    u8 context_mode;
+    u8 pad_0ef[2];
+    i8 build_context;
+    u8 pad_0f2[2];
+    u8 action_movement_state;
+    u8 action_movement_variant;
+    u8 pad_0f6[6];
+    f32 context_animation_time;
+    i8 context_target;
+    u8 context_state_flags;
+    u8 pad_102[1234];
+    NUVEC reset_up_direction;
+    struct GAMEPAD_PC *gamepad;
+    u8 pad_5e4[32];
+    void *field_0x604;
+    u8 pad_608[4];
+    struct gameobject_s *linked_object;
+    u8 pad_610[4];
+    u32 field_0x614;
+    u32 field_0x618;
+    u32 field_0x61c;
+    u32 field_0x620;
+    u32 field_0x624;
+    u32 field_0x628;
+    u32 field_0x62c;
+    u32 field_0x630;
+    u8 pad_634[20];
+    u32 field_0x648;
+    u8 pad_64c[8];
+    union {
+        i32 force_glow_mode;
+        void *force_glow_object;
+    };
+    union {
+        i32 force_glow_state;
+        void *force_glow_candidate;
+    };
+    u8 pad_65c[4];
+    u32 input_state;
+    u32 field_0x664;
+    u32 field_0x668;
+    u8 pad_66c[4];
+    u32 field_0x670;
+    u32 field_0x674;
+    u32 field_0x678;
+    f32 context_blend;
+    f32 context_distance;
+    u8 pad_684[4];
+    u32 field_0x688;
+    f32 delayed_turn_timer;
+    u32 field_0x690;
+    u32 field_0x694;
+    u8 pad_698[4];
+    u32 field_0x69c;
+    u32 field_0x6a0;
+    u32 field_0x6a4;
+    u8 pad_6a8[32];
+    u32 field_0x6c8;
+    f32 force_glow_x;
+    f32 force_glow_y;
+    f32 force_glow_intensity;
+    u8 pad_6d8[4];
+    f32 force_glow_z;
+    u32 field_0x6e0;
+    u8 pad_6e4[4];
+    u32 field_0x6e8;
+    f32 ground_height;
+    u8 pad_6f0[8];
+    u32 field_0x6f8;
+    u32 field_0x6fc;
+    u8 pad_700[16];
+    u32 field_0x710;
+    u8 pad_714[4];
+    u32 field_0x718;
+    u32 field_0x71c;
+    u32 field_0x720;
+    u32 field_0x724;
+    u32 field_0x728;
+    u8 pad_72c[4];
+    u32 field_0x730;
+    u32 field_0x734;
+    u8 pad_738[4];
+    u32 field_0x73c;
+    u8 pad_740[28];
+    i16 movement_angle_0;
+    i16 movement_angle_1;
+    i16 movement_angle_2;
+    i16 movement_angle_3;
+    i16 movement_lean_angle;
+    i16 secondary_lean_angle;
+    i16 tertiary_lean_angle;
+    i16 force_glow_index;
+    u8 movement_flags;
+    u8 secondary_flags;
+    u8 animation_flags;
+    u8 pad_76f;
+    u8 render_flags;
+    u8 field_0x771;
+    u8 pad_772;
+    u8 random_state[4];
+    u8 pad_777[6];
+    u8 field_0x77d;
+    u8 field_0x77e;
+    u8 pad_77f[13];
+    u8 random_context;
+    u8 pad_78d;
+    i8 surface_type;
+    u8 pad_78f[5];
+    u32 field_0x794;
+};
+STATIC_ASSERT(sizeof(struct PLAYERPACKET_s) == 1944);
+
+struct AREASAVE_s {
+    u8 complete;
+    u8 area_complete;
+    u8 true_hero_complete[2];
+    u8 minikit_complete;
+    union {
+        u8 field_0x5[3];
+        struct {
+            u8 minikit_count;
+            u8 red_brick_collected;
+            u8 reserved_0x7;
+        };
+    };
+    f32 challenge_trial_time;
+};
+STATIC_ASSERT(sizeof(struct AREASAVE_s) == 12);
+
+struct COLLECTID {
+    i16 id;
+    u8 type;
+    u8 field2_0x3;
+    i32 field3_0x4;
+    u8 can_buy;
+    u8 field5_0x9;
+    u16 field6_0xa;
+    union {
+        char cheat_code[16];
+        struct {
+            u8 grid_reserved[8];
+            f32 grid_x;
+            f32 grid_y;
+        };
+    };
+};
+STATIC_ASSERT(sizeof(struct COLLECTID) == 28);
+
+struct HINT_s {
+    i16 control_mode_ids[2];
+    u8 flags;
+    u8 pad_0x05[3];
+    i32 shop_price;
+    f32 display_duration;
+    f32 repeat_delay;
+    union {
+        i32(__cdecl *availability_fn)(struct HINT_s *arg0);
+        u8 pad_0x14[4];
+    };
+    void(__cdecl *on_display)(struct HINT_s *arg0);
+    u8 completion_flags[4];
+    f32 field_0x20;
+};
+STATIC_ASSERT(sizeof(struct HINT_s) == 36);
+
+struct shopitem_s {
+    char name[64];
+    char special_name[32];
+    i16 item_id;
+    u8 type;
+    u8 unlocked;
+    i32 price;
+    struct nuhspecial_s special;
+};
+STATIC_ASSERT(sizeof(struct shopitem_s) == 116);
+
+struct AREA_GLOBAL_VALUES {
+    i32 field_0x00;
+    i32 field_0x04;
+    i32 field_0x08;
+    i32 field_0x0c;
+    i32 field_0x10;
+    i32 field_0x14;
+    i32 field_0x18;
+    i32 field_0x1c;
+    i32 field_0x20;
+    union {
+        struct {
+            i32 field_0x24;
+            i32 field_0x28;
+        };
+        u32 arcade_player_kills[2];
+    };
+    union {
+        struct {
+            i32 field_0x2c;
+            i32 field_0x30;
+        };
+        u32 arcade_ai_kills[2];
+    };
+};
+STATIC_ASSERT(sizeof(struct AREA_GLOBAL_VALUES) == 52);
+
+struct SCENESPECIALPROGRESS_s {
+    u32 frame : 11;
+    u32 visible : 1;
+    u32 playing : 1;
+    u32 waiting : 1;
+    u32 repeating : 1;
+    u32 reserved : 17;
+    f32 tfactor;
+};
+STATIC_ASSERT(sizeof(struct SCENESPECIALPROGRESS_s) == 8);
+
+struct SCENEPROGRESS_s {
+    struct SCENESPECIALPROGRESS_s specials[1280];
+};
+STATIC_ASSERT(sizeof(struct SCENEPROGRESS_s) == 10240);
+
+struct AIAREA_s {
+    char name[16];
+    union {
+        NUVEC position;
+        struct {
+            f32 min_x;
+            f32 min_y;
+            f32 min_z;
+        };
+    };
+    union {
+        struct {
+            f32 half_width;
+            f32 height;
+            f32 half_depth;
+        };
+        struct {
+            f32 max_x;
+            f32 max_y;
+            f32 max_z;
+        };
+    };
+    union {
+        i16 rotation;
+        i16 flags;
+    };
+    u8 runtime_flags;
+    u8 game_flags;
+    u8 padding_0x2c[8];
+    struct AISYS_PC *system;
+    u8 padding_0x38[4];
+};
+STATIC_ASSERT(sizeof(struct AIAREA_s) == 60);
+
+struct AIPATHCNXCONTROLLER_s {
+    NULISTLNK links;
+    struct AIPATHCNX_PC *connection;
+    union {
+        void *target;
+        struct nuhspecial_s special;
+        i32 fake_animation_id;
+    };
+    i32 gizmo_output;
+    u32 on_flags;
+    u32 off_flags;
+    u32 on_frames[32];
+    u8 target_type;
+    u8 path_index;
+    u8 flags;
+    u8 padding_0xa7;
+};
+STATIC_ASSERT(sizeof(struct AIPATHCNXCONTROLLER_s) == 168);
+
+struct AIPATHCNXCONTROLSYS_s {
+    i32 controller_count;
+    struct AIPATHCNXCONTROLLER_s *controllers;
+    NULISTHDR available_controllers;
+    NULISTHDR active_controllers;
+};
+STATIC_ASSERT(sizeof(struct AIPATHCNXCONTROLSYS_s) == 24);
+
+struct GIZMOFNS_s {
+    i16 unknown1;
+    u8 unknown2;
+    u8 unknown3;
+    i32(__cdecl *get_max_gizmos_fn)(void *arg0);
+    void(__cdecl *add_gizmos_fn)(struct GIZMOSYS_s *arg0, i32 arg1, void *arg2, void *arg3);
+    void(__cdecl *early_update_fn)(void *arg0, void *arg1, f32 arg2);
+    void(__cdecl *late_update_fn)(void *arg0, void *arg1, f32 arg2);
+    void(__cdecl *draw_fn)(void *arg0, void *arg1, f32 arg2);
+    void(__cdecl *panel_draw_fn)(void *arg0, void *arg1, f32 arg2);
+    void *unknown_fn;
+    char *(__cdecl *get_gizmo_name_fn)(struct GIZMO_s *arg0);
+    i32(__cdecl *get_output_fn)(struct GIZMO_s *arg0, i32 arg1, i32 arg2);
+    char *(__cdecl *get_output_name_fn)(struct GIZMO_s *arg0, i32 arg1);
+    i32(__cdecl *get_num_outputs_fn)(struct GIZMO_s *arg0);
+    void(__cdecl *activate_fn)(struct GIZMO_s *arg0, i32 arg1);
+    i32(__cdecl *activate_rev_fn)(struct GIZMO_s *arg0, i32 arg1, i32 arg2);
+    void(__cdecl *set_visibility_fn)(struct GIZMO_s *arg0, i32 arg1);
+    i32(__cdecl *get_visibility_fn)(struct GIZMO_s *arg0);
+    struct nuvec_s *(__cdecl *get_pos_fn)(struct GIZMO_s *arg0);
+    i32(__cdecl *using_special_fn)(struct GIZMO_s **arg0, void *arg1, i32 arg2, char *arg3);
+    i32(__cdecl *bolt_hit_plat_fn)(void *arg0, void *arg1, struct bolt_s *arg2, u8 *arg3);
+    i32 *(__cdecl *get_best_bolt_target_fn)(struct gizmoset_pc_s *arg0, f32 *arg1, struct nuvec_s *arg2,
+                                            struct nuvec_s *arg3, void *arg4, struct nuvec_s *arg5,
+                                            struct nuvec_s *arg6, f32 arg7, f32 arg8, i32 arg9, i32 arg10, i32 arg11);
+    i32(__cdecl *bolt_hit_fn)(void *arg0, void *arg1, void *arg2, struct nuvec_s *arg3, i32 arg4, f32 arg5,
+                              struct nuvec_s *arg6, struct nuvec_s *arg7, struct bolt_s *arg8, u32 arg9, u8 *arg10);
+    void *(__cdecl *allocate_progress_data_fn)(void *arg0, void *arg1);
+    void(__cdecl *clear_progress_fn)(void *arg0, void *arg1);
+    void(__cdecl *store_progress_fn)(void *arg0, void *arg1, void *arg2);
+    void(__cdecl *reset_fn)(void *arg0, void *arg1, void *arg2);
+    void *(__cdecl *reserve_buffer_space_fn)(void *arg0);
+    i32(__cdecl *load_fn)(void *arg0, void *arg1);
+    void(__cdecl *post_load_fn)(void *arg0, void *arg1);
+    void(__cdecl *add_level_sfx_fn)(void *arg0, void *arg1, i32 *arg2, i32 *arg3, i32 arg4);
+};
+STATIC_ASSERT(sizeof(struct GIZMOFNS_s) == 116);
+
+struct ADDGIZMOTYPE_s {
+    char *name;
+    char *prefix;
+    struct GIZMOFNS_s fns;
+};
+STATIC_ASSERT(sizeof(struct ADDGIZMOTYPE_s) == 124);
+
+struct ZIPUP_s {
+    char name[16];
+    NUVEC lower_position;
+    NUVEC hook_origin;
+    NUVEC upper_position;
+    u16 hook_x_rotation;
+    u16 hook_y_rotation;
+    NUVEC hook_position;
+    NUVEC rider_start_offset;
+    NUVEC rider_target_position;
+    struct gameobject_s *occupant;
+    u16 pitch_adjustment;
+    u16 direction;
+    u16 facing_angle;
+    u8 reserved_0x66[2];
+    union {
+        u8 flags;
+        struct {
+            u8 configuration_flags : 6;
+            u8 active : 1;
+            u8 visible : 1;
+        };
+    };
+    u8 runtime_flags;
+    u8 reserved_0x6a[2];
+    f32 lower_ground_height;
+    f32 upper_ground_height;
+    u16 lower_ground_x_rotation;
+    u16 upper_ground_x_rotation;
+    u16 lower_ground_z_rotation;
+    u16 upper_ground_z_rotation;
+};
+STATIC_ASSERT(sizeof(struct ZIPUP_s) == 124);
+
+struct STATUSPACKET_s {
+    struct STATUSPACKET_LSW_s *lsw_packet;
+    i32(__cdecl *init_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1);
+    i32(__cdecl *finish_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);
+    void(__cdecl *reset_callback)(struct STATUSPACKET_s *arg0);
+    void(__cdecl *draw_background_callback)(struct STATUSPACKET_s *arg0);
+    struct area_data_pc_s *area;
+    struct episode_data_pc_s *episode;
+    u32 *score;
+    struct MISSIONDATA_s *mission;
+    f32 player0_rumble_amount;
+    f32 player0_rumble_time;
+    f32 player0_rumble_duration;
+    f32 player0_buzz_amount;
+    u8 player0_rumble_priority;
+    u8 field_0x35[3];
+    f32 player1_rumble_amount;
+    f32 player1_rumble_time;
+    f32 player1_rumble_duration;
+    f32 player1_buzz_amount;
+    u8 player1_rumble_priority;
+    u8 field_0x49[3];
+    f32 area_time;
+    f32 collected_score;
+    f32 true_hero_target;
+    f32 true_hero_percent;
+    f32 previous_best_time;
+    f32 new_best_time;
+    f32 elapsed_time;
+    f32 field_0x68;
+    u32 previous_best_score;
+    u32 new_best_score;
+    u32 original_score;
+    u32 reward_score;
+    u32 time_reward_score;
+    u32 final_reward_score;
+    u32 coins_remaining[2];
+    u32 coins_collected[2];
+    i32 new_minikits;
+    u32 field_0x98;
+    u16 player0_model;
+    u16 player1_model;
+    i16 area_id;
+    i8 episode_id;
+    u8 field_0xa3;
+    union {
+        u8 player_active[2];
+        struct {
+            u8 player0_active;
+            u8 player1_active;
+        };
+    };
+    u8 challenge_state;
+    u8 mission_state;
+    f32 superstory_time;
+    u32 superstory_score;
+    union {
+        u8 field_0xb0;
+        struct {
+            u8 : 2;
+            u8 true_hero_complete : 1;
+            u8 next_area_unlocked : 1;
+            u8 new_minikit_complete : 1;
+            u8 bonus_winner : 1;
+            u8 free_play : 1;
+            u8 vehicle_area : 1;
+        };
+    };
+    union {
+        u8 mode_flags;
+        struct {
+            u8 bonus_mode : 1;
+            u8 super_bonus_mode : 1;
+            u8 super_story_mode : 1;
+            u8 saved_and_exited : 1;
+            u8 continue_story : 1;
+            u8 : 3;
+        };
+    };
+    u8 status_flags;
+    u8 minikit_count;
+    u8 minikit_max;
+    u8 stage_count;
+    i8 current_gold_brick;
+    u8 save_state;
+    u8 prompt_choice;
+    u8 newly_completed;
+    u8 previous_completion;
+    u8 previous_gold_bricks;
+    u8 displayed_gold_bricks;
+    u8 field_0xbd;
+    i8 field_0xbe;
+    u8 field_0xbf[7];
+    i8 stage_types[40];
+    u8 gold_brick_enabled[40];
+    i16 next_area;
+    i8 chapter;
+    u8 field_0x119[3];
+    struct STATUS_STAGE_s *previous_stage_2;
+    struct STATUS_STAGE_s *previous_stage;
+    struct STATUS_STAGE_s *stage;
+    struct STATUS_STAGE_s *next_stage;
+    u8 field_0x12c[32];
+};
+STATIC_ASSERT(sizeof(struct STATUSPACKET_s) == 332);
+
+struct STATUS_STAGE_s {
+    void(__cdecl *draw_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);
+    void(__cdecl *update_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, f32 arg2);
+    void(__cdecl *skip_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1);
+    i32 type;
+    u16 field_0x10;
+    u8 field_0x12;
+    u8 pad_0x13;
+    i32 field_0x14;
+    f32 field_0x18;
+    f32 field_0x1c;
+};
+STATIC_ASSERT(sizeof(struct STATUS_STAGE_s) == 32);
+
+struct COLLECTION_s {
+    struct COLLECTID *list;
+    u16 count_x;
+    u16 count_y;
+    void *field_8;
+    void *field_c;
+    f32 field_10;
+    f32 field_14;
+};
+STATIC_ASSERT(sizeof(struct COLLECTION_s) == 24);
+
+struct DOOR_s {
+    char name[64];
+    char gizmo_name[64];
+    char camera_spline_name[32];
+    struct nugspline_s *spline;
+    NUVEC point0;
+    NUVEC point1;
+    NUVEC opposite_midpoint;
+    NUVEC point3;
+    NUVEC pos;
+    f32 radius;
+    NUVEC normal;
+    i16 level;
+    i16 freeplay_level;
+    u8 next_sock;
+    u8 flags;
+    u8 vehicle;
+    u8 active;
+    struct nugspline_s *camera_spline;
+    f32 camera_wait;
+    f32 camera_blend_time;
+    union {
+        u64 takeover_character_mask;
+        struct {
+            u32 vehicle_mask;
+            i32 vehicle_mode;
+        };
+    };
+    NUPLANE plane;
+    void *cutscene;
+};
+STATIC_ASSERT(sizeof(struct DOOR_s) == 296);
+
+struct GIZTURRET_s {
+    u8 field_0x00[8];
+    char name[16];
+    struct gameanimset_s *anim_set;
+    struct gameanimobj_s *primary_anim_obj;
+    struct gameanimobj_s *secondary_anim_obj;
+    NUVEC position;
+    NUVEC field_0x30;
+    NUVEC field_0x3c;
+    NUVEC field_0x48;
+    i32 pitch;
+    i32 field_0x58;
+    i32 field_0x5c;
+    i32 yaw;
+    i32 field_0x64;
+    i32 field_0x68;
+    i32 field_0x6c;
+    i32 field_0x70;
+    NUVEC field_0x74[4];
+    NUMTX field_0xa4;
+    void *field_0xe4;
+    struct gameobject_s *controller;
+    f32 field_0xec;
+    f32 field_0xf0;
+    f32 reflection_alpha;
+    f32 fire_cooldown;
+    f32 fire_interval;
+    f32 pitch_turn_speed;
+    f32 yaw_turn_speed;
+    union {
+        u32 behavior_flags;
+        struct {
+            u8 behavior_flags_low;
+            u8 animation_flags;
+            u16 behavior_flags_high;
+        };
+    };
+    union {
+        i16 field_0x10c;
+        u16 completion_score;
+    };
+    i16 room_id;
+    i16 field_0x110;
+    i16 field_0x112;
+    NUVEC field_0x114;
+    f32 field_0x120;
+    i16 blowup_type;
+    i16 field_0x126;
+    i16 base_y_rotation;
+    i16 field_0x12a;
+    u8 field_0x12c;
+    i8 bolt_type_id;
+    u8 field_0x12e;
+    u8 field_0x12f;
+    u8 field_0x130;
+    u8 field_0x131;
+    u8 field_0x132[2];
+    i16 field_0x134;
+    u8 field_0x136[2];
+    i16 field_0x138;
+    union {
+        u8 flags;
+        struct {
+            u8 : 1;
+            u8 active : 1;
+            u8 visible : 1;
+            u8 aim_locked : 1;
+            u8 aim_at_fixed_angles : 1;
+            u8 update_disabled : 1;
+            u8 rapid_fire_pending : 1;
+            u8 fired_this_frame : 1;
+        };
+    };
+    union {
+        u8 runtime_flags;
+        struct {
+            u8 : 3;
+            u8 rotation_sound_playing : 1;
+            u8 : 4;
+        };
+    };
+    struct MechObjectInterface *mech_object_interface;
+    f32 field_0x140;
+};
+STATIC_ASSERT(sizeof(struct GIZTURRET_s) == 324);
+
+struct GIZBOMBGEN_s {
+    char name[16];
+    NUVEC position;
+    struct gameanimset_s *anim_set;
+    i32 interval;
+    struct gameobject_s *generated_bomb;
+    i16 field_0x28;
+    union {
+        u8 flags;
+        struct {
+            u8 active : 1;
+            u8 visible : 1;
+            u8 reserved_flags : 6;
+        };
+    };
+    u8 field_0x2b;
+};
+STATIC_ASSERT(sizeof(struct GIZBOMBGEN_s) == 44);
+
+struct GIZBOMBGENSYS_s {
+    struct GIZBOMBGEN_s *bomb_generators;
+    u16 count;
+    u16 capacity;
+    void *anim_object_pool;
+    u8 flags;
+    u8 reserved_0x0d[3];
+    void *progress;
+};
+STATIC_ASSERT(sizeof(struct GIZBOMBGENSYS_s) == 20);
+
+struct GIZFORCEGROUP_s {
+    struct GIZFORCE_s *forces[8];
+    f32 combined_height;
+    u8 field_0x24;
+    u8 count;
+    u8 configured_count;
+    u8 field_0x27;
+};
+STATIC_ASSERT(sizeof(struct GIZFORCEGROUP_s) == 40);
+
+struct GIZFORCESYS_s {
+    struct GIZFORCE_s *forces;
+    struct GIZFORCE_s **visible_forces;
+    struct GIZMO_s **hit_test_gizmos;
+    u16 capacity;
+    u16 count;
+    u16 visible_force_count;
+    u16 hit_test_gizmo_count;
+    struct gameanimobjpool_s *anim_pool;
+    struct GIZFORCEGROUP_s groups[8];
+};
+STATIC_ASSERT(sizeof(struct GIZFORCESYS_s) == 344);
+
+struct GIZFORCEANIMDATA_s {
+    u16 flags;
+    i16 platform_id;
+    union {
+        u32 field_0x04;
+        struct {
+            u32 force_glow_active : 1;
+            u32 : 31;
+        };
+    };
+};
+STATIC_ASSERT(sizeof(struct GIZFORCEANIMDATA_s) == 8);
+
+struct GIZMOSYS_s {
+    struct gizmoset_pc_s *sets;
+    char *error_log;
+    u8 flags;
+};
+STATIC_ASSERT(sizeof(struct GIZMOSYS_s) == 12);
+
+struct GIZPANEL_s {
+    NUMTX matrix;
+    char name[16];
+    NUVEC position;
+    u16 y_rotation;
+    u8 field_0x5e[3];
+    u8 model_variant;
+    u8 field_0x62[2];
+    f32 flash_timer;
+    union {
+        u8 flags;
+        struct {
+            u8 reserved_flag : 1;
+            u8 state : 1;
+            u8 visible : 1;
+            u8 track_player : 1;
+            u8 player_near : 1;
+            u8 hide_base : 1;
+            u8 hide_target : 1;
+            u8 baddie : 1;
+        };
+    };
+    u8 draw_flags;
+    u8 field_0x6a[2];
+    NUVEC floor_position;
+    NUVEC target_offset;
+    u16 target_x_rotation;
+    u16 target_y_rotation;
+    u16 arm_x_rotation;
+    u16 target_pitch;
+    u16 target_roll;
+    i16 platform_id;
+    f32 activation_time;
+    f32 target_scale;
+    struct MechObjectInterface *mech_object_interface;
+};
+STATIC_ASSERT(sizeof(struct GIZPANEL_s) == 156);
+
+struct GIZPANELSYS_s {
+    i32 count;
+    struct GIZPANEL_s *panels;
+};
+STATIC_ASSERT(sizeof(struct GIZPANELSYS_s) == 8);
+
+struct nucolour3_s {
+    f32 r;
+    f32 g;
+    f32 b;
+};
+STATIC_ASSERT(sizeof(struct nucolour3_s) == 12);
+
+struct TintStack {
+    struct nucolour3_s ambient;
+};
+STATIC_ASSERT(sizeof(struct TintStack) == 12);
+
+struct GIZTORPMACHINE_s {
+    char name[16];
+    NUVEC position;
+    f32 activation_time;
+    u16 y_rotation;
+    u8 reserved_0x22[9];
+    union {
+        u8 flags;
+        struct {
+            u8 active : 1;
+            u8 visible : 1;
+            u8 reserved_flags : 6;
+        };
+    };
+};
+STATIC_ASSERT(sizeof(struct GIZTORPMACHINE_s) == 44);
+
+struct GIZTORPMACHINESYS_s {
+    struct GIZTORPMACHINE_s *machines;
+    i32 count;
+    f32 scale;
+};
+STATIC_ASSERT(sizeof(struct GIZTORPMACHINESYS_s) == 12);
+
+struct LEVEL_PROGRESS_DATA_s {
+    u32 words[2560];
+};
+STATIC_ASSERT(sizeof(struct LEVEL_PROGRESS_DATA_s) == 10240);
+
+struct LEVELSCRIPTPROGRESS_s {
+    char name[16];
+    f32 params[4];
+};
+STATIC_ASSERT(sizeof(struct LEVELSCRIPTPROGRESS_s) == 32);
+
+struct LEVEL_PROGRESS_s {
+    struct LEVEL_PROGRESS_DATA_s data;
+    union {
+        i32 flags;
+        struct {
+            u8 flags_low;
+            u8 flags_upper[3];
+        };
+    };
+    u32 disabled_ai_object_mask[2];
+    f32 grabber_field_0x48c;
+    f32 grabber_field_0x484;
+    f32 grabber_field_0x494;
+    u32 destroyed_trooper_cannon_mask;
+    u32 played_cutscene_mask;
+    struct LEVELSCRIPTPROGRESS_s scripts[32];
+    GIZFLOWPROGRESS_PC giz_flow_progress;
+    char disabled_effect_names[12][16];
+};
+STATIC_ASSERT(sizeof(struct LEVEL_PROGRESS_s) == 11812);
+
+struct HUBMINIKIT_s {
+    NUVEC position;
+    f32 scale;
+    f32 field_0x10;
+    i32 phase_x;
+    i32 rate_x;
+    i32 phase_y;
+    i32 rate_y;
+    i32 phase_z;
+    i32 rate_z;
+    i32 phase_rotation;
+    i32 rate_rotation;
+    u16 rotation;
+    u16 rotation_velocity;
+    u16 tilt;
+    u16 target_rotation;
+    u8 displayed_piece_count;
+    u8 target_piece_count;
+    u8 reserved_0x3e[2];
+    NUVEC collision_center;
+    NUVEC bounds_min;
+    NUVEC bounds_max;
+    f32 radius;
+    f32 height_ratio;
+    f32 offset_x;
+    f32 offset_z;
+    f32 velocity_x;
+    f32 velocity_z;
+};
+STATIC_ASSERT(sizeof(struct HUBMINIKIT_s) == 124);
+
+struct LEDGE_s {
+    char name[8];
+    NUVEC position;
+    u16 y_rotation;
+    i8 type_code;
+    union {
+        u8 state_flags;
+        struct {
+            u8 active : 1;
+            u8 visible : 1;
+            u8 : 6;
+        };
+    };
+    u8 type_index;
+    u8 flags;
+    u8 pad_1a[2];
+    i16 field_0x1c;
+    i16 field_0x1e;
+    NUVEC bounds_min;
+    NUVEC bounds_max;
+};
+STATIC_ASSERT(sizeof(struct LEDGE_s) == 56);
+
+struct RUMBLEPACKET {
+    u32 field_0x00;
+    f32 rumble_amount;
+    u32 field_0x08;
+    f32 rumble_time;
+    union {
+        u32 field_0x10;
+        struct {
+            u8 active;
+            u8 pad_0x11[3];
+        };
+    };
+};
+STATIC_ASSERT(sizeof(struct RUMBLEPACKET) == 20);
+
+struct EPISODESAVE_s {
+    f32 superstory_time_limit;
+    i32 superstory_score_target;
+    union {
+        u32 flags;
+        struct {
+            u8 superstory_complete;
+            u8 reserved_0x9[3];
+        };
+    };
+};
+STATIC_ASSERT(sizeof(struct EPISODESAVE_s) == 12);
+
+struct PARTLIGHTSOURCE_s {
+    u8 reserved_00[120];
+    NUVEC values[7];
+};
+STATIC_ASSERT(sizeof(struct PARTLIGHTSOURCE_s) == 204);
+
+struct LEVELSCRIPTPROCESS_s {
+    char name[16];
+    AISCRIPTPROCESS_PC processor;
+    u32 unknown_d8;
+};
+STATIC_ASSERT(sizeof(struct LEVELSCRIPTPROCESS_s) == 220);
+
+struct MISSIONSYS_s {
+    struct MISSIONDATA_s *missions;
+    struct MISSIONDATA_s *mission;
+    TIMER timer;
+    struct MISSIONSAVE_s *mission_save;
+    u8 count;
+    u8 field8_0x1d;
+    u8 flags;
+    u8 character_count;
+    i16 character_ids[8];
+};
+STATIC_ASSERT(sizeof(struct MISSIONSYS_s) == 48);
+
+struct PLAYERITEM_s {
+    struct PLAYERITEMTYPE_s *type;
+    u8 ammunition;
+    u8 field_0x5;
+    u8 reserved[2];
+};
+STATIC_ASSERT(sizeof(struct PLAYERITEM_s) == 8);
+
+struct SECURITYDOOR_s {
+    NUMTX leaf_matrix[2];
+    char name[16];
+    NUVEC position;
+    i16 platform_id[2];
+    u16 yaw;
+    union {
+        u16 flags;
+        struct {
+            u16 active : 1;
+            u16 visible : 1;
+            u16 opened : 1;
+            u16 flag_08 : 1;
+            u16 reserved_flags : 4;
+            u16 state : 8;
+        };
+    };
+    NUVEC player_position;
+    u16 terrain_angle_z;
+    u16 terrain_angle_x;
+    f32 opening;
+    char unknown_b8[8];
+};
+STATIC_ASSERT(sizeof(struct SECURITYDOOR_s) == 192);
+
+struct SHOPINPUT {
+    union {
+        i32 value[10];
+        struct {
+            i32 left_pressed;
+            i32 right_pressed;
+            i32 up_pressed;
+            i32 down_pressed;
+            i32 left_held;
+            i32 right_held;
+            i32 up_held;
+            i32 down_held;
+            i32 confirm;
+            i32 cancel;
+        };
+    };
+};
+STATIC_ASSERT(sizeof(struct SHOPINPUT) == 40);
+
+struct SIGNAL_s {
+    char name[16];
+    NUMTX matrix;
+    NUVEC position;
+    u16 yaw;
+    u16 terrain_pitch;
+    u16 terrain_roll;
+    i16 animation_0;
+    i16 animation_1;
+    i16 animation_2;
+    char character_letter;
+    char suit_letter;
+    union {
+        u8 flags;
+        struct {
+            u8 visible : 1;
+            u8 active : 1;
+            u8 in_use : 1;
+            u8 reserved_flags : 5;
+        };
+    };
+    u8 pad_6b;
+    f32 radius;
+    f32 scale;
+    NUVEC normal;
+    struct SUIT_INITIALIZER_RECORD_PC *suit;
+    NUVEC target_position;
+    i16 platform_id;
+    u16 pad_92;
+};
+STATIC_ASSERT(sizeof(struct SIGNAL_s) == 148);
+
+struct SIGNALPROGRESS_s {
+    char suit_letters[32];
+    u32 active_mask;
+    u32 visible_mask;
+};
+STATIC_ASSERT(sizeof(struct SIGNALPROGRESS_s) == 40);
+
+struct SPEEDERCHASEVALUES {
+    f32 distance;
+    f32 ahead_range;
+    f32 ahead_speed;
+    f32 ahead_seek;
+    f32 behind_range;
+    f32 behind_speed;
+    f32 behind_seek;
+};
+STATIC_ASSERT(sizeof(struct SPEEDERCHASEVALUES) == 28);
+
+struct VuVec {
+    union {
+        struct {
+            f32 x;
+            f32 y;
+            f32 z;
+        };
+        NUVEC xyz;
+    };
+    f32 w;
+};
+STATIC_ASSERT(sizeof(struct VuVec) == 16);
+
+struct TIGHTROPE_s {
+    char name[16];
+    union {
+        NUVEC start_position;
+        NUVEC start;
+    };
+    union {
+        NUVEC end_position;
+        NUVEC end;
+    };
+    u16 field_0x28;
+    u16 field_0x2a;
+    u16 field_0x2c;
+    u16 field_0x2e;
+    u8 field_0x30;
+    u8 field_0x31;
+    i8 field_0x32;
+    u8 pad_33;
+    NUVEC direction;
+    union {
+        f32 length;
+        f32 horizontal_length;
+    };
+    union {
+        u16 rotation;
+        u16 y_rotation;
+        u16 angle;
+    };
+    union {
+        u8 visible;
+        u8 enabled;
+    };
+    union {
+        u8 active;
+        u8 available;
+    };
+};
+STATIC_ASSERT(sizeof(struct TIGHTROPE_s) == 72);
+
+struct NuSpecialBoundsDisplayLayout {
+    NUMTX mtx;
+    NUMTX draw_mtx;
+    NUVEC min;
+    f32 min_w;
+    NUVEC max;
+    f32 max_w;
+    NUVEC center;
+    f32 radius;
+    struct nuclipobject_s *clip_objects;
+    char *name;
+    u32 flags;
+    f32 *clip_range;
+    i32 instance_ix;
+    struct nuinstanim_time_view_s *instance_animation;
+    i16 wind_speed;
+    i16 wind_scale;
+    u32 pad_cc;
+};
+STATIC_ASSERT(sizeof(struct NuSpecialBoundsDisplayLayout) == 208);
+
+struct NuSpecialLegacyInstanceBoundsLayout {
+    u8 pad_00[64];
+    i16 object_index;
+};
+STATIC_ASSERT(sizeof(struct NuSpecialLegacyInstanceBoundsLayout) == 66);
+
+struct NuSpecialLegacyObjectBoundsLayout {
+    struct NuSpecialLegacyMaterialLink *materials;
+    f32 origin_radius;
+    u8 pad_08[4];
+    NUVEC minimum;
+    NUVEC maximum;
+    NUVEC center;
+    f32 radius;
+    u8 pad_34[4];
+    struct NuSpecialLegacyObjectBoundsLayout *next;
+};
+STATIC_ASSERT(sizeof(struct NuSpecialLegacyObjectBoundsLayout) == 60);
+
+struct NuSpecialLegacyRuntimeLayout {
+    u8 pad_00[64];
+    u8 *instance;
+    char *name;
+    u32 flags;
+};
+STATIC_ASSERT(sizeof(struct NuSpecialLegacyRuntimeLayout) == 76);
+
+struct NuSpecialLegacySceneLayout {
+    u8 pad_00[24];
+    void **objects;
+    i32 instance_count;
+    u8 *instances;
+};
+STATIC_ASSERT(sizeof(struct NuSpecialLegacySceneLayout) == 36);
+
+struct TRAFFICANIMINSTANCE_s {
+    NULISTLNK link;
+    struct TRAFFICANIM_s *animation;
+    f32 frame;
+    i8 vehicle_index;
+    u8 reserved_11[3];
+};
+STATIC_ASSERT(sizeof(struct TRAFFICANIMINSTANCE_s) == 20);
+
+struct TRAFFICANIM_s {
+    struct nuhspecial_s special;
+    void *animation;
+    f32 end_frame;
+    f32 tfactor;
+    f32 frame_interval;
+    f32 random_interval;
+    f32 room_frame_interval;
+    f32 y_offset;
+    i8 vehicle_indices[16];
+    u8 rooms[256];
+    i8 vehicle_count;
+    u8 disabled;
+    u8 reserved_13a[2];
+    f32 next_spawn_time;
+};
+STATIC_ASSERT(sizeof(struct TRAFFICANIM_s) == 320);
+
+struct TRAFFICANIMSYS_s {
+    struct TRAFFICANIM_s animations[64];
+    struct nuhspecial_s vehicles[16];
+    struct TRAFFICANIMINSTANCE_s instances[500];
+    NULISTHDR free_instances;
+    NULISTHDR active_instances;
+    i8 animation_count;
+    i8 vehicle_count;
+    u8 reserved_77e2[2];
+};
+STATIC_ASSERT(sizeof(struct TRAFFICANIMSYS_s) == 30692);
+
+struct SNIPER_s {
+    NUVEC prev;
+    NUVEC pos;
+    f32 fire_timer;
+    f32 state;
+};
+STATIC_ASSERT(sizeof(struct SNIPER_s) == 32);
+
+struct MINEENTRY_s {
+    u32 active;
+    NUVEC pos;
+    f32 grow;
+    f32 grow_alpha;
+    u16 rotx;
+    u16 roty;
+};
+STATIC_ASSERT(sizeof(struct MINEENTRY_s) == 28);
+
+struct MINESYS_s {
+    struct nuhspecial_s mine_special;
+    struct MINEENTRY_s mines[64];
+    f32 mine_radius;
+    f32 spawn_timer;
+    void *nomine_areas[10];
+    i16 nomine_count;
+    i16 mine_debris;
+    i32 mine_part;
+    f32 update_timer;
+};
+STATIC_ASSERT(sizeof(struct MINESYS_s) == 1864);
+
+struct instNUGCUTSCENE_s {
+    struct instNUGCUTSCENE_s *next;
+    struct instNUGCUTSCENE_s *previous;
+    char name[16];
+    NUMTX matrix;
+    struct NUGCUTSCENE_s *cutscene;
+    struct NUGCUTSCENE_s *cutscene_copy;
+    NUVEC transformed_bounds_center;
+    NUVEC bounds_min;
+    NUVEC bounds_max;
+    f32 max_camera_distance_squared;
+    union {
+        struct {
+            union {
+                u8 flags_88;
+                struct {
+                    u8 flags_88_low : 2;
+                    u8 paused : 1;
+                    u8 flags_88_high : 5;
+                };
+            };
+            union {
+                u8 flags_89;
+                struct {
+                    u8 flags_89_low : 4;
+                    i8 finished : 1;
+                    u8 flags_89_high : 3;
+                };
+            };
+            u8 flags_8a;
+            u8 flags_8b;
+        };
+        struct {
+            u32 flags_88_word_low : 13;
+            i32 repeat_count : 5;
+            u32 flags_88_word_high : 14;
+        };
+    };
+    union {
+        u8 flags_8c;
+        struct {
+            u8 flags_8c_low : 6;
+            u8 wait_at_end : 1;
+            u8 flags_8c_high : 1;
+        };
+    };
+    u8 flags_8d;
+    u8 pad_8e[2];
+    f32 current_frame;
+    f32 render_frame;
+    f32 rate;
+    struct instNUGCUTSCENECAMERA_s *camera_instance;
+    struct instNUGCUTRIGIDSYS_s *rigid_instance;
+    struct instNUGCUTCHARSYS_s *character_instance;
+    struct instNUGCUTLOCATORSYS_s *locator_instance;
+    struct instNUGCUTTRIGGERSYS_s *trigger_instance;
+    struct instNUGCUTSCENE_s *chained_instance;
+    void(__cdecl *end_callback)(struct instNUGCUTSCENE_s *arg0);
+    u32 field_b8;
+    struct NUGCUTSCENE_s *stream_buffer_0;
+    struct NUGCUTSCENE_s *stream_buffer_1;
+    void *field_c4;
+    void *field_c8;
+    u8 pad_cc[12];
+    i16 skip_countdown;
+    u8 pad_da[5];
+    u8 stream_index;
+    f32 accumulated_stream_duration;
+    f32 elapsed;
+    f32 alpha;
+    void *pending_stream_buffer;
+    i32 allocation_size;
+    struct instNUGCUTSCENE_s *queued_stream_instance;
+};
+STATIC_ASSERT(sizeof(struct instNUGCUTSCENE_s) == 248);
+
+struct SOCKSYS {
+    struct sock_pc_s *sock;
+    i32 count;
+};
+STATIC_ASSERT(sizeof(struct SOCKSYS) == 8);
+
+struct PODSPRINTNETPACKET_s {
+    i16 ai_state;
+    char pad_0x02[4];
+    i16 speed;
+    i16 speed2;
+};
+STATIC_ASSERT(sizeof(struct PODSPRINTNETPACKET_s) == 10);
+
+struct PODSPRINT_AISPLINE_s {
+    struct nugspline_s *spline;
+    i16 vals[6];
+};
+STATIC_ASSERT(sizeof(struct PODSPRINT_AISPLINE_s) == 16);
+
+struct PODSPRINT_s {
+    struct nugspline_s *finish_line;
+    struct nugspline_s *halfway;
+    struct PODSPRINT_AISPLINE_s ai[6];
+    struct gizaimessage_s *lap_msg;
+    struct gizaimessage_s *max_speed_msg;
+    struct gizaimessage_s *min_speed_msg;
+    struct gizaimessage_s *speed_step_msg;
+    void *field_0x78;
+    void *boulders;
+    f32 field_0x80;
+    f32 speed;
+    f32 field_0x88;
+    char pad_0x8c[2];
+    u8 ai_state;
+    u8 ai_index;
+    char pad_0x90[2];
+    u8 flags;
+    char pad_0x93[1];
+};
+STATIC_ASSERT(sizeof(struct PODSPRINT_s) == 148);
+
+struct PLAYERSUBOBJ2_s {
+    char pad_0x00[28];
+    f32 value;
+};
+STATIC_ASSERT(sizeof(struct PLAYERSUBOBJ2_s) == 32);
+
+struct PLAYERSUBOBJ_s {
+    char pad_0x00[36];
+    void *field_0x24;
+};
+STATIC_ASSERT(sizeof(struct PLAYERSUBOBJ_s) == 40);
+
+struct HOTHBATTLE_MELEE_WAVE_s {
+    i16 character_id;
+    u8 reserved_02[2];
+    struct gameobject_s *creatures[4];
+    union {
+        u8 remaining_count;
+        u8 field_0x18;
+    };
+    union {
+        u8 initial_count;
+        u8 field_0x19;
+    };
+    union {
+        u8 active_count;
+        u8 reserved_1a;
+    };
+    char name[13];
+    u8 reserved_24[4];
+};
+STATIC_ASSERT(sizeof(struct HOTHBATTLE_MELEE_WAVE_s) == 40);
+
+struct HOTHBATTLE_MELEE_s {
+    union {
+        u8 current_wave;
+        u8 field_0x0;
+    };
+    union {
+        u8 next_wave;
+        u8 field_0x1;
+    };
+    union {
+        u8 initialize_wave;
+        u8 field_0x2;
+    };
+    u8 field_0x3;
+    union {
+        i8 transition_phase;
+        i8 field_0x4;
+    };
+    u8 field_0x5[3];
+    f32 wave_delay;
+    struct HOTHBATTLE_MELEE_WAVE_s waves[4];
+    struct gameobject_s *background_creatures[6];
+    u8 creature_count;
+    u8 reserved_0xc5[3];
+};
+STATIC_ASSERT(sizeof(struct HOTHBATTLE_MELEE_s) == 200);
+
+struct GIZSPECIAL_s {
+    char name[32];
+    struct gameanimset_s *anim_set;
+    union {
+        u8 flags;
+        struct {
+            u8 is_reversed : 1;
+            u8 is_active : 1;
+            u8 field_0x24_2 : 6;
+        };
+    };
+    u8 field_0x25[3];
+};
+STATIC_ASSERT(sizeof(struct GIZSPECIAL_s) == 40);
+
+struct instNUGCUTRIGID_s {
+    struct NUGSCN_s *scene;
+    void *special;
+    void *display_special;
+    u8 state_index;
+    u8 visible;
+    u8 pad_0e[2];
+};
+STATIC_ASSERT(sizeof(struct instNUGCUTRIGID_s) == 16);
+
+struct AICONDITION_s {
+    NULISTLNK list_node;
+    f32 param_val;
+    char type;
+    i8 param_idx;
+    u16 bool_and : 1;
+    u16 keep_blocked : 1;
+    u16 is_param_idx_valid : 1;
+    u16 is_complex : 1;
+    char *complex_arg;
+    char *arg;
+    void *void_arg;
+    struct AICONDITIONDEF_PC *def;
+    char *next_state_name;
+    struct AISTATE_PC *next_state;
+    struct AICONDITION_s *param_cond;
+};
+STATIC_ASSERT(sizeof(struct AICONDITION_s) == 44);
+
+struct EDLOCATORSET_s {
+    NULISTLNK link;
+    char name[16];
+    struct EDLOCATOR_s *locators[64];
+};
+STATIC_ASSERT(sizeof(struct EDLOCATORSET_s) == 280);
+
+struct EDLOCATOR_s {
+    NULISTLNK link;
+    char name[16];
+    NUVEC position;
+    i32 direction;
+    union {
+        u8 path_check[28];
+        struct {
+            i32 on_path;
+            struct EDAIPATH_s *path;
+            struct EDAIPATHNODE_s *first_node;
+            struct EDAIPATHNODE_s *second_node;
+            f32 path_fraction;
+            f32 path_width;
+            i32 path_angle;
+        };
+    };
+    u16 runtime_index;
+    u8 drawn;
+    u8 unknown_47;
+};
+STATIC_ASSERT(sizeof(struct EDLOCATOR_s) == 72);
+
+struct EDAIPATHROUTE_s {
+    char name[16];
+    u64 user_mask;
+    u8 flags;
+    u8 unknown_19[3];
+};
+STATIC_ASSERT(sizeof(struct EDAIPATHROUTE_s) == 32);
+
+struct EDAIPATH_s {
+    NULISTLNK link;
+    char name[16];
+    NULISTHDR nodes;
+    struct EDAIPATHNODE_s *current_node;
+    union {
+        struct EDAIPATHNODE_s *other_node;
+        struct EDAIPATHNODE_s *nearest_node;
+    };
+    union {
+        struct EDAIPATHROUTE_s *current_route;
+        u32 unknown_28;
+    };
+    u8 flags;
+    u8 unknown_02d;
+    i16 runtime_start;
+    i16 runtime_end;
+    i16 runtime_nearest;
+    i16 node_count;
+    i8 draw_index;
+    u8 unknown_037[5];
+    struct EDAIPATHROUTE_s routes[16];
+};
+STATIC_ASSERT(sizeof(struct EDAIPATH_s) == 576);
+
+struct EDAIPATHCNX_s {
+    struct EDAIPATHNODE_s *node;
+    u32 flags;
+    u16 route_mask;
+    u16 unknown_0a;
+};
+STATIC_ASSERT(sizeof(struct EDAIPATHCNX_s) == 12);
+
+struct EDAIPATHNODE_s {
+    NULISTLNK link;
+    char name[16];
+    NUVEC position;
+    f32 radius;
+    union {
+        f32 lower_height;
+        f32 height_min;
+    };
+    union {
+        f32 upper_height;
+        f32 height_max;
+    };
+    union {
+        u8 unknown_030[96];
+        struct EDAIPATHCNX_s connections[8];
+    };
+    i16 index;
+    u8 flags;
+    u8 unknown_093[3];
+    u16 route_mask;
+    union {
+        struct nuhspecial_s special;
+        struct nuhspecial_s platform;
+    };
+    union {
+        NUVEC special_position;
+        NUVEC platform_position;
+    };
+    struct EDAISHAREDPATHNODE_s *shared_node;
+};
+STATIC_ASSERT(sizeof(struct EDAIPATHNODE_s) == 180);
+
+struct EDAISHAREDPATHNODE_s {
+    NULISTLNK link;
+    i8 reference_count;
+    i8 runtime_index;
+    u8 draw_flags;
+};
+STATIC_ASSERT(sizeof(struct EDAISHAREDPATHNODE_s) == 12);
+
+struct AIEDITOR_RENDER_STATE {
+    u8 unknown_00[4];
+    struct eduimenu_s *main_menu;
+    void *enter_context;
+    void *enter_owner;
+    union {
+        NUVEC selection_position;
+        NUVEC cursor_position;
+    };
+    NUVEC cursor_movement;
+    NUVEC camera_position;
+    union {
+        u8 unknown_34[48];
+        struct {
+            i32 camera_pitch;
+            i32 camera_yaw;
+            struct nuhspecial_s cursor_platform;
+            u8 unknown_48_to_64[28];
+        };
+    };
+    struct AISYS_PC *ai_system;
+    struct EDAIPATH_s path_storage[32];
+    struct EDAIPATH_s *current_path;
+    union {
+        NULISTHDR free_paths;
+        u8 unknown_3fec[8];
+    };
+    NULISTHDR paths;
+    union {
+        u8 unknown_3ffc[185096];
+        struct {
+            struct EDAIPATHNODE_s node_storage[1024];
+            NULISTHDR free_path_nodes;
+            struct EDAISHAREDPATHNODE_s shared_node_storage[64];
+        };
+    };
+    union {
+        NULISTHDR free_shared_nodes;
+        NULISTHDR free_shared_path_nodes;
+    };
+    union {
+        NULISTHDR path_walls;
+        NULISTHDR shared_path_nodes;
+    };
+    union {
+        u8 unknown_31314[22032];
+        struct {
+            struct AIPATHSYS_PC *cached_path_system;
+            struct AIPATH_PC *runtime_path;
+            u8 unknown_3131c_to_36924[22024];
+        };
+    };
+    NULISTHDR creatures;
+    u8 unknown_3692c[4];
+    struct EditorNamedEntry *mode_selection_36930;
+    u8 unknown_36934[4372];
+    void *mode_selection_37a48;
+    u8 unknown_37a4c[4];
+    struct EDLOCATOR_s locator_pool[256];
+    NULISTHDR free_locators;
+    NULISTHDR locators;
+    union {
+        void *mode_selection_3c260;
+        struct EDLOCATOR_s *current_locator;
+    };
+    union {
+        u8 unknown_3c264[4];
+        struct EDLOCATOR_s *nearest_locator;
+    };
+    struct EDLOCATORSET_s locator_set_pool[64];
+    char pending_locator_name[16];
+    NULISTHDR free_locator_sets;
+    NULISTHDR locator_sets;
+    union {
+        struct EditorNamedEntry *current_route;
+        struct EDLOCATORSET_s *current_locator_set;
+    };
+    u8 unknown_4088c[9744];
+    void *mode_selection_42e9c;
+    u8 unknown_42ea0[8];
+    u8 flags;
+    u8 unknown_42ea9[3];
+    void *enter_extra_1;
+    void *enter_extra_2;
+    void *enter_extra_3;
+    u8 save_scratch[524288];
+    char warning[256];
+    u32 pad_buttons;
+    u32 pad_pressed;
+};
+STATIC_ASSERT(sizeof(struct AIEDITOR_RENDER_STATE) == 800832);
+
+struct EDAIPATHWALL_s {
+    NULISTLNK link;
+    u8 unknown_08[2];
+    u8 flags;
+};
+STATIC_ASSERT(sizeof(struct EDAIPATHWALL_s) == 12);
+
+struct AIPATHNODELINK_s {
+    u8 node_index;
+    u8 padding_0x01;
+    i16 special_route_index;
+};
+STATIC_ASSERT(sizeof(struct AIPATHNODELINK_s) == 4);
+
+struct AIPATHSPECIALROUTE_s {
+    u8 path_count;
+    u8 padding_0x01[3];
+    struct AIPATH_PC **paths;
+};
+STATIC_ASSERT(sizeof(struct AIPATHSPECIALROUTE_s) == 8);
+
+struct eduiitem_s {
+    struct eduiitem_s *next;
+    struct eduiitem_s *previous;
+    i32 type;
+    union {
+        i32 data;
+        void *data_ptr;
+        u8 unknown_0c[4];
+    };
+    u8 unknown_10;
+    union {
+        u8 flags;
+        struct {
+            u8 highlighted : 1;
+            u8 disabled : 1;
+            u8 unknown_flags : 6;
+        };
+    };
+    i8 text_alignment;
+    u8 unknown_13[5];
+    i32 selection_group;
+    i32 x;
+    i32 y;
+    char *text;
+    u32 colours[4];
+    i32(__cdecl *input)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2, u32 arg3);
+    i32(__cdecl *process)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
+    i32(__cdecl *render)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
+    void(__cdecl *destroy)(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
+};
+STATIC_ASSERT(sizeof(struct eduiitem_s) == 72);
+
+struct eduimenu_s {
+    struct eduiitem_s *first;
+    struct eduiitem_s *last;
+    struct eduiitem_s *selected;
+    struct eduiitem_s *field_0c;
+    struct eduiitem_s *field_10;
+    i32 x;
+    i32 y;
+    i32 width;
+    i32 height;
+    i32 field_24;
+    i32 field_28;
+    void *font;
+    void(__cdecl *callback)(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    char *title;
+    u32 flags : 3;
+    u32 unknown_flags : 29;
+    struct eduimenu_s *child;
+    struct eduimenu_s *parent;
+};
+STATIC_ASSERT(sizeof(struct eduimenu_s) == 68);
+
+struct EDANTINODE_s {
+    NULISTLNK link;
+    NUVEC position;
+    f32 radius;
+    f32 lower_height;
+    f32 upper_height;
+    struct nuhspecial_s special;
+    NUVEC special_position;
+    i32 rotation_offset;
+    i32 flags;
+    f32 base_radius;
+    f32 base_height;
+    u8 game_flags;
+    u8 type;
+    u8 unknown_4a[2];
+};
+STATIC_ASSERT(sizeof(struct EDANTINODE_s) == 76);
+
+struct EDAIPATHCHECK_s {
+    i32 on_path;
+    struct EDAIPATH_s *path;
+    struct EDAIPATHNODE_s *first;
+    struct EDAIPATHNODE_s *second;
+    f32 fraction;
+    f32 width;
+    i32 angle;
+};
+STATIC_ASSERT(sizeof(struct EDAIPATHCHECK_s) == 28);
+
+struct edui_textpicker_s {
+    struct eduiitem_s base;
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    char value[256];
+    i32 keyboard_column;
+    i32 keyboard_row;
+    i32 cursor;
+    i16 editing;
+    i16 max_length;
+    void(__cdecl *callback)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    char *format;
+    u32 keyboard_flags;
+};
+STATIC_ASSERT(sizeof(struct edui_textpicker_s) == 360);
+
+struct nufile_info_s {
+    u8 unknown_00[16];
+    i8 second;
+    i8 minute;
+    i8 hour;
+    i8 day;
+    i8 month;
+    u8 unknown_15;
+    i16 year;
+};
+STATIC_ASSERT(sizeof(struct nufile_info_s) == 24);
+
+struct GIZOBSTACLESYS_s {
+    struct gizobstacle_s *obstacles;
+    struct GIZMO_s **active_gizmos;
+    u16 count;
+    u16 capacity;
+    u16 active_gizmo_count;
+    u16 field_0x0e;
+    struct gameanimobjpool_s *anim_pool;
+};
+STATIC_ASSERT(sizeof(struct GIZOBSTACLESYS_s) == 20);
+
+struct gizmotype_s {
+    char name[32];
+    char prefix[8];
+    struct GIZMOFNS_s fns;
+    void *buffer;
+};
+STATIC_ASSERT(sizeof(struct gizmotype_s) == 160);
+
+struct CHARSCENE_s {
+    struct NUGSCN_s *scene;
+    struct nuhspecial_s special_scene;
+};
+STATIC_ASSERT(sizeof(struct CHARSCENE_s) == 16);
+
+struct STATUSCOLLECT_s {
+    u16 completion_points;
+    u8 gold_bricks;
+    u8 flags;
+};
+STATIC_ASSERT(sizeof(struct STATUSCOLLECT_s) == 4);
+
+struct PORTALDOOR_s {
+    struct nuhspecial_s special;
+    u16 flags;
+    u8 portal_id;
+    u8 pad_0f;
+};
+STATIC_ASSERT(sizeof(struct PORTALDOOR_s) == 16);
+
+struct CUTSYS {
+    void **cuts;
+    i32 count;
+    u32 *character_bits;
+};
+STATIC_ASSERT(sizeof(struct CUTSYS) == 12);
+
+struct CLIMBOBJECTSYS_s {
+    struct CLIMBOBJECT_s *objects;
+    u16 count;
+    u16 capacity;
+};
+STATIC_ASSERT(sizeof(struct CLIMBOBJECTSYS_s) == 8);
+
+struct CLIMBOBJECT_s {
+    NUVEC normal;
+    f32 impact_x;
+    f32 impact_z;
+    struct AIPATHCNX_PC *connection;
+    struct AIPATH_PC *path;
+    u8 flags;
+    u8 field_0x1d[3];
+};
+STATIC_ASSERT(sizeof(struct CLIMBOBJECT_s) == 32);
+
+struct GIZMOPICKUPRUNTIMESYS_s {
+    struct GIZMOPICKUP_PC *pickups;
+    struct GIZMOPICKUP_PC *temporary_pickups;
+    i32 pickup_count;
+    i32 field_0x0c;
+    i32 total_score;
+    f32 draw_distance;
+    f32 pickup_scale;
+};
+STATIC_ASSERT(sizeof(struct GIZMOPICKUPRUNTIMESYS_s) == 28);
+
+struct LEVELSAVE_s {
+    char minikit_names[10][8];
+    u8 minikit_count;
+    u8 reserved_0x51[2];
+    u8 arcade_flags;
+};
+STATIC_ASSERT(sizeof(struct LEVELSAVE_s) == 84);
+
+struct SPECIALMINIKITSYS_s {
+    struct SPECIALMINIKIT_s *items;
+    i32 count;
+};
+STATIC_ASSERT(sizeof(struct SPECIALMINIKITSYS_s) == 8);
+
+struct SPECIALMINIKIT_s {
+    struct nuhspecial_s special;
+    void *inst_anim;
+    void *anim_data;
+    f32 end_frame;
+    char special_name[16];
+    char pickup_name[8];
+    struct GIZMO_s *special_gizmo;
+    struct GIZMO_s *pickup_gizmo;
+    u8 flags;
+};
+STATIC_ASSERT(sizeof(struct SPECIALMINIKIT_s) == 60);
+
+struct CHARPLATFORM_s {
+    struct nuhspecial_s special;
+    i16 object_id;
+    i16 platform_id;
+    struct gameobject_s *object;
+};
+STATIC_ASSERT(sizeof(struct CHARPLATFORM_s) == 20);
+
+struct CHARPLATFORMSYS_s {
+    i32 field_0x00;
+    i32 platform_count;
+    struct CHARPLATFORM_s platforms[1];
+};
+STATIC_ASSERT(sizeof(struct CHARPLATFORMSYS_s) == 28);
+
+struct GIZBUILDITANIMDATA_s {
+    NUMTX start_mtx;
+    NUMTX end_mtx;
+    NUMTX draw_mtx;
+    f32 wobble_time;
+    u8 wobble_axis;
+    u8 padding_0xc5;
+    u8 was_drawn;
+    u8 padding_0xc7;
+};
+STATIC_ASSERT(sizeof(struct GIZBUILDITANIMDATA_s) == 200);
+
+struct GIZBUILDITSYS_s {
+    struct GIZBUILDIT_s *buildits;
+    u16 count;
+    u16 capacity;
+    u16 max_animation_objects;
+    u16 field_0x0a;
+    struct gameanimobjpool_s *anim_pool;
+    struct gameanimobj_s **anim_objects;
+};
+STATIC_ASSERT(sizeof(struct GIZBUILDITSYS_s) == 20);
+
+struct NuPlatform {
+    char *name;
+    char *texture_extension;
+    char *font_extension;
+    i32 current_platform;
+};
+STATIC_ASSERT(sizeof(struct NuPlatform) == 16);
+
+struct PLUG_s {
+    char name[16];
+    NUVEC position;
+    u16 x_rotation;
+    u16 y_rotation;
+    u16 z_rotation;
+    u8 enabled;
+    union {
+        u8 flags;
+        struct {
+            u8 active : 1;
+            u8 visible : 1;
+            u8 reserved_flags : 6;
+        };
+    };
+    u8 reserved[16];
+};
+STATIC_ASSERT(sizeof(struct PLUG_s) == 52);
+
+struct FADER_s {
+    struct nuhspecial_s special;
+    struct nuhspecial_s while_animating;
+};
+STATIC_ASSERT(sizeof(struct FADER_s) == 24);
+
+struct pushblock_s {
+    union {
+        f32 ground_offset;
+        f32 vertical_penetration;
+    };
+    union {
+        f32 ground_height;
+        f32 support_height;
+    };
+    f32 snap_timer;
+    f32 settled_height;
+    i8 terrain_info[4];
+    i8 extra_terrain_info[4];
+    i32 previous_extra_terrain_info;
+    union {
+        struct pushblock_s *supporting_block;
+        struct pushblock_s *block_below;
+    };
+    struct pushblock_s *previous_supporting_block;
+    struct nuhspecial_s special;
+    struct gameobject_s *pushing_object;
+    i32 platform_id;
+    u8 fields_038[8];
+    f32 snap_distance;
+    char name[16];
+    struct nuvec_s *snap_positions;
+    struct nuvec_s *position;
+    struct nuhspecial_s end_position_specials[2];
+    NUVEC end_position_origins[2];
+    NUVEC velocity;
+    NUVEC target_velocity;
+    NUVEC snap_origin;
+    NUVEC bounds_min;
+    NUVEC bounds_max;
+    union {
+        struct {
+            u8 runtime_flags_0c8;
+            u8 runtime_flags_0c9;
+            union {
+                u8 flags_0ca;
+                struct {
+                    u8 fields_0ca_0_1 : 2;
+                    u8 push_visible : 1;
+                    u8 fields_0ca_3 : 1;
+                    u8 config_0ca_4 : 1;
+                    u8 config_0ca_5 : 1;
+                    u8 config_0ca_6 : 1;
+                    u8 config_0ca_7 : 1;
+                };
+            };
+            union {
+                u8 flags_0cb;
+                struct {
+                    u8 fields_0cb_0_1 : 2;
+                    u8 config_0cb_2 : 1;
+                    u8 config_0cb_3 : 1;
+                    u8 field_0cb_4 : 1;
+                    u8 config_0cb_5 : 1;
+                    u8 config_0cb_6 : 1;
+                    u8 field_0cb_7 : 1;
+                };
+            };
+        };
+        u8 state_flags[4];
+        u32 packed_state_flags;
+    };
+    union {
+        u16 completion_flags;
+        u16 field_0xcc;
+    };
+    union {
+        struct {
+            u8 end_position_count;
+            u8 output_count;
+        };
+        u16 field_0xce;
+    };
+};
+STATIC_ASSERT(sizeof(struct pushblock_s) == 208);
+
+struct PUSHPROGRESS {
+    u32 visible_mask;
+    u32 state_mask;
+    u32 position_mask;
+    NUVEC positions[16];
+    NUVEC end_positions[2][16];
+};
+STATIC_ASSERT(sizeof(struct PUSHPROGRESS) == 588);
+
+struct minisnowtrooper_s {
+    u8 formation_index;
+    u8 state_flags;
+    u8 reserved_002;
+    u8 speed_divisor;
+    u16 rotation;
+    u16 target_rotation;
+    f32 timer;
+    f32 formation_x;
+    f32 formation_z;
+    NUVEC shot_position;
+};
+STATIC_ASSERT(sizeof(struct minisnowtrooper_s) == 32);
+
+struct minitrooperteam_s {
+    f32 origin_x;
+    f32 origin_z;
+    f32 height;
+    f32 formation_width;
+    f32 formation_depth;
+    u16 facing_angle;
+    u8 formation_state;
+    u8 route_state;
+    u8 waypoint_state;
+    u8 team_flags;
+    u8 trooper_count;
+    u8 reserved_01b;
+    u32 state_flags;
+    f32 state_timer;
+    f32 debris_timer;
+    f32 fire_timer;
+    f32 reserved_02c;
+    i32 bolt_type;
+    struct nuvec_s *route_point;
+    struct nugspline_s *path;
+    struct minisnowtrooper_s *troopers;
+    NUVEC position;
+    i32 target_index;
+};
+STATIC_ASSERT(sizeof(struct minitrooperteam_s) == 80);
+
+struct GIZTURRETSYS_s {
+    struct GIZTURRET_s *turrets;
+    struct gameanimobjpool_s *anim_pool;
+    u16 count;
+    u16 capacity;
+    u8 field_0x0c[4];
+};
+STATIC_ASSERT(sizeof(struct GIZTURRETSYS_s) == 16);
+
+struct nuclipbounds_s {
+    NUVEC center;
+    f32 center_w;
+    NUVEC extent;
+    f32 extent_w;
+};
+STATIC_ASSERT(sizeof(struct nuclipbounds_s) == 32);
+
+struct nuclipobject_s {
+    i32 nmaterials;
+    i32 *material_ids;
+    i32 *indices;
+};
+STATIC_ASSERT(sizeof(struct nuclipobject_s) == 12);
+
+struct edui_gradient_node_s {
+    struct edui_gradient_node_s *next;
+    struct edui_gradient_node_s *previous;
+    f32 time;
+    u32 colour;
+    f32 hue;
+    f32 saturation;
+    f32 value;
+    u32 metadata;
+};
+STATIC_ASSERT(sizeof(struct edui_gradient_node_s) == 32);
+
+struct edui_gradient_pick_s {
+    struct eduiitem_s base;
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    struct edui_gradient_node_s *first_stage;
+    struct edui_gradient_node_s *selected_stage;
+    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *press)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *add)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *remove)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *copy)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *paste)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    i32 change_timer;
+};
+STATIC_ASSERT(sizeof(struct edui_gradient_pick_s) == 112);
+
+struct edui_texture_pick_s {
+    struct eduiitem_s base;
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    f32 uv_x[2];
+    f32 uv_y[2];
+    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void *material;
+    i32 selected_corner;
+    f32 zoom;
+};
+STATIC_ASSERT(sizeof(struct edui_texture_pick_s) == 108);
+
+struct edui_graph_s {
+    struct eduiitem_s base;
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    struct PC_SPECIAL_PROJECTION_ADJUST *graph;
+    struct PC_SPECIAL_PROJECTION_ADJUST *onion_skins[8];
+    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    f32 cursor_x;
+    f32 cursor_y;
+    i32 width;
+    i32 height;
+    f32 x_scale;
+    f32 y_scale;
+    i32 selected_point;
+    char x_label[16];
+    char y_label[16];
+    char title[16];
+};
+STATIC_ASSERT(sizeof(struct edui_graph_s) == 192);
+
+struct edui_slider_s {
+    struct eduiitem_s base;
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    f32 normalized_value;
+    f32 value;
+    f32 minimum;
+    f32 range;
+    i32 change_timer;
+    char *format;
+    f32 granularity;
+};
+STATIC_ASSERT(sizeof(struct edui_slider_s) == 108);
+
+struct edcam_s {
+    NUVEC position;
+    i32 pitch;
+    i32 yaw;
+    f32 distance;
+    NUVEC offset;
+    NUVEC snap_origin;
+    NUVEC snap_step;
+    i32 pitch_snap_step;
+    i32 yaw_snap_step;
+    NUVEC snapped_position;
+    i32 snapped_pitch;
+    i32 snapped_yaw;
+    NUVEC position_speed;
+    i32 pad_pitch_speed;
+    i32 pad_yaw_speed;
+    f32 distance_speed;
+    f32 minimum_distance;
+    f32 mouse_pitch_speed;
+    f32 mouse_yaw_speed;
+    f32 mouse_move_speed;
+    f32 auto_move_base;
+    f32 auto_move_dist_scale;
+    f32 auto_zoom_base;
+    f32 auto_zoom_dist_scale;
+    union {
+        u8 freedoms;
+        struct {
+            u8 allow_position_x : 1;
+            u8 allow_position_y : 1;
+            u8 allow_position_z : 1;
+            u8 allow_pitch : 1;
+            u8 allow_yaw : 1;
+            u8 allow_distance : 1;
+            u8 invert_pad_pitch : 1;
+            u8 reserved_freedom : 1;
+        };
+    };
+    u8 padding_91[3];
+};
+STATIC_ASSERT(sizeof(struct edcam_s) == 148);
+
+struct edui_prop_s {
+    struct eduiitem_s base;
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    u16 unknown_property_flags : 6;
+    u16 button_type : 3;
+    u16 remaining_property_flags : 7;
+    u8 unknown_4e[6];
+    f32 label_width;
+    f32 button_size;
+    f32 button_x;
+    f32 button_y;
+    char *property_text;
+    u8 unknown_68[4];
+    i32 depth;
+    void(__cdecl *selected)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *button)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    i32 extra_data;
+};
+STATIC_ASSERT(sizeof(struct edui_prop_s) == 128);
+
+struct edui_interact_s {
+    f32 x;
+    f32 y;
+    f32 width;
+    f32 height;
+    struct eduimenu_s *menu;
+    struct eduiitem_s *item;
+    i32(__cdecl *callback)(struct edui_interact_s *arg0);
+    u32 buttons;
+    i32 field_20;
+};
+STATIC_ASSERT(sizeof(struct edui_interact_s) == 36);
+
+struct edui_sel_s {
+    struct eduiitem_s base;
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    void(__cdecl *selected)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *held)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+};
+STATIC_ASSERT(sizeof(struct edui_sel_s) == 84);
+
+struct edui_colour_slider_s {
+    struct edui_slider_s base;
+    u8 red;
+    u8 green;
+    u8 blue;
+    u8 unknown_6f;
+};
+STATIC_ASSERT(sizeof(struct edui_colour_slider_s) == 112);
+
+struct edui_file_pick_s {
+    struct eduiitem_s base;
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    char *format;
+    u16 reserved_54;
+    u16 reopen_directory;
+    char name[64];
+    char directory[256];
+    char filename[264];
+    i32(__cdecl *compare_entries)(void *arg0, void *arg1);
+};
+STATIC_ASSERT(sizeof(struct edui_file_pick_s) == 676);
+
+struct edui_colour_pick_s {
+    struct eduiitem_s base;
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    f32 cursor_x;
+    f32 cursor_y;
+    f32 hue;
+    f32 saturation;
+    f32 value;
+    f32 red;
+    f32 green;
+    f32 blue;
+    union {
+        u8 interaction_flags;
+        struct {
+            u8 dragging_colour : 1;
+            u8 dragging_saturation : 1;
+            u8 confirm : 1;
+            u8 unknown_interaction_flags : 5;
+        };
+    };
+    u8 unknown_6d[3];
+    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+};
+STATIC_ASSERT(sizeof(struct edui_colour_pick_s) == 116);
+
+struct ed_module_s {
+    struct ed_module_s *next;
+    struct ed_module_s *previous;
+    char *name;
+    void(__cdecl *init)(void);
+    void(__cdecl *close)(void);
+    void(__cdecl *activate)(void);
+    void(__cdecl *deactivate)(void);
+    void(__cdecl *apply)(void);
+    void(__cdecl *write)(i32 arg0);
+    void(__cdecl *read)(i32 arg0);
+    u32 block_id;
+    i32(__cdecl *process)(f32 arg0, struct FRAME_PAD_PC *arg1);
+    void(__cdecl *render)(void);
+    void *reserved;
+};
+STATIC_ASSERT(sizeof(struct ed_module_s) == 56);
+
+struct nutex_s {
+    i32 type;
+    i32 width;
+    i32 height;
+};
+STATIC_ASSERT(sizeof(struct nutex_s) == 12);
+
+struct edanim_param_s {
+    i32 instance_id;
+    i32 effect_count;
+    i32 sound_count;
+    i32 field_00c;
+    i32 field_010;
+    f32 field_014;
+    f32 field_018;
+    char effect_names[8][16];
+    i32 effect_ids[8];
+    i32 effect_intervals[8];
+    i32 effect_flags[8];
+    f32 effect_positions[8][3];
+    i16 effect_angles[8];
+    i16 effect_angle_ranges[8];
+    f32 field_17c;
+    char sound_names[8][16];
+    i32 sound_ids[8];
+    i32 sound_flags[8];
+    f32 sound_values[8];
+    f32 sound_positions[8][3];
+    i32 platform_id;
+    f32 bounce_impulse;
+    f32 bounce_spring;
+    f32 bounce_damping;
+    i8 page;
+    u8 reserved_2d1[3];
+};
+STATIC_ASSERT(sizeof(struct edanim_param_s) == 724);
+
+struct edgra_individual_s {
+    NUVEC position;
+    f32 field_0c;
+    i16 field_10;
+    i16 field_12;
+    u8 unknown_14[12];
+};
+STATIC_ASSERT(sizeof(struct edgra_individual_s) == 32);
+
+struct debris_float_key_s {
+    f32 time;
+    f32 value;
+};
+STATIC_ASSERT(sizeof(struct debris_float_key_s) == 8);
+
+struct NuLegacyInstanceLayout {
+    u8 pad_00[68];
+    union {
+        u8 flags;
+        struct {
+            u8 visible : 1;
+            u8 on_screen : 1;
+            u8 unused_flag_2 : 1;
+            u8 no_visibility_test : 1;
+            u8 unused_flags_4_7 : 4;
+        };
+    };
+    u8 pad_45[3];
+    struct nuinstanim_time_view_s *animation;
+};
+STATIC_ASSERT(sizeof(struct NuLegacyInstanceLayout) == 76);
+
+struct NuSpecialLegacyLayout {
+    u8 pad_00[64];
+    void *instance;
+    char *name;
+    u32 flags;
+};
+STATIC_ASSERT(sizeof(struct NuSpecialLegacyLayout) == 76);
+
+struct VuMtx {
+    NUMTX matrix;
+};
+STATIC_ASSERT(sizeof(struct VuMtx) == 64);
+
+struct LevelEditorScene {
+    char name[32];
+    char directory[128];
+    struct NUGSCN_s *scene;
+    i32 active : 1;
+    i32 editable : 1;
+    i32 saved : 1;
+    u32 reserved_flags : 29;
+};
+STATIC_ASSERT(sizeof(struct LevelEditorScene) == 168);
+
 /* Globals and constants transferred from the Android sources (tools/globals.py). */
 #ifdef __cplusplus
 extern "C" {
@@ -20714,16 +24110,703 @@ extern "C" {
     extern char *txt;
     extern i16 id_MINISLAVE1;
     extern i32 PadFlyMode;
-    struct gizobstacle_s *__cdecl GizObstacle_FindByName(void *arg0, char *arg1);
+    GIZOBSTACLE *__cdecl GizObstacle_FindByName(GIZOBSTACLESYS_s *system, char *name);
     void __cdecl TakeOverGameObject(struct gameobject_s *rider, struct gameobject_s *vehicle, i32 blend_camera,
                                     i32 immediate);
     void __cdecl DrawBossHitPoints(struct gameobject_s *object);
     void __cdecl MovePlayer(struct gameobject_s *object);
     void __cdecl MovePlayerSpline(struct gameobject_s *object);
     i16 __cdecl GetGenericGoon(i32 arg0);
+    extern void(__cdecl *AIPathNodeDeletedFn)(struct EDAIPATHNODE_s *arg0);
+    void __cdecl DrawLocator(struct nuvec_s *arg0, f32 arg1, i32 arg2, i32 arg3);
+    extern char *(__cdecl *SpecialRouteCharacterNameFn)(u8 arg0);
+    extern f32 aiEditor_LocatorWidth;
+    extern i32 aidata_version;
+    extern struct AIEDITOR_RENDER_STATE *aieditor;
+    void __cdecl aieditor_ClearMainMenu(void);
+    void __cdecl aieditor_cbCancelMainMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl aieditor_cbCancelSaveMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl creatureEditor_PathNodeMoved(struct EDAIPATHNODE_s *node);
+    extern void *ed_fnt;
+    struct eduiitem_s *__cdecl eduiMenuAddItem(struct eduimenu_s *menu, struct eduiitem_s *item);
+    struct eduimenu_s *__cdecl eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, void *font, void *callback,
+                                              char *title);
+    extern struct eduiitem_s *edui_last_item;
+    void __cdecl locatorEditor_PathNodeMoved(struct EDAIPATHNODE_s *node);
+    void __cdecl locatorEditor_cbCancelRenameMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl locatorEditor_cbCancelSelectLocatorSet(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl locatorEditor_cbRenameLocator(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl locatorEditor_cbSetLocatorSet(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl pathEditor_cbCancelSelectMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl pathEditor_cbSetCurrentPath(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl routeEditor_cbCancelRouteUsers(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl routeEditor_cbSetRouteUsers(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern i32 edSfxAllCount;
+    void __cdecl edanimDrawCursor(void);
+    void __cdecl edanimRenderParticleEmitters(i32 parameter_index);
+    void __cdecl edanimRenderSoundEmitters(i32 parameter_index);
+    extern struct eduimenu_s *edanim_active_menu;
+    extern struct eduimenu_s *edanim_bouncy_menu;
+    extern struct eduimenu_s *edanim_localsoundtype_menu;
+    extern void *edanim_mtl;
+    extern i32 edanim_nearest_sound;
+    extern struct eduimenu_s *edanim_sound_menu;
+    extern i32 edanim_sound_mode;
+    extern i32 edanim_sound_type;
+    extern struct eduimenu_s *edanim_soundtype_menu;
+    void __cdecl edanimcbCancelBouncyMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edanimcbCancelLocalSoundTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edanimcbCancelSoundMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edanimcbCancelSoundTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edanimcbLocalSoundMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edanimcbSetBouncyDamping(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edanimcbSetBouncyPlayerGrav(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edanimcbSetBouncyTension(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edanimcbSetLocalSoundType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edanimcbSetSoundType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
+    char *__cdecl edbitsGetSoundName(i32 sound_type);
+    extern char edbits_level_save_directory[256];
+    extern char edbits_level_save_extension[256];
+    extern char edbits_level_save_name[256];
+    extern u32 edblack[4];
+    void __cdecl edgraAttachMenu(struct eduimenu_s *parent, struct eduimenu_s *child);
+    extern i32 edgra_dpadmode;
+    extern struct eduimenu_s *edgra_dpadmode_menu;
+    extern i32 edgra_filter;
+    extern char edgra_filter_string[16];
+    extern struct eduimenu_s *edgra_instance_menu;
+    extern i32 edgra_instance_type;
+    void __cdecl edgracbCancelDpadModeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edgracbCancelInstanceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edgracbSetDpadMode(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edgracbSetInstanceType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern u32 edgrey[4];
+    void __cdecl eduiMenuAddItemFirst(struct eduimenu_s *menu, struct eduiitem_s *item);
+    extern struct eduimenu_s *edbri_bridgeproperties_menu;
+    extern struct eduimenu_s *edbri_dpadmode_menu;
+    extern i32 edbri_mode;
+    extern struct eduimenu_s *edbri_plankcount_menu;
+    extern i32 edbri_planks;
+    extern i32 edbri_post_interval;
+    void __cdecl edbricbCancelBridgePropertiesMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edbricbCancelDpadModeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edbricbCancelPlankCountMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edbricbRopeColourMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edbricbSetBridgeDamp(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edbricbSetBridgeGravity(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edbricbSetBridgePlrweight(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edbricbSetBridgeRopeheight(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edbricbSetBridgeStability(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edbricbSetBridgeTension(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edbricbSetDpadMode(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edbricbSetPlankCount(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edbricbSetPostInterval(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    u32 __cdecl FS_EncodedDateKey(char *name);
+    void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out);
+    f32 __cdecl FS_GetDirTextWidth(void);
+    i32 __cdecl FS_PrevNameLen(char *name);
+    struct eduimenu_s *__cdecl eduiGetActiveMenu(void);
+    struct eduiitem_s *__cdecl eduiItemGreyPickCreate(u32 data, void *colours, void *callback, char *text);
+    extern i32 edui_donotdraw;
+    extern void *edui_font;
+    void __cdecl eduicbPickCFGCancel(struct eduimenu_s *menu, struct eduimenu_s *arg1);
+    extern u32 eduimenu_outline_colour;
+    extern u32 eduimenu_selected_outline_colour;
+    void __cdecl cbgpcfgAdd(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+    void __cdecl cbgpcfgCPPress(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+    void __cdecl cbgpcfgCopy(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+    void __cdecl cbgpcfgDel(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+    void __cdecl cbgpcfgPaste(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+    struct eduiitem_s *__cdecl eduiItemColourPickCreate(u32 arg0, void *arg1, void *arg2, char *arg3);
+    void __cdecl eduiItemColourPickSetHSV(struct edui_colour_pick_s *item, f32 hue, f32 saturation, f32 value);
+    struct eduiitem_s *__cdecl eduiItemSelWithClipColourCreate(u32 data, void *colours, i32 selected, i32 group,
+                                                               void *callback, char *text);
+    extern struct eduimenu_s *colourmenu;
+    extern struct eduimenu_s *edui_messagemenu;
+    void __cdecl eduicbCancelMessageMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl cbChangeETimeMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbChangeGenRateMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbFileLoadEffects(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbFileSaveEffects(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlCancelDataMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl cbPtlCancelEmitMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl cbPtlCopyEffect(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlDeleteEffect(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlEmitTimeMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlEmitVelMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlGravMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlShowAll(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlStartVelMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlVarEmitMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlVarStartMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edgraDetermineNearestInstance(f32 distance);
+    void __cdecl edgraDoInput(struct FRAME_PAD_PC *pad);
+    extern struct eduimenu_s *edgra_active_menu;
+    extern struct eduimenu_s *edgra_clumparea_menu;
+    extern struct eduimenu_s *edgra_clumpfade_menu;
+    extern struct eduimenu_s *edgra_clumpmode_menu;
+    extern struct eduimenu_s *edgra_clumpproperties_menu;
+    extern i32 edgra_editormode;
+    extern struct eduimenu_s *edgra_globals_menu;
+    extern i32 edgra_mode;
+    extern i32 edgra_superscale;
+    void __cdecl edgracbApplyGlobalFade(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edgracbCancelClumpAreaMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edgracbCancelClumpFadeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edgracbCancelClumpModeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edgracbCancelClumpPropertiesMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edgracbCancelGlobalsMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edgracbClumpDistMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edgracbClumpSizesMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edgracbClumpTerrainMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edgracbSetClumpArea(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edgracbSetClumpFadeIn(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edgracbSetClumpFadeOut(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edgracbSetClumpMode(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edgracbSetClumpWind(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edgracbSetGlobalFadeIn(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edgracbSetGlobalFadeOut(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edgracbToggleClumpReactive(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern i32 edpp_create_type;
+    extern u8 edpp_effect_list;
+    extern i32 edpp_num_orphans;
+    extern i32 edpp_showAllPlaced;
+    extern struct eduimenu_s *edptl_drawflag_menu;
+    extern struct eduimenu_s *edptl_group_menu;
+    void __cdecl edptlcbCancelDrawflagMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edptlcbCancelGroupMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edptlcbChangeCSDisable(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edptlcbClipboardMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edptlcbDeleteOrphans(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edptlcbGhostMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edptlcbSetDrawflag(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edptlcbSetGroup(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edptlcbSetMasterGroup(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl eduiItemSliderSetFmt(struct edui_slider_s *item, char *format);
+    void __cdecl eduiItemSliderSetGranularity(struct edui_slider_s *item, f32 granularity);
+    extern struct edui_slider_s *fadeinitem;
+    extern struct edui_slider_s *fadeoutitem;
+    extern struct edui_slider_s *globalfadeinitem;
+    extern struct edui_slider_s *globalfadeoutitem;
+    extern struct eduimenu_s *ptldatamenu;
+    extern struct eduimenu_s *ptlemitmenu;
+    void __cdecl edpartApplyScaleType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartCancelCutOffMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelGravMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelInstanceOrientMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelScaleTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelThingsInstanceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartChangeBounce(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartChangeCutOff(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartChangeGrav(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartChangeInstanceRot(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartChangeInstanceVarRot(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartGeneralTypeMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartLevelTypeMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartSetInstanceType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartSetScaleFactor(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern struct eduimenu_s *edpart_cutoff_menu;
+    extern i32 edpart_filter;
+    extern char edpart_filter_string[16];
+    extern struct eduimenu_s *edpart_grav_menu;
+    extern struct eduimenu_s *edpart_instorient_menu;
+    extern i32 edpart_nearest;
+    extern struct parttype_lookup_pc_s *edpart_nearest_type;
+    extern f32 edpart_scale_factor;
+    extern struct eduimenu_s *edpart_scaletype_menu;
+    extern i32 edpart_superscale;
+    extern struct eduimenu_s *edpart_thingsinstance_menu;
+    extern struct eduimenu_s *edpart_type_menu;
+    extern i32 edpart_which_scene;
+    void __cdecl DebrisSetDetailLevels(i32 arg0, i32 arg1);
+    void __cdecl DebrisSetGroupID(i32 handle, i16 group);
+    void __cdecl DebrisStatusNormal(i32 *handle);
+    void __cdecl cbCancelChangeNameMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl cbCancelEffectListMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl cbChangeName(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl cbPtlApplyJib(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlCancelCutOffMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl cbPtlCancelDamageFlagMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl cbPtlCancelDamageMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl cbPtlCancelJibMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl cbPtlChangeCameraCutOff(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlChangeCutOff(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlChangeCutOn(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlChangeDamageFlags(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlChangeDrawCutOff(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlChangeRepeatFlag(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlChangeSoundCutOff(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlCollMenu(struct eduimenu_s *parent, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlRepeatBoxMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlTorusMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbSelEffectList(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
+    extern struct eduimenu_s *dpadmodemenu;
+    void __cdecl edcamSetPos(struct nuvec_s *position);
+    void __cdecl edppDrawCursor(void);
+    void __cdecl edppHighlightNearest(void);
+    void __cdecl edppMultipleCopyClear(void);
+    void __cdecl edppMultipleCopyCopy(void);
+    void __cdecl edppMultipleCopyPaste(void);
+    i32 __cdecl edppPtlCreate(struct nuvec_s *arg0, i32 arg1);
+    extern struct eduimenu_s *edpp_active_menu;
+    extern f32 edpp_copy_size;
+    extern i32 edpp_dpad_mode;
+    extern struct eduimenu_s *edptl_bounce_menu;
+    extern i32 edptl_count;
+    extern struct eduimenu_s *edptl_damage_menu;
+    extern struct eduimenu_s *edptl_damageflag_menu;
+    extern struct eduimenu_s *edptl_detail_menu;
+    extern struct eduimenu_s *edptl_orphanlist_menu;
+    extern struct eduimenu_s *edptl_star_menu;
+    extern i32 edptl_superscale;
+    extern struct eduimenu_s *edptl_testdetail_menu;
+    void __cdecl edptlcbApplyBounceFactor(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edptlcbApplyBounceOffset(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edptlcbApplyStarPoints(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edptlcbApplyStarRatio(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edptlcbCancelBounceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edptlcbCancelDetailMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edptlcbCancelDpadModeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edptlcbCancelOrphanListMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edptlcbCancelStarMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edptlcbCancelTestDetailMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edptlcbSetDebrisDetail(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edptlcbSetDebrisThinning(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edptlcbSetDetail(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edptlcbSetDpadMode(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edptlcbSetMaxThin(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern struct eduimenu_s *effectlistmenu;
+    extern struct edui_slider_s *grad_jib_x_amp_item;
+    extern struct edui_slider_s *grad_jib_x_freq_item;
+    extern struct edui_slider_s *grad_jib_y_amp_item;
+    extern struct edui_slider_s *grad_jib_y_freq_item;
+    extern struct eduimenu_s *namemenu;
+    extern struct eduimenu_s *ptlcutoffmenu;
+    extern struct eduimenu_s *ptljibmenu;
+    extern i32 EDPP_MAX_TYPES;
+    void __cdecl cbPtlCancelQuickDeleteMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl cbPtlCancelTextureMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl cbPtlQuickDeleteType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlSelTextureType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbPtlSetXZFacing(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl cbPtlTextureSelectMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern u32 eddarkred[4];
+    extern struct eduimenu_s *edptl_quickdel_menu;
+    extern struct eduimenu_s *texturemenu;
+    void __cdecl Door_GoThrough(struct WORLDINFO_s *world, struct DOOR_s *door, i32 player_triggered);
+    extern f32 iconalphaoverride;
+    extern i16 tCHALLENGECOMPLETE;
+    extern i16 tWINNER;
+    void __cdecl AI_Activate(void *gizmo, i32 active);
+    void __cdecl AI_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 type_id, void *world_ptr, void *unused);
+    char *__cdecl AI_GetGizmoName(void *gizmo);
+    i32 __cdecl AI_GetMaxGizmos(void *arg0);
+    i32 __cdecl AI_GetNumOutputs(void *arg0);
+    i32 __cdecl AI_GetOutput(void *gizmo, i32 arg1, i32 arg2);
+    char *__cdecl AI_GetOutputName(void *arg0, i32 arg1);
+    extern f32 GIZPANEL_PLAYERPOSLIFT;
+    void __cdecl GizTurret_ReadAnimSetData(struct gameanimobj_s *object, u8 version);
+    struct nuvec_s *__cdecl GizmoGetPos(struct GIZMOSYS_s *gizmo_sys, void *gizmo);
+    struct area_supercounter_pc_s *__cdecl SuperCounters_FindPickup(struct WORLDINFO_s *arg0, void *arg1,
+                                                                    struct nuvec_s *arg2, void *arg3);
+    extern u16 *Game_CompletionSave;
+    u8 __cdecl Store_IsPackUnlocked(i32 pack);
+    void __cdecl NuLightSpeedBlur(i32 reuse_camera, f32 scale);
+    void __cdecl NuSpeedBlurSetMotionFactors(f32 pan, f32 pull, f32 clamp);
+    extern struct level_data_pc_s *PODRACEC_LDATA;
+    void __cdecl edbriMakePath(char *path);
+    void __cdecl edbriStartAllPages(void);
+    extern f32 Door_CutCamBlendTime;
+    extern NUVEC Door_CutCamPos0;
+    extern NUVEC Door_CutCamPos1;
+    extern f32 Door_CutCamWait;
+    extern f32 Door_CutCamWaitTime;
+    extern i32 Door_CutLookAtPlayers;
+    extern char Door_ExitCameraSplineName[32];
+    extern char Door_ExitName[64];
+    extern struct DOOR_s *setlastdoor_last;
+    i32 __cdecl ShipDropCoins(struct starfighter_s *fighter);
+    void __cdecl CutScene_SnapToEnd(void *cut);
+    extern i32 LevForce;
+    extern struct gizaimessage_s *MaulA_ai_message;
+    extern struct gameobject_s *Maul_obj;
+    void __cdecl PodRaceReset(void);
+    extern i32 PodRace_nsnipers;
+    extern f32 PodRace_sniper_fire_time;
+    extern SNIPER_s PodRace_snipers[10];
+    void __cdecl PodSprint_InitAISpline(struct WORLDINFO_s *world, void *ai, char *name);
+    extern i32 g_lowEndLevelBehaviour;
+    extern void *kaminoe_netpacket;
+    extern i32 max_nsnipers;
+    extern f32 mushroom0_along;
+    extern f32 mushroom2_along;
+    extern i32 mushroom_collapse;
+    extern f32 mushroom_max_time_available;
+    extern i32 mushroom_nattempts_per_increment;
+    extern f32 mushroom_time_available;
+    extern f32 mushroom_time_increment;
+    extern struct PODSPRINTNETPACKET_s *podsprint_netpacket;
+    extern struct gameobject_s *Grievous_obj;
+    void __cdecl InitMiniSnowTroopers(struct WORLDINFO_s *arg0, i32 arg1, i32 arg2, i32 arg3);
+    extern struct gizaimessage_s *KashyyykA_msg_TotalWookies;
+    extern struct gizaimessage_s *KashyyykA_msg_WookiesToRescue;
+    extern struct gizaimessage_s *vader_b_complete_msg;
+    extern u8 vader_b_playersDead;
+    void __cdecl InitTrooperCannons(struct WORLDINFO_s *arg0);
+    extern struct gameobject_s *gameobj;
+    extern i16 id_MILLENNIUMFALCON;
+    extern f32 spotLightA_yrot[2];
+    extern f32 spotLightA_zrot[2];
+    extern f32 spotLightB_yrot[2];
+    extern f32 spotLightB_zrot[2];
+    extern u8 troopercannons_beenReset;
+    void __cdecl FadeLoop_SetObj(struct NUGSCN_s *scene, char *name);
+    extern u8 code_test[16];
+    extern struct eduimenu_s *edanim_localparticle_menu;
+    extern struct eduimenu_s *edanim_localparticletype_menu;
+    extern struct eduimenu_s *edanim_mctb_menu;
+    extern i32 edanim_nearest_particle;
+    extern struct eduimenu_s *edanim_particle_menu;
+    extern i32 edanim_particle_type;
+    extern struct eduimenu_s *edanim_particletype_menu;
+    void __cdecl edanimcbCancelLocalParticleMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edanimcbCancelLocalParticleTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edanimcbCancelMCTBMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edanimcbCancelParticleMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edanimcbCancelParticleTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edanimcbSetLocalParticleType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edanimcbSetParticleRate(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edanimcbSetParticleType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edanimcbToggleParticleSwitch(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    extern char id_test[17];
+    i32 __cdecl saveloadCheckCardFreeSpace(i32 slot);
+    i32 __cdecl saveloadCheckCardType(void);
+    i32 __cdecl saveloadCheckSlotsUsed(void);
+    i32 __cdecl saveloadDeleteSlot(i32 slot);
+    i32 __cdecl saveloadSaveSlot(i32 slot, void *buffer, i32 size);
+    void __cdecl AddFancyMessageRGB(char *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, i32 arg5, u8 arg6, u8 arg7,
+                                    u8 arg8);
+    void __cdecl PadOutPause(i32 port, struct WORLDINFO_s *world);
+    i32 __cdecl PlayersDropInOut(void);
+    extern i32 COMPLETIONPOINTS;
+    f32 __cdecl NuFmin(f32 a, f32 b);
+    void __cdecl GizBuildIt_TurnOff(struct GIZBUILDIT_s *buildit);
+    void __cdecl GizAIMessage_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 arg1, void *arg2, void *arg3);
+    char *__cdecl GizAIMessage_GetGizmoName(void *gizmo);
+    i32 __cdecl GizAIMessage_GetMaxGizmos(void *arg0);
+    i32 __cdecl GizAIMessage_GetNumOutputs(void *gizmo);
+    i32 __cdecl GizAIMessage_GetOutput(void *gizmo, i32 output_index, i32 arg2);
+    char *__cdecl GizAIMessage_GetOutputName(void *gizmo, i32 output_index);
+    extern i32 gizaimessage_gizmotype_id;
+    extern f32 ICONSIZE;
+    void __cdecl PlayRadio(char *arg0, char *arg1, i32 arg2);
+    void __cdecl RegisterGizActions(void *definitions);
+    void __cdecl GizRandom_Activate(void *gizmo, i32 active);
+    void __cdecl GizRandom_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    char *__cdecl GizRandom_GetGizmoName(void *gizmo);
+    i32 __cdecl GizRandom_GetMaxGizmos(void *world_ptr);
+    i32 __cdecl GizRandom_GetNumOutputs(void *gizmo);
+    i32 __cdecl GizRandom_GetOutput(void *gizmo, i32 output_index, i32 arg2);
+    char *__cdecl GizRandom_GetOutputName(void *arg0, i32 arg1);
+    void *__cdecl GizRandom_ReserveBufferSpace(void *world_ptr);
+    i32 __cdecl GizSpinner_GetTargetPoints(struct GIZSPINNER_s *spinner, struct nuvec_s *positions,
+                                           struct nuvec_s *directions);
+    f32 __cdecl NuSpecialGetOriginRadius(void *special);
+    i32 __cdecl DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x,
+                                         u16 rotate_y, u16 rotate_z, struct nuhspecial_s *special, i32 rotate_order);
+    extern f32 PANEL_MINIKITCOUNTSCALE;
+    extern f32 PANEL_MINIKITCOUNTY;
+    extern f32 stats_xscale;
+    extern nuhspecial_s FadeLoop_ObjHSpecial;
+    struct level_data_pc_s *__cdecl CanSaveAndExit(struct WORLDINFO_s *world);
+    extern u8 MENUEXITB;
+    extern u8 MENUEXITG;
+    extern u8 MENUEXITR;
+    extern u8 MENULOSTA1;
+    extern u8 MENULOSTA2;
+    extern u8 MENULOSTB1;
+    extern u8 MENULOSTB2;
+    extern u8 MENULOSTG1;
+    extern u8 MENULOSTG2;
+    extern u8 MENULOSTR1;
+    extern u8 MENULOSTR2;
+    extern f32 MENUTEXTSCALE;
+    extern i32 PauseMenus_Align;
+    extern f32 PauseMenus_X;
+    extern TIMER SuperStoryTimer;
+    extern struct area_data_pc_s *VEHICLES_ADATA;
+    extern i16 tALLLEVELPROGRESSWILLBELOST;
+    extern i16 tALLSUPERSTORYPROGRESSWILLBELOST;
+    extern i16 tARCADE_NOWIN;
+    extern i16 tCANCEL;
+    extern i16 tEXITTOMAP;
+    extern i16 tEXITWITHOUTSAVING;
+    extern i16 tGAMEPROGRESSWILLBELOST;
+    extern i16 tNO;
+    extern i16 tQUITGAME;
+    extern i16 tRESTARTDEMO2;
+    extern i16 tRESTARTLEVEL;
+    extern i16 tSAVEANDEXIT;
+    extern i16 tYES;
+    i16 __cdecl BoltType_FindIDByNameWide(char *arg0, struct WORLDINFO_s *arg1);
+    i32 __cdecl SpawnMeleeCreatureType(i32 type);
+    extern i16 id_PROBEDROID;
+    extern HOTHBATTLE_MELEE_s melee;
+    extern struct gameobject_s *ForceBackObj;
+    extern f32 ForceBackRadius;
+    extern i32 ForceBackType;
+    void __cdecl edpartCancelChangeGenRateMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelChangeMaxLifeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelChangeNameMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelDebrisScaleMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelDebrisSettingsMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelEmitMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelInstanceFlagsMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelInstanceScaleMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelInstanceSettingsMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartChangeDebrisScale(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartChangeGenRate(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edpartChangeInstanceFlag(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartChangeInstanceScale(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartChangeMaxLife(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartChangeName(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edpartChangeRanMaxLife(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartDestroy(i32 index);
+    void __cdecl edpartDieDebrisMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartDrawCursor(void);
+    void __cdecl edpartEmitTimeMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartEmitVelMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartEmitterDebrisMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartFinishMenu(struct eduimenu_s *menu);
+    void __cdecl edpartHighlightNearest(void);
+    void __cdecl edpartImpactDebrisMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartImpactPartMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartTintMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartTrail1DebrisMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartTrail2DebrisMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartVarEmitMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartVarStartMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern struct eduimenu_s *edpart_active_menu;
+    extern struct eduimenu_s *edpart_changegenrate_menu;
+    extern i32 edpart_create_type;
+    extern struct eduimenu_s *edpart_debrisscale_menu;
+    extern struct eduimenu_s *edpart_debrissettings_menu;
+    extern struct eduimenu_s *edpart_emit_menu;
+    extern struct eduimenu_s *edpart_instanceflags_menu;
+    extern struct eduimenu_s *edpart_instancescale_menu;
+    extern struct eduimenu_s *edpart_instancesettings_menu;
+    extern struct eduimenu_s *edpart_maxlife_menu;
+    extern struct eduimenu_s *edpart_name_menu;
+    extern struct part_emit_pc_s *edpart_nearest_emit;
+    void __cdecl DrawGameObjectsDraw(i32 pass);
+    void __cdecl ResetPlayer(struct gameobject_s *arg0, i32 arg1, struct nuvec_s *arg2, i32 arg3);
+    extern i32 droid_hack;
+    void __cdecl SetAnimFrame(struct nuhspecial_s *special, f32 frame);
+    extern i32 runoutofpostabspace;
+    extern f32 CameraZoom;
+    void __cdecl ReCalculateCompletionPoints(void);
+    extern STATUSPACKET_s StatusPacket;
+    void __cdecl StatusStage_Reset(struct STATUS_STAGE_s *stage);
+    extern struct STATUS_STAGE_s *StatusStages;
+    extern i32 goldbrickmsgcount;
+    extern f32 menu_pulse;
+    extern i32 smarttextex_drawmessagebox;
+    extern i32 status_prompt;
+    extern i16 tCONTINUESTORY;
+    extern i16 tFINALCHAPTERLOCKED;
+    extern i16 tFINISHSTORY;
+    extern i16 tMAP;
+    extern i16 tNEXTCHAPTERLOCKED;
+    extern i16 tRESTART;
+    extern struct shopitem_s *BrickItems;
+    extern i32 BrickShelfIds[7];
+    extern struct shopitem_s *CharItems;
+    extern i32 CharShelfIds[7];
+    extern shopitem_s CutItems[128];
+    extern i32 CutShelfIds[7];
+    void __cdecl DrawTopShelf(i32 picked_item);
+    extern struct shopitem_s *ExtraItems;
+    extern i32 ExtraShelfIds[7];
+    extern struct shopitem_s *HintItems;
+    extern i32 HintShelfIds[7];
+    void __cdecl InitBikeParts(void);
+    void __cdecl NuMtxRotateXInline(struct numtx_s *m, i32 a);
+    void __cdecl NuMtxRotateYInline(struct numtx_s *m, i32 a);
+    void __cdecl NuMtxRotateZInline(struct numtx_s *m, i32 a);
+    extern i32 SHOPCHARCOUNT;
+    i32 __cdecl SelectShopItem(struct shopitem_s *items, i32 index);
+    extern f32 ShopNameAlpha;
+    extern NUVEC SubShelfPos[7];
+    extern shopitem_s TopShelf[6];
+    extern nuhspecial_s iconback;
+    extern i32 players_going_forward;
+    void __cdecl cbPtlCancelGSortMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl cbPtlCancelReadoutMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl cbPtlSelGSort(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
+    void __cdecl cbPtlSelReadout(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern i32 edpp_readout;
+    extern struct eduimenu_s *ptlgsortmenu;
+    extern struct eduimenu_s *ptlreadoutmenu;
+    struct SIGNAL_s *__cdecl Signal_FindNearest(struct WORLDINFO_s *world, struct nuvec_s *position,
+                                                struct gameobject_s *object, f32 *distance);
+    extern i32 traffic_portalling;
+    extern struct eduimenu_s *edanim_switchtype_menu;
+    void __cdecl edanimcbCancelSwitchTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edanimcbSetSwitchType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
+    extern struct level_data_pc_s *DAGOBAHA_LDATA;
+    extern struct level_data_pc_s *DAGOBAHD_LDATA;
+    extern struct level_data_pc_s *DAGOBAHE_LDATA;
+    extern i32 radios_playing;
+    u32 __cdecl NuMouseReadButtons(void);
+    f32 __cdecl NuMouseReadXVel(void);
+    f32 __cdecl NuMouseReadYVel(void);
+    f32 __cdecl NuMouseReadZVel(void);
+    void __cdecl do_Pad_Standard_camera(struct edcam_s *camera, f32 delta_time, struct FRAME_PAD_PC *pad);
+    void __cdecl do_Pad_flymode_camera(struct edcam_s *camera, f32 delta_time, struct FRAME_PAD_PC *pad);
+    void __cdecl do_mouse_flymode_camera(struct edcam_s *camera, f32 delta_time);
+    extern struct numtx_s *ed_remap_mtx;
+    void __cdecl edmainSetCamera(struct numtx_s *matrix);
+    extern edcam_s gp_cam;
+    void __cdecl NuDisplayListBurstRndrSpecial(struct nuhspecial_s *handle, u32 count, struct numtx_s *matrices,
+                                               i32 clip);
+    i32 __cdecl findrange(struct NUGSCN_s *arg0, i32 arg1);
+    void __cdecl NuTexAddReference(i32 tex_id, struct NUGSCN_s *scene);
+    extern f32 AiRndrCullDistance;
+    extern i32 DisableDebugMsg;
+    void __cdecl NuDebugMsgPrint(char *message);
+    extern char err_msg_filter[32];
+    extern void(__cdecl *nudebug_handler)(char *arg0);
+    extern char *nufile;
+    extern i32 nuline;
+    void __cdecl NuHtmlFlush(i32 force);
+    void __cdecl NuRndrPrimSetColour(i32 colour);
+    void __cdecl NuRndrPrimUV(f32 u, f32 v);
+    void __cdecl cbCancelSubMenu(struct eduimenu_s *menu, struct eduimenu_s *arg1);
+    void __cdecl cbColourPickSel(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    extern struct edui_colour_pick_s *cp_item;
+    extern i32(__cdecl *cp_process)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2,
+                                    struct FRAME_PAD_PC *arg3);
+    i32 __cdecl cbProcessColourPick(struct eduimenu_s *menu, struct eduiitem_s *item, f32 delta_time,
+                                    struct FRAME_PAD_PC *pad);
+    void __cdecl cbToggleIndicatorMode(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    extern struct eduiitem_s *cp_info;
+    void __cdecl cbCopy(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern struct eduiitem_s *cp_copy;
+    extern struct eduiitem_s *cp_paste;
+    void __cdecl cbPaste(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern i32 ed_init;
+    extern i32 ed_module_active;
+    void __cdecl edmainClose(void);
+    extern struct ed_module_s *ed_list;
+    extern struct nucamera_s *edinternalcam;
+    void __cdecl edmainExtCamera(struct nucamera_s *camera);
+    extern f32 edmain_menu_scale;
+    void __cdecl eduiInit(void);
+    void __cdecl cbmcfgCameraSpeed(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbmcfgCancel(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    extern struct eduimenu_s *ed_cfg_menu;
+    void __cdecl cbSetAutoSpeed(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern i32 edmain_auto_speed;
+    extern f32 edmain_default_camera_speed;
+    extern struct eduimenu_s *ed_main_menu;
+    extern i32 ed_main_menu_x;
+    extern i32 ed_main_menu_y;
+    void __cdecl eduiMenuFitWidth(struct eduimenu_s *menu, i32 padding);
+    void __cdecl cbMMCancel(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    extern i32 ed_main_menu_h;
+    extern i32 ed_main_menu_w;
+    void __cdecl cbMMEditorConfig(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl cbMMRegSel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern struct ed_module_s *ed_curr;
+    void __cdecl eduiMenuHighlight(struct eduimenu_s *menu, struct eduiitem_s *item);
+    void __cdecl cbMMReturnToApp(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern char ed_levelfile[256];
+    void __cdecl eduiInitMaterials(void);
+    extern struct eduimenu_s *submenu1;
+    void __cdecl cbSel(struct eduimenu_s *arg0, struct eduiitem_s *item);
+    void __cdecl Game_KillPart(struct PART_PC *part, i32 reason);
+    void __cdecl eduiMenuRender(struct eduimenu_s *menu);
+    extern struct eduimenu_s *active_menu;
+    void __cdecl cbGradChange(void);
+    void __cdecl cbSubMenu(struct eduimenu_s *menu, struct eduiitem_s *item);
+    extern struct eduimenu_s *default_active_menu;
+    struct edui_gradient_node_s *__cdecl eduiGradStageAdd(struct edui_gradient_pick_s *item, f32 time, f32 hue,
+                                                          f32 saturation, f32 value);
+    struct eduiitem_s *__cdecl eduiItemGradPickCreate(u32 data, void *colours, void *callback, char *text);
+    struct eduiitem_s *__cdecl eduiItemGreyGradPickCreate(u32 data, void *colours, void *callback, char *text);
+    struct eduiitem_s *__cdecl eduiItemSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum,
+                                                    f32 maximum, f32 value, char *text);
+    i32 __cdecl eduiMenuProcessAux(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
+    i32 __cdecl eduiProcessInteracts(struct eduimenu_s *menu, struct FRAME_PAD_PC *pad);
+    extern struct eduimenu_s *processing_menu;
+    extern struct eduimenu_s *submenu0;
+    extern struct eduimenu_s *testmenu0;
+    void __cdecl cbPtlDamageFlagMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern struct anakin_door_s *AnakinC;
+    extern anakin_door_setup_s DoorSetupList[15];
+    void __cdecl PodRaceSnipersReset(void);
+    void __cdecl edanimcbLocalParticleMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, u32 *colours,
+                                     void *material);
+    void __cdecl NuSound3CancelCheckStereo(void);
+    struct eduiitem_s *__cdecl eduiItemSelCreate(u32 data, void *colours, i32 selected, i32 group, void *callback,
+                                                 char *text);
+    struct eduiitem_s *__cdecl eduiItemTextPickCreate(u32 data, void *colours, void *callback, char *text);
+    struct eduiitem_s *__cdecl eduiItemToggleCreate(u32 data, void *colours, i32 selected, i32 group, void *callback,
+                                                    char *text);
+    void __cdecl eduiCreateMessageMenu(struct eduimenu_s *parent, char *message, i32 highlighted);
+    struct eduiitem_s *__cdecl eduiItemCheckCreate(u32 data, void *colours, i32 selected, i32 group, void *callback,
+                                                   char *text);
+    i32 __cdecl eduiMenuAttach(struct eduimenu_s *menu, struct eduimenu_s *child);
+    struct eduiitem_s *__cdecl eduiItemSliderCreateInt(u32 data, void *colours, i32 group, void *callback, i32 minimum,
+                                                       i32 maximum, i32 value, char *text);
+    i32 __cdecl eduiMenuProcess(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
+    struct COLLECTID *__cdecl CollectIDUnlocked(i32 id);
+    void __cdecl edcamSet(void);
+    void __cdecl edppDoInput(struct FRAME_PAD_PC *pad);
+    void __cdecl edcamMoveEx(struct FRAME_PAD_PC *pad, f32 delta_time);
 #ifdef __cplusplus
 }
 #endif
+enum { EDCAM_FREEDOM_DISTANCE = 32 };
+enum { EDCAM_FREEDOM_PITCH = 8 };
+enum { EDCAM_FREEDOM_POSITION_X = 1 };
+enum { EDCAM_FREEDOM_POSITION_Y = 2 };
+enum { EDCAM_FREEDOM_POSITION_Z = 4 };
+enum { EDCAM_FREEDOM_YAW = 16 };
+enum { CHARACTER_CONTEXT_DOOMED = 43 };
+enum { CHARACTER_CONTEXT_NONE = -1 };
+enum { CHARACTER_CONTEXT_SIGNAL = 76 };
+enum { AREAFLAG_MINIKIT = 16 };
+enum { SAVE_INCOMPLETE = 0 };
+enum { GAMEANIMSET_STATE_AT_END = 2 };
+enum { GAMEANIMSET_VISIBILITY_ALL = 2 };
+enum { GIZBOMBGEN_FLAG_ACTIVE = 1 };
+enum { GIZBOMBGEN_FLAG_VISIBLE = 2 };
+enum { GIZFORCE_CONFIG_ALONG_SOCKET = 64 };
+enum { GIZFORCE_CONFIG_CAST_SHADOW = 4096 };
+enum { GIZFORCE_CONFIG_DRAW_REFLECTION = 4 };
+enum { GIZFORCE_PROGRESS_VISIBLE = 2 };
+enum { GIZFORCE_RUNTIME_ALONG_SOCKET_HIDDEN = 8 };
+enum { GIZBUILDIT_AVAILABILITY_ACTIVE = 1 };
+enum { GIZBUILDIT_AVAILABILITY_VISIBLE = 2 };
+enum { GIZBUILDIT_BUILD_IDLE = 0 };
+enum { GIZBUILDIT_RUNTIME_REWARD_RELEASED = 2 };
+enum { GIZBUILDIT_STATE_ROTATING_WOBBLE = 1 };
+enum { GIZBUILDIT_STATE_TURN_OFF_WHEN_COMPLETE = 2 };
+enum { SAVE_REWARD_100_PERCENT = 1 };
+enum { SAVE_REWARD_ALL_GOLD_BRICKS = 2 };
+enum { AI_ACTION_SPEED_RUN = 0 };
+enum { AI_ACTION_SPEED_TIPTOE = 2 };
+enum { AI_ACTION_SPEED_WALK = 1 };
+enum { DOOR_FLAG_CAMERA_LOOK_AT_PLAYERS = 2 };
+enum { DOOR_FLAG_DO_NOT_USE = 4 };
+enum { GIZMOPICKUP_STATE_ENABLED = 2 };
+enum { GIZMOPICKUP_STATE_VISIBLE = 4 };
+enum { GIZTORPMACHINE_FLAG_ALTERNATE_MODEL = 4 };
+enum { GIZTURRET_RUNTIME_FLAG_BLOWUP_NAME_ID = 1 };
+enum { GIZTURRET_RUNTIME_FLAG_ROTATION_SFX_PLAYING = 8 };
 enum { CHARACTER_CONTEXT_DROP_IN = 35 };
 enum { NUQFNT_CSMODE_ABSOLUTE = 4 };
 enum { NUQFNT_CSMODE_NORMALISED = 3 };

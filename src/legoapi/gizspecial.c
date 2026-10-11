@@ -440,3 +440,10 @@ i32 GetAnimDirection(NUINSTANIM_TIME_VIEW *animation) {
     }
     return animation->tfactor < 0.0f ? 1 : 0;
 }
+
+void edbobs_DrawCoordinateInfo(NUVEC *position, i32 x, i32 y) {
+    const i32 row = 1000 + y * 8;
+    NuQFntPrintEx(system_qfont, (x + 10) * 16, row, 0x10, "%.3f", position->x);
+    NuQFntPrintEx(system_qfont, (x + 80) * 16, row, 0x10, "%.3f", position->y);
+    NuQFntPrintEx(system_qfont, (x + 150) * 16, row, 0x10, "%.3f", position->z);
+}

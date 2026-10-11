@@ -41,6 +41,77 @@ void __cdecl DrawStatusText(char *text, u16 angle, f32 x, f32 y, f32 scale, u32 
     NuQFntSetCoordinateSystem(3);
 }
 
+STATUS_STAGE_s *FindStatusStage(i32 type) {
+    struct STATUS_STAGE_s *stage;
+    for (stage = StatusStages; stage->type != -1; ++stage) {
+        if (stage->type == type) {
+            return stage;
+        }
+    }
+    return NULL;
+}
+
+void NewStatusRumbleBuzz(i32 player, float amount, float buzz, i32 priority) {
+    if (!(amount > 0.0f)) {
+        if (StatusPacket.player0_active != 0 && (player == 0 || player == -1)) {
+            goto player0_buzz;
+        }
+        if (StatusPacket.player1_active != 0 && (player == 1 || player == -1)) {
+            goto player1_buzz;
+        }
+        return;
+    }
+
+    if (StatusPacket.player0_active != 0 && (player == 0 || player == -1)) {
+        if (StatusPacket.player0_rumble_time <= 0.0f || amount > StatusPacket.player0_rumble_time /
+                                                                     StatusPacket.player0_rumble_duration *
+                                                                     StatusPacket.player0_rumble_amount) {
+            StatusPacket.player0_rumble_amount = amount;
+            StatusPacket.player0_rumble_duration = amount;
+            StatusPacket.player0_rumble_time = amount;
+        }
+    player0_buzz:
+        if (buzz > StatusPacket.player0_buzz_amount) {
+            StatusPacket.player0_buzz_amount = buzz;
+        }
+        if (priority > 0) {
+            const i32 old_priority = StatusPacket.player0_rumble_priority;
+            ++priority;
+            if (priority > old_priority) {
+                StatusPacket.player0_rumble_priority = (u8)(priority);
+            }
+        }
+    }
+
+    if (StatusPacket.player1_active != 0 && (player == 1 || player == -1)) {
+        if (StatusPacket.player1_rumble_time <= 0.0f || amount > StatusPacket.player1_rumble_time /
+                                                                     StatusPacket.player1_rumble_duration *
+                                                                     StatusPacket.player1_rumble_amount) {
+            StatusPacket.player1_rumble_amount = amount;
+            StatusPacket.player1_rumble_duration = amount;
+            StatusPacket.player1_rumble_time = amount;
+        }
+    player1_buzz:
+        if (buzz > StatusPacket.player1_buzz_amount) {
+            StatusPacket.player1_buzz_amount = buzz;
+        }
+        if (priority > 0) {
+            const i32 old_priority = StatusPacket.player1_rumble_priority;
+            ++priority;
+            if (priority > old_priority) {
+                StatusPacket.player1_rumble_priority = (u8)(priority);
+            }
+        }
+    }
+}
+
+void AddStatusStage(STATUSPACKET_s *packet, i32 type, i32 gold_brick_enabled) {
+    const u8 index = packet->stage_count;
+    packet->stage_types[index] = (i8)(type);
+    packet->gold_brick_enabled[index] = (u8)(gold_brick_enabled);
+    packet->stage_count = index + 1;
+}
+
 i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *, NUMTX *, f32);
 i32 __cdecl DrawPanel3DObject(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x, u16 rotate_y,
                               u16 rotate_z, NUSPECIALHANDLE *special, i32 rotate_order, f32 alpha) {
@@ -57,6 +128,13 @@ i32 __cdecl DrawPanel3DObject(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32
         NuSpecialDrawAtAlpha(special, &matrix, alpha);
     }
     return 0;
+}
+
+i32 DrawPanel3DObjectMtxNoAlpha(nuhspecial_s *special, NUMTX *matrix) {
+    if (special == NULL || NuSpecialExistsFn(special) == 0)
+        return 0;
+    NuMtxMulVU0(matrix, matrix, NuCameraGetMtx());
+    return NuSpecialDrawAt(special, matrix);
 }
 
 extern NUGSCN *things_scene;

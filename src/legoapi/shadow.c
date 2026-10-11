@@ -43,6 +43,17 @@ void __cdecl Shadow_SetMode(void) {
     }
 }
 
+void Shard_Collect(SHARD_s *shard, GAMEOBJECT *object) {
+    shard->collection_time = 0.0f;
+    shard->collecting = 1;
+    shard->collector = object;
+    NuVecRotateZ(&shard->collection_velocity, &v010, shard->angle_z);
+    NuVecRotateZ(&shard->collection_velocity, &shard->collection_velocity, shard->angle_x);
+    NuVecScale(&shard->collection_velocity, &shard->collection_velocity, 3.0f);
+    NewBuzzFrames(shard->collector->pad->bound_pad, 1, 0);
+    shard->tumble_x = qrand() <= 0x7fff;
+}
+
 f32 __cdecl BlobShadowFade(NUVEC *position, f32 fade_start, f32 fade_end, f32 alpha) {
     NUVEC delta;
     f32 distance_squared;

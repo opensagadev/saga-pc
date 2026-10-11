@@ -77,6 +77,77 @@ static void GizActionNextLocator(AISYS_PC *sys, AILOCATORSET_PC *set, i32 loopin
     set->assigned[candidate] = object->object_id;
 }
 
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+    static f32 Condition_EitherPlayerLocatorRangeXZ(AISYS_PC *, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                                    char *, void *argument) {
+        NUVEC difference;
+        if (packet != NULL && packet->owner != NULL) {
+            AILOCATOR_PC *locator = static_cast<AILOCATOR_PC *>(argument);
+            if (locator == NULL) {
+                locator = processor->locator;
+            }
+            if (locator != NULL) {
+                f32 first_distance = 1.0e9f;
+                f32 second_distance = 1.0e9f;
+                if (player != NULL) {
+                    first_distance = NuVecXZDist(&player->position, &locator->position, &difference);
+                }
+                if (player2 != NULL) {
+                    second_distance = NuVecXZDist(&player2->position, &locator->position, &difference);
+                }
+                return NuFmin(first_distance, second_distance);
+            }
+        }
+        return 1.0e9f;
+    }
+}
+
+extern "C" {
+    static void *Condition_IsSetAliveInit(AISYS_PC *, char *arg, AISCRIPT_PC *) {
+        if (arg == NULL)
+            return NULL;
+        if (NuStrICmp(arg, "myset") == 0)
+            return reinterpret_cast<void *>(static_cast<intptr_t>(-1));
+        i32 set = NuAToI(arg);
+        if (set < 1 || set > 16)
+            set = 0;
+        return reinterpret_cast<void *>(static_cast<intptr_t>(set));
+    }
+}
+
+extern "C" {
+    static void *Condition_NumForceObjectsInit(AISYS_PC *system, char *name, AISCRIPT_PC *) {
+        i32 flags = 0;
+        if (name != NULL && system != NULL) {
+            flags = NuStrIStr(name, "throwable") != NULL;
+            if (NuStrIStr(name, "inrange") != NULL)
+                flags |= 2;
+        }
+        return reinterpret_cast<void *>(static_cast<intptr_t>(flags));
+    }
+}
+
+extern "C" {
+    static void *Condition_LastLevelInit(AISYS_PC *system, char *name, AISCRIPT_PC *) {
+        if (name != NULL && system != NULL && WORLD->area != NULL) {
+            for (i32 index = 0; index < LEVELCOUNT; ++index) {
+                if (NuStrICmp(name, LDataList[index].name) == 0) {
+                    return reinterpret_cast<void *>(static_cast<i32>(index));
+                }
+            }
+        }
+        return reinterpret_cast<void *>(static_cast<i32>(-1));
+    }
+}
+
+extern "C" {}
+
+extern "C" {}
+
 extern "C" {
     i32 __cdecl Action_GetLocatorFromSet(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                          char **params, i32 param_count, i32 first_time, float) {

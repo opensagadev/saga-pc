@@ -179,8 +179,10 @@ def declare(names, android, translator):
     """Add externs and enum constants to the transferred section of saga.h."""
     text = HEADER.read_text(encoding="latin-1")
     externs, constants, missing = [], [], []
+    skip = ROOT / "build/globals/skip.txt"  # declarations that did not compile in every unit
+    skipped = set(skip.read_text().split()) if skip.is_file() else set()
     for name in names:
-        if re.search(r"\b" + re.escape(name) + r"\b", text):
+        if re.search(r"\b" + re.escape(name) + r"\b", text) or name in skipped:
             continue
         android.find(name)
         if name in android.constants:

@@ -24,6 +24,19 @@ void __cdecl DropInOutCode(GAMEOBJECT *object) {
     }
 }
 
+void StartDropIn(GAMEOBJECT *object) {
+    i16 animation;
+    if (WORLD->current_level == PODSPRINTA_LDATA || (PODRACE_ADATA != NULL && PODRACE_ADATA == WORLD->area)) {
+        return;
+    }
+
+    object->character_context = CHARACTER_CONTEXT_DROP_IN;
+    animation = (object->character_data->model_flags & 0x2000) == 0 ? 5 : 1;
+    object->context_timer = 0.0f;
+    object->context_duration = 0.5f;
+    object->field_7aa = animation;
+}
+
 void StartDropOut(GAMEOBJECT *object) {
     i16 animation;
     if (WORLD->current_level == PODSPRINTA_LDATA || (PODRACE_ADATA != NULL && PODRACE_ADATA == WORLD->area)) {

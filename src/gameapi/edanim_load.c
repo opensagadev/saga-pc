@@ -118,6 +118,20 @@ void __cdecl edanimDetermineNearestAnim(f32 distance) {
     }
 }
 
+void edanimParticleDestroy(i32 parameter_index, i32 particle_index) {
+    i32 index;
+    edanim_param_s *parameters = AnimParams;
+    for (index = particle_index; index < parameters[parameter_index].effect_count - 1; ++index) {
+        parameters[parameter_index].effect_ids[index] = parameters[parameter_index].effect_ids[index + 1];
+        parameters[parameter_index].effect_intervals[index] = parameters[parameter_index].effect_intervals[index + 1];
+        parameters[parameter_index].effect_flags[index] = parameters[parameter_index].effect_flags[index + 1];
+        memcpy(parameters[parameter_index].effect_positions[index],
+               parameters[parameter_index].effect_positions[index + 1], sizeof(NUVEC));
+        strcpy(parameters[parameter_index].effect_names[index], parameters[parameter_index].effect_names[index + 1]);
+    }
+    --parameters[parameter_index].effect_count;
+}
+
 i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
     i32 page, version, count, slot = 0, index, item, extra, interval, instance;
     char name[20], discarded_name[16];
@@ -262,4 +276,120 @@ i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
     edanim_nearest_param_id = -1;
     edanimDetermineNearestAnim(1.0f);
     return page;
+}
+
+static void edanimcbSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    i32 index;
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    edanim_soundtype_menu =
+        eduiMenuCreate(70, 70, 250, 250, ed_fnt, edanimcbCancelSoundTypeMenu, (char *)("Sound Type"));
+    if (!edanim_soundtype_menu) {
+        return;
+    }
+
+    eduiMenuAddItem(edanim_soundtype_menu, eduiItemCheckCreate(0x1869f, colours, edanim_sound_type == -1, 0,
+                                                               edanimcbSetSoundType, (char *)("NONE")));
+    for (index = 0; index < edSfxAllCount; ++index) {
+        if (edanim_sound_type == index) {
+            eduiMenuAddItem(edanim_soundtype_menu,
+                            eduiItemCheckCreate(index, colours, 1, 1, edanimcbSetSoundType, edbitsGetSoundName(index)));
+            edanim_soundtype_menu->selected = edui_last_item;
+        } else {
+            eduiMenuAddItem(edanim_soundtype_menu,
+                            eduiItemCheckCreate(index, colours, 0, 1, edanimcbSetSoundType, edbitsGetSoundName(index)));
+        }
+    }
+
+    eduiMenuAttach(parent, edanim_soundtype_menu);
+    edanim_soundtype_menu->x = parent->x + 10;
+    edanim_soundtype_menu->y = parent->y + 40;
+}
+
+static void edanimcbSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    struct eduimenu_s *menu;
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (edanim_nearest_param_id == -1) {
+        return;
+    }
+
+    menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelSoundMenu, (char *)("Attached Sounds"));
+    edanim_sound_menu = menu;
+    if (!menu) {
+        return;
+    }
+
+    eduiMenuAddItem(menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbSoundTypeMenu, (char *)("Sound Type...")));
+    if (edanim_nearest_sound != -1) {
+        eduiMenuAddItem(
+            menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbLocalSoundMenu, (char *)("Highlighted Snd Settings...")));
+    }
+
+    eduiMenuAttach(parent, menu);
+    menu->x = parent->x + 10;
+    menu->y = parent->y + 40;
+}
+
+static void edanimcbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    i32 page;
+    char path[256];
+    char directory[256];
+    char name[256];
+    char extension[256];
+    if (!edbits_level_save_directory[0])
+        strcpy(directory, ".");
+    else
+        strcpy(directory, edbits_level_save_directory);
+    if (!edbits_level_save_name[0])
+        strcpy(name, "anims");
+    else
+        strcpy(name, edbits_level_save_name);
+    if (!edbits_level_save_extension[0])
+        strcpy(extension, "anm");
+    else
+        strcpy(extension, edbits_level_save_extension);
+    sprintf(path, "%s\\%s.%s", directory, name, extension);
+    edanimParamReset();
+    page = -1;
+    if (NuFileExists(path)) {
+        page = edanimLoadPage(path, edbits_base_scene);
+    }
+    edanimStartAllPages();
+    if (page < 0)
+        eduiCreateMessageMenu(menu, (char *)("File Load Error"), 0);
+    else
+        eduiCreateMessageMenu(menu, (char *)("Loaded OK"), 1);
+}
+
+static void edanimRender() {
+    if (edbitsProcessCubemapDump()) {
+        return;
+    }
+    edcamSet();
+    edanimDrawCursor();
+
+    if (edanim_nearest != -1) {
+        nuhspecial_s special;
+        struct nuvec_s *position;
+        i32 colour = 0xffff0000;
+        if (edanim_particle_mode) {
+            colour = 0xff00ff00;
+        } else if (!edanim_sound_mode) {
+            colour = edanim_nearest_param_id == -1 ? 0xff808080 : 0xffffffff;
+        }
+
+        special = special;
+        NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
+        position = NuSpecialGetPos(&special);
+        edbitsDrawCube(position->x, position->y, position->z, 0.5f, 0.5f, 0.5f, 0, 0, 0, 0, 0, colour, edanim_mtl);
+
+        if (edanim_particle_mode) {
+            edanimRenderParticleEmitters(edanim_nearest_param_id);
+        } else if (edanim_sound_mode) {
+            edanimRenderSoundEmitters(edanim_nearest_param_id);
+        }
+    }
+
+    if (edanim_active_menu) {
+        eduiMenuRender(edanim_active_menu);
+    }
 }

@@ -5,6 +5,10 @@ void __cdecl NuVpSetIdentityPc(NUMTX *matrix) {
         *matrix = NuVpIdentityMatrixPc;
 }
 
+NUVPCURRENT *NuVpGetCurrentViewport(void) {
+    return &vpCurrent;
+}
+
 void __cdecl NuVpBuildScalingTemplatePc(void) {
     volatile f32 width = (f32)DebrisGlassTextureWidth;
     volatile f32 height = (f32)DebrisGlassTextureHeight;

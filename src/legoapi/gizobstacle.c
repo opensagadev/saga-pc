@@ -77,6 +77,53 @@ void __cdecl GizActions_PlayObstacle(GIZFLOW_PC *flow, FLOWBOX_PC *box, char **p
     obstacle->runtime_flags = flags;
 }
 
+static void GizActions_PlayRadio(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
+    char *special_name;
+    char *blowup_name;
+    i32 play;
+    i32 index;
+    if (count <= 0) {
+        return;
+    }
+    special_name = NULL;
+    blowup_name = NULL;
+    play = 1;
+    for (index = 0; index < count; ++index) {
+        char *value = NuStrIStr(params[index], "BlowUp=");
+        if (value != NULL) {
+            blowup_name = value + NuStrLen("BlowUp=");
+        } else if ((value = NuStrIStr(params[index], "Special=")) != NULL) {
+            special_name = value + NuStrLen("Special=");
+        } else if (NuStrICmp(params[index], "FALSE") == 0) {
+            play = 0;
+        }
+    }
+    if (special_name != NULL || blowup_name != NULL) {
+        PlayRadio(special_name, blowup_name, play);
+    }
+}
+
+static i32 GizBombGens_Load(void *world_ptr, void *system_ptr) {
+    const u8 version = (u8)(EdFileReadChar());
+    GIZBOMBGENSYS_s *system = (GIZBOMBGENSYS_s *)(system_ptr);
+    system->count = (u16)(EdFileReadShort());
+    if (system->count != 0) {
+        i32 index = 0;
+        GIZBOMBGEN_s *bomb_generator = system->bomb_generators;
+        do {
+            EdFileRead(bomb_generator->name, sizeof(bomb_generator->name));
+            EdFileReadNuVec(&bomb_generator->position);
+            bomb_generator->interval = EdFileReadInt();
+            bomb_generator->flags |= GIZBOMBGEN_FLAG_ACTIVE | GIZBOMBGEN_FLAG_VISIBLE;
+            GizmoFileReadGameAnimSet(bomb_generator->anim_set, world_ptr, NULL, version, (char *)("BombGenerator"),
+                                     bomb_generator->name);
+            ++index;
+            ++bomb_generator;
+        } while (system->count > index);
+    }
+    return 1;
+}
+
 extern void *__cdecl GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
 typedef struct gizobstacle_system_pc_s {
     GIZOBSTACLE *obstacles;
@@ -190,6 +237,22 @@ void __cdecl GizObstacles_ClearProgress(void *world, void *ptr) {
         progress->pickups_spawned[i] = progress->ai_active[i] = progress->blocked[i] = 0;
         progress->trigger_latched[i] = progress->destroyed[i] = 0;
     }
+}
+
+GIZOBSTACLE *GizObstacle_FindByName(GIZOBSTACLESYS_s *system, char *name) {
+    i32 index;
+    if (system == NULL || name == NULL) {
+        return NULL;
+    }
+
+    for (index = 0; index < system->count; ++index) {
+        GIZOBSTACLE *obstacle = &system->obstacles[index];
+        if (NuStrICmp(obstacle->name, name) == 0) {
+            return obstacle;
+        }
+    }
+
+    return NULL;
 }
 void __cdecl GizObstacles_StoreProgress(void *world, void *ptr, void *progress_ptr) {
     GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)ptr;

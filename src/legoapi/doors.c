@@ -158,6 +158,7 @@ void *__cdecl Door_FindByName(WORLDINFO *world, char *name) {
             return door;
     return NULL;
 }
+
 i32 __cdecl StartDoorPositions(void) {
     PLAYER_WORLD_DOORS_PC *view = (PLAYER_WORLD_DOORS_PC *)WORLD;
     PLAYER_DOOR_PC *door;

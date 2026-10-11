@@ -119,6 +119,25 @@ void NuRegionSet(i32 region) {
 void __cdecl bgProcDataOversize(i32 size) {
 }
 
+static void NuDebugMsgFunction(char *format, ...) {
+    char captxt[16384];
+    if (!DisableDebugMsg) {
+        if (err_msg_filter[0] == 0 || strstr(nufile, err_msg_filter) != NULL) {
+            char *args;
+            sprintf(captxt, "NuDebugMsg - %s(%d) :", nufile, nuline);
+
+            va_start(args, format);
+            vsprintf(txt, format, args);
+            va_end(args);
+            NuStrCat(captxt, txt);
+            NuStrCat(captxt, "\n");
+            if (nudebug_handler != NULL)
+                nudebug_handler(captxt);
+            NuDebugMsgPrint(captxt);
+        }
+    }
+}
+
 GAMECAMERA *GameCam;
 i32 part_debris_count;
 
