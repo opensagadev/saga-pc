@@ -24,7 +24,7 @@ JOURNAL=build/permute/batch.jsonl
 mkdir -p build/permute permute
 log() { printf '%s %s\n' "$(date '+%F %T')" "$*" | tee -a build/permute/loop.log; }
 
-python3 -c 'import clang.cindex' 2>/dev/null || python3 -m pip install --user libclang
+python3 -c 'import clang.cindex, capstone' 2>/dev/null || python3 -m pip install --user libclang capstone
 if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
     echo "Commit or stash tracked changes first." >&2
     exit 1

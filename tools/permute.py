@@ -14,6 +14,7 @@ import json
 import os
 from pathlib import Path
 import random
+import re
 import shutil
 import subprocess
 import sys
@@ -34,6 +35,29 @@ else:
     from tools import rewrite
 
 OUT = ROOT / "build/permute"
+try:
+    import capstone
+    _DISASSEMBLER = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+except ImportError:  # Fall back to raw bytes for the tie-breaking score.
+    _DISASSEMBLER = None
+
+
+def instructions(code, va):
+    """Normalized instruction stream: absolute addresses vary with layout, so mask them."""
+    if _DISASSEMBLER is None:
+        return list(code)
+    return [re.sub(r"0x[0-9a-f]{5,}", "ADDR", f"{i.mnemonic} {i.op_str}")
+            for i in _DISASSEMBLER.disasm(code, va)]
+
+
+def similarity(target_ops, code, va):
+    """Instruction-sequence similarity in percent; breaks ties when objdiff does not move."""
+    return 100 * difflib.SequenceMatcher(None, target_ops, instructions(code, va), autojunk=False).ratio()
+
+
+def key(value):
+    """Order scores by objdiff first, then by instruction-sequence similarity."""
+    return (round(value[0], 6), round(value[3], 3))
 CFLAGS = ["/nologo", "/c", "/O2", "/Gy", "/GS", "/MT"]
 
 
@@ -49,6 +73,7 @@ class Scorer:
         self.symbol, self.va, self.size = symbol, matches[0]["address"], matches[0]["size"]
         self.bindings = bindings_for(records)
         self.target = retail(project()["target"]).read_va(self.va, self.size)
+        self.target_ops = instructions(self.target, self.va)
         self.compiler, self.wine, self.env = environment()
         self.objdiff = ROOT / "build/tools/bin/objdiff-cli"
         self.work = OUT / "work" / (worker or f"p{os.getpid()}")
@@ -96,7 +121,8 @@ class Scorer:
         except (BinaryError, KeyError, ValueError):
             return None
         if base == self.target:
-            return (100.0, True, len(base))
+            return (100.0, True, len(base), 100.0)
+        secondary = similarity(self.target_ops, base, self.va)
         write_function(slot / "t.obj", self.symbol, self.va, self.target)
         write_function(slot / "b.obj", self.symbol, self.va, base)
         (slot / "objdiff.json").write_text(json.dumps({
@@ -110,7 +136,7 @@ class Scorer:
             percent = functions[0].get("fuzzy_match_percent", 0.0) if functions else 0.0
         except (OSError, ValueError, KeyError, IndexError):
             return None
-        return (min(percent, 99.999), False, len(base))
+        return (min(percent, 99.999), False, len(base), secondary)
 
 
 def search(scorer, text, function, iterations, jobs, seed, log):
@@ -121,7 +147,7 @@ def search(scorer, text, function, iterations, jobs, seed, log):
     if best is None:
         raise ValueError("The unchanged unit does not compile or the function is missing")
     start = best
-    log(f"start {best[0]:.3f}%")
+    log(f"start {best[0]:.3f}% (instructions {best[3]:.1f}%)")
     attempts = 0
     stale = 0
     while attempts < iterations and not best[1]:
@@ -138,14 +164,14 @@ def search(scorer, text, function, iterations, jobs, seed, log):
             scores = list(pool.map(lambda c: scorer.score(c.text), batch))
         attempts += len(batch)
         improved = False
-        for candidate, value in sorted(zip(batch, scores), key=lambda p: -(p[1] or (-1,))[0]):
-            if value is None:
-                continue
+        ranked = sorted(((c, v) for c, v in zip(batch, scores) if v is not None),
+                        key=lambda p: key(p[1]), reverse=True)
+        for candidate, value in ranked:
             if not candidate.safe and not value[1]:
                 continue
-            if value[0] > best[0] + 1e-6:
+            if key(value) > key(best):
                 best_text, best = candidate.text, value
-                log(f"{attempts:5} {value[0]:.3f}%  {candidate.kind}: {candidate.note}")
+                log(f"{attempts:5} {value[0]:.3f}% (instructions {value[3]:.1f}%)  {candidate.kind}: {candidate.note}")
                 improved = True
                 break
         if improved:
@@ -154,7 +180,7 @@ def search(scorer, text, function, iterations, jobs, seed, log):
         stale += 1
         # Accept a neutral safe rewrite occasionally to escape plateaus.
         neutral = [c for c, v in zip(batch, scores)
-                   if v is not None and c.safe and abs(v[0] - best[0]) < 1e-6 and c.text != best_text]
+                   if v is not None and c.safe and key(v) == key(best) and c.text != best_text]
         if neutral and stale <= 3:
             choice = rng.choice(neutral)
             best_text = choice.text
@@ -172,7 +198,8 @@ def run_one(symbol, unit, iterations, jobs, seed, apply, log, worker=None):
     start, best, best_text = search(scorer, text, rewrite.function_name(symbol), iterations, jobs, seed, log)
     summary = {"symbol": symbol, "unit": unit, "size": scorer.size, "start": start[0],
                "best": best[0], "exact": best[1], "seconds": round(time.time() - began, 1)}
-    if best_text != text and best[0] > start[0]:
+    summary["instructions"] = [round(start[3], 2), round(best[3], 2)]
+    if best_text != text and key(best) > key(start):
         OUT.mkdir(parents=True, exist_ok=True)
         patch = "".join(difflib.unified_diff(text.splitlines(True), best_text.splitlines(True),
                                              "a/" + unit, "b/" + unit))
@@ -183,7 +210,7 @@ def run_one(symbol, unit, iterations, jobs, seed, apply, log, worker=None):
     return summary
 
 
-def batch(count, iterations, jobs, apply, minimum, maximum, seed=1, workers=1):
+def batch(count, iterations, jobs, apply, minimum, maximum, seed=1, workers=1, min_percent=20.0):
     """Work through the functions losing the most bytes, several at a time.
 
     Each worker is a separate process; all share the build's Wine prefix. Two
@@ -191,13 +218,14 @@ def batch(count, iterations, jobs, apply, minimum, maximum, seed=1, workers=1):
     """
     report = json.loads((ROOT / "matching.json").read_text())
     rows = [r for r in report["functions"]
-            if r.get("objdiff_percent") is not None and r["objdiff_percent"] < 100
+            if r.get("objdiff_percent") is not None and min_percent <= r["objdiff_percent"] < 100
             and len(r["units"]) == 1 and minimum <= (r["target_size"] or 0) <= maximum]
     rows.sort(key=lambda r: -r["target_size"] * (100 - r["objdiff_percent"]))
     journal = OUT / "batch.jsonl"
     done = set()
     if journal.is_file():
-        done = {json.loads(line)["symbol"] for line in journal.read_text().splitlines() if line.strip()}
+        entries = [json.loads(line) for line in journal.read_text().splitlines() if line.strip()]
+        done = {e["symbol"] for e in entries if "error" not in e}
     OUT.mkdir(parents=True, exist_ok=True)
     todo = [r for r in rows if r["symbol"] not in done][:count]
     remaining = len([r for r in rows if r["symbol"] not in done])
@@ -263,8 +291,10 @@ def batch(count, iterations, jobs, apply, minimum, maximum, seed=1, workers=1):
             else:
                 gained = summary["size"] * (summary["best"] - summary["start"]) / 100
                 result = "EXACT" if summary["exact"] else f"{summary['best']:.1f}%"
+                steps = summary.get("instructions", [0, 0])
                 say(f"[{tag}] done {row['name']}: {summary['start']:.1f}% -> {result} "
-                    f"(+{gained:.0f} weighted bytes, {summary['seconds']:.0f}s)"
+                    f"(instructions {steps[0]:.0f}% -> {steps[1]:.0f}%, "
+                    f"+{gained:.0f} weighted bytes, {summary['seconds']:.0f}s)"
                     f"{', applied' if summary.get('applied') else ''}")
             with output, journal.open("a") as stream:
                 stream.write(json.dumps(summary) + "\n")
@@ -289,6 +319,8 @@ def main():
                         help="Process the N functions losing the most bytes in matching.json")
     parser.add_argument("--min-size", type=int, default=16)
     parser.add_argument("--max-size", type=int, default=6000)
+    parser.add_argument("--min-percent", type=float, default=20.0,
+                        help="Batch: skip functions below this similarity; they need structural work")
     parser.add_argument("--workers", type=int, default=1,
                         help="Batch: functions searched at once, in separate processes")
     parser.add_argument("--worker", help=argparse.SUPPRESS)
@@ -296,7 +328,7 @@ def main():
     args = parser.parse_args()
     if args.batch:
         batch(args.batch, args.iterations, args.jobs, args.apply, args.min_size, args.max_size, args.seed,
-              args.workers)
+              args.workers, args.min_percent)
         return 0
     if not args.symbol:
         parser.error("Name a function or use --batch")
