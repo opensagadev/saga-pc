@@ -64,3 +64,5 @@
 {"symbol": "_GameObjectStuffAfterAnimation", "unit": "src/legoapi/gameobjects.c", "size": 3904, "start": 27.10863, "best": 27.280203, "exact": false, "seconds": 383.3, "instructions": [23.74, 23.74], "rules": 3, "applied": true}
 {"symbol": "_Text3DEx", "unit": "src/legoapi/text.c", "size": 2616, "start": 35.97518, "best": 38.148907, "exact": false, "seconds": 353.6, "instructions": [21.38, 21.4], "rules": 3, "applied": true}
 {"symbol": "?NewScanHandelSubsetPc@@YAPAFPAFPAUnuvec_s@@1MH@Z", "unit": "src/nu2api/terrain_query.cpp", "size": 3290, "start": 29.578457, "best": 29.60051, "exact": false, "seconds": 375.5, "instructions": [20.09, 20.09], "rules": 3, "applied": true}
+{"symbol": "_TerrainInitEx", "unit": "src/nu2api/nuterrain.c", "size": 3491, "start": 40.320156, "best": 40.320156, "exact": false, "seconds": 264.8, "instructions": [27.55, 27.55], "rules": 3}
+{"symbol": "_TerrainPlatformEmbedded", "unit": "src/nu2api/terrain_collision.cpp", "size": 4252, "start": 61.663395, "best": 63.603775, "exact": false, "seconds": 390.4, "instructions": [30.13, 29.5], "rules": 3, "applied": true}

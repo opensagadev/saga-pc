@@ -2004,7 +2004,7 @@ extern "C" {
             if (!(platform->flags & 1))
                 return 1;
             if (previous->m00 == matrix->m00 && previous->m01 == matrix->m01 && previous->m02 == matrix->m02 &&
-                previous->m10 == matrix->m10 && previous->m11 == matrix->m11 && previous->m12 == matrix->m12 &&
+                previous->m10 == matrix->m10 && matrix->m11 == previous->m11 && previous->m12 == matrix->m12 &&
                 previous->m20 == matrix->m20 && previous->m21 == matrix->m21 && previous->m22 == matrix->m22)
                 return 1;
         }
@@ -2029,12 +2029,12 @@ extern "C" {
         query->radius = old_query->radius;
         query->object_scale = old_query->object_scale;
         query->movement.x = (previous->m30 - matrix->m30) * 1.73f;
-        query->movement.y = ((previous->m31 - matrix->m31) * 1.73f) * query->inverse_object_scale;
+        query->movement.y = query->inverse_object_scale * (((previous->m31 - matrix->m31) * 1.73f));
         query->movement.z = (previous->m32 - matrix->m32) * 1.73f;
         if (platform->flags & 1) {
             NuMtxInvRSS(&tertempmat, previous);
             tertempvec4.x = old_query->position.x - previous->m30;
-            tertempvec4.y = (old_query->position.y - query->collision_radius) * query->object_scale - previous->m31;
+            tertempvec4.y = query->object_scale * ((old_query->position.y - query->collision_radius)) - previous->m31;
             tertempvec4.z = old_query->position.z - previous->m32;
             tertempvec4.w = 1.0f;
             NuVec4MtxTransformVU0(&tertempvec4, &tertempvec4, &tertempmat);
@@ -2048,21 +2048,21 @@ extern "C" {
         query->movement.x -= 0.01f * old_query->movement_normal.x;
         query->movement.y -= 0.01f * old_query->movement_normal.y;
         query->movement.z -= 0.01f * old_query->movement_normal.z;
-        query->position.x = old_query->position.x - query->movement.x * 0.91f;
+        query->position.x = old_query->position.x - 0.91f * query->movement.x;
         query->position.y = old_query->position.y - query->movement.y * 0.91f;
         query->position.z = old_query->position.z - query->movement.z * 0.91f;
 
-        TERRAIN_GROUP *group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[old_query->terrain_group_index];
         TERRAIN_SHAPE **cursor = reinterpret_cast<TERRAIN_SHAPE **>(query->scan_list_storage + 4);
+        TERRAIN_GROUP *group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[old_query->terrain_group_index];
         i32 count = 0;
         i32 transformed_count = 0;
         TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
         if (query->object_scale == 1.0f) {
             if ((platform->flags & 1)) {
                 while (batch->marker > -1) {
-                    i32 shape_count = batch->shape_count;
                     TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
-                    for (i32 remaining = shape_count; remaining > 0; --remaining, ++source) {
+
+                    for (i32 remaining = batch->shape_count; remaining > 0; --remaining, ++source) {
                         if (source->material[1] != 0)
                             continue;
                         vertices[0].x = source->vertices[0].x;
@@ -2140,7 +2140,7 @@ extern "C" {
                         surface->normals[0].z = vertices[0].x * vertices[1].y - vertices[0].y * vertices[1].x;
                         NUVEC *normal = &surface->normals[0];
                         f32 length = NuFsqrt(normal->x * normal->x + normal->y * normal->y + normal->z * normal->z);
-                        f32 inverse = length == 0.0f ? 0.0f : 1.0f / length;
+                        f32 inverse = 0.0f == length ? 0.0f : 1.0f / length;
                         surface->normals[0].x *= inverse;
                         surface->normals[0].y *= inverse;
                         surface->normals[0].z *= inverse;
@@ -2272,7 +2272,7 @@ extern "C" {
                         memcpy(surface->material, source->material, 4);
                         surface->vertices[0].x = source->vertices[0].x;
                         surface->vertices[0].y =
-                            (source->vertices[0].y + group->origin.y) * query->inverse_object_scale - group->origin.y;
+                            query->inverse_object_scale * ((source->vertices[0].y + group->origin.y)) - group->origin.y;
                         surface->vertices[0].z = source->vertices[0].z;
                         surface->vertices[1].x = source->vertices[1].x;
                         surface->vertices[1].y =
@@ -2330,8 +2330,8 @@ extern "C" {
         if (TerrainImpactPlatform(flags) != 0) {
             NuScratchRelease();
             NuScratchRelease();
-            TerrainScaledShapeCursorPc = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT1);
             curSphereter = saved_sphere;
+            TerrainScaledShapeCursorPc = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT1);
             TerI = old_query;
             return 1;
         }
