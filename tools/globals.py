@@ -162,6 +162,13 @@ def function_prototype(cursor, translator):
     return f"{ret} __cdecl {cursor.spelling}({', '.join(params) or 'void'});"
 
 
+def variable_declared(name):
+    pattern = re.compile(r"^[ \t]*(?:extern\s+|static\s+)?[A-Za-z_][\w \t*]*[ \t*]" + re.escape(name)
+                         + r"\s*(?:\[[^\]]*\]\s*)*(?:=|;)", re.M)
+    return any(pattern.search(path.read_text(encoding="latin-1"))
+               for path in (ROOT / "src").rglob("*") if path.suffix in (".c", ".cpp", ".h") and path != HEADER)
+
+
 def function_defined(name):
     pattern = re.compile(r"\b" + re.escape(name) + r"\s*\([^;{}]*\)\s*\{")
     return any(pattern.search(path.read_text(encoding="latin-1"))
@@ -191,6 +198,9 @@ def declare(names, android, translator):
                 continue
             externs.append(f"    {prototype}")
         elif name in android.globals:
+            if variable_declared(name):
+                missing.append(name)  # a unit declares it already, maybe with its PC type
+                continue
             spelled = spell_variable(android.globals[name].type, name, translator)
             if spelled is None:
                 missing.append(name)
