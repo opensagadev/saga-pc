@@ -264,16 +264,16 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
         AlertSurroundingCreatures(attacker, &target->collision_position);
     if (hit > 0 || instant)
         target->portal_flags |= 1;
-    if (!(flags & 0x100)) {
+    if (!(0x100 & flags)) {
         damage = 0;
     } else {
         if ((CInfo[target->character_context].flags & 0x4000000) ||
             (target->character_context != -1 && (target->character_context == LEGOCONTEXT_LAND_SLAM ||
                                                  target->character_context == LEGOCONTEXT_LAND_LUNGE))) {
             i32 rotation_difference = RotDiff(attacker->movement_facing_angle, target->movement_facing_angle);
-            if (rotation_difference < 0)
+            if (-1 >= rotation_difference)
                 rotation_difference = -rotation_difference;
-            if (rotation_difference > 0x4000 &&
+            if (rotation_difference >= 16385 &&
                 !(LEGOCONTEXT_COMBO != -1 && attacker->character_context == LEGOCONTEXT_COMBO &&
                   attacker->combo_branch == 6)) {
                 if ((target->flags_1fc_word & 0x80))
@@ -313,7 +313,7 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
                 hit = 0;
                 goto attributed_hit;
             }
-            if (target->id == id_SPEEDERBIKE && !(target->flags_1fc_word & 0x80)) {
+            if (id_SPEEDERBIKE == target->id && !(target->flags_1fc_word & 0x80)) {
                 if (attacker && !(attacker->character_data->model_flags & 0x2000))
                     hit = 0;
                 else if (target->ai_packet.creature_set != 2)
@@ -324,7 +324,7 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
         if (WORLD->area == HOTHBATTLE_ADATA &&
             ((target->id == id_ATAT && !(target->flags_1fc_word & 0x80) &&
               (!attacker || !(attacker->flags_1fc_word & 0x80))) ||
-             (attacker && attacker->id == id_ATAT && !(target->flags_1fc_word & 0x80) &&
+             (attacker && id_ATAT == attacker->id && !(target->flags_1fc_word & 0x80) &&
               !(attacker->flags_1fc_word & 0x80)))) {
             if (hit == -1 && target->id == id_ATAT) {
                 if (target->character_context != 23)
@@ -335,7 +335,7 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
         }
         if (flags & 1)
             goto attributed_hit;
-        if ((flags & 2) && !(target->flags_1fc_word & 0x80) && WORLD->current_level != HUB_LDATA) {
+        if ((flags & 2) && !(0x80 & target->flags_1fc_word) && WORLD->current_level != HUB_LDATA) {
             if (!StartupGameFlag1 && !(target->portal_flags & 0x08000000) && CombatHitReactionIntervalPc != 0 &&
                 attacker != NULL && attacker->field_280 != 0xff && target->field_280 == 0xff &&
                 !(target->flags_1fc_word & 2)) {
@@ -597,7 +597,7 @@ ordinary_death:
         KillParts(target->rider, -1, target->rider->id == id_BODYGUARD ? 4 : -1, 1, 0.0f, 0, (u16 *)(parts_angle));
         KillGameObject(target->rider, 2, 0);
     }
-    KillParts(target, -1, target->id == id_BODYGUARD ? 4 : -1, 1, throw_up ? 1.0f : 0.0f, 0, (u16 *)(parts_angle));
+    KillParts(target, -1, id_BODYGUARD == target->id ? 4 : -1, 1, throw_up ? 1.0f : 0.0f, 0, (u16 *)(parts_angle));
     KillGameObject(target, 2, 0);
     if ((target->flags_1fc_word & 0x80))
         GameCam_Judder(GameCam, 0.2f, 0, NULL);
