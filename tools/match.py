@@ -11,12 +11,12 @@ import sys
 if __package__:
     from .binary import compare_data, relocate_function, write_function
     from .lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, covered_bytes,
-                      digest, external_symbols, load_code_groups, prepare_code_group_objects, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
+                      digest, external_symbols, load_code_groups, prepare_code_group_objects, library_objects, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools.binary import compare_data, relocate_function, write_function
     from tools.lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, covered_bytes,
-                     digest, external_symbols, load_code_groups, prepare_code_group_objects, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
+                     digest, external_symbols, load_code_groups, prepare_code_group_objects, library_objects, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
 
 OUT = ROOT / "build/objdiff"
 
@@ -186,6 +186,8 @@ def main():
     candidate_only = load_candidate_only(config, objects, records)
     objects = prepare_code_group_objects(objects, load_code_groups(config), records)
     definition_index = DefinitionIndex(objects)
+    for unit, (obj, names) in library_objects().items():
+        definition_index.add_library(unit, obj, names)
     members, member_proof, migrations = [], None, []
     if "data_members" in config and not args.function:
         if __package__:

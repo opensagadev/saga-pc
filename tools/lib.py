@@ -88,6 +88,59 @@ def compiled_objects():
     return objects
 
 
+def archive_members(path):
+    """Yield (index, member name, bytes) for each object in an MS COFF archive."""
+    data = Path(path).read_bytes()
+    if data[:8] != b"!<arch>\n":
+        raise ValueError(f"{path}: not an archive")
+    offset, longnames, index = 8, b"", 0
+    while offset + 60 <= len(data):
+        header = data[offset:offset + 60]
+        name = header[:16].decode("latin-1").strip()
+        size = int(header[48:58])
+        body = data[offset + 60:offset + 60 + size]
+        if name == "//":
+            longnames = body
+        elif name != "/":
+            if name.startswith("/") and name[1:].isdigit():
+                start = int(name[1:])
+                end = longnames.find(b"\0", start)
+                name = longnames[start:end if end >= 0 else None].decode("latin-1")
+            else:
+                name = name.rstrip("/")
+            yield index, name, body
+            index += 1
+        offset += 60 + size + (size & 1)
+
+
+def library_entries():
+    path = ROOT / "config/library-objects.json"
+    return json.loads(path.read_text())["entries"] if path.is_file() else []
+
+
+def library_member_path(archive, index, body=None):
+    """Extract one pinned archive member under build/lib/ (once) and return its path."""
+    path = ROOT / "build/lib" / archive / f"{index:05d}.obj"
+    if body is not None:
+        if not path.is_file() or path.read_bytes() != body:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(body)
+        return path
+    if not path.is_file():
+        for member_index, _, member in archive_members(ROOT / "build/tools/msvc8/lib" / archive):
+            library_member_path(archive, member_index, member)
+    return path
+
+
+def library_objects():
+    """Accepted runtime functions: {unit: (COFF, [symbol names])} for comparison only."""
+    result = {}
+    for entry in library_entries():
+        unit = f"lib/{entry['archive']}/{entry['index']:05d}:{Path(entry['member'].replace(chr(92), '/')).name}"
+        result[unit] = (COFF(library_member_path(entry["archive"], entry["index"])), entry["symbols"])
+    return result
+
+
 def object_path(unit):
     return ROOT / "build/obj" / Path(unit).relative_to("src").with_suffix(".obj")
 
@@ -218,6 +271,13 @@ class DefinitionIndex:
                 local.setdefault(definition['name'], []).append(definition)
             for name, definitions in local.items():
                 self.entries.setdefault(name, []).append((unit, obj, tuple(definitions)))
+
+    def add_library(self, unit, obj, names):
+        """Index only the accepted functions of a runtime archive member."""
+        wanted = set(names)
+        for definition in obj.defined_symbols():
+            if definition["name"] in wanted:
+                self.entries.setdefault(definition["name"], []).append((unit, obj, (definition,)))
 
     def definitions_for(self, symbol):
         found = []
