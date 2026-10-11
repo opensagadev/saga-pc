@@ -245,7 +245,7 @@ def publish(unit, message):
 
 
 def batch(count, iterations, jobs, apply, minimum, maximum, seed=1, workers=1, min_percent=20.0,
-          push=False):
+          push=False, order="lost"):
     """Work through the functions losing the most bytes, several at a time.
 
     Each worker is a separate process; all share the build's Wine prefix. Two
@@ -255,7 +255,12 @@ def batch(count, iterations, jobs, apply, minimum, maximum, seed=1, workers=1, m
     rows = [r for r in report["functions"]
             if r.get("objdiff_percent") is not None and min_percent <= r["objdiff_percent"] < 100
             and len(r["units"]) == 1 and minimum <= (r["target_size"] or 0) <= maximum]
-    rows.sort(key=lambda r: -r["target_size"] * (100 - r["objdiff_percent"]))
+    if order == "near":
+        # Closest to exact first: cheap exact matches.
+        rows = [r for r in rows if r["objdiff_percent"] >= 85]
+        rows.sort(key=lambda r: (-r["objdiff_percent"], r["target_size"]))
+    else:
+        rows.sort(key=lambda r: -r["target_size"] * (100 - r["objdiff_percent"]))
     journal = OUT / "batch.jsonl"
     done = set()
     if journal.is_file():
@@ -365,11 +370,13 @@ def main():
     parser.add_argument("--worker", help=argparse.SUPPRESS)
     parser.add_argument("--push", action="store_true",
                         help="Batch with --apply: commit and push each improved function")
+    parser.add_argument("--order", choices=("lost", "near"), default="lost",
+                        help="Batch: most lost bytes first, or closest to exact first")
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args()
     if args.batch:
         batch(args.batch, args.iterations, args.jobs, args.apply, args.min_size, args.max_size, args.seed,
-              args.workers, args.min_percent, args.push)
+              args.workers, args.min_percent, args.push, args.order)
         return 0
     if not args.symbol:
         parser.error("Name a function or use --batch")

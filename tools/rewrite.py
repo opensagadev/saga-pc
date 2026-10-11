@@ -19,7 +19,7 @@ from tools.check import analysis_configuration, analysis_language
 from tools.lib import ROOT
 
 # Bump when rules change materially: batch runs retry functions searched with older rules.
-VERSION = 2
+VERSION = 3
 K = ci.CursorKind
 FLOATS = {ci.TypeKind.FLOAT, ci.TypeKind.DOUBLE, ci.TypeKind.LONGDOUBLE}
 NEGATE = {"==": "!=", "!=": "==", "<": ">=", ">=": "<", ">": "<=", "<=": ">"}
@@ -490,19 +490,53 @@ def rule_swap_statements(source):
                             f"line {first.location.line}", _independent(source, first, second))
 
 
+def _store_target(source, lhs):
+    """Identity of a store: a local variable, or (base variable, field path) of p->a.b."""
+    lhs = strip(lhs)
+    if lhs.kind == K.DECL_REF_EXPR and lhs.referenced.semantic_parent.kind != K.TRANSLATION_UNIT:
+        return ("local", lhs.referenced.spelling), lhs.referenced
+    if lhs.kind == K.MEMBER_REF_EXPR:
+        path, node = [], lhs
+        while node is not None and node.kind == K.MEMBER_REF_EXPR:
+            path.append(node.spelling)
+            children = [strip(c) for c in node.get_children()]
+            if len(children) > 1:
+                return None, None
+            node = children[0] if children else None  # no child: implicit this->member
+        if node is None or node.kind == K.CXX_THIS_EXPR:
+            return ("field", "this", tuple(reversed(path))), None
+        if node.kind == K.DECL_REF_EXPR:
+            return ("field", node.referenced.spelling, tuple(reversed(path))), node.referenced
+    return None, None
+
+
 def _independent(source, first, second):
-    written, read = [], []
+    """Two pure stores to different locals, or to different fields of one base, neither read by the other."""
+    targets, read_names = [], []
     for stmt in (first, second):
         expr = strip(stmt)
-        if expr.kind != K.BINARY_OPERATOR or source.operator(expr) != "=" or not pure(source, list(expr.get_children())[1]):
+        if expr.kind != K.BINARY_OPERATOR or source.operator(expr) != "=":
             return False
-        lhs, rhs = list(expr.get_children())
-        lhs = strip(lhs)
-        if lhs.kind != K.DECL_REF_EXPR or lhs.referenced.semantic_parent.kind == K.TRANSLATION_UNIT:
+        lhs, rhs = source.children(expr)
+        if not pure(source, rhs):
             return False
-        written.append(lhs.referenced)
-        read.append({n.referenced for n in [rhs, *source.walk(rhs)] if n.kind == K.DECL_REF_EXPR})
-    return written[0] != written[1] and written[0] not in read[1] and written[1] not in read[0]
+        target, _ = _store_target(source, lhs)
+        if target is None:
+            return False
+        targets.append(target)
+        read_names.append({n.spelling for n in [rhs, *source.walk(rhs)]
+                           if n.kind in (K.DECL_REF_EXPR, K.MEMBER_REF_EXPR)})
+    if targets[0] == targets[1]:
+        return False
+    if targets[0][0] == "field" and targets[1][0] == "field":
+        # Same base and disjoint field paths cannot overlap; different bases might alias.
+        if targets[0][1] != targets[1][1] or targets[0][2][0] == targets[1][2][0] and (
+                targets[0][2][:len(targets[1][2])] == targets[1][2] or targets[1][2][:len(targets[0][2])] == targets[0][2]):
+            return False
+    elif targets[0][0] != targets[1][0]:
+        return False
+    name = lambda t: t[2][-1] if t[0] == "field" else t[1]
+    return name(targets[0]) not in read_names[1] and name(targets[1]) not in read_names[0]
 
 
 def rule_compound_assign(source):
@@ -785,6 +819,45 @@ def rule_forward_temp(source):
                             f"line {first.location.line}", True)
 
 
+def rule_signedness(source):
+    """Compare as unsigned (JB/JAE) or signed (JL/JGE): exact-only, it changes negative cases."""
+    for node in source.walk():
+        if node.kind != K.BINARY_OPERATOR or source.operator(node) not in ("<", ">", "<=", ">="):
+            continue
+        left, right = source.children(node)
+        kind = left.type.get_canonical().kind
+        if kind in (ci.TypeKind.INT, ci.TypeKind.LONG, ci.TypeKind.SHORT, ci.TypeKind.SCHAR, ci.TypeKind.CHAR_S):
+            cast = "(unsigned int)"
+        elif kind in (ci.TypeKind.UINT, ci.TypeKind.ULONG, ci.TypeKind.USHORT, ci.TypeKind.UCHAR):
+            cast = "(int)"
+        else:
+            continue
+        a, b = source.span(left)
+        yield Candidate(source.edit([(a, b, f"{cast}{paren(source.src(left))}")]), "signedness",
+                        f"line {node.location.line}", False)
+
+
+def rule_chain_swap(source):
+    """a = b = E  ->  b = a = E: changes which store VC8 emits first."""
+    for node in source.walk():
+        if node.kind != K.BINARY_OPERATOR or source.operator(node) != "=":
+            continue
+        lhs, rhs = source.children(node)
+        inner = strip(rhs)
+        if inner.kind != K.BINARY_OPERATOR or source.operator(inner) != "=":
+            continue
+        middle, value = source.children(inner)
+        first, _ = _store_target(source, lhs)
+        second, _ = _store_target(source, middle)
+        if (first is None or second is None or first == second
+                or lhs.type.get_canonical().spelling != middle.type.get_canonical().spelling):
+            continue
+        a, b = source.span(node)
+        replacement = f"{source.src(middle)} = {source.src(lhs)} = {source.src(value)}"
+        yield Candidate(source.edit([(a, b, replacement)]), "chain_swap", f"line {node.location.line}", True)
+
+
 RULES = [rule_inline_local, rule_invert_if, rule_guard_to_else, rule_compare, rule_merge_assign,
          rule_commute, rule_swap_statements, rule_compound_assign, rule_index, rule_ternary,
-         rule_swap_decls, rule_move_decls, rule_drop_cast, rule_result_variable, rule_forward_temp]
+         rule_swap_decls, rule_move_decls, rule_drop_cast, rule_result_variable, rule_forward_temp,
+         rule_signedness, rule_chain_swap]
