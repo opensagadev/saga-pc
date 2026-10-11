@@ -81,6 +81,22 @@ extern "C" {}
 
 extern "C" {}
 
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
 extern "C" {
     static f32 Condition_EitherPlayerLocatorRangeXZ(AISYS_PC *, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                                     char *, void *argument) {

@@ -88,6 +88,18 @@ u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner) {
     return page;
 }
 
+f32 NuMouseReadXVel(void) {
+    return 0.0f;
+}
+
+f32 NuMouseReadYVel(void) {
+    return 0.0f;
+}
+
+f32 NuMouseReadZVel(void) {
+    return 0.0f;
+}
+
 void __cdecl NuKeyboardRead(void) {
     NuKeyboardState_PC *state;
 

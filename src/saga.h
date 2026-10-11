@@ -4692,7 +4692,8 @@ STATIC_ASSERT(offsetof(AITRIGGERSET_PARTIAL_PC, flags_low) == 0x210);
 typedef struct gameobject_s {
     union {
         struct {
-            u8 unknown_0000[8];
+            struct gameobject_s *objptr;
+            u8 unknown_0004[4];
             ANIMPACKET_PC anim_packet;
         };
         struct {
@@ -4737,6 +4738,7 @@ typedef struct gameobject_s {
     u32 flags_1f8;
     union {
         u8 flags_1fc;
+        u16 flags_1fc_half;
         u32 flags_1fc_word;
     };
     f32 movement_direction_x;
@@ -20599,6 +20601,23 @@ extern "C" {
 }
 #endif
 
+/* Android macros and callback types that ported code uses. */
+#ifndef MIN
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#endif
+#define NU_SIN_LUT(ang) NuTrigTable[(i32)(ang) >> 1 & 0x7fff]
+#define NU_COS_LUT(ang) NuTrigTable[((i32)(ang) + 0x4000) >> 1 & 0x7fff]
+#define QRAND_FLOAT() (qrand() * (1.0f / 65535.0f))
+struct eduimenu_s;
+struct eduiitem_s;
+struct nuhspecial_s;
+typedef void(__cdecl *EdUiMenuCallback)(struct eduimenu_s *menu, struct eduimenu_s *parent);
+typedef void(__cdecl *EdUiItemCallback)(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+typedef i32 AIFINDALTERNATIVESPECIALOBJECT(AISYS_PC *system, struct nuhspecial_s *special);
+
 /* Types imported from the Android sources (tools/typeimport.py). */
 typedef struct ADDGIZMOTYPE_s ADDGIZMOTYPE_s;
 typedef struct AIAREA_s AIAREA_s;
@@ -24766,9 +24785,78 @@ extern "C" {
     void __cdecl edcamSet(void);
     void __cdecl edppDoInput(struct FRAME_PAD_PC *pad);
     void __cdecl edcamMoveEx(struct FRAME_PAD_PC *pad, f32 delta_time);
+    extern i32(__cdecl *FindAlternativeSpecialObjectFn)(struct AISYS_PC *arg0, struct nuhspecial_s *arg1);
+    i32 __cdecl FindAnimIX(struct characterdata_pc_s *character, char *name);
+    extern u32 lightning_col[2];
+    extern f32 lightning_endw[2];
+    extern f32 lightning_sizel[2];
+    extern f32 lightning_sizew[2];
+    extern f32 lightning_sizewab[2];
+    extern i32 lightning_type;
+    i32 __cdecl eduiItemSetText(struct eduiitem_s *item, char *text);
+    void __cdecl eduiItemSliderSetVal(struct edui_slider_s *item, f32 value);
+    i32 __cdecl eduicbInteractSel(struct edui_interact_s *arg0);
+    i32 __cdecl eduicbInteractSlider(struct edui_interact_s *arg0);
+    void __cdecl eduicbItemDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
+    void __cdecl eduicbItemSliderDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
+    i32 __cdecl eduicbProcessColourSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2,
+                                          struct FRAME_PAD_PC *arg3);
+    i32 __cdecl eduicbProcessSel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
+    i32 __cdecl eduicbProcessSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2,
+                                    struct FRAME_PAD_PC *arg3);
+    i32 __cdecl eduicbRenderCheck(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
+                                  i32 arg5);
+    i32 __cdecl eduicbRenderColourSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
+                                         i32 arg5);
+    i32 __cdecl eduicbRenderSel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
+                                i32 arg5);
+    i32 __cdecl eduicbRenderSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
+                                   i32 arg5);
+    i32 __cdecl eduicbRenderSliderInt(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
+                                      i32 arg5);
+    void __cdecl eduicbItemTextPickDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
+    i32 __cdecl eduicbProcessTextPick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2,
+                                      struct FRAME_PAD_PC *arg3);
+    i32 __cdecl eduicbRenderTextPick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
+                                     i32 arg5);
+    void __cdecl eduiItemTextPickSetFmt(struct edui_textpicker_s *item, char *format);
+    extern char *textrow[4];
+    void __cdecl DebrisSetPriority(i32 arg0, i16 arg1, u8 arg2);
+    extern i32 edbits_particle_level_page;
+    void __cdecl EatVictim(struct gameobject_s *object);
+    struct gameobject_s *__cdecl GizTurret_GetTgt(struct GIZTURRET_s *turret, struct numtx_s *matrix);
+    void __cdecl GrabVictim(struct gameobject_s *object, struct gameobject_s *victim);
+    extern i32 addbolt_nosfx;
+    extern f32 gizturret_rapid_fire_rate;
+    extern i16 temp_yrot;
+    extern f32 MulAdd;
+    extern f32 MulDist;
+    extern f32 SpaceRumbleTimer;
+    extern f32 SpeedAdd;
+    extern f32 SpeedDist;
+    extern f32 PodRace_sniper_fire_radius;
+    extern f32 PodRace_sniper_fire_range_time;
+    extern f32 PodRace_sniper_start_fire_radius;
+    void __cdecl Hub_MarkCharacterUnavailable(i16 *characters, i16 character);
+    extern storepack_s StorePack[11];
+    extern i16 id_JABBA;
+    extern i16 id_TRAININGREMOTE;
+    extern i16 id_WEIRDO1;
+    extern i16 id_WEIRDO2;
+    extern i16 id_WHIP;
+    extern i16 id_WOMPRAT;
+    void __cdecl StartLaunch(struct gameobject_s *object);
+    void __cdecl eduiItemFilePickSetFmt(struct edui_file_pick_s *item, char *format);
+    void __cdecl eduicbItemFilePickDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
+    i32 __cdecl eduicbProcessFilePick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2,
+                                      struct FRAME_PAD_PC *arg3);
+    i32 __cdecl eduicbRenderFilePick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
+                                     i32 arg5);
 #ifdef __cplusplus
 }
 #endif
+enum { APIOBJECT_FLAG_CHARACTER = 4096 };
+enum { APIOBJECT_FLAG_IN_USE = 1 };
 enum { EDCAM_FREEDOM_DISTANCE = 32 };
 enum { EDCAM_FREEDOM_PITCH = 8 };
 enum { EDCAM_FREEDOM_POSITION_X = 1 };

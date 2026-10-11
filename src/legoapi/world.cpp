@@ -600,6 +600,8 @@ extern "C" {
 
 extern "C" {}
 
+extern "C" {}
+
 extern "C" void edbitsDrawBasicCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_x,
                                     i32 rotation_y, i32 rotation_z, i32 colour, numtl_s *material) {
     NUVEC outlines[4][5] = {{{-1, -1, 1}, {1, -1, 1}, {1, 1, 1}, {-1, 1, 1}, {-1, -1, 1}},

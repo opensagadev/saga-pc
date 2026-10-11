@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "saga.h"
 
 void __cdecl NuWindSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 group_count);

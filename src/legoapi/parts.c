@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "saga.h"
 
 extern const char PowerUpLoopSfx_PC[18];

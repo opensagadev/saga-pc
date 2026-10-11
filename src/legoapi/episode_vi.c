@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "saga.h"
 
 typedef struct emperor_fight_packet_pc_s {

@@ -41,6 +41,26 @@ i32 __cdecl GameObjectNearFloor(GAMEOBJECT *object, f32 height, f32 *distance) {
     return tolerance > floor_distance;
 }
 
+void GameObjectToCameraDistances() {
+    i32 object_index;
+    const NUVEC camera_position = GameCam->position;
+    GAMEOBJECT *object = Obj;
+    for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++object) {
+        f32 dx;
+        f32 dy;
+        f32 dz;
+        const u16 required_flags = APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER;
+        if ((object->flags_1fc_half & required_flags) != required_flags) {
+            continue;
+        }
+
+        dx = camera_position.x - object->position.x;
+        dy = camera_position.y - object->position.y;
+        dz = camera_position.z - object->position.z;
+        object->ai_update_distance = NuFsqrt(dx * dx + dy * dy + dz * dz);
+    }
+}
+
 i16 __cdecl NuPortalWhichRoom(NUGSCN *scene, NUVEC *position);
 
 void __cdecl PortalGameObject(GAMEOBJECT *object, i32 enabled, i32 update_room, i16 room, NUGSCN *scene) {

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "saga.h"
 
 typedef struct EDANIM_LOAD_PARAM_PC {

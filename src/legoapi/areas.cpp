@@ -1219,6 +1219,7 @@ extern "C" {
         AreaDataLoaded = 1;
     }
 }
+
 enum FADETYPE_VALUE {
     FADE_TYPE_NONE = -1,
     FADE_TYPE_SCREEN = 0,

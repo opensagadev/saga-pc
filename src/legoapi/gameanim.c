@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "saga.h"
 
 extern void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *special, i32 visible);

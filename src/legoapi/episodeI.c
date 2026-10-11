@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "saga.h"
 
 f32 __cdecl PodSprint_InStartCountdown(WORLDINFO *world) {
@@ -70,6 +71,83 @@ static void PodMatrixCopyPrivatePc(NUMTX *destination, const NUMTX *source) {
     destination->m31 = source->m31;
     destination->m32 = source->m32;
     destination->m33 = source->m33;
+}
+
+static void PodRaceSnipersUpdate(void) {
+    i32 i;
+    NUVEC direction;
+    static i32 player_ix;
+    i32 bolttype = (WORLD->current_level == PODSPRINTA_LDATA) ? 0x29 : 0x28;
+    INIT_BOLT_CONFIG_PC *type = BoltType_FindByID(bolttype, WORLD);
+    i32 n = PodRace_nsnipers;
+    if (n <= 0 || max_nsnipers <= 0)
+        return;
+    for (i = 0; i < n && i < max_nsnipers; i++) {
+        i32 j;
+        SNIPER_s *s = &PodRace_snipers[i];
+        i32 in_range = 0;
+        for (j = 0; j < 2; ++j) {
+            f32 dz;
+            f32 dx;
+            f32 dist2;
+            GAMEOBJECT *target = Player[j];
+            if (!(target != NULL && (target->flags_1fc_half & 0x1001) == 0x1001)) {
+                continue;
+            }
+            dz = target->collision_position.z - s->pos.z;
+            dx = target->collision_position.x - s->pos.x;
+            dist2 = dx * dx + dz * dz;
+            if (dist2 < PodRace_sniper_start_fire_radius * PodRace_sniper_start_fire_radius) {
+                in_range = 1;
+                if (dist2 < PodRace_sniper_fire_radius * PodRace_sniper_fire_radius)
+                    s->state = PodRace_sniper_fire_range_time;
+            }
+        }
+        s->fire_timer += FRAMETIME;
+        if (in_range) {
+            if (s->fire_timer >= PodRace_sniper_fire_time) {
+                NUVEC aim;
+                f32 distance;
+                NUMTX mtx;
+                s->fire_timer = 0.0f;
+                aim = aim;
+                if (s->state > 0.0f) {
+                    GAMEOBJECT *target = player2;
+                    if (target == NULL) {
+                        player_ix = 0;
+                    } else {
+                        player_ix = player_ix == 0;
+                    }
+                    if (player_ix == 0)
+                        target = player;
+                    if (target == NULL || type == NULL)
+                        continue;
+                    CalculateInterceptVector(&s->prev, &target->collision_position, &target->velocity, type->speed,
+                                             &aim, NULL);
+                    NuVecAdd(&aim, &aim, &s->prev);
+                    s->state -= FRAMETIME;
+                    if (s->state < 0.0f)
+                        s->state = 0.0f;
+                } else {
+                    aim.x = 0.0f;
+                    aim.y = 0.0f;
+                    aim.z = NuRandFloat() * PodRace_sniper_fire_radius;
+                    NuVecRotateY(&aim, &aim, NuRandInt());
+                    NuVecAdd(&aim, &aim, &s->pos);
+                }
+
+                distance = NuVecDist(&aim, &s->prev, &direction);
+                temp_yrot = NuAtan2D(direction.x, direction.z);
+                temp_xrot = NuAtan2D(-direction.y, distance);
+                // Retail uses an aligned matrix local in its realigned stack frame.
+                mtx = mtx;
+                NuMtxSetRotationX(&mtx, (u16)temp_xrot);
+                NuMtxRotateY(&mtx, (u16)temp_yrot);
+                Bolt_Add(NULL, &s->prev, &mtx, bolttype, 0);
+            }
+            n = PodRace_nsnipers;
+        }
+    }
 }
 
 static RACEPOD_RESOURCE_PC *RacePodAllocatePrivatePc(void) {

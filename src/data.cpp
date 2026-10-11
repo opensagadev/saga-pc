@@ -28851,3 +28851,19 @@ extern "C" {
 extern "C" {}
 
 extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$PodRace_nsnipers")
+    i32 PodRace_nsnipers;
+
+#pragma data_seg(".data$PodRace_sniper_fire_time")
+    f32 PodRace_sniper_fire_time = 0.25f;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edpp_copy_source_vec")
+    NUVEC edpp_copy_source_vec;
+
+#pragma bss_seg(".bss$edpp_copyroty")
+    i32 edpp_copyroty;
+}

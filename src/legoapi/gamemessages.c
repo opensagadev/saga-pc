@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "saga.h"
 #include <string.h>
 GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {

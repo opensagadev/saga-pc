@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "saga.h"
 
 void ResetGizAIMessageSys(GIZAIMESSAGESYS *sys) {
