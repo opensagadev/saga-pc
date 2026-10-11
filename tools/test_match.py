@@ -107,8 +107,8 @@ class ProgressTests(unittest.TestCase):
             match.update_badge(stats)
             updated = path.read_text()
             self.assertIn("mapped%20code-25.000%25-red", updated)
-            self.assertIn("mapped%20data-25.000%25-yellow", updated)
-            self.assertIn("mapped%20code%2Bdata-75.000%25-green", updated)
+            self.assertIn("mapped%20data-25.000%25-orange", updated)
+            self.assertIn("mapped%20code%2Bdata-75.000%25-brightgreen", updated)
             self.assertNotIn("/badge/mapping-", updated)
             self.assertTrue(updated.startswith("prefix\n"))
             self.assertTrue(updated.endswith(" suffix\n"))
@@ -122,8 +122,8 @@ class ProgressTests(unittest.TestCase):
             path = Path(temp) / "README.md"
             path.write_text("<!-- matching-badge -->old<!-- /matching-badge --> "
                             "<!-- mapping-badge -->old<!-- /mapping-badge -->\n")
-            for value, color in ((0, "red"), (24.999, "red"), (25, "yellow"),
-                                 (74.999, "yellow"), (75, "green"), (100, "green")):
+            for value, color in ((0, "red"), (24.999, "red"), (25, "orange"),
+                                 (74.999, "orange"), (75, "brightgreen"), (100, "brightgreen")):
                 with self.subTest(value=value):
                     match.update_badge({"fuzzy_coverage_percent": value, "mapping_percent": 0})
                     self.assertIn(f"fuzzy%20code-{value:.3f}%25-{color}", path.read_text())

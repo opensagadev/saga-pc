@@ -14325,7 +14325,7 @@ address    , symbol                                                         , si
 0x82b174,_PCShaderWaterTheta,,f32
 0x82b178,_PCShaderWaterLastFrame,,i32
 0x82b1e0,_ShaderUniformRecordsPc,,ShaderUniformRecordPc[100]
-0x82d700,?uberShader2@@3PADA,,char []
+0x82d700,?uberShader2@@3PADA,158576,char [158576]
 0x854270,_ShaderProgramHashPC,,u32[2]
 0x008542e0 , ??_R0?AVShaderBuilderGen@@@8                                   , 31    ,
 0x00854300 , ??_R0?AVHLSLShaderBuilder@@@8                                  , 32    ,

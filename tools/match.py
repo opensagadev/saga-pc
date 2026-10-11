@@ -110,6 +110,18 @@ def objdiff_progress(report, functions):
     return {"objdiff_fuzzy_percent": objdiff_percent(measures), "objdiff_total_code": total}
 
 
+def repository_paths(value):
+    """Report paths relative to the repository so reports carry no local directories."""
+    prefix = str(ROOT) + "/"
+    if isinstance(value, dict):
+        return {repository_paths(k): repository_paths(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [repository_paths(v) for v in value]
+    if isinstance(value, str) and value.startswith(prefix):
+        return value[len(prefix):]
+    return value
+
+
 def update_badge(stats):
     path = ROOT / "README.md"
     content = path.read_text()
@@ -124,7 +136,7 @@ def update_badge(stats):
         images = []
         for label, field, alt in badges:
             value = stats[field]
-            color = "red" if value < 25 else "yellow" if value < 75 else "green"
+            color = "red" if value < 25 else "orange" if value < 75 else "brightgreen"
             images.append(f"![{alt}](https://img.shields.io/badge/{label}-{value:.3f}%25-{color})")
         # Start the Markdown row with an image, then keep both closing markers
         # and the mapping marker inline so HTML blocks do not split the badges.
@@ -335,6 +347,7 @@ def main():
             result["progress"]["matched_data_region_bytes"] = covered_bytes(
                 [(number(r["address"]), r["target_size"]) for r in data + members
                  if r["exact_match"] and r["target_size"] is not None])
+    result = repository_paths(result)
     (OUT / "summary.json").write_text(json.dumps(result, indent=2) + "\n")
     if args.update:
         update_badge(result["progress"])

@@ -328,7 +328,7 @@ extern "C" void __cdecl NuShaderManagerSetfv(i32 semantic, const f32 *values) {
 }
 
 #include <new>
-extern char uberShader2[157210];
+extern char uberShader2[158576];
 
 template <> PC_SHADER_MANAGER_VIEW::ShaderManagerTemplate() {
     for (i32 i = 0; i < 400; ++i)
@@ -361,7 +361,7 @@ ShaderManagerHLSL::ShaderManagerHLSL(VirtualStackAllocator &allocator)
     compiler = new (memory) HLSLShaderBuilder(allocator);
     compiler->SetSaveDirectory("\\genShaders");
     compiler->SetIncludeDirectories("./shaders;../nu2api/shaderBuilder;C:\\projects\\nu2api\\shaderBuilder");
-    compiler->LoadSource(uberShader2, sizeof(uberShader2));
+    compiler->LoadSource(uberShader2, sizeof(uberShader2) - 1);
     compiler->SetProfile(PCDeviceHardwareVertexProcessingPC, 8, 2);
     compiler->dictionary.AddRegisterBlock("skinMatrix", 8);
     compiler->dictionary.AddRegisterBlock("blendShapes", 8);
