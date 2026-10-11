@@ -256,7 +256,7 @@ check_cinfo_flags: {
     if (set_facing_angle != 0) {
         object->takeover_start_angle = wall_angle;
     }
-    if (((PART_RELEASE_PUSH_PC *)object)->push_timer <= 0.0f) {
+    if (0.0f >= ((PART_RELEASE_PUSH_PC *)object)->push_timer) {
         goto exit_push_check;
     }
     goto check_current_contexts;
@@ -296,10 +296,10 @@ check_current_contexts: {
     if (LEGOCONTEXT_PUSHOBSTACLE != -1 && LEGOCONTEXT_PUSHOBSTACLE == context) {
         goto pushobstacle_maintain;
     }
-    if (LEGOCONTEXT_PUSHSPINNER != -1 && LEGOCONTEXT_PUSHSPINNER == context) {
+    if (LEGOCONTEXT_PUSHSPINNER != -1 && context == LEGOCONTEXT_PUSHSPINNER) {
         goto pushspinner_maintain;
     }
-    if (LEGOCONTEXT_PUSH != -1 && LEGOCONTEXT_PUSH == context) {
+    if (LEGOCONTEXT_PUSH != -1 && context == LEGOCONTEXT_PUSH) {
         goto pushblock_maintain;
     }
     goto revalidate_context;
@@ -317,7 +317,7 @@ revalidate_context: {
         return;
     }
     FastWeaponIn(object, 0);
-    if (LEGOCONTEXT_WALLJUMPWAIT != -1 && LEGOCONTEXT_WALLJUMPWAIT == context) {
+    if (LEGOCONTEXT_WALLJUMPWAIT != -1 && context == LEGOCONTEXT_WALLJUMPWAIT) {
         PlayLandSfx(object, 0, 0);
     } else {
         PlayGruntSfx(object);
@@ -340,7 +340,7 @@ near_floor_push_check: {
 
 check_jump_context_inner: {
     allow_block_push = 0;
-    if (LEGOCONTEXT_JUMP != -1 && LEGOCONTEXT_JUMP == context) {
+    if (LEGOCONTEXT_JUMP != -1 && context == LEGOCONTEXT_JUMP) {
         allow_block_push = object->action_movement_state == 9;
     }
     goto check_walljump_flag;
@@ -374,7 +374,7 @@ push_entry_gate: {
 }
 
 exit_push_check: {
-    if (LEGOCONTEXT_PUSHOBSTACLE != -1 && LEGOCONTEXT_PUSHOBSTACLE == context) {
+    if (LEGOCONTEXT_PUSHOBSTACLE != -1 && context == LEGOCONTEXT_PUSHOBSTACLE) {
         GameCam_Blend(NULL, 0.5f, 0.0f, 1);
     }
     object->character_context = -1;
@@ -434,8 +434,8 @@ interaction_timer_expired: {
         goto start_end_of_jump;
     }
     {
-        CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
-        if (model->model_data_b[LEGOACT_LUNGE] == NULL) {
+        
+        if (object->character_model->model_data_b[LEGOACT_LUNGE] == NULL) {
             goto start_end_of_jump;
         }
     }
@@ -485,7 +485,7 @@ pushobstacle_maintain: {
         u16 wanted = GamePad_InputAngle(object, pad);
         u16 have = object->takeover_start_angle;
         obstacle_input_difference = RotDiff(wanted, have);
-        if (obstacle_input_difference < 0) {
+        if (obstacle_input_difference <= -1) {
             obstacle_input_difference = -obstacle_input_difference;
         }
         if (obstacle_input_difference > 0x31c6) {
@@ -686,7 +686,7 @@ check_spinner_room: {
         context = object->character_context;
         goto push_anim_set;
     }
-    if (found_spinner->spin_timer <= 0.0f) {
+    if (0.0f >= found_spinner->spin_timer) {
         goto spinner_teamwork_check;
     }
     context = object->character_context;
@@ -845,7 +845,7 @@ wallshuffle_entry_gated: {
         object->field_7aa = wait_anim;
         ((PUSH_OBJECT_LOCAL_PC *)object)->landing_followup = 0;
         f32 duration = AnimDuration(object->id, wait_anim, 0.0f, 0.0f, 0);
-        f32 timer_value = duration <= 0.0f ? 0.3f : duration;
+        f32 timer_value = 0.0f >= duration ? 0.3f : duration;
         object->movement_facing_angle = wall_angle;
         object->context_timer = timer_value;
         object->velocity = v000;
