@@ -1289,7 +1289,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                 EShadowPolygonPc = NULL;
             }
             if (!(LevelConfigFarDistance > ordinary_above_y) || !(ordinary_above_normal.y < 0.0f) ||
-                !(roof_range + position->y > ordinary_above_y)) {
+                !(ordinary_above_y < roof_range + position->y)) {
                 ShadowRoofPolygonPc = NULL;
                 GetSurfaceInfoRoofHeightPc = LevelConfigFarDistance;
             } else {
@@ -1350,7 +1350,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                                 winding = 2;
                                 goto second_plane;
                             }
-                        } else if (CAST_LINE(0, 1) != 0 && CAST_LINE(2, 0) != 0) {
+                        } else if (CAST_LINE(0, 1) != 0 && 0 != CAST_LINE(2, 0)) {
                             winding = 2;
                             goto first_plane;
                         }
@@ -1361,7 +1361,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                             winding = 1;
                         second_plane:
                             normal_y = surface->normals[1].y;
-                            if (normal_y == 0.0f)
+                            if (0.0f == normal_y)
                                 goto first_plane;
                             normal_z = surface->normals[1].z;
                             normal_x = surface->normals[1].x;
@@ -1371,7 +1371,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                             plane_y = (terrain->groups[group_index].origin.y + surface->vertices[3].y) + plane_quotient;
                             goto record_plane;
                         }
-                    } else if (CAST_LINE(1, 0) != 0 && CAST_LINE(0, 2) != 0) {
+                    } else if (CAST_LINE(1, 0) != 0 && 0 != (CAST_LINE(0, 2))) {
                         winding = 1;
                     first_plane:
                         normal_z = surface->normals[0].z;
@@ -1420,12 +1420,12 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                     }
                 }
             } else if (!(normal_y > 0.0f)) {
-                if (normal_y < 0.0f && CAST_LINE(0, 1) != 0 && CAST_LINE(2, 0) != 0 && CAST_LINE(1, 2) != 0) {
+                if (0.0f > normal_y && CAST_LINE(0, 1) != 0 && CAST_LINE(2, 0) != 0 && CAST_LINE(1, 2) != 0) {
                     winding = 2;
                     goto first_plane;
                 }
             } else {
-                if (CAST_LINE(1, 0) != 0 && CAST_LINE(0, 2) != 0 && CAST_LINE(2, 1) != 0) {
+                if (CAST_LINE(1, 0) != 0 && 0 != (CAST_LINE(0, 2)) && CAST_LINE(2, 1) != 0) {
                     winding = 1;
                     goto first_plane;
                 }
