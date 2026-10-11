@@ -24,7 +24,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
         buffer->void_ptr = NuAlloc(0x4000000, NuHwAllocSourcePc, 0xb2);
         end->addr = buffer->addr + 0x4000000;
     }
-    STUBBED_NAMED(0x004ff100); /* native call 6dbc30 */
+    PcInitializeStartupCriticalSection();
     STUBBED_NAMED(0x00602930); /* (1.0f, .5f, 0), call 6dbc49 */
     va_start(args, allocate);
     do {
@@ -336,7 +336,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     NuRndrBufferDescriptorsInitPc(buffer, *end);
     PcResetGeometryOriginStatePc();
     STUBBED_NAMED(0x005eaa80); /* (buffer, *end) */
-    STUBBED_NAMED(0x004ffbb0);
+    PcInitializePerformanceTiming();
     NuTimeBarInit();
     NuAnimInit(animation_count, buffer, *end);
     NuTexAnimInitMutex();

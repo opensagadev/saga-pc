@@ -2509,3 +2509,25 @@ initializer in a genuine const subsection. No full extent is trimmed or masked.
 The source run, cleanup and next measured startup order are recorded in the
 [current execution policy](transfer-execution.md). It establishes no rendered
 frame or playable-game milestone; the thread/timer overlap remains a hold.
+
+### Startup timing, lock ownership and inferred declaration backing EEE (2026-10-11)
+
+PcInitializeStartupCriticalSection4ff100/31 and PcInitializePerformanceTiming4ffbb0/101
+match complete native bytes. Real hardware sites call them in native order. The
+SDK critical-section (24-byte) and guard (four-byte) views are loader zero, original extents unknown. Existing
+canonical TickBase920a00/8 and PerformanceFrequency91efa0/8 remain unchanged.
+The thread pool's91ef90 arithmetic bias was mistaken for its first object. Actual
+first slot `0x91efa8`, with 13 working records, indexedcount-1/index-1, retains native13-created/12-enterable
+asymmetry and prior exact enter/leave30-byte bodies. Original pool owning extent
+is unknown: the false old 312-byte extent is retired, reducing union data/map credit by 304 bytes
+while preserving frequency (eight bytes). No new original allocation credit is introduced.
+
+Cache `0x297cc98` has 256 inferred eight-byte working records, complete zero 2,048-byte native
+initializer, with original extent blank. Independent PC water-object start `0x297d4a0`,
+Mac inline eight-byte records / 2,048-byte spacing and Android explicit 256-entry pool favor that reconstruction;
+257 or smaller-plus-hidden-storage remain possible. It is not a proved original
+PC declaration or complete startup-key upper bound. Full old 32-byte prefix and
+complete getter (1,684 bytes), search (82) and copy (84) outputs/references are preserved. Counter,
+algorithms, source sections, failure behavior and lifecycle remain unchanged.
+No counter reset, capacity guard or success provider is added. Actual runtime
+outcome and limitations are recorded in the current execution policy.

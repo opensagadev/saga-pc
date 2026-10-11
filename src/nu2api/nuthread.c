@@ -12,7 +12,7 @@ STATIC_ASSERT(sizeof(PCThreadCriticalSections_candidate) == 0x138);
 i32 __cdecl PCThreadCriticalSectionCreate_candidate(void) {
     if (PCThreadCriticalSectionCount_candidate <= 12) {
         ++PCThreadCriticalSectionCount_candidate;
-        InitializeCriticalSection(&PCThreadCriticalSections_candidate[PCThreadCriticalSectionCount_candidate]);
+        InitializeCriticalSection(&PCThreadCriticalSections_candidate[PCThreadCriticalSectionCount_candidate - 1]);
         return PCThreadCriticalSectionCount_candidate;
     }
 
@@ -21,13 +21,13 @@ i32 __cdecl PCThreadCriticalSectionCreate_candidate(void) {
 
 __declspec(noinline) void __cdecl PCThreadCriticalSectionEnter_candidate(i32 section_index) {
     if (section_index >= 1 && section_index <= 12) {
-        EnterCriticalSection(&PCThreadCriticalSections_candidate[section_index]);
+        EnterCriticalSection(&PCThreadCriticalSections_candidate[section_index - 1]);
     }
 }
 
 __declspec(noinline) void __cdecl PCThreadCriticalSectionLeave_candidate(i32 section_index) {
     if (section_index >= 1 && section_index <= 12) {
-        LeaveCriticalSection(&PCThreadCriticalSections_candidate[section_index]);
+        LeaveCriticalSection(&PCThreadCriticalSections_candidate[section_index - 1]);
     }
 }
 

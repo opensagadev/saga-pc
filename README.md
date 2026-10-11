@@ -1,14 +1,12 @@
 # saga-pc
 
-**Runtime status: not playable.** Genuine hardware/window/input, viewport,
-lighting, resource, animation, shader and renderer startup providers are connected.
-The latest bounded source run (DDD) displayed a PID-attributed `TitleNotSet`
-window until its 60-second deadline; rendered frames and a loaded world remain
-unverified. Work prioritizes the measured startup frontier, then real world/frame
-activation. See the [current roadmap](docs/roadmap.md).
+**Runtime status: not playable.** The source reaches genuine hardware/window/device
+startup, permanent-data loading and repeated frame/swap entries. Completed rendering
+and a loaded playable world remain unverified. Work follows the measured source
+failure and real provider dependencies; see the [current roadmap](docs/roadmap.md).
 
 <!-- matching-badge -->
-![fuzzy code](https://img.shields.io/badge/fuzzy%20code-29.589%25-yellow)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-43.544%25-yellow) ![mapped data](https://img.shields.io/badge/mapped%20data-1.796%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-5.466%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
+![fuzzy code](https://img.shields.io/badge/fuzzy%20code-29.592%25-yellow)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-43.547%25-yellow) ![mapped data](https://img.shields.io/badge/mapped%20data-1.795%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-5.466%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 **saga-pc** is a matching decompilation of the GOG PC release of
 *LEGO Star Wars: The Complete Saga*.

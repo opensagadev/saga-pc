@@ -10118,7 +10118,7 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern const f64 TerrainSkinSampleCountPc;
     extern i32 obstacle_gizmotype_id;
     extern i32 PCVertexDeclarationCountPC;
-    extern PC_VERTEX_DECL_ENTRY_PC PCVertexDeclarationCachePC[4];
+    extern PC_VERTEX_DECL_ENTRY_PC PCVertexDeclarationCachePC[256];
     extern u32 CRC16TablePC[256];
     extern u32 ShaderProgramHashPC[2];
     PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32);
@@ -20084,5 +20084,19 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl PcInitializeStartupCriticalSection(void);
+    void __cdecl PcInitializePerformanceTiming(void);
+    extern i32 PcStartupCriticalSectionInitialized;
+    extern CRITICAL_SECTION PcStartupCriticalSection;
+#ifdef __cplusplus
+}
+#endif
+STATIC_ASSERT(sizeof(CRITICAL_SECTION) == 24);
+STATIC_ASSERT(sizeof(DWORD_PTR) == 4);
+STATIC_ASSERT(sizeof(LARGE_INTEGER) == 8);
 
 #endif

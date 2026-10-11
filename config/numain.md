@@ -1,27 +1,42 @@
 # NuMain investigation queue
 
-Current whole-project transfer status is recorded in
-[transfer-execution.md](transfer-execution.md). BBB connects genuine API, wind,
-animation and particle initialization plus initial swap and sampler/reset calls.
-CCC additionally reconnects startup materials, pad autoconfiguration and genuine
-occlusion initialization; its source EXE has not been rerun.
-The latest frozen source run remained active until its 60-second deadline.
-The launcher then terminated it; natural exit was not observed. No fault or
-exception was recorded, and no native game or crash window was attributed by
-the broad window samples. This does not prove recurring frames, a loaded world,
-playability, or that execution passed the earlier declaration failure.
+Current whole-project status and source contracts are recorded in
+[transfer-execution.md](transfer-execution.md). Decompilation order follows the
+measured runtime frontier before independent broad source waves.
 
-The last attributed failure, in AAA, was exact PCVertexDeclarationFindSlot
-receiving count 0x0200090a with descriptor 0x02000909. The source count occupied
-cache+32, the key position of a hypothetical fifth record; insertion overwrite
-was the leading explanation, with the preceding write unobserved. Native places
-its counter eight bytes before its cache. Full original capacity remains unknown;
-the earlier four-record view establishes only a minimum for a finite producer
-domain. BBB changes no cache storage, counter, search, copy or guard. Retained Mac
-catalogs contain no debug array declaration proving this PC allocation.
-Resource/world actions and device lifetimes remain incomplete. Original scene
-capacity is also unproved. Dated notes below retain historical observations;
-use current source and the work plan for active gaps.
+The rebuilt source was tested with empty arguments and installed assets, first
+under a correctly installed four-byte WineDbg write watch, then normally for
+60 seconds. The debugger captured genuine declaration-count writes 1 and 2;
+at a later fault the count was 13 and the cache contained real records. This run
+passed the formerly observed four-record storage failure. It does not prove the
+original cache capacity or establish a bound for every startup/gameplay path.
+
+The new attributed fault is source `0x005347d5`, inside exact `GetSfxIdN`
+(native `0x650e40`, 77 complete bytes), reading null `SfxInfo`. The recorded return
+chain passes through particle loading. Current source omits the preceding native
+sound configuration provider at `0x6521b0`, and never assigns `SfxInfo`.
+Recovering that real producer and its consumed dependencies is the next priority;
+a null guard or dummy table would hide the missing reconstruction.
+
+The separate normal run reached its 60-second deadline without a logged source
+fault; its PID-attributed window remained black in samples at 5.79, 21.44 and
+55.81 seconds. Debugger timing changes scheduling, so these are distinct results.
+No completed nontrivial rendering, world activation or playable game is established.
+Both runs preserve all frozen inputs and objects, set and query crash-dialog
+suppression, and leave no owned game/debugger process or sampled game/crash window.
+The debugger was explicitly killed/quit after capture; the normal run was stopped
+at its deadline. Neither is reported as a natural successful game exit.
+
+The DDD debugger observation reached hardware/window/adapter/device/shader startup
+and LoadPerm, then NuFrameEnd9 times and NuRndrSwapScreen10 times. Wine's own window
+inventory established TTalesWindow, titled TitleNotSet. A later source fault at
+00549a34 maps to exact native PCVertexDeclarationFindSlot741934+0x24. The counter
+occupied cache+32 in our source while native places it eight bytes before the cache.
+A subsequent watch command failed installation; it supplies no write chronology.
+The new256 working backing uses explicit convergent inference, keeps original size
+unknown/zero-credit, and preserves lookup/insertion/count behavior. Timing and lock
+corrections are real native dependencies, not substitutes for this storage review.
+Dated notes below retain historical limits; use the current source and work plan.
 
 The original PC `NuMain` is at `0x00492b40`, with a complete 4,332-byte extent.
 [Identification notes](identification.md) explain its entry chain and implemented

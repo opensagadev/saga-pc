@@ -636,3 +636,21 @@ void __cdecl NuTimeBarSetRender(i32 set) {
 f32 NuTimeGetFrameTime(void) {
     return nuapi.frame_time;
 }
+
+void __cdecl PcInitializeStartupCriticalSection(void) {
+    if (PcStartupCriticalSectionInitialized == 0) {
+        InitializeCriticalSection(&PcStartupCriticalSection);
+        PcStartupCriticalSectionInitialized = 1;
+    }
+}
+
+void __cdecl PcInitializePerformanceTiming(void) {
+    DWORD_PTR process_mask = 1;
+    DWORD_PTR system_mask = 1;
+    if (!GetProcessAffinityMask(GetCurrentProcess(), &process_mask, &system_mask))
+        process_mask = 1;
+    SetProcessAffinityMask(GetCurrentProcess(), 1);
+    QueryPerformanceCounter((LARGE_INTEGER *)&NuTime_TickBase);
+    QueryPerformanceFrequency((LARGE_INTEGER *)&NuTime_PerformanceFrequency);
+    SetProcessAffinityMask(GetCurrentProcess(), process_mask);
+}

@@ -14188,7 +14188,7 @@ extern "C" {
     i32 PCVertexDeclarationCountPC;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PCVertexDeclarationCachePC")
-    PC_VERTEX_DECL_ENTRY_PC PCVertexDeclarationCachePC[4];
+    PC_VERTEX_DECL_ENTRY_PC PCVertexDeclarationCachePC[256];
 #pragma bss_seg()
 }
 
@@ -28203,4 +28203,9 @@ extern "C" {
 
 extern "C" {
     f32 ActionMusicStickyTimeoutPc[2] = {1.0f, 6.0f};
+}
+
+extern "C" {
+    i32 PcStartupCriticalSectionInitialized;
+    CRITICAL_SECTION PcStartupCriticalSection;
 }

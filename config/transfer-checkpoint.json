@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1510309,
-    "matched_code_bytes": 234878,
-    "matching_percent": 6.766388783739326,
-    "fuzzy_coverage_percent": 29.58872136323767,
-    "mapped_functions": 5377,
-    "matched_functions": 2458,
-    "objdiff_fuzzy_percent": 69.46587,
-    "objdiff_total_code": 1479430,
+    "mapped_code_bytes": 1510441,
+    "matched_code_bytes": 235010,
+    "matching_percent": 6.770191452867357,
+    "fuzzy_coverage_percent": 29.59175186792561,
+    "mapped_functions": 5379,
+    "matched_functions": 2460,
+    "objdiff_fuzzy_percent": 69.46679,
+    "objdiff_total_code": 1479562,
     "image_bytes": 40067072,
-    "mapped_bytes": 2158521,
-    "mapping_percent": 5.387269127127633,
+    "mapped_bytes": 2158349,
+    "mapping_percent": 5.3868398469446435,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -38,7 +38,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 1511503
+        "mapped_bytes": 1511635
       },
       {
         "name": ".rdata",
@@ -52,21 +52,21 @@
         "kind": "data",
         "address": "0x7ef000",
         "size": 35372200,
-        "mapped_bytes": 616832
+        "mapped_bytes": 616528
       }
     ],
-    "mapping_known_size_symbols": 9665,
-    "mapping_unknown_size_symbols": 5653,
-    "mapping_code_bytes": 1511503,
+    "mapping_known_size_symbols": 9666,
+    "mapping_unknown_size_symbols": 5656,
+    "mapping_code_bytes": 1511635,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 43.54352875019517,
-    "mapping_data_bytes": 647018,
+    "mapping_code_percent": 43.54733141932321,
+    "mapping_data_bytes": 646714,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 1.796325857882761,
-    "mapping_code_data_bytes": 2158521,
+    "mapping_data_percent": 1.795481858085543,
+    "mapping_code_data_bytes": 2158349,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 5.465964578767012,
-    "matched_data_region_bytes": 637841
+    "mapping_code_data_percent": 5.465529027800611,
+    "matched_data_region_bytes": 637537
   },
   "newly_compared": [
     {
@@ -37772,7 +37772,13 @@
       "date": "2026-10-11",
       "scope": "Connected viewport/lighting/resource startup and character/camera/scene reset providers; measured startup-first continuation",
       "baseline_commit": "6877a7756400388be1c75facdebf1a8a96120b84",
-      "publication": "Exact pushed revision CI pending at commit",
+      "publication": {
+        "commit": "be647b859b259502f46569294b0cff7680ab7703",
+        "ci_run": 38136446273,
+        "ci_job": 114461179391,
+        "steps_success": 13,
+        "conclusion": "success"
+      },
       "cleanup": {
         "commit": "6877a7756400388be1c75facdebf1a8a96120b84",
         "ci_run": 38133974217,
@@ -38378,7 +38384,167 @@
       "next_connected_wave": "Attribute actual startup wait; repair earliest verified missing PC action; thread/timer132 held on native storage overlap; bootstrap real constructors/shaders and world/frame providers remain explicit",
       "ongoing_goal": "active",
       "human_journal": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7"
+    },
+    {
+      "checkpoint": "EEE",
+      "date": "2026-10-11",
+      "scope": "Measured startup frontier; genuine critical/timing132, lock first-slot correction and inferred256 declaration working backing",
+      "baseline_commit": "be647b859b259502f46569294b0cff7680ab7703",
+      "publication": "Exact pushed revision CI pending at commit",
+      "new_functions": 2,
+      "new_unique_compared_PC_bytes": 132,
+      "new_exact_functions": 2,
+      "new_exact_code_bytes": 132,
+      "new_exact_data_bytes": 0,
+      "false_exact_data_union_bytes_retired": 304,
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1510441,
+        "matched_code_bytes": 235010,
+        "matching_percent": 6.770191452867357,
+        "fuzzy_coverage_percent": 29.59175186792561,
+        "mapped_functions": 5379,
+        "matched_functions": 2460,
+        "objdiff_fuzzy_percent": 69.46679,
+        "objdiff_total_code": 1479562,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2158349,
+        "mapping_percent": 5.3868398469446435,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1511635
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30186
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616528
+          }
+        ],
+        "mapping_known_size_symbols": 9666,
+        "mapping_unknown_size_symbols": 5656,
+        "mapping_code_bytes": 1511635,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 43.54733141932321,
+        "mapping_data_bytes": 646714,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.795481858085543,
+        "mapping_code_data_bytes": 2158349,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.465529027800611,
+        "matched_data_region_bytes": 637537
+      },
+      "fuzzy_delta_pp": 0.003030504687938418,
+      "runtime": {
+        "cleanup_verified": true,
+        "public_observation": "The rebuilt source was tested with empty arguments and installed assets, first\nunder a correctly installed four-byte WineDbg write watch, then normally for\n60 seconds. The debugger captured genuine declaration-count writes 1 and 2;\nat a later fault the count was 13 and the cache contained real records. This run\npassed the formerly observed four-record storage failure. It does not prove the\noriginal cache capacity or establish a bound for every startup/gameplay path.\n\nThe new attributed fault is source `0x005347d5`, inside exact `GetSfxIdN`\n(native `0x650e40`, 77 complete bytes), reading null `SfxInfo`. The recorded return\nchain passes through particle loading. Current source omits the preceding native\nsound configuration provider at `0x6521b0`, and never assigns `SfxInfo`.\nRecovering that real producer and its consumed dependencies is the next priority;\na null guard or dummy table would hide the missing reconstruction.\n\nThe separate normal run reached its 60-second deadline without a logged source\nfault; its PID-attributed window remained black in samples at 5.79, 21.44 and\n55.81 seconds. Debugger timing changes scheduling, so these are distinct results.\nNo completed nontrivial rendering, world activation or playable game is established.\nBoth runs preserve all frozen inputs and objects, set and query crash-dialog\nsuppression, and leave no owned game/debugger process or sampled game/crash window.\nThe debugger was explicitly killed/quit after capture; the normal run was stopped\nat its deadline. Neither is reported as a natural successful game exit.",
+        "next_native_target": "Restore genuine InitSfx native0x6521b0 sound-configuration/table producer and real consumed dependencies before particle GetSfxIdN; independently prepare true ReadPad/ReadPads and menu-input callsites. Then verify loaded permanent data and interactive menus before world activation.",
+        "debugger_receipt": {
+          "path": "build/analysis/startup-runnable-order-next-v1/declaration-watch-v2/observation/receipt.json",
+          "sha256": "2eeb20f0a3a133bf4b4e003b2a0682c949285f8c088e381fe7fb4a2cd625559d"
+        },
+        "normal_receipt": {
+          "path": "build/analysis/startup-runnable-order-next-v1/normal-source-v2/observation/receipt.json",
+          "sha256": "cb62c30ec4a9ccb0a5eb141efad19057e0c48e394a23fa8e5834949bfc6adeb8"
+        },
+        "source_exe_sha256": "f31b55ca7ebfa2bcb547fc8490369a8919ee2f43f2607dc16725ae3670a35094",
+        "debugger_elapsed_seconds": 5.688580816145986,
+        "normal_elapsed_seconds": 60.684428832959384,
+        "debugger_fault_source": "0x005347d5",
+        "fault_function": "GetSfxIdN",
+        "native_function": "0x00650e40",
+        "native_complete_extent": 77,
+        "cache_count_at_fault": 13,
+        "watch_captured_count_values": [
+          1,
+          2
+        ],
+        "original_cache_capacity": null,
+        "normal_deadline_stopped": true,
+        "normal_exit_code": -15,
+        "normal_screenshots": [
+          {
+            "path": "/home/fabian/git/saga-pc/build/analysis/startup-runnable-order-next-v1/normal-source-v2/observation/owned-window-05s.png",
+            "sha256": "e95c0eda406aab59485803a024616ea5f0c68293f83a67969d2916f1218d57b8",
+            "actual_elapsed_seconds": 5.786198632093146,
+            "visual_observation": "black game window"
+          },
+          {
+            "path": "/home/fabian/git/saga-pc/build/analysis/startup-runnable-order-next-v1/normal-source-v2/observation/owned-window-20s.png",
+            "sha256": "e95c0eda406aab59485803a024616ea5f0c68293f83a67969d2916f1218d57b8",
+            "actual_elapsed_seconds": 21.43755729799159,
+            "visual_observation": "black game window"
+          },
+          {
+            "path": "/home/fabian/git/saga-pc/build/analysis/startup-runnable-order-next-v1/normal-source-v2/observation/owned-window-55s.png",
+            "sha256": "e95c0eda406aab59485803a024616ea5f0c68293f83a67969d2916f1218d57b8",
+            "actual_elapsed_seconds": 55.80617104889825,
+            "visual_observation": "black game window"
+          }
+        ],
+        "playable": false
+      },
+      "accepted_proof": {
+        "accepted": true,
+        "review": {
+          "path": "build/analysis/thread-timer-native-owner-independent-v1/final-finite-review.json",
+          "sha256": "d9cfd3dabe4b34b3bb3c3fc596d8c1d7e85f497d895d7f76c3291d8a34d44443"
+        },
+        "normal_manifest_sha256": "c609ea863760e04c1ca460145f42fe0865860f1c3693fe7e6a85699bd90c5991",
+        "normal_report_sha256": "056e57d5695fe9a8b9639224106a7799fa91587083b3ec5bfd0b89369d4cd0bf",
+        "source_exe_sha256": "f31b55ca7ebfa2bcb547fc8490369a8919ee2f43f2607dc16725ae3670a35094",
+        "prior_complete_outputs": 16678,
+        "prior_legitimate_exact_rows_preserved": 6272,
+        "finite_changed_outputs": 4,
+        "explicit_false_data_union_bytes_retired": 304,
+        "new_exact_PC_bytes": 132,
+        "cache_inferred_working_capacity": 256,
+        "cache_original_extent": null,
+        "cache_original_capacity": null,
+        "cache_allocation_mapping_credit": 0,
+        "remaining_holds": []
+      },
+      "source_contracts": "### Startup timing, lock ownership and inferred declaration backing EEE (2026-10-11)\n\nPcInitializeStartupCriticalSection4ff100/31 and PcInitializePerformanceTiming4ffbb0/101\nmatch complete native bytes. Real hardware sites call them in native order. The\nSDK critical-section (24-byte) and guard (four-byte) views are loader zero, original extents unknown. Existing\ncanonical TickBase920a00/8 and PerformanceFrequency91efa0/8 remain unchanged.\nThe thread pool's91ef90 arithmetic bias was mistaken for its first object. Actual\nfirst slot `0x91efa8`, with 13 working records, indexedcount-1/index-1, retains native13-created/12-enterable\nasymmetry and prior exact enter/leave30-byte bodies. Original pool owning extent\nis unknown: the false old 312-byte extent is retired, reducing union data/map credit by 304 bytes\nwhile preserving frequency (eight bytes). No new original allocation credit is introduced.\n\nCache `0x297cc98` has 256 inferred eight-byte working records, complete zero 2,048-byte native\ninitializer, with original extent blank. Independent PC water-object start `0x297d4a0`,\nMac inline eight-byte records / 2,048-byte spacing and Android explicit 256-entry pool favor that reconstruction;\n257 or smaller-plus-hidden-storage remain possible. It is not a proved original\nPC declaration or complete startup-key upper bound. Full old 32-byte prefix and\ncomplete getter (1,684 bytes), search (82) and copy (84) outputs/references are preserved. Counter,\nalgorithms, source sections, failure behavior and lifecycle remain unchanged.\nNo counter reset, capacity guard or success provider is added. Actual runtime\noutcome and limitations are recorded in the current execution policy.\n",
+      "evidence": [
+        {
+          "path": "build/analysis/thread-timer-core-main-v1/accepted-final-proof.json",
+          "sha256": "59f5b25c0b121bcfb755dfad02132c45d4bd6f9c031a1cc0bafa7abdec276ee4"
+        },
+        {
+          "path": "build/analysis/thread-timer-core-main-v1/final-runtime-summary.json",
+          "sha256": "42a424e68b877733b6f2cf23a1bb31d4d0ec688fd17f65199dfd2cea137434a4"
+        },
+        {
+          "path": "build/analysis/thread-timer-native-owner-independent-v1/capacity-convergence/ranked-capacity-review.json",
+          "sha256": "847755741a9509e4b37caa95beccae34b2602970134acb2be0116162ab749001"
+        },
+        {
+          "path": "build/analysis/thread-timer-native-owner-independent-v1/accepted-correction.json",
+          "sha256": "2fc8710021d70251c65b8d502e402715a987e3cbe9ef103859789fd5b8311933"
+        }
+      ],
+      "required_checks": "PASS796tests3existing skips;LLVM18format371/tidy344;source build/link5205functions11388data344objects;full authoritative retail match",
+      "normal_manifest_sha256": "c609ea863760e04c1ca460145f42fe0865860f1c3693fe7e6a85699bd90c5991",
+      "normal_report_sha256": "056e57d5695fe9a8b9639224106a7799fa91587083b3ec5bfd0b89369d4cd0bf",
+      "source_exe_sha256": "f31b55ca7ebfa2bcb547fc8490369a8919ee2f43f2607dc16725ae3670a35094",
+      "next_connected_wave": "Restore genuine InitSfx native0x6521b0 sound-configuration/table producer and real consumed dependencies before particle GetSfxIdN; independently prepare true ReadPad/ReadPads and menu-input callsites. Then verify loaded permanent data and interactive menus before world activation.",
+      "ongoing_goal": "active",
+      "human_journal": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "report_publication_note": "Retail report describes immutable source/input snapshot before this explanatory documentation publication. No source/map/tool/member change after frozen comparison; full results and sourceEXE preserved."
     }
   ],
-  "latest_checkpoint": "DDD"
+  "latest_checkpoint": "EEE"
 }
