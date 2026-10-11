@@ -24,7 +24,7 @@ main() {
     MAX_SIZE=${MAX_SIZE:-8000}
     JOURNAL=build/permute/batch.jsonl
 
-    mkdir -p build/permute permute
+    mkdir -p build/permute
     log() { printf '%s %s\n' "$(date '+%F %T')" "$*" | tee -a build/permute/loop.log; }
 
     python3 -c 'import clang.cindex, capstone' 2>/dev/null || python3 -m pip install --user libclang capstone
@@ -46,9 +46,8 @@ main() {
     }
 
     publish() {
-        cp "$JOURNAL" permute/batch.jsonl 2>/dev/null
-        echo "$SEED" > permute/seed
-        git add -A src permute matching.json README.md
+        echo "$SEED" > build/permute/seed
+        git add -A src matching.json README.md
         git diff --cached --quiet && return
         git commit -q -m "$1" -m "[skip ci]"
         for delay in 2 4 8 16; do
@@ -60,9 +59,8 @@ main() {
     }
 
     sync
-    [ -f permute/batch.jsonl ] && [ ! -s "$JOURNAL" ] && cp permute/batch.jsonl "$JOURNAL"
     touch "$JOURNAL"
-    SEED=$(cat permute/seed 2>/dev/null || echo 1)
+    SEED=$(cat build/permute/seed 2>/dev/null || echo 1)
 
     while true; do
         sync

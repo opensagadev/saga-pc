@@ -94,7 +94,7 @@ Improvements go to `build/permute/<symbol>.patch`; `--apply` writes them into
 `src/`. Batch runs record results in `build/permute/batch.jsonl` and skip
 functions already recorded. Workers are separate processes sharing the build's
 Wine prefix. `permute_loop.sh` pulls `main` each round, searches the
-next functions, commits and pushes improvements with the journal (`permute/`),
+next functions, commits and pushes improved sources (the journal stays in `build/permute/`),
 and after a full pass re-measures with `make match` and starts a new pass.
 
 ## Runtime library

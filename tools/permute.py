@@ -246,11 +246,8 @@ def git(*args):
 
 
 def publish(unit, message):
-    """Commit one applied function and the journal, then push to the current branch."""
-    record = ROOT / "permute/batch.jsonl"
-    record.parent.mkdir(exist_ok=True)
-    shutil.copyfile(OUT / "batch.jsonl", record)
-    git("add", unit, str(record.relative_to(ROOT)))
+    """Commit one applied function, then push to the current branch."""
+    git("add", unit)
     # Each automated commit would otherwise start a full CI build.
     if git("commit", "-q", "-m", message + "\n\n[skip ci]").returncode:
         return

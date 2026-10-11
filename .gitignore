@@ -15,3 +15,5 @@ __pycache__/
 *.tar.gz
 *.tar.xz
 .DS_Store
+# Local permute bookkeeping from older loop versions
+/permute/
