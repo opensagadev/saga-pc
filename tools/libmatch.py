@@ -34,6 +34,29 @@ ARCHIVES = ("libcmt.lib", "libcpmt.lib")
 CONFIG = ROOT / "config/library-objects.json"
 
 
+def import_types(names):
+    """SDK prototypes for import slots, as `RET (__stdcall *)(ARGS)`."""
+    if not names:
+        return {}
+    import clang.cindex as ci
+    from tools.check import analysis_configuration
+    _, overlay, flags = analysis_configuration()
+    probe = ROOT / "build/lib/imports.c"
+    probe.parent.mkdir(parents=True, exist_ok=True)
+    probe.write_text("#include <windows.h>\n")
+    unit = ci.Index.create().parse(str(probe), args=[*flags, "-ivfsoverlay", str(overlay), "-x", "c"])
+    wanted = {n.removeprefix("__imp__").split("@", 1)[0]: n for n in names}
+    result = {}
+    for cursor in unit.cursor.get_children():
+        if cursor.kind == ci.CursorKind.FUNCTION_DECL and cursor.spelling in wanted:
+            args = ", ".join(a.type.spelling for a in cursor.get_arguments()) or "void"
+            result[wanted[cursor.spelling]] = f"{cursor.result_type.spelling} (__stdcall *)({args})"
+    missing = sorted(set(names) - set(result))
+    if missing:
+        raise ValueError(f"No SDK prototype for {', '.join(missing)}")
+    return result
+
+
 def code_ranges(records):
     ranges = sorted((r["address"], r["address"] + r["size"]) for r in records if r["address"] and r["size"])
     merged = []
@@ -122,12 +145,24 @@ def main():
             else:
                 address = (value - addend) & 0xffffffff
             derived.setdefault(name, set()).add(address)
+    imports = {item["address"]: item for item in pe.imports()}
+    owners = {}
+    for name, addresses in derived.items():
+        for address in addresses:
+            owners.setdefault(address, set()).add(name)
     new_bindings = dict(bindings)
     for name, addresses in derived.items():
-        if name in bindings:
+        if name in bindings or len(addresses) != 1 or len(defined.get(name, ())) > 1:
             continue
-        if len(addresses) == 1 and len(defined.get(name, ())) <= 1:
-            new_bindings[name] = next(iter(addresses))
+        address = next(iter(addresses))
+        if name.startswith("__imp__"):
+            # An import slot must hold exactly this API in the retail import table.
+            api = name.removeprefix("__imp__").split("@", 1)[0]
+            if address not in imports or imports[address]["name"] != api:
+                continue
+        elif len(owners[address]) > 1:
+            continue  # several names claim one address: an A/W twin or alias, not provable here
+        new_bindings[name] = address
 
     # Pass 3: accept only functions that relocate to exactly the retail bytes.
     accepted = []
@@ -140,6 +175,11 @@ def main():
             continue
         if base == code[c["va"] - text_va:c["va"] - text_va + len(base)]:
             accepted.append(c)
+    # Two library functions at one address cannot both be right.
+    claims = {}
+    for c in accepted:
+        claims.setdefault(c["va"], []).append(c)
+    accepted = [c for c in accepted if len(claims[c["va"]]) == 1]
     # Bindings needed by accepted functions only.
     needed = {}
     for c in accepted:
@@ -149,6 +189,7 @@ def main():
             if name in new_bindings and name not in bindings and name not in needed:
                 # Import address table slots are four-byte pointers.
                 needed[name] = (new_bindings[name], 4 if name.startswith("__imp_") else None)
+    ctypes = import_types([name for name in needed if name.startswith("__imp__")])
     total = sum(len(c["region"]["bytes"]) for c in accepted)
     print(f"Accepted {len(accepted)} runtime functions ({total} bytes); "
           f"{len(needed) - len(accepted)} derived references")
@@ -170,7 +211,7 @@ def main():
     header, body = lines[0], lines[1:]
     for name, (address, size) in needed.items():
         quoted = io.StringIO()
-        csv.writer(quoted, lineterminator="").writerow([f"0x{address:x}", name, size or "", ""])
+        csv.writer(quoted, lineterminator="").writerow([f"0x{address:x}", name, size or "", ctypes.get(name, "")])
         body.append(quoted.getvalue())
 
     def sort_key(line):

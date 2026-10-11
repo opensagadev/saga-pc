@@ -17,19 +17,7 @@
     "_xtoa_s@20",
     "__itoa_s",
     "__ltoa_s",
-    "__ultoa_s",
-    "@x64toa_s@24",
-    "__i64toa_s",
-    "__ui64toa_s"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 8,
-   "member": "build\\intel\\mt_obj\\xtows.obj",
-   "symbols": [
-    "__i64tow_s",
-    "__ui64tow_s"
+    "__ultoa_s"
    ]
   },
   {
@@ -60,40 +48,19 @@
    "member": "build\\intel\\mt_obj\\cpp_obj\\_wctype.obj",
    "symbols": [
     "__iswalpha_l",
-    "_iswalpha",
     "__iswupper_l",
-    "_iswupper",
     "__iswlower_l",
-    "_iswlower",
     "__iswdigit_l",
-    "_iswdigit",
     "__iswxdigit_l",
-    "_iswxdigit",
     "__iswspace_l",
-    "_iswspace",
     "__iswpunct_l",
-    "_iswpunct",
     "__iswalnum_l",
-    "_iswalnum",
     "__iswprint_l",
-    "_iswprint",
     "__iswgraph_l",
-    "_iswgraph",
     "__iswcntrl_l",
-    "_iswcntrl",
     "_iswascii",
     "__iswcsym_l",
-    "___iswcsym",
-    "__iswcsymf_l",
-    "___iswcsymf"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 17,
-   "member": "build\\intel\\mt_obj\\cpp_obj\\iswctype.obj",
-   "symbols": [
-    "_iswctype"
+    "__iswcsymf_l"
    ]
   },
   {
@@ -144,38 +111,6 @@
    "symbols": [
     "___doserrno",
     "__dosmaperr"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 61,
-   "member": "build\\intel\\mt_obj\\rmdir.obj",
-   "symbols": [
-    "__rmdir"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 66,
-   "member": "build\\intel\\mt_obj\\unlink.obj",
-   "symbols": [
-    "_remove"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 74,
-   "member": "build\\intel\\mt_obj\\wrmdir.obj",
-   "symbols": [
-    "__wrmdir"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 79,
-   "member": "build\\intel\\mt_obj\\wunlink.obj",
-   "symbols": [
-    "__wremove"
    ]
   },
   {
@@ -557,15 +492,6 @@
   },
   {
    "archive": "libcmt.lib",
-   "index": 206,
-   "member": "build\\intel\\mt_obj\\open.obj",
-   "symbols": [
-    "__sopen",
-    "__sopen_s"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
    "index": 211,
    "member": "build\\intel\\mt_obj\\setmode.obj",
    "symbols": [
@@ -580,15 +506,6 @@
     "__putwch_nolock",
     "__cputws",
     "__putwch"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 227,
-   "member": "build\\intel\\mt_obj\\wopen.obj",
-   "symbols": [
-    "__wsopen",
-    "__wsopen_s"
    ]
   },
   {
@@ -625,7 +542,6 @@
    "symbols": [
     "?CPtoLCID@@YAHH@Z",
     "?setSBCS@@YAXPAUthreadmbcinfostruct@@@Z",
-    "?setSBUpLow@@YAXPAUthreadmbcinfostruct@@@Z",
     "___updatetmbcinfo",
     "__setmbcp",
     "___initmbctable"
@@ -674,32 +590,15 @@
   },
   {
    "archive": "libcmt.lib",
-   "index": 358,
-   "member": "build\\intel\\mt_obj\\getenv.obj",
-   "symbols": [
-    "__getenv_helper_nolock",
-    "__getenv_s_helper",
-    "__dupenv_s_helper",
-    "_getenv",
-    "_getenv_s",
-    "__dupenv_s"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
    "index": 360,
    "member": "build\\intel\\mt_obj\\getqloc.obj",
    "symbols": [
-    "_TranslateName",
     "_GetLcidFromDefault",
     "_ProcessCodePage",
     "_TestDefaultCountry",
     "_LcidFromHexString",
     "_GetPrimaryLen",
-    "_CountryEnumProc@4",
     "_TestDefaultLanguage",
-    "_LangCountryEnumProc@4",
-    "_LanguageEnumProc@4",
     "_GetLcidFromCountry",
     "_GetLcidFromLangCountry",
     "_GetLcidFromLanguage",
@@ -735,7 +634,6 @@
    "index": 367,
    "member": "build\\intel\\mt_obj\\initctyp.obj",
    "symbols": [
-    "___init_ctype",
     "____mb_cur_max_func",
     "____mb_cur_max_l_func",
     "____lc_codepage_func",
@@ -827,16 +725,7 @@
    "index": 392,
    "member": "build\\intel\\mt_obj\\qsort.obj",
    "symbols": [
-    "_swap",
     "_shortsort"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 393,
-   "member": "build\\intel\\mt_obj\\qsort_s.obj",
-   "symbols": [
-    "_swap_c"
    ]
   },
   {
@@ -866,7 +755,6 @@
     "___lc_strtolc",
     "___lc_lctostr",
     "__setlocale_get_all",
-    "__setlocale_set_cat",
     "__create_locale",
     "_setlocale"
    ]
@@ -899,14 +787,6 @@
    "symbols": [
     "_xcptlookup",
     "___CppXcptFilter"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 418,
-   "member": "build\\intel\\mt_obj\\wgetenv.obj",
-   "symbols": [
-    "__wgetenv"
    ]
   },
   {
@@ -1054,15 +934,6 @@
   },
   {
    "archive": "libcmt.lib",
-   "index": 504,
-   "member": "build\\intel\\mt_obj\\fopen.obj",
-   "symbols": [
-    "__fsopen",
-    "_fopen_s"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
    "index": 509,
    "member": "build\\intel\\mt_obj\\fseek.obj",
    "symbols": [
@@ -1082,35 +953,8 @@
    "index": 522,
    "member": "build\\intel\\mt_obj\\printf.obj",
    "symbols": [
-    "_printf",
     "__set_printf_count_output",
     "__get_printf_count_output"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 537,
-   "member": "build\\intel\\mt_obj\\sprintf.obj",
-   "symbols": [
-    "__snprintf_s",
-    "__snprintf_s_l"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 540,
-   "member": "build\\intel\\mt_obj\\swprintf.obj",
-   "symbols": [
-    "__snwprintf_s",
-    "__snwprintf_s_l"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 545,
-   "member": "build\\intel\\mt_obj\\tmpfile.obj",
-   "symbols": [
-    "_tmpfile_s"
    ]
   },
   {
@@ -1131,62 +975,11 @@
   },
   {
    "archive": "libcmt.lib",
-   "index": 548,
-   "member": "build\\intel\\mt_obj\\vprintf.obj",
-   "symbols": [
-    "_vprintf_helper"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 551,
-   "member": "build\\intel\\mt_obj\\vsprintf.obj",
-   "symbols": [
-    "__vsprintf_l",
-    "__vscprintf_helper"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 552,
-   "member": "build\\intel\\mt_obj\\vsnprint.obj",
-   "symbols": [
-    "__vsnprintf_l"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
    "index": 553,
    "member": "build\\intel\\mt_obj\\vsnprnc.obj",
    "symbols": [
     "__vsnprintf_helper",
-    "__vsprintf_s_l",
-    "__vsnprintf_s_l"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 555,
-   "member": "build\\intel\\mt_obj\\vswprint.obj",
-   "symbols": [
-    "__vscwprintf_helper"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 558,
-   "member": "build\\intel\\mt_obj\\vwprintf.obj",
-   "symbols": [
-    "_vwprintf_helper"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 560,
-   "member": "build\\intel\\mt_obj\\wfopen.obj",
-   "symbols": [
-    "__wfopen",
-    "__wfopen_s"
+    "__vsprintf_s_l"
    ]
   },
   {
@@ -1262,14 +1055,6 @@
   },
   {
    "archive": "libcmt.lib",
-   "index": 609,
-   "member": "build\\intel\\mt_obj\\_strnicm.obj",
-   "symbols": [
-    "___ascii_strnicmp"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
    "index": 611,
    "member": "build\\intel\\mt_obj\\strpbrk.obj",
    "symbols": [
@@ -1290,14 +1075,6 @@
    "member": "build\\intel\\mt_obj\\strstr.obj",
    "symbols": [
     "_strstr"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 617,
-   "member": "build\\intel\\mt_obj\\strlen_s.obj",
-   "symbols": [
-    "_strnlen"
    ]
   },
   {
@@ -1330,47 +1107,6 @@
    "member": "build\\intel\\mt_obj\\wcslen.obj",
    "symbols": [
     "_wcslen"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 655,
-   "member": "build\\intel\\mt_obj\\cpp_obj\\stricmp.obj",
-   "symbols": [
-    "___ascii_stricmp",
-    "__stricmp"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 659,
-   "member": "build\\intel\\mt_obj\\cpp_obj\\strnicmp.obj",
-   "symbols": [
-    "__strnicmp"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 660,
-   "member": "build\\intel\\mt_obj\\cpp_obj\\strnicol.obj",
-   "symbols": [
-    "__strnicoll"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 663,
-   "member": "build\\intel\\mt_obj\\cpp_obj\\wcscoll.obj",
-   "symbols": [
-    "_wcscoll"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 667,
-   "member": "build\\intel\\mt_obj\\cpp_obj\\wcsncoll.obj",
-   "symbols": [
-    "__wcsncoll"
    ]
   },
   {
@@ -1457,22 +1193,6 @@
    "member": "..\\build\\intel\\mt_obj\\mantold.obj",
    "symbols": [
     "___mtold12"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 836,
-   "member": "..\\build\\intel\\mt_obj\\strgtold.obj",
-   "symbols": [
-    "___STRINGTOLD_L"
-   ]
-  },
-  {
-   "archive": "libcmt.lib",
-   "index": 837,
-   "member": "..\\build\\intel\\mt_obj\\wstrgtold.obj",
-   "symbols": [
-    "___WSTRINGTOLD_L"
    ]
   },
   {
