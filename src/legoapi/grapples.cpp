@@ -278,7 +278,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
             return;
         }
         object->context_timer += FRAMETIME;
-        if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0) {
+        if ((GAMEPAD_JUMP & object->pad->buttons_pressed) != 0) {
             if ((GRAPPLE_CURRENT->flags & 4) != 0)
                 GRAPPLE_CURRENT->activation_progress = 1.0f;
             Grapple_JumpPc(object);
@@ -333,7 +333,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
         if ((object->context_variant_flags & 0x100) != 0 || (object->big_jump_animation <= 15 && up)) {
             if (object->context_hover_target_y > 0.0f) {
                 f32 speed = 1.0f;
-                if (LEGOACT_GRAPPLE_UP != -1 && object->character_model->model_data_b[LEGOACT_GRAPPLE_UP] != NULL) {
+                if (-1 != LEGOACT_GRAPPLE_UP && object->character_model->model_data_b[LEGOACT_GRAPPLE_UP] != NULL) {
                     object->field_7aa = LEGOACT_GRAPPLE_UP;
                     speed = AnimSpeed(object->character_model, LEGOACT_GRAPPLE_UP);
                     if (speed < 0.5f)
@@ -367,13 +367,13 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
                     }
                 }
             }
-        } else if (object->big_jump_animation <= 15) {
+        } else if (object->big_jump_animation < 16) {
             if (down) {
                 f32 speed = 0.75f;
                 if (LEGOACT_GRAPPLE_DOWN != -1 && object->character_model->model_data_b[LEGOACT_GRAPPLE_DOWN] != NULL) {
                     object->field_7aa = LEGOACT_GRAPPLE_DOWN;
                     const f32 animation_speed = AnimSpeed(object->character_model, LEGOACT_GRAPPLE_DOWN);
-                    speed = animation_speed < 0.5f ? 0.5f : animation_speed;
+                    speed = 0.5f > animation_speed ? 0.5f : animation_speed;
                 }
                 f32 maximum_length;
                 maximum_length = Grapple_MaximumLengthPc(object);
@@ -386,7 +386,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
                     object->context_duration = 0.0f;
                     if (Grapple_RopeSwingRotate != 0 && (GRAPPLE_CURRENT->flags & 4) != 0)
                         object->movement_facing_angle +=
-                            static_cast<i32>(static_cast<u16>(Grapple_RopeSwingRotate) * FRAMETIME);
+                            static_cast<i32>(FRAMETIME * (static_cast<u16>(Grapple_RopeSwingRotate)));
                 } else {
                     object->flags_e24 |= 0x80;
                     object->field_7aa = LEGOACT_GRAPPLE_IDLE;
@@ -423,7 +423,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
                 object->field_7a8 += 0x8000;
             return;
         }
-        if (!((static_cast<i16>(old_phase) > -1 && static_cast<i16>(object->field_7a8) < 0) ||
+        if (!((static_cast<i16>(old_phase) > -1 && static_cast<i16>(object->field_7a8) <= -1) ||
               object->field_7a8 < old_phase))
             return;
         i32 change = -10;
@@ -451,7 +451,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
         if (static_cast<i8>(object->flags_1fc) >= 0 && object->field_f00 != 1)
             return;
         if (ObjLandReady(object) == 0 && (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP)) {
-            if (LEGOCONTEXT_GLIDE == -1 || object->character_context != LEGOCONTEXT_GLIDE || LEGOACT_GLIDE == -1 ||
+            if (LEGOCONTEXT_GLIDE == -1 || object->character_context != LEGOCONTEXT_GLIDE || -1 == LEGOACT_GLIDE ||
                 object->field_7aa != LEGOACT_GLIDE || object->grapple != NULL)
                 return;
         }
@@ -494,7 +494,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
         object->big_jump_animation = 0;
         object->field_7a8 = 0x2000;
         const f32 depth = 0.75f * FRAMETIME + object->context_hover_target_y;
-        object->context_hover_target_y = (maximum_length < depth ? maximum_length : depth);
+        object->context_hover_target_y = (depth > maximum_length ? maximum_length : depth);
         if (object->pad->input_magnitude > 0.0f && static_cast<i8>(object->flags_1fc) < 0) {
             object->big_jump_animation = static_cast<u8>(static_cast<i32>(
                 (object->pad->input_magnitude / object->character_data->game_character->run_speed) * 30.0f));

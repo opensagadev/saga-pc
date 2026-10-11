@@ -38,3 +38,6 @@
 {"symbol": "_GameAIProcess", "unit": "src/legoapi/gameobjects.c", "size": 6245, "start": 68.315025, "best": 68.315025, "exact": false, "seconds": 392.1, "instructions": [56.87, 56.87]}
 {"symbol": "_GameObjectRotation", "unit": "src/legoapi/gameobjects.c", "size": 2650, "start": 33.22466, "best": 50.02329, "exact": false, "seconds": 98.6, "instructions": [38.59, 43.31], "rules": 2, "applied": true}
 {"symbol": "_DrawAlphaGrid", "unit": "src/legoapi/render.c", "size": 5964, "start": 37.001087, "best": 37.10369, "exact": false, "seconds": 253.2, "instructions": [25.95, 26.09], "rules": 2, "applied": true}
+{"symbol": "_FixUpLevels", "unit": "src/legoapi/level_fixup.cpp", "size": 6860, "start": 37.77964, "best": 37.77964, "exact": false, "seconds": 281.3, "instructions": [33.5, 33.5], "rules": 2}
+{"symbol": "_UpdateGameObjects", "unit": "src/legoapi/gameobjects.c", "size": 6847, "start": 55.446335, "best": 55.446335, "exact": false, "seconds": 290.4, "instructions": [57.3, 57.3], "rules": 2}
+{"symbol": "_Grapple_MoveCode", "unit": "src/legoapi/grapples.cpp", "size": 3392, "start": 58.895973, "best": 59.191277, "exact": false, "seconds": 373.9, "instructions": [61.39, 61.23], "rules": 2, "applied": true}
