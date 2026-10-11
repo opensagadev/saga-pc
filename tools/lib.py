@@ -132,12 +132,28 @@ def library_member_path(archive, index, body=None):
     return path
 
 
+def localize_statics(obj, archive, index):
+    """Give file-local symbols of a runtime member names that are unique across archives.
+
+    String literals, static data, section symbols and static functions reuse the
+    same names in many members; the prefix lets each be bound to its own address.
+    """
+    prefix = f"{Path(archive).stem}#{index:05d}:"
+    for symbol in obj.symbols:
+        if symbol["storage_class"] == 3 and symbol["name"] and not symbol["name"].startswith(prefix):
+            symbol["local_name"] = symbol["name"]
+            symbol["name"] = prefix + symbol["name"]
+    return obj
+
+
 def library_objects():
     """Accepted runtime functions: {unit: (COFF, [symbol names])} for comparison only."""
     result = {}
     for entry in library_entries():
         unit = f"lib/{entry['archive']}/{entry['index']:05d}:{Path(entry['member'].replace(chr(92), '/')).name}"
-        result[unit] = (COFF(library_member_path(entry["archive"], entry["index"])), entry["symbols"])
+        obj = localize_statics(COFF(library_member_path(entry["archive"], entry["index"])),
+                               entry["archive"], entry["index"])
+        result[unit] = (obj, entry["symbols"])
     return result
 
 

@@ -373,7 +373,7 @@ class COFF:
                 raise BinaryError("Definition section is out of bounds")
             section = self.sections[symbol["section"] - 1]
             if (symbol["storage_class"] == 3 and symbol["aux"]
-                    and symbol["name"] == section["name"]):
+                    and symbol.get("local_name", symbol["name"]) == section["name"]):
                 continue
             flags = section["characteristics"]
             if (not flags & 0xe0 or flags & 0xa00
