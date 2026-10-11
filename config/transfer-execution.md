@@ -10,49 +10,63 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Verified published baseline BBB is [c1e87df](https://github.com/opensagadev/saga-pc/commit/c1e87dfe7901cb4b383e9b3a4465a51a28e9f2be), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37892772484) passing all 13 steps. CCC exact-revision CI will be checked after publication.
+Verified published source baseline CCC is [eebedac](https://github.com/opensagadev/saga-pc/commit/eebedac3b0adddc2da1323459076065d37f17b45), with [all 13 CI steps passing](https://github.com/opensagadev/saga-pc/actions/runs/38133432755). The subsequent [repository cleanup](https://github.com/opensagadev/saga-pc/commit/6877a7756400388be1c75facdebf1a8a96120b84) also [passes all 13 steps](https://github.com/opensagadev/saga-pc/actions/runs/38133974217); its verified recoverable archive reclaimed 1.28 GB. DDD exact-revision CI will be checked after publication.
 
-Checkpoint CCC transfers nine complete functions / 1,685 newly compared PC bytes:
-occlusion initialization (three / 720), startup material creation (one / 469),
-and input mapping/configuration (five / 496). Five functions / 203 bytes are
-byte exact. The other four retain complete nonexact comparisons and independently
-reviewed PC contracts. Three original hardware sites now call real providers;
-the partial hardware parent receives no duplicate transferred-byte credit.
+Checkpoint DDD adds 13 complete functions / 2,044 newly compared PC bytes:
+viewport/lighting/resource initialization (six / 667) and connected character,
+camera, audio, cheat, batarang and scene reset providers (seven / 1,377).
+Six functions / 630 bytes are exact; exact data increases by eight bytes.
+Three original hardware call sites now consume the real viewport, lighting and
+resource-registry providers. The partial caller receives no duplicate byte credit.
 
-Whole-PC fuzzy coverage is 29.547906%, up 0.034794
-percentage points. Exact code is 234,248/3,471,246 bytes
-(6.748240%), up 203; exact data remains 637,833 bytes.
-Every prior exact contract survives: 2,451 code copies, 5,712 data copies and
-13 named members. Of 16,636 prior complete outputs, 16,633 stay identical.
-The three changes are the intended hardware parent and two specific previously
-reviewed camera/particle compiler-output pairs, with complete bytes/references
-and their stable-memory/floating-point qualifications retained.
+Whole-PC fuzzy coverage is 29.588721%, up 0.040816 percentage points.
+Exact code is 234,878/3,471,246 bytes (6.766389%); exact data is 637,841 bytes.
+Mapping is 1,511,503/3,471,246 code bytes and 647,018/36,018,966 data bytes,
+combined 2,158,521/39,490,212 section bytes. None measures runnable completion.
+All prior exact bytes survive, including 32 viewport bytes migrated to genuine
+named members. All 13 prior named members survive; 14 viewport contracts are added.
+Of 16,653 prior complete outputs, 16,639 are byte-identical, 11 have explicit
+canonical viewport storage qualifications, and three have independently reviewed
+complete output changes (hardware calls, constant-order code and data padding).
+No comparison is masked or truncated.
 
-The existing occlusion manager's complete 368-byte initializer remains unchanged
-and native-equal. Six new scalar/array views total 36 typed bytes in ordinary
-sections; all complete emitted initializers equal native, but original owning
-extents stay blank and receive zero data credit. Three material class statics
-remain in original occlusion.cpp. No new constructor or dynamic initializer is
-introduced. Existing central initialization remains unchanged.
+The viewport has one genuine 64-byte working view, with asserted named fields;
+its original owning extent remains unknown. Ten duplicate scalar allocations
+are removed. The getter preserves raw float bits and matches all 62 native bytes.
+Lighting retains native loader/runtime defaults and the eight-record working
+cohort without claiming an original allocation boundary. Resource cleanup calls
+real NuFree and COM providers; NuFree remains partial in arena/manager domains,
+so successful lifetime closure is not claimed. All new unknown data views receive
+zero owning-extent credit. The genuine two-float audio timeout array adds eight
+exact data bytes. No new constructor or dynamic initializer is introduced.
 
-All required local checks pass: LLVM18 format/tidy, 796 tests (three existing
-skips), source build/link, 343-owner object coverage and full retail matching.
-The initial sandboxed match attempt could not start Wine IPC; the unchanged
-normal-environment retry passed. No compiler flags, source guards, comparison
-masks or extents were changed to obtain these results.
+Required local checks pass: 796 tests (three existing skips), LLVM18 format/tidy,
+source build/link, complete coverage of 344 objects and full authoritative retail
+matching. Full prior outputs, references and exact results were independently
+reviewed against the immutable normal object bank.
 
-CCC has not been run as a game. The latest full-game observation remains BBB's
-60-second deadline termination, with no fault recorded and no verified native
-game window, recurring frames, loaded world or playability. The earlier AAA
-declaration-cache failure and unproved original allocation remain unresolved.
-No cache size, counter, search or guard is changed. Occlusion keeps native
-default capacity zero and its zero-capacity early return.
+The DDD source executable was observed for 60 seconds with empty arguments and
+installed assets. A PID-attributed window titled `TitleNotSet` persisted from
+2.5 seconds to the deadline. No rendered frame, loaded world, native window-class
+milestone or playability is established. Mesa EGL/DRI2 warnings were recorded;
+those do not locate the source wait. A bounded debugger attach failed with
+`ptrace: Operation not permitted`, so there is no stack attribution. The launcher
+terminated only its owned process group; no owned processes or sampled game/crash
+windows remained. Wine crash-dialog suppression was set and queried before launch.
 
-Next is the producer-backed viewport family (two / 213 candidate bytes), with
-genuine 64-byte viewport views and storage review before activation. Lighting
-and resource registry providers remain separate bounded holds. Candidate bytes
-receive no comparison credit. Cleanup follows publication before further source
-integration; originals, current tools, active proofs and human edits are retained.
+Decompilation order now prioritizes the actual startup frontier, then device and
+presentation, installed-world activation and recurring update/render. First obtain
+an attributable wait/fault with the unchanged source executable and distinguish
+host graphics behavior from source omissions. Repair the earliest verified missing
+provider or incorrect native binding, then rerun a bounded test. Do not infer a
+blocker from a percentage or add success returns, fallback behavior or guards.
+
+Remaining holds include the original declaration-cache allocation/preceding write,
+real renderer/bootstrap constructor and shader providers, and the consumed
+providers of the full CheckResetBits caller. The prepared critical-section/timing
+pair (132 candidate bytes) is held: the existing thread-array mapping overlaps
+canonical performance-frequency storage. Resolve native ownership/layout before
+activation; candidate bytes receive no transfer credit.
 
 ## Ownership and continuous work
 

@@ -242,10 +242,10 @@ void __cdecl NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, 
         half_fov = (f32)((f64)camera->fov * 0.5);
         angle = (i32)((f64)half_fov * AIPathAngularScale);
         cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
-        horizontal = (camera->aspect * cotangent) * NuCameraVPortProjectionScaleX;
+        horizontal = (camera->aspect * cotangent) * vpCurrent.projection_scale_x;
         memset(&pc_vport_mtx, 0, sizeof(pc_vport_mtx));
         pc_vport_mtx.m00 = horizontal;
-        pc_vport_mtx.m11 = NuCameraVPortProjectionScaleY * cotangent;
+        pc_vport_mtx.m11 = vpCurrent.projection_scale_y * cotangent;
         pc_vport_mtx.m22 = (far_clip + near_clip) / (far_clip - near_clip);
         pc_vport_mtx.m23 = 1.0f;
         pc_vport_mtx.m32 = ((-2.0f * far_clip) * near_clip) / (far_clip - near_clip);
@@ -266,10 +266,10 @@ void __cdecl NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera
         half_fov = (f32)((f64)camera->fov * 0.5);
         angle = (i32)((f64)half_fov * AIPathAngularScale);
         cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
-        horizontal = (camera->aspect * NuCameraScissorProjectionScaleX) * cotangent;
+        horizontal = (camera->aspect * vpCurrent.scissor_scale_x) * cotangent;
         memset(&NuCameraScissorProjectionScratch, 0, sizeof(NuCameraScissorProjectionScratch));
         NuCameraScissorProjectionScratch.m00 = horizontal;
-        NuCameraScissorProjectionScratch.m11 = NuCameraScissorProjectionScaleY * cotangent;
+        NuCameraScissorProjectionScratch.m11 = vpCurrent.scissor_scale_y * cotangent;
         NuCameraScissorProjectionScratch.m22 = (far_clip + near_clip) / (far_clip - near_clip);
         NuCameraScissorProjectionScratch.m23 = 1.0f;
         NuCameraScissorProjectionScratch.m32 = ((-2.0f * far_clip) * near_clip) / (far_clip - near_clip);

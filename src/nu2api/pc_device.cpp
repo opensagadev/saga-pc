@@ -1439,3 +1439,14 @@ void __thiscall PC_DEVICE_BACKEND_PC::SetColorWriteMaskPc(u8 colour_enabled, u8 
             break;
     }
 }
+
+extern "C" void __cdecl NuPs2GetViewport(NUVPCURRENT *viewport) {
+    if (viewport != NULL) {
+        viewport->x = PCDeviceBackend.requested_viewport.x;
+        viewport->y = PCDeviceBackend.requested_viewport.y;
+        viewport->width = PCDeviceBackend.requested_viewport.width;
+        viewport->height = PCDeviceBackend.requested_viewport.height;
+        memcpy(&viewport->min_z, &PCDeviceBackend.requested_viewport.min_z, sizeof(viewport->min_z));
+        memcpy(&viewport->max_z, &PCDeviceBackend.requested_viewport.max_z, sizeof(viewport->max_z));
+    }
+}

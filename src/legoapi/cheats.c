@@ -100,3 +100,8 @@ void __cdecl Cheats_TurnOff(i32 only_powerups) {
     }
     Cheats_SetFlags();
 }
+
+void __cdecl Cheats_Reset(void) {
+    Cheat_PowerUpTime = 0.0f;
+    Cheats_SetFlags();
+}

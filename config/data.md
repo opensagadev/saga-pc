@@ -2465,3 +2465,47 @@ signed WORDs use ordinary central storage. All six new complete regions total
 original owning extents remain unknown/blank: no allocation, mapping or exact-data
 credit. No new constructors/dynamic initialization are emitted; the old CRC16
 initializer remains intact. No declaration-cache capacity is inferred or changed.
+
+### Connected viewport, lighting, resource and reset checkpoint DDD (2026-10-11)
+
+Six core extents are NuVpInit607bc0/151, NuPs2GetViewport6e4ff0/62,
+NuLgtInitializeStatePc609060/206, NuGobjReleaseChildPc609b90/96,
+NuGobjRegistryCleanupPc60c6e0/117 and NuGobjRegistryInitPc60cb00/35.
+Neutral PC names avoid claiming unproved Android identities. Viewport getter and
+child release match all native bytes. Real hardware calls replace three native-site
+markers, preserving the complete owned switch tail and old references.
+
+Seven reset extents are LSW_SetIndy42aa00/489, GameAudio_SetActionMusicTimes547a10/21,
+Cheats_Reset56e560/13, Batarangs_Reset404990/184, GameCam_Reset54a2f0/232,
+Minicam_InitSystem576c40/21 and ResetScene48c3f0/417. Audio/cheats/minicam/scene
+are exact. ResetScene ends at48c591; the following unrelated function is excluded
+by genuine boundary evidence. PC-specific character branches, unsigned camera
+inputs, narrow sentinels and matrix-copy-before-translation order are preserved.
+The full CheckResetBits caller remains held on genuine consumed providers.
+
+Canonical vpCurrent remains in nurndr.c. A64-byte working view replaces its old
+16-byte prefix and ten separately allocated scalar duplicates. All named widths
+and offsets are asserted. Parent owning extent is blank; four coordinates and
+four camera scales preserve32 known physical bytes through named4-byte contracts.
+Six other migrated scalars remain unknown-size. Fourteen new member contracts
+retain all13 old members. Device viewport's owning extent remains unknown.
+The getter copies the two named float fields by memcpy4 to preserve raw bits.
+
+Lighting initializes native eight156-byte working records, loader heads/counts
+and runtime defaults; these do not establish original allocation boundaries.
+Resource partial views have asserted fields and retain real NuFree/COM calls.
+NuFree's held arena/manager behavior prevents a lifetime-success claim. Registry
+cleanup retains the finite valid-acyclic-list qualification where the compiler
+omits an empty traversal. All new owning extents, including filename padding,
+remain blank. ActionMusicStickyTimeoutPc is the genuine bounded two-float array
+at8020b4/8, native initializer1.0/6.0, adding8 exact data bytes.
+
+Full prior output review accepts only three finite changes: hardware2162→2178,
+unchanged-source InitGameAfterConfig4437 constant-order windows, and TempOptions
+16→20 with unchanged typed13-byte zero payload and emitted zero padding. The latter
+remains nonexact. RippleForceFieldSoundNamePc retains its full10-byte native-exact
+initializer in a genuine const subsection. No full extent is trimmed or masked.
+
+The source run, cleanup and next measured startup order are recorded in the
+[current execution policy](transfer-execution.md). It establishes no rendered
+frame or playable-game milestone; the thread/timer overlap remains a hold.

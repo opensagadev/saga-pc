@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <string.h>
 void Minicam_AddCommand(i32 type, f32 duration, i32 argument, void *target, NUVEC position) {
     if (type == 6 || type == 7) {
         i32 i = MiniCam.command_count;
@@ -516,4 +517,8 @@ dispatch_command: {
     ++MINI_CAM_STATE.current_command;
     goto read_command;
 }
+}
+
+void __cdecl Minicam_InitSystem(void) {
+    memset(&MiniCam, 0, sizeof(MiniCam));
 }

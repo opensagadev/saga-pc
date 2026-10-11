@@ -1690,3 +1690,51 @@ extern "C" void __cdecl Credits_Draw_Game(WORLDINFO *world) {
         }
     }
 }
+
+/* Append in existing world.cpp beside StoreSceneProgress. PC48c3f0..48c590 inclusive417. */
+void __cdecl ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
+    i32 count, i;
+    NUSPECIALHANDLE special;
+    NUINSTANIM_TIME_VIEW *animation;
+    ANI3_HEADER_PC *data;
+    NUMTX *base;
+    u32 packed;
+    if (scene == NULL || progress == NULL)
+        return;
+    count = NuSpecialGetNumSpecials(scene);
+    if (count == 0)
+        return;
+    for (i = 0; i < count; ++i) {
+        if (i != 0)
+            NuSpecialGetNext(&special);
+        else
+            NuSpecialGetFirst(scene, &special, 1);
+        packed = progress->specials[i].flags;
+        NuSpecialSetVisibility(&special, (packed >> 11) & 1);
+        base = NuSpecialGetMtx(&special);
+        NuSpecialSetDrawMtx(&special, base);
+        NuSpecialUpdate(&special);
+        if (scene->instance_animation_data == NULL)
+            continue;
+        animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&special);
+        if (animation == NULL)
+            continue;
+        data = (ANI3_HEADER_PC *)scene->instance_animation_data[animation->animation_index];
+        if (data == NULL)
+            continue;
+        animation->ltime = (f32)(u32)(progress->specials[i].flags & 0x7ff);
+        packed = progress->specials[i].flags;
+        animation->flags = (animation->flags & ~1u) | ((packed >> 12) & 1);
+        packed = progress->specials[i].flags;
+        animation->flags = (animation->flags & ~4u) | ((packed >> 11) & 4);
+        packed = progress->specials[i].flags;
+        animation->flags = (animation->flags & ~8u) | ((packed >> 11) & 8);
+        animation->tfactor = progress->specials[i].tfactor;
+        animation->prev_eval_time = animation->ltime;
+        NuAnimData2CalcMatrix(data, 0, animation->ltime, &animation->matrix);
+        scene->instance_animation_matrices[animation - scene->instance_animations] = animation->matrix;
+        animation->matrix.m30 += base->m30;
+        animation->matrix.m31 += base->m31;
+        animation->matrix.m32 += base->m32;
+    }
+}

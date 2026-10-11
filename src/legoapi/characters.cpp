@@ -544,3 +544,57 @@ i32 __cdecl RedirectAnim(char *directory, void *list, CHARACTERANIM_CONFIG_PC *a
     }
     return 0;
 }
+
+void __cdecl LSW_SetIndy(i32 area_index) {
+    i16 object_id;
+    f32 initial_delay, hold_time;
+    AREA_DATA_PC *area;
+    area = area_index == -1 ? NULL : &ADataList[area_index];
+    PUNCHGAP = 0.3f;
+    PUNCHCHARGAP = 0.3f;
+    if (area_index != -1 && (area == LOSTTEMPLE_ADATA || area == JIMTEST_ADATA)) {
+        LEDGETERRAINLOOKAHEAD = 0.075f;
+        LedgeTerrain_CheckAnims = 0;
+        LEGOHINT_PUNCH = 0;
+        StartupGameFlag0 = 1;
+        DefaultMotionLedgeTerrainEnabledPc = 1;
+        Grapples_Available = 1;
+        Grapple_RopeSwingsAvailable = 1;
+        SuperCarryEnablePc = 1;
+        CombatRollEnablePc = 1;
+        TechnoSysPc.interaction_time = -0.2f;
+        TechnoSysPc.idle_object_ids[1] = 0x2f;
+        TechnoSysPc.idle_object_ids[2] = 0x30;
+        TechnoSysPc.idle_object_ids[3] = 0x31;
+        TechnoSysPc.idle_offsets[2].x = 0.0f;
+        TechnoSysPc.idle_offsets[2].y = 0.0f;
+        TechnoSysPc.idle_offsets[2].z = -0.1295f;
+        TechnoSysPc.hand_object_ids[0] = -1;
+        TechnoSysPc.hand_object_ids[1] = -1;
+        object_id = 0x56;
+        initial_delay = 0.1f;
+        hold_time = 3.0f;
+    } else {
+        StartupGameFlag0 = 0;
+        DefaultMotionLedgeTerrainEnabledPc = 0;
+        Grapples_Available = 0;
+        SuperCarryEnablePc = 0;
+        CombatRollEnablePc = 0;
+        LEGOHINT_PUNCH = 1;
+        TechnoSysPc.interaction_time = 0.2f;
+        TechnoSysPc.idle_object_ids[1] = 0x2c;
+        TechnoSysPc.idle_object_ids[2] = -1;
+        TechnoSysPc.idle_object_ids[3] = -1;
+        TechnoSysPc.idle_offsets[2] = v000;
+        TechnoSysPc.hand_object_ids[0] = 0x2d;
+        TechnoSysPc.hand_object_ids[1] = 0x2e;
+        object_id = 0x55;
+        initial_delay = 1.0f;
+        hold_time = 6.0f;
+    }
+    TechnoSysPc.idle_offsets[0] = v000;
+    TechnoSysPc.idle_offsets[1] = v000;
+    TechnoSysPc.idle_object_ids[0] = object_id;
+    TechnoDefaultObjectPc = object_id;
+    GameAudio_SetActionMusicTimes(initial_delay, hold_time);
+}

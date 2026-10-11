@@ -6177,8 +6177,36 @@ typedef struct nuvpcurrent_s {
     i32 y;
     i32 width;
     i32 height;
+    f32 min_z;
+    f32 max_z;
+    f32 center_x;
+    f32 center_y;
+    f32 clip_min_x;
+    f32 clip_min_y;
+    f32 clip_max_x;
+    f32 clip_max_y;
+    f32 projection_scale_x;
+    f32 projection_scale_y;
+    f32 scissor_scale_x;
+    f32 scissor_scale_y;
 } NUVPCURRENT;
-STATIC_ASSERT(sizeof(NUVPCURRENT) == 0x10);
+STATIC_ASSERT(sizeof(NUVPCURRENT) == 0x40);
+STATIC_ASSERT(offsetof(NUVPCURRENT, x) == 0x0);
+STATIC_ASSERT(offsetof(NUVPCURRENT, y) == 0x4);
+STATIC_ASSERT(offsetof(NUVPCURRENT, width) == 0x8);
+STATIC_ASSERT(offsetof(NUVPCURRENT, height) == 0xc);
+STATIC_ASSERT(offsetof(NUVPCURRENT, min_z) == 0x10);
+STATIC_ASSERT(offsetof(NUVPCURRENT, max_z) == 0x14);
+STATIC_ASSERT(offsetof(NUVPCURRENT, center_x) == 0x18);
+STATIC_ASSERT(offsetof(NUVPCURRENT, center_y) == 0x1c);
+STATIC_ASSERT(offsetof(NUVPCURRENT, clip_min_x) == 0x20);
+STATIC_ASSERT(offsetof(NUVPCURRENT, clip_min_y) == 0x24);
+STATIC_ASSERT(offsetof(NUVPCURRENT, clip_max_x) == 0x28);
+STATIC_ASSERT(offsetof(NUVPCURRENT, clip_max_y) == 0x2c);
+STATIC_ASSERT(offsetof(NUVPCURRENT, projection_scale_x) == 0x30);
+STATIC_ASSERT(offsetof(NUVPCURRENT, projection_scale_y) == 0x34);
+STATIC_ASSERT(offsetof(NUVPCURRENT, scissor_scale_x) == 0x38);
+STATIC_ASSERT(offsetof(NUVPCURRENT, scissor_scale_y) == 0x3c);
 
 typedef struct nudisplaylistitem_s {
     u8 type;
@@ -9932,6 +9960,7 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern MEMORYMANAGER theMemoryManager;
     extern NURNDRLIBSCENE currentScene;
     extern NUVPCURRENT vpCurrent;
+    extern NUVPCURRENT vpDevice;
     extern NURNDRLIBSTATE *displaylist_2d_state;
     extern NUDISPLAYLISTITEM *displaylist_2d_first;
     extern NUDISPLAYLISTITEM *displaylist_2d_mtl_last;
@@ -12901,12 +12930,6 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern PC_DEVICE_BACKEND_PC PCDeviceBackend;
     extern HRESULT PCDeviceLastResult;
     extern i32 NuVpDirtyPc;
-    extern f32 NuVpMinZPc;
-    extern f32 NuVpMaxZPc;
-    extern f32 NuVpProjectionMinXPc;
-    extern f32 NuVpProjectionMinYPc;
-    extern f32 NuVpProjectionMaxXPc;
-    extern f32 NuVpProjectionMaxYPc;
     extern NUMTX NuVpIdentityMatrixPc;
     extern const f64 NuVpFixed16ScalePc;
     extern const f64 NuVpDepthRangePc;
@@ -12948,10 +12971,6 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     void __cdecl NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast);
     void __cdecl NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast);
     extern f32 NuCameraProjectionFarClipBias;
-    extern f32 NuCameraVPortProjectionScaleX;
-    extern f32 NuCameraVPortProjectionScaleY;
-    extern f32 NuCameraScissorProjectionScaleX;
-    extern f32 NuCameraScissorProjectionScaleY;
     extern NUMTX NuCameraScissorProjectionScratch;
     void __cdecl PCClipScreenUnsupported(void);
     extern NUVEC cam_axes;
@@ -19983,6 +20002,87 @@ STATIC_ASSERT(offsetof(NuDeferredFilterGen, dynamic_lights) == 0x58);
 STATIC_ASSERT(offsetof(NuDeferredFilterGen, deferred_geometry_count) == 0xd8);
 STATIC_ASSERT(offsetof(NuDynamicLight, render_sets_pc) == 0);
 STATIC_ASSERT(offsetof(NuDynamicLight, render_set_count_pc) == 0x70c);
+#endif
+
+typedef struct PC_LIGHT_STATE_SLOT_PC {
+    u8 unknown_00[0x94];
+    i32 next, previous;
+} PC_LIGHT_STATE_SLOT_PC;
+STATIC_ASSERT(sizeof(PC_LIGHT_STATE_SLOT_PC) == 0x9c);
+STATIC_ASSERT(offsetof(PC_LIGHT_STATE_SLOT_PC, next) == 0x94);
+STATIC_ASSERT(offsetof(PC_LIGHT_STATE_SLOT_PC, previous) == 0x98);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern PC_LIGHT_STATE_SLOT_PC NuLgtStateSlotsPc[8];
+    extern i32 NuLgtStateCapacityPc, NuLgtStateActiveCountPc, NuLgtStateFreeHeadPc;
+    extern i32 NuLgtStateEnabledPc, NuLgtStateUnknownPc;
+    void __cdecl NuLgtInitializeStatePc(void);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    typedef struct PC_GOBJ_REGISTRY_AUX_PC {
+        struct PC_GOBJ_REGISTRY_AUX_PC *next;
+        u8 unknown_04[8];
+        void *payload;
+    } PC_GOBJ_REGISTRY_AUX_PC;
+    STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_AUX_PC, payload) == 0xc);
+    typedef struct PC_GOBJ_NATIVE_RESOURCE_PC {
+        u8 unknown_00[0x10];
+        PC_TEXTURE_RESOURCE_PC *resource;
+    } PC_GOBJ_NATIVE_RESOURCE_PC;
+    STATIC_ASSERT(offsetof(PC_GOBJ_NATIVE_RESOURCE_PC, resource) == 0x10);
+    typedef struct PC_GOBJ_REGISTRY_CHILD_PC {
+        struct PC_GOBJ_REGISTRY_CHILD_PC *next;
+        u8 unknown_04[0x1c];
+        void *owned_buffer;
+        u8 unknown_24[8];
+        PC_GOBJ_REGISTRY_AUX_PC *auxiliary;
+        u8 unknown_30[8];
+        PC_GOBJ_NATIVE_RESOURCE_PC *native_resource;
+    } PC_GOBJ_REGISTRY_CHILD_PC;
+    STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_CHILD_PC, owned_buffer) == 0x20);
+    STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_CHILD_PC, auxiliary) == 0x2c);
+    STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_CHILD_PC, native_resource) == 0x38);
+    typedef struct PC_GOBJ_REGISTRY_ENTRY_PC {
+        struct PC_GOBJ_REGISTRY_ENTRY_PC *next, *previous;
+        u8 unknown_08[4];
+        PC_GOBJ_REGISTRY_CHILD_PC *children;
+        PC_GOBJ_REGISTRY_AUX_PC *auxiliary;
+    } PC_GOBJ_REGISTRY_ENTRY_PC;
+    STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_ENTRY_PC, children) == 0xc);
+    STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_ENTRY_PC, auxiliary) == 0x10);
+    extern i32 NuGobjRegistryInitializedPc, NuGobjRegistryCountPc;
+    extern PC_GOBJ_REGISTRY_ENTRY_PC *NuGobjRegistryFirstPc;
+    extern const char NuGobjSourcePathPc[51];
+    void __cdecl NuGobjReleaseChildPc(PC_GOBJ_REGISTRY_CHILD_PC *);
+    void __cdecl NuGobjRegistryCleanupPc(void);
+    void __cdecl NuGobjRegistryInitPc(void);
+
+    void __cdecl NuPs2GetViewport(NUVPCURRENT *viewport);
+    void __cdecl NuVpInit(void);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern AREA_DATA_PC *JIMTEST_ADATA;
+    extern f32 ActionMusicStickyTimeoutPc[2];
+    void __cdecl LSW_SetIndy(i32 area_index);
+    void __cdecl GameAudio_SetActionMusicTimes(f32 initial_delay, f32 hold_time);
+    void __cdecl Cheats_Reset(void);
+    void __cdecl Batarangs_Reset(void);
+    void __cdecl GameCam_Reset(GAMECAMERA *camera);
+    void __cdecl Minicam_InitSystem(void);
+    void __cdecl ResetScene(NUGSCN *scene, SCENEPROGRESS *progress);
+#ifdef __cplusplus
+}
 #endif
 
 #endif

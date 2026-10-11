@@ -57,3 +57,8 @@ void __cdecl GameAudio_AddSfx(i32 code, i32 *ids, i32 *count, i32 capacity) {
     ids[*count] = id;
     ++*count;
 }
+
+void __cdecl GameAudio_SetActionMusicTimes(f32 initial_delay, f32 hold_time) {
+    ActionMusicStickyTimeoutPc[0] = initial_delay;
+    ActionMusicStickyTimeoutPc[1] = hold_time;
+}

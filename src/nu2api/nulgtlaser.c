@@ -1,5 +1,6 @@
 #include "saga.h"
 #include <math.h>
+#include <string.h>
 
 STATIC_ASSERT(offsetof(NULGTLASER_PC, start) == 0x0);
 STATIC_ASSERT(offsetof(NULGTLASER_PC, end) == 0xc);
@@ -626,4 +627,20 @@ void __cdecl NuLgtSetArcMatEx(i32 type, NUMTL *material, f32 u0, f32 v0, f32 u1,
     NuLgtArcMtl[type].v0 = v0;
     NuLgtArcMtl[type].u1 = u1;
     NuLgtArcMtl[type].v1 = v1;
+}
+
+void __cdecl NuLgtInitializeStatePc(void) {
+    i32 i;
+    NuLgtStateUnknownPc = 0;
+    NuLgtStateCapacityPc = 8;
+    memset(NuLgtStateSlotsPc, 0, sizeof(NuLgtStateSlotsPc));
+    for (i = 0; i < 8; ++i) {
+        NuLgtStateSlotsPc[i].next = i == 7 ? -1 : i + 1;
+        NuLgtStateSlotsPc[i].previous = i - 1;
+    }
+    NuLgtStateActiveCountPc = 0;
+    NuLgtArcLaserCnt = 0;
+    NuLgtArcLaserOldCnt = 0;
+    NuLgtStateFreeHeadPc = -1;
+    NuLgtStateEnabledPc = 1;
 }

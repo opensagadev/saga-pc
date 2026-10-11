@@ -8,7 +8,7 @@ void __cdecl NuVpSetIdentityPc(NUMTX *matrix) {
 void __cdecl NuVpBuildScalingTemplatePc(void) {
     volatile f32 width = (f32)DebrisGlassTextureWidth;
     volatile f32 height = (f32)DebrisGlassTextureHeight;
-    volatile f32 min_z = NuVpMinZPc;
+    volatile f32 min_z = vpCurrent.min_z;
     NuCameraScalingTemplate.m00 = (f32)((f64)width * NuQFntHalfScale);
     NuCameraScalingTemplate.m01 = 0.0f;
     NuCameraScalingTemplate.m02 = 0.0f;
@@ -49,8 +49,8 @@ void __cdecl NuVpUpdate(void) {
     bottom = (i32)((u32)y + (u32)height);
     limit_x = (i32)((u32)DebrisGlassTextureWidth << 4);
     limit_y = (i32)((u32)DebrisGlassTextureHeight << 4);
-    viewport.min_z = NuVpMinZPc;
-    viewport.max_z = NuVpMaxZPc;
+    viewport.min_z = vpCurrent.min_z;
+    viewport.max_z = vpCurrent.max_z;
     if (right < 0 || x >= limit_x || bottom < 0 || y >= limit_y)
         goto empty;
     if (x < 0) {
@@ -91,21 +91,21 @@ submit:
     NuVpSubmitPc(&viewport);
     NuMtxSetIdentity(&NuVpIdentityMatrixPc);
     NuVpBuildScalingTemplatePc();
-    if (NuVpProjectionMinXPc == 0.0f && NuVpProjectionMaxXPc == 1.0f) {
-        NuCameraVPortProjectionScaleX = 1.0f;
-        NuCameraScissorProjectionScaleX = (f32)((f64)vpCurrent.width * NuVpFixed16ScalePc);
+    if (vpCurrent.clip_min_x == 0.0f && vpCurrent.clip_max_x == 1.0f) {
+        vpCurrent.projection_scale_x = 1.0f;
+        vpCurrent.scissor_scale_x = (f32)((f64)vpCurrent.width * NuVpFixed16ScalePc);
     } else {
-        reciprocal = (f32)(1.0 / ((f64)NuVpProjectionMaxXPc - (f64)NuVpProjectionMinXPc));
-        NuCameraScissorProjectionScaleX = reciprocal;
-        NuCameraVPortProjectionScaleX = NuCameraScissorProjectionScaleX;
+        reciprocal = (f32)(1.0 / ((f64)vpCurrent.clip_max_x - (f64)vpCurrent.clip_min_x));
+        vpCurrent.scissor_scale_x = reciprocal;
+        vpCurrent.projection_scale_x = vpCurrent.scissor_scale_x;
     }
-    if (NuVpProjectionMinYPc == 0.0f && NuVpProjectionMaxYPc == 1.0f) {
-        NuCameraVPortProjectionScaleY = 1.0f;
-        NuCameraScissorProjectionScaleY = (f32)((f64)vpCurrent.height * NuVpFixed16ScalePc);
+    if (vpCurrent.clip_min_y == 0.0f && vpCurrent.clip_max_y == 1.0f) {
+        vpCurrent.projection_scale_y = 1.0f;
+        vpCurrent.scissor_scale_y = (f32)((f64)vpCurrent.height * NuVpFixed16ScalePc);
     } else {
-        reciprocal = (f32)(1.0 / ((f64)NuVpProjectionMaxYPc - (f64)NuVpProjectionMinYPc));
-        NuCameraScissorProjectionScaleY = reciprocal;
-        NuCameraVPortProjectionScaleY = NuCameraScissorProjectionScaleY;
+        reciprocal = (f32)(1.0 / ((f64)vpCurrent.clip_max_y - (f64)vpCurrent.clip_min_y));
+        vpCurrent.scissor_scale_y = reciprocal;
+        vpCurrent.projection_scale_y = vpCurrent.scissor_scale_y;
     }
 }
 
@@ -166,8 +166,8 @@ STATIC_ASSERT(offsetof(NUVPCURRENT, width) == 8);
 STATIC_ASSERT(offsetof(NUVPCURRENT, height) == 0xc);
 void __cdecl NuVpSetZRange(f32 minimum, f32 maximum) {
     NuVpDirtyPc = 1;
-    NuVpMinZPc = minimum;
-    NuVpMaxZPc = maximum;
+    vpCurrent.min_z = minimum;
+    vpCurrent.max_z = maximum;
 }
 void __cdecl NuVpSetPosition2(f32 x, f32 y) {
     x += RenderPostViewportPrefixPc.x_offset;
@@ -195,4 +195,21 @@ void __cdecl NuVpSetSize2(f32 width, f32 height) {
     vpCurrent.width = (i32)((f64)PS2_REZ_W * width / PS2_VREZ_W * 16.0);
     vpCurrent.height = (i32)((f64)PS2_REZ_H * height / PS2_VREZ_H * 16.0);
     NuVpDirtyPc = 1;
+}
+
+void __cdecl NuVpInit(void) {
+    NuPs2GetViewport(&vpDevice);
+    vpDevice.center_x = 0.5f;
+    vpDevice.center_y = 0.5f;
+    vpDevice.clip_min_x = 0.0f;
+    vpDevice.clip_min_y = 0.0f;
+    vpDevice.clip_max_x = 1.0f;
+    vpDevice.clip_max_y = 1.0f;
+    vpDevice.x = (i32)((u32)vpDevice.x << 4);
+    vpDevice.y = (i32)((u32)vpDevice.y << 4);
+    vpDevice.width = (i32)((u32)vpDevice.width << 4);
+    vpDevice.height = (i32)((u32)vpDevice.height << 4);
+    vpCurrent = vpDevice;
+    NuVpDirtyPc = 1;
+    NuVpUpdate();
 }

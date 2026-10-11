@@ -87,3 +87,14 @@ void __cdecl Batarangs_CheckLostData(void *data) {
         ++batarang;
     } while (batarang != end);
 }
+
+void __cdecl Batarangs_Reset(void) {
+    BATARANG_LOST_READER_PC *slot = (BATARANG_LOST_READER_PC *)BatarangPacketsPc;
+    i32 i;
+    for (i = 0; i < 8; ++i) {
+        slot[i].in_flight = 0;
+        slot[i].active = 0;
+        slot[i].owner = NULL;
+        slot[i].cooldown = 50;
+    }
+}

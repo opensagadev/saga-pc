@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1509170,
-    "matched_code_bytes": 234248,
-    "matching_percent": 6.748239681082816,
-    "fuzzy_coverage_percent": 29.547905644232745,
-    "mapped_functions": 5367,
-    "matched_functions": 2452,
-    "objdiff_fuzzy_percent": 69.46608,
-    "objdiff_total_code": 1477386,
+    "mapped_code_bytes": 1510309,
+    "matched_code_bytes": 234878,
+    "matching_percent": 6.766388783739326,
+    "fuzzy_coverage_percent": 29.58872136323767,
+    "mapped_functions": 5377,
+    "matched_functions": 2458,
+    "objdiff_fuzzy_percent": 69.46587,
+    "objdiff_total_code": 1479430,
     "image_bytes": 40067072,
-    "mapped_bytes": 2157374,
-    "mapping_percent": 5.384406427302699,
+    "mapped_bytes": 2158521,
+    "mapping_percent": 5.387269127127633,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -38,7 +38,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 1510364
+        "mapped_bytes": 1511503
       },
       {
         "name": ".rdata",
@@ -52,21 +52,21 @@
         "kind": "data",
         "address": "0x7ef000",
         "size": 35372200,
-        "mapped_bytes": 616824
+        "mapped_bytes": 616832
       }
     ],
-    "mapping_known_size_symbols": 9659,
-    "mapping_unknown_size_symbols": 5647,
-    "mapping_code_bytes": 1510364,
+    "mapping_known_size_symbols": 9665,
+    "mapping_unknown_size_symbols": 5653,
+    "mapping_code_bytes": 1511503,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 43.51071632491618,
-    "mapping_data_bytes": 647010,
+    "mapping_code_percent": 43.54352875019517,
+    "mapping_data_bytes": 647018,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 1.7963036473617815,
-    "mapping_code_data_bytes": 2157374,
+    "mapping_data_percent": 1.796325857882761,
+    "mapping_code_data_bytes": 2158521,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 5.463060061566648,
-    "matched_data_region_bytes": 637833
+    "mapping_code_data_percent": 5.465964578767012,
+    "matched_data_region_bytes": 637841
   },
   "newly_compared": [
     {
@@ -37617,7 +37617,13 @@
       "date": "2026-10-11",
       "scope": "Connected genuine occlusion, startup material and input initialization",
       "baseline_commit": "c1e87dfe7901cb4b383e9b3a4465a51a28e9f2be",
-      "publication": "Exact pushed revision CI pending at commit",
+      "publication": {
+        "commit": "eebedac3b0adddc2da1323459076065d37f17b45",
+        "ci_run": 38133432755,
+        "ci_job": 114452301055,
+        "steps_success": 13,
+        "conclusion": "success"
+      },
       "new_functions": 9,
       "new_unique_compared_PC_bytes": 1685,
       "new_exact_functions": 5,
@@ -37760,7 +37766,619 @@
       "next_connected_wave": "Viewport213 proposal; producer-backed64B views/storage, lighting206 and resource152 specific holds; no candidate credit",
       "ongoing_goal": "active",
       "human_journal": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7"
+    },
+    {
+      "checkpoint": "DDD",
+      "date": "2026-10-11",
+      "scope": "Connected viewport/lighting/resource startup and character/camera/scene reset providers; measured startup-first continuation",
+      "baseline_commit": "6877a7756400388be1c75facdebf1a8a96120b84",
+      "publication": "Exact pushed revision CI pending at commit",
+      "cleanup": {
+        "commit": "6877a7756400388be1c75facdebf1a8a96120b84",
+        "ci_run": 38133974217,
+        "ci_job": 114453920188,
+        "steps_success": 13,
+        "reclaimed_bytes": 1282781184,
+        "archive_sha256": "d0ba82652f4ebd3da0234fa69f1929caf2d683044c9d4dc8f2c3d96a9033874b"
+      },
+      "new_functions": 13,
+      "new_unique_compared_PC_bytes": 2044,
+      "new_exact_functions": 6,
+      "new_exact_code_bytes": 630,
+      "new_exact_data_bytes": 8,
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1510309,
+        "matched_code_bytes": 234878,
+        "matching_percent": 6.766388783739326,
+        "fuzzy_coverage_percent": 29.58872136323767,
+        "mapped_functions": 5377,
+        "matched_functions": 2458,
+        "objdiff_fuzzy_percent": 69.46587,
+        "objdiff_total_code": 1479430,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2158521,
+        "mapping_percent": 5.387269127127633,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1511503
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30186
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616832
+          }
+        ],
+        "mapping_known_size_symbols": 9665,
+        "mapping_unknown_size_symbols": 5653,
+        "mapping_code_bytes": 1511503,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 43.54352875019517,
+        "mapping_data_bytes": 647018,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.796325857882761,
+        "mapping_code_data_bytes": 2158521,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.465964578767012,
+        "matched_data_region_bytes": 637841
+      },
+      "fuzzy_delta_pp": 0.0408157190049252,
+      "old_exact_preservation": {
+        "functions": {
+          "unchanged_exact_rows": 2452,
+          "unchanged_physical_copies": 2456
+        },
+        "data": {
+          "unchanged_exact_rows": 3798,
+          "unchanged_physical_copies": 5709
+        },
+        "new_functions": [
+          {
+            "name": "Batarangs_Reset",
+            "symbol": "_Batarangs_Reset",
+            "address": "0x00404990",
+            "units": [
+              "src/legoapi/batarang.cpp"
+            ],
+            "target_size": 184,
+            "exact_match": false,
+            "objects": [
+              {
+                "unit": "src/legoapi/batarang.cpp",
+                "base_size": 41,
+                "exact_match": false,
+                "target_sha256": "bf5e430b8bf39e123ef9ac41ee25b0cee06da99f0e4e70a976bb152b69f24556",
+                "base_sha256": "522f941306c9adb4a5769c5b990f2bbc7f6d9da3d6b4749ae9aa9a6b787d9c05",
+                "relocation_count": 2,
+                "comparison_unit": "00404990-05ac009867c9",
+                "objdiff_percent": 11.971429
+              }
+            ],
+            "status": "different",
+            "objdiff_percent": 11.971429
+          },
+          {
+            "name": "LSW_SetIndy",
+            "symbol": "_LSW_SetIndy",
+            "address": "0x0042aa00",
+            "units": [
+              "src/legoapi/characters.cpp"
+            ],
+            "target_size": 489,
+            "exact_match": false,
+            "objects": [
+              {
+                "unit": "src/legoapi/characters.cpp",
+                "base_size": 464,
+                "exact_match": false,
+                "target_sha256": "b83e4ecabac6b3a326968ca1e5afb04a14bbad1d5c1fa5d8df8c0209e585f679",
+                "base_sha256": "89cae6c9b610379e73f4e6b91c22ab6550ed7c38de6b1ed496ca3a7c72cb0652",
+                "relocation_count": 58,
+                "comparison_unit": "0042aa00-24983211bee7",
+                "objdiff_percent": 31.527473
+              }
+            ],
+            "status": "different",
+            "objdiff_percent": 31.527473
+          },
+          {
+            "name": "ResetScene",
+            "symbol": "_ResetScene",
+            "address": "0x0048c3f0",
+            "units": [
+              "src/legoapi/world.cpp"
+            ],
+            "target_size": 417,
+            "exact_match": true,
+            "objects": [
+              {
+                "unit": "src/legoapi/world.cpp",
+                "base_size": 417,
+                "exact_match": true,
+                "target_sha256": "93ec92b1b146d37cafdf64ce8f8c5e395528b45415b1b60923130e48a8c9bc11",
+                "base_sha256": "93ec92b1b146d37cafdf64ce8f8c5e395528b45415b1b60923130e48a8c9bc11",
+                "relocation_count": 10,
+                "comparison_unit": "0048c3f0-da583c3b8904",
+                "objdiff_percent": 100.0
+              }
+            ],
+            "status": "exact",
+            "objdiff_percent": 100.0
+          },
+          {
+            "name": "GameAudio_SetActionMusicTimes",
+            "symbol": "_GameAudio_SetActionMusicTimes",
+            "address": "0x00547a10",
+            "units": [
+              "src/legoapi/gameaudio.c"
+            ],
+            "target_size": 21,
+            "exact_match": true,
+            "objects": [
+              {
+                "unit": "src/legoapi/gameaudio.c",
+                "base_size": 21,
+                "exact_match": true,
+                "target_sha256": "fb45960c4ee366c9ca1c8c10d4c8d26e897ff575a89f4f6ca7c16fc9043d3ed9",
+                "base_sha256": "fb45960c4ee366c9ca1c8c10d4c8d26e897ff575a89f4f6ca7c16fc9043d3ed9",
+                "relocation_count": 2,
+                "comparison_unit": "00547a10-1ac8720f2865",
+                "objdiff_percent": 100.0
+              }
+            ],
+            "status": "exact",
+            "objdiff_percent": 100.0
+          },
+          {
+            "name": "GameCam_Reset",
+            "symbol": "_GameCam_Reset",
+            "address": "0x0054a2f0",
+            "units": [
+              "src/legoapi/camera.c"
+            ],
+            "target_size": 232,
+            "exact_match": false,
+            "objects": [
+              {
+                "unit": "src/legoapi/camera.c",
+                "base_size": 240,
+                "exact_match": false,
+                "target_sha256": "cfd2a649eaf9df509d16950abec176c42d33cdfe25100a5335a5131b5bff8f4a",
+                "base_sha256": "755bc36f3d4ad1cb45fa7c33c63666d71387928a69b2c8173ce2f0800485149d",
+                "relocation_count": 6,
+                "comparison_unit": "0054a2f0-0d513f10d648",
+                "objdiff_percent": 84.53333
+              }
+            ],
+            "status": "different",
+            "objdiff_percent": 84.53333
+          },
+          {
+            "name": "Cheats_Reset",
+            "symbol": "_Cheats_Reset",
+            "address": "0x0056e560",
+            "units": [
+              "src/legoapi/cheats.c"
+            ],
+            "target_size": 13,
+            "exact_match": true,
+            "objects": [
+              {
+                "unit": "src/legoapi/cheats.c",
+                "base_size": 13,
+                "exact_match": true,
+                "target_sha256": "97d8091ae4a4122ff177b644c84f493bc80ecd4f02d319a3e549824b70851d25",
+                "base_sha256": "97d8091ae4a4122ff177b644c84f493bc80ecd4f02d319a3e549824b70851d25",
+                "relocation_count": 2,
+                "comparison_unit": "0056e560-a607509af252",
+                "objdiff_percent": 100.0
+              }
+            ],
+            "status": "exact",
+            "objdiff_percent": 100.0
+          },
+          {
+            "name": "Minicam_InitSystem",
+            "symbol": "_Minicam_InitSystem",
+            "address": "0x00576c40",
+            "units": [
+              "src/legoapi/minicamcut.c"
+            ],
+            "target_size": 21,
+            "exact_match": true,
+            "objects": [
+              {
+                "unit": "src/legoapi/minicamcut.c",
+                "base_size": 21,
+                "exact_match": true,
+                "target_sha256": "68ff0a839b802542b947512997f573a8db77254fdedea7da52a15c8b7fbe1b99",
+                "base_sha256": "68ff0a839b802542b947512997f573a8db77254fdedea7da52a15c8b7fbe1b99",
+                "relocation_count": 2,
+                "comparison_unit": "00576c40-9f8377d93cbc",
+                "objdiff_percent": 100.0
+              }
+            ],
+            "status": "exact",
+            "objdiff_percent": 100.0
+          },
+          {
+            "name": "NuVpInit",
+            "symbol": "_NuVpInit",
+            "address": "0x00607bc0",
+            "units": [
+              "src/nu2api/nuvport.c"
+            ],
+            "target_size": 151,
+            "exact_match": false,
+            "objects": [
+              {
+                "unit": "src/nu2api/nuvport.c",
+                "base_size": 123,
+                "exact_match": false,
+                "target_sha256": "7ecd0d4b567f0470f372290cbbd54d3506a87da650d8713b4f3552f641a4a754",
+                "base_sha256": "3c6e32f8484f15196720eda4621757fa4e2172b4d10f666b9e4d6984a0d83888",
+                "relocation_count": 17,
+                "comparison_unit": "00607bc0-0cc06e4f668c",
+                "objdiff_percent": 55.35294
+              }
+            ],
+            "status": "different",
+            "objdiff_percent": 55.35294
+          },
+          {
+            "name": "NuLgtInitializeStatePc",
+            "symbol": "_NuLgtInitializeStatePc",
+            "address": "0x00609060",
+            "units": [
+              "src/nu2api/nulgtlaser.c"
+            ],
+            "target_size": 206,
+            "exact_match": false,
+            "objects": [
+              {
+                "unit": "src/nu2api/nulgtlaser.c",
+                "base_size": 209,
+                "exact_match": false,
+                "target_sha256": "f3286be5044ce8a17383154f524c67ac7ad97637822960ba79b67ac7126d9791",
+                "base_sha256": "4037083ec11768b9b3c430a3b8cfe4543b7ea8c5866d1b1aadce08928446057e",
+                "relocation_count": 25,
+                "comparison_unit": "00609060-7c44befa972b",
+                "objdiff_percent": 75.83784
+              }
+            ],
+            "status": "different",
+            "objdiff_percent": 75.83784
+          },
+          {
+            "name": "NuGobjReleaseChildPc",
+            "symbol": "_NuGobjReleaseChildPc",
+            "address": "0x00609b90",
+            "units": [
+              "src/nu2api/nugobj.c"
+            ],
+            "target_size": 96,
+            "exact_match": true,
+            "objects": [
+              {
+                "unit": "src/nu2api/nugobj.c",
+                "base_size": 96,
+                "exact_match": true,
+                "target_sha256": "a8a7ee05c27cbb5f8d614c82074d566cc1dd9e629f0e35184837917720d98d58",
+                "base_sha256": "a8a7ee05c27cbb5f8d614c82074d566cc1dd9e629f0e35184837917720d98d58",
+                "relocation_count": 3,
+                "comparison_unit": "00609b90-ce06c4ad96cd",
+                "objdiff_percent": 100.0
+              }
+            ],
+            "status": "exact",
+            "objdiff_percent": 100.0
+          },
+          {
+            "name": "NuGobjRegistryCleanupPc",
+            "symbol": "_NuGobjRegistryCleanupPc",
+            "address": "0x0060c6e0",
+            "units": [
+              "src/nu2api/nugobj.c"
+            ],
+            "target_size": 117,
+            "exact_match": false,
+            "objects": [
+              {
+                "unit": "src/nu2api/nugobj.c",
+                "base_size": 109,
+                "exact_match": false,
+                "target_sha256": "9c233c1a27ded2a99cd9ca90b080aea9292e12bb96756b11670b775937142e94",
+                "base_sha256": "e4d54df5f31725d67e057e4e4e1af06a8ff306fa97425a3ef05d0897cb494ca2",
+                "relocation_count": 5,
+                "comparison_unit": "0060c6e0-ca0c1d2800b3",
+                "objdiff_percent": 86.458336
+              }
+            ],
+            "status": "different",
+            "objdiff_percent": 86.458336
+          },
+          {
+            "name": "NuGobjRegistryInitPc",
+            "symbol": "_NuGobjRegistryInitPc",
+            "address": "0x0060cb00",
+            "units": [
+              "src/nu2api/nugobj.c"
+            ],
+            "target_size": 35,
+            "exact_match": false,
+            "objects": [
+              {
+                "unit": "src/nu2api/nugobj.c",
+                "base_size": 35,
+                "exact_match": false,
+                "target_sha256": "51077adca488fabfc8a8503be187d9720dc0d957f566c27b6a2527a74a76f5b8",
+                "base_sha256": "e6682f1430f2e5bc452b8d2fa37b6c39b7db0ed270acb1f722610d883b87926d",
+                "relocation_count": 4,
+                "comparison_unit": "0060cb00-9d281ed719f2",
+                "objdiff_percent": 99.333336
+              }
+            ],
+            "status": "different",
+            "objdiff_percent": 99.333336
+          },
+          {
+            "name": "NuPs2GetViewport",
+            "symbol": "_NuPs2GetViewport",
+            "address": "0x006e4ff0",
+            "units": [
+              "src/nu2api/pc_device.cpp"
+            ],
+            "target_size": 62,
+            "exact_match": true,
+            "objects": [
+              {
+                "unit": "src/nu2api/pc_device.cpp",
+                "base_size": 62,
+                "exact_match": true,
+                "target_sha256": "af145510ce06ff7f4fbb77e28d987f000984adecaee18601151daed6ffe432d8",
+                "base_sha256": "af145510ce06ff7f4fbb77e28d987f000984adecaee18601151daed6ffe432d8",
+                "relocation_count": 6,
+                "comparison_unit": "006e4ff0-0200101fa65a",
+                "objdiff_percent": 100.0
+              }
+            ],
+            "status": "exact",
+            "objdiff_percent": 100.0
+          }
+        ],
+        "new_unique_native_function_bytes": 2044,
+        "new_exact_functions": 6,
+        "new_exact_function_bytes": 630,
+        "migrations": [
+          {
+            "old_symbol": "_vpCurrent",
+            "known_bytes": 16,
+            "new_members": [
+              "vpCurrent.x",
+              "vpCurrent.y",
+              "vpCurrent.width",
+              "vpCurrent.height"
+            ],
+            "complete_initializer_preserved": "Independent old16/fullnew64 concat proof mandatory; original parent extent corrected to unknown."
+          },
+          {
+            "old_symbol": "_NuCameraVPortProjectionScaleX",
+            "known_bytes": 4,
+            "new_member": "vpCurrent.projection_scale_x",
+            "complete_initializer_preserved": true
+          },
+          {
+            "old_symbol": "_NuCameraVPortProjectionScaleY",
+            "known_bytes": 4,
+            "new_member": "vpCurrent.projection_scale_y",
+            "complete_initializer_preserved": true
+          },
+          {
+            "old_symbol": "_NuCameraScissorProjectionScaleX",
+            "known_bytes": 4,
+            "new_member": "vpCurrent.scissor_scale_x",
+            "complete_initializer_preserved": true
+          },
+          {
+            "old_symbol": "_NuCameraScissorProjectionScaleY",
+            "known_bytes": 4,
+            "new_member": "vpCurrent.scissor_scale_y",
+            "complete_initializer_preserved": true
+          }
+        ],
+        "existing_named_members_preserved": 13,
+        "new_named_members": 14,
+        "exact_code_delta": 630,
+        "exact_data_delta": 8,
+        "fuzzy_delta_pp": 0.0408157190049252,
+        "report_sha256": "96835f576d85a4588a1a9416a24226a17730a867528271e062318142dafee076"
+      },
+      "prior_output_preservation": {
+        "baseline": "CCCeebedac_FROZEN_NORMAL_RETAIL_SOURCE",
+        "counts": {
+          "functions": 5275,
+          "data": 11378,
+          "identical_full_relocated": 16639
+        },
+        "changes": [
+          {
+            "unit": "src/data.cpp",
+            "symbol": "_TempOptions",
+            "successor": "_TempOptions",
+            "old_size": 16,
+            "new_size": 20,
+            "old_raw_sha": "374708fff7719dd5979ec875d56cd2286f6d3cf7ec317a3b25632aab28ec37bb",
+            "new_raw_sha": "de47c9b27eb8d300dbb5f2c353e632c393262cf06340c4fa7f1b40c4cbd36f90"
+          },
+          {
+            "unit": "src/legogame/game.cpp",
+            "symbol": "_InitGameAfterConfig",
+            "successor": "_InitGameAfterConfig",
+            "old_size": 4437,
+            "new_size": 4437,
+            "old_raw_sha": "956a25cc8d8f22073ef4a1b12fa15580277fd4e50636b59ea5cb1f46500692c3",
+            "new_raw_sha": "0aa67eb28d74135c45106431903ca1cfd688529cfcda855a220fe70ec375a5f5"
+          },
+          {
+            "unit": "src/nu2api/hardware_dispatch.cpp",
+            "symbol": "_NuInitHardwarePc",
+            "successor": "_NuInitHardwarePc",
+            "old_size": 2162,
+            "new_size": 2178,
+            "old_raw_sha": "f752277e93f43b48b073c1689518639fa4f16a44e2d5e2fad8b221f58cab66b0",
+            "new_raw_sha": "0820c9ae92719059f05c32a43b49da60f4b16eaf62295514bbaa89d3fb7e388e"
+          }
+        ],
+        "qualified": [
+          {
+            "unit": "src/data.cpp",
+            "symbol": "_NuVpMaxZPc",
+            "successor": "_vpCurrent.max_z",
+            "old_complete_size": 4,
+            "qualification": "Retired separate scalar equals complete canonical named4 field at same originalVA. Unknown oldextent staysunknown."
+          },
+          {
+            "unit": "src/data.cpp",
+            "symbol": "_NuVpProjectionMinXPc",
+            "successor": "_vpCurrent.clip_min_x",
+            "old_complete_size": 4,
+            "qualification": "Retired separate scalar equals complete canonical named4 field at same originalVA. Unknown oldextent staysunknown."
+          },
+          {
+            "unit": "src/data.cpp",
+            "symbol": "_NuCameraScissorProjectionScaleY",
+            "successor": "_vpCurrent.scissor_scale_y",
+            "old_complete_size": 4,
+            "qualification": "Retired separate scalar equals complete canonical named4 field at same originalVA. Unknown oldextent staysunknown."
+          },
+          {
+            "unit": "src/data.cpp",
+            "symbol": "_NuCameraVPortProjectionScaleX",
+            "successor": "_vpCurrent.projection_scale_x",
+            "old_complete_size": 4,
+            "qualification": "Retired separate scalar equals complete canonical named4 field at same originalVA. Unknown oldextent staysunknown."
+          },
+          {
+            "unit": "src/data.cpp",
+            "symbol": "_NuCameraScissorProjectionScaleX",
+            "successor": "_vpCurrent.scissor_scale_x",
+            "old_complete_size": 4,
+            "qualification": "Retired separate scalar equals complete canonical named4 field at same originalVA. Unknown oldextent staysunknown."
+          },
+          {
+            "unit": "src/data.cpp",
+            "symbol": "_NuVpProjectionMaxYPc",
+            "successor": "_vpCurrent.clip_max_y",
+            "old_complete_size": 4,
+            "qualification": "Retired separate scalar equals complete canonical named4 field at same originalVA. Unknown oldextent staysunknown."
+          },
+          {
+            "unit": "src/data.cpp",
+            "symbol": "_NuCameraVPortProjectionScaleY",
+            "successor": "_vpCurrent.projection_scale_y",
+            "old_complete_size": 4,
+            "qualification": "Retired separate scalar equals complete canonical named4 field at same originalVA. Unknown oldextent staysunknown."
+          },
+          {
+            "unit": "src/data.cpp",
+            "symbol": "_NuVpProjectionMinYPc",
+            "successor": "_vpCurrent.clip_min_y",
+            "old_complete_size": 4,
+            "qualification": "Retired separate scalar equals complete canonical named4 field at same originalVA. Unknown oldextent staysunknown."
+          },
+          {
+            "unit": "src/data.cpp",
+            "symbol": "_NuVpProjectionMaxXPc",
+            "successor": "_vpCurrent.clip_max_x",
+            "old_complete_size": 4,
+            "qualification": "Retired separate scalar equals complete canonical named4 field at same originalVA. Unknown oldextent staysunknown."
+          },
+          {
+            "unit": "src/data.cpp",
+            "symbol": "_NuVpMinZPc",
+            "successor": "_vpCurrent.min_z",
+            "old_complete_size": 4,
+            "qualification": "Retired separate scalar equals complete canonical named4 field at same originalVA. Unknown oldextent staysunknown."
+          },
+          {
+            "unit": "src/nu2api/nurndr.c",
+            "symbol": "_vpCurrent",
+            "old_complete_size": 16,
+            "new_complete_size": 64,
+            "known_field_bytes_preserved": 16,
+            "qualification": "Old16 was a working prefix, not original owning boundary. Four actual named known4 coordinate fields independently preserve its full initializer; new owningextent unknown. Full64 retained."
+          }
+        ],
+        "map_sha256": "071d1ef8c23a62061b824bd5e457553f20d72373aa773bcaa84d2fa049e38de3",
+        "source_exe_sha256": "6072e0aba4cbabc856ad6e6b987f76a621b345474e7731faff1309ed5386f8b0"
+      },
+      "source_contracts": "### Connected viewport, lighting, resource and reset checkpoint DDD (2026-10-11)\n\nSix core extents are NuVpInit607bc0/151, NuPs2GetViewport6e4ff0/62,\nNuLgtInitializeStatePc609060/206, NuGobjReleaseChildPc609b90/96,\nNuGobjRegistryCleanupPc60c6e0/117 and NuGobjRegistryInitPc60cb00/35.\nNeutral PC names avoid claiming unproved Android identities. Viewport getter and\nchild release match all native bytes. Real hardware calls replace three native-site\nmarkers, preserving the complete owned switch tail and old references.\n\nSeven reset extents are LSW_SetIndy42aa00/489, GameAudio_SetActionMusicTimes547a10/21,\nCheats_Reset56e560/13, Batarangs_Reset404990/184, GameCam_Reset54a2f0/232,\nMinicam_InitSystem576c40/21 and ResetScene48c3f0/417. Audio/cheats/minicam/scene\nare exact. ResetScene ends at48c591; the following unrelated function is excluded\nby genuine boundary evidence. PC-specific character branches, unsigned camera\ninputs, narrow sentinels and matrix-copy-before-translation order are preserved.\nThe full CheckResetBits caller remains held on genuine consumed providers.\n\nCanonical vpCurrent remains in nurndr.c. A64-byte working view replaces its old\n16-byte prefix and ten separately allocated scalar duplicates. All named widths\nand offsets are asserted. Parent owning extent is blank; four coordinates and\nfour camera scales preserve32 known physical bytes through named4-byte contracts.\nSix other migrated scalars remain unknown-size. Fourteen new member contracts\nretain all13 old members. Device viewport's owning extent remains unknown.\nThe getter copies the two named float fields by memcpy4 to preserve raw bits.\n\nLighting initializes native eight156-byte working records, loader heads/counts\nand runtime defaults; these do not establish original allocation boundaries.\nResource partial views have asserted fields and retain real NuFree/COM calls.\nNuFree's held arena/manager behavior prevents a lifetime-success claim. Registry\ncleanup retains the finite valid-acyclic-list qualification where the compiler\nomits an empty traversal. All new owning extents, including filename padding,\nremain blank. ActionMusicStickyTimeoutPc is the genuine bounded two-float array\nat8020b4/8, native initializer1.0/6.0, adding8 exact data bytes.\n\nFull prior output review accepts only three finite changes: hardware2162\u21922178,\nunchanged-source InitGameAfterConfig4437 constant-order windows, and TempOptions\n16\u219220 with unchanged typed13-byte zero payload and emitted zero padding. The latter\nremains nonexact. RippleForceFieldSoundNamePc retains its full10-byte native-exact\ninitializer in a genuine const subsection. No full extent is trimmed or masked.\n\nThe source run, cleanup and next measured startup order are recorded in the\n[current execution policy](transfer-execution.md). It establishes no rendered\nframe or playable-game milestone; the thread/timer overlap remains a hold.\n",
+      "runtime": {
+        "new_game_run": true,
+        "receipt_sha256": "b77a1d9e4ec2b339c36dbd75567ae2448509d4225c37238e956f78c02ace9d8d",
+        "source_exe_sha256": "6072e0aba4cbabc856ad6e6b987f76a621b345474e7731faff1309ed5386f8b0",
+        "deadline_stopped": true,
+        "seconds": 60.25041041499935,
+        "exit_code": -15,
+        "observed_window": "PID-attributed TitleNotSet from2.5s to59.46s; no native-class/frame/world/playability proof",
+        "stack": "ptrace denied; no source wait attribution",
+        "owned_processes_after": [],
+        "sampled_game_or_crash_windows_after": [],
+        "inputs_unchanged": true,
+        "cache_changes": 0
+      },
+      "required_checks": "PASS796tests3existing skips;LLVM18format371/tidy344;source link/objectcoverage5203functions11386data344objects;full authoritative retail match",
+      "normal_manifest_sha256": "273c8c2360aaaf9387e78ea4aeaa31bccb5f5f0f281369fc667a8aa9016cde1c",
+      "normal_report_sha256": "96835f576d85a4588a1a9416a24226a17730a867528271e062318142dafee076",
+      "source_exe_sha256": "6072e0aba4cbabc856ad6e6b987f76a621b345474e7731faff1309ed5386f8b0",
+      "evidence": [
+        {
+          "path": "build/analysis/viewport-lighting-resource-independent-next-v1/sealed-final-v2-review.json",
+          "sha256": "b1c50a3c943641d0b5520fd8db4c9f42239713bb367c316fb55c56f1411f56b7"
+        },
+        {
+          "path": "build/analysis/connected-reset-actual-independent-v1/accepted-final-v2-reset-packet.json",
+          "sha256": "b197c973e98360b01f6681ce9a0160a547bf77f457db1c874fd499c13ed2b47a"
+        },
+        {
+          "path": "build/analysis/hardware-viewport-lighting-data-next-v1/frozen-actual-review-v2/complete-proof.json",
+          "sha256": "dc76b972547797522943cfc348db0265581b9a435364f5d7d12fee4da534c3c6"
+        },
+        {
+          "path": "build/analysis/hardware-viewport-lighting-resource-prior-pairs-v1/accepted-final-frozen-v2.json",
+          "sha256": "9d782906ac7fcf6fe89492a16c73d4366921313c5761b933d5c35d44f8464b5b"
+        },
+        {
+          "path": "build/analysis/hardware-viewport-lighting-resource-main-v1/exact-preservation-and-delta.json",
+          "sha256": "bd8f6bd867cf1d1a868144958640fa9ebf81fff4456e0dddb4c47a12c55194ee"
+        },
+        {
+          "path": "build/analysis/hardware-viewport-lighting-resource-main-v1/aggregate-prior-preservation.json",
+          "sha256": "44d2251049186094c2fb3bd98b0edb8fc86017503ab15e510a97d9c5563e6bb2"
+        },
+        {
+          "path": "build/analysis/startup-runnable-order-next-v1/observation/receipt.json",
+          "sha256": "b77a1d9e4ec2b339c36dbd75567ae2448509d4225c37238e956f78c02ace9d8d"
+        }
+      ],
+      "next_connected_wave": "Attribute actual startup wait; repair earliest verified missing PC action; thread/timer132 held on native storage overlap; bootstrap real constructors/shaders and world/frame providers remain explicit",
+      "ongoing_goal": "active",
+      "human_journal": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7"
     }
   ],
-  "latest_checkpoint": "CCC"
+  "latest_checkpoint": "DDD"
 }

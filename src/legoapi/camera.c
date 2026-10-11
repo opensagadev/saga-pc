@@ -492,3 +492,72 @@ void __cdecl KeepPointOnScreen(NUVEC *position, NUVEC *velocity) {
             velocity->y = 0.0f;
     }
 }
+
+typedef struct RESET_CAMERA_PC {
+    u8 opaque_00;
+    u8 sock;
+    i16 sock_segment;
+    u8 opaque_04[0x1b4];
+    f32 seek_timer;
+    f32 blend_time, blend_duration;
+    u8 opaque_1c4[4];
+    f32 judder_time;
+    u8 opaque_1cc[4];
+    f32 shake_amplitude, shake_target_amount, shake_time, shake_speed;
+    f32 position_seek, angle_seek;
+    f32 reset_1e8, reset_1ec, reset_1f0, reset_1f4;
+    u8 opaque_1f8[0xc];
+    f32 reset_204, reset_208, reset_20c, reset_210, reset_214, reset_218;
+    u8 opaque_21c[0x10];
+    i8 mode;
+    u8 previous_mode;
+} RESET_CAMERA_PC;
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, sock) == 0x1);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, sock_segment) == 0x2);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, seek_timer) == 0x1b8);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, blend_time) == 0x1bc);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, blend_duration) == 0x1c0);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, judder_time) == 0x1c8);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, shake_amplitude) == 0x1d0);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, shake_target_amount) == 0x1d4);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, shake_time) == 0x1d8);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, shake_speed) == 0x1dc);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, position_seek) == 0x1e0);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, angle_seek) == 0x1e4);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, reset_1e8) == 0x1e8);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, reset_1ec) == 0x1ec);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, reset_1f0) == 0x1f0);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, reset_1f4) == 0x1f4);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, reset_204) == 0x204);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, reset_208) == 0x208);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, reset_20c) == 0x20c);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, reset_210) == 0x210);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, reset_214) == 0x214);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, reset_218) == 0x218);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, mode) == 0x22c);
+STATIC_ASSERT(offsetof(RESET_CAMERA_PC, previous_mode) == 0x22d);
+void __cdecl GameCam_Reset(GAMECAMERA *camera) {
+    RESET_CAMERA_PC *c = (RESET_CAMERA_PC *)(camera == NULL ? GameCam : camera);
+    c->previous_mode = 0xff;
+    c->mode = -1;
+    c->sock_segment = -1;
+    c->sock = 0xff;
+    c->judder_time = 0.0f;
+    c->shake_amplitude = 0.0f;
+    c->shake_target_amount = 0.0f;
+    c->shake_time = 0.0f;
+    c->shake_speed = 1.0f;
+    c->blend_time = 0.0f;
+    c->blend_duration = 0.0f;
+    ObstacleCamSpl = NULL;
+    MiniCutCam = 0;
+    c->position_seek = (f32)(u8)WORLD->current_level->cam_pos_seek;
+    c->seek_timer = 0.0f;
+    c->angle_seek = (f32)(u8)WORLD->current_level->cam_angle_seek;
+    c->reset_1ec = c->reset_1e8 = 0.0f;
+    c->reset_1f4 = c->reset_1f0 = 0.0f;
+    c->reset_214 = c->reset_218 = 0.0f;
+    c->reset_20c = c->reset_210 = 0.0f;
+    c->reset_204 = c->reset_208 = 0.0f;
+    Minicam_InitSystem();
+}

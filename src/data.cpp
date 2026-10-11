@@ -8738,18 +8738,7 @@ extern "C" {
 #pragma data_seg(".data$NuCameraProjectionFarClipBias")
     f32 NuCameraProjectionFarClipBias = 0.1f;
 #pragma data_seg()
-#pragma bss_seg(".bss$NuCameraVPortProjectionScaleX")
-    f32 NuCameraVPortProjectionScaleX;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuCameraVPortProjectionScaleY")
-    f32 NuCameraVPortProjectionScaleY;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuCameraScissorProjectionScaleX")
-    f32 NuCameraScissorProjectionScaleX;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuCameraScissorProjectionScaleY")
-    f32 NuCameraScissorProjectionScaleY;
-#pragma bss_seg()
+
 #pragma bss_seg(".bss$NuCameraScissorProjectionScratch")
     NUMTX NuCameraScissorProjectionScratch;
 #pragma bss_seg()
@@ -12522,24 +12511,7 @@ extern "C" {
 #pragma bss_seg(".bss$NuVpDirtyPc")
     i32 NuVpDirtyPc;
 #pragma bss_seg()
-#pragma bss_seg(".bss$NuVpMinZPc")
-    f32 NuVpMinZPc;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuVpMaxZPc")
-    f32 NuVpMaxZPc;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuVpProjectionMinXPc")
-    f32 NuVpProjectionMinXPc;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuVpProjectionMinYPc")
-    f32 NuVpProjectionMinYPc;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuVpProjectionMaxXPc")
-    f32 NuVpProjectionMaxXPc;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuVpProjectionMaxYPc")
-    f32 NuVpProjectionMaxYPc;
-#pragma bss_seg()
+
 #pragma bss_seg(".bss$PCDeviceLastResult")
     HRESULT PCDeviceLastResult;
 #pragma bss_seg()
@@ -19004,9 +18976,9 @@ extern "C" {
 #pragma data_seg(".data$ForceFieldRippleRatePc")
     f32 ForceFieldRippleRatePc = 100.0f;
 #pragma data_seg()
-#pragma data_seg(".data$RippleForceFieldSoundNamePc")
+#pragma const_seg(".rdata$RippleForceFieldSoundNamePc")
     const char RippleForceFieldSoundNamePc[10] = "SabFField";
-#pragma data_seg()
+#pragma const_seg()
 #pragma data_seg(".data$PodDustLocatorIndicesPc")
     i32 PodDustLocatorIndicesPc[2] = {1, 2};
 #pragma data_seg()
@@ -28207,4 +28179,28 @@ extern "C" {
     NUMTL *PCStartupMaterial1Pc = NULL;
     NUMTL *PCStartupMaterial2Pc = NULL;
     i16 PlayerLastPort[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
+}
+
+extern "C" {
+    NUVPCURRENT vpDevice;
+}
+
+extern "C" {
+    PC_LIGHT_STATE_SLOT_PC NuLgtStateSlotsPc[8];
+    i32 NuLgtStateCapacityPc = 8;
+    i32 NuLgtStateActiveCountPc = -1;
+    i32 NuLgtStateFreeHeadPc = -1;
+    i32 NuLgtStateEnabledPc;
+    i32 NuLgtStateUnknownPc;
+}
+
+extern "C" {
+    i32 NuGobjRegistryInitializedPc;
+    PC_GOBJ_REGISTRY_ENTRY_PC *NuGobjRegistryFirstPc;
+    i32 NuGobjRegistryCountPc;
+    extern const char NuGobjSourcePathPc[51] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c";
+}
+
+extern "C" {
+    f32 ActionMusicStickyTimeoutPc[2] = {1.0f, 6.0f};
 }
