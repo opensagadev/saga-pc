@@ -37,6 +37,12 @@ font/text-table backing and the remaining permanent/world loaders. Keep native
 failure behavior, caller order and matching; no forced readiness or substitute
 providers. Research proposals remain local and uncompiled.
 
+Three pre-existing unpublished research records were incorrectly attributed to
+the user. Their referenced audit files are missing; the records are archived
+locally and the journal is restored to its committed version. The report's
+identification metadata is refreshed. Source, full code/data comparisons and
+all exact results are unchanged; this correction adds zero reconstructed bytes.
+
 Work is paused at the user's request after this validated checkpoint is pushed.
 Resume only on the user's instruction, using the retained proposals and current
 source; the recurring automation is paused.

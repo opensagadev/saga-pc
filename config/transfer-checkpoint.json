@@ -38802,7 +38802,7 @@
       "date": "2026-10-11",
       "scope": "Native frame input polling/reset and genuine keyboard lifecycle; runnable-first dependency order",
       "baseline_commit": "a803b6f0973efced1b6d8e00885ff1f675f9aa53",
-      "publication": "Exact pushed revision CI pending at commit",
+      "publication": "Source checkpoint90966e8 pushed; exact final metadata-followup CI pending at commit",
       "new_functions": 27,
       "new_unique_compared_PC_bytes": 8881,
       "new_exact_functions": 8,
@@ -39044,8 +39044,8 @@
             "sha256": "4bba3b1ddded1892c3f6216ebfbd6bca0218ccc79bcbbf0735304045325c798e"
           }
         },
-        "normal_manifest_sha256": "4989ed168b90acb6f34b17438c23e5a63382f2e23211cb15754ee4aeda201228",
-        "normal_report_sha256": "e48520ec6f732550345638a492c5077a41ce2ea614c77a22a9cc5a5ed3631c7b",
+        "normal_manifest_sha256": "cd7bd1c038a4b17d352e0e26129c55033c1e94e9f76f29658be7fb4fdecd9b17",
+        "normal_report_sha256": "ad8d6e6dac0c8159140122649d3328d11739b11eb393d87e832953455598b9d5",
         "source_exe_sha256": "af1976e59903b491c182b0a65d9d8a3c7150245e978d67226d7852ca667fb9a2",
         "prior_complete_outputs": 16752,
         "prior_legitimate_exact_rows_preserved": 6283,
@@ -39055,7 +39055,13 @@
         "new_exact_data_bytes": 66,
         "owning_extent_qualification": "Unknown new original data extents stay blank; no original allocation credit",
         "native_parent_calls": "NuFrameEnd before tick reads; swap EndScene/inputreset/Present/leave",
-        "required_checks": "PASS796tests3skips/LLVM18format371tidy344/fullbuildlink5247functions11490data344objects/fullretailmatch"
+        "required_checks": "PASS796tests3skips/LLVM18format371tidy344/fullbuildlink5247functions11490data344objects/fullretailmatch",
+        "journal_correction": {
+          "path": "build/analysis/input-poll-main-v1/journal-provenance-correction/correction.json",
+          "sha256": "bff7ff4c5f6abb9e103095c62a7e81cd215066a9e92613ce7c0481e9dcceb445"
+        },
+        "source_body_rebind": "All344 source/object hashes, complete function/data/member report arrays, EXE, map and member/candidate contracts identical to accepted v2. Only journal-derived identification metadata/input pins refreshed.",
+        "new_compared_bytes_in_metadata_followup": 0
       },
       "runtime": {
         "receipt": {
@@ -39083,8 +39089,19 @@
       "required_checks": "PASS: 796 tests, three existing skips; LLVM18format371/tidy344; sourcebuild/link5247functions11490data344objects; fullretailmatch",
       "next_connected_wave": "The next runnable dependency wave is the genuine save-folder registration\n(49 bytes) and save initialization/slot enumeration (385 bytes), restoring the\nconditional hardware call and original InitOnce arguments. Current startup skips\nboth producers; the permanent loader waits for saveload_status. Restore actual\nfolder publication and six-slot file enumeration before readiness is produced.\nThen connect the reviewed legal texture/material/color/vertex family (514 bytes),\nfont/text-table backing and the remaining permanent/world loaders. Keep native\nfailure behavior, caller order and matching; no forced readiness or substitute\nproviders. Research proposals remain local and uncompiled.\n\nWork is paused at the user's request after this validated checkpoint is pushed.\nResume only on the user's instruction, using the retained proposals and current\nsource; the recurring automation is paused.\n",
       "ongoing_goal": "paused by user after publication",
-      "human_journal": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
-      "report_publication_note": "Immutable source/input measurement precedes explanatory publication edits. Full source/objects/report/EXE unchanged; only named explanatory documents changed."
+      "report_publication_note": "Immutable source/input measurement precedes explanatory publication edits. Full source/objects/report/EXE unchanged; only named explanatory documents changed.",
+      "journal_provenance_correction": "The three pre-existing uncommitted agent-style research records were incorrectly attributed to the user. User confirmed no intended edit. Referenced audits are missing; records archived locally, committed journal restored. No unpublished record added to repository.",
+      "journal_sha256": "27b7f93dfaf1d4e9e48a425f3863dfbd6b0d71815fc5d2c235e314ccca9e6fbd",
+      "metadata_followup": {
+        "source_code_commit": "90966e8371457970d53685e182e17daa310385aa",
+        "new_compared_PC_bytes": 0,
+        "code_data_and_all_exact_results_unchanged": true,
+        "report_sha256": "ad8d6e6dac0c8159140122649d3328d11739b11eb393d87e832953455598b9d5",
+        "proof": {
+          "path": "build/analysis/input-poll-main-v1/accepted-journal-correction-proof.json",
+          "sha256": "11ae6ab65f1115486dd0e7796b6157ce0654d9de6ef91c5005a91faa7a3ac793"
+        }
+      }
     }
   ],
   "latest_checkpoint": "GGG"

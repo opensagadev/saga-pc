@@ -5510,3 +5510,11 @@ atexit destructor, with the native one-byte mouse flags and page resets. No
 manual enable or synthetic initialization is added. XINPUT1_3 ordinals2/3/4 are
 actual DLL imports, without replacement implementations. Full PC boundaries,
 new outputs and finite nonexact qualifications are pinned in transfer-checkpoint.json.
+
+### Pre-existing journal records (GGG publication correction)
+
+Three pre-existing unpublished research records were incorrectly attributed to
+the user. Their referenced audit files are missing; the records are archived
+locally and the journal is restored to its committed version. The report's
+identification metadata is refreshed. Source, full code/data comparisons and
+all exact results are unchanged; this correction adds zero reconstructed bytes.
