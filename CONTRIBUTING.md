@@ -92,9 +92,8 @@ tools/permute_loop.sh                                         # forever; pushes 
 
 Improvements go to `build/permute/<symbol>.patch`; `--apply` writes them into
 `src/`. Batch runs record results in `build/permute/batch.jsonl` and skip
-functions already recorded. Each worker uses its own Wine prefix under
-`build/tools/wine-workers/` (about 1.3 GB each) so parallel compiles do not
-share one wineserver. `permute_loop.sh` pulls `main` each round, searches the
+functions already recorded. Workers are separate processes sharing the build's
+Wine prefix. `permute_loop.sh` pulls `main` each round, searches the
 next functions, commits and pushes improvements with the journal (`permute/`),
 and after a full pass re-measures with `make match` and starts a new pass.
 

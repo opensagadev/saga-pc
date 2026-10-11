@@ -37,22 +37,10 @@ OUT = ROOT / "build/permute"
 CFLAGS = ["/nologo", "/c", "/O2", "/Gy", "/GS", "/MT"]
 
 
-def prepare_prefix(prefix, env):
-    """Initialize a worker's Wine prefix once."""
-    prefix = prefix.resolve()
-    if not (prefix / ".ready").is_file():
-        prefix.mkdir(parents=True, exist_ok=True)
-        subprocess.run(["wineboot", "-i"], capture_output=True, timeout=600,
-                       env=dict(env, WINEPREFIX=str(prefix),
-                                WINEDLLOVERRIDES="mscoree,mshtml=;winemenubuilder.exe=d"))
-        (prefix / ".ready").touch()
-    return prefix
-
-
 class Scorer:
     """Compile one translation unit and score one function in it."""
 
-    def __init__(self, unit, symbol, wineprefix=None):
+    def __init__(self, unit, symbol, worker=None):
         self.unit = Path(unit)
         records = load_symbols()
         matches = [r for r in records if r["symbol"] == symbol and r["address"] is not None]
@@ -62,11 +50,8 @@ class Scorer:
         self.bindings = bindings_for(records)
         self.target = retail(project()["target"]).read_va(self.va, self.size)
         self.compiler, self.wine, self.env = environment()
-        if wineprefix:
-            # Separate prefixes give parallel workers separate wineservers.
-            self.env["WINEPREFIX"] = str(prepare_prefix(Path(wineprefix), self.env))
         self.objdiff = ROOT / "build/tools/bin/objdiff-cli"
-        self.work = OUT / "work" / (Path(wineprefix).name if wineprefix else "main")
+        self.work = OUT / "work" / (worker or f"p{os.getpid()}")
         self.work.mkdir(parents=True, exist_ok=True)
         self.includes = ["/I" + windows(ROOT / "src"), "/I" + windows((ROOT / self.unit).parent),
                          "/I" + windows(self.compiler.parent / "include"),
@@ -179,8 +164,8 @@ def search(scorer, text, function, iterations, jobs, seed, log):
     return start, best, best_text
 
 
-def run_one(symbol, unit, iterations, jobs, seed, apply, log, wineprefix=None):
-    scorer = Scorer(unit, symbol, wineprefix)
+def run_one(symbol, unit, iterations, jobs, seed, apply, log, worker=None):
+    scorer = Scorer(unit, symbol, worker)
     path = ROOT / unit
     text = path.read_text(encoding="latin-1")
     began = time.time()
@@ -201,8 +186,8 @@ def run_one(symbol, unit, iterations, jobs, seed, apply, log, wineprefix=None):
 def batch(count, iterations, jobs, apply, minimum, maximum, seed=1, workers=1):
     """Work through the functions losing the most bytes, several at a time.
 
-    Each worker is a separate process with its own Wine prefix (and so its own
-    wineserver). Two workers never edit the same source unit at once.
+    Each worker is a separate process; all share the build's Wine prefix. Two
+    workers never edit the same source unit at once.
     """
     report = json.loads((ROOT / "matching.json").read_text())
     rows = [r for r in report["functions"]
@@ -244,7 +229,6 @@ def batch(count, iterations, jobs, apply, minimum, maximum, seed=1, workers=1):
             condition.notify_all()
 
     def worker(number):
-        prefix = ROOT / f"build/tools/wine-workers/w{number}"
         tag = f"w{number}"
         while (item := take()) is not None:
             position, row = item
@@ -253,7 +237,7 @@ def batch(count, iterations, jobs, apply, minimum, maximum, seed=1, workers=1):
                 f"({unit}, {row['target_size']} bytes, {row['objdiff_percent']:.1f}%)")
             command = [sys.executable, str(Path(__file__).resolve()), row["symbol"], "--unit", unit,
                        "--iterations", str(iterations), "--jobs", str(jobs), "--seed", str(seed),
-                       "--wineprefix", str(prefix)] + (["--apply"] if apply else [])
+                       "--worker", tag] + (["--apply"] if apply else [])
             summary = None
             try:
                 process = subprocess.Popen(command, cwd=ROOT, stdout=subprocess.PIPE,
@@ -306,8 +290,8 @@ def main():
     parser.add_argument("--min-size", type=int, default=16)
     parser.add_argument("--max-size", type=int, default=6000)
     parser.add_argument("--workers", type=int, default=1,
-                        help="Batch: functions searched at once, each with its own Wine prefix")
-    parser.add_argument("--wineprefix", help=argparse.SUPPRESS)
+                        help="Batch: functions searched at once, in separate processes")
+    parser.add_argument("--worker", help=argparse.SUPPRESS)
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args()
     if args.batch:
@@ -327,7 +311,7 @@ def main():
         lambda message: print(f"[{args.symbol}] {message}", flush=True))
     try:
         summary = run_one(args.symbol, unit, args.iterations, args.jobs, args.seed, args.apply, log,
-                          args.wineprefix)
+                          args.worker)
     except (ValueError, OSError, subprocess.SubprocessError) as error:
         summary = {"symbol": args.symbol, "unit": unit, "error": str(error)[:300]}
     print(json.dumps(summary), flush=True)

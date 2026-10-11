@@ -12,8 +12,7 @@
 set -u
 cd "$(dirname "$0")/.."
 BRANCH=${BRANCH:-main}
-# One worker per four cores: each has its own Wine prefix (~1.3 GB, created once
-# under build/tools/wine-workers/) because a single wineserver limits throughput.
+# One worker (function) per four cores, each compiling up to JOBS candidates at once.
 CORES=$(nproc)
 WORKERS=${WORKERS:-$(( CORES >= 8 ? CORES / 4 : 1 ))}
 JOBS=${JOBS:-$(( (CORES + WORKERS - 1) / WORKERS ))}
@@ -31,6 +30,9 @@ if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
     exit 1
 fi
 git checkout -q "$BRANCH"
+# Initialize the build's Wine prefix once, before workers compile in parallel.
+make build/tools/wine/.ready >/dev/null
+log "starting: $WORKERS workers x $JOBS compile jobs on $CORES cores"
 
 sync() {
     # A conflicting pull is skipped; the next round tries again.
