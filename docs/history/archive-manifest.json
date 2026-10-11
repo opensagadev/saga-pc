@@ -102,6 +102,19 @@
         "../src/nu2api/pc_device.cpp": "../../src/nu2api/pc_device.cpp"
       },
       "substantive_text_preservation": "Exact original bytes recovered after removal of archive notice and reversal of listed link-target substitutions."
+    },
+    {
+      "original_path": "config/transfer-execution.md",
+      "original_section_begin": "## Current source checkpoint JJ (2026-10-08)",
+      "original_section_sha256": "a4e7a848d75fe7e4cd9eaa9c6864847690ce52760c94d9e45a0656ce549884d8",
+      "original_section_bytes": 16397,
+      "archive_path": "docs/history/source-checkpoints-JJ-SS-2026-10-09.md",
+      "archive_sha256": "e333364da7bed5d45fadc2835e8b0f589a4e9accd2c59cd5e1be2d9b111b4033",
+      "archived_on": "2026-10-11",
+      "mechanical_link_rebasings": {
+        "transfer-checkpoint.json": "../../config/transfer-checkpoint.json"
+      },
+      "substantive_text_preservation": "Exact original section bytes recovered after removal of archive notice and reversal of listed link-target substitutions. Current policy preceding this section remains in its original file."
     }
   ]
 }

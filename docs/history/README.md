@@ -13,6 +13,7 @@ historical meaning while source links point to current C++ successors.
 - [Identification pipeline design, 2026-09-30](identification-plan-2026-09-30.md)
 - [Earlier work plan and release history](progress-plan-through-2026-10-03.md)
 - [Complete transfer execution history through II, 2026-10-08](transfer-execution-through-II-2026-10-08.md)
+- [Source checkpoint history JJ–SS, 2026-10-08–09](source-checkpoints-JJ-SS-2026-10-09.md)
 
 Current readers should start with [the roadmap](../roadmap.md),
 [work plan](../../config/progress-plan.md) and

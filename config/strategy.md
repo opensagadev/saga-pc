@@ -26,3 +26,9 @@ repeating whole-binary discovery or released-family audits.
 
 The complete [2026-09-30 strategy review](../docs/history/strategy-review-2026-09-30.md)
 is historical, including its baseline numbers and experiments.
+
+Completed local analysis may be compacted under ignored `build/archive/`. The
+archive manifest and restoration instructions stay beside each verified archive.
+Restore a referenced historical tree on demand before reusing its evidence; keep
+current baselines, source proposals, native inputs and tools directly available.
+Archival changes no source, comparison or reconstruction credit.
