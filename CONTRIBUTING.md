@@ -137,6 +137,13 @@ brace-initialized or locally instantiated structs stays (VC8 code generation for
 local struct instances depends on member types), and edits are dropped for any
 struct whose size or existing offsets would change.
 
+`python3 tools/typeimport.py TYPE... --android ../saga --write` imports Android
+structs that `src/saga.h` has no counterpart for (nor any unit declares) into a
+section of the header, with dependencies held by value, PC types for paired
+members and a size assertion each; structs whose layout for the MSVC x86 target
+differs from the Android one are dropped. No existing code uses them, so object
+code stays the same; the scores of the functions ported with them check them.
+
 `python3 tools/port.py NAME --android ../saga` drafts a PC port of an Android
 function: struct types become their PC pairs, each field access (including
 `a.b.c` chains through embedded and anonymous members) becomes the PC member at
