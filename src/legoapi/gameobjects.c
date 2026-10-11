@@ -1354,18 +1354,18 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     }
     if ((object->character_data->model_flags & 0x2000) != 0) {
         object->velocity.x = (f32)((f64)object->velocity.x * 0.5);
-        object->velocity.y = (f32)((f64)object->velocity.y * 0.5);
+        object->velocity.y = (f32)(0.5 * ((f64)object->velocity.y));
         object->velocity.z = (f32)((f64)object->velocity.z * 0.5);
     } else {
         object->velocity.x = 0.0f;
         object->velocity.z = 0.0f;
     }
-    object->current_hp = 0;
     object->dead = (u8)(reason == 3 ? 2 : reason);
+    object->current_hp = 0;
     if (object->character_context == 7 || object->field_e33 == 1)
         object->flags_e20 |= 0x10000;
     else if (object->character_context == 6 || object->field_e33 == 2)
-        object->flags_e20 &= ~0x10000;
+        object->flags_e20 = object->flags_e20 & (~0x10000);
     if (object->helmet != 0)
         STUBBED_NAMED("KillGameObject: LoseHelmet PC433aa0");
     rider = object->rider;
@@ -1399,7 +1399,7 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     object->death_timer = 0.0f;
     if (object->dead != 2)
         object->dead = 1;
-    if (object->dead == 1)
+    if (1 == object->dead)
         object->start_position = object->position;
     object->death_delay = object->dead == 2 ? 0.0f : 0.5f;
     if (object->death_delay <= 0.0f)
@@ -1450,7 +1450,7 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     object->ai_packet.target_metric_f0 = 1000000000.0f;
     object->ai_awareness_mask = 0;
     object->ai_seen_mask = 0;
-    object->field_eb0 = object->field_eb4 = 0;
+    object->field_eb4 = object->field_eb0 = 0;
     object->opponent = NULL;
     object->ai_packet.opponent = NULL;
     object->field_ec0 = 0;
@@ -1489,12 +1489,12 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
                 Part[i].owner = NULL;
         STUBBED_NAMED("KillGameObject: explosion owner cleanup (eight records38) PC43700c..43711e");
     }
-    if (DOGFIGHTA_LDATA != NULL && WorldInfo_CurrentlyActive()->current_level == DOGFIGHTA_LDATA && BonusWinner == -1 &&
-        (object->flags_1f8 & 0x40000) == 0)
+    if (DOGFIGHTA_LDATA != NULL && DOGFIGHTA_LDATA == WorldInfo_CurrentlyActive()->current_level && BonusWinner == -1 &&
+        (0x40000 & object->flags_1f8) == 0)
         STUBBED_NAMED("KillGameObject: ResetLevel EP3_DOGFIGHT_DIE PC57a620");
     if (0 != terminal_kill && object->field_280 == 0xff) {
-        i32 remove = requested_reason == 5;
         AICREATURE_PC *creature = NULL;
+        i32 remove = requested_reason == 5;
         i32 persistent = (object->portal_flags & 0x100000) != 0;
         i32 respawn = 0;
         if (!remove) {
