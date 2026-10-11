@@ -27,3 +27,6 @@ void NuDynamicLight::resetGeometry() {
         set.shadow_lists_pc[1].first->id = 1;
     }
 }
+extern "C" void __cdecl NuOcclusionManagerInit(u32 capacity, VARIPTR *buffer, VARIPTR buffer_end) {
+    g_OcclusionManager.Init(capacity, buffer, buffer_end);
+}

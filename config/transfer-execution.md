@@ -9,66 +9,49 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Verified published baseline AAA is [2825bf6](https://github.com/opensagadev/saga-pc/commit/2825bf60e08aa25797794f2d71d091d3d57ebf97), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37890834273) passing all 13 steps. BBB exact-revision CI will be checked after publication.
+Verified published baseline BBB is [c1e87df](https://github.com/opensagadev/saga-pc/commit/c1e87dfe7901cb4b383e9b3a4465a51a28e9f2be), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37892772484) passing all 13 steps. CCC exact-revision CI will be checked after publication.
 
-Checkpoint BBB transfers five complete startup functions / 436 newly compared
-PC bytes. API initialization (112), wind initialization (57) and the real
-particle vertex-buffer helper (108) are byte exact, adding 277 exact bytes.
-Animation initialization (89) and particle arena initialization (70) retain
-complete nonexact comparisons and independently reviewed source contracts.
-The animation producer reserves the actual 16-byte header, 48-byte joints and
-per-joint flags; old reader names and offsets remain unchanged, and header bytes
-6/7 remain untouched. Native startup passes animation_count 160, not the video
-parameter suggested by the old omission comment.
+Checkpoint CCC transfers nine complete functions / 1,685 newly compared PC bytes:
+occlusion initialization (three / 720), startup material creation (one / 469),
+and input mapping/configuration (five / 496). Five functions / 203 bytes are
+byte exact. The other four retain complete nonexact comparisons and independently
+reviewed PC contracts. Three original hardware sites now call real providers;
+the partial hardware parent receives no duplicate transferred-byte credit.
 
-Seven real caller sites are restored: four hardware startup calls and three
-sampler/post-effect reset calls in SwapScreen. The existing real buffer creators,
-lockers, initial swap, callbacks and returned values are retained. No filter
-instances, vtables, allocator providers, capacity guesses or success values are
-fabricated. Both parents remain partial/nonexact; 16 SwapScreen omissions remain.
+Whole-PC fuzzy coverage is 29.547906%, up 0.034794
+percentage points. Exact code is 234,248/3,471,246 bytes
+(6.748240%), up 203; exact data remains 637,833 bytes.
+Every prior exact contract survives: 2,451 code copies, 5,712 data copies and
+13 named members. Of 16,636 prior complete outputs, 16,633 stay identical.
+The three changes are the intended hardware parent and two specific previously
+reviewed camera/particle compiler-output pairs, with complete bytes/references
+and their stable-memory/floating-point qualifications retained.
 
-Whole-PC fuzzy coverage is 29.513112%, up 0.012891
-percentage points. Exact code is 234,045/3,471,246 bytes (6.742392%),
-up 277; exact data remains 637,833 bytes. All 2,448 previous exact code copies,
-5,709 data copies and 13 named members survive. Of 16,625 old complete outputs,
-16,619 are byte identical. The six changes are the two intended callers, two
-specific independently reviewed nonexact Init/Particle pairs, and two complete
-unknown-extent data-tail pairs. The declared shader array remains 157,210 bytes;
-its full compiled region now includes two alignment zeros, which differ from
-native bytes and remain explicitly nonexact with zero extent credit. No native
-body or data mismatch is cropped or masked.
+The existing occlusion manager's complete 368-byte initializer remains unchanged
+and native-equal. Six new scalar/array views total 36 typed bytes in ordinary
+sections; all complete emitted initializers equal native, but original owning
+extents stay blank and receive zero data credit. Three material class statics
+remain in original occlusion.cpp. No new constructor or dynamic initializer is
+introduced. Existing central initialization remains unchanged.
 
-Two shared DWORDs are added in ordinary default sections; the private API default
-stays in its original source owner. All three owning extents remain blank, with
-zero new data credit. Required checks pass: LLVM18 format/tidy for 343 owners,
-796 tests (three existing skips), normal source link/object coverage and full
-retail matching. An initial system-LLVM22 formatting disagreement and two Wine
-compiler timeouts are retained; unchanged-source checks with installed LLVM18
-and the unchanged pinned build retry pass. All 89 natural SDK outputs retain
-their descriptors, with refreshed header recipe pins and complete link proof.
+All required local checks pass: LLVM18 format/tidy, 796 tests (three existing
+skips), source build/link, 343-owner object coverage and full retail matching.
+The initial sandboxed match attempt could not start Wine IPC; the unchanged
+normal-environment retry passed. No compiler flags, source guards, comparison
+masks or extents were changed to obtain these results.
 
-The latest frozen source run remained active until its 60-second deadline.
-The launcher then terminated it; natural exit was not observed. No fault or
-exception was recorded, and no native game or crash window was attributed by
-the broad window samples. This does not prove recurring frames, a loaded world,
-playability, or that execution passed the earlier declaration failure.
+CCC has not been run as a game. The latest full-game observation remains BBB's
+60-second deadline termination, with no fault recorded and no verified native
+game window, recurring frames, loaded world or playability. The earlier AAA
+declaration-cache failure and unproved original allocation remain unresolved.
+No cache size, counter, search or guard is changed. Occlusion keeps native
+default capacity zero and its zero-capacity early return.
 
-The last attributed failure, in AAA, was exact PCVertexDeclarationFindSlot
-receiving count 0x0200090a with descriptor 0x02000909. The source count occupied
-cache+32, the key position of a hypothetical fifth record; insertion overwrite
-was the leading explanation, with the preceding write unobserved. Native places
-its counter eight bytes before its cache. Full original capacity remains unknown;
-the earlier four-record view establishes only a minimum for a finite producer
-domain. BBB changes no cache storage, counter, search, copy or guard. Retained Mac
-catalogs contain no debug array declaration proving this PC allocation.
-
-All 343 objects, 456 input pins and frozen report/image artifacts remain unchanged
-during the observation. Crash-dialog suppression was set and queried; cleanup
-left no owned processes, debuggers or windows. The 60.434 seconds include cleanup;
-launcher exit -15 is deadline termination, not natural game exit. The source is
-not playable. Device/resource lifetimes, persistent frames and world/gameplay
-remain unresolved. Next is the connected occlusion720 and material/input965
-source proposal; its 1,685 candidate bytes receive no reconstruction credit yet.
+Next is the producer-backed viewport family (two / 213 candidate bytes), with
+genuine 64-byte viewport views and storage review before activation. Lighting
+and resource registry providers remain separate bounded holds. Candidate bytes
+receive no comparison credit. Cleanup follows publication before further source
+integration; originals, current tools, active proofs and human edits are retained.
 
 ## Ownership and continuous work
 

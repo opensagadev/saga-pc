@@ -13,7 +13,8 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     const char *parameter_2e = NuHwDefaultParameterPc;
     const char *config_name = NuHwDefaultConfigNamePc;
     void *parameter_2d = NULL, *parameter_30 = NULL, *parameter_31 = NULL;
-    void *parameter_32 = NULL, *parameter_33 = NULL, *parameter_4c = NULL;
+    void *parameter_32 = NULL, *parameter_33 = NULL;
+    u32 occlusion_capacity = 0;
     HWND supplied_window = NULL;
     u32 icon = 0;
     i32 selector;
@@ -150,7 +151,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
                 animation_count = va_arg(args, i32);
                 break;
             case 76:
-                parameter_4c = va_arg(args, void *);
+                occlusion_capacity = va_arg(args, u32);
                 break;
             case 79:
                 NuHwParameter4fPc = va_arg(args, u32);
@@ -326,7 +327,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     NuTexInitEx(buffer, texture_count);
     NuMtlInitEx(buffer, material_count);
     NuRndrInitEx(stream_size, buffer, *end);
-    STUBBED_NAMED(0x00601a30);
+    NuRndrInitStartupMaterialsPc();
     STUBBED_NAMED(0x0060cb00);
     STUBBED_NAMED(0x005d16a0); /* (buffer, *end) */
     NuInitDebrisRenderer(buffer, *end);
@@ -359,8 +360,8 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     if (pads[3])
         *pads[3] = NuPadOpen(3, 0);
     NuMtlInitOverride(512, buffer, end);
-    STUBBED_NAMED(0x006daea0); /* (1) */
-    STUBBED_NAMED(0x005f2800); /* (parameter_4c, buffer, *end) */
+    NuPadAutoConfigurePc(1);
+    NuOcclusionManagerInit(occlusion_capacity, buffer, *end);
     STUBBED_NAMED(0x006ddec0);
     NuRndrBeginScene(1);
     NuRndrClear(0xb00, 0, 1.0f);

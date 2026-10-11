@@ -436,3 +436,34 @@ FRAME_PAD_PC *NuPadOpen(i32 device, i32 slot) {
     NuPadOpenPS(pad);
     return pad;
 }
+
+void __cdecl NuPadSetValid(i32 port, i32 valid) {
+    g_nupadScannedPads[port].is_valid = (u8)valid;
+}
+
+void __cdecl NuPadMapPlayerToPort(i32 player, i32 port) {
+    i32 previous;
+    if (port < 0) {
+        previous = TextInputDeviceLinksPc[player].device;
+        if (previous >= 0)
+            g_nupadScannedPads[previous].mapped_to_pad = -1;
+        TextInputDeviceLinksPc[player].available = 0;
+        return;
+    }
+    NuKeyboardClearActiveDevicesPc();
+    previous = TextInputDeviceLinksPc[player].device;
+    if (previous >= 0)
+        g_nupadScannedPads[previous].mapped_to_pad = -1;
+    TextInputDeviceLinksPc[player].available = 0;
+    if (previous >= 0)
+        g_nupadScannedPads[previous].mapped_to_pad = -1;
+    g_nupadScannedPads[port].digital_buttons_pressed = 0;
+    TextInputDeviceLinksPc[player].device = port;
+    g_nupadScannedPads[port].mapped_to_pad = player;
+    if (FramePadActivatedPc == 0)
+        FramePadProfilePortPc = port;
+    PlayerLastPort[player] = (i16)port;
+    FramePadActivatedPc = 1;
+    TextInputDeviceLinksPc[player].available = 1;
+    NuKeyboardApplyActionKeys_candidate(PlayerLastPort, 8);
+}

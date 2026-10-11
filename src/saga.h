@@ -1601,7 +1601,8 @@ typedef struct numtlattrib_s {
     u32 z_mode : 2;
     u32 unknown_2_1_2 : 2;
     u32 unknown_2_4 : 1;
-    u32 unknown_19_31 : 13;
+    u32 unknown_2_8 : 1;
+    u32 unknown_20_31 : 12;
 } NUMTLATTRIB;
 STATIC_ASSERT(sizeof(NUMTLATTRIB) == 4);
 typedef struct nudisplaylist_pc_s NUDISPLAYLIST_PC;
@@ -7608,6 +7609,28 @@ STATIC_ASSERT(sizeof(PC_SURFACE_MASK_PC) == 4);
 STATIC_ASSERT(offsetof(PC_SURFACE_MASK_PC, low) == 0);
 STATIC_ASSERT(offsetof(PC_SURFACE_MASK_PC, word) == 0);
 
+typedef struct PC_MATERIAL_SHADER_DESC_VIEW {
+    u32 flags;
+    i32 diffuse_map_id;
+    u8 unknown_08[0xc];
+    u32 packed_diffuse_colour;
+    u8 unknown_18[0x90];
+    u8 texture_unit_count;
+    u8 unknown_a9[0x93];
+    u32 vertex_format;
+    i16 shader_handle;
+    i16 shader_variant_handle;
+    u8 unknown_144[0xc4];
+} PC_MATERIAL_SHADER_DESC_VIEW;
+STATIC_ASSERT(sizeof(PC_MATERIAL_SHADER_DESC_VIEW) == 0x208);
+STATIC_ASSERT(offsetof(PC_MATERIAL_SHADER_DESC_VIEW, flags) == 0);
+STATIC_ASSERT(offsetof(PC_MATERIAL_SHADER_DESC_VIEW, diffuse_map_id) == 4);
+STATIC_ASSERT(offsetof(PC_MATERIAL_SHADER_DESC_VIEW, packed_diffuse_colour) == 0x14);
+STATIC_ASSERT(offsetof(PC_MATERIAL_SHADER_DESC_VIEW, texture_unit_count) == 0xa8);
+STATIC_ASSERT(offsetof(PC_MATERIAL_SHADER_DESC_VIEW, vertex_format) == 0x13c);
+STATIC_ASSERT(offsetof(PC_MATERIAL_SHADER_DESC_VIEW, shader_handle) == 0x140);
+STATIC_ASSERT(offsetof(PC_MATERIAL_SHADER_DESC_VIEW, shader_variant_handle) == 0x142);
+
 #ifdef __cplusplus
 struct PC_OCCLUDER_RECORD {
     NUVEC4 vertices[4];
@@ -7621,6 +7644,10 @@ STATIC_ASSERT(offsetof(PC_OCCLUDER_RECORD, min_x) == 0x80);
 STATIC_ASSERT(offsetof(PC_OCCLUDER_RECORD, depth) == 0x94);
 
 struct OccluderSet {
+    static NUMTL *ms_pZOnlyMtl3D;
+    static NUMTL *ms_pZOnlyMtl2D;
+    static NUMTL *ms_pAlphaMtl2D;
+    void Init(u32, VARIPTR *, VARIPTR);
     PC_OCCLUDER_RECORD *occluders;
     u32 *indices;
     u32 capacity;
@@ -7634,12 +7661,16 @@ struct OccluderSet {
     static i32 __cdecl SortByDepth(const void *, const void *);
 };
 STATIC_ASSERT(sizeof(OccluderSet) == 0xa0);
+STATIC_ASSERT(offsetof(OccluderSet, occluders) == 0);
+STATIC_ASSERT(offsetof(OccluderSet, indices) == 4);
+STATIC_ASSERT(offsetof(OccluderSet, capacity) == 8);
 STATIC_ASSERT(offsetof(OccluderSet, count) == 0xc);
 STATIC_ASSERT(offsetof(OccluderSet, queries_prepared) == 0x10);
 STATIC_ASSERT(offsetof(OccluderSet, projection_matrix) == 0x20);
 STATIC_ASSERT(offsetof(OccluderSet, query_matrix) == 0x60);
 
 struct OcclusionManager {
+    void Init(u32, VARIPTR *, VARIPTR);
     bool initialized;
     bool enabled;
     u8 unknown_02[14];
@@ -7653,6 +7684,12 @@ struct OcclusionManager {
 };
 STATIC_ASSERT(sizeof(OcclusionManager) == sizeof(OCCLUSIONMANAGER));
 STATIC_ASSERT(offsetof(OcclusionManager, current_set) == 0x154);
+STATIC_ASSERT(offsetof(OcclusionManager, initialized) == 0);
+STATIC_ASSERT(offsetof(OcclusionManager, enabled) == 1);
+STATIC_ASSERT(offsetof(OcclusionManager, sets) == 0x10);
+STATIC_ASSERT(offsetof(OcclusionManager, building_set) == 0x150);
+STATIC_ASSERT(offsetof(OcclusionManager, unknown_158) == 0x158);
+STATIC_ASSERT(offsetof(OcclusionManager, unknown_15c) == 0x15c);
 STATIC_ASSERT(offsetof(OcclusionManager, occluded_count) == 0x160);
 STATIC_ASSERT(offsetof(OcclusionManager, query_count) == 0x164);
 #endif
@@ -9324,7 +9361,12 @@ void __cdecl PCStereoUnknownToken(void);
     extern char **argv;
     extern NUDATHDR *curr_dat;
     extern NUAPI nuapi;
-    extern OCCLUSIONMANAGER g_OcclusionManager;
+#ifdef __cplusplus
+    extern OcclusionManager g_OcclusionManager;
+#else
+extern OCCLUSIONMANAGER g_OcclusionManager;
+#endif
+    void __cdecl NuOcclusionManagerInit(u32, VARIPTR *, VARIPTR);
     void __cdecl NuOcclusionManagerBeginFrame(void);
     void __cdecl NuFrameBegin(void);
     extern void *Game_NuPad_Store[2];
@@ -16180,6 +16222,13 @@ extern "C" {
     FRAME_PAD_PC *__cdecl NuPadOpen(i32 port, i32 slot);
     i32 __cdecl NuPadRead(FRAME_PAD_PC *pad);
     void __cdecl NuPadSetStatus(i32 pad, i32 status);
+    void __cdecl NuPadSetValid(i32 port, i32 valid);
+    void __cdecl NuPadMapPlayerToPort(i32 player, i32 port);
+    void __cdecl NuPadAutoConfigurePc(i32 count);
+    void __cdecl NuKeyboardClearActiveDevicesPc(void);
+    void __cdecl NuRndrInitStartupMaterialsPc(void);
+    extern NUMTL *PCStartupMaterial1Pc, *PCStartupMaterial2Pc;
+    extern i16 PlayerLastPort[8];
     void __cdecl NuPadProcessReadData(FRAME_SCANNED_PAD_PC *pad);
     void __cdecl NuPadSetMaxGamePads(i32 count);
     void __cdecl NuPadInit(void);
@@ -16388,7 +16437,13 @@ struct PC_INPUT_DEVICE_PC {
     u8 deadzone, alternate_deadzone;
     u8 unknown_1e[2];
     u32 left_trigger, right_trigger;
-    u8 unknown_28[2];
+    union {
+        u8 unknown_28[2];
+        struct {
+            u8 action_keys_active;
+            u8 unknown_29;
+        };
+    };
     u8 config_dirty, config_installed, config_present, capabilities_valid;
     char name[64];
     PC_INPUT_BINDING_PC bindings[32];
@@ -16429,6 +16484,7 @@ struct PC_INPUT_RUNTIME_PC {
     void InstallConfig(PC_INPUT_CONFIG_PC *, i32 port, i32 key, i32 auxiliary, i32 auxiliary_port);
     void BindPreferredConfig(i32 mask, i32 port);
     void InitKeyboardProfiles();
+    void AutoConfigurePadsPc(i32 count);
     void InitXInputCaps(const PC_XINPUT_CAPABILITIES_PC *, PC_INPUT_DEVICE_PC *);
 };
 extern PC_INPUT_CONFIG_PC PcStaticInputConfigs[15];
@@ -16451,6 +16507,8 @@ STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, pov_count) == 0x1b);
 STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, deadzone) == 0x1c);
 STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, left_trigger) == 0x20);
 STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, right_trigger) == 0x24);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, action_keys_active) == 0x28);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, unknown_28) == 0x28);
 STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, config_dirty) == 0x2a);
 STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, config_installed) == 0x2b);
 STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, config_present) == 0x2c);

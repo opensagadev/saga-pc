@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1507485,
-    "matched_code_bytes": 234045,
-    "matching_percent": 6.742391636893496,
-    "fuzzy_coverage_percent": 29.51311169201329,
-    "mapped_functions": 5358,
-    "matched_functions": 2447,
-    "objdiff_fuzzy_percent": 69.46356,
-    "objdiff_total_code": 1475701,
+    "mapped_code_bytes": 1509170,
+    "matched_code_bytes": 234248,
+    "matching_percent": 6.748239681082816,
+    "fuzzy_coverage_percent": 29.547905644232745,
+    "mapped_functions": 5367,
+    "matched_functions": 2452,
+    "objdiff_fuzzy_percent": 69.46608,
+    "objdiff_total_code": 1477386,
     "image_bytes": 40067072,
-    "mapped_bytes": 2155689,
-    "mapping_percent": 5.380200978998415,
+    "mapped_bytes": 2157374,
+    "mapping_percent": 5.384406427302699,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -38,7 +38,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 1508679
+        "mapped_bytes": 1510364
       },
       {
         "name": ".rdata",
@@ -55,17 +55,17 @@
         "mapped_bytes": 616824
       }
     ],
-    "mapping_known_size_symbols": 9650,
-    "mapping_unknown_size_symbols": 5641,
-    "mapping_code_bytes": 1508679,
+    "mapping_known_size_symbols": 9659,
+    "mapping_unknown_size_symbols": 5647,
+    "mapping_code_bytes": 1510364,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 43.46217467733488,
+    "mapping_code_percent": 43.51071632491618,
     "mapping_data_bytes": 647010,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 1.7963036473617815,
-    "mapping_code_data_bytes": 2155689,
+    "mapping_code_data_bytes": 2157374,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 5.45879318145975,
+    "mapping_code_data_percent": 5.463060061566648,
     "matched_data_region_bytes": 637833
   },
   "newly_compared": [
@@ -37130,7 +37130,13 @@
       "date": "2026-10-09",
       "scope": "Connected genuine hardware startup suppliers and seven native caller reconnections",
       "baseline_commit": "2825bf60e08aa25797794f2d71d091d3d57ebf97",
-      "publication": "Exact pushed revision CI pending at commit",
+      "publication": {
+        "commit": "c1e87dfe7901cb4b383e9b3a4465a51a28e9f2be",
+        "CI_run": 37892772484,
+        "CI_job": 113697181263,
+        "CI_verified_steps": 13,
+        "status": "success"
+      },
       "new_functions": 5,
       "new_unique_compared_PC_bytes": 436,
       "new_exact_functions": 3,
@@ -37605,7 +37611,156 @@
       "next_connected_wave": "Occlusion720+material/input965 readable source proposals, still uncompiled/no credit; originaldeclarationcachecapacity remainsHOLD",
       "ongoing_goal": "active; checkpointdoesnotcompletegame",
       "human_journal": "Unrelated3additionspreservedunstaged SHA4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7"
+    },
+    {
+      "checkpoint": "CCC",
+      "date": "2026-10-11",
+      "scope": "Connected genuine occlusion, startup material and input initialization",
+      "baseline_commit": "c1e87dfe7901cb4b383e9b3a4465a51a28e9f2be",
+      "publication": "Exact pushed revision CI pending at commit",
+      "new_functions": 9,
+      "new_unique_compared_PC_bytes": 1685,
+      "new_exact_functions": 5,
+      "new_exact_code_bytes": 203,
+      "new_exact_data_bytes": 0,
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1509170,
+        "matched_code_bytes": 234248,
+        "matching_percent": 6.748239681082816,
+        "fuzzy_coverage_percent": 29.547905644232745,
+        "mapped_functions": 5367,
+        "matched_functions": 2452,
+        "objdiff_fuzzy_percent": 69.46608,
+        "objdiff_total_code": 1477386,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2157374,
+        "mapping_percent": 5.384406427302699,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1510364
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30186
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616824
+          }
+        ],
+        "mapping_known_size_symbols": 9659,
+        "mapping_unknown_size_symbols": 5647,
+        "mapping_code_bytes": 1510364,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 43.51071632491618,
+        "mapping_data_bytes": 647010,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7963036473617815,
+        "mapping_code_data_bytes": 2157374,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.463060061566648,
+        "matched_data_region_bytes": 637833
+      },
+      "fuzzy_delta_pp": 0.034793952219455804,
+      "old_exact_preservation": {
+        "functions": {
+          "exact_rows_preserved": 2447,
+          "physical_copies_preserved": 2451
+        },
+        "data": {
+          "exact_rows_preserved": 3803,
+          "physical_copies_preserved": 5712
+        },
+        "named_members_preserved": 13
+      },
+      "prior_output_preservation": {
+        "baseline": "BBBc1e87df_FROZEN_NORMAL_RETAIL_SOURCE",
+        "counts": {
+          "functions": 5266,
+          "data": 11370,
+          "identical_full_relocated": 16633
+        },
+        "changes": [
+          {
+            "unit": "src/legoapi/camera.c",
+            "symbol": "_GameCameraMakeMiniCut3",
+            "successor": "_GameCameraMakeMiniCut3",
+            "old_size": 1709,
+            "new_size": 1789,
+            "old_raw_sha": "c4a2ffcc805ea325522e28caeac1d6b1b35d4a295403f310d9498f0ce7dab19c",
+            "new_raw_sha": "4382fb31517118bb3ecc2395e3613371dbcf77baa069534c76ff89bd7be28a0f"
+          },
+          {
+            "unit": "src/nu2api/hardware_dispatch.cpp",
+            "symbol": "_NuInitHardwarePc",
+            "successor": "_NuInitHardwarePc",
+            "old_size": 2098,
+            "new_size": 2162,
+            "old_raw_sha": "e32d37ed77ff5a95ed702958fa4e54b31c63c00a9475895bb6971b6affda01d5",
+            "new_raw_sha": "f752277e93f43b48b073c1689518639fa4f16a44e2d5e2fad8b221f58cab66b0"
+          },
+          {
+            "unit": "src/nu2api/nuparticle_runtime.c",
+            "symbol": "_NuRndrParticleGroup",
+            "successor": "_NuRndrParticleGroup",
+            "old_size": 713,
+            "new_size": 717,
+            "old_raw_sha": "4aec3d49d650a845629f9b7c72ccf7e63cd616033532557f6605fcfa8b54b7e9",
+            "new_raw_sha": "8e4cfb2614f860e8911b830282ca6165ce1a173ed9ec0cc1a4e175d532f99a25"
+          }
+        ],
+        "qualified": [],
+        "map_sha256": "3f19fdbb9ff7420d98bb6d9377c533b51e616bcd2b3e3eedc39130febe13e902",
+        "source_exe_sha256": "85ed498728fa08e1930879fdded68cf54ff4b0111cd7ab0110f795f3f90602ca"
+      },
+      "source_contracts": "### Connected occlusion/material/input checkpoint CCC (2026-10-11)\n\nNine complete native extents add 1,685 newly compared bytes: OccluderSet::Init\n5e7f40/585, manager Init5f26d0/109, public5f2800/26, startup materials601a30/469,\npad-valid4f4340/21, map-player4f47f0/231, clear-keyboard6d6720/30,\nautoconfigure6da970/197 and wrapper6daea0/17. Manager/public/pad-valid/clear/wrapper\nare exact203. Set initialization uses real public material factories/updates\nfor native private/inlined work. Other nonexact outputs preserve independently\nreviewed full flag stores, mapping order and device predicates; no byte tuning.\nNative input tests device kind DWORD0 and active BYTE28; signed preferred key\nand negative-port behavior are retained. Real action-key application consumes\nthe eight signed-WORD last-port view. No provider or success return is fabricated.\n\nThree real hardware calls preserve actual native order and cdecl0/1/3 arguments.\nFull caller/switch-table review covers 412 selector paths and each contained\napplication; default selector76 capacity remains zero. All old exact outputs\nsurvive. Specific unchanged-source camera and particle compiler pairs reproduce\nretained full bytes and ordered references; their qualifications remain explicit.\nThe source game is not rerun and remains unplayable.",
+      "runtime": {
+        "new_game_run": false,
+        "last_game_run": "BBB deadline termination60s; no fault recorded, no playability/frame/window claim",
+        "cache_changes": 0
+      },
+      "required_checks": "PASS796tests3existing skips;LLVM18format370/tidy343;source link/objectcoverage5190functions11374data343owners;full retail match",
+      "normal_manifest_sha256": "cb7ba5e3624635063e9840a034fd0e4bc283dabf3acff76e0cd178d08a80b8a6",
+      "normal_report_sha256": "c744715be2bc65e804cadfc97a6d0a242442721b1561449d0c6599671ca7b099",
+      "source_exe_sha256": "85ed498728fa08e1930879fdded68cf54ff4b0111cd7ab0110f795f3f90602ca",
+      "evidence": [
+        {
+          "path": "build/analysis/hardware-occlusion-actual-normal-v1/accepted-actual-contract.json",
+          "sha256": "5677e5299b91f0e32a69c9bede12715dd457979cbb4f02428e350f69ed8aed31"
+        },
+        {
+          "path": "build/analysis/hardware-material-input-actual-normal-v1/sealed-actual-normal-review.json",
+          "sha256": "893f6b308893a79e7610e0e4a13bfebf28beef96be7a850cf6b34eb285cdbb2b"
+        },
+        {
+          "path": "build/analysis/hardware-occlusion-material-input-data-next-v1/actual-normal-review-v1/complete-data-review.json",
+          "sha256": "9f5a0fdacb84e6bcddc0c314c23f8b117a91c18243f93a716d6951e47c4ad517"
+        },
+        {
+          "path": "build/analysis/hardware-occlusion-material-input-caller-review-v1/accepted-actual-caller-packet.json",
+          "sha256": "ca8497fbe8bc5812b75be7e5123ce85015778d8537475f57e4923d0685702c76"
+        },
+        {
+          "path": "build/analysis/hardware-occlusion-material-input-prior-pairs-v1/accepted-current-pairs.json",
+          "sha256": "1559fb8d82e9b01641394ea0d365100f8eb84e90bc7a9f70f8c81f9211d438b1"
+        }
+      ],
+      "next_connected_wave": "Viewport213 proposal; producer-backed64B views/storage, lighting206 and resource152 specific holds; no candidate credit",
+      "ongoing_goal": "active",
+      "human_journal": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7"
     }
   ],
-  "latest_checkpoint": "BBB"
+  "latest_checkpoint": "CCC"
 }

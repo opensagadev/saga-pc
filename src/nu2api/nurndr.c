@@ -1141,3 +1141,56 @@ ShaderUniformRecordPc *__cdecl NuShaderUniformGetByString(const char *name) {
     }
     return NULL;
 }
+
+/* PC 601a30. Minimum reader for this initialization cohort, not a NUMTL extent. */
+typedef struct PC_STARTUP_MATERIAL_READER_PC {
+    u8 unknown_00[0x40];
+    u32 render_flags;
+    u32 secondary_flags;
+    u8 unknown_48[0xc];
+    NUVEC diffuse;
+    u8 unknown_60[0x10];
+    f32 opacity;
+    i16 texture_id;
+    i16 sort_priority;
+} PC_STARTUP_MATERIAL_READER_PC;
+STATIC_ASSERT(sizeof(PC_STARTUP_MATERIAL_READER_PC) == 0x78);
+STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, render_flags) == 0x40);
+STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, secondary_flags) == 0x44);
+STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, diffuse) == 0x54);
+STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, opacity) == 0x70);
+STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, texture_id) == 0x74);
+STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, sort_priority) == 0x76);
+
+void __cdecl NuRndrInitStartupMaterialsPc(void) {
+    PC_STARTUP_MATERIAL_READER_PC *material;
+    PCStartupMaterial1Pc = NuMtlCreate(1);
+    material = (PC_STARTUP_MATERIAL_READER_PC *)PCStartupMaterial1Pc;
+    material->diffuse.x = material->diffuse.y = material->diffuse.z = 1.0f;
+    material->render_flags = (material->render_flags & ~0x1000u) | 0x2000u;
+    material->render_flags = (material->render_flags & ~0x8000u) | 0x4000u;
+    material->opacity = 0.999f;
+    material->render_flags = (material->render_flags & 0xfffffff1u) | 1u;
+    material->secondary_flags = (material->secondary_flags & ~2u) | 1u;
+    material->render_flags = (material->render_flags & ~0x200u) | 0x100u;
+    material->render_flags = (material->render_flags & ~0x800u) | 0x400u;
+    material->render_flags = (material->render_flags & ~0x10000u) | 0x20000u;
+    material->texture_id = 0;
+    material->sort_priority = 0x100;
+    NuMtlUpdate(PCStartupMaterial1Pc);
+
+    PCStartupMaterial2Pc = NuMtlCreate(1);
+    material = (PC_STARTUP_MATERIAL_READER_PC *)PCStartupMaterial2Pc;
+    material->diffuse.x = material->diffuse.y = material->diffuse.z = 1.0f;
+    material->render_flags = (material->render_flags & ~0x1000u) | 0x2000u;
+    material->render_flags = (material->render_flags & ~0x8000u) | 0x4000u;
+    material->opacity = 0.999f;
+    material->render_flags = (material->render_flags & 0xfffffff2u) | 2u;
+    material->secondary_flags = (material->secondary_flags & ~2u) | 1u;
+    material->render_flags = (material->render_flags & ~0x200u) | 0x100u;
+    material->render_flags = (material->render_flags & ~0x800u) | 0x400u;
+    material->render_flags = (material->render_flags & ~0x10000u) | 0x20000u;
+    material->texture_id = 0;
+    material->sort_priority = 0x100;
+    NuMtlUpdate(PCStartupMaterial2Pc);
+}

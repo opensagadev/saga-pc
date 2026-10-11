@@ -1,7 +1,7 @@
 # Reconstruction roadmap
 
 The goal is a complete PC reconstruction from readable C/C++. The source build
-is **not playable**. Verified published baseline AAA is [2825bf6](https://github.com/opensagadev/saga-pc/commit/2825bf60e08aa25797794f2d71d091d3d57ebf97), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37890834273) passing all 13 steps. BBB exact-revision CI will be checked after publication.
+is **not playable**. Verified published baseline BBB is [c1e87df](https://github.com/opensagadev/saga-pc/commit/c1e87dfe7901cb4b383e9b3a4465a51a28e9f2be), with [exact-revision CI](https://github.com/opensagadev/saga-pc/actions/runs/37892772484) passing all 13 steps. CCC exact-revision CI will be checked after publication.
 
 The latest frozen source run remained active until its 60-second deadline.
 The launcher then terminated it; natural exit was not observed. No fault or
@@ -18,7 +18,8 @@ the earlier four-record view establishes only a minimum for a finite producer
 domain. BBB changes no cache storage, counter, search, copy or guard. Retained Mac
 catalogs contain no debug array declaration proving this PC allocation.
 
-BBB adds five functions / 436 compared PC bytes, three exact / 277 bytes.
+CCC adds nine functions / 1,685 compared PC bytes, five exact / 203 bytes.
+Its source game has not been rerun; the observation above belongs to BBB.
 Similarity and mapping measure reconstruction, separately from runnable
 milestones. See [matching.json](../matching.json) and
 [checkpoint evidence](../config/transfer-checkpoint.json).

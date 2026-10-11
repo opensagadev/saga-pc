@@ -1,5 +1,6 @@
 #include "saga.h"
 #include <stdlib.h>
+#include <string.h>
 
 static __declspec(noinline) void OcclusionMtxCopyPrivate(NUMTX *destination, const NUMTX *source) {
     destination->m00 = source->m00;
@@ -144,3 +145,63 @@ bool OcclusionManager::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum,
 extern "C" i32 __cdecl NuOcclusionManagerIsEnabled(void) {
     return g_OcclusionManager.initialized != 0 && g_OcclusionManager.enabled != 0;
 }
+/* Original legoapi/render/light/occlusion.cpp family; public material APIs
+ * preserve the original inline operations without exposing private ABIs. */
+void OccluderSet::Init(u32 max_occluders, VARIPTR *buffer, VARIPTR buffer_end) {
+    (void)buffer_end;
+    capacity = max_occluders;
+    count = 0;
+    occluders = reinterpret_cast<PC_OCCLUDER_RECORD *>((buffer->addr + 15u) & ~15u);
+    buffer->addr = ((buffer->addr + 15u) & ~15u) + capacity * sizeof(PC_OCCLUDER_RECORD);
+    indices = reinterpret_cast<u32 *>((buffer->addr + 3u) & ~3u);
+    buffer->addr = ((buffer->addr + 3u) & ~3u) + capacity * sizeof(u32);
+    if (ms_pZOnlyMtl3D == NULL) {
+        ms_pZOnlyMtl3D = NuMtlCreate3D(1);
+        ms_pZOnlyMtl2D = NuMtlCreate(1);
+        ms_pAlphaMtl2D = NuMtlCreate(1);
+        PC_MATERIAL_SHADER_DESC_VIEW desc2d;
+        memset(&desc2d, 0, sizeof(desc2d));
+        desc2d.flags = 0x1000;
+        desc2d.diffuse_map_id = 0;
+        desc2d.vertex_format |= 0x40001;
+        NuMtlSetShaderDescPS(ms_pZOnlyMtl2D, &desc2d);
+        ms_pZOnlyMtl2D->attribs.z_mode = 0;
+        ms_pZOnlyMtl2D->attribs.alpha_mode = 13;
+        ms_pZOnlyMtl2D->attribs.unknown_2_8 = 0;
+        ms_pZOnlyMtl2D->attribs.cull_mode = 2;
+        NuMtlUpdate(ms_pZOnlyMtl2D);
+        PC_MATERIAL_SHADER_DESC_VIEW desc3d;
+        memset(&desc3d, 0, sizeof(desc3d));
+        desc3d.flags = 0x1000;
+        desc3d.diffuse_map_id = 0;
+        desc3d.vertex_format |= 1;
+        NuMtlSetShaderDescPS(ms_pZOnlyMtl3D, &desc3d);
+        ms_pZOnlyMtl3D->attribs.z_mode = 0;
+        ms_pZOnlyMtl3D->attribs.alpha_mode = 13;
+        ms_pZOnlyMtl3D->attribs.unknown_2_8 = 0;
+        ms_pZOnlyMtl3D->attribs.cull_mode = 2;
+        NuMtlUpdate(ms_pZOnlyMtl3D);
+        ms_pAlphaMtl2D->attribs.z_mode = 1;
+        ms_pAlphaMtl2D->attribs.alpha_mode = 1;
+        ms_pAlphaMtl2D->attribs.cull_mode = 2;
+        NuMtlUpdate(ms_pAlphaMtl2D);
+    }
+}
+
+void OcclusionManager::Init(u32 capacity, VARIPTR *buffer, VARIPTR buffer_end) {
+    if (capacity != 0) {
+        sets[0].Init(capacity, buffer, buffer_end);
+        sets[1].Init(capacity, buffer, buffer_end);
+        unknown_158 = 0.3f;
+        building_set = &sets[0];
+        current_set = &sets[1];
+        unknown_15c = -1.0f;
+        initialized = true;
+        enabled = true;
+    }
+}
+
+/* Genuine original occlusion.cpp static members; outside extern C. */
+NUMTL *OccluderSet::ms_pZOnlyMtl3D;
+NUMTL *OccluderSet::ms_pZOnlyMtl2D;
+NUMTL *OccluderSet::ms_pAlphaMtl2D;

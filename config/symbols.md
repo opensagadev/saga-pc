@@ -5395,3 +5395,23 @@ Seven actual native caller sites are independently verified, including complete
 selector/switch tables; parents remain partial/nonexact and receive no duplicate
 byte credit. Three new scalar views have blank owning extents. The latest bounded
 run has no recorded fault, but ends by deadline with no positive frame claim.
+
+### Connected occlusion/material/input checkpoint CCC (2026-10-11)
+
+Nine complete native extents add 1,685 newly compared bytes: OccluderSet::Init
+5e7f40/585, manager Init5f26d0/109, public5f2800/26, startup materials601a30/469,
+pad-valid4f4340/21, map-player4f47f0/231, clear-keyboard6d6720/30,
+autoconfigure6da970/197 and wrapper6daea0/17. Manager/public/pad-valid/clear/wrapper
+are exact203. Set initialization uses real public material factories/updates
+for native private/inlined work. Other nonexact outputs preserve independently
+reviewed full flag stores, mapping order and device predicates; no byte tuning.
+Native input tests device kind DWORD0 and active BYTE28; signed preferred key
+and negative-port behavior are retained. Real action-key application consumes
+the eight signed-WORD last-port view. No provider or success return is fabricated.
+
+Three real hardware calls preserve actual native order and cdecl0/1/3 arguments.
+Full caller/switch-table review covers 412 selector paths and each contained
+application; default selector76 capacity remains zero. All old exact outputs
+survive. Specific unchanged-source camera and particle compiler pairs reproduce
+retained full bytes and ordered references; their qualifications remain explicit.
+The source game is not rerun and remains unplayable.

@@ -3,6 +3,8 @@
 Current whole-project transfer status is recorded in
 [transfer-execution.md](transfer-execution.md). BBB connects genuine API, wind,
 animation and particle initialization plus initial swap and sampler/reset calls.
+CCC additionally reconnects startup materials, pad autoconfiguration and genuine
+occlusion initialization; its source EXE has not been rerun.
 The latest frozen source run remained active until its 60-second deadline.
 The launcher then terminated it; natural exit was not observed. No fault or
 exception was recorded, and no native game or crash window was attributed by

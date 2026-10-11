@@ -2453,3 +2453,15 @@ allnativezero, while shader157210->157212 gains0000 alignment before the newDWOR
 which differs from native5f5f. The full shader region stays NONEXACT; its actual
 source declaration and payload remain157210 unchanged. No crop/extent inference
 or extra credit is made. All2,154 central known-extent exact copies survive.
+
+### Startup occlusion and material/input storage CCC (2026-10-11)
+
+The existing 368-byte g_OcclusionManager aggregate keeps its complete native-equal
+initializer and C linkage through its genuine C++ type refinement. All 6,140 old
+central data regions remain unchanged. Three class material pointers stay in
+original occlusion.cpp; two startup material pointers and PlayerLastPort's eight
+signed WORDs use ordinary central storage. All six new complete regions total
+36 bytes and equal native initialization, including eight -1 WORDs. Their
+original owning extents remain unknown/blank: no allocation, mapping or exact-data
+credit. No new constructors/dynamic initialization are emitted; the old CRC16
+initializer remains intact. No declaration-cache capacity is inferred or changed.

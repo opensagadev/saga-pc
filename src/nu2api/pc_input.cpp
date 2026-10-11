@@ -368,3 +368,35 @@ STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, capabilities_valid) == 0x2d);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, devices) == 0x4e34);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, shutdown_state) == 0x67e4);
 STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS_PC, release) == 8);
+
+extern "C" void __cdecl NuKeyboardClearActiveDevicesPc(void) {
+    PC_INPUT_RUNTIME_PC *state = (PC_INPUT_RUNTIME_PC *)nu_input_state;
+    for (i32 device = 10; device < 14; ++device)
+        state->devices[device].action_keys_active = 0;
+}
+
+void PC_INPUT_RUNTIME_PC::AutoConfigurePadsPc(i32 count) {
+    i32 device = 0;
+    for (i32 pad = 0; pad < count; ++pad) {
+        i32 linked = TextInputLinkedDevicePc(pad);
+        while (device < 14 &&
+               (devices[device].kind == 0 || ((u32)(device - 10) <= 3 && !devices[device].action_keys_active)))
+            ++device;
+        if (device >= 14)
+            continue;
+        if (device != linked) {
+            NuPadMapPlayerToPort(pad, device);
+            NuPadSetValid(device, 1);
+            PC_INPUT_CONFIG_PC *config = FindConfig(7, device, preferred_key);
+            if (!config)
+                config = FindConfig(7, device, -1);
+            if (config)
+                InstallConfig(config, device, config->key, 0, 0);
+        }
+        ++device;
+    }
+}
+
+extern "C" void __cdecl NuPadAutoConfigurePc(i32 count) {
+    ((PC_INPUT_RUNTIME_PC *)nu_input_state)->AutoConfigurePadsPc(count);
+}

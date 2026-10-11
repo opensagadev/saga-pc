@@ -1,24 +1,4 @@
 #include "saga.h"
-typedef struct PC_MATERIAL_SHADER_DESC_VIEW {
-    u8 unknown_00[4];
-    i32 diffuse_map_id;
-    u8 unknown_08[0xc];
-    u32 packed_diffuse_colour;
-    u8 unknown_18[0x90];
-    u8 texture_unit_count;
-    u8 unknown_a9[0x93];
-    u32 vertex_format;
-    i16 shader_handle;
-    i16 shader_variant_handle;
-    u8 unknown_144[0xc4];
-} PC_MATERIAL_SHADER_DESC_VIEW;
-STATIC_ASSERT(sizeof(PC_MATERIAL_SHADER_DESC_VIEW) == 0x208);
-STATIC_ASSERT(offsetof(PC_MATERIAL_SHADER_DESC_VIEW, diffuse_map_id) == 4);
-STATIC_ASSERT(offsetof(PC_MATERIAL_SHADER_DESC_VIEW, packed_diffuse_colour) == 0x14);
-STATIC_ASSERT(offsetof(PC_MATERIAL_SHADER_DESC_VIEW, texture_unit_count) == 0xa8);
-STATIC_ASSERT(offsetof(PC_MATERIAL_SHADER_DESC_VIEW, vertex_format) == 0x13c);
-STATIC_ASSERT(offsetof(PC_MATERIAL_SHADER_DESC_VIEW, shader_handle) == 0x140);
-STATIC_ASSERT(offsetof(PC_MATERIAL_SHADER_DESC_VIEW, shader_variant_handle) == 0x142);
 typedef struct PC_MATERIAL_UPDATE_VIEW {
     u8 unknown_00[0x3c];
     void *display;

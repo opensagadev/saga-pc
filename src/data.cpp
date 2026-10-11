@@ -10230,7 +10230,7 @@ extern "C" {
     EDANIM_PARAM_PC AnimParams[64];
 #pragma bss_seg()
     f32 NuVideoFrameRate;
-    OCCLUSIONMANAGER g_OcclusionManager = {0, 1, {0}, {{0}}, 0, 0, 0.3f, -1.0f, 0, 0, {0}};
+    OcclusionManager g_OcclusionManager = {0, 1, {0}, {{0}}, 0, 0, 0.3f, -1.0f, 0, 0, {0}};
 
     // STUBBED: reserved PC menu callbacks remain unavailable.
     MENUFNINFO MenuInfo[100] = {
@@ -28201,4 +28201,10 @@ extern "C" {
 extern "C" {
     u32 NuDebrisIdealDynamicVBSizePc = 262144u;
     i32 MaxAnimJoints = 0;
+}
+
+extern "C" {
+    NUMTL *PCStartupMaterial1Pc = NULL;
+    NUMTL *PCStartupMaterial2Pc = NULL;
+    i16 PlayerLastPort[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
 }
