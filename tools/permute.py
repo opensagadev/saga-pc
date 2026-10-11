@@ -197,6 +197,17 @@ def search(scorer, text, function, iterations, jobs, seed, log):
     return start, best, best_text
 
 
+def merge_edit(base, current, edited):
+    """Three-way merge of one search's edit (base -> edited) into the current file."""
+    with tempfile.TemporaryDirectory(prefix="permute-merge-") as temp:
+        paths = []
+        for name, content in (("current", current), ("base", base), ("edited", edited)):
+            paths.append(Path(temp) / name)
+            paths[-1].write_text(content, encoding="latin-1")
+        result = subprocess.run(["git", "merge-file", "-p", *map(str, paths)], capture_output=True)
+        return result.stdout.decode("latin-1") if result.returncode == 0 else None
+
+
 def run_one(symbol, unit, iterations, jobs, seed, apply, log, worker=None):
     scorer = Scorer(unit, symbol, worker)
     path = ROOT / unit
@@ -213,6 +224,15 @@ def run_one(symbol, unit, iterations, jobs, seed, apply, log, worker=None):
                                              "a/" + unit, "b/" + unit))
         (OUT / f"{symbol.strip('?@_')[:80]}.patch").write_text(patch)
         if apply:
+            current = path.read_text(encoding="latin-1")
+            if current != text:
+                # The file changed during the search (a pull or another tool): merge only
+                # this search's edit into it instead of overwriting the newer content.
+                merged = merge_edit(text, current, best_text)
+                if merged is None:
+                    summary["apply_conflict"] = True
+                    return summary
+                best_text = merged
             path.write_text(best_text, encoding="latin-1")
             # Rewrites insert unformatted text; formatting never changes generated code.
             subprocess.run([clang_tool("clang-format"), "-i", "--style=file", str(path)],
