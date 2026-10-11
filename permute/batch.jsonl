@@ -83,3 +83,4 @@
 {"symbol": "_GameObjectRotation", "unit": "src/legoapi/gameobjects.c", "size": 2650, "start": 50.02329, "best": 50.028767, "exact": false, "seconds": 98.6, "instructions": [43.31, 43.31], "rules": 3, "applied": true}
 {"symbol": "__ve_envelope_search", "unit": "src/audio/vorbis/envelope.c", "error": "ve_envelope_search: definition not found in unit"}
 {"symbol": "_Techno_ResetFields", "unit": "src/legoapi/techno.c", "size": 174, "start": 99.96875, "best": 100.0, "exact": true, "seconds": 21.6, "instructions": [96.88, 100.0], "rules": 3, "applied": true}
+{"symbol": "?Attach@PC_EFFECT_SURFACE_PC@@QAEXPAUGRAPHICS_RENDER_TEXTURE_PC@@H_N@Z", "unit": "src/nu2api/effect_surface.cpp", "size": 170, "start": 99.96923, "best": 100.0, "exact": true, "seconds": 26.4, "instructions": [98.46, 100.0], "rules": 3, "applied": true}

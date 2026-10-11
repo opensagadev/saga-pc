@@ -61,7 +61,7 @@ void PC_EFFECT_SURFACE_PC::Attach(GRAPHICS_RENDER_TEXTURE_PC *new_texture, i32 n
     surface = NULL;
     level = (u16)new_level;
     field_10 = 0;
-    width = height = 0;
+    height = width = 0;
     if (new_texture == NULL)
         return;
     if (new_texture->surface != NULL) {
