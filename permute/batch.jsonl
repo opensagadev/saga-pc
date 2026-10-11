@@ -32,3 +32,4 @@
 {"symbol": "_NuTimeBarSetRender", "unit": "src/nu2api/nutimebar.c", "size": 2130, "start": 34.684128, "best": 35.630157, "exact": false, "seconds": 280.3, "instructions": [28.4, 28.6], "applied": true}
 {"symbol": "?Configure@ShaderBuilderGen@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z", "unit": "src/nu2api/shader_compiler.cpp", "size": 4642, "start": 70.71589, "best": 70.71589, "exact": false, "seconds": 213.9, "instructions": [63.45, 63.45]}
 {"symbol": "_AIMoveToDestination", "unit": "src/gameapi/aisys.c", "size": 4355, "start": 68.177246, "best": 71.558945, "exact": false, "seconds": 300.2, "instructions": [43.38, 48.64], "applied": true}
+{"symbol": "_ScanWallSplineTerrain", "unit": "src/nu2api/terrain_scan.cpp", "size": 1818, "start": 27.37013, "best": 28.550325, "exact": false, "seconds": 256.3, "instructions": [13.86, 17.53], "applied": true}

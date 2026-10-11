@@ -1017,7 +1017,7 @@ extern "C" void ScanWallSplineTerrain(i32 unused_first, i32 terrain_mask, i32 un
             scan_bounds.min_x = scan_query.position.x - NuTimeBarTop - reach;
             scan_bounds.max_x = scan_query.position.x + NuTimeBarTop + reach;
             scan_bounds.min_y = scan_query.position.y - NuTimeBarTop - vertical;
-            scan_bounds.max_y = scan_query.position.y + NuTimeBarTop + vertical;
+            scan_bounds.max_y = vertical + (scan_query.position.y + NuTimeBarTop);
             scan_bounds.min_z = scan_query.position.z - NuTimeBarTop - reach;
             scan_bounds.max_z = scan_query.position.z + NuTimeBarTop + reach;
             bounds_radius = reach;
@@ -1028,7 +1028,7 @@ extern "C" void ScanWallSplineTerrain(i32 unused_first, i32 terrain_mask, i32 un
                 scan_bounds.max_x = scan_query.position.x + TerrainScanMargin02Pc + radius;
             } else {
                 scan_bounds.min_x = scan_query.position.x - TerrainScanMargin02Pc - radius;
-                scan_bounds.max_x = scan_query.position.x + scan_query.movement.x + TerrainScanMargin02Pc + radius;
+                scan_bounds.max_x = radius + (scan_query.position.x + scan_query.movement.x + TerrainScanMargin02Pc);
             }
             if (scan_query.movement.y <= 0.0f) {
                 scan_bounds.min_y = scan_query.position.y + scan_query.movement.y - TerrainScanMargin02Pc - radius;
@@ -1037,7 +1037,7 @@ extern "C" void ScanWallSplineTerrain(i32 unused_first, i32 terrain_mask, i32 un
                 scan_bounds.min_y = scan_query.position.y - TerrainScanMargin02Pc - radius;
                 scan_bounds.max_y = scan_query.position.y + scan_query.movement.y + TerrainScanMargin02Pc + radius;
             }
-            if (scan_query.movement.z <= 0.0f) {
+            if (0.0f >= scan_query.movement.z) {
                 scan_bounds.min_z = scan_query.position.z + scan_query.movement.z - TerrainScanMargin02Pc - radius;
                 scan_bounds.max_z = scan_query.position.z + TerrainScanMargin02Pc + radius;
             } else {
@@ -1070,24 +1070,24 @@ extern "C" void ScanWallSplineTerrain(i32 unused_first, i32 terrain_mask, i32 un
             if (mask != 0 && (mask & wall_mask) == 0)
                 continue;
             for (i32 first = 0; first < node->point_count; first += 16) {
-                NUVEC *points = node->points + first;
+                
                 i32 end = node->point_count;
-                if (points[0].y != 2147483648.0f) {
-                    if (points[1].y < wall_bounds.min_x || points[0].y > wall_bounds.max_x ||
-                        points[3].y < wall_bounds.min_z || points[2].y > wall_bounds.max_z)
+                if ((node->points + first)[0].y != 2147483648.0f) {
+                    if ((node->points + first)[1].y < wall_bounds.min_x || (node->points + first)[0].y > wall_bounds.max_x ||
+                        (node->points + first)[3].y < wall_bounds.min_z || (node->points + first)[2].y > wall_bounds.max_z)
                         continue;
                     end = MIN(end, first + 16);
                 }
                 for (i32 i = first; i < end; ++i) {
                     NUVEC &a = node->points[i];
-                    NUVEC &b = node->points[i + 1];
-                    if ((a.x < wall_bounds.min_x || b.x > wall_bounds.max_x) &&
+                    NUVEC &b = node->points[1 + i];
+                    if ((wall_bounds.min_x > a.x || b.x > wall_bounds.max_x) &&
                         (b.x < wall_bounds.min_x || a.x > wall_bounds.max_x))
                         continue;
                     if ((a.z < wall_bounds.min_z || b.z > wall_bounds.max_z) &&
                         (b.z < wall_bounds.min_z || a.z > wall_bounds.max_z))
                         continue;
-                    if (WallSplCount < 64) {
+                    if (64 > WallSplCount) {
                         ((TERRAIN_WALL_POINT *)WallSplList)[WallSplCount].position = a;
                         ((TERRAIN_WALL_POINT *)WallSplList)[WallSplCount + 1].position = b;
                         for (i32 p = 0; p < 2; ++p) {
