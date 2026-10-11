@@ -39,7 +39,7 @@ main() {
 
     sync() {
         # A conflicting pull is skipped; the next round tries again.
-        if ! git pull -q --no-rebase --no-edit -X ours origin "$BRANCH" >/dev/null 2>&1; then
+        if ! { git fetch -q origin "$BRANCH" && git merge -q -X ours -m "Merge upstream changes" -m "[skip ci]" FETCH_HEAD; } >/dev/null 2>&1; then
             git merge --abort 2>/dev/null
             log "pull of $BRANCH conflicted; continuing without it"
         fi
