@@ -48,3 +48,9 @@
 {"symbol": "_ScanTerrain", "unit": "src/nu2api/terrain_scan.cpp", "size": 7479, "start": 27.209938, "best": 27.51701, "exact": false, "seconds": 535.2, "instructions": [20.2, 22.96], "rules": 2, "applied": true}
 {"symbol": "_GameObjectStuffAfterAnimation", "unit": "src/legoapi/gameobjects.c", "size": 3904, "start": 27.10863, "best": 27.10863, "exact": false, "seconds": 256.7, "instructions": [23.74, 23.74], "rules": 2}
 {"symbol": "_NewCast", "unit": "src/nu2api/nuterrain.c", "size": 3407, "start": 34.758812, "best": 36.94434, "exact": false, "seconds": 412.2, "instructions": [17.52, 24.04], "rules": 2, "applied": true}
+{"symbol": "?NewScanHandelSubsetPc@@YAPAFPAFPAUnuvec_s@@1MH@Z", "unit": "src/nu2api/terrain_query.cpp", "size": 3290, "start": 29.578457, "best": 29.578457, "exact": false, "seconds": 252.4, "instructions": [20.09, 20.09], "rules": 2}
+{"symbol": "?UpdateGeometry@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ", "unit": "src/nu2api/nudebug_pc.cpp", "size": 5091, "start": 50.97553, "best": 50.97553, "exact": false, "seconds": 136.5, "instructions": [35.83, 35.83], "rules": 3}
+{"symbol": "_DrawAlphaGrid", "unit": "src/legoapi/render.c", "size": 5964, "start": 37.10369, "best": 37.10369, "exact": false, "seconds": 200.7, "instructions": [26.09, 26.09], "rules": 3}
+{"symbol": "_FixUpLevels", "unit": "src/legoapi/level_fixup.cpp", "size": 6860, "start": 37.77964, "best": 37.77964, "exact": false, "seconds": 268.9, "instructions": [33.5, 33.5], "rules": 3}
+{"symbol": "_TerrainPlayer", "unit": "src/legoapi/terrain_player_pc.c", "size": 7994, "start": 58.194588, "best": 58.194588, "exact": false, "seconds": 320.1, "instructions": [62.37, 62.37], "rules": 3}
+{"symbol": "_UpdateGameObjects", "unit": "src/legoapi/gameobjects.c", "size": 6847, "start": 55.446335, "best": 55.965397, "exact": false, "seconds": 355.3, "instructions": [57.3, 57.5], "rules": 3, "applied": true}

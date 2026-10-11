@@ -2734,11 +2734,11 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             interval = 1;
             if (0x1001 != (object->flags_1fc_word & 0x1001))
                 continue;
-            if ((object->flags_ef4 & 8) != 0)
+            if (0 != (object->flags_ef4 & 8))
                 object->ai_elapsed_time = 0.0f;
             object->ai_elapsed_time += FRAMETIME;
             if (timebase_updates == 0 || (object->flags_1f8 & 0x400) == 0 || (object->portal_flags & 0x8000000) != 0 ||
-                (object->flags_ef4 & 0x20) != 0 || (CInfo[(i8)object->character_context].flags & 0x200) != 0 ||
+                (0x20 & object->flags_ef4) != 0 || 0 != (CInfo[(i8)object->character_context].flags & 0x200) ||
                 object->supporting_platform_id != -1 || (object->rider != NULL && object->character_context == 0x3b) ||
                 Technos_FindControllingTechno(object) != NULL ||
                 (object->active_trigger_set != NULL && (object->active_trigger_set->flags_low & 2) != 0) ||
@@ -2784,7 +2784,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         if ((object->flags_1fc_word & 0x1001) != 0x1001 || (object->flags_1f8 & 0x400) == 0)
             continue;
         object->flags_1fc_word = (object->flags_1fc_word & ~0x4000u) | ((object->character_context == 0) << 14);
-        object->vehicle_hit_timer -= FRAMETIME;
+        object->vehicle_hit_timer = object->vehicle_hit_timer - FRAMETIME;
         if (object->vehicle_hit_timer < -1.0f)
             SetFlicker(object, 0.0f);
         if (object->timer_d34 > 0.0f)
@@ -3100,7 +3100,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     } else if (player_tag_timer > 0.0f) {
         player_tag_timer -= FRAMETIME;
         if (player_tag_timer < 0.0f || player_tag_to == NULL || player_tag_from == NULL ||
-            (player_tag_to->flags_1fc_word & 0x1001) != 0x1001 || player_tag_to->dead != 0 ||
+            0x1001 != ((player_tag_to->flags_1fc_word & 0x1001)) || player_tag_to->dead != 0 ||
             (player_tag_to->tag_flags & 2) != 0 || (player_tag_from->flags_1fc_word & 0x1001) != 0x1001 ||
             player_tag_from->dead != 0 || (player_tag_from->tag_flags & 2) != 0) {
             player_tag_to = NULL;
