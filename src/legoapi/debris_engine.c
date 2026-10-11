@@ -231,11 +231,11 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
     if (extra == 0) {
         return;
     }
-    if (extra > 0) {
+    if (extra >= 1) {
         i32 *free_count = glass ? &freedebchkptrg : &freedebchkptr;
         i32 capacity = glass ? debrischunksglass : debrischunks;
         DEBRIS_PARTICLE_CHUNK_PC **chunks = glass ? freedebchunksglass : freedebchunks;
-        if (*free_count + extra >= capacity) {
+        if (capacity <= *free_count + extra) {
             return;
         }
         for (i = 0; i < extra; ++i) {
@@ -249,7 +249,7 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
             for (i = 0; i < render_count; ++i) {
                 if (ParticleChunkToRender[i].particle_chunk == NULL) {
                     render = &ParticleChunkToRender[i];
-                    render->particle_chunk = key->particle_chunks[0];
+                    render->particle_chunk = *key->particle_chunks;
                     render->effect = effect;
                     render->key = key;
                     render->render_priority = key->render_priority;
@@ -264,7 +264,7 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
         if (key->allocated_chunk_count == key->previous_allocated_chunk_count) {
             key->particle_count = key->previous_particle_count;
         } else {
-            key->particle_count += glass ? 12 : 32;
+            key->particle_count = key->particle_count + (glass ? 12 : 32);
         }
         *free_count += extra;
         LinkDmaParticalSets(key->particle_chunks, key->allocated_chunk_count);
@@ -274,7 +274,7 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
         return;
     }
     DebrisGetControlStackLock();
-    for (i = extra; i < 0; ++i) {
+    for (i = extra; 0 > i; ++i) {
         DEBRIS_CHUNK_CONTROL_PC *control = freechunkcontrols[freechunkcontrolsptr];
         DEBRIS_INFO_PC *current_effect;
         i32 panel_time;
@@ -318,7 +318,7 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
             }
         }
     }
-    for (i = extra; i < 0; ++i) {
+    for (i = extra; 0 > i; ++i) {
         key->particle_chunks[key->allocated_chunk_count + i] = NULL;
     }
     key->allocated_chunk_count = key->previous_allocated_chunk_count;

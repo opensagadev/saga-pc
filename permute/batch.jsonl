@@ -23,3 +23,4 @@
 {"symbol": "_GameObjectStuffAfterAnimation", "unit": "src/legoapi/gameobjects.c", "size": 3904, "start": 27.10863, "best": 27.10863, "exact": false, "seconds": 224.0, "instructions": [23.74, 23.74]}
 {"symbol": "?NewScanHandelSubsetPc@@YAPAFPAFPAUnuvec_s@@1MH@Z", "unit": "src/nu2api/terrain_query.cpp", "size": 3290, "start": 27.961832, "best": 29.578457, "exact": false, "seconds": 671.4, "instructions": [20.68, 20.09], "applied": true}
 {"symbol": "_CutScene_DrawCharacter", "unit": "src/legoapi/cutscene_runtime.cpp", "size": 3767, "start": 56.142082, "best": 60.029865, "exact": false, "seconds": 424.2, "instructions": [44.37, 44.74], "applied": true}
+{"symbol": "_DebReAlloc2", "unit": "src/legoapi/debris_engine.c", "size": 2337, "start": 36.482307, "best": 38.21229, "exact": false, "seconds": 274.4, "instructions": [25.76, 25.9], "applied": true}
