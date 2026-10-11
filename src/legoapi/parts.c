@@ -1062,15 +1062,15 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
                                                u16 render_priority, i8 timed_flags) {
     DEBRIS_INFO_PC *effect;
     NUVEC clipped_position;
-    NUVEC extent;
+
     f32 thinning;
     f32 emission_interval;
     f32 rate;
     f32 now;
     f32 end_time;
     f32 elapsed_intervals;
-    f32 emission_epoch;
     f32 emission_time;
+    f32 emission_epoch;
     f32 next_emission_time;
     i32 panel_time;
     i32 emission_count;
@@ -1105,7 +1105,8 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     effect = debtab[effect_index];
     if (effect == NULL || effect->disabled != 0 || count < 1)
         return;
-    if (effect->time_group != 4) {
+    if (4 != effect->time_group) {
+        NUVEC extent;
         clipped_position = *position;
         extent.x = 1.0f;
         extent.y = 1.0f;
@@ -1113,9 +1114,9 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
         if (NuCameraClipTestExtentsAxisAligned(&clipped_position, &extent, effect->clip_extent) == 0)
             return;
     }
-    thinning = forced_debris_thinning != 0
+    thinning = 0 != forced_debris_thinning
                    ? debris_thinning_level
-                   : (debris_thinning_level > effect->thinning ? effect->thinning : debris_thinning_level);
+                   : (effect->thinning < debris_thinning_level ? effect->thinning : debris_thinning_level);
     rate = DebrisDivide((f32)count, thinning);
     emission_interval = DebrisDivide(1.0f, rate);
     if (emitter_orientation == NULL)
@@ -1125,8 +1126,7 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     panel_time = effect->time_group == 4;
     now = panel_time ? panelglobaltime : globaltime;
     end_time = now + duration;
-    elapsed_intervals = (f32)(i32)DebrisDivide(now, emission_interval);
-    emission_epoch = elapsed_intervals * emission_interval;
+    emission_epoch = ((f32)(i32)DebrisDivide(now, emission_interval)) * emission_interval;
     emission_time = emission_interval + emission_epoch;
     if (emission_time > end_time)
         return;
@@ -1163,8 +1163,8 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
             key->effect_orientation.m31 = 0.0f;
             key->effect_orientation.m32 = 0.0f;
             DebrisEmitterPos(effect->particle_keys[i], 0.0f, 0.0f, 0.0f);
-            key->timed_flags = timed_flags;
             key->render_priority = render_priority;
+            key->timed_flags = timed_flags;
             particle_key_slot = i;
             break;
         }
@@ -1174,7 +1174,7 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     required_particles = key->particle_count + particle_count;
     allocated_chunks = key->allocated_chunk_count;
     if (allocated_chunks * particles_per_chunk < required_particles) {
-        if (allocated_chunks < 0) {
+        if (allocated_chunks <= -1) {
             key->allocated_chunk_count = 0;
             allocated_chunks = 0;
         }
@@ -1200,7 +1200,7 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
             total_chunk_count = debrischunks + debrischunksglass;
             render_chunk = NULL;
             for (j = 0; j < total_chunk_count; ++j) {
-                if (ParticleChunkToRender[j].particle_chunk == NULL) {
+                if (NULL == ParticleChunkToRender[j].particle_chunk) {
                     render_chunk = &ParticleChunkToRender[j];
                     break;
                 }

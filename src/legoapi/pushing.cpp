@@ -166,6 +166,7 @@ typedef struct PUSH_OBSTACLE_WORLD_PC {
 } PUSH_OBSTACLE_WORLD_PC;
 STATIC_ASSERT(offsetof(PUSH_OBSTACLE_WORLD_PC, obstacle_sys) == 0x46a4);
 extern "C" void __cdecl PushCode(GAMEOBJECT *object, i32 allow_push) {
+    f32 distance;
     if (VehicleArea != 0 || (i8)object->field_280 == -1) {
         return;
     }
@@ -195,7 +196,7 @@ extern "C" void __cdecl PushCode(GAMEOBJECT *object, i32 allow_push) {
         goto check_cinfo_flags;
     }
 
-    wall_angle += 0x8000;
+    wall_angle = wall_angle + 0x8000;
     // The lean timer only arms on surfaces flagged pushable (0x20000). Plain
     // walls never start it, so walking into them stays walk-in-place.
     if (static_cast<u8>((i8)object->jump_animation_state) <= 31 &&
@@ -250,7 +251,7 @@ check_cinfo_flags: {
     if ((CInfo[context].flags & 0x2000) == 0) {
         goto check_jump_context;
     }
-    if (LEGOCONTEXT_WALLJUMPWAIT != -1 && LEGOCONTEXT_WALLJUMPWAIT == context) {
+    if (LEGOCONTEXT_WALLJUMPWAIT != -1 && context == LEGOCONTEXT_WALLJUMPWAIT) {
         goto walljumpwait_pressed;
     }
     if (set_facing_angle != 0) {
@@ -430,7 +431,7 @@ interaction_timer_expired: {
         context = object->character_context;
         goto check_current_contexts;
     }
-    if (LEGOACT_LUNGE == -1) {
+    if (-1 == LEGOACT_LUNGE) {
         goto start_end_of_jump;
     }
     {
@@ -537,7 +538,9 @@ obstacle_rumble_a: {
 }
 
 obstacle_rumble_b: {
-    { NewRumble(object->pad->bound_pad, qrand() * (f64)(1.0f / 65535.0f) * (f64)0.3f, 0); }
+    {
+        NewRumble(object->pad->bound_pad, qrand() * (f64)(1.0f / 65535.0f) * (f64)0.3f, 0);
+    }
     goto revalidate_context;
 }
 
@@ -595,10 +598,10 @@ pushspinner_maintain: {
     if ((pad->buttons_pressed & GAMEPAD_JUMP) == 0) {
         PUSH_SPINNER_PC *spinner = static_cast<PUSH_SPINNER_PC *>(object->grapple);
         if (GizSpinner_Push(spinner, (i8)object->context_variant) == 0) {
-            if (qrand() <= 0x7ff) {
-                GizSpinner_PushFail(object, spinner);
-            } else {
+            if (qrand() > 0x7ff) {
                 spinner->state_flags &= ~0x300u;
+            } else {
+                GizSpinner_PushFail(object, spinner);
             }
             goto revalidate_context;
         }
@@ -643,8 +646,8 @@ pushblock_maintain: {
             goto clear_context;
         }
     }
-    object->character_context = ZipUpWallShuffleContextPc;
     object->field_7aa = LEGOACT_WALLSHUFFLE_IDLE;
+    object->character_context = ZipUpWallShuffleContextPc;
     goto revalidate_context;
 }
 
@@ -761,7 +764,7 @@ obstacle_find_check: {
         context = find_context;
     }
     {
-        f32 distance;
+
         search_center = &object->collision_position;
         GIZOBSTACLE *obstacle = GizObstacle_FindNearest(((PUSH_OBSTACLE_WORLD_PC *)WORLD)->obstacle_sys, search_center,
                                                         object, &distance, 7);
@@ -809,7 +812,7 @@ wallshuffle_entry_gated: {
             goto check_current_contexts;
         }
     }
-    if (!(object->horizontal_velocity_magnitude > (gcd->run_speed + gcd->walk_speed) * 0.5f)) {
+    if (!((gcd->walk_speed + gcd->run_speed) * 0.5f < object->horizontal_velocity_magnitude)) {
         goto check_current_contexts;
     }
     if (object->field_281 != 0) {
@@ -821,11 +824,11 @@ wallshuffle_entry_gated: {
     if (LEGOCONTEXT_JUMP == -1) {
         goto check_current_contexts;
     }
-    if (LEGOCONTEXT_JUMP != context) {
+    if (context != LEGOCONTEXT_JUMP) {
         goto check_current_contexts;
     }
     if (object->action_movement_state == 0) {
-        if (object->jump_sequence > 1) {
+        if (1 < object->jump_sequence) {
             goto check_current_contexts;
         }
     } else if (object->action_movement_state != 9) {

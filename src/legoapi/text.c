@@ -607,13 +607,13 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
     VUFNT *font;
     f32 draw_x_scale, draw_y_scale, width, height, baseline_y, draw_y;
     f32 button_scale, button_width, normal_width, ratio, scaled_width;
-    f64 half_height;
     u8 decoded[512], buttons[512], normal[512], fragment[1024];
+    f64 half_height;
     u16 encoded[512], button_encoded[512], normal_encoded[512];
     i32 button_count, normal_count, count, button_font, is_button, next_button, preset, i;
     u32 opacity, base_colour, colour;
-    u8 *output;
     i32 *selected_count;
+    u8 *output;
 
     text3d_width = text3d_height = 0.0f;
     font = SmartTextFont != NULL ? SmartTextFont : QFont2D;
@@ -637,12 +637,12 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
     text3d_height = height;
     half_height = 0.5 * ((f64)height);
     baseline_y = y + NuQFntBaseline(font);
-    draw_y = (f32)((f64)baseline_y - half_height);
     button_scale = draw_x_scale;
+    draw_y = (f32)((f64)baseline_y - half_height);
     if (draw_y_scale != draw_x_scale) {
         if (smarttext_fwn == 1)
             button_scale = draw_x_scale;
-        else if (smarttext_fwn == 2)
+        else if (2 == smarttext_fwn)
             button_scale = draw_y_scale;
         else
             button_scale = 0.5f * (draw_x_scale + draw_y_scale);
@@ -651,8 +651,8 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
         button_count = 0;
         for (i = 0; decoded[i] != 0;) {
             is_button = decoded[i] == 0xd4 && decoded[i + 1] >= 0xb1 && decoded[i + 1] <= 0xbf;
-            output = is_button ? buttons : normal;
             selected_count = is_button ? &button_count : &normal_count;
+            output = is_button ? buttons : normal;
             output[(*selected_count)++] = decoded[i++];
             while ((decoded[i] & 0xc0) == 0x80)
                 output[(*selected_count)++] = decoded[i++];
@@ -713,7 +713,7 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
                                   ((u32)(text_preset_b[preset]) << 16);
                 }
             }
-            i += 2;
+            i = i + 2;
             if (count != 0 && colour != current_rgba) {
                 fragment[count] = 0;
                 x += TextPrintSubstring(fragment, x, draw_y, z, button_font ? button_scale : draw_x_scale,
@@ -723,7 +723,7 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
             current_rgba = colour;
             continue;
         }
-        next_button = decoded[i] == 0xd4 && decoded[i + 1] >= 0xb1 && decoded[i + 1] <= 0xbf;
+        next_button = decoded[i] == 0xd4 && decoded[1 + i] >= 0xb1 && decoded[i + 1] <= 0xbf;
         if (count != 0 && next_button != button_font) {
             fragment[count] = 0;
             x += TextPrintSubstring(fragment, x, draw_y, z, button_font ? button_scale : draw_x_scale,

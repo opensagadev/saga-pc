@@ -1176,17 +1176,17 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                     NuVecMtxRotate(&velocity, &velocity, &matrix);
                     {
                         ADDPART_PC part = Default_ADDPART;
-                        part.matrix = &matrix;
                         part.velocity = &velocity;
+                        part.matrix = &matrix;
                         part.part_id = 90;
-                        part.gravity = -10.0f;
                         part.flags = 0x10;
+                        part.gravity = -10.0f;
                         part.field_14 = 0.05f;
                         part.field_18 = 0.05f;
                         part.special = &WORLD->level_objects[90].special;
+                        part.stop_fn = PartStop_Flickerer;
                         part.update_fn = PartUpdate_Basketball;
                         part.impact_fn = PartImpact_Basketball;
-                        part.stop_fn = PartStop_Flickerer;
                         part.draw_fn = PartDraw_Flickerer;
                         part.time_step = FRAMETIME;
                         AddPart(&part);
@@ -1232,11 +1232,11 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
             NUMTX matrix;
             NUVEC velocity;
             i32 joint = drawn ? data->rocket_joint : -1;
-            if (joint != -1 && model->points_of_interest[joint] != NULL)
+            if (-1 != joint && model->points_of_interest[joint] != NULL)
                 matrix = object->locator_matrices[joint];
             else {
                 NuMtxSetRotationX(&matrix, 0x1555);
-                NuMtxRotateY(&matrix, (u16)(object->field_0x276 + 0x8000));
+                NuMtxRotateY(&matrix, (u16)(0x8000 + object->field_0x276));
                 matrix.m30 = object->collision_position.x;
                 matrix.m31 = object->collision_position.y;
                 matrix.m32 = object->collision_position.z;
@@ -1255,15 +1255,15 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                 part.velocity = &velocity;
                 part.field_14 = 0.1f;
                 part.field_18 = 0.1f;
-                part.special = &WORLD->level_objects[232].special;
                 part.part_id = 232;
+                part.special = &WORLD->level_objects[232].special;
                 part.flags = player ? 0xc11b : 0xc31b;
                 part.owner = object;
                 part.hostility_group = object->hostility_group;
-                part.kill_fn = BobaRocket_Kill;
                 part.move_fn = BobaRocket_Move;
-                part.deflect_fn = BobaRocket_Deflect;
+                part.kill_fn = BobaRocket_Kill;
                 part.collision_fn = PartCollide_3D;
+                part.deflect_fn = BobaRocket_Deflect;
                 part.time_step = FRAMETIME;
                 part.gravity = 0.0f;
                 part.field_a4 = player ? (f32)(4.0 + 2.0 * ((f64)qrand() * (f64)(1.0f / 65535.0f))) : 10.0f;
@@ -1354,18 +1354,18 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     }
     if ((object->character_data->model_flags & 0x2000) != 0) {
         object->velocity.x = (f32)((f64)object->velocity.x * 0.5);
-        object->velocity.y = (f32)((f64)object->velocity.y * 0.5);
+        object->velocity.y = (f32)(0.5 * ((f64)object->velocity.y));
         object->velocity.z = (f32)((f64)object->velocity.z * 0.5);
     } else {
         object->velocity.x = 0.0f;
         object->velocity.z = 0.0f;
     }
-    object->current_hp = 0;
     object->dead = (u8)(reason == 3 ? 2 : reason);
+    object->current_hp = 0;
     if (object->character_context == 7 || object->field_e33 == 1)
         object->flags_e20 |= 0x10000;
     else if (object->character_context == 6 || object->field_e33 == 2)
-        object->flags_e20 &= ~0x10000;
+        object->flags_e20 = object->flags_e20 & (~0x10000);
     if (object->helmet != 0)
         STUBBED_NAMED("KillGameObject: LoseHelmet PC433aa0");
     rider = object->rider;
@@ -1399,7 +1399,7 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     object->death_timer = 0.0f;
     if (object->dead != 2)
         object->dead = 1;
-    if (object->dead == 1)
+    if (1 == object->dead)
         object->start_position = object->position;
     object->death_delay = object->dead == 2 ? 0.0f : 0.5f;
     if (object->death_delay <= 0.0f)
@@ -1450,7 +1450,7 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     object->ai_packet.target_metric_f0 = 1000000000.0f;
     object->ai_awareness_mask = 0;
     object->ai_seen_mask = 0;
-    object->field_eb0 = object->field_eb4 = 0;
+    object->field_eb4 = object->field_eb0 = 0;
     object->opponent = NULL;
     object->ai_packet.opponent = NULL;
     object->field_ec0 = 0;
@@ -1489,12 +1489,12 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
                 Part[i].owner = NULL;
         STUBBED_NAMED("KillGameObject: explosion owner cleanup (eight records38) PC43700c..43711e");
     }
-    if (DOGFIGHTA_LDATA != NULL && WorldInfo_CurrentlyActive()->current_level == DOGFIGHTA_LDATA && BonusWinner == -1 &&
-        (object->flags_1f8 & 0x40000) == 0)
+    if (DOGFIGHTA_LDATA != NULL && DOGFIGHTA_LDATA == WorldInfo_CurrentlyActive()->current_level && BonusWinner == -1 &&
+        (0x40000 & object->flags_1f8) == 0)
         STUBBED_NAMED("KillGameObject: ResetLevel EP3_DOGFIGHT_DIE PC57a620");
     if (0 != terminal_kill && object->field_280 == 0xff) {
-        i32 remove = requested_reason == 5;
         AICREATURE_PC *creature = NULL;
+        i32 remove = requested_reason == 5;
         i32 persistent = (object->portal_flags & 0x100000) != 0;
         i32 respawn = 0;
         if (!remove) {
@@ -2734,11 +2734,11 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             interval = 1;
             if (0x1001 != (object->flags_1fc_word & 0x1001))
                 continue;
-            if ((object->flags_ef4 & 8) != 0)
+            if (0 != (object->flags_ef4 & 8))
                 object->ai_elapsed_time = 0.0f;
             object->ai_elapsed_time += FRAMETIME;
             if (timebase_updates == 0 || (object->flags_1f8 & 0x400) == 0 || (object->portal_flags & 0x8000000) != 0 ||
-                (object->flags_ef4 & 0x20) != 0 || (CInfo[(i8)object->character_context].flags & 0x200) != 0 ||
+                (0x20 & object->flags_ef4) != 0 || 0 != (CInfo[(i8)object->character_context].flags & 0x200) ||
                 object->supporting_platform_id != -1 || (object->rider != NULL && object->character_context == 0x3b) ||
                 Technos_FindControllingTechno(object) != NULL ||
                 (object->active_trigger_set != NULL && (object->active_trigger_set->flags_low & 2) != 0) ||
@@ -2784,7 +2784,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         if ((object->flags_1fc_word & 0x1001) != 0x1001 || (object->flags_1f8 & 0x400) == 0)
             continue;
         object->flags_1fc_word = (object->flags_1fc_word & ~0x4000u) | ((object->character_context == 0) << 14);
-        object->vehicle_hit_timer -= FRAMETIME;
+        object->vehicle_hit_timer = object->vehicle_hit_timer - FRAMETIME;
         if (object->vehicle_hit_timer < -1.0f)
             SetFlicker(object, 0.0f);
         if (object->timer_d34 > 0.0f)
@@ -3100,7 +3100,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     } else if (player_tag_timer > 0.0f) {
         player_tag_timer -= FRAMETIME;
         if (player_tag_timer < 0.0f || player_tag_to == NULL || player_tag_from == NULL ||
-            (player_tag_to->flags_1fc_word & 0x1001) != 0x1001 || player_tag_to->dead != 0 ||
+            0x1001 != ((player_tag_to->flags_1fc_word & 0x1001)) || player_tag_to->dead != 0 ||
             (player_tag_to->tag_flags & 2) != 0 || (player_tag_from->flags_1fc_word & 0x1001) != 0x1001 ||
             player_tag_from->dead != 0 || (player_tag_from->tag_flags & 2) != 0) {
             player_tag_to = NULL;
