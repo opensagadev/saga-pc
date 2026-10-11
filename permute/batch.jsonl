@@ -42,3 +42,5 @@
 {"symbol": "_UpdateGameObjects", "unit": "src/legoapi/gameobjects.c", "size": 6847, "start": 55.446335, "best": 55.446335, "exact": false, "seconds": 290.4, "instructions": [57.3, 57.3], "rules": 2}
 {"symbol": "_Grapple_MoveCode", "unit": "src/legoapi/grapples.cpp", "size": 3392, "start": 58.895973, "best": 59.191277, "exact": false, "seconds": 373.9, "instructions": [61.39, 61.23], "rules": 2, "applied": true}
 {"symbol": "_NewScan", "unit": "src/nu2api/terrain_query.cpp", "size": 4361, "start": 36.20644, "best": 36.90133, "exact": false, "seconds": 417.0, "instructions": [15.32, 15.24], "rules": 2, "applied": true}
+{"symbol": "?UpdateGeometry@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ", "unit": "src/nu2api/nudebug_pc.cpp", "size": 5091, "start": 50.97553, "best": 50.97553, "exact": false, "seconds": 151.8, "instructions": [35.83, 35.83], "rules": 2}
+{"symbol": "_JumpCode", "unit": "src/legoapi/move.c", "size": 6473, "start": 40.78447, "best": 46.32921, "exact": false, "seconds": 458.4, "instructions": [48.42, 47.85], "rules": 2, "applied": true}
