@@ -1590,7 +1590,7 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
         bounds.min_y = static_cast<f64>(position->y) + movement->y - TerrainScanMargin02Pc - radius;
         bounds.max_y = static_cast<f64>(position->y) + TerrainScanMargin02Pc + radius;
     }
-    if (movement->z > 0.0f) {
+    if (0.0f < movement->z) {
         bounds.min_z = static_cast<f64>(position->z) - TerrainScanMargin02Pc - radius;
         bounds.max_z = static_cast<f64>(position->z) + movement->z + TerrainScanMargin02Pc + radius;
     } else {
@@ -1639,7 +1639,7 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
                               group.origin.z;
             } else {
                 local.max_z = bounds.max_z - group.origin.z;
-                local.min_z = (static_cast<f64>(matrix->m32) - platform->previous_matrix.m32) * 1.5 + bounds.min_z -
+                local.min_z = bounds.min_z + ((static_cast<f64>(matrix->m32) - platform->previous_matrix.m32) * 1.5) -
                               group.origin.z;
             }
         } else {
@@ -1654,13 +1654,14 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
             local.min_z = bounds.min_z - group.origin.z;
             local.max_z = bounds.max_z - group.origin.z;
         }
-        const bool rotating = matrix != NULL && (platform->flags & TERRAIN_PLATFORM_FLAG_ROTATING) != 0;
+        const bool rotating = matrix != NULL && (TERRAIN_PLATFORM_FLAG_ROTATING & platform->flags) != 0;
         if (rotating) {
-            const f64 x = (static_cast<f64>(bounds.min_x) + bounds.max_x) * 0.5 - group.origin.x;
-            const f64 y = ((static_cast<f64>(bounds.min_y) + bounds.max_y) * 0.5 - group.origin.y) *
-                          static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale;
+            
+            
             const f64 z = (static_cast<f64>(bounds.min_z) + bounds.max_z) * 0.5 - group.origin.z;
-            const f32 distance_squared = x * x + y * y + z * z;
+            const f32 distance_squared = ((const f64)((static_cast<f64>(bounds.min_x) + bounds.max_x) * 0.5 - group.origin.x)) * ((const f64)((static_cast<f64>(bounds.min_x) + bounds.max_x) * 0.5 - group.origin.x)) + ((const f64)(((static_cast<f64>(bounds.min_y) + bounds.max_y) * 0.5 - group.origin.y) *
+                          static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale)) * ((const f64)(((static_cast<f64>(bounds.min_y) + bounds.max_y) * 0.5 - group.origin.y) *
+                          static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale)) + z * z;
             const f64 reach = static_cast<f64>(scan_radius_squared) + group.radius;
             if (!(reach * reach > distance_squared))
                 continue;
@@ -1682,7 +1683,7 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
     while (static_cast<i32>(reinterpret_cast<usize>(source->first)) > 0) {
         TERRAIN_WALL_POINT *wall = source->first;
         if (TERRAIN_HANDLE_WALL_OVERLAP(bounds, wall) &&
-            (wall->material[1] == 0 || (wall->material[1] & terrain_mask) != 0)) {
+            (0 == wall->material[1] || (wall->material[1] & terrain_mask) != 0)) {
             walls->first = source->first;
             walls->second = source->first;
             ++walls;

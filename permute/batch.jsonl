@@ -20,3 +20,5 @@
 {"symbol": "_PushCode", "unit": "src/legoapi/pushing.cpp", "size": 3127, "start": 34.981884, "best": 36.350243, "exact": false, "seconds": 472.4, "instructions": [30.03, 31.72], "applied": true}
 {"symbol": "_ZipUp_MoveCode", "unit": "src/legoapi/zipup.c", "size": 3774, "start": 48.30388, "best": 59.559963, "exact": false, "seconds": 357.9, "instructions": [49.86, 49.5], "applied": true}
 {"symbol": "_AddVariableShotDebrisEffectTimed5", "unit": "src/legoapi/parts.c", "size": 2846, "start": 38.420227, "best": 39.913105, "exact": false, "seconds": 309.6, "instructions": [43.6, 42.29], "applied": true}
+{"symbol": "_GameObjectStuffAfterAnimation", "unit": "src/legoapi/gameobjects.c", "size": 3904, "start": 27.10863, "best": 27.10863, "exact": false, "seconds": 224.0, "instructions": [23.74, 23.74]}
+{"symbol": "?NewScanHandelSubsetPc@@YAPAFPAFPAUnuvec_s@@1MH@Z", "unit": "src/nu2api/terrain_query.cpp", "size": 3290, "start": 27.961832, "best": 29.578457, "exact": false, "seconds": 671.4, "instructions": [20.68, 20.09], "applied": true}
