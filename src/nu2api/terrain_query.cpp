@@ -545,10 +545,10 @@ extern "C" {
         i32 cache_index = 0;
         i32 oldest_age = 0x7fffffff;
         bool cache_hit = false;
-        for (i32 i = 0; i < 16; ++i) {
+        for (i32 i = 0; 16 > i; ++i) {
             TERRAIN_INDEX_LEVEL_PC &candidate = ((TERRAIN_SET_PC *)CurrentTerrain)->index_levels[i];
             const i32 age = candidate.cache_age;
-            if (age > 0) {
+            if (age >= 1) {
 
                 const f64 dz = ((f64)position->z + 1.0f) - candidate.center_z;
                 if (((const f64)(((f64)position->x + 1.0f) - candidate.center_x)) > 0.0f &&
@@ -600,7 +600,7 @@ extern "C" {
                     if (group.scene_index < 0)
                         TerrainSkinAllocate(&group);
                     TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group.data);
-                    while (batch->marker > -1) {
+                    while (batch->marker >= 0) {
                         TERRAIN_SHAPE *shape = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
                         const i32 count = batch->shape_count;
                         if (local_max_x >= batch->min_x && batch->max_x > local_min_x && local_max_z >= batch->min_z &&
@@ -650,8 +650,8 @@ extern "C" {
                 if (count <= 0) {
                     break;
                 }
-                const i16 group_index = reinterpret_cast<i16 *>(entry)[1];
                 TERRAIN_SHAPE **shapes = reinterpret_cast<TERRAIN_SHAPE **>(entry + sizeof(TERRAIN_SHAPE *));
+                const i16 group_index = reinterpret_cast<i16 *>(entry)[1];
                 entry = reinterpret_cast<u8 *>(shapes + count);
                 TERRAIN_GROUP_PC &group = ((TERRAIN_SET_PC *)CurrentTerrain)->groups[group_index];
                 if (!SHADOW_BOUNDS_OVERLAP(min_x, min_z, max_x, max_z, group.bounds_min, group.bounds_max) ||
@@ -661,8 +661,8 @@ extern "C" {
 
                 const f32 local_min_x = min_x - group.origin.x;
                 const f32 local_max_x = max_x - group.origin.x;
-                const f32 local_min_z = min_z - group.origin.z;
                 const f32 local_max_z = max_z - group.origin.z;
+                const f32 local_min_z = min_z - group.origin.z;
                 for (i32 i = 0; i < count; ++i) {
                     TERRAIN_SHAPE *shape = shapes[i];
                     if (local_max_x < shape->min_x || shape->max_x <= local_min_x || local_max_z < shape->min_z ||
@@ -690,9 +690,8 @@ extern "C" {
             // This scan uses the complete platform cell, not NewScanRot's active cache.
             const TERRAIN_CELL_PC &cell = ((TERRAIN_SET_PC *)CurrentTerrain)->cells[TERRAIN_PLATFORM_CELL];
             const i16 *platform_groups = ((TERRAIN_SET_PC *)CurrentTerrain)->group_indices + cell.first_group;
-            const i32 platform_count = static_cast<i16>(cell.group_count);
 
-            for (i32 platform_index = 0; platform_index < platform_count; ++platform_index) {
+            for (i32 platform_index = 0; platform_index < (static_cast<i16>(cell.group_count)); ++platform_index) {
                 const i32 group_index = platform_groups[platform_index];
                 TERRAIN_GROUP_PC &group = ((TERRAIN_SET_PC *)CurrentTerrain)->groups[group_index];
                 TERRAIN_PLATFORM_PC &platform = ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[group.scene_index];
@@ -713,8 +712,8 @@ extern "C" {
                         local_max_x = (matrix->m30 - platform.previous_matrix.m30) * 1.5f + max_x - group.origin.x;
                     else
                         local_min_x = (matrix->m30 - platform.previous_matrix.m30) * 1.5f + min_x - group.origin.x;
-                    if (matrix->m32 > platform.previous_matrix.m32)
-                        local_max_z = (matrix->m32 - platform.previous_matrix.m32) * 1.5f + max_z - group.origin.z;
+                    if (platform.previous_matrix.m32 < matrix->m32)
+                        local_max_z = (((matrix->m32 - platform.previous_matrix.m32) * 1.5f)) + max_z - group.origin.z;
                     else
                         local_min_z = (matrix->m32 - platform.previous_matrix.m32) * 1.5f + min_z - group.origin.z;
                 }
@@ -732,7 +731,7 @@ extern "C" {
                         for (i32 shape_index = 0; shape_index < batch->shape_count; ++shape_index) {
                             TERRAIN_SHAPE *shape = &shapes[shape_index];
                             if (local_max_x < shape->min_x || shape->max_x <= local_min_x ||
-                                local_max_z < shape->min_z || shape->max_z <= local_min_z) {
+                                local_max_z < shape->min_z || local_min_z >= shape->max_z) {
                                 continue;
                             }
                             if (writer.limit <= reinterpret_cast<u8 *>(writer.cursor)) {

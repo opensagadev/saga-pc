@@ -116,6 +116,7 @@ static i32 TerrainKillPlayer(GAMEOBJECT *object, i32 surface, NUVEC *normal) {
 }
 
 void __cdecl TerrainPlayer(GAMEOBJECT *object) {
+    NUVEC forward;
     GAMEPAD_PC *entry_pad;
     u8 entry_underwater;
     u8 entry_intersects_water;
@@ -373,8 +374,8 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 object->contact_material_word = 0;
 
                 if (object->use_model_origin != 0 && api->field_281 != 0 &&
-                    (movement.x != 0.0f || movement.z != 0.0f) &&
-                    !(WORLD->current_level == ENDORBATTLEC_LDATA && object->id == GameObjectRotationAtstId)) {
+                    (0.0f != movement.x || movement.z != 0.0f) &&
+                    !(ENDORBATTLEC_LDATA == WORLD->current_level && object->id == GameObjectRotationAtstId)) {
                     i32 deflection_mode;
 
                     deflection_mode = 0;
@@ -407,7 +408,9 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                     PLAYERCHARACTERCONFIG_PC *character;
 
                     character = api->character_data->game_character;
-                    if (object->id == id_SPEEDERBIKE) {
+                    if (object->id != id_SPEEDERBIKE) {
+                        movement_scale = TerrainPlayerOtherMovementScalePc / character->run_speed;
+                    } else {
                         if (object->ai_packet.goal_speed_mode == 1) {
                             movement_scale = TerrainPlayerBikeMovementScalePc / character->walk_speed;
                         } else if (object->ai_packet.goal_speed_mode == 2) {
@@ -415,8 +418,6 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                         } else {
                             movement_scale = TerrainPlayerBikeMovementScalePc / character->run_speed;
                         }
-                    } else {
-                        movement_scale = TerrainPlayerOtherMovementScalePc / character->run_speed;
                     }
                     movement.x *= movement_scale;
                     movement.z *= movement_scale;
@@ -455,7 +456,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                         (api->character_data->game_character->flags_090 & 0x8040) != 0) {
                         i32 i;
 
-                        for (i = 0; i < platforms->count; ++i) {
+                        for (i = 0; platforms->count > i; ++i) {
                             GAMEOBJECT *platform_object;
 
                             platform_object = platforms->entries[i].object;
@@ -505,7 +506,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                     current = NULL;
                     TerrainPlatGetMtx(api->supporting_platform_id, &previous, &current);
                     if (previous != NULL && current != NULL) {
-                        NUVEC forward;
+
                         NUVEC previous_forward, current_forward;
                         NUANG previous_heading;
                         NUANG current_heading;
@@ -531,7 +532,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                     i32 wall_impact;
 
                     wall_impact = 0;
-                    if (object->contact_count != 0 && (api->flags_1fc_word & 0x84) == 0 &&
+                    if (object->contact_count != 0 && 0 == (api->flags_1fc_word & 0x84) &&
                         object->character_context != 0 && object->character_context != 0x43 &&
                         object->character_context != 0x45 && (object->flags_ef4 & 0x10000) == 0) {
                         i32 i;
@@ -588,7 +589,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 if (api->supporting_platform_id == -1 && api->field_281 != 0 && object->terrain_platform_id != -1) {
                     api->supporting_platform_id = object->terrain_platform_id;
                 }
-                if ((api->character_data->game_character->flags_090 & 0x8000) == 0 &&
+                if ((0x8000 & api->character_data->game_character->flags_090) == 0 &&
                     object->reflection_height == 2000000.0f && object->terrain_platform_id != -1) {
                     f32 reflection_height;
 
@@ -609,10 +610,10 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
             }
         }
 
-        left_platform = api->field_281 == 0 && entry_platform != -1 && api->supporting_platform_id == -1 &&
-                        object->terrain_platform_id == entry_platform;
         landed_platform = api->field_281 != 0 && entry_platform == -1 && api->supporting_platform_id != -1 &&
                           api->supporting_platform_id == object->terrain_platform_id && entry_vertical_velocity < 0.0f;
+        left_platform = api->field_281 == 0 && entry_platform != -1 && api->supporting_platform_id == -1 &&
+                        object->terrain_platform_id == entry_platform;
         if (left_platform || landed_platform) {
             i32 platform_id;
             TERRAIN_PLAYER_GRABBER_PC *grabber;
@@ -760,7 +761,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                     exempt_context = !((api->flags_1fc_word & 0x80) != 0) &&
                                      (object->character_context == 0x46 || object->character_context == 0x47);
                     rescue_below =
-                        ((layer_flags & 1) != 0 || tractor_swamp) && api->water_height > api->position.y &&
+                        ((layer_flags & 1) != 0 || tractor_swamp) && api->position.y < api->water_height &&
                         !(VehicleArea != 0 && BonusArea != 0 && api->character_data->game_character->field_028 > 0.0f);
                     rescue_above = (layer_flags & 0x20) != 0 && api->collision_max.y > api->water_height;
                     if ((rescue_below || rescue_above) && !exempt_context) {
@@ -892,7 +893,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
 
         if ((object->portal_flags & 0x40000) == 0 && ((TERRAIN_PLAYER_SET_PC *)(CurrentTerrain)) != NULL &&
             api->dead == 0 && (WORLD->current_level->flags & 0xe0) == 0 &&
-            ((f32)(((TERRAIN_PLAYER_SET_PC *)(CurrentTerrain))->minimum_height)) - 5.0f > api->position.y) {
+            (((((TERRAIN_PLAYER_SET_PC *)(CurrentTerrain))->minimum_height))) - 5.0f > api->position.y) {
             if (api->model_draw_result != 0) {
                 InstantKillParts(object, 0, 0.0f);
             }
