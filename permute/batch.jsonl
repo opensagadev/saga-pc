@@ -28,3 +28,4 @@
 {"symbol": "_UpdatePushBlocks", "unit": "src/legoapi/gizpushblocks.cpp", "size": 4366, "start": 63.5025, "best": 63.92, "exact": false, "seconds": 485.2, "instructions": [47.95, 47.88], "applied": true}
 {"symbol": "_LoadAreaCharacters", "unit": "src/legoapi/areas.cpp", "size": 3370, "start": 55.391018, "best": 55.838993, "exact": false, "seconds": 379.6, "instructions": [59.7, 59.99], "applied": true}
 {"symbol": "_NuLgtArcLaserDraw", "unit": "src/nu2api/nulgtlaser.c", "size": 2506, "start": 44.053764, "best": 69.696236, "exact": false, "seconds": 339.1, "instructions": [49.63, 50.0], "applied": true}
+{"symbol": "_KillGameObject", "unit": "src/legoapi/gameobjects.c", "size": 3750, "start": 27.113327, "best": 27.594963, "exact": false, "seconds": 366.9, "instructions": [32.99, 32.84], "applied": true}

@@ -1370,7 +1370,7 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
         STUBBED_NAMED("KillGameObject: LoseHelmet PC433aa0");
     rider = object->rider;
     STUBBED_NAMED("KillGameObject: Player_ClearContext PC55e4a0");
-    if (terminal_kill != 0 && rider != NULL)
+    if (terminal_kill != 0 && NULL != rider)
         KillGameObject(rider, 4, 0);
     STUBBED_NAMED("KillGameObject: ReleaseLever PC48ffc0");
     STUBBED_NAMED("KillGameObject: Player_ResetContexts embedded packet6c4 PC55e4e0");
@@ -1385,8 +1385,8 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
             (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0))
             STUBBED_NAMED("KillGameObject: one-second GameCam_Blend PC54a3e0");
         if ((object->flags_1f8 & 0x40000) == 0) {
-            if (object->takeover_owner != NULL &&
-                (object->takeover_owner->rider == NULL || object->takeover_owner->rider == object)) {
+            if ((object->takeover_owner != NULL &&
+                (object->takeover_owner->rider == NULL || object == object->takeover_owner->rider))) {
                 STUBBED_NAMED(
                     "KillGameObject: real GetTakeOverPos output-dependent position/start/AI position writes PC4871a0");
             } else {
@@ -1404,7 +1404,7 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     object->death_delay = object->dead == 2 ? 0.0f : 0.5f;
     if (object->death_delay <= 0.0f)
         object->movement_lean_angle = 0;
-    if (terminal_kill == 0)
+    if (0 == terminal_kill)
         STUBBED_NAMED("KillGameObject: real BeenKilled script predicate/process using same packet2c8 PC52c790/52cc90");
     group = object->ai_packet.group;
     if (group != NULL) {
@@ -1418,7 +1418,7 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
                 for (i = group->member_count - 1; i >= 0; --i) {
                     if (group->members[i] != NULL) {
                         candidate = (GAMEOBJECT *)group->members[i]->owner;
-                        if (candidate != object && (candidate->flags_1fc_word & 0x1001) == 0x1001 &&
+                        if (object != candidate && (candidate->flags_1fc_word & 0x1001) == 0x1001 &&
                             candidate->dead == 0) {
                             group->leader = (APIOBJECT_PC *)candidate;
                             break;
@@ -1469,7 +1469,7 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     STUBBED_NAMED("KillGameObject: ReleaseBuildIt PC58ff10");
     STUBBED_NAMED("KillGameObject: ReleasePush PC59cb00");
     candidate = Obj;
-    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++candidate) {
+    for (i = 0; HIGHGAMEOBJECT > i; ++i, ++candidate) {
         if ((candidate->flags_1fc_word & 0x1001) != 0x1001 || candidate == object)
             continue;
         if (candidate->character_context == 27 && candidate->force_target == object)
@@ -1492,7 +1492,7 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     if (DOGFIGHTA_LDATA != NULL && WorldInfo_CurrentlyActive()->current_level == DOGFIGHTA_LDATA && BonusWinner == -1 &&
         (object->flags_1f8 & 0x40000) == 0)
         STUBBED_NAMED("KillGameObject: ResetLevel EP3_DOGFIGHT_DIE PC57a620");
-    if (terminal_kill != 0 && object->field_280 == 0xff) {
+    if (0 != terminal_kill && object->field_280 == 0xff) {
         i32 remove = requested_reason == 5;
         AICREATURE_PC *creature = NULL;
         i32 persistent = (object->portal_flags & 0x100000) != 0;
@@ -2962,7 +2962,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     CurrentSpeed = 0.0f;
     for (i = 0; i <= 7; ++i) {
         player_flags = 1 | 0x1000;
-        object = Player[i];
+object = Player[i];
         if (object == NULL || (object->flags_1fc_word & player_flags) != player_flags) {
             continue;
         }
