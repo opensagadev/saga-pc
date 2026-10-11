@@ -1026,7 +1026,7 @@ extern "C" {
                 model = &apicharsys->models[apicharsys->playermodelids[replacement_id]];
             }
         }
-        if (model == NULL) {
+        if (NULL == model) {
             if ((character->flags & 2) == 0) {
                 scene_object = static_cast<GAMEOBJECT *>(instance->character_model);
                 model = scene_object->character_model;
@@ -1068,7 +1068,7 @@ extern "C" {
             reinterpret_cast<CUT_DRAW_OBJECT_PC *>(scene_object)->matrix = world_matrix;
             scene_object->position = *reinterpret_cast<NUVEC *>(&world_matrix.m30);
         }
-        if (visible == 0) {
+        if (0 == visible) {
             return;
         }
 
@@ -1084,20 +1084,20 @@ extern "C" {
                 instance->animation_a = requested_animation;
                 instance->animation_frame_a = !(animation_start_frame > 1.0f) ? 1.0f : animation_start_frame;
             } else {
-                if ((instance->flags & 1) == 0) {
-                    if (instance->current_animation == 0) {
-                        instance->animation_frame_a = frame;
-                        instance->animation_a = requested_animation;
-                    } else {
-                        instance->animation_a = instance->current_animation;
-                        animation_index = instance->current_animation;
-                    }
-                } else {
+                if ((instance->flags & 1) != 0) {
                     instance->animation_a = instance->animation_b;
                     instance->animation_frame_a = instance->animation_frame_b;
                     animation_index = instance->animation_b;
+                } else {
+                    if (instance->current_animation != 0) {
+                        instance->animation_a = instance->current_animation;
+                        animation_index = instance->current_animation;
+                    } else {
+                        instance->animation_frame_a = frame;
+                        instance->animation_a = requested_animation;
+                    }
                 }
-                if (!(animation_start_frame > 1.0f)) {
+                if (!(1.0f < animation_start_frame)) {
                     animation_start_frame = 1.0f;
                 }
                 instance->animation_b = requested_animation;
@@ -1113,14 +1113,7 @@ extern "C" {
         bool blending = (instance->flags & 1) != 0;
         u32 animation_a_index = instance->animation_a;
         if (blending) {
-            if (blend_time <= 0.0f) {
-                instance->blend_progress = 0;
-                animation_a_index = instance->animation_b;
-                instance->flags ^= 1;
-                instance->animation_a = instance->animation_b;
-                instance->animation_frame_a = instance->animation_frame_b;
-                blending = false;
-            } else {
+            if (!(blend_time <= 0.0f)) {
                 instance->blend_progress += (1.0f / blend_time) * (FRAMETIME * 60.0f);
                 if (instance->blend_progress >= 1.0f) {
                     instance->blend_progress = 0;
@@ -1130,6 +1123,13 @@ extern "C" {
                     instance->animation_frame_a = instance->animation_frame_b;
                     blending = false;
                 }
+            } else {
+                instance->blend_progress = 0;
+                animation_a_index = instance->animation_b;
+                instance->flags ^= 1;
+                instance->animation_a = instance->animation_b;
+                instance->animation_frame_a = instance->animation_frame_b;
+                blending = false;
             }
         }
 
@@ -1218,10 +1218,10 @@ extern "C" {
         }
 
         EnableShadowMapRendering(0);
-        if (Cheats_CheckFlags(1) == 0) {
-            FindAndSetLights(reinterpret_cast<NUVEC *>(&world_matrix.m30), 1.0f, world->rtl_set);
-        } else {
+        if (Cheats_CheckFlags(1) != 0) {
             SetZeroLights();
+        } else {
+            FindAndSetLights(reinterpret_cast<NUVEC *>(&world_matrix.m30), 1.0f, world->rtl_set);
         }
 
         u8 render_character = 1;
@@ -1262,7 +1262,7 @@ extern "C" {
                 f32 shadow_radius = game_data->field_08c;
                 if (game_data->shadow_locators == 0) {
                     if (!(shadow_radius < 99.0f)) {
-                        shadow_radius = character_data->collision_radius * character_data->model_scale * 2.0f;
+                        shadow_radius = character_data->model_scale * character_data->collision_radius * 2.0f;
                     }
                     if (shadow_radius > 0.0f) {
                         ground_height = GameShadow(NULL, reinterpret_cast<NUVEC *>(&world_matrix.m30), 5.0f, -1);
@@ -1300,7 +1300,7 @@ extern "C" {
                                     model->points_of_interest[i] != NULL) {
                                     NUVEC shadow_position = locator_positions[i];
                                     f32 locator_ground = GameShadow(NULL, &shadow_position, 5.0f, -1);
-                                    if (locator_ground != 2000000.0f && ShadNorm.y > 0.0f) {
+                                    if (locator_ground != 2000000.0f && 0.0f < ShadNorm.y) {
                                         shadow_position.y = locator_ground + 0.005f;
                                         u16 x_rotation;
                                         u16 z_rotation;
@@ -1333,7 +1333,7 @@ extern "C" {
                     surface = ShadowInfo();
                 }
             }
-            if (surface >= 0 && surface < 32 && (TerSurface[surface].flags & 2) != 0 && ground_height != 2000000.0f) {
+            if (surface >= 0 && surface <= 31 && (TerSurface[surface].flags & 2) != 0 && ground_height != 2000000.0f) {
                 reflection_height = ground_height;
             } else if (platform != -1) {
                 (void)FindReflectionNoPlatforms(reinterpret_cast<NUVEC *>(&world_matrix.m30));
