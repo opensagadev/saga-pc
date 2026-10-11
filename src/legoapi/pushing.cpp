@@ -538,9 +538,7 @@ obstacle_rumble_a: {
 }
 
 obstacle_rumble_b: {
-    {
-        NewRumble(object->pad->bound_pad, qrand() * (f64)(1.0f / 65535.0f) * (f64)0.3f, 0);
-    }
+    { NewRumble(object->pad->bound_pad, qrand() * (f64)(1.0f / 65535.0f) * (f64)0.3f, 0); }
     goto revalidate_context;
 }
 
